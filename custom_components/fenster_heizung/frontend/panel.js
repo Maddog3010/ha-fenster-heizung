@@ -54,9 +54,9 @@ const CSS = `
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px}
 .card h2{font-size:.95rem;margin:0 0 12px;font-weight:600;display:flex;align-items:center;gap:8px}
 .card h2 .ic{color:var(--teal)}
-.hero{position:relative;overflow:hidden;border:0;color:#ecfeff;padding:20px 18px;
+.hero{position:relative;overflow:hidden;border:0;color:#ecfeff;padding:20px 18px;min-height:168px;
   background:radial-gradient(120% 140% at 85% 0%,#14b8a6 0%,rgba(20,184,166,0) 55%),linear-gradient(135deg,#0f5f66 0%,#0c3b52 60%,#0b2c43 100%)}
-.hero .art{position:absolute;right:-6px;top:8px;width:46%;max-width:300px;opacity:.95}
+.hero .art{position:absolute;right:8px;top:50%;transform:translateY(-50%);height:88%;max-height:190px;width:auto;max-width:46%;opacity:.95}
 .hero .lbl{font-size:.82rem;opacity:.85;display:flex;gap:6px;align-items:center}
 .hero .big{font-size:2.7rem;font-weight:700;line-height:1.05;margin:6px 0 2px;letter-spacing:-.5px}
 .hero .big small{font-size:1.2rem;font-weight:500;opacity:.85;margin-left:4px}
@@ -97,12 +97,19 @@ const CSS = `
 .foot .a span{display:block;font-size:.76rem;color:var(--mut);margin-top:2px}
 .note{text-align:center;color:var(--mut);font-size:.76rem;padding:2px 10px}
 .empty{text-align:center;color:var(--mut);padding:40px 10px}
-@media(min-width:720px){.tiles{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(2,1fr)}.hero .big{font-size:3.3rem}.hero .art{width:34%}}
+@media(min-width:720px){.tiles{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(2,1fr)}.hero .big{font-size:3.3rem}}
 @media(min-width:1080px){.rooms{grid-template-columns:repeat(3,1fr)}}
 `;
 
 class FensterHeizungPanel extends HTMLElement {
   constructor() { super(); this.attachShadow({ mode: "open" }); this._narrow = false; }
+  connectedCallback() {
+    this._ro = new ResizeObserver(() => {
+      if (this._hass && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render();
+    });
+    this._ro.observe(this);
+  }
+  disconnectedCallback() { this._ro && this._ro.disconnect(); }
   set hass(h) { this._hass = h; this._render(); }
   set narrow(v) { this._narrow = v; this._render(); }
   set panel(_) {}
@@ -145,15 +152,17 @@ class FensterHeizungPanel extends HTMLElement {
   }
 
   _chart(rooms) {
-    const days = this._days(rooms), W = 640, H = 250, L = 42, R = 8, T = 12, B = 32;
+    const days = this._days(rooms), W = Math.max(300, Math.min(1100, (this.clientWidth || 390) - 62)), H = 230, L = 36, R = 6, T = 12, B = 30;
+    this._w = this.clientWidth;
+    const lblStep = W < 480 ? 3 : 2; // auf dem Handy seltener beschriften
     const tot = days.map((x) => x.v.reduce((a, b) => a + b, 0));
     const step = [30, 60, 120, 240, 480].find((s) => Math.max(...tot, 1) / s <= 4) || 480;
     const max = Math.max(Math.ceil(Math.max(...tot, 1) / step) * step, step);
     const iw = (W - L - R) / days.length, bw = iw * 0.62, y = (v) => T + (H - T - B) * (1 - v / max);
-    let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Pausenzeit pro Tag">`;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="${H}" role="img" aria-label="Pausenzeit pro Tag">`;
     for (let v = 0; v <= max; v += step) {
       s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-dasharray="${v ? "3 4" : "0"}"/>`;
-      s += `<text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="14" fill="var(--mut)">${v}</text>`;
+      s += `<text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="12" fill="var(--mut)">${v}</text>`;
     }
     days.forEach((dd, i) => {
       const x = L + iw * i + (iw - bw) / 2; let acc = 0;
@@ -162,8 +171,8 @@ class FensterHeizungPanel extends HTMLElement {
         const y1 = y(acc + v), h = y(acc) - y1; acc += v;
         s += `<rect x="${x}" y="${y1}" width="${bw}" height="${Math.max(h, 1)}" rx="3" fill="${COLORS[k % COLORS.length]}"/>`;
       });
-      const today = i === days.length - 1, lab = i % 2 === (days.length - 1) % 2 || today;
-      if (lab) s += `<text x="${x + bw / 2}" y="${H - 8}" text-anchor="middle" font-size="14" fill="${today ? "var(--primary-text-color)" : "var(--mut)"}" font-weight="${today ? 700 : 400}">${today ? "heute" : dd.d.toLocaleDateString("de-DE", { day: "numeric", month: "numeric" })}</text>`;
+      const today = i === days.length - 1, lab = (days.length - 1 - i) % lblStep === 0;
+      if (lab) s += `<text x="${today ? x + bw : x + bw / 2}" y="${H - 8}" text-anchor="${today ? "end" : "middle"}" font-size="12" fill="${today ? "var(--primary-text-color)" : "var(--mut)"}" font-weight="${today ? 700 : 400}">${today ? "heute" : dd.d.toLocaleDateString("de-DE", { day: "numeric", month: "numeric" })}</text>`;
     });
     return s + "</svg>";
   }
