@@ -6,8 +6,9 @@ import re
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import STATE_OFF, STATE_ON, STATE_UNAVAILABLE, STATE_UNKNOWN
+from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_call_later, async_track_state_change_event
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
@@ -15,30 +16,33 @@ from homeassistant.util import dt as dt_util
 from .const import (
     ACTION_OFF,
     CONF_ACTION,
+    CONF_BLOCK_FROM,
+    CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
+    CONF_NOTIFY_AFTER,
+    CONF_NOTIFY_SERVICE,
     CONF_OPEN_DELAY,
+    CONF_OUTDOOR_MAX,
+    CONF_OUTDOOR_SENSOR,
     CONF_SETBACK_TEMP,
     CONF_THERMOSTATS,
     CONF_WINDOWS,
     DEFAULT_CLOSE_DELAY,
     DEFAULT_OPEN_DELAY,
+    DEFAULT_OUTDOOR_MAX,
     DEFAULT_SETBACK_TEMP,
     DOMAIN,
-)
-
-from .const import (  # noqa: E402
-    CONF_BLOCK_FROM,
-    CONF_BLOCK_TO,
-    CONF_NOTIFY_AFTER,
-    CONF_NOTIFY_SERVICE,
-    CONF_OUTDOOR_MAX,
-    CONF_OUTDOOR_SENSOR,
-    DEFAULT_OUTDOOR_MAX,
+    HEATING_MODES,
+    MODE_ACTIVE,
+    MODE_DISABLED,
+    MODE_PAUSED,
+    MODE_WINDOW_ONLY,
+    SIGNAL_UPDATE,
 )
 
 _LOGGER = logging.getLogger(__name__)
+PLATFORMS = ["switch", "sensor"]
 RECHECK_SECONDS = 300
-PLATFORMS = ["switch"]
 
 
 class WindowController:
@@ -51,31 +55,113 @@ class WindowController:
         self.active = False  # True = Heizung gerade pausiert
         self._saved: dict[str, dict[str, Any]] = {}
         self._timer: CALLBACK_TYPE | None = None
-        self._unsub: CALLBACK_TYPE | None = None
         self._notify_timer: CALLBACK_TYPE | None = None
         self._notified = False
+        self._unsub: CALLBACK_TYPE | None = None
+        self._unsub_t: CALLBACK_TYPE | None = None
         self._store = Store(hass, 1, f"{DOMAIN}_{entry.entry_id}")
+        # Statistik "pausiert heute"
+        self._day = dt_util.now().date().isoformat()
+        self._seconds = 0.0
+        self._pauses = 0
+        self._paused_since = None
 
     @property
     def cfg(self) -> dict[str, Any]:
         return {**self.entry.data, **self.entry.options}
 
     async def async_start(self) -> None:
-        saved = await self._store.async_load()
-        if saved:
-            self._saved = saved
-            self.active = bool(saved)
+        data = await self._store.async_load() or {}
+        if "saved" in data:
+            self._saved = data.get("saved") or {}
+            self._day = data.get("day") or self._day
+            self._seconds = float(data.get("seconds") or 0)
+            self._pauses = int(data.get("pauses") or 0)
+            if data.get("paused_since"):
+                self._paused_since = dt_util.parse_datetime(data["paused_since"])
+        else:  # Altformat (bis 1.1.x): nur die gemerkten Thermostate
+            self._saved = data
+        self.active = bool(self._saved)
+        if self.active and self._paused_since is None:
+            self._paused_since = dt_util.now()
+        self._roll()
         self._unsub = async_track_state_change_event(
             self.hass, self.cfg[CONF_WINDOWS], self._window_changed
+        )
+        self._unsub_t = async_track_state_change_event(
+            self.hass, self.cfg[CONF_THERMOSTATS], self._thermostat_changed
         )
         self._evaluate()
 
     async def async_stop(self) -> None:
         self._cancel_timer()
         self._cancel_notify()
-        if self._unsub:
-            self._unsub()
-            self._unsub = None
+        for attr in ("_unsub", "_unsub_t"):
+            unsub = getattr(self, attr)
+            if unsub:
+                unsub()
+                setattr(self, attr, None)
+
+    # --- Zustand für Sensoren ----------------------------------------------
+    def mode(self) -> str:
+        if not self.enabled:
+            return MODE_DISABLED
+        if self.active:
+            return MODE_PAUSED
+        for eid in self.cfg[CONF_THERMOSTATS]:
+            st = self.hass.states.get(eid)
+            if st is not None and st.state in HEATING_MODES:
+                return MODE_ACTIVE
+        return MODE_WINDOW_ONLY
+
+    def thermostat_states(self) -> dict[str, str]:
+        out = {}
+        for eid in self.cfg[CONF_THERMOSTATS]:
+            st = self.hass.states.get(eid)
+            out[eid] = st.state if st else "unbekannt"
+        return out
+
+    def _roll(self):
+        """Tageswechsel: Zähler auf 0, laufende Pause ab Mitternacht zählen."""
+        now = dt_util.now()
+        today = now.date().isoformat()
+        if self._day != today:
+            self._day = today
+            self._seconds = 0.0
+            self._pauses = 0
+            if self._paused_since:
+                self._paused_since = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        return now
+
+    def minutes_today(self) -> float:
+        now = self._roll()
+        seconds = self._seconds
+        if self._paused_since:
+            seconds += max((now - self._paused_since).total_seconds(), 0)
+        return round(seconds / 60, 1)
+
+    @property
+    def pauses_today(self) -> int:
+        self._roll()
+        return self._pauses
+
+    @property
+    def paused_since(self):
+        return self._paused_since
+
+    def _signal(self) -> None:
+        async_dispatcher_send(self.hass, SIGNAL_UPDATE.format(self.entry.entry_id))
+
+    async def _save(self) -> None:
+        await self._store.async_save(
+            {
+                "saved": self._saved,
+                "paused_since": self._paused_since.isoformat() if self._paused_since else None,
+                "day": self._day,
+                "seconds": self._seconds,
+                "pauses": self._pauses,
+            }
+        )
 
     # --- Logik -------------------------------------------------------------
     def _any_open(self) -> bool:
@@ -90,9 +176,13 @@ class WindowController:
         self._evaluate()
 
     @callback
+    def _thermostat_changed(self, event: Event) -> None:
+        self._signal()
+
+    @callback
     def _evaluate(self) -> None:
         self._cancel_timer()
-        self._update_notify()
+        self._update_notify()  # Fenstermeldung gilt auch, wenn die Heizung aus ist
         if not self.enabled:
             return
         is_open = self._any_open()
@@ -130,7 +220,7 @@ class WindowController:
                 self.cfg.get(CONF_OUTDOOR_MAX, DEFAULT_OUTDOOR_MAX)
             )
         except (AttributeError, ValueError, TypeError):
-            return True  # Sensor unbekannt -> normal regeln
+            return True
 
     def _cancel_notify(self) -> None:
         if self._notify_timer:
@@ -179,6 +269,7 @@ class WindowController:
             await self._restore(None)
         else:
             self._evaluate()
+        self._signal()
 
     async def _suppress(self, _now) -> None:
         self._timer = None
@@ -191,7 +282,9 @@ class WindowController:
         cfg = self.cfg
         for eid in cfg[CONF_THERMOSTATS]:
             st = self.hass.states.get(eid)
-            if st is None or st.state in (STATE_UNAVAILABLE, STATE_UNKNOWN, STATE_OFF):
+            # nur Thermostate im Heizbetrieb (heat/auto) werden angefasst;
+            # "off" und alle anderen Modi bleiben unberührt
+            if st is None or st.state not in HEATING_MODES:
                 continue
             self._saved[eid] = {
                 "hvac_mode": st.state,
@@ -207,22 +300,31 @@ class WindowController:
                     eid,
                     temperature=cfg.get(CONF_SETBACK_TEMP, DEFAULT_SETBACK_TEMP),
                 )
-        self.active = bool(self._saved)
-        await self._store.async_save(self._saved)
+        if self._saved and not self.active:
+            self.active = True
+            self._paused_since = self._roll()
+            self._pauses += 1
+        await self._save()
+        self._signal()
 
     async def _restore(self, _now) -> None:
         self._timer = None
         for eid, data in self._saved.items():
             st = self.hass.states.get(eid)
-            if st is None or st.state == STATE_UNAVAILABLE:
+            if st is None or st.state == "unavailable":
                 continue
             if st.state != data["hvac_mode"]:
                 await self._call("set_hvac_mode", eid, hvac_mode=data["hvac_mode"])
             if data.get("temperature") is not None:
                 await self._call("set_temperature", eid, temperature=data["temperature"])
+        now = self._roll()
+        if self._paused_since:
+            self._seconds += max((now - self._paused_since).total_seconds(), 0)
+            self._paused_since = None
         self._saved = {}
         self.active = False
-        await self._store.async_save(self._saved)
+        await self._save()
+        self._signal()
 
     async def _call(self, service: str, entity_id: str, **data: Any) -> None:
         try:

@@ -32,3 +32,13 @@ OPTIONAL_KEYS = (
     CONF_OUTDOOR_SENSOR,
     CONF_NOTIFY_SERVICE,
 )
+
+SIGNAL_UPDATE = "fenster_heizung_update_{}"
+
+HEATING_MODES = ("heat", "auto")
+
+MODE_ACTIVE = "regelung_aktiv"
+MODE_PAUSED = "heizung_pausiert"
+MODE_WINDOW_ONLY = "nur_fenstermeldung"
+MODE_DISABLED = "regelung_aus"
+MODES = [MODE_ACTIVE, MODE_PAUSED, MODE_WINDOW_ONLY, MODE_DISABLED]
