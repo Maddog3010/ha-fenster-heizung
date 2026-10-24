@@ -1,4 +1,5 @@
-<img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/custom_components/fenster_heizung/brand/icon.png" width="96" alt="Fenster &amp; Heizung">
+![Fenster & Heizung](custom_components/fenster_heizung/brand/icon.png)
+
 
 
 # Fenster & Heizung
