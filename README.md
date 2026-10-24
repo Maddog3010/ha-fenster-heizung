@@ -9,7 +9,8 @@ Home-Assistant-Integration: Pausiert Heizungsthermostate, solange Fenster offen 
 ## Dashboard
 Die Integration bringt ein eigenes Dashboard in der Seitenleiste mit.
 
-<img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_handy_dunkel.png" width="260" alt="Dashboard auf dem Handy, dunkel"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_handy_hell.png" width="260" alt="Dashboard auf dem Handy, hell">
+![Dashboard auf dem Handy, dunkel](docs/vorschau_handy_dunkel.png) ![Dashboard auf dem Handy, hell](docs/vorschau_handy_hell.png)
+
 
 
 ![Dashboard auf dem Desktop](docs/vorschau_desktop.png)
