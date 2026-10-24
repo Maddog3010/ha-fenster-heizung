@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [1.5.2] - 2026-10-24
+### Behoben
+- Dashboard auf dem iPhone: Über der Titelzeile stand ein großer leerer Streifen, weil der Abstand zur Statusleiste doppelt gerechnet wurde.
+- Dashboard auf dem Handy: Die Illustration überdeckte die Chips in der Kopfkarte. Sie ist jetzt kleiner und bleibt oben rechts.
+- „0 von 1 Räumen“ heißt jetzt „0 von 1 Raum“.
+- Ohne Pausen zeigt das Diagramm den Hinweis „Noch keine Pausen in den letzten 14 Tagen“.
+
 ## [1.5.1] - 2026-10-24
 ### Behoben
 - Dashboard: Die Illustration in der Kopfkarte wurde auf dem Desktop unten abgeschnitten und bleibt jetzt immer vollständig sichtbar.
@@ -97,6 +104,7 @@ Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sic
 - Schalter „Fensterregelung aktiv“ pro Raum.
 - Deutsche und englische Oberfläche.
 
+[1.5.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.2
 [1.5.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.1
 [1.5.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.0
 [1.4.2.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.2
