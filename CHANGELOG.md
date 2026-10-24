@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [1.5.1] - 2026-10-24
+### Behoben
+- Dashboard: Die Illustration in der Kopfkarte wurde auf dem Desktop unten abgeschnitten und bleibt jetzt immer vollständig sichtbar.
+- Dashboard: Das Diagramm „Pausenzeit pro Tag“ wird in seiner echten Breite gezeichnet. Auf dem Desktop war die Schrift zu groß, auf dem Handy zu klein. Auf schmalen Bildschirmen steht die Beschriftung der Tage seltener, damit nichts überlappt.
+
 ## [1.5.0] - 2026-10-24
 ### Neu
 - **Eigenes Dashboard** als Eintrag „Fenster & Heizung“ in der Seitenleiste. Es füllt sich automatisch mit allen eingerichteten Räumen, ohne Konfiguration und ohne Erweiterungen aus HACS.
@@ -92,6 +97,7 @@ Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sic
 - Schalter „Fensterregelung aktiv“ pro Raum.
 - Deutsche und englische Oberfläche.
 
+[1.5.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.1
 [1.5.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.0
 [1.4.2.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.2
 [1.4.2.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.1
