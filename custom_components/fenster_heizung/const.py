@@ -61,3 +61,6 @@ CONF_HEAT_LOAD = "heat_load_w_m2"
 CONF_DESIGN_TEMP = "design_temp"
 DEFAULT_HEAT_LOAD = 60.0
 DEFAULT_DESIGN_TEMP = -12.0
+
+PANEL_URL = "fenster-heizung"
+STATIC_URL = "/fenster_heizung_static"

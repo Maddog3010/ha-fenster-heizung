@@ -15,7 +15,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_time_interval
 
-from .const import DOMAIN, MODES, SIGNAL_UPDATE
+from .const import CONF_WINDOWS, DOMAIN, MODES, SIGNAL_UPDATE
 
 SCOPES = {
     "minutes_today": "day",
@@ -77,6 +77,7 @@ class PausedMinutesSensor(_Base):
     _attr_native_unit_of_measurement = UnitOfTime.MINUTES
     _attr_state_class = SensorStateClass.TOTAL_INCREASING
     _attr_icon = "mdi:radiator-off"
+    _unrecorded_attributes = frozenset({"verlauf"})
 
     def __init__(self, entry: ConfigEntry, key: str, scope: str) -> None:
         super().__init__(entry, key)
@@ -88,8 +89,11 @@ class PausedMinutesSensor(_Base):
 
     @property
     def extra_state_attributes(self) -> dict:
-        attrs = self._ctrl.saved_gas(self._ctrl.seconds(self._scope))
+        attrs = self._ctrl.saved_gas(self._scope)
+        attrs["zeitraum"] = self._scope
         if self._scope == "day":
+            attrs.update(self._ctrl.power_info())
+            attrs["verlauf"] = self._ctrl.minutes_history()
             since = self._ctrl.paused_since
             attrs["pausen_heute"] = self._ctrl.pauses_today
             attrs["pausiert_seit"] = since.isoformat() if since else None
@@ -114,5 +118,6 @@ class ModeSensor(_Base):
     def extra_state_attributes(self) -> dict:
         return {
             "thermostate": self._ctrl.thermostat_states(),
+            "fenster": list(self._ctrl.cfg[CONF_WINDOWS]),
             "heizung_quelle": self._ctrl.heating_source(),
         }

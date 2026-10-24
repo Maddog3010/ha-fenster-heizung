@@ -2,11 +2,14 @@
 from __future__ import annotations
 
 import logging
+import os
 import re
 from datetime import date, timedelta
 from typing import Any
 
-from homeassistant.config_entries import ConfigEntry
+from homeassistant.components import frontend, panel_custom
+from homeassistant.components.http import StaticPathConfig
+from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_send
@@ -57,7 +60,9 @@ from .const import (
     MODE_DISABLED,
     MODE_PAUSED,
     MODE_WINDOW_ONLY,
+    PANEL_URL,
     SIGNAL_UPDATE,
+    STATIC_URL,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -283,6 +288,17 @@ class WindowController:
                 # Tage aus älteren Versionen: Sekunden mal feste Leistung
                 total += self._kwh_history.get(day, secs / 3600 * fixed)
         return total + extra
+
+    def minutes_history(self, days: int = 13) -> dict[str, float]:
+        """Pausenminuten der letzten abgeschlossenen Tage (für das Dashboard)."""
+        self._roll()
+        today = dt_util.now().date()
+        out: dict[str, float] = {}
+        for i in range(1, days + 1):
+            key = (today - timedelta(days=i)).isoformat()
+            if key in self._history:
+                out[key] = round(self._history[key] / 60, 1)
+        return out
 
     def saved_gas(self, scope: str) -> dict[str, float]:
         """Grobe Schätzung des eingesparten Gases."""
@@ -574,12 +590,47 @@ class WindowController:
             _LOGGER.exception("climate.%s für %s fehlgeschlagen", service, entity_id)
 
 
+async def _async_register_panel(hass: HomeAssistant) -> None:
+    """Dashboard als Eintrag in der Seitenleiste bereitstellen."""
+    store = hass.data.setdefault(DOMAIN, {})
+    path = os.path.join(os.path.dirname(__file__), "frontend")
+    if not store.get("static"):
+        try:
+            await hass.http.async_register_static_paths(
+                [StaticPathConfig(STATIC_URL, path, True)]
+            )
+        except RuntimeError:  # Pfad ist bereits registriert
+            pass
+        store["static"] = True
+    if store.get("panel"):
+        return
+    version = await hass.async_add_executor_job(
+        lambda: int(os.path.getmtime(os.path.join(path, "panel.js")))
+    )
+    try:
+        await panel_custom.async_register_panel(
+            hass,
+            webcomponent_name="fenster-heizung-panel",
+            frontend_url_path=PANEL_URL,
+            module_url=f"{STATIC_URL}/panel.js?v={version}",
+            sidebar_title="Fenster & Heizung",
+            sidebar_icon="mdi:window-open-variant",
+            require_admin=False,
+            config={},
+            embed_iframe=False,
+        )
+    except ValueError:  # Panel existiert bereits
+        pass
+    store["panel"] = True
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     controller = WindowController(hass, entry)
     entry.runtime_data = controller
     await controller.async_start()
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(_reload))
+    await _async_register_panel(hass)
     return True
 
 
@@ -591,4 +642,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if ok:
         await entry.runtime_data.async_stop()
+        others = [
+            e
+            for e in hass.config_entries.async_entries(DOMAIN)
+            if e.entry_id != entry.entry_id and e.state is ConfigEntryState.LOADED
+        ]
+        if not others:  # letzter Raum entfernt: Seitenleisten-Eintrag wieder löschen
+            frontend.async_remove_panel(hass, PANEL_URL, warn_if_unknown=False)
+            hass.data.get(DOMAIN, {}).pop("panel", None)
     return ok
