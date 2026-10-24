@@ -1,6 +1,6 @@
 {
   "codeowners": [
-    "@DEIN-USER"
+    "@Maddog3010"
   ],
   "config_flow": true,
   "documentation": "https://github.com/DEIN-USER/ha-fenster-heizung",
