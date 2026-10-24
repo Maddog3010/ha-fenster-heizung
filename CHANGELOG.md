@@ -2,6 +2,25 @@
 
 Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [1.4.2.1] - 2026-10-24
+### Neu
+- **Eigener Nachrichtentext** für die Erinnerung bei langem Lüften, wie das Feld „Nachricht“ bei den Aktionen in den Entwicklerwerkzeugen (mehrzeilig möglich).
+- **Optionaler Titel** der Benachrichtigung.
+- Platzhalter in Text und Titel: `{raum}`, `{minuten}` und `{fenster}` (Namen der offenen Fenster). Unbekannte Platzhalter bleiben unverändert stehen.
+
+### Geändert
+- Ohne eigenen Text gilt wie bisher: „Fenster in {raum} ist seit {minuten} Minuten offen.“
+
+## [1.4.2] - 2026-10-24
+### Neu
+- **Genauere Raumberechnung** für das gesparte Gas: Mit Angabe von Raumfläche (m²), spezifischer Heizlast (W/m²) und Auslegungs-Außentemperatur wird die Heizleistung aus der Außentemperatur berechnet und während der Pause minütlich aufsummiert. Bei warmem Wetter sinkt die Ersparnis entsprechend. Ohne Außentemperatursensor wird pauschal mit halber Auslegungsleistung gerechnet.
+- Neues Attribut am Sensor „heute“: `aktuelle_leistung_kw` und `berechnung`.
+- **Benachrichtigungs-Aktionen per Auswahlmenü**: Die verfügbaren notify-Aktionen stehen wie in den Entwicklerwerkzeugen zur Auswahl (mehrere möglich, Suche und eigene Eingabe erlaubt).
+
+### Geändert
+- Ist die Raumfläche 0 (Standard), gilt weiterhin die feste Leistung in kW wie bisher.
+- Ältere Einträge mit Komma-Text bei den Benachrichtigungsdiensten werden automatisch in die Auswahl übernommen.
+
 ## [1.4.1] - 2026-10-24
 ### Geändert
 - „Energie pro m³ Gas“ lässt sich jetzt von 1 bis 40 kWh/m³ einstellen (bisher 5 bis 15), damit auch Flüssiggas (Propan, etwa 26 kWh/m³) möglich ist.
@@ -56,6 +75,8 @@ Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sic
 - Schalter „Fensterregelung aktiv“ pro Raum.
 - Deutsche und englische Oberfläche.
 
+[1.4.2.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.1
+[1.4.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2
 [1.4.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.1
 [1.4.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.0
 [1.3.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.3.0
