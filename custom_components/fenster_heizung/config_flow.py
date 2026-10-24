@@ -17,6 +17,8 @@ from .const import (
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
+    CONF_HEATING_ENTITY,
+    CONF_HEATING_OFF_STATES,
     CONF_NOTIFY_AFTER,
     CONF_NOTIFY_SERVICE,
     CONF_OPEN_DELAY,
@@ -26,6 +28,7 @@ from .const import (
     CONF_THERMOSTATS,
     CONF_WINDOWS,
     DEFAULT_CLOSE_DELAY,
+    DEFAULT_HEATING_OFF_STATES,
     DEFAULT_NOTIFY_AFTER,
     DEFAULT_OUTDOOR_MAX,
     DEFAULT_OPEN_DELAY,
@@ -77,6 +80,17 @@ def _schema(with_name: bool) -> vol.Schema:
                     mode=selector.NumberSelectorMode.BOX,
                 )
             ),
+            vol.Optional(CONF_HEATING_ENTITY): selector.EntitySelector(
+                selector.EntitySelectorConfig(
+                    domain=[
+                        "climate", "binary_sensor", "sensor", "switch",
+                        "input_boolean", "input_select", "select",
+                    ]
+                )
+            ),
+            vol.Required(
+                CONF_HEATING_OFF_STATES, default=DEFAULT_HEATING_OFF_STATES
+            ): selector.TextSelector(),
             vol.Optional(CONF_OUTDOOR_SENSOR): selector.EntitySelector(
                 selector.EntitySelectorConfig(domain="sensor", device_class="temperature")
             ),
