@@ -56,6 +56,20 @@
       "enabled": {
         "name": "Window control active"
       }
+    },
+    "sensor": {
+      "minutes_today": {
+        "name": "Heating paused today"
+      },
+      "mode": {
+        "name": "Operating state",
+        "state": {
+          "regelung_aktiv": "Control active",
+          "heizung_pausiert": "Heating paused",
+          "nur_fenstermeldung": "Heating off, window alert only",
+          "regelung_aus": "Control disabled"
+        }
+      }
     }
   }
 }

@@ -56,6 +56,20 @@
       "enabled": {
         "name": "Fensterregelung aktiv"
       }
+    },
+    "sensor": {
+      "minutes_today": {
+        "name": "Heizung pausiert heute"
+      },
+      "mode": {
+        "name": "Betriebszustand",
+        "state": {
+          "regelung_aktiv": "Regelung aktiv",
+          "heizung_pausiert": "Heizung pausiert",
+          "nur_fenstermeldung": "Heizung aus, nur Fenstermeldung",
+          "regelung_aus": "Regelung deaktiviert"
+        }
+      }
     }
   }
 }
