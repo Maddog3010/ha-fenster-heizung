@@ -2,6 +2,10 @@
 
 Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [1.4.1] - 2026-10-24
+### Geändert
+- „Energie pro m³ Gas“ lässt sich jetzt von 1 bis 40 kWh/m³ einstellen (bisher 5 bis 15), damit auch Flüssiggas (Propan, etwa 26 kWh/m³) möglich ist.
+
 ## [1.4.0] - 2026-10-24
 ### Neu
 - Neue Sensoren pro Raum: **Heizung pausiert im Monat**, **im Jahr** und **gesamt** (Minuten), zusätzlich zu „heute“.
@@ -52,6 +56,7 @@ Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sic
 - Schalter „Fensterregelung aktiv“ pro Raum.
 - Deutsche und englische Oberfläche.
 
+[1.4.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.1
 [1.4.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.0
 [1.3.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.3.0
 [1.2.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.2.0
