@@ -22,6 +22,9 @@ CONF_OUTDOOR_SENSOR = "outdoor_sensor"
 CONF_OUTDOOR_MAX = "outdoor_max_temp"
 CONF_NOTIFY_SERVICE = "notify_service"
 CONF_NOTIFY_AFTER = "notify_after"
+CONF_NOTIFY_TITLE = "notify_title"
+CONF_NOTIFY_MESSAGE = "notify_message"
+DEFAULT_NOTIFY_MESSAGE = "Fenster in {raum} ist seit {minuten} Minuten offen."
 CONF_HEATING_ENTITY = "heating_entity"
 CONF_HEATING_OFF_STATES = "heating_off_states"
 DEFAULT_HEATING_OFF_STATES = "off"
@@ -35,6 +38,7 @@ OPTIONAL_KEYS = (
     CONF_OUTDOOR_SENSOR,
     CONF_NOTIFY_SERVICE,
     CONF_HEATING_ENTITY,
+    CONF_NOTIFY_TITLE,
 )
 
 SIGNAL_UPDATE = "fenster_heizung_update_{}"
@@ -51,3 +55,9 @@ CONF_HEAT_POWER = "heat_power_kw"
 CONF_GAS_KWH_PER_M3 = "gas_kwh_per_m3"
 DEFAULT_HEAT_POWER = 1.0
 DEFAULT_GAS_KWH_PER_M3 = 10.0
+
+CONF_ROOM_AREA = "room_area"
+CONF_HEAT_LOAD = "heat_load_w_m2"
+CONF_DESIGN_TEMP = "design_temp"
+DEFAULT_HEAT_LOAD = 60.0
+DEFAULT_DESIGN_TEMP = -12.0

@@ -1,13 +1,14 @@
 """Config- und Options-Flow: Sensoren und Thermostate per UI wählbar."""
 from __future__ import annotations
 
+import re
 from typing import Any
 
 import voluptuous as vol
 
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, OptionsFlow
 from homeassistant.const import CONF_NAME
-from homeassistant.core import callback
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import selector
 
 from .const import (
@@ -17,23 +18,31 @@ from .const import (
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
+    CONF_DESIGN_TEMP,
     CONF_GAS_KWH_PER_M3,
+    CONF_HEAT_LOAD,
     CONF_HEAT_POWER,
     CONF_HEATING_ENTITY,
     CONF_HEATING_OFF_STATES,
     CONF_NOTIFY_AFTER,
+    CONF_NOTIFY_MESSAGE,
     CONF_NOTIFY_SERVICE,
+    CONF_NOTIFY_TITLE,
     CONF_OPEN_DELAY,
     CONF_OUTDOOR_MAX,
     CONF_OUTDOOR_SENSOR,
+    CONF_ROOM_AREA,
     CONF_SETBACK_TEMP,
     CONF_THERMOSTATS,
     CONF_WINDOWS,
     DEFAULT_CLOSE_DELAY,
+    DEFAULT_DESIGN_TEMP,
     DEFAULT_GAS_KWH_PER_M3,
+    DEFAULT_HEAT_LOAD,
     DEFAULT_HEAT_POWER,
     DEFAULT_HEATING_OFF_STATES,
     DEFAULT_NOTIFY_AFTER,
+    DEFAULT_NOTIFY_MESSAGE,
     DEFAULT_OUTDOOR_MAX,
     DEFAULT_OPEN_DELAY,
     DEFAULT_SETBACK_TEMP,
@@ -51,7 +60,17 @@ def _delay(max_s: int) -> selector.NumberSelector:
     )
 
 
-def _schema(with_name: bool) -> vol.Schema:
+def _notify_options(hass: HomeAssistant) -> list[str]:
+    """Alle verfügbaren notify-Aktionen, wie in den Entwicklerwerkzeugen."""
+    try:
+        names = hass.services.async_services_for_domain("notify")
+    except AttributeError:
+        names = hass.services.async_services().get("notify", {})
+    skip = {"send_message", "reload"}  # brauchen ein Ziel bzw. sind keine Benachrichtigung
+    return sorted(f"notify.{n}" for n in names if n not in skip)
+
+
+def _schema(hass: HomeAssistant, with_name: bool) -> vol.Schema:
     fields: dict = {}
     if with_name:
         fields[vol.Required(CONF_NAME)] = selector.TextSelector()
@@ -108,7 +127,18 @@ def _schema(with_name: bool) -> vol.Schema:
             ),
             vol.Optional(CONF_BLOCK_FROM): selector.TimeSelector(),
             vol.Optional(CONF_BLOCK_TO): selector.TimeSelector(),
-            vol.Optional(CONF_NOTIFY_SERVICE): selector.TextSelector(),
+            vol.Optional(CONF_NOTIFY_SERVICE): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=_notify_options(hass),
+                    multiple=True,
+                    custom_value=True,
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            ),
+            vol.Optional(CONF_NOTIFY_TITLE): selector.TextSelector(),
+            vol.Optional(
+                CONF_NOTIFY_MESSAGE, default=DEFAULT_NOTIFY_MESSAGE
+            ): selector.TextSelector(selector.TextSelectorConfig(multiline=True)),
             vol.Required(
                 CONF_NOTIFY_AFTER, default=DEFAULT_NOTIFY_AFTER
             ): selector.NumberSelector(
@@ -133,6 +163,28 @@ def _schema(with_name: bool) -> vol.Schema:
                     mode=selector.NumberSelectorMode.BOX,
                 )
             ),
+            vol.Required(CONF_ROOM_AREA, default=0): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    min=0, max=300, step=0.5, unit_of_measurement="m²",
+                    mode=selector.NumberSelectorMode.BOX,
+                )
+            ),
+            vol.Required(
+                CONF_HEAT_LOAD, default=DEFAULT_HEAT_LOAD
+            ): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    min=10, max=250, step=1, unit_of_measurement="W/m²",
+                    mode=selector.NumberSelectorMode.BOX,
+                )
+            ),
+            vol.Required(
+                CONF_DESIGN_TEMP, default=DEFAULT_DESIGN_TEMP
+            ): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    min=-30, max=5, step=0.5, unit_of_measurement="°C",
+                    mode=selector.NumberSelectorMode.BOX,
+                )
+            ),
         }
     )
     return vol.Schema(fields)
@@ -146,7 +198,9 @@ class FensterHeizungFlow(ConfigFlow, domain=DOMAIN):
     ) -> ConfigFlowResult:
         if user_input is not None:
             return self.async_create_entry(title=user_input[CONF_NAME], data=user_input)
-        return self.async_show_form(step_id="user", data_schema=_schema(True))
+        return self.async_show_form(
+            step_id="user", data_schema=_schema(self.hass, True)
+        )
 
     @staticmethod
     @callback
@@ -163,7 +217,12 @@ class FensterHeizungOptions(OptionsFlow):
                 user_input.setdefault(key, None)
             return self.async_create_entry(data=user_input)
         current = {**self.config_entry.data, **self.config_entry.options}
+        raw = current.get(CONF_NOTIFY_SERVICE)
+        if isinstance(raw, str):  # ältere Einträge: Text mit Komma -> Liste
+            current[CONF_NOTIFY_SERVICE] = [x for x in re.split(r"[,;\s]+", raw) if x]
         return self.async_show_form(
             step_id="init",
-            data_schema=self.add_suggested_values_to_schema(_schema(False), current),
+            data_schema=self.add_suggested_values_to_schema(
+                _schema(self.hass, False), current
+            ),
         )

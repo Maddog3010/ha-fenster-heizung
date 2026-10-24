@@ -10,7 +10,11 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import STATE_OFF, STATE_ON
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-from homeassistant.helpers.event import async_call_later, async_track_state_change_event
+from homeassistant.helpers.event import (
+    async_call_later,
+    async_track_state_change_event,
+    async_track_time_interval,
+)
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
@@ -20,22 +24,30 @@ from .const import (
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
+    CONF_DESIGN_TEMP,
     CONF_GAS_KWH_PER_M3,
+    CONF_HEAT_LOAD,
     CONF_HEAT_POWER,
     CONF_HEATING_ENTITY,
     CONF_HEATING_OFF_STATES,
     CONF_NOTIFY_AFTER,
+    CONF_NOTIFY_MESSAGE,
     CONF_NOTIFY_SERVICE,
+    CONF_NOTIFY_TITLE,
     CONF_OPEN_DELAY,
     CONF_OUTDOOR_MAX,
     CONF_OUTDOOR_SENSOR,
+    CONF_ROOM_AREA,
     CONF_SETBACK_TEMP,
     CONF_THERMOSTATS,
     CONF_WINDOWS,
     DEFAULT_CLOSE_DELAY,
+    DEFAULT_DESIGN_TEMP,
     DEFAULT_GAS_KWH_PER_M3,
+    DEFAULT_HEAT_LOAD,
     DEFAULT_HEAT_POWER,
     DEFAULT_HEATING_OFF_STATES,
+    DEFAULT_NOTIFY_MESSAGE,
     DEFAULT_OPEN_DELAY,
     DEFAULT_OUTDOOR_MAX,
     DEFAULT_SETBACK_TEMP,
@@ -51,6 +63,20 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = ["switch", "sensor"]
 RECHECK_SECONDS = 300
+
+
+class _SafeDict(dict):
+    """Unbekannte Platzhalter bleiben unverändert stehen."""
+
+    def __missing__(self, key: str) -> str:
+        return "{" + key + "}"
+
+
+def _render(template: str, values: dict[str, Any]) -> str:
+    try:
+        return template.format_map(_SafeDict(values))
+    except Exception:  # noqa: BLE001
+        return template
 
 
 class WindowController:
@@ -76,6 +102,11 @@ class WindowController:
         self._paused_since = None
         self._history: dict[str, float] = {}  # abgeschlossene Tage -> Sekunden
         self._archived = 0.0  # Sekunden älterer Tage (> 400 Tage)
+        self._kwh = 0.0  # geschätzte Energie heute
+        self._kwh_history: dict[str, float] = {}
+        self._kwh_archived = 0.0
+        self._last_tick = None
+        self._unsub_e: CALLBACK_TYPE | None = None
 
     @property
     def cfg(self) -> dict[str, Any]:
@@ -90,6 +121,11 @@ class WindowController:
             self._pauses = int(data.get("pauses") or 0)
             self._history = {k: float(v) for k, v in (data.get("history") or {}).items()}
             self._archived = float(data.get("archived") or 0)
+            self._kwh = float(data.get("kwh") or 0)
+            self._kwh_history = {
+                k: float(v) for k, v in (data.get("kwh_history") or {}).items()
+            }
+            self._kwh_archived = float(data.get("kwh_archived") or 0)
             if data.get("paused_since"):
                 self._paused_since = dt_util.parse_datetime(data["paused_since"])
         else:  # Altformat (bis 1.1.x): nur die gemerkten Thermostate
@@ -108,12 +144,16 @@ class WindowController:
             self._unsub_h = async_track_state_change_event(
                 self.hass, [self.cfg[CONF_HEATING_ENTITY]], self._heating_changed
             )
+        self._last_tick = dt_util.now() if self.active else None
+        self._unsub_e = async_track_time_interval(
+            self.hass, self._energy_tick, timedelta(seconds=60)
+        )
         self._evaluate()
 
     async def async_stop(self) -> None:
         self._cancel_timer()
         self._cancel_notify()
-        for attr in ("_unsub", "_unsub_t", "_unsub_h"):
+        for attr in ("_unsub", "_unsub_t", "_unsub_h", "_unsub_e"):
             unsub = getattr(self, attr)
             if unsub:
                 unsub()
@@ -162,6 +202,7 @@ class WindowController:
     async def _release(self) -> None:
         """Heizung ging aus: Pause beenden, ohne die Thermostate zurückzustellen."""
         self._cancel_timer()
+        self._energy_step()
         now = self._roll()
         if self._paused_since:
             self._seconds += max((now - self._paused_since).total_seconds(), 0)
@@ -178,6 +219,9 @@ class WindowController:
             out[eid] = st.state if st else "unbekannt"
         return out
 
+    def _fixed_kw(self) -> float:
+        return float(self.cfg.get(CONF_HEAT_POWER, DEFAULT_HEAT_POWER))
+
     def _roll(self):
         """Tageswechsel: abgeschlossene Tage in den Verlauf schreiben."""
         now = dt_util.now()
@@ -193,13 +237,21 @@ class WindowController:
                 self._paused_since = end
             if secs > 0:
                 self._history[cur.isoformat()] = round(secs, 1)
+            if self._kwh > 0:
+                self._kwh_history[cur.isoformat()] = round(self._kwh, 3)
             self._seconds = 0.0
+            self._kwh = 0.0
             self._pauses = 0
             cur += timedelta(days=1)
         self._day = today.isoformat()
         cutoff = (today - timedelta(days=400)).isoformat()
+        fixed = self._fixed_kw()
         for key in [k for k in self._history if k < cutoff]:
-            self._archived += self._history.pop(key)
+            secs = self._history.pop(key)
+            self._archived += secs
+            self._kwh_archived += self._kwh_history.pop(key, secs / 3600 * fixed)
+        for key in [k for k in self._kwh_history if k < cutoff]:
+            self._kwh_archived += self._kwh_history.pop(key)
         return now
 
     def seconds(self, scope: str) -> float:
@@ -215,15 +267,94 @@ class WindowController:
         prefix = now.strftime("%Y-%m" if scope == "month" else "%Y")
         return total + sum(v for k, v in self._history.items() if k.startswith(prefix))
 
-    def saved_gas(self, seconds: float) -> dict[str, float]:
+    def kwh(self, scope: str) -> float:
+        """Geschätzte eingesparte Energie (kWh)."""
+        now = self._roll()
+        total = self._kwh
+        if scope == "day":
+            return total
+        fixed = self._fixed_kw()
+        if scope == "total":
+            prefix, extra = "", self._kwh_archived
+        else:
+            prefix, extra = now.strftime("%Y-%m" if scope == "month" else "%Y"), 0.0
+        for day, secs in self._history.items():
+            if day.startswith(prefix):
+                # Tage aus älteren Versionen: Sekunden mal feste Leistung
+                total += self._kwh_history.get(day, secs / 3600 * fixed)
+        return total + extra
+
+    def saved_gas(self, scope: str) -> dict[str, float]:
         """Grobe Schätzung des eingesparten Gases."""
-        cfg = self.cfg
-        kwh = seconds / 3600 * float(cfg.get(CONF_HEAT_POWER, DEFAULT_HEAT_POWER))
-        per_m3 = float(cfg.get(CONF_GAS_KWH_PER_M3, DEFAULT_GAS_KWH_PER_M3)) or 1.0
+        kwh = self.kwh(scope)
+        per_m3 = float(
+            self.cfg.get(CONF_GAS_KWH_PER_M3, DEFAULT_GAS_KWH_PER_M3)
+        ) or 1.0
         return {
             "gespartes_gas_m3": round(kwh / per_m3, 2),
             "gespartes_gas_kwh": round(kwh, 2),
         }
+
+    def _indoor_target(self) -> float:
+        temps = [
+            d.get("temperature")
+            for d in self._saved.values()
+            if isinstance(d.get("temperature"), (int, float))
+        ]
+        return sum(temps) / len(temps) if temps else 20.0
+
+    def _outdoor_temp(self) -> float | None:
+        eid = self.cfg.get(CONF_OUTDOOR_SENSOR)
+        st = self.hass.states.get(eid) if eid else None
+        try:
+            return float(st.state)
+        except (AttributeError, ValueError, TypeError):
+            return None
+
+    def room_power_kw(self) -> float:
+        """Aktuelle Heizleistung des Raums.
+
+        Mit Raumfläche: Fläche x spezifische Heizlast bei Auslegungstemperatur,
+        skaliert mit (innen - außen) / (innen - Auslegung). Sonst feste Leistung.
+        """
+        cfg = self.cfg
+        area = float(cfg.get(CONF_ROOM_AREA) or 0)
+        if area <= 0:
+            return self._fixed_kw()
+        design_kw = area * float(cfg.get(CONF_HEAT_LOAD, DEFAULT_HEAT_LOAD)) / 1000
+        t_in = self._indoor_target()
+        t_design = float(cfg.get(CONF_DESIGN_TEMP, DEFAULT_DESIGN_TEMP))
+        t_out = self._outdoor_temp()
+        if t_out is None:
+            factor = 0.5  # ohne Außensensor: pauschal halbe Auslegungsleistung
+        elif t_in <= t_design:
+            factor = 1.0
+        else:
+            factor = min(max((t_in - t_out) / (t_in - t_design), 0.0), 1.0)
+        return design_kw * factor
+
+    def power_info(self) -> dict[str, Any]:
+        area = float(self.cfg.get(CONF_ROOM_AREA) or 0)
+        return {
+            "aktuelle_leistung_kw": round(self.room_power_kw(), 2),
+            "berechnung": "Raumfläche und Außentemperatur" if area > 0 else "feste Leistung",
+        }
+
+    def _energy_step(self) -> None:
+        """Energie seit dem letzten Schritt aufaddieren (nur während einer Pause)."""
+        now = self._roll()
+        last, self._last_tick = self._last_tick, now
+        if not self.active or last is None:
+            return
+        dt = min(max((now - last).total_seconds(), 0.0), 300.0)
+        self._kwh += self.room_power_kw() * dt / 3600
+
+    @callback
+    def _energy_tick(self, _now) -> None:
+        self._energy_step()
+        if self.active:
+            self._store.async_delay_save(self._data, 120)
+            self._signal()
 
     @property
     def pauses_today(self) -> int:
@@ -237,18 +368,22 @@ class WindowController:
     def _signal(self) -> None:
         async_dispatcher_send(self.hass, SIGNAL_UPDATE.format(self.entry.entry_id))
 
+    def _data(self) -> dict[str, Any]:
+        return {
+            "saved": self._saved,
+            "paused_since": self._paused_since.isoformat() if self._paused_since else None,
+            "day": self._day,
+            "seconds": self._seconds,
+            "pauses": self._pauses,
+            "history": self._history,
+            "archived": self._archived,
+            "kwh": round(self._kwh, 4),
+            "kwh_history": self._kwh_history,
+            "kwh_archived": round(self._kwh_archived, 4),
+        }
+
     async def _save(self) -> None:
-        await self._store.async_save(
-            {
-                "saved": self._saved,
-                "paused_since": self._paused_since.isoformat() if self._paused_since else None,
-                "day": self._day,
-                "seconds": self._seconds,
-                "pauses": self._pauses,
-                "history": self._history,
-                "archived": self._archived,
-            }
-        )
+        await self._store.async_save(self._data())
 
     # --- Logik -------------------------------------------------------------
     def _any_open(self) -> bool:
@@ -333,18 +468,33 @@ class WindowController:
         if not self._any_open():
             return
         self._notified = True
-        services = [
-            x for x in re.split(r"[,;\s]+", self.cfg[CONF_NOTIFY_SERVICE]) if x
-        ]
+        raw = self.cfg[CONF_NOTIFY_SERVICE]
+        if isinstance(raw, str):  # ältere Einträge: Text mit Komma
+            raw = re.split(r"[,;\s]+", raw)
+        services = [x for x in raw if x]
         minutes = int(float(self.cfg.get(CONF_NOTIFY_AFTER) or 0))
-        message = f"Fenster in {self.entry.title} ist seit {minutes} Minuten offen."
+        open_names = []
+        for eid in self.cfg[CONF_WINDOWS]:
+            st = self.hass.states.get(eid)
+            if st and st.state in (STATE_ON, "open"):
+                open_names.append(st.attributes.get("friendly_name", eid))
+        values = {
+            "raum": self.entry.title,
+            "minuten": minutes,
+            "fenster": ", ".join(open_names),
+        }
+        template = self.cfg.get(CONF_NOTIFY_MESSAGE) or DEFAULT_NOTIFY_MESSAGE
+        payload: dict[str, Any] = {"message": _render(template, values)}
+        title = _render(self.cfg.get(CONF_NOTIFY_TITLE) or "", values).strip()
+        if title:
+            payload["title"] = title
         for service in services:
             domain, _, name = service.partition(".")
             if not name:
                 domain, name = "notify", service
             try:
                 await self.hass.services.async_call(
-                    domain, name, {"message": message}, blocking=True
+                    domain, name, payload, blocking=True
                 )
             except Exception:  # noqa: BLE001
                 _LOGGER.exception("Benachrichtigung über %s fehlgeschlagen", service)
@@ -390,6 +540,7 @@ class WindowController:
         if self._saved and not self.active:
             self.active = True
             self._paused_since = self._roll()
+            self._last_tick = self._paused_since
             self._pauses += 1
         await self._save()
         self._signal()
@@ -404,6 +555,7 @@ class WindowController:
                 await self._call("set_hvac_mode", eid, hvac_mode=data["hvac_mode"])
             if data.get("temperature") is not None:
                 await self._call("set_temperature", eid, temperature=data["temperature"])
+        self._energy_step()
         now = self._roll()
         if self._paused_since:
             self._seconds += max((now - self._paused_since).total_seconds(), 0)
