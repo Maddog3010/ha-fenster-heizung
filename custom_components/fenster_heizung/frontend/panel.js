@@ -46,7 +46,7 @@ const CSS = `
   --card:var(--card-background-color,#1a2129);--mut:var(--secondary-text-color,#9aa7b4);--line:var(--divider-color,#2a3440);
   --green:#34d399;--amber:#f59e0b;--slate:#7dd3fc;--gray:#94a3b8;--teal:#2dd4bf}
 *{box-sizing:border-box}
-.bar{display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top,0px)) 16px 10px;position:sticky;top:0;z-index:2;
+.bar{display:flex;align-items:center;gap:8px;padding:10px 16px;position:sticky;top:0;z-index:2;
   background:var(--app-header-background-color,var(--card));color:var(--app-header-text-color,var(--primary-text-color));border-bottom:1px solid var(--line)}
 .bar h1{font-size:1.15rem;font-weight:600;margin:0;flex:1}
 .bar button{background:none;border:0;color:inherit;padding:6px;border-radius:50%;cursor:pointer;display:grid;place-items:center}
@@ -56,12 +56,12 @@ const CSS = `
 .card h2 .ic{color:var(--teal)}
 .hero{position:relative;overflow:hidden;border:0;color:#ecfeff;padding:20px 18px;min-height:168px;
   background:radial-gradient(120% 140% at 85% 0%,#14b8a6 0%,rgba(20,184,166,0) 55%),linear-gradient(135deg,#0f5f66 0%,#0c3b52 60%,#0b2c43 100%)}
-.hero .art{position:absolute;right:8px;top:50%;transform:translateY(-50%);height:88%;max-height:190px;width:auto;max-width:46%;opacity:.95}
+.hero .art{position:absolute;right:10px;top:14px;height:104px;width:auto;max-width:44%;opacity:.95}
 .hero .lbl{font-size:.82rem;opacity:.85;display:flex;gap:6px;align-items:center}
 .hero .big{font-size:2.7rem;font-weight:700;line-height:1.05;margin:6px 0 2px;letter-spacing:-.5px}
 .hero .big small{font-size:1.2rem;font-weight:500;opacity:.85;margin-left:4px}
 .hero .sub{font-size:.8rem;opacity:.75;max-width:55%}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.chips{position:relative;display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
 .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);backdrop-filter:blur(4px);border-radius:999px;padding:6px 11px;font-size:.8rem;font-weight:500}
 .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .tile{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;position:relative;overflow:hidden}
@@ -97,7 +97,7 @@ const CSS = `
 .foot .a span{display:block;font-size:.76rem;color:var(--mut);margin-top:2px}
 .note{text-align:center;color:var(--mut);font-size:.76rem;padding:2px 10px}
 .empty{text-align:center;color:var(--mut);padding:40px 10px}
-@media(min-width:720px){.tiles{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(2,1fr)}.hero .big{font-size:3.3rem}}
+@media(min-width:720px){.tiles{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(2,1fr)}.hero .big{font-size:3.3rem}.hero .art{top:50%;transform:translateY(-50%);height:88%;max-height:190px;max-width:34%}}
 @media(min-width:1080px){.rooms{grid-template-columns:repeat(3,1fr)}}
 `;
 
@@ -174,6 +174,7 @@ class FensterHeizungPanel extends HTMLElement {
       const today = i === days.length - 1, lab = (days.length - 1 - i) % lblStep === 0;
       if (lab) s += `<text x="${today ? x + bw : x + bw / 2}" y="${H - 8}" text-anchor="${today ? "end" : "middle"}" font-size="12" fill="${today ? "var(--primary-text-color)" : "var(--mut)"}" font-weight="${today ? 700 : 400}">${today ? "heute" : dd.d.toLocaleDateString("de-DE", { day: "numeric", month: "numeric" })}</text>`;
     });
+    if (!tot.some(Boolean)) s += `<text x="${(L + W - R) / 2}" y="${(T + H - B) / 2}" text-anchor="middle" font-size="13" fill="var(--mut)">Noch keine Pausen in den letzten 14 Tagen</text>`;
     return s + "</svg>";
   }
 
@@ -238,7 +239,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="big">${num(sum("day", "gas"), 2)}<small>m³ Gas</small></div>
         <div class="sub">${esc(dateStr)}</div>
         <div class="chips"><span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
-          <span class="chip">${ic("radiator", 16)}${paused} von ${rooms.length} Räumen pausiert</span>
+          <span class="chip">${ic("radiator", 16)}${paused} von ${rooms.length} ${rooms.length === 1 ? "Raum" : "Räumen"} pausiert</span>
           <span class="chip">${ic("thermo", 16)}${num(sum("day", "kwh"), 1)} kWh</span></div></div>
       <div class="tiles">${tiles.map(([sc, ico, lab, col]) => `<div class="tile" style="--a:${col}">
         <div class="t">${ic(ico, 17)}${lab}</div><div class="v">${num(sum(sc, "min"))}<small>Min.</small></div>
