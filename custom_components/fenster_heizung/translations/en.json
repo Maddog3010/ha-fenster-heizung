@@ -1,0 +1,61 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up room",
+        "description": "Pick the window sensors and thermostats of one room. Create one entry per room.",
+        "data": {
+          "name": "Room name",
+          "window_sensors": "Window sensors",
+          "thermostats": "Thermostats",
+          "open_delay": "Delay after opening (s)",
+          "close_delay": "Delay after closing (s)",
+          "action": "Action when window is open",
+          "setback_temp": "Setback temperature (°C)",
+          "outdoor_sensor": "Outdoor temperature sensor (optional)",
+          "outdoor_max_temp": "Only act when outside is colder than (°C)",
+          "block_from": "Blocked period from (optional)",
+          "block_to": "Blocked period until (optional)",
+          "notify_service": "Notify services, separate multiple with commas, e.g. notify.mobile_app_phone, notify.mobile_app_tablet (optional)",
+          "notify_after": "Remind after X minutes open (0 = off)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Settings",
+        "data": {
+          "window_sensors": "Window sensors",
+          "thermostats": "Thermostats",
+          "open_delay": "Delay after opening (s)",
+          "close_delay": "Delay after closing (s)",
+          "action": "Action when window is open",
+          "setback_temp": "Setback temperature (°C)",
+          "outdoor_sensor": "Outdoor temperature sensor (optional)",
+          "outdoor_max_temp": "Only act when outside is colder than (°C)",
+          "block_from": "Blocked period from (optional)",
+          "block_to": "Blocked period until (optional)",
+          "notify_service": "Notify services, separate multiple with commas, e.g. notify.mobile_app_phone, notify.mobile_app_tablet (optional)",
+          "notify_after": "Remind after X minutes open (0 = off)"
+        }
+      }
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "off": "Turn thermostat off",
+        "setback": "Set to setback temperature"
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "enabled": {
+        "name": "Window control active"
+      }
+    }
+  }
+}

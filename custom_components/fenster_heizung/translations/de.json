@@ -1,0 +1,61 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Raum einrichten",
+        "description": "Wähle die Fenstersensoren und Thermostate eines Raums. Pro Raum legst du einen Eintrag an.",
+        "data": {
+          "name": "Raumname",
+          "window_sensors": "Fenstersensoren",
+          "thermostats": "Heizungsthermostate",
+          "open_delay": "Verzögerung nach Öffnen (s)",
+          "close_delay": "Verzögerung nach Schließen (s)",
+          "action": "Aktion bei offenem Fenster",
+          "setback_temp": "Absenktemperatur (°C)",
+          "outdoor_sensor": "Außentemperatursensor (optional)",
+          "outdoor_max_temp": "Nur regeln, wenn draußen kälter als (°C)",
+          "block_from": "Sperrzeit von (optional)",
+          "block_to": "Sperrzeit bis (optional)",
+          "notify_service": "Benachrichtigungsdienste, mehrere mit Komma trennen, z. B. notify.mobile_app_handy, notify.mobile_app_tablet (optional)",
+          "notify_after": "Erinnerung nach X Minuten offen (0 = aus)"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Einstellungen",
+        "data": {
+          "window_sensors": "Fenstersensoren",
+          "thermostats": "Heizungsthermostate",
+          "open_delay": "Verzögerung nach Öffnen (s)",
+          "close_delay": "Verzögerung nach Schließen (s)",
+          "action": "Aktion bei offenem Fenster",
+          "setback_temp": "Absenktemperatur (°C)",
+          "outdoor_sensor": "Außentemperatursensor (optional)",
+          "outdoor_max_temp": "Nur regeln, wenn draußen kälter als (°C)",
+          "block_from": "Sperrzeit von (optional)",
+          "block_to": "Sperrzeit bis (optional)",
+          "notify_service": "Benachrichtigungsdienste, mehrere mit Komma trennen, z. B. notify.mobile_app_handy, notify.mobile_app_tablet (optional)",
+          "notify_after": "Erinnerung nach X Minuten offen (0 = aus)"
+        }
+      }
+    }
+  },
+  "selector": {
+    "action": {
+      "options": {
+        "off": "Thermostat ausschalten",
+        "setback": "Auf Absenktemperatur stellen"
+      }
+    }
+  },
+  "entity": {
+    "switch": {
+      "enabled": {
+        "name": "Fensterregelung aktiv"
+      }
+    }
+  }
+}
