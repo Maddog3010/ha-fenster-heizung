@@ -129,7 +129,7 @@ def _schema(with_name: bool) -> vol.Schema:
                 CONF_GAS_KWH_PER_M3, default=DEFAULT_GAS_KWH_PER_M3
             ): selector.NumberSelector(
                 selector.NumberSelectorConfig(
-                    min=5, max=15, step=0.1, unit_of_measurement="kWh/m³",
+                    min=1, max=40, step=0.1, unit_of_measurement="kWh/m³",
                     mode=selector.NumberSelectorMode.BOX,
                 )
             ),
