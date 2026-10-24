@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import re
+from datetime import date, timedelta
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -19,6 +20,8 @@ from .const import (
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
+    CONF_GAS_KWH_PER_M3,
+    CONF_HEAT_POWER,
     CONF_HEATING_ENTITY,
     CONF_HEATING_OFF_STATES,
     CONF_NOTIFY_AFTER,
@@ -30,6 +33,8 @@ from .const import (
     CONF_THERMOSTATS,
     CONF_WINDOWS,
     DEFAULT_CLOSE_DELAY,
+    DEFAULT_GAS_KWH_PER_M3,
+    DEFAULT_HEAT_POWER,
     DEFAULT_HEATING_OFF_STATES,
     DEFAULT_OPEN_DELAY,
     DEFAULT_OUTDOOR_MAX,
@@ -69,6 +74,8 @@ class WindowController:
         self._seconds = 0.0
         self._pauses = 0
         self._paused_since = None
+        self._history: dict[str, float] = {}  # abgeschlossene Tage -> Sekunden
+        self._archived = 0.0  # Sekunden älterer Tage (> 400 Tage)
 
     @property
     def cfg(self) -> dict[str, Any]:
@@ -81,6 +88,8 @@ class WindowController:
             self._day = data.get("day") or self._day
             self._seconds = float(data.get("seconds") or 0)
             self._pauses = int(data.get("pauses") or 0)
+            self._history = {k: float(v) for k, v in (data.get("history") or {}).items()}
+            self._archived = float(data.get("archived") or 0)
             if data.get("paused_since"):
                 self._paused_since = dt_util.parse_datetime(data["paused_since"])
         else:  # Altformat (bis 1.1.x): nur die gemerkten Thermostate
@@ -170,23 +179,51 @@ class WindowController:
         return out
 
     def _roll(self):
-        """Tageswechsel: Zähler auf 0, laufende Pause ab Mitternacht zählen."""
+        """Tageswechsel: abgeschlossene Tage in den Verlauf schreiben."""
         now = dt_util.now()
-        today = now.date().isoformat()
-        if self._day != today:
-            self._day = today
+        today = now.date()
+        cur = date.fromisoformat(self._day)
+        while cur < today:
+            day_start = dt_util.start_of_local_day(cur)
+            end = dt_util.start_of_local_day(cur + timedelta(days=1))
+            secs = self._seconds
+            if self._paused_since:
+                begin = max(self._paused_since, day_start)
+                secs += max((end - begin).total_seconds(), 0)
+                self._paused_since = end
+            if secs > 0:
+                self._history[cur.isoformat()] = round(secs, 1)
             self._seconds = 0.0
             self._pauses = 0
-            if self._paused_since:
-                self._paused_since = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            cur += timedelta(days=1)
+        self._day = today.isoformat()
+        cutoff = (today - timedelta(days=400)).isoformat()
+        for key in [k for k in self._history if k < cutoff]:
+            self._archived += self._history.pop(key)
         return now
 
-    def minutes_today(self) -> float:
+    def seconds(self, scope: str) -> float:
+        """Pausenzeit in Sekunden: day, month, year oder total."""
         now = self._roll()
-        seconds = self._seconds
+        total = self._seconds
         if self._paused_since:
-            seconds += max((now - self._paused_since).total_seconds(), 0)
-        return round(seconds / 60, 1)
+            total += max((now - self._paused_since).total_seconds(), 0)
+        if scope == "day":
+            return total
+        if scope == "total":
+            return total + sum(self._history.values()) + self._archived
+        prefix = now.strftime("%Y-%m" if scope == "month" else "%Y")
+        return total + sum(v for k, v in self._history.items() if k.startswith(prefix))
+
+    def saved_gas(self, seconds: float) -> dict[str, float]:
+        """Grobe Schätzung des eingesparten Gases."""
+        cfg = self.cfg
+        kwh = seconds / 3600 * float(cfg.get(CONF_HEAT_POWER, DEFAULT_HEAT_POWER))
+        per_m3 = float(cfg.get(CONF_GAS_KWH_PER_M3, DEFAULT_GAS_KWH_PER_M3)) or 1.0
+        return {
+            "gespartes_gas_m3": round(kwh / per_m3, 2),
+            "gespartes_gas_kwh": round(kwh, 2),
+        }
 
     @property
     def pauses_today(self) -> int:
@@ -208,6 +245,8 @@ class WindowController:
                 "day": self._day,
                 "seconds": self._seconds,
                 "pauses": self._pauses,
+                "history": self._history,
+                "archived": self._archived,
             }
         )
 

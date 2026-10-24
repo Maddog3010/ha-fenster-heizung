@@ -46,3 +46,8 @@ MODE_PAUSED = "heizung_pausiert"
 MODE_WINDOW_ONLY = "nur_fenstermeldung"
 MODE_DISABLED = "regelung_aus"
 MODES = [MODE_ACTIVE, MODE_PAUSED, MODE_WINDOW_ONLY, MODE_DISABLED]
+
+CONF_HEAT_POWER = "heat_power_kw"
+CONF_GAS_KWH_PER_M3 = "gas_kwh_per_m3"
+DEFAULT_HEAT_POWER = 1.0
+DEFAULT_GAS_KWH_PER_M3 = 10.0

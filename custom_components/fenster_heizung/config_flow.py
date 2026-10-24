@@ -17,6 +17,8 @@ from .const import (
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
+    CONF_GAS_KWH_PER_M3,
+    CONF_HEAT_POWER,
     CONF_HEATING_ENTITY,
     CONF_HEATING_OFF_STATES,
     CONF_NOTIFY_AFTER,
@@ -28,6 +30,8 @@ from .const import (
     CONF_THERMOSTATS,
     CONF_WINDOWS,
     DEFAULT_CLOSE_DELAY,
+    DEFAULT_GAS_KWH_PER_M3,
+    DEFAULT_HEAT_POWER,
     DEFAULT_HEATING_OFF_STATES,
     DEFAULT_NOTIFY_AFTER,
     DEFAULT_OUTDOOR_MAX,
@@ -110,6 +114,22 @@ def _schema(with_name: bool) -> vol.Schema:
             ): selector.NumberSelector(
                 selector.NumberSelectorConfig(
                     min=0, max=240, step=1, unit_of_measurement="min",
+                    mode=selector.NumberSelectorMode.BOX,
+                )
+            ),
+            vol.Required(
+                CONF_HEAT_POWER, default=DEFAULT_HEAT_POWER
+            ): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    min=0.1, max=30, step=0.1, unit_of_measurement="kW",
+                    mode=selector.NumberSelectorMode.BOX,
+                )
+            ),
+            vol.Required(
+                CONF_GAS_KWH_PER_M3, default=DEFAULT_GAS_KWH_PER_M3
+            ): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    min=5, max=15, step=0.1, unit_of_measurement="kWh/m³",
                     mode=selector.NumberSelectorMode.BOX,
                 )
             ),
