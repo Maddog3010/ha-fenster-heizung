@@ -17,7 +17,12 @@
           "block_from": "Sperrzeit von (optional)",
           "block_to": "Sperrzeit bis (optional)",
           "notify_service": "Benachrichtigungsdienste, mehrere mit Komma trennen, z. B. notify.mobile_app_handy, notify.mobile_app_tablet (optional)",
-          "notify_after": "Erinnerung nach X Minuten offen (0 = aus)"
+          "notify_after": "Erinnerung nach X Minuten offen (0 = aus)",
+          "heating_entity": "Heizungs-Sensor (optional)",
+          "heating_off_states": "Zustände für „Heizung aus“ (Komma getrennt)"
+        },
+        "data_description": {
+          "heating_entity": "Wähle eine Entität, die anzeigt, ob die Heizung läuft (z. B. ein climate-Gerät, Schalter oder Sommer-Modus). Hat sie einen der Zustände unten, wird nicht geregelt und nur die Fenstermeldung bleibt aktiv. Beispiel: off, oder bei einem Sommer-Schalter: on."
         }
       }
     }
@@ -38,7 +43,12 @@
           "block_from": "Sperrzeit von (optional)",
           "block_to": "Sperrzeit bis (optional)",
           "notify_service": "Benachrichtigungsdienste, mehrere mit Komma trennen, z. B. notify.mobile_app_handy, notify.mobile_app_tablet (optional)",
-          "notify_after": "Erinnerung nach X Minuten offen (0 = aus)"
+          "notify_after": "Erinnerung nach X Minuten offen (0 = aus)",
+          "heating_entity": "Heizungs-Sensor (optional)",
+          "heating_off_states": "Zustände für „Heizung aus“ (Komma getrennt)"
+        },
+        "data_description": {
+          "heating_entity": "Wähle eine Entität, die anzeigt, ob die Heizung läuft (z. B. ein climate-Gerät, Schalter oder Sommer-Modus). Hat sie einen der Zustände unten, wird nicht geregelt und nur die Fenstermeldung bleibt aktiv. Beispiel: off, oder bei einem Sommer-Schalter: on."
         }
       }
     }

@@ -17,7 +17,12 @@
           "block_from": "Blocked period from (optional)",
           "block_to": "Blocked period until (optional)",
           "notify_service": "Notify services, separate multiple with commas, e.g. notify.mobile_app_phone, notify.mobile_app_tablet (optional)",
-          "notify_after": "Remind after X minutes open (0 = off)"
+          "notify_after": "Remind after X minutes open (0 = off)",
+          "heating_entity": "Heating sensor (optional)",
+          "heating_off_states": "States meaning “heating off” (comma separated)"
+        },
+        "data_description": {
+          "heating_entity": "Pick an entity that shows whether heating is running (e.g. a climate device, switch or summer-mode toggle). If it has one of the states below, nothing is controlled and only the window alert stays active. Example: off, or for a summer-mode switch: on."
         }
       }
     }
@@ -38,7 +43,12 @@
           "block_from": "Blocked period from (optional)",
           "block_to": "Blocked period until (optional)",
           "notify_service": "Notify services, separate multiple with commas, e.g. notify.mobile_app_phone, notify.mobile_app_tablet (optional)",
-          "notify_after": "Remind after X minutes open (0 = off)"
+          "notify_after": "Remind after X minutes open (0 = off)",
+          "heating_entity": "Heating sensor (optional)",
+          "heating_off_states": "States meaning “heating off” (comma separated)"
+        },
+        "data_description": {
+          "heating_entity": "Pick an entity that shows whether heating is running (e.g. a climate device, switch or summer-mode toggle). If it has one of the states below, nothing is controlled and only the window alert stays active. Example: off, or for a summer-mode switch: on."
         }
       }
     }
