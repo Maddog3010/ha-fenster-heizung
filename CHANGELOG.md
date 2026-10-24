@@ -2,6 +2,10 @@
 
 Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [1.4.2.2] - 2026-10-24
+### Geändert
+- Das Feld für die feste Gasleistung heißt jetzt „Feste Gasleistung des Raums (kW, nur ohne Raumfläche)“. Die Beschreibung erklärt, dass es nur gilt, wenn die Raumfläche 0 ist, und für ältere Tage vor Version 1.4.2.
+
 ## [1.4.2.1] - 2026-10-24
 ### Neu
 - **Eigener Nachrichtentext** für die Erinnerung bei langem Lüften, wie das Feld „Nachricht“ bei den Aktionen in den Entwicklerwerkzeugen (mehrzeilig möglich).
@@ -75,6 +79,7 @@ Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sic
 - Schalter „Fensterregelung aktiv“ pro Raum.
 - Deutsche und englische Oberfläche.
 
+[1.4.2.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.2
 [1.4.2.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.1
 [1.4.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2
 [1.4.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.1
