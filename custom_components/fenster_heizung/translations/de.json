@@ -19,10 +19,14 @@
           "notify_service": "Benachrichtigungsdienste, mehrere mit Komma trennen, z. B. notify.mobile_app_handy, notify.mobile_app_tablet (optional)",
           "notify_after": "Erinnerung nach X Minuten offen (0 = aus)",
           "heating_entity": "Heizungs-Sensor (optional)",
-          "heating_off_states": "Zustände für „Heizung aus“ (Komma getrennt)"
+          "heating_off_states": "Zustände für „Heizung aus“ (Komma getrennt)",
+          "heat_power_kw": "Gasleistung des Raums für die Schätzung (kW)",
+          "gas_kwh_per_m3": "Energie pro m³ Gas (kWh/m³)"
         },
         "data_description": {
-          "heating_entity": "Wähle eine Entität, die anzeigt, ob die Heizung läuft (z. B. ein climate-Gerät, Schalter oder Sommer-Modus). Hat sie einen der Zustände unten, wird nicht geregelt und nur die Fenstermeldung bleibt aktiv. Beispiel: off, oder bei einem Sommer-Schalter: on."
+          "heating_entity": "Wähle eine Entität, die anzeigt, ob die Heizung läuft (z. B. ein climate-Gerät, Schalter oder Sommer-Modus). Hat sie einen der Zustände unten, wird nicht geregelt und nur die Fenstermeldung bleibt aktiv. Beispiel: off, oder bei einem Sommer-Schalter: on.",
+          "heat_power_kw": "Grobe Schätzung: Wie viel Gasleistung braucht dieser Raum im Heizbetrieb im Schnitt? Beispiel: 1,0 kW für ein Zimmer.",
+          "gas_kwh_per_m3": "Umrechnung von kWh in m³ Gas. Der Wert steht auf deiner Gasrechnung (Brennwert mal Zustandszahl), meist etwa 10."
         }
       }
     }
@@ -45,10 +49,14 @@
           "notify_service": "Benachrichtigungsdienste, mehrere mit Komma trennen, z. B. notify.mobile_app_handy, notify.mobile_app_tablet (optional)",
           "notify_after": "Erinnerung nach X Minuten offen (0 = aus)",
           "heating_entity": "Heizungs-Sensor (optional)",
-          "heating_off_states": "Zustände für „Heizung aus“ (Komma getrennt)"
+          "heating_off_states": "Zustände für „Heizung aus“ (Komma getrennt)",
+          "heat_power_kw": "Gasleistung des Raums für die Schätzung (kW)",
+          "gas_kwh_per_m3": "Energie pro m³ Gas (kWh/m³)"
         },
         "data_description": {
-          "heating_entity": "Wähle eine Entität, die anzeigt, ob die Heizung läuft (z. B. ein climate-Gerät, Schalter oder Sommer-Modus). Hat sie einen der Zustände unten, wird nicht geregelt und nur die Fenstermeldung bleibt aktiv. Beispiel: off, oder bei einem Sommer-Schalter: on."
+          "heating_entity": "Wähle eine Entität, die anzeigt, ob die Heizung läuft (z. B. ein climate-Gerät, Schalter oder Sommer-Modus). Hat sie einen der Zustände unten, wird nicht geregelt und nur die Fenstermeldung bleibt aktiv. Beispiel: off, oder bei einem Sommer-Schalter: on.",
+          "heat_power_kw": "Grobe Schätzung: Wie viel Gasleistung braucht dieser Raum im Heizbetrieb im Schnitt? Beispiel: 1,0 kW für ein Zimmer.",
+          "gas_kwh_per_m3": "Umrechnung von kWh in m³ Gas. Der Wert steht auf deiner Gasrechnung (Brennwert mal Zustandszahl), meist etwa 10."
         }
       }
     }
@@ -79,6 +87,15 @@
           "nur_fenstermeldung": "Heizung aus, nur Fenstermeldung",
           "regelung_aus": "Regelung deaktiviert"
         }
+      },
+      "minutes_month": {
+        "name": "Heizung pausiert im Monat"
+      },
+      "minutes_year": {
+        "name": "Heizung pausiert im Jahr"
+      },
+      "minutes_total": {
+        "name": "Heizung pausiert gesamt"
       }
     }
   }

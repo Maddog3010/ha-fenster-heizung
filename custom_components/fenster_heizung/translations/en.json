@@ -19,10 +19,14 @@
           "notify_service": "Notify services, separate multiple with commas, e.g. notify.mobile_app_phone, notify.mobile_app_tablet (optional)",
           "notify_after": "Remind after X minutes open (0 = off)",
           "heating_entity": "Heating sensor (optional)",
-          "heating_off_states": "States meaning “heating off” (comma separated)"
+          "heating_off_states": "States meaning “heating off” (comma separated)",
+          "heat_power_kw": "Gas power of the room for the estimate (kW)",
+          "gas_kwh_per_m3": "Energy per m³ of gas (kWh/m³)"
         },
         "data_description": {
-          "heating_entity": "Pick an entity that shows whether heating is running (e.g. a climate device, switch or summer-mode toggle). If it has one of the states below, nothing is controlled and only the window alert stays active. Example: off, or for a summer-mode switch: on."
+          "heating_entity": "Pick an entity that shows whether heating is running (e.g. a climate device, switch or summer-mode toggle). If it has one of the states below, nothing is controlled and only the window alert stays active. Example: off, or for a summer-mode switch: on.",
+          "heat_power_kw": "Rough estimate: average gas power this room needs while heating. Example: 1.0 kW for one room.",
+          "gas_kwh_per_m3": "Conversion from kWh to m³ of gas. It is on your gas bill (calorific value times conversion factor), usually about 10."
         }
       }
     }
@@ -45,10 +49,14 @@
           "notify_service": "Notify services, separate multiple with commas, e.g. notify.mobile_app_phone, notify.mobile_app_tablet (optional)",
           "notify_after": "Remind after X minutes open (0 = off)",
           "heating_entity": "Heating sensor (optional)",
-          "heating_off_states": "States meaning “heating off” (comma separated)"
+          "heating_off_states": "States meaning “heating off” (comma separated)",
+          "heat_power_kw": "Gas power of the room for the estimate (kW)",
+          "gas_kwh_per_m3": "Energy per m³ of gas (kWh/m³)"
         },
         "data_description": {
-          "heating_entity": "Pick an entity that shows whether heating is running (e.g. a climate device, switch or summer-mode toggle). If it has one of the states below, nothing is controlled and only the window alert stays active. Example: off, or for a summer-mode switch: on."
+          "heating_entity": "Pick an entity that shows whether heating is running (e.g. a climate device, switch or summer-mode toggle). If it has one of the states below, nothing is controlled and only the window alert stays active. Example: off, or for a summer-mode switch: on.",
+          "heat_power_kw": "Rough estimate: average gas power this room needs while heating. Example: 1.0 kW for one room.",
+          "gas_kwh_per_m3": "Conversion from kWh to m³ of gas. It is on your gas bill (calorific value times conversion factor), usually about 10."
         }
       }
     }
@@ -79,6 +87,15 @@
           "nur_fenstermeldung": "Heating off, window alert only",
           "regelung_aus": "Control disabled"
         }
+      },
+      "minutes_month": {
+        "name": "Heating paused this month"
+      },
+      "minutes_year": {
+        "name": "Heating paused this year"
+      },
+      "minutes_total": {
+        "name": "Heating paused in total"
       }
     }
   }
