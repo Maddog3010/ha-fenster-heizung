@@ -22,6 +22,9 @@ CONF_OUTDOOR_SENSOR = "outdoor_sensor"
 CONF_OUTDOOR_MAX = "outdoor_max_temp"
 CONF_NOTIFY_SERVICE = "notify_service"
 CONF_NOTIFY_AFTER = "notify_after"
+CONF_HEATING_ENTITY = "heating_entity"
+CONF_HEATING_OFF_STATES = "heating_off_states"
+DEFAULT_HEATING_OFF_STATES = "off"
 
 DEFAULT_OUTDOOR_MAX = 15.0
 DEFAULT_NOTIFY_AFTER = 0
@@ -31,6 +34,7 @@ OPTIONAL_KEYS = (
     CONF_BLOCK_TO,
     CONF_OUTDOOR_SENSOR,
     CONF_NOTIFY_SERVICE,
+    CONF_HEATING_ENTITY,
 )
 
 SIGNAL_UPDATE = "fenster_heizung_update_{}"

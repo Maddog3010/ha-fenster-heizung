@@ -100,4 +100,7 @@ class ModeSensor(_Base):
 
     @property
     def extra_state_attributes(self) -> dict:
-        return {"thermostate": self._ctrl.thermostat_states()}
+        return {
+            "thermostate": self._ctrl.thermostat_states(),
+            "heizung_quelle": self._ctrl.heating_source(),
+        }

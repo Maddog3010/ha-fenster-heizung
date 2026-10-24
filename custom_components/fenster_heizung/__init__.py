@@ -19,6 +19,8 @@ from .const import (
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
+    CONF_HEATING_ENTITY,
+    CONF_HEATING_OFF_STATES,
     CONF_NOTIFY_AFTER,
     CONF_NOTIFY_SERVICE,
     CONF_OPEN_DELAY,
@@ -28,6 +30,7 @@ from .const import (
     CONF_THERMOSTATS,
     CONF_WINDOWS,
     DEFAULT_CLOSE_DELAY,
+    DEFAULT_HEATING_OFF_STATES,
     DEFAULT_OPEN_DELAY,
     DEFAULT_OUTDOOR_MAX,
     DEFAULT_SETBACK_TEMP,
@@ -59,6 +62,7 @@ class WindowController:
         self._notified = False
         self._unsub: CALLBACK_TYPE | None = None
         self._unsub_t: CALLBACK_TYPE | None = None
+        self._unsub_h: CALLBACK_TYPE | None = None
         self._store = Store(hass, 1, f"{DOMAIN}_{entry.entry_id}")
         # Statistik "pausiert heute"
         self._day = dt_util.now().date().isoformat()
@@ -91,12 +95,16 @@ class WindowController:
         self._unsub_t = async_track_state_change_event(
             self.hass, self.cfg[CONF_THERMOSTATS], self._thermostat_changed
         )
+        if self.cfg.get(CONF_HEATING_ENTITY):
+            self._unsub_h = async_track_state_change_event(
+                self.hass, [self.cfg[CONF_HEATING_ENTITY]], self._heating_changed
+            )
         self._evaluate()
 
     async def async_stop(self) -> None:
         self._cancel_timer()
         self._cancel_notify()
-        for attr in ("_unsub", "_unsub_t"):
+        for attr in ("_unsub", "_unsub_t", "_unsub_h"):
             unsub = getattr(self, attr)
             if unsub:
                 unsub()
@@ -108,11 +116,51 @@ class WindowController:
             return MODE_DISABLED
         if self.active:
             return MODE_PAUSED
+        if self._heating_off():
+            return MODE_WINDOW_ONLY
         for eid in self.cfg[CONF_THERMOSTATS]:
             st = self.hass.states.get(eid)
             if st is not None and st.state in HEATING_MODES:
                 return MODE_ACTIVE
         return MODE_WINDOW_ONLY
+
+    def _heating_off(self) -> bool:
+        """Eigener Sensor: Zustand aus der Liste -> Heizung aus, nur Fenstermeldung."""
+        eid = self.cfg.get(CONF_HEATING_ENTITY)
+        if not eid:
+            return False
+        st = self.hass.states.get(eid)
+        if st is None or st.state in ("unavailable", "unknown"):
+            return False
+        raw = self.cfg.get(CONF_HEATING_OFF_STATES) or DEFAULT_HEATING_OFF_STATES
+        off = {x.strip().lower() for x in re.split(r"[,;]", raw) if x.strip()}
+        return st.state.lower() in off
+
+    def heating_source(self) -> str | None:
+        eid = self.cfg.get(CONF_HEATING_ENTITY)
+        if not eid:
+            return None
+        st = self.hass.states.get(eid)
+        return f"{eid}: {st.state if st else 'unbekannt'}"
+
+    @callback
+    def _heating_changed(self, event: Event) -> None:
+        if self._heating_off() and self.active:
+            self.hass.async_create_task(self._release())
+        self._evaluate()
+        self._signal()
+
+    async def _release(self) -> None:
+        """Heizung ging aus: Pause beenden, ohne die Thermostate zurückzustellen."""
+        self._cancel_timer()
+        now = self._roll()
+        if self._paused_since:
+            self._seconds += max((now - self._paused_since).total_seconds(), 0)
+            self._paused_since = None
+        self._saved = {}
+        self.active = False
+        await self._save()
+        self._signal()
 
     def thermostat_states(self) -> dict[str, str]:
         out = {}
@@ -186,7 +234,7 @@ class WindowController:
         if not self.enabled:
             return
         is_open = self._any_open()
-        if is_open and not self.active:
+        if is_open and not self.active and not self._heating_off():
             delay = self.cfg.get(CONF_OPEN_DELAY, DEFAULT_OPEN_DELAY)
             self._timer = async_call_later(self.hass, delay, self._suppress)
         elif not is_open and self.active:
@@ -273,7 +321,7 @@ class WindowController:
 
     async def _suppress(self, _now) -> None:
         self._timer = None
-        if not self.enabled or not self._any_open():
+        if not self.enabled or not self._any_open() or self._heating_off():
             return
         if self._blocked_now() or not self._outdoor_ok():
             # später erneut prüfen, solange das Fenster offen bleibt
