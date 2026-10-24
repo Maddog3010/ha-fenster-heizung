@@ -1,3 +1,5 @@
+<img src="custom_components/fenster_heizung/brand/icon.png" width="96" alt="Fenster &amp; Heizung">
+
 # Fenster & Heizung
 
 Home-Assistant-Integration: Pausiert Heizungsthermostate, solange Fenster offen sind.
@@ -19,3 +21,11 @@ Home-Assistant-Integration: Pausiert Heizungsthermostate, solange Fenster offen 
 2. URL dieses Repos eintragen, Kategorie **Integration**
 3. „Fenster & Heizung“ installieren und Home Assistant neu starten
 4. Einstellungen → Geräte & Dienste → Integration hinzufügen → „Fenster & Heizung“
+
+## Neue Version veröffentlichen
+1. `version` in `custom_components/fenster_heizung/manifest.json` erhöhen
+2. Auf GitHub ein **Release** mit passendem Tag erstellen (z. B. `v1.4.1`)
+3. HACS zeigt das Update an
+
+## Änderungen
+Alle Versionen siehe [CHANGELOG.md](CHANGELOG.md).
