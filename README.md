@@ -8,6 +8,9 @@ Home-Assistant-Integration: Pausiert Heizungsthermostate, solange Fenster offen 
 - Verzögerung nach Öffnen und nach Schließen
 - Sperrzeit (z. B. nachts) und Außentemperatur-Bedingung
 - Erinnerung per Benachrichtigung, wenn ein Fenster zu lange offen ist (mehrere Dienste möglich)
+- Sensor „Heizung pausiert heute“ (Minuten pro Tag, plus Anzahl der Pausen)
+- Sensor „Betriebszustand“: Regelung aktiv, Heizung pausiert, Heizung aus (nur Fenstermeldung) oder Regelung deaktiviert
+- Geregelt werden nur Thermostate im Modus `heat` oder `auto`; steht ein Thermostat auf `off`, bleibt nur die Fenstermeldung aktiv
 - Schalter „Fensterregelung aktiv“ pro Raum
 
 ## Installation über HACS
