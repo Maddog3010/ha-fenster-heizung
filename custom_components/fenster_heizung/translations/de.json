@@ -16,17 +16,28 @@
           "outdoor_max_temp": "Nur regeln, wenn draußen kälter als (°C)",
           "block_from": "Sperrzeit von (optional)",
           "block_to": "Sperrzeit bis (optional)",
-          "notify_service": "Benachrichtigungsdienste, mehrere mit Komma trennen, z. B. notify.mobile_app_handy, notify.mobile_app_tablet (optional)",
+          "notify_service": "Benachrichtigungs-Aktionen (Auswahl wie in den Entwicklerwerkzeugen)",
           "notify_after": "Erinnerung nach X Minuten offen (0 = aus)",
           "heating_entity": "Heizungs-Sensor (optional)",
           "heating_off_states": "Zustände für „Heizung aus“ (Komma getrennt)",
           "heat_power_kw": "Gasleistung des Raums für die Schätzung (kW)",
-          "gas_kwh_per_m3": "Energie pro m³ Gas (kWh/m³)"
+          "gas_kwh_per_m3": "Energie pro m³ Gas (kWh/m³)",
+          "room_area": "Raumfläche für die Gasberechnung (m², 0 = feste Leistung)",
+          "heat_load_w_m2": "Spezifische Heizlast (W/m²)",
+          "design_temp": "Auslegungs-Außentemperatur (°C)",
+          "notify_title": "Titel der Benachrichtigung (optional)",
+          "notify_message": "Nachrichtentext"
         },
         "data_description": {
           "heating_entity": "Wähle eine Entität, die anzeigt, ob die Heizung läuft (z. B. ein climate-Gerät, Schalter oder Sommer-Modus). Hat sie einen der Zustände unten, wird nicht geregelt und nur die Fenstermeldung bleibt aktiv. Beispiel: off, oder bei einem Sommer-Schalter: on.",
           "heat_power_kw": "Grobe Schätzung: Wie viel Gasleistung braucht dieser Raum im Heizbetrieb im Schnitt? Beispiel: 1,0 kW für ein Zimmer.",
-          "gas_kwh_per_m3": "Umrechnung von kWh in m³ Gas. Der Wert steht auf deiner Gasrechnung (Brennwert mal Zustandszahl), meist etwa 10."
+          "gas_kwh_per_m3": "Umrechnung von kWh in m³ Gas. Der Wert steht auf deiner Gasrechnung (Brennwert mal Zustandszahl), meist etwa 10.",
+          "notify_service": "Wähle eine oder mehrere notify-Aktionen aus der Liste, z. B. notify.mobile_app_handy. Du kannst auch tippen, um zu suchen oder einen eigenen Namen einzugeben.",
+          "room_area": "Wenn größer als 0, wird die Heizleistung des Raums aus Fläche, Heizlast und Außentemperatur berechnet statt aus der festen Leistung oben.",
+          "heat_load_w_m2": "Heizlast pro m² bei Auslegungstemperatur. Richtwerte: Neubau etwa 40, saniert etwa 60, unsanierter Altbau etwa 100.",
+          "design_temp": "Norm-Außentemperatur deines Standorts, in Deutschland meist zwischen -10 und -16 °C. Ohne Außentemperatursensor wird pauschal mit halber Leistung gerechnet.",
+          "notify_message": "Text der Erinnerung, wie das Feld „Nachricht“ in den Entwicklerwerkzeugen. Platzhalter: {raum}, {minuten} und {fenster} (Namen der offenen Fenster).",
+          "notify_title": "Optionaler Titel. Dieselben Platzhalter sind möglich, z. B. Fenster offen: {raum}."
         }
       }
     }
@@ -46,17 +57,28 @@
           "outdoor_max_temp": "Nur regeln, wenn draußen kälter als (°C)",
           "block_from": "Sperrzeit von (optional)",
           "block_to": "Sperrzeit bis (optional)",
-          "notify_service": "Benachrichtigungsdienste, mehrere mit Komma trennen, z. B. notify.mobile_app_handy, notify.mobile_app_tablet (optional)",
+          "notify_service": "Benachrichtigungs-Aktionen (Auswahl wie in den Entwicklerwerkzeugen)",
           "notify_after": "Erinnerung nach X Minuten offen (0 = aus)",
           "heating_entity": "Heizungs-Sensor (optional)",
           "heating_off_states": "Zustände für „Heizung aus“ (Komma getrennt)",
           "heat_power_kw": "Gasleistung des Raums für die Schätzung (kW)",
-          "gas_kwh_per_m3": "Energie pro m³ Gas (kWh/m³)"
+          "gas_kwh_per_m3": "Energie pro m³ Gas (kWh/m³)",
+          "room_area": "Raumfläche für die Gasberechnung (m², 0 = feste Leistung)",
+          "heat_load_w_m2": "Spezifische Heizlast (W/m²)",
+          "design_temp": "Auslegungs-Außentemperatur (°C)",
+          "notify_title": "Titel der Benachrichtigung (optional)",
+          "notify_message": "Nachrichtentext"
         },
         "data_description": {
           "heating_entity": "Wähle eine Entität, die anzeigt, ob die Heizung läuft (z. B. ein climate-Gerät, Schalter oder Sommer-Modus). Hat sie einen der Zustände unten, wird nicht geregelt und nur die Fenstermeldung bleibt aktiv. Beispiel: off, oder bei einem Sommer-Schalter: on.",
           "heat_power_kw": "Grobe Schätzung: Wie viel Gasleistung braucht dieser Raum im Heizbetrieb im Schnitt? Beispiel: 1,0 kW für ein Zimmer.",
-          "gas_kwh_per_m3": "Umrechnung von kWh in m³ Gas. Der Wert steht auf deiner Gasrechnung (Brennwert mal Zustandszahl), meist etwa 10."
+          "gas_kwh_per_m3": "Umrechnung von kWh in m³ Gas. Der Wert steht auf deiner Gasrechnung (Brennwert mal Zustandszahl), meist etwa 10.",
+          "notify_service": "Wähle eine oder mehrere notify-Aktionen aus der Liste, z. B. notify.mobile_app_handy. Du kannst auch tippen, um zu suchen oder einen eigenen Namen einzugeben.",
+          "room_area": "Wenn größer als 0, wird die Heizleistung des Raums aus Fläche, Heizlast und Außentemperatur berechnet statt aus der festen Leistung oben.",
+          "heat_load_w_m2": "Heizlast pro m² bei Auslegungstemperatur. Richtwerte: Neubau etwa 40, saniert etwa 60, unsanierter Altbau etwa 100.",
+          "design_temp": "Norm-Außentemperatur deines Standorts, in Deutschland meist zwischen -10 und -16 °C. Ohne Außentemperatursensor wird pauschal mit halber Leistung gerechnet.",
+          "notify_message": "Text der Erinnerung, wie das Feld „Nachricht“ in den Entwicklerwerkzeugen. Platzhalter: {raum}, {minuten} und {fenster} (Namen der offenen Fenster).",
+          "notify_title": "Optionaler Titel. Dieselben Platzhalter sind möglich, z. B. Fenster offen: {raum}."
         }
       }
     }
