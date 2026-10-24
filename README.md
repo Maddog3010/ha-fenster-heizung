@@ -1,4 +1,5 @@
-![Fenster & Heizung](custom_components/fenster_heizung/brand/icon.png)
+<img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/custom_components/fenster_heizung/brand/icon.png" width="96" alt="Fenster &amp; Heizung">
+
 
 
 
@@ -9,7 +10,8 @@ Home-Assistant-Integration: Pausiert Heizungsthermostate, solange Fenster offen 
 ## Dashboard
 Die Integration bringt ein eigenes Dashboard in der Seitenleiste mit.
 
-![Dashboard auf dem Handy, dunkel](docs/vorschau_handy_dunkel.png) ![Dashboard auf dem Handy, hell](docs/vorschau_handy_hell.png)
+<img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_handy_dunkel.png" width="260" alt="Dashboard auf dem Handy, dunkel"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_handy_hell.png" width="260" alt="Dashboard auf dem Handy, hell">
+
 
 
 
