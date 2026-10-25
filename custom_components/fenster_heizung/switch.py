@@ -4,6 +4,7 @@ from __future__ import annotations
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.restore_state import RestoreEntity
@@ -93,6 +94,10 @@ class PlanSwitch(_Base):
         self.async_write_ha_state()
 
     async def async_turn_on(self, **kwargs) -> None:
+        if not self._ctrl.plan_dict()["entries"]:
+            raise ServiceValidationError(
+                "Noch kein Heizplan eingerichtet. Lege zuerst im Dashboard Schaltpunkte an."
+            )
         await self._ctrl.async_set_plan_enabled(True)
 
     async def async_turn_off(self, **kwargs) -> None:
