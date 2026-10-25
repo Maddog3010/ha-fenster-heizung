@@ -95,6 +95,9 @@
     "switch": {
       "enabled": {
         "name": "Window control active"
+      },
+      "plan_enabled": {
+        "name": "Heating plan active"
       }
     },
     "sensor": {
@@ -118,6 +121,9 @@
       },
       "minutes_total": {
         "name": "Heating paused in total"
+      },
+      "plan_target": {
+        "name": "Heating plan target temperature"
       }
     }
   }

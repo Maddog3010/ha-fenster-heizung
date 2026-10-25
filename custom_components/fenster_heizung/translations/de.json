@@ -95,6 +95,9 @@
     "switch": {
       "enabled": {
         "name": "Fensterregelung aktiv"
+      },
+      "plan_enabled": {
+        "name": "Heizplan aktiv"
       }
     },
     "sensor": {
@@ -118,6 +121,9 @@
       },
       "minutes_total": {
         "name": "Heizung pausiert gesamt"
+      },
+      "plan_target": {
+        "name": "Heizplan Solltemperatur"
       }
     }
   }
