@@ -64,3 +64,11 @@ DEFAULT_DESIGN_TEMP = -12.0
 
 PANEL_URL = "fenster-heizung"
 STATIC_URL = "/fenster_heizung_static"
+
+PLAN_MIN_TEMP = 5.0
+PLAN_MAX_TEMP = 30.0
+BLOCK_IDS = ("hero", "tiles", "chart", "rooms")
+ROOM_ICON_IDS = (
+    "sofa", "tv", "dining", "pot", "bed", "baby", "desk", "book",
+    "drop", "laundry", "door", "stairs", "sun", "tree", "car", "tools",
+)

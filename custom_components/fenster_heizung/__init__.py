@@ -16,11 +16,13 @@ from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import (
     async_call_later,
     async_track_state_change_event,
+    async_track_time_change,
     async_track_time_interval,
 )
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .api import async_register_api
 from .const import (
     ACTION_OFF,
     CONF_ACTION,
@@ -61,6 +63,8 @@ from .const import (
     MODE_PAUSED,
     MODE_WINDOW_ONLY,
     PANEL_URL,
+    PLAN_MAX_TEMP,
+    PLAN_MIN_TEMP,
     SIGNAL_UPDATE,
     STATIC_URL,
 )
@@ -82,6 +86,39 @@ def _render(template: str, values: dict[str, Any]) -> str:
         return template.format_map(_SafeDict(values))
     except Exception:  # noqa: BLE001
         return template
+
+
+def _to_min(value: str) -> int:
+    try:
+        h, m = str(value).split(":")
+        return int(h) * 60 + int(m)
+    except (ValueError, TypeError):
+        return 0
+
+
+def normalize_entries(raw: Any) -> list[dict[str, Any]]:
+    """Schaltpunkte prüfen und vereinheitlichen. Wirft ValueError bei Fehlern."""
+    out: list[dict[str, Any]] = []
+    for e in raw or []:
+        days = sorted({int(d) for d in e.get("days", []) if 0 <= int(d) <= 6})
+        if not days:
+            continue
+        m = re.fullmatch(r"([01]?\d|2[0-3]):([0-5]\d)", str(e.get("time", "")))
+        if not m:
+            raise ValueError(f"Ungültige Uhrzeit: {e.get('time')}")
+        temp = round(float(e.get("temp")) * 2) / 2
+        if not PLAN_MIN_TEMP <= temp <= PLAN_MAX_TEMP:
+            raise ValueError(f"Temperatur außerhalb {PLAN_MIN_TEMP}-{PLAN_MAX_TEMP} °C: {temp}")
+        out.append(
+            {
+                "id": str(e.get("id") or f"e{len(out)}")[:16],
+                "days": days,
+                "time": f"{int(m[1]):02d}:{m[2]}",
+                "temp": temp,
+            }
+        )
+    out.sort(key=lambda e: (e["days"][0], e["time"]))
+    return out
 
 
 class WindowController:
@@ -112,6 +149,9 @@ class WindowController:
         self._kwh_archived = 0.0
         self._last_tick = None
         self._unsub_e: CALLBACK_TYPE | None = None
+        self._unsub_p: CALLBACK_TYPE | None = None
+        self._plan: dict[str, Any] = {"enabled": False, "entries": []}
+        self._plan_key: int | None = None  # zuletzt angewandter Schaltpunkt
 
     @property
     def cfg(self) -> dict[str, Any]:
@@ -131,6 +171,15 @@ class WindowController:
                 k: float(v) for k, v in (data.get("kwh_history") or {}).items()
             }
             self._kwh_archived = float(data.get("kwh_archived") or 0)
+            try:
+                raw = data.get("plan") or {}
+                self._plan = {
+                    "enabled": bool(raw.get("enabled")),
+                    "entries": normalize_entries(raw.get("entries")),
+                }
+            except (ValueError, TypeError):
+                _LOGGER.warning("Gespeicherter Heizplan ist ungültig und wird ignoriert")
+            self._plan_key = data.get("plan_key")
             if data.get("paused_since"):
                 self._paused_since = dt_util.parse_datetime(data["paused_since"])
         else:  # Altformat (bis 1.1.x): nur die gemerkten Thermostate
@@ -150,6 +199,7 @@ class WindowController:
                 self.hass, [self.cfg[CONF_HEATING_ENTITY]], self._heating_changed
             )
         self._last_tick = dt_util.now() if self.active else None
+        self._unsub_p = async_track_time_change(self.hass, self._plan_tick, second=0)
         self._unsub_e = async_track_time_interval(
             self.hass, self._energy_tick, timedelta(seconds=60)
         )
@@ -158,7 +208,7 @@ class WindowController:
     async def async_stop(self) -> None:
         self._cancel_timer()
         self._cancel_notify()
-        for attr in ("_unsub", "_unsub_t", "_unsub_h", "_unsub_e"):
+        for attr in ("_unsub", "_unsub_t", "_unsub_h", "_unsub_e", "_unsub_p"):
             unsub = getattr(self, attr)
             if unsub:
                 unsub()
@@ -356,6 +406,119 @@ class WindowController:
             "berechnung": "Raumfläche und Außentemperatur" if area > 0 else "feste Leistung",
         }
 
+    # --- Heizplan ----------------------------------------------------------
+    def plan_dict(self) -> dict[str, Any]:
+        return {
+            "enabled": bool(self._plan["enabled"]),
+            "entries": [dict(e) for e in self._plan["entries"]],
+        }
+
+    @property
+    def plan_enabled_flag(self) -> bool:
+        return bool(self._plan["enabled"])
+
+    def _plan_enabled(self) -> bool:
+        return bool(self._plan["enabled"] and self._plan["entries"])
+
+    def _plan_points(self) -> list[tuple[int, float]]:
+        pts: list[tuple[int, float]] = []
+        for e in self._plan["entries"]:
+            minute = _to_min(e["time"])
+            pts.extend((d * 1440 + minute, float(e["temp"])) for d in e["days"])
+        return sorted(pts)
+
+    @staticmethod
+    def _week_minute(now) -> int:
+        return now.weekday() * 1440 + now.hour * 60 + now.minute
+
+    def plan_current(self, now=None) -> tuple[int, float] | None:
+        """Der zuletzt erreichte Schaltpunkt der Woche (mit Umbruch zur Vorwoche)."""
+        pts = self._plan_points()
+        if not pts:
+            return None
+        w = self._week_minute(now or dt_util.now())
+        cur = pts[-1]
+        for point in pts:
+            if point[0] <= w:
+                cur = point
+            else:
+                break
+        return cur
+
+    def plan_next(self, now=None):
+        """Nächster Schaltpunkt und Minuten bis dahin."""
+        pts = self._plan_points()
+        if not pts:
+            return None
+        w = self._week_minute(now or dt_util.now())
+        for point in pts:
+            if point[0] > w:
+                return point, point[0] - w
+        return pts[0], pts[0][0] + 10080 - w
+
+    def plan_target(self) -> float | None:
+        if not self._plan_enabled():
+            return None
+        cur = self.plan_current()
+        return cur[1] if cur else None
+
+    def plan_info(self) -> dict[str, Any]:
+        info: dict[str, Any] = {"heizplan_aktiv": self._plan_enabled()}
+        nxt = self.plan_next()
+        if nxt:
+            (_, temp), mins = nxt
+            start = dt_util.now().replace(second=0, microsecond=0)
+            info["naechste_aenderung"] = (start + timedelta(minutes=mins)).isoformat()
+            info["naechste_temperatur"] = temp
+        return info
+
+    async def _plan_apply(self, temp: float) -> None:
+        for eid in self.cfg[CONF_THERMOSTATS]:
+            st = self.hass.states.get(eid)
+            if st is None or st.state not in HEATING_MODES:
+                continue
+            value = temp
+            lo, hi = st.attributes.get("min_temp"), st.attributes.get("max_temp")
+            if isinstance(lo, (int, float)):
+                value = max(value, lo)
+            if isinstance(hi, (int, float)):
+                value = min(value, hi)
+            await self._call("set_temperature", eid, temperature=value)
+
+    async def _plan_apply_if_due(self, force: bool = False) -> None:
+        """Plantemperatur setzen, wenn ein neuer Schaltpunkt erreicht wurde."""
+        if not self._plan_enabled():
+            return
+        cur = self.plan_current()
+        if cur is None:
+            return
+        if self.active or self._heating_off():
+            return  # Fenster offen bzw. Heizung aus: später erneut prüfen
+        if not force and cur[0] == self._plan_key:
+            return
+        await self._plan_apply(cur[1])
+        self._plan_key = cur[0]
+        await self._save()
+        self._signal()
+
+    async def _plan_tick(self, _now) -> None:
+        await self._plan_apply_if_due()
+
+    async def async_set_plan(self, enabled: bool, entries: Any) -> None:
+        clean = normalize_entries(entries)
+        self._plan = {"enabled": bool(enabled and clean), "entries": clean}
+        self._plan_key = None
+        await self._save()
+        self._signal()
+        await self._plan_apply_if_due(force=True)
+
+    async def async_set_plan_enabled(self, enabled: bool) -> None:
+        self._plan["enabled"] = bool(enabled and self._plan["entries"])
+        self._plan_key = None
+        await self._save()
+        self._signal()
+        await self._plan_apply_if_due(force=True)
+
     def _energy_step(self) -> None:
         """Energie seit dem letzten Schritt aufaddieren (nur während einer Pause)."""
         now = self._roll()
@@ -396,6 +559,8 @@ class WindowController:
             "kwh": round(self._kwh, 4),
             "kwh_history": self._kwh_history,
             "kwh_archived": round(self._kwh_archived, 4),
+            "plan": self._plan,
+            "plan_key": self._plan_key,
         }
 
     async def _save(self) -> None:
@@ -580,6 +745,7 @@ class WindowController:
         self.active = False
         await self._save()
         self._signal()
+        await self._plan_apply_if_due()  # nach dem Fenster gilt der aktuelle Plan
 
     async def _call(self, service: str, entity_id: str, **data: Any) -> None:
         try:
@@ -593,6 +759,9 @@ class WindowController:
 async def _async_register_panel(hass: HomeAssistant) -> None:
     """Dashboard als Eintrag in der Seitenleiste bereitstellen."""
     store = hass.data.setdefault(DOMAIN, {})
+    if not store.get("api"):
+        async_register_api(hass)
+        store["api"] = True
     path = os.path.join(os.path.dirname(__file__), "frontend")
     if not store.get("static"):
         try:

@@ -9,7 +9,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import UnitOfTime
+from homeassistant.const import UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -30,7 +30,7 @@ async def async_setup_entry(
 ) -> None:
     async_add_entities(
         [PausedMinutesSensor(entry, key, scope) for key, scope in SCOPES.items()]
-        + [ModeSensor(entry)]
+        + [PlanTargetSensor(entry), ModeSensor(entry)]
     )
 
 
@@ -119,5 +119,26 @@ class ModeSensor(_Base):
         return {
             "thermostate": self._ctrl.thermostat_states(),
             "fenster": list(self._ctrl.cfg[CONF_WINDOWS]),
+            "entry_id": self._entry.entry_id,
             "heizung_quelle": self._ctrl.heating_source(),
         }
+
+
+class PlanTargetSensor(_Base):
+    """Solltemperatur, die der Heizplan gerade vorgibt."""
+
+    _attr_device_class = SensorDeviceClass.TEMPERATURE
+    _attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_icon = "mdi:calendar-clock"
+
+    def __init__(self, entry: ConfigEntry) -> None:
+        super().__init__(entry, "plan_target")
+
+    @property
+    def native_value(self) -> float | None:
+        return self._ctrl.plan_target()
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        return self._ctrl.plan_info()
