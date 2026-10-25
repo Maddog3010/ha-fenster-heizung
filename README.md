@@ -49,10 +49,13 @@ Pro Raum gibt es einen Heizplan aus Schaltpunkten: Tage, Uhrzeit und Temperatur.
 3. „Fenster & Heizung“ installieren und Home Assistant neu starten
 4. Einstellungen → Geräte & Dienste → Integration hinzufügen → „Fenster & Heizung“
 
-## Neue Version veröffentlichen
-1. `version` in `custom_components/fenster_heizung/manifest.json` erhöhen
-2. Auf GitHub ein **Release** mit passendem Tag erstellen (z. B. `v2.0.1`)
-3. HACS zeigt das Update an
-
 ## Änderungen
 Alle Versionen siehe [CHANGELOG.md](CHANGELOG.md).
+
+## im nächsten Release geplant 
+- Kleine Animationen: Flamme pulsiert bei Pause, Fensterflügel öffnet sich bei offenem Fenster
+- Wählbare Akzentfarbe und eigene Raumfarben
+- Optionales Raumfoto als Kartenhintergrund
+- Außentemperatur und Wetter in der Kopfkarte
+- Urlaubs- und Anwesenheitsmodus: Absenken von–bis oder wenn niemand zu Hause ist, Vorheizen bei Rückkehr
+- Anzeige „Warum?“: Der Raum erklärt seinen Zustand, zum Beispiel „Terrassentür seit 3 Min. offen“
