@@ -2,6 +2,21 @@
 
 Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2.0.0] - 2026-10-24
+### Neu
+- **Heizplan** pro Raum: Schaltpunkte mit Tagen, Uhrzeit und Temperatur (5 bis 30 °C in 0,5-Grad-Schritten). Zu jedem Schaltpunkt werden die Thermostate im Modus `heat` oder `auto` auf die Zieltemperatur gestellt. Manuelle Änderungen bleiben bis zum nächsten Schaltpunkt bestehen.
+- Der Heizplan arbeitet mit der Fensterregelung zusammen: Während eine Pause läuft, wird nichts gesetzt. Nach dem Schließen gilt die Temperatur, die laut Plan dann dran ist. Bei „Heizung aus“ (eigener Heizungs-Sensor) ruht der Plan.
+- Heizplan im Dashboard bearbeiten: Tagesbalken mit Temperaturfarben, Vorschau je Wochentag, Schaltpunkte hinzufügen und löschen, Standardvorlage.
+- Neue Entitäten pro Raum: Schalter **Heizplan aktiv** und Sensor **Heizplan Solltemperatur** (Attribute: `naechste_aenderung`, `naechste_temperatur`).
+- **Dashboard anpassen** (nur Administratoren): Bereiche und Raumkarten per Ziehen verschieben, Anordnung wird für alle gespeichert.
+- **Raumsymbole** aus 16 Symbolen wählbar.
+- Neue Kopfzeile mit Logo und dem Namen „Fenster & Heizung“.
+- Neue WebSocket-Befehle für das Dashboard: `fenster_heizung/get_state`, `set_layout` und `set_plan` (die beiden letzten nur für Administratoren).
+
+### Hinweis
+- Die Integration hängt zusätzlich von der Komponente `websocket_api` ab (bei jeder Installation vorhanden).
+- Der Schalter „Fensterregelung aktiv“ hat jetzt das Attribut `funktion`, damit das Dashboard ihn vom Heizplan-Schalter unterscheiden kann.
+
 ## [1.5.2] - 2026-10-24
 ### Behoben
 - Dashboard auf dem iPhone: Über der Titelzeile stand ein großer leerer Streifen, weil der Abstand zur Statusleiste doppelt gerechnet wurde.
@@ -104,6 +119,7 @@ Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sic
 - Schalter „Fensterregelung aktiv“ pro Raum.
 - Deutsche und englische Oberfläche.
 
+[2.0.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.0.0
 [1.5.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.2
 [1.5.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.1
 [1.5.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.0
