@@ -2,8 +2,6 @@
 
 # Fenster & Heizung
 
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
-
 Home-Assistant-Integration: Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus und bringt ein eigenes Dashboard mit.
 
 ## Dashboard
@@ -55,9 +53,6 @@ Pro Raum gibt es einen Heizplan aus Schaltpunkten: Tage, Uhrzeit und Temperatur.
 1. `version` in `custom_components/fenster_heizung/manifest.json` erhöhen
 2. Auf GitHub ein **Release** mit passendem Tag erstellen (z. B. `v2.0.1`)
 3. HACS zeigt das Update an
-
-## Unterstützen
-Gefällt dir die Integration? Über [GitHub Sponsors](https://github.com/sponsors/maddog3010) kannst du die Weiterentwicklung unterstützen. Danke!
 
 ## Änderungen
 Alle Versionen siehe [CHANGELOG.md](CHANGELOG.md).
