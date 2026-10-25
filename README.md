@@ -2,6 +2,8 @@
 
 # Fenster & Heizung
 
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
+
 Home-Assistant-Integration: Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus und bringt ein eigenes Dashboard mit.
 
 ## Dashboard
@@ -26,7 +28,8 @@ Pro Raum gibt es einen Heizplan aus Schaltpunkten: Tage, Uhrzeit und Temperatur.
 
 <img src="docs/vorschau_heizplan.png" width="240" alt="Heizplan bearbeiten">
 
-- Zu jedem Schaltpunkt wird die Zieltemperatur an die Thermostate im Modus `heat` oder `auto` gesendet. Thermostate auf `off` bleiben unberührt.
+- Pro Schaltpunkt wählst du mehrere Tage, die Uhrzeit und die Temperatur. Kürzel: „Mo–Fr“, „Sa–So“, „Alle Tage“.
+- Zu jedem Schaltpunkt wird die Zieltemperatur an die Thermostate gesendet. Ausgeschaltete Thermostate schaltet der Plan je nach Einstellung ein: „Nein“, „Heizen“ oder „Automatik“. Andere Modi (z. B. cool) bleiben unberührt.
 - Dazwischen bleibt eine manuelle Änderung bis zum nächsten Schaltpunkt bestehen.
 - Während ein Fenster die Heizung pausiert, greift der Plan nicht. Nach dem Schließen gilt die Temperatur, die dann laut Plan dran ist.
 - Steht der eigene Heizungs-Sensor auf „Heizung aus“, wird der Plan nicht ausgeführt.
@@ -47,6 +50,14 @@ Pro Raum gibt es einen Heizplan aus Schaltpunkten: Tage, Uhrzeit und Temperatur.
 2. URL dieses Repos eintragen, Kategorie **Integration**
 3. „Fenster & Heizung“ installieren und Home Assistant neu starten
 4. Einstellungen → Geräte & Dienste → Integration hinzufügen → „Fenster & Heizung“
+
+## Neue Version veröffentlichen
+1. `version` in `custom_components/fenster_heizung/manifest.json` erhöhen
+2. Auf GitHub ein **Release** mit passendem Tag erstellen (z. B. `v2.0.1`)
+3. HACS zeigt das Update an
+
+## Unterstützen
+Gefällt dir die Integration? Über [GitHub Sponsors](https://github.com/sponsors/maddog3010) kannst du die Weiterentwicklung unterstützen. Danke!
 
 ## Änderungen
 Alle Versionen siehe [CHANGELOG.md](CHANGELOG.md).
