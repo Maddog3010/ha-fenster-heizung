@@ -31,6 +31,9 @@ from .const import (
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
     CONF_DESIGN_TEMP,
+    CONF_COP,
+    CONF_ENERGY_PER_UNIT,
+    CONF_FUEL,
     CONF_GAS_KWH_PER_M3,
     CONF_HEAT_LOAD,
     CONF_HEAT_POWER,
@@ -49,7 +52,9 @@ from .const import (
     CONF_WINDOWS,
     DEFAULT_CLOSE_DELAY,
     DEFAULT_DESIGN_TEMP,
-    DEFAULT_GAS_KWH_PER_M3,
+    DEFAULT_COP,
+    DEFAULT_FUEL,
+    FUELS,
     DEFAULT_HEAT_LOAD,
     DEFAULT_HEAT_POWER,
     DEFAULT_HEATING_OFF_STATES,
@@ -358,16 +363,45 @@ class WindowController:
                 out[key] = round(self._history[key] / 60, 1)
         return out
 
-    def saved_gas(self, scope: str) -> dict[str, float]:
-        """Grobe Schätzung des eingesparten Gases."""
-        kwh = self.kwh(scope)
-        per_m3 = float(
-            self.cfg.get(CONF_GAS_KWH_PER_M3, DEFAULT_GAS_KWH_PER_M3)
-        ) or 1.0
+    def fuel_info(self) -> dict[str, Any]:
+        """Brennstoff, Einheit und Umrechnung von kWh Wärme in Menge."""
+        cfg = self.cfg
+        fuel = cfg.get(CONF_FUEL)
+        if fuel not in FUELS:
+            fuel = DEFAULT_FUEL
+        unit, default = FUELS[fuel]
+        per_unit = cfg.get(CONF_ENERGY_PER_UNIT)
+        if not per_unit and fuel == "erdgas":
+            per_unit = cfg.get(CONF_GAS_KWH_PER_M3)  # Einstellung aus Version 2.3 und älter
+        per_unit = float(per_unit or default) or default
+        cop = 1.0
+        if fuel == "strom":
+            cop = float(cfg.get(CONF_COP) or DEFAULT_COP) or DEFAULT_COP
         return {
-            "gespartes_gas_m3": round(kwh / per_m3, 2),
+            "brennstoff": fuel,
+            "einheit": unit,
+            "energie_pro_einheit": per_unit,
+            "cop": cop,
+            "faktor": 1.0 / (per_unit * cop),
+        }
+
+    def saved_gas(self, scope: str) -> dict[str, Any]:
+        """Grobe Schätzung des eingesparten Brennstoffs."""
+        kwh = self.kwh(scope)
+        info = self.fuel_info()
+        amount = round(kwh * info["faktor"], 2)
+        out: dict[str, Any] = {
+            "gespart_menge": amount,
+            "einheit": info["einheit"],
+            "brennstoff": info["brennstoff"],
+            "menge_pro_kwh": round(info["faktor"], 5),
             "gespartes_gas_kwh": round(kwh, 2),
         }
+        if info["brennstoff"] == "erdgas":
+            out["gespartes_gas_m3"] = amount  # bleibt für ältere Dashboards erhalten
+        if info["brennstoff"] == "strom":
+            out["cop"] = info["cop"]
+        return out
 
     def _indoor_target(self) -> float:
         temps = [

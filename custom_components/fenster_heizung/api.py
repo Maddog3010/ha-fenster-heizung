@@ -1,6 +1,8 @@
 """WebSocket-Schnittstelle für das Dashboard (Heizplan, Anordnung, Anwesenheit)."""
 from __future__ import annotations
 
+import json
+import os
 from typing import Any
 
 import voluptuous as vol
@@ -10,7 +12,7 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 
-from .const import BLOCK_IDS, DOMAIN, PLAN_MODES, ROOM_ICON_IDS
+from .const import BLOCK_IDS, DOMAIN, GROUP_ICON_IDS, MAX_GROUPS, PLAN_MODES, ROOM_ICON_IDS
 from .presence import clean_presence
 
 def clean_layout(raw: Any) -> dict[str, Any]:
@@ -29,7 +31,49 @@ def clean_layout(raw: Any) -> dict[str, Any]:
         for k, v in (raw.get("icons") or {}).items()
         if isinstance(v, str) and v in ROOM_ICON_IDS
     }
-    return {"blocks": blocks, "rooms": rooms, "icons": icons}
+    groups: list[dict[str, Any]] = []
+    used: set[str] = set()
+    seen_ids: set[str] = set()
+    for g in (raw.get("groups") or [])[:MAX_GROUPS]:
+        if not isinstance(g, dict):
+            continue
+        gid = str(g.get("id") or "")[:16]
+        name = str(g.get("name") or "").strip()[:30]
+        if not gid or not name or gid in seen_ids:
+            continue
+        seen_ids.add(gid)
+        members: list[str] = []
+        for r in g.get("rooms") or []:
+            if isinstance(r, str) and r not in used and r not in members:
+                members.append(r[:64])
+        used.update(members)
+        icon = g.get("icon")
+        groups.append(
+            {
+                "id": gid,
+                "name": name,
+                "icon": icon if icon in GROUP_ICON_IDS else GROUP_ICON_IDS[0],
+                "rooms": members,
+            }
+        )
+    return {"blocks": blocks, "rooms": rooms, "icons": icons, "groups": groups}
+
+
+def _read_version() -> str:
+    try:
+        path = os.path.join(os.path.dirname(__file__), "manifest.json")
+        with open(path, encoding="utf-8") as fh:
+            return str(json.load(fh).get("version", ""))
+    except (OSError, ValueError):
+        return ""
+
+
+async def _version(hass: HomeAssistant) -> str:
+    cached = hass.data.get(f"{DOMAIN}_version")
+    if cached is None:
+        cached = await hass.async_add_executor_job(_read_version)
+        hass.data[f"{DOMAIN}_version"] = cached
+    return cached
 
 
 async def _layout(hass: HomeAssistant) -> dict[str, Any]:
@@ -58,7 +102,13 @@ async def ws_get_state(hass: HomeAssistant, connection, msg: dict) -> None:
         if ctrl is not None and entry.state is ConfigEntryState.LOADED:
             plans[entry.entry_id] = ctrl.plan_dict()
     connection.send_result(
-        msg["id"], {"layout": layout, "plans": plans, "presence": _presence_snapshot(hass)}
+        msg["id"],
+        {
+            "layout": layout,
+            "plans": plans,
+            "presence": _presence_snapshot(hass),
+            "version": await _version(hass),
+        },
     )
 
 

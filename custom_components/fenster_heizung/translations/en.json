@@ -20,24 +20,28 @@
           "notify_after": "Remind after X minutes open (0 = off)",
           "heating_entity": "Heating sensor (optional)",
           "heating_off_states": "States meaning “heating off” (comma separated)",
-          "heat_power_kw": "Fixed gas power of the room (kW, only without room area)",
-          "gas_kwh_per_m3": "Energy per m³ of gas (kWh/m³)",
-          "room_area": "Room area for the gas calculation (m², 0 = fixed power)",
+          "heat_power_kw": "Fixed heating power of the room (kW, only without room area)",
+          "room_area": "Room area for the calculation (m², 0 = fixed power)",
           "heat_load_w_m2": "Specific heat load (W/m²)",
           "design_temp": "Design outdoor temperature (°C)",
           "notify_title": "Notification title (optional)",
-          "notify_message": "Message text"
+          "notify_message": "Message text",
+          "fuel": "Fuel",
+          "energy_per_unit": "Energy per unit (kWh), empty = fuel default",
+          "cop": "Seasonal COP (heat pump only)"
         },
         "data_description": {
           "heating_entity": "Pick an entity that shows whether heating is running (e.g. a climate device, switch or summer-mode toggle). If it has one of the states below, nothing is controlled and only the window alert stays active. Example: off, or for a summer-mode switch: on.",
-          "heat_power_kw": "Only used if the room area below is 0, and for older days before version 1.4.2. Rough estimate of the room's average gas power, e.g. 1.0 kW.",
-          "gas_kwh_per_m3": "Conversion from kWh to m³ of gas. It is on your gas bill (calorific value times conversion factor), usually about 10.",
+          "heat_power_kw": "Only used when the room area below is 0, and for days before version 1.4.2. Rough estimate of the average heating power of the room, e.g. 1.0 kW.",
           "notify_service": "Pick one or more notify actions from the list, e.g. notify.mobile_app_phone. You can also type to search or enter a custom name.",
           "room_area": "If greater than 0, the room's heating power is calculated from area, heat load and outdoor temperature instead of the fixed power above.",
           "heat_load_w_m2": "Heat load per m² at design temperature. Rough values: new build about 40, renovated about 60, unrenovated old building about 100.",
           "design_temp": "Standard design outdoor temperature of your location. Without an outdoor sensor, half power is assumed.",
           "notify_message": "Text of the reminder, like the “Message” field in Developer Tools. Placeholders: {raum}, {minuten} and {fenster} (names of the open windows).",
-          "notify_title": "Optional title. The same placeholders work, e.g. Window open: {raum}."
+          "notify_title": "Optional title. The same placeholders work, e.g. Window open: {raum}.",
+          "fuel": "Sets the unit and labels in the dashboard. Defaults: gas 10 kWh/m³, heating oil 10 kWh/l, LPG 6.6 kWh/l, pellets 4.8 kWh/kg, electricity 1 kWh/kWh.",
+          "energy_per_unit": "Energy content of your fuel per unit (m³, l, kg or kWh). Leave empty or 0 to use the default. For natural gas, the value is on your gas bill (calorific value times state number), usually about 10.",
+          "cop": "Heat pump only: 1 kWh of electricity yields about this many kWh of heat. Savings are heat divided by this value. Use 1 to calculate like direct electric heating."
         }
       }
     }
@@ -61,24 +65,28 @@
           "notify_after": "Remind after X minutes open (0 = off)",
           "heating_entity": "Heating sensor (optional)",
           "heating_off_states": "States meaning “heating off” (comma separated)",
-          "heat_power_kw": "Fixed gas power of the room (kW, only without room area)",
-          "gas_kwh_per_m3": "Energy per m³ of gas (kWh/m³)",
-          "room_area": "Room area for the gas calculation (m², 0 = fixed power)",
+          "heat_power_kw": "Fixed heating power of the room (kW, only without room area)",
+          "room_area": "Room area for the calculation (m², 0 = fixed power)",
           "heat_load_w_m2": "Specific heat load (W/m²)",
           "design_temp": "Design outdoor temperature (°C)",
           "notify_title": "Notification title (optional)",
-          "notify_message": "Message text"
+          "notify_message": "Message text",
+          "fuel": "Fuel",
+          "energy_per_unit": "Energy per unit (kWh), empty = fuel default",
+          "cop": "Seasonal COP (heat pump only)"
         },
         "data_description": {
           "heating_entity": "Pick an entity that shows whether heating is running (e.g. a climate device, switch or summer-mode toggle). If it has one of the states below, nothing is controlled and only the window alert stays active. Example: off, or for a summer-mode switch: on.",
-          "heat_power_kw": "Only used if the room area below is 0, and for older days before version 1.4.2. Rough estimate of the room's average gas power, e.g. 1.0 kW.",
-          "gas_kwh_per_m3": "Conversion from kWh to m³ of gas. It is on your gas bill (calorific value times conversion factor), usually about 10.",
+          "heat_power_kw": "Only used when the room area below is 0, and for days before version 1.4.2. Rough estimate of the average heating power of the room, e.g. 1.0 kW.",
           "notify_service": "Pick one or more notify actions from the list, e.g. notify.mobile_app_phone. You can also type to search or enter a custom name.",
           "room_area": "If greater than 0, the room's heating power is calculated from area, heat load and outdoor temperature instead of the fixed power above.",
           "heat_load_w_m2": "Heat load per m² at design temperature. Rough values: new build about 40, renovated about 60, unrenovated old building about 100.",
           "design_temp": "Standard design outdoor temperature of your location. Without an outdoor sensor, half power is assumed.",
           "notify_message": "Text of the reminder, like the “Message” field in Developer Tools. Placeholders: {raum}, {minuten} and {fenster} (names of the open windows).",
-          "notify_title": "Optional title. The same placeholders work, e.g. Window open: {raum}."
+          "notify_title": "Optional title. The same placeholders work, e.g. Window open: {raum}.",
+          "fuel": "Sets the unit and labels in the dashboard. Defaults: gas 10 kWh/m³, heating oil 10 kWh/l, LPG 6.6 kWh/l, pellets 4.8 kWh/kg, electricity 1 kWh/kWh.",
+          "energy_per_unit": "Energy content of your fuel per unit (m³, l, kg or kWh). Leave empty or 0 to use the default. For natural gas, the value is on your gas bill (calorific value times state number), usually about 10.",
+          "cop": "Heat pump only: 1 kWh of electricity yields about this many kWh of heat. Savings are heat divided by this value. Use 1 to calculate like direct electric heating."
         }
       }
     }
@@ -88,6 +96,15 @@
       "options": {
         "off": "Turn thermostat off",
         "setback": "Set to setback temperature"
+      }
+    },
+    "fuel": {
+      "options": {
+        "erdgas": "Natural gas (m³)",
+        "heizoel": "Heating oil (l)",
+        "fluessiggas": "LPG (l)",
+        "pellets": "Pellets (kg)",
+        "strom": "Heat pump / electricity (kWh)"
       }
     }
   },

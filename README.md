@@ -13,7 +13,7 @@ Die Integration legt den Eintrag „Fenster & Heizung“ in der Seitenleiste an.
 
 ![Dashboard auf dem Desktop](docs/vorschau_desktop.png)
 
-- Kopfkarte mit dem heute gesparten Gas, Kacheln für Heute, Monat, Jahr und Gesamt
+- Kopfkarte mit dem heute gesparten Brennstoff (Gas, Heizöl, Flüssiggas, Pellets oder Strom), Kacheln für Heute, Monat, Jahr und Gesamt
 - Balkendiagramm der Pausenzeit der letzten 14 Tage, nach Räumen gestapelt
 - Raumkarten mit Status, Fenster, Heizung, Heizplan und 7-Tage-Verlauf
 - Hell und Dunkel folgen dem Design von Home Assistant
@@ -34,6 +34,15 @@ Pro Raum gibt es einen Heizplan aus Schaltpunkten: Tage, Uhrzeit und Temperatur.
 - Während ein Fenster die Heizung pausiert, greift der Plan nicht. Nach dem Schließen gilt die Temperatur, die dann laut Plan dran ist.
 - Steht der eigene Heizungs-Sensor auf „Heizung aus“, wird der Plan nicht ausgeführt.
 - Der Schalter „Heizplan aktiv“ und der Sensor „Heizplan Solltemperatur“ (mit nächster Änderung als Attribut) lassen sich in Automationen verwenden.
+
+## Bericht pro Raum
+Der Knopf „Bericht“ auf jeder Raumkarte zeigt pro Tag Temperaturverlauf, Ziel, Pausenzeiten, Fensteröffnungen und eine Ereignisliste (Daten aus dem Home-Assistant-Verlauf, Recorder-Aufbewahrung beachten).
+
+## Brennstoff
+Erdgas (m³, 10 kWh), Heizöl (l, 10), Flüssiggas (l, 6,6), Pellets (kg, 4,8), Wärmepumpe/Strom (kWh, 1, mit JAZ/COP). Der Wert „Energie pro Einheit (kWh)“ ist anpassbar.
+
+## Gruppen und Zonen
+Im Bearbeiten-Modus lassen sich Räume zu Gruppen zusammenfassen (Name, Symbol, Räume, Reihenfolge) mit gemeinsamem Schalter und Einklappen.
 
 ## „Warum?“ pro Raum
 Der Knopf „Warum?“ auf jeder Raumkarte erklärt den aktuellen Zustand: offenes Fenster, Verzögerung, Sperrzeit, Außentemperatur, Heizplan und Abwesenheit.
@@ -58,7 +67,7 @@ Eine Karte im Dashboard stellt alle Räume gemeinsam um: **Zu Hause**, **Abwesen
 - Sperrzeit (z. B. nachts) und Außentemperatur-Bedingung
 - Erinnerung bei langem Lüften: Aktionen per Auswahlmenü, eigener Titel und Text mit den Platzhaltern `{raum}`, `{minuten}`, `{fenster}`
 - Eigener Heizungs-Sensor wählbar (z. B. climate, Schalter, Sommer-Modus): steht er auf „Heizung aus“, wird nicht geregelt und nur die Fenstermeldung bleibt aktiv
-- Sensoren „Heizung pausiert“ für heute, Monat, Jahr und gesamt (Minuten) mit geschätztem gespartem Gas (m³ und kWh) als Attribut; optional aus Raumfläche, Heizlast und Außentemperatur berechnet
+- Sensoren „Heizung pausiert“ für heute, Monat, Jahr und gesamt (Minuten) mit geschätzter Ersparnis (Menge je Brennstoff und kWh) als Attribut; optional aus Raumfläche, Heizlast und Außentemperatur berechnet
 - Sensor „Betriebszustand“: Regelung aktiv, Heizung pausiert, Heizung aus (nur Fenstermeldung) oder Regelung deaktiviert
 - Schalter „Fensterregelung aktiv“ und „Heizplan aktiv“ pro Raum
 

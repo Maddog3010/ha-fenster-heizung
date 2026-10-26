@@ -19,6 +19,9 @@ from .const import (
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
     CONF_DESIGN_TEMP,
+    CONF_COP,
+    CONF_ENERGY_PER_UNIT,
+    CONF_FUEL,
     CONF_GAS_KWH_PER_M3,
     CONF_HEAT_LOAD,
     CONF_HEAT_POWER,
@@ -37,7 +40,9 @@ from .const import (
     CONF_WINDOWS,
     DEFAULT_CLOSE_DELAY,
     DEFAULT_DESIGN_TEMP,
-    DEFAULT_GAS_KWH_PER_M3,
+    DEFAULT_COP,
+    DEFAULT_FUEL,
+    FUELS,
     DEFAULT_HEAT_LOAD,
     DEFAULT_HEAT_POWER,
     DEFAULT_HEATING_OFF_STATES,
@@ -155,11 +160,22 @@ def _schema(hass: HomeAssistant, with_name: bool) -> vol.Schema:
                     mode=selector.NumberSelectorMode.BOX,
                 )
             ),
-            vol.Required(
-                CONF_GAS_KWH_PER_M3, default=DEFAULT_GAS_KWH_PER_M3
-            ): selector.NumberSelector(
+            vol.Required(CONF_FUEL, default=DEFAULT_FUEL): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=list(FUELS),
+                    translation_key="fuel",
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            ),
+            vol.Optional(CONF_ENERGY_PER_UNIT): selector.NumberSelector(
                 selector.NumberSelectorConfig(
-                    min=1, max=40, step=0.1, unit_of_measurement="kWh/m³",
+                    min=0, max=40, step=0.1, unit_of_measurement="kWh",
+                    mode=selector.NumberSelectorMode.BOX,
+                )
+            ),
+            vol.Optional(CONF_COP, default=DEFAULT_COP): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    min=1, max=8, step=0.1,
                     mode=selector.NumberSelectorMode.BOX,
                 )
             ),
@@ -217,6 +233,10 @@ class FensterHeizungOptions(OptionsFlow):
                 user_input.setdefault(key, None)
             return self.async_create_entry(data=user_input)
         current = {**self.config_entry.data, **self.config_entry.options}
+        if not current.get(CONF_ENERGY_PER_UNIT) and current.get(CONF_GAS_KWH_PER_M3):
+            # Wert aus Version 2.3 und älter übernehmen (galt für Erdgas)
+            if current.get(CONF_FUEL, DEFAULT_FUEL) == DEFAULT_FUEL:
+                current[CONF_ENERGY_PER_UNIT] = current[CONF_GAS_KWH_PER_M3]
         raw = current.get(CONF_NOTIFY_SERVICE)
         if isinstance(raw, str):  # ältere Einträge: Text mit Komma -> Liste
             current[CONF_NOTIFY_SERVICE] = [x for x in re.split(r"[,;\s]+", raw) if x]

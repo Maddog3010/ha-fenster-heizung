@@ -1,5 +1,9 @@
 /* Fenster & Heizung – Dashboard-Panel 2.0 (ohne externe Abhängigkeiten) */
 const ICONS = {
+  layers: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12.5l9 5 9-5M3 17l9 5 9-5"/>',
+  chev: '<path d="M6 9l6 6 6-6"/>',
+  chart: '<path d="M4 4v16h16"/><path d="M8 15l3-4 3 2 5-7"/>',
+  sliders: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/>',
   window: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M4 12h16"/>',
   windowOpen: '<rect x="3" y="3" width="9" height="18" rx="2"/><path d="M14 5l7 2v10l-7 2z"/><path d="M3 12h9"/>',
   radiator: '<rect x="3" y="6" width="18" height="12" rx="2.5"/><path d="M7.5 9.5v5M12 9.5v5M16.5 9.5v5M6 18v2M18 18v2"/>',
@@ -52,6 +56,17 @@ const MODE = {
   nur_fenstermeldung: { t: "Heizung aus · nur Fenstermeldung", c: "slate" },
   regelung_aus: { t: "Regelung deaktiviert", c: "gray" },
 };
+const LOGO_URL = "/fenster_heizung_static/logo.png";
+const FUELS = {
+  erdgas: { short: "Gas", label: "m³ Gas", noun: "Gasersparnis" },
+  heizoel: { short: "Heizöl", label: "l Heizöl", noun: "Heizölersparnis" },
+  fluessiggas: { short: "Flüssiggas", label: "l Flüssiggas", noun: "Flüssiggasersparnis" },
+  pellets: { short: "Pellets", label: "kg Pellets", noun: "Pelletersparnis" },
+  strom: { short: "Strom", label: "kWh Strom", noun: "Stromersparnis" },
+};
+const MIXED = { short: "Heizenergie", label: "kWh Heizenergie", unit: "kWh", noun: "Ersparnis" };
+const unitOf = (f) => (f.unit || f.label.split(" ")[0]);
+const GROUP_ICONS = ["layers", "home", "bed", "sofa", "desk"];
 const BLOCKS = { hero: "Kopfkarte", presence: "Anwesenheit", tiles: "Kennzahlen", chart: "Diagramm", rooms: "Räume" };
 const DAYS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 const DAYS_LONG = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
@@ -112,7 +127,13 @@ button{font:inherit;color:inherit}
 .logo{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:#fff;flex:none;
   background:linear-gradient(135deg,#14b8a6,#0e6a82);box-shadow:0 4px 12px rgba(20,184,166,.35)}
 .brand>div{min-width:0}.brand b{display:block;font-size:1.12rem;font-weight:700;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand div span em{font-style:normal}.brand .ver:not(:first-child)::before{content:" · "}
 .brand div span{display:block;font-size:.72rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar:not(.nar){position:static;background:none;border:0;max-width:1180px;margin:0 auto;padding:18px 14px 0;gap:14px}
+.bar:not(.nar) .logo{width:46px;height:46px;border-radius:14px}
+.bar:not(.nar) .brand{gap:14px}
+.bar:not(.nar) .brand b{font-size:1.3rem}
+.bar:not(.nar) .brand div span{font-size:.82rem;margin-top:2px}
 .pillbtn{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:7px 12px;font-size:.82rem;font-weight:600;cursor:pointer}
 .pillbtn.pri{background:var(--teal);border-color:var(--teal);color:#042f2e}
 .wrap{max-width:1180px;margin:0 auto;padding:16px 14px calc(28px + env(safe-area-inset-bottom,0px));display:grid;gap:14px}
@@ -130,7 +151,8 @@ button{font:inherit;color:inherit}
 .hero{position:relative;overflow:hidden;border:0;color:#ecfeff;padding:20px 18px;min-height:168px;
   background:radial-gradient(120% 140% at 85% 0%,#14b8a6 0%,rgba(20,184,166,0) 55%),linear-gradient(135deg,#0f5f66 0%,#0c3b52 60%,#0b2c43 100%)}
 .hero .art{position:absolute;right:10px;top:14px;height:104px;width:auto;max-width:44%;opacity:.95}
-.hero .lbl{font-size:.82rem;opacity:.85;display:flex;gap:6px;align-items:center}
+.hero .hlogo{position:absolute;right:14px;bottom:14px;width:48px;height:48px;border-radius:50%;object-fit:cover;box-shadow:0 4px 14px rgba(0,0,0,.45),0 0 0 2px rgba(255,255,255,.16);background:#000}
+.hero .lbl{max-width:calc(100% - 150px);font-size:.82rem;opacity:.85;display:flex;gap:6px;align-items:center}
 .hero .big{font-size:2.7rem;font-weight:700;line-height:1.05;margin:6px 0 2px;letter-spacing:-.5px}
 .hero .big small{font-size:1.2rem;font-weight:500;opacity:.85;margin-left:4px}
 .hero .sub{font-size:.8rem;opacity:.75;max-width:55%}
@@ -180,6 +202,7 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .tlw b{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1.5px;border-radius:2px;background:#fff;box-shadow:0 0 0 2px rgba(0,0,0,.4)}
 .tla{display:flex;justify-content:space-between;font-size:.68rem;color:var(--mut);margin-top:3px;padding:0 1px}
 .off .tl,.off .pnow{opacity:.45}
+.plnk{display:flex;flex-wrap:wrap;gap:2px 22px}
 .lnk{background:none;border:0;color:var(--teal);font-weight:600;font-size:.86rem;cursor:pointer;padding:6px 2px;display:inline-flex;gap:6px;align-items:center;text-align:left}
 .foot{display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);padding-top:12px}
 .foot .a{flex:1;min-width:0}
@@ -234,11 +257,70 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .why-l{display:grid;gap:11px;margin:6px 0 14px}
 .wl{display:flex;gap:10px;align-items:flex-start;font-size:.92rem}.wl i{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px}
 .wl.ok i{background:var(--green)}.wl.warn i{background:var(--amber)}.wl.info i{background:var(--gray)}
-@media(max-width:520px){.pillbtn .bl{display:none}.pillbtn{padding:8px}.brand div span{display:none}.brand .logo{width:34px;height:34px}}
+@media(max-width:520px){.pillbtn .bl{display:none}.pillbtn{padding:8px}.brand .tag{display:none}.brand b{font-size:.94rem}.brand{gap:8px}.hero .hlogo{width:42px;height:42px;right:12px;bottom:12px}.hero .chips{padding-right:50px}.brand .ver::before{content:""!important}.brand .logo{width:34px;height:34px}}
 @media(min-width:720px){.tiles{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(2,1fr)}.hero .big{font-size:3.3rem}
-  .hero .art{top:50%;transform:translateY(-50%);height:88%;max-height:190px;max-width:34%}
+  .hero .art{top:50%;transform:translateY(-50%);height:88%;max-height:190px;max-width:34%;right:84px}.hero .hlogo{width:60px;height:60px;right:20px;bottom:18px}.hero .chips{padding-right:0}.hero .lbl{max-width:none}
   .sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:min(580px,92vw);border-radius:22px;max-height:86vh}}
 @media(min-width:1080px){.rooms{grid-template-columns:repeat(3,1fr)}}
+
+.grp{display:grid;gap:10px;min-width:0;max-width:100%}.grp>*{min-width:0}
+.grp+.grp{margin-top:22px}
+.gh{display:flex;align-items:center;gap:12px;padding:2px 2px}
+.gico{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;color:#fff;background:linear-gradient(135deg,#14b8a6,#0e6a82)}
+.gn{flex:1;min-width:0}.gn b{display:block;font-size:1.05rem;line-height:1.2}
+.gn span{display:block;font-size:.76rem;color:var(--mut)}
+.gtog,.gedit,.gmv{border:1px solid var(--line);background:transparent;border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;color:var(--primary-text-color);flex:none}
+.gtog{transition:transform .2s}.grp.col .gtog{transform:rotate(-90deg)}
+.gmv.up .ic{transform:rotate(180deg)}.gmv[disabled]{opacity:.35;cursor:default}
+.gmini{display:flex;flex-wrap:wrap;gap:8px}
+.gm{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 12px;font-size:.84rem}
+.gm i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 25%,transparent)}
+.gm small{color:var(--mut)}
+.gadd{border:1.5px dashed var(--line);background:transparent;border-radius:16px;padding:14px;color:var(--teal);font-weight:600;cursor:pointer;display:flex;gap:8px;align-items:center;justify-content:center;margin-top:10px;width:100%}
+.gsw{display:flex;align-items:center;gap:8px;flex:none;font-size:.72rem;color:var(--mut)}
+.gsw span{display:none}
+@media(min-width:720px){.gsw span{display:inline}}
+.gname{width:100%;background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:12px;padding:11px 12px;font:inherit;font-size:1rem;margin:4px 0 12px}
+.gicons{display:flex;gap:8px;margin:4px 0 12px}
+.gicons button{width:46px;height:46px;border-radius:14px;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);display:grid;place-items:center;cursor:pointer}
+.gicons button.sel{background:var(--teal);border-color:var(--teal);color:#042f2e}
+.btn2.del{flex:0 0 auto;color:#f87171;border-color:color-mix(in srgb,#f87171 40%,var(--line))}
+.sheet.wide{padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+@media(min-width:720px){.sheet.wide{width:min(780px,94vw)}}
+.rdays{display:flex;gap:2px;overflow-x:auto;margin:0 -6px 8px;padding:2px 6px 6px;scrollbar-width:none}
+.rdays::-webkit-scrollbar{display:none}
+.rd{flex:none;width:44px;border:0;background:transparent;border-radius:14px;padding:4px 0 2px;cursor:pointer;color:var(--mut);display:grid;justify-items:center;gap:3px}
+.rd small{font-size:.72rem;font-weight:600}
+.rd b{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;font-size:.95rem;color:var(--primary-text-color);font-weight:600}
+.rd.sel b{background:var(--teal);color:#042f2e}
+.rd.today small::after{content:"•";margin-left:2px;color:var(--teal)}
+.rtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:2px 0 10px}
+.rtiles .tile{padding:10px 12px 10px 14px;border-radius:14px}
+.rtiles .tile .v{font-size:1.2rem;margin-top:4px}
+.rtiles .tile .g{font-size:.72rem}
+.rleg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.76rem;color:var(--mut);margin:4px 0 6px}
+.rleg span{display:inline-flex;align-items:center;gap:6px}
+.rleg i{display:inline-block;width:16px;height:0;border-top:2.5px solid var(--c)}
+.rleg i.d{border-top-style:dashed;border-top-width:2px}
+.rleg i.b{height:10px;width:14px;border:0;border-radius:3px;background:color-mix(in srgb,var(--c) 28%,transparent)}
+.rleg i.o{width:10px;height:10px;border:2.2px solid var(--c);border-radius:50%;background:var(--card)}
+.rwrap{position:relative;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.rchart{display:block;width:100%;height:auto;cursor:crosshair}
+.rtip{position:absolute;top:6px;transform:translateX(-50%);background:var(--primary-background-color);border:1px solid var(--line);border-radius:12px;padding:8px 12px;box-shadow:0 8px 24px rgba(0,0,0,.35);pointer-events:none;min-width:128px;font-size:.76rem;color:var(--mut)}
+.rtip b{display:block;font-size:1.25rem;color:var(--primary-text-color);margin:1px 0 3px}
+.rtip .st{display:flex;align-items:center;gap:6px;color:var(--primary-text-color);font-size:.78rem;font-weight:600}
+.rtip .st i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.rtip .wo{margin-top:3px;color:#60a5fa;font-weight:600}
+.rbar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:var(--line);margin:6px 0 2px}
+.rbar i{display:block;height:100%}
+.rev{display:grid;gap:0;margin:6px 0 4px}
+.rev>div{display:grid;grid-template-columns:48px 14px 1fr;gap:8px;align-items:start;padding:7px 0;border-top:1px solid var(--line);font-size:.86rem}
+.rev>div:first-child{border-top:0}
+.rev time{color:var(--mut);font-variant-numeric:tabular-nums}
+.rev i{width:10px;height:10px;border-radius:50%;background:var(--c);margin-top:5px}
+.rev small{display:block;color:var(--mut);font-size:.74rem;margin-top:1px}
+.rnav{display:flex;justify-content:space-between;margin-top:6px}
+.rmsg{padding:34px 8px;text-align:center;color:var(--mut);font-size:.9rem;border:1px dashed var(--line);border-radius:14px;margin:6px 0 8px}
 `;
 
 class FensterHeizungPanel extends HTMLElement {
@@ -246,7 +328,7 @@ class FensterHeizungPanel extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this._narrow = false; this._edit = false; this._modal = null; this._dragging = false;
-    this._cfg = { layout: { blocks: [], rooms: [], icons: {} }, plans: {}, presence: { mode: "home" } };
+    this._cfg = { layout: { blocks: [], rooms: [], icons: {}, groups: [] }, plans: {}, presence: { mode: "home" } };
   }
   connectedCallback() {
     this._ro = new ResizeObserver(() => { if (this._hass && !this._dragging && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render(); });
@@ -267,7 +349,8 @@ class FensterHeizungPanel extends HTMLElement {
   async _load() {
     try {
       const r = await this._hass.callWS({ type: "fenster_heizung/get_state" });
-      this._cfg = { layout: { blocks: [], rooms: [], icons: {}, ...(r.layout || {}) }, plans: r.plans || {}, presence: r.presence || { mode: "home" } };
+      this._cfg = { layout: { blocks: [], rooms: [], icons: {}, groups: [], ...(r.layout || {}) }, plans: r.plans || {}, presence: r.presence || { mode: "home" } };
+      this._ver = r.version || "";
     } catch (e) { /* älteres Backend: Standardwerte */ }
     this._render();
   }
@@ -295,10 +378,12 @@ class FensterHeizungPanel extends HTMLElement {
       const a = st.attributes || {};
       if (eid.startsWith("switch.")) { if (a.funktion === "heizplan") { r.planOn = st.state === "on"; } else { r.sw = eid; r.on = st.state === "on"; } }
       else if (a.zeitraum) {
-        r.sc[a.zeitraum] = { min: Number(st.state) || 0, gas: a.gespartes_gas_m3 || 0, kwh: a.gespartes_gas_kwh || 0 };
+        r.fuel = FUELS[a.brennstoff] ? a.brennstoff : "erdgas";
+        r.sc[a.zeitraum] = { min: Number(st.state) || 0, gas: Number(a.gespart_menge ?? a.gespartes_gas_m3) || 0, kwh: a.gespartes_gas_kwh || 0 };
+        r.apk = Number(a.menge_pro_kwh) || r.apk || 0.1;
         if (a.zeitraum === "day") { r.pauses = a.pausen_heute || 0; r.kw = a.aktuelle_leistung_kw || 0; r.hist = a.verlauf || {}; }
       } else if ("thermostate" in a) {
-        r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id;
+        r.modeEid = eid; r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id;
       }
     }
     const list = [...rooms.values()];
@@ -375,6 +460,186 @@ class FensterHeizungPanel extends HTMLElement {
   _pres() { return { mode: "home", temp: 16, preheat: true, preheat_time: "12:00", auto: true, persons: [], away_after: 30, ...(this._cfg.presence || {}) }; }
   _away() { const p = this._pres(); return (p.effective ?? p.mode) !== "home"; }
   _fmtD(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }) : "–"; }
+
+  /* ---------------- Gruppen ---------------- */
+  _collapsed() {
+    try { return new Set(JSON.parse(localStorage.getItem("fh_collapsed") || "[]")); } catch (_) { return new Set(); }
+  }
+  _setCollapsed(set) { try { localStorage.setItem("fh_collapsed", JSON.stringify([...set])); } catch (_) { /* Speicher gesperrt */ } }
+  _groupsHtml(rooms) {
+    const groups = (this._cfg.layout.groups || []).filter((g) => g && g.name), edit = this._edit, adm = this._admin();
+    const addBtn = edit && adm ? `<button class="gadd" data-act="gadd">${ic("plus", 18)}Gruppe hinzufügen</button>` : "";
+    if (!groups.length) return `<div class="rooms" data-sort-container="room">${rooms.map((r) => this._room(r)).join("")}</div>${addBtn}`;
+    const used = new Set(groups.flatMap((g) => g.rooms || [])), rest = rooms.filter((r) => !used.has(r.id)), col = this._collapsed();
+    const list = groups.map((g) => ({ ...g, members: rooms.filter((r) => (g.rooms || []).includes(r.id)) }));
+    if (rest.length) list.push({ id: "_rest", name: "Weitere Räume", icon: "home", members: rest, fixed: true });
+    const dot = { green: "#34d399", amber: "#f59e0b", slate: "#7dd3fc", gray: "#94a3b8" };
+    const html = list.map((g, gi) => {
+      const m = g.members, paused = m.filter((r) => r.mode === "heizung_pausiert").length, min = m.reduce((a, r) => a + (r.sc.day?.min || 0), 0);
+      const fs = new Set(m.map((r) => r.fuel || "erdgas")), amount = fs.size === 1 ? `${num(m.reduce((a, r) => a + (r.sc.day?.gas || 0), 0), 2)} ${FUELS[[...fs][0]].label}` : `${num(m.reduce((a, r) => a + (r.sc.day?.kwh || 0), 0), 1)} kWh Wärme`;
+      const allOn = m.length > 0 && m.every((r) => r.on), closed = col.has(g.id);
+      const stat = m.length ? `${m.length} ${m.length === 1 ? "Raum" : "Räume"} · ${paused ? paused + " pausiert" : "alle aktiv"} · ${num(min)} Min. · ${amount}` : "Noch keine Räume";
+      const mv = edit && adm && !g.fixed ? `<button class="gmv up" data-act="gmv" data-g="${esc(g.id)}" data-dir="-1" ${gi === 0 ? "disabled" : ""} aria-label="Gruppe nach oben">${ic("chev", 16)}</button><button class="gmv" data-act="gmv" data-g="${esc(g.id)}" data-dir="1" ${gi >= groups.length - 1 ? "disabled" : ""} aria-label="Gruppe nach unten">${ic("chev", 16)}</button><button class="gedit" data-act="gedit" data-g="${esc(g.id)}" aria-label="Gruppe bearbeiten">${ic("pencil", 16)}</button>` : "";
+      const body = !m.length ? "" : closed
+        ? `<div class="gmini">${m.map((r) => { const t = (r.thermos || []).map((e) => this._hass.states[e]).filter(Boolean)[0]?.attributes.current_temperature; return `<span class="gm" style="--c:${dot[(MODE[r.mode] || MODE.regelung_aus).c]}"><i></i>${esc(r.name)}${t != null ? `<small>${num(t, 1)} °C</small>` : ""}</span>`; }).join("")}</div>`
+        : `<div class="rooms" data-sort-container="room">${m.map((r) => this._room(r)).join("")}</div>`;
+      return `<section class="grp ${closed ? "col" : ""}" data-gid="${esc(g.id)}"><div class="gh">
+        <span class="gico">${ic(g.icon || "layers", 20)}</span><div class="gn"><b>${esc(g.name)}</b><span>${stat}</span></div>${mv}
+        ${m.some((r) => r.sw) ? `<div class="gsw"><span>Fensterregelung</span><button class="sw ${allOn ? "on" : ""}" data-act="gsw" data-g="${esc(g.id)}" aria-label="Fensterregelung der Gruppe ${esc(g.name)} umschalten" aria-pressed="${allOn}"></button></div>` : ""}
+        <button class="gtog" data-act="gtog" data-g="${esc(g.id)}" aria-label="Gruppe ein- oder ausklappen" aria-expanded="${!closed}">${ic("chev", 18)}</button></div>${body}</section>`;
+    }).join("");
+    return html + addBtn;
+  }
+  _gActions(a, b) {
+    const L = this._cfg.layout; L.groups = L.groups || [];
+    if (a === "gtog") { const c = this._collapsed(), id = b.dataset.g; c.has(id) ? c.delete(id) : c.add(id); this._setCollapsed(c); this._render(); }
+    else if (a === "gsw") {
+      const rooms = this._collect(), g = L.groups.find((x) => x.id === b.dataset.g);
+      const ids = g ? g.rooms : rooms.filter((r) => !L.groups.some((x) => x.rooms.includes(r.id))).map((r) => r.id);
+      const mem = rooms.filter((r) => ids.includes(r.id) && r.sw), all = mem.every((r) => r.on);
+      if (mem.length) this._hass.callService("switch", all ? "turn_off" : "turn_on", { entity_id: mem.map((r) => r.sw) });
+    }
+    else if (a === "gmv") {
+      const i = L.groups.findIndex((x) => x.id === b.dataset.g), j = i + +b.dataset.dir;
+      if (i >= 0 && L.groups[j]) { [L.groups[i], L.groups[j]] = [L.groups[j], L.groups[i]]; this._saveLayout(); this._render(); }
+    }
+    else if (a === "gedit" || a === "gadd") {
+      const g = a === "gedit" ? L.groups.find((x) => x.id === b.dataset.g) : null;
+      this._modal = { type: "grp", draft: g ? { ...g, rooms: [...g.rooms] } : { id: "g" + Date.now().toString(36).slice(-8), name: "", icon: GROUP_ICONS[0], rooms: [], isNew: true } };
+      this._renderModal();
+    }
+    else if (a === "gpick") { const d = this._modal.draft, id = b.dataset.r; d.rooms = d.rooms.includes(id) ? d.rooms.filter((x) => x !== id) : [...d.rooms, id]; this._renderModal(); }
+    else if (a === "gicon") { this._modal.draft.icon = b.dataset.k; this._renderModal(); }
+    else if (a === "gsave") {
+      const d = this._modal.draft; d.name = (d.name || "").trim();
+      if (!d.name) { this._toast("Bitte einen Namen eingeben"); return; }
+      L.groups.forEach((x) => (x.rooms = x.rooms.filter((r) => !d.rooms.includes(r))));
+      const i = L.groups.findIndex((x) => x.id === d.id), { isNew, ...clean } = d;
+      if (i >= 0) L.groups[i] = clean; else L.groups.push(clean);
+      this._saveLayout(); this._modal = null; this._renderModal(); this._render();
+    }
+    else if (a === "gdel") { L.groups = L.groups.filter((x) => x.id !== this._modal.draft.id); this._saveLayout(); this._modal = null; this._renderModal(); this._render(); }
+  }
+
+  /* ---------------- Bericht ---------------- */
+  _repDays(n = 14) {
+    const out = [];
+    for (let i = n - 1; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); out.push({ iso: this._isoDay(-i), d, today: i === 0 }); }
+    return out;
+  }
+  _repOpen(id) { this._modal = { type: "rep", id, day: this._isoDay(0), keepScroll: 99999 }; this._repLoad(this._modal); this._renderModal(); }
+  async _repLoad(m) {
+    const r = this._collect().find((x) => x.id === m.id); if (!r) return;
+    const day = m.day, [y, mo, d] = day.split("-").map(Number), start = new Date(y, mo - 1, d), nextDay = new Date(y, mo - 1, d + 1), end = new Date(Math.min(+nextDay, Date.now()));
+    this._repCache = this._repCache || new Map();
+    const key = m.id + "|" + day, hit = this._repCache.get(key);
+    if (hit && (day !== this._isoDay(0) ? true : Date.now() - hit.at < 60000)) { m.data = hit.data; m.error = null; m.loading = false; return; }
+    const tok = (this._repTok = (this._repTok || 0) + 1);
+    m.loading = true; m.data = null; m.error = null; m.tok = tok;
+    const ids = [...(r.thermos || []), ...(r.windows || []), ...(r.modeEid ? [r.modeEid] : [])];
+    try {
+      const res = await this._hass.callWS({ type: "history/history_during_period", start_time: start.toISOString(), end_time: end.toISOString(), entity_ids: ids, include_start_time_state: true, significant_changes_only: false, minimal_response: false, no_attributes: false });
+      if (m.tok !== tok) return;
+      m.data = this._repBuild(r, res || {}, start, end);
+      this._repCache.set(key, { at: Date.now(), data: m.data });
+    } catch (e) {
+      if (m.tok !== tok) return;
+      m.error = "Der Verlauf konnte nicht aus Home Assistant geladen werden.";
+    }
+    m.loading = false;
+    if (this._modal === m) this._renderModal();
+  }
+  _repBuild(r, res, start, end) {
+    const t0 = +start / 1000, endMin = Math.max(5, Math.floor((+end - +start) / 60000));
+    const ser = (eid) => { let a = {}; return (res[eid] || []).map((x) => { if (x.a) a = x.a; return { t: Math.max(0, ((x.lu ?? x.lc ?? t0) - t0) / 60), s: x.s, a }; }); };
+    const at = (list, t) => { let v = null; for (const x of list) { if (x.t <= t) v = x; else break; } return v; };
+    const th = (r.thermos || []).map(ser), wins = (r.windows || []).map((e) => ({ e, list: ser(e), name: this._hass.states[e]?.attributes.friendly_name || "Fenster" })), mode = r.modeEid ? ser(r.modeEid) : [];
+    const num2 = (v) => (typeof v === "number" ? v : Number(v)), ok = (v) => v != null && v !== "" && Number.isFinite(num2(v));
+    const pts = []; let lastTemp = null;
+    for (let m = 0; m <= endMin; m += 5) {
+      const ts = th.map((l) => at(l, m)).filter(Boolean), cs = ts.map((x) => x.a.current_temperature).filter(ok).map(num2);
+      if (cs.length) lastTemp = cs.reduce((a, b) => a + b, 0) / cs.length;
+      const md = at(mode, m), paused = !!md && md.s === "heizung_pausiert";
+      const tg = ts.filter((x) => x.s !== "off" && x.s !== "unavailable").map((x) => x.a.temperature).filter(ok).map(num2);
+      const w = wins.find((x) => at(x.list, m)?.s === "on");
+      if (lastTemp != null) pts.push({ t: m, temp: Math.round(lastTemp * 10) / 10, tgt: !paused && tg.length ? tg.reduce((a, b) => a + b, 0) / tg.length : null, paused, open: w ? w.name : null });
+    }
+    const intervals = (list, on) => { const out = []; let cur = null; for (const x of list) { if (on(x)) { if (!cur) cur = [x.t, endMin]; } else if (cur) { cur[1] = x.t; out.push(cur); cur = null; } } if (cur) out.push(cur); return out; };
+    const pauses = intervals(mode, (x) => x.s === "heizung_pausiert").filter(([a, b]) => b > a);
+    const opens = []; wins.forEach((w) => intervals(w.list, (x) => x.s === "on").forEach(([a, b]) => b > a && opens.push({ s: a, e: b, name: w.name })));
+    opens.sort((a, b) => a.s - b.s);
+    const hh = (m) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(Math.floor(m) % 60).padStart(2, "0")}`, ev = [];
+    for (const o of opens) {
+      ev.push({ t: o.s, c: "#60a5fa", x: `${o.name} geöffnet`, y: "Offenes Fenster erkannt" });
+      if (o.e < endMin || !(Date.now() - +end < 90000)) ev.push({ t: o.e, c: "#60a5fa", x: `${o.name} geschlossen`, y: `${Math.round(o.e - o.s)} Min. offen` });
+    }
+    for (const [a, b] of pauses) { ev.push({ t: a, c: "#f59e0b", x: "Heizung pausiert", y: "wegen offenem Fenster" }); if (b < endMin) ev.push({ t: b, c: "#34d399", x: "Heizung wieder aktiv", y: "Fenster geschlossen" }); }
+    let prev = null;
+    for (const p of pts) { if (p.tgt != null) { if (prev != null && Math.abs(p.tgt - prev) >= 0.25) ev.push({ t: p.t, c: "#2dd4bf", x: `Solltemperatur ${num(p.tgt, 1)} °C`, y: "Heizplan oder Änderung am Thermostat" }); prev = p.tgt; } }
+    ev.sort((a, b) => a.t - b.t).forEach((e) => (e.h = hh(e.t)));
+    const temps = pts.map((p) => p.temp), pm = pauses.reduce((a, [x, y]) => a + (y - x), 0), openMin = opens.reduce((a, o) => a + (o.e - o.s), 0);
+    return { pts, pauses, opens, ev, end: endMin, pm, openMin, kwh: pm / 60 * (r.kw || 0), apk: r.apk || 0.1, fuel: r.fuel || "erdgas",
+      avg: temps.length ? temps.reduce((a, b) => a + b, 0) / temps.length : 0, min: temps.length ? Math.min(...temps) : 0, max: temps.length ? Math.max(...temps) : 0 };
+  }
+  _repHover(min) {
+    const d = this._repData; if (!d || !d.pts.length) return;
+    const sr = this.shadowRoot, g = this._repGeo, p = d.pts.reduce((a, q) => (Math.abs(q.t - min) < Math.abs(a.t - min) ? q : a), d.pts[0]);
+    const x = g.x(p.t), y = g.y(p.temp), xl = sr.getElementById("rxl"), c = sr.getElementById("rxc"), tip = sr.getElementById("rtip");
+    if (xl) { xl.setAttribute("x1", x); xl.setAttribute("x2", x); }
+    if (c) { c.setAttribute("cx", x); c.setAttribute("cy", y); }
+    if (!tip) return;
+    const hh = `${String(Math.floor(p.t / 60)).padStart(2, "0")}:${String(p.t % 60).padStart(2, "0")}`;
+    tip.style.left = Math.min(Math.max(x / g.W * 100, 17), 83) + "%";
+    tip.innerHTML = `${hh} Uhr<b>${num(p.temp, 1)} °C</b><div class="st" style="--c:${p.paused ? "#f59e0b" : "#34d399"}"><i></i>${p.paused ? "Heizung pausiert" : p.tgt != null ? "Ziel " + num(p.tgt, 1) + " °C" : "Thermostat aus"}</div>${p.open ? `<div class="wo">${esc(p.open)} offen</div>` : ""}`;
+  }
+  _repChart(d) {
+    const cw = this.clientWidth || 390, avail = cw >= 720 ? Math.min(780, cw * 0.94) : cw, W = Math.max(300, Math.min(748, Math.floor(avail - 32))), H = W < 500 ? 250 : 300, L = 34, R = 10, T = 12, B = 26;
+    const iw = W - L - R, ih = H - T - B, vals = d.pts.flatMap((p) => (p.tgt != null ? [p.temp, p.tgt] : [p.temp]));
+    let lo = Math.floor(Math.min(...vals) - 1), hi = Math.ceil(Math.max(...vals) + 1); if (hi - lo < 6) { lo -= 2; hi += 2; }
+    const x = (m) => L + iw * m / 1440, y = (v) => T + ih * (1 - (v - lo) / (hi - lo));
+    this._repGeo = { W, x, y, L, iw };
+    let s = `<svg class="rchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Temperaturverlauf"><defs><linearGradient id="rag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2dd4bf" stop-opacity=".34"/><stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/></linearGradient></defs>`;
+    for (let v = Math.ceil(lo / 2) * 2; v <= hi; v += 2) s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--mut)">${v}°</text>`;
+    for (const h of [0, 6, 12, 18, 24]) s += `<line x1="${x(h * 60)}" x2="${x(h * 60)}" y1="${T}" y2="${T + ih}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${x(h * 60)}" y="${H - 8}" text-anchor="${h === 0 ? "start" : h === 24 ? "end" : "middle"}" font-size="11" fill="var(--mut)">${String(h).padStart(2, "0")}:00</text>`;
+    for (const [a, b] of d.pauses) s += `<rect x="${x(a)}" y="${T}" width="${Math.max(2, x(b) - x(a))}" height="${ih}" fill="#f59e0b" opacity=".16"/>`;
+    let tp = "", open = false, py = null;
+    for (const p of d.pts) {
+      if (p.tgt == null) { open = false; py = null; continue; }
+      if (!open) { tp += `M${x(p.t).toFixed(1)} ${y(p.tgt).toFixed(1)} `; open = true; }
+      else { if (py !== p.tgt) tp += `L${x(p.t).toFixed(1)} ${y(py).toFixed(1)} `; tp += `L${x(p.t).toFixed(1)} ${y(p.tgt).toFixed(1)} `; }
+      py = p.tgt;
+    }
+    if (tp) s += `<path d="${tp}" fill="none" stroke="#7dd3fc" stroke-width="1.8" stroke-dasharray="5 4" opacity=".9"/>`;
+    const line = d.pts.map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)} ${y(p.temp).toFixed(1)}`).join(" "), last = d.pts[d.pts.length - 1];
+    s += `<path d="${line} L${x(last.t)} ${T + ih} L${x(d.pts[0].t)} ${T + ih} Z" fill="url(#rag)"/><path d="${line}" fill="none" stroke="#2dd4bf" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+    for (const o of d.opens) { const p = d.pts.find((q) => q.t >= o.s) || last; s += `<circle cx="${x(o.s)}" cy="${y(p.temp)}" r="5" fill="var(--card)" stroke="#60a5fa" stroke-width="2.4"/>`; }
+    s += `<line id="rxl" x1="0" x2="0" y1="${T}" y2="${T + ih}" stroke="var(--mut)" opacity=".7"/><circle id="rxc" r="5.5" cx="0" cy="0" fill="var(--card)" stroke="#2dd4bf" stroke-width="2.4"/></svg>`;
+    return s;
+  }
+  _repBody(r, m) {
+    const days = this._repDays(), idx = days.findIndex((x) => x.iso === m.day), d = m.data;
+    const head = `<div class="rdays">${days.map((x) => `<button class="rd ${x.iso === m.day ? "sel" : ""} ${x.today ? "today" : ""}" data-act="repday" data-d="${x.iso}" aria-label="${x.d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}"><small>${"SMDMDFS"[x.d.getDay()]}</small><b>${x.d.getDate()}</b></button>`).join("")}</div>`;
+    const nav = `<div class="rnav"><button class="lnk" data-act="repnav" data-s="-1" ${idx <= 0 ? "disabled style=\"opacity:.4\"" : ""}>‹ Vorheriger Tag</button><button class="lnk" data-act="repnav" data-s="1" ${idx >= days.length - 1 ? "disabled style=\"opacity:.4\"" : ""}>Nächster Tag ›</button></div>`;
+    this._repData = null;
+    if (m.loading) return head + `<div class="rmsg">Verlauf wird geladen …</div>` + nav;
+    if (m.error) return head + `<div class="rmsg">${esc(m.error)}</div>` + nav;
+    if (!d || !d.pts.length) return head + `<div class="rmsg">Für diesen Tag liegen keine Verlaufsdaten vor.<br><span class="sm">Der Bericht nutzt den Verlauf (Recorder) von Home Assistant. Er reicht so weit zurück, wie dort Daten aufbewahrt werden.</span></div>` + nav;
+    this._repData = d;
+    const F = FUELS[d.fuel] || FUELS.erdgas, bar = []; let prev = null;
+    for (const p of d.pts) { const k = p.paused ? "p" : "a"; if (prev && prev.k === k) prev.n += 5; else bar.push((prev = { k, n: 5 })); }
+    return head + `<div class="rtiles">
+        <div class="tile" style="--a:#2dd4bf"><div class="t">${ic("thermo", 15)}Ø Temperatur</div><div class="v">${num(d.avg, 1)}<small>°C</small></div><div class="g">${num(d.min, 1)} – ${num(d.max, 1)} °C</div></div>
+        <div class="tile" style="--a:#f59e0b"><div class="t">${ic("radiator", 15)}Pausiert</div><div class="v">${num(d.pm)}<small>Min.</small></div><div class="g">${ic("flame", 13)}~${num(d.kwh * d.apk, 2)} ${F.label.split(" ")[0]}</div></div>
+        <div class="tile" style="--a:#60a5fa"><div class="t">${ic("windowOpen", 15)}Fenster offen</div><div class="v">${d.opens.length}<small>×</small></div><div class="g">${num(d.openMin)} Min. gesamt</div></div>
+      </div>
+      <div class="rleg"><span style="--c:#2dd4bf"><i></i>Temperatur</span><span style="--c:#7dd3fc"><i class="d"></i>Ziel (Thermostat)</span><span style="--c:#f59e0b"><i class="b"></i>Heizung pausiert</span><span style="--c:#60a5fa"><i class="o"></i>Fenster geöffnet</span></div>
+      <div class="rwrap" id="rwrap">${this._repChart(d)}<div class="rtip" id="rtip"></div></div>
+      <div class="rbar" aria-hidden="true">${bar.map((b) => `<i style="width:${b.n / 1440 * 100}%;background:${b.k === "p" ? "#f59e0b" : "#34d399"}"></i>`).join("")}</div>
+      <div class="rleg" style="margin:6px 0 0"><span style="--c:#34d399"><i class="b" style="background:#34d399"></i>Heizung aktiv</span><span style="--c:#f59e0b"><i class="b" style="background:#f59e0b"></i>pausiert wegen Fenster</span></div>
+      <div class="mut sm" style="margin:14px 0 2px"><b style="color:var(--primary-text-color)">Ereignisse</b></div>
+      <div class="rev">${d.ev.length ? d.ev.map((e) => `<div style="--c:${e.c}"><time>${e.h}</time><i></i><span>${esc(e.x)}<small>${esc(e.y)}</small></span></div>`).join("") : `<div style="--c:var(--line)"><time></time><i></i><span>Keine Ereignisse an diesem Tag</span></div>`}</div>` + nav;
+  }
+
   _isoDay(add = 0) { const d = new Date(); d.setDate(d.getDate() + add); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
   _savePresence() {
     this._hass.callWS({ type: "fenster_heizung/set_presence", presence: this._cfg.presence })
@@ -395,7 +660,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="seg3">${[["home", "home", "Zu Hause"], ["away", "door", "Abwesend"], ["vacation", "suitcase", "Urlaub"]].map(([k, i, l]) => `<button class="${p.mode === k ? "sel" : ""}" data-act="pm" data-k="${k}" ${adm ? "" : "disabled"}>${ic(i, 22)}${l}</button>`).join("")}</div>
       <div class="pstat">${stat}</div>
       ${persons.length ? `<div class="pers">${persons.map((s) => `<span class="per ${s.state === "home" ? "home" : ""}"><i></i>${esc(s.attributes.friendly_name || s.entity_id)} · ${s.state === "home" ? "zu Hause" : "unterwegs"}</span>`).join("")}</div>` : ""}
-      ${adm ? `<button class="lnk" data-act="vac">${ic("suitcase", 16)}Urlaub planen und Einstellungen</button>` : ""}</div>`;
+      ${adm ? `<div class="plnk"><button class="lnk" data-act="vac">${ic("suitcase", 16)}Urlaub planen</button><button class="lnk" data-act="pset">${ic("sliders", 16)}Einstellungen</button></div>` : ""}</div>`;
   }
 
   _planBox(r) {
@@ -421,7 +686,7 @@ class FensterHeizungPanel extends HTMLElement {
       : `<div class="rico" style="background:${r.color}">${ic(this._icon(r), 24)}</div>`;
     return `<div class="card room" data-sort="room" data-id="${esc(r.id)}"><div class="rh">
       ${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${icon}
-      <div class="rn"><b>${esc(r.name)}</b><div class="pl"><span class="pill ${m.c}">${m.t}</span><button class="why" data-act="why" data-id="${esc(r.id)}" aria-label="Warum?">${ic("info", 13)}Warum?</button></div></div>
+      <div class="rn"><b>${esc(r.name)}</b><div class="pl"><span class="pill ${m.c}">${m.t}</span><button class="why" data-act="why" data-id="${esc(r.id)}" aria-label="Warum?">${ic("info", 13)}Warum?</button><button class="why" data-act="rep" data-id="${esc(r.id)}" aria-label="Bericht">${ic("chart", 13)}Bericht</button></div></div>
       <button class="sw ${r.on ? "on" : ""}" data-act="sw" data-sw="${esc(r.sw)}" aria-label="Fensterregelung umschalten" aria-pressed="${!!r.on}"></button></div>
       <div class="two">
         <div class="box ${wc}"><div class="t">${ic(open.length ? "windowOpen" : "window", 18)}Fenster</div>
@@ -432,7 +697,7 @@ class FensterHeizungPanel extends HTMLElement {
           <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div></div>
       </div>
       ${this._planBox(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : ""}
-      <div class="foot"><div class="a"><b>${num(d.min)} Min. pausiert</b><span>${r.pauses || 0}× heute · ~${num(d.gas, 2)} m³ Gas · ${num(r.kw, 2)} kW</span></div>${this._spark(r)}</div></div>`;
+      <div class="foot"><div class="a"><b>${num(d.min)} Min. pausiert</b><span>${r.pauses || 0}× heute · ~${num(d.gas, 2)} ${FUELS[r.fuel || "erdgas"].label} · ${num(r.kw, 2)} kW</span></div>${this._spark(r)}</div></div>`;
   }
 
   _render() {
@@ -444,22 +709,24 @@ class FensterHeizungPanel extends HTMLElement {
     const rooms = this._collect(), edit = this._edit, adm = this._admin();
     const sum = (sc, k) => rooms.reduce((a, r) => a + (r.sc[sc]?.[k] || 0), 0);
     const paused = rooms.filter((r) => r.mode === "heizung_pausiert").length;
+    const fset = new Set(rooms.map((r) => r.fuel || "erdgas")), F = fset.size === 1 ? FUELS[[...fset][0]] : MIXED, mixed = fset.size > 1;
+    const amt = (sc) => (mixed ? sum(sc, "kwh") : sum(sc, "gas"));
     const dateStr = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const tiles = [["day", "today", "Heute", "#2dd4bf"], ["month", "month", "Monat", "#60a5fa"], ["year", "year", "Jahr", "#a78bfa"], ["total", "total", "Gesamt", "#f472b6"]];
     const content = {
-      hero: () => `<div class="card hero">${this._art()}
-        <div class="lbl">${ic("flame", 16)}Heute gespart (geschätzt)</div>
-        <div class="big">${num(sum("day", "gas"), 2)}<small>m³ Gas</small></div><div class="sub">${esc(dateStr)}</div>
+      hero: () => `<div class="card hero">${this._art()}<img class="hlogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false">
+        <div class="lbl">${ic("flame", 16)}Heute ${F.short} gespart (geschätzt)</div>
+        <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>
         <div class="chips"><span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
           <span class="chip">${ic("radiator", 16)}${paused} von ${rooms.length} ${rooms.length === 1 ? "Raum" : "Räumen"} pausiert</span>
-          <span class="chip">${ic("thermo", 16)}${num(sum("day", "kwh"), 1)} kWh</span></div></div>`,
+          <span class="chip">${ic("thermo", 16)}${num(sum("day", "kwh"), 1)} kWh Wärme</span></div></div>`,
       presence: () => this._presenceCard(),
       tiles: () => `<div class="tiles">${tiles.map(([sc, ico, lab, col]) => `<div class="tile" style="--a:${col}">
         <div class="t">${ic(ico, 17)}${lab}</div><div class="v">${num(sum(sc, "min"))}<small>Min.</small></div>
-        <div class="g">${ic("flame", 14)}${num(sum(sc, "gas"), 2)} m³</div></div>`).join("")}</div>`,
+        <div class="g">${ic("flame", 14)}${num(amt(sc), 2)} ${unitOf(F)}</div></div>`).join("")}</div>`,
       chart: () => `<div class="card"><h2>${ic("clock", 18)}Pausenzeit pro Tag · letzte 14 Tage</h2>${this._chart(rooms)}
         <div class="legend">${[...rooms].sort((a, b) => COLORS.indexOf(a.color) - COLORS.indexOf(b.color)).map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div></div>`,
-      rooms: () => `<div class="rooms" data-sort-container="room">${rooms.map((r) => this._room(r)).join("")}</div>`,
+      rooms: () => this._groupsHtml(rooms),
     };
     // Reihenfolge der Räume im Diagramm = Reihenfolge der Farben, deshalb nach Farbe
     const chartRooms = [...rooms].sort((a, b) => COLORS.indexOf(a.color) - COLORS.indexOf(b.color));
@@ -469,11 +736,11 @@ class FensterHeizungPanel extends HTMLElement {
         ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${BLOCKS[id]}</div>` : ""}${content[id]()}</section>`).join("")
       : `<div class="card empty">Noch keine Räume eingerichtet.<br>Füge unter Einstellungen › Geräte &amp; Dienste die Integration „Fenster &amp; Heizung“ hinzu.</div>`;
     sr.getElementById("main").innerHTML = `
-      <div class="bar">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><span class="logo">${ic("windowOpen", 22)}</span><div><b>Fenster &amp; Heizung</b><span>Smarte Fenster- und Heizungssteuerung</span></div></div>
+      <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
+        <div class="brand"><span class="logo">${ic("windowOpen", 22)}</span><div><b>Modul 1 – Fenster &amp; Heizung</b><span><em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
         ${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
       <div class="wrap">${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um es zu ändern.</div></div>` : ""}
-        ${blocks}${rooms.length ? `<div class="note">Die Gasersparnis ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter.</div>` : ""}</div>`;
+        ${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
   }
 
   _build() {
@@ -481,10 +748,14 @@ class FensterHeizungPanel extends HTMLElement {
     sr.innerHTML = `<style>${CSS}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true;
     sr.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (b) this._act(b.dataset.act, b); });
+    const hov = (e) => { const c = e.target.closest && e.target.closest(".rchart"); if (!c || !this._repGeo) return; const bb = c.getBoundingClientRect(), g = this._repGeo; this._repHover(Math.min(1439, Math.max(0, ((e.clientX - bb.left) / bb.width * g.W - g.L) / g.iw * 1440))); };
+    sr.addEventListener("pointermove", hov); sr.addEventListener("pointerdown", hov);
+    sr.addEventListener("input", (e) => { const t = e.target; if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value; });
     sr.addEventListener("pointerdown", (e) => { const g = e.target.closest("[data-handle]"); if (g) this._dragStart(e, g); });
     sr.addEventListener("change", (e) => {
       const t = e.target;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("v") && this._modal && this._modal.type === "vac") { const k = { vfrom: "from", vto: "to", vtime: "preheat_time" }[t.dataset.f]; this._modal.draft[k] = t.value; if (k === "from" && t.value > this._modal.draft.to) this._modal.draft.to = t.value; this._renderModal(); }
+      else if (t.dataset && t.dataset.f === "gname" && this._modal) { this._modal.draft.name = t.value; }
       else if (t.dataset && t.dataset.f === "time" && this._modal) { this._modal.draft.entries[+t.dataset.i].time = t.value || "00:00"; this._renderModal(); }
     });
   }
@@ -493,6 +764,10 @@ class FensterHeizungPanel extends HTMLElement {
   _act(a, b) {
     const m = this._modal, i = +b.dataset.i, id = b.dataset.id;
     if (a === "menu") this.dispatchEvent(new Event("hass-toggle-menu", { bubbles: true, composed: true }));
+    else if (["gtog", "gsw", "gmv", "gedit", "gadd", "gpick", "gicon", "gsave", "gdel"].includes(a)) this._gActions(a, b);
+    else if (a === "rep") this._repOpen(id);
+    else if (a === "repday") { m.day = b.dataset.d; m.keepScroll = b.closest(".rdays").scrollLeft; this._repLoad(m).then(() => {}); this._renderModal(); }
+    else if (a === "repnav") { const ds = this._repDays(), k = ds.findIndex((x) => x.iso === m.day) + +b.dataset.s; if (ds[k]) { m.day = ds[k].iso; m.keepScroll = this.shadowRoot.querySelector(".rdays")?.scrollLeft; this._repLoad(m).then(() => {}); this._renderModal(); } }
     else if (a === "sw") this._hass.callService("switch", "toggle", { entity_id: b.dataset.sw });
     else if (a === "edit") { this._edit = true; this._render(); }
     else if (a === "done") { this._edit = false; this._render(); }
@@ -511,7 +786,11 @@ class FensterHeizungPanel extends HTMLElement {
       const p = this._pres(), all = Object.keys(this._hass.states).filter((e) => e.startsWith("person."));
       this._modal = { type: "vac", draft: { ...p, from: p.from || this._isoDay(0), to: p.to || this._isoDay(7), persons: p.persons.length ? [...p.persons] : all } }; this._renderModal();
     }
-    else if (m && m.type === "vac") {
+    else if (a === "pset") {
+      const p = this._pres(), all = Object.keys(this._hass.states).filter((e) => e.startsWith("person."));
+      this._modal = { type: "pset", draft: { ...p, persons: p.persons.length ? [...p.persons] : all } }; this._renderModal();
+    }
+    else if (m && (m.type === "vac" || m.type === "pset")) {
       const d = m.draft;
       if (a === "vtm") d.temp = Math.max(5, d.temp - 0.5);
       else if (a === "vtp") d.temp = Math.min(25, d.temp + 0.5);
@@ -520,6 +799,9 @@ class FensterHeizungPanel extends HTMLElement {
       else if (a === "vawm") d.away_after = Math.max(15, d.away_after - 15);
       else if (a === "vawp") d.away_after = Math.min(120, d.away_after + 15);
       else if (a === "vper") { const e = b.dataset.e; d.persons = d.persons.includes(e) ? d.persons.filter((x) => x !== e) : [...d.persons, e]; }
+      else if (a === "psetsave") {
+        this._cfg.presence = { ...this._pres(), temp: d.temp, auto: d.auto, away_after: d.away_after, persons: d.persons }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Einstellungen gespeichert"); return;
+      }
       else if (a === "vsave") {
         if (!d.from || !d.to || d.to < d.from) { this._toast("Bitte ein gültiges Datum wählen"); return; }
         this._cfg.presence = { ...d, mode: "vacation", origin: "manual" }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Urlaub gespeichert"); return;
@@ -572,6 +854,22 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sh"><div><b>Symbol wählen</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="igrid">${ROOM_ICONS.map(([k, l]) => `<button class="${k === cur ? "sel" : ""}" data-act="pick" data-k="${k}">${ic(k, 28)}<span>${l}</span></button>`).join("")}</div>
         <button class="lnk" data-act="preset">Automatisch nach Raumname</button></div>`;
+    } else if (m.type === "rep") {
+      box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+        <div class="sh"><div><b>Bericht</b><span>${esc(r.name)} · ${m.day.split("-").reverse().join(".")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        ${this._repBody(r, m)}</div>`;
+      const dd = box.querySelector(".rdays"); if (dd) dd.scrollLeft = m.keepScroll ?? 99999;
+      if (this._repData) { const ev = this._repData.ev.find((e) => e.c === "#60a5fa"), last = this._repData.pts[this._repData.pts.length - 1].t; this._repHover(ev ? ev.t + 2 : Math.min(12 * 60, last)); }
+    } else if (m.type === "grp") {
+      const d = m.draft, rooms = this._collect(), owner = (id) => (this._cfg.layout.groups || []).find((g) => g.id !== d.id && (g.rooms || []).includes(id));
+      box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+        <div class="sh"><div><b>${d.isNew ? "Neue Gruppe" : "Gruppe bearbeiten"}</b><span>Räume zusammenfassen</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm" style="margin:0">Name</div><input class="gname" data-f="gname" value="${esc(d.name)}" placeholder="z. B. Obergeschoss" maxlength="30">
+        <div class="mut sm" style="margin:0">Symbol</div><div class="gicons">${GROUP_ICONS.map((k) => `<button class="${d.icon === k ? "sel" : ""}" data-act="gicon" data-k="${k}" aria-label="${k}">${ic(k, 22)}</button>`).join("")}</div>
+        <div class="mut sm" style="margin:0">Räume in dieser Gruppe</div>
+        <div class="dchips">${rooms.map((r) => { const o = owner(r.id); return `<button class="dc ${d.rooms.includes(r.id) ? "sel" : ""}" data-act="gpick" data-r="${esc(r.id)}">${esc(r.name)}${o && !d.rooms.includes(r.id) ? ` <small style="opacity:.7">· ${esc(o.name)}</small>` : ""}</button>`; }).join("")}</div>
+        <div class="mut sm" style="margin:0 0 12px">Ein Raum gehört immer nur zu einer Gruppe. Nicht zugeordnete Räume stehen unter „Weitere Räume“.</div>
+        <div class="foot2">${d.isNew ? "" : `<button class="btn2 del" data-act="gdel" aria-label="Gruppe löschen">${ic("trash", 17)}</button>`}<button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="gsave">Speichern</button></div></div>`;
     } else if (m.type === "why") {
       const mm = MODE[r.mode] || MODE.regelung_aus;
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
@@ -579,20 +877,27 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="why-l">${(r.why || []).map((w) => `<div class="wl ${w.s}"><i></i><span>${esc(w.t)}</span></div>`).join("") || `<div class="mut">Keine Angaben vorhanden.</div>`}</div>
         <div class="foot2"><button class="btn2" data-act="close">Schließen</button></div></div>`;
     } else if (m.type === "vac") {
-      const d = m.draft, persons = Object.keys(this._hass.states).filter((e) => e.startsWith("person."));
+      const d = m.draft;
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
-        <div class="sh"><div><b>Urlaub planen</b><span>Alle Räume</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="sh"><div><b>Urlaub planen</b><span>Alle Räume · Absenkung ${num(d.temp, 1)} °C</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="vrow"><span>Von</span><input type="date" value="${d.from}" data-f="vfrom"></div>
         <div class="vrow"><span>Bis</span><input type="date" value="${d.to}" data-f="vto" min="${d.from}"></div>
-        <div class="vrow"><span>Absenktemperatur</span><div class="step"><button data-act="vtm" aria-label="kälter">${ic("minus", 18)}</button><b style="color:${heat(d.temp)}">${num(d.temp, 1)} °C</b><button data-act="vtp" aria-label="wärmer">${ic("plus", 18)}</button></div></div>
         <div class="vrow"><span>Am Rückkehrtag vorheizen</span><button class="sw ${d.preheat ? "on" : ""}" data-act="vpre" aria-pressed="${d.preheat}"></button></div>
         ${d.preheat ? `<div class="vrow"><span>Vorheizen ab</span><input type="time" value="${d.preheat_time}" data-f="vtime" style="background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit"></div>` : ""}
         <div class="mut sm" style="margin:2px 0 0">${d.preheat ? `Am Bis-Tag gilt ab ${d.preheat_time} Uhr wieder der Heizplan.` : "Der Heizplan gilt wieder ab dem Tag nach dem Bis-Datum."}</div>
+        <div class="mut sm" style="margin:10px 0 0">Die Absenktemperatur und die automatische Erkennung stellst du unter „Einstellungen“ ein.</div>
+        <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="vsave">Urlaub starten</button></div></div>`;
+    } else if (m.type === "pset") {
+      const d = m.draft, persons = Object.keys(this._hass.states).filter((e) => e.startsWith("person."));
+      box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+        <div class="sh"><div><b>Einstellungen</b><span>Anwesenheit &amp; Urlaub</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm" style="margin:0 0 4px">Absenkung</div>
+        <div class="vrow"><span>Temperatur bei Abwesenheit und Urlaub</span><div class="step"><button data-act="vtm" aria-label="kälter">${ic("minus", 18)}</button><b style="color:${heat(d.temp)}">${num(d.temp, 1)} °C</b><button data-act="vtp" aria-label="wärmer">${ic("plus", 18)}</button></div></div>
         <div class="mut sm" style="margin:14px 0 4px">Automatisch erkennen</div>
         <div class="vrow"><span>Abwesend, wenn niemand zu Hause ist</span><button class="sw ${d.auto ? "on" : ""}" data-act="vauto" aria-pressed="${d.auto}"></button></div>
         ${d.auto ? `<div class="dchips">${persons.map((e) => `<button class="dc ${d.persons.includes(e) ? "sel" : ""}" data-act="vper" data-e="${esc(e)}">${esc(this._hass.states[e].attributes.friendly_name || e)}</button>`).join("")}</div>
         <div class="vrow"><span>Nach</span><div class="step"><button data-act="vawm" aria-label="weniger">${ic("minus", 18)}</button><b>${d.away_after} Min.</b><button data-act="vawp" aria-label="mehr">${ic("plus", 18)}</button></div></div>` : ""}
-        <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="vsave">Speichern</button></div></div>`;
+        <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="psetsave">Speichern</button></div></div>`;
     } else {
       const d = m.draft, pts = points(d.entries), today = Math.floor(nowMin() / 1440);
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
@@ -677,7 +982,11 @@ class FensterHeizungPanel extends HTMLElement {
     if (commit && d.t) {
       d.after ? d.t.after(d.item) : d.t.before(d.item);
       const ids = [...d.container.children].filter((c) => c.dataset.sort === d.group).map((c) => c.dataset.id);
-      this._cfg.layout[d.group === "block" ? "blocks" : "rooms"] = ids; this._saveLayout();
+      if (d.group === "room") {
+        const all = this._collect().map((r) => r.id), slots = all.map((id, i) => (ids.includes(id) ? i : -1)).filter((i) => i >= 0);
+        slots.forEach((pos, k) => (all[pos] = ids[k])); this._cfg.layout.rooms = all;
+      } else this._cfg.layout.blocks = ids;
+      this._saveLayout();
     }
     this._drag = null; this._dragging = false; this._render();
   }

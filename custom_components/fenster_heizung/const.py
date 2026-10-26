@@ -33,6 +33,7 @@ DEFAULT_OUTDOOR_MAX = 15.0
 DEFAULT_NOTIFY_AFTER = 0
 
 OPTIONAL_KEYS = (
+    "energy_per_unit",
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
     CONF_OUTDOOR_SENSOR,
@@ -52,7 +53,20 @@ MODE_DISABLED = "regelung_aus"
 MODES = [MODE_ACTIVE, MODE_PAUSED, MODE_WINDOW_ONLY, MODE_DISABLED]
 
 CONF_HEAT_POWER = "heat_power_kw"
-CONF_GAS_KWH_PER_M3 = "gas_kwh_per_m3"
+CONF_GAS_KWH_PER_M3 = "gas_kwh_per_m3"  # alt (bis 2.3), nur noch als Rückfall für Erdgas
+CONF_FUEL = "fuel"
+CONF_ENERGY_PER_UNIT = "energy_per_unit"
+CONF_COP = "cop"
+DEFAULT_FUEL = "erdgas"
+DEFAULT_COP = 3.5
+# Brennstoff -> (Einheit, Standard kWh pro Einheit)
+FUELS: dict[str, tuple[str, float]] = {
+    "erdgas": ("m³", 10.0),
+    "heizoel": ("l", 10.0),
+    "fluessiggas": ("l", 6.6),
+    "pellets": ("kg", 4.8),
+    "strom": ("kWh", 1.0),
+}
 DEFAULT_HEAT_POWER = 1.0
 DEFAULT_GAS_KWH_PER_M3 = 10.0
 
@@ -68,6 +82,8 @@ STATIC_URL = "/fenster_heizung_static"
 PLAN_MIN_TEMP = 5.0
 PLAN_MAX_TEMP = 30.0
 BLOCK_IDS = ("hero", "presence", "tiles", "chart", "rooms")
+GROUP_ICON_IDS = ("layers", "home", "bed", "sofa", "desk")
+MAX_GROUPS = 12
 ROOM_ICON_IDS = (
     "sofa", "tv", "dining", "pot", "bed", "baby", "desk", "book",
     "drop", "laundry", "door", "stairs", "sun", "tree", "car", "tools",
