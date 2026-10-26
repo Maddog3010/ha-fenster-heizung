@@ -8,6 +8,7 @@ from .const import (
     ACTION_OFF,
     ACTION_SETBACK,
     CONF_ACTION,
+    CONF_AIR_HINT,
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
@@ -19,6 +20,8 @@ from .const import (
     CONF_HEAT_POWER,
     CONF_HEATING_ENTITY,
     CONF_HEATING_OFF_STATES,
+    CONF_HUMIDITY,
+    CONF_WEATHER_ADJ,
     CONF_NOTIFY_AFTER,
     CONF_NOTIFY_MESSAGE,
     CONF_NOTIFY_SERVICE,
@@ -149,6 +152,9 @@ def clean_options(raw: Any) -> dict[str, Any]:
     states = str(raw.get(CONF_HEATING_OFF_STATES) or "").strip()[:200]
     out[CONF_HEATING_OFF_STATES] = states or DEFAULT_HEATING_OFF_STATES
     out[CONF_OUTDOOR_SENSOR] = _opt_entity(raw, CONF_OUTDOOR_SENSOR, ("sensor",))
+    out[CONF_HUMIDITY] = _opt_entity(raw, CONF_HUMIDITY, ("sensor",))
+    for key in (CONF_AIR_HINT, CONF_WEATHER_ADJ):
+        out[key] = "off" if raw.get(key) == "off" else "on"
     out[CONF_BLOCK_FROM] = _time(raw, CONF_BLOCK_FROM)
     out[CONF_BLOCK_TO] = _time(raw, CONF_BLOCK_TO)
     if bool(out[CONF_BLOCK_FROM]) != bool(out[CONF_BLOCK_TO]):

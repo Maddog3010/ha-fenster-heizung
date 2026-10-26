@@ -15,7 +15,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_time_interval
 
-from .const import CONF_WINDOWS, DOMAIN, MODES, SIGNAL_UPDATE
+from .const import CONF_AIR_HINT, CONF_HUMIDITY, CONF_WEATHER_ADJ, CONF_WINDOWS, DOMAIN, MODES, SIGNAL_UPDATE
 
 SCOPES = {
     "minutes_today": "day",
@@ -123,6 +123,9 @@ class ModeSensor(_Base):
             "entry_id": self._entry.entry_id,
             "grund": self._ctrl.reasons(),
             "heizung_quelle": self._ctrl.heating_source(),
+            "luftfeuchte_sensor": self._ctrl.cfg.get(CONF_HUMIDITY),
+            "lueftungshinweise": "aus" if self._ctrl.cfg.get(CONF_AIR_HINT) == "off" else "an",
+            "wetter_anpassung": "aus" if self._ctrl.cfg.get(CONF_WEATHER_ADJ) == "off" else "an",
         }
 
 

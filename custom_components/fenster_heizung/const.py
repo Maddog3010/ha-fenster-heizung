@@ -87,5 +87,23 @@ MAX_GROUPS = 12
 ROOM_ICON_IDS = (
     "sofa", "tv", "dining", "pot", "bed", "baby", "desk", "book",
     "drop", "laundry", "door", "stairs", "sun", "tree", "car", "tools",
+    "bath", "shower", "toilet", "wardrobe", "hanger", "plant", "lamp", "fireplace",
+    "gamepad", "music", "dumbbell", "bike", "fridge", "wine", "paw", "blocks",
+    "roof", "crate", "wave", "balcony", "radiator", "window", "suitcase",
 )
+# Grenzen für Darstellung (Farben, Raumfotos)
+MAX_PHOTOS = 12
+MAX_PHOTO_CHARS = 150_000
 PLAN_MODES = ("keep", "heat", "auto")
+
+# 2.6.0: Raumluft, Wetter-Anpassung, Aufheizzeit, Updates
+CONF_HUMIDITY = "humidity_sensor"
+CONF_AIR_HINT = "air_hint"
+CONF_WEATHER_ADJ = "weather_adj"
+EXTRA_KEYS = (CONF_HUMIDITY, CONF_AIR_HINT, CONF_WEATHER_ADJ)  # gehören nicht zum HA-Optionsdialog
+GITHUB_REPO = "Maddog3010/ha-fenster-heizung"
+UPDATE_CACHE_SECONDS = 6 * 3600
+LEARN_MIN_DELTA = 1.0  # Aufheizphase ab so viel Kelvin unter dem Ziel
+LEARN_MAX_SAMPLES = 80
+LEARN_KEEP_DAYS = 45
+BACKUP_FORMAT = 1
