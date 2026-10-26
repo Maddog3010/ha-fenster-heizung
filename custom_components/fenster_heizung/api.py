@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from typing import Any
 
 import voluptuous as vol
@@ -12,7 +13,22 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 
-from .const import BLOCK_IDS, DOMAIN, GROUP_ICON_IDS, MAX_GROUPS, PLAN_MODES, ROOM_ICON_IDS
+from .const import (
+    BLOCK_IDS,
+    CONF_BLOCK_FROM,
+    CONF_BLOCK_TO,
+    CONF_ENERGY_PER_UNIT,
+    CONF_FUEL,
+    CONF_GAS_KWH_PER_M3,
+    CONF_NOTIFY_SERVICE,
+    DEFAULT_FUEL,
+    DOMAIN,
+    GROUP_ICON_IDS,
+    MAX_GROUPS,
+    PLAN_MODES,
+    ROOM_ICON_IDS,
+)
+from .options import clean_options
 from .presence import clean_presence
 
 def clean_layout(raw: Any) -> dict[str, Any]:
@@ -163,6 +179,67 @@ async def ws_set_presence(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], await mgr.async_set(msg["presence"]))
 
 
+def _current_options(entry) -> dict[str, Any]:
+    """Aktuelle Einstellungen eines Raums (Daten und Optionen zusammengeführt)."""
+    cur = {**entry.data, **entry.options}
+    cur.pop("name", None)
+    if not cur.get(CONF_ENERGY_PER_UNIT) and cur.get(CONF_GAS_KWH_PER_M3):
+        if cur.get(CONF_FUEL, DEFAULT_FUEL) == DEFAULT_FUEL:
+            cur[CONF_ENERGY_PER_UNIT] = cur[CONF_GAS_KWH_PER_M3]  # Wert aus Version 2.3 und älter
+    cur.pop(CONF_GAS_KWH_PER_M3, None)
+    raw = cur.get(CONF_NOTIFY_SERVICE)
+    if isinstance(raw, str):
+        cur[CONF_NOTIFY_SERVICE] = [x for x in re.split(r"[,;\s]+", raw) if x]
+    for key in (CONF_BLOCK_FROM, CONF_BLOCK_TO):
+        if isinstance(cur.get(key), str) and len(cur[key]) >= 5:
+            cur[key] = cur[key][:5]
+    return cur
+
+
+def _room_entry(hass: HomeAssistant, entry_id: str):
+    entry = hass.config_entries.async_get_entry(entry_id)
+    return entry if entry is not None and entry.domain == DOMAIN else None
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command(
+    {vol.Required("type"): "fenster_heizung/get_options", vol.Required("entry_id"): str}
+)
+@websocket_api.async_response
+async def ws_get_options(hass: HomeAssistant, connection, msg: dict) -> None:
+    entry = _room_entry(hass, msg["entry_id"])
+    if entry is None:
+        connection.send_error(msg["id"], "not_found", "Raum nicht gefunden")
+        return
+    connection.send_result(msg["id"], {"name": entry.title, "options": _current_options(entry)})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command(
+    {
+        vol.Required("type"): "fenster_heizung/set_options",
+        vol.Required("entry_id"): str,
+        vol.Required("options"): dict,
+    }
+)
+@websocket_api.async_response
+async def ws_set_options(hass: HomeAssistant, connection, msg: dict) -> None:
+    entry = _room_entry(hass, msg["entry_id"])
+    if entry is None:
+        connection.send_error(msg["id"], "not_found", "Raum nicht gefunden")
+        return
+    try:
+        cleaned = clean_options(msg["options"])
+    except ValueError as err:
+        connection.send_error(msg["id"], "invalid_format", str(err))
+        return
+    # Speichern lädt den Raum über den Update-Listener neu
+    hass.config_entries.async_update_entry(entry, options=cleaned)
+    connection.send_result(msg["id"], {"options": _current_options(entry)})
+
+
 def async_register_api(hass: HomeAssistant) -> None:
-    for command in (ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence):
+    for command in (
+        ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options
+    ):
         websocket_api.async_register_command(hass, command)

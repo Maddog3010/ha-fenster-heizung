@@ -2,13 +2,16 @@
 
 # Fenster & Heizung
 
-Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.4.0**.
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
+
+Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.5.0**.
 
 ## Inhalt
 - [Dashboard](#dashboard)
 - [Räume und Gruppen](#räume-und-gruppen)
 - [Bericht pro Raum](#bericht-pro-raum)
 - [Heizplan](#heizplan)
+- [Raumeinstellungen im Dashboard](#raumeinstellungen-im-dashboard)
 - [„Warum?“ pro Raum](#warum-pro-raum)
 - [Anwesenheit und Urlaub](#anwesenheit-und-urlaub)
 - [Brennstoff und Ersparnis](#brennstoff-und-ersparnis)
@@ -27,7 +30,7 @@ Die Integration legt den Eintrag „Fenster & Heizung“ in der Seitenleiste an.
 
 - Kopfkarte mit der heute gesparten Menge (je nach Brennstoff) und Kacheln für Heute, Monat, Jahr und Gesamt
 - Balkendiagramm der Pausenzeit der letzten 14 Tage, nach Räumen gestapelt
-- Raumkarten mit Status, Fenster, Heizung, Heizplan und 7-Tage-Verlauf
+- Raumkarten mit Status, Fenster, Heizung, Heizplan und 7-Tage-Verlauf, umschaltbar zwischen **Detail** und **Kompakt**
 - Karte „Anwesenheit & Urlaub“
 - Hell und Dunkel folgen dem Design von Home Assistant, das Layout passt sich Handy und Desktop an
 
@@ -35,6 +38,13 @@ Die Integration legt den Eintrag „Fenster & Heizung“ in der Seitenleiste an.
 Mit dem Stift oben rechts lassen sich die Bereiche und die Raumkarten an den Griffen verschieben. Ein Tipp auf das Raumsymbol öffnet die Auswahl mit 16 Symbolen. Die Anordnung wird gespeichert und gilt für alle Nutzer.
 
 <img src="docs/vorschau_verschieben.png" width="240" alt="Verschieben"> <img src="docs/vorschau_symbole.png" width="240" alt="Symbolauswahl">
+
+### Ansicht: Detail oder Kompakt
+Oben im Raumbereich schaltest du zwischen „Detail“ (Karten) und „Kompakt“ (eine Zeile pro Raum) um. Die Kompaktansicht ist praktisch bei vielen Räumen, etwa sechs auf dem Tablet: Raumname, Fenster, Ist- und Zieltemperatur, Heizplan und Pausenzeit stehen in einer Zeile, Knöpfe für Bericht, „Warum?“, Heizplan und Einstellungen sitzen rechts. Die Auswahl wird pro Browser gemerkt.
+
+<img src="docs/vorschau_kompakt_handy.png" width="240" alt="Kompaktansicht auf dem Handy"> <img src="docs/vorschau_kompakt.png" width="480" alt="Kompaktansicht auf dem Desktop">
+
+![Detailansicht](docs/vorschau_detail.png)
 
 ## Räume und Gruppen
 Räume lassen sich zu Gruppen (Zonen) zusammenfassen, zum Beispiel „Obergeschoss“ und „Erdgeschoss“.
@@ -66,12 +76,31 @@ Pro Raum gibt es einen Heizplan aus Schaltpunkten: Tage, Uhrzeit und Temperatur.
 
 <img src="docs/vorschau_heizplan.png" width="240" alt="Heizplan bearbeiten">
 
+**Wochenansicht:** Im Editor zeigen sieben Balken untereinander alle Wochentage auf einen Blick, jeweils mit den Temperaturstufen über 24 Stunden. Der Tag, den du gerade bearbeitest, ist hervorgehoben, die übrigen sind abgedunkelt. Ein Tipp auf einen Balken wählt den Tag.
+
+<img src="docs/vorschau_woche_handy.png" width="240" alt="Wochenansicht auf dem Handy"> <img src="docs/vorschau_woche.png" width="480" alt="Wochenansicht auf dem Desktop">
+
 - Pro Schaltpunkt wählst du mehrere Tage, die Uhrzeit und die Temperatur. Kürzel: „Mo–Fr“, „Sa–So“, „Alle Tage“.
 - Zu jedem Schaltpunkt wird die Zieltemperatur an die Thermostate gesendet. Ausgeschaltete Thermostate schaltet der Plan je nach Einstellung ein: „Nein“, „Heizen“ oder „Automatik“. Andere Modi (z. B. cool) bleiben unberührt.
 - Dazwischen bleibt eine manuelle Änderung bis zum nächsten Schaltpunkt bestehen.
 - Während ein Fenster die Heizung pausiert, greift der Plan nicht. Nach dem Schließen gilt die Temperatur, die dann laut Plan dran ist.
 - Steht der eigene Heizungs-Sensor auf „Heizung aus“, wird der Plan nicht ausgeführt.
 - Der Schalter „Heizplan aktiv“ und der Sensor „Heizplan Solltemperatur“ (mit nächster Änderung als Attribut) lassen sich in Automationen verwenden.
+
+## Raumeinstellungen im Dashboard
+Das Zahnrad auf jeder Raumkarte (nur Administratoren) öffnet die Einrichtung des Raums direkt im Dashboard, ohne Umweg über die Home-Assistant-Einstellungen. Fünf aufklappbare Abschnitte:
+
+- **Geräte:** Fenstersensoren und Thermostate (als Chips hinzufügen und entfernen)
+- **Regelung:** Verzögerungen, Aktion (ausschalten oder Absenktemperatur), Absenktemperatur, Heizungs-Sensor
+- **Bedingungen:** Sperrzeit und Außentemperatur
+- **Erinnerung:** Benachrichtigungsdienste (mehrere möglich), Titel, Text, Wartezeit
+- **Energie:** Brennstoff, Energie pro Einheit, JAZ/COP, Heizleistung, Fläche, Heizlast, Auslegungstemperatur
+
+<img src="docs/vorschau_raumeinstellungen_handy.png" width="240" alt="Raumeinstellungen auf dem Handy"> <img src="docs/vorschau_raumeinstellungen.png" width="480" alt="Raumeinstellungen auf dem Desktop">
+
+Eingaben werden vor dem Speichern geprüft; Fehler erscheinen direkt im Dialog. Nach dem Speichern lädt die Integration den Raum neu. „Raum hinzufügen“ und „Raum entfernen“ öffnen die Integrationsseite von Home Assistant, dort werden Einträge angelegt und gelöscht.
+
+<img src="docs/vorschau_raumeinstellungen_bedingungen.png" width="480" alt="Bedingungen">
 
 ## „Warum?“ pro Raum
 Der Knopf „Warum?“ auf jeder Raumkarte erklärt den aktuellen Zustand: welches Fenster seit wann offen ist, ob die Verzögerung erreicht ist und wann die Heizung pausiert, Sperrzeit, Außentemperatur, Heizplan und Abwesenheit.
@@ -107,7 +136,7 @@ Die Integration schätzt, wie viel Heizenergie durch die Pausen gespart wurde, u
 - Die Ersparnis ist eine grobe Schätzung, die echte liegt etwas darunter. Die Heizleistung ist fest einstellbar oder wird aus Raumfläche, Heizlast und Außentemperatur berechnet.
 
 ## Einrichtung und Einstellungen
-Jeder Raum wird als eigener Eintrag über das Menü eingerichtet: Einstellungen → Geräte & Dienste → Integration hinzufügen.
+Jeder Raum wird als eigener Eintrag über das Menü eingerichtet: Einstellungen → Geräte & Dienste → Integration hinzufügen. Danach lassen sich alle Werte auch im Dashboard ändern, siehe [Raumeinstellungen im Dashboard](#raumeinstellungen-im-dashboard).
 
 - Fenstersensoren und Thermostate frei wählbar
 - Thermostat ausschalten oder auf Absenktemperatur stellen, mit Verzögerung nach Öffnen und Schließen
@@ -136,11 +165,12 @@ Pro Raum:
 ## Update und Hinweise
 - Nach einem Update Home Assistant neu starten und die Seite einmal neu laden (Strg+F5), damit das neue Dashboard geladen wird.
 - Der bisherige Wert „Energie pro m³ Gas“ bleibt für Erdgas erhalten.
+- Die Raumeinstellungen im Dashboard nutzen die neuen WebSocket-Befehle `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Neue Werte werden wie in den Home-Assistant-Optionen gespeichert.
 - Der Bericht braucht Verlaufsdaten im Recorder, siehe [Bericht pro Raum](#bericht-pro-raum).
 
 ## Neue Version veröffentlichen
 1. `version` in `custom_components/fenster_heizung/manifest.json` erhöhen
-2. Auf GitHub ein **Release** mit passendem Tag erstellen (z. B. `v2.4.0`)
+2. Auf GitHub ein **Release** mit passendem Tag erstellen (z. B. `v2.5.0`)
 3. HACS zeigt das Update an
 
 ## Unterstützen
