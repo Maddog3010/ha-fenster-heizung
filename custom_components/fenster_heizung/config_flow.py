@@ -14,7 +14,6 @@ from homeassistant.helpers import selector
 from .const import (
     ACTION_OFF,
     ACTION_SETBACK,
-    EXTRA_KEYS,
     CONF_ACTION,
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
@@ -232,9 +231,6 @@ class FensterHeizungOptions(OptionsFlow):
         if user_input is not None:
             for key in OPTIONAL_KEYS:  # geleerte Felder wirklich leeren
                 user_input.setdefault(key, None)
-            for key in EXTRA_KEYS:  # Dashboard-Einstellungen bleiben beim Speichern hier erhalten
-                if key not in user_input and self.config_entry.options.get(key) is not None:
-                    user_input[key] = self.config_entry.options[key]
             return self.async_create_entry(data=user_input)
         current = {**self.config_entry.data, **self.config_entry.options}
         if not current.get(CONF_ENERGY_PER_UNIT) and current.get(CONF_GAS_KWH_PER_M3):
