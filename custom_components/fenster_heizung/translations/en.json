@@ -115,6 +115,9 @@
       },
       "plan_enabled": {
         "name": "Heating plan active"
+      },
+      "heater_enabled": {
+        "name": "Electric heater enabled"
       }
     },
     "sensor": {

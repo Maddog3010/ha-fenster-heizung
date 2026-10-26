@@ -1,4 +1,4 @@
-"""Schalter pro Raum: Fensterregelung und Heizplan."""
+"""Schalter pro Raum: Fensterregelung, Heizplan und Elektroheizer."""
 from __future__ import annotations
 
 from homeassistant.components.switch import SwitchEntity
@@ -15,7 +15,11 @@ from .const import DOMAIN, SIGNAL_UPDATE
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
-    async_add_entities([EnabledSwitch(entry), PlanSwitch(entry)])
+    entities = [EnabledSwitch(entry), PlanSwitch(entry)]
+    cfg = {**entry.data, **entry.options}
+    if cfg.get("htr_on") == "on" and cfg.get("htr_entity"):
+        entities.append(HeaterSwitch(entry))
+    async_add_entities(entities)
 
 
 class _Base(SwitchEntity):
@@ -102,3 +106,44 @@ class PlanSwitch(_Base):
 
     async def async_turn_off(self, **kwargs) -> None:
         await self._ctrl.async_set_plan_enabled(False)
+
+
+class HeaterSwitch(_Base):
+    """Elektroheizer des Raums erlauben oder pausieren (die Regelung selbst läuft im Hintergrund)."""
+
+    _attr_icon = "mdi:heat-wave"
+    _attr_should_poll = False
+
+    def __init__(self, entry: ConfigEntry) -> None:
+        super().__init__(entry, "heater_enabled")
+
+    @property
+    def is_on(self) -> bool:
+        return self._ctrl.heater.manual_on
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        return {"funktion": "heizer"}
+
+    async def async_added_to_hass(self) -> None:
+        self.async_on_remove(
+            async_dispatcher_connect(
+                self.hass, SIGNAL_UPDATE.format(self._entry.entry_id), self._refresh
+            )
+        )
+
+    @callback
+    def _refresh(self) -> None:
+        self.async_write_ha_state()
+
+    async def _set(self, on: bool) -> None:
+        await self._ctrl.heater.async_set_manual(on)
+        pv = self.hass.data.get(DOMAIN, {}).get("pv")
+        if pv is not None:
+            await pv.async_evaluate()  # sofort reagieren, nicht erst im nächsten Takt
+
+    async def async_turn_on(self, **kwargs) -> None:
+        await self._set(True)
+
+    async def async_turn_off(self, **kwargs) -> None:
+        await self._set(False)

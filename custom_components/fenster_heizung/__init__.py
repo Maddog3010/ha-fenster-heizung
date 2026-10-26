@@ -23,6 +23,8 @@ from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .api import async_register_api
+from .general import GeneralManager
+from .heater import HeaterRoom, PvManager
 from .presence import PresenceManager
 from .const import (
     ACTION_OFF,
@@ -64,6 +66,9 @@ from .const import (
     DEFAULT_SETBACK_TEMP,
     DOMAIN,
     HEATING_MODES,
+    LEARN_KEEP_DAYS,
+    LEARN_MAX_SAMPLES,
+    LEARN_MIN_DELTA,
     MODE_ACTIVE,
     MODE_DISABLED,
     MODE_PAUSED,
@@ -161,6 +166,11 @@ class WindowController:
         self._plan_key: int | str | None = None  # zuletzt angewandter Schaltpunkt
         self._away_temp: float | None = None  # Absenkung bei Abwesenheit oder Urlaub
         self._away_saved: dict[str, float] = {}  # Solltemperaturen vor der Absenkung
+        self._learn: list[dict[str, Any]] = []  # gelernte Aufheizphasen
+        self._phase: dict[str, Any] | None = None
+        self._last_aired: str | None = None  # Zeitpunkt, zu dem zuletzt ein Fenster geschlossen wurde
+        self._was_open = False
+        self.heater = HeaterRoom(self)
 
     @property
     def cfg(self) -> dict[str, Any]:
@@ -190,6 +200,10 @@ class WindowController:
             except (ValueError, TypeError):
                 _LOGGER.warning("Gespeicherter Heizplan ist ungültig und wird ignoriert")
             self._plan_key = data.get("plan_key")
+            la = data.get("last_aired")
+            self._last_aired = la if isinstance(la, str) and dt_util.parse_datetime(la) else None
+            self.heater.load(data.get("heater"))
+            self._learn = [x for x in (data.get("learn") or []) if isinstance(x, dict)][-LEARN_MAX_SAMPLES:]
             at = data.get("away_temp")
             self._away_temp = float(at) if isinstance(at, (int, float)) else None
             self._away_saved = {k: float(v) for k, v in (data.get("away_saved") or {}).items()}
@@ -216,6 +230,7 @@ class WindowController:
         self._unsub_e = async_track_time_interval(
             self.hass, self._energy_tick, timedelta(seconds=60)
         )
+        self._was_open = self._any_open()
         self._evaluate()
 
     async def async_stop(self) -> None:
@@ -233,6 +248,8 @@ class WindowController:
             return MODE_DISABLED
         if self.active:
             return MODE_PAUSED
+        if self.heater.thermo_off_active:
+            return MODE_ACTIVE  # Thermostate ruhen nur, solange der Elektroheizer läuft
         if self._heating_off():
             return MODE_WINDOW_ONLY
         for eid in self.cfg[CONF_THERMOSTATS]:
@@ -506,7 +523,11 @@ class WindowController:
         return cur[1] if cur else None
 
     def plan_info(self) -> dict[str, Any]:
+        mgr = self._general()
         info: dict[str, Any] = {"heizplan_aktiv": self._plan_enabled()}
+        if mgr is not None:
+            info["sommermodus"] = mgr.summer
+            info["wetter_anpassung"] = mgr.delta_for(self.cfg)
         nxt = self.plan_next()
         if nxt:
             (_, temp), mins = nxt
@@ -523,11 +544,119 @@ class WindowController:
         """Was soll gerade gelten? Absenkung bei Abwesenheit hat Vorrang vor dem Heizplan."""
         if self._away_temp is not None:
             return "away", self._away_temp, False
+        mgr = self._general()
+        if mgr is not None and mgr.summer:
+            return None  # Sommermodus: Heizplan ruht
         if self._plan_enabled():
             cur = self.plan_current()
             if cur:
-                return cur[0], cur[1], self._plan.get("mode", "heat") in HEATING_MODES
+                delta = mgr.delta_for(self.cfg) if mgr is not None else 0.0
+                temp = min(max(cur[1] + delta, PLAN_MIN_TEMP), PLAN_MAX_TEMP)
+                key = f"{cur[0]}:{delta:+g}" if delta else cur[0]
+                return key, temp, self._plan.get("mode", "heat") in HEATING_MODES
         return None
+
+    def window_open(self) -> bool:
+        return self._any_open()
+
+    def room_temperature(self) -> float | None:
+        """Raumtemperatur laut erstem Thermostat, das einen Wert meldet."""
+        for eid in self.cfg[CONF_THERMOSTATS]:
+            st = self.hass.states.get(eid)
+            cur = st.attributes.get("current_temperature") if st else None
+            if isinstance(cur, (int, float)):
+                return float(cur)
+        return None
+
+    @property
+    def last_aired(self) -> str | None:
+        return self._last_aired
+
+    def _general(self):
+        return self.hass.data.get(DOMAIN, {}).get("general")
+
+    async def async_general_changed(self) -> None:
+        """Sommermodus oder Wetter-Anpassung haben sich geändert: Ziel neu setzen."""
+        self._plan_key = None
+        self._signal()
+        await self._plan_apply_if_due(force=True)
+
+    # --- Lernende Aufheizzeit ------------------------------------------------
+    def _room_temps(self) -> tuple[float, float] | None:
+        for eid in self.cfg[CONF_THERMOSTATS]:
+            st = self.hass.states.get(eid)
+            if st is None or st.state not in HEATING_MODES:
+                continue
+            cur, tgt = st.attributes.get("current_temperature"), st.attributes.get("temperature")
+            if isinstance(cur, (int, float)) and isinstance(tgt, (int, float)):
+                return float(cur), float(tgt)
+        return None
+
+    def _outdoor_now(self) -> float | None:
+        temp = self._outdoor_temp()
+        if temp is None:
+            mgr = self._general()
+            temp = mgr.outdoor()[0] if mgr is not None else None
+        return temp
+
+    def _learn_step(self) -> None:
+        """Jede Minute: Aufheizphasen erkennen und ihre Dauer pro Kelvin merken."""
+        now = dt_util.now()
+        temps = None if self.active else self._room_temps()
+        if temps is None:
+            self._phase = None
+            return
+        cur, tgt = temps
+        ph = self._phase
+        if ph is None:
+            if tgt - cur >= LEARN_MIN_DELTA:
+                self._phase = {"t": now.isoformat(), "c": cur, "g": tgt, "o": self._outdoor_now()}
+            return
+        if abs(tgt - ph["g"]) > 0.01:
+            self._phase = None  # Ziel geändert: Messung verwerfen
+            return
+        start = dt_util.parse_datetime(ph["t"])
+        hours = (now - start).total_seconds() / 3600 if start else 99.0
+        if cur >= tgt - 0.2:
+            gain = cur - ph["c"]
+            if hours >= 10 / 60 and gain >= 0.8:
+                cutoff = (now - timedelta(days=LEARN_KEEP_DAYS)).isoformat()
+                self._learn = [x for x in self._learn if str(x.get("t", "")) >= cutoff]
+                self._learn.append({
+                    "t": ph["t"], "min_per_k": round(hours * 60 / gain, 1),
+                    "out": ph["o"], "gain": round(gain, 1),
+                })
+                self._learn = self._learn[-LEARN_MAX_SAMPLES:]
+                self._store.async_delay_save(self._data, 60)
+            self._phase = None
+        elif hours > 6:
+            self._phase = None
+
+    def learning_info(self) -> dict[str, Any] | None:
+        """Gelernte Aufheizzeit für den Bericht (mindestens 3 Phasen), sonst None."""
+        rows = [x for x in self._learn if isinstance(x.get("min_per_k"), (int, float)) and x["min_per_k"] > 0]
+        if len(rows) < 3:
+            return None
+
+        def med(vals: list[float]) -> float:
+            v = sorted(vals)
+            n = len(v)
+            return v[n // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
+
+        bands = []
+        for label, lo, hi in (("Frost (unter 0 °C)", -99, 0), ("Kühl (0 bis 10 °C)", 0, 10), ("Mild (über 10 °C)", 10, 99)):
+            sel = [x["min_per_k"] for x in rows if isinstance(x.get("out"), (int, float)) and lo <= x["out"] < hi]
+            if sel:
+                bands.append({"label": label, "min_per_k": round(med(sel)), "n": len(sel)})
+        first = min(str(x["t"]) for x in rows)
+        start = dt_util.parse_datetime(first)
+        days = max(1, (dt_util.now() - start).days + 1) if start else 1
+        return {
+            "days": min(days, LEARN_KEEP_DAYS),
+            "samples": len(rows),
+            "rate": round(60 / med([x["min_per_k"] for x in rows]), 2),
+            "bands": bands,
+        }
 
     async def _plan_apply(self, temp: float, turn_on: bool = True) -> None:
         """Temperatur setzen; ausgeschaltete Thermostate je nach Einstellung einschalten."""
@@ -558,8 +687,8 @@ class WindowController:
         if target is None:
             return
         key, temp, turn_on = target
-        if self.active or self._heating_off():
-            return  # Fenster offen bzw. Heizung aus: später erneut prüfen
+        if self.active or self._heating_off() or self.heater.thermo_off_active:
+            return  # Fenster offen, Heizung aus oder Elektroheizer läuft: später erneut prüfen
         if not force and key == self._plan_key:
             return
         await self._plan_apply(temp, turn_on)
@@ -680,6 +809,7 @@ class WindowController:
         return out[:8]
 
     async def _plan_tick(self, _now) -> None:
+        self._learn_step()
         await self._plan_apply_if_due()
 
     async def async_set_plan(self, enabled: bool, entries: Any, mode: str | None = None) -> None:
@@ -742,6 +872,9 @@ class WindowController:
             "plan_key": self._plan_key,
             "away_temp": self._away_temp,
             "away_saved": self._away_saved,
+            "learn": self._learn,
+            "last_aired": self._last_aired,
+            "heater": self.heater.data(),
         }
 
     async def _save(self) -> None:
@@ -757,6 +890,16 @@ class WindowController:
 
     @callback
     def _window_changed(self, event: Event) -> None:
+        is_open = self._any_open()
+        if self._was_open and not is_open:  # gelüftet: Zeitpunkt merken (übersteht Neustarts)
+            self._last_aired = dt_util.now().isoformat()
+            self._store.async_delay_save(self._data, 30)
+            self._signal()
+        self._was_open = is_open
+        if is_open and self.heater.stage > 0:  # Elektroheizer sofort stoppen
+            pv = self.hass.data.get(DOMAIN, {}).get("pv")
+            if pv is not None:
+                self.hass.async_create_task(pv.async_evaluate())
         self._evaluate()
 
     @callback
@@ -874,6 +1017,8 @@ class WindowController:
         self._timer = None
         if not self.enabled or not self._any_open() or self._heating_off():
             return
+        if self.heater.thermo_off_active:  # Thermostate wurden für den Elektroheizer abgestellt
+            await self.heater.restore_thermostats()
         if self._blocked_now() or not self._outdoor_ok():
             # später erneut prüfen, solange das Fenster offen bleibt
             self._timer = async_call_later(self.hass, RECHECK_SECONDS, self._suppress)
@@ -985,6 +1130,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "presence" not in store:
         store["presence"] = PresenceManager(hass)
         await store["presence"].async_start()
+    if "general" not in store:
+        store["general"] = GeneralManager(hass)
+        await store["general"].async_start()
+    if "pv" not in store:
+        store["pv"] = PvManager(hass)
+        await store["pv"].async_start()
     return True
 
 
@@ -1007,4 +1158,10 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             mgr = hass.data.get(DOMAIN, {}).pop("presence", None)
             if mgr is not None:
                 mgr.async_stop()
+            gen = hass.data.get(DOMAIN, {}).pop("general", None)
+            if gen is not None:
+                gen.async_stop()
+            pvm = hass.data.get(DOMAIN, {}).pop("pv", None)
+            if pvm is not None:
+                pvm.async_stop()
     return ok

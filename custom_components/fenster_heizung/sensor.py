@@ -15,7 +15,7 @@ from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_time_interval
 
-from .const import CONF_WINDOWS, DOMAIN, MODES, SIGNAL_UPDATE
+from .const import CONF_AIR_EVERY, CONF_AIR_HINT, CONF_HUMIDITY, CONF_WEATHER_ADJ, CONF_WINDOWS, DEFAULT_AIR_EVERY, DOMAIN, MODES, SIGNAL_UPDATE
 
 SCOPES = {
     "minutes_today": "day",
@@ -106,7 +106,7 @@ class ModeSensor(_Base):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_options = MODES
     _attr_icon = "mdi:thermostat-box"
-    _unrecorded_attributes = frozenset({"grund"})
+    _unrecorded_attributes = frozenset({"grund", "heizer"})
 
     def __init__(self, entry: ConfigEntry) -> None:
         super().__init__(entry, "mode")
@@ -123,6 +123,12 @@ class ModeSensor(_Base):
             "entry_id": self._entry.entry_id,
             "grund": self._ctrl.reasons(),
             "heizung_quelle": self._ctrl.heating_source(),
+            "zuletzt_gelueftet": self._ctrl.last_aired,
+            "lueften_nach_h": self._ctrl.cfg.get(CONF_AIR_EVERY, DEFAULT_AIR_EVERY),
+            "luftfeuchte_sensor": self._ctrl.cfg.get(CONF_HUMIDITY),
+            "lueftungshinweise": "aus" if self._ctrl.cfg.get(CONF_AIR_HINT) == "off" else "an",
+            "wetter_anpassung": "aus" if self._ctrl.cfg.get(CONF_WEATHER_ADJ) == "off" else "an",
+            "heizer": self._ctrl.heater.attrs(),
         }
 
 

@@ -21,7 +21,14 @@ DEFAULTS: dict[str, Any] = {
     "updates": True,
     "summer": {"mode": "auto", "temp": 18.0, "days": 3},
     "wxadj": {"on": False, "mild": 12.0, "down": 1.0, "frost": 0.0, "up": 1.0},
+    "pv": {"sensor": "", "sign": "export", "reserve": 200, "delay": 3, "minrun": 10,
+           "soc_sensor": "", "soc_min": 80, "price": 32.0, "feed": 8.0},
 }
+_ENTITY = re.compile(r"^sensor\.[a-z0-9_]+$")
+
+
+def _sensor(val: Any) -> str:
+    return val if isinstance(val, str) and _ENTITY.match(val) else ""
 
 
 def _number(val: Any, lo: float, hi: float, default: float) -> float:
@@ -37,7 +44,8 @@ def clean_general(raw: Any) -> dict[str, Any]:
     raw = raw if isinstance(raw, dict) else {}
     s = raw.get("summer") if isinstance(raw.get("summer"), dict) else {}
     w = raw.get("wxadj") if isinstance(raw.get("wxadj"), dict) else {}
-    ds, dw = DEFAULTS["summer"], DEFAULTS["wxadj"]
+    ds, dw, dp = DEFAULTS["summer"], DEFAULTS["wxadj"], DEFAULTS["pv"]
+    p = raw.get("pv") if isinstance(raw.get("pv"), dict) else {}
     days = s.get("days")
     return {
         "updates": raw.get("updates") is not False,
@@ -52,6 +60,17 @@ def clean_general(raw: Any) -> dict[str, Any]:
             "down": _number(w.get("down"), 0, 5, dw["down"]),
             "frost": _number(w.get("frost"), -20, 40, dw["frost"]),
             "up": _number(w.get("up"), 0, 5, dw["up"]),
+        },
+        "pv": {
+            "sensor": _sensor(p.get("sensor")),
+            "sign": "import" if p.get("sign") == "import" else "export",
+            "reserve": int(_number(p.get("reserve"), 0, 2000, dp["reserve"])),
+            "delay": int(_number(p.get("delay"), 0, 30, dp["delay"])),
+            "minrun": int(_number(p.get("minrun"), 0, 120, dp["minrun"])),
+            "soc_sensor": _sensor(p.get("soc_sensor")),
+            "soc_min": int(_number(p.get("soc_min"), 0, 100, dp["soc_min"])),
+            "price": _number(p.get("price"), 0, 100, dp["price"]),
+            "feed": _number(p.get("feed"), 0, 100, dp["feed"]),
         },
     }
 
@@ -84,7 +103,7 @@ def parse_notes(body: str) -> list[list[str]]:
     """Aufzählungspunkte einer GitHub-Release-Beschreibung als [Symbol, Text]."""
     icons = (("lüft", "windy"), ("luft", "drop"), ("schimmel", "drop"), ("sommer", "sun"),
              ("sicher", "copy"), ("ansicht", "user"), ("update", "bell"), ("wetter", "partly"),
-             ("aufheiz", "clock"), ("symbol", "palette"), ("farbe", "palette"))
+             ("aufheiz", "clock"), ("heizer", "bolt"), ("überschuss", "bolt"), ("pv", "bolt"), ("symbol", "palette"), ("farbe", "palette"))
     out: list[list[str]] = []
     for line in (body or "").splitlines():
         m = re.match(r"^\s*[-*]\s+(.*\S)\s*$", line)
@@ -212,37 +231,58 @@ class GeneralManager:
         self.data = clean_general(raw)
         await self._store.async_save(self._data())
         await self.async_recalc()
+        pv = self.hass.data.get(DOMAIN, {}).get("pv")
+        if pv is not None:  # neue PV-Einstellungen gleich anwenden
+            self.hass.async_create_task(pv.async_evaluate())
         return self.data
 
     # --- Update-Hinweis ----------------------------------------------------
-    async def async_update_info(self, current: str) -> dict[str, Any]:
-        base = {"latest": current}
-        if not self.data["updates"]:
-            return base
-        now = time.monotonic()
-        if self._upd and now - self._upd[0] < UPDATE_CACHE_SECONDS:
-            return self._upd[1]
+    async def _get_json(self, url: str) -> tuple[int, Any]:
         from homeassistant.helpers.aiohttp_client import async_get_clientsession  # noqa: PLC0415
 
-        info = base
+        sess = async_get_clientsession(self.hass)
+        async with sess.get(url, headers={"Accept": "application/vnd.github+json"}, timeout=10) as resp:
+            return resp.status, (await resp.json() if resp.status == 200 else None)
+
+    async def _fetch_latest(self, current: str) -> dict[str, Any]:
+        """Neueste Version von GitHub: veröffentlichtes Release, sonst höchster Versions-Tag."""
+        api = f"https://api.github.com/repos/{GITHUB_REPO}"
         try:
-            sess = async_get_clientsession(self.hass)
-            async with sess.get(
-                f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest",
-                headers={"Accept": "application/vnd.github+json"},
-                timeout=10,
-            ) as resp:
-                if resp.status == 200:
-                    j = await resp.json()
-                    tag = str(j.get("tag_name") or "").lstrip("vV")
-                    if _tag_ok(tag):
-                        info = {
-                            "latest": tag,
-                            "date": str(j.get("published_at") or "")[:10],
-                            "notes": parse_notes(str(j.get("body") or "")),
-                            "url": str(j.get("html_url") or ""),
-                        }
+            status, j = await self._get_json(f"{api}/releases/latest")
+            if status == 200 and isinstance(j, dict):
+                tag = str(j.get("tag_name") or "").lstrip("vV")
+                if _tag_ok(tag):
+                    return {
+                        "latest": tag,
+                        "date": str(j.get("published_at") or "")[:10],
+                        "notes": parse_notes(str(j.get("body") or "")),
+                        "url": str(j.get("html_url") or ""),
+                    }
+            elif status not in (200, 404):
+                return {"latest": current, "error": f"GitHub antwortet mit Status {status}"}
+            # Noch kein Release veröffentlicht (nur ein Tag gesetzt)? Dann den höchsten Tag nehmen.
+            status, tags = await self._get_json(f"{api}/tags?per_page=50")
+            if status == 200 and isinstance(tags, list):
+                found = [str(t.get("name") or "").lstrip("vV") for t in tags if isinstance(t, dict)]
+                found = [t for t in found if _tag_ok(t)]
+                if found:
+                    best = max(found, key=lambda t: tuple(int(x) for x in t.split(".")))
+                    return {"latest": best, "notes": [], "url": f"https://github.com/{GITHUB_REPO}/releases/tag/v{best}"}
+            elif status not in (200, 404):
+                return {"latest": current, "error": f"GitHub antwortet mit Status {status}"}
         except Exception as err:  # noqa: BLE001  - Netzwerkfehler dürfen nie stören
             _LOGGER.debug("Update-Prüfung nicht möglich: %s", err)
-        self._upd = (now, info)
+            return {"latest": current, "error": "GitHub ist nicht erreichbar"}
+        return {"latest": current}
+
+    async def async_update_info(self, current: str, force: bool = False) -> dict[str, Any]:
+        """Update-Info. `force` (Knopf „Jetzt prüfen“) umgeht den Zwischenspeicher und die Abschaltung."""
+        if not self.data["updates"] and not force:
+            return {"latest": current}
+        now = time.monotonic()
+        if not force and self._upd and now - self._upd[0] < UPDATE_CACHE_SECONDS:
+            return self._upd[1]
+        info = await self._fetch_latest(current)
+        if "error" not in info:  # Fehler nicht zwischenspeichern, beim nächsten Mal neu versuchen
+            self._upd = (now, info)
         return info

@@ -115,6 +115,9 @@
       },
       "plan_enabled": {
         "name": "Heizplan aktiv"
+      },
+      "heater_enabled": {
+        "name": "Elektroheizer aktiv"
       }
     },
     "sensor": {

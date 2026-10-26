@@ -4,6 +4,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
+from .pvlogic import parse_steps
 from .const import (
     ACTION_OFF,
     ACTION_SETBACK,
@@ -68,6 +69,9 @@ _NUMBERS: dict[str, tuple[float, float, float, bool]] = {
     CONF_DESIGN_TEMP: (-30, 5, DEFAULT_DESIGN_TEMP, False),
     CONF_COP: (1, 8, DEFAULT_COP, False),
     CONF_AIR_EVERY: (0, 48, DEFAULT_AIR_EVERY, True),
+    "htr_watt": (50, 10000, 1500, True),
+    "htr_target": (10, 30, 22.0, False),
+    "htr_prio": (1, 9, 5, True),
 }
 
 LABELS = {
@@ -85,6 +89,9 @@ LABELS = {
     CONF_COP: "JAZ / COP",
     CONF_AIR_EVERY: "Lüften erinnern nach Stunden",
     CONF_ENERGY_PER_UNIT: "Energie pro Einheit",
+    "htr_watt": "Leistung des Heizers",
+    "htr_target": "Heizen bis",
+    "htr_prio": "Priorität",
 }
 
 
@@ -132,8 +139,30 @@ def _time(raw: dict, key: str) -> str | None:
         return None
     m = _TIME.match(str(val).strip())
     if not m:
-        raise ValueError("Sperrzeit: Uhrzeit wie 22:00 angeben")
+        raise ValueError("Uhrzeit wie 22:00 angeben")
     return f"{int(m.group(1)):02d}:{m.group(2)}:{m.group(3) or '00'}"
+
+
+def _heater(raw: dict, out: dict[str, Any]) -> None:
+    """Einstellungen des Elektroheizers (2.7.0)."""
+    out["htr_on"] = "on" if raw.get("htr_on") == "on" else "off"
+    out["htr_entity"] = _opt_entity(raw, "htr_entity", ("switch", "climate"))
+    for key in ("htr_watt", "htr_target", "htr_prio"):
+        out[key] = _num(raw, key)
+    out["htr_steps"] = parse_steps(raw.get("htr_steps"))
+    presets = raw.get("htr_presets")
+    out["htr_presets"] = [str(p).strip()[:40] for p in presets[:8]] if isinstance(presets, list) else []
+    out["htr_devtemp"] = "keep" if raw.get("htr_devtemp") == "keep" else "max"
+    out["htr_auto"] = "off" if raw.get("htr_auto") == "off" else "on"
+    out["htr_thermo"] = "on" if raw.get("htr_thermo") == "on" else "off"
+    out["htr_from"] = _time(raw, "htr_from")
+    out["htr_to"] = _time(raw, "htr_to")
+    if bool(out["htr_from"]) != bool(out["htr_to"]):
+        raise ValueError("Elektroheizer: Beginn und Ende des Zeitfensters angeben (oder beides leer lassen)")
+    if out["htr_on"] == "on" and not out["htr_entity"]:
+        raise ValueError("Elektroheizer: Schalter oder Gerät des Heizers wählen")
+    if out["htr_entity"] and out["htr_entity"] in (raw.get(CONF_THERMOSTATS) or []):
+        raise ValueError("Elektroheizer: Das Gerät darf nicht zugleich Heizungsthermostat des Raums sein")
 
 
 def clean_options(raw: Any) -> dict[str, Any]:
@@ -159,6 +188,7 @@ def clean_options(raw: Any) -> dict[str, Any]:
     out[CONF_HUMIDITY] = _opt_entity(raw, CONF_HUMIDITY, ("sensor",))
     for key in (CONF_AIR_HINT, CONF_WEATHER_ADJ):
         out[key] = "off" if raw.get(key) == "off" else "on"
+    _heater(raw, out)
     out[CONF_BLOCK_FROM] = _time(raw, CONF_BLOCK_FROM)
     out[CONF_BLOCK_TO] = _time(raw, CONF_BLOCK_TO)
     if bool(out[CONF_BLOCK_FROM]) != bool(out[CONF_BLOCK_TO]):
