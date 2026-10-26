@@ -67,8 +67,9 @@ STATIC_URL = "/fenster_heizung_static"
 
 PLAN_MIN_TEMP = 5.0
 PLAN_MAX_TEMP = 30.0
-BLOCK_IDS = ("hero", "tiles", "chart", "rooms")
+BLOCK_IDS = ("hero", "presence", "tiles", "chart", "rooms")
 ROOM_ICON_IDS = (
     "sofa", "tv", "dining", "pot", "bed", "baby", "desk", "book",
     "drop", "laundry", "door", "stairs", "sun", "tree", "car", "tools",
 )
+PLAN_MODES = ("keep", "heat", "auto")

@@ -106,6 +106,7 @@ class ModeSensor(_Base):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_options = MODES
     _attr_icon = "mdi:thermostat-box"
+    _unrecorded_attributes = frozenset({"grund"})
 
     def __init__(self, entry: ConfigEntry) -> None:
         super().__init__(entry, "mode")
@@ -120,6 +121,7 @@ class ModeSensor(_Base):
             "thermostate": self._ctrl.thermostat_states(),
             "fenster": list(self._ctrl.cfg[CONF_WINDOWS]),
             "entry_id": self._entry.entry_id,
+            "grund": self._ctrl.reasons(),
             "heizung_quelle": self._ctrl.heating_source(),
         }
 

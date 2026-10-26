@@ -1,4 +1,4 @@
-"""WebSocket-Schnittstelle für das Dashboard (Heizplan und Anordnung)."""
+"""WebSocket-Schnittstelle für das Dashboard (Heizplan, Anordnung, Anwesenheit)."""
 from __future__ import annotations
 
 from typing import Any
@@ -10,8 +10,8 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 
-from .const import BLOCK_IDS, DOMAIN, ROOM_ICON_IDS
-
+from .const import BLOCK_IDS, DOMAIN, PLAN_MODES, ROOM_ICON_IDS
+from .presence import clean_presence
 
 def clean_layout(raw: Any) -> dict[str, Any]:
     """Anordnung und Symbole prüfen, unbekannte Werte verwerfen."""
@@ -41,6 +41,13 @@ async def _layout(hass: HomeAssistant) -> dict[str, Any]:
     return store["layout"]
 
 
+def _presence_snapshot(hass: HomeAssistant) -> dict[str, Any]:
+    mgr = hass.data.get(DOMAIN, {}).get("presence")
+    if mgr is not None:
+        return mgr.snapshot()
+    return {**clean_presence({}), "effective": "home"}
+
+
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/get_state"})
 @websocket_api.async_response
 async def ws_get_state(hass: HomeAssistant, connection, msg: dict) -> None:
@@ -50,7 +57,9 @@ async def ws_get_state(hass: HomeAssistant, connection, msg: dict) -> None:
         ctrl = getattr(entry, "runtime_data", None)
         if ctrl is not None and entry.state is ConfigEntryState.LOADED:
             plans[entry.entry_id] = ctrl.plan_dict()
-    connection.send_result(msg["id"], {"layout": layout, "plans": plans})
+    connection.send_result(
+        msg["id"], {"layout": layout, "plans": plans, "presence": _presence_snapshot(hass)}
+    )
 
 
 @websocket_api.require_admin
@@ -73,6 +82,7 @@ async def ws_set_layout(hass: HomeAssistant, connection, msg: dict) -> None:
         vol.Required("entry_id"): str,
         vol.Required("enabled"): bool,
         vol.Required("entries"): [dict],
+        vol.Optional("mode"): vol.In(list(PLAN_MODES)),
     }
 )
 @websocket_api.async_response
@@ -83,14 +93,26 @@ async def ws_set_plan(hass: HomeAssistant, connection, msg: dict) -> None:
         connection.send_error(msg["id"], "not_found", "Raum nicht gefunden")
         return
     try:
-        await ctrl.async_set_plan(msg["enabled"], msg["entries"])
+        await ctrl.async_set_plan(msg["enabled"], msg["entries"], msg.get("mode"))
     except (ValueError, TypeError) as err:
         connection.send_error(msg["id"], "invalid_format", str(err))
         return
     connection.send_result(msg["id"], ctrl.plan_dict())
 
 
+@websocket_api.require_admin
+@websocket_api.websocket_command(
+    {vol.Required("type"): "fenster_heizung/set_presence", vol.Required("presence"): dict}
+)
+@websocket_api.async_response
+async def ws_set_presence(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("presence")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Anwesenheit ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.async_set(msg["presence"]))
+
+
 def async_register_api(hass: HomeAssistant) -> None:
-    websocket_api.async_register_command(hass, ws_get_state)
-    websocket_api.async_register_command(hass, ws_set_layout)
-    websocket_api.async_register_command(hass, ws_set_plan)
+    for command in (ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence):
+        websocket_api.async_register_command(hass, command)

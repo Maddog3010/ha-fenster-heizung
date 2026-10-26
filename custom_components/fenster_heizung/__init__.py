@@ -23,6 +23,7 @@ from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .api import async_register_api
+from .presence import PresenceManager
 from .const import (
     ACTION_OFF,
     CONF_ACTION,
@@ -65,6 +66,7 @@ from .const import (
     PANEL_URL,
     PLAN_MAX_TEMP,
     PLAN_MIN_TEMP,
+    PLAN_MODES,
     SIGNAL_UPDATE,
     STATIC_URL,
 )
@@ -150,8 +152,10 @@ class WindowController:
         self._last_tick = None
         self._unsub_e: CALLBACK_TYPE | None = None
         self._unsub_p: CALLBACK_TYPE | None = None
-        self._plan: dict[str, Any] = {"enabled": False, "entries": []}
-        self._plan_key: int | None = None  # zuletzt angewandter Schaltpunkt
+        self._plan: dict[str, Any] = {"enabled": False, "entries": [], "mode": "heat"}
+        self._plan_key: int | str | None = None  # zuletzt angewandter Schaltpunkt
+        self._away_temp: float | None = None  # Absenkung bei Abwesenheit oder Urlaub
+        self._away_saved: dict[str, float] = {}  # Solltemperaturen vor der Absenkung
 
     @property
     def cfg(self) -> dict[str, Any]:
@@ -176,10 +180,14 @@ class WindowController:
                 self._plan = {
                     "enabled": bool(raw.get("enabled")),
                     "entries": normalize_entries(raw.get("entries")),
+                    "mode": raw.get("mode") if raw.get("mode") in PLAN_MODES else "heat",
                 }
             except (ValueError, TypeError):
                 _LOGGER.warning("Gespeicherter Heizplan ist ungültig und wird ignoriert")
             self._plan_key = data.get("plan_key")
+            at = data.get("away_temp")
+            self._away_temp = float(at) if isinstance(at, (int, float)) else None
+            self._away_saved = {k: float(v) for k, v in (data.get("away_saved") or {}).items()}
             if data.get("paused_since"):
                 self._paused_since = dt_util.parse_datetime(data["paused_since"])
         else:  # Altformat (bis 1.1.x): nur die gemerkten Thermostate
@@ -411,6 +419,7 @@ class WindowController:
         return {
             "enabled": bool(self._plan["enabled"]),
             "entries": [dict(e) for e in self._plan["entries"]],
+            "mode": self._plan.get("mode", "heat"),
         }
 
     @property
@@ -472,11 +481,35 @@ class WindowController:
             info["naechste_temperatur"] = temp
         return info
 
-    async def _plan_apply(self, temp: float) -> None:
+    @property
+    def away_temp(self) -> float | None:
+        return self._away_temp
+
+    def _current_target(self):
+        """Was soll gerade gelten? Absenkung bei Abwesenheit hat Vorrang vor dem Heizplan."""
+        if self._away_temp is not None:
+            return "away", self._away_temp, False
+        if self._plan_enabled():
+            cur = self.plan_current()
+            if cur:
+                return cur[0], cur[1], self._plan.get("mode", "heat") in HEATING_MODES
+        return None
+
+    async def _plan_apply(self, temp: float, turn_on: bool = True) -> None:
+        """Temperatur setzen; ausgeschaltete Thermostate je nach Einstellung einschalten."""
+        mode = self._plan.get("mode", "heat") if turn_on else "keep"
         for eid in self.cfg[CONF_THERMOSTATS]:
             st = self.hass.states.get(eid)
-            if st is None or st.state not in HEATING_MODES:
+            if st is None:
                 continue
+            if st.state not in HEATING_MODES:
+                if st.state != "off" or mode not in HEATING_MODES:
+                    continue  # anderer Modus (z. B. cool) oder "nicht einschalten"
+                modes = st.attributes.get("hvac_modes") or []
+                target = next((m for m in (mode, "heat", "auto") if m in modes), None)
+                if target is None:
+                    continue
+                await self._call("set_hvac_mode", eid, hvac_mode=target)
             value = temp
             lo, hi = st.attributes.get("min_temp"), st.attributes.get("max_temp")
             if isinstance(lo, (int, float)):
@@ -486,27 +519,139 @@ class WindowController:
             await self._call("set_temperature", eid, temperature=value)
 
     async def _plan_apply_if_due(self, force: bool = False) -> None:
-        """Plantemperatur setzen, wenn ein neuer Schaltpunkt erreicht wurde."""
-        if not self._plan_enabled():
+        """Plan- oder Absenktemperatur setzen, wenn sich das Ziel geändert hat."""
+        target = self._current_target()
+        if target is None:
             return
-        cur = self.plan_current()
-        if cur is None:
-            return
+        key, temp, turn_on = target
         if self.active or self._heating_off():
             return  # Fenster offen bzw. Heizung aus: später erneut prüfen
-        if not force and cur[0] == self._plan_key:
+        if not force and key == self._plan_key:
             return
-        await self._plan_apply(cur[1])
-        self._plan_key = cur[0]
+        await self._plan_apply(temp, turn_on)
+        self._plan_key = key
         await self._save()
         self._signal()
+
+    async def async_set_away(self, temp: float | None) -> None:
+        """Absenkung bei Abwesenheit oder Urlaub ein- oder ausschalten."""
+        if temp is None:
+            if self._away_temp is None:
+                return
+            saved, self._away_saved, self._away_temp = self._away_saved, {}, None
+            self._plan_key = None
+            await self._save()
+            self._signal()
+            if self._plan_enabled():
+                await self._plan_apply_if_due(force=True)
+            elif not self.active and not self._heating_off():
+                for eid, value in saved.items():  # ohne Plan: vorherige Temperaturen zurück
+                    st = self.hass.states.get(eid)
+                    if st is not None and st.state in HEATING_MODES:
+                        await self._call("set_temperature", eid, temperature=value)
+            return
+        if self._away_temp is None:  # Eintritt: aktuelle Solltemperaturen merken
+            self._away_saved = {}
+            for eid in self.cfg[CONF_THERMOSTATS]:
+                st = self.hass.states.get(eid)
+                value = st.attributes.get("temperature") if st else None
+                if st is not None and st.state in HEATING_MODES and isinstance(value, (int, float)):
+                    self._away_saved[eid] = float(value)
+        self._away_temp = float(temp)
+        self._plan_key = None
+        await self._save()
+        self._signal()
+        await self._plan_apply_if_due(force=True)
+
+    def reasons(self) -> list[dict[str, str]]:
+        """Gründe für den aktuellen Zustand, für den Knopf „Warum?“ im Dashboard."""
+        cfg, hass, now = self.cfg, self.hass, dt_util.now()
+        out: list[dict[str, str]] = []
+
+        def add(level: str, text: str) -> None:
+            out.append({"s": level, "t": text})
+
+        def span(seconds: float) -> str:
+            return f"{int(seconds)} Sek." if seconds < 60 else f"{int(round(seconds / 60))} Min."
+
+        def deg(value: float) -> str:
+            return f"{value:.1f} °C".replace(".", ",")
+
+        blocked, cold = self._blocked_now(), self._outdoor_ok()
+        if not self.enabled:
+            add("warn", "Der Schalter „Fensterregelung“ ist ausgeschaltet")
+        opened = []
+        for eid in cfg[CONF_WINDOWS]:
+            st = hass.states.get(eid)
+            if st and st.state in (STATE_ON, "open"):
+                opened.append((st.attributes.get("friendly_name", eid), dt_util.as_local(st.last_changed)))
+        delay = float(cfg.get(CONF_OPEN_DELAY, DEFAULT_OPEN_DELAY))
+        explained = False  # Sperrzeit bzw. Außentemperatur wurden schon als Grund genannt
+        if opened:
+            for name, since in opened[:3]:
+                add("warn", f"{name} ist seit {since:%H:%M} Uhr offen ({span(max((now - since).total_seconds(), 0))})")
+            if self.active and self._paused_since:
+                since = dt_util.as_local(self._paused_since)
+                add("ok", f"Verzögerung von {span(delay)} erreicht: Heizung pausiert seit {since:%H:%M} Uhr")
+            elif self.enabled:
+                if blocked:
+                    add("info", "Sperrzeit ist aktiv: Die Heizung wird nicht pausiert")
+                    explained = True
+                elif not cold:
+                    add("info", "Es ist draußen nicht kalt genug: Die Heizung wird nicht pausiert")
+                    explained = True
+                elif self._heating_off():
+                    add("info", "Der Heizungs-Sensor meldet „Heizung aus“: Es wird nichts pausiert")
+                else:
+                    left = max(delay - (now - min(s for _, s in opened)).total_seconds(), 0)
+                    add("info", f"Die Heizung pausiert in etwa {span(left)}" if left else "Die Heizung wird gleich pausiert")
+        else:
+            add("ok", "Alle Fenster sind geschlossen")
+            if self.active:
+                add("info", f"Die Heizung startet nach {span(float(cfg.get(CONF_CLOSE_DELAY, DEFAULT_CLOSE_DELAY)))} wieder")
+        if cfg.get(CONF_OUTDOOR_SENSOR) and not explained:
+            out_t = self._outdoor_temp()
+            if out_t is not None:
+                limit = float(cfg.get(CONF_OUTDOOR_MAX, DEFAULT_OUTDOOR_MAX))
+                if out_t < limit:
+                    add("ok" if opened else "info", f"Außentemperatur {deg(out_t)} liegt unter der Schwelle von {deg(limit)}")
+                else:
+                    add("info", f"Außentemperatur {deg(out_t)} liegt nicht unter der Schwelle von {deg(limit)}: Es wird nicht pausiert")
+        if cfg.get(CONF_BLOCK_FROM) and cfg.get(CONF_BLOCK_TO) and not (blocked and explained):
+            span_txt = f"{str(cfg[CONF_BLOCK_FROM])[:5]} bis {str(cfg[CONF_BLOCK_TO])[:5]} Uhr"
+            add("info", f"Sperrzeit {span_txt} ist {'aktiv' if blocked else 'nicht aktiv'}")
+        states = [hass.states.get(e) for e in cfg[CONF_THERMOSTATS]]
+        heating = [s for s in states if s is not None and s.state in HEATING_MODES]
+        if heating:
+            add("info", f"{len(heating)} von {len(states)} Thermostaten im Heizbetrieb")
+        elif not self.active:
+            add("info", "Die Thermostate stehen auf „aus“, es gibt nichts zu regeln")
+        if self._heating_off() and not opened:
+            add("info", "Der Heizungs-Sensor meldet „Heizung aus“: Es bleibt nur die Fenstermeldung")
+        if self._away_temp is not None:
+            add("warn", f"Abwesenheit oder Urlaub: Absenkung auf {deg(self._away_temp)}")
+        if self._plan["entries"]:
+            if self._plan["enabled"]:
+                cur, nxt = self.plan_current(), self.plan_next()
+                if cur and nxt:
+                    (_, ntemp), mins = nxt
+                    when = now.replace(second=0, microsecond=0) + timedelta(minutes=mins)
+                    gap = (when.date() - now.date()).days
+                    day = "" if gap == 0 else "morgen " if gap == 1 else ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"][when.weekday()] + " "
+                    add("info", f"Heizplan: aktuell {deg(cur[1])}, ab {day}{when:%H:%M} Uhr {deg(ntemp)}")
+            else:
+                add("info", "Der Heizplan ist ausgeschaltet")
+        else:
+            add("info", "Kein Heizplan eingerichtet")
+        return out[:8]
 
     async def _plan_tick(self, _now) -> None:
         await self._plan_apply_if_due()
 
-    async def async_set_plan(self, enabled: bool, entries: Any) -> None:
+    async def async_set_plan(self, enabled: bool, entries: Any, mode: str | None = None) -> None:
         clean = normalize_entries(entries)
-        self._plan = {"enabled": bool(enabled and clean), "entries": clean}
+        mode = mode if mode in PLAN_MODES else self._plan.get("mode", "heat")
+        self._plan = {"enabled": bool(enabled and clean), "entries": clean, "mode": mode}
         self._plan_key = None
         await self._save()
         self._signal()
@@ -561,6 +706,8 @@ class WindowController:
             "kwh_archived": round(self._kwh_archived, 4),
             "plan": self._plan,
             "plan_key": self._plan_key,
+            "away_temp": self._away_temp,
+            "away_saved": self._away_saved,
         }
 
     async def _save(self) -> None:
@@ -800,6 +947,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(_reload))
     await _async_register_panel(hass)
+    store = hass.data.setdefault(DOMAIN, {})
+    if "presence" not in store:
+        store["presence"] = PresenceManager(hass)
+        await store["presence"].async_start()
     return True
 
 
@@ -819,4 +970,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if not others:  # letzter Raum entfernt: Seitenleisten-Eintrag wieder löschen
             frontend.async_remove_panel(hass, PANEL_URL, warn_if_unknown=False)
             hass.data.get(DOMAIN, {}).pop("panel", None)
+            mgr = hass.data.get(DOMAIN, {}).pop("presence", None)
+            if mgr is not None:
+                mgr.async_stop()
     return ok

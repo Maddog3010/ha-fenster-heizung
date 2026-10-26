@@ -2,6 +2,47 @@
 
 Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2.2.1] - 2026-10-26
+### Neu
+- **„Warum?“ auf jeder Raumkarte.** Der Knopf neben dem Status öffnet eine Liste mit den Gründen für den aktuellen Zustand, zum Beispiel:
+  - welches Fenster seit wann offen ist
+  - ob die Verzögerung erreicht ist und seit wann die Heizung pausiert, sonst in wie vielen Minuten sie pausiert
+  - ob Sperrzeit oder Außentemperatur das Pausieren verhindern, mit der aktuellen Außentemperatur und der Schwelle
+  - ob der Schalter „Fensterregelung“ aus ist oder die Thermostate ausgeschaltet sind
+  - Abwesenheit oder Urlaub und der aktuelle Heizplan mit der nächsten Änderung
+- Die Liste aktualisiert sich bei geöffnetem Dialog von selbst.
+- Neues Attribut `grund` am Sensor „Betriebszustand“ (wird nicht in der Datenbank aufgezeichnet), damit die Gründe auch in Automationen und Karten verwendet werden können.
+
+## [2.2.0] - 2026-10-25
+### Neu
+- **Anwesenheit und Urlaub** für alle Räume, mit den Zuständen „Zu Hause“, „Abwesend“ und „Urlaub“ in einer neuen Karte im Dashboard.
+- Bei „Abwesend“ und „Urlaub“ werden die Thermostate im Modus `heat` oder `auto` auf die Absenktemperatur gestellt. Ausgeschaltete Thermostate werden nicht eingeschaltet. Der Heizplan ruht in dieser Zeit.
+- **Rückkehr:** Mit aktivem Heizplan gilt sofort wieder die Plantemperatur. Ohne Heizplan werden die vorherigen Solltemperaturen wiederhergestellt.
+- **Urlaub planen:** Von und Bis, Absenktemperatur und optional das Vorheizen am Bis-Tag. Der Urlaub beginnt um 0 Uhr des Von-Tags. Mit Vorheizen gilt am Bis-Tag ab der eingestellten Uhrzeit wieder der Heizplan, ohne Vorheizen ab dem Tag danach. Danach springt der Zustand von selbst auf „Zu Hause“.
+- **Automatisch abwesend:** Sind alle gewählten Personen (oder alle `person`-Entitäten) für die eingestellte Zeit unterwegs (15 bis 120 Minuten), wird „Abwesend“ gesetzt. Kommt eine Person nach Hause, geht es zurück auf „Zu Hause“. Ein von Hand gesetztes „Abwesend“ bleibt bestehen.
+- Die Fensterregelung arbeitet weiter: Nach einer Fensterpause bleibt die Absenkung erhalten.
+- Die Absenkung übersteht einen Neustart von Home Assistant.
+- Raumkarten zeigen bei Abwesenheit oder Urlaub den Hinweis „Absenkung auf X °C, der Heizplan ruht“.
+- Neuer WebSocket-Befehl `fenster_heizung/set_presence` (nur Administratoren), `get_state` liefert jetzt auch `presence`.
+- Das Dashboard bekommt dafür den verschiebbaren Bereich „Anwesenheit“.
+
+### Hinweis
+- Ändern kann die Anwesenheit nur ein Administrator.
+
+## [2.1.0] - 2026-10-25
+### Neu
+- **Der Heizplan kann ausgeschaltete Thermostate einschalten.** Im Plan-Editor wählst du „Nein“, „Heizen“ (heat) oder „Automatik“ (auto). Unterstützt ein Thermostat den gewählten Modus nicht, wird der andere Heizmodus genommen. Thermostate in anderen Modi, zum Beispiel cool, bleiben unberührt. Ist der eigene Heizungs-Sensor auf „Heizung aus“, ruht der Plan weiterhin.
+- Tage im Heizplan bequemer wählen: Pro Schaltpunkt lassen sich mehrere Tage antippen, dazu gibt es die Kürzel „Mo–Fr“, „Sa–So“ und „Alle Tage“ sowie „Kopie“ zum Duplizieren eines Schaltpunkts.
+- Die Beschriftung im Editor ist klarer: „Gilt an (mehrere Tage möglich)“ bei jedem Schaltpunkt und „Vorschau für Tag“ bei der Tagesvorschau.
+- Neues Attribut `mode` im Heizplan (WebSocket `set_plan` und `get_state`).
+
+### Hinweis
+- Standard für bestehende und neue Pläne ist „Heizen“. Wer das nicht möchte, stellt im Editor „Nein“ ein.
+
+## [2.0.1] - 2026-10-25
+### Behoben
+- Der Schalter „Heizplan aktiv“ sprang beim Einschalten ohne Meldung wieder aus, wenn noch kein Schaltpunkt eingerichtet war. Jetzt erscheint der Hinweis „Noch kein Heizplan eingerichtet“.
+
 ## [2.0.0] - 2026-10-24
 ### Neu
 - **Heizplan** pro Raum: Schaltpunkte mit Tagen, Uhrzeit und Temperatur (5 bis 30 °C in 0,5-Grad-Schritten). Zu jedem Schaltpunkt werden die Thermostate im Modus `heat` oder `auto` auf die Zieltemperatur gestellt. Manuelle Änderungen bleiben bis zum nächsten Schaltpunkt bestehen.
@@ -119,6 +160,10 @@ Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sic
 - Schalter „Fensterregelung aktiv“ pro Raum.
 - Deutsche und englische Oberfläche.
 
+[2.2.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.2.1
+[2.2.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.2.0
+[2.1.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.1.0
+[2.0.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.0.1
 [2.0.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.0.0
 [1.5.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.2
 [1.5.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.1

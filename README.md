@@ -2,6 +2,8 @@
 
 # Fenster & Heizung
 
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
+
 Home-Assistant-Integration: Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus und bringt ein eigenes Dashboard mit.
 
 ## Dashboard
@@ -33,7 +35,24 @@ Pro Raum gibt es einen Heizplan aus Schaltpunkten: Tage, Uhrzeit und Temperatur.
 - Steht der eigene Heizungs-Sensor auf „Heizung aus“, wird der Plan nicht ausgeführt.
 - Der Schalter „Heizplan aktiv“ und der Sensor „Heizplan Solltemperatur“ (mit nächster Änderung als Attribut) lassen sich in Automationen verwenden.
 
+## „Warum?“ pro Raum
+Der Knopf „Warum?“ auf jeder Raumkarte erklärt den aktuellen Zustand: offenes Fenster, Verzögerung, Sperrzeit, Außentemperatur, Heizplan und Abwesenheit.
+
+<img src="docs/vorschau_warum.png" width="480" alt="Warum-Anzeige">
+
+## Anwesenheit und Urlaub
+Eine Karte im Dashboard stellt alle Räume gemeinsam um: **Zu Hause**, **Abwesend** oder **Urlaub**.
+
+<img src="docs/vorschau_anwesenheit.png" width="480" alt="Anwesenheit und Urlaub">
+
+- Bei Abwesenheit und Urlaub werden Thermostate im Modus `heat` oder `auto` auf die Absenktemperatur gestellt, der Heizplan ruht.
+- Bei der Rückkehr gilt wieder der Heizplan, ohne Plan werden die vorherigen Temperaturen wiederhergestellt.
+- Urlaub mit Von und Bis, optional mit Vorheizen am Bis-Tag. Danach schaltet der Zustand von selbst auf „Zu Hause“.
+- Automatisch abwesend, wenn alle gewählten Personen eine einstellbare Zeit unterwegs sind.
+
 ## Funktionen
+- „Warum?“-Anzeige pro Raum
+- Anwesenheit und Urlaub für alle Räume
 - Einrichtung pro Raum über das Menü: Fenstersensoren und Thermostate frei wählbar
 - Thermostat ausschalten oder auf Absenktemperatur stellen, mit Verzögerung nach Öffnen und Schließen
 - Sperrzeit (z. B. nachts) und Außentemperatur-Bedingung
@@ -49,13 +68,13 @@ Pro Raum gibt es einen Heizplan aus Schaltpunkten: Tage, Uhrzeit und Temperatur.
 3. „Fenster & Heizung“ installieren und Home Assistant neu starten
 4. Einstellungen → Geräte & Dienste → Integration hinzufügen → „Fenster & Heizung“
 
+## Neue Version veröffentlichen
+1. `version` in `custom_components/fenster_heizung/manifest.json` erhöhen
+2. Auf GitHub ein **Release** mit passendem Tag erstellen (z. B. `v2.0.1`)
+3. HACS zeigt das Update an
+
+## Unterstützen
+Gefällt dir die Integration? Über [GitHub Sponsors](https://github.com/sponsors/maddog3010) kannst du die Weiterentwicklung unterstützen. Danke!
+
 ## Änderungen
 Alle Versionen siehe [CHANGELOG.md](CHANGELOG.md).
-
-## im nächsten Release geplant 
-- Kleine Animationen: Flamme pulsiert bei Pause, Fensterflügel öffnet sich bei offenem Fenster
-- Wählbare Akzentfarbe und eigene Raumfarben
-- Optionales Raumfoto als Kartenhintergrund
-- Außentemperatur und Wetter in der Kopfkarte
-- Urlaubs- und Anwesenheitsmodus: Absenken von–bis oder wenn niemand zu Hause ist, Vorheizen bei Rückkehr
-- Anzeige „Warum?“: Der Raum erklärt seinen Zustand, zum Beispiel „Terrassentür seit 3 Min. offen“

@@ -27,6 +27,10 @@ const ICONS = {
   tree: '<circle cx="12" cy="9" r="6"/><path d="M12 15v6M8.5 21h7"/>',
   car: '<path d="M4 17v-5l2-5h12l2 5v5zM4 17v2M20 17v2M4 12h16"/><circle cx="8" cy="15" r=".9" fill="currentColor"/><circle cx="16" cy="15" r=".9" fill="currentColor"/>',
   tools: '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13.5h18"/>',
+  copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
+  home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  suitcase: '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18M12 13v2"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
   menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
   pencil: '<path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
@@ -48,7 +52,7 @@ const MODE = {
   nur_fenstermeldung: { t: "Heizung aus · nur Fenstermeldung", c: "slate" },
   regelung_aus: { t: "Regelung deaktiviert", c: "gray" },
 };
-const BLOCKS = { hero: "Kopfkarte", tiles: "Kennzahlen", chart: "Diagramm", rooms: "Räume" };
+const BLOCKS = { hero: "Kopfkarte", presence: "Anwesenheit", tiles: "Kennzahlen", chart: "Diagramm", rooms: "Räume" };
 const DAYS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 const DAYS_LONG = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
 const TEMPLATE = [
@@ -194,6 +198,8 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .dc.sel{background:var(--teal);border-color:var(--teal);color:#042f2e}
 .dchips.sm .dc{min-width:34px;padding:5px 6px;font-size:.74rem}
 .mut{color:var(--mut)}.sm{font-size:.76rem;margin:4px 0 12px}
+.seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:12px}.seg button{flex:1;background:transparent;border:0;padding:9px 6px;font-weight:600;font-size:.84rem;cursor:pointer;color:var(--mut)}.seg button.sel{background:var(--teal);color:#042f2e}
+.quick{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0 0 2px}.quick .lnk{font-size:.78rem;padding:2px 0}
 .sp{border:1px solid var(--line);border-radius:14px;padding:11px;margin-bottom:10px;background:color-mix(in srgb,var(--primary-background-color) 55%,transparent)}
 .sp1{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .sp input[type=time]{background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:1.05rem;font-weight:700;width:112px}
@@ -209,6 +215,25 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .igrid button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--primary-text-color)}
 .igrid button.sel .ic{color:var(--teal)}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:60;background:#111827;color:#fff;border:1px solid #334155;padding:10px 16px;border-radius:999px;font-size:.86rem;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.pres h2{margin-bottom:12px}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.seg3 button{display:grid;justify-items:center;gap:5px;padding:11px 4px;border-radius:14px;border:1px solid var(--line);background:transparent;font-weight:600;font-size:.8rem;color:var(--mut);cursor:pointer}
+.seg3 button[disabled]{cursor:default;opacity:.7}
+.seg3 button.sel{background:color-mix(in srgb,var(--teal) 16%,transparent);border-color:var(--teal);color:var(--primary-text-color)}
+.seg3 button.sel .ic{color:var(--teal)}
+.pstat{font-size:.88rem;color:var(--mut);margin-bottom:10px}.pstat b{color:var(--primary-text-color)}
+.pers{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.per{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.8rem}
+.per i{width:9px;height:9px;border-radius:50%;background:var(--gray)}.per.home i{background:var(--green)}
+.pnote{display:flex;gap:8px;align-items:center;font-size:.8rem;color:var(--amber);background:color-mix(in srgb,var(--amber) 12%,transparent);border-radius:10px;padding:7px 10px}
+.sheet input[type=date]{background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit;font-size:.95rem}
+.vrow{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:10px 0}
+.vrow>span{font-size:.92rem}
+.pl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.why{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:2px 9px;font-size:.72rem;color:var(--mut);cursor:pointer;margin-top:3px}
+.why-l{display:grid;gap:11px;margin:6px 0 14px}
+.wl{display:flex;gap:10px;align-items:flex-start;font-size:.92rem}.wl i{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px}
+.wl.ok i{background:var(--green)}.wl.warn i{background:var(--amber)}.wl.info i{background:var(--gray)}
 @media(max-width:520px){.pillbtn .bl{display:none}.pillbtn{padding:8px}.brand div span{display:none}.brand .logo{width:34px;height:34px}}
 @media(min-width:720px){.tiles{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(2,1fr)}.hero .big{font-size:3.3rem}
   .hero .art{top:50%;transform:translateY(-50%);height:88%;max-height:190px;max-width:34%}
@@ -221,7 +246,7 @@ class FensterHeizungPanel extends HTMLElement {
     super();
     this.attachShadow({ mode: "open" });
     this._narrow = false; this._edit = false; this._modal = null; this._dragging = false;
-    this._cfg = { layout: { blocks: [], rooms: [], icons: {} }, plans: {} };
+    this._cfg = { layout: { blocks: [], rooms: [], icons: {} }, plans: {}, presence: { mode: "home" } };
   }
   connectedCallback() {
     this._ro = new ResizeObserver(() => { if (this._hass && !this._dragging && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render(); });
@@ -233,6 +258,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass = h;
     if (first) this._load();
     this._render();
+    if (this._modal && this._modal.type === "why") this._renderModal();  // Gründe bleiben aktuell
   }
   set narrow(v) { this._narrow = v; this._render(); }
   set panel(_) {}
@@ -241,7 +267,7 @@ class FensterHeizungPanel extends HTMLElement {
   async _load() {
     try {
       const r = await this._hass.callWS({ type: "fenster_heizung/get_state" });
-      this._cfg = { layout: { blocks: [], rooms: [], icons: {}, ...(r.layout || {}) }, plans: r.plans || {} };
+      this._cfg = { layout: { blocks: [], rooms: [], icons: {}, ...(r.layout || {}) }, plans: r.plans || {}, presence: r.presence || { mode: "home" } };
     } catch (e) { /* älteres Backend: Standardwerte */ }
     this._render();
   }
@@ -272,7 +298,7 @@ class FensterHeizungPanel extends HTMLElement {
         r.sc[a.zeitraum] = { min: Number(st.state) || 0, gas: a.gespartes_gas_m3 || 0, kwh: a.gespartes_gas_kwh || 0 };
         if (a.zeitraum === "day") { r.pauses = a.pausen_heute || 0; r.kw = a.aktuelle_leistung_kw || 0; r.hist = a.verlauf || {}; }
       } else if ("thermostate" in a) {
-        r.mode = st.state; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id;
+        r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id;
       }
     }
     const list = [...rooms.values()];
@@ -346,13 +372,39 @@ class FensterHeizungPanel extends HTMLElement {
     <path d="M150 50l36 36" stroke="#ecfeff" stroke-width="4" stroke-linecap="round"/></svg>`;
   }
 
+  _pres() { return { mode: "home", temp: 16, preheat: true, preheat_time: "12:00", auto: true, persons: [], away_after: 30, ...(this._cfg.presence || {}) }; }
+  _away() { const p = this._pres(); return (p.effective ?? p.mode) !== "home"; }
+  _fmtD(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }) : "–"; }
+  _isoDay(add = 0) { const d = new Date(); d.setDate(d.getDate() + add); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+  _savePresence() {
+    this._hass.callWS({ type: "fenster_heizung/set_presence", presence: this._cfg.presence })
+      .then((r) => { this._cfg.presence = r; this._render(); })
+      .catch(() => this._toast("Anwesenheit konnte nicht gespeichert werden"));
+  }
+  _presenceCard() {
+    const p = this._pres(), h = this._hass, adm = this._admin();
+    const persons = (p.persons.length ? p.persons : Object.keys(h.states).filter((e) => e.startsWith("person."))).map((e) => h.states[e]).filter(Boolean);
+    const days = p.to ? Math.max(0, Math.ceil((new Date(p.to + "T23:59:59") - new Date()) / 864e5)) : 0;
+    const stat = p.mode === "vacation" && p.effective === "home"
+      ? `<b>Urlaub geplant:</b> ${this._fmtD(p.from)} bis ${this._fmtD(p.to)} · Absenkung ${num(p.temp, 1)} °C`
+      : p.mode === "vacation"
+        ? `<b>Urlaub bis ${this._fmtD(p.to)}</b> (noch ${days} Tage) · Absenkung ${num(p.temp, 1)} °C${p.preheat ? ` · Vorheizen am Rückkehrtag ab ${p.preheat_time} Uhr` : ""}`
+        : p.mode === "away" ? `<b>Abwesend:</b> Räume auf ${num(p.temp, 1)} °C abgesenkt. ${p.origin === "auto" ? "Bei Rückkehr einer Person" : "Nach dem Umschalten auf „Zu Hause“"} gilt wieder der Heizplan.`
+        : `<b>Zu Hause:</b> Alle Heizpläne laufen normal.${p.auto ? " Automatisch abwesend, wenn alle Personen " + p.away_after + " Min. unterwegs sind." : ""}`;
+    return `<div class="card pres"><h2>${ic("home", 18)}Anwesenheit &amp; Urlaub</h2>
+      <div class="seg3">${[["home", "home", "Zu Hause"], ["away", "door", "Abwesend"], ["vacation", "suitcase", "Urlaub"]].map(([k, i, l]) => `<button class="${p.mode === k ? "sel" : ""}" data-act="pm" data-k="${k}" ${adm ? "" : "disabled"}>${ic(i, 22)}${l}</button>`).join("")}</div>
+      <div class="pstat">${stat}</div>
+      ${persons.length ? `<div class="pers">${persons.map((s) => `<span class="per ${s.state === "home" ? "home" : ""}"><i></i>${esc(s.attributes.friendly_name || s.entity_id)} · ${s.state === "home" ? "zu Hause" : "unterwegs"}</span>`).join("")}</div>` : ""}
+      ${adm ? `<button class="lnk" data-act="vac">${ic("suitcase", 16)}Urlaub planen und Einstellungen</button>` : ""}</div>`;
+  }
+
   _planBox(r) {
     const p0 = this._cfg.plans[r.id] || { enabled: false, entries: [] }, p = { ...p0, enabled: r.planOn ?? p0.enabled }, pts = points(p.entries), adm = this._admin();
     const btn = adm ? `<button class="ibtn" data-act="plan" data-id="${esc(r.id)}" aria-label="Heizplan bearbeiten">${ic("pencil", 17)}</button>` : "";
     if (!pts.length) return `<div class="plan"><div class="ph"><span class="pt">${ic("plan", 18)}Heizplan</span><span class="pill gray">nicht eingerichtet</span></div>${adm ? `<button class="lnk" data-act="plan" data-id="${esc(r.id)}">${ic("plus", 16)}Heizplan einrichten</button>` : ""}</div>`;
     const now = nowMin(), today = Math.floor(now / 1440), cur = at(pts, now), nx = nextPt(pts, now), nw = nx.w % 10080, nd = Math.floor(nw / 1440);
     const when = nd === today && nx.w > now ? "heute" : nd === (today + 1) % 7 ? "morgen" : DAYS[nd];
-    return `<div class="plan ${p.enabled ? "" : "off"}"><div class="ph"><span class="pt">${ic("plan", 18)}Heizplan</span><span class="pill ${p.enabled ? "green" : "gray"}">${p.enabled ? "aktiv" : "aus"}</span>${btn}</div>
+    return `<div class="plan ${p.enabled && !this._away() ? "" : "off"}"><div class="ph"><span class="pt">${ic("plan", 18)}Heizplan</span><span class="pill ${p.enabled ? "green" : "gray"}">${p.enabled ? "aktiv" : "aus"}</span>${btn}</div>
       <div class="pnow">Jetzt <b>${num(cur, 1)} °C</b> · ab ${when} ${fmtT(nw % 1440)} Uhr <b>${num(nx.t, 1)} °C</b></div>${bar(pts, today, now)}</div>`;
   }
 
@@ -369,7 +421,7 @@ class FensterHeizungPanel extends HTMLElement {
       : `<div class="rico" style="background:${r.color}">${ic(this._icon(r), 24)}</div>`;
     return `<div class="card room" data-sort="room" data-id="${esc(r.id)}"><div class="rh">
       ${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${icon}
-      <div class="rn"><b>${esc(r.name)}</b><span class="pill ${m.c}">${m.t}</span></div>
+      <div class="rn"><b>${esc(r.name)}</b><div class="pl"><span class="pill ${m.c}">${m.t}</span><button class="why" data-act="why" data-id="${esc(r.id)}" aria-label="Warum?">${ic("info", 13)}Warum?</button></div></div>
       <button class="sw ${r.on ? "on" : ""}" data-act="sw" data-sw="${esc(r.sw)}" aria-label="Fensterregelung umschalten" aria-pressed="${!!r.on}"></button></div>
       <div class="two">
         <div class="box ${wc}"><div class="t">${ic(open.length ? "windowOpen" : "window", 18)}Fenster</div>
@@ -379,7 +431,7 @@ class FensterHeizungPanel extends HTMLElement {
           <div class="v">${cur != null ? num(cur, 1) + " °C" : hv}</div>
           <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div></div>
       </div>
-      ${this._planBox(r)}
+      ${this._planBox(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : ""}
       <div class="foot"><div class="a"><b>${num(d.min)} Min. pausiert</b><span>${r.pauses || 0}× heute · ~${num(d.gas, 2)} m³ Gas · ${num(r.kw, 2)} kW</span></div>${this._spark(r)}</div></div>`;
   }
 
@@ -401,6 +453,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="chips"><span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
           <span class="chip">${ic("radiator", 16)}${paused} von ${rooms.length} ${rooms.length === 1 ? "Raum" : "Räumen"} pausiert</span>
           <span class="chip">${ic("thermo", 16)}${num(sum("day", "kwh"), 1)} kWh</span></div></div>`,
+      presence: () => this._presenceCard(),
       tiles: () => `<div class="tiles">${tiles.map(([sc, ico, lab, col]) => `<div class="tile" style="--a:${col}">
         <div class="t">${ic(ico, 17)}${lab}</div><div class="v">${num(sum(sc, "min"))}<small>Min.</small></div>
         <div class="g">${ic("flame", 14)}${num(sum(sc, "gas"), 2)} m³</div></div>`).join("")}</div>`,
@@ -431,7 +484,8 @@ class FensterHeizungPanel extends HTMLElement {
     sr.addEventListener("pointerdown", (e) => { const g = e.target.closest("[data-handle]"); if (g) this._dragStart(e, g); });
     sr.addEventListener("change", (e) => {
       const t = e.target;
-      if (t.dataset && t.dataset.f === "time" && this._modal) { this._modal.draft.entries[+t.dataset.i].time = t.value || "00:00"; this._renderModal(); }
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("v") && this._modal && this._modal.type === "vac") { const k = { vfrom: "from", vto: "to", vtime: "preheat_time" }[t.dataset.f]; this._modal.draft[k] = t.value; if (k === "from" && t.value > this._modal.draft.to) this._modal.draft.to = t.value; this._renderModal(); }
+      else if (t.dataset && t.dataset.f === "time" && this._modal) { this._modal.draft.entries[+t.dataset.i].time = t.value || "00:00"; this._renderModal(); }
     });
   }
 
@@ -447,6 +501,31 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "close") { this._modal = null; this._renderModal(); }
     else if (a === "pick") { this._cfg.layout.icons = { ...(this._cfg.layout.icons || {}), [m.id]: b.dataset.k }; this._saveLayout(); this._modal = null; this._renderModal(); this._render(); }
     else if (a === "preset") { const ic2 = { ...(this._cfg.layout.icons || {}) }; delete ic2[m.id]; this._cfg.layout.icons = ic2; this._saveLayout(); this._modal = null; this._renderModal(); this._render(); }
+    else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
+    else if (a === "pm") {
+      const p = this._pres();
+      if (b.dataset.k === "vacation" && !(p.from && p.to)) { this._act("vac", b); return; }
+      this._cfg.presence = { ...p, mode: b.dataset.k, origin: "manual" }; this._savePresence(); this._render();
+    }
+    else if (a === "vac") {
+      const p = this._pres(), all = Object.keys(this._hass.states).filter((e) => e.startsWith("person."));
+      this._modal = { type: "vac", draft: { ...p, from: p.from || this._isoDay(0), to: p.to || this._isoDay(7), persons: p.persons.length ? [...p.persons] : all } }; this._renderModal();
+    }
+    else if (m && m.type === "vac") {
+      const d = m.draft;
+      if (a === "vtm") d.temp = Math.max(5, d.temp - 0.5);
+      else if (a === "vtp") d.temp = Math.min(25, d.temp + 0.5);
+      else if (a === "vpre") d.preheat = !d.preheat;
+      else if (a === "vauto") d.auto = !d.auto;
+      else if (a === "vawm") d.away_after = Math.max(15, d.away_after - 15);
+      else if (a === "vawp") d.away_after = Math.min(120, d.away_after + 15);
+      else if (a === "vper") { const e = b.dataset.e; d.persons = d.persons.includes(e) ? d.persons.filter((x) => x !== e) : [...d.persons, e]; }
+      else if (a === "vsave") {
+        if (!d.from || !d.to || d.to < d.from) { this._toast("Bitte ein gültiges Datum wählen"); return; }
+        this._cfg.presence = { ...d, mode: "vacation", origin: "manual" }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Urlaub gespeichert"); return;
+      }
+      this._renderModal();
+    }
     else if (m && m.type === "plan") {
       const d = m.draft;
       if (a === "penable") d.enabled = !d.enabled;
@@ -455,6 +534,9 @@ class FensterHeizungPanel extends HTMLElement {
       else if (a === "tmin") d.entries[i].temp = Math.max(5, Math.round((d.entries[i].temp - 0.5) * 2) / 2);
       else if (a === "tplus") d.entries[i].temp = Math.min(30, Math.round((d.entries[i].temp + 0.5) * 2) / 2);
       else if (a === "pdel") d.entries.splice(i, 1);
+      else if (a === "pmode") d.mode = b.dataset.k;
+      else if (a === "pdq") d.entries[i].days = { wk: [0, 1, 2, 3, 4], we: [5, 6], all: [0, 1, 2, 3, 4, 5, 6] }[b.dataset.q];
+      else if (a === "pdup") d.entries.splice(i + 1, 0, { ...d.entries[i], days: [...d.entries[i].days], id: this._uid() });
       else if (a === "padd") d.entries.push({ id: this._uid(), days: [0, 1, 2, 3, 4], time: "06:00", temp: 21 });
       else if (a === "ptpl") d.entries = TEMPLATE.map((e) => ({ ...e, id: this._uid() }));
       else if (a === "psave") return this._savePlan();
@@ -465,7 +547,7 @@ class FensterHeizungPanel extends HTMLElement {
   _openPlan(id) {
     if (!this._admin()) return;
     const p0 = this._cfg.plans[id] || { enabled: true, entries: [] }, pr = this._collect().find((x) => x.id === id), p = { ...p0, enabled: pr && pr.planOn !== undefined ? pr.planOn : p0.enabled };
-    const draft = { enabled: p.entries.length ? p.enabled : true, entries: p.entries.map((e) => ({ ...e, days: [...e.days], id: e.id || this._uid() })) };
+    const draft = { mode: p.mode || "heat", enabled: p.entries.length ? p.enabled : true, entries: p.entries.map((e) => ({ ...e, days: [...e.days], id: e.id || this._uid() })) };
     this._modal = { type: "plan", id, draft, day: Math.floor(nowMin() / 1440) };
     this._renderModal();
   }
@@ -474,8 +556,8 @@ class FensterHeizungPanel extends HTMLElement {
     entries.sort((a, b) => Math.min(...a.days) - Math.min(...b.days) || toMin(a.time) - toMin(b.time));
     const plan = { enabled: m.draft.enabled && entries.length > 0, entries };
     try {
-      await this._hass.callWS({ type: "fenster_heizung/set_plan", entry_id: m.id, enabled: plan.enabled, entries });
-      this._cfg.plans[m.id] = plan; this._modal = null; this._renderModal(); this._render(); this._toast("Heizplan gespeichert");
+      await this._hass.callWS({ type: "fenster_heizung/set_plan", entry_id: m.id, enabled: plan.enabled, entries, mode: m.draft.mode });
+      this._cfg.plans[m.id] = { ...plan, mode: m.draft.mode }; this._modal = null; this._renderModal(); this._render(); this._toast("Heizplan gespeichert");
     } catch (e) { this._toast("Heizplan konnte nicht gespeichert werden"); }
   }
 
@@ -490,19 +572,45 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sh"><div><b>Symbol wählen</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="igrid">${ROOM_ICONS.map(([k, l]) => `<button class="${k === cur ? "sel" : ""}" data-act="pick" data-k="${k}">${ic(k, 28)}<span>${l}</span></button>`).join("")}</div>
         <button class="lnk" data-act="preset">Automatisch nach Raumname</button></div>`;
+    } else if (m.type === "why") {
+      const mm = MODE[r.mode] || MODE.regelung_aus;
+      box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+        <div class="sh"><div><b>${r.mode === "heizung_pausiert" ? "Warum pausiert die Heizung?" : "Warum „" + mm.t + "“?"}</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="why-l">${(r.why || []).map((w) => `<div class="wl ${w.s}"><i></i><span>${esc(w.t)}</span></div>`).join("") || `<div class="mut">Keine Angaben vorhanden.</div>`}</div>
+        <div class="foot2"><button class="btn2" data-act="close">Schließen</button></div></div>`;
+    } else if (m.type === "vac") {
+      const d = m.draft, persons = Object.keys(this._hass.states).filter((e) => e.startsWith("person."));
+      box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+        <div class="sh"><div><b>Urlaub planen</b><span>Alle Räume</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="vrow"><span>Von</span><input type="date" value="${d.from}" data-f="vfrom"></div>
+        <div class="vrow"><span>Bis</span><input type="date" value="${d.to}" data-f="vto" min="${d.from}"></div>
+        <div class="vrow"><span>Absenktemperatur</span><div class="step"><button data-act="vtm" aria-label="kälter">${ic("minus", 18)}</button><b style="color:${heat(d.temp)}">${num(d.temp, 1)} °C</b><button data-act="vtp" aria-label="wärmer">${ic("plus", 18)}</button></div></div>
+        <div class="vrow"><span>Am Rückkehrtag vorheizen</span><button class="sw ${d.preheat ? "on" : ""}" data-act="vpre" aria-pressed="${d.preheat}"></button></div>
+        ${d.preheat ? `<div class="vrow"><span>Vorheizen ab</span><input type="time" value="${d.preheat_time}" data-f="vtime" style="background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit"></div>` : ""}
+        <div class="mut sm" style="margin:2px 0 0">${d.preheat ? `Am Bis-Tag gilt ab ${d.preheat_time} Uhr wieder der Heizplan.` : "Der Heizplan gilt wieder ab dem Tag nach dem Bis-Datum."}</div>
+        <div class="mut sm" style="margin:14px 0 4px">Automatisch erkennen</div>
+        <div class="vrow"><span>Abwesend, wenn niemand zu Hause ist</span><button class="sw ${d.auto ? "on" : ""}" data-act="vauto" aria-pressed="${d.auto}"></button></div>
+        ${d.auto ? `<div class="dchips">${persons.map((e) => `<button class="dc ${d.persons.includes(e) ? "sel" : ""}" data-act="vper" data-e="${esc(e)}">${esc(this._hass.states[e].attributes.friendly_name || e)}</button>`).join("")}</div>
+        <div class="vrow"><span>Nach</span><div class="step"><button data-act="vawm" aria-label="weniger">${ic("minus", 18)}</button><b>${d.away_after} Min.</b><button data-act="vawp" aria-label="mehr">${ic("plus", 18)}</button></div></div>` : ""}
+        <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="vsave">Speichern</button></div></div>`;
     } else {
       const d = m.draft, pts = points(d.entries), today = Math.floor(nowMin() / 1440);
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>Heizplan</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="row"><span>Heizplan aktiv</span><button class="sw ${d.enabled ? "on" : ""}" data-act="penable" aria-label="Heizplan aktiv" aria-pressed="${d.enabled}"></button></div>
+        <div class="mut sm" style="margin:0 0 6px">Beim Planstart ausgeschaltete Thermostate einschalten</div>
+        <div class="seg">${[["keep", "Nein"], ["heat", "Heizen"], ["auto", "Automatik"]].map(([k, l]) => `<button class="${d.mode === k ? "sel" : ""}" data-act="pmode" data-k="${k}">${l}</button>`).join("")}</div>
+        <div class="mut sm" style="margin:0 0 4px">Vorschau für Tag</div>
         <div class="dchips">${DAYS.map((x, k) => `<button class="dc ${m.day === k ? "sel" : ""}" data-act="pday" data-d="${k}">${x}</button>`).join("")}</div>
         ${pts.length ? bar(pts, m.day, m.day === today ? nowMin() : null) : `<div class="mut">Noch keine Schaltpunkte.</div>`}
-        <div class="mut sm">Vorschau für ${DAYS_LONG[m.day]} · Farbe = Temperatur</div>
+        <div class="mut sm">${DAYS_LONG[m.day]} · Farbe = Temperatur</div>
         ${d.entries.map((e, i) => `<div class="sp"><div class="sp1">
           <input type="time" value="${e.time}" data-i="${i}" data-f="time" aria-label="Uhrzeit">
           <div class="step"><button data-act="tmin" data-i="${i}" aria-label="kälter">${ic("minus", 18)}</button><b style="color:${heat(e.temp)}">${num(e.temp, 1)} °C</b><button data-act="tplus" data-i="${i}" aria-label="wärmer">${ic("plus", 18)}</button></div>
           <button class="ibtn" data-act="pdel" data-i="${i}" aria-label="Schaltpunkt löschen">${ic("trash", 17)}</button></div>
-          <div class="dchips sm">${DAYS.map((x, k) => `<button class="dc ${e.days.includes(k) ? "sel" : ""}" data-act="pdc" data-i="${i}" data-d="${k}">${x}</button>`).join("")}</div></div>`).join("")}
+          <div class="mut sm" style="margin:2px 0 2px">Gilt an (mehrere Tage möglich)</div>
+          <div class="dchips sm">${DAYS.map((x, k) => `<button class="dc ${e.days.includes(k) ? "sel" : ""}" data-act="pdc" data-i="${i}" data-d="${k}">${x}</button>`).join("")}</div>
+          <div class="quick"><button class="lnk" data-act="pdq" data-i="${i}" data-q="wk">Mo–Fr</button><button class="lnk" data-act="pdq" data-i="${i}" data-q="we">Sa–So</button><button class="lnk" data-act="pdq" data-i="${i}" data-q="all">Alle Tage</button><button class="lnk" data-act="pdup" data-i="${i}">${ic("copy", 14)}Kopie</button></div></div>`).join("")}
         <div class="btns"><button class="lnk" data-act="padd">${ic("plus", 16)}Schaltpunkt</button><button class="lnk" data-act="ptpl">Vorlage laden</button></div>
         <div class="foot2"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="psave">Speichern</button></div></div>`;
     }
