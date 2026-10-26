@@ -4,7 +4,7 @@
 
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
 
-Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.6.1**.
+Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.8.0**.
 
 ## Inhalt
 - [Dashboard](#dashboard)
@@ -16,6 +16,8 @@ Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster
 - [„Warum?“ pro Raum](#warum-pro-raum)
 - [Raumluft: Lüften und Schimmel](#raumluft-lüften-und-schimmel)
 - [Elektroheizer mit PV-Überschuss](#elektroheizer-mit-pv-überschuss)
+- [Gerätediagnose](#gerätediagnose)
+- [Einrichtungsassistent](#einrichtungsassistent)
 - [Wetter-Anpassung und Sommermodus](#wetter-anpassung-und-sommermodus)
 - [Sichern und Wiederherstellen](#sichern-und-wiederherstellen)
 - [Meine Ansicht](#meine-ansicht)
@@ -175,7 +177,7 @@ In jedem Raum kann ein elektrischer Heizer (Heizlüfter, Infrarot, Klima-Heizger
 
 **Einrichtung**
 1. Unter **Allgemein → PV-Überschuss für Elektroheizer** den Sensor für die Netzeinspeisung wählen. Er muss die Leistung am Netzanschluss in W oder kW liefern. Mit der Auswahl „Einspeisung positiv“ oder „Netzbezug positiv“ stellst du das Vorzeichen passend ein.
-2. Dort außerdem Reserve, Einschaltverzögerung, Mindestlaufzeit, optional den Batterie-Ladestand sowie Strompreis und Einspeisevergütung einstellen.
+2. Dort außerdem Reserve, Einschaltverzögerung, Mindestlaufzeit, optional den Batterie-Ladestand sowie den Strompreis und die Einspeisevergütung einstellen. Der Strompreis lässt sich als Festpreis (mit zwei Nachkommastellen, z. B. 31,87 ct/kWh) eintragen oder aus einer Entität lesen, etwa einem dynamischen Stromtarif. Sensoren in €/kWh und ct/kWh werden erkannt; fällt der Sensor aus, gilt der Festpreis.
 3. In den Raumeinstellungen unter **Elektroheizer** den Heizer einschalten und das Gerät wählen.
 
 <img src="docs/vorschau_pv_allgemein.png" width="480" alt="PV-Einstellungen unter Allgemein"> <img src="docs/vorschau_pv_einstellung.png" width="480" alt="Elektroheizer in den Raumeinstellungen">
@@ -208,6 +210,35 @@ Der Knopf „Bericht“ an der Heizer-Karte zeigt pro Tag Laufzeit, Energie, den
 <img src="docs/vorschau_pv_bericht.png" width="480" alt="Heizer-Bericht"> <img src="docs/vorschau_pv_alle.png" width="480" alt="Gesamtbericht aller Heizer">
 
 Hinweise: Die Energie wird aus der Nennleistung der Stufe berechnet, nicht gemessen. Der PV-Anteil ergibt sich aus der Netzeinspeisung. Der Heizer wird ausschließlich von dieser Integration geschaltet. Schaltest du ihn von Hand, übernimmt die Regelung innerhalb von etwa 30 Sekunden wieder.
+
+## Gerätediagnose
+Unter **Allgemein → Diagnose öffnen** zeigt die Gerätediagnose, ob alle Geräte der Regelung melden. Oben steht eine Gesamtanzeige („Alles in Ordnung“, Warnungen oder Fehler) mit dem Knopf „Erneut prüfen“. Es gibt fünf Reiter:
+
+- **Status:** Pro Raum die Fenstersensoren, Thermostate, Luftfeuchte-Sensoren und Elektroheizer, dazu PV-Sensor, Batterie, Strompreis, Einspeisevergütung und Benachrichtigungsdienste. Fehler: nicht erreichbar oder gelöscht. Warnungen: über 24 Stunden keine Meldung, Thermostat ohne Raumtemperatur, Fenster über 12 Stunden offen, Sensor ohne Zahlenwert, Dienst nicht gefunden.
+- **Gemeldet:** Alle Geräte nach letzter Meldung sortiert, die ältesten oben, mit Filter „Nur auffällige“.
+- **Ventile:** Pro Thermostat Batterie, Ist- und Zieltemperatur, letzte Meldung und letzter Befehl. Die Integration prüft zwei Minuten nach jedem Befehl (Zieltemperatur oder Betriebsart), ob das Ventil ihn übernommen hat. Sonst steht dort „Reagiert nicht auf Befehle“.
+- **Fenster:** Pro Fensterkontakt Zustand, letzter Wechsel, letzte Meldung und Batterie. Gemeldet werden: nicht erreichbar, Batterie leer oder schwach, „seit Tagen unverändert“ (einstellbar, Standard 7 Tage) und „keine Meldung“ seit über 3 Tagen.
+- **Protokoll:** Fehlgeschlagene Schaltvorgänge, nicht erreichbare Geräte, Ventile, die nicht reagieren, und Benachrichtigungen. Die letzten 200 Einträge bleiben über Neustarts erhalten. „Kopieren“ legt sie für Fehlerberichte in die Zwischenablage, „Leeren“ löscht sie.
+
+**Batterie:** Die Integration liest sie aus dem Gerät, aus einem Batteriesensor desselben Geräts oder aus einem Binärsensor mit der Geräteklasse Batterie. Über „Quelle“ in jeder Karte wählst du eine andere Entität: einen Prozent-Sensor oder einen Binärsensor, der bei schwacher Batterie „an“ ist („Umgekehrt“ dreht das um), oder schaltest die Überwachung ab. Ab 20 % (einstellbar) gilt die Batterie als schwach, ab 10 % oder bei einem Binärsensor als leer.
+
+**Benachrichtigung:** Im Reiter „Ventile“ wählst du einen Benachrichtigungsdienst. Alle fünf Minuten wird geprüft; jedes Problem wird höchstens einmal in 24 Stunden gemeldet und erst wieder, wenn es zwischenzeitlich gelöst war. In den Raumkarten erscheint bei einem Problem ein Hinweis wie „Batterie 12 %“, „Ventil offline“ oder „Kontakt unverändert“, ein Tipp darauf öffnet die Diagnose.
+
+<img src="docs/vorschau_diagnose.png" width="480" alt="Gerätediagnose"> <img src="docs/vorschau_ventile.png" width="480" alt="Ventil-Diagnose">
+
+## Einrichtungsassistent
+Unter **Allgemein → Assistent starten** (bei noch fehlenden Räumen auch direkt im Dashboard) führt der Assistent in acht Schritten durch die Einrichtung. Jeder Schritt außer dem ersten lässt sich überspringen:
+
+1. **Willkommen:** zeigt, was in deinem Home Assistant gefunden wurde.
+2. **Räume:** Vorschläge aus den Bereichen von Home Assistant (Fenster- und Türsensoren plus Thermostate im selben Bereich) oder manuell. Bestehende Räume bleiben unverändert.
+3. **Fenstermeldung:** Verzögerungen, Thermostat aus oder Absenken, Sommermodus.
+4. **Heizung & Energie:** Brennstoff, Außentemperatur-Sensor, wetterabhängige Absenkung.
+5. **Luftfeuchte:** Sensor je Raum.
+6. **PV & Elektroheizer:** Einspeise-Sensor, Batterie, Strompreis und Einspeisevergütung (je als Festwert oder Entität), Heizer je Raum mit Leistungsstufen.
+7. **Meldungen:** Benachrichtigungsdienst und Erinnerungszeit.
+8. **Zusammenfassung:** Erst hier wird angelegt. Danach zeigt der Assistent pro Raum ein Häkchen oder den Fehler. Räume ohne Fenstersensor oder Thermostat werden übersprungen.
+
+<img src="docs/vorschau_assistent.png" width="720" alt="Einrichtungsassistent">
 
 ## Wetter-Anpassung und Sommermodus
 Beides stellst du unter **Allgemein** (Knopf oben rechts, nur Administratoren) ein.
@@ -314,6 +345,7 @@ Pro Raum:
 - Der bisherige Wert „Energie pro m³ Gas“ bleibt für Erdgas erhalten.
 - Die Raumeinstellungen im Dashboard nutzen die neuen WebSocket-Befehle `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Neue Werte werden wie in den Home-Assistant-Optionen gespeichert.
 - Farben, Fotos, Symbole und die Wetteranzeige werden im gemeinsamen Layout gespeichert (WebSocket-Befehl `fenster_heizung/set_layout`, nur Administratoren). Das Backend prüft Farben, Foto-Format und -Größe sowie die Entitäten.
+- Version 2.8.0 fügt die WebSocket-Befehle `get_diag` und `clear_diag` hinzu (Letzterer nur für Administratoren) und den Schlüssel `valve` in den allgemeinen Einstellungen (Batterie-Schwelle, Tage, Benachrichtigungsdienst, Batterie-Quellen).
 - Version 2.6.0 fügt die WebSocket-Befehle `get_general`, `set_general`, `get_update`, `get_learning` und `restore` hinzu. Das Backend prüft alle Werte; Änderungen sind nur für Administratoren erlaubt.
 - Neue Raumeinstellungen (`humidity_sensor`, `air_hint`, `air_every`, `weather_adj`) erscheinen nur im Dashboard. Beim Speichern im HA-Optionsdialog bleiben sie erhalten.
 - Der Bericht braucht Verlaufsdaten im Recorder, siehe [Bericht pro Raum](#bericht-pro-raum).

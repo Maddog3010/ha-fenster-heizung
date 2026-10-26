@@ -22,21 +22,44 @@ DEFAULTS: dict[str, Any] = {
     "summer": {"mode": "auto", "temp": 18.0, "days": 3},
     "wxadj": {"on": False, "mild": 12.0, "down": 1.0, "frost": 0.0, "up": 1.0},
     "pv": {"sensor": "", "sign": "export", "reserve": 200, "delay": 3, "minrun": 10,
-           "soc_sensor": "", "soc_min": 80, "price": 32.0, "feed": 8.0},
+           "soc_sensor": "", "soc_min": 80, "price": 32.0, "feed": 8.0,
+           "price_mode": "fix", "price_sensor": "",
+           "feed_mode": "fix", "feed_sensor": ""},
+    "valve": {"warn": 20, "days": 7, "notify": "", "batsrc": {}},
 }
 _ENTITY = re.compile(r"^sensor\.[a-z0-9_]+$")
+_NOTIFY = re.compile(r"^notify\.[a-z0-9_]+$")
+_BATSRC = re.compile(r"^(sensor|binary_sensor)\.[a-z0-9_]+$")
+_DEVICE = re.compile(r"^(climate|binary_sensor)\.[a-z0-9_]+$")
 
 
 def _sensor(val: Any) -> str:
     return val if isinstance(val, str) and _ENTITY.match(val) else ""
 
 
-def _number(val: Any, lo: float, hi: float, default: float) -> float:
+def _number(val: Any, lo: float, hi: float, default: float, decimals: int = 1) -> float:
+    if isinstance(val, str):
+        val = val.strip().replace(",", ".")
     try:
         v = float(val)
     except (TypeError, ValueError):
         return default
-    return round(min(max(v, lo), hi), 1)
+    if v != v or v in (float("inf"), float("-inf")):
+        return default
+    return round(min(max(v, lo), hi), decimals)
+
+
+def _batsrc(raw: Any) -> dict[str, dict[str, Any]]:
+    out: dict[str, dict[str, Any]] = {}
+    if not isinstance(raw, dict):
+        return out
+    for key, val in list(raw.items())[:300]:
+        if not (isinstance(key, str) and _DEVICE.match(key) and isinstance(val, dict)):
+            continue
+        src = val.get("src")
+        if src == "none" or (isinstance(src, str) and _BATSRC.match(src)):
+            out[key] = {"src": src, "inv": bool(val.get("inv")) and src != "none" and src.startswith("binary_sensor.")}
+    return out
 
 
 def clean_general(raw: Any) -> dict[str, Any]:
@@ -46,6 +69,8 @@ def clean_general(raw: Any) -> dict[str, Any]:
     w = raw.get("wxadj") if isinstance(raw.get("wxadj"), dict) else {}
     ds, dw, dp = DEFAULTS["summer"], DEFAULTS["wxadj"], DEFAULTS["pv"]
     p = raw.get("pv") if isinstance(raw.get("pv"), dict) else {}
+    vv = raw.get("valve") if isinstance(raw.get("valve"), dict) else {}
+    dv = DEFAULTS["valve"]
     days = s.get("days")
     return {
         "updates": raw.get("updates") is not False,
@@ -69,8 +94,18 @@ def clean_general(raw: Any) -> dict[str, Any]:
             "minrun": int(_number(p.get("minrun"), 0, 120, dp["minrun"])),
             "soc_sensor": _sensor(p.get("soc_sensor")),
             "soc_min": int(_number(p.get("soc_min"), 0, 100, dp["soc_min"])),
-            "price": _number(p.get("price"), 0, 100, dp["price"]),
-            "feed": _number(p.get("feed"), 0, 100, dp["feed"]),
+            "price": _number(p.get("price"), 0, 100, dp["price"], 2),
+            "feed": _number(p.get("feed"), 0, 100, dp["feed"], 2),
+            "price_mode": "entity" if p.get("price_mode") == "entity" else "fix",
+            "price_sensor": _sensor(p.get("price_sensor")),
+            "feed_mode": "entity" if p.get("feed_mode") == "entity" else "fix",
+            "feed_sensor": _sensor(p.get("feed_sensor")),
+        },
+        "valve": {
+            "warn": int(_number(vv.get("warn"), 11, 60, dv["warn"])),
+            "days": int(_number(vv.get("days"), 1, 60, dv["days"])),
+            "notify": vv.get("notify") if isinstance(vv.get("notify"), str) and _NOTIFY.match(vv.get("notify")) else "",
+            "batsrc": _batsrc(vv.get("batsrc")),
         },
     }
 

@@ -11,6 +11,7 @@ from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 from homeassistant.helpers.event import async_call_later, async_track_time_interval
 from homeassistant.util import dt as dt_util
 
+from .diag import diag_expect, diag_log
 from .const import (
     CONF_THERMOSTATS,
     DOMAIN,
@@ -135,8 +136,12 @@ class HeaterRoom:
     async def _svc(self, domain: str, service: str, **data: Any) -> None:
         try:
             await self.hass.services.async_call(domain, service, data, blocking=True)
-        except Exception:  # noqa: BLE001
+        except Exception as err:  # noqa: BLE001
             _LOGGER.exception("%s.%s für %s fehlgeschlagen", domain, service, data.get("entity_id"))
+            diag_log(self.hass, "error", f"{domain}.{service} für {data.get('entity_id')} fehlgeschlagen: {err}", entity=data.get("entity_id"))
+        else:
+            if domain == "climate" and service == "set_temperature":
+                diag_expect(self.hass, data.get("entity_id"), temperature=data.get("temperature"))
 
     async def async_apply(self, c: dict[str, Any], stage: int) -> None:
         """Gerät auf die Stufe stellen (0 = aus). Nur Befehle, die wirklich nötig sind."""
@@ -161,6 +166,7 @@ class HeaterRoom:
             mode = next((m for m in ("heat", "auto", "heat_cool") if m in modes), None)
             if mode is None:
                 _LOGGER.warning("%s kennt keinen Heizmodus", eid)
+                diag_log(self.hass, "warning", f"{eid} kennt keinen Heizmodus", entity=eid)
                 return
             await self._svc("climate", "set_hvac_mode", entity_id=eid, hvac_mode=mode)
         if c["devtemp"] == "max":
@@ -363,8 +369,9 @@ class PvManager:
         async with self._lock:
             try:
                 await self._run()
-            except Exception:  # noqa: BLE001  - die Regelung darf nie abstürzen
+            except Exception as err:  # noqa: BLE001  - die Regelung darf nie abstürzen
                 _LOGGER.exception("PV-Heizer: Auswertung fehlgeschlagen")
+                diag_log(self.hass, "error", f"PV-Heizer: Auswertung fehlgeschlagen: {err}")
 
     async def _run(self) -> None:
         rooms = self._rooms()

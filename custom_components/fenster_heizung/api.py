@@ -435,9 +435,27 @@ async def ws_set_options(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], {"options": _current_options(entry)})
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/get_diag"})
+@websocket_api.async_response
+async def ws_get_diag(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("diag")
+    connection.send_result(msg["id"], mgr.snapshot() if mgr is not None else {"devices": [], "notify": [], "valves": [], "log": []})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/clear_diag"})
+@websocket_api.async_response
+async def ws_clear_diag(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("diag")
+    if mgr is not None:
+        mgr.clear()
+    connection.send_result(msg["id"], {})
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
+        ws_get_diag, ws_clear_diag,
     ):
         websocket_api.async_register_command(hass, command)

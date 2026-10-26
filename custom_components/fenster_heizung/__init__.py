@@ -23,6 +23,7 @@ from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .api import async_register_api
+from .diag import DiagManager, diag_expect, diag_log
 from .general import GeneralManager
 from .heater import HeaterRoom, PvManager
 from .presence import PresenceManager
@@ -1003,6 +1004,7 @@ class WindowController:
                 )
             except Exception:  # noqa: BLE001
                 _LOGGER.exception("Benachrichtigung über %s fehlgeschlagen", service)
+                diag_log(self.hass, "error", f"Benachrichtigung über {service} fehlgeschlagen", room=self.entry.title)
 
     async def async_set_enabled(self, enabled: bool) -> None:
         self.enabled = enabled
@@ -1078,8 +1080,14 @@ class WindowController:
             await self.hass.services.async_call(
                 "climate", service, {"entity_id": entity_id, **data}, blocking=True
             )
-        except Exception:  # noqa: BLE001
+        except Exception as err:  # noqa: BLE001
             _LOGGER.exception("climate.%s für %s fehlgeschlagen", service, entity_id)
+            diag_log(self.hass, "error", f"climate.{service} für {entity_id} fehlgeschlagen: {err}", entity=entity_id, room=self.entry.title)
+        else:
+            if service == "set_temperature":
+                diag_expect(self.hass, entity_id, temperature=data.get("temperature"))
+            elif service == "set_hvac_mode":
+                diag_expect(self.hass, entity_id, hvac_mode=data.get("hvac_mode"))
 
 
 async def _async_register_panel(hass: HomeAssistant) -> None:
@@ -1133,6 +1141,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "general" not in store:
         store["general"] = GeneralManager(hass)
         await store["general"].async_start()
+    if "diag" not in store:
+        store["diag"] = DiagManager(hass)
+        await store["diag"].async_start()
     if "pv" not in store:
         store["pv"] = PvManager(hass)
         await store["pv"].async_start()
@@ -1161,6 +1172,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             gen = hass.data.get(DOMAIN, {}).pop("general", None)
             if gen is not None:
                 gen.async_stop()
+            dgm = hass.data.get(DOMAIN, {}).pop("diag", None)
+            if dgm is not None:
+                dgm.async_stop()
             pvm = hass.data.get(DOMAIN, {}).pop("pv", None)
             if pvm is not None:
                 pvm.async_stop()

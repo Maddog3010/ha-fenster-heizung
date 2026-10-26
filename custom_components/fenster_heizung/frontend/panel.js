@@ -239,7 +239,10 @@ const vnum = (a) => String(a || "0").split(".").map((x) => parseInt(x, 10) || 0)
 const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
 /* Elektroheizer mit PV-Überschuss */
 const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"] };
-const PVDEF = { sensor: "", sign: "export", reserve: 200, delay: 3, minrun: 10, soc_sensor: "", soc_min: 80, price: 32, feed: 8 };
+const WZ_STEPS = ["Willkommen", "Räume", "Fenstermeldung", "Heizung & Energie", "Luftfeuchte", "PV & Elektroheizer", "Meldungen", "Zusammenfassung"];
+const DG_ROLES = { window: "Fenstersensor", thermo: "Thermostat", hum: "Luftfeuchte", heater: "Elektroheizer", power: "Heizer-Leistung", pv: "PV-Einspeisung", soc: "Batterie", price: "Strompreis", feed: "Einspeisevergütung", outdoor: "Außentemperatur", heating: "Heizungs-Status" };
+const num2 = (v) => (Number(v) || 0).toLocaleString("de-DE", { maximumFractionDigits: 1 });
+const PVDEF = { sensor: "", sign: "export", reserve: 200, delay: 3, minrun: 10, soc_sensor: "", soc_min: 80, price: 32, feed: 8, price_mode: "fix", price_sensor: "", feed_mode: "fix", feed_sensor: "" };
 const stepsOf = (h) => (Array.isArray(h.stufen) && h.stufen.length ? h.stufen : [Number(h.watt) || 0]).map(Number).filter((x) => x > 0).sort((a, b) => a - b);
 const parseSteps = (t) => String(t || "").split(/[;,\s]+/).map((x) => parseInt(x, 10)).filter((x) => x > 0 && x <= 10000).sort((a, b) => a - b);
 const wfmt = (w) => (w >= 1000 ? `${(w / 1000).toLocaleString("de-DE", { maximumFractionDigits: 2 })} kW` : `${Math.round(w).toLocaleString("de-DE")} W`);
@@ -448,7 +451,8 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .vbar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 10px}
 .myb{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:999px;padding:7px 12px;font-size:.82rem;font-weight:600;cursor:pointer}
 .myb.on{border-color:var(--teal);color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent)}
-.air{display:grid;grid-template-columns:repeat(auto-fit,minmax(124px,1fr));gap:8px;margin:10px 0 0}
+.air{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0 0}
+@media(max-width:420px){.air{gap:5px}.air .ac{padding:7px 7px!important}.air .ac .t{font-size:.66rem;gap:3px}.air .ac .v{font-size:.92rem}.air .ac .s{font-size:.66rem}}
 .air .ac{background:color-mix(in srgb,var(--c) 9%,transparent);border:1px solid color-mix(in srgb,var(--c) 28%,transparent);border-radius:12px;padding:8px 10px;min-width:0}
 .air .ac .t{font-size:.7rem;color:var(--mut);display:flex;gap:5px;align-items:center;overflow-wrap:anywhere}
 .air .ac .v{font-weight:700;font-size:1.02rem;margin-top:2px;overflow-wrap:anywhere}
@@ -646,6 +650,32 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .oadd{border-style:dashed;color:var(--teal);font-weight:600;padding:6px 10px;border-radius:999px;font-size:.82rem}
 .olinks{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 16px;margin:4px 0 6px}.lnk.dng{color:#f87171}
 .btn2[disabled]{opacity:.6;cursor:default}
+button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
+.vc{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:0 0 10px}.vc.warn{border-color:color-mix(in srgb,#fbbf24 50%,var(--line))}.vc.bad{border-color:color-mix(in srgb,#f87171 55%,var(--line))}
+.vh{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;margin-bottom:6px}.vh b{display:block;overflow-wrap:anywhere}.vh span{font-size:.76rem;color:var(--mut)}.vh em{font-style:normal;font-size:.76rem;color:var(--mut)}
+.vb{display:flex;align-items:center;gap:10px;padding:5px 0;border-top:1px solid color-mix(in srgb,var(--line) 45%,transparent);font-size:.84rem;flex-wrap:wrap}.vl{color:var(--mut);min-width:98px;font-size:.78rem}.vb b{font-weight:600}.vbad{color:#f87171}
+.vbar{flex:1;min-width:70px;max-width:180px;height:8px;border-radius:4px;background:color-mix(in srgb,var(--mut) 25%,transparent);overflow:hidden}.vbar i{display:block;height:100%;background:#22c55e;border-radius:4px}.vbar.warn i{background:#fbbf24}.vbar.bad i{background:#f87171}
+.vm{display:grid;grid-template-columns:18px 1fr;gap:8px;margin-top:8px;padding:9px 10px;border-radius:10px;font-size:.84rem}.vm b{display:block}.vm span{font-size:.78rem;color:var(--mut)}.vm.warn{background:color-mix(in srgb,#fbbf24 12%,transparent)}.vm.warn .ic{color:#fbbf24}.vm.bad{background:color-mix(in srgb,#f87171 12%,transparent)}.vm.bad .ic{color:#f87171}
+.dg .seg button{font-size:.78rem;padding:9px 3px;white-space:nowrap}@media(max-width:380px){.dg .seg button{font-size:.68rem;padding:9px 0}}
+.vsrc{font-size:.72rem;color:var(--mut);overflow-wrap:anywhere}.vbs{padding-top:0;border-top:0;margin-top:-2px}.vch{margin-left:auto;font-size:.78rem;padding:2px 4px}.vbe{padding:4px 0 6px}.vinv{display:flex;gap:8px;align-items:center;font-size:.8rem;color:var(--mut);margin:0 0 6px}.vwarn{color:#fbbf24}
+.dgs{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:4px 0 12px}.dgs b{display:block}.dgs span{font-size:.78rem;color:var(--mut)}.dgs .btn2{flex:none;padding:8px 12px;font-size:.82rem}
+.dgs.ok{border-color:color-mix(in srgb,#22c55e 45%,var(--line));background:color-mix(in srgb,#22c55e 8%,transparent)}.dgs.ok .ic{color:#22c55e}.dgs.warn{border-color:color-mix(in srgb,#fbbf24 50%,var(--line));background:color-mix(in srgb,#fbbf24 8%,transparent)}.dgs.warn .ic{color:#fbbf24}.dgs.bad{border-color:color-mix(in srgb,#f87171 50%,var(--line));background:color-mix(in srgb,#f87171 8%,transparent)}.dgs.bad .ic{color:#f87171}
+.dgd{width:10px;height:10px;border-radius:50%;background:#22c55e;display:inline-block;flex:none}.dgd.warn{background:#fbbf24}.dgd.bad{background:#f87171}
+.dgb{margin-top:2px}.dgr{border:1px solid var(--line);border-radius:14px;padding:4px 12px 6px;margin:0 0 10px}.dgh{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 60%,transparent)}.dgh span{margin-left:auto;font-size:.76rem;color:var(--mut)}
+.dgl,.dgt,.dgg{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid color-mix(in srgb,var(--line) 45%,transparent)}.dgl:last-child{border-bottom:0}
+.dgl b,.dgt b,.dgg b{display:block;font-size:.88rem;overflow-wrap:anywhere}.dgl span,.dgt span,.dgg span{display:block;font-size:.74rem;color:var(--mut);overflow-wrap:anywhere}.dgl em,.dgg em{font-style:normal;font-size:.76rem;color:var(--mut);text-align:right;max-width:46%}.dgl.warn em{color:#fbbf24}.dgl.bad em{color:#f87171}
+.dgv{text-align:right}.dgv b{white-space:nowrap}.dgf{display:flex;gap:8px;margin:2px 0 8px;flex-wrap:wrap}.chipb{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);border-radius:999px;padding:6px 12px;font:inherit;font-size:.8rem;font-weight:600;cursor:pointer}.chipb.sel{background:color-mix(in srgb,var(--teal) 18%,transparent);border-color:var(--teal)}
+.dgg.error em{color:#f87171}.dgg.warning em{color:#fbbf24}.dgempty{display:grid;justify-items:center;text-align:center;gap:6px;padding:26px 10px;color:var(--mut)}.dgempty .ic{color:#22c55e}.dgempty b{color:var(--primary-text-color)}.dgempty span{font-size:.82rem;max-width:340px}
+.wzp{display:flex;gap:4px;margin:2px 0 14px}.wzp i{flex:1;height:5px;border-radius:3px;background:var(--line);cursor:pointer}.wzp i.on{background:var(--teal)}
+.wzt{margin:0 0 6px;font-size:1.15rem}.wzhero{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:color-mix(in srgb,var(--teal) 18%,transparent);color:var(--teal);margin:6px 0 12px}.wzhero.ok{background:color-mix(in srgb,#22c55e 20%,transparent);color:#22c55e}
+.wzb{min-height:260px;padding-bottom:10px}.wzf{position:sticky;bottom:0;padding-top:10px;background:var(--card)}.wzskip{display:block;margin:8px auto 0}
+.wzc{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 10px;font-size:.8rem}.wzc.ok{padding:4px 10px;color:var(--teal);border-color:color-mix(in srgb,var(--teal) 50%,var(--line))}.wzc button{border:0;background:transparent;color:var(--mut);cursor:pointer;padding:2px;display:grid}
+.wzch,.wzex{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}.wzex{margin:0 0 6px}
+.wzs{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:8px 0}.wzs b{display:block}.wzs span{font-size:.78rem;color:var(--mut)}.wzs .btn2{flex:none;padding:8px 14px}
+.wzr{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:8px 0}.wzr.inc{border-style:dashed}.wzrh{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.wzsum{display:grid;gap:8px}.wzsum>div{display:grid;grid-template-columns:30px 1fr;column-gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px}.wzsum em{grid-row:span 2;color:var(--teal);display:grid;place-items:center}.wzsum span{font-size:.8rem;color:var(--mut);overflow-wrap:anywhere}
+.wzres{display:grid;grid-template-columns:20px 1fr;gap:2px 8px;padding:8px 0;border-bottom:1px solid var(--line)}.wzres.ok .ic{color:#22c55e}.wzres.bad .ic{color:#f87171}.wzres span{grid-column:2;font-size:.8rem;color:var(--mut)}
+
 `;
 
 class FensterHeizungPanel extends HTMLElement {
@@ -848,7 +878,7 @@ class FensterHeizungPanel extends HTMLElement {
       : `<div class="rico" style="${rcStyle(r.color)}">${ico(this._icon(r), 28)}</div>`;
     return `<div class="card crow ${edit ? "ed" : ""}${this._ph(r).c}"${this._ph(r).s} data-sort="room" data-id="${esc(r.id)}">
       ${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${icon}
-      <div class="rn"><b>${esc(r.name)}</b><span class="pill ${m.c}">${m.t}</span>${this._airChip(r)}${this._htrChip(r)}</div>
+      <div class="rn"><b>${esc(r.name)}</b><span class="pill ${m.c}">${m.t}</span>${this._airChip(r)}${this._htrChip(r)}${this._devChip(r)}</div>
       <div class="cells">
         <div class="cell w1 win ${open.length ? "amber" : ""}"><b>${ic(open.length ? "windowOpen" : "window", 15)}${open.length ? `${open.length} von ${wins.length} offen` : "geschlossen"}</b>${esc(open.length ? open.map((w) => w.attributes.friendly_name || w.entity_id).join(", ") : wins.length + (wins.length === 1 ? " Fenster" : " Fenster"))}</div>
         <div class="cell w2"><b>${cur != null ? num(cur, 1) + " °C" : hv}</b>${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} · ` : "") + hv : "kein Thermostat"}</div>
@@ -991,12 +1021,12 @@ class FensterHeizungPanel extends HTMLElement {
     else if (m.error) body = `<div class="mut" style="padding:24px 0">${esc(m.error)}</div>`;
     else if (m.data) {
       const d = m.data; this._hrData = d;
-      const share = d.kwh > 0 ? Math.round((d.pvk / d.kwh) * 100) : 0, gain = (d.pvk * Math.max(0, p.price - p.feed)) / 100;
+      const share = d.kwh > 0 ? Math.round((d.pvk / d.kwh) * 100) : 0, gain = (d.pvk * Math.max(0, this._price() - this._feed())) / 100;
       body = `<div class="hrt"><div style="--a:var(--teal)"><span>${ic("clock", 15)}Laufzeit</span><b>${hmin(d.mins)}</b></div><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie</span><b>${num(d.kwh, 1)} <small>kWh</small></b></div><div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${share} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div></div>
         <div class="hlg"><span><i style="background:#fbbf24"></i>PV-Überschuss</span><span><i style="background:var(--teal)"></i>Heizer (gestrichelt: Stufen)</span>${d.hasT ? `<span><i style="background:#7dd3fc"></i>Raumtemperatur</span>` : ""}</div>
         <div class="hcw">${this._hrChart(d)}</div><div class="hxr" id="hxr"></div>
         <div class="lsec" style="margin-top:14px">Ereignisse</div>${d.ev.length ? d.ev.map((e) => `<div class="hre"><em>${String(Math.floor(e.t / 60)).padStart(2, "0")}:${String(e.t % 60).padStart(2, "0")}</em><i style="background:${e.c}"></i><div><b>${e.x}</b><span>${e.y}</span></div></div>`).join("") : `<div class="mut sm">An diesem Tag hat der Heizer nicht geheizt.</div>`}
-        <div class="mut sm" style="margin-top:10px">Vorteil = PV-Strom statt Netzbezug (${num(p.price, 1)} ct/kWh) abzüglich entgangener Einspeisevergütung (${num(p.feed, 1)} ct/kWh).</div>`;
+        <div class="mut sm" style="margin-top:10px">Vorteil = PV-Strom statt Netzbezug (${num(this._price(), 2)} ct/kWh${p.price_mode === "entity" && p.price_sensor ? ", aktuell" : ""}) abzüglich entgangener Einspeisevergütung (${num(this._feed(), 2)} ct/kWh${p.feed_mode === "entity" && p.feed_sensor ? ", aktuell" : ""}).</div>`;
     }
     return `<div class="hrds">${chips}</div>${body}`;
   }
@@ -1005,7 +1035,7 @@ class FensterHeizungPanel extends HTMLElement {
     const kw = (r, iso) => (iso === today ? Number(r.htr.heute_kwh) || 0 : r.htr.verlauf && r.htr.verlauf[iso] ? Number(r.htr.verlauf[iso][0]) || 0 : 0);
     const pvd = (r, iso) => (iso === today ? Number(r.htr.heute_pv_kwh) || 0 : r.htr.verlauf && r.htr.verlauf[iso] ? Number(r.htr.verlauf[iso][1]) || 0 : 0);
     const tot = days.map((iso) => rs.reduce((a, r) => a + kw(r, iso), 0)), mx = Math.max(0.1, ...tot);
-    const sum = tot.reduce((a, b) => a + b, 0), pvs = days.reduce((a, iso) => a + rs.reduce((b, r) => b + pvd(r, iso), 0), 0), gain = (pvs * Math.max(0, p.price - p.feed)) / 100;
+    const sum = tot.reduce((a, b) => a + b, 0), pvs = days.reduce((a, iso) => a + rs.reduce((b, r) => b + pvd(r, iso), 0), 0), gain = (pvs * Math.max(0, this._price() - this._feed())) / 100;
     const cols = days.map((iso, i) => `<div class="hac"><em>${num(tot[i], 1)}</em><div class="hab">${rs.map((r) => `<b style="height:${(kw(r, iso) / mx) * 100}%;background:${r.color}" title="${esc(r.name)} ${num(kw(r, iso), 1)} kWh"></b>`).join("")}</div><span>${new Date(iso + "T12:00:00").toLocaleDateString("de-DE", { weekday: "short" }).slice(0, 2)}</span></div>`).join("");
     return `<div class="hrt"><div style="--a:#fbbf24"><span>${ic("bolt", 15)}Energie, 7 Tage</span><b>${num(sum, 1)} <small>kWh</small></b></div><div style="--a:#34d399"><span>${ic("sun", 15)}aus PV</span><b>${sum > 0 ? Math.round((pvs / sum) * 100) : 0} <small>%</small></b></div><div style="--a:#a78bfa"><span>${ic("flame", 15)}Vorteil</span><b>${num(gain, 2)} <small>€</small></b></div><div style="--a:var(--teal)"><span>${ic("clock", 15)}Heizer</span><b>${rs.length}</b></div></div>
       <div class="hac-w">${cols}</div><div class="hlg">${rs.map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div>
@@ -1223,6 +1253,19 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="ac slate"><div class="t">${ic("thermo", 13)}Taupunkt</div><div class="v">${num(a.td, 1)} °C</div><div class="s">Wand ${num(a.ts, 1)} °C</div></div>
       <div class="ac ${mc}"><div class="t">${ic("alert", 13)}Schimmel</div><div class="v">${ml}</div><div class="s">${num(a.rs)} % Wand</div></div></div>${this._airMsg(a)}`;
   }
+  _rate(k) {
+    const p = this._pv();
+    if (p[k + "_mode"] === "entity" && p[k + "_sensor"]) {
+      const s = this._hass.states[p[k + "_sensor"]], v = s ? parseFloat(String(s.state).replace(",", ".")) : NaN;
+      if (isFinite(v) && v >= 0) {
+        const u = String((s.attributes || {}).unit_of_measurement || "").toLowerCase();
+        return /ct|cent/.test(u) ? v : /€|eur/.test(u) || v < 5 ? v * 100 : v;
+      }
+    }
+    return Number(p[k]) || 0;
+  }
+  _price() { return this._rate("price"); }
+  _feed() { return this._rate("feed"); }
   _pv() { return { ...PVDEF, ...((this._gen || {}).pv || {}) }; }
   _htrRooms() { return this._collect(true).filter((r) => r.htr).sort((a, b) => (a.htr.prio || 9) - (b.htr.prio || 9)); }
   _htrTotal() { return this._htrRooms().reduce((a, r) => a + (Number(r.htr.watt_now) || 0), 0); }
@@ -1272,7 +1315,7 @@ class FensterHeizungPanel extends HTMLElement {
     const rs = this._htrRooms(); if (!rs.length) return "";
     const p = this._pv(), w = this._pvNow(), tot = this._htrTotal(), soc = this._soc();
     const kwh = rs.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), pvk = rs.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
-    const share = kwh > 0 ? Math.round((pvk / kwh) * 100) : 0, gain = (pvk * Math.max(0, p.price - p.feed)) / 100, cap = Math.max(w ?? 0, tot, 1);
+    const share = kwh > 0 ? Math.round((pvk / kwh) * 100) : 0, gain = (pvk * Math.max(0, this._price() - this._feed())) / 100, cap = Math.max(w ?? 0, tot, 1);
     const seg = rs.filter((r) => r.htr.watt_now > 0).map((r) => `<i style="width:${(r.htr.watt_now / cap) * 100}%;background:${r.color}" title="${esc(r.name)} ${wfmt(r.htr.watt_now)}"></i>`).join("");
     return `<div class="card pvb"><div class="pvh"><span class="pt">${ic("bolt", 18)}PV-Heizer</span><button class="lnk" data-act="hrepall">${ic("chart", 15)}Bericht</button></div>
       ${w == null ? `<div class="mut sm">Noch kein PV-Sensor gewählt. Das stellst du unter „Allgemein“ ein.</div>` : `<div class="pvbig"><b>${wfmt(w)}</b><span>PV-Überschuss${soc != null ? ` · Batterie ${num(soc)} %${p.soc_min ? ` (ab ${num(p.soc_min)} % für Heizer)` : ""}` : ""}</span></div>
@@ -1313,9 +1356,9 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.due) msg = `<div class="airmsg amber">${ic("windy", 16)}<div><b>Länger nicht gelüftet</b> (${this._ago(a.hrs)}). Jetzt ca. ${a.need} Min. stoßlüften.</div></div>`;
     else if (a.crit < 60) msg = `<div class="airmsg amber">${ic("alert", 16)}<div><b>Kalte Wände:</b> halte die Luftfeuchte unter ${num(Math.floor(a.crit))} %. Ohne Sensor kann die Karte sie nicht messen.</div></div>`;
     else msg = `<div class="airmsg green">${ic("check", 16)}<div><b>Kein Lüftungsbedarf erkannt</b>, zuletzt gelüftet ${this._ago(a.hrs)}</div></div>`;
-    return `<div class="air"><div class="ac ${a.due ? "amber" : "green"}"><div class="t">${ic("windy", 13)}Gelüftet</div><div class="v">${a.open ? "jetzt" : a.hrs == null ? "unbekannt" : this._ago(a.hrs).replace("vor ", "")}</div><div class="s">${a.every > 0 ? `Erinnern: ${a.every} Std.` : "ohne Erinnerung"}</div></div>
-      <div class="ac slate"><div class="t">${ic("thermo", 13)}Wand</div><div class="v">${num(a.ts, 1)} °C</div><div class="s">${a.estimated ? "grob geschätzt" : "Außenwand"}</div></div>
-      <div class="ac ${cc}"><div class="t">${ic("drop", 13)}Kritisch ab</div><div class="v">${a.crit >= 90 ? "über 90" : num(Math.floor(a.crit))} %</div><div class="s">an der Wand</div></div></div>${msg}
+    return `<div class="air"><div class="ac ${a.due ? "amber" : "green"}"><div class="t">${ic("windy", 13)}Gelüftet</div><div class="v">${a.open ? "jetzt" : a.hrs == null ? "unbekannt" : this._ago(a.hrs).replace("vor ", "")}</div><div class="s">${a.every > 0 ? `Erinnern: ${a.every}&nbsp;Std.` : "ohne Erinnerung"}</div></div>
+      <div class="ac slate"><div class="t">${ic("thermo", 13)}Wand</div><div class="v">${num(a.ts, 1)}&nbsp;°C</div><div class="s">${a.estimated ? "grob geschätzt" : "Außenwand"}</div></div>
+      <div class="ac ${cc}"><div class="t">${ic("drop", 13)}Kritisch ab</div><div class="v">${a.crit >= 90 ? "&gt;&nbsp;90" : num(Math.floor(a.crit))}&nbsp;%</div><div class="s">an der Wand</div></div></div>${msg}
       ${adm ? `<button class="lnk" data-act="airsetup" data-id="${esc(r.id)}">${ic("drop", 15)}Luftfeuchte-Sensor wählen für genaue Warnung</button>` : ""}`;
   }
   _airLiteChip(r) {
@@ -1373,7 +1416,8 @@ class FensterHeizungPanel extends HTMLElement {
     const f = t.dataset && t.dataset.f;
     if (f === "gwxn") { const v = Number(t.value); this._gen.wxadj = { ...this._gen.wxadj, [t.dataset.k]: isFinite(v) ? v : 0 }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gpvs" || f === "gpvb") { this._gen.pv = { ...this._pv(), [f === "gpvs" ? "sensor" : "soc_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
-    if (f === "gpvn") { const v = Number(t.value); this._gen.pv = { ...this._pv(), [t.dataset.k]: isFinite(v) ? Math.max(0, v) : 0 }; this._saveGen(); this._render(); this._renderModal(); return true; }
+    if (f === "gpvp") { this._gen.pv = { ...this._pv(), [t.dataset.p + "_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
+    if (f === "gpvn") { const v = Number(t.value); this._gen.pv = { ...this._pv(), [t.dataset.k]: isFinite(v) ? Math.min(100, Math.max(0, Math.round(v * 100) / 100)) : 0 }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gth") { const v = Math.min(35, Math.max(5, Number(t.value) || 18)); this._gen.summer = { ...this._gen.summer, temp: v }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "rsfile") {
       const file = t.files && t.files[0]; if (!file) return true;
@@ -1426,7 +1470,7 @@ class FensterHeizungPanel extends HTMLElement {
       : `<div class="rico" style="${rcStyle(r.color)}">${ico(this._icon(r), 32)}</div>`;
     return `<div class="card room${this._ph(r).c}"${this._ph(r).s} data-sort="room" data-id="${esc(r.id)}"><div class="rh">
       ${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${icon}
-      <div class="rn"><b>${esc(r.name)}</b><div class="pl"><span class="pill ${m.c}">${m.t}</span><button class="why" data-act="why" data-id="${esc(r.id)}" aria-label="Warum?">${ic("info", 13)}Warum?</button><button class="why" data-act="rep" data-id="${esc(r.id)}" aria-label="Bericht">${ic("chart", 13)}Bericht</button></div></div>
+      <div class="rn"><b>${esc(r.name)}</b><div class="pl"><span class="pill ${m.c}">${m.t}</span><button class="why" data-act="why" data-id="${esc(r.id)}" aria-label="Warum?">${ic("info", 13)}Warum?</button><button class="why" data-act="rep" data-id="${esc(r.id)}" aria-label="Bericht">${ic("chart", 13)}Bericht</button>${this._devChip(r)}</div></div>
       ${this._admin() ? `<button class="ibtn gear" data-act="opt" data-id="${esc(r.id)}" aria-label="Raumeinstellungen">${ic("sliders", 17)}</button>` : ""}
       <button class="sw ${r.on ? "on" : ""}" data-act="sw" data-sw="${esc(r.sw)}" aria-label="Fensterregelung umschalten" aria-pressed="${!!r.on}"></button></div>
       <div class="two">
@@ -1478,7 +1522,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="legend">${chartRooms.map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div></div>`;
     const blocks = rooms.length ? this._blockOrder().map((id) => (!content[id]() && !edit ? "" : `<section class="blk ${edit ? "editing" : ""}" data-sort="block" data-id="${id}">
         ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${BLOCKS[id]}</div>` : ""}${content[id]()}</section>`)).join("")
-      : `<div class="card empty">Noch keine Räume eingerichtet.<br>Füge unter Einstellungen › Geräte &amp; Dienste die Integration „Fenster &amp; Heizung“ hinzu.</div>`;
+      : `<div class="card empty">Noch keine Räume eingerichtet.<br>${adm ? `<button class="btn2 pri" data-act="wz" style="margin-top:14px;flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button>` : "Ein Administrator kann die Einrichtung starten."}</div>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><span class="logo">${ic("windowOpen", 22)}</span><div><b>Modul 1 – Fenster &amp; Heizung</b><span><em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
@@ -1500,6 +1544,8 @@ class FensterHeizungPanel extends HTMLElement {
     sr.addEventListener("pointerdown", (e) => { const g = e.target.closest("[data-handle]"); if (g) this._dragStart(e, g); });
     sr.addEventListener("change", (e) => {
       const t = e.target;
+      if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wz") && this._wzChange(t)) return;
       if (this._lookChange(t)) return;
       if (t.dataset && t.dataset.k === "htr_steps" && this._modal && this._modal.type === "opt") { this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("v") && this._modal && this._modal.type === "vac") { const k = { vfrom: "from", vto: "to", vtime: "preheat_time" }[t.dataset.f]; this._modal.draft[k] = t.value; if (k === "from" && t.value > this._modal.draft.to) this._modal.draft.to = t.value; this._renderModal(); }
@@ -1515,6 +1561,10 @@ class FensterHeizungPanel extends HTMLElement {
     else if (["gtog", "gsw", "gmv", "gedit", "gadd", "gpick", "gicon", "gsave", "gdel"].includes(a)) this._gActions(a, b);
     else if (a === "opt") this._optOpen(id);
     else if (a === "oadd") this._nav(HA_PAGE);
+    else if (a === "wz") this._wzOpen();
+    else if (a === "diag") this._dgOpen(b.dataset.k);
+    else if (a.startsWith("dg") && m && m.type === "diag") this._dgAct(a, b);
+    else if (a.startsWith("wz") && m && m.type === "wiz") this._wzAct(a, b);
     else if (m && m.type === "opt") this._optAct(a, b);
     else if (a === "rep") this._repOpen(id);
     else if (a === "repday") { m.day = b.dataset.d; m.keepScroll = b.closest(".rdays").scrollLeft; this._repLoad(m).then(() => {}); this._renderModal(); }
@@ -1529,6 +1579,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "hrep") this._hrOpen(id);
     else if (a === "hrepall") { this._modal = { type: "hrepall" }; this._renderModal(); }
     else if (a === "hrday") { m.day = b.dataset.d; this._hrLoad(m); this._renderModal(); }
+    else if (a === "gpvpm") { this._gen.pv = { ...this._pv(), [b.dataset.p + "_mode"]: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "gpvsign") { this._gen.pv = { ...this._pv(), sign: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "gen") { this._modal = { type: "gen", restore: null }; this._renderModal(); }
     else if (a === "news") { this._modal = { type: "news" }; this._renderModal(); }
@@ -1726,11 +1777,348 @@ class FensterHeizungPanel extends HTMLElement {
     } catch (e) { this._toast("Heizplan konnte nicht gespeichert werden"); }
   }
 
+  /* ---------------- Einrichtungsassistent ---------------- */
+  _wzOpen() {
+    const pv = { ...PVDEF, ...(this._gen.pv || {}) }, sm = this._gen.summer || {};
+    this._modal = { type: "wiz", step: 0, busy: false, done: null, draft: { rooms: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, summer: sm.mode || "auto", fuel: "erdgas", outdoor: "", wx: !!(this._gen.wxadj || {}).on, pvon: !!pv.sensor, pv, notify: "", notify_after: 0 } };
+    this._renderModal();
+  }
+  _wzFind() {
+    const H = this._hass, st = H.states || {}, ids = Object.keys(st), dc = (e) => (st[e].attributes || {}).device_class || "";
+    const area = (e) => { const en = (H.entities || {})[e]; if (!en) return ""; if (en.area_id) return en.area_id; const dv = en.device_id && (H.devices || {})[en.device_id]; return (dv && dv.area_id) || ""; };
+    const win = ids.filter((e) => e.startsWith("binary_sensor.") && ["window", "door", "opening", "garage_door"].includes(dc(e))), cl = ids.filter((e) => e.startsWith("climate.") && !((H.entities || {})[e] || {}).platform?.includes?.("fenster_heizung"));
+    const hum = ids.filter((e) => e.startsWith("sensor.") && dc(e) === "humidity"), tmp = ids.filter((e) => e.startsWith("sensor.") && dc(e) === "temperature");
+    const sw = ids.filter((e) => e.startsWith("switch.") || e.startsWith("climate.") || e.startsWith("input_boolean."));
+    const notify = Object.keys(((H.services || {}).notify) || {}).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).map((n) => "notify." + n).sort();
+    const have = new Set(this._collect().map((r) => (r.name || "").toLowerCase())), groups = {};
+    for (const e of [...win, ...cl]) { const a = area(e); if (a) (groups[a] = groups[a] || { w: [], c: [] })[e.startsWith("climate.") ? "c" : "w"].push(e); }
+    const sug = Object.entries(groups).filter(([, g]) => g.w.length && g.c.length).map(([a, g]) => ({ name: ((H.areas || {})[a] || {}).name || a, windows: g.w, thermos: g.c })).filter((s) => !have.has(s.name.toLowerCase()));
+    return { win, cl, hum, tmp, sw, notify, sug };
+  }
+  _wzName(e) { const s = this._hass.states[e]; return (s && s.attributes.friendly_name) || e; }
+  _wzSel(opts, cur, f, extra = "", none = "– keiner –") { return `<select class="lsel" data-f="${f}" ${extra}><option value="">${none}</option>${[...new Set([...opts, ...(cur && !opts.includes(cur) ? [cur] : [])])].map((e) => `<option value="${esc(e)}" ${cur === e ? "selected" : ""}>${esc(this._wzName(e))}</option>`).join("")}</select>`; }
+  _wzRate(d, k, label, F) {
+    const p = d.pv, ent = p[k + "_mode"] === "entity", sn = p[k + "_sensor"], opts = Object.keys(this._hass.states).filter((e) => e.startsWith("sensor.") && (this._hass.states[e].attributes.device_class === "monetary" || (/(kwh|wh)$/i.test(this._hass.states[e].attributes.unit_of_measurement || "") && /€|eur|ct|cent/i.test(this._hass.states[e].attributes.unit_of_measurement || ""))));
+    return `<div class="mut sm" style="margin:8px 0 0">${label}</div>
+      <div class="seg">${[["fix", "Festwert"], ["entity", "Entität"]].map(([m, t]) => `<button class="${(ent ? "entity" : "fix") === m ? "sel" : ""}" data-act="wzrm" data-p="${k}" data-k="${m}">${t}</button>`).join("")}</div>
+      ${ent ? this._wzSel(opts, sn, "wzv", `data-k="pv.${k}_sensor"`) : `<div class="of"><div class="ol"><b>${F}</b></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="wzv" data-num="1" data-k="pv.${k}" value="${p[k]}" min="0" max="100" step="0.01"><i>ct/kWh</i></span></div></div>`}`;
+  }
+  _wzSet(path, val) { const d = this._modal.draft, ks = path.split("."); let o = d; for (const k of ks.slice(0, -1)) o = o[k]; o[ks[ks.length - 1]] = val; }
+  _wzChange(t) {
+    const m = this._modal, f = t.dataset.f; if (!m || m.type !== "wiz") return false;
+    if (f === "wzv") { let v = t.value; if (t.dataset.num) { v = Number(String(v).replace(",", ".")); v = isFinite(v) ? Math.max(0, Math.round(v * 100) / 100) : 0; } this._wzSet(t.dataset.k, v); this._renderModal(); return true; }
+    if (f === "wzr") { m.draft.rooms[+t.dataset.i][t.dataset.k] = t.value; if (t.dataset.k === "heater") this._renderModal(); return true; }
+    if (f === "wzadd") { const r = m.draft.rooms[+t.dataset.i], k = t.dataset.k; if (t.value && !r[k].includes(t.value)) r[k].push(t.value); this._renderModal(); return true; }
+    return false;
+  }
+  _wzAct(a, b) {
+    const m = this._modal, d = m.draft, i = +b.dataset.i, F = this._wzFind();
+    if (a === "wznext") { m.step = Math.min(WZ_STEPS.length - 1, m.step + 1); }
+    else if (a === "wzback") { m.step = Math.max(0, m.step - 1); }
+    else if (a === "wzgo") { m.step = +b.dataset.k; }
+    else if (a === "wzsug") { const s = F.sug[i]; if (s && !d.rooms.some((r) => r.name === s.name)) d.rooms.push({ name: s.name, windows: [...s.windows], thermos: [...s.thermos], hum: "", heater: "", steps: "" }); }
+    else if (a === "wzsugall") { for (const s of F.sug) if (!d.rooms.some((r) => r.name === s.name)) d.rooms.push({ name: s.name, windows: [...s.windows], thermos: [...s.thermos], hum: "", heater: "", steps: "" }); }
+    else if (a === "wzroom") { d.rooms.push({ name: "", windows: [], thermos: [], hum: "", heater: "", steps: "" }); }
+    else if (a === "wzdel") { d.rooms.splice(i, 1); }
+    else if (a === "wzrm") { if (b.dataset.e) { const r = d.rooms[i]; r[b.dataset.k] = r[b.dataset.k].filter((x) => x !== b.dataset.e); } else d.pv[b.dataset.p + "_mode"] = b.dataset.k; }
+    else if (a === "wzact") { d.action = b.dataset.k; }
+    else if (a === "wzsum") { d.summer = b.dataset.k; }
+    else if (a === "wzpvon") { d.pvon = !d.pvon; }
+    else if (a === "wzsign") { d.pv.sign = b.dataset.k; }
+    else if (a === "wzwx") { d.wx = !d.wx; }
+    else if (a === "wzapply") { this._wzApply(); return; }
+    else if (a === "wzclose") { this._modal = null; this._renderModal(); this._load(); return; }
+    this._renderModal();
+  }
+  _wzValid(d) { return d.rooms.filter((r) => r.name.trim() && r.windows.length && r.thermos.length); }
+  async _wzApply() {
+    const m = this._modal, d = m.draft, rooms = this._wzValid(d), out = []; m.busy = true; m.step = WZ_STEPS.length - 1; this._renderModal();
+    const H = this._hass, steps = (s) => String(s || "").split(/[,;\s]+/).map(Number).filter((n) => n > 0);
+    for (const r of rooms) {
+      try {
+        const fl = await H.callApi("POST", "config/config_entries/flow", { handler: "fenster_heizung", show_advanced_options: false });
+        const res = await H.callApi("POST", "config/config_entries/flow/" + fl.flow_id, { name: r.name.trim(), window_sensors: r.windows, thermostats: r.thermos, open_delay: d.open_delay, close_delay: d.close_delay, action: d.action, setback_temp: d.setback_temp, fuel: d.fuel, ...(d.outdoor ? { outdoor_sensor: d.outdoor } : {}), ...(d.notify ? { notify_service: [d.notify], notify_after: d.notify_after } : {}) });
+        if (res.type !== "create_entry") throw new Error(res.reason || "Abbruch");
+        const id = typeof res.result === "string" ? res.result : res.result && res.result.entry_id, extra = {};
+        if (id && r.hum) extra.humidity_sensor = r.hum;
+        if (id && d.pvon && r.heater) Object.assign(extra, { htr_on: "on", htr_entity: r.heater, ...(steps(r.steps).length ? { htr_steps: steps(r.steps).join(", ") } : {}) });
+        if (id && Object.keys(extra).length) { const o = await H.callWS({ type: "fenster_heizung/get_options", entry_id: id }); await H.callWS({ type: "fenster_heizung/set_options", entry_id: id, options: { ...((o && o.options) || {}), ...extra } }); }
+        out.push([r.name, true, ""]);
+      } catch (e) { out.push([r.name, false, (e && (e.message || e.body?.message)) || "Fehler"]); }
+    }
+    try {
+      const pv = d.pvon ? d.pv : { ...this._pv(), sensor: "" };
+      this._gen = { ...this._gen, summer: { ...this._gen.summer, mode: d.summer }, wxadj: { ...this._gen.wxadj, on: d.wx }, pv: { ...this._pv(), ...pv } };
+      await this._saveGen();
+    } catch (_) { out.push(["Allgemeine Einstellungen", false, "nicht gespeichert"]); }
+    m.busy = false; m.done = out; this._renderModal();
+  }
+  _wzBody(m) {
+    const d = m.draft, F = this._wzFind(), s = m.step, ex = this._collect();
+    const chips = (r, i, k, list) => `<div class="wzch">${list.map((e) => `<span class="wzc">${esc(this._wzName(e))}<button data-act="wzrm" data-i="${i}" data-k="${k}" data-e="${esc(e)}" aria-label="Entfernen">${ic("close", 12)}</button></span>`).join("")}</div>`;
+    const num = (label, hint, key, unit, lo, hi, st) => `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="wzv" data-num="1" data-k="${key}" value="${key.split(".").reduce((o, k) => o[k], d)}" min="${lo}" max="${hi}" step="${st}"><i>${unit}</i></span></div></div>`;
+    if (m.done) return `<div class="wzhero ok">${ic("check", 34)}</div><h3 class="wzt">Einrichtung abgeschlossen</h3>
+      ${m.done.map(([n, ok, err]) => `<div class="wzres ${ok ? "ok" : "bad"}">${ic(ok ? "check" : "alert", 16)}<b>${esc(n)}</b><span>${ok ? "eingerichtet" : esc(err)}</span></div>`).join("") || `<div class="mut">Es wurden keine neuen Räume angelegt.</div>`}
+      <div class="mut sm" style="margin-top:10px">Heizpläne, Anwesenheit und Darstellung stellst du danach im Dashboard ein. Diesen Assistenten findest du jederzeit unter „Allgemein“.</div>`;
+    if (s === 0) return `<div class="wzhero">${ic("windowOpen", 34)}</div><h3 class="wzt">Willkommen</h3>
+      <div class="mut" style="margin-bottom:10px">In wenigen Schritten richtest du Räume, Fenstermeldung, Heizung und optional PV-Elektroheizer ein. Du kannst jeden Schritt überspringen und später alles ändern.</div>
+      <div class="gbox"><b>Das hat der Assistent gefunden</b>${F.cl.length} Thermostate · ${F.win.length} Fenster- und Türsensoren · ${F.hum.length} Luftfeuchte-Sensoren${F.sug.length ? `<br>${F.sug.length} Räume lassen sich aus deinen Bereichen vorschlagen.` : ""}</div>
+      <div class="mut sm">${ex.length ? `Bereits eingerichtet: ${ex.length} ${ex.length === 1 ? "Raum" : "Räume"}. Sie bleiben unverändert.` : "Es ist noch kein Raum eingerichtet."}</div>`;
+    if (s === 1) return `<h3 class="wzt">Räume</h3><div class="mut sm" style="margin-bottom:8px">Ein Raum braucht mindestens einen Fenstersensor und ein Thermostat.</div>
+      ${ex.length ? `<div class="wzex">${ex.map((r) => `<span class="wzc ok">${ic("check", 12)}${esc(r.name)}</span>`).join("")}</div>` : ""}
+      ${F.sug.length ? `<div class="lsec">${ic("home", 15)}Vorschläge aus deinen Bereichen</div>${F.sug.map((x, i) => { const on = d.rooms.some((r) => r.name === x.name); return `<div class="wzs"><div><b>${esc(x.name)}</b><span>${x.windows.length} Fenster · ${x.thermos.length} Thermostat${x.thermos.length > 1 ? "e" : ""}</span></div><button class="btn2 ${on ? "" : "pri"}" ${on ? "disabled" : ""} data-act="wzsug" data-i="${i}">${on ? "Hinzugefügt" : "Übernehmen"}</button></div>`; }).join("")}${F.sug.some((x) => !d.rooms.some((r) => r.name === x.name)) ? `<button class="lnk" data-act="wzsugall">Alle Vorschläge übernehmen</button>` : ""}` : ""}
+      <div class="lsec">${ic("plus", 15)}Neue Räume</div>
+      ${d.rooms.map((r, i) => `<div class="wzr ${r.name.trim() && r.windows.length && r.thermos.length ? "" : "inc"}"><div class="wzrh"><input class="otxt" data-f="wzr" data-i="${i}" data-k="name" value="${esc(r.name)}" placeholder="Raumname"><button class="ibtn" data-act="wzdel" data-i="${i}" aria-label="Raum entfernen">${ic("trash", 18)}</button></div>
+        <div class="mut sm">Fenster- und Türsensoren</div>${chips(r, i, "windows", r.windows)}${this._wzSel(F.win.filter((e) => !r.windows.includes(e)), "", "wzadd", `data-i="${i}" data-k="windows"`, "+ Sensor hinzufügen")}
+        <div class="mut sm">Thermostate</div>${chips(r, i, "thermos", r.thermos)}${this._wzSel(F.cl.filter((e) => !r.thermos.includes(e)), "", "wzadd", `data-i="${i}" data-k="thermos"`, "+ Thermostat hinzufügen")}</div>`).join("")}
+      <button class="btn2" data-act="wzroom" style="width:100%">${ic("plus", 16)} Raum manuell hinzufügen</button>`;
+    if (s === 2) return `<h3 class="wzt">Fenstermeldung</h3><div class="mut sm" style="margin-bottom:6px">Gilt für alle neuen Räume. Pro Raum änderst du es später in den Einstellungen.</div>
+      ${num("Fenster offen nach", "So lange muss es offen sein, bevor geheizt wird.", "open_delay", "s", 0, 3600, 5)}${num("Fenster zu nach", "Wartezeit, bevor wieder geheizt wird.", "close_delay", "s", 0, 3600, 5)}
+      <div class="mut sm" style="margin:8px 0 0">Bei offenem Fenster</div><div class="seg">${[["off", "Thermostat aus"], ["setback", "Absenken"]].map(([k, l]) => `<button class="${d.action === k ? "sel" : ""}" data-act="wzact" data-k="${k}">${l}</button>`).join("")}</div>
+      ${d.action === "setback" ? num("Absenktemperatur", "", "setback_temp", "°C", 5, 25, 0.5) : ""}
+      <div class="mut sm" style="margin:8px 0 0">Sommermodus</div><div class="seg">${[["off", "Aus"], ["auto", "Automatisch"], ["on", "Immer an"]].map(([k, l]) => `<button class="${d.summer === k ? "sel" : ""}" data-act="wzsum" data-k="${k}">${l}</button>`).join("")}</div>`;
+    if (s === 3) return `<h3 class="wzt">Heizung &amp; Energie</h3><div class="mut sm" style="margin-bottom:6px">Für die Ersparnis im Dashboard.</div>
+      <div class="mut sm">Brennstoff</div><select class="lsel" data-f="wzv" data-k="fuel">${Object.entries({ erdgas: "Erdgas", heizoel: "Heizöl", fluessiggas: "Flüssiggas", pellets: "Pellets", strom: "Strom / Wärmepumpe" }).map(([v, l]) => `<option value="${v}" ${d.fuel === v ? "selected" : ""}>${l}</option>`).join("")}</select>
+      <div class="mut sm">Außentemperatur-Sensor (optional)</div>${this._wzSel(F.tmp, d.outdoor, "wzv", `data-k="outdoor"`)}
+      <div class="of"><div class="ol"><b>Wetterabhängige Absenkung</b><span>Bei Sonne oder Milde sinkt die Zieltemperatur, bei Frost steigt sie.</span></div><div class="oc"><button class="sw ${d.wx ? "on" : ""}" data-act="wzwx" aria-pressed="${d.wx}"></button></div></div>`;
+    if (s === 4) return `<h3 class="wzt">Luftfeuchte</h3><div class="mut sm" style="margin-bottom:8px">Optional. Mit einem Sensor je Raum warnt das Dashboard genauer vor Schimmel.</div>
+      ${d.rooms.length ? d.rooms.map((r, i) => `<div class="mut sm" style="margin:6px 0 0">${esc(r.name || "Raum " + (i + 1))}</div>${this._wzSel(F.hum, r.hum, "wzr", `data-i="${i}" data-k="hum"`)}`).join("") : `<div class="mut">Für neue Räume. Bestehende Räume stellst du in deren Einstellungen ein.</div>`}`;
+    if (s === 5) return `<h3 class="wzt">PV &amp; Elektroheizer</h3><div class="of"><div class="ol"><b>Elektroheizer mit PV-Überschuss</b><span>Heizen nur, wenn Strom übrig ist.</span></div><div class="oc"><button class="sw ${d.pvon ? "on" : ""}" data-act="wzpvon" aria-pressed="${d.pvon}"></button></div></div>
+      ${d.pvon ? `<div class="mut sm">Sensor für die Einspeisung ins Netz</div>${this._wzSel(Object.keys(this._hass.states).filter((e) => e.startsWith("sensor.") && (this._hass.states[e].attributes.device_class === "power" || /^k?W$/.test(this._hass.states[e].attributes.unit_of_measurement || ""))), d.pv.sensor, "wzv", `data-k="pv.sensor"`)}
+        <div class="seg">${[["export", "Einspeisung positiv"], ["import", "Netzbezug positiv"]].map(([k, l]) => `<button class="${d.pv.sign === k ? "sel" : ""}" data-act="wzsign" data-k="${k}">${l}</button>`).join("")}</div>
+        <div class="mut sm">Batterie-Ladestand (optional)</div>${this._wzSel(Object.keys(this._hass.states).filter((e) => e.startsWith("sensor.") && (this._hass.states[e].attributes.device_class === "battery" || this._hass.states[e].attributes.unit_of_measurement === "%")), d.pv.soc_sensor, "wzv", `data-k="pv.soc_sensor"`)}
+        ${this._wzRate(d, "price", "Strompreis (Netzbezug)", "Festpreis")}${this._wzRate(d, "feed", "Einspeisevergütung", "Festvergütung")}
+        <div class="lsec">${ic("radiator", 15)}Heizer in neuen Räumen</div>
+        ${d.rooms.length ? d.rooms.map((r, i) => `<div class="mut sm" style="margin:6px 0 0">${esc(r.name || "Raum " + (i + 1))}</div>${this._wzSel(F.sw, r.heater, "wzr", `data-i="${i}" data-k="heater"`, "– kein Elektroheizer –")}${r.heater ? `<div class="of"><div class="ol"><b>Leistungsstufen</b><span>In Watt, z. B. 800, 1200, 1800.</span></div><div class="oc"><input class="otxt" data-f="wzr" data-i="${i}" data-k="steps" value="${esc(r.steps)}" placeholder="800, 1200, 1800"></div></div>` : ""}`).join("") : `<div class="mut">Heizer in bestehenden Räumen richtest du in deren Einstellungen ein.</div>`}` : ""}`;
+    if (s === 6) return `<h3 class="wzt">Meldungen</h3><div class="mut sm" style="margin-bottom:8px">Optional. Eine Erinnerung, wenn ein Fenster zu lange offen steht.</div>
+      <div class="mut sm">Benachrichtigen über</div><select class="lsel" data-f="wzv" data-k="notify"><option value="">– keine –</option>${F.notify.map((n) => `<option value="${esc(n)}" ${d.notify === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select>
+      ${d.notify ? num("Erinnern nach", "Minuten, die das Fenster offen steht.", "notify_after", "Min.", 0, 240, 1) : ""}`;
+    const ok = this._wzValid(d), bad = d.rooms.length - ok.length;
+    const heat = d.pvon ? ok.filter((r) => r.heater).length : 0;
+    return `<h3 class="wzt">Zusammenfassung</h3>
+      <div class="wzsum"><div><em>${ic("home", 16)}</em><b>${ok.length} neue ${ok.length === 1 ? "Raum" : "Räume"}</b><span>${ok.map((r) => esc(r.name)).join(", ") || "keine"}${bad ? ` · ${bad} unvollständig, wird übersprungen` : ""}</span></div>
+      <div><em>${ic("window", 16)}</em><b>Fenstermeldung</b><span>offen nach ${d.open_delay} s, zu nach ${d.close_delay} s · ${d.action === "off" ? "Thermostat aus" : "Absenken auf " + num2(d.setback_temp) + " °C"}</span></div>
+      <div><em>${ic("sun", 16)}</em><b>Sommermodus</b><span>${{ off: "Aus", auto: "Automatisch", on: "Immer an" }[d.summer]}</span></div>
+      <div><em>${ic("flame", 16)}</em><b>Heizung</b><span>${esc(d.fuel)}${d.outdoor ? " · Außensensor gewählt" : ""}${d.wx ? " · Wetter-Absenkung an" : ""}</span></div>
+      <div><em>${ic("bolt", 16)}</em><b>PV-Überschuss</b><span>${d.pvon ? `${d.pv.sensor ? "Sensor gewählt" : "kein Sensor"} · ${heat} Elektroheizer` : "nicht eingerichtet"}</span></div>
+      <div><em>${ic("bell", 16)}</em><b>Meldungen</b><span>${d.notify ? esc(d.notify) + ", nach " + d.notify_after + " Min." : "aus"}</span></div></div>
+      <div class="mut sm" style="margin-top:8px">Bestehende Räume bleiben unverändert.</div>`;
+  }
+  _wzModal() {
+    const m = this._modal, s = m.step, n = WZ_STEPS.length, last = s === n - 1;
+    return `<div class="ov" data-act="${m.done ? "wzclose" : "close"}"></div><div class="sheet wide wz" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Einrichtungsassistent</b><span>${m.done ? "Fertig" : `Schritt ${s + 1} von ${n} · ${WZ_STEPS[s]}`}</span></div><button class="ibtn" data-act="${m.done ? "wzclose" : "close"}" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="wzp">${WZ_STEPS.map((t, i) => `<i class="${i <= s ? "on" : ""}" ${m.done ? "" : `data-act="wzgo" data-k="${i}" title="${t}"`}></i>`).join("")}</div>
+      <div class="wzb">${this._wzBody(m)}</div>
+      <div class="foot2 wzf">${m.done ? `<button class="btn2 pri" data-act="wzclose">Fertig</button>` : `${s > 0 ? `<button class="btn2" data-act="wzback">Zurück</button>` : ""}${last ? `<button class="btn2 pri" data-act="wzapply" ${m.busy ? "disabled" : ""}>${m.busy ? "Richte ein …" : "Einrichtung anwenden"}</button>` : `<button class="btn2 pri" data-act="wznext">${s === 0 ? "Los geht’s" : "Weiter"}</button>`}`}</div>
+      ${!m.done && s > 0 && !last ? `<button class="lnk wzskip" data-act="wznext">Diesen Schritt überspringen</button>` : ""}</div>`;
+  }
+  /* ---------------- Heizkörperventil-Diagnose ---------------- */
+  _vcfg() { return { warn: 20, days: 7, notify: "", ...((this._gen || {}).valve || {}) }; }
+  _vBattery(eid) {
+    const H = this._hass, st = H.states || {}, s = st[eid]; if (!s) return null;
+    const ov = (this._vcfg().batsrc || {})[eid];
+    if (ov) {
+      if (ov.src === "none") return null;
+      const bs = st[ov.src], nm = bs && bs.attributes.friendly_name;
+      if (!bs || bs.state === "unavailable" || bs.state === "unknown") return { pct: null, low: false, unknown: true, manual: true, src: ov.src, name: nm };
+      if (ov.src.startsWith("binary_sensor.")) return { pct: null, low: (bs.state === "on") !== !!ov.inv, manual: true, bin: true, src: ov.src, name: nm };
+      const n = parseFloat(String(bs.state).replace(",", ".")); return isFinite(n) ? { pct: Math.round(n), manual: true, src: ov.src, name: nm } : { pct: null, low: false, unknown: true, manual: true, src: ov.src, name: nm };
+    }
+    const a = s.attributes || {}, num0 = (v) => { const n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : null; };
+    for (const k of ["battery_level", "battery"]) if (a[k] != null && num0(a[k]) != null) return { pct: Math.round(num0(a[k])), src: "Attribut" };
+    if (a.battery_low === true) return { pct: null, low: true, bin: true, src: "Attribut" };
+    const dv = (H.entities || {})[eid] && H.entities[eid].device_id; if (!dv) return null;
+    for (const [e, en] of Object.entries(H.entities || {})) {
+      if (en.device_id !== dv || !st[e]) continue; const dc = (st[e].attributes || {}).device_class;
+      if (e.startsWith("sensor.") && dc === "battery" && num0(st[e].state) != null) return { pct: Math.round(num0(st[e].state)), src: e, name: st[e].attributes.friendly_name };
+      if (e.startsWith("binary_sensor.") && dc === "battery") return { pct: null, low: st[e].state === "on", bin: true, src: e, name: st[e].attributes.friendly_name };
+    }
+    return null;
+  }
+  _batCands(eid) {
+    const H = this._hass, st = H.states || {}, dv = ((H.entities || {})[eid] || {}).device_id, out = [];
+    for (const e of Object.keys(st)) { const dc = (st[e].attributes || {}).device_class; if ((e.startsWith("sensor.") && dc === "battery") || (e.startsWith("binary_sensor.") && ["battery", "battery_charging"].includes(dc)) || (e.startsWith("binary_sensor.") && /batt|akku/i.test(e + " " + (st[e].attributes.friendly_name || "")))) out.push(e); }
+    const same = (e) => dv && ((H.entities || {})[e] || {}).device_id === dv;
+    return out.sort((a, b) => same(b) - same(a) || a.localeCompare(b));
+  }
+  _batRow(eid, b) {
+    const cfg = this._vcfg(), ov = (cfg.batsrc || {})[eid], pc = b && b.pct != null ? Math.max(0, Math.min(100, b.pct)) : null, bc = b && (b.low || (pc != null && pc <= 10)) ? "bad" : b && pc != null && pc <= cfg.warn ? "warn" : "ok";
+    const open = this._modal && this._modal.bat === eid;
+    const val = !b ? `<span class="mut">${ov && ov.src === "none" ? "ohne Batterie-Überwachung" : "kein Batteriewert gefunden"}</span>` : b.unknown ? `<b class="vwarn">Batteriesensor meldet nichts</b>` : pc != null ? `<div class="vbar ${bc}"><i style="width:${pc}%"></i></div><b>${pc} %</b>` : `<b class="${b.low ? "vbad" : ""}">${b.low ? "leer / schwach" : "in Ordnung"}</b>`;
+    const src = b && b.src ? `<span class="vsrc">${b.manual ? "Quelle: " : "erkannt: "}${esc(b.name || b.src)}${b.bin ? " (Binärsensor)" : ""}</span>` : "";
+    let ed = "";
+    if (open) {
+      const c = this._batCands(eid), cur = ov ? ov.src : "", isBin = cur.startsWith("binary_sensor."), nm = (e) => esc((this._hass.states[e] || { attributes: {} }).attributes.friendly_name || e);
+      const sens = c.filter((e) => e.startsWith("sensor.")), bins = c.filter((e) => e.startsWith("binary_sensor."));
+      ed = `<div class="vbe"><select class="lsel" data-f="vbat" data-e="${esc(eid)}"><option value="">Automatisch erkennen</option><option value="none" ${cur === "none" ? "selected" : ""}>Keine Batterie-Überwachung</option>
+        ${sens.length ? `<optgroup label="Prozent-Sensor">${sens.map((e) => `<option value="${esc(e)}" ${cur === e ? "selected" : ""}>${nm(e)}</option>`).join("")}</optgroup>` : ""}
+        ${bins.length ? `<optgroup label="Binärsensor (an = Batterie schwach)">${bins.map((e) => `<option value="${esc(e)}" ${cur === e ? "selected" : ""}>${nm(e)}</option>`).join("")}</optgroup>` : ""}
+        ${cur && !c.includes(cur) && cur !== "none" ? `<option value="${esc(cur)}" selected>${esc(cur)}</option>` : ""}</select>
+        ${isBin ? `<label class="vinv"><input type="checkbox" data-f="vbatinv" data-e="${esc(eid)}" ${ov.inv ? "checked" : ""}> Umgekehrt: „an“ bedeutet Batterie in Ordnung</label>` : ""}
+        ${!c.length ? `<div class="mut sm">Es wurde kein Batterie-Sensor gefunden. Ein Binärsensor, der bei schwacher Batterie „an“ ist, reicht.</div>` : ""}</div>`;
+    }
+    return `<div class="vb"><span class="vl">Batterie</span>${val}<button class="lnk vch" data-act="dgbat" data-e="${esc(eid)}">${open ? "Fertig" : "Quelle"}</button></div>${src ? `<div class="vb vbs">${src}</div>` : ""}${ed}`;
+  }
+  _vInfo(eid, rv) {
+    const s = (this._hass.states || {})[eid], cfg = this._vcfg(), now = Date.now();
+    if (!s) return { lvl: "bad", msg: "Entität existiert nicht mehr", bat: null, lines: [] };
+    const a = s.attributes || {}, at = Date.parse(s.last_updated || ""), age = isFinite(at) ? now - at : null, bat = this._vBattery(eid), out = [];
+    let lvl = "ok";
+    const up = (l) => { if (l === "bad" || (l === "warn" && lvl === "ok")) lvl = l; };
+    if (s.state === "unavailable") { up("bad"); out.push(["bad", "Nicht erreichbar", "Das Ventil meldet sich nicht. Funkverbindung oder Batterie prüfen."]); }
+    else {
+      if (age != null && age > 6 * 36e5 && s.state !== "off") { up("warn"); out.push(["warn", `Keine Meldung seit ${this._dgAgo(age).replace("vor ", "")}`, "Das Ventil sendet keine neuen Werte."]); }
+      if (rv && rv.ok === false && rv.expect != null) { up("bad"); out.push(["bad", "Reagiert nicht auf Befehle", `Ziel ${num(rv.expect, 1)} °C gesendet ${this._dgAgo(now - Date.parse(rv.cmd_at))}, das Ventil meldet ${rv.actual != null ? "als Ziel " + num(rv.actual, 1) + " °C" : "keinen Zielwert"}.`]); }
+    }
+    if (bat && bat.unknown) { up("warn"); out.push(["warn", "Batteriesensor meldet nichts", "Der gewählte Batterie-Sensor ist nicht erreichbar. Quelle prüfen."]); }
+    if (bat) { if (bat.low || (bat.pct != null && bat.pct <= 10)) { up("bad"); out.push(["bad", bat.pct != null ? `Batterie fast leer (${bat.pct} %)` : "Batterie leer", "Jetzt wechseln, sonst bleibt das Ventil stehen."]); } else if (bat.pct != null && bat.pct <= cfg.warn) { up("warn"); out.push(["warn", `Batterie schwach (${bat.pct} %)`, "Bald wechseln."]); } }
+    return { lvl, bat, age, s, lines: out, cur: a.current_temperature, tgt: a.temperature, act: a.hvac_action, rv };
+  }
+  _valveChip(r) {
+    let w = null;
+    for (const e of r.thermos || []) { const i = this._vInfo(e); if (i.lvl === "ok") continue; const l = i.lines[0] || []; if (!w || (i.lvl === "bad" && w[0] !== "bad")) w = [i.lvl, l[1] || l[0] || "Ventil prüfen", l[0] || ""]; }
+    if (!w) return "";
+    const short = /Batterie/.test(w[2]) ? w[2].replace("Batterie ", "Batterie ").replace(/ \((\d+) %\)/, " $1 %") : /Nicht erreichbar/.test(w[2]) ? "Ventil offline" : /Reagiert/.test(w[2]) ? "Ventil reagiert nicht" : "Ventil prüfen";
+    return `<button class="achip ${w[0] === "bad" ? "red" : "amber"}" data-act="diag" data-k="valve" aria-label="Ventil-Diagnose öffnen">${ic("thermo", 12)}${esc(short)}</button>`;
+  }
+  _wInfo(eid) {
+    const s = (this._hass.states || {})[eid], cfg = this._vcfg(), now = Date.now(), out = [];
+    if (!s) return { lvl: "bad", lines: [["bad", "Entität existiert nicht mehr", "Der Sensor wurde gelöscht oder umbenannt."]], bat: null, s: null };
+    const ch = Date.parse(s.last_changed || ""), up = Date.parse(s.last_updated || ""), ageC = isFinite(ch) ? now - ch : null, ageU = isFinite(up) ? now - up : null, bat = this._vBattery(eid), days = cfg.days || 7;
+    let lvl = "ok"; const u = (l) => { if (l === "bad" || (l === "warn" && lvl === "ok")) lvl = l; };
+    if (s.state === "unavailable") { u("bad"); out.push(["bad", "Nicht erreichbar", "Der Sensor meldet sich nicht. Batterie und Funkverbindung prüfen."]); }
+    else {
+      if (s.state === "on" && ageC != null && ageC > 12 * 36e5) { u("warn"); out.push(["warn", `Seit ${this._dgAgo(ageC).replace("vor ", "")} offen`, "Fenster wirklich offen? Sonst hängt der Sensor."]); }
+      else if (ageC != null && ageC > days * 864e5) { u("warn"); out.push(["warn", `Seit ${Math.floor(ageC / 864e5)} Tagen unverändert`, "Normal, wenn das Fenster nie geöffnet wird. Sonst Sensor prüfen."]); }
+      if (ageU != null && ageU > 3 * 864e5 && ageC != null && ageU < ageC) { u("warn"); out.push(["warn", `Keine Meldung seit ${Math.floor(ageU / 864e5)} Tagen`, "Auch Batterie- und Signalwerte kommen nicht mehr an."]); }
+    }
+    if (bat && bat.unknown) { u("warn"); out.push(["warn", "Batteriesensor meldet nichts", "Der gewählte Batterie-Sensor ist nicht erreichbar. Quelle prüfen."]); }
+    if (bat) { if (bat.low || (bat.pct != null && bat.pct <= 10)) { u("bad"); out.push(["bad", bat.pct != null ? `Batterie fast leer (${bat.pct} %)` : "Batterie leer", "Jetzt wechseln, sonst erkennt die Regelung offene Fenster nicht mehr."]); } else if (bat.pct != null && bat.pct <= cfg.warn) { u("warn"); out.push(["warn", `Batterie schwach (${bat.pct} %)`, "Bald wechseln."]); } }
+    return { lvl, bat, s, ageC, ageU, lines: out };
+  }
+  _dgWindows(m) {
+    const cfg = this._vcfg(), list = []; for (const r of this._collect()) for (const e of r.windows || []) list.push({ r, e, i: this._wInfo(e) });
+    const bad = list.filter((x) => x.i.lvl === "bad").length, warn = list.filter((x) => x.i.lvl === "warn").length, rk = { bad: 0, warn: 1, ok: 2 };
+    const hdr = !list.length ? `<div class="mut" style="padding:16px 0">Noch keine Fensterkontakte eingerichtet.</div>` : `<div class="mut sm" style="margin:2px 0 10px">${bad ? `${bad} Kontakt${bad > 1 ? "e brauchen" : " braucht"} Aufmerksamkeit.` : warn ? `${warn} Hinweis${warn > 1 ? "e" : ""}.` : "Alle Fensterkontakte melden und haben genug Batterie."}</div>`;
+    const cards = list.sort((a, b) => rk[a.i.lvl] - rk[b.i.lvl]).map(({ r, e, i }) => {
+      const b = i.bat, pc = b && b.pct != null ? Math.max(0, Math.min(100, b.pct)) : null, bc = b && (b.low || (pc != null && pc <= 10)) ? "bad" : b && pc != null && pc <= cfg.warn ? "warn" : "ok", nm = i.s ? i.s.attributes.friendly_name || e : e;
+      const st = !i.s ? "–" : i.s.state === "unavailable" ? "nicht erreichbar" : i.s.state === "on" ? "offen" : "zu";
+      return `<div class="vc ${i.lvl}"><div class="vh"><i class="dgd ${i.lvl}"></i><div><b>${esc(nm)}</b><span>${esc(r.name)}</span></div><em>${i.lvl === "ok" ? "In Ordnung" : i.lvl === "warn" ? "Hinweis" : "Problem"}</em></div>
+        <div class="vb"><span class="vl">Zustand</span><b>${st}</b></div>
+        <div class="vb"><span class="vl">Zuletzt geändert</span><b>${i.ageC != null ? this._dgAgo(i.ageC) : "–"}</b></div>
+        <div class="vb"><span class="vl">Letzte Meldung</span><b>${i.ageU != null ? this._dgAgo(i.ageU) : "–"}</b></div>
+        ${this._batRow(e, i.bat)}
+        ${i.lines.map(([l, t, h]) => `<div class="vm ${l}">${ic(l === "bad" ? "alert" : "info", 15)}<div><b>${esc(t)}</b><span>${esc(h)}</span></div></div>`).join("")}</div>`;
+    }).join("");
+    const set = `<div class="lsec" style="margin-top:14px">${ic("window", 15)}Wann auffällig?</div>
+      <div class="of"><div class="ol"><b>Unverändert ab</b><span>Tage ohne Wechsel zwischen offen und zu.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="vdays" value="${cfg.days || 7}" min="1" max="60" step="1"><i>Tage</i></span></div></div>
+      <div class="mut sm" style="margin-top:4px">Batterie-Schwelle und Benachrichtigung stellst du im Reiter „Ventile“ ein. Sie gelten auch für die Fensterkontakte.</div>`;
+    return hdr + cards + set;
+  }
+  _devChip(r) {
+    let w = null;
+    for (const e of r.thermos || []) { const i = this._vInfo(e); if (i.lvl === "ok") continue; const l = i.lines[0] || []; if (!w || (i.lvl === "bad" && w[0] !== "bad")) w = [i.lvl, l[1] || "", "valve", "Ventil"]; }
+    for (const e of r.windows || []) { const i = this._wInfo(e); if (i.lvl === "ok") continue; const l = i.lines[0] || []; if (!w || (i.lvl === "bad" && w[0] !== "bad")) w = [i.lvl, l[1] || "", "win", "Kontakt"]; }
+    if (!w) return "";
+    const t = w[1], k = w[3], short = /Batterie/.test(t) ? `${k === "Ventil" ? "Batterie" : "Kontakt-Batterie"}${(t.match(/\((\d+) %\)/) || [])[1] ? " " + t.match(/\((\d+) %\)/)[1] + " %" : " leer"}` : /Nicht erreichbar/.test(t) ? `${k} offline` : /Reagiert/.test(t) ? "Ventil reagiert nicht" : /unverändert/.test(t) ? "Kontakt unverändert" : /offen/.test(t) ? "Fenster lange offen" : `${k} prüfen`;
+    return `<button class="achip ${w[0] === "bad" ? "red" : "amber"}" data-act="diag" data-k="${w[2]}" aria-label="Diagnose öffnen">${ic(w[2] === "win" ? "window" : "thermo", 12)}${esc(short)}</button>`;
+  }
+  _dgValves(m) {
+    const rooms = this._collect(), cfg = this._vcfg(), rvs = (m.data && m.data.valves) || [], rvf = (e) => rvs.find((v) => v.entity === e);
+    const list = []; for (const r of rooms) for (const e of r.thermos || []) list.push({ r, e, i: this._vInfo(e, rvf(e)) });
+    const bad = list.filter((x) => x.i.lvl === "bad").length, warn = list.filter((x) => x.i.lvl === "warn").length;
+    const hdr = !list.length ? `<div class="mut" style="padding:16px 0">Noch keine Thermostate eingerichtet.</div>` : `<div class="mut sm" style="margin:2px 0 10px">${bad ? `${bad} Ventil${bad > 1 ? "e brauchen" : " braucht"} Aufmerksamkeit.` : warn ? `${warn} Warnung${warn > 1 ? "en" : ""}.` : "Alle Ventile reagieren und haben genug Batterie."}</div>`;
+    const cards = list.sort((a, b) => ({ bad: 0, warn: 1, ok: 2 }[a.i.lvl] - { bad: 0, warn: 1, ok: 2 }[b.i.lvl])).map(({ r, e, i }) => {
+      const b = i.bat, pc = b && b.pct != null ? Math.max(0, Math.min(100, b.pct)) : null, bc = b && (b.low || (pc != null && pc <= 10)) ? "bad" : b && pc != null && pc <= cfg.warn ? "warn" : "ok";
+      const nm = i.s ? i.s.attributes.friendly_name || e : e, rv = i.rv;
+      return `<div class="vc ${i.lvl}"><div class="vh"><i class="dgd ${i.lvl}"></i><div><b>${esc(nm)}</b><span>${esc(r.name)}</span></div><em>${i.lvl === "ok" ? "In Ordnung" : i.lvl === "warn" ? "Warnung" : "Problem"}</em></div>
+        ${this._batRow(e, i.bat)}
+        <div class="vb"><span class="vl">Ventil</span><b>${i.cur != null ? `Ist ${num(i.cur, 1)} °C` : "keine Temperatur"}${i.tgt != null ? ` · Ziel ${num(i.tgt, 1)} °C` : ""}${i.act ? ` · ${{ heating: "heizt", idle: "ruht", off: "aus" }[i.act] || i.act}` : ""}</b></div>
+        <div class="vb"><span class="vl">Letzte Meldung</span><b>${i.age != null ? this._dgAgo(i.age) : "–"}</b></div>
+        ${rv ? `<div class="vb"><span class="vl">Letzter Befehl</span><b>${this._dgAgo(Date.now() - Date.parse(rv.cmd_at))}: ${rv.expect != null ? "Ziel " + num(rv.expect, 1) + " °C" : "Modus " + esc(rv.mode || "")} ${rv.ok === false ? "nicht übernommen" : rv.ok ? "übernommen" : "wird geprüft"}</b></div>` : ""}
+        ${i.lines.map(([l, t, h]) => `<div class="vm ${l}">${ic(l === "bad" ? "alert" : "info", 15)}<div><b>${esc(t)}</b><span>${esc(h)}</span></div></div>`).join("")}</div>`;
+    }).join("");
+    const notify = ((this._hass.services || {}).notify) ? Object.keys(this._hass.services.notify).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).map((n) => "notify." + n).sort() : [];
+    const set = `<div class="lsec" style="margin-top:14px">${ic("bell", 15)}Benachrichtigung bei Problemen</div>
+      <div class="mut sm" style="margin:2px 0 4px">Du bekommst eine Meldung, wenn ein Ventil ausfällt, nicht reagiert oder die Batterie schwach ist. Pro Problem höchstens einmal am Tag.</div>
+      <div class="mut sm">Benachrichtigen über</div><select class="lsel" data-f="vnotify"><option value="">– keine –</option>${[...new Set([...notify, ...(cfg.notify ? [cfg.notify] : [])])].map((n) => `<option value="${esc(n)}" ${cfg.notify === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select>
+      <div class="of"><div class="ol"><b>Batterie schwach ab</b><span>Unter 10 % gilt sie als fast leer.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="vwarn" value="${cfg.warn}" min="11" max="60" step="1"><i>%</i></span></div></div>`;
+    return hdr + cards + set;
+  }
+  /* ---------------- Gerätediagnose ---------------- */
+  async _dgOpen(tab) {
+    this._modal = { type: "diag", tab: tab || "status", only: false, data: null, loading: true, at: null };
+    this._renderModal(); await this._dgLoad();
+  }
+  async _dgLoad() {
+    const m = this._modal; if (!m || m.type !== "diag") return; m.loading = true; this._renderModal();
+    try { m.data = await this._hass.callWS({ type: "fenster_heizung/get_diag" }); m.error = ""; } catch (e) { m.data = m.data || { devices: [], notify: [], log: [] }; m.error = "Die Diagnose konnte nicht vom Server geladen werden."; }
+    m.at = new Date(); m.loading = false; if (this._modal === m) this._renderModal();
+  }
+  _dgAgo(ms) { const s = Math.max(0, Math.round(ms / 1000)); if (s < 45) return "gerade eben"; const mi = Math.round(s / 60); if (mi < 60) return `vor ${mi} Min.`; const h = Math.round(mi / 60); if (h < 48) return `vor ${h} Std.`; return `vor ${Math.round(h / 24)} Tagen`; }
+  _dgRows(data) {
+    const st = this._hass.states || {}, now = Date.now(), R = DG_ROLES, rows = [];
+    for (const d of data.devices || []) {
+      const s = st[d.entity], dom = String(d.entity).split(".")[0], at = s ? Date.parse(s.last_updated || s.last_changed || "") : NaN, age = isFinite(at) ? now - at : null, name = s ? s.attributes.friendly_name || d.entity : d.entity;
+      let lvl = "ok", msg = "OK", val = "";
+      if (!s) { lvl = "bad"; msg = "Entität existiert nicht mehr"; }
+      else if (s.state === "unavailable") { lvl = "bad"; msg = "Nicht erreichbar"; val = "nicht erreichbar"; }
+      else if (s.state === "unknown") { lvl = "warn"; msg = "Wert unbekannt"; val = "unbekannt"; }
+      else {
+        val = dom === "climate" ? (s.attributes.current_temperature != null ? `${num(s.attributes.current_temperature, 1)} °C` : s.state) : dom === "binary_sensor" ? (s.state === "on" ? "offen" : "zu") : `${s.state}${s.attributes.unit_of_measurement ? " " + s.attributes.unit_of_measurement : ""}`;
+        if (dom === "climate" && s.attributes.current_temperature == null) { lvl = "warn"; msg = "Meldet keine Raumtemperatur"; }
+        else if (["sensor"].includes(dom) && age != null && age > 864e5) { lvl = "warn"; msg = `Seit ${this._dgAgo(age).replace("vor ", "")} keine Meldung`; }
+        else if (d.role === "window" && s.state === "on" && age != null && age > 12 * 36e5) { lvl = "warn"; msg = `Seit ${this._dgAgo(age).replace("vor ", "")} offen. Sensor hängt?`; }
+        else if (["pv", "soc", "price", "feed", "power"].includes(d.role) && !isFinite(parseFloat(String(s.state).replace(",", ".")))) { lvl = "warn"; msg = "Kein Zahlenwert"; }
+      }
+      rows.push({ room: d.room || "Allgemein", role: R[d.role] || d.role, entity: d.entity, name, val, age, lvl, msg });
+    }
+    for (const n of data.notify || []) { const [dm, sv] = String(n.service).split("."), ok = !!((this._hass.services || {})[dm] || {})[sv]; rows.push({ room: n.room || "Allgemein", role: "Benachrichtigung", entity: n.service, name: n.service, val: ok ? "vorhanden" : "fehlt", age: null, lvl: ok ? "ok" : "warn", msg: ok ? "Dienst verfügbar" : "Dienst nicht gefunden" }); }
+    return rows;
+  }
+  _dgBody(m) {
+    if (!m.data) return `<div class="mut" style="padding:34px 0;text-align:center">Lädt …</div>`;
+    const wp = this._collect().reduce((a, r) => a + (r.windows || []).filter((e) => this._wInfo(e).lvl !== "ok").length, 0), vp = this._collect().reduce((a, r) => a + (r.thermos || []).filter((e) => this._vInfo(e, ((m.data.valves || []).find((v) => v.entity === e))).lvl !== "ok").length, 0), rows = this._dgRows(m.data), vx = this._collect().flatMap((r) => [...(r.thermos || []).map((e) => [e, this._vInfo(e, (m.data.valves || []).find((v) => v.entity === e))]), ...(r.windows || []).map((e) => [e, this._wInfo(e)])]).filter(([e, i]) => i.lvl !== "ok" && !rows.some((r) => r.entity === e && r.lvl !== "ok")), bad = rows.filter((r) => r.lvl === "bad").length + vx.filter(([, i]) => i.lvl === "bad").length, warn = rows.filter((r) => r.lvl === "warn").length + vx.filter(([, i]) => i.lvl === "warn").length, lg = m.data.log || [];
+    const sum = bad ? ["bad", "alert", `${bad} ${bad === 1 ? "Fehler" : "Fehler"}${warn ? ` und ${warn} ${warn === 1 ? "Warnung" : "Warnungen"}` : ""}`, "Diese Geräte melden nicht. Die Regelung kann dadurch eingeschränkt sein."] : warn ? ["warn", "info", `${warn} ${warn === 1 ? "Warnung" : "Warnungen"}`, "Läuft, aber ein Gerät fällt auf."] : ["ok", "check", "Alles in Ordnung", `${rows.length} Geräte und Dienste geprüft, Ventile und Batterien eingeschlossen.`];
+    const head = `<div class="dgs ${sum[0]}">${ic(sum[1], 22)}<div><b>${sum[2]}</b><span>${sum[3]}${m.at ? ` Geprüft um ${m.at.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}.` : ""}</span></div><button class="btn2" data-act="dgre" ${m.loading ? "disabled" : ""}>${m.loading ? "Prüfe …" : "Erneut prüfen"}</button></div>${m.error ? `<div class="gst">${ic("alert", 15)}${esc(m.error)}</div>` : ""}`;
+    const tabs = `<div class="seg">${[["status", "Status"], ["sens", "Gemeldet"], ["valve", `Ventile${vp ? " (" + vp + ")" : ""}`], ["win", `Fenster${wp ? " (" + wp + ")" : ""}`], ["log", `Protokoll${lg.length ? " (" + lg.length + ")" : ""}`]].map(([k, l]) => `<button class="${m.tab === k ? "sel" : ""}" data-act="dgtab" data-k="${k}">${l}</button>`).join("")}</div>`;
+    const dot = (l) => `<i class="dgd ${l}" aria-hidden="true"></i>`, rank = { bad: 0, warn: 1, ok: 2 };
+    let body = "";
+    if (m.tab === "status") {
+      const by = {}; for (const r of rows) (by[r.room] = by[r.room] || []).push(r);
+      body = Object.entries(by).sort((a, b) => (a[0] === "Allgemein") - (b[0] === "Allgemein") || a[0].localeCompare(b[0], "de")).map(([room, list]) => { const w = list.reduce((a, r) => (rank[r.lvl] < rank[a] ? r.lvl : a), "ok"); return `<div class="dgr"><div class="dgh">${dot(w)}<b>${esc(room)}</b><span>${w === "ok" ? "in Ordnung" : list.filter((r) => r.lvl !== "ok").length + " auffällig"}</span></div>${list.map((r) => `<div class="dgl ${r.lvl}">${dot(r.lvl)}<div><b>${esc(r.role)}</b><span>${esc(r.name)}</span></div><em>${esc(r.msg)}</em></div>`).join("")}</div>`; }).join("") || `<div class="mut">Noch keine Geräte eingerichtet.</div>`;
+    } else if (m.tab === "valve") { body = this._dgValves(m);
+    } else if (m.tab === "win") { body = this._dgWindows(m);
+    } else if (m.tab === "sens") {
+      const list = rows.filter((r) => r.entity.includes(".") && !r.entity.startsWith("notify.")).filter((r) => !m.only || r.lvl !== "ok").sort((a, b) => (b.age == null ? 1e15 : b.age) - (a.age == null ? 1e15 : a.age) || rank[a.lvl] - rank[b.lvl]);
+      body = `<div class="dgf"><button class="chipb ${m.only ? "" : "sel"}" data-act="dgonly" data-k="0">Alle</button><button class="chipb ${m.only ? "sel" : ""}" data-act="dgonly" data-k="1">Nur auffällige</button></div>` + (list.map((r) => `<div class="dgt ${r.lvl}">${dot(r.lvl)}<div class="dgn"><b>${esc(r.name)}</b><span>${esc(r.room)} · ${esc(r.role)}</span></div><div class="dgv"><b>${esc(r.val || "–")}</b><span>${r.age == null ? "–" : this._dgAgo(r.age)}</span></div></div>`).join("") || `<div class="mut" style="padding:16px 0">Nichts Auffälliges.</div>`);
+    } else {
+      body = lg.length ? `<div class="dgf"><button class="chipb" data-act="dgcopy">${ic("copy", 14)} Kopieren</button><button class="chipb" data-act="dgclr">${ic("trash", 14)} Leeren</button></div>` + lg.map((e) => `<div class="dgg ${e.level}">${dot(e.level === "error" ? "bad" : e.level === "warning" ? "warn" : "ok")}<div><b>${esc(e.msg)}</b><span>${esc(e.room || "Allgemein")}</span></div><em>${new Date(e.t).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</em></div>`).join("") : `<div class="dgempty">${ic("check", 26)}<b>Keine Fehler protokolliert</b><span>Hier erscheinen fehlgeschlagene Schaltvorgänge, nicht erreichbare Geräte und Meldungen der Heizer-Steuerung.</span></div>`;
+    }
+    return head + tabs + `<div class="dgb">${body}</div>`;
+  }
+  _dgModal() {
+    const m = this._modal;
+    return `<div class="ov" data-act="close"></div><div class="sheet wide dg" role="dialog" aria-modal="true"><div class="sh"><div><b>Gerätediagnose</b><span>Sensoren, Thermostate, Heizer und Fehler</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>${this._dgBody(m)}<div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Schließen</button></div></div>`;
+  }
+  _dgAct(a, b) {
+    const m = this._modal;
+    if (a === "dgtab") m.tab = b.dataset.k;
+    else if (a === "dgonly") m.only = b.dataset.k === "1";
+    else if (a === "dgbat") m.bat = m.bat === b.dataset.e ? null : b.dataset.e;
+    else if (a === "dgre") { this._dgLoad(); return; }
+    else if (a === "dgclr") { this._hass.callWS({ type: "fenster_heizung/clear_diag" }).then(() => { m.data.log = []; this._renderModal(); }).catch(() => this._toast("Protokoll konnte nicht geleert werden")); return; }
+    else if (a === "dgcopy") { const t = (m.data.log || []).map((e) => `${e.t} [${e.level}] ${e.room || "Allgemein"}: ${e.msg}`).join("\n"); try { navigator.clipboard.writeText(t).then(() => this._toast("Protokoll kopiert")); } catch (_) { this._toast("Kopieren nicht möglich"); } return; }
+    this._renderModal();
+  }
   _renderModal() {
     const box = this.shadowRoot.getElementById("modal"), m = this._modal;
     const old = box.querySelector(".sheet"), top = old ? old.scrollTop : 0;
     if (!m) { box.innerHTML = ""; return; }
     const r = this._collect().find((x) => x.id === m.id) || { name: "" };
+    if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
     if (m.type === "icon") {
       const cur = this._icon(r), L = this._cfg.layout, cc = (L.colors || {})[m.id], ph = (L.photos || {})[m.id];
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
@@ -1768,8 +2156,17 @@ class FensterHeizungPanel extends HTMLElement {
         ${[["reserve", "Reserve", "W", "Bleibt zusätzlich zur Heizerleistung übrig.", 0, 2000, 50], ["delay", "Einschalten nach", "Min.", "So lange muss der Überschuss anliegen.", 0, 30, 1], ["minrun", "Mindestlaufzeit", "Min.", "Kürzer läuft ein Heizer nicht an einem Stück.", 0, 120, 5]].map(([k, l, u, h, lo, hi, st]) => `<div class="of"><div class="ol"><b>${l}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="${lo}" max="${hi}" step="${st}"><i>${u}</i></span></div></div>`).join("")}
         <div class="mut sm" style="margin:6px 0 0">Batterie-Ladestand (optional)</div><select class="lsel" data-f="gpvb"><option value="">– keiner –</option>${Object.keys(this._hass.states).filter((k) => k.startsWith("sensor.") && (this._hass.states[k].attributes.device_class === "battery" || this._hass.states[k].attributes.unit_of_measurement === "%")).map((k) => `<option value="${esc(k)}" ${pv.soc_sensor === k ? "selected" : ""}>${esc(this._hass.states[k].attributes.friendly_name || k)}</option>`).join("")}</select>
         ${pv.soc_sensor ? `<div class="of"><div class="ol"><b>Heizer erst ab</b><span>Die Batterie wird zuerst geladen.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="soc_min" value="${pv.soc_min}" min="0" max="100" step="5"><i>%</i></span></div></div>` : ""}
-        ${[["price", "Strompreis", "ct/kWh", "Für den Vorteil im Bericht."], ["feed", "Einspeisevergütung", "ct/kWh", ""]].map(([k, l, u, h]) => `<div class="of"><div class="ol"><b>${l}</b>${h ? `<span>${h}</span>` : ""}</div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="0" max="100" step="0.5"><i>${u}</i></span></div></div>`).join("")}
+        ${[["price", "Strompreis (Netzbezug)", "Festpreis", "Preis pro kWh aus dem Netz."], ["feed", "Einspeisevergütung", "Festvergütung", "Vergütung pro eingespeister kWh."]].map(([k, l, fl, h]) => { const ent = pv[k + "_mode"] === "entity", sn = pv[k + "_sensor"]; return `<div class="mut sm" style="margin:6px 0 0">${l}${k === "price" ? " für den Vorteil im Bericht" : ""}</div>
+        <div class="seg">${[["fix", "Festwert"], ["entity", "Entität"]].map(([m, t]) => `<button class="${(ent ? "entity" : "fix") === m ? "sel" : ""}" data-act="gpvpm" data-p="${k}" data-k="${m}">${t}</button>`).join("")}</div>
+        ${ent ? `<select class="lsel" data-f="gpvp" data-p="${k}"><option value="">– keiner –</option>${Object.keys(this._hass.states).filter((e) => e.startsWith("sensor.") && (this._hass.states[e].attributes.device_class === "monetary" || (/(kwh|wh)$/i.test(this._hass.states[e].attributes.unit_of_measurement || "") && /€|eur|ct|cent/i.test(this._hass.states[e].attributes.unit_of_measurement || "")) || e === sn)).map((e) => `<option value="${esc(e)}" ${sn === e ? "selected" : ""}>${esc(this._hass.states[e].attributes.friendly_name || e)}</option>`).join("")}</select>
+        <div class="mut sm" style="margin:2px 0 0">${sn ? `Aktuell ${num(this._rate(k), 2)} ct/kWh${Number(pv[k]) ? ` (${fl} ${num(pv[k], 2)} ct/kWh, falls der Sensor ausfällt)` : ""}` : `Ohne Sensor gilt der ${fl}.`}</div>` : `<div class="of"><div class="ol"><b>${fl}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="0" max="100" step="0.01"><i>ct/kWh</i></span></div></div>`}`; }).join("")}
         <div class="gst ${this._pvNow() != null ? "on" : ""}">${ic(this._pvNow() != null ? "bolt" : "info", 15)}${this._pvNow() != null ? `Aktuell ${wfmt(this._pvNow())} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Noch kein Sensor gewählt."}</div>
+        <div class="lsec">${ic("thermo", 15)}Gerätediagnose</div>
+        <div class="mut sm" style="margin:2px 0 4px">Welche Sensoren zuletzt gemeldet haben, Statusprüfung aller Geräte und das Fehlerprotokoll.</div>
+        <button class="btn2" data-act="diag" style="width:100%;flex:none">${ic("tools", 16)} Diagnose öffnen</button>
+        <div class="lsec">${ic("tools", 15)}Einrichtungsassistent</div>
+        <div class="mut sm" style="margin:2px 0 4px">Räume, Fenstermeldung, Heizung, Luftfeuchte, PV-Heizer und Meldungen Schritt für Schritt einrichten.</div>
+        <button class="btn2" data-act="wz" style="width:100%;flex:none">${ic("tools", 16)} Assistent starten</button>
         <div class="lsec">${ic("copy", 15)}Sichern &amp; Wiederherstellen</div>
         <div class="mut sm" style="margin:2px 0 4px">Eine Datei mit allen Räumen, Einstellungen, Heizplänen, Anwesenheit und dem Aussehen des Dashboards.</div>
         ${rs ? `<div class="gbox"><b>Sicherung gefunden</b>${esc(new Date(rs.created).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" }))} · Version ${esc(rs.version || "?")}<br>${Object.keys(rs.rooms).length} Räume · ${Object.values(rs.plans || {}).filter((p) => p && p.entries && p.entries.length).length} Heizpläne · Aussehen · Anwesenheit<br><span class="mut">Das ersetzt die aktuellen Einstellungen.</span></div>
