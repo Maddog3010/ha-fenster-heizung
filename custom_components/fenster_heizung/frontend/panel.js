@@ -693,7 +693,7 @@ class FensterHeizungPanel extends HTMLElement {
         r.apk = Number(a.menge_pro_kwh) || r.apk || 0.1;
         if (a.zeitraum === "day") { r.pauses = a.pausen_heute || 0; r.kw = a.aktuelle_leistung_kw || 0; r.hist = a.verlauf || {}; }
       } else if ("thermostate" in a) {
-        r.modeEid = eid; r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id; r.humEid = a.luftfeuchte_sensor || ""; r.wxOff = a.wetter_anpassung === "aus"; r.airOff = a.lueftungshinweise === "aus";
+        r.modeEid = eid; r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id; r.humEid = a.luftfeuchte_sensor || ""; r.wxOff = a.wetter_anpassung === "aus"; r.airOff = a.lueftungshinweise === "aus"; r.airEvery = a.lueften_nach_h != null ? Number(a.lueften_nach_h) : 8; r.lastAir = a.zuletzt_gelueftet ? new Date(a.zuletzt_gelueftet).getTime() : 0;
       }
     }
     const list = [...rooms.values()];
@@ -1085,14 +1085,57 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="airmsg green">${ic("check", 16)}<div><b>Raumluft in Ordnung</b>, kein Lüftungsbedarf.</div></div>`;
   }
   _airBox(r) {
-    const a = this._airData(r); if (!a) return "";
+    const a = this._airData(r); if (!a) return this._airLiteBox(r);
     const [ml, mc] = MOLD[a.lvl], hc = a.rh >= 70 ? "red" : a.rh >= 60 ? "amber" : "green";
     return `<div class="air"><div class="ac ${hc}"><div class="t">${ic("drop", 13)}Luftfeuchte</div><div class="v">${num(a.rh)} %</div><div class="gauge"><i style="width:${Math.min(100, a.rh)}%"></i></div></div>
       <div class="ac slate"><div class="t">${ic("thermo", 13)}Taupunkt</div><div class="v">${num(a.td, 1)} °C</div><div class="s">Wand ${num(a.ts, 1)} °C</div></div>
       <div class="ac ${mc}"><div class="t">${ic("alert", 13)}Schimmel</div><div class="v">${ml}</div><div class="s">${num(a.rs)} % Wand</div></div></div>${this._airMsg(a)}`;
   }
+  _airLite(r) {
+    if (r.airOff || r.humEid) return null;
+    const h = this._hass, t0 = (r.thermos || []).map((e) => h.states[e]).filter(Boolean)[0], t = t0 && t0.attributes.current_temperature;
+    if (t == null) return null;
+    const o = this._out(), ts = o.t == null ? Number(t) - 4 : o.t + 0.7 * (Number(t) - o.t), crit = Math.min(100, (80 * esat(Number(t))) / esat(ts));
+    const wins = (r.windows || []).map((e) => h.states[e]).filter(Boolean), open = wins.filter((w) => ["on", "open"].includes(w.state));
+    const since = open.length ? Math.min(...open.map((w) => new Date(w.last_changed || Date.now()).getTime())) : 0;
+    const last = open.length ? Date.now() : (r.lastAir || this._airHistFor(r) || 0);
+    const hrs = last ? (Date.now() - last) / 3600000 : null, every = r.airEvery == null ? 8 : r.airEvery;
+    return { t: Number(t), ts, crit, open: open.length, since, need: ventMin(o.t), hrs, every, due: every > 0 && hrs != null && hrs >= every, estimated: o.t == null };
+  }
+  _airHistFor(r) {
+    const hist = (this._airHist = this._airHist || {}), c = hist[r.id];
+    if (c !== undefined) return c;   // gefunden (ms) oder 0 = nichts im Verlauf
+    hist[r.id] = 0;
+    const ids = r.windows || []; if (!ids.length) return 0;
+    const end = new Date(), start = new Date(+end - 9 * 864e5);
+    this._hass.callWS({ type: "history/history_during_period", start_time: start.toISOString(), end_time: end.toISOString(), entity_ids: ids, include_start_time_state: true, significant_changes_only: false, minimal_response: true, no_attributes: true }).then((res) => {
+      let best = 0;
+      for (const id of ids) { let prev = null; for (const x of (res && res[id]) || []) { const on = ["on", "open"].includes(x.s); const t = (x.lu ?? x.lc ?? 0) * 1000; if (prev && !on && t > best) best = t; prev = on; } }
+      hist[r.id] = best; if (best) this._render();
+    }).catch(() => {});
+    return 0;
+  }
+  _ago(h) { return h == null ? "unbekannt" : h < 1 ? (h * 60 < 2 ? "gerade eben" : `vor ${Math.round(h * 60)} Min.`) : h < 48 ? `vor ${Math.round(h)} Std.` : `vor ${Math.round(h / 24)} Tagen`; }
+  _airLiteBox(r) {
+    const a = this._airLite(r); if (!a) return "";
+    const cc = a.crit < 60 ? "amber" : "slate", adm = this._admin();
+    let msg;
+    if (a.open) { const c = cdown(a.since, a.need); msg = `<div class="airmsg ${c.left <= 0 ? "done" : "green"}" data-since="${a.since}" data-need="${a.need}">${ic("windy", 16)}<div><b>Lüften läuft</b> · <span data-cd>${c.txt}</span><div class="pr"><i data-bar style="width:${c.pct}%"></i></div></div></div>`; }
+    else if (a.due) msg = `<div class="airmsg amber">${ic("windy", 16)}<div><b>Länger nicht gelüftet</b> (${this._ago(a.hrs)}). Jetzt ca. ${a.need} Min. stoßlüften.</div></div>`;
+    else if (a.crit < 60) msg = `<div class="airmsg amber">${ic("alert", 16)}<div><b>Kalte Wände:</b> halte die Luftfeuchte unter ${num(Math.floor(a.crit))} %. Ohne Sensor kann die Karte sie nicht messen.</div></div>`;
+    else msg = `<div class="airmsg green">${ic("check", 16)}<div><b>Kein Lüftungsbedarf erkannt</b>, zuletzt gelüftet ${this._ago(a.hrs)}</div></div>`;
+    return `<div class="air"><div class="ac ${a.due ? "amber" : "green"}"><div class="t">${ic("windy", 13)}Gelüftet</div><div class="v">${a.open ? "jetzt" : a.hrs == null ? "unbekannt" : this._ago(a.hrs).replace("vor ", "")}</div><div class="s">${a.every > 0 ? `Erinnern: ${a.every} Std.` : "ohne Erinnerung"}</div></div>
+      <div class="ac slate"><div class="t">${ic("thermo", 13)}Wand</div><div class="v">${num(a.ts, 1)} °C</div><div class="s">${a.estimated ? "grob geschätzt" : "Außenwand ca."}</div></div>
+      <div class="ac ${cc}"><div class="t">${ic("drop", 13)}Kritisch ab</div><div class="v">${a.crit >= 90 ? "über 90" : num(Math.floor(a.crit))} %</div><div class="s">an der Wand</div></div></div>${msg}
+      ${adm ? `<button class="lnk" data-act="airsetup" data-id="${esc(r.id)}">${ic("drop", 15)}Luftfeuchte-Sensor wählen für genaue Warnung</button>` : ""}`;
+  }
+  _airLiteChip(r) {
+    const a = this._airLite(r); if (!a) return "";
+    if (a.open) { const c = cdown(a.since, a.need); return `<span class="achip green" data-since="${a.since}" data-need="${a.need}">${ic("windy", 12)}<span data-cd>${c.txt}</span></span>`; }
+    return `<span class="achip ${a.due ? "amber" : "slate"}">${ic("windy", 12)}Gelüftet ${this._ago(a.hrs)}</span>`;
+  }
   _airChip(r) {
-    const a = this._airData(r); if (!a) return "";
+    const a = this._airData(r); if (!a) return this._airLiteChip(r);
     if (a.open) { const c = cdown(a.since, a.need); return `<span class="achip green" data-since="${a.since}" data-need="${a.need}">${ic("windy", 12)}<span data-cd>${c.txt}</span></span>`; }
     const [ml, mc] = MOLD[a.lvl]; return `<span class="achip ${mc}">${ic("drop", 12)}${num(a.rh)} % · Schimmel ${ml}</span>`;
   }
@@ -1287,6 +1330,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "view") { try { localStorage.setItem("fh_view", b.dataset.k); } catch (_) { /* Speicher gesperrt */ } this._render(); }
     else if (a === "plan") this._openPlan(id);
     else if (a === "icon") { this._modal = { type: "icon", id }; this._renderModal(); }
+    else if (a === "airsetup") { this._optOpen(id).then(() => { if (this._modal && this._modal.type === "opt") { this._modal.open.add("air"); this._renderModal(); } }); }
     else if (a === "gen") { this._modal = { type: "gen", restore: null }; this._renderModal(); }
     else if (a === "news") { this._modal = { type: "news" }; this._renderModal(); }
     else if (a === "updx") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet bis zur nächsten Version"); }
@@ -1373,7 +1417,7 @@ class FensterHeizungPanel extends HTMLElement {
     let res;
     try { res = await this._hass.callWS({ type: "fenster_heizung/get_options", entry_id: id }); } catch (_) { this._toast("Einstellungen konnten nicht geladen werden"); return; }
     const o = (res && res.options) || {};
-    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1 };
+    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1, humidity_sensor: "", air_hint: "on", weather_adj: "on", air_every: 8 };
     for (const k of Object.keys(d)) if (o[k] !== undefined && o[k] !== null) d[k] = Array.isArray(o[k]) ? [...o[k]] : o[k];
     this._modal = { type: "opt", id, name: (res && res.name) || "", draft: d, open: new Set(["dev", "ctl"]), busy: false };
     this._renderModal();
@@ -1430,8 +1474,9 @@ class FensterHeizungPanel extends HTMLElement {
         multi("notify_service", notify, "Benachrichtigungs-Aktionen", "Wie in den Entwicklerwerkzeugen, z. B. notify.mobile_app_handy.") +
         num("notify_after", "min", { l: "Erinnerung nach … Minuten offen", h: "0 = aus", min: 0, max: 240, step: 1 }) +
         txt("notify_title", { l: "Titel (optional)", h: "Platzhalter: {raum}, {minuten}, {fenster}" }) + txt("notify_message", { l: "Nachrichtentext" })),
-      sec("air", "drop", "Raumluft", d.humidity_sensor ? fn(d.humidity_sensor) : "kein Luftfeuchte-Sensor",
-        one("humidity_sensor", ent("sensor", "humidity"), "Luftfeuchte-Sensor", "Dann zeigt die Karte Taupunkt, Schimmelrisiko und Lüftungsempfehlung.") +
+      sec("air", "drop", "Raumluft", d.humidity_sensor ? fn(d.humidity_sensor) : `ohne Sensor${Number(d.air_every) > 0 ? ` · Lüften nach ${d.air_every} Std.` : ""}`,
+        one("humidity_sensor", ent("sensor", "humidity"), "Luftfeuchte-Sensor", "Mit Sensor zeigt die Karte Luftfeuchte, Taupunkt und Schimmelrisiko. Ohne Sensor gibt es Lüftungs-Erinnerung, Wandtemperatur und kritische Feuchte.") +
+        num("air_every", "Std.", { l: "Erinnern, wenn länger nicht gelüftet", h: "0 = aus. Gemessen am letzten Schließen des Fensters.", min: 0, max: 48, step: 1 }) +
         row("Lüftungshinweise und Schimmelwarnung", "Auf der Karte und als Erinnerung nach dem Lüften.", seg("air_hint", [["on", "An"], ["off", "Aus"]]))),
       sec("wxa", "partly", "Wetter-Anpassung", d.weather_adj === "off" ? "ausgenommen" : "folgt der allgemeinen Einstellung",
         row("Zieltemperatur nach Wetter anpassen", "Die Grenzwerte stellst du unter „Allgemein“ ein.", seg("weather_adj", [["on", "Ja"], ["off", "Ausnehmen"]]))),

@@ -4,7 +4,7 @@
 
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
 
-Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.6.0**.
+Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.6.1**.
 
 ## Inhalt
 - [Dashboard](#dashboard)
@@ -155,6 +155,18 @@ Hat ein Raum einen Luftfeuchte-Sensor, zeigt die Karte **Luftfeuchte**, **Taupun
 
 <img src="docs/vorschau_handy_luft.png" width="240" alt="Raumluft auf dem Handy"> <img src="docs/vorschau_luft_detail.png" width="480" alt="Raumluft auf den Karten">
 
+### Ohne Luftfeuchte-Sensor
+Auch ohne Sensor bleibt die Karte nützlich. Sie zeigt dann:
+
+- **Gelüftet vor X Std.** und eine Erinnerung, wenn länger nicht gelüftet wurde (Standard 8 Std., einstellbar unter **Raumeinstellungen › Raumluft**, 0 = aus). Den Zeitpunkt des letzten Schließens speichert die Integration selbst. Er bleibt nach einem Neustart erhalten. Nur beim allerersten Start liest das Dashboard ihn einmalig aus dem Verlauf (Recorder, bis zu 9 Tage).
+- **Wandtemperatur** der Außenwand (geschätzt aus Raum- und Außentemperatur) und **kritische Feuchte**: ab dieser Luftfeuchte droht Schimmel an der Wand. Bei kalten Wänden steht dazu ein Hinweis, die Luftfeuchte niedrig zu halten.
+- Die **Lüftungsempfehlung mit Countdown** bei offenem Fenster.
+- Einen Link, der direkt zur Sensor-Auswahl führt.
+
+Luftfeuchte, Taupunkt und das Schimmelrisiko (gering, erhöht, hoch) brauchen einen Sensor.
+
+<img src="docs/vorschau_handy_ohne.png" width="240" alt="Raumluft ohne Sensor auf dem Handy"> <img src="docs/vorschau_ohne_gemischt.png" width="480" alt="Karten mit und ohne Sensor">
+
 ## Wetter-Anpassung und Sommermodus
 Beides stellst du unter **Allgemein** (Knopf oben rechts, nur Administratoren) ein.
 
@@ -245,7 +257,7 @@ Pro Raum:
 | Schalter „Fensterregelung aktiv“ | Regelung ein/aus |
 | Schalter „Heizplan aktiv“ | Heizplan ein/aus |
 | Sensor „Heizung pausiert“ (heute, Monat, Jahr, gesamt) | Minuten; Attribute: `gespart_menge`, `einheit`, `brennstoff`, `gespartes_gas_kwh`, bei Erdgas zusätzlich `gespartes_gas_m3` |
-| Sensor „Betriebszustand“ | Regelung aktiv, Heizung pausiert, Heizung aus (nur Fenstermeldung) oder Regelung deaktiviert |
+| Sensor „Betriebszustand“ | Regelung aktiv, Heizung pausiert, Heizung aus (nur Fenstermeldung) oder Regelung deaktiviert; Attribute u. a. `zuletzt_gelueftet`, `luftfeuchte_sensor` |
 | Sensor „Heizplan Solltemperatur“ | aktuelle Vorgabe des Plans, nächste Änderung als Attribut; dazu `sommermodus` und `wetter_anpassung` |
 
 ## Installation über HACS
@@ -260,12 +272,12 @@ Pro Raum:
 - Die Raumeinstellungen im Dashboard nutzen die neuen WebSocket-Befehle `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Neue Werte werden wie in den Home-Assistant-Optionen gespeichert.
 - Farben, Fotos, Symbole und die Wetteranzeige werden im gemeinsamen Layout gespeichert (WebSocket-Befehl `fenster_heizung/set_layout`, nur Administratoren). Das Backend prüft Farben, Foto-Format und -Größe sowie die Entitäten.
 - Version 2.6.0 fügt die WebSocket-Befehle `get_general`, `set_general`, `get_update`, `get_learning` und `restore` hinzu. Das Backend prüft alle Werte; Änderungen sind nur für Administratoren erlaubt.
-- Neue Raumeinstellungen (`humidity_sensor`, `air_hint`, `weather_adj`) erscheinen nur im Dashboard. Beim Speichern im HA-Optionsdialog bleiben sie erhalten.
+- Neue Raumeinstellungen (`humidity_sensor`, `air_hint`, `air_every`, `weather_adj`) erscheinen nur im Dashboard. Beim Speichern im HA-Optionsdialog bleiben sie erhalten.
 - Der Bericht braucht Verlaufsdaten im Recorder, siehe [Bericht pro Raum](#bericht-pro-raum).
 
 ## Neue Version veröffentlichen
 1. `version` in `custom_components/fenster_heizung/manifest.json` erhöhen
-2. Auf GitHub ein **Release** mit passendem Tag erstellen (z. B. `v2.6.0`) und kurze Aufzählungspunkte in die Beschreibung schreiben (sie erscheinen im Update-Hinweis)
+2. Auf GitHub ein **Release** mit passendem Tag erstellen (z. B. `v2.6.1`) und kurze Aufzählungspunkte in die Beschreibung schreiben (sie erscheinen im Update-Hinweis)
 3. HACS zeigt das Update an
 
 ## Unterstützen

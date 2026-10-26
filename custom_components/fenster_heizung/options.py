@@ -8,6 +8,7 @@ from .const import (
     ACTION_OFF,
     ACTION_SETBACK,
     CONF_ACTION,
+    CONF_AIR_EVERY,
     CONF_AIR_HINT,
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
@@ -33,6 +34,7 @@ from .const import (
     CONF_SETBACK_TEMP,
     CONF_THERMOSTATS,
     CONF_WINDOWS,
+    DEFAULT_AIR_EVERY,
     DEFAULT_COP,
     DEFAULT_DESIGN_TEMP,
     DEFAULT_FUEL,
@@ -65,6 +67,7 @@ _NUMBERS: dict[str, tuple[float, float, float, bool]] = {
     CONF_HEAT_LOAD: (10, 250, DEFAULT_HEAT_LOAD, False),
     CONF_DESIGN_TEMP: (-30, 5, DEFAULT_DESIGN_TEMP, False),
     CONF_COP: (1, 8, DEFAULT_COP, False),
+    CONF_AIR_EVERY: (0, 48, DEFAULT_AIR_EVERY, True),
 }
 
 LABELS = {
@@ -80,6 +83,7 @@ LABELS = {
     CONF_HEAT_LOAD: "Heizlast",
     CONF_DESIGN_TEMP: "Auslegungstemperatur",
     CONF_COP: "JAZ / COP",
+    CONF_AIR_EVERY: "Lüften erinnern nach Stunden",
     CONF_ENERGY_PER_UNIT: "Energie pro Einheit",
 }
 
@@ -142,7 +146,7 @@ def clean_options(raw: Any) -> dict[str, Any]:
     }
     for key in (CONF_OPEN_DELAY, CONF_CLOSE_DELAY, CONF_SETBACK_TEMP, CONF_OUTDOOR_MAX,
                 CONF_NOTIFY_AFTER, CONF_HEAT_POWER, CONF_ROOM_AREA, CONF_HEAT_LOAD,
-                CONF_DESIGN_TEMP, CONF_COP):
+                CONF_DESIGN_TEMP, CONF_COP, CONF_AIR_EVERY):
         out[key] = _num(raw, key)
     action = raw.get(CONF_ACTION) or ACTION_OFF
     if action not in (ACTION_OFF, ACTION_SETBACK):

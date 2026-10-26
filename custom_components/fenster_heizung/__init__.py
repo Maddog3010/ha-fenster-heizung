@@ -167,6 +167,8 @@ class WindowController:
         self._away_saved: dict[str, float] = {}  # Solltemperaturen vor der Absenkung
         self._learn: list[dict[str, Any]] = []  # gelernte Aufheizphasen
         self._phase: dict[str, Any] | None = None
+        self._last_aired: str | None = None  # Zeitpunkt, zu dem zuletzt ein Fenster geschlossen wurde
+        self._was_open = False
 
     @property
     def cfg(self) -> dict[str, Any]:
@@ -196,6 +198,8 @@ class WindowController:
             except (ValueError, TypeError):
                 _LOGGER.warning("Gespeicherter Heizplan ist ungültig und wird ignoriert")
             self._plan_key = data.get("plan_key")
+            la = data.get("last_aired")
+            self._last_aired = la if isinstance(la, str) and dt_util.parse_datetime(la) else None
             self._learn = [x for x in (data.get("learn") or []) if isinstance(x, dict)][-LEARN_MAX_SAMPLES:]
             at = data.get("away_temp")
             self._away_temp = float(at) if isinstance(at, (int, float)) else None
@@ -223,6 +227,7 @@ class WindowController:
         self._unsub_e = async_track_time_interval(
             self.hass, self._energy_tick, timedelta(seconds=60)
         )
+        self._was_open = self._any_open()
         self._evaluate()
 
     async def async_stop(self) -> None:
@@ -546,6 +551,10 @@ class WindowController:
                 return key, temp, self._plan.get("mode", "heat") in HEATING_MODES
         return None
 
+    @property
+    def last_aired(self) -> str | None:
+        return self._last_aired
+
     def _general(self):
         return self.hass.data.get(DOMAIN, {}).get("general")
 
@@ -847,6 +856,7 @@ class WindowController:
             "away_temp": self._away_temp,
             "away_saved": self._away_saved,
             "learn": self._learn,
+            "last_aired": self._last_aired,
         }
 
     async def _save(self) -> None:
@@ -862,6 +872,12 @@ class WindowController:
 
     @callback
     def _window_changed(self, event: Event) -> None:
+        is_open = self._any_open()
+        if self._was_open and not is_open:  # gelüftet: Zeitpunkt merken (übersteht Neustarts)
+            self._last_aired = dt_util.now().isoformat()
+            self._store.async_delay_save(self._data, 30)
+            self._signal()
+        self._was_open = is_open
         self._evaluate()
 
     @callback

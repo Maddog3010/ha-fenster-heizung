@@ -100,7 +100,9 @@ PLAN_MODES = ("keep", "heat", "auto")
 CONF_HUMIDITY = "humidity_sensor"
 CONF_AIR_HINT = "air_hint"
 CONF_WEATHER_ADJ = "weather_adj"
-EXTRA_KEYS = (CONF_HUMIDITY, CONF_AIR_HINT, CONF_WEATHER_ADJ)  # gehören nicht zum HA-Optionsdialog
+CONF_AIR_EVERY = "air_every"  # Erinnerung (Std.), wenn lange nicht gelüftet; 0 = aus
+DEFAULT_AIR_EVERY = 8
+EXTRA_KEYS = (CONF_HUMIDITY, CONF_AIR_HINT, CONF_WEATHER_ADJ, CONF_AIR_EVERY)  # gehören nicht zum HA-Optionsdialog
 GITHUB_REPO = "Maddog3010/ha-fenster-heizung"
 UPDATE_CACHE_SECONDS = 6 * 3600
 LEARN_MIN_DELTA = 1.0  # Aufheizphase ab so viel Kelvin unter dem Ziel
