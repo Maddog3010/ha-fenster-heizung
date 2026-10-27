@@ -2,6 +2,30 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.1] - 2026-10-27
+### Neu
+- **Personen & Standort** unter Einstellungen → Allgemein:
+  - Standort der Personen über die Home-Assistant-Integration „Apple iCloud“ (Akku, Genauigkeit, letzte Meldung werden angezeigt).
+  - Einstellungen pro Person: Name, mehrere Standortquellen, WLAN-/Router-Quelle, Zählregel für „Automatisch abwesend“, Genauigkeitsgrenze.
+  - **Home-Zone per Karte** (OpenStreetMap): verschieben, zoomen, Radius 30 bis 1000 m, Übernahme der Position von Home Assistant oder einer Person.
+  - Hinweise zum iPhone direkt auf der Seite.
+- **Anwesenheit & Urlaub** nutzt die Zone und die Quellen: Eine Person gilt als zu Hause, wenn ihr genauer Standort in der Zone liegt oder eine Quelle „zu Hause“ meldet. Die Karte zeigt Entfernung und „x von y zu Hause“.
+- Zone und Personen sind in Sichern & Wiederherstellen enthalten. Es wird kein Standortverlauf gespeichert.
+- **go-e Charger direkt verbinden** unter Einstellungen → Allgemein → **Integrationen** (lokale HTTP-API v2, ohne Cloud), mit Verbindungstest.
+- **Laderegelung in Modul 8** (Beta), angelehnt an evcc: Modi Aus, Sonne, Sonne + Netz und Voll, Ladestrom 6 bis 16 A, Start- und Stopp-Verzögerung, automatische Umschaltung zwischen 1 und 3 Phasen, Ladelimit, Ladeplan mit Ziel-Ladestand und Uhrzeit, Hausbatterie zuerst, Netzladen nur bei günstigem Preis und eine Liste der letzten Entscheidungen.
+  - Die Regelung ist standardmäßig **aus** und stellt die Wallbox beim Ausschalten wieder auf „neutral“. Bei Eingriffen von Hand pausiert sie 30 Minuten. Es sind nur Adressen im lokalen Netz erlaubt.
+  - **Fahrzeuge & Karten** (wie bei evcc): Fahrzeug wird an der RFID-Karte erkannt, die in der go-e-App hinterlegt ist. Pro Fahrzeug Modus und Ladelimit, Gastfahrzeug für unbekannte Karten, „Nur mit erkannter Karte regeln“ und Zurücksetzen nach dem Abstecken. Die Sperre selbst kommt von der Kartenpflicht in der go-e-App.
+  - **Planung nach Strompreis und Sonne** (neues Register „Planung“ in Modul 8): günstigste Ladefenster bis zum Ziel-Ladestand, Strategien „Sonne zuerst, dann günstig“, „Nur Sonne“ und „Günstigster Preis“, Diagramm mit PV-Überschuss und Strompreis, Kacheln für Energie, Sonnenanteil, Kosten und Ersparnis. Der Schalter „Planung aktiv“ macht daraus eine **echte Steuerung**: Die Wallbox lädt nur in den geplanten Fenstern. Reicht die Sonne nicht, lädt der Ladeplan rechtzeitig mit Netzstrom nach.
+  - **Tibber** unter Einstellungen → Integrationen → Stromtarife (Zugriffstoken, Verbindungstest, mehrere Zuhause) mit drei Varianten der Preisauflösung: Stundenmittel, Viertelstunden und Preisstufen.
+  - **PV-Prognose mit Forecast.Solar:** Die Integration wird erkannt (mehrere Dachflächen werden addiert) und über `forecast_solar.get_forecast` gelesen. Ein einstellbarer Grundverbrauch wird vom Überschuss abgezogen.
+  - **Ladestatistik** (neues Register in Modul 8): Balkendiagramm pro Tag, Monat oder Jahr für Energie und Kosten, aufgeteilt nach Sonne / Netz oder nach Fahrzeug, mit Kacheln und den letzten Ladevorgängen. Gerechnet wird alle 10 Sekunden aus Ladeleistung, Netzanschluss und Preis, gespeichert bis zu 800 Tage.
+  - Die Modi der Laderegelung heißen jetzt **Aus, Sonne, Sonne + Netz und Voll**.
+### Behoben
+- **Handy-Ansicht:** Einstellungen oder Seitenleiste öffneten sich teils von selbst, zum Beispiel direkt nach dem Öffnen der Integration oder beim Wischen. Schaltflächen reagieren jetzt nur noch, wenn der Finger auch auf ihnen aufgesetzt wurde (Geisterklicks werden ignoriert), und Wischen auf der Modulleiste öffnet nicht mehr die Seitenleiste von Home Assistant.
+- **Modulleiste:** Sie springt beim Aktualisieren nicht mehr an den Anfang zurück, rastet beim Wischen sauber ein und zeigt das gewählte Modul in der Mitte.
+### Geändert
+- Die Erkennung von Abwesenheit berücksichtigt nur Personen, die als „zählend“ markiert sind.
+
 ## [3.0.0] - 2026-10-27
 Große Version: Gerätestrom als eigenes Modul, zwölf Beta-Module und eine neue Modulreihenfolge. Das Dashboard hat jetzt 16 Module.
 ### Neu

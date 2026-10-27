@@ -5,12 +5,18 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.0-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.1-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Eine Integration für Home Assistant, die Heizung, Fenster, Warmwasser, Solarstrom und Geräte zusammenbringt.** Sie pausiert Heizkörper, wenn ein Fenster offen ist, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer und Warmwasser, zeigt, woher der Strom deiner Geräte kommt, und stellt alles in einem eigenen Dashboard in der Seitenleiste dar.
 
-> ### 🎉 Neu in Version 3.0.0
+> ### 🔌 Neu in Version 3.0.1: Laderegelung für den go-e Charger
+> Unter **Einstellungen → Allgemein → Integrationen** verbindest du den go-e Charger direkt über das lokale Netzwerk, auf Wunsch auch Tibber für die Strompreise. In **Modul 8** regelst du dann das Laden nach PV-Überschuss (Sonne, Sonne + Netz, Voll, Ladeplan), planst es nach Strompreis und PV-Prognose und siehst die **Ladestatistik** mit Sonnenanteil und Kosten. Die Regelung ist standardmäßig aus.
+>
+> ### 📍 Personen & Standort (ebenfalls 3.0.1)
+> Neue Seite unter **Einstellungen → Allgemein → Personen & Standort**: Standort der Personen über **Apple iCloud**, eigene **Home-Zone auf der Karte** und Einstellungen pro Person. „Anwesenheit & Urlaub“ nutzt beides. Mehr dazu im Abschnitt [Anwesenheit und Urlaub](#anwesenheit-und-urlaub).
+>
+> ### 🎉 Version 3.0.0
 > Das Dashboard hat jetzt **16 Module**. Neu ist **Modul 4: Gerätestrom** (fertig, kein Beta). Dazu kommen **zwölf Beta-Module** (5 bis 16) mit eigenen Seiten für Lüftung, Rollläden, Wärmepumpe, Elektroauto, Wetter, Garten, Sicherheitsmelder, Pool und Sauna, Batteriespeicher, Stromtarif, Wartung und Solar-Prognose.
 > **Alle Beta-Module sind standardmäßig aus.** Du schaltest sie unter **Einstellungen → Module verwalten** ein, wenn du sie ausprobieren willst. Alle Änderungen stehen im [Changelog](CHANGELOG.md).
 >
@@ -27,7 +33,7 @@
 | 5 | Lüftung & Raumluft | Beta | Luftfeuchte und Lüftungshinweise je Raum, später KWL und CO₂ |
 | 6 | Rollläden & Beschattung | Beta | Sonnenstand und Außenwerte, später Rollladensteuerung |
 | 7 | Wärmepumpe | Beta | Außenbedingungen, später Laufzeit, Takten und Abtauen |
-| 8 | Elektroauto & Wallbox | Beta | Auto mit Wallbox, Ladekabel, Ladestand, Reichweite, Kilometerstand |
+| 8 | Elektroauto & Wallbox | Beta | Auto mit Wallbox, Ladestand, Reichweite, Kilometerstand, Laderegelung für den go-e Charger (Sonne, Sonne + Netz, Voll, Ladeplan), Planung nach Strompreis (Tibber) und PV-Prognose (Forecast.Solar), Ladestatistik |
 | 9 | Wetter & Warnungen | Beta | Unwetter-, Sturm- und Frostwarnung aus der Wetter-Entität |
 | 10 | Garten & Bewässerung | Beta | Regen, PV-Überschuss und Zisterne |
 | 11 | Rauch- & Sicherheitsmelder | Beta | Melder, Batteriestände und Alarme im Überblick |
@@ -117,6 +123,21 @@ Der Knopf „Bericht“ zeigt einen Tagesbericht mit Temperaturverlauf, Zieltemp
 
 ### Anwesenheit und Urlaub
 Eine Karte stellt alle Räume gemeinsam um: **Zu Hause**, **Abwesend** oder **Urlaub**. Urlaub lässt sich mit Datum und Vorheizen am Rückkehrtag planen. Automatisch abwesend wird der Haushalt, wenn alle gewählten Personen länger unterwegs sind.
+
+#### Personen & Standort (neu in 3.0.1)
+Unter **Einstellungen → Allgemein → Personen & Standort** legst du fest, woher der Standort jeder Person kommt und wo dein Zuhause liegt.
+
+![Personen und Standort](docs/vorschau_personen_standort.png)
+
+- **Standort über Apple iCloud:** Die Integration nutzt die Geräte der Home-Assistant-Integration „Apple iCloud“ (Einrichtung: [HA-Doku](https://www.home-assistant.io/integrations/icloud)). Home Assistant Cloud und die Companion-App sind dafür nicht nötig.
+- **Einstellungen pro Person:** Name, mehrere Standortquellen, optional ein WLAN- oder Router-Gerät als zweite Quelle, ob die Person für das automatische Abwesend zählt, und eine Genauigkeitsgrenze (Standard 100 m). Zu ungenaue Positionen werden ignoriert.
+- **Home-Zone per Karte:** Karte (OpenStreetMap) verschieben und zoomen, Radius von 30 bis 1000 m. Die Zone ist unabhängig von der Zone in Home Assistant. Ohne eigene Zone gilt weiter, was Home Assistant meldet.
+
+![Home-Zone auf der Karte](docs/vorschau_home_zone.png)
+
+Eine Person gilt als **zu Hause**, wenn Home Assistant „zu Hause“ meldet, eine Quelle „zu Hause“ meldet, eine ausreichend genaue Position in der Zone liegt oder die WLAN-Quelle „zu Hause“ meldet. Gespeichert werden nur die Einstellungen, **kein Standortverlauf**.
+
+**Am iPhone beachten:** „Wo ist?“ und Ortungsdienste an, Anmeldung mit Apple-Passwort und Zwei-Faktor-Code (gelegentlich erneut nötig), eigene Apple-ID je Person, iCloud aktualisiert nicht sekundengenau. Darum Zone nicht kleiner als etwa 100 bis 200 m wählen und bei Bedarf zusätzlich WLAN nutzen.
 
 ### Elektroheizer mit PV-Überschuss
 Pro Raum kann ein elektrischer Heizer (Heizlüfter, Infrarot, Klima-Heizgerät) eingerichtet werden. Er heizt nur, wenn genug PV-Überschuss da ist, auf Wunsch in mehreren Leistungsstufen.
@@ -237,7 +258,43 @@ Zeigt die Außenbedingungen und ob Abtauen wahrscheinlicher wird (unter etwa 7 �
 - **Wallbox** immer sichtbar. Das **Ladekabel** erscheint nur, wenn der Stecker steckt, und verschwindet beim Abstecken. **Beim Laden** läuft eine Animation am Kabel, die Wallbox zeigt die Leistung.
 - **Kacheln:** Ladestand, Reichweite, Kilometerstand und Ladeleistung.
 - **Sensoren** (alle optional, wählbar in den Einstellungen): Ladestand, Kilometerstand, Reichweite, „Stecker steckt“, Ladeleistung, „lädt“.
-- **Geplant:** Laden nach PV-Überschuss.
+- **Laderegelung für den go-e Charger (neu in 3.0.1):** Die Wallbox wird direkt über die lokale HTTP-API v2 gelesen und geregelt, ohne Cloud. Die Verbindung richtest du unter **Einstellungen → Allgemein → Integrationen** ein (IP-Adresse, „Verbindung testen“). In der go-e-App muss unter Einstellungen → Verbindung → API-Einstellungen die lokale HTTP-API eingeschaltet sein.
+
+<p align="center"><img src="docs/vorschau_wallbox_regelung.png" width="620" alt="Laderegelung der Wallbox"></p>
+
+  - **Fahrzeuge & Karten (wie bei evcc):** Die Regelung erkennt das Fahrzeug an der RFID-Karte, die an der Wallbox angelegt wird. Du trägst keine Kartennummern ein, sondern wählst die Karten, die in der go-e-App schon hinterlegt sind (Kartenname). Pro Fahrzeug stellst du Modus und Ladelimit ein, ein Gastfahrzeug gilt für unbekannte Karten. Eine Karte gehört zu genau einem Fahrzeug.
+  - **„Nur mit erkannter Karte regeln“:** Ohne Karte verändert Strom & Wärme nichts an der Wallbox. Die eigentliche Sperre kommt von der Kartenpflicht (Authentifizierung) in der go-e-App.
+  - **„Nach dem Abstecken zurücksetzen“:** Die Wallbox wird auf „neutral“ gestellt und die Erkennung vergessen. Sie gilt nur für eine Ladung.
+<p align="center"><img src="docs/vorschau_wallbox_fahrzeuge.png" width="620" alt="Fahrzeuge und Karten"></p>
+
+  - **Schalter „Laderegelung aktiv“:** Standardmäßig **aus**. Solange er aus ist, verändert Strom & Wärme nichts an der Wallbox. Beim Ausschalten stellt die Regelung die Wallbox wieder auf „neutral“.
+  - **Modi** wie bei evcc: **Aus**, **Sonne** (nur mit Überschuss), **Sonne + Netz** (immer Mindeststrom, mehr bei Überschuss) und **Voll** (Höchststrom).
+  - **Regelung:** Ladestrom 6 bis 16 A in 1-A-Schritten, Start ab einem Überschuss nach einer Wartezeit, Stopp nach einer Wartezeit (gegen Wolken), automatische Umschaltung zwischen 1 und 3 Phasen (höchstens alle 10 Minuten), Ladelimit in Prozent.
+  - **Überschuss:** Einspeisung am Netzanschluss (Netz-Sensor aus Modul 3 oder 1) plus die Leistung, die die Wallbox selbst zieht. Die Regelung läuft alle 10 Sekunden.
+  - **Ladeplan:** Ziel-Ladestand bis zu einer Uhrzeit (täglich, Mo–Fr oder Wochenende). Reicht die Sonne nicht, startet die Wallbox spätestens zur berechneten Zeit mit Netzstrom. Braucht den Ladestand-Sensor des Fahrzeugs und die Akkukapazität.
+  - **Hausbatterie zuerst** (mit Mindest-Ladestand) und **Netzstrom nur bei günstigem Preis** (mit Preis-Sensor aus Modul 1).
+  - **Sicherheit:** Es sind nur Adressen im lokalen Netz erlaubt. Stellst du die Wallbox in der go-e-App von Hand um, pausiert die Regelung 30 Minuten. Fehlt der Überschuss-Wert, wird im Modus „Sonne“ nicht geladen. Ist die Wallbox nicht erreichbar, kann nichts umgestellt werden, sie bleibt im letzten Zustand, und die Meldung steht in der Liste. Die letzten Entscheidungen stehen mit Begründung in der Liste.
+  - **Erster Test:** Regelung erst mit Modus „Voll“ und 6 A ausprobieren und in der go-e-App beobachten, danach „Sonne“.
+  - Unterstützt wird der **go-e Charger Gemini** (und andere Geräte mit lokaler API v2). Die Befehle stammen aus der [offiziellen go-e-API-Dokumentation](https://github.com/goecharger/go-eCharger-API-v2/blob/main/apikeys-en.md).
+
+  - **Tibber (neu in 3.0.1):** Unter **Einstellungen → Allgemein → Integrationen → Stromtarife** verbindest du Tibber mit deinem persönlichen Zugriffstoken (developer.tibber.com), ohne zusätzliche Integration. Es werden nur Strompreise von heute und morgen abgerufen, keine Verbrauchsdaten. Der Token wird nur in Home Assistant gespeichert und nur an api.tibber.com gesendet.
+<p align="center"><img src="docs/vorschau_integration_tibber.png" width="620" alt="Tibber verbinden"></p>
+
+    - **Preisauflösung:** „Stundenmittel“ (empfohlen, ein Preis pro Stunde), „Viertelstunden“ (die genauen 15-Minuten-Preise; kennt die Tibber-Schnittstelle sie nicht, werden automatisch Stundenwerte genommen) oder „Preisstufen“ (nur Tibbers Einstufung von sehr günstig bis teuer, die Kosten in der Statistik bleiben mit den echten Preisen berechnet).
+  - **Register in Modul 8:** „Laden“, „Planung“ und „Ladestatistik“.
+  - **Planung nach Strompreis und Sonne (neu in 3.0.1):**
+<p align="center"><img src="docs/vorschau_wallbox_planung.png" width="620" alt="Ladeplanung nach Preis und Sonne"></p>
+
+    - Das Diagramm zeigt die nächsten rund 30 Stunden: PV-Überschuss (türkis), Strompreis (orange), geplante Ladung (markiert) und die Uhrzeit, bis zu der das Auto geladen sein soll. Ziel-Ladestand, Uhrzeit und Akkukapazität kommen aus dem Ladeplan unter „Laden“.
+    - **Strategien:** „Sonne zuerst, dann günstig“ (niedrigste effektive Kosten aus PV-Anteil und Preis), „Nur Sonne“ (nur Stunden mit genug Überschuss) und „Günstigster Preis“.
+    - **Schalter „Planung aktiv“:** Aus = nur Anzeige. An = **echte Steuerung**: Die Wallbox lädt nur in den geplanten Fenstern (in Sonnenstunden nach Überschuss, in günstigen Netzstunden mit voller Leistung) und wird dazwischen pausiert. Der Modus unter „Laden“ ist dann gesperrt. Ein Fahrzeug mit dem Modus „Aus“ bleibt aus. Die Laderegelung muss an sein, der Ladestand des Fahrzeugs muss bekannt sein.
+    - **Sicherheit:** Reicht die Sonne nicht bis zur Uhrzeit, startet die Ladung spätestens zur berechneten Zeit mit Netzstrom. Das Ladelimit und „fertig geladen“ gelten weiter.
+    - **Quellen der Vorhersage:** Strompreis von **Tibber** oder aus einem Preis-Sensor (Modul 1). PV-Prognose von **Forecast.Solar**: Die Integration in Home Assistant wird erkannt (mehrere Dachflächen werden addiert) und über die Aktion `forecast_solar.get_forecast` gelesen. Vom Hausverbrauch wird ein einstellbarer **Grundverbrauch** (Vorgabe 0,4 kW) abgezogen.
+  - **Ladestatistik (neu in 3.0.1):**
+<p align="center"><img src="docs/vorschau_wallbox_statistik.png" width="620" alt="Ladestatistik"></p>
+
+    - Balkendiagramm pro Tag (Monat), pro Monat (Jahr) oder pro Jahr (Gesamt), wahlweise **Energie** oder **Kosten**, aufgeteilt nach **Sonne / Netz** oder nach **Fahrzeug**. Dazu Kacheln mit Geladen, Sonnenanteil, Kosten, Ø Preis und Ersparnis sowie die letzten Ladevorgänge.
+    - **So wird gerechnet:** Alle 10 Sekunden wird die Ladeleistung aufgeteilt. Als Sonne zählt der Anteil, der aus dem Überschuss am Netzanschluss gedeckt wird (Einspeisung plus Wallbox-Leistung, also auch die Hausbatterie), der Rest kommt aus dem Netz. Die Kosten sind der Netzanteil mal dem Preis zum Zeitpunkt des Ladens (Tibber oder Preis-Sensor aus Modul 1, ohne Preis 0 €). Gespeichert wird pro Tag, Fahrzeug und Ladevorgang bis zu 800 Tage, es wird kein Verlauf deiner Position oder Verbrauchsdaten gespeichert. Gezählt wird auch bei ausgeschalteter Regelung.
 
 <img src="docs/vorschau_elektroauto_einstellungen.png" width="480" alt="Elektroauto einrichten">
 
@@ -289,10 +346,10 @@ Unter **Allgemein → Diagnose öffnen** siehst du, ob alle Geräte der Regelung
 <p><img src="docs/vorschau_diagnose.png" width="480" alt="Gerätediagnose"> <img src="docs/vorschau_ventile.png" width="480" alt="Ventile"></p>
 
 ### Sichern und Wiederherstellen
-Unter **Allgemein → Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit Räumen, Heizplänen, Anwesenheit, Aussehen, allgemeinen Einstellungen und den Einstellungen der Module 2 bis 4 und 8. Beim Einlesen siehst du zuerst eine Zusammenfassung, erst „Wiederherstellen“ ersetzt die aktuellen Einstellungen.
+Unter **Allgemein → Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit Räumen, Heizplänen, Anwesenheit (mit Home-Zone und Personen), Aussehen, allgemeinen Einstellungen und den Einstellungen der Module 2 bis 4 und 8. Beim Einlesen siehst du zuerst eine Zusammenfassung, erst „Wiederherstellen“ ersetzt die aktuellen Einstellungen.
 
 ### Update-Hinweis
-Administratoren sehen oben ein Banner, wenn auf GitHub eine neuere Version veröffentlicht wurde. Maßgeblich ist die höchste Version unter allen Releases und Tags, auch mit vier Teilen (zum Beispiel `3.0.0` oder `2.9.2.5`). Die Prüfung fragt höchstens einmal pro Stunde ab und lässt sich unter **Allgemein → Updates** ausschalten.
+Administratoren sehen oben ein Banner, wenn auf GitHub eine neuere Version veröffentlicht wurde. Maßgeblich ist die höchste Version unter allen Releases und Tags, auch mit vier Teilen (zum Beispiel `3.0.1` oder `2.9.2.5`). Die Prüfung fragt höchstens einmal pro Stunde ab und lässt sich unter **Allgemein → Updates** ausschalten.
 
 ## Entitäten
 Pro Raum:
@@ -312,6 +369,9 @@ Pro Raum:
 
 - Die technische Kennung der Integration bleibt `fenster_heizung` (Ordner, Entitäten, Speicher). Nur der Anzeigename ist „Strom & Wärme“.
 - Raumeinstellungen im Dashboard: `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Layout (Farben, Fotos, Symbole, Wetteranzeige): `fenster_heizung/set_layout`. Allgemeines und Sicherung: `get_general`, `set_general`, `get_update`, `get_learning`, `restore`. Diagnose: `get_diag`, `clear_diag`. Module: `get_modules`, `set_modules`, `set_wasser`, `wasser_cmd`. Das Backend prüft alle Werte, Änderungen sind nur für Administratoren erlaubt.
+- Version 3.0.1: Statistik und Planung: `fenster_heizung/wb_stats` (Tage und Ladevorgänge), `wb_forecast` (Stundenraster mit `pv`, `price`, `level`, `slot_min`, `fs`), Tibber: `tb_get`, `tb_test` mit `token`, `tb_set` mit `token`, `home`, `res` (`h`, `q`, `lvl`). Die Einstellungen der Wallbox haben dafür `planOn`, `planStrat`, `planSrc`, `pvSrc`, `baseW`.
+- Version 3.0.1: Wallbox: `fenster_heizung/wb_get` (Status, Einstellungen, Entscheidungen), `wb_set` mit `cfg` (`ip`, `enabled`, `mode` = off/pv/minpv/now, `minA`, `maxA`, `ph`, `startW`, `onMin`, `offMin`, `limit`, `plan`, `planSoc`, `planTime`, `planDays`, `cap`, `batOn`, `batSoc`, `priceOn`, `priceMax`, `lock`, `reset`, `vehicles` mit `id`, `name`, `ids` (Kartennummern), `mode`, `limit`, `guest` mit `mode`, `limit`); `wb_get` liefert zusätzlich `info.cards` und `who` (erkanntes Fahrzeug) und `wb_test` mit `ip`.
+- Version 3.0.1: `fenster_heizung/set_presence` kennt zusätzlich `zone` (`lat`, `lon`, `r` in Metern, 30 bis 1000) und `people` (je `person.*`: `label`, `trackers`, `wifi`, `count`, `acc`).
 - Version 3.0.0: `get_modules` und `set_modules` kennen zusätzlich `on.ev`, `gs` (`devices` mit `id`, `name`, `ent`, `thr`, `end`, dazu `bat_cost`, `forecast`, `notify`) und `ev` (`brand`, `model`, `body`, `color`, `ent`). `fenster_heizung/gs_get` liefert die Auswertung von Modul 4. Ereignis `geraetestrom_run_finished` mit `device`, `kwh`, `cost`, `saved`, `share`. Die Beta-Module 9 bis 16 (`wx`, `ga`, `sf`, `pl`, `bt`, `dt`, `wa`, `sp`) speichern im Backend nur den Schalter `on.<kürzel>`, standardmäßig `false`. Die Module 5 bis 7 haben noch keine Einstellungen im Backend.
 - Version 2.9.2.3: `energy` kennt zusätzlich `ent.pv2`, `ent.pve2` (zweite Solaranlage) sowie die Anzeigenamen `pvn` und `pv2n`.
 - Version 2.9.2.1: `energy` kennt zusätzlich `ent.bchg`, `ent.bdis` und `bmode` (`one` oder `two`). Versions-Tags dürfen vier Teile haben.
@@ -319,7 +379,7 @@ Pro Raum:
 - Neue Raumeinstellungen (`humidity_sensor`, `air_hint`, `air_every`, `weather_adj`) erscheinen nur im Dashboard und bleiben beim Speichern im HA-Optionsdialog erhalten.
 - Der Bericht braucht Verlaufsdaten im Recorder.
 
-**Neue Version veröffentlichen:** `version` in `custom_components/fenster_heizung/manifest.json` erhöhen, auf GitHub ein Release mit passendem Tag (zum Beispiel `v3.0.0`) erstellen und kurze Aufzählungspunkte in die Beschreibung schreiben. Sie erscheinen im Update-Hinweis des Dashboards. HACS zeigt das Update an.
+**Neue Version veröffentlichen:** `version` in `custom_components/fenster_heizung/manifest.json` erhöhen, auf GitHub ein Release mit passendem Tag (zum Beispiel `v3.0.1`) erstellen und kurze Aufzählungspunkte in die Beschreibung schreiben. Sie erscheinen im Update-Hinweis des Dashboards. HACS zeigt das Update an.
 </details>
 
 ## Wichtige Hinweise

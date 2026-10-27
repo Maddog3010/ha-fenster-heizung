@@ -29,6 +29,8 @@ from .geraete import GeraeteManager
 from .wasser import WasserManager
 from .heater import HeaterRoom, PvManager
 from .presence import PresenceManager
+from .tibber import TibberManager
+from .wallbox import WallboxManager
 from .const import (
     ACTION_OFF,
     CONF_ACTION,
@@ -1155,6 +1157,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "geraete" not in store:
         store["geraete"] = GeraeteManager(hass)
         await store["geraete"].async_start()
+    if "tibber" not in store:
+        store["tibber"] = TibberManager(hass)
+        await store["tibber"].async_start()
+    if "wallbox" not in store:
+        store["wallbox"] = WallboxManager(hass)
+        await store["wallbox"].async_start()
     return True
 
 
@@ -1192,4 +1200,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             gsm = hass.data.get(DOMAIN, {}).pop("geraete", None)
             if gsm is not None:
                 gsm.async_stop()
+            wbm = hass.data.get(DOMAIN, {}).pop("wallbox", None)
+            if wbm is not None:
+                wbm.async_stop()
+            hass.data.get(DOMAIN, {}).pop("tibber", None)
     return ok

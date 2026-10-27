@@ -20,6 +20,8 @@ const ICONS = {
   upload: '<path d="M12 16V5M7 9l5-5 5 5M5 20h14"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 4-6 8-6s7 2 8 6"/>',
   bell: '<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/>',
+  pin: '<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.9.7 3.2 2.4 3.5 5.2"/>',
   alert: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v5M12 17.6v.4"/>',
   up: '<path d="M6 15l6-6 6 6"/>',
   window: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 3v18M4 12h16"/>',
@@ -730,7 +732,17 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 
 /* Module */
 .sxw{max-width:760px;margin:0 auto;width:100%}.sxh{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:18px 4px 8px}
-.sxl{padding:4px 0}.sxrow{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:inherit;text-align:left;padding:12px 14px;cursor:pointer;font:inherit}
+.omap{position:relative;height:300px;overflow:hidden;border-radius:14px;border:1px solid var(--line);background:#e8e4da;touch-action:none;cursor:grab;user-select:none}.omap.sm{height:240px;cursor:default}.omap:active{cursor:grabbing}.omap.sm:active{cursor:default}
+.otile{position:absolute;width:256px;height:256px;max-width:none;pointer-events:none}.ozone{position:absolute;left:50%;top:50%;border-radius:50%;border:2px solid #0d9488;background:rgba(45,212,191,.22);transform:translate(-50%,-50%);pointer-events:none}
+.opin{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-34px 0 0 -17px;color:#0d9488;filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));pointer-events:none}.opin svg{width:34px;height:34px;fill:#14b8a6;stroke:#fff;stroke-width:1.4}
+.odot{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.5);pointer-events:none}
+.oatt{position:absolute;right:6px;bottom:4px;font-size:.62rem;background:rgba(255,255,255,.78);color:#333;padding:1px 6px;border-radius:6px}.ozb{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:6px}.ozb button{width:34px;height:34px;border-radius:9px;border:1px solid rgba(0,0,0,.2);background:#fff;color:#222;font-size:1.2rem;cursor:pointer}
+.ocard{padding:14px 16px}.ocard h2{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:1.02rem}.oper{display:flex;align-items:center;gap:12px;padding:12px 0}.oper+.oper{border-top:1px solid var(--line)}.oav{flex:none;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:1.05rem}
+.opi{flex:1;min-width:0}.opi b{display:block}.opi small{display:block;color:var(--mut);margin-top:2px}.ost{font-size:.74rem;font-weight:700;padding:3px 10px;border-radius:99px;border:1px solid var(--line);white-space:nowrap}.ost.home{color:#22c55e;border-color:#22c55e}.ost.away{color:var(--mut)}.ost.off{color:#f59e0b;border-color:#f59e0b}
+.ocp{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal);font-weight:700}.otr{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;margin:6px 0}.otr .opi small{font-size:.76rem}
+.osel{width:100%;background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;margin:4px 0}.ohint{margin-top:10px;border:1px solid var(--line);border-radius:12px;padding:2px 14px}.ohint summary{cursor:pointer;padding:10px 0;font-weight:700}.ohint ol{margin:0 0 12px;padding-left:20px;color:var(--mut);font-size:.86rem;line-height:1.5}.ohint li{margin:6px 0}.ohint b{color:var(--primary-text-color)}
+.orng{width:100%;accent-color:var(--teal);margin:6px 0}.ocoord{display:flex;gap:14px;flex-wrap:wrap;color:var(--mut);font-size:.84rem;margin-top:8px}.ocoord b{color:var(--primary-text-color)}
+.rfv{border:1px solid var(--line);border-radius:14px;padding:12px;margin:10px 0}.sxl{padding:4px 0}.sxrow{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:inherit;text-align:left;padding:12px 14px;cursor:pointer;font:inherit}
 .sxrow+.sxrow{border-top:1px solid var(--line)}.sxrow:hover{background:color-mix(in srgb,var(--teal) 6%,transparent)}.sxrow.soon{opacity:.55;cursor:default}.sxrow.soon:hover{background:none}
 .sxi{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal)}
 .sxt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.sxt b{font-size:.95rem;font-weight:650}.sxt b i{font-style:normal;font-weight:500;color:var(--mut);font-size:.8rem;margin-right:4px}.sxt small{color:var(--mut);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -751,6 +763,11 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .gsadv.green{--c:#34d399;color:#34d399}.gsadv.amber{--c:#f59e0b;color:#f59e0b}.gsadv.slate{--c:#94a3b8;color:var(--mut)}
 .gsdc{display:grid;gap:8px;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px}.gsdh{display:flex;gap:8px;align-items:center}.gsdh .otxt{flex:1}
 .gsnums{display:flex;gap:12px;flex-wrap:wrap}.gsnums label{display:grid;gap:4px;font-size:.76rem;color:var(--mut)}.gsnums .onum{display:inline-flex;align-items:center;gap:6px}.gsnums input{width:80px}.onum u,.gsnums u{text-decoration:none;color:var(--mut)}
+.wbtabs{display:flex;gap:6px;margin:0 0 12px;border:1px solid var(--line);border-radius:999px;padding:4px;width:max-content;max-width:100%}.wbtabs button{display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--mut);border-radius:999px;padding:8px 16px;font:inherit;font-weight:600;font-size:.88rem;cursor:pointer}.wbtabs button.sel{background:var(--teal);color:var(--on-acc)}
+.wbsh{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px}.wbnav{display:flex;align-items:center;gap:8px}.wbnav button{border:1px solid var(--line);background:transparent;color:var(--primary-text-color);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer}.wbnav b{min-width:120px;text-align:center}.tbvar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 10px}.tbvar button{display:grid;gap:5px;text-align:left;padding:10px;border-radius:14px;border:1px solid var(--line);background:transparent;color:var(--mut);font:inherit;cursor:pointer;align-content:start}.tbvar button b{color:var(--primary-text-color);font-size:.88rem}.tbvar button small{font-size:.74rem;line-height:1.35}.tbvar button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent)}@media(max-width:560px){.tbvar{grid-template-columns:1fr}}
+.wbsc{overflow-x:auto}.wbsc svg{min-width:520px}.wbst{margin:12px 0 4px}.wbst b{font-size:1.05rem}
+.wbses{display:grid;gap:8px}.wbse{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.wbse:first-child{border-top:0}.wbse>div{display:grid;gap:2px}.wbsb{height:8px;border-radius:99px;background:#f59e0b;overflow:hidden;display:block!important}.wbsb i{display:block;height:100%;background:#2dd4bf}.wbsv{text-align:right}
+@media(max-width:560px){.wbse{grid-template-columns:1fr 1fr}.wbsb{grid-column:1/-1;order:3}}
 .gsch{border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:999px;padding:6px 14px;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}.gsch.sel{background:var(--teal);border-color:var(--teal);color:var(--on-acc)}
 .gschips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}.gsq{margin:8px 0}
 .evsw{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:linear-gradient(135deg,var(--c2),var(--c));cursor:pointer;padding:0}.evsw.sel{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal)}
@@ -762,9 +779,9 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .luroom{display:grid;gap:3px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:.8rem}.luroom b{font-size:.92rem}.luroom .lv{font-size:1.5rem;font-weight:750}
 .luroom .lv.green{color:#34d399}.luroom .lv.amber{color:#f59e0b}.luroom .lv.red{color:#f87171}.luroom.off{opacity:.55}
 .lusoon{display:flex;align-items:center;gap:14px;opacity:.65;border-style:dashed}.lusoon>svg{flex:none;color:var(--mut)}.lusoon div{flex:1;display:grid;gap:2px}.lusoon .beta{margin:0}
-.mbar{display:flex;gap:8px;overflow-x:auto;max-width:1180px;margin:0 auto;padding:12px 14px 0;scrollbar-width:none}
+.mbar{display:flex;gap:8px;overflow-x:auto;max-width:1180px;margin:0 auto;padding:12px 14px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scroll-padding:0 14px;touch-action:pan-x pan-y}
 .mbar::-webkit-scrollbar{display:none}
-.mtab{position:relative;flex:none;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:8px 14px 8px 11px;cursor:pointer;text-align:left;color:var(--mut)}
+.mtab{scroll-snap-align:start;position:relative;flex:none;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:8px 14px 8px 11px;cursor:pointer;text-align:left;color:var(--mut)}
 .mtab span{display:block;line-height:1.15}.mtab small{display:block;font-size:.68rem;opacity:.85}.mtab b{display:block;font-size:.9rem;color:var(--primary-text-color);white-space:nowrap}
 .mtab.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 13%,var(--card));color:var(--teal)}
 .mtab.add{border-style:dashed;background:transparent}
@@ -827,7 +844,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._narrow = false; this._edit = false; this._modal = null; this._dragging = false;
     this._cfg = { layout: { blocks: [], rooms: [], icons: {}, groups: [] }, plans: {}, presence: { mode: "home" } };
     this._gen = { updates: true, summer: { mode: "auto", temp: 18, days: 3 }, wxadj: { on: false, mild: 12, down: 1, frost: 0, up: 1 }, pv: { ...PVDEF } };
-    this._learn = {}; this._st = null; this._stOpen = false; this._pollN = 0;
+    this._learn = {}; this._st = null; this._stOpen = false; this._ortOpen = false; this._igOpen = false; this._pollN = 0;
   }
   connectedCallback() {
     this._ro = new ResizeObserver(() => { if (this._hass && !this._dragging && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render(); });
@@ -1305,7 +1322,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _presenceCard() {
     const p = this._pres(), h = this._hass, adm = this._admin();
-    const persons = (p.persons.length ? p.persons : Object.keys(h.states).filter((e) => e.startsWith("person."))).map((e) => h.states[e]).filter(Boolean);
+    const persons = this._ortPersons().filter((x) => !p.persons.length || p.persons.includes(x.id)), zn = this._ort().own ? this._ort().zone : null;
     const days = p.to ? Math.max(0, Math.ceil((new Date(p.to + "T23:59:59") - new Date()) / 864e5)) : 0;
     const stat = p.mode === "vacation" && p.effective === "home"
       ? `<b>Urlaub geplant:</b> ${this._fmtD(p.from)} bis ${this._fmtD(p.to)} · Absenkung ${num(p.temp, 1)} °C`
@@ -1316,8 +1333,8 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="card pres"><h2>${ic("home", 18)}Anwesenheit &amp; Urlaub</h2>
       <div class="seg3">${[["home", "home", "Zu Hause"], ["away", "door", "Abwesend"], ["vacation", "suitcase", "Urlaub"]].map(([k, i, l]) => `<button class="${p.mode === k ? "sel" : ""}" data-act="pm" data-k="${k}" ${adm ? "" : "disabled"}>${ic(i, 22)}${l}</button>`).join("")}</div>
       <div class="pstat">${stat}</div>
-      ${persons.length ? `<div class="pers">${persons.map((s) => `<span class="per ${s.state === "home" ? "home" : ""}"><i></i>${esc(s.attributes.friendly_name || s.entity_id)} · ${s.state === "home" ? "zu Hause" : "unterwegs"}</span>`).join("")}</div>` : ""}
-      ${adm ? `<div class="plnk"><button class="lnk" data-act="vac">${ic("suitcase", 16)}Urlaub planen</button><button class="lnk" data-act="pset">${ic("sliders", 16)}Einstellungen</button></div>` : ""}</div>`;
+      ${persons.length ? `<div class="pers">${persons.map((s) => `<span class="per ${s.home ? "home" : ""}"><i></i>${esc(s.name)} · ${s.unavailable && !s.tr.length ? "keine Ortung" : s.home ? "zu Hause" : s.dist != null ? "unterwegs, " + this._ortFmtD(s.dist) : "unterwegs"}</span>`).join("")}</div>${zn ? `<div class="mut sm" style="margin-top:6px">Home-Zone ${zn.r} m · ${persons.filter((x) => x.home).length} von ${persons.length} zu Hause</div>` : ""}` : ""}
+      ${adm ? `<div class="plnk"><button class="lnk" data-act="vac">${ic("suitcase", 16)}Urlaub planen</button><button class="lnk" data-act="pset">${ic("sliders", 16)}Einstellungen</button><button class="lnk" data-act="ortopen">${ic("pin", 16)}Personen &amp; Standort</button></div>` : ""}</div>`;
   }
 
   _planBox(r) {
@@ -1721,13 +1738,25 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="foot"><div class="a"><b>${num(d.min)} Min. pausiert</b><span>${r.pauses || 0}× heute · ~${num(d.gas, 2)} ${FUELS[r.fuel || "erdgas"].label} · ${num(r.kw, 2)} kW</span></div>${this._spark(r)}</div></div>`;
   }
 
+  /* Die Modulleiste behält beim Neuzeichnen ihre Scrollposition. Beim Wechsel des Moduls wird das gewählte Tab in die Mitte geholt. */
   _render() {
+    const sr0 = this.shadowRoot, bar = sr0 && sr0.querySelector(".mbar"), x = bar ? bar.scrollLeft : null, id = this._mdActive();
+    this._render0();
+    const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
+    if (this._mbId !== id || x == null) {
+      const t = nb.querySelector(".mtab.sel"); if (t) nb.scrollLeft = Math.max(0, t.offsetLeft - (nb.clientWidth - t.offsetWidth) / 2);
+    } else nb.scrollLeft = x;
+    this._mbId = id;
+  }
+  _render0() {
     if (!this._hass || this._dragging) return;
     const sr = this.shadowRoot;
     if (!this._built) { this._build(); }
     const bg = getComputedStyle(this).backgroundColor.match(/\d+/g) || [15, 20, 25];
     this.style.colorScheme = (0.299 * bg[0] + 0.587 * bg[1] + 0.114 * bg[2]) < 140 ? "dark" : "light";
     this._applyLook();
+    if (this._igOpen && this._admin()) { this._igRender(); return; }
+    if (this._ortOpen && this._admin()) { this._ortRender(); return; }
     if (this._stOpen && this._admin()) { this._stRender(); return; }
     if (this._mdActive() !== "fh") { this._mdRender(); return; }
     const rooms = this._collect(), edit = this._edit, adm = this._admin();
@@ -1771,8 +1800,13 @@ class FensterHeizungPanel extends HTMLElement {
   _build() {
     const sr = this.shadowRoot;
     sr.innerHTML = `<style>${CSS}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
-    this._built = true;
-    sr.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (b) this._act(b.dataset.act, b); });
+    this._built = true; this._t0 = Date.now();
+    /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
+    const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
+    sr.addEventListener("pointerdown", (e) => { const b = e.target.closest && e.target.closest("[data-act]"); this._pd = b ? { s: sig(b), t: Date.now() } : null; }, true);
+    sr.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (!b) return; if (e.detail !== 0 && !(this._pd && this._pd.s === sig(b) && Date.now() - this._pd.t < 2000)) return; if (b.dataset.act === "mdst" && Date.now() - (this._t0 || 0) < 1200) return; this._act(b.dataset.act, b); });
+    /* Wischen auf der Modulleiste soll nicht die Seitenleiste von Home Assistant öffnen. */
+    sr.addEventListener("touchstart", (e) => { if (e.target.closest && e.target.closest(".mbar,.rdays,.sxl,.ohint")) e.stopPropagation(); }, { passive: true });
     const hov = (e) => { const c = e.target.closest && e.target.closest(".rchart"); if (!c || !this._repGeo) return; const bb = c.getBoundingClientRect(), g = this._repGeo; this._repHover(Math.min(1439, Math.max(0, ((e.clientX - bb.left) / bb.width * g.W - g.L) / g.iw * 1440))); };
     sr.addEventListener("pointermove", hov); sr.addEventListener("pointerdown", hov);
     const whv = (e) => { const c = e.target.closest && e.target.closest(".wwc2"); if (!c || !this._wwGeo) return; const bb = c.getBoundingClientRect(), g = this._wwGeo; this._wwHover(Math.min(g.total, Math.max(0, ((e.clientX - bb.left) / bb.width * g.W - g.L) / g.iw * g.total))); };
@@ -1789,6 +1823,9 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wz") && this._wzChange(t)) return;
       if (t.dataset && t.dataset.f && (t.dataset.f.startsWith("md") || t.dataset.f.startsWith("ww") || t.dataset.f.startsWith("en") || t.dataset.f.startsWith("gs") || t.dataset.f.startsWith("ev")) && this._mdChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ort") && this._ortChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wb") && this._wbChange(t)) return;
       if (this._lookChange(t)) return;
       if (t.dataset && t.dataset.k === "htr_steps" && this._modal && this._modal.type === "opt") { this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("v") && this._modal && this._modal.type === "vac") { const k = { vfrom: "from", vto: "to", vtime: "preheat_time" }[t.dataset.f]; this._modal.draft[k] = t.value; if (k === "from" && t.value > this._modal.draft.to) this._modal.draft.to = t.value; this._renderModal(); }
@@ -1804,6 +1841,9 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "pkopen") { this._pkId = this._pkId === b.dataset.pid ? null : b.dataset.pid; this._renderModal(); const q = this.shadowRoot.querySelector(".pksearch"); if (q) q.focus(); }
     else if (a === "pkpick") { const meta = (this._pkReg || {})[b.dataset.pid]; this._pkId = null; if (meta) { const t = { dataset: { ...meta }, value: b.dataset.v, tagName: "SELECT" }; this._onInput(t); this._onChange(t); } this._renderModal(); }
     else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || a.startsWith("gs") || a.startsWith("ev")) this._mdAct(a, b);
+    else if (a.startsWith("ort")) this._ortAct(a, b);
+    else if (a.startsWith("ig")) this._igAct(a, b);
+    else if (a.startsWith("wb")) this._wbAct(a, b);
     else if (["gtog", "gsw", "gmv", "gedit", "gadd", "gpick", "gicon", "gsave", "gdel"].includes(a)) this._gActions(a, b);
     else if (a === "opt") this._optOpen(id);
     else if (a === "oadd") this._nav(HA_PAGE);
@@ -2380,6 +2420,10 @@ class FensterHeizungPanel extends HTMLElement {
     if (!m) { box.innerHTML = ""; return; }
     const r = this._collect().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
+    if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "iggoe") { box.innerHTML = this._igGoeModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "ortper" || m.type === "ortzone") { box.innerHTML = m.type === "ortper" ? this._ortPerModal() : this._ortZoneModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._ortBind(); return; }
     if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
     if (m.type === "icon") {
@@ -2697,6 +2741,8 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sxw"><div class="sxh">Module</div><div class="card sxl">${mods}${ext}</div>
         <div class="sxh">Allgemein</div><div class="card sxl">
           ${row("tools", "Einrichtungsassistent", "Räume, Ventile und Fenster zuordnen", "wz")}
+          ${row("puzzle", "Integrationen", "Wallbox und weitere Geräte direkt verbinden", "igopen", "", this._igChip())}
+          ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
           ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern und zurückspielen", "gen")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
@@ -2704,6 +2750,516 @@ class FensterHeizungPanel extends HTMLElement {
         ${soon ? `<div class="sxh">Demnächst</div><div class="card sxl">${soon}</div>` : ""}</div>
       </div>`;
   }
+  /* ---------------- Personen & Standort: iCloud-Ortung, Personen-Einstellungen, Home-Zone auf der Karte ---------------- */
+  _ort() {
+    if (!this._ortS) {
+      const h = this._hass, hz = h && h.states["zone.home"], hc = (h && h.config) || {};
+      this._ortS = { zdef: { lat: Number(hz ? hz.attributes.latitude : hc.latitude) || 51.1657, lon: Number(hz ? hz.attributes.longitude : hc.longitude) || 10.4515, r: Math.round(Number(hz && hz.attributes.radius) || 150) }, draft: null, map: null };
+    }
+    const pr = this._cfg.presence || {};
+    this._ortS.zone = pr.zone || this._ortS.zdef; this._ortS.per = pr.people || {}; this._ortS.own = !!pr.zone;
+    return this._ortS;
+  }
+  _ortZone() { return this._ort().zone; }
+  _ortDist(lat, lon) {
+    const z = this._ortZone(), R = 6371000, rad = (x) => (x * Math.PI) / 180, dl = rad(lat - z.lat), dn = rad(lon - z.lon);
+    const a = Math.sin(dl / 2) ** 2 + Math.cos(rad(z.lat)) * Math.cos(rad(lat)) * Math.sin(dn / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(a));
+  }
+  _ortFmtD(m) { return m == null ? "–" : m < 1000 ? `${Math.round(m / 10) * 10} m` : `${num(m / 1000, m < 10000 ? 1 : 0)} km`; }
+  _ortAgo(iso) { const t = iso ? new Date(iso).getTime() : NaN; if (!isFinite(t)) return ""; const m = Math.max(0, Math.round((Date.now() - t) / 60000)); return m < 1 ? "gerade eben" : m < 60 ? `vor ${m} Min.` : m < 1440 ? `vor ${Math.round(m / 60)} Std.` : `vor ${Math.round(m / 1440)} Tagen`; }
+  _ortTracker(id) {
+    const h = this._hass, s = h.states[id]; if (!s) return { id, name: id, missing: true };
+    const a = s.attributes || {}, reg = (h.entities || {})[id], cloud = (reg && reg.platform === "icloud") || /icloud/i.test(id) || a.source_type === "gps" && /iphone|ipad|apple/i.test(String(a.friendly_name || id));
+    const bat = a.battery_level ?? a.battery;
+    return { id, name: a.friendly_name || id, state: s.state, icloud: !!cloud, bat: bat != null && isFinite(Number(bat)) ? Number(bat) : null, acc: a.gps_accuracy != null ? Number(a.gps_accuracy) : null, lat: a.latitude != null ? Number(a.latitude) : null, lon: a.longitude != null ? Number(a.longitude) : null, seen: this._ortAgo(s.last_updated || s.last_changed) };
+  }
+  _ortPersons() {
+    const h = this._hass, st = h.states, o = this._ort(), COL = ["#14b8a6", "#6366f1", "#f59e0b", "#ec4899", "#22c55e", "#0ea5e9"];
+    return Object.keys(st).filter((e) => e.startsWith("person.")).map((id, i) => {
+      const s = st[id], a = s.attributes || {}, cfg = o.per[id] || {};
+      const trackers = cfg.trackers ? cfg.trackers.slice() : [...new Set([...(a.device_trackers || []), ...(a.source ? [a.source] : [])])].filter((x) => x.startsWith("device_tracker."));
+      const tr = trackers.map((t) => this._ortTracker(t));
+      const good = tr.filter((x) => x.lat != null && (cfg.acc ?? 100) >= (x.acc ?? 0));
+      let lat = a.latitude != null ? Number(a.latitude) : null, lon = a.longitude != null ? Number(a.longitude) : null;
+      if (lat == null && good[0]) { lat = good[0].lat; lon = good[0].lon; }
+      const dist = lat != null ? this._ortDist(lat, lon) : null, inZone = o.own && dist != null && dist <= o.zone.r;
+      const home = s.state === "home" || inZone || tr.some((x) => x.state === "home") || (cfg.wifi && (st[cfg.wifi] || {}).state === "home");
+      return { id, name: cfg.label || a.friendly_name || id, state: s.state, col: COL[i % COL.length], tr, lat, lon, dist, home, count: cfg.count !== false, acc: cfg.acc ?? 100, wifi: cfg.wifi || "", noSrc: !tr.length && !cfg.wifi, unavailable: s.state === "unavailable" || s.state === "unknown" };
+    });
+  }
+  _ortChip() {
+    const P = this._ortPersons(), n = P.filter((x) => !x.noSrc).length;
+    return P.length ? `<em class="sxc ${n === P.length ? "ok" : ""}">${n} von ${P.length} mit Ortung</em>` : `<em class="sxc">Offen</em>`;
+  }
+  /* Karte: eigene Kachelberechnung (OpenStreetMap), ohne Zusatzbibliothek */
+  _ortPx(lat, lon, z) { const n = 256 * 2 ** z, sn = Math.sin((lat * Math.PI) / 180); return [((lon + 180) / 360) * n, (0.5 - Math.log((1 + sn) / (1 - sn)) / (4 * Math.PI)) * n]; }
+  _ortLL(x, y, z) { const n = 256 * 2 ** z, lon = (x / n) * 360 - 180, lat = (Math.atan(Math.sinh(Math.PI * (1 - (2 * y) / n))) * 180) / Math.PI; return [lat, lon]; }
+  _ortMapInner(c, z, zone, dots, showZone = true) {
+    const [cx, cy] = this._ortPx(c.lat, c.lon, z), n = 2 ** z, tx0 = Math.floor(cx / 256), ty0 = Math.floor(cy / 256);
+    let t = "";
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -3; dx <= 3; dx++) {
+      const tx = tx0 + dx, ty = ty0 + dy; if (ty < 0 || ty >= n) continue;
+      const X = ((tx % n) + n) % n;
+      t += `<img class="otile" alt="" draggable="false" src="https://tile.openstreetmap.org/${z}/${X}/${ty}.png" style="left:calc(50% + ${Math.round(tx * 256 - cx)}px);top:calc(50% + ${Math.round(ty * 256 - cy)}px)">`;
+    }
+    const mpp = (156543.03392 * Math.cos((c.lat * Math.PI) / 180)) / 2 ** z, rp = Math.max(6, zone.r / mpp);
+    const d = dots.map((p) => { const [px, py] = this._ortPx(p.lat, p.lon, z); return `<div class="odot" style="left:calc(50% + ${Math.round(px - cx)}px);top:calc(50% + ${Math.round(py - cy)}px);background:${p.col}" title="${esc(p.name)}">${esc(p.name.slice(0, 1).toUpperCase())}</div>`; }).join("");
+    return `<div class="otiles">${t}</div>${showZone ? `<div class="ozone" style="width:${rp * 2}px;height:${rp * 2}px;left:calc(50% + ${Math.round(this._ortPx(zone.lat, zone.lon, z)[0] - cx)}px);top:calc(50% + ${Math.round(this._ortPx(zone.lat, zone.lon, z)[1] - cy)}px)"></div>` : ""}${d}`;
+  }
+  _ortZoomFor(r) { const lat = this._ortZone().lat; for (let z = 18; z >= 12; z--) { if (r / ((156543.03392 * Math.cos((lat * Math.PI) / 180)) / 2 ** z) <= 70) return z; } return 12; }
+  _ortRender() {
+    const sr = this.shadowRoot, o = this._ort(), P = this._ortPersons(), z = o.zone, adm = this._admin();
+    const withSrc = P.filter((x) => x.dist != null && x.lat != null), inZ = P.filter((x) => x.home).length;
+    const cloud = P.flatMap((x) => x.tr).filter((x) => x.icloud), clouds = [...new Set(cloud.map((x) => x.id))].length;
+    const pres = this._pres();
+    const per = P.map((x) => {
+      const t0 = x.tr[0], st = x.unavailable ? ["off", "Nicht erreichbar"] : x.home ? ["home", "Zu Hause"] : x.dist != null ? ["away", `Unterwegs · ${this._ortFmtD(x.dist)}`] : ["off", "Keine Ortung"];
+      const src = x.tr.length ? x.tr.map((q) => `${q.icloud ? "iCloud" : "Gerät"}${q.bat != null ? ` · Akku ${Math.round(q.bat)} %` : ""}${q.seen ? ` · ${q.seen}` : ""}`).slice(0, 1).join("") : x.wifi ? "Nur WLAN-Erkennung" : "Noch keine Quelle gewählt";
+      return `<div class="oper"><span class="oav" style="background:${x.col}">${esc(x.name.slice(0, 1).toUpperCase())}</span><div class="opi"><b>${esc(x.name)}</b><small>${esc(t0 ? t0.name + " · " : "")}${esc(src)}</small><small>${x.count ? "Zählt für automatisches Abwesend" : "Zählt nicht für automatisches Abwesend"}</small></div><span class="ost ${st[0]}">${esc(st[1])}</span><button class="ibtn" data-act="ortper" data-k="${esc(x.id)}" aria-label="${esc(x.name)} bearbeiten">${ic("pencil", 17)}</button></div>`;
+    }).join("");
+    sr.getElementById("main").innerHTML = `
+      <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Personen &amp; Standort</b><span><em class="tag">Wer ist zu Hause und wo ist das Zuhause</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <button class="pillbtn pri" data-act="ortback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
+      <div class="wrap"><div class="sxw">
+        <div class="card ocard"><h2>${ic("pin", 18)}Standort-Quelle</h2>
+          <div class="oper" style="padding-top:0"><span class="oav" style="background:#64748b">${ic("cloud", 22)}</span><div class="opi"><b>Apple iCloud (Wo ist?)</b><small>${clouds ? `${clouds} iCloud-Gerät${clouds > 1 ? "e" : ""} gefunden. Der Standort kommt von der Home-Assistant-Integration „Apple iCloud“.` : "Noch kein iCloud-Gerät gefunden. Richte zuerst die Home-Assistant-Integration „Apple iCloud“ ein."}</small></div><span class="ost ${clouds ? "home" : "off"}">${clouds ? "Verbunden" : "Nicht eingerichtet"}</span></div>
+          <details class="ohint"><summary>iPhone: Das muss stimmen</summary><ol>
+            <li><b>Wo ist? und Standortdienste an.</b> Auf dem iPhone: Einstellungen → Apple-Account → Wo ist? → „Mein iPhone suchen“ an. Dazu Datenschutz &amp; Sicherheit → Ortungsdienste an.</li>
+            <li><b>Zwei-Faktor-Anmeldung.</b> Home Assistant fragt beim Einrichten einen sechsstelligen Code ab, der auf einem vertrauenswürdigen Apple-Gerät erscheint. Apple beendet die Sitzung gelegentlich, dann musst du dich in Home Assistant erneut anmelden.</li>
+            <li><b>Jede Person mit eigener Apple-ID</b> bekommt in Home Assistant einen eigenen Eintrag „Apple iCloud“. Die Geräte stammen aus dem jeweils angemeldeten Konto.</li>
+            <li><b>Die Aktualisierung ist nicht sekundengenau.</b> Die Integration fragt in einem wechselnden Takt ab, abhängig von Zone, Entfernung und Akkustand. Der Stromsparmodus des iPhones kann Standortmeldungen zusätzlich verzögern.</li>
+            <li><b>Zusätzlich das WLAN nutzen.</b> Als zweite Quelle bei der Person ist ein Router- oder Ping-Gerät sehr zuverlässig, wenn das Handy im Haus ist. Die Person gilt als zu Hause, sobald eine Quelle „zu Hause“ meldet.</li>
+            <li><b>Datenschutz.</b> „Strom &amp; Wärme“ nutzt nur „zu Hause“ oder „unterwegs“ und die Entfernung zur Home-Zone. Es wird kein Standortverlauf gespeichert.</li></ol></details></div>
+        <div class="card ocard"><h2>${ic("home", 18)}Home-Zone</h2>
+          <div class="omap sm" id="omap-main">${this._ortMapInner(z, this._ortZoomFor(Math.max(z.r, ...withSrc.map((x) => Math.min(x.dist, 2000)).concat([0])) * 0.9 || z.r), z, withSrc)}<div class="opin">${ic("pin", 34)}</div><span class="oatt">© OpenStreetMap-Mitwirkende</span></div>
+          <div class="ocoord"><span>Radius <b>${z.r} m</b></span><span>Breite <b>${num(z.lat, 5)}</b></span><span>Länge <b>${num(z.lon, 5)}</b></span><span>In der Zone <b>${inZ} von ${P.length}</b></span></div>
+          <div class="mut sm" style="margin:8px 0 0">Die Zone gilt für „Anwesenheit &amp; Urlaub“ und für die automatische Erkennung. Eine Person zählt als zu Hause, wenn ihr Standort in der Zone liegt oder Home Assistant „zu Hause“ meldet.${o.own ? "" : " Noch keine eigene Zone festgelegt: Es gilt vorerst die Zone von Home Assistant."}</div>
+          ${adm ? `<div class="plnk"><button class="lnk" data-act="ortzone">${ic("pencil", 16)}Home-Zone auf der Karte festlegen</button></div>` : ""}</div>
+        <div class="card ocard"><h2>${ic("users", 18)}Personen im Haushalt</h2>${per || `<div class="mut">Keine Personen gefunden. Lege sie in Home Assistant unter Einstellungen → Personen an.</div>`}
+          <div class="mut sm" style="margin-top:8px">${pres.auto ? `Der Haushalt wird abwesend, wenn alle zählenden Personen ${pres.away_after} Min. nicht zu Hause sind.` : "Die automatische Erkennung ist aus (Anwesenheit &amp; Urlaub → Einstellungen)."}</div></div>
+      </div></div>`;
+  }
+  _ortPerModal() {
+    const d = this._ort().draft, h = this._hass, p = this._ortPersons().find((x) => x.id === d.id) || { name: d.id }, all = Object.keys(h.states).filter((e) => e.startsWith("device_tracker.")).filter((e) => !d.trackers.includes(e)).sort((a, b) => Number(this._ortTracker(b).icloud) - Number(this._ortTracker(a).icloud));
+    const wifi = Object.keys(h.states).filter((e) => e.startsWith("device_tracker.") || e.startsWith("binary_sensor.")).sort();
+    const tr = d.trackers.map((id) => { const q = this._ortTracker(id); return `<div class="otr"><span class="oav" style="width:36px;height:36px;background:#64748b">${ic("user", 18)}</span><div class="opi"><b>${esc(q.name)} ${q.icloud ? `<span class="ocp">iCloud</span>` : ""}</b><small>${q.missing ? "Entität nicht gefunden" : [q.state === "home" ? "Zu Hause" : q.state === "not_home" ? "Unterwegs" : q.state, q.bat != null ? `Akku ${Math.round(q.bat)} %` : "", q.acc != null ? `Genauigkeit ${Math.round(q.acc)} m` : "", q.seen].filter(Boolean).join(" · ")}</small></div><button class="ibtn" data-act="ortrm" data-k="${esc(id)}" aria-label="Quelle entfernen">${ic("trash", 17)}</button></div>`; }).join("");
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${esc(p.name)}</b><span>${esc(d.id)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("user", 15)}Name</div>
+      <input class="osel" type="text" data-f="ortlabel" maxlength="30" value="${esc(d.label)}" placeholder="${esc((h.states[d.id].attributes || {}).friendly_name || d.id)}">
+      <div class="lsec">${ic("pin", 15)}Standortquellen</div>
+      ${tr || `<div class="mut sm">Noch keine Quelle. Wähle das iPhone aus der Liste.</div>`}
+      <select class="osel" data-f="ortadd" aria-label="Gerät hinzufügen"><option value="">+ Gerät hinzufügen …</option>${all.map((e) => { const q = this._ortTracker(e); return `<option value="${esc(e)}">${q.icloud ? "iCloud · " : ""}${esc(q.name)} (${esc(e)})</option>`; }).join("")}</select>
+      <div class="mut sm">iCloud-Geräte stehen oben. Mehrere Quellen: Die Person ist zu Hause, sobald eine davon „zu Hause“ meldet.</div>
+      <div class="lsec">${ic("shield", 15)}WLAN- oder Router-Erkennung (optional)</div>
+      <select class="osel" data-f="ortwifi" aria-label="WLAN-Erkennung"><option value="">Keine</option>${wifi.map((e) => `<option value="${esc(e)}" ${d.wifi === e ? "selected" : ""}>${esc((h.states[e].attributes || {}).friendly_name || e)} (${esc(e)})</option>`).join("")}</select>
+      <div class="lsec">${ic("sliders", 15)}Regeln</div>
+      <div class="vrow"><span>Zählt für automatisches Abwesend</span><button class="sw ${d.count ? "on" : ""}" data-act="ortcount" aria-pressed="${d.count}" aria-label="Zählt für Abwesenheit"></button></div>
+      <div class="vrow"><span>Ungenaue Standorte ignorieren ab</span><div class="step"><button data-act="ortacc" data-k="-50" aria-label="weniger">${ic("minus", 18)}</button><b>${d.acc} m</b><button data-act="ortacc" data-k="50" aria-label="mehr">${ic("plus", 18)}</button></div></div>
+      <div class="mut sm">Meldet das iPhone eine schlechtere Genauigkeit, wird die Position nicht für die Home-Zone benutzt.</div>
+      <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="ortpsave">Speichern</button></div></div>`;
+  }
+  _ortZoneModal() {
+    const o = this._ort(), m = o.map, P = this._ortPersons().filter((x) => x.lat != null), h = this._hass, hc = h.config || {};
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Home-Zone</b><span>Karte verschieben, der Pin zeigt dein Zuhause</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="omap" id="omap-edit">${this._ortMapInner(m, m.z, { lat: m.lat, lon: m.lon, r: m.r }, P)}<div class="opin">${ic("pin", 34)}</div><div class="ozb"><button data-act="ortz" data-k="1" aria-label="Vergrößern">+</button><button data-act="ortz" data-k="-1" aria-label="Verkleinern">−</button></div><span class="oatt">© OpenStreetMap-Mitwirkende</span></div>
+      <div class="ocoord"><span>Breite <b id="olat">${num(m.lat, 5)}</b></span><span>Länge <b id="olon">${num(m.lon, 5)}</b></span></div>
+      <div class="vrow" style="margin-top:8px"><span>Radius</span><b id="orv">${m.r} m</b></div>
+      <input class="orng" type="range" min="30" max="1000" step="10" value="${m.r}" data-f="ortr" aria-label="Radius der Home-Zone">
+      <div class="plnk"><button class="lnk" data-act="ortha">${ic("home", 16)}Standort von Home Assistant übernehmen</button><button class="lnk" data-act="ortme">${ic("pin", 16)}Position einer Person übernehmen</button></div>
+      <div class="mut sm" style="margin:6px 0 0">Tipp: Ein Radius von 100 bis 200 m ist für iCloud sinnvoll, weil die Position des iPhones einige Meter abweichen kann. Zu klein, und die Person gilt am Gartentor schon als unterwegs.${hc.latitude ? "" : ""}</div>
+      <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="ortzsave">Zone speichern</button></div></div>`;
+  }
+  _ortBind() {
+    const box = this.shadowRoot.getElementById("modal"), el = box && box.querySelector("#omap-edit"); if (!el || el._ob) return; el._ob = true;
+    let drag = null, raf = 0;
+    const redraw = () => { raf = 0; const o = this._ort(), m = o.map; const inner = el.querySelector(".otiles"); const html = this._ortMapInner(m, m.z, { lat: m.lat, lon: m.lon, r: m.r }, this._ortPersons().filter((x) => x.lat != null)); const tmp = document.createElement("div"); tmp.innerHTML = html; el.querySelectorAll(".otiles,.ozone,.odot").forEach((n) => n.remove()); [...tmp.children].reverse().forEach((n) => el.insertBefore(n, el.firstChild)); const la = box.querySelector("#olat"), lo = box.querySelector("#olon"); if (la) la.textContent = num(m.lat, 5); if (lo) lo.textContent = num(m.lon, 5); };
+    el.addEventListener("pointerdown", (e) => { if (e.target.closest(".ozb")) return; drag = { x: e.clientX, y: e.clientY }; try { el.setPointerCapture(e.pointerId); } catch (_) {} });
+    el.addEventListener("pointermove", (e) => { if (!drag) return; const m = this._ort().map, [cx, cy] = this._ortPx(m.lat, m.lon, m.z), [la, lo] = this._ortLL(cx - (e.clientX - drag.x), cy - (e.clientY - drag.y), m.z); drag = { x: e.clientX, y: e.clientY }; m.lat = Math.max(-80, Math.min(80, la)); m.lon = lo; if (!raf) raf = requestAnimationFrame(redraw); });
+    const rg = box.querySelector("[data-f=ortr]"); if (rg) rg.addEventListener("input", () => { const m = this._ort().map; m.r = Number(rg.value); const v = box.querySelector("#orv"); if (v) v.textContent = `${m.r} m`; if (!raf) raf = requestAnimationFrame(redraw); });
+    const end = () => { drag = null; }; el.addEventListener("pointerup", end); el.addEventListener("pointercancel", end);
+    el.addEventListener("wheel", (e) => { e.preventDefault(); this._ortAct("ortz", { dataset: { k: e.deltaY < 0 ? "1" : "-1" } }); }, { passive: false });
+  }
+  _ortAct(a, b) {
+    const o = this._ort(), k = b.dataset ? b.dataset.k : "";
+    if (a === "ortopen") { this._ortOpen = true; this._render(); }
+    else if (a === "ortback") { this._ortOpen = false; this._render(); }
+    else if (a === "ortper") { const x = this._ortPersons().find((q) => q.id === k); if (!x) return; o.draft = { id: k, label: (o.per[k] || {}).label || "", trackers: x.tr.map((q) => q.id), wifi: x.wifi, count: x.count, acc: x.acc }; this._modal = { type: "ortper" }; this._renderModal(); }
+    else if (a === "ortrm") { o.draft.trackers = o.draft.trackers.filter((e) => e !== k); this._renderModal(); }
+    else if (a === "ortcount") { o.draft.count = !o.draft.count; this._renderModal(); }
+    else if (a === "ortacc") { o.draft.acc = Math.max(20, Math.min(500, o.draft.acc + Number(k))); this._renderModal(); }
+    else if (a === "ortpsave") { const d = o.draft; this._cfg.presence = { ...this._pres(), people: { ...o.per, [d.id]: { label: d.label.trim(), trackers: d.trackers, wifi: d.wifi, count: d.count, acc: d.acc } } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Person gespeichert"); }
+    else if (a === "ortzone") { const z = o.zone; o.map = { lat: z.lat, lon: z.lon, r: z.r, z: this._ortZoomFor(z.r) }; this._modal = { type: "ortzone" }; this._renderModal(); }
+    else if (a === "ortz") { const m = o.map; m.z = Math.max(5, Math.min(19, m.z + Number(k))); this._renderModal(); }
+    else if (a === "ortha") { const hz = this._hass.states["zone.home"], hc = this._hass.config || {}; const la = Number(hz ? hz.attributes.latitude : hc.latitude), lo = Number(hz ? hz.attributes.longitude : hc.longitude); if (isFinite(la) && isFinite(lo)) { o.map.lat = la; o.map.lon = lo; this._renderModal(); } }
+    else if (a === "ortme") { const x = this._ortPersons().find((q) => q.lat != null); if (x) { o.map.lat = x.lat; o.map.lon = x.lon; this._renderModal(); this._toast(`Position von ${x.name} übernommen`); } else this._toast("Keine Position verfügbar"); }
+    else if (a === "ortzsave") { const m = o.map; this._cfg.presence = { ...this._pres(), zone: { lat: Math.round(m.lat * 1e6) / 1e6, lon: Math.round(m.lon * 1e6) / 1e6, r: m.r } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Home-Zone gespeichert"); }
+  }
+  _ortChange(t) {
+    const o = this._ort(), f = t.dataset.f;
+    if (f === "ortlabel") { o.draft.label = t.value; return true; }
+    if (f === "ortadd") { if (t.value && !o.draft.trackers.includes(t.value)) { o.draft.trackers.push(t.value); this._renderModal(); } return true; }
+    if (f === "ortwifi") { o.draft.wifi = t.value; return true; }
+    if (f === "ortr") { o.map.r = Number(t.value); return true; }
+    return false;
+  }
+  /* Integrationen: Wallbox (go-e Charger) direkt über die lokale HTTP-API verbinden. Die Daten liegen im Backend (wb_get, wb_set, wb_test). */
+  _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "forecast", baseW: 400, vehicles: [], guest: { mode: "off", limit: 80 } }; }
+  _wbSnap() { const s = (this._wbD && this._wbD.snap) || {}; return { ...s, cfg: { ...this._wbDef(), ...(s.cfg || {}) }, info: s.info || {}, want: s.want || {}, log: s.log || [], plan: s.plan || {} }; }
+  _wb() { return this._wbSnap().cfg; }
+  _wbVisible() { return !this._modal && ((this._igOpen && this._admin()) || (!this._stOpen && !this._ortOpen && this._mdActive() === "ev")); }
+  _wbLoad(force) {
+    if (!this._hass || this._wbBusy) return;
+    if (!force && this._wbD && Date.now() - this._wbD.ts < 4000) return;
+    this._wbBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/wb_get" }).then((r) => { if (!this._wbSaveT) this._wbD = { snap: r || {}, ts: Date.now() }; }).catch(() => { this._wbD = { snap: { ok: false, error: "Keine Antwort von Home Assistant" }, ts: Date.now() }; })
+      .finally(() => { this._wbBusy = false; if (this._wbVisible()) this._render(); clearTimeout(this._wbT); this._wbT = setTimeout(() => { this._wbT = null; if (this._wbVisible()) this._wbLoad(true); }, 5000); });
+  }
+  _wbSave(patch, now) {
+    const sn = this._wbSnap(); this._wbD = { snap: { ...sn, cfg: { ...sn.cfg, ...patch } }, ts: Date.now() };
+    clearTimeout(this._wbSaveT);
+    this._wbSaveT = setTimeout(() => {
+      this._wbSaveT = null; const cfg = this._wbSnap().cfg;
+      this._hass.callWS({ type: "fenster_heizung/wb_set", cfg }).then((r) => { this._wbD = { snap: r, ts: Date.now() }; if (this._wbVisible()) this._render(); })
+        .catch(() => this._toast("Wallbox-Einstellung konnte nicht gespeichert werden"));
+    }, now ? 0 : 500);
+  }
+  _igChip() { const s = this._wbSnap(); this._wbLoad(); return s.cfg.ip ? (s.ok ? `<em class="sxc ok">go-e verbunden</em>` : `<em class="sxc">Nicht erreichbar</em>`) : `<em class="sxc">Nicht verbunden</em>`; }
+  _igRender() {
+    this._wbLoad();
+    const sr = this.shadowRoot, s = this._wbSnap(), c = s.cfg, adm = this._admin(), i = s.info;
+    sr.getElementById("main").innerHTML = `
+      <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Integrationen</b><span><em class="tag">Geräte direkt verbinden</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <button class="pillbtn pri" data-act="igback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
+      <div class="wrap"><div class="sxw">
+        <div class="card ocard"><h2>${ic("car", 18)}Wallboxen</h2>
+          <div class="oper"><span class="oav" style="background:#0ea5e9">${ic("energy", 22)}</span><div class="opi"><b>go-e Charger</b><small>${c.ip ? (s.ok ? `${esc(i.type || "go-e Charger")} · ${esc(c.ip)}${i.fw ? " · Firmware " + esc(i.fw) : ""}` : `${esc(c.ip)} · ${esc(s.error || "keine Antwort")}`) : "Direkte Verbindung über das lokale Netzwerk, ohne Cloud"}</small></div><span class="ost ${c.ip && s.ok ? "home" : "off"}">${c.ip ? (s.ok ? "Verbunden" : "Nicht erreichbar") : "Nicht verbunden"}</span>${adm ? `<button class="ibtn" data-act="iggoe" aria-label="go-e bearbeiten">${ic(c.ip ? "pencil" : "plus", 18)}</button>` : ""}</div>
+          <div class="mut sm" style="margin-top:8px">Die Wallbox wird direkt über ihre lokale Schnittstelle gelesen und gesteuert. Eine Integration in Home Assistant ist dafür nicht nötig. Die Steuerung stellst du in <b>Modul 8 · Elektroauto &amp; Wallbox</b> ein.</div></div>
+        ${this._igTbRow()}
+        <div class="card ocard"><h2>${ic("puzzle", 18)}Weitere Hersteller</h2><div class="mut">Zuerst wird go-e angebunden. Weitere Hersteller folgen. Wünsche kannst du auf GitHub melden.</div></div>
+        <div class="card ocard"><h2>${ic("info", 18)}go-e Charger vorbereiten</h2>
+          <details class="ohint" ${c.ip ? "" : "open"}><summary>Lokale Schnittstelle einschalten</summary><ol>
+            <li><b>In der go-e-App:</b> Einstellungen → Verbindung → API-Einstellungen → „Zugriff auf lokale HTTP API“ aktivieren.</li>
+            <li><b>Version 2 nötig:</b> Die lokale API v2 gibt es nur bei neueren Geräten. Der go-e Charger Gemini unterstützt sie.</li>
+            <li><b>Feste IP-Adresse:</b> Vergib dem go-e im Router eine feste Adresse, sonst bricht die Verbindung nach einem Neustart ab.</li>
+            <li><b>Gleiches Netzwerk:</b> Home Assistant und die Wallbox müssen sich im selben Netz erreichen.</li></ol></details></div>
+      </div></div>`;
+  }
+  /* Tibber: Strompreise direkt über die Tibber-Schnittstelle */
+  _tbLoad(force) {
+    if (!this._hass || this._tbBusy) return;
+    if (!force && this._tbD && Date.now() - this._tbD.ts < 20000) return;
+    this._tbBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/tb_get" }).then((r) => { this._tbD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._tbD = { d: { error: true }, ts: Date.now() }; })
+      .finally(() => { this._tbBusy = false; if (this._igOpen || this._wbVisible()) this._render(); });
+  }
+  _tb() { return (this._tbD && this._tbD.d) || {}; }
+  _tbMini(k) {
+    const pr = [20, 19, 17, 15, 14, 14, 15, 18, 24, 30, 33, 31, 27, 22, 18, 16, 16, 18, 24, 28, 25, 21, 19, 18]; // Beispielverlauf
+    if (k === "h") return pr.filter((_, i) => i % 4 === 0).map((v, i) => `<rect x="${3 + i * 19.5}" y="${42 - v}" width="16" height="${v}" rx="2" fill="#f59e0b"/>`).join("");
+    if (k === "q") return pr.map((v, i) => `<rect x="${3 + i * 4.9}" y="${42 - v}" width="3.6" height="${v}" rx="1" fill="#f59e0b"/>`).join("");
+    const col = (v) => v < 17 ? "#2dd4bf" : v < 25 ? "#a3a3a3" : "#f87171";
+    return pr.filter((_, i) => i % 2 === 0).map((v, i) => `<rect x="${3 + i * 9.8}" y="${v < 17 ? 18 : v < 25 ? 26 : 34}" width="8.6" height="${v < 17 ? 24 : v < 25 ? 16 : 8}" rx="2" fill="${col(v)}"/>`).join("");
+  }
+  _igTbRow() {
+    this._tbLoad(); const T = this._tb(), adm = this._admin(), on = !!T.connected;
+    return `<div class="card ocard"><h2>${ic("energy", 18)}Stromtarife</h2>
+      <div class="oper"><span class="oav" style="background:#6366f1">${ic("energy", 22)}</span><div class="opi"><b>Tibber</b><small>${on ? `${esc(T.home || "Zuhause")}${T.price_now != null ? " · jetzt " + num(T.price_now, 1) + " ct/kWh" : ""}` : T.error ? "Keine Antwort von Home Assistant" : "Stundenpreise direkt von Tibber, ohne zusätzliche Integration"}</small></div><span class="ost ${on ? "home" : "off"}">${on ? "Verbunden" : "Nicht verbunden"}</span>${adm ? `<button class="ibtn" data-act="igtb" aria-label="Tibber bearbeiten">${ic(on ? "pencil" : "plus", 18)}</button>` : ""}</div>
+      <div class="mut sm" style="margin-top:8px">Die Preise von heute und morgen (ab etwa 13 Uhr) werden für die <b>Ladeplanung</b> in Modul 8 genutzt. Als Preisquelle kannst du dort auch einen eigenen Sensor wählen.</div></div>`;
+  }
+  _igTbModal() {
+    const I = this._igS, d = I.tb, t = I.tbTest, T = this._tb();
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Tibber</b><span>Strompreise über die Tibber-Schnittstelle</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("shield", 15)}Zugriffstoken</div>
+      <input class="osel" type="password" data-f="igtbtok" maxlength="200" value="${esc(d.token)}" placeholder="${T.connected ? "Gespeichert – zum Ändern neu eingeben" : "Persönlicher Zugriffstoken von Tibber"}" aria-label="Zugriffstoken" autocomplete="off" spellcheck="false">
+      <div class="mut sm">Den Token erstellst du auf developer.tibber.com nach der Anmeldung mit deinem Tibber-Konto (Bereich „Create token“).</div>
+      <div class="foot2" style="margin:10px 0"><button class="btn2" data-act="igtbtest" ${I.busy || !d.token ? "disabled" : ""}>${ic("check", 16)} ${I.busy ? "Prüfe …" : "Verbindung testen"}</button></div>
+      ${t ? `<div class="otr"><span class="oav" style="width:36px;height:36px;background:${t.ok ? "#22c55e" : "#f87171"}">${ic(t.ok ? "check" : "alert", 18)}</span><div class="opi"><b>${t.ok ? "Verbindung steht" : "Keine Verbindung"}</b><small>${t.ok ? `${esc(t.home || "Zuhause")} · jetzt ${num(t.price_now, 1)} ct/kWh · heute ${num(t.min, 1)} bis ${num(t.max, 1)} ct/kWh · morgen ${t.tomorrow ? "vorhanden" : "noch nicht veröffentlicht"}` : esc(t.error || "Der Token wurde nicht akzeptiert")}</small></div></div>` : ""}
+      ${t && t.ok && (t.homes || []).length > 1 ? `<div class="lsec">${ic("energy", 15)}Zuhause wählen</div><div class="gschips">${t.homes.map((h) => `<button class="gsch ${d.home === h.id ? "sel" : ""}" data-act="igtbhome" data-k="${esc(h.id)}" aria-pressed="${d.home === h.id}">${esc(h.name)}</button>`).join("")}</div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("chart", 15)}Preisauflösung</div>
+      <div class="tbvar">${[["h", "Stundenmittel", "Ein Preis pro Stunde (Mittel aus vier Viertelstunden). Übersichtlich und stabil, empfohlen."], ["q", "Viertelstunden", "Die genauen 15-Minuten-Preise von Tibber. Der Plan nutzt auch kurze Preistäler, braucht aber mehr Schaltvorgänge."], ["lvl", "Preisstufen", "Nur Tibbers Einstufung (sehr günstig bis teuer). Lädt in günstigen Stufen, ohne genaue Preise zu rechnen. Kosten in der Statistik sind dann grob."]].map(([k, t, x]) => `<button class="${d.res === k ? "sel" : ""}" data-act="igtbres" data-k="${k}" aria-pressed="${d.res === k}"><svg viewBox="0 0 120 44" width="100%" height="44" aria-hidden="true">${this._tbMini(k)}</svg><b>${t}</b><small>${x}</small></button>`).join("")}</div>
+      <div class="gst">${ic("info", 15)}Der Token wird nur in Home Assistant gespeichert und nur an api.tibber.com gesendet. Es werden ausschließlich die Strompreise abgerufen, keine Verbrauchsdaten.</div>
+      <div class="foot2" style="margin-top:14px">${T.connected ? `<button class="btn2 dng" data-act="igtbrm">${ic("trash", 16)} Entfernen</button>` : `<button class="btn2" data-act="close">Abbrechen</button>`}<button class="btn2 pri" data-act="igtbsave" ${(t && t.ok) || (T.connected && !d.token) ? "" : "disabled"}>Speichern</button></div></div>`;
+  }
+  _igGoeModal() {
+    const I = this._igS, d = I.draft, t = I.test, c = this._wb();
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>go-e Charger</b><span>Direkte Verbindung im lokalen Netzwerk</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("energy", 15)}IP-Adresse</div>
+      <input class="osel" type="text" inputmode="decimal" data-f="igip" maxlength="64" value="${esc(d.ip)}" placeholder="z. B. 192.168.1.45" aria-label="IP-Adresse" autocomplete="off">
+      <div class="mut sm">Die Adresse findest du in der go-e-App oder in deinem Router. Es sind nur Adressen im lokalen Netz erlaubt.</div>
+      <div class="foot2" style="margin:10px 0"><button class="btn2" data-act="igtest" ${I.busy ? "disabled" : ""}>${ic("check", 16)} ${I.busy ? "Prüfe …" : "Verbindung testen"}</button></div>
+      ${t ? `<div class="otr"><span class="oav" style="width:36px;height:36px;background:${t.ok ? "#22c55e" : "#f87171"}">${ic(t.ok ? "check" : "alert", 18)}</span><div class="opi"><b>${t.ok ? "Verbindung steht" : "Keine Antwort"}</b><small>${t.ok ? `${esc(t.type || "go-e")} · Seriennummer ${esc(t.serial || "–")} · Firmware ${esc(t.fw || "–")}` : esc(t.error || "Prüfe IP-Adresse, WLAN der Wallbox und ob die lokale HTTP-API in der App aktiv ist.")}</small></div></div>` : ""}
+      <div class="gst">${ic("info", 15)}Es werden nur Status und Ladeeinstellungen der Wallbox gelesen und gesetzt. Es werden keine Daten an Dritte gesendet.</div>
+      <div class="foot2" style="margin-top:14px">${c.ip ? `<button class="btn2 dng" data-act="igrm">${ic("trash", 16)} Entfernen</button>` : `<button class="btn2" data-act="close">Abbrechen</button>`}<button class="btn2 pri" data-act="igsave" ${t && t.ok ? "" : "disabled"}>Speichern</button></div></div>`;
+  }
+  _igAct(a, b) {
+    const I = this._igS || (this._igS = { draft: { ip: "" }, test: null, busy: false, tb: { token: "", home: "", res: "h" }, tbTest: null });
+    if (!I.tb) I.tb = { token: "", home: "" };
+    if (a === "igopen") { this._igOpen = true; this._render(); }
+    else if (a === "igback") { this._igOpen = false; this._render(); }
+    else if (a === "iggoe") { I.draft = { ip: this._wb().ip }; I.test = null; this._modal = { type: "iggoe" }; this._renderModal(); }
+    else if (a === "igtest") {
+      I.busy = true; this._renderModal();
+      this._hass.callWS({ type: "fenster_heizung/wb_test", ip: (I.draft.ip || "").trim() }).then((r) => { I.test = r; }).catch(() => { I.test = { ok: false, error: "Keine Antwort von Home Assistant" }; })
+        .finally(() => { I.busy = false; if (this._modal && this._modal.type === "iggoe") this._renderModal(); });
+    }
+    else if (a === "igtb") { I.tb = { token: "", home: this._tb().home_id || "", res: this._tb().res || "h" }; I.tbTest = null; this._modal = { type: "igtb" }; this._renderModal(); }
+    else if (a === "igtbtest") {
+      I.busy = true; this._renderModal();
+      this._hass.callWS({ type: "fenster_heizung/tb_test", token: (I.tb.token || "").trim() }).then((r) => { I.tbTest = r; if (r && r.ok && !I.tb.home) I.tb.home = ((r.homes || [])[0] || {}).id || ""; }).catch(() => { I.tbTest = { ok: false, error: "Keine Antwort von Home Assistant" }; })
+        .finally(() => { I.busy = false; if (this._modal && this._modal.type === "igtb") this._renderModal(); });
+    }
+    else if (a === "igtbres") { I.tb.res = b.dataset.k; this._renderModal(); }
+    else if (a === "igtbhome") { I.tb.home = b.dataset.k; this._renderModal(); }
+    else if (a === "igtbsave") { this._hass.callWS({ type: "fenster_heizung/tb_set", ...(I.tb.token.trim() ? { token: I.tb.token.trim() } : {}), home: I.tb.home, res: I.tb.res || "h" }).then(() => this._tbLoad(true)).catch(() => {}); this._modal = null; this._renderModal(); this._toast("Tibber gespeichert"); }
+    else if (a === "igtbrm") { this._hass.callWS({ type: "fenster_heizung/tb_set", token: "", home: "" }).then(() => this._tbLoad(true)).catch(() => {}); this._modal = null; this._renderModal(); this._toast("Tibber entfernt"); }
+    else if (a === "igsave") { this._wbSave({ ip: I.draft.ip.trim() }, true); this._modal = null; this._renderModal(); this._render(); this._toast("go-e Charger gespeichert"); }
+    else if (a === "igrm") { this._wbSave({ ip: "", enabled: false, mode: "off" }, true); this._modal = null; this._renderModal(); this._render(); this._toast("go-e Charger entfernt"); }
+  }
+  _igChange(t) { const I = this._igS; if (I && t.dataset.f === "igip") { I.draft.ip = t.value; I.test = null; return true; } if (I && t.dataset.f === "igtbtok") { I.tb.token = t.value; I.tbTest = null; if (this._modal && this._modal.type === "igtb") this._renderModal(); return true; } return false; }
+
+  /* Planung: Strompreis- und PV-Vorhersage, günstigste Ladefenster */
+  _wbFcLoad(force) {
+    if (!this._hass || this._wbFcBusy) return;
+    if (!force && this._wbFcD && Date.now() - this._wbFcD.ts < 60000) return;
+    this._wbFcBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/wb_forecast" }).then((r) => { this._wbFcD = { data: r || {}, ts: Date.now() }; }).catch(() => { this._wbFcD = { data: { error: true }, ts: Date.now() }; })
+      .finally(() => { this._wbFcBusy = false; if (this._wbStT() === "plan" && this._wbVisible()) this._render(); });
+  }
+  _wbPlanCalc(hours, o) {
+    const SL = o.sh || 1, now = new Date(), [hh, mm] = String(o.until || "07:00").split(":").map(Number), dl = new Date(now); dl.setHours(hh || 0, mm || 0, 0, 0); if (dl <= now) dl.setDate(dl.getDate() + 1);
+    const P = o.pmax, need = Math.max(0, (o.target - o.soc) / 100 * o.cap), sun = o.strat === "sun", price = o.strat === "price", lv = o.rank === "level", LR = { VERY_CHEAP: 0, CHEAP: 1, NORMAL: 2, EXPENSIVE: 3, VERY_EXPENSIVE: 4 };
+    const cand = hours.map((h, i) => ({ i, h, t: new Date(h.t) })).filter((c) => c.t.getTime() + SL * 36e5 > now.getTime() && c.t.getTime() + SL * 36e5 <= dl.getTime());
+    const pw = (c) => sun ? Math.min(P, c.h.pv) : P, share = (c) => { const e = pw(c); return e > 0 ? Math.min(c.h.pv, e) / e : 0; }, rk = (c) => lv ? (LR[c.h.level || "NORMAL"] ?? 2) * 100 : 0;
+    const pool = cand.filter((c) => !sun || c.h.pv >= o.minkw);
+    pool.sort((a, b) => sun ? b.h.pv - a.h.pv : price ? rk(a) + a.h.price - (rk(b) + b.h.price) : rk(a) + a.h.price * (1 - share(a)) - (rk(b) + b.h.price * (1 - share(b))));
+    const sel = {}; let left = need;
+    for (const c of pool) { if (left <= 0.01) break; const e = Math.min(pw(c) * SL, left); if (e <= 0) continue; sel[c.i] = e; left -= e; }
+    const calc = (m) => { let kwh = 0, pv = 0, cost = 0; Object.keys(m).forEach((i) => { const h = hours[i], e = m[i], kw = e / SL, s = kw > 0 ? Math.min(1, h.pv / kw) : 0; kwh += e; pv += e * s; cost += e * (1 - s) * h.price / 100; }); return { kwh, pv, cost }; };
+    const imm = {}; let l2 = need; cand.forEach((c) => { if (l2 <= 0.01) return; const e = Math.min(P * SL, l2); imm[c.i] = e; l2 -= e; });
+    return { sel, left: Math.max(0, left), need, dl, plan: calc(sel), imm: calc(imm), cand };
+  }
+  _wbPlan(d) {
+    this._wbFcLoad(); this._tbLoad();
+    const F = this._wbFcD && this._wbFcD.data, c = this._wbSnap().cfg, adm = this._admin();
+    if (!F) return `<div class="card empty">${ic("sun", 30)}<div class="sm" style="margin-top:8px">Vorhersage wird geladen …</div></div>`;
+    if (F.error || !(F.hours || []).length) return `<div class="card empty">${ic("sun", 30)}<div style="margin:8px 0 4px;font-weight:700;color:var(--primary-text-color)">Keine Vorhersage verfügbar</div><div class="sm" style="max-width:480px;margin:0 auto">Wähle in den Einstellungen von Modul 3 einen Preis-Sensor mit Stundenpreisen (zum Beispiel Tibber oder aWATTar) und eine PV-Prognose (zum Beispiel Forecast.Solar oder Solcast).</div></div>`;
+    const P = { strat: c.planStrat || "mix" }, pad = (v) => String(v).padStart(2, "0"), hrs = F.hours, SL = (F.slot_min || 60) / 60, tm = (t) => pad(t.getHours()) + ":" + pad(t.getMinutes());
+    const soc = d.soc != null ? d.soc : this._wbSnap().soc != null ? this._wbSnap().soc : 40, ph = c.ph === 1 ? 1 : 3, pmax = Math.round(c.maxA * 0.23 * ph * 10) / 10;
+    const R = this._wbPlanCalc(hrs, { strat: P.strat, target: c.planSoc, soc, cap: c.cap, until: c.planTime, pmax, minkw: Math.max(1.4, c.startW / 1000), sh: SL, rank: this._tb().connected && c.planSrc !== "sensor" && this._tb().res === "lvl" ? "level" : "price" });
+    const shown = hrs.map((h, i) => ({ h, i, t: new Date(h.t) })).filter((x) => x.t.getTime() + SL * 36e5 > Date.now()).slice(0, Math.round(30 / SL)), n = shown.length;
+    const W = 640, Hh = 240, pl = 36, pr = 40, pb = 24, pt = 8, bw = (W - pl - pr) / n, bar = Math.min(bw * (SL < 1 ? 0.8 : 0.7), 18);
+    const mxP = Math.max(pmax, ...shown.map((x) => x.h.pv)), stepP = enStep(mxP), topP = Math.ceil(mxP / stepP) * stepP, mxC = Math.max(...shown.map((x) => x.h.price), 1), topC = Math.ceil(mxC / 10) * 10, minC = Math.min(0, ...shown.map((x) => x.h.price));
+    const yP = (v) => Hh - pb - (v / topP) * (Hh - pb - pt), yC = (v) => Hh - pb - ((v - minC) / (topC - minC)) * (Hh - pb - pt);
+    let g = "", bars = "", line = "", pts = [];
+    for (let v = 0; v <= topP + 1e-9; v += stepP) { const y = yP(v); g += `<line x1="${pl}" x2="${W - pr}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${pl - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="#2dd4bf">${num(v, 0)}</text>`; }
+    for (let v = 0; v <= topC; v += topC / 4) g += `<text x="${W - pr + 6}" y="${yC(v) + 4}" font-size="11" fill="#f59e0b">${num(v, 0)}</text>`;
+    shown.forEach((x, k) => { const xx = pl + k * bw, cx = xx + bw / 2, on = R.sel[x.i] != null, beyond = x.t.getTime() + SL * 36e5 > R.dl.getTime();
+      if (on) bars += `<rect x="${xx + 1}" y="${pt}" width="${bw - 2}" height="${Hh - pb - pt}" rx="4" fill="#2dd4bf" opacity=".16" stroke="#2dd4bf" stroke-opacity=".5"/>`;
+      bars += `<rect x="${cx - bar / 2}" y="${yP(x.h.pv)}" width="${bar}" height="${Math.max(0, Hh - pb - yP(x.h.pv))}" rx="2" fill="#2dd4bf" opacity="${beyond ? .3 : .9}"><title>${tm(x.t)} · PV ${num(x.h.pv, 1)} kW · ${num(x.h.price, 1)} ct/kWh${on ? " · Ladung " + num(R.sel[x.i], 1) + " kWh" : ""}</title></rect>`;
+      pts.push(`${cx},${yC(x.h.price)}`); if ((x.t.getMinutes() === 0 && x.t.getHours() % 3 === 0) || k === 0) bars += `<text x="${cx}" y="${Hh - 7}" text-anchor="middle" font-size="11" fill="var(--mut)">${pad(x.t.getHours())}${x.t.getHours() === 0 ? "" : ""}</text>`;
+      if (x.t.getHours() === 0 && x.t.getMinutes() === 0 && k > 0) bars += `<line x1="${xx}" x2="${xx}" y1="${pt}" y2="${Hh - pb}" stroke="var(--line)"/>`; });
+    const dlk = shown.findIndex((x) => x.t.getTime() + SL * 36e5 > R.dl.getTime()); if (dlk > 0) bars += `<line x1="${pl + dlk * bw}" x2="${pl + dlk * bw}" y1="${pt}" y2="${Hh - pb}" stroke="#f87171" stroke-dasharray="4 3"/><text x="${pl + dlk * bw - 4}" y="${pt + 10}" text-anchor="end" font-size="11" fill="#f87171">Bis ${esc(c.planTime)}</text>`;
+    line = `<polyline points="${pts.join(" ")}" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linejoin="round"/>`;
+    const win = []; Object.keys(R.sel).map(Number).sort((a, b) => a - b).forEach((i) => { const l = win[win.length - 1]; if (l && l.end === i) { l.end = i + 1; l.kwh += R.sel[i]; l.idx.push(i); } else win.push({ start: i, end: i + 1, kwh: R.sel[i], idx: [i] }); });
+    const hm = (i) => tm(new Date(hrs[i].t)), hend = (i) => tm(new Date(new Date(hrs[i].t).getTime() + SL * 36e5)), wsum = (w) => { let pv = 0, co = 0; w.idx.forEach((i) => { const h = hrs[i], e = R.sel[i], s = Math.min(1, h.pv / Math.max(e / SL, 0.0001)); pv += e * s; co += e * (1 - s) * h.price / 100; }); return { s: w.kwh > 0 ? pv / w.kwh * 100 : 0, c: co }; };
+    const chip = (k, t) => `<button class="gsch ${P.strat === k ? "sel" : ""}" data-act="wbplan" data-k="${k}" aria-pressed="${P.strat === k}">${t}</button>`;
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const sh = R.plan.kwh > 0 ? R.plan.pv / R.plan.kwh * 100 : 0, sav = Math.max(0, R.imm.cost - R.plan.cost), STR = { mix: "Sonne zuerst, dann günstig: wählt die Stunden mit den niedrigsten effektiven Kosten aus PV-Anteil und Preis.", sun: "Nur Sonne: lädt nur in Stunden mit genug PV-Überschuss. Reicht das nicht, fehlt am Ende Energie.", price: "Günstigster Preis: wählt die Stunden mit dem niedrigsten Strompreis, egal ob die Sonne scheint." };
+    const FS = F.fs || {}, pvs = c.pvSrc === "sensor" ? "sensor" : "forecast", pvChip = (k, t) => `<button class="gsch ${pvs === k ? "sel" : ""}" data-act="wbpv" data-k="${k}" aria-pressed="${pvs === k}" ${adm ? "" : "disabled"}>${t}</button>`;
+    const TB = this._tb(), tbOn = !!TB.connected, src = c.planSrc === "sensor" || !tbOn ? "sensor" : "tibber", srcChip = (k, t) => `<button class="gsch ${src === k ? "sel" : ""}" data-act="wbsrc" data-k="${k}" aria-pressed="${src === k}" ${adm && (k === "sensor" || tbOn) ? "" : "disabled"}>${t}</button>`;
+    return `<div class="card"><h2>${ic("sun", 18)}Ladeplanung nach Preis und Sonne</h2>
+      <div class="vrow"><span>Planung aktiv<small class="mut" style="display:block">${c.planOn ? "Echte Steuerung: Die Wallbox lädt nur in den geplanten Fenstern und wird dazwischen pausiert." : "Aus: Der Plan wird nur angezeigt, die Wallbox lädt nicht danach."}</small></span><button class="sw ${c.planOn ? "on" : ""}" data-act="wbsw" data-k="planOn" aria-pressed="${!!c.planOn}" aria-label="Planung aktiv" ${adm ? "" : "disabled"}></button></div>
+      ${c.planOn ? (() => { const nowI = hrs.findIndex((h) => { const t = new Date(h.t); return t <= new Date() && t.getTime() + SL * 36e5 > Date.now(); }), run = nowI >= 0 && R.sel[nowI] != null, nxt = Object.keys(R.sel).map(Number).filter((i) => i > nowI).sort((a, b) => a - b)[0], fin = R.need <= 0.05;
+        return `<div class="otr"><span class="oav" style="width:36px;height:36px;background:${run ? "#2dd4bf" : "#64748b"}">${ic(run ? "energy" : "clock", 18)}</span><div class="opi"><b>${fin ? "Ziel erreicht, es wird nicht geladen" : run ? "Lädt jetzt nach Plan" : nxt != null ? "Wartet auf das nächste Ladefenster" : "Kein Ladefenster geplant"}</b><small>${fin ? "Der Ladestand liegt schon über dem Ziel." : run ? `Bis ${hend(nowI)} Uhr, ${num(R.sel[nowI], 1)} kWh geplant.` : nxt != null ? `Nächster Start um ${hm(nxt)} Uhr.` : "Das Ziel wird mit dem Ladeplan erreicht."}</small></div></div>`; })() : ""}
+      ${c.planOn && !c.enabled ? `<div class="gst on">${ic("info", 15)}Die Laderegelung ist aus. Schalte sie unter „Laden“ ein, sonst wird nichts nach Plan geladen.</div>` : ""}
+      <div class="mut sm" style="margin:6px 0 8px">Ziel: <b>${c.planSoc} %</b> bis <b>${esc(c.planTime)} Uhr</b>${soc != null ? ` · jetzt ${num(soc, 0)} %` : ""} · Ladeleistung bis ${num(pmax, 1)} kW. Ziel und Uhrzeit stellst du im Ladeplan unter „Laden“ ein.</div>
+      <div class="gschips">${chip("mix", "Sonne zuerst, dann günstig")}${chip("sun", "Nur Sonne")}${chip("price", "Günstigster Preis")}</div>
+      <div class="mut sm" style="margin:2px 0 10px">${STR[P.strat]}</div>
+      ${R.left > 0.05 ? `<div class="gst on">${ic("info", 15)}Bis ${esc(c.planTime)} Uhr fehlen voraussichtlich ${num(R.left, 1)} kWh. Dann lädt der Ladeplan zum Schluss mit Netzstrom nach.</div>` : ""}
+      <div class="wbsc"><svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="PV-Prognose in kW und Strompreis in ct/kWh für die nächsten Stunden">${g}${bars}${line}</svg></div>
+      <div class="gsleg" style="margin-top:6px"><span><i style="background:#2dd4bf"></i>PV-Überschuss (kW)</span><span><i style="background:#f59e0b"></i>Strompreis (ct/kWh)</span><span><i style="background:#2dd4bf;opacity:.35;outline:1px solid #2dd4bf"></i>Geplante Ladung</span></div>
+      <div class="lugrid" style="margin-top:12px">${tile("Geplant", num(R.plan.kwh, 1) + " kWh", `von ${num(R.need, 1)} kWh benötigt`)}${tile("Sonnenanteil", num(sh, 0) + " %", "erwartet")}${tile("Kosten", num(R.plan.cost, 2) + " €", "erwarteter Netzstrom")}${tile("Ersparnis", num(sav, 2) + " €", "gegenüber sofort laden")}</div></div>
+      <div class="card"><h2>${ic("clock", 18)}Geplante Ladefenster</h2>${win.length ? `<div class="wbses">${win.map((w) => { const x = wsum(w), d0 = new Date(hrs[w.start].t), tom = d0.toDateString() !== new Date().toDateString(); return `<div class="wbse"><div><b>${hm(w.start)} – ${hend(w.end - 1)}</b><span class="mut sm">${tom ? "morgen" : "heute"} · ${SL < 1 ? num((w.end - w.start) * SL * 60, 0) + " Min." : (w.end - w.start) + " " + (w.end - w.start === 1 ? "Stunde" : "Stunden")}</span></div><div class="wbsb"><i style="width:${x.s}%"></i></div><div class="wbsv"><b>${num(w.kwh, 1)} kWh</b><span class="mut sm">${num(x.s, 0)} % Sonne · ${num(x.c, 2)} €</span></div></div>`; }).join("")}</div>` : `<div class="mut sm">Es ist keine Ladung nötig, das Ziel ist schon erreicht.</div>`}
+      <div class="mut sm" style="margin:10px 0 0">Quellen: Preis ${src === "tibber" ? "Tibber" + (TB.home ? " · " + esc(TB.home) : "") : esc(F.price_src || "–")} · PV-Prognose ${pvs === "forecast" ? "Forecast.Solar" : esc(F.pv_src || "–")}. Die Vorhersage ändert sich im Laufe des Tages, der Plan wird alle paar Minuten neu berechnet.</div></div>
+      <div class="card"><h2>${ic("tools", 18)}Quellen der Vorhersage</h2>
+        <div class="lsec">${ic("energy", 15)}Strompreis</div><div class="gschips">${srcChip("tibber", "Tibber")}${srcChip("sensor", "Preis-Sensor (Modul 1)")}</div>
+        ${tbOn ? `<div class="mut sm" style="margin:0 0 10px">Tibber · ${esc(TB.home || "Zuhause")} · ${({ h: "Stundenmittel", q: "Viertelstunden", lvl: "Preisstufen" })[TB.res || "h"]}. Die Auflösung stellst du unter Einstellungen → Integrationen → Tibber ein.</div>` : `<div class="mut sm" style="margin:0 0 10px">Tibber ist nicht verbunden. Du richtest es unter Einstellungen → Integrationen ein.</div>`}
+        <div class="lsec">${ic("sun", 15)}PV-Prognose</div><div class="gschips">${pvChip("forecast", "Forecast.Solar")}${pvChip("sensor", "Eigener Sensor")}</div>
+        ${pvs === "forecast" ? (FS.found ? `<div class="otr"><span class="oav" style="width:36px;height:36px;background:#f59e0b">${ic("sun", 18)}</span><div class="opi"><b>Forecast.Solar erkannt</b><small>${(FS.sites || []).map((x) => esc(x.name) + " " + num(x.kwp, 1) + " kWp").join(" · ")} · heute ${num(FS.today, 1)} kWh · morgen ${num(FS.tomorrow, 1)} kWh</small></div></div>` : `<div class="gst on">${ic("info", 15)}Forecast.Solar wurde in Home Assistant nicht gefunden. Richte es unter Einstellungen → Geräte &amp; Dienste → Integration hinzufügen ein. Mehrere Dachflächen werden addiert.</div>`) : `<div class="mut sm" style="margin:0 0 6px">Der eigene Prognose-Sensor wird in den Einstellungen von Modul 3 gewählt.</div>`}
+        <div class="vrow"><span>Grundverbrauch des Hauses<small class="mut" style="display:block">Wird von der Prognose abgezogen: Überschuss = Erzeugung minus Hausverbrauch.</small></span><div class="step" style="flex:none"><button data-act="wbstep" data-k="baseW" data-s="-100" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${num(c.baseW / 1000, 1)} kW</b><button data-act="wbstep" data-k="baseW" data-s="100" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>
+        <div class="mut sm">Forecast.Solar liefert die Werte in Home Assistant, ein Abruf pro Stunde genügt. Die kostenlose Stufe hat ein Limit von 12 Abrufen pro Stunde, das reicht für diese Planung.</div></div>`;
+  }
+  /* Ladestatistik: Balkendiagramm pro Tag, Anteil Sonne/Netz, Kosten */
+  _wbStT() { return this._wbTab === "stat" ? "stat" : this._wbTab === "plan" ? "plan" : "laden"; }
+  _wbTabs() {
+    const t = this._wbStT(), b = (k, l, i) => `<button class="${t === k ? "sel" : ""}" data-act="wbtab" data-k="${k}" aria-pressed="${t === k}">${ic(i, 16)}${l}</button>`;
+    return `<div class="wbtabs" role="tablist">${b("laden", "Laden", "energy")}${b("plan", "Planung", "sun")}${b("stat", "Ladestatistik", "chart")}</div>`;
+  }
+  _wbStatLoad(force) {
+    if (!this._hass || this._wbStBusy) return;
+    if (!force && this._wbStD && Date.now() - this._wbStD.ts < 30000) return;
+    this._wbStBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/wb_stats" }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; }).catch(() => { this._wbStD = { data: { error: true }, ts: Date.now() }; })
+      .finally(() => { this._wbStBusy = false; if (this._wbStT() === "stat" && this._wbVisible()) this._render(); });
+  }
+  _wbStS() { const n = new Date(); return this._wbStV || (this._wbStV = { per: "m", y: n.getFullYear(), m: n.getMonth(), what: "e", by: "src" }); }
+  _wbStat() {
+    this._wbStatLoad();
+    const S = this._wbStS(), D = (this._wbStD && this._wbStD.data) || null;
+    if (!D) return `<div class="card empty">${ic("chart", 30)}<div class="sm" style="margin-top:8px">Ladestatistik wird geladen …</div></div>`;
+    if (D.error) return `<div class="card empty">${ic("chart", 30)}<div class="sm" style="margin-top:8px">Die Ladestatistik konnte nicht geladen werden.</div></div>`;
+    const days = D.days || [], pad = (v) => String(v).padStart(2, "0"), MON = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+    const kosten = S.what === "k", byV = S.by === "veh";
+    let slots = [], lab = (s) => s.l;
+    if (S.per === "m") { const n = new Date(S.y, S.m + 1, 0).getDate(); for (let i = 1; i <= n; i++) slots.push({ k: `${S.y}-${pad(S.m + 1)}-${pad(i)}`, l: String(i) }); }
+    else if (S.per === "y") for (let i = 0; i < 12; i++) slots.push({ k: `${S.y}-${pad(i + 1)}`, l: MON[i].slice(0, 3) });
+    else { const ys = [...new Set(days.map((r) => r.d.slice(0, 4)))].sort(); (ys.length ? ys : [String(S.y)]).forEach((y) => slots.push({ k: y, l: y })); }
+    const klen = S.per === "m" ? 10 : S.per === "y" ? 7 : 4, ix = Object.fromEntries(slots.map((s, i) => [s.k, i]));
+    const vehs = []; days.forEach((r) => Object.keys(r.veh || {}).forEach((n) => { if (!vehs.includes(n)) vehs.push(n); }));
+    const PAL = ["#2dd4bf", "#f59e0b", "#a78bfa", "#60a5fa", "#f472b6", "#a3e635"], SRC = ["#2dd4bf", "#f59e0b"];
+    const series = byV ? vehs.map((n, i) => ({ id: n, name: n, col: PAL[i % PAL.length] })) : kosten ? [{ id: "grid", name: "Netzkosten", col: "#f59e0b" }] : [{ id: "pv", name: "Sonne", col: SRC[0] }, { id: "grid", name: "Netz", col: SRC[1] }];
+    slots.forEach((s) => { s.v = series.map(() => 0); });
+    let tot = { kwh: 0, pv: 0, grid: 0, cost: 0, full: 0 };
+    days.forEach((r) => { const i = ix[r.d.slice(0, klen)]; if (i == null) return; tot.pv += r.pv; tot.grid += r.grid; tot.cost += r.cost; tot.full += r.full || 0; tot.kwh += r.pv + r.grid;
+      series.forEach((se, j) => { slots[i].v[j] += byV ? ((r.veh || {})[se.id] ? (kosten ? r.veh[se.id].cost : r.veh[se.id].kwh) : 0) : se.id === "pv" ? r.pv : kosten ? r.cost : r.grid; }); });
+    const mx = Math.max(...slots.map((s) => s.v.reduce((a, b) => a + b, 0)), 0.1), step = enStep(mx), top = Math.ceil(mx / step) * step, W = 640, Hh = 210, pl = 34, pb = 22, n = slots.length, bw = (W - pl) / n, bar = Math.min(bw * 0.66, 30);
+    const unit = kosten ? "€" : "kWh"; let grid = "", bars = "";
+    for (let v = 0; v <= top + 1e-9; v += step) { const y = Hh - pb - (v / top) * (Hh - pb - 8); grid += `<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${pl - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="var(--mut)">${num(v, step < 1 ? 1 : 0)}</text>`; }
+    slots.forEach((s, i) => { let y = Hh - pb; const x = pl + i * bw + (bw - bar) / 2; s.v.forEach((v, j) => { const h = (v / top) * (Hh - pb - 8); if (h > 0.4) { y -= h; bars += `<rect x="${x}" y="${y}" width="${bar}" height="${h}" fill="${series[j].col}" rx="2"><title>${esc(series[j].name)} ${num(v, 2)} ${unit}</title></rect>`; } });
+      if (n <= 14 || i % 2 === 0 || S.per === "m" && (i + 1) % 5 === 0 || i === n - 1) bars += `<text x="${x + bar / 2}" y="${Hh - 6}" text-anchor="middle" font-size="11" fill="var(--mut)">${esc(lab(s))}</text>`; });
+    const share = tot.kwh > 0 ? tot.pv / tot.kwh * 100 : 0, ppk = tot.kwh > 0 ? tot.cost / tot.kwh : 0, fullGrid = tot.full > 0 ? tot.full : null, saved = fullGrid != null ? Math.max(0, fullGrid - tot.cost) : null;
+    const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${on}">${t}</button>`;
+    const title = S.per === "m" ? `${MON[S.m]} ${S.y}` : S.per === "y" ? String(S.y) : "Gesamt";
+    const nav = S.per === "all" ? "" : `<div class="wbnav"><button data-act="wbnav" data-k="-1" aria-label="Zurück">‹</button><b>${title}</b><button data-act="wbnav" data-k="1" aria-label="Weiter">›</button></div>`;
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const ses = (D.sessions || []).filter((r) => S.per === "all" ? true : S.per === "y" ? r.start.slice(0, 4) === String(S.y) : r.start.slice(0, 7) === `${S.y}-${pad(S.m + 1)}`).slice(0, 8);
+    const fd = (iso) => { const t = new Date(iso); return t.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }) + " " + t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }); };
+    return `<div class="card"><h2>${ic("chart", 18)}Ladestatistik</h2>
+      <div class="wbsh"><div class="gschips">${[["m", "Monat"], ["y", "Jahr"], ["all", "Gesamt"]].map(([k, t]) => chip("wbsper", k, t, S.per === k)).join("")}</div>${nav}</div>
+      <div class="wbsh"><div class="gschips">${chip("wbswhat", "e", "Energie", !kosten)}${chip("wbswhat", "k", "Kosten", kosten)}</div><div class="gschips">${chip("wbsby", "src", "Sonne / Netz", !byV)}${vehs.length ? chip("wbsby", "veh", "Fahrzeug", byV) : ""}</div></div>
+      <div class="wbst"><b>${kosten ? "Ladekosten" : "Geladene Energie"}</b> <span class="mut">${kosten ? num(tot.cost, 2) + " € gesamt" : num(tot.kwh, 1) + " kWh gesamt"} · ${num(share, 0)} % Sonne</span></div>
+      <div class="wbsc"><svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="${kosten ? "Ladekosten in Euro" : "Geladene Energie in kWh"} pro ${S.per === "m" ? "Tag" : S.per === "y" ? "Monat" : "Jahr"}">${grid}${bars}</svg></div>
+      <div class="gsleg" style="margin-top:6px">${series.map((se) => `<span><i style="background:${se.col}"></i>${esc(se.name)} <b>${byV ? "" : num(se.id === "pv" ? tot.pv : kosten ? tot.cost : tot.grid, kosten ? 2 : 1) + " " + unit}</b></span>`).join("")}<span class="mut">${unit} pro ${S.per === "m" ? "Tag" : S.per === "y" ? "Monat" : "Jahr"}</span></div>
+      <div class="lugrid" style="margin-top:12px">${tile("Geladen", num(tot.kwh, 1) + " kWh", `${num(tot.pv, 1)} kWh Sonne · ${num(tot.grid, 1)} kWh Netz`)}${tile("Sonnenanteil", num(share, 0) + " %", "der geladenen Energie")}${tile("Kosten", num(tot.cost, 2) + " €", "nur Netzstrom")}${tile("Ø Preis", tot.kwh > 0 ? num(ppk * 100, 1) + " ct/kWh" : "–", fullGrid != null ? `Ersparnis ${num(saved, 2)} € durch Sonne` : "Preis aus Modul 1")}</div>
+      <div class="mut sm" style="margin:10px 0 0">Sonne = Überschuss und Hausbatterie, Netz = Bezug vom Netzanschluss. Die Aufteilung wird alle 10 Sekunden aus Ladeleistung und Netzbezug berechnet. Kosten = Netzstrom × Preis zum Zeitpunkt des Ladens.</div></div>
+      <div class="card"><h2>${ic("clock", 18)}Letzte Ladevorgänge</h2>${ses.length ? `<div class="wbses">${ses.map((r) => `<div class="wbse"><div><b>${esc(r.veh || "Unbekannt")}</b><span class="mut sm">${fd(r.start)} · ${num(r.min / 60, 1)} h</span></div><div class="wbsb"><i style="width:${r.kwh > 0 ? r.pv / r.kwh * 100 : 0}%"></i></div><div class="wbsv"><b>${num(r.kwh, 1)} kWh</b><span class="mut sm">${num(r.kwh > 0 ? r.pv / r.kwh * 100 : 0, 0)} % Sonne · ${num(r.cost, 2)} €</span></div></div>`).join("")}</div>` : `<div class="mut sm">In diesem Zeitraum gab es keine Ladevorgänge.</div>`}</div>`;
+  }
+  _wbStAct(a, b) {
+    const S = this._wbStS(), k = b.dataset.k;
+    if (a === "wbtab") this._wbTab = k;
+    else if (a === "wbplan") this._wbSave({ planStrat: k });
+    else if (a === "wbsrc") { this._wbSave({ planSrc: k }); }
+    else if (a === "wbpv") { this._wbSave({ pvSrc: k }); }
+    else if (a === "wbsper") S.per = k;
+    else if (a === "wbswhat") S.what = k;
+    else if (a === "wbsby") S.by = k;
+    else if (a === "wbnav") { const d = Number(k); if (S.per === "m") { let m = S.m + d, y = S.y; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } S.m = m; S.y = y; } else S.y += d; }
+    this._render();
+  }
+  /* Laderegelung der Wallbox in Modul 8 (Modus, Ladeplan, Schwellen; angelehnt an das Prinzip von evcc) */
+  _wbCard(d) {
+    this._wbLoad();
+    const s = this._wbSnap(), c = s.cfg, i = s.info, w = s.want, adm = this._admin(), soc = d.soc != null ? d.soc : s.soc;
+    if (!c.ip) return `<div class="card lusoon">${ic("energy", 26)}<div><b>Laderegelung</b><span class="mut">Verbinde zuerst deine Wallbox unter Einstellungen → Integrationen.</span></div>${adm ? `<button class="btn2 pri" data-act="igopen" style="flex:none">Integrationen</button>` : ""}</div>`;
+    const modes = [["off", "Aus", "close"], ["pv", "Sonne", "sun"], ["minpv", "Sonne + Netz", "bolt"], ["now", "Voll", "energy"]];
+    const info = { off: "Es wird nicht geladen.", pv: "Lädt nur mit Überschuss aus der Solaranlage. Ohne Überschuss pausiert die Ladung.", minpv: "Lädt immer mit dem Mindeststrom und nutzt zusätzlich den PV-Überschuss.", now: "Lädt sofort mit dem eingestellten Höchststrom, unabhängig von der Sonne." }[c.mode];
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const stp = (lab, key, val, unit, step, hint) => `<div class="vrow"><span>${lab}${hint ? `<small class="mut" style="display:block">${hint}</small>` : ""}</span><div class="step" style="flex:none"><button data-act="wbstep" data-k="${key}" data-s="${-step}" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${val} ${unit}</b><button data-act="wbstep" data-k="${key}" data-s="${step}" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>`;
+    const sw = (lab, key, on, hint) => `<div class="vrow"><span>${lab}${hint ? `<small class="mut" style="display:block">${hint}</small>` : ""}</span><button class="sw ${on ? "on" : ""}" data-act="wbsw" data-k="${key}" aria-pressed="${on}" aria-label="${lab}" ${adm ? "" : "disabled"}></button></div>`;
+    const chips = (key, opts, cur) => `<div class="gschips" style="margin:6px 0">${opts.map(([k, l]) => `<button class="gsch ${cur === k ? "sel" : ""}" data-act="wbset" data-key="${key}" data-k="${k}" aria-pressed="${cur === k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}</div>`;
+    const hhmm = (iso) => { const t = iso ? new Date(iso) : null; return t && isFinite(t) ? t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : ""; };
+    const pw = i.power != null ? wfmt(i.power) : "–", pl = s.plan || {};
+    const status = !s.ok ? ["Nicht erreichbar", s.error || "keine Antwort"] : c.enabled ? [i.car_text || "–", (w.state === "pausiert" ? "Regelung pausiert" : w.state === "pv" ? "Lädt mit PV-Überschuss" : w.state === "voll" ? "Lädt mit voller Leistung" : w.state === "minpv" ? "Mindeststrom plus PV" : w.state === "wartet" ? "Wartet auf Überschuss" : w.state === "plan_wartet" ? "Wartet auf das Ladefenster" : w.state === "gesperrt" ? "Wartet auf eine Karte" : w.state === "limit" ? "Ladelimit erreicht" : w.state === "fertig" ? "Fertig geladen" : "Wallbox ist aus")] : [i.car_text || "–", "Regelung ist aus"];
+    return `<div class="card ocard"><h2>${ic("energy", 18)}Wallbox · ${esc(i.name || i.type || "go-e Charger")}</h2>
+        ${sw("Laderegelung aktiv", "wbon", c.enabled, c.enabled ? "Strom &amp; Wärme steuert Start, Ladestrom und Phasen." : "Aus: Es wird nichts an der Wallbox verändert.")}
+        <div class="seg3 wbm" style="grid-template-columns:repeat(4,1fr)">${modes.map(([k, l, ic_]) => `<button class="${c.mode === k ? "sel" : ""}" data-act="wbset" data-key="mode" data-k="${k}" ${adm && !c.planOn ? "" : "disabled"}>${ic(ic_, 22)}${l}</button>`).join("")}</div>
+        <div class="mut sm" style="margin:-2px 0 10px">${c.planOn ? "Die <b>Planung</b> steuert die Wallbox. Der Modus gilt wieder, wenn du sie im Register „Planung“ ausschaltest." : info}</div>
+        <div class="lugrid">${tile("Status", esc(status[0]), esc(status[1]))}${tile("Ladeleistung", pw, i.cur != null ? `${num(i.cur, 0)} A · ${i.phases || "–"} ${i.phases === 1 ? "Phase" : "Phasen"}` : "–")}${tile("PV-Überschuss", w.surplus_w != null ? wfmt(w.surplus_w) : "–", c.enabled ? "aus dem Netz-Sensor (Modul 3 oder 1)" : "bei aktiver Regelung")}${tile("Ladestand", soc != null ? num(soc, 0) + " %" : "–", soc != null ? `Limit ${c.limit} %` : "kein Sensor gewählt")}</div>
+        ${c.enabled && w.reason ? `<div class="gst">${ic("info", 15)}${esc(w.reason)}</div>` : ""}
+        ${i.session_wh != null ? `<div class="mut sm" style="margin-top:6px">Diese Ladung: ${num(i.session_wh / 1000, 1)} kWh · gesamt ${i.total_wh != null ? num(i.total_wh / 1000, 0) + " kWh" : "–"} · Firmware ${esc(i.fw || "–")}</div>` : ""}</div>
+      <div class="card ocard"><h2>${ic("clock", 18)}Ladeplan</h2>
+        ${sw("Ziel zu einer Uhrzeit", "plan", c.plan, "Zum Beispiel: Morgens um 7 Uhr auf 80 % geladen. Braucht den Ladestand-Sensor des Fahrzeugs.")}
+        ${c.plan ? `${stp("Ziel-Ladestand", "planSoc", c.planSoc, "%", 5)}
+        <div class="vrow"><span>Bis</span><input class="osel" type="time" data-f="wbtime" value="${esc(c.planTime)}" style="width:auto;margin:0" aria-label="Uhrzeit" ${adm ? "" : "disabled"}></div>${chips("planDays", [["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]], c.planDays)}
+        <div class="gst">${ic("clock", 15)}<span>${soc == null ? "Ohne Ladestand-Sensor ist keine Planung möglich (Fahrzeug einrichten)." : pl.need_kwh > 0 && pl.start ? `Es fehlen etwa <b>${num(pl.need_kwh, 0)} kWh</b>. Reicht die Sonne bis ${esc(c.planTime)} nicht, startet die Wallbox spätestens um <b>${hhmm(pl.start)} Uhr</b> mit Netzstrom.` : pl.need_kwh > 0 ? "Für diesen Tag ist keine Ladung geplant." : "Das Ziel ist schon erreicht."}</span></div>` : ""}</div>
+      <div class="card ocard"><h2>${ic("sliders", 18)}Regelung</h2>
+        ${stp("Mindest-Ladestrom", "minA", c.minA, "A", 1, "Darunter lädt das Auto nicht (6 bis 16 A)")}${stp("Höchster Ladestrom", "maxA", c.maxA, "A", 1)}
+        <div class="mut sm" style="margin-top:8px">Phasenumschaltung</div>${chips("ph", [["auto", "Automatisch"], ["1", "1 Phase"], ["3", "3 Phasen"]], c.ph)}
+        <div class="mut sm">Automatisch: Bei wenig Sonne 1 Phase (ab ${wfmt(230 * c.minA)}), bei viel Sonne 3 Phasen (ab ${wfmt(230 * 3 * c.minA)}). Die Umschaltung erfolgt höchstens alle 10 Minuten.</div>
+        ${stp("Starten ab Überschuss", "startW", wfmt(c.startW), "", 100)}${stp("Start nach", "onMin", c.onMin, "Min.", 1, "Der Überschuss muss so lange da sein")}${stp("Stopp nach", "offMin", c.offMin, "Min.", 1, "Verhindert ständiges Ein- und Ausschalten bei Wolken")}
+        ${stp("Laden bis Ladestand", "limit", c.limit, "%", 5, "Braucht den Ladestand-Sensor des Fahrzeugs")}${stp("Akkukapazität", "cap", c.cap, "kWh", 5, "Für die Berechnung des Ladeplans")}</div>
+      ${this._rfCard()}
+      <div class="card ocard"><h2>${ic("home", 18)}Hausbatterie und Strompreis</h2>
+        ${sw("Hausbatterie zuerst laden", "batOn", c.batOn, "Das Auto bekommt erst Überschuss, wenn die Batterie voll genug ist (Ladestand-Sensor in Modul 1)")}
+        ${c.batOn ? stp("Batterie mindestens", "batSoc", c.batSoc, "%", 5) : ""}
+        ${sw("Netzstrom nur bei günstigem Preis", "priceOn", c.priceOn, "Braucht einen Preis-Sensor (dynamischer Tarif) in Modul 1")}
+        ${c.priceOn ? stp("Höchster Preis", "priceMax", c.priceMax, "ct/kWh", 1) : ""}</div>
+      <div class="card ocard"><h2>${ic("list", 18)}Letzte Entscheidungen</h2>${s.log.length ? `<div class="rev">${s.log.slice(0, 12).map((e) => `<div style="--c:var(--teal)"><time>${hhmm(e.t)}</time><i></i><span>${esc(e.x)}</span></div>`).join("")}</div>` : `<div class="mut sm">Noch nichts. Hier steht, wann die Regelung die Wallbox umgestellt hat und warum.</div>`}</div>`;
+  }
+  /* Fahrzeuge und Karten (nach dem Vorbild von evcc): Das Fahrzeug wird an der Karte erkannt, die an der Wallbox angelegt wird. */
+  _rfCard() {
+    const sn = this._wbSnap(), c = sn.cfg, adm = this._admin(), cards = (sn.info && sn.info.cards) || [], who = sn.who || null;
+    const nm = (i) => (cards.find((x) => x.i === i) || {}).n || `Karte ${i}`;
+    const MODES = [["off", "Aus"], ["pv", "Sonne"], ["minpv", "Sonne + Netz"], ["now", "Voll"]], ML = Object.fromEntries(MODES);
+    const mode = (id, cur) => `<div class="gschips" style="margin:6px 0">${MODES.map(([k, l]) => `<button class="gsch ${cur === k ? "sel" : ""}" data-act="wbrmode" data-v="${id}" data-k="${k}" aria-pressed="${cur === k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}</div>`;
+    const lim = (id, val) => `<div class="vrow"><span>Ladelimit</span><div class="step" style="flex:none"><button data-act="wbrlim" data-v="${id}" data-s="-5" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${val} %</b><button data-act="wbrlim" data-v="${id}" data-s="5" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>`;
+    const used = new Set(c.vehicles.flatMap((x) => x.ids));
+    const veh = c.vehicles.map((x) => `<div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#14b8a6">${ic("car", 20)}</span><div class="opi"><b>${esc(x.name)}</b><small>${x.ids.length ? "Erkannt an: " + x.ids.map((i) => esc(nm(i))).join(", ") : "Noch keine Kennung zugeordnet"}</small></div>${adm ? `<button class="ibtn" data-act="wbrvdel" data-v="${x.id}" aria-label="Fahrzeug entfernen">${ic("trash", 16)}</button>` : ""}</div>
+      <div class="mut sm" style="margin-top:8px">Kennungen (Karten aus der Wallbox)</div>
+      <div class="gschips" style="margin:6px 0">${x.ids.map((i) => `<button class="gsch sel" data-act="wbrrm" data-v="${x.id}" data-k="${i}" aria-label="${esc(nm(i))} entfernen" ${adm ? "" : "disabled"}>${esc(nm(i))} ${ic("close", 12)}</button>`).join("")}</div>
+      <select class="osel" data-f="wbradd" data-v="${x.id}" aria-label="Kennung hinzufügen" ${adm ? "" : "disabled"}><option value="">+ Kennung hinzufügen …</option>${cards.map((k) => (used.has(k.i) ? "" : `<option value="${k.i}">${esc(k.n)} (Karte ${k.i})</option>`)).join("")}</select>
+      <div class="mut sm" style="margin-top:8px">Modus, sobald das Fahrzeug erkannt wird</div>${mode(x.id, x.mode)}${lim(x.id, x.limit)}</div>`).join("");
+    const st = !sn.ok ? ["Wallbox nicht erreichbar", sn.error || "keine Antwort"]
+      : !who ? ["Keine Kennung erkannt", c.lock ? "Strom & Wärme verändert nichts, bis eine Karte angelegt wird." : "Es gilt der Modus der Laderegelung oben."]
+      : who.kind === "vehicle" ? [`Erkannt: ${who.name} (Karte „${nm(who.card)}“)`, `Die Regelung arbeitet im Modus „${ML[who.mode]}“ mit Ladelimit ${who.limit} %.`]
+      : [`Erkannt: Gastfahrzeug (Karte „${nm(who.card)}“)`, `Die Karte ist keinem Fahrzeug zugeordnet. Es gilt der Modus „${ML[who.mode]}“.`];
+    return `<div class="card ocard"><h2>${ic("car", 18)}Fahrzeuge &amp; Karten</h2>
+      <div class="mut sm" style="margin-bottom:8px">Wie bei evcc wird das Fahrzeug an der Karte erkannt, die an der Wallbox angelegt wird. Als Kennung dient der Kartenname aus der go-e-App. Eine Karte gehört zu genau einem Fahrzeug, ein Fahrzeug kann mehrere Karten haben.</div>
+      <div class="gst" style="margin:0 0 10px">${ic(who ? "check" : "info", 15)}<span><b>${esc(st[0])}</b><br>${esc(st[1])}</span></div>
+      ${veh}
+      ${adm && c.vehicles.length < 6 ? `<button class="lnk" data-act="wbrvadd">${ic("plus", 16)}Fahrzeug hinzufügen</button>` : ""}
+      <div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#64748b">${ic("user", 20)}</span><div class="opi"><b>Gastfahrzeug</b><small>Unbekannte Karte</small></div></div>${mode("guest", c.guest.mode)}${lim("guest", c.guest.limit)}</div>
+      <div class="vrow"><span>Nur mit erkannter Karte regeln<small class="mut" style="display:block">Ohne angelegte Karte verändert Strom &amp; Wärme nichts an der Wallbox. Die eigentliche Sperre kommt von der Kartenpflicht in der go-e-App.</small></span><button class="sw ${c.lock ? "on" : ""}" data-act="wbrlock" aria-pressed="${c.lock}" aria-label="Nur mit erkannter Karte regeln" ${adm ? "" : "disabled"}></button></div>
+      <div class="vrow"><span>Nach dem Abstecken zurücksetzen<small class="mut" style="display:block">Die Wallbox wird auf „neutral“ gestellt und die Erkennung vergessen. Sie gilt nur für eine Ladung.</small></span><button class="sw ${c.reset ? "on" : ""}" data-act="wbrreset" aria-pressed="${c.reset}" aria-label="Nach dem Abstecken zurücksetzen" ${adm ? "" : "disabled"}></button></div></div>`;
+  }
+  _rfAct(a, b) {
+    const c = this._wb(), k = b.dataset.k, id = b.dataset.v;
+    const upd = (fn) => { if (id === "guest") this._wbSave({ guest: fn({ ...c.guest }) }); else this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? fn({ ...x }) : x)) }); };
+    if (a === "wbrlock") this._wbSave({ lock: !c.lock });
+    else if (a === "wbrreset") this._wbSave({ reset: !c.reset });
+    else if (a === "wbrmode") upd((x) => ({ ...x, mode: k }));
+    else if (a === "wbrlim") upd((x) => ({ ...x, limit: Math.max(50, Math.min(100, x.limit + Number(b.dataset.s))) }));
+    else if (a === "wbrrm") upd((x) => ({ ...x, ids: x.ids.filter((i) => i !== Number(k)) }));
+    else if (a === "wbrvadd") { const n = c.vehicles.length + 1; this._wbSave({ vehicles: [...c.vehicles, { id: "v" + Date.now().toString(36), name: "Fahrzeug " + n, ids: [], mode: "pv", limit: 80 }] }, true); }
+    else if (a === "wbrvdel") this._wbSave({ vehicles: c.vehicles.filter((x) => x.id !== id) }, true);
+    this._render();
+  }
+  _wbAct(a, b) {
+    if (a.startsWith("wbr")) return this._rfAct(a, b);
+    if (a === "wbtab" || a === "wbplan" || a === "wbsrc" || a === "wbpv" || a === "wbsper" || a === "wbswhat" || a === "wbsby" || a === "wbnav") return this._wbStAct(a, b);
+    const c = this._wb(), k = b.dataset.k, R = { minA: [6, 16], maxA: [6, 16], startW: [500, 8000], onMin: [0, 15], offMin: [0, 30], limit: [50, 100], planSoc: [20, 100], cap: [10, 120], batSoc: [0, 100], priceMax: [1, 80], baseW: [0, 3000] };
+    if (a === "wbset") this._wbSave({ [b.dataset.key]: k });
+    else if (a === "wbsw" && k === "wbon") { if (c.enabled) this._wbSave({ enabled: false }, true); else { this._modal = { type: "wbon" }; this._renderModal(); return; } }
+    else if (a === "wbsw") this._wbSave({ [k]: !c[k] });
+    else if (a === "wbstep") { const r = R[k], v = Math.max(r[0], Math.min(r[1], c[k] + Number(b.dataset.s))), p = { [k]: v }; if (k === "minA" && c.maxA < v) p.maxA = v; if (k === "maxA" && c.minA > v) p.minA = v; this._wbSave(p); }
+    else if (a === "wbyes") { this._wbSave({ enabled: true }, true); this._modal = null; this._renderModal(); this._toast("Laderegelung ist an"); }
+    this._render();
+  }
+  _wbOnModal() {
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Laderegelung einschalten?</b><span>Wallbox · go-e Charger</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut" style="margin:6px 0 10px">Strom &amp; Wärme startet und stoppt dann die Ladung und stellt Ladestrom und Phasen ein. Wenn du die Wallbox in der go-e-App von Hand umstellst, pausiert die Regelung 30 Minuten.</div>
+      <div class="gst">${ic("info", 15)}Tipp für den ersten Test: Modus „Aus“ lassen, dann „Voll“ mit niedrigem Höchststrom (zum Beispiel 6 A) und die Wirkung in der go-e-App beobachten.</div>
+      <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="wbyes">Einschalten</button></div></div>`;
+  }
+  _wbChange(t) { const f = t.dataset.f; if (f === "wbradd") { const c = this._wb(); if (t.value) { this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, ids: [...x.ids, Number(t.value)] } : x)) }, true); this._render(); } return true; } if (f === "wbtime") { this._wbSave({ planTime: t.value || "07:00" }); this._render(); return true; } return false; }
   /* Gerätestrom: eigene Berechnung im Backend (fenster_heizung/gs_get). Solar, Netz, Batterie kommen aus Modul 3, Preise aus Modul 1. */
   _gsState() {
     const s = this._mdState();
@@ -2899,10 +3455,13 @@ class FensterHeizungPanel extends HTMLElement {
     const stT = d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt";
     const tile = (ico, t, v, sub) => `<div class="luroom"><span class="mut">${ic(ico, 14)} ${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
     const bar = d.soc != null ? `<div class="gsbar" style="margin-top:6px" role="progressbar" aria-valuenow="${num(d.soc, 0)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(0, Math.min(100, d.soc))}%;background:${d.soc < 20 ? "#f87171" : "#34d399"}"></i></div>` : "";
-    return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}
+    const wbOn = !!this._wbSnap().cfg.ip, wbTabs = wbOn ? this._wbTabs() : "";
+    if (wbOn && this._wbStT() === "plan") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbPlan(d)}`;
+    if (wbOn && this._wbStT() === "stat") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbStat()}`;
+    return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}
       <div class="card evcard ${d.charging ? "chg" : d.plugged ? "plg" : ""}"><div class="evhead"><b>${ic("car", 18)}${esc([this._evState().brand === "Andere" ? "" : this._evState().brand, this._evState().model].filter(Boolean).join(" ") || "Fahrzeug & Wallbox")}</b><span class="gsst ${d.charging ? "on" : ""}">${stT}</span></div>${this._evScene(d)}</div>
       <div class="lugrid">${tile("energy", "Ladestand", d.soc != null ? num(d.soc, 0) + " %" : "–", bar || "kein Sensor")}${tile("car", "Reichweite", d.range != null ? num(d.range, 0) + " km" : "–", d.range != null ? "laut Fahrzeug" : "kein Sensor")}${tile("total", "Kilometerstand", d.odo != null ? num(d.odo, 0) + " km" : "–", d.odo != null ? "gesamt" : "kein Sensor")}${tile("bolt", "Ladeleistung", d.power != null ? num(d.power / 1000, 1) + " kW" : "–", stT)}</div>
-      ${this._betaSoon("sun", "Laden mit PV-Überschuss", "Ladeleistung der Wallbox an den Solarüberschuss anpassen")}`;
+      ${this._wbCard(d)}`;
   }
   _evSetModal() {
     const V = this._evState(), E = V.ent, st = this._hass.states, ks = Object.keys(st);
