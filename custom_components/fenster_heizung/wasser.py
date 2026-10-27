@@ -559,7 +559,7 @@ class WasserManager:
             boost = False
             diag_log(self.hass, "info", "Warmwasser: Einmal-Aufheizen abgeschlossen", room="Warmwasser")
         leg_active = False
-        if cfg["leg"]["on"]:
+        if cfg["leg"]["on"] and (E["src"] or E["rod"]):  # ohne Erzeuger oder Heizstab kann nichts aufgeheizt werden
             if s["leg_run"] is None and leg_due(cfg["leg"], local, (s["leg_last"] or {}).get("ts"), False):
                 s["leg_run"] = {"start": now}
                 self._save()

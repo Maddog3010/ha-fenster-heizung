@@ -272,7 +272,7 @@ class DiagManager:
         if not new:
             return
         try:
-            await self.hass.services.async_call(domain, name, {"title": "Fenster & Heizung: Geräteproblem", "message": "\n".join(t for _, _, t in new)}, blocking=True)
+            await self.hass.services.async_call(domain, name, {"title": "Strom & Wärme: Geräteproblem", "message": "\n".join(t for _, _, t in new)}, blocking=True)
         except Exception as err:  # noqa: BLE001
             self.log("error", f"Benachrichtigung über {svc} fehlgeschlagen: {err}")
             return

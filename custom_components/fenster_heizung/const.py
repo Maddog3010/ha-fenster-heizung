@@ -1,4 +1,4 @@
-"""Konstanten für Fenster & Heizung."""
+"""Konstanten für Strom & Wärme."""
 
 DOMAIN = "fenster_heizung"
 

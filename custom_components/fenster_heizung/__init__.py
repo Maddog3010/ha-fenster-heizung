@@ -1,4 +1,4 @@
-"""Fenster & Heizung: Thermostate pausieren, solange Fenster offen sind."""
+"""Strom & Wärme: Fenster, Heizung, Warmwasser und Energie."""
 from __future__ import annotations
 
 import logging
@@ -1117,7 +1117,7 @@ async def _async_register_panel(hass: HomeAssistant) -> None:
             webcomponent_name="fenster-heizung-panel",
             frontend_url_path=PANEL_URL,
             module_url=f"{STATIC_URL}/panel.js?v={version}",
-            sidebar_title="Fenster & Heizung",
+            sidebar_title="Strom & Wärme",
             sidebar_icon="mdi:window-open-variant",
             require_admin=False,
             config={},

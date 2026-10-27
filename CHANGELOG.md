@@ -1,6 +1,28 @@
 # Changelog
 
-Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
+Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
+
+## [2.9.2.5] - 2026-10-27
+Die Integration heißt jetzt „Strom & Wärme“. Dazu eine zentrale Einstellungsseite, ein neuer Kopf und eine neue README.
+### Neu
+- **Neuer Name „Strom & Wärme“:** in HACS, Seitenleiste, Hinweisen und Dokumentation. Die Domain `fenster_heizung` bleibt gleich, bestehende Installationen laufen weiter.
+- **Kopfzeile in jedem Modul:** Logo und Produktname stehen oben, darunter der Modulname. Das Logo wurde aus der Karte in Modul 1 in den Kopf verschoben.
+- **Zentrale Einstellungsseite:** Der Knopf „Einstellungen“ oben rechts öffnet in jedem Modul dieselbe Seite. Sie listet alle Module mit Status, dazu Einrichtungsassistent, Darstellung, Sichern & Wiederherstellen, Diagnose und Modulverwaltung. Künftige Module erscheinen dort automatisch. Die einzelnen Knöpfe „Allgemein“, „Darstellung“ und „Einstellungen“ je Modul entfallen, „Anpassen“ bleibt in Modul 1.
+- **README komplett neu**, mit Banner und aktuellen Bildern.
+- Hinweis: Auf GitHub den Tag `v2.9.2.5` setzen.
+
+## [2.9.2.4] - 2026-10-27
+Modul 2: Darstellung ohne Geräte, glattere Speicher-Linien und ein Fehler beim Legionellenschutz.
+### Behoben
+- **Legionellenschutz ohne Erzeuger:** Er startete trotzdem jede Woche einen Lauf und meldete danach „abgebrochen“. Jetzt läuft er nur, wenn ein Wärmeerzeuger oder Heizstab gewählt ist.
+- **Speicher-Diagramm:** Messwerte im Sekundentakt ließen die Linien fransig aussehen. Sie werden jetzt zu 12-Minuten-Mittelwerten zusammengefasst und weich gezeichnet, etwas dünner. Das Hover-Fenster zeigt weiter die echten Werte.
+### Neu
+- **Modul 2 ohne Geräte:** Fehlt der Wärmeerzeuger, die Pumpe oder der Heizstab, sagen das die Karten jetzt:
+  - Warmwasser-Zeitplan: Hinweis „Noch kein Wärmeerzeuger gewählt“, der Plan ist abgedunkelt.
+  - Zirkulation, Legionellenschutz, PV-Überschuss: statt unwirksamer Einstellungen ein Hinweis mit Knopf zur Auswahl.
+  - „Einmal aufheizen“ und „Zirkulation 5 Min.“ sind abgedunkelt mit Grund.
+  - Kacheln und Zustand nennen, was fehlt.
+- Hinweis: Auf GitHub den Tag `v2.9.2.4` setzen.
 
 ## [2.9.2.3] - 2026-10-27
 Fehlerbehebungen (Modul 1 und 2), eine neue Verlaufsgrafik in Modul 2 und die zweite Solaranlage in Modul 3.
