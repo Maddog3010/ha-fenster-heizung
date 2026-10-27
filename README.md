@@ -4,7 +4,7 @@
 
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
 
-Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.9.0**.
+Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.9.1**.
 
 ## Inhalt
 - [Dashboard](#dashboard)
@@ -18,6 +18,8 @@ Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster
 - [Elektroheizer mit PV-Überschuss](#elektroheizer-mit-pv-überschuss)
 - [Module](#module)
 - [Modul 2: Warmwasser und Zirkulation](#modul-2-warmwasser-und-zirkulation)
+- [Modul 3: Energie-Übersicht](#modul-3-energie-übersicht)
+- [Entitäten auswählen](#entitäten-auswählen)
 - [Gerätediagnose](#gerätediagnose)
 - [Einrichtungsassistent](#einrichtungsassistent)
 - [Wetter-Anpassung und Sommermodus](#wetter-anpassung-und-sommermodus)
@@ -224,11 +226,11 @@ Der Knopf „Bericht“ an der Heizer-Karte zeigt pro Tag Laufzeit, Energie, den
 Hinweise: Die Energie wird aus der Nennleistung der Stufe berechnet, nicht gemessen. Der PV-Anteil ergibt sich aus der Netzeinspeisung. Der Heizer wird ausschließlich von dieser Integration geschaltet. Schaltest du ihn von Hand, übernimmt die Regelung innerhalb von etwa 30 Sekunden wieder.
 
 ## Module
-Das Dashboard besteht aus **Modulen**. Unter dem Titel zeigt eine Leiste „Modul 1 Fenster & Heizung“, „Modul 2 Warmwasser“ und „+ Module“. Modul 1 ist das Grundmodul und immer aktiv.
+Das Dashboard besteht aus **Modulen**. Unter dem Titel zeigt eine Leiste „Modul 1 Fenster & Heizung“, „Modul 2 Warmwasser“, „Modul 3 Energie“ und „+ Module“. Modul 1 ist das Grundmodul und immer aktiv.
 
-- **Module verwalten** (Tipp auf „+ Module“, nur Administratoren): Modul 2 und eigene Module lassen sich ein- und ausschalten. Ausschalten löscht keine Einstellungen.
+- **Module verwalten** (Tipp auf „+ Module“, nur Administratoren): Modul 2, Modul 3 und eigene Module lassen sich ein- und ausschalten. Ausschalten löscht keine Einstellungen.
 - **Weitere Module hinzufügen:** über HACS suchen oder die Adresse einer Moduldatei eintragen (`/local/…js`, `/hacsfiles/…js` oder `https://…js`). Die Adresse wird geprüft, höchstens 12 eigene Module.
-- Geplant sind Rollläden und Beschattung, Lüftung, Wärmepumpe und eine Energie-Übersicht. Sie erscheinen in der Verwaltung als „Geplant“.
+- Geplant sind Rollläden und Beschattung, Lüftung und Wärmepumpe. Sie erscheinen in der Verwaltung als „Geplant“.
 - Ein Modul meldet sich mit ID, Name, Symbol und einer Seite an. **Die Moduldatei wird in dieser Version noch nicht geladen:** ein hinzugefügtes eigenes Modul erscheint in der Leiste mit seinem Namen und der Adresse, die Seite bleibt vorerst ein Platzhalter. Die Schnittstelle dafür ist in Vorbereitung.
 
 <img src="docs/vorschau_modul_leiste.png" width="720" alt="Modul-Leiste"> <img src="docs/vorschau_modul_verwaltung.png" width="360" alt="Module verwalten">
@@ -267,6 +269,27 @@ Einmal pro Woche (Wochentag und Uhrzeit wählbar) heizt das Modul den Speicher a
 
 ### PV-Überschuss
 Mit einem Heizstab-Schalter lädt das Modul den Speicher bei Überschuss bis zur eingestellten Höchsttemperatur (Standard 62 °C). Der Heizstab geht an, wenn der Überschuss die eingestellte Schwelle erreicht, und aus, wenn mehr als 100 W aus dem Netz kommen. Mindestens 5 Minuten an und 3 Minuten aus. Sensor, Vorzeichen und Batterie-Grenze kommen aus den PV-Einstellungen unter Allgemein. **Der Warmwasser-Heizstab hat Vorrang vor den Raumheizern**, weil diese den dann verbleibenden Überschuss sehen. Die Leistung des Heizstabs trägst du im Modul ein.
+
+## Modul 3: Energie-Übersicht
+<img src="docs/vorschau_modul_energie.png" width="720" alt="Modul Energie-Übersicht">
+
+Heizung, Strom und PV auf einer Seite. Das Modul liest nur Sensoren, es schaltet nichts. Es erscheint in der Modul-Leiste, sobald es eingerichtet ist (Zahnrad „Einstellungen“ oder Karte „Energie-Übersicht einrichten“).
+
+- **Kopfkarte:** Hausverbrauch jetzt, Anteil aus Solar, Chips für Solar, Netz und Batterie.
+- **Zeitraum:** Heute, 7 Tage, 30 Tage.
+- **Kacheln:** Solar (mit Eigenverbrauch), Netzbezug (Kosten), Einspeisung (Vergütung), Verbrauch (Autarkie).
+- **Energiefluss:** animierte Grafik mit Solar, Netz, Haus, Batterie, Heizung und Warmwasser.
+- **Verlauf:** Leistungskurve für heute, Balken pro Tag für 7 und 30 Tage.
+- **Verteilung** („Wohin der Strom heute geht“, nur Heute): Warmwasser ist aus der Laufzeit des Heizstabs aus Modul 2 geschätzt.
+- **Kosten und Vorteil:** Bezug, Einspeisevergütung, gesparter Bezug durch Eigenverbrauch, Bilanz. Preise kommen aus Modul 1 › Allgemein.
+- **Heizung:** durch die Fensterregelung gesparte Wärme, Elektroheizer mit Solaranteil, Warmwassertemperatur, Sprungtasten zu Modul 1 und 2.
+
+**Einrichten:** Leistungssensoren (Watt oder kW) für Solar und Netz (wahlweise wie in Modul 1) sind nötig, Hausverbrauch und Batterie sind optional. Fehlt der Hausverbrauch, wird er berechnet. Das Vorzeichen von Netz und Batterie stellst du ein. Für 7 und 30 Tage wählst du drei Energiezähler (kWh): Solar-Ertrag, Netzbezug und Einspeisung. Sie müssen in Home Assistant als Langzeitstatistik geführt werden (Zähler mit `state_class: total_increasing`). Die Einstellungen werden im Backend gespeichert und mit gesichert; nur der gewählte Zeitraum bleibt pro Gerät im Browser.
+
+## Entitäten auswählen
+<img src="docs/vorschau_entitaeten_auswahl.png" width="360" alt="Entitäten-Auswahl"> <img src="docs/vorschau_energie_einstellungen.png" width="360" alt="Energie-Einstellungen">
+
+Überall im Dashboard (Einrichtungsassistent, Allgemein, Raumoptionen, Modul 2 und 3) ersetzt eine Suchauswahl die einfachen Listen: Das Feld zeigt Name, Entity-ID und aktuellen Wert. Ein Tipp öffnet die Liste mit Suchfeld (Name oder Entity-ID), passende Entitäten stehen oben mit „Passt“, jede Zeile zeigt den aktuellen Wert. „– keiner –“ leert das Feld.
 
 ## Gerätediagnose
 Unter **Allgemein → Diagnose öffnen** zeigt die Gerätediagnose, ob alle Geräte der Regelung melden. Oben steht eine Gesamtanzeige („Alles in Ordnung“, Warnungen oder Fehler) mit dem Knopf „Erneut prüfen“. Es gibt fünf Reiter:
@@ -315,7 +338,7 @@ Aus, Automatisch oder Immer an. Bei „Automatisch“ ruhen die Heizpläne, wenn
 <img src="docs/vorschau_sommer_kopf.png" width="480" alt="Sommermodus in der Kopfkarte">
 
 ## Sichern und Wiederherstellen
-Unter **Allgemein › Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit allen Räumen und Raumeinstellungen, Heizplänen, Anwesenheit, Aussehen (Farben, Symbole, Fotos, Kopfkarten-Hintergründe, Gruppen), den allgemeinen Einstellungen sowie den Modulen samt den Einstellungen von Modul 2.
+Unter **Allgemein › Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit allen Räumen und Raumeinstellungen, Heizplänen, Anwesenheit, Aussehen (Farben, Symbole, Fotos, Kopfkarten-Hintergründe, Gruppen), den allgemeinen Einstellungen sowie den Modulen samt den Einstellungen von Modul 2 und 3.
 
 - „Sicherung einlesen“ zeigt zuerst eine Zusammenfassung. Erst „Wiederherstellen“ ersetzt die aktuellen Einstellungen.
 - Räume werden anhand ihrer ID zugeordnet, sonst über einen eindeutigen Namen. Räume, die es nicht mehr gibt, werden übersprungen. Das Dashboard meldet, wie viele.
@@ -402,6 +425,7 @@ Pro Raum:
 - Der bisherige Wert „Energie pro m³ Gas“ bleibt für Erdgas erhalten.
 - Die Raumeinstellungen im Dashboard nutzen die neuen WebSocket-Befehle `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Neue Werte werden wie in den Home-Assistant-Optionen gespeichert.
 - Farben, Fotos, Symbole und die Wetteranzeige werden im gemeinsamen Layout gespeichert (WebSocket-Befehl `fenster_heizung/set_layout`, nur Administratoren). Das Backend prüft Farben, Foto-Format und -Größe sowie die Entitäten.
+- Version 2.9.1: `set_modules` nimmt zusätzlich `on.en` (Modul 3 ein/aus) und `energy` (`ent` mit `pv`, `grid`, `house`, `bat`, `pve`, `imp`, `exp` als Sensor-IDs, `sign` und `bsign`) an; das Backend prüft sie. Sicherung und Wiederherstellung enthalten sie.
 - Version 2.9.0 fügt die WebSocket-Befehle `get_modules`, `set_modules`, `set_wasser` und `wasser_cmd` hinzu (schreibend nur für Administratoren), liefert `modules` und `wasser` in `get_state` und kennt im Layout das Feld `hero`.
 - Version 2.8.0 fügt die WebSocket-Befehle `get_diag` und `clear_diag` hinzu (Letzterer nur für Administratoren) und den Schlüssel `valve` in den allgemeinen Einstellungen (Batterie-Schwelle, Tage, Benachrichtigungsdienst, Batterie-Quellen).
 - Version 2.6.0 fügt die WebSocket-Befehle `get_general`, `set_general`, `get_update`, `get_learning` und `restore` hinzu. Das Backend prüft alle Werte; Änderungen sind nur für Administratoren erlaubt.
