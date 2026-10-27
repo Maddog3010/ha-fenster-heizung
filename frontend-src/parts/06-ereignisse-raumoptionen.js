@@ -27,6 +27,7 @@
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ort") && this._ortChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("spx") && this._spChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("sfx") && this._sfxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wb") && this._wbChange(t)) return;
       if (this._lookChange(t)) return;
@@ -48,6 +49,7 @@
     else if (a.startsWith("sto")) this._stoAct(a, b);
     else if (a.startsWith("ig")) this._igAct(a, b);
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
+    else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);
     else if (a.startsWith("wb")) this._wbAct(a, b);
     else if (["gtog", "gsw", "gmv", "gedit", "gadd", "gpick", "gicon", "gsave", "gdel"].includes(a)) this._gActions(a, b);

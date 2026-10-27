@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.5] - 2026-10-28
+### Neu
+- **Modul 16 „Solar-Prognose“ (Vorabversion):** Ertrag heute und morgen aus Forecast.Solar (mehrere Anlagen werden addiert) oder einem eigenen Sensor mit `wh_period`, Stundenverlauf, beste Zeit für Verbraucher und Vergleich der Tagesprognose mit dem tatsächlichen Ertrag (Abweichung in Prozent). Die Prognose des Tages wird morgens festgehalten, der Verlauf bleibt 60 Tage gespeichert. Einstellungen: Quelle, Ertragssensor (Tageswert oder Gesamtzähler, Übernahme aus Modul 3). Neue Datei `solar.py`, WS-Befehle `sp_get` und `sp_set`.
+- **Kennzeichnung der Module in vier Stufen:** Stabil (grün), Beta (orange), Vorabversion (blau), In Entwicklung (grau). Sichtbar im Kopfteil, am Desktop zusätzlich am Tab, dazu in der Modulliste der Einstellungen und im Hinweiskasten der Seite. Am Handy steht die Kennzeichnung nur im Kopfteil, die Tabs bleiben schmal.
+### Geändert
+- Modul 11 und 16 sind „Vorabversion“, Modul 8, 9 und 14 „Beta“, die übrigen Beta-Module „In Entwicklung“ (Beispielseiten), Modul 1 bis 4 „Stabil“.
+
 ## [3.0.2.4] - 2026-10-27
 ### Geändert
 - **Zuordnung für Wetter und Warnungen** (Wetter, Wind, Außentemperatur, amtliche Warnung) und die **Auswahl der Benachrichtigungsdienste** stehen jetzt in den Einstellungen von Modul 9 (Einstellungen → Modul 9) statt im Store. Der Store zeigt nur noch die Dienste und ihre Detailseiten.

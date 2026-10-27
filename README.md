@@ -5,7 +5,7 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.4-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.5-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Eine Integration für Home Assistant, die Heizung, Fenster, Warmwasser, Solarstrom und Geräte zusammenbringt.** Sie pausiert Heizkörper, wenn ein Fenster offen ist, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer und Warmwasser, zeigt, woher der Strom deiner Geräte kommt, und stellt alles in einem eigenen Dashboard in der Seitenleiste dar.
@@ -30,157 +30,30 @@
 
 ## Die Module auf einen Blick
 
+**Kennzeichnung:** Jedes Modul trägt im Kopfteil (am Desktop zusätzlich am Tab) eine Stufe:
+- **Stabil** (grün): fertig und im Alltag erprobt (Module 1 bis 4).
+- **Beta** (orange): funktioniert, wird gerade getestet.
+- **Vorabversion** (blau): arbeitet schon mit echten Daten, ist aber noch nicht endgültig. Aussehen und Einstellungen können sich ändern.
+- **In Entwicklung** (grau): Beispielseite mit Beispielwerten, das Modul steuert noch nichts.
+
 | Nr. | Modul | Stand | Was es macht |
 |---|---|---|---|
-| 1 | **Fenster & Heizung** | fertig | Thermostate bei offenem Fenster pausieren, Heizpläne, Anwesenheit und Urlaub, Berichte, Elektroheizer mit PV-Überschuss, Schimmel- und Lüftungshinweise, Diagnose |
-| 2 | **Warmwasser & Zirkulation** | fertig | Speicher, Zeitplan, Zirkulationspumpe, Legionellenschutz, Heizstab bei PV-Überschuss |
-| 3 | **Energie** | fertig | Solar, Netz, Batterie und Hausverbrauch, Kosten und Autarkie, zweite Solaranlage |
-| 4 | **Gerätestrom** | fertig, neu | Pro Gerät Solar-, Batterie- und Netzanteil, Kosten, Ersparnis, Startempfehlung |
-| 5 | Lüftung & Raumluft | Beta | Luftfeuchte und Lüftungshinweise je Raum, später KWL und CO₂ |
-| 6 | Rollläden & Beschattung | Beta | Sonnenstand und Außenwerte, später Rollladensteuerung |
-| 7 | Wärmepumpe | Beta | Außenbedingungen, später Laufzeit, Takten und Abtauen |
+| 1 | **Fenster & Heizung** | Stabil | Thermostate bei offenem Fenster pausieren, Heizpläne, Anwesenheit und Urlaub, Berichte, Elektroheizer mit PV-Überschuss, Schimmel- und Lüftungshinweise, Diagnose |
+| 2 | **Warmwasser & Zirkulation** | Stabil | Speicher, Zeitplan, Zirkulationspumpe, Legionellenschutz, Heizstab bei PV-Überschuss |
+| 3 | **Energie** | Stabil | Solar, Netz, Batterie und Hausverbrauch, Kosten und Autarkie, zweite Solaranlage |
+| 4 | **Gerätestrom** | Stabil, neu | Pro Gerät Solar-, Batterie- und Netzanteil, Kosten, Ersparnis, Startempfehlung |
+| 5 | Lüftung & Raumluft | In Entwicklung | Luftfeuchte und Lüftungshinweise je Raum, später KWL und CO₂ |
+| 6 | Rollläden & Beschattung | In Entwicklung | Sonnenstand und Außenwerte, später Rollladensteuerung |
+| 7 | Wärmepumpe | In Entwicklung | Außenbedingungen, später Laufzeit, Takten und Abtauen |
 | 8 | Elektroauto & Wallbox | Beta | Auto mit Wallbox, Ladestand, Reichweite, Kilometerstand, Laderegelung für den go-e Charger (Sonne, Sonne + Netz, Voll, Ladeplan), Planung nach Strompreis (Tibber) und PV-Prognose (Forecast.Solar), Ladestatistik |
 | 9 | Wetter & Warnungen | Beta, neu | Sturm-, Gewitter-, Frost-, Hitze- und Starkregenwarnung mit Vorwarnung, amtliche Warnungen (DWD, NINA), Aktionen, Fenster-Erinnerung und Meldungen aufs Handy |
-| 10 | Garten & Bewässerung | Beta | Regen, PV-Überschuss und Zisterne |
-| 11 | Rauch- & Sicherheitsmelder | Beta | Melder, Batteriestände und Alarme im Überblick |
-| 12 | Pool & Sauna | Beta | Überschuss, Strompreis und Außentemperatur |
-| 13 | Batteriespeicher-Planung | Beta | Betriebsarten, Ladestand-Grenzen, Zeitplan (Vorschau) |
+| 10 | Garten & Bewässerung | In Entwicklung | Regen, PV-Überschuss und Zisterne |
+| 11 | Rauch- & Sicherheitsmelder | Vorabversion | Melder, Batteriestände und Alarme im Überblick |
+| 12 | Pool & Sauna | In Entwicklung | Überschuss, Strompreis und Außentemperatur |
+| 13 | Batteriespeicher-Planung | In Entwicklung | Betriebsarten, Ladestand-Grenzen, Zeitplan (Vorschau) |
 | 14 | Dynamischer Stromtarif | Beta | Stundenpreise, Preisverlauf, günstigste Zeiten |
-| 15 | Wartung & Erinnerungen | Beta | Termine und Betriebsstunden (Vorschau mit Beispielen) |
-| 16 | Solar-Prognose | Beta | Prognose gegen tatsächlichen Ertrag (Vorschau mit Beispielen) |
-
-<p align="center">
-  <img src="docs/vorschau_handy_modul1.png" width="230" alt="Modul 1 auf dem Handy">
-  <img src="docs/vorschau_handy_modul2.png" width="230" alt="Modul 2 auf dem Handy">
-  <img src="docs/vorschau_handy_modul3.png" width="230" alt="Modul 3 auf dem Handy">
-  <img src="docs/vorschau_handy_geraetestrom.png" width="230" alt="Modul 4 auf dem Handy">
-</p>
-
-## Inhalt
-- [Schnellstart](#schnellstart)
-- [Einstellungen und Module verwalten](#einstellungen-und-module-verwalten)
-- [Modul 1: Fenster & Heizung](#modul-1-fenster--heizung)
-- [Modul 2: Warmwasser & Zirkulation](#modul-2-warmwasser--zirkulation)
-- [Modul 3: Energie](#modul-3-energie)
-- [Modul 4: Gerätestrom](#modul-4-gerätestrom)
-- [Beta-Module 5 bis 16](#beta-module-5-bis-16)
-- [Allgemeines](#allgemeines)
-- [Entitäten](#entitäten)
-- [Hinweise für Entwickler](#hinweise-für-entwickler)
-- [Wichtige Hinweise](#wichtige-hinweise)
-- [Unterstützen](#unterstützen)
-
-## Schnellstart
-**Voraussetzungen:** Home Assistant 2024.11 oder neuer und [HACS](https://hacs.xyz).
-
-1. HACS → drei Punkte → **Benutzerdefinierte Repositories**
-2. Die Adresse dieses Repositories eintragen, Kategorie **Integration**
-3. „Strom & Wärme“ installieren und Home Assistant **neu starten**
-4. **Einstellungen → Geräte & Dienste → Integration hinzufügen → „Strom & Wärme“**: pro Raum ein Eintrag, mit Fenstersensoren und Thermostaten
-5. In der Seitenleiste „Strom & Wärme“ öffnen. Der **Einrichtungsassistent** führt in acht Schritten durch Räume, Fenstermeldung, Heizung, Luftfeuchte, PV und Meldungen. Jeder Schritt außer dem ersten lässt sich überspringen.
-
-Die Module 2 bis 4 sind ab Werk an, die Beta-Module 5 bis 16 aus. Eingeschaltet und eingerichtet wird unter **Einstellungen**. Nach jedem Update Home Assistant neu starten und die Seite einmal neu laden (Strg+F5).
-
-<p align="center"><img src="docs/vorschau_desktop.png" width="720" alt="Dashboard auf dem Desktop"></p>
-
-
-## Einstellungen und Module verwalten
-Der Knopf **Einstellungen** oben rechts öffnet in jedem Modul dieselbe Seite. Sie listet alle Module mit Status („Eingerichtet“, „Aus“, „Beta“) und führt zur Einrichtung des jeweiligen Moduls. Dazu kommen die allgemeinen Bereiche: Einrichtungsassistent, Darstellung, Sichern & Wiederherstellen, Diagnose und **Module verwalten**.
-
-Unter **Module verwalten** schaltest du jedes Modul ein oder aus. Modul 1 ist immer an. Die Einstellung speichert die Integration im Backend und gilt für alle Nutzer. Ausgeschaltete Module erscheinen weder in der Modulleiste noch im Menü. Eigene Module lassen sich über eine Dateiadresse hinzufügen.
-
-<p align="center"><img src="docs/vorschau_einstellungen.png" width="440" alt="Einstellungsseite"> <img src="docs/vorschau_beta_module.png" width="440" alt="Module verwalten"></p>
-
-## Modul 1: Fenster & Heizung
-
-<p align="center"><img src="docs/vorschau_modul_fenster_heizung.png" width="720" alt="Modul 1: Fenster &amp; Heizung"></p>
-
-### Fensterregelung
-Öffnet jemand ein Fenster, schaltet die Integration die Thermostate des Raums nach einer einstellbaren Verzögerung aus oder senkt sie ab. Nach dem Schließen läuft alles wie vorher weiter.
-
-- Fenstersensoren und Thermostate frei wählbar, Sperrzeit (zum Beispiel nachts) und Außentemperatur-Bedingung
-- Eigener Heizungs-Sensor wählbar: steht er auf „Heizung aus“, wird nicht geregelt
-- Erinnerung bei zu langem Lüften per Benachrichtigung, mit eigenem Titel und Text (`{raum}`, `{minuten}`, `{fenster}`)
-- Der Knopf **„Warum?“** erklärt pro Raum, was gerade passiert und weshalb
-
-### Dashboard
-Das Dashboard füllt sich automatisch mit allen Räumen: Kopfkarte mit der heute gesparten Menge, Außentemperatur und Wetter, Kennzahlen für Heute, Monat, Jahr und Gesamt, ein Balkendiagramm der letzten 14 Tage und eine Karte pro Raum. Umschaltbar zwischen **Detail** und **Kompakt**, hell und dunkel nach dem Design von Home Assistant, passend für Handy, Tablet und Desktop.
-
-<details>
-<summary><b>Anpassen, Gruppen, Fotos und Wetter</b></summary>
-
-- **Anpassen** (nur Administratoren): Bereiche und Raumkarten lassen sich verschieben, Räume bekommen eines von 16 Symbolen, eine Farbe und ein Foto. Das gilt für alle Nutzer.
-- **Gruppen** (zum Beispiel Erdgeschoss und Obergeschoss): eigene Kopfzeile mit Zusammenfassung und gemeinsamem Schalter für die Fensterregelung. Höchstens 12 Gruppen.
-- **Meine Ansicht:** Räume und Bereiche nur für dich im Browser ein- und ausblenden oder neu ordnen.
-- **Darstellung:** Akzentfarbe, Hintergründe der Kopfkarte (zum Beispiel nach Tageszeit oder Wetter) und die Außentemperatur-Quelle.
-
-<img src="docs/vorschau_gruppen.png" width="480" alt="Gruppen"> <img src="docs/vorschau_darstellung.png" width="480" alt="Darstellung">
-</details>
-
-### Heizplan
-Pro Raum ein Plan aus Schaltpunkten (Tage, Uhrzeit, Temperatur) mit Wochenansicht. Ausgeschaltete Thermostate schaltet der Plan je nach Einstellung ein („Nein“, „Heizen“, „Automatik“). Eine manuelle Änderung bleibt bis zum nächsten Schaltpunkt bestehen. Bei offenem Fenster greift der Plan nicht, danach gilt die Temperatur, die dann dran ist. Der Schalter „Heizplan aktiv“ und der Sensor „Heizplan Solltemperatur“ lassen sich in Automationen verwenden.
-
-<p><img src="docs/vorschau_heizplan.png" width="240" alt="Heizplan"> <img src="docs/vorschau_woche.png" width="480" alt="Wochenansicht"></p>
-
-### Bericht pro Raum
-Der Knopf „Bericht“ zeigt einen Tagesbericht mit Temperaturverlauf, Zieltemperatur, Pausenzeiten, Fensterereignissen und eingesparter Energie. Ganz oben steht die **gelernte Aufheizzeit**: die Integration erkennt Aufheizphasen und merkt sich die Minuten pro Kelvin, getrennt nach Frost, kühl und mild. Die Daten stammen aus dem Verlauf von Home Assistant, für volle 7 Tage muss der Recorder so lange aufbewahren (Standard: 10 Tage).
-
-<p><img src="docs/vorschau_bericht.png" width="480" alt="Bericht"> <img src="docs/vorschau_bericht_handy.png" width="240" alt="Bericht auf dem Handy"></p>
-
-### Anwesenheit und Urlaub
-Eine Karte stellt alle Räume gemeinsam um: **Zu Hause**, **Abwesend** oder **Urlaub**. Urlaub lässt sich mit Datum und Vorheizen am Rückkehrtag planen. Automatisch abwesend wird der Haushalt, wenn alle gewählten Personen länger unterwegs sind.
-
-#### Personen & Standort (neu in 3.0.1)
-Unter **Einstellungen → Allgemein → Personen & Standort** legst du fest, woher der Standort jeder Person kommt und wo dein Zuhause liegt.
-
-![Personen und Standort](docs/vorschau_personen_standort.png)
-
-- **Standort über Apple iCloud:** Die Integration nutzt die Geräte der Home-Assistant-Integration „Apple iCloud“ (Einrichtung: [HA-Doku](https://www.home-assistant.io/integrations/icloud)). Home Assistant Cloud und die Companion-App sind dafür nicht nötig.
-- **Einstellungen pro Person:** Name, mehrere Standortquellen, optional ein WLAN- oder Router-Gerät als zweite Quelle, ob die Person für das automatische Abwesend zählt, und eine Genauigkeitsgrenze (Standard 100 m). Zu ungenaue Positionen werden ignoriert.
-- **Home-Zone per Karte:** Karte (OpenStreetMap) verschieben und zoomen, Radius von 30 bis 1000 m. Die Zone ist unabhängig von der Zone in Home Assistant. Ohne eigene Zone gilt weiter, was Home Assistant meldet.
-
-![Home-Zone auf der Karte](docs/vorschau_home_zone.png)
-
-Eine Person gilt als **zu Hause**, wenn Home Assistant „zu Hause“ meldet, eine Quelle „zu Hause“ meldet, eine ausreichend genaue Position in der Zone liegt oder die WLAN-Quelle „zu Hause“ meldet. Gespeichert werden nur die Einstellungen, **kein Standortverlauf**.
-
-**Am iPhone beachten:** „Wo ist?“ und Ortungsdienste an, Anmeldung mit Apple-Passwort und Zwei-Faktor-Code (gelegentlich erneut nötig), eigene Apple-ID je Person, iCloud aktualisiert nicht sekundengenau. Darum Zone nicht kleiner als etwa 100 bis 200 m wählen und bei Bedarf zusätzlich WLAN nutzen.
-
-### Elektroheizer mit PV-Überschuss
-Pro Raum kann ein elektrischer Heizer (Heizlüfter, Infrarot, Klima-Heizgerät) eingerichtet werden. Er heizt nur, wenn genug PV-Überschuss da ist, auf Wunsch in mehreren Leistungsstufen.
-
-<details>
-<summary><b>Einrichtung und Regelung im Detail</b></summary>
-
-**Einrichtung**
-1. Unter **Allgemein → PV-Überschuss für Elektroheizer** den Sensor für die Netzeinspeisung wählen (Watt oder kW) und das Vorzeichen passend einstellen.
-2. Dort Reserve, Einschaltverzögerung, Mindestlaufzeit, optional den Batterie-Ladestand sowie Strompreis und Einspeisevergütung einstellen. Der Strompreis lässt sich als Festpreis oder aus einer Entität lesen, etwa einem dynamischen Tarif.
-3. In den Raumeinstellungen unter **Elektroheizer** den Heizer einschalten und das Gerät wählen.
-
-**So wird geregelt**
-- Verfügbarer Überschuss = Einspeisung plus die Leistung der laufenden Heizer. Die Heizer verdrängen sich also nicht selbst.
-- Ein Heizer läuft auf der höchsten Stufe, deren Leistung plus Reserve in den freien Überschuss passt. Bei mehreren Heizern gilt die Priorität: 1 wird zuerst versorgt.
-- Hochschalten erst, wenn die höhere Stufe die eingestellte Verzögerung lang möglich war. Zurückschalten nach etwa einer Minute. Ausschalten frühestens nach der Mindestlaufzeit.
-- Sofort aus: Fenster auf, Raum warm genug, außerhalb des erlaubten Zeitfensters, Schalter „Elektroheizer aktiv“ aus, Batterie unter der Schwelle.
-- Fällt der Sensor aus, gilt der Überschuss als 0. Ist das Gerät nicht erreichbar, wird nichts geschaltet.
-- Bei einem `climate`-Gerät ordnest du jeder Stufe eine Voreinstellung zu (zum Beispiel H1, H2, H3). Die Thermostate des Raums werden auf Wunsch abgestellt, solange der Heizer läuft.
-- Der Bericht pro Heizer zeigt Laufzeit, Energie, Solaranteil und den Vorteil in Euro. Die Energie wird aus der Nennleistung der Stufe berechnet, nicht gemessen.
-
-<img src="docs/vorschau_pv_block.png" width="480" alt="PV-Heizer"> <img src="docs/vorschau_pv_stufen.png" width="480" alt="Stufen">
-</details>
-
-### Raumluft: Lüften und Schimmel
-Mit einem Luftfeuchte-Sensor zeigt die Raumkarte Luftfeuchte, Taupunkt und Schimmelrisiko mit einer Empfehlung zum Stoßlüften samt Countdown. Auch ohne Sensor erscheinen „Gelüftet vor X Std.“, die geschätzte Wandtemperatur und die kritische Feuchte. Das Schimmelrisiko ist eine Schätzung, kein Messwert.
-
-### Wetter-Anpassung und Sommermodus
-Die Einstellungen dazu öffnest du über **Einstellungen → Modul 1**: vier aufklappbare Bereiche (Sommermodus, Wetterabhängige Absenkung, PV-Überschuss für Elektroheizer, Strompreis und Einspeisevergütung), jeweils mit Kurzstatus in der Zeile.
-
-- **Wetterabhängige Absenkung** (standardmäßig aus): Bei Sonne oder milder Luft sinkt die Zieltemperatur des Heizplans, bei Frost steigt sie.
-- **Sommermodus:** Aus, automatisch oder immer an. Bei „Automatisch“ ruhen die Heizpläne ab einer einstellbaren mittleren Außentemperatur. Fenstermeldung und Erinnerungen bleiben aktiv.
-
-### Brennstoff und Ersparnis
-Die Integration schätzt die durch Pausen gesparte Heizenergie und rechnet sie in die Menge deines Brennstoffs um. Die Ersparnis ist eine grobe Schätzung, die echte liegt etwas darunter.
-
-| Brennstoff | Einheit | Standard: kWh pro Einheit |
+| 15 | Wartung & Erinnerungen | In Entwicklung | Termine und Betriebsstunden (Vorschau mit Beispielen) |
+| 16 | Solar-Prognose | Vorabversion, neu | Prognose heute und morgen (Forecast.Solar oder eigener Sensor), stündlicher Verlauf, Prognose gegen tatsächlichen Ertrag, beste Zeit für Verbraucher | Brennstoff | Einheit | Standard: kWh pro Einheit |
 |---|---|---|
 | Erdgas | m³ | 10 |
 | Heizöl | l | 10 |
@@ -386,9 +259,13 @@ Liest die **Stundenpreise** aus dem Preis-Sensor, den du in Modul 1 unter „Str
 <p align="center"><img src="docs/vorschau_modul_wartung.png" width="560" alt="Modul 15: Wartung &amp; Erinnerungen"></p>
 Zeigt, wie die Seite aussehen soll: Termine wie Schornsteinfeger, Lüftungsfilter und Heizungswartung mit Restzeit sowie Betriebsstunden mit Fortschritt bis zur nächsten Wartung. **Alle Einträge sind Beispiele.** **Geplant:** eigene Termine mit „Erledigt“-Knopf, Erinnerung aufs Handy, Betriebsstunden aus Sensoren.
 
-### Modul 16: Solar-Prognose
+### Modul 16: Solar-Prognose (Vorabversion)
 <p align="center"><img src="docs/vorschau_modul_prognose.png" width="560" alt="Modul 16: Solar-Prognose"></p>
-Zeigt, wie die Seite aussehen soll: Prognose für heute und morgen, bisheriger Ertrag und ein Vergleich von Prognose gegen tatsächlichen Ertrag der letzten Tage. **Alle Werte sind Beispiele.** **Geplant:** echte Prognose-Sensoren (zum Beispiel Forecast.Solar), Vergleich mit dem Ertrag aus Modul 3, beste Zeit für Verbraucher.
+Zeigt den erwarteten Ertrag für heute und morgen, den bisherigen Ertrag des Tages, einen Stundenverlauf (Heute oder Morgen), die ergiebigste Zeit für Verbraucher und einen Vergleich von Prognose gegen tatsächlichen Ertrag der letzten Tage mit der Abweichung in Prozent.
+- **Quelle:** Forecast.Solar (mehrere Anlagen werden addiert) oder ein eigener Sensor mit dem Attribut `wh_period`.
+- **Ertrag:** ein Energie-Sensor, entweder nur für den Tag oder als Gesamtzähler. Der Sensor aus Modul 3 lässt sich mit einem Klick übernehmen.
+- **Ehrlicher Vergleich:** Die Prognose des Tages wird morgens festgehalten, der Verlauf bleibt 60 Tage gespeichert. Das Modul läuft im Hintergrund und schaltet nichts.
+Einrichtung: Einstellungen → Modul 16.
 
 ## Allgemeines
 
@@ -423,6 +300,7 @@ Pro Raum:
 <summary><b>WebSocket-Befehle und Änderungen an der Schnittstelle</b></summary>
 
 - Die technische Kennung der Integration bleibt `fenster_heizung` (Ordner, Entitäten, Speicher). Nur der Anzeigename ist „Strom & Wärme“.
+- Modul 16: `fenster_heizung/sp_get` (Prognose, Verlauf, Vergleich) und `sp_set` (`cfg` mit `src`, `fc_sensor`, `act`, `mode`, nur Administratoren).
 - Modul 9: `fenster_heizung/wx_get` (Einstellungen, Warnlage, Vorhersage, offene Fenster, Protokoll), `wx_set` (`cfg`, nur Administratoren) und `wx_test` (Testmeldung, gibt `sent` zurück).
 - Raumeinstellungen im Dashboard: `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Layout (Farben, Fotos, Symbole, Wetteranzeige): `fenster_heizung/set_layout`. Allgemeines und Sicherung: `get_general`, `set_general`, `get_update`, `get_learning`, `restore`. Diagnose: `get_diag`, `clear_diag`. Module: `get_modules`, `set_modules`, `set_wasser`, `wasser_cmd`. Das Backend prüft alle Werte, Änderungen sind nur für Administratoren erlaubt.
 - Version 3.0.2.3: `fenster_heizung/wb_quick` (`kind` = `h1`, `goal`, `sun` oder leer zum Stoppen, nur Administratoren). `wb_get` liefert zusätzlich `quick` (`k`, `until`) und `guard` (`house_a`, `wb_a`, `total_a`, `max_a`, `allowed_a`, `limited`). `wb_set` kennt zusätzlich `guard` (`on`, `maxA` 10 bis 63), `notify` (`start`, `goal`, `plan`, `off`, `long`, `to` mit `notify.*`-Diensten) und pro Fahrzeug `dep` (`on`, `soc`, `time`, `days`). `wb_stats` liefert pro Tag zusätzlich `km`.

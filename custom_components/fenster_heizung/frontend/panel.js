@@ -236,7 +236,11 @@ const WW_ON = ["on", "heat", "heating", "performance", "eco", "electric", "gas",
 const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000, MW: 1e6 };
 const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", bmode: "one", pvn: "", pv2n: "", ent: { pv: "", grid: "", house: "", bat: "", bchg: "", bdis: "", pve: "", pv2: "", pve2: "", imp: "", exp: "" } };
 /* Einstellungen je Modul: neue Module tragen sich hier ein und erscheinen automatisch auf der Einstellungsseite */
-const MOD_SET = { sp: { act: "mdbeta", txt: "Prognose-Sensoren und Vergleich mit dem Ertrag (in Entwicklung)" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
+/* Reifegrad der Module: dev = Beispielseite, vorab = Vorabversion (echte Daten, noch nicht endgültig), beta = zum Testen */
+const MOD_ST = { sf: "vorab", sp: "vorab", ev: "beta", wx: "beta", dt: "beta" };
+const modSt = (m) => (!m ? "" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
+const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
+const MOD_SET = { sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
 const EV_BRANDS = ["Mercedes-Benz", "Audi", "VW", "BYD", "BMW", "Andere"];
 const EV_BODIES = { limousine: "Limousine", suv: "SUV", kombi: "Kombi", kompakt: "Kompakt" };
@@ -750,6 +754,15 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .stowarn{display:flex;gap:10px;background:color-mix(in srgb,#f59e0b 14%,var(--card));border:1px solid color-mix(in srgb,#f59e0b 50%,var(--line));border-radius:12px;padding:10px 12px;color:#fbbf24;font-size:.86rem;margin-top:10px}
 @media(max-width:600px){.stofe{flex-direction:column;align-items:flex-start;padding:18px}.stobig{width:64px;height:64px}.stohd .stoi.big{width:60px;height:60px}}
 .hsn{margin-top:8px}.hsn summary{display:flex;align-items:center;gap:8px}.hsd{width:10px;height:10px;border-radius:50%;flex:none}.stoq2 li{margin-bottom:4px}.stoq2 b,.hsn li b{color:var(--primary-text-color)}
+.vab{line-height:1.35;font-style:normal;font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,#0ea5e9 18%,transparent);color:#0ea5e9;border:1px solid color-mix(in srgb,#0ea5e9 50%,transparent);margin-right:8px;white-space:nowrap}
+.mtab .vab{margin:0 0 0 2px;padding:1px 6px;font-size:.6rem}.mbadge.vab,.sxc.vab{color:#0ea5e9;border-color:color-mix(in srgb,#0ea5e9 50%,transparent)}
+.vabox{display:flex;gap:12px;align-items:flex-start;border:1px solid color-mix(in srgb,#0ea5e9 55%,transparent);background:color-mix(in srgb,#0ea5e9 9%,transparent);border-radius:14px;padding:12px 14px;margin-bottom:12px;font-size:.84rem;line-height:1.45}
+.vabox>svg{flex:none;color:#0ea5e9;margin-top:1px}.vabox b{display:block;color:var(--primary-text-color);margin-bottom:3px;font-size:.92rem}.vabox a{color:#0ea5e9}
+.dvl{line-height:1.35;font-style:normal;font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--secondary-text-color) 16%,transparent);color:var(--secondary-text-color);border:1px solid color-mix(in srgb,var(--secondary-text-color) 45%,transparent);margin-right:8px;white-space:nowrap}
+.mtab .dvl{margin:0 0 0 2px;padding:1px 6px;font-size:.6rem}.betabox.dvbox{border-color:color-mix(in srgb,var(--secondary-text-color) 50%,transparent);background:color-mix(in srgb,var(--secondary-text-color) 9%,transparent)}.dvbox>svg{color:var(--secondary-text-color)}.dvbox a{color:var(--primary-text-color)}
+.stb{line-height:1.35;font-style:normal;font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,#22c55e 16%,transparent);color:#22c55e;border:1px solid color-mix(in srgb,#22c55e 50%,transparent);margin-right:8px;white-space:nowrap}
+.mtab .stb{margin:0 0 0 2px;padding:1px 6px;font-size:.6rem}
+@media(max-width:719px){.mtab .stb,.mtab .vab,.mtab .beta,.mtab .dvl{display:none}}
 @media(min-width:720px){.tiles{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(2,1fr)}.hero .big{font-size:3.3rem}
   .hero .art{top:50%;transform:translateY(-50%);height:88%;max-height:190px;max-width:34%;right:84px}.hero .hlogo{width:60px;height:60px;right:20px;bottom:18px}.hero .chips{padding-right:0}.hero .lbl{max-width:none}
   .sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:min(580px,92vw);border-radius:22px;max-height:86vh}}
@@ -2018,6 +2031,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ort") && this._ortChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("spx") && this._spChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("sfx") && this._sfxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wb") && this._wbChange(t)) return;
       if (this._lookChange(t)) return;
@@ -2039,6 +2053,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("sto")) this._stoAct(a, b);
     else if (a.startsWith("ig")) this._igAct(a, b);
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
+    else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);
     else if (a.startsWith("wb")) this._wbAct(a, b);
     else if (["gtog", "gsw", "gmv", "gedit", "gadd", "gpick", "gicon", "gsave", "gdel"].includes(a)) this._gActions(a, b);
@@ -2621,6 +2636,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
     if (m.type === "sfset") { box.innerHTML = this._sfxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "spset") { box.innerHTML = this._spModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "stodet") { box.innerHTML = this._stoModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -2936,7 +2952,7 @@ class FensterHeizungPanel extends HTMLElement {
     const isOn = (m) => m.id === "fh" || (m.id === "ww" ? s.on.ww : m.beta ? s.on[m.id] === true : m.id === "gs" ? s.on.gs !== false : this._enOn());
     const act = MODS.filter(isOn), off = MODS.filter((m) => !isOn(m));
     const mods = act.map((m) => {
-      const d = this._stDone(m.id), chip = m.beta ? `<em class="sxc beta">Beta</em>` : d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc">Offen</em>`;
+      const d = this._stDone(m.id), chip = m.beta ? `<em class="sxc ${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc">Offen</em>`;
       return row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", chip);
     }).join("");
     const ext = s.ext.map((x) => row("puzzle", `<i>Eigenes Modul</i> ${esc(x.name)}`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join("");
@@ -4025,29 +4041,102 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="gst">${ic("info", 15)}Das Ladekabel erscheint, sobald „angesteckt“ meldet, und verschwindet beim Abstecken. Beim Laden leuchtet es und die Ladung läuft sichtbar.</div>
       <div class="foot2"><button class="btn2 pri" data-act="evdone">Fertig</button></div></div>`;
   }
-  _betaBox(txt) { return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
+  _betaBox(txt) {
+    const m = MODS.find((x) => x.id === (this._mdActive && this._mdActive())), st = modSt(m);
+    if (st === "vorab") return this._vorabBox(txt);
+    if (st === "dev") return `<div class="betabox dvbox">${ic("alert", 20)}<div><b>In Entwicklung – diese Seite zeigt Beispielwerte</b>Das Modul steuert noch nichts. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`;
+    return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
   _betaSoon(ico, t, d) { return `<div class="card lusoon">${ic(ico, 26)}<div><b>${t}</b><span class="mut">${d}</span></div><em class="beta">In Entwicklung</em></div>`; }
   _betaPage(id) { return id === "sp" ? this._spPage() : id === "wa" ? this._waPage() : id === "bt" ? this._btPage() : id === "dt" ? this._dtPage() : id === "sf" ? this._sfPage() : id === "pl" ? this._plPage() : id === "wx" ? this._wxPage() : id === "ga" ? this._gaPage() : id === "ev" ? this._evPage() : id === "rb" ? this._rbPage() : id === "wp" ? this._wpPage() : this._luPage(); }
+  /* Modul 16: Solar-Prognose (Vorabversion) – Daten und Tagesvergleich laufen im Backend (solar.py) */
+  _vorabBox(txt) { return `<div class="vabox">${ic("sun", 20)}<div><b>Vorabversion – funktioniert, ist aber noch nicht endgültig</b>Aussehen und Einstellungen können sich noch ändern. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
+  _spLoad(force) {
+    if (!this._hass || this._spBusy) return;
+    if (!force && this._spD && Date.now() - this._spD.ts < 60000) return;
+    this._spBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/sp_get" }).then((r) => { this._spD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._spD = { d: { error: true }, ts: Date.now() }; })
+      .finally(() => { this._spBusy = false; if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } });
+  }
+  _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen); }
+  _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", ...(d.cfg || {}) } }; }
+  _spSave(cfg) {
+    const s = this._sp(); this._spD = { d: { ...s, cfg }, ts: Date.now() };
+    this._hass.callWS({ type: "fenster_heizung/sp_set", cfg }).then((r) => { this._spD = { d: r || {}, ts: Date.now() }; if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } })
+      .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
+    this._render(); if (this._modal && this._modal.type === "spset") this._renderModal();
+  }
+  _spAct(a, b) {
+    const k = b.dataset.k, c = { ...this._sp().cfg };
+    if (a === "spxopen") { this._spLoad(true); this._modal = { type: "spset" }; this._renderModal(); return; }
+    if (a === "spxday") { this._spDay = k; this._render(); return; }
+    if (a === "spxsrc") c.src = k; else if (a === "spxmode") c.mode = k; else if (a === "spxm3") c.act = k || ""; else if (a === "spxgoig") { this._modal = null; this._renderModal(); this._sto = { q: "forecast", c: "" }; this._igOpen = true; this._render(); return; } else return;
+    this._spSave(c);
+  }
+  _spChange(t) {
+    const f = t.dataset.f, v = t.value || "", c = { ...this._sp().cfg };
+    if (t.blur) t.blur();
+    if (f === "spxfc") c.fc_sensor = v; else if (f === "spxact") c.act = v; else return false;
+    this._spSave(c); return true;
+  }
+  _spModal() {
+    const H = this._hass, S = H.states, adm = this._admin(), C = this._sp().cfg, ids = Object.keys(S);
+    const nm = (id) => esc((S[id].attributes || {}).friendly_name || id), un = (id) => (S[id].attributes || {}).unit_of_measurement || "";
+    const eng = ids.filter((k) => k.startsWith("sensor.") && /^(Wh|kWh|MWh)$/.test(un(k)) && !/prognose|forecast|estimated|energy_production_(today|tomorrow)/i.test(k));
+    const fc = ids.filter((k) => k.startsWith("sensor.") && S[k].attributes && S[k].attributes.wh_period);
+    const m3 = (() => { try { const e = this._enState().ent; return e.pve || ""; } catch (x) { return ""; } })();
+    const opt = (list, cur, auto) => `<option value="" ${cur ? "" : "selected"}>${esc(auto)}</option>${list.map((id) => `<option value="${esc(id)}" ${cur === id ? "selected" : ""}>${nm(id)} · ${esc(S[id].state)} ${esc(un(id))}</option>`).join("")}`;
+    const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" ${adm ? "" : "disabled"}>${t}</button>`;
+    const sel = (ico, t, f, body, dis) => `<div class="vrow"><span>${ic(ico, 15)} ${t}</span><select class="osel" style="max-width:55%;margin:0" data-f="${f}" aria-label="${t}" ${adm && !dis ? "" : "disabled"}>${body}</select></div>`;
+    const fsN = this._sp().sites || [];
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Solar-Prognose</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("sun", 15)}Prognose-Quelle</div>
+      <div class="gschips">${chip("spxsrc", "forecast", "Forecast.Solar", C.src === "forecast")}${chip("spxsrc", "sensor", "Eigener Sensor", C.src === "sensor")}</div>
+      ${C.src === "forecast" ? `<div class="gst">${ic("info", 15)}<span>${fsN.length ? `Gefunden: ${fsN.map(esc).join(", ")}. Mehrere Anlagen werden addiert.` : `Die Integration Forecast.Solar ist nicht eingerichtet oder liefert gerade nichts. Sie lässt sich im <button class="lnk" data-act="spxgoig">Store</button> finden.`}</span></div>`
+      : sel("chart", "Prognose-Sensor", "spxfc", opt(fc, C.fc_sensor, fc.length ? "Bitte wählen" : "Keiner gefunden"), !fc.length) + `<div class="mut sm">Der Sensor braucht das Attribut <code>wh_period</code> (Wh je Stunde), wie es Forecast.Solar liefert.</div>`}
+      <div class="lsec" style="margin-top:12px">${ic("energy", 15)}Tatsächlicher Ertrag</div>
+      ${sel("zap", "Ertragssensor", "spxact", opt(eng, C.act, eng.length ? "Ohne Vergleich" : "Keine Energie-Sensoren"), !eng.length)}
+      ${m3 && m3 !== C.act && S[m3] ? `<div class="gst">${ic("info", 15)}<span>Modul 3 nutzt <b>${nm(m3)}</b>. <button class="lnk" data-act="spxm3" data-k="${esc(m3)}">Denselben Sensor verwenden</button></span></div>` : ""}
+      <div class="mut sm" style="margin:8px 0 4px">Was zählt der Sensor?</div>
+      <div class="gschips">${chip("spxmode", "day", "Nur den heutigen Tag", C.mode === "day")}${chip("spxmode", "total", "Gesamtzähler (steigt immer)", C.mode === "total")}</div>
+      <div class="mut sm" style="margin-top:6px">Die Prognose des Tages wird morgens festgehalten. So bleibt der Vergleich über die Tage ehrlich, auch wenn sich die Vorhersage tagsüber ändert.</div>
+    </div>`;
+  }
   _spPage() {
-    const tag = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], now = new Date(), tdy = 14.2, tom = 9.6, got = 9.1;
-    const hist = [[-6, 11.8, 12.4], [-5, 6.2, 5.1], [-4, 13.5, 14.1], [-3, 15.1, 13.8], [-2, 8.4, 9.0], [-1, 10.9, 10.2]];
-    const mx = 16, bh = (v) => Math.round((v / mx) * 120), dev = hist.reduce((a, x) => a + (x[2] - x[1]), 0) / hist.reduce((a, x) => a + x[1], 0) * 100;
-    const col = (d, f, a, today) => { const dn = new Date(now.getTime() + d * 864e5).getDay(); return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="display:flex;align-items:flex-end;gap:3px;height:124px"><div title="Prognose ${num(f, 1)} kWh" style="width:16px;height:${bh(f)}px;border-radius:4px 4px 0 0;background:#f59e0b;opacity:.45"></div>${a != null ? `<div title="Tatsächlich ${num(a, 1)} kWh" style="width:16px;height:${bh(a)}px;border-radius:4px 4px 0 0;background:#f59e0b"></div>` : ""}</div><span class="mut" style="font-size:.72rem;${today ? "font-weight:700" : ""}">${today ? "Heute" : tag[dn]}</span></div>`; };
-    const bars = hist.map((x) => col(x[0], x[1], x[2])).join("") + col(0, tdy, got, true) + col(1, tom, null);
+    this._spLoad();
+    const S = this._sp(), adm = this._admin(), DAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], f1 = (v) => num(v, 1);
+    const head = this._vorabBox("Die Prognose kommt aus Forecast.Solar oder einem eigenen Sensor, der Ertrag aus einem Energie-Sensor deiner Anlage.");
+    if (!this._spD) return head + `<div class="card empty">${ic("sun", 36)}<div style="margin-top:8px">Lade Prognose …</div></div>`;
+    if (S.error) return head + `<div class="card empty">${ic("alert", 36)}<div style="margin-top:8px">Die Prognose konnte nicht geladen werden.</div></div>`;
+    if (!S.found) return head + `<div class="card empty">${ic("sun", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Prognose da</div>Wähle in den Einstellungen die Quelle. Am einfachsten geht es mit der Integration Forecast.Solar.${adm ? `<div style="margin-top:12px"><button class="btn2" data-act="spxopen">${ic("sliders", 16)}Einstellungen öffnen</button></div>` : ""}</div>`;
+    const today = S.today, got = S.got, base = S.today_f != null ? S.today_f : today, pc = got != null && base > 0 ? Math.round(got / base * 100) : null, nowH = S.now_h;
+    const dlt = S.tomorrow - today, dp = today > 0 ? Math.round(dlt / today * 100) : null;
     const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    const pc = Math.round((got / tdy) * 100);
-    return `${this._betaBox("Alle Werte sind Beispiele. Echte Prognose-Sensoren (zum Beispiel Forecast.Solar) wählst du später in den Einstellungen.")}
-      <div class="card"><h2>${ic("sun", 18)}Ertrag heute und morgen (Beispiel)</h2><div class="lugrid">
-        ${tile("Heute, Prognose", num(tdy, 1) + " kWh", "Gesamter Tag")}
-        ${tile("Heute, bisher", num(got, 1) + " kWh", pc + " % der Tagesprognose")}
-        ${tile("Morgen, Prognose", num(tom, 1) + " kWh", tom < tdy ? "Weniger als heute" : "Mehr als heute")}
-        ${tile("Abweichung 6 Tage", (dev >= 0 ? "+" : "") + num(dev, 1) + " %", dev >= 0 ? "Ertrag über der Prognose" : "Ertrag unter der Prognose")}</div></div>
-      <div class="card"><h2>${ic("chart", 18)}Prognose gegen tatsächlich (Beispiel)</h2>
-        <div style="display:flex;gap:6px;margin-top:10px;align-items:flex-end">${bars}</div>
-        <div class="gst" style="margin-top:10px;flex-wrap:wrap"><span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px"><i style="width:10px;height:10px;border-radius:3px;background:#f59e0b;opacity:.45"></i>Prognose</span><span style="display:inline-flex;align-items:center;gap:5px"><i style="width:10px;height:10px;border-radius:3px;background:#f59e0b"></i>Tatsächlich</span><span style="margin-left:12px">kWh pro Tag</span></div></div>
-      ${this._betaSoon("sun", "Prognose-Sensoren wählen", "Heute, morgen und stündlicher Verlauf aus Home Assistant")}
-      ${this._betaSoon("chart", "Vergleich mit dem Ertrag", "Tatsächlicher Ertrag aus Modul 3, dazu Trefferquote über Wochen")}
-      ${this._betaSoon("clock", "Beste Zeit für Verbraucher", "Hinweis, wann Waschen, Laden oder Bewässern am meisten Solarstrom nutzt")}`;
+    const day = this._spDay === "tomorrow" ? "tomorrow" : "today", rows = day === "today" ? S.hours : S.hours_tm;
+    const mx = Math.max(1, ...rows.map((r) => r[1]), 0.5), H0 = rows.length ? Math.min(...rows.map((r) => r[0])) : 6, H1 = rows.length ? Math.max(...rows.map((r) => r[0])) : 20, n = H1 - H0 + 1, bw = 560 / Math.max(n, 1);
+    const byh = Object.fromEntries(rows);
+    const bars = Array.from({ length: n }, (_, i) => { const h = H0 + i, v = byh[h] || 0, ht = Math.round(v / mx * 110), past = day === "today" && h < nowH, cur = day === "today" && h === nowH;
+      return `<g><title>${h}:00 Uhr · ${num(v, 2)} kWh</title><rect x="${(i * bw + 2).toFixed(1)}" y="${130 - ht}" width="${(bw - 4).toFixed(1)}" height="${Math.max(ht, 1)}" rx="3" fill="#f59e0b" opacity="${cur ? 1 : past ? 0.4 : 0.75}"/>${i % 2 === 0 || n < 10 ? `<text x="${(i * bw + bw / 2).toFixed(1)}" y="146" text-anchor="middle" font-size="10" fill="var(--secondary-text-color)">${h}</text>` : ""}</g>`; }).join("");
+    const chart = rows.length ? `<svg viewBox="0 0 560 150" role="img" aria-label="Stündliche Prognose" style="width:100%;height:auto;display:block;margin-top:10px">${bars}</svg><div class="mut sm">kWh je Stunde, Höchstwert ${f1(mx)} kWh. ${day === "today" ? "Vergangene Stunden sind blasser, die aktuelle ist voll." : ""}</div>` : `<div class="mut" style="padding:16px 0">Für diesen Tag gibt es keine Stundenwerte.</div>`;
+    const hist = S.hist || [], hm = Math.max(1, ...hist.map((x) => Math.max(x.f || 0, x.a || 0)), today, got || 0);
+    const hcol = (lab, f, a, tdy) => `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0"><div style="display:flex;align-items:flex-end;gap:3px;height:110px"><div title="Prognose ${f1(f)} kWh" style="width:12px;height:${Math.max(2, Math.round(f / hm * 104))}px;border-radius:3px;background:#f59e0b;opacity:.45"></div>${a != null ? `<div title="Ertrag ${f1(a)} kWh" style="width:12px;height:${Math.max(2, Math.round(a / hm * 104))}px;border-radius:3px;background:#22c55e;${tdy ? "opacity:.65" : ""}"></div>` : ""}</div><span class="mut" style="font-size:.7rem${tdy ? ";font-weight:700;color:var(--primary-text-color)" : ""}">${lab}</span></div>`;
+    const hbars = hist.map((x) => hcol(DAYS[new Date(x.d + "T12:00:00").getDay()], x.f, x.a, false)).join("") + hcol("Heute", base, got, true);
+    const best = S.best, dev = S.dev;
+    return `${head}
+      <div class="card"><h2>${ic("sun", 18)}Ertrag heute und morgen</h2><div class="lugrid">
+        ${tile("Heute, Prognose", f1(today) + " kWh", "Gesamter Tag")}
+        ${tile("Heute, bisher", got != null ? f1(got) + " kWh" : "–", got != null ? (pc != null ? pc + " % der Tagesprognose" : "") : S.has_act ? "Sensor liefert keinen Wert" : "Kein Ertragssensor gewählt")}
+        ${tile("Morgen, Prognose", f1(S.tomorrow) + " kWh", dp == null ? "" : dp === 0 ? "Wie heute" : dp < 0 ? `${-dp} % weniger als heute` : `${dp} % mehr als heute`)}
+        ${tile("Abweichung " + hist.length + (hist.length === 1 ? " Tag" : " Tage"), dev == null ? "–" : (dev >= 0 ? "+" : "") + f1(dev) + " %", dev == null ? "Braucht Ertragssensor und einige Tage" : dev >= 0 ? "Ertrag über der Prognose" : "Ertrag unter der Prognose")}</div>
+        ${pc != null ? `<div style="margin-top:12px;height:8px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color) 10%,transparent);overflow:hidden" role="progressbar" aria-valuenow="${Math.min(pc, 100)}" aria-valuemin="0" aria-valuemax="100"><i style="display:block;height:100%;width:${Math.min(pc, 100)}%;background:#22c55e"></i></div>` : ""}</div>
+      <div class="card"><h2>${ic("chart", 18)}Verlauf über den Tag</h2>
+        <div class="gschips" style="margin-top:6px"><button class="gsch ${day === "today" ? "sel" : ""}" data-act="spxday" data-k="today" aria-pressed="${day === "today"}">Heute</button><button class="gsch ${day === "tomorrow" ? "sel" : ""}" data-act="spxday" data-k="tomorrow" aria-pressed="${day === "tomorrow"}">Morgen</button></div>${chart}</div>
+      ${best ? `<div class="card"><h2>${ic("clock", 18)}Beste Zeit für Verbraucher</h2><div style="margin-top:6px">${S.best_day === "today" ? "Heute" : "Morgen"} zwischen <b>${best.from}:00 und ${best.to}:00 Uhr</b> ist mit rund ${f1(best.kwh)} kWh die ergiebigste Zeit. Dann lohnen sich Waschen, Laden oder Bewässern am meisten.</div></div>` : ""}
+      <div class="card"><h2>${ic("chart", 18)}Prognose gegen tatsächlich</h2>
+        ${hist.length || got != null ? `<div style="display:flex;gap:6px;margin-top:10px;align-items:flex-end">${hbars}</div>
+        <div class="gst" style="margin-top:10px;flex-wrap:wrap"><span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px"><i style="width:10px;height:10px;border-radius:3px;background:#f59e0b;opacity:.45"></i>Prognose</span><span style="display:inline-flex;align-items:center;gap:5px"><i style="width:10px;height:10px;border-radius:3px;background:#22c55e"></i>Ertrag</span></div>`
+        : `<div class="mut" style="padding:12px 0">${S.has_act ? "Der Vergleich füllt sich ab morgen. Die Prognose des Tages wird morgens festgehalten." : "Wähle in den Einstellungen einen Ertragssensor, dann zeigt dieser Vergleich Prognose und Ertrag pro Tag."}</div>`}
+        <div class="mut sm" style="margin-top:6px">Quelle: ${esc(S.src || "–")}${(S.sites || []).length ? " · " + S.sites.map(esc).join(", ") : ""}</div></div>`;
   }
   _waPage() {
     const day = 864e5, now = Date.now(), fmt = (d) => new Date(d).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
@@ -4482,7 +4571,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
-    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${m.beta ? `<em class="beta">Beta</em>` : ""}</button>`).join("")}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
+    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
   }
   _mdRender() {
     const sr = this.shadowRoot, a = this._mdActive(), m = this._mdList().find((x) => x.id === a), adm = this._admin();
@@ -4495,7 +4584,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a !== "ww" && a !== "en" && a !== "gs" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${m.beta ? `<em class="beta">Beta-Version</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${this._stoBtn()}${pills}</div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${this._stoBtn()}${pills}</div>
       ${this._mdBar()}<div class="wrap">${body}</div>`;
   }
   _mdAct(a, b) {
@@ -4557,7 +4646,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${row("en", "energy", "Modul 3 – Energie-Übersicht", this._enConfigured() ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!this._enConfigured() && this._enOn() ? `<button class="btn2 pri" data-act="mdensetup">Einrichten</button>` : ""}${tog("en", this._enOn())}</span>`)}
       ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
       ${row("gs", "laundry", "Modul 4 – Gerätestrom", this._gsState().devices.length ? this._gsState().devices.length + (this._gsState().devices.length === 1 ? " Gerät" : " Geräte") : "Noch nicht eingerichtet", `<span class="mact">${tog("gs", s.on.gs !== false)}</span>`)}
-      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · in Entwicklung", `<span class="mact"><span class="mbadge beta">Beta</span>${tog(x.id, s.on[x.id] === true)}</span>`)).join("")}
+      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion" }[modSt(x)], `<span class="mact"><span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true)}</span>`)).join("")}
       ${MOD_SOON.length ? `<div class="lsec">${ic("clock", 15)}Geplant</div>
       ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
       <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>
