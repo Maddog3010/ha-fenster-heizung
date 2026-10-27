@@ -5,13 +5,13 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.3-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.4-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Eine Integration für Home Assistant, die Heizung, Fenster, Warmwasser, Solarstrom und Geräte zusammenbringt.** Sie pausiert Heizkörper, wenn ein Fenster offen ist, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer und Warmwasser, zeigt, woher der Strom deiner Geräte kommt, und stellt alles in einem eigenen Dashboard in der Seitenleiste dar.
 
 > ### 🌦️ Neu in Version 3.0.2.3: Modul 9 Wetter & Warnungen
-> **Modul 9 (Beta) ist fertig:** Warnungen für Sturm, Gewitter, Frost, Hitze und Starkregen mit **Vorwarnung**, **amtliche Warnungen** von DWD, NINA und MeteoAlarm, **Aktionen** (Rollläden, Markisen, Schalter, Skripte), **Fenster-Erinnerung** und **Benachrichtigung** aufs Handy. Unter **Einstellungen → Allgemein → Integrationen → Wetter und Warnungen** siehst du die passenden Dienste mit Status. Was eingerichtet ist, wird automatisch genutzt. Details im Abschnitt [Modul 9](#modul-9-wetter--warnungen). Die Einstellungen von **Modul 1** sind neu geordnet (vier aufklappbare Bereiche unter **Einstellungen → Modul 1**), und die Tasten des Sommermodus funktionieren wieder.
+> **Modul 9 (Beta) ist fertig:** Warnungen für Sturm, Gewitter, Frost, Hitze und Starkregen mit **Vorwarnung**, **amtliche Warnungen** von DWD, NINA und MeteoAlarm, **Aktionen** (Rollläden, Markisen, Schalter, Skripte), **Fenster-Erinnerung** und **Benachrichtigung** aufs Handy. Im **Store** (Kategorie „Wetter“) siehst du die passenden Dienste mit Status. Was eingerichtet ist, wird automatisch genutzt. Details im Abschnitt [Modul 9](#modul-9-wetter--warnungen). Die Einstellungen von **Modul 1** sind neu geordnet (vier aufklappbare Bereiche unter **Einstellungen → Modul 1**), und die Tasten des Sommermodus funktionieren wieder.
 >
 > ### ⚡ Außerdem in 3.0.2.3: Wallbox noch komfortabler
 > **Modul 8 ist neu geordnet:** Das Register „Laden“ zeigt nur noch den Alltag, alle Einstellungen stehen im neuen Register „Einstellungen“ mit Einrichtungs-Check und aufklappbaren Bereichen. Dazu gibt es eine **Statusleiste** mit Hinweisen. In **Modul 8** gibt es jetzt eine Tageskarte **Heute**, einen **Schnellstart** (1 Stunde voll, bis zum Ziel voll, heute nur Sonne), den **Hausanschluss-Schutz**, **Benachrichtigungen** aufs Handy und eine **Abfahrtszeit pro Fahrzeug**. RFID-Karten ordnest du per Antippen den Fahrzeugen zu (mehrere Karten pro Fahrzeug sind möglich), die Auswahl der Karten funktioniert jetzt zuverlässig. Die Ladestatistik zeigt zusätzlich Ø Verbrauch und gespartes CO₂ und lässt sich als CSV exportieren. Alle Details stehen im [Changelog](CHANGELOG.md).
@@ -340,13 +340,11 @@ Neu in 3.0.2.3: Das Modul läuft jetzt im Hintergrund von Home Assistant, auch w
 
 <p align="center"><img src="docs/vorschau_wetter_einstellungen.png" width="460" alt="Modul 9: Einstellungen"></p>
 
-**Quellen und Zuordnung** stellst du unter **Einstellungen → Allgemein → Integrationen → Wetter und Warnungen** ein:
+**Quellen und Zuordnung** stellst du unter **Einstellungen → Modul 9** im Abschnitt „Datenquellen“ ein. Die passenden Dienste mit Status stehen im **Store** in der Kategorie „Wetter“:
 
-<p align="center"><img src="docs/vorschau_integrationen_wetter.png" width="460" alt="Integrationen: Wetter und Warnungen"></p>
-
-- Dort stehen die passenden Dienste mit Status: **Deutscher Wetterdienst (DWD)**, **NINA**, MeteoAlarm, **Met.no**, OpenWeatherMap, Open-Meteo, AccuWeather, Pirate Weather, Tomorrow.io sowie die Wetterstationen Ecowitt, Netatmo und WeatherFlow Tempest. Nicht eingerichtete haben einen Knopf „Einrichten“, der zur Einrichtung in Home Assistant führt.
-- Was eingerichtet ist, wird **automatisch erkannt und genutzt**. Bei mehreren Quellen wählst du unter „Zuordnung“ Wetter, Wind, Außentemperatur und amtliche Warnung selbst. Die Wetter-Entität und die Außentemperatur gelten auch für die Wetter-Anzeige im Dashboard.
-- Die Benachrichtigungsdienste wählst du ebenfalls dort.
+- Im Store stehen: **Deutscher Wetterdienst (DWD)**, **NINA**, MeteoAlarm, **Met.no**, OpenWeatherMap, Open-Meteo, AccuWeather, Pirate Weather, Tomorrow.io sowie die Wetterstationen Ecowitt, Netatmo und WeatherFlow Tempest. Nicht eingerichtete Dienste lassen sich über „Einrichten“ in Home Assistant hinzufügen.
+- Was eingerichtet ist, wird **automatisch erkannt und genutzt**. Bei mehreren Quellen wählst du in den Modul-9-Einstellungen Wetter, Wind, Außentemperatur und amtliche Warnung selbst. Die Wetter-Entität und die Außentemperatur gelten auch für die Wetter-Anzeige im Dashboard.
+- Die Benachrichtigungsdienste wählst du im selben Fenster im Bereich „Benachrichtigung“.
 
 **Beta-Hinweis:** Die Vorhersage und die Erkennung der DWD-, NINA- und MeteoAlarm-Entitäten sind noch nicht auf allen Systemen geprüft. Rückmeldungen auf GitHub sind willkommen.
 

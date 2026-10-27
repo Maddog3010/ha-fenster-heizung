@@ -3205,7 +3205,7 @@ class FensterHeizungPanel extends HTMLElement {
     const WL = { warn: "Warnungen", weather: "Wetter", station: "Wetterstation" };
     for (const x of this._igWxCatalog()) { const n = byDom(x.d).length, cx = X[x.d] || ["Cloud", "Offiziell"];
       out.push({ id: x.d, d: x.d, n: x.n, sub: WL[x.k], cat: "wetter", c: x.c, i: x.i, mid: "wx", mods: ["Modul 9"], on: n > 0, top: x.top, conn: cx[0], src: cx[1], st: n ? `${n} ${n === 1 ? "Entität" : "Entitäten"} · genutzt von Modul 9` : "", desc: x.t, feats: W[x.k],
-        steps: ["Unten „Einrichten“ tippen, Home Assistant öffnet die Einrichtung", "Dienst hinzufügen und die Angaben eintragen", "Modul 9 erkennt ihn automatisch. Bei mehreren Quellen wählst du unten auf dieser Seite die Zuordnung"], note: "" }); }
+        steps: ["Unten „Einrichten“ tippen, Home Assistant öffnet die Einrichtung", "Dienst hinzufügen und die Angaben eintragen", "Modul 9 erkennt ihn automatisch. Bei mehreren Quellen wählst du die Zuordnung unter Einstellungen → Modul 9"], note: "" }); }
     const anyX = ids.some((k) => (E[k] || {}).platform === "xsense");
     for (const x of this._igSfCatalog()) { const n = det.filter((y) => (y.src || (E[y.id] || {}).platform) === x.d).length, up = n > 0 || (x.d === "xsense" && anyX), cx = X[x.d] || ["Cloud", "Offiziell"], isx = x.d === "xsense";
       out.push({ id: x.d, d: x.d, n: x.n, sub: "Melder", cat: "sicherheit", c: x.c, i: x.i, mid: "sf", mods: ["Modul 11"], on: up, top: x.top, feat: isx, hacs: x.hacs, conn: cx[0], src: cx[1], st: up ? (n ? `${n} Melder · genutzt von Modul 11` : "Verbunden, aber noch ohne Melder") : "", desc: x.t,
@@ -3262,7 +3262,6 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="stoch">${chips.map(([k, t]) => `<button class="${st.c === k ? "on" : ""}" data-act="stoc" data-k="${k}" aria-pressed="${st.c === k}">${t}</button>`).join("")}</div>
         <div id="stofe">${this._stoFeat()}</div>
         <div id="stogrid">${this._stoGrid()}</div>
-        ${this._igWxCard()}
         <div class="mut sm" style="margin:6px 4px 0">Der Store ist ein Katalog: Er zeigt, was zu deinen Modulen passt, erkennt, was in Home Assistant schon läuft, und führt dich durch die Einrichtung.</div>
       </div></div>`;
     const ds = [...mainEl.querySelectorAll("details")]; if (prevOpen.length === ds.length) ds.forEach((d, n) => { d.open = prevOpen[n]; });
@@ -3318,7 +3317,8 @@ class FensterHeizungPanel extends HTMLElement {
       { d: "tempest", n: "WeatherFlow Tempest", t: "Eigene Wetterstation: Wind, Regen, Blitze", k: "station", c: "#64748b", i: "fan" },
     ];
   }
-  _igWxCard() {
+  /* Zuordnung der Wetter-Quellen: gehört zu Modul 9 und steht in dessen Einstellungen */
+  _wxsAssign() {
     this._wxsLoad(); const H = this._hass, S = H.states, E = H.entities || {}, adm = this._admin(), W = this._wxs().cfg, L = this._wxCfg();
     const nm = (id) => esc((S[id].attributes || {}).friendly_name || id), un = (id) => (S[id].attributes || {}).unit_of_measurement || "";
     const ids = Object.keys(S), byDom = (d) => ids.filter((k) => (E[k] || {}).platform === d);
@@ -3326,28 +3326,14 @@ class FensterHeizungPanel extends HTMLElement {
     const tmp = ids.filter((k) => k.startsWith("sensor.") && S[k].attributes.device_class === "temperature" && /au(ß|ss)en|outdoor|outside|garten|terrasse|balkon/i.test(k + " " + (S[k].attributes.friendly_name || ""))).slice(0, 12);
     const off = ids.filter((k) => /^(sensor|binary_sensor)\./.test(k) && ["dwd_weather_warnings", "nina", "meteoalarm"].includes((E[k] || {}).platform));
     const notify = [...new Set([...Object.keys((H.services || {}).notify || {}).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).sort().map((n) => "notify." + n), ...W.notify.to])];
-    const wid = L.entity && S[L.entity] ? L.entity : weather[0], oid = W.official.on ? (W.official.ent && S[W.official.ent] ? W.official.ent : off[0]) : "";
-    const use = { warn: "Modul 9", weather: "Modul 9 · Wetter-Anzeige", station: "Modul 9" };
-    const sum = (s, ents) => { if (s.k === "weather") { const w = ents.find((x) => x.startsWith("weather.")); if (w) return `${(WX[S[w].state] || ["", S[w].state])[1]}${S[w].attributes.temperature != null ? " · " + num(S[w].attributes.temperature, 1) + " °C" : ""}`; } if (s.k === "warn") { const w = ents[0]; return w ? `${ents.length} ${ents.length === 1 ? "Entität" : "Entitäten"} · Stand ${esc(S[w].state)}` : ""; } return `${ents.length} ${ents.length === 1 ? "Sensor" : "Sensoren"}`; };
-    const row = (s) => {
-      const ents = byDom(s.d), on = ents.length > 0, used = s.k === "weather" ? ents.includes(wid) : s.k === "warn" ? ents.includes(oid) : ents.includes(W.wind) || ents.includes(L.outdoor);
-      return `<div class="oper" style="padding:6px 0"><span class="oav" style="width:40px;height:40px;background:${s.c}">${ic(s.i, 20)}</span><div class="opi"><b>${s.n}</b><small>${on ? esc(sum(s, ents)) + (used ? " · genutzt von " + use[s.k] : " · nicht ausgewählt") : esc(s.t)}</small></div>${on ? `<span class="ost home">Verbunden</span>` : `<span class="ost off">Nicht eingerichtet</span>${adm ? `<a class="btn2" style="flex:none;text-decoration:none" href="/config/integrations/dashboard/add?domain=${s.d}" target="_blank" rel="noopener">Einrichten</a>` : ""}`}</div>`;
-    };
-    const cat = this._igWxCatalog(), sec = (ico, t, k) => { const all = cat.filter((s) => s.k === k), vis = all.filter((s) => s.top || byDom(s.d).length), rest = all.filter((s) => !vis.includes(s)); return `<div class="lsec" style="margin-top:12px">${ic(ico, 15)}${t}</div>${vis.map(row).join("")}${rest.length ? `<details class="ohint"><summary>Weitere Dienste (${rest.length})</summary>${rest.map(row).join("")}</details>` : ""}`; };
     const opt = (ids2, cur, auto, lab) => `<option value="" ${cur ? "" : "selected"}>${esc(auto)}</option>${ids2.map((id) => `<option value="${esc(id)}" ${cur === id ? "selected" : ""}>${lab(id)}</option>`).join("")}`;
     const sel = (ico, t, f, body, dis) => `<div class="vrow"><span>${ic(ico, 15)} ${t}</span><select class="osel" style="max-width:55%;margin:0" data-f="${f}" aria-label="${t}" ${adm && !dis ? "" : "disabled"}>${body}</select></div>`;
     const multi = weather.length > 1 || wind.length > 1 || tmp.length > 1 || off.length > 1;
-    if (!this._igWxCatalog().some((x) => byDom(x.d).length)) return "";
-    return `<div class="card ocard"><h2>${ic("cloud", 18)}Zuordnung für Wetter und Warnungen</h2>
-      <div class="mut sm" style="margin:0 0 4px">Was in Home Assistant eingerichtet ist, wird automatisch erkannt und von Modul 9 genutzt. Die Wetter-Entität und die Außentemperatur gelten auch für die Wetter-Anzeige im Dashboard.</div>
-      <div class="mut sm" style="margin:0 0 4px">${multi ? "Es gibt mehrere Quellen. Standard ist „Automatisch“, du kannst eine bestimmte wählen." : "Es ist jeweils nur eine Quelle da, deshalb passt „Automatisch“."}</div>
+    return `<div class="mut sm" style="margin:0 0 4px">${multi ? "Es gibt mehrere Quellen. Standard ist „Automatisch“, du kannst eine bestimmte wählen." : "Es ist jeweils nur eine Quelle da, deshalb passt „Automatisch“."} Die Wetter-Entität und die Außentemperatur gelten auch für die Wetter-Anzeige im Dashboard.</div>
       ${sel("cloud", "Wetter", "wxsselw", opt(weather, L.entity && S[L.entity] ? L.entity : "", weather[0] ? `Automatisch (${(S[weather[0]].attributes || {}).friendly_name || weather[0]})` : "Keine gefunden", (id) => nm(id)), !weather.length)}
       ${sel("fan", "Wind", "wxsselwind", opt(wind, W.wind && S[W.wind] ? W.wind : "", "Automatisch (aus der Wetter-Entität)", (id) => `${nm(id)} · ${esc(S[id].state)} ${esc(un(id))}`), !wind.length)}
       ${sel("thermo", "Außentemperatur", "wxsselout", opt(tmp, L.outdoor && S[L.outdoor] ? L.outdoor : "", "Automatisch (aus der Wetter-Entität)", (id) => `${nm(id)} · ${esc(S[id].state)} ${esc(un(id))}`), !tmp.length)}
-      ${sel("shield", "Amtliche Warnung", "wxsseloff", `<option value="" ${W.official.on && !W.official.ent ? "selected" : ""}>${off[0] ? "Automatisch (" + esc((S[off[0]].attributes || {}).friendly_name || off[0]) + ")" : "Keine gefunden"}</option>${off.map((id) => `<option value="${esc(id)}" ${W.official.on && W.official.ent === id ? "selected" : ""}>${nm(id)}</option>`).join("")}<option value="__off" ${W.official.on ? "" : "selected"}>Nicht verwenden</option>`, !off.length)}
-      <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Benachrichtigung bei Warnungen</div>
-      ${notify.length ? `<div class="gschips">${notify.map((n) => `<button class="gsch ${W.notify.to.includes(n) ? "sel" : ""}" data-act="wxsns" data-k="${esc(n)}" aria-pressed="${W.notify.to.includes(n)}" ${adm ? "" : "disabled"}>${esc(n)}</button>`).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
-      <div class="mut sm" style="margin-top:8px">Grenzwerte, Vorwarnung und Aktionen stellst du in Modul 9 ein.</div></div>`;
+      ${sel("shield", "Amtliche Warnung", "wxsseloff", `<option value="" ${W.official.on && !W.official.ent ? "selected" : ""}>${off[0] ? "Automatisch (" + esc((S[off[0]].attributes || {}).friendly_name || off[0]) + ")" : "Keine gefunden"}</option>${off.map((id) => `<option value="${esc(id)}" ${W.official.on && W.official.ent === id ? "selected" : ""}>${nm(id)}</option>`).join("")}<option value="__off" ${W.official.on ? "" : "selected"}>Nicht verwenden</option>`, !off.length)}`;
   }
   _igSfCatalog() {
     return [
@@ -4336,8 +4322,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (f.startsWith("wxssel") && t.blur) t.blur(); /* Auswahl schließen, damit die Seite neu gezeichnet wird */
     if (f === "wxswind") { this._wxsPatch((c) => { c.wind = v; }); return true; }
     if (f === "wxsadd") { if (v) this._wxsPatch((c) => { if (c.acts.length < 12) c.acts.push({ id: "a" + Date.now().toString(36), warn: "storm", ent: v, do: this._wxsDo(v)[0][0], undo: true }); }); return true; }
-    if (f === "wxsselw") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), entity: v }; this._saveLayout(); this._render(); return true; }
-    if (f === "wxsselout") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), outdoor: v }; this._saveLayout(); this._render(); return true; }
+    if (f === "wxsselw") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), entity: v }; this._saveLayout(); this._render(); this._renderModal(); return true; }
+    if (f === "wxsselout") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), outdoor: v }; this._saveLayout(); this._render(); this._renderModal(); return true; }
     if (f === "wxsselwind") { this._wxsPatch((c) => { c.wind = v; }); return true; }
     if (f === "wxsseloff") { this._wxsPatch((c) => { c.official = v === "__off" ? { on: false, ent: "" } : { on: true, ent: v }; }); return true; }
     if (f === "wxsent") { this._wxsPatch((c) => { const x = c.acts[Number(t.dataset.i)]; if (x && v) { x.ent = v; if (!this._wxsDo(v).some((d) => d[0] === x.do)) x.do = this._wxsDo(v)[0][0]; } }); return true; }
@@ -4428,7 +4414,9 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="sh"><div><b>Wetter &amp; Warnungen</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("alert", 15)}Warnstufen</div>
       ${WR.map(([k, t, h, ctl]) => `<div class="vrow"><span>${t}<small class="mut" style="display:block">${h}</small></span>${C.warn[k].on && ctl ? ctl : ""}${sw("wxsw", k, C.warn[k].on, t)}</div>`).join("")}
-      <div class="gst">${ic("info", 15)}<span>Wetter-Entität, Windsensor, Außentemperatur, amtliche Warnungen und Benachrichtigungsdienste wählst du unter <button class="lnk" data-act="wxsgoig">Einstellungen → Integrationen</button>.</span></div>
+      <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Datenquellen</div>
+      ${this._wxsAssign()}
+      <div class="gst">${ic("info", 15)}<span>Weitere Dienste für Wetter und Warnungen findest du im <button class="lnk" data-act="wxsgoig">Store</button>.</span></div>
       <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Vorwarnung</div>
       <div class="vrow"><span>Warnung vorab melden<small class="mut" style="display:block">Aus der Stundenprognose der Wetter-Entität. Gilt für Sturm, Gewitter, Frost, Hitze und Starkregen.</small></span>${C.ahead.on ? step("wxsaheadh", "", "", C.ahead.hours, C.ahead.hours === 1 ? "Std." : "Std.", 1) : ""}${sw("wxsahead", "", C.ahead.on, "Vorwarnung")}</div>
       <div class="lsec" style="margin-top:12px">${ic("blinds", 15)}Aktionen bei einer Warnung</div>
@@ -4439,6 +4427,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${C.win.on ? `<div class="gschips">${["storm", "thunder", "rain"].map((k) => chip("wxswinw", k, NM[k], C.win.warn.includes(k))).join("")}</div>` : ""}
       <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Benachrichtigung</div>
       ${[["start", "Warnung beginnt"], ["ahead", "Vorwarnung"], ["end", "Warnung endet"]].map(([k, t]) => `<div class="vrow"><span>${t}</span>${sw("wxsn", k, C.notify[k], t)}</div>`).join("")}
+      ${svc.length ? `<div class="gschips">${svc.map((n) => chip("wxsns", esc(n), esc(n), C.notify.to.includes(n))).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
       <div class="mut sm" style="margin:2px 0 6px">${C.notify.to.length ? `Gesendet wird an: ${C.notify.to.map(esc).join(", ")}.` : "Es ist noch kein Benachrichtigungsdienst gewählt."}</div>
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wxstest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
