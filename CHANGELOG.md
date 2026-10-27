@@ -31,6 +31,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
   - „Letzte Entscheidungen“ zeigt zuerst 4 Einträge.
 - Neuer WebSocket-Befehl `wb_quick`, `wb_get` und `wb_set` kennen `quick`, `guard`, `notify` und `dep`.
 ### Behoben
+- **Integrationen:** Aufklappbare Bereiche („Weitere Dienste“, „Lokale Schnittstelle einschalten“) und die Auswahlfelder (Wetter, Wind, Außentemperatur, Amtliche Warnung) schlossen sich sofort wieder, weil sich die Seite automatisch neu zeichnete. Offene Bereiche bleiben jetzt offen, und eine geöffnete Auswahl wird nicht mehr unterbrochen.
 - **Modul 8, Fehlerbehebung:**
   - „Heute“ zeigte zwischen 0 und 2 Uhr die Werte des Vortags (die Oberfläche rechnete mit der UTC-Zeit statt mit der Ortszeit).
   - Der Schnellstart wird beendet, wenn die Laderegelung ausgeschaltet wird, und lässt sich nur bei aktiver Regelung starten.

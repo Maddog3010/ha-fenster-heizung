@@ -2935,8 +2935,10 @@ class FensterHeizungPanel extends HTMLElement {
   _igChip() { const s = this._wbSnap(); this._wbLoad(); return s.cfg.ip ? (s.ok ? `<em class="sxc ok">go-e verbunden</em>` : `<em class="sxc">Nicht erreichbar</em>`) : `<em class="sxc">Nicht verbunden</em>`; }
   _igRender() {
     this._wbLoad();
-    const sr = this.shadowRoot, s = this._wbSnap(), c = s.cfg, adm = this._admin(), i = s.info;
-    sr.getElementById("main").innerHTML = `
+    const sr = this.shadowRoot, s = this._wbSnap(), c = s.cfg, adm = this._admin(), i = s.info, mainEl = sr.getElementById("main");
+    const ae = sr.activeElement; if (ae && ae.tagName === "SELECT" && mainEl.contains(ae)) return; /* offene Auswahl nicht durch das automatische Aktualisieren schließen */
+    const prevOpen = [...mainEl.querySelectorAll("details")].map((d) => d.open);
+    mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Integrationen</b><span><em class="tag">Geräte direkt verbinden</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
         <button class="pillbtn pri" data-act="igback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
@@ -2954,6 +2956,7 @@ class FensterHeizungPanel extends HTMLElement {
             <li><b>Feste IP-Adresse:</b> Vergib dem go-e im Router eine feste Adresse, sonst bricht die Verbindung nach einem Neustart ab.</li>
             <li><b>Gleiches Netzwerk:</b> Home Assistant und die Wallbox müssen sich im selben Netz erreichen.</li></ol></details></div>
       </div></div>`;
+    const ds = [...mainEl.querySelectorAll("details")]; if (prevOpen.length === ds.length) ds.forEach((d, n) => { d.open = prevOpen[n]; }); /* aufgeklappte Bereiche bleiben beim Aktualisieren offen */
   }
   /* Integrationen für Wetter und Warnungen: Dienste mit Status. Eingerichtete Dienste nutzt Modul 9 automatisch (Zuordnung nur bei mehreren). */
   _wxOffAny() { const E = this._hass.entities || {}; return Object.keys(this._hass.states).some((k) => ["dwd_weather_warnings", "nina", "meteoalarm"].includes((E[k] || {}).platform)); }
@@ -3874,6 +3877,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _wxsChange(t) {
     const f = t.dataset.f, v = t.value || "";
+    if (f.startsWith("wxssel") && t.blur) t.blur(); /* Auswahl schließen, damit die Seite neu gezeichnet wird */
     if (f === "wxswind") { this._wxsPatch((c) => { c.wind = v; }); return true; }
     if (f === "wxsadd") { if (v) this._wxsPatch((c) => { if (c.acts.length < 12) c.acts.push({ id: "a" + Date.now().toString(36), warn: "storm", ent: v, do: this._wxsDo(v)[0][0], undo: true }); }); return true; }
     if (f === "wxsselw") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), entity: v }; this._saveLayout(); this._render(); return true; }
