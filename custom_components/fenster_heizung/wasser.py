@@ -156,7 +156,7 @@ def clean_wasser(raw: Any) -> dict[str, Any]:
     }
 
 
-EN_KEYS = ("pv", "grid", "house", "bat", "pve", "imp", "exp")
+EN_KEYS = ("pv", "grid", "house", "bat", "bchg", "bdis", "pve", "imp", "exp")
 EN_DOMAIN = "sensor"
 
 
@@ -175,6 +175,7 @@ def clean_energy(raw: Any) -> dict[str, Any]:
         "ent": ent,
         "sign": sign if sign in ("export", "import") else "",
         "bsign": bsign if bsign in ("charge", "discharge") else "charge",
+        "bmode": "two" if raw.get("bmode") == "two" else "one",
     }
 
 

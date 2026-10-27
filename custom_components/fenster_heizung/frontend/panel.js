@@ -226,9 +226,12 @@ const WW_DEF = { size: 300, target: 55, day: null, boost: false, circ5: false, a
   leg: { on: true, day: 5, time: "03:00", temp: 60, hold: 20, last: null },
   pv: { on: true, min: 1800, max: 62, watt: 2000 } };
 const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }, { id: "en", n: 3, name: "Energie-Übersicht", short: "Energie", icon: "energy", tag: "Heizung, Strom und PV im Überblick" }];
-const PK_HINT = { pv: /solar|pv|photovolt|erzeug|wechselrichter|inverter/i, grid: /netz|grid|einspeis|bezug|zähler|meter/i, house: /haus|house|verbrauch|load|consum/i, bat: /batter|speicher|akku/i, pve: /solar|pv|ertrag|yield|produc|erzeug/i, imp: /bezug|import|from.?grid|consum|netz/i, exp: /einspeis|export|feed|to.?grid/i,
+const PK_HINT = { pv: /solar|pv|photovolt|erzeug|wechselrichter|inverter/i, grid: /netz|grid|einspeis|bezug|zähler|meter/i, bchg: /lad|charge|zufuhr|input/i, bdis: /entlad|discharge|abgabe|output/i, house: /haus|house|verbrauch|load|consum/i, bat: /batter|speicher|akku/i, pve: /solar|pv|ertrag|yield|produc|erzeug/i, imp: /bezug|import|from.?grid|consum|netz/i, exp: /einspeis|export|feed|to.?grid/i,
   top: /oben|top|warmwasser|speicher|boiler/i, mid: /mitte|mid|warmwasser|speicher|boiler/i, bot: /unten|bot|warmwasser|speicher|boiler/i, ret: /rücklauf|ruecklauf|return|zirkul/i, pump: /zirkul|pumpe|pump/i, src: /heiz|kessel|wärmepumpe|puffer|ventil/i, rod: /heizstab|stab|rod|boiler/i, trig: /taster|bewegung|button|trigger|motion/i, outdoor: /außen|aussen|outdoor|outside/i, hum: /feucht|humid/i, heater: /heiz|elektro|heater/i };
-const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", ent: { pv: "", grid: "", house: "", bat: "", pve: "", imp: "", exp: "" } };
+/* Schrittweite der Achse: 1, 2, 5 × 10^n, höchstens 5 Linien (auch bei sehr großen Werten) */
+const enStep = (mx) => { const raw = Math.max(mx, 1) / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; };
+const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000, MW: 1e6 };
+const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", bmode: "one", ent: { pv: "", grid: "", house: "", bat: "", bchg: "", bdis: "", pve: "", imp: "", exp: "" } };
 const MOD_SOON = [["blinds", "Rollläden & Beschattung", "Sonnenstand, Hitzeschutz und Heizbedarf"], ["fan", "Lüftung & Raumluft", "KWL, CO₂ und Feuchte"], ["heatpump", "Wärmepumpe", "Laufzeit, Takten und Abtauen"]];
 const TEMPLATE = [
   { days: [0, 1, 2, 3, 4], time: "05:30", temp: 21 }, { days: [0, 1, 2, 3, 4], time: "08:00", temp: 18 },
@@ -259,7 +262,7 @@ function airCalc(t, rh, to, rhOut) {
 }
 const cdown = (since, need) => { const el = Math.max(0, (Date.now() - since) / 1000), tot = need * 60, left = Math.max(0, tot - el); return { left, pct: Math.min(100, (el / tot) * 100), txt: left > 0 ? `noch ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, "0")} Min.` : "genug gelüftet, Fenster schließen" }; };
 const vnum = (a) => String(a || "0").split(".").map((x) => parseInt(x, 10) || 0);
-const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 3; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
+const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 4; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
 /* Elektroheizer mit PV-Überschuss */
 const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"] };
 const WZ_STEPS = ["Willkommen", "Räume", "Fenstermeldung", "Heizung & Energie", "Luftfeuchte", "PV & Elektroheizer", "Meldungen", "Zusammenfassung"];
@@ -2588,7 +2591,7 @@ class FensterHeizungPanel extends HTMLElement {
       const en = r.modules.energy, E = this._enState(); E.on = s.on.en !== false;
       if (en) {
         const has = Object.values(en.ent || {}).some(Boolean); let mig = false; try { mig = localStorage.getItem("fh_energy_mig") === "1"; } catch (_) { /* Speicher gesperrt */ }
-        if (has || mig) { E.ent = { ...E.ent, ...(en.ent || {}) }; E.sign = en.sign || ""; E.bsign = en.bsign || "charge"; }
+        if (has || mig) { E.ent = { ...E.ent, ...(en.ent || {}) }; E.sign = en.sign || ""; E.bsign = en.bsign || "charge"; E.bmode = en.bmode === "two" ? "two" : "one"; }
         else if (Object.values(E.ent).some(Boolean) && this._admin()) { try { localStorage.setItem("fh_energy_mig", "1"); } catch (_) { /* Speicher gesperrt */ } this._mdSave(); }
         else { try { localStorage.setItem("fh_energy_mig", "1"); } catch (_) { /* Speicher gesperrt */ } }
       }
@@ -2598,7 +2601,7 @@ class FensterHeizungPanel extends HTMLElement {
     s.ww = { ...d, ...c, ent: { ...d.ent, ...(c.ent || {}) }, heat: { ...d.heat, ...(c.heat || {}) }, circ: { ...d.circ, ...(c.circ || {}) }, leg: { ...d.leg, ...(c.leg || {}), last: st.leg_last || null }, pv: { ...d.pv, ...(c.pv || {}) }, boost: !!st.boost, circ5: !!st.circ5, away: !!st.away, ...keep };
     s.loaded = true;
   }
-  _mdBackup() { const W = this._mdState().ww, ww = JSON.parse(JSON.stringify(W)); ["boost", "circ5", "away", "day"].forEach((k) => delete ww[k]); delete ww.leg.last; const E = this._enState(); return { modules: { on: this._mdState().on, ext: this._mdState().ext, energy: { ent: E.ent, sign: E.sign || "", bsign: E.bsign } }, ww }; }
+  _mdBackup() { const W = this._mdState().ww, ww = JSON.parse(JSON.stringify(W)); ["boost", "circ5", "away", "day"].forEach((k) => delete ww[k]); delete ww.leg.last; const E = this._enState(); return { modules: { on: this._mdState().on, ext: this._mdState().ext, energy: { ent: E.ent, sign: E.sign || "", bsign: E.bsign, bmode: E.bmode === "two" ? "two" : "one" } }, ww }; }
   _mdSave() {
     clearTimeout(this._mdT);
     this._mdT = setTimeout(() => {
@@ -2937,7 +2940,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!this._ens) {
       let s = {}; try { s = JSON.parse(localStorage.getItem("fh_energy") || "{}") || {}; } catch (_) { /* Speicher gesperrt */ }
       const d = JSON.parse(JSON.stringify(EN_DEF));
-      this._ens = { ...d, range: ["day", "week", "month"].includes(s.range) ? s.range : "day", ent: { ...d.ent, ...(s.ent || {}) }, sign: s.sign || "", bsign: s.bsign || "charge" };
+      this._ens = { ...d, range: ["day", "week", "month"].includes(s.range) ? s.range : "day", ent: { ...d.ent, ...(s.ent || {}) }, sign: s.sign || "", bsign: s.bsign || "charge", bmode: s.bmode === "two" ? "two" : "one" };
     }
     return this._ens;
   }
@@ -2952,12 +2955,23 @@ class FensterHeizungPanel extends HTMLElement {
     return v;
   }
   _enNow() {
-    const E = this._enState(), g = this._enGrid(), pv = this._enW(E.ent.pv), gr = this._enW(g.ent), b = this._enW(E.ent.bat);
+    const E = this._enState(), g = this._enGrid(), pv = this._enW(E.ent.pv), gr = this._enW(g.ent), b = this._enBatW();
     if (pv == null || gr == null) return null;
-    const exp = g.sign === "import" ? -gr : gr, bc = b == null ? 0 : E.bsign === "discharge" ? -b : b;
+    const exp = g.sign === "import" ? -gr : gr, bc = b == null ? 0 : b;
     const house = E.ent.house && this._enW(E.ent.house) != null ? this._enW(E.ent.house) : Math.max(0, pv - exp - bc);
     const e = Math.max(0, exp), imp = Math.max(0, -exp), c = Math.max(0, bc), dis = Math.max(0, -bc);
     return { pv, exp: e, imp, house, bc: c, dis, pv2h: Math.min(house, Math.max(0, pv - e - c)), pv2b: c, b2h: dis, g2h: imp, soc: this._soc(), hasBat: b != null };
+  }
+  /* Batterie-Leistung, Laden positiv: ein Sensor mit Vorzeichen oder zwei Sensoren (Laden / Entladen) */
+  _enBatIds() { const E = this._enState(); return E.bmode === "two" ? [E.ent.bchg, E.ent.bdis].filter(Boolean) : [E.ent.bat].filter(Boolean); }
+  _enBatW() {
+    const E = this._enState();
+    if (E.bmode === "two") { const c = E.ent.bchg ? this._enW(E.ent.bchg) : null, d = E.ent.bdis ? this._enW(E.ent.bdis) : null; return c == null && d == null ? null : Math.max(0, c || 0) - Math.max(0, d || 0); }
+    const b = this._enW(E.ent.bat); return b == null ? null : E.bsign === "discharge" ? -b : b;
+  }
+  _enBatAt(sb, at, m) {
+    const E = this._enState(); if (E.bmode === "two") { const v = sb.map((l) => at(l, m)); if (v.every((x) => x == null)) return null; const c = E.ent.bchg ? v[0] : 0, d = E.ent.bdis ? v[E.ent.bchg ? 1 : 0] : 0; return Math.max(0, c || 0) - Math.max(0, d || 0); }
+    const b = at(sb[0], m); return b == null ? null : E.bsign === "discharge" ? -b : b;
   }
   /* ---- Verlauf laden ---- */
   _enLoad(force) {
@@ -2970,11 +2984,11 @@ class FensterHeizungPanel extends HTMLElement {
     const done = (res, err) => ({ range: key, ts: Date.now(), start: +start, end: +end, res: res || {}, err: !!err });
     let p;
     if (key === "day") {
-      const ids = [E.ent.pv, g.ent, E.ent.house, E.ent.bat].filter(Boolean);
+      const ids = [E.ent.pv, g.ent, E.ent.house, ...this._enBatIds()].filter(Boolean);
       p = this._hass.callWS({ type: "history/history_during_period", start_time: start.toISOString(), end_time: end.toISOString(), entity_ids: ids, include_start_time_state: true, significant_changes_only: false, minimal_response: false, no_attributes: false });
     } else {
-      const ids = [E.ent.pve, E.ent.imp, E.ent.exp].filter(Boolean);
-      p = ids.length ? this._hass.callWS({ type: "recorder/statistics_during_period", start_time: start.toISOString(), end_time: end.toISOString(), statistic_ids: ids, period: "day", types: ["change"] }) : Promise.resolve({});
+      const src = this._enSrc(), all = Object.values(src).filter(Boolean), q = (t, per, ty) => { const ids = [...new Set(all.filter((x) => x.t === t).map((x) => x.id))]; return ids.length ? this._hass.callWS({ type: "recorder/statistics_during_period", start_time: start.toISOString(), end_time: end.toISOString(), statistic_ids: ids, period: per, types: [ty] }) : Promise.resolve({}); };
+      p = Promise.all([q("e", "day", "change"), q("p", "hour", "mean")]).then(([e, w]) => ({ e, w }));
     }
     p.then((r) => { this._enH = done(r); }).catch(() => { this._enH = done({}, true); })
       .finally(() => { this._enBusy = false; if (this._mdActive() === "en" && !this._dragging) this._render(); });
@@ -2987,12 +3001,12 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _enSamples() {
     const H = this._enH, E = this._enState(), g = this._enGrid(); if (!H || H.range !== "day") return null;
-    const sp = this._enSer(E.ent.pv), sg = this._enSer(g.ent), sh = E.ent.house ? this._enSer(E.ent.house) : null, sb = E.ent.bat ? this._enSer(E.ent.bat) : null;
+    const sp = this._enSer(E.ent.pv), sg = this._enSer(g.ent), sh = E.ent.house ? this._enSer(E.ent.house) : null, sb = this._enBatIds().length ? this._enBatIds().map((x) => this._enSer(x)) : null;
     const at = (l, m) => { let v = null; for (const x of l) { if (x.t <= m) v = x.v; else break; } return v; };
     const total = Math.floor((H.end - H.start) / 6e4), out = [];
     for (let m = 0; m <= total; m += 5) {
       const pv = at(sp, m) ?? 0, gr = at(sg, m); if (gr == null && !sp.length) continue;
-      const exp = gr == null ? 0 : g.sign === "import" ? -gr : gr, bb = sb ? at(sb, m) : null, bc = bb == null ? 0 : E.bsign === "discharge" ? -bb : bb;
+      const exp = gr == null ? 0 : g.sign === "import" ? -gr : gr, bb = sb ? this._enBatAt(sb, at, m) : null, bc = bb == null ? 0 : bb;
       const house = sh && at(sh, m) != null ? at(sh, m) : Math.max(0, pv - exp - bc);
       out.push({ t: m, pv: Math.max(0, pv), exp: Math.max(0, exp), imp: Math.max(0, -exp), house });
     }
@@ -3005,15 +3019,47 @@ class FensterHeizungPanel extends HTMLElement {
       const k = (f) => s.reduce((a, x) => a + x[f], 0) * 5 / 60 / 1000;
       return { pv: k("pv"), exp: k("exp"), imp: k("imp"), house: k("house") };
     }
-    const days = this._enDays(); if (!days.some((d) => d.pv || d.imp || d.exp)) return { empty: true, nocnt: !(E.ent.pve && E.ent.imp && E.ent.exp) };
+    const days = this._enDays(); if (!days.some((d) => d.pv || d.imp || d.exp)) return { empty: true, nocnt: !Object.values(this._enSrc()).some(Boolean) };
     const pv = days.reduce((a, d) => a + d.pv, 0), imp = days.reduce((a, d) => a + d.imp, 0), exp = days.reduce((a, d) => a + d.exp, 0);
     return { pv, exp, imp, house: Math.max(0, pv - exp + imp) };
   }
+  /* Quelle je Größe: Energiezähler (Wh/kWh/MWh) oder Leistungssensor (W/kW/MW). Leer = aus den Leistungssensoren oben. */
+  _enKind(eid) {
+    const u = (((this._hass.states[eid] || {}).attributes || {}).unit_of_measurement || "").trim();
+    if (u in EN_UNIT_E) return { t: "e", k: EN_UNIT_E[u] };
+    if (u in EN_UNIT_P) return { t: "p", k: EN_UNIT_P[u] };
+    return null;
+  }
+  _enSrc() {
+    const E = this._enState(), g = this._enGrid(), out = {}, mk = (id, part) => { const k = id && this._enKind(id); return k ? { id, ...k, part } : null; };
+    out.pv = mk(E.ent.pve || E.ent.pv, "pv");
+    out.imp = E.ent.imp ? mk(E.ent.imp, "imp") : mk(g.ent, "imp");
+    out.exp = E.ent.exp ? mk(E.ent.exp, "exp") : mk(g.ent, "exp");
+    if (out.imp && !E.ent.imp) out.imp.sg = g.sign;
+    if (out.exp && !E.ent.exp) out.exp.sg = g.sign;
+    return out;
+  }
+  _enNote() {
+    const src = this._enSrc(), miss = !Object.values(src).some(Boolean), der = Object.values(src).some((x) => x && x.t === "p");
+    if (miss) return `<div class="gst on">${ic("info", 15)}Für 7 und 30 Tage fehlt ein Sensor. Wähle in den Einstellungen Energiezähler (Wh, kWh) oder lass sie leer, dann wird aus den Leistungssensoren gerechnet.</div>`;
+    return der ? `<div class="gst">${ic("info", 15)}Teilweise aus Leistungs-Mittelwerten (Stundenwerte) berechnet. Mit Energiezählern (Wh, kWh) wird es genauer.</div>` : "";
+  }
   _enDays() {
-    const H = this._enH, E = this._enState(), n = E.range === "week" ? 7 : 30, out = [];
+    const H = this._enH, n = H.range === "week" ? 7 : 30, out = [], src = this._enSrc(), R = H.res || {};
     for (let i = 0; i < n; i++) out.push({ d: new Date(H.start + i * 864e5 + 36e5), pv: 0, imp: 0, exp: 0 });
-    const put = (eid, f) => { ((H.res || {})[eid] || []).forEach((x) => { const i = Math.round((x.start - H.start) / 864e5); if (out[i] && isFinite(x.change)) out[i][f] += x.change; }); };
-    if (E.ent.pve) put(E.ent.pve, "pv"); if (E.ent.imp) put(E.ent.imp, "imp"); if (E.ent.exp) put(E.ent.exp, "exp");
+    out.derived = false;
+    Object.entries(src).forEach(([f, s]) => {
+      if (!s) return;
+      if (s.t === "e") (R.e && R.e[s.id] || []).forEach((x) => { const i = Math.round((x.start - H.start) / 864e5); if (out[i] && isFinite(x.change)) out[i][f] += Math.max(0, x.change * s.k); });
+      else {
+        out.derived = true;
+        (R.w && R.w[s.id] || []).forEach((x) => {
+          const i = Math.floor((x.start - H.start) / 864e5); if (!out[i] || !isFinite(x.mean)) return;
+          let w = x.mean * s.k; if (s.sg) w = s.part === "exp" ? (s.sg === "import" ? -w : w) : (s.sg === "import" ? w : -w);
+          out[i][f] += Math.max(0, w) / 1000;
+        });
+      }
+    });
     return out;
   }
   /* ---- Darstellung ---- */
@@ -3048,8 +3094,8 @@ class FensterHeizungPanel extends HTMLElement {
       return `<svg class="wwchart" viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="Leistung heute"><text x="${L - 6}" y="${T - 10}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">kW</text>${g}${area("pv", "#fbbf24")}${area("imp", "#f87171")}${line("pv", "#fbbf24")}${line("house", "#38bdf8")}</svg>
         <div class="legend"><span><i style="background:#fbbf24"></i>Solar</span><span><i style="background:#38bdf8"></i>Verbrauch</span><span><i style="background:#f87171"></i>Netzbezug</span></div>`;
     }
-    const days = this._enDays(), mx = Math.max(1, ...days.flatMap((d) => [d.pv, d.imp, d.exp])), stp = mx > 40 ? 20 : mx > 20 ? 10 : mx > 8 ? 5 : 2, top = Math.ceil(mx / stp) * stp, gw = iw / days.length, bw = Math.max(2, Math.min(9, gw / 3.6)), Y = (v) => T + ih - (v / top) * ih;
-    let s = ""; for (let v = 0; v <= top; v += stp) s += `<line x1="${L}" x2="${Wd - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" opacity=".13"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${num(v, v % 1 ? 1 : 0)}</text>`;
+    const days = this._enDays(), mx = Math.max(1, ...days.flatMap((d) => [d.pv, d.imp, d.exp])), stp = enStep(mx), top = Math.ceil(mx / stp) * stp, gw = iw / days.length, bw = Math.max(2, Math.min(9, gw / 3.6)), Y = (v) => T + ih - (v / top) * ih;
+    let s = ""; for (let v = 0, c = 0; v <= top && c < 12; v += stp, c++) s += `<line x1="${L}" x2="${Wd - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" opacity=".13"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${num(v, v % 1 ? 1 : 0)}</text>`;
     days.forEach((d, i) => {
       const x0 = L + i * gw + gw / 2 - bw * 1.5;
       [[d.pv, "#fbbf24"], [d.imp, "#f87171"], [d.exp, "#34d399"]].forEach(([v, c], k) => { s += `<rect x="${(x0 + k * (bw + 1)).toFixed(1)}" y="${Y(v).toFixed(1)}" width="${bw}" height="${Math.max(0, Y(0) - Y(v)).toFixed(1)}" rx="1.5" fill="${c}"/>`; });
@@ -3076,13 +3122,13 @@ class FensterHeizungPanel extends HTMLElement {
     const kwh = (v) => (v == null ? "–" : num(v, v >= 100 ? 0 : 1));
     const eur = (kwhv, ct) => (kwhv == null ? null : (kwhv * ct) / 100);
     const tiles = `<div class="tiles">${[
-      ["sun", "Solar", sum && !sum.empty ? kwh(sum.pv) : "–", "kWh", "#fbbf24", evq != null ? `${evq} % selbst genutzt` : sum && sum.nocnt ? "Zähler fehlt" : "Keine Daten"],
+      ["sun", "Solar", sum && !sum.empty ? kwh(sum.pv) : "–", "kWh", "#fbbf24", evq != null ? `${evq} % selbst genutzt` : sum && sum.nocnt ? "Sensor fehlt" : "Keine Daten"],
       ["bolt", "Netzbezug", sum && !sum.empty ? kwh(sum.imp) : "–", "kWh", "#f87171", sum && !sum.empty ? `${num(eur(sum.imp, price), 2)} € Kosten` : "Keine Daten"],
       ["upload", "Einspeisung", sum && !sum.empty ? kwh(sum.exp) : "–", "kWh", "#34d399", sum && !sum.empty ? `${num(eur(sum.exp, feed), 2)} € Vergütung` : "Keine Daten"],
       ["home", "Verbrauch", sum && !sum.empty ? kwh(sum.house) : "–", "kWh", "#2dd4bf", autarky != null ? `${autarky} % Autarkie` : "Keine Daten"],
     ].map(([ico, lab, v, u, c, sub]) => `<div class="tile" style="--a:${c}"><div class="t">${ic(ico, 17)}${lab}</div><div class="v">${v}<small>${u}</small></div><div class="g">${sub}</div></div>`).join("")}</div>`;
     const flow = `<div class="card"><h2>${ic("sun", 18)}Energiefluss jetzt</h2>${this._enFlow(n)}</div>`;
-    const chart = `<div class="card"><h2>${ic("chart", 18)}${range === "day" ? "Leistung heute" : range === "week" ? "Energie pro Tag · 7 Tage" : "Energie pro Tag · 30 Tage"}<button class="ibtn gear" style="margin-left:auto" data-act="enreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._enChart()}${E.ent.pve && E.ent.imp && E.ent.exp || range === "day" ? "" : `<div class="gst on">${ic("info", 15)}Für 7 und 30 Tage fehlen die Energiezähler (kWh). Sie lassen sich in den Einstellungen wählen.</div>`}</div>`;
+    const chart = `<div class="card"><h2>${ic("chart", 18)}${range === "day" ? "Leistung heute" : range === "week" ? "Energie pro Tag · 7 Tage" : "Energie pro Tag · 30 Tage"}<button class="ibtn gear" style="margin-left:auto" data-act="enreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._enChart()}${range === "day" ? "" : this._enNote()}</div>`;
     // Verteilung (nur heute)
     const rooms = this._htrRooms(), heatK = rooms.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), heatPv = rooms.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
     const ws = this._mdState().ww, wwK = ws.ent.rod ? (this._wwMinutesOn(ws.ent.rod) || 0) / 60 * ws.pv.watt / 1000 : 0;
@@ -3126,6 +3172,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "enreload") { this._enH = null; this._enLoad(true); this._render(); }
     else if (a === "ensdone") { this._pkId = null; this._modal = null; this._renderModal(); this._enH = null; this._render(); }
     else if (a === "enssign") { E.sign = k; this._enSave(true); this._renderModal(); }
+    else if (a === "ensbm") { E.bmode = k === "two" ? "two" : "one"; this._pkId = null; this._enH = null; this._enSave(true); this._renderModal(); }
     else if (a === "ensbs") { E.bsign = k; this._enSave(true); this._renderModal(); }
   }
   _enChange(t) {
@@ -3136,7 +3183,7 @@ class FensterHeizungPanel extends HTMLElement {
   _enSetModal() {
     const E = this._enState(), st = this._hass.states, ks = Object.keys(st), p = this._pv();
     const pw = ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "power" || /^k?W$/.test(st[e].attributes.unit_of_measurement || "")));
-    const en = ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "energy" || /^k?Wh$/.test(st[e].attributes.unit_of_measurement || "")));
+    const en = ks.filter((e) => e.startsWith("sensor.") && (["energy", "power"].includes(st[e].attributes.device_class) || /^[kM]?Wh?$/.test(st[e].attributes.unit_of_measurement || "")));
     const sel = (k, o, none) => this._wzSel(o, E.ent[k], "enent", `data-k="${k}"`, none || "– keiner –");
     return `<div class="ov" data-act="ensdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Energie-Übersicht</b><span>Einstellungen</span></div><button class="ibtn" data-act="ensdone" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -3145,9 +3192,11 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="mut sm" style="margin:0">Netz${p.sensor ? ` (leer = ${esc(this._wzName(p.sensor))} aus Modul 1)` : ""}</div>${sel("grid", pw, p.sensor ? "– wie Modul 1 –" : "– keiner –")}
       <div class="seg">${[["", "Wie Modul 1"], ["export", "Einspeisung positiv"], ["import", "Bezug positiv"]].map(([k, l]) => `<button class="${(E.sign || "") === k ? "sel" : ""}" data-act="enssign" data-k="${k}">${l}</button>`).join("")}</div>
       <div class="mut sm" style="margin:0">Hausverbrauch (optional, sonst berechnet)</div>${sel("house", pw)}
-      <div class="mut sm" style="margin:0">Batterie-Leistung (optional)</div>${sel("bat", pw)}
-      ${E.ent.bat ? `<div class="seg">${[["charge", "Laden positiv"], ["discharge", "Entladen positiv"]].map(([k, l]) => `<button class="${E.bsign === k ? "sel" : ""}" data-act="ensbs" data-k="${k}">${l}</button>`).join("")}</div>` : ""}
-      <div class="lsec">${ic("chart", 15)}Energiezähler (kWh) für 7 und 30 Tage</div>
+      <div class="mut sm" style="margin:0">Batterie-Leistung (optional)</div>
+      <div class="seg">${[["one", "Ein Sensor"], ["two", "Zwei Sensoren (Laden / Entladen)"]].map(([k, l]) => `<button class="${E.bmode === k ? "sel" : ""}" data-act="ensbm" data-k="${k}">${l}</button>`).join("")}</div>
+      ${E.bmode === "two" ? `<div class="mut sm" style="margin:0">Batterie lädt (Watt, positiver Wert)</div>${sel("bchg", pw)}<div class="mut sm" style="margin:0">Batterie entlädt (Watt, positiver Wert)</div>${sel("bdis", pw)}` : `${sel("bat", pw)}${E.ent.bat ? `<div class="seg">${[["charge", "Laden positiv"], ["discharge", "Entladen positiv"]].map(([k, l]) => `<button class="${E.bsign === k ? "sel" : ""}" data-act="ensbs" data-k="${k}">${l}</button>`).join("")}</div>` : ""}`}
+      <div class="lsec">${ic("chart", 15)}Tagessummen für 7 und 30 Tage</div>
+      <div class="mut sm" style="margin:2px 0 6px">Energiezähler (Wh, kWh, MWh) sind am genauesten. Leistungssensoren (W, kW) gehen auch. Leer lassen: es wird aus Solar und Netz oben berechnet.</div>
       <div class="mut sm" style="margin:2px 0 0">Solar-Ertrag gesamt</div>${sel("pve", en)}
       <div class="mut sm" style="margin:0">Netzbezug gesamt</div>${sel("imp", en)}
       <div class="mut sm" style="margin:0">Einspeisung gesamt</div>${sel("exp", en)}

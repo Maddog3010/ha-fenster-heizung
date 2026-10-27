@@ -152,8 +152,14 @@ def parse_notes(body: str) -> list[list[str]]:
     return out
 
 
+def _vkey(tag: str) -> tuple[int, ...]:
+    """Versionsschlüssel mit bis zu vier Teilen (2.9.2 < 2.9.2.1)."""
+    p = [int(x) for x in tag.split(".")]
+    return tuple(p + [0] * (4 - len(p)))
+
+
 def _tag_ok(tag: str) -> bool:
-    return bool(re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}$", tag))
+    return bool(re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}(\.\d{1,3})?$", tag))
 
 
 class GeneralManager:
@@ -301,7 +307,7 @@ class GeneralManager:
                 found = [str(t.get("name") or "").lstrip("vV") for t in tags if isinstance(t, dict)]
                 found = [t for t in found if _tag_ok(t)]
                 if found:
-                    best = max(found, key=lambda t: tuple(int(x) for x in t.split(".")))
+                    best = max(found, key=_vkey)
                     return {"latest": best, "notes": [], "url": f"https://github.com/{GITHUB_REPO}/releases/tag/v{best}"}
             elif status not in (200, 404):
                 return {"latest": current, "error": f"GitHub antwortet mit Status {status}"}
