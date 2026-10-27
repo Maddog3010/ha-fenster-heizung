@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2.9.2.2] - 2026-10-27
+Nur Fehlerbehebungen in Modul 3.
+### Behoben
+- **Nachts „Keine Messwerte“:** Meldet der Solar-Sensor „nicht verfügbar“ oder „unbekannt“ (Wechselrichter nachts), gilt das jetzt als 0 W. Im Tagesverlauf blieb sonst der letzte Abendwert stehen und täuschte Solarstrom über die Nacht vor.
+- **Negative Solarwerte** (zum Beispiel −3 W) werden auf 0 gesetzt.
+- **Sommerzeit-Umstellung:** Bei 7 und 30 Tagen, aus Leistung gerechnet, landete die letzte Stunde eines Umstelltags am Folgetag. Zuordnung und Datumsbeschriftung folgen jetzt dem lokalen Kalendertag.
+- **Tagesdiagramm:** Die Achse hat höchstens fünf runde Schritte statt einer Linie pro kW.
+- **Kleine kWh-Werte:** unter 10 kWh zwei Nachkommastellen (0,03 statt 0,0).
+- **Netz im Energiefluss:** „Einspeisung“ erscheint erst ab 20 W, wie bei den Linien.
+- **Hinweise:** Fehlt die Langzeitstatistik der gewählten Sensoren oder schlägt das Laden fehl, steht jetzt der Grund unter dem Diagramm.
+
 ## [2.9.2.1] - 2026-10-27
 ### Neu
 - **Modul 3, Batterie-Leistung:** Neben einem Sensor mit Vorzeichen lassen sich jetzt **zwei Sensoren** wählen, einen für Laden und einen für Entladen (jeweils positive Werte, einer von beiden reicht). Gilt für Energiefluss, Kopfkarte, Verlauf und Hinweise.

@@ -4,7 +4,7 @@
 
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
 
-Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.9.2.1**.
+Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.9.2.2**.
 
 ## Inhalt
 - [Dashboard](#dashboard)
@@ -284,7 +284,7 @@ Heizung, Strom und PV auf einer Seite. Das Modul liest nur Sensoren, es schaltet
 - **Kosten und Vorteil:** Bezug, Einspeisevergütung, gesparter Bezug durch Eigenverbrauch, Bilanz. Preise kommen aus Modul 1 › Allgemein.
 - **Heizung:** durch die Fensterregelung gesparte Wärme, Elektroheizer mit Solaranteil, Warmwassertemperatur, Sprungtasten zu Modul 1 und 2.
 
-**Einrichten:** Leistungssensoren (Watt oder kW) für Solar und Netz (wahlweise wie in Modul 1) sind nötig, Hausverbrauch und Batterie sind optional. Fehlt der Hausverbrauch, wird er berechnet. Das Vorzeichen von Netz und Batterie stellst du ein. Die Batterie-Leistung gibt es als **ein Sensor mit Vorzeichen** (Laden oder Entladen positiv) oder als **zwei Sensoren**: einen für „lädt“ und einen für „entlädt“, jeweils mit positivem Wert (einer von beiden reicht). Für 7 und 30 Tage wählst du drei Sensoren für Solar-Ertrag, Netzbezug und Einspeisung. Am genauesten sind **Energiezähler** (Wh, kWh oder MWh, Langzeitstatistik mit `state_class: total_increasing`); die Einheit wird automatisch umgerechnet. **Leistungssensoren** (W, kW) gehen auch: die Summen werden dann aus den Stunden-Mittelwerten der Langzeitstatistik berechnet, das ist etwas ungenauer. **Leer lassen:** dann wird aus dem Solar- und dem Netz-Sensor oben gerechnet (mit dem eingestellten Vorzeichen). Wird aus Leistung gerechnet, steht ein Hinweis unter dem Diagramm. Die Einstellungen werden im Backend gespeichert und mit gesichert; nur der gewählte Zeitraum bleibt pro Gerät im Browser.
+**Einrichten:** Leistungssensoren (Watt oder kW) für Solar und Netz (wahlweise wie in Modul 1) sind nötig, Hausverbrauch und Batterie sind optional. Fehlt der Hausverbrauch, wird er berechnet. Meldet der Solar-Sensor „nicht verfügbar“ (Wechselrichter nachts), zählt das als 0 W. Das Vorzeichen von Netz und Batterie stellst du ein. Die Batterie-Leistung gibt es als **ein Sensor mit Vorzeichen** (Laden oder Entladen positiv) oder als **zwei Sensoren**: einen für „lädt“ und einen für „entlädt“, jeweils mit positivem Wert (einer von beiden reicht). Für 7 und 30 Tage wählst du drei Sensoren für Solar-Ertrag, Netzbezug und Einspeisung. Am genauesten sind **Energiezähler** (Wh, kWh oder MWh, Langzeitstatistik mit `state_class: total_increasing`); die Einheit wird automatisch umgerechnet. **Leistungssensoren** (W, kW) gehen auch: die Summen werden dann aus den Stunden-Mittelwerten der Langzeitstatistik berechnet, das ist etwas ungenauer. **Leer lassen:** dann wird aus dem Solar- und dem Netz-Sensor oben gerechnet (mit dem eingestellten Vorzeichen). Wird aus Leistung gerechnet, steht ein Hinweis unter dem Diagramm. Die Einstellungen werden im Backend gespeichert und mit gesichert; nur der gewählte Zeitraum bleibt pro Gerät im Browser.
 
 ## Entitäten auswählen
 <img src="docs/vorschau_entitaeten_auswahl.png" width="360" alt="Entitäten-Auswahl"> <img src="docs/vorschau_energie_einstellungen.png" width="360" alt="Energie-Einstellungen">
@@ -425,6 +425,7 @@ Pro Raum:
 - Der bisherige Wert „Energie pro m³ Gas“ bleibt für Erdgas erhalten.
 - Die Raumeinstellungen im Dashboard nutzen die neuen WebSocket-Befehle `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Neue Werte werden wie in den Home-Assistant-Optionen gespeichert.
 - Farben, Fotos, Symbole und die Wetteranzeige werden im gemeinsamen Layout gespeichert (WebSocket-Befehl `fenster_heizung/set_layout`, nur Administratoren). Das Backend prüft Farben, Foto-Format und -Größe sowie die Entitäten.
+- Version 2.9.2.2 ändert nichts an der Schnittstelle.
 - Version 2.9.2.1: `energy` kennt zusätzlich `ent.bchg`, `ent.bdis` (Batterie lädt / entlädt) und `bmode` (`one` oder `two`). Versions-Tags dürfen vier Teile haben (zum Beispiel `2.9.2.1`).
 - Version 2.9.2 ändert nichts an der Schnittstelle.
 - Version 2.9.1: `set_modules` nimmt zusätzlich `on.en` (Modul 3 ein/aus) und `energy` (`ent` mit `pv`, `grid`, `house`, `bat`, `pve`, `imp`, `exp` als Sensor-IDs, `sign` und `bsign`) an; das Backend prüft sie. Sicherung und Wiederherstellung enthalten sie.

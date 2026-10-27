@@ -2954,8 +2954,14 @@ class FensterHeizungPanel extends HTMLElement {
     if ((st.attributes || {}).unit_of_measurement === "kW") v *= 1000;
     return v;
   }
+  /* Solar-Leistung: Wechselrichter melden nachts oft „nicht verfügbar“ (= 0 W); negative Kleinstwerte werden auf 0 gesetzt */
+  _enPvW() {
+    const id = this._enState().ent.pv, st = id && this._hass.states[id]; if (!st) return null;
+    if (["unavailable", "unknown", ""].includes(String(st.state))) return 0;
+    const v = this._enW(id); return v == null ? 0 : Math.max(0, v);
+  }
   _enNow() {
-    const E = this._enState(), g = this._enGrid(), pv = this._enW(E.ent.pv), gr = this._enW(g.ent), b = this._enBatW();
+    const E = this._enState(), g = this._enGrid(), pv = this._enPvW(), gr = this._enW(g.ent), b = this._enBatW();
     if (pv == null || gr == null) return null;
     const exp = g.sign === "import" ? -gr : gr, bc = b == null ? 0 : b;
     const house = E.ent.house && this._enW(E.ent.house) != null ? this._enW(E.ent.house) : Math.max(0, pv - exp - bc);
@@ -2993,15 +2999,15 @@ class FensterHeizungPanel extends HTMLElement {
     p.then((r) => { this._enH = done(r); }).catch(() => { this._enH = done({}, true); })
       .finally(() => { this._enBusy = false; if (this._mdActive() === "en" && !this._dragging) this._render(); });
   }
-  _enSer(eid) {
+  _enSer(eid, zero) {
     const H = this._enH; if (!H || !eid) return [];
     let k = 1; const raw = (H.res || {})[eid] || [];
     for (const x of raw) { if (x.a && x.a.unit_of_measurement) { if (x.a.unit_of_measurement === "kW") k = 1000; break; } }
-    return raw.map((x) => ({ t: ((x.lu ?? x.lc ?? H.start / 1000) * 1000 - H.start) / 6e4, v: parseFloat(x.s) * k })).filter((x) => isFinite(x.v));
+    return raw.map((x) => ({ t: ((x.lu ?? x.lc ?? H.start / 1000) * 1000 - H.start) / 6e4, v: isFinite(parseFloat(x.s)) ? parseFloat(String(x.s).replace(",", ".")) * k : zero ? 0 : NaN })).filter((x) => isFinite(x.v));
   }
   _enSamples() {
     const H = this._enH, E = this._enState(), g = this._enGrid(); if (!H || H.range !== "day") return null;
-    const sp = this._enSer(E.ent.pv), sg = this._enSer(g.ent), sh = E.ent.house ? this._enSer(E.ent.house) : null, sb = this._enBatIds().length ? this._enBatIds().map((x) => this._enSer(x)) : null;
+    const sp = this._enSer(E.ent.pv, true), sg = this._enSer(g.ent), sh = E.ent.house ? this._enSer(E.ent.house) : null, sb = this._enBatIds().length ? this._enBatIds().map((x) => this._enSer(x)) : null;
     const at = (l, m) => { let v = null; for (const x of l) { if (x.t <= m) v = x.v; else break; } return v; };
     const total = Math.floor((H.end - H.start) / 6e4), out = [];
     for (let m = 0; m <= total; m += 5) {
@@ -3042,19 +3048,22 @@ class FensterHeizungPanel extends HTMLElement {
   _enNote() {
     const src = this._enSrc(), miss = !Object.values(src).some(Boolean), der = Object.values(src).some((x) => x && x.t === "p");
     if (miss) return `<div class="gst on">${ic("info", 15)}Für 7 und 30 Tage fehlt ein Sensor. Wähle in den Einstellungen Energiezähler (Wh, kWh) oder lass sie leer, dann wird aus den Leistungssensoren gerechnet.</div>`;
+    if (this._enH && this._enH.err) return `<div class="gst on">${ic("alert", 15)}Der Verlauf konnte nicht geladen werden. Ist der Recorder in Home Assistant aktiv?</div>`;
+    const sm = this._enSum(); if (sm && sm.empty) return `<div class="gst on">${ic("info", 15)}Für die gewählten Sensoren gibt es keine Langzeitstatistik. Zähler brauchen <code>state_class: total_increasing</code>, Leistungssensoren <code>state_class: measurement</code>.</div>`;
     return der ? `<div class="gst">${ic("info", 15)}Teilweise aus Leistungs-Mittelwerten (Stundenwerte) berechnet. Mit Energiezählern (Wh, kWh) wird es genauer.</div>` : "";
   }
   _enDays() {
     const H = this._enH, n = H.range === "week" ? 7 : 30, out = [], src = this._enSrc(), R = H.res || {};
-    for (let i = 0; i < n; i++) out.push({ d: new Date(H.start + i * 864e5 + 36e5), pv: 0, imp: 0, exp: 0 });
+    const d0 = new Date(H.start), di = (ts) => { const d = new Date(ts); return Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - d0) / 864e5); };
+    for (let i = 0; i < n; i++) out.push({ d: new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() + i, 12), pv: 0, imp: 0, exp: 0 });
     out.derived = false;
     Object.entries(src).forEach(([f, s]) => {
       if (!s) return;
-      if (s.t === "e") (R.e && R.e[s.id] || []).forEach((x) => { const i = Math.round((x.start - H.start) / 864e5); if (out[i] && isFinite(x.change)) out[i][f] += Math.max(0, x.change * s.k); });
+      if (s.t === "e") (R.e && R.e[s.id] || []).forEach((x) => { const i = di(x.start); if (out[i] && isFinite(x.change)) out[i][f] += Math.max(0, x.change * s.k); });
       else {
         out.derived = true;
         (R.w && R.w[s.id] || []).forEach((x) => {
-          const i = Math.floor((x.start - H.start) / 864e5); if (!out[i] || !isFinite(x.mean)) return;
+          const i = di(x.start); if (!out[i] || !isFinite(x.mean)) return;
           let w = x.mean * s.k; if (s.sg) w = s.part === "exp" ? (s.sg === "import" ? -w : w) : (s.sg === "import" ? w : -w);
           out[i][f] += Math.max(0, w) / 1000;
         });
@@ -3074,7 +3083,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${ln("M90 150H170", n.g2h, col.grid, "", 130, 142)}${ln("M310 150H230", n.b2h, col.bat, "", 270, 142)}
       ${ln("M192 216L150 262", Math.min(heat, n.house), col.house, "", 128, 240)}${ln("M208 216L250 262", Math.min(ww, n.house), col.house, "", 272, 240)}
       ${node(200, 38, "sun", col.pv, "Solar", kw(n.pv), true)}
-      ${node(60, 150, "bolt", n.exp > 0 ? col.exp : col.grid, n.exp > 0 ? "Einspeisung" : "Netz", n.exp > 0 ? kw(n.exp) : n.imp > 20 ? "Bezug " + kw(n.imp) : "0 W")}
+      ${node(60, 150, "bolt", n.exp > 20 ? col.exp : col.grid, n.exp > 20 ? "Einspeisung" : "Netz", n.exp > 20 ? kw(n.exp) : n.imp > 20 ? "Bezug " + kw(n.imp) : "0 W")}
       ${node(200, 150, "home", col.house, "Haus", kw(n.house))}
       ${n.hasBat ? node(340, 150, "energy", col.bat, n.soc != null ? Math.round(n.soc) + " %" : "Batterie", n.bc > 20 ? "lädt " + kw(n.bc) : n.dis > 20 ? "entlädt " + kw(n.dis) : "ruht") : ""}
       <g transform="translate(150,282)"><rect x="-44" y="-18" width="88" height="34" rx="12" fill="var(--card)" stroke="var(--line)"/><text x="0" y="-3" class="fln">Heizung</text><text x="0" y="11" class="fls">${kw(heat)}</text></g>
@@ -3086,10 +3095,10 @@ class FensterHeizungPanel extends HTMLElement {
     const Wd = 640, Ht = 214, L = 40, R = 8, T = 24, B = 28, iw = Wd - L - R, ih = Ht - T - B;
     if (E.range === "day") {
       const s = this._enSamples(); if (!s || !s.length) return `<div class="mut sm" style="padding:30px 0;text-align:center">Keine Verlaufsdaten für heute.</div>`;
-      const mx = Math.max(500, ...s.map((x) => Math.max(x.pv, x.house, x.imp))), top = Math.ceil(mx / 1000) * 1000, X = (m) => L + (m / 1440) * iw, Y = (w) => T + ih - (w / top) * ih;
+      const mx = Math.max(500, ...s.map((x) => Math.max(x.pv, x.house, x.imp))), sk = Math.max(1, enStep(mx / 1000)) * 1000, top = Math.ceil(mx / sk) * sk, X = (m) => L + (m / 1440) * iw, Y = (w) => T + ih - (w / top) * ih;
       const area = (f, c) => `<path d="M${X(s[0].t)} ${Y(0)}${s.map((x) => `L${X(x.t).toFixed(1)} ${Y(x[f]).toFixed(1)}`).join("")}L${X(s[s.length - 1].t)} ${Y(0)}Z" fill="${c}" opacity=".28"/>`;
       const line = (f, c, w = 2) => `<path d="${s.map((x, i) => `${i ? "L" : "M"}${X(x.t).toFixed(1)} ${Y(x[f]).toFixed(1)}`).join("")}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>`;
-      let g = ""; for (let w = 0; w <= top; w += 1000) g += `<line x1="${L}" x2="${Wd - R}" y1="${Y(w)}" y2="${Y(w)}" stroke="currentColor" opacity=".13"/><text x="${L - 6}" y="${Y(w) + 4}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${w / 1000}</text>`;
+      let g = ""; for (let w = 0, c = 0; w <= top && c < 12; w += sk, c++) g += `<line x1="${L}" x2="${Wd - R}" y1="${Y(w)}" y2="${Y(w)}" stroke="currentColor" opacity=".13"/><text x="${L - 6}" y="${Y(w) + 4}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${w / 1000}</text>`;
       for (const h of [0, 6, 12, 18, 24]) g += `<text x="${X(h * 60)}" y="${Ht - 8}" text-anchor="${h === 0 ? "start" : h === 24 ? "end" : "middle"}" font-size="11" fill="currentColor" opacity=".6">${String(h).padStart(2, "0")}:00</text>`;
       return `<svg class="wwchart" viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="Leistung heute"><text x="${L - 6}" y="${T - 10}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">kW</text>${g}${area("pv", "#fbbf24")}${area("imp", "#f87171")}${line("pv", "#fbbf24")}${line("house", "#38bdf8")}</svg>
         <div class="legend"><span><i style="background:#fbbf24"></i>Solar</span><span><i style="background:#38bdf8"></i>Verbrauch</span><span><i style="background:#f87171"></i>Netzbezug</span></div>`;
@@ -3119,7 +3128,7 @@ class FensterHeizungPanel extends HTMLElement {
     const hero = `<div class="card hero enh"><div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
       <div class="chips"><span class="chip">${ic("sun", 16)}Solar ${wfmt(n.pv)}</span><span class="chip st ${n.exp > 20 ? "ok" : n.imp > 20 ? "warn" : ""}">${ic("bolt", 16)}${n.exp > 20 ? "Einspeisung " + wfmt(n.exp) : n.imp > 20 ? "Netzbezug " + wfmt(n.imp) : "Netz ausgeglichen"}</span>${n.hasBat ? `<span class="chip">${ic("energy", 16)}Batterie ${n.soc != null ? Math.round(n.soc) + " %" : ""}${n.bc > 20 ? " lädt" : n.dis > 20 ? " entlädt" : ""}</span>` : ""}${autarky != null && range === "day" ? `<span class="chip st ok">${ic("check", 16)}Autarkie heute ${autarky} %</span>` : ""}</div></div>`;
     const tabs = `<div class="seg wwseg enseg" role="group">${[["day", "Heute"], ["week", "7 Tage"], ["month", "30 Tage"]].map(([k, l]) => `<button class="${range === k ? "sel" : ""}" data-act="enrange" data-k="${k}" aria-pressed="${range === k}">${l}</button>`).join("")}</div>`;
-    const kwh = (v) => (v == null ? "–" : num(v, v >= 100 ? 0 : 1));
+    const kwh = (v) => (v == null ? "–" : num(v, v >= 100 ? 0 : v >= 10 ? 1 : 2));
     const eur = (kwhv, ct) => (kwhv == null ? null : (kwhv * ct) / 100);
     const tiles = `<div class="tiles">${[
       ["sun", "Solar", sum && !sum.empty ? kwh(sum.pv) : "–", "kWh", "#fbbf24", evq != null ? `${evq} % selbst genutzt` : sum && sum.nocnt ? "Sensor fehlt" : "Keine Daten"],
