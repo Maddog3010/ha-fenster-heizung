@@ -4,7 +4,7 @@
 
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
 
-Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.8.0**.
+Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.9.0**.
 
 ## Inhalt
 - [Dashboard](#dashboard)
@@ -16,6 +16,8 @@ Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster
 - [„Warum?“ pro Raum](#warum-pro-raum)
 - [Raumluft: Lüften und Schimmel](#raumluft-lüften-und-schimmel)
 - [Elektroheizer mit PV-Überschuss](#elektroheizer-mit-pv-überschuss)
+- [Module](#module)
+- [Modul 2: Warmwasser und Zirkulation](#modul-2-warmwasser-und-zirkulation)
 - [Gerätediagnose](#gerätediagnose)
 - [Einrichtungsassistent](#einrichtungsassistent)
 - [Wetter-Anpassung und Sommermodus](#wetter-anpassung-und-sommermodus)
@@ -138,6 +140,16 @@ Im Anpassen-Modus öffnet ein Tipp auf das Raumsymbol den Dialog „Raum anpasse
 
 <img src="docs/vorschau_fotos_handy.png" width="240" alt="Fotos auf dem Handy"> <img src="docs/vorschau_fotos_kompakt.png" width="480" alt="Kompaktansicht mit Foto">
 
+### Kopfkarten-Hintergrund
+Unter **Darstellung** bekommt die Kopfkarte einen Hintergrund. Wahl zwischen **Standard**, **Tageszeit** (Nacht, Sonnenaufgang, Tag, Sonnenuntergang), **Jahreszeit** (Frühling bis Winter) und **Wetter** (sonnig, bewölkt, Regen, Starkregen, Schnee, Nebel, Gewitter, klare Nacht).
+
+- Die Tageszeit kommt von `sun.sun` (Sonnenhöhe), ohne Sonnen-Entität von der Uhr. Die Jahreszeit folgt dem Monat, auf der Südhalbkugel umgekehrt. Das Wetter kommt aus der gewählten Wetter-Entität, nachts etwas abgedunkelt.
+- Jede Szene lässt sich durch ein **eigenes Foto** ersetzen (höchstens 12, im Browser verkleinert). Das Foto wird abgedunkelt, damit die Schrift lesbar bleibt.
+
+<img src="docs/vorschau_kopf_hintergruende.png" width="480" alt="Kopfkarten-Hintergrund wählen"> <img src="docs/vorschau_kopf_wetter.png" width="480" alt="Kopfkarte bei Regen in der Nacht">
+
+<img src="docs/vorschau_kopf_tageszeit.png" width="480" alt="Kopfkarte bei Sonnenuntergang">
+
 ### Außentemperatur und Wetter
 Die Kopfkarte zeigt unter dem Datum Wettersymbol, Außentemperatur, Zustand sowie Luftfeuchte und Wind, soweit deine Wetter-Entität sie liefert.
 
@@ -211,6 +223,51 @@ Der Knopf „Bericht“ an der Heizer-Karte zeigt pro Tag Laufzeit, Energie, den
 
 Hinweise: Die Energie wird aus der Nennleistung der Stufe berechnet, nicht gemessen. Der PV-Anteil ergibt sich aus der Netzeinspeisung. Der Heizer wird ausschließlich von dieser Integration geschaltet. Schaltest du ihn von Hand, übernimmt die Regelung innerhalb von etwa 30 Sekunden wieder.
 
+## Module
+Das Dashboard besteht aus **Modulen**. Unter dem Titel zeigt eine Leiste „Modul 1 Fenster & Heizung“, „Modul 2 Warmwasser“ und „+ Module“. Modul 1 ist das Grundmodul und immer aktiv.
+
+- **Module verwalten** (Tipp auf „+ Module“, nur Administratoren): Modul 2 und eigene Module lassen sich ein- und ausschalten. Ausschalten löscht keine Einstellungen.
+- **Weitere Module hinzufügen:** über HACS suchen oder die Adresse einer Moduldatei eintragen (`/local/…js`, `/hacsfiles/…js` oder `https://…js`). Die Adresse wird geprüft, höchstens 12 eigene Module.
+- Geplant sind Rollläden und Beschattung, Lüftung, Wärmepumpe und eine Energie-Übersicht. Sie erscheinen in der Verwaltung als „Geplant“.
+- Ein Modul meldet sich mit ID, Name, Symbol und einer Seite an. **Die Moduldatei wird in dieser Version noch nicht geladen:** ein hinzugefügtes eigenes Modul erscheint in der Leiste mit seinem Namen und der Adresse, die Seite bleibt vorerst ein Platzhalter. Die Schnittstelle dafür ist in Vorbereitung.
+
+<img src="docs/vorschau_modul_leiste.png" width="720" alt="Modul-Leiste"> <img src="docs/vorschau_modul_verwaltung.png" width="360" alt="Module verwalten">
+
+## Modul 2: Warmwasser und Zirkulation
+Zeigt den Speicher, steuert Erzeuger, Heizstab und Zirkulationspumpe nach Zeitplan und führt den Legionellenschutz aus. Das Modul schaltet **nur die Geräte, die du auswählst**. Ohne Auswahl tut es nichts.
+
+<img src="docs/vorschau_modul_warmwasser.png" width="720" alt="Modul Warmwasser">
+
+### Einrichten
+**Einstellungen** (Knopf oben rechts im Modul): Speicherinhalt, Soll-Temperatur und Absenktemperatur, bis zu drei Temperatursensoren (oben, Mitte, unten), den Wärmeerzeuger (Schalter, `water_heater` oder `climate`), optional einen Heizstab für PV-Überschuss, die Zirkulationspumpe (Schalter), einen Rücklaufsensor und einen Auslöser für „Bei Bedarf“. Mindestens ein Speichersensor oder die Pumpe genügt für den Start.
+
+<img src="docs/vorschau_modul_einrichten.png" width="240" alt="Modul einrichten"> <img src="docs/vorschau_modul_einstellungen.png" width="240" alt="Einstellungen">
+
+### Was die Seite zeigt
+- Kopfkarte mit Temperaturen oben, Mitte und unten, Status (Bereit, Heizt auf, Unter Soll, Zu heiß, Abwesend) und einer Schätzung, für wie viele Duschen das Wasser reicht (50 Liter Mischwasser mit 38 °C).
+- Kacheln für Erzeuger- und Pumpenlaufzeit der letzten 24 Stunden, Rücklauf und letzten Legionellenschutz.
+- Verlaufsdiagramm der letzten 24 Stunden mit Soll-Linie sowie Balken für Erzeuger und Pumpe.
+- Ein Zustandsblock meldet nicht erreichbare Sensoren, einen zu heißen oder zu kalten Speicher, einen zu warmen Rücklauf bei laufender Pumpe und überfälligen Legionellenschutz.
+
+### Zeitplan (Warmwasser)
+Pro Zeitfenster eine Soll-Temperatur, getrennt für Montag bis Freitag und das Wochenende. Außerhalb der Fenster gilt die Absenktemperatur. Der Erzeuger schaltet ein, wenn der Speicher oben 3 K unter Soll liegt, und aus, sobald das Soll erreicht ist. Ab 65 °C schaltet das Modul Erzeuger und Heizstab immer ab (Verbrühschutz). Bei einem `water_heater` oder `climate` setzt es stattdessen die Solltemperatur.
+
+<img src="docs/vorschau_modul_zeitplan.png" width="240" alt="Zeitplan bearbeiten">
+
+### Zirkulation
+- **Zeitplan:** Die Pumpe läuft in den eingestellten Zeiten.
+- **Bei Bedarf:** Der Auslöser (Taster, Bewegungsmelder, Durchflusssensor) startet die Pumpe für die eingestellte Nachlaufzeit. Sind Zeiten eingetragen, gilt das nur in diesen Zeiten.
+- **Intervall:** In den Zeiten läuft die Pumpe alle X Minuten für Y Minuten.
+- **Aus.**
+- **Rücklauf-Grenze:** Ab dieser Temperatur stoppt die Pumpe und startet erst 2 K darunter wieder. Das spart Energie, weil das Wasser in der Leitung schon warm ist.
+- Die Knöpfe **Einmal aufheizen** (auf die Schutztemperatur, höchstens 3 Stunden), **Zirkulation 5 Min.** und **Abwesend** (Absenktemperatur, Pumpe aus) wirken sofort.
+
+### Legionellenschutz
+Einmal pro Woche (Wochentag und Uhrzeit wählbar) heizt das Modul den Speicher auf die Schutztemperatur (Standard 60 °C) und hält sie 20 Minuten. Gezählt wird, wenn der **kälteste** Sensor die Temperatur erreicht. Schafft der Speicher das in sechs Stunden nicht, bricht der Lauf ab und das Fehlerprotokoll bekommt eine Warnung. Ein verpasster Termin läuft am selben Tag nach. Das Ergebnis steht im Modul, die Läufe im Fehlerprotokoll der Gerätediagnose.
+
+### PV-Überschuss
+Mit einem Heizstab-Schalter lädt das Modul den Speicher bei Überschuss bis zur eingestellten Höchsttemperatur (Standard 62 °C). Der Heizstab geht an, wenn der Überschuss die eingestellte Schwelle erreicht, und aus, wenn mehr als 100 W aus dem Netz kommen. Mindestens 5 Minuten an und 3 Minuten aus. Sensor, Vorzeichen und Batterie-Grenze kommen aus den PV-Einstellungen unter Allgemein. **Der Warmwasser-Heizstab hat Vorrang vor den Raumheizern**, weil diese den dann verbleibenden Überschuss sehen. Die Leistung des Heizstabs trägst du im Modul ein.
+
 ## Gerätediagnose
 Unter **Allgemein → Diagnose öffnen** zeigt die Gerätediagnose, ob alle Geräte der Regelung melden. Oben steht eine Gesamtanzeige („Alles in Ordnung“, Warnungen oder Fehler) mit dem Knopf „Erneut prüfen“. Es gibt fünf Reiter:
 
@@ -258,7 +315,7 @@ Aus, Automatisch oder Immer an. Bei „Automatisch“ ruhen die Heizpläne, wenn
 <img src="docs/vorschau_sommer_kopf.png" width="480" alt="Sommermodus in der Kopfkarte">
 
 ## Sichern und Wiederherstellen
-Unter **Allgemein › Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit allen Räumen und Raumeinstellungen, Heizplänen, Anwesenheit, Aussehen (Farben, Symbole, Fotos, Gruppen) und den allgemeinen Einstellungen.
+Unter **Allgemein › Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit allen Räumen und Raumeinstellungen, Heizplänen, Anwesenheit, Aussehen (Farben, Symbole, Fotos, Kopfkarten-Hintergründe, Gruppen), den allgemeinen Einstellungen sowie den Modulen samt den Einstellungen von Modul 2.
 
 - „Sicherung einlesen“ zeigt zuerst eine Zusammenfassung. Erst „Wiederherstellen“ ersetzt die aktuellen Einstellungen.
 - Räume werden anhand ihrer ID zugeordnet, sonst über einen eindeutigen Namen. Räume, die es nicht mehr gibt, werden übersprungen. Das Dashboard meldet, wie viele.
@@ -345,6 +402,7 @@ Pro Raum:
 - Der bisherige Wert „Energie pro m³ Gas“ bleibt für Erdgas erhalten.
 - Die Raumeinstellungen im Dashboard nutzen die neuen WebSocket-Befehle `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Neue Werte werden wie in den Home-Assistant-Optionen gespeichert.
 - Farben, Fotos, Symbole und die Wetteranzeige werden im gemeinsamen Layout gespeichert (WebSocket-Befehl `fenster_heizung/set_layout`, nur Administratoren). Das Backend prüft Farben, Foto-Format und -Größe sowie die Entitäten.
+- Version 2.9.0 fügt die WebSocket-Befehle `get_modules`, `set_modules`, `set_wasser` und `wasser_cmd` hinzu (schreibend nur für Administratoren), liefert `modules` und `wasser` in `get_state` und kennt im Layout das Feld `hero`.
 - Version 2.8.0 fügt die WebSocket-Befehle `get_diag` und `clear_diag` hinzu (Letzterer nur für Administratoren) und den Schlüssel `valve` in den allgemeinen Einstellungen (Batterie-Schwelle, Tage, Benachrichtigungsdienst, Batterie-Quellen).
 - Version 2.6.0 fügt die WebSocket-Befehle `get_general`, `set_general`, `get_update`, `get_learning` und `restore` hinzu. Das Backend prüft alle Werte; Änderungen sind nur für Administratoren erlaubt.
 - Neue Raumeinstellungen (`humidity_sensor`, `air_hint`, `air_every`, `weather_adj`) erscheinen nur im Dashboard. Beim Speichern im HA-Optionsdialog bleiben sie erhalten.
