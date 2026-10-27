@@ -7,6 +7,7 @@ Liste der Module (an/aus, eigene Module).
 from __future__ import annotations
 
 import logging
+import asyncio
 import re
 import time
 from datetime import datetime, timedelta
@@ -144,20 +145,24 @@ def clean_wasser(raw: Any) -> dict[str, Any]:
             "on": bool(lg.get("on", d["leg"]["on"])),
             "day": _num(lg.get("day"), 0, 6, d["leg"]["day"]),
             "time": _hm(lg.get("time"), d["leg"]["time"]),
-            "temp": _num(lg.get("temp"), 55, 75, d["leg"]["temp"]),
+            "temp": _num(lg.get("temp"), 55, 65, d["leg"]["temp"]),
             "hold": _num(lg.get("hold"), 10, 60, d["leg"]["hold"]),
         },
         "pv": {
             "on": bool(pv.get("on", d["pv"]["on"])),
             "min": _num(pv.get("min"), 300, 6000, d["pv"]["min"]),
-            "max": _num(pv.get("max"), 50, 70, d["pv"]["max"]),
+            "max": _num(pv.get("max"), 50, 65, d["pv"]["max"]),
             "watt": _num(pv.get("watt"), 300, 9000, d["pv"]["watt"]),
         },
     }
 
 
-EN_KEYS = ("pv", "grid", "house", "bat", "bchg", "bdis", "pve", "imp", "exp")
+EN_KEYS = ("pv", "grid", "house", "bat", "bchg", "bdis", "pve", "pv2", "pve2", "imp", "exp")
 EN_DOMAIN = "sensor"
+
+
+def _name(v: Any) -> str:
+    return re.sub(r"[<>\"'&]", "", str(v or "").strip())[:20]
 
 
 def clean_energy(raw: Any) -> dict[str, Any]:
@@ -176,6 +181,8 @@ def clean_energy(raw: Any) -> dict[str, Any]:
         "sign": sign if sign in ("export", "import") else "",
         "bsign": bsign if bsign in ("charge", "discharge") else "charge",
         "bmode": "two" if raw.get("bmode") == "two" else "one",
+        "pvn": _name(raw.get("pvn")),
+        "pv2n": _name(raw.get("pv2n")),
     }
 
 
@@ -326,6 +333,9 @@ class WasserManager:
         self._unsub_trig: CALLBACK_TYPE | None = None
         self._rod_since = 0.0
         self._last_set: dict[str, Any] = {}
+        self._last_set_ts: dict[str, float] = {}
+        self._lock = asyncio.Lock()
+        self._ours: set[str] = set()
         self._info: dict[str, Any] = {}
 
     async def async_start(self) -> None:
@@ -368,6 +378,7 @@ class WasserManager:
     async def async_set_cfg(self, raw: Any) -> None:
         self.cfg = clean_wasser(raw)
         self._last_set.clear()
+        self._last_set_ts.clear()
         self._watch_trigger()
         self._save()
         await self._tick(None)
@@ -472,6 +483,21 @@ class WasserManager:
         domain = eid.split(".")[0]
         await self._call(domain, "turn_on" if want else "turn_off", entity_id=eid)
 
+    def _src_on(self, eid: str) -> bool:
+        """Läuft der Erzeuger? Schalter: Zustand. Thermostat oder Wasserbereiter: Solltemperatur über der Absenkung."""
+        if not eid:
+            return False
+        if eid.split(".")[0] in ("switch", "input_boolean"):
+            return self._is_on(eid)
+        st = self.hass.states.get(eid)
+        if st is None or st.state in ("unavailable", "unknown", "off"):
+            return False
+        try:
+            sp = float(st.attributes.get("temperature"))
+        except (TypeError, ValueError):
+            return self._is_on(eid)
+        return sp > self.cfg["heat"]["low"] + 1.0
+
     async def _source(self, eid: str, want_on: bool, temp: float) -> None:
         domain = eid.split(".")[0]
         if domain in ("switch", "input_boolean"):
@@ -481,14 +507,32 @@ class WasserManager:
         if st is None or st.state in ("unavailable", "unknown"):
             return
         target = float(temp if want_on else self.cfg["heat"]["low"])
-        if self._last_set.get(eid) != target:
+        try:
+            sp = float(st.attributes.get("temperature"))
+        except (TypeError, ValueError):
+            sp = None
+        now = time.time()
+        # Neu setzen: bei anderem Ziel, oder wenn jemand die Solltemperatur verstellt hat (höchstens alle 10 Minuten)
+        drift = sp is not None and abs(sp - target) > 1.0 and now - self._last_set_ts.get(eid, 0.0) > 600
+        if self._last_set.get(eid) != target or drift:
             await self._call(domain, "set_temperature", entity_id=eid, temperature=target)
             self._last_set[eid] = target
+            self._last_set_ts[eid] = now
 
     # ---- Takt
+    async def _release(self) -> None:
+        """Modul aus oder Gerät abgewählt: Heizstab und Pumpe, die dieses Modul eingeschaltet hat, wieder ausschalten."""
+        keep = {self.cfg["ent"]["rod"], self.cfg["ent"]["pump"]} if self.active() else set()
+        for eid in list(self._ours):
+            if eid not in keep:
+                self._ours.discard(eid)
+                await self._switch(eid, False)
+
     async def _tick(self, _now) -> None:
         try:
-            await self._run()
+            async with self._lock:
+                await self._release()
+                await self._run()
         except Exception as err:  # noqa: BLE001  - die Regelung darf nie abstürzen
             _LOGGER.exception("Warmwasser: Auswertung fehlgeschlagen")
             diag_log(self.hass, "error", f"Warmwasser: Auswertung fehlgeschlagen: {err}", room="Warmwasser")
@@ -540,14 +584,14 @@ class WasserManager:
         hot = boost or leg_active
         want = float(cfg["leg"]["temp"]) if hot else float(cfg["heat"]["low"] if away else schedule_temp(cfg, local.weekday(), minute))
         ctl = lowest if hot else control
-        src_on = self._is_on(E["src"])
+        src_on = self._src_on(E["src"])
         src_want = None
         if E["src"]:
             src_want = source_wanted(ctl, want, src_on)
+            if control is not None and control >= SAFE_MAX:
+                src_want = False                       # Verbrühschutz gilt immer für den oberen Sensor
             if src_want is not None:
                 await self._source(E["src"], src_want, want)
-            elif control is not None and control >= SAFE_MAX:
-                await self._source(E["src"], False, want)
 
         # Heizstab
         rod_want = None
@@ -561,6 +605,8 @@ class WasserManager:
             if rod_want is not None and rod_want != rod_on:
                 self._rod_since = now
                 await self._switch(E["rod"], rod_want)
+                if rod_want:
+                    self._ours.add(E["rod"])
 
         # Pumpe
         pump_want = None
@@ -568,5 +614,7 @@ class WasserManager:
             pump_on = self._is_on(E["pump"])
             pump_want = pump_wanted(cfg, local.weekday(), minute, now, self._val(E["ret"]), pump_on, s["demand_until"], s["circ_until"], away)
             await self._switch(E["pump"], pump_want)
+            if pump_want:
+                self._ours.add(E["pump"])
 
         self._info = {"want": want, "src_want": src_want, "rod_want": rod_want, "pump_want": pump_want, "showers": shower_count(cfg["size"], known)}

@@ -2,6 +2,26 @@
 
 Alle wichtigen Änderungen an „Fenster & Heizung“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2.9.2.3] - 2026-10-27
+Fehlerbehebungen (Modul 1 und 2), eine neue Verlaufsgrafik in Modul 2 und die zweite Solaranlage in Modul 3.
+### Behoben
+- **Modul 1, Elektroheizer:** Wird er in den Einstellungen abgeschaltet, schaltet Modul 1 das Gerät aus und stellt die Thermostate des Raums wieder her. Vorher blieben sie aus. Auch beim Abschalten der Option „Thermostate abstellen“ kommen sie sofort zurück.
+- **Modul 1, Update-Hinweis:** Maßgeblich ist jetzt die höchste Version unter allen Releases und Tags. Ein Tag wie `v2.9.2.3` wurde vorher übersehen, wenn schon ein älteres Release existierte.
+- **Modul 2, Erzeuger:** Thermostat oder Wasserbereiter als Erzeuger: Zustand aus der Solltemperatur mit Hysterese, Verstellen von außen wird nach 10 Minuten korrigiert.
+- **Modul 2, Sicherheit:** Meldet der obere Sensor 65 °C oder mehr, wird der Erzeuger abgeschaltet. Schutz- und PV-Temperatur höchstens 65 °C.
+- **Modul 2, Aufräumen:** Wird das Modul ausgeschaltet oder ein Gerät abgewählt, schalten sich Heizstab und Pumpe, die das Modul eingeschaltet hat, wieder aus.
+- **Modul 2, Anzeige:** „Legionellenschutz läuft“ im Status, die gewünschte Temperatur stimmt mit der Regelung überein, Eingabefelder mit Grenzen 55–65 und 50–65 °C.
+- **Speicher-Kachel:** Fehlt ein Temperatursensor, wird er nicht mehr mit dem Wert von „Mitte“ vorgetäuscht.
+### Neu
+- **Modul 3, zweite Solaranlage** (zum Beispiel Balkonkraftwerk): zweiter Leistungssensor und optional zweiter Ertragszähler. Beide Anlagen werden addiert (Energiefluss, Kopfkarte, Verlauf, Tagessummen, 7 und 30 Tage, Autarkie, Kosten). Meldet eine Anlage „nicht verfügbar", zählt sie als 0 W.
+  - Die Kopfkarte zeigt „davon Balkon …“, die Solar-Kachel zeigt den Anteil der zweiten Anlage.
+  - Beide Anlagen lassen sich benennen (zum Beispiel „Dach“ und „Balkon“).
+  - Im Tagesverlauf erscheint die zweite Anlage als dünne Linie.
+  - Hinweis „… liefert nichts“, wenn eine Anlage seit 10 Minuten unter 5 W liegt, während die andere mindestens 400 W liefert.
+- **Modul 2, Verlauf der letzten 24 Stunden** im Stil der Berichte aus Modul 1: Legende, gestrichelte Hilfslinien, Soll-Stufen aus dem Zeitplan, Erzeuger-Zeiten, Pumpenbalken und Hover-Anzeige.
+### Hinweis
+- Auf GitHub den Tag `v2.9.2.3` setzen, damit die Update-Prüfung die Version findet.
+
 ## [2.9.2.2] - 2026-10-27
 Nur Fehlerbehebungen in Modul 3.
 ### Behoben
@@ -304,22 +324,22 @@ Nur Fehlerbehebungen in Modul 3.
 - Schalter „Fensterregelung aktiv“ pro Raum.
 - Deutsche und englische Oberfläche.
 
-[2.2.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.2.1
-[2.2.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.2.0
-[2.1.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.1.0
-[2.0.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.0.1
-[2.0.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v2.0.0
-[1.5.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.2
-[1.5.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.1
-[1.5.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.5.0
-[1.4.2.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.2
-[1.4.2.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.1
-[1.4.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.2
-[1.4.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.1
-[1.4.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.4.0
-[1.3.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.3.0
-[1.2.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.2.0
-[1.1.2]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.1.2
-[1.1.1]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.1.1
-[1.1.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.1.0
-[1.0.0]: https://github.com/maddog3010/ha-fenster-heizung/releases/tag/v1.0.0
+[2.2.1]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v2.2.1
+[2.2.0]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v2.2.0
+[2.1.0]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v2.1.0
+[2.0.1]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v2.0.1
+[2.0.0]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v2.0.0
+[1.5.2]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.5.2
+[1.5.1]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.5.1
+[1.5.0]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.5.0
+[1.4.2.2]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.2
+[1.4.2.1]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.4.2.1
+[1.4.2]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.4.2
+[1.4.1]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.4.1
+[1.4.0]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.4.0
+[1.3.0]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.3.0
+[1.2.0]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.2.0
+[1.1.2]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.1.2
+[1.1.1]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.1.1
+[1.1.0]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.1.0
+[1.0.0]: https://github.com/Maddog3010/ha-fenster-heizung/releases/tag/v1.0.0

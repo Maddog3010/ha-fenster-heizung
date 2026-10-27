@@ -2,9 +2,9 @@
 
 # Fenster & Heizung
 
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/maddog3010)
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
-Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.9.2.2**.
+Home-Assistant-Integration (HACS): Pausiert Heizungsthermostate, solange Fenster offen sind, führt einen Heizplan aus, kennt Anwesenheit und Urlaub und bringt ein eigenes Dashboard mit Tagesberichten pro Raum mit. Aktuelle Version: **2.9.2.3**.
 
 ## Inhalt
 - [Dashboard](#dashboard)
@@ -425,7 +425,7 @@ Pro Raum:
 - Der bisherige Wert „Energie pro m³ Gas“ bleibt für Erdgas erhalten.
 - Die Raumeinstellungen im Dashboard nutzen die neuen WebSocket-Befehle `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Neue Werte werden wie in den Home-Assistant-Optionen gespeichert.
 - Farben, Fotos, Symbole und die Wetteranzeige werden im gemeinsamen Layout gespeichert (WebSocket-Befehl `fenster_heizung/set_layout`, nur Administratoren). Das Backend prüft Farben, Foto-Format und -Größe sowie die Entitäten.
-- Version 2.9.2.2 ändert nichts an der Schnittstelle.
+- Version 2.9.2.3: `energy` kennt zusätzlich `ent.pv2`, `ent.pve2` (zweite Solaranlage) sowie die Anzeigenamen `pvn` und `pv2n`.
 - Version 2.9.2.1: `energy` kennt zusätzlich `ent.bchg`, `ent.bdis` (Batterie lädt / entlädt) und `bmode` (`one` oder `two`). Versions-Tags dürfen vier Teile haben (zum Beispiel `2.9.2.1`).
 - Version 2.9.2 ändert nichts an der Schnittstelle.
 - Version 2.9.1: `set_modules` nimmt zusätzlich `on.en` (Modul 3 ein/aus) und `energy` (`ent` mit `pv`, `grid`, `house`, `bat`, `pve`, `imp`, `exp` als Sensor-IDs, `sign` und `bsign`) an; das Backend prüft sie. Sicherung und Wiederherstellung enthalten sie.
@@ -441,7 +441,7 @@ Pro Raum:
 3. HACS zeigt das Update an
 
 ## Unterstützen
-Gefällt dir die Integration? Über [GitHub Sponsors](https://github.com/sponsors/maddog3010) kannst du die Weiterentwicklung unterstützen. Danke!
+Gefällt dir die Integration? Über [GitHub Sponsors](https://github.com/sponsors/Maddog3010) kannst du die Weiterentwicklung unterstützen. Danke!
 
 ## Änderungen
 Alle Versionen siehe [CHANGELOG.md](CHANGELOG.md).

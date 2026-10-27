@@ -216,6 +216,15 @@ class HeaterRoom:
         ctrl._signal()
         await ctrl._plan_apply_if_due()  # inzwischen geänderten Heizplan nachziehen
 
+    async def release(self) -> None:
+        """Elektroheizer wurde in den Einstellungen abgeschaltet: Gerät aus, Thermostate zurück."""
+        eid = self.ctrl.cfg.get("htr_entity")
+        if (self.stage > 0 or self.saved or self.dev_temp is not None) and eid and self.hass.states.get(eid) is not None:  # nach dem Neuladen ist die Stufe unbekannt
+            await self.async_apply({"entity": eid, "climate": eid.startswith("climate."), "presets": [], "devtemp": "max"}, 0)
+        self.stage, self.pending, self.started = 0, None, None
+        self.status = STATUS_OFF
+        await self.restore_thermostats()
+
     # --- Bedingungen ---------------------------------------------------------
     def update_warm(self, c: dict[str, Any]) -> None:
         self.warm = warm_state(self.ctrl.room_temperature(), c["target"], self.warm)
@@ -373,7 +382,19 @@ class PvManager:
                 _LOGGER.exception("PV-Heizer: Auswertung fehlgeschlagen")
                 diag_log(self.hass, "error", f"PV-Heizer: Auswertung fehlgeschlagen: {err}")
 
+    async def _release_disabled(self) -> None:
+        from homeassistant.config_entries import ConfigEntryState  # noqa: PLC0415
+
+        for entry in self.hass.config_entries.async_entries(DOMAIN):
+            ctrl = getattr(entry, "runtime_data", None)
+            if ctrl is None or entry.state is not ConfigEntryState.LOADED or ctrl.heater.cfg() is not None:
+                continue
+            if ctrl.heater.stage > 0 or ctrl.heater.saved or ctrl.heater.dev_temp is not None:
+                await ctrl.heater.release()
+                ctrl._signal()
+
     async def _run(self) -> None:
+        await self._release_disabled()
         rooms = self._rooms()
         now = time.time()
         dt = min(max(now - self._last, 0.0), 120.0) if self._last else 0.0
@@ -427,7 +448,7 @@ class PvManager:
                 h.stage = new
             if h.stage > 0 and c["thermo_off"] and not h.saved and not ctrl.active:
                 await h.thermo_off()
-            if h.stage == 0 and h.saved:
+            if h.saved and (h.stage == 0 or not c["thermo_off"]):
                 await h.restore_thermostats()
             h.status = blocked or (STATUS_PV if h.stage > 0 else STATUS_WAIT)
             heater_w[str(id(h))] = h.power(c)

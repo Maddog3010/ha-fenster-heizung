@@ -286,34 +286,39 @@ class GeneralManager:
             return resp.status, (await resp.json() if resp.status == 200 else None)
 
     async def _fetch_latest(self, current: str) -> dict[str, Any]:
-        """Neueste Version von GitHub: veröffentlichtes Release, sonst höchster Versions-Tag."""
+        """Neueste Version von GitHub: höchste Versionsnummer unter allen Releases und Tags (nicht das zuletzt angelegte Release)."""
         api = f"https://api.github.com/repos/{GITHUB_REPO}"
+        cands: dict[str, dict[str, Any]] = {}
         try:
-            status, j = await self._get_json(f"{api}/releases/latest")
-            if status == 200 and isinstance(j, dict):
-                tag = str(j.get("tag_name") or "").lstrip("vV")
-                if _tag_ok(tag):
-                    return {
-                        "latest": tag,
-                        "date": str(j.get("published_at") or "")[:10],
-                        "notes": parse_notes(str(j.get("body") or "")),
-                        "url": str(j.get("html_url") or ""),
-                    }
-            elif status not in (200, 404):
+            status, rel = await self._get_json(f"{api}/releases?per_page=50")
+            if status == 200 and isinstance(rel, list):
+                for j in rel:
+                    if not isinstance(j, dict) or j.get("draft") or j.get("prerelease"):
+                        continue
+                    tag = str(j.get("tag_name") or "").lstrip("vV")
+                    if _tag_ok(tag):
+                        cands[tag] = {
+                            "latest": tag,
+                            "date": str(j.get("published_at") or "")[:10],
+                            "notes": parse_notes(str(j.get("body") or "")),
+                            "url": str(j.get("html_url") or ""),
+                        }
+            elif status != 404:
                 return {"latest": current, "error": f"GitHub antwortet mit Status {status}"}
-            # Noch kein Release veröffentlicht (nur ein Tag gesetzt)? Dann den höchsten Tag nehmen.
-            status, tags = await self._get_json(f"{api}/tags?per_page=50")
+            # Tags ohne veröffentlichtes Release zählen ebenfalls
+            status, tags = await self._get_json(f"{api}/tags?per_page=100")
             if status == 200 and isinstance(tags, list):
-                found = [str(t.get("name") or "").lstrip("vV") for t in tags if isinstance(t, dict)]
-                found = [t for t in found if _tag_ok(t)]
-                if found:
-                    best = max(found, key=_vkey)
-                    return {"latest": best, "notes": [], "url": f"https://github.com/{GITHUB_REPO}/releases/tag/v{best}"}
-            elif status not in (200, 404):
+                for t in tags:
+                    name = str(t.get("name") or "").lstrip("vV") if isinstance(t, dict) else ""
+                    if _tag_ok(name) and name not in cands:
+                        cands[name] = {"latest": name, "notes": [], "url": f"https://github.com/{GITHUB_REPO}/releases/tag/v{name}"}
+            elif status != 404:
                 return {"latest": current, "error": f"GitHub antwortet mit Status {status}"}
         except Exception as err:  # noqa: BLE001  - Netzwerkfehler dürfen nie stören
             _LOGGER.debug("Update-Prüfung nicht möglich: %s", err)
             return {"latest": current, "error": "GitHub ist nicht erreichbar"}
+        if cands:
+            return cands[max(cands, key=_vkey)]
         return {"latest": current}
 
     async def async_update_info(self, current: str, force: bool = False) -> dict[str, Any]:
