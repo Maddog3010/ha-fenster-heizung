@@ -81,6 +81,8 @@ Unter **Module verwalten** schaltest du jedes Modul ein oder aus. Modul 1 ist im
 
 ## Modul 1: Fenster & Heizung
 
+<p align="center"><img src="docs/vorschau_modul_fenster_heizung.png" width="720" alt="Modul 1: Fenster &amp; Heizung"></p>
+
 ### Fensterregelung
 Öffnet jemand ein Fenster, schaltet die Integration die Thermostate des Raums nach einer einstellbaren Verzögerung aus oder senkt sie ab. Nach dem Schließen läuft alles wie vorher weiter.
 
@@ -217,12 +219,15 @@ Zeigt für jedes Gerät, **woher der Strom kam** (Solar, Batterie oder Netz), wa
 Diese zwölf Module sind **Beta-Versionen**. Sie sind noch in Entwicklung, Funktionen können sich ändern oder fehlen. Jede Seite trägt die Kennzeichnung „Beta“ und nennt unten, was noch folgt („In Entwicklung“). Alle Beta-Module sind **standardmäßig aus**, lesen nur Werte aus Home Assistant und **schalten nichts**. Wer ein Modul einschaltet, sieht es sofort in der Modulleiste. Rückmeldungen gern als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues).
 
 ### Modul 5: Lüftung & Raumluft
+<p align="center"><img src="docs/vorschau_modul_lueftung.png" width="560" alt="Modul 5: Lüftung &amp; Raumluft"></p>
 Zeigt pro Raum Luftfeuchte, Taupunkt und Lüftungshinweise aus den Räumen von Modul 1. Räume ohne Luftfeuchte-Sensor sind als solche markiert. **Geplant:** KWL (Lüftungsanlage) steuern und CO₂-Werte auswerten.
 
 ### Modul 6: Rollläden & Beschattung
+<p align="center"><img src="docs/vorschau_modul_rolllaeden.png" width="560" alt="Modul 6: Rollläden &amp; Beschattung"></p>
 Zeigt Sonnenhöhe und Himmelsrichtung aus der Sonnen-Entität von Home Assistant sowie Außentemperatur und Luftfeuchte. **Geplant:** Rollläden nach Zeitplan und Sonnenstand steuern, Hitzeschutz im Sommer, Sonnenwärme im Winter nutzen.
 
 ### Modul 7: Wärmepumpe
+<p align="center"><img src="docs/vorschau_modul_waermepumpe.png" width="560" alt="Modul 7: Wärmepumpe"></p>
 Zeigt die Außenbedingungen und ob Abtauen wahrscheinlicher wird (unter etwa 7 °C). **Geplant:** Laufzeit und Takten erkennen, Vorlauf, Rücklauf und Leistungszahl (COP), Abtauzyklen zählen.
 
 ### Modul 8: Elektroauto & Wallbox
@@ -252,6 +257,7 @@ Zeigt, ob es regnet (aus der Wetter-Entität), den aktuellen PV-Überschuss (aus
 Findet automatisch alle `binary_sensor` mit der Geräteklasse **Rauch, CO, Gas, Wasser oder Sicherheit** und zeigt Anzahl, Alarme (rot, oben in der Liste), Melder mit schwacher Batterie (unter 20 %, wenn der Melder `battery_level` meldet) und nicht erreichbare Melder. **Geplant:** Alarm-Benachrichtigung, Batteriewarnung, Prüf-Erinnerung. **Wichtig:** Das Modul ersetzt keine Alarmanlage und keinen Rauchmelder mit eigener Sirene.
 
 ### Modul 12: Pool & Sauna
+<p align="center"><img src="docs/vorschau_modul_pool.png" width="560" alt="Modul 12: Pool &amp; Sauna"></p>
 Zeigt PV-Überschuss und Strompreis aus Modul 1 sowie die Außentemperatur. **Geplant:** Poolpumpe nach Sonne und Überschuss, Pool-Heizung (Wärmepumpe oder Heizstab), Sauna nach Wunschzeit, Kosten und Solaranteil.
 
 ### Modul 13: Batteriespeicher-Planung
@@ -265,9 +271,11 @@ Zeigt Ladestand und Untergrenze (aus den PV-Einstellungen von Modul 1), den Übe
 Liest die **Stundenpreise** aus dem Preis-Sensor, den du in Modul 1 unter „Strompreis“ gewählt hast. Der Sensor muss die Preisliste für heute als Attribut `raw_today`, `prices_today`, `today` oder `prices` liefern (24 Stunden- oder 96 Viertelstunden-Werte, in Euro oder Cent). Die Seite zeigt Preis jetzt, Tagesschnitt, nächste Stunde, einen **Preisverlauf** (grün günstig, rot teuer) und die **günstigsten drei Stunden** zum Laden und Waschen. Ohne Preisliste erscheint ein Hinweis. **Geplant:** Vorschläge für günstige Fenster, Preisalarm, Preise für morgen.
 
 ### Modul 15: Wartung & Erinnerungen
+<p align="center"><img src="docs/vorschau_modul_wartung.png" width="560" alt="Modul 15: Wartung &amp; Erinnerungen"></p>
 Zeigt, wie die Seite aussehen soll: Termine wie Schornsteinfeger, Lüftungsfilter und Heizungswartung mit Restzeit sowie Betriebsstunden mit Fortschritt bis zur nächsten Wartung. **Alle Einträge sind Beispiele.** **Geplant:** eigene Termine mit „Erledigt“-Knopf, Erinnerung aufs Handy, Betriebsstunden aus Sensoren.
 
 ### Modul 16: Solar-Prognose
+<p align="center"><img src="docs/vorschau_modul_prognose.png" width="560" alt="Modul 16: Solar-Prognose"></p>
 Zeigt, wie die Seite aussehen soll: Prognose für heute und morgen, bisheriger Ertrag und ein Vergleich von Prognose gegen tatsächlichen Ertrag der letzten Tage. **Alle Werte sind Beispiele.** **Geplant:** echte Prognose-Sensoren (zum Beispiel Forecast.Solar), Vergleich mit dem Ertrag aus Modul 3, beste Zeit für Verbraucher.
 
 ## Allgemeines
