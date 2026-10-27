@@ -26,6 +26,8 @@ from .api import async_register_api
 from .diag import DiagManager, diag_expect, diag_log
 from .general import GeneralManager
 from .geraete import GeraeteManager
+from .hersteller import logic as hs_logic, lookup as hs_lookup
+from .sicherheit import SicherheitManager
 from .wetter import WetterManager
 from .wasser import WasserManager
 from .heater import HeaterRoom, PvManager
@@ -1045,6 +1047,10 @@ class WindowController:
                 st.attributes.get("hvac_modes") or []
             ):
                 await self._call("set_hvac_mode", eid, hvac_mode=STATE_OFF)
+            elif cfg.get(CONF_ACTION, ACTION_OFF) == ACTION_OFF and hs_logic(hs_lookup(self.hass, eid))["off_min"]:
+                # Gerät ohne echten Aus-Zustand (z. B. Homematic IP, Shelly TRV, Danfoss Ally): kleinste Temperatur
+                low = st.attributes.get("min_temp")
+                await self._call("set_temperature", eid, temperature=low if isinstance(low, (int, float)) else 5)
             else:
                 await self._call(
                     "set_temperature",
@@ -1065,8 +1071,12 @@ class WindowController:
             st = self.hass.states.get(eid)
             if st is None or st.state == "unavailable":
                 continue
-            if st.state != data["hvac_mode"]:
+            resume = data["hvac_mode"] == "auto" and "auto" in (st.attributes.get("hvac_modes") or []) and hs_logic(hs_lookup(self.hass, eid))["auto_resume"]
+            if st.state != data["hvac_mode"] or resume:
+                # Zeitplan-Geräte (tado, Homematic IP, FRITZ!): Automatik erneut setzen beendet die manuelle Übersteuerung
                 await self._call("set_hvac_mode", eid, hvac_mode=data["hvac_mode"])
+            if resume:
+                continue
             if data.get("temperature") is not None:
                 await self._call("set_temperature", eid, temperature=data["temperature"])
         self._energy_step()
@@ -1167,6 +1177,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "wetter" not in store:
         store["wetter"] = WetterManager(hass)
         await store["wetter"].async_start()
+    if "sicherheit" not in store:
+        store["sicherheit"] = SicherheitManager(hass)
+        await store["sicherheit"].async_start()
     return True
 
 
@@ -1210,5 +1223,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             wxm = hass.data.get(DOMAIN, {}).pop("wetter", None)
             if wxm is not None:
                 wxm.async_stop()
+            sfm = hass.data.get(DOMAIN, {}).pop("sicherheit", None)
+            if sfm is not None:
+                sfm.async_stop()
             hass.data.get(DOMAIN, {}).pop("tibber", None)
     return ok

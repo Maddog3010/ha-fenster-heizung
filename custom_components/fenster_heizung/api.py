@@ -137,6 +137,11 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
             clean["outdoor"] = out_s
         if clean:
             out["wx"] = clean
+    store = raw.get("store")
+    if isinstance(store, dict):
+        sc = {k: store[k] for k in ("icon", "tab") if isinstance(store.get(k), bool)}
+        if sc:
+            out["store"] = sc
     return out
 
 
@@ -655,11 +660,63 @@ async def ws_wx_test(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], await mgr.async_test())
 
 
+def _sf(hass: HomeAssistant, connection, msg: dict):
+    mgr = hass.data.get(DOMAIN, {}).get("sicherheit")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Sicherheit ist noch nicht bereit")
+    return mgr
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sf_get"})
+@websocket_api.async_response
+async def ws_sf_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _sf(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], await mgr.snapshot())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sf_set", vol.Required("cfg"): dict})
+@websocket_api.async_response
+async def ws_sf_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _sf(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], await mgr.async_set(msg["cfg"]))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sf_test"})
+@websocket_api.async_response
+async def ws_sf_test(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _sf(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], await mgr.async_test())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sf_tested"})
+@websocket_api.async_response
+async def ws_sf_tested(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _sf(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], await mgr.async_mark_tested())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sf_press", vol.Required("ent"): str})
+@websocket_api.async_response
+async def ws_sf_press(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _sf(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], await mgr.async_press_test(msg["ent"]))
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
+        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press,
     ):
         websocket_api.async_register_command(hass, command)

@@ -2,16 +2,34 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [3.0.2] - 2026-10-27
+## [3.0.2.3] - 2026-10-27
 ### Neu
+- **Intern:** Das Dashboard (`panel.js`) wird jetzt aus 14 Quelldateien in `frontend-src/parts` gebaut (`python3 frontend-src/build.py`), das Ergebnis ist byte-gleich zur bisherigen Datei. Für Nutzer ändert sich nichts.
+- **Herstellerprofile für Thermostate (Modul 1):** tado°, Homematic IP, AVM FRITZ!DECT, Shelly TRV, Aqara E1 und Danfoss Ally werden automatisch erkannt. Im Store gibt es die Kategorie „Heizung“ mit Detailseiten und den Besonderheiten je Hersteller, in den Raumeinstellungen steht unter „Fenster & Thermostate“ der erkannte Hersteller mit Hinweisen. Die Regelung beachtet zwei Besonderheiten: Geräte ohne echtes Aus (Homematic IP, Shelly TRV, Danfoss Ally) gehen bei „Thermostat aus“ auf die kleinste Temperatur des Geräts, und Zeitplan-Geräte (tado°, Homematic IP, FRITZ!) schalten nach dem Lüften wieder auf Automatik, statt die alte Temperatur als manuelle Übersteuerung zu setzen. Alle anderen Geräte verhalten sich wie bisher.
+- **Neuer Store für Integrationen:** Die Integrationen-Seite ist jetzt ein Store mit Suche, Kategorien (Strom & Tarife, Elektroauto, Wetter, Sicherheit), Highlight-Banner sowie den Bereichen „Verbunden“ und „Entdecken“. Tippt man eine Karte an, öffnet sich eine Detailseite mit Kurzfakten, „Was du bekommst“, „So geht es“ und Hinweisen. Erreichbar über ein **Store-Symbol im Kopf** (mit Zähler für fehlende Dienste), einen **Tab „Store“** in der Modul-Leiste und weiterhin über Einstellungen → Allgemein. Symbol und Tab lassen sich unter Einstellungen → Allgemein → „Store anzeigen“ einzeln ausblenden.
+- **Einstellungen neu gegliedert:** Oben eine Übersicht (aktive Module, Räume, Personen, Version), dann **Allgemein** (Einrichtungsassistent, Integrationen, Personen & Standort, Darstellung), **Meine Module** (nur eingeschaltete, mit Status), **Weitere Module** (ausgeschaltete als kleine Felder, ein Tipp schaltet ein) und **System** (Sichern & Wiederherstellen, Diagnose, Module verwalten).
+- **Modul 8, neues Aussehen:** Register-Leiste über die volle Breite (am Handy mit Icons über den Texten), Fahrzeugkarte mit größerem Titel und Schein beim Laden oder Angesteckt-Sein, vier Kacheln mit Icon neben der Fahrzeugkarte, Heute und Wallbox links, Schnellstart und Entscheidungen rechts ohne Lücken, Karten mit Icon-Titel und runderen Ecken.
+- **Modul 2, neues Aussehen:** Größere Temperatur und Speicher in der Kopfkarte mit Glas-Chips und abgerundeten Aktionstasten, Kennzahlen mit Icon-Plättchen (am Handy zu zweit), Karten mit Icon-Titel, Zeitplan und Legionellenschutz links, Zirkulation und PV-Überschuss rechts ohne Lücken, am Handy in sinnvoller Reihenfolge.
+- **Modul 4, neues Aussehen:** Kopfkarte mit Ring für den Eigenstrom-Anteil (Solar und Batterie) über alle Geräte, Zeitraum-Kacheln mit Icon und Farblinie (am Handy zu zweit), Gerätekarten mit Icon, Statuspunkt, dickem Quellen-Balken, drei großen Zahlen für Solar, Batterie und Netz, Feldern für Heute und Letzter Durchlauf sowie Startempfehlung als Fußstreifen, Verlauf mit Icon-Titel und abgerundeten Balken.
+- **Modul 3, neues Aussehen:** Kopfkarte mit Ring für den Deckungsanteil, Kennzahlen mit Icon und Balken (selbst genutzt, Bezug, Einspeisung, Autarkie), zwei lückenlose Spalten, Karten mit Icon-Titel, hervorgehobene Bilanz, größerer Energiefluss und volle Breite für den Zeitraum-Umschalter. Am Handy stehen die Karten in sinnvoller Reihenfolge.
+- **Modul 1, neues Aussehen:** Kopfkarte mit Glas-Chips, Raumkarten mit farbigem Statusstreifen und aufgeräumter Kopfzeile, Heizung und Fenster als geteilte Leiste, Anwesenheit als durchgehender Umschalter, klarere Kacheln für Luftfeuchte, Taupunkt und Schimmel. Karten einer Reihe sind gleich hoch.
+- **Modul 11 „Rauch- & Sicherheitsmelder“ (Beta) ist fertig** und läuft im Hintergrund, auch bei geschlossenem Dashboard:
+  - **Erkennung:** alle Melder mit Geräteklasse Rauch, CO, Gas, Wasser, Hitze oder Sicherheit, mit Raum, Batteriestand und Testknopf, egal von welchem Hersteller.
+  - **Alarm:** sofortige Meldung aufs Handy, deine Aktionen (Licht, Schalter, Ventil, Rollladen, Skript, Szene) einmal ausgelöst, Erinnerung alle 10 Minuten (einstellbar), Meldung bei Ende.
+  - **Batterie** (Standard unter 20 %), **Erreichbarkeit** (Standard nach 60 Minuten) und **Prüf-Erinnerung** (alle 1, 3, 6 oder 12 Monate, Knopf „Geprüft“), jeweils mit Sperrzeit gegen Dauermeldungen.
+  - **Neues Aussehen:** Statusfläche (ruhig, Hinweise, Alarm), Kacheln, Melderkarten mit Statusstreifen, Prüfung und Protokoll.
+  - **Integrationen:** neue Karte für Melder-Dienste mit X-Sense (über die inoffizielle Community-Integration per HACS, wird automatisch erkannt), Zigbee, Zigbee2MQTT, Homematic IP und weitere, mit Anleitung.
 - **Modul 9 „Wetter & Warnungen“ (Beta) ist fertig** und läuft im Hintergrund, auch bei geschlossenem Dashboard:
+  - **Neues Aussehen:** Oben ein Satz zur Lage (keine Warnung, Vorwarnung, aktiv) mit der **Windkurve der nächsten 12 Stunden** gegen die Sturmgrenze, Warnstunden getönt. Darunter **Warnstufen als Pegel** (Messwert gegen Grenze, amtliche Warnung mit Stufe 1 bis 4), **Aktionen und Erinnerungen** als Liste und ein **Protokoll** als Zeitleiste.
   - **Warnungen:** Sturm (Grenzwert 30 bis 120 km/h), Gewitter und Hagel, Frost, Hitze und Starkregen, einzeln schaltbar. Beginn nach zwei Messungen in Folge, Ende erst nach zehn Minuten unter der Grenze (mit Spielraum), damit Böen nicht ständig umschalten.
   - **Wind** aus einer Wetterstation oder aus der Wetter-Entität (Böen inklusive). Einheiten m/s, mph und Knoten werden in km/h umgerechnet.
   - **Vorwarnung** bis 12 Stunden im Voraus aus der Stundenvorhersage, Karte „Nächste Stunden“.
   - **Amtliche Warnung** von DWD, NINA und MeteoAlarm als eigene Kachel, mit Meldung aufs Handy.
   - **Aktionen** bei Warnungen: Rollläden und Markisen, Schalter, Lichter, Skripte und Szenen, einmal pro Warnung, optional mit „Danach zurück“ 15 Minuten nach Ende.
   - **Fenster-Erinnerung** für offene Fenster aus Modul 1, **Benachrichtigung** über `notify.*` (Beginn, Ende, Vorwarnung) mit Testmeldung, **Protokoll** der letzten Ereignisse.
+  - Die **Einstellungen** von Modul 9 öffnest du über **Einstellungen → Modul 9** (der große Knopf auf der Seite entfällt, wie bei den anderen Modulen).
   - Neue WebSocket-Befehle `wx_get`, `wx_set` und `wx_test`.
+- **Modul 1, Einstellungen neu geordnet:** Unter **Einstellungen → Modul 1** stehen vier aufklappbare Bereiche mit Kurzstatus: **Sommermodus**, **Wetterabhängige Absenkung**, **PV-Überschuss für Elektroheizer** und neu getrennt davon **Strompreis und Einspeisevergütung**. Jeder Bereich zeigt in der Zeile, was gerade eingestellt ist. Welche Bereiche offen sind, wird im Browser gemerkt. **Sichern & Wiederherstellen** und Updates haben ihren eigenen Eintrag unter Einstellungen → Allgemein, Diagnose und Einrichtungsassistent stehen dort schon als eigene Zeilen (vorher doppelt im Dialog).
 - **Integrationen → Wetter und Warnungen:** Passende Dienste mit Status (DWD, NINA, MeteoAlarm, Met.no, OpenWeatherMap, Open-Meteo, AccuWeather, Pirate Weather, Tomorrow.io, Ecowitt, Netatmo, WeatherFlow Tempest) und „Einrichten“-Knopf. Eingerichtetes wird automatisch genutzt, bei mehreren Quellen gibt es eine Zuordnung für Wetter, Wind, Außentemperatur und amtliche Warnung sowie die Auswahl der Benachrichtigungsdienste.
 - **Modul 8 (Beta), Register „Laden“:**
   - **Heute:** Geladene Energie, Sonnenanteil, Kosten und aktuelle Leistung mit Anteil Sonne und Netz.
@@ -31,6 +49,8 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
   - „Letzte Entscheidungen“ zeigt zuerst 4 Einträge.
 - Neuer WebSocket-Befehl `wb_quick`, `wb_get` und `wb_set` kennen `quick`, `guard`, `notify` und `dep`.
 ### Behoben
+- **Modul 8, Ladeplanung:** Beim Ändern der Uhrzeit (z. B. von 7 auf 5 Uhr) am Mac/Safari wurde das Zeitfeld nach jeder einzelnen Ziffer neu aufgebaut und eine unvollständige Zeit gespeichert. Jetzt wird nur eine vollständige, gültige Uhrzeit gespeichert und das Feld erst nach der Eingabe aktualisiert.
+- **Sommermodus:** Die Tasten „Aus“, „Automatisch“ und „Immer an“ reagierten nicht (der Name der Aktion wurde fälschlich dem Modul Gerätestrom zugeordnet).
 - **Integrationen:** Aufklappbare Bereiche („Weitere Dienste“, „Lokale Schnittstelle einschalten“) und die Auswahlfelder (Wetter, Wind, Außentemperatur, Amtliche Warnung) schlossen sich sofort wieder, weil sich die Seite automatisch neu zeichnete. Offene Bereiche bleiben jetzt offen, und eine geöffnete Auswahl wird nicht mehr unterbrochen.
 - **Modul 8, Fehlerbehebung:**
   - „Heute“ zeigte zwischen 0 und 2 Uhr die Werte des Vortags (die Oberfläche rechnete mit der UTC-Zeit statt mit der Ortszeit).

@@ -5,15 +5,15 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.3-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Eine Integration für Home Assistant, die Heizung, Fenster, Warmwasser, Solarstrom und Geräte zusammenbringt.** Sie pausiert Heizkörper, wenn ein Fenster offen ist, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer und Warmwasser, zeigt, woher der Strom deiner Geräte kommt, und stellt alles in einem eigenen Dashboard in der Seitenleiste dar.
 
-> ### 🌦️ Neu in Version 3.0.2: Modul 9 Wetter & Warnungen
-> **Modul 9 (Beta) ist fertig:** Warnungen für Sturm, Gewitter, Frost, Hitze und Starkregen mit **Vorwarnung**, **amtliche Warnungen** von DWD, NINA und MeteoAlarm, **Aktionen** (Rollläden, Markisen, Schalter, Skripte), **Fenster-Erinnerung** und **Benachrichtigung** aufs Handy. Unter **Einstellungen → Allgemein → Integrationen → Wetter und Warnungen** siehst du die passenden Dienste mit Status. Was eingerichtet ist, wird automatisch genutzt. Details im Abschnitt [Modul 9](#modul-9-wetter--warnungen).
+> ### 🌦️ Neu in Version 3.0.2.3: Modul 9 Wetter & Warnungen
+> **Modul 9 (Beta) ist fertig:** Warnungen für Sturm, Gewitter, Frost, Hitze und Starkregen mit **Vorwarnung**, **amtliche Warnungen** von DWD, NINA und MeteoAlarm, **Aktionen** (Rollläden, Markisen, Schalter, Skripte), **Fenster-Erinnerung** und **Benachrichtigung** aufs Handy. Unter **Einstellungen → Allgemein → Integrationen → Wetter und Warnungen** siehst du die passenden Dienste mit Status. Was eingerichtet ist, wird automatisch genutzt. Details im Abschnitt [Modul 9](#modul-9-wetter--warnungen). Die Einstellungen von **Modul 1** sind neu geordnet (vier aufklappbare Bereiche unter **Einstellungen → Modul 1**), und die Tasten des Sommermodus funktionieren wieder.
 >
-> ### ⚡ Außerdem in 3.0.2: Wallbox noch komfortabler
+> ### ⚡ Außerdem in 3.0.2.3: Wallbox noch komfortabler
 > **Modul 8 ist neu geordnet:** Das Register „Laden“ zeigt nur noch den Alltag, alle Einstellungen stehen im neuen Register „Einstellungen“ mit Einrichtungs-Check und aufklappbaren Bereichen. Dazu gibt es eine **Statusleiste** mit Hinweisen. In **Modul 8** gibt es jetzt eine Tageskarte **Heute**, einen **Schnellstart** (1 Stunde voll, bis zum Ziel voll, heute nur Sonne), den **Hausanschluss-Schutz**, **Benachrichtigungen** aufs Handy und eine **Abfahrtszeit pro Fahrzeug**. RFID-Karten ordnest du per Antippen den Fahrzeugen zu (mehrere Karten pro Fahrzeug sind möglich), die Auswahl der Karten funktioniert jetzt zuverlässig. Die Ladestatistik zeigt zusätzlich Ø Verbrauch und gespartes CO₂ und lässt sich als CSV exportieren. Alle Details stehen im [Changelog](CHANGELOG.md).
 >
 > ### 🔌 Version 3.0.1: Laderegelung für den go-e Charger
@@ -172,6 +172,8 @@ Pro Raum kann ein elektrischer Heizer (Heizlüfter, Infrarot, Klima-Heizgerät) 
 Mit einem Luftfeuchte-Sensor zeigt die Raumkarte Luftfeuchte, Taupunkt und Schimmelrisiko mit einer Empfehlung zum Stoßlüften samt Countdown. Auch ohne Sensor erscheinen „Gelüftet vor X Std.“, die geschätzte Wandtemperatur und die kritische Feuchte. Das Schimmelrisiko ist eine Schätzung, kein Messwert.
 
 ### Wetter-Anpassung und Sommermodus
+Die Einstellungen dazu öffnest du über **Einstellungen → Modul 1**: vier aufklappbare Bereiche (Sommermodus, Wetterabhängige Absenkung, PV-Überschuss für Elektroheizer, Strompreis und Einspeisevergütung), jeweils mit Kurzstatus in der Zeile.
+
 - **Wetterabhängige Absenkung** (standardmäßig aus): Bei Sonne oder milder Luft sinkt die Zieltemperatur des Heizplans, bei Frost steigt sie.
 - **Sommermodus:** Aus, automatisch oder immer an. Bei „Automatisch“ ruhen die Heizpläne ab einer einstellbaren mittleren Außentemperatur. Fenstermeldung und Erinnerungen bleiben aktiv.
 
@@ -268,7 +270,7 @@ Zeigt die Außenbedingungen und ob Abtauen wahrscheinlicher wird (unter etwa 7 �
 
 <p align="center"><img src="docs/vorschau_wallbox_regelung.png" width="620" alt="Laderegelung der Wallbox"></p>
 
-  - **Fahrzeuge & Karten (wie bei evcc):** Die Regelung erkennt das Fahrzeug an der RFID-Karte, die an der Wallbox angelegt wird. Du trägst keine Kartennummern ein, sondern tippst die Karten an, die in der go-e-App schon hinterlegt sind (Kartenname). **Seit 3.0.2** gibt es dafür den Block **„Karten zuordnen“**: Jede Karte hat eine Zeile mit allen Fahrzeugen als Auswahl-Chips, ein Tipp ordnet sie zu oder löst sie wieder. Ein Fahrzeug kann **beliebig viele Karten** haben (zum Beispiel eine pro Person für dasselbe Auto), eine Karte gehört aber zu genau einem Fahrzeug. Die gerade erkannte Karte ist mit „Aktiv“ markiert, Karten ohne Fahrzeug gelten als Gast. Ist in den Elektroauto-Einstellungen eine Marke und ein Modell hinterlegt, legst du das Fahrzeug mit einem Tipp an. Pro Fahrzeug stellst du Modus und Ladelimit ein, ein Gastfahrzeug gilt für unbekannte Karten. Die Ladestatistik zählt weiter getrennt pro Karte und Fahrzeug.
+  - **Fahrzeuge & Karten (wie bei evcc):** Die Regelung erkennt das Fahrzeug an der RFID-Karte, die an der Wallbox angelegt wird. Du trägst keine Kartennummern ein, sondern tippst die Karten an, die in der go-e-App schon hinterlegt sind (Kartenname). **Seit 3.0.2.3** gibt es dafür den Block **„Karten zuordnen“**: Jede Karte hat eine Zeile mit allen Fahrzeugen als Auswahl-Chips, ein Tipp ordnet sie zu oder löst sie wieder. Ein Fahrzeug kann **beliebig viele Karten** haben (zum Beispiel eine pro Person für dasselbe Auto), eine Karte gehört aber zu genau einem Fahrzeug. Die gerade erkannte Karte ist mit „Aktiv“ markiert, Karten ohne Fahrzeug gelten als Gast. Ist in den Elektroauto-Einstellungen eine Marke und ein Modell hinterlegt, legst du das Fahrzeug mit einem Tipp an. Pro Fahrzeug stellst du Modus und Ladelimit ein, ein Gastfahrzeug gilt für unbekannte Karten. Die Ladestatistik zählt weiter getrennt pro Karte und Fahrzeug.
   - **„Nur mit erkannter Karte regeln“:** Ohne Karte verändert Strom & Wärme nichts an der Wallbox. Die eigentliche Sperre kommt von der Kartenpflicht (Authentifizierung) in der go-e-App.
   - **„Nach dem Abstecken zurücksetzen“:** Die Wallbox wird auf „neutral“ gestellt und die Erkennung vergessen. Sie gilt nur für eine Ladung.
 <p align="center"><img src="docs/vorschau_wallbox_fahrzeuge.png" width="620" alt="Fahrzeuge und Karten"></p>
@@ -287,7 +289,7 @@ Zeigt die Außenbedingungen und ob Abtauen wahrscheinlicher wird (unter etwa 7 �
 <p align="center"><img src="docs/vorschau_integration_tibber.png" width="620" alt="Tibber verbinden"></p>
 
     - **Preisauflösung:** „Stundenmittel“ (empfohlen, ein Preis pro Stunde), „Viertelstunden“ (die genauen 15-Minuten-Preise; kennt die Tibber-Schnittstelle sie nicht, werden automatisch Stundenwerte genommen) oder „Preisstufen“ (nur Tibbers Einstufung von sehr günstig bis teuer, die Kosten in der Statistik bleiben mit den echten Preisen berechnet).
-  - **Register in Modul 8 (neu geordnet in 3.0.2):** „Laden“, „Planung“, „Ladestatistik“ und „Einstellungen“.
+  - **Register in Modul 8 (neu geordnet in 3.0.2.3):** „Laden“, „Planung“, „Ladestatistik“ und „Einstellungen“.
 <p align="center"><img src="docs/vorschau_wallbox_laden.png" width="620" alt="Modul 8, Register Laden"></p>
 
     - **Laden (Alltag):** Auto-Grafik, Heute, Wallbox mit Modus und Status, Schnellstart und die letzten Entscheidungen. Die Modus-Tasten gelten für das **erkannte Fahrzeug**, darunter steht, für wen („Gilt für BYD Seal U“). Ohne erkannte Karte gilt der Standardmodus oder der Gastmodus.
@@ -308,30 +310,30 @@ Zeigt die Außenbedingungen und ob Abtauen wahrscheinlicher wird (unter etwa 7 �
 <p align="center"><img src="docs/vorschau_wallbox_statistik.png" width="620" alt="Ladestatistik"></p>
 
     - Balkendiagramm pro Tag (Monat), pro Monat (Jahr) oder pro Jahr (Gesamt), wahlweise **Energie** oder **Kosten**, aufgeteilt nach **Sonne / Netz** oder nach **Fahrzeug**. Dazu Kacheln mit Geladen, Sonnenanteil, Kosten, Ø Preis und Ersparnis sowie die letzten Ladevorgänge.
-    - **Neu in 3.0.2:** Kachel **Ø Verbrauch** (kWh pro 100 km, aus dem Kilometerstand-Sensor des Elektroautos, ohne Sensor wird sie als „–“ angezeigt) und **CO₂ gespart** (Sonne statt Netz-Mix, gerechnet mit 0,38 kg je kWh). Der Knopf **CSV** lädt die Tage und Ladevorgänge als Tabelle für Excel herunter (Semikolon, deutsche Zahlen).
+    - **Neu in 3.0.2.3:** Kachel **Ø Verbrauch** (kWh pro 100 km, aus dem Kilometerstand-Sensor des Elektroautos, ohne Sensor wird sie als „–“ angezeigt) und **CO₂ gespart** (Sonne statt Netz-Mix, gerechnet mit 0,38 kg je kWh). Der Knopf **CSV** lädt die Tage und Ladevorgänge als Tabelle für Excel herunter (Semikolon, deutsche Zahlen).
     - **So wird gerechnet:** Alle 10 Sekunden wird die Ladeleistung aufgeteilt. Als Sonne zählt der Anteil, der aus dem Überschuss am Netzanschluss gedeckt wird (Einspeisung plus Wallbox-Leistung, also auch die Hausbatterie), der Rest kommt aus dem Netz. Die Kosten sind der Netzanteil mal dem Preis zum Zeitpunkt des Ladens (Tibber oder Preis-Sensor aus Modul 1, ohne Preis 0 €). Gespeichert wird pro Tag, Fahrzeug und Ladevorgang bis zu 800 Tage, es wird kein Verlauf deiner Position oder Verbrauchsdaten gespeichert. Gezählt wird auch bei ausgeschalteter Regelung.
 
-  - **Neu in 3.0.2: Heute, Schnellstart, Hausanschluss-Schutz und Benachrichtigungen** (Heute und Schnellstart im Register „Laden“, Schutz und Benachrichtigungen im Register „Einstellungen“):
+  - **Neu in 3.0.2.3: Heute, Schnellstart, Hausanschluss-Schutz und Benachrichtigungen** (Heute und Schnellstart im Register „Laden“, Schutz und Benachrichtigungen im Register „Einstellungen“):
 <p align="center"><img src="docs/vorschau_wallbox_zusatz.png" width="620" alt="Heute, Schnellstart, Hausanschluss-Schutz und Benachrichtigungen"></p>
 
     - **Heute:** Geladene Energie, Sonnenanteil, Kosten und die aktuelle Leistung mit dem Anteil Sonne und Netz.
     - **Schnellstart:** Einmalig **1 Stunde voll**, **Bis zum Ziel voll** (bis zum Ladelimit oder Abstecken) oder **Heute nur Sonne** (bis Mitternacht). Er ändert weder Modus noch Planung, endet von selbst, beim Abstecken oder mit „Stopp“ und gilt nur bei einem erkannten Fahrzeug, wenn „Nur mit erkannter Karte regeln“ an ist.
     - **Hausanschluss-Schutz:** Du gibst den Höchststrom pro Phase an (Wert deiner Hauptsicherung oder niedriger). Die Wallbox wird gedrosselt oder pausiert, wenn Haus und Wallbox zusammen die Grenze überschreiten würden, nie das Haus. Der Hausstrom wird aus dem Netzbezug des Zählers (Modul 3 oder Photovoltaik-Einstellung) geschätzt, gleichmäßig auf drei Phasen verteilt. Bei Einspeisung wird nicht gedrosselt. Standardmäßig aus.
     - **Benachrichtigungen:** Meldungen über die Home-Assistant-App (`notify.*`-Dienste, mehrere möglich) bei **Ladung gestartet**, **Ziel erreicht**, **Ladeplan reicht nicht** (Netzstrom nötig), **Wallbox nicht erreichbar** (nach einer Minute) und **Auto steckt lange ohne Ladung** (nach 12 Stunden, standardmäßig aus). Jede Meldung kommt pro Ladung nur einmal.
-  - **Neu in 3.0.2: Abfahrtszeit pro Fahrzeug** im Register „Planung“: Jedes Fahrzeug kann sein eigenes Ziel-Ladestand, seine eigene Uhrzeit und eigene Tage (täglich, Mo–Fr, Wochenende) haben. Es gilt das Fahrzeug, das an der Karte erkannt wird. Ohne eigene Abfahrt sowie bei Gästen gilt der Ladeplan unter „Laden“. Liegt das Ziel an einem Tag, der nicht gewählt ist, wird nicht nach Plan geladen, es gilt der normale Modus. Dadurch wirken die Tage jetzt auch in der Planung nach Preis und Sonne.
+  - **Neu in 3.0.2.3: Abfahrtszeit pro Fahrzeug** im Register „Planung“: Jedes Fahrzeug kann sein eigenes Ziel-Ladestand, seine eigene Uhrzeit und eigene Tage (täglich, Mo–Fr, Wochenende) haben. Es gilt das Fahrzeug, das an der Karte erkannt wird. Ohne eigene Abfahrt sowie bei Gästen gilt der Ladeplan unter „Laden“. Liegt das Ziel an einem Tag, der nicht gewählt ist, wird nicht nach Plan geladen, es gilt der normale Modus. Dadurch wirken die Tage jetzt auch in der Planung nach Preis und Sonne.
 
 <img src="docs/vorschau_elektroauto_einstellungen.png" width="480" alt="Elektroauto einrichten">
 
 ### Modul 9: Wetter & Warnungen
 <p align="center"><img src="docs/vorschau_modul_wetter.png" width="560" alt="Modul 9: Wetter &amp; Warnungen"></p>
 
-Neu in 3.0.2: Das Modul läuft jetzt im Hintergrund von Home Assistant, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, deshalb kann zusätzlich eine amtliche Warnung angezeigt werden.
+Neu in 3.0.2.3: Das Modul läuft jetzt im Hintergrund von Home Assistant, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, deshalb kann zusätzlich eine amtliche Warnung angezeigt werden.
 
 - **Warnlage jetzt:** Fünf eigene Warnungen, jede einzeln ein- und ausschaltbar: **Sturm** (ab 30 bis 120 km/h, Standard 60), **Gewitter und Hagel**, **Frost** (−10 bis 5 °C), **Hitze** (20 bis 45 °C, standardmäßig aus) und **Starkregen** (standardmäßig aus). Eine Warnung beginnt nach zwei Messungen in Folge (glättet Böen) und endet erst, wenn der Wert zehn Minuten lang deutlich unter der Grenze liegt.
 - **Wind:** aus einer eigenen Wetterstation (m/s, mph, Knoten werden in km/h umgerechnet) oder aus der Wetter-Entität, dort auch die Böen.
 - **Vorwarnung:** Aus der Stundenvorhersage der Wetter-Entität (`weather.get_forecasts`) bis zu 12 Stunden im Voraus. Die Karte „Nächste Stunden“ markiert Stunden mit erwarteter Warnung orange. Nicht jeder Wetterdienst liefert eine Stundenvorhersage, dann entfällt sie.
 - **Amtliche Warnung:** Ist **DWD**, **NINA** oder **MeteoAlarm** in Home Assistant eingerichtet, erscheint die höchste aktuelle Warnung als eigene Kachel und wird gemeldet.
-- **Aktionen:** Bei einer Warnung schaltet das Modul, was du auswählst: Rollläden und Markisen (schließen oder öffnen), Schalter, Skripte und Szenen. Eine Aktion läuft einmal beim Beginn. Optional „Danach zurück“: 15 Minuten nach Ende der Warnung wird der vorige Zustand wiederhergestellt, außer eine andere aktive Warnung braucht das Gerät noch.
+- **Aktionen:** Bei einer Warnung schaltet das Modul, was du auswählst: Rollläden und Markisen (schließen oder öffnen), Schalter, Skripte und Szenen. Eine Aktion läuft einmal beim Beginn. Alle Einstellungen öffnest du über **Einstellungen → Modul 9**. Optional „Danach zurück“: 15 Minuten nach Ende der Warnung wird der vorige Zustand wiederhergestellt, außer eine andere aktive Warnung braucht das Gerät noch.
 - **Fenster-Erinnerung:** Meldet bei den gewählten Warnungen (Standard Sturm, Gewitter, Starkregen) offene Fenster aus Modul 1, einmal pro Fenster und Warnung.
 - **Benachrichtigung:** Über `notify.*`-Dienste für Beginn, Ende und Vorwarnung, mit „Test senden“. Vorwarnung und amtliche Warnungen werden höchstens einmal pro Stunde je Art gemeldet.
 - **Protokoll:** Die letzten Ereignisse (Beginn, Ende, ausgelöste Aktionen, Erinnerungen).
@@ -353,10 +355,20 @@ Neu in 3.0.2: Das Modul läuft jetzt im Hintergrund von Home Assistant, auch wen
 
 Zeigt, ob es regnet (aus der Wetter-Entität), den aktuellen PV-Überschuss (aus Modul 1) und einen Platz für den Zisternen-Füllstand. **Geplant:** Regenprognose, Zisterne mit Umschalten auf Leitungswasser, Bewässerung bei PV-Überschuss, Zeitplan pro Zone.
 
+### Store (Integrationen)
+Der Store zeigt Dienste, die zu deinen Modulen passen (go-e, Tibber, Wetter und Warnungen, Melder), erkennt, was in Home Assistant schon läuft, und führt durch die Einrichtung. Er öffnet über das Store-Symbol im Kopf, den Tab „Store“ in der Modul-Leiste oder Einstellungen → Allgemein. Symbol und Tab kannst du unter „Store anzeigen“ einzeln ausblenden.
+
+### Herstellerprofile (Thermostate)
+Strom & Wärme erkennt Thermostate von tado°, Homematic IP, AVM FRITZ!DECT, Shelly TRV, Aqara E1 und Danfoss Ally automatisch. Im Store (Kategorie „Heizung“) und in den Raumeinstellungen stehen die Besonderheiten je Hersteller. Geräte ohne echtes Aus (Homematic IP, Shelly TRV, Danfoss Ally) gehen bei „Thermostat aus“ auf die kleinste Temperatur, Zeitplan-Geräte (tado°, Homematic IP, FRITZ!) schalten nach dem Lüften wieder auf Automatik. Die Hinweise stammen aus Herstellerangaben und Community-Erfahrungen, bitte am eigenen Gerät prüfen.
+
 ### Modul 11: Rauch- & Sicherheitsmelder
 <p align="center"><img src="docs/vorschau_modul_sicherheit.png" width="560" alt="Modul 11: Rauch- &amp; Sicherheitsmelder"></p>
 
-Findet automatisch alle `binary_sensor` mit der Geräteklasse **Rauch, CO, Gas, Wasser oder Sicherheit** und zeigt Anzahl, Alarme (rot, oben in der Liste), Melder mit schwacher Batterie (unter 20 %, wenn der Melder `battery_level` meldet) und nicht erreichbare Melder. **Geplant:** Alarm-Benachrichtigung, Batteriewarnung, Prüf-Erinnerung. **Wichtig:** Das Modul ersetzt keine Alarmanlage und keinen Rauchmelder mit eigener Sirene.
+Findet automatisch alle `binary_sensor` mit der Geräteklasse **Rauch, CO, Gas, Wasser, Hitze oder Sicherheit**, mit Raum, Batteriestand und Testknopf. Bei Alarm kommt sofort eine Meldung aufs Handy, deine Aktionen laufen einmal (Licht, Schalter, Ventil, Rollladen, Skript, Szene), auf Wunsch gibt es Erinnerungen und eine Meldung bei Ende. Dazu Warnung bei schwacher Batterie (Standard unter 20 %), bei nicht erreichbaren Meldern (Standard 60 Minuten) und eine Prüf-Erinnerung (1, 3, 6 oder 12 Monate, Knopf „Geprüft“). Alles läuft im Hintergrund, auch bei geschlossenem Dashboard.
+
+**X-Sense:** Es gibt keine offizielle Home-Assistant-Integration. Mit einer inoffiziellen Community-Integration per HACS (z. B. [Jarnsen/ha-xsense-component_test](https://github.com/Jarnsen/ha-xsense-component_test)) werden die Melder automatisch erkannt. Das läuft über die Cloud und kann nach Home-Assistant-Updates ausfallen. Die Melder alarmieren auch ohne Home Assistant weiter. Die Anleitung steht unter Integrationen.
+
+**Wichtig:** Das Modul ersetzt keine Alarmanlage und keinen Rauchmelder mit eigener Sirene.
 
 ### Modul 12: Pool & Sauna
 <p align="center"><img src="docs/vorschau_modul_pool.png" width="560" alt="Modul 12: Pool &amp; Sauna"></p>
@@ -415,7 +427,7 @@ Pro Raum:
 - Die technische Kennung der Integration bleibt `fenster_heizung` (Ordner, Entitäten, Speicher). Nur der Anzeigename ist „Strom & Wärme“.
 - Modul 9: `fenster_heizung/wx_get` (Einstellungen, Warnlage, Vorhersage, offene Fenster, Protokoll), `wx_set` (`cfg`, nur Administratoren) und `wx_test` (Testmeldung, gibt `sent` zurück).
 - Raumeinstellungen im Dashboard: `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Layout (Farben, Fotos, Symbole, Wetteranzeige): `fenster_heizung/set_layout`. Allgemeines und Sicherung: `get_general`, `set_general`, `get_update`, `get_learning`, `restore`. Diagnose: `get_diag`, `clear_diag`. Module: `get_modules`, `set_modules`, `set_wasser`, `wasser_cmd`. Das Backend prüft alle Werte, Änderungen sind nur für Administratoren erlaubt.
-- Version 3.0.2: `fenster_heizung/wb_quick` (`kind` = `h1`, `goal`, `sun` oder leer zum Stoppen, nur Administratoren). `wb_get` liefert zusätzlich `quick` (`k`, `until`) und `guard` (`house_a`, `wb_a`, `total_a`, `max_a`, `allowed_a`, `limited`). `wb_set` kennt zusätzlich `guard` (`on`, `maxA` 10 bis 63), `notify` (`start`, `goal`, `plan`, `off`, `long`, `to` mit `notify.*`-Diensten) und pro Fahrzeug `dep` (`on`, `soc`, `time`, `days`). `wb_stats` liefert pro Tag zusätzlich `km`.
+- Version 3.0.2.3: `fenster_heizung/wb_quick` (`kind` = `h1`, `goal`, `sun` oder leer zum Stoppen, nur Administratoren). `wb_get` liefert zusätzlich `quick` (`k`, `until`) und `guard` (`house_a`, `wb_a`, `total_a`, `max_a`, `allowed_a`, `limited`). `wb_set` kennt zusätzlich `guard` (`on`, `maxA` 10 bis 63), `notify` (`start`, `goal`, `plan`, `off`, `long`, `to` mit `notify.*`-Diensten) und pro Fahrzeug `dep` (`on`, `soc`, `time`, `days`). `wb_stats` liefert pro Tag zusätzlich `km`.
 - Version 3.0.1: Statistik und Planung: `fenster_heizung/wb_stats` (Tage und Ladevorgänge), `wb_forecast` (Stundenraster mit `pv`, `price`, `level`, `slot_min`, `fs`), Tibber: `tb_get`, `tb_test` mit `token`, `tb_set` mit `token`, `home`, `res` (`h`, `q`, `lvl`). Die Einstellungen der Wallbox haben dafür `planOn`, `planStrat`, `planSrc`, `pvSrc`, `baseW`.
 - Version 3.0.1: Wallbox: `fenster_heizung/wb_get` (Status, Einstellungen, Entscheidungen), `wb_set` mit `cfg` (`ip`, `enabled`, `mode` = off/pv/minpv/now, `minA`, `maxA`, `ph`, `startW`, `onMin`, `offMin`, `limit`, `plan`, `planSoc`, `planTime`, `planDays`, `cap`, `batOn`, `batSoc`, `priceOn`, `priceMax`, `lock`, `reset`, `vehicles` mit `id`, `name`, `ids` (Kartennummern), `mode`, `limit`, `guest` mit `mode`, `limit`); `wb_get` liefert zusätzlich `info.cards` und `who` (erkanntes Fahrzeug) und `wb_test` mit `ip`.
 - Version 3.0.1: `fenster_heizung/set_presence` kennt zusätzlich `zone` (`lat`, `lon`, `r` in Metern, 30 bis 1000) und `people` (je `person.*`: `label`, `trackers`, `wifi`, `count`, `acc`).

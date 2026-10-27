@@ -236,7 +236,7 @@ const WW_ON = ["on", "heat", "heating", "performance", "eco", "electric", "gas",
 const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000, MW: 1e6 };
 const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", bmode: "one", pvn: "", pv2n: "", ent: { pv: "", grid: "", house: "", bat: "", bchg: "", bdis: "", pve: "", pv2: "", pve2: "", imp: "", exp: "" } };
 /* Einstellungen je Modul: neue Module tragen sich hier ein und erscheinen automatisch auf der Einstellungsseite */
-const MOD_SET = { sp: { act: "mdbeta", txt: "Prognose-Sensoren und Vergleich mit dem Ertrag (in Entwicklung)" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "mdbeta", txt: "Melder, Batteriestände und Alarme (in Entwicklung)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "mdbeta", txt: "Unwetter-, Sturm- und Frostwarnungen mit Aktionen (in Entwicklung)" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "gen", txt: "Photovoltaik, Preise, Sommerbetrieb, Wetter, Updates" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
+const MOD_SET = { sp: { act: "mdbeta", txt: "Prognose-Sensoren und Vergleich mit dem Ertrag (in Entwicklung)" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
 const EV_BRANDS = ["Mercedes-Benz", "Audi", "VW", "BYD", "BMW", "Andere"];
 const EV_BODIES = { limousine: "Limousine", suv: "SUV", kombi: "Kombi", kompakt: "Kompakt" };
@@ -574,6 +574,182 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .stbar u b{position:absolute;top:17px;left:50%;transform:translateX(-50%);font-size:.66rem;color:var(--mut);font-weight:600}.stbar u.ok b{color:var(--primary-text-color)}
 .stlb{display:flex;justify-content:space-between;font-size:.72rem;color:var(--mut)}
 @media(max-width:520px){.brand .mn{display:none}.pillbtn .bl{display:none}.pillbtn{padding:8px}.brand .tag{display:none}.brand b{font-size:.94rem}.brand{gap:8px}.hero .hlogo{width:42px;height:42px;right:12px;bottom:12px}.hero .chips{padding-right:50px}.brand .ver::before{content:""!important}.brand .logo{width:34px;height:34px}}
+/* Modul 1: neues Aussehen (Raumkarten, Kopf, Anwesenheit, Kennzahlen) */
+.hero{border-radius:22px;padding:22px 22px 18px}.chip{background:rgba(3,12,22,.34);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(6px);font-weight:600}
+.seg3{gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}.seg3 button{display:flex;flex-direction:row;justify-content:center;align-items:center;gap:8px;border:0;border-radius:0;padding:12px 6px}.seg3 button+button{border-left:1px solid var(--line)}
+.tile{border-radius:18px;padding:14px 16px}.tile::before{left:auto;top:14px;right:14px;bottom:auto;width:8px;height:8px;border-radius:50%}.tile .v{font-size:1.7rem;letter-spacing:-.02em;margin-top:8px}
+.rooms{align-items:stretch}
+.room{display:flex;flex-direction:column;gap:14px;padding:16px;overflow:hidden;border-radius:20px}
+.room::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--st,var(--line))}
+.room[data-m=green]{--st:var(--green)}.room[data-m=amber]{--st:var(--amber)}.room[data-m=slate]{--st:var(--slate)}.room[data-m=gray]{--st:var(--gray)}
+.rh{align-items:flex-start}.rico{width:48px;height:48px;border-radius:15px}
+.rn b{font-size:1.12rem;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.pl{gap:3px 12px;margin-top:3px}.pill{margin:0}
+.why{border:0;background:none;padding:0;margin:0;font-size:.76rem;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--mut) 45%,transparent);text-underline-offset:3px}
+.two{gap:0;border:1px solid var(--line);border-radius:16px;overflow:hidden}.two .box{border:0;border-radius:0;background:none;padding:12px 14px}
+.two .box:nth-child(2){order:-1;border-right:1px solid var(--line)}.two .box .v{font-size:1.08rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.box .v{font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-top:4px}.box.amber .v{color:var(--amber)}.box.green .t .ic{color:var(--green)}
+.room .plan{border-top:0;padding-top:0}.room .foot{margin-top:auto}
+
+/* Modul 3: neues Aussehen */
+.enh{position:relative;border-radius:22px;padding:22px 22px 18px;background:radial-gradient(120% 140% at 100% 0%,#14b8a6 0%,transparent 55%),linear-gradient(135deg,#064e3b,#0f766e 60%,#155e75)}
+.enring{position:absolute;right:26px;top:50%;transform:translateY(-50%);width:132px;height:132px}
+.enring svg{width:100%;height:100%}.enring .rb{fill:none;stroke:rgba(255,255,255,.16);stroke-width:10}.enring .rf{fill:none;stroke:#fff;stroke-width:10;stroke-linecap:round}
+.enring .rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}.enring .rv b{font-size:1.9rem;line-height:1;letter-spacing:-.02em}.enring .rv small{font-size:.9rem;font-weight:600;margin-left:1px}.enring .rv span{font-size:.72rem;opacity:.8;margin-top:3px}
+@media(max-width:560px){.enring{top:20px;right:18px;transform:none;width:88px;height:88px}.enring .rv b{font-size:1.2rem}.enring .rv span{display:none}}
+.enseg{max-width:none;width:100%}
+.tiles .tile{position:relative;padding:14px 14px 16px;border-radius:18px;overflow:hidden}
+.tiles .tile::before{display:none}
+.tile .t{gap:8px;font-weight:600}.tile .ti{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;color:var(--a);background:color-mix(in srgb,var(--a) 16%,transparent)}
+.tile .v{font-size:1.7rem;margin-top:10px}.tile .g{font-size:.74rem}
+.tile .tbar{height:4px;border-radius:4px;background:color-mix(in srgb,var(--a) 16%,transparent);margin-top:11px;overflow:hidden}.tile .tbar i{display:block;height:100%;background:var(--a);border-radius:4px}
+.enc{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.enco{display:flex;flex-direction:column;gap:14px;min-width:0}
+@media(max-width:860px){.enc{display:flex;flex-direction:column;align-items:stretch}.enco{display:contents}}
+.enc .card{border-radius:20px;padding:18px}.enc .card h2{display:flex;align-items:center;gap:10px;font-size:1rem;margin:0 0 14px}
+.enc .card h2>svg:first-child{box-sizing:content-box;padding:7px;width:18px;height:18px;border-radius:10px;background:color-mix(in srgb,var(--teal,#2dd4bf) 15%,transparent);color:var(--teal,#2dd4bf)}
+.enflow{width:100%;max-width:460px;display:block;margin:0 auto}
+.enrows>div{padding:10px 0}
+.enrows .sum{margin-top:2px}
+.enrows .sum:last-child,.enrows>div:last-child.sum{padding:12px 14px;border:0;border-radius:12px;background:color-mix(in srgb,var(--teal,#2dd4bf) 12%,transparent)}
+.pvbar.endist{height:14px;border-radius:8px;margin-bottom:8px}
+
+/* Modul 4: neues Aussehen */
+.gshero{position:relative;border-radius:22px;padding:22px 22px 20px;background:radial-gradient(120% 150% at 100% 0%,#fcd34d 0%,transparent 55%),linear-gradient(135deg,#d97706,#f59e0b 60%,#b45309)}
+.gsbig{font-size:3rem;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin:6px 0 4px}
+.gsring{position:absolute;right:24px;top:50%;transform:translateY(-50%);width:116px;height:116px}
+.gsring svg{width:100%;height:100%}.gsring .rb{fill:none;stroke:rgba(27,21,0,.16);stroke-width:10}.gsring .rf{fill:none;stroke:#1b1500;stroke-width:10;stroke-linecap:round}
+.gsring .rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#1b1500}.gsring .rv b{font-size:1.6rem;line-height:1}.gsring .rv small{font-size:.8rem;margin-left:1px}.gsring .rv span{font-size:.68rem;font-weight:600;margin-top:3px;opacity:.8}
+@media(max-width:560px){.gsring{top:18px;right:16px;transform:none;width:78px;height:78px}.gsring .rv b{font-size:1.1rem}.gsring .rv span{display:none}.gsbig{font-size:2.4rem}}
+.gstiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}@media(max-width:720px){.gstiles{grid-template-columns:1fr 1fr}}
+.gstile{border:1px solid var(--line);border-left:1px solid var(--line);border-radius:18px;padding:14px;position:relative;overflow:hidden}
+.gstile::after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--c)}
+.gst{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.82rem;color:var(--mut)}
+.gsi{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;color:var(--c,var(--amber));background:color-mix(in srgb,var(--c,var(--amber)) 16%,transparent)}
+.gsi.big{width:40px;height:40px;border-radius:13px;--c:var(--amber)}
+.gstile .gsv{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:8px 0 2px}
+.gsdev{border-radius:20px;padding:16px;gap:14px}
+.gsh{gap:12px}.gsh b{flex:1;font-size:1.1rem}
+.gsst{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 12px;font-size:.8rem;font-weight:700;border:1px solid var(--line);color:var(--mut)}
+.gsst.on{color:var(--green);border-color:color-mix(in srgb,var(--green) 45%,transparent);background:color-mix(in srgb,var(--green) 12%,transparent)}
+.gsst.on::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+.gsbar{display:flex;height:14px;border-radius:8px;overflow:hidden;gap:2px}.gsbar i{display:block;height:100%}
+.gsdev .gsleg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0}
+.gsdev .gsleg span{display:grid;grid-template-columns:auto 1fr;column-gap:6px;align-items:center;font-size:.76rem;color:var(--mut)}
+.gsdev .gsleg span i{width:8px;height:8px;border-radius:50%}.gsdev .gsleg em{font-style:normal}
+.gsdev .gsleg b{grid-column:1/3;font-size:1rem;color:var(--primary-text-color);margin-top:2px}
+.gsrows{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.gsrow{display:flex;flex-direction:column;gap:2px;padding:10px 12px;font-size:.78rem}.gsrow+.gsrow{border-left:1px solid var(--line)}
+.gsrow b{font-size:.92rem}.gsrow em{font-style:normal;color:var(--green);font-size:.76rem;min-height:1em}
+.gsadv{border-radius:14px;padding:10px 14px}
+.gsc{border-radius:20px;padding:18px}.gsc h2{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.gsc h2>svg:first-child{box-sizing:content-box;padding:7px;width:18px;height:18px;border-radius:10px;background:color-mix(in srgb,var(--amber) 16%,transparent);color:var(--amber)}
+.gsch{padding:7px 16px}
+.gstiles .gstile{border-left:1px solid var(--line)!important}.gshero{padding:18px 22px 16px}.gsc svg{max-height:280px}
+@media(max-width:720px){.gstiles{grid-template-columns:1fr 1fr!important}.gstile .gsv{font-size:1.3rem}.gstile .mut.sm{font-size:.72rem}}
+
+/* Modul 2: neues Aussehen */
+.wwh{position:relative;border-radius:22px;padding:22px 22px 18px;background:radial-gradient(110% 150% at 100% 0%,#22d3ee 0%,transparent 52%),linear-gradient(135deg,#0c4a6e,#075985 55%,#0e7490);overflow:hidden}
+.wwh .big{font-size:4rem;letter-spacing:-.03em;line-height:1.05}
+.wwh .wwtk{transform:scale(1.12);transform-origin:right center;margin-right:8px}
+.wwh .chip{background:rgba(3,12,22,.34);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(6px);font-weight:600}
+.wwacts{gap:10px;margin-top:14px}
+.wwacts .wwa{border-radius:16px;padding:12px 14px;background:rgba(3,12,22,.3);border:1px solid rgba(255,255,255,.16);justify-content:center}
+.wwacts .wwa .ic{opacity:.9}
+.wwc,.enc .card{border-radius:20px;padding:18px}
+.wwc h2{display:flex;align-items:center;gap:10px;font-size:1rem;margin:0 0 14px}
+.wwc h2>svg:first-child{box-sizing:content-box;padding:7px;width:18px;height:18px;border-radius:10px;background:color-mix(in srgb,var(--teal,#2dd4bf) 15%,transparent);color:var(--teal,#2dd4bf)}
+.wwc .wwlegend,.wwc .wwleg{gap:8px}
+.wwseg{border-radius:14px}
+.wwrs{margin-top:8px}
+.dgs{border-radius:14px}
+@media(max-width:560px){.wwh .big{font-size:3rem}.wwh .wwtk{transform:none}.wwacts{grid-template-columns:1fr}}
+
+/* Modul 8: neues Aussehen */
+.wbtabs{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;width:100%!important;max-width:100%;box-sizing:border-box;gap:4px;border-radius:16px;padding:4px;margin:0 0 14px}
+.wbtabs button{justify-content:center;border-radius:12px;padding:10px 8px;white-space:nowrap}
+@media(max-width:560px){.wbtabs{grid-template-columns:auto auto auto auto!important;justify-content:space-between}.wbtabs button{flex-direction:column;gap:3px;font-size:.62rem;letter-spacing:-.01em;padding:8px 1px;min-width:0}.evtop{grid-template-columns:minmax(0,1fr)}}
+.evtop>*,.mcols>*{min-width:0}
+.wbbar{gap:8px;margin:0 0 14px}.wbchip{background:var(--card);padding:6px 14px;font-weight:650}
+.evtop{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:stretch;margin:0 0 14px}
+@media(max-width:860px){.evtop{grid-template-columns:1fr}}
+.evtop .lugrid{grid-template-columns:1fr 1fr;grid-auto-rows:1fr}
+.evcard{border-radius:22px;padding:18px;gap:12px;background:radial-gradient(110% 120% at 0% 0%,color-mix(in srgb,var(--c8,#64748b) 18%,transparent),transparent 60%),var(--card)}
+.evcard.chg{--c8:#2dd4bf;border-color:color-mix(in srgb,#2dd4bf 40%,var(--line))}.evcard.plg{--c8:#f59e0b}
+.evhead b{font-size:1.3rem;letter-spacing:-.01em;gap:10px}
+.evhead b>svg{box-sizing:content-box;padding:8px;width:20px;height:20px;border-radius:12px;background:color-mix(in srgb,var(--teal,#2dd4bf) 15%,transparent);color:var(--teal,#2dd4bf)}
+.evcard svg.evs,.evcard>svg{border-radius:16px}
+.luroom{border-radius:18px;padding:14px;gap:4px;align-content:space-between}
+.luroom .lv{font-size:1.65rem;letter-spacing:-.02em}
+.luroom .lt{display:flex;align-items:center;gap:8px;font-weight:600}
+.luroom .ti{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;color:var(--teal,#2dd4bf);background:color-mix(in srgb,var(--teal,#2dd4bf) 15%,transparent)}
+.mcols{column-count:2;column-gap:14px}
+.mcols>.card{break-inside:avoid;margin:0 0 14px!important}
+@media(max-width:860px){.mcols{column-count:1}}
+.ocard{border-radius:20px;padding:18px}.ocard h2{gap:10px;margin:0 0 14px}
+.ocard h2>svg:first-child{box-sizing:content-box;padding:7px;width:18px;height:18px;border-radius:10px;background:color-mix(in srgb,var(--teal,#2dd4bf) 15%,transparent);color:var(--teal,#2dd4bf)}
+.mcols .lugrid{grid-template-columns:1fr 1fr}
+.mcols .luroom{padding:12px}.mcols .luroom .lv{font-size:1.4rem}
+
+/* Einstellungen: neue Gliederung */
+.sxw{max-width:860px}
+.sxsum{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:6px 0 4px}
+.sxsum>div{border:1px solid var(--line);border-radius:16px;padding:12px 14px;background:var(--card);display:flex;flex-direction:column;gap:2px}
+.sxsum b{font-size:1.4rem;font-weight:800;letter-spacing:-.02em}.sxsum span{font-size:.74rem;color:var(--mut)}
+.sxh2{display:flex;align-items:center;gap:10px;margin:24px 4px 10px}
+.sxh2 b{font-size:1.05rem}.sxh2 small{color:var(--mut);font-size:.8rem;margin-left:2px}
+.sxhi{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;color:var(--teal);background:color-mix(in srgb,var(--teal) 15%,transparent)}
+.sxl{border-radius:20px;overflow:hidden}
+.sxi{display:grid;place-items:center;flex:none;width:40px;height:40px;border-radius:13px;color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,transparent)}
+.sxgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sxoff{display:flex;align-items:center;gap:10px;border:1px dashed var(--line);border-radius:16px;background:transparent;color:inherit;font:inherit;text-align:left;padding:10px 12px;cursor:pointer}
+.sxoff:hover{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 6%,transparent)}
+.sxoff .sxi{width:34px;height:34px;border-radius:11px;color:var(--mut);background:color-mix(in srgb,var(--mut) 12%,transparent)}
+.sxoff .sxt b{font-size:.88rem}.sxoff.soon{opacity:.5;cursor:default}
+.sxoff .sxc{font-size:.68rem}
+@media(max-width:620px){.sxsum{grid-template-columns:repeat(4,1fr);gap:6px}.sxsum>div{padding:9px 10px;border-radius:14px}.sxsum b{font-size:1.05rem}.sxsum span{font-size:.64rem}.sxh2{flex-wrap:wrap;row-gap:0}.sxh2 small{flex-basis:100%;margin:-2px 0 0 40px}.sxoff{padding:8px 10px;gap:8px}.sxoff .sxi{display:none}.sxoff .sxt b{font-size:.8rem}.sxoff .sxc{display:none}.sxoff .sxt small{font-size:.68rem}}
+
+/* Modul 11: Sicherheit */
+.sfh{position:relative;border-radius:22px;padding:22px 22px 18px;overflow:hidden;background:radial-gradient(110% 150% at 100% 0%,#34d399 0%,transparent 52%),linear-gradient(135deg,#064e3b,#0f766e 60%,#155e75)}
+.sfh.warn{background:radial-gradient(110% 150% at 100% 0%,#fbbf24 0%,transparent 52%),linear-gradient(135deg,#78350f,#b45309 60%,#92400e)}
+.sfh.alarm{background:radial-gradient(110% 150% at 100% 0%,#f87171 0%,transparent 52%),linear-gradient(135deg,#7f1d1d,#b91c1c 60%,#991b1b);animation:sfp 1.6s ease-in-out infinite}
+@keyframes sfp{50%{box-shadow:0 0 0 6px rgba(239,68,68,.25)}}
+@media(prefers-reduced-motion:reduce){.sfh.alarm{animation:none}}
+.sfh .big{font-size:2rem;letter-spacing:-.02em;line-height:1.15;margin:6px 0 4px;max-width:calc(100% - 100px)}
+.sfh .sub{max-width:calc(100% - 100px)}
+.sfi{position:absolute;right:24px;top:22px;width:84px;height:84px;border-radius:26px;display:grid;place-items:center;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);color:#fff}
+@media(max-width:560px){.sfh .big{font-size:1.5rem;max-width:calc(100% - 70px)}.sfh .sub{max-width:calc(100% - 70px)}.sfi{width:58px;height:58px;border-radius:18px;right:16px}.sfi svg{width:34px;height:34px}}
+.sfc{border-radius:20px;padding:18px}.sfc h2{display:flex;align-items:center;gap:10px;font-size:1rem;margin:0 0 14px}.sfc h2 small{margin-left:auto;font-weight:600}
+.sfc h2>svg:first-child{box-sizing:content-box;padding:7px;width:18px;height:18px;border-radius:10px;background:color-mix(in srgb,var(--teal,#2dd4bf) 15%,transparent);color:var(--teal,#2dd4bf)}
+.sfg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,310px),1fr));gap:10px}.sfd{min-width:0}.sfc .wxlog>div{grid-template-columns:104px 1fr}
+.sfd{border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:grid;gap:10px;background:var(--card);position:relative;overflow:hidden}
+.sfd::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#34d399}.sfd.alarm::before{background:#ef4444}.sfd.off::before{background:#64748b}
+.sfd.alarm{border-color:#ef444488;background:color-mix(in srgb,#ef4444 9%,var(--card))}
+.sfdh{display:flex;align-items:center;gap:10px}.sfdt{flex:1;min-width:0;display:flex;flex-direction:column}.sfdt b{font-size:.95rem;line-height:1.25}.sfdt small{color:var(--mut);font-size:.76rem}
+.sfdi{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:12px;color:#34d399;background:color-mix(in srgb,#34d399 14%,transparent)}.sfd.alarm .sfdi{color:#ef4444;background:color-mix(in srgb,#ef4444 16%,transparent)}.sfd.off .sfdi{color:var(--mut);background:color-mix(in srgb,var(--mut) 14%,transparent)}
+.sfs{flex:none;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid color-mix(in srgb,#34d399 45%,transparent);color:#34d399}.sfs.alarm{background:#ef4444;border-color:#ef4444;color:#fff}.sfs.off{border-color:var(--line);color:var(--mut)}
+.sfb{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.78rem;color:var(--mut)}.sfb span{display:inline-flex;align-items:center;gap:5px}.sfbar{flex:1 1 70px;min-width:60px;height:6px;border-radius:6px;background:color-mix(in srgb,var(--mut) 20%,transparent);overflow:hidden}.sfbar i{display:block;height:100%;border-radius:6px}
+.sfsince{color:#ef4444;font-weight:600}
+/* Store */
+.pillbtn.sto{position:relative;padding:8px}.sdot{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;border-radius:10px;background:#f59e0b;color:#1a1200;font-size:.7rem;font-weight:700;line-height:19px;font-style:normal;text-align:center;padding:0 5px}
+.mtab.sto{background:linear-gradient(120deg,#0f766e,#1e3a8a);border-color:transparent;color:#fff}.mtab.sto small{color:rgba(255,255,255,.75)}.mtab.sto .sdot{top:-6px;right:-4px}
+.stow{display:flex;flex-direction:column;gap:12px;max-width:1100px}
+.stosr{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px;color:var(--mut)}.stoq{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--primary-text-color);font:inherit;padding:13px 0}.stosr:focus-within{border-color:var(--teal)}
+.stoch{display:flex;gap:8px;flex-wrap:wrap}.stoch button{border:1px solid var(--line);background:var(--card);color:inherit;border-radius:999px;padding:8px 14px;font:inherit;font-size:.88rem;cursor:pointer}.stoch button.on{background:var(--teal);border-color:var(--teal);color:var(--on-acc,#042);font-weight:700}
+.stofe{display:flex;gap:20px;align-items:center;width:100%;text-align:left;border:0;border-radius:22px;padding:24px;background:linear-gradient(120deg,#0f766e,#1e3a8a);color:#fff;cursor:pointer;font:inherit}.stobig{flex:none;width:88px;height:88px;border-radius:22px;background:rgba(255,255,255,.18);display:grid;place-items:center}
+.stofx{display:flex;flex-direction:column;gap:6px;align-items:flex-start}.stofx em{font-style:normal;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;opacity:.8}.stofx b{font-size:1.4rem}.stofx>span{opacity:.92;max-width:520px}.stobt{font-style:normal;background:#fff;color:#000;font-weight:700;border-radius:999px;padding:8px 18px;margin-top:4px}
+.stoh{display:flex;justify-content:space-between;align-items:baseline;margin:10px 2px 0;font-size:1.05rem}.stoh small{color:var(--mut);font-weight:400;font-size:.82rem}
+.stog{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px}
+.stoc{display:flex;flex-direction:column;gap:10px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;color:inherit;font:inherit;cursor:pointer;min-width:0}.stoc:hover{border-color:var(--teal)}
+.stot{display:flex;gap:12px;align-items:center}.stoi{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;color:#fff}.stoi.big{width:78px;height:78px;border-radius:20px}.ston{display:flex;flex-direction:column;min-width:0}.ston b{font-size:1rem}.ston small{color:var(--mut);font-size:.8rem}
+.stod{color:var(--mut);font-size:.88rem;flex:1;display:block}.stof{display:flex;justify-content:space-between;align-items:center;gap:8px}.stof em{font-style:normal;font-weight:700;font-size:.86rem;border:1px solid var(--line);border-radius:999px;padding:7px 14px}.stof em.pri{background:var(--teal);border-color:var(--teal);color:var(--on-acc,#042)}
+.stos{font-size:.82rem;font-weight:600}.stos.ok{color:#4ade80}.stos.wn{color:#fbbf24}.stos.bad{color:#f87171}
+.stosh{max-height:90vh}.stohd{display:flex;gap:16px;align-items:center;margin-bottom:10px}.stohd>div{flex:1;min-width:0}.stohd b{font-size:1.3rem;display:block}.stohd small{color:var(--mut)}.stoact{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}.stoact .btn2{text-decoration:none;display:inline-flex;flex:none;width:auto;padding:10px 22px}
+.stofa{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:14px;margin:10px 0 14px;text-align:center}.stofa div{padding:10px 6px;border-right:1px solid var(--line);min-width:0}.stofa div:last-child{border:0}.stofa b{font-size:.88rem}.stofa small{display:block;color:var(--mut);font-size:.7rem}
+.stoul{margin:4px 0 12px;padding-left:18px;color:var(--mut)}.stost{display:flex;gap:10px;margin:8px 0;color:var(--mut);font-size:.9rem}.stost b{flex:none;width:22px;height:22px;border-radius:50%;background:var(--teal);color:var(--on-acc,#042);display:grid;place-items:center;font-size:.75rem}
+.stowarn{display:flex;gap:10px;background:color-mix(in srgb,#f59e0b 14%,var(--card));border:1px solid color-mix(in srgb,#f59e0b 50%,var(--line));border-radius:12px;padding:10px 12px;color:#fbbf24;font-size:.86rem;margin-top:10px}
+@media(max-width:600px){.stofe{flex-direction:column;align-items:flex-start;padding:18px}.stobig{width:64px;height:64px}.stohd .stoi.big{width:60px;height:60px}}
+.hsn{margin-top:8px}.hsn summary{display:flex;align-items:center;gap:8px}.hsd{width:10px;height:10px;border-radius:50%;flex:none}.stoq2 li{margin-bottom:4px}.stoq2 b,.hsn li b{color:var(--primary-text-color)}
 @media(min-width:720px){.tiles{grid-template-columns:repeat(4,1fr)}.rooms{grid-template-columns:repeat(2,1fr)}.hero .big{font-size:3.3rem}
   .hero .art{top:50%;transform:translateY(-50%);height:88%;max-height:190px;max-width:34%;right:84px}.hero .hlogo{width:60px;height:60px;right:20px;bottom:18px}.hero .chips{padding-right:0}.hero .lbl{max-width:none}
   .sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-50%);width:min(580px,92vw);border-radius:22px;max-height:86vh}}
@@ -747,7 +923,7 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .sxi{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal)}
 .sxt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.sxt b{font-size:.95rem;font-weight:650}.sxt b i{font-style:normal;font-weight:500;color:var(--mut);font-size:.8rem;margin-right:4px}.sxt small{color:var(--mut);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sxc{flex:none;font-style:normal;font-size:.72rem;font-weight:650;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}.sxc.ok{color:var(--teal);border-color:color-mix(in srgb,var(--teal) 40%,transparent)}.sxc.off{opacity:.7}
-.sxrow .sxg{flex:none;transform:rotate(-90deg);color:var(--mut);display:grid}
+.sxrow .sxg{flex:none;transform:rotate(-90deg);color:var(--mut);display:grid}.fhs{border:1px solid var(--line);border-radius:16px;margin:0 0 10px;overflow:hidden}.fhs.open{border-color:color-mix(in srgb,var(--teal) 40%,var(--line))}.fhs.open .sxg{transform:rotate(0)}.fhb{padding:2px 14px 14px;border-top:1px solid var(--line)}.fhb>.mut:first-child{margin-top:10px}
 @media(max-width:520px){.sxt small{white-space:normal}}
 .beta{line-height:1.35;font-style:normal;font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,#f59e0b 20%,transparent);color:#f59e0b;border:1px solid color-mix(in srgb,#f59e0b 50%,transparent);margin-right:8px;white-space:nowrap}
 .mtab .beta{margin:0 0 0 2px;padding:1px 6px;font-size:.6rem}.mbadge.beta,.sxc.beta{color:#f59e0b;border-color:color-mix(in srgb,#f59e0b 50%,transparent)}
@@ -766,6 +942,20 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .wbtabs{display:flex;gap:6px;margin:0 0 12px;border:1px solid var(--line);border-radius:999px;padding:4px;width:max-content;max-width:100%}.wbtabs button{display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--mut);border-radius:999px;padding:8px 16px;font:inherit;font-weight:600;font-size:.88rem;cursor:pointer}.wbtabs button.sel{background:var(--teal);color:var(--on-acc)}
 .wbsh{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px}.wbnav{display:flex;align-items:center;gap:8px}.wbnav button{border:1px solid var(--line);background:transparent;color:var(--primary-text-color);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer}.wbnav b{min-width:120px;text-align:center}.card.wsec{padding:0;margin-bottom:10px}.wsec>button{display:flex;align-items:center;gap:12px;width:100%;background:transparent;border:0;color:inherit;font:inherit;text-align:left;padding:14px 16px;cursor:pointer;border-radius:inherit}.wsec>button>svg{flex:none;color:var(--teal)}.wsec .wst{flex:1;min-width:0}.wsec .wst b{display:block;font-size:1rem}.wsec .wst span{display:block;color:var(--mut);font-size:.84rem;margin-top:2px}.wsec .wch{flex:none;transition:transform .2s;color:var(--mut);display:grid}.wsec.open .wch{transform:rotate(180deg)}.wsec .wbody{padding:4px 16px 16px;border-top:1px solid var(--line)}.wbbar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.wbchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.84rem;font-weight:600}.wbchip i{width:8px;height:8px;border-radius:50%;background:#64748b}.wbchip.ok i{background:#2dd4bf}.wbchip.warn i{background:#f59e0b}.wbchip.bad i{background:#f87171}.wbchip.ok{border-color:#2dd4bf66}.wbchip.warn{border-color:#f59e0b66}.wbchip.bad{border-color:#f8717166}.wbchip svg{color:var(--mut)}.wdot{font-style:normal;display:inline-grid;place-items:center;width:18px;height:18px;margin-left:8px;border-radius:50%;background:#f59e0b;color:#1a1204;font-size:.72rem;font-weight:800;vertical-align:1px}.wck{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.wck:first-of-type{border-top:0}.wcki{flex:none;display:grid}.wckt{flex:1;min-width:0}.wckt b{display:block;font-size:.92rem}.wckt small{display:block}.wsall{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px;margin:0 0 10px}.wsall .lnk{margin-left:12px}.rfa{margin:0 0 10px}.rfc{padding:10px 0;border-top:1px solid var(--line)}.rfc:first-of-type{border-top:0}.rfn{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}.rfn small{flex-basis:100%}
 .wxfc{display:grid;grid-template-columns:repeat(auto-fit,minmax(54px,1fr));gap:6px;margin-top:8px}.wxfc>div{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:12px;border:1px solid var(--line);background:rgba(127,127,127,.06)}.wxfc>div.bad{border-color:var(--warning-color,#f59e0b);background:rgba(245,158,11,.14)}.wxfc b{font-size:.95rem}.wxfc small{font-size:.7rem}
+.wxhero{padding:18px 18px 12px;border-color:color-mix(in srgb,var(--green) 40%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--green) 9%,var(--card)),var(--card) 70%)}.wxhero.soon{border-color:color-mix(in srgb,var(--slate) 45%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--slate) 10%,var(--card)),var(--card) 70%)}.wxhero.hot{border-color:color-mix(in srgb,var(--amber) 55%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--amber) 13%,var(--card)),var(--card) 70%)}
+.wxhead{display:flex;gap:14px;align-items:center}.wxhead b{display:block;font-size:1.6rem;font-weight:800;line-height:1.15;letter-spacing:-.01em}.wxhead small{display:block;margin-top:3px;font-size:.92rem;color:var(--mut)}
+.wxdot{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--green) 22%,transparent);color:var(--green)}.wxhero.soon .wxdot{background:color-mix(in srgb,var(--slate) 22%,transparent);color:var(--slate)}.wxhero.hot .wxdot{background:color-mix(in srgb,var(--amber) 24%,transparent);color:var(--amber)}
+.wxnow{display:flex;flex-wrap:wrap;gap:6px 18px;margin:14px 0 4px;font-size:.9rem}.wxnow span{display:inline-flex;align-items:center;gap:6px;color:var(--primary-text-color);font-variant-numeric:tabular-nums}.wxnow .ic{color:var(--mut)}
+.wxc{margin-top:8px}.wxc svg{display:block;width:100%;height:auto;overflow:visible}.wxbad{fill:var(--amber);opacity:.15}.wxar{fill:var(--teal);opacity:.12}.wxln{fill:none;stroke:var(--teal);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}.wxd{fill:var(--teal)}.wxdb{fill:var(--amber)}.wxlim{stroke:var(--amber);stroke-width:1.4;stroke-dasharray:5 4}.wxlt{fill:var(--amber);font-size:11px;font-weight:600}
+.wxh{display:grid;padding:0 1.33%;margin-top:4px}.wxh svg,.wxnow svg,.wxnote svg{width:18px;height:18px;flex:none}.wxh>div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 0;border-radius:10px;font-variant-numeric:tabular-nums}.wxh>div.bad{background:rgba(245,158,11,.13)}.wxh small{font-size:.7rem;color:var(--mut)}.wxh b{font-size:.82rem;font-weight:600}.wxh .ic{color:var(--mut)}
+.wxcols{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));align-items:start}
+.wxl{display:grid;gap:0}.wxr{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}.wxr:first-child{border-top:0}.wxr.off{opacity:.55}
+.wxi{flex:none;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:rgba(127,127,127,.12);color:var(--mut)}.wxr.hot .wxi{background:color-mix(in srgb,var(--amber) 22%,transparent);color:var(--amber)}.wxr.soon .wxi{background:color-mix(in srgb,var(--slate) 22%,transparent);color:var(--slate)}
+.wxm{flex:1;min-width:0}.wxt{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.wxt b{font-size:.98rem;font-weight:700}.wxt em{font-style:normal;font-size:.82rem;color:var(--mut);white-space:nowrap}.wxr.hot .wxt em{color:var(--amber);font-weight:700}.wxr.soon .wxt em{color:var(--slate);font-weight:700}.wxm small{display:block;margin-top:4px;font-size:.8rem;color:var(--mut)}
+.wxg{position:relative;height:7px;border-radius:99px;background:rgba(127,127,127,.18);margin-top:8px}.wxg i{position:absolute;inset:0 auto 0 0;border-radius:99px;background:var(--teal)}.wxr.hot .wxg i{background:var(--amber)}.wxr.soon .wxg i{background:var(--slate)}.wxg u{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--primary-text-color);opacity:.7;border-radius:2px}
+.wxp{display:flex;gap:4px;margin-top:8px}.wxp i{flex:1;height:7px;border-radius:99px;background:rgba(127,127,127,.18)}.wxp i.on{background:var(--amber)}.wxp i.on.l3,.wxp i.on.l4{background:#ef4444}
+.wxnote{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:.82rem;color:var(--mut)}
+.wxlog{display:grid;gap:0;position:relative}.wxlog>div{display:grid;grid-template-columns:78px 1fr;gap:12px;padding:8px 0;font-size:.9rem;position:relative}.wxlog time{color:var(--mut);font-variant-numeric:tabular-nums;font-size:.82rem;padding-top:1px}.wxlog span{position:relative;padding-left:18px}.wxlog span::before{content:"";position:absolute;left:0;top:.45em;width:8px;height:8px;border-radius:50%;background:var(--teal)}.wxlog>div:not(:last-child) span::after{content:"";position:absolute;left:3.5px;top:1.4em;bottom:-1.1em;width:1px;background:var(--line)}
 .tbvar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 10px}.tbvar button{display:grid;gap:5px;text-align:left;padding:10px;border-radius:14px;border:1px solid var(--line);background:transparent;color:var(--mut);font:inherit;cursor:pointer;align-content:start}.tbvar button b{color:var(--primary-text-color);font-size:.88rem}.tbvar button small{font-size:.74rem;line-height:1.35}.tbvar button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent)}@media(max-width:560px){.tbvar{grid-template-columns:1fr}}
 .wbsc{overflow-x:auto}.wbsc svg{min-width:520px}.wbst{margin:12px 0 4px}.wbst b{font-size:1.05rem}
 .wbses{display:grid;gap:8px}.wbse{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.wbse:first-child{border-top:0}.wbse>div{display:grid;gap:2px}.wbsb{height:8px;border-radius:99px;background:#f59e0b;overflow:hidden;display:block!important}.wbsb i{display:block;height:100%;background:#2dd4bf}.wbsv{text-align:right}
@@ -1640,12 +1830,12 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _saveGen() {
     this._hass.callWS({ type: "fenster_heizung/set_general", general: this._gen }).then((r) => {
-      if (r && r.general) { this._gen = { ...this._gen, ...r.general }; this._st = r.status || null; this._render(); if (this._modal && this._modal.type === "gen") this._renderModal(); }
+      if (r && r.general) { this._gen = { ...this._gen, ...r.general }; this._st = r.status || null; this._render(); if (this._modal && (this._modal.type === "gen" || this._modal.type === "fh")) this._renderModal(); }
     }).catch(() => this._toast("Einstellung konnte nicht gespeichert werden"));
   }
   _pollGen() {
     this._hass.callWS({ type: "fenster_heizung/get_general" }).then((r) => {
-      if (!r || this._dragging || (this._modal && this._modal.type === "gen")) return;
+      if (!r || this._dragging || (this._modal && (this._modal.type === "gen" || this._modal.type === "fh"))) return;
       this._st = r.status || null; this._gen = { ...this._gen, ...(r.general || {}) }; this._render();
     }).catch(() => {});
   }
@@ -1722,7 +1912,7 @@ class FensterHeizungPanel extends HTMLElement {
     const icon = edit
       ? `<button class="rico" style="${rcStyle(r.color)}" data-act="icon" data-id="${esc(r.id)}" aria-label="Symbol ändern">${ico(this._icon(r), 32)}<span class="pen">${ic("pencil", 11)}</span></button>`
       : `<div class="rico" style="${rcStyle(r.color)}">${ico(this._icon(r), 32)}</div>`;
-    return `<div class="card room${this._ph(r).c}"${this._ph(r).s} data-sort="room" data-id="${esc(r.id)}"><div class="rh">
+    return `<div class="card room${this._ph(r).c}"${this._ph(r).s} data-m="${m.c}" data-sort="room" data-id="${esc(r.id)}"><div class="rh">
       ${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${icon}
       <div class="rn"><b>${esc(r.name)}</b><div class="pl"><span class="pill ${m.c}">${m.t}</span><button class="why" data-act="why" data-id="${esc(r.id)}" aria-label="Warum?">${ic("info", 13)}Warum?</button><button class="why" data-act="rep" data-id="${esc(r.id)}" aria-label="Bericht">${ic("chart", 13)}Bericht</button>${this._devChip(r)}</div></div>
       ${this._admin() ? `<button class="ibtn gear" data-act="opt" data-id="${esc(r.id)}" aria-label="Raumeinstellungen">${ic("sliders", 17)}</button>` : ""}
@@ -1794,7 +1984,7 @@ class FensterHeizungPanel extends HTMLElement {
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span><em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
-        ${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
+        ${this._stoBtn()}${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
       ${this._mdBar()}<div class="wrap">${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
         ${!edit ? this._updBanner() : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
   }
@@ -1828,6 +2018,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ort") && this._ortChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("sfx") && this._sfxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wb") && this._wbChange(t)) return;
       if (this._lookChange(t)) return;
       if (t.dataset && t.dataset.k === "htr_steps" && this._modal && this._modal.type === "opt") { this._renderModal(); return; }
@@ -1843,10 +2034,12 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "menu") this.dispatchEvent(new Event("hass-toggle-menu", { bubbles: true, composed: true }));
     else if (a === "pkopen") { this._pkId = this._pkId === b.dataset.pid ? null : b.dataset.pid; this._renderModal(); const q = this.shadowRoot.querySelector(".pksearch"); if (q) q.focus(); }
     else if (a === "pkpick") { const meta = (this._pkReg || {})[b.dataset.pid]; this._pkId = null; if (meta) { const t = { dataset: { ...meta }, value: b.dataset.v, tagName: "SELECT" }; this._onInput(t); this._onChange(t); } this._renderModal(); }
-    else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || a.startsWith("gs") || a.startsWith("ev")) this._mdAct(a, b);
+    else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || (a.startsWith("gs") && a !== "gsum") || a.startsWith("ev")) this._mdAct(a, b);
     else if (a.startsWith("ort")) this._ortAct(a, b);
+    else if (a.startsWith("sto")) this._stoAct(a, b);
     else if (a.startsWith("ig")) this._igAct(a, b);
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
+    else if (a.startsWith("sfx")) this._sfxAct(a, b);
     else if (a.startsWith("wb")) this._wbAct(a, b);
     else if (["gtog", "gsw", "gmv", "gedit", "gadd", "gpick", "gicon", "gsave", "gdel"].includes(a)) this._gActions(a, b);
     else if (a === "opt") this._optOpen(id);
@@ -1871,6 +2064,8 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "hrday") { m.day = b.dataset.d; this._hrLoad(m); this._renderModal(); }
     else if (a === "gpvpm") { this._gen.pv = { ...this._pv(), [b.dataset.p + "_mode"]: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "gpvsign") { this._gen.pv = { ...this._pv(), sign: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
+    else if (a === "fhset") { this._modal = { type: "fh" }; this._renderModal(); }
+    else if (a === "fhsec") { const s = this._fhOpenSet(); s.has(b.dataset.k) ? s.delete(b.dataset.k) : s.add(b.dataset.k); try { localStorage.setItem("fh-open", JSON.stringify([...s])); } catch (_) {} this._renderModal(); }
     else if (a === "gen") { this._modal = { type: "gen", restore: null }; this._renderModal(); }
     else if (a === "news") { this._modal = { type: "news" }; this._renderModal(); }
     else if (a === "updx") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet bis zur nächsten Version"); }
@@ -2011,7 +2206,7 @@ class FensterHeizungPanel extends HTMLElement {
     const A = d.action === "setback" ? `Absenken auf ${num0(d.setback_temp)} °C` : "Thermostat aus";
     return [
       sec("dev", "window", "Fenster &amp; Thermostate", `${d.window_sensors.length} Fenster · ${d.thermostats.length} Thermostat${d.thermostats.length === 1 ? "" : "e"}`,
-        multi("window_sensors", ent("binary_sensor"), "Fenstersensoren") + multi("thermostats", ent("climate"), "Heizungsthermostate")),
+        multi("window_sensors", ent("binary_sensor"), "Fenstersensoren") + multi("thermostats", ent("climate"), "Heizungsthermostate") + this._hsRoomNote(d.thermostats)),
       sec("ctl", "radiator", "Regelung", `${d.open_delay} s auf · ${d.close_delay} s zu · ${A}`,
         num("open_delay", "s", { l: "Verzögerung nach Öffnen", h: "So lange muss das Fenster offen sein, bevor die Heizung pausiert.", min: 0, max: 3600, step: 5 }) +
         num("close_delay", "s", { l: "Verzögerung nach Schließen", min: 0, max: 3600, step: 5 }) +
@@ -2425,8 +2620,11 @@ class FensterHeizungPanel extends HTMLElement {
     const r = this._collect().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
+    if (m.type === "sfset") { box.innerHTML = this._sfxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "stodet") { box.innerHTML = this._stoModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "stoset") { box.innerHTML = this._stoSetModal(); return; }
     if (m.type === "iggoe") { box.innerHTML = this._igGoeModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "ortper" || m.type === "ortzone") { box.innerHTML = m.type === "ortper" ? this._ortPerModal() : this._ortZoneModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._ortBind(); return; }
     if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -2445,41 +2643,42 @@ class FensterHeizungPanel extends HTMLElement {
           <div class="pbs"><input type="file" accept="image/*" data-f="rfile" hidden><button class="lnk" data-act="rphoto">${ph ? "Foto ersetzen" : "Foto auswählen"}</button>${ph ? `<button class="lnk dng" data-act="rphotodel">Foto entfernen</button>` : ""}</div></div>
         <div class="mut sm" style="margin:0 0 8px">Das Foto wird verkleinert (ca. 560 px) und für alle Nutzer gespeichert. Höchstens 12 Fotos.</div>
         <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
-    } else if (m.type === "gen") {
-      const g = this._gen, sm = g.summer, S = this._sum(), rs = m.restore, u = this._upd, wa = g.wxadj, wadj = this._wxAdj(), pv = this._pv();
+    } else if (m.type === "fh") {
+      const g = this._gen, sm = g.summer, S = this._sum(), wa = g.wxadj, wadj = this._wxAdj(), pv = this._pv();
       const sumInfo = S.active ? `Aktiv${S.out != null ? `: ${num(S.out, 1)} °C draußen` : ""}. Der Heizplan ruht, die Fenstermeldung bleibt.` : sm.mode === "off" ? "Aus. Der Heizplan läuft wie gewohnt." : `Inaktiv${S.out != null ? `: ${num(S.out, 1)} °C draußen, Schwelle ${num(sm.temp, 1)} °C` : ""}.`;
+      const open = this._fhOpenSet(), pvn = this._pvNow(), rp = this._rate("price"), rf = this._rate("feed"), dn = (n) => (n === 1 ? "1 Tag" : n + " Tage");
+      const sec = (id, ico, ttl, txt, chip, tone, body) => `<div class="fhs ${open.has(id) ? "open" : ""}"><button class="sxrow" data-act="fhsec" data-k="${id}" aria-expanded="${open.has(id)}"><span class="sxi">${ic(ico, 20)}</span><span class="sxt"><b>${ttl}</b><small>${txt}</small></span><em class="sxc ${tone}">${chip}</em><span class="sxg">${ic("chev", 16)}</span></button>${open.has(id) ? `<div class="fhb">${body}</div>` : ""}</div>`;
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-        <div class="sh"><div><b>Allgemein</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-        <div class="lsec">${ic("sun", 15)}Sommermodus</div>
-        <div class="mut sm" style="margin:2px 0 8px">Wenn es draußen warm genug ist, ruhen die Heizpläne. Die Fenstermeldung und alle Erinnerungen bleiben aktiv.</div>
+        <div class="sh"><div><b>Modul 1 · Einstellungen</b><span>Fenster &amp; Heizung, gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        ${sec("sum", "sun", "Sommermodus", sm.mode === "off" ? "Die Heizpläne laufen wie gewohnt." : sm.mode === "on" ? "Die Heizpläne ruhen." : `Automatisch ab ${num(sm.temp, 1)} °C, Mittel über ${dn(sm.days)}.`, S.active ? "Aktiv" : sm.mode === "off" ? "Aus" : "Bereit", S.active ? "ok" : "off", `
+        <div class="mut sm" style="margin:10px 0 8px">Wenn es draußen warm genug ist, ruhen die Heizpläne. Die Fenstermeldung und alle Erinnerungen bleiben aktiv.</div>
         <div class="seg">${[["off", "Aus"], ["auto", "Automatisch"], ["on", "Immer an"]].map(([k, l]) => `<button class="${sm.mode === k ? "sel" : ""}" data-act="gsum" data-k="${k}">${l}</button>`).join("")}</div>
         ${sm.mode === "auto" ? `<div class="of"><div class="ol"><b>Ab einer Außentemperatur von</b><span>Mittel der letzten Tage, Sensor siehe Darstellung.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gth" value="${sm.temp}" min="5" max="35" step="0.5"><i>°C</i></span></div></div>
         <div class="of"><div class="ol"><b>Gemittelt über</b></div><div class="oc"><div class="seg oseg">${[1, 3, 7].map((d) => `<button class="${sm.days === d ? "sel" : ""}" data-act="gdays" data-k="${d}">${d === 1 ? "1 Tag" : d + " Tage"}</button>`).join("")}</div></div></div>` : ""}
-        <div class="gst ${S.active ? "on" : ""}">${ic(S.active ? "sun" : "info", 15)}${sumInfo}</div>
-        <div class="lsec">${ic("partly", 15)}Wetterabhängige Absenkung</div>
+        <div class="gst ${S.active ? "on" : ""}">${ic(S.active ? "sun" : "info", 15)}${sumInfo}</div>`)}
+        ${sec("wx", "partly", "Wetterabhängige Absenkung", wa.on ? `Mild ab ${num(wa.mild, 0)} °C um ${num(wa.down, 1)} K senken, bei Frost bis ${num(wa.frost, 0)} °C um ${num(wa.up, 1)} K anheben.` : "Die Zieltemperatur bleibt wie im Heizplan.", !wa.on ? "Aus" : wadj && wadj.d ? "Aktiv" : "An", wa.on ? "ok" : "off", `
         <div class="mut sm" style="margin:2px 0 4px">Bei Sonne oder milder Luft sinkt die Zieltemperatur, bei Frost steigt sie. Gilt für alle Räume, die du nicht ausnimmst.</div>
         <div class="ltog"><span>Zieltemperatur nach Wetter anpassen</span><button class="sw ${wa.on ? "on" : ""}" data-act="gwx" aria-pressed="${wa.on}" aria-label="Wetter-Anpassung"></button></div>
         ${wa.on ? [["mild", "Mild ab", "°C", "Bei Sonne schon ab 5 °C weniger."], ["down", "Dann absenken um", "K", ""], ["frost", "Frost bis", "°C", ""], ["up", "Dann anheben um", "K", ""]].map(([k, l, u, h]) => `<div class="of"><div class="ol"><b>${l}</b>${h ? `<span>${h}</span>` : ""}</div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gwxn" data-k="${k}" value="${wa[k]}" min="${k === "mild" || k === "frost" ? -20 : 0}" max="${k === "mild" || k === "frost" ? 40 : 5}" step="0.5"><i>${u}</i></span></div></div>`).join("") : ""}
-        <div class="gst ${wadj && wadj.d ? "on" : ""}">${ic(wadj && wadj.d ? (wadj.fr ? "snow" : "sun") : "info", 15)}${!wa.on ? "Aus." : wadj && wadj.d ? `Aktiv: ${wadj.d > 0 ? "+" : "−"}${num(Math.abs(wadj.d), 1)} °C (${wadj.why}).` : "Gerade keine Anpassung nötig."}</div>
-        <div class="lsec">${ic("bolt", 15)}PV-Überschuss für Elektroheizer</div>
+        <div class="gst ${wadj && wadj.d ? "on" : ""}">${ic(wadj && wadj.d ? (wadj.fr ? "snow" : "sun") : "info", 15)}${!wa.on ? "Aus." : wadj && wadj.d ? `Aktiv: ${wadj.d > 0 ? "+" : "−"}${num(Math.abs(wadj.d), 1)} °C (${wadj.why}).` : "Gerade keine Anpassung nötig."}</div>`)}
+        ${sec("pv", "bolt", "PV-Überschuss für Elektroheizer", pv.sensor ? (pvn != null ? `${wfmt(pvn)} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Sensor gewählt, noch kein Wert.") : "Noch kein Sensor für die Einspeisung gewählt.", pv.sensor ? "Eingerichtet" : "Offen", pv.sensor ? "ok" : "", `
         <div class="mut sm" style="margin:2px 0 4px">Elektroheizer in den Räumen heizen nur bei genug Überschuss. Sie schaltest du in den Raumeinstellungen ein.</div>
         <div class="mut sm" style="margin:0">Sensor für die Einspeisung ins Netz</div>${this._wzSel(Object.keys(this._hass.states).filter((k) => k.startsWith("sensor.") && (this._hass.states[k].attributes.device_class === "power" || /^k?W$/.test(this._hass.states[k].attributes.unit_of_measurement || ""))), pv.sensor, "gpvs", "", "– keiner –", PK_HINT.grid)}
         <div class="seg">${[["export", "Einspeisung positiv"], ["import", "Netzbezug positiv"]].map(([k, l]) => `<button class="${pv.sign === k ? "sel" : ""}" data-act="gpvsign" data-k="${k}">${l}</button>`).join("")}</div>
         ${[["reserve", "Reserve", "W", "Bleibt zusätzlich zur Heizerleistung übrig.", 0, 2000, 50], ["delay", "Einschalten nach", "Min.", "So lange muss der Überschuss anliegen.", 0, 30, 1], ["minrun", "Mindestlaufzeit", "Min.", "Kürzer läuft ein Heizer nicht an einem Stück.", 0, 120, 5]].map(([k, l, u, h, lo, hi, st]) => `<div class="of"><div class="ol"><b>${l}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="${lo}" max="${hi}" step="${st}"><i>${u}</i></span></div></div>`).join("")}
         <div class="mut sm" style="margin:6px 0 0">Batterie-Ladestand (optional)</div>${this._wzSel(Object.keys(this._hass.states).filter((k) => k.startsWith("sensor.") && (this._hass.states[k].attributes.device_class === "battery" || this._hass.states[k].attributes.unit_of_measurement === "%")), pv.soc_sensor, "gpvb", "", "– keiner –", PK_HINT.bat)}
         ${pv.soc_sensor ? `<div class="of"><div class="ol"><b>Heizer erst ab</b><span>Die Batterie wird zuerst geladen.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="soc_min" value="${pv.soc_min}" min="0" max="100" step="5"><i>%</i></span></div></div>` : ""}
+        <div class="gst ${this._pvNow() != null ? "on" : ""}">${ic(this._pvNow() != null ? "bolt" : "info", 15)}${this._pvNow() != null ? `Aktuell ${wfmt(this._pvNow())} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Noch kein Sensor gewählt."}</div>`)}
+        ${sec("pr", "chart", "Strompreis und Einspeisevergütung", `Netzbezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh. Grundlage für den Vorteil im Bericht.`, rp > 0 || rf > 0 ? "Eingerichtet" : "Offen", rp > 0 || rf > 0 ? "ok" : "", `
         ${[["price", "Strompreis (Netzbezug)", "Festpreis", "Preis pro kWh aus dem Netz."], ["feed", "Einspeisevergütung", "Festvergütung", "Vergütung pro eingespeister kWh."]].map(([k, l, fl, h]) => { const ent = pv[k + "_mode"] === "entity", sn = pv[k + "_sensor"]; return `<div class="mut sm" style="margin:6px 0 0">${l}${k === "price" ? " für den Vorteil im Bericht" : ""}</div>
         <div class="seg">${[["fix", "Festwert"], ["entity", "Entität"]].map(([m, t]) => `<button class="${(ent ? "entity" : "fix") === m ? "sel" : ""}" data-act="gpvpm" data-p="${k}" data-k="${m}">${t}</button>`).join("")}</div>
         ${ent ? `${this._wzSel(Object.keys(this._hass.states).filter((e) => e.startsWith("sensor.") && (this._hass.states[e].attributes.device_class === "monetary" || (/(kwh|wh)$/i.test(this._hass.states[e].attributes.unit_of_measurement || "") && /€|eur|ct|cent/i.test(this._hass.states[e].attributes.unit_of_measurement || "")) || e === sn)), sn, "gpvp", `data-p="${k}"`, "– keiner –", /preis|price|tarif|tibber|awattar|strom/i)}
-        <div class="mut sm" style="margin:2px 0 0">${sn ? `Aktuell ${num(this._rate(k), 2)} ct/kWh${Number(pv[k]) ? ` (${fl} ${num(pv[k], 2)} ct/kWh, falls der Sensor ausfällt)` : ""}` : `Ohne Sensor gilt der ${fl}.`}</div>` : `<div class="of"><div class="ol"><b>${fl}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="0" max="100" step="0.01"><i>ct/kWh</i></span></div></div>`}`; }).join("")}
-        <div class="gst ${this._pvNow() != null ? "on" : ""}">${ic(this._pvNow() != null ? "bolt" : "info", 15)}${this._pvNow() != null ? `Aktuell ${wfmt(this._pvNow())} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Noch kein Sensor gewählt."}</div>
-        <div class="lsec">${ic("thermo", 15)}Gerätediagnose</div>
-        <div class="mut sm" style="margin:2px 0 4px">Welche Sensoren zuletzt gemeldet haben, Statusprüfung aller Geräte und das Fehlerprotokoll.</div>
-        <button class="btn2" data-act="diag" style="width:100%;flex:none">${ic("tools", 16)} Diagnose öffnen</button>
-        <div class="lsec">${ic("tools", 15)}Einrichtungsassistent</div>
-        <div class="mut sm" style="margin:2px 0 4px">Räume, Fenstermeldung, Heizung, Luftfeuchte, PV-Heizer und Meldungen Schritt für Schritt einrichten.</div>
-        <button class="btn2" data-act="wz" style="width:100%;flex:none">${ic("tools", 16)} Assistent starten</button>
-        <div class="lsec">${ic("copy", 15)}Sichern &amp; Wiederherstellen</div>
+        <div class="mut sm" style="margin:2px 0 0">${sn ? `Aktuell ${num(this._rate(k), 2)} ct/kWh${Number(pv[k]) ? ` (${fl} ${num(pv[k], 2)} ct/kWh, falls der Sensor ausfällt)` : ""}` : `Ohne Sensor gilt der ${fl}.`}</div>` : `<div class="of"><div class="ol"><b>${fl}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="0" max="100" step="0.01"><i>ct/kWh</i></span></div></div>`}`; }).join("")}`)}
+        <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+    } else if (m.type === "gen") {
+      const g = this._gen, rs = m.restore, u = this._upd;
+      box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+        <div class="sh"><div><b>Sichern &amp; Wiederherstellen</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="mut sm" style="margin:2px 0 4px">Eine Datei mit allen Räumen, Einstellungen, Heizplänen, Anwesenheit und dem Aussehen des Dashboards.</div>
         ${rs ? `<div class="gbox"><b>Sicherung gefunden</b>${esc(new Date(rs.created).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" }))} · Version ${esc(rs.version || "?")}<br>${Object.keys(rs.rooms).length} Räume · ${Object.values(rs.plans || {}).filter((p) => p && p.entries && p.entries.length).length} Heizpläne · Aussehen · Anwesenheit<br><span class="mut">Das ersetzt die aktuellen Einstellungen.</span></div>
           <div class="foot2"><button class="btn2" data-act="rsno">Abbrechen</button><button class="btn2 pri" data-act="rsgo">Wiederherstellen</button></div>`
@@ -2727,32 +2926,42 @@ class FensterHeizungPanel extends HTMLElement {
     const E = id === "ww" ? (this._mdState().ww.ent || {}) : (this._enState().ent || {});
     return Object.values(E).some((v) => v) ? "Eingerichtet" : "";
   }
+  _fhOpenSet() {
+    if (!this._fhOpen) { let a = null; try { a = JSON.parse(localStorage.getItem("fh-open") || "null"); } catch (_) {} this._fhOpen = new Set(Array.isArray(a) ? a : [this._pv().sensor ? "sum" : "pv"]); }
+    return this._fhOpen;
+  }
   _stRender() {
     const sr = this.shadowRoot, s = this._mdState();
     const row = (icn, ttl, txt, act, k, extra) => `<button class="sxrow" data-act="${act}"${k ? ` data-k="${k}"` : ""}><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}</b><small>${txt}</small></span>${extra || ""}<span class="sxg">${ic("chev", 16)}</span></button>`;
-    const mods = MODS.map((m) => {
-      const on = m.id === "fh" || (m.id === "ww" ? s.on.ww : m.beta ? s.on[m.id] === true : m.id === "gs" ? s.on.gs !== false : this._enOn()), d = on ? this._stDone(m.id) : "";
-      const chip = !on ? `<em class="sxc off">Aus</em>` : m.beta ? `<em class="sxc beta">Beta</em>` : d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc">Offen</em>`;
-      return on ? row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", chip)
-        : row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, "Ausgeschaltet – hier aktivieren", "mdtog", m.id, chip);
+    const isOn = (m) => m.id === "fh" || (m.id === "ww" ? s.on.ww : m.beta ? s.on[m.id] === true : m.id === "gs" ? s.on.gs !== false : this._enOn());
+    const act = MODS.filter(isOn), off = MODS.filter((m) => !isOn(m));
+    const mods = act.map((m) => {
+      const d = this._stDone(m.id), chip = m.beta ? `<em class="sxc beta">Beta</em>` : d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc">Offen</em>`;
+      return row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", chip);
     }).join("");
     const ext = s.ext.map((x) => row("puzzle", `<i>Eigenes Modul</i> ${esc(x.name)}`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join("");
-    const soon = MOD_SOON.map((x) => `<div class="sxrow soon"><span class="sxi">${ic(x[0], 20)}</span><span class="sxt"><b>${esc(x[1])}</b><small>${esc(x[2])}</small></span><em class="sxc">Bald</em></div>`).join("");
+    const offG = off.map((m) => `<button class="sxoff" data-act="mdtog" data-k="${m.id}"><span class="sxi">${ic(m.icon, 18)}</span><span class="sxt"><b>${esc(m.name)}</b><small>Modul ${m.n}</small></span><em class="sxc">Einschalten</em></button>`).join("");
+    const soon = MOD_SOON.map((x) => `<div class="sxoff soon"><span class="sxi">${ic(x[0], 18)}</span><span class="sxt"><b>${esc(x[1])}</b><small>${esc(x[2])}</small></span><em class="sxc">Bald</em></div>`).join("");
+    const grp = (ico, ttl, sub, body) => `<div class="sxh2"><span class="sxhi">${ic(ico, 16)}</span><b>${ttl}</b><small>${sub}</small></div>${body}`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Module an einem Ort</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
         <button class="pillbtn pri" data-act="mdstx">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap">
-        <div class="sxw"><div class="sxh">Module</div><div class="card sxl">${mods}${ext}</div>
-        <div class="sxh">Allgemein</div><div class="card sxl">
+        <div class="sxw">
+        <div class="sxsum"><div><b>${act.length}</b><span>${act.length === 1 ? "Modul aktiv" : "Module aktiv"}</span></div><div><b>${this._collect().length}</b><span>Räume</span></div><div><b>${this._ortPersons().length}</b><span>Personen</span></div><div><b>${this._ver ? esc(this._ver) : "–"}</b><span>Version</span></div></div>
+        ${grp("tools", "Allgemein", "Einrichtung und Verbindungen", `<div class="card sxl">
           ${row("tools", "Einrichtungsassistent", "Räume, Ventile und Fenster zuordnen", "wz")}
-          ${row("puzzle", "Integrationen", "Wallbox und weitere Geräte direkt verbinden", "igopen", "", this._igChip())}
+          ${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen", "", this._igChip())}
+          ${row("sliders", "Store anzeigen", "Symbol im Kopf und Tab in der Modul-Leiste ein- oder ausblenden", "stoset", "", `<em class="sxc ${this._stoCfg().icon || this._stoCfg().tab ? "ok" : "off"}">${this._stoCfg().icon && this._stoCfg().tab ? "Symbol + Tab" : this._stoCfg().icon ? "Symbol" : this._stoCfg().tab ? "Tab" : "Aus"}</em>`)}
           ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
-          ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}
+          ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}</div>`)}
+        ${grp("layers", "Meine Module", `${act.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${mods}${ext}</div>`)}
+        ${off.length || soon ? grp("plus", "Weitere Module", "Ausgeschaltet – mit einem Tipp einschalten", `<div class="sxgrid">${offG}${soon}</div>`) : ""}
+        ${grp("shield", "System", "Sichern, prüfen, verwalten", `<div class="card sxl">
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern und zurückspielen", "gen")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
-          ${row("puzzle", "Module verwalten", "Module ein- und ausschalten, eigene Module hinzufügen", "mdmgr")}</div>
-        ${soon ? `<div class="sxh">Demnächst</div><div class="card sxl">${soon}</div>` : ""}</div>
+          ${row("puzzle", "Module verwalten", "Module ein- und ausschalten, eigene Module hinzufügen", "mdmgr")}</div>`)}</div>
       </div>`;
   }
   /* ---------------- Personen & Standort: iCloud-Ortung, Personen-Einstellungen, Home-Zone auf der Karte ---------------- */
@@ -2933,30 +3142,163 @@ class FensterHeizungPanel extends HTMLElement {
     }, now ? 0 : 500);
   }
   _igChip() { const s = this._wbSnap(); this._wbLoad(); return s.cfg.ip ? (s.ok ? `<em class="sxc ok">go-e verbunden</em>` : `<em class="sxc">Nicht erreichbar</em>`) : `<em class="sxc">Nicht verbunden</em>`; }
+  /* ===== Store: Katalog aller Dienste, Startseite (A) und Detailseite (C) ===== */
+  _sto0() { return this._sto || (this._sto = { q: "", c: "all" }); }
+  _stoCfg() { const t = (this._cfg && this._cfg.layout && this._cfg.layout.store) || {}; return { icon: t.icon !== false, tab: t.tab !== false }; }
+  /* ===== Herstellerprofile für Heizkörperthermostate ===== */
+  _hsProfiles() {
+    const Z = "Zigbee-Integration (ZHA oder Zigbee2MQTT) einrichten und das Thermostat anlernen";
+    const T3 = "In den Raumeinstellungen unter „Fenster & Thermostate“ das Thermostat auswählen, das Profil wird automatisch erkannt";
+    return {
+      tado: { n: "tado°", sub: "Thermostate · Cloud", c: "#f97316", d: "tado", conn: "Cloud", src: "Offiziell", desc: "Heizkörper- und Raumthermostate über die tado-Cloud, mit Zeitplan aus der tado-App.",
+        feats: ["Heizung beim Lüften ausschalten und danach auf den Zeitplan zurück", "Zeitplan der tado-App bleibt erhalten", "Zieltemperatur und Heizstatus im Dashboard"],
+        quirks: [["Zurück zum Zeitplan", "Eine geänderte Temperatur wirkt bei tado als manuelle Übersteuerung. Nach dem Lüften wird deshalb die Automatik erneut gesetzt, damit wieder der Zeitplan gilt."], ["Echtes Aus", "Beim Lüften wird das Thermostat ausgeschaltet, nicht nur abgesenkt."], ["Eigene Fensterfunktion", "tado erkennt offene Fenster teils selbst. Wenn du Fenstersensoren nutzt, ist es sinnvoll, diese Funktion in der tado-App auszuschalten, damit sich beides nicht in die Quere kommt."], ["Zeitlich begrenzt ändern", "Die tado-Aktion „Climate-Timer“ setzt eine Temperatur für eine Dauer, danach gilt wieder der Zeitplan."], ["Cloud", "Befehle laufen über die tado-Cloud und können einige Sekunden brauchen. Die Verzögerung für „Fenster offen“ nicht zu kurz wählen."]],
+        steps: ["Unten „Einrichten“ tippen, Home Assistant öffnet die tado-Einrichtung", "Mit dem tado-Konto anmelden", T3], note: "" },
+      hmip: { n: "Homematic IP", sub: "Thermostate · Access Point", c: "#0ea5e9", d: "homematicip_cloud", conn: "Cloud", src: "Offiziell", desc: "Heizkörperthermostate (z. B. HmIP-eTRV) über den Homematic-IP-Access-Point.",
+        feats: ["Heizung beim Lüften auf die kleinste Temperatur und danach zurück auf Automatik", "Zeitprofile des Geräts bleiben erhalten", "Boost und Normal als Voreinstellung nutzbar"],
+        quirks: [["Kein echtes Aus", "Die Thermostate kennen nur Automatik und Manuell. „Ausschalten“ setzt darum die kleinste Temperatur des Geräts (meist um 5 °C)."], ["Zurück zum Zeitplan", "Nach dem Lüften wird die Automatik erneut gesetzt, statt die alte Temperatur als manuelle Einstellung zu setzen."], ["Verknüpfung im Gerät", "Mit einem Homematic-IP-Fensterkontakt kann das Thermostat selbst absenken. Nutze entweder die Verknüpfung in der Homematic-IP-App oder Strom & Wärme, nicht beides für dasselbe Fenster."], ["Funk-Begrenzung", "Homematic IP darf nur begrenzt oft senden (Duty Cycle). Viele Befehle in kurzer Zeit werden verzögert."]],
+        steps: ["Unten „Einrichten“ tippen und die Homematic-IP-Integration hinzufügen", "Am Access Point die Taste drücken, wenn Home Assistant danach fragt", T3], note: "" },
+      fritz: { n: "AVM FRITZ!DECT", sub: "Thermostate · FRITZ!Box", c: "#ef4444", d: "fritzbox", conn: "Lokal", src: "Offiziell", desc: "FRITZ!DECT 301 und 302 sowie Comet DECT an der FRITZ!Box, ohne Cloud.",
+        feats: ["Heizung beim Lüften ausschalten und danach zurück", "Läuft lokal über die FRITZ!Box", "Komfort- und Spar-Temperatur als Voreinstellung"],
+        quirks: [["Eigene Fenstererkennung", "FRITZ!DECT-Thermostate erkennen einen Temperatursturz selbst als offenes Fenster. Das kann mit den Fenstersensoren zusammenfallen, schadet aber nicht."], ["Aus möglich", "Das Thermostat lässt sich ausschalten. Die FRITZ!Box setzt dafür den Aus-Wert des Geräts."], ["Zurück zum Zeitplan", "Falls das Thermostat im Automatikbetrieb lief, wird die Automatik nach dem Lüften erneut gesetzt."], ["Aktualität", "Die Werte kommen von der FRITZ!Box und können einige Sekunden alt sein."]],
+        steps: ["Unten „Einrichten“ tippen, Home Assistant sucht die FRITZ!Box", "Einen FRITZ!Box-Benutzer mit Berechtigung für Smart Home verwenden", T3], note: "" },
+      shelly: { n: "Shelly TRV", sub: "Thermostate · lokal", c: "#2563eb", d: "shelly", conn: "Lokal", src: "Offiziell", desc: "Shelly-Heizkörperthermostate, direkt im Heimnetz.",
+        feats: ["Heizung beim Lüften auf die kleinste Temperatur und danach zurück", "Ventilstellung im Blick", "Optional mit externem Raumfühler"],
+        quirks: [["Kein echtes Aus", "Das Gerät hat keinen eigenen Aus-Zustand. „Ausschalten“ bedeutet die kleinste Temperatur (meist 4 °C)."], ["Verzögerte Werte", "Bei Batteriegeräten kommen Werte und Befehle teils erst nach einigen Minuten an. Die Verzögerung für „Fenster offen“ nicht zu kurz wählen."], ["Externer Fühler", "Mit einem externen Raumfühler misst das Thermostat nicht mehr direkt am Heizkörper und regelt genauer."]],
+        steps: ["Unten „Einrichten“ tippen und die Shelly-Integration hinzufügen", "Thermostat im selben Netz (BLU TRV über ein Shelly-Gateway)", T3], note: "" },
+      aqara: { n: "Aqara E1", sub: "Thermostat · Zigbee", c: "#14b8a6", d: "zha", conn: "Lokal", src: "Zigbee", desc: "Aqara Radiator Thermostat E1 über Zigbee (ZHA oder Zigbee2MQTT).",
+        feats: ["Heizung beim Lüften ausschalten und danach zurück", "Temperaturbereich 5 bis 30 °C", "Läuft lokal, ohne Cloud"],
+        quirks: [["Echtes Aus", "Das Thermostat kennt Aus und Heizen. Beim Lüften wird es ausgeschaltet."], ["Eigene Fenstererkennung", "Die eingebaute Fenstererkennung kann zusätzlich eingreifen. Mit Fenstersensoren in Strom & Wärme ist es sinnvoll, sie im Gerät auszuschalten."], ["Kalibrieren", "Nach dem Einbau einmal kalibrieren, damit das Ventil sauber fährt."], ["Kindersicherung", "Ist sie an, sind die Tasten am Gerät gesperrt, die Steuerung über Home Assistant geht weiter."]],
+        steps: [Z, "Zum Anlernen den Mittelring etwa 10 Sekunden gedrückt halten", T3], note: "" },
+      danfoss: { n: "Danfoss Ally", sub: "Thermostat · Zigbee", c: "#dc2626", d: "zha", conn: "Lokal", src: "Zigbee", desc: "Danfoss Ally Heizkörperthermostat über Zigbee (ZHA oder Zigbee2MQTT).",
+        feats: ["Heizung beim Lüften auf die kleinste Temperatur und danach zurück", "Temperaturbereich 5 bis 35 °C", "Läuft lokal, ohne Cloud"],
+        quirks: [["Kein echtes Aus", "Das Thermostat kennt nur Heizen. „Ausschalten“ setzt darum die kleinste Temperatur (5 °C)."], ["Eigene Fensterfunktion", "Das Thermostat kann ein offenes Fenster selbst erkennen. Mit Fenstersensoren in Strom & Wärme ist es sinnvoll, diese Funktion im Gerät auszuschalten."], ["Heizkörper verdeckt", "Ist der Heizkörper verdeckt (Vorhang, Möbel), den Raumfühler-Modus einstellen, sonst misst das Thermostat zu warm."], ["Externer Raumfühler", "Ein externer Fühler muss regelmäßig neu gemeldet werden, sonst fällt das Thermostat auf den eigenen Fühler zurück."]],
+        steps: [Z, "Heizkörper-Einbau mit dem mitgelieferten Adapter, danach Anpassungslauf abwarten", T3], note: "" },
+    };
+  }
+  _hsOf(eid) {
+    const H = this._hass, e = (H.entities || {})[eid]; if (!e) return null;
+    const pl = String(e.platform || "").toLowerCase(), dev = e.device_id && H.devices ? H.devices[e.device_id] : null, man = String((dev && dev.manufacturer) || "").toLowerCase(), mod = String((dev && dev.model) || "").toLowerCase();
+    const P = { tado: "tado", homematicip_cloud: "hmip", homematicip_local: "hmip", homematic: "hmip", fritzbox: "fritz", shelly: "shelly" };
+    if (P[pl]) return P[pl];
+    if (man.includes("danfoss")) return "danfoss";
+    if (/aqara|lumi|xiaomi/.test(man) || mod.includes("srts")) return "aqara";
+    return null;
+  }
+  _hsRoomNote(list) {
+    const P = this._hsProfiles(), ids = [...new Set((list || []).map((e) => this._hsOf(e)).filter(Boolean))]; if (!ids.length) return "";
+    return ids.map((id) => { const x = P[id]; return `<details class="ohint hsn"><summary><span class="hsd" style="background:${x.c}"></span>${esc(x.n)} erkannt · Besonderheiten (${x.quirks.length})</summary><ul class="stoul">${x.quirks.map(([t, d]) => `<li><b>${esc(t)}:</b> ${esc(d)}</li>`).join("")}</ul></details>`; }).join("");
+  }
+  _stoCat() {
+    const H = this._hass, E = H.entities || {}, S = H.states, ids = Object.keys(S), byDom = (d) => ids.filter((k) => (E[k] || {}).platform === d);
+    const wb = this._wbSnap(), c = wb.cfg, T = this._tb(), det = this._sfList(), out = [];
+    const X = { xsense: ["Cloud", "Community"], zha: ["Lokal", "Offiziell"], mqtt: ["Lokal", "Offiziell"], homematicip_cloud: ["Cloud", "Offiziell"], fritzbox: ["Lokal", "Offiziell"], zwave_js: ["Lokal", "Offiziell"], matter: ["Lokal", "Offiziell"], tuya: ["Cloud", "Offiziell"], ecowitt: ["Lokal", "Offiziell"], tempest: ["Lokal", "Offiziell"], met: ["Cloud", "Offiziell"], dwd_weather_warnings: ["Cloud", "Offiziell"], nina: ["Cloud", "Offiziell"], meteoalarm: ["Cloud", "Offiziell"] };
+    out.push({ id: "goe", n: "go-e Charger", sub: "Wallbox", cat: "auto", c: "#0ea5e9", i: "energy", mid: "ev", mods: ["Modul 8"], on: !!c.ip, bad: !!c.ip && !wb.ok, top: 1, act: "iggoe", conn: "Lokal", src: "Direkt",
+      st: c.ip ? (wb.ok ? `${(wb.info && wb.info.type) || "go-e Charger"} · ${c.ip}` : `${c.ip} · ${wb.error || "keine Antwort"}`) : "", desc: "Wallbox direkt im Heimnetz lesen und steuern, ohne Cloud.",
+      feats: ["Laden nach Sonne, Strompreis und Abfahrtszeit planen", "Status, Leistung und Ladestand direkt sehen", "Läuft lokal im Heimnetz, ohne Cloud"],
+      steps: ["In der go-e-App: Einstellungen → Verbindung → API-Einstellungen → „Zugriff auf lokale HTTP API“ einschalten", "Dem go-e im Router eine feste IP-Adresse geben", "Hier „Einrichten“ tippen, IP-Adresse eintragen und die Verbindung testen"], note: "Die lokale API v2 gibt es nur bei neueren Geräten. Der go-e Charger Gemini unterstützt sie." });
+    out.push({ id: "tibber", n: "Tibber", sub: "Stromtarif", cat: "tarif", c: "#6366f1", i: "energy", mid: "ev", mods: ["Modul 8"], on: !!T.connected, top: 1, act: "igtb", conn: "Cloud", src: "Offiziell",
+      st: T.connected ? `${T.home || "Zuhause"}${T.price_now != null ? " · jetzt " + num(T.price_now, 1) + " ct/kWh" : ""}` : "", desc: "Stundenpreise direkt von Tibber, ohne zusätzliche Integration.",
+      feats: ["Strompreise von heute und morgen (ab etwa 13 Uhr)", "Ladeplanung in Modul 8 zur günstigsten Zeit", "Preise als Stunde, Viertelstunde oder Preisstufe"],
+      steps: ["Auf developer.tibber.com anmelden und einen Zugriffstoken erstellen", "Hier „Einrichten“ tippen und den Token eintragen", "Verbindung testen und speichern"], note: "Der Token wird nur in Home Assistant gespeichert und nur an api.tibber.com gesendet. Es werden nur Strompreise abgerufen." });
+    const W = { warn: ["Amtliche Warnungen mit Stufe 1 bis 4 in Modul 9", "Meldung aufs Handy und Aktionen bei Warnung"], weather: ["Wetter und Vorhersage für Modul 9 und die Kopfkarte", "Vorwarnung aus der Stundenvorhersage"], station: ["Wind, Regen und Temperatur direkt vor Ort", "Genauer als eine Vorhersage für Sturmwarnungen"] };
+    const WL = { warn: "Warnungen", weather: "Wetter", station: "Wetterstation" };
+    for (const x of this._igWxCatalog()) { const n = byDom(x.d).length, cx = X[x.d] || ["Cloud", "Offiziell"];
+      out.push({ id: x.d, d: x.d, n: x.n, sub: WL[x.k], cat: "wetter", c: x.c, i: x.i, mid: "wx", mods: ["Modul 9"], on: n > 0, top: x.top, conn: cx[0], src: cx[1], st: n ? `${n} ${n === 1 ? "Entität" : "Entitäten"} · genutzt von Modul 9` : "", desc: x.t, feats: W[x.k],
+        steps: ["Unten „Einrichten“ tippen, Home Assistant öffnet die Einrichtung", "Dienst hinzufügen und die Angaben eintragen", "Modul 9 erkennt ihn automatisch. Bei mehreren Quellen wählst du unten auf dieser Seite die Zuordnung"], note: "" }); }
+    const anyX = ids.some((k) => (E[k] || {}).platform === "xsense");
+    for (const x of this._igSfCatalog()) { const n = det.filter((y) => (y.src || (E[y.id] || {}).platform) === x.d).length, up = n > 0 || (x.d === "xsense" && anyX), cx = X[x.d] || ["Cloud", "Offiziell"], isx = x.d === "xsense";
+      out.push({ id: x.d, d: x.d, n: x.n, sub: "Melder", cat: "sicherheit", c: x.c, i: x.i, mid: "sf", mods: ["Modul 11"], on: up, top: x.top, feat: isx, hacs: x.hacs, conn: cx[0], src: cx[1], st: up ? (n ? `${n} Melder · genutzt von Modul 11` : "Verbunden, aber noch ohne Melder") : "", desc: x.t,
+        feats: ["Alarm aufs Handy und Aktionen (Licht, Ventil, Sirene)", "Batteriestand und Erreichbarkeit im Blick", "Erinnerung an die regelmäßige Prüfung"],
+        steps: isx ? ["Community-Integration in HACS als benutzerdefiniertes Repository (Kategorie „Integration“) hinzufügen, die Adresse steht hinter „Anleitung“", "Home Assistant neu starten und unter Geräte & Dienste „X-Sense“ hinzufügen, besser mit einem zweiten Konto, mit dem du nur die Melder teilst", "Fertig: Die Melder erscheinen in Modul 11, mit Batterie und, wenn vorhanden, Testknopf"] : ["Unten „Einrichten“ tippen und den Dienst in Home Assistant hinzufügen", "Melder anlernen", "Modul 11 erkennt alle Melder (Rauch, CO, Gas, Wasser, Hitze) automatisch"],
+        note: isx ? "Inoffiziell und cloud-basiert, von der Community gepflegt. Nach Home-Assistant-Updates kann sie kurz ausfallen. Die Melder selbst alarmieren auch ohne Home Assistant weiter." : "" }); }
+    const hp = this._hsProfiles(), cnt = {}; ids.filter((k) => k.startsWith("climate.")).forEach((k) => { const id = this._hsOf(k); if (id) cnt[id] = (cnt[id] || 0) + 1; });
+    for (const id of Object.keys(hp)) { const x = hp[id], n = cnt[id] || 0;
+      out.push({ id: "hs_" + id, d: x.d, n: x.n, sub: x.sub, cat: "heizung", c: x.c, i: "thermo", mid: "fh", mods: ["Modul 1"], on: n > 0, top: 1, nodot: 1, conn: x.conn, src: x.src, st: n ? `${n} ${n === 1 ? "Thermostat" : "Thermostate"} in Home Assistant gefunden` : "", desc: x.desc, feats: x.feats, quirks: x.quirks, steps: x.steps, note: x.note }); }
+    out.forEach((x) => { x.tag = x.src === "Community" ? "Inoffiziell" : x.conn === "Cloud" ? "Konto nötig" : "In HA einrichten"; });
+    return out;
+  }
+  _stoTodo() {
+    if (!this._hass || !this._admin()) return 0;
+    if (this._stoT && Date.now() - this._stoT.ts < 4000) return this._stoT.n;
+    let n = 0; try { const ml = this._mdList().map((m) => m.id); n = this._stoCat().filter((x) => !x.on && x.top && !x.nodot && ml.includes(x.mid)).length; } catch (_) { /* egal */ }
+    this._stoT = { ts: Date.now(), n }; return n;
+  }
+  _stoBtn() {
+    if (!this._admin() || !this._stoCfg().icon) return "";
+    const n = this._stoTodo();
+    return `<button class="pillbtn sto" data-act="igopen" aria-label="Store: Integrationen und Dienste" title="Store">${ic("puzzle", 17)}${n ? `<i class="sdot">${n}</i>` : ""}</button>`;
+  }
+  _stoCard(x) {
+    return `<button class="stoc" data-act="stodet" data-k="${esc(x.id)}"><span class="stot"><span class="stoi" style="background:${x.c}">${ic(x.i, 24)}</span><span class="ston"><b>${esc(x.n)}</b><small>${esc(x.sub)} · ${esc(x.mods.join(", "))}</small></span></span><span class="stod">${esc(x.on ? x.st : x.desc)}</span><span class="stof">${x.on ? `<span class="stos ${x.bad ? "bad" : "ok"}">● ${x.bad ? "Nicht erreichbar" : "Verbunden"}</span><em>Ansehen</em>` : `<span class="stos wn">${esc(x.tag)}</span><em class="pri">Einrichten</em>`}</span></button>`;
+  }
+  _stoGrid() {
+    const { q, c } = this._sto0(), cat = this._stoCat(), all = q || c !== "all";
+    const hay = (x) => (x.n + " " + x.sub + " " + x.desc + " " + x.mods.join(" ") + " " + x.cat + " " + (x.quirks ? x.quirks.map((q) => q[0]).join(" ") : "")).toLowerCase();
+    const vis = cat.filter((x) => (c === "all" || c === "on" ? c === "on" ? x.on : true : x.cat === c) && (!q || hay(x).includes(q.toLowerCase())) && (all || x.on || x.top));
+    const on = vis.filter((x) => x.on), off = vis.filter((x) => !x.on);
+    if (!vis.length) return `<div class="card empty">${ic("puzzle", 30)}<div style="margin-top:8px">Nichts gefunden. Wünsche kannst du auf GitHub melden.</div></div>`;
+    return `${on.length ? `<h3 class="stoh">Verbunden<small>${on.length} ${on.length === 1 ? "Dienst" : "Dienste"}</small></h3><div class="stog">${on.map((x) => this._stoCard(x)).join("")}</div>` : ""}${off.length ? `<h3 class="stoh">${c === "all" && !q ? "Entdecken" : "Weitere Dienste"}<small>${c === "all" && !q ? "Passend zu deinen Modulen" : off.length + " Treffer"}</small></h3><div class="stog">${off.map((x) => this._stoCard(x)).join("")}</div>` : ""}`;
+  }
+  _stoFeat() {
+    const { q, c } = this._sto0(); if (q || c !== "all") return "";
+    const cat = this._stoCat(), x = ["xsense", "tibber", "nina"].map((id) => cat.find((y) => y.id === id)).find((y) => y && !y.on); if (!x) return "";
+    return `<button class="stofe" data-act="stodet" data-k="${esc(x.id)}"><span class="stobig">${ic(x.i, 44)}</span><span class="stofx"><em>${x.id === "xsense" ? "Neu · Modul 11" : "Empfohlen · " + esc(x.mods[0])}</em><b>${esc(x.n)}${x.id === "xsense" ? " Rauchmelder" : ""}</b><span>${esc(x.id === "xsense" ? "Rauch- und CO-Melder aus der X-Sense-Cloud ins Dashboard holen. Alarm, Batterie und Prüf-Erinnerung inklusive." : x.desc)}</span><i class="stobt">Ansehen</i></span></button>`;
+  }
   _igRender() {
-    this._wbLoad();
-    const sr = this.shadowRoot, s = this._wbSnap(), c = s.cfg, adm = this._admin(), i = s.info, mainEl = sr.getElementById("main");
-    const ae = sr.activeElement; if (ae && ae.tagName === "SELECT" && mainEl.contains(ae)) return; /* offene Auswahl nicht durch das automatische Aktualisieren schließen */
-    const prevOpen = [...mainEl.querySelectorAll("details")].map((d) => d.open);
+    this._wbLoad(); this._tbLoad(); this._sfxLoad();
+    const sr = this.shadowRoot, mainEl = sr.getElementById("main"), ae = sr.activeElement;
+    if (ae && mainEl.contains(ae) && (ae.tagName === "SELECT" || ae.classList.contains("stoq"))) return; /* offene Auswahl und Suchfeld nicht durch das automatische Aktualisieren stören */
+    const prevOpen = [...mainEl.querySelectorAll("details")].map((d) => d.open), st = this._sto0(), cat = this._stoCat();
+    const chips = [["all", "Alle"], ["on", `Verbunden (${cat.filter((x) => x.on).length})`], ["tarif", "Strom & Tarife"], ["auto", "Elektroauto"], ["heizung", "Heizung"], ["wetter", "Wetter"], ["sicherheit", "Sicherheit"]];
+    const keep = mainEl.querySelector(".wrap") ? mainEl.scrollTop : 0;
     mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Integrationen</b><span><em class="tag">Geräte direkt verbinden</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Store</b><span><em class="tag">Integrationen und Dienste</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <button class="pillbtn" data-act="mdmgr" aria-label="Module verwalten">${ic("layers", 16)}<span class="bl">Module</span></button>
         <button class="pillbtn pri" data-act="igback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
-      <div class="wrap"><div class="sxw">
-        <div class="card ocard"><h2>${ic("car", 18)}Wallboxen</h2>
-          <div class="oper"><span class="oav" style="background:#0ea5e9">${ic("energy", 22)}</span><div class="opi"><b>go-e Charger</b><small>${c.ip ? (s.ok ? `${esc(i.type || "go-e Charger")} · ${esc(c.ip)}${i.fw ? " · Firmware " + esc(i.fw) : ""}` : `${esc(c.ip)} · ${esc(s.error || "keine Antwort")}`) : "Direkte Verbindung über das lokale Netzwerk, ohne Cloud"}</small></div><span class="ost ${c.ip && s.ok ? "home" : "off"}">${c.ip ? (s.ok ? "Verbunden" : "Nicht erreichbar") : "Nicht verbunden"}</span>${adm ? `<button class="ibtn" data-act="iggoe" aria-label="go-e bearbeiten">${ic(c.ip ? "pencil" : "plus", 18)}</button>` : ""}</div>
-          <div class="mut sm" style="margin-top:8px">Die Wallbox wird direkt über ihre lokale Schnittstelle gelesen und gesteuert. Eine Integration in Home Assistant ist dafür nicht nötig. Die Steuerung stellst du in <b>Modul 8 · Elektroauto &amp; Wallbox</b> ein.</div></div>
-        ${this._igTbRow()}
+      <div class="wrap"><div class="sxw stow">
+        <label class="stosr"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input class="stoq" type="search" data-f="stoq" value="${esc(st.q)}" placeholder="Suchen, z. B. Tibber, Rauchmelder, Wetter" aria-label="Suchen" autocomplete="off" spellcheck="false"></label>
+        <div class="stoch">${chips.map(([k, t]) => `<button class="${st.c === k ? "on" : ""}" data-act="stoc" data-k="${k}" aria-pressed="${st.c === k}">${t}</button>`).join("")}</div>
+        <div id="stofe">${this._stoFeat()}</div>
+        <div id="stogrid">${this._stoGrid()}</div>
         ${this._igWxCard()}
-        <div class="card ocard"><h2>${ic("puzzle", 18)}Weitere Hersteller</h2><div class="mut">Zuerst wird go-e angebunden. Weitere Hersteller folgen. Wünsche kannst du auf GitHub melden.</div></div>
-        <div class="card ocard"><h2>${ic("info", 18)}go-e Charger vorbereiten</h2>
-          <details class="ohint" ${c.ip ? "" : "open"}><summary>Lokale Schnittstelle einschalten</summary><ol>
-            <li><b>In der go-e-App:</b> Einstellungen → Verbindung → API-Einstellungen → „Zugriff auf lokale HTTP API“ aktivieren.</li>
-            <li><b>Version 2 nötig:</b> Die lokale API v2 gibt es nur bei neueren Geräten. Der go-e Charger Gemini unterstützt sie.</li>
-            <li><b>Feste IP-Adresse:</b> Vergib dem go-e im Router eine feste Adresse, sonst bricht die Verbindung nach einem Neustart ab.</li>
-            <li><b>Gleiches Netzwerk:</b> Home Assistant und die Wallbox müssen sich im selben Netz erreichen.</li></ol></details></div>
+        <div class="mut sm" style="margin:6px 4px 0">Der Store ist ein Katalog: Er zeigt, was zu deinen Modulen passt, erkennt, was in Home Assistant schon läuft, und führt dich durch die Einrichtung.</div>
       </div></div>`;
-    const ds = [...mainEl.querySelectorAll("details")]; if (prevOpen.length === ds.length) ds.forEach((d, n) => { d.open = prevOpen[n]; }); /* aufgeklappte Bereiche bleiben beim Aktualisieren offen */
+    const ds = [...mainEl.querySelectorAll("details")]; if (prevOpen.length === ds.length) ds.forEach((d, n) => { d.open = prevOpen[n]; });
+    const inp = mainEl.querySelector(".stoq"); if (inp) inp.addEventListener("input", () => { this._sto0().q = inp.value.trim(); const g = sr.getElementById("stogrid"), f = sr.getElementById("stofe"); if (g) g.innerHTML = this._stoGrid(); if (f) f.innerHTML = this._stoFeat(); });
+  }
+  _stoModal() {
+    const m = this._modal, x = this._stoCat().find((y) => y.id === m.id); if (!x) return `<div class="ov" data-act="close"></div>`;
+    const adm = this._admin(), add = `/config/integrations/dashboard/add?domain=${x.d}`, man = `/config/integrations/integration/${x.d}`;
+    const btn = x.act ? `<button class="btn2 pri" data-act="stogo" data-k="${x.act}">${x.on ? "Verwalten" : "Einrichten"}</button>` : (adm ? `<a class="btn2 pri" href="${x.on ? man : add}" target="_blank" rel="noopener">${x.on ? "Verwalten" : "Einrichten"}</a>${!x.on && x.hacs ? `<a class="btn2" href="${x.hacs}" target="_blank" rel="noopener">Anleitung</a>` : ""}` : "");
+    return `<div class="ov" data-act="close"></div><div class="sheet wide stosh" role="dialog" aria-modal="true">
+      <div class="stohd"><span class="stoi big" style="background:${x.c}">${ic(x.i, 38)}</span><div><b>${esc(x.n)}</b><small>${esc(x.sub)}${x.src === "Community" ? " · Community" : ""}</small><div class="stoact">${btn}${x.on ? `<span class="stos ${x.bad ? "bad" : "ok"}">● ${x.bad ? "Nicht erreichbar" : "Verbunden"}</span>` : ""}</div></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${x.on && x.st ? `<div class="mut sm" style="margin:0 0 8px">${esc(x.st)}</div>` : ""}
+      <div class="stofa"><div><b>${esc(x.mods.join(", "))}</b><small>wird genutzt von</small></div><div><b>${esc(x.conn)}</b><small>Verbindung</small></div><div><b>${esc(x.src === "Direkt" ? "Direkt" : x.src)}</b><small>Quelle</small></div></div>
+      <div class="lsec">${ic("check", 15)}Was du bekommst</div><ul class="stoul">${x.feats.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
+      ${x.quirks ? `<div class="lsec">${ic("sliders", 15)}Besonderheiten dieses Herstellers</div><ul class="stoul stoq2">${x.quirks.map(([t, d]) => `<li><b>${esc(t)}:</b> ${esc(d)}</li>`).join("")}</ul>` : ""}
+      <div class="lsec">${ic("tools", 15)}So geht es</div>${x.steps.map((t, n) => `<div class="stost"><b>${n + 1}</b><span>${esc(t)}</span></div>`).join("")}
+      ${x.note ? `<div class="stowarn">${ic("info", 16)}<span>${esc(x.note)}</span></div>` : ""}
+      ${x.quirks ? `<div class="mut sm" style="margin-top:10px">Die Hinweise stammen aus Herstellerangaben und Erfahrungen der Community. Bitte am eigenen Gerät prüfen, Firmware und Integration können sich unterscheiden.</div>` : ""}
+      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="close">Schließen</button></div></div>`;
+  }
+  _stoSetModal() {
+    const t = this._stoCfg();
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Store anzeigen</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:0 0 8px">Der Store bleibt immer unter Einstellungen → Allgemein erreichbar. Hier schaltest du die zusätzlichen Zugänge einzeln ein oder aus.</div>
+      <div class="ltog"><span><b>Store-Symbol im Kopf</b><br><small class="mut">Puzzle-Symbol neben den Einstellungen, mit Zähler für Dienste, die noch fehlen</small></span><button class="sw ${t.icon ? "on" : ""}" data-act="stotog" data-k="icon" aria-pressed="${t.icon}" aria-label="Store-Symbol im Kopf"></button></div>
+      <div class="ltog"><span><b>Tab „Store“ in der Modul-Leiste</b><br><small class="mut">Ersetzt den gestrichelten Tab „Erweitern“ am Ende der Leiste</small></span><button class="sw ${t.tab ? "on" : ""}" data-act="stotog" data-k="tab" aria-pressed="${t.tab}" aria-label="Tab Store in der Modul-Leiste"></button></div>
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _stoAct(a, b) {
+    const k = b.dataset.k;
+    if (a === "stoc") { this._sto0().c = k; this._render(); }
+    else if (a === "stodet") { this._modal = { type: "stodet", id: k }; this._renderModal(); }
+    else if (a === "stogo") { this._igAct(k, b); }
+    else if (a === "stoset") { this._modal = { type: "stoset" }; this._renderModal(); }
+    else if (a === "stotog") { const t = this._stoCfg(); this._cfg.layout.store = { ...t, [k]: !t[k] }; this._saveLayout(); this._render(); this._renderModal(); }
   }
   /* Integrationen für Wetter und Warnungen: Dienste mit Status. Eingerichtete Dienste nutzt Modul 9 automatisch (Zuordnung nur bei mehreren). */
   _wxOffAny() { const E = this._hass.entities || {}; return Object.keys(this._hass.states).some((k) => ["dwd_weather_warnings", "nina", "meteoalarm"].includes((E[k] || {}).platform)); }
@@ -2995,10 +3337,9 @@ class FensterHeizungPanel extends HTMLElement {
     const opt = (ids2, cur, auto, lab) => `<option value="" ${cur ? "" : "selected"}>${esc(auto)}</option>${ids2.map((id) => `<option value="${esc(id)}" ${cur === id ? "selected" : ""}>${lab(id)}</option>`).join("")}`;
     const sel = (ico, t, f, body, dis) => `<div class="vrow"><span>${ic(ico, 15)} ${t}</span><select class="osel" style="max-width:55%;margin:0" data-f="${f}" aria-label="${t}" ${adm && !dis ? "" : "disabled"}>${body}</select></div>`;
     const multi = weather.length > 1 || wind.length > 1 || tmp.length > 1 || off.length > 1;
-    return `<div class="card ocard"><h2>${ic("cloud", 18)}Wetter und Warnungen</h2>
-      <div class="mut sm" style="margin:0 0 4px">Diese Dienste passen zu Modul 9. Was in Home Assistant eingerichtet ist, wird automatisch erkannt und genutzt. Die Wetter-Entität und die Außentemperatur gelten auch für die Wetter-Anzeige im Dashboard.</div>
-      ${sec("shield", "Amtliche Warnungen", "warn")}${sec("sun", "Wetter und Vorhersage", "weather")}${sec("fan", "Eigene Wetterstation", "station")}
-      <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Zuordnung</div>
+    if (!this._igWxCatalog().some((x) => byDom(x.d).length)) return "";
+    return `<div class="card ocard"><h2>${ic("cloud", 18)}Zuordnung für Wetter und Warnungen</h2>
+      <div class="mut sm" style="margin:0 0 4px">Was in Home Assistant eingerichtet ist, wird automatisch erkannt und von Modul 9 genutzt. Die Wetter-Entität und die Außentemperatur gelten auch für die Wetter-Anzeige im Dashboard.</div>
       <div class="mut sm" style="margin:0 0 4px">${multi ? "Es gibt mehrere Quellen. Standard ist „Automatisch“, du kannst eine bestimmte wählen." : "Es ist jeweils nur eine Quelle da, deshalb passt „Automatisch“."}</div>
       ${sel("cloud", "Wetter", "wxsselw", opt(weather, L.entity && S[L.entity] ? L.entity : "", weather[0] ? `Automatisch (${(S[weather[0]].attributes || {}).friendly_name || weather[0]})` : "Keine gefunden", (id) => nm(id)), !weather.length)}
       ${sel("fan", "Wind", "wxsselwind", opt(wind, W.wind && S[W.wind] ? W.wind : "", "Automatisch (aus der Wetter-Entität)", (id) => `${nm(id)} · ${esc(S[id].state)} ${esc(un(id))}`), !wind.length)}
@@ -3007,6 +3348,18 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Benachrichtigung bei Warnungen</div>
       ${notify.length ? `<div class="gschips">${notify.map((n) => `<button class="gsch ${W.notify.to.includes(n) ? "sel" : ""}" data-act="wxsns" data-k="${esc(n)}" aria-pressed="${W.notify.to.includes(n)}" ${adm ? "" : "disabled"}>${esc(n)}</button>`).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
       <div class="mut sm" style="margin-top:8px">Grenzwerte, Vorwarnung und Aktionen stellst du in Modul 9 ein.</div></div>`;
+  }
+  _igSfCatalog() {
+    return [
+      { d: "xsense", n: "X-Sense", t: "Rauch-, CO-, Hitze- und Wassermelder über die X-Sense-Basisstation. Inoffizielle Community-Integration (HACS), nutzt die X-Sense-Cloud.", c: "#e11d48", i: "flame", top: 1, hacs: "https://github.com/Jarnsen/ha-xsense-component_test" },
+      { d: "zha", n: "Zigbee (ZHA)", t: "Zigbee-Melder direkt über Home Assistant, ohne Cloud", c: "#f59e0b", i: "shield", top: 1 },
+      { d: "mqtt", n: "Zigbee2MQTT / MQTT", t: "Melder über Zigbee2MQTT oder MQTT-Bridges", c: "#a855f7", i: "shield", top: 1 },
+      { d: "homematicip_cloud", n: "Homematic IP", t: "Rauch- und Wassermelder von Homematic IP", c: "#0ea5e9", i: "shield", top: 1 },
+      { d: "fritzbox", n: "AVM FRITZ!SmartHome", t: "FRITZ!DECT-Geräte und Melder an der FRITZ!Box", c: "#ef4444", i: "shield" },
+      { d: "zwave_js", n: "Z-Wave JS", t: "Z-Wave-Rauch- und CO-Melder", c: "#14b8a6", i: "shield" },
+      { d: "matter", n: "Matter", t: "Melder über Matter", c: "#64748b", i: "shield" },
+      { d: "tuya", n: "Tuya / Smart Life", t: "Rauch- und Wassermelder von Tuya-Marken, Cloud nötig", c: "#f97316", i: "shield" },
+    ];
   }
   /* Tibber: Strompreise direkt über die Tibber-Schnittstelle */
   _tbLoad(force) {
@@ -3023,12 +3376,6 @@ class FensterHeizungPanel extends HTMLElement {
     if (k === "q") return pr.map((v, i) => `<rect x="${3 + i * 4.9}" y="${42 - v}" width="3.6" height="${v}" rx="1" fill="#f59e0b"/>`).join("");
     const col = (v) => v < 17 ? "#2dd4bf" : v < 25 ? "#a3a3a3" : "#f87171";
     return pr.filter((_, i) => i % 2 === 0).map((v, i) => `<rect x="${3 + i * 9.8}" y="${v < 17 ? 18 : v < 25 ? 26 : 34}" width="8.6" height="${v < 17 ? 24 : v < 25 ? 16 : 8}" rx="2" fill="${col(v)}"/>`).join("");
-  }
-  _igTbRow() {
-    this._tbLoad(); const T = this._tb(), adm = this._admin(), on = !!T.connected;
-    return `<div class="card ocard"><h2>${ic("energy", 18)}Stromtarife</h2>
-      <div class="oper"><span class="oav" style="background:#6366f1">${ic("energy", 22)}</span><div class="opi"><b>Tibber</b><small>${on ? `${esc(T.home || "Zuhause")}${T.price_now != null ? " · jetzt " + num(T.price_now, 1) + " ct/kWh" : ""}` : T.error ? "Keine Antwort von Home Assistant" : "Stundenpreise direkt von Tibber, ohne zusätzliche Integration"}</small></div><span class="ost ${on ? "home" : "off"}">${on ? "Verbunden" : "Nicht verbunden"}</span>${adm ? `<button class="ibtn" data-act="igtb" aria-label="Tibber bearbeiten">${ic(on ? "pencil" : "plus", 18)}</button>` : ""}</div>
-      <div class="mut sm" style="margin-top:8px">Die Preise von heute und morgen (ab etwa 13 Uhr) werden für die <b>Ladeplanung</b> in Modul 8 genutzt. Als Preisquelle kannst du dort auch einen eigenen Sensor wählen.</div></div>`;
   }
   _igTbModal() {
     const I = this._igS, d = I.tb, t = I.tbTest, T = this._tb();
@@ -3060,7 +3407,7 @@ class FensterHeizungPanel extends HTMLElement {
   _igAct(a, b) {
     const I = this._igS || (this._igS = { draft: { ip: "" }, test: null, busy: false, tb: { token: "", home: "", res: "h" }, tbTest: null });
     if (!I.tb) I.tb = { token: "", home: "" };
-    if (a === "igopen") { this._igOpen = true; this._render(); }
+    if (a === "igopen") { this._igOpen = true; this._stOpen = false; this._sto = { q: "", c: "all" }; this._modal = null; this._renderModal(); this._render(); }
     else if (a === "igback") { this._igOpen = false; this._render(); }
     else if (a === "iggoe") { I.draft = { ip: this._wb().ip }; I.test = null; this._modal = { type: "iggoe" }; this._renderModal(); }
     else if (a === "igtest") {
@@ -3461,7 +3808,8 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="gst">${ic("info", 15)}Tipp für den ersten Test: Modus „Aus“ lassen, dann „Voll“ mit niedrigem Höchststrom (zum Beispiel 6 A) und die Wirkung in der go-e-App beobachten.</div>
       <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="wbyes">Einschalten</button></div></div>`;
   }
-  _wbChange(t) { const f = t.dataset.f; if (f === "wbdt") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), time: t.value } } : x)) }); this._render(); } return true; } if (f === "wbradd") { const c = this._wb(); if (t.value) { this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, ids: [...x.ids, Number(t.value)] } : x)) }, true); this._render(); } return true; } if (f === "wbtime") { this._wbSave({ planTime: t.value || "07:00" }); this._render(); return true; } return false; }
+  _wbLater(t) { /* Zeitfeld nicht mitten in der Eingabe neu aufbauen (Safari meldet jede Ziffer einzeln) */ clearTimeout(this._wbLT); this._wbLT = setTimeout(() => { const ae = this.shadowRoot.activeElement; if (ae && ae.type === "time") { ae.addEventListener("blur", () => this._render(), { once: true }); } else this._render(); }, 700); }
+  _wbChange(t) { const f = t.dataset.f; if (f === "wbdt") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), time: t.value } } : x)) }); this._wbLater(t); } return true; } if (f === "wbradd") { const c = this._wb(); if (t.value) { this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, ids: [...x.ids, Number(t.value)] } : x)) }, true); this._render(); } return true; } if (f === "wbtime") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { this._wbSave({ planTime: t.value }); this._wbLater(t); } return true; } return false; }
   /* Gerätestrom: eigene Berechnung im Backend (fenster_heizung/gs_get). Solar, Netz, Batterie kommen aus Modul 3, Preise aus Modul 1. */
   _gsState() {
     const s = this._mdState();
@@ -3535,16 +3883,16 @@ class FensterHeizungPanel extends HTMLElement {
     const devs = D.devices || [];
     const sum = (f) => devs.reduce((a, d) => a + (f(d) || 0), 0), cols = ["#e9a413", "#13a97b", "#6f78e8"], srcN = ["Solar", "Batterie", "Netz"];
     const per = [["Heute", "day", "today", "#2dd4bf"], ["Monat", "month", "month", "#60a5fa"], ["Jahr", "year", "year", "#a78bfa"], ["Gesamt", "total", "total", "#f472b6"]];
-    const tiles = per.map(([t, k, ico, c]) => `<div class="card gstile" style="--c:${c}"><div class="mut sm">${ic(ico, 14)} ${t}</div><div class="gsv">${eur(sum((d) => d[k].saved))}</div><div class="mut sm">gespart · Kosten ${eur(sum((d) => d[k].cost))} · ${num(sum((d) => d[k].kwh), 1)} kWh</div></div>`).join("");
+    const tiles = per.map(([t, k, ico, c]) => `<div class="card gstile" style="--c:${c}"><div class="gst"><span class="gsi">${ic(ico, 15)}</span>${t}</div><div class="gsv">${eur(sum((d) => d[k].saved))}</div><div class="mut sm">gespart · Kosten ${eur(sum((d) => d[k].cost))} · ${num(sum((d) => d[k].kwh), 1)} kWh</div></div>`).join("");
     const cards = devs.map((d) => {
       const run = d.running, base = run ? d.w : d.e, tot = base[0] + base[1] + base[2] || 1, adv = d.advice || "", ac = /^Jetzt/.test(adv) ? "green" : /^Teil/.test(adv) ? "amber" : "slate";
-      return `<div class="card gsdev"><div class="gsh"><b>${esc(d.name)}</b><span class="gsst ${run ? "on" : ""}">${run ? num(d.w[0] + d.w[1] + d.w[2], 0) + " W" : "Aus"}</span></div>
+      return `<div class="card gsdev"><div class="gsh"><span class="gsi big">${ic("laundry", 20)}</span><b>${esc(d.name)}</b><span class="gsst ${run ? "on" : ""}">${run ? num(d.w[0] + d.w[1] + d.w[2], 0) + " W" : "Aus"}</span></div>
         <div class="gsbar" role="img" aria-label="Anteile Solar, Batterie, Netz">${base.map((v, i) => `<i style="width:${v / tot * 100}%;background:${cols[i]}"></i>`).join("")}</div>
-        <div class="gsleg">${srcN.map((t, i) => `<span><i style="background:${cols[i]}"></i>${t} ${run ? num(d.w[i], 0) + " W" : num(d.e[i], 1) + " kWh"}</span>`).join("")}</div>
-        <div class="gsrow"><span class="mut">Heute</span><b>${eur(d.day.cost)} Kosten · ${eur(d.day.saved)} gespart</b></div>
-        <div class="gsrow"><span class="mut">Letzter Durchlauf</span><b>${d.last ? eur(d.last.cost) + " · " + num(d.last.kwh, 2) + " kWh · " + num(d.last.share, 0) + " % Eigenanteil" : "noch keiner"}</b></div>
+        <div class="gsleg">${srcN.map((t, i) => `<span><i style="background:${cols[i]}"></i><em>${t}</em><b>${run ? num(d.w[i], 0) + " W" : num(d.e[i], 1) + " kWh"}</b></span>`).join("")}</div>
+        <div class="gsrows"><div class="gsrow"><span class="mut">Heute</span><b>${eur(d.day.cost)} Kosten</b><em>${eur(d.day.saved)} gespart</em></div>
+        <div class="gsrow"><span class="mut">Letzter Durchlauf</span><b>${d.last ? eur(d.last.cost) + " · " + num(d.last.kwh, 2) + " kWh" : "noch keiner"}</b><em>${d.last ? num(d.last.share, 0) + " % Eigenanteil" : ""}</em></div></div>
         ${adv ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung ${num(d.cover, 0)} %</span></div>` : ""}</div>`; }).join("");
-    return `${warn}<div class="card hero gshero"><div class="mut" style="opacity:.85">${ic("laundry", 16)} Heute gespart</div><div class="gsbig">${eur(sum((d) => d.day.saved))}</div><div style="opacity:.85">${num(sum((d) => d.day.runs))} ${sum((d) => d.day.runs) === 1 ? "Durchlauf" : "Durchläufe"} heute · ${num(sum((d) => d.day.kwh), 1)} kWh</div></div>
+    return `${warn}<div class="card hero gshero">${(() => { const e0 = sum((d) => d.e[0] + d.e[1]), et = sum((d) => d.e[0] + d.e[1] + d.e[2]), pc = et > 0 ? Math.round(e0 / et * 100) : 0; return `<div class="gsring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="rb"/><circle cx="60" cy="60" r="50" class="rf" stroke-dasharray="${(pc * 3.1416).toFixed(1)} 314.2" transform="rotate(-90 60 60)"/></svg><div class="rv"><b>${pc}<small>%</small></b><span>Eigenstrom</span></div></div>`; })()}<div class="mut" style="opacity:.85">${ic("laundry", 16)} Heute gespart</div><div class="gsbig">${eur(sum((d) => d.day.saved))}</div><div style="opacity:.85">${num(sum((d) => d.day.runs))} ${sum((d) => d.day.runs) === 1 ? "Durchlauf" : "Durchläufe"} heute · ${num(sum((d) => d.day.kwh), 1)} kWh</div></div>
       <div class="gstiles">${tiles}</div><div class="gsgrid">${cards}</div>${this._gsChart(D, devs, cols, srcN)}`;
   }
   _gsChart(D, devs, cols, srcN) {
@@ -3559,11 +3907,11 @@ class FensterHeizungPanel extends HTMLElement {
     const lab = (s) => mon ? s.dt.toLocaleDateString("de-DE", { month: "short" }) : n > 7 ? String(s.dt.getDate()) : s.dt.toLocaleDateString("de-DE", { weekday: "short" });
     let grid = "", bars = "";
     for (let v = 0; v <= top + 1e-9; v += step) { const y = Hh - pb - (v / top) * (Hh - pb - 8); grid += `<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${pl - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="var(--mut)">${num(v, step < 1 ? 1 : 0)}</text>`; }
-    slots.forEach((s, i) => { let y = Hh - pb; const x = pl + i * bw + (bw - bar) / 2; s.v.forEach((v, j) => { const h = (v / top) * (Hh - pb - 8); if (h > 0.4) { y -= h; bars += `<rect x="${x}" y="${y}" width="${bar}" height="${h}" fill="${cols[j]}" rx="2"><title>${srcN[j]} ${num(v, 2)} kWh</title></rect>`; } });
+    slots.forEach((s, i) => { let y = Hh - pb; const x = pl + i * bw + (bw - bar) / 2; s.v.forEach((v, j) => { const h = (v / top) * (Hh - pb - 8); if (h > 0.4) { y -= h; bars += `<rect x="${x}" y="${y}" width="${bar}" height="${h}" fill="${cols[j]}" rx="3"><title>${srcN[j]} ${num(v, 2)} kWh</title></rect>`; } });
       bars += `<text x="${x + bar / 2}" y="${Hh - 6}" text-anchor="middle" font-size="11" fill="var(--mut)">${esc(lab(s))}</text>`; });
     const totE = slots.reduce((a, s) => a + s.v[0] + s.v[1] + s.v[2], 0), totS = slots.reduce((a, s) => a + s.s, 0), totC = slots.reduce((a, s) => a + s.c, 0);
     const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${on}">${t}</button>`;
-    return `<div class="card"><h2>${ic("chart", 18)}Verlauf nach Quelle</h2>
+    return `<div class="card gsc"><h2>${ic("chart", 18)}Verlauf nach Quelle</h2>
       <div class="gschips">${[["7", "7 Tage"], ["30", "30 Tage"], ["12", "12 Monate"]].map(([k, t]) => chip("gsper", k, t, rg === k)).join("")}</div>
       <div class="gschips">${chip("gsdev", "", "Alle Geräte", !sel)}${devs.map((d) => chip("gsdev", esc(d.id), esc(d.name), sel === d.id)).join("")}</div>
       <svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="Energie nach Quelle in kWh">${grid}${bars}</svg>
@@ -3655,16 +4003,16 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="sm" style="max-width:460px;margin:0 auto 14px">Zeigt Ladestand, Reichweite und Kilometerstand. Die Wallbox ist abgebildet, das Ladekabel erscheint beim Anstecken und leuchtet beim Laden.</div>
       ${adm ? `<button class="btn2 pri" data-act="mdevset" style="flex:none;padding:12px 22px">${ic("tools", 16)} Fahrzeug einrichten</button>` : "Ein Administrator kann das Modul einrichten."}</div>`;
     const stT = d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt";
-    const tile = (ico, t, v, sub) => `<div class="luroom"><span class="mut">${ic(ico, 14)} ${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const tile = (ico, t, v, sub) => `<div class="luroom"><span class="mut lt"><span class="ti">${ic(ico, 15)}</span>${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
     const bar = d.soc != null ? `<div class="gsbar" style="margin-top:6px" role="progressbar" aria-valuenow="${num(d.soc, 0)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(0, Math.min(100, d.soc))}%;background:${d.soc < 20 ? "#f87171" : "#34d399"}"></i></div>` : "";
     const wbOn = !!this._wbSnap().cfg.ip, wbTabs = wbOn ? this._wbTabs() + this._wbBar() : "";
     if (wbOn && this._wbStT() === "plan") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbPlan(d)}`;
     if (wbOn && this._wbStT() === "set") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbCard(d, "set")}`;
     if (wbOn && this._wbStT() === "stat") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbStat()}`;
     return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}
-      <div class="card evcard ${d.charging ? "chg" : d.plugged ? "plg" : ""}"><div class="evhead"><b>${ic("car", 18)}${esc([this._evState().brand === "Andere" ? "" : this._evState().brand, this._evState().model].filter(Boolean).join(" ") || "Fahrzeug & Wallbox")}</b><span class="gsst ${d.charging ? "on" : ""}">${stT}</span></div>${this._evScene(d)}</div>
-      <div class="lugrid">${tile("energy", "Ladestand", d.soc != null ? num(d.soc, 0) + " %" : "–", bar || "kein Sensor")}${tile("car", "Reichweite", d.range != null ? num(d.range, 0) + " km" : "–", d.range != null ? "laut Fahrzeug" : "kein Sensor")}${tile("total", "Kilometerstand", d.odo != null ? num(d.odo, 0) + " km" : "–", d.odo != null ? "gesamt" : "kein Sensor")}${tile("bolt", "Ladeleistung", d.power != null ? num(d.power / 1000, 1) + " kW" : "–", stT)}</div>
-      ${wbOn ? this._wbxToday(d) : ""}${this._wbCard(d)}`;
+      <div class="evtop"><div class="card evcard ${d.charging ? "chg" : d.plugged ? "plg" : ""}"><div class="evhead"><b>${ic("car", 18)}${esc([this._evState().brand === "Andere" ? "" : this._evState().brand, this._evState().model].filter(Boolean).join(" ") || "Fahrzeug & Wallbox")}</b><span class="gsst ${d.charging ? "on" : ""}">${stT}</span></div>${this._evScene(d)}</div>
+      <div class="lugrid">${tile("energy", "Ladestand", d.soc != null ? num(d.soc, 0) + " %" : "–", bar || "kein Sensor")}${tile("car", "Reichweite", d.range != null ? num(d.range, 0) + " km" : "–", d.range != null ? "laut Fahrzeug" : "kein Sensor")}${tile("total", "Kilometerstand", d.odo != null ? num(d.odo, 0) + " km" : "–", d.odo != null ? "gesamt" : "kein Sensor")}${tile("bolt", "Ladeleistung", d.power != null ? num(d.power / 1000, 1) + " kW" : "–", stT)}</div></div>
+      <div class="mcols">${wbOn ? this._wbxToday(d) : ""}${this._wbCard(d)}</div>`;
   }
   _evSetModal() {
     const V = this._evState(), E = V.ent, st = this._hass.states, ks = Object.keys(st);
@@ -3787,27 +4135,135 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._betaSoon("bell", "Preisalarm", "Melden, wenn der Preis unter oder über eine Grenze geht")}
       ${this._betaSoon("chart", "Morgen", "Preise des nächsten Tages, sobald sie veröffentlicht sind")}`;
   }
-  _sfList() {
-    const KIND = { smoke: "Rauchmelder", carbon_monoxide: "CO-Melder", gas: "Gasmelder", moisture: "Wassermelder", safety: "Sicherheitsmelder" };
-    return Object.entries(this._hass.states).filter(([id, e]) => id.startsWith("binary_sensor.") && KIND[(e.attributes || {}).device_class]).map(([id, e]) => {
-      const a = e.attributes || {}, b = a.battery_level ?? a.battery, bv = b != null && isFinite(Number(b)) ? Number(b) : null;
-      return { id, name: a.friendly_name || id, kind: KIND[a.device_class], alarm: e.state === "on", off: e.state === "unavailable" || e.state === "unknown", bat: bv };
+  /* Modul 11: Rauch- & Sicherheitsmelder (Alarme, Batterie, Erreichbarkeit, Prüf-Erinnerung, Aktionen und Meldungen laufen im Backend) */
+  _sfxDef() { return { kinds: ["smoke", "co", "gas", "water", "heat", "safety"], excl: [], repeat: 10, bat: { on: true, pct: 20 }, off: { on: true, min: 60 }, test: { on: true, months: 6 }, acts: [], notify: { alarm: true, end: false, bat: true, off: true, test: true, to: [] } }; }
+  _sfxNames() { return { smoke: "Rauch", co: "CO", gas: "Gas", water: "Wasser", heat: "Hitze", safety: "Sicherheit" }; }
+  _sfxKind() { return { smoke: ["Rauchmelder", "flame"], co: ["CO-Melder", "alert"], gas: ["Gasmelder", "flame"], water: ["Wassermelder", "drop"], heat: ["Hitzemelder", "thermo"], safety: ["Sicherheitsmelder", "shield"] }; }
+  _sfxLoad(force) {
+    if (!this._hass || this._sfxBusy) return;
+    if (!force && this._sfxD && Date.now() - this._sfxD.ts < 15000) return;
+    this._sfxBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { error: true }, ts: Date.now() }; })
+      .finally(() => { this._sfxBusy = false; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } });
+  }
+  _sfxVisible() { return !!(this._modal && this._modal.type === "sfset") || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }
+  _sfx() { const d = (this._sfxD && this._sfxD.d) || {}, df = this._sfxDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, bat: { ...df.bat, ...(c.bat || {}) }, off: { ...df.off, ...(c.off || {}) }, test: { ...df.test, ...(c.test || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, kinds: c.kinds || df.kinds, excl: c.excl || [], acts: c.acts || [] } }; }
+  _sfxSave(cfg) {
+    const s = this._sfx(); this._sfxD = { d: { ...s, cfg }, ts: Date.now() };
+    clearTimeout(this._sfxT);
+    this._sfxT = setTimeout(() => {
+      this._sfxT = null;
+      this._hass.callWS({ type: "fenster_heizung/sf_set", cfg: this._sfx().cfg }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } })
+        .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
+    }, 500);
+    this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal();
+  }
+  _sfxPatch(fn) { const c = JSON.parse(JSON.stringify(this._sfx().cfg)); fn(c); this._sfxSave(c); }
+  _sfxAct(a, b) {
+    const k = b.dataset.k, i = Number(b.dataset.i), s = Number(b.dataset.s);
+    if (a === "sfxopen") { this._sfxLoad(true); this._modal = { type: "sfset" }; this._renderModal(); return; }
+    if (a === "sfxtest") { this._hass.callWS({ type: "fenster_heizung/sf_test" }).then((r) => this._toast(r && r.sent ? `Test an ${r.sent} ${r.sent === 1 ? "Dienst" : "Diensten"} gesendet` : "Kein Benachrichtigungsdienst gewählt")).catch(() => this._toast("Test fehlgeschlagen")); return; }
+    if (a === "sfxtested") { this._hass.callWS({ type: "fenster_heizung/sf_tested" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; this._render(); this._toast("Melder als geprüft eingetragen"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
+    if (a === "sfxpress") { this._hass.callWS({ type: "fenster_heizung/sf_press", ent: k }).then((r) => { this._toast(r && r.ok ? "Test am Melder ausgelöst" : "Der Melder hat keinen Testknopf"); this._sfxLoad(true); }).catch(() => this._toast("Test fehlgeschlagen")); return; }
+    if (a === "sfxgoig") { this._modal = null; this._renderModal(); this._sto = { q: "", c: "sicherheit" }; this._igOpen = true; this._render(); return; }
+    this._sfxPatch((c) => {
+      if (a === "sfxkind") c.kinds = c.kinds.includes(k) ? c.kinds.filter((x) => x !== k) : [...c.kinds, k];
+      else if (a === "sfxexcl") c.excl = c.excl.includes(k) ? c.excl.filter((x) => x !== k) : [...c.excl, k];
+      else if (a === "sfxrep") c.repeat = Math.min(60, Math.max(0, (Number(c.repeat) || 0) + s));
+      else if (a === "sfxbat") c.bat.on = !c.bat.on;
+      else if (a === "sfxbatp") c.bat.pct = Math.min(50, Math.max(5, (Number(c.bat.pct) || 20) + s));
+      else if (a === "sfxoff") c.off.on = !c.off.on;
+      else if (a === "sfxoffm") c.off.min = Number(k);
+      else if (a === "sfxtst") c.test.on = !c.test.on;
+      else if (a === "sfxtstm") c.test.months = Number(k);
+      else if (a === "sfxn") c.notify[k] = !c.notify[k];
+      else if (a === "sfxns") c.notify.to = c.notify.to.includes(k) ? c.notify.to.filter((x) => x !== k) : [...c.notify.to, k];
+      else if (a === "sfxak") c.acts[i].kind = k;
+      else if (a === "sfxad") c.acts[i].do = k;
+      else if (a === "sfxrm") c.acts.splice(i, 1);
+    });
+  }
+  _sfxChange(t) {
+    const f = t.dataset.f, v = t.value || "";
+    if (f === "sfxadd") { if (v) this._sfxPatch((c) => { if (c.acts.length < 12) c.acts.push({ id: "a" + Date.now().toString(36), kind: "smoke", ent: v, do: this._sfxDo(v)[0][0] }); }); return true; }
+    if (f === "sfxent") { this._sfxPatch((c) => { const x = c.acts[Number(t.dataset.i)]; if (x && v) x.ent = v; }); return true; }
+    return false;
+  }
+  /* Ohne Antwort vom Backend: Melder direkt aus den Zuständen lesen */
+  _sfxDo(ent) { const d = String(ent).split(".")[0]; return d === "cover" ? [["open", "Öffnen"], ["close", "Schließen"]] : d === "script" || d === "scene" ? [["run", "Ausführen"]] : [["on", "Einschalten"], ["off", "Ausschalten"]]; }
+  /* Ohne Antwort vom Backend: Melder direkt aus den Zuständen lesen */
+  _sfxLocal() {
+    const H = this._hass, E = H.entities || {}, K = { smoke: "smoke", carbon_monoxide: "co", gas: "gas", moisture: "water", heat: "heat", safety: "safety" }, KN = this._sfxKind();
+    return Object.entries(H.states).filter(([id, e]) => id.startsWith("binary_sensor.") && K[(e.attributes || {}).device_class]).map(([id, e]) => {
+      const a = e.attributes || {}, b = a.battery_level ?? a.battery, bv = b != null && isFinite(Number(b)) ? Number(b) : null, k = K[a.device_class];
+      return { id, name: a.friendly_name || id, k, kind: KN[k][0], area: "", src: (E[id] || {}).platform || "", alarm: e.state === "on", off: e.state === "unavailable" || e.state === "unknown", bat: bv, test: "" };
     }).sort((x, y) => Number(y.alarm) - Number(x.alarm) || x.name.localeCompare(y.name, "de"));
   }
+  _sfList() { const S = this._sfx(); return !S.error && S.det ? S.det : this._sfxLocal(); }
+  _sfAgo(iso) { const t = iso ? new Date(iso).getTime() : NaN; if (!isFinite(t)) return ""; const m = Math.max(0, Math.round((Date.now() - t) / 60000)); return m < 1 ? "gerade eben" : m < 60 ? `vor ${m} Min.` : m < 1440 ? `vor ${Math.round(m / 60)} Std.` : `vor ${Math.round(m / 1440)} Tagen`; }
   _sfPage() {
-    const l = this._sfList(), al = l.filter((x) => x.alarm).length, low = l.filter((x) => x.bat != null && x.bat < 20).length, off = l.filter((x) => x.off).length;
-    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    const row = (x) => `<div class="luroom ${x.alarm ? "" : "off"}"><b>${ic(x.kind === "Wassermelder" ? "drop" : x.kind === "Rauchmelder" ? "flame" : "shield", 16)} ${esc(x.name)}</b>
-      <span class="${x.alarm ? "" : "mut"}" style="${x.alarm ? "color:var(--error-color,#ef4444);font-weight:700" : ""}">${x.alarm ? "ALARM" : x.off ? "Nicht erreichbar" : "In Ordnung"}</span>
-      <span class="mut">${esc(x.kind)} · ${x.bat != null ? `Batterie ${num(x.bat, 0)} %${x.bat < 20 ? " (schwach)" : ""}` : "Batterie unbekannt"}</span></div>`;
-    return `${this._betaBox("Gelesen werden Melder mit der Geräteklasse Rauch, CO, Gas, Wasser oder Sicherheit. Das Modul ersetzt keine echte Alarmanlage.")}
-      <div class="card"><h2>${ic("shield", 18)}Überblick</h2>
-        <div class="gst ${al ? "" : "on"}" style="margin-bottom:10px">${ic(al ? "alert" : "check", 15)}${l.length ? (al ? `${al} Alarm${al > 1 ? "e" : ""} aktiv.` : "Alle Melder sind in Ordnung.") : "Noch keine Melder gefunden."}</div>
-        <div class="lugrid">${tile("Melder", String(l.length), "Gefunden in Home Assistant")}${tile("Alarme", String(al), al ? "Sofort prüfen" : "Keine aktiv")}${tile("Batterie schwach", String(low), low ? "Unter 20 %" : "Alle über 20 %")}${tile("Nicht erreichbar", String(off), off ? "Prüfen" : "Alle melden")}</div></div>
-      ${l.length ? `<div class="card"><h2>${ic("bell", 18)}Melder</h2><div class="lugrid">${l.map(row).join("")}</div></div>` : ""}
-      ${this._betaSoon("bell", "Alarm-Benachrichtigung", "Sofort aufs Handy, mit Name des Melders und Raum")}
-      ${this._betaSoon("alert", "Batteriewarnung", "Melden, bevor eine Batterie leer ist")}
-      ${this._betaSoon("clock", "Prüf-Erinnerung", "Regelmäßig an den Test der Melder erinnern")}`;
+    this._sfxLoad();
+    const S = this._sfx(), C = S.cfg, adm = this._admin(), live = !S.error && !!S.det, l = this._sfList(), KN = this._sfxKind();
+    const al = l.filter((x) => x.alarm), low = l.filter((x) => x.bat != null && x.bat < C.bat.pct), off = l.filter((x) => x.off), tst = S.test || {};
+    const bad = al.length ? "alarm" : low.length || off.length || tst.due ? "warn" : "ok";
+    const msg = !l.length ? ["Noch keine Melder gefunden", "Melder aus Home Assistant erscheinen hier automatisch, zum Beispiel von X-Sense, Zigbee, Z-Wave oder Homematic."]
+      : al.length ? [`${al.length} ${al.length === 1 ? "Alarm" : "Alarme"} aktiv`, al.map((x) => x.name + (x.area ? " (" + x.area + ")" : "")).join(", ")]
+        : bad === "warn" ? ["Alles ruhig, aber es gibt Hinweise", [low.length ? `${low.length} ${low.length === 1 ? "Batterie ist" : "Batterien sind"} schwach` : "", off.length ? `${off.length} nicht erreichbar` : "", tst.due ? "Prüfung fällig" : ""].filter(Boolean).join(" · ")]
+          : ["Alles in Ordnung", `${l.length} ${l.length === 1 ? "Melder meldet" : "Melder melden"} keinen Alarm, alle erreichbar und mit guter Batterie`];
+    const hero = `<div class="card hero sfh ${bad}"><div class="sfi">${ic(bad === "alarm" ? "alert" : bad === "warn" ? "info" : "shield", 56)}</div><div class="lbl">${ic("shield", 16)}Sicherheit im Haus</div><div class="big">${esc(msg[0])}</div><div class="sub">${esc(msg[1])}</div>
+      <div class="chips"><span class="chip">${ic("shield", 16)}${l.length} ${l.length === 1 ? "Melder" : "Melder"}</span>${low.length ? `<span class="chip st warn">${ic("alert", 16)}${low.length} Batterie schwach</span>` : ""}${off.length ? `<span class="chip st warn">${ic("alert", 16)}${off.length} nicht erreichbar</span>` : ""}${tst.due ? `<span class="chip st warn">${ic("clock", 16)}Prüfung fällig</span>` : ""}${C.notify.to.length ? `<span class="chip">${ic("bell", 16)}Meldung an ${C.notify.to.length} ${C.notify.to.length === 1 ? "Dienst" : "Dienste"}</span>` : `<span class="chip">${ic("bell", 16)}Keine Meldung eingerichtet</span>`}</div></div>`;
+    const tiles = `<div class="tiles">${[
+      ["shield", "Melder", String(l.length), "", "#2dd4bf", "In Home Assistant gefunden"],
+      ["alert", "Alarme", String(al.length), "", al.length ? "#ef4444" : "#34d399", al.length ? "Sofort prüfen" : "Keine aktiv"],
+      ["energy", "Batterie schwach", String(low.length), "", low.length ? "#f59e0b" : "#34d399", low.length ? `Unter ${C.bat.pct} %` : `Alle über ${C.bat.pct} %`],
+      ["info", "Nicht erreichbar", String(off.length), "", off.length ? "#f59e0b" : "#34d399", off.length ? "Prüfen" : "Alle melden sich"],
+    ].map(([ico, lab, v, u, c, sub]) => `<div class="tile" style="--a:${c}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}<small>${u}</small></div><div class="g">${sub}</div></div>`).join("")}</div>`;
+    const card = (x) => { const st = x.alarm ? ["alarm", "ALARM"] : x.off ? ["off", "Nicht erreichbar"] : ["ok", "In Ordnung"], bt = x.bat != null ? Math.max(0, Math.min(100, x.bat)) : null, bc = bt == null ? "" : bt < C.bat.pct ? "#f87171" : bt < 40 ? "#f59e0b" : "#34d399";
+      return `<div class="sfd ${st[0]}"><div class="sfdh"><span class="sfdi">${ic(KN[x.k][1], 20)}</span><div class="sfdt"><b>${esc(x.name)}</b><small>${esc(x.kind)}${x.area ? " · " + esc(x.area) : ""}${x.src === "xsense" ? " · X-Sense" : ""}</small></div><span class="sfs ${st[0]}">${st[1]}</span></div>
+        <div class="sfb">${bt != null ? `<div class="sfbar"><i style="width:${bt}%;background:${bc}"></i></div><span>${ic("energy", 13)} Batterie ${num(bt, 0)} %${bt < C.bat.pct ? " · schwach" : ""}</span>` : `<span class="mut">Batterie unbekannt</span>`}${x.alarm && x.since ? `<span class="sfsince">seit ${esc(this._sfAgo(x.since))}</span>` : ""}${adm && x.test ? `<button class="lnk" data-act="sfxpress" data-k="${esc(x.id)}">${ic("bell", 14)}Testen</button>` : ""}</div></div>`; };
+    const list = l.length ? `<div class="card sfc"><h2>${ic("bell", 18)}Melder<small class="mut">${l.length}</small></h2><div class="sfg">${l.map(card).join("")}</div></div>` : "";
+    const E = this._hass.entities || {}, anyXs = !!(S.xs && S.xs.found) || Object.keys(E).some((k) => (E[k] || {}).platform === "xsense");
+    const empty = !l.length ? `<div class="card sfc"><h2>${ic("puzzle", 18)}Melder verbinden</h2><div class="mut sm" style="margin:0 0 10px">Das Modul liest Melder mit der Geräteklasse Rauch, CO, Gas, Wasser, Hitze oder Sicherheit. ${anyXs ? "X-Sense ist verbunden, hat aber noch keine Melder geliefert." : "Für X-Sense, Zigbee, Z-Wave und Homematic gibt es unter Einstellungen → Integrationen eine Anleitung."}</div>${adm ? `<button class="btn2 pri" data-act="sfxgoig" style="flex:none;padding:10px 18px">${ic("puzzle", 16)} Integrationen öffnen</button>` : ""}</div>` : "";
+    const testC = `<div class="card sfc"><h2>${ic("clock", 18)}Prüfung</h2>
+      <div class="dgs ${tst.due ? "warn" : "ok"}">${ic(tst.due ? "alert" : "check", 22)}<div><b>${!C.test.on ? "Erinnerung ausgeschaltet" : tst.due ? "Prüfung fällig" : tst.last ? "Zuletzt geprüft " + esc(this._sfAgo(tst.last)) : "Noch nicht geprüft"}</b><span>${C.test.on ? `Alle ${C.test.months} ${C.test.months === 1 ? "Monat" : "Monate"} Testknopf an jedem Melder drücken. ${tst.last ? "" : "Die Frist läuft ab dem ersten Start des Moduls."}` : "Du bekommst keine Erinnerung an den Melder-Test."}</span></div><span></span></div>
+      ${adm && l.length ? `<div class="foot2" style="margin-top:10px"><button class="btn2 pri" data-act="sfxtested">${ic("check", 16)} Geprüft</button></div>` : ""}</div>`;
+    const log = (S.log || []).length ? `<div class="card sfc"><h2>${ic("list", 18)}Protokoll</h2><div class="wxlog">${S.log.slice(0, 8).map((x) => `<div><time>${new Date(x.t).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</time><span>${esc(x.x)}</span></div>`).join("")}</div></div>` : `<div class="card sfc"><h2>${ic("list", 18)}Protokoll</h2><div class="mut sm">Noch keine Ereignisse. Alarme, schwache Batterien und Prüfungen erscheinen hier.</div></div>`;
+    return `${this._betaBox("Das Modul liest vorhandene Melder und meldet Alarme aufs Handy. Es ersetzt keine zertifizierten Rauchmelder oder Alarmanlage.")}${hero}${l.length ? tiles : ""}${empty}${list}<div class="enc"><div class="enco">${testC}</div><div class="enco">${log}</div></div>`;
+  }
+  _sfxModal() {
+    const S = this._sfx(), C = S.cfg, H = this._hass, NM = this._sfxNames(), KN = this._sfxKind();
+    const sw = (act, k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" aria-label="${label}"></button>`;
+    const step = (act, val, unit, s) => `<div class="step" style="flex:none"><button data-act="${act}" data-s="-${s}" aria-label="weniger">${ic("minus", 18)}</button><b>${val} ${unit}</b><button data-act="${act}" data-s="${s}" aria-label="mehr">${ic("plus", 18)}</button></div>`;
+    const chip = (act, k, t, on, extra = "") => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" ${extra} aria-pressed="${!!on}">${t}</button>`;
+    const actOpts = Object.keys(H.states).filter((e) => /^(light|switch|cover|input_boolean|script|scene)\./.test(e));
+    const svc = [...new Set([...Object.keys(((H.services || {}).notify) || {}).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).sort().map((n) => "notify." + n), ...C.notify.to])];
+    const all = [...(S.det || []), ...(S.excl || []).filter((x) => !(S.det || []).some((d) => d.id === x.id)).map((x) => ({ id: x.id, name: x.name, k: "safety", kind: "ausgeschlossen", area: "" }))];
+    const acts = C.acts.map((x, i) => `<div class="rfv"><div class="vrow" style="margin:0"><span><b>${esc(this._wzName(x.ent))}</b><small class="mut" style="display:block">${esc(x.ent)}</small></span><button class="ibtn" data-act="sfxrm" data-i="${i}" aria-label="Aktion entfernen">${ic("trash", 18)}</button></div>
+      <div class="mut sm" style="margin:6px 0 4px">Bei</div><div class="gschips">${[["any", "Jedem Alarm"], ...Object.keys(NM).map((k) => [k, NM[k]])].map(([k, t]) => chip("sfxak", k, t, x.kind === k, `data-i="${i}"`)).join("")}</div>
+      <div class="mut sm" style="margin:6px 0 4px">Dann</div><div class="gschips">${this._sfxDo(x.ent).map(([k, t]) => chip("sfxad", k, t, x.do === k, `data-i="${i}"`)).join("")}</div></div>`).join("");
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Rauch- &amp; Sicherheitsmelder</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("shield", 15)}Welche Melder</div>
+      <div class="mut sm" style="margin:0 0 6px">Gelesen werden Melder mit passender Geräteklasse. Schalte Arten aus, die du nicht brauchst.</div>
+      <div class="gschips">${Object.keys(NM).map((k) => chip("sfxkind", k, NM[k], C.kinds.includes(k))).join("")}</div>
+      ${all.length ? `<details class="ohint"><summary>Einzelne Melder ausschließen (${C.excl.length})</summary>${all.map((d) => `<div class="vrow"><span>${esc(d.name)}<small class="mut" style="display:block">${esc(d.kind)}${d.area ? " · " + esc(d.area) : ""}</small></span>${sw("sfxexcl", esc(d.id), !C.excl.includes(d.id), d.name)}</div>`).join("")}<div class="mut sm">Ein Schalter aus bedeutet: wird nicht überwacht.</div></details>` : ""}
+      <div class="gst">${ic("info", 15)}<span>X-Sense und andere Hersteller richtest du unter <button class="lnk" data-act="sfxgoig">Einstellungen → Integrationen</button> ein.</span></div>
+      <div class="lsec" style="margin-top:12px">${ic("alert", 15)}Bei Alarm</div>
+      <div class="vrow"><span>Erinnerung wiederholen<small class="mut" style="display:block">Solange der Alarm anhält, kommt alle paar Minuten eine Meldung. 0 = nur einmal.</small></span>${step("sfxrep", C.repeat, "Min.", 5)}</div>
+      <div class="mut sm" style="margin:10px 0 6px">Aktionen: das Modul schaltet nur, was du hier auswählst, einmal pro Alarm. Gut sind Licht an, Rollläden öffnen (Fluchtweg), Wasserventil schließen oder eine Sirene per Skript.</div>
+      ${acts}${C.acts.length < 12 ? this._wzSel(actOpts, "", "sfxadd", "", "+ Aktion hinzufügen", /licht|light|flur|ventil|sirene|rollo/i) : ""}
+      <div class="lsec" style="margin-top:12px">${ic("energy", 15)}Batterie und Erreichbarkeit</div>
+      <div class="vrow"><span>Schwache Batterie melden<small class="mut" style="display:block">Einmal pro Woche, solange sie unter der Grenze liegt.</small></span>${C.bat.on ? step("sfxbatp", C.bat.pct, "%", 5) : ""}${sw("sfxbat", "", C.bat.on, "Batterie")}</div>
+      <div class="vrow"><span>Nicht erreichbar melden<small class="mut" style="display:block">Wenn sich ein Melder so lange nicht meldet. Einmal pro Tag.</small></span>${sw("sfxoff", "", C.off.on, "Erreichbarkeit")}</div>
+      ${C.off.on ? `<div class="gschips">${[[15, "15 Min."], [60, "1 Std."], [180, "3 Std."], [720, "12 Std."], [1440, "1 Tag"]].map(([k, t]) => chip("sfxoffm", k, t, C.off.min === k)).join("")}</div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Prüf-Erinnerung</div>
+      <div class="vrow"><span>Regelmäßig an den Test erinnern<small class="mut" style="display:block">Du drückst den Testknopf und tippst danach auf „Geprüft“.</small></span>${sw("sfxtst", "", C.test.on, "Prüf-Erinnerung")}</div>
+      ${C.test.on ? `<div class="gschips">${[[1, "Monatlich"], [3, "Alle 3 Monate"], [6, "Alle 6 Monate"], [12, "Jährlich"]].map(([k, t]) => chip("sfxtstm", k, t, C.test.months === k)).join("")}</div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Benachrichtigung</div>
+      ${[["alarm", "Alarm"], ["end", "Alarm beendet"], ["bat", "Batterie schwach"], ["off", "Nicht erreichbar"], ["test", "Prüfung fällig"]].map(([k, t]) => `<div class="vrow"><span>${t}</span>${sw("sfxn", k, C.notify[k], t)}</div>`).join("")}
+      <div class="lsec" style="margin-top:8px">${ic("bell", 15)}Senden an</div>
+      ${svc.length ? `<div class="gschips">${svc.map((n) => chip("sfxns", esc(n), esc(n), C.notify.to.includes(n))).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
+      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="sfxtest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _plPage() {
     const pv = this._pvNow(), pr = this._price(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
@@ -3838,7 +4294,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/wx_get" }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._wxsD = { d: { error: true }, ts: Date.now() }; })
       .finally(() => { this._wxsBusy = false; if (this._wxsVisible()) { this._render(); if (this._modal && this._modal.type === "wxset") this._renderModal(); } });
   }
-  _wxsVisible() { return this._mdActive && this._mdActive() === "wx"; }
+  _wxsVisible() { return !!(this._modal && this._modal.type === "wxset") || (!!this._mdActive && this._mdActive() === "wx" && !this._stOpen); }
   _wxs() { const d = (this._wxsD && this._wxsD.d) || {}, df = this._wxsDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, warn: Object.fromEntries(Object.keys(df.warn).map((k) => [k, { ...df.warn[k], ...((c.warn || {})[k] || {}) }])), ahead: { ...df.ahead, ...(c.ahead || {}) }, official: { ...df.official, ...(c.official || {}) }, win: { ...df.win, ...(c.win || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, acts: c.acts || [] } }; }
   _wxsSave(cfg) {
     const s = this._wxs(); this._wxsD = { d: { ...s, cfg }, ts: Date.now() };
@@ -3855,7 +4311,7 @@ class FensterHeizungPanel extends HTMLElement {
     const k = b.dataset.k, i = Number(b.dataset.i), s = Number(b.dataset.s);
     if (a === "wxsopen") { this._wxsLoad(true); this._modal = { type: "wxset" }; this._renderModal(); return; }
     if (a === "wxstest") { this._hass.callWS({ type: "fenster_heizung/wx_test" }).then((r) => this._toast(r && r.sent ? `Test an ${r.sent} ${r.sent === 1 ? "Dienst" : "Diensten"} gesendet` : "Kein Benachrichtigungsdienst gewählt")).catch(() => this._toast("Test fehlgeschlagen")); return; }
-    if (a === "wxsgoig") { this._modal = null; this._renderModal(); this._igOpen = true; this._render(); return; }
+    if (a === "wxsgoig") { this._modal = null; this._renderModal(); this._sto = { q: "", c: "wetter" }; this._igOpen = true; this._render(); return; }
     if (a === "wxsweather") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), entity: k || "" }; this._saveLayout(); this._render(); return; }
     if (a === "wxsout") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), outdoor: k || "" }; this._saveLayout(); this._render(); return; }
     this._wxsPatch((c) => {
@@ -3899,31 +4355,61 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _wxPage() {
     this._wxsLoad(); const S = this._wxs(), C = S.cfg, adm = this._admin(), d = this._wxWarn(), NM = this._wxsNames(), live = !S.error && S.state, W = (live ? S.state.warn : this._wxsLocal()) || {};
-    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`, hm = (iso) => { const t = new Date(iso); return String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0"); };
-    const wx = d.w ? (WX[d.w.state] || ["cloud", d.w.state])[1] : "–", ICO = { storm: "fan", thunder: "flame", frost: "thermo", heat: "sun", rain: "drop" };
-    const sub = { storm: () => (d.mx ? `Wind bis ${num(d.mx, 0)} km/h · Grenze ${C.warn.storm.kmh}` : "Keine Windwerte"), thunder: () => (W.thunder && W.thunder.a ? "Gewitter oder Hagel gemeldet" : "Kein Gewitter oder Hagel"), frost: () => (d.o.t != null ? `Draußen ${num(d.o.t, 1)} °C · Grenze ${C.warn.frost.temp} °C` : "Keine Außentemperatur"), heat: () => (d.o.t != null ? `Draußen ${num(d.o.t, 1)} °C · Grenze ${C.warn.heat.temp} °C` : "Keine Außentemperatur"), rain: () => (d.w && d.w.state === "pouring" ? "Starkregen gemeldet" : "Kein Starkregen") };
-    const row = (k) => { const on = !!C.warn[k].on, w = W[k] || {}, act = on && w.a, ah = on && !act && w.ahead; return `<div class="luroom ${on ? "" : "off"}"><b>${ic(ICO[k], 16)} ${NM[k]}</b><span class="${act ? "" : "mut"}" style="${act ? "color:var(--warning-color,#f59e0b);font-weight:700" : ah ? "color:#38bdf8;font-weight:700" : ""}">${!on ? "Aus" : act ? `Aktiv${w.since ? " seit " + hm(w.since) : ""}` : ah ? `Vorwarnung ab ${hm(w.ahead)}` : "Keine Warnung"}</span><span class="mut">${sub[k]()}</span></div>`; };
-    const any = Object.keys(NM).some((k) => C.warn[k].on && (W[k] || {}).a), soon = Object.keys(NM).some((k) => C.warn[k].on && !(W[k] || {}).a && (W[k] || {}).ahead);
-    const fc = (S.fc || []).slice(0, 12), fcCard = C.ahead.on && fc.length ? `<div class="card"><h2>${ic("clock", 18)}Nächste Stunden</h2><div class="wxfc">${fc.map((x) => { const bad = (x.w || []).length; return `<div class="${bad ? "bad" : ""}" title="${bad ? x.w.map((k) => NM[k]).join(", ") : "Keine Warnung"}"><span class="mut">${hm(x.t).slice(0, 2)}</span>${ic((WX[x.cond] || ["cloud"])[0], 20)}<b>${num(x.temp, 0)}°</b><small class="mut">${x.wind != null ? num(x.wind, 0) : "–"}</small></div>`; }).join("")}</div>
-      <div class="gst" style="margin-top:8px">Temperatur in °C, darunter der Wind in km/h. Orange: Hier wird eine Warnung erwartet. Vorwarnung bis ${C.ahead.hours} ${C.ahead.hours === 1 ? "Stunde" : "Stunden"} im Voraus.</div></div>` : "";
-    const A = C.acts, ST = (S.state && S.state.acts) || {}, actRow = (x) => { const on = (W[x.warn] || {}).a, s = ST[x.id] || {}, dn = (this._wxsDo(x.ent).find((y) => y[0] === x.do) || [0, x.do])[1]; return `<div class="luroom"><b>${ic(String(x.ent).startsWith("cover.") ? "blinds" : "bolt", 16)} ${esc(this._wzName(x.ent))}</b><span class="${s.state === "run" ? "" : "mut"}" style="${s.state === "run" ? "color:var(--warning-color,#f59e0b);font-weight:700" : ""}">${s.state === "run" ? `Ausgelöst ${s.at ? hm(s.at) : ""}` : on ? "Wartet" : "Bereit"}</span><span class="mut">Bei ${NM[x.warn]}: ${dn.toLowerCase()}${x.undo ? ", danach zurück" : ""}</span></div>`; };
-    const wo = S.open || [], winCard = `<div class="gst ${C.win.on ? "on" : ""}" style="margin-top:10px">${ic("window", 15)}<span>${C.win.on ? `Fenster-Erinnerung aktiv bei ${C.win.warn.map((k) => NM[k]).join(", ")}.${wo.length ? ` Jetzt offen: <b>${wo.map(esc).join(", ")}</b>.` : " Zurzeit ist kein Fenster offen."}` : "Fenster-Erinnerung aus. Sie meldet bei Sturm, Gewitter oder Starkregen offene Fenster."}</span></div>`;
-    const lg = (S.log || []).slice(0, 6);
-    return `${this._betaBox("Die Warnungen werden im Hintergrund aus deiner Wetter-Entität oder Wetterstation berechnet, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, diese kommen vom Deutschen Wetterdienst oder NINA, wenn eingerichtet.")}
-      <div class="card"><h2>${ic("alert", 18)}Warnlage jetzt</h2>
-        <div class="gst ${any ? "" : "on"}" style="margin-bottom:10px">${ic(any ? "alert" : "check", 15)}${any ? "Mindestens eine Warnung ist aktiv." : soon ? "Keine Warnung, aber eine Vorwarnung liegt vor." : "Zurzeit liegt keine Warnung vor."}</div>
-        <div class="lugrid">${Object.keys(NM).map(row).join("")}${C.official.on && this._wxOffAny() ? (() => { const o = (S.state && S.state.official) || {}, hot = o.level > 0; return `<div class="luroom"><b>${ic("shield", 16)} Amtliche Warnung</b><span class="${hot ? "" : "mut"}" style="${hot ? "color:var(--warning-color,#f59e0b);font-weight:700" : ""}">${hot ? esc(o.title || "Warnung aktiv") : "Keine Warnung"}</span><span class="mut">${hot ? esc(o.text || "") : "Deutscher Wetterdienst und Co."}</span></div>`; })() : ""}</div>
-        ${adm ? `<div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="wxsopen">${ic("sliders", 16)} Einstellungen</button></div>` : ""}</div>
-      ${fcCard}
-      <div class="card"><h2>${ic("sun", 18)}Wetter jetzt</h2><div class="lugrid">
-        ${tile("Zustand", wx, d.w ? "Wetter-Entität" : "Keine Wetter-Entität gefunden")}
-        ${tile("Draußen", d.o.t != null ? num(d.o.t, 1) + " °C" : "–", d.o.rh != null ? num(d.o.rh) + " % Luftfeuchte" : "")}
-        ${tile("Wind", isFinite(d.wind) ? num(d.wind, 0) + " km/h" : "–", d.mx > (isFinite(d.wind) ? d.wind : 0) ? `Böen bis ${num(d.mx, 0)} km/h` : d.gale ? "Sturmstärke" : "Unter der Sturmgrenze")}</div></div>
-      <div class="card"><h2>${ic("blinds", 18)}Aktionen und Erinnerungen</h2>
-        ${A.length ? `<div class="lugrid">${A.map(actRow).join("")}</div>` : `<div class="mut sm">Noch keine Aktion. In den Einstellungen legst du fest, was bei einer Warnung passiert, zum Beispiel Rollläden oder Markisen fahren.</div>`}
-        ${winCard}
-        <div class="gst ${C.notify.to.length ? "on" : ""}" style="margin-top:8px">${ic("bell", 15)}<span>${C.notify.to.length ? `Benachrichtigung an ${C.notify.to.length} ${C.notify.to.length === 1 ? "Dienst" : "Dienste"}: ${[C.notify.start && "Beginn", C.notify.end && "Ende", C.notify.ahead && C.ahead.on && "Vorwarnung"].filter(Boolean).join(", ") || "nichts ausgewählt"}.` : "Keine Benachrichtigung eingerichtet."}</span></div></div>
-      ${lg.length ? `<div class="card"><h2>${ic("clock", 18)}Protokoll</h2><div class="wbses">${lg.map((x) => `<div class="wbse"><div><b>${esc(x.x)}</b><span class="mut sm">${new Date(x.t).toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" })}</span></div></div>`).join("")}</div></div>` : ""}`;
+    const hm = (iso) => { const t = new Date(iso); return String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0"); };
+    const ICO = { storm: "fan", thunder: "flame", frost: "thermo", heat: "sun", rain: "drop" }, KEYS = Object.keys(NM), on = (k) => !!C.warn[k].on;
+    const act = KEYS.filter((k) => on(k) && (W[k] || {}).a), soon = KEYS.filter((k) => on(k) && !(W[k] || {}).a && (W[k] || {}).ahead);
+    const O = (live && S.state.official) || {}, offOn = C.official.on && this._wxOffAny(), offHot = offOn && O.level > 0;
+    const wx = d.w ? (WX[d.w.state] || ["cloud", d.w.state])[1] : "", wnd = isFinite(d.wind) ? d.wind : null;
+    /* Kopf: ein Satz zur Lage, darunter die Werte von jetzt */
+    const tone = act.length || offHot ? "hot" : soon.length ? "soon" : "ok";
+    const head = act.length ? `${NM[act[0]]}${act.length > 1 ? ` und ${act.length - 1} weitere` : ""}` : offHot ? O.title : soon.length ? `${NM[soon[0]]} wird erwartet` : "Keine Warnung";
+    const sub = act.length ? ((W[act[0]] || {}).since ? `Seit ${hm(W[act[0]].since)} Uhr${offHot ? " · " + O.title : ""}` : "Gerade aktiv") : offHot ? `${O.text || "Amtliche Warnung"}` : soon.length ? `Ab etwa ${hm(W[soon[0]].ahead)} Uhr, ${C.ahead.hours} ${C.ahead.hours === 1 ? "Stunde" : "Stunden"} Vorlauf` : "Alle Werte liegen unter den Grenzen.";
+    const now = [wx && `<span>${ic((WX[d.w.state] || ["cloud"])[0], 16)}${wx}</span>`, d.o.t != null && `<span>${ic("thermo", 16)}${num(d.o.t, 1)} °C</span>`, wnd != null && `<span>${ic("fan", 16)}${num(wnd, 0)} km/h${d.mx > wnd ? `, Böen ${num(d.mx, 0)}` : ""}</span>`].filter(Boolean).join("");
+    /* Kurve: Wind der nächsten Stunden gegen die Sturmgrenze, Warnstunden getönt */
+    const fc = C.ahead.on ? (S.fc || []).slice(0, 12) : [], n = fc.length;
+    let chart = "";
+    if (n > 1) {
+      const VW = 600, VH = 132, px = 8, top = 22, bot = 10, cw = (VW - 2 * px) / n, lim = on("storm") ? C.warn.storm.kmh : null, vals = fc.map((x) => (isFinite(x.wind) ? x.wind : 0)), ym = Math.max(lim ? lim * 1.3 : 0, ...vals, 20) * 1.08;
+      const X = (i) => px + cw * (i + 0.5), Y = (v) => top + (VH - top - bot) * (1 - v / ym), line = vals.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join("");
+      chart = `<div class="wxc"><svg viewBox="0 0 ${VW} ${VH}" role="img" aria-label="Windvorhersage der nächsten ${n} Stunden${lim ? " mit Sturmgrenze " + lim + " km/h" : ""}">
+          ${fc.map((x, i) => ((x.w || []).length ? `<rect x="${(px + cw * i).toFixed(1)}" y="0" width="${cw.toFixed(1)}" height="${VH}" class="wxbad"/>` : "")).join("")}
+          <path d="${line}L${X(n - 1).toFixed(1)} ${VH - bot}L${X(0).toFixed(1)} ${VH - bot}Z" class="wxar"/>
+          ${lim ? `<line x1="${px}" x2="${VW - px}" y1="${Y(lim).toFixed(1)}" y2="${Y(lim).toFixed(1)}" class="wxlim"/><text x="${VW - px - 2}" y="${(Y(lim) - 6).toFixed(1)}" text-anchor="end" class="wxlt">Sturmgrenze ${lim} km/h</text>` : ""}
+          <path d="${line}" class="wxln"/>${vals.map((v, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${(fc[i].w || []).length ? 3.6 : 2.4}" class="${(fc[i].w || []).length ? "wxdb" : "wxd"}"/>`).join("")}</svg>
+        <div class="wxh" style="grid-template-columns:repeat(${n},1fr)">${fc.map((x) => `<div class="${(x.w || []).length ? "bad" : ""}" title="${(x.w || []).length ? x.w.map((k) => NM[k]).join(", ") : "Keine Warnung"}"><small>${hm(x.t).slice(0, 2)}</small>${ic((WX[x.cond] || ["cloud"])[0], 18)}<b>${isFinite(x.temp) ? num(x.temp, 0) + "°" : "–"}</b></div>`).join("")}</div></div>`;
+    } else if (C.ahead.on) chart = `<div class="wxnote">${ic("info", 15)}Keine Stundenvorhersage von der Wetter-Entität. Die Vorwarnung braucht sie.</div>`;
+    const hero = `<div class="card wxhero ${tone}"><div class="wxhead"><span class="wxdot" aria-hidden="true">${ic(tone === "ok" ? "check" : "alert", 22)}</span><div><b>${esc(head)}</b><small>${esc(sub)}</small></div></div>
+      ${now ? `<div class="wxnow">${now}</div>` : ""}${chart}</div>`;
+    /* Warnstufen: je ein Pegel gegen die eingestellte Grenze */
+    const gauge = (k) => {
+      const c = C.warn[k]; let v = null, fill = 0, mark = 0, val = "";
+      if (k === "storm") { v = d.mx > 0 ? d.mx : wnd != null ? wnd : (S.fc || []).length && isFinite(S.fc[0].wind) ? S.fc[0].wind : null; if (v != null) { const m = c.kmh * 1.25; fill = v / m; mark = c.kmh / m; val = `${num(v, 0)} von ${c.kmh} km/h`; } }
+      else if (k === "frost") { v = d.o.t; if (v != null) { fill = (c.temp + 10 - v) / 15; mark = 10 / 15; val = `${num(v, 1)} °C, Grenze ${c.temp} °C`; } }
+      else if (k === "heat") { v = d.o.t; if (v != null) { fill = (v - (c.temp - 15)) / 20; mark = 15 / 20; val = `${num(v, 1)} °C, Grenze ${c.temp} °C`; } }
+      return { has: v != null, fill: Math.max(0.02, Math.min(1, fill)), mark, val };
+    };
+    const row = (k) => {
+      const w = W[k] || {}, o = on(k), a = o && w.a, ah = o && !a && w.ahead, g = gauge(k), st = !o ? "Aus" : a ? `Aktiv${w.since ? " seit " + hm(w.since) : ""}` : ah ? `Erwartet ab ${hm(w.ahead)}` : "Keine Warnung";
+      const tx = k === "thunder" ? (a ? "Gewitter oder Hagel gemeldet" : "") : k === "rain" ? (a ? "Starkregen gemeldet" : "") : (g.has ? g.val : "Kein Messwert");
+      return `<div class="wxr ${!o ? "off" : a ? "hot" : ah ? "soon" : ""}"><span class="wxi">${ic(ICO[k], 18)}</span><div class="wxm"><div class="wxt"><b>${NM[k]}</b><em>${st}</em></div>${g.has && o ? `<div class="wxg" role="img" aria-label="${esc(g.val)}"><i style="width:${(g.fill * 100).toFixed(0)}%"></i><u style="left:${(g.mark * 100).toFixed(0)}%"></u></div>` : ""}${o && tx ? `<small>${esc(tx)}</small>` : ""}</div></div>`;
+    };
+    const lv = Math.max(0, Math.min(4, O.level || 0));
+    const offRow = offOn ? `<div class="wxr ${offHot ? "hot" : ""}"><span class="wxi">${ic("shield", 18)}</span><div class="wxm"><div class="wxt"><b>Amtliche Warnung</b><em>${offHot ? esc(String(O.title).replace(/^Amtliche Warnung:\s*/, "")) : "Keine Warnung"}</em></div><div class="wxp" role="img" aria-label="Stufe ${lv} von 4">${[1, 2, 3, 4].map((i) => `<i class="${i <= lv ? "on l" + lv : ""}"></i>`).join("")}</div><small>${offHot ? esc(O.text || "") : "Deutscher Wetterdienst, NINA oder MeteoAlarm"}</small></div></div>` : "";
+    const lamp = KEYS.some(on) ? "" : `<div class="wxnote">${ic("info", 15)}Alle eigenen Warnungen sind aus. Einschalten unter Einstellungen → Modul 9.</div>`;
+    const warn = `<div class="card"><h2>${ic("alert", 18)}Warnstufen</h2><div class="wxl">${KEYS.map(row).join("")}${offRow}</div>${lamp}</div>`;
+    /* Aktionen und Erinnerungen */
+    const A = C.acts, ST = (live && S.state.acts) || {}, wo = S.open || [];
+    const arow = (x) => { const on2 = (W[x.warn] || {}).a, s = ST[x.id] || {}, dn = (this._wxsDo(x.ent).find((y) => y[0] === x.do) || [0, x.do])[1], run = s.state === "run"; return `<div class="wxr ${run ? "hot" : ""}"><span class="wxi">${ic(String(x.ent).startsWith("cover.") ? "blinds" : "bolt", 18)}</span><div class="wxm"><div class="wxt"><b>${esc(this._wzName(x.ent))}</b><em>${run ? "Ausgelöst" + (s.at ? " " + hm(s.at) : "") : on2 ? "Wartet" : "Bereit"}</em></div><small>Bei ${NM[x.warn]}: ${dn}${x.undo ? ", danach zurück" : ""}</small></div></div>`; };
+    const info = (ico, t, txt, onn) => `<div class="wxr ${onn ? "" : "off"}"><span class="wxi">${ic(ico, 18)}</span><div class="wxm"><div class="wxt"><b>${t}</b><em>${onn ? "An" : "Aus"}</em></div><small>${txt}</small></div></div>`;
+    const nTo = C.notify.to.length, nWhat = [C.notify.start && "Beginn", C.notify.end && "Ende", C.notify.ahead && C.ahead.on && "Vorwarnung"].filter(Boolean).join(", ");
+    const acts = `<div class="card"><h2>${ic("blinds", 18)}Aktionen und Erinnerungen</h2><div class="wxl">
+        ${A.map(arow).join("")}
+        ${info("window", "Fenster-Erinnerung", C.win.on ? `Bei ${C.win.warn.map((k) => NM[k]).join(", ")}. ${wo.length ? "Jetzt offen: " + wo.map(esc).join(", ") + "." : "Zurzeit ist kein Fenster offen."}` : "Meldet offene Fenster bei Sturm, Gewitter oder Starkregen.", C.win.on)}
+        ${info("bell", "Benachrichtigung", nTo ? `An ${nTo} ${nTo === 1 ? "Dienst" : "Dienste"}: ${nWhat || "nichts ausgewählt"}.` : "Noch kein Dienst gewählt (Einstellungen → Integrationen).", nTo > 0)}</div>
+        ${A.length ? "" : `<div class="wxnote">${ic("info", 15)}Noch keine Aktion. Unter Einstellungen → Modul 9 legst du fest, was bei einer Warnung passiert, etwa Markise einfahren.</div>`}</div>`;
+    const lg = (S.log || []).slice(0, 8), dd = (iso) => { const t = new Date(iso), td = new Date(); return t.toDateString() === td.toDateString() ? hm(iso) : t.toLocaleDateString("de-DE", { weekday: "short" }) + " " + hm(iso); };
+    const log = lg.length ? `<div class="card"><h2>${ic("clock", 18)}Protokoll</h2><div class="wxlog">${lg.map((x) => `<div><time>${dd(x.t)}</time><span>${esc(x.x)}</span></div>`).join("")}</div></div>` : "";
+    return `${this._betaBox("Die Warnungen werden im Hintergrund aus deiner Wetter-Entität oder Wetterstation berechnet, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, diese kommen vom Deutschen Wetterdienst oder NINA, wenn eingerichtet.")}${hero}<div class="wxcols">${warn}${acts}</div>${log}`;
   }
   _wxsModal() {
     const S = this._wxs(), C = S.cfg, NM = this._wxsNames(), st = this._hass.states, H = this._hass;
@@ -4007,7 +4493,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
-    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${m.beta ? `<em class="beta">Beta</em>` : ""}</button>`).join("")}<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button></nav>`;
+    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${m.beta ? `<em class="beta">Beta</em>` : ""}</button>`).join("")}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
   }
   _mdRender() {
     const sr = this.shadowRoot, a = this._mdActive(), m = this._mdList().find((x) => x.id === a), adm = this._admin();
@@ -4020,7 +4506,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a !== "ww" && a !== "en" && a !== "gs" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${m.beta ? `<em class="beta">Beta-Version</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${pills}</div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${m.beta ? `<em class="beta">Beta-Version</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${this._stoBtn()}${pills}</div>
       ${this._mdBar()}<div class="wrap">${body}</div>`;
   }
   _mdAct(a, b) {
@@ -4266,8 +4752,8 @@ class FensterHeizungPanel extends HTMLElement {
       ["drop", "Zirkulation", pumpMin == null ? "–" : pumpMin, "Min.", "var(--teal)", hasPump ? `Plan: ${num(circH, 1)} Std. pro Tag` : "Keine Pumpe gewählt"],
       ["thermo", "Rücklauf", rv == null ? "–" : num(rv, 1), "°C", "#60a5fa", E.ret ? `Pumpe stoppt ab ${W.circ.ret_max} °C` : "Kein Sensor gewählt"],
       ["shield", "Legionellenschutz", legD == null ? "–" : legD, legD === 1 ? "Tag her" : "Tage her", "#a78bfa", !hasGen ? "Kein Erzeuger gewählt" : W.leg.on ? `Nächster Lauf: ${DAYS[W.leg.day]} ${W.leg.time}` : "Ausgeschaltet"],
-    ].map(([ico, lab, v, u, col, sub]) => `<div class="tile" style="--a:${col}"><div class="t">${ic(ico, 17)}${lab}</div><div class="v">${v}<small>${u}</small></div><div class="g">${sub}</div></div>`).join("")}</div>`;
-    const chart = `<div class="card"><h2>${ic("chart", 18)}Speicher · letzte 24 Stunden<button class="ibtn gear" style="margin-left:auto" data-act="wwreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._wwChart()}</div>`;
+    ].map(([ico, lab, v, u, col, sub]) => `<div class="tile" style="--a:${col}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}<small>${u}</small></div><div class="g">${sub}</div></div>`).join("")}</div>`;
+    const chart = `<div class="card wwc"><h2>${ic("chart", 18)}Speicher · letzte 24 Stunden<button class="ibtn gear" style="margin-left:auto" data-act="wwreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._wwChart()}</div>`;
     const dayTabs = (w) => `<div class="seg wwseg" role="group">${[["wd", "Montag–Freitag"], ["we", "Wochenende"]].map(([k, l]) => `<button class="${key === k ? "sel" : ""}" data-act="wwday" data-k="${k}" aria-pressed="${key === k}">${l}</button>`).join("")}</div>`;
     const heatC = `<div class="card"><h2>${ic("plan", 18)}Warmwasser-Zeitplan${adm ? `<button class="lnk" style="margin-left:auto" data-act="wwsch" data-k="heat">${ic("pencil", 15)}Bearbeiten</button>` : ""}</h2>${dayTabs()}
       ${hasGen ? "" : `<div class="wwempty">${ic("flame", 22)}<div><b>Noch kein Wärmeerzeuger gewählt</b><span>Der Zeitplan wird erst wirksam, wenn ein Erzeuger oder Heizstab gewählt ist. Bis dahin dient er nur der Anzeige.</span></div>${adm ? `<button class="lnk" data-act="mdsetup">Auswählen</button>` : ""}</div>`}
@@ -4300,8 +4786,9 @@ class FensterHeizungPanel extends HTMLElement {
       ${pv.on ? `<div class="mut sm" style="margin:0 0 6px">Der Speicher wird bei Überschuss über das Soll hinaus geladen. Sensor, Batterie-Grenze und Vorzeichen kommen aus Modul 1 → Allgemein. Der Heizstab hat Vorrang vor den Raumheizern.</div>
         ${this._wwNum("Ab Überschuss", "", "pv.min", pv.min, 300, 6000, 100, "W", adm)}${this._wwNum("Speicher bis maximal", "", "pv.max", pv.max, 50, 65, 1, "°C", adm)}${this._wwNum("Leistung Heizstab", "Damit erkennt das Modul, wann der Überschuss reicht.", "pv.watt", pv.watt, 300, 9000, 100, "W", adm)}
         <div class="gst ${E.rod ? "" : "on"}">${ic(E.rod ? "bolt" : "info", 15)}${E.rod ? (pvNow == null ? "Kein PV-Sensor gewählt." : pvNow >= pv.min ? `Aktuell ${wfmt(pvNow)} Überschuss – der Heizstab darf laufen.` : `Aktuell ${wfmt(pvNow)} Überschuss – zu wenig, Heizstab bleibt aus.`) : "Für PV-Heizung fehlt noch der Heizstab-Schalter in den Einstellungen."}</div>` : `<div class="mut sm">Aus.</div>`}</div>`;
-    const dg = `<div class="card"><h2>${ic("tools", 18)}Zustand</h2>${probs.map(([lv, ico, ti, tx]) => `<div class="dgs ${lv === "mut" ? "" : lv}">${ic(ico, 22)}<div><b>${esc(ti)}</b><span>${esc(tx)}</span></div><span></span></div>`).join("")}<div class="mut sm" style="margin:0">Hinweise erscheinen auch in der Gerätediagnose und als Meldung.</div></div>`;
-    return `${hero}${tiles}${chart}<div class="wwg2">${heatC}${circC}</div><div class="wwg2">${legC}${pvC}</div>${dg}<div class="note">Das Modul schaltet nur die gewählten Geräte. Bei Überschuss hat der Warmwasser-Heizstab Vorrang vor den Raumheizern.</div>`;
+    const dg = `<div class="card wwc"><h2>${ic("tools", 18)}Zustand</h2>${probs.map(([lv, ico, ti, tx]) => `<div class="dgs ${lv === "mut" ? "" : lv}">${ic(ico, 22)}<div><b>${esc(ti)}</b><span>${esc(tx)}</span></div><span></span></div>`).join("")}<div class="mut sm" style="margin:0">Hinweise erscheinen auch in der Gerätediagnose und als Meldung.</div></div>`;
+    const o = (n, h) => h.replace('<div class="card', `<div style="order:${n}" class="card`);
+    return `${hero}${tiles}${chart}<div class="enc"><div class="enco">${o(1, heatC)}${o(3, legC)}</div><div class="enco">${o(2, circC)}${o(4, pvC)}</div></div>${dg}<div class="note">Das Modul schaltet nur die gewählten Geräte. Bei Überschuss hat der Warmwasser-Heizstab Vorrang vor den Raumheizern.</div>`;
   }
   _wwNum(label, hint, path, val, lo, hi, step, unit, adm) {
     return `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="wwnum" data-k="${path}" data-min="${lo}" data-max="${hi}" data-step="${step}" value="${val}" min="${lo}" max="${hi}" step="${step}" ${adm ? "" : "disabled"}><i>${unit}</i></span></div></div>`;
@@ -4593,7 +5080,7 @@ class FensterHeizungPanel extends HTMLElement {
     const heat = this._htrTotal(), ww = this._wwIsOn(this._mdState().ww.ent.rod) ? this._mdState().ww.pv.watt : 0, rest = Math.max(0, n.house - heat - ww);
     const self = sum && !sum.empty ? Math.max(0, sum.pv - sum.exp) : null, autarky = sum && !sum.empty && sum.house > 0 ? Math.round(Math.min(100, Math.max(0, (1 - sum.imp / sum.house) * 100))) : null, evq = sum && !sum.empty && sum.pv > 0 ? Math.round(Math.min(100, (self / sum.pv) * 100)) : null;
     const covered = n.house > 0 ? Math.round(Math.min(100, (n.pv2h + n.b2h) / n.house * 100)) : 100;
-    const hero = `<div class="card hero enh"><div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
+    const hero = `<div class="card hero enh"><div class="enring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="rb"/><circle cx="60" cy="60" r="50" class="rf" stroke-dasharray="${(covered * 3.1416).toFixed(1)} 314.2" transform="rotate(-90 60 60)"/></svg><div class="rv"><b>${covered}<small>%</small></b><span>gedeckt</span></div></div><div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
       <div class="chips"><span class="chip">${ic("sun", 16)}Solar ${wfmt(n.pv)}</span>${n.pvb != null && n.pvb >= 1 ? `<span class="chip">${ic("sun", 16)}davon ${esc(this._enPvNames()[1])} ${wfmt(n.pvb)}</span>` : ""}<span class="chip st ${n.exp > 20 ? "ok" : n.imp > 20 ? "warn" : ""}">${ic("bolt", 16)}${n.exp > 20 ? "Einspeisung " + wfmt(n.exp) : n.imp > 20 ? "Netzbezug " + wfmt(n.imp) : "Netz ausgeglichen"}</span>${n.hasBat ? `<span class="chip">${ic("energy", 16)}Batterie ${n.soc != null ? Math.round(n.soc) + " %" : ""}${n.bc > 20 ? " lädt" : n.dis > 20 ? " entlädt" : ""}</span>` : ""}${autarky != null && range === "day" ? `<span class="chip st ok">${ic("check", 16)}Autarkie heute ${autarky} %</span>` : ""}</div></div>`;
     const tabs = `<div class="seg wwseg enseg" role="group">${[["day", "Heute"], ["week", "7 Tage"], ["month", "30 Tage"]].map(([k, l]) => `<button class="${range === k ? "sel" : ""}" data-act="enrange" data-k="${k}" aria-pressed="${range === k}">${l}</button>`).join("")}</div>`;
     const kwh = (v) => (v == null ? "–" : num(v, v >= 100 ? 0 : v >= 10 ? 1 : 2));
@@ -4603,7 +5090,7 @@ class FensterHeizungPanel extends HTMLElement {
       ["bolt", "Netzbezug", sum && !sum.empty ? kwh(sum.imp) : "–", "kWh", "#f87171", sum && !sum.empty ? `${num(eur(sum.imp, price), 2)} € Kosten` : "Keine Daten"],
       ["upload", "Einspeisung", sum && !sum.empty ? kwh(sum.exp) : "–", "kWh", "#34d399", sum && !sum.empty ? `${num(eur(sum.exp, feed), 2)} € Vergütung` : "Keine Daten"],
       ["home", "Verbrauch", sum && !sum.empty ? kwh(sum.house) : "–", "kWh", "#2dd4bf", autarky != null ? `${autarky} % Autarkie` : "Keine Daten"],
-    ].map(([ico, lab, v, u, c, sub]) => `<div class="tile" style="--a:${c}"><div class="t">${ic(ico, 17)}${lab}</div><div class="v">${v}<small>${u}</small></div><div class="g">${sub}</div></div>`).join("")}</div>`;
+    ].map(([ico, lab, v, u, c, sub], i) => { const pc = sum && !sum.empty ? [evq, sum.house > 0 ? sum.imp / sum.house * 100 : 0, sum.pv > 0 ? sum.exp / sum.pv * 100 : 0, autarky][i] : null; return `<div class="tile" style="--a:${c}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}<small>${u}</small></div><div class="g">${sub}</div>${pc != null ? `<div class="tbar"><i style="width:${Math.max(2, Math.min(100, pc)).toFixed(0)}%"></i></div>` : ""}</div>`; }).join("")}</div>`;
     const flow = `<div class="card"><h2>${ic("sun", 18)}Energiefluss jetzt</h2>${this._enFlow(n)}</div>`;
     const chart = `<div class="card"><h2>${ic("chart", 18)}${range === "day" ? "Leistung heute" : range === "week" ? "Energie pro Tag · 7 Tage" : "Energie pro Tag · 30 Tage"}<button class="ibtn gear" style="margin-left:auto" data-act="enreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._enChart()}${range === "day" ? "" : this._enNote()}</div>`;
     // Verteilung (nur heute)
@@ -4642,7 +5129,8 @@ class FensterHeizungPanel extends HTMLElement {
     this._enOut(n).forEach((nm) => tips.push(["alert!", `${esc(nm)} liefert nichts.`, "Die andere Anlage erzeugt Strom. Ist der Wechselrichter ausgesteckt, aus oder ohne Verbindung?"]));
     if (!tips.length) tips.push(["check", "Alles ruhig.", "Kein Überschuss, kein hoher Netzbezug."]);
     const tipC = `<div class="card"><h2>${ic("info", 18)}Hinweise</h2>${tips.map(([ico, t, s]) => `<div class="dgs ${ico.endsWith("!") ? "warn" : "ok"}" style="grid-template-columns:28px 1fr">${ic(ico.replace("!", ""), 22)}<div><b>${t}</b>${s ? `<span>${s}</span>` : ""}</div></div>`).join("")}</div>`;
-    return `${hero}${tabs}${tiles}<div class="wwg2">${flow}${chart}</div><div class="wwg2">${dist}${cost}</div><div class="wwg2">${heatC}${tipC}</div>`;
+    const o = (n, h) => h.replace('<div class="card', `<div style="order:${n}" class="card`);
+    return `${hero}${tabs}${tiles}<div class="enc"><div class="enco">${o(1, flow)}${dist ? o(3, dist) : ""}${o(6, tipC)}</div><div class="enco">${o(2, chart)}${cost ? o(4, cost) : ""}${o(5, heatC)}</div></div>`;
   }
   _enAct(a, b) {
     const E = this._enState(), k = b.dataset.k;
