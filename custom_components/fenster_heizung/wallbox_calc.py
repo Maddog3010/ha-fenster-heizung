@@ -25,6 +25,7 @@ DEFAULT: dict[str, Any] = {
     "onMin": 1, "offMin": 3, "limit": 80, "plan": False, "planSoc": 80, "planTime": "07:00", "planDays": "all",
     "cap": 60, "batOn": True, "batSoc": 30, "priceOn": False, "priceMax": 18,
     "lock": False, "reset": True, "vehicles": [], "guest": {"mode": "off", "limit": 80},
+    "guard": {"on": False, "maxA": 35}, "notify": {"start": True, "goal": True, "plan": True, "off": True, "long": False, "to": []},
     "planOn": False, "planStrat": "mix", "planSrc": "auto", "pvSrc": "forecast", "baseW": 400,
 }
 MAX_VEHICLES = 6
@@ -84,6 +85,11 @@ def clean_wb(raw: Any) -> dict[str, Any]:
     out["lock"] = bool(raw.get("lock", False))
     out["reset"] = bool(raw.get("reset", True))
     out["vehicles"] = clean_vehicles(raw.get("vehicles"))
+    gd = raw.get("guard") if isinstance(raw.get("guard"), dict) else {}
+    out["guard"] = {"on": bool(gd.get("on", False)), "maxA": _int(gd.get("maxA"), 10, 63, 35)}
+    nt = raw.get("notify") if isinstance(raw.get("notify"), dict) else {}
+    out["notify"] = {k: bool(nt.get(k, d["notify"][k])) for k in ("start", "goal", "plan", "off", "long")}
+    out["notify"]["to"] = [x for x in dict.fromkeys(nt.get("to") if isinstance(nt.get("to"), list) else []) if isinstance(x, str) and re.fullmatch(r"notify\.[a-z0-9_]{1,60}", x)][:6]
     g = raw.get("guest") if isinstance(raw.get("guest"), dict) else {}
     out["guest"] = {"mode": g.get("mode") if g.get("mode") in MODES else "off", "limit": _int(g.get("limit"), 50, 100, 80)}
     return out
@@ -111,7 +117,11 @@ def clean_vehicles(raw: Any) -> list[dict[str, Any]]:
                 ids.append(n)
         used.update(ids)
         name = re.sub(r"[<>\"'&]", "", str(v.get("name") or "")).strip()[:30] or "Fahrzeug"
-        out.append({"id": vid, "name": name, "ids": ids, "mode": v.get("mode") if v.get("mode") in MODES else "pv", "limit": _int(v.get("limit"), 50, 100, 80)})
+        dp = v.get("dep") if isinstance(v.get("dep"), dict) else {}
+        t = str(dp.get("time", "07:00"))
+        dep = {"on": bool(dp.get("on", False)), "soc": _int(dp.get("soc"), 20, 100, 80), "time": t if re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", t) else "07:00",
+               "days": dp.get("days") if dp.get("days") in PLAN_DAYS else "all"}
+        out.append({"id": vid, "name": name, "ids": ids, "mode": v.get("mode") if v.get("mode") in MODES else "pv", "limit": _int(v.get("limit"), 50, 100, 80), "dep": dep})
     return out
 
 
@@ -121,7 +131,7 @@ def resolve_who(cfg: dict[str, Any], card: int | None) -> dict[str, Any] | None:
         return None
     for v in cfg["vehicles"]:
         if card in v["ids"]:
-            return {"kind": "vehicle", "name": v["name"], "card": card, "mode": v["mode"], "limit": v["limit"]}
+            return {"kind": "vehicle", "name": v["name"], "card": card, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep")}
     g = cfg["guest"]
     return {"kind": "guest", "name": "Gastfahrzeug", "card": card, "mode": g["mode"], "limit": g["limit"]}
 
@@ -265,3 +275,16 @@ def commands(want: dict[str, Any], cur: dict[str, Any]) -> dict[str, int]:
         if want["psm"] != cur.get("psm"):
             cmd["psm"] = want["psm"]
     return cmd
+
+
+def guard_limit(guard: dict[str, Any], grid_import_w: float, wb_w: float, phases: int | None) -> dict[str, Any]:
+    """Hausanschluss-Schutz: Wie viel Strom darf die Wallbox ziehen, ohne dass Haus und Wallbox zusammen die Grenze überschreiten?
+
+    Der Hausstrom wird aus dem Netzbezug geschätzt (gleichmäßig auf drei Phasen). Die Wallbox wird gedrosselt, nie das Haus.
+    Rückgabe: house_a (Haus ohne Wallbox), wb_a (Wallbox), total_a, max_a, allowed_a (Strom, den die Wallbox noch bekommen darf).
+    """
+    other_a = max(grid_import_w - wb_w, 0.0) / (3 * VOLT)
+    ph = phases if phases in (1, 3) else 3
+    wb_a = wb_w / (VOLT * ph) if wb_w > 0 else 0.0
+    mx = float(guard["maxA"])
+    return {"house_a": round(other_a, 1), "wb_a": round(wb_a, 1), "total_a": round(other_a + wb_a, 1), "max_a": int(mx), "allowed_a": int(max(mx - other_a, 0.0))}

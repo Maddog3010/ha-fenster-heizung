@@ -143,7 +143,7 @@ def plan_mode(slots: list[dict[str, Any]], R: dict[str, Any], now: datetime, o: 
     if R["left"] > 0.05 and pmax > 0:
         start = R["deadline"] - timedelta(minutes=int(R["left"] / pmax * 60 * 1.1) + 5)
         if now >= start:
-            return {"mode": "now", "state": "plan", "reason": "Ladeplan: Die Sonne reicht nicht, es wird mit Netzstrom nachgeladen."}
+            return {"mode": "now", "state": "plan", "late": True, "reason": "Ladeplan: Die Sonne reicht nicht, es wird mit Netzstrom nachgeladen."}
     nxt = min((slots[i]["t"] for i in R["sel"] if slots[i]["t"] > now), default=None)
     return {"mode": None, "state": "plan_wartet", "reason": "Ladeplan: Wartet auf das nächste Ladefenster" + (f" um {nxt.strftime('%H:%M')} Uhr." if nxt else ".")}
 
@@ -214,7 +214,7 @@ def prices_from_attr(attrs: dict[str, Any]) -> list[dict[str, Any]]:
 
 # ---- Ladestatistik
 def empty_stats() -> dict[str, Any]:
-    return {"days": {}, "sessions": [], "open": None}
+    return {"days": {}, "sessions": [], "open": None, "odo": None}
 
 
 def clean_stats(raw: Any) -> dict[str, Any]:
@@ -226,7 +226,7 @@ def clean_stats(raw: Any) -> dict[str, Any]:
         if not (isinstance(k, str) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", k) and isinstance(v, dict)):
             continue
         try:
-            st["days"][k] = {"pv": float(v.get("pv", 0)), "grid": float(v.get("grid", 0)), "cost": float(v.get("cost", 0)), "full": float(v.get("full", 0)),
+            st["days"][k] = {"pv": float(v.get("pv", 0)), "grid": float(v.get("grid", 0)), "cost": float(v.get("cost", 0)), "full": float(v.get("full", 0)), "km": max(0.0, float(v.get("km", 0))),
                              "veh": {str(n)[:30]: {"kwh": float(x.get("kwh", 0)), "cost": float(x.get("cost", 0))} for n, x in (v.get("veh") or {}).items() if isinstance(x, dict)}}
         except (TypeError, ValueError):
             continue
@@ -238,7 +238,29 @@ def clean_stats(raw: Any) -> dict[str, Any]:
             except (TypeError, ValueError):
                 continue
     st["sessions"] = st["sessions"][:KEEP_SESSIONS]
+    try:
+        o = float(raw.get("odo")) if raw.get("odo") is not None else None
+        st["odo"] = o if o is not None and 0 <= o < 5e6 else None
+    except (TypeError, ValueError):
+        st["odo"] = None
     return st
+
+
+def day_ok(days: str, when: datetime) -> bool:
+    """Gilt die Planung für den Tag, an dem das Ziel erreicht sein soll? days: all, wk (Mo–Fr), we (Sa–So)."""
+    wd = when.weekday()
+    return not ((days == "wk" and wd > 4) or (days == "we" and wd < 5))
+
+
+def add_km(st: dict[str, Any], now: datetime, odo: float | None) -> None:
+    """Gefahrene Kilometer aus dem Kilometerstand-Sensor fortschreiben (für Ø Verbrauch)."""
+    if odo is None or odo < 0:
+        return
+    last = st.get("odo")
+    st["odo"] = float(odo)
+    if last is not None and 0 < odo - last < 2000:
+        d = st["days"].setdefault(now.date().isoformat(), {"pv": 0.0, "grid": 0.0, "cost": 0.0, "full": 0.0, "km": 0.0, "veh": {}})
+        d["km"] = d.get("km", 0.0) + (odo - last)
 
 
 def add_energy(st: dict[str, Any], now: datetime, dt_s: float, power_w: float, surplus_w: float | None, price_ct: float | None, veh: str) -> None:
@@ -250,7 +272,7 @@ def add_energy(st: dict[str, Any], now: datetime, dt_s: float, power_w: float, s
     pv, grid = kwh * pv_share, kwh * (1 - pv_share)
     price = price_ct if price_ct is not None else 0.0
     cost = grid * price / 100
-    d = st["days"].setdefault(now.date().isoformat(), {"pv": 0.0, "grid": 0.0, "cost": 0.0, "full": 0.0, "veh": {}})
+    d = st["days"].setdefault(now.date().isoformat(), {"pv": 0.0, "grid": 0.0, "cost": 0.0, "full": 0.0, "km": 0.0, "veh": {}})
     d["pv"] += pv
     d["grid"] += grid
     d["cost"] += cost
@@ -305,7 +327,7 @@ def prune(st: dict[str, Any], today: date) -> None:
 
 
 def stats_view(st: dict[str, Any]) -> dict[str, Any]:
-    days = [{"d": k, "pv": round(v["pv"], 3), "grid": round(v["grid"], 3), "cost": round(v["cost"], 4), "full": round(v["full"], 4),
+    days = [{"d": k, "pv": round(v["pv"], 3), "grid": round(v["grid"], 3), "cost": round(v["cost"], 4), "full": round(v["full"], 4), "km": round(v.get("km", 0.0), 1),
              "veh": {n: {"kwh": round(x["kwh"], 3), "cost": round(x["cost"], 4)} for n, x in v["veh"].items()}} for k, v in sorted(st["days"].items())]
     ses = list(st["sessions"])
     o = st.get("open")

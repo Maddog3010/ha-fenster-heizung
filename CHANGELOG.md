@@ -2,6 +2,45 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2] - 2026-10-27
+### Neu
+- **Modul 9 „Wetter & Warnungen“ (Beta) ist fertig** und läuft im Hintergrund, auch bei geschlossenem Dashboard:
+  - **Warnungen:** Sturm (Grenzwert 30 bis 120 km/h), Gewitter und Hagel, Frost, Hitze und Starkregen, einzeln schaltbar. Beginn nach zwei Messungen in Folge, Ende erst nach zehn Minuten unter der Grenze (mit Spielraum), damit Böen nicht ständig umschalten.
+  - **Wind** aus einer Wetterstation oder aus der Wetter-Entität (Böen inklusive). Einheiten m/s, mph und Knoten werden in km/h umgerechnet.
+  - **Vorwarnung** bis 12 Stunden im Voraus aus der Stundenvorhersage, Karte „Nächste Stunden“.
+  - **Amtliche Warnung** von DWD, NINA und MeteoAlarm als eigene Kachel, mit Meldung aufs Handy.
+  - **Aktionen** bei Warnungen: Rollläden und Markisen, Schalter, Lichter, Skripte und Szenen, einmal pro Warnung, optional mit „Danach zurück“ 15 Minuten nach Ende.
+  - **Fenster-Erinnerung** für offene Fenster aus Modul 1, **Benachrichtigung** über `notify.*` (Beginn, Ende, Vorwarnung) mit Testmeldung, **Protokoll** der letzten Ereignisse.
+  - Neue WebSocket-Befehle `wx_get`, `wx_set` und `wx_test`.
+- **Integrationen → Wetter und Warnungen:** Passende Dienste mit Status (DWD, NINA, MeteoAlarm, Met.no, OpenWeatherMap, Open-Meteo, AccuWeather, Pirate Weather, Tomorrow.io, Ecowitt, Netatmo, WeatherFlow Tempest) und „Einrichten“-Knopf. Eingerichtetes wird automatisch genutzt, bei mehreren Quellen gibt es eine Zuordnung für Wetter, Wind, Außentemperatur und amtliche Warnung sowie die Auswahl der Benachrichtigungsdienste.
+- **Modul 8 (Beta), Register „Laden“:**
+  - **Heute:** Geladene Energie, Sonnenanteil, Kosten und aktuelle Leistung mit Anteil Sonne und Netz.
+  - **Schnellstart:** 1 Stunde voll, bis zum Ziel voll oder heute nur Sonne. Einmalig, ohne Modus und Planung zu ändern; endet von selbst, beim Abstecken oder mit „Stopp“.
+  - **Hausanschluss-Schutz:** Die Wallbox wird gedrosselt oder pausiert, wenn Haus und Wallbox zusammen den eingestellten Höchststrom pro Phase überschreiten würden. Der Hausstrom wird aus dem Netzbezug geschätzt. Standardmäßig aus.
+  - **Benachrichtigungen** über `notify.*`-Dienste: Ladung gestartet, Ziel erreicht, Ladeplan reicht nicht, Wallbox nicht erreichbar, Auto steckt lange ohne Ladung.
+  - **Karten zuordnen:** Jede Karte der Wallbox lässt sich per Antippen einem Fahrzeug zuordnen. Ein Fahrzeug kann mehrere Karten haben (zum Beispiel eine pro Person), eine Karte gehört zu einem Fahrzeug. Das Fahrzeug aus den Elektroauto-Einstellungen lässt sich mit einem Tipp übernehmen.
+- **Planung:** **Abfahrtszeit pro Fahrzeug** mit eigenem Ziel-Ladestand, eigener Uhrzeit und eigenen Tagen. Die gewählten Tage gelten jetzt auch in der Planung nach Preis und Sonne.
+- **Ladestatistik:** Kacheln **Ø Verbrauch** (aus dem Kilometerstand) und **CO₂ gespart**, Export als **CSV**. Pro Tag werden gefahrene Kilometer mitgezählt, wenn ein Kilometerstand-Sensor eingestellt ist.
+- **Modul 8 neu geordnet:**
+  - Vier Register: **Laden** (nur Alltag), **Planung**, **Ladestatistik** und neu **Einstellungen**.
+  - **Einstellungen** mit **Einrichtungs-Check** und sechs aufklappbaren Bereichen (Wallbox und Verbindung, Laderegelung, Fahrzeuge und Karten, Hausbatterie und Strompreis, Hausanschluss-Schutz, Benachrichtigungen). Jede Zeile zeigt den aktuellen Stand, ein „!“ markiert Bereiche, die Aufmerksamkeit brauchen. Welche Bereiche offen sind, wird im Browser gemerkt.
+  - **Verbindung testen** direkt in den Einstellungen.
+  - **Statusleiste** über allen Registern mit Zustand, Modus, Fahrzeug und Leistung sowie Hinweisen mit Sprung zur Lösung (keine Verbindung, von Hand umgestellt mit Restzeit, wartet auf Karte, Netz-Sensor fehlt).
+  - **Standard-Abfahrt** im Register „Planung“ (vorher „Ladeplan“ unter „Laden“). Ziel, Uhrzeit und Tage sind immer sichtbar, der Schalter heißt „Spätestens mit Netzstrom nachladen“.
+  - Die **Modus-Tasten** gelten für das erkannte Fahrzeug (vorher änderten sie immer den Standardmodus, obwohl der Modus des Fahrzeugs galt). Darunter steht, für wen sie gelten.
+  - „Letzte Entscheidungen“ zeigt zuerst 4 Einträge.
+- Neuer WebSocket-Befehl `wb_quick`, `wb_get` und `wb_set` kennen `quick`, `guard`, `notify` und `dep`.
+### Behoben
+- **Modul 8, Fehlerbehebung:**
+  - „Heute“ zeigte zwischen 0 und 2 Uhr die Werte des Vortags (die Oberfläche rechnete mit der UTC-Zeit statt mit der Ortszeit).
+  - Der Schnellstart wird beendet, wenn die Laderegelung ausgeschaltet wird, und lässt sich nur bei aktiver Regelung starten.
+  - Die Messung des Hausanschluss-Schutzes veraltete nicht mehr, wenn die Regelung nicht rechnet.
+  - Wird gleichzeitig eine Einstellung gespeichert und ein Schnellstart gestartet, geht die Einstellung nicht mehr verloren.
+  - Die Statusleiste und der Einrichtungs-Check warnen nicht mehr kurz nach dem Einschalten, bevor die Regelung zum ersten Mal gerechnet hat.
+  - Gespeicherte Benachrichtigungsdienste, die es nicht mehr gibt, bleiben sichtbar („nicht gefunden“) und lassen sich abwählen.
+  - Die Planung weist darauf hin, wenn das Ziel auf einen Wochentag fällt, für den keine Abfahrt gilt.
+- **Fahrzeuge & Karten:** Die Auswahl der Karten funktionierte nicht, weil sich das Dropdown beim automatischen Aktualisieren der Seite wieder schloss. Karten werden jetzt als Chips ausgewählt.
+
 ## [3.0.1] - 2026-10-27
 ### Neu
 - **Personen & Standort** unter Einstellungen → Allgemein:

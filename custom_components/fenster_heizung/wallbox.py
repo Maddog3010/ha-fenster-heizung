@@ -20,10 +20,10 @@ from homeassistant.util import dt as dt_util
 from .const import DOMAIN
 from .geraete_calc import grid_import_w, rate_eur, watts
 from .wallbox_calc import (
-    CAR_CHARGING, CAR_IDLE, EXTERN_HOLD_S, VOLT, clean_wb, commands, decide, parse_nrg, plan_due, resolve_who, valid_host,
+    CAR_CHARGING, CAR_DONE, CAR_IDLE, EXTERN_HOLD_S, VOLT, clean_wb, commands, decide, guard_limit, parse_nrg, plan_due, resolve_who, valid_host,
 )
 from .wallbox_plan import (
-    add_energy, build_slots, clean_stats, close_session, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_tick, stats_view,
+    add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_tick, stats_view,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -128,6 +128,14 @@ class WallboxManager:
         self._fc_busy = False
         self._slots: list[dict[str, Any]] = []
         self._slot_res = "h"
+        self._quick: dict[str, Any] | None = None  # Schnellstart (einmalig, nicht gespeichert)
+        self.guard: dict[str, Any] | None = None  # Hausanschluss-Schutz: letzte Messung
+        self._plan_late = False
+        self._prev_car: int | None = None
+        self._fail = 0
+        self._n = {"start": False, "goal": False, "plan": False, "off": False, "long": False}
+        self._plug_ts: float | None = None
+        self._charged = False
 
     async def async_start(self) -> None:
         self.cfg = clean_wb(await self._store.async_load())
@@ -144,6 +152,8 @@ class WallboxManager:
     async def async_set(self, raw: Any) -> dict[str, Any]:
         old = self.cfg
         self.cfg = clean_wb(raw)
+        if not self.cfg["enabled"]:
+            self._quick = None
         if old["enabled"] and not self.cfg["enabled"]:
             self._restore = True  # Wallbox wieder auf „neutral“ stellen
         if self.cfg["enabled"] != old["enabled"] or self.cfg["mode"] != old["mode"]:
@@ -258,10 +268,19 @@ class WallboxManager:
             if self.ok or not self.err:
                 self._add(f"Wallbox nicht erreichbar: {err}")
             self.ok, self.err = False, str(err)
+            self._fail += 1
+            if self._fail >= 6 and not self._n["off"]:
+                self._n["off"] = True
+                await self._notify("off", "Wallbox nicht erreichbar", f"Die Wallbox antwortet seit einer Minute nicht: {err}")
             return
+        self._fail = 0
+        self._n["off"] = False
         self.ok, self.err = True, ""
+        self.guard = None
         self.info = summarize(st)
         self._count(st_car=self.info["car"])
+        await self._events(time.time())
+        self._quick_check(self.info["car"], time.time())
         if self._restore:
             self._restore = False
             await self._apply(cl, {"frc": 0}, "Regelung ausgeschaltet: Die Wallbox ist wieder auf „neutral“.")
@@ -291,6 +310,9 @@ class WallboxManager:
             return
         if who is not None:
             cfg = {**cfg, "mode": who["mode"], "limit": who["limit"]}
+            dp = who.get("dep") or {}
+            if who["kind"] == "vehicle" and dp.get("on"):  # eigene Abfahrt dieses Fahrzeugs
+                cfg = {**cfg, "planSoc": dp["soc"], "planTime": dp["time"], "planDays": dp["days"]}
         # Jemand hat von Hand umgestellt: nicht dagegen regeln
         for k, v in self._last_set.items():
             if cur.get(k) is not None and cur[k] != v and (k == "frc" or cur.get("frc") == 2):
@@ -303,7 +325,11 @@ class WallboxManager:
             return
         wb_w = self.info["power"] or 0.0
         plan_txt = ""
-        if cfg["planOn"] and not (who is not None and who["mode"] == "off"):
+        self._plan_late = False
+        q = self._quick
+        if q:  # Schnellstart: einmalig, ohne Modus und Planung zu ändern
+            cfg = {**cfg, "mode": "pv" if q["k"] == "sun" else "now", "plan": False, "priceOn": False}
+        if cfg["planOn"] and not q and not (who is not None and who["mode"] == "off"):
             pm = await self._plan_now(cfg, dt_util.now())
             if pm is not None:
                 if pm["mode"] is None:
@@ -317,6 +343,7 @@ class WallboxManager:
                     return
                 cfg = {**cfg, "mode": pm["mode"]}
                 plan_txt = pm["reason"] + " "
+                self._plan_late = bool(pm.get("late"))
         inp = {
             "car": self.info["car"], "surplus_w": self.surplus(wb_w), "soc": self._soc(), "bat_ok": self._bat_ok(),
             "price_ct": self._price_now(dt_util.now()), "cur_ph": self.info["phases"],
@@ -327,6 +354,9 @@ class WallboxManager:
         if who is not None:
             self.want["who"] = who
         self.want["surplus_w"] = inp["surplus_w"]
+        self._guard(cfg, wb_w)
+        if q:
+            self.want["quick"] = q["k"]
         cmd = commands(self.want, cur)
         if cmd:
             if "psm" in cmd:
@@ -344,6 +374,7 @@ class WallboxManager:
         w = resolve_who(self.cfg, trx if isinstance(trx, int) and trx >= 1 else self._card)
         veh = w["name"] if w else "Unbekannt"
         session_tick(self._st, now, charging, power)
+        add_km(self._st, now, self._odo())
         if charging and power > 0 and dt > 0:
             add_energy(self._st, now, dt, power, self.surplus(power), self._price_now(now), veh)
         day = now.date().isoformat()
@@ -454,6 +485,8 @@ class WallboxManager:
         soc = self._soc()
         if soc is None:
             return None
+        if not day_ok(cfg["planDays"], deadline(now, cfg["planTime"])):
+            return None  # an diesem Tag ist keine Abfahrt geplant
         await self.forecast()
         slots = self._slots
         if not slots:
@@ -461,6 +494,111 @@ class WallboxManager:
         o = self._plan_opts(cfg, soc, self._slot_res)
         R = plan_calc(slots, now, o)
         return plan_mode(slots, R, now, o)
+
+    def _odo(self) -> float | None:
+        ev = self._modules().get("ev") or {}
+        v = self._num((ev.get("ent") or {}).get("odo"))
+        return v if v is not None and v >= 0 else None
+
+    def _grid_import(self) -> float | None:
+        """Netzbezug in Watt (negativ = Einspeisung) vom Zähler aus Modul 3."""
+        m = self._modules()
+        en = m.get("energy") or {}
+        pvc = self._pv_cfg()
+        ent = (en.get("ent") or {}).get("grid") or pvc.get("sensor")
+        st = self.hass.states.get(ent) if ent else None
+        if st is None:
+            return None
+        w = watts(st.state, st.attributes.get("unit_of_measurement"))
+        if w is None:
+            return None
+        return grid_import_w(w, en.get("sign") or pvc.get("sign") or "export")
+
+    def _guard(self, cfg: dict[str, Any], wb_w: float) -> None:
+        """Hausanschluss-Schutz: Die Wallbox drosseln, wenn Haus und Wallbox zusammen die Grenze überschreiten würden."""
+        g = cfg["guard"]
+        self.guard = None
+        if not g["on"]:
+            return
+        imp = self._grid_import()
+        if imp is None:
+            return
+        r = guard_limit(g, imp, wb_w, self.info.get("phases"))
+        r["limited"] = False
+        w = self.want
+        if w.get("frc") == 2 and w.get("amp", 0) > r["allowed_a"]:
+            r["limited"] = True
+            if r["allowed_a"] >= cfg["minA"]:
+                w["amp"] = r["allowed_a"]
+                w["state"] = "gedrosselt"
+                w["reason"] = f"Hausanschluss-Schutz: Die Wallbox wird auf {r['allowed_a']} A gedrosselt. " + w.get("reason", "")
+            else:
+                w.update(frc=1, state="gedrosselt", reason=f"Hausanschluss-Schutz: Das Haus braucht gerade {r['house_a']} A von {r['max_a']} A. Die Wallbox pausiert.")
+        self.guard = r
+
+    def _quick_check(self, car: int | None, now_ts: float) -> None:
+        q = self._quick
+        if not q:
+            return
+        if car is not None and car != CAR_IDLE:
+            q["seen"] = True
+        if (car == CAR_IDLE and q["seen"]) or car == CAR_DONE or (q["until"] and now_ts > q["until"]):
+            self._quick = None
+            self._add("Schnellstart beendet.")
+
+    async def async_quick(self, kind: str) -> dict[str, Any]:
+        """Schnellstart: h1 = 1 Stunde voll, goal = bis zum Ziel voll, sun = heute nur Sonne. Leer = Stopp."""
+        if kind in ("h1", "goal", "sun") and self.cfg["enabled"]:
+            now = dt_util.now()
+            until = time.time() + 3600 if kind == "h1" else (now.replace(hour=23, minute=59, second=59, microsecond=0).timestamp() if kind == "sun" else None)
+            self._quick = {"k": kind, "until": until, "seen": self.info.get("car") not in (None, CAR_IDLE)}
+            self._add({"h1": "Schnellstart: 1 Stunde voll laden.", "goal": "Schnellstart: bis zum Ziel voll laden.", "sun": "Schnellstart: heute nur mit Sonne."}[kind])
+        elif self._quick:
+            self._quick = None
+            self._add("Schnellstart gestoppt.")
+        self._hold_until = 0.0
+        await self._tick(None)
+        return self.snapshot()
+
+    async def _notify(self, kind: str, title: str, msg: str) -> None:
+        n = self.cfg["notify"]
+        if not n.get(kind):
+            return
+        for svc in n["to"]:
+            name = svc.split(".", 1)[1]
+            if not self.hass.services.has_service("notify", name):
+                continue
+            try:
+                await self.hass.services.async_call("notify", name, {"title": title, "message": msg}, blocking=False)
+            except Exception as err:  # Dienst fehlerhaft: nie die Regelung stören
+                _LOGGER.debug("Benachrichtigung %s: %s", svc, err)
+
+    async def _events(self, now_ts: float) -> None:
+        """Meldungen aufs Handy: Ladung gestartet, Ziel erreicht, Plan reicht nicht, lange ohne Ladung."""
+        car, prev = self.info.get("car"), self._prev_car
+        self._prev_car = car
+        who = self.who["name"] if self.who else "Das Auto"
+        if car == CAR_CHARGING and prev is not None and prev != CAR_CHARGING and not self._n["start"]:
+            self._n["start"] = True
+            await self._notify("start", "Ladung gestartet", f"{who} lädt mit {round((self.info.get('power') or 0) / 1000, 1)} kW.")
+        if car == CAR_IDLE:
+            self._plug_ts, self._charged = None, False
+            self._n.update(start=False, goal=False, plan=False, long=False)
+            return
+        if self._plug_ts is None:
+            self._plug_ts = now_ts
+        if car == CAR_CHARGING:
+            self._charged = True
+        w = self.want or {}
+        if (car == CAR_DONE or w.get("state") == "limit") and not self._n["goal"]:
+            self._n["goal"] = True
+            await self._notify("goal", "Ladeziel erreicht", f"{who} ist fertig geladen.")
+        if self._plan_late and not self._n["plan"]:
+            self._n["plan"] = True
+            await self._notify("plan", "Ladeplan braucht Netzstrom", "Die Sonne reicht nicht bis zur Abfahrt. Es wird mit Netzstrom nachgeladen.")
+        if not self._charged and not self._n["long"] and now_ts - self._plug_ts > 12 * 3600:
+            self._n["long"] = True
+            await self._notify("long", "Auto steckt ohne Ladung", f"{who} steckt seit über 12 Stunden an der Wallbox und hat nicht geladen.")
 
     async def _apply(self, cl: GoeClient, cmd: dict[str, int], why: str) -> None:
         try:
@@ -479,4 +617,5 @@ class WallboxManager:
             "cfg": self.cfg, "ok": self.ok, "error": self.err, "info": self.info, "want": self.want, "log": list(self.log),
             "who": self.who, "soc": self._soc(), "plan": {"due": due[0], "need_kwh": round(due[1], 1), "start": due[2].isoformat(timespec="minutes") if due[2] else None},
             "hold": max(0, int(self._hold_until - time.time())),
+            "quick": {"k": self._quick["k"], "until": self._quick["until"]} if self._quick else None, "guard": self.guard,
         }

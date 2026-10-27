@@ -764,7 +764,9 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .gsdc{display:grid;gap:8px;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px}.gsdh{display:flex;gap:8px;align-items:center}.gsdh .otxt{flex:1}
 .gsnums{display:flex;gap:12px;flex-wrap:wrap}.gsnums label{display:grid;gap:4px;font-size:.76rem;color:var(--mut)}.gsnums .onum{display:inline-flex;align-items:center;gap:6px}.gsnums input{width:80px}.onum u,.gsnums u{text-decoration:none;color:var(--mut)}
 .wbtabs{display:flex;gap:6px;margin:0 0 12px;border:1px solid var(--line);border-radius:999px;padding:4px;width:max-content;max-width:100%}.wbtabs button{display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--mut);border-radius:999px;padding:8px 16px;font:inherit;font-weight:600;font-size:.88rem;cursor:pointer}.wbtabs button.sel{background:var(--teal);color:var(--on-acc)}
-.wbsh{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px}.wbnav{display:flex;align-items:center;gap:8px}.wbnav button{border:1px solid var(--line);background:transparent;color:var(--primary-text-color);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer}.wbnav b{min-width:120px;text-align:center}.tbvar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 10px}.tbvar button{display:grid;gap:5px;text-align:left;padding:10px;border-radius:14px;border:1px solid var(--line);background:transparent;color:var(--mut);font:inherit;cursor:pointer;align-content:start}.tbvar button b{color:var(--primary-text-color);font-size:.88rem}.tbvar button small{font-size:.74rem;line-height:1.35}.tbvar button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent)}@media(max-width:560px){.tbvar{grid-template-columns:1fr}}
+.wbsh{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px}.wbnav{display:flex;align-items:center;gap:8px}.wbnav button{border:1px solid var(--line);background:transparent;color:var(--primary-text-color);border-radius:10px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer}.wbnav b{min-width:120px;text-align:center}.card.wsec{padding:0;margin-bottom:10px}.wsec>button{display:flex;align-items:center;gap:12px;width:100%;background:transparent;border:0;color:inherit;font:inherit;text-align:left;padding:14px 16px;cursor:pointer;border-radius:inherit}.wsec>button>svg{flex:none;color:var(--teal)}.wsec .wst{flex:1;min-width:0}.wsec .wst b{display:block;font-size:1rem}.wsec .wst span{display:block;color:var(--mut);font-size:.84rem;margin-top:2px}.wsec .wch{flex:none;transition:transform .2s;color:var(--mut);display:grid}.wsec.open .wch{transform:rotate(180deg)}.wsec .wbody{padding:4px 16px 16px;border-top:1px solid var(--line)}.wbbar{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.wbchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.84rem;font-weight:600}.wbchip i{width:8px;height:8px;border-radius:50%;background:#64748b}.wbchip.ok i{background:#2dd4bf}.wbchip.warn i{background:#f59e0b}.wbchip.bad i{background:#f87171}.wbchip.ok{border-color:#2dd4bf66}.wbchip.warn{border-color:#f59e0b66}.wbchip.bad{border-color:#f8717166}.wbchip svg{color:var(--mut)}.wdot{font-style:normal;display:inline-grid;place-items:center;width:18px;height:18px;margin-left:8px;border-radius:50%;background:#f59e0b;color:#1a1204;font-size:.72rem;font-weight:800;vertical-align:1px}.wck{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.wck:first-of-type{border-top:0}.wcki{flex:none;display:grid}.wckt{flex:1;min-width:0}.wckt b{display:block;font-size:.92rem}.wckt small{display:block}.wsall{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px;margin:0 0 10px}.wsall .lnk{margin-left:12px}.rfa{margin:0 0 10px}.rfc{padding:10px 0;border-top:1px solid var(--line)}.rfc:first-of-type{border-top:0}.rfn{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px}.rfn small{flex-basis:100%}
+.wxfc{display:grid;grid-template-columns:repeat(auto-fit,minmax(54px,1fr));gap:6px;margin-top:8px}.wxfc>div{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:12px;border:1px solid var(--line);background:rgba(127,127,127,.06)}.wxfc>div.bad{border-color:var(--warning-color,#f59e0b);background:rgba(245,158,11,.14)}.wxfc b{font-size:.95rem}.wxfc small{font-size:.7rem}
+.tbvar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 10px}.tbvar button{display:grid;gap:5px;text-align:left;padding:10px;border-radius:14px;border:1px solid var(--line);background:transparent;color:var(--mut);font:inherit;cursor:pointer;align-content:start}.tbvar button b{color:var(--primary-text-color);font-size:.88rem}.tbvar button small{font-size:.74rem;line-height:1.35}.tbvar button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent)}@media(max-width:560px){.tbvar{grid-template-columns:1fr}}
 .wbsc{overflow-x:auto}.wbsc svg{min-width:520px}.wbst{margin:12px 0 4px}.wbst b{font-size:1.05rem}
 .wbses{display:grid;gap:8px}.wbse{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}.wbse:first-child{border-top:0}.wbse>div{display:grid;gap:2px}.wbsb{height:8px;border-radius:99px;background:#f59e0b;overflow:hidden;display:block!important}.wbsb i{display:block;height:100%;background:#2dd4bf}.wbsv{text-align:right}
 @media(max-width:560px){.wbse{grid-template-columns:1fr 1fr}.wbsb{grid-column:1/-1;order:3}}
@@ -1825,6 +1827,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && (t.dataset.f.startsWith("md") || t.dataset.f.startsWith("ww") || t.dataset.f.startsWith("en") || t.dataset.f.startsWith("gs") || t.dataset.f.startsWith("ev")) && this._mdChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ort") && this._ortChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wb") && this._wbChange(t)) return;
       if (this._lookChange(t)) return;
       if (t.dataset && t.dataset.k === "htr_steps" && this._modal && this._modal.type === "opt") { this._renderModal(); return; }
@@ -1843,6 +1846,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || a.startsWith("gs") || a.startsWith("ev")) this._mdAct(a, b);
     else if (a.startsWith("ort")) this._ortAct(a, b);
     else if (a.startsWith("ig")) this._igAct(a, b);
+    else if (a.startsWith("wxs")) this._wxsAct(a, b);
     else if (a.startsWith("wb")) this._wbAct(a, b);
     else if (["gtog", "gsw", "gmv", "gedit", "gadd", "gpick", "gicon", "gsave", "gdel"].includes(a)) this._gActions(a, b);
     else if (a === "opt") this._optOpen(id);
@@ -2421,6 +2425,7 @@ class FensterHeizungPanel extends HTMLElement {
     const r = this._collect().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
+    if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "iggoe") { box.innerHTML = this._igGoeModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "ortper" || m.type === "ortzone") { box.innerHTML = m.type === "ortper" ? this._ortPerModal() : this._ortZoneModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._ortBind(); return; }
@@ -2907,7 +2912,7 @@ class FensterHeizungPanel extends HTMLElement {
     return false;
   }
   /* Integrationen: Wallbox (go-e Charger) direkt über die lokale HTTP-API verbinden. Die Daten liegen im Backend (wb_get, wb_set, wb_test). */
-  _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "forecast", baseW: 400, vehicles: [], guest: { mode: "off", limit: 80 } }; }
+  _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "forecast", baseW: 400, vehicles: [], guest: { mode: "off", limit: 80 }, guard: { on: false, maxA: 35 }, notify: { start: true, goal: true, plan: true, off: true, long: false, to: [] } }; }
   _wbSnap() { const s = (this._wbD && this._wbD.snap) || {}; return { ...s, cfg: { ...this._wbDef(), ...(s.cfg || {}) }, info: s.info || {}, want: s.want || {}, log: s.log || [], plan: s.plan || {} }; }
   _wb() { return this._wbSnap().cfg; }
   _wbVisible() { return !this._modal && ((this._igOpen && this._admin()) || (!this._stOpen && !this._ortOpen && this._mdActive() === "ev")); }
@@ -2940,6 +2945,7 @@ class FensterHeizungPanel extends HTMLElement {
           <div class="oper"><span class="oav" style="background:#0ea5e9">${ic("energy", 22)}</span><div class="opi"><b>go-e Charger</b><small>${c.ip ? (s.ok ? `${esc(i.type || "go-e Charger")} · ${esc(c.ip)}${i.fw ? " · Firmware " + esc(i.fw) : ""}` : `${esc(c.ip)} · ${esc(s.error || "keine Antwort")}`) : "Direkte Verbindung über das lokale Netzwerk, ohne Cloud"}</small></div><span class="ost ${c.ip && s.ok ? "home" : "off"}">${c.ip ? (s.ok ? "Verbunden" : "Nicht erreichbar") : "Nicht verbunden"}</span>${adm ? `<button class="ibtn" data-act="iggoe" aria-label="go-e bearbeiten">${ic(c.ip ? "pencil" : "plus", 18)}</button>` : ""}</div>
           <div class="mut sm" style="margin-top:8px">Die Wallbox wird direkt über ihre lokale Schnittstelle gelesen und gesteuert. Eine Integration in Home Assistant ist dafür nicht nötig. Die Steuerung stellst du in <b>Modul 8 · Elektroauto &amp; Wallbox</b> ein.</div></div>
         ${this._igTbRow()}
+        ${this._igWxCard()}
         <div class="card ocard"><h2>${ic("puzzle", 18)}Weitere Hersteller</h2><div class="mut">Zuerst wird go-e angebunden. Weitere Hersteller folgen. Wünsche kannst du auf GitHub melden.</div></div>
         <div class="card ocard"><h2>${ic("info", 18)}go-e Charger vorbereiten</h2>
           <details class="ohint" ${c.ip ? "" : "open"}><summary>Lokale Schnittstelle einschalten</summary><ol>
@@ -2948,6 +2954,56 @@ class FensterHeizungPanel extends HTMLElement {
             <li><b>Feste IP-Adresse:</b> Vergib dem go-e im Router eine feste Adresse, sonst bricht die Verbindung nach einem Neustart ab.</li>
             <li><b>Gleiches Netzwerk:</b> Home Assistant und die Wallbox müssen sich im selben Netz erreichen.</li></ol></details></div>
       </div></div>`;
+  }
+  /* Integrationen für Wetter und Warnungen: Dienste mit Status. Eingerichtete Dienste nutzt Modul 9 automatisch (Zuordnung nur bei mehreren). */
+  _wxOffAny() { const E = this._hass.entities || {}; return Object.keys(this._hass.states).some((k) => ["dwd_weather_warnings", "nina", "meteoalarm"].includes((E[k] || {}).platform)); }
+  _igWxCatalog() {
+    return [
+      { d: "dwd_weather_warnings", n: "Deutscher Wetterdienst (DWD)", t: "Amtliche Unwetterwarnungen für deinen Landkreis", k: "warn", c: "#ef4444", i: "shield", top: 1 },
+      { d: "nina", n: "NINA Bevölkerungsschutz", t: "Warnungen von Bund und Ländern (Unwetter, Hochwasser, Gefahren)", k: "warn", c: "#f97316", i: "alert", top: 1 },
+      { d: "meteoalarm", n: "MeteoAlarm", t: "Europäische Wetterwarnungen", k: "warn", c: "#eab308", i: "shield" },
+      { d: "met", n: "Met.no", t: "Wetter und Vorhersage, kostenlos und ohne Anmeldung", k: "weather", c: "#0ea5e9", i: "cloud", top: 1 },
+      { d: "openweathermap", n: "OpenWeatherMap", t: "Wetter und Vorhersage, Schlüssel nötig", k: "weather", c: "#0ea5e9", i: "cloud" },
+      { d: "open_meteo", n: "Open-Meteo", t: "Wetter und Stundenvorhersage, kostenlos", k: "weather", c: "#0ea5e9", i: "cloud" },
+      { d: "accuweather", n: "AccuWeather", t: "Wetter und Vorhersage, Schlüssel nötig", k: "weather", c: "#0ea5e9", i: "cloud" },
+      { d: "pirateweather", n: "Pirate Weather", t: "Wetter und Stundenvorhersage, Schlüssel nötig", k: "weather", c: "#0ea5e9", i: "cloud" },
+      { d: "tomorrowio", n: "Tomorrow.io", t: "Wetter und Vorhersage, Schlüssel nötig", k: "weather", c: "#0ea5e9", i: "cloud" },
+      { d: "ecowitt", n: "Ecowitt", t: "Eigene Wetterstation: Wind, Regen, Temperatur vor Ort", k: "station", c: "#64748b", i: "fan" },
+      { d: "netatmo", n: "Netatmo", t: "Eigene Wetterstation: Temperatur, Regen, Wind", k: "station", c: "#64748b", i: "fan" },
+      { d: "tempest", n: "WeatherFlow Tempest", t: "Eigene Wetterstation: Wind, Regen, Blitze", k: "station", c: "#64748b", i: "fan" },
+    ];
+  }
+  _igWxCard() {
+    this._wxsLoad(); const H = this._hass, S = H.states, E = H.entities || {}, adm = this._admin(), W = this._wxs().cfg, L = this._wxCfg();
+    const nm = (id) => esc((S[id].attributes || {}).friendly_name || id), un = (id) => (S[id].attributes || {}).unit_of_measurement || "";
+    const ids = Object.keys(S), byDom = (d) => ids.filter((k) => (E[k] || {}).platform === d);
+    const weather = ids.filter((k) => k.startsWith("weather.")), wind = ids.filter((k) => k.startsWith("sensor.") && (S[k].attributes.device_class === "wind_speed" || /^(km\/h|m\/s|mph|kn)$/i.test(un(k))) && !/gust|boe|böe/i.test(k)).slice(0, 12);
+    const tmp = ids.filter((k) => k.startsWith("sensor.") && S[k].attributes.device_class === "temperature" && /au(ß|ss)en|outdoor|outside|garten|terrasse|balkon/i.test(k + " " + (S[k].attributes.friendly_name || ""))).slice(0, 12);
+    const off = ids.filter((k) => /^(sensor|binary_sensor)\./.test(k) && ["dwd_weather_warnings", "nina", "meteoalarm"].includes((E[k] || {}).platform));
+    const notify = [...new Set([...Object.keys((H.services || {}).notify || {}).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).sort().map((n) => "notify." + n), ...W.notify.to])];
+    const wid = L.entity && S[L.entity] ? L.entity : weather[0], oid = W.official.on ? (W.official.ent && S[W.official.ent] ? W.official.ent : off[0]) : "";
+    const use = { warn: "Modul 9", weather: "Modul 9 · Wetter-Anzeige", station: "Modul 9" };
+    const sum = (s, ents) => { if (s.k === "weather") { const w = ents.find((x) => x.startsWith("weather.")); if (w) return `${(WX[S[w].state] || ["", S[w].state])[1]}${S[w].attributes.temperature != null ? " · " + num(S[w].attributes.temperature, 1) + " °C" : ""}`; } if (s.k === "warn") { const w = ents[0]; return w ? `${ents.length} ${ents.length === 1 ? "Entität" : "Entitäten"} · Stand ${esc(S[w].state)}` : ""; } return `${ents.length} ${ents.length === 1 ? "Sensor" : "Sensoren"}`; };
+    const row = (s) => {
+      const ents = byDom(s.d), on = ents.length > 0, used = s.k === "weather" ? ents.includes(wid) : s.k === "warn" ? ents.includes(oid) : ents.includes(W.wind) || ents.includes(L.outdoor);
+      return `<div class="oper" style="padding:6px 0"><span class="oav" style="width:40px;height:40px;background:${s.c}">${ic(s.i, 20)}</span><div class="opi"><b>${s.n}</b><small>${on ? esc(sum(s, ents)) + (used ? " · genutzt von " + use[s.k] : " · nicht ausgewählt") : esc(s.t)}</small></div>${on ? `<span class="ost home">Verbunden</span>` : `<span class="ost off">Nicht eingerichtet</span>${adm ? `<a class="btn2" style="flex:none;text-decoration:none" href="/config/integrations/dashboard/add?domain=${s.d}" target="_blank" rel="noopener">Einrichten</a>` : ""}`}</div>`;
+    };
+    const cat = this._igWxCatalog(), sec = (ico, t, k) => { const all = cat.filter((s) => s.k === k), vis = all.filter((s) => s.top || byDom(s.d).length), rest = all.filter((s) => !vis.includes(s)); return `<div class="lsec" style="margin-top:12px">${ic(ico, 15)}${t}</div>${vis.map(row).join("")}${rest.length ? `<details class="ohint"><summary>Weitere Dienste (${rest.length})</summary>${rest.map(row).join("")}</details>` : ""}`; };
+    const opt = (ids2, cur, auto, lab) => `<option value="" ${cur ? "" : "selected"}>${esc(auto)}</option>${ids2.map((id) => `<option value="${esc(id)}" ${cur === id ? "selected" : ""}>${lab(id)}</option>`).join("")}`;
+    const sel = (ico, t, f, body, dis) => `<div class="vrow"><span>${ic(ico, 15)} ${t}</span><select class="osel" style="max-width:55%;margin:0" data-f="${f}" aria-label="${t}" ${adm && !dis ? "" : "disabled"}>${body}</select></div>`;
+    const multi = weather.length > 1 || wind.length > 1 || tmp.length > 1 || off.length > 1;
+    return `<div class="card ocard"><h2>${ic("cloud", 18)}Wetter und Warnungen</h2>
+      <div class="mut sm" style="margin:0 0 4px">Diese Dienste passen zu Modul 9. Was in Home Assistant eingerichtet ist, wird automatisch erkannt und genutzt. Die Wetter-Entität und die Außentemperatur gelten auch für die Wetter-Anzeige im Dashboard.</div>
+      ${sec("shield", "Amtliche Warnungen", "warn")}${sec("sun", "Wetter und Vorhersage", "weather")}${sec("fan", "Eigene Wetterstation", "station")}
+      <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Zuordnung</div>
+      <div class="mut sm" style="margin:0 0 4px">${multi ? "Es gibt mehrere Quellen. Standard ist „Automatisch“, du kannst eine bestimmte wählen." : "Es ist jeweils nur eine Quelle da, deshalb passt „Automatisch“."}</div>
+      ${sel("cloud", "Wetter", "wxsselw", opt(weather, L.entity && S[L.entity] ? L.entity : "", weather[0] ? `Automatisch (${(S[weather[0]].attributes || {}).friendly_name || weather[0]})` : "Keine gefunden", (id) => nm(id)), !weather.length)}
+      ${sel("fan", "Wind", "wxsselwind", opt(wind, W.wind && S[W.wind] ? W.wind : "", "Automatisch (aus der Wetter-Entität)", (id) => `${nm(id)} · ${esc(S[id].state)} ${esc(un(id))}`), !wind.length)}
+      ${sel("thermo", "Außentemperatur", "wxsselout", opt(tmp, L.outdoor && S[L.outdoor] ? L.outdoor : "", "Automatisch (aus der Wetter-Entität)", (id) => `${nm(id)} · ${esc(S[id].state)} ${esc(un(id))}`), !tmp.length)}
+      ${sel("shield", "Amtliche Warnung", "wxsseloff", `<option value="" ${W.official.on && !W.official.ent ? "selected" : ""}>${off[0] ? "Automatisch (" + esc((S[off[0]].attributes || {}).friendly_name || off[0]) + ")" : "Keine gefunden"}</option>${off.map((id) => `<option value="${esc(id)}" ${W.official.on && W.official.ent === id ? "selected" : ""}>${nm(id)}</option>`).join("")}<option value="__off" ${W.official.on ? "" : "selected"}>Nicht verwenden</option>`, !off.length)}
+      <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Benachrichtigung bei Warnungen</div>
+      ${notify.length ? `<div class="gschips">${notify.map((n) => `<button class="gsch ${W.notify.to.includes(n) ? "sel" : ""}" data-act="wxsns" data-k="${esc(n)}" aria-pressed="${W.notify.to.includes(n)}" ${adm ? "" : "disabled"}>${esc(n)}</button>`).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
+      <div class="mut sm" style="margin-top:8px">Grenzwerte, Vorwarnung und Aktionen stellst du in Modul 9 ein.</div></div>`;
   }
   /* Tibber: Strompreise direkt über die Tibber-Schnittstelle */
   _tbLoad(force) {
@@ -3024,6 +3080,108 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _igChange(t) { const I = this._igS; if (I && t.dataset.f === "igip") { I.draft.ip = t.value; I.test = null; return true; } if (I && t.dataset.f === "igtbtok") { I.tb.token = t.value; I.tbTest = null; if (this._modal && this._modal.type === "igtb") this._renderModal(); return true; } return false; }
 
+  /* Modul 8: Heute, Schnellstart, Hausanschluss-Schutz, Benachrichtigungen */
+  _wbxToday(d) {
+    const s = this._wbSnap(), i = s.info, T = (this._wbStD && this._wbStD.data) || null, td = ((n) => `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`)(new Date()), r = T && (T.days || []).find((x) => x.d === td);
+    this._wbStatLoad();
+    const kwh = r ? r.pv + r.grid : 0, pv = r ? r.pv : 0, share = kwh > 0 ? pv / kwh * 100 : 0, now = i.power != null ? i.power : 0, sur = s.want && s.want.surplus_w != null ? s.want.surplus_w : 0, ns = now > 0 ? Math.min(100, sur / now * 100) : 0;
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    return `<div class="card ocard"><h2>${ic("clock", 18)}Heute</h2>
+      <div class="lugrid">${tile("Geladen", num(kwh, 1) + " kWh", `${num(pv, 1)} kWh Sonne`)}${tile("Sonnenanteil", num(share, 0) + " %", "heute")}${tile("Kosten", num(r ? r.cost : 0, 2) + " €", "Netzstrom")}${tile("Jetzt", num(now / 1000, 1) + " kW", now > 0 ? num(ns, 0) + " % davon Sonne" : "keine Ladung")}</div>
+      ${now > 0 ? `<div class="gsbar" style="margin-top:10px" role="img" aria-label="Anteil Sonne und Netz jetzt"><i style="width:${ns}%;background:#2dd4bf"></i><i style="width:${100 - ns}%;background:#f59e0b"></i></div><div class="gsleg" style="margin-top:6px"><span><i style="background:#2dd4bf"></i>Sonne</span><span><i style="background:#f59e0b"></i>Netz</span></div>` : ""}</div>`;
+  }
+  _wbxParts() {
+    const sn = this._wbSnap(), c = sn.cfg, G = c.guard, N = c.notify, q = sn.quick && sn.quick.k, adm = this._admin(), sw = (lab, k, on, hint) => `<div class="vrow"><span>${lab}${hint ? `<small class="mut" style="display:block">${hint}</small>` : ""}</span><button class="sw ${on ? "on" : ""}" data-act="wbxsw" data-k="${k}" aria-pressed="${on}" aria-label="${lab}" ${adm ? "" : "disabled"}></button></div>`;
+    const Q = [["h1", "1 Stunde voll"], ["goal", "Bis zum Ziel voll"], ["sun", "Heute nur Sonne"]], gi = sn.guard;
+    const svc = [...new Set([...Object.keys((this._hass.services || {}).notify || {}).filter((n) => n !== "send_message").sort().map((n) => "notify." + n), ...N.to])];
+    const min = sn.quick && sn.quick.until ? Math.max(1, Math.ceil((sn.quick.until * 1000 - Date.now()) / 6e4)) : 0;
+    return {
+      quick: `        <div class="mut sm" style="margin:0 0 6px">Einmalig, ohne den Modus oder die Planung zu ändern. Endet von selbst, beim Abstecken oder mit „Stopp“.</div>
+        ${q ? `<div class="otr"><span class="oav" style="width:36px;height:36px;background:#2dd4bf">${ic("energy", 18)}</span><div class="opi"><b>Schnellstart läuft: ${esc(Q.find((x) => x[0] === q)[1])}</b><small>${q === "h1" ? `Noch ${min} Minuten.` : q === "goal" ? "Bis zum Ladelimit oder zum Abstecken." : "Bis Mitternacht, nur mit Überschuss."}</small></div><button class="btn2 dng" data-act="wbxq" data-k="" style="flex:none">Stopp</button></div>` : `<div class="gschips">${Q.map(([k, l]) => `<button class="gsch" data-act="wbxq" data-k="${k}" ${adm && c.enabled ? "" : "disabled"}>${l}</button>`).join("")}</div>${c.enabled ? "" : `<div class="mut sm" style="margin-top:6px">Schalte zuerst die Laderegelung ein.</div>`}`}`,
+      guard: `        ${sw("Wallbox drosseln, wenn der Hausanschluss voll ist", "guard", G.on, "Schützt die Hauptsicherung, zum Beispiel wenn Herd, Backofen und Wallbox zusammen laufen.")}
+        ${G.on ? `<div class="vrow"><span>Höchststrom am Hausanschluss<small class="mut" style="display:block">Pro Phase, Wert deiner Hauptsicherung oder niedriger.</small></span><div class="step" style="flex:none"><button data-act="wbxg" data-s="-1" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${G.maxA} A</b><button data-act="wbxg" data-s="1" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>
+        ${gi ? `<div class="gsbar" style="margin-top:8px" role="progressbar" aria-valuenow="${gi.total_a}" aria-valuemin="0" aria-valuemax="${G.maxA}"><i style="width:${Math.min(100, gi.house_a / G.maxA * 100)}%;background:#6366f1"></i><i style="width:${Math.min(100 - Math.min(100, gi.house_a / G.maxA * 100), gi.wb_a / G.maxA * 100)}%;background:#2dd4bf"></i></div><div class="gsleg" style="margin-top:6px"><span><i style="background:#6366f1"></i>Haus</span><span><i style="background:#2dd4bf"></i>Wallbox</span></div><div class="mut sm" style="margin-top:4px">Haus ${num(gi.house_a, 1)} A + Wallbox ${num(gi.wb_a, 1)} A = ${num(gi.total_a, 1)} A von ${G.maxA} A${gi.limited ? " · Die Wallbox wird gerade gedrosselt." : "."}</div>` : `<div class="mut sm" style="margin-top:8px">Für die Messung braucht Modul 3 (Energie) oder die Photovoltaik-Einstellung einen Zähler-Sensor.</div>`}
+        <div class="mut sm" style="margin-top:4px">Der Hausstrom wird aus dem Netzbezug geschätzt (gleichmäßig auf drei Phasen). Die Wallbox wird zuerst gedrosselt, nie das Haus.</div>` : ""}`,
+      notify: `        <div class="mut sm" style="margin:0 0 6px">Meldungen aufs Handy, zum Beispiel über die Home-Assistant-App.</div>
+        ${sw("Ladung gestartet", "start", N.start)}${sw("Ziel-Ladestand erreicht", "goal", N.goal)}${sw("Ladeplan reicht nicht, Netzstrom nötig", "plan", N.plan)}${sw("Wallbox nicht erreichbar", "off", N.off)}${sw("Auto steckt lange ohne Ladung", "long", N.long, "Nach 12 Stunden, zum Beispiel wenn der Ladeplan nie startet.")}
+        <div class="lsec" style="margin-top:8px">${ic("bell", 15)}Senden an</div>
+        ${svc.length ? `<div class="gschips">${svc.map((n) => `<button class="gsch ${N.to.includes(n) ? "sel" : ""}" data-act="wbxn" data-k="${esc(n)}" aria-pressed="${N.to.includes(n)}" ${adm ? "" : "disabled"}>${esc(n.replace("notify.", ""))}${((this._hass.services || {}).notify || {})[n.slice(7)] === undefined ? " (nicht gefunden)" : ""}</button>`).join("")}</div>` : `<div class="mut sm">Keine Benachrichtigungsdienste gefunden. Installiere die Home-Assistant-App auf dem Handy, dann erscheint sie hier.</div>`}` };
+  }
+  _wbxQuickCard() { return `<div class="card ocard"><h2>${ic("energy", 18)}Schnellstart</h2>${this._wbxParts().quick}</div>`; }
+  _wbSecS() {
+    if (!this._wbSecO) { let v = {}; try { v = JSON.parse(localStorage.getItem("fh_wbsec") || "{}") || {}; } catch (e) { v = {}; } this._wbSecO = v && typeof v === "object" ? v : {}; }
+    return this._wbSecO;
+  }
+  _wbSecSave() { try { localStorage.setItem("fh_wbsec", JSON.stringify(this._wbSecO || {})); } catch (e) { /* ohne Speicher */ } }
+  _wbSec(key, ico, title, sum, body, warn) {
+    const o = !!this._wbSecS()[key];
+    return `<div class="card ocard wsec ${o ? "open" : ""}"><button data-act="wbsec" data-k="${key}" aria-expanded="${o}">${ic(ico, 20)}<span class="wst"><b>${title}${warn ? `<em class="wdot" title="Braucht Aufmerksamkeit">!</em>` : ""}</b><span>${sum}</span></span><span class="wch">${ic("chev", 18)}</span></button>${o ? `<div class="wbody">${body}</div>` : ""}</div>`;
+  }
+  /* Statusleiste über allen Registern: Zustand, Modus, Fahrzeug, Leistung und Hinweise mit Sprung zur Lösung */
+  _wbBar() {
+    const s = this._wbSnap(), c = s.cfg, i = s.info, w = s.want || {}, who = s.who;
+    const veh = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.name === who.name) : null, MN = { off: "Aus", pv: "Sonne", minpv: "Sonne + Netz", now: "Voll" };
+    const em = who ? (veh ? veh.mode : who.kind === "guest" ? c.guest.mode : c.mode) : c.mode;
+    const st = !s.ok ? ["bad", "Nicht erreichbar"] : !c.enabled ? ["off", "Regelung aus"] : s.hold > 0 ? ["warn", "Pausiert"] : c.planOn ? ["ok", "Planung aktiv"] : ["ok", "Regelung aktiv"];
+    const chip = (cls, t) => `<span class="wbchip ${cls}">${cls ? "<i></i>" : ""}${t}</span>`;
+    const chips = chip(st[0], st[1]) + (s.ok && c.enabled && !c.planOn ? chip("", `Modus ${MN[em] || "–"}`) : "") + (s.ok && who ? chip("", `${ic("car", 13)} ${esc(who.name)}`) : "") + (s.ok && i.power > 0 ? chip("", `${ic("energy", 13)} ${wfmt(i.power)}`) : "") + (s.quick ? chip("warn", "Schnellstart") : "");
+    const N = [];
+    if (!s.ok) N.push([`Keine Verbindung zur Wallbox${s.error ? " (" + esc(s.error) + ")" : ""}. Prüfe Strom und WLAN der Wallbox.`, "wb", "Verbindung prüfen"]);
+    else if (c.enabled && s.hold > 0) N.push([`Du hast die Wallbox von Hand umgestellt. Die Regelung pausiert noch ${Math.ceil(s.hold / 60)} Min. und regelt dann wieder.`]);
+    if (s.ok && c.enabled && !s.hold && w.state === "gesperrt") N.push(["Die Regelung wartet auf eine Karte. Lege die Karte an der Wallbox an.", "veh", "Karten ansehen"]);
+    if (s.ok && c.enabled && !s.hold && w.state && w.state !== "gesperrt" && w.surplus_w == null && (em === "pv" || em === "minpv" || c.planOn)) N.push(["Es fehlt ein Netz-Sensor für den Überschuss (Modul 3 oder Photovoltaik in Modul 1). Ohne ihn wird nicht mit Sonne geladen."]);
+    return `<div class="wbbar">${chips}</div>${N.map((n) => `<div class="gst on" style="margin:0 0 10px">${ic("info", 15)}<span>${n[0]}${n[1] ? ` <button class="lnk" data-act="wbgo" data-k="${n[1]}">${n[2]}</button>` : ""}</span></div>`).join("")}`;
+  }
+  /* Einrichtungs-Check im Register Einstellungen */
+  _wbCheck() {
+    this._wbFcLoad(); this._tbLoad();
+    const s = this._wbSnap(), c = s.cfg, i = s.info, w = s.want || {}, F = this._wbFcD && this._wbFcD.data, TB = this._tb(), cards = (i && i.cards) || [];
+    const noCard = c.vehicles.filter((x) => !x.ids.length);
+    const R = [
+      [s.ok ? "ok" : "bad", "Wallbox verbunden", s.ok ? `${esc(i.name || "go-e Charger")} antwortet.` : "Keine Antwort von der Wallbox.", "wb", "Prüfen"],
+      [s.soc != null ? "ok" : "warn", "Ladestand-Sensor des Fahrzeugs", s.soc != null ? `Ladestand ${num(s.soc, 0)} %.` : "Ohne ihn gibt es keine Planung und kein Ladelimit.", null, null, "mdevset"],
+      [!c.enabled || !w.state ? "opt" : w.surplus_w != null ? "ok" : "warn", "Netz-Sensor für den Überschuss", !c.enabled || !w.state ? "Wird geprüft, sobald die Regelung läuft." : w.surplus_w != null ? `Überschuss ${wfmt(w.surplus_w)}.` : "Fehlt in Modul 3 und in der Photovoltaik-Einstellung von Modul 1."],
+      [c.vehicles.length ? "ok" : "warn", "Fahrzeug angelegt", c.vehicles.length ? c.vehicles.map((x) => esc(x.name)).join(", ") : "Lege ein Fahrzeug an, damit Modus und Limit pro Fahrzeug gelten.", "veh", "Anlegen"],
+      [!c.vehicles.length ? "opt" : !cards.length ? "warn" : noCard.length ? "warn" : "ok", "Karten zugeordnet", !c.vehicles.length ? "Zuerst ein Fahrzeug anlegen." : !cards.length ? "In der go-e-App sind noch keine RFID-Karten angelegt." : noCard.length ? `${noCard.map((x) => esc(x.name)).join(", ")} ${noCard.length === 1 ? "hat" : "haben"} noch keine Karte.` : "Jedes Fahrzeug hat mindestens eine Karte.", "veh", "Zuordnen"],
+      [TB.connected ? "ok" : "opt", "Strompreis (optional)", TB.connected ? "Tibber ist verbunden." : "Für die Planung nach Preis: Tibber unter Einstellungen → Integrationen verbinden oder einen Preis-Sensor in Modul 1 wählen."],
+      [F && F.fs && F.fs.found ? "ok" : "opt", "PV-Prognose (optional)", F && F.fs && F.fs.found ? "Forecast.Solar wurde erkannt." : "Für die Planung nach Sonne: die Integration Forecast.Solar in Home Assistant einrichten."],
+    ];
+    const need = R.filter((r) => r[0] !== "opt"), done = need.filter((r) => r[0] === "ok").length, all = need.length && done === need.length;
+    const ico = { ok: ["check", "#2dd4bf"], warn: ["info", "#f59e0b"], bad: ["info", "#f87171"], opt: ["minus", "#64748b"] };
+    return `<div class="card ocard"><h2>${ic("check", 18)}Einrichtung<span class="mut sm" style="margin-left:auto;font-weight:500">${all ? "Alles bereit" : `${done} von ${need.length} erledigt`}</span></h2>
+      <div class="gsbar" role="progressbar" aria-valuenow="${done}" aria-valuemin="0" aria-valuemax="${need.length}"><i style="width:${need.length ? done / need.length * 100 : 0}%;background:${all ? "#2dd4bf" : "#f59e0b"}"></i></div>
+      ${R.map((r) => `<div class="wck"><span class="wcki" style="color:${ico[r[0]][1]}">${ic(ico[r[0]][0], 16)}</span><span class="wckt"><b>${r[1]}</b><small class="mut">${r[2]}</small></span>${r[0] !== "ok" && r[3] && this._admin() ? `<button class="lnk" data-act="wbgo" data-k="${r[3]}">${r[4]}</button>` : ""}${r[0] !== "ok" && r[5] && this._admin() ? `<button class="lnk" data-act="${r[5]}">Einrichten</button>` : ""}</div>`).join("")}</div>`;
+  }
+  _wbxAct(a, b) {
+    const c = this._wb(), k = b.dataset.k;
+    if (a === "wbxq") { this._hass.callWS({ type: "fenster_heizung/wb_quick", kind: k || "" }).then((r) => { this._wbD = { snap: this._wbSaveT ? { ...r, cfg: this._wbSnap().cfg } : r, ts: Date.now() }; this._render(); }).catch(() => this._toast("Schnellstart konnte nicht gestartet werden")); return; }
+    if (a === "wbxsw") { if (k === "guard") this._wbSave({ guard: { ...c.guard, on: !c.guard.on } }, true); else this._wbSave({ notify: { ...c.notify, [k]: !c.notify[k] } }, true); }
+    else if (a === "wbxg") this._wbSave({ guard: { ...c.guard, maxA: Math.max(10, Math.min(63, c.guard.maxA + Number(b.dataset.s))) } });
+    else if (a === "wbxn") this._wbSave({ notify: { ...c.notify, to: c.notify.to.includes(k) ? c.notify.to.filter((x) => x !== k) : [...c.notify.to, k] } }, true);
+    else if (a === "wbcsv") return this._wbCsv();
+    this._render();
+  }
+  _wbCsv() {
+    const D = (this._wbStD && this._wbStD.data) || {}, days = D.days || [];
+    if (!days.length) return this._toast("Noch keine Ladungen zum Exportieren");
+    const f = (v, n) => String(Number(v || 0).toFixed(n)).replace(".", ","), rows = [["Datum", "Sonne kWh", "Netz kWh", "Gesamt kWh", "Kosten EUR", "Kosten ohne Sonne EUR", "Kilometer"]];
+    days.forEach((r) => rows.push([r.d, f(r.pv, 2), f(r.grid, 2), f(r.pv + r.grid, 2), f(r.cost, 2), f(r.full, 2), f(r.km, 1)]));
+    rows.push([]); rows.push(["Ladevorgänge"]); rows.push(["Start", "Dauer Minuten", "Fahrzeug", "kWh", "davon Sonne kWh", "Kosten EUR"]);
+    (D.sessions || []).forEach((x) => rows.push([x.start, f(x.min, 0), x.veh, f(x.kwh, 2), f(x.pv, 2), f(x.cost, 2)]));
+    const csv = "\ufeff" + rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(";")).join("\r\n");
+    try { const u = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" })), el = document.createElement("a"); el.href = u; el.download = "ladestatistik.csv"; document.body.appendChild(el); el.click(); el.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); this._toast("Ladestatistik exportiert"); }
+    catch (e) { this._toast("Export nicht möglich"); }
+  }
+  /* Abfahrtszeit pro Fahrzeug (in der Planung): eigenes Ziel, eigene Uhrzeit, eigene Tage */
+  _wbDep(v) { const c = this._wb(), d = (v && v.dep) || {}; return { on: !!d.on, soc: d.soc || c.planSoc, time: d.time || c.planTime, days: d.days || c.planDays }; }
+  _wbdAct(a, b) {
+    const c = this._wb(), id = b.dataset.v, k = b.dataset.k;
+    const upd = (fn) => this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? { ...x, dep: fn(this._wbDep(x)) } : x)) });
+    if (a === "wbdsw") upd((d) => ({ ...d, on: !d.on }));
+    else if (a === "wbdsoc") upd((d) => ({ ...d, soc: Math.max(20, Math.min(100, d.soc + Number(b.dataset.s))) }));
+    else if (a === "wbddays") upd((d) => ({ ...d, days: k }));
+    this._render();
+  }
   /* Planung: Strompreis- und PV-Vorhersage, günstigste Ladefenster */
   _wbFcLoad(force) {
     if (!this._hass || this._wbFcBusy) return;
@@ -3050,9 +3208,10 @@ class FensterHeizungPanel extends HTMLElement {
     const F = this._wbFcD && this._wbFcD.data, c = this._wbSnap().cfg, adm = this._admin();
     if (!F) return `<div class="card empty">${ic("sun", 30)}<div class="sm" style="margin-top:8px">Vorhersage wird geladen …</div></div>`;
     if (F.error || !(F.hours || []).length) return `<div class="card empty">${ic("sun", 30)}<div style="margin:8px 0 4px;font-weight:700;color:var(--primary-text-color)">Keine Vorhersage verfügbar</div><div class="sm" style="max-width:480px;margin:0 auto">Wähle in den Einstellungen von Modul 3 einen Preis-Sensor mit Stundenpreisen (zum Beispiel Tibber oder aWATTar) und eine PV-Prognose (zum Beispiel Forecast.Solar oder Solcast).</div></div>`;
+    const who = this._wbSnap().who, veh = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.name === who.name) : null, vd = veh ? this._wbDep(veh) : null, eff = vd && vd.on ? { soc: vd.soc, time: vd.time, days: vd.days, name: veh.name } : { soc: c.planSoc, time: c.planTime, days: c.planDays, name: "" };
     const P = { strat: c.planStrat || "mix" }, pad = (v) => String(v).padStart(2, "0"), hrs = F.hours, SL = (F.slot_min || 60) / 60, tm = (t) => pad(t.getHours()) + ":" + pad(t.getMinutes());
     const soc = d.soc != null ? d.soc : this._wbSnap().soc != null ? this._wbSnap().soc : 40, ph = c.ph === 1 ? 1 : 3, pmax = Math.round(c.maxA * 0.23 * ph * 10) / 10;
-    const R = this._wbPlanCalc(hrs, { strat: P.strat, target: c.planSoc, soc, cap: c.cap, until: c.planTime, pmax, minkw: Math.max(1.4, c.startW / 1000), sh: SL, rank: this._tb().connected && c.planSrc !== "sensor" && this._tb().res === "lvl" ? "level" : "price" });
+    const R = this._wbPlanCalc(hrs, { strat: P.strat, target: eff.soc, soc, cap: c.cap, until: eff.time, pmax, minkw: Math.max(1.4, c.startW / 1000), sh: SL, rank: this._tb().connected && c.planSrc !== "sensor" && this._tb().res === "lvl" ? "level" : "price" });
     const shown = hrs.map((h, i) => ({ h, i, t: new Date(h.t) })).filter((x) => x.t.getTime() + SL * 36e5 > Date.now()).slice(0, Math.round(30 / SL)), n = shown.length;
     const W = 640, Hh = 240, pl = 36, pr = 40, pb = 24, pt = 8, bw = (W - pl - pr) / n, bar = Math.min(bw * (SL < 1 ? 0.8 : 0.7), 18);
     const mxP = Math.max(pmax, ...shown.map((x) => x.h.pv)), stepP = enStep(mxP), topP = Math.ceil(mxP / stepP) * stepP, mxC = Math.max(...shown.map((x) => x.h.price), 1), topC = Math.ceil(mxC / 10) * 10, minC = Math.min(0, ...shown.map((x) => x.h.price));
@@ -3065,7 +3224,7 @@ class FensterHeizungPanel extends HTMLElement {
       bars += `<rect x="${cx - bar / 2}" y="${yP(x.h.pv)}" width="${bar}" height="${Math.max(0, Hh - pb - yP(x.h.pv))}" rx="2" fill="#2dd4bf" opacity="${beyond ? .3 : .9}"><title>${tm(x.t)} · PV ${num(x.h.pv, 1)} kW · ${num(x.h.price, 1)} ct/kWh${on ? " · Ladung " + num(R.sel[x.i], 1) + " kWh" : ""}</title></rect>`;
       pts.push(`${cx},${yC(x.h.price)}`); if ((x.t.getMinutes() === 0 && x.t.getHours() % 3 === 0) || k === 0) bars += `<text x="${cx}" y="${Hh - 7}" text-anchor="middle" font-size="11" fill="var(--mut)">${pad(x.t.getHours())}${x.t.getHours() === 0 ? "" : ""}</text>`;
       if (x.t.getHours() === 0 && x.t.getMinutes() === 0 && k > 0) bars += `<line x1="${xx}" x2="${xx}" y1="${pt}" y2="${Hh - pb}" stroke="var(--line)"/>`; });
-    const dlk = shown.findIndex((x) => x.t.getTime() + SL * 36e5 > R.dl.getTime()); if (dlk > 0) bars += `<line x1="${pl + dlk * bw}" x2="${pl + dlk * bw}" y1="${pt}" y2="${Hh - pb}" stroke="#f87171" stroke-dasharray="4 3"/><text x="${pl + dlk * bw - 4}" y="${pt + 10}" text-anchor="end" font-size="11" fill="#f87171">Bis ${esc(c.planTime)}</text>`;
+    const dlk = shown.findIndex((x) => x.t.getTime() + SL * 36e5 > R.dl.getTime()); if (dlk > 0) bars += `<line x1="${pl + dlk * bw}" x2="${pl + dlk * bw}" y1="${pt}" y2="${Hh - pb}" stroke="#f87171" stroke-dasharray="4 3"/><text x="${pl + dlk * bw - 4}" y="${pt + 10}" text-anchor="end" font-size="11" fill="#f87171">Bis ${esc(eff.time)}</text>`;
     line = `<polyline points="${pts.join(" ")}" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linejoin="round"/>`;
     const win = []; Object.keys(R.sel).map(Number).sort((a, b) => a - b).forEach((i) => { const l = win[win.length - 1]; if (l && l.end === i) { l.end = i + 1; l.kwh += R.sel[i]; l.idx.push(i); } else win.push({ start: i, end: i + 1, kwh: R.sel[i], idx: [i] }); });
     const hm = (i) => tm(new Date(hrs[i].t)), hend = (i) => tm(new Date(new Date(hrs[i].t).getTime() + SL * 36e5)), wsum = (w) => { let pv = 0, co = 0; w.idx.forEach((i) => { const h = hrs[i], e = R.sel[i], s = Math.min(1, h.pv / Math.max(e / SL, 0.0001)); pv += e * s; co += e * (1 - s) * h.price / 100; }); return { s: w.kwh > 0 ? pv / w.kwh * 100 : 0, c: co }; };
@@ -3078,14 +3237,22 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow"><span>Planung aktiv<small class="mut" style="display:block">${c.planOn ? "Echte Steuerung: Die Wallbox lädt nur in den geplanten Fenstern und wird dazwischen pausiert." : "Aus: Der Plan wird nur angezeigt, die Wallbox lädt nicht danach."}</small></span><button class="sw ${c.planOn ? "on" : ""}" data-act="wbsw" data-k="planOn" aria-pressed="${!!c.planOn}" aria-label="Planung aktiv" ${adm ? "" : "disabled"}></button></div>
       ${c.planOn ? (() => { const nowI = hrs.findIndex((h) => { const t = new Date(h.t); return t <= new Date() && t.getTime() + SL * 36e5 > Date.now(); }), run = nowI >= 0 && R.sel[nowI] != null, nxt = Object.keys(R.sel).map(Number).filter((i) => i > nowI).sort((a, b) => a - b)[0], fin = R.need <= 0.05;
         return `<div class="otr"><span class="oav" style="width:36px;height:36px;background:${run ? "#2dd4bf" : "#64748b"}">${ic(run ? "energy" : "clock", 18)}</span><div class="opi"><b>${fin ? "Ziel erreicht, es wird nicht geladen" : run ? "Lädt jetzt nach Plan" : nxt != null ? "Wartet auf das nächste Ladefenster" : "Kein Ladefenster geplant"}</b><small>${fin ? "Der Ladestand liegt schon über dem Ziel." : run ? `Bis ${hend(nowI)} Uhr, ${num(R.sel[nowI], 1)} kWh geplant.` : nxt != null ? `Nächster Start um ${hm(nxt)} Uhr.` : "Das Ziel wird mit dem Ladeplan erreicht."}</small></div></div>`; })() : ""}
-      ${c.planOn && !c.enabled ? `<div class="gst on">${ic("info", 15)}Die Laderegelung ist aus. Schalte sie unter „Laden“ ein, sonst wird nichts nach Plan geladen.</div>` : ""}
-      <div class="mut sm" style="margin:6px 0 8px">Ziel: <b>${c.planSoc} %</b> bis <b>${esc(c.planTime)} Uhr</b>${soc != null ? ` · jetzt ${num(soc, 0)} %` : ""} · Ladeleistung bis ${num(pmax, 1)} kW. Ziel und Uhrzeit stellst du im Ladeplan unter „Laden“ ein.</div>
+      ${c.planOn && !c.enabled ? `<div class="gst on">${ic("info", 15)}Die Laderegelung ist aus. Schalte sie im Register „Laden“ ein, sonst wird nichts nach Plan geladen.</div>` : ""}
+      <div class="mut sm" style="margin:6px 0 8px">Ziel: <b>${eff.soc} %</b> bis <b>${esc(eff.time)} Uhr</b>${soc != null ? ` · jetzt ${num(soc, 0)} %` : ""} · Ladeleistung bis ${num(pmax, 1)} kW. ${eff.name ? `Abfahrt von <b>${esc(eff.name)}</b>, siehe unten.` : "Ziel und Uhrzeit stellst du unten unter „Standard-Abfahrt“ ein, pro Fahrzeug unten."}</div>
+      ${(() => { const wd = R.dl.getDay(), bad = (eff.days === "wk" && (wd === 0 || wd === 6)) || (eff.days === "we" && wd > 0 && wd < 6); return bad ? `<div class="gst on" style="margin:0 0 10px">${ic("info", 15)}<span>Das Ziel liegt auf ${["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"][wd]}, dafür gilt keine Abfahrt (${eff.days === "wk" ? "Mo–Fr" : "Wochenende"}). Es wird nicht nach Plan geladen, es gilt der normale Modus.</span></div>` : ""; })()}
       <div class="gschips">${chip("mix", "Sonne zuerst, dann günstig")}${chip("sun", "Nur Sonne")}${chip("price", "Günstigster Preis")}</div>
       <div class="mut sm" style="margin:2px 0 10px">${STR[P.strat]}</div>
-      ${R.left > 0.05 ? `<div class="gst on">${ic("info", 15)}Bis ${esc(c.planTime)} Uhr fehlen voraussichtlich ${num(R.left, 1)} kWh. Dann lädt der Ladeplan zum Schluss mit Netzstrom nach.</div>` : ""}
+      ${R.left > 0.05 ? `<div class="gst on">${ic("info", 15)}Bis ${esc(eff.time)} Uhr fehlen voraussichtlich ${num(R.left, 1)} kWh. Dann lädt der Ladeplan zum Schluss mit Netzstrom nach.</div>` : ""}
       <div class="wbsc"><svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="PV-Prognose in kW und Strompreis in ct/kWh für die nächsten Stunden">${g}${bars}${line}</svg></div>
       <div class="gsleg" style="margin-top:6px"><span><i style="background:#2dd4bf"></i>PV-Überschuss (kW)</span><span><i style="background:#f59e0b"></i>Strompreis (ct/kWh)</span><span><i style="background:#2dd4bf;opacity:.35;outline:1px solid #2dd4bf"></i>Geplante Ladung</span></div>
       <div class="lugrid" style="margin-top:12px">${tile("Geplant", num(R.plan.kwh, 1) + " kWh", `von ${num(R.need, 1)} kWh benötigt`)}${tile("Sonnenanteil", num(sh, 0) + " %", "erwartet")}${tile("Kosten", num(R.plan.cost, 2) + " €", "erwarteter Netzstrom")}${tile("Ersparnis", num(sav, 2) + " €", "gegenüber sofort laden")}</div></div>
+      ${this._wbCard(d, "dep")}
+      <div class="card"><h2>${ic("car", 18)}Abfahrtszeit pro Fahrzeug</h2>
+        <div class="mut sm" style="margin:0 0 8px">Jedes Fahrzeug kann sein eigenes Ziel und seine eigene Uhrzeit haben. Es gilt das Fahrzeug, das an der Karte erkannt wird. Ohne eigene Abfahrt, bei Gästen und ohne erkannte Karte gilt die Standard-Abfahrt (<b>${c.planSoc} %</b> bis <b>${esc(c.planTime)} Uhr</b>).</div>
+        ${c.vehicles.length ? c.vehicles.map((x) => { const dd = this._wbDep(x), act = veh && veh.id === x.id; return `<div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#2dd4bf">${ic("car", 20)}</span><div class="opi"><b>${esc(x.name)}</b><small>${dd.on ? `${dd.soc} % bis ${esc(dd.time)} Uhr · ${({ all: "täglich", wk: "Mo–Fr", we: "Wochenende" })[dd.days]}` : "Nutzt den Ladeplan"}</small></div>${act ? `<span class="ost home">Aktiv</span>` : ""}<button class="sw ${dd.on ? "on" : ""}" data-act="wbdsw" data-v="${x.id}" aria-pressed="${dd.on}" aria-label="Eigene Abfahrt für ${esc(x.name)}" ${adm ? "" : "disabled"}></button></div>
+          ${dd.on ? `<div class="vrow"><span>Ziel-Ladestand</span><div class="step" style="flex:none"><button data-act="wbdsoc" data-v="${x.id}" data-s="-5" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${dd.soc} %</b><button data-act="wbdsoc" data-v="${x.id}" data-s="5" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>
+          <div class="vrow"><span>Abfahrt</span><input class="osel" type="time" data-f="wbdt" data-v="${x.id}" value="${esc(dd.time)}" style="width:auto;margin:0" aria-label="Abfahrtszeit ${esc(x.name)}" ${adm ? "" : "disabled"}></div>
+          <div class="gschips">${[["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]].map(([k, t]) => `<button class="gsch ${dd.days === k ? "sel" : ""}" data-act="wbddays" data-v="${x.id}" data-k="${k}" aria-pressed="${dd.days === k}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</div>` : ""}</div>`; }).join("") : `<div class="mut sm">Lege unter „Laden“ → Fahrzeuge &amp; Karten ein Fahrzeug an, dann kannst du hier seine Abfahrtszeit einstellen.</div>`}</div>
       <div class="card"><h2>${ic("clock", 18)}Geplante Ladefenster</h2>${win.length ? `<div class="wbses">${win.map((w) => { const x = wsum(w), d0 = new Date(hrs[w.start].t), tom = d0.toDateString() !== new Date().toDateString(); return `<div class="wbse"><div><b>${hm(w.start)} – ${hend(w.end - 1)}</b><span class="mut sm">${tom ? "morgen" : "heute"} · ${SL < 1 ? num((w.end - w.start) * SL * 60, 0) + " Min." : (w.end - w.start) + " " + (w.end - w.start === 1 ? "Stunde" : "Stunden")}</span></div><div class="wbsb"><i style="width:${x.s}%"></i></div><div class="wbsv"><b>${num(w.kwh, 1)} kWh</b><span class="mut sm">${num(x.s, 0)} % Sonne · ${num(x.c, 2)} €</span></div></div>`; }).join("")}</div>` : `<div class="mut sm">Es ist keine Ladung nötig, das Ziel ist schon erreicht.</div>`}
       <div class="mut sm" style="margin:10px 0 0">Quellen: Preis ${src === "tibber" ? "Tibber" + (TB.home ? " · " + esc(TB.home) : "") : esc(F.price_src || "–")} · PV-Prognose ${pvs === "forecast" ? "Forecast.Solar" : esc(F.pv_src || "–")}. Die Vorhersage ändert sich im Laufe des Tages, der Plan wird alle paar Minuten neu berechnet.</div></div>
       <div class="card"><h2>${ic("tools", 18)}Quellen der Vorhersage</h2>
@@ -3097,10 +3264,10 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="mut sm">Forecast.Solar liefert die Werte in Home Assistant, ein Abruf pro Stunde genügt. Die kostenlose Stufe hat ein Limit von 12 Abrufen pro Stunde, das reicht für diese Planung.</div></div>`;
   }
   /* Ladestatistik: Balkendiagramm pro Tag, Anteil Sonne/Netz, Kosten */
-  _wbStT() { return this._wbTab === "stat" ? "stat" : this._wbTab === "plan" ? "plan" : "laden"; }
+  _wbStT() { return this._wbTab === "stat" ? "stat" : this._wbTab === "plan" ? "plan" : this._wbTab === "set" ? "set" : "laden"; }
   _wbTabs() {
     const t = this._wbStT(), b = (k, l, i) => `<button class="${t === k ? "sel" : ""}" data-act="wbtab" data-k="${k}" aria-pressed="${t === k}">${ic(i, 16)}${l}</button>`;
-    return `<div class="wbtabs" role="tablist">${b("laden", "Laden", "energy")}${b("plan", "Planung", "sun")}${b("stat", "Ladestatistik", "chart")}</div>`;
+    return `<div class="wbtabs" role="tablist">${b("laden", "Laden", "energy")}${b("plan", "Planung", "sun")}${b("stat", "Ladestatistik", "chart")}${b("set", "Einstellungen", "sliders")}</div>`;
   }
   _wbStatLoad(force) {
     if (!this._hass || this._wbStBusy) return;
@@ -3126,8 +3293,8 @@ class FensterHeizungPanel extends HTMLElement {
     const PAL = ["#2dd4bf", "#f59e0b", "#a78bfa", "#60a5fa", "#f472b6", "#a3e635"], SRC = ["#2dd4bf", "#f59e0b"];
     const series = byV ? vehs.map((n, i) => ({ id: n, name: n, col: PAL[i % PAL.length] })) : kosten ? [{ id: "grid", name: "Netzkosten", col: "#f59e0b" }] : [{ id: "pv", name: "Sonne", col: SRC[0] }, { id: "grid", name: "Netz", col: SRC[1] }];
     slots.forEach((s) => { s.v = series.map(() => 0); });
-    let tot = { kwh: 0, pv: 0, grid: 0, cost: 0, full: 0 };
-    days.forEach((r) => { const i = ix[r.d.slice(0, klen)]; if (i == null) return; tot.pv += r.pv; tot.grid += r.grid; tot.cost += r.cost; tot.full += r.full || 0; tot.kwh += r.pv + r.grid;
+    let tot = { kwh: 0, pv: 0, grid: 0, cost: 0, full: 0, km: 0 };
+    days.forEach((r) => { const i = ix[r.d.slice(0, klen)]; if (i == null) return; tot.pv += r.pv; tot.grid += r.grid; tot.cost += r.cost; tot.full += r.full || 0; tot.km += r.km || 0; tot.kwh += r.pv + r.grid;
       series.forEach((se, j) => { slots[i].v[j] += byV ? ((r.veh || {})[se.id] ? (kosten ? r.veh[se.id].cost : r.veh[se.id].kwh) : 0) : se.id === "pv" ? r.pv : kosten ? r.cost : r.grid; }); });
     const mx = Math.max(...slots.map((s) => s.v.reduce((a, b) => a + b, 0)), 0.1), step = enStep(mx), top = Math.ceil(mx / step) * step, W = 640, Hh = 210, pl = 34, pb = 22, n = slots.length, bw = (W - pl) / n, bar = Math.min(bw * 0.66, 30);
     const unit = kosten ? "€" : "kWh"; let grid = "", bars = "";
@@ -3147,13 +3314,17 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="wbst"><b>${kosten ? "Ladekosten" : "Geladene Energie"}</b> <span class="mut">${kosten ? num(tot.cost, 2) + " € gesamt" : num(tot.kwh, 1) + " kWh gesamt"} · ${num(share, 0)} % Sonne</span></div>
       <div class="wbsc"><svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="${kosten ? "Ladekosten in Euro" : "Geladene Energie in kWh"} pro ${S.per === "m" ? "Tag" : S.per === "y" ? "Monat" : "Jahr"}">${grid}${bars}</svg></div>
       <div class="gsleg" style="margin-top:6px">${series.map((se) => `<span><i style="background:${se.col}"></i>${esc(se.name)} <b>${byV ? "" : num(se.id === "pv" ? tot.pv : kosten ? tot.cost : tot.grid, kosten ? 2 : 1) + " " + unit}</b></span>`).join("")}<span class="mut">${unit} pro ${S.per === "m" ? "Tag" : S.per === "y" ? "Monat" : "Jahr"}</span></div>
-      <div class="lugrid" style="margin-top:12px">${tile("Geladen", num(tot.kwh, 1) + " kWh", `${num(tot.pv, 1)} kWh Sonne · ${num(tot.grid, 1)} kWh Netz`)}${tile("Sonnenanteil", num(share, 0) + " %", "der geladenen Energie")}${tile("Kosten", num(tot.cost, 2) + " €", "nur Netzstrom")}${tile("Ø Preis", tot.kwh > 0 ? num(ppk * 100, 1) + " ct/kWh" : "–", fullGrid != null ? `Ersparnis ${num(saved, 2)} € durch Sonne` : "Preis aus Modul 1")}</div>
+      <div class="lugrid" style="margin-top:12px">${tile("Geladen", num(tot.kwh, 1) + " kWh", `${num(tot.pv, 1)} kWh Sonne · ${num(tot.grid, 1)} kWh Netz`)}${tile("Sonnenanteil", num(share, 0) + " %", "der geladenen Energie")}${tile("Kosten", num(tot.cost, 2) + " €", "nur Netzstrom")}${tile("Ø Preis", tot.kwh > 0 ? num(ppk * 100, 1) + " ct/kWh" : "–", fullGrid != null ? `Ersparnis ${num(saved, 2)} € durch Sonne` : "Preis aus Modul 1")}${tile("Ø Verbrauch", tot.km > 0 ? num(tot.kwh / tot.km * 100, 1) + " kWh/100 km" : "–", tot.km > 0 ? `${num(tot.km, 0)} km laut Kilometerstand` : "braucht den Kilometerstand-Sensor")}${tile("CO₂ gespart", num(tot.pv * 0.38, 0) + " kg", "Sonne statt Netz-Mix (0,38 kg/kWh)")}</div>
+      <div class="foot2" style="margin-top:10px"><button class="btn2" data-act="wbcsv">${ic("check", 16)} Als CSV exportieren</button></div>
       <div class="mut sm" style="margin:10px 0 0">Sonne = Überschuss und Hausbatterie, Netz = Bezug vom Netzanschluss. Die Aufteilung wird alle 10 Sekunden aus Ladeleistung und Netzbezug berechnet. Kosten = Netzstrom × Preis zum Zeitpunkt des Ladens.</div></div>
       <div class="card"><h2>${ic("clock", 18)}Letzte Ladevorgänge</h2>${ses.length ? `<div class="wbses">${ses.map((r) => `<div class="wbse"><div><b>${esc(r.veh || "Unbekannt")}</b><span class="mut sm">${fd(r.start)} · ${num(r.min / 60, 1)} h</span></div><div class="wbsb"><i style="width:${r.kwh > 0 ? r.pv / r.kwh * 100 : 0}%"></i></div><div class="wbsv"><b>${num(r.kwh, 1)} kWh</b><span class="mut sm">${num(r.kwh > 0 ? r.pv / r.kwh * 100 : 0, 0)} % Sonne · ${num(r.cost, 2)} €</span></div></div>`).join("")}</div>` : `<div class="mut sm">In diesem Zeitraum gab es keine Ladevorgänge.</div>`}</div>`;
   }
   _wbStAct(a, b) {
     const S = this._wbStS(), k = b.dataset.k;
     if (a === "wbtab") this._wbTab = k;
+    else if (a === "wbsec") { this._wbSecO = { ...this._wbSecS(), [k]: !this._wbSecS()[k] }; this._wbSecSave(); }
+    else if (a === "wbsecall") { this._wbSecO = Object.fromEntries(["wb", "reg", "veh", "bat", "grd", "ntf"].map((x) => [x, k === "1"])); this._wbSecSave(); }
+    else if (a === "wbgo") { this._wbTab = "set"; this._wbSecO = { ...this._wbSecS(), [k]: true }; this._wbSecSave(); }
     else if (a === "wbplan") this._wbSave({ planStrat: k });
     else if (a === "wbsrc") { this._wbSave({ planSrc: k }); }
     else if (a === "wbpv") { this._wbSave({ pvSrc: k }); }
@@ -3164,12 +3335,13 @@ class FensterHeizungPanel extends HTMLElement {
     this._render();
   }
   /* Laderegelung der Wallbox in Modul 8 (Modus, Ladeplan, Schwellen; angelehnt an das Prinzip von evcc) */
-  _wbCard(d) {
+  _wbCard(d, part) {
     this._wbLoad();
     const s = this._wbSnap(), c = s.cfg, i = s.info, w = s.want, adm = this._admin(), soc = d.soc != null ? d.soc : s.soc;
     if (!c.ip) return `<div class="card lusoon">${ic("energy", 26)}<div><b>Laderegelung</b><span class="mut">Verbinde zuerst deine Wallbox unter Einstellungen → Integrationen.</span></div>${adm ? `<button class="btn2 pri" data-act="igopen" style="flex:none">Integrationen</button>` : ""}</div>`;
     const modes = [["off", "Aus", "close"], ["pv", "Sonne", "sun"], ["minpv", "Sonne + Netz", "bolt"], ["now", "Voll", "energy"]];
-    const info = { off: "Es wird nicht geladen.", pv: "Lädt nur mit Überschuss aus der Solaranlage. Ohne Überschuss pausiert die Ladung.", minpv: "Lädt immer mit dem Mindeststrom und nutzt zusätzlich den PV-Überschuss.", now: "Lädt sofort mit dem eingestellten Höchststrom, unabhängig von der Sonne." }[c.mode];
+    const wsn = s.who, wveh = wsn && wsn.kind === "vehicle" ? c.vehicles.find((x) => x.name === wsn.name) : null, em = wsn ? (wveh ? wveh.mode : wsn.kind === "guest" ? c.guest.mode : c.mode) : c.mode;
+    const info = { off: "Es wird nicht geladen.", pv: "Lädt nur mit Überschuss aus der Solaranlage. Ohne Überschuss pausiert die Ladung.", minpv: "Lädt immer mit dem Mindeststrom und nutzt zusätzlich den PV-Überschuss.", now: "Lädt sofort mit dem eingestellten Höchststrom, unabhängig von der Sonne." }[em];
     const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
     const stp = (lab, key, val, unit, step, hint) => `<div class="vrow"><span>${lab}${hint ? `<small class="mut" style="display:block">${hint}</small>` : ""}</span><div class="step" style="flex:none"><button data-act="wbstep" data-k="${key}" data-s="${-step}" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${val} ${unit}</b><button data-act="wbstep" data-k="${key}" data-s="${step}" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>`;
     const sw = (lab, key, on, hint) => `<div class="vrow"><span>${lab}${hint ? `<small class="mut" style="display:block">${hint}</small>` : ""}</span><button class="sw ${on ? "on" : ""}" data-act="wbsw" data-k="${key}" aria-pressed="${on}" aria-label="${lab}" ${adm ? "" : "disabled"}></button></div>`;
@@ -3177,52 +3349,72 @@ class FensterHeizungPanel extends HTMLElement {
     const hhmm = (iso) => { const t = iso ? new Date(iso) : null; return t && isFinite(t) ? t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : ""; };
     const pw = i.power != null ? wfmt(i.power) : "–", pl = s.plan || {};
     const status = !s.ok ? ["Nicht erreichbar", s.error || "keine Antwort"] : c.enabled ? [i.car_text || "–", (w.state === "pausiert" ? "Regelung pausiert" : w.state === "pv" ? "Lädt mit PV-Überschuss" : w.state === "voll" ? "Lädt mit voller Leistung" : w.state === "minpv" ? "Mindeststrom plus PV" : w.state === "wartet" ? "Wartet auf Überschuss" : w.state === "plan_wartet" ? "Wartet auf das Ladefenster" : w.state === "gesperrt" ? "Wartet auf eine Karte" : w.state === "limit" ? "Ladelimit erreicht" : w.state === "fertig" ? "Fertig geladen" : "Wallbox ist aus")] : [i.car_text || "–", "Regelung ist aus"];
-    return `<div class="card ocard"><h2>${ic("energy", 18)}Wallbox · ${esc(i.name || i.type || "go-e Charger")}</h2>
+    const sec = (k, ico, t, sm, b, wn) => this._wbSec(k, ico, t, sm, b, wn), X = this._wbxParts(), nv = c.vehicles.length, nc = ((i && i.cards) || []).length, nt = Object.values(c.notify || {}).filter((v) => v === true).length;
+    const mainCard = `<div class="card ocard"><h2>${ic("energy", 18)}Wallbox · ${esc(i.name || i.type || "go-e Charger")}</h2>
         ${sw("Laderegelung aktiv", "wbon", c.enabled, c.enabled ? "Strom &amp; Wärme steuert Start, Ladestrom und Phasen." : "Aus: Es wird nichts an der Wallbox verändert.")}
-        <div class="seg3 wbm" style="grid-template-columns:repeat(4,1fr)">${modes.map(([k, l, ic_]) => `<button class="${c.mode === k ? "sel" : ""}" data-act="wbset" data-key="mode" data-k="${k}" ${adm && !c.planOn ? "" : "disabled"}>${ic(ic_, 22)}${l}</button>`).join("")}</div>
-        <div class="mut sm" style="margin:-2px 0 10px">${c.planOn ? "Die <b>Planung</b> steuert die Wallbox. Der Modus gilt wieder, wenn du sie im Register „Planung“ ausschaltest." : info}</div>
+        <div class="seg3 wbm" style="grid-template-columns:repeat(4,1fr)">${modes.map(([k, l, ic_]) => `<button class="${em === k ? "sel" : ""}" data-act="wbmode" data-k="${k}" aria-pressed="${em === k}" ${adm && !c.planOn ? "" : "disabled"}>${ic(ic_, 22)}${l}</button>`).join("")}</div>
+        <div class="mut sm" style="margin:-2px 0 10px">${c.planOn ? "Die <b>Planung</b> steuert die Wallbox. Der Modus gilt wieder, wenn du sie im Register „Planung“ ausschaltest." : info + " " + (wsn ? (wveh ? `Gilt für <b>${esc(wveh.name)}</b> (Karte ${esc(String(wsn.card))}).` : "Gilt für das Gastfahrzeug.") : "Gilt, solange kein Fahrzeug an einer Karte erkannt wird.")}</div>
         <div class="lugrid">${tile("Status", esc(status[0]), esc(status[1]))}${tile("Ladeleistung", pw, i.cur != null ? `${num(i.cur, 0)} A · ${i.phases || "–"} ${i.phases === 1 ? "Phase" : "Phasen"}` : "–")}${tile("PV-Überschuss", w.surplus_w != null ? wfmt(w.surplus_w) : "–", c.enabled ? "aus dem Netz-Sensor (Modul 3 oder 1)" : "bei aktiver Regelung")}${tile("Ladestand", soc != null ? num(soc, 0) + " %" : "–", soc != null ? `Limit ${c.limit} %` : "kein Sensor gewählt")}</div>
         ${c.enabled && w.reason ? `<div class="gst">${ic("info", 15)}${esc(w.reason)}</div>` : ""}
-        ${i.session_wh != null ? `<div class="mut sm" style="margin-top:6px">Diese Ladung: ${num(i.session_wh / 1000, 1)} kWh · gesamt ${i.total_wh != null ? num(i.total_wh / 1000, 0) + " kWh" : "–"} · Firmware ${esc(i.fw || "–")}</div>` : ""}</div>
-      <div class="card ocard"><h2>${ic("clock", 18)}Ladeplan</h2>
-        ${sw("Ziel zu einer Uhrzeit", "plan", c.plan, "Zum Beispiel: Morgens um 7 Uhr auf 80 % geladen. Braucht den Ladestand-Sensor des Fahrzeugs.")}
-        ${c.plan ? `${stp("Ziel-Ladestand", "planSoc", c.planSoc, "%", 5)}
-        <div class="vrow"><span>Bis</span><input class="osel" type="time" data-f="wbtime" value="${esc(c.planTime)}" style="width:auto;margin:0" aria-label="Uhrzeit" ${adm ? "" : "disabled"}></div>${chips("planDays", [["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]], c.planDays)}
-        <div class="gst">${ic("clock", 15)}<span>${soc == null ? "Ohne Ladestand-Sensor ist keine Planung möglich (Fahrzeug einrichten)." : pl.need_kwh > 0 && pl.start ? `Es fehlen etwa <b>${num(pl.need_kwh, 0)} kWh</b>. Reicht die Sonne bis ${esc(c.planTime)} nicht, startet die Wallbox spätestens um <b>${hhmm(pl.start)} Uhr</b> mit Netzstrom.` : pl.need_kwh > 0 ? "Für diesen Tag ist keine Ladung geplant." : "Das Ziel ist schon erreicht."}</span></div>` : ""}</div>
-      <div class="card ocard"><h2>${ic("sliders", 18)}Regelung</h2>
+        ${i.session_wh != null ? `<div class="mut sm" style="margin-top:6px">Diese Ladung: ${num(i.session_wh / 1000, 1)} kWh · gesamt ${i.total_wh != null ? num(i.total_wh / 1000, 0) + " kWh" : "–"} · Firmware ${esc(i.fw || "–")}</div>` : ""}</div>`;
+    const logCard = `<div class="card ocard"><h2>${ic("list", 18)}Letzte Entscheidungen</h2>${s.log.length ? `<div class="rev">${s.log.slice(0, this._wbLogAll ? 12 : 4).map((e) => `<div style="--c:var(--teal)"><time>${hhmm(e.t)}</time><i></i><span>${esc(e.x)}</span></div>`).join("")}${s.log.length > 4 ? `<button class="lnk" data-act="wblog" style="margin-top:6px">${this._wbLogAll ? "Weniger anzeigen" : `Alle ${Math.min(12, s.log.length)} anzeigen`}</button>` : ""}</div>` : `<div class="mut sm">Noch nichts. Hier steht, wann die Regelung die Wallbox umgestellt hat und warum.</div>`}</div>`;
+    const regBody = `<div class="lsec">${ic("energy", 15)}Ladestrom</div>
         ${stp("Mindest-Ladestrom", "minA", c.minA, "A", 1, "Darunter lädt das Auto nicht (6 bis 16 A)")}${stp("Höchster Ladestrom", "maxA", c.maxA, "A", 1)}
-        <div class="mut sm" style="margin-top:8px">Phasenumschaltung</div>${chips("ph", [["auto", "Automatisch"], ["1", "1 Phase"], ["3", "3 Phasen"]], c.ph)}
+        <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Phasenumschaltung</div>${chips("ph", [["auto", "Automatisch"], ["1", "1 Phase"], ["3", "3 Phasen"]], c.ph)}
         <div class="mut sm">Automatisch: Bei wenig Sonne 1 Phase (ab ${wfmt(230 * c.minA)}), bei viel Sonne 3 Phasen (ab ${wfmt(230 * 3 * c.minA)}). Die Umschaltung erfolgt höchstens alle 10 Minuten.</div>
+        <div class="lsec" style="margin-top:12px">${ic("sun", 15)}Start und Stopp bei Sonne</div>
         ${stp("Starten ab Überschuss", "startW", wfmt(c.startW), "", 100)}${stp("Start nach", "onMin", c.onMin, "Min.", 1, "Der Überschuss muss so lange da sein")}${stp("Stopp nach", "offMin", c.offMin, "Min.", 1, "Verhindert ständiges Ein- und Ausschalten bei Wolken")}
-        ${stp("Laden bis Ladestand", "limit", c.limit, "%", 5, "Braucht den Ladestand-Sensor des Fahrzeugs")}${stp("Akkukapazität", "cap", c.cap, "kWh", 5, "Für die Berechnung des Ladeplans")}</div>
-      ${this._rfCard()}
-      <div class="card ocard"><h2>${ic("home", 18)}Hausbatterie und Strompreis</h2>
-        ${sw("Hausbatterie zuerst laden", "batOn", c.batOn, "Das Auto bekommt erst Überschuss, wenn die Batterie voll genug ist (Ladestand-Sensor in Modul 1)")}
+        <div class="lsec" style="margin-top:12px">${ic("car", 15)}Fahrzeug</div>
+        ${stp("Laden bis Ladestand", "limit", c.limit, "%", 5, "Braucht den Ladestand-Sensor des Fahrzeugs")}${stp("Akkukapazität", "cap", c.cap, "kWh", 5, "Für die Berechnung des Ladeplans")}`;
+    const batBody = `${sw("Hausbatterie zuerst laden", "batOn", c.batOn, "Das Auto bekommt erst Überschuss, wenn die Batterie voll genug ist (Ladestand-Sensor in Modul 1)")}
         ${c.batOn ? stp("Batterie mindestens", "batSoc", c.batSoc, "%", 5) : ""}
         ${sw("Netzstrom nur bei günstigem Preis", "priceOn", c.priceOn, "Braucht einen Preis-Sensor (dynamischer Tarif) in Modul 1")}
-        ${c.priceOn ? stp("Höchster Preis", "priceMax", c.priceMax, "ct/kWh", 1) : ""}</div>
-      <div class="card ocard"><h2>${ic("list", 18)}Letzte Entscheidungen</h2>${s.log.length ? `<div class="rev">${s.log.slice(0, 12).map((e) => `<div style="--c:var(--teal)"><time>${hhmm(e.t)}</time><i></i><span>${esc(e.x)}</span></div>`).join("")}</div>` : `<div class="mut sm">Noch nichts. Hier steht, wann die Regelung die Wallbox umgestellt hat und warum.</div>`}</div>`;
+        ${c.priceOn ? stp("Höchster Preis", "priceMax", c.priceMax, "ct/kWh", 1) : ""}`;
+    const depCard = `<div class="card ocard"><h2>${ic("clock", 18)}Standard-Abfahrt</h2>
+        <div class="mut sm" style="margin:0 0 8px">Gilt für alle Fahrzeuge ohne eigene Abfahrt, für Gäste und ohne erkannte Karte. Braucht den Ladestand-Sensor des Fahrzeugs.</div>
+        ${stp("Ziel-Ladestand", "planSoc", c.planSoc, "%", 5)}
+        <div class="vrow"><span>Bis</span><input class="osel" type="time" data-f="wbtime" value="${esc(c.planTime)}" style="width:auto;margin:0" aria-label="Uhrzeit" ${adm ? "" : "disabled"}></div>${chips("planDays", [["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]], c.planDays)}
+        ${sw("Spätestens mit Netzstrom nachladen", "plan", c.plan, "Reicht die Sonne nicht, startet die Wallbox im Modus „Sonne“ zur berechneten Zeit mit Netzstrom. Die Planung nach Preis und Sonne ersetzt das, wenn sie aktiv ist.")}
+        <div class="gst">${ic("clock", 15)}<span>${soc == null ? "Ohne Ladestand-Sensor ist keine Planung möglich (Fahrzeug einrichten)." : pl.need_kwh > 0 && pl.start ? `Es fehlen etwa <b>${num(pl.need_kwh, 0)} kWh</b>. Reicht die Sonne bis ${esc(c.planTime)} nicht, startet die Wallbox spätestens um <b>${hhmm(pl.start)} Uhr</b> mit Netzstrom.` : pl.need_kwh > 0 ? "Für diesen Tag ist keine Ladung geplant." : "Das Ziel ist schon erreicht."}</span></div></div>`;
+    if (part === "dep") return depCard;
+    if (part === "set") return `${this._wbCheck()}<div class="wsall"><span class="mut sm">Tippe auf einen Bereich, um ihn zu öffnen.</span><span><button class="lnk" data-act="wbsecall" data-k="1">Alle öffnen</button><button class="lnk" data-act="wbsecall" data-k="0">Alle schließen</button></span></div>
+      ${sec("wb", "energy", "Wallbox und Verbindung", `${esc(i.name || i.type || "go-e Charger")} · ${esc(c.ip)}${s.ok ? "" : " · nicht erreichbar"}`, `<div class="lugrid">${tile("Gerät", esc(i.type || "go-e Charger"), esc(i.name || "–"))}${tile("Adresse", esc(c.ip), s.ok ? "erreichbar" : "nicht erreichbar")}${tile("Firmware", esc(i.fw || "–"), i.serial ? "Seriennr. " + esc(i.serial) : "–")}${tile("Gesamt geladen", i.total_wh != null ? num(i.total_wh / 1000, 0) + " kWh" : "–", "seit Inbetriebnahme")}</div>
+        <div class="mut sm" style="margin:8px 0">Die Verbindung zur Wallbox richtest du unter Einstellungen → Integrationen ein, dort auch Tibber.</div><div style="display:flex;gap:8px;flex-wrap:wrap">${adm ? `<button class="btn2" data-act="wbtest" ${this._wbTest && this._wbTest.busy ? "disabled" : ""}>${ic("check", 16)} Verbindung testen</button><button class="btn2" data-act="igopen">${ic("tools", 16)} Verbindung ändern</button>` : ""}</div>${this._wbTest && !this._wbTest.busy ? `<div class="gst ${this._wbTest.ok ? "" : "on"}" style="margin-top:8px">${ic(this._wbTest.ok ? "check" : "info", 15)}<span>${this._wbTest.ok ? `Verbindung steht: ${esc(this._wbTest.type || "go-e Charger")}, Firmware ${esc(this._wbTest.fw || "–")}.` : esc(this._wbTest.error || "Keine Antwort")}</span></div>` : ""}`, !s.ok)}
+      ${sec("reg", "sliders", "Laderegelung", `${c.minA} bis ${c.maxA} A · Phasen ${c.ph === "auto" ? "automatisch" : c.ph} · Limit ${c.limit} %`, regBody)}
+      ${sec("veh", "car", "Fahrzeuge und Karten", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"} · ${nc} ${nc === 1 ? "Karte" : "Karten"}${c.lock ? " · nur mit Karte" : ""}`, this._rfCard(true), !nv || c.vehicles.some((x) => !x.ids.length))}
+      ${sec("bat", "home", "Hausbatterie und Strompreis", `Batterie ${c.batOn ? "zuerst bis " + c.batSoc + " %" : "egal"} · Preisgrenze ${c.priceOn ? c.priceMax + " ct" : "aus"}`, batBody)}
+      ${sec("grd", "shield", "Hausanschluss-Schutz", c.guard.on ? `An · höchstens ${c.guard.maxA} A pro Phase` : "Aus", X.guard)}
+      ${sec("ntf", "bell", "Benachrichtigungen", nt ? `${nt} von 5 Meldungen · ${c.notify.to.length ? c.notify.to.map((x) => esc(x.replace("notify.", ""))).join(", ") : "kein Empfänger"}` : "Aus", X.notify)}`;
+    return `${mainCard}
+      <div class="card ocard"><h2>${ic("energy", 18)}Schnellstart</h2>${X.quick}</div>
+      ${logCard}`;
   }
   /* Fahrzeuge und Karten (nach dem Vorbild von evcc): Das Fahrzeug wird an der Karte erkannt, die an der Wallbox angelegt wird. */
-  _rfCard() {
+  _rfCard(bare) {
     const sn = this._wbSnap(), c = sn.cfg, adm = this._admin(), cards = (sn.info && sn.info.cards) || [], who = sn.who || null;
     const nm = (i) => (cards.find((x) => x.i === i) || {}).n || `Karte ${i}`;
     const MODES = [["off", "Aus"], ["pv", "Sonne"], ["minpv", "Sonne + Netz"], ["now", "Voll"]], ML = Object.fromEntries(MODES);
     const mode = (id, cur) => `<div class="gschips" style="margin:6px 0">${MODES.map(([k, l]) => `<button class="gsch ${cur === k ? "sel" : ""}" data-act="wbrmode" data-v="${id}" data-k="${k}" aria-pressed="${cur === k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}</div>`;
     const lim = (id, val) => `<div class="vrow"><span>Ladelimit</span><div class="step" style="flex:none"><button data-act="wbrlim" data-v="${id}" data-s="-5" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${val} %</b><button data-act="wbrlim" data-v="${id}" data-s="5" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>`;
     const used = new Set(c.vehicles.flatMap((x) => x.ids));
+    const owner = (i) => c.vehicles.find((x) => x.ids.includes(i)), E = this._evState(), evName = [E.brand === "Andere" ? "" : E.brand, E.model].filter(Boolean).join(" ").trim(), canTake = adm && evName && c.vehicles.length < 6 && !c.vehicles.some((x) => x.name === evName);
+    const assign = `<div class="rfa"><div class="lsec">${ic("shield", 15)}Karten zuordnen</div><div class="mut sm" style="margin:2px 0 6px">Pro Fahrzeug sind beliebig viele Karten möglich. Jede Karte gehört aber nur zu einem Fahrzeug.</div>
+      ${canTake ? `<button class="btn2" data-act="wbrfromev" style="margin:4px 0 8px">${ic("car", 16)} Fahrzeug aus den Einstellungen übernehmen: ${esc(evName)}</button>` : ""}
+      ${cards.length ? cards.map((k) => { const o = owner(k.i), act = who && who.card === k.i; return `<div class="rfc"><div class="rfn"><b>${esc(k.n)}</b>${act ? `<span class="ost home">Aktiv</span>` : ""}<small class="mut">Karte ${k.i} · ${num(k.kwh, 0)} kWh geladen · ${o ? "gehört zu " + esc(o.name) : "keinem Fahrzeug zugeordnet (Gast)"}</small></div>
+        ${c.vehicles.length ? `<div class="gschips" style="margin:4px 0 0">${c.vehicles.map((x) => `<button class="gsch ${o && o.id === x.id ? "sel" : ""}" data-act="wbrassign" data-v="${x.id}" data-k="${k.i}" aria-pressed="${!!(o && o.id === x.id)}" ${adm ? "" : "disabled"}>${esc(x.name)}</button>`).join("")}</div>` : `<div class="mut sm">Lege zuerst ein Fahrzeug an.</div>`}</div>`; }).join("") : `<div class="mut sm">Es wurden noch keine Karten von der Wallbox gelesen. Lege sie in der go-e-App an (Einstellungen → Zugang → RFID-Karten).</div>`}</div>`;
     const veh = c.vehicles.map((x) => `<div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#14b8a6">${ic("car", 20)}</span><div class="opi"><b>${esc(x.name)}</b><small>${x.ids.length ? "Erkannt an: " + x.ids.map((i) => esc(nm(i))).join(", ") : "Noch keine Kennung zugeordnet"}</small></div>${adm ? `<button class="ibtn" data-act="wbrvdel" data-v="${x.id}" aria-label="Fahrzeug entfernen">${ic("trash", 16)}</button>` : ""}</div>
       <div class="mut sm" style="margin-top:8px">Kennungen (Karten aus der Wallbox)</div>
       <div class="gschips" style="margin:6px 0">${x.ids.map((i) => `<button class="gsch sel" data-act="wbrrm" data-v="${x.id}" data-k="${i}" aria-label="${esc(nm(i))} entfernen" ${adm ? "" : "disabled"}>${esc(nm(i))} ${ic("close", 12)}</button>`).join("")}</div>
-      <select class="osel" data-f="wbradd" data-v="${x.id}" aria-label="Kennung hinzufügen" ${adm ? "" : "disabled"}><option value="">+ Kennung hinzufügen …</option>${cards.map((k) => (used.has(k.i) ? "" : `<option value="${k.i}">${esc(k.n)} (Karte ${k.i})</option>`)).join("")}</select>
+      ${cards.some((k) => !used.has(k.i)) ? `<div class="mut sm" style="margin-top:4px">Freie Karten antippen, um sie diesem Fahrzeug zuzuordnen</div><div class="gschips" style="margin:6px 0">${cards.filter((k) => !used.has(k.i)).map((k) => `<button class="gsch" data-act="wbrcadd" data-v="${x.id}" data-k="${k.i}" aria-label="${esc(k.n)} zuordnen" ${adm ? "" : "disabled"}>${ic("plus", 12)} ${esc(k.n)}</button>`).join("")}</div>` : (cards.length ? `<div class="mut sm" style="margin-top:4px">Alle Karten der Wallbox sind zugeordnet.</div>` : `<div class="mut sm" style="margin-top:4px">Es sind noch keine Karten in der go-e-App angelegt.</div>`)}
       <div class="mut sm" style="margin-top:8px">Modus, sobald das Fahrzeug erkannt wird</div>${mode(x.id, x.mode)}${lim(x.id, x.limit)}</div>`).join("");
     const st = !sn.ok ? ["Wallbox nicht erreichbar", sn.error || "keine Antwort"]
       : !who ? ["Keine Kennung erkannt", c.lock ? "Strom & Wärme verändert nichts, bis eine Karte angelegt wird." : "Es gilt der Modus der Laderegelung oben."]
       : who.kind === "vehicle" ? [`Erkannt: ${who.name} (Karte „${nm(who.card)}“)`, `Die Regelung arbeitet im Modus „${ML[who.mode]}“ mit Ladelimit ${who.limit} %.`]
       : [`Erkannt: Gastfahrzeug (Karte „${nm(who.card)}“)`, `Die Karte ist keinem Fahrzeug zugeordnet. Es gilt der Modus „${ML[who.mode]}“.`];
-    return `<div class="card ocard"><h2>${ic("car", 18)}Fahrzeuge &amp; Karten</h2>
+    return `${bare ? "<div>" : `<div class="card ocard"><h2>${ic("car", 18)}Fahrzeuge &amp; Karten</h2>`}
       <div class="mut sm" style="margin-bottom:8px">Wie bei evcc wird das Fahrzeug an der Karte erkannt, die an der Wallbox angelegt wird. Als Kennung dient der Kartenname aus der go-e-App. Eine Karte gehört zu genau einem Fahrzeug, ein Fahrzeug kann mehrere Karten haben.</div>
       <div class="gst" style="margin:0 0 10px">${ic(who ? "check" : "info", 15)}<span><b>${esc(st[0])}</b><br>${esc(st[1])}</span></div>
+      ${assign}
       ${veh}
       ${adm && c.vehicles.length < 6 ? `<button class="lnk" data-act="wbrvadd">${ic("plus", 16)}Fahrzeug hinzufügen</button>` : ""}
       <div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#64748b">${ic("user", 20)}</span><div class="opi"><b>Gastfahrzeug</b><small>Unbekannte Karte</small></div></div>${mode("guest", c.guest.mode)}${lim("guest", c.guest.limit)}</div>
@@ -3237,15 +3429,22 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "wbrmode") upd((x) => ({ ...x, mode: k }));
     else if (a === "wbrlim") upd((x) => ({ ...x, limit: Math.max(50, Math.min(100, x.limit + Number(b.dataset.s))) }));
     else if (a === "wbrrm") upd((x) => ({ ...x, ids: x.ids.filter((i) => i !== Number(k)) }));
+    else if (a === "wbrcadd" || a === "wbrassign") { const n = Number(k), has = (c.vehicles.find((x) => x.id === id) || { ids: [] }).ids.includes(n); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? { ...x, ids: has ? x.ids.filter((i) => i !== n) : [...x.ids, n] } : { ...x, ids: x.ids.filter((i) => i !== n) })) }, true); }
+    else if (a === "wbrfromev") { const E = this._evState(), nm2 = [E.brand === "Andere" ? "" : E.brand, E.model].filter(Boolean).join(" ").trim().slice(0, 30); if (nm2) this._wbSave({ vehicles: [...c.vehicles, { id: "v" + Date.now().toString(36), name: nm2, ids: [], mode: "pv", limit: 80 }] }, true); }
     else if (a === "wbrvadd") { const n = c.vehicles.length + 1; this._wbSave({ vehicles: [...c.vehicles, { id: "v" + Date.now().toString(36), name: "Fahrzeug " + n, ids: [], mode: "pv", limit: 80 }] }, true); }
     else if (a === "wbrvdel") this._wbSave({ vehicles: c.vehicles.filter((x) => x.id !== id) }, true);
     this._render();
   }
   _wbAct(a, b) {
     if (a.startsWith("wbr")) return this._rfAct(a, b);
-    if (a === "wbtab" || a === "wbplan" || a === "wbsrc" || a === "wbpv" || a === "wbsper" || a === "wbswhat" || a === "wbsby" || a === "wbnav") return this._wbStAct(a, b);
+    if (a.startsWith("wbx") || a === "wbcsv") return this._wbxAct(a, b);
+    if (a.startsWith("wbd")) return this._wbdAct(a, b);
+    if (a === "wbtab" || a === "wbsec" || a === "wbsecall" || a === "wbgo" || a === "wbplan" || a === "wbsrc" || a === "wbpv" || a === "wbsper" || a === "wbswhat" || a === "wbsby" || a === "wbnav") return this._wbStAct(a, b);
+    if (a === "wbtest") { this._wbTest = { busy: true }; this._render(); this._hass.callWS({ type: "fenster_heizung/wb_test", ip: this._wb().ip }).then((r) => { this._wbTest = r || { ok: false, error: "Keine Antwort" }; }).catch(() => { this._wbTest = { ok: false, error: "Keine Antwort von Home Assistant" }; }).finally(() => this._render()); return; }
+    if (a === "wblog") { this._wbLogAll = !this._wbLogAll; this._render(); return; }
     const c = this._wb(), k = b.dataset.k, R = { minA: [6, 16], maxA: [6, 16], startW: [500, 8000], onMin: [0, 15], offMin: [0, 30], limit: [50, 100], planSoc: [20, 100], cap: [10, 120], batSoc: [0, 100], priceMax: [1, 80], baseW: [0, 3000] };
-    if (a === "wbset") this._wbSave({ [b.dataset.key]: k });
+    if (a === "wbmode") { const who = this._wbSnap().who, v = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.name === who.name) : null; if (v) this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === v.id ? { ...x, mode: k } : x)) }); else if (who && who.kind === "guest") this._wbSave({ guest: { ...c.guest, mode: k } }); else this._wbSave({ mode: k }); }
+    else if (a === "wbset") this._wbSave({ [b.dataset.key]: k });
     else if (a === "wbsw" && k === "wbon") { if (c.enabled) this._wbSave({ enabled: false }, true); else { this._modal = { type: "wbon" }; this._renderModal(); return; } }
     else if (a === "wbsw") this._wbSave({ [k]: !c[k] });
     else if (a === "wbstep") { const r = R[k], v = Math.max(r[0], Math.min(r[1], c[k] + Number(b.dataset.s))), p = { [k]: v }; if (k === "minA" && c.maxA < v) p.maxA = v; if (k === "maxA" && c.minA > v) p.minA = v; this._wbSave(p); }
@@ -3259,7 +3458,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="gst">${ic("info", 15)}Tipp für den ersten Test: Modus „Aus“ lassen, dann „Voll“ mit niedrigem Höchststrom (zum Beispiel 6 A) und die Wirkung in der go-e-App beobachten.</div>
       <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="wbyes">Einschalten</button></div></div>`;
   }
-  _wbChange(t) { const f = t.dataset.f; if (f === "wbradd") { const c = this._wb(); if (t.value) { this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, ids: [...x.ids, Number(t.value)] } : x)) }, true); this._render(); } return true; } if (f === "wbtime") { this._wbSave({ planTime: t.value || "07:00" }); this._render(); return true; } return false; }
+  _wbChange(t) { const f = t.dataset.f; if (f === "wbdt") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), time: t.value } } : x)) }); this._render(); } return true; } if (f === "wbradd") { const c = this._wb(); if (t.value) { this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, ids: [...x.ids, Number(t.value)] } : x)) }, true); this._render(); } return true; } if (f === "wbtime") { this._wbSave({ planTime: t.value || "07:00" }); this._render(); return true; } return false; }
   /* Gerätestrom: eigene Berechnung im Backend (fenster_heizung/gs_get). Solar, Netz, Batterie kommen aus Modul 3, Preise aus Modul 1. */
   _gsState() {
     const s = this._mdState();
@@ -3455,13 +3654,14 @@ class FensterHeizungPanel extends HTMLElement {
     const stT = d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt";
     const tile = (ico, t, v, sub) => `<div class="luroom"><span class="mut">${ic(ico, 14)} ${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
     const bar = d.soc != null ? `<div class="gsbar" style="margin-top:6px" role="progressbar" aria-valuenow="${num(d.soc, 0)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(0, Math.min(100, d.soc))}%;background:${d.soc < 20 ? "#f87171" : "#34d399"}"></i></div>` : "";
-    const wbOn = !!this._wbSnap().cfg.ip, wbTabs = wbOn ? this._wbTabs() : "";
+    const wbOn = !!this._wbSnap().cfg.ip, wbTabs = wbOn ? this._wbTabs() + this._wbBar() : "";
     if (wbOn && this._wbStT() === "plan") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbPlan(d)}`;
+    if (wbOn && this._wbStT() === "set") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbCard(d, "set")}`;
     if (wbOn && this._wbStT() === "stat") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbStat()}`;
     return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}
       <div class="card evcard ${d.charging ? "chg" : d.plugged ? "plg" : ""}"><div class="evhead"><b>${ic("car", 18)}${esc([this._evState().brand === "Andere" ? "" : this._evState().brand, this._evState().model].filter(Boolean).join(" ") || "Fahrzeug & Wallbox")}</b><span class="gsst ${d.charging ? "on" : ""}">${stT}</span></div>${this._evScene(d)}</div>
       <div class="lugrid">${tile("energy", "Ladestand", d.soc != null ? num(d.soc, 0) + " %" : "–", bar || "kein Sensor")}${tile("car", "Reichweite", d.range != null ? num(d.range, 0) + " km" : "–", d.range != null ? "laut Fahrzeug" : "kein Sensor")}${tile("total", "Kilometerstand", d.odo != null ? num(d.odo, 0) + " km" : "–", d.odo != null ? "gesamt" : "kein Sensor")}${tile("bolt", "Ladeleistung", d.power != null ? num(d.power / 1000, 1) + " kW" : "–", stT)}</div>
-      ${this._wbCard(d)}`;
+      ${wbOn ? this._wbxToday(d) : ""}${this._wbCard(d)}`;
   }
   _evSetModal() {
     const V = this._evState(), E = V.ent, st = this._hass.states, ks = Object.keys(st);
@@ -3626,26 +3826,131 @@ class FensterHeizungPanel extends HTMLElement {
     const storm = ["lightning", "lightning-rainy", "hail"].includes(w ? w.state : ""), gale = mx >= 60, frost = o.t != null && o.t <= 0;
     return { w, o, wind, mx, storm, gale, frost };
   }
+  /* Modul 9: Wetter & Warnungen (Regeln, Vorwarnung, Aktionen, Fenster-Erinnerung und Benachrichtigung laufen im Backend) */
+  _wxsDef() { return { warn: { storm: { on: true, kmh: 60 }, thunder: { on: true }, frost: { on: true, temp: 0 }, heat: { on: false, temp: 30 }, rain: { on: false } }, wind: "", ahead: { on: true, hours: 3 }, official: { on: true, ent: "" }, acts: [], win: { on: false, warn: ["storm", "thunder", "rain"] }, notify: { start: true, end: false, ahead: true, to: [] } }; }
+  _wxsLoad(force) {
+    if (!this._hass || this._wxsBusy) return;
+    if (!force && this._wxsD && Date.now() - this._wxsD.ts < 20000) return;
+    this._wxsBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/wx_get" }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._wxsD = { d: { error: true }, ts: Date.now() }; })
+      .finally(() => { this._wxsBusy = false; if (this._wxsVisible()) { this._render(); if (this._modal && this._modal.type === "wxset") this._renderModal(); } });
+  }
+  _wxsVisible() { return this._mdActive && this._mdActive() === "wx"; }
+  _wxs() { const d = (this._wxsD && this._wxsD.d) || {}, df = this._wxsDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, warn: Object.fromEntries(Object.keys(df.warn).map((k) => [k, { ...df.warn[k], ...((c.warn || {})[k] || {}) }])), ahead: { ...df.ahead, ...(c.ahead || {}) }, official: { ...df.official, ...(c.official || {}) }, win: { ...df.win, ...(c.win || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, acts: c.acts || [] } }; }
+  _wxsSave(cfg) {
+    const s = this._wxs(); this._wxsD = { d: { ...s, cfg }, ts: Date.now() };
+    clearTimeout(this._wxsT);
+    this._wxsT = setTimeout(() => {
+      this._wxsT = null;
+      this._hass.callWS({ type: "fenster_heizung/wx_set", cfg: this._wxs().cfg }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; if (this._wxsVisible()) this._render(); })
+        .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
+    }, 500);
+    this._render(); if (this._modal && this._modal.type === "wxset") this._renderModal();
+  }
+  _wxsPatch(fn) { const c = JSON.parse(JSON.stringify(this._wxs().cfg)); fn(c); this._wxsSave(c); }
+  _wxsAct(a, b) {
+    const k = b.dataset.k, i = Number(b.dataset.i), s = Number(b.dataset.s);
+    if (a === "wxsopen") { this._wxsLoad(true); this._modal = { type: "wxset" }; this._renderModal(); return; }
+    if (a === "wxstest") { this._hass.callWS({ type: "fenster_heizung/wx_test" }).then((r) => this._toast(r && r.sent ? `Test an ${r.sent} ${r.sent === 1 ? "Dienst" : "Diensten"} gesendet` : "Kein Benachrichtigungsdienst gewählt")).catch(() => this._toast("Test fehlgeschlagen")); return; }
+    if (a === "wxsgoig") { this._modal = null; this._renderModal(); this._igOpen = true; this._render(); return; }
+    if (a === "wxsweather") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), entity: k || "" }; this._saveLayout(); this._render(); return; }
+    if (a === "wxsout") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), outdoor: k || "" }; this._saveLayout(); this._render(); return; }
+    this._wxsPatch((c) => {
+      if (a === "wxswindset") c.wind = k || "";
+      else if (a === "wxsoff") c.official = k ? { on: true, ent: k } : { on: false, ent: "" };
+      else if (a === "wxsw") c.warn[k].on = !c.warn[k].on;
+      else if (a === "wxstep") { const w = c.warn[k], f = b.dataset.f, lim = { kmh: [30, 120, 5], temp: k === "heat" ? [20, 45, 1] : [-10, 5, 1] }[f]; w[f] = Math.min(lim[1], Math.max(lim[0], (Number(w[f]) || 0) + s)); }
+      else if (a === "wxsahead") c.ahead.on = !c.ahead.on;
+      else if (a === "wxsaheadh") c.ahead.hours = Math.min(12, Math.max(1, (Number(c.ahead.hours) || 3) + s));
+      else if (a === "wxsn") c.notify[k] = !c.notify[k];
+      else if (a === "wxsns") c.notify.to = c.notify.to.includes(k) ? c.notify.to.filter((x) => x !== k) : [...c.notify.to, k];
+      else if (a === "wxsaw") c.acts[i].warn = k;
+      else if (a === "wxsad") c.acts[i].do = k;
+      else if (a === "wxsau") c.acts[i].undo = !c.acts[i].undo;
+      else if (a === "wxsrm") c.acts.splice(i, 1);
+      else if (a === "wxswin") c.win.on = !c.win.on;
+      else if (a === "wxswinw") c.win.warn = c.win.warn.includes(k) ? c.win.warn.filter((x) => x !== k) : [...c.win.warn, k];
+    });
+  }
+  _wxsChange(t) {
+    const f = t.dataset.f, v = t.value || "";
+    if (f === "wxswind") { this._wxsPatch((c) => { c.wind = v; }); return true; }
+    if (f === "wxsadd") { if (v) this._wxsPatch((c) => { if (c.acts.length < 12) c.acts.push({ id: "a" + Date.now().toString(36), warn: "storm", ent: v, do: this._wxsDo(v)[0][0], undo: true }); }); return true; }
+    if (f === "wxsselw") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), entity: v }; this._saveLayout(); this._render(); return true; }
+    if (f === "wxsselout") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), outdoor: v }; this._saveLayout(); this._render(); return true; }
+    if (f === "wxsselwind") { this._wxsPatch((c) => { c.wind = v; }); return true; }
+    if (f === "wxsseloff") { this._wxsPatch((c) => { c.official = v === "__off" ? { on: false, ent: "" } : { on: true, ent: v }; }); return true; }
+    if (f === "wxsent") { this._wxsPatch((c) => { const x = c.acts[Number(t.dataset.i)]; if (x && v) { x.ent = v; if (!this._wxsDo(v).some((d) => d[0] === x.do)) x.do = this._wxsDo(v)[0][0]; } }); return true; }
+    return false;
+  }
+  _wxsDo(ent) {
+    const d = String(ent).split(".")[0];
+    return d === "cover" ? [["close", "Schließen"], ["open", "Öffnen"]] : d === "script" || d === "scene" ? [["run", "Ausführen"]] : [["on", "Einschalten"], ["off", "Ausschalten"]];
+  }
+  _wxsNames() { return { storm: "Sturm", thunder: "Gewitter & Hagel", frost: "Frost", heat: "Hitze", rain: "Starkregen" }; }
+  _wxsLocal() {
+    const d = this._wxWarn(), c = this._wxs().cfg.warn, st = d.w ? d.w.state : "";
+    return { storm: { a: !!c.storm.on && d.mx >= c.storm.kmh, v: d.mx }, thunder: { a: !!c.thunder.on && ["lightning", "lightning-rainy", "hail"].includes(st), v: null }, frost: { a: !!c.frost.on && d.o.t != null && d.o.t <= c.frost.temp, v: d.o.t },
+      heat: { a: !!c.heat.on && d.o.t != null && d.o.t >= c.heat.temp, v: d.o.t }, rain: { a: !!c.rain.on && st === "pouring", v: null } };
+  }
   _wxPage() {
-    const d = this._wxWarn(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    const wx = d.w ? (WX[d.w.state] || ["cloud", d.w.state])[1] : "–";
-    const row = (ico, t, on, txt) => `<div class="luroom ${on ? "" : "off"}"><b>${ic(ico, 16)} ${t}</b><span class="${on ? "" : "mut"}" style="${on ? "color:var(--warning-color,#f59e0b);font-weight:700" : ""}">${on ? "Aktiv" : "Keine Warnung"}</span><span class="mut">${txt}</span></div>`;
-    const any = d.storm || d.gale || d.frost;
-    return `${this._betaBox("Die Warnungen werden aus deiner Wetter-Entität in Home Assistant abgeleitet.")}
+    this._wxsLoad(); const S = this._wxs(), C = S.cfg, adm = this._admin(), d = this._wxWarn(), NM = this._wxsNames(), live = !S.error && S.state, W = (live ? S.state.warn : this._wxsLocal()) || {};
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`, hm = (iso) => { const t = new Date(iso); return String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0"); };
+    const wx = d.w ? (WX[d.w.state] || ["cloud", d.w.state])[1] : "–", ICO = { storm: "fan", thunder: "flame", frost: "thermo", heat: "sun", rain: "drop" };
+    const sub = { storm: () => (d.mx ? `Wind bis ${num(d.mx, 0)} km/h · Grenze ${C.warn.storm.kmh}` : "Keine Windwerte"), thunder: () => (W.thunder && W.thunder.a ? "Gewitter oder Hagel gemeldet" : "Kein Gewitter oder Hagel"), frost: () => (d.o.t != null ? `Draußen ${num(d.o.t, 1)} °C · Grenze ${C.warn.frost.temp} °C` : "Keine Außentemperatur"), heat: () => (d.o.t != null ? `Draußen ${num(d.o.t, 1)} °C · Grenze ${C.warn.heat.temp} °C` : "Keine Außentemperatur"), rain: () => (d.w && d.w.state === "pouring" ? "Starkregen gemeldet" : "Kein Starkregen") };
+    const row = (k) => { const on = !!C.warn[k].on, w = W[k] || {}, act = on && w.a, ah = on && !act && w.ahead; return `<div class="luroom ${on ? "" : "off"}"><b>${ic(ICO[k], 16)} ${NM[k]}</b><span class="${act ? "" : "mut"}" style="${act ? "color:var(--warning-color,#f59e0b);font-weight:700" : ah ? "color:#38bdf8;font-weight:700" : ""}">${!on ? "Aus" : act ? `Aktiv${w.since ? " seit " + hm(w.since) : ""}` : ah ? `Vorwarnung ab ${hm(w.ahead)}` : "Keine Warnung"}</span><span class="mut">${sub[k]()}</span></div>`; };
+    const any = Object.keys(NM).some((k) => C.warn[k].on && (W[k] || {}).a), soon = Object.keys(NM).some((k) => C.warn[k].on && !(W[k] || {}).a && (W[k] || {}).ahead);
+    const fc = (S.fc || []).slice(0, 12), fcCard = C.ahead.on && fc.length ? `<div class="card"><h2>${ic("clock", 18)}Nächste Stunden</h2><div class="wxfc">${fc.map((x) => { const bad = (x.w || []).length; return `<div class="${bad ? "bad" : ""}" title="${bad ? x.w.map((k) => NM[k]).join(", ") : "Keine Warnung"}"><span class="mut">${hm(x.t).slice(0, 2)}</span>${ic((WX[x.cond] || ["cloud"])[0], 20)}<b>${num(x.temp, 0)}°</b><small class="mut">${x.wind != null ? num(x.wind, 0) : "–"}</small></div>`; }).join("")}</div>
+      <div class="gst" style="margin-top:8px">Temperatur in °C, darunter der Wind in km/h. Orange: Hier wird eine Warnung erwartet. Vorwarnung bis ${C.ahead.hours} ${C.ahead.hours === 1 ? "Stunde" : "Stunden"} im Voraus.</div></div>` : "";
+    const A = C.acts, ST = (S.state && S.state.acts) || {}, actRow = (x) => { const on = (W[x.warn] || {}).a, s = ST[x.id] || {}, dn = (this._wxsDo(x.ent).find((y) => y[0] === x.do) || [0, x.do])[1]; return `<div class="luroom"><b>${ic(String(x.ent).startsWith("cover.") ? "blinds" : "bolt", 16)} ${esc(this._wzName(x.ent))}</b><span class="${s.state === "run" ? "" : "mut"}" style="${s.state === "run" ? "color:var(--warning-color,#f59e0b);font-weight:700" : ""}">${s.state === "run" ? `Ausgelöst ${s.at ? hm(s.at) : ""}` : on ? "Wartet" : "Bereit"}</span><span class="mut">Bei ${NM[x.warn]}: ${dn.toLowerCase()}${x.undo ? ", danach zurück" : ""}</span></div>`; };
+    const wo = S.open || [], winCard = `<div class="gst ${C.win.on ? "on" : ""}" style="margin-top:10px">${ic("window", 15)}<span>${C.win.on ? `Fenster-Erinnerung aktiv bei ${C.win.warn.map((k) => NM[k]).join(", ")}.${wo.length ? ` Jetzt offen: <b>${wo.map(esc).join(", ")}</b>.` : " Zurzeit ist kein Fenster offen."}` : "Fenster-Erinnerung aus. Sie meldet bei Sturm, Gewitter oder Starkregen offene Fenster."}</span></div>`;
+    const lg = (S.log || []).slice(0, 6);
+    return `${this._betaBox("Die Warnungen werden im Hintergrund aus deiner Wetter-Entität oder Wetterstation berechnet, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, diese kommen vom Deutschen Wetterdienst oder NINA, wenn eingerichtet.")}
       <div class="card"><h2>${ic("alert", 18)}Warnlage jetzt</h2>
-        <div class="gst ${any ? "" : "on"}" style="margin-bottom:10px">${ic(any ? "alert" : "check", 15)}${any ? "Mindestens eine Warnung ist aktiv." : "Zurzeit liegt keine Warnung vor."}</div>
-        <div class="lugrid">
-          ${row("flame", "Unwetter", d.storm, d.storm ? "Gewitter oder Hagel gemeldet" : "Kein Gewitter oder Hagel")}
-          ${row("fan", "Sturm", d.gale, d.mx ? `Wind bis ${num(d.mx, 0)} km/h` : "Keine Windwerte")}
-          ${row("thermo", "Frost", d.frost, d.o.t != null ? `Draußen ${num(d.o.t, 1)} °C` : "Keine Außentemperatur")}</div></div>
+        <div class="gst ${any ? "" : "on"}" style="margin-bottom:10px">${ic(any ? "alert" : "check", 15)}${any ? "Mindestens eine Warnung ist aktiv." : soon ? "Keine Warnung, aber eine Vorwarnung liegt vor." : "Zurzeit liegt keine Warnung vor."}</div>
+        <div class="lugrid">${Object.keys(NM).map(row).join("")}${C.official.on && this._wxOffAny() ? (() => { const o = (S.state && S.state.official) || {}, hot = o.level > 0; return `<div class="luroom"><b>${ic("shield", 16)} Amtliche Warnung</b><span class="${hot ? "" : "mut"}" style="${hot ? "color:var(--warning-color,#f59e0b);font-weight:700" : ""}">${hot ? esc(o.title || "Warnung aktiv") : "Keine Warnung"}</span><span class="mut">${hot ? esc(o.text || "") : "Deutscher Wetterdienst und Co."}</span></div>`; })() : ""}</div>
+        ${adm ? `<div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="wxsopen">${ic("sliders", 16)} Einstellungen</button></div>` : ""}</div>
+      ${fcCard}
       <div class="card"><h2>${ic("sun", 18)}Wetter jetzt</h2><div class="lugrid">
         ${tile("Zustand", wx, d.w ? "Wetter-Entität" : "Keine Wetter-Entität gefunden")}
         ${tile("Draußen", d.o.t != null ? num(d.o.t, 1) + " °C" : "–", d.o.rh != null ? num(d.o.rh) + " % Luftfeuchte" : "")}
-        ${tile("Wind", isFinite(d.wind) ? num(d.wind, 0) + " km/h" : "–", d.gale ? "Sturmstärke" : "Unter der Sturmgrenze")}</div></div>
-      ${this._betaSoon("alert", "Warnstufen festlegen", "Ab wann Sturm, Unwetter und Frost als Warnung gelten")}
-      ${this._betaSoon("blinds", "Aktionen auslösen", "Zum Beispiel Rollläden einfahren oder Markisen schließen")}
-      ${this._betaSoon("window", "Fenster-Erinnerung", "Bei Sturm oder Gewitter an offene Fenster erinnern")}
-      ${this._betaSoon("bell", "Benachrichtigung", "Warnung aufs Handy, sobald sie beginnt oder endet")}`;
+        ${tile("Wind", isFinite(d.wind) ? num(d.wind, 0) + " km/h" : "–", d.mx > (isFinite(d.wind) ? d.wind : 0) ? `Böen bis ${num(d.mx, 0)} km/h` : d.gale ? "Sturmstärke" : "Unter der Sturmgrenze")}</div></div>
+      <div class="card"><h2>${ic("blinds", 18)}Aktionen und Erinnerungen</h2>
+        ${A.length ? `<div class="lugrid">${A.map(actRow).join("")}</div>` : `<div class="mut sm">Noch keine Aktion. In den Einstellungen legst du fest, was bei einer Warnung passiert, zum Beispiel Rollläden oder Markisen fahren.</div>`}
+        ${winCard}
+        <div class="gst ${C.notify.to.length ? "on" : ""}" style="margin-top:8px">${ic("bell", 15)}<span>${C.notify.to.length ? `Benachrichtigung an ${C.notify.to.length} ${C.notify.to.length === 1 ? "Dienst" : "Dienste"}: ${[C.notify.start && "Beginn", C.notify.end && "Ende", C.notify.ahead && C.ahead.on && "Vorwarnung"].filter(Boolean).join(", ") || "nichts ausgewählt"}.` : "Keine Benachrichtigung eingerichtet."}</span></div></div>
+      ${lg.length ? `<div class="card"><h2>${ic("clock", 18)}Protokoll</h2><div class="wbses">${lg.map((x) => `<div class="wbse"><div><b>${esc(x.x)}</b><span class="mut sm">${new Date(x.t).toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" })}</span></div></div>`).join("")}</div></div>` : ""}`;
+  }
+  _wxsModal() {
+    const S = this._wxs(), C = S.cfg, NM = this._wxsNames(), st = this._hass.states, H = this._hass;
+    const step = (act, k, f, val, unit, min) => `<div class="step" style="flex:none"><button data-act="${act}" data-k="${k}" data-f="${f}" data-s="-${min}" aria-label="weniger">${ic("minus", 18)}</button><b>${val} ${unit}</b><button data-act="${act}" data-k="${k}" data-f="${f}" data-s="${min}" aria-label="mehr">${ic("plus", 18)}</button></div>`;
+    const sw = (act, k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" aria-label="${label}"></button>`;
+    const WR = [["storm", "Sturm", "Ab dieser Windstärke oder Böe (km/h).", step("wxstep", "storm", "kmh", C.warn.storm.kmh, "km/h", 5)], ["thunder", "Gewitter und Hagel", "Wenn die Wetter-Entität Gewitter oder Hagel meldet.", ""], ["frost", "Frost", "Bei dieser Außentemperatur oder darunter.", step("wxstep", "frost", "temp", C.warn.frost.temp, "°C", 1)], ["heat", "Hitze", "Ab dieser Außentemperatur, zum Beispiel für Beschattung.", step("wxstep", "heat", "temp", C.warn.heat.temp, "°C", 1)], ["rain", "Starkregen", "Wenn die Wetter-Entität Starkregen meldet.", ""]];
+    const windOpts = Object.keys(st).filter((e) => e.startsWith("sensor.") && (/(km\/h|m\/s|mph|kn)$/i.test(st[e].attributes.unit_of_measurement || "") || /wind/i.test(e)));
+    const actOpts = Object.keys(st).filter((e) => /^(cover|switch|input_boolean|script|scene)\./.test(e));
+    const svc = [...new Set([...Object.keys(((H.services || {}).notify) || {}).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).sort().map((n) => "notify." + n), ...C.notify.to])];
+    const chip = (act, k, t, on, extra = "") => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" ${extra} aria-pressed="${!!on}">${t}</button>`;
+    const acts = C.acts.map((x, i) => `<div class="rfv"><div class="vrow" style="margin:0"><span><b>${esc(this._wzName(x.ent))}</b><small class="mut" style="display:block">${esc(x.ent)}</small></span><button class="ibtn" data-act="wxsrm" data-i="${i}" aria-label="Aktion entfernen">${ic("trash", 18)}</button></div>
+      <div class="mut sm" style="margin:6px 0 4px">Bei</div><div class="gschips">${Object.keys(NM).map((k) => chip("wxsaw", k, NM[k], x.warn === k, `data-i="${i}"`)).join("")}</div>
+      <div class="mut sm" style="margin:6px 0 4px">Dann</div><div class="gschips">${this._wxsDo(x.ent).map(([k, t]) => chip("wxsad", k, t, x.do === k, `data-i="${i}"`)).join("")}</div>
+      ${["cover", "switch", "input_boolean"].includes(String(x.ent).split(".")[0]) ? `<div class="vrow"><span>Danach zurück<small class="mut" style="display:block">Eine Viertelstunde nach Ende der Warnung wird der vorige Zustand wiederhergestellt.</small></span>${sw("wxsau", "", x.undo, "Danach zurück").replace('data-k=""', `data-i="${i}"`)}</div>` : ""}</div>`).join("");
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Wetter &amp; Warnungen</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("alert", 15)}Warnstufen</div>
+      ${WR.map(([k, t, h, ctl]) => `<div class="vrow"><span>${t}<small class="mut" style="display:block">${h}</small></span>${C.warn[k].on && ctl ? ctl : ""}${sw("wxsw", k, C.warn[k].on, t)}</div>`).join("")}
+      <div class="gst">${ic("info", 15)}<span>Wetter-Entität, Windsensor, Außentemperatur, amtliche Warnungen und Benachrichtigungsdienste wählst du unter <button class="lnk" data-act="wxsgoig">Einstellungen → Integrationen</button>.</span></div>
+      <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Vorwarnung</div>
+      <div class="vrow"><span>Warnung vorab melden<small class="mut" style="display:block">Aus der Stundenprognose der Wetter-Entität. Gilt für Sturm, Gewitter, Frost, Hitze und Starkregen.</small></span>${C.ahead.on ? step("wxsaheadh", "", "", C.ahead.hours, C.ahead.hours === 1 ? "Std." : "Std.", 1) : ""}${sw("wxsahead", "", C.ahead.on, "Vorwarnung")}</div>
+      <div class="lsec" style="margin-top:12px">${ic("blinds", 15)}Aktionen bei einer Warnung</div>
+      <div class="mut sm" style="margin:0 0 6px">Das Modul schaltet nur, was du hier auswählst: Rollläden, Markisen, Schalter, Skripte und Szenen. Eine Aktion läuft einmal, wenn die Warnung beginnt.</div>
+      ${acts}${C.acts.length < 12 ? this._wzSel(actOpts, "", "wxsadd", "", "+ Aktion hinzufügen", /cover|markise|rollo|rolllad/i) : ""}
+      <div class="lsec" style="margin-top:12px">${ic("window", 15)}Fenster-Erinnerung</div>
+      <div class="vrow"><span>Offene Fenster melden<small class="mut" style="display:block">Nutzt die Fenster-Kontakte deiner Räume aus Modul 1. Die Meldung kommt einmal pro Warnung.</small></span>${sw("wxswin", "", C.win.on, "Fenster-Erinnerung")}</div>
+      ${C.win.on ? `<div class="gschips">${["storm", "thunder", "rain"].map((k) => chip("wxswinw", k, NM[k], C.win.warn.includes(k))).join("")}</div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Benachrichtigung</div>
+      ${[["start", "Warnung beginnt"], ["ahead", "Vorwarnung"], ["end", "Warnung endet"]].map(([k, t]) => `<div class="vrow"><span>${t}</span>${sw("wxsn", k, C.notify[k], t)}</div>`).join("")}
+      <div class="mut sm" style="margin:2px 0 6px">${C.notify.to.length ? `Gesendet wird an: ${C.notify.to.map(esc).join(", ")}.` : "Es ist noch kein Benachrichtigungsdienst gewählt."}</div>
+      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wxstest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _gaPage() {
     const st = this._hass.states, c = this._wxCfg(), wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather."));

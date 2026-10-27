@@ -26,6 +26,7 @@ from .api import async_register_api
 from .diag import DiagManager, diag_expect, diag_log
 from .general import GeneralManager
 from .geraete import GeraeteManager
+from .wetter import WetterManager
 from .wasser import WasserManager
 from .heater import HeaterRoom, PvManager
 from .presence import PresenceManager
@@ -1163,6 +1164,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "wallbox" not in store:
         store["wallbox"] = WallboxManager(hass)
         await store["wallbox"].async_start()
+    if "wetter" not in store:
+        store["wetter"] = WetterManager(hass)
+        await store["wetter"].async_start()
     return True
 
 
@@ -1203,5 +1207,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             wbm = hass.data.get(DOMAIN, {}).pop("wallbox", None)
             if wbm is not None:
                 wbm.async_stop()
+            wxm = hass.data.get(DOMAIN, {}).pop("wetter", None)
+            if wxm is not None:
+                wxm.async_stop()
             hass.data.get(DOMAIN, {}).pop("tibber", None)
     return ok

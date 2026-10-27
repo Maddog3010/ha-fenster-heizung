@@ -357,6 +357,8 @@ async def ws_set_layout(hass: HomeAssistant, connection, msg: dict) -> None:
     store = hass.data[DOMAIN]
     store["layout"] = clean_layout(msg["layout"])
     await store["layout_store"].async_save(store["layout"])
+    if store.get("wetter") is not None:
+        store["wetter"]._fc_ts = 0.0  # neue Wetter-Entität: Vorhersage neu holen
     connection.send_result(msg["id"], store["layout"])
 
 
@@ -558,6 +560,17 @@ async def ws_wb_test(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], await mgr.async_test(msg["ip"]))
 
 
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wb_quick", vol.Required("kind"): vol.In(["", "h1", "goal", "sun"])})
+@websocket_api.async_response
+async def ws_wb_quick(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("wallbox")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Wallbox ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.async_quick(msg["kind"]))
+
+
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wb_stats"})
 @websocket_api.async_response
 async def ws_wb_stats(hass: HomeAssistant, connection, msg: dict) -> None:
@@ -609,11 +622,44 @@ async def ws_tb_set(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], tb.view())
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wx_get"})
+@websocket_api.async_response
+async def ws_wx_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("wetter")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Wetter ist noch nicht bereit")
+        return
+    await _layout(hass)
+    connection.send_result(msg["id"], await mgr.snapshot())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wx_set", vol.Required("cfg"): dict})
+@websocket_api.async_response
+async def ws_wx_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("wetter")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Wetter ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.async_set(msg["cfg"]))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wx_test"})
+@websocket_api.async_response
+async def ws_wx_test(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("wetter")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Wetter ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.async_test())
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
-        ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set,
+        ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
     ):
         websocket_api.async_register_command(hass, command)
