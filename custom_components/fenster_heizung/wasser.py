@@ -156,6 +156,28 @@ def clean_wasser(raw: Any) -> dict[str, Any]:
     }
 
 
+EN_KEYS = ("pv", "grid", "house", "bat", "pve", "imp", "exp")
+EN_DOMAIN = "sensor"
+
+
+def clean_energy(raw: Any) -> dict[str, Any]:
+    """Einstellungen von Modul 3 (Energie-Übersicht): nur Sensor-IDs und zwei Vorzeichen-Optionen."""
+    raw = raw if isinstance(raw, dict) else {}
+    ent_raw = raw.get("ent") if isinstance(raw.get("ent"), dict) else {}
+    ent: dict[str, str] = {}
+    for k in EN_KEYS:
+        v = ent_raw.get(k)
+        ok = isinstance(v, str) and len(v) <= 120 and _ENTITY.match(v) and v.split(".")[0] == EN_DOMAIN
+        ent[k] = v if ok else ""
+    sign = raw.get("sign")
+    bsign = raw.get("bsign")
+    return {
+        "ent": ent,
+        "sign": sign if sign in ("export", "import") else "",
+        "bsign": bsign if bsign in ("charge", "discharge") else "charge",
+    }
+
+
 def clean_modules(raw: Any) -> dict[str, Any]:
     raw = raw if isinstance(raw, dict) else {}
     on = raw.get("on") if isinstance(raw.get("on"), dict) else {}
@@ -171,7 +193,7 @@ def clean_modules(raw: Any) -> dict[str, Any]:
         seen.add(xid)
         name = re.sub(r"[<>\"'&]", "", str(x.get("name") or "").strip())[:40] or "Eigenes Modul"
         ext.append({"id": xid, "name": name, "url": url, "on": bool(x.get("on", True))})
-    return {"on": {"ww": bool(on.get("ww", True))}, "ext": ext}
+    return {"on": {"ww": bool(on.get("ww", True)), "en": bool(on.get("en", True))}, "ext": ext, "energy": clean_energy(raw.get("energy"))}
 
 
 def configured(cfg: dict[str, Any]) -> bool:
