@@ -25,6 +25,7 @@ from homeassistant.util import dt as dt_util
 from .api import async_register_api
 from .diag import DiagManager, diag_expect, diag_log
 from .general import GeneralManager
+from .wasser import WasserManager
 from .heater import HeaterRoom, PvManager
 from .presence import PresenceManager
 from .const import (
@@ -1147,6 +1148,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "pv" not in store:
         store["pv"] = PvManager(hass)
         await store["pv"].async_start()
+    if "wasser" not in store:
+        store["wasser"] = WasserManager(hass)
+        await store["wasser"].async_start()
     return True
 
 
@@ -1178,4 +1182,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             pvm = hass.data.get(DOMAIN, {}).pop("pv", None)
             if pvm is not None:
                 pvm.async_stop()
+            wwm = hass.data.get(DOMAIN, {}).pop("wasser", None)
+            if wwm is not None:
+                wwm.async_stop()
     return ok

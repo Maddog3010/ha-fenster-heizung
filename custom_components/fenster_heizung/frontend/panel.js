@@ -60,6 +60,13 @@ const ICONS = {
   plus: '<path d="M12 5v14M5 12h14"/>',
   minus: '<path d="M5 12h14"/>',
   trash: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/>',
+  boiler: '<rect x="6" y="3.5" width="12" height="17" rx="4.5"/><path d="M9 10.5c1.2-1.4 2.4 1.4 3.6 0s2.4 1.4 3.6 0M9 14.5c1.2-1.4 2.4 1.4 3.6 0s2.4 1.4 3.6 0M12 3.5V2M12 20.5V22"/>',
+  puzzle: '<path d="M10 4a2 2 0 1 1 4 0v1.5h4V10h-1.5a2 2 0 1 0 0 4H18v4.5h-4.5V17a2 2 0 1 0-4 0v1.5H5V14h1.5a2 2 0 1 0 0-4H5V5.5h5z"/>',
+  shield: '<path d="M12 3l7.5 3v5.5c0 4.5-3.2 8-7.5 9.5-4.3-1.5-7.5-5-7.5-9.5V6z"/><path d="M8.7 12l2.3 2.3 4.3-4.6"/>',
+  blinds: '<rect x="4" y="3.5" width="16" height="4" rx="1"/><path d="M5.5 7.5v10M18.5 7.5v10M5.5 11h13M5.5 14.5h13M5.5 18h13"/>',
+  fan: '<circle cx="12" cy="12" r="1.8"/><path d="M12 10.2C12 6 10 3.5 7.5 4.5 5.5 5.5 7 9 10.2 10.5M13.8 12c4.2 0 6.7-2 5.7-4.5-1-2-4.5-.5-6 2.7M12 13.8c0 4.2 2 6.7 4.5 5.7 2-1 .5-4.5-2.7-6M10.2 12C6 12 3.5 14 4.5 16.5c1 2 4.5.5 6-2.7"/>',
+  heatpump: '<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 8.5v7M8.5 12h7"/>',
+  energy: '<circle cx="12" cy="12" r="9"/><path d="M13 6l-4 6.5h3.5L11 18l4.5-7H12z"/>',
   grip: '<g fill="currentColor" stroke="none"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></g>',
 };
 
@@ -187,6 +194,8 @@ const ROOM_COLORS = ["#2dd4bf", "#f59e0b", "#a78bfa", "#f472b6", "#60a5fa", "#a3
 const HEX = /^#[0-9a-f]{6}$/i;
 const onColor = (hex) => { const n = parseInt(hex.slice(1), 16), l = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; return l > 0.6 ? "#06201e" : "#ffffff"; };
 const WX = { sunny: ["sun", "Sonnig"], "clear-night": ["moon", "Klare Nacht"], partlycloudy: ["partly", "Leicht bewölkt"], cloudy: ["cloud", "Bewölkt"], rainy: ["rain", "Regen"], pouring: ["rain", "Starkregen"], snowy: ["snow", "Schnee"], "snowy-rainy": ["snow", "Schneeregen"], fog: ["fog", "Nebel"], hail: ["snow", "Hagel"], lightning: ["bolt", "Gewitter"], "lightning-rainy": ["bolt", "Gewitter mit Regen"], windy: ["windy", "Windig"], "windy-variant": ["windy", "Windig"], exceptional: ["info", "Ausnahmewetter"] };
+const HERO_MODES = [["standard", "Standard"], ["time", "Tageszeit"], ["season", "Jahreszeit"], ["weather", "Wetter"]];
+const HERO_SLOTS = { time: [["night", "Nacht"], ["sunrise", "Sonnenaufgang"], ["day", "Tag"], ["sunset", "Sonnenuntergang"]], season: [["spring", "Frühling"], ["summer", "Sommer"], ["autumn", "Herbst"], ["winter", "Winter"]], weather: [["sunny", "Sonnig"], ["clear-night", "Klare Nacht"], ["partlycloudy", "Teils bewölkt"], ["cloudy", "Bewölkt"], ["rainy", "Regen"], ["pouring", "Starkregen"], ["snowy", "Schnee"], ["fog", "Nebel"], ["lightning", "Gewitter"]] };
 const MODE = {
   regelung_aktiv: { t: "Regelung aktiv", c: "green" },
   heizung_pausiert: { t: "Heizung pausiert", c: "amber" },
@@ -207,6 +216,17 @@ const GROUP_ICONS = ["layers", "home", "bed", "sofa", "desk"];
 const BLOCKS = { hero: "Kopfkarte", presence: "Anwesenheit", tiles: "Kennzahlen", chart: "Diagramm", pv: "PV-Heizer", rooms: "Räume" };
 const DAYS = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 const DAYS_LONG = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"];
+const wwTm = (s) => { const [h, m] = String(s || "0:0").split(":").map(Number); return (h || 0) * 60 + (m || 0); };
+const wwFmt = (m) => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
+const wwCol = (t) => (t == null ? "#64748b" : t < 30 ? "#3b82f6" : t < 40 ? "#38bdf8" : t < 48 ? "#2dd4bf" : t < 55 ? "#fbbf24" : t < 60 ? "#fb923c" : "#ef4444");
+const WW_DEF = { size: 300, target: 55, day: null, boost: false, circ5: false, away: false,
+  ent: { top: "", mid: "", bot: "", src: "", rod: "", pump: "", ret: "", trig: "" },
+  heat: { low: 42, wd: [{ from: "05:00", to: "07:30", temp: 55 }, { from: "16:30", to: "21:30", temp: 55 }], we: [{ from: "07:00", to: "10:00", temp: 55 }, { from: "17:00", to: "21:30", temp: 55 }] },
+  circ: { mode: "plan", ret_max: 45, run: 3, on: 3, every: 30, wd: [{ from: "05:30", to: "08:00" }, { from: "17:00", to: "21:30" }], we: [{ from: "07:00", to: "10:30" }, { from: "17:00", to: "21:30" }] },
+  leg: { on: true, day: 5, time: "03:00", temp: 60, hold: 20, last: null },
+  pv: { on: true, min: 1800, max: 62, watt: 2000 } };
+const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }];
+const MOD_SOON = [["blinds", "Rollläden & Beschattung", "Sonnenstand, Hitzeschutz und Heizbedarf"], ["fan", "Lüftung & Raumluft", "KWL, CO₂ und Feuchte"], ["heatpump", "Wärmepumpe", "Laufzeit, Takten und Abtauen"], ["energy", "Energie-Übersicht", "Heizung, Strom und PV in einem Bild"]];
 const TEMPLATE = [
   { days: [0, 1, 2, 3, 4], time: "05:30", temp: 21 }, { days: [0, 1, 2, 3, 4], time: "08:00", temp: 18 },
   { days: [0, 1, 2, 3, 4], time: "16:00", temp: 21 }, { days: [0, 1, 2, 3, 4], time: "22:00", temp: 17 },
@@ -339,6 +359,12 @@ button{font:inherit;color:inherit}
 .card h2 .ic{color:var(--teal)}
 .hero{position:relative;overflow:hidden;border:0;color:#ecfeff;padding:20px 18px;min-height:168px;
   background:radial-gradient(120% 140% at 85% 0%,color-mix(in srgb,var(--teal) 82%,#000) 0%,transparent 55%),linear-gradient(135deg,color-mix(in srgb,var(--teal) 34%,#0b2c43) 0%,color-mix(in srgb,var(--teal) 10%,#0b2c43) 60%,#0b2c43 100%)}
+.hero.hs{background:#0b2c43}.hero .hbg{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block}.hero .hbg.hph{background-size:cover;background-position:center}
+.hero.hs::after{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(3,12,22,.55) 0%,rgba(3,12,22,.18) 62%,transparent 100%),linear-gradient(0deg,rgba(3,12,22,.35),transparent 45%);pointer-events:none}
+.hero.hs>.lbl,.hero.hs>.big,.hero.hs>.sub,.hero.hs>.wx,.hero.hs>.chips{position:relative;z-index:1}.hero.hs>.art,.hero.hs>.hlogo{z-index:1}.hero.hs .big,.hero.hs .lbl,.hero.hs .sub{text-shadow:0 1px 10px rgba(0,0,0,.45)}
+.hsl{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px;margin:0 -2px;scroll-snap-type:x proximity}.hsc{flex:none;width:132px;scroll-snap-align:start}.hsc b{display:block;font-size:.8rem;margin:5px 0 0}
+.hth{position:relative;height:72px;border-radius:12px;overflow:hidden;border:2px solid transparent}.hsc.on .hth{border-color:var(--teal)}.hth .hbg{position:absolute;inset:0}.hth em{position:absolute;left:6px;top:6px;font-style:normal;font-size:.66rem;font-weight:700;background:var(--teal);color:var(--on-acc,#042f2e);border-radius:999px;padding:1px 7px}
+.hac{display:flex;align-items:center;justify-content:space-between}.hac .lnk{font-size:.74rem;padding:2px 0}
 .hero .art{position:absolute;right:10px;top:14px;height:104px;width:auto;max-width:44%;opacity:.95}
 .hero .hlogo{position:absolute;right:14px;bottom:14px;width:48px;height:48px;border-radius:50%;object-fit:cover;box-shadow:0 4px 14px rgba(0,0,0,.45),0 0 0 2px rgba(255,255,255,.16);background:#000}
 .hero .lbl{max-width:calc(100% - 150px);font-size:.82rem;opacity:.85;display:flex;gap:6px;align-items:center}
@@ -654,7 +680,7 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .vc{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:0 0 10px}.vc.warn{border-color:color-mix(in srgb,#fbbf24 50%,var(--line))}.vc.bad{border-color:color-mix(in srgb,#f87171 55%,var(--line))}
 .vh{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;margin-bottom:6px}.vh b{display:block;overflow-wrap:anywhere}.vh span{font-size:.76rem;color:var(--mut)}.vh em{font-style:normal;font-size:.76rem;color:var(--mut)}
 .vb{display:flex;align-items:center;gap:10px;padding:5px 0;border-top:1px solid color-mix(in srgb,var(--line) 45%,transparent);font-size:.84rem;flex-wrap:wrap}.vl{color:var(--mut);min-width:98px;font-size:.78rem}.vb b{font-weight:600}.vbad{color:#f87171}
-.vbar{flex:1;min-width:70px;max-width:180px;height:8px;border-radius:4px;background:color-mix(in srgb,var(--mut) 25%,transparent);overflow:hidden}.vbar i{display:block;height:100%;background:#22c55e;border-radius:4px}.vbar.warn i{background:#fbbf24}.vbar.bad i{background:#f87171}
+.batbar{flex:1;min-width:70px;max-width:180px;height:8px;border-radius:4px;background:color-mix(in srgb,var(--mut) 25%,transparent);overflow:hidden}.batbar i{display:block;height:100%;background:#22c55e;border-radius:4px}.batbar.warn i{background:#fbbf24}.batbar.bad i{background:#f87171}
 .vm{display:grid;grid-template-columns:18px 1fr;gap:8px;margin-top:8px;padding:9px 10px;border-radius:10px;font-size:.84rem}.vm b{display:block}.vm span{font-size:.78rem;color:var(--mut)}.vm.warn{background:color-mix(in srgb,#fbbf24 12%,transparent)}.vm.warn .ic{color:#fbbf24}.vm.bad{background:color-mix(in srgb,#f87171 12%,transparent)}.vm.bad .ic{color:#f87171}
 .dg .seg button{font-size:.78rem;padding:9px 3px;white-space:nowrap}@media(max-width:380px){.dg .seg button{font-size:.68rem;padding:9px 0}}
 .vsrc{font-size:.72rem;color:var(--mut);overflow-wrap:anywhere}.vbs{padding-top:0;border-top:0;margin-top:-2px}.vch{margin-left:auto;font-size:.78rem;padding:2px 4px}.vbe{padding:4px 0 6px}.vinv{display:flex;gap:8px;align-items:center;font-size:.8rem;color:var(--mut);margin:0 0 6px}.vwarn{color:#fbbf24}
@@ -676,6 +702,49 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .wzsum{display:grid;gap:8px}.wzsum>div{display:grid;grid-template-columns:30px 1fr;column-gap:10px;border:1px solid var(--line);border-radius:14px;padding:10px 12px}.wzsum em{grid-row:span 2;color:var(--teal);display:grid;place-items:center}.wzsum span{font-size:.8rem;color:var(--mut);overflow-wrap:anywhere}
 .wzres{display:grid;grid-template-columns:20px 1fr;gap:2px 8px;padding:8px 0;border-bottom:1px solid var(--line)}.wzres.ok .ic{color:#22c55e}.wzres.bad .ic{color:#f87171}.wzres span{grid-column:2;font-size:.8rem;color:var(--mut)}
 
+/* Module */
+.mbar{display:flex;gap:8px;overflow-x:auto;max-width:1180px;margin:0 auto;padding:12px 14px 0;scrollbar-width:none}
+.mbar::-webkit-scrollbar{display:none}
+.mtab{position:relative;flex:none;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:8px 14px 8px 11px;cursor:pointer;text-align:left;color:var(--mut)}
+.mtab span{display:block;line-height:1.15}.mtab small{display:block;font-size:.68rem;opacity:.85}.mtab b{display:block;font-size:.9rem;color:var(--primary-text-color);white-space:nowrap}
+.mtab.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 13%,var(--card));color:var(--teal)}
+.mtab.add{border-style:dashed;background:transparent}
+.mdot{position:absolute;top:7px;right:8px;width:9px;height:9px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 2px var(--card)}
+.logo.ww{background:linear-gradient(135deg,#38bdf8,#1d4ed8);box-shadow:0 4px 12px rgba(56,189,248,.35)}
+.mrow{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:8px 0}
+.mrow .mi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal);flex:none}
+.mrow .mt{flex:1;min-width:0}.mrow .mt b{display:block;font-size:.92rem}.mrow .mt span{display:block;font-size:.76rem;color:var(--mut);margin-top:1px;word-break:break-all}
+.mact{display:flex;align-items:center;gap:10px;flex:none}.mact .btn2{flex:none;padding:7px 12px;font-size:.8rem}
+.mbadge{font-size:.72rem;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:var(--mut);white-space:nowrap}
+.mrow:has(.soon){opacity:.72}
+.murl{display:flex;gap:8px;margin:6px 0}.murl .otxt{flex:1}.murl .btn2{flex:none;padding:0 16px}
+.minfo{border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:.84rem;margin:6px 0 10px;background:color-mix(in srgb,var(--teal) 6%,transparent)}.minfo ul{margin:6px 0 0;padding-left:18px;display:grid;gap:4px}
+code{font-family:ui-monospace,monospace;font-size:.78rem}
+.wwh{background:linear-gradient(135deg,#0c4a6e,#075985 55%,#0e7490);display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center}
+.wwh .wwl1 .lbl{max-width:none}.wwh .wwl1 .sub{max-width:none}
+.wwh .wwtk{grid-column:2;grid-row:1}.wwtank{width:min(230px,50vw);height:auto;display:block}
+.wwh .chips,.wwh .wwacts{grid-column:1/-1}
+.wwh .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;padding-right:0}
+.chip.st.ok{background:rgba(52,211,153,.3)}.chip.st.warn{background:rgba(251,146,60,.34)}
+.wwacts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.wwa{display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.1);color:#fff;border-radius:14px;padding:10px 8px;font-size:.82rem;font-weight:600;cursor:pointer;text-align:center;line-height:1.15}
+.wwa.on{background:#fff;color:#075985;border-color:#fff}.wwa[disabled]{opacity:.45;cursor:default}
+.wwchart{width:100%;height:auto;display:block;color:var(--primary-text-color)}
+.wwseg{margin-bottom:10px}
+.wwbar{position:relative;height:30px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:color-mix(in srgb,var(--line) 55%,transparent)}
+.wwbar.heat{background:color-mix(in srgb,var(--low) 34%,var(--card))}
+.wwbar .seg1{position:absolute;top:0;bottom:0;display:grid;place-items:center}.wwbar .seg1.circ{background:var(--teal)}.wwbar .seg1 em{font-style:normal;font-size:.72rem;font-weight:700;color:#06202b}
+.wwbar u{position:absolute;top:0;bottom:0;width:2px;background:var(--primary-text-color);text-decoration:none;opacity:.9}
+.wwax{display:flex;justify-content:space-between;font-size:.68rem;color:var(--mut);margin:3px 1px 8px}
+.wwrs{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin-bottom:6px}.wwr{border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:.8rem}
+.wwnote{display:flex;gap:8px;align-items:flex-start;font-size:.8rem;color:var(--mut);margin-top:6px}.wwnote .ic{flex:none;margin-top:1px}
+.wwhint{display:flex;gap:8px;align-items:flex-start;font-size:.8rem;color:var(--mut);margin:0 0 10px}.wwhint .ic{flex:none;margin-top:1px}
+.wwst{margin-left:auto;font-size:.75rem;font-weight:600;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:3px 10px}.wwst.on{color:var(--teal);border-color:var(--teal)}
+.wwg2{display:grid;gap:14px}
+@media(min-width:900px){.wwg2{grid-template-columns:1fr 1fr;align-items:start}}
+.wsr{display:flex;align-items:center;gap:8px;margin:8px 0;flex-wrap:wrap}.wsr input{background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit;width:112px}.wsr .onum input{width:70px}
+.wwe .t1{font-size:1.1rem;font-weight:700;color:var(--primary-text-color);margin:10px 0 6px}
+.wwl{list-style:none;padding:0;margin:0 auto;display:inline-grid;gap:8px;text-align:left}.wwl li{display:flex;gap:8px;align-items:center}
 `;
 
 class FensterHeizungPanel extends HTMLElement {
@@ -694,7 +763,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   disconnectedCallback() { this._ro && this._ro.disconnect(); clearInterval(this._ti); }
   _tick() {
-    if (this._hass && ++this._pollN % 60 === 0) this._pollGen();
+    if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); }
     this.shadowRoot.querySelectorAll("[data-since]").forEach((el) => {
       const c = cdown(+el.dataset.since, +el.dataset.need), b = el.querySelector("[data-cd]"), f = el.querySelector("[data-bar]");
       if (b) b.textContent = c.txt; if (f) f.style.width = c.pct + "%"; el.classList.toggle("done", c.left <= 0);
@@ -721,6 +790,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._gen.summer = { mode: "auto", temp: 18, days: 3, ...(this._gen.summer || {}) };
       this._gen.wxadj = { on: false, mild: 12, down: 1, frost: 0, up: 1, ...(this._gen.wxadj || {}) };
       this._gen.pv = { ...PVDEF, ...(this._gen.pv || {}) };
+      this._mdApply(r);
     } catch (e) { /* älteres Backend: Standardwerte */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     this._render();
@@ -1373,6 +1443,97 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _acc() { const a = this._cfg.layout.accent; return HEX.test(a || "") ? a : DEF_ACC; }
   _applyLook() { const a = this._acc(); this.style.setProperty("--teal", a); this.style.setProperty("--on-acc", onColor(a)); }
+  /* ---------------- Kopfkarten-Hintergrund ---------------- */
+  _heroCfg() { const h = this._cfg.layout.hero || {}; return { mode: ["time", "season", "weather"].includes(h.mode) ? h.mode : "standard", own: h.own && typeof h.own === "object" ? h.own : {} }; }
+  _sunPhase() {
+    const s = (this._hass.states || {})["sun.sun"];
+    if (s) { const el = Number(s.attributes.elevation); if (isFinite(el)) return el < -4 ? "night" : el <= 8 ? (s.attributes.rising ? "sunrise" : "sunset") : "day"; return s.state === "below_horizon" ? "night" : "day"; }
+    const d = new Date(), h = d.getHours() + d.getMinutes() / 60; return h < 5.5 || h >= 21 ? "night" : h < 8 ? "sunrise" : h < 18 ? "day" : "sunset";
+  }
+  _season() {
+    const m = new Date().getMonth(), lat = this._hass.config && Number(this._hass.config.latitude), n = m >= 2 && m <= 4 ? 0 : m >= 5 && m <= 7 ? 1 : m >= 8 && m <= 10 ? 2 : 3, order = ["spring", "summer", "autumn", "winter"];
+    return order[isFinite(lat) && lat < 0 ? (n + 2) % 4 : n];
+  }
+  _wxSlot() {
+    const c = this._wxCfg(), st = this._hass.states, wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather.")), night = this._sunPhase() === "night";
+    if (!wid) return night ? "clear-night" : "sunny";
+    const map = { sunny: "sunny", "clear-night": "clear-night", partlycloudy: "partlycloudy", cloudy: "cloudy", rainy: "rainy", pouring: "pouring", snowy: "snowy", "snowy-rainy": "snowy", hail: "snowy", fog: "fog", lightning: "lightning", "lightning-rainy": "lightning", windy: "cloudy", "windy-variant": "cloudy", exceptional: "cloudy" };
+    let k = map[st[wid].state] || "cloudy"; if (k === "sunny" && night) k = "clear-night"; if (k === "clear-night" && !night) k = "sunny"; return k;
+  }
+  _heroSlot(mode) { return mode === "time" ? this._sunPhase() : mode === "season" ? this._season() : this._wxSlot(); }
+  _heroBg() {
+    const c = this._heroCfg(); if (c.mode === "standard") return "";
+    const slot = this._heroSlot(c.mode), own = c.own[c.mode + ":" + slot];
+    return own && /^data:image\//.test(own) ? `<div class="hbg hph" style="background-image:url('${esc(own)}')"></div>` : this._heroSvg(c.mode, slot, "h", this._sunPhase() === "night");
+  }
+  _heroSvg(mode, slot, p, night) {
+    night = !!night && mode === "weather" && slot !== "clear-night";
+    let seed = 11; const R = () => (seed = (seed * 1664525 + 1013904223) % 4294967296) / 4294967296, f = (n) => Math.round(n * 10) / 10;
+    const mix = (hex, t) => { const a = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)), b = [5, 10, 28]; return "#" + a.map((v, i) => Math.round(v * (1 - t) + b[i] * t).toString(16).padStart(2, "0")).join(""); };
+    const grad = (st) => `<defs><linearGradient id="${p}g" x1="0" y1="0" x2="0" y2="1">${st.map(([o, col]) => `<stop offset="${o}" stop-color="${night ? mix(col, 0.62) : col}"/>`).join("")}</linearGradient></defs><rect width="400" height="200" fill="url(#${p}g)"/>`;
+    const stars = (n) => Array.from({ length: n }, () => `<circle cx="${f(R() * 400)}" cy="${f(R() * 115)}" r="${f(0.5 + R() * 1)}" fill="#fff" opacity="${f(0.35 + R() * 0.6)}"/>`).join("");
+    const hills = (c1, c2, y = 150) => `<path d="M0 ${y}C60 ${y - 30} 120 ${y - 24} 190 ${y - 8}S330 ${y - 34} 400 ${y - 12}V200H0Z" fill="${c1}"/><path d="M0 ${y + 22}C80 ${y + 4} 150 ${y + 12} 230 ${y + 20}S350 ${y + 6} 400 ${y + 16}V200H0Z" fill="${c2}"/>`;
+    const sun = (x, y, r, col, glow) => `<circle cx="${x}" cy="${y}" r="${r * 2.6}" fill="${glow}" opacity=".18"/><circle cx="${x}" cy="${y}" r="${r * 1.7}" fill="${glow}" opacity=".3"/><circle cx="${x}" cy="${y}" r="${r}" fill="${col}"/>`;
+    const moon = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r * 2.4}" fill="#cfd8ff" opacity=".12"/><mask id="${p}m"><rect width="400" height="200" fill="#fff"/><circle cx="${x + r * 0.5}" cy="${y - r * 0.25}" r="${r * 0.92}" fill="#000"/></mask><circle cx="${x}" cy="${y}" r="${r}" fill="#f4f1d8" mask="url(#${p}m)"/>`;
+    const cloud = (x, y, s, op, col) => `<g opacity="${op}" fill="${col}" transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="0" rx="36" ry="12"/><ellipse cx="-17" cy="-9" rx="19" ry="13"/><ellipse cx="11" cy="-14" rx="23" ry="16"/></g>`;
+    const rain = (n, len, op) => Array.from({ length: n }, () => { const x = f(R() * 420), y = f(R() * 190); return `<path d="M${x} ${y}l-4 ${len}" stroke="#cfe6ff" stroke-width="1.2" opacity="${op}" stroke-linecap="round"/>`; }).join("");
+    const snow = (n, c) => Array.from({ length: n }, () => `<circle cx="${f(R() * 400)}" cy="${f(R() * 190)}" r="${f(0.8 + R() * 1.9)}" fill="${c || "#fff"}" opacity="${f(0.5 + R() * 0.5)}"/>`).join("");
+    const fog = () => [40, 78, 112, 146].map((y, i) => `<rect x="${i % 2 ? -30 : 20}" y="${y}" width="420" height="22" rx="11" fill="#e8eef2" opacity="${f(0.16 + i * 0.05)}"/>`).join("");
+    const leaves = (n) => Array.from({ length: n }, () => `<ellipse cx="${f(R() * 400)}" cy="${f(R() * 190)}" rx="${f(3 + R() * 3)}" ry="${f(1.8 + R() * 1.6)}" fill="${["#e0451f", "#f08a1f", "#f4c430", "#b5471d"][Math.floor(R() * 4)]}" opacity=".85" transform="rotate(${Math.round(R() * 180)} ${f(R() * 400)} ${f(R() * 190)})"/>`).join("");
+    const petals = (n) => Array.from({ length: n }, () => `<circle cx="${f(R() * 400)}" cy="${f(R() * 190)}" r="${f(1.6 + R() * 2)}" fill="${["#ffd1e3", "#fff", "#ffb6d2"][Math.floor(R() * 3)]}" opacity=".85"/>`).join("");
+    const bolt = (x, y) => `<polygon points="${x},${y} ${x - 14},${y + 34} ${x - 3},${y + 34} ${x - 10},${y + 62} ${x + 16},${y + 24} ${x + 4},${y + 24} ${x + 12},${y}" fill="#fff6b0" opacity=".95"/><polygon points="${x},${y} ${x - 14},${y + 34} ${x - 3},${y + 34} ${x - 10},${y + 62} ${x + 16},${y + 24} ${x + 4},${y + 24} ${x + 12},${y}" fill="#fff6b0" opacity=".25" transform="scale(1.4)" transform-origin="${x} ${y}"/>`;
+    const cl = (op, col, pts) => pts.map(([x, y, s]) => cloud(x, y, s, op, col)).join("");
+    let b = "";
+    if (mode === "time") {
+      if (slot === "night") b = grad([[0, "#050a1c"], [0.6, "#14214a"], [1, "#2a2f66"]]) + stars(70) + moon(310, 48, 18) + hills("#0a1230", "#070d24", 160);
+      else if (slot === "sunrise") b = grad([[0, "#27255e"], [0.45, "#8a4a86"], [0.75, "#f08a6a"], [1, "#fbd38a"]]) + sun(300, 152, 22, "#fff3c0", "#ffd27a") + hills("#3a2a52", "#241a3c", 152);
+      else if (slot === "sunset") b = grad([[0, "#1c2a60"], [0.4, "#75397c"], [0.75, "#e5604b"], [1, "#fbab5c"]]) + sun(110, 152, 24, "#ffe2a0", "#ff9f5a") + hills("#3b2447", "#241634", 152);
+      else b = grad([[0, "#1a5aa6"], [0.6, "#3f9ad6"], [1, "#9ad8f0"]]) + sun(320, 44, 20, "#fff7c2", "#fff1a0") + cl(0.7, "#fff", [[90, 56, 1.1], [210, 92, 0.8]]) + hills("#2f7d6a", "#1f5f55", 160);
+    } else if (mode === "season") {
+      if (slot === "spring") b = grad([[0, "#1b6a7a"], [0.55, "#6fbf9a"], [1, "#d6efb0"]]) + sun(330, 40, 14, "#fffbd0", "#fff2a0") + hills("#4f9a5a", "#3a7d49", 152) + petals(34);
+      else if (slot === "summer") b = grad([[0, "#0d5f9a"], [0.5, "#29a8c8"], [1, "#fbe9a0"]]) + sun(318, 42, 24, "#fff4b0", "#ffe27a") + cl(0.55, "#fff", [[100, 60, 0.9]]) + hills("#e1b84a", "#c79a2e", 155);
+      else if (slot === "autumn") b = grad([[0, "#2c1a14"], [0.5, "#8e4520"], [1, "#e6903a"]]) + sun(290, 78, 15, "#ffd9a0", "#ff9f5a") + hills("#4b2412", "#33180d", 155) + leaves(34);
+      else b = grad([[0, "#0a2240"], [0.55, "#2c5d8c"], [1, "#a9cbe3"]]) + snow(74) + hills("#e8f1f8", "#cfe0ee", 158);
+    } else {
+      const day = !night;
+      if (slot === "clear-night") b = grad([[0, "#050a1c"], [0.6, "#14214a"], [1, "#2a2f66"]]) + stars(70) + moon(310, 48, 18) + hills("#0a1230", "#070d24", 160);
+      else if (slot === "sunny") b = grad([[0, "#1a5aa6"], [0.6, "#3f9ad6"], [1, "#9ad8f0"]]) + sun(320, 44, 20, "#fff7c2", "#fff1a0") + hills("#2f7d6a", "#1f5f55", 160);
+      else if (slot === "partlycloudy") b = grad([[0, "#2a649f"], [0.6, "#5aa0d0"], [1, "#a9d6ea"]]) + sun(320, 48, 18, "#fff7c2", "#fff1a0") + cl(0.85, "#fff", [[110, 64, 1.2], [250, 96, 1], [330, 74, 0.8]]) + hills("#2f7d6a", "#1f5f55", 162);
+      else if (slot === "cloudy") b = grad([[0, "#46566a"], [0.6, "#6f8196"], [1, "#a2b2c2"]]) + cl(0.85, "#d6dee6", [[80, 52, 1.3], [200, 86, 1.5], [320, 56, 1.2], [140, 120, 1.1]]) + hills("#44566a", "#34455a", 166);
+      else if (slot === "rainy") b = grad([[0, "#2b3a4f"], [0.6, "#4b5f78"], [1, "#7288a0"]]) + cl(0.9, "#8b9bb0", [[80, 46, 1.4], [210, 70, 1.6], [330, 48, 1.3]]) + rain(60, 14, 0.55) + hills("#2c3b50", "#1f2d40", 168);
+      else if (slot === "pouring") b = grad([[0, "#1b2638"], [0.6, "#35465d"], [1, "#586d86"]]) + cl(0.95, "#6f8096", [[70, 44, 1.5], [200, 64, 1.7], [330, 44, 1.4]]) + rain(140, 18, 0.6) + hills("#1d2a3c", "#142030", 170);
+      else if (slot === "snowy") b = grad([[0, "#415a74"], [0.6, "#7f9bb5"], [1, "#c4d6e4"]]) + cl(0.8, "#e4ecf3", [[90, 48, 1.3], [250, 74, 1.4]]) + snow(80) + hills("#eef4f9", "#d6e4ef", 164);
+      else if (slot === "fog") b = grad([[0, "#5c6b78"], [0.6, "#8a98a4"], [1, "#b9c4cc"]]) + hills("#6f7f8c", "#5f6f7c", 150) + fog();
+      else b = grad([[0, "#1c2233"], [0.6, "#323a55"], [1, "#4f5a78"]]) + cl(0.95, "#59627f", [[80, 46, 1.5], [220, 66, 1.7], [330, 44, 1.3]]) + rain(70, 14, 0.4) + bolt(250, 70) + hills("#171d2e", "#101626", 170);
+      void day;
+    }
+    return `<svg class="hbg" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${b}</svg>`;
+  }
+  _heroPick(inp) {
+    const file = inp.files && inp.files[0], key = this._heroTarget; if (!file || !key) return;
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const w = Math.min(900, img.width), h = Math.round(img.height * w / img.width), c = document.createElement("canvas"); c.width = w; c.height = h;
+      c.getContext("2d").drawImage(img, 0, 0, w, h); URL.revokeObjectURL(url);
+      let q = 0.72, d = c.toDataURL("image/jpeg", q);
+      while (d.length > 150000 && q > 0.3) { q -= 0.08; d = c.toDataURL("image/jpeg", q); }
+      if (d.length > 190000) { this._toast("Bild ist zu groß"); return; }
+      const hc = this._heroCfg(), own = { ...hc.own, [key]: d };
+      if (Object.keys(own).length > 12) { this._toast("Höchstens 12 eigene Hintergründe"); return; }
+      this._cfg.layout.hero = { mode: hc.mode, own }; this._saveLayout(); this._render(); this._renderModal();
+    };
+    img.onerror = () => this._toast("Bild konnte nicht gelesen werden");
+    img.src = url;
+  }
+  _heroLook() {
+    const c = this._heroCfg(), slots = HERO_SLOTS[c.mode] || [], act = c.mode === "standard" ? "" : this._heroSlot(c.mode);
+    const info = { standard: "Die gewohnte Kopfkarte.", time: "Der Hintergrund folgt dem Sonnenstand (Sonne „sun.sun“, sonst die Uhrzeit): Nacht, Sonnenaufgang, Tag und Sonnenuntergang.", season: "Der Hintergrund folgt der Jahreszeit (meteorologisch, auf der Südhalbkugel umgekehrt).", weather: "Der Hintergrund zeigt das aktuelle Wetter, nachts dunkler. Das Wetter kommt von der Wetter-Entität oben." }[c.mode];
+    return `<div class="lsec">${ic("image", 15)}Kopfkarten-Hintergrund</div>
+      <div class="seg" style="margin-top:6px">${HERO_MODES.map(([k, l]) => `<button class="${c.mode === k ? "sel" : ""}" data-act="hmode" data-k="${k}">${l}</button>`).join("")}</div>
+      <div class="mut sm" style="margin:0 0 8px">${info}</div>
+      ${slots.length ? `<div class="hsl">${slots.map(([k, l], i) => { const own = c.own[c.mode + ":" + k], key = c.mode + ":" + k; return `<div class="hsc ${act === k ? "on" : ""}"><div class="hth">${own ? `<div class="hbg hph" style="background-image:url('${esc(own)}')"></div>` : this._heroSvg(c.mode, k, "t" + i, false)}${act === k ? `<em>jetzt</em>` : ""}</div><b>${l}</b><div class="hac"><button class="lnk" data-act="hup" data-k="${key}">${own ? "Ersetzen" : "Eigenes Foto"}</button>${own ? `<button class="lnk dng" data-act="hdel" data-k="${key}">${ic("trash", 13)}</button>` : ""}</div></div>`; }).join("")}</div><input type="file" accept="image/*" data-f="hfile" hidden>
+      <div class="mut sm" style="margin:6px 0 8px">Mit „Eigenes Foto“ ersetzt du den Hintergrund für diesen Fall. Das Foto wird verkleinert (ca. 900 px) und für alle Nutzer gespeichert. Höchstens 12 Fotos.</div>` : ""}`;
+  }
   _wxCfg() { const w = this._cfg.layout.wx || {}; return { on: w.on !== false, entity: w.entity || "", outdoor: w.outdoor || "" }; }
   _wx() {
     const c = this._wxCfg(); if (!c.on) return "";
@@ -1399,7 +1560,7 @@ class FensterHeizungPanel extends HTMLElement {
   async _backup() {
     const rooms = {}, list = this._collect(true);
     for (const r of list) { try { const o = await this._hass.callWS({ type: "fenster_heizung/get_options", entry_id: r.id }); rooms[r.id] = { name: r.name, options: o.options }; } catch (_) { rooms[r.id] = { name: r.name }; } }
-    const data = { app: "fenster_heizung", format: 1, version: this._ver, created: new Date().toISOString(), layout: this._cfg.layout, plans: this._cfg.plans, presence: this._cfg.presence, general: this._gen, rooms };
+    const data = { app: "fenster_heizung", format: 1, version: this._ver, created: new Date().toISOString(), layout: this._cfg.layout, plans: this._cfg.plans, presence: this._cfg.presence, general: this._gen, modules: this._mdBackup().modules, wasser: this._mdBackup().ww, rooms };
     const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: "application/json" })), a = document.createElement("a");
     a.href = url; a.download = `fenster-heizung-sicherung-${new Date().toISOString().slice(0, 10)}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000);
     this._toast(`Sicherung gespeichert (${list.length} ${list.length === 1 ? "Raum" : "Räume"})`);
@@ -1435,6 +1596,7 @@ class FensterHeizungPanel extends HTMLElement {
     const f = t.dataset && t.dataset.f, L = this._cfg.layout, m = this._modal;
     if (!f) return false;
     if (f === "rfile") { this._photoPick(t); return true; }
+    if (f === "hfile") { this._heroPick(t); t.value = ""; return true; }
     if (f === "lacc" && HEX.test(t.value)) L.accent = t.value;
     else if (f === "rcolc" && m && HEX.test(t.value)) L.colors = { ...(L.colors || {}), [m.id]: t.value };
     else if (f === "lwxe") L.wx = { ...(L.wx || {}), entity: t.value };
@@ -1493,6 +1655,7 @@ class FensterHeizungPanel extends HTMLElement {
     const bg = getComputedStyle(this).backgroundColor.match(/\d+/g) || [15, 20, 25];
     this.style.colorScheme = (0.299 * bg[0] + 0.587 * bg[1] + 0.114 * bg[2]) < 140 ? "dark" : "light";
     this._applyLook();
+    if (this._mdActive() !== "fh") { this._mdRender(); return; }
     const rooms = this._collect(), edit = this._edit, adm = this._admin();
     const sum = (sc, k) => rooms.reduce((a, r) => a + (r.sc[sc]?.[k] || 0), 0);
     const paused = rooms.filter((r) => r.mode === "heizung_pausiert").length;
@@ -1501,7 +1664,7 @@ class FensterHeizungPanel extends HTMLElement {
     const dateStr = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const tiles = [["day", "today", "Heute", "var(--teal)"], ["month", "month", "Monat", "#60a5fa"], ["year", "year", "Jahr", "#a78bfa"], ["total", "total", "Gesamt", "#f472b6"]];
     const content = {
-      hero: () => `<div class="card hero">${this._art()}<img class="hlogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false">
+      hero: () => `<div class="card hero${this._heroCfg().mode !== "standard" ? " hs" : ""}">${this._heroBg()}${this._art()}<img class="hlogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false">
         <div class="lbl">${ic("flame", 16)}Heute ${F.short} gespart (geschätzt)</div>
         <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>${this._wx()}
         <div class="chips">${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
@@ -1527,7 +1690,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><span class="logo">${ic("windowOpen", 22)}</span><div><b>Modul 1 – Fenster &amp; Heizung</b><span><em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
         ${adm ? `<button class="pillbtn" data-act="gen" aria-label="Allgemein">${ic("sliders", 16)}<span class="bl">Allgemein</span></button>` : ""}${adm && edit ? `<button class="pillbtn" data-act="look">${ic("palette", 16)}<span class="bl">Darstellung</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
-      <div class="wrap">${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
+      ${this._mdBar()}<div class="wrap">${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
         ${!edit ? this._updBanner() : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
   }
 
@@ -1546,6 +1709,7 @@ class FensterHeizungPanel extends HTMLElement {
       const t = e.target;
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wz") && this._wzChange(t)) return;
+      if (t.dataset && t.dataset.f && (t.dataset.f.startsWith("md") || t.dataset.f.startsWith("ww")) && this._mdChange(t)) return;
       if (this._lookChange(t)) return;
       if (t.dataset && t.dataset.k === "htr_steps" && this._modal && this._modal.type === "opt") { this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("v") && this._modal && this._modal.type === "vac") { const k = { vfrom: "from", vto: "to", vtime: "preheat_time" }[t.dataset.f]; this._modal.draft[k] = t.value; if (k === "from" && t.value > this._modal.draft.to) this._modal.draft.to = t.value; this._renderModal(); }
@@ -1558,6 +1722,7 @@ class FensterHeizungPanel extends HTMLElement {
   _act(a, b) {
     const m = this._modal, i = +b.dataset.i, id = b.dataset.id;
     if (a === "menu") this.dispatchEvent(new Event("hass-toggle-menu", { bubbles: true, composed: true }));
+    else if (a.startsWith("md") || a.startsWith("ww")) this._mdAct(a, b);
     else if (["gtog", "gsw", "gmv", "gedit", "gadd", "gpick", "gicon", "gsave", "gdel"].includes(a)) this._gActions(a, b);
     else if (a === "opt") this._optOpen(id);
     else if (a === "oadd") this._nav(HA_PAGE);
@@ -1611,6 +1776,9 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "myreset") { this._mySet({ on: false, hidden: [], order: [], hb: [] }); this._render(); this._renderModal(); }
     else if (a === "look") { this._modal = { type: "look" }; this._renderModal(); }
     else if (a === "lacc") { this._cfg.layout.accent = b.dataset.k || ""; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (a === "hmode") { const hc = this._heroCfg(); this._cfg.layout.hero = { mode: b.dataset.k, own: hc.own }; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (a === "hup") { this._heroTarget = b.dataset.k; const inp = this.shadowRoot.querySelector("[data-f=hfile]"); if (inp) inp.click(); }
+    else if (a === "hdel") { const hc = this._heroCfg(), own = { ...hc.own }; delete own[b.dataset.k]; this._cfg.layout.hero = { mode: hc.mode, own }; this._saveLayout(); this._render(); this._renderModal(); }
     else if (a === "lwx") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), on: !this._wxCfg().on }; this._saveLayout(); this._render(); this._renderModal(); }
     else if (a === "rcol") { const c = { ...(this._cfg.layout.colors || {}) }; if (b.dataset.k) c[m.id] = b.dataset.k; else delete c[m.id]; this._cfg.layout.colors = c; this._saveLayout(); this._render(); this._renderModal(); }
     else if (a === "rphoto") { const f = this.shadowRoot.querySelector('[data-f="rfile"]'); if (f) f.click(); }
@@ -1945,7 +2113,7 @@ class FensterHeizungPanel extends HTMLElement {
   _batRow(eid, b) {
     const cfg = this._vcfg(), ov = (cfg.batsrc || {})[eid], pc = b && b.pct != null ? Math.max(0, Math.min(100, b.pct)) : null, bc = b && (b.low || (pc != null && pc <= 10)) ? "bad" : b && pc != null && pc <= cfg.warn ? "warn" : "ok";
     const open = this._modal && this._modal.bat === eid;
-    const val = !b ? `<span class="mut">${ov && ov.src === "none" ? "ohne Batterie-Überwachung" : "kein Batteriewert gefunden"}</span>` : b.unknown ? `<b class="vwarn">Batteriesensor meldet nichts</b>` : pc != null ? `<div class="vbar ${bc}"><i style="width:${pc}%"></i></div><b>${pc} %</b>` : `<b class="${b.low ? "vbad" : ""}">${b.low ? "leer / schwach" : "in Ordnung"}</b>`;
+    const val = !b ? `<span class="mut">${ov && ov.src === "none" ? "ohne Batterie-Überwachung" : "kein Batteriewert gefunden"}</span>` : b.unknown ? `<b class="vwarn">Batteriesensor meldet nichts</b>` : pc != null ? `<div class="batbar ${bc}"><i style="width:${pc}%"></i></div><b>${pc} %</b>` : `<b class="${b.low ? "vbad" : ""}">${b.low ? "leer / schwach" : "in Ordnung"}</b>`;
     const src = b && b.src ? `<span class="vsrc">${b.manual ? "Quelle: " : "erkannt: "}${esc(b.name || b.src)}${b.bin ? " (Binärsensor)" : ""}</span>` : "";
     let ed = "";
     if (open) {
@@ -2118,6 +2286,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!m) { box.innerHTML = ""; return; }
     const r = this._collect().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
     if (m.type === "icon") {
       const cur = this._icon(r), L = this._cfg.layout, cc = (L.colors || {})[m.id], ph = (L.photos || {})[m.id];
@@ -2212,6 +2381,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sh"><div><b>Darstellung</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="lsec">${ic("palette", 15)}Akzentfarbe</div>
         <div class="swatches">${ACCENTS.map((c) => `<button class="sw2 ${a === c ? "sel" : ""}" style="background:${c}" data-act="lacc" data-k="${c}" aria-label="${c}"></button>`).join("")}<label class="cpick"><input type="color" data-f="lacc" value="${a}">Eigene</label></div>
+        ${this._heroLook()}
         <div class="lsec">${ic("sun", 15)}Wetter in der Kopfkarte</div>
         <div class="ltog"><span>Außentemperatur und Wetter anzeigen</span><button class="sw ${w.on ? "on" : ""}" data-act="lwx" aria-pressed="${w.on}" aria-label="Wetter anzeigen"></button></div>
         ${w.on ? `<div class="mut sm" style="margin:0">Wetter-Entität</div><select class="lsel" data-f="lwxe"><option value="">Automatisch${wl[0] ? ` (${esc(nm(wl[0]))})` : ""}</option>${wl.map((k) => `<option value="${esc(k)}" ${w.entity === k ? "selected" : ""}>${esc(nm(k))}</option>`).join("")}</select>
@@ -2358,6 +2528,350 @@ class FensterHeizungPanel extends HTMLElement {
       this._saveLayout();
     }
     this._drag = null; this._dragging = false; this._render();
+  }
+
+  /* ================= Module (Modul 2: Warmwasser & Zirkulation, weitere Module) ================= */
+  _mdState() {
+    if (!this._mds) {
+      let act = "fh"; try { act = localStorage.getItem("fh_mod_active") || "fh"; } catch (_) { /* Speicher gesperrt */ }
+      this._mds = { active: act, on: { ww: true }, ext: [], ww: JSON.parse(JSON.stringify(WW_DEF)), loaded: false };
+    }
+    return this._mds;
+  }
+  _mdApply(r) {
+    const s = this._mdState();
+    if (r && r.modules) { s.on = { ww: true, ...(r.modules.on || {}) }; s.ext = Array.isArray(r.modules.ext) ? r.modules.ext : []; }
+    const w = r && r.wasser; if (!w) return;
+    const d = JSON.parse(JSON.stringify(WW_DEF)), c = w.ww || {}, st = w.status || {}, keep = { day: s.ww.day };
+    s.ww = { ...d, ...c, ent: { ...d.ent, ...(c.ent || {}) }, heat: { ...d.heat, ...(c.heat || {}) }, circ: { ...d.circ, ...(c.circ || {}) }, leg: { ...d.leg, ...(c.leg || {}), last: st.leg_last || null }, pv: { ...d.pv, ...(c.pv || {}) }, boost: !!st.boost, circ5: !!st.circ5, away: !!st.away, ...keep };
+    s.loaded = true;
+  }
+  _mdBackup() { const W = this._mdState().ww, ww = JSON.parse(JSON.stringify(W)); ["boost", "circ5", "away", "day"].forEach((k) => delete ww[k]); delete ww.leg.last; return { modules: { on: this._mdState().on, ext: this._mdState().ext }, ww }; }
+  _mdSave() {
+    clearTimeout(this._mdT);
+    this._mdT = setTimeout(() => {
+      this._mdT = null;
+      if (!this._hass) return; const b = this._mdBackup();
+      this._hass.callWS({ type: "fenster_heizung/set_modules", modules: b.modules })
+        .then(() => this._hass.callWS({ type: "fenster_heizung/set_wasser", ww: b.ww }))
+        .then((r) => { this._mdPoll(r); })
+        .catch(() => this._toast("Modul-Einstellung konnte nicht gespeichert werden"));
+    }, 500);
+  }
+  _mdPoll(r) {
+    if (!this._hass) return;
+    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "mods"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
+    if (r) { apply(r); return; }
+    this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
+  }
+  _mdActiveSet(id) { const s = this._mdState(); s.active = id; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
+  _mdList() { const s = this._mdState(); return [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
+  _mdActive() { const s = this._mdState(); return this._mdList().some((m) => m.id === s.active) ? s.active : "fh"; }
+  _mdBar() {
+    const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
+    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}</button>`).join("")}<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button></nav>`;
+  }
+  _mdRender() {
+    const sr = this.shadowRoot, a = this._mdActive(), m = this._mdList().find((x) => x.id === a), adm = this._admin();
+    let body = "", pills = "";
+    if (a === "ww") { body = this._wwPage(); pills = adm ? `<button class="pillbtn" data-act="mdsetup" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; this._wwLoad(); }
+    else body = `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">${esc(m.name)}</div>Dieses Modul wird aus <code>${esc(m.ext.url)}</code> geladen.<br><span class="sm">Externe Module werden in einer späteren Version geladen.</span></div>`;
+    sr.getElementById("main").innerHTML = `
+      <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
+        <div class="brand"><span class="logo ${a === "ww" ? "ww" : ""}">${ic(m.icon, 22)}</span><div><b>${m.n ? "Modul " + m.n + " – " : ""}${esc(m.name)}</b><span><em class="tag">${esc(m.tag)}</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${pills}</div>
+      ${this._mdBar()}<div class="wrap">${body}</div>`;
+  }
+  _mdAct(a, b) {
+    const s = this._mdState(), m = this._modal, k = b.dataset.k;
+    if (a === "mdgo") { this._mdActiveSet(k); this._render(); }
+    else if (a === "mdmgr") { this._modal = { type: "mods" }; this._renderModal(); }
+    else if (a === "mdsetup") { this._modal = { type: "wwset" }; this._renderModal(); }
+    else if (a === "mdtog") {
+      if (k === "ww") s.on.ww = !s.on.ww; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
+      if (!this._mdList().some((x) => x.id === s.active)) this._mdActiveSet("fh");
+      this._mdSave(); this._renderModal(); this._render();
+    }
+    else if (a === "mdextadd") {
+      const inp = this.shadowRoot.querySelector('[data-f="mdurl"]'), url = (inp ? inp.value : "").trim();
+      if (!/^(https:\/\/|\/local\/|\/hacsfiles\/).+\.js$/i.test(url)) { m.err = "Bitte die Adresse der Moduldatei eintragen, z. B. /local/mein-modul.js oder https://…/modul.js"; m.url = url; this._renderModal(); return; }
+      const base = decodeURIComponent(url.split("/").pop().replace(/\.js$/i, "")).replace(/[-_.]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      s.ext.push({ id: "x" + Date.now().toString(36), name: base || "Eigenes Modul", url, on: true }); m.err = ""; m.url = ""; this._mdSave(); this._renderModal(); this._render(); this._toast("Modul hinzugefügt");
+    }
+    else if (a === "mdextdel") { s.ext = s.ext.filter((x) => x.id !== k); if (s.active === k) this._mdActiveSet("fh"); this._mdSave(); this._renderModal(); this._render(); }
+    else if (a === "mdhacs") { this._modal = null; this._renderModal(); this._nav("/hacs"); }
+    else if (a === "mdinfo") { m.info = !m.info; this._renderModal(); }
+    else if (a.startsWith("ww")) this._wwAct(a, b);
+  }
+  _mdChange(t) {
+    const f = t.dataset.f, m = this._modal;
+    if (f === "mdurl") { if (m) m.url = t.value; return true; }
+    if (f.startsWith("ww")) return this._wwChange(t);
+    return false;
+  }
+  _mdModal() {
+    const m = this._modal;
+    if (m.type === "wwset") return this._wwSetModal();
+    if (m.type === "wwsch") return this._wwSchModal();
+    const s = this._mdState(), W = s.ww, ok = this._wwConfigured();
+    const row = (id, ico, name, sub, right) => `<div class="mrow"><span class="mi">${ic(ico, 22)}</span><div class="mt"><b>${esc(name)}</b><span>${sub}</span></div>${right}</div>`;
+    const tog = (id, on) => `<button class="sw ${on ? "on" : ""}" data-act="mdtog" data-k="${id}" aria-pressed="${on}" aria-label="Modul ein- oder ausschalten"></button>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Module</b><span>Funktionen erweitern, ohne dass sie sich stören</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("check", 15)}Installiert</div>
+      ${row("fh", "windowOpen", "Modul 1 – Fenster & Heizung", "Fenster, Heizpläne, Elektroheizer, Berichte", `<span class="mbadge">Grundmodul</span>`)}
+      ${row("ww", "boiler", "Modul 2 – Warmwasser & Zirkulation", ok ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!ok && s.on.ww ? `<button class="btn2 pri" data-act="mdsetup">Einrichten</button>` : ""}${tog("ww", s.on.ww)}</span>`)}
+      ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
+      <div class="lsec">${ic("clock", 15)}Geplant</div>
+      ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}
+      <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>
+      <div class="mut sm" style="margin:2px 0 8px">Module sind kleine Erweiterungen. Sie nutzen deine Räume, die PV-Einstellungen und die Meldungen mit und erscheinen hier als eigene Seite.</div>
+      <div class="gbtns"><button class="btn2" data-act="mdhacs">${ic("download", 16)} Über HACS suchen</button></div>
+      <div class="mut sm" style="margin:4px 0 0">Oder die Adresse einer Moduldatei eintragen</div>
+      <div class="murl"><input class="otxt" data-f="mdurl" placeholder="/local/mein-modul.js" value="${esc(m.url || "")}" autocomplete="off" spellcheck="false"><button class="btn2 pri" data-act="mdextadd">Hinzufügen</button></div>
+      ${m.err ? `<div class="gst on">${ic("alert", 15)}${esc(m.err)}</div>` : ""}
+      <button class="lnk" data-act="mdinfo">${ic("info", 15)}Wie funktionieren Module?</button>
+      ${m.info ? `<div class="minfo"><b>So ist es aufgebaut</b><ul><li>Jedes Modul meldet sich mit <b>ID, Name, Symbol und einer Seite</b> (JavaScript-Datei) an.</li><li>Es bekommt Zugriff auf Räume, PV-Überschuss, Benachrichtigungen und die Gerätediagnose.</li><li>Was ein Modul speichert, bleibt in seinem eigenen Bereich. Ausschalten löscht nichts.</li><li>Module werden einzeln über HACS installiert und haben eigene Versionen.</li></ul></div>` : ""}
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+
+  /* ---- Warmwasser: Daten ---- */
+  _wwV(e) { const s = e && this._hass.states[e], v = s ? parseFloat(String(s.state).replace(",", ".")) : NaN; return isFinite(v) ? v : null; }
+  _wwIsOn(e) { const s = e && this._hass.states[e]; return !!s && ["on", "heat", "heating", "performance", "eco", "electric", "gas", "heat_pump", "high_demand"].includes(s.state); }
+  _wwConfigured() { const e = this._mdState().ww.ent; return !!(e.top || e.mid || e.bot || e.pump); }
+  _wwDay() { const w = this._mdState().ww; return w.day || (new Date().getDay() % 6 === 0 ? "we" : "wd"); }
+  _wwTemps() { const e = this._mdState().ww.ent; return { top: this._wwV(e.top), mid: this._wwV(e.mid), bot: this._wwV(e.bot) }; }
+  _wwNowSched() {
+    const W = this._mdState().ww, d = new Date(), key = d.getDay() % 6 === 0 ? "we" : "wd", mi = d.getHours() * 60 + d.getMinutes();
+    const hit = (W.heat[key] || []).find((x) => mi >= wwTm(x.from) && mi < wwTm(x.to));
+    return hit ? hit.temp : W.heat.low;
+  }
+  _wwShowers(t) {
+    const W = this._mdState().ww, th = [t.top, t.mid, t.bot].filter((v) => v != null); if (!th.length) return null;
+    const part = W.size / th.length; let mixed = 0;
+    th.forEach((v) => { if (v > 38) mixed += part * (v - 10) / 28; });
+    return Math.floor(mixed / 50);
+  }
+  _wwStatus() {
+    const W = this._mdState().ww, t = this._wwTemps(), want = W.boost ? W.leg.temp : this._wwNowSched();
+    if (t.top != null && t.top >= 65) return ["alert", "Zu heiß", "warn"];
+    if (W.boost) return ["flame", "Einmal-Aufheizen läuft", "warn"];
+    if (W.away) return ["suitcase", "Abwesend – Sparmodus", "mut"];
+    if (this._wwIsOn(W.ent.src) || this._wwIsOn(W.ent.rod)) return ["flame", `Heizt auf ${num(want, 0)} °C`, "warn"];
+    if (t.top != null && t.top >= want - 3) return ["check", "Bereit", "ok"];
+    if (t.top != null) return ["alert", `Unter Soll (${num(want, 0)} °C)`, "warn"];
+    return ["info", "Kein Messwert", "mut"];
+  }
+  _wwProblems() {
+    const W = this._mdState().ww, E = W.ent, out = [];
+    if (!this._hass || !this._wwConfigured()) return [["mut", "info", "Modul nicht eingerichtet", "Wähle unter „Einstellungen“ die Sensoren und Schalter für Speicher und Pumpe."]];
+    const nm = (e) => this._wzName(e);
+    [["top", "Speicher oben"], ["mid", "Speicher Mitte"], ["bot", "Speicher unten"], ["ret", "Rücklauf"]].forEach(([k, l]) => {
+      if (!E[k]) return; const st = this._hass.states[E[k]];
+      if (!st || ["unavailable", "unknown"].includes(st.state)) out.push(["bad", "alert", `${l}: nicht erreichbar`, `${esc(nm(E[k]))} liefert keinen Wert. Die Regelung ist an dieser Stelle blind.`]);
+    });
+    const t = this._wwTemps(), want = this._wwNowSched();
+    if (t.top != null && t.top >= 65) out.push(["warn", "alert", `Speicher sehr heiß (${num(t.top, 1)} °C)`, "Ab 60 °C am Zapfhahn droht Verbrühungsgefahr. Mischer oder Begrenzung prüfen."]);
+    else if (t.top != null && t.top < Math.min(want, W.heat.low) - 5 && !W.away) out.push(["warn", "alert", `Speicher kühler als Soll (${num(t.top, 1)} °C)`, `Soll ist ${num(want, 0)} °C. Heizt der Erzeuger nicht an?`]);
+    const rv = this._wwV(E.ret);
+    if (E.pump && this._wwIsOn(E.pump) && rv != null && rv >= W.circ.ret_max + 5) out.push(["warn", "thermo", `Rücklauf sehr warm (${num(rv, 1)} °C)`, "Pumpe läuft, obwohl der Rücklauf warm ist. Schwerkraftbremse oder Pumpenschaltung prüfen."]);
+    if (W.leg.on) { const d = this._wwLegDays(); if (d != null && d > 9) out.push(["warn", "shield", `Legionellenschutz überfällig (${d} Tage)`, "Die letzte Aufheizung auf Schutztemperatur ist länger als 9 Tage her."]); }
+    return out.length ? out : [["ok", "check", "Alles in Ordnung", "Sensoren erreichbar, Speicher im Soll, Pumpe unauffällig."]];
+  }
+  _wwLegDays() { const l = this._mdState().ww.leg.last; return l ? Math.floor((Date.now() - new Date(l.ts).getTime()) / 864e5) : null; }
+
+  /* ---- Warmwasser: Verlauf (24 h) ---- */
+  _wwLoad(force) {
+    const W = this._mdState().ww, E = W.ent, ids = [E.top, E.mid, E.bot, E.ret, E.pump, E.src, E.rod].filter(Boolean);
+    if (!this._hass || !ids.length) return;
+    if (!force && this._wwH && Date.now() - this._wwH.ts < 3e5) return;
+    if (this._wwBusy) return; this._wwBusy = true;
+    const end = new Date(), start = new Date(+end - 864e5);
+    this._hass.callWS({ type: "history/history_during_period", start_time: start.toISOString(), end_time: end.toISOString(), entity_ids: ids, include_start_time_state: true, significant_changes_only: false, minimal_response: false, no_attributes: false })
+      .then((res) => { this._wwH = { ts: Date.now(), start: +start, end: +end, res: res || {} }; })
+      .catch(() => { this._wwH = { ts: Date.now(), start: +start, end: +end, res: {}, err: true }; })
+      .finally(() => { this._wwBusy = false; if (this._mdActive() === "ww" && !this._dragging) this._render(); });
+  }
+  _wwSeries(eid) { const H = this._wwH; if (!H || !eid) return []; return ((H.res || {})[eid] || []).map((x) => ({ t: ((x.lu ?? x.lc ?? H.start / 1000) * 1000 - H.start) / 6e4, s: x.s })); }
+  _wwMinutesOn(eid) {
+    const ser = this._wwSeries(eid), H = this._wwH; if (!ser.length || !H) return null;
+    const total = (H.end - H.start) / 6e4; let sum = 0;
+    ser.forEach((x, i) => { const t0 = Math.max(0, x.t), t1 = i + 1 < ser.length ? ser[i + 1].t : total; if (["on", "heat", "heating", "performance", "eco", "electric"].includes(x.s)) sum += Math.max(0, t1 - t0); });
+    return Math.round(sum);
+  }
+  _wwChart() {
+    const W = this._mdState().ww, E = W.ent, H = this._wwH;
+    if (!H) return `<div class="mut sm" style="padding:30px 0;text-align:center">Verlauf wird geladen …</div>`;
+    const lines = [["top", "oben", E.top], ["mid", "Mitte", E.mid], ["bot", "unten", E.bot]].filter((x) => x[2]).map(([k, l, e]) => ({ k, l, ser: this._wwSeries(e).map((x) => ({ t: x.t, v: parseFloat(x.s) })).filter((x) => isFinite(x.v)) })).filter((x) => x.ser.length);
+    if (!lines.length) return `<div class="mut sm" style="padding:30px 0;text-align:center">Für den Verlauf fehlen Messwerte der Speicher-Sensoren.</div>`;
+    const Wd = 640, Ht = 200, L = 34, R = 8, T = 10, B = 40, iw = Wd - L - R, ih = Ht - T - B, total = (H.end - H.start) / 6e4;
+    const all = lines.flatMap((x) => x.ser.map((p) => p.v)), lo = Math.floor((Math.min(...all, W.heat.low) - 3) / 5) * 5, hi = Math.ceil((Math.max(...all, W.target) + 3) / 5) * 5;
+    const X = (m) => L + (m / total) * iw, Y = (v) => T + ih - ((v - lo) / (hi - lo)) * ih;
+    const cols = { top: "#f97316", mid: "#fbbf24", bot: "#38bdf8" };
+    const path = (ser) => { let d = ""; ser.forEach((p, i) => { d += i ? `H${X(p.t).toFixed(1)}V${Y(p.v).toFixed(1)}` : `M${X(Math.max(0, p.t)).toFixed(1)} ${Y(p.v).toFixed(1)}`; }); return d + `H${X(total).toFixed(1)}`; };
+    const bands = (eid, y, c) => { const ser = this._wwSeries(eid); let out = ""; ser.forEach((x, i) => { const on = ["on", "heat", "heating", "performance", "eco", "electric"].includes(x.s); if (!on) return; const t0 = Math.max(0, x.t), t1 = i + 1 < ser.length ? ser[i + 1].t : total; out += `<rect x="${X(t0).toFixed(1)}" y="${y}" width="${Math.max(1.5, X(t1) - X(t0)).toFixed(1)}" height="6" rx="2" fill="${c}"/>`; }); return out; };
+    const ticks = []; for (let v = lo; v <= hi; v += 10) ticks.push(v);
+    const hrs = []; const s0 = new Date(H.start); for (let h = 0; h <= 24; h += 6) { const t = new Date(+s0 + h * 36e5); hrs.push([h * 60, String(t.getHours()).padStart(2, "0") + ":00"]); }
+    return `<svg class="wwchart" viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="Speichertemperaturen der letzten 24 Stunden">
+      ${ticks.map((v) => `<line x1="${L}" x2="${Wd - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" opacity=".13"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${v}°</text>`).join("")}
+      <line x1="${L}" x2="${Wd - R}" y1="${Y(W.target)}" y2="${Y(W.target)}" stroke="#34d399" stroke-dasharray="5 4" opacity=".85"/><text x="${Wd - R - 2}" y="${Y(W.target) - 4}" text-anchor="end" font-size="10" fill="#34d399">Soll ${W.target}°</text>
+      ${hrs.map(([m, l]) => `<text x="${X(m)}" y="${T + ih + 15}" text-anchor="${m === 0 ? "start" : m === 1440 ? "end" : "middle"}" font-size="11" fill="currentColor" opacity=".6">${l}</text>`).join("")}
+      ${lines.map((x) => `<path d="${path(x.ser)}" fill="none" stroke="${cols[x.k]}" stroke-width="2.2" stroke-linejoin="round"/>`).join("")}
+      ${E.src || E.rod ? bands(E.src || E.rod, Ht - 18, "#f97316") : ""}${E.pump ? bands(E.pump, Ht - 9, "#2dd4bf") : ""}</svg>
+      <div class="legend">${lines.map((x) => `<span><i style="background:${cols[x.k]}"></i>${x.l}</span>`).join("")}${E.src || E.rod ? `<span><i style="background:#f97316;border-radius:2px"></i>Erzeuger an</span>` : ""}${E.pump ? `<span><i style="background:#2dd4bf;border-radius:2px"></i>Pumpe an</span>` : ""}</div>`;
+  }
+  _wwTank(t) {
+    const col = (v) => wwCol(v), top = t.top ?? t.mid ?? t.bot, mid = t.mid ?? top, bot = t.bot ?? mid, f = (v) => (v == null ? "–" : num(v, 1));
+    return `<svg class="wwtank" viewBox="0 0 196 176" role="img" aria-label="Speicher">
+      <defs><linearGradient id="wwg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col(top)}"/><stop offset=".5" stop-color="${col(mid)}"/><stop offset="1" stop-color="${col(bot)}"/></linearGradient></defs>
+      <path d="M62 14V5M30 154v13" stroke="rgba(255,255,255,.7)" stroke-width="5" stroke-linecap="round"/>
+      <rect x="12" y="14" width="76" height="140" rx="17" fill="url(#wwg)" stroke="rgba(255,255,255,.7)" stroke-width="2.5"/>
+      <rect x="21" y="24" width="8" height="120" rx="4" fill="#fff" opacity=".22"/>
+      <path d="M44 120c10 0 10-10 20-10s10 10 20 10" stroke="rgba(255,255,255,.55)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0"/>
+      ${[[38, top, "oben"], [88, mid, "Mitte"], [138, bot, "unten"]].map(([y, v, l]) => `<circle cx="88" cy="${y}" r="4.5" fill="#fff" stroke="${col(v)}" stroke-width="2"/><path d="M93 ${y}h14" stroke="rgba(255,255,255,.5)"/><text x="112" y="${y - 1}" font-size="19" font-weight="700" fill="#fff">${f(v)}<tspan font-size="12" font-weight="500" opacity=".8"> °C</tspan></text><text x="112" y="${y + 14}" font-size="11" fill="#fff" opacity=".7">${l}</text>`).join("")}</svg>`;
+  }
+
+  /* ---- Warmwasser: Seite ---- */
+  _wwBar(list, kind) {
+    const W = this._mdState().ww, now = new Date(), nm = now.getHours() * 60 + now.getMinutes();
+    const seg = (list || []).map((x) => { const a = wwTm(x.from), b = wwTm(x.to); return `<i class="seg1 ${kind}" style="left:${(a / 14.4).toFixed(2)}%;width:${(Math.max(0, b - a) / 14.4).toFixed(2)}%;${kind === "heat" ? `background:${wwCol(x.temp)}` : ""}" title="${x.from}–${x.to}">${kind === "heat" && b - a >= 120 ? `<em>${x.temp}°</em>` : ""}</i>`; }).join("");
+    return `<div class="wwbar ${kind}" style="${kind === "heat" ? `--low:${wwCol(W.heat.low)}` : ""}">${seg}<u style="left:${(nm / 14.4).toFixed(2)}%" title="Jetzt"></u></div><div class="wwax"><span>0</span><span>6</span><span>12</span><span>18</span><span>24 Uhr</span></div>`;
+  }
+  _wwList(list, kind) { return (list || []).length ? (list || []).map((x) => `<span class="wwr">${x.from}–${x.to}${kind === "heat" ? ` · <b style="color:${wwCol(x.temp)}">${x.temp} °C</b>` : ""}</span>`).join("") : `<span class="mut sm">Keine Zeiten – ${kind === "heat" ? "es gilt immer die Absenktemperatur." : "die Pumpe bleibt aus."}</span>`; }
+  _wwPage() {
+    const W = this._mdState().ww, E = W.ent, adm = this._admin();
+    if (!this._wwConfigured()) return `<div class="card empty wwe">${ic("boiler", 40)}<div class="t1">Warmwasser & Zirkulation einrichten</div>
+      <div class="sm" style="max-width:460px;margin:0 auto 14px">Wähle deinen Speicher-Sensor, den Wärmeerzeuger und die Zirkulationspumpe. Danach siehst du Temperatur, Zeitpläne und Legionellenschutz auf einen Blick.</div>
+      <ul class="wwl"><li>${ic("clock", 16)}Zeitpläne für Aufheizen und Zirkulation</li><li>${ic("bolt", 16)}Überschuss aus PV im Speicher nutzen</li><li>${ic("shield", 16)}Legionellenschutz mit Nachweis</li></ul>
+      ${adm ? `<button class="btn2 pri" data-act="mdsetup" style="margin-top:16px;flex:none;padding:12px 22px">${ic("tools", 16)} Modul einrichten</button>` : "Ein Administrator kann das Modul einrichten."}</div>`;
+    const t = this._wwTemps(), st = this._wwStatus(), sh = this._wwShowers(t), want = W.boost ? W.leg.temp : this._wwNowSched(), key = this._wwDay();
+    const pumpOn = this._wwIsOn(E.pump), rv = this._wwV(E.ret), legD = this._wwLegDays(), pvNow = this._pvNow(), srcMin = this._wwMinutesOn(E.src || E.rod), pumpMin = this._wwMinutesOn(E.pump);
+    const circH = (W.circ[key] || []).reduce((a, x) => a + Math.max(0, wwTm(x.to) - wwTm(x.from)), 0) / 60;
+    const probs = this._wwProblems();
+    const hero = `<div class="card hero wwh">
+      <div class="wwl1"><div class="lbl">${ic("drop", 16)}Warmwasser oben im Speicher</div>
+      <div class="big">${t.top != null ? num(t.top, 1) : "–"}<small>°C</small></div><div class="sub">Soll ${num(want, 0)} °C · ${W.size} Liter</div></div>
+      <div class="wwtk">${this._wwTank(t)}</div>
+      <div class="chips"><span class="chip st ${st[2]}">${ic(st[0], 16)}${st[1]}</span>${sh != null ? `<span class="chip">${ic("shower", 16)}Reicht für ca. ${sh} ${sh === 1 ? "Dusche" : "Duschen"}</span>` : ""}${E.pump ? `<span class="chip">${ic("drop", 16)}Zirkulation ${pumpOn ? "läuft" : "aus"}</span>` : ""}${W.pv.on && pvNow != null ? `<span class="chip">${ic("bolt", 16)}PV-Überschuss ${wfmt(pvNow)}</span>` : ""}</div>
+      ${adm ? `<div class="wwacts"><button class="wwa ${W.boost ? "on" : ""}" data-act="wwboost">${ic("flame", 17)}<span>${W.boost ? "Aufheizen stoppen" : "Einmal aufheizen"}</span></button><button class="wwa ${W.circ5 ? "on" : ""}" data-act="wwcirc5" ${E.pump ? "" : "disabled"}>${ic("clock", 17)}<span>${W.circ5 ? "Zirkulation läuft 5 Min." : "Zirkulation 5 Min."}</span></button><button class="wwa ${W.away ? "on" : ""}" data-act="wwaway">${ic("suitcase", 17)}<span>${W.away ? "Abwesend: an" : "Abwesend"}</span></button></div>` : ""}</div>`;
+    const tiles = `<div class="tiles">${[
+      ["flame", "Erzeuger heute", srcMin == null ? "–" : srcMin, "Min.", "var(--amber)", "Aktive Zeit, letzte 24 Std."],
+      ["drop", "Zirkulation", pumpMin == null ? "–" : pumpMin, "Min.", "var(--teal)", `Plan: ${num(circH, 1)} Std. pro Tag`],
+      ["thermo", "Rücklauf", rv == null ? "–" : num(rv, 1), "°C", "#60a5fa", `Pumpe stoppt ab ${W.circ.ret_max} °C`],
+      ["shield", "Legionellenschutz", legD == null ? "–" : legD, legD === 1 ? "Tag her" : "Tage her", "#a78bfa", W.leg.on ? `Nächster Lauf: ${DAYS[W.leg.day]} ${W.leg.time}` : "Ausgeschaltet"],
+    ].map(([ico, lab, v, u, col, sub]) => `<div class="tile" style="--a:${col}"><div class="t">${ic(ico, 17)}${lab}</div><div class="v">${v}<small>${u}</small></div><div class="g">${sub}</div></div>`).join("")}</div>`;
+    const chart = `<div class="card"><h2>${ic("chart", 18)}Speicher · letzte 24 Stunden<button class="ibtn gear" style="margin-left:auto" data-act="wwreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._wwChart()}</div>`;
+    const dayTabs = (w) => `<div class="seg wwseg" role="group">${[["wd", "Montag–Freitag"], ["we", "Wochenende"]].map(([k, l]) => `<button class="${key === k ? "sel" : ""}" data-act="wwday" data-k="${k}" aria-pressed="${key === k}">${l}</button>`).join("")}</div>`;
+    const heatC = `<div class="card"><h2>${ic("plan", 18)}Warmwasser-Zeitplan${adm ? `<button class="lnk" style="margin-left:auto" data-act="wwsch" data-k="heat">${ic("pencil", 15)}Bearbeiten</button>` : ""}</h2>${dayTabs()}
+      ${this._wwBar(W.heat[key], "heat")}<div class="wwrs">${this._wwList(W.heat[key], "heat")}</div>
+      <div class="wwnote">${ic("moon", 15)}<span>Außerhalb der Zeiten hält der Speicher <b>${W.heat.low} °C</b>. ${W.pv.on ? "Bei PV-Überschuss heizt er bis " + W.pv.max + " °C." : ""}</span></div></div>`;
+    const modes = [["plan", "Zeitplan"], ["demand", "Bei Bedarf"], ["interval", "Intervall"], ["off", "Aus"]];
+    const cm = W.circ.mode;
+    const circC = `<div class="card"><h2>${ic("drop", 18)}Zirkulation${E.pump ? `<span class="wwst ${pumpOn ? "on" : ""}">${pumpOn ? "Pumpe läuft" : "Pumpe aus"}</span>` : ""}</h2>
+      <div class="seg wwseg" role="group">${modes.map(([k, l]) => `<button class="${cm === k ? "sel" : ""}" data-act="wwmode" data-k="${k}" aria-pressed="${cm === k}">${l}</button>`).join("")}</div>
+      ${cm === "off" ? `<div class="mut sm">Die Pumpe bleibt aus. Warmes Wasser kommt am Hahn mit Wartezeit.</div>` : `
+        ${cm === "demand" ? `<div class="wwhint">${ic("info", 16)}<span>Die Pumpe startet kurz, wenn <b>${E.trig ? esc(this._wzName(E.trig)) : "ein Auslöser"}</b> meldet, und läuft ${W.circ.run} Min. nach.${E.trig ? "" : " Wähle den Auslöser in den Einstellungen."} Mit Zeiten unten gilt das nur dann, ohne Zeiten immer.</span></div>` : ""}
+        ${cm === "interval" ? `<div class="wwhint">${ic("info", 16)}<span>In den Zeiten unten läuft die Pumpe alle ${W.circ.every} Min. für ${W.circ.on} Min.</span></div>` : ""}
+        ${cm === "plan" ? `<div class="wwhint">${ic("info", 16)}<span>Die Pumpe läuft in diesen Zeiten, solange der Rücklauf unter ${W.circ.ret_max} °C bleibt.</span></div>` : ""}
+        ${dayTabs()}${this._wwBar(W.circ[key], "circ")}<div class="wwrs">${this._wwList(W.circ[key], "circ")}${adm ? `<button class="lnk" data-act="wwsch" data-k="circ">${ic("pencil", 15)}Zeiten</button>` : ""}</div>
+        ${cm === "demand" ? this._wwNum("Nachlauf", "Wie lange die Pumpe nach dem Auslöser läuft.", "circ.run", W.circ.run, 1, 15, 1, "Min.", adm) : ""}
+        ${cm === "interval" ? this._wwNum("Pumpe läuft", "", "circ.on", W.circ.on, 1, 15, 1, "Min.", adm) + this._wwNum("Alle", "", "circ.every", W.circ.every, 10, 120, 5, "Min.", adm) : ""}
+        ${this._wwNum("Pumpe stoppt ab Rücklauf", "Spart Energie, weil schon warmes Wasser in der Leitung ist.", "circ.ret_max", W.circ.ret_max, 30, 60, 1, "°C", adm)}`}</div>`;
+    const lg = W.leg;
+    const legC = `<div class="card"><h2>${ic("shield", 18)}Legionellenschutz<button class="sw ${lg.on ? "on" : ""}" style="margin-left:auto" data-act="wwleg" aria-pressed="${lg.on}" aria-label="Legionellenschutz"></button></h2>
+      ${lg.on ? `<div class="mut sm" style="margin:0 0 6px">Der Speicher wird regelmäßig auf Schutztemperatur gebracht und gehalten.</div>
+        <div class="dchips">${DAYS.map((d, i) => `<button class="dc ${lg.day === i ? "sel" : ""}" data-act="wwlegday" data-k="${i}">${d}</button>`).join("")}</div>
+        ${this._wwNumT("Uhrzeit", "Am besten nachts, wenn niemand duscht.", "leg.time", lg.time, adm)}${this._wwNum("Schutztemperatur", "", "leg.temp", lg.temp, 55, 75, 1, "°C", adm)}${this._wwNum("Halten für", "", "leg.hold", lg.hold, 10, 60, 5, "Min.", adm)}
+        <div class="dgs ${lg.last && lg.last.ok ? (legD > 9 ? "warn" : "ok") : "warn"}">${ic(lg.last && lg.last.ok ? "check" : "alert", 22)}<div><b>${lg.last ? `Letzte Aufheizung: ${new Date(lg.last.ts).toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "numeric" })}, ${new Date(lg.last.ts).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr` : "Noch keine Aufheizung aufgezeichnet"}</b><span>${lg.last ? `${num(lg.last.max, 1)} °C erreicht, ${lg.last.held} Min. gehalten` : "Der erste Lauf folgt zum eingestellten Zeitpunkt."}</span></div><span></span></div>`
+      : `<div class="gst on">${ic("alert", 15)}Aus. In Speichern über 400 Liter oder mit Zirkulation wird ein regelmäßiges Aufheizen empfohlen.</div>`}</div>`;
+    const pv = W.pv;
+    const pvC = `<div class="card"><h2>${ic("bolt", 18)}PV-Überschuss nutzen<button class="sw ${pv.on ? "on" : ""}" style="margin-left:auto" data-act="wwpv" aria-pressed="${pv.on}" aria-label="PV-Überschuss"></button></h2>
+      ${pv.on ? `<div class="mut sm" style="margin:0 0 6px">Der Speicher wird bei Überschuss über das Soll hinaus geladen. Sensor, Batterie-Grenze und Vorzeichen kommen aus Modul 1 → Allgemein. Der Heizstab hat Vorrang vor den Raumheizern.</div>
+        ${this._wwNum("Ab Überschuss", "", "pv.min", pv.min, 300, 6000, 100, "W", adm)}${this._wwNum("Speicher bis maximal", "", "pv.max", pv.max, 50, 70, 1, "°C", adm)}${this._wwNum("Leistung Heizstab", "Damit erkennt das Modul, wann der Überschuss reicht.", "pv.watt", pv.watt, 300, 9000, 100, "W", adm)}
+        <div class="gst ${E.rod ? "" : "on"}">${ic(E.rod ? "bolt" : "info", 15)}${E.rod ? (pvNow == null ? "Kein PV-Sensor gewählt." : pvNow >= pv.min ? `Aktuell ${wfmt(pvNow)} Überschuss – der Heizstab darf laufen.` : `Aktuell ${wfmt(pvNow)} Überschuss – zu wenig, Heizstab bleibt aus.`) : "Für PV-Heizung fehlt noch der Heizstab-Schalter in den Einstellungen."}</div>` : `<div class="mut sm">Aus.</div>`}</div>`;
+    const dg = `<div class="card"><h2>${ic("tools", 18)}Zustand</h2>${probs.map(([lv, ico, ti, tx]) => `<div class="dgs ${lv === "mut" ? "" : lv}">${ic(ico, 22)}<div><b>${esc(ti)}</b><span>${esc(tx)}</span></div><span></span></div>`).join("")}<div class="mut sm" style="margin:0">Hinweise erscheinen auch in der Gerätediagnose und als Meldung.</div></div>`;
+    return `${hero}${tiles}${chart}<div class="wwg2">${heatC}${circC}</div><div class="wwg2">${legC}${pvC}</div>${dg}<div class="note">Das Modul schaltet nur die gewählten Geräte. Bei Überschuss hat der Warmwasser-Heizstab Vorrang vor den Raumheizern.</div>`;
+  }
+  _wwNum(label, hint, path, val, lo, hi, step, unit, adm) {
+    return `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="wwnum" data-k="${path}" data-min="${lo}" data-max="${hi}" data-step="${step}" value="${val}" min="${lo}" max="${hi}" step="${step}" ${adm ? "" : "disabled"}><i>${unit}</i></span></div></div>`;
+  }
+  _wwNumT(label, hint, path, val, adm) {
+    return `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc"><span class="onum"><input type="time" data-f="wwnum" data-k="${path}" data-t="1" value="${val}" ${adm ? "" : "disabled"}></span></div></div>`;
+  }
+  _wwSet(path, v) { const W = this._mdState().ww, p = path.split("."); let o = W; for (let i = 0; i < p.length - 1; i++) o = o[p[i]]; o[p[p.length - 1]] = v; this._mdSave(); }
+  _wwChange(t) {
+    const f = t.dataset.f, W = this._mdState().ww;
+    if (f === "wwnum") {
+      let v = t.value;
+      if (!t.dataset.t) { v = Number(String(v).replace(",", ".")); const lo = +t.dataset.min, hi = +t.dataset.max, st = +t.dataset.step || 1; v = isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v / st) * st)) : lo; }
+      else if (!/^\d\d:\d\d$/.test(v)) v = "03:00";
+      this._wwSet(t.dataset.k, v); this._render(); return true;
+    }
+    if (f === "wwent") { W.ent[t.dataset.k] = t.value; this._mdSave(); this._wwH = null; return true; }
+    if (f === "wwsz") { const v = Number(String(t.value).replace(",", ".")); W[t.dataset.k] = isFinite(v) ? Math.min(+t.dataset.max, Math.max(+t.dataset.min, Math.round(v))) : W[t.dataset.k]; this._mdSave(); return true; }
+    if (f === "wwsch") {
+      const m = this._modal, list = W[m.kind][this._wwDay()], x = list[+t.dataset.i], k = t.dataset.k;
+      if (k === "temp") { const v = Number(String(t.value).replace(",", ".")); x.temp = isFinite(v) ? Math.min(70, Math.max(30, Math.round(v))) : x.temp; }
+      else { x[k] = /^\d\d:\d\d$/.test(t.value) ? t.value : x[k]; if (wwTm(x.to) <= wwTm(x.from)) { if (k === "from") x.to = wwFmt(Math.min(1439, wwTm(x.from) + 30)); else x.from = wwFmt(Math.max(0, wwTm(x.to) - 30)); } }
+      this._mdSave(); this._renderModal(); return true;
+    }
+    return false;
+  }
+  _wwAct(a, b) {
+    const W = this._mdState().ww, k = b.dataset.k, m = this._modal;
+    if (a === "wwmode") { W.circ.mode = k; this._mdSave(); this._render(); }
+    else if (a === "wwday") { W.day = k; this._mdSave(); this._render(); }
+    else if (a === "wwboost" || a === "wwcirc5" || a === "wwaway") {
+      const key = { wwboost: "boost", wwcirc5: "circ5", wwaway: "away" }[a], val = !W[key];
+      this._hass.callWS({ type: "fenster_heizung/wasser_cmd", cmd: key, value: val }).then((r) => {
+        this._mdT = null; this._mdApply(r); this._render();
+        this._toast({ boost: val ? `Speicher wird einmal auf ${W.leg.temp} °C aufgeheizt` : "Aufheizen gestoppt", circ5: val ? "Pumpe läuft 5 Minuten" : "Pumpe gestoppt", away: val ? "Abwesend: Sparmodus an" : "Abwesend: aus" }[key]);
+      }).catch(() => this._toast("Befehl konnte nicht gesendet werden"));
+    }
+    else if (a === "wwleg") { W.leg.on = !W.leg.on; this._mdSave(); this._render(); }
+    else if (a === "wwlegday") { W.leg.day = +k; this._mdSave(); this._render(); }
+    else if (a === "wwpv") { W.pv.on = !W.pv.on; this._mdSave(); this._render(); }
+    else if (a === "wwreload") { this._wwH = null; this._wwLoad(true); this._mdPoll(); }
+    else if (a === "wwsch") { this._modal = { type: "wwsch", kind: k }; this._renderModal(); }
+    else if (a === "wwschadd") { const list = W[m.kind][this._wwDay()]; const last = list.length ? wwTm(list[list.length - 1].to) : 360; const from = Math.min(1380, last + 60); list.push({ from: wwFmt(from), to: wwFmt(Math.min(1439, from + 60)), temp: W.target }); this._mdSave(); this._renderModal(); }
+    else if (a === "wwschdel") { W[m.kind][this._wwDay()].splice(+b.dataset.i, 1); this._mdSave(); this._renderModal(); }
+    else if (a === "wwschcopy") { const from = this._wwDay(), to = from === "wd" ? "we" : "wd"; W[m.kind][to] = JSON.parse(JSON.stringify(W[m.kind][from])); this._mdSave(); this._toast(`Zeiten auf ${to === "wd" ? "Montag–Freitag" : "das Wochenende"} kopiert`); }
+    else if (a === "wwschday") { W.day = k; this._mdSave(); this._renderModal(); }
+    else if (a === "wwschdone" || a === "wwsetdone") { if (a === "wwschdone") { ["wd", "we"].forEach((d) => W[m.kind][d].sort((x, y) => wwTm(x.from) - wwTm(y.from))); } this._mdSave(); this._modal = null; this._renderModal(); this._render(); if (a === "wwsetdone") this._wwLoad(true); }
+  }
+  _wwSchModal() {
+    const m = this._modal, W = this._mdState().ww, key = this._wwDay(), list = W[m.kind][key], heat = m.kind === "heat";
+    return `<div class="ov" data-act="wwschdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${heat ? "Warmwasser-Zeitplan" : "Zirkulationszeiten"}</b><span>${heat ? "Wann der Speicher auf Soll gehalten wird" : "Wann die Pumpe laufen darf"}</span></div><button class="ibtn" data-act="wwschdone" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="seg wwseg" role="group">${[["wd", "Montag–Freitag"], ["we", "Wochenende"]].map(([k, l]) => `<button class="${key === k ? "sel" : ""}" data-act="wwschday" data-k="${k}">${l}</button>`).join("")}</div>
+      ${this._wwBar(list, m.kind)}
+      ${list.length ? list.map((x, i) => `<div class="wsr"><input type="time" data-f="wwsch" data-i="${i}" data-k="from" value="${x.from}" aria-label="Von"><span>bis</span><input type="time" data-f="wwsch" data-i="${i}" data-k="to" value="${x.to}" aria-label="Bis">${heat ? `<span class="onum"><input type="number" inputmode="numeric" data-f="wwsch" data-i="${i}" data-k="temp" value="${x.temp}" min="30" max="70" aria-label="Temperatur"><i>°C</i></span>` : ""}<button class="ibtn" data-act="wwschdel" data-i="${i}" aria-label="Zeitfenster löschen">${ic("trash", 17)}</button></div>`).join("") : `<div class="mut sm" style="padding:10px 0">Noch keine Zeitfenster.</div>`}
+      <div class="gbtns"><button class="btn2" data-act="wwschadd">${ic("plus", 16)} Zeitfenster</button><button class="btn2" data-act="wwschcopy">${ic("copy", 16)} Auf ${key === "wd" ? "Wochenende" : "Mo–Fr"} kopieren</button></div>
+      ${heat ? `<div class="mut sm" style="margin:6px 0 0">Absenktemperatur außerhalb der Zeiten und Soll werden unter „Einstellungen“ festgelegt.</div>` : ""}
+      <div class="foot2"><button class="btn2 pri" data-act="wwschdone">Fertig</button></div></div>`;
+  }
+  _wwSetModal() {
+    const W = this._mdState().ww, E = W.ent, st = this._hass.states, ks = Object.keys(st);
+    const temp = ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "temperature" || /°C/.test(st[e].attributes.unit_of_measurement || "")));
+    const gen = ks.filter((e) => /^(water_heater|switch|climate|input_boolean)\./.test(e)), sw = ks.filter((e) => /^(switch|input_boolean)\./.test(e)), trg = ks.filter((e) => /^(binary_sensor|button|input_button|event)\./.test(e));
+    const sel = (k, opts) => this._wzSel(opts, E[k], "wwent", `data-k="${k}"`);
+    const sz = (label, k, lo, hi, unit) => `<div class="of"><div class="ol"><b>${label}</b></div><div class="oc"><span class="onum"><input type="number" inputmode="numeric" data-f="wwsz" data-k="${k}" data-min="${lo}" data-max="${hi}" value="${W[k]}"><i>${unit}</i></span></div></div>`;
+    const tz = (label, hint, path, val, lo, hi) => this._wwNum(label, hint, path, val, lo, hi, 1, "°C", true);
+    return `<div class="ov" data-act="wwsetdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Warmwasser & Zirkulation</b><span>Einstellungen</span></div><button class="ibtn" data-act="wwsetdone" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("thermo", 15)}Speicher</div>
+      ${sz("Inhalt", "size", 50, 1000, "Liter")}${tz("Soll-Temperatur", "Gilt in den Zeiten des Zeitplans.", "target", W.target, 40, 65)}${tz("Absenktemperatur", "Außerhalb der Zeiten und bei Abwesenheit.", "heat.low", W.heat.low, 30, 55)}
+      <div class="mut sm" style="margin:8px 0 0">Temperatur oben</div>${sel("top", temp)}
+      <div class="mut sm" style="margin:0">Temperatur Mitte (optional)</div>${sel("mid", temp)}
+      <div class="mut sm" style="margin:0">Temperatur unten (optional)</div>${sel("bot", temp)}
+      <div class="lsec">${ic("flame", 15)}Wärmeerzeuger</div>
+      <div class="mut sm" style="margin:2px 0 0">Schalter oder Warmwasser-Gerät, das den Speicher heizt</div>${sel("src", gen)}
+      <div class="mut sm" style="margin:0">Heizstab für PV-Überschuss (optional)</div>${sel("rod", sw)}
+      <div class="lsec">${ic("drop", 15)}Zirkulation</div>
+      <div class="mut sm" style="margin:2px 0 0">Zirkulationspumpe (Schalter)</div>${sel("pump", sw)}
+      <div class="mut sm" style="margin:0">Rücklauf-Temperatur (optional)</div>${sel("ret", temp)}
+      <div class="mut sm" style="margin:0">Auslöser für „Bei Bedarf“ (optional)</div>${sel("trig", trg)}
+      <div class="gst">${ic("info", 15)}Das Modul schaltet nur die hier gewählten Geräte. Sensoren und Schalter bleiben in Home Assistant unverändert.</div>
+      <div class="foot2"><button class="btn2 pri" data-act="wwsetdone">Fertig</button></div></div>`;
   }
 }
 customElements.define("fenster-heizung-panel", FensterHeizungPanel);

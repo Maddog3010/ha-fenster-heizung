@@ -1,6 +1,6 @@
 {
   "codeowners": [
-    "@Maddog3010"
+    "@DEIN-USER"
   ],
   "config_flow": true,
   "dependencies": [
@@ -9,12 +9,12 @@
     "panel_custom",
     "websocket_api"
   ],
-  "documentation": "https://github.com/Maddog3010/ha-fenster-heizung",
+  "documentation": "https://github.com/DEIN-USER/ha-fenster-heizung",
   "domain": "fenster_heizung",
   "integration_type": "service",
   "iot_class": "local_push",
-  "issue_tracker": "https://github.com/Maddog3010/ha-fenster-heizung/issues",
+  "issue_tracker": "https://github.com/DEIN-USER/ha-fenster-heizung/issues",
   "name": "Fenster & Heizung",
   "requirements": [],
-  "version": "2.8.0"
+  "version": "2.9.0"
 }

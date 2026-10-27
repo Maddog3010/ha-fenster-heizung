@@ -94,6 +94,15 @@ ROOM_ICON_IDS = (
 # Grenzen für Darstellung (Farben, Raumfotos)
 MAX_PHOTOS = 12
 MAX_PHOTO_CHARS = 150_000
+MAX_HERO_PHOTOS = 12
+MAX_HERO_CHARS = 300_000
+HERO_MODES = ("standard", "time", "season", "weather")
+HERO_SLOTS = (
+    "time:night", "time:sunrise", "time:day", "time:sunset",
+    "season:spring", "season:summer", "season:autumn", "season:winter",
+    "weather:sunny", "weather:clear-night", "weather:partlycloudy", "weather:cloudy", "weather:rainy",
+    "weather:pouring", "weather:snowy", "weather:fog", "weather:lightning",
+)
 PLAN_MODES = ("keep", "heat", "auto")
 
 # 2.6.0: Raumluft, Wetter-Anpassung, Aufheizzeit, Updates

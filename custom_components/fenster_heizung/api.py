@@ -25,7 +25,11 @@ from .const import (
     DEFAULT_FUEL,
     DOMAIN,
     GROUP_ICON_IDS,
+    HERO_MODES,
+    HERO_SLOTS,
     MAX_GROUPS,
+    MAX_HERO_CHARS,
+    MAX_HERO_PHOTOS,
     MAX_PHOTO_CHARS,
     MAX_PHOTOS,
     PLAN_MODES,
@@ -34,6 +38,7 @@ from .const import (
 from .general import clean_general
 from .options import clean_options
 from .presence import clean_presence
+from .wasser import clean_modules, clean_wasser
 
 def clean_layout(raw: Any) -> dict[str, Any]:
     """Anordnung und Symbole prüfen, unbekannte Werte verwerfen."""
@@ -107,6 +112,18 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
                 photos[str(k)[:64]] = v
     if photos:
         out["photos"] = photos
+    hero = raw.get("hero")
+    if isinstance(hero, dict):
+        mode = hero.get("mode") if hero.get("mode") in HERO_MODES else "standard"
+        own: dict[str, str] = {}
+        if isinstance(hero.get("own"), dict):
+            for k, v in hero["own"].items():
+                if len(own) >= MAX_HERO_PHOTOS:
+                    break
+                if k in HERO_SLOTS and isinstance(v, str) and len(v) <= MAX_HERO_CHARS and _PHOTO.match(v):
+                    own[k] = v
+        if mode != "standard" or own:
+            out["hero"] = {"mode": mode, "own": own}
     wx = raw.get("wx")
     if isinstance(wx, dict):
         clean: dict[str, Any] = {}
@@ -267,6 +284,12 @@ async def ws_restore(hass: HomeAssistant, connection, msg: dict) -> None:
     mgr = hass.data[DOMAIN].get("presence")
     if mgr is not None and isinstance(data.get("presence"), dict):
         await mgr.async_set(data["presence"])
+    wmgr = hass.data[DOMAIN].get("wasser")
+    if wmgr is not None:
+        if isinstance(data.get("modules"), dict):
+            await wmgr.async_set_modules(data["modules"])
+        if isinstance(data.get("wasser"), dict):
+            await wmgr.async_set_cfg(data["wasser"])
     plans = data.get("plans") if isinstance(data.get("plans"), dict) else {}
     done = skipped_opts = 0
     for old, new in mapping.items():
@@ -294,6 +317,14 @@ async def ws_restore(hass: HomeAssistant, connection, msg: dict) -> None:
     )
 
 
+def _modules_snapshot(hass: HomeAssistant) -> dict[str, Any]:
+    mgr = hass.data.get(DOMAIN, {}).get("wasser")
+    if mgr is None:
+        return {"modules": clean_modules({}), "wasser": {"ww": clean_wasser({}), "status": {}}}
+    snap = mgr.snapshot()
+    return {"modules": snap["modules"], "wasser": {"ww": snap["ww"], "status": snap["status"]}}
+
+
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/get_state"})
 @websocket_api.async_response
 async def ws_get_state(hass: HomeAssistant, connection, msg: dict) -> None:
@@ -311,6 +342,7 @@ async def ws_get_state(hass: HomeAssistant, connection, msg: dict) -> None:
             "presence": _presence_snapshot(hass),
             "version": await _version(hass),
             **_general_snapshot(hass),
+            **_modules_snapshot(hass),
         },
     )
 
@@ -452,10 +484,48 @@ async def ws_clear_diag(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], {})
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/get_modules"})
+@websocket_api.async_response
+async def ws_get_modules(hass: HomeAssistant, connection, msg: dict) -> None:
+    connection.send_result(msg["id"], _modules_snapshot(hass))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/set_modules", vol.Required("modules"): dict})
+@websocket_api.async_response
+async def ws_set_modules(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("wasser")
+    if mgr is not None:
+        await mgr.async_set_modules(msg["modules"])
+    connection.send_result(msg["id"], _modules_snapshot(hass))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/set_wasser", vol.Required("ww"): dict})
+@websocket_api.async_response
+async def ws_set_wasser(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("wasser")
+    if mgr is not None:
+        await mgr.async_set_cfg(msg["ww"])
+    connection.send_result(msg["id"], _modules_snapshot(hass))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command(
+    {vol.Required("type"): "fenster_heizung/wasser_cmd", vol.Required("cmd"): vol.In(("boost", "circ5", "away")), vol.Required("value"): bool}
+)
+@websocket_api.async_response
+async def ws_wasser_cmd(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("wasser")
+    if mgr is not None:
+        await mgr.async_command(msg["cmd"], msg["value"])
+    connection.send_result(msg["id"], _modules_snapshot(hass))
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
-        ws_get_diag, ws_clear_diag,
+        ws_get_diag, ws_clear_diag, ws_get_modules, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
     ):
         websocket_api.async_register_command(hass, command)
