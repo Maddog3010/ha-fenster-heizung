@@ -225,7 +225,7 @@ const WW_DEF = { size: 300, target: 55, day: null, boost: false, circ5: false, a
   circ: { mode: "plan", ret_max: 45, run: 3, on: 3, every: 30, wd: [{ from: "05:30", to: "08:00" }, { from: "17:00", to: "21:30" }], we: [{ from: "07:00", to: "10:30" }, { from: "17:00", to: "21:30" }] },
   leg: { on: true, day: 5, time: "03:00", temp: 60, hold: 20, last: null },
   pv: { on: true, min: 1800, max: 62, watt: 2000 } };
-const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }, { id: "en", n: 3, name: "Energie-Übersicht", short: "Energie", icon: "energy", tag: "Heizung, Strom und PV im Überblick" }];
+const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }, { id: "en", n: 3, name: "Energie-Übersicht", short: "Energie", icon: "energy", tag: "Heizung, Strom und PV im Überblick" }, { id: "gs", n: 4, name: "Gerätestrom", short: "Gerätestrom", icon: "laundry", tag: "Woher der Strom kommt und was er kostet" }, { id: "lu", n: 5, name: "Lüftung & Raumluft", short: "Lüftung", icon: "fan", tag: "KWL, CO₂ und Feuchte", beta: true }, { id: "rb", n: 6, name: "Rollläden & Beschattung", short: "Rollläden", icon: "blinds", tag: "Sonnenstand, Hitzeschutz und Heizbedarf", beta: true }, { id: "wp", n: 7, name: "Wärmepumpe", short: "Wärmepumpe", icon: "heatpump", tag: "Laufzeit, Takten und Abtauen", beta: true }, { id: "ev", n: 8, name: "Elektroauto & Wallbox", short: "E-Auto", icon: "car", tag: "Ladestand, Ladekabel, Wallbox und Kilometerstand", beta: true }, { id: "wx", n: 9, name: "Wetter & Warnungen", short: "Wetter", icon: "alert", tag: "Unwetter-, Sturm- und Frostwarnungen mit Aktionen", beta: true }, { id: "ga", n: 10, name: "Garten & Bewässerung", short: "Garten", icon: "plant", tag: "Regenprognose, Zisterne und Bewässerung bei PV-Überschuss", beta: true }, { id: "sf", n: 11, name: "Rauch- & Sicherheitsmelder", short: "Sicherheit", icon: "shield", tag: "Melder, Batteriestände und Alarme im Überblick", beta: true }, { id: "pl", n: 12, name: "Pool & Sauna", short: "Pool & Sauna", icon: "wave", tag: "Pumpe und Heizung nach PV-Überschuss und Strompreis", beta: true }, { id: "bt", n: 13, name: "Batteriespeicher-Planung", short: "Batterie", icon: "energy", tag: "Modi, Zeitplan und Ladestand-Grenzen", beta: true }, { id: "dt", n: 14, name: "Dynamischer Stromtarif", short: "Stromtarif", icon: "chart", tag: "Börsenpreis pro Stunde und günstigste Zeiten", beta: true }, { id: "wa", n: 15, name: "Wartung & Erinnerungen", short: "Wartung", icon: "tools", tag: "Schornsteinfeger, Filter, Termine und Betriebsstunden", beta: true }, { id: "sp", n: 16, name: "Solar-Prognose", short: "Prognose", icon: "sun", tag: "Ertrag heute und morgen, Prognose gegen tatsächlich", beta: true }];
 const PK_HINT = { pv: /solar|pv|photovolt|erzeug|wechselrichter|inverter/i, grid: /netz|grid|einspeis|bezug|zähler|meter/i, bchg: /lad|charge|zufuhr|input/i, bdis: /entlad|discharge|abgabe|output/i, house: /haus|house|verbrauch|load|consum/i, bat: /batter|speicher|akku/i, pve: /solar|pv|ertrag|yield|produc|erzeug/i, pv2: /balkon|plug|mikro|solar|pv|erzeug/i, pve2: /balkon|plug|mikro|ertrag|yield|produc|solar|pv/i, imp: /bezug|import|from.?grid|consum|netz/i, exp: /einspeis|export|feed|to.?grid/i,
   top: /oben|top|warmwasser|speicher|boiler/i, mid: /mitte|mid|warmwasser|speicher|boiler/i, bot: /unten|bot|warmwasser|speicher|boiler/i, ret: /rücklauf|ruecklauf|return|zirkul/i, pump: /zirkul|pumpe|pump/i, src: /heiz|kessel|wärmepumpe|puffer|ventil/i, rod: /heizstab|stab|rod|boiler/i, trig: /taster|bewegung|button|trigger|motion/i, outdoor: /außen|aussen|outdoor|outside/i, hum: /feucht|humid/i, heater: /heiz|elektro|heater/i };
 /* Schrittweite der Achse: 1, 2, 5 × 10^n, höchstens 5 Linien (auch bei sehr großen Werten) */
@@ -234,8 +234,17 @@ const WW_ON = ["on", "heat", "heating", "performance", "eco", "electric", "gas",
 const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000, MW: 1e6 };
 const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", bmode: "one", pvn: "", pv2n: "", ent: { pv: "", grid: "", house: "", bat: "", bchg: "", bdis: "", pve: "", pv2: "", pve2: "", imp: "", exp: "" } };
 /* Einstellungen je Modul: neue Module tragen sich hier ein und erscheinen automatisch auf der Einstellungsseite */
-const MOD_SET = { fh: { act: "gen", txt: "Photovoltaik, Preise, Sommerbetrieb, Wetter, Updates" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
-const MOD_SOON = [["blinds", "Rollläden & Beschattung", "Sonnenstand, Hitzeschutz und Heizbedarf"], ["fan", "Lüftung & Raumluft", "KWL, CO₂ und Feuchte"], ["heatpump", "Wärmepumpe", "Laufzeit, Takten und Abtauen"]];
+const MOD_SET = { sp: { act: "mdbeta", txt: "Prognose-Sensoren und Vergleich mit dem Ertrag (in Entwicklung)" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "mdbeta", txt: "Melder, Batteriestände und Alarme (in Entwicklung)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "mdbeta", txt: "Unwetter-, Sturm- und Frostwarnungen mit Aktionen (in Entwicklung)" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "gen", txt: "Photovoltaik, Preise, Sommerbetrieb, Wetter, Updates" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
+/* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
+const EV_BRANDS = ["Mercedes-Benz", "Audi", "VW", "BYD", "BMW", "Andere"];
+const EV_BODIES = { limousine: "Limousine", suv: "SUV", kombi: "Kombi", kompakt: "Kompakt" };
+const EV_COLORS = { blue: ["Blau", "#4f86e8", "#2f5fc4", "#152f6b", "#0a1740"], red: ["Rot", "#ef5a5a", "#c62828", "#6e1212", "#3b0a0a"], white: ["Weiß", "#ffffff", "#e5e8ee", "#aab2bf", "#6b7280"], black: ["Schwarz", "#4b5563", "#1f2937", "#0b0f14", "#000000"], silver: ["Silber", "#e5e7eb", "#b6bcc7", "#7b8494", "#4b5563"], green: ["Grün", "#4fae7a", "#2a7d52", "#12402a", "#0a2619"] };
+const EV_SHAPES = {
+  limousine: { tl: [296, 178], rear: 284, front: 692, wh: [372, 600], port: [308, 181], ly: 174, body: "M290 232 C286 226 284 214 284 200 C284 184 290 172 306 166 L338 158 C362 153 388 140 414 127 C432 118 452 115 474 115 L506 115 C536 115 562 134 592 156 L642 165 C668 169 688 178 692 194 C694 206 693 222 688 232 Z", glass: "M346 156 C366 152 390 140 414 128 C432 120 452 119 474 119 L506 119 C530 119 552 134 578 156 Z", gt: 119, gb: 156, gx: [350, 578], pil: 470, seams: [372, 470, 566], handles: [[434, 170], [528, 172]], mir: [586, 152] },
+  suv: { tl: [286, 168], rear: 284, front: 692, wh: [372, 600], port: [308, 181], ly: 172, body: "M290 232 C286 226 284 214 284 196 C284 176 288 150 300 138 C306 130 318 124 334 121 L352 118 C360 108 372 102 392 101 L542 101 C560 101 574 118 594 144 L646 156 C672 161 690 172 692 190 C694 206 693 222 688 232 Z", glass: "M338 144 L352 122 C358 110 370 105 392 105 L542 105 C558 106 570 122 588 144 Z", gt: 105, gb: 144, gx: [340, 588], pil: 470, seams: [372, 470, 570], handles: [[434, 160], [530, 162]], mir: [590, 140] },
+  kombi: { tl: [288, 176], rear: 284, front: 692, wh: [372, 600], port: [308, 181], ly: 174, body: "M290 232 C286 226 284 214 284 198 C284 180 290 166 304 160 L330 154 C340 138 356 124 386 119 L544 117 C564 118 578 134 596 154 L644 162 C668 167 688 176 692 192 C694 206 693 222 688 232 Z", glass: "M336 154 C346 138 360 125 388 122 L544 121 C560 122 574 136 590 154 Z", gt: 121, gb: 154, gx: [340, 590], pil: 472, seams: [384, 472, 568], handles: [[432, 168], [530, 170]], mir: [588, 150] },
+  kompakt: { tl: [324, 176], rear: 314, front: 660, wh: [386, 584], port: [336, 181], ly: 174, body: "M320 232 C316 226 314 214 314 198 C314 180 320 164 336 158 L356 150 C364 132 380 118 406 114 L522 114 C546 114 564 130 580 148 L622 158 C646 164 660 176 660 192 C662 206 661 222 656 232 Z", glass: "M350 150 C358 134 374 121 406 118 L522 118 C540 119 554 132 570 148 Z", gt: 118, gb: 148, gx: [352, 570], pil: 464, seams: [394, 464, 548], handles: [[424, 163], [506, 165]], mir: [566, 144] } };
+const MOD_SOON = [];
 const TEMPLATE = [
   { days: [0, 1, 2, 3, 4], time: "05:30", temp: 21 }, { days: [0, 1, 2, 3, 4], time: "08:00", temp: 18 },
   { days: [0, 1, 2, 3, 4], time: "16:00", temp: 21 }, { days: [0, 1, 2, 3, 4], time: "22:00", temp: 17 },
@@ -728,6 +737,31 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .sxc{flex:none;font-style:normal;font-size:.72rem;font-weight:650;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}.sxc.ok{color:var(--teal);border-color:color-mix(in srgb,var(--teal) 40%,transparent)}.sxc.off{opacity:.7}
 .sxrow .sxg{flex:none;transform:rotate(-90deg);color:var(--mut);display:grid}
 @media(max-width:520px){.sxt small{white-space:normal}}
+.beta{line-height:1.35;font-style:normal;font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,#f59e0b 20%,transparent);color:#f59e0b;border:1px solid color-mix(in srgb,#f59e0b 50%,transparent);margin-right:8px;white-space:nowrap}
+.mtab .beta{margin:0 0 0 2px;padding:1px 6px;font-size:.6rem}.mbadge.beta,.sxc.beta{color:#f59e0b;border-color:color-mix(in srgb,#f59e0b 50%,transparent)}
+.betabox{display:flex;gap:12px;align-items:flex-start;border:1px solid color-mix(in srgb,#f59e0b 55%,transparent);background:color-mix(in srgb,#f59e0b 10%,transparent);border-radius:16px;padding:14px 16px;font-size:.84rem;color:var(--mut)}
+.betabox>svg{flex:none;color:#f59e0b;margin-top:1px}.betabox b{display:block;color:var(--primary-text-color);margin-bottom:3px;font-size:.92rem}.betabox a{color:#f59e0b}
+.gshero{background:linear-gradient(135deg,#e9a413,#f59e0b 60%,#d97706);color:#1b1500}.gshero .mut{color:inherit}.gsbig{font-size:2.6rem;font-weight:800;line-height:1.1;margin:4px 0}
+.gstiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}.gstile{border-left:4px solid var(--c)}.gsv{font-size:1.5rem;font-weight:750;margin:2px 0}
+.gsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.gsdev{display:grid;gap:10px}.gsh{display:flex;justify-content:space-between;align-items:center}.gsh b{font-size:1.05rem}
+.gsst{font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}.gsst.on{color:#34d399;border-color:color-mix(in srgb,#34d399 50%,transparent)}
+.gsbar{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--line)}.gsbar i{display:block;height:100%}
+.gsleg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.78rem;color:var(--mut)}.gsleg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
+.gsrow{display:grid;gap:1px;font-size:.82rem}.gsrow b{font-weight:600}.gsadv{display:flex;align-items:center;gap:8px;font-size:.84rem;font-weight:650;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--c,#64748b) 14%,transparent)}
+.gsadv.green{--c:#34d399;color:#34d399}.gsadv.amber{--c:#f59e0b;color:#f59e0b}.gsadv.slate{--c:#94a3b8;color:var(--mut)}
+.gsdc{display:grid;gap:8px;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:8px}.gsdh{display:flex;gap:8px;align-items:center}.gsdh .otxt{flex:1}
+.gsnums{display:flex;gap:12px;flex-wrap:wrap}.gsnums label{display:grid;gap:4px;font-size:.76rem;color:var(--mut)}.gsnums .onum{display:inline-flex;align-items:center;gap:6px}.gsnums input{width:80px}.onum u,.gsnums u{text-decoration:none;color:var(--mut)}
+.gsch{border:1px solid var(--line);background:transparent;color:var(--mut);border-radius:999px;padding:6px 14px;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}.gsch.sel{background:var(--teal);border-color:var(--teal);color:var(--on-acc)}
+.gschips{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0}.gsq{margin:8px 0}
+.evsw{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:linear-gradient(135deg,var(--c2),var(--c));cursor:pointer;padding:0}.evsw.sel{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal)}
+.evcard{display:grid;gap:8px}.evhead{display:flex;justify-content:space-between;align-items:center}.evhead b{display:flex;align-items:center;gap:8px}
+.evsvg{width:100%;max-height:300px}.evcable{opacity:0;transition:opacity .5s ease}.evcable.on{opacity:1}
+.evflow{animation:evflow 1s linear infinite}.evpulse{animation:evpulse 1.4s ease-in-out infinite}@keyframes evpulse{50%{opacity:.45}}@keyframes evflow{to{stroke-dashoffset:-36}}
+@media(prefers-reduced-motion:reduce){.evflow,.evpulse{animation:none}.evcable{transition:none}}
+.lugrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.luroom{display:grid;gap:3px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:.8rem}.luroom b{font-size:.92rem}.luroom .lv{font-size:1.5rem;font-weight:750}
+.luroom .lv.green{color:#34d399}.luroom .lv.amber{color:#f59e0b}.luroom .lv.red{color:#f87171}.luroom.off{opacity:.55}
+.lusoon{display:flex;align-items:center;gap:14px;opacity:.65;border-style:dashed}.lusoon>svg{flex:none;color:var(--mut)}.lusoon div{flex:1;display:grid;gap:2px}.lusoon .beta{margin:0}
 .mbar{display:flex;gap:8px;overflow-x:auto;max-width:1180px;margin:0 auto;padding:12px 14px 0;scrollbar-width:none}
 .mbar::-webkit-scrollbar{display:none}
 .mtab{position:relative;flex:none;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:8px 14px 8px 11px;cursor:pointer;text-align:left;color:var(--mut)}
@@ -793,7 +827,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._narrow = false; this._edit = false; this._modal = null; this._dragging = false;
     this._cfg = { layout: { blocks: [], rooms: [], icons: {}, groups: [] }, plans: {}, presence: { mode: "home" } };
     this._gen = { updates: true, summer: { mode: "auto", temp: 18, days: 3 }, wxadj: { on: false, mild: 12, down: 1, frost: 0, up: 1 }, pv: { ...PVDEF } };
-    this._learn = {}; this._st = null; this._pollN = 0;
+    this._learn = {}; this._st = null; this._stOpen = false; this._pollN = 0;
   }
   connectedCallback() {
     this._ro = new ResizeObserver(() => { if (this._hass && !this._dragging && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render(); });
@@ -1694,7 +1728,7 @@ class FensterHeizungPanel extends HTMLElement {
     const bg = getComputedStyle(this).backgroundColor.match(/\d+/g) || [15, 20, 25];
     this.style.colorScheme = (0.299 * bg[0] + 0.587 * bg[1] + 0.114 * bg[2]) < 140 ? "dark" : "light";
     this._applyLook();
-    if (this._st && this._admin()) { this._stRender(); return; }
+    if (this._stOpen && this._admin()) { this._stRender(); return; }
     if (this._mdActive() !== "fh") { this._mdRender(); return; }
     const rooms = this._collect(), edit = this._edit, adm = this._admin();
     const sum = (sc, k) => rooms.reduce((a, r) => a + (r.sc[sc]?.[k] || 0), 0);
@@ -1754,7 +1788,7 @@ class FensterHeizungPanel extends HTMLElement {
   _onChange(t) {
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wz") && this._wzChange(t)) return;
-      if (t.dataset && t.dataset.f && (t.dataset.f.startsWith("md") || t.dataset.f.startsWith("ww") || t.dataset.f.startsWith("en")) && this._mdChange(t)) return;
+      if (t.dataset && t.dataset.f && (t.dataset.f.startsWith("md") || t.dataset.f.startsWith("ww") || t.dataset.f.startsWith("en") || t.dataset.f.startsWith("gs") || t.dataset.f.startsWith("ev")) && this._mdChange(t)) return;
       if (this._lookChange(t)) return;
       if (t.dataset && t.dataset.k === "htr_steps" && this._modal && this._modal.type === "opt") { this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("v") && this._modal && this._modal.type === "vac") { const k = { vfrom: "from", vto: "to", vtime: "preheat_time" }[t.dataset.f]; this._modal.draft[k] = t.value; if (k === "from" && t.value > this._modal.draft.to) this._modal.draft.to = t.value; this._renderModal(); }
@@ -1769,7 +1803,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "menu") this.dispatchEvent(new Event("hass-toggle-menu", { bubbles: true, composed: true }));
     else if (a === "pkopen") { this._pkId = this._pkId === b.dataset.pid ? null : b.dataset.pid; this._renderModal(); const q = this.shadowRoot.querySelector(".pksearch"); if (q) q.focus(); }
     else if (a === "pkpick") { const meta = (this._pkReg || {})[b.dataset.pid]; this._pkId = null; if (meta) { const t = { dataset: { ...meta }, value: b.dataset.v, tagName: "SELECT" }; this._onInput(t); this._onChange(t); } this._renderModal(); }
-    else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en")) this._mdAct(a, b);
+    else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || a.startsWith("gs") || a.startsWith("ev")) this._mdAct(a, b);
     else if (["gtog", "gsw", "gmv", "gedit", "gadd", "gpick", "gicon", "gsave", "gdel"].includes(a)) this._gActions(a, b);
     else if (a === "opt") this._optOpen(id);
     else if (a === "oadd") this._nav(HA_PAGE);
@@ -2346,7 +2380,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!m) { box.innerHTML = ""; return; }
     const r = this._collect().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
-    if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
     if (m.type === "icon") {
       const cur = this._icon(r), L = this._cfg.layout, cc = (L.colors || {})[m.id], ph = (L.photos || {})[m.id];
@@ -2594,14 +2628,16 @@ class FensterHeizungPanel extends HTMLElement {
   _mdState() {
     if (!this._mds) {
       let act = "fh"; try { act = localStorage.getItem("fh_mod_active") || "fh"; } catch (_) { /* Speicher gesperrt */ }
-      this._mds = { active: act, on: { ww: true, en: true }, ext: [], ww: JSON.parse(JSON.stringify(WW_DEF)), loaded: false };
+      this._mds = { active: act, on: { ww: true, en: true, gs: true, lu: false, rb: false, wp: false, ev: false, wx: false, ga: false, sf: false, pl: false, bt: false, dt: false, wa: false, sp: false }, ext: [], ww: JSON.parse(JSON.stringify(WW_DEF)), loaded: false };
     }
     return this._mds;
   }
   _mdApply(r) {
     const s = this._mdState();
     if (r && r.modules) {
-      s.on = { ww: true, en: true, ...(r.modules.on || {}) }; s.ext = Array.isArray(r.modules.ext) ? r.modules.ext : [];
+      s.on = { ww: true, en: true, gs: true, lu: false, rb: false, wp: false, ev: false, wx: false, ga: false, sf: false, pl: false, bt: false, dt: false, wa: false, sp: false, ...(r.modules.on || {}) }; s.ext = Array.isArray(r.modules.ext) ? r.modules.ext : [];
+      if (r.modules.gs) this._mdState().gs = r.modules.gs;
+      if (r.modules.ev) { const ev = this._mdState().ev = { brand: "", model: "", body: "limousine", color: "blue", ...r.modules.ev }; ev.ent = { soc: "", odo: "", range: "", plug: "", power: "", charging: "", ...(r.modules.ev.ent || {}) }; }
       const en = r.modules.energy, E = this._enState(); E.on = s.on.en !== false;
       if (en) {
         const has = Object.values(en.ent || {}).some(Boolean); let mig = false; try { mig = localStorage.getItem("fh_energy_mig") === "1"; } catch (_) { /* Speicher gesperrt */ }
@@ -2615,7 +2651,7 @@ class FensterHeizungPanel extends HTMLElement {
     s.ww = { ...d, ...c, ent: { ...d.ent, ...(c.ent || {}) }, heat: { ...d.heat, ...(c.heat || {}) }, circ: { ...d.circ, ...(c.circ || {}) }, leg: { ...d.leg, ...(c.leg || {}), last: st.leg_last || null }, pv: { ...d.pv, ...(c.pv || {}) }, boost: !!st.boost, circ5: !!st.circ5, away: !!st.away, info: { want: st.want, leg: !!st.leg_running }, ...keep };
     s.loaded = true;
   }
-  _mdBackup() { const W = this._mdState().ww, ww = JSON.parse(JSON.stringify(W)); ["boost", "circ5", "away", "day", "info"].forEach((k) => delete ww[k]); delete ww.leg.last; const E = this._enState(); return { modules: { on: this._mdState().on, ext: this._mdState().ext, energy: { ent: E.ent, sign: E.sign || "", bsign: E.bsign, bmode: E.bmode === "two" ? "two" : "one", pvn: E.pvn || "", pv2n: E.pv2n || "" } }, ww }; }
+  _mdBackup() { const W = this._mdState().ww, ww = JSON.parse(JSON.stringify(W)); ["boost", "circ5", "away", "day", "info"].forEach((k) => delete ww[k]); delete ww.leg.last; const E = this._enState(); return { modules: { on: this._mdState().on, ext: this._mdState().ext, gs: this._gsState(), ev: this._evState(), energy: { ent: E.ent, sign: E.sign || "", bsign: E.bsign, bmode: E.bmode === "two" ? "two" : "one", pvn: E.pvn || "", pv2n: E.pv2n || "" } }, ww }; }
   _mdSave() {
     clearTimeout(this._mdT);
     this._mdT = setTimeout(() => {
@@ -2629,15 +2665,16 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _mdPoll(r) {
     if (!this._hass) return;
-    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "mods", "enset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
+    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "mods", "enset", "gsset", "evset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
     if (r) { apply(r); return; }
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
   _mdActiveSet(id) { const s = this._mdState(); s.active = id; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
-  _mdList() { const s = this._mdState(); return [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
+  _mdList() { const s = this._mdState(); return [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
   _mdActive() { const s = this._mdState(); return this._mdList().some((m) => m.id === s.active) ? s.active : "fh"; }
   _stDone(id) {
     if (id === "fh") { const n = this._collect().length; return n ? n + (n === 1 ? " Raum" : " Räume") : ""; }
+    if (id === "gs") { const n = this._gsState().devices.length; return n ? n + (n === 1 ? " Gerät" : " Geräte") : ""; }
     const E = id === "ww" ? (this._mdState().ww.ent || {}) : (this._enState().ent || {});
     return Object.values(E).some((v) => v) ? "Eingerichtet" : "";
   }
@@ -2645,8 +2682,8 @@ class FensterHeizungPanel extends HTMLElement {
     const sr = this.shadowRoot, s = this._mdState();
     const row = (icn, ttl, txt, act, k, extra) => `<button class="sxrow" data-act="${act}"${k ? ` data-k="${k}"` : ""}><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}</b><small>${txt}</small></span>${extra || ""}<span class="sxg">${ic("chev", 16)}</span></button>`;
     const mods = MODS.map((m) => {
-      const on = m.id === "fh" || (m.id === "ww" ? s.on.ww : this._enOn()), d = on ? this._stDone(m.id) : "";
-      const chip = !on ? `<em class="sxc off">Aus</em>` : d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc">Offen</em>`;
+      const on = m.id === "fh" || (m.id === "ww" ? s.on.ww : m.beta ? s.on[m.id] === true : m.id === "gs" ? s.on.gs !== false : this._enOn()), d = on ? this._stDone(m.id) : "";
+      const chip = !on ? `<em class="sxc off">Aus</em>` : m.beta ? `<em class="sxc beta">Beta</em>` : d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc">Offen</em>`;
       return on ? row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", chip)
         : row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, "Ausgeschaltet – hier aktivieren", "mdtog", m.id, chip);
     }).join("");
@@ -2664,35 +2701,473 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern und zurückspielen", "gen")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
           ${row("puzzle", "Module verwalten", "Module ein- und ausschalten, eigene Module hinzufügen", "mdmgr")}</div>
-        <div class="sxh">Demnächst</div><div class="card sxl">${soon}</div></div>
+        ${soon ? `<div class="sxh">Demnächst</div><div class="card sxl">${soon}</div>` : ""}</div>
       </div>`;
+  }
+  /* Gerätestrom: eigene Berechnung im Backend (fenster_heizung/gs_get). Solar, Netz, Batterie kommen aus Modul 3, Preise aus Modul 1. */
+  _gsState() {
+    const s = this._mdState();
+    return s.gs || (s.gs = { devices: [], bat_cost: 0, forecast: "", notify: [] });
+  }
+  _gsReady() { return this._enConfigured(); }
+  _gsLoad(force) {
+    if (!this._hass || this._gsBusy) return;
+    if (!force && this._gsD && Date.now() - this._gsD.ts < 15000) return;
+    this._gsBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/gs_get" }).then((r) => { this._gsD = { ...(r || {}), ts: Date.now() }; }).catch(() => { this._gsD = { devices: [], hist: {}, err: true, ts: Date.now() }; })
+      .finally(() => { this._gsBusy = false; if (this._mdActive() === "gs" && !this._modal && !this._stOpen) this._render(); });
+  }
+  _gsAct(a, b) {
+    const G = this._gsState(), k = b.dataset.k, i = +b.dataset.i;
+    if (a === "gsset") { this._modal = { type: "gsset" }; this._renderModal(); }
+    else if (a === "gsdone") { this._pkId = null; this._modal = null; this._renderModal(); this._gsLoad(true); this._render(); }
+    else if (a === "gsadd") { if (G.devices.length < 8) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5 }); this._mdSave(); this._renderModal(); } }
+    else if (a === "gsdel") { G.devices.splice(i, 1); this._pkId = null; this._mdSave(); this._renderModal(); }
+    else if (a === "gsnot") { const n = new Set(G.notify); if (n.has(k)) n.delete(k); else n.add(k); G.notify = [...n]; this._mdSave(); this._renderModal(); }
+    else if (a === "gsper") { this._gsRange = k; this._render(); }
+    else if (a === "gsdev") { this._gsSel = k; this._render(); }
+  }
+  _gsChange(t) {
+    const f = t.dataset.f, G = this._gsState(), d = G.devices[+t.dataset.i];
+    if (f === "gsent" && d) { d.ent = t.value; this._mdSave(); return true; }
+    if (f === "gsname" && d) { d.name = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 30); this._mdSave(); return true; }
+    if (f === "gsnum" && d) { const v = Math.max(1, Math.min(t.dataset.k === "thr" ? 500 : 120, Math.round(parseFloat(String(t.value).replace(",", ".")) || 1))); d[t.dataset.k] = v; this._mdSave(); return true; }
+    if (f === "gsbat") { G.bat_cost = Math.max(0, Math.min(100, parseFloat(String(t.value).replace(",", ".")) || 0)); this._mdSave(); return true; }
+    if (f === "gsfc") { G.forecast = t.value; this._mdSave(); return true; }
+    return false;
+  }
+  _gsSetModal() {
+    const G = this._gsState(), st = this._hass.states, ks = Object.keys(st), p = this._pv(), E = this._enState(), g = this._enGrid();
+    const pw = ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "power" || /^k?W$/.test(st[e].attributes.unit_of_measurement || "")));
+    const nm = (e) => (e ? esc(this._wzName(e)) : "–");
+    const svc = Object.keys((this._hass.services || {}).notify || {}).filter((n) => n !== "send_message").sort().map((n) => "notify." + n);
+    const opts = [...svc, ...G.notify.filter((n) => !svc.includes(n))];
+    const eur = (c) => num(c, 1) + " ct/kWh";
+    return `<div class="ov" data-act="gsdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Gerätestrom</b><span>Einstellungen</span></div><button class="ibtn" data-act="gsdone" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("laundry", 15)}Geräte</div>
+      <div class="mut sm" style="margin:2px 0 6px">Je Gerät ein Leistungssensor (Steckdose oder Zähler, in Watt). Ein Durchlauf beginnt über der Startschwelle und endet, wenn die Leistung die eingestellte Zeit darunter bleibt.</div>
+      ${G.devices.map((d, i) => `<div class="gsdc"><div class="gsdh"><input class="otxt" type="text" maxlength="30" placeholder="Name, z. B. Waschmaschine" value="${esc(d.name)}" data-f="gsname" data-i="${i}" aria-label="Gerätename"><button class="ibtn" data-act="gsdel" data-i="${i}" aria-label="Gerät entfernen">${ic("trash", 17)}</button></div>
+        ${this._wzSel(pw, d.ent, "gsent", `data-i="${i}" data-k="ent"`, "– Leistungssensor wählen –", /wasch|trockn|sp(ü|u)l|geschirr|power|leistung/i)}
+        <div class="gsnums"><label>Startschwelle<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="thr" value="${d.thr}" min="1" max="500"><u>W</u></span></label><label>Ende nach<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="end" value="${d.end}" min="1" max="120"><u>min</u></span></label></div></div>`).join("")}
+      ${G.devices.length < 8 ? `<button class="btn2" data-act="gsadd" style="width:100%;flex:none">${ic("plus", 16)} Gerät hinzufügen</button>` : ""}
+      <div class="lsec">${ic("sun", 15)}Quellen und Preise</div>
+      <div class="gst ${this._gsReady() ? "" : "on"}">${ic(this._gsReady() ? "check" : "alert", 15)}<div>${this._gsReady() ? `Solar: <b>${nm(E.ent.pv)}</b>${E.ent.pv2 ? " + " + nm(E.ent.pv2) : ""} · Netz: <b>${nm(g.ent)}</b>${E.ent.bat || E.ent.bdis ? ` · Batterie: <b>${nm(E.ent.bat || E.ent.bdis)}</b>` : ""}<br><span class="mut">kommen aus Modul 3 – Energie-Übersicht.</span>` : "Solar- und Netz-Sensor fehlen. Sie werden einmal in Modul 3 – Energie-Übersicht gewählt und hier mitgenutzt."}</div></div>
+      <div class="gst">${ic("info", 15)}<div>Bezugspreis <b>${eur(p.price)}</b>${p.price_mode === "entity" ? " (Sensor)" : ""}, Einspeisevergütung <b>${eur(p.feed)}</b>${p.feed_mode === "entity" ? " (Sensor)" : ""}<br><span class="mut">kommen aus Modul 1 → Allgemein → Photovoltaik.</span></div></div>
+      <div class="gsq"><button class="btn2" data-act="mdensetup" style="flex:none">${ic("energy", 15)} Modul 3 öffnen</button></div>
+      <div class="lsec">${ic("bolt", 15)}Batterie</div>
+      <div class="of"><div class="ol"><b>Speicherkosten</b><span>Was eine kWh aus der Batterie kostet. 0 = Batteriestrom gilt als kostenlos.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gsbat" value="${G.bat_cost}" min="0" max="100" step="0.5"><u>ct/kWh</u></span></div></div>
+      <div class="lsec">${ic("sun", 15)}Startempfehlung</div>
+      <div class="mut sm" style="margin:2px 0 0">Prognose-Sensor in Watt (optional). Ohne Sensor zählt die aktuelle Solarleistung.</div>${this._wzSel(pw, G.forecast, "gsfc", "", "– keiner –", /prognose|forecast|solar|pv/i)}
+      <div class="lsec">${ic("bell", 15)}Meldung am Ende eines Durchlaufs</div>
+      ${opts.length ? `<div class="gschips">${opts.map((n) => `<button class="gsch ${G.notify.includes(n) ? "sel" : ""}" data-act="gsnot" data-k="${esc(n)}" aria-pressed="${G.notify.includes(n)}">${esc(n.replace("notify.", ""))}</button>`).join("")}</div>` : `<div class="mut sm">Keine Benachrichtigungsdienste gefunden.</div>`}
+      <div class="mut sm" style="margin:6px 0 0">Zusätzlich wird das Ereignis <code>geraetestrom_run_finished</code> ausgelöst.</div>
+      <div class="foot2"><button class="btn2 pri" data-act="gsdone">Fertig</button></div></div>`;
+  }
+  _gsPage() {
+    const adm = this._admin(), G = this._gsState();
+    this._gsLoad();
+    const D = this._gsD, eur = (v) => num(v, 2) + " €";
+    if (!G.devices.length) return `<div class="card empty">${ic("laundry", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Gerät eingerichtet</div>
+      <div class="sm" style="max-width:480px;margin:0 auto 14px">Zeigt pro Gerät (Waschmaschine, Trockner, Spülmaschine …), woher der Strom kommt – Solar, Batterie oder Netz – und was er kostet. Dazu Ersparnis, Durchläufe und eine Startempfehlung.</div>
+      <ul class="wwl"><li>${ic("sun", 16)}Anteile Solar, Batterie, Netz pro Gerät</li><li>${ic("chart", 16)}Kosten und Ersparnis: heute, Monat, Jahr, gesamt</li><li>${ic("bell", 16)}Meldung am Ende eines Durchlaufs</li></ul>
+      ${adm ? `<button class="btn2 pri" data-act="gsset" style="margin-top:16px;flex:none;padding:12px 22px">${ic("tools", 16)} Gerät hinzufügen</button>` : "Ein Administrator kann das Modul einrichten."}</div>`;
+    const warn = !this._gsReady() ? `<div class="banner">${ic("alert", 18)}<div><b>Solar- und Netz-Sensor fehlen.</b> Sie werden in Modul 3 – Energie-Übersicht gewählt. Bis dahin gilt der gesamte Strom als Netzstrom.${adm ? ` <button class="lnk" data-act="mdensetup">Modul 3 öffnen</button>` : ""}</div></div>` : "";
+    if (!D) return `${warn}<div class="card empty">Lade Gerätestrom …</div>`;
+    const devs = D.devices || [];
+    const sum = (f) => devs.reduce((a, d) => a + (f(d) || 0), 0), cols = ["#e9a413", "#13a97b", "#6f78e8"], srcN = ["Solar", "Batterie", "Netz"];
+    const per = [["Heute", "day", "today", "#2dd4bf"], ["Monat", "month", "month", "#60a5fa"], ["Jahr", "year", "year", "#a78bfa"], ["Gesamt", "total", "total", "#f472b6"]];
+    const tiles = per.map(([t, k, ico, c]) => `<div class="card gstile" style="--c:${c}"><div class="mut sm">${ic(ico, 14)} ${t}</div><div class="gsv">${eur(sum((d) => d[k].saved))}</div><div class="mut sm">gespart · Kosten ${eur(sum((d) => d[k].cost))} · ${num(sum((d) => d[k].kwh), 1)} kWh</div></div>`).join("");
+    const cards = devs.map((d) => {
+      const run = d.running, base = run ? d.w : d.e, tot = base[0] + base[1] + base[2] || 1, adv = d.advice || "", ac = /^Jetzt/.test(adv) ? "green" : /^Teil/.test(adv) ? "amber" : "slate";
+      return `<div class="card gsdev"><div class="gsh"><b>${esc(d.name)}</b><span class="gsst ${run ? "on" : ""}">${run ? num(d.w[0] + d.w[1] + d.w[2], 0) + " W" : "Aus"}</span></div>
+        <div class="gsbar" role="img" aria-label="Anteile Solar, Batterie, Netz">${base.map((v, i) => `<i style="width:${v / tot * 100}%;background:${cols[i]}"></i>`).join("")}</div>
+        <div class="gsleg">${srcN.map((t, i) => `<span><i style="background:${cols[i]}"></i>${t} ${run ? num(d.w[i], 0) + " W" : num(d.e[i], 1) + " kWh"}</span>`).join("")}</div>
+        <div class="gsrow"><span class="mut">Heute</span><b>${eur(d.day.cost)} Kosten · ${eur(d.day.saved)} gespart</b></div>
+        <div class="gsrow"><span class="mut">Letzter Durchlauf</span><b>${d.last ? eur(d.last.cost) + " · " + num(d.last.kwh, 2) + " kWh · " + num(d.last.share, 0) + " % Eigenanteil" : "noch keiner"}</b></div>
+        ${adv ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung ${num(d.cover, 0)} %</span></div>` : ""}</div>`; }).join("");
+    return `${warn}<div class="card hero gshero"><div class="mut" style="opacity:.85">${ic("laundry", 16)} Heute gespart</div><div class="gsbig">${eur(sum((d) => d.day.saved))}</div><div style="opacity:.85">${num(sum((d) => d.day.runs))} ${sum((d) => d.day.runs) === 1 ? "Durchlauf" : "Durchläufe"} heute · ${num(sum((d) => d.day.kwh), 1)} kWh</div></div>
+      <div class="gstiles">${tiles}</div><div class="gsgrid">${cards}</div>${this._gsChart(D, devs, cols, srcN)}`;
+  }
+  _gsChart(D, devs, cols, srcN) {
+    const rg = this._gsRange || "7", sel = devs.some((d) => d.id === this._gsSel) ? this._gsSel : "", H = D.hist || {};
+    const pick = sel ? [sel] : devs.map((d) => d.id), mon = rg === "12", n = rg === "30" ? 30 : rg === "7" ? 7 : 12;
+    const today = new Date(); today.setHours(12, 0, 0, 0);
+    const keyOf = (dt) => mon ? dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0") : dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0") + "-" + String(dt.getDate()).padStart(2, "0");
+    const slots = []; for (let i = n - 1; i >= 0; i--) { const dt = new Date(today); if (mon) dt.setMonth(dt.getMonth() - i, 1); else dt.setDate(dt.getDate() - i); slots.push({ k: keyOf(dt), dt, v: [0, 0, 0], c: 0, s: 0 }); }
+    const ix = Object.fromEntries(slots.map((s, i) => [s.k, i]));
+    pick.forEach((id) => (H[id] || []).forEach((r) => { const i = ix[mon ? r.d.slice(0, 7) : r.d]; if (i == null) return; slots[i].v[0] += r.s; slots[i].v[1] += r.b; slots[i].v[2] += r.g; slots[i].c += r.cost; slots[i].s += r.saved; }));
+    const mx = Math.max(...slots.map((s) => s.v[0] + s.v[1] + s.v[2]), 0.1), step = enStep(mx), top = Math.ceil(mx / step) * step, W = 640, Hh = 190, pl = 34, pb = 22, bw = (W - pl) / n, bar = Math.min(bw * 0.62, 34);
+    const lab = (s) => mon ? s.dt.toLocaleDateString("de-DE", { month: "short" }) : n > 7 ? String(s.dt.getDate()) : s.dt.toLocaleDateString("de-DE", { weekday: "short" });
+    let grid = "", bars = "";
+    for (let v = 0; v <= top + 1e-9; v += step) { const y = Hh - pb - (v / top) * (Hh - pb - 8); grid += `<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${pl - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="var(--mut)">${num(v, step < 1 ? 1 : 0)}</text>`; }
+    slots.forEach((s, i) => { let y = Hh - pb; const x = pl + i * bw + (bw - bar) / 2; s.v.forEach((v, j) => { const h = (v / top) * (Hh - pb - 8); if (h > 0.4) { y -= h; bars += `<rect x="${x}" y="${y}" width="${bar}" height="${h}" fill="${cols[j]}" rx="2"><title>${srcN[j]} ${num(v, 2)} kWh</title></rect>`; } });
+      bars += `<text x="${x + bar / 2}" y="${Hh - 6}" text-anchor="middle" font-size="11" fill="var(--mut)">${esc(lab(s))}</text>`; });
+    const totE = slots.reduce((a, s) => a + s.v[0] + s.v[1] + s.v[2], 0), totS = slots.reduce((a, s) => a + s.s, 0), totC = slots.reduce((a, s) => a + s.c, 0);
+    const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${on}">${t}</button>`;
+    return `<div class="card"><h2>${ic("chart", 18)}Verlauf nach Quelle</h2>
+      <div class="gschips">${[["7", "7 Tage"], ["30", "30 Tage"], ["12", "12 Monate"]].map(([k, t]) => chip("gsper", k, t, rg === k)).join("")}</div>
+      <div class="gschips">${chip("gsdev", "", "Alle Geräte", !sel)}${devs.map((d) => chip("gsdev", esc(d.id), esc(d.name), sel === d.id)).join("")}</div>
+      <svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="Energie nach Quelle in kWh">${grid}${bars}</svg>
+      <div class="gsleg" style="margin-top:6px">${srcN.map((t, i) => `<span><i style="background:${cols[i]}"></i>${t}</span>`).join("")}<span class="mut">kWh pro ${mon ? "Monat" : "Tag"}</span></div>
+      <div class="mut sm" style="margin:8px 0 0">Zeitraum: ${num(totE, 1)} kWh · Kosten ${num(totC, 2)} € · gespart ${num(totS, 2)} €</div></div>`;
+  }
+  /* Elektroauto & Wallbox (Beta) */
+  _evState() { const s = this._mdState(); return s.ev || (s.ev = { brand: "", model: "", body: "limousine", color: "blue", ent: { soc: "", odo: "", range: "", plug: "", power: "", charging: "" } }); }
+  _evNum(eid) { const st = eid && this._hass.states[eid]; if (!st) return null; const v = parseFloat(String(st.state).replace(",", ".")); return isFinite(v) ? (st.attributes.unit_of_measurement === "kW" ? v * 1000 : v) : null; }
+  _evData() {
+    const E = this._evState().ent, st = this._hass.states, S = (e) => (e && st[e] ? String(st[e].state).toLowerCase() : "");
+    const power = this._evNum(E.power), soc = this._evNum(E.soc), odo = this._evNum(E.odo), range = this._evNum(E.range);
+    const ON = /^(on|true|yes|connected|plugged|plugged_in|ev_connected|vehicle_connected|charging|ready|waiting|complete|finished|preparing|suspended)/, OFF = /^(off|false|no|disconnected|unplugged|not_connected|available|unavailable|unknown|none)/;
+    const chg = E.charging ? ON.test(S(E.charging)) && !OFF.test(S(E.charging)) : power != null && power >= 100;
+    const plug = E.plug ? ON.test(S(E.plug)) && !OFF.test(S(E.plug)) : chg;
+    return { soc, odo, range, power, charging: plug && chg, plugged: plug || chg, any: Object.values(E).some(Boolean) };
+  }
+  _evScene(d) {
+    const V = this._evState(), H = EV_SHAPES[V.body] || EV_SHAPES.limousine, C = EV_COLORS[V.color] || EV_COLORS.blue, [px, py] = H.port, [w1, w2] = H.wh;
+    const led = d.charging ? "#22e06b" : d.plugged ? "#ffa51f" : "#9aa5b1", cab = `M112 207 C108 272 196 270 236 248 C${px - 38} ${py + 49} ${px - 14} ${py + 19} ${px} ${py}`;
+    const wheel = (cx) => `<g><ellipse cx="${cx}" cy="250" rx="30" ry="3" fill="#000" opacity=".5"/><circle cx="${cx}" cy="217" r="33" fill="#0b0d11"/><circle cx="${cx}" cy="217" r="33" fill="none" stroke="#1d222b" stroke-width="3"/><circle cx="${cx}" cy="217" r="27" fill="none" stroke="#252b36" stroke-width="1.5"/>
+        <circle cx="${cx}" cy="217" r="23" fill="url(#evrim)"/><circle cx="${cx}" cy="217" r="23" fill="none" stroke="#4b5563" stroke-width="1.2"/><circle cx="${cx}" cy="217" r="19" fill="#161a21"/>
+        <circle cx="${cx}" cy="217" r="17" fill="none" stroke="#9aa3b1" stroke-width="1" opacity=".5"/><path d="M${cx - 15} 212 A16 16 0 0 1 ${cx - 4} 202" stroke="#d7141f" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"/>
+        <g stroke="url(#evrim)" stroke-width="3" stroke-linecap="round">${Array.from({ length: 10 }, (_, k) => k * 36).map((ang) => `<line x1="${cx + 6 * Math.sin(ang * Math.PI / 180)}" y1="${217 - 6 * Math.cos(ang * Math.PI / 180)}" x2="${cx + 20 * Math.sin((ang + 8) * Math.PI / 180)}" y2="${217 - 20 * Math.cos((ang + 8) * Math.PI / 180)}"/>`).join("")}</g>
+        <circle cx="${cx}" cy="217" r="7" fill="#2b313b"/><circle cx="${cx}" cy="217" r="3.2" fill="#b4bcc8"/><path d="M${cx - 24} 205 A26 26 0 0 1 ${cx + 6} 192" stroke="#fff" stroke-width="1.5" fill="none" opacity=".25"/></g>`;
+    return `<svg class="evsvg" viewBox="0 0 760 290" role="img" aria-label="${d.charging ? "Fahrzeug lädt" : d.plugged ? "Ladekabel angesteckt" : "Ladekabel nicht angesteckt"}">
+      <defs>
+        <linearGradient id="evsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa7e6"/><stop offset=".62" stop-color="#bfe0f7"/><stop offset="1" stop-color="#eaf5fb"/></linearGradient>
+        <radialGradient id="evsun" cx=".86" cy=".16" r=".45"><stop offset="0" stop-color="#fff7d1" stop-opacity=".95"/><stop offset=".35" stop-color="#fff2b0" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <linearGradient id="evpaint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C[1]}"/><stop offset=".45" stop-color="${C[2]}"/><stop offset="1" stop-color="${C[3]}"/></linearGradient>
+        <linearGradient id="evglass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b3e52"/><stop offset=".5" stop-color="#16222f"/><stop offset="1" stop-color="#0a1018"/></linearGradient>
+        <linearGradient id="evrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e5e9ef"/><stop offset=".5" stop-color="#9aa3b1"/><stop offset="1" stop-color="#d7dce4"/></linearGradient>
+        <linearGradient id="evwall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ece7df"/><stop offset="1" stop-color="#d6cfc4"/></linearGradient>
+        <linearGradient id="evbox" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9dde3"/></linearGradient>
+        <linearGradient id="evroad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b7280"/><stop offset="1" stop-color="#4b5563"/></linearGradient>
+        <clipPath id="evbody"><path d="${H.body}"/></clipPath><clipPath id="evgl"><path d="${H.glass}"/></clipPath><linearGradient id="evrefl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></linearGradient>
+        <filter id="evblur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+        <filter id="evglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
+      <rect width="760" height="290" rx="16" fill="url(#evsky)"/><rect width="760" height="290" rx="16" fill="url(#evsun)"/>
+      <g opacity=".9" fill="#fff"><ellipse cx="260" cy="58" rx="46" ry="12" opacity=".85"/><ellipse cx="292" cy="50" rx="30" ry="11" opacity=".9"/><ellipse cx="520" cy="46" rx="38" ry="9" opacity=".75"/></g>
+      <g filter="url(#evblur)" opacity=".55"><ellipse cx="300" cy="244" rx="120" ry="16" fill="#6f9a74"/><ellipse cx="480" cy="246" rx="150" ry="13" fill="#5d8a66"/><ellipse cx="680" cy="244" rx="110" ry="15" fill="#7aa57f"/></g>
+      <rect y="248" width="760" height="42" fill="url(#evroad)"/><rect y="248" width="760" height="3" fill="#8b93a0"/><g stroke="#e5e7eb" stroke-width="3" opacity=".75"><path d="M250 276H330M440 276H520M630 276H710" stroke-linecap="round"/></g>
+      <rect x="20" y="30" width="170" height="218" fill="url(#evwall)"/><rect x="20" y="30" width="170" height="10" fill="#bdb5a8"/><rect x="190" y="30" width="6" height="218" fill="#a69d8f" opacity=".6"/>
+      <g stroke="#c8c0b3" stroke-width="1" opacity=".7">${[70, 110, 150, 190, 230].map((y) => `<line x1="20" y1="${y}" x2="190" y2="${y}"/>`).join("")}</g>
+      <rect x="96" y="102" width="86" height="118" rx="18" fill="#000" opacity=".22" filter="url(#evblur)"/>
+      <g><rect x="86" y="92" width="76" height="116" rx="16" fill="url(#evbox)" stroke="#aeb5bf" stroke-width="1.5"/>
+        <rect x="86" y="92" width="76" height="116" rx="16" fill="none" stroke="#fff" stroke-width="1" opacity=".9"/>
+        <rect x="96" y="102" width="56" height="26" rx="8" fill="#0d141c"/><text x="124" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="${d.charging ? "#4ade80" : "#8da0b3"}">${d.charging && d.power != null ? num(d.power / 1000, 1) + " kW" : d.plugged ? "bereit" : "frei"}</text>
+        <circle cx="124" cy="152" r="14" fill="#eef0f3" stroke="#c4cad2"/><circle cx="124" cy="152" r="11" fill="none" stroke="${led}" stroke-width="3.5"/><circle cx="124" cy="152" r="11" fill="none" stroke="${led}" stroke-width="3.5" filter="url(#evglow)" class="${d.charging ? "evpulse" : ""}" opacity=".8"/>
+        <path d="M121 146 L126 146 L123 152 L127 152 L121 160 L123 154 L119 154 Z" fill="${led}"/>
+        <rect x="108" y="190" width="32" height="14" rx="6" fill="#1a1f26"/><circle cx="124" cy="197" r="4" fill="#050709"/></g>
+      <ellipse cx="490" cy="251" rx="215" ry="9" fill="#000" opacity=".45" filter="url(#evblur)"/>
+      <g class="evcable ${d.plugged ? "on" : ""}">
+        ${d.charging ? `<path d="${cab}" fill="none" stroke="#22e06b" stroke-width="12" stroke-linecap="round" opacity=".45" filter="url(#evglow)" class="evpulse"/>` : ""}
+        <path d="${cab}" fill="none" stroke="#0b0e12" stroke-width="9" stroke-linecap="round"/><path d="${cab}" fill="none" stroke="#3a424d" stroke-width="2" stroke-linecap="round" transform="translate(-1.5 -2)"/>
+        <path d="${cab}" fill="none" stroke="${d.charging ? "#a7f3c0" : "none"}" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="5 13" class="${d.charging ? "evflow" : ""}"/>
+        <g transform="rotate(-52 ${px} ${py})"><rect x="${px - 10}" y="${py - 8}" width="24" height="16" rx="6" fill="#14181e" stroke="#2c333c"/><rect x="${px + 10}" y="${py - 5}" width="6" height="10" rx="2" fill="#0b0e12"/><rect x="${px - 8}" y="${py - 6}" width="10" height="3" rx="1.5" fill="${led}" opacity=".9"/></g></g>
+      <g>
+        <path d="${H.body}" fill="url(#evpaint)"/>
+        <g clip-path="url(#evbody)">
+          <rect x="${H.rear - 4}" y="${H.gb}" width="420" height="40" fill="url(#evrefl)"/>
+          <path d="M${H.rear} ${H.gt + 36} C420 ${H.gt + 28} 560 ${H.gt + 36} ${H.front} ${H.gt + 62}" stroke="#fff" stroke-width="3" fill="none" opacity=".38"/>
+          <path d="M${H.rear} ${H.gb + 12} C420 ${H.gb + 8} 560 ${H.gb + 10} ${H.front} ${H.gb + 24}" stroke="${C[4]}" stroke-width="2.2" fill="none" opacity=".4"/>
+          <path d="M${H.rear} ${H.gb + 14} C420 ${H.gb + 10} 560 ${H.gb + 12} ${H.front} ${H.gb + 26}" stroke="#fff" stroke-width="1" fill="none" opacity=".3"/>
+          <path d="M${H.rear - 2} 224 L700 224 L700 240 L${H.rear - 2} 240 Z" fill="#10141b"/><path d="M${H.rear - 2} 224 L700 224" stroke="#fff" stroke-width="1" opacity=".18"/>
+          <g stroke="${C[4]}" stroke-width="1.3" opacity=".65" fill="none">${H.seams.map((x, k) => `<path d="M${x} ${H.gb} C${x - 2} 190 ${x - 4} 210 ${x - 5} 224"/>`).join("")}</g>
+          ${H.handles.map(([x, y]) => `<rect x="${x}" y="${y}" width="22" height="3.4" rx="1.7" fill="#0b0e12" opacity=".55"/><rect x="${x}" y="${y - 1}" width="22" height="1.6" rx=".8" fill="#fff" opacity=".4"/>`).join("")}
+          <ellipse cx="${(H.rear + H.front) / 2}" cy="${H.gt - 6}" rx="${(H.front - H.rear) / 3.2}" ry="10" fill="#fff" opacity=".2"/></g>
+        <path d="${H.glass}" fill="url(#evglass)"/>
+        <g clip-path="url(#evgl)"><path d="M${H.gx[0] + 10} ${H.gb} L${H.gx[0] + 58} ${H.gt - 2} L${H.gx[0] + 84} ${H.gt - 2} L${H.gx[0] + 38} ${H.gb} Z" fill="#fff" opacity=".24"/><path d="M${H.pil + 24} ${H.gb} L${H.pil + 62} ${H.gt - 2} L${H.pil + 78} ${H.gt - 2} L${H.pil + 40} ${H.gb} Z" fill="#fff" opacity=".15"/><rect x="${H.gx[0]}" y="${H.gb - 12}" width="${H.gx[1] - H.gx[0]}" height="12" fill="#000" opacity=".25"/></g>
+        <path d="M${H.pil - 3} ${H.gt - 2} L${H.pil + 1} ${H.gb + 1} L${H.pil + 5} ${H.gb + 1} L${H.pil + 3} ${H.gt - 2} Z" fill="${C[3]}" stroke="#05070a" stroke-width="1"/>
+        <path d="${H.glass}" fill="none" stroke="#05070a" stroke-width="2.2" stroke-linejoin="round"/><path d="${H.glass.replace(/ Z$/, "")}" fill="none" stroke="#c9d3e3" stroke-width="1" opacity=".55" transform="translate(0 -2.6)"/>
+        <path d="M${H.mir[0]} ${H.mir[1]} L${H.mir[0] + 14} ${H.mir[1]} C${H.mir[0] + 20} ${H.mir[1]} ${H.mir[0] + 22} ${H.mir[1] + 6} ${H.mir[0] + 16} ${H.mir[1] + 9} L${H.mir[0] - 2} ${H.mir[1] + 10} Z" fill="${C[2]}" stroke="${C[4]}"/>
+        <path d="M${H.tl[0]} ${H.tl[1] - 9} L${H.tl[0] + 8} ${H.tl[1] - 11} L${H.tl[0] + 8} ${H.tl[1] + 9} L${H.tl[0]} ${H.tl[1] + 11} Z" fill="#d6192a"/><path d="M${H.tl[0]} ${H.tl[1] - 9} L${H.tl[0] + 8} ${H.tl[1] - 11} L${H.tl[0] + 8} ${H.tl[1] + 9} L${H.tl[0]} ${H.tl[1] + 11} Z" fill="#ff5a66" opacity=".55" filter="url(#evglow)"/>
+        <path d="M${H.front - 34} ${H.ly - 2} C${H.front - 18} ${H.ly - 2} ${H.front - 6} ${H.ly + 2} ${H.front} ${H.ly + 8} L${H.front} ${H.ly + 13} C${H.front - 10} ${H.ly + 8} ${H.front - 22} ${H.ly + 6} ${H.front - 34} ${H.ly + 6} Z" fill="#f8fbff"/><path d="M${H.front - 34} ${H.ly - 2} L${H.front} ${H.ly + 10} L${H.front} ${H.ly + 14} Z" fill="#fff6c8" opacity=".6" filter="url(#evglow)"/>
+        <path d="M${H.front - 6} ${H.ly + 22} L${H.front - 2} ${H.ly + 22} L${H.front - 2} ${H.ly + 40} L${H.front - 8} ${H.ly + 42} Z" fill="#0b0f16" opacity=".8"/>
+        <path d="${H.body}" fill="none" stroke="${C[4]}" stroke-width="1.6"/>
+        <circle cx="${px}" cy="${py}" r="7" fill="#0d1426" stroke="#8aa0c8" stroke-width="1.5"/><circle cx="${px}" cy="${py}" r="3.2" fill="${led}" class="${d.charging ? "evpulse" : ""}"/>
+        <circle cx="${w1}" cy="217" r="41" fill="#07090d"/><circle cx="${w1}" cy="217" r="41" fill="none" stroke="${C[4]}" stroke-width="2"/><circle cx="${w2}" cy="217" r="41" fill="#07090d"/><circle cx="${w2}" cy="217" r="41" fill="none" stroke="${C[4]}" stroke-width="2"/>
+        ${wheel(w1)}${wheel(w2)}</g>
+      <g><rect x="562" y="30" width="162" height="40" rx="20" fill="#0f172a" opacity=".82"/>
+        ${d.charging ? `<path d="M590 40 L580 52 H588 L585 62 L598 49 H590 Z" fill="#facc15"/>` : `<circle cx="588" cy="50" r="6" fill="${led}"/>`}
+        <text x="642" y="57" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">${d.soc != null ? num(d.soc, 0) + " %" : "–"}</text></g></svg>`;
+  }
+  _evPage() {
+    const adm = this._admin(), d = this._evData();
+    if (!d.any) return `${this._betaBox("Wähle in den Einstellungen die Sensoren deines Fahrzeugs und der Wallbox.")}
+      <div class="card empty">${ic("car", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Fahrzeug eingerichtet</div>
+      <div class="sm" style="max-width:460px;margin:0 auto 14px">Zeigt Ladestand, Reichweite und Kilometerstand. Die Wallbox ist abgebildet, das Ladekabel erscheint beim Anstecken und leuchtet beim Laden.</div>
+      ${adm ? `<button class="btn2 pri" data-act="mdevset" style="flex:none;padding:12px 22px">${ic("tools", 16)} Fahrzeug einrichten</button>` : "Ein Administrator kann das Modul einrichten."}</div>`;
+    const stT = d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt";
+    const tile = (ico, t, v, sub) => `<div class="luroom"><span class="mut">${ic(ico, 14)} ${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const bar = d.soc != null ? `<div class="gsbar" style="margin-top:6px" role="progressbar" aria-valuenow="${num(d.soc, 0)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(0, Math.min(100, d.soc))}%;background:${d.soc < 20 ? "#f87171" : "#34d399"}"></i></div>` : "";
+    return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}
+      <div class="card evcard ${d.charging ? "chg" : d.plugged ? "plg" : ""}"><div class="evhead"><b>${ic("car", 18)}${esc([this._evState().brand === "Andere" ? "" : this._evState().brand, this._evState().model].filter(Boolean).join(" ") || "Fahrzeug & Wallbox")}</b><span class="gsst ${d.charging ? "on" : ""}">${stT}</span></div>${this._evScene(d)}</div>
+      <div class="lugrid">${tile("energy", "Ladestand", d.soc != null ? num(d.soc, 0) + " %" : "–", bar || "kein Sensor")}${tile("car", "Reichweite", d.range != null ? num(d.range, 0) + " km" : "–", d.range != null ? "laut Fahrzeug" : "kein Sensor")}${tile("total", "Kilometerstand", d.odo != null ? num(d.odo, 0) + " km" : "–", d.odo != null ? "gesamt" : "kein Sensor")}${tile("bolt", "Ladeleistung", d.power != null ? num(d.power / 1000, 1) + " kW" : "–", stT)}</div>
+      ${this._betaSoon("sun", "Laden mit PV-Überschuss", "Ladeleistung der Wallbox an den Solarüberschuss anpassen")}`;
+  }
+  _evSetModal() {
+    const V = this._evState(), E = V.ent, st = this._hass.states, ks = Object.keys(st);
+    const num_ = ks.filter((e) => e.startsWith("sensor.") && !isNaN(parseFloat(st[e].state)));
+    const pw = ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "power" || /^k?W$/.test(st[e].attributes.unit_of_measurement || "")));
+    const bin = ks.filter((e) => e.startsWith("binary_sensor.") || e.startsWith("sensor.") || e.startsWith("switch."));
+    const sel = (k, o, none, h) => this._wzSel(o, E[k], "event", `data-k="${k}"`, none || "– keiner –", h);
+    return `<div class="ov" data-act="evdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Elektroauto &amp; Wallbox</b><span>Einstellungen · Beta</span></div><button class="ibtn" data-act="evdone" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("car", 15)}Dein Auto</div>
+      <div class="mut sm" style="margin:2px 0 4px">Marke</div><div class="gschips">${EV_BRANDS.map((b) => `<button class="gsch ${V.brand === b ? "sel" : ""}" data-act="evbrand" data-k="${esc(b)}" aria-pressed="${V.brand === b}">${esc(b)}</button>`).join("")}</div>
+      <div class="mut sm" style="margin:6px 0 4px">Modell (optional)</div><input class="otxt" type="text" maxlength="30" placeholder="z. B. Modellname" value="${esc(V.model)}" data-f="evmodel" aria-label="Modell">
+      <div class="mut sm" style="margin:8px 0 4px">Form der Zeichnung</div><div class="gschips">${Object.entries(EV_BODIES).map(([k, t]) => `<button class="gsch ${V.body === k ? "sel" : ""}" data-act="evbody" data-k="${k}" aria-pressed="${V.body === k}">${t}</button>`).join("")}</div>
+      <div class="mut sm" style="margin:6px 0 4px">Farbe</div><div class="gschips">${Object.entries(EV_COLORS).map(([k, c]) => `<button class="evsw ${V.color === k ? "sel" : ""}" data-act="evcol" data-k="${k}" style="--c:${c[2]};--c2:${c[1]}" aria-label="${c[0]}" aria-pressed="${V.color === k}" title="${c[0]}"></button>`).join("")}</div>
+      <div class="gst">${ic("info", 15)}Marke und Modell erscheinen als Beschriftung. Die Zeichnung ist allgemein gehalten, ohne Logos und nicht dem Modell nachgebaut.</div>
+      <div class="lsec">${ic("energy", 15)}Fahrzeug-Sensoren</div>
+      <div class="mut sm" style="margin:2px 0 0">Ladestand (Prozent)</div>${sel("soc", num_, "", /soc|batter|ladestand|akku/i)}
+      <div class="mut sm" style="margin:0">Kilometerstand</div>${sel("odo", num_, "", /odo|kilometer|km|mileage|stand/i)}
+      <div class="mut sm" style="margin:0">Reichweite (optional)</div>${sel("range", num_, "", /reichweite|range/i)}
+      <div class="lsec">${ic("bolt", 15)}Wallbox</div>
+      <div class="mut sm" style="margin:2px 0 0">Ladekabel angesteckt (Sensor oder Status der Wallbox)</div>${sel("plug", bin, "", /plug|kabel|cable|connect|angesteckt|status/i)}
+      <div class="mut sm" style="margin:0">Lädt gerade (optional, sonst aus der Ladeleistung)</div>${sel("charging", bin, "", /charging|l(ä|a)dt|lade/i)}
+      <div class="mut sm" style="margin:0">Ladeleistung (Watt)</div>${sel("power", pw, "", /lade|charg|wallbox|power|leistung/i)}
+      <div class="gst">${ic("info", 15)}Das Ladekabel erscheint, sobald „angesteckt“ meldet, und verschwindet beim Abstecken. Beim Laden leuchtet es und die Ladung läuft sichtbar.</div>
+      <div class="foot2"><button class="btn2 pri" data-act="evdone">Fertig</button></div></div>`;
+  }
+  _betaBox(txt) { return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
+  _betaSoon(ico, t, d) { return `<div class="card lusoon">${ic(ico, 26)}<div><b>${t}</b><span class="mut">${d}</span></div><em class="beta">In Entwicklung</em></div>`; }
+  _betaPage(id) { return id === "sp" ? this._spPage() : id === "wa" ? this._waPage() : id === "bt" ? this._btPage() : id === "dt" ? this._dtPage() : id === "sf" ? this._sfPage() : id === "pl" ? this._plPage() : id === "wx" ? this._wxPage() : id === "ga" ? this._gaPage() : id === "ev" ? this._evPage() : id === "rb" ? this._rbPage() : id === "wp" ? this._wpPage() : this._luPage(); }
+  _spPage() {
+    const tag = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], now = new Date(), tdy = 14.2, tom = 9.6, got = 9.1;
+    const hist = [[-6, 11.8, 12.4], [-5, 6.2, 5.1], [-4, 13.5, 14.1], [-3, 15.1, 13.8], [-2, 8.4, 9.0], [-1, 10.9, 10.2]];
+    const mx = 16, bh = (v) => Math.round((v / mx) * 120), dev = hist.reduce((a, x) => a + (x[2] - x[1]), 0) / hist.reduce((a, x) => a + x[1], 0) * 100;
+    const col = (d, f, a, today) => { const dn = new Date(now.getTime() + d * 864e5).getDay(); return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px"><div style="display:flex;align-items:flex-end;gap:3px;height:124px"><div title="Prognose ${num(f, 1)} kWh" style="width:16px;height:${bh(f)}px;border-radius:4px 4px 0 0;background:#f59e0b;opacity:.45"></div>${a != null ? `<div title="Tatsächlich ${num(a, 1)} kWh" style="width:16px;height:${bh(a)}px;border-radius:4px 4px 0 0;background:#f59e0b"></div>` : ""}</div><span class="mut" style="font-size:.72rem;${today ? "font-weight:700" : ""}">${today ? "Heute" : tag[dn]}</span></div>`; };
+    const bars = hist.map((x) => col(x[0], x[1], x[2])).join("") + col(0, tdy, got, true) + col(1, tom, null);
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const pc = Math.round((got / tdy) * 100);
+    return `${this._betaBox("Alle Werte sind Beispiele. Echte Prognose-Sensoren (zum Beispiel Forecast.Solar) wählst du später in den Einstellungen.")}
+      <div class="card"><h2>${ic("sun", 18)}Ertrag heute und morgen (Beispiel)</h2><div class="lugrid">
+        ${tile("Heute, Prognose", num(tdy, 1) + " kWh", "Gesamter Tag")}
+        ${tile("Heute, bisher", num(got, 1) + " kWh", pc + " % der Tagesprognose")}
+        ${tile("Morgen, Prognose", num(tom, 1) + " kWh", tom < tdy ? "Weniger als heute" : "Mehr als heute")}
+        ${tile("Abweichung 6 Tage", (dev >= 0 ? "+" : "") + num(dev, 1) + " %", dev >= 0 ? "Ertrag über der Prognose" : "Ertrag unter der Prognose")}</div></div>
+      <div class="card"><h2>${ic("chart", 18)}Prognose gegen tatsächlich (Beispiel)</h2>
+        <div style="display:flex;gap:6px;margin-top:10px;align-items:flex-end">${bars}</div>
+        <div class="gst" style="margin-top:10px;flex-wrap:wrap"><span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px"><i style="width:10px;height:10px;border-radius:3px;background:#f59e0b;opacity:.45"></i>Prognose</span><span style="display:inline-flex;align-items:center;gap:5px"><i style="width:10px;height:10px;border-radius:3px;background:#f59e0b"></i>Tatsächlich</span><span style="margin-left:12px">kWh pro Tag</span></div></div>
+      ${this._betaSoon("sun", "Prognose-Sensoren wählen", "Heute, morgen und stündlicher Verlauf aus Home Assistant")}
+      ${this._betaSoon("chart", "Vergleich mit dem Ertrag", "Tatsächlicher Ertrag aus Modul 3, dazu Trefferquote über Wochen")}
+      ${this._betaSoon("clock", "Beste Zeit für Verbraucher", "Hinweis, wann Waschen, Laden oder Bewässern am meisten Solarstrom nutzt")}`;
+  }
+  _waPage() {
+    const day = 864e5, now = Date.now(), fmt = (d) => new Date(d).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" });
+    const items = [["Lüftungsfilter wechseln", "Alle 3 Monate", now + 12 * day, "fan"], ["Schornsteinfeger", "Jährliche Messung", now + 38 * day, "flame"], ["Heizungswartung", "Jährlich, Fachbetrieb", now + 120 * day, "tools"], ["Zisternenfilter reinigen", "Alle 6 Monate", now + 160 * day, "drop"]];
+    const rest = (t) => Math.round((t - now) / day), tone = (d) => (d < 0 ? "#ef4444" : d <= 14 ? "#f59e0b" : "#22c55e");
+    const row = (x) => { const d = rest(x[2]); return `<div class="luroom"><b>${ic(x[3], 16)} ${x[0]}</b><span style="color:${tone(d)};font-weight:700">${d < 0 ? `${-d} Tage überfällig` : d === 0 ? "Heute fällig" : `in ${d} Tagen`}</span><span class="mut">${x[1]} · ${fmt(x[2])}</span></div>`; };
+    const hrs = [["Wärmepumpe", 4820, 5000], ["Zirkulationspumpe", 9340, 20000]];
+    const hrow = (x) => { const pc = Math.min(100, Math.round((x[1] / x[2]) * 100)), c = pc >= 90 ? "#f59e0b" : "#22c55e"; return `<div class="luroom"><b>${ic("clock", 16)} ${x[0]}</b><span class="lv">${num(x[1], 0)} h</span><div style="height:8px;border-radius:5px;background:rgba(127,127,127,.25);overflow:hidden;margin:4px 0"><div style="width:${pc}%;height:100%;background:${c}"></div></div><span class="mut">Nächste Wartung bei ${num(x[2], 0)} h (${pc} %)</span></div>`; };
+    const soon = items.filter((x) => rest(x[2]) <= 30).length, tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    return `${this._betaBox("Die Einträge sind Beispiele. Eigene Termine, Filter und Zähler richtest du später in den Einstellungen ein.")}
+      <div class="card"><h2>${ic("tools", 18)}Überblick</h2><div class="gst" style="margin-bottom:10px">${ic("alert", 15)}${soon === 1 ? "1 Termin ist" : soon + " Termine sind"} in den nächsten 30 Tagen fällig.</div>
+        <div class="lugrid">${tile("Fällig in 30 Tagen", String(soon), "Zum Beispiel Filter und Schornsteinfeger")}${tile("Überfällig", "0", "Nichts versäumt")}${tile("Termine gesamt", String(items.length), "Beispieleinträge")}</div></div>
+      <div class="card"><h2>${ic("clock", 18)}Termine (Beispiel)</h2><div class="lugrid">${items.map(row).join("")}</div></div>
+      <div class="card"><h2>${ic("tools", 18)}Betriebsstunden (Beispiel)</h2><div class="lugrid">${hrs.map(hrow).join("")}</div></div>
+      ${this._betaSoon("plus", "Eigene Termine anlegen", "Name, Abstand und nächstes Datum, mit Erledigt-Knopf")}
+      ${this._betaSoon("bell", "Erinnerung", "Aufs Handy, einige Tage vor dem Termin")}
+      ${this._betaSoon("clock", "Betriebsstunden aus Sensoren", "Zähler aus Home Assistant lesen und Wartung bei Stundenzahl melden")}`;
+  }
+  _btPage() {
+    const soc = this._soc(), p = this._pv(), pv = this._pvNow();
+    const modes = [["sun", "PV laden", "Überschuss in die Batterie"], ["shield", "Halten", "Ladestand nicht verändern"], ["home", "Haus aus Batterie", "Verbrauch aus dem Speicher decken"], ["energy", "Netzladen", "Bei günstigem Strom aus dem Netz laden"]];
+    const mc = modes.map((m, i) => `<div class="luroom ${i ? "off" : ""}"><b>${ic(m[0], 16)} ${m[1]}</b><span class="mut">${m[2]}</span></div>`).join("");
+    const seg = [[0, 6, "#6366f1", "Netzladen"], [6, 10, "#64748b", "Halten"], [10, 16, "#f59e0b", "PV laden"], [16, 22, "#22c55e", "Haus aus Batterie"], [22, 24, "#64748b", "Halten"]];
+    const bar = seg.map((x) => `<div title="${x[3]}" style="flex:${x[1] - x[0]};background:${x[2]};opacity:.85"></div>`).join("");
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    return `${this._betaBox("Die Planung ist eine Vorschau mit Beispielwerten. Es wird nichts an der Batterie geschaltet.")}
+      <div class="card"><h2>${ic("energy", 18)}Speicher jetzt</h2><div class="lugrid">
+        ${tile("Ladestand", soc != null ? num(soc, 0) + " %" : "–", soc != null ? "Aus dem Sensor in Modul 1" : "Noch kein Ladestand-Sensor gewählt")}
+        ${tile("PV-Überschuss", pv != null ? wfmt(pv) : "–", pv != null ? "Verfügbar zum Laden" : "Noch kein Sensor gewählt")}
+        ${tile("Untergrenze", p.soc_min != null && p.soc_sensor ? num(p.soc_min, 0) + " %" : "–", "Heizer erst darüber (Modul 1)")}</div></div>
+      <div class="card"><h2>${ic("sliders", 18)}Betriebsarten</h2><div class="lugrid">${mc}</div></div>
+      <div class="card"><h2>${ic("clock", 18)}Beispiel-Zeitplan</h2>
+        <div style="display:flex;height:26px;border-radius:8px;overflow:hidden;margin:8px 0 4px">${bar}</div>
+        <div style="display:flex;justify-content:space-between" class="mut sm"><span>0 Uhr</span><span>6</span><span>12</span><span>18</span><span>24</span></div>
+        <div class="gst" style="margin-top:10px;flex-wrap:wrap">${seg.map((x) => `<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px"><i style="width:10px;height:10px;border-radius:3px;background:${x[2]}"></i>${x[3]}</span>`).join("")}</div></div>
+      ${this._betaSoon("sliders", "Ladestand-Grenzen", "Untere und obere Grenze je Betriebsart festlegen")}
+      ${this._betaSoon("clock", "Zeitplan", "Betriebsart nach Uhrzeit und Wochentag wählen")}
+      ${this._betaSoon("bolt", "Netzladen nach Preis", "Nur laden, wenn der Strom günstig ist (Modul 14)")}`;
+  }
+  _dtPrices() {
+    const p = this._pv(), e = p.price_sensor && this._hass.states[p.price_sensor]; if (!e) return null;
+    const a = e.attributes || {}, raw = a.raw_today || a.prices_today || a.today || a.prices;
+    if (!Array.isArray(raw) || raw.length < 12) return null;
+    const vals = raw.map((x) => Number(typeof x === "object" && x ? (x.value ?? x.price) : x));
+    if (vals.some((v) => !isFinite(v))) return null;
+    const f = vals.every((v) => Math.abs(v) < 5) ? 100 : 1, per = vals.length > 30 ? 4 : 1;
+    const h = []; for (let i = 0; i < 24; i++) { let t = 0, n = 0; for (let k = 0; k < per; k++) { const v = vals[i * per + k]; if (v != null) { t += v; n++; } } h.push(n ? (t / n) * f : null); }
+    return h.every((v) => v != null) ? h : null;
+  }
+  _dtPage() {
+    const h = this._dtPrices(), now = new Date().getHours(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    let body = `<div class="card empty">${ic("chart", 30)}<div style="margin-top:8px">Noch keine Stundenpreise. Wähle in Modul 1 unter „Strompreis“ einen Sensor mit Preisliste (zum Beispiel Tibber, Awattar oder Nord Pool).</div></div>`;
+    if (h) {
+      const mn = Math.min(...h), mx = Math.max(...h), avg = h.reduce((a, b) => a + b, 0) / 24, span = Math.max(mx - mn, 0.01);
+      const col = (v) => (v - mn) / span < 0.34 ? "#22c55e" : (v - mn) / span < 0.67 ? "#f59e0b" : "#ef4444";
+      let bi = 0, bs = Infinity; for (let i = 0; i <= 21; i++) { const sm = h[i] + h[i + 1] + h[i + 2]; if (sm < bs) { bs = sm; bi = i; } }
+      const bars = h.map((v, i) => `<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px" title="${i}:00 · ${num(v, 1)} ct/kWh"><div style="width:100%;height:${Math.round(12 + ((v - mn) / span) * 108)}px;border-radius:4px 4px 0 0;background:${col(v)};opacity:${i < now ? 0.4 : 0.95};${i === now ? "outline:2px solid var(--primary-text-color);outline-offset:1px" : ""}"></div><span class="mut" style="font-size:.62rem">${i % 3 === 0 ? i : ""}</span></div>`).join("");
+      body = `<div class="card"><h2>${ic("chart", 18)}Preisverlauf heute</h2><div style="display:flex;align-items:flex-end;gap:2px;height:150px;margin-top:8px">${bars}</div>
+        <div class="gst" style="margin-top:8px">Cent pro kWh, grün günstig, rot teuer. Der Rahmen zeigt die aktuelle Stunde.</div></div>
+        <div class="card"><h2>${ic("clock", 18)}Günstigste Zeiten</h2><div class="lugrid">
+          ${tile("Günstigste 3 Stunden", `${bi}–${bi + 3} Uhr`, `Ø ${num(bs / 3, 1)} ct/kWh · zum Laden und Waschen`)}
+          ${tile("Günstigste Stunde", `${h.indexOf(mn)}:00 Uhr`, `${num(mn, 1)} ct/kWh`)}
+          ${tile("Teuerste Stunde", `${h.indexOf(mx)}:00 Uhr`, `${num(mx, 1)} ct/kWh`)}</div></div>`;
+      body = `<div class="card"><h2>${ic("bolt", 18)}Preis jetzt</h2><div class="lugrid">
+          ${tile("Jetzt", num(h[now], 1) + " ct/kWh", h[now] <= avg ? "Unter dem Tagesschnitt" : "Über dem Tagesschnitt")}
+          ${tile("Tagesschnitt", num(avg, 1) + " ct/kWh", `Spanne ${num(mn, 1)} bis ${num(mx, 1)} ct`)}
+          ${tile("Nächste Stunde", num(h[(now + 1) % 24], 1) + " ct/kWh", h[(now + 1) % 24] < h[now] ? "Wird günstiger" : "Wird teurer")}</div></div>` + body;
+    }
+    return `${this._betaBox("Die Stundenpreise kommen aus dem Preis-Sensor, den du in Modul 1 gewählt hast.")}${body}
+      ${this._betaSoon("clock", "Günstige Fenster", "Beste Zeit zum Laden, Waschen oder Heizen vorschlagen")}
+      ${this._betaSoon("bell", "Preisalarm", "Melden, wenn der Preis unter oder über eine Grenze geht")}
+      ${this._betaSoon("chart", "Morgen", "Preise des nächsten Tages, sobald sie veröffentlicht sind")}`;
+  }
+  _sfList() {
+    const KIND = { smoke: "Rauchmelder", carbon_monoxide: "CO-Melder", gas: "Gasmelder", moisture: "Wassermelder", safety: "Sicherheitsmelder" };
+    return Object.entries(this._hass.states).filter(([id, e]) => id.startsWith("binary_sensor.") && KIND[(e.attributes || {}).device_class]).map(([id, e]) => {
+      const a = e.attributes || {}, b = a.battery_level ?? a.battery, bv = b != null && isFinite(Number(b)) ? Number(b) : null;
+      return { id, name: a.friendly_name || id, kind: KIND[a.device_class], alarm: e.state === "on", off: e.state === "unavailable" || e.state === "unknown", bat: bv };
+    }).sort((x, y) => Number(y.alarm) - Number(x.alarm) || x.name.localeCompare(y.name, "de"));
+  }
+  _sfPage() {
+    const l = this._sfList(), al = l.filter((x) => x.alarm).length, low = l.filter((x) => x.bat != null && x.bat < 20).length, off = l.filter((x) => x.off).length;
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const row = (x) => `<div class="luroom ${x.alarm ? "" : "off"}"><b>${ic(x.kind === "Wassermelder" ? "drop" : x.kind === "Rauchmelder" ? "flame" : "shield", 16)} ${esc(x.name)}</b>
+      <span class="${x.alarm ? "" : "mut"}" style="${x.alarm ? "color:var(--error-color,#ef4444);font-weight:700" : ""}">${x.alarm ? "ALARM" : x.off ? "Nicht erreichbar" : "In Ordnung"}</span>
+      <span class="mut">${esc(x.kind)} · ${x.bat != null ? `Batterie ${num(x.bat, 0)} %${x.bat < 20 ? " (schwach)" : ""}` : "Batterie unbekannt"}</span></div>`;
+    return `${this._betaBox("Gelesen werden Melder mit der Geräteklasse Rauch, CO, Gas, Wasser oder Sicherheit. Das Modul ersetzt keine echte Alarmanlage.")}
+      <div class="card"><h2>${ic("shield", 18)}Überblick</h2>
+        <div class="gst ${al ? "" : "on"}" style="margin-bottom:10px">${ic(al ? "alert" : "check", 15)}${l.length ? (al ? `${al} Alarm${al > 1 ? "e" : ""} aktiv.` : "Alle Melder sind in Ordnung.") : "Noch keine Melder gefunden."}</div>
+        <div class="lugrid">${tile("Melder", String(l.length), "Gefunden in Home Assistant")}${tile("Alarme", String(al), al ? "Sofort prüfen" : "Keine aktiv")}${tile("Batterie schwach", String(low), low ? "Unter 20 %" : "Alle über 20 %")}${tile("Nicht erreichbar", String(off), off ? "Prüfen" : "Alle melden")}</div></div>
+      ${l.length ? `<div class="card"><h2>${ic("bell", 18)}Melder</h2><div class="lugrid">${l.map(row).join("")}</div></div>` : ""}
+      ${this._betaSoon("bell", "Alarm-Benachrichtigung", "Sofort aufs Handy, mit Name des Melders und Raum")}
+      ${this._betaSoon("alert", "Batteriewarnung", "Melden, bevor eine Batterie leer ist")}
+      ${this._betaSoon("clock", "Prüf-Erinnerung", "Regelmäßig an den Test der Melder erinnern")}`;
+  }
+  _plPage() {
+    const pv = this._pvNow(), pr = this._price(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const o = this._out();
+    return `${this._betaBox("Überschuss und Strompreis kommen aus den PV-Einstellungen von Modul 1.")}
+      <div class="card"><h2>${ic("wave", 18)}Bedingungen jetzt</h2><div class="lugrid">
+        ${tile("PV-Überschuss", pv != null ? wfmt(pv) : "–", pv != null ? (pv >= 1000 ? "Gut für Pumpe und Heizung" : "Eher wenig") : "Noch kein Sensor gewählt")}
+        ${tile("Strompreis", pr ? num(pr, 1) + " ct/kWh" : "–", pr ? "Aus Modul 1" : "Noch kein Preis gewählt")}
+        ${tile("Außentemperatur", o.t != null ? num(o.t, 1) + " °C" : "–", o.t != null && o.t < 10 ? "Pool-Heizung lohnt kaum" : "Draußen")}</div></div>
+      ${this._betaSoon("wave", "Poolpumpe", "Filterzeiten nach Sonne und Überschuss, Mindestlaufzeit pro Tag")}
+      ${this._betaSoon("flame", "Pool-Heizung", "Wärmepumpe oder Heizstab bei Überschuss oder günstigem Strom")}
+      ${this._betaSoon("thermo", "Sauna", "Aufheizen nach Wunschzeit, bevorzugt mit Solarstrom")}
+      ${this._betaSoon("bolt", "Kosten & Solaranteil", "Was Pumpe und Heizung kosten und wie viel davon Solarstrom war")}`;
+  }
+  _wxWarn() {
+    const st = this._hass.states, c = this._wxCfg(), wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather."));
+    const w = wid ? st[wid] : null, a = w ? w.attributes : {}, o = this._out();
+    const wind = a.wind_speed != null ? Number(a.wind_speed) : null, gust = a.wind_gust_speed != null ? Number(a.wind_gust_speed) : null, mx = Math.max(isFinite(wind) ? wind : 0, isFinite(gust) ? gust : 0);
+    const storm = ["lightning", "lightning-rainy", "hail"].includes(w ? w.state : ""), gale = mx >= 60, frost = o.t != null && o.t <= 0;
+    return { w, o, wind, mx, storm, gale, frost };
+  }
+  _wxPage() {
+    const d = this._wxWarn(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const wx = d.w ? (WX[d.w.state] || ["cloud", d.w.state])[1] : "–";
+    const row = (ico, t, on, txt) => `<div class="luroom ${on ? "" : "off"}"><b>${ic(ico, 16)} ${t}</b><span class="${on ? "" : "mut"}" style="${on ? "color:var(--warning-color,#f59e0b);font-weight:700" : ""}">${on ? "Aktiv" : "Keine Warnung"}</span><span class="mut">${txt}</span></div>`;
+    const any = d.storm || d.gale || d.frost;
+    return `${this._betaBox("Die Warnungen werden aus deiner Wetter-Entität in Home Assistant abgeleitet.")}
+      <div class="card"><h2>${ic("alert", 18)}Warnlage jetzt</h2>
+        <div class="gst ${any ? "" : "on"}" style="margin-bottom:10px">${ic(any ? "alert" : "check", 15)}${any ? "Mindestens eine Warnung ist aktiv." : "Zurzeit liegt keine Warnung vor."}</div>
+        <div class="lugrid">
+          ${row("flame", "Unwetter", d.storm, d.storm ? "Gewitter oder Hagel gemeldet" : "Kein Gewitter oder Hagel")}
+          ${row("fan", "Sturm", d.gale, d.mx ? `Wind bis ${num(d.mx, 0)} km/h` : "Keine Windwerte")}
+          ${row("thermo", "Frost", d.frost, d.o.t != null ? `Draußen ${num(d.o.t, 1)} °C` : "Keine Außentemperatur")}</div></div>
+      <div class="card"><h2>${ic("sun", 18)}Wetter jetzt</h2><div class="lugrid">
+        ${tile("Zustand", wx, d.w ? "Wetter-Entität" : "Keine Wetter-Entität gefunden")}
+        ${tile("Draußen", d.o.t != null ? num(d.o.t, 1) + " °C" : "–", d.o.rh != null ? num(d.o.rh) + " % Luftfeuchte" : "")}
+        ${tile("Wind", isFinite(d.wind) ? num(d.wind, 0) + " km/h" : "–", d.gale ? "Sturmstärke" : "Unter der Sturmgrenze")}</div></div>
+      ${this._betaSoon("alert", "Warnstufen festlegen", "Ab wann Sturm, Unwetter und Frost als Warnung gelten")}
+      ${this._betaSoon("blinds", "Aktionen auslösen", "Zum Beispiel Rollläden einfahren oder Markisen schließen")}
+      ${this._betaSoon("window", "Fenster-Erinnerung", "Bei Sturm oder Gewitter an offene Fenster erinnern")}
+      ${this._betaSoon("bell", "Benachrichtigung", "Warnung aufs Handy, sobald sie beginnt oder endet")}`;
+  }
+  _gaPage() {
+    const st = this._hass.states, c = this._wxCfg(), wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather."));
+    const w = wid ? st[wid] : null, rainy = w && ["rainy", "pouring", "lightning-rainy", "snowy-rainy"].includes(w.state), pv = this._pvNow();
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    return `${this._betaBox("Regen kommt aus deiner Wetter-Entität, der Überschuss aus den PV-Einstellungen von Modul 1.")}
+      <div class="card"><h2>${ic("plant", 18)}Garten jetzt</h2><div class="lugrid">
+        ${tile("Regen", w ? (rainy ? "Es regnet" : "Trocken") : "–", w ? (rainy ? "Bewässern nicht nötig" : "Kein Regen gemeldet") : "Keine Wetter-Entität gefunden")}
+        ${tile("PV-Überschuss", pv != null ? wfmt(pv) : "–", pv != null ? (pv >= 500 ? "Genug zum Bewässern" : "Eher wenig") : "Noch kein Sensor gewählt")}
+        ${tile("Zisterne", "–", "Füllstand-Sensor folgt")}</div></div>
+      ${this._betaSoon("drop", "Regenprognose", "Bewässerung überspringen, wenn Regen erwartet wird")}
+      ${this._betaSoon("tree", "Zisterne", "Füllstand anzeigen und auf Leitungswasser umschalten, wenn sie leer ist")}
+      ${this._betaSoon("sun", "Bewässerung bei PV-Überschuss", "Pumpe oder Ventil starten, wenn genug Solarstrom übrig ist")}
+      ${this._betaSoon("clock", "Zeitplan", "Bewässerungszeiten pro Zone mit Dauer und Wochentagen")}`;
+  }
+  _rbPage() {
+    const h = this._hass, sun = h.states["sun.sun"], o = this._out(), el = sun ? Number(sun.attributes.elevation) : NaN, az = sun ? Number(sun.attributes.azimuth) : NaN;
+    const dir = isFinite(az) ? ["Nord", "Nordost", "Ost", "Südost", "Süd", "Südwest", "West", "Nordwest"][Math.round(az / 45) % 8] : "";
+    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    return `${this._betaBox("Der Sonnenstand kommt aus der Sonnen-Entität von Home Assistant.")}
+      <div class="card"><h2>${ic("sun", 18)}Sonne &amp; Wetter jetzt</h2><div class="lugrid">
+        ${tile("Sonnenhöhe", isFinite(el) ? num(el, 0) + " °" : "–", isFinite(el) ? (el > 0 ? "Sonne über dem Horizont" : "Sonne unter dem Horizont") : "Keine Sonnen-Entität gefunden")}
+        ${tile("Richtung", dir || "–", isFinite(az) ? num(az, 0) + " °" : "")}
+        ${tile("Draußen", o.t != null ? num(o.t, 1) + " °C" : "–", o.rh != null ? num(o.rh) + " % Luftfeuchte" : "")}</div></div>
+      ${this._betaSoon("blinds", "Rollläden steuern", "Zeitpläne, Sonnenstand und Fenster-Stellung")}
+      ${this._betaSoon("sun", "Hitzeschutz im Sommer", "Beschatten, wenn die Sonne aufs Fenster scheint")}
+      ${this._betaSoon("thermo", "Wärme nutzen im Winter", "Rollläden öffnen, wenn die Sonne mitheizt, und nachts schließen")}`;
+  }
+  _wpPage() {
+    const o = this._out(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    return `${this._betaBox("Entitäten der Wärmepumpe wählst du später in den Einstellungen des Moduls.")}
+      <div class="card"><h2>${ic("thermo", 18)}Außenbedingungen</h2><div class="lugrid">
+        ${tile("Außentemperatur", o.t != null ? num(o.t, 1) + " °C" : "–", o.t != null && o.t < 7 ? "Abtauen wird wahrscheinlicher" : "Kaum Abtau-Bedarf")}
+        ${tile("Luftfeuchte", o.rh != null ? num(o.rh) + " %" : "–", "Draußen")}</div></div>
+      ${this._betaSoon("heatpump", "Laufzeit & Takten", "Starts, Laufzeit am Stück und Taktung erkennen")}
+      ${this._betaSoon("thermo", "Vorlauf, Rücklauf & Effizienz", "Temperaturen, Spreizung und Leistungszahl (COP)")}
+      ${this._betaSoon("snow", "Abtauen", "Abtauzyklen zählen und auswerten")}`;
+  }
+  _luPage() {
+    const rooms = this._collect(), adm = this._admin();
+    const cards = rooms.map((r) => { const a = this._airData(r); if (!a) return `<div class="luroom off"><b>${esc(r.name)}</b><span class="mut">Kein Luftfeuchte-Sensor</span></div>`;
+      const [ml, mc] = MOLD[a.lvl], hc = a.rh >= 70 ? "red" : a.rh >= 60 ? "amber" : "green";
+      return `<div class="luroom ${mc}"><b>${esc(r.name)}</b><span class="lv ${hc}">${num(a.rh)} %</span><span class="mut">Taupunkt ${num(a.td, 1)} °C · Schimmel ${ml}</span></div>`; }).join("");
+    const soon = (ico, t, d) => `<div class="card lusoon">${ic(ico, 26)}<div><b>${t}</b><span class="mut">${d}</span></div><em class="beta">In Entwicklung</em></div>`;
+    return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. Die Raumluft-Übersicht nutzt die Luftfeuchte-Sensoren aus Modul 1. Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>
+      <div class="card"><h2>${ic("drop", 18)}Raumluft-Übersicht</h2>${rooms.length ? `<div class="lugrid">${cards}</div>` : `<div class="mut sm">Noch keine Räume eingerichtet.</div>`}
+        <div class="mut sm" style="margin:10px 0 0">Luftfeuchte, Taupunkt und Schimmelrisiko je Raum. Sensoren wählst du in den Raumeinstellungen von Modul 1.</div></div>
+      ${soon("fan", "Lüftungsanlage (KWL)", "Stufen, Bypass und Filterwechsel schalten und überwachen")}
+      ${soon("windy", "CO₂ & Luftqualität", "CO₂-Sensoren auswerten und Lüften empfehlen")}`;
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
-    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}</button>`).join("")}<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button></nav>`;
+    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${m.beta ? `<em class="beta">Beta</em>` : ""}</button>`).join("")}<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button></nav>`;
   }
   _mdRender() {
     const sr = this.shadowRoot, a = this._mdActive(), m = this._mdList().find((x) => x.id === a), adm = this._admin();
     let body = "", pills = "";
     if (a === "ww") { body = this._wwPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; this._wwLoad(); }
+    else if (a === "gs") { body = this._gsPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
+    else if (m.beta) { body = this._betaPage(a); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "en") { body = this._enPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else body = `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">${esc(m.name)}</div>Dieses Modul wird aus <code>${esc(m.ext.url)}</code> geladen.<br><span class="sm">Externe Module werden in einer späteren Version geladen.</span></div>`;
-    if (a !== "ww" && a !== "en" && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
+    if (a !== "ww" && a !== "en" && a !== "gs" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span><em class="tag">${esc(m.tag)}</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${pills}</div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${m.beta ? `<em class="beta">Beta-Version</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${pills}</div>
       ${this._mdBar()}<div class="wrap">${body}</div>`;
   }
   _mdAct(a, b) {
     const s = this._mdState(), m = this._modal, k = b.dataset.k;
-    if (a === "mdgo") { this._st = false; this._mdActiveSet(k); this._render(); }
-    else if (a === "mdst") { this._st = true; this._render(); }
-    else if (a === "mdstx") { this._st = false; this._render(); }
+    if (a === "mdgo") { this._stOpen = false; this._mdActiveSet(k); this._render(); }
+    else if (a === "mdst") { this._stOpen = true; this._render(); }
+    else if (a === "mdstx") { this._stOpen = false; this._render(); }
     else if (a === "mdmgr") { this._modal = { type: "mods" }; this._renderModal(); }
     else if (a === "mdsetup") { this._modal = { type: "wwset" }; this._renderModal(); }
+    else if (a === "mdevset") { this._modal = { type: "evset" }; this._renderModal(); }
+    else if (a === "mdgs") { this._modal = { type: "gsset" }; this._renderModal(); }
+    else if (a === "mdbeta") { this._toast("Für dieses Modul gibt es in der Beta noch keine Einstellungen"); }
     else if (a === "mdensetup") { this._modal = { type: "enset" }; this._renderModal(); }
     else if (a === "mdtog") {
-      if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
+      if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else if (k === "gs") s.on.gs = s.on.gs === false; else if (MODS.some((m) => m.beta && m.id === k)) s.on[k] = s.on[k] !== true; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
       if (!this._mdList().some((x) => x.id === s.active)) this._mdActiveSet("fh");
       this._mdSave(); this._renderModal(); this._render();
     }
@@ -2707,12 +3182,18 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "mdinfo") { m.info = !m.info; this._renderModal(); }
     else if (a.startsWith("ww")) this._wwAct(a, b);
     else if (a.startsWith("en")) this._enAct(a, b);
+    else if (a.startsWith("gs")) this._gsAct(a, b);
+    else if (a === "evbrand" || a === "evbody" || a === "evcol") { const V = this._evState(); if (a === "evbrand") V.brand = V.brand === b.dataset.k ? "" : b.dataset.k; else if (a === "evbody") V.body = b.dataset.k; else V.color = b.dataset.k; this._mdSave(); this._renderModal(); }
+    else if (a === "evdone") { this._pkId = null; this._modal = null; this._renderModal(); this._render(); }
   }
   _mdChange(t) {
     const f = t.dataset.f, m = this._modal;
     if (f === "mdurl") { if (m) m.url = t.value; return true; }
     if (f.startsWith("ww")) return this._wwChange(t);
     if (f.startsWith("en")) return this._enChange(t);
+    if (f.startsWith("gs")) return this._gsChange(t);
+    if (f === "evmodel") { this._evState().model = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 30); this._mdSave(); return true; }
+    if (f === "event") { this._evState().ent[t.dataset.k] = t.value; this._mdSave(); return true; }
     return false;
   }
   _mdModal() {
@@ -2720,6 +3201,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "wwset") return this._wwSetModal();
     if (m.type === "wwsch") return this._wwSchModal();
     if (m.type === "enset") return this._enSetModal();
+    if (m.type === "gsset") return this._gsSetModal();
+    if (m.type === "evset") return this._evSetModal();
     const s = this._mdState(), W = s.ww, ok = this._wwConfigured();
     const row = (id, ico, name, sub, right) => `<div class="mrow"><span class="mi">${ic(ico, 22)}</span><div class="mt"><b>${esc(name)}</b><span>${sub}</span></div>${right}</div>`;
     const tog = (id, on) => `<button class="sw ${on ? "on" : ""}" data-act="mdtog" data-k="${id}" aria-pressed="${on}" aria-label="Modul ein- oder ausschalten"></button>`;
@@ -2730,8 +3213,10 @@ class FensterHeizungPanel extends HTMLElement {
       ${row("ww", "boiler", "Modul 2 – Warmwasser & Zirkulation", ok ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!ok && s.on.ww ? `<button class="btn2 pri" data-act="mdsetup">Einrichten</button>` : ""}${tog("ww", s.on.ww)}</span>`)}
       ${row("en", "energy", "Modul 3 – Energie-Übersicht", this._enConfigured() ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!this._enConfigured() && this._enOn() ? `<button class="btn2 pri" data-act="mdensetup">Einrichten</button>` : ""}${tog("en", this._enOn())}</span>`)}
       ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
-      <div class="lsec">${ic("clock", 15)}Geplant</div>
-      ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}
+      ${row("gs", "laundry", "Modul 4 – Gerätestrom", this._gsState().devices.length ? this._gsState().devices.length + (this._gsState().devices.length === 1 ? " Gerät" : " Geräte") : "Noch nicht eingerichtet", `<span class="mact">${tog("gs", s.on.gs !== false)}</span>`)}
+      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · in Entwicklung", `<span class="mact"><span class="mbadge beta">Beta</span>${tog(x.id, s.on[x.id] === true)}</span>`)).join("")}
+      ${MOD_SOON.length ? `<div class="lsec">${ic("clock", 15)}Geplant</div>
+      ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
       <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>
       <div class="mut sm" style="margin:2px 0 8px">Module sind kleine Erweiterungen. Sie nutzen deine Räume, die PV-Einstellungen und die Meldungen mit und erscheinen hier als eigene Seite.</div>
       <div class="gbtns"><button class="btn2" data-act="mdhacs">${ic("download", 16)} Über HACS suchen</button></div>

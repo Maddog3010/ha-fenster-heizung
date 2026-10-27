@@ -2,6 +2,35 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.0] - 2026-10-27
+Große Version: Gerätestrom als eigenes Modul, zwölf Beta-Module und eine neue Modulreihenfolge. Das Dashboard hat jetzt 16 Module.
+### Neu
+- **Modul 4: Gerätestrom** (kein Beta): eigener Rechenkern in „Strom & Wärme“, die separate Integration „geraetestrom“ wird nicht mehr gebraucht.
+  - Bis zu 8 Geräte mit Leistungssensor, Schwelle und Endzeit. Aufteilung der Leistung auf Solar, Batterie und Netz aus den Sensoren von Modul 3, Preise aus Modul 1.
+  - Kosten und Ersparnis je Lauf, Heute/Monat/Jahr/Gesamt, letzter Durchlauf, Empfehlung (Jetzt starten, Teilweise Solar, Besser warten), Verlaufsgrafik für 7 Tage, 30 Tage und 12 Monate.
+  - Ereignis `geraetestrom_run_finished` und Meldung über wählbare `notify`-Dienste am Ende eines Laufs. Daten werden bis zu 800 Tage gespeichert.
+- **Neue Modulreihenfolge:** 1 Fenster & Heizung, 2 Warmwasser, 3 Energie, 4 Gerätestrom, 5 bis 16 Beta-Module.
+- **Zwölf Beta-Module**, standardmäßig aus und deutlich als „Beta“ gekennzeichnet. Einschalten unter Einstellungen → Module verwalten:
+  - 5 Lüftung & Raumluft, 6 Rollläden & Beschattung, 7 Wärmepumpe, 8 Elektroauto & Wallbox
+  - 9 **Wetter & Warnungen:** Unwetter-, Sturm- und Frostwarnung aus der Wetter-Entität
+  - 10 **Garten & Bewässerung:** Regen, PV-Überschuss, Zisterne
+  - 11 **Rauch- & Sicherheitsmelder:** Melder, Batteriestände und Alarme
+  - 12 **Pool & Sauna:** Überschuss, Strompreis, Außentemperatur
+  - 13 **Batteriespeicher-Planung:** Betriebsarten und Ladestand, mit Beispiel-Zeitplan
+  - 14 **Dynamischer Stromtarif:** Stundenpreise, Preisverlauf, günstigste drei Stunden
+  - 15 **Wartung & Erinnerungen:** Beispiel-Termine und -Betriebsstunden
+  - 16 **Solar-Prognose:** Beispielwerte für Prognose und Ertrag
+  - Was noch nicht geht, steht auf der jeweiligen Seite als „In Entwicklung“. Diese Module schalten nichts.
+- **Elektroauto & Wallbox:** farbige Grafik mit Wallbox; das Ladekabel erscheint nur bei angestecktem Stecker und ist beim Laden animiert. Ladestand, Reichweite, Kilometerstand und Ladeleistung. Auswahl von Marke (Mercedes-Benz, Audi, VW, BYD, BMW, Andere), Modell, Karosserie und Farbe. Keine Markenlogos, keine Nachbildung echter Modelle.
+- **README komplett neu**, neuer Werbebanner.
+### Behoben
+- **Einstellungsseite öffnete sich von selbst:** Beim Öffnen der Integration und beim Wechsel zwischen Modulen erschien ungewollt die Einstellungsseite. Ursache war eine gemeinsam genutzte Variable für Betriebsstatus und Seitenanzeige. Die Seite öffnet sich jetzt nur noch über den Knopf „Einstellungen“ und schließt mit „Fertig“.
+### Noch nicht übernommen aus der alten Integration „geraetestrom“
+- Zähler und Verlauf der alten Integration, HA-Sensoren für das Energie-Dashboard, Energiefluss-Grafik und Anordnung per Ziehen. Die Auswertung beginnt neu.
+### Hinweise
+- Update von 2.x ohne Änderung an bestehenden Einstellungen. Nach dem Update Home Assistant neu starten und die Seite neu laden (Strg+F5).
+- Auf GitHub den Tag `v3.0.0` setzen.
+
 ## [2.9.2.5] - 2026-10-27
 Die Integration heißt jetzt „Strom & Wärme“. Dazu eine zentrale Einstellungsseite, ein neuer Kopf und eine neue README.
 ### Neu

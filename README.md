@@ -1,27 +1,46 @@
 <p align="center">
-  <img src="docs/banner.png" alt="Strom &amp; Wärme – Fenster, Heizung, Warmwasser und Energie in Home Assistant">
+  <img src="docs/banner.png" alt="Strom &amp; Wärme Version 3.0 – 16 Module für Heizung, Strom und Haus in Home Assistant">
 </p>
 
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-2.9.2.5-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.0-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
-**Eine Integration für Home Assistant, die Heizung, Fenster, Warmwasser und Solarstrom zusammenbringt.** Sie pausiert Heizkörper, wenn ein Fenster offen ist, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer und Warmwasser und zeigt alles in einem eigenen Dashboard in der Seitenleiste.
+> ### 🎉 Neu in Version 3.0.0
+> „Strom & Wärme“ wächst auf **16 Module**. Neu sind **Modul 4: Gerätestrom** (fertig, kein Beta) und **zwölf Beta-Module**: Lüftung, Rollläden, Wärmepumpe, Elektroauto & Wallbox, Wetter & Warnungen, Garten & Bewässerung, Rauch- & Sicherheitsmelder, Pool & Sauna, Batteriespeicher-Planung, Dynamischer Stromtarif, Wartung & Erinnerungen und Solar-Prognose. **Alle Beta-Module sind standardmäßig aus** und erscheinen erst, wenn du sie unter **Einstellungen → Module verwalten** einschaltest. Alle Details stehen im [Changelog](CHANGELOG.md).
+>
+> **Update von 2.x:** einfach über HACS aktualisieren, Home Assistant neu starten, Seite neu laden. Deine Einstellungen bleiben erhalten. Gerätestrom ist jetzt Teil dieser Integration und braucht die separate Integration „geraetestrom“ nicht mehr (siehe [Modul 4](#modul-4-gerätestrom)).
 
-Das Dashboard besteht aus drei Modulen:
+**Eine Integration für Home Assistant, die Heizung, Fenster, Warmwasser, Solarstrom und Geräte zusammenbringt.** Sie pausiert Heizkörper, wenn ein Fenster offen ist, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer und Warmwasser, zeigt, woher der Strom deiner Geräte kommt, und stellt alles in einem eigenen Dashboard in der Seitenleiste dar.
+
+Das Dashboard besteht aus **vier fertigen Modulen** und **zwölf Beta-Modulen**:
 
 | Modul | Was es macht |
 |---|---|
 | **1 – Fenster & Heizung** | Pausiert Thermostate bei offenem Fenster, Heizplan pro Raum, Anwesenheit und Urlaub, Tagesberichte, Elektroheizer mit PV-Überschuss, Schimmel- und Lüftungshinweise, Gerätediagnose |
 | **2 – Warmwasser & Zirkulation** | Speichertemperaturen, Zeitplan für Erzeuger, Zirkulationspumpe nach Zeit, Bedarf oder Intervall, Legionellenschutz, Heizstab bei PV-Überschuss |
-| **3 – Energie** | Solar, Netz, Batterie und Hausverbrauch auf einer Seite: Energiefluss, Tages-, 7- und 30-Tage-Auswertung, Kosten und Autarkie, mit zweiter Solaranlage (zum Beispiel Balkonkraftwerk) |
+| **3 – Energie** | Solar, Netz, Batterie und Hausverbrauch auf einer Seite: Energiefluss, Tages-, 7- und 30-Tage-Auswertung, Kosten und Autarkie, mit zweiter Solaranlage |
+| **4 – Gerätestrom** *(neu)* | Pro Gerät: wie viel Strom aus Solar, Batterie und Netz kam, was der Lauf kostete und was du gespart hast. Mit Startempfehlung und Meldung am Ende |
+| **5 – Lüftung & Raumluft** *(Beta)* | KWL, CO₂ und Feuchte |
+| **6 – Rollläden & Beschattung** *(Beta)* | Sonnenstand, Hitzeschutz und Heizbedarf |
+| **7 – Wärmepumpe** *(Beta)* | Laufzeit, Takten und Abtauen |
+| **8 – Elektroauto & Wallbox** *(Beta)* | Auto in Farbe mit Wallbox, Ladekabel nur bei angestecktem Stecker, Ladeanimation, Ladestand, Reichweite, Kilometerstand |
+| **9 – Wetter & Warnungen** *(Beta)* | Unwetter-, Sturm- und Frostwarnung aus der Wetter-Entität, später mit Aktionen wie Rollläden einfahren |
+| **10 – Garten & Bewässerung** *(Beta)* | Regen, PV-Überschuss und Zisterne, später Bewässerung nach Prognose und Überschuss |
+| **11 – Rauch- & Sicherheitsmelder** *(Beta)* | Übersicht über Melder, Batteriestände und Alarme |
+| **12 – Pool & Sauna** *(Beta)* | Pumpe und Heizung nach PV-Überschuss und Strompreis |
+| **13 – Batteriespeicher-Planung** *(Beta)* | Modi PV laden, Halten, Haus aus Batterie, Netzladen mit Zeitplan und Ladestand-Grenzen |
+| **14 – Dynamischer Stromtarif** *(Beta)* | Börsenpreis pro Stunde, günstigste Fenster, Preisverlauf |
+| **15 – Wartung & Erinnerungen** *(Beta)* | Schornsteinfeger, Filter, Wartungstermine, Betriebsstunden |
+| **16 – Solar-Prognose** *(Beta)* | Ertrag heute und morgen, Prognose gegen tatsächlichen Ertrag |
 
 <p align="center">
   <img src="docs/vorschau_handy_modul1.png" width="230" alt="Modul 1 auf dem Handy">
   <img src="docs/vorschau_handy_modul2.png" width="230" alt="Modul 2 auf dem Handy">
   <img src="docs/vorschau_handy_modul3.png" width="230" alt="Modul 3 auf dem Handy">
+  <img src="docs/vorschau_handy_geraetestrom.png" width="230" alt="Modul 4 auf dem Handy">
 </p>
 
 ## Inhalt
@@ -29,6 +48,9 @@ Das Dashboard besteht aus drei Modulen:
 - [Modul 1: Fenster & Heizung](#modul-1-fenster--heizung)
 - [Modul 2: Warmwasser & Zirkulation](#modul-2-warmwasser--zirkulation)
 - [Modul 3: Energie](#modul-3-energie)
+- [Modul 4: Gerätestrom](#modul-4-gerätestrom)
+- [Beta-Module 5 bis 16](#beta-module-5-bis-16)
+- [Einstellungen](#einstellungen)
 - [Allgemeines](#allgemeines)
 - [Entitäten](#entitäten)
 - [Hinweise für Entwickler](#hinweise-für-entwickler)
@@ -44,7 +66,7 @@ Das Dashboard besteht aus drei Modulen:
 4. **Einstellungen → Geräte & Dienste → Integration hinzufügen → „Strom & Wärme“**: pro Raum ein Eintrag, mit Fenstersensoren und Thermostaten
 5. In der Seitenleiste „Strom & Wärme“ öffnen. Der **Einrichtungsassistent** führt in acht Schritten durch Räume, Fenstermeldung, Heizung, Luftfeuchte, PV und Meldungen. Jeder Schritt außer dem ersten lässt sich überspringen.
 
-Module 2 und 3 schalten Administratoren über **„+ Module“** ein und richten sie über das Zahnrad ein. Nach jedem Update Home Assistant neu starten und die Seite einmal neu laden (Strg+F5).
+Die Module 2 bis 4 schalten Administratoren über **Einstellungen → Module verwalten** ein und richten sie über die Einstellungsseite ein. Die Beta-Module 5 bis 16 sind ab Werk aus. Nach jedem Update Home Assistant neu starten und die Seite einmal neu laden (Strg+F5).
 
 <p align="center"><img src="docs/vorschau_desktop.png" width="720" alt="Dashboard auf dem Desktop"></p>
 
@@ -164,6 +186,68 @@ Heizung, Strom und PV auf einer Seite. Das Modul **liest nur Sensoren und schalt
 <img src="docs/vorschau_energie_einstellungen.png" width="360" alt="Energie-Einstellungen">
 </details>
 
+## Modul 4: Gerätestrom
+Zeigt für jedes Gerät, **woher der Strom kam** (Solar, Batterie oder Netz), was der Lauf kostete und was du durch eigenen Strom gespart hast. Das Modul **liest nur Sensoren und schaltet nichts**. Es rechnet selbst in „Strom & Wärme“. Die frühere Integration „geraetestrom“ wird nicht mehr gebraucht.
+
+<p align="center"><img src="docs/vorschau_modul_geraetestrom.png" width="720" alt="Modul 4: Gerätestrom"></p>
+
+**Einrichten** (Einstellungen → Modul 4): bis zu 8 Geräte mit je einem **Leistungssensor** (Watt oder kW), einer **Schwelle** (ab wie vielen Watt ein Lauf gilt) und einer **Endzeit** (so viele Minuten unter der Schwelle beenden den Lauf). Dazu optional Batteriekosten (ct/kWh), ein Prognose-Sensor und Benachrichtigungsdienste.
+
+- **Quellen:** Die Aufteilung nutzt die Sensoren aus **Modul 3** (Solar, Netz, Batterie) und die Preise aus **Modul 1 → Allgemein**. Solar fürs Haus = Erzeugung minus Batterie-Laden minus Einspeisung. Die Geräteleistung wird anteilig auf Solar, Batterie und Netz verteilt.
+- **Kosten und Ersparnis:** Netzstrom kostet den Strompreis. Solarstrom spart Strompreis minus Einspeisevergütung. Batteriestrom spart Strompreis minus Batteriekosten.
+- **Karten:** pro Gerät Leistung nach Quelle, Heute, letzter Durchlauf und eine Empfehlung: **Jetzt starten** (ab 70 % Solardeckung), **Teilweise Solar** (ab 30 %) oder **Besser warten**.
+- **Verlauf:** gestapelte Balken nach Quelle für 7 Tage, 30 Tage und 12 Monate, auf Wunsch je Gerät. Die Daten bleiben bis zu 800 Tage gespeichert.
+- **Ende eines Laufs:** Das Ereignis `geraetestrom_run_finished` wird ausgelöst, und gewählte `notify`-Dienste melden zum Beispiel „Waschmaschine fertig: 0,90 kWh · 0,12 € · 78 % eigener Strom (gespart: 0,42 €)“.
+
+<img src="docs/vorschau_geraetestrom_einstellungen.png" width="480" alt="Gerätestrom einrichten">
+
+*Hinweis:* Zähler der alten Integration werden nicht übernommen, die Auswertung beginnt neu. Die Home-Assistant-Sensoren für das Energie-Dashboard, die Energiefluss-Grafik und die Anordnung per Ziehen gibt es in der neuen Version noch nicht.
+
+## Beta-Module 5 bis 16
+Diese Module sind **Beta-Versionen**: Sie sind noch in Entwicklung, Funktionen können sich ändern oder fehlen. Sie sind **standardmäßig aus** und tragen die Kennzeichnung „Beta“ in Leiste, Kopf und Einstellungen. Einschalten unter **Einstellungen → Module verwalten**. Die Beta-Module **lesen nur** und schalten nichts. Was noch nicht geht, steht auf der Seite als „In Entwicklung“.
+
+| Modul | Was die Seite heute zeigt | Geplant |
+|---|---|---|
+| **5 – Lüftung & Raumluft** | Luftfeuchte und Lüftungshinweise je Raum | KWL, CO₂ |
+| **6 – Rollläden & Beschattung** | Sonnenhöhe, Richtung, Außentemperatur | Rollläden steuern, Hitzeschutz, Wärme nutzen |
+| **7 – Wärmepumpe** | Außenbedingungen, Abtau-Wahrscheinlichkeit | Laufzeit, Takten, Vorlauf und COP, Abtauen |
+| **8 – Elektroauto & Wallbox** | Fahrzeug, Wallbox, Ladekabel, Ladestand, Reichweite, Kilometerstand, Ladeleistung | Laden mit PV-Überschuss |
+| **9 – Wetter & Warnungen** | Warnlage für Unwetter (Gewitter, Hagel), Sturm (ab 60 km/h) und Frost (ab 0 °C) aus der Wetter-Entität | Warnstufen, Aktionen wie Rollläden einfahren, Fenster-Erinnerung, Benachrichtigung |
+| **10 – Garten & Bewässerung** | Regen, PV-Überschuss, Zisterne | Regenprognose, Zisterne, Bewässerung bei Überschuss, Zeitplan |
+| **11 – Rauch- & Sicherheitsmelder** | Melder mit Geräteklasse Rauch, CO, Gas, Wasser oder Sicherheit, Alarm, Batterie unter 20 %, nicht erreichbare Melder | Alarm-Benachrichtigung, Batteriewarnung, Prüf-Erinnerung |
+| **12 – Pool & Sauna** | PV-Überschuss, Strompreis, Außentemperatur | Poolpumpe, Pool-Heizung, Sauna, Kosten und Solaranteil |
+| **13 – Batteriespeicher-Planung** | Ladestand, Überschuss, Untergrenze, Betriebsarten, **Beispiel**-Zeitplan | Ladestand-Grenzen, echter Zeitplan, Netzladen nach Preis |
+| **14 – Dynamischer Stromtarif** | Stundenpreise aus dem Preis-Sensor von Modul 1 (Attribut `raw_today`, `prices_today`, `today` oder `prices`), Preisverlauf, günstigste drei Stunden | Günstige Fenster, Preisalarm, Preise für morgen |
+| **15 – Wartung & Erinnerungen** | **Beispiel**-Termine und -Betriebsstunden | Eigene Termine, Erinnerung, Betriebsstunden aus Sensoren |
+| **16 – Solar-Prognose** | **Beispiel**-Werte für Prognose und Ertrag | Prognose-Sensoren, Vergleich mit Modul 3 |
+
+<p align="center">
+  <img src="docs/vorschau_modul_wetter.png" width="360" alt="Modul 9: Wetter &amp; Warnungen">
+  <img src="docs/vorschau_modul_stromtarif.png" width="360" alt="Modul 14: Dynamischer Stromtarif">
+</p>
+<p align="center">
+  <img src="docs/vorschau_modul_sicherheit.png" width="360" alt="Modul 11: Rauch- &amp; Sicherheitsmelder">
+  <img src="docs/vorschau_modul_batterie.png" width="360" alt="Modul 13: Batteriespeicher-Planung">
+</p>
+
+*Hinweis:* Das Modul 11 ersetzt keine Alarmanlage und keinen Rauchmelder mit eigener Sirene. Module 13, 15 und 16 zeigen zurzeit Beispielwerte und sind auch so beschriftet.
+
+### Modul 8: Elektroauto & Wallbox
+<p align="center"><img src="docs/vorschau_modul_elektroauto.png" width="720" alt="Modul 8: Elektroauto"></p>
+
+- **Auswahl:** Marke (Mercedes-Benz, Audi, VW, BYD, BMW oder Andere), Modellname, Karosserie (Limousine, SUV, Kombi, Kompakt) und eine von sechs Farben. Die Grafik ist eine eigene Zeichnung. **Es werden keine Markenlogos und keine Nachbildungen echter Modelle verwendet**, die Marke steht nur als Text.
+- **Wallbox** immer sichtbar. Das **Ladekabel** erscheint nur, wenn der Stecker steckt, und verschwindet beim Abstecken. **Beim Laden** läuft eine Animation am Kabel, die Wallbox zeigt die Leistung.
+- **Kacheln:** Ladestand, Reichweite, Kilometerstand und Ladeleistung.
+- **Sensoren** (alle optional): Ladestand, Kilometerstand, Reichweite, „Stecker steckt“, Ladeleistung, „lädt“. Fehlt ein Sensor, bleibt die Kachel leer.
+- Das Modul liest nur und schaltet nichts.
+
+<img src="docs/vorschau_elektroauto_einstellungen.png" width="480" alt="Elektroauto einrichten">
+
+## Einstellungen
+Der Knopf **Einstellungen** oben rechts öffnet in jedem Modul dieselbe Seite: alle Module mit Status, dazu Einrichtungsassistent, Darstellung, Sichern & Wiederherstellen, Diagnose und Modulverwaltung.
+
+<p align="center"><img src="docs/vorschau_einstellungen.png" width="560" alt="Einstellungsseite"> <img src="docs/vorschau_beta_module.png" width="560" alt="Module verwalten"></p>
+
 ## Allgemeines
 
 ### Entitäten auswählen
@@ -175,10 +259,10 @@ Unter **Allgemein → Diagnose öffnen** siehst du, ob alle Geräte der Regelung
 <p><img src="docs/vorschau_diagnose.png" width="480" alt="Gerätediagnose"> <img src="docs/vorschau_ventile.png" width="480" alt="Ventile"></p>
 
 ### Sichern und Wiederherstellen
-Unter **Allgemein → Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit Räumen, Heizplänen, Anwesenheit, Aussehen, allgemeinen Einstellungen und den Einstellungen von Modul 2 und 3. Beim Einlesen siehst du zuerst eine Zusammenfassung, erst „Wiederherstellen“ ersetzt die aktuellen Einstellungen.
+Unter **Allgemein → Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit Räumen, Heizplänen, Anwesenheit, Aussehen, allgemeinen Einstellungen und den Einstellungen der Module 2 bis 4 und 8. Beim Einlesen siehst du zuerst eine Zusammenfassung, erst „Wiederherstellen“ ersetzt die aktuellen Einstellungen.
 
 ### Update-Hinweis
-Administratoren sehen oben ein Banner, wenn auf GitHub eine neuere Version veröffentlicht wurde. Maßgeblich ist die höchste Version unter allen Releases und Tags, auch mit vier Teilen (zum Beispiel `2.9.2.5`). Die Prüfung fragt höchstens einmal pro Stunde ab und lässt sich unter **Allgemein → Updates** ausschalten.
+Administratoren sehen oben ein Banner, wenn auf GitHub eine neuere Version veröffentlicht wurde. Maßgeblich ist die höchste Version unter allen Releases und Tags, auch mit vier Teilen (zum Beispiel `3.0.0` oder `2.9.2.5`). Die Prüfung fragt höchstens einmal pro Stunde ab und lässt sich unter **Allgemein → Updates** ausschalten.
 
 ## Entitäten
 Pro Raum:
@@ -198,19 +282,21 @@ Pro Raum:
 
 - Die technische Kennung der Integration bleibt `fenster_heizung` (Ordner, Entitäten, Speicher). Nur der Anzeigename ist „Strom & Wärme“.
 - Raumeinstellungen im Dashboard: `fenster_heizung/get_options` und `fenster_heizung/set_options` (nur Administratoren). Layout (Farben, Fotos, Symbole, Wetteranzeige): `fenster_heizung/set_layout`. Allgemeines und Sicherung: `get_general`, `set_general`, `get_update`, `get_learning`, `restore`. Diagnose: `get_diag`, `clear_diag`. Module: `get_modules`, `set_modules`, `set_wasser`, `wasser_cmd`. Das Backend prüft alle Werte, Änderungen sind nur für Administratoren erlaubt.
+- Version 3.0.0: `get_modules` und `set_modules` kennen zusätzlich `on.ev`, `gs` (`devices` mit `id`, `name`, `ent`, `thr`, `end`, dazu `bat_cost`, `forecast`, `notify`) und `ev` (`brand`, `model`, `body`, `color`, `ent`). `fenster_heizung/gs_get` liefert die Auswertung von Modul 4. Ereignis `geraetestrom_run_finished` mit `device`, `kwh`, `cost`, `saved`, `share`. Die Beta-Module 9 bis 16 (`wx`, `ga`, `sf`, `pl`, `bt`, `dt`, `wa`, `sp`) speichern im Backend nur den Schalter `on.<kürzel>`, standardmäßig `false`. Die Module 5 bis 7 haben noch keine Einstellungen im Backend.
 - Version 2.9.2.3: `energy` kennt zusätzlich `ent.pv2`, `ent.pve2` (zweite Solaranlage) sowie die Anzeigenamen `pvn` und `pv2n`.
 - Version 2.9.2.1: `energy` kennt zusätzlich `ent.bchg`, `ent.bdis` und `bmode` (`one` oder `two`). Versions-Tags dürfen vier Teile haben.
 - Version 2.9.1: `set_modules` nimmt `on.en` und `energy` (`ent` mit `pv`, `grid`, `house`, `bat`, `pve`, `imp`, `exp`, `sign`, `bsign`) an.
 - Neue Raumeinstellungen (`humidity_sensor`, `air_hint`, `air_every`, `weather_adj`) erscheinen nur im Dashboard und bleiben beim Speichern im HA-Optionsdialog erhalten.
 - Der Bericht braucht Verlaufsdaten im Recorder.
 
-**Neue Version veröffentlichen:** `version` in `custom_components/fenster_heizung/manifest.json` erhöhen, auf GitHub ein Release mit passendem Tag (zum Beispiel `v2.9.2.5`) erstellen und kurze Aufzählungspunkte in die Beschreibung schreiben. Sie erscheinen im Update-Hinweis des Dashboards. HACS zeigt das Update an.
+**Neue Version veröffentlichen:** `version` in `custom_components/fenster_heizung/manifest.json` erhöhen, auf GitHub ein Release mit passendem Tag (zum Beispiel `v3.0.0`) erstellen und kurze Aufzählungspunkte in die Beschreibung schreiben. Sie erscheinen im Update-Hinweis des Dashboards. HACS zeigt das Update an.
 </details>
 
 ## Wichtige Hinweise
 - Die Integration schaltet **Heizungsthermostate, Elektroheizer, Heizstäbe und Pumpen**. Prüfe nach der Einrichtung, ob alles wie gewünscht reagiert, und beobachte die ersten Tage. Die Nutzung erfolgt auf eigene Verantwortung.
 - Die Regelung von Warmwasser und Heizstab ersetzt keinen Verbrühschutz und keine Sicherheitseinrichtungen der Anlage. Beachte die Vorgaben deines Herstellers.
-- Energie- und Kostenwerte, die Ersparnis und die Dusch-Schätzung sind **Schätzungen**. Die Energie der Elektroheizer wird aus der Nennleistung berechnet, nicht gemessen.
+- **Beta-Module** (5 bis 16) sind unfertig und können sich ändern.
+- Energie- und Kostenwerte, die Ersparnis und die Dusch-Schätzung sind **Schätzungen**. Die Energie der Elektroheizer wird aus der Nennleistung berechnet, nicht gemessen. Gerätestrom rechnet aus Messwerten im 20-Sekunden-Takt, die Aufteilung auf Solar, Batterie und Netz ist eine Näherung.
 - Sensoren müssen in Home Assistant aktuelle Werte liefern. Ohne Messwerte bleibt die Regelung zurückhaltend: Fällt der PV-Sensor aus, gilt der Überschuss als 0.
 - „Strom & Wärme“ ist ein privates Projekt und steht in keiner Verbindung zu Home Assistant oder Nabu Casa.
 

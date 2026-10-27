@@ -20,6 +20,7 @@ from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN
 from .diag import diag_log
+from .geraete_calc import clean_ev, clean_gs
 from .pvlogic import grid_to_export, soc_allows
 
 _LOGGER = logging.getLogger(__name__)
@@ -157,6 +158,8 @@ def clean_wasser(raw: Any) -> dict[str, Any]:
     }
 
 
+# Beta-Module ohne eigene Einstellungen im Backend: nur der Schalter wird gespeichert (standardmäßig aus)
+BETA_KEYS = ("wx", "ga", "sf", "pl", "bt", "dt", "wa", "sp")
 EN_KEYS = ("pv", "grid", "house", "bat", "bchg", "bdis", "pve", "pv2", "pve2", "imp", "exp")
 EN_DOMAIN = "sensor"
 
@@ -201,7 +204,7 @@ def clean_modules(raw: Any) -> dict[str, Any]:
         seen.add(xid)
         name = re.sub(r"[<>\"'&]", "", str(x.get("name") or "").strip())[:40] or "Eigenes Modul"
         ext.append({"id": xid, "name": name, "url": url, "on": bool(x.get("on", True))})
-    return {"on": {"ww": bool(on.get("ww", True)), "en": bool(on.get("en", True))}, "ext": ext, "energy": clean_energy(raw.get("energy"))}
+    return {"on": {"ww": bool(on.get("ww", True)), "en": bool(on.get("en", True)), "gs": bool(on.get("gs", True)), "lu": bool(on.get("lu", False)), "rb": bool(on.get("rb", False)), "wp": bool(on.get("wp", False)), "ev": bool(on.get("ev", False)), **{k: bool(on.get(k, False)) for k in BETA_KEYS}}, "ext": ext, "energy": clean_energy(raw.get("energy")), "gs": clean_gs(raw.get("gs")), "ev": clean_ev(raw.get("ev"))}
 
 
 def configured(cfg: dict[str, Any]) -> bool:
@@ -373,6 +376,9 @@ class WasserManager:
     async def async_set_modules(self, raw: Any) -> None:
         self.modules = clean_modules(raw)
         self._save()
+        gsm = self.hass.data.get(DOMAIN, {}).get("geraete")
+        if gsm is not None:
+            await gsm.async_config_changed()
         await self._tick(None)
 
     async def async_set_cfg(self, raw: Any) -> None:

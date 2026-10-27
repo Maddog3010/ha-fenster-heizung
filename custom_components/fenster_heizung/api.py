@@ -490,6 +490,13 @@ async def ws_get_modules(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], _modules_snapshot(hass))
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/gs_get"})
+@websocket_api.async_response
+async def ws_gs_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("geraete")
+    connection.send_result(msg["id"], mgr.snapshot() if mgr is not None else {"ready": False, "devices": [], "hist": {}})
+
+
 @websocket_api.require_admin
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/set_modules", vol.Required("modules"): dict})
 @websocket_api.async_response
@@ -526,6 +533,6 @@ def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
-        ws_get_diag, ws_clear_diag, ws_get_modules, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
+        ws_get_diag, ws_clear_diag, ws_get_modules, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
     ):
         websocket_api.async_register_command(hass, command)
