@@ -6612,6 +6612,10 @@ class FensterHeizungPanel extends HTMLElement {
     const due = C.test.on ? l.filter((x) => x.test_due) : [], life = l.filter((x) => x.life_days != null && x.life_days <= C.lead), op = this._sfDepRows().filter((x) => x.open);
     return { S, C, l, al, low, off, due, life, op, bad: al.length ? "alarm" : low.length || off.length || due.length || life.length ? "warn" : "ok" };
   }
+  _sfLogo(bad) {
+    if (bad === "ok") return this._modLogo("sf");
+    return `<div class="mlogo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5 9 14v17c0 14 9 22 23 28 14-6 23-14 23-28V14z" class="f"/><path d="M32 22v17"/><path d="M32 46v.5"/></svg></div>`;
+  }
   _sfPage() {
     this._sfxLoad();
     const T = this._sfStat(), { C, l, al, low, off, due, life, op } = T, tab = this._sfTab();
@@ -6620,7 +6624,7 @@ class FensterHeizungPanel extends HTMLElement {
         : T.bad === "warn" ? ["Alles ruhig, aber es gibt Hinweise", [low.length ? `${low.length} Batterie${low.length === 1 ? "" : "n"} schwach` : "", off.length ? `${off.length} nicht erreichbar` : "", due.length ? "Prüfung fällig" : "", life.length ? `${life.length} Melder zu tauschen` : ""].filter(Boolean).join(" · ")]
           : ["Alles in Ordnung", `${l.length} ${l.length === 1 ? "Melder meldet" : "Melder melden"} keinen Alarm, alle erreichbar und mit guter Batterie`];
     const chip = (ico, t, w) => `<span class="chip${w ? " st warn" : ""}">${ic(ico, 16)}${t}</span>`;
-    const hero = `<div class="card hero mh a-sf sfh ${T.bad}">${this._modLogo("sf")}<div class="lbl">${ic("shield", 16)}Sicherheit im Haus</div><div class="big">${esc(msg[0])}</div><div class="sub">${esc(msg[1])}</div>
+    const hero = `<div class="card hero mh a-sf sfh ${T.bad}">${this._sfLogo(T.bad)}<div class="lbl">${ic("shield", 16)}Sicherheit im Haus</div><div class="big">${esc(msg[0])}</div><div class="sub">${esc(msg[1])}</div>
       <div class="chips">${chip("shield", `${l.length} Melder`)}${low.length ? chip("alert", `${low.length} Batterie schwach`, 1) : ""}${off.length ? chip("alert", `${off.length} nicht erreichbar`, 1) : ""}${due.length ? chip("clock", "Prüfung fällig", 1) : ""}${life.length ? chip("alert", `${life.length} zu tauschen`, 1) : ""}${op.length ? chip("lock", `${op.length} offen beim Gehen`, 1) : ""}${!C.notify.to.length ? chip("bell", "Keine Meldung eingerichtet") : ""}</div></div>`;
     const tabs = [["ov", "Übersicht"], ["pl", "Grundriss"], ["wa", "Wartung"], ["se", "Einstellungen"]];
     const bar = `<div class="sftabs" role="tablist">${tabs.map(([k, t]) => `<button class="${k === tab ? "on" : ""}" data-act="sfxtab" data-k="${k}" role="tab" aria-selected="${k === tab}">${t}</button>`).join("")}</div>`;

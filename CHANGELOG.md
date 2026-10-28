@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.1] - 2026-10-28
+
+### Geändert
+- **Modul 11:** Bei Alarm und bei Hinweisen zeigt das Banner ein Schild mit Ausrufezeichen statt des Hakens. Der Haken bleibt, wenn alles in Ordnung ist.
+
 ## [3.0.6.0] - 2026-10-28
 
 ### Neu
