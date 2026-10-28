@@ -2,6 +2,10 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.5.2] - 2026-10-28
+### Geändert
+- **Fehlersuche für Knöpfe, die nicht reagieren:** Wirft eine Aktion oder das Zeichnen der Seite einen Fehler, erscheint jetzt eine Meldung mit dem Fehlertext (und einer Zeile in der Konsole), statt dass nichts passiert.
+
 ## [3.0.5.1] - 2026-10-28
 ### Behoben
 - **Knöpfe reagierten nicht (Einstellungen, Anpassen und weitere):** Meldet Home Assistant laufend neue Werte, wurde die Seite mitten im Tippen neu aufgebaut, und der Tipp ging verloren. Solange ein Finger oder die Maus auf einem Knopf liegt, wird die Seite jetzt nicht neu gezeichnet und erst danach aktualisiert.

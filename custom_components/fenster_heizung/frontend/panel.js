@@ -2204,7 +2204,7 @@ class FensterHeizungPanel extends HTMLElement {
       return;
     }
     const bar = sr0 && sr0.querySelector(".mbar"), x = bar ? bar.scrollLeft : null, id = this._mdActive();
-    this._render0();
+    try { this._render0(); } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {
       const t = nb.querySelector(".mtab.sel"); if (t) nb.scrollLeft = Math.max(0, t.offsetLeft - (nb.clientWidth - t.offsetWidth) / 2);
@@ -2273,7 +2273,7 @@ class FensterHeizungPanel extends HTMLElement {
     const rel = () => { clearTimeout(this._prT); this._prT = setTimeout(() => { this._press = false; if (this._prPend) { this._prPend = false; this._render(); } }, 60); };
     sr.addEventListener("pointerdown", (e) => { if (e.target.closest && e.target.closest("[data-act],[data-handle]")) { this._press = true; clearTimeout(this._prT); this._prT = setTimeout(() => { this._press = false; if (this._prPend) { this._prPend = false; this._render(); } }, 1500); } }, true);
     ["pointerup", "pointercancel", "click"].forEach((n) => sr.addEventListener(n, rel, true));
-    sr.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (!b) return; if (e.detail !== 0 && !(this._pd && this._pd.s === sig(b) && Date.now() - this._pd.t < 2000)) return; if (b.dataset.act === "mdst" && Date.now() - (this._t0 || 0) < 1200) return; this._act(b.dataset.act, b); });
+    sr.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (!b) return; if (e.detail !== 0 && !(this._pd && this._pd.s === sig(b) && Date.now() - this._pd.t < 2000)) return; if (b.dataset.act === "mdst" && Date.now() - (this._t0 || 0) < 1200) return; try { this._act(b.dataset.act, b); } catch (err) { console.error("fenster_heizung", b.dataset.act, err); this._toast("Fehler bei „" + b.dataset.act + "“: " + (err && err.message || err)); } });
     /* Wischen auf der Modulleiste soll nicht die Seitenleiste von Home Assistant öffnen. */
     sr.addEventListener("touchstart", (e) => { if (e.target.closest && e.target.closest(".mbar,.rdays,.sxl,.ohint")) e.stopPropagation(); }, { passive: true });
     const hov = (e) => { const c = e.target.closest && e.target.closest(".rchart"); if (!c || !this._repGeo) return; const bb = c.getBoundingClientRect(), g = this._repGeo; this._repHover(Math.min(1439, Math.max(0, ((e.clientX - bb.left) / bb.width * g.W - g.L) / g.iw * 1440))); };
