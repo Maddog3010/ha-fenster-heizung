@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://hacs.xyz"><img alt="HACS" src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white"></a>
-  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.2.14-2dd4bf"></a>
+  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.3-2dd4bf"></a>
   <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18bcf2">
   <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white"></a>
 </p>
@@ -45,8 +45,11 @@
 
 ## Neu
 
+**3.0.3: Vorabversionen, Spartipp und Modul 18 „Licht & Lampen“.** Neue Labs erscheinen für Sponsoren 14 Tage früher (Schalter „Vorabversionen zuerst“ im Sponsor-Bereich, ab Werk aus), danach für alle. Die ersten beiden: der Spartipp der Woche und das neue Modul 18.
+
 **3.0.2.13: Sponsor-Bereich.** Sponsoren bekommen mit einem Schlüssel ein Abzeichen, Farbverläufe, Uhr-Stile und Vorabversionen. Nichts, was bisher frei war, wird gesperrt. [Mehr dazu](#sponsor-werden)
 
+- **3.0.3:** Modul 18 „Licht & Lampen“ und der „Spartipp der Woche“, beide zuerst als Vorabversion für Sponsoren.
 - **3.0.2.12:** [Tablet-Modus](#bedienung) mit PIN, Ruhemodus und Display-Steuerung per Bewegungsmelder.
 - **3.0.2.11:** [Startseite](#bedienung) und das Lab „Start-Bubbles“.
 - **3.0.2.10:** Modul 17 „Müllabfuhr“ als Lab.
@@ -98,6 +101,7 @@ Jedes Modul trägt im Kopfteil (am Desktop zusätzlich am Tab) eine Stufe:
 | 16 | Solar-Prognose | Vorabversion | Prognose heute und morgen, Stundenverlauf, Prognose gegen tatsächlichen Ertrag |
 | – | Start | Stabil | Überblick nach dem Öffnen: Ampel, Modul-Kacheln, Wetter, Personen, Alarm, Hinweise, Energie, Müll. Kein eigenes Modul, abschaltbar |
 | 17 | Müllabfuhr | Lab | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend, Ansage und Licht. Erscheint nur bei eingeschaltetem Lab |
+| 18 | Licht & Lampen | Lab | Alle Lampen nach Räumen, schalten, dimmen, Lichtfarbe, Szenenknöpfe. Erscheint nur bei eingeschaltetem Lab, zuerst als Vorabversion für Sponsoren |
 
 <p align="center">
   <img src="docs/vorschau_handy_modul1.png" width="200" alt="Modul 1 auf dem Handy">
@@ -221,7 +225,7 @@ Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt 
 | **Autarkie-Prognose** | 3 | Test | Wie viel Prozent des Tagesverbrauchs heute voraussichtlich aus Solar kommen. Nutzt die Prognose aus Modul 16 und den Verbrauch aus Modul 3 (7 oder 30 Tage), sonst deine Angabe. Grobe Schätzung. |
 | **Wäsche-Wetter** | 9 | Test | Ampel, ob Wäsche draußen trocknet, mit Luftfeuchte, Wind und Niederschlag aus der Wetter-Entität. Mindest-Wind einstellbar. |
 | **Lernfaktor für die Prognose** | 16 | Früh | Gelernte Abweichung der Anlage aus Prognose gegen Ertrag (mindestens 3 Tage, begrenzt auf 0,5 bis 1,5) und die korrigierte Prognose für heute. Andere Module nutzen weiter die Originalprognose. |
-| *Spartipp der Woche* | 3 | Idee | Angekündigt, noch nicht einschaltbar. |
+| **Spartipp der Woche** | 3 | Früh | Zeigt das Gerät mit dem größten Netzbezug der letzten 7 Tage (aus Modul 4), die beste Sonnenzeit laut Prognose (Modul 16) und die mögliche Ersparnis pro Woche als Obergrenze. Nur Anzeige. Zuerst als Vorabversion für Sponsoren. |
 
 #### Labs, die Geräte schalten
 Diese Funktionen laufen im Backend von Home Assistant, auch bei geschlossenem Dashboard. **Fenster auf, Abwesend und Urlaub, die Sicherheitsgrenzen der Module (zum Beispiel 65 °C im Warmwasserspeicher) und die Hausanschluss-Regeln haben immer Vorrang.** Fehlt ein Messwert, verhält sich die Funktion zurückhaltend und ändert nichts. Beobachte die ersten Tage, ob alles wie gewünscht reagiert.
@@ -233,6 +237,7 @@ Diese Funktionen laufen im Backend von Home Assistant, auch bei geschlossenem Da
 | **Legionellenschutz nach Sonne** | 2 | Test | Entscheidet am geplanten Tag zur Laufzeit: Reicht die Prognose aus Modul 16 (Standard ab 8 kWh), läuft der Schutz wie geplant, sonst am nächsten Tag mit besserer Prognose, höchstens um die eingestellten Tage (Standard 3). Ist der Schutz überfällig (mehr als 9 Tage), läuft er sofort. |
 | **Ladeziel nach Kalender** | 8 | Früh | Hebt den Ziel-Ladestand des Ladeplans an (Standard 90 %), wenn im gewählten Kalender in den nächsten 36 Stunden ein langer Termin (Standard ab 2 Stunden) beginnt. Es wird nur das Ziel geändert, nicht der Ladevorgang. Das Ziel wirkt, wenn der Ladeplan in Modul 8 an ist. |
 | **Müllabfuhr** | 17 | Früh | Schaltet das neue Modul 17 frei. Am Vorabend zur eingestellten Uhrzeit (Standard 18:30) schickt es eine Nachricht aufs Handy, sagt die Abholung über einen Lautsprecher an und lässt ein Licht in der Farbe der Tonne leuchten, bis sie als draußen markiert ist. Alles einzeln einstellbar, ab Werk aus, einmal pro Tag. Ausgeschaltet verschwinden Modul und Store-Eintrag, nichts wird mehr gesendet oder geschaltet. |
+| **Licht & Lampen** | 18 | Früh | Schaltet das neue Modul 18 frei: alle Lampen aus Home Assistant nach Räumen, schalten, Helligkeit und Lichtfarbe, Knöpfe für Gute Nacht, Ankommen und Gemütlich (mit deinen Szenen oder Skripten verknüpfbar) und „Alle aus“ mit Rückfrage. Dazu ein Hinweis, wenn Licht länger als eingestellt brennt. Es gibt keine Automatik, geschaltet wird nur auf Fingertipp. Ausgeschaltet verschwindet das Modul. |
 | **Start-Bubbles** | Start | Früh | Zeigt oben auf der Startseite bis zu acht runde Kurzinfos (Wetter, Personen, Alarm, Solar, Batterie, E-Auto, offene Fenster, nächste Müllabfuhr, Warmwasser, Strompreis, Hinweise). Nur Anzeige, Warnfarben optional. Ausgeschaltet verschwindet die Reihe. |
 
 <p align="center"><img src="docs/vorschau_labs_bestaetigung.png" width="520" alt="Bestätigung vor dem Einschalten"></p>
@@ -642,6 +647,23 @@ Zeigt den erwarteten Ertrag für heute und morgen, den bisherigen Ertrag des Tag
 - **Beste Zeit:** das ergiebigste Dreistundenfenster (ab 16 Uhr für den nächsten Tag).
 
 Einrichtung: Einstellungen → Modul 16.
+
+</details>
+
+<details>
+<summary><b>Modul 18: Licht & Lampen</b> &nbsp;·&nbsp; Lab</summary>
+
+<br>
+
+Das Modul ist ein Lab (Art „Schaltet Geräte“, Stand „Früh“) und zuerst eine Vorabversion für Sponsoren. Du schaltest es unter **Labs → Licht & Lampen** ein und bestätigst vorher. Ausgeschaltet verschwindet es, deine Einstellungen bleiben gespeichert.
+
+- **Räume und Lampen:** Alle `light.*`-Entitäten, gruppiert nach den Bereichen aus Home Assistant. Lichtgruppen werden ausgelassen, damit keine Lampe doppelt zählt. Pro Raum ein Schalter und ein Helligkeitsregler, pro Lampe ein Schalter. Ein Tipp auf den Namen öffnet Helligkeit, Weißton und Lichtfarbe, soweit die Lampe das kann.
+- **Szenenknöpfe:** Gute Nacht, Ankommen und Gemütlich rufen eine Szene (`scene.*`) oder ein Skript (`script.*`) auf, das du in den Einstellungen verknüpfst. Unverknüpfte Knöpfe sind gestrichelt und öffnen die Einstellungen. „Alle aus“ ist eingebaut und fragt vorher nach.
+- **Licht lange an:** Hinweis mit Knopf „Ausschalten“, wenn eine Lampe länger als 1, 2 oder 4 Stunden an ist. Meldet ein Bewegungs-, Anwesenheits- oder Belegungssensor im selben Raum etwas, kommt kein Hinweis.
+- **Räume ausblenden:** zum Beispiel Garten oder Keller.
+- **Tablet-Modus und Startseite:** Das Modul erscheint in der unteren Leiste des Tablet-Modus und als Kachel auf der Startseite.
+
+Geschaltet wird nur auf Fingertipp, es gibt keine Automatik.
 
 </details>
 

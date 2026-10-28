@@ -8,8 +8,14 @@
   _labPill(t = "Labs") { return `<em class="labp">${ic("flask", 11)}${t}</em>`; }
   /* Katalog: nur Funktionen, die etwas anzeigen */
   _labCat() {
-    return this._labCat0().filter((x) => !x.early || this._spnEarly()).map((x) => ({ k: "s", ...x }));
+    return this._labCat0().filter((x) => this._labVisible(x)).map((x) => ({ k: "s", ...x }));
   }
+  /* Vorabversionen: ein Lab mit early: "JJJJ-MM-TT" sehen Sponsoren (Schalter „Vorabversionen zuerst“) vorher, alle anderen ab diesem Tag */
+  _labEarlyTs(x) { if (!x.early) return 0; const t = new Date(x.early + "T00:00:00").getTime(); return isFinite(t) ? t : 0; }
+  _labIsEarly(x) { return !!x.early && Date.now() < this._labEarlyTs(x); }
+  _labVisible(x) { return !this._labIsEarly(x) || this._spnEarly(); }
+  _labEarlyDate(x) { return new Date(this._labEarlyTs(x)).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }); }
+  _labEarlyHidden() { return this._labCat0().filter((x) => !this._labVisible(x)); }
   _labCat0() {
     return [
       { id: "lx", mid: "fh", mod: "Modul 1", mn: "Fenster & Heizung", n: "Bester Lüftungszeitpunkt", st: "Test", i: "windy", soon: false,
@@ -74,9 +80,19 @@
         needs: () => [["Die Startseite ist eingeschaltet", this._hzOn()]],
         after: "Ausgeschaltet verschwindet die Bubble-Reihe von der Startseite. Deine Auswahl bleibt gespeichert.",
         f: [] },
-      { id: "st", mid: "en", mod: "Modul 3", mn: "Energie", n: "Spartipp der Woche", st: "Idee", i: "tools", soon: true,
-        d: "Kurzer Hinweis, welches Gerät oder welche Uhrzeit den meisten Netzstrom kostet, mit Vorschlag.",
-        feats: ["Größter Netzbezug der Woche", "Konkreter Vorschlag mit geschätzter Ersparnis"], how: ["Noch in Vorbereitung."], needs: () => [], f: [] },
+      { id: "st", mid: "en", mod: "Modul 3", mn: "Energie", n: "Spartipp der Woche", st: "Früh", i: "tools", early: "2026-11-11",
+        d: "Zeigt, welches Gerät in den letzten 7 Tagen am meisten Netzstrom brauchte und wann die Sonne es am günstigsten versorgt.",
+        feats: ["Gerät mit dem größten Netzbezug der Woche", "Beste Sonnenzeit laut Prognose aus Modul 16", "Geschätzte Ersparnis pro Woche, wenn das Gerät dann läuft"],
+        how: ["Aus dem Verlauf von Modul 4 wird der Netzbezug jedes Geräts der letzten 7 Tage addiert.", "Die ergiebigste Sonnenzeit kommt aus der Prognose von Modul 16, heute oder morgen.", "Ersparnis = Netzbezug mal (Strompreis minus Einspeisevergütung). Das ist eine Obergrenze, nicht jedes Gerät lässt sich verschieben."],
+        needs: () => [["Modul 4 mit mindestens einem Gerät", this._gsState().devices.length > 0], ["Modul 16 liefert eine Prognose (für die Sonnenzeit)", !!(this._mdState().on.sp && this._sp().found)]],
+        f: [] },
+      { id: "li", k: "g", mid: "li", mod: "Modul 18", mn: "Licht & Lampen", n: "Licht & Lampen", st: "Früh", i: "lamp", early: "2026-11-11",
+        d: "Neues Modul 18: alle Lampen aus Home Assistant nach Räumen, schalten, dimmen, Farbe und Szenen.",
+        feats: ["Alle Lampen (light.*) nach Räumen aus deinen Home-Assistant-Bereichen", "Schalten, Helligkeit und Lichtfarbe, wenn die Lampe es kann", "Knöpfe für Gute Nacht, Ankommen und Gemütlich, verknüpfbar mit deinen Szenen oder Skripten, dazu „Alle aus“", "Hinweis, wenn Licht länger als eingestellt brennt (nicht, wenn ein Bewegungssensor im Raum etwas meldet)"],
+        how: ["Die Seite liest die Lampen und Räume aus Home Assistant und schaltet nur, wenn du tippst. Es gibt keine Automatik.", "Die Szenenknöpfe rufen die Szene oder das Skript auf, das du in den Einstellungen verknüpfst. „Alle aus“ ist eingebaut und fragt vorher nach.", "Der Hinweis „Licht lange an“ rechnet ab dem letzten Schalten der Lampe."],
+        needs: () => [["Lampen in Home Assistant (light.*)", Object.keys(this._hass.states).some((k) => k.startsWith("light."))], ["Räume (Bereiche) für die Lampen (optional)", Object.values(this._hass.entities || {}).some((e) => e && e.entity_id && e.entity_id.startsWith("light.") && (e.area_id || e.device_id))]],
+        after: "Ausgeschaltet verschwindet Modul 18. Es wird nichts mehr geschaltet, die Einstellungen (verknüpfte Szenen, Räume) bleiben gespeichert. Eingeschaltete Lampen bleiben, wie sie sind.",
+        f: [] },
     ];
   }
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
@@ -110,7 +126,7 @@
   }
   /* Karten oben in der Seite des Moduls */
   _labCards(mid) {
-    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
+    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb", "li"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
       let body = ""; try { body = this["_lab_" + x.id](); } catch (e) { body = `<div class="mut sm">Diese Funktion kann gerade nichts anzeigen.</div>`; }
       return this._labCard(x, body);
     }).join("");
@@ -146,6 +162,19 @@
     rooms.forEach((r) => { const d = this._learnFor(r.id); if (d) rows.push({ r, lead: Math.min(mx, Math.round(dk / d.rate * 60)), rate: d.rate }); });
     if (!rows.length) return `<div class="mut sm">Noch keine gelernte Aufheizzeit. Sie entsteht nach ein paar Aufheizphasen und steht im Raumbericht.</div>`;
     return `<div class="lugrid">${rows.map((x) => this._labTile(esc(x.r.name), `${x.lead} Min. früher`, `+${num(dk, 1)} K bei ${num(x.rate, 1)} K/h`, x.lead >= mx ? "amber" : "green")).join("")}</div><div class="mut sm" style="margin-top:8px">So viel früher würde der Heizplan starten. Geschaltet wird nur, wenn der Raum zum Schaltpunkt kälter ist als das Ziel.</div>`;
+  }
+  _lab_st() {
+    this._gsLoad(); this._spLoad();
+    const G = this._gsState(), D = this._gsD;
+    if (!G.devices.length) return `<div class="mut sm">Braucht Modul 4 mit mindestens einem Gerät, zum Beispiel Waschmaschine oder Trockner.</div>`;
+    if (!D || !D.hist) return `<div class="mut sm">Der Verlauf wird geladen.</div>`;
+    const d0 = new Date(Date.now() - 7 * 864e5), key = d0.getFullYear() + "-" + String(d0.getMonth() + 1).padStart(2, "0") + "-" + String(d0.getDate()).padStart(2, "0");
+    const rows = (D.devices || []).map((v) => { const h = (D.hist[v.id] || []).filter((r) => r.d >= key); return { v, g: h.reduce((a, r) => a + (r.g || 0), 0), c: h.reduce((a, r) => a + (r.cost || 0), 0), n: h.length }; }).sort((a, b) => b.g - a.g);
+    const top = rows[0];
+    if (!top || top.g < 0.05) return `<div class="mut sm">In den letzten 7 Tagen gab es kaum Netzbezug bei deinen Geräten. Für einen Tipp braucht es ein paar Tage mit Verlauf.</div>`;
+    const sav = top.g * Math.max(0, this._price() - this._feed()) / 100, S = this._sp(), b = S.found ? S.best : null, win = b ? `${b.from}:00 bis ${b.to}:00 Uhr` : "";
+    return `<div class="lugrid">${this._labTile("Größter Netzbezug", esc(top.v.name), `${num(top.g, 1)} kWh in 7 Tagen · ${num(top.c, 2)} €`, "amber")}${this._labTile("Beste Sonnenzeit", win || "–", b ? `${S.best_day === "today" ? "heute" : "morgen"}, rund ${num(b.kwh, 1)} kWh Ertrag` : "Braucht Modul 16 mit Prognose")}${this._labTile("Mögliche Ersparnis", `bis zu ${num(sav, 2)} €`, "pro Woche, wenn es mit Sonne läuft", "green")}</div>
+      <div class="mut sm" style="margin-top:8px"><b>Tipp:</b> Starte ${esc(top.v.name)}${win ? ` ${S.best_day === "today" ? "heute" : "morgen"} zwischen ${win}` : " zur sonnigsten Zeit"}, statt abends. Das ist eine Obergrenze: Nicht jeder Lauf lässt sich verschieben.</div>`;
   }
   _labLoad(force) {
     if (!this._hass || this._labBusy) return;
@@ -194,7 +223,7 @@
   _labCardEl(x) {
     const on = this._labOn(x.id), adm = this._admin();
     return `<div class="labk ${on ? "on" : ""} ${x.soon ? "soon" : ""}"><div class="labkt"><span class="ico">${ic(x.i, 22)}</span>${x.soon ? `<em class="risk">Bald</em>` : `<button class="sw ${on ? "on" : ""}" data-act="labtog" data-k="${x.id}" aria-pressed="${on}" aria-label="${esc(x.n)} ${on ? "ausschalten" : "einschalten"}" ${adm ? "" : "disabled"}></button>`}</div>
-      <button class="labkb" data-act="labdet" data-k="${x.id}"><b>${esc(x.n)}</b><span>${esc(x.d)}</span><span class="labtg"><em class="mod">${esc(x.mod)}</em><em class="risk ${this._labK(x)[1]}">${this._labK(x)[0]}</em><em class="risk">${esc(x.st)}</em></span></button></div>`;
+      <button class="labkb" data-act="labdet" data-k="${x.id}"><b>${esc(x.n)}</b><span>${esc(x.d)}</span><span class="labtg"><em class="mod">${esc(x.mod)}</em><em class="risk ${this._labK(x)[1]}">${this._labK(x)[0]}</em><em class="risk">${esc(x.st)}</em>${this._labIsEarly(x) ? `<em class="risk vab">Vorab bis ${this._labEarlyDate(x)}</em>` : ""}</span></button></div>`;
   }
   _labRender() {
     const sr = this.shadowRoot, mainEl = sr.getElementById("main"), st = this._lab0(), cat = this._labCat(), n = this._labCount();
@@ -209,8 +238,15 @@
       <div class="wrap"><div class="sxw stow">
         <div class="labban">${ic("flask", 22)}<div><b>Labs sind Experimente</b>Sie funktionieren schon, sind aber noch nicht überall erprobt. Eingeschaltet erscheinen sie im passenden Modul mit dem Zeichen <em class="labp">${ic("flask", 11)}Labs</em>. Ausgeschaltet sind sie dort wieder weg.</div></div>
         <div class="stoch">${chips.map(([k, t]) => `<button class="${st.c === k ? "on" : ""}" data-act="labc" data-k="${k}" aria-pressed="${st.c === k}">${esc(t)}</button>`).join("")}</div>
-        ${vis.length ? `<div class="stog">${vis.map((x) => this._labCardEl(x)).join("")}</div>` : `<div class="card empty">${ic("flask", 30)}<div style="margin-top:8px">Noch nichts eingeschaltet.</div></div>`}
+        ${(() => { const ear = vis.filter((x) => this._labIsEarly(x)), rest = vis.filter((x) => !this._labIsEarly(x)); return `${ear.length ? `<div class="labsec">${ic("heart", 15)}Vorabversion für Sponsoren</div><div class="stog">${ear.map((x) => this._labCardEl(x)).join("")}</div>${rest.length ? `<div class="labsec" style="margin-top:14px">${ic("flask", 15)}Für alle</div>` : ""}` : ""}${rest.length ? `<div class="stog">${rest.map((x) => this._labCardEl(x)).join("")}</div>` : ear.length ? "" : `<div class="card empty">${ic("flask", 30)}<div style="margin-top:8px">Noch nichts eingeschaltet.</div></div>`}`; })()}
+        ${this._labTease()}
         <div class="mut sm" style="margin:14px 2px">Ideen und Fehler gern auf <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">GitHub</a> melden. Eine Funktion kann sich ändern, später fest eingebaut werden oder wieder entfallen.</div></div></div>`;
+  }
+  /* Hinweis auf Vorabversionen, die man (noch) nicht sieht */
+  _labTease() {
+    const h = this._labEarlyHidden(); if (!h.length) return "";
+    const sp = this._spnS(), ea = this._labEarlyDate(h.slice().sort((a, b) => this._labEarlyTs(a) - this._labEarlyTs(b))[0]);
+    return `<div class="labtease">${ic("heart", 20)}<div><b>${h.length} ${h.length === 1 ? "Vorabversion" : "Vorabversionen"} für Sponsoren</b><span>${h.map((x) => esc(x.n)).join(", ")}. ${sp.active ? "Schalte im Sponsor-Bereich „Vorabversionen zuerst“ ein, um sie schon jetzt zu sehen." : `Sponsoren sehen neue Labs ein bis zwei Wochen früher. Für alle ab ${ea}.`}</span></div><button class="btn2" data-act="spnopen">${ic("heart", 15)} ${sp.active ? "Sponsor-Bereich" : "Sponsor werden"}</button></div>`;
   }
   /* Infoseite einer Funktion */
   _labModal(id) {
@@ -219,7 +255,7 @@
     return `<div class="ov" data-act="close"></div><div class="sheet wide stosh" role="dialog" aria-modal="true">
       <div class="stohd"><span class="stoi big labi">${ic(x.i, 38)}</span><div><b>${esc(x.n)}</b><small>Labs · ${esc(x.mod)} ${esc(x.mn)}</small><div class="stoact">${x.soon ? `<span class="risk">In Vorbereitung</span>` : `<button class="btn2 pri" data-act="labtog" data-k="${x.id}" ${adm ? "" : "disabled"}>${on ? "Ausschalten" : "Einschalten"}</button>${on ? `<span class="stos ok">● Eingeschaltet</span>` : ""}`}</div></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="mut sm" style="margin:0 0 8px">${esc(x.d)}</div>
-      <div class="stofa"><div><b>${esc(x.mod)}</b><small>wird angezeigt in</small></div><div><b>${this._labK(x)[0]}</b><small>Art</small></div><div><b>${esc(x.st)}</b><small>Stand</small></div></div>
+      <div class="stofa"><div><b>${esc(x.mod)}</b><small>wird angezeigt in</small></div><div><b>${this._labK(x)[0]}</b><small>Art</small></div><div><b>${esc(x.st)}${this._labIsEarly(x) ? ` · Vorab bis ${this._labEarlyDate(x)}` : ""}</b><small>Stand</small></div></div>
       <div class="lsec">${ic("check", 15)}Was du bekommst</div><ul class="stoul">${x.feats.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
       ${x.soon ? "" : `<div class="lsec">${ic("tools", 15)}So wird gerechnet</div>${x.how.map((t, n) => `<div class="stost"><b>${n + 1}</b><span>${esc(t)}</span></div>`).join("")}`}
       ${nd.length ? `<div class="lsec">${ic("info", 15)}Voraussetzungen</div><ul class="stoul">${nd.map(([t, ok]) => `<li>${ok ? "✓" : "✗"} ${esc(t)}</li>`).join("")}</ul>` : ""}

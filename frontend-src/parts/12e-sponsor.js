@@ -3,9 +3,9 @@
      Uhr-Stile und Vorabversionen. Der Schlüssel wird im Backend geprüft (sponsor.py). Wer den privaten Schlüssel
      eingetragen hat, sieht zusätzlich die Verwaltung der Sponsoren. */
   async _spnLoad() {
-    try { this._sp = await this._hass.callWS({ type: "fenster_heizung/spn_get" }); } catch (_) { this._sp = null; }
+    try { this._spnD = await this._hass.callWS({ type: "fenster_heizung/spn_get" }); } catch (_) { this._spnD = null; }
   }
-  _spnS() { return this._sp || { url: "https://github.com/sponsors/Maddog3010", state: "none", active: false, name: "", bis: "", prefs: { badge: true, grad: "none", clock: "standard", early: false }, saved_prefs: { badge: true, grad: "none", clock: "standard", early: false }, manage: false }; }
+  _spnS() { return this._spnD || { url: "https://github.com/sponsors/Maddog3010", state: "none", active: false, name: "", bis: "", prefs: { badge: true, grad: "none", clock: "standard", early: false }, saved_prefs: { badge: true, grad: "none", clock: "standard", early: false }, manage: false }; }
   _spnP() { return this._spnS().prefs; }
   _spnEarly() { const s = this._spnS(); return !!(s.active && s.prefs.early); }
   _spnDate(d) { try { return new Date(d + "T12:00:00").toLocaleDateString("de-DE"); } catch (_) { return d; } }
@@ -43,7 +43,7 @@
       if (!key) { this._modal.err = "Bitte den Schlüssel einfügen."; this._renderModal(); return; }
       this._spnRedeem(key);
     }
-    else if (a === "spnclr") { this._hass.callWS({ type: "fenster_heizung/spn_clear" }).then((r) => { this._sp = r; this._spnApply(); this._renderModal(); this._render(); this._toast("Schlüssel entfernt"); }).catch(() => this._toast("Das ging nicht")); }
+    else if (a === "spnclr") { this._hass.callWS({ type: "fenster_heizung/spn_clear" }).then((r) => { this._spnD = r; this._spnApply(); this._renderModal(); this._render(); this._toast("Schlüssel entfernt"); }).catch(() => this._toast("Das ging nicht")); }
     else if (a === "spnbadge") this._spnPref({ badge: !this._spnS().saved_prefs.badge });
     else if (a === "spnearly") this._spnPref({ early: !this._spnS().saved_prefs.early });
     else if (a === "spngrad") this._spnPref({ grad: k });
@@ -86,7 +86,7 @@
   _spnRedeem(key, mine) {
     this._hass.callWS({ type: "fenster_heizung/spn_redeem", key }).then((r) => {
       const st = (r.result || {}).state;
-      this._sp = r; this._spnApply(); this._render();
+      this._spnD = r; this._spnApply(); this._render();
       if (st === "ok") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._toast(mine ? "Bei dir eingelöst" : "Danke für deine Unterstützung!"); return; }
       if (!this._modal || this._modal.type !== "spndlg") { this._modal = { type: "spndlg", err: "" }; }
       this._modal.err = st === "expired" ? "Dieser Schlüssel ist abgelaufen." : st === "revoked" ? "Dieser Schlüssel wurde gesperrt." : "Der Schlüssel ist nicht gültig. Bitte vollständig einfügen, ohne Leerzeichen am Ende.";
@@ -94,9 +94,9 @@
     }).catch(() => this._toast("Das ging nicht"));
   }
   _spnPref(patch) {
-    const old = this._spnS().saved_prefs; if (this._sp) this._sp.saved_prefs = { ...old, ...patch }; if (this._sp && this._sp.active) this._sp.prefs = { ...old, ...patch };
+    const old = this._spnS().saved_prefs; if (this._spnD) this._spnD.saved_prefs = { ...old, ...patch }; if (this._spnD && this._spnD.active) this._spnD.prefs = { ...old, ...patch };
     this._spnApply(); this._renderModal(); this._render();
-    this._hass.callWS({ type: "fenster_heizung/spn_prefs", prefs: patch }).then((r) => { this._sp = r; this._spnApply(); this._renderModal(); this._render(); }).catch(() => this._toast("Das ging nicht"));
+    this._hass.callWS({ type: "fenster_heizung/spn_prefs", prefs: patch }).then((r) => { this._spnD = r; this._spnApply(); this._renderModal(); this._render(); }).catch(() => this._toast("Das ging nicht"));
   }
   _spnAdminLoad() { this._hass.callWS({ type: "fenster_heizung/spn_admin_get" }).then((r) => { this._spnA = r; if (this._modal && this._modal.type === "spnadm") this._renderModal(); }).catch(() => this._toast("Das ging nicht")); }
   _spnAdm(msg, then) { this._hass.callWS({ type: "fenster_heizung/spn_admin_act", ...msg }).then((r) => { this._spnA = { ...this._spnA, ...r }; this._spnLoad().then(() => { then(r); this._render(); }); }).catch(() => this._toast("Das ging nicht")); }

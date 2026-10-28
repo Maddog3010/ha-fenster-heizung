@@ -254,6 +254,7 @@ const HZ_BUBS = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fe
 const HZ_BUB_DEF = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell"];
 const HZ_BUB_N = { wetter: ["Wetter", "Außentemperatur und Wetterlage", "cloud"], personen: ["Personen zu Hause", "Anzahl der Personen daheim", "users"], alarm: ["Alarm", "Zustand der Alarmanlage", "shield"], solar: ["Solar jetzt", "Leistung der PV-Anlage", "sun"], batterie: ["Batterie", "Ladestand des Speichers", "bolt"], auto: ["E-Auto", "Ladestand und ob es lädt", "car"], fenster: ["Offene Fenster", "Anzahl offener Fenster", "windowOpen"], muell: ["Nächste Müllabfuhr", "nur wenn Modul 17 an ist", "trash"], warmwasser: ["Warmwasser", "Temperatur im Speicher", "drop"], preis: ["Strompreis", "Preis aus Modul 3", "chart"], hinweise: ["Hinweise", "Anzahl der Hinweise", "info"] };
 const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", icon: "trash", tag: "Abholtermine, Tonnen-Ampel und Erinnerung", lab: true };
+const MOD_LI = { id: "li", n: 18, name: "Licht & Lampen", short: "Licht", icon: "lamp", tag: "Lampen schalten, dimmen und Szenen", lab: true };
 const MU_NAMES = { tonnen: "Tonnen", next: "Nächste Abholungen", cal: "Kalender", rem: "Erinnerung am Vorabend", hint: "Hinweise", cost: "Kosten" };
 const MU_WIDE = ["tonnen", "cost"];
 const DAYS_SHORT_MU = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
@@ -1091,6 +1092,22 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .mub.editing{padding:8px 10px 10px;margin:4px}.mub .etag{margin:0 0 8px 2px}.mub.hid>:not(.etag){opacity:.4;filter:grayscale(.6);pointer-events:none}.mub.hid{outline-style:dotted}
 .eyeb{margin-left:auto;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);border-radius:999px;padding:5px 12px 5px 10px;font:inherit;font-size:.78rem;font-weight:600;cursor:pointer}.eyeb:hover{border-color:var(--teal)}.mub.hid .eyeb{color:var(--mut)}
 .mublks .dragging{opacity:.35}
+.labsec{display:flex;align-items:center;gap:8px;margin:4px 2px 8px;font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#e07aa6}
+.labtease{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0;padding:12px 14px;border-radius:16px;border:1px dashed color-mix(in srgb,#e07aa6 55%,transparent);background:color-mix(in srgb,#e07aa6 6%,transparent);color:#e07aa6}
+.labtease>div{flex:1;min-width:200px;color:var(--primary-text-color)}.labtease b{display:block}.labtease span{display:block;font-size:.84rem;color:var(--mut)}
+.risk.vab{color:#e07aa6;border-color:color-mix(in srgb,#e07aa6 55%,transparent);background:color-mix(in srgb,#e07aa6 10%,transparent)}
+.lixgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:start;margin-top:14px}
+.lixroom.on{border-color:color-mix(in srgb,#fbbf24 55%,transparent);background:color-mix(in srgb,#fbbf24 7%,var(--card))}
+.lixhd{display:flex;align-items:center;gap:10px}.lixico{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:var(--mut);flex:none}
+.lixroom.on .lixico{background:color-mix(in srgb,#fbbf24 22%,transparent);color:#fbbf24}
+.lixt{flex:1;min-width:0}.lixt b{display:block}.lixt small{display:block;color:var(--mut);font-size:.78rem}
+.lixrng{display:flex;align-items:center;gap:10px;margin:12px 0 4px;color:var(--mut)}.lixrng input{flex:1;min-width:0;accent-color:#fbbf24;height:28px}.lixrng b{min-width:44px;text-align:right;color:var(--primary-text-color);font-size:.85rem}
+.lixl{display:grid;gap:2px;margin-top:8px}.lixlamp{display:flex;align-items:center;gap:8px;padding:4px 0}.lixlamp.un{opacity:.5}
+.lixnm{flex:1;min-width:0;display:flex;align-items:center;gap:10px;text-align:left;background:none;border:0;color:var(--primary-text-color);font:inherit;padding:8px 2px;cursor:pointer;min-height:40px}.lixnm svg{flex:none;color:var(--mut)}.lixlamp.on .lixnm svg{color:#fbbf24}.lixnm small{display:block;color:var(--mut);font-size:.74rem}
+.lixscn .lixun{border-style:dashed;color:var(--mut)}.lixscn .lixun small{display:none}.lixtiles{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+.lixhint{margin-top:12px;align-items:center}.lixhint .lnk{margin-left:auto;flex:none}
+.lixsw{display:flex;flex-wrap:wrap;gap:12px;margin:8px 0}.lixc{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer;padding:0}.lixc.on{border-color:#fff;box-shadow:0 0 0 2px var(--teal,#2dd4bf)}
+
 .hzbubs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0;-webkit-overflow-scrolling:touch}.hzbubs::-webkit-scrollbar{display:none}
 .hzb{flex:none;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--primary-text-color);border-radius:999px;padding:5px 14px 5px 5px;font:inherit;cursor:pointer;text-align:left}
 .hzb:hover{border-color:color-mix(in srgb,var(--teal) 60%,var(--line))}.hzb:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
@@ -2204,6 +2221,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mux") && this._muxChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lix") && this._lixChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("hz") && this._hzChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tm") && this._tmChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("spx") && this._spChange(t)) return;
@@ -2230,6 +2248,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("ig")) this._igAct(a, b);
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
     else if (a.startsWith("mux")) this._muxAct(a, b);
+    else if (a.startsWith("lix")) this._lixAct(a, b);
     else if (a.startsWith("hz")) this._hzAct(a, b);
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
     else if (a.startsWith("spn")) this._spnAct(a, b);
@@ -2820,6 +2839,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["lixset", "lixdet", "lixoff"].includes(m.type)) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -3123,7 +3143,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
   _mdActiveSet(id) { const s = this._mdState(); s.active = id; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
-  _mdList() { const s = this._mdState(); return [...(this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : []), MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true), ...(this._labOn("mm") ? [MOD_MU] : []), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
+  _mdList() { const s = this._mdState(); return [...(this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : []), MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true), ...(this._labOn("mm") ? [MOD_MU] : []), ...(this._labOn("li") ? [MOD_LI] : []), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
   _mdActive() {
     const s = this._mdState();
     if (!this._hzDec && this._cfgReady) {
@@ -4786,8 +4806,14 @@ class FensterHeizungPanel extends HTMLElement {
   _labPill(t = "Labs") { return `<em class="labp">${ic("flask", 11)}${t}</em>`; }
   /* Katalog: nur Funktionen, die etwas anzeigen */
   _labCat() {
-    return this._labCat0().filter((x) => !x.early || this._spnEarly()).map((x) => ({ k: "s", ...x }));
+    return this._labCat0().filter((x) => this._labVisible(x)).map((x) => ({ k: "s", ...x }));
   }
+  /* Vorabversionen: ein Lab mit early: "JJJJ-MM-TT" sehen Sponsoren (Schalter „Vorabversionen zuerst“) vorher, alle anderen ab diesem Tag */
+  _labEarlyTs(x) { if (!x.early) return 0; const t = new Date(x.early + "T00:00:00").getTime(); return isFinite(t) ? t : 0; }
+  _labIsEarly(x) { return !!x.early && Date.now() < this._labEarlyTs(x); }
+  _labVisible(x) { return !this._labIsEarly(x) || this._spnEarly(); }
+  _labEarlyDate(x) { return new Date(this._labEarlyTs(x)).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }); }
+  _labEarlyHidden() { return this._labCat0().filter((x) => !this._labVisible(x)); }
   _labCat0() {
     return [
       { id: "lx", mid: "fh", mod: "Modul 1", mn: "Fenster & Heizung", n: "Bester Lüftungszeitpunkt", st: "Test", i: "windy", soon: false,
@@ -4852,9 +4878,19 @@ class FensterHeizungPanel extends HTMLElement {
         needs: () => [["Die Startseite ist eingeschaltet", this._hzOn()]],
         after: "Ausgeschaltet verschwindet die Bubble-Reihe von der Startseite. Deine Auswahl bleibt gespeichert.",
         f: [] },
-      { id: "st", mid: "en", mod: "Modul 3", mn: "Energie", n: "Spartipp der Woche", st: "Idee", i: "tools", soon: true,
-        d: "Kurzer Hinweis, welches Gerät oder welche Uhrzeit den meisten Netzstrom kostet, mit Vorschlag.",
-        feats: ["Größter Netzbezug der Woche", "Konkreter Vorschlag mit geschätzter Ersparnis"], how: ["Noch in Vorbereitung."], needs: () => [], f: [] },
+      { id: "st", mid: "en", mod: "Modul 3", mn: "Energie", n: "Spartipp der Woche", st: "Früh", i: "tools", early: "2026-11-11",
+        d: "Zeigt, welches Gerät in den letzten 7 Tagen am meisten Netzstrom brauchte und wann die Sonne es am günstigsten versorgt.",
+        feats: ["Gerät mit dem größten Netzbezug der Woche", "Beste Sonnenzeit laut Prognose aus Modul 16", "Geschätzte Ersparnis pro Woche, wenn das Gerät dann läuft"],
+        how: ["Aus dem Verlauf von Modul 4 wird der Netzbezug jedes Geräts der letzten 7 Tage addiert.", "Die ergiebigste Sonnenzeit kommt aus der Prognose von Modul 16, heute oder morgen.", "Ersparnis = Netzbezug mal (Strompreis minus Einspeisevergütung). Das ist eine Obergrenze, nicht jedes Gerät lässt sich verschieben."],
+        needs: () => [["Modul 4 mit mindestens einem Gerät", this._gsState().devices.length > 0], ["Modul 16 liefert eine Prognose (für die Sonnenzeit)", !!(this._mdState().on.sp && this._sp().found)]],
+        f: [] },
+      { id: "li", k: "g", mid: "li", mod: "Modul 18", mn: "Licht & Lampen", n: "Licht & Lampen", st: "Früh", i: "lamp", early: "2026-11-11",
+        d: "Neues Modul 18: alle Lampen aus Home Assistant nach Räumen, schalten, dimmen, Farbe und Szenen.",
+        feats: ["Alle Lampen (light.*) nach Räumen aus deinen Home-Assistant-Bereichen", "Schalten, Helligkeit und Lichtfarbe, wenn die Lampe es kann", "Knöpfe für Gute Nacht, Ankommen und Gemütlich, verknüpfbar mit deinen Szenen oder Skripten, dazu „Alle aus“", "Hinweis, wenn Licht länger als eingestellt brennt (nicht, wenn ein Bewegungssensor im Raum etwas meldet)"],
+        how: ["Die Seite liest die Lampen und Räume aus Home Assistant und schaltet nur, wenn du tippst. Es gibt keine Automatik.", "Die Szenenknöpfe rufen die Szene oder das Skript auf, das du in den Einstellungen verknüpfst. „Alle aus“ ist eingebaut und fragt vorher nach.", "Der Hinweis „Licht lange an“ rechnet ab dem letzten Schalten der Lampe."],
+        needs: () => [["Lampen in Home Assistant (light.*)", Object.keys(this._hass.states).some((k) => k.startsWith("light."))], ["Räume (Bereiche) für die Lampen (optional)", Object.values(this._hass.entities || {}).some((e) => e && e.entity_id && e.entity_id.startsWith("light.") && (e.area_id || e.device_id))]],
+        after: "Ausgeschaltet verschwindet Modul 18. Es wird nichts mehr geschaltet, die Einstellungen (verknüpfte Szenen, Räume) bleiben gespeichert. Eingeschaltete Lampen bleiben, wie sie sind.",
+        f: [] },
     ];
   }
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
@@ -4888,7 +4924,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Karten oben in der Seite des Moduls */
   _labCards(mid) {
-    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
+    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb", "li"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
       let body = ""; try { body = this["_lab_" + x.id](); } catch (e) { body = `<div class="mut sm">Diese Funktion kann gerade nichts anzeigen.</div>`; }
       return this._labCard(x, body);
     }).join("");
@@ -4924,6 +4960,19 @@ class FensterHeizungPanel extends HTMLElement {
     rooms.forEach((r) => { const d = this._learnFor(r.id); if (d) rows.push({ r, lead: Math.min(mx, Math.round(dk / d.rate * 60)), rate: d.rate }); });
     if (!rows.length) return `<div class="mut sm">Noch keine gelernte Aufheizzeit. Sie entsteht nach ein paar Aufheizphasen und steht im Raumbericht.</div>`;
     return `<div class="lugrid">${rows.map((x) => this._labTile(esc(x.r.name), `${x.lead} Min. früher`, `+${num(dk, 1)} K bei ${num(x.rate, 1)} K/h`, x.lead >= mx ? "amber" : "green")).join("")}</div><div class="mut sm" style="margin-top:8px">So viel früher würde der Heizplan starten. Geschaltet wird nur, wenn der Raum zum Schaltpunkt kälter ist als das Ziel.</div>`;
+  }
+  _lab_st() {
+    this._gsLoad(); this._spLoad();
+    const G = this._gsState(), D = this._gsD;
+    if (!G.devices.length) return `<div class="mut sm">Braucht Modul 4 mit mindestens einem Gerät, zum Beispiel Waschmaschine oder Trockner.</div>`;
+    if (!D || !D.hist) return `<div class="mut sm">Der Verlauf wird geladen.</div>`;
+    const d0 = new Date(Date.now() - 7 * 864e5), key = d0.getFullYear() + "-" + String(d0.getMonth() + 1).padStart(2, "0") + "-" + String(d0.getDate()).padStart(2, "0");
+    const rows = (D.devices || []).map((v) => { const h = (D.hist[v.id] || []).filter((r) => r.d >= key); return { v, g: h.reduce((a, r) => a + (r.g || 0), 0), c: h.reduce((a, r) => a + (r.cost || 0), 0), n: h.length }; }).sort((a, b) => b.g - a.g);
+    const top = rows[0];
+    if (!top || top.g < 0.05) return `<div class="mut sm">In den letzten 7 Tagen gab es kaum Netzbezug bei deinen Geräten. Für einen Tipp braucht es ein paar Tage mit Verlauf.</div>`;
+    const sav = top.g * Math.max(0, this._price() - this._feed()) / 100, S = this._sp(), b = S.found ? S.best : null, win = b ? `${b.from}:00 bis ${b.to}:00 Uhr` : "";
+    return `<div class="lugrid">${this._labTile("Größter Netzbezug", esc(top.v.name), `${num(top.g, 1)} kWh in 7 Tagen · ${num(top.c, 2)} €`, "amber")}${this._labTile("Beste Sonnenzeit", win || "–", b ? `${S.best_day === "today" ? "heute" : "morgen"}, rund ${num(b.kwh, 1)} kWh Ertrag` : "Braucht Modul 16 mit Prognose")}${this._labTile("Mögliche Ersparnis", `bis zu ${num(sav, 2)} €`, "pro Woche, wenn es mit Sonne läuft", "green")}</div>
+      <div class="mut sm" style="margin-top:8px"><b>Tipp:</b> Starte ${esc(top.v.name)}${win ? ` ${S.best_day === "today" ? "heute" : "morgen"} zwischen ${win}` : " zur sonnigsten Zeit"}, statt abends. Das ist eine Obergrenze: Nicht jeder Lauf lässt sich verschieben.</div>`;
   }
   _labLoad(force) {
     if (!this._hass || this._labBusy) return;
@@ -4972,7 +5021,7 @@ class FensterHeizungPanel extends HTMLElement {
   _labCardEl(x) {
     const on = this._labOn(x.id), adm = this._admin();
     return `<div class="labk ${on ? "on" : ""} ${x.soon ? "soon" : ""}"><div class="labkt"><span class="ico">${ic(x.i, 22)}</span>${x.soon ? `<em class="risk">Bald</em>` : `<button class="sw ${on ? "on" : ""}" data-act="labtog" data-k="${x.id}" aria-pressed="${on}" aria-label="${esc(x.n)} ${on ? "ausschalten" : "einschalten"}" ${adm ? "" : "disabled"}></button>`}</div>
-      <button class="labkb" data-act="labdet" data-k="${x.id}"><b>${esc(x.n)}</b><span>${esc(x.d)}</span><span class="labtg"><em class="mod">${esc(x.mod)}</em><em class="risk ${this._labK(x)[1]}">${this._labK(x)[0]}</em><em class="risk">${esc(x.st)}</em></span></button></div>`;
+      <button class="labkb" data-act="labdet" data-k="${x.id}"><b>${esc(x.n)}</b><span>${esc(x.d)}</span><span class="labtg"><em class="mod">${esc(x.mod)}</em><em class="risk ${this._labK(x)[1]}">${this._labK(x)[0]}</em><em class="risk">${esc(x.st)}</em>${this._labIsEarly(x) ? `<em class="risk vab">Vorab bis ${this._labEarlyDate(x)}</em>` : ""}</span></button></div>`;
   }
   _labRender() {
     const sr = this.shadowRoot, mainEl = sr.getElementById("main"), st = this._lab0(), cat = this._labCat(), n = this._labCount();
@@ -4987,8 +5036,15 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="wrap"><div class="sxw stow">
         <div class="labban">${ic("flask", 22)}<div><b>Labs sind Experimente</b>Sie funktionieren schon, sind aber noch nicht überall erprobt. Eingeschaltet erscheinen sie im passenden Modul mit dem Zeichen <em class="labp">${ic("flask", 11)}Labs</em>. Ausgeschaltet sind sie dort wieder weg.</div></div>
         <div class="stoch">${chips.map(([k, t]) => `<button class="${st.c === k ? "on" : ""}" data-act="labc" data-k="${k}" aria-pressed="${st.c === k}">${esc(t)}</button>`).join("")}</div>
-        ${vis.length ? `<div class="stog">${vis.map((x) => this._labCardEl(x)).join("")}</div>` : `<div class="card empty">${ic("flask", 30)}<div style="margin-top:8px">Noch nichts eingeschaltet.</div></div>`}
+        ${(() => { const ear = vis.filter((x) => this._labIsEarly(x)), rest = vis.filter((x) => !this._labIsEarly(x)); return `${ear.length ? `<div class="labsec">${ic("heart", 15)}Vorabversion für Sponsoren</div><div class="stog">${ear.map((x) => this._labCardEl(x)).join("")}</div>${rest.length ? `<div class="labsec" style="margin-top:14px">${ic("flask", 15)}Für alle</div>` : ""}` : ""}${rest.length ? `<div class="stog">${rest.map((x) => this._labCardEl(x)).join("")}</div>` : ear.length ? "" : `<div class="card empty">${ic("flask", 30)}<div style="margin-top:8px">Noch nichts eingeschaltet.</div></div>`}`; })()}
+        ${this._labTease()}
         <div class="mut sm" style="margin:14px 2px">Ideen und Fehler gern auf <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">GitHub</a> melden. Eine Funktion kann sich ändern, später fest eingebaut werden oder wieder entfallen.</div></div></div>`;
+  }
+  /* Hinweis auf Vorabversionen, die man (noch) nicht sieht */
+  _labTease() {
+    const h = this._labEarlyHidden(); if (!h.length) return "";
+    const sp = this._spnS(), ea = this._labEarlyDate(h.slice().sort((a, b) => this._labEarlyTs(a) - this._labEarlyTs(b))[0]);
+    return `<div class="labtease">${ic("heart", 20)}<div><b>${h.length} ${h.length === 1 ? "Vorabversion" : "Vorabversionen"} für Sponsoren</b><span>${h.map((x) => esc(x.n)).join(", ")}. ${sp.active ? "Schalte im Sponsor-Bereich „Vorabversionen zuerst“ ein, um sie schon jetzt zu sehen." : `Sponsoren sehen neue Labs ein bis zwei Wochen früher. Für alle ab ${ea}.`}</span></div><button class="btn2" data-act="spnopen">${ic("heart", 15)} ${sp.active ? "Sponsor-Bereich" : "Sponsor werden"}</button></div>`;
   }
   /* Infoseite einer Funktion */
   _labModal(id) {
@@ -4997,7 +5053,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="ov" data-act="close"></div><div class="sheet wide stosh" role="dialog" aria-modal="true">
       <div class="stohd"><span class="stoi big labi">${ic(x.i, 38)}</span><div><b>${esc(x.n)}</b><small>Labs · ${esc(x.mod)} ${esc(x.mn)}</small><div class="stoact">${x.soon ? `<span class="risk">In Vorbereitung</span>` : `<button class="btn2 pri" data-act="labtog" data-k="${x.id}" ${adm ? "" : "disabled"}>${on ? "Ausschalten" : "Einschalten"}</button>${on ? `<span class="stos ok">● Eingeschaltet</span>` : ""}`}</div></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="mut sm" style="margin:0 0 8px">${esc(x.d)}</div>
-      <div class="stofa"><div><b>${esc(x.mod)}</b><small>wird angezeigt in</small></div><div><b>${this._labK(x)[0]}</b><small>Art</small></div><div><b>${esc(x.st)}</b><small>Stand</small></div></div>
+      <div class="stofa"><div><b>${esc(x.mod)}</b><small>wird angezeigt in</small></div><div><b>${this._labK(x)[0]}</b><small>Art</small></div><div><b>${esc(x.st)}${this._labIsEarly(x) ? ` · Vorab bis ${this._labEarlyDate(x)}` : ""}</b><small>Stand</small></div></div>
       <div class="lsec">${ic("check", 15)}Was du bekommst</div><ul class="stoul">${x.feats.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
       ${x.soon ? "" : `<div class="lsec">${ic("tools", 15)}So wird gerechnet</div>${x.how.map((t, n) => `<div class="stost"><b>${n + 1}</b><span>${esc(t)}</span></div>`).join("")}`}
       ${nd.length ? `<div class="lsec">${ic("info", 15)}Voraussetzungen</div><ul class="stoul">${nd.map(([t, ok]) => `<li>${ok ? "✓" : "✗"} ${esc(t)}</li>`).join("")}</ul>` : ""}
@@ -5228,6 +5284,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (m.id === "gs") { const n = this._gsState().devices.length; sub = n ? `${n} ${n === 1 ? "Gerät" : "Geräte"}` : "Keine Geräte"; c = n ? "" : "mut"; }
     else if (m.id === "ev") { const e = (this._evState().ent || {}).soc, v = e && st[e] ? parseFloat(st[e].state) : NaN; sub = isFinite(v) ? `${num(v, 0)} %` : "Nicht eingerichtet"; c = isFinite(v) ? "" : "mut"; }
     else if (m.id === "mu") { const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; sub = x ? `${esc(x.name)} ${this._muWhen(x.days)}` : "Keine Termine"; c = x && x.days <= 1 ? "wa" : x ? "" : "mut"; this._muLoad(); }
+    else if (m.id === "li") { const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; sub = L.length ? (n ? `${n} von ${L.length} an` : "Alles aus") : "Keine Lampen"; c = n ? "wa" : "mut"; }
     else { sub = modSt(m) && STG[modSt(m)] ? STG[modSt(m)].t : ""; c = "mut"; }
     return `<button class="hzt ${c}" data-act="hzgo" data-k="${m.id}"><span class="hti">${ic(m.icon, 22)}</span><b>${esc(m.short)}</b><small>${sub}</small></button>`;
   }
@@ -5471,6 +5528,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (id === "ww") { this._wwLoad(); return this._wwPage(); }
     if (id === "gs") return this._gsPage();
     if (id === "mu") return this._muPage();
+    if (id === "li") return this._liPage();
     if (m.beta) return this._betaPage(id);
     if (id === "en") return this._enPage();
     return `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Dieses Modul gibt es im Tablet-Modus noch nicht.</div>`;
@@ -5656,9 +5714,9 @@ class FensterHeizungPanel extends HTMLElement {
      Uhr-Stile und Vorabversionen. Der Schlüssel wird im Backend geprüft (sponsor.py). Wer den privaten Schlüssel
      eingetragen hat, sieht zusätzlich die Verwaltung der Sponsoren. */
   async _spnLoad() {
-    try { this._sp = await this._hass.callWS({ type: "fenster_heizung/spn_get" }); } catch (_) { this._sp = null; }
+    try { this._spnD = await this._hass.callWS({ type: "fenster_heizung/spn_get" }); } catch (_) { this._spnD = null; }
   }
-  _spnS() { return this._sp || { url: "https://github.com/sponsors/Maddog3010", state: "none", active: false, name: "", bis: "", prefs: { badge: true, grad: "none", clock: "standard", early: false }, saved_prefs: { badge: true, grad: "none", clock: "standard", early: false }, manage: false }; }
+  _spnS() { return this._spnD || { url: "https://github.com/sponsors/Maddog3010", state: "none", active: false, name: "", bis: "", prefs: { badge: true, grad: "none", clock: "standard", early: false }, saved_prefs: { badge: true, grad: "none", clock: "standard", early: false }, manage: false }; }
   _spnP() { return this._spnS().prefs; }
   _spnEarly() { const s = this._spnS(); return !!(s.active && s.prefs.early); }
   _spnDate(d) { try { return new Date(d + "T12:00:00").toLocaleDateString("de-DE"); } catch (_) { return d; } }
@@ -5696,7 +5754,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (!key) { this._modal.err = "Bitte den Schlüssel einfügen."; this._renderModal(); return; }
       this._spnRedeem(key);
     }
-    else if (a === "spnclr") { this._hass.callWS({ type: "fenster_heizung/spn_clear" }).then((r) => { this._sp = r; this._spnApply(); this._renderModal(); this._render(); this._toast("Schlüssel entfernt"); }).catch(() => this._toast("Das ging nicht")); }
+    else if (a === "spnclr") { this._hass.callWS({ type: "fenster_heizung/spn_clear" }).then((r) => { this._spnD = r; this._spnApply(); this._renderModal(); this._render(); this._toast("Schlüssel entfernt"); }).catch(() => this._toast("Das ging nicht")); }
     else if (a === "spnbadge") this._spnPref({ badge: !this._spnS().saved_prefs.badge });
     else if (a === "spnearly") this._spnPref({ early: !this._spnS().saved_prefs.early });
     else if (a === "spngrad") this._spnPref({ grad: k });
@@ -5739,7 +5797,7 @@ class FensterHeizungPanel extends HTMLElement {
   _spnRedeem(key, mine) {
     this._hass.callWS({ type: "fenster_heizung/spn_redeem", key }).then((r) => {
       const st = (r.result || {}).state;
-      this._sp = r; this._spnApply(); this._render();
+      this._spnD = r; this._spnApply(); this._render();
       if (st === "ok") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._toast(mine ? "Bei dir eingelöst" : "Danke für deine Unterstützung!"); return; }
       if (!this._modal || this._modal.type !== "spndlg") { this._modal = { type: "spndlg", err: "" }; }
       this._modal.err = st === "expired" ? "Dieser Schlüssel ist abgelaufen." : st === "revoked" ? "Dieser Schlüssel wurde gesperrt." : "Der Schlüssel ist nicht gültig. Bitte vollständig einfügen, ohne Leerzeichen am Ende.";
@@ -5747,9 +5805,9 @@ class FensterHeizungPanel extends HTMLElement {
     }).catch(() => this._toast("Das ging nicht"));
   }
   _spnPref(patch) {
-    const old = this._spnS().saved_prefs; if (this._sp) this._sp.saved_prefs = { ...old, ...patch }; if (this._sp && this._sp.active) this._sp.prefs = { ...old, ...patch };
+    const old = this._spnS().saved_prefs; if (this._spnD) this._spnD.saved_prefs = { ...old, ...patch }; if (this._spnD && this._spnD.active) this._spnD.prefs = { ...old, ...patch };
     this._spnApply(); this._renderModal(); this._render();
-    this._hass.callWS({ type: "fenster_heizung/spn_prefs", prefs: patch }).then((r) => { this._sp = r; this._spnApply(); this._renderModal(); this._render(); }).catch(() => this._toast("Das ging nicht"));
+    this._hass.callWS({ type: "fenster_heizung/spn_prefs", prefs: patch }).then((r) => { this._spnD = r; this._spnApply(); this._renderModal(); this._render(); }).catch(() => this._toast("Das ging nicht"));
   }
   _spnAdminLoad() { this._hass.callWS({ type: "fenster_heizung/spn_admin_get" }).then((r) => { this._spnA = r; if (this._modal && this._modal.type === "spnadm") this._renderModal(); }).catch(() => this._toast("Das ging nicht")); }
   _spnAdm(msg, then) { this._hass.callWS({ type: "fenster_heizung/spn_admin_act", ...msg }).then((r) => { this._spnA = { ...this._spnA, ...r }; this._spnLoad().then(() => { then(r); this._render(); }); }).catch(() => this._toast("Das ging nicht")); }
@@ -5833,6 +5891,133 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="mut sm" style="margin-top:10px">Namen, Daten und Notizen bleiben in deinem Home Assistant. Das Dashboard weist dich ${30} Tage vor Ablauf darauf hin.</div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
   }
+  /* Modul 18: Licht & Lampen (Labs). Schaltet nur auf Fingertipp über Home Assistant (light.*, scene.*, script.*).
+     Das Modul gibt es nur, solange das Lab „Licht & Lampen“ (li) an ist. Verknüpfte Szenen und ausgeblendete Räume stehen im Layout (layout.li). */
+  _liLay() {
+    const l = (this._cfg && this._cfg.layout && this._cfg.layout.li) || {}, sc = l.scenes && typeof l.scenes === "object" ? l.scenes : {};
+    return { scenes: { night: sc.night || "", arrive: sc.arrive || "", cozy: sc.cozy || "" }, hours: [1, 2, 4].includes(l.hours) ? l.hours : 2, hidden: Array.isArray(l.hidden) ? l.hidden.filter((x) => typeof x === "string") : [] };
+  }
+  _liSave(patch) { const l = this._liLay(); this._cfg.layout.li = { scenes: l.scenes, hours: l.hours, hidden: l.hidden, ...patch }; this._saveLayout(); this._render(); if (this._modal) this._renderModal(); }
+  _liAreaOf(eid) {
+    const H = this._hass, en = (H.entities || {})[eid]; if (!en) return "";
+    if (en.area_id) return en.area_id;
+    const dv = en.device_id && (H.devices || {})[en.device_id]; return (dv && dv.area_id) || "";
+  }
+  _liAreaName(a) { if (!a) return "Ohne Raum"; const x = (this._hass.areas || {})[a]; return (x && x.name) || a; }
+  /* Alle einzelnen Lampen. Lichtgruppen (mit entity_id-Liste) werden ausgelassen, sonst zählt jede Lampe doppelt. */
+  _liLamps() {
+    const st = this._hass.states, now = Date.now();
+    return Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).map((e) => {
+      const s = st[e], a = s.attributes || {}, modes = Array.isArray(a.supported_color_modes) ? a.supported_color_modes : [], un = s.state === "unavailable" || s.state === "unknown";
+      const dim = modes.some((m) => m !== "onoff"), ct = modes.includes("color_temp"), col = modes.some((m) => ["hs", "xy", "rgb", "rgbw", "rgbww"].includes(m));
+      const t = new Date(s.last_changed).getTime();
+      return { id: e, name: a.friendly_name || e, on: s.state === "on", un, dim, ct, col, br: a.brightness != null ? Math.round(Number(a.brightness) / 2.55) : (s.state === "on" ? 100 : 0), kel: a.color_temp_kelvin || null, kmin: a.min_color_temp_kelvin || 2000, kmax: a.max_color_temp_kelvin || 6500, since: isFinite(t) ? now - t : 0, area: this._liAreaOf(e) };
+    });
+  }
+  _liRooms() {
+    const L = this._liLay(), by = {};
+    this._liLamps().forEach((x) => { const k = x.area || "_"; (by[k] = by[k] || { k, name: this._liAreaName(x.area), lamps: [] }).lamps.push(x); });
+    const all = Object.values(by).sort((a, b) => (a.k === "_") - (b.k === "_") || a.name.localeCompare(b.name, "de"));
+    all.forEach((r) => { r.lamps.sort((a, b) => a.name.localeCompare(b.name, "de")); r.on = r.lamps.filter((x) => x.on); r.dim = r.lamps.filter((x) => x.dim && !x.un); r.hid = L.hidden.includes(r.k); });
+    return all;
+  }
+  /* Ist im Raum ein Bewegungs-, Anwesenheits- oder Belegungssensor aktiv? Dann kein „Licht lange an“-Hinweis. */
+  _liBusy(area) {
+    if (!area) return false; const st = this._hass.states;
+    return Object.keys(st).some((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class) && st[e].state === "on" && this._liAreaOf(e) === area);
+  }
+  _liDur(ms) { const m = Math.round(ms / 60000); return m < 60 ? `${m} Min.` : `${num(Math.floor(m / 60), 0)} Std.${m % 60 >= 10 ? " " + (m % 60) + " Min." : ""}`; }
+  _liLong() { const lim = this._liLay().hours * 36e5; return this._liRooms().filter((r) => !r.hid).map((r) => ({ r, l: r.on.filter((x) => x.since >= lim) })).filter((x) => x.l.length && !this._liBusy(x.r.k === "_" ? "" : x.r.k)).map((x) => ({ r: x.r, ms: Math.max(...x.l.map((y) => y.since)), l: x.l })).sort((a, b) => b.ms - a.ms); }
+  _liCall(dom, svc, data) { return this._hass.callService(dom, svc, data).catch(() => this._toast("Das hat nicht geklappt")); }
+  _liSwatches(x) {
+    const out = [];
+    if (x.ct) [[2700, "Warmweiß"], [4000, "Neutralweiß"], [6000, "Kaltweiß"]].forEach(([k, t]) => out.push({ t, bg: k < 3500 ? "#ffb36b" : k < 5000 ? "#fff3e0" : "#cfe8ff", d: `data-kel="${Math.min(x.kmax, Math.max(x.kmin, k))}"`, on: x.kel && Math.abs(x.kel - Math.min(x.kmax, Math.max(x.kmin, k))) < 200 }));
+    if (x.col) [[[167, 139, 250], "Violett"], [[244, 114, 182], "Rosa"], [[96, 165, 250], "Blau"], [[52, 211, 153], "Grün"], [[251, 191, 36], "Gelb"], [[248, 113, 113], "Rot"]].forEach(([c, t]) => out.push({ t, bg: `rgb(${c.join(",")})`, d: `data-rgb="${c.join(",")}"`, on: false }));
+    return out;
+  }
+  _liSceneBtn(k, label, ico, pri) {
+    const L = this._liLay(), e = L.scenes[k], ok = e && this._hass.states[e];
+    if (!ok) return `<button class="btn2 lixun" data-act="lixscn" data-k="${k}" title="Noch nicht verknüpft">${ic("link", 15)} ${label}<small>verknüpfen</small></button>`;
+    return `<button class="btn2 ${pri ? "pri" : ""}" data-act="lixscn" data-k="${k}" title="${esc(this._wzName(e))}">${ic(ico, 15)} ${label}</button>`;
+  }
+  _liPage() {
+    const adm = this._admin(), rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un);
+    const banner = `<div class="labban">${ic("flask", 22)}<div><b>Labs · Licht & Lampen</b>Dieses Modul ist ein Experiment und nur da, solange das Lab eingeschaltet ist. Es schaltet nur, wenn du tippst.</div></div>`;
+    if (!rooms.length) return `${banner}<div class="card empty">${ic("lamp", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Keine Lampen gefunden</div>Es gibt in Home Assistant keine Entität light.*. Lampen richtest du in Home Assistant unter Geräte und Dienste ein.</div>`;
+    const on = lamps.filter((x) => x.on), L = this._liLay(), long = this._liLong();
+    const top = shown.slice().sort((a, b) => b.on.length - a.on.length)[0], mx = on.length ? Math.max(...on.map((x) => x.since)) : 0, longest = on.find((x) => x.since === mx);
+    const mu = this._labOn("mm") ? this._mu() : null, mul = mu && mu.cfg && mu.cfg.light && mu.cfg.light.on && mu.cfg.light.ent ? mu.cfg.light.ent : "";
+    const tiles = `<div class="lugrid lixtiles">${this._labTile("Lampen an", String(on.length), `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}`, on.length ? "amber" : "")}${this._labTile("Meiste Lampen an", top && top.on.length ? esc(top.name) : "–", top && top.on.length ? `${top.on.length} von ${top.lamps.length} an` : "Alles aus")}${this._labTile("Längste an", on.length ? this._liDur(mx) : "–", on.length && longest ? esc(longest.name) : "Nichts an")}${mul ? this._labTile("Müll-Licht", this._hass.states[mul] && this._hass.states[mul].state === "on" ? "An" : "Aus", esc(this._wzName(mul)) + " (Modul 17)") : ""}</div>`;
+    const scn = `<div class="gbtns lixscn">${this._liSceneBtn("night", "Gute Nacht", "moon", true)}<button class="btn2" data-act="lixalloff" ${on.length ? "" : "disabled"}>${ic("lamp", 15)} Alle aus</button>${this._liSceneBtn("arrive", "Ankommen", "home")}${this._liSceneBtn("cozy", "Gemütlich", "fireplace")}</div>`;
+    const names = ["night", "arrive", "cozy"].filter((k) => L.scenes[k] && this._hass.states[L.scenes[k]]).map((k) => `${{ night: "Gute Nacht", arrive: "Ankommen", cozy: "Gemütlich" }[k]}: ${esc(this._wzName(L.scenes[k]))}`);
+    const now = `<div class="card"><h2>${ic("lamp", 18)}Jetzt</h2>${tiles}<div style="margin-top:12px">${scn}</div>${names.length ? `<div class="mut sm" style="margin-top:8px">${names.join(" · ")}</div>` : adm ? `<div class="mut sm" style="margin-top:8px">Die drei Knöpfe verknüpfst du in den Einstellungen mit deinen Szenen oder Skripten.</div>` : ""}</div>`;
+    const hint = long.slice(0, 3).map((x) => `<div class="gst on lixhint">${ic("bell", 15)}<span><b>${esc(x.r.name === "Ohne Raum" ? "Licht ohne Raum" : "Im Raum „" + x.r.name + "“")} brennt seit ${this._liDur(x.ms)}</b> · ${x.l.map((y) => esc(y.name)).join(", ")}</span><button class="lnk" data-act="lixroomoff" data-k="${esc(x.r.k)}">Ausschalten</button></div>`).join("");
+    const room = (r) => {
+      const n = r.on.length, bp = r.dim.filter((x) => x.on), avg = bp.length ? Math.round(bp.reduce((a, x) => a + x.br, 0) / bp.length) : 0;
+      return `<div class="card lixroom ${n ? "on" : ""}"><div class="lixhd"><span class="lixico">${ic("lamp", 20)}</span><div class="lixt"><b>${esc(r.name)}</b><small>${n ? `${n} von ${r.lamps.length} an` : "aus"}</small></div><button class="sw ${n ? "on" : ""}" data-act="lixroom" data-k="${esc(r.k)}" aria-pressed="${!!n}" aria-label="${esc(r.name)}: ${n ? "alle ausschalten" : "alle einschalten"}"></button></div>
+        ${bp.length ? `<div class="lixrng"><span>${ic("sun", 14)}</span><input type="range" min="1" max="100" value="${avg}" data-f="lixbr" data-k="${esc(r.k)}" aria-label="Helligkeit ${esc(r.name)}"><b>${avg} %</b></div>` : ""}
+        <div class="lixl">${r.lamps.map((x) => `<div class="lixlamp ${x.on ? "on" : ""} ${x.un ? "un" : ""}"><button class="lixnm" data-act="lixdet" data-k="${esc(x.id)}" ${x.un ? "disabled" : ""} aria-label="${esc(x.name)}: Details">${ic("lamp", 16)}<span>${esc(x.name)}${x.un ? `<small>nicht erreichbar</small>` : x.on && x.dim ? `<small>${x.br} %</small>` : ""}</span></button><button class="sw ${x.on ? "on" : ""}" data-act="lixsw" data-k="${esc(x.id)}" aria-pressed="${x.on}" aria-label="${esc(x.name)} ${x.on ? "ausschalten" : "einschalten"}" ${x.un ? "disabled" : ""}></button></div>`).join("")}</div></div>`;
+    };
+    return `${banner}${now}${hint}<div class="lixgrid">${shown.map(room).join("") || `<div class="card empty">Alle Räume sind ausgeblendet. Einblenden kannst du sie in den Einstellungen.</div>`}</div>`;
+  }
+  _lixAct(a, b) {
+    const k = b.dataset.k, rooms = this._liRooms();
+    if (a === "lixopen") { this._modal = { type: "lixset" }; this._renderModal(); return; }
+    if (a === "lixdet") { this._modal = { type: "lixdet", id: k }; this._renderModal(); return; }
+    if (a === "lixalloff") { this._modal = { type: "lixoff" }; this._renderModal(); return; }
+    if (a === "lixalloffgo") { const ids = this._liLamps().filter((x) => x.on).map((x) => x.id); this._modal = null; this._renderModal(); if (ids.length) this._liCall("light", "turn_off", { entity_id: ids }); this._toast("Alle Lampen werden ausgeschaltet"); return; }
+    if (a === "lixsw") { const x = this._liLamps().find((y) => y.id === k); if (x) this._liCall("light", x.on ? "turn_off" : "turn_on", { entity_id: k }); return; }
+    if (a === "lixroom") { const r = rooms.find((y) => y.k === k); if (r) this._liCall("light", r.on.length ? "turn_off" : "turn_on", { entity_id: (r.on.length ? r.on : r.lamps.filter((x) => !x.un)).map((x) => x.id) }); return; }
+    if (a === "lixroomoff") { const r = rooms.find((y) => y.k === k); if (r && r.on.length) this._liCall("light", "turn_off", { entity_id: r.on.map((x) => x.id) }); return; }
+    if (a === "lixscn") {
+      const e = this._liLay().scenes[k];
+      if (!e || !this._hass.states[e]) { if (this._admin()) { this._modal = { type: "lixset" }; this._renderModal(); } else this._toast("Dieser Knopf ist noch nicht mit einer Szene verknüpft"); return; }
+      this._liCall(e.split(".")[0], "turn_on", { entity_id: e }); this._toast(`${this._wzName(e)} wird ausgeführt`); return;
+    }
+    if (a === "lixcol") { const m = this._modal; if (!m || m.type !== "lixdet") return; const d = { entity_id: m.id }; if (b.dataset.kel) d.color_temp_kelvin = +b.dataset.kel; else if (b.dataset.rgb) d.rgb_color = b.dataset.rgb.split(",").map(Number); this._liCall("light", "turn_on", d); return; }
+    if (a === "lixhrs") { this._liSave({ hours: +k }); return; }
+    if (a === "lixhide") { const h = this._liLay().hidden; this._liSave({ hidden: h.includes(k) ? h.filter((x) => x !== k) : [...h, k] }); return; }
+    if (a === "lixunlink") { const l = this._liLay(); this._liSave({ scenes: { ...l.scenes, [k]: "" } }); return; }
+  }
+  _lixChange(t) {
+    const f = t.dataset.f, k = t.dataset.k, v = t.value || "";
+    if (f === "lixsel") { if (["night", "arrive", "cozy"].includes(k) && (v === "" || /^(scene|script)\.[a-z0-9_]+$/.test(v))) { const l = this._liLay(); this._liSave({ scenes: { ...l.scenes, [k]: v } }); } return true; }
+    if (f === "lixbr") { const r = this._liRooms().find((y) => y.k === k), p = Math.max(1, Math.min(100, Math.round(Number(v)))); if (r && r.dim.some((x) => x.on)) this._liCall("light", "turn_on", { entity_id: r.dim.filter((x) => x.on).map((x) => x.id), brightness_pct: p }); return true; }
+    if (f === "lixdbr") { const m = this._modal; if (m && m.type === "lixdet") this._liCall("light", "turn_on", { entity_id: m.id, brightness_pct: Math.max(1, Math.min(100, Math.round(Number(v)))) }); return true; }
+    if (f === "lixkel") { const m = this._modal; if (m && m.type === "lixdet") this._liCall("light", "turn_on", { entity_id: m.id, color_temp_kelvin: Math.round(Number(v)) }); return true; }
+    return false;
+  }
+  _lixModal() {
+    const m = this._modal, adm = this._admin();
+    if (m.type === "lixoff") {
+      const n = this._liLamps().filter((x) => x.on).length;
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Alle Lampen ausschalten?</b><span>Modul 18 · Licht & Lampen</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm">${n ? `${n} ${n === 1 ? "Lampe ist" : "Lampen sind"} an und ${n === 1 ? "wird" : "werden"} jetzt ausgeschaltet. Das gilt für alle Räume, auch ausgeblendete.` : "Es ist keine Lampe an."}</div>
+        <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="lixalloffgo" ${n ? "" : "disabled"}>Alle aus</button></div></div>`;
+    }
+    if (m.type === "lixdet") {
+      const x = this._liLamps().find((y) => y.id === m.id); if (!x) return `<div class="ov" data-act="close"></div><div class="sheet"><div class="sh"><div><b>Lampe nicht gefunden</b></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div></div>`;
+      const sw = this._liSwatches(x);
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${esc(x.name)}</b><span>${esc(this._liAreaName(x.area))} · ${x.un ? "nicht erreichbar" : x.on ? "an" : "aus"}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="vrow"><span>Lampe</span><button class="sw ${x.on ? "on" : ""}" data-act="lixsw" data-k="${esc(x.id)}" aria-pressed="${x.on}" aria-label="${esc(x.name)} ${x.on ? "ausschalten" : "einschalten"}"></button></div>
+        ${x.dim ? `<div class="vrow"><span>Helligkeit</span><span class="lixrng" style="flex:1;max-width:60%"><input type="range" min="1" max="100" value="${x.on ? x.br : 50}" data-f="lixdbr" aria-label="Helligkeit"><b>${x.on ? x.br + " %" : "aus"}</b></span></div>` : `<div class="mut sm" style="margin:8px 0">Diese Lampe kann nur ein- und ausgeschaltet werden.</div>`}
+        ${x.ct ? `<div class="vrow"><span>Weißton<small class="mut" style="display:block">${x.kel ? x.kel + " Kelvin" : "warm bis kalt"}</small></span><span class="lixrng" style="flex:1;max-width:60%"><input type="range" min="${x.kmin}" max="${x.kmax}" step="100" value="${x.kel || Math.round((x.kmin + x.kmax) / 2)}" data-f="lixkel" aria-label="Weißton"></span></div>` : ""}
+        ${sw.length ? `<div class="lsec">${ic("palette", 15)}Lichtfarbe</div><div class="lixsw">${sw.map((s) => `<button class="lixc ${s.on ? "on" : ""}" style="background:${s.bg}" data-act="lixcol" ${s.d} aria-label="${esc(s.t)}" title="${esc(s.t)}"></button>`).join("")}</div>` : ""}
+        <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+    }
+    const L = this._liLay(), H = this._hass, st = H.states, sc = Object.keys(st).filter((e) => e.startsWith("scene.") || e.startsWith("script.")), rooms = this._liRooms();
+    const slot = (k, t, h) => `<div class="lsec" style="margin-top:10px">${ic("link", 15)}${t}</div><div class="mut sm" style="margin:0 0 4px">${h}</div>${this._wzSel(sc, L.scenes[k], "lixsel", `data-k="${k}"`, "– nicht verknüpft –", /schlaf|nacht|aus|bed|night|ankomm|heim|home|arriv|gem(ü|u)t|cozy|relax|abend/i)}`;
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Licht & Lampen</b><span>Modul 18 · Labs · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("lamp", 15)}Szenenknöpfe</div>
+      <div class="mut sm" style="margin:0 0 4px">Jeder Knopf ruft eine Szene oder ein Skript aus Home Assistant auf. Ohne Auswahl bleibt er unverknüpft und öffnet diese Einstellungen. „Alle aus“ ist eingebaut.</div>
+      ${slot("night", "Gute Nacht", "Zum Beispiel deine Szene zum Schlafengehen")}${slot("arrive", "Ankommen", "Zum Beispiel Licht im Flur und Wohnzimmer")}${slot("cozy", "Gemütlich", "Zum Beispiel warmes, gedimmtes Licht")}
+      <div class="lsec" style="margin-top:14px">${ic("bell", 15)}Hinweis „Licht lange an“</div>
+      <div class="vrow"><span>Hinweis ab<small class="mut" style="display:block">So lange darf eine Lampe an sein. Meldet ein Bewegungs- oder Anwesenheitssensor im Raum etwas, kommt kein Hinweis.</small></span><div class="seg">${[1, 2, 4].map((h) => `<button class="${L.hours === h ? "sel" : ""}" data-act="lixhrs" data-k="${h}" ${adm ? "" : "disabled"}>${h} Std.</button>`).join("")}</div></div>
+      <div class="lsec" style="margin-top:14px">${ic("door", 15)}Räume</div>
+      <div class="mut sm" style="margin:0 0 6px">Ausgeblendete Räume (zum Beispiel Garten oder Keller) fehlen auf der Seite, auch bei „Alle aus“ der Seitenübersicht. „Alle aus“ schaltet trotzdem jede Lampe.</div>
+      <div class="gschips">${rooms.map((r) => `<button class="gsch ${r.hid ? "" : "sel"}" data-act="lixhide" data-k="${esc(r.k)}" aria-pressed="${!r.hid}" ${adm ? "" : "disabled"}>${esc(r.name)} (${r.lamps.length})</button>`).join("")}</div>
+      <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
     return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
@@ -5844,10 +6029,11 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "gs") { body = this._gsPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "st") { body = this._hzPage(); pills = adm ? `<button class="pillbtn" data-act="hzopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; }
     else if (a === "mu") { body = this._muPage(); pills = adm ? `<button class="pillbtn" data-act="muxopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; this._muLoad(); }
+    else if (a === "li") { body = this._liPage(); pills = adm ? `<button class="pillbtn" data-act="lixopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (m.beta) { body = this._betaPage(a); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "en") { body = this._enPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else body = `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">${esc(m.name)}</div>Dieses Modul wird aus <code>${esc(m.ext.url)}</code> geladen.<br><span class="sm">Externe Module werden in einer späteren Version geladen.</span></div>`;
-    if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "st" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
+    if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "li" && a !== "st" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>

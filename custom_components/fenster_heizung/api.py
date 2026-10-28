@@ -151,6 +151,22 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
                 mc[key] = [x for x in dict.fromkeys(v) if isinstance(x, str) and x in MU_BLOCKS]
         if mc:
             out["mu"] = mc
+    li = raw.get("li")
+    if isinstance(li, dict):
+        lc2: dict[str, Any] = {}
+        sce = li.get("scenes")
+        if isinstance(sce, dict):
+            lc2["scenes"] = {
+                k: sce[k] for k in ("night", "arrive", "cozy")
+                if isinstance(sce.get(k), str) and re.match(r"^(scene|script)\.[a-z0-9_]+$", sce[k])
+            }
+        if li.get("hours") in (1, 2, 4):
+            lc2["hours"] = li["hours"]
+        hid = li.get("hidden")
+        if isinstance(hid, list):
+            lc2["hidden"] = [x[:64] for x in dict.fromkeys(hid) if isinstance(x, str) and x][:60]
+        if lc2:
+            out["li"] = lc2
     start = raw.get("start")
     if isinstance(start, dict):
         sc2: dict[str, Any] = {k: start[k] for k in ("on", "greet", "ctl") if isinstance(start.get(k), bool)}
@@ -196,7 +212,7 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
 MU_BLOCKS = {"tonnen", "next", "cal", "rem", "hint", "cost"}
 ST_BLOCKS = {"zuhause", "wetter", "personen", "hinweise", "alarm", "energie", "muell"}
 ST_BUBBLES = {"wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell", "warmwasser", "preis", "hinweise"}
-LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm", "sb"}
+LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm", "sb", "li"}
 LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "lf_days", "vh_dk", "vh_max", "dz_days", "dz_lead", "ld_wait", "ld_min", "lk_hi", "lk_dur"}
 
 
