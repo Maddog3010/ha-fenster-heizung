@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://hacs.xyz"><img alt="HACS" src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white"></a>
-  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.5.5-2dd4bf"></a>
+  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.5.6-2dd4bf"></a>
   <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18bcf2">
   <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white"></a>
 </p>
@@ -278,7 +278,7 @@ Als Dank gibt es einen **Sponsor-Schlüssel** mit zusätzlichen Dingen, die sch�
 
 **So geht es:**
 1. Auf [GitHub Sponsors](https://github.com/sponsors/Maddog3010) Sponsor werden.
-2. Du bekommst deinen Schlüssel per GitHub-Nachricht oder E-Mail, gültig für ein Jahr.
+2. Schick mir nach dem Sponsoring kurz eine E-Mail mit deinem GitHub-Namen an [00.verkauf_kompass@icloud.com](mailto:00.verkauf_kompass@icloud.com). Du bekommst deinen Schlüssel per E-Mail, gültig für ein Jahr.
 3. Im Dashboard unter **Einstellungen → Sponsor-Bereich** (oder über das Herz im Kopf) den Schlüssel einfügen. Ein Administrator genügt, der Schlüssel gilt dann für alle Geräte und Benutzer.
 
 <details>

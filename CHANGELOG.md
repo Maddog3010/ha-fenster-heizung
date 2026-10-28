@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.5.6] - 2026-10-28
+
+### Neu
+- **Sponsor-Hinweis:** Im Sponsor-Bereich steht jetzt, dass man sich nach dem Sponsoring kurz per E-Mail melden soll, um den Schlüssel zu bekommen. Ein Tipp auf die Adresse öffnet das Mailprogramm mit ausgefülltem Betreff. Dasselbe steht in der README.
+
 ## [3.0.5.5] - 2026-10-28
 ### Neu
 - **Banner auch bei Lüftung (5), Rollläden (6), Wärmepumpe (7), Müllabfuhr (17) und Licht (18),** im gleichen Format wie die anderen Module.

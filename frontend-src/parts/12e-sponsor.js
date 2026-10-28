@@ -124,8 +124,9 @@
         ${adm ? `<div class="gbtns" style="margin-top:14px">${s.state === "dev" ? "" : `<button class="btn2" data-act="spnclr">Schlüssel entfernen</button>`}${s.manage ? `<button class="btn2 pri" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button>` : ""}</div>` : ""}`;
     } else {
       const note = s.state === "expired" ? `<div class="gst bad">${ic("clock", 15)}<span>Dein Schlüssel ist am ${esc(this._spnDate(s.bis))} abgelaufen. Die Extras sind aus, deine Einstellungen bleiben gespeichert.</span></div>` : s.state === "revoked" ? `<div class="gst bad">${ic("lock", 15)}<span>Dieser Schlüssel wurde gesperrt.</span></div>` : "";
-      body = `${note}<div class="mut sm" style="margin:2px 0 10px">Die Integration ist und bleibt kostenlos. Sponsoren bekommen Schönes obendrauf. Nichts, was du jetzt nutzt, wird gesperrt.</div>${perks}
-        ${adm ? `<div class="lsec" style="margin-top:14px">${ic("key", 15)}Sponsor-Schlüssel</div><div class="mut sm" style="margin:0 0 6px">Bekommst du nach dem Sponsoring. Einfach einfügen.</div>
+      const mail = `<div class="spnmail">${ic("mail", 18)}<div><b>Nach dem Sponsoring: kurz per E-Mail melden</b><span>Schreib mir nach dem Sponsoring eine E-Mail mit deinem GitHub-Namen, dann schicke ich dir deinen Schlüssel.</span><a href="mailto:${SPN_MAIL}?subject=${encodeURIComponent("Sponsor-Schlüssel Strom & Wärme")}&body=${encodeURIComponent("Hallo, ich habe auf GitHub gesponsert.\nMein GitHub-Name: \n")}" class="spnma">${ic("mail", 14)} ${SPN_MAIL}</a></div></div>`;
+      body = `${note}<div class="mut sm" style="margin:2px 0 10px">Die Integration ist und bleibt kostenlos. Sponsoren bekommen Schönes obendrauf. Nichts, was du jetzt nutzt, wird gesperrt.</div>${perks}${mail}
+        ${adm ? `<div class="lsec" style="margin-top:14px">${ic("key", 15)}Sponsor-Schlüssel</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail. Einfach einfügen.</div>
         <textarea class="osel spnta" data-f="spnkey" rows="3" placeholder="FH1-…" spellcheck="false" aria-label="Sponsor-Schlüssel"></textarea>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div>
         <div class="gbtns" style="margin-top:8px"><button class="btn2 spnb" data-act="spnred">${ic("heart", 16)} Schlüssel einlösen</button>${link}</div>

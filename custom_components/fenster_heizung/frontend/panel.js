@@ -19,6 +19,7 @@ const ICONS = {
   download: '<path d="M12 4v11M7 11l5 5 5-5M5 20h14"/>',
   upload: '<path d="M12 16V5M7 9l5-5 5 5M5 20h14"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 20c1-4 4-6 8-6s7 2 8 6"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
   bell: '<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/>',
   pin: '<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
   users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.8a3.5 3.5 0 0 1 0 6.4M18 14.8c1.9.7 3.2 2.4 3.5 5.2"/>',
@@ -215,6 +216,7 @@ const MODE = {
   nur_fenstermeldung: { t: "Heizung aus · nur Fenstermeldung", c: "slate" },
   regelung_aus: { t: "Regelung deaktiviert", c: "gray" },
 };
+const SPN_MAIL = "00.verkauf_kompass@icloud.com";
 const LOGO_URL = "/fenster_heizung_static/logo.png", PRODUCT = "Strom & Wärme";
 const FUELS = {
   erdgas: { short: "Gas", label: "m³ Gas", noun: "Gasersparnis" },
@@ -854,6 +856,7 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .wwtkc{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0}.wwtkc h2{align-self:flex-start}.wwtkc .wwtank{width:100%;max-width:230px}
 @media(max-width:720px){.wwrow{grid-template-columns:1fr}.wwrow .tiles{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.hero.mh.hr{min-height:200px}.wwh .mlogo{top:18px}.mring{right:auto;left:auto;top:auto;bottom:16px;right:16px;transform:none;width:78px;height:78px}.mring .rv b{font-size:1.15rem}.mring .rv span{display:none}.hero.mh.hr .lbl,.hero.mh.hr .sub,.hero.mh.hr .big{max-width:calc(100% - 96px)}.hero.mh.hr .chips{padding-right:92px}}
+.spnmail{display:flex;gap:11px;align-items:flex-start;margin:12px 0 0;padding:12px 13px;border-radius:14px;border:1px solid color-mix(in srgb,#f472b6 45%,var(--line));background:color-mix(in srgb,#f472b6 9%,transparent)}.spnmail>.ic{color:#f472b6;flex:none;margin-top:2px}.spnmail b{display:block;font-size:.9rem}.spnmail span{display:block;font-size:.8rem;color:var(--mut);margin:2px 0 8px}.spnma{display:inline-flex;gap:6px;align-items:center;font-size:.82rem;font-weight:700;color:var(--primary-text-color);text-decoration:none;border:1px solid var(--line);border-radius:99px;padding:6px 12px;background:var(--card);word-break:break-all}.spnma .ic{color:#f472b6}
 .labk.on{border-color:#8b5cf6;box-shadow:0 0 0 1px #8b5cf6 inset}.labk.soon{opacity:.75}
 .labkt{display:flex;justify-content:space-between;align-items:center}.labkt .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#6d28d9,#a21caf);color:#fff}
 .labkb{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;font-size:.82rem;color:var(--mut)}.labkb b{font-size:.98rem;color:var(--primary-text-color)}.labkb:focus-visible{outline:2px solid #8b5cf6;outline-offset:4px;border-radius:8px}
@@ -5997,8 +6000,9 @@ class FensterHeizungPanel extends HTMLElement {
         ${adm ? `<div class="gbtns" style="margin-top:14px">${s.state === "dev" ? "" : `<button class="btn2" data-act="spnclr">Schlüssel entfernen</button>`}${s.manage ? `<button class="btn2 pri" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button>` : ""}</div>` : ""}`;
     } else {
       const note = s.state === "expired" ? `<div class="gst bad">${ic("clock", 15)}<span>Dein Schlüssel ist am ${esc(this._spnDate(s.bis))} abgelaufen. Die Extras sind aus, deine Einstellungen bleiben gespeichert.</span></div>` : s.state === "revoked" ? `<div class="gst bad">${ic("lock", 15)}<span>Dieser Schlüssel wurde gesperrt.</span></div>` : "";
-      body = `${note}<div class="mut sm" style="margin:2px 0 10px">Die Integration ist und bleibt kostenlos. Sponsoren bekommen Schönes obendrauf. Nichts, was du jetzt nutzt, wird gesperrt.</div>${perks}
-        ${adm ? `<div class="lsec" style="margin-top:14px">${ic("key", 15)}Sponsor-Schlüssel</div><div class="mut sm" style="margin:0 0 6px">Bekommst du nach dem Sponsoring. Einfach einfügen.</div>
+      const mail = `<div class="spnmail">${ic("mail", 18)}<div><b>Nach dem Sponsoring: kurz per E-Mail melden</b><span>Schreib mir nach dem Sponsoring eine E-Mail mit deinem GitHub-Namen, dann schicke ich dir deinen Schlüssel.</span><a href="mailto:${SPN_MAIL}?subject=${encodeURIComponent("Sponsor-Schlüssel Strom & Wärme")}&body=${encodeURIComponent("Hallo, ich habe auf GitHub gesponsert.\nMein GitHub-Name: \n")}" class="spnma">${ic("mail", 14)} ${SPN_MAIL}</a></div></div>`;
+      body = `${note}<div class="mut sm" style="margin:2px 0 10px">Die Integration ist und bleibt kostenlos. Sponsoren bekommen Schönes obendrauf. Nichts, was du jetzt nutzt, wird gesperrt.</div>${perks}${mail}
+        ${adm ? `<div class="lsec" style="margin-top:14px">${ic("key", 15)}Sponsor-Schlüssel</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail. Einfach einfügen.</div>
         <textarea class="osel spnta" data-f="spnkey" rows="3" placeholder="FH1-…" spellcheck="false" aria-label="Sponsor-Schlüssel"></textarea>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div>
         <div class="gbtns" style="margin-top:8px"><button class="btn2 spnb" data-act="spnred">${ic("heart", 16)} Schlüssel einlösen</button>${link}</div>
