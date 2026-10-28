@@ -1945,7 +1945,13 @@ class FensterHeizungPanel extends HTMLElement {
 
   /* Die Modulleiste behält beim Neuzeichnen ihre Scrollposition. Beim Wechsel des Moduls wird das gewählte Tab in die Mitte geholt. */
   _render() {
-    const sr0 = this.shadowRoot, bar = sr0 && sr0.querySelector(".mbar"), x = bar ? bar.scrollLeft : null, id = this._mdActive();
+    const sr0 = this.shadowRoot, ae0 = sr0 && sr0.activeElement;
+    /* Läuft gerade eine Eingabe (Uhrzeit, Zahl, Text), wird die Seite nicht neu aufgebaut. Home Assistant meldet laufend neue Werte, das würde das Feld mitten im Tippen wegwerfen. Nach dem Verlassen des Feldes wird nachgezogen. */
+    if (ae0 && ae0.tagName === "INPUT" && ["time", "date", "number", "text"].includes(ae0.type) && !ae0.classList.contains("stoq") && sr0.getElementById("main") && sr0.getElementById("main").contains(ae0)) {
+      if (this._inHook !== ae0) { this._inHook = ae0; ae0.addEventListener("blur", () => { this._inHook = null; setTimeout(() => this._render(), 0); }, { once: true }); }
+      return;
+    }
+    const bar = sr0 && sr0.querySelector(".mbar"), x = bar ? bar.scrollLeft : null, id = this._mdActive();
     this._render0();
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {

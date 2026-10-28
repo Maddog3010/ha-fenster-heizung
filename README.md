@@ -5,7 +5,7 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.5-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.6-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Heizung, Fenster, Warmwasser, Solarstrom, Elektroauto und Geräte in einem Dashboard für Home Assistant.**

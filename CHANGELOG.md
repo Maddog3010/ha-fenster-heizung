@@ -2,6 +2,12 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.6] - 2026-10-28
+### Behoben
+- **Zeitfelder verschwanden beim Eingeben** (zum Beispiel „Bis“ und „Abfahrt“ in Modul 8, Register „Planung“): Home Assistant meldet laufend neue Werte, und das Dashboard baute die Seite dabei mitten im Tippen neu auf. Solange ein Zeit-, Zahlen- oder Textfeld im Fokus ist, wird die Seite jetzt nicht neu gezeichnet, nach dem Verlassen des Feldes zieht sie nach. Das gilt im ganzen Dashboard, die Suche im Store ist ausgenommen.
+### Geändert
+- README komplett neu geschrieben, der versehentlich gelöschte Abschnitt zu Modul 1 ist wieder da.
+
 ## [3.0.2.5] - 2026-10-28
 ### Neu
 - **Modul 16 „Solar-Prognose“ (Vorabversion):** Ertrag heute und morgen aus Forecast.Solar (mehrere Anlagen werden addiert) oder einem eigenen Sensor mit `wh_period`, Stundenverlauf, beste Zeit für Verbraucher und Vergleich der Tagesprognose mit dem tatsächlichen Ertrag (Abweichung in Prozent). Die Prognose des Tages wird morgens festgehalten, der Verlauf bleibt 60 Tage gespeichert. Einstellungen: Quelle, Ertragssensor (Tageswert oder Gesamtzähler, Übernahme aus Modul 3). Neue Datei `solar.py`, WS-Befehle `sp_get` und `sp_set`.
