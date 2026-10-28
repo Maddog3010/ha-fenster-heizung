@@ -40,7 +40,19 @@ BAT_NOTE_GAP_S = 7 * 86400
 OFF_NOTE_GAP_S = 86400
 TEST_NOTE_GAP_S = 7 * 86400
 MAX_ACTS = 12
-MAX_LOG = 40
+MAX_LOG = 100
+MAX_META = 60
+MAX_ITEMS = 300
+MAX_FLOORS = 6
+MAX_BG = 320_000
+MAX_DEP = 30
+LIFE_NOTE_GAP_S = 7 * 86400
+BHIST_MAX = 60
+BHIST_GAP_S = 20 * 3600
+ITEM_T = ("r", "w", "d", "f", "s", "x", "m")
+_ID = re.compile(r"^[a-z0-9_]{1,24}$")
+_MON = re.compile(r"^(20\d\d|19\d\d)-(0[1-9]|1[0-2])$")
+_HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 MAX_EXCL = 60
 _ENT = re.compile(r"^[a-z_]+\.[a-z0-9_]+$")
 OFF_STATES = ("unavailable", "unknown")
@@ -50,7 +62,11 @@ def default_cfg() -> dict[str, Any]:
     return {
         "kinds": list(KINDS), "excl": [], "repeat": 10,
         "bat": {"on": True, "pct": 20}, "off": {"on": True, "min": 60}, "test": {"on": True, "months": 6},
-        "acts": [], "notify": {"alarm": True, "end": False, "bat": True, "off": True, "test": True, "to": []},
+        "acts": [], "notify": {"alarm": True, "end": False, "bat": True, "off": True, "test": True, "life": True, "depart": True, "to": []},
+        "meta": {}, "add": [], "plan": {"floors": [{"id": "eg", "n": "EG"}], "items": [], "bg": {}},
+        "quiet": {"on": False, "from": "22:00", "to": "07:00"}, "lead": 30,
+        "depart": {"on": True, "ents": [], "frost": {"on": False, "ent": "", "below": 3}},
+        "proto": {"name": "", "addr": "", "who": ""},
     }
 
 
@@ -119,9 +135,77 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
         s = _ent(s, ("notify",))
         if s and s not in to and len(to) < 10:
             to.append(s)
-    d["notify"] = {k: bool(n.get(k, d["notify"][k])) for k in ("alarm", "end", "bat", "off", "test")}
+    d["notify"] = {k: bool(n.get(k, d["notify"][k])) for k in ("alarm", "end", "bat", "off", "test", "life", "depart")}
     d["notify"]["to"] = to
+    add = []
+    for e in r.get("add") if isinstance(r.get("add"), list) else []:
+        e = _ent(e, ("binary_sensor",))
+        if e and e not in add and len(add) < MAX_META:
+            add.append(e)
+    d["add"] = add
+    meta = {}
+    mr = r.get("meta") if isinstance(r.get("meta"), dict) else {}
+    for e, m in mr.items():
+        e = _ent(e, ("binary_sensor",))
+        if not e or not isinstance(m, dict) or len(meta) >= MAX_META:
+            continue
+        inst = str(m.get("inst") or "")
+        meta[e] = {
+            "name": str(m.get("name") or "").strip()[:40], "kind": m.get("kind") if m.get("kind") in KINDS else "",
+            "floor": str(m.get("floor") or "")[:24] if _ID.match(str(m.get("floor") or "")) else "",
+            "room": str(m.get("room") or "").strip()[:40], "bat": _ent(m.get("bat"), ("sensor",)),
+            "btype": str(m.get("btype") or "").strip()[:20], "inst": inst if _MON.match(inst) else "",
+            "life": int(_num(m.get("life"), 0, 20, 0)), "int": min((0, 1, 3, 6, 12), key=lambda x: abs(x - int(_num(m.get("int"), 0, 12, 0)))),
+            "press": _ent(m.get("press"), ("button",)),
+        }
+    d["meta"] = meta
+    d["plan"] = clean_plan(r.get("plan"))
+    q = r.get("quiet") if isinstance(r.get("quiet"), dict) else {}
+    d["quiet"] = {"on": bool(q.get("on", False)), "from": q.get("from") if _HM.match(str(q.get("from"))) else "22:00", "to": q.get("to") if _HM.match(str(q.get("to"))) else "07:00"}
+    d["lead"] = min((0, 7, 14, 30, 60), key=lambda x: abs(x - int(_num(r.get("lead"), 0, 60, 30))))
+    dp = r.get("depart") if isinstance(r.get("depart"), dict) else {}
+    de = []
+    for e in dp.get("ents") if isinstance(dp.get("ents"), list) else []:
+        e = _ent(e, ("binary_sensor", "cover", "lock", "switch", "light", "input_boolean", "climate", "camera"))
+        if e and e not in de and len(de) < MAX_DEP:
+            de.append(e)
+    fr = dp.get("frost") if isinstance(dp.get("frost"), dict) else {}
+    d["depart"] = {"on": bool(dp.get("on", True)), "ents": de, "frost": {"on": bool(fr.get("on", False)), "ent": _ent(fr.get("ent"), ("sensor", "weather")), "below": int(_num(fr.get("below"), -10, 10, 3))}}
+    pr = r.get("proto") if isinstance(r.get("proto"), dict) else {}
+    d["proto"] = {k: str(pr.get(k) or "").strip()[:60] for k in ("name", "addr", "who")}
     return d
+
+
+def clean_plan(raw: Any) -> dict[str, Any]:
+    r = raw if isinstance(raw, dict) else {}
+    floors, ids = [], set()
+    for f in r.get("floors") if isinstance(r.get("floors"), list) else []:
+        if isinstance(f, dict) and _ID.match(str(f.get("id") or "")) and f["id"] not in ids and len(floors) < MAX_FLOORS:
+            ids.add(f["id"])
+            floors.append({"id": f["id"], "n": str(f.get("n") or f["id"]).strip()[:16] or f["id"]})
+    if not floors:
+        floors, ids = [{"id": "eg", "n": "EG"}], {"eg"}
+    items, seen = [], set()
+    for it in r.get("items") if isinstance(r.get("items"), list) else []:
+        if not isinstance(it, dict) or len(items) >= MAX_ITEMS or it.get("t") not in ITEM_T:
+            continue
+        iid, fl = str(it.get("id") or ""), str(it.get("fl") or "")
+        if not _ID.match(iid) or iid in seen or fl not in ids:
+            continue
+        seen.add(iid)
+        o = {"id": iid, "fl": fl, "t": it["t"]}
+        for k in ("x", "y", "w", "h", "x2", "y2"):
+            if k in it:
+                o[k] = int(_num(it[k], -50, 1200, 0))
+        o["r"] = int(_num(it.get("r"), 0, 270, 0) // 90 * 90)
+        o["n"] = str(it.get("n") or "").strip()[:30]
+        o["e"] = _ent(it.get("e"), ("binary_sensor",))
+        items.append(o)
+    bg = {}
+    for k, v in (r.get("bg") if isinstance(r.get("bg"), dict) else {}).items():
+        if k in ids and isinstance(v, str) and len(v) <= MAX_BG and re.match(r"^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$", v):
+            bg[k] = v
+    return {"floors": floors, "items": items, "bg": bg}
 
 
 def kind_of(device_class: Any) -> tuple[str, str] | None:
@@ -157,6 +241,9 @@ class SicherheitManager:
         self.st: dict[str, dict[str, Any]] = {}  # je Melder: a (Alarm), since, off_since, rep
         self.last_test = ""
         self.first_seen = ""
+        self.tested: dict[str, str] = {}
+        self.bhist: dict[str, list[list[float]]] = {}
+        self._home: bool | None = None
         self.log: list[dict[str, str]] = []
         self._notes: dict[str, float] = {}
         self._unsub: CALLBACK_TYPE | None = None
@@ -170,6 +257,10 @@ class SicherheitManager:
             self.cfg = clean_cfg(d.get("cfg"))
             self.last_test = str(d.get("last_test") or "")
             self.first_seen = str(d.get("first_seen") or "")
+            self.tested = {str(k): str(v) for k, v in (d.get("tested") or {}).items() if isinstance(v, str)}
+            for k, v in (d.get("bhist") or {}).items():
+                if isinstance(v, list):
+                    self.bhist[str(k)] = [[float(a), float(b)] for a, b in v if isinstance(a, (int, float)) and isinstance(b, (int, float))][-BHIST_MAX:]
             for k, v in (d.get("st") if isinstance(d.get("st"), dict) else {}).items():
                 if isinstance(v, dict):
                     self.st[str(k)] = {"a": bool(v.get("a")), "since": str(v.get("since") or ""), "off_since": 0.0, "rep": 0.0}
@@ -188,13 +279,13 @@ class SicherheitManager:
     def _save(self) -> None:
         self._store.async_delay_save(
             lambda: {
-                "cfg": self.cfg, "last_test": self.last_test, "first_seen": self.first_seen,
+                "cfg": self.cfg, "last_test": self.last_test, "first_seen": self.first_seen, "tested": self.tested, "bhist": self.bhist,
                 "st": {k: {"a": v["a"], "since": v["since"]} for k, v in self.st.items()}, "log": self.log, "notes": self._notes,
             }, 10,
         )
 
-    def _add(self, text: str) -> None:
-        self.log.insert(0, {"t": dt_util.now().isoformat(), "x": text})
+    def _add(self, text: str, c: str = "") -> None:
+        self.log.insert(0, {"t": dt_util.now().isoformat(), "x": text, "c": c})
         del self.log[MAX_LOG:]
 
     def active(self) -> bool:
@@ -227,21 +318,32 @@ class SicherheitManager:
             elif e.domain == "button" and "test" in e.entity_id:
                 btn_by_dev.setdefault(e.device_id, e.entity_id)
         out = []
+        meta = self.cfg["meta"]
         for s in self.hass.states.async_all("binary_sensor"):
             k = kind_of(s.attributes.get("device_class"))
-            if k is None or k[0] not in self.cfg["kinds"] or s.entity_id in self.cfg["excl"]:
+            m = meta.get(s.entity_id) or {}
+            manual = s.entity_id in self.cfg["add"]
+            if s.entity_id in self.cfg["excl"]:
                 continue
+            if k is None and not manual:
+                continue
+            if k is not None and k[0] not in self.cfg["kinds"] and not manual:
+                continue
+            if m.get("kind"):
+                k = (m["kind"], KIND_NAMES[m["kind"]])
+            elif k is None:
+                k = ("safety", KIND_NAMES["safety"])
             ent = reg.async_get(s.entity_id)
             did = ent.device_id if ent else None
             dev = devs.async_get(did) if did else None
             aid = (ent.area_id if ent and ent.area_id else (dev.area_id if dev else None))
             area = areas.async_get_area(aid).name if aid and areas.async_get_area(aid) else ""
-            sib = self.hass.states.get(bat_by_dev[did]) if did in bat_by_dev else None
+            sib = self.hass.states.get(m["bat"]) if m.get("bat") else (self.hass.states.get(bat_by_dev[did]) if did in bat_by_dev else None)
             bat = battery_of(s.attributes or {}, sib.state if sib is not None else None)
             out.append({
-                "id": s.entity_id, "name": s.attributes.get("friendly_name") or s.entity_id, "k": k[0], "kind": k[1], "area": area,
+                "id": s.entity_id, "name": m.get("name") or s.attributes.get("friendly_name") or s.entity_id, "k": k[0], "kind": k[1], "area": area,
                 "src": ent.platform if ent else "", "alarm": s.state == "on", "off": s.state in OFF_STATES, "bat": bat,
-                "test": btn_by_dev.get(did, "") if did else "",
+                "test": m.get("press") or (btn_by_dev.get(did, "") if did else ""), "manual": manual and kind_of(s.attributes.get("device_class")) is None,
             })
         out.sort(key=lambda x: (not x["alarm"], x["name"].lower()))
         return out
@@ -250,6 +352,8 @@ class SicherheitManager:
     async def _notify(self, kind: str, title: str, msg: str, gap_key: str = "", gap: float = 0) -> int:
         n = self.cfg["notify"]
         if kind and not n.get(kind):
+            return 0
+        if kind and kind != "alarm" and self.is_quiet():
             return 0
         if gap_key:
             if time.time() - self._notes.get(gap_key, 0) < gap:
@@ -266,6 +370,13 @@ class SicherheitManager:
             except Exception as err:  # Dienst fehlerhaft: nie die Überwachung stören
                 _LOGGER.debug("Benachrichtigung %s: %s", svc, err)
         return sent
+
+    def is_quiet(self) -> bool:
+        q = self.cfg["quiet"]
+        if not q["on"]:
+            return False
+        t = dt_util.now().strftime("%H:%M")
+        return (q["from"] <= t < q["to"]) if q["from"] <= q["to"] else (t >= q["from"] or t < q["to"])
 
     async def async_test(self) -> dict[str, Any]:
         return {"sent": await self._notify("", "Rauch- und Sicherheitsmelder", "Testmeldung von Modul 11. Die Benachrichtigung funktioniert.")}
@@ -294,7 +405,7 @@ class SicherheitManager:
             if d["id"] == det_id and d["test"]:
                 ok = await self._call_press(d["test"])
                 if ok:
-                    self._add(f"Test ausgelöst: {d['name']}.")
+                    self._add(f"Test ausgelöst: {d['name']}.", "ok")
                     self._save()
                 return {"ok": ok}
         return {"ok": False}
@@ -326,6 +437,8 @@ class SicherheitManager:
             self._save()
         det = self.detectors()
         seen = {d["id"] for d in det}
+        quiet = self.is_quiet()
+        self._sample_bat(det, now_ts)
         for d in det:
             s = self.st.setdefault(d["id"], {"a": False, "since": "", "off_since": 0.0, "rep": 0.0})
             where = f" ({d['area']})" if d["area"] else ""
@@ -333,7 +446,7 @@ class SicherheitManager:
             if d["alarm"] and not s["a"]:
                 s.update({"a": True, "since": now.isoformat(), "rep": now_ts})
                 n = await self._run_acts(d["k"])
-                self._add(f"ALARM: {d['name']}{where}." + (f" {n} Aktion(en) ausgelöst." if n else ""))
+                self._add(f"Alarm: {d['name']}{where}." + (f" {n} Aktion(en) ausgelöst." if n else ""), "alarm")
                 await self._notify("alarm", f"ALARM: {d['kind']}", f"{d['name']}{where} hat ausgelöst.")
                 self._save()
             elif d["alarm"] and s["a"]:
@@ -343,40 +456,112 @@ class SicherheitManager:
                     await self._notify("alarm", f"ALARM läuft noch: {d['kind']}", f"{d['name']}{where} meldet weiter Alarm.")
             elif not d["alarm"] and s["a"] and not d["off"]:
                 s.update({"a": False, "since": ""})
-                self._add(f"Alarm beendet: {d['name']}{where}.")
+                self._add(f"Alarm beendet: {d['name']}{where}.", "ok")
                 await self._notify("end", f"Alarm beendet: {d['kind']}", f"{d['name']}{where} meldet keinen Alarm mehr.")
                 self._save()
             # Erreichbarkeit
             if d["off"]:
                 s["off_since"] = s["off_since"] or now_ts
                 o = self.cfg["off"]
-                if o["on"] and now_ts - s["off_since"] >= o["min"] * 60:
+                if o["on"] and not quiet and now_ts - s["off_since"] >= o["min"] * 60:
                     key = f"off:{d['id']}"
                     if now_ts - self._notes.get(key, 0) >= OFF_NOTE_GAP_S:
-                        self._add(f"Nicht erreichbar: {d['name']}{where}.")
+                        self._add(f"Nicht erreichbar: {d['name']}{where}.", "off")
                     await self._notify("off", "Melder nicht erreichbar", f"{d['name']}{where} meldet sich seit über {o['min']} Minuten nicht.", key, OFF_NOTE_GAP_S)
                     self._save()
             else:
                 s["off_since"] = 0.0
             # Batterie
             b = self.cfg["bat"]
-            if b["on"] and d["bat"] is not None and d["bat"] < b["pct"]:
+            if b["on"] and not quiet and d["bat"] is not None and d["bat"] < b["pct"]:
                 key = f"bat:{d['id']}"
                 if now_ts - self._notes.get(key, 0) >= BAT_NOTE_GAP_S:
-                    self._add(f"Batterie schwach: {d['name']}{where} ({round(d['bat'])} %).")
+                    self._add(f"Batterie schwach: {d['name']}{where} ({round(d['bat'])} %).", "warn")
                 await self._notify("bat", "Melder-Batterie schwach", f"{d['name']}{where}: Batterie bei {round(d['bat'])} %. Bitte bald wechseln.", key, BAT_NOTE_GAP_S)
                 self._save()
         for k in [k for k in self.st if k not in seen]:
             if not self.st[k]["a"]:
                 del self.st[k]
-        # Prüf-Erinnerung
-        t = self.cfg["test"]
-        if t["on"] and det:
-            ms = months_since(self.last_test or self.first_seen, now)
-            if ms is not None and ms >= t["months"]:
+        # Prüf-Erinnerung (je Melder, sonst nach der allgemeinen Frist) und Lebensdauer
+        if not quiet and det:
+            due = [d for d in det if self._test_due(d, now)]
+            if due and self.cfg["test"]["on"]:
                 if now_ts - self._notes.get("test", 0) >= TEST_NOTE_GAP_S:
-                    self._add("Erinnerung: Melder prüfen (Testknopf drücken).")
-                await self._notify("test", "Melder prüfen", f"Die Melder wurden seit über {t['months']} Monaten nicht geprüft. Bitte den Testknopf drücken und danach in der App „Geprüft“ antippen.", "test", TEST_NOTE_GAP_S)
+                    self._add("Erinnerung: Melder prüfen (Testknopf drücken).", "warn")
+                names = ", ".join(d["name"] for d in due[:4]) + (" …" if len(due) > 4 else "")
+                await self._notify("test", "Melder prüfen", f"Zu prüfen: {names}. Bitte den Testknopf drücken und danach in der App „Geprüft“ antippen.", "test", TEST_NOTE_GAP_S)
+                self._save()
+            lead = self.cfg["lead"]
+            for d in det:
+                left = self._life_days(d, now)
+                if left is not None and left <= lead:
+                    key = f"life:{d['id']}"
+                    if now_ts - self._notes.get(key, 0) >= LIFE_NOTE_GAP_S:
+                        self._add(f"Austausch fällig: {d['name']}" + (f" (in {left} Tagen)." if left > 0 else " (überfällig)."), "warn")
+                    await self._notify("life", "Melder austauschen", f"{d['name']}: " + (f"Lebensdauer endet in {left} Tagen." if left > 0 else "Die Lebensdauer ist abgelaufen. Bitte austauschen."), key, LIFE_NOTE_GAP_S)
+                    self._save()
+        await self._check_depart()
+
+    def _sample_bat(self, det: list[dict[str, Any]], now_ts: float) -> None:
+        for d in det:
+            if d["bat"] is None:
+                continue
+            h = self.bhist.setdefault(d["id"], [])
+            if not h or now_ts - h[-1][0] >= BHIST_GAP_S:
+                h.append([round(now_ts), round(d["bat"], 1)])
+                del h[:-BHIST_MAX]
+                self._save()
+
+    def bat_days(self, det_id: str, now_ts: float | None = None) -> int | None:
+        """Grobe Prognose: wie viele Tage die Batterie noch bis 0 % hält (Gerade durch die Messpunkte)."""
+        h = self.bhist.get(det_id) or []
+        if len(h) < 2:
+            return None
+        (t0, b0), (t1, b1) = h[0], h[-1]
+        span = (t1 - t0) / 86400
+        if span < 7 or b1 >= b0:
+            return None
+        return max(0, int(b1 / ((b0 - b1) / span)))
+
+    def _life_days(self, d: dict[str, Any], now: Any) -> int | None:
+        m = self.cfg["meta"].get(d["id"]) or {}
+        if not m.get("inst") or not m.get("life"):
+            return None
+        y, mo = int(m["inst"][:4]) + int(m["life"]), int(m["inst"][5:])
+        end = now.replace(year=y, month=mo, day=1, hour=0, minute=0, second=0, microsecond=0)
+        return (end - now).days
+
+    def _test_due(self, d: dict[str, Any], now: Any) -> bool:
+        m = self.cfg["meta"].get(d["id"]) or {}
+        months = m.get("int") or self.cfg["test"]["months"]
+        ms = months_since(self.tested.get(d["id"]) or self.last_test or self.first_seen, now)
+        return ms is not None and ms >= months
+
+    @staticmethod
+    def _is_open(state: Any) -> bool:
+        return state in ("on", "open", "opening", "unlocked", "heat", "cool")
+
+    def depart_open(self) -> list[dict[str, str]]:
+        out = []
+        for e in self.cfg["depart"]["ents"]:
+            st = self.hass.states.get(e)
+            if st is not None and self._is_open(st.state):
+                out.append({"id": e, "name": st.attributes.get("friendly_name") or e})
+        return out
+
+    async def _check_depart(self) -> None:
+        """Alle Personen weg und noch etwas offen: einmal melden."""
+        ids = list(self.hass.states.async_entity_ids("person"))
+        if not ids:
+            return
+        home = any((self.hass.states.get(i) is not None and self.hass.states.get(i).state == "home") for i in ids)
+        was, self._home = self._home, home
+        if was is True and not home and self.cfg["depart"]["on"]:
+            op = self.depart_open()
+            if op:
+                names = ", ".join(x["name"] for x in op[:5]) + (" …" if len(op) > 5 else "")
+                self._add(f"Abfahrt-Prüfung: {len(op)} offen ({names}).", "warn")
+                await self._notify("depart", "Du bist unterwegs, es ist noch etwas offen", names)
                 self._save()
 
     async def async_config_changed(self) -> None:
@@ -388,10 +573,14 @@ class SicherheitManager:
         await self.async_config_changed()
         return await self.snapshot()
 
-    async def async_mark_tested(self) -> dict[str, Any]:
+    async def async_mark_tested(self, ent: str = "") -> dict[str, Any]:
         self.last_test = dt_util.now().isoformat()
+        if ent:
+            self.tested[ent] = self.last_test
+        else:
+            self.tested = {}
         self._notes.pop("test", None)
-        self._add("Melder geprüft (von Hand bestätigt).")
+        self._add("Melder geprüft (von Hand bestätigt)." if not ent else f"Geprüft: {ent}.", "ok")
         self._save()
         return await self.snapshot()
 
@@ -404,6 +593,12 @@ class SicherheitManager:
         for d in det:
             s = self.st.get(d["id"]) or {}
             d["since"] = s.get("since") or None
+            m = self.cfg["meta"].get(d["id"]) or {}
+            d["floor"], d["room"], d["btype"], d["inst"], d["life"] = m.get("floor", ""), m.get("room", ""), m.get("btype", ""), m.get("inst", ""), m.get("life", 0)
+            d["life_days"] = self._life_days(d, now)
+            d["tested"] = self.tested.get(d["id"]) or None
+            d["test_due"] = self._test_due(d, now)
+            d["bat_days"] = self.bat_days(d["id"])
         # Alle erkannten Melder inkl. ausgeschlossener, damit man sie wieder einschalten kann
         reg = er.async_get(self.hass)
         excl = []
@@ -412,4 +607,4 @@ class SicherheitManager:
             excl.append({"id": e, "name": (st.attributes.get("friendly_name") if st is not None else "") or e})
         xs = sum(1 for d in det if d["src"] == "xsense")
         xs_any = any(e.platform == "xsense" for e in reg.entities.values())
-        return {"cfg": self.cfg, "det": det, "excl": excl, "test": test, "log": self.log[:12], "xs": {"found": xs_any, "n": xs}}
+        return {"cfg": self.cfg, "det": det, "excl": excl, "test": test, "log": self.log[:40], "open": self.depart_open(), "home": self._home, "xs": {"found": xs_any, "n": xs}}

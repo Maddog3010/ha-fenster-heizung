@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.0] - 2026-10-28
+
+### Neu
+- **Modul 11 (Rauch- & Sicherheitsmelder) ist jetzt Beta und komplett überarbeitet:**
+  - Vier Reiter: Übersicht, Grundriss, Wartung, Einstellungen.
+  - **Grundriss-Baukasten:** Räume, Wände, Türen, Fenster, Treppen und Texte frei zeichnen, Melder platzieren, mehrere Etagen, Hintergrundbild möglich. Bei Alarm leuchtet der Raum.
+  - **Wartung:** Einbaudatum, Lebensdauer, Prüfintervall je Melder, Batterie-Prognose, Einkaufsliste, Jahresprotokoll zum Drucken oder Speichern.
+  - **Melder und Batterie in den Einstellungen:** Name, Art, Etage, Raum, Batterie-Sensor und -Typ, Testknopf, Einbau, Lebensdauer. Melder lassen sich auch von Hand hinzufügen.
+  - **Abfahrt-Prüfung:** zeigt offene Fenster, Türen und Geräte, meldet beim Verlassen des Hauses, mit Anwesenheit und Frost-Hinweis. Kameras und Schlösser werden nur angezeigt.
+  - **Ereignis-Zeitleiste, Ruhezeit und Erinnerung** vor Ablauf der Lebensdauer.
+
 ## [3.0.5.6] - 2026-10-28
 
 ### Neu

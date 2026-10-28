@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://hacs.xyz"><img alt="HACS" src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white"></a>
-  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.5.6-2dd4bf"></a>
+  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.6.0-2dd4bf"></a>
   <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18bcf2">
   <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white"></a>
 </p>
@@ -104,7 +104,7 @@ Jedes Modul trägt im Kopfteil (am Desktop zusätzlich am Tab) eine Stufe:
 | 8 | Elektroauto & Wallbox | Beta | Auto mit Wallbox, go-e Charger regeln (Sonne, Sonne + Netz, Voll, Ladeplan), Planung nach Strompreis und PV-Prognose, Ladestatistik |
 | 9 | Wetter & Warnungen | Beta | Sturm, Gewitter, Frost, Hitze und Starkregen mit Vorwarnung, amtliche Warnungen, Aktionen, Meldungen aufs Handy |
 | 10 | Garten & Bewässerung | In Entwicklung | Regen, PV-Überschuss und Zisterne |
-| 11 | Rauch- & Sicherheitsmelder | Vorabversion | Melder, Batteriestände und Alarme im Überblick, mit Meldung aufs Handy |
+| 11 | Rauch- & Sicherheitsmelder | Beta | Melder, Batterie, Grundriss zum Selberzeichnen, Wartung und Abfahrt-Prüfung |
 | 12 | Pool & Sauna | In Entwicklung | Überschuss, Strompreis und Außentemperatur |
 | 13 | Batteriespeicher-Planung | In Entwicklung | Betriebsarten, Ladestand-Grenzen, Zeitplan (Vorschau) |
 | 14 | Dynamischer Stromtarif | Beta | Stundenpreise, Preisverlauf, günstigste Zeiten |
@@ -602,7 +602,7 @@ Zeigt, ob es regnet, den aktuellen PV-Überschuss und einen Platz für den Ziste
 </details>
 
 <details>
-<summary><b>Modul 11: Rauch- &amp; Sicherheitsmelder</b> &nbsp;·&nbsp; Vorabversion</summary>
+<summary><b>Modul 11: Rauch- &amp; Sicherheitsmelder</b> &nbsp;·&nbsp; Beta</summary>
 
 <br>
 
@@ -612,6 +612,11 @@ Findet automatisch alle `binary_sensor` mit der Geräteklasse **Rauch, CO, Gas, 
 
 - **Alarm:** sofortige Meldung aufs Handy, deine Aktionen laufen einmal (Licht, Schalter, Ventil, Rollladen, Skript, Szene), auf Wunsch Erinnerungen (alle 10 Minuten) und eine Meldung bei Ende.
 - **Batterie** (Standard unter 20 %), **Erreichbarkeit** (Standard nach 60 Minuten) und **Prüf-Erinnerung** (alle 1, 3, 6 oder 12 Monate, Knopf „Geprüft“), jeweils mit Sperrzeit gegen Dauermeldungen.
+- **Grundriss mit Baukasten:** Räume und Wände aufziehen, Türen, Fenster und Treppen setzen, Melder darauf platzieren. Mehrere Etagen, auf Wunsch ein Foto deines Bauplans als Hintergrund. Bei Alarm leuchtet der Raum rot.
+- **Wartung und Nachweis:** Einbaudatum, Lebensdauer (zum Beispiel 10 Jahre), Prüfintervall je Melder, Batterie-Prognose, Einkaufsliste nach Batterie-Typ und ein Jahresprotokoll zum Ausdrucken oder als PDF.
+- **Melder und Batterie in den Einstellungen:** Melder werden automatisch gefunden oder von Hand hinzugefügt. Je Melder legst du Name, Etage, Raum, Batterie-Sensor, Batterie-Typ, Testknopf, Einbau, Lebensdauer und Prüfung fest.
+- **Abfahrt-Prüfung:** Fenster (auch aus Modul 1), Türen, Herd oder Garage wählen. Gehen alle Personen und ist noch etwas offen, kommt eine Meldung. Dazu Anwesenheit, Frost-Hinweis und Wasser-Hinweise. Kameras und Schlösser werden nur angezeigt, nie gesteuert.
+- **Ereignis-Zeitleiste, Ruhezeit** (nur Alarme kommen durch) und Erinnerung vor Ablauf der Lebensdauer.
 - **X-Sense:** Es gibt keine offizielle Home-Assistant-Integration. Mit einer inoffiziellen Community-Integration per HACS (zum Beispiel [Jarnsen/ha-xsense-component_test](https://github.com/Jarnsen/ha-xsense-component_test)) werden die Melder automatisch erkannt. Das läuft über die Cloud und kann nach Home-Assistant-Updates ausfallen. Die Melder alarmieren auch ohne Home Assistant weiter. Die Anleitung steht im Store.
 
 **Wichtig:** Das Modul ersetzt keine Alarmanlage und keinen Rauchmelder mit eigener Sirene.
@@ -774,7 +779,7 @@ Pro Raum:
 - **Tablet-Modus:** `tm_get` (Tablets ohne PIN-Prüfwert), `tm_hello` (`tid`, `name`, `kind`, `size`), `tm_set` (`tid`, `cfg`, `name`, bei vorhandener PIN `pin` oder Administrator), `tm_check` (`tid`, `pin`), `tm_pin` (`tid`, `pin`, `old`), `tm_reset` und `tm_del` (nur Administratoren). Die Daten liegen im Speicher `fenster_heizung_tablets`.
 - **Modul 17:** `mu_get` (Termine, Tonnen-Status, Monat, Kosten, Hinweise), `mu_set` (`cfg`, nur Administratoren), `mu_act` (`act` = `done`, `undo` oder `snooze`, mit `bin` bei `done` und `undo`), `mu_test` (Testmeldung, nur Administratoren). Anordnung der Karten: `set_layout` (`mu` mit `order` und `hidden`).
 - **Modul 16:** `sp_get` (Prognose, Stundenwerte, Verlauf, Abweichung) und `sp_set` (`cfg` mit `src` = `forecast` oder `sensor`, `fc_sensor`, `act`, `mode` = `day` oder `total`, nur Administratoren).
-- **Modul 11:** `sf_get`, `sf_set`, `sf_test`, `sf_tested`, `sf_press`.
+- **Modul 11:** `sf_get`, `sf_set`, `sf_test`, `sf_tested` (optional je Melder), `sf_press`.
 - **Modul 9:** `wx_get` (Einstellungen, Warnlage, Vorhersage, offene Fenster, Protokoll), `wx_set` (`cfg`, nur Administratoren), `wx_test` (Testmeldung, gibt `sent` zurück).
 - **Modul 8 (Wallbox):** `wb_get`, `wb_set` (`cfg` mit `ip`, `enabled`, `mode` = off/pv/minpv/now, `minA`, `maxA`, `ph`, `startW`, `onMin`, `offMin`, `limit`, `plan`, `planSoc`, `planTime`, `planDays`, `cap`, `batOn`, `batSoc`, `priceOn`, `priceMax`, `lock`, `reset`, `vehicles`, `guard`, `notify`, `planOn`, `planStrat`, `planSrc`, `pvSrc`, `baseW`), `wb_test`, `wb_quick` (`kind` = `h1`, `goal`, `sun` oder leer zum Stoppen), `wb_stats`, `wb_forecast`. Tibber: `tb_get`, `tb_test`, `tb_set` (`token`, `home`, `res` = `h`, `q`, `lvl`).
 - `set_presence` kennt zusätzlich `zone` (`lat`, `lon`, `r` in Metern, 30 bis 1000) und `people` (je `person.*`: `label`, `trackers`, `wifi`, `count`, `acc`).

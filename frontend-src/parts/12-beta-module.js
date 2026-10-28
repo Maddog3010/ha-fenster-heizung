@@ -169,7 +169,7 @@
       ${this._betaSoon("chart", "Morgen", "Preise des nächsten Tages, sobald sie veröffentlicht sind")}`;
   }
   /* Modul 11: Rauch- & Sicherheitsmelder (Alarme, Batterie, Erreichbarkeit, Prüf-Erinnerung, Aktionen und Meldungen laufen im Backend) */
-  _sfxDef() { return { kinds: ["smoke", "co", "gas", "water", "heat", "safety"], excl: [], repeat: 10, bat: { on: true, pct: 20 }, off: { on: true, min: 60 }, test: { on: true, months: 6 }, acts: [], notify: { alarm: true, end: false, bat: true, off: true, test: true, to: [] } }; }
+  _sfxDef() { return { kinds: ["smoke", "co", "gas", "water", "heat", "safety"], excl: [], repeat: 10, bat: { on: true, pct: 20 }, off: { on: true, min: 60 }, test: { on: true, months: 6 }, acts: [], notify: { alarm: true, end: false, bat: true, off: true, test: true, life: true, depart: true, to: [] }, meta: {}, add: [], plan: { floors: [{ id: "eg", n: "EG" }], items: [], bg: {} }, quiet: { on: false, from: "22:00", to: "07:00" }, lead: 30, depart: { on: true, ents: [], frost: { on: false, ent: "", below: 3 } }, proto: { name: "", addr: "", who: "" } }; }
   _sfxNames() { return { smoke: "Rauch", co: "CO", gas: "Gas", water: "Wasser", heat: "Hitze", safety: "Sicherheit" }; }
   _sfxKind() { return { smoke: ["Rauchmelder", "flame"], co: ["CO-Melder", "alert"], gas: ["Gasmelder", "flame"], water: ["Wassermelder", "drop"], heat: ["Hitzemelder", "thermo"], safety: ["Sicherheitsmelder", "shield"] }; }
   _sfxLoad(force) {
@@ -180,7 +180,7 @@
       .finally(() => { this._sfxBusy = false; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } });
   }
   _sfxVisible() { return !!(this._modal && this._modal.type === "sfset") || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }
-  _sfx() { const d = (this._sfxD && this._sfxD.d) || {}, df = this._sfxDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, bat: { ...df.bat, ...(c.bat || {}) }, off: { ...df.off, ...(c.off || {}) }, test: { ...df.test, ...(c.test || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, kinds: c.kinds || df.kinds, excl: c.excl || [], acts: c.acts || [] } }; }
+  _sfx() { const d = (this._sfxD && this._sfxD.d) || {}, df = this._sfxDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, bat: { ...df.bat, ...(c.bat || {}) }, off: { ...df.off, ...(c.off || {}) }, test: { ...df.test, ...(c.test || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, kinds: c.kinds || df.kinds, excl: c.excl || [], acts: c.acts || [], meta: c.meta || {}, add: c.add || [], plan: { floors: c.plan && c.plan.floors && c.plan.floors.length ? c.plan.floors : df.plan.floors, items: (c.plan && c.plan.items) || [], bg: (c.plan && c.plan.bg) || {} }, quiet: { ...df.quiet, ...(c.quiet || {}) }, lead: c.lead != null ? c.lead : df.lead, depart: { ...df.depart, ...(c.depart || {}), frost: { ...df.depart.frost, ...((c.depart || {}).frost || {}) } }, proto: { ...df.proto, ...(c.proto || {}) } } }; }
   _sfxSave(cfg) {
     const s = this._sfx(); this._sfxD = { d: { ...s, cfg }, ts: Date.now() };
     clearTimeout(this._sfxT);
@@ -194,9 +194,10 @@
   _sfxPatch(fn) { const c = JSON.parse(JSON.stringify(this._sfx().cfg)); fn(c); this._sfxSave(c); }
   _sfxAct(a, b) {
     const k = b.dataset.k, i = Number(b.dataset.i), s = Number(b.dataset.s);
+    if (this._sfxNew(a, b)) return;
     if (a === "sfxopen") { this._sfxLoad(true); this._modal = { type: "sfset" }; this._renderModal(); return; }
     if (a === "sfxtest") { this._hass.callWS({ type: "fenster_heizung/sf_test" }).then((r) => this._toast(r && r.sent ? `Test an ${r.sent} ${r.sent === 1 ? "Dienst" : "Diensten"} gesendet` : "Kein Benachrichtigungsdienst gewählt")).catch(() => this._toast("Test fehlgeschlagen")); return; }
-    if (a === "sfxtested") { this._hass.callWS({ type: "fenster_heizung/sf_tested" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; this._render(); this._toast("Melder als geprüft eingetragen"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
+    if (a === "sfxtested") { this._hass.callWS({ type: "fenster_heizung/sf_tested", ent: k || undefined }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; this._render(); this._toast("Melder als geprüft eingetragen"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
     if (a === "sfxpress") { this._hass.callWS({ type: "fenster_heizung/sf_press", ent: k }).then((r) => { this._toast(r && r.ok ? "Test am Melder ausgelöst" : "Der Melder hat keinen Testknopf"); this._sfxLoad(true); }).catch(() => this._toast("Test fehlgeschlagen")); return; }
     if (a === "sfxgoig") { this._modal = null; this._renderModal(); this._sto = { q: "", c: "sicherheit" }; this._igOpen = true; this._render(); return; }
     this._sfxPatch((c) => {
@@ -218,6 +219,7 @@
   }
   _sfxChange(t) {
     const f = t.dataset.f, v = t.value || "";
+    if (this._sfxNewChange(t)) return true;
     if (f === "sfxadd") { if (v) this._sfxPatch((c) => { if (c.acts.length < 12) c.acts.push({ id: "a" + Date.now().toString(36), kind: "smoke", ent: v, do: this._sfxDo(v)[0][0] }); }); return true; }
     if (f === "sfxent") { this._sfxPatch((c) => { const x = c.acts[Number(t.dataset.i)]; if (x && v) x.ent = v; }); return true; }
     return false;
@@ -234,35 +236,6 @@
   }
   _sfList() { const S = this._sfx(); return !S.error && S.det ? S.det : this._sfxLocal(); }
   _sfAgo(iso) { const t = iso ? new Date(iso).getTime() : NaN; if (!isFinite(t)) return ""; const m = Math.max(0, Math.round((Date.now() - t) / 60000)); return m < 1 ? "gerade eben" : m < 60 ? `vor ${m} Min.` : m < 1440 ? `vor ${Math.round(m / 60)} Std.` : `vor ${Math.round(m / 1440)} Tagen`; }
-  _sfPage() {
-    this._sfxLoad();
-    const S = this._sfx(), C = S.cfg, adm = this._admin(), live = !S.error && !!S.det, l = this._sfList(), KN = this._sfxKind();
-    const al = l.filter((x) => x.alarm), low = l.filter((x) => x.bat != null && x.bat < C.bat.pct), off = l.filter((x) => x.off), tst = S.test || {};
-    const bad = al.length ? "alarm" : low.length || off.length || tst.due ? "warn" : "ok";
-    const msg = !l.length ? ["Noch keine Melder gefunden", "Melder aus Home Assistant erscheinen hier automatisch, zum Beispiel von X-Sense, Zigbee, Z-Wave oder Homematic."]
-      : al.length ? [`${al.length} ${al.length === 1 ? "Alarm" : "Alarme"} aktiv`, al.map((x) => x.name + (x.area ? " (" + x.area + ")" : "")).join(", ")]
-        : bad === "warn" ? ["Alles ruhig, aber es gibt Hinweise", [low.length ? `${low.length} ${low.length === 1 ? "Batterie ist" : "Batterien sind"} schwach` : "", off.length ? `${off.length} nicht erreichbar` : "", tst.due ? "Prüfung fällig" : ""].filter(Boolean).join(" · ")]
-          : ["Alles in Ordnung", `${l.length} ${l.length === 1 ? "Melder meldet" : "Melder melden"} keinen Alarm, alle erreichbar und mit guter Batterie`];
-    const hero = `<div class="card hero mh a-sf sfh ${bad}">${this._modLogo("sf")}<div class="lbl">${ic("shield", 16)}Sicherheit im Haus</div><div class="big">${esc(msg[0])}</div><div class="sub">${esc(msg[1])}</div>
-      <div class="chips"><span class="chip">${ic("shield", 16)}${l.length} ${l.length === 1 ? "Melder" : "Melder"}</span>${low.length ? `<span class="chip st warn">${ic("alert", 16)}${low.length} Batterie schwach</span>` : ""}${off.length ? `<span class="chip st warn">${ic("alert", 16)}${off.length} nicht erreichbar</span>` : ""}${tst.due ? `<span class="chip st warn">${ic("clock", 16)}Prüfung fällig</span>` : ""}${C.notify.to.length ? `<span class="chip">${ic("bell", 16)}Meldung an ${C.notify.to.length} ${C.notify.to.length === 1 ? "Dienst" : "Dienste"}</span>` : `<span class="chip">${ic("bell", 16)}Keine Meldung eingerichtet</span>`}</div></div>`;
-    const tiles = `<div class="tiles">${[
-      ["shield", "Melder", String(l.length), "", "#2dd4bf", "In Home Assistant gefunden"],
-      ["alert", "Alarme", String(al.length), "", al.length ? "#ef4444" : "#34d399", al.length ? "Sofort prüfen" : "Keine aktiv"],
-      ["energy", "Batterie schwach", String(low.length), "", low.length ? "#f59e0b" : "#34d399", low.length ? `Unter ${C.bat.pct} %` : `Alle über ${C.bat.pct} %`],
-      ["info", "Nicht erreichbar", String(off.length), "", off.length ? "#f59e0b" : "#34d399", off.length ? "Prüfen" : "Alle melden sich"],
-    ].map(([ico, lab, v, u, c, sub]) => `<div class="tile" style="--a:${c}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}<small>${u}</small></div><div class="g">${sub}</div></div>`).join("")}</div>`;
-    const card = (x) => { const st = x.alarm ? ["alarm", "ALARM"] : x.off ? ["off", "Nicht erreichbar"] : ["ok", "In Ordnung"], bt = x.bat != null ? Math.max(0, Math.min(100, x.bat)) : null, bc = bt == null ? "" : bt < C.bat.pct ? "#f87171" : bt < 40 ? "#f59e0b" : "#34d399";
-      return `<div class="sfd ${st[0]}"><div class="sfdh"><span class="sfdi">${ic(KN[x.k][1], 20)}</span><div class="sfdt"><b>${esc(x.name)}</b><small>${esc(x.kind)}${x.area ? " · " + esc(x.area) : ""}${x.src === "xsense" ? " · X-Sense" : ""}</small></div><span class="sfs ${st[0]}">${st[1]}</span></div>
-        <div class="sfb">${bt != null ? `<div class="sfbar"><i style="width:${bt}%;background:${bc}"></i></div><span>${ic("energy", 13)} Batterie ${num(bt, 0)} %${bt < C.bat.pct ? " · schwach" : ""}</span>` : `<span class="mut">Batterie unbekannt</span>`}${x.alarm && x.since ? `<span class="sfsince">seit ${esc(this._sfAgo(x.since))}</span>` : ""}${adm && x.test ? `<button class="lnk" data-act="sfxpress" data-k="${esc(x.id)}">${ic("bell", 14)}Testen</button>` : ""}</div></div>`; };
-    const list = l.length ? `<div class="card sfc"><h2>${ic("bell", 18)}Melder<small class="mut">${l.length}</small></h2><div class="sfg">${l.map(card).join("")}</div></div>` : "";
-    const E = this._hass.entities || {}, anyXs = !!(S.xs && S.xs.found) || Object.keys(E).some((k) => (E[k] || {}).platform === "xsense");
-    const empty = !l.length ? `<div class="card sfc"><h2>${ic("puzzle", 18)}Melder verbinden</h2><div class="mut sm" style="margin:0 0 10px">Das Modul liest Melder mit der Geräteklasse Rauch, CO, Gas, Wasser, Hitze oder Sicherheit. ${anyXs ? "X-Sense ist verbunden, hat aber noch keine Melder geliefert." : "Für X-Sense, Zigbee, Z-Wave und Homematic gibt es unter Einstellungen → Integrationen eine Anleitung."}</div>${adm ? `<button class="btn2 pri" data-act="sfxgoig" style="flex:none;padding:10px 18px">${ic("puzzle", 16)} Integrationen öffnen</button>` : ""}</div>` : "";
-    const testC = `<div class="card sfc"><h2>${ic("clock", 18)}Prüfung</h2>
-      <div class="dgs ${tst.due ? "warn" : "ok"}">${ic(tst.due ? "alert" : "check", 22)}<div><b>${!C.test.on ? "Erinnerung ausgeschaltet" : tst.due ? "Prüfung fällig" : tst.last ? "Zuletzt geprüft " + esc(this._sfAgo(tst.last)) : "Noch nicht geprüft"}</b><span>${C.test.on ? `Alle ${C.test.months} ${C.test.months === 1 ? "Monat" : "Monate"} Testknopf an jedem Melder drücken. ${tst.last ? "" : "Die Frist läuft ab dem ersten Start des Moduls."}` : "Du bekommst keine Erinnerung an den Melder-Test."}</span></div><span></span></div>
-      ${adm && l.length ? `<div class="foot2" style="margin-top:10px"><button class="btn2 pri" data-act="sfxtested">${ic("check", 16)} Geprüft</button></div>` : ""}</div>`;
-    const log = (S.log || []).length ? `<div class="card sfc"><h2>${ic("list", 18)}Protokoll</h2><div class="wxlog">${S.log.slice(0, 8).map((x) => `<div><time>${new Date(x.t).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</time><span>${esc(x.x)}</span></div>`).join("")}</div></div>` : `<div class="card sfc"><h2>${ic("list", 18)}Protokoll</h2><div class="mut sm">Noch keine Ereignisse. Alarme, schwache Batterien und Prüfungen erscheinen hier.</div></div>`;
-    return `${this._betaBox("Das Modul liest vorhandene Melder und meldet Alarme aufs Handy. Es ersetzt keine zertifizierten Rauchmelder oder Alarmanlage.")}${hero}${l.length ? tiles : ""}${empty}${list}<div class="enc"><div class="enco">${testC}</div><div class="enco">${log}</div></div>`;
-  }
   _sfxModal() {
     const S = this._sfx(), C = S.cfg, H = this._hass, NM = this._sfxNames(), KN = this._sfxKind();
     const sw = (act, k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" aria-label="${label}"></button>`;
@@ -293,7 +266,7 @@
       <div class="vrow"><span>Regelmäßig an den Test erinnern<small class="mut" style="display:block">Du drückst den Testknopf und tippst danach auf „Geprüft“.</small></span>${sw("sfxtst", "", C.test.on, "Prüf-Erinnerung")}</div>
       ${C.test.on ? `<div class="gschips">${[[1, "Monatlich"], [3, "Alle 3 Monate"], [6, "Alle 6 Monate"], [12, "Jährlich"]].map(([k, t]) => chip("sfxtstm", k, t, C.test.months === k)).join("")}</div>` : ""}
       <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Benachrichtigung</div>
-      ${[["alarm", "Alarm"], ["end", "Alarm beendet"], ["bat", "Batterie schwach"], ["off", "Nicht erreichbar"], ["test", "Prüfung fällig"]].map(([k, t]) => `<div class="vrow"><span>${t}</span>${sw("sfxn", k, C.notify[k], t)}</div>`).join("")}
+      ${[["alarm", "Alarm"], ["end", "Alarm beendet"], ["bat", "Batterie schwach"], ["off", "Nicht erreichbar"], ["test", "Prüfung fällig"], ["life", "Austausch fällig"], ["depart", "Abfahrt-Prüfung"]].map(([k, t]) => `<div class="vrow"><span>${t}</span>${sw("sfxn", k, C.notify[k], t)}</div>`).join("")}
       <div class="lsec" style="margin-top:8px">${ic("bell", 15)}Senden an</div>
       ${svc.length ? `<div class="gschips">${svc.map((n) => chip("sfxns", esc(n), esc(n), C.notify.to.includes(n))).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="sfxtest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
