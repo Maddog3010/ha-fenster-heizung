@@ -2995,10 +2995,8 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sxsum"><div><b>${act.length}</b><span>${act.length === 1 ? "Modul aktiv" : "Module aktiv"}</span></div><div><b>${this._collect().length}</b><span>Räume</span></div><div><b>${this._ortPersons().length}</b><span>Personen</span></div><div><b>${this._ver ? esc(this._ver) : "–"}</b><span>Version</span></div></div>
         ${grp("tools", "Allgemein", "Einrichtung und Verbindungen", `<div class="card sxl">
           ${row("tools", "Einrichtungsassistent", "Räume, Ventile und Fenster zuordnen", "wz")}
-          ${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen", "", this._igChip())}
-          ${row("sliders", "Store anzeigen", "Symbol im Kopf und Tab in der Modul-Leiste ein- oder ausblenden", "stoset", "", `<em class="sxc ${this._stoCfg().icon || this._stoCfg().tab ? "ok" : "off"}">${this._stoCfg().icon && this._stoCfg().tab ? "Symbol + Tab" : this._stoCfg().icon ? "Symbol" : this._stoCfg().tab ? "Tab" : "Aus"}</em>`)}
+          ${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen")}
           ${row("flask", "Labs", "Experimentelle Funktionen ansehen und einschalten", "labopen", "", `<em class="sxc ${this._labCount() ? "ok" : "off"}">${this._labCount() ? this._labCount() + " an" : "Aus"}</em>`)}
-          ${row("sliders", "Labs anzeigen", "Symbol im Kopf und Tab in der Modul-Leiste ein- oder ausblenden", "labset", "", "")}
           ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
           ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}</div>`)}
         ${grp("layers", "Meine Module", `${act.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${mods}${ext}</div>`)}
@@ -3301,6 +3299,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Store</b><span><em class="tag">Integrationen und Dienste</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
         <button class="pillbtn" data-act="mdmgr" aria-label="Module verwalten">${ic("layers", 16)}<span class="bl">Module</span></button>
+        <button class="pillbtn" data-act="stoset" aria-label="Store anzeigen">${ic("sliders", 16)}<span class="bl">Anzeige</span></button>
         <button class="pillbtn pri" data-act="igback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw stow">
         <label class="stosr"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input class="stoq" type="search" data-f="stoq" value="${esc(st.q)}" placeholder="Suchen, z. B. Tibber, Rauchmelder, Wetter" aria-label="Suchen" autocomplete="off" spellcheck="false"></label>

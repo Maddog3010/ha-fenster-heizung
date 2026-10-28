@@ -2,6 +2,10 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.8] - 2026-10-28
+### Geändert
+- **Einstellungen aufgeräumt:** Die Zeilen „Store anzeigen“ und „Labs anzeigen“ sind entfallen. Symbol und Tab blendest du jetzt über den Knopf **Anzeige** auf der Store-Seite bzw. der Labs-Seite ein oder aus. Bei „Store & Integrationen“ steht kein Statusfeld („go-e verbunden“) mehr, bei „Labs“ bleibt die Anzahl eingeschalteter Labs.
+
 ## [3.0.2.7] - 2026-10-28
 ### Neu
 - **Labs (experimentelle Funktionen):** Eigene Seite mit Karten, Schalter, Filter nach Modul und einer Infoseite je Funktion (Was du bekommst, So wird gerechnet, Voraussetzungen, Einstellungen). Erreichbar über ein **Kolben-Symbol im Kopf** (mit Zähler), einen **Tab „Labs“** in der Modul-Leiste und Einstellungen → Allgemein → „Labs“. Symbol und Tab lassen sich unter „Labs anzeigen“ einzeln ausblenden. Die Auswahl gilt für alle Nutzer.

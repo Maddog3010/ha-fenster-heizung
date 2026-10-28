@@ -5,7 +5,7 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.7-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.8-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Ein Dashboard für Heizung, Strom und Haus in Home Assistant.**
@@ -13,8 +13,9 @@
 
 <p align="center"><img src="docs/vorschau_desktop.png" width="760" alt="Dashboard auf dem Desktop"></p>
 
-## Neu in 3.0.2.7
-- **Labs:** experimentelle Funktionen zum Ausprobieren, mit eigener Seite, Infoseite je Funktion und klarer Kennzeichnung im Modul. Ausgeschaltet verschwinden sie wieder. Die ersten vier zeigen nur etwas an: Bester Lüftungszeitpunkt, Autarkie-Prognose, Wäsche-Wetter und Lernfaktor für die Prognose. [Mehr zu Labs](#labs-experimentelle-funktionen)
+## Neu in 3.0.2.8
+- **Einstellungen aufgeräumt:** „Store anzeigen“ und „Labs anzeigen“ sind jetzt der Knopf **Anzeige** direkt auf der Store- und der Labs-Seite. Das Feld „go-e verbunden“ bei „Store & Integrationen“ entfällt.
+- **Labs:** (seit 3.0.2.7) experimentelle Funktionen zum Ausprobieren, mit eigener Seite, Infoseite je Funktion und klarer Kennzeichnung im Modul. Ausgeschaltet verschwinden sie wieder. Die ersten vier zeigen nur etwas an: Bester Lüftungszeitpunkt, Autarkie-Prognose, Wäsche-Wetter und Lernfaktor für die Prognose. [Mehr zu Labs](#labs-experimentelle-funktionen)
 - Davor: Modul 16 „Solar-Prognose“, Kennzeichnung der Module in vier Stufen, Store für Integrationen, Herstellerprofile für Thermostate, Module 9 und 11, überarbeitetes Modul 8, neue Optik für Modul 1 bis 4.
 
 Alle Änderungen stehen im [Changelog](CHANGELOG.md).
@@ -92,7 +93,7 @@ Die Module 2 bis 4 sind ab Werk an, alle weiteren Module aus. Eingeschaltet und 
 Der Knopf **Einstellungen** oben rechts öffnet in jedem Modul dieselbe Seite:
 
 - **Übersicht** mit aktiven Modulen, Räumen, Personen und Version
-- **Allgemein:** Einrichtungsassistent, Integrationen, Store anzeigen, Labs, Labs anzeigen, Personen & Standort, Darstellung
+- **Allgemein:** Einrichtungsassistent, Store & Integrationen, Labs, Personen & Standort, Darstellung
 - **Meine Module:** nur eingeschaltete Module, mit Stufe und Status
 - **Weitere Module:** ausgeschaltete Module als kleine Felder, ein Tipp schaltet ein
 - **System:** Sichern & Wiederherstellen, Diagnose, Module verwalten
@@ -102,7 +103,7 @@ Unter **Module verwalten** schaltest du jedes Modul ein oder aus (Modul 1 ist im
 ### Store (Integrationen)
 Der Store zeigt Dienste, die zu deinen Modulen passen (go-e, Tibber, Wetter und Warnungen, Melder, Thermostate), erkennt, was in Home Assistant schon läuft, und führt durch die Einrichtung. Er hat Suche, Kategorien, Detailseiten mit „Was du bekommst“ und „So geht es“ sowie einen Zähler für fehlende Dienste.
 
-Du öffnest ihn über das **Store-Symbol im Kopf**, den **Tab „Store“** in der Modul-Leiste oder Einstellungen → Allgemein. Symbol und Tab lassen sich unter „Store anzeigen“ einzeln ausblenden.
+Du öffnest ihn über das **Store-Symbol im Kopf**, den **Tab „Store“** in der Modul-Leiste oder Einstellungen → Allgemein. Symbol und Tab lassen sich über den Knopf „Anzeige“ auf der Store-Seite einzeln ausblenden.
 
 ## Labs: experimentelle Funktionen
 Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt sind. Du schaltest sie einzeln ein, sie erscheinen im passenden Modul und sind nach dem Ausschalten dort wieder weg. Alle Labs der ersten Runde **zeigen nur etwas an und schalten nichts**.
@@ -110,7 +111,7 @@ Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt 
 <p align="center"><img src="docs/vorschau_labs.png" width="460" alt="Labs-Seite"> <img src="docs/vorschau_labs_info.png" width="460" alt="Infoseite einer Funktion"></p>
 
 - **Labs-Seite:** Karten mit Schalter, Stand (Idee, Früh, Test) und Modul, Filter nach Modul oder „Eingeschaltet“, „Alle Labs aus“. Ein Tipp auf die Karte öffnet wie im Store eine Infoseite mit „Was du bekommst“, „So wird gerechnet“, Voraussetzungen (erfüllt oder fehlt) und den Einstellungen der Funktion.
-- **Zugang:** Kolben-Symbol im Kopf (mit Zähler eingeschalteter Labs), Tab „Labs“ in der Modul-Leiste und Einstellungen → Allgemein → „Labs“. Symbol und Tab blendest du unter „Labs anzeigen“ einzeln aus, die Seite bleibt über die Einstellungen immer erreichbar. Die Auswahl gilt für alle Nutzer, nur Administratoren schalten um.
+- **Zugang:** Kolben-Symbol im Kopf (mit Zähler eingeschalteter Labs), Tab „Labs“ in der Modul-Leiste und Einstellungen → Allgemein → „Labs“. Symbol und Tab blendest du über den Knopf „Anzeige“ auf der Labs-Seite einzeln aus, die Seite bleibt über die Einstellungen immer erreichbar. Die Auswahl gilt für alle Nutzer, nur Administratoren schalten um.
 - **Kennzeichnung:** Im Modul sitzt die Funktion als Karte mit gestricheltem violettem Rand, dem Zeichen „Labs“ und dem Hinweis „Nur Anzeige“. Einstellungsfelder von Labs haben einen violetten Streifen und dasselbe Zeichen. Im Kopf des Moduls steht „n Labs aktiv“.
 - **Ausschalten:** Karte und Felder verschwinden aus dem Modul, die eingestellten Werte bleiben gespeichert.
 
@@ -437,7 +438,7 @@ Unter **System → Diagnose** siehst du, ob alle Geräte der Regelung melden: St
 Unter **System → Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit Räumen, Heizplänen, Anwesenheit (mit Home-Zone und Personen), Aussehen, allgemeinen Einstellungen und den Einstellungen der Module 2 bis 4 und 8. Beim Einlesen siehst du zuerst eine Zusammenfassung, erst „Wiederherstellen“ ersetzt die aktuellen Einstellungen.
 
 ### Update-Hinweis
-Administratoren sehen oben ein Banner, wenn auf GitHub eine neuere Version veröffentlicht wurde. Maßgeblich ist die höchste Version unter allen Releases und Tags, auch mit vier Teilen (zum Beispiel `3.0.2.7`). Die Prüfung fragt höchstens einmal pro Stunde ab und lässt sich unter **Allgemein → Updates** ausschalten.
+Administratoren sehen oben ein Banner, wenn auf GitHub eine neuere Version veröffentlicht wurde. Maßgeblich ist die höchste Version unter allen Releases und Tags, auch mit vier Teilen (zum Beispiel `3.0.2.8`). Die Prüfung fragt höchstens einmal pro Stunde ab und lässt sich unter **Allgemein → Updates** ausschalten.
 
 ## Entitäten
 Pro Raum:
@@ -467,7 +468,7 @@ Pro Raum:
 - Die Module 5, 6, 7, 10, 12, 13, 15 speichern im Backend nur den Schalter `on.<kürzel>` (Standard `false`).
 - Der Bericht braucht Verlaufsdaten im Recorder.
 
-**Neue Version veröffentlichen:** `version` in `custom_components/fenster_heizung/manifest.json` erhöhen, auf GitHub ein Release mit passendem Tag (zum Beispiel `v3.0.2.7`) erstellen und kurze Aufzählungspunkte in die Beschreibung schreiben. Sie erscheinen im Update-Hinweis des Dashboards. HACS zeigt das Update an.
+**Neue Version veröffentlichen:** `version` in `custom_components/fenster_heizung/manifest.json` erhöhen, auf GitHub ein Release mit passendem Tag (zum Beispiel `v3.0.2.8`) erstellen und kurze Aufzählungspunkte in die Beschreibung schreiben. Sie erscheinen im Update-Hinweis des Dashboards. HACS zeigt das Update an.
 </details>
 
 ## Wichtige Hinweise
