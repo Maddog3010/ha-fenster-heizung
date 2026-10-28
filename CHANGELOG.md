@@ -2,6 +2,10 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.5.3] - 2026-10-28
+### Behoben
+- **Einstellungen ließen sich nicht öffnen**, sobald das Lab „Tags & Karten“ eingeschaltet war (Fehler „Can't find variable adm“, seit 3.0.4). Ohne dieses Lab trat der Fehler nicht auf.
+
 ## [3.0.5.2] - 2026-10-28
 ### Geändert
 - **Fehlersuche für Knöpfe, die nicht reagieren:** Wirft eine Aktion oder das Zeichnen der Seite einen Fehler, erscheint jetzt eine Meldung mit dem Fehlertext (und einer Zeile in der Konsole), statt dass nichts passiert.

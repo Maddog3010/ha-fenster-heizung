@@ -65,7 +65,7 @@
     return this._fhOpen;
   }
   _stRender() {
-    const sr = this.shadowRoot, s = this._mdState();
+    const sr = this.shadowRoot, s = this._mdState(), adm = this._admin();
     const row = (icn, ttl, txt, act, k, extra) => `<button class="sxrow" data-act="${act}"${k ? ` data-k="${k}"` : ""}><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}</b><small>${txt}</small></span>${extra || ""}<span class="sxg">${ic("chev", 16)}</span></button>`;
     const isOn = (m) => m.id === "fh" || (m.id === "ww" ? s.on.ww : m.beta ? s.on[m.id] === true && (!m.sponsor || this._spnS().active) : m.id === "gs" ? s.on.gs !== false : this._enOn());
     const act = MODS.filter(isOn), off = MODS.filter((m) => !isOn(m));
