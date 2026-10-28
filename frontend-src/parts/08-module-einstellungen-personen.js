@@ -89,6 +89,7 @@
           ${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen")}
           ${row("flask", "Labs", "Experimentelle Funktionen ansehen und einschalten", "labopen", "", `<em class="sxc ${this._labCount() ? "ok" : "off"}">${this._labCount() ? this._labCount() + " an" : "Aus"}</em>`)}
           ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
+          ${this._labOn("tg") && adm ? row("nfc", "Tags &amp; Karten", "RFID-Karten und NFC-Sticker anlernen und zuordnen", "tgxopen") : ""}
           ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}
           ${this._spnRow()}</div>`)}
         ${grp("layers", "Meine Module", `${act.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${mods}${ext}</div>`)}

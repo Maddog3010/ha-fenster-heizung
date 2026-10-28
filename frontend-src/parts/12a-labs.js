@@ -93,6 +93,13 @@
         needs: () => [["Lampen in Home Assistant (light.*)", Object.keys(this._hass.states).some((k) => k.startsWith("light."))], ["Räume (Bereiche) für die Lampen (optional)", Object.values(this._hass.entities || {}).some((e) => e && e.entity_id && e.entity_id.startsWith("light.") && (e.area_id || e.device_id))]],
         after: "Ausgeschaltet verschwindet Modul 18. Es wird nichts mehr geschaltet, die Einstellungen (verknüpfte Szenen, Räume) bleiben gespeichert. Eingeschaltete Lampen bleiben, wie sie sind.",
         f: [] },
+      { id: "tg", k: "g", mid: "tg", mod: "Übergreifend", mn: "Tags & Karten", n: "Tags & Karten", st: "Früh", i: "nfc", early: "2026-11-11",
+        d: "RFID-Karten und NFC-Sticker lösen feste Aktionen aus, zum Beispiel Abwesend, Warmwasser-Boost oder Licht aus.",
+        feats: ["Karten oder Sticker anlernen: einmal an einen Leser halten, fertig", "Jeder Tag führt genau eine Aktion aus einer festen Liste aus, auch „Person ist zu Hause/unterwegs“", "Optional nur für bestimmte Personen und nur in einem Zeitfenster", "Rückmeldung per Handy-Nachricht, Ansage oder blinkendem Licht, dazu ein Protokoll"],
+        how: ["Home Assistant meldet jeden Scan als Ereignis. Die Integration prüft die Kennung, Person und Zeit und führt dann die gewählte Aktion aus.", "Es gibt keine freien Dienstaufrufe, keine Alarm- und keine Türaktionen, weil sich Karten kopieren lassen.", "Doppelte Scans innerhalb von 3 Sekunden zählen einmal."],
+        needs: () => [["Ein Leser, der Tags an Home Assistant meldet (Handy mit NFC, ESPHome PN532/RC522)", true]],
+        after: "Ausgeschaltet reagiert kein Tag mehr. Die angelernten Tags bleiben gespeichert.",
+        f: [] },
     ];
   }
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
@@ -261,7 +268,7 @@
       ${nd.length ? `<div class="lsec">${ic("info", 15)}Voraussetzungen</div><ul class="stoul">${nd.map(([t, ok]) => `<li>${ok ? "✓" : "✗"} ${esc(t)}</li>`).join("")}</ul>` : ""}
       ${x.f.length ? `<div class="lsec">${ic("sliders", 15)}Einstellungen dieser Funktion</div>${x.f.map((f) => this._labField(esc(f[1]), esc(f[2]), this._labStep(f, adm))).join("")}` : ""}
       <div class="stowarn ${x.k === "g" ? "dng" : ""}">${ic("alert", 16)}<span>${x.k === "g" ? `<b>Diese Funktion greift in Geräte ein.</b> Du bestätigst das vor dem Einschalten. Ausgeschaltet schaltet sie nichts mehr. Fenster auf, Abwesend und die Sicherheitsgrenzen der Module haben weiter Vorrang.` : `Labs sind Experimente. Diese Funktion zeigt nur etwas an und schaltet nichts.`} ${x.after ? esc(x.after) : `Ausgeschaltet verschwindet sie aus ${esc(x.mod)}, die Einstellungen bleiben gespeichert.`}</span></div>
-      <div class="foot2" style="margin-top:12px"><a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
+      <div class="foot2" style="margin-top:12px">${x.id === "tg" && on && adm ? `<button class="btn2" data-act="tgxopen">Tags verwalten</button>` : ""}<a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
   }
   _labOkModal(id) {
     const x = this._labCat().find((y) => y.id === id); if (!x) return "";

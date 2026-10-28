@@ -1,4 +1,6 @@
 {
+  "domain": "fenster_heizung",
+  "name": "Strom & Wärme",
   "codeowners": [
     "@Maddog3010"
   ],
@@ -10,11 +12,9 @@
     "websocket_api"
   ],
   "documentation": "https://github.com/Maddog3010/ha-fenster-heizung",
-  "domain": "fenster_heizung",
   "integration_type": "service",
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/Maddog3010/ha-fenster-heizung/issues",
-  "name": "Strom & Wärme",
   "requirements": [],
-  "version": "3.0.3.1"
+  "version": "3.0.4"
 }

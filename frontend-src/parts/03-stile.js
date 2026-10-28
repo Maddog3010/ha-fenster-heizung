@@ -750,6 +750,10 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .labtease>div{flex:1;min-width:200px;color:var(--primary-text-color)}.labtease b{display:block}.labtease span{display:block;font-size:.84rem;color:var(--mut)}
 .risk.vab{color:#e07aa6;border-color:color-mix(in srgb,#e07aa6 55%,transparent);background:color-mix(in srgb,#e07aa6 10%,transparent)}
 .lixgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:start;margin-top:14px}
+.tgxrow{display:flex;align-items:center;gap:6px;padding-right:12px}.tgxrow+.tgxrow{border-top:1px solid var(--line)}.tgxrow .sxrow{flex:1;min-width:0}.tgxl{border:1px solid var(--line);border-radius:14px;margin:8px 0;overflow:hidden}
+.tgxscan{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;border:1px dashed color-mix(in srgb,var(--teal) 60%,transparent);border-radius:14px;padding:16px;margin:8px 0;background:color-mix(in srgb,var(--teal) 7%,transparent)}.tgxscan.found{border-style:solid}
+.tgxpulse{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--teal);background:color-mix(in srgb,var(--teal) 18%,transparent);animation:tgxp 1.6s ease-in-out infinite}@keyframes tgxp{50%{box-shadow:0 0 0 12px color-mix(in srgb,var(--teal) 0%,transparent);transform:scale(1.06)}}@media(prefers-reduced-motion:reduce){.tgxpulse{animation:none}}
+.tgxlog{display:flex;flex-direction:column;font-size:.8rem}.tgxlog>div{display:flex;flex-wrap:wrap;gap:2px 10px;padding:6px 0;border-top:1px solid var(--line)}
 .lixroom.on{border-color:color-mix(in srgb,#fbbf24 55%,transparent);background:color-mix(in srgb,#fbbf24 7%,var(--card))}
 .lixhd{display:flex;align-items:center;gap:10px}.lixico{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:var(--mut);flex:none}
 .lixroom.on .lixico{background:color-mix(in srgb,#fbbf24 22%,transparent);color:#fbbf24}

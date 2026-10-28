@@ -160,6 +160,7 @@ class PresenceManager:
         self.hass = hass
         self._store = Store(hass, 1, f"{DOMAIN}_presence")
         self.data: dict[str, Any] = clean_presence({})
+        self.override: dict[str, tuple[bool, datetime, datetime]] = {}  # Person -> (zu Hause?, seit, bis), zum Beispiel per Tag
         self._unsub: CALLBACK_TYPE | None = None
 
     async def async_start(self) -> None:
@@ -193,14 +194,27 @@ class PresenceManager:
         d = self.data
         ids = d["persons"] or list(self.hass.states.async_entity_ids("person"))
         out = []
+        now = dt_util.now()
         for pid in ids:
             cfg = d["people"].get(pid)
             if cfg is not None and not cfg["count"]:
                 continue
             home, last = person_home(self.hass.states.get, pid, cfg, d["zone"])
+            ov = self.override.get(pid)
+            if ov and now < ov[2]:
+                home, last = ov[0], ov[1]
             if home is not None:
                 out.append((home, last))
         return out
+
+    async def async_person(self, pid: str, home: bool, hours: int = 12) -> bool:
+        """Eine Person von Hand auf „zu Hause“ oder „unterwegs“ setzen (zum Beispiel mit einem Tag), gilt höchstens einige Stunden."""
+        if not isinstance(pid, str) or not pid.startswith("person."):
+            return False
+        now = dt_util.now()
+        self.override[pid] = (bool(home), now, now + timedelta(hours=max(1, min(24, int(hours)))))
+        await self._tick(now)
+        return True
 
     async def _tick(self, now: datetime) -> None:
         p, changed = self.data, False

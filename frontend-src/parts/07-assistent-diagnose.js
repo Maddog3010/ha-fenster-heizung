@@ -368,6 +368,7 @@
     if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lixset", "lixdet", "lixoff"].includes(m.type)) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

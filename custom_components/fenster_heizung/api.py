@@ -212,7 +212,7 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
 MU_BLOCKS = {"tonnen", "next", "cal", "rem", "hint", "cost"}
 ST_BLOCKS = {"zuhause", "wetter", "personen", "hinweise", "alarm", "energie", "muell"}
 ST_BUBBLES = {"wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell", "warmwasser", "preis", "hinweise"}
-LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm", "sb", "li"}
+LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm", "sb", "li", "tg"}
 LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "lf_days", "vh_dk", "vh_max", "dz_days", "dz_lead", "ld_wait", "ld_min", "lk_hi", "lk_dur"}
 
 
@@ -764,6 +764,44 @@ async def ws_mu_test(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], await mgr.async_test())
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tg_get"})
+@websocket_api.async_response
+async def ws_tg_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("tags")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Tags & Karten ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], mgr.snapshot())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tg_set", vol.Required("cfg"): dict})
+@websocket_api.async_response
+async def ws_tg_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("tags")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Tags & Karten ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.async_set(msg["cfg"]))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tg_act", vol.Required("act"): vol.In(["learn", "stop", "test", "forget"]), vol.Optional("tid"): str})
+@websocket_api.async_response
+async def ws_tg_act(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("tags")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Tags & Karten ist noch nicht bereit")
+        return
+    act, tid = msg["act"], str(msg.get("tid") or "")
+    if act == "test":
+        connection.send_result(msg["id"], await mgr.async_test(tid))
+    elif act == "forget":
+        connection.send_result(msg["id"], mgr.async_clear_unknown(tid))
+    else:
+        connection.send_result(msg["id"], mgr.async_learn(act == "learn"))
+
+
 @websocket_api.require_admin
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wx_test"})
 @websocket_api.async_response
@@ -1062,7 +1100,7 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
-        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test,
+        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del,
         ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
     ):

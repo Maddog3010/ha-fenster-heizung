@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.4] - 2026-10-28
+### Neu
+- **Lab „Tags & Karten“ (Vorabversion bis 11.11.):** RFID-Karten und NFC-Sticker lösen feste Aktionen aus. Anlernen: „Tag anlernen“ tippen, Karte an einen Leser halten (Handy mit NFC, ESPHome PN532/RC522 oder jeder Leser, der in Home Assistant Tags meldet), Aktion wählen.
+  - **Feste Aktionsliste, keine freien Dienstaufrufe:** Anwesenheit (Zu Hause, Abwesend, Urlaub 1 bis 21 Tage, „Person ist zu Hause/unterwegs“), Fensterregelung und Heizplan an/aus, Warmwasser (Boost, Zirkulation, Abwesend), Elektroauto (1 Stunde, bis Ziel, mit Sonne, Stopp), Müll („Tonne ist draußen“), Licht (Gute Nacht, Ankommen, Gemütlich, Alle aus).
+  - **Sicherheit:** keine Alarm- und keine Türaktionen, weil sich Karten kopieren lassen. Nur Admins richten Tags ein. Doppelte Scans innerhalb von 3 Sekunden zählen einmal.
+  - **Pro Tag:** nur für bestimmte Personen (erkannt am Handy-Nutzer), Zeitfenster (auch über Mitternacht), Rückmeldung per Handy-Nachricht, Ansage oder blinkendem Licht. Protokoll der letzten 30 Scans, unbekannte Tags lassen sich zuordnen oder verwerfen.
+  - „Person ist zu Hause/unterwegs“ gilt für die automatische Abwesenheit höchstens 12 Stunden.
+  - Neue Befehle `tg_get`, `tg_set`, `tg_act`, neuer Speicher `fenster_heizung_tags`. Zugang über Labs → Tags verwalten und Einstellungen → Allgemein.
+
 ## [3.0.3.1] - 2026-10-28
 ### Behoben
 - **„Sponsor anlegen“ ging nie** (Meldung „Das ging nicht“, auch Verlängern, Sperren und Entfernen): Das Feld für die Sponsor-Nummer hieß `id` und kollidierte mit der Nachrichten-Kennung von Home Assistant, die Anfrage wurde abgelehnt. Es heißt jetzt `sid`.

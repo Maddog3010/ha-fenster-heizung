@@ -88,6 +88,7 @@ const _S = (d) => `<path d="${d}"/>`;
 const _C = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="currentColor" fill-opacity=".2"/>`;
 const _P = (d) => _F(d) + _S(d);
 Object.assign(ICONS, {
+  nfc: _S("M6 8a8 8 0 0 1 0 8M10 6a11 11 0 0 1 0 12M14 4a14 14 0 0 1 0 16") + _C(18, 12, 3),
   sofa: _F("M3 13.5A2.5 2.5 0 0 1 5.5 11h13a2.5 2.5 0 0 1 2.5 2.5V17H3z") + _S("M5 11V8.5A3 3 0 0 1 8 5.5h8a3 3 0 0 1 3 3V11M3 13.5A2.5 2.5 0 0 1 5.5 11h13a2.5 2.5 0 0 1 2.5 2.5V17H3zM6 17v2M18 17v2"),
   tv: _P("M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z") + _S("M8 21h8M12 17v4"),
   dining: _P("M8 8h8l1.5 3h-11z") + _S("M12 3v5M3.5 15h17M6 15v5.5M18 15v5.5"),
@@ -1097,6 +1098,10 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .labtease>div{flex:1;min-width:200px;color:var(--primary-text-color)}.labtease b{display:block}.labtease span{display:block;font-size:.84rem;color:var(--mut)}
 .risk.vab{color:#e07aa6;border-color:color-mix(in srgb,#e07aa6 55%,transparent);background:color-mix(in srgb,#e07aa6 10%,transparent)}
 .lixgrid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));align-items:start;margin-top:14px}
+.tgxrow{display:flex;align-items:center;gap:6px;padding-right:12px}.tgxrow+.tgxrow{border-top:1px solid var(--line)}.tgxrow .sxrow{flex:1;min-width:0}.tgxl{border:1px solid var(--line);border-radius:14px;margin:8px 0;overflow:hidden}
+.tgxscan{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;border:1px dashed color-mix(in srgb,var(--teal) 60%,transparent);border-radius:14px;padding:16px;margin:8px 0;background:color-mix(in srgb,var(--teal) 7%,transparent)}.tgxscan.found{border-style:solid}
+.tgxpulse{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--teal);background:color-mix(in srgb,var(--teal) 18%,transparent);animation:tgxp 1.6s ease-in-out infinite}@keyframes tgxp{50%{box-shadow:0 0 0 12px color-mix(in srgb,var(--teal) 0%,transparent);transform:scale(1.06)}}@media(prefers-reduced-motion:reduce){.tgxpulse{animation:none}}
+.tgxlog{display:flex;flex-direction:column;font-size:.8rem}.tgxlog>div{display:flex;flex-wrap:wrap;gap:2px 10px;padding:6px 0;border-top:1px solid var(--line)}
 .lixroom.on{border-color:color-mix(in srgb,#fbbf24 55%,transparent);background:color-mix(in srgb,#fbbf24 7%,var(--card))}
 .lixhd{display:flex;align-items:center;gap:10px}.lixico{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:var(--mut);flex:none}
 .lixroom.on .lixico{background:color-mix(in srgb,#fbbf24 22%,transparent);color:#fbbf24}
@@ -2222,6 +2227,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mux") && this._muxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lix") && this._lixChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tgx") && this._tgxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("hz") && this._hzChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tm") && this._tmChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("spx") && this._spChange(t)) return;
@@ -2249,6 +2255,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
     else if (a.startsWith("mux")) this._muxAct(a, b);
     else if (a.startsWith("lix")) this._lixAct(a, b);
+    else if (a.startsWith("tgx")) this._tgxAct(a, b);
     else if (a.startsWith("hz")) this._hzAct(a, b);
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
     else if (a.startsWith("spn")) this._spnAct(a, b);
@@ -2839,6 +2846,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lixset", "lixdet", "lixoff"].includes(m.type)) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -3188,6 +3196,7 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen")}
           ${row("flask", "Labs", "Experimentelle Funktionen ansehen und einschalten", "labopen", "", `<em class="sxc ${this._labCount() ? "ok" : "off"}">${this._labCount() ? this._labCount() + " an" : "Aus"}</em>`)}
           ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
+          ${this._labOn("tg") && adm ? row("nfc", "Tags &amp; Karten", "RFID-Karten und NFC-Sticker anlernen und zuordnen", "tgxopen") : ""}
           ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}
           ${this._spnRow()}</div>`)}
         ${grp("layers", "Meine Module", `${act.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${mods}${ext}</div>`)}
@@ -4891,6 +4900,13 @@ class FensterHeizungPanel extends HTMLElement {
         needs: () => [["Lampen in Home Assistant (light.*)", Object.keys(this._hass.states).some((k) => k.startsWith("light."))], ["Räume (Bereiche) für die Lampen (optional)", Object.values(this._hass.entities || {}).some((e) => e && e.entity_id && e.entity_id.startsWith("light.") && (e.area_id || e.device_id))]],
         after: "Ausgeschaltet verschwindet Modul 18. Es wird nichts mehr geschaltet, die Einstellungen (verknüpfte Szenen, Räume) bleiben gespeichert. Eingeschaltete Lampen bleiben, wie sie sind.",
         f: [] },
+      { id: "tg", k: "g", mid: "tg", mod: "Übergreifend", mn: "Tags & Karten", n: "Tags & Karten", st: "Früh", i: "nfc", early: "2026-11-11",
+        d: "RFID-Karten und NFC-Sticker lösen feste Aktionen aus, zum Beispiel Abwesend, Warmwasser-Boost oder Licht aus.",
+        feats: ["Karten oder Sticker anlernen: einmal an einen Leser halten, fertig", "Jeder Tag führt genau eine Aktion aus einer festen Liste aus, auch „Person ist zu Hause/unterwegs“", "Optional nur für bestimmte Personen und nur in einem Zeitfenster", "Rückmeldung per Handy-Nachricht, Ansage oder blinkendem Licht, dazu ein Protokoll"],
+        how: ["Home Assistant meldet jeden Scan als Ereignis. Die Integration prüft die Kennung, Person und Zeit und führt dann die gewählte Aktion aus.", "Es gibt keine freien Dienstaufrufe, keine Alarm- und keine Türaktionen, weil sich Karten kopieren lassen.", "Doppelte Scans innerhalb von 3 Sekunden zählen einmal."],
+        needs: () => [["Ein Leser, der Tags an Home Assistant meldet (Handy mit NFC, ESPHome PN532/RC522)", true]],
+        after: "Ausgeschaltet reagiert kein Tag mehr. Die angelernten Tags bleiben gespeichert.",
+        f: [] },
     ];
   }
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
@@ -5059,7 +5075,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${nd.length ? `<div class="lsec">${ic("info", 15)}Voraussetzungen</div><ul class="stoul">${nd.map(([t, ok]) => `<li>${ok ? "✓" : "✗"} ${esc(t)}</li>`).join("")}</ul>` : ""}
       ${x.f.length ? `<div class="lsec">${ic("sliders", 15)}Einstellungen dieser Funktion</div>${x.f.map((f) => this._labField(esc(f[1]), esc(f[2]), this._labStep(f, adm))).join("")}` : ""}
       <div class="stowarn ${x.k === "g" ? "dng" : ""}">${ic("alert", 16)}<span>${x.k === "g" ? `<b>Diese Funktion greift in Geräte ein.</b> Du bestätigst das vor dem Einschalten. Ausgeschaltet schaltet sie nichts mehr. Fenster auf, Abwesend und die Sicherheitsgrenzen der Module haben weiter Vorrang.` : `Labs sind Experimente. Diese Funktion zeigt nur etwas an und schaltet nichts.`} ${x.after ? esc(x.after) : `Ausgeschaltet verschwindet sie aus ${esc(x.mod)}, die Einstellungen bleiben gespeichert.`}</span></div>
-      <div class="foot2" style="margin-top:12px"><a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
+      <div class="foot2" style="margin-top:12px">${x.id === "tg" && on && adm ? `<button class="btn2" data-act="tgxopen">Tags verwalten</button>` : ""}<a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
   }
   _labOkModal(id) {
     const x = this._labCat().find((y) => y.id === id); if (!x) return "";
@@ -6017,6 +6033,162 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="mut sm" style="margin:0 0 6px">Ausgeblendete Räume (zum Beispiel Garten oder Keller) fehlen auf der Seite, auch bei „Alle aus“ der Seitenübersicht. „Alle aus“ schaltet trotzdem jede Lampe.</div>
       <div class="gschips">${rooms.map((r) => `<button class="gsch ${r.hid ? "" : "sel"}" data-act="lixhide" data-k="${esc(r.k)}" aria-pressed="${!r.hid}" ${adm ? "" : "disabled"}>${esc(r.name)} (${r.lamps.length})</button>`).join("")}</div>
       <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  /* Lab „Tags & Karten“ (tg): RFID-Karten und NFC-Sticker lösen feste Aktionen aus. Die Tags und ihre Aktionen liegen im Backend (tags.py),
+     hier stehen nur Anzeige und Bedienung. Es gibt keine freien Dienstaufrufe, nur die feste Liste des Backends. */
+  _tgxLoad(force) {
+    if (!this._hass || this._tgxBusy) return;
+    if (!force && this._tgxD && Date.now() - this._tgxTs < 20000) return;
+    this._tgxBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/tg_get" }).then((r) => { this._tgxD = r; this._tgxTs = Date.now(); }).catch(() => {})
+      .finally(() => { this._tgxBusy = false; this._tgxRefresh(); });
+  }
+  _tgxIs() { const m = this._modal; return !!(m && ["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)); }
+  _tgxRefresh() { if (this._tgxIs() && this._modal.type === "tgxmgr") { this._renderModal(); this._tgxPoll(); } }
+  _tgxPoll() {
+    clearTimeout(this._tgxT);
+    const D = this._tgxD;
+    if (D && D.learn && D.learn.active && this._modal && this._modal.type === "tgxmgr") this._tgxT = setTimeout(() => this._tgxLoad(true), 1500);
+  }
+  _tgxPut(cfg) {
+    return this._hass.callWS({ type: "fenster_heizung/tg_set", cfg }).then((r) => { this._tgxD = r; this._tgxTs = Date.now(); }).catch(() => this._toast("Das hat nicht geklappt"));
+  }
+  _tgxCall(act, tid) {
+    return this._hass.callWS({ type: "fenster_heizung/tg_act", act, tid: tid || "" }).then((r) => { this._tgxD = r; this._tgxTs = Date.now(); return r; }).catch(() => { this._toast("Das hat nicht geklappt"); return null; });
+  }
+  _tgxWhen(ts) {
+    const d = new Date(ts * 1000), n = new Date(), hm = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    if (d.toDateString() === n.toDateString()) return "Heute " + hm;
+    const y = new Date(n.getTime() - 864e5); return (d.toDateString() === y.toDateString() ? "Gestern " : d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }) + " ") + hm;
+  }
+  _tgxPerson(id) { const s = this._hass.states[id]; return s && s.attributes && s.attributes.friendly_name ? s.attributes.friendly_name : String(id || "").replace("person.", ""); }
+  _tgxDesc(a) {
+    const D = this._tgxD, c = D && D.actions.find((x) => x.k === a.k); if (!c) return "Unbekannte Aktion";
+    if (a.k === "pres_vac") return `Urlaub für ${a.arg} ${a.arg === 1 ? "Tag" : "Tage"}`;
+    if (a.k === "person_home" || a.k === "person_away") return `${this._tgxPerson(a.arg)} ist ${a.k === "person_home" ? "zu Hause" : "unterwegs"}`;
+    if (a.k === "mu_done") return `${(D.bins || {})[a.arg] || "Tonne"} ist draußen`;
+    return c.n;
+  }
+  _tgxIcon(a) { const g = (this._tgxD.actions.find((x) => x.k === a.k) || {}).g; return { fh: "home", pe: "user", ww: "drop", ev: "car", mu: "trash", li: "lamp" }[g] || "nfc"; }
+  _tgxNeed(k) {
+    const g = ((this._tgxD.actions.find((x) => x.k === k)) || {}).g;
+    if (g === "li" && !this._labOn("li")) return "Modul 18 ist nicht eingeschaltet (Labs).";
+    if (g === "mu" && !this._labOn("mm")) return "Modul 17 ist nicht eingeschaltet (Labs).";
+    return "";
+  }
+  _tgxCfgNow() { const c = this._tgxD.cfg; return { tags: { ...c.tags }, fb: { ...c.fb } }; }
+  _tgxBlank(id) { return { id, isNew: true, name: "", on: true, act: { k: "", arg: null }, persons: [], fb: { notify: false, tts: false, blink: false }, from: "", to: "", g: "" }; }
+  _tgxAct(a, b) {
+    const k = b.dataset.k, D = this._tgxD, m = this._modal;
+    if (a === "tgxopen") { this._modal = { type: "tgxmgr" }; this._tgxLoad(true); this._renderModal(); return; }
+    if (!D && a !== "tgxopen") return;
+    if (a === "tgxback") { clearTimeout(this._tgxT); this._modal = { type: "tgxmgr" }; this._renderModal(); this._tgxPoll(); return; }
+    if (a === "tgxlearn") { this._tgxCall("learn").then(() => { this._renderModal(); this._tgxPoll(); }); return; }
+    if (a === "tgxstop") { clearTimeout(this._tgxT); this._tgxCall("stop").then(() => this._renderModal()); return; }
+    if (a === "tgxnew") { clearTimeout(this._tgxT); const f = D.learn && D.learn.found; this._tgxCall("stop"); const t = f && D.cfg.tags[f.id]; this._modal = { type: "tgxedit", draft: t ? { ...t, id: f.id, isNew: false, g: (D.actions.find((x) => x.k === t.act.k) || {}).g || "" } : this._tgxBlank(f ? f.id : k) }; this._renderModal(); return; }
+    if (a === "tgxedit") { clearTimeout(this._tgxT); const t = D.cfg.tags[k]; if (!t) return; this._modal = { type: "tgxedit", draft: { ...t, id: k, isNew: false, g: (D.actions.find((x) => x.k === t.act.k) || {}).g || "" } }; this._renderModal(); return; }
+    if (a === "tgxfb") { clearTimeout(this._tgxT); this._modal = { type: "tgxfb" }; this._renderModal(); return; }
+    if (a === "tgxforget") { this._tgxCall("forget", k).then(() => this._renderModal()); return; }
+    if (a === "tgxtog") { const c = this._tgxCfgNow(), t = c.tags[k]; if (!t) return; c.tags[k] = { ...t, on: !t.on }; this._tgxPut(c).then(() => this._renderModal()); return; }
+    if (a === "tgxfbn") { const c = this._tgxCfgNow(), l = c.fb.notify || []; c.fb = { ...c.fb, notify: l.includes(k) ? l.filter((x) => x !== k) : [...l, k] }; this._tgxPut(c).then(() => this._renderModal()); return; }
+    if (!m || m.type !== "tgxedit") return;
+    const d = m.draft;
+    if (a === "tgxg") { d.g = k; if (!D.actions.some((x) => x.g === k && x.k === d.act.k)) d.act = { k: "", arg: null }; }
+    else if (a === "tgxa") { const c = D.actions.find((x) => x.k === k); d.act = { k, arg: c.arg === "days" ? 7 : c.arg === "bin" ? "rest" : c.arg === "person" ? "" : null }; }
+    else if (a === "tgxdays") d.act.arg = Math.min(21, Math.max(1, (d.act.arg || 7) + Number(b.dataset.s)));
+    else if (a === "tgxbin") d.act.arg = k;
+    else if (a === "tgxwho") d.persons = d.persons.includes(k) ? d.persons.filter((x) => x !== k) : [...d.persons, k];
+    else if (a === "tgxfbt") d.fb[k] = !d.fb[k];
+    else if (a === "tgxwclr") { d.from = ""; d.to = ""; }
+    else if (a === "tgxsave") {
+      if (!d.act.k || (d.act.k.startsWith("person_") && !d.act.arg)) { this._toast("Bitte eine Aktion wählen"); return; }
+      const c = this._tgxCfgNow(), { id, isNew, g, ...t } = d; t.name = (d.name || "").trim() || "Tag"; t.from = d.from && d.to ? d.from : ""; t.to = d.from && d.to ? d.to : "";
+      c.tags[id] = t; this._tgxPut(c).then(() => { this._modal = { type: "tgxmgr" }; this._renderModal(); this._tgxPoll(); this._toast("Tag gespeichert"); }); return;
+    }
+    else if (a === "tgxtest") {
+      if (!d.act.k || d.isNew) { this._toast(d.isNew ? "Erst speichern, dann testen" : "Bitte eine Aktion wählen"); return; }
+      this._tgxCall("test", d.id).then((r) => this._toast(r && r.test ? r.test.msg : "Das hat nicht geklappt")); return;
+    }
+    else if (a === "tgxdel") { const c = this._tgxCfgNow(); delete c.tags[d.id]; this._tgxPut(c).then(() => { this._modal = { type: "tgxmgr" }; this._renderModal(); this._toast("Tag gelöscht"); }); return; }
+    this._renderModal();
+  }
+  _tgxChange(t) {
+    const f = t.dataset.f, v = t.value || "", m = this._modal;
+    if (f === "tgxname" && m && m.draft) { m.draft.name = v.slice(0, 40); return true; }
+    if (f === "tgxfrom" && m && m.draft) { m.draft.from = v; if (m.draft.from && !m.draft.to) m.draft.to = "23:59"; return true; }
+    if (f === "tgxto" && m && m.draft) { m.draft.to = v; if (m.draft.to && !m.draft.from) m.draft.from = "00:00"; return true; }
+    if (f === "tgxperson" && m && m.draft) { m.draft.act.arg = /^person\.[a-z0-9_]+$/.test(v) ? v : ""; this._renderModal(); return true; }
+    if (f === "tgxtts" || f === "tgxplayer" || f === "tgxlight") {
+      const c = this._tgxCfgNow(), ok = v === "" || /^[a-z_]+\.[a-z0-9_]+$/.test(v);
+      if (!ok) return true;
+      c.fb = { ...c.fb, tts: { ...c.fb.tts }, ...(f === "tgxlight" ? { light: v } : {}) };
+      if (f === "tgxtts") c.fb.tts.ent = v; if (f === "tgxplayer") c.fb.tts.player = v;
+      this._tgxPut(c).then(() => this._renderModal()); return true;
+    }
+    return false;
+  }
+  _tgxModal() {
+    const m = this._modal, D = this._tgxD, adm = this._admin();
+    const hd = (t, s, back) => `<div class="sh"><div><b>${t}</b><span>${s}</span></div><button class="ibtn" data-act="${back ? "tgxback" : "close"}" aria-label="${back ? "Zurück" : "Schließen"}">${ic(back ? "back" : "close", 20)}</button></div>`;
+    if (!D) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">${hd("Tags & Karten", "Labs · lädt …")}<div class="mut sm">Die Tags werden geladen.</div></div>`;
+    if (m.type === "tgxfb") {
+      const F = D.cfg.fb, st = this._hass.states, ids = (p) => Object.keys(st).filter((e) => e.startsWith(p)), svc = Object.keys((this._hass.services || {}).notify || {}).filter((x) => x !== "notify" && x !== "send_message").map((x) => "notify." + x);
+      return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Rückmeldung einrichten", "Tags & Karten · gilt für alle Tags", true)}
+        <div class="mut sm" style="margin:0 0 6px">Hier legst du fest, wohin die Rückmeldung geht. Pro Tag schaltest du dann ein, ob sie kommt.</div>
+        <div class="lsec">${ic("bell", 15)}Handy-Nachricht</div>
+        <div class="gschips">${svc.length ? svc.map((s) => `<button class="gsch ${F.notify.includes(s) ? "sel" : ""}" data-act="tgxfbn" data-k="${esc(s)}" aria-pressed="${F.notify.includes(s)}" ${adm ? "" : "disabled"}>${esc(s.replace("notify.", ""))}</button>`).join("") : `<span class="mut sm">Es gibt keine Benachrichtigungsdienste (notify).</span>`}</div>
+        <div class="lsec" style="margin-top:12px">${ic("tv", 15)}Ansage</div>
+        <div class="vrow"><span>Sprachdienst</span>${this._wzSel(ids("tts."), F.tts.ent, "tgxtts", "", "– nicht gewählt –")}</div>
+        <div class="vrow"><span>Lautsprecher</span>${this._wzSel(ids("media_player."), F.tts.player, "tgxplayer", "", "– nicht gewählt –")}</div>
+        <div class="lsec" style="margin-top:12px">${ic("lamp", 15)}Licht blinkt</div>
+        <div class="mut sm" style="margin:0 0 4px">Blinkt kurz grün, bei einem Fehler rot.</div>
+        <div class="vrow"><span>Lampe</span>${this._wzSel(ids("light.").filter((e) => !Array.isArray((st[e].attributes || {}).entity_id)), F.light, "tgxlight", "", "– nicht gewählt –")}</div>
+        <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="tgxback">Fertig</button></div></div>`;
+    }
+    if (m.type === "tgxedit") {
+      const d = m.draft, A = D.actions, gs = Object.keys(D.groups), cur = A.find((x) => x.k === d.act.k), fb = D.cfg.fb;
+      const persons = Object.keys(this._hass.states).filter((e) => e.startsWith("person."));
+      const chip = (act, k, label, on, extra = "") => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${esc(k)}" aria-pressed="${on}" ${extra}>${esc(label)}</button>`;
+      const need = d.act.k ? this._tgxNeed(d.act.k) : "";
+      const arg = !cur ? "" : cur.arg === "days" ? `<div class="vrow"><span>Dauer</span><div class="step" style="flex:none"><button data-act="tgxdays" data-s="-1" aria-label="weniger">${ic("minus", 18)}</button><b>${d.act.arg} ${d.act.arg === 1 ? "Tag" : "Tage"}</b><button data-act="tgxdays" data-s="1" aria-label="mehr">${ic("plus", 18)}</button></div></div>`
+        : cur.arg === "bin" ? `<div class="gschips" style="margin:6px 0">${Object.entries(D.bins).map(([k, n]) => chip("tgxbin", k, n, d.act.arg === k)).join("")}</div>`
+        : cur.arg === "person" ? `<div style="margin:6px 0">${this._wzSel(persons, d.act.arg || "", "tgxperson", "", "– Person wählen –")}</div><div class="mut sm">${d.act.k === "person_home" ? "Zählt für die automatische Abwesenheit als „zu Hause“, höchstens 12 Stunden." : "Gilt als „unterwegs“. Sind alle unterwegs, wechseln die Räume nach der eingestellten Zeit auf „Abwesend“."}</div>` : "";
+      const fbk = (k, t, ok, why) => chip("tgxfbt", k, t, !!d.fb[k] && ok, ok ? "" : `disabled title="${esc(why)}"`);
+      return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd(d.isNew ? "Neuen Tag einrichten" : "Tag bearbeiten", `${esc(d.name || "Tag")} · gilt für alle Nutzer`, true)}
+        <div class="vrow"><span>Name<small class="mut" style="display:block">Zum Beispiel „Nachttisch-Sticker“</small></span><input type="text" data-f="tgxname" value="${esc(d.name)}" maxlength="40" placeholder="Name" aria-label="Name" style="flex:1;max-width:55%;background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit"></div>
+        <div class="mut sm" style="margin:0 0 6px">Kennung: <code>${esc(d.id)}</code></div>
+        <div class="lsec">${ic("tools", 15)}Aktion (feste Auswahl)</div>
+        <div class="gschips">${gs.map((g) => chip("tgxg", g, D.groups[g], d.g === g)).join("")}</div>
+        ${d.g ? `<div class="gschips" style="margin-top:8px">${A.filter((x) => x.g === d.g).map((x) => chip("tgxa", x.k, x.n, d.act.k === x.k)).join("")}</div>` : `<div class="mut sm" style="margin-top:6px">Wähle zuerst den Bereich.</div>`}
+        ${arg}${need ? `<div class="stowarn" style="margin-top:8px">${ic("alert", 16)}<span>${esc(need)} Die Aktion tut nichts, solange das aus ist.</span></div>` : ""}
+        <div class="lsec" style="margin-top:12px">${ic("users", 15)}Nur diese Personen</div>
+        <div class="mut sm" style="margin:0 0 4px">Ohne Auswahl darf jeder. Wer scannt, erkennt Home Assistant nur beim Handy mit Companion-App. Ein Leser ohne Person (zum Beispiel ESPHome) führt einen Tag mit Auswahl nicht aus.</div>
+        <div class="gschips">${persons.length ? persons.map((p) => chip("tgxwho", p, this._tgxPerson(p), d.persons.includes(p))).join("") : `<span class="mut sm">Keine Personen in Home Assistant.</span>`}</div>
+        <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Rückmeldung</div>
+        <div class="gschips">${fbk("notify", "Handy-Nachricht", fb.notify.length > 0, "Erst unter „Rückmeldung einrichten“ einen Dienst wählen")}${fbk("tts", "Ansage", !!(fb.tts.ent && fb.tts.player), "Erst unter „Rückmeldung einrichten“ Sprachdienst und Lautsprecher wählen")}${fbk("blink", "Licht blinkt", !!fb.light, "Erst unter „Rückmeldung einrichten“ eine Lampe wählen")}</div>
+        <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Zeitfenster (optional)</div>
+        <div class="vrow"><span>Nur zwischen<small class="mut" style="display:block">Über Mitternacht möglich, zum Beispiel 20:00 bis 06:00</small></span><span style="display:flex;gap:6px;align-items:center"><input type="time" data-f="tgxfrom" value="${esc(d.from)}" aria-label="von" style="background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px"> bis <input type="time" data-f="tgxto" value="${esc(d.to)}" aria-label="bis" style="background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px">${d.from ? `<button class="oclr" data-act="tgxwclr" aria-label="Zurücksetzen">${ic("close", 14)}</button>` : ""}</span></div>
+        <div class="foot2" style="margin-top:12px">${d.isNew ? "" : `<button class="btn2" data-act="tgxdel" style="color:#fb7185">Löschen</button>`}<button class="btn2" data-act="tgxtest" ${d.isNew ? "disabled" : ""}>Testen</button><button class="btn2 pri" data-act="tgxsave" ${adm ? "" : "disabled"}>Speichern</button></div></div>`;
+    }
+    const tags = Object.entries(D.cfg.tags), L = D.learn || {}, F = L.found, lg = (D.log || []).slice(0, 6);
+    const rc = { ok: "#2dd4bf", fail: "#fb7185", unknown: "#fb7185", deny: "#fbbf24", off: "#fbbf24", time: "#fbbf24" };
+    const ready = this._tgxReady();
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Tags & Karten", "Labs · gilt für alle Nutzer")}
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px"><div class="mut sm">${tags.length ? `${tags.length} ${tags.length === 1 ? "Tag" : "Tags"} angelernt` : "Noch kein Tag angelernt"}${D.unknown.length ? ` · ${D.unknown.length} unbekannt gescannt` : ""}</div><button class="btn2 pri" data-act="tgxlearn" ${adm && !L.active ? "" : "disabled"}>${ic("plus", 16)} Tag anlernen</button></div>
+      ${L.active && !F ? `<div class="tgxscan"><span class="tgxpulse">${ic("nfc", 30)}</span><b>Jetzt Karte oder Sticker an einen Leser halten …</b><span class="mut sm">Wartet noch ${L.left} Sekunden</span><button class="btn2" data-act="tgxstop">Abbrechen</button></div>` : ""}
+      ${F ? `<div class="tgxscan found"><span class="tgxpulse">${ic("check", 30)}</span><b>${F.known ? "Bekannter Tag erkannt" : "Neuer Tag erkannt"}</b><span class="mut sm">${esc(F.id)} · ${esc(F.reader)}</span><button class="btn2 pri" data-act="tgxnew" data-k="${esc(F.id)}">${F.known ? "Bearbeiten" : "Einrichten"}</button></div>` : ""}
+      ${ready ? `<div class="stowarn">${ic("alert", 16)}<span>${esc(ready)}</span></div>` : ""}
+      ${tags.length ? `<div class="sxl tgxl">${tags.map(([id, t]) => { const l = D.last[id]; return `<div class="tgxrow"><button class="sxrow" data-act="tgxedit" data-k="${esc(id)}"><span class="sxi">${ic(this._tgxIcon(t.act), 20)}</span><span class="sxt"><b>${esc(t.name)}</b><small>${esc(this._tgxDesc(t.act))}${l ? ` · zuletzt ${esc(this._tgxWhen(l.ts))}, ${esc(l.reader)}` : " · noch nicht gescannt"}</small></span></button><button class="sw ${t.on ? "on" : ""}" data-act="tgxtog" data-k="${esc(id)}" aria-pressed="${t.on}" aria-label="${esc(t.name)} ${t.on ? "ausschalten" : "einschalten"}" ${adm ? "" : "disabled"}></button></div>`; }).join("")}</div>` : `<div class="mut sm" style="margin:10px 0">Tippe auf „Tag anlernen“ und halte eine Karte oder einen Sticker an einen Leser. Als Leser taugt das Handy mit NFC (Companion-App), ein ESPHome-Leser (PN532 oder RC522) und jeder andere Leser, der in Home Assistant Tags meldet.</div>`}
+      ${D.unknown.length ? `<div class="lsec">${ic("info", 15)}Unbekannte Tags</div>${D.unknown.map((u) => `<div class="vrow tgxunk"><span><b>${esc(u.id.length > 22 ? u.id.slice(0, 20) + "…" : u.id)}</b><small class="mut" style="display:block">${esc(this._tgxWhen(u.ts))} · ${esc(u.reader)}</small></span><span style="display:flex;gap:6px"><button class="btn2" data-act="tgxnew" data-k="${esc(u.id)}" ${adm ? "" : "disabled"}>Zuordnen</button><button class="btn2" data-act="tgxforget" data-k="${esc(u.id)}" ${adm ? "" : "disabled"}>Verwerfen</button></span></div>`).join("")}` : ""}
+      <div class="lsec">${ic("bell", 15)}Rückmeldung</div>
+      <div class="vrow"><span>Handy, Ansage oder blinkendes Licht<small class="mut" style="display:block">${D.cfg.fb.notify.length || D.cfg.fb.tts.ent || D.cfg.fb.light ? "Eingerichtet. Pro Tag schaltest du sie ein." : "Noch nicht eingerichtet."}</small></span><button class="btn2" style="flex:none" data-act="tgxfb" ${adm ? "" : "disabled"}>Einrichten</button></div>
+      ${lg.length ? `<div class="lsec">${ic("list", 15)}Protokoll</div><div class="tgxlog">${lg.map((x) => `<div><span class="mut">${esc(this._tgxWhen(x.ts))}</span><b>${esc(x.name)}</b><span class="mut">${esc(x.reader)}</span><span style="color:${rc[x.res] || "inherit"}">${esc(x.msg)}</span></div>`).join("")}</div>` : ""}
+      <div class="stowarn" style="margin-top:10px">${ic("alert", 16)}<span><b>Karten und Sticker lassen sich kopieren.</b> Deshalb gibt es keine Aktionen, die einen Alarm entschärfen oder etwas aufschließen. Jeder Tag führt genau eine Aktion aus der festen Liste aus.</span></div>
+      <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _tgxReady() {
+    const D = this._tgxD; if (!D || !D.on) return "Das Lab „Tags & Karten“ ist ausgeschaltet. Tags werden erst nach dem Einschalten ausgeführt.";
+    return "";
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
