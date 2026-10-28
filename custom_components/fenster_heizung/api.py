@@ -151,12 +151,15 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
         cfg = labs.get("cfg")
         if isinstance(cfg, dict):
             lc["cfg"] = {k: float(v) for k, v in cfg.items() if k in LAB_NUM and isinstance(v, (int, float)) and not isinstance(v, bool) and -1e6 < v < 1e6}
+            cal = cfg.get("lk_cal")
+            if isinstance(cal, str) and re.match(r"^calendar\.[a-z0-9_]+$", cal):
+                lc["cfg"]["lk_cal"] = cal
         out["labs"] = lc
     return out
 
 
-LAB_IDS = {"lx", "ae", "wl", "lf", "st"}
-LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "lf_days"}
+LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk"}
+LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "lf_days", "vh_dk", "vh_max", "dz_days", "dz_lead", "ld_wait", "ld_min", "lk_hi", "lk_dur"}
 
 
 def _read_version() -> str:
@@ -684,6 +687,16 @@ async def ws_sp_get(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], await mgr.snapshot())
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/labs_get"})
+@websocket_api.async_response
+async def ws_labs_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("labs")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Labs sind noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.snapshot())
+
+
 @websocket_api.require_admin
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sp_set", vol.Required("cfg"): dict})
 @websocket_api.async_response
@@ -752,6 +765,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
-        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set,
+        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get,
     ):
         websocket_api.async_register_command(hass, command)

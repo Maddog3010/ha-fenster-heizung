@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.9] - 2026-10-28
+### Neu
+- **Vier Labs, die Geräte schalten** (neue Datei `labs.py`, WS-Befehl `labs_get`), ab Werk aus und mit Bestätigung vor dem Einschalten:
+  - **Smart Vorheizen (Modul 1):** Der Heizplan startet früher, wenn der Raum zum Schaltpunkt kälter ist als das Ziel. Vorlauf aus der gelernten Aufheizzeit, begrenzt durch „Aufheizen um“ und „Höchstens vorziehen“.
+  - **Duschzeiten lernen (Modul 2):** Erkennt Entnahmen aus dem Abkühlen des Speichers, lernt typische Zeiten für Werktage und Wochenende (halbe Stunden, ab der Hälfte der Tage) und heizt nach dem Lernzeitraum vor diesen Zeiten vor. Die Daten bleiben 30 Tage gespeichert.
+  - **Legionellenschutz nach Sonne (Modul 2):** Am geplanten Tag entscheidet die Prognose aus Modul 16, ob der Lauf bleibt oder auf den nächsten sonnigeren Tag rückt (höchstens die eingestellten Tage, überfällig nach 9 Tagen läuft er sofort).
+  - **Ladeziel nach Kalender (Modul 8):** Ein langer Termin in den nächsten 36 Stunden hebt den Ziel-Ladestand des Ladeplans an. Es wird nur das Ziel geändert.
+- Auf der Labs-Seite Filter nach Art („Nur Anzeige“, „Schaltet Geräte“), Karten im Modul mit Lernstand und Entscheidung, Einstellungen je Lab in der Infoseite.
+### Geändert
+- README neu geschrieben, mit eigenem Abschnitt für Labs, die Geräte schalten.
+
 ## [3.0.2.8] - 2026-10-28
 ### Geändert
 - **Einstellungen aufgeräumt:** Die Zeilen „Store anzeigen“ und „Labs anzeigen“ sind entfallen. Symbol und Tab blendest du jetzt über den Knopf **Anzeige** auf der Store-Seite bzw. der Labs-Seite ein oder aus. Bei „Store & Integrationen“ steht kein Statusfeld („go-e verbunden“) mehr, bei „Labs“ bleibt die Anzahl eingeschalteter Labs.

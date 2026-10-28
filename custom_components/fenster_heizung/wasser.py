@@ -566,7 +566,13 @@ class WasserManager:
             diag_log(self.hass, "info", "Warmwasser: Einmal-Aufheizen abgeschlossen", room="Warmwasser")
         leg_active = False
         if cfg["leg"]["on"] and (E["src"] or E["rod"]):  # ohne Erzeuger oder Heizstab kann nichts aufgeheizt werden
-            if s["leg_run"] is None and leg_due(cfg["leg"], local, (s["leg_last"] or {}).get("ts"), False):
+            leg = cfg["leg"]
+            lab = self.hass.data.get(DOMAIN, {}).get("labs")
+            if lab is not None and s["leg_run"] is None:
+                leg = await lab.leg_effective(leg, local, (s["leg_last"] or {}).get("ts"))  # Lab „Legionellenschutz nach Sonne“
+            if s["leg_run"] is None and leg_due(leg, local, (s["leg_last"] or {}).get("ts"), False):
+                if lab is not None:
+                    lab.leg_started()
                 s["leg_run"] = {"start": now}
                 self._save()
                 diag_log(self.hass, "info", f"Warmwasser: Legionellenschutz startet (Ziel {cfg['leg']['temp']} °C)", room="Warmwasser")
@@ -589,6 +595,9 @@ class WasserManager:
         # Soll und Erzeuger
         hot = boost or leg_active
         want = float(cfg["leg"]["temp"]) if hot else float(cfg["heat"]["low"] if away else schedule_temp(cfg, local.weekday(), minute))
+        lab = self.hass.data.get(DOMAIN, {}).get("labs")
+        if lab is not None and not hot and not away:
+            want = max(want, lab.dz_temp(cfg, local))  # Lab „Duschzeiten lernen“: vor gelernten Zapfzeiten vorheizen
         ctl = lowest if hot else control
         src_on = self._src_on(E["src"])
         src_want = None

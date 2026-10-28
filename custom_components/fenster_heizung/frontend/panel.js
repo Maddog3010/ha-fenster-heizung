@@ -752,7 +752,7 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .labkt{display:flex;justify-content:space-between;align-items:center}.labkt .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#6d28d9,#a21caf);color:#fff}
 .labkb{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;font-size:.82rem;color:var(--mut)}.labkb b{font-size:.98rem;color:var(--primary-text-color)}.labkb:focus-visible{outline:2px solid #8b5cf6;outline-offset:4px;border-radius:8px}
 .labtg{display:flex;flex-wrap:wrap;gap:6px}.labtg em{font-style:normal;font-size:.68rem;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--primary-text-color,#fff) 10%,transparent)}
-.risk{font-style:normal;font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--primary-text-color,#fff) 10%,transparent);color:var(--mut)}.risk.s{background:color-mix(in srgb,#22c55e 18%,transparent);color:#4ade80}
+.risk{font-style:normal;font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--primary-text-color,#fff) 10%,transparent);color:var(--mut)}.risk.g{background:color-mix(in srgb,#f59e0b 22%,transparent);color:#fbbf24}.stowarn.dng{border-color:#ef4444;background:color-mix(in srgb,#ef4444 12%,transparent)}.risk.s{background:color-mix(in srgb,#22c55e 18%,transparent);color:#4ade80}
 .stoi.labi{background:linear-gradient(135deg,#6d28d9,#a21caf)}
 .stow{display:flex;flex-direction:column;gap:12px;max-width:1100px}
 .stosr{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px;color:var(--mut)}.stoq{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--primary-text-color);font:inherit;padding:13px 0}.stosr:focus-within{border-color:var(--teal)}
@@ -2052,6 +2052,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wz") && this._wzChange(t)) return;
       if (t.dataset && t.dataset.f && (t.dataset.f.startsWith("md") || t.dataset.f.startsWith("ww") || t.dataset.f.startsWith("en") || t.dataset.f.startsWith("gs") || t.dataset.f.startsWith("ev")) && this._mdChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("labf_") && this._labChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ort") && this._ortChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
@@ -2666,6 +2667,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "stodet") { box.innerHTML = this._stoModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "labdet") { box.innerHTML = this._labModal(m.id); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "labok") { box.innerHTML = this._labOkModal(m.id); return; }
     if (m.type === "labset") { box.innerHTML = this._labSetModal(); return; }
     if (m.type === "stoset") { box.innerHTML = this._stoSetModal(); return; }
     if (m.type === "iggoe") { box.innerHTML = this._igGoeModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -4603,11 +4605,15 @@ class FensterHeizungPanel extends HTMLElement {
      Eingeschaltet erscheinen sie als Karte mit Labs-Zeichen im passenden Modul, ausgeschaltet sind sie dort komplett weg. */
   _labCfg() { const l = (this._cfg && this._cfg.layout && this._cfg.layout.labs) || {}; return { on: Array.isArray(l.on) ? l.on : [], icon: l.icon !== false, tab: l.tab !== false, cfg: l.cfg && typeof l.cfg === "object" ? l.cfg : {} }; }
   _labOn(id) { return this._labCfg().on.includes(id); }
-  _labV(k) { const d = { lx_diff: 0.5, ae_cons: 12, ae_share: 60, wl_wind: 6, lf_days: 14 }, v = this._labCfg().cfg[k]; return typeof v === "number" && isFinite(v) ? v : d[k]; }
-  _labSet(patch) { const c = this._labCfg(); this._cfg.layout.labs = { on: c.on, icon: c.icon, tab: c.tab, cfg: c.cfg, ...patch }; this._saveLayout(); this._render(); if (this._modal) this._renderModal(); }
+  _labV(k) { const d = { lx_diff: 0.5, ae_cons: 12, ae_share: 60, wl_wind: 6, lf_days: 14, vh_dk: 3, vh_max: 90, dz_days: 14, dz_lead: 45, ld_wait: 3, ld_min: 8, lk_hi: 90, lk_dur: 2 }, v = this._labCfg().cfg[k]; return typeof v === "number" && isFinite(v) ? v : d[k]; }
+  _labStr(k) { const v = this._labCfg().cfg[k]; return typeof v === "string" ? v : ""; }
+  _labSet(patch) { const c = this._labCfg(); this._cfg.layout.labs = { on: c.on, icon: c.icon, tab: c.tab, cfg: c.cfg, ...patch }; this._saveLayout(); setTimeout(() => this._labLoad(true), 900); this._render(); if (this._modal) this._renderModal(); }
   _labPill(t = "Labs") { return `<em class="labp">${ic("flask", 11)}${t}</em>`; }
   /* Katalog: nur Funktionen, die etwas anzeigen */
   _labCat() {
+    return this._labCat0().map((x) => ({ k: "s", ...x }));
+  }
+  _labCat0() {
     return [
       { id: "lx", mid: "fh", mod: "Modul 1", mn: "Fenster & Heizung", n: "Bester Lüftungszeitpunkt", st: "Test", i: "windy", soon: false,
         d: "Vergleicht Innen- und Außenluft und sagt, wann Stoßlüften gegen Feuchte und Schimmel am meisten bringt.",
@@ -4633,11 +4639,36 @@ class FensterHeizungPanel extends HTMLElement {
         how: ["Aus den letzten Tagen: Summe des Ertrags geteilt durch Summe der Prognose.", "Der Faktor wird auf 0,5 bis 1,5 begrenzt. Er braucht mindestens 3 Tage Verlauf.", "Die korrigierte Prognose ist nur eine Anzeige. Andere Module nutzen weiter die Originalprognose."],
         needs: () => [["Modul 16 ist an und liefert eine Prognose", !!(this._mdState().on.sp && this._sp().found)], ["Ertragssensor in Modul 16 gewählt", !!this._sp().has_act]],
         f: [["lf_days", "Tage für den Faktor", "So viele Tage fließen in die Berechnung ein", "Tage", 3, 30, 1]] },
+      { id: "vh", k: "g", mid: "fh", mod: "Modul 1", mn: "Fenster & Heizung", n: "Smart Vorheizen", st: "Test", i: "flame",
+        d: "Der Heizplan startet früher, wenn die gelernte Aufheizzeit es nötig macht. Ziel: Der Raum ist pünktlich warm.",
+        feats: ["Pro Raum: so viel früher würde der Heizplan starten", "Nutzt die gelernte Aufheizzeit aus dem Raumbericht", "Greift nur ein, wenn der Raum zum Schaltpunkt kälter ist als das Ziel"],
+        how: ["Aus der gelernten Aufheizzeit (Kelvin pro Stunde) wird die Dauer für die gewünschte Erwärmung berechnet.", "Der Schaltpunkt des Heizplans wird um diese Dauer vorgezogen, höchstens um den eingestellten Wert.", "Fenster auf, Abwesend und Urlaub haben weiter Vorrang."],
+        needs: () => [["Heizplan in mindestens einem Raum", this._collect().length > 0], ["Gelernte Aufheizzeit (nach ein paar Aufheizphasen)", this._collect().some((r) => { const d = this._learn[r.id]; return !!d; })]],
+        f: [["vh_dk", "Aufheizen um", "So viel Grad soll der Raum bis zum Schaltpunkt gewinnen", "K", 1, 6, 0.5], ["vh_max", "Höchstens vorziehen", "Längster Vorlauf vor dem Schaltpunkt", "Min.", 15, 180, 15]] },
+      { id: "dz", k: "g", mid: "ww", mod: "Modul 2", mn: "Warmwasser", n: "Duschzeiten lernen", st: "Früh", i: "drop",
+        d: "Erkennt aus dem Speicherverlauf, wann du warmes Wasser brauchst, und heizt passend vor, statt nach festem Plan.",
+        feats: ["Erkannte Zeiten mit hohem Verbrauch", "Vorheizen vor diesen Zeiten statt nach festem Zeitplan", "Der feste Zeitplan bleibt als Rückfall bestehen"],
+        how: ["Aus dem Temperaturabfall im Speicher werden Zapfzeiten erkannt.", "Nach dem Lernzeitraum zeigt das Lab typische Zeiten für Wochentage und Wochenende.", "Der Erzeuger startet den eingestellten Vorlauf vor der Zeit. Ab 65 °C schaltet Modul 2 weiter immer ab."],
+        needs: () => [["Speichersensor in Modul 2", !!this._mdState().ww.ent.top], ["Wärmeerzeuger in Modul 2", !!(this._mdState().ww.ent.src || this._mdState().ww.ent.rod)]],
+        f: [["dz_days", "Lernzeitraum", "So viele Tage werden beobachtet", "Tage", 7, 30, 7], ["dz_lead", "Vorlauf", "So früh vor der Zeit wird aufgeheizt", "Min.", 15, 120, 15]] },
+      { id: "ld", k: "g", mid: "ww", mod: "Modul 2", mn: "Warmwasser", n: "Legionellenschutz nach Sonne", st: "Test", i: "shield",
+        d: "Verschiebt den wöchentlichen Lauf auf den sonnigeren Tag, damit er mit PV-Überschuss läuft.",
+        feats: ["Vergleich der Prognose für den geplanten Tag mit dem Folgetag", "Vorschlag, den Lauf zu verschieben", "Nutzt die Prognose aus Modul 16"],
+        how: ["Der Lauf bleibt am geplanten Tag, wenn die Prognose dort mindestens die Mindestmenge erreicht.", "Sonst wandert er auf den nächsten Tag mit besserer Prognose, höchstens um die eingestellten Tage.", "Ist der Schutz überfällig (mehr als 9 Tage), läuft er trotzdem sofort."],
+        needs: () => [["Legionellenschutz in Modul 2 an", !!this._mdState().ww.leg.on], ["Modul 16 liefert eine Prognose", !!(this._mdState().on.sp && this._sp().found)]],
+        f: [["ld_wait", "Höchstens verschieben", "Um so viele Tage darf der Lauf wandern", "Tage", 1, 5, 1], ["ld_min", "Mindestprognose", "Ab dieser Tagesprognose gilt ein Tag als sonnig", "kWh", 3, 30, 1]] },
+      { id: "lk", k: "g", mid: "ev", mod: "Modul 8", mn: "Elektroauto & Wallbox", n: "Ladeziel nach Kalender", st: "Früh", i: "clock",
+        d: "Setzt den Ziel-Ladestand nach Terminen im Home-Assistant-Kalender: längerer Termin, höheres Ziel.",
+        feats: ["Nächster Termin aus deinem Kalender", "Vorschlag für den Ziel-Ladestand", "Der normale Ladeplan bleibt der Rückfall"],
+        how: ["Das Lab liest den nächsten Termin der gewählten Kalender-Entität.", "Dauert er mindestens so lange wie eingestellt, gilt das höhere Ziel, sonst das Ziel aus dem Ladeplan.", "Geschaltet wird nur das Ziel, nicht der Ladevorgang selbst. Die Regelung von Modul 8 bleibt maßgeblich."],
+        needs: () => [["Kalender in Home Assistant", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Wallbox-Regelung in Modul 8", !!(this._mdState().on.ev !== false)]],
+        f: [["lk_cal", "Kalender", "Aus diesem Kalender wird der nächste Termin gelesen", "sel"], ["lk_hi", "Ziel bei langem Termin", "Ziel-Ladestand für lange Termine", "%", 60, 100, 10], ["lk_dur", "Als lang gilt ab", "Dauer des Termins", "Std.", 1, 6, 1]] },
       { id: "st", mid: "en", mod: "Modul 3", mn: "Energie", n: "Spartipp der Woche", st: "Idee", i: "tools", soon: true,
         d: "Kurzer Hinweis, welches Gerät oder welche Uhrzeit den meisten Netzstrom kostet, mit Vorschlag.",
         feats: ["Größter Netzbezug der Woche", "Konkreter Vorschlag mit geschätzter Ersparnis"], how: ["Noch in Vorbereitung."], needs: () => [], f: [] },
     ];
   }
+  _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
   _labMods() { return [...new Set(this._labCat().map((x) => x.mid))]; }
   _labCount(mid) { return this._labCat().filter((x) => this._labOn(x.id) && (!mid || x.mid === mid)).length; }
   _labBtn() {
@@ -4653,10 +4684,11 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Kennzeichnung im Modul */
   _labCard(x, body) {
-    return `<div class="card labc"><em class="labp tr">${ic("flask", 11)}Labs</em><h2>${ic(x.i, 18)}${esc(x.n)}</h2>${body}<div class="labfoot"><span class="risk s">Nur Anzeige</span><span class="mut sm">Experimentell, kann sich ändern.</span>${this._admin() ? `<button class="lnk" data-act="labdet" data-k="${x.id}">Info</button>` : ""}</div></div>`;
+    return `<div class="card labc"><em class="labp tr">${ic("flask", 11)}Labs</em><h2>${ic(x.i, 18)}${esc(x.n)}</h2>${body}<div class="labfoot"><span class="risk ${this._labK(x)[1]}">${this._labK(x)[0]}</span><span class="mut sm">Experimentell, kann sich ändern.</span>${this._admin() ? `<button class="lnk" data-act="labdet" data-k="${x.id}">Info</button>` : ""}</div></div>`;
   }
   _labField(label, hint, ctrl) { return `<div class="vrow labf"><span>${label} ${this._labPill()}${hint ? `<small class="mut" style="display:block">${hint}</small>` : ""}</span>${ctrl}</div>`; }
   _labStep(f, adm) {
+    if (f[3] === "sel") { const cur = this._labStr(f[0]), H = this._hass.states, ids = Object.keys(H).filter((e) => e.startsWith("calendar.")); return `<select class="osel" style="max-width:55%;margin:0" data-f="labf_${f[0]}" aria-label="${esc(f[1])}" ${adm ? "" : "disabled"}><option value="">${ids.length ? "Bitte wählen" : "Kein Kalender gefunden"}</option>${ids.map((e) => `<option value="${esc(e)}" ${cur === e ? "selected" : ""}>${esc((H[e].attributes || {}).friendly_name || e)}</option>`).join("")}</select>`; }
     const [k, , , unit, lo, hi, st] = f, v = this._labV(k), t = (s) => `data-act="labstep" data-k="${k}" data-s="${s}" data-lo="${lo}" data-hi="${hi}" ${adm ? "" : "disabled"}`;
     return `<div class="step" style="flex:none"><button ${t(-st)} aria-label="weniger">${ic("minus", 18)}</button><b>${num(v, st < 1 ? 1 : 0)} ${unit}</b><button ${t(st)} aria-label="mehr">${ic("plus", 18)}</button></div>`;
   }
@@ -4698,6 +4730,46 @@ class FensterHeizungPanel extends HTMLElement {
     const T = [["Gut", "Wäsche trocknet draußen gut.", "green"], ["Geht so", "Trocknet, aber langsamer.", "amber"], ["Eher nicht", wet ? "Es regnet oder ist nass." : "Zu feucht zum Trocknen.", "red"]][lvl];
     return `<div class="lugrid">${this._labTile("Wäsche draußen", T[0], T[1], T[2])}${this._labTile("Luftfeuchte", rh != null ? num(rh) + " %" : "–", "bis 75 % gut")}${this._labTile("Wind", wind != null ? num(wind, 0) + " km/h" : "–", `ab ${num(mw, 0)} km/h gut`)}${this._labTile("Niederschlag", wet ? "Ja" : "Nein", esc(w[1].state))}</div>`;
   }
+  _lab_vh() {
+    const rooms = this._collect(), dk = this._labV("vh_dk"), mx = this._labV("vh_max"), rows = [];
+    rooms.forEach((r) => { const d = this._learnFor(r.id); if (d) rows.push({ r, lead: Math.min(mx, Math.round(dk / d.rate * 60)), rate: d.rate }); });
+    if (!rows.length) return `<div class="mut sm">Noch keine gelernte Aufheizzeit. Sie entsteht nach ein paar Aufheizphasen und steht im Raumbericht.</div>`;
+    return `<div class="lugrid">${rows.map((x) => this._labTile(esc(x.r.name), `${x.lead} Min. früher`, `+${num(dk, 1)} K bei ${num(x.rate, 1)} K/h`, x.lead >= mx ? "amber" : "green")).join("")}</div><div class="mut sm" style="margin-top:8px">So viel früher würde der Heizplan starten. Geschaltet wird nur, wenn der Raum zum Schaltpunkt kälter ist als das Ziel.</div>`;
+  }
+  _labLoad(force) {
+    if (!this._hass || this._labBusy) return;
+    if (!force && this._labD && Date.now() - this._labD.ts < 60000) return;
+    this._labBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/labs_get" }).then((r) => { this._labD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._labD = { d: {}, ts: Date.now() }; })
+      .finally(() => { this._labBusy = false; if (this._labShown()) { this._render(); if (this._modal && this._modal.type === "labdet") this._renderModal(); } });
+  }
+  _labShown() { return !this._stOpen && !this._igOpen && !this._ortOpen && (this._labOn("dz") || this._labOn("ld")) && (!!(this._modal && this._modal.type === "labdet") || this._labOpen || ["ww"].includes(this._mdActive())); }
+  _labSnap() { return (this._labD && this._labD.d) || {}; }
+  _lab_dz() {
+    this._labLoad(); const S = this._labSnap().dz;
+    if (!S) return `<div class="mut sm">Der Lernstand wird geladen.</div>`;
+    const pct = Math.min(100, Math.round(S.seen / Math.max(1, S.need) * 100));
+    const t = (a) => a && a.length ? a.join(", ") : "keine erkannt";
+    return `<div class="lugrid">${this._labTile("Lernstand", `${S.seen} von ${S.need} Tagen`, S.ready ? "Lernzeit abgeschlossen" : "Das Modul beobachtet den Speicher", S.ready ? "green" : "amber")}${this._labTile("Werktags", S.ready ? t(S.wd) : "–", `${this._labV("dz_lead")} Min. Vorlauf`)}${this._labTile("Wochenende", S.ready ? t(S.we) : "–", "Rückfall: fester Zeitplan")}</div>
+      <div class="mut sm" style="margin-top:8px">${S.ready ? "Vor diesen Zeiten heizt der Erzeuger auf die Temperatur des Zeitplans vor. Der feste Zeitplan bleibt zusätzlich bestehen." : `Noch wird nichts geschaltet. Nach ${S.need} Tagen mit Messwerten beginnt das Vorheizen.`} ${pct < 100 ? `(${pct} %)` : ""}</div>`;
+  }
+  _lab_ld() {
+    this._labLoad(); const S = this._labSnap().ld;
+    if (!S) return `<div class="mut sm">Der Stand wird geladen.</div>`;
+    if (S.on_leg === false) return `<div class="mut sm">Der Legionellenschutz ist in Modul 2 ausgeschaltet.</div>`;
+    if (S.found === false) return `<div class="mut sm">Braucht Modul 16 mit einer Prognose. Ohne sie läuft der Schutz wie geplant.</div>`;
+    const plan = DAYS_LONG[S.plan_day], eff = DAYS_LONG[S.eff_day], min = this._labV("ld_min"), wait = this._labV("ld_wait");
+    const msg = S.shift > 0 ? `Der Lauf wurde auf ${eff} verschoben, weil die Prognose am ${plan} unter ${num(min, 0)} kWh lag.` : `Am ${plan} um ${esc(S.time || "")} Uhr entscheidet das Lab: Reicht die Prognose (ab ${num(min, 0)} kWh), läuft der Schutz wie geplant, sonst am nächsten sonnigeren Tag, höchstens ${num(wait, 0)} Tage später.`;
+    return `<div class="lugrid">${this._labTile("Geplant", plan, `${esc(S.time || "")} Uhr`)}${this._labTile("Läuft am", eff, S.shift > 0 ? `${S.shift} Tag${S.shift > 1 ? "e" : ""} verschoben` : "wie geplant", S.shift > 0 ? "amber" : "green")}${this._labTile("Prognose heute", S.today != null ? num(S.today, 1) + " kWh" : "–", "Modul 16")}${this._labTile("Prognose morgen", S.tomorrow != null ? num(S.tomorrow, 1) + " kWh" : "–", "Modul 16")}</div><div class="mut sm" style="margin-top:8px">${msg}</div>`;
+  }
+  _lab_lk() {
+    const id = this._labStr("lk_cal"), st = id && this._hass.states[id];
+    if (!st) return `<div class="mut sm">Wähle in der Infoseite einen Kalender.</div>`;
+    const a = st.attributes || {}, t0 = a.start_time ? new Date(String(a.start_time).replace(" ", "T")) : null, t1 = a.end_time ? new Date(String(a.end_time).replace(" ", "T")) : null;
+    if (!a.message || !t0 || isNaN(t0)) return `<div class="mut sm">Im Kalender steht kein kommender Termin.</div>`;
+    const h = t1 && !isNaN(t1) ? (t1 - t0) / 36e5 : 0, long = h >= this._labV("lk_dur"), base = (this._wb() || {}).planSoc || 80, goal = long ? Math.max(base, this._labV("lk_hi")) : base;
+    return `<div class="lugrid">${this._labTile("Nächster Termin", esc(String(a.message).slice(0, 28)), t0.toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" }))}${this._labTile("Dauer", num(h, 1) + " Std.", long ? "gilt als lang" : "gilt als kurz")}${this._labTile("Ziel-Ladestand", goal + " %", long ? `statt ${base} % im Ladeplan` : "wie im Ladeplan", long ? "amber" : "green")}</div>`;
+  }
   _lab_lf() {
     this._spLoad(); const S = this._sp();
     if (!S.found) return `<div class="mut sm">Braucht Modul 16 mit einer Prognose.</div>`;
@@ -4711,12 +4783,12 @@ class FensterHeizungPanel extends HTMLElement {
   _labCardEl(x) {
     const on = this._labOn(x.id), adm = this._admin();
     return `<div class="labk ${on ? "on" : ""} ${x.soon ? "soon" : ""}"><div class="labkt"><span class="ico">${ic(x.i, 22)}</span>${x.soon ? `<em class="risk">Bald</em>` : `<button class="sw ${on ? "on" : ""}" data-act="labtog" data-k="${x.id}" aria-pressed="${on}" aria-label="${esc(x.n)} ${on ? "ausschalten" : "einschalten"}" ${adm ? "" : "disabled"}></button>`}</div>
-      <button class="labkb" data-act="labdet" data-k="${x.id}"><b>${esc(x.n)}</b><span>${esc(x.d)}</span><span class="labtg"><em class="mod">${esc(x.mod)}</em><em class="risk s">Nur Anzeige</em><em class="risk">${esc(x.st)}</em></span></button></div>`;
+      <button class="labkb" data-act="labdet" data-k="${x.id}"><b>${esc(x.n)}</b><span>${esc(x.d)}</span><span class="labtg"><em class="mod">${esc(x.mod)}</em><em class="risk ${this._labK(x)[1]}">${this._labK(x)[0]}</em><em class="risk">${esc(x.st)}</em></span></button></div>`;
   }
   _labRender() {
     const sr = this.shadowRoot, mainEl = sr.getElementById("main"), st = this._lab0(), cat = this._labCat(), n = this._labCount();
-    const chips = [["all", `Alle (${cat.length})`], ["on", `Eingeschaltet (${n})`], ...this._labMods().map((m) => [m, cat.find((x) => x.mid === m).mod])];
-    const vis = cat.filter((x) => st.c === "all" || (st.c === "on" ? this._labOn(x.id) : x.mid === st.c));
+    const chips = [["all", `Alle (${cat.length})`], ["on", `Eingeschaltet (${n})`], ["s", "Nur Anzeige"], ["g", "Schaltet Geräte"], ...this._labMods().map((m) => [m, cat.find((x) => x.mid === m).mod])];
+    const vis = cat.filter((x) => st.c === "all" || (st.c === "on" ? this._labOn(x.id) : st.c === "s" || st.c === "g" ? x.k === st.c : x.mid === st.c));
     mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Labs</b><span><em class="tag">Experimentelle Funktionen</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
@@ -4736,13 +4808,27 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="ov" data-act="close"></div><div class="sheet wide stosh" role="dialog" aria-modal="true">
       <div class="stohd"><span class="stoi big labi">${ic(x.i, 38)}</span><div><b>${esc(x.n)}</b><small>Labs · ${esc(x.mod)} ${esc(x.mn)}</small><div class="stoact">${x.soon ? `<span class="risk">In Vorbereitung</span>` : `<button class="btn2 pri" data-act="labtog" data-k="${x.id}" ${adm ? "" : "disabled"}>${on ? "Ausschalten" : "Einschalten"}</button>${on ? `<span class="stos ok">● Eingeschaltet</span>` : ""}`}</div></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="mut sm" style="margin:0 0 8px">${esc(x.d)}</div>
-      <div class="stofa"><div><b>${esc(x.mod)}</b><small>wird angezeigt in</small></div><div><b>Nur Anzeige</b><small>Art</small></div><div><b>${esc(x.st)}</b><small>Stand</small></div></div>
+      <div class="stofa"><div><b>${esc(x.mod)}</b><small>wird angezeigt in</small></div><div><b>${this._labK(x)[0]}</b><small>Art</small></div><div><b>${esc(x.st)}</b><small>Stand</small></div></div>
       <div class="lsec">${ic("check", 15)}Was du bekommst</div><ul class="stoul">${x.feats.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
       ${x.soon ? "" : `<div class="lsec">${ic("tools", 15)}So wird gerechnet</div>${x.how.map((t, n) => `<div class="stost"><b>${n + 1}</b><span>${esc(t)}</span></div>`).join("")}`}
       ${nd.length ? `<div class="lsec">${ic("info", 15)}Voraussetzungen</div><ul class="stoul">${nd.map(([t, ok]) => `<li>${ok ? "✓" : "✗"} ${esc(t)}</li>`).join("")}</ul>` : ""}
       ${x.f.length ? `<div class="lsec">${ic("sliders", 15)}Einstellungen dieser Funktion</div>${x.f.map((f) => this._labField(esc(f[1]), esc(f[2]), this._labStep(f, adm))).join("")}` : ""}
-      <div class="stowarn">${ic("alert", 16)}<span>Labs sind Experimente. Diese Funktion zeigt nur etwas an und schaltet nichts. Ausgeschaltet verschwindet sie aus ${esc(x.mod)}, die Einstellungen bleiben gespeichert.</span></div>
+      <div class="stowarn ${x.k === "g" ? "dng" : ""}">${ic("alert", 16)}<span>${x.k === "g" ? `<b>Diese Funktion greift in Geräte ein.</b> Du bestätigst das vor dem Einschalten. Ausgeschaltet schaltet sie nichts mehr. Fenster auf, Abwesend und die Sicherheitsgrenzen der Module haben weiter Vorrang.` : `Labs sind Experimente. Diese Funktion zeigt nur etwas an und schaltet nichts.`} Ausgeschaltet verschwindet sie aus ${esc(x.mod)}, die Einstellungen bleiben gespeichert.</span></div>
       <div class="foot2" style="margin-top:12px"><a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
+  }
+  _labOkModal(id) {
+    const x = this._labCat().find((y) => y.id === id); if (!x) return "";
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${esc(x.n)} einschalten?</b><span>Labs · ${esc(x.mod)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="stowarn dng">${ic("alert", 16)}<span><b>Diese Funktion greift in Geräte ein.</b> Sie ist ein Experiment und noch nicht überall erprobt.</span></div>
+      <ul class="stoul">${x.feats.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
+      <div class="mut sm">Beobachte die ersten Tage, ob alles wie gewünscht reagiert. Mit „Alle Labs aus“ ist sie sofort wieder aus.</div>
+      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="labgo" data-k="${esc(id)}">Einschalten</button></div></div>`;
+  }
+  _labChange(t) {
+    const k = String(t.dataset.f || "").replace("labf_", ""), c = this._labCfg();
+    if (!/^lk_cal$/.test(k)) return false;
+    this._labSet({ cfg: { ...c.cfg, [k]: t.value } }); return true;
   }
   _labSetModal() {
     const t = this._labCfg();
@@ -4761,7 +4847,8 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "labdet") { this._modal = { type: "labdet", id: k }; this._renderModal(); }
     else if (a === "labset") { this._modal = { type: "labset" }; this._renderModal(); }
     else if (a === "labtz") { const c = this._labCfg(); this._labSet({ [k]: !c[k] }); }
-    else if (a === "labtog") { const c = this._labCfg(), x = this._labCat().find((y) => y.id === k); if (!x || x.soon) return; this._labSet({ on: c.on.includes(k) ? c.on.filter((y) => y !== k) : [...c.on, k] }); }
+    else if (a === "labtog") { const c = this._labCfg(), x = this._labCat().find((y) => y.id === k); if (!x || x.soon) return; if (x.k === "g" && !c.on.includes(k)) { this._modal = { type: "labok", id: k }; this._renderModal(); return; } this._labSet({ on: c.on.includes(k) ? c.on.filter((y) => y !== k) : [...c.on, k] }); }
+    else if (a === "labgo") { const c = this._labCfg(); this._modal = null; this._labSet({ on: c.on.includes(k) ? c.on : [...c.on, k] }); this._renderModal(); }
     else if (a === "laboff") { this._labSet({ on: [] }); this._toast("Alle Labs sind aus"); }
     else if (a === "labstep") { const c = this._labCfg(), v = Math.min(Number(b.dataset.hi), Math.max(Number(b.dataset.lo), Math.round((this._labV(k) + Number(b.dataset.s)) * 100) / 100)); this._labSet({ cfg: { ...c.cfg, [k]: v } }); }
   }

@@ -313,6 +313,9 @@ class WallboxManager:
             dp = who.get("dep") or {}
             if who["kind"] == "vehicle" and dp.get("on"):  # eigene Abfahrt dieses Fahrzeugs
                 cfg = {**cfg, "planSoc": dp["soc"], "planTime": dp["time"], "planDays": dp["days"]}
+        lab = self.hass.data.get(DOMAIN, {}).get("labs")
+        if lab is not None:
+            cfg = lab.wb_cfg(cfg)  # Lab „Ladeziel nach Kalender“
         # Jemand hat von Hand umgestellt: nicht dagegen regeln
         for k, v in self._last_set.items():
             if cur.get(k) is not None and cur[k] != v and (k == "frc" or cur.get("frc") == 2):

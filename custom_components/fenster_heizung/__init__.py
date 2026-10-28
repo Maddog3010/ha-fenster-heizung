@@ -28,6 +28,7 @@ from .general import GeneralManager
 from .geraete import GeraeteManager
 from .hersteller import logic as hs_logic, lookup as hs_lookup
 from .sicherheit import SicherheitManager
+from .labs import LabsManager
 from .solar import SolarManager
 from .wetter import WetterManager
 from .wasser import WasserManager
@@ -558,6 +559,9 @@ class WindowController:
             return None  # Sommermodus: Heizplan ruht
         if self._plan_enabled():
             cur = self.plan_current()
+            lab = self.hass.data.get(DOMAIN, {}).get("labs")
+            if cur and lab is not None:
+                cur = lab.vh_point(self, cur) or cur  # Lab „Smart Vorheizen“: Plan früher starten
             if cur:
                 delta = mgr.delta_for(self.cfg) if mgr is not None else 0.0
                 temp = min(max(cur[1] + delta, PLAN_MIN_TEMP), PLAN_MAX_TEMP)
@@ -1181,6 +1185,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "solar" not in store:
         store["solar"] = SolarManager(hass)
         await store["solar"].async_start()
+    if "labs" not in store:
+        store["labs"] = LabsManager(hass)
+        await store["labs"].async_start()
     if "sicherheit" not in store:
         store["sicherheit"] = SicherheitManager(hass)
         await store["sicherheit"].async_start()
@@ -1230,6 +1237,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             spm = hass.data.get(DOMAIN, {}).pop("solar", None)
             if spm is not None:
                 spm.async_stop()
+            lbm = hass.data.get(DOMAIN, {}).pop("labs", None)
+            if lbm is not None:
+                lbm.async_stop()
             sfm = hass.data.get(DOMAIN, {}).pop("sicherheit", None)
             if sfm is not None:
                 sfm.async_stop()
