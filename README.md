@@ -5,15 +5,17 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.9-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.10-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Ein Dashboard für Heizung, Strom und Haus in Home Assistant.**
-„Strom & Wärme“ pausiert Heizkörper bei offenem Fenster, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer, Warmwasser und das Auto, zeigt, woher der Strom deiner Geräte kommt, und warnt vor Unwetter und Rauch. Alles steht in einer eigenen Seite in der Seitenleiste, 16 Module, die du einzeln ein- und ausschaltest.
+„Strom & Wärme“ pausiert Heizkörper bei offenem Fenster, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer, Warmwasser und das Auto, zeigt, woher der Strom deiner Geräte kommt, und warnt vor Unwetter und Rauch. Alles steht in einer eigenen Seite in der Seitenleiste, 16 Module, die du einzeln ein- und ausschaltest, dazu Modul 17 „Müllabfuhr“ als Lab.
 
 <p align="center"><img src="docs/vorschau_desktop.png" width="760" alt="Dashboard auf dem Desktop"></p>
 
-## Neu in 3.0.2.9
+## Neu in 3.0.2.10
+- **Modul 17: Müllabfuhr (Lab):** Abholtermine aus einem Abfallkalender, Tonnen-Ampel zum Abhaken, nächste Abholungen, Monatskalender, Erinnerung am Vorabend aufs Handy, Ansage über einen Lautsprecher, Licht in der Farbe der Tonne, Hinweise bei Verschiebung, Sturm und Frost sowie Leerungen und Kosten. Das Modul und sein Store-Eintrag „Abfallkalender“ (waste_collection_schedule) gibt es nur, solange das Lab eingeschaltet ist. Die Karten lassen sich über **Anpassen** verschieben und ausblenden. [Mehr zu Modul 17](#modul-17-müllabfuhr-lab)
+- In 3.0.2.9 kamen vier Labs dazu, die Geräte schalten:
 - **Vier Labs, die Geräte schalten:** *Smart Vorheizen* (Heizplan startet früher), *Duschzeiten lernen* (Warmwasser vor gelernten Zapfzeiten vorheizen), *Legionellenschutz nach Sonne* (Lauf auf den sonnigeren Tag verschieben) und *Ladeziel nach Kalender* (Ziel-Ladestand der Wallbox). Sie sind ab Werk aus, tragen die Kennzeichnung „Schaltet Geräte“ und fragen vor dem Einschalten nach. [Mehr zu Labs](#labs-experimentelle-funktionen)
 - Davor: Labs mit den ersten Anzeige-Funktionen, Modul 16 „Solar-Prognose“, Kennzeichnung der Module in vier Stufen, Store für Integrationen, Herstellerprofile für Thermostate, Module 9 und 11, überarbeitetes Modul 8, neue Optik für Modul 1 bis 4.
 
@@ -64,6 +66,7 @@ Jedes Modul trägt im Kopfteil (am Desktop zusätzlich am Tab) eine Stufe:
 | 14 | Dynamischer Stromtarif | Beta | Stundenpreise, Preisverlauf, günstigste Zeiten |
 | 15 | Wartung & Erinnerungen | In Entwicklung | Termine und Betriebsstunden (Vorschau mit Beispielen) |
 | 16 | Solar-Prognose | Vorabversion | Prognose heute und morgen, Stundenverlauf, Prognose gegen tatsächlichen Ertrag |
+| 17 | Müllabfuhr | Lab | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend, Ansage und Licht. Erscheint nur bei eingeschaltetem Lab |
 
 <p align="center">
   <img src="docs/vorschau_handy_modul1.png" width="230" alt="Modul 1 auf dem Handy">
@@ -135,6 +138,7 @@ Diese Funktionen laufen im Backend von Home Assistant, auch bei geschlossenem Da
 | **Duschzeiten lernen** | 2 | Früh | Erkennt Warmwasser-Entnahmen aus dem Abkühlen des Speichers und lernt typische Zeiten für Werktage und Wochenende. Nach dem Lernzeitraum (Standard 14 Tage) heizt der Erzeuger den eingestellten Vorlauf (Standard 45 Min.) vor diesen Zeiten auf die Temperatur des Zeitplans. Der feste Zeitplan bleibt zusätzlich bestehen. |
 | **Legionellenschutz nach Sonne** | 2 | Test | Entscheidet am geplanten Tag zur Laufzeit: Reicht die Prognose aus Modul 16 (Standard ab 8 kWh), läuft der Schutz wie geplant, sonst am nächsten Tag mit besserer Prognose, höchstens um die eingestellten Tage (Standard 3). Ist der Schutz überfällig (mehr als 9 Tage), läuft er sofort. |
 | **Ladeziel nach Kalender** | 8 | Früh | Hebt den Ziel-Ladestand des Ladeplans an (Standard 90 %), wenn im gewählten Kalender in den nächsten 36 Stunden ein langer Termin (Standard ab 2 Stunden) beginnt. Es wird nur das Ziel geändert, nicht der Ladevorgang. Das Ziel wirkt, wenn der Ladeplan in Modul 8 an ist. |
+| **Müllabfuhr** | 17 | Früh | Schaltet das neue Modul 17 frei. Am Vorabend zur eingestellten Uhrzeit (Standard 18:30) schickt es eine Nachricht aufs Handy, sagt die Abholung über einen Lautsprecher an und lässt ein Licht in der Farbe der Tonne leuchten, bis sie als draußen markiert ist. Alles einzeln einstellbar, ab Werk aus, einmal pro Tag. Ausgeschaltet verschwinden Modul und Store-Eintrag, nichts wird mehr gesendet oder geschaltet. |
 
 <p align="center"><img src="docs/vorschau_labs_bestaetigung.png" width="520" alt="Bestätigung vor dem Einschalten"></p>
 
@@ -437,6 +441,25 @@ Zeigt den erwarteten Ertrag für heute und morgen, den bisherigen Ertrag des Tag
 
 Einrichtung: Einstellungen → Modul 16.
 
+### Modul 17: Müllabfuhr (Lab)
+<p align="center"><img src="docs/vorschau_modul_muell.png" width="760" alt="Modul 17: Müllabfuhr"></p>
+
+Das Modul ist ein Lab (Art „Schaltet Geräte“, Stand „Früh“). Du schaltest es unter **Labs → Müllabfuhr** ein und bestätigst vorher. Ausgeschaltet ist es komplett weg: die Seite in der Modul-Leiste, der Store-Eintrag und der Filter „Haus“. Die Einstellungen bleiben gespeichert.
+
+- **Tonnen:** Restmüll, Bio, Papier und Gelber Sack, einzeln ein- und ausschaltbar. Die Tonne wird orange, sobald am nächsten Tag abgeholt wird und die eingestellte Uhrzeit erreicht ist. Mit einem Tipp markierst du sie als draußen, nach der Abholung setzt sie sich von selbst zurück.
+- **Nächste Abholungen und Monatskalender:** mit den Farben der Tonnen.
+- **Erinnerung am Vorabend:** Nachricht an einen oder mehrere Benachrichtigungsdienste (`notify.*`, zum Beispiel die Mobile App), dazu „Später erinnern“ (eine Stunde). Sie kommt einmal pro Tag und nur für Tonnen, die noch nicht draußen stehen. Nach einem Neustart wird sie bis zwei Stunden nach der Uhrzeit nachgeholt.
+- **Ansage und Licht:** Sprachausgabe über einen Sprachdienst (`tts.*`) und einen Lautsprecher mit eigenem Text (`{tonnen}` steht für die Tonnen). Ein Licht leuchtet in der Farbe der Tonne und geht aus, wenn alle Tonnen draußen stehen.
+- **Hinweise:** Eine Abholung an einem anderen Wochentag als üblich (zum Beispiel nach einem Feiertag) und Sturm- oder Frostwarnungen aus Modul 9 an Abholtagen.
+- **Kosten:** Restmüll-Leerungen im Jahr, enthaltene Leerungen und Gebühr je weitere Leerung.
+- **Termine:** Sie kommen aus einem Kalender in Home Assistant. Am einfachsten ist die Community-Integration [waste_collection_schedule](https://github.com/mampfes/hacs_waste_collection_schedule), die viele Entsorger kennt. Sie ist **inoffiziell** und wird nicht von diesem Projekt gepflegt. Im Store erscheint sie als „Abfallkalender“, solange das Lab an ist. Der Kalender wird automatisch erkannt oder in den Einstellungen gewählt. Welche Tonne ein Termin ist, erkennt das Modul an Wörtern im Titel (zum Beispiel „rest“, „bio“, „papier“, „gelb“), die du anpassen kannst.
+- **Anpassen:** Wie in Modul 1 verschiebst du die Karten an den Griffen und blendest sie mit dem Auge aus. Das gilt für alle Nutzer, „Zurücksetzen“ stellt die Standard-Anordnung wieder her.
+
+<p align="center"><img src="docs/vorschau_modul_muell_anpassen.png" width="620" alt="Anpassen in Modul 17"> <img src="docs/vorschau_muell_handy.png" width="200" alt="Modul 17 auf dem Handy"></p>
+<p align="center"><img src="docs/vorschau_muell_einstellungen.png" width="460" alt="Einstellungen von Modul 17"> <img src="docs/vorschau_muell_store.png" width="460" alt="Store-Eintrag Abfallkalender"></p>
+
+Einrichtung: Einstellungen im Modul 17 (Knopf oben rechts). Ausgeschaltet bleibt die Integration waste_collection_schedule in Home Assistant installiert, du entfernst sie dort.
+
 ## Allgemeines
 
 ### Entitäten auswählen
@@ -473,6 +496,7 @@ Pro Raum:
 - Das Dashboard (`panel.js`) wird aus den Quelldateien in `frontend-src/parts` gebaut: `python3 frontend-src/build.py` (mit `--check` prüfen, ob die Datei aktuell ist).
 - Raumeinstellungen: `fenster_heizung/get_options`, `set_options` (nur Administratoren). Layout (Farben, Fotos, Symbole, Wetteranzeige, `store` mit `icon` und `tab`, `labs` mit `on`, `icon`, `tab` und `cfg`): `set_layout`. Allgemeines und Sicherung: `get_general`, `set_general`, `get_update`, `get_learning`, `restore`. Diagnose: `get_diag`, `clear_diag`. Module: `get_modules`, `set_modules`, `set_wasser`, `wasser_cmd`. Das Backend prüft alle Werte, Änderungen sind nur für Administratoren erlaubt.
 - **Labs:** `labs_get` (Lernstand der Duschzeiten, Stand des Legionellenschutzes, Kalendertermin). Ein- und Ausschalten und Werte laufen über `set_layout` (`labs`).
+- **Modul 17:** `mu_get` (Termine, Tonnen-Status, Monat, Kosten, Hinweise), `mu_set` (`cfg`, nur Administratoren), `mu_act` (`act` = `done`, `undo` oder `snooze`, mit `bin` bei `done` und `undo`), `mu_test` (Testmeldung, nur Administratoren). Anordnung der Karten: `set_layout` (`mu` mit `order` und `hidden`).
 - **Modul 16:** `sp_get` (Prognose, Stundenwerte, Verlauf, Abweichung) und `sp_set` (`cfg` mit `src` = `forecast` oder `sensor`, `fc_sensor`, `act`, `mode` = `day` oder `total`, nur Administratoren).
 - **Modul 11:** `sf_get`, `sf_set`, `sf_test`, `sf_tested`, `sf_press`.
 - **Modul 9:** `wx_get` (Einstellungen, Warnlage, Vorhersage, offene Fenster, Protokoll), `wx_set` (`cfg`, nur Administratoren), `wx_test` (Testmeldung, gibt `sent` zurück).

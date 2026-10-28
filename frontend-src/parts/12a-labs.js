@@ -60,6 +60,13 @@
         how: ["Das Lab liest den nächsten Termin der gewählten Kalender-Entität.", "Dauert er mindestens so lange wie eingestellt, gilt das höhere Ziel, sonst das Ziel aus dem Ladeplan.", "Geschaltet wird nur das Ziel, nicht der Ladevorgang selbst. Die Regelung von Modul 8 bleibt maßgeblich."],
         needs: () => [["Kalender in Home Assistant", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Wallbox-Regelung in Modul 8", !!(this._mdState().on.ev !== false)]],
         f: [["lk_cal", "Kalender", "Aus diesem Kalender wird der nächste Termin gelesen", "sel"], ["lk_hi", "Ziel bei langem Termin", "Ziel-Ladestand für lange Termine", "%", 60, 100, 10], ["lk_dur", "Als lang gilt ab", "Dauer des Termins", "Std.", 1, 6, 1]] },
+      { id: "mm", k: "g", mid: "mu", mod: "Modul 17", mn: "Müllabfuhr", n: "Müllabfuhr", st: "Früh", i: "trash",
+        d: "Neues Modul 17: Abholtermine aus deinem Abfallkalender, Tonnen-Ampel, Erinnerung am Vorabend, Ansage und Licht.",
+        feats: ["Nächste Abholungen und Monatskalender für Rest, Bio, Papier und Gelben Sack", "Tonnen-Ampel: am Vorabend orange, nach dem Abhaken grün", "Nachricht aufs Handy zu einer Uhrzeit, die du einstellst", "Ansage über einen Lautsprecher und Licht in der Farbe der Tonne", "Hinweise bei verschobenen Terminen, Sturm und Frost", "Leerungen und Kosten im Jahr"],
+        how: ["Die Termine liest das Modul aus einem Kalender von Home Assistant, zum Beispiel dem von waste_collection_schedule. Den Eintrag dafür gibt es im Store, solange dieses Lab an ist.", "Der Titel jedes Termins wird den Tonnen zugeordnet. Die Erkennungswörter kannst du in den Einstellungen ändern.", "Am Vorabend zur eingestellten Uhrzeit schickt das Modul die Nachricht, sagt sie an und schaltet das Licht, wenn du das eingeschaltet hast. Einmal pro Tag, und nur für Tonnen, die noch nicht als draußen markiert sind."],
+        needs: () => [["Abfallkalender in Home Assistant (waste_collection_schedule)", this._muHasWcs()], ["Ein Kalender mit den Abholterminen", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Benachrichtigungsdienst für die Erinnerung (optional)", Object.keys((this._hass.services || {}).notify || {}).some((n) => !["send_message", "reload", "persistent_notification"].includes(n))]],
+        after: "Ausgeschaltet verschwinden Modul 17 und der Eintrag „Abfallkalender“ im Store. Gesendet und geschaltet wird dann nichts mehr. Die Einstellungen bleiben gespeichert. Die Integration waste_collection_schedule selbst bleibt in Home Assistant installiert, sie entfernst du dort.",
+        f: [] },
       { id: "st", mid: "en", mod: "Modul 3", mn: "Energie", n: "Spartipp der Woche", st: "Idee", i: "tools", soon: true,
         d: "Kurzer Hinweis, welches Gerät oder welche Uhrzeit den meisten Netzstrom kostet, mit Vorschlag.",
         feats: ["Größter Netzbezug der Woche", "Konkreter Vorschlag mit geschätzter Ersparnis"], how: ["Noch in Vorbereitung."], needs: () => [], f: [] },
@@ -96,7 +103,7 @@
   }
   /* Karten oben in der Seite des Moduls */
   _labCards(mid) {
-    return this._labCat().filter((x) => x.mid === mid && this._labOn(x.id) && !x.soon).map((x) => {
+    return this._labCat().filter((x) => x.mid === mid && x.id !== "mm" && this._labOn(x.id) && !x.soon).map((x) => {
       let body = ""; try { body = this["_lab_" + x.id](); } catch (e) { body = `<div class="mut sm">Diese Funktion kann gerade nichts anzeigen.</div>`; }
       return this._labCard(x, body);
     }).join("");
@@ -210,7 +217,7 @@
       ${x.soon ? "" : `<div class="lsec">${ic("tools", 15)}So wird gerechnet</div>${x.how.map((t, n) => `<div class="stost"><b>${n + 1}</b><span>${esc(t)}</span></div>`).join("")}`}
       ${nd.length ? `<div class="lsec">${ic("info", 15)}Voraussetzungen</div><ul class="stoul">${nd.map(([t, ok]) => `<li>${ok ? "✓" : "✗"} ${esc(t)}</li>`).join("")}</ul>` : ""}
       ${x.f.length ? `<div class="lsec">${ic("sliders", 15)}Einstellungen dieser Funktion</div>${x.f.map((f) => this._labField(esc(f[1]), esc(f[2]), this._labStep(f, adm))).join("")}` : ""}
-      <div class="stowarn ${x.k === "g" ? "dng" : ""}">${ic("alert", 16)}<span>${x.k === "g" ? `<b>Diese Funktion greift in Geräte ein.</b> Du bestätigst das vor dem Einschalten. Ausgeschaltet schaltet sie nichts mehr. Fenster auf, Abwesend und die Sicherheitsgrenzen der Module haben weiter Vorrang.` : `Labs sind Experimente. Diese Funktion zeigt nur etwas an und schaltet nichts.`} Ausgeschaltet verschwindet sie aus ${esc(x.mod)}, die Einstellungen bleiben gespeichert.</span></div>
+      <div class="stowarn ${x.k === "g" ? "dng" : ""}">${ic("alert", 16)}<span>${x.k === "g" ? `<b>Diese Funktion greift in Geräte ein.</b> Du bestätigst das vor dem Einschalten. Ausgeschaltet schaltet sie nichts mehr. Fenster auf, Abwesend und die Sicherheitsgrenzen der Module haben weiter Vorrang.` : `Labs sind Experimente. Diese Funktion zeigt nur etwas an und schaltet nichts.`} ${x.after ? esc(x.after) : `Ausgeschaltet verschwindet sie aus ${esc(x.mod)}, die Einstellungen bleiben gespeichert.`}</span></div>
       <div class="foot2" style="margin-top:12px"><a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
   }
   _labOkModal(id) {

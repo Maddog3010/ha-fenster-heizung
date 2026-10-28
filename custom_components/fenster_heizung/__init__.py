@@ -29,6 +29,7 @@ from .geraete import GeraeteManager
 from .hersteller import logic as hs_logic, lookup as hs_lookup
 from .sicherheit import SicherheitManager
 from .labs import LabsManager
+from .muell import MuellManager
 from .solar import SolarManager
 from .wetter import WetterManager
 from .wasser import WasserManager
@@ -1188,6 +1189,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "labs" not in store:
         store["labs"] = LabsManager(hass)
         await store["labs"].async_start()
+    if "muell" not in store:
+        store["muell"] = MuellManager(hass)
+        await store["muell"].async_start()
     if "sicherheit" not in store:
         store["sicherheit"] = SicherheitManager(hass)
         await store["sicherheit"].async_start()
@@ -1240,6 +1244,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             lbm = hass.data.get(DOMAIN, {}).pop("labs", None)
             if lbm is not None:
                 lbm.async_stop()
+            mum = hass.data.get(DOMAIN, {}).pop("muell", None)
+            if mum is not None:
+                mum.async_stop()
             sfm = hass.data.get(DOMAIN, {}).pop("sicherheit", None)
             if sfm is not None:
                 sfm.async_stop()

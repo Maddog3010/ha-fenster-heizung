@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.10] - 2026-10-28
+### Neu
+- **Modul 17: Müllabfuhr (Lab)** (neue Datei `muell.py`, WS-Befehle `mu_get`, `mu_set`, `mu_act`, `mu_test`), ab Werk aus und mit Bestätigung vor dem Einschalten (Art „Schaltet Geräte“):
+  - Termine aus einem Kalender von Home Assistant, zum Beispiel von waste_collection_schedule. Tonnen Restmüll, Bio, Papier und Gelber Sack werden über Wörter im Titel erkannt (einstellbar).
+  - Seite mit Tonnen-Ampel zum Abhaken, nächsten Abholungen, Monatskalender, Hinweisen (Verschiebung, Sturm, Frost), Erinnerung, Ansage, Licht und Kosten.
+  - Erinnerung am Vorabend zur eingestellten Uhrzeit: Nachricht aufs Handy, Ansage über einen Lautsprecher und Licht in der Farbe der Tonne. Einmal pro Tag, nur für Tonnen, die noch nicht draußen stehen, mit „Später erinnern“.
+  - **Anpassen** wie in Modul 1: Karten verschieben und ausblenden (`layout.mu` mit `order` und `hidden`), gilt für alle Nutzer.
+  - Das Modul, die Meldungen und der Store-Eintrag „Abfallkalender“ (mit Filter „Haus“) gibt es nur, solange das Lab eingeschaltet ist.
+### Geändert
+- Labs-Infoseite kann einen eigenen Hinweis zum Ausschalten zeigen.
+- README: neuer Abschnitt zu Modul 17.
+
 ## [3.0.2.9] - 2026-10-28
 ### Neu
 - **Vier Labs, die Geräte schalten** (neue Datei `labs.py`, WS-Befehl `labs_get`), ab Werk aus und mit Bestätigung vor dem Einschalten:

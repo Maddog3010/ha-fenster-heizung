@@ -365,6 +365,7 @@
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
     if (m.type === "sfset") { box.innerHTML = this._sfxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "spset") { box.innerHTML = this._spModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "stodet") { box.innerHTML = this._stoModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -599,7 +600,7 @@
     d.t = best; if (!best) return;
     const r = best.getBoundingClientRect(), cols = getComputedStyle(d.container).gridTemplateColumns.split(" ").length;
     const sameRow = Math.abs(r.top + r.height / 2 - d.y) < r.height / 2;
-    d.after = d.group === "room" && cols > 1 && sameRow ? d.x > r.left + r.width / 2 : d.y > r.top + r.height / 2;
+    d.after = (d.group === "room" || d.group === "mublk") && cols > 1 && sameRow ? d.x > r.left + r.width / 2 : d.y > r.top + r.height / 2;
     best.classList.add(d.after ? "drop-after" : "drop-before");
   }
   _dragEnd(commit) {
@@ -613,7 +614,8 @@
       if (d.group === "room") {
         const all = this._collect().map((r) => r.id), slots = all.map((id, i) => (ids.includes(id) ? i : -1)).filter((i) => i >= 0);
         slots.forEach((pos, k) => (all[pos] = ids[k])); this._cfg.layout.rooms = all;
-      } else this._cfg.layout.blocks = ids;
+      } else if (d.group === "mublk") this._cfg.layout.mu = { ...(this._cfg.layout.mu || {}), order: ids };
+      else this._cfg.layout.blocks = ids;
       this._saveLayout();
     }
     this._drag = null; this._dragging = false; this._render();

@@ -142,6 +142,15 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
         sc = {k: store[k] for k in ("icon", "tab") if isinstance(store.get(k), bool)}
         if sc:
             out["store"] = sc
+    mu = raw.get("mu")
+    if isinstance(mu, dict):
+        mc: dict[str, Any] = {}
+        for key in ("order", "hidden"):
+            v = mu.get(key)
+            if isinstance(v, list):
+                mc[key] = [x for x in dict.fromkeys(v) if isinstance(x, str) and x in MU_BLOCKS]
+        if mc:
+            out["mu"] = mc
     labs = raw.get("labs")
     if isinstance(labs, dict):
         lc: dict[str, Any] = {k: labs[k] for k in ("icon", "tab") if isinstance(labs.get(k), bool)}
@@ -158,7 +167,8 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk"}
+MU_BLOCKS = {"tonnen", "next", "cal", "rem", "hint", "cost"}
+LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm"}
 LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "lf_days", "vh_dk", "vh_max", "dz_days", "dz_lead", "ld_wait", "ld_min", "lk_hi", "lk_dur"}
 
 
@@ -666,6 +676,50 @@ async def ws_wx_set(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], await mgr.async_set(msg["cfg"]))
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mu_get"})
+@websocket_api.async_response
+async def ws_mu_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("muell")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Müllabfuhr ist noch nicht bereit")
+        return
+    await _layout(hass)
+    connection.send_result(msg["id"], await mgr.snapshot())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mu_set", vol.Required("cfg"): dict})
+@websocket_api.async_response
+async def ws_mu_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("muell")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Müllabfuhr ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.async_set(msg["cfg"]))
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mu_act", vol.Required("act"): vol.In(["done", "undo", "snooze"]), vol.Optional("bin"): str})
+@websocket_api.async_response
+async def ws_mu_act(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("muell")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Müllabfuhr ist noch nicht bereit")
+        return
+    act, k = msg["act"], str(msg.get("bin") or "")
+    connection.send_result(msg["id"], await (mgr.async_done(k) if act == "done" else mgr.async_undo(k) if act == "undo" else mgr.async_snooze()))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mu_test"})
+@websocket_api.async_response
+async def ws_mu_test(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("muell")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Müllabfuhr ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.async_test())
+
+
 @websocket_api.require_admin
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wx_test"})
 @websocket_api.async_response
@@ -765,6 +819,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
-        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get,
+        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test,
     ):
         websocket_api.async_register_command(hass, command)

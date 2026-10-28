@@ -92,6 +92,12 @@
     const hp = this._hsProfiles(), cnt = {}; ids.filter((k) => k.startsWith("climate.")).forEach((k) => { const id = this._hsOf(k); if (id) cnt[id] = (cnt[id] || 0) + 1; });
     for (const id of Object.keys(hp)) { const x = hp[id], n = cnt[id] || 0;
       out.push({ id: "hs_" + id, d: x.d, n: x.n, sub: x.sub, cat: "heizung", c: x.c, i: "thermo", mid: "fh", mods: ["Modul 1"], on: n > 0, top: 1, nodot: 1, conn: x.conn, src: x.src, st: n ? `${n} ${n === 1 ? "Thermostat" : "Thermostate"} in Home Assistant gefunden` : "", desc: x.desc, feats: x.feats, quirks: x.quirks, steps: x.steps, note: x.note }); }
+    if (this._labOn("mm")) { const n = ids.filter((k) => (E[k] || {}).platform === "waste_collection_schedule").length;
+      out.push({ id: "wcs", d: "waste_collection_schedule", n: "Abfallkalender", sub: "waste_collection_schedule", cat: "haus", c: "#16a34a", i: "trash", mid: "mu", mods: ["Modul 17"], on: n > 0, top: 1, hacs: "https://github.com/mampfes/hacs_waste_collection_schedule", conn: "Cloud", src: "Community", st: n ? `${n} ${n === 1 ? "Entität" : "Entitäten"} · genutzt von Modul 17` : "",
+        desc: "Holt die Abholtermine deines Entsorgers in einen Kalender von Home Assistant. Dafür gibt es Hunderte Anbieter.",
+        feats: ["Termine für Restmüll, Bio, Papier und Gelben Sack als Kalender", "Modul 17 zeigt sie an und erinnert am Vorabend", "Kennt viele Entsorger in Deutschland, Österreich und der Schweiz"],
+        steps: ["Community-Integration in HACS als benutzerdefiniertes Repository (Kategorie „Integration“) hinzufügen, die Adresse steht hinter „Anleitung“", "Home Assistant neu starten und unter Geräte & Dienste „Waste Collection Schedule“ hinzufügen, dann den Entsorger wählen", "Fertig: Der Kalender erscheint automatisch in Modul 17, oder du wählst ihn in den Einstellungen des Moduls"],
+        note: "Inoffiziell, von der Community gepflegt. Der Eintrag erscheint nur, solange das Lab „Müllabfuhr“ eingeschaltet ist. Ausgeschaltet verschwindet er hier wieder, die Integration selbst bleibt in Home Assistant, bis du sie dort entfernst." }); }
     out.forEach((x) => { x.tag = x.src === "Community" ? "Inoffiziell" : x.conn === "Cloud" ? "Konto nötig" : "In HA einrichten"; });
     return out;
   }
@@ -127,7 +133,7 @@
     const sr = this.shadowRoot, mainEl = sr.getElementById("main"), ae = sr.activeElement;
     if (ae && mainEl.contains(ae) && (ae.tagName === "SELECT" || ae.classList.contains("stoq"))) return; /* offene Auswahl und Suchfeld nicht durch das automatische Aktualisieren stören */
     const prevOpen = [...mainEl.querySelectorAll("details")].map((d) => d.open), st = this._sto0(), cat = this._stoCat();
-    const chips = [["all", "Alle"], ["on", `Verbunden (${cat.filter((x) => x.on).length})`], ["tarif", "Strom & Tarife"], ["auto", "Elektroauto"], ["heizung", "Heizung"], ["wetter", "Wetter"], ["sicherheit", "Sicherheit"]];
+    const chips = [["all", "Alle"], ["on", `Verbunden (${cat.filter((x) => x.on).length})`], ["tarif", "Strom & Tarife"], ["auto", "Elektroauto"], ["heizung", "Heizung"], ["wetter", "Wetter"], ["sicherheit", "Sicherheit"], ...(cat.some((x) => x.cat === "haus") ? [["haus", "Haus"]] : [])];
     const keep = mainEl.querySelector(".wrap") ? mainEl.scrollTop : 0;
     mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
