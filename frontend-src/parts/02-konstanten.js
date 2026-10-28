@@ -179,3 +179,20 @@ const EF_POS = {
 const EF_SIDES = [["top", "Oben"], ["bottom", "Unten"], ["left", "Links"], ["right", "Rechts"]];
 const EF_COLORS = ["#facc15", "#f97316", "#38bdf8", "#a78bfa", "#2dd4bf", "#f472b6", "#4ade80"];
 const EF_FLOWS = [["consume", "Verbraucht", "Energie fließt vom Haus zur Kachel"], ["supply", "Liefert", "Energie fließt von der Kachel ins Haus, zum Beispiel Solar"], ["both", "Beides, ein Sensor", "Netz oder Akku mit Vorzeichen: positiv = zur Kachel"], ["split", "Beides, zwei Sensoren", "Zum Beispiel Bezug und Einspeisung getrennt"]];
+/* Logos der Modul-Banner: Linien-Symbole, class="f" füllt halbtransparent */
+const MOD_ART = {
+  fh: `<rect x="8" y="8" width="34" height="32" rx="4"/><path d="M25 8v32M8 24h34"/><path d="M8 48h30M12 44v10M19 44v10M26 44v10M33 44v10"/><path d="M52 58c-5 0-8-3-8-7 0-5 5-7 5-12 4 3 11 7 11 12 0 4-4 7-8 7z" class="f"/>`,
+  ww: `<rect x="18" y="6" width="28" height="46" rx="12" class="f"/><path d="M23 28c3-3 6 3 9 0s6 3 9 0M23 37c3-3 6 3 9 0s6 3 9 0"/><path d="M32 52v6M24 58h16"/><path d="M46 18h6v10"/>`,
+  en: `<path d="M6 32 32 9l26 23"/><path d="M12 28v26h40V28"/><path d="M35 22 25 38h8l-3 12 11-16h-8z" class="f"/>`,
+  gs: `<rect x="10" y="6" width="44" height="52" rx="7"/><path d="M10 18h44"/><circle cx="32" cy="38" r="13" class="f"/><circle cx="32" cy="38" r="6"/><circle cx="19" cy="12" r="1.6"/><circle cx="26" cy="12" r="1.6"/>`,
+  ev: `<path d="M5 40l6-14c1-3 4-5 7-5h22c3 0 5 1 7 3l9 12c1 1 2 3 2 5v4H5z" class="f"/><circle cx="19" cy="46" r="6"/><circle cx="46" cy="46" r="6"/><path d="M31 8l-5 9h7l-4 9"/>`,
+  wx: `<circle cx="22" cy="20" r="8" class="f"/><path d="M22 4v4M8 20H4M10 8l3 3M34 8l-3 3"/><path d="M18 54a11 11 0 0 1 1-21 15 15 0 0 1 29 5 8 8 0 0 1 0 16z" class="f"/>`,
+  ga: `<path d="M20 58h24l-3-16H23z" class="f"/><path d="M32 42V22"/><path d="M32 32c-11 0-15-7-15-16 9 0 15 5 15 16z"/><path d="M32 27c9 0 13-5 13-12-8 0-13 5-13 12z"/><path d="M52 12c-3 4-4 6-4 8a4 4 0 0 0 8 0c0-2-1-4-4-8z"/>`,
+  sf: `<path d="M32 5 9 14v17c0 14 9 22 23 28 14-6 23-14 23-28V14z" class="f"/><path d="M21 32l8 8 15-17"/>`,
+  pl: `<circle cx="46" cy="16" r="7" class="f"/><path d="M6 36c6-6 10 6 16 0s10 6 16 0 10 6 16 0"/><path d="M6 48c6-6 10 6 16 0s10 6 16 0 10 6 16 0"/><path d="M10 30c0-9 3-14 8-14s8 5 8 14"/>`,
+  bt: `<rect x="6" y="18" width="46" height="28" rx="6" class="f"/><path d="M56 28v8"/><path d="M31 23l-8 11h7l-3 9 10-12h-7z"/>`,
+  dt: `<path d="M8 8v48h50"/><path d="M14 44l12-14 10 8 12-20 8 6"/><circle cx="26" cy="30" r="2.4"/><circle cx="36" cy="38" r="2.4"/><circle cx="48" cy="18" r="2.4"/>`,
+  wa: `<path d="M40 8a12 12 0 0 0-10 17L8 47l9 9 22-22a12 12 0 0 0 17-11l-8 8-7-2-2-7 8-8z" class="f"/>`,
+  sp: `<circle cx="22" cy="20" r="8" class="f"/><path d="M22 4v4M22 32v4M6 20h4M34 20h4M11 9l3 3M33 9l-3 3M11 31l3-3"/><path d="M34 56V42M44 56V34M54 56V24M30 58h28"/>`,
+  ef: `<path d="M18 30 32 18l14 12v16H18z" class="f"/><path d="M26 46V36h12v10"/><path d="M4 32h8M8 28l4 4-4 4M60 32h-8M56 28l-4 4 4 4"/><circle cx="32" cy="8" r="4"/><path d="M32 12v3"/>`,
+};

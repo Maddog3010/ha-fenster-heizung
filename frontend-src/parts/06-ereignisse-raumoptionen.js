@@ -9,6 +9,13 @@
     const rel = () => { clearTimeout(this._prT); this._prT = setTimeout(() => { this._press = false; if (this._prPend) { this._prPend = false; this._render(); } }, 60); };
     sr.addEventListener("pointerdown", (e) => { if (e.target.closest && e.target.closest("[data-act],[data-handle]")) { this._press = true; clearTimeout(this._prT); this._prT = setTimeout(() => { this._press = false; if (this._prPend) { this._prPend = false; this._render(); } }, 1500); } }, true);
     ["pointerup", "pointercancel", "click"].forEach((n) => sr.addEventListener(n, rel, true));
+    /* Beim Wischen und Ausrollen (iPad, Handy, Mausrad) wird die Seite nicht neu aufgebaut. Ein Neuaufbau würde das Ausrollen anhalten und die Leiste ruckeln lassen. Danach wird nachgezogen. */
+    let tx = 0, ty = 0;
+    const hold = (ms) => { this._hold = Date.now() + ms; clearTimeout(this._holdT); this._holdT = setTimeout(() => { this._hold = 0; if (this._prPend) { this._prPend = false; this._render(); } }, ms + 40); };
+    sr.addEventListener("touchstart", (e) => { const t = e.touches[0]; if (t) { tx = t.clientX; ty = t.clientY; } this._tmv = false; }, { passive: true, capture: true });
+    sr.addEventListener("touchmove", (e) => { const t = e.touches[0]; if (t && Math.abs(t.clientX - tx) + Math.abs(t.clientY - ty) > 8) { this._tmv = true; hold(5000); } }, { passive: true, capture: true });
+    ["touchend", "touchcancel"].forEach((n) => sr.addEventListener(n, () => { if (this._tmv) { this._tmv = false; hold(1400); } }, { passive: true, capture: true }));
+    sr.addEventListener("wheel", () => hold(450), { passive: true, capture: true });
     sr.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (!b) return; if (e.detail !== 0 && !(this._pd && this._pd.s === sig(b) && Date.now() - this._pd.t < 2000)) return; if (b.dataset.act === "mdst" && Date.now() - (this._t0 || 0) < 1200) return; try { this._act(b.dataset.act, b); } catch (err) { console.error("fenster_heizung", b.dataset.act, err); this._toast("Fehler bei „" + b.dataset.act + "“: " + (err && err.message || err)); } });
     /* Wischen auf der Modulleiste soll nicht die Seitenleiste von Home Assistant öffnen. */
     sr.addEventListener("touchstart", (e) => { if (e.target.closest && e.target.closest(".mbar,.rdays,.sxl,.ohint")) e.stopPropagation(); }, { passive: true });

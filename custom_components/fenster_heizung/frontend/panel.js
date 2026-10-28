@@ -381,6 +381,23 @@ const EF_POS = {
 const EF_SIDES = [["top", "Oben"], ["bottom", "Unten"], ["left", "Links"], ["right", "Rechts"]];
 const EF_COLORS = ["#facc15", "#f97316", "#38bdf8", "#a78bfa", "#2dd4bf", "#f472b6", "#4ade80"];
 const EF_FLOWS = [["consume", "Verbraucht", "Energie fließt vom Haus zur Kachel"], ["supply", "Liefert", "Energie fließt von der Kachel ins Haus, zum Beispiel Solar"], ["both", "Beides, ein Sensor", "Netz oder Akku mit Vorzeichen: positiv = zur Kachel"], ["split", "Beides, zwei Sensoren", "Zum Beispiel Bezug und Einspeisung getrennt"]];
+/* Logos der Modul-Banner: Linien-Symbole, class="f" füllt halbtransparent */
+const MOD_ART = {
+  fh: `<rect x="8" y="8" width="34" height="32" rx="4"/><path d="M25 8v32M8 24h34"/><path d="M8 48h30M12 44v10M19 44v10M26 44v10M33 44v10"/><path d="M52 58c-5 0-8-3-8-7 0-5 5-7 5-12 4 3 11 7 11 12 0 4-4 7-8 7z" class="f"/>`,
+  ww: `<rect x="18" y="6" width="28" height="46" rx="12" class="f"/><path d="M23 28c3-3 6 3 9 0s6 3 9 0M23 37c3-3 6 3 9 0s6 3 9 0"/><path d="M32 52v6M24 58h16"/><path d="M46 18h6v10"/>`,
+  en: `<path d="M6 32 32 9l26 23"/><path d="M12 28v26h40V28"/><path d="M35 22 25 38h8l-3 12 11-16h-8z" class="f"/>`,
+  gs: `<rect x="10" y="6" width="44" height="52" rx="7"/><path d="M10 18h44"/><circle cx="32" cy="38" r="13" class="f"/><circle cx="32" cy="38" r="6"/><circle cx="19" cy="12" r="1.6"/><circle cx="26" cy="12" r="1.6"/>`,
+  ev: `<path d="M5 40l6-14c1-3 4-5 7-5h22c3 0 5 1 7 3l9 12c1 1 2 3 2 5v4H5z" class="f"/><circle cx="19" cy="46" r="6"/><circle cx="46" cy="46" r="6"/><path d="M31 8l-5 9h7l-4 9"/>`,
+  wx: `<circle cx="22" cy="20" r="8" class="f"/><path d="M22 4v4M8 20H4M10 8l3 3M34 8l-3 3"/><path d="M18 54a11 11 0 0 1 1-21 15 15 0 0 1 29 5 8 8 0 0 1 0 16z" class="f"/>`,
+  ga: `<path d="M20 58h24l-3-16H23z" class="f"/><path d="M32 42V22"/><path d="M32 32c-11 0-15-7-15-16 9 0 15 5 15 16z"/><path d="M32 27c9 0 13-5 13-12-8 0-13 5-13 12z"/><path d="M52 12c-3 4-4 6-4 8a4 4 0 0 0 8 0c0-2-1-4-4-8z"/>`,
+  sf: `<path d="M32 5 9 14v17c0 14 9 22 23 28 14-6 23-14 23-28V14z" class="f"/><path d="M21 32l8 8 15-17"/>`,
+  pl: `<circle cx="46" cy="16" r="7" class="f"/><path d="M6 36c6-6 10 6 16 0s10 6 16 0 10 6 16 0"/><path d="M6 48c6-6 10 6 16 0s10 6 16 0 10 6 16 0"/><path d="M10 30c0-9 3-14 8-14s8 5 8 14"/>`,
+  bt: `<rect x="6" y="18" width="46" height="28" rx="6" class="f"/><path d="M56 28v8"/><path d="M31 23l-8 11h7l-3 9 10-12h-7z"/>`,
+  dt: `<path d="M8 8v48h50"/><path d="M14 44l12-14 10 8 12-20 8 6"/><circle cx="26" cy="30" r="2.4"/><circle cx="36" cy="38" r="2.4"/><circle cx="48" cy="18" r="2.4"/>`,
+  wa: `<path d="M40 8a12 12 0 0 0-10 17L8 47l9 9 22-22a12 12 0 0 0 17-11l-8 8-7-2-2-7 8-8z" class="f"/>`,
+  sp: `<circle cx="22" cy="20" r="8" class="f"/><path d="M22 4v4M22 32v4M6 20h4M34 20h4M11 9l3 3M33 9l-3 3M11 31l3-3"/><path d="M34 56V42M44 56V34M54 56V24M30 58h28"/>`,
+  ef: `<path d="M18 30 32 18l14 12v16H18z" class="f"/><path d="M26 46V36h12v10"/><path d="M4 32h8M8 28l4 4-4 4M60 32h-8M56 28l-4 4 4 4"/><circle cx="32" cy="8" r="4"/><path d="M32 12v3"/>`,
+};
 const CSS = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -804,7 +821,35 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 .pillbtn.lab{color:#a78bfa}.ldot{background:#8b5cf6!important;color:#fff!important}
 .mtab.labt{background:linear-gradient(120deg,#6d28d9,#a21caf);border-color:transparent;color:#fff}.mtab.labt small{color:rgba(255,255,255,.75)}.mtab.labt .sdot{top:-6px;right:-4px}
 .labban{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px dashed color-mix(in srgb,#8b5cf6 55%,transparent);background:color-mix(in srgb,#8b5cf6 8%,transparent);margin-bottom:12px;font-size:.85rem;color:var(--mut)}.labban b{display:block;color:var(--primary-text-color);margin-bottom:2px}.labban>svg{flex:none;color:#a78bfa}
-.labk{position:relative;display:flex;flex-direction:column;gap:6px;border-radius:16px;border:1px solid var(--line);background:var(--card-background-color,#1c1c1c);padding:12px}.labk.on{border-color:#8b5cf6;box-shadow:0 0 0 1px #8b5cf6 inset}.labk.soon{opacity:.75}
+.labk{position:relative;display:flex;flex-direction:column;gap:6px;border-radius:16px;border:1px solid var(--line);background:var(--card-background-color,#1c1c1c);padding:12px}.mbadge.sp,.sxc.sp{display:inline-flex;align-items:center;gap:4px;color:#f472b6;border-color:color-mix(in srgb,#f472b6 55%,transparent);background:color-mix(in srgb,#f472b6 12%,transparent)}
+.labk.spk{border-color:color-mix(in srgb,#f472b6 55%,var(--line));background:linear-gradient(160deg,color-mix(in srgb,#f472b6 9%,var(--card)),var(--card) 60%)}.labk.spk.on{border-color:#f472b6;box-shadow:0 0 0 1px #f472b6 inset}
+.spkb{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;margin-bottom:2px;padding:4px 10px;border-radius:999px;background:#f472b6;color:#3b0a24;font-size:.72rem;font-weight:800;letter-spacing:.03em}
+.spnote{display:flex;align-items:center;gap:10px;margin:0 0 10px;padding:10px 12px;border-radius:14px;border:1px solid color-mix(in srgb,#f472b6 55%,transparent);background:color-mix(in srgb,#f472b6 12%,transparent);color:var(--primary-text-color)}.spnote>span{flex:1;min-width:0;font-size:.86rem}.spnote b{display:block;color:#f472b6}.spnote svg{color:#f472b6;flex:none}.spnote .btn2{width:auto;flex:none;padding:8px 14px}
+/* Einheitliches Banner aller Module: Text links, Logo-Feld rechts */
+.hero.mh{min-height:168px;background:radial-gradient(120% 140% at 88% 0%,color-mix(in srgb,var(--a1,#14b8a6) 78%,#000) 0%,transparent 58%),linear-gradient(135deg,color-mix(in srgb,var(--a1,#14b8a6) 34%,var(--a2,#0b3b45)) 0%,var(--a2,#0b3b45) 100%)}
+.hero.mh.hs{background:#0b2c43}
+.mlogo{position:absolute;right:20px;top:50%;transform:translateY(-50%);width:108px;height:108px;border-radius:30px;display:grid;place-items:center;background:linear-gradient(145deg,rgba(255,255,255,.2),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.28);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 10px 26px rgba(0,0,0,.22);color:#fff;z-index:1}
+.mlogo svg{width:66%;height:66%;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}.mlogo .f{fill:rgba(255,255,255,.24)}
+.hero.mh .lbl,.hero.mh .sub{max-width:calc(100% - 160px)}.hero.mh .big{max-width:calc(100% - 150px)}.hero.mh .big.bs{font-size:2.1rem;line-height:1.15;letter-spacing:-.02em}
+.hero.mh .chips{position:relative;z-index:1;margin-top:12px}
+.hero.mh .chips .chip{white-space:nowrap}
+.a-ev{--a1:#818cf8;--a2:#1e1b4b}.a-ga{--a1:#4ade80;--a2:#0b2e1a}.a-pl{--a1:#22d3ee;--a2:#0a2f3b}.a-bt{--a1:#a3e635;--a2:#1a2e0a}.a-dt{--a1:#a78bfa;--a2:#2a1458}.a-wa{--a1:#fb923c;--a2:#3b1d0a}.a-sp{--a1:#fbbf24;--a2:#3b2a05}.a-ef{--a1:#2dd4bf;--a2:#0b3b45}.a-wx{--a1:#38bdf8;--a2:#0c2a43}.a-sf{--a1:#34d399;--a2:#064e3b}.a-fh{--a1:#2dd4bf;--a2:#0b2c43}.a-ww{--a1:#22d3ee;--a2:#0c4a6e}.a-en{--a1:#14b8a6;--a2:#064e3b}.a-gs{--a1:#fbbf24;--a2:#d97706}
+.gshero .mlogo{color:#1b1500;background:linear-gradient(145deg,rgba(255,255,255,.45),rgba(255,255,255,.18));border-color:rgba(27,21,0,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 22px rgba(120,53,15,.25)}.gshero .mlogo svg{filter:none}.gshero .mlogo .f{fill:rgba(27,21,0,.16)}.gshero.mh{background:linear-gradient(135deg,#e9a413,#f59e0b 60%,#d97706)}.gshero .chip{background:rgba(27,21,0,.12);border-color:rgba(27,21,0,.18);color:#1b1500}
+.a-wx.wxsoon{--a1:#fbbf24;--a2:#3b2a07}.a-wx.wxhot{--a1:#f87171;--a2:#3b0d0d}.a-wx.wxok{--a1:#38bdf8;--a2:#0c2a43}
+.sfh.mh .big{max-width:calc(100% - 150px)}.sfh.mh .sub{max-width:calc(100% - 160px)}
+@media(min-width:720px){.hero.mh .big{font-size:3.3rem}.hero.mh .big.bs,.sfh.mh .big{font-size:2.4rem}.mlogo{width:128px;height:128px;right:28px;border-radius:34px}}
+@media(max-width:560px){.hero.mh{min-height:150px;padding-top:20px}.mlogo{width:76px;height:76px;border-radius:22px;right:14px;top:18px;transform:none}.hero.mh .lbl,.hero.mh .sub,.hero.mh .big,.sfh.mh .big,.sfh.mh .sub{max-width:calc(100% - 96px)}.hero.mh .big.bs,.sfh.mh .big{font-size:1.5rem}.hero.mh .big{font-size:2.3rem}}
+.mring{position:absolute;right:164px;top:50%;transform:translateY(-50%);width:112px;height:112px;z-index:1}
+.mring svg{width:100%;height:100%}.mring .rb{fill:none;stroke:rgba(255,255,255,.2);stroke-width:10}.mring .rf{fill:none;stroke:#fff;stroke-width:10;stroke-linecap:round}
+.mring .rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}.mring .rv b{font-size:1.7rem;line-height:1;letter-spacing:-.02em}.mring .rv small{font-size:.8rem;font-weight:600;margin-left:1px}.mring .rv span{font-size:.7rem;opacity:.85;margin-top:3px}
+.gshero .mring .rb{stroke:rgba(27,21,0,.16)}.gshero .mring .rf{stroke:#1b1500}.gshero .mring .rv{color:#1b1500}
+.hero.mh.hr .lbl,.hero.mh.hr .sub,.hero.mh.hr .big{max-width:calc(100% - 320px)}
+.wwh .mlogo{top:24px;transform:none}
+.wwrow{display:grid;grid-template-columns:minmax(210px,260px) 1fr;gap:12px;align-items:stretch}.wwrow .tiles{grid-template-columns:repeat(2,1fr);align-content:stretch}
+.wwtkc{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0}.wwtkc h2{align-self:flex-start}.wwtkc .wwtank{width:100%;max-width:230px}
+@media(max-width:720px){.wwrow{grid-template-columns:1fr}.wwrow .tiles{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.hero.mh.hr{min-height:200px}.wwh .mlogo{top:18px}.mring{right:auto;left:auto;top:auto;bottom:16px;right:16px;transform:none;width:78px;height:78px}.mring .rv b{font-size:1.15rem}.mring .rv span{display:none}.hero.mh.hr .lbl,.hero.mh.hr .sub,.hero.mh.hr .big{max-width:calc(100% - 96px)}.hero.mh.hr .chips{padding-right:92px}}
+.labk.on{border-color:#8b5cf6;box-shadow:0 0 0 1px #8b5cf6 inset}.labk.soon{opacity:.75}
 .labkt{display:flex;justify-content:space-between;align-items:center}.labkt .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#6d28d9,#a21caf);color:#fff}
 .labkb{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;font-size:.82rem;color:var(--mut)}.labkb b{font-size:.98rem;color:var(--primary-text-color)}.labkb:focus-visible{outline:2px solid #8b5cf6;outline-offset:4px;border-radius:8px}
 .labtg{display:flex;flex-wrap:wrap;gap:6px}.labtg em{font-style:normal;font-size:.68rem;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--primary-text-color,#fff) 10%,transparent)}
@@ -1057,9 +1102,9 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .luroom{display:grid;gap:3px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:.8rem}.luroom b{font-size:.92rem}.luroom .lv{font-size:1.5rem;font-weight:750}
 .luroom .lv.green{color:#34d399}.luroom .lv.amber{color:#f59e0b}.luroom .lv.red{color:#f87171}.luroom.off{opacity:.55}
 .lusoon{display:flex;align-items:center;gap:14px;opacity:.65;border-style:dashed}.lusoon>svg{flex:none;color:var(--mut)}.lusoon div{flex:1;display:grid;gap:2px}.lusoon .beta{margin:0}
-.mbar{display:flex;gap:8px;overflow-x:auto;max-width:1180px;margin:0 auto;padding:12px 14px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scroll-snap-type:x proximity;scroll-padding:0 14px;touch-action:pan-x pan-y}
+.mbar{display:flex;gap:8px;overflow-x:auto;max-width:1180px;margin:0 auto;padding:12px 14px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x pan-y}
 .mbar::-webkit-scrollbar{display:none}
-.mtab{scroll-snap-align:start;position:relative;flex:none;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:8px 14px 8px 11px;cursor:pointer;text-align:left;color:var(--mut)}
+.mtab{position:relative;flex:none;display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--card);border-radius:16px;padding:8px 14px 8px 11px;cursor:pointer;text-align:left;color:var(--mut)}
 .mtab span{display:block;line-height:1.15}.mtab small{display:block;font-size:.68rem;opacity:.85}.mtab b{display:block;font-size:.9rem;color:var(--primary-text-color);white-space:nowrap}
 .mtab.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 13%,var(--card));color:var(--teal)}
 .mtab.add{border-style:dashed;background:transparent}
@@ -2196,7 +2241,7 @@ class FensterHeizungPanel extends HTMLElement {
 
   /* Die Modulleiste behält beim Neuzeichnen ihre Scrollposition. Beim Wechsel des Moduls wird das gewählte Tab in die Mitte geholt. */
   _render() {
-    if (this._press) { this._prPend = true; return; }
+    if (this._press || (this._hold && Date.now() < this._hold)) { this._prPend = true; return; }
     const sr0 = this.shadowRoot, ae0 = sr0 && sr0.activeElement;
     /* Läuft gerade eine Eingabe (Uhrzeit, Zahl, Text), wird die Seite nicht neu aufgebaut. Home Assistant meldet laufend neue Werte, das würde das Feld mitten im Tippen wegwerfen. Nach dem Verlassen des Feldes wird nachgezogen. */
     if (ae0 && ae0.tagName === "INPUT" && ["time", "date", "number", "text"].includes(ae0.type) && !ae0.classList.contains("stoq") && sr0.getElementById("main") && sr0.getElementById("main").contains(ae0)) {
@@ -2232,7 +2277,7 @@ class FensterHeizungPanel extends HTMLElement {
     const dateStr = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const tiles = [["day", "today", "Heute", "var(--teal)"], ["month", "month", "Monat", "#60a5fa"], ["year", "year", "Jahr", "#a78bfa"], ["total", "total", "Gesamt", "#f472b6"]];
     const content = {
-      hero: () => `<div class="card hero${this._heroCfg().mode !== "standard" ? " hs" : ""}">${this._heroBg()}${this._art()}
+      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}">${this._heroBg()}${this._modLogo("fh")}
         <div class="lbl">${ic("flame", 16)}Heute ${F.short} gespart (geschätzt)</div>
         <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>${this._wx()}
         <div class="chips">${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
@@ -2273,6 +2318,13 @@ class FensterHeizungPanel extends HTMLElement {
     const rel = () => { clearTimeout(this._prT); this._prT = setTimeout(() => { this._press = false; if (this._prPend) { this._prPend = false; this._render(); } }, 60); };
     sr.addEventListener("pointerdown", (e) => { if (e.target.closest && e.target.closest("[data-act],[data-handle]")) { this._press = true; clearTimeout(this._prT); this._prT = setTimeout(() => { this._press = false; if (this._prPend) { this._prPend = false; this._render(); } }, 1500); } }, true);
     ["pointerup", "pointercancel", "click"].forEach((n) => sr.addEventListener(n, rel, true));
+    /* Beim Wischen und Ausrollen (iPad, Handy, Mausrad) wird die Seite nicht neu aufgebaut. Ein Neuaufbau würde das Ausrollen anhalten und die Leiste ruckeln lassen. Danach wird nachgezogen. */
+    let tx = 0, ty = 0;
+    const hold = (ms) => { this._hold = Date.now() + ms; clearTimeout(this._holdT); this._holdT = setTimeout(() => { this._hold = 0; if (this._prPend) { this._prPend = false; this._render(); } }, ms + 40); };
+    sr.addEventListener("touchstart", (e) => { const t = e.touches[0]; if (t) { tx = t.clientX; ty = t.clientY; } this._tmv = false; }, { passive: true, capture: true });
+    sr.addEventListener("touchmove", (e) => { const t = e.touches[0]; if (t && Math.abs(t.clientX - tx) + Math.abs(t.clientY - ty) > 8) { this._tmv = true; hold(5000); } }, { passive: true, capture: true });
+    ["touchend", "touchcancel"].forEach((n) => sr.addEventListener(n, () => { if (this._tmv) { this._tmv = false; hold(1400); } }, { passive: true, capture: true }));
+    sr.addEventListener("wheel", () => hold(450), { passive: true, capture: true });
     sr.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (!b) return; if (e.detail !== 0 && !(this._pd && this._pd.s === sig(b) && Date.now() - this._pd.t < 2000)) return; if (b.dataset.act === "mdst" && Date.now() - (this._t0 || 0) < 1200) return; try { this._act(b.dataset.act, b); } catch (err) { console.error("fenster_heizung", b.dataset.act, err); this._toast("Fehler bei „" + b.dataset.act + "“: " + (err && err.message || err)); } });
     /* Wischen auf der Modulleiste soll nicht die Seitenleiste von Home Assistant öffnen. */
     sr.addEventListener("touchstart", (e) => { if (e.target.closest && e.target.closest(".mbar,.rdays,.sxl,.ohint")) e.stopPropagation(); }, { passive: true });
@@ -3255,7 +3307,7 @@ class FensterHeizungPanel extends HTMLElement {
       return row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", chip);
     }).join("");
     const ext = s.ext.map((x) => row("puzzle", `<i>Eigenes Modul</i> ${esc(x.name)}`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join("");
-    const offG = off.map((m) => `<button class="sxoff" data-act="mdtog" data-k="${m.id}"><span class="sxi">${ic(m.icon, 18)}</span><span class="sxt"><b>${esc(m.name)}</b><small>Modul ${m.n}${m.sponsor ? " · nur für Sponsoren" : ""}</small></span><em class="sxc">Einschalten</em></button>`).join("");
+    const offG = off.map((m) => `<button class="sxoff" data-act="mdtog" data-k="${m.id}"><span class="sxi">${ic(m.icon, 18)}</span><span class="sxt"><b>${esc(m.name)}</b><small>Modul ${m.n}</small></span>${m.sponsor ? `<em class="sxc sp">${ic("heart", 11)}Nur Sponsoren</em>` : `<em class="sxc">Einschalten</em>`}</button>`).join("");
     const soon = MOD_SOON.map((x) => `<div class="sxoff soon"><span class="sxi">${ic(x[0], 18)}</span><span class="sxt"><b>${esc(x[1])}</b><small>${esc(x[2])}</small></span><em class="sxc">Bald</em></div>`).join("");
     const grp = (ico, ttl, sub, body) => `<div class="sxh2"><span class="sxhi">${ic(ico, 16)}</span><b>${ttl}</b><small>${sub}</small></div>${body}`;
     sr.getElementById("main").innerHTML = `
@@ -4202,7 +4254,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="gsrows"><div class="gsrow"><span class="mut">Heute</span><b>${eur(d.day.cost)} Kosten</b><em>${eur(d.day.saved)} gespart</em></div>
         <div class="gsrow"><span class="mut">Letzter Durchlauf</span><b>${d.last ? eur(d.last.cost) + " · " + num(d.last.kwh, 2) + " kWh" : "noch keiner"}</b><em>${d.last ? num(d.last.share, 0) + " % Eigenanteil" : ""}</em></div></div>
         ${adv ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung ${num(d.cover, 0)} %</span></div>` : ""}</div>`; }).join("");
-    return `${warn}<div class="card hero gshero">${(() => { const e0 = sum((d) => d.e[0] + d.e[1]), et = sum((d) => d.e[0] + d.e[1] + d.e[2]), pc = et > 0 ? Math.round(e0 / et * 100) : 0; return `<div class="gsring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="rb"/><circle cx="60" cy="60" r="50" class="rf" stroke-dasharray="${(pc * 3.1416).toFixed(1)} 314.2" transform="rotate(-90 60 60)"/></svg><div class="rv"><b>${pc}<small>%</small></b><span>Eigenstrom</span></div></div>`; })()}<div class="mut" style="opacity:.85">${ic("laundry", 16)} Heute gespart</div><div class="gsbig">${eur(sum((d) => d.day.saved))}</div><div style="opacity:.85">${num(sum((d) => d.day.runs))} ${sum((d) => d.day.runs) === 1 ? "Durchlauf" : "Durchläufe"} heute · ${num(sum((d) => d.day.kwh), 1)} kWh</div></div>
+    return `${warn}<div class="card hero mh hr a-gs gshero">${this._modLogo("gs")}${(() => { const e0 = sum((d) => d.e[0] + d.e[1]), et = sum((d) => d.e[0] + d.e[1] + d.e[2]); return this._modRing(et > 0 ? Math.round(e0 / et * 100) : 0, "Eigenstrom"); })()}<div class="mut" style="opacity:.85">${ic("laundry", 16)} Heute gespart</div><div class="gsbig">${eur(sum((d) => d.day.saved))}</div><div style="opacity:.85">${num(sum((d) => d.day.runs))} ${sum((d) => d.day.runs) === 1 ? "Durchlauf" : "Durchläufe"} heute · ${num(sum((d) => d.day.kwh), 1)} kWh</div></div>
       <div class="gstiles">${tiles}</div><div class="gsgrid">${cards}</div>${this._gsChart(D, devs, cols, srcN)}`;
   }
   _gsChart(D, devs, cols, srcN) {
@@ -4355,7 +4407,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (st === "dev") return `<div class="betabox dvbox">${ic("alert", 20)}<div><b>In Entwicklung – diese Seite zeigt Beispielwerte</b>Das Modul steuert noch nichts. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`;
     return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
   _betaSoon(ico, t, d) { return `<div class="card lusoon">${ic(ico, 26)}<div><b>${t}</b><span class="mut">${d}</span></div><em class="beta">In Entwicklung</em></div>`; }
-  _betaPage(id) { return id === "ef" ? this._efPage() : id === "sp" ? this._spPage() : id === "wa" ? this._waPage() : id === "bt" ? this._btPage() : id === "dt" ? this._dtPage() : id === "sf" ? this._sfPage() : id === "pl" ? this._plPage() : id === "wx" ? this._wxPage() : id === "ga" ? this._gaPage() : id === "ev" ? this._evPage() : id === "rb" ? this._rbPage() : id === "wp" ? this._wpPage() : this._luPage(); }
+  _betaPage(id) { return this._modHeroFor(id) + (id === "ef" ? this._efPage() : id === "sp" ? this._spPage() : id === "wa" ? this._waPage() : id === "bt" ? this._btPage() : id === "dt" ? this._dtPage() : id === "sf" ? this._sfPage() : id === "pl" ? this._plPage() : id === "wx" ? this._wxPage() : id === "ga" ? this._gaPage() : id === "ev" ? this._evPage() : id === "rb" ? this._rbPage() : id === "wp" ? this._wpPage() : this._luPage()); }
   /* Modul 16: Solar-Prognose (Vorabversion) – Daten und Tagesvergleich laufen im Backend (solar.py) */
   _vorabBox(txt) { return `<div class="vabox">${ic("sun", 20)}<div><b>Vorabversion – funktioniert, ist aber noch nicht endgültig</b>Aussehen und Einstellungen können sich noch ändern. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
   _spLoad(force) {
@@ -4594,7 +4646,7 @@ class FensterHeizungPanel extends HTMLElement {
       : al.length ? [`${al.length} ${al.length === 1 ? "Alarm" : "Alarme"} aktiv`, al.map((x) => x.name + (x.area ? " (" + x.area + ")" : "")).join(", ")]
         : bad === "warn" ? ["Alles ruhig, aber es gibt Hinweise", [low.length ? `${low.length} ${low.length === 1 ? "Batterie ist" : "Batterien sind"} schwach` : "", off.length ? `${off.length} nicht erreichbar` : "", tst.due ? "Prüfung fällig" : ""].filter(Boolean).join(" · ")]
           : ["Alles in Ordnung", `${l.length} ${l.length === 1 ? "Melder meldet" : "Melder melden"} keinen Alarm, alle erreichbar und mit guter Batterie`];
-    const hero = `<div class="card hero sfh ${bad}"><div class="sfi">${ic(bad === "alarm" ? "alert" : bad === "warn" ? "info" : "shield", 56)}</div><div class="lbl">${ic("shield", 16)}Sicherheit im Haus</div><div class="big">${esc(msg[0])}</div><div class="sub">${esc(msg[1])}</div>
+    const hero = `<div class="card hero mh a-sf sfh ${bad}">${this._modLogo("sf")}<div class="lbl">${ic("shield", 16)}Sicherheit im Haus</div><div class="big">${esc(msg[0])}</div><div class="sub">${esc(msg[1])}</div>
       <div class="chips"><span class="chip">${ic("shield", 16)}${l.length} ${l.length === 1 ? "Melder" : "Melder"}</span>${low.length ? `<span class="chip st warn">${ic("alert", 16)}${low.length} Batterie schwach</span>` : ""}${off.length ? `<span class="chip st warn">${ic("alert", 16)}${off.length} nicht erreichbar</span>` : ""}${tst.due ? `<span class="chip st warn">${ic("clock", 16)}Prüfung fällig</span>` : ""}${C.notify.to.length ? `<span class="chip">${ic("bell", 16)}Meldung an ${C.notify.to.length} ${C.notify.to.length === 1 ? "Dienst" : "Dienste"}</span>` : `<span class="chip">${ic("bell", 16)}Keine Meldung eingerichtet</span>`}</div></div>`;
     const tiles = `<div class="tiles">${[
       ["shield", "Melder", String(l.length), "", "#2dd4bf", "In Home Assistant gefunden"],
@@ -4762,8 +4814,7 @@ class FensterHeizungPanel extends HTMLElement {
           <path d="${line}" class="wxln"/>${vals.map((v, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${(fc[i].w || []).length ? 3.6 : 2.4}" class="${(fc[i].w || []).length ? "wxdb" : "wxd"}"/>`).join("")}</svg>
         <div class="wxh" style="grid-template-columns:repeat(${n},1fr)">${fc.map((x) => `<div class="${(x.w || []).length ? "bad" : ""}" title="${(x.w || []).length ? x.w.map((k) => NM[k]).join(", ") : "Keine Warnung"}"><small>${hm(x.t).slice(0, 2)}</small>${ic((WX[x.cond] || ["cloud"])[0], 18)}<b>${isFinite(x.temp) ? num(x.temp, 0) + "°" : "–"}</b></div>`).join("")}</div></div>`;
     } else if (C.ahead.on) chart = `<div class="wxnote">${ic("info", 15)}Keine Stundenvorhersage von der Wetter-Entität. Die Vorwarnung braucht sie.</div>`;
-    const hero = `<div class="card wxhero ${tone}"><div class="wxhead"><span class="wxdot" aria-hidden="true">${ic(tone === "ok" ? "check" : "alert", 22)}</span><div><b>${esc(head)}</b><small>${esc(sub)}</small></div></div>
-      ${now ? `<div class="wxnow">${now}</div>` : ""}${chart}</div>`;
+    const hero = `${this._modHero("wx", { icon: "partly", lbl: "Wetter & Warnungen", big: head, small: true, sub, cls: "wx" + tone })}<div class="card wxhero ${tone}">${now ? `<div class="wxnow">${now}</div>` : ""}${chart}</div>`;
     /* Warnstufen: je ein Pegel gegen die eingestellte Grenze */
     const gauge = (k) => {
       const c = C.warn[k]; let v = null, fill = 0, mark = 0, val = "";
@@ -4882,7 +4933,7 @@ class FensterHeizungPanel extends HTMLElement {
   /* Labs: experimentelle Funktionen. Ein/Aus und Werte stehen im Layout (layout.labs), gelten für alle Nutzer.
      Eingeschaltet erscheinen sie als Karte mit Labs-Zeichen im passenden Modul, ausgeschaltet sind sie dort komplett weg. */
   _labCfg() { const l = (this._cfg && this._cfg.layout && this._cfg.layout.labs) || {}; return { on: Array.isArray(l.on) ? l.on : [], icon: l.icon !== false, tab: l.tab !== false, cfg: l.cfg && typeof l.cfg === "object" ? l.cfg : {} }; }
-  _labOn(id) { return this._labCfg().on.includes(id); }
+  _labOn(id) { if (id === "ef") return this._mdState().on.ef === true && !!this._spnS().active; return this._labCfg().on.includes(id); }
   _labV(k) { const d = { lx_diff: 0.5, ae_cons: 12, ae_share: 60, wl_wind: 6, lf_days: 14, vh_dk: 3, vh_max: 90, dz_days: 14, dz_lead: 45, ld_wait: 3, ld_min: 8, lk_hi: 90, lk_dur: 2 }, v = this._labCfg().cfg[k]; return typeof v === "number" && isFinite(v) ? v : d[k]; }
   _labStr(k) { const v = this._labCfg().cfg[k]; return typeof v === "string" ? v : ""; }
   _labSet(patch) { const c = this._labCfg(); this._cfg.layout.labs = { on: c.on, icon: c.icon, tab: c.tab, cfg: c.cfg, ...patch }; this._saveLayout(); setTimeout(() => this._labLoad(true), 900); this._render(); if (this._modal) this._renderModal(); }
@@ -4974,6 +5025,13 @@ class FensterHeizungPanel extends HTMLElement {
         needs: () => [["Lampen in Home Assistant (light.*)", Object.keys(this._hass.states).some((k) => k.startsWith("light."))], ["Räume (Bereiche) für die Lampen (optional)", Object.values(this._hass.entities || {}).some((e) => e && e.entity_id && e.entity_id.startsWith("light.") && (e.area_id || e.device_id))]],
         after: "Ausgeschaltet verschwindet Modul 18. Es wird nichts mehr geschaltet, die Einstellungen (verknüpfte Szenen, Räume) bleiben gespeichert. Eingeschaltete Lampen bleiben, wie sie sind.",
         f: [] },
+      { id: "ef", k: "s", modul: true, sponsor: true, mid: "ef", mod: "Modul 19", mn: "Hausfluss", n: "Hausfluss", st: "Beta", i: "energy",
+        d: "Neues Modul 19: dein Haus als Fluss-Bild mit Solar, Netz, Akku und Verbrauchern. Dauerhaft nur für Sponsoren.",
+        feats: ["Das Haus in der Mitte, bis zu 8 Kacheln drumherum (Solar, Netz, Akku, Auto, Verbraucher)", "Animierte Flusslinien zeigen Richtung und Stärke der Leistung", "Pro Kachel Bild, Farbe, Name und Werte frei wählbar", "Am Desktop und auf dem Handy, das Haus immer in der Mitte"],
+        how: ["Die Seite liest nur Leistungssensoren aus Home Assistant und zeigt sie an. Es wird nichts geschaltet.", "Hausverbrauch = Zufluss (Solar, Netzbezug, Akku-Entladung) minus Abfluss (Einspeisung, Akku-Ladung).", "Eingerichtet wird unter Einrichten auf der Seite des Moduls."],
+        needs: () => [["Aktiver Sponsor-Schlüssel", !!this._spnS().active], ["Leistungssensoren in Home Assistant (Solar, Netz, Akku)", Object.keys(this._hass.states).some((k) => k.startsWith("sensor."))]],
+        after: "Ausgeschaltet verschwindet Modul 19. Deine Kacheln bleiben gespeichert.",
+        f: [] },
       { id: "tg", k: "g", mid: "tg", mod: "Übergreifend", mn: "Tags & Karten", n: "Tags & Karten", st: "Früh", i: "nfc", early: "2026-11-11",
         d: "RFID-Karten und NFC-Sticker lösen feste Aktionen aus, zum Beispiel Abwesend, Warmwasser-Boost oder Licht aus.",
         feats: ["Karten oder Sticker anlernen: einmal an einen Leser halten, fertig", "Jeder Tag führt genau eine Aktion aus einer festen Liste aus, auch „Person ist zu Hause/unterwegs“", "Optional nur für bestimmte Personen und nur in einem Zeitfenster", "Rückmeldung per Handy-Nachricht, Ansage oder blinkendem Licht, dazu ein Protokoll"],
@@ -4985,7 +5043,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
   _labMods() { return [...new Set(this._labCat().map((x) => x.mid))]; }
-  _labCount(mid) { return this._labCat().filter((x) => this._labOn(x.id) && (!mid || x.mid === mid)).length; }
+  _labCount(mid) { return this._labCat().filter((x) => !x.modul && this._labOn(x.id) && (!mid || x.mid === mid)).length; }
   _labBtn() {
     if (!this._admin() || !this._labCfg().icon) return "";
     const n = this._labCount();
@@ -5014,7 +5072,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Karten oben in der Seite des Moduls */
   _labCards(mid) {
-    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb", "li"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
+    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb", "li", "ef"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
       let body = ""; try { body = this["_lab_" + x.id](); } catch (e) { body = `<div class="mut sm">Diese Funktion kann gerade nichts anzeigen.</div>`; }
       return this._labCard(x, body);
     }).join("");
@@ -5110,7 +5168,7 @@ class FensterHeizungPanel extends HTMLElement {
   _lab0() { if (!this._labS) this._labS = { c: "all" }; return this._labS; }
   _labCardEl(x) {
     const on = this._labOn(x.id), adm = this._admin();
-    return `<div class="labk ${on ? "on" : ""} ${x.soon ? "soon" : ""}"><div class="labkt"><span class="ico">${ic(x.i, 22)}</span>${x.soon ? `<em class="risk">Bald</em>` : `<button class="sw ${on ? "on" : ""}" data-act="labtog" data-k="${x.id}" aria-pressed="${on}" aria-label="${esc(x.n)} ${on ? "ausschalten" : "einschalten"}" ${adm ? "" : "disabled"}></button>`}</div>
+    return `<div class="labk ${on ? "on" : ""} ${x.soon ? "soon" : ""} ${x.sponsor ? "spk" : ""}">${x.sponsor ? `<div class="spkb">${ic("heart", 13)}Nur für Sponsoren</div>` : ""}<div class="labkt"><span class="ico">${ic(x.i, 22)}</span>${x.soon ? `<em class="risk">Bald</em>` : `<button class="sw ${on ? "on" : ""}" data-act="labtog" data-k="${x.id}" aria-pressed="${on}" aria-label="${esc(x.n)} ${on ? "ausschalten" : "einschalten"}" ${adm ? "" : "disabled"}></button>`}</div>
       <button class="labkb" data-act="labdet" data-k="${x.id}"><b>${esc(x.n)}</b><span>${esc(x.d)}</span><span class="labtg"><em class="mod">${esc(x.mod)}</em><em class="risk ${this._labK(x)[1]}">${this._labK(x)[0]}</em><em class="risk">${esc(x.st)}</em>${this._labIsEarly(x) ? `<em class="risk vab">Vorab bis ${this._labEarlyDate(x)}</em>` : ""}</span></button></div>`;
   }
   _labRender() {
@@ -5126,7 +5184,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="wrap"><div class="sxw stow">
         <div class="labban">${ic("flask", 22)}<div><b>Labs sind Experimente</b>Sie funktionieren schon, sind aber noch nicht überall erprobt. Eingeschaltet erscheinen sie im passenden Modul mit dem Zeichen <em class="labp">${ic("flask", 11)}Labs</em>. Ausgeschaltet sind sie dort wieder weg.</div></div>
         <div class="stoch">${chips.map(([k, t]) => `<button class="${st.c === k ? "on" : ""}" data-act="labc" data-k="${k}" aria-pressed="${st.c === k}">${esc(t)}</button>`).join("")}</div>
-        ${(() => { const ear = vis.filter((x) => this._labIsEarly(x)), rest = vis.filter((x) => !this._labIsEarly(x)); return `${ear.length ? `<div class="labsec">${ic("heart", 15)}Vorabversion für Sponsoren</div><div class="stog">${ear.map((x) => this._labCardEl(x)).join("")}</div>${rest.length ? `<div class="labsec" style="margin-top:14px">${ic("flask", 15)}Für alle</div>` : ""}` : ""}${rest.length ? `<div class="stog">${rest.map((x) => this._labCardEl(x)).join("")}</div>` : ear.length ? "" : `<div class="card empty">${ic("flask", 30)}<div style="margin-top:8px">Noch nichts eingeschaltet.</div></div>`}`; })()}
+        ${(() => { const spo = vis.filter((x) => x.sponsor), ear = vis.filter((x) => !x.sponsor && this._labIsEarly(x)), rest = vis.filter((x) => !x.sponsor && !this._labIsEarly(x)); return `${spo.length ? `<div class="labsec">${ic("heart", 15)}Nur für Sponsoren</div><div class="mut sm" style="margin:-2px 2px 8px">Diese Module gehören dauerhaft zu den Extras für Sponsoren und brauchen einen aktiven Sponsor-Schlüssel.</div><div class="stog">${spo.map((x) => this._labCardEl(x)).join("")}</div>${ear.length || rest.length ? `<div class="labsec" style="margin-top:14px">${ic("flask", 15)}Labs</div>` : ""}` : ""}${ear.length ? `<div class="labsec">${ic("heart", 15)}Vorabversion für Sponsoren</div><div class="stog">${ear.map((x) => this._labCardEl(x)).join("")}</div>${rest.length ? `<div class="labsec" style="margin-top:14px">${ic("flask", 15)}Für alle</div>` : ""}` : ""}${rest.length ? `<div class="stog">${rest.map((x) => this._labCardEl(x)).join("")}</div>` : ear.length ? "" : `<div class="card empty">${ic("flask", 30)}<div style="margin-top:8px">Noch nichts eingeschaltet.</div></div>`}`; })()}
         ${this._labTease()}
         <div class="mut sm" style="margin:14px 2px">Ideen und Fehler gern auf <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">GitHub</a> melden. Eine Funktion kann sich ändern, später fest eingebaut werden oder wieder entfallen.</div></div></div>`;
   }
@@ -5143,13 +5201,14 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="ov" data-act="close"></div><div class="sheet wide stosh" role="dialog" aria-modal="true">
       <div class="stohd"><span class="stoi big labi">${ic(x.i, 38)}</span><div><b>${esc(x.n)}</b><small>Labs · ${esc(x.mod)} ${esc(x.mn)}</small><div class="stoact">${x.soon ? `<span class="risk">In Vorbereitung</span>` : `<button class="btn2 pri" data-act="labtog" data-k="${x.id}" ${adm ? "" : "disabled"}>${on ? "Ausschalten" : "Einschalten"}</button>${on ? `<span class="stos ok">● Eingeschaltet</span>` : ""}`}</div></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="mut sm" style="margin:0 0 8px">${esc(x.d)}</div>
+      ${x.sponsor ? `<div class="spnote">${ic("heart", 18)}<span><b>Nur für Sponsoren</b>${this._spnS().active ? "Dein Sponsor-Schlüssel ist aktiv, du kannst das Modul einschalten." : "Zum Einschalten brauchst du einen aktiven Sponsor-Schlüssel."}</span>${this._spnS().active ? "" : `<button class="btn2" data-act="spnopen">Sponsor werden</button>`}</div>` : ""}
       <div class="stofa"><div><b>${esc(x.mod)}</b><small>wird angezeigt in</small></div><div><b>${this._labK(x)[0]}</b><small>Art</small></div><div><b>${esc(x.st)}${this._labIsEarly(x) ? ` · Vorab bis ${this._labEarlyDate(x)}` : ""}</b><small>Stand</small></div></div>
       <div class="lsec">${ic("check", 15)}Was du bekommst</div><ul class="stoul">${x.feats.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
       ${x.soon ? "" : `<div class="lsec">${ic("tools", 15)}So wird gerechnet</div>${x.how.map((t, n) => `<div class="stost"><b>${n + 1}</b><span>${esc(t)}</span></div>`).join("")}`}
       ${nd.length ? `<div class="lsec">${ic("info", 15)}Voraussetzungen</div><ul class="stoul">${nd.map(([t, ok]) => `<li>${ok ? "✓" : "✗"} ${esc(t)}</li>`).join("")}</ul>` : ""}
       ${x.f.length ? `<div class="lsec">${ic("sliders", 15)}Einstellungen dieser Funktion</div>${x.f.map((f) => this._labField(esc(f[1]), esc(f[2]), this._labStep(f, adm))).join("")}` : ""}
       <div class="stowarn ${x.k === "g" ? "dng" : ""}">${ic("alert", 16)}<span>${x.k === "g" ? `<b>Diese Funktion greift in Geräte ein.</b> Du bestätigst das vor dem Einschalten. Ausgeschaltet schaltet sie nichts mehr. Fenster auf, Abwesend und die Sicherheitsgrenzen der Module haben weiter Vorrang.` : `Labs sind Experimente. Diese Funktion zeigt nur etwas an und schaltet nichts.`} ${x.after ? esc(x.after) : `Ausgeschaltet verschwindet sie aus ${esc(x.mod)}, die Einstellungen bleiben gespeichert.`}</span></div>
-      <div class="foot2" style="margin-top:12px">${x.id === "tg" && on && adm ? `<button class="btn2" data-act="tgxopen">Tags verwalten</button>` : ""}<a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
+      <div class="foot2" style="margin-top:12px">${x.id === "ef" && on && adm ? `<button class="btn2" data-act="efxopen">Einrichten</button>` : ""}${x.id === "tg" && on && adm ? `<button class="btn2" data-act="tgxopen">Tags verwalten</button>` : ""}<a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
   }
   _labOkModal(id) {
     const x = this._labCat().find((y) => y.id === id); if (!x) return "";
@@ -5182,6 +5241,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "labdet") { this._modal = { type: "labdet", id: k }; this._renderModal(); }
     else if (a === "labset") { this._modal = { type: "labset" }; this._renderModal(); }
     else if (a === "labtz") { const c = this._labCfg(); this._labSet({ [k]: !c[k] }); }
+    else if ((a === "labtog" || a === "labgo") && k === "ef") { this._modal = null; this._mdAct("mdtog", b); }
     else if (a === "labtog") { const c = this._labCfg(), x = this._labCat().find((y) => y.id === k); if (!x || x.soon) return; if (x.k === "g" && !c.on.includes(k)) { this._modal = { type: "labok", id: k }; this._renderModal(); return; } this._labSet({ on: c.on.includes(k) ? c.on.filter((y) => y !== k) : [...c.on, k] }); }
     else if (a === "labgo") { const c = this._labCfg(); this._modal = null; this._labSet({ on: c.on.includes(k) ? c.on : [...c.on, k] }); this._renderModal(); }
     else if (a === "laboff") { this._labSet({ on: [] }); this._toast("Alle Labs sind aus"); }
@@ -6346,7 +6406,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (calc.src) chips.push(`Solar ${Math.round(nodes.filter((n) => n.flow === "supply").reduce((a, n) => a - this._efxNodeW(n), 0)).toLocaleString("de-DE")} W`);
       if (hub.top && this._hass.states[hub.top]) { const [v, u] = this._efxFmt(hub.top); chips.push(`Hausverbrauch heute ${v} ${u}`); }
       (hub.chips || []).forEach((id) => { if (this._hass.states[id]) { const [v, u] = this._efxFmt(id); chips.push(`${this._wzName(id)} ${v} ${u}`); } });
-      hero = `<div class="efhero"><small>${!isNaN(w) && w < 0 ? "Einspeisung jetzt" : !pe && hub.calc === "rest" ? "Restverbrauch jetzt" : "Hausverbrauch jetzt"}</small><div class="efbig"><b>${isNaN(w) ? "–" : Math.abs(Math.round(w)).toLocaleString("de-DE")}</b><span>W</span></div><div class="efchips">${chips.map((t) => `<span>${esc(t)}</span>`).join("")}</div></div>`;
+      hero = this._modHero("ef", { icon: "energy", lbl: !isNaN(w) && w < 0 ? "Einspeisung jetzt" : !pe && hub.calc === "rest" ? "Restverbrauch jetzt" : "Hausverbrauch jetzt", big: isNaN(w) ? "–" : Math.abs(Math.round(w)).toLocaleString("de-DE"), unit: "W", chips });
     }
     const hubCell = `<div class="efc hb" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
     setTimeout(() => this._efxLines(), 0);
@@ -6473,6 +6533,30 @@ class FensterHeizungPanel extends HTMLElement {
     if (f === "efximgc") { if (/^(mdi:[a-z0-9-]{2,60}|\/local\/[A-Za-z0-9_.\/-]{1,150}|https:\/\/\S{4,200})$/.test(v)) { d.image = v; this._renderModal(); } return true; }
     return false;
   }
+  /* ================= Einheitliches Banner für alle Module =================
+     Links Titelzeile, große Zahl, Zusatzzeile und Chips, rechts ein Logo-Feld mit dem Symbol des Moduls. */
+  _modLogo(id) { return `<div class="mlogo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${MOD_ART[id] || ""}</svg></div>`; }
+  _modRing(pct, label) {
+    const p = Math.max(0, Math.min(100, Math.round(pct)));
+    return `<div class="mring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="rb"/><circle cx="60" cy="60" r="50" class="rf" stroke-dasharray="${(p * 3.1416).toFixed(1)} 314.2" transform="rotate(-90 60 60)"/></svg><div class="rv"><b>${p}<small>%</small></b><span>${esc(label)}</span></div></div>`;
+  }
+  _modHero(id, o) {
+    const chips = (o.chips || []).filter(Boolean);
+    return `<div class="card hero mh a-${id}${o.cls ? " " + o.cls : ""}">${this._modLogo(id)}<div class="lbl">${ic(o.icon || "info", 16)}${esc(o.lbl)}</div><div class="big${o.small ? " bs" : ""}">${esc(o.big)}${o.unit ? `<small>${esc(o.unit)}</small>` : ""}</div>${o.sub ? `<div class="sub">${esc(o.sub)}</div>` : ""}${chips.length ? `<div class="chips">${chips.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>`;
+  }
+  /* Banner der Module ohne eigenes Banner (aus den Werten, die die Seite ohnehin zeigt) */
+  _modHeroFor(id) {
+    try {
+      if (id === "ev") { const d = this._evData(); return this._modHero("ev", { icon: "car", lbl: "Elektroauto & Wallbox", big: d.soc != null ? num(d.soc, 0) : "–", unit: d.soc != null ? "%" : "", sub: !d.any ? "Noch kein Fahrzeug eingerichtet" : d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt", chips: [d.range != null ? `Reichweite ${num(d.range, 0)} km` : "", d.odo != null ? `${num(d.odo, 0)} km gefahren` : ""] }); }
+      if (id === "ga") { const st = this._hass.states, c = this._wxCfg(), wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather.")), w = wid ? st[wid] : null, rainy = w && ["rainy", "pouring", "lightning-rainy", "snowy-rainy"].includes(w.state), pv = this._pvNow(); return this._modHero("ga", { icon: "plant", lbl: "Garten jetzt", big: w ? (rainy ? "Es regnet" : "Trocken") : "–", small: true, sub: w ? (rainy ? "Bewässern nicht nötig" : "Kein Regen gemeldet") : "Keine Wetter-Entität gefunden", chips: [pv != null ? `PV-Überschuss ${wfmt(pv)}` : ""] }); }
+      if (id === "pl") { const pv = this._pvNow(), pr = this._price(), o = this._out(); return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: pv != null ? wfmt(pv) : "–", small: true, sub: pv != null ? (pv >= 1000 ? "PV-Überschuss, gut für Pumpe und Heizung" : "PV-Überschuss, eher wenig") : "Noch kein Überschuss-Sensor gewählt", chips: [pr ? `${num(pr, 1)} ct/kWh` : "", o.t != null ? `${num(o.t, 1)} °C draußen` : ""] }); }
+      if (id === "bt") { const soc = this._soc(), pv = this._pvNow(); return this._modHero("bt", { icon: "energy", lbl: "Batteriespeicher", big: soc != null ? num(soc, 0) : "–", unit: soc != null ? "%" : "", sub: soc != null ? "Ladestand" : "Noch kein Ladestand-Sensor gewählt", chips: [pv != null ? `PV-Überschuss ${wfmt(pv)}` : ""] }); }
+      if (id === "dt") { const h = this._dtPrices(), now = new Date().getHours(); if (!h) return this._modHero("dt", { icon: "chart", lbl: "Dynamischer Stromtarif", big: "–", sub: "Noch keine Stundenpreise" }); const mn = Math.min(...h); return this._modHero("dt", { icon: "chart", lbl: "Strompreis jetzt", big: num(h[now], 1), unit: "ct/kWh", sub: `Günstigste Stunde ${h.indexOf(mn)}:00 Uhr mit ${num(mn, 1)} ct/kWh`, chips: [`Ø ${num(h.reduce((a, b) => a + b, 0) / 24, 1)} ct/kWh heute`] }); }
+      if (id === "wa") return this._modHero("wa", { icon: "tools", lbl: "Wartung & Erinnerungen", big: "2", unit: "bald fällig", sub: "Beispieleinträge, eigene Termine folgen", chips: ["Filter", "Schornsteinfeger", "Betriebsstunden"] });
+      if (id === "sp") { const S = this._sp(); if (!this._spD || S.error || !S.found) return this._modHero("sp", { icon: "sun", lbl: "Solar-Prognose", big: "–", sub: S && S.error ? "Prognose nicht geladen" : "Noch keine Prognose" }); return this._modHero("sp", { icon: "sun", lbl: "Solar heute (Prognose)", big: num(S.today, 1), unit: "kWh", sub: `Morgen ${num(S.tomorrow, 1)} kWh`, chips: [S.got != null ? `Bisher ${num(S.got, 1)} kWh` : ""] }); }
+    } catch (e) { return ""; }
+    return "";
+  }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
     return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
@@ -6507,7 +6591,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "mdbeta") { this._toast("Für dieses Modul gibt es in der Beta noch keine Einstellungen"); }
     else if (a === "mdensetup") { this._modal = { type: "enset" }; this._renderModal(); }
     else if (a === "mdtog") {
-      if (MODS.some((x) => x.id === k && x.sponsor) && s.on[k] !== true && !this._spnS().active) { this._modal = { type: "spndlg", err: "" }; this._renderModal(); return; }
+      if (MODS.some((x) => x.id === k && x.sponsor) && !this._spnS().active) { this._modal = { type: "spndlg", err: "" }; this._renderModal(); return; }
       if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else if (k === "gs") s.on.gs = s.on.gs === false; else if (MODS.some((m) => m.beta && m.id === k)) s.on[k] = s.on[k] !== true; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
       if (!this._mdList().some((x) => x.id === s.active)) this._mdActiveSet("fh");
       this._mdSave(); this._renderModal(); this._render();
@@ -6555,7 +6639,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${row("en", "energy", "Modul 3 – Energie-Übersicht", this._enConfigured() ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!this._enConfigured() && this._enOn() ? `<button class="btn2 pri" data-act="mdensetup">Einrichten</button>` : ""}${tog("en", this._enOn())}</span>`)}
       ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
       ${row("gs", "laundry", "Modul 4 – Gerätestrom", this._gsState().devices.length ? this._gsState().devices.length + (this._gsState().devices.length === 1 ? " Gerät" : " Geräte") : "Noch nicht eingerichtet", `<span class="mact">${tog("gs", s.on.gs !== false)}</span>`)}
-      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion" }[modSt(x)] + (x.sponsor ? " · nur für Sponsoren" : ""), `<span class="mact"><span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
+      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion" }[modSt(x)] + "", `<span class="mact">${x.sponsor ? `<span class="mbadge sp">${ic("heart", 11)}Nur Sponsoren</span>` : ""}<span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
       ${MOD_SOON.length ? `<div class="lsec">${ic("clock", 15)}Geplant</div>
       ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
       <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>
@@ -6728,10 +6812,10 @@ class FensterHeizungPanel extends HTMLElement {
     const pumpOn = this._wwIsOn(E.pump), rv = this._wwV(E.ret), legD = this._wwLegDays(), pvNow = this._pvNow(), srcMin = this._wwMinutesOn(E.src || E.rod), pumpMin = this._wwMinutesOn(E.pump);
     const circH = (W.circ[today] || []).reduce((a, x) => a + Math.max(0, wwTm(x.to) - wwTm(x.from)), 0) / 60;
     const probs = this._wwProblems(), hasGen = !!(E.src || E.rod), hasPump = !!E.pump;
-    const hero = `<div class="card hero wwh">
+    const hero = `<div class="card hero mh a-ww wwh">
       <div class="wwl1"><div class="lbl">${ic("drop", 16)}Warmwasser oben im Speicher</div>
       <div class="big">${t.top != null ? num(t.top, 1) : "–"}<small>°C</small></div><div class="sub">Soll ${num(want, 0)} °C · ${W.size} Liter</div></div>
-      <div class="wwtk">${this._wwTank(t)}</div>
+      ${this._modLogo("ww")}
       <div class="chips"><span class="chip st ${st[2]}">${ic(st[0], 16)}${st[1]}</span>${sh != null ? `<span class="chip">${ic("shower", 16)}Reicht für ca. ${sh} ${sh === 1 ? "Dusche" : "Duschen"}</span>` : ""}${E.pump ? `<span class="chip">${ic("drop", 16)}Zirkulation ${pumpOn ? "läuft" : "aus"}</span>` : ""}${W.pv.on && pvNow != null ? `<span class="chip">${ic("bolt", 16)}PV-Überschuss ${wfmt(pvNow)}</span>` : ""}</div>
       ${adm ? `<div class="wwacts"><button class="wwa ${W.boost ? "on" : ""}" data-act="wwboost" ${hasGen || W.boost ? "" : "disabled"} title="${hasGen ? "" : "Kein Wärmeerzeuger gewählt"}">${ic("flame", 17)}<span>${W.boost ? "Aufheizen stoppen" : "Einmal aufheizen"}</span>${hasGen || W.boost ? "" : "<small>Kein Erzeuger gewählt</small>"}</button><button class="wwa ${W.circ5 ? "on" : ""}" data-act="wwcirc5" ${E.pump ? "" : "disabled"}>${ic("clock", 17)}<span>${W.circ5 ? "Zirkulation läuft 5 Min." : "Zirkulation 5 Min."}</span>${E.pump ? "" : "<small>Keine Pumpe gewählt</small>"}</button><button class="wwa ${W.away ? "on" : ""}" data-act="wwaway">${ic("suitcase", 17)}<span>${W.away ? "Abwesend: an" : "Abwesend"}</span></button></div>` : ""}</div>`;
     const tiles = `<div class="tiles">${[
@@ -6775,7 +6859,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="gst ${E.rod ? "" : "on"}">${ic(E.rod ? "bolt" : "info", 15)}${E.rod ? (pvNow == null ? "Kein PV-Sensor gewählt." : pvNow >= pv.min ? `Aktuell ${wfmt(pvNow)} Überschuss – der Heizstab darf laufen.` : `Aktuell ${wfmt(pvNow)} Überschuss – zu wenig, Heizstab bleibt aus.`) : "Für PV-Heizung fehlt noch der Heizstab-Schalter in den Einstellungen."}</div>` : `<div class="mut sm">Aus.</div>`}</div>`;
     const dg = `<div class="card wwc"><h2>${ic("tools", 18)}Zustand</h2>${probs.map(([lv, ico, ti, tx]) => `<div class="dgs ${lv === "mut" ? "" : lv}">${ic(ico, 22)}<div><b>${esc(ti)}</b><span>${esc(tx)}</span></div><span></span></div>`).join("")}<div class="mut sm" style="margin:0">Hinweise erscheinen auch in der Gerätediagnose und als Meldung.</div></div>`;
     const o = (n, h) => h.replace('<div class="card', `<div style="order:${n}" class="card`);
-    return `${hero}${tiles}${chart}<div class="enc"><div class="enco">${o(1, heatC)}${o(3, legC)}</div><div class="enco">${o(2, circC)}${o(4, pvC)}</div></div>${dg}<div class="note">Das Modul schaltet nur die gewählten Geräte. Bei Überschuss hat der Warmwasser-Heizstab Vorrang vor den Raumheizern.</div>`;
+    return `${hero}<div class="wwrow"><div class="card wwtkc"><h2>${ic("drop", 18)}Speicher</h2>${this._wwTank(t)}</div>${tiles}</div>${chart}<div class="enc"><div class="enco">${o(1, heatC)}${o(3, legC)}</div><div class="enco">${o(2, circC)}${o(4, pvC)}</div></div>${dg}<div class="note">Das Modul schaltet nur die gewählten Geräte. Bei Überschuss hat der Warmwasser-Heizstab Vorrang vor den Raumheizern.</div>`;
   }
   _wwNum(label, hint, path, val, lo, hi, step, unit, adm) {
     return `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="wwnum" data-k="${path}" data-min="${lo}" data-max="${hi}" data-step="${step}" value="${val}" min="${lo}" max="${hi}" step="${step}" ${adm ? "" : "disabled"}><i>${unit}</i></span></div></div>`;
@@ -7067,7 +7151,7 @@ class FensterHeizungPanel extends HTMLElement {
     const heat = this._htrTotal(), ww = this._wwIsOn(this._mdState().ww.ent.rod) ? this._mdState().ww.pv.watt : 0, rest = Math.max(0, n.house - heat - ww);
     const self = sum && !sum.empty ? Math.max(0, sum.pv - sum.exp) : null, autarky = sum && !sum.empty && sum.house > 0 ? Math.round(Math.min(100, Math.max(0, (1 - sum.imp / sum.house) * 100))) : null, evq = sum && !sum.empty && sum.pv > 0 ? Math.round(Math.min(100, (self / sum.pv) * 100)) : null;
     const covered = n.house > 0 ? Math.round(Math.min(100, (n.pv2h + n.b2h) / n.house * 100)) : 100;
-    const hero = `<div class="card hero enh"><div class="enring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="rb"/><circle cx="60" cy="60" r="50" class="rf" stroke-dasharray="${(covered * 3.1416).toFixed(1)} 314.2" transform="rotate(-90 60 60)"/></svg><div class="rv"><b>${covered}<small>%</small></b><span>gedeckt</span></div></div><div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
+    const hero = `<div class="card hero mh hr a-en enh">${this._modLogo("en")}${this._modRing(covered, "gedeckt")}<div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
       <div class="chips"><span class="chip">${ic("sun", 16)}Solar ${wfmt(n.pv)}</span>${n.pvb != null && n.pvb >= 1 ? `<span class="chip">${ic("sun", 16)}davon ${esc(this._enPvNames()[1])} ${wfmt(n.pvb)}</span>` : ""}<span class="chip st ${n.exp > 20 ? "ok" : n.imp > 20 ? "warn" : ""}">${ic("bolt", 16)}${n.exp > 20 ? "Einspeisung " + wfmt(n.exp) : n.imp > 20 ? "Netzbezug " + wfmt(n.imp) : "Netz ausgeglichen"}</span>${n.hasBat ? `<span class="chip">${ic("energy", 16)}Batterie ${n.soc != null ? Math.round(n.soc) + " %" : ""}${n.bc > 20 ? " lädt" : n.dis > 20 ? " entlädt" : ""}</span>` : ""}${autarky != null && range === "day" ? `<span class="chip st ok">${ic("check", 16)}Autarkie heute ${autarky} %</span>` : ""}</div></div>`;
     const tabs = `<div class="seg wwseg enseg" role="group">${[["day", "Heute"], ["week", "7 Tage"], ["month", "30 Tage"]].map(([k, l]) => `<button class="${range === k ? "sel" : ""}" data-act="enrange" data-k="${k}" aria-pressed="${range === k}">${l}</button>`).join("")}</div>`;
     const kwh = (v) => (v == null ? "–" : num(v, v >= 100 ? 0 : v >= 10 ? 1 : 2));

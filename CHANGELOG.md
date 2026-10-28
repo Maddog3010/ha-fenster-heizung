@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.5.4] - 2026-10-28
+### Neu
+- **Einheitliche Banner in allen Modulen:** Text links, rechts ein Logo-Feld mit dem Symbol des Moduls (reine Symbole, ohne Schrift), je Modul in eigener Farbe. Neu sind Banner bei Elektroauto, Garten, Pool & Sauna, Batteriespeicher, Stromtarif, Wartung und Solar-Prognose. Sicherheit, Wetter und Hausfluss haben dasselbe Format.
+  - Modul 2: Der Speicher-Tank steht als eigene Kachel „Speicher“ unter dem Banner.
+  - Energie und Gerätestrom: Die Ringe (Deckung, Eigenstrom) bleiben im Banner, neben dem Logo.
+- **Labs:** Modul 19 „Hausfluss“ steht jetzt auch in den Labs, in einem eigenen Abschnitt „Nur für Sponsoren“ mit rosa Abzeichen. Auch in Einstellungen und Modulverwaltung steht ein Abzeichen „Nur Sponsoren“. Der Schalter öffnet ohne Schlüssel den Sponsor-Dialog.
+### Verbessert
+- **Scrollen auf iPad und Handy:** Beim Wischen und Ausrollen wird die Seite nicht mehr neu aufgebaut (das hielt das Ausrollen an). Die Modulleiste rastet nicht mehr ein, das ruckelte.
+### Behoben
+- Die Einstellungen ließen sich nicht öffnen, wenn das Lab „Tags & Karten“ an war (Fehler „Can't find variable adm“, seit 3.0.4).
+- Knöpfe verlieren Tipps nicht mehr, wenn Home Assistant gerade einen Wert meldet (3.0.5.1).
+- Fehlermeldung statt stiller Knöpfe, wenn eine Aktion oder das Zeichnen der Seite fehlschlägt (3.0.5.2).
+
 ## [3.0.5.3] - 2026-10-28
 ### Behoben
 - **Einstellungen ließen sich nicht öffnen**, sobald das Lab „Tags & Karten“ eingeschaltet war (Fehler „Can't find variable adm“, seit 3.0.4). Ohne dieses Lab trat der Fehler nicht auf.

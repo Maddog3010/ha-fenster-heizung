@@ -1,7 +1,7 @@
   /* Labs: experimentelle Funktionen. Ein/Aus und Werte stehen im Layout (layout.labs), gelten für alle Nutzer.
      Eingeschaltet erscheinen sie als Karte mit Labs-Zeichen im passenden Modul, ausgeschaltet sind sie dort komplett weg. */
   _labCfg() { const l = (this._cfg && this._cfg.layout && this._cfg.layout.labs) || {}; return { on: Array.isArray(l.on) ? l.on : [], icon: l.icon !== false, tab: l.tab !== false, cfg: l.cfg && typeof l.cfg === "object" ? l.cfg : {} }; }
-  _labOn(id) { return this._labCfg().on.includes(id); }
+  _labOn(id) { if (id === "ef") return this._mdState().on.ef === true && !!this._spnS().active; return this._labCfg().on.includes(id); }
   _labV(k) { const d = { lx_diff: 0.5, ae_cons: 12, ae_share: 60, wl_wind: 6, lf_days: 14, vh_dk: 3, vh_max: 90, dz_days: 14, dz_lead: 45, ld_wait: 3, ld_min: 8, lk_hi: 90, lk_dur: 2 }, v = this._labCfg().cfg[k]; return typeof v === "number" && isFinite(v) ? v : d[k]; }
   _labStr(k) { const v = this._labCfg().cfg[k]; return typeof v === "string" ? v : ""; }
   _labSet(patch) { const c = this._labCfg(); this._cfg.layout.labs = { on: c.on, icon: c.icon, tab: c.tab, cfg: c.cfg, ...patch }; this._saveLayout(); setTimeout(() => this._labLoad(true), 900); this._render(); if (this._modal) this._renderModal(); }
@@ -93,6 +93,13 @@
         needs: () => [["Lampen in Home Assistant (light.*)", Object.keys(this._hass.states).some((k) => k.startsWith("light."))], ["Räume (Bereiche) für die Lampen (optional)", Object.values(this._hass.entities || {}).some((e) => e && e.entity_id && e.entity_id.startsWith("light.") && (e.area_id || e.device_id))]],
         after: "Ausgeschaltet verschwindet Modul 18. Es wird nichts mehr geschaltet, die Einstellungen (verknüpfte Szenen, Räume) bleiben gespeichert. Eingeschaltete Lampen bleiben, wie sie sind.",
         f: [] },
+      { id: "ef", k: "s", modul: true, sponsor: true, mid: "ef", mod: "Modul 19", mn: "Hausfluss", n: "Hausfluss", st: "Beta", i: "energy",
+        d: "Neues Modul 19: dein Haus als Fluss-Bild mit Solar, Netz, Akku und Verbrauchern. Dauerhaft nur für Sponsoren.",
+        feats: ["Das Haus in der Mitte, bis zu 8 Kacheln drumherum (Solar, Netz, Akku, Auto, Verbraucher)", "Animierte Flusslinien zeigen Richtung und Stärke der Leistung", "Pro Kachel Bild, Farbe, Name und Werte frei wählbar", "Am Desktop und auf dem Handy, das Haus immer in der Mitte"],
+        how: ["Die Seite liest nur Leistungssensoren aus Home Assistant und zeigt sie an. Es wird nichts geschaltet.", "Hausverbrauch = Zufluss (Solar, Netzbezug, Akku-Entladung) minus Abfluss (Einspeisung, Akku-Ladung).", "Eingerichtet wird unter Einrichten auf der Seite des Moduls."],
+        needs: () => [["Aktiver Sponsor-Schlüssel", !!this._spnS().active], ["Leistungssensoren in Home Assistant (Solar, Netz, Akku)", Object.keys(this._hass.states).some((k) => k.startsWith("sensor."))]],
+        after: "Ausgeschaltet verschwindet Modul 19. Deine Kacheln bleiben gespeichert.",
+        f: [] },
       { id: "tg", k: "g", mid: "tg", mod: "Übergreifend", mn: "Tags & Karten", n: "Tags & Karten", st: "Früh", i: "nfc", early: "2026-11-11",
         d: "RFID-Karten und NFC-Sticker lösen feste Aktionen aus, zum Beispiel Abwesend, Warmwasser-Boost oder Licht aus.",
         feats: ["Karten oder Sticker anlernen: einmal an einen Leser halten, fertig", "Jeder Tag führt genau eine Aktion aus einer festen Liste aus, auch „Person ist zu Hause/unterwegs“", "Optional nur für bestimmte Personen und nur in einem Zeitfenster", "Rückmeldung per Handy-Nachricht, Ansage oder blinkendem Licht, dazu ein Protokoll"],
@@ -104,7 +111,7 @@
   }
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
   _labMods() { return [...new Set(this._labCat().map((x) => x.mid))]; }
-  _labCount(mid) { return this._labCat().filter((x) => this._labOn(x.id) && (!mid || x.mid === mid)).length; }
+  _labCount(mid) { return this._labCat().filter((x) => !x.modul && this._labOn(x.id) && (!mid || x.mid === mid)).length; }
   _labBtn() {
     if (!this._admin() || !this._labCfg().icon) return "";
     const n = this._labCount();
@@ -133,7 +140,7 @@
   }
   /* Karten oben in der Seite des Moduls */
   _labCards(mid) {
-    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb", "li"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
+    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb", "li", "ef"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
       let body = ""; try { body = this["_lab_" + x.id](); } catch (e) { body = `<div class="mut sm">Diese Funktion kann gerade nichts anzeigen.</div>`; }
       return this._labCard(x, body);
     }).join("");
@@ -229,7 +236,7 @@
   _lab0() { if (!this._labS) this._labS = { c: "all" }; return this._labS; }
   _labCardEl(x) {
     const on = this._labOn(x.id), adm = this._admin();
-    return `<div class="labk ${on ? "on" : ""} ${x.soon ? "soon" : ""}"><div class="labkt"><span class="ico">${ic(x.i, 22)}</span>${x.soon ? `<em class="risk">Bald</em>` : `<button class="sw ${on ? "on" : ""}" data-act="labtog" data-k="${x.id}" aria-pressed="${on}" aria-label="${esc(x.n)} ${on ? "ausschalten" : "einschalten"}" ${adm ? "" : "disabled"}></button>`}</div>
+    return `<div class="labk ${on ? "on" : ""} ${x.soon ? "soon" : ""} ${x.sponsor ? "spk" : ""}">${x.sponsor ? `<div class="spkb">${ic("heart", 13)}Nur für Sponsoren</div>` : ""}<div class="labkt"><span class="ico">${ic(x.i, 22)}</span>${x.soon ? `<em class="risk">Bald</em>` : `<button class="sw ${on ? "on" : ""}" data-act="labtog" data-k="${x.id}" aria-pressed="${on}" aria-label="${esc(x.n)} ${on ? "ausschalten" : "einschalten"}" ${adm ? "" : "disabled"}></button>`}</div>
       <button class="labkb" data-act="labdet" data-k="${x.id}"><b>${esc(x.n)}</b><span>${esc(x.d)}</span><span class="labtg"><em class="mod">${esc(x.mod)}</em><em class="risk ${this._labK(x)[1]}">${this._labK(x)[0]}</em><em class="risk">${esc(x.st)}</em>${this._labIsEarly(x) ? `<em class="risk vab">Vorab bis ${this._labEarlyDate(x)}</em>` : ""}</span></button></div>`;
   }
   _labRender() {
@@ -245,7 +252,7 @@
       <div class="wrap"><div class="sxw stow">
         <div class="labban">${ic("flask", 22)}<div><b>Labs sind Experimente</b>Sie funktionieren schon, sind aber noch nicht überall erprobt. Eingeschaltet erscheinen sie im passenden Modul mit dem Zeichen <em class="labp">${ic("flask", 11)}Labs</em>. Ausgeschaltet sind sie dort wieder weg.</div></div>
         <div class="stoch">${chips.map(([k, t]) => `<button class="${st.c === k ? "on" : ""}" data-act="labc" data-k="${k}" aria-pressed="${st.c === k}">${esc(t)}</button>`).join("")}</div>
-        ${(() => { const ear = vis.filter((x) => this._labIsEarly(x)), rest = vis.filter((x) => !this._labIsEarly(x)); return `${ear.length ? `<div class="labsec">${ic("heart", 15)}Vorabversion für Sponsoren</div><div class="stog">${ear.map((x) => this._labCardEl(x)).join("")}</div>${rest.length ? `<div class="labsec" style="margin-top:14px">${ic("flask", 15)}Für alle</div>` : ""}` : ""}${rest.length ? `<div class="stog">${rest.map((x) => this._labCardEl(x)).join("")}</div>` : ear.length ? "" : `<div class="card empty">${ic("flask", 30)}<div style="margin-top:8px">Noch nichts eingeschaltet.</div></div>`}`; })()}
+        ${(() => { const spo = vis.filter((x) => x.sponsor), ear = vis.filter((x) => !x.sponsor && this._labIsEarly(x)), rest = vis.filter((x) => !x.sponsor && !this._labIsEarly(x)); return `${spo.length ? `<div class="labsec">${ic("heart", 15)}Nur für Sponsoren</div><div class="mut sm" style="margin:-2px 2px 8px">Diese Module gehören dauerhaft zu den Extras für Sponsoren und brauchen einen aktiven Sponsor-Schlüssel.</div><div class="stog">${spo.map((x) => this._labCardEl(x)).join("")}</div>${ear.length || rest.length ? `<div class="labsec" style="margin-top:14px">${ic("flask", 15)}Labs</div>` : ""}` : ""}${ear.length ? `<div class="labsec">${ic("heart", 15)}Vorabversion für Sponsoren</div><div class="stog">${ear.map((x) => this._labCardEl(x)).join("")}</div>${rest.length ? `<div class="labsec" style="margin-top:14px">${ic("flask", 15)}Für alle</div>` : ""}` : ""}${rest.length ? `<div class="stog">${rest.map((x) => this._labCardEl(x)).join("")}</div>` : ear.length ? "" : `<div class="card empty">${ic("flask", 30)}<div style="margin-top:8px">Noch nichts eingeschaltet.</div></div>`}`; })()}
         ${this._labTease()}
         <div class="mut sm" style="margin:14px 2px">Ideen und Fehler gern auf <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">GitHub</a> melden. Eine Funktion kann sich ändern, später fest eingebaut werden oder wieder entfallen.</div></div></div>`;
   }
@@ -262,13 +269,14 @@
     return `<div class="ov" data-act="close"></div><div class="sheet wide stosh" role="dialog" aria-modal="true">
       <div class="stohd"><span class="stoi big labi">${ic(x.i, 38)}</span><div><b>${esc(x.n)}</b><small>Labs · ${esc(x.mod)} ${esc(x.mn)}</small><div class="stoact">${x.soon ? `<span class="risk">In Vorbereitung</span>` : `<button class="btn2 pri" data-act="labtog" data-k="${x.id}" ${adm ? "" : "disabled"}>${on ? "Ausschalten" : "Einschalten"}</button>${on ? `<span class="stos ok">● Eingeschaltet</span>` : ""}`}</div></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="mut sm" style="margin:0 0 8px">${esc(x.d)}</div>
+      ${x.sponsor ? `<div class="spnote">${ic("heart", 18)}<span><b>Nur für Sponsoren</b>${this._spnS().active ? "Dein Sponsor-Schlüssel ist aktiv, du kannst das Modul einschalten." : "Zum Einschalten brauchst du einen aktiven Sponsor-Schlüssel."}</span>${this._spnS().active ? "" : `<button class="btn2" data-act="spnopen">Sponsor werden</button>`}</div>` : ""}
       <div class="stofa"><div><b>${esc(x.mod)}</b><small>wird angezeigt in</small></div><div><b>${this._labK(x)[0]}</b><small>Art</small></div><div><b>${esc(x.st)}${this._labIsEarly(x) ? ` · Vorab bis ${this._labEarlyDate(x)}` : ""}</b><small>Stand</small></div></div>
       <div class="lsec">${ic("check", 15)}Was du bekommst</div><ul class="stoul">${x.feats.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>
       ${x.soon ? "" : `<div class="lsec">${ic("tools", 15)}So wird gerechnet</div>${x.how.map((t, n) => `<div class="stost"><b>${n + 1}</b><span>${esc(t)}</span></div>`).join("")}`}
       ${nd.length ? `<div class="lsec">${ic("info", 15)}Voraussetzungen</div><ul class="stoul">${nd.map(([t, ok]) => `<li>${ok ? "✓" : "✗"} ${esc(t)}</li>`).join("")}</ul>` : ""}
       ${x.f.length ? `<div class="lsec">${ic("sliders", 15)}Einstellungen dieser Funktion</div>${x.f.map((f) => this._labField(esc(f[1]), esc(f[2]), this._labStep(f, adm))).join("")}` : ""}
       <div class="stowarn ${x.k === "g" ? "dng" : ""}">${ic("alert", 16)}<span>${x.k === "g" ? `<b>Diese Funktion greift in Geräte ein.</b> Du bestätigst das vor dem Einschalten. Ausgeschaltet schaltet sie nichts mehr. Fenster auf, Abwesend und die Sicherheitsgrenzen der Module haben weiter Vorrang.` : `Labs sind Experimente. Diese Funktion zeigt nur etwas an und schaltet nichts.`} ${x.after ? esc(x.after) : `Ausgeschaltet verschwindet sie aus ${esc(x.mod)}, die Einstellungen bleiben gespeichert.`}</span></div>
-      <div class="foot2" style="margin-top:12px">${x.id === "tg" && on && adm ? `<button class="btn2" data-act="tgxopen">Tags verwalten</button>` : ""}<a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
+      <div class="foot2" style="margin-top:12px">${x.id === "ef" && on && adm ? `<button class="btn2" data-act="efxopen">Einrichten</button>` : ""}${x.id === "tg" && on && adm ? `<button class="btn2" data-act="tgxopen">Tags verwalten</button>` : ""}<a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Rückmeldung geben</a><button class="btn2" data-act="close">Schließen</button></div></div>`;
   }
   _labOkModal(id) {
     const x = this._labCat().find((y) => y.id === id); if (!x) return "";
@@ -301,6 +309,7 @@
     else if (a === "labdet") { this._modal = { type: "labdet", id: k }; this._renderModal(); }
     else if (a === "labset") { this._modal = { type: "labset" }; this._renderModal(); }
     else if (a === "labtz") { const c = this._labCfg(); this._labSet({ [k]: !c[k] }); }
+    else if ((a === "labtog" || a === "labgo") && k === "ef") { this._modal = null; this._mdAct("mdtog", b); }
     else if (a === "labtog") { const c = this._labCfg(), x = this._labCat().find((y) => y.id === k); if (!x || x.soon) return; if (x.k === "g" && !c.on.includes(k)) { this._modal = { type: "labok", id: k }; this._renderModal(); return; } this._labSet({ on: c.on.includes(k) ? c.on.filter((y) => y !== k) : [...c.on, k] }); }
     else if (a === "labgo") { const c = this._labCfg(); this._modal = null; this._labSet({ on: c.on.includes(k) ? c.on : [...c.on, k] }); this._renderModal(); }
     else if (a === "laboff") { this._labSet({ on: [] }); this._toast("Alle Labs sind aus"); }
