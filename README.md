@@ -20,6 +20,8 @@
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](https://github.com/sponsors/Maddog3010). Dafür gibt es Schönes obendrauf, [mehr dazu](#sponsor-werden).
 
 > 📖 **Komplette Bedienungsanleitung als PDF:** [Bedienungsanleitung öffnen](docs/Bedienungsanleitung.pdf) (53 Seiten mit Bilderklärungen, Datenstand Version 3.0.3.1, 28.10.2026).
+>
+> 📲 **Tags & Karten mit dem iPhone anlernen:** [Bebilderte Anleitung öffnen](docs/Anleitung_Tags_iPhone.pdf) (5 Seiten).
 
 <p align="center"><img src="docs/vorschau_desktop.png" width="640" alt="Dashboard auf dem Desktop"></p>
 
