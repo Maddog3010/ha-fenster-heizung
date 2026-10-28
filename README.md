@@ -1,56 +1,73 @@
 <p align="center">
-  <img src="docs/banner.png" alt="Strom &amp; Wärme: 16 Module für Heizung, Strom und Haus in Home Assistant">
+  <img src="docs/banner.png" alt="Strom &amp; Wärme: Heizung, Strom und Haus in Home Assistant">
 </p>
 
 # Strom & Wärme
 
-[![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.13-2dd4bf)](CHANGELOG.md)
-[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
+<p align="center">
+  <a href="https://hacs.xyz"><img alt="HACS" src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white"></a>
+  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.2.14-2dd4bf"></a>
+  <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18bcf2">
+  <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white"></a>
+</p>
 
-**Ein Dashboard für Heizung, Strom und Haus in Home Assistant.**
-„Strom & Wärme“ pausiert Heizkörper bei offenem Fenster, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer, Warmwasser und das Auto, zeigt, woher der Strom deiner Geräte kommt, und warnt vor Unwetter und Rauch. Alles steht in einer eigenen Seite in der Seitenleiste, 16 Module, die du einzeln ein- und ausschaltest, dazu Modul 17 „Müllabfuhr“ als Lab.
+<p align="center">
+  <a href="https://github.com/sponsors/Maddog3010"><img src="docs/sponsor_banner.png" alt="Gefällt dir Strom &amp; Wärme? Werde Sponsor auf GitHub" width="100%"></a>
+</p>
 
-<p align="center"><img src="docs/vorschau_desktop.png" width="760" alt="Dashboard auf dem Desktop"></p>
+**Ein Dashboard für Heizung, Strom und Haus in Home Assistant.** Es pausiert Heizkörper bei offenem Fenster, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer, Warmwasser und das Auto, zeigt, woher der Strom deiner Geräte kommt, und warnt vor Unwetter und Rauch. Alles steht auf einer eigenen Seite in der Seitenleiste. Du schaltest nur die Module ein, die du brauchst.
 
-## Neu in 3.0.2.13
-- **Sponsor-Bereich:** Wer die Entwicklung über GitHub Sponsors unterstützt, bekommt einen Schlüssel und damit Schönes obendrauf: ein Abzeichen im Kopf, zusätzliche Farbverläufe, Uhr-Stile für den Ruhemodus des Tablet-Modus und Vorabversionen. Alles, was bisher kostenlos ist, bleibt kostenlos. Der Link zu GitHub Sponsors steht im Kopf, auf der Startseite, im Update-Hinweis und in den Einstellungen. Siehe [Sponsor-Bereich](#sponsor-bereich).
+> 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](https://github.com/sponsors/Maddog3010). Dafür gibt es Schönes obendrauf, [mehr dazu](#sponsor-werden).
 
-## Neu in 3.0.2.12
-- **Tablet-Modus:** eine eigene Oberfläche für Wand- und Tischtablets. Große Bedienflächen, untere Knopfleiste statt der Tab-Leiste, Ruhemodus mit dunkler Uhr, PIN-Schutz für die Einstellungen und Display-Steuerung per Bewegungsmelder. Gilt pro Gerät, die normale Ansicht ist dort ausgeblendet. Siehe [Tablet-Modus](#tablet-modus).
+<p align="center"><img src="docs/vorschau_desktop.png" width="640" alt="Dashboard auf dem Desktop"></p>
 
-## Neu in 3.0.2.11
-- **Startseite:** ein neuer Tab „Start“ ganz links, der nach dem Öffnen des Dashboards in Home Assistant zuerst erscheint. Zeigt, ob zu Hause alles in Ordnung ist, Kacheln für deine Module, Wetter, Personen, Alarm, Hinweise, Energie und Müllabfuhr. Karten lassen sich über „Anpassen“ verschieben und ausblenden. Abschaltbar.
-- **Lab „Start-Bubbles“:** runde Kurzinfos ganz oben auf der Startseite, deren Inhalt du aus elf Möglichkeiten wählst (Art „Nur Anzeige“).
+<p align="center">
+  <a href="#installation">Installation</a> ·
+  <a href="#die-module">Module</a> ·
+  <a href="#bedienung">Bedienung</a> ·
+  <a href="#sponsor-werden">Sponsor werden</a> ·
+  <a href="#häufige-fragen">Fragen</a> ·
+  <a href="CHANGELOG.md">Änderungen</a>
+</p>
 
-## Neu in 3.0.2.10
-- **Modul 17: Müllabfuhr (Lab):** Abholtermine aus einem Abfallkalender, Tonnen-Ampel zum Abhaken, nächste Abholungen, Monatskalender, Erinnerung am Vorabend aufs Handy, Ansage über einen Lautsprecher, Licht in der Farbe der Tonne, Hinweise bei Verschiebung, Sturm und Frost sowie Leerungen und Kosten. Das Modul und sein Store-Eintrag „Abfallkalender“ (waste_collection_schedule) gibt es nur, solange das Lab eingeschaltet ist. Die Karten lassen sich über **Anpassen** verschieben und ausblenden. [Mehr zu Modul 17](#modul-17-müllabfuhr-lab)
-- In 3.0.2.9 kamen vier Labs dazu, die Geräte schalten:
-- **Vier Labs, die Geräte schalten:** *Smart Vorheizen* (Heizplan startet früher), *Duschzeiten lernen* (Warmwasser vor gelernten Zapfzeiten vorheizen), *Legionellenschutz nach Sonne* (Lauf auf den sonnigeren Tag verschieben) und *Ladeziel nach Kalender* (Ziel-Ladestand der Wallbox). Sie sind ab Werk aus, tragen die Kennzeichnung „Schaltet Geräte“ und fragen vor dem Einschalten nach. [Mehr zu Labs](#labs-experimentelle-funktionen)
-- Davor: Labs mit den ersten Anzeige-Funktionen, Modul 16 „Solar-Prognose“, Kennzeichnung der Module in vier Stufen, Store für Integrationen, Herstellerprofile für Thermostate, Module 9 und 11, überarbeitetes Modul 8, neue Optik für Modul 1 bis 4.
+## Das Wichtigste in Kürze
 
-Alle Änderungen stehen im [Changelog](CHANGELOG.md).
+| Bereich | Was du bekommst |
+|---|---|
+| 🪟 **Fenster & Heizung** | Thermostate pausieren, wenn ein Fenster offen ist. Heizpläne, Anwesenheit, Urlaub, Berichte, Elektroheizer mit PV-Überschuss, Schimmelhinweise. |
+| 🚿 **Warmwasser** | Speicher, Zeitplan, Zirkulation, Legionellenschutz, Heizstab bei Überschuss. |
+| ⚡ **Energie und Gerätestrom** | Solar, Netz, Batterie, Kosten, Autarkie. Pro Gerät: woher kam der Strom und was hat der Lauf gekostet. |
+| 🚗 **Elektroauto** | go-e Charger lokal regeln, nach Sonne, Strompreis und Abfahrtszeit laden, Ladestatistik. |
+| 🌦️ **Wetter und Sicherheit** | Eigene Warnungen plus DWD, NINA und MeteoAlarm. Rauch-, Gas- und Wassermelder im Überblick. |
+| 🏠 **Startseite** | Alles auf einen Blick: Ampel, Wetter, Personen, Alarm, Hinweise, Müllabfuhr. |
+| 📱 **Tablet-Modus** | Große Bedienflächen, Ruhemodus, PIN-Schutz und Display-Steuerung per Bewegungsmelder für Wandtablets. |
+| 🧪 **Labs** | Neue Funktionen zum Ausprobieren, ab Werk aus. |
 
-## Inhalt
-- [Die Module auf einen Blick](#die-module-auf-einen-blick)
-- [Schnellstart](#schnellstart)
-- [Einstellungen, Module und Store](#einstellungen-module-und-store)
-- [Labs: experimentelle Funktionen](#labs-experimentelle-funktionen)
-- [Startseite](#startseite)
-- [Tablet-Modus](#tablet-modus)
-- [Sponsor-Bereich](#sponsor-bereich)
-- [Modul 1: Fenster & Heizung](#modul-1-fenster--heizung)
-- [Modul 2: Warmwasser & Zirkulation](#modul-2-warmwasser--zirkulation)
-- [Modul 3: Energie](#modul-3-energie)
-- [Modul 4: Gerätestrom](#modul-4-gerätestrom)
-- [Module 5 bis 16](#module-5-bis-16)
-- [Allgemeines](#allgemeines)
-- [Entitäten](#entitäten)
-- [Hinweise für Entwickler](#hinweise-für-entwickler)
-- [Wichtige Hinweise](#wichtige-hinweise)
-- [Unterstützen](#unterstützen)
+## Neu
 
-## Die Module auf einen Blick
+**3.0.2.13: Sponsor-Bereich.** Sponsoren bekommen mit einem Schlüssel ein Abzeichen, Farbverläufe, Uhr-Stile und Vorabversionen. Nichts, was bisher frei war, wird gesperrt. [Mehr dazu](#sponsor-werden)
+
+- **3.0.2.12:** [Tablet-Modus](#bedienung) mit PIN, Ruhemodus und Display-Steuerung per Bewegungsmelder.
+- **3.0.2.11:** [Startseite](#bedienung) und das Lab „Start-Bubbles“.
+- **3.0.2.10:** Modul 17 „Müllabfuhr“ als Lab.
+- **3.0.2.9:** Vier Labs, die Geräte schalten: Smart Vorheizen, Duschzeiten lernen, Legionellenschutz nach Sonne, Ladeziel nach Kalender.
+
+Alle Versionen stehen im [Changelog](CHANGELOG.md).
+
+## Installation
+**Voraussetzungen:** Home Assistant 2024.11 oder neuer und [HACS](https://hacs.xyz).
+
+1. HACS öffnen, drei Punkte, **Benutzerdefinierte Repositories**.
+2. Die Adresse dieses Repositories eintragen, Kategorie **Integration**.
+3. „Strom & Wärme“ installieren und Home Assistant **neu starten**.
+4. **Einstellungen → Geräte & Dienste → Integration hinzufügen → „Strom & Wärme“**. Pro Raum ein Eintrag, mit Fenstersensoren und Thermostaten.
+5. In der Seitenleiste „Strom & Wärme“ öffnen. Der **Einrichtungsassistent** führt in acht Schritten durch Räume, Fenstermeldung, Heizung, Luftfeuchte, PV und Meldungen. Jeder Schritt außer dem ersten lässt sich überspringen.
+
+Die Module 2 bis 4 sind ab Werk an, alle weiteren aus. Eingeschaltet und eingerichtet wird unter **Einstellungen**.
+
+**Update:** über HACS aktualisieren, Home Assistant neu starten, Seite neu laden (Strg+F5). Deine Einstellungen bleiben erhalten. Von 2.x kommend: Gerätestrom ist jetzt Teil dieser Integration, die separate Integration „geraetestrom“ wird nicht mehr gebraucht.
+
+## Die Module
 
 Jedes Modul trägt im Kopfteil (am Desktop zusätzlich am Tab) eine Stufe:
 
@@ -83,26 +100,83 @@ Jedes Modul trägt im Kopfteil (am Desktop zusätzlich am Tab) eine Stufe:
 | 17 | Müllabfuhr | Lab | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend, Ansage und Licht. Erscheint nur bei eingeschaltetem Lab |
 
 <p align="center">
-  <img src="docs/vorschau_handy_modul1.png" width="230" alt="Modul 1 auf dem Handy">
-  <img src="docs/vorschau_handy_modul2.png" width="230" alt="Modul 2 auf dem Handy">
-  <img src="docs/vorschau_handy_modul3.png" width="230" alt="Modul 3 auf dem Handy">
-  <img src="docs/vorschau_handy_geraetestrom.png" width="230" alt="Modul 4 auf dem Handy">
+  <img src="docs/vorschau_handy_modul1.png" width="200" alt="Modul 1 auf dem Handy">
+  <img src="docs/vorschau_handy_modul2.png" width="200" alt="Modul 2 auf dem Handy">
+  <img src="docs/vorschau_handy_modul3.png" width="200" alt="Modul 3 auf dem Handy">
+  <img src="docs/vorschau_startseite_handy.png" width="200" alt="Startseite auf dem Handy">
 </p>
 
-## Schnellstart
-**Voraussetzungen:** Home Assistant 2024.11 oder neuer und [HACS](https://hacs.xyz).
+## Bedienung
 
-1. HACS → drei Punkte → **Benutzerdefinierte Repositories**
-2. Die Adresse dieses Repositories eintragen, Kategorie **Integration**
-3. „Strom & Wärme“ installieren und Home Assistant **neu starten**
-4. **Einstellungen → Geräte & Dienste → Integration hinzufügen → „Strom & Wärme“**: pro Raum ein Eintrag, mit Fenstersensoren und Thermostaten
-5. In der Seitenleiste „Strom & Wärme“ öffnen. Der **Einrichtungsassistent** führt in acht Schritten durch Räume, Fenstermeldung, Heizung, Luftfeuchte, PV und Meldungen. Jeder Schritt außer dem ersten lässt sich überspringen.
+Die Bereiche der Oberfläche. Ein Klick klappt sie auf.
 
-Die Module 2 bis 4 sind ab Werk an, alle weiteren Module aus. Eingeschaltet und eingerichtet wird unter **Einstellungen**.
+<details>
+<summary><b>Startseite</b></summary>
 
-**Update:** über HACS aktualisieren, Home Assistant neu starten, Seite neu laden (Strg+F5). Deine Einstellungen bleiben erhalten. Von 2.x kommend: Gerätestrom ist jetzt Teil dieser Integration, die separate Integration „geraetestrom“ wird nicht mehr gebraucht.
+<br>
 
-## Einstellungen, Module und Store
+<p align="center"><img src="docs/vorschau_startseite.png" width="760" alt="Startseite"></p>
+
+Der Tab **Start** steht ganz links und erscheint, wenn du das Dashboard in Home Assistant neu öffnest. Ein Direktlink mit `?modul=<Kennung>` (zum Beispiel `?modul=mu`) öffnet stattdessen das Modul. Unter **Einstellungen** stellst du die Startseite aus oder auf „Letztes Modul“.
+
+- **Zuhause:** Ampel („Alles in Ordnung“ oder „Fast alles in Ordnung“) mit einer Kachel je aktivem Modul. Ein Tipp öffnet das Modul.
+- **Wetter:** aus deiner Wetter-Entität, mit Stundenwerten, wenn sie eine Vorhersage liefert.
+- **Personen:** wer zu Hause ist, seit wann, sonst die Entfernung (aus „Personen & Standort“).
+- **Alarm:** Zustand deiner Alarmanlage (`alarm_control_panel`). Schalten ist ab Werk aus. Mit „Alarm schalten erlauben“ erscheinen Knöpfe für Unscharf, Abwesend und Zu Hause, jedes Schalten wird bestätigt, bei Code-Anlagen mit Code-Eingabe. Das schaltet echte Geräte.
+- **Hinweise:** Fenster zu lange offen, Probleme im Warmwasser, schwache Batterien, Müllabfuhr, ausgelöster Alarm.
+- **Energie** und **Müllabfuhr** erscheinen nur, wenn Modul 3 eingerichtet und das Lab „Müllabfuhr“ an ist.
+
+Karten ohne Datenquelle erscheinen nicht. Mit **Anpassen** (wie in Modul 1) verschiebst du Karten und blendest sie aus, die Anordnung gilt für alle Nutzer.
+
+<p align="center"><img src="docs/vorschau_startseite_anpassen.png" width="520" alt="Anpassen der Startseite"> <img src="docs/vorschau_startseite_handy.png" width="200" alt="Startseite auf dem Handy"></p>
+
+##### Lab „Start-Bubbles“
+<p align="center"><img src="docs/vorschau_startseite_bubbles.png" width="560" alt="Bubbles wählen"> <img src="docs/vorschau_startseite_einstellungen.png" width="560" alt="Einstellungen der Startseite"></p>
+
+Unter **Labs → Start-Bubbles** einschalten (Art „Nur Anzeige“). Dann erscheint oben eine Reihe runder Kurzinfos. Den Inhalt wählst du in den Einstellungen der Startseite („Bubbles wählen“, bis zu acht, Reihenfolge per Pfeil). Warnfarben (Gelb bei Hinweis, Rot bei Alarm) und „Antippen öffnet Karte oder Modul“ sind einstellbar. Bubbles ohne Daten werden ausgelassen. Ausgeschaltet ist die Reihe weg, die Auswahl bleibt gespeichert.
+
+</details>
+
+<details>
+<summary><b>Tablet-Modus</b></summary>
+
+<br>
+
+<p align="center"><img src="docs/vorschau_tablet.png" width="760" alt="Tablet-Modus auf einem 10-Zoll-Tablet"></p>
+
+Für Tablets an der Wand oder auf dem Tisch. Im Tablet-Modus gibt es keine Tab-Leiste und keine Schalter im Kopf, nur Kopfzeile mit Uhr, den Inhalt und eine untere Leiste mit großen Knöpfen. Die Ansicht passt sich an Bildschirmgröße und Ausrichtung an (Hoch- und Querformat, 8 bis 13 Zoll). Die Einstellungen gelten nur für das jeweilige Gerät.
+
+**Einschalten** (vier Wege):
+1. Knopf **Tablet-Modus** im Kopf der normalen Ansicht (ab 600 px Breite).
+2. Im selben Dialog stehen Aktivierung (Aus, Automatisch, Immer an), Name, Größe, Ruhemodus, Bewegungsmelder und PIN. „Automatisch“ gilt für Touchgeräte ab 600 px Breite.
+3. Ein Hinweis beim ersten Öffnen auf einem Gerät in Tablet-Größe. „Nicht mehr fragen“ merkt sich das Gerät.
+4. Ein Direktlink mit `?tablet=1`. In **Fully Kiosk** als Start-URL eintragen (Web Content Settings), dann startet das Tablet immer im Tablet-Modus. `?tablet=0` schaltet ihn auf diesem Gerät wieder aus.
+
+**PIN:** sechs Ziffern, beim Festlegen zweimal eingeben. Ohne PIN startet der Modus über den Dialog nicht. Das Schloss oben rechts öffnet nach der PIN die Einstellungen dieses Tablets, dort auch „Tablet-Modus beenden“. Nach fünf falschen Eingaben ist die Eingabe 60 Sekunden gesperrt. Die PIN liegt nur als Prüfwert im Home Assistant. Sie schützt vor Versehen, nicht vor Technikern. Vergessen? Ein Administrator setzt sie in der normalen Ansicht unter **Tablet-Modus → Tablets verwalten** zurück.
+
+<p align="center"><img src="docs/vorschau_tablet_pin.png" width="380" alt="PIN-Eingabe"> <img src="docs/vorschau_tablet_hoch.png" width="200" alt="Hochformat"> <img src="docs/vorschau_tablet_ruhe.png" width="380" alt="Ruhemodus"></p>
+
+- **Start:** Bubbles (wenn das Lab „Start-Bubbles“ an ist), eine große Kachel je Modul und die wichtigsten Hinweise.
+- **Fenster & Heizung:** pro Raum die Ist-Temperatur und die Soll-Temperatur mit großen −/+-Knöpfen (setzt `climate.set_temperature` für die Thermostate des Raums). Bei offenem Fenster ist die Heizung pausiert und die Knöpfe sind gesperrt. Die übrigen Module zeigen ihre bekannte Ansicht in großer Schrift.
+- **Untere Leiste:** alle aktiven Module, abwählbar. Bei schmalen Bildschirmen steht der Rest unter „Mehr“.
+- **Zurück zu Start** nach 2, 5 oder 15 Minuten ohne Berührung (einstellbar).
+- **Ruhemodus** nach 5, 15 oder 30 Minuten: dunkle Uhr mit Wetter, Alarm, Personen und Müllabfuhr. Berühren, Bewegung oder eine Warnung (zum Beispiel ausgelöster Alarm) weckt auf. Der erste Tipp schaltet nur auf, er löst nichts darunter aus.
+- **Bewegungsmelder und Display:** Du wählst einen Bewegungsmelder (`binary_sensor`). Er wird im Home Assistant überwacht und funktioniert auch bei ausgeschaltetem Display. Bei Bewegung wird der **Display-Schalter** eingeschaltet, nach der eingestellten Zeit ohne Bewegung (10 oder 30 Minuten) wieder aus. Bei Fully ist das der Schalter „Screen“ der Fully-Integration. Für die Home-Assistant-App unter Android lässt sich ein Benachrichtigungsdienst (`mobile_app_…`) eintragen, er schaltet nur ein. Ein ausgelöster Alarm schaltet das Display ebenfalls ein.
+
+| | Fully Kiosk (Android) | HA-App Android | HA-App iPad/iPhone |
+|---|---|---|---|
+| Ruhemodus, Aufwachen per Bewegung | ja | ja | ja |
+| Display einschalten bei Bewegung | ja | ja | nein |
+| Display ausschalten | ja | teilweise | nein |
+
+Hinweise: Die Seite überdeckt im Tablet-Modus die ganze Anzeige. Zeigt Home Assistant dennoch Seitenleiste und Kopfzeile, lassen sie sich mit Fully (Kiosk-Modus) oder einem Kiosk-Add-on ausblenden. Die Display-Helligkeit steuert die Seite nicht.
+
+</details>
+
+<details>
+<summary><b>Einstellungen, Module und Store</b></summary>
+
+<br>
 
 <p align="center"><img src="docs/vorschau_einstellungen.png" width="440" alt="Einstellungsseite"> <img src="docs/vorschau_beta_module.png" width="440" alt="Module verwalten"></p>
 
@@ -116,12 +190,18 @@ Der Knopf **Einstellungen** oben rechts öffnet in jedem Modul dieselbe Seite:
 
 Unter **Module verwalten** schaltest du jedes Modul ein oder aus (Modul 1 ist immer an). Die Einstellung gilt für alle Nutzer. Eigene Module lassen sich über eine Dateiadresse hinzufügen.
 
-### Store (Integrationen)
+#### Store (Integrationen)
 Der Store zeigt Dienste, die zu deinen Modulen passen (go-e, Tibber, Wetter und Warnungen, Melder, Thermostate), erkennt, was in Home Assistant schon läuft, und führt durch die Einrichtung. Er hat Suche, Kategorien, Detailseiten mit „Was du bekommst“ und „So geht es“ sowie einen Zähler für fehlende Dienste.
 
 Du öffnest ihn über das **Store-Symbol im Kopf**, den **Tab „Store“** in der Modul-Leiste oder Einstellungen → Allgemein. Symbol und Tab lassen sich über den Knopf „Anzeige“ auf der Store-Seite einzeln ausblenden.
 
-## Labs: experimentelle Funktionen
+</details>
+
+<details>
+<summary><b>Labs: experimentelle Funktionen</b></summary>
+
+<br>
+
 Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt sind. Sie sind **ab Werk aus**. Du schaltest sie einzeln ein, sie erscheinen im passenden Modul und sind nach dem Ausschalten dort wieder weg.
 
 <p align="center"><img src="docs/vorschau_labs.png" width="460" alt="Labs-Seite"> <img src="docs/vorschau_labs_info.png" width="460" alt="Infoseite einer Funktion"></p>
@@ -134,7 +214,7 @@ Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt 
 
 <p align="center"><img src="docs/vorschau_labs_modul.png" width="620" alt="Labs-Karten in Modul 2"></p>
 
-### Labs, die nur anzeigen
+#### Labs, die nur anzeigen
 | Lab | Modul | Stand | Was es zeigt |
 |---|---|---|---|
 | **Bester Lüftungszeitpunkt** | 1 | Test | Pro Raum, ob Lüften jetzt lohnt: Vergleich der absoluten Feuchte innen und außen, Schwelle einstellbar (Standard 0,5 g/m³). Braucht Raumsensoren mit Luftfeuchte und Außenwerte. |
@@ -143,7 +223,7 @@ Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt 
 | **Lernfaktor für die Prognose** | 16 | Früh | Gelernte Abweichung der Anlage aus Prognose gegen Ertrag (mindestens 3 Tage, begrenzt auf 0,5 bis 1,5) und die korrigierte Prognose für heute. Andere Module nutzen weiter die Originalprognose. |
 | *Spartipp der Woche* | 3 | Idee | Angekündigt, noch nicht einschaltbar. |
 
-### Labs, die Geräte schalten
+#### Labs, die Geräte schalten
 Diese Funktionen laufen im Backend von Home Assistant, auch bei geschlossenem Dashboard. **Fenster auf, Abwesend und Urlaub, die Sicherheitsgrenzen der Module (zum Beispiel 65 °C im Warmwasserspeicher) und die Hausanschluss-Regeln haben immer Vorrang.** Fehlt ein Messwert, verhält sich die Funktion zurückhaltend und ändert nichts. Beobachte die ersten Tage, ob alles wie gewünscht reagiert.
 
 | Lab | Modul | Stand | Was es schaltet |
@@ -159,11 +239,55 @@ Diese Funktionen laufen im Backend von Home Assistant, auch bei geschlossenem Da
 
 Labs können sich ändern, später fest eingebaut werden oder wieder entfallen. Ideen und Fehler gern als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues). Im Protokoll der Gerätediagnose steht, wann ein Lab etwas geändert hat.
 
-## Modul 1: Fenster & Heizung
+</details>
+
+## Sponsor werden
+
+„Strom & Wärme“ ist ein privates Projekt, das in meiner Freizeit entsteht. Es ist und bleibt **kostenlos und offen**. Wer die Arbeit unterstützt, hilft mir, Fehler zu beheben, neue Module zu bauen und alles mit echten Geräten zu testen.
+
+Als Dank gibt es einen **Sponsor-Schlüssel** mit zusätzlichen Dingen, die schön, aber nie nötig sind. **Es wird nichts gesperrt, was ohne Schlüssel schon da war.**
+
+| Extra | Was es macht |
+|---|---|
+| 💗 **Abzeichen** | Ein Herz mit „Sponsor“ im Kopf. Lässt sich ausblenden. |
+| 🎨 **Farbverläufe** | „Meer“ und „Abend“ als Verlauf hinter dem Kopf. |
+| 🕒 **Uhr-Stile** | „Dünn“, „Kräftig“ und „Digital“ für die Uhr im Ruhemodus des Tablet-Modus. |
+| 🧪 **Vorabversionen** | Neue Labs erscheinen für Sponsoren ein bis zwei Wochen früher. |
+
+<p align="center">
+  <img src="docs/vorschau_sponsor_gesperrt.png" width="440" alt="Sponsor-Bereich vor dem Einlösen">
+  <img src="docs/vorschau_sponsor_bereich.png" width="440" alt="Sponsor-Bereich mit Schlüssel: Abzeichen, Verlauf, Uhr-Stil">
+</p>
+
+**So geht es:**
+1. Auf [GitHub Sponsors](https://github.com/sponsors/Maddog3010) Sponsor werden.
+2. Du bekommst deinen Schlüssel per GitHub-Nachricht oder E-Mail, gültig für ein Jahr.
+3. Im Dashboard unter **Einstellungen → Sponsor-Bereich** (oder über das Herz im Kopf) den Schlüssel einfügen. Ein Administrator genügt, der Schlüssel gilt dann für alle Geräte und Benutzer.
+
+<details>
+<summary><b>Wie der Schlüssel funktioniert, und was mit deinen Daten passiert</b></summary>
+
+<br>
+
+Der Schlüssel trägt deinen Namen, ein Ablaufdatum und eine digitale Unterschrift (Ed25519). Die Integration prüft die Unterschrift selbst mit einem öffentlichen Schlüssel im Code. **Es gibt keinen Server und kein Konto, und es werden keine Daten von dir gesendet.** Läuft ein Schlüssel ab, gehen nur die Extras aus, deine Einstellungen bleiben gespeichert. Gesperrte Schlüssel stehen in der Datei [`sponsor_gesperrt.json`](sponsor_gesperrt.json), die die Integration einmal am Tag von GitHub lädt. Ist GitHub nicht erreichbar, bleibt alles wie es war.
+
+Weil der Quellcode offen ist, ließe sich jede Sperre umgehen. Deshalb gibt es nur Schönes und Zusätzliches als Extra und keine Funktion, die du zum Arbeiten brauchst.
+
+**Für den Entwickler:** Wer den privaten Schlüssel im Sponsor-Bereich einträgt („Entwickler-Zugang“ im Sponsor-Dialog), bekommt die Verwaltung (<a href="docs/vorschau_sponsor_verwaltung.png">Vorschau</a>): Sponsoren anlegen mit Name und Ablaufdatum (Vorgabe ein Jahr), Schlüssel kopieren, verlängern, sperren und die Danke-Liste kopieren. Namen und Notizen bleiben im eigenen Home Assistant. Neuer Speicher `fenster_heizung_sponsor`, neue Befehle `spn_get`, `spn_redeem`, `spn_clear`, `spn_prefs`, `spn_admin_get`, `spn_admin_setup`, `spn_admin_act`.
+</details>
+
+## Module im Detail
+
+Jedes Modul zum Aufklappen. Die Stufe steht dahinter.
+
+<details>
+<summary><b>Modul 1: Fenster &amp; Heizung</b> &nbsp;·&nbsp; Stabil</summary>
+
+<br>
 
 <p align="center"><img src="docs/vorschau_modul_fenster_heizung.png" width="720" alt="Modul 1: Fenster &amp; Heizung"></p>
 
-### Fensterregelung
+#### Fensterregelung
 Öffnet jemand ein Fenster, schaltet die Integration die Thermostate des Raums nach einer einstellbaren Verzögerung aus oder senkt sie ab. Nach dem Schließen läuft alles wie vorher weiter.
 
 - Fenstersensoren und Thermostate frei wählbar, Sperrzeit (zum Beispiel nachts) und Außentemperatur-Bedingung
@@ -171,14 +295,14 @@ Labs können sich ändern, später fest eingebaut werden oder wieder entfallen. 
 - Erinnerung bei zu langem Lüften per Benachrichtigung, mit eigenem Titel und Text (`{raum}`, `{minuten}`, `{fenster}`)
 - Der Knopf **„Warum?“** erklärt pro Raum, was gerade passiert und weshalb
 
-### Herstellerprofile für Thermostate
+#### Herstellerprofile für Thermostate
 Thermostate von tado°, Homematic IP, AVM FRITZ!DECT, Shelly TRV, Aqara E1 und Danfoss Ally werden automatisch erkannt. Im Store (Kategorie „Heizung“) und in den Raumeinstellungen stehen die Besonderheiten je Hersteller.
 
 - Geräte ohne echtes Aus (Homematic IP, Shelly TRV, Danfoss Ally) gehen bei „Thermostat aus“ auf die kleinste Temperatur des Geräts.
 - Zeitplan-Geräte (tado°, Homematic IP, FRITZ!) schalten nach dem Lüften wieder auf Automatik, statt die alte Temperatur als manuelle Übersteuerung zu setzen.
 - Alle anderen Geräte verhalten sich wie bisher. Die Hinweise stammen aus Herstellerangaben und Community-Erfahrungen, bitte am eigenen Gerät prüfen.
 
-### Dashboard
+#### Dashboard
 Das Dashboard füllt sich automatisch mit allen Räumen: Kopfkarte mit der heute gesparten Menge, Außentemperatur und Wetter, Kennzahlen für Heute, Monat, Jahr und Gesamt, ein Balkendiagramm der letzten 14 Tage und eine Karte pro Raum. Umschaltbar zwischen **Detail** und **Kompakt**, hell und dunkel nach dem Design von Home Assistant, passend für Handy, Tablet und Desktop.
 
 <details>
@@ -192,17 +316,17 @@ Das Dashboard füllt sich automatisch mit allen Räumen: Kopfkarte mit der heute
 <img src="docs/vorschau_gruppen.png" width="480" alt="Gruppen"> <img src="docs/vorschau_darstellung.png" width="480" alt="Darstellung">
 </details>
 
-### Heizplan
+#### Heizplan
 Pro Raum ein Plan aus Schaltpunkten (Tage, Uhrzeit, Temperatur) mit Wochenansicht. Ausgeschaltete Thermostate schaltet der Plan je nach Einstellung ein („Nein“, „Heizen“, „Automatik“). Eine manuelle Änderung bleibt bis zum nächsten Schaltpunkt bestehen. Bei offenem Fenster greift der Plan nicht, danach gilt die Temperatur, die dann dran ist. Der Schalter „Heizplan aktiv“ und der Sensor „Heizplan Solltemperatur“ lassen sich in Automationen verwenden.
 
 <p><img src="docs/vorschau_heizplan.png" width="240" alt="Heizplan"> <img src="docs/vorschau_woche.png" width="480" alt="Wochenansicht"></p>
 
-### Bericht pro Raum
+#### Bericht pro Raum
 Der Knopf „Bericht“ zeigt einen Tagesbericht mit Temperaturverlauf, Zieltemperatur, Pausenzeiten, Fensterereignissen und eingesparter Energie. Ganz oben steht die **gelernte Aufheizzeit**: die Integration erkennt Aufheizphasen und merkt sich die Minuten pro Kelvin, getrennt nach Frost, kühl und mild. Die Daten stammen aus dem Verlauf von Home Assistant, für volle 7 Tage muss der Recorder so lange aufbewahren (Standard: 10 Tage).
 
 <p><img src="docs/vorschau_bericht.png" width="480" alt="Bericht"> <img src="docs/vorschau_bericht_handy.png" width="240" alt="Bericht auf dem Handy"></p>
 
-### Anwesenheit und Urlaub
+#### Anwesenheit und Urlaub
 Eine Karte stellt alle Räume gemeinsam um: **Zu Hause**, **Abwesend** oder **Urlaub**. Urlaub lässt sich mit Datum und Vorheizen am Rückkehrtag planen. Automatisch abwesend wird der Haushalt, wenn alle gewählten Personen länger unterwegs sind.
 
 **Personen & Standort** (Einstellungen → Allgemein) legt fest, woher der Standort jeder Person kommt und wo dein Zuhause liegt.
@@ -219,7 +343,7 @@ Eine Person gilt als **zu Hause**, wenn Home Assistant „zu Hause“ meldet, ei
 
 *Am iPhone beachten:* „Wo ist?“ und Ortungsdienste an, Anmeldung mit Apple-Passwort und Zwei-Faktor-Code (gelegentlich erneut nötig), eigene Apple-ID je Person, iCloud aktualisiert nicht sekundengenau. Darum die Zone nicht kleiner als etwa 100 bis 200 m wählen und bei Bedarf zusätzlich WLAN nutzen.
 
-### Elektroheizer mit PV-Überschuss
+#### Elektroheizer mit PV-Überschuss
 Pro Raum kann ein elektrischer Heizer (Heizlüfter, Infrarot, Klima-Heizgerät) eingerichtet werden. Er heizt nur, wenn genug PV-Überschuss da ist, auf Wunsch in mehreren Leistungsstufen.
 
 <details>
@@ -242,16 +366,16 @@ Pro Raum kann ein elektrischer Heizer (Heizlüfter, Infrarot, Klima-Heizgerät) 
 <img src="docs/vorschau_pv_block.png" width="480" alt="PV-Heizer"> <img src="docs/vorschau_pv_stufen.png" width="480" alt="Stufen">
 </details>
 
-### Raumluft: Lüften und Schimmel
+#### Raumluft: Lüften und Schimmel
 Mit einem Luftfeuchte-Sensor zeigt die Raumkarte Luftfeuchte, Taupunkt und Schimmelrisiko mit einer Empfehlung zum Stoßlüften samt Countdown. Auch ohne Sensor erscheinen „Gelüftet vor X Std.“, die geschätzte Wandtemperatur und die kritische Feuchte. Das Schimmelrisiko ist eine Schätzung, kein Messwert.
 
-### Wetter-Anpassung und Sommermodus
+#### Wetter-Anpassung und Sommermodus
 Die Einstellungen dazu öffnest du über **Einstellungen → Modul 1**: vier aufklappbare Bereiche (Sommermodus, Wetterabhängige Absenkung, PV-Überschuss für Elektroheizer, Strompreis und Einspeisevergütung), jeweils mit Kurzstatus in der Zeile.
 
 - **Wetterabhängige Absenkung** (standardmäßig aus): Bei Sonne oder milder Luft sinkt die Zieltemperatur des Heizplans, bei Frost steigt sie.
 - **Sommermodus:** Aus, automatisch oder immer an. Bei „Automatisch“ ruhen die Heizpläne ab einer einstellbaren mittleren Außentemperatur. Fenstermeldung und Erinnerungen bleiben aktiv.
 
-### Brennstoff und Ersparnis
+#### Brennstoff und Ersparnis
 Die Integration schätzt die durch Pausen gesparte Heizenergie und rechnet sie in die Menge deines Brennstoffs um. Die Ersparnis ist eine grobe Schätzung, die echte liegt etwas darunter.
 
 | Brennstoff | Einheit | Standard: kWh pro Einheit |
@@ -262,7 +386,13 @@ Die Integration schätzt die durch Pausen gesparte Heizenergie und rechnet sie i
 | Pellets | kg | 4,8 |
 | Wärmepumpe / Strom | kWh | 1 (mit JAZ/COP, Standard 3,5) |
 
-## Modul 2: Warmwasser & Zirkulation
+</details>
+
+<details>
+<summary><b>Modul 2: Warmwasser &amp; Zirkulation</b> &nbsp;·&nbsp; Stabil</summary>
+
+<br>
+
 Zeigt den Speicher, steuert Erzeuger, Heizstab und Zirkulationspumpe nach Zeitplan und führt den Legionellenschutz aus. **Das Modul schaltet nur Geräte, die du auswählst.** Fehlt eines, sagt die Seite das an der passenden Stelle.
 
 <p align="center"><img src="docs/vorschau_modul_warmwasser.png" width="720" alt="Modul 2: Warmwasser"></p>
@@ -276,7 +406,13 @@ Zeigt den Speicher, steuert Erzeuger, Heizstab und Zirkulationspumpe nach Zeitpl
 - **Legionellenschutz:** einmal pro Woche auf die Schutztemperatur (Standard 60 °C) und 20 Minuten halten, gemessen am kältesten Sensor. Er läuft nur mit gewähltem Erzeuger oder Heizstab. Schafft der Speicher es in sechs Stunden nicht, bricht der Lauf ab und das Fehlerprotokoll bekommt eine Warnung.
 - **PV-Überschuss:** Mit einem Heizstab-Schalter lädt das Modul den Speicher bei Überschuss bis zur eingestellten Höchsttemperatur (Standard 62 °C). **Der Warmwasser-Heizstab hat Vorrang vor den Raumheizern.**
 
-## Modul 3: Energie
+</details>
+
+<details>
+<summary><b>Modul 3: Energie</b> &nbsp;·&nbsp; Stabil</summary>
+
+<br>
+
 Heizung, Strom und PV auf einer Seite. Das Modul **liest nur Sensoren und schaltet nichts**.
 
 <p align="center"><img src="docs/vorschau_modul_energie.png" width="720" alt="Modul 3: Energie"></p>
@@ -300,7 +436,13 @@ Heizung, Strom und PV auf einer Seite. Das Modul **liest nur Sensoren und schalt
 <img src="docs/vorschau_energie_einstellungen.png" width="360" alt="Energie-Einstellungen">
 </details>
 
-## Modul 4: Gerätestrom
+</details>
+
+<details>
+<summary><b>Modul 4: Gerätestrom</b> &nbsp;·&nbsp; Stabil</summary>
+
+<br>
+
 Zeigt für jedes Gerät, **woher der Strom kam** (Solar, Batterie oder Netz), was der Lauf kostete und was du durch eigenen Strom gespart hast. Das Modul **liest nur Sensoren und schaltet nichts**.
 
 <p align="center"><img src="docs/vorschau_modul_geraetestrom.png" width="720" alt="Modul 4: Gerätestrom"></p>
@@ -317,10 +459,13 @@ Zeigt für jedes Gerät, **woher der Strom kam** (Solar, Batterie oder Netz), wa
 
 *Hinweis:* Zähler der alten Integration werden nicht übernommen, die Auswertung beginnt neu.
 
-## Module 5 bis 16
-Diese Module sind noch nicht stabil. Die Stufe steht jeweils im Kopfteil der Seite und in der Tabelle oben. Alle sind **standardmäßig aus** und werden unter **Einstellungen → Module verwalten** eingeschaltet. Module in der Stufe „In Entwicklung“ zeigen Beispielwerte und steuern nichts. Rückmeldungen gern als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues).
+</details>
 
-### Modul 5, 6, 7 (In Entwicklung)
+<details>
+<summary><b>Module 5, 6, 7: Lüftung, Rollläden, Wärmepumpe</b> &nbsp;·&nbsp; In Entwicklung</summary>
+
+<br>
+
 | Modul | Zeigt heute | Geplant |
 |---|---|---|
 | **5 Lüftung & Raumluft** | Pro Raum Luftfeuchte, Taupunkt und Lüftungshinweise aus den Räumen von Modul 1 | KWL steuern, CO₂-Werte auswerten |
@@ -329,7 +474,13 @@ Diese Module sind noch nicht stabil. Die Stufe steht jeweils im Kopfteil der Sei
 
 <p align="center"><img src="docs/vorschau_modul_lueftung.png" width="280" alt="Modul 5"> <img src="docs/vorschau_modul_rolllaeden.png" width="280" alt="Modul 6"> <img src="docs/vorschau_modul_waermepumpe.png" width="280" alt="Modul 7"></p>
 
-### Modul 8: Elektroauto & Wallbox (Beta)
+</details>
+
+<details>
+<summary><b>Modul 8: Elektroauto &amp; Wallbox</b> &nbsp;·&nbsp; Beta</summary>
+
+<br>
+
 <p align="center"><img src="docs/vorschau_modul_elektroauto.png" width="720" alt="Modul 8: Elektroauto"></p>
 
 Das Modul zeigt dein Auto mit Wallbox und regelt den **go-e Charger** (Gemini und andere Geräte mit lokaler API v2) direkt über das lokale Netzwerk, ohne Cloud. Die Regelung ist standardmäßig **aus**. Register: **Laden**, **Planung**, **Ladestatistik**, **Einstellungen**, dazu eine Statusleiste über allen Registern.
@@ -395,7 +546,13 @@ Das Modul zeigt dein Auto mit Wallbox und regelt den **go-e Charger** (Gemini un
 
 <img src="docs/vorschau_elektroauto_einstellungen.png" width="480" alt="Elektroauto einrichten">
 
-### Modul 9: Wetter & Warnungen (Beta)
+</details>
+
+<details>
+<summary><b>Modul 9: Wetter &amp; Warnungen</b> &nbsp;·&nbsp; Beta</summary>
+
+<br>
+
 <p align="center"><img src="docs/vorschau_modul_wetter.png" width="560" alt="Modul 9: Wetter &amp; Warnungen"></p>
 
 Das Modul läuft im Hintergrund von Home Assistant, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, deshalb kann zusätzlich eine amtliche Warnung angezeigt werden.
@@ -414,12 +571,24 @@ Das Modul läuft im Hintergrund von Home Assistant, auch wenn das Dashboard gesc
 
 *Beta-Hinweis:* Vorhersage und Erkennung von DWD, NINA und MeteoAlarm sind noch nicht auf allen Systemen geprüft.
 
-### Modul 10: Garten & Bewässerung (In Entwicklung)
+</details>
+
+<details>
+<summary><b>Modul 10: Garten &amp; Bewässerung</b> &nbsp;·&nbsp; In Entwicklung</summary>
+
+<br>
+
 <p align="center"><img src="docs/vorschau_modul_garten.png" width="560" alt="Modul 10: Garten &amp; Bewässerung"></p>
 
 Zeigt, ob es regnet, den aktuellen PV-Überschuss und einen Platz für den Zisternen-Füllstand. **Geplant:** Regenprognose, Zisterne mit Umschalten auf Leitungswasser, Bewässerung bei PV-Überschuss, Zeitplan pro Zone.
 
-### Modul 11: Rauch- & Sicherheitsmelder (Vorabversion)
+</details>
+
+<details>
+<summary><b>Modul 11: Rauch- &amp; Sicherheitsmelder</b> &nbsp;·&nbsp; Vorabversion</summary>
+
+<br>
+
 <p align="center"><img src="docs/vorschau_modul_sicherheit.png" width="560" alt="Modul 11: Rauch- &amp; Sicherheitsmelder"></p>
 
 Findet automatisch alle `binary_sensor` mit der Geräteklasse **Rauch, CO, Gas, Wasser, Hitze oder Sicherheit**, mit Raum, Batteriestand und Testknopf. Alles läuft im Hintergrund, auch bei geschlossenem Dashboard.
@@ -430,7 +599,13 @@ Findet automatisch alle `binary_sensor` mit der Geräteklasse **Rauch, CO, Gas, 
 
 **Wichtig:** Das Modul ersetzt keine Alarmanlage und keinen Rauchmelder mit eigener Sirene.
 
-### Modul 12, 13, 15 (In Entwicklung)
+</details>
+
+<details>
+<summary><b>Module 12, 13, 15: Pool, Batteriespeicher, Wartung</b> &nbsp;·&nbsp; In Entwicklung</summary>
+
+<br>
+
 | Modul | Zeigt heute | Geplant |
 |---|---|---|
 | **12 Pool & Sauna** | PV-Überschuss und Strompreis aus Modul 1, Außentemperatur | Poolpumpe nach Sonne, Pool-Heizung, Sauna nach Wunschzeit, Kosten und Solaranteil |
@@ -439,12 +614,24 @@ Findet automatisch alle `binary_sensor` mit der Geräteklasse **Rauch, CO, Gas, 
 
 <p align="center"><img src="docs/vorschau_modul_pool.png" width="280" alt="Modul 12"> <img src="docs/vorschau_modul_batterie.png" width="280" alt="Modul 13"> <img src="docs/vorschau_modul_wartung.png" width="280" alt="Modul 15"></p>
 
-### Modul 14: Dynamischer Stromtarif (Beta)
+</details>
+
+<details>
+<summary><b>Modul 14: Dynamischer Stromtarif</b> &nbsp;·&nbsp; Beta</summary>
+
+<br>
+
 <p align="center"><img src="docs/vorschau_modul_stromtarif.png" width="560" alt="Modul 14: Dynamischer Stromtarif"></p>
 
 Liest die **Stundenpreise** aus dem Preis-Sensor, den du in Modul 1 unter „Strompreis“ gewählt hast. Der Sensor muss die Preisliste für heute als Attribut `raw_today`, `prices_today`, `today` oder `prices` liefern (24 Stunden- oder 96 Viertelstunden-Werte, in Euro oder Cent). Die Seite zeigt Preis jetzt, Tagesschnitt, nächste Stunde, einen **Preisverlauf** (grün günstig, rot teuer) und die **günstigsten drei Stunden** zum Laden und Waschen. **Geplant:** Vorschläge für günstige Fenster, Preisalarm, Preise für morgen.
 
-### Modul 16: Solar-Prognose (Vorabversion)
+</details>
+
+<details>
+<summary><b>Modul 16: Solar-Prognose</b> &nbsp;·&nbsp; Vorabversion</summary>
+
+<br>
+
 <p align="center"><img src="docs/vorschau_modul_prognose.png" width="560" alt="Modul 16: Solar-Prognose"></p>
 
 Zeigt den erwarteten Ertrag für heute und morgen, den bisherigen Ertrag des Tages, einen Stundenverlauf (Heute oder Morgen), die ergiebigste Zeit für Verbraucher und einen Vergleich von Prognose gegen tatsächlichen Ertrag der letzten Tage mit der Abweichung in Prozent. Das Modul läuft im Hintergrund und schaltet nichts.
@@ -456,58 +643,13 @@ Zeigt den erwarteten Ertrag für heute und morgen, den bisherigen Ertrag des Tag
 
 Einrichtung: Einstellungen → Modul 16.
 
-### Startseite
-<p align="center"><img src="docs/vorschau_startseite.png" width="760" alt="Startseite"></p>
+</details>
 
-Der Tab **Start** steht ganz links und erscheint, wenn du das Dashboard in Home Assistant neu öffnest. Ein Direktlink mit `?modul=<Kennung>` (zum Beispiel `?modul=mu`) öffnet stattdessen das Modul. Unter **Einstellungen** stellst du die Startseite aus oder auf „Letztes Modul“.
+<details>
+<summary><b>Modul 17: Müllabfuhr</b> &nbsp;·&nbsp; Lab</summary>
 
-- **Zuhause:** Ampel („Alles in Ordnung“ oder „Fast alles in Ordnung“) mit einer Kachel je aktivem Modul. Ein Tipp öffnet das Modul.
-- **Wetter:** aus deiner Wetter-Entität, mit Stundenwerten, wenn sie eine Vorhersage liefert.
-- **Personen:** wer zu Hause ist, seit wann, sonst die Entfernung (aus „Personen & Standort“).
-- **Alarm:** Zustand deiner Alarmanlage (`alarm_control_panel`). Schalten ist ab Werk aus. Mit „Alarm schalten erlauben“ erscheinen Knöpfe für Unscharf, Abwesend und Zu Hause, jedes Schalten wird bestätigt, bei Code-Anlagen mit Code-Eingabe. Das schaltet echte Geräte.
-- **Hinweise:** Fenster zu lange offen, Probleme im Warmwasser, schwache Batterien, Müllabfuhr, ausgelöster Alarm.
-- **Energie** und **Müllabfuhr** erscheinen nur, wenn Modul 3 eingerichtet und das Lab „Müllabfuhr“ an ist.
+<br>
 
-Karten ohne Datenquelle erscheinen nicht. Mit **Anpassen** (wie in Modul 1) verschiebst du Karten und blendest sie aus, die Anordnung gilt für alle Nutzer.
-
-<p align="center"><img src="docs/vorschau_startseite_anpassen.png" width="520" alt="Anpassen der Startseite"> <img src="docs/vorschau_startseite_handy.png" width="200" alt="Startseite auf dem Handy"></p>
-
-#### Lab „Start-Bubbles“
-<p align="center"><img src="docs/vorschau_startseite_bubbles.png" width="560" alt="Bubbles wählen"> <img src="docs/vorschau_startseite_einstellungen.png" width="560" alt="Einstellungen der Startseite"></p>
-
-Unter **Labs → Start-Bubbles** einschalten (Art „Nur Anzeige“). Dann erscheint oben eine Reihe runder Kurzinfos. Den Inhalt wählst du in den Einstellungen der Startseite („Bubbles wählen“, bis zu acht, Reihenfolge per Pfeil). Warnfarben (Gelb bei Hinweis, Rot bei Alarm) und „Antippen öffnet Karte oder Modul“ sind einstellbar. Bubbles ohne Daten werden ausgelassen. Ausgeschaltet ist die Reihe weg, die Auswahl bleibt gespeichert.
-
-### Tablet-Modus
-<p align="center"><img src="docs/vorschau_tablet.png" width="760" alt="Tablet-Modus auf einem 10-Zoll-Tablet"></p>
-
-Für Tablets an der Wand oder auf dem Tisch. Im Tablet-Modus gibt es keine Tab-Leiste und keine Schalter im Kopf, nur Kopfzeile mit Uhr, den Inhalt und eine untere Leiste mit großen Knöpfen. Die Ansicht passt sich an Bildschirmgröße und Ausrichtung an (Hoch- und Querformat, 8 bis 13 Zoll). Die Einstellungen gelten nur für das jeweilige Gerät.
-
-**Einschalten** (vier Wege):
-1. Knopf **Tablet-Modus** im Kopf der normalen Ansicht (ab 600 px Breite).
-2. Im selben Dialog stehen Aktivierung (Aus, Automatisch, Immer an), Name, Größe, Ruhemodus, Bewegungsmelder und PIN. „Automatisch“ gilt für Touchgeräte ab 600 px Breite.
-3. Ein Hinweis beim ersten Öffnen auf einem Gerät in Tablet-Größe. „Nicht mehr fragen“ merkt sich das Gerät.
-4. Ein Direktlink mit `?tablet=1`. In **Fully Kiosk** als Start-URL eintragen (Web Content Settings), dann startet das Tablet immer im Tablet-Modus. `?tablet=0` schaltet ihn auf diesem Gerät wieder aus.
-
-**PIN:** sechs Ziffern, beim Festlegen zweimal eingeben. Ohne PIN startet der Modus über den Dialog nicht. Das Schloss oben rechts öffnet nach der PIN die Einstellungen dieses Tablets, dort auch „Tablet-Modus beenden“. Nach fünf falschen Eingaben ist die Eingabe 60 Sekunden gesperrt. Die PIN liegt nur als Prüfwert im Home Assistant. Sie schützt vor Versehen, nicht vor Technikern. Vergessen? Ein Administrator setzt sie in der normalen Ansicht unter **Tablet-Modus → Tablets verwalten** zurück.
-
-<p align="center"><img src="docs/vorschau_tablet_pin.png" width="380" alt="PIN-Eingabe"> <img src="docs/vorschau_tablet_hoch.png" width="200" alt="Hochformat"> <img src="docs/vorschau_tablet_ruhe.png" width="380" alt="Ruhemodus"></p>
-
-- **Start:** Bubbles (wenn das Lab „Start-Bubbles“ an ist), eine große Kachel je Modul und die wichtigsten Hinweise.
-- **Fenster & Heizung:** pro Raum die Ist-Temperatur und die Soll-Temperatur mit großen −/+-Knöpfen (setzt `climate.set_temperature` für die Thermostate des Raums). Bei offenem Fenster ist die Heizung pausiert und die Knöpfe sind gesperrt. Die übrigen Module zeigen ihre bekannte Ansicht in großer Schrift.
-- **Untere Leiste:** alle aktiven Module, abwählbar. Bei schmalen Bildschirmen steht der Rest unter „Mehr“.
-- **Zurück zu Start** nach 2, 5 oder 15 Minuten ohne Berührung (einstellbar).
-- **Ruhemodus** nach 5, 15 oder 30 Minuten: dunkle Uhr mit Wetter, Alarm, Personen und Müllabfuhr. Berühren, Bewegung oder eine Warnung (zum Beispiel ausgelöster Alarm) weckt auf. Der erste Tipp schaltet nur auf, er löst nichts darunter aus.
-- **Bewegungsmelder und Display:** Du wählst einen Bewegungsmelder (`binary_sensor`). Er wird im Home Assistant überwacht und funktioniert auch bei ausgeschaltetem Display. Bei Bewegung wird der **Display-Schalter** eingeschaltet, nach der eingestellten Zeit ohne Bewegung (10 oder 30 Minuten) wieder aus. Bei Fully ist das der Schalter „Screen“ der Fully-Integration. Für die Home-Assistant-App unter Android lässt sich ein Benachrichtigungsdienst (`mobile_app_…`) eintragen, er schaltet nur ein. Ein ausgelöster Alarm schaltet das Display ebenfalls ein.
-
-| | Fully Kiosk (Android) | HA-App Android | HA-App iPad/iPhone |
-|---|---|---|---|
-| Ruhemodus, Aufwachen per Bewegung | ja | ja | ja |
-| Display einschalten bei Bewegung | ja | ja | nein |
-| Display ausschalten | ja | teilweise | nein |
-
-Hinweise: Die Seite überdeckt im Tablet-Modus die ganze Anzeige. Zeigt Home Assistant dennoch Seitenleiste und Kopfzeile, lassen sie sich mit Fully (Kiosk-Modus) oder einem Kiosk-Add-on ausblenden. Die Display-Helligkeit steuert die Seite nicht.
-
-### Modul 17: Müllabfuhr (Lab)
 <p align="center"><img src="docs/vorschau_modul_muell.png" width="760" alt="Modul 17: Müllabfuhr"></p>
 
 Das Modul ist ein Lab (Art „Schaltet Geräte“, Stand „Früh“). Du schaltest es unter **Labs → Müllabfuhr** ein und bestätigst vorher. Ausgeschaltet ist es komplett weg: die Seite in der Modul-Leiste, der Store-Eintrag und der Filter „Haus“. Die Einstellungen bleiben gespeichert.
@@ -526,39 +668,36 @@ Das Modul ist ein Lab (Art „Schaltet Geräte“, Stand „Früh“). Du schalt
 
 Einrichtung: Einstellungen im Modul 17 (Knopf oben rechts). Ausgeschaltet bleibt die Integration waste_collection_schedule in Home Assistant installiert, du entfernst sie dort.
 
-### Sponsor-Bereich
-Die Integration ist und bleibt kostenlos und offen. Wer sie über [GitHub Sponsors](https://github.com/sponsors/Maddog3010) unterstützt, bekommt einen **Sponsor-Schlüssel** und damit zusätzliche Dinge, die schön, aber nie nötig sind. Es wird nichts gesperrt, was ohne Schlüssel schon da war.
+</details>
 
-Im Kopf, in den Einstellungen unter „Sponsor-Bereich“ oder über die Karte auf der Startseite öffnest du den Dialog. Ein Administrator fügt dort den Schlüssel ein. Er gilt dann für alle Geräte und Benutzer.
+## Mehr
 
-| Extra | Was es macht |
-|---|---|
-| Abzeichen | Ein Herz mit „Sponsor“ im Kopf. Lässt sich ausblenden. |
-| Farbverläufe | „Meer“ und „Abend“ als Verlauf hinter dem Kopf. |
-| Uhr-Stile | „Dünn“, „Kräftig“ und „Digital“ für die Uhr im Ruhemodus des Tablet-Modus. |
-| Vorabversionen | Neue Labs erscheinen für Sponsoren ein bis zwei Wochen früher. |
+<details>
+<summary><b>Allgemeines: Entitäten wählen, Diagnose, Sichern, Update-Hinweis</b></summary>
 
-**Wie der Schlüssel funktioniert:** Er trägt Name, Ablaufdatum und eine digitale Unterschrift (Ed25519). Die Integration prüft die Unterschrift selbst mit einem öffentlichen Schlüssel im Code. Es gibt keinen Server und kein Konto, und es werden keine Daten gesendet. Läuft ein Schlüssel ab, gehen nur die Extras aus, die Einstellungen bleiben gespeichert. Gesperrte Schlüssel stehen in der Datei [`sponsor_gesperrt.json`](sponsor_gesperrt.json), die die Integration einmal am Tag von GitHub lädt. Ist GitHub nicht erreichbar, bleibt alles wie es war.
+<br>
 
-**Für den Entwickler:** Wer den privaten Schlüssel im Sponsor-Bereich einträgt („Ich bin der Entwickler“), bekommt die Verwaltung. Sponsoren anlegen mit Name und Ablaufdatum (Vorgabe ein Jahr), Schlüssel kopieren, verlängern, sperren, Danke-Liste kopieren. Namen und Notizen bleiben im eigenen Home Assistant. Neuer Speicher `fenster_heizung_sponsor`, neue Befehle `spn_get`, `spn_redeem`, `spn_clear`, `spn_prefs`, `spn_admin_get`, `spn_admin_setup`, `spn_admin_act`.
-
-## Allgemeines
-
-### Entitäten auswählen
+#### Entitäten auswählen
 Überall im Dashboard ersetzt eine Suchauswahl die einfachen Listen. Sie zeigt Name, Entity-ID und aktuellen Wert, passende Entitäten stehen oben mit „Passt“.
 
-### Gerätediagnose
+#### Gerätediagnose
 Unter **System → Diagnose** siehst du, ob alle Geräte der Regelung melden: Status, zuletzt gemeldet, Ventile (Batterie und ob sie Befehle übernehmen), Fenstersensoren und ein Protokoll fehlgeschlagener Schaltvorgänge. Auf Wunsch kommt eine Benachrichtigung bei Problemen, höchstens einmal in 24 Stunden je Problem.
 
 <p><img src="docs/vorschau_diagnose.png" width="480" alt="Gerätediagnose"> <img src="docs/vorschau_ventile.png" width="480" alt="Ventile"></p>
 
-### Sichern und Wiederherstellen
+#### Sichern und Wiederherstellen
 Unter **System → Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit Räumen, Heizplänen, Anwesenheit (mit Home-Zone und Personen), Aussehen, allgemeinen Einstellungen und den Einstellungen der Module 2 bis 4 und 8. Beim Einlesen siehst du zuerst eine Zusammenfassung, erst „Wiederherstellen“ ersetzt die aktuellen Einstellungen.
 
-### Update-Hinweis
+#### Update-Hinweis
 Administratoren sehen oben ein Banner, wenn auf GitHub eine neuere Version veröffentlicht wurde. Maßgeblich ist die höchste Version unter allen Releases und Tags, auch mit vier Teilen (zum Beispiel `3.0.2.9`). Die Prüfung fragt höchstens einmal pro Stunde ab und lässt sich unter **Allgemein → Updates** ausschalten.
 
-## Entitäten
+</details>
+
+<details>
+<summary><b>Entitäten</b></summary>
+
+<br>
+
 Pro Raum:
 
 | Entität | Beschreibung |
@@ -570,9 +709,13 @@ Pro Raum:
 | Sensor „Betriebszustand“ | Regelung aktiv, Heizung pausiert, Heizung aus (nur Fenstermeldung) oder Regelung deaktiviert; Attribute u. a. `zuletzt_gelueftet`, `luftfeuchte_sensor`, `heizer` |
 | Sensor „Heizplan Solltemperatur“ | aktuelle Vorgabe des Plans, nächste Änderung als Attribut; dazu `sommermodus` und `wetter_anpassung` |
 
-## Hinweise für Entwickler
+</details>
+
 <details>
-<summary><b>WebSocket-Befehle und Änderungen an der Schnittstelle</b></summary>
+<summary><b>Hinweise für Entwickler</b></summary>
+
+<br>
+
 
 - Die technische Kennung der Integration bleibt `fenster_heizung` (Ordner, Entitäten, Speicher). Nur der Anzeigename ist „Strom & Wärme“.
 - Das Dashboard (`panel.js`) wird aus den Quelldateien in `frontend-src/parts` gebaut: `python3 frontend-src/build.py` (mit `--check` prüfen, ob die Datei aktuell ist).
@@ -591,6 +734,7 @@ Pro Raum:
 - Der Bericht braucht Verlaufsdaten im Recorder.
 
 **Neue Version veröffentlichen:** `version` in `custom_components/fenster_heizung/manifest.json` erhöhen, auf GitHub ein Release mit passendem Tag (zum Beispiel `v3.0.2.9`) erstellen und kurze Aufzählungspunkte in die Beschreibung schreiben. Sie erscheinen im Update-Hinweis des Dashboards. HACS zeigt das Update an.
+
 </details>
 
 ## Wichtige Hinweise
@@ -601,13 +745,26 @@ Pro Raum:
 - Sensoren müssen in Home Assistant aktuelle Werte liefern. Ohne Messwerte bleibt die Regelung zurückhaltend: Fällt der PV-Sensor aus, gilt der Überschuss als 0.
 - „Strom & Wärme“ ist ein privates Projekt und steht in keiner Verbindung zu Home Assistant oder Nabu Casa.
 
-## Unterstützen
-Gefällt dir die Integration? Über [GitHub Sponsors](https://github.com/sponsors/Maddog3010) kannst du die Weiterentwicklung unterstützen. Danke! Mit einem Schlüssel gibt es [einige Extras](#sponsor-bereich).
+## Häufige Fragen
 
-Fehler und Wünsche gern als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues) melden. Hilfreich sind die Version, eine kurze Beschreibung und der Ausschnitt aus dem Protokoll der Gerätediagnose („Kopieren“).
+**Kostet „Strom & Wärme“ etwas?**
+Nein. Die Integration ist kostenlos und offen. Ein Sponsoring ist freiwillig.
 
-## Änderungen
-Alle Versionen siehe [CHANGELOG.md](CHANGELOG.md).
+**Brauche ich einen Sponsor-Schlüssel, um etwas zu nutzen?**
+Nein. Alle Module, Labs und der Tablet-Modus funktionieren ohne Schlüssel. Der Schlüssel bringt nur zusätzliche Extras, siehe [Sponsor werden](#sponsor-werden).
+
+**Was passiert, wenn mein Schlüssel abläuft?**
+Nur die Extras gehen aus. Deine Einstellungen bleiben gespeichert, mit einem neuen Schlüssel ist alles wieder da.
+
+**Werden Daten an einen Server geschickt?**
+Der Schlüssel wird lokal geprüft, ohne Server. Einmal am Tag lädt die Integration die öffentliche Sperrliste von GitHub. Standortdaten werden nicht als Verlauf gespeichert. Für Wetter, Strompreis oder Tibber werden nur die jeweiligen Dienste angefragt, die du selbst einrichtest.
+
+**Funktioniert der Tablet-Modus mit Fully Kiosk und der HA-App?**
+Ja. Ruhemodus und Aufwachen per Bewegung gehen überall. Das Display per Bewegungsmelder einschalten geht mit Fully Kiosk und der Android-App, am iPad nicht. Details stehen im Abschnitt [Bedienung](#bedienung).
+
+**Wo melde ich Fehler und Wünsche?**
+Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues). Hilfreich sind die Version, eine kurze Beschreibung und der Ausschnitt aus dem Protokoll der Gerätediagnose („Kopieren“).
 
 ---
-<p align="center"><sub>Made with ❤ by <b>MADDOG3010</b></sub></p>
+<p align="center"><a href="https://github.com/sponsors/Maddog3010"><img src="docs/sponsor_banner.png" alt="Sponsor werden" width="70%"></a></p>
+<p align="center"><sub>Made with ❤ by <b>MADDOG3010</b> · „Strom &amp; Wärme“ ist ein privates Projekt und steht in keiner Verbindung zu Home Assistant oder Nabu Casa.</sub></p>

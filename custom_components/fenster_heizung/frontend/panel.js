@@ -5782,7 +5782,7 @@ class FensterHeizungPanel extends HTMLElement {
         <textarea class="osel spnta" data-f="spnkey" rows="3" placeholder="FH1-…" spellcheck="false" aria-label="Sponsor-Schlüssel"></textarea>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div>
         <div class="gbtns" style="margin-top:8px"><button class="btn2 spnb" data-act="spnred">${ic("heart", 16)} Schlüssel einlösen</button>${link}</div>
-        ${s.manage ? `<div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button></div>` : `<div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnadm" style="font-size:.8rem">Ich bin der Entwickler</button></div>`}`
+        ${s.manage ? `<div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button></div>` : `<div style="margin-top:12px;text-align:center"><button class="lnk" data-act="spnadm" style="font-size:.7rem;opacity:.45">Entwickler-Zugang</button></div>`}`
         : `<div class="mut sm">Den Schlüssel trägt ein Administrator ein.</div><div class="gbtns" style="margin-top:10px">${link}</div>`}`;
     }
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>${ic("heart", 17)} Sponsor-Bereich</b><span>${s.active ? "Freigeschaltet" : "Noch nicht freigeschaltet"}</span></div>${close}</div>${body}</div>`;

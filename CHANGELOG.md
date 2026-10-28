@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.14] - 2026-10-28
+### Geändert
+- **README komplett neu:** neues Kopfbild, Sponsor-Banner ganz oben und am Ende, Kurzüberblick, einklappbare Abschnitte für Bedienung und alle Module, eigener Abschnitt „Sponsor werden“ mit Bildern und neue Häufige Fragen. Der Inhalt der Module bleibt unverändert.
+- Sponsor-Dialog: Der Zugang zur Verwaltung ist jetzt ein unauffälliger Text „Entwickler-Zugang“ am Ende des Dialogs.
+
 ## [3.0.2.13] - 2026-10-28
 ### Neu
 - **Sponsor-Bereich:** Link zu GitHub Sponsors im Kopf, als Karte auf der Startseite (60 Tage ausblendbar), als Zeile im Update-Hinweis und in den Einstellungen. Mit einem Sponsor-Schlüssel gibt es ein Abzeichen, Farbverläufe für den Kopf („Meer“, „Abend“), Uhr-Stile für den Ruhemodus („Dünn“, „Kräftig“, „Digital“) und Vorabversionen (Labs mit Kennzeichen `early`). Nichts, was bisher frei war, wird gesperrt.
