@@ -44,6 +44,7 @@
       if (e.startsWith("binary_sensor.") && a.device_class === "battery" && s.state === "on") { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: "Batterie wechseln", r: "", c: "wa" }); }
       else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
     });
+    try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: "wa" }); } catch (_) { /* egal */ }
     const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
   }
   /* Kachel je aktives Modul */
@@ -148,7 +149,7 @@
       return `<section class="blk mub ${HZ_WIDE.includes(id) ? "wide" : ""} ${edit ? "editing" : ""} ${hid ? "hid" : ""}" data-sort="hzblk" data-id="${id}">
       ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${HZ_NAMES[id]}<button class="eyeb" data-act="hzhide" data-k="${id}" aria-pressed="${!hid}" aria-label="${HZ_NAMES[id]} ${hid ? "einblenden" : "ausblenden"}" title="${hid ? "Einblenden" : "Ausblenden"}">${ic(hid ? "eyeOff" : "eye", 18)}<span>${hid ? "Ausgeblendet" : "Sichtbar"}</span></button></div>` : ""}${B[id]}</section>`;
     }).join("");
-    return `${bub}${eb}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
+    return `${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
   }
   _hzAct(a, b) {
     const k = b.dataset.k;

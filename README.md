@@ -5,13 +5,16 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.12-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.13-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Ein Dashboard für Heizung, Strom und Haus in Home Assistant.**
 „Strom & Wärme“ pausiert Heizkörper bei offenem Fenster, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer, Warmwasser und das Auto, zeigt, woher der Strom deiner Geräte kommt, und warnt vor Unwetter und Rauch. Alles steht in einer eigenen Seite in der Seitenleiste, 16 Module, die du einzeln ein- und ausschaltest, dazu Modul 17 „Müllabfuhr“ als Lab.
 
 <p align="center"><img src="docs/vorschau_desktop.png" width="760" alt="Dashboard auf dem Desktop"></p>
+
+## Neu in 3.0.2.13
+- **Sponsor-Bereich:** Wer die Entwicklung über GitHub Sponsors unterstützt, bekommt einen Schlüssel und damit Schönes obendrauf: ein Abzeichen im Kopf, zusätzliche Farbverläufe, Uhr-Stile für den Ruhemodus des Tablet-Modus und Vorabversionen. Alles, was bisher kostenlos ist, bleibt kostenlos. Der Link zu GitHub Sponsors steht im Kopf, auf der Startseite, im Update-Hinweis und in den Einstellungen. Siehe [Sponsor-Bereich](#sponsor-bereich).
 
 ## Neu in 3.0.2.12
 - **Tablet-Modus:** eine eigene Oberfläche für Wand- und Tischtablets. Große Bedienflächen, untere Knopfleiste statt der Tab-Leiste, Ruhemodus mit dunkler Uhr, PIN-Schutz für die Einstellungen und Display-Steuerung per Bewegungsmelder. Gilt pro Gerät, die normale Ansicht ist dort ausgeblendet. Siehe [Tablet-Modus](#tablet-modus).
@@ -35,6 +38,7 @@ Alle Änderungen stehen im [Changelog](CHANGELOG.md).
 - [Labs: experimentelle Funktionen](#labs-experimentelle-funktionen)
 - [Startseite](#startseite)
 - [Tablet-Modus](#tablet-modus)
+- [Sponsor-Bereich](#sponsor-bereich)
 - [Modul 1: Fenster & Heizung](#modul-1-fenster--heizung)
 - [Modul 2: Warmwasser & Zirkulation](#modul-2-warmwasser--zirkulation)
 - [Modul 3: Energie](#modul-3-energie)
@@ -522,6 +526,22 @@ Das Modul ist ein Lab (Art „Schaltet Geräte“, Stand „Früh“). Du schalt
 
 Einrichtung: Einstellungen im Modul 17 (Knopf oben rechts). Ausgeschaltet bleibt die Integration waste_collection_schedule in Home Assistant installiert, du entfernst sie dort.
 
+### Sponsor-Bereich
+Die Integration ist und bleibt kostenlos und offen. Wer sie über [GitHub Sponsors](https://github.com/sponsors/Maddog3010) unterstützt, bekommt einen **Sponsor-Schlüssel** und damit zusätzliche Dinge, die schön, aber nie nötig sind. Es wird nichts gesperrt, was ohne Schlüssel schon da war.
+
+Im Kopf, in den Einstellungen unter „Sponsor-Bereich“ oder über die Karte auf der Startseite öffnest du den Dialog. Ein Administrator fügt dort den Schlüssel ein. Er gilt dann für alle Geräte und Benutzer.
+
+| Extra | Was es macht |
+|---|---|
+| Abzeichen | Ein Herz mit „Sponsor“ im Kopf. Lässt sich ausblenden. |
+| Farbverläufe | „Meer“ und „Abend“ als Verlauf hinter dem Kopf. |
+| Uhr-Stile | „Dünn“, „Kräftig“ und „Digital“ für die Uhr im Ruhemodus des Tablet-Modus. |
+| Vorabversionen | Neue Labs erscheinen für Sponsoren ein bis zwei Wochen früher. |
+
+**Wie der Schlüssel funktioniert:** Er trägt Name, Ablaufdatum und eine digitale Unterschrift (Ed25519). Die Integration prüft die Unterschrift selbst mit einem öffentlichen Schlüssel im Code. Es gibt keinen Server und kein Konto, und es werden keine Daten gesendet. Läuft ein Schlüssel ab, gehen nur die Extras aus, die Einstellungen bleiben gespeichert. Gesperrte Schlüssel stehen in der Datei [`sponsor_gesperrt.json`](sponsor_gesperrt.json), die die Integration einmal am Tag von GitHub lädt. Ist GitHub nicht erreichbar, bleibt alles wie es war.
+
+**Für den Entwickler:** Wer den privaten Schlüssel im Sponsor-Bereich einträgt („Ich bin der Entwickler“), bekommt die Verwaltung. Sponsoren anlegen mit Name und Ablaufdatum (Vorgabe ein Jahr), Schlüssel kopieren, verlängern, sperren, Danke-Liste kopieren. Namen und Notizen bleiben im eigenen Home Assistant. Neuer Speicher `fenster_heizung_sponsor`, neue Befehle `spn_get`, `spn_redeem`, `spn_clear`, `spn_prefs`, `spn_admin_get`, `spn_admin_setup`, `spn_admin_act`.
+
 ## Allgemeines
 
 ### Entitäten auswählen
@@ -582,7 +602,7 @@ Pro Raum:
 - „Strom & Wärme“ ist ein privates Projekt und steht in keiner Verbindung zu Home Assistant oder Nabu Casa.
 
 ## Unterstützen
-Gefällt dir die Integration? Über [GitHub Sponsors](https://github.com/sponsors/Maddog3010) kannst du die Weiterentwicklung unterstützen. Danke!
+Gefällt dir die Integration? Über [GitHub Sponsors](https://github.com/sponsors/Maddog3010) kannst du die Weiterentwicklung unterstützen. Danke! Mit einem Schlüssel gibt es [einige Extras](#sponsor-bereich).
 
 Fehler und Wünsche gern als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues) melden. Hilfreich sind die Version, eine kurze Beschreibung und der Ausschnitt aus dem Protokoll der Gerätediagnose („Kopieren“).
 

@@ -57,6 +57,7 @@
     else if (a.startsWith("mux")) this._muxAct(a, b);
     else if (a.startsWith("hz")) this._hzAct(a, b);
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
+    else if (a.startsWith("spn")) this._spnAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);
     else if (a.startsWith("wb")) this._wbAct(a, b);

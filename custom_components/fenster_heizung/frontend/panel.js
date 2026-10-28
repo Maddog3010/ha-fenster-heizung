@@ -51,6 +51,11 @@ const ICONS = {
   tree: '<circle cx="12" cy="9" r="6"/><path d="M12 15v6M8.5 21h7"/>',
   car: '<path d="M4 17v-5l2-5h12l2 5v5zM4 17v2M20 17v2M4 12h16"/><circle cx="8" cy="15" r=".9" fill="currentColor"/><circle cx="16" cy="15" r=".9" fill="currentColor"/>',
   tools: '<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M9 8V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13.5h18"/>',
+  back: '<path d="M15 5l-7 7 7 7"/>',
+  more: '<circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/>',
+  heart: '<path d="M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.4-7 10-7 10z"/>',
+  key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
+  link: '<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',
   copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>',
   home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
@@ -1170,6 +1175,31 @@ button.hzr{cursor:pointer}
 .tmurl{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:6px 6px 6px 12px;overflow:hidden}.tmurl code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.8rem;color:var(--teal)}
 @media(max-width:520px){.tmclk span{font-size:1.8rem}.tmclk small{display:none}.tmmore{grid-template-columns:repeat(2,1fr)}}
 
+
+/* Sponsor-Bereich (3.0.2.13) */
+.spnb{--spr:#e07aa6}.pillbtn.spnb,.btn2.spnb{color:var(--spr);border-color:color-mix(in srgb,var(--spr) 55%,transparent);background:color-mix(in srgb,var(--spr) 12%,transparent);font-weight:700}
+.spnb svg{fill:currentColor}.pillbtn.spnb.pri,.btn2.spnb.pri{background:var(--spr);border-color:var(--spr);color:#2a0f1b}.pillbtn.spnb.on{background:color-mix(in srgb,var(--spr) 16%,transparent)}
+.spnc{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border:1px solid color-mix(in srgb,#e07aa6 35%,var(--line));background:color-mix(in srgb,#e07aa6 6%,var(--card,#1c1c1c));border-radius:20px;padding:14px 16px;margin:0 0 12px}
+.spnbig{width:46px;height:46px;border-radius:14px;background:color-mix(in srgb,#e07aa6 16%,transparent);display:grid;place-items:center;flex:none;color:#e07aa6}.spnbig svg{fill:currentColor}
+.spnt{flex:1;min-width:200px}.spnt b{display:block}.spnt span{display:block;font-size:.86rem;color:var(--mut)}.spnc a{text-decoration:none}
+.spnthx{display:flex;gap:10px;align-items:center;border:1px solid color-mix(in srgb,#e07aa6 45%,transparent);background:color-mix(in srgb,#e07aa6 10%,transparent);border-radius:12px;padding:10px 12px;font-size:.9rem;font-weight:600}.spnthx svg{fill:#e07aa6;stroke:#e07aa6;flex:none}
+.spnl{display:block;margin-top:3px;font-size:.76rem;color:var(--mut)}.spnl svg{fill:#e07aa6;stroke:#e07aa6;vertical-align:-2px}.spnl a{color:#e07aa6}
+.spnperks{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.spnperks>div{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.spnperks svg{color:#e07aa6;flex:none}.spnperks span{font-size:.8rem;color:var(--mut)}.spnperks b{display:block;font-size:.9rem;color:var(--primary-text-color,#e8eaed)}
+.spnta{width:100%;margin:0;font:12.5px ui-monospace,Menlo,monospace;resize:vertical;word-break:break-all}
+.spnkeybox{border:1px solid var(--line);background:#222;border-radius:12px;padding:12px;font:12.5px/1.45 ui-monospace,Menlo,monospace;word-break:break-all;color:var(--mut);user-select:all}
+.spnsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 6px}.spnsum>div{border:1px solid var(--line);background:#222;border-radius:14px;padding:10px 12px}.spnsum small{display:block;color:var(--mut);font-size:.72rem}.spnsum b{font-size:1.4rem}.spnsum b.wa{color:#f59e0b}
+.spnrow{display:grid;grid-template-columns:40px 1fr auto auto auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.spna{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:#e07aa6;color:#2a0f1b}.spna.off{background:#444;color:#ccc}
+.spnn b{display:block}.spnn small{display:block;color:var(--mut);font-size:.78rem}
+.spns{font-style:normal;font-size:.7rem;font-weight:700;padding:3px 9px;border-radius:99px;border:1px solid;white-space:nowrap}
+.spns.g{color:#34d399;border-color:color-mix(in srgb,#34d399 50%,transparent)}.spns.a{color:#f59e0b;border-color:color-mix(in srgb,#f59e0b 50%,transparent)}.spns.r{color:#f87171;border-color:color-mix(in srgb,#f87171 50%,transparent)}.spns.x{color:var(--mut);border-color:var(--line)}
+.spnmini{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:transparent;color:inherit;border-radius:99px;padding:5px 10px;font-size:.76rem;font-weight:600;cursor:pointer}
+.spnck{display:flex;gap:8px;align-items:center;font-size:.88rem;cursor:pointer}
+@media(max-width:520px){.spnrow{grid-template-columns:40px 1fr auto}.spnrow .spns{grid-column:2}.spnrow .spnmini{grid-column:2}.spnrow .spnmore{grid-column:3;grid-row:1}.spnperks{grid-template-columns:1fr}}
+:host(.spg-meer) .bar{background:linear-gradient(110deg,rgba(14,116,144,.38),rgba(30,58,138,.18) 60%,transparent);border-radius:20px;padding-bottom:12px}
+:host(.spg-abend) .bar{background:linear-gradient(110deg,rgba(217,119,6,.34),rgba(190,24,93,.2) 60%,transparent);border-radius:20px;padding-bottom:12px}
+.tmrc.ck-duenn{font-weight:100}.tmrc.ck-kraeftig{font-weight:800;color:var(--teal,#2dd4bf)}.tmrc.ck-digital{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:700;color:#f59e0b;letter-spacing:.04em}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -1219,6 +1249,7 @@ class FensterHeizungPanel extends HTMLElement {
     } catch (e) { /* älteres Backend: Standardwerte */ }
     this._cfgReady = true;
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
+    try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     this._render();
   }
@@ -1350,7 +1381,7 @@ class FensterHeizungPanel extends HTMLElement {
     const u = this._upd, g = this._gen || {};
     if (!this._admin() || !u || g.updates === false || !vgt(u.latest, this._ver)) return "";
     try { if (localStorage.getItem("fh_upd_skip") === u.latest) return ""; } catch (_) { /* egal */ }
-    return `<div class="upd">${ic("bell", 22)}<div><b>Neue Version ${esc(u.latest)} verfügbar</b><span>Installiert ist ${esc(this._ver)}${u.date ? " · veröffentlicht am " + esc(new Date(u.date + "T12:00:00").toLocaleDateString("de-DE")) : ""}</span></div><button class="lnk" data-act="news">Das ist neu</button><button class="ibtn" data-act="updx" aria-label="Ausblenden">${ic("close", 18)}</button></div>`;
+    return `<div class="upd">${ic("bell", 22)}<div><b>Neue Version ${esc(u.latest)} verfügbar</b><span>Installiert ist ${esc(this._ver)}${u.date ? " · veröffentlicht am " + esc(new Date(u.date + "T12:00:00").toLocaleDateString("de-DE")) : ""}</span>${this._spnLine()}</div><button class="lnk" data-act="news">Das ist neu</button><button class="ibtn" data-act="updx" aria-label="Ausblenden">${ic("close", 18)}</button></div>`;
   }
   _view() { try { return localStorage.getItem("fh_view") === "compact" ? "compact" : "detail"; } catch (_) { return "detail"; } }
   _viewBar() {
@@ -2137,7 +2168,7 @@ class FensterHeizungPanel extends HTMLElement {
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span><em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
-        ${this._tmBtn()}${this._labBtn()}${this._stoBtn()}${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
+        ${this._tmBtn()}${this._spnBtn()}${this._labBtn()}${this._stoBtn()}${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
       ${this._mdBar()}<div class="wrap">${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
         ${!edit ? this._updBanner() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
   }
@@ -2201,6 +2232,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("mux")) this._muxAct(a, b);
     else if (a.startsWith("hz")) this._hzAct(a, b);
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
+    else if (a.startsWith("spn")) this._spnAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);
     else if (a.startsWith("wb")) this._wbAct(a, b);
@@ -2785,6 +2817,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
     if (m.type === "sfset") { box.innerHTML = this._sfxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "spset") { box.innerHTML = this._spModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -3135,7 +3168,8 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen")}
           ${row("flask", "Labs", "Experimentelle Funktionen ansehen und einschalten", "labopen", "", `<em class="sxc ${this._labCount() ? "ok" : "off"}">${this._labCount() ? this._labCount() + " an" : "Aus"}</em>`)}
           ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
-          ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}</div>`)}
+          ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}
+          ${this._spnRow()}</div>`)}
         ${grp("layers", "Meine Module", `${act.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${mods}${ext}</div>`)}
         ${off.length || soon ? grp("plus", "Weitere Module", "Ausgeschaltet – mit einem Tipp einschalten", `<div class="sxgrid">${offG}${soon}</div>`) : ""}
         ${grp("shield", "System", "Sichern, prüfen, verwalten", `<div class="card sxl">
@@ -4752,7 +4786,7 @@ class FensterHeizungPanel extends HTMLElement {
   _labPill(t = "Labs") { return `<em class="labp">${ic("flask", 11)}${t}</em>`; }
   /* Katalog: nur Funktionen, die etwas anzeigen */
   _labCat() {
-    return this._labCat0().map((x) => ({ k: "s", ...x }));
+    return this._labCat0().filter((x) => !x.early || this._spnEarly()).map((x) => ({ k: "s", ...x }));
   }
   _labCat0() {
     return [
@@ -5182,6 +5216,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (e.startsWith("binary_sensor.") && a.device_class === "battery" && s.state === "on") { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: "Batterie wechseln", r: "", c: "wa" }); }
       else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
     });
+    try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: "wa" }); } catch (_) { /* egal */ }
     const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
   }
   /* Kachel je aktives Modul */
@@ -5286,7 +5321,7 @@ class FensterHeizungPanel extends HTMLElement {
       return `<section class="blk mub ${HZ_WIDE.includes(id) ? "wide" : ""} ${edit ? "editing" : ""} ${hid ? "hid" : ""}" data-sort="hzblk" data-id="${id}">
       ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${HZ_NAMES[id]}<button class="eyeb" data-act="hzhide" data-k="${id}" aria-pressed="${!hid}" aria-label="${HZ_NAMES[id]} ${hid ? "einblenden" : "ausblenden"}" title="${hid ? "Einblenden" : "Ausblenden"}">${ic(hid ? "eyeOff" : "eye", 18)}<span>${hid ? "Ausgeblendet" : "Sichtbar"}</span></button></div>` : ""}${B[id]}</section>`;
     }).join("");
-    return `${bub}${eb}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
+    return `${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
   }
   _hzAct(a, b) {
     const k = b.dataset.k;
@@ -5460,7 +5495,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _tmSleepHtml() {
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
-    return `<div class="tmrest"><div class="tmrc" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
+    return `<div class="tmrest"><div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
   }
   _tmRender() {
     const sr = this.shadowRoot, v = this._mdList().some((m) => m.id === this._tmV()) || this._tmV() === "st" ? this._tmV() : "st", m = this._mdList().find((x) => x.id === v), c = this._tmC(), me = this._tmMe();
@@ -5616,6 +5651,188 @@ class FensterHeizungPanel extends HTMLElement {
       ${list}
       <div class="gbtns" style="margin-top:14px">${inT ? `<button class="btn2" data-act="tmend" ${lock ? "disabled" : ""}>Tablet-Modus beenden</button><button class="btn2 pri" data-act="tmdone">${ic("check", 16)} Fertig</button>` : `<button class="btn2" data-act="close">Schließen</button><button class="btn2 pri" data-act="tmstart" ${lock ? "disabled" : ""}>${ic("tablet", 16)} Tablet-Modus jetzt starten</button>`}</div></div>`;
   }
+  /* ================= Sponsor-Bereich (3.0.2.13) =================
+     Die Integration bleibt kostenlos. Mit einem Sponsor-Schlüssel gibt es Schönes obendrauf: Abzeichen, Farbverläufe,
+     Uhr-Stile und Vorabversionen. Der Schlüssel wird im Backend geprüft (sponsor.py). Wer den privaten Schlüssel
+     eingetragen hat, sieht zusätzlich die Verwaltung der Sponsoren. */
+  async _spnLoad() {
+    try { this._sp = await this._hass.callWS({ type: "fenster_heizung/spn_get" }); } catch (_) { this._sp = null; }
+  }
+  _spnS() { return this._sp || { url: "https://github.com/sponsors/Maddog3010", state: "none", active: false, name: "", bis: "", prefs: { badge: true, grad: "none", clock: "standard", early: false }, saved_prefs: { badge: true, grad: "none", clock: "standard", early: false }, manage: false }; }
+  _spnP() { return this._spnS().prefs; }
+  _spnEarly() { const s = this._spnS(); return !!(s.active && s.prefs.early); }
+  _spnDate(d) { try { return new Date(d + "T12:00:00").toLocaleDateString("de-DE"); } catch (_) { return d; } }
+  /* Aussehen: Verlauf im Kopf (Klasse am Panel, das CSS steht in den Stilen) */
+  _spnApply() {
+    const g = this._spnP().grad, cl = this.classList;
+    ["meer", "abend"].forEach((k) => cl.toggle("spg-" + k, g === k));
+  }
+  _spnEarlyClock() { const s = this._spnS(); return s.active && s.prefs.clock !== "standard" ? "ck-" + s.prefs.clock : ""; }
+  _spnBtn() {
+    const s = this._spnS(), adm = this._admin();
+    if (s.active && s.prefs.badge) return `<button class="pillbtn spnb on" data-act="spnopen" aria-label="Sponsor-Bereich" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${ic("heart", 15)}<span class="bl">Sponsor</span></button>`;
+    if (!adm) return "";
+    return `<button class="pillbtn spnb" data-act="spnopen" aria-label="Sponsor-Bereich" title="Sponsor werden oder Schlüssel eingeben">${ic("heart", 15)}<span class="bl">Sponsor</span></button>`;
+  }
+  /* B: Karte auf der Startseite, nur für Administratoren ohne Schlüssel, 60 Tage ausblendbar */
+  _spnCard() {
+    if (!this._admin() || this._edit || this._spnS().active) return "";
+    try { const t = +localStorage.getItem("fh_spn_hide") || 0; if (Date.now() - t < 60 * 86400000) return ""; } catch (_) { /* egal */ }
+    return `<div class="spnc"><span class="spnbig">${ic("heart", 24)}</span><div class="spnt"><b>Gefällt dir die Integration?</b><span>Sie ist kostenlos und offen. Wenn du magst, unterstütze die Entwicklung auf GitHub.</span></div><a class="pillbtn spnb pri" href="${esc(this._spnS().url)}" target="_blank" rel="noopener noreferrer">${ic("heart", 15)}Sponsor werden</a><button class="ibtn" data-act="spnhide" aria-label="Ausblenden">${ic("close", 18)}</button></div>`;
+  }
+  /* C: Zeile im Update-Hinweis */
+  _spnLine() { return this._spnS().active ? "" : `<span class="spnl">${ic("heart", 12)} Hobbyprojekt. <a href="${esc(this._spnS().url)}" target="_blank" rel="noopener noreferrer">Unterstützen</a></span>`; }
+  /* D: Zeile in den Einstellungen */
+  _spnRow() {
+    const s = this._spnS(), chip = s.active ? `<em class="sxc ok">${esc(s.name || "Aktiv")}</em>` : s.state === "expired" ? `<em class="sxc wa">Abgelaufen</em>` : `<em class="sxc">Schlüssel</em>`;
+    return `<button class="sxrow" data-act="spnopen"><span class="sxi">${ic("heart", 20)}</span><span class="sxt"><b>Sponsor-Bereich</b><small>Schlüssel eingeben, Extras einstellen</small></span>${chip}</button>`;
+  }
+  _spnAct(a, b) {
+    const k = b.dataset.k;
+    if (a === "spnopen") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._spnLoad().then(() => { if (this._modal && this._modal.type === "spndlg") this._renderModal(); this._render(); }); }
+    else if (a === "spnhide") { try { localStorage.setItem("fh_spn_hide", String(Date.now())); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet"); }
+    else if (a === "spnred") {
+      const el = this.shadowRoot.querySelector('[data-f="spnkey"]'), key = el ? String(el.value || "").trim() : "";
+      if (!key) { this._modal.err = "Bitte den Schlüssel einfügen."; this._renderModal(); return; }
+      this._spnRedeem(key);
+    }
+    else if (a === "spnclr") { this._hass.callWS({ type: "fenster_heizung/spn_clear" }).then((r) => { this._sp = r; this._spnApply(); this._renderModal(); this._render(); this._toast("Schlüssel entfernt"); }).catch(() => this._toast("Das ging nicht")); }
+    else if (a === "spnbadge") this._spnPref({ badge: !this._spnS().saved_prefs.badge });
+    else if (a === "spnearly") this._spnPref({ early: !this._spnS().saved_prefs.early });
+    else if (a === "spngrad") this._spnPref({ grad: k });
+    else if (a === "spnclk") this._spnPref({ clock: k });
+    else if (a === "spnadm") { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._spnAdminLoad(); }
+    else if (a === "spnback") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); }
+    else if (a === "spnlist") { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); }
+    else if (a === "spnnew") { this._modal = { type: "spnadm", view: "new", err: "" }; this._renderModal(); }
+    else if (a === "spncreate") {
+      const q = (f) => this.shadowRoot.querySelector(`[data-f="${f}"]`), name = String((q("spnname") || {}).value || "").trim();
+      if (!name) { this._modal.err = "Bitte einen Namen eingeben."; this._renderModal(); return; }
+      this._spnAdm({ act: "create", name, bis: String((q("spnbis") || {}).value || ""), note: String((q("spnnote") || {}).value || ""), on: !!(q("spndk") || {}).checked }, (r) => {
+        if (!r.ok) { this._modal.err = r.error === "date" ? "Das Datum ist ungültig." : "Das ging nicht."; this._renderModal(); return; }
+        this._modal = { type: "spnadm", view: "done", id: r.id, key: r.key }; this._renderModal();
+      });
+    }
+    else if (a === "spnext") { this._spnAdm({ act: "extend", id: k }, (r) => { if (!r.ok) { this._toast("Das ging nicht"); return; } this._modal = { type: "spnadm", view: "done", id: r.id, key: r.key }; this._renderModal(); }); }
+    else if (a === "spnkey") { const s = ((this._spnA || {}).items || []).find((x) => x.id === k); if (s) { this._modal = { type: "spnadm", view: "done", id: s.id, key: s.key }; this._renderModal(); } }
+    else if (a === "spnrevq") { this._modal = { type: "spnadm", view: "revoke", id: k }; this._renderModal(); }
+    else if (a === "spnrev") { this._spnAdm({ act: "revoke", id: k }, () => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._toast("Gesperrt. Jetzt noch die Liste im Repo ändern."); }); }
+    else if (a === "spnunrev") { this._spnAdm({ act: "unrevoke", id: k }, () => { this._renderModal(); this._toast("Sperre aufgehoben. Die Liste im Repo muss auch angepasst werden."); }); }
+    else if (a === "spndel") { this._spnAdm({ act: "remove", id: k }, () => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); }); }
+    else if (a === "spndk") { const s = ((this._spnA || {}).items || []).find((x) => x.id === k); if (s) this._spnAdm({ act: "danke", id: k, on: !s.danke }, () => this._renderModal()); }
+    else if (a === "spnmine") { this._spnRedeem(this._modal.key, true); }
+    else if (a === "spncopy") this._spnCopy(this._modal.key, "Schlüssel kopiert");
+    else if (a === "spnmsg") {
+      const s = ((this._spnA || {}).items || []).find((x) => x.id === this._modal.id) || {};
+      this._spnCopy(`Hallo ${s.name || ""},\n\ndanke für deine Unterstützung! Hier ist dein Sponsor-Schlüssel für Strom & Wärme (gültig bis ${this._spnDate(s.bis || "")}):\n\n${this._modal.key}\n\nEinlösen: Einstellungen > Sponsor-Bereich > Schlüssel einfügen.`, "Nachricht kopiert");
+    }
+    else if (a === "spnjson2") this._spnCopy(b.dataset.j || "{}", "Liste kopiert");
+    else if (a === "spnjson") this._spnCopy(((this._spnA || {}).revoked_json || "{}"), "Liste kopiert");
+    else if (a === "spndanke") this._spnCopy(((this._spnA || {}).danke || []).map((n) => `- ${n}`).join("\n"), "Danke-Liste kopiert");
+    else if (a === "spnsetup") {
+      const el = this.shadowRoot.querySelector('[data-f="spnpriv"]'), v = el ? String(el.value || "").trim() : "";
+      this._hass.callWS({ type: "fenster_heizung/spn_admin_setup", priv: v }).then((r) => { if (!r.ok) { this._modal.err = "Das ist nicht der richtige private Schlüssel."; this._renderModal(); return; } this._spnA = r; this._spnLoad().then(() => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._render(); }); }).catch(() => this._toast("Das ging nicht"));
+    }
+    else if (a === "spnforget") { this._spnAdm({ act: "forget" }, () => { this._spnLoad().then(() => { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._render(); }); }); }
+  }
+  _spnCopy(t, ok) { try { navigator.clipboard.writeText(t).then(() => this._toast(ok)); } catch (_) { this._toast("Kopieren nicht möglich"); } }
+  _spnRedeem(key, mine) {
+    this._hass.callWS({ type: "fenster_heizung/spn_redeem", key }).then((r) => {
+      const st = (r.result || {}).state;
+      this._sp = r; this._spnApply(); this._render();
+      if (st === "ok") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._toast(mine ? "Bei dir eingelöst" : "Danke für deine Unterstützung!"); return; }
+      if (!this._modal || this._modal.type !== "spndlg") { this._modal = { type: "spndlg", err: "" }; }
+      this._modal.err = st === "expired" ? "Dieser Schlüssel ist abgelaufen." : st === "revoked" ? "Dieser Schlüssel wurde gesperrt." : "Der Schlüssel ist nicht gültig. Bitte vollständig einfügen, ohne Leerzeichen am Ende.";
+      this._renderModal();
+    }).catch(() => this._toast("Das ging nicht"));
+  }
+  _spnPref(patch) {
+    const old = this._spnS().saved_prefs; if (this._sp) this._sp.saved_prefs = { ...old, ...patch }; if (this._sp && this._sp.active) this._sp.prefs = { ...old, ...patch };
+    this._spnApply(); this._renderModal(); this._render();
+    this._hass.callWS({ type: "fenster_heizung/spn_prefs", prefs: patch }).then((r) => { this._sp = r; this._spnApply(); this._renderModal(); this._render(); }).catch(() => this._toast("Das ging nicht"));
+  }
+  _spnAdminLoad() { this._hass.callWS({ type: "fenster_heizung/spn_admin_get" }).then((r) => { this._spnA = r; if (this._modal && this._modal.type === "spnadm") this._renderModal(); }).catch(() => this._toast("Das ging nicht")); }
+  _spnAdm(msg, then) { this._hass.callWS({ type: "fenster_heizung/spn_admin_act", ...msg }).then((r) => { this._spnA = { ...this._spnA, ...r }; this._spnLoad().then(() => { then(r); this._render(); }); }).catch(() => this._toast("Das ging nicht")); }
+  _spnModal() {
+    const m = this._modal, close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
+    return m.type === "spnadm" ? this._spnAdmModal(close) : this._spnDlg(close);
+  }
+  _spnDlg(close) {
+    const s = this._spnS(), m = this._modal, adm = this._admin(), p = s.saved_prefs;
+    const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${String(cur) === String(k)}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</span>`;
+    const row = (t, sub, ctl) => `<div class="vrow"><span>${t}${sub ? `<small class="mut" style="display:block">${sub}</small>` : ""}</span>${ctl}</div>`;
+    const sw = (act, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm ? "" : "disabled"}></button>`;
+    const link = `<a class="btn2 spnb pri" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">${ic("heart", 16)} Sponsor werden</a>`;
+    const perks = `<div class="spnperks"><div>${ic("heart", 16)}<span><b>Abzeichen</b>Ein Herz im Kopf</span></div><div>${ic("palette", 16)}<span><b>Farbverläufe</b>Für den Kopf</span></div><div>${ic("moon", 16)}<span><b>Uhr-Stile</b>Für den Ruhemodus</span></div><div>${ic("flask", 16)}<span><b>Vorabversionen</b>Neue Labs zuerst</span></div></div>`;
+    let body;
+    if (s.active) {
+      body = `<div class="spnthx">${ic("heart", 15)}<span>Danke${s.name ? ", " + esc(s.name) : ""}! Dein Schlüssel gilt bis ${esc(this._spnDate(s.bis))}.</span></div>
+        <div class="lsec" style="margin-top:12px">${ic("palette", 15)}Farben und Aussehen</div>
+        ${row("Abzeichen im Kopf", "Das Herz neben den Knöpfen", sw("spnbadge", p.badge, "Abzeichen"))}
+        ${row("Verlauf im Kopf", "Zusätzliche Farbverläufe", seg("spngrad", p.grad, [["none", "Aus"], ["meer", "Meer"], ["abend", "Abend"]]))}
+        <div class="lsec" style="margin-top:12px">${ic("moon", 15)}Tablet-Ruhemodus</div>
+        ${row("Uhr-Stil", "Wirkt im Ruhemodus des Tablet-Modus", seg("spnclk", p.clock, [["standard", "Standard"], ["duenn", "Dünn"], ["kraeftig", "Kräftig"], ["digital", "Digital"]]))}
+        <div class="lsec" style="margin-top:12px">${ic("flask", 15)}Mitmachen</div>
+        ${row("Vorabversionen zuerst", "Neue Labs ein bis zwei Wochen früher sehen", sw("spnearly", p.early, "Vorabversionen"))}
+        ${adm ? `<div class="gbtns" style="margin-top:14px"><button class="btn2" data-act="spnclr">Schlüssel entfernen</button>${s.manage ? `<button class="btn2 pri" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button>` : ""}</div>` : ""}`;
+    } else {
+      const note = s.state === "expired" ? `<div class="gst bad">${ic("clock", 15)}<span>Dein Schlüssel ist am ${esc(this._spnDate(s.bis))} abgelaufen. Die Extras sind aus, deine Einstellungen bleiben gespeichert.</span></div>` : s.state === "revoked" ? `<div class="gst bad">${ic("lock", 15)}<span>Dieser Schlüssel wurde gesperrt.</span></div>` : "";
+      body = `${note}<div class="mut sm" style="margin:2px 0 10px">Die Integration ist und bleibt kostenlos. Sponsoren bekommen Schönes obendrauf. Nichts, was du jetzt nutzt, wird gesperrt.</div>${perks}
+        ${adm ? `<div class="lsec" style="margin-top:14px">${ic("key", 15)}Sponsor-Schlüssel</div><div class="mut sm" style="margin:0 0 6px">Bekommst du nach dem Sponsoring. Einfach einfügen.</div>
+        <textarea class="osel spnta" data-f="spnkey" rows="3" placeholder="FH1-…" spellcheck="false" aria-label="Sponsor-Schlüssel"></textarea>
+        <div class="tmerr" role="alert">${esc(m.err || "")}</div>
+        <div class="gbtns" style="margin-top:8px"><button class="btn2 spnb" data-act="spnred">${ic("heart", 16)} Schlüssel einlösen</button>${link}</div>
+        ${s.manage ? `<div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button></div>` : `<div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnadm" style="font-size:.8rem">Ich bin der Entwickler</button></div>`}`
+        : `<div class="mut sm">Den Schlüssel trägt ein Administrator ein.</div><div class="gbtns" style="margin-top:10px">${link}</div>`}`;
+    }
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>${ic("heart", 17)} Sponsor-Bereich</b><span>${s.active ? "Freigeschaltet" : "Noch nicht freigeschaltet"}</span></div>${close}</div>${body}</div>`;
+  }
+  _spnAdmModal(close) {
+    const m = this._modal, A = this._spnA, head = (t, s, back) => `<div class="sh"><div><b>${t}</b><span>${s}</span></div>${back ? `<button class="ibtn" data-act="${back}" aria-label="Zurück">${ic("back", 20)}</button>` : ""}${close}</div>`;
+    const wrap = (h, b) => `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${h}${b}</div>`;
+    if (!A) return wrap(head("Sponsoren verwalten", "Lädt …", ""), `<div class="mut sm">Einen Moment …</div>`);
+    if (A.setup) {
+      return wrap(head("Verwaltung einrichten", "Nur für den Entwickler", "spnback"), `<div class="mut sm" style="margin:0 0 8px">Füge hier den privaten Schlüssel ein (beginnt mit FHPRIV1-). Er bleibt in diesem Home Assistant, auch in dessen Sicherungen. Gib ihn nie weiter.</div>
+        <textarea class="osel spnta" data-f="spnpriv" rows="2" placeholder="FHPRIV1-…" spellcheck="false" aria-label="Privater Schlüssel"></textarea><div class="tmerr" role="alert">${esc(m.err || "")}</div>
+        <div class="gbtns" style="margin-top:8px"><button class="btn2 pri" data-act="spnsetup">${ic("key", 16)} Einrichten</button></div>`);
+    }
+    const item = (s) => {
+      const st = { ok: ["g", "Aktiv"], soon: ["a", s.days === 0 ? "Heute" : `Noch ${s.days} ${s.days === 1 ? "Tag" : "Tage"}`], expired: ["x", "Abgelaufen"], revoked: ["r", "Gesperrt"] }[s.state];
+      const act = s.state === "revoked" ? `<button class="spnmini" data-act="spnunrev" data-k="${s.id}">${ic("eye", 14)}Sperre aufheben</button>` : s.state === "ok" ? `<button class="spnmini" data-act="spnkey" data-k="${s.id}">${ic("copy", 14)}Schlüssel</button>` : `<button class="spnmini" data-act="spnext" data-k="${s.id}">${ic("clock", 14)}Verlängern</button>`;
+      return `<div class="spnrow"><span class="spna ${s.state === "expired" || s.state === "revoked" ? "off" : ""}">${esc((s.name || "?")[0].toUpperCase())}</span><span class="spnn"><b>${esc(s.name)}</b><small>${s.state === "revoked" ? "gesperrt" + (s.revoked_at ? " am " + esc(this._spnDate(s.revoked_at)) : "") : (s.since ? "seit " + esc(this._spnDate(s.since)) + " · " : "") + "gültig bis " + esc(this._spnDate(s.bis))}${s.note ? " · " + esc(s.note) : ""}</small></span><em class="spns ${st[0]}">${st[1]}</em>${act}<button class="ibtn spnmore" data-act="spnrevq" data-k="${s.id}" aria-label="Sperren oder löschen">${ic("more", 18)}</button></div>`;
+    };
+    if (m.view === "new") {
+      const d = new Date(); d.setFullYear(d.getFullYear() + 1); const def = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      return wrap(head("Neuer Sponsor", "Drei Angaben", "spnlist"), `<div class="of"><div class="ol"><b>Name</b><span>Erscheint im Abzeichen und, wenn erlaubt, in der Danke-Liste</span></div></div><input class="osel" data-f="spnname" maxlength="40" placeholder="z. B. Anna K." aria-label="Name" style="width:100%;margin:0 0 8px">
+        <div class="of"><div class="ol"><b>Gültig bis</b><span>Vorgabe: ein Jahr ab heute</span></div></div><input class="osel" type="date" data-f="spnbis" value="${def}" aria-label="Gültig bis" style="width:100%;margin:0 0 8px">
+        <div class="of"><div class="ol"><b>Notiz (nur für dich)</b></div></div><input class="osel" data-f="spnnote" maxlength="120" placeholder="z. B. GitHub: annak" aria-label="Notiz" style="width:100%;margin:0 0 8px">
+        <label class="spnck"><input type="checkbox" data-f="spndk"> In der Danke-Liste nennen (Sponsor ist einverstanden)</label>
+        <div class="tmerr" role="alert">${esc(m.err || "")}</div><div class="gbtns" style="margin-top:8px"><button class="btn2 pri" data-act="spncreate">${ic("key", 16)} Schlüssel erzeugen</button></div>`);
+    }
+    if (m.view === "done") {
+      const s = A.items.find((x) => x.id === m.id) || {};
+      return wrap(head("Schlüssel", `${esc(s.name || "")}, gültig bis ${esc(this._spnDate(s.bis || ""))}`, "spnlist"), `<div class="spnkeybox">${esc(m.key)}</div>
+        <div class="gbtns" style="margin-top:10px"><button class="btn2 pri" data-act="spncopy">${ic("copy", 16)} Kopieren</button><button class="btn2" data-act="spnmsg">${ic("link", 16)} Nachricht kopieren</button></div>
+        <div class="gbtns" style="margin-top:8px"><button class="btn2" data-act="spnmine">${ic("heart", 16)} Bei mir einlösen</button></div>
+        <div class="mut sm" style="margin-top:8px">„Nachricht kopieren“ legt einen Text mit dem Schlüssel und einer kurzen Anleitung in die Zwischenablage.</div>`);
+    }
+    if (m.view === "revoke") {
+      const s = A.items.find((x) => x.id === m.id); if (!s) return wrap(head("Sponsor", "", "spnlist"), "");
+      let ids = []; try { ids = JSON.parse(A.revoked_json).gesperrt || []; } catch (_) { /* leer */ } if (!ids.includes(s.id)) ids = [...ids, s.id].sort();
+      const json = JSON.stringify({ gesperrt: ids });
+      return wrap(head(`${esc(s.name)}`, "Sperren oder entfernen", "spnlist"), `<div class="mut sm" style="margin:0 0 8px">Beim Sperren wird der Schlüssel hier als gesperrt markiert. Damit er auch beim Sponsor aufhört zu gelten, muss die Sperrliste im Repo aktualisiert werden. Die Datei heißt <b>sponsor_gesperrt.json</b>. Bis dahin gilt der Schlüssel, spätestens bis zum Ablaufdatum.</div>
+        <div class="spnkeybox" style="color:#9be7c4">${esc(json)}</div>
+        <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnjson2" data-j="${esc(json)}">${ic("copy", 16)} Liste kopieren</button><button class="btn2 pri" data-act="spnrev" data-k="${s.id}" ${s.state === "revoked" ? "disabled" : ""}>${ic("lock", 16)} Sperren</button></div>
+        <label class="spnck" style="margin-top:10px"><input type="checkbox" data-act="spndk" data-k="${s.id}" ${s.danke ? "checked" : ""}> In der Danke-Liste nennen</label>
+        <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spndel" data-k="${s.id}">${ic("trash", 16)} Aus der Liste löschen</button></div>`);
+    }
+    const c = A.count || {};
+    return wrap(head("Sponsoren verwalten", "Nur für dich sichtbar", "spnback"), `<div class="spnsum"><div><small>Aktiv</small><b>${(c.ok || 0) + (c.soon || 0)}</b></div><div><small>Laufen bald ab</small><b class="${c.soon ? "wa" : ""}">${c.soon || 0}</b></div><div><small>Abgelaufen oder gesperrt</small><b>${(c.expired || 0) + (c.revoked || 0)}</b></div></div>
+      ${A.items.length ? A.items.map(item).join("") : `<div class="mut sm" style="margin:10px 0">Noch keine Sponsoren. Lege den ersten an.</div>`}
+      <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="spnnew">${ic("heart", 16)} Neuer Sponsor</button><button class="btn2" data-act="spndanke" ${A.danke.length ? "" : "disabled"}>${ic("copy", 16)} Danke-Liste kopieren</button></div>
+      <div class="mut sm" style="margin-top:10px">Namen, Daten und Notizen bleiben in deinem Home Assistant. Das Dashboard weist dich ${30} Tage vor Ablauf darauf hin.</div>
+      <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
+  }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
     return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
@@ -5633,7 +5850,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "st" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${this._tmBtn()}${this._stoBtn()}${pills}</div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
       ${this._mdBar()}<div class="wrap">${this._tmHint()}${this._labCards(a)}${body}</div>`;
   }
   _mdAct(a, b) {

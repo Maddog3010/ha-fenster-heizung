@@ -8,7 +8,7 @@
   _labPill(t = "Labs") { return `<em class="labp">${ic("flask", 11)}${t}</em>`; }
   /* Katalog: nur Funktionen, die etwas anzeigen */
   _labCat() {
-    return this._labCat0().map((x) => ({ k: "s", ...x }));
+    return this._labCat0().filter((x) => !x.early || this._spnEarly()).map((x) => ({ k: "s", ...x }));
   }
   _labCat0() {
     return [

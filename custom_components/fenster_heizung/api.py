@@ -935,6 +935,111 @@ async def ws_tm_del(hass: HomeAssistant, connection, msg: dict) -> None:
         connection.send_result(msg["id"], mgr.snapshot())
 
 
+def _spn(hass: HomeAssistant, connection, msg: dict):
+    mgr = hass.data.get(DOMAIN, {}).get("sponsor")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Sponsor-Bereich ist noch nicht bereit")
+    return mgr
+
+
+def _is_admin(connection) -> bool:
+    return bool(connection.user and connection.user.is_admin)
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/spn_get"})
+@websocket_api.async_response
+async def ws_spn_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _spn(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], mgr.snapshot(_is_admin(connection)))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/spn_redeem", vol.Required("key"): str})
+@websocket_api.async_response
+async def ws_spn_redeem(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _spn(hass, connection, msg)
+    if mgr is not None:
+        r = mgr.redeem(msg["key"])
+        connection.send_result(msg["id"], {"result": r, **mgr.snapshot(True)})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/spn_clear"})
+@websocket_api.async_response
+async def ws_spn_clear(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _spn(hass, connection, msg)
+    if mgr is not None:
+        mgr.clear()
+        connection.send_result(msg["id"], mgr.snapshot(True))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/spn_prefs", vol.Required("prefs"): dict})
+@websocket_api.async_response
+async def ws_spn_prefs(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _spn(hass, connection, msg)
+    if mgr is not None:
+        mgr.set_prefs(msg["prefs"])
+        connection.send_result(msg["id"], mgr.snapshot(True))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/spn_admin_get"})
+@websocket_api.async_response
+async def ws_spn_admin_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _spn(hass, connection, msg)
+    if mgr is None:
+        return
+    if not mgr.priv:
+        connection.send_result(msg["id"], {"setup": True})
+        return
+    connection.send_result(msg["id"], mgr.admin_list())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/spn_admin_setup", vol.Required("priv"): str})
+@websocket_api.async_response
+async def ws_spn_admin_setup(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _spn(hass, connection, msg)
+    if mgr is not None:
+        ok = mgr.setup(msg["priv"])
+        connection.send_result(msg["id"], {"ok": ok, **(mgr.admin_list() if ok else {"setup": True})})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({
+    vol.Required("type"): "fenster_heizung/spn_admin_act", vol.Required("act"): vol.In(["create", "extend", "revoke", "unrevoke", "danke", "remove", "forget"]),
+    vol.Optional("id"): str, vol.Optional("name"): str, vol.Optional("bis"): str, vol.Optional("note"): str, vol.Optional("on"): bool,
+})
+@websocket_api.async_response
+async def ws_spn_admin_act(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _spn(hass, connection, msg)
+    if mgr is None:
+        return
+    if not mgr.priv:
+        connection.send_error(msg["id"], "no_priv", "Verwaltung ist nicht eingerichtet")
+        return
+    act, sid, res = msg["act"], msg.get("id", ""), {"ok": True}
+    if act == "create":
+        res = mgr.create(msg.get("name", ""), msg.get("bis", ""), msg.get("note", ""), bool(msg.get("on")))
+    elif act == "extend":
+        res = mgr.extend(sid)
+    elif act == "revoke":
+        res = {"ok": mgr.revoke(sid, True)}
+    elif act == "unrevoke":
+        res = {"ok": mgr.revoke(sid, False)}
+    elif act == "danke":
+        res = {"ok": mgr.set_danke(sid, bool(msg.get("on")))}
+    elif act == "remove":
+        res = {"ok": mgr.remove(sid)}
+    elif act == "forget":
+        mgr.forget_priv()
+        connection.send_result(msg["id"], {"ok": True, "setup": True})
+        return
+    connection.send_result(msg["id"], {**res, **mgr.admin_list()})
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
@@ -943,5 +1048,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del,
+        ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
     ):
         websocket_api.async_register_command(hass, command)

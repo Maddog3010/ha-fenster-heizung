@@ -46,6 +46,7 @@ class FensterHeizungPanel extends HTMLElement {
     } catch (e) { /* älteres Backend: Standardwerte */ }
     this._cfgReady = true;
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
+    try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     this._render();
   }

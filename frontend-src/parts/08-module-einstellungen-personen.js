@@ -89,7 +89,8 @@
           ${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen")}
           ${row("flask", "Labs", "Experimentelle Funktionen ansehen und einschalten", "labopen", "", `<em class="sxc ${this._labCount() ? "ok" : "off"}">${this._labCount() ? this._labCount() + " an" : "Aus"}</em>`)}
           ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
-          ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}</div>`)}
+          ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}
+          ${this._spnRow()}</div>`)}
         ${grp("layers", "Meine Module", `${act.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${mods}${ext}</div>`)}
         ${off.length || soon ? grp("plus", "Weitere Module", "Ausgeschaltet – mit einem Tipp einschalten", `<div class="sxgrid">${offG}${soon}</div>`) : ""}
         ${grp("shield", "System", "Sichern, prüfen, verwalten", `<div class="card sxl">

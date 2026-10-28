@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.13] - 2026-10-28
+### Neu
+- **Sponsor-Bereich:** Link zu GitHub Sponsors im Kopf, als Karte auf der Startseite (60 Tage ausblendbar), als Zeile im Update-Hinweis und in den Einstellungen. Mit einem Sponsor-Schlüssel gibt es ein Abzeichen, Farbverläufe für den Kopf („Meer“, „Abend“), Uhr-Stile für den Ruhemodus („Dünn“, „Kräftig“, „Digital“) und Vorabversionen (Labs mit Kennzeichen `early`). Nichts, was bisher frei war, wird gesperrt.
+  - Schlüssel mit Ed25519-Unterschrift, geprüft in `sponsor.py` ohne Server. Format `FH1-…`, mit Name, Stufe, Ablaufdatum und Nummer.
+  - **Verwaltung** für den Entwickler (nur mit dem privaten Schlüssel): Sponsoren anlegen, Schlüssel kopieren, um ein Jahr verlängern, sperren, Danke-Liste kopieren, Hinweis 30 Tage vor Ablauf.
+  - Sperrliste `sponsor_gesperrt.json` im Repo, wird einmal am Tag geladen.
+  - Neuer Speicher `fenster_heizung_sponsor`, neue Befehle `spn_get`, `spn_redeem`, `spn_clear`, `spn_prefs`, `spn_admin_get`, `spn_admin_setup`, `spn_admin_act`.
+
 ## [3.0.2.12] - 2026-10-28
 ### Neu
 - **Tablet-Modus:** eigene Oberfläche für Tablets mit großen Bedienflächen, unterer Knopfleiste, Größen für 8 bis 13 Zoll im Hoch- und Querformat und ausgeblendeter normaler Ansicht. Einschalten über den Knopf „Tablet-Modus“ im Kopf, den Hinweis beim ersten Öffnen oder den Direktlink `?tablet=1` (zum Beispiel als Start-URL in Fully Kiosk).

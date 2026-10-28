@@ -97,7 +97,7 @@
   }
   _tmSleepHtml() {
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
-    return `<div class="tmrest"><div class="tmrc" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
+    return `<div class="tmrest"><div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
   }
   _tmRender() {
     const sr = this.shadowRoot, v = this._mdList().some((m) => m.id === this._tmV()) || this._tmV() === "st" ? this._tmV() : "st", m = this._mdList().find((x) => x.id === v), c = this._tmC(), me = this._tmMe();
