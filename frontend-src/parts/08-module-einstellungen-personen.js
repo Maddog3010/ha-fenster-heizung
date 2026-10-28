@@ -44,7 +44,12 @@
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
   _mdActiveSet(id) { const s = this._mdState(); s.active = id; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
-  _mdList() { const s = this._mdState(); return [...(this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : []), MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...(this._labOn("mm") ? [MOD_MU] : []), ...(this._labOn("li") ? [MOD_LI] : []), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
+  _mdList() {
+    const s = this._mdState(), home = this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : [];
+    const rest = [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...(this._labOn("mm") ? [MOD_MU] : []), ...(this._labOn("li") ? [MOD_LI] : [])];
+    rest.sort((a, b) => a.n - b.n);
+    return [...home, ...rest, ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))];
+  }
   _mdActive() {
     const s = this._mdState();
     if (!this._hzDec && this._cfgReady) {
@@ -71,8 +76,10 @@
     const act = MODS.filter(isOn), off = MODS.filter((m) => !isOn(m));
     const mods = act.map((m) => {
       const d = this._stDone(m.id), chip = m.beta ? `<em class="sxc ${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc">Offen</em>`;
-      return row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", chip);
-    }).join("");
+      return [m.n, row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", chip)];
+    });
+    const labM = [[MOD_MU, "mm", "muxopen", "Abholtermine, Tonnen-Ampel und Erinnerung"], [MOD_LI, "li", "lixopen", "Lampen, Szenenknöpfe und Hinweis bei langem Licht"]].filter((x) => this._labOn(x[1]));
+    const labRows = [...mods, ...labM.map(([m, , a, t]) => [m.n, row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])].sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("");
     const ext = s.ext.map((x) => row("puzzle", `<i>Eigenes Modul</i> ${esc(x.name)}`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join("");
     const offG = off.map((m) => `<button class="sxoff" data-act="mdtog" data-k="${m.id}"><span class="sxi">${ic(m.icon, 18)}</span><span class="sxt"><b>${esc(m.name)}</b><small>Modul ${m.n}</small></span>${m.sponsor ? `<em class="sxc sp">${ic("heart", 11)}Nur Sponsoren</em>` : `<em class="sxc">Einschalten</em>`}</button>`).join("");
     const soon = MOD_SOON.map((x) => `<div class="sxoff soon"><span class="sxi">${ic(x[0], 18)}</span><span class="sxt"><b>${esc(x[1])}</b><small>${esc(x[2])}</small></span><em class="sxc">Bald</em></div>`).join("");
@@ -83,7 +90,7 @@
         <button class="pillbtn pri" data-act="mdstx">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap">
         <div class="sxw">
-        <div class="sxsum"><div><b>${act.length}</b><span>${act.length === 1 ? "Modul aktiv" : "Module aktiv"}</span></div><div><b>${this._collect().length}</b><span>Räume</span></div><div><b>${this._ortPersons().length}</b><span>Personen</span></div><div><b>${this._ver ? esc(this._ver) : "–"}</b><span>Version</span></div></div>
+        <div class="sxsum"><div><b>${act.length + labM.length}</b><span>${act.length + labM.length === 1 ? "Modul aktiv" : "Module aktiv"}</span></div><div><b>${this._collect().length}</b><span>Räume</span></div><div><b>${this._ortPersons().length}</b><span>Personen</span></div><div><b>${this._ver ? esc(this._ver) : "–"}</b><span>Version</span></div></div>
         ${grp("tools", "Allgemein", "Einrichtung und Verbindungen", `<div class="card sxl">
           ${row("tools", "Einrichtungsassistent", "Räume, Ventile und Fenster zuordnen", "wz")}
           ${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen")}
@@ -92,7 +99,7 @@
           ${this._labOn("tg") && adm ? row("nfc", "Tags &amp; Karten", "RFID-Karten und NFC-Sticker anlernen und zuordnen", "tgxopen") : ""}
           ${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}
           ${this._spnRow()}</div>`)}
-        ${grp("layers", "Meine Module", `${act.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${mods}${ext}</div>`)}
+        ${grp("layers", "Meine Module", `${act.length + labM.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${labRows}${ext}</div>`)}
         ${off.length || soon ? grp("plus", "Weitere Module", "Ausgeschaltet – mit einem Tipp einschalten", `<div class="sxgrid">${offG}${soon}</div>`) : ""}
         ${grp("shield", "System", "Sichern, prüfen, verwalten", `<div class="card sxl">
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern und zurückspielen", "gen")}

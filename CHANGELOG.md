@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.5.5] - 2026-10-28
+### Neu
+- **Banner auch bei Lüftung (5), Rollläden (6), Wärmepumpe (7), Müllabfuhr (17) und Licht (18),** im gleichen Format wie die anderen Module.
+- **Modul 17 und 18 stehen unter „Meine Module“** in den Einstellungen (mit Abzeichen „Lab“) und zählen bei „Module aktiv“ mit.
+### Geändert
+- **Reihenfolge:** Modulleiste und Liste in den Einstellungen sind nach Modulnummer sortiert (16, 17, 18, 19).
+- **Der Banner steht in jedem Modul ganz oben,** auch wenn davor Labs-Karten oder Hinweise stehen (Modul 1 und Start ausgenommen).
+
 ## [3.0.5.4] - 2026-10-28
 ### Neu
 - **Einheitliche Banner in allen Modulen:** Text links, rechts ein Logo-Feld mit dem Symbol des Moduls (reine Symbole, ohne Schrift), je Modul in eigener Farbe. Neu sind Banner bei Elektroauto, Garten, Pool & Sauna, Batteriespeicher, Stromtarif, Wartung und Solar-Prognose. Sicherheit, Wetter und Hausfluss haben dasselbe Format.

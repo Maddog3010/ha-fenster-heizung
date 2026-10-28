@@ -194,5 +194,10 @@ const MOD_ART = {
   dt: `<path d="M8 8v48h50"/><path d="M14 44l12-14 10 8 12-20 8 6"/><circle cx="26" cy="30" r="2.4"/><circle cx="36" cy="38" r="2.4"/><circle cx="48" cy="18" r="2.4"/>`,
   wa: `<path d="M40 8a12 12 0 0 0-10 17L8 47l9 9 22-22a12 12 0 0 0 17-11l-8 8-7-2-2-7 8-8z" class="f"/>`,
   sp: `<circle cx="22" cy="20" r="8" class="f"/><path d="M22 4v4M22 32v4M6 20h4M34 20h4M11 9l3 3M33 9l-3 3M11 31l3-3"/><path d="M34 56V42M44 56V34M54 56V24M30 58h28"/>`,
+  lu: `<circle cx="32" cy="32" r="5" class="f"/><path d="M32 27c-3-9-1-18 8-19 4 5 1 15-8 19zM37 32c9-3 18-1 19 8-5 4-15 1-19-8zM32 37c3 9 1 18-8 19-4-5-1-15 8-19zM27 32c-9 3-18 1-19-8 5-4 15-1 19 8z"/>`,
+  rb: `<rect x="8" y="6" width="48" height="8" rx="3" class="f"/><path d="M12 14v34M52 14v34M12 22h40M12 30h40M12 38h40"/><path d="M32 38v14"/><rect x="28" y="52" width="8" height="6" rx="2"/>`,
+  wp: `<rect x="6" y="14" width="52" height="38" rx="7" class="f"/><circle cx="26" cy="33" r="10"/><path d="M26 25v16M18 33h16"/><path d="M46 24v18M52 28v10"/>`,
+  mu: `<path d="M14 18h36l-3 38H17z" class="f"/><path d="M10 18h44M24 18v-6h16v6"/><path d="M25 28v20M32 28v20M39 28v20"/>`,
+  li: `<path d="M20 10h24l5 24H15z" class="f"/><path d="M32 34v16M22 56h20M26 50h12"/><path d="M8 18l4 3M56 18l-4 3M32 2v4"/>`,
   ef: `<path d="M18 30 32 18l14 12v16H18z" class="f"/><path d="M26 46V36h12v10"/><path d="M4 32h8M8 28l4 4-4 4M60 32h-8M56 28l-4 4 4 4"/><circle cx="32" cy="8" r="4"/><path d="M32 12v3"/>`,
 };
