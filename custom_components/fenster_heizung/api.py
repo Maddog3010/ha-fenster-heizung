@@ -151,6 +151,32 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
                 mc[key] = [x for x in dict.fromkeys(v) if isinstance(x, str) and x in MU_BLOCKS]
         if mc:
             out["mu"] = mc
+    start = raw.get("start")
+    if isinstance(start, dict):
+        sc2: dict[str, Any] = {k: start[k] for k in ("on", "greet", "ctl") if isinstance(start.get(k), bool)}
+        if start.get("open") in ("start", "last"):
+            sc2["open"] = start["open"]
+        for key in ("order", "hidden"):
+            v = start.get(key)
+            if isinstance(v, list):
+                sc2[key] = [x for x in dict.fromkeys(v) if isinstance(x, str) and x in ST_BLOCKS]
+        al = start.get("alarm")
+        if isinstance(al, str) and (al == "" or re.match(r"^alarm_control_panel\.[a-z0-9_]+$", al)):
+            sc2["alarm"] = al
+        bub = start.get("bub")
+        if isinstance(bub, dict):
+            bc: dict[str, Any] = {}
+            ids = bub.get("ids")
+            if isinstance(ids, list):
+                bc["ids"] = [x for x in dict.fromkeys(ids) if isinstance(x, str) and x in ST_BUBBLES][:8]
+            if isinstance(bub.get("warn"), bool):
+                bc["warn"] = bub["warn"]
+            if bub.get("tap") in ("block", "module"):
+                bc["tap"] = bub["tap"]
+            if bc:
+                sc2["bub"] = bc
+        if sc2:
+            out["start"] = sc2
     labs = raw.get("labs")
     if isinstance(labs, dict):
         lc: dict[str, Any] = {k: labs[k] for k in ("icon", "tab") if isinstance(labs.get(k), bool)}
@@ -168,7 +194,9 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
 
 
 MU_BLOCKS = {"tonnen", "next", "cal", "rem", "hint", "cost"}
-LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm"}
+ST_BLOCKS = {"zuhause", "wetter", "personen", "hinweise", "alarm", "energie", "muell"}
+ST_BUBBLES = {"wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell", "warmwasser", "preis", "hinweise"}
+LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm", "sb"}
 LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "lf_days", "vh_dk", "vh_max", "dz_days", "dz_lead", "ld_wait", "ld_min", "lk_hi", "lk_dur"}
 
 

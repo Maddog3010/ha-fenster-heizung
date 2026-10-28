@@ -5,13 +5,17 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.10-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.11-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Ein Dashboard für Heizung, Strom und Haus in Home Assistant.**
 „Strom & Wärme“ pausiert Heizkörper bei offenem Fenster, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer, Warmwasser und das Auto, zeigt, woher der Strom deiner Geräte kommt, und warnt vor Unwetter und Rauch. Alles steht in einer eigenen Seite in der Seitenleiste, 16 Module, die du einzeln ein- und ausschaltest, dazu Modul 17 „Müllabfuhr“ als Lab.
 
 <p align="center"><img src="docs/vorschau_desktop.png" width="760" alt="Dashboard auf dem Desktop"></p>
+
+## Neu in 3.0.2.11
+- **Startseite:** ein neuer Tab „Start“ ganz links, der nach dem Öffnen des Dashboards in Home Assistant zuerst erscheint. Zeigt, ob zu Hause alles in Ordnung ist, Kacheln für deine Module, Wetter, Personen, Alarm, Hinweise, Energie und Müllabfuhr. Karten lassen sich über „Anpassen“ verschieben und ausblenden. Abschaltbar.
+- **Lab „Start-Bubbles“:** runde Kurzinfos ganz oben auf der Startseite, deren Inhalt du aus elf Möglichkeiten wählst (Art „Nur Anzeige“).
 
 ## Neu in 3.0.2.10
 - **Modul 17: Müllabfuhr (Lab):** Abholtermine aus einem Abfallkalender, Tonnen-Ampel zum Abhaken, nächste Abholungen, Monatskalender, Erinnerung am Vorabend aufs Handy, Ansage über einen Lautsprecher, Licht in der Farbe der Tonne, Hinweise bei Verschiebung, Sturm und Frost sowie Leerungen und Kosten. Das Modul und sein Store-Eintrag „Abfallkalender“ (waste_collection_schedule) gibt es nur, solange das Lab eingeschaltet ist. Die Karten lassen sich über **Anpassen** verschieben und ausblenden. [Mehr zu Modul 17](#modul-17-müllabfuhr-lab)
@@ -26,6 +30,7 @@ Alle Änderungen stehen im [Changelog](CHANGELOG.md).
 - [Schnellstart](#schnellstart)
 - [Einstellungen, Module und Store](#einstellungen-module-und-store)
 - [Labs: experimentelle Funktionen](#labs-experimentelle-funktionen)
+- [Startseite](#startseite)
 - [Modul 1: Fenster & Heizung](#modul-1-fenster--heizung)
 - [Modul 2: Warmwasser & Zirkulation](#modul-2-warmwasser--zirkulation)
 - [Modul 3: Energie](#modul-3-energie)
@@ -66,6 +71,7 @@ Jedes Modul trägt im Kopfteil (am Desktop zusätzlich am Tab) eine Stufe:
 | 14 | Dynamischer Stromtarif | Beta | Stundenpreise, Preisverlauf, günstigste Zeiten |
 | 15 | Wartung & Erinnerungen | In Entwicklung | Termine und Betriebsstunden (Vorschau mit Beispielen) |
 | 16 | Solar-Prognose | Vorabversion | Prognose heute und morgen, Stundenverlauf, Prognose gegen tatsächlichen Ertrag |
+| – | Start | Stabil | Überblick nach dem Öffnen: Ampel, Modul-Kacheln, Wetter, Personen, Alarm, Hinweise, Energie, Müll. Kein eigenes Modul, abschaltbar |
 | 17 | Müllabfuhr | Lab | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend, Ansage und Licht. Erscheint nur bei eingeschaltetem Lab |
 
 <p align="center">
@@ -139,6 +145,7 @@ Diese Funktionen laufen im Backend von Home Assistant, auch bei geschlossenem Da
 | **Legionellenschutz nach Sonne** | 2 | Test | Entscheidet am geplanten Tag zur Laufzeit: Reicht die Prognose aus Modul 16 (Standard ab 8 kWh), läuft der Schutz wie geplant, sonst am nächsten Tag mit besserer Prognose, höchstens um die eingestellten Tage (Standard 3). Ist der Schutz überfällig (mehr als 9 Tage), läuft er sofort. |
 | **Ladeziel nach Kalender** | 8 | Früh | Hebt den Ziel-Ladestand des Ladeplans an (Standard 90 %), wenn im gewählten Kalender in den nächsten 36 Stunden ein langer Termin (Standard ab 2 Stunden) beginnt. Es wird nur das Ziel geändert, nicht der Ladevorgang. Das Ziel wirkt, wenn der Ladeplan in Modul 8 an ist. |
 | **Müllabfuhr** | 17 | Früh | Schaltet das neue Modul 17 frei. Am Vorabend zur eingestellten Uhrzeit (Standard 18:30) schickt es eine Nachricht aufs Handy, sagt die Abholung über einen Lautsprecher an und lässt ein Licht in der Farbe der Tonne leuchten, bis sie als draußen markiert ist. Alles einzeln einstellbar, ab Werk aus, einmal pro Tag. Ausgeschaltet verschwinden Modul und Store-Eintrag, nichts wird mehr gesendet oder geschaltet. |
+| **Start-Bubbles** | Start | Früh | Zeigt oben auf der Startseite bis zu acht runde Kurzinfos (Wetter, Personen, Alarm, Solar, Batterie, E-Auto, offene Fenster, nächste Müllabfuhr, Warmwasser, Strompreis, Hinweise). Nur Anzeige, Warnfarben optional. Ausgeschaltet verschwindet die Reihe. |
 
 <p align="center"><img src="docs/vorschau_labs_bestaetigung.png" width="520" alt="Bestätigung vor dem Einschalten"></p>
 
@@ -441,6 +448,27 @@ Zeigt den erwarteten Ertrag für heute und morgen, den bisherigen Ertrag des Tag
 
 Einrichtung: Einstellungen → Modul 16.
 
+### Startseite
+<p align="center"><img src="docs/vorschau_startseite.png" width="760" alt="Startseite"></p>
+
+Der Tab **Start** steht ganz links und erscheint, wenn du das Dashboard in Home Assistant neu öffnest. Ein Direktlink mit `?modul=<Kennung>` (zum Beispiel `?modul=mu`) öffnet stattdessen das Modul. Unter **Einstellungen** stellst du die Startseite aus oder auf „Letztes Modul“.
+
+- **Zuhause:** Ampel („Alles in Ordnung“ oder „Fast alles in Ordnung“) mit einer Kachel je aktivem Modul. Ein Tipp öffnet das Modul.
+- **Wetter:** aus deiner Wetter-Entität, mit Stundenwerten, wenn sie eine Vorhersage liefert.
+- **Personen:** wer zu Hause ist, seit wann, sonst die Entfernung (aus „Personen & Standort“).
+- **Alarm:** Zustand deiner Alarmanlage (`alarm_control_panel`). Schalten ist ab Werk aus. Mit „Alarm schalten erlauben“ erscheinen Knöpfe für Unscharf, Abwesend und Zu Hause, jedes Schalten wird bestätigt, bei Code-Anlagen mit Code-Eingabe. Das schaltet echte Geräte.
+- **Hinweise:** Fenster zu lange offen, Probleme im Warmwasser, schwache Batterien, Müllabfuhr, ausgelöster Alarm.
+- **Energie** und **Müllabfuhr** erscheinen nur, wenn Modul 3 eingerichtet und das Lab „Müllabfuhr“ an ist.
+
+Karten ohne Datenquelle erscheinen nicht. Mit **Anpassen** (wie in Modul 1) verschiebst du Karten und blendest sie aus, die Anordnung gilt für alle Nutzer.
+
+<p align="center"><img src="docs/vorschau_startseite_anpassen.png" width="520" alt="Anpassen der Startseite"> <img src="docs/vorschau_startseite_handy.png" width="200" alt="Startseite auf dem Handy"></p>
+
+#### Lab „Start-Bubbles“
+<p align="center"><img src="docs/vorschau_startseite_bubbles.png" width="560" alt="Bubbles wählen"> <img src="docs/vorschau_startseite_einstellungen.png" width="560" alt="Einstellungen der Startseite"></p>
+
+Unter **Labs → Start-Bubbles** einschalten (Art „Nur Anzeige“). Dann erscheint oben eine Reihe runder Kurzinfos. Den Inhalt wählst du in den Einstellungen der Startseite („Bubbles wählen“, bis zu acht, Reihenfolge per Pfeil). Warnfarben (Gelb bei Hinweis, Rot bei Alarm) und „Antippen öffnet Karte oder Modul“ sind einstellbar. Bubbles ohne Daten werden ausgelassen. Ausgeschaltet ist die Reihe weg, die Auswahl bleibt gespeichert.
+
 ### Modul 17: Müllabfuhr (Lab)
 <p align="center"><img src="docs/vorschau_modul_muell.png" width="760" alt="Modul 17: Müllabfuhr"></p>
 
@@ -496,6 +524,7 @@ Pro Raum:
 - Das Dashboard (`panel.js`) wird aus den Quelldateien in `frontend-src/parts` gebaut: `python3 frontend-src/build.py` (mit `--check` prüfen, ob die Datei aktuell ist).
 - Raumeinstellungen: `fenster_heizung/get_options`, `set_options` (nur Administratoren). Layout (Farben, Fotos, Symbole, Wetteranzeige, `store` mit `icon` und `tab`, `labs` mit `on`, `icon`, `tab` und `cfg`): `set_layout`. Allgemeines und Sicherung: `get_general`, `set_general`, `get_update`, `get_learning`, `restore`. Diagnose: `get_diag`, `clear_diag`. Module: `get_modules`, `set_modules`, `set_wasser`, `wasser_cmd`. Das Backend prüft alle Werte, Änderungen sind nur für Administratoren erlaubt.
 - **Labs:** `labs_get` (Lernstand der Duschzeiten, Stand des Legionellenschutzes, Kalendertermin). Ein- und Ausschalten und Werte laufen über `set_layout` (`labs`).
+- **Startseite:** keine eigenen WS-Befehle. Einstellungen und Bubbles stehen in `layout.start` (`on`, `open`, `greet`, `alarm`, `ctl`, `order`, `hidden`, `bub`), gespeichert über `set_layout`. Der Alarm wird über den Dienst `alarm_control_panel.alarm_*` geschaltet.
 - **Modul 17:** `mu_get` (Termine, Tonnen-Status, Monat, Kosten, Hinweise), `mu_set` (`cfg`, nur Administratoren), `mu_act` (`act` = `done`, `undo` oder `snooze`, mit `bin` bei `done` und `undo`), `mu_test` (Testmeldung, nur Administratoren). Anordnung der Karten: `set_layout` (`mu` mit `order` und `hidden`).
 - **Modul 16:** `sp_get` (Prognose, Stundenwerte, Verlauf, Abweichung) und `sp_set` (`cfg` mit `src` = `forecast` oder `sensor`, `fc_sensor`, `act`, `mode` = `day` oder `total`, nur Administratoren).
 - **Modul 11:** `sf_get`, `sf_set`, `sf_test`, `sf_tested`, `sf_press`.

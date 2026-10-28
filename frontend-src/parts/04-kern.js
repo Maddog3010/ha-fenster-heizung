@@ -43,6 +43,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._gen.pv = { ...PVDEF, ...(this._gen.pv || {}) };
       this._mdApply(r);
     } catch (e) { /* älteres Backend: Standardwerte */ }
+    this._cfgReady = true;
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     this._render();
   }

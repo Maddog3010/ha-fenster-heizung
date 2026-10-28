@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.11] - 2026-10-28
+### Neu
+- **Startseite:** neuer Tab „Start“ (Kennung `st`) ganz links, erscheint beim Öffnen des Dashboards zuerst. Ein Direktlink mit `?modul=<Kennung>` öffnet weiter das jeweilige Modul. In den Einstellungen abschaltbar oder auf „Letztes Modul“ umstellbar.
+  - Karten: Zuhause (Ampel und Modul-Kacheln), Wetter (mit Stundenwerten über `weather.get_forecasts`), Personen, Hinweise, Alarm, Energie und Müllabfuhr. Karten ohne Datenquelle erscheinen nicht.
+  - **Anpassen** wie in Modul 1 und 17: Karten verschieben und ausblenden (`layout.start` mit `order` und `hidden`), gilt für alle Nutzer.
+  - **Alarm** zeigt den Zustand einer `alarm_control_panel`-Entität. Schalten (Unscharf, Abwesend, Zu Hause) ist ab Werk aus, braucht den Schalter „Alarm schalten erlauben“ und wird immer bestätigt, bei Code-Anlagen mit Code. Nur Administratoren.
+  - Hinweise sammeln Fenster zu lange offen, Probleme im Warmwasser, schwache Batterien, die nächste Müllabholung und einen ausgelösten Alarm.
+- **Lab „Start-Bubbles“** (`sb`, Art „Nur Anzeige“, ab Werk aus): bis zu acht runde Kurzinfos oben auf der Startseite. Inhalt und Reihenfolge wählbar aus Wetter, Personen, Alarm, Solar, Batterie, E-Auto, offene Fenster, nächste Müllabfuhr, Warmwasser, Strompreis und Hinweise. Warnfarben und „Antippen öffnet Karte oder Modul“ einstellbar. Ausgeschaltet ist die Reihe weg.
+### Geändert
+- `api.py`: `layout.start` wird geprüft (Blöcke, Bubbles, Alarm-Entität); `LAB_IDS` um `sb` erweitert.
+- README: neuer Abschnitt „Startseite“.
+
 ## [3.0.2.10] - 2026-10-28
 ### Neu
 - **Modul 17: Müllabfuhr (Lab)** (neue Datei `muell.py`, WS-Befehle `mu_get`, `mu_set`, `mu_act`, `mu_test`), ab Werk aus und mit Bestätigung vor dem Einschalten (Art „Schaltet Geräte“):

@@ -46,6 +46,12 @@ const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000
 const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", bmode: "one", pvn: "", pv2n: "", ent: { pv: "", grid: "", house: "", bat: "", bchg: "", bdis: "", pve: "", pv2: "", pve2: "", imp: "", exp: "" } };
 /* Einstellungen je Modul: neue Module tragen sich hier ein und erscheinen automatisch auf der Einstellungsseite */
 /* Reifegrad der Module: dev = Beispielseite, vorab = Vorabversion (echte Daten, noch nicht endgültig), beta = zum Testen */
+const MOD_HOME = { id: "st", n: 0, name: "Start", short: "Start", icon: "home", tag: "Der Überblick über dein Zuhause", start: true };
+const HZ_NAMES = { zuhause: "Zuhause", wetter: "Wetter", personen: "Personen", hinweise: "Hinweise", alarm: "Alarm", energie: "Energie", muell: "Müllabfuhr" };
+const HZ_WIDE = ["zuhause", "energie"];
+const HZ_BUBS = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell", "warmwasser", "preis", "hinweise"];
+const HZ_BUB_DEF = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell"];
+const HZ_BUB_N = { wetter: ["Wetter", "Außentemperatur und Wetterlage", "cloud"], personen: ["Personen zu Hause", "Anzahl der Personen daheim", "users"], alarm: ["Alarm", "Zustand der Alarmanlage", "shield"], solar: ["Solar jetzt", "Leistung der PV-Anlage", "sun"], batterie: ["Batterie", "Ladestand des Speichers", "bolt"], auto: ["E-Auto", "Ladestand und ob es lädt", "car"], fenster: ["Offene Fenster", "Anzahl offener Fenster", "windowOpen"], muell: ["Nächste Müllabfuhr", "nur wenn Modul 17 an ist", "trash"], warmwasser: ["Warmwasser", "Temperatur im Speicher", "drop"], preis: ["Strompreis", "Preis aus Modul 3", "chart"], hinweise: ["Hinweise", "Anzahl der Hinweise", "info"] };
 const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", icon: "trash", tag: "Abholtermine, Tonnen-Ampel und Erinnerung", lab: true };
 const MU_NAMES = { tonnen: "Tonnen", next: "Nächste Abholungen", cal: "Kalender", rem: "Erinnerung am Vorabend", hint: "Hinweise", cost: "Kosten" };
 const MU_WIDE = ["tonnen", "cost"];

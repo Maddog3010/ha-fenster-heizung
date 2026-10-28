@@ -240,6 +240,12 @@ const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000
 const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", bmode: "one", pvn: "", pv2n: "", ent: { pv: "", grid: "", house: "", bat: "", bchg: "", bdis: "", pve: "", pv2: "", pve2: "", imp: "", exp: "" } };
 /* Einstellungen je Modul: neue Module tragen sich hier ein und erscheinen automatisch auf der Einstellungsseite */
 /* Reifegrad der Module: dev = Beispielseite, vorab = Vorabversion (echte Daten, noch nicht endgültig), beta = zum Testen */
+const MOD_HOME = { id: "st", n: 0, name: "Start", short: "Start", icon: "home", tag: "Der Überblick über dein Zuhause", start: true };
+const HZ_NAMES = { zuhause: "Zuhause", wetter: "Wetter", personen: "Personen", hinweise: "Hinweise", alarm: "Alarm", energie: "Energie", muell: "Müllabfuhr" };
+const HZ_WIDE = ["zuhause", "energie"];
+const HZ_BUBS = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell", "warmwasser", "preis", "hinweise"];
+const HZ_BUB_DEF = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell"];
+const HZ_BUB_N = { wetter: ["Wetter", "Außentemperatur und Wetterlage", "cloud"], personen: ["Personen zu Hause", "Anzahl der Personen daheim", "users"], alarm: ["Alarm", "Zustand der Alarmanlage", "shield"], solar: ["Solar jetzt", "Leistung der PV-Anlage", "sun"], batterie: ["Batterie", "Ladestand des Speichers", "bolt"], auto: ["E-Auto", "Ladestand und ob es lädt", "car"], fenster: ["Offene Fenster", "Anzahl offener Fenster", "windowOpen"], muell: ["Nächste Müllabfuhr", "nur wenn Modul 17 an ist", "trash"], warmwasser: ["Warmwasser", "Temperatur im Speicher", "drop"], preis: ["Strompreis", "Preis aus Modul 3", "chart"], hinweise: ["Hinweise", "Anzahl der Hinweise", "info"] };
 const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", icon: "trash", tag: "Abholtermine, Tonnen-Ampel und Erinnerung", lab: true };
 const MU_NAMES = { tonnen: "Tonnen", next: "Nächste Abholungen", cal: "Kalender", rem: "Erinnerung am Vorabend", hint: "Hinweise", cost: "Kosten" };
 const MU_WIDE = ["tonnen", "cost"];
@@ -1078,6 +1084,43 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .mub.editing{padding:8px 10px 10px;margin:4px}.mub .etag{margin:0 0 8px 2px}.mub.hid>:not(.etag){opacity:.4;filter:grayscale(.6);pointer-events:none}.mub.hid{outline-style:dotted}
 .eyeb{margin-left:auto;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);border-radius:999px;padding:5px 12px 5px 10px;font:inherit;font-size:.78rem;font-weight:600;cursor:pointer}.eyeb:hover{border-color:var(--teal)}.mub.hid .eyeb{color:var(--mut)}
 .mublks .dragging{opacity:.35}
+.hzbubs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0;-webkit-overflow-scrolling:touch}.hzbubs::-webkit-scrollbar{display:none}
+.hzb{flex:none;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--primary-text-color);border-radius:999px;padding:5px 14px 5px 5px;font:inherit;cursor:pointer;text-align:left}
+.hzb:hover{border-color:color-mix(in srgb,var(--teal) 60%,var(--line))}.hzb:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.hzb i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal);flex:none}
+.hzb b{display:block;font-size:.88rem;line-height:1.15;white-space:nowrap}.hzb small{display:block;font-size:.68rem;color:var(--mut);white-space:nowrap}
+.hzb.ok i{background:color-mix(in srgb,var(--green) 18%,transparent);color:var(--green)}
+.hzb.wa{border-color:color-mix(in srgb,var(--amber) 60%,transparent);background:color-mix(in srgb,var(--amber) 9%,var(--card))}.hzb.wa i{background:color-mix(in srgb,var(--amber) 20%,transparent);color:var(--amber)}
+.hzb.bad{border-color:#f87171;background:color-mix(in srgb,#f87171 12%,var(--card))}.hzb.bad i{background:color-mix(in srgb,#f87171 22%,transparent);color:#f87171}
+.hzbe{border:2px dashed var(--line);border-radius:20px;padding:8px 10px 10px}
+.hzhead{font-size:1.4rem;font-weight:700;color:var(--amber);line-height:1.2}.hzhead.ok{color:var(--green)}.hzhead.bad{color:#f87171}
+.hzsub{color:var(--mut);font-size:.92rem;margin:2px 0 14px}
+.hzgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:12px}
+.hzt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px 12px;border-radius:16px;border:1px solid var(--line);background:rgba(127,127,127,.07);color:var(--primary-text-color);font:inherit;text-align:center;cursor:pointer}
+.hzt:hover{border-color:color-mix(in srgb,var(--teal) 60%,var(--line))}.hzt:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.hzt .hti{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal)}
+.hzt b{font-size:.95rem}.hzt small{font-size:.8rem;font-weight:700;color:var(--green)}
+.hzt.wa{border-color:color-mix(in srgb,var(--amber) 70%,var(--line));background:color-mix(in srgb,var(--amber) 11%,transparent)}.hzt.wa small{color:var(--amber)}.hzt.wa .hti{background:color-mix(in srgb,var(--amber) 20%,transparent);color:var(--amber)}
+.hzt.mut small{color:var(--mut)}.hzt.sel{border-color:var(--teal)}.hzt.sel small{color:var(--teal)}
+.hzl{display:flex;flex-direction:column}
+.hzr{display:flex;align-items:center;gap:14px;padding:10px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--primary-text-color);font:inherit;text-align:left;width:100%}.hzl>.hzr:first-child{border-top:0;padding-top:2px}
+button.hzr{cursor:pointer}
+.hzr .hzri{width:44px;height:44px;border-radius:14px;background:rgba(127,127,127,.12);display:grid;place-items:center;flex:none;color:var(--mut)}.hzr.wa .hri{background:color-mix(in srgb,var(--amber) 16%,transparent);color:var(--amber)}.hzr.bad .hri{background:color-mix(in srgb,#f87171 18%,transparent);color:#f87171}
+.hzr .hzrx{flex:1;min-width:0}.hzr .hzrx b{display:block;font-size:.98rem}.hzr .hzrx small{display:block;color:var(--mut);font-size:.84rem}
+.hzr .hzrr{font-size:.85rem;color:var(--mut);text-align:right;flex:none}.hzr .hzrr.wa{color:var(--amber);font-weight:700}.hzr .hzrr.ok{color:var(--green);font-weight:700}.hzr .hzrr.bad{color:#f87171;font-weight:700}
+.hzav{width:44px;height:44px;border-radius:50%;background:var(--c,#14b8a6) center/cover;display:grid;place-items:center;font-weight:700;color:#fff;position:relative;flex:none}
+.hzav u{position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;border:2px solid var(--card);background:#6b7280}.hzav.home u{background:var(--green)}
+.hzrt{margin-left:auto;font-size:.78rem;font-weight:500;color:var(--mut);max-width:50%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hzwx{display:flex;align-items:center;gap:14px}.hzwi{color:var(--amber);flex:none}.hzbig{font-size:2.2rem;font-weight:700;line-height:1}.hzbig small{font-size:1rem;color:var(--mut);font-weight:500}
+.hzfc{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.hzfc div{background:rgba(127,127,127,.1);border-radius:12px;padding:8px 4px;text-align:center;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:2px}.hzfc b{color:var(--primary-text-color);font-size:1rem}.hzfc small{font-size:.74rem}
+.hzgo{cursor:pointer}.hzflash{animation:hzf 1.2s}@keyframes hzf{0%,100%{box-shadow:none}30%{box-shadow:0 0 0 3px var(--teal)}}
+.hzo{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:14px;margin-bottom:7px;background:rgba(127,127,127,.05)}.hzo.on{border-color:color-mix(in srgb,var(--teal) 45%,var(--line))}
+.hzck{width:24px;height:24px;border-radius:8px;border:2px solid var(--line);background:transparent;display:grid;place-items:center;cursor:pointer;color:var(--on-acc);padding:0;flex:none}.hzck.on{background:var(--teal);border-color:var(--teal)}
+.hzoi{width:34px;height:34px;border-radius:10px;background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal);display:grid;place-items:center;flex:none}
+.hzot{flex:1;min-width:0}.hzot b{display:block;font-size:.92rem}.hzot small{display:block;font-size:.76rem;color:var(--mut)}
+.hzo .ibtn.dn svg{transform:rotate(180deg)}.gschs{display:inline-flex;gap:6px;flex-wrap:wrap}
+@media(max-width:520px){.hzgrid{grid-template-columns:repeat(2,1fr)}.hzrt{max-width:42%}}
+
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -1124,6 +1167,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._gen.pv = { ...PVDEF, ...(this._gen.pv || {}) };
       this._mdApply(r);
     } catch (e) { /* älteres Backend: Standardwerte */ }
+    this._cfgReady = true;
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     this._render();
   }
@@ -2077,6 +2121,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mux") && this._muxChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("hz") && this._hzChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("spx") && this._spChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("sfx") && this._sfxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wb") && this._wbChange(t)) return;
@@ -2101,6 +2146,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("ig")) this._igAct(a, b);
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
     else if (a.startsWith("mux")) this._muxAct(a, b);
+    else if (a.startsWith("hz")) this._hzAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);
     else if (a.startsWith("wb")) this._wbAct(a, b);
@@ -2685,6 +2731,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
     if (m.type === "sfset") { box.innerHTML = this._sfxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "spset") { box.innerHTML = this._spModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -2920,7 +2967,7 @@ class FensterHeizungPanel extends HTMLElement {
     d.t = best; if (!best) return;
     const r = best.getBoundingClientRect(), cols = getComputedStyle(d.container).gridTemplateColumns.split(" ").length;
     const sameRow = Math.abs(r.top + r.height / 2 - d.y) < r.height / 2;
-    d.after = (d.group === "room" || d.group === "mublk") && cols > 1 && sameRow ? d.x > r.left + r.width / 2 : d.y > r.top + r.height / 2;
+    d.after = (d.group === "room" || d.group === "mublk" || d.group === "hzblk") && cols > 1 && sameRow ? d.x > r.left + r.width / 2 : d.y > r.top + r.height / 2;
     best.classList.add(d.after ? "drop-after" : "drop-before");
   }
   _dragEnd(commit) {
@@ -2935,6 +2982,7 @@ class FensterHeizungPanel extends HTMLElement {
         const all = this._collect().map((r) => r.id), slots = all.map((id, i) => (ids.includes(id) ? i : -1)).filter((i) => i >= 0);
         slots.forEach((pos, k) => (all[pos] = ids[k])); this._cfg.layout.rooms = all;
       } else if (d.group === "mublk") this._cfg.layout.mu = { ...(this._cfg.layout.mu || {}), order: ids };
+      else if (d.group === "hzblk") { const h = this._hzCfg(); this._cfg.layout.start = { ...(this._cfg.layout.start || {}), order: [...ids, ...h.order.filter((x) => !ids.includes(x))] }; }
       else this._cfg.layout.blocks = ids;
       this._saveLayout();
     }
@@ -2987,8 +3035,16 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
   _mdActiveSet(id) { const s = this._mdState(); s.active = id; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
-  _mdList() { const s = this._mdState(); return [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true), ...(this._labOn("mm") ? [MOD_MU] : []), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
-  _mdActive() { const s = this._mdState(); return this._mdList().some((m) => m.id === s.active) ? s.active : "fh"; }
+  _mdList() { const s = this._mdState(); return [...(this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : []), MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true), ...(this._labOn("mm") ? [MOD_MU] : []), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
+  _mdActive() {
+    const s = this._mdState();
+    if (!this._hzDec && this._cfgReady) {
+      this._hzDec = true; let q = ""; try { q = new URLSearchParams(location.search).get("modul") || ""; } catch (_) { /* kein Zugriff */ }
+      if (q && this._mdList().some((m) => m.id === q)) s.active = q;
+      else if (this._hzOn() && this._hzCfg().open === "start") s.active = "st";
+    }
+    return this._mdList().some((m) => m.id === s.active) ? s.active : this._hzOn() ? "st" : "fh";
+  }
   _stDone(id) {
     if (id === "fh") { const n = this._collect().length; return n ? n + (n === 1 ? " Raum" : " Räume") : ""; }
     if (id === "gs") { const n = this._gsState().devices.length; return n ? n + (n === 1 ? " Gerät" : " Geräte") : ""; }
@@ -4700,6 +4756,13 @@ class FensterHeizungPanel extends HTMLElement {
         needs: () => [["Abfallkalender in Home Assistant (waste_collection_schedule)", this._muHasWcs()], ["Ein Kalender mit den Abholterminen", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Benachrichtigungsdienst für die Erinnerung (optional)", Object.keys((this._hass.services || {}).notify || {}).some((n) => !["send_message", "reload", "persistent_notification"].includes(n))]],
         after: "Ausgeschaltet verschwinden Modul 17 und der Eintrag „Abfallkalender“ im Store. Gesendet und geschaltet wird dann nichts mehr. Die Einstellungen bleiben gespeichert. Die Integration waste_collection_schedule selbst bleibt in Home Assistant installiert, sie entfernst du dort.",
         f: [] },
+      { id: "sb", mid: "st", mod: "Startseite", mn: "", n: "Start-Bubbles", st: "Früh", i: "layers",
+        d: "Runde Kurzinfos ganz oben auf der Startseite. Du wählst selbst, was sie zeigen: Wetter, Personen, Alarm, Solar, Batterie und mehr.",
+        feats: ["Bis zu 8 runde Kurzinfos in einer Reihe, auf dem Handy wischbar", "Inhalt und Reihenfolge wählst du selbst", "Warnfarben: Gelb bei Hinweisen, Rot bei ausgelöstem Alarm", "Ein Tipp springt zur passenden Karte oder öffnet das Modul"],
+        how: ["Die Bubbles lesen nur Werte, die Home Assistant und die Module schon haben. Es wird nichts geschaltet.", "Eine Bubble ohne Daten wird ausgelassen, zum Beispiel „Solar“, wenn Modul 3 nicht eingerichtet ist.", "Die Auswahl öffnest du auf der Startseite über Einstellungen oder Anpassen."],
+        needs: () => [["Die Startseite ist eingeschaltet", this._hzOn()]],
+        after: "Ausgeschaltet verschwindet die Bubble-Reihe von der Startseite. Deine Auswahl bleibt gespeichert.",
+        f: [] },
       { id: "st", mid: "en", mod: "Modul 3", mn: "Energie", n: "Spartipp der Woche", st: "Idee", i: "tools", soon: true,
         d: "Kurzer Hinweis, welches Gerät oder welche Uhrzeit den meisten Netzstrom kostet, mit Vorschlag.",
         feats: ["Größter Netzbezug der Woche", "Konkreter Vorschlag mit geschätzter Ersparnis"], how: ["Noch in Vorbereitung."], needs: () => [], f: [] },
@@ -4736,7 +4799,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Karten oben in der Seite des Moduls */
   _labCards(mid) {
-    return this._labCat().filter((x) => x.mid === mid && x.id !== "mm" && this._labOn(x.id) && !x.soon).map((x) => {
+    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
       let body = ""; try { body = this["_lab_" + x.id](); } catch (e) { body = `<div class="mut sm">Diese Funktion kann gerade nichts anzeigen.</div>`; }
       return this._labCard(x, body);
     }).join("");
@@ -5018,20 +5081,246 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow"><span>Wetter-Hinweise<small class="mut" style="display:block">Warnt vor Sturm und Frost an Abholtagen. Nutzt Modul 9, falls eingeschaltet.</small></span>${sw("wx", C.wx, "Wetter-Hinweise")}</div>
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="muxtest" ${C.push.to.length || C.tts.on ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
+  /* Startseite: der Überblick über das Zuhause. Erscheint nach dem Laden des Dashboards zuerst (abschaltbar).
+     Blöcke: Zuhause, Wetter, Personen, Hinweise, Alarm, Energie, Müllabfuhr. Anordnung und Sichtbarkeit stehen in layout.start.
+     Lab „Start-Bubbles“ (sb): runde Kurzinfos ganz oben, Auswahl in layout.start.bub. Alles nur Anzeige, nur der Alarm kann (optional) schalten. */
+  _hzCfg() {
+    const l = (this._cfg && this._cfg.layout && this._cfg.layout.start) || {}, b = l.bub || {}, known = Object.keys(HZ_NAMES), o = (Array.isArray(l.order) ? l.order : []).filter((x) => known.includes(x));
+    return {
+      on: l.on !== false, open: l.open === "last" ? "last" : "start", greet: l.greet !== false, alarm: typeof l.alarm === "string" ? l.alarm : "", ctl: l.ctl === true,
+      order: [...o, ...known.filter((x) => !o.includes(x))], hidden: (Array.isArray(l.hidden) ? l.hidden : []).filter((x) => known.includes(x)),
+      bub: { ids: (Array.isArray(b.ids) ? b.ids : HZ_BUB_DEF).filter((x) => HZ_BUBS.includes(x)).slice(0, 8), warn: b.warn !== false, tap: b.tap === "module" ? "module" : "block" },
+    };
+  }
+  _hzOn() { return this._hzCfg().on; }
+  _hzSave(patch) {
+    const raw = (this._cfg.layout.start && typeof this._cfg.layout.start === "object") ? this._cfg.layout.start : {};
+    this._cfg.layout.start = { ...raw, ...patch }; this._saveLayout(); this._render();
+    if (this._modal && ["hzset", "hzbub"].includes(this._modal.type)) this._renderModal();
+  }
+  _hzGreet() {
+    const c = this._hzCfg(), d = new Date(), h = d.getHours(), hi = h < 5 ? "Gute Nacht" : h < 11 ? "Guten Morgen" : h < 17 ? "Guten Tag" : "Guten Abend";
+    const nm = c.greet && this._hass && this._hass.user && this._hass.user.name ? String(this._hass.user.name).trim().split(/\s+/)[0] : "";
+    return `${nm ? `${hi}, ${esc(nm)}` : hi} · ${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}`;
+  }
+  _hzSince(iso) { const m = Math.max(0, Math.round((Date.now() - new Date(iso || Date.now()).getTime()) / 60000)); return m < 60 ? `${m} Min.` : m < 1440 ? `${Math.floor(m / 60)} Std.` : `${Math.floor(m / 1440)} Tg.`; }
+  /* Offene Fenster je Raum */
+  _hzWin() {
+    const st = this._hass.states, out = [];
+    this._collect().forEach((r) => {
+      const open = (r.windows || []).map((e) => st[e]).filter((w) => w && ["on", "open"].includes(w.state));
+      if (open.length) out.push({ name: r.name, n: open.length, since: Math.min(...open.map((w) => new Date(w.last_changed || Date.now()).getTime())) });
+    });
+    return out;
+  }
+  _hzMu() { return this._labOn("mm") ? (this._mu().bins || []) : []; }
+  _hzHints() {
+    const H = this._hass, st = H.states, out = [], o = this._out();
+    this._hzWin().forEach((w) => { const m = Math.round((Date.now() - w.since) / 60000); if (m >= 15) out.push({ i: "windowOpen", t: `${esc(w.name)}: Fenster seit ${this._hzSince(new Date(w.since).toISOString())} offen`, s: o.t != null ? `Außen ${num(o.t, 0)} °C` : "", r: "jetzt", c: "wa", mod: "fh" }); });
+    if (this._mdState().on.ww && this._wwConfigured()) this._wwProblems().filter((p) => p[0] === "bad" || p[0] === "warn").slice(0, 2).forEach((p) => out.push({ i: "drop", t: esc(p[2]), s: esc(p[3]), r: "", c: p[0] === "bad" ? "bad" : "wa", mod: "ww" }));
+    const due = this._hzMu().filter((x) => ["out", "today", "soon"].includes(x.state));
+    if (due.length) out.push({ i: "trash", t: `${due.some((x) => x.state === "today") ? "Heute" : "Morgen"}: ${due.map((x) => esc(x.name)).join(", ")}`, s: "Abholung, Tonne rausstellen", r: due.some((x) => x.state === "today") ? "heute" : "morgen", c: "wa", mod: "mu" });
+    const al = this._hzAlarmEnt(); if (al && st[al] && st[al].state === "triggered") out.push({ i: "shield", t: "Alarm ausgelöst", s: esc(this._wzName(al)), r: "jetzt", c: "bad", blk: "alarm" });
+    let nb = 0;
+    Object.keys(st).forEach((e) => {
+      if (nb >= 3) return; const s = st[e], a = s.attributes || {};
+      if (e.startsWith("binary_sensor.") && a.device_class === "battery" && s.state === "on") { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: "Batterie wechseln", r: "", c: "wa" }); }
+      else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
+    });
+    const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
+  }
+  /* Kachel je aktives Modul */
+  _hzTile(m) {
+    const st = this._hass.states; let sub = "", c = "";
+    if (m.id === "fh") { const n = this._hzWin().reduce((s, w) => s + w.n, 0); sub = n ? `${n} ${n === 1 ? "Fenster" : "Fenster"} offen` : "Alle Fenster zu"; c = n ? "wa" : ""; }
+    else if (m.id === "ww") { const E = this._mdState().ww.ent || {}, t = E.top && st[E.top], v = t ? parseFloat(t.state) : NaN, bad = this._wwConfigured() && this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn"); sub = isFinite(v) ? `${num(v, 0)} °C` : "Nicht eingerichtet"; c = bad ? "wa" : isFinite(v) ? "" : "mut"; }
+    else if (m.id === "en") { const N = this._enOn() ? this._enNow() : null; sub = N ? `${num(N.pv / 1000, 1)} kW PV` : "Nicht eingerichtet"; c = N ? "" : "mut"; }
+    else if (m.id === "gs") { const n = this._gsState().devices.length; sub = n ? `${n} ${n === 1 ? "Gerät" : "Geräte"}` : "Keine Geräte"; c = n ? "" : "mut"; }
+    else if (m.id === "ev") { const e = (this._evState().ent || {}).soc, v = e && st[e] ? parseFloat(st[e].state) : NaN; sub = isFinite(v) ? `${num(v, 0)} %` : "Nicht eingerichtet"; c = isFinite(v) ? "" : "mut"; }
+    else if (m.id === "mu") { const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; sub = x ? `${esc(x.name)} ${this._muWhen(x.days)}` : "Keine Termine"; c = x && x.days <= 1 ? "wa" : x ? "" : "mut"; this._muLoad(); }
+    else { sub = modSt(m) && STG[modSt(m)] ? STG[modSt(m)].t : ""; c = "mut"; }
+    return `<button class="hzt ${c}" data-act="hzgo" data-k="${m.id}"><span class="hti">${ic(m.icon, 22)}</span><b>${esc(m.short)}</b><small>${sub}</small></button>`;
+  }
+  _hzZuhause(hints) {
+    const mods = this._mdList().filter((m) => m.id !== "st"), n = hints.length, bad = hints.some((h) => h.c === "bad");
+    const head = n ? (bad ? "Es gibt etwas zu tun" : "Fast alles in Ordnung") : "Alles in Ordnung", hc = bad ? "bad" : n ? "" : "ok";
+    return `<div class="card"><h2>${ic("home", 18)}Zuhause</h2><div class="hzhead ${hc}">${head}</div><div class="hzsub">${n ? `${n} ${n === 1 ? "Hinweis braucht" : "Hinweise brauchen"} Aufmerksamkeit. ` : ""}Tippe auf eine Kachel, um das Modul zu öffnen.</div><div class="hzgrid">${mods.map((m) => this._hzTile(m)).join("")}</div></div>`;
+  }
+  /* Wetter */
+  _hzWxId() { const c = this._wxCfg(), st = this._hass.states; return c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather.")); }
+  _hzFc(wid) {
+    const d = this._hzFcD; if (d && d.id === wid && Date.now() - d.ts < 900000) return d.list;
+    if (this._hzFcBusy || !this._hass) return d && d.id === wid ? d.list : [];
+    this._hzFcBusy = true;
+    this._hass.callWS({ type: "call_service", domain: "weather", service: "get_forecasts", service_data: { type: "hourly" }, target: { entity_id: wid }, return_response: true })
+      .then((r) => { const f = r && r.response && r.response[wid] && r.response[wid].forecast; this._hzFcD = { id: wid, ts: Date.now(), list: Array.isArray(f) ? f : [] }; })
+      .catch(() => { this._hzFcD = { id: wid, ts: Date.now(), list: [] }; })
+      .finally(() => { this._hzFcBusy = false; if (this._mdActive() === "st" && !this._dragging && !this._modal) this._render(); });
+    return d && d.id === wid ? d.list : [];
+  }
+  _hzWetter() {
+    const wid = this._hzWxId(); if (!wid) return "";
+    const w = this._hass.states[wid], a = w.attributes || {}, o = this._out(), k = WX[w.state] || ["cloud", w.state || ""];
+    const fc = this._hzFc(wid).filter((x) => new Date(x.datetime).getTime() > Date.now()).filter((_, i) => i % 3 === 2).slice(0, 4);
+    const bits = [a.humidity != null ? `Luftfeuchte ${num(a.humidity, 0)} %` : "", a.wind_speed != null ? `Wind ${num(a.wind_speed, 0)} ${a.wind_speed_unit || "km/h"}` : ""].filter(Boolean).join(" · ");
+    return `<div class="card"><h2>${ic("cloud", 18)}Wetter<span class="hzrt">${esc(a.friendly_name || wid)}</span></h2>
+      <div class="hzwx"><span class="hzwi">${ic(k[0], 44)}</span><div><div class="hzbig">${o.t != null ? num(o.t, 1) : "–"}<small> °C</small></div><div class="hzsub" style="margin:2px 0 0">${esc(k[1])}${bits ? ` · ${bits}` : ""}</div></div></div>
+      ${fc.length ? `<div class="hzfc">${fc.map((x) => `<div><small>${new Date(x.datetime).getHours()} Uhr</small><b>${x.temperature != null ? num(x.temperature, 0) + "°" : "–"}</b>${ic((WX[x.condition] || ["cloud"])[0], 18)}</div>`).join("")}</div>` : ""}</div>`;
+  }
+  /* Personen */
+  _hzPersonen() {
+    const P = this._ortPersons().filter((p) => p.count); if (!P.length) return "";
+    const st = this._hass.states, nh = P.filter((p) => p.home).length;
+    const dist = (d) => (d >= 1000 ? `${num(d / 1000, d < 10000 ? 1 : 0)} km` : `${num(d, 0)} m`);
+    return `<div class="card"><h2>${ic("users", 18)}Personen<span class="hzrt">${nh} von ${P.length} zu Hause</span></h2><div class="hzl">${P.map((p) => {
+      const s = st[p.id] || {}, pic = (s.attributes || {}).entity_picture, since = s.last_changed ? new Date(s.last_changed).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "";
+      const sub = p.unavailable ? "Kein Standort" : p.home ? `Zu Hause${since ? ` seit ${since}` : ""}` : p.dist != null ? `Unterwegs, ${dist(p.dist)} entfernt` : (p.state && p.state !== "not_home" ? esc(p.state) : "Unterwegs");
+      return `<div class="hzr"><span class="hzav ${p.home ? "home" : ""}" style="--c:${p.col};${pic ? `background-image:url('${esc(pic)}');` : ""}">${pic ? "" : esc(p.name.slice(0, 1).toUpperCase())}<u></u></span><div class="hzrx"><b>${esc(p.name)}</b><small>${sub}</small></div><span class="hzrr ${p.home ? "ok" : ""}">${p.home ? "zu Hause" : "unterwegs"}</span></div>`;
+    }).join("")}</div></div>`;
+  }
+  /* Alarm */
+  _hzAlarmEnt() { const c = this._hzCfg(), st = this._hass.states; return c.alarm && st[c.alarm] ? c.alarm : Object.keys(st).find((k) => k.startsWith("alarm_control_panel.")) || ""; }
+  _hzAlarmTxt(s) { return { disarmed: ["Unscharf", "ok"], armed_home: ["Scharf, zu Hause", "ok"], armed_away: ["Scharf, abwesend", "ok"], armed_night: ["Scharf, Nacht", "ok"], armed_vacation: ["Scharf, Urlaub", "ok"], armed_custom_bypass: ["Scharf, angepasst", "ok"], arming: ["Wird scharf geschaltet …", "wa"], pending: ["Verzögerung läuft", "wa"], disarming: ["Wird unscharf geschaltet …", "wa"], triggered: ["AUSGELÖST", "bad"] }[s] || ["Nicht verfügbar", "mut"]; }
+  _hzAlarm() {
+    const e = this._hzAlarmEnt(); if (!e) return ""; const s = this._hass.states[e], [txt, cl] = this._hzAlarmTxt(s.state), c = this._hzCfg(), ctl = c.ctl && this._admin();
+    const since = s.last_changed ? new Date(s.last_changed).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "";
+    const btn = (k, t, ico, on) => `<button class="hzt ${on ? "sel" : ""}" data-act="hzalarm" data-k="${k}"><span class="hti">${ic(ico, 20)}</span><b>${t}</b>${on ? "<small>aktiv</small>" : ""}</button>`;
+    return `<div class="card"><h2>${ic("shield", 18)}Alarm<span class="hzrt">${esc(this._wzName(e))}</span></h2><div class="hzhead ${cl === "ok" ? "ok" : cl === "bad" ? "bad" : ""}" style="font-size:1.25rem">${txt}</div><div class="hzsub">${since ? `Seit ${since} Uhr` : ""}</div>
+      ${ctl ? `<div class="hzgrid">${btn("disarm", "Unscharf", "shield", s.state === "disarmed")}${btn("away", "Abwesend", "door", s.state === "armed_away")}${btn("home", "Zu Hause", "home", s.state === "armed_home")}</div><div class="hzsub" style="margin:8px 0 0">Schalten nur mit Bestätigung${(s.attributes || {}).code_format ? " und Code" : ""}.</div>` : ""}</div>`;
+  }
+  _hzHinweise(hints) {
+    return `<div class="card"><h2>${ic("info", 18)}Hinweise<span class="hzrt">alle Module</span></h2>${hints.length ? `<div class="hzl">${hints.slice(0, 6).map((h) => `<${h.mod || h.blk ? `button data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}"` : "div"} class="hzr ${h.c || ""}"><span class="hzri">${ic(h.i, 22)}</span><span class="hzrx"><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span>${h.r ? `<span class="hzrr ${h.c || ""}">${h.r}</span>` : ""}</${h.mod || h.blk ? "button" : "div"}>`).join("")}</div>` : `<div class="mut sm">Keine Hinweise. Fenster, Batterien, Warmwasser und Termine sind in Ordnung.</div>`}</div>`;
+  }
+  _hzEnergie() {
+    if (!this._enOn()) return ""; const N = this._enNow(); if (!N) return "";
+    const net = N.exp > 0 ? this._labTile("Netz", `${num(N.exp / 1000, 1)} kW`, "Einspeisung", "green") : this._labTile("Netz", `${num(N.imp / 1000, 1)} kW`, N.imp > 0 ? "Bezug" : "ausgeglichen", N.imp > 0 ? "amber" : "");
+    return `<div class="card hzgo" data-act="hzgo" data-k="en" role="button" tabindex="0"><h2>${ic("energy", 18)}Energie jetzt<span class="hzrt">Modul 3</span></h2><div class="lugrid">${this._labTile("Solar", `${num(N.pv / 1000, 1)} kW`, `Haus ${num(N.house / 1000, 1)} kW`)}${N.soc != null ? this._labTile("Batterie", `${num(N.soc, 0)} %`, N.bc > 0 ? `lädt mit ${num(N.bc / 1000, 1)} kW` : N.dis > 0 ? `entlädt mit ${num(N.dis / 1000, 1)} kW` : "ruht") : ""}${net}</div></div>`;
+  }
+  _hzMuell() {
+    if (!this._labOn("mm")) return ""; this._muLoad(); const S = this._mu(), rows = (S.bins || []).filter((x) => x.next); if (!S.on || !rows.length) return "";
+    const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", none: "–" };
+    return `<div class="card"><h2>${ic("trash", 18)}Müllabfuhr<span class="hzrt">Modul 17</span></h2><div class="mugrid">${(S.bins || []).map((x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}"><i class="bin" style="background:${x.color}"></i><b>${esc(x.name)}</b><small>${x.next ? (x.days <= 1 ? lbl[x.state] : this._muWhen(x.days)) : "–"}</small></${tap ? "button" : "div"}>`; }).join("")}</div></div>`;
+  }
+  /* Bubbles (Lab) */
+  _hzBubDef(id) {
+    const st = this._hass.states, o = () => this._out();
+    if (id === "wetter") { const wid = this._hzWxId(), w = wid && st[wid]; if (!w) return null; const t = o().t; return { i: (WX[w.state] || ["cloud"])[0], b: t != null ? `${num(t, 0)} °C` : "–", s: "Wetter", blk: "wetter" }; }
+    if (id === "personen") { const P = this._ortPersons().filter((p) => p.count); if (!P.length) return null; const n = P.filter((p) => p.home).length; return { i: "users", b: `${n} zu Hause`, s: "Personen", c: n ? "ok" : "", blk: "personen" }; }
+    if (id === "alarm") { const e = this._hzAlarmEnt(); if (!e) return null; const [t, c] = this._hzAlarmTxt(st[e].state); return { i: "shield", b: t.replace(/, .*/, ""), s: "Alarm", c: c === "ok" ? "ok" : c === "bad" ? "bad" : c === "wa" ? "wa" : "", blk: "alarm" }; }
+    if (id === "solar" || id === "batterie") { if (!this._enOn()) return null; const N = this._enNow(); if (!N) return null; return id === "solar" ? { i: "sun", b: `${num(N.pv / 1000, 1)} kW`, s: "Solar", mod: "en", blk: "energie" } : N.soc != null ? { i: "bolt", b: `${num(N.soc, 0)} %`, s: "Batterie", mod: "en", blk: "energie" } : null; }
+    if (id === "auto") { const E = this._evState().ent || {}, v = E.soc && st[E.soc] ? parseFloat(st[E.soc].state) : NaN; if (!isFinite(v)) return null; const ch = E.charging && st[E.charging] && ["on", "charging"].includes(st[E.charging].state); return { i: "car", b: `${num(v, 0)} %`, s: ch ? "lädt" : "E-Auto", c: ch ? "ok" : "", mod: "ev" }; }
+    if (id === "fenster") { const n = this._hzWin().reduce((s, w) => s + w.n, 0); return { i: "windowOpen", b: n ? `${n} offen` : "alle zu", s: "Fenster", c: n ? "wa" : "ok", mod: "fh" }; }
+    if (id === "muell") { if (!this._labOn("mm")) return null; this._muLoad(); const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; return x ? { i: "trash", b: x.days === 0 ? "Heute" : x.days === 1 ? "Morgen" : `in ${x.days} Tg.`, s: x.name, c: x.days <= 1 ? "wa" : "", mod: "mu", blk: "muell" } : null; }
+    if (id === "warmwasser") { if (!this._mdState().on.ww) return null; const E = this._mdState().ww.ent || {}, v = E.top && st[E.top] ? parseFloat(st[E.top].state) : NaN; return isFinite(v) ? { i: "drop", b: `${num(v, 0)} °C`, s: "Warmwasser", mod: "ww" } : null; }
+    if (id === "preis") { if (!this._enOn()) return null; const p = this._price(); return p ? { i: "chart", b: `${num(p, 1)} ct`, s: "Strompreis", mod: "en" } : null; }
+    if (id === "hinweise") { const n = this._hzHints().length; return { i: "info", b: n ? `${n} ${n === 1 ? "Hinweis" : "Hinweise"}` : "keine", s: "Hinweise", c: n ? "wa" : "ok", blk: "hinweise" }; }
+    return null;
+  }
+  _hzBubs() {
+    const c = this._hzCfg().bub, items = c.ids.map((id) => ({ id, ...(this._hzBubDef(id) || {}) })).filter((x) => x.i);
+    return items.length ? `<div class="hzbubs" role="list">${items.map((x) => `<button class="hzb ${c.warn ? x.c || "" : ""}" role="listitem" data-act="hzbub" data-k="${x.id}"><i>${ic(x.i, 16)}</i><span><b>${esc(x.b)}</b><small>${esc(x.s)}</small></span></button>`).join("")}</div>` : `<div class="mut sm">Keine Bubble hat gerade Daten. Wähle andere unter „Inhalt wählen“.</div>`;
+  }
+  /* Seite */
+  _hzPage() {
+    const adm = this._admin(), edit = this._edit && adm, c = this._hzCfg(), hints = this._hzHints();
+    const B = { zuhause: this._hzZuhause(hints), wetter: this._hzWetter(), personen: this._hzPersonen(), hinweise: this._hzHinweise(hints), alarm: this._hzAlarm(), energie: this._hzEnergie(), muell: this._hzMuell() };
+    const eb = edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe die Karten an den Griffen, um sie zu verschieben. Mit dem Auge blendest du eine Karte aus. <button class="lnk" data-act="hzreset">Zurücksetzen</button></div></div>` : "";
+    const bub = this._labOn("sb") ? (edit ? `<div class="hzbe"><div class="etag">${ic("layers", 16)}Bubbles (Lab)<button class="eyeb" data-act="hzbubopen">${ic("sliders", 16)}<span>Inhalt wählen</span></button></div>${this._hzBubs()}</div>` : this._hzBubs()) : "";
+    const blocks = c.order.filter((id) => B[id] && (edit || !c.hidden.includes(id))).map((id) => {
+      const hid = c.hidden.includes(id);
+      return `<section class="blk mub ${HZ_WIDE.includes(id) ? "wide" : ""} ${edit ? "editing" : ""} ${hid ? "hid" : ""}" data-sort="hzblk" data-id="${id}">
+      ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${HZ_NAMES[id]}<button class="eyeb" data-act="hzhide" data-k="${id}" aria-pressed="${!hid}" aria-label="${HZ_NAMES[id]} ${hid ? "einblenden" : "ausblenden"}" title="${hid ? "Einblenden" : "Ausblenden"}">${ic(hid ? "eyeOff" : "eye", 18)}<span>${hid ? "Ausgeblendet" : "Sichtbar"}</span></button></div>` : ""}${B[id]}</section>`;
+    }).join("");
+    return `${bub}${eb}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
+  }
+  _hzAct(a, b) {
+    const k = b.dataset.k;
+    if (a === "hzgo") {
+      if (k && this._mdList().some((m) => m.id === k)) { this._stOpen = false; this._edit = false; this._mdActiveSet(k); this._render(); }
+      else if (b.dataset.b) this._hzScroll(b.dataset.b);
+      return;
+    }
+    if (a === "hzbub") {
+      const d = this._hzBubDef(k) || {}, tap = this._hzCfg().bub.tap, el = d.blk && this.shadowRoot.querySelector(`[data-sort="hzblk"][data-id="${d.blk}"]`);
+      if (tap === "block" && el && !el.classList.contains("hid")) this._hzScroll(d.blk);
+      else if (d.mod && this._mdList().some((m) => m.id === d.mod)) { this._edit = false; this._mdActiveSet(d.mod); this._render(); }
+      else if (d.blk) this._hzScroll(d.blk);
+      return;
+    }
+    if (a === "hzopen") { this._modal = { type: "hzset" }; this._renderModal(); return; }
+    if (a === "hzbubopen") { this._modal = { type: "hzbub" }; this._renderModal(); return; }
+    if (a === "hzback") { this._modal = { type: "hzset" }; this._renderModal(); return; }
+    if (a === "hzhide") { const h = this._hzCfg().hidden; this._hzSave({ hidden: h.includes(k) ? h.filter((x) => x !== k) : [...h, k] }); return; }
+    if (a === "hzreset") { this._hzSave({ order: Object.keys(HZ_NAMES), hidden: [] }); this._toast("Anordnung zurückgesetzt"); return; }
+    if (a === "hzsw") { const c = this._hzCfg(); if (k === "on") this._hzSave({ on: !c.on }); else if (k === "greet") this._hzSave({ greet: !c.greet }); else if (k === "ctl") this._hzSave({ ctl: !c.ctl }); else if (k === "warn") this._hzSave({ bub: { ...c.bub, warn: !c.bub.warn } }); return; }
+    if (a === "hzopenm") { this._hzSave({ open: k === "last" ? "last" : "start" }); return; }
+    if (a === "hztap") { const c = this._hzCfg(); this._hzSave({ bub: { ...c.bub, tap: k === "module" ? "module" : "block" } }); return; }
+    if (a === "hzbt") { const c = this._hzCfg(), ids = c.bub.ids.slice(); if (ids.includes(k)) ids.splice(ids.indexOf(k), 1); else if (ids.length < 8) ids.push(k); else { this._toast("Mehr als 8 Bubbles sind nicht möglich"); return; } this._hzSave({ bub: { ...c.bub, ids } }); return; }
+    if (a === "hzbm") { const c = this._hzCfg(), ids = c.bub.ids.slice(), i = ids.indexOf(k), j = i + (b.dataset.d === "up" ? -1 : 1); if (i < 0 || j < 0 || j >= ids.length) return; [ids[i], ids[j]] = [ids[j], ids[i]]; this._hzSave({ bub: { ...c.bub, ids } }); return; }
+    if (a === "hzalarm") { const e = this._hzAlarmEnt(); if (!e || !this._hzCfg().ctl || !this._admin()) return; this._modal = { type: "hzpin", mode: k }; this._renderModal(); return; }
+    if (a === "hzpinok") {
+      const m = this._modal, e = this._hzAlarmEnt(); if (!m || !e) return; const inp = this.shadowRoot.querySelector(".hzpin"), code = inp ? inp.value.trim() : "";
+      const svc = { disarm: "alarm_disarm", away: "alarm_arm_away", home: "alarm_arm_home" }[m.mode]; if (!svc) return;
+      this._modal = null; this._renderModal();
+      this._hass.callService("alarm_control_panel", svc, { entity_id: e, ...(code ? { code } : {}) }).then(() => this._toast("Alarm wird geschaltet")).catch(() => this._toast("Das hat nicht geklappt. Stimmt der Code?"));
+      return;
+    }
+  }
+  _hzScroll(id) {
+    const el = this.shadowRoot.querySelector(`[data-sort="hzblk"][data-id="${id}"]`); if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" }); el.classList.add("hzflash"); setTimeout(() => el.classList.remove("hzflash"), 1300);
+  }
+  _hzChange(t) {
+    if (t.dataset.f === "hzsel") { this._hzSave({ alarm: t.value || "" }); return true; }
+    return false;
+  }
+  _hzModal() {
+    const m = this._modal, c = this._hzCfg(), adm = this._admin(), st = this._hass.states;
+    const sw = (k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="hzsw" data-k="${k}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm ? "" : "disabled"}></button>`;
+    const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" ${adm ? "" : "disabled"}>${t}</button>`;
+    if (m.type === "hzpin") {
+      const e = this._hzAlarmEnt(), need = e && (st[e].attributes || {}).code_format, T = { disarm: "unscharf schalten", away: "auf „Abwesend“ schalten", home: "auf „Zu Hause“ schalten" }[m.mode] || "schalten";
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Alarm ${T}?</b><span>${esc(e ? this._wzName(e) : "")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="gst on">${ic("alert", 15)}<span>Das schaltet deine Alarmanlage in Home Assistant.</span></div>
+        ${need ? `<div class="vrow"><span>Code</span><input class="osel hzpin" type="password" inputmode="${need === "number" ? "numeric" : "text"}" autocomplete="off" style="width:50%;margin:0" aria-label="Alarm-Code"></div>` : ""}
+        <div class="gbtns" style="margin-top:12px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="hzpinok">${ic("check", 16)} ${m.mode === "disarm" ? "Unscharf schalten" : "Scharf schalten"}</button></div></div>`;
+    }
+    if (m.type === "hzbub") {
+      const sel = c.bub.ids, rest = HZ_BUBS.filter((x) => !sel.includes(x));
+      const row = (id, on, i) => `<div class="hzo ${on ? "on" : ""}"><button class="hzck ${on ? "on" : ""}" data-act="hzbt" data-k="${id}" aria-pressed="${on}" aria-label="${esc(HZ_BUB_N[id][0])}" ${adm ? "" : "disabled"}>${on ? ic("check", 14) : ""}</button><span class="hzoi">${ic(HZ_BUB_N[id][2], 18)}</span><span class="hzot"><b>${HZ_BUB_N[id][0]}</b><small>${HZ_BUB_N[id][1]}</small></span>${on && adm ? `<button class="ibtn" data-act="hzbm" data-d="up" data-k="${id}" aria-label="Nach oben" ${i === 0 ? "disabled" : ""}>${ic("up", 16)}</button><button class="ibtn dn" data-act="hzbm" data-d="down" data-k="${id}" aria-label="Nach unten" ${i === sel.length - 1 ? "disabled" : ""}>${ic("up", 16)}</button>` : ""}</div>`;
+      return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Bubbles wählen</b><span>Lab „Start-Bubbles“ · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm" style="margin:0 0 8px">Bis zu 8 möglich, ${sel.length} gewählt. Die Reihenfolge änderst du mit den Pfeilen. Bubbles ohne Daten werden ausgelassen.</div>
+        ${sel.map((id, i) => row(id, true, i)).join("")}${rest.map((id) => row(id, false, -1)).join("")}
+        <div class="vrow"><span>Warnfarben<small class="mut" style="display:block">Gelb bei Hinweis, Rot bei Alarm</small></span>${sw("warn", c.bub.warn, "Warnfarben")}</div>
+        <div class="vrow"><span>Antippen öffnet</span><span class="gschs">${chip("hztap", "block", "Karte", c.bub.tap === "block")}${chip("hztap", "module", "Modul", c.bub.tap === "module")}</span></div>
+        <div class="gbtns" style="margin-top:10px"><button class="btn2 pri" data-act="hzback">${ic("check", 16)} Fertig</button></div></div>`;
+    }
+    const alarms = Object.keys(st).filter((e) => e.startsWith("alarm_control_panel."));
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Startseite</b><span>Gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="vrow"><span>Startseite verwenden<small class="mut" style="display:block">Aus: das Dashboard öffnet wie bisher das zuletzt benutzte Modul.</small></span>${sw("on", c.on, "Startseite verwenden")}</div>
+      <div class="vrow"><span>Beim Öffnen zeigen<small class="mut" style="display:block">Gilt, wenn du das Dashboard in Home Assistant neu öffnest. Ein Direktlink mit <code>?modul=</code> öffnet sein Modul.</small></span><span class="gschs">${chip("hzopenm", "start", "Start", c.open === "start")}${chip("hzopenm", "last", "Letztes Modul", c.open === "last")}</span></div>
+      <div class="vrow"><span>Begrüßung mit Namen<small class="mut" style="display:block">Vorname des angemeldeten Benutzers.</small></span>${sw("greet", c.greet, "Begrüßung mit Namen")}</div>
+      <div class="lsec" style="margin-top:12px">${ic("shield", 15)}Alarm</div>
+      ${alarms.length ? this._wzSel(alarms, c.alarm, "hzsel", "", "– automatisch –") : `<div class="mut sm">Keine Alarmanlage in Home Assistant gefunden. Der Block bleibt dann weg.</div>`}
+      <div class="vrow"><span>Alarm schalten erlauben<small class="mut" style="display:block">Zeigt Knöpfe für Unscharf, Abwesend und Zu Hause. Jedes Schalten wird bestätigt. Das schaltet echte Geräte.</small></span>${sw("ctl", c.ctl, "Alarm schalten erlauben")}</div>
+      ${this._labOn("sb") ? `<div class="gbtns" style="margin-top:12px"><button class="btn2" data-act="hzbubopen">${ic("layers", 16)} Bubbles wählen</button></div>` : `<div class="gst">${ic("info", 15)}<span>Runde Kurzinfos oben gibt es im Lab „Start-Bubbles“ unter Labs.</span></div>`}
+      <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="hzreset">Anordnung zurücksetzen</button></div></div>`;
+  }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
-    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
+    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
   }
   _mdRender() {
     const sr = this.shadowRoot, a = this._mdActive(), m = this._mdList().find((x) => x.id === a), adm = this._admin();
     let body = "", pills = "";
     if (a === "ww") { body = this._wwPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; this._wwLoad(); }
     else if (a === "gs") { body = this._gsPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
+    else if (a === "st") { body = this._hzPage(); pills = adm ? `<button class="pillbtn" data-act="hzopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; }
     else if (a === "mu") { body = this._muPage(); pills = adm ? `<button class="pillbtn" data-act="muxopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; this._muLoad(); }
     else if (m.beta) { body = this._betaPage(a); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "en") { body = this._enPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else body = `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">${esc(m.name)}</div>Dieses Modul wird aus <code>${esc(m.ext.url)}</code> geladen.<br><span class="sm">Externe Module werden in einer späteren Version geladen.</span></div>`;
-    if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
+    if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "st" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${this._stoBtn()}${pills}</div>

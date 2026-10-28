@@ -67,6 +67,13 @@
         needs: () => [["Abfallkalender in Home Assistant (waste_collection_schedule)", this._muHasWcs()], ["Ein Kalender mit den Abholterminen", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Benachrichtigungsdienst für die Erinnerung (optional)", Object.keys((this._hass.services || {}).notify || {}).some((n) => !["send_message", "reload", "persistent_notification"].includes(n))]],
         after: "Ausgeschaltet verschwinden Modul 17 und der Eintrag „Abfallkalender“ im Store. Gesendet und geschaltet wird dann nichts mehr. Die Einstellungen bleiben gespeichert. Die Integration waste_collection_schedule selbst bleibt in Home Assistant installiert, sie entfernst du dort.",
         f: [] },
+      { id: "sb", mid: "st", mod: "Startseite", mn: "", n: "Start-Bubbles", st: "Früh", i: "layers",
+        d: "Runde Kurzinfos ganz oben auf der Startseite. Du wählst selbst, was sie zeigen: Wetter, Personen, Alarm, Solar, Batterie und mehr.",
+        feats: ["Bis zu 8 runde Kurzinfos in einer Reihe, auf dem Handy wischbar", "Inhalt und Reihenfolge wählst du selbst", "Warnfarben: Gelb bei Hinweisen, Rot bei ausgelöstem Alarm", "Ein Tipp springt zur passenden Karte oder öffnet das Modul"],
+        how: ["Die Bubbles lesen nur Werte, die Home Assistant und die Module schon haben. Es wird nichts geschaltet.", "Eine Bubble ohne Daten wird ausgelassen, zum Beispiel „Solar“, wenn Modul 3 nicht eingerichtet ist.", "Die Auswahl öffnest du auf der Startseite über Einstellungen oder Anpassen."],
+        needs: () => [["Die Startseite ist eingeschaltet", this._hzOn()]],
+        after: "Ausgeschaltet verschwindet die Bubble-Reihe von der Startseite. Deine Auswahl bleibt gespeichert.",
+        f: [] },
       { id: "st", mid: "en", mod: "Modul 3", mn: "Energie", n: "Spartipp der Woche", st: "Idee", i: "tools", soon: true,
         d: "Kurzer Hinweis, welches Gerät oder welche Uhrzeit den meisten Netzstrom kostet, mit Vorschlag.",
         feats: ["Größter Netzbezug der Woche", "Konkreter Vorschlag mit geschätzter Ersparnis"], how: ["Noch in Vorbereitung."], needs: () => [], f: [] },
@@ -103,7 +110,7 @@
   }
   /* Karten oben in der Seite des Moduls */
   _labCards(mid) {
-    return this._labCat().filter((x) => x.mid === mid && x.id !== "mm" && this._labOn(x.id) && !x.soon).map((x) => {
+    return this._labCat().filter((x) => x.mid === mid && !["mm", "sb"].includes(x.id) && this._labOn(x.id) && !x.soon).map((x) => {
       let body = ""; try { body = this["_lab_" + x.id](); } catch (e) { body = `<div class="mut sm">Diese Funktion kann gerade nichts anzeigen.</div>`; }
       return this._labCard(x, body);
     }).join("");
