@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://hacs.xyz"><img alt="HACS" src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white"></a>
-  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.4-2dd4bf"></a>
+  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.5-2dd4bf"></a>
   <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18bcf2">
   <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white"></a>
 </p>
@@ -50,12 +50,15 @@
 
 ## Neu
 
+**3.0.5: Modul 19 „Hausfluss“ (Beta, nur für Sponsoren).** Dein Haus als Fluss-Bild im Dashboard: Solar, Netz, Akku und Verbraucher als Kacheln mit animierten Flusslinien, mobil und am Desktop.
+
 **3.0.4: Lab „Tags & Karten“.** RFID-Karten und NFC-Sticker lösen feste Aktionen aus (Abwesend, Warmwasser-Boost, Licht aus, „Person ist zu Hause“ und mehr), mit Personen- und Zeitfilter, Rückmeldung und Protokoll. Zuerst als Vorabversion für Sponsoren.
 
 **3.0.3: Vorabversionen, Spartipp und Modul 18 „Licht & Lampen“.** Neue Labs erscheinen für Sponsoren 14 Tage früher (Schalter „Vorabversionen zuerst“ im Sponsor-Bereich, ab Werk aus), danach für alle. Die ersten beiden: der Spartipp der Woche und das neue Modul 18.
 
 **3.0.2.13: Sponsor-Bereich.** Sponsoren bekommen mit einem Schlüssel ein Abzeichen, Farbverläufe, Uhr-Stile und Vorabversionen. Nichts, was bisher frei war, wird gesperrt. [Mehr dazu](#sponsor-werden)
 
+- **3.0.5:** Modul 19 „Hausfluss“ als Beta, dauerhaft nur für Sponsoren.
 - **3.0.4:** Lab „Tags & Karten“ für RFID-Karten und NFC-Sticker, zuerst als Vorabversion für Sponsoren.
 - **3.0.3:** Modul 18 „Licht & Lampen“ und der „Spartipp der Woche“, beide zuerst als Vorabversion für Sponsoren.
 - **3.0.2.12:** [Tablet-Modus](#bedienung) mit PIN, Ruhemodus und Display-Steuerung per Bewegungsmelder.
@@ -656,6 +659,21 @@ Zeigt den erwarteten Ertrag für heute und morgen, den bisherigen Ertrag des Tag
 - **Beste Zeit:** das ergiebigste Dreistundenfenster (ab 16 Uhr für den nächsten Tag).
 
 Einrichtung: Einstellungen → Modul 16.
+
+</details>
+
+<details>
+<summary><b>Modul 19: Hausfluss</b> &nbsp;·&nbsp; Beta &nbsp;·&nbsp; nur für Sponsoren</summary>
+
+<br>
+
+Das Modul zeigt dein Haus als Fluss-Bild im Dashboard (keine eigene Seitenleisten-Seite). Es ist dauerhaft Sponsoren vorbehalten und wird in der Modul-Verwaltung eingeschaltet. Mit „Einrichten“ legst du die Kacheln fest.
+
+- **Aufbau:** Das Haus steht in der Mitte, dazu bis zu acht Kacheln: oben 2, links 3, rechts 3, unten 1. Mobil sind die Kacheln kleiner, das Bild bleibt wie am Desktop.
+- **Fluss:** Animierte Linien zeigen Richtung und Stärke. Pro Kachel wählst du Verbrauch, Erzeugung, beides oder geteilt, kannst die Richtung umkehren und getrennte Sensoren für „zum Haus“ und „aus dem Haus“ angeben.
+- **Haus-Kachel:** Gesamtleistung aus Zufluss (Solar, Netzbezug, Akku-Entladung) minus Abfluss (Einspeisung, Akku-Ladung), oder „Rest“ ohne die Verbraucher-Kacheln. Dazu bis zu vier Chips.
+- **Bilder und Farben:** eingebaute Symbole, mdi:, Emojis, /local/ oder https, Farbe und Name pro Kachel.
+- **Sicherheit:** Es sind nur Sensoren (`sensor.`, `number.`, `input_number.`, `counter.`) wählbar, nur Admins richten ein. Ohne Leistungssensor bleibt die Linie aus.
 
 </details>
 

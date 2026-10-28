@@ -30,6 +30,7 @@
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mux") && this._muxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lix") && this._lixChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("efx") && this._efxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tgx") && this._tgxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("hz") && this._hzChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tm") && this._tmChange(t)) return;
@@ -59,6 +60,7 @@
     else if (a.startsWith("mux")) this._muxAct(a, b);
     else if (a.startsWith("lix")) this._lixAct(a, b);
     else if (a.startsWith("tgx")) this._tgxAct(a, b);
+    else if (a.startsWith("efx")) this._efxAct(a, b);
     else if (a.startsWith("hz")) this._hzAct(a, b);
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
     else if (a.startsWith("spn")) this._spnAct(a, b);

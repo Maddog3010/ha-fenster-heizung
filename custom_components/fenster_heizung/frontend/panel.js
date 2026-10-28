@@ -238,7 +238,7 @@ const WW_DEF = { size: 300, target: 55, day: null, boost: false, circ5: false, a
   circ: { mode: "plan", ret_max: 45, run: 3, on: 3, every: 30, wd: [{ from: "05:30", to: "08:00" }, { from: "17:00", to: "21:30" }], we: [{ from: "07:00", to: "10:30" }, { from: "17:00", to: "21:30" }] },
   leg: { on: true, day: 5, time: "03:00", temp: 60, hold: 20, last: null },
   pv: { on: true, min: 1800, max: 62, watt: 2000 } };
-const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }, { id: "en", n: 3, name: "Energie-Übersicht", short: "Energie", icon: "energy", tag: "Heizung, Strom und PV im Überblick" }, { id: "gs", n: 4, name: "Gerätestrom", short: "Gerätestrom", icon: "laundry", tag: "Woher der Strom kommt und was er kostet" }, { id: "lu", n: 5, name: "Lüftung & Raumluft", short: "Lüftung", icon: "fan", tag: "KWL, CO₂ und Feuchte", beta: true }, { id: "rb", n: 6, name: "Rollläden & Beschattung", short: "Rollläden", icon: "blinds", tag: "Sonnenstand, Hitzeschutz und Heizbedarf", beta: true }, { id: "wp", n: 7, name: "Wärmepumpe", short: "Wärmepumpe", icon: "heatpump", tag: "Laufzeit, Takten und Abtauen", beta: true }, { id: "ev", n: 8, name: "Elektroauto & Wallbox", short: "E-Auto", icon: "car", tag: "Ladestand, Ladekabel, Wallbox und Kilometerstand", beta: true }, { id: "wx", n: 9, name: "Wetter & Warnungen", short: "Wetter", icon: "alert", tag: "Unwetter-, Sturm- und Frostwarnungen mit Aktionen", beta: true }, { id: "ga", n: 10, name: "Garten & Bewässerung", short: "Garten", icon: "plant", tag: "Regenprognose, Zisterne und Bewässerung bei PV-Überschuss", beta: true }, { id: "sf", n: 11, name: "Rauch- & Sicherheitsmelder", short: "Sicherheit", icon: "shield", tag: "Melder, Batteriestände und Alarme im Überblick", beta: true }, { id: "pl", n: 12, name: "Pool & Sauna", short: "Pool & Sauna", icon: "wave", tag: "Pumpe und Heizung nach PV-Überschuss und Strompreis", beta: true }, { id: "bt", n: 13, name: "Batteriespeicher-Planung", short: "Batterie", icon: "energy", tag: "Modi, Zeitplan und Ladestand-Grenzen", beta: true }, { id: "dt", n: 14, name: "Dynamischer Stromtarif", short: "Stromtarif", icon: "chart", tag: "Börsenpreis pro Stunde und günstigste Zeiten", beta: true }, { id: "wa", n: 15, name: "Wartung & Erinnerungen", short: "Wartung", icon: "tools", tag: "Schornsteinfeger, Filter, Termine und Betriebsstunden", beta: true }, { id: "sp", n: 16, name: "Solar-Prognose", short: "Prognose", icon: "sun", tag: "Ertrag heute und morgen, Prognose gegen tatsächlich", beta: true }];
+const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }, { id: "en", n: 3, name: "Energie-Übersicht", short: "Energie", icon: "energy", tag: "Heizung, Strom und PV im Überblick" }, { id: "gs", n: 4, name: "Gerätestrom", short: "Gerätestrom", icon: "laundry", tag: "Woher der Strom kommt und was er kostet" }, { id: "lu", n: 5, name: "Lüftung & Raumluft", short: "Lüftung", icon: "fan", tag: "KWL, CO₂ und Feuchte", beta: true }, { id: "rb", n: 6, name: "Rollläden & Beschattung", short: "Rollläden", icon: "blinds", tag: "Sonnenstand, Hitzeschutz und Heizbedarf", beta: true }, { id: "wp", n: 7, name: "Wärmepumpe", short: "Wärmepumpe", icon: "heatpump", tag: "Laufzeit, Takten und Abtauen", beta: true }, { id: "ev", n: 8, name: "Elektroauto & Wallbox", short: "E-Auto", icon: "car", tag: "Ladestand, Ladekabel, Wallbox und Kilometerstand", beta: true }, { id: "wx", n: 9, name: "Wetter & Warnungen", short: "Wetter", icon: "alert", tag: "Unwetter-, Sturm- und Frostwarnungen mit Aktionen", beta: true }, { id: "ga", n: 10, name: "Garten & Bewässerung", short: "Garten", icon: "plant", tag: "Regenprognose, Zisterne und Bewässerung bei PV-Überschuss", beta: true }, { id: "sf", n: 11, name: "Rauch- & Sicherheitsmelder", short: "Sicherheit", icon: "shield", tag: "Melder, Batteriestände und Alarme im Überblick", beta: true }, { id: "pl", n: 12, name: "Pool & Sauna", short: "Pool & Sauna", icon: "wave", tag: "Pumpe und Heizung nach PV-Überschuss und Strompreis", beta: true }, { id: "bt", n: 13, name: "Batteriespeicher-Planung", short: "Batterie", icon: "energy", tag: "Modi, Zeitplan und Ladestand-Grenzen", beta: true }, { id: "dt", n: 14, name: "Dynamischer Stromtarif", short: "Stromtarif", icon: "chart", tag: "Börsenpreis pro Stunde und günstigste Zeiten", beta: true }, { id: "wa", n: 15, name: "Wartung & Erinnerungen", short: "Wartung", icon: "tools", tag: "Schornsteinfeger, Filter, Termine und Betriebsstunden", beta: true }, { id: "sp", n: 16, name: "Solar-Prognose", short: "Prognose", icon: "sun", tag: "Ertrag heute und morgen, Prognose gegen tatsächlich", beta: true }, { id: "ef", n: 19, name: "Hausfluss", short: "Hausfluss", icon: "energy", tag: "Dein Haus als Fluss-Bild: Solar, Netz, Akku und Verbraucher", beta: true, sponsor: true }];
 const PK_HINT = { pv: /solar|pv|photovolt|erzeug|wechselrichter|inverter/i, grid: /netz|grid|einspeis|bezug|zähler|meter/i, bchg: /lad|charge|zufuhr|input/i, bdis: /entlad|discharge|abgabe|output/i, house: /haus|house|verbrauch|load|consum/i, bat: /batter|speicher|akku/i, pve: /solar|pv|ertrag|yield|produc|erzeug/i, pv2: /balkon|plug|mikro|solar|pv|erzeug/i, pve2: /balkon|plug|mikro|ertrag|yield|produc|solar|pv/i, imp: /bezug|import|from.?grid|consum|netz/i, exp: /einspeis|export|feed|to.?grid/i,
   top: /oben|top|warmwasser|speicher|boiler/i, mid: /mitte|mid|warmwasser|speicher|boiler/i, bot: /unten|bot|warmwasser|speicher|boiler/i, ret: /rücklauf|ruecklauf|return|zirkul/i, pump: /zirkul|pumpe|pump/i, src: /heiz|kessel|wärmepumpe|puffer|ventil/i, rod: /heizstab|stab|rod|boiler/i, trig: /taster|bewegung|button|trigger|motion/i, outdoor: /außen|aussen|outdoor|outside/i, hum: /feucht|humid/i, heater: /heiz|elektro|heater/i };
 /* Schrittweite der Achse: 1, 2, 5 × 10^n, höchstens 5 Linien (auch bei sehr großen Werten) */
@@ -259,10 +259,10 @@ const MOD_LI = { id: "li", n: 18, name: "Licht & Lampen", short: "Licht", icon: 
 const MU_NAMES = { tonnen: "Tonnen", next: "Nächste Abholungen", cal: "Kalender", rem: "Erinnerung am Vorabend", hint: "Hinweise", cost: "Kosten" };
 const MU_WIDE = ["tonnen", "cost"];
 const DAYS_SHORT_MU = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
-const MOD_ST = { sf: "vorab", sp: "vorab", ev: "beta", wx: "beta", dt: "beta" };
+const MOD_ST = { ef: "beta", sf: "vorab", sp: "vorab", ev: "beta", wx: "beta", dt: "beta" };
 const modSt = (m) => (!m ? "" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
-const MOD_SET = { sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
+const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
 const EV_BRANDS = ["Mercedes-Benz", "Audi", "VW", "BYD", "BMW", "Andere"];
 const EV_BODIES = { limousine: "Limousine", suv: "SUV", kombi: "Kombi", kompakt: "Kompakt" };
@@ -345,7 +345,42 @@ const HA_PAGE = "/config/integrations/integration/fenster_heizung";
 const num0 = (v) => String(v).replace(".", ",");
 const barRow = (pts, d, now) => `<div class="tlw"><div class="tl">${segs(pts, d).map((s) =>
   `<i style="width:${(s.e - s.s) / 14.4}%;background:${heat(s.t)}" title="${fmtT(s.s)}–${fmtT(s.e % 1440 || 1440)} · ${num(s.t, 1)} °C"></i>`).join("")}</div>${now != null ? `<b style="left:${(now % 1440) / 14.4}%"></b>` : ""}</div>`;
-
+/* Modul 19 Hausfluss: Bilder (Illustrationen, Emojis) und Plätze der Kacheln */
+const EF_IMGS = [
+  { id: 'sonne', n: 'Sonne', k: 'solar pv sonne photovoltaik erzeugung', s: '<circle cx="32" cy="32" r="11" fill="#fbbf24"/><path d="M32 6v7M32 51v7M6 32h7M51 32h7M13.6 13.6l5 5M45.4 45.4l5 5M13.6 50.4l5-5M45.4 18.6l5-5" stroke="#fbbf24" stroke-width="4" stroke-linecap="round"/>' },
+  { id: 'solar', n: 'Solarmodul', k: 'solar pv modul dach photovoltaik erzeugung', s: '<path d="M9 40l8-24h38l-8 24z" fill="#2563eb"/><path d="M13.5 28h39M25 16l-5 24M37 16l-3 24M49 16l-2 24" stroke="#bfdbfe" stroke-width="1.8"/><path d="M32 40v11M22 53h20" stroke="#94a3b8" stroke-width="3.5" stroke-linecap="round"/>' },
+  { id: 'haus', n: 'Haus', k: 'haus gebäude zuhause verbrauch', s: '<path d="M8 31L32 11l24 20" fill="none" stroke="#f1f5f9" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><rect x="14" y="31" width="36" height="24" rx="4" fill="#7dd3fc"/><rect x="27" y="39" width="10" height="16" rx="2" fill="#0f172a"/>' },
+  { id: 'akku', n: 'Akku', k: 'batterie speicher akku ladestand', s: '<rect x="7" y="19" width="45" height="27" rx="6" fill="none" stroke="#4ade80" stroke-width="4"/><rect x="53" y="28" width="5" height="10" rx="2" fill="#4ade80"/><rect x="13" y="25" width="8" height="15" rx="2" fill="#4ade80"/><rect x="24" y="25" width="8" height="15" rx="2" fill="#4ade80"/><rect x="35" y="25" width="8" height="15" rx="2" fill="#4ade80" opacity=".35"/>' },
+  { id: 'auto', n: 'Auto', k: 'auto elektroauto fahrzeug laden', s: '<path d="M7 40l5-13c1-3 3-4 6-4h28c3 0 5 1 6 4l5 13v10H7z" fill="#f472b6"/><path d="M16 28h32l3 9H13z" fill="#fde7f3"/><circle cx="19" cy="50" r="6" fill="#0f172a"/><circle cx="45" cy="50" r="6" fill="#0f172a"/>' },
+  { id: 'wallbox', n: 'Wallbox', k: 'wallbox ladestation auto laden', s: '<rect x="17" y="7" width="30" height="46" rx="9" fill="#e2e8f0"/><path d="M34 15l-7 11h6l-3 9 9-13h-6z" fill="#2dd4bf"/><path d="M32 53v6" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>' },
+  { id: 'steckdose', n: 'Steckdose', k: 'steckdose stecker strom verbraucher', s: '<rect x="9" y="9" width="46" height="46" rx="13" fill="#f1f5f9"/><circle cx="32" cy="32" r="17" fill="#e2e8f0"/><circle cx="25.5" cy="32" r="3" fill="#0f172a"/><circle cx="38.5" cy="32" r="3" fill="#0f172a"/>' },
+  { id: 'waschmaschine', n: 'Waschmaschine', k: 'waschmaschine wäsche waschen', s: '<rect x="12" y="7" width="40" height="50" rx="6" fill="#e2e8f0"/><circle cx="32" cy="36" r="14" fill="#38bdf8"/><circle cx="32" cy="36" r="8.5" fill="#bae6fd"/><circle cx="19" cy="15" r="2.5" fill="#64748b"/><rect x="26" y="13" width="20" height="4" rx="2" fill="#94a3b8"/>' },
+  { id: 'trockner', n: 'Trockner', k: 'trockner wäsche trocknen', s: '<rect x="12" y="7" width="40" height="50" rx="6" fill="#e2e8f0"/><circle cx="32" cy="36" r="14" fill="#a78bfa"/><path d="M24 36a8 8 0 0 1 16 0" stroke="#ede9fe" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="19" cy="15" r="2.5" fill="#64748b"/><rect x="26" y="13" width="20" height="4" rx="2" fill="#94a3b8"/>' },
+  { id: 'kuehlschrank', n: 'Kühlschrank', k: 'kühlschrank gefrierschrank kühlen', s: '<rect x="16" y="6" width="32" height="53" rx="6" fill="#e0f2fe"/><path d="M16 27h32" stroke="#7dd3fc" stroke-width="3"/><rect x="22" y="12" width="3.5" height="10" rx="1.7" fill="#64748b"/><rect x="22" y="32" width="3.5" height="15" rx="1.7" fill="#64748b"/>' },
+  { id: 'wasser', n: 'Wasser', k: 'wasser tropfen wasserzähler durchfluss', s: '<path d="M32 7C22 21 16 30 16 38a16 16 0 0 0 32 0c0-8-6-17-16-31z" fill="#38bdf8"/><path d="M24 40a8 8 0 0 0 8 8" stroke="#e0f2fe" stroke-width="3" fill="none" stroke-linecap="round"/>' },
+  { id: 'blitz', n: 'Blitz', k: 'blitz strom leistung energie', s: '<path d="M37 5L14 36h14l-4 23 26-33H36z" fill="#facc15"/>' },
+  { id: 'heizung', n: 'Heizkörper', k: 'heizung heizkörper wärme wärmepumpe', s: '<rect x="8" y="14" width="48" height="34" rx="7" fill="#f1f5f9"/><g fill="#14b8a6"><rect x="15" y="21" width="5" height="20" rx="2.5"/><rect x="24" y="21" width="5" height="20" rx="2.5"/><rect x="33" y="21" width="5" height="20" rx="2.5"/><rect x="42" y="21" width="5" height="20" rx="2.5"/></g><circle cx="50" cy="53" r="4.5" fill="#f59e0b"/>' },
+  { id: 'netz', n: 'Stromnetz', k: 'netz strommast netzbezug einspeisung zähler', s: '<path d="M32 6L20 58M32 6l12 52M25 24h14M22 38h20M12 17h40" stroke="#cbd5e1" stroke-width="3.5" stroke-linecap="round" fill="none"/>' },
+  { id: 'lampe', n: 'Lampe', k: 'lampe licht beleuchtung glühbirne', s: '<path d="M32 7a17 17 0 0 0-9 31v7h18v-7a17 17 0 0 0-9-31z" fill="#fde047"/><rect x="25" y="48" width="14" height="5.5" rx="2.7" fill="#94a3b8"/>' },
+];
+const EF_EMO = [
+  ['☀️', 'Sonne', 'solar'], ['🌤️', 'Wolkig', 'sonne wolke wetter'], ['🔌', 'Stecker', 'steckdose strom'], ['🫧', 'Seifenblasen', 'waschmaschine wäsche'], ['🌀', 'Wirbel', 'trockner'],
+  ['🧊', 'Eiswürfel', 'kühlschrank kühlen'], ['🚰', 'Wasserhahn', 'wasser'], ['🚗', 'Auto', 'fahrzeug'], ['🔋', 'Batterie', 'akku speicher'], ['🏠', 'Haus', 'gebäude'],
+  ['⚡', 'Blitz', 'strom energie'], ['💡', 'Glühbirne', 'lampe licht'], ['🔥', 'Feuer', 'heizung gas flamme'], ['❄️', 'Schneeflocke', 'kälte klima kühlen'], ['🌡️', 'Thermometer', 'temperatur'],
+  ['💧', 'Tropfen', 'wasser'], ['🍳', 'Pfanne', 'herd kochen'], ['🍽️', 'Teller', 'spülmaschine geschirr'], ['🧺', 'Wäschekorb', 'wäsche'], ['📺', 'Fernseher', 'tv'],
+  ['💻', 'Laptop', 'computer büro'], ['🖥️', 'Monitor', 'computer pc'], ['🎮', 'Spielkonsole', 'gaming'], ['🛁', 'Badewanne', 'bad'], ['🚿', 'Dusche', 'bad warmwasser'],
+  ['🪟', 'Fenster', ''], ['🚪', 'Tür', ''], ['🛏️', 'Bett', 'schlafzimmer'], ['🛋️', 'Sofa', 'wohnzimmer'], ['🌱', 'Pflanze', 'garten bewässerung'],
+  ['🏊', 'Schwimmbad', 'pool pumpe'], ['🚲', 'Fahrrad', 'ebike'], ['🌬️', 'Wind', 'lüftung ventilator'], ['🔆', 'Helligkeit', 'licht'], ['🏭', 'Fabrik', 'industrie werkstatt'],
+];
+const EF_POS = {
+  top_1: [2, 1, "supply", "#facc15", "Oben 1"], top_2: [3, 1, "supply", "#fbbf24", "Oben 2"],
+  left_1: [1, 2, "consume", "#f97316", "Links 1"], left_2: [1, 3, "consume", "#38bdf8", "Links 2"], left_3: [1, 4, "consume", "#a78bfa", "Links 3"],
+  right_1: [4, 2, "consume", "#38bdf8", "Rechts 1"], right_2: [4, 3, "consume", "#2dd4bf", "Rechts 2"], right_3: [4, 4, "consume", "#f472b6", "Rechts 3"],
+  bottom: [2, 5, "consume", "#4ade80", "Unten"],
+};
+const EF_SIDES = [["top", "Oben"], ["bottom", "Unten"], ["left", "Links"], ["right", "Rechts"]];
+const EF_COLORS = ["#facc15", "#f97316", "#38bdf8", "#a78bfa", "#2dd4bf", "#f472b6", "#4ade80"];
+const EF_FLOWS = [["consume", "Verbraucht", "Energie fließt vom Haus zur Kachel"], ["supply", "Liefert", "Energie fließt von der Kachel ins Haus, zum Beispiel Solar"], ["both", "Beides, ein Sensor", "Netz oder Akku mit Vorzeichen: positiv = zur Kachel"], ["split", "Beides, zwei Sensoren", "Zum Beispiel Bezug und Einspeisung getrennt"]];
 const CSS = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -1102,6 +1137,37 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .tgxscan{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;border:1px dashed color-mix(in srgb,var(--teal) 60%,transparent);border-radius:14px;padding:16px;margin:8px 0;background:color-mix(in srgb,var(--teal) 7%,transparent)}.tgxscan.found{border-style:solid}
 .tgxpulse{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--teal);background:color-mix(in srgb,var(--teal) 18%,transparent);animation:tgxp 1.6s ease-in-out infinite}@keyframes tgxp{50%{box-shadow:0 0 0 12px color-mix(in srgb,var(--teal) 0%,transparent);transform:scale(1.06)}}@media(prefers-reduced-motion:reduce){.tgxpulse{animation:none}}
 .tgxlog{display:flex;flex-direction:column;font-size:.8rem}.tgxlog>div{display:flex;flex-wrap:wrap;gap:2px 10px;padding:6px 0;border-top:1px solid var(--line)}
+.efx{display:grid;gap:14px;max-width:1000px;margin:0 auto;width:100%}
+.efhero{container-type:inline-size;min-height:150px;border-radius:20px;padding:20px 22px;background:linear-gradient(120deg,#14b8a6 0%,#0f766e 45%,#0b3b45 100%);position:relative;overflow:hidden;color:#fff}
+.efhero::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.2),transparent 70%)}
+.efhero small{font-size:12px;opacity:.85}.efbig{font-size:44px;font-weight:800;line-height:1.1;letter-spacing:-.02em}.efbig span{font-size:18px;font-weight:500;margin-left:4px;opacity:.9}
+.efchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;position:relative;z-index:1}.efchips span{background:rgba(255,255,255,.14);border-radius:999px;padding:6px 12px;font-size:12px}
+.efx.nar .efbig{font-size:40px}
+.efboard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;position:relative}
+.efgrid{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;z-index:1}
+.eflines{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:visible}
+.efc{display:flex;justify-content:center;align-items:center}.efc.hb .efn,.efc.bt .efn{width:calc(50% - 6px)}
+.efn{--c:#2dd4bf;container-type:inline-size;width:100%;aspect-ratio:1;position:relative;border-radius:20px;background:color-mix(in srgb,var(--primary-text-color) 5%,var(--card));border:1.5px solid color-mix(in srgb,var(--c) 45%,transparent);transition:border-color .2s,box-shadow .2s}
+.efg{width:100%;aspect-ratio:1;visibility:hidden}.efc.bt .efg{width:calc(50% - 6px)}.efx.nar .efc.bt .efg{width:clamp(92px,27%,130px)}.efn.on{border-color:var(--c);box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 40%,transparent),0 8px 28px -10px var(--c)}
+.efi{position:absolute;left:50%;top:50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;font-size:14cqw;overflow:hidden;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 38%,transparent),color-mix(in srgb,var(--c) 10%,var(--card)) 75%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 40%,transparent)}
+.efi svg{width:64%;height:64%}.efi img{width:100%;height:100%;object-fit:cover}.efi ha-icon{--mdc-icon-size:14cqw}.efn:not(.on) .efi{filter:saturate(.45) brightness(.85)}
+.efnm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.efs{position:absolute;font:inherit;font-size:8.5cqw;font-weight:700;color:var(--mut);white-space:nowrap;line-height:1.15;text-align:center;background:none;border:0;padding:0;cursor:pointer}span.efs{cursor:default}
+.efn.on .efs{color:var(--primary-text-color)}.efs i{display:block;font-style:normal;font-size:.72em;font-weight:500;color:var(--mut);overflow:hidden;text-overflow:ellipsis}
+.efs.t{top:8%;left:50%;transform:translateX(-50%)}.efs.b{bottom:8%;left:50%;transform:translateX(-50%)}.efs.l{left:3%;top:50%;transform:translateY(-50%);width:28%}.efs.r{right:3%;top:50%;transform:translateY(-50%);width:28%}
+.efn.hub .efs.t{font-size:10cqw}.efn.hub .efs.b{font-size:9cqw}
+.efx.nar .efboard{padding:12px 10px}.efx.nar .efgrid{grid-template-columns:minmax(0,1fr) clamp(92px,27%,130px) minmax(0,1fr);column-gap:clamp(16px,6%,28px);row-gap:12px}
+.efx.nar .efc.hb .efn{width:100%}.efx.nar .efc.bt .efn{width:clamp(92px,27%,130px)}
+.efx.nar .efs{font-size:max(10.5px,11cqw)}.efx.nar .efs i{font-size:max(9px,.82em)}.efx.nar .efn.hub .efs.t{font-size:max(10.5px,11.5cqw)}.efx.nar .efn.hub .efs.b{font-size:max(10.5px,10.5cqw)}
+.efx.nar .efs.l,.efx.nar .efs.r{width:30%}.efx.nar .efs.t{top:7%}.efx.nar .efs.b{bottom:7%}
+.efrow{display:flex;align-items:center;gap:6px;padding-right:12px;border-top:1px solid var(--line)}.efrow .sxrow{flex:1;min-width:0}.efl{border:1px solid var(--line);border-radius:14px;overflow:hidden}.efl .efrow:first-child{border-top:0}
+.efmini{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:color-mix(in srgb,var(--c) 22%,transparent);font-size:16px;overflow:hidden}.efmini svg{width:20px;height:20px}.efmini img{width:100%;height:100%;object-fit:cover}
+.efli{background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font:inherit;width:100%;margin:4px 0}.vrow .efli{width:auto;flex:1}
+.efpick{border:1px solid var(--line);border-radius:14px;padding:8px 10px;margin:6px 0}.efgal{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:6px;max-height:210px;overflow:auto;margin:6px 0}
+.efpi{aspect-ratio:1;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);display:grid;place-items:center;font-size:22px;cursor:pointer;padding:6px}.efpi svg{width:100%;height:100%}.efpi.sel{border-color:var(--teal);box-shadow:0 0 0 2px color-mix(in srgb,var(--teal) 40%,transparent)}
+.efsw{display:flex;gap:8px;flex-wrap:wrap}.efsw button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;color:var(--mut);font-weight:700;font-size:.7rem}.efsw button.sel{border-color:var(--primary-text-color)}
+.efv{align-items:flex-start;flex-direction:column;gap:2px}.efv>*{width:100%}.efside{margin:2px 0}.efinfo{border:1px solid var(--line);border-radius:12px;padding:2px 12px;margin:8px 0}.efinfo summary{cursor:pointer;padding:8px 0;font-weight:650;font-size:.9rem}
+@media (prefers-reduced-motion:reduce){.efn{transition:none}}
 .lixroom.on{border-color:color-mix(in srgb,#fbbf24 55%,transparent);background:color-mix(in srgb,#fbbf24 7%,var(--card))}
 .lixhd{display:flex;align-items:center;gap:10px}.lixico{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:var(--mut);flex:none}
 .lixroom.on .lixico{background:color-mix(in srgb,#fbbf24 22%,transparent);color:#fbbf24}
@@ -2227,6 +2293,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mux") && this._muxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lix") && this._lixChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("efx") && this._efxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tgx") && this._tgxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("hz") && this._hzChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tm") && this._tmChange(t)) return;
@@ -2256,6 +2323,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("mux")) this._muxAct(a, b);
     else if (a.startsWith("lix")) this._lixAct(a, b);
     else if (a.startsWith("tgx")) this._tgxAct(a, b);
+    else if (a.startsWith("efx")) this._efxAct(a, b);
     else if (a.startsWith("hz")) this._hzAct(a, b);
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
     else if (a.startsWith("spn")) this._spnAct(a, b);
@@ -2846,6 +2914,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["efxmgr", "efxedit"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lixset", "lixdet", "lixoff"].includes(m.type)) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -3109,7 +3178,7 @@ class FensterHeizungPanel extends HTMLElement {
   _mdState() {
     if (!this._mds) {
       let act = "fh"; try { act = localStorage.getItem("fh_mod_active") || "fh"; } catch (_) { /* Speicher gesperrt */ }
-      this._mds = { active: act, on: { ww: true, en: true, gs: true, lu: false, rb: false, wp: false, ev: false, wx: false, ga: false, sf: false, pl: false, bt: false, dt: false, wa: false, sp: false }, ext: [], ww: JSON.parse(JSON.stringify(WW_DEF)), loaded: false };
+      this._mds = { active: act, on: { ww: true, en: true, gs: true, lu: false, rb: false, wp: false, ev: false, wx: false, ga: false, sf: false, pl: false, bt: false, dt: false, wa: false, sp: false, ef: false }, ext: [], ww: JSON.parse(JSON.stringify(WW_DEF)), loaded: false };
     }
     return this._mds;
   }
@@ -3151,7 +3220,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
   _mdActiveSet(id) { const s = this._mdState(); s.active = id; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
-  _mdList() { const s = this._mdState(); return [...(this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : []), MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true), ...(this._labOn("mm") ? [MOD_MU] : []), ...(this._labOn("li") ? [MOD_LI] : []), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
+  _mdList() { const s = this._mdState(); return [...(this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : []), MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...(this._labOn("mm") ? [MOD_MU] : []), ...(this._labOn("li") ? [MOD_LI] : []), ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))]; }
   _mdActive() {
     const s = this._mdState();
     if (!this._hzDec && this._cfgReady) {
@@ -3174,14 +3243,14 @@ class FensterHeizungPanel extends HTMLElement {
   _stRender() {
     const sr = this.shadowRoot, s = this._mdState();
     const row = (icn, ttl, txt, act, k, extra) => `<button class="sxrow" data-act="${act}"${k ? ` data-k="${k}"` : ""}><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}</b><small>${txt}</small></span>${extra || ""}<span class="sxg">${ic("chev", 16)}</span></button>`;
-    const isOn = (m) => m.id === "fh" || (m.id === "ww" ? s.on.ww : m.beta ? s.on[m.id] === true : m.id === "gs" ? s.on.gs !== false : this._enOn());
+    const isOn = (m) => m.id === "fh" || (m.id === "ww" ? s.on.ww : m.beta ? s.on[m.id] === true && (!m.sponsor || this._spnS().active) : m.id === "gs" ? s.on.gs !== false : this._enOn());
     const act = MODS.filter(isOn), off = MODS.filter((m) => !isOn(m));
     const mods = act.map((m) => {
       const d = this._stDone(m.id), chip = m.beta ? `<em class="sxc ${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc">Offen</em>`;
       return row(m.icon, `<i>Modul ${m.n}</i> ${esc(m.name)}`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", chip);
     }).join("");
     const ext = s.ext.map((x) => row("puzzle", `<i>Eigenes Modul</i> ${esc(x.name)}`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join("");
-    const offG = off.map((m) => `<button class="sxoff" data-act="mdtog" data-k="${m.id}"><span class="sxi">${ic(m.icon, 18)}</span><span class="sxt"><b>${esc(m.name)}</b><small>Modul ${m.n}</small></span><em class="sxc">Einschalten</em></button>`).join("");
+    const offG = off.map((m) => `<button class="sxoff" data-act="mdtog" data-k="${m.id}"><span class="sxi">${ic(m.icon, 18)}</span><span class="sxt"><b>${esc(m.name)}</b><small>Modul ${m.n}${m.sponsor ? " · nur für Sponsoren" : ""}</small></span><em class="sxc">Einschalten</em></button>`).join("");
     const soon = MOD_SOON.map((x) => `<div class="sxoff soon"><span class="sxi">${ic(x[0], 18)}</span><span class="sxt"><b>${esc(x[1])}</b><small>${esc(x[2])}</small></span><em class="sxc">Bald</em></div>`).join("");
     const grp = (ico, ttl, sub, body) => `<div class="sxh2"><span class="sxhi">${ic(ico, 16)}</span><b>${ttl}</b><small>${sub}</small></div>${body}`;
     sr.getElementById("main").innerHTML = `
@@ -4281,7 +4350,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (st === "dev") return `<div class="betabox dvbox">${ic("alert", 20)}<div><b>In Entwicklung – diese Seite zeigt Beispielwerte</b>Das Modul steuert noch nichts. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`;
     return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
   _betaSoon(ico, t, d) { return `<div class="card lusoon">${ic(ico, 26)}<div><b>${t}</b><span class="mut">${d}</span></div><em class="beta">In Entwicklung</em></div>`; }
-  _betaPage(id) { return id === "sp" ? this._spPage() : id === "wa" ? this._waPage() : id === "bt" ? this._btPage() : id === "dt" ? this._dtPage() : id === "sf" ? this._sfPage() : id === "pl" ? this._plPage() : id === "wx" ? this._wxPage() : id === "ga" ? this._gaPage() : id === "ev" ? this._evPage() : id === "rb" ? this._rbPage() : id === "wp" ? this._wpPage() : this._luPage(); }
+  _betaPage(id) { return id === "ef" ? this._efPage() : id === "sp" ? this._spPage() : id === "wa" ? this._waPage() : id === "bt" ? this._btPage() : id === "dt" ? this._dtPage() : id === "sf" ? this._sfPage() : id === "pl" ? this._plPage() : id === "wx" ? this._wxPage() : id === "ga" ? this._gaPage() : id === "ev" ? this._evPage() : id === "rb" ? this._rbPage() : id === "wp" ? this._wpPage() : this._luPage(); }
   /* Modul 16: Solar-Prognose (Vorabversion) – Daten und Tagesvergleich laufen im Backend (solar.py) */
   _vorabBox(txt) { return `<div class="vabox">${ic("sun", 20)}<div><b>Vorabversion – funktioniert, ist aber noch nicht endgültig</b>Aussehen und Einstellungen können sich noch ändern. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
   _spLoad(force) {
@@ -6190,6 +6259,215 @@ class FensterHeizungPanel extends HTMLElement {
     const D = this._tgxD; if (!D || !D.on) return "Das Lab „Tags & Karten“ ist ausgeschaltet. Tags werden erst nach dem Einschalten ausgeführt.";
     return "";
   }
+  /* ================= Modul 19 Hausfluss (Beta, nur für Sponsoren) =================
+     Ein Haus in der Mitte, bis zu 9 Kacheln drumherum, je Kachel ein Bild und vier Werte. Die Linien zeigen, wohin die
+     Energie gerade fließt. Gespeichert wird zentral im Backend (energiefluss.py), die Werte kommen live aus den Entitäten. */
+  _efxLoad(force) {
+    if (!this._hass || this._efxBusy || (this._efxD && !force)) return;
+    this._efxBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/ef_get" }).then((r) => { this._efxD = r; }).catch(() => { this._efxD = { locked: true, cfg: null, err: true }; })
+      .finally(() => { this._efxBusy = false; if (this._mdActive() === "ef") this._render(); });
+  }
+  _efxPut(cfg) {
+    return this._hass.callWS({ type: "fenster_heizung/ef_set", cfg }).then((r) => { this._efxD = r; }).catch(() => this._toast("Das hat nicht geklappt"));
+  }
+  _efxSp() { return !!this._spnS().active; }
+  _efxCfg() { return (this._efxD && this._efxD.cfg) || { hero: { show: true }, hub: { on: true, name: "Haus", image: "🏠", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", calc: "total", chips: [] }, nodes: {} }; }
+  _efxClone() { return JSON.parse(JSON.stringify(this._efxCfg())); }
+  _efxBlank(pos) {
+    const p = EF_POS[pos];
+    return { on: true, name: p[4], image: p[2] === "supply" ? "svg:sonne" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false };
+  }
+  /* ---- Rechnen: Leistung einer Kachel in W, positiv = zur Kachel, negativ = ins Haus ---- */
+  _efxToW(id) { const st = id && this._hass.states[id]; if (!st) return NaN; const v = parseFloat(st.state); return isNaN(v) ? NaN : /^kW$/i.test(st.attributes.unit_of_measurement || "") ? v * 1000 : v; }
+  _efxPid(n) { const b = n.bottom && this._hass.states[n.bottom]; return n.power || (b && /^k?W$/i.test(b.attributes.unit_of_measurement || "") ? n.bottom : ""); }
+  _efxNodeW(n) {
+    if (n.flow === "split") { const a = this._efxToW(n.power_to_node), b = this._efxToW(n.power_to_house); return (isNaN(a) ? 0 : Math.abs(a)) - (isNaN(b) ? 0 : Math.abs(b)); }
+    const v = this._efxToW(this._efxPid(n)); if (isNaN(v)) return 0;
+    return n.flow === "supply" ? -Math.abs(v) : n.flow === "consume" ? Math.abs(v) : n.invert ? -v : v;
+  }
+  /* Hausverbrauch: Zufluss (Solar, Netzbezug, Akku entladen) minus Abfluss (Einspeisung, Akku laden). Verbraucher-Kacheln gehören zum Haus,
+     nur „Restverbrauch“ zieht sie zusätzlich ab. */
+  _efxCalc(nodes) {
+    let total = 0, cons = 0, bidir = false, src = false;
+    nodes.forEach((n) => {
+      const w = this._efxNodeW(n);
+      if (n.flow === "consume") { cons += Math.abs(w); return; }
+      if (n.flow === "both" || n.flow === "split") bidir = true; else src = true;
+      total += -w;
+    });
+    return { total: Math.max(0, total), rest: Math.max(0, total - cons), bidir, src };
+  }
+  _efxFmtW(w) { return w >= 1000 ? (w / 1000).toLocaleString("de-DE", { maximumFractionDigits: 2 }) + " kW" : Math.round(w).toLocaleString("de-DE") + " W"; }
+  _efxFmt(id) {
+    const st = this._hass.states[id]; if (!st) return ["–", "", ""];
+    const v = parseFloat(st.state), u = st.attributes.unit_of_measurement || "";
+    return [isNaN(v) ? st.state : v.toLocaleString("de-DE", { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 2 }), u, String(st.attributes.friendly_name || id).split(" ").pop()];
+  }
+  _efxImg(v) {
+    v = String(v || "");
+    if (v.startsWith("svg:")) { const i = EF_IMGS.find((x) => x.id === v.slice(4)); return i ? `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${i.s}</svg>` : ""; }
+    if (/^(\/local\/|https:)/.test(v)) return `<img src="${esc(v)}" alt="" loading="lazy">`;
+    if (v.startsWith("mdi:")) return `<ha-icon icon="${esc(v)}"></ha-icon>`;
+    return esc(v);
+  }
+  _efxSide(n, side, hub, hubW) {
+    const id = n[side], lab = String(n[side + "_label"] || "").trim(), lr = side === "left" || side === "right";
+    let html = "", calc = false;
+    if (id) { const [v, u, l] = this._efxFmt(id); html = lr ? `${v}<i>${esc(lab || u)}</i>` : `${v} ${esc(u)}<i>${esc(lab || l)}</i>`; }
+    else if (hub && side === "bottom") { calc = true; html = `${this._efxFmtW(hubW)}<i>${esc(lab || (n.calc === "rest" ? "Restverbrauch" : "Hausverbrauch"))}</i>`; }
+    return { id, html, calc };
+  }
+  _efxNodeHtml(pos, n, hubW) {
+    const hub = pos === "hub", col = n.color || (EF_POS[pos] || [])[3] || "#2dd4bf", w = hub ? 0 : this._efxNodeW(n), on = hub || Math.abs(w) > 5;
+    const sides = EF_SIDES.map(([s]) => { const o = this._efxSide(n, s, hub, hubW), tag = o.id ? "button" : "span"; return `<${tag} class="efs ${s[0]}" ${o.id ? `data-act="efxmore" data-e="${esc(o.id)}" title="${esc((this._hass.states[o.id] || { attributes: {} }).attributes.friendly_name || o.id)}"` : ""}>${o.html}</${tag}>`; }).join("");
+    return `<div class="efn${hub ? " hub" : ""}${on ? " on" : ""}" data-p="${pos}" data-w="${Math.round(w)}" data-c="${col}" style="--c:${col}" role="group" aria-label="${esc(n.name)}">${sides}<div class="efi">${this._efxImg(n.image)}</div><span class="efnm">${esc(n.name)}</span></div>`;
+  }
+  _efPage() {
+    if (!this._efxD) { this._efxLoad(); return `<div class="card empty">Hausfluss wird geladen …</div>`; }
+    if (!this._efxSp()) return `<div class="card empty">${ic("heart", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Nur für Sponsoren</div>Der Hausfluss ist ein Beta-Modul und gehört zu den Extras für Sponsoren.<br><button class="btn2 pri" style="margin-top:12px" data-act="spnopen">Sponsor-Bereich öffnen</button></div>`;
+    const c = this._efxCfg(), adm = this._admin(), list = EF_POS ? Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on) : [], nodes = list.map((p) => c.nodes[p]);
+    if (!list.length) return `<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Kacheln</div>Lege Solar, Netz, Akku und Verbraucher als Kacheln um dein Haus an.${adm ? `<br><button class="btn2 pri" style="margin-top:12px" data-act="efxstart">Mit Beispiel-Kacheln starten</button> <button class="btn2" style="margin-top:12px" data-act="efxopen">Selbst einrichten</button>` : ""}</div>`;
+    const narrow = (this.clientWidth || 1000) < 640, hub = c.hub, calc = this._efxCalc(nodes), hubW = hub.calc === "rest" ? calc.rest : calc.total;
+    /* Das Haus sitzt immer genau in der Mitte: Zeilen oben und unten werden paarweise gehalten oder weggelassen, leere Gegenstücke bekommen einen unsichtbaren Platzhalter */
+    const has = (r) => list.some((p) => EF_POS[p][1] === r), keep = [1, 2, 3, 4, 5].filter((r) => r === 3 || (r === 1 || r === 5 ? has(1) || has(5) : has(2) || has(4)));
+    const ri = (r) => keep.indexOf(r) + 1, COL = { top_1: 1, top_2: 3, left_1: 1, left_2: 1, left_3: 1, right_1: 3, right_2: 3, right_3: 3 };
+    const cellAt = (p, html) => { const e = EF_POS[p], b = p === "bottom", col = narrow ? (b ? "1/-1" : COL[p]) : (b ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}" style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
+    const ghost = '<div class="efg" aria-hidden="true"></div>', ghosts = [[1, "top_1"], [5, "bottom"], [2, "left_1"], [4, "left_3"]].filter(([r]) => keep.includes(r) && !has(r)).map(([, p]) => cellAt(p, ghost)).join("");
+    const cells = list.map((p) => cellAt(p, this._efxNodeHtml(p, c.nodes[p], hubW))).join("") + ghosts;
+    let hero = "";
+    if (c.hero.show) {
+      const pe = hub.bottom, w = pe ? this._efxToW(pe) : hubW, chips = [];
+      if (calc.src) chips.push(`Solar ${Math.round(nodes.filter((n) => n.flow === "supply").reduce((a, n) => a - this._efxNodeW(n), 0)).toLocaleString("de-DE")} W`);
+      if (hub.top && this._hass.states[hub.top]) { const [v, u] = this._efxFmt(hub.top); chips.push(`Hausverbrauch heute ${v} ${u}`); }
+      (hub.chips || []).forEach((id) => { if (this._hass.states[id]) { const [v, u] = this._efxFmt(id); chips.push(`${this._wzName(id)} ${v} ${u}`); } });
+      hero = `<div class="efhero"><small>${!isNaN(w) && w < 0 ? "Einspeisung jetzt" : !pe && hub.calc === "rest" ? "Restverbrauch jetzt" : "Hausverbrauch jetzt"}</small><div class="efbig"><b>${isNaN(w) ? "–" : Math.abs(Math.round(w)).toLocaleString("de-DE")}</b><span>W</span></div><div class="efchips">${chips.map((t) => `<span>${esc(t)}</span>`).join("")}</div></div>`;
+    }
+    const hubCell = `<div class="efc hb" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
+    setTimeout(() => this._efxLines(), 0);
+    return `<div class="efx${narrow ? " nar" : ""}">${hero}<div class="efboard" id="efboard"><svg class="eflines" aria-hidden="true"></svg><div class="efgrid">${cells}${hubCell}</div></div>
+      <div class="mut sm" style="margin:2px 4px">Beta für Sponsoren · Werte live aus deinen Entitäten · Tippe auf einen Wert für den Verlauf</div></div>`;
+  }
+  _efxLines() {
+    const r = this.shadowRoot, b = r && r.getElementById("efboard"), hub = b && b.querySelector(".efn.hub"), svg = b && b.querySelector("svg.eflines"); if (!b || !hub || !svg) return;
+    const narrow = b.closest(".efx").classList.contains("nar"), g = b.getBoundingClientRect(), hb = hub.getBoundingClientRect(), hx = hb.left - g.left + hb.width / 2, hy = hb.top - g.top + hb.height / 2;
+    let off = "", act = "";
+    const els = [...b.querySelectorAll(".efn:not(.hub):not(.ghost)")];
+    els.forEach((el) => {
+      const p = EF_POS[el.dataset.p], q = el.getBoundingClientRect(), nx = q.left - g.left + q.width / 2, ny = q.top - g.top + q.height / 2, on = el.classList.contains("on"), col = el.dataset.c, w = +el.dataset.w;
+      const vert = p[1] === 1 || p[1] === 5, mx = (hx + nx) / 2, my = (hy + ny) / 2;
+      let d = vert ? `M${hx},${hy} C${hx},${my} ${nx},${my} ${nx},${ny}` : `M${hx},${hy} C${mx},${hy} ${mx},${ny} ${nx},${ny}`;
+      if (narrow && vert && Math.abs(nx - hx) > 20) { const lf = nx < hx, ex = (lf ? q.right : q.left) - g.left; d = `M${hx},${hy} C${hx},${ny + (hy - ny) * 0.35} ${hx + (lf ? -1 : 1) * Math.abs(ex - hx) * 0.45},${ny} ${ex},${ny}`; }  /* Handy: Kurve läuft in der Mitte hoch und biegt seitlich in die Kachel ein */
+      const st = `fill="none" stroke="${col}" stroke-opacity="${on ? 0.9 : 0.25}" stroke-width="${on ? 3 : 2}" stroke-linecap="round" stroke-linejoin="round"`;
+      const path = `<path id="efp_${el.dataset.p}" d="${d}" ${st}/>`;
+      if (on) act += path + `<circle r="4.5" fill="${col}"><animateMotion dur="2.4s" repeatCount="indefinite" keyPoints="${w > 0 ? "0;1" : "1;0"}" keyTimes="0;1" calcMode="linear"><mpath href="#efp_${el.dataset.p}"/></animateMotion></circle>`;
+      else off += path;
+    });
+    svg.innerHTML = off + act;
+  }
+  /* ---------------- Einrichtung ---------------- */
+  _efxIds() { return Object.keys(this._hass.states).filter((e) => /^(sensor|number|input_number|counter)\./.test(e)); }
+  _efxModal() {
+    const m = this._modal, adm = this._admin(), c = this._efxCfg();
+    const hd = (t, s, back) => `<div class="sh"><div><b>${t}</b><span>${s}</span></div><button class="ibtn" data-act="${back ? "efxback" : "close"}" aria-label="${back ? "Zurück" : "Schließen"}">${ic(back ? "back" : "close", 20)}</button></div>`;
+    if (m.type === "efxedit") return this._efxEditModal(hd);
+    const row = (pos, n) => {
+      const e = EF_POS[pos], fl = n ? EF_FLOWS.find((x) => x[0] === n.flow)[1] : "";
+      return `<div class="efrow"><button class="sxrow" data-act="efxedit" data-k="${pos}"><span class="sxi">${n ? `<span class="efmini" style="--c:${n.color || e[3]}">${this._efxImg(n.image)}</span>` : ic("plus", 20)}</span><span class="sxt"><b>${n ? esc(n.name) : "Kachel hinzufügen"}</b><small>${e[4]}${n ? " · " + fl : ""}</small></span></button>${n ? `<button class="sw ${n.on ? "on" : ""}" data-act="efxtog" data-k="${pos}" aria-pressed="${n.on}" aria-label="${esc(n.name)} ${n.on ? "ausblenden" : "einblenden"}" ${adm ? "" : "disabled"}></button>` : ""}</div>`;
+    };
+    const h = c.hub;
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Hausfluss einrichten", "Modul 19 · Beta · gilt für alle Nutzer")}
+      <div class="lsec">${ic("home", 15)}Haus (Mitte)</div>
+      <div class="efrow"><button class="sxrow" data-act="efxedit" data-k="hub"><span class="sxi"><span class="efmini" style="--c:${h.color || "#2dd4bf"}">${this._efxImg(h.image)}</span></span><span class="sxt"><b>${esc(h.name)}</b><small>${h.bottom ? "Eigener Sensor für den Hausverbrauch" : "Hausverbrauch wird berechnet: " + (h.calc === "rest" ? "Restverbrauch" : "Gesamtverbrauch")}</small></span></button></div>
+      <div class="lsec">${ic("energy", 15)}Kacheln</div>
+      <div class="efl">${Object.keys(EF_POS).map((p) => row(p, c.nodes[p])).join("")}</div>
+      <div class="lsec">${ic("sliders", 15)}Kopfbereich</div>
+      <div class="vrow"><span>Hausverbrauch jetzt anzeigen<small class="mut" style="display:block">Große Zahl mit Chips oben auf der Seite</small></span><button class="sw ${c.hero.show ? "on" : ""}" data-act="efxhero" aria-pressed="${c.hero.show}" aria-label="Kopfbereich" ${adm ? "" : "disabled"}></button></div>
+      <div class="stowarn" style="margin-top:12px">${ic("info", 16)}<span>Das Modul zeigt nur an und schaltet nichts. Es nutzt Sensoren aus Home Assistant (Leistung in W oder kW, Energie, Ladestand).</span></div>
+      <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _efxEditModal(hd) {
+    const d = this._modal.draft, hub = this._modal.pos === "hub", n = d, adm = this._admin(), ids = this._efxIds(), pe = EF_POS[this._modal.pos];
+    const sel = (k, none = "– keiner –") => this._wzSel(ids, n[k] || "", "efxe", `data-w="${k}"`, none);
+    const lab = (s) => `<input type="text" class="efli" data-f="efxlab" data-w="${s}" value="${esc(n[s + "_label"])}" maxlength="24" placeholder="Beschriftung (leer = automatisch)" aria-label="Beschriftung">`;
+    const chip = (act, k, label, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${esc(k)}" aria-pressed="${on}">${esc(label)}</button>`;
+    const q = (this._modal.q || "").toLowerCase(), imgs = EF_IMGS.filter((x) => !q || (x.n + " " + x.k).toLowerCase().includes(q)), emo = EF_EMO.filter((x) => !q || (x[1] + " " + x[2]).toLowerCase().includes(q));
+    const imgp = this._modal.imgOpen ? `<div class="efpick"><input type="search" data-f="efximgq" value="${esc(this._modal.q || "")}" placeholder="Suchen: Solar, Auto, Waschmaschine …" class="efli" aria-label="Bild suchen" autocomplete="off">
+      <div class="efgal">${imgs.map((x) => `<button class="efpi ${n.image === "svg:" + x.id ? "sel" : ""}" data-act="efximg" data-k="svg:${x.id}" title="${esc(x.n)}"><svg viewBox="0 0 64 64">${x.s}</svg></button>`).join("")}${emo.map((x) => `<button class="efpi ${n.image === x[0] ? "sel" : ""}" data-act="efximg" data-k="${esc(x[0])}" title="${esc(x[1])}"><span>${x[0]}</span></button>`).join("")}</div>
+      <input type="text" class="efli" data-f="efximgc" value="${/^(mdi:|\/local\/|https:)/.test(n.image) ? esc(n.image) : ""}" placeholder="Eigenes: mdi:flash oder /local/bild.png" aria-label="Eigenes Bild"></div>` : "";
+    const flow = hub ? "" : `<div class="lsec">${ic("energy", 15)}Flussart</div><div class="gschips">${EF_FLOWS.map((f) => chip("efxflow", f[0], f[1], n.flow === f[0])).join("")}</div><div class="mut sm">${esc(EF_FLOWS.find((f) => f[0] === n.flow)[2])}</div>`;
+    const pw = hub ? "" : n.flow === "split" ? `<div class="vrow efv"><span>Leistung zur Kachel<small class="mut" style="display:block">zum Beispiel Einspeisung</small></span>${sel("power_to_node")}</div><div class="vrow efv"><span>Leistung ins Haus<small class="mut" style="display:block">zum Beispiel Netzbezug</small></span>${sel("power_to_house")}</div>`
+      : `<div class="vrow efv"><span>Leistung (W oder kW)<small class="mut" style="display:block">Steuert die Linie. Leer = „Unten“, wenn es eine Leistung ist</small></span>${sel("power")}</div>${n.flow === "both" ? `<div class="vrow"><span>Vorzeichen umkehren<small class="mut" style="display:block">Positiv = zur Kachel. Liefert dein Sensor es umgekehrt, einschalten</small></span><button class="sw ${n.invert ? "on" : ""}" data-act="efxinv" aria-pressed="${n.invert}" aria-label="Vorzeichen umkehren"></button></div>` : ""}`;
+    const hubx = !hub ? "" : `<div class="lsec">${ic("tools", 15)}So wird der Hausverbrauch berechnet</div>
+      <div class="gschips">${chip("efxcalc", "total", "Gesamtverbrauch", n.calc === "total")}${chip("efxcalc", "rest", "Restverbrauch", n.calc === "rest")}</div>
+      <div class="mut sm">Gesamt = Zufluss (Solar, Netzbezug, Akku entladen) minus Einspeisung und Akku laden. Rest zieht zusätzlich die Verbraucher-Kacheln ab. Wählst du bei „Unten“ einen eigenen Sensor, hat dieser Vorrang.</div>
+      ${this._efxHubInfo()}
+      <div class="lsec">${ic("list", 15)}Weitere Chips im Kopf</div>
+      <div class="gschips">${(n.chips || []).map((e) => `<span class="och">${esc(this._wzName(e))}<button data-act="efxchipdel" data-k="${esc(e)}" aria-label="Entfernen">${ic("close", 12)}</button></span>`).join("")}</div>
+      ${(n.chips || []).length < 4 ? this._wzSel(ids, "", "efxchipadd", "", "+ Chip hinzufügen") : ""}`;
+    const noP = !hub && (n.flow === "split" ? !n.power_to_node && !n.power_to_house : !n.power && !(n.bottom && /^k?W$/i.test(((this._hass.states[n.bottom] || { attributes: {} }).attributes.unit_of_measurement) || "")));
+    const warn = noP ? `<div class="stowarn" style="margin:8px 0">${ic("alert", 16)}<span>Ohne Leistungssensor bleibt die Linie aus. Wähle oben einen Sensor in W oder kW.</span></div>` : "";
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd(hub ? "Haus bearbeiten" : this._modal.isNew ? "Kachel einrichten" : "Kachel bearbeiten", hub ? "Mitte" : pe[4], true)}
+      <div class="vrow"><span>Name</span><input type="text" class="efli" style="max-width:55%" data-f="efxname" value="${esc(n.name)}" maxlength="30" aria-label="Name"></div>
+      <div class="vrow"><span>Bild</span><button class="btn2" style="flex:none;display:inline-flex;align-items:center;gap:8px" data-act="efximgtog"><span class="efmini" style="--c:${n.color || (pe ? pe[3] : "#2dd4bf")}">${this._efxImg(n.image)}</span> ${this._modal.imgOpen ? "Schließen" : "Ändern"}</button></div>${imgp}
+      <div class="vrow"><span>Farbe</span><span class="efsw">${EF_COLORS.map((x) => `<button class="${n.color === x ? "sel" : ""}" style="background:${x}" data-act="efxcol" data-k="${x}" aria-label="Farbe ${x}" aria-pressed="${n.color === x}"></button>`).join("")}<button class="${n.color ? "" : "sel"}" data-act="efxcol" data-k="" aria-label="Standardfarbe" style="background:var(--line)">A</button></span></div>
+      ${flow}${pw}${warn}
+      <div class="lsec">${ic("sliders", 15)}Werte auf der Kachel</div>
+      ${EF_SIDES.map(([s, t]) => `<div class="efside"><div class="mut sm" style="margin:6px 0 2px">${t}${hub && s === "top" ? " · Chip „Hausverbrauch heute“" : hub && s === "bottom" ? " · leer = berechneter Hausverbrauch" : ""}</div>${sel(s, hub && s === "bottom" ? "– berechnet –" : "– nichts –")}${n[s] || (hub && s === "bottom") ? lab(s) : ""}</div>`).join("")}
+      ${hubx}
+      <div class="foot2" style="margin-top:14px">${hub || this._modal.isNew ? "" : `<button class="btn2" data-act="efxdel" style="color:#fb7185">Entfernen</button>`}<button class="btn2" data-act="efxback">Abbrechen</button><button class="btn2 pri" data-act="efxsave" ${adm ? "" : "disabled"}>Speichern</button></div></div>`;
+  }
+  _efxHubInfo() {
+    const c = this._efxCfg(), list = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on).map((p) => c.nodes[p]);
+    if (!list.length) return "";
+    const calc = this._efxCalc(list);
+    const miss = !calc.src ? "Es fehlt eine Quelle mit Flussart „Liefert“, zum Beispiel Solar." : !calc.bidir ? "Es fehlt Netz oder Akku mit Flussart „Beides“. Ohne sie ist das Ergebnis nicht vollständig." : "";
+    return `<details class="efinfo"><summary>Welche Kacheln einfließen</summary>${list.map((n) => { const w = this._efxNodeW(n); return `<div class="vrow"><span>${esc(n.name)}<small class="mut" style="display:block">${n.flow === "consume" ? "Verbraucher, gehört zum Haus" : n.flow === "supply" ? "Zufluss" : "Zufluss oder Abfluss"}</small></span><b>${n.flow === "consume" ? "–" : this._efxFmtW(Math.abs(w)) + (w > 0 ? " Abfluss" : w < 0 ? " Zufluss" : "")}</b></div>`; }).join("")}</details>${miss ? `<div class="stowarn" style="margin-top:6px">${ic("alert", 16)}<span>${miss}</span></div>` : ""}`;
+  }
+  _efxAct(a, b) {
+    const k = b.dataset.k, m = this._modal;
+    if (a === "efxmore") { this.dispatchEvent(new CustomEvent("hass-more-info", { detail: { entityId: b.dataset.e }, bubbles: true, composed: true })); return; }
+    if (a === "efxopen") { this._modal = { type: "efxmgr" }; this._efxLoad(true); this._renderModal(); return; }
+    if (a === "efxstart") {
+      const c = this._efxClone(), mk = (p, o) => ({ ...this._efxBlank(p), ...o });
+      c.nodes = { top_1: mk("top_1", { name: "PV Dach", image: "svg:solar", flow: "supply" }), left_1: mk("left_1", { name: "Netz", image: "svg:netz", flow: "split", color: "#a78bfa" }), left_2: mk("left_2", { name: "Steckdose", image: "svg:steckdose", flow: "consume", color: "#f97316" }), right_1: mk("right_1", { name: "Auto", image: "svg:auto", flow: "consume", color: "#f472b6" }), bottom: mk("bottom", { name: "Akku", image: "svg:akku", flow: "both" }) };
+      this._efxPut(c).then(() => { this._render(); this._toast("Beispiel-Kacheln angelegt, jetzt Entitäten zuordnen"); this._modal = { type: "efxmgr" }; this._renderModal(); }); return;
+    }
+    if (a === "efxback") { this._modal = { type: "efxmgr" }; this._renderModal(); return; }
+    if (a === "efxhero") { const c = this._efxClone(); c.hero.show = !c.hero.show; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
+    if (a === "efxtog") { const c = this._efxClone(); if (c.nodes[k]) c.nodes[k].on = !c.nodes[k].on; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
+    if (a === "efxedit") {
+      const c = this._efxCfg(), n = k === "hub" ? c.hub : c.nodes[k];
+      this._modal = { type: "efxedit", pos: k, isNew: !n, draft: JSON.parse(JSON.stringify(n || this._efxBlank(k))) }; this._renderModal(); return;
+    }
+    if (!m || m.type !== "efxedit") return;
+    const d = m.draft;
+    if (a === "efximgtog") m.imgOpen = !m.imgOpen;
+    else if (a === "efximg") { d.image = k; m.imgOpen = false; m.q = ""; }
+    else if (a === "efxcol") d.color = k;
+    else if (a === "efxflow") d.flow = k;
+    else if (a === "efxinv") d.invert = !d.invert;
+    else if (a === "efxcalc") d.calc = k;
+    else if (a === "efxchipdel") d.chips = d.chips.filter((x) => x !== k);
+    else if (a === "efxsave") {
+      const c = this._efxClone(); d.name = (d.name || "").trim() || (m.pos === "hub" ? "Haus" : EF_POS[m.pos][4]);
+      if (m.pos === "hub") c.hub = d; else c.nodes[m.pos] = { ...d, on: true };
+      this._efxPut(c).then(() => { this._modal = { type: "efxmgr" }; this._renderModal(); this._render(); this._toast("Gespeichert"); }); return;
+    }
+    else if (a === "efxdel") { const c = this._efxClone(); delete c.nodes[m.pos]; this._efxPut(c).then(() => { this._modal = { type: "efxmgr" }; this._renderModal(); this._render(); this._toast("Kachel entfernt"); }); return; }
+    this._renderModal();
+  }
+  _efxChange(t) {
+    const f = t.dataset.f, v = t.value || "", m = this._modal; if (!m || m.type !== "efxedit") return false;
+    const d = m.draft, ent = (x) => (/^(sensor|number|input_number|counter)\.[a-z0-9_]+$/.test(x) ? x : "");
+    if (f === "efxname") { d.name = v.slice(0, 30); return true; }
+    if (f === "efxe") { d[t.dataset.w] = ent(v); return true; }
+    if (f === "efxlab") { d[t.dataset.w + "_label"] = v.slice(0, 24); return true; }
+    if (f === "efxchipadd") { const e = ent(v); if (e && !d.chips.includes(e) && d.chips.length < 4) d.chips.push(e); return true; }
+    if (f === "efximgq") { m.q = v; this._renderModal(); const i = this.shadowRoot.querySelector('[data-f="efximgq"]'); if (i) { i.focus(); i.setSelectionRange(v.length, v.length); } return true; }
+    if (f === "efximgc") { if (/^(mdi:[a-z0-9-]{2,60}|\/local\/[A-Za-z0-9_.\/-]{1,150}|https:\/\/\S{4,200})$/.test(v)) { d.image = v; this._renderModal(); } return true; }
+    return false;
+  }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
     return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
@@ -6202,6 +6480,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "st") { body = this._hzPage(); pills = adm ? `<button class="pillbtn" data-act="hzopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; }
     else if (a === "mu") { body = this._muPage(); pills = adm ? `<button class="pillbtn" data-act="muxopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; this._muLoad(); }
     else if (a === "li") { body = this._liPage(); pills = adm ? `<button class="pillbtn" data-act="lixopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
+    else if (a === "ef") { body = this._efPage(); pills = adm ? `<button class="pillbtn" data-act="efxopen" aria-label="Einrichten">${ic("sliders", 16)}<span class="bl">Einrichten</span></button>` : ""; }
     else if (m.beta) { body = this._betaPage(a); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "en") { body = this._enPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else body = `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">${esc(m.name)}</div>Dieses Modul wird aus <code>${esc(m.ext.url)}</code> geladen.<br><span class="sm">Externe Module werden in einer späteren Version geladen.</span></div>`;
@@ -6223,6 +6502,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "mdbeta") { this._toast("Für dieses Modul gibt es in der Beta noch keine Einstellungen"); }
     else if (a === "mdensetup") { this._modal = { type: "enset" }; this._renderModal(); }
     else if (a === "mdtog") {
+      if (MODS.some((x) => x.id === k && x.sponsor) && s.on[k] !== true && !this._spnS().active) { this._modal = { type: "spndlg", err: "" }; this._renderModal(); return; }
       if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else if (k === "gs") s.on.gs = s.on.gs === false; else if (MODS.some((m) => m.beta && m.id === k)) s.on[k] = s.on[k] !== true; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
       if (!this._mdList().some((x) => x.id === s.active)) this._mdActiveSet("fh");
       this._mdSave(); this._renderModal(); this._render();
@@ -6270,7 +6550,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${row("en", "energy", "Modul 3 – Energie-Übersicht", this._enConfigured() ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!this._enConfigured() && this._enOn() ? `<button class="btn2 pri" data-act="mdensetup">Einrichten</button>` : ""}${tog("en", this._enOn())}</span>`)}
       ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
       ${row("gs", "laundry", "Modul 4 – Gerätestrom", this._gsState().devices.length ? this._gsState().devices.length + (this._gsState().devices.length === 1 ? " Gerät" : " Geräte") : "Noch nicht eingerichtet", `<span class="mact">${tog("gs", s.on.gs !== false)}</span>`)}
-      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion" }[modSt(x)], `<span class="mact"><span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true)}</span>`)).join("")}
+      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion" }[modSt(x)] + (x.sponsor ? " · nur für Sponsoren" : ""), `<span class="mact"><span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
       ${MOD_SOON.length ? `<div class="lsec">${ic("clock", 15)}Geplant</div>
       ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
       <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>

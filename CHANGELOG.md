@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.5] - 2026-10-28
+### Neu
+- **Modul 19 „Hausfluss“ (Beta, dauerhaft nur für Sponsoren):** Dein Haus als Fluss-Bild im Dashboard, native Neuentwicklung nach der Karte „Energiefluss“. Das Haus sitzt in der Mitte, ringsum bis zu acht Kacheln (oben 2, links 3, rechts 3, unten 1) für Solar, Netz, Akku, Auto und Verbraucher.
+  - **Flusslinien mit laufenden Punkten:** Richtung und Stärke folgen der Leistung der Kachel. Pro Kachel: Verbrauch, Erzeugung, beides oder geteilt, Leistung umkehrbar, eigene Sensoren für „zum Haus“ und „aus dem Haus“.
+  - **Haus-Kachel:** Gesamtverbrauch aus Zufluss minus Abfluss oder „Rest“ (ohne Verbraucher-Kacheln), bis zu vier Chips.
+  - **Bilder:** eingebaute Symbole, mdi:, Emojis, /local/ oder https. Farben, Namen und Zusatzzeilen pro Kachel.
+  - **Mobil:** kleinere Kacheln mit gut lesbarer Schrift, gleiches Fluss-Bild wie am Desktop, Haus in der Mitte.
+  - Nur Sensoren (`sensor.`, `number.`, `input_number.`, `counter.`) sind erlaubt. Einrichten über Modul-Verwaltung und „Einrichten“ auf der Seite. Neue Befehle `ef_get`, `ef_set`, Speicher `fenster_heizung_hausfluss`.
+
 ## [3.0.4] - 2026-10-28
 ### Neu
 - **Lab „Tags & Karten“ (Vorabversion bis 11.11.):** RFID-Karten und NFC-Sticker lösen feste Aktionen aus. Anlernen: „Tag anlernen“ tippen, Karte an einen Leser halten (Handy mit NFC, ESPHome PN532/RC522 oder jeder Leser, der in Home Assistant Tags meldet), Aktion wählen.

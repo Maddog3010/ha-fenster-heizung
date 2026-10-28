@@ -159,7 +159,7 @@ def clean_wasser(raw: Any) -> dict[str, Any]:
 
 
 # Beta-Module ohne eigene Einstellungen im Backend: nur der Schalter wird gespeichert (standardmäßig aus)
-BETA_KEYS = ("wx", "ga", "sf", "pl", "bt", "dt", "wa", "sp")
+BETA_KEYS = ("wx", "ga", "sf", "pl", "bt", "dt", "wa", "sp", "ef")
 EN_KEYS = ("pv", "grid", "house", "bat", "bchg", "bdis", "pve", "pv2", "pve2", "imp", "exp")
 EN_DOMAIN = "sensor"
 

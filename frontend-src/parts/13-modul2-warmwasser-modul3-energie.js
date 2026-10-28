@@ -10,6 +10,7 @@
     else if (a === "st") { body = this._hzPage(); pills = adm ? `<button class="pillbtn" data-act="hzopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; }
     else if (a === "mu") { body = this._muPage(); pills = adm ? `<button class="pillbtn" data-act="muxopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; this._muLoad(); }
     else if (a === "li") { body = this._liPage(); pills = adm ? `<button class="pillbtn" data-act="lixopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
+    else if (a === "ef") { body = this._efPage(); pills = adm ? `<button class="pillbtn" data-act="efxopen" aria-label="Einrichten">${ic("sliders", 16)}<span class="bl">Einrichten</span></button>` : ""; }
     else if (m.beta) { body = this._betaPage(a); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "en") { body = this._enPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else body = `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">${esc(m.name)}</div>Dieses Modul wird aus <code>${esc(m.ext.url)}</code> geladen.<br><span class="sm">Externe Module werden in einer späteren Version geladen.</span></div>`;
@@ -31,6 +32,7 @@
     else if (a === "mdbeta") { this._toast("Für dieses Modul gibt es in der Beta noch keine Einstellungen"); }
     else if (a === "mdensetup") { this._modal = { type: "enset" }; this._renderModal(); }
     else if (a === "mdtog") {
+      if (MODS.some((x) => x.id === k && x.sponsor) && s.on[k] !== true && !this._spnS().active) { this._modal = { type: "spndlg", err: "" }; this._renderModal(); return; }
       if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else if (k === "gs") s.on.gs = s.on.gs === false; else if (MODS.some((m) => m.beta && m.id === k)) s.on[k] = s.on[k] !== true; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
       if (!this._mdList().some((x) => x.id === s.active)) this._mdActiveSet("fh");
       this._mdSave(); this._renderModal(); this._render();
@@ -78,7 +80,7 @@
       ${row("en", "energy", "Modul 3 – Energie-Übersicht", this._enConfigured() ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!this._enConfigured() && this._enOn() ? `<button class="btn2 pri" data-act="mdensetup">Einrichten</button>` : ""}${tog("en", this._enOn())}</span>`)}
       ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
       ${row("gs", "laundry", "Modul 4 – Gerätestrom", this._gsState().devices.length ? this._gsState().devices.length + (this._gsState().devices.length === 1 ? " Gerät" : " Geräte") : "Noch nicht eingerichtet", `<span class="mact">${tog("gs", s.on.gs !== false)}</span>`)}
-      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion" }[modSt(x)], `<span class="mact"><span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true)}</span>`)).join("")}
+      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion" }[modSt(x)] + (x.sponsor ? " · nur für Sponsoren" : ""), `<span class="mact"><span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
       ${MOD_SOON.length ? `<div class="lsec">${ic("clock", 15)}Geplant</div>
       ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
       <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>
