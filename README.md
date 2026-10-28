@@ -19,6 +19,8 @@
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](https://github.com/sponsors/Maddog3010). Dafür gibt es Schönes obendrauf, [mehr dazu](#sponsor-werden).
 
+> 📖 **Komplette Bedienungsanleitung als PDF:** [Bedienungsanleitung öffnen](docs/Bedienungsanleitung.pdf) (53 Seiten mit Bilderklärungen, Datenstand Version 3.0.3.1, 28.10.2026).
+
 <p align="center"><img src="docs/vorschau_desktop.png" width="640" alt="Dashboard auf dem Desktop"></p>
 
 <p align="center">
@@ -26,6 +28,7 @@
   <a href="#die-module">Module</a> ·
   <a href="#bedienung">Bedienung</a> ·
   <a href="#sponsor-werden">Sponsor werden</a> ·
+  <a href="docs/Bedienungsanleitung.pdf">Anleitung (PDF)</a> ·
   <a href="#häufige-fragen">Fragen</a> ·
   <a href="CHANGELOG.md">Änderungen</a>
 </p>
@@ -55,7 +58,7 @@
 - **3.0.2.10:** Modul 17 „Müllabfuhr“ als Lab.
 - **3.0.2.9:** Vier Labs, die Geräte schalten: Smart Vorheizen, Duschzeiten lernen, Legionellenschutz nach Sonne, Ladeziel nach Kalender.
 
-Alle Versionen stehen im [Changelog](CHANGELOG.md).
+Alle Versionen stehen im [Changelog](CHANGELOG.md). Die ausführliche [Bedienungsanleitung als PDF](docs/Bedienungsanleitung.pdf) beschreibt jedes Modul mit Bildern.
 
 ## Installation
 **Voraussetzungen:** Home Assistant 2024.11 oder neuer und [HACS](https://hacs.xyz).
