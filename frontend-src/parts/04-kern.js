@@ -5,7 +5,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._narrow = false; this._edit = false; this._modal = null; this._dragging = false;
     this._cfg = { layout: { blocks: [], rooms: [], icons: {}, groups: [] }, plans: {}, presence: { mode: "home" } };
     this._gen = { updates: true, summer: { mode: "auto", temp: 18, days: 3 }, wxadj: { on: false, mild: 12, down: 1, frost: 0, up: 1 }, pv: { ...PVDEF } };
-    this._learn = {}; this._st = null; this._stOpen = false; this._ortOpen = false; this._igOpen = false; this._pollN = 0;
+    this._learn = {}; this._st = null; this._stOpen = false; this._labOpen = false; this._ortOpen = false; this._igOpen = false; this._pollN = 0;
   }
   connectedCallback() {
     this._ro = new ResizeObserver(() => { if (this._hass && !this._dragging && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render(); });

@@ -142,7 +142,21 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
         sc = {k: store[k] for k in ("icon", "tab") if isinstance(store.get(k), bool)}
         if sc:
             out["store"] = sc
+    labs = raw.get("labs")
+    if isinstance(labs, dict):
+        lc: dict[str, Any] = {k: labs[k] for k in ("icon", "tab") if isinstance(labs.get(k), bool)}
+        on = labs.get("on")
+        if isinstance(on, list):
+            lc["on"] = [x for x in dict.fromkeys(on) if isinstance(x, str) and x in LAB_IDS]
+        cfg = labs.get("cfg")
+        if isinstance(cfg, dict):
+            lc["cfg"] = {k: float(v) for k, v in cfg.items() if k in LAB_NUM and isinstance(v, (int, float)) and not isinstance(v, bool) and -1e6 < v < 1e6}
+        out["labs"] = lc
     return out
+
+
+LAB_IDS = {"lx", "ae", "wl", "lf", "st"}
+LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "lf_days"}
 
 
 def _read_version() -> str:

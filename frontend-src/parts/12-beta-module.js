@@ -57,6 +57,7 @@
       <div class="mut sm" style="margin:8px 0 4px">Was zählt der Sensor?</div>
       <div class="gschips">${chip("spxmode", "day", "Nur den heutigen Tag", C.mode === "day")}${chip("spxmode", "total", "Gesamtzähler (steigt immer)", C.mode === "total")}</div>
       <div class="mut sm" style="margin-top:6px">Die Prognose des Tages wird morgens festgehalten. So bleibt der Vergleich über die Tage ehrlich, auch wenn sich die Vorhersage tagsüber ändert.</div>
+      ${this._labFields("sp")}
     </div>`;
   }
   _spPage() {
@@ -475,6 +476,7 @@
       ${[["start", "Warnung beginnt"], ["ahead", "Vorwarnung"], ["end", "Warnung endet"]].map(([k, t]) => `<div class="vrow"><span>${t}</span>${sw("wxsn", k, C.notify[k], t)}</div>`).join("")}
       ${svc.length ? `<div class="gschips">${svc.map((n) => chip("wxsns", esc(n), esc(n), C.notify.to.includes(n))).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
       <div class="mut sm" style="margin:2px 0 6px">${C.notify.to.length ? `Gesendet wird an: ${C.notify.to.map(esc).join(", ")}.` : "Es ist noch kein Benachrichtigungsdienst gewählt."}</div>
+      ${this._labFields("wx")}
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wxstest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _gaPage() {

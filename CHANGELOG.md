@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.7] - 2026-10-28
+### Neu
+- **Labs (experimentelle Funktionen):** Eigene Seite mit Karten, Schalter, Filter nach Modul und einer Infoseite je Funktion (Was du bekommst, So wird gerechnet, Voraussetzungen, Einstellungen). Erreichbar über ein **Kolben-Symbol im Kopf** (mit Zähler), einen **Tab „Labs“** in der Modul-Leiste und Einstellungen → Allgemein → „Labs“. Symbol und Tab lassen sich unter „Labs anzeigen“ einzeln ausblenden. Die Auswahl gilt für alle Nutzer.
+- Eingeschaltete Labs erscheinen als Karte mit gestricheltem violettem Rand, dem Zeichen „Labs“ und dem Hinweis „Nur Anzeige“ im passenden Modul, ihre Einstellungsfelder sind violett markiert. Ausgeschaltet sind sie dort komplett weg, die Werte bleiben gespeichert. Das Modul zeigt im Kopf „n Labs aktiv“.
+- **Erste Labs, alle nur Anzeige:** Bester Lüftungszeitpunkt (Modul 1, Innen- gegen Außenluft je Raum), Autarkie-Prognose (Modul 3), Wäsche-Wetter (Modul 9), Lernfaktor für die Prognose (Modul 16). „Spartipp der Woche“ ist als „Bald“ angekündigt.
+- Das Backend prüft die Labs-Einstellungen (`layout.labs`: `on`, `icon`, `tab`, `cfg`).
+### Geändert
+- README neu geschrieben, mit Abschnitt zu Labs.
+
 ## [3.0.2.6] - 2026-10-28
 ### Behoben
 - **Zeitfelder verschwanden beim Eingeben** (zum Beispiel „Bis“ und „Abfahrt“ in Modul 8, Register „Planung“): Home Assistant meldet laufend neue Werte, und das Dashboard baute die Seite dabei mitten im Tippen neu auf. Solange ein Zeit-, Zahlen- oder Textfeld im Fokus ist, wird die Seite jetzt nicht neu gezeichnet, nach dem Verlassen des Feldes zieht sie nach. Das gilt im ganzen Dashboard, die Suche im Store ist ausgenommen.

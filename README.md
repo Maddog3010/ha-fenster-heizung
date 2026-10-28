@@ -5,18 +5,17 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.6-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.7-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
-**Heizung, Fenster, Warmwasser, Solarstrom, Elektroauto und Geräte in einem Dashboard für Home Assistant.**
-Die Integration pausiert Heizkörper bei offenem Fenster, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer, Warmwasser und das Auto, zeigt, woher der Strom deiner Geräte kommt, warnt vor Unwetter und Rauch und stellt alles in einer eigenen Seite in der Seitenleiste dar.
+**Ein Dashboard für Heizung, Strom und Haus in Home Assistant.**
+„Strom & Wärme“ pausiert Heizkörper bei offenem Fenster, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer, Warmwasser und das Auto, zeigt, woher der Strom deiner Geräte kommt, und warnt vor Unwetter und Rauch. Alles steht in einer eigenen Seite in der Seitenleiste, 16 Module, die du einzeln ein- und ausschaltest.
 
 <p align="center"><img src="docs/vorschau_desktop.png" width="760" alt="Dashboard auf dem Desktop"></p>
 
-## Neu in 3.0.2.5
-- **Modul 16 „Solar-Prognose“ (Vorabversion):** Ertrag heute und morgen aus Forecast.Solar, Stundenverlauf, beste Zeit für Verbraucher und Vergleich von Prognose gegen tatsächlichen Ertrag.
-- **Kennzeichnung in vier Stufen:** *Stabil*, *Beta*, *Vorabversion* und *In Entwicklung* zeigen auf einen Blick, wie weit ein Modul ist.
-- Davor (3.0.2.x): Store für Integrationen, Herstellerprofile für Thermostate, Modul 9 „Wetter & Warnungen“, Modul 11 „Rauch- & Sicherheitsmelder“, überarbeitetes Modul 8 für Wallbox und Elektroauto, neue Optik für die Module 1 bis 4.
+## Neu in 3.0.2.7
+- **Labs:** experimentelle Funktionen zum Ausprobieren, mit eigener Seite, Infoseite je Funktion und klarer Kennzeichnung im Modul. Ausgeschaltet verschwinden sie wieder. Die ersten vier zeigen nur etwas an: Bester Lüftungszeitpunkt, Autarkie-Prognose, Wäsche-Wetter und Lernfaktor für die Prognose. [Mehr zu Labs](#labs-experimentelle-funktionen)
+- Davor: Modul 16 „Solar-Prognose“, Kennzeichnung der Module in vier Stufen, Store für Integrationen, Herstellerprofile für Thermostate, Module 9 und 11, überarbeitetes Modul 8, neue Optik für Modul 1 bis 4.
 
 Alle Änderungen stehen im [Changelog](CHANGELOG.md).
 
@@ -24,6 +23,7 @@ Alle Änderungen stehen im [Changelog](CHANGELOG.md).
 - [Die Module auf einen Blick](#die-module-auf-einen-blick)
 - [Schnellstart](#schnellstart)
 - [Einstellungen, Module und Store](#einstellungen-module-und-store)
+- [Labs: experimentelle Funktionen](#labs-experimentelle-funktionen)
 - [Modul 1: Fenster & Heizung](#modul-1-fenster--heizung)
 - [Modul 2: Warmwasser & Zirkulation](#modul-2-warmwasser--zirkulation)
 - [Modul 3: Energie](#modul-3-energie)
@@ -92,7 +92,7 @@ Die Module 2 bis 4 sind ab Werk an, alle weiteren Module aus. Eingeschaltet und 
 Der Knopf **Einstellungen** oben rechts öffnet in jedem Modul dieselbe Seite:
 
 - **Übersicht** mit aktiven Modulen, Räumen, Personen und Version
-- **Allgemein:** Einrichtungsassistent, Integrationen, Personen & Standort, Darstellung, Store anzeigen
+- **Allgemein:** Einrichtungsassistent, Integrationen, Store anzeigen, Labs, Labs anzeigen, Personen & Standort, Darstellung
 - **Meine Module:** nur eingeschaltete Module, mit Stufe und Status
 - **Weitere Module:** ausgeschaltete Module als kleine Felder, ein Tipp schaltet ein
 - **System:** Sichern & Wiederherstellen, Diagnose, Module verwalten
@@ -103,6 +103,28 @@ Unter **Module verwalten** schaltest du jedes Modul ein oder aus (Modul 1 ist im
 Der Store zeigt Dienste, die zu deinen Modulen passen (go-e, Tibber, Wetter und Warnungen, Melder, Thermostate), erkennt, was in Home Assistant schon läuft, und führt durch die Einrichtung. Er hat Suche, Kategorien, Detailseiten mit „Was du bekommst“ und „So geht es“ sowie einen Zähler für fehlende Dienste.
 
 Du öffnest ihn über das **Store-Symbol im Kopf**, den **Tab „Store“** in der Modul-Leiste oder Einstellungen → Allgemein. Symbol und Tab lassen sich unter „Store anzeigen“ einzeln ausblenden.
+
+## Labs: experimentelle Funktionen
+Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt sind. Du schaltest sie einzeln ein, sie erscheinen im passenden Modul und sind nach dem Ausschalten dort wieder weg. Alle Labs der ersten Runde **zeigen nur etwas an und schalten nichts**.
+
+<p align="center"><img src="docs/vorschau_labs.png" width="460" alt="Labs-Seite"> <img src="docs/vorschau_labs_info.png" width="460" alt="Infoseite einer Funktion"></p>
+
+- **Labs-Seite:** Karten mit Schalter, Stand (Idee, Früh, Test) und Modul, Filter nach Modul oder „Eingeschaltet“, „Alle Labs aus“. Ein Tipp auf die Karte öffnet wie im Store eine Infoseite mit „Was du bekommst“, „So wird gerechnet“, Voraussetzungen (erfüllt oder fehlt) und den Einstellungen der Funktion.
+- **Zugang:** Kolben-Symbol im Kopf (mit Zähler eingeschalteter Labs), Tab „Labs“ in der Modul-Leiste und Einstellungen → Allgemein → „Labs“. Symbol und Tab blendest du unter „Labs anzeigen“ einzeln aus, die Seite bleibt über die Einstellungen immer erreichbar. Die Auswahl gilt für alle Nutzer, nur Administratoren schalten um.
+- **Kennzeichnung:** Im Modul sitzt die Funktion als Karte mit gestricheltem violettem Rand, dem Zeichen „Labs“ und dem Hinweis „Nur Anzeige“. Einstellungsfelder von Labs haben einen violetten Streifen und dasselbe Zeichen. Im Kopf des Moduls steht „n Labs aktiv“.
+- **Ausschalten:** Karte und Felder verschwinden aus dem Modul, die eingestellten Werte bleiben gespeichert.
+
+<p align="center"><img src="docs/vorschau_labs_modul.png" width="620" alt="Autarkie-Prognose als Labs-Karte in Modul 3"></p>
+
+| Lab | Modul | Stand | Was es zeigt |
+|---|---|---|---|
+| **Bester Lüftungszeitpunkt** | 1 | Test | Pro Raum, ob Lüften jetzt lohnt: Vergleich der absoluten Feuchte innen und außen, Schwelle einstellbar (Standard 0,5 g/m³). Braucht Raumsensoren mit Luftfeuchte und Außenwerte. |
+| **Autarkie-Prognose** | 3 | Test | Wie viel Prozent des Tagesverbrauchs heute voraussichtlich aus Solar kommen. Nutzt die Prognose aus Modul 16 und den Verbrauch aus Modul 3 (7 oder 30 Tage), sonst deine Angabe. Grobe Schätzung. |
+| **Wäsche-Wetter** | 9 | Test | Ampel, ob Wäsche draußen trocknet, mit Luftfeuchte, Wind und Niederschlag aus der Wetter-Entität. Mindest-Wind einstellbar. |
+| **Lernfaktor für die Prognose** | 16 | Früh | Gelernte Abweichung der Anlage aus Prognose gegen Ertrag (mindestens 3 Tage, begrenzt auf 0,5 bis 1,5) und die korrigierte Prognose für heute. Andere Module nutzen weiter die Originalprognose. |
+| *Spartipp der Woche* | 3 | Idee | Angekündigt, noch nicht einschaltbar. |
+
+Labs können sich ändern, später fest eingebaut werden oder wieder entfallen. Ideen und Fehler gern als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues).
 
 ## Modul 1: Fenster & Heizung
 
@@ -415,7 +437,7 @@ Unter **System → Diagnose** siehst du, ob alle Geräte der Regelung melden: St
 Unter **System → Sichern & Wiederherstellen** speicherst du eine JSON-Datei mit Räumen, Heizplänen, Anwesenheit (mit Home-Zone und Personen), Aussehen, allgemeinen Einstellungen und den Einstellungen der Module 2 bis 4 und 8. Beim Einlesen siehst du zuerst eine Zusammenfassung, erst „Wiederherstellen“ ersetzt die aktuellen Einstellungen.
 
 ### Update-Hinweis
-Administratoren sehen oben ein Banner, wenn auf GitHub eine neuere Version veröffentlicht wurde. Maßgeblich ist die höchste Version unter allen Releases und Tags, auch mit vier Teilen (zum Beispiel `3.0.2.5`). Die Prüfung fragt höchstens einmal pro Stunde ab und lässt sich unter **Allgemein → Updates** ausschalten.
+Administratoren sehen oben ein Banner, wenn auf GitHub eine neuere Version veröffentlicht wurde. Maßgeblich ist die höchste Version unter allen Releases und Tags, auch mit vier Teilen (zum Beispiel `3.0.2.7`). Die Prüfung fragt höchstens einmal pro Stunde ab und lässt sich unter **Allgemein → Updates** ausschalten.
 
 ## Entitäten
 Pro Raum:
@@ -435,7 +457,7 @@ Pro Raum:
 
 - Die technische Kennung der Integration bleibt `fenster_heizung` (Ordner, Entitäten, Speicher). Nur der Anzeigename ist „Strom & Wärme“.
 - Das Dashboard (`panel.js`) wird aus den Quelldateien in `frontend-src/parts` gebaut: `python3 frontend-src/build.py` (mit `--check` prüfen, ob die Datei aktuell ist).
-- Raumeinstellungen: `fenster_heizung/get_options`, `set_options` (nur Administratoren). Layout (Farben, Fotos, Symbole, Wetteranzeige, `store` mit `icon` und `tab`): `set_layout`. Allgemeines und Sicherung: `get_general`, `set_general`, `get_update`, `get_learning`, `restore`. Diagnose: `get_diag`, `clear_diag`. Module: `get_modules`, `set_modules`, `set_wasser`, `wasser_cmd`. Das Backend prüft alle Werte, Änderungen sind nur für Administratoren erlaubt.
+- Raumeinstellungen: `fenster_heizung/get_options`, `set_options` (nur Administratoren). Layout (Farben, Fotos, Symbole, Wetteranzeige, `store` mit `icon` und `tab`, `labs` mit `on`, `icon`, `tab` und `cfg`): `set_layout`. Allgemeines und Sicherung: `get_general`, `set_general`, `get_update`, `get_learning`, `restore`. Diagnose: `get_diag`, `clear_diag`. Module: `get_modules`, `set_modules`, `set_wasser`, `wasser_cmd`. Das Backend prüft alle Werte, Änderungen sind nur für Administratoren erlaubt.
 - **Modul 16:** `sp_get` (Prognose, Stundenwerte, Verlauf, Abweichung) und `sp_set` (`cfg` mit `src` = `forecast` oder `sensor`, `fc_sensor`, `act`, `mode` = `day` oder `total`, nur Administratoren).
 - **Modul 11:** `sf_get`, `sf_set`, `sf_test`, `sf_tested`, `sf_press`.
 - **Modul 9:** `wx_get` (Einstellungen, Warnlage, Vorhersage, offene Fenster, Protokoll), `wx_set` (`cfg`, nur Administratoren), `wx_test` (Testmeldung, gibt `sent` zurück).
@@ -445,13 +467,13 @@ Pro Raum:
 - Die Module 5, 6, 7, 10, 12, 13, 15 speichern im Backend nur den Schalter `on.<kürzel>` (Standard `false`).
 - Der Bericht braucht Verlaufsdaten im Recorder.
 
-**Neue Version veröffentlichen:** `version` in `custom_components/fenster_heizung/manifest.json` erhöhen, auf GitHub ein Release mit passendem Tag (zum Beispiel `v3.0.2.5`) erstellen und kurze Aufzählungspunkte in die Beschreibung schreiben. Sie erscheinen im Update-Hinweis des Dashboards. HACS zeigt das Update an.
+**Neue Version veröffentlichen:** `version` in `custom_components/fenster_heizung/manifest.json` erhöhen, auf GitHub ein Release mit passendem Tag (zum Beispiel `v3.0.2.7`) erstellen und kurze Aufzählungspunkte in die Beschreibung schreiben. Sie erscheinen im Update-Hinweis des Dashboards. HACS zeigt das Update an.
 </details>
 
 ## Wichtige Hinweise
 - Die Integration schaltet **Heizungsthermostate, Elektroheizer, Heizstäbe, Pumpen und auf Wunsch die Wallbox**. Prüfe nach der Einrichtung, ob alles wie gewünscht reagiert, und beobachte die ersten Tage. Die Nutzung erfolgt auf eigene Verantwortung.
 - Die Regelung von Warmwasser und Heizstab ersetzt keinen Verbrühschutz und keine Sicherheitseinrichtungen der Anlage. Beachte die Vorgaben deines Herstellers.
-- Module der Stufen Beta, Vorabversion und In Entwicklung können sich ändern.
+- Module der Stufen Beta, Vorabversion und In Entwicklung können sich ändern. Labs sind Experimente und können sich ändern oder entfallen.
 - Energie- und Kostenwerte, die Ersparnis, die Dusch-Schätzung und Prognosen sind **Schätzungen**. Die Energie der Elektroheizer wird aus der Nennleistung berechnet, nicht gemessen. Gerätestrom rechnet aus Messwerten im 20-Sekunden-Takt, die Aufteilung auf Solar, Batterie und Netz ist eine Näherung.
 - Sensoren müssen in Home Assistant aktuelle Werte liefern. Ohne Messwerte bleibt die Regelung zurückhaltend: Fällt der PV-Sensor aus, gilt der Überschuss als 0.
 - „Strom & Wärme“ ist ein privates Projekt und steht in keiner Verbindung zu Home Assistant oder Nabu Casa.

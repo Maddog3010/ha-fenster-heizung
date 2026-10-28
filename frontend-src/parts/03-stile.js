@@ -411,6 +411,22 @@ button.rico::after{content:"";position:absolute;right:-5px;bottom:-5px;width:18p
 /* Store */
 .pillbtn.sto{position:relative;padding:8px}.sdot{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;border-radius:10px;background:#f59e0b;color:#1a1200;font-size:.7rem;font-weight:700;line-height:19px;font-style:normal;text-align:center;padding:0 5px}
 .mtab.sto{background:linear-gradient(120deg,#0f766e,#1e3a8a);border-color:transparent;color:#fff}.mtab.sto small{color:rgba(255,255,255,.75)}.mtab.sto .sdot{top:-6px;right:-4px}
+.labp{display:inline-flex;align-items:center;gap:4px;font-style:normal;font-size:.68rem;font-weight:700;letter-spacing:.02em;padding:2px 8px 2px 6px;border-radius:999px;background:color-mix(in srgb,#8b5cf6 20%,transparent);color:#a78bfa;border:1px solid color-mix(in srgb,#8b5cf6 45%,transparent);white-space:nowrap;vertical-align:middle}
+.labp.tr{position:absolute;top:10px;right:12px}
+.card.labc{position:relative;border:1.5px dashed color-mix(in srgb,#8b5cf6 60%,transparent);background:linear-gradient(180deg,color-mix(in srgb,#8b5cf6 7%,var(--card-background-color,#1c1c1c)),var(--card-background-color,#1c1c1c) 60%)}
+.card.labc h2{padding-right:70px}.labfoot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px}.labfoot .lnk{margin-left:auto}
+.lugrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.luroom{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color,#fff) 6%,transparent);font-size:.8rem}.luroom .lv{font-size:1.15rem;font-weight:700;color:var(--primary-text-color)}
+.luroom.green{box-shadow:inset 3px 0 #22c55e}.luroom.amber{box-shadow:inset 3px 0 #f59e0b}.luroom.red{box-shadow:inset 3px 0 #ef4444}
+.vrow.labf{border-left:3px solid #8b5cf6;padding-left:10px;background:color-mix(in srgb,#8b5cf6 7%,transparent);border-radius:0 10px 10px 0}
+.pillbtn.lab{color:#a78bfa}.ldot{background:#8b5cf6!important;color:#fff!important}
+.mtab.labt{background:linear-gradient(120deg,#6d28d9,#a21caf);border-color:transparent;color:#fff}.mtab.labt small{color:rgba(255,255,255,.75)}.mtab.labt .sdot{top:-6px;right:-4px}
+.labban{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:14px;border:1.5px dashed color-mix(in srgb,#8b5cf6 55%,transparent);background:color-mix(in srgb,#8b5cf6 8%,transparent);margin-bottom:12px;font-size:.85rem;color:var(--mut)}.labban b{display:block;color:var(--primary-text-color);margin-bottom:2px}.labban>svg{flex:none;color:#a78bfa}
+.labk{position:relative;display:flex;flex-direction:column;gap:6px;border-radius:16px;border:1px solid var(--line);background:var(--card-background-color,#1c1c1c);padding:12px}.labk.on{border-color:#8b5cf6;box-shadow:0 0 0 1px #8b5cf6 inset}.labk.soon{opacity:.75}
+.labkt{display:flex;justify-content:space-between;align-items:center}.labkt .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#6d28d9,#a21caf);color:#fff}
+.labkb{all:unset;cursor:pointer;display:flex;flex-direction:column;gap:6px;font-size:.82rem;color:var(--mut)}.labkb b{font-size:.98rem;color:var(--primary-text-color)}.labkb:focus-visible{outline:2px solid #8b5cf6;outline-offset:4px;border-radius:8px}
+.labtg{display:flex;flex-wrap:wrap;gap:6px}.labtg em{font-style:normal;font-size:.68rem;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--primary-text-color,#fff) 10%,transparent)}
+.risk{font-style:normal;font-size:.68rem;font-weight:600;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--primary-text-color,#fff) 10%,transparent);color:var(--mut)}.risk.s{background:color-mix(in srgb,#22c55e 18%,transparent);color:#4ade80}
+.stoi.labi{background:linear-gradient(135deg,#6d28d9,#a21caf)}
 .stow{display:flex;flex-direction:column;gap:12px;max-width:1100px}
 .stosr{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 14px;color:var(--mut)}.stoq{flex:1;min-width:0;background:transparent;border:0;outline:0;color:var(--primary-text-color);font:inherit;padding:13px 0}.stosr:focus-within{border-color:var(--teal)}
 .stoch{display:flex;gap:8px;flex-wrap:wrap}.stoch button{border:1px solid var(--line);background:var(--card);color:inherit;border-radius:999px;padding:8px 14px;font:inherit;font-size:.88rem;cursor:pointer}.stoch button.on{background:var(--teal);border-color:var(--teal);color:var(--on-acc,#042);font-weight:700}
