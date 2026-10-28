@@ -2196,6 +2196,7 @@ class FensterHeizungPanel extends HTMLElement {
 
   /* Die Modulleiste behält beim Neuzeichnen ihre Scrollposition. Beim Wechsel des Moduls wird das gewählte Tab in die Mitte geholt. */
   _render() {
+    if (this._press) { this._prPend = true; return; }
     const sr0 = this.shadowRoot, ae0 = sr0 && sr0.activeElement;
     /* Läuft gerade eine Eingabe (Uhrzeit, Zahl, Text), wird die Seite nicht neu aufgebaut. Home Assistant meldet laufend neue Werte, das würde das Feld mitten im Tippen wegwerfen. Nach dem Verlassen des Feldes wird nachgezogen. */
     if (ae0 && ae0.tagName === "INPUT" && ["time", "date", "number", "text"].includes(ae0.type) && !ae0.classList.contains("stoq") && sr0.getElementById("main") && sr0.getElementById("main").contains(ae0)) {
@@ -2268,6 +2269,10 @@ class FensterHeizungPanel extends HTMLElement {
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
     sr.addEventListener("pointerdown", (e) => { const b = e.target.closest && e.target.closest("[data-act]"); this._pd = b ? { s: sig(b), t: Date.now() } : null; }, true);
+    /* Solange ein Finger oder die Maus auf einer Schaltfläche liegt, wird die Seite nicht neu aufgebaut. Sonst verschwindet die Schaltfläche zwischen Aufsetzen und Loslassen, wenn Home Assistant gerade einen Wert meldet, und der Tipp geht verloren. Danach wird nachgezogen. */
+    const rel = () => { clearTimeout(this._prT); this._prT = setTimeout(() => { this._press = false; if (this._prPend) { this._prPend = false; this._render(); } }, 60); };
+    sr.addEventListener("pointerdown", (e) => { if (e.target.closest && e.target.closest("[data-act],[data-handle]")) { this._press = true; clearTimeout(this._prT); this._prT = setTimeout(() => { this._press = false; if (this._prPend) { this._prPend = false; this._render(); } }, 1500); } }, true);
+    ["pointerup", "pointercancel", "click"].forEach((n) => sr.addEventListener(n, rel, true));
     sr.addEventListener("click", (e) => { const b = e.target.closest("[data-act]"); if (!b) return; if (e.detail !== 0 && !(this._pd && this._pd.s === sig(b) && Date.now() - this._pd.t < 2000)) return; if (b.dataset.act === "mdst" && Date.now() - (this._t0 || 0) < 1200) return; this._act(b.dataset.act, b); });
     /* Wischen auf der Modulleiste soll nicht die Seitenleiste von Home Assistant öffnen. */
     sr.addEventListener("touchstart", (e) => { if (e.target.closest && e.target.closest(".mbar,.rdays,.sxl,.ohint")) e.stopPropagation(); }, { passive: true });

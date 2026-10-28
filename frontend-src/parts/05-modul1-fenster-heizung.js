@@ -730,6 +730,7 @@
 
   /* Die Modulleiste behält beim Neuzeichnen ihre Scrollposition. Beim Wechsel des Moduls wird das gewählte Tab in die Mitte geholt. */
   _render() {
+    if (this._press) { this._prPend = true; return; }
     const sr0 = this.shadowRoot, ae0 = sr0 && sr0.activeElement;
     /* Läuft gerade eine Eingabe (Uhrzeit, Zahl, Text), wird die Seite nicht neu aufgebaut. Home Assistant meldet laufend neue Werte, das würde das Feld mitten im Tippen wegwerfen. Nach dem Verlassen des Feldes wird nachgezogen. */
     if (ae0 && ae0.tagName === "INPUT" && ["time", "date", "number", "text"].includes(ae0.type) && !ae0.classList.contains("stoq") && sr0.getElementById("main") && sr0.getElementById("main").contains(ae0)) {

@@ -2,6 +2,10 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.5.1] - 2026-10-28
+### Behoben
+- **Knöpfe reagierten nicht (Einstellungen, Anpassen und weitere):** Meldet Home Assistant laufend neue Werte, wurde die Seite mitten im Tippen neu aufgebaut, und der Tipp ging verloren. Solange ein Finger oder die Maus auf einem Knopf liegt, wird die Seite jetzt nicht neu gezeichnet und erst danach aktualisiert.
+
 ## [3.0.5] - 2026-10-28
 ### Neu
 - **Modul 19 „Hausfluss“ (Beta, dauerhaft nur für Sponsoren):** Dein Haus als Fluss-Bild im Dashboard, native Neuentwicklung nach der Karte „Energiefluss“. Das Haus sitzt in der Mitte, ringsum bis zu acht Kacheln (oben 2, links 3, rechts 3, unten 1) für Solar, Netz, Akku, Auto und Verbraucher.
