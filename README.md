@@ -5,13 +5,16 @@
 # Strom & Wärme
 
 [![HACS](https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white)](https://hacs.xyz)
-[![Version](https://img.shields.io/badge/Version-3.0.2.11-2dd4bf)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-3.0.2.12-2dd4bf)](CHANGELOG.md)
 [![GitHub Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white)](https://github.com/sponsors/Maddog3010)
 
 **Ein Dashboard für Heizung, Strom und Haus in Home Assistant.**
 „Strom & Wärme“ pausiert Heizkörper bei offenem Fenster, heizt nach Plan, nutzt PV-Überschuss für Elektroheizer, Warmwasser und das Auto, zeigt, woher der Strom deiner Geräte kommt, und warnt vor Unwetter und Rauch. Alles steht in einer eigenen Seite in der Seitenleiste, 16 Module, die du einzeln ein- und ausschaltest, dazu Modul 17 „Müllabfuhr“ als Lab.
 
 <p align="center"><img src="docs/vorschau_desktop.png" width="760" alt="Dashboard auf dem Desktop"></p>
+
+## Neu in 3.0.2.12
+- **Tablet-Modus:** eine eigene Oberfläche für Wand- und Tischtablets. Große Bedienflächen, untere Knopfleiste statt der Tab-Leiste, Ruhemodus mit dunkler Uhr, PIN-Schutz für die Einstellungen und Display-Steuerung per Bewegungsmelder. Gilt pro Gerät, die normale Ansicht ist dort ausgeblendet. Siehe [Tablet-Modus](#tablet-modus).
 
 ## Neu in 3.0.2.11
 - **Startseite:** ein neuer Tab „Start“ ganz links, der nach dem Öffnen des Dashboards in Home Assistant zuerst erscheint. Zeigt, ob zu Hause alles in Ordnung ist, Kacheln für deine Module, Wetter, Personen, Alarm, Hinweise, Energie und Müllabfuhr. Karten lassen sich über „Anpassen“ verschieben und ausblenden. Abschaltbar.
@@ -31,6 +34,7 @@ Alle Änderungen stehen im [Changelog](CHANGELOG.md).
 - [Einstellungen, Module und Store](#einstellungen-module-und-store)
 - [Labs: experimentelle Funktionen](#labs-experimentelle-funktionen)
 - [Startseite](#startseite)
+- [Tablet-Modus](#tablet-modus)
 - [Modul 1: Fenster & Heizung](#modul-1-fenster--heizung)
 - [Modul 2: Warmwasser & Zirkulation](#modul-2-warmwasser--zirkulation)
 - [Modul 3: Energie](#modul-3-energie)
@@ -469,6 +473,36 @@ Karten ohne Datenquelle erscheinen nicht. Mit **Anpassen** (wie in Modul 1) vers
 
 Unter **Labs → Start-Bubbles** einschalten (Art „Nur Anzeige“). Dann erscheint oben eine Reihe runder Kurzinfos. Den Inhalt wählst du in den Einstellungen der Startseite („Bubbles wählen“, bis zu acht, Reihenfolge per Pfeil). Warnfarben (Gelb bei Hinweis, Rot bei Alarm) und „Antippen öffnet Karte oder Modul“ sind einstellbar. Bubbles ohne Daten werden ausgelassen. Ausgeschaltet ist die Reihe weg, die Auswahl bleibt gespeichert.
 
+### Tablet-Modus
+<p align="center"><img src="docs/vorschau_tablet.png" width="760" alt="Tablet-Modus auf einem 10-Zoll-Tablet"></p>
+
+Für Tablets an der Wand oder auf dem Tisch. Im Tablet-Modus gibt es keine Tab-Leiste und keine Schalter im Kopf, nur Kopfzeile mit Uhr, den Inhalt und eine untere Leiste mit großen Knöpfen. Die Ansicht passt sich an Bildschirmgröße und Ausrichtung an (Hoch- und Querformat, 8 bis 13 Zoll). Die Einstellungen gelten nur für das jeweilige Gerät.
+
+**Einschalten** (vier Wege):
+1. Knopf **Tablet-Modus** im Kopf der normalen Ansicht (ab 600 px Breite).
+2. Im selben Dialog stehen Aktivierung (Aus, Automatisch, Immer an), Name, Größe, Ruhemodus, Bewegungsmelder und PIN. „Automatisch“ gilt für Touchgeräte ab 600 px Breite.
+3. Ein Hinweis beim ersten Öffnen auf einem Gerät in Tablet-Größe. „Nicht mehr fragen“ merkt sich das Gerät.
+4. Ein Direktlink mit `?tablet=1`. In **Fully Kiosk** als Start-URL eintragen (Web Content Settings), dann startet das Tablet immer im Tablet-Modus. `?tablet=0` schaltet ihn auf diesem Gerät wieder aus.
+
+**PIN:** sechs Ziffern, beim Festlegen zweimal eingeben. Ohne PIN startet der Modus über den Dialog nicht. Das Schloss oben rechts öffnet nach der PIN die Einstellungen dieses Tablets, dort auch „Tablet-Modus beenden“. Nach fünf falschen Eingaben ist die Eingabe 60 Sekunden gesperrt. Die PIN liegt nur als Prüfwert im Home Assistant. Sie schützt vor Versehen, nicht vor Technikern. Vergessen? Ein Administrator setzt sie in der normalen Ansicht unter **Tablet-Modus → Tablets verwalten** zurück.
+
+<p align="center"><img src="docs/vorschau_tablet_pin.png" width="380" alt="PIN-Eingabe"> <img src="docs/vorschau_tablet_hoch.png" width="200" alt="Hochformat"> <img src="docs/vorschau_tablet_ruhe.png" width="380" alt="Ruhemodus"></p>
+
+- **Start:** Bubbles (wenn das Lab „Start-Bubbles“ an ist), eine große Kachel je Modul und die wichtigsten Hinweise.
+- **Fenster & Heizung:** pro Raum die Ist-Temperatur und die Soll-Temperatur mit großen −/+-Knöpfen (setzt `climate.set_temperature` für die Thermostate des Raums). Bei offenem Fenster ist die Heizung pausiert und die Knöpfe sind gesperrt. Die übrigen Module zeigen ihre bekannte Ansicht in großer Schrift.
+- **Untere Leiste:** alle aktiven Module, abwählbar. Bei schmalen Bildschirmen steht der Rest unter „Mehr“.
+- **Zurück zu Start** nach 2, 5 oder 15 Minuten ohne Berührung (einstellbar).
+- **Ruhemodus** nach 5, 15 oder 30 Minuten: dunkle Uhr mit Wetter, Alarm, Personen und Müllabfuhr. Berühren, Bewegung oder eine Warnung (zum Beispiel ausgelöster Alarm) weckt auf. Der erste Tipp schaltet nur auf, er löst nichts darunter aus.
+- **Bewegungsmelder und Display:** Du wählst einen Bewegungsmelder (`binary_sensor`). Er wird im Home Assistant überwacht und funktioniert auch bei ausgeschaltetem Display. Bei Bewegung wird der **Display-Schalter** eingeschaltet, nach der eingestellten Zeit ohne Bewegung (10 oder 30 Minuten) wieder aus. Bei Fully ist das der Schalter „Screen“ der Fully-Integration. Für die Home-Assistant-App unter Android lässt sich ein Benachrichtigungsdienst (`mobile_app_…`) eintragen, er schaltet nur ein. Ein ausgelöster Alarm schaltet das Display ebenfalls ein.
+
+| | Fully Kiosk (Android) | HA-App Android | HA-App iPad/iPhone |
+|---|---|---|---|
+| Ruhemodus, Aufwachen per Bewegung | ja | ja | ja |
+| Display einschalten bei Bewegung | ja | ja | nein |
+| Display ausschalten | ja | teilweise | nein |
+
+Hinweise: Die Seite überdeckt im Tablet-Modus die ganze Anzeige. Zeigt Home Assistant dennoch Seitenleiste und Kopfzeile, lassen sie sich mit Fully (Kiosk-Modus) oder einem Kiosk-Add-on ausblenden. Die Display-Helligkeit steuert die Seite nicht.
+
 ### Modul 17: Müllabfuhr (Lab)
 <p align="center"><img src="docs/vorschau_modul_muell.png" width="760" alt="Modul 17: Müllabfuhr"></p>
 
@@ -525,6 +559,7 @@ Pro Raum:
 - Raumeinstellungen: `fenster_heizung/get_options`, `set_options` (nur Administratoren). Layout (Farben, Fotos, Symbole, Wetteranzeige, `store` mit `icon` und `tab`, `labs` mit `on`, `icon`, `tab` und `cfg`): `set_layout`. Allgemeines und Sicherung: `get_general`, `set_general`, `get_update`, `get_learning`, `restore`. Diagnose: `get_diag`, `clear_diag`. Module: `get_modules`, `set_modules`, `set_wasser`, `wasser_cmd`. Das Backend prüft alle Werte, Änderungen sind nur für Administratoren erlaubt.
 - **Labs:** `labs_get` (Lernstand der Duschzeiten, Stand des Legionellenschutzes, Kalendertermin). Ein- und Ausschalten und Werte laufen über `set_layout` (`labs`).
 - **Startseite:** keine eigenen WS-Befehle. Einstellungen und Bubbles stehen in `layout.start` (`on`, `open`, `greet`, `alarm`, `ctl`, `order`, `hidden`, `bub`), gespeichert über `set_layout`. Der Alarm wird über den Dienst `alarm_control_panel.alarm_*` geschaltet.
+- **Tablet-Modus:** `tm_get` (Tablets ohne PIN-Prüfwert), `tm_hello` (`tid`, `name`, `kind`, `size`), `tm_set` (`tid`, `cfg`, `name`, bei vorhandener PIN `pin` oder Administrator), `tm_check` (`tid`, `pin`), `tm_pin` (`tid`, `pin`, `old`), `tm_reset` und `tm_del` (nur Administratoren). Die Daten liegen im Speicher `fenster_heizung_tablets`.
 - **Modul 17:** `mu_get` (Termine, Tonnen-Status, Monat, Kosten, Hinweise), `mu_set` (`cfg`, nur Administratoren), `mu_act` (`act` = `done`, `undo` oder `snooze`, mit `bin` bei `done` und `undo`), `mu_test` (Testmeldung, nur Administratoren). Anordnung der Karten: `set_layout` (`mu` mit `order` und `hidden`).
 - **Modul 16:** `sp_get` (Prognose, Stundenwerte, Verlauf, Abweichung) und `sp_set` (`cfg` mit `src` = `forecast` oder `sensor`, `fc_sensor`, `act`, `mode` = `day` oder `total`, nur Administratoren).
 - **Modul 11:** `sf_get`, `sf_set`, `sf_test`, `sf_tested`, `sf_press`.

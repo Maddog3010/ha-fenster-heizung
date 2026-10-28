@@ -14,6 +14,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   disconnectedCallback() { this._ro && this._ro.disconnect(); clearInterval(this._ti); }
   _tick() {
+    this._tmTick();
     if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); }
     this.shadowRoot.querySelectorAll("[data-since]").forEach((el) => {
       const c = cdown(+el.dataset.since, +el.dataset.need), b = el.querySelector("[data-cd]"), f = el.querySelector("[data-bar]");
@@ -44,6 +45,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._mdApply(r);
     } catch (e) { /* älteres Backend: Standardwerte */ }
     this._cfgReady = true;
+    try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     this._render();
   }

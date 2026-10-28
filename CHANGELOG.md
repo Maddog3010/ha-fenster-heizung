@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.2.12] - 2026-10-28
+### Neu
+- **Tablet-Modus:** eigene Oberfläche für Tablets mit großen Bedienflächen, unterer Knopfleiste, Größen für 8 bis 13 Zoll im Hoch- und Querformat und ausgeblendeter normaler Ansicht. Einschalten über den Knopf „Tablet-Modus“ im Kopf, den Hinweis beim ersten Öffnen oder den Direktlink `?tablet=1` (zum Beispiel als Start-URL in Fully Kiosk).
+  - **PIN-Schutz** (sechs Stellen) für die Einstellungen und das Beenden, Sperre nach fünf Fehlversuchen, Zurücksetzen durch Administratoren.
+  - **Ruhemodus** mit dunkler Uhr, „Zurück zu Start“ nach Inaktivität, Aufwecken per Berührung, Bewegung oder Warnung.
+  - **Bewegungsmelder:** schaltet das Display über einen Schalter (Fully) oder einen Benachrichtigungsbefehl (HA-App Android) ein und nach einer Zeit ohne Bewegung wieder aus. Läuft im Home Assistant und braucht die Seite nicht.
+  - Heizung mit −/+-Knöpfen pro Raum, Start mit Bubbles, Kacheln und Hinweisen.
+  - Neuer Speicher `fenster_heizung_tablets`, neue Befehle `tm_get`, `tm_hello`, `tm_set`, `tm_check`, `tm_pin`, `tm_reset`, `tm_del`.
+
 ## [3.0.2.11] - 2026-10-28
 ### Neu
 - **Startseite:** neuer Tab „Start“ (Kennung `st`) ganz links, erscheint beim Öffnen des Dashboards zuerst. Ein Direktlink mit `?modul=<Kennung>` öffnet weiter das jeweilige Modul. In den Einstellungen abschaltbar oder auf „Letztes Modul“ umstellbar.

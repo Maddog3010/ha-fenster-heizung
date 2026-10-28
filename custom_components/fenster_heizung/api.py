@@ -841,6 +841,100 @@ async def ws_sf_press(hass: HomeAssistant, connection, msg: dict) -> None:
         connection.send_result(msg["id"], await mgr.async_press_test(msg["ent"]))
 
 
+def _tm(hass: HomeAssistant, connection, msg: dict):
+    mgr = hass.data.get(DOMAIN, {}).get("tablet")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Tablet-Modus ist noch nicht bereit")
+    return mgr
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tm_get"})
+@websocket_api.async_response
+async def ws_tm_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _tm(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], mgr.snapshot())
+
+
+@websocket_api.websocket_command({
+    vol.Required("type"): "fenster_heizung/tm_hello", vol.Required("tid"): str,
+    vol.Optional("name"): str, vol.Optional("kind"): str, vol.Optional("size"): str,
+})
+@websocket_api.async_response
+async def ws_tm_hello(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _tm(hass, connection, msg)
+    if mgr is not None:
+        r = mgr.hello(msg["tid"], msg.get("name", ""), msg.get("kind", ""), msg.get("size", ""))
+        r.update(mgr.snapshot())
+        connection.send_result(msg["id"], r)
+
+
+def _tm_allowed(mgr, connection, msg: dict) -> bool:
+    """Änderungen an einem Tablet mit PIN: Administrator oder richtige PIN."""
+    t = mgr.tablets.get(msg["tid"])
+    if t is None:
+        return False
+    if not t["pin"] or (connection.user and connection.user.is_admin):
+        return True
+    return bool(mgr.verify(msg["tid"], msg.get("pin", ""))["ok"])
+
+
+@websocket_api.websocket_command({
+    vol.Required("type"): "fenster_heizung/tm_set", vol.Required("tid"): str, vol.Required("cfg"): dict,
+    vol.Optional("name"): str, vol.Optional("pin"): str,
+})
+@websocket_api.async_response
+async def ws_tm_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _tm(hass, connection, msg)
+    if mgr is None:
+        return
+    if not _tm_allowed(mgr, connection, msg):
+        connection.send_error(msg["id"], "denied", "PIN falsch oder Tablet unbekannt")
+        return
+    if "name" in msg:
+        mgr.set_name(msg["tid"], msg["name"])
+    mgr.set_cfg(msg["tid"], msg["cfg"])
+    connection.send_result(msg["id"], mgr.snapshot())
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tm_check", vol.Required("tid"): str, vol.Required("pin"): str})
+@websocket_api.async_response
+async def ws_tm_check(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _tm(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], mgr.verify(msg["tid"], msg["pin"]))
+
+
+@websocket_api.websocket_command({
+    vol.Required("type"): "fenster_heizung/tm_pin", vol.Required("tid"): str, vol.Required("pin"): str, vol.Optional("old"): str,
+})
+@websocket_api.async_response
+async def ws_tm_pin(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _tm(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], mgr.set_pin(msg["tid"], msg["pin"], msg.get("old"), False))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tm_reset", vol.Required("tid"): str})
+@websocket_api.async_response
+async def ws_tm_reset(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _tm(hass, connection, msg)
+    if mgr is not None:
+        mgr.reset_pin(msg["tid"])
+        connection.send_result(msg["id"], mgr.snapshot())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tm_del", vol.Required("tid"): str})
+@websocket_api.async_response
+async def ws_tm_del(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _tm(hass, connection, msg)
+    if mgr is not None:
+        mgr.remove(msg["tid"])
+        connection.send_result(msg["id"], mgr.snapshot())
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
@@ -848,5 +942,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test,
+        ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del,
     ):
         websocket_api.async_register_command(hass, command)
