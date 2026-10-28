@@ -60,13 +60,13 @@
         this._modal = { type: "spnadm", view: "done", id: r.id, key: r.key }; this._renderModal();
       });
     }
-    else if (a === "spnext") { this._spnAdm({ act: "extend", id: k }, (r) => { if (!r.ok) { this._toast("Das ging nicht"); return; } this._modal = { type: "spnadm", view: "done", id: r.id, key: r.key }; this._renderModal(); }); }
+    else if (a === "spnext") { this._spnAdm({ act: "extend", sid: k }, (r) => { if (!r.ok) { this._toast("Das ging nicht"); return; } this._modal = { type: "spnadm", view: "done", id: r.id, key: r.key }; this._renderModal(); }); }
     else if (a === "spnkey") { const s = ((this._spnA || {}).items || []).find((x) => x.id === k); if (s) { this._modal = { type: "spnadm", view: "done", id: s.id, key: s.key }; this._renderModal(); } }
     else if (a === "spnrevq") { this._modal = { type: "spnadm", view: "revoke", id: k }; this._renderModal(); }
-    else if (a === "spnrev") { this._spnAdm({ act: "revoke", id: k }, () => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._toast("Gesperrt. Jetzt noch die Liste im Repo ändern."); }); }
-    else if (a === "spnunrev") { this._spnAdm({ act: "unrevoke", id: k }, () => { this._renderModal(); this._toast("Sperre aufgehoben. Die Liste im Repo muss auch angepasst werden."); }); }
-    else if (a === "spndel") { this._spnAdm({ act: "remove", id: k }, () => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); }); }
-    else if (a === "spndk") { const s = ((this._spnA || {}).items || []).find((x) => x.id === k); if (s) this._spnAdm({ act: "danke", id: k, on: !s.danke }, () => this._renderModal()); }
+    else if (a === "spnrev") { this._spnAdm({ act: "revoke", sid: k }, () => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._toast("Gesperrt. Jetzt noch die Liste im Repo ändern."); }); }
+    else if (a === "spnunrev") { this._spnAdm({ act: "unrevoke", sid: k }, () => { this._renderModal(); this._toast("Sperre aufgehoben. Die Liste im Repo muss auch angepasst werden."); }); }
+    else if (a === "spndel") { this._spnAdm({ act: "remove", sid: k }, () => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); }); }
+    else if (a === "spndk") { const s = ((this._spnA || {}).items || []).find((x) => x.id === k); if (s) this._spnAdm({ act: "danke", sid: k, on: !s.danke }, () => this._renderModal()); }
     else if (a === "spnmine") { this._spnRedeem(this._modal.key, true); }
     else if (a === "spncopy") this._spnCopy(this._modal.key, "Schlüssel kopiert");
     else if (a === "spnmsg") {
@@ -113,7 +113,7 @@
     const perks = `<div class="spnperks"><div>${ic("heart", 16)}<span><b>Abzeichen</b>Ein Herz im Kopf</span></div><div>${ic("palette", 16)}<span><b>Farbverläufe</b>Für den Kopf</span></div><div>${ic("moon", 16)}<span><b>Uhr-Stile</b>Für den Ruhemodus</span></div><div>${ic("flask", 16)}<span><b>Vorabversionen</b>Neue Labs zuerst</span></div></div>`;
     let body;
     if (s.active) {
-      body = `<div class="spnthx">${ic("heart", 15)}<span>Danke${s.name ? ", " + esc(s.name) : ""}! Dein Schlüssel gilt bis ${esc(this._spnDate(s.bis))}.</span></div>
+      body = `<div class="spnthx">${ic("heart", 15)}<span>${s.state === "dev" ? "Entwickler-Zugang: Alle Extras und Vorabversionen sind für dich immer frei, ohne Schlüssel." : `Danke${s.name ? ", " + esc(s.name) : ""}! Dein Schlüssel gilt bis ${esc(this._spnDate(s.bis))}.`}</span></div>
         <div class="lsec" style="margin-top:12px">${ic("palette", 15)}Farben und Aussehen</div>
         ${row("Abzeichen im Kopf", "Das Herz neben den Knöpfen", sw("spnbadge", p.badge, "Abzeichen"))}
         ${row("Verlauf im Kopf", "Zusätzliche Farbverläufe", seg("spngrad", p.grad, [["none", "Aus"], ["meer", "Meer"], ["abend", "Abend"]]))}
@@ -121,7 +121,7 @@
         ${row("Uhr-Stil", "Wirkt im Ruhemodus des Tablet-Modus", seg("spnclk", p.clock, [["standard", "Standard"], ["duenn", "Dünn"], ["kraeftig", "Kräftig"], ["digital", "Digital"]]))}
         <div class="lsec" style="margin-top:12px">${ic("flask", 15)}Mitmachen</div>
         ${row("Vorabversionen zuerst", "Neue Labs ein bis zwei Wochen früher sehen", sw("spnearly", p.early, "Vorabversionen"))}
-        ${adm ? `<div class="gbtns" style="margin-top:14px"><button class="btn2" data-act="spnclr">Schlüssel entfernen</button>${s.manage ? `<button class="btn2 pri" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button>` : ""}</div>` : ""}`;
+        ${adm ? `<div class="gbtns" style="margin-top:14px">${s.state === "dev" ? "" : `<button class="btn2" data-act="spnclr">Schlüssel entfernen</button>`}${s.manage ? `<button class="btn2 pri" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button>` : ""}</div>` : ""}`;
     } else {
       const note = s.state === "expired" ? `<div class="gst bad">${ic("clock", 15)}<span>Dein Schlüssel ist am ${esc(this._spnDate(s.bis))} abgelaufen. Die Extras sind aus, deine Einstellungen bleiben gespeichert.</span></div>` : s.state === "revoked" ? `<div class="gst bad">${ic("lock", 15)}<span>Dieser Schlüssel wurde gesperrt.</span></div>` : "";
       body = `${note}<div class="mut sm" style="margin:2px 0 10px">Die Integration ist und bleibt kostenlos. Sponsoren bekommen Schönes obendrauf. Nichts, was du jetzt nutzt, wird gesperrt.</div>${perks}

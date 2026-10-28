@@ -1026,7 +1026,7 @@ async def ws_spn_admin_setup(hass: HomeAssistant, connection, msg: dict) -> None
 @websocket_api.require_admin
 @websocket_api.websocket_command({
     vol.Required("type"): "fenster_heizung/spn_admin_act", vol.Required("act"): vol.In(["create", "extend", "revoke", "unrevoke", "danke", "remove", "forget"]),
-    vol.Optional("id"): str, vol.Optional("name"): str, vol.Optional("bis"): str, vol.Optional("note"): str, vol.Optional("on"): bool,
+    vol.Optional("sid"): str, vol.Optional("name"): str, vol.Optional("bis"): str, vol.Optional("note"): str, vol.Optional("on"): bool,
 })
 @websocket_api.async_response
 async def ws_spn_admin_act(hass: HomeAssistant, connection, msg: dict) -> None:
@@ -1036,7 +1036,7 @@ async def ws_spn_admin_act(hass: HomeAssistant, connection, msg: dict) -> None:
     if not mgr.priv:
         connection.send_error(msg["id"], "no_priv", "Verwaltung ist nicht eingerichtet")
         return
-    act, sid, res = msg["act"], msg.get("id", ""), {"ok": True}
+    act, sid, res = msg["act"], msg.get("sid", ""), {"ok": True}
     if act == "create":
         res = mgr.create(msg.get("name", ""), msg.get("bis", ""), msg.get("note", ""), bool(msg.get("on")))
     elif act == "extend":

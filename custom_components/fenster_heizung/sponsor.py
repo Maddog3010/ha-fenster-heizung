@@ -211,6 +211,9 @@ class SponsorManager:
     def snapshot(self, admin: bool = False) -> dict[str, Any]:
         st = self.status()
         active = bool(st.get("ok"))
+        if not active and self.priv:
+            st = {"state": "dev", "ok": True, "name": "Entwickler", "bis": "", "days": None}
+            active = True
         out: dict[str, Any] = {
             "url": SPONSOR_URL, "state": st["state"], "active": active, "name": st.get("name", ""),
             "bis": st.get("bis", ""), "days": st.get("days"),
