@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.7.1] - 2026-10-29
+
+### Behoben
+- **Tablet-Modus: Display ging bei Bewegung nicht an.** Meldete der Display-Schalter (Fully „Screen“) schon „an“, obwohl Bildschirmschoner oder Dimmen das Display dunkel hielten, wurde nichts gesendet. „An“ wird jetzt bei jeder Bewegung gesendet.
+
 ## [3.0.7.0] - 2026-10-29
 
 ### Behoben

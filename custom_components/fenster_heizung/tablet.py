@@ -279,7 +279,9 @@ class TabletManager:
         try:
             if c["screen"]:
                 cur = self.hass.states.get(c["screen"])
-                if cur is not None and cur.state == ("on" if on else "off"):
+                # Aus nur senden, wenn das Display noch an ist. An immer senden: Fully meldet "an", auch wenn
+                # Bildschirmschoner oder Dimmen das Display dunkel halten.
+                if not on and cur is not None and cur.state == "off":
                     return
                 await self.hass.services.async_call("switch", "turn_on" if on else "turn_off", {"entity_id": c["screen"]}, blocking=False)
             elif c["notify"] and on:

@@ -16,5 +16,5 @@
   "iot_class": "local_push",
   "issue_tracker": "https://github.com/Maddog3010/ha-fenster-heizung/issues",
   "requirements": [],
-  "version": "3.0.7.0"
+  "version": "3.0.7.1"
 }
