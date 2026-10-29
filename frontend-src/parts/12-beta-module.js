@@ -273,18 +273,13 @@
       ${svc.length ? `<div class="gschips">${svc.map((n) => chip("sfxns", esc(n), esc(n), C.notify.to.includes(n))).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="sfxtest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
-  _plPage() {
+  _plLive() {
     const pv = this._pvNow(), pr = this._price(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
     const o = this._out();
-    return `${this._betaBox("Überschuss und Strompreis kommen aus den PV-Einstellungen von Modul 1.")}
-      <div class="card"><h2>${ic("wave", 18)}Bedingungen jetzt</h2><div class="lugrid">
+    return `<div class="card"><h2>${ic("wave", 18)}Bedingungen jetzt</h2><div class="lugrid">
         ${tile("PV-Überschuss", pv != null ? wfmt(pv) : "–", pv != null ? (pv >= 1000 ? "Gut für Pumpe und Heizung" : "Eher wenig") : "Noch kein Sensor gewählt")}
         ${tile("Strompreis", pr ? num(pr, 1) + " ct/kWh" : "–", pr ? "Aus Modul 1" : "Noch kein Preis gewählt")}
-        ${tile("Außentemperatur", o.t != null ? num(o.t, 1) + " °C" : "–", o.t != null && o.t < 10 ? "Pool-Heizung lohnt kaum" : "Draußen")}</div></div>
-      ${this._betaSoon("wave", "Poolpumpe", "Filterzeiten nach Sonne und Überschuss, Mindestlaufzeit pro Tag")}
-      ${this._betaSoon("flame", "Pool-Heizung", "Wärmepumpe oder Heizstab bei Überschuss oder günstigem Strom")}
-      ${this._betaSoon("thermo", "Sauna", "Aufheizen nach Wunschzeit, bevorzugt mit Solarstrom")}
-      ${this._betaSoon("bolt", "Kosten & Solaranteil", "Was Pumpe und Heizung kosten und wie viel davon Solarstrom war")}`;
+        ${tile("Außentemperatur", o.t != null ? num(o.t, 1) + " °C" : "–", o.t != null && o.t < 10 ? "Pool-Heizung lohnt kaum" : "Draußen")}</div></div>`;
   }
   _wxWarn() {
     const st = this._hass.states, c = this._wxCfg(), wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather."));

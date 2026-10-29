@@ -598,6 +598,53 @@ const WP_STEPS = [
   ["3", "Effizienz und Abtauen", "COP, Jahresarbeitszahl, Abtauzyklen und Verknüpfung mit Modul 2, 14 und 16."]];
 const WP_IDEAS = ["Heizkurve als Vorschlag mit Begründung", "Bivalenzpunkt und Heizstab-Anteil", "Schallleistung und Nachtabsenkung", "Warmwasser nach PV-Überschuss (Modul 16)", "Wärmemenge je Raum aus Modul 1"];
 const WP_OPEN = ["Welche Anlagen gehen: Entitäten aus Home Assistant, welche Hersteller zuerst", "Welche Ansicht wird Startseite: Überblick, Laufzeit oder Effizienz", "Auswertung als Sponsor-Lab oder frei für alle"];
+const PL_TABS = [["j", "Jetzt"], ["a", "Überblick"], ["b", "Pumpe"], ["c", "Heizung"], ["d", "Sauna"], ["e", "Kosten"], ["f", "Verknüpfung"], ["fp", "Fahrplan"]];
+const PL_PINS = {
+  a: { img: "pl-a.jpg", t: "Überblick", alt: "Pool und Sauna mit Strom und Überschuss auf einen Blick", pins: [
+    [50, 13, "Zähler oben", "PV-Überschuss, Strompreis, Wassertemperatur im Pool und Stand der Sauna."],
+    [44, 42, "Pumpe", "Läuft sie gerade und warum, zum Beispiel wegen PV-Überschuss. Dazu die Laufzeit heute."],
+    [44, 57, "Heizung", "Wärmepumpe oder Heizstab, mit Leistung und Zieltemperatur."],
+    [44, 71, "Filterdruck", "Der Druck am Filter kommt auf Wunsch aus Modul 15 und warnt, wenn rückgespült werden sollte."],
+    [88, 71, "Sicherheit der Sauna", "Die Sauna schaltet nach der eingestellten Zeit ab, standardmäßig nach 4 Stunden."],
+    [50, 89, "Fehlende Entitäten", "Was nicht vorhanden ist, bleibt leer. Es wird nichts geschätzt."]] },
+  b: { img: "pl-b.jpg", t: "Pumpe", alt: "Filterzeiten nach Sonne und Überschuss", pins: [
+    [50, 9, "Zähler oben", "Wie lange die Pumpe heute lief, wie viel davon mit Solarstrom, die Kosten und der nächste Lauf."],
+    [50, 35, "Überschuss und Lauf", "Die gelbe Fläche ist der PV-Überschuss. Die türkisen Balken zeigen, wann die Pumpe lief oder laufen soll."],
+    [50, 42, "Mindestlaufzeit", "Mindestens 6 Stunden pro Tag, bevorzugt mit Überschuss, der Rest bei günstigem Strom."],
+    [56, 73, "Regeln", "Ab welchem Überschuss die Pumpe startet, die Mindestlaufzeit am Stück und der Dauerlauf bei Frost."],
+    [79, 66, "Trockenlaufschutz", "Fehlt der Durchfluss, wird die Pumpe nach zwei Minuten abgeschaltet und du bekommst einen Hinweis."]] },
+  c: { img: "pl-c.jpg", t: "Heizung", alt: "Pool-Heizung und Wassertemperatur", pins: [
+    [50, 11, "Zähler oben", "Wassertemperatur, Heizung an oder aus, geschätzte Zeit bis zum Ziel und der Wärmeverlust über Nacht."],
+    [30, 42, "Verlauf", "Die Linie ist die Wassertemperatur. Gelb hinterlegt sind die Stunden, in denen mit Überschuss geheizt wird."],
+    [74, 34, "Wärmequelle", "Wärmepumpe, Heizstab oder beides, mit Zieltemperatur und der Wahl, nur bei Überschuss oder auch bei günstigem Strom zu heizen."],
+    [94, 53, "Nur bei Überschuss", "Dann heizt der Pool nur mit Eigenstrom. Das dauert länger, kostet aber nichts extra."],
+    [50, 91, "Ohne Wassersensor", "Fehlt der Sensor, wird nach Laufzeit geheizt und die Zeit bis zum Ziel nicht angezeigt."]] },
+  d: { img: "pl-d.jpg", t: "Sauna", alt: "Aufheizen zur Wunschzeit, mit Sicherheit", pins: [
+    [50, 9, "Zähler oben", "Kabinentemperatur, gelernte Aufheizzeit, nächste Nutzung und die Kosten pro Saunagang."],
+    [12, 29, "Jetzt oder zur Wunschzeit", "Du wählst, wann die Sauna bereit sein soll. Das Modul rechnet zurück, wann es starten muss."],
+    [55, 61, "Bestätigen", "Die Sauna wird nie ohne deine Bestätigung eingeschaltet, auch nicht zur geplanten Zeit."],
+    [96, 48, "Rauchalarm", "Schlägt ein Rauchmelder aus Modul 11 an, wird die Sauna sofort abgeschaltet. Das ist nicht abschaltbar."],
+    [50, 90, "Kein Ersatz", "Das Modul ersetzt keinen Sicherheitsschalter am Gerät. Es schaltet nur, wenn alle Bedingungen passen."]] },
+  e: { img: "pl-e.jpg", t: "Kosten", alt: "Kosten und Solaranteil pro Woche", pins: [
+    [50, 15, "Zähler oben", "Kosten der Woche, Solaranteil, Ersparnis gegenüber reinem Netzstrom und Verbrauch."],
+    [30, 61, "Strom pro Tag", "Gelb ist Solarstrom, rot Netzstrom. An sonnigen Tagen wird der Anteil gelb deutlich größer."],
+    [30, 85, "Legende", "Der Verlauf kommt aus Home Assistant, es wird nichts extra gespeichert."],
+    [88, 49, "Auswertung", "Kosten getrennt nach Pumpe, Heizung und Sauna."],
+    [79, 36, "Preis", "Der Preis kommt aus den Einstellungen von Modul 1 oder dem Stromtarif in Modul 14."]] },
+  f: { img: "pl-f.jpg", t: "Verknüpfungen", alt: "Mit anderen Modulen verbinden", pins: [
+    [53, 25, "Stromtarif (Modul 14)", "Pumpe und Heizung in günstigen Stunden, die Sauna bevorzugt dann aufheizen."],
+    [53, 40, "Solar-Prognose (Modul 16)", "Heizen und Pumpen auf Stunden mit viel Sonne legen, bei schlechtem Wetter auf morgen verschieben."],
+    [53, 69, "Wartung (Modul 15)", "Filter rückspülen, Wasserwerte prüfen und Pumpenstunden als Termine."],
+    [53, 83, "Sicherheit (Modul 11)", "Bei Rauchalarm geht die Sauna sofort aus. Das ist immer an und lässt sich nicht abschalten."],
+    [79, 5, "Vorrang", "Sicherheit zuerst, dann Frostschutz, dann Überschuss und Preis. Die Mindestlaufzeit der Pumpe hat Vorrang vor dem Preis."],
+    [79, 31, "Hinweis aufs Handy", "Zum Beispiel „Pool ist bis 18:00 warm“ oder „Sauna aufgeheizt“. Eine Meldung pro Ereignis, nie nachts."]] },
+};
+const PL_STEPS = [
+  ["1", "Überblick und Pumpe", "Pumpe nach Überschuss und Mindestlaufzeit, Überblick über Pool und Sauna."],
+  ["2", "Heizung und Kosten", "Pool-Heizung nach Überschuss oder Preis, Kosten und Solaranteil."],
+  ["3", "Sauna und Verknüpfung", "Aufheizen zur Wunschzeit mit Sicherheit, Verknüpfung mit Modul 9, 11, 14, 15 und 16."]];
+const PL_IDEAS = ["Wasserwerte (pH, Chlor) aus Sensoren", "Abdeckung per Rollladen-Antrieb", "Poolroboter mit Zeitplan", "Saunalicht und Musik als Szene", "Winterbetrieb mit Frostschutz"];
+const PL_OPEN = ["Welche Geräte gehen: Schalter, Steckdosen, Wärmepumpe, Heizstab", "Sauna-Schalten: nur mit Bestätigung oder auch automatisch", "Auswertung als Sponsor-Lab oder frei für alle"];
 /* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],
@@ -2721,6 +2768,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("lux")) this._luAct(a, b);
     else if (a.startsWith("rbx")) this._rbAct(a, b);
     else if (a.startsWith("wpx")) this._wpAct(a, b);
+    else if (a.startsWith("plx")) this._plAct(a, b);
     else if (a.startsWith("mvx")) this._mvAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
@@ -5018,18 +5066,13 @@ class FensterHeizungPanel extends HTMLElement {
       ${svc.length ? `<div class="gschips">${svc.map((n) => chip("sfxns", esc(n), esc(n), C.notify.to.includes(n))).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="sfxtest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
-  _plPage() {
+  _plLive() {
     const pv = this._pvNow(), pr = this._price(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
     const o = this._out();
-    return `${this._betaBox("Überschuss und Strompreis kommen aus den PV-Einstellungen von Modul 1.")}
-      <div class="card"><h2>${ic("wave", 18)}Bedingungen jetzt</h2><div class="lugrid">
+    return `<div class="card"><h2>${ic("wave", 18)}Bedingungen jetzt</h2><div class="lugrid">
         ${tile("PV-Überschuss", pv != null ? wfmt(pv) : "–", pv != null ? (pv >= 1000 ? "Gut für Pumpe und Heizung" : "Eher wenig") : "Noch kein Sensor gewählt")}
         ${tile("Strompreis", pr ? num(pr, 1) + " ct/kWh" : "–", pr ? "Aus Modul 1" : "Noch kein Preis gewählt")}
-        ${tile("Außentemperatur", o.t != null ? num(o.t, 1) + " °C" : "–", o.t != null && o.t < 10 ? "Pool-Heizung lohnt kaum" : "Draußen")}</div></div>
-      ${this._betaSoon("wave", "Poolpumpe", "Filterzeiten nach Sonne und Überschuss, Mindestlaufzeit pro Tag")}
-      ${this._betaSoon("flame", "Pool-Heizung", "Wärmepumpe oder Heizstab bei Überschuss oder günstigem Strom")}
-      ${this._betaSoon("thermo", "Sauna", "Aufheizen nach Wunschzeit, bevorzugt mit Solarstrom")}
-      ${this._betaSoon("bolt", "Kosten & Solaranteil", "Was Pumpe und Heizung kosten und wie viel davon Solarstrom war")}`;
+        ${tile("Außentemperatur", o.t != null ? num(o.t, 1) + " °C" : "–", o.t != null && o.t < 10 ? "Pool-Heizung lohnt kaum" : "Draußen")}</div></div>`;
   }
   _wxWarn() {
     const st = this._hass.states, c = this._wxCfg(), wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather."));
@@ -6849,7 +6892,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (id === "mu") { const S = this._mu(); const rows = (S && S.bins) || []; if (!S || !S.on || !S.cal) return this._modHero("mu", { icon: "trash", lbl: "Müllabfuhr", big: "–", small: true, sub: "Noch kein Abfallkalender gewählt" }); const due = rows.filter((x) => ["out", "today"].includes(x.state)), soon = rows.filter((x) => x.state === "soon"), up = rows.filter((x) => x.next).sort((a, b) => a.days - b.days)[0]; const big = due.length ? (due.some((x) => x.state === "today") ? "Heute" : "Jetzt raus") : soon.length ? "Morgen" : up ? (up.days === 0 ? "Heute" : `in ${up.days} Tagen`) : "–"; const names = (due.length ? due : soon.length ? soon : up ? [up] : []).map((x) => x.name); return this._modHero("mu", { icon: "trash", lbl: "Nächste Abholung", big, small: true, sub: names.join(", ") || "Keine Termine gefunden" }); }
       if (id === "ev") { const d = this._evData(); return this._modHero("ev", { icon: "car", lbl: "Elektroauto & Wallbox", big: d.soc != null ? num(d.soc, 0) : "–", unit: d.soc != null ? "%" : "", sub: !d.any ? "Noch kein Fahrzeug eingerichtet" : d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt", chips: [d.range != null ? `Reichweite ${num(d.range, 0)} km` : "", d.odo != null ? `${num(d.odo, 0)} km gefahren` : ""] }); }
       if (id === "ga") return this._modHero("ga", { icon: "plant", lbl: "Garten & Bewässerung", big: "Gartenplan", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
-      if (id === "pl") { const pv = this._pvNow(), pr = this._price(), o = this._out(); return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: pv != null ? wfmt(pv) : "–", small: true, sub: pv != null ? (pv >= 1000 ? "PV-Überschuss, gut für Pumpe und Heizung" : "PV-Überschuss, eher wenig") : "Noch kein Überschuss-Sensor gewählt", chips: [pr ? `${num(pr, 1)} ct/kWh` : "", o.t != null ? `${num(o.t, 1)} °C draußen` : ""] }); }
+      if (id === "pl") return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: "Pool & Sauna", small: true, sub: "Bedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "bt") { const soc = this._soc(), pv = this._pvNow(); return this._modHero("bt", { icon: "energy", lbl: "Batteriespeicher", big: soc != null ? num(soc, 0) : "–", unit: soc != null ? "%" : "", sub: soc != null ? "Ladestand" : "Noch kein Ladestand-Sensor gewählt", chips: [pv != null ? `PV-Überschuss ${wfmt(pv)}` : ""] }); }
       if (id === "dt") { const h = this._dtPrices(), now = new Date().getHours(); if (!h) return this._modHero("dt", { icon: "chart", lbl: "Dynamischer Stromtarif", big: "–", sub: "Noch keine Stundenpreise" }); const mn = Math.min(...h); return this._modHero("dt", { icon: "chart", lbl: "Strompreis jetzt", big: num(h[now], 1), unit: "ct/kWh", sub: `Günstigste Stunde ${h.indexOf(mn)}:00 Uhr mit ${num(mn, 1)} ct/kWh`, chips: [`Ø ${num(h.reduce((a, b) => a + b, 0) / 24, 1)} ct/kWh heute`] }); }
       if (id === "wa") return this._modHero("wa", { icon: "tools", lbl: "Wartung & Erinnerungen", big: "Wartung", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
@@ -7421,6 +7464,33 @@ class FensterHeizungPanel extends HTMLElement {
   _wpAct(a, b) {
     if (a === "wpxtab") { this._wpT = b.dataset.k; try { localStorage.setItem("fh_wp_tab", this._wpT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "wpxpin") { this._wpP = { ...(this._wpP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
+  }
+  /* ================= Modul 12: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
+  _plTab() {
+    let t = this._plT; if (!t) { try { t = localStorage.getItem("fh_pl_tab"); } catch (_) { /* privater Modus */ } }
+    return PL_TABS.some((x) => x[0] === t) ? t : "j";
+  }
+  _plSel(k) { const s = (this._plP || {})[k], n = PL_PINS[k].pins.length; return Number.isInteger(s) && s >= 0 && s < n ? s : 0; }
+  _plShot(k) {
+    const d = PL_PINS[k], sel = this._plSel(k), cur = d.pins[sel];
+    const pins = d.pins.map((p, i) => `<button class="gapin${i === sel ? " on" : ""}" style="left:${p[0]}%;top:${p[1]}%" data-act="plxpin" data-k="${k}" data-i="${i}" aria-label="${esc(p[2])}" aria-pressed="${i === sel}">${i + 1}</button>`).join("");
+    const rows = d.pins.map((p, i) => i === sel ? "" : `<button class="garow" data-act="plxpin" data-k="${k}" data-i="${i}"><span class="gan">${i + 1}</span>${esc(p[2])}</button>`).join("");
+    return `<div class="card" style="padding:12px 16px"><b>${esc(d.t)}</b><div class="mut sm">${esc(d.alt)}</div></div>
+      <div class="gamain"><div class="gashot"><img data-keep="1" src="${GA_IMG}${d.img}${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(d.alt)}" loading="lazy" decoding="async">${pins}<span class="gatip">Tippe auf eine Zahl</span></div>
+      <div class="galist"><div class="card gacur"><div class="gah"><span class="gan">${sel + 1}</span><b>${esc(cur[2])}</b></div><p>${esc(cur[3])}</p></div>${rows}</div></div>`;
+  }
+  _plPage() {
+    const t = this._plTab();
+    const tabs = `<div class="sftabs gatabs" role="tablist">${PL_TABS.map(([k, l]) => `<button class="${k === t ? "on" : ""}" role="tab" aria-selected="${k === t}" data-act="plxtab" data-k="${k}">${l}</button>`).join("")}</div>`;
+    const body = t === "j" ? this._plLive() : t !== "fp" ? this._plShot(t) : `<div class="gast">${PL_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i === 0 ? "d" : "s"}">Stufe ${n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
+      <div class="card"><h2>${ic("puzzle", 18)}Weitere Ideen</h2><div class="gschips">${PL_IDEAS.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
+      <div class="card"><h2>${ic("info", 18)}Noch offen</h2><ul style="margin:6px 0 0;padding-left:20px;line-height:1.6">${PL_OPEN.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    return `${tabs}<div style="display:grid;gap:12px">${body}</div>
+      <div class="gasoon" style="margin-top:12px">${ic("clock", 22)}<div><b>Coming soon …</b><br><span class="mut">Dieses Modul ist in Entwicklung. Der Reiter „Jetzt“ zeigt die echten Bedingungen. Alles andere sind Entwürfe mit Beispielwerten, Pool und Sauna werden noch nicht gesteuert.</span></div></div>`;
+  }
+  _plAct(a, b) {
+    if (a === "plxtab") { this._plT = b.dataset.k; try { localStorage.setItem("fh_pl_tab", this._plT); } catch (_) { /* privater Modus */ } this._render(); }
+    else if (a === "plxpin") { this._plP = { ...(this._plP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");

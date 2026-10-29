@@ -395,6 +395,53 @@ const WP_STEPS = [
   ["3", "Effizienz und Abtauen", "COP, Jahresarbeitszahl, Abtauzyklen und Verknüpfung mit Modul 2, 14 und 16."]];
 const WP_IDEAS = ["Heizkurve als Vorschlag mit Begründung", "Bivalenzpunkt und Heizstab-Anteil", "Schallleistung und Nachtabsenkung", "Warmwasser nach PV-Überschuss (Modul 16)", "Wärmemenge je Raum aus Modul 1"];
 const WP_OPEN = ["Welche Anlagen gehen: Entitäten aus Home Assistant, welche Hersteller zuerst", "Welche Ansicht wird Startseite: Überblick, Laufzeit oder Effizienz", "Auswertung als Sponsor-Lab oder frei für alle"];
+const PL_TABS = [["j", "Jetzt"], ["a", "Überblick"], ["b", "Pumpe"], ["c", "Heizung"], ["d", "Sauna"], ["e", "Kosten"], ["f", "Verknüpfung"], ["fp", "Fahrplan"]];
+const PL_PINS = {
+  a: { img: "pl-a.jpg", t: "Überblick", alt: "Pool und Sauna mit Strom und Überschuss auf einen Blick", pins: [
+    [50, 13, "Zähler oben", "PV-Überschuss, Strompreis, Wassertemperatur im Pool und Stand der Sauna."],
+    [44, 42, "Pumpe", "Läuft sie gerade und warum, zum Beispiel wegen PV-Überschuss. Dazu die Laufzeit heute."],
+    [44, 57, "Heizung", "Wärmepumpe oder Heizstab, mit Leistung und Zieltemperatur."],
+    [44, 71, "Filterdruck", "Der Druck am Filter kommt auf Wunsch aus Modul 15 und warnt, wenn rückgespült werden sollte."],
+    [88, 71, "Sicherheit der Sauna", "Die Sauna schaltet nach der eingestellten Zeit ab, standardmäßig nach 4 Stunden."],
+    [50, 89, "Fehlende Entitäten", "Was nicht vorhanden ist, bleibt leer. Es wird nichts geschätzt."]] },
+  b: { img: "pl-b.jpg", t: "Pumpe", alt: "Filterzeiten nach Sonne und Überschuss", pins: [
+    [50, 9, "Zähler oben", "Wie lange die Pumpe heute lief, wie viel davon mit Solarstrom, die Kosten und der nächste Lauf."],
+    [50, 35, "Überschuss und Lauf", "Die gelbe Fläche ist der PV-Überschuss. Die türkisen Balken zeigen, wann die Pumpe lief oder laufen soll."],
+    [50, 42, "Mindestlaufzeit", "Mindestens 6 Stunden pro Tag, bevorzugt mit Überschuss, der Rest bei günstigem Strom."],
+    [56, 73, "Regeln", "Ab welchem Überschuss die Pumpe startet, die Mindestlaufzeit am Stück und der Dauerlauf bei Frost."],
+    [79, 66, "Trockenlaufschutz", "Fehlt der Durchfluss, wird die Pumpe nach zwei Minuten abgeschaltet und du bekommst einen Hinweis."]] },
+  c: { img: "pl-c.jpg", t: "Heizung", alt: "Pool-Heizung und Wassertemperatur", pins: [
+    [50, 11, "Zähler oben", "Wassertemperatur, Heizung an oder aus, geschätzte Zeit bis zum Ziel und der Wärmeverlust über Nacht."],
+    [30, 42, "Verlauf", "Die Linie ist die Wassertemperatur. Gelb hinterlegt sind die Stunden, in denen mit Überschuss geheizt wird."],
+    [74, 34, "Wärmequelle", "Wärmepumpe, Heizstab oder beides, mit Zieltemperatur und der Wahl, nur bei Überschuss oder auch bei günstigem Strom zu heizen."],
+    [94, 53, "Nur bei Überschuss", "Dann heizt der Pool nur mit Eigenstrom. Das dauert länger, kostet aber nichts extra."],
+    [50, 91, "Ohne Wassersensor", "Fehlt der Sensor, wird nach Laufzeit geheizt und die Zeit bis zum Ziel nicht angezeigt."]] },
+  d: { img: "pl-d.jpg", t: "Sauna", alt: "Aufheizen zur Wunschzeit, mit Sicherheit", pins: [
+    [50, 9, "Zähler oben", "Kabinentemperatur, gelernte Aufheizzeit, nächste Nutzung und die Kosten pro Saunagang."],
+    [12, 29, "Jetzt oder zur Wunschzeit", "Du wählst, wann die Sauna bereit sein soll. Das Modul rechnet zurück, wann es starten muss."],
+    [55, 61, "Bestätigen", "Die Sauna wird nie ohne deine Bestätigung eingeschaltet, auch nicht zur geplanten Zeit."],
+    [96, 48, "Rauchalarm", "Schlägt ein Rauchmelder aus Modul 11 an, wird die Sauna sofort abgeschaltet. Das ist nicht abschaltbar."],
+    [50, 90, "Kein Ersatz", "Das Modul ersetzt keinen Sicherheitsschalter am Gerät. Es schaltet nur, wenn alle Bedingungen passen."]] },
+  e: { img: "pl-e.jpg", t: "Kosten", alt: "Kosten und Solaranteil pro Woche", pins: [
+    [50, 15, "Zähler oben", "Kosten der Woche, Solaranteil, Ersparnis gegenüber reinem Netzstrom und Verbrauch."],
+    [30, 61, "Strom pro Tag", "Gelb ist Solarstrom, rot Netzstrom. An sonnigen Tagen wird der Anteil gelb deutlich größer."],
+    [30, 85, "Legende", "Der Verlauf kommt aus Home Assistant, es wird nichts extra gespeichert."],
+    [88, 49, "Auswertung", "Kosten getrennt nach Pumpe, Heizung und Sauna."],
+    [79, 36, "Preis", "Der Preis kommt aus den Einstellungen von Modul 1 oder dem Stromtarif in Modul 14."]] },
+  f: { img: "pl-f.jpg", t: "Verknüpfungen", alt: "Mit anderen Modulen verbinden", pins: [
+    [53, 25, "Stromtarif (Modul 14)", "Pumpe und Heizung in günstigen Stunden, die Sauna bevorzugt dann aufheizen."],
+    [53, 40, "Solar-Prognose (Modul 16)", "Heizen und Pumpen auf Stunden mit viel Sonne legen, bei schlechtem Wetter auf morgen verschieben."],
+    [53, 69, "Wartung (Modul 15)", "Filter rückspülen, Wasserwerte prüfen und Pumpenstunden als Termine."],
+    [53, 83, "Sicherheit (Modul 11)", "Bei Rauchalarm geht die Sauna sofort aus. Das ist immer an und lässt sich nicht abschalten."],
+    [79, 5, "Vorrang", "Sicherheit zuerst, dann Frostschutz, dann Überschuss und Preis. Die Mindestlaufzeit der Pumpe hat Vorrang vor dem Preis."],
+    [79, 31, "Hinweis aufs Handy", "Zum Beispiel „Pool ist bis 18:00 warm“ oder „Sauna aufgeheizt“. Eine Meldung pro Ereignis, nie nachts."]] },
+};
+const PL_STEPS = [
+  ["1", "Überblick und Pumpe", "Pumpe nach Überschuss und Mindestlaufzeit, Überblick über Pool und Sauna."],
+  ["2", "Heizung und Kosten", "Pool-Heizung nach Überschuss oder Preis, Kosten und Solaranteil."],
+  ["3", "Sauna und Verknüpfung", "Aufheizen zur Wunschzeit mit Sicherheit, Verknüpfung mit Modul 9, 11, 14, 15 und 16."]];
+const PL_IDEAS = ["Wasserwerte (pH, Chlor) aus Sensoren", "Abdeckung per Rollladen-Antrieb", "Poolroboter mit Zeitplan", "Saunalicht und Musik als Szene", "Winterbetrieb mit Frostschutz"];
+const PL_OPEN = ["Welche Geräte gehen: Schalter, Steckdosen, Wärmepumpe, Heizstab", "Sauna-Schalten: nur mit Bestätigung oder auch automatisch", "Auswertung als Sponsor-Lab oder frei für alle"];
 /* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],

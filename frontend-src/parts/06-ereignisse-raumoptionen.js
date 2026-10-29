@@ -117,6 +117,7 @@
     else if (a.startsWith("lux")) this._luAct(a, b);
     else if (a.startsWith("rbx")) this._rbAct(a, b);
     else if (a.startsWith("wpx")) this._wpAct(a, b);
+    else if (a.startsWith("plx")) this._plAct(a, b);
     else if (a.startsWith("mvx")) this._mvAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
