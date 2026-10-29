@@ -454,20 +454,6 @@
       ${this._labFields("wx")}
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wxstest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
-  _gaPage() {
-    const st = this._hass.states, c = this._wxCfg(), wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather."));
-    const w = wid ? st[wid] : null, rainy = w && ["rainy", "pouring", "lightning-rainy", "snowy-rainy"].includes(w.state), pv = this._pvNow();
-    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    return `${this._betaBox("Regen kommt aus deiner Wetter-Entität, der Überschuss aus den PV-Einstellungen von Modul 1.")}
-      <div class="card"><h2>${ic("plant", 18)}Garten jetzt</h2><div class="lugrid">
-        ${tile("Regen", w ? (rainy ? "Es regnet" : "Trocken") : "–", w ? (rainy ? "Bewässern nicht nötig" : "Kein Regen gemeldet") : "Keine Wetter-Entität gefunden")}
-        ${tile("PV-Überschuss", pv != null ? wfmt(pv) : "–", pv != null ? (pv >= 500 ? "Genug zum Bewässern" : "Eher wenig") : "Noch kein Sensor gewählt")}
-        ${tile("Zisterne", "–", "Füllstand-Sensor folgt")}</div></div>
-      ${this._betaSoon("drop", "Regenprognose", "Bewässerung überspringen, wenn Regen erwartet wird")}
-      ${this._betaSoon("tree", "Zisterne", "Füllstand anzeigen und auf Leitungswasser umschalten, wenn sie leer ist")}
-      ${this._betaSoon("sun", "Bewässerung bei PV-Überschuss", "Pumpe oder Ventil starten, wenn genug Solarstrom übrig ist")}
-      ${this._betaSoon("clock", "Zeitplan", "Bewässerungszeiten pro Zone mit Dauer und Wochentagen")}`;
-  }
   _rbPage() {
     const h = this._hass, sun = h.states["sun.sun"], o = this._out(), el = sun ? Number(sun.attributes.elevation) : NaN, az = sun ? Number(sun.attributes.azimuth) : NaN;
     const dir = isFinite(az) ? ["Nord", "Nordost", "Ost", "Südost", "Süd", "Südwest", "West", "Nordwest"][Math.round(az / 45) % 8] : "";

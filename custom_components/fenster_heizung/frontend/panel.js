@@ -405,6 +405,37 @@ const MOD_ART = {
   li: `<path d="M20 10h24l5 24H15z" class="f"/><path d="M32 34v16M22 56h20M26 50h12"/><path d="M8 18l4 3M56 18l-4 3M32 2v4"/>`,
   ef: `<path d="M18 30 32 18l14 12v16H18z" class="f"/><path d="M26 46V36h12v10"/><path d="M4 32h8M8 28l4 4-4 4M60 32h-8M56 28l-4 4 4 4"/><circle cx="32" cy="8" r="4"/><path d="M32 12v3"/>`,
 };
+/* Modul 10 (Konzeptseite): Reiter, Bilder und Markierungen. Positionen in Prozent des Bildes. */
+const GA_IMG = "/fenster_heizung_static/img/";
+const GA_TABS = [["an", "Ansicht"], ["bk", "Baukasten"], ["hy", "Handy"], ["te", "Technik"], ["fp", "Fahrplan"]];
+const GA_PINS = {
+  an: { img: "ga-ansicht.jpg", alt: "Gartenplan mit Karte, Zonen, Leitungen und Seitenpanel", pins: [
+    [13, 21, "Zisterne mit Füllstand", "Der Füllstand steht im Tank-Symbol. Die Pumpe daneben dreht sich, solange sie läuft."],
+    [23, 47, "Animierte Leitungen", "Wasser fließt blau gestrichelt in Flussrichtung, solange ein Ventil läuft. Sonst bleibt die Leitung grau und ruhig. Mit einem Durchfluss-Sensor passt sich die Geschwindigkeit an."],
+    [52, 44, "Zone „braucht Wasser“", "Zonen färben sich nach der Bodenfeuchte: trocken orange, feucht blau. Fällt eine Zone unter ihr Ziel, steht dort „braucht Wasser“. Zonen mit Schloss sind gesperrt, zum Beispiel wegen Regenprognose."],
+    [34, 70, "Regner mit Reichweite", "Die Reichweite ist ein Kreis. Läuft der Regner, drehen sich die Tropfen und Wellen pulsieren. Am Bodenfeuchte-Sensor zeigt ein Schild den Prozentwert."],
+    [29, 7, "Karte und Ebenen", "OpenStreetMap, optional Satellit. Feuchte und Regenradar lassen sich zuschalten. Die Quellenangabe „© OpenStreetMap-Mitwirkende“ bleibt immer sichtbar."],
+    [86, 30, "Seitenpanel", "Für die gewählte Zone: Feuchte gegen Ziel, Laufzeit, Wasserverbrauch, nächster Lauf sowie Stopp und +10 min."]] },
+  bk: { img: "ga-baukasten.jpg", alt: "Baukasten zum Platzieren von Regnern, Ventilen, Rohren und Sensoren", pins: [
+    [86, 20, "Palette", "Bewässerung: Regner, Sektor-Regner, Tropfer, Ventil, Pumpe, Zisterne. Messen und Leitung: Bodenfeuchte, Durchfluss, Hahn, Rohr, Beet oder Zone, Text. Element ziehen oder antippen, ein Punktraster hilft beim Andocken."],
+    [57, 30, "Rohre ziehen", "„Rohr“ wählen und von Punkt zu Punkt ziehen, mit Knickpunkten. Die Leitungen leuchten später, wenn ein Ventil läuft."],
+    [37, 45, "Griffe am Element", "Das gewählte Element hat Griffe zum Verschieben, Drehen und für die Reichweite."],
+    [86, 78, "Eigenschaften", "Home-Assistant-Entität (Schalter oder Sensor), Zone oder Ventil und Reichweite. Außerdem Duplizieren und Löschen."],
+    [94, 96, "Speichern", "Das Layout liegt im Speicher der Integration, auf allen Geräten gleich und mit in der Sicherung."]] },
+};
+const GA_TECH = [
+  ["pin", "Karte", "Leaflet (ca. 40 KB), in die Integration gebündelt. Kacheln von OpenStreetMap, die Quellenangabe bleibt immer sichtbar."],
+  ["info", "Kachelserver", "Der OSM-Standardserver ist nicht für Dauerbetrieb gedacht. Geplant: Kachelanbieter mit freiem Kontingent einstellbar oder Kacheln fürs Grundstück zwischenspeichern."],
+  ["shield", "Datenschutz", "Beim Laden der Kacheln sieht der Anbieter deine IP-Adresse und den ungefähren Kartenausschnitt. Dazu kommt ein Hinweis in der Einrichtung."],
+  ["drop", "Animation", "Eine SVG-Ebene über der Karte mit CSS-Animationen, ohne Dauer-Rendern. Flüssig auch auf dem iPad."],
+  ["home", "Standort", "Die Karte zentriert auf den Home-Assistant-Standort oder eine gesuchte Adresse, einmal gespeichert."],
+  ["tools", "Datenmodell", "Elemente mit Typ, Position (Breite und Länge), Entität, Zone und Parametern. Rohre sind Punktfolgen zwischen Elementen."]];
+const GA_STEPS = [
+  ["1", "Karte und Baukasten", "Karte, Elemente platzieren, Rohre ziehen, animierte Leitungen und Bodenfeuchte."],
+  ["2", "Zonen und Automatik", "Zonen zeichnen, Zeitpläne und Automatik nach Feuchte, Regen und PV-Überschuss."],
+  ["3", "Radar und Verbrauch", "Regenradar, Heatmap der Feuchte und Wasserverbrauch."]];
+const GA_IDEAS = ["Regenradar als Ebene", "Wasserverbrauch pro Zone und Tag am Symbol", "Weitere Ebenen: Gartenbeleuchtung, Mähroboter, Pool (Modul 12)", "Frost- und Regenschutz mit Sperrsymbol", "Editor als Sponsor-Lab, Basiskarte frei"];
+const GA_OPEN = ["Kachelanbieter: OSM-Standard mit Zwischenspeicher oder Anbieter mit Kontingent", "Editor als Sponsor-Lab oder frei für alle", "Umfang von Stufe 1"];
 const CSS = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -1380,6 +1411,21 @@ button.hzr{cursor:pointer}
 .hero.mh.sfh.warn{background:radial-gradient(110% 150% at 100% 0%,#fbbf24 0%,transparent 52%),linear-gradient(135deg,#78350f,#b45309 60%,#92400e)}
 .hero.mh.sfh.alarm{background:radial-gradient(110% 150% at 100% 0%,#f87171 0%,transparent 52%),linear-gradient(135deg,#7f1d1d,#b91c1c 60%,#991b1b);animation:sfp 1.6s ease-in-out infinite}
 @media(prefers-reduced-motion:reduce){.hero.mh.sfh.alarm{animation:none}}
+.hero.mh .chip.stdev{background:#fbbf24;color:#2b1d00;font-weight:800;border-color:transparent}.hero.mh .chip.stsoon{background:#8b5cf6;color:#fff;font-weight:800;border-color:transparent}
+.gatabs{margin:2px 0 12px}.gamain{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:14px;align-items:start}
+.gashot{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#0c0f12}.gashot img{display:block;width:100%;height:auto}
+.gatip{position:absolute;left:8px;top:8px;background:#241a45;color:#d6ccff;border:1px solid #8b5cf666;font-size:.66rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;pointer-events:none}
+.gapin{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;border:0;background:var(--teal);color:#042f2e;font:inherit;font-weight:800;font-size:.9rem;cursor:pointer;box-shadow:0 0 0 6px color-mix(in srgb,var(--teal) 30%,transparent);display:grid;place-items:center;padding:0}
+.gapin.on{background:#fbbf24;box-shadow:0 0 0 8px rgba(251,191,36,.35);z-index:2}.gapin:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.galist{display:grid;gap:8px;align-content:start}.gacur{border-color:rgba(251,191,36,.55)!important}.gacur .gah{display:flex;gap:10px;align-items:center}.gacur p{margin:8px 0 0;line-height:1.45;color:var(--mut)}
+.gan{flex:none;width:26px;height:26px;border-radius:50%;background:var(--teal);color:#042f2e;font-weight:800;font-size:.85rem;display:grid;place-items:center}.gacur .gan{background:#fbbf24}
+.garow{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:1px solid var(--line);background:var(--card);color:var(--primary-text-color);border-radius:16px;padding:10px 14px;font:inherit;cursor:pointer}
+.gafeat{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}.gafc{border:1px solid var(--line);border-radius:18px;padding:14px;background:color-mix(in srgb,var(--primary-text-color) 4%,var(--card))}.gafc b{display:flex;gap:8px;align-items:center;margin-bottom:4px}.gafc b svg{color:var(--teal)}.gafc span{color:var(--mut);font-size:.9rem;line-height:1.4;display:block}
+.gaph{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}.gaph figure{margin:0;width:min(300px,44%);min-width:220px}.gaph .gashot{border-radius:22px}.gaph figcaption{text-align:center;color:var(--mut);font-size:.85rem;margin-top:6px}
+.gast{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.gast .s{border:1px solid var(--line);border-radius:18px;padding:14px;background:color-mix(in srgb,var(--primary-text-color) 4%,var(--card))}.gast .s b{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.gast .s span.d{display:block;color:var(--mut);margin-top:6px;line-height:1.4;font-size:.92rem}
+.gastg{font-size:.64rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:2px 9px}.gastg.d{background:#3a2a05;color:#fbbf24;border:1px solid rgba(251,191,36,.4)}.gastg.s{background:#241a45;color:#c4b5fd;border:1px solid rgba(139,92,246,.4)}
+.gasoon{border:1px dashed rgba(139,92,246,.55);background:rgba(139,92,246,.12);border-radius:16px;padding:12px 16px;line-height:1.4;display:flex;gap:12px;align-items:center}.gasoon svg{flex:none;color:#c4b5fd}
+@media(max-width:820px){.gamain{grid-template-columns:1fr}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -2468,6 +2514,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (this._admin() && this._hass) this._hass.callWS({ type: "fenster_heizung/bak_list" }).then((r) => fin((r && r.stores) || [])).catch(() => fin([]));
     }
     else if (a.startsWith("ebk")) this._ebkAct(a, b);
+    else if (a.startsWith("gax")) this._gaAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
     else if (a === "bakyes") {
@@ -4943,20 +4990,6 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._labFields("wx")}
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wxstest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
-  _gaPage() {
-    const st = this._hass.states, c = this._wxCfg(), wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather."));
-    const w = wid ? st[wid] : null, rainy = w && ["rainy", "pouring", "lightning-rainy", "snowy-rainy"].includes(w.state), pv = this._pvNow();
-    const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    return `${this._betaBox("Regen kommt aus deiner Wetter-Entität, der Überschuss aus den PV-Einstellungen von Modul 1.")}
-      <div class="card"><h2>${ic("plant", 18)}Garten jetzt</h2><div class="lugrid">
-        ${tile("Regen", w ? (rainy ? "Es regnet" : "Trocken") : "–", w ? (rainy ? "Bewässern nicht nötig" : "Kein Regen gemeldet") : "Keine Wetter-Entität gefunden")}
-        ${tile("PV-Überschuss", pv != null ? wfmt(pv) : "–", pv != null ? (pv >= 500 ? "Genug zum Bewässern" : "Eher wenig") : "Noch kein Sensor gewählt")}
-        ${tile("Zisterne", "–", "Füllstand-Sensor folgt")}</div></div>
-      ${this._betaSoon("drop", "Regenprognose", "Bewässerung überspringen, wenn Regen erwartet wird")}
-      ${this._betaSoon("tree", "Zisterne", "Füllstand anzeigen und auf Leitungswasser umschalten, wenn sie leer ist")}
-      ${this._betaSoon("sun", "Bewässerung bei PV-Überschuss", "Pumpe oder Ventil starten, wenn genug Solarstrom übrig ist")}
-      ${this._betaSoon("clock", "Zeitplan", "Bewässerungszeiten pro Zone mit Dauer und Wochentagen")}`;
-  }
   _rbPage() {
     const h = this._hass, sun = h.states["sun.sun"], o = this._out(), el = sun ? Number(sun.attributes.elevation) : NaN, az = sun ? Number(sun.attributes.azimuth) : NaN;
     const dir = isFinite(az) ? ["Nord", "Nordost", "Ost", "Südost", "Süd", "Südwest", "West", "Nordwest"][Math.round(az / 45) % 8] : "";
@@ -6606,7 +6639,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _modHero(id, o) {
     const chips = (o.chips || []).filter(Boolean);
-    return `<div class="card hero mh a-${id}${o.cls ? " " + o.cls : ""}">${this._modLogo(id)}<div class="lbl">${ic(o.icon || "info", 16)}${esc(o.lbl)}</div><div class="big${o.small ? " bs" : ""}">${esc(o.big)}${o.unit ? `<small>${esc(o.unit)}</small>` : ""}</div>${o.sub ? `<div class="sub">${esc(o.sub)}</div>` : ""}${chips.length ? `<div class="chips">${chips.map((c) => `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>`;
+    return `<div class="card hero mh a-${id}${o.cls ? " " + o.cls : ""}">${this._modLogo(id)}<div class="lbl">${ic(o.icon || "info", 16)}${esc(o.lbl)}</div><div class="big${o.small ? " bs" : ""}">${esc(o.big)}${o.unit ? `<small>${esc(o.unit)}</small>` : ""}</div>${o.sub ? `<div class="sub">${esc(o.sub)}</div>` : ""}${chips.length ? `<div class="chips">${chips.map((c) => /^§(dev|soon)\|/.test(c) ? `<span class="chip st${c.slice(1, c.indexOf("|"))}">${esc(c.slice(c.indexOf("|") + 1))}</span>` : `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>`;
   }
   /* Banner der Module ohne eigenes Banner (aus den Werten, die die Seite ohnehin zeigt) */
   _modHeroFor(id) {
@@ -6617,7 +6650,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (id === "li") { const rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on); return this._modHero("li", { icon: "lamp", lbl: "Licht & Lampen", big: String(on.length), unit: on.length === 1 ? "Lampe an" : "Lampen an", sub: lamps.length ? `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}` : "Keine Lampen gefunden" }); }
       if (id === "mu") { const S = this._mu(); const rows = (S && S.bins) || []; if (!S || !S.on || !S.cal) return this._modHero("mu", { icon: "trash", lbl: "Müllabfuhr", big: "–", small: true, sub: "Noch kein Abfallkalender gewählt" }); const due = rows.filter((x) => ["out", "today"].includes(x.state)), soon = rows.filter((x) => x.state === "soon"), up = rows.filter((x) => x.next).sort((a, b) => a.days - b.days)[0]; const big = due.length ? (due.some((x) => x.state === "today") ? "Heute" : "Jetzt raus") : soon.length ? "Morgen" : up ? (up.days === 0 ? "Heute" : `in ${up.days} Tagen`) : "–"; const names = (due.length ? due : soon.length ? soon : up ? [up] : []).map((x) => x.name); return this._modHero("mu", { icon: "trash", lbl: "Nächste Abholung", big, small: true, sub: names.join(", ") || "Keine Termine gefunden" }); }
       if (id === "ev") { const d = this._evData(); return this._modHero("ev", { icon: "car", lbl: "Elektroauto & Wallbox", big: d.soc != null ? num(d.soc, 0) : "–", unit: d.soc != null ? "%" : "", sub: !d.any ? "Noch kein Fahrzeug eingerichtet" : d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt", chips: [d.range != null ? `Reichweite ${num(d.range, 0)} km` : "", d.odo != null ? `${num(d.odo, 0)} km gefahren` : ""] }); }
-      if (id === "ga") { const st = this._hass.states, c = this._wxCfg(), wid = c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather.")), w = wid ? st[wid] : null, rainy = w && ["rainy", "pouring", "lightning-rainy", "snowy-rainy"].includes(w.state), pv = this._pvNow(); return this._modHero("ga", { icon: "plant", lbl: "Garten jetzt", big: w ? (rainy ? "Es regnet" : "Trocken") : "–", small: true, sub: w ? (rainy ? "Bewässern nicht nötig" : "Kein Regen gemeldet") : "Keine Wetter-Entität gefunden", chips: [pv != null ? `PV-Überschuss ${wfmt(pv)}` : ""] }); }
+      if (id === "ga") return this._modHero("ga", { icon: "plant", lbl: "Garten & Bewässerung", big: "Gartenplan", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "pl") { const pv = this._pvNow(), pr = this._price(), o = this._out(); return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: pv != null ? wfmt(pv) : "–", small: true, sub: pv != null ? (pv >= 1000 ? "PV-Überschuss, gut für Pumpe und Heizung" : "PV-Überschuss, eher wenig") : "Noch kein Überschuss-Sensor gewählt", chips: [pr ? `${num(pr, 1)} ct/kWh` : "", o.t != null ? `${num(o.t, 1)} °C draußen` : ""] }); }
       if (id === "bt") { const soc = this._soc(), pv = this._pvNow(); return this._modHero("bt", { icon: "energy", lbl: "Batteriespeicher", big: soc != null ? num(soc, 0) : "–", unit: soc != null ? "%" : "", sub: soc != null ? "Ladestand" : "Noch kein Ladestand-Sensor gewählt", chips: [pv != null ? `PV-Überschuss ${wfmt(pv)}` : ""] }); }
       if (id === "dt") { const h = this._dtPrices(), now = new Date().getHours(); if (!h) return this._modHero("dt", { icon: "chart", lbl: "Dynamischer Stromtarif", big: "–", sub: "Noch keine Stundenpreise" }); const mn = Math.min(...h); return this._modHero("dt", { icon: "chart", lbl: "Strompreis jetzt", big: num(h[now], 1), unit: "ct/kWh", sub: `Günstigste Stunde ${h.indexOf(mn)}:00 Uhr mit ${num(mn, 1)} ct/kWh`, chips: [`Ø ${num(h.reduce((a, b) => a + b, 0) / 24, 1)} ct/kWh heute`] }); }
@@ -7015,6 +7048,36 @@ class FensterHeizungPanel extends HTMLElement {
         .then((r) => { if (run) done({ ok: !!(r.res && r.res.ok), msg: (r.res && r.res.msg) || "" }, r.res); else done({ ok: !!r.ok, msg: r.msg || "" }); })
         .catch(() => done({ ok: false, msg: "Keine Antwort von Home Assistant" }));
     }
+  }
+  /* ================= Modul 10: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
+  _gaTab() {
+    let t = this._gaT; if (!t) { try { t = localStorage.getItem("fh_ga_tab"); } catch (_) { /* privater Modus */ } }
+    return GA_TABS.some((x) => x[0] === t) ? t : "an";
+  }
+  _gaSel(k) { const s = (this._gaP || {})[k], n = GA_PINS[k].pins.length; return Number.isInteger(s) && s >= 0 && s < n ? s : 0; }
+  _gaShot(k) {
+    const d = GA_PINS[k], sel = this._gaSel(k), cur = d.pins[sel];
+    const pins = d.pins.map((p, i) => `<button class="gapin${i === sel ? " on" : ""}" style="left:${p[0]}%;top:${p[1]}%" data-act="gaxpin" data-k="${k}" data-i="${i}" aria-label="${esc(p[2])}" aria-pressed="${i === sel}">${i + 1}</button>`).join("");
+    const rows = d.pins.map((p, i) => i === sel ? "" : `<button class="garow" data-act="gaxpin" data-k="${k}" data-i="${i}"><span class="gan">${i + 1}</span>${esc(p[2])}</button>`).join("");
+    return `<div class="gamain"><div class="gashot"><img src="${GA_IMG}${d.img}${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(d.alt)}" loading="lazy" decoding="async">${pins}<span class="gatip">Tippe auf eine Zahl</span></div>
+      <div class="galist"><div class="card gacur"><div class="gah"><span class="gan">${sel + 1}</span><b>${esc(cur[2])}</b></div><p>${esc(cur[3])}</p></div>${rows}</div></div>`;
+  }
+  _gaPage() {
+    const t = this._gaTab();
+    const tabs = `<div class="sftabs gatabs" role="tablist">${GA_TABS.map(([k, l]) => `<button class="${k === t ? "on" : ""}" role="tab" aria-selected="${k === t}" data-act="gaxtab" data-k="${k}">${l}</button>`).join("")}</div>`;
+    let body = "";
+    if (t === "an" || t === "bk") body = this._gaShot(t);
+    else if (t === "hy") body = `<div class="card"><h2>${ic("tablet", 18)}Auch auf dem Handy</h2><div class="mut sm" style="margin:0 0 10px">Die Karte steht oben, Baukasten und Eigenschaften darunter. Bedient wird per Touch.</div><div class="gaph"><figure><div class="gashot"><img src="${GA_IMG}ga-handy1.jpg" alt="Gartenplan auf dem Handy" loading="lazy" decoding="async"></div><figcaption>Ansicht</figcaption></figure><figure><div class="gashot"><img src="${GA_IMG}ga-handy2.jpg" alt="Baukasten auf dem Handy" loading="lazy" decoding="async"></div><figcaption>Baukasten</figcaption></figure></div></div>`;
+    else if (t === "te") body = `<div class="gafeat">${GA_TECH.map(([i, n, d]) => `<div class="gafc"><b>${ic(i, 18)}${n}</b><span>${d}</span></div>`).join("")}</div>`;
+    else body = `<div class="gast">${GA_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i === 0 ? "d" : "s"}">Stufe ${n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
+      <div class="card"><h2>${ic("puzzle", 18)}Weitere Ideen</h2><div class="gschips">${GA_IDEAS.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
+      <div class="card"><h2>${ic("info", 18)}Noch offen</h2><ul style="margin:6px 0 0;padding-left:20px;line-height:1.6">${GA_OPEN.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    return `${tabs}<div style="display:grid;gap:12px">${body}</div>
+      <div class="gasoon" style="margin-top:12px">${ic("clock", 22)}<div><b>Coming soon …</b><br><span class="mut">Dieses Modul ist in Entwicklung. Die Seite zeigt, wie es aussehen wird. Bewässern kann es noch nicht. Die Bilder sind Vorschauen, die Karte darin ist eine nachgezeichnete Skizze im OSM-Stil.</span></div></div>`;
+  }
+  _gaAct(a, b) {
+    if (a === "gaxtab") { this._gaT = b.dataset.k; try { localStorage.setItem("fh_ga_tab", this._gaT); } catch (_) { /* privater Modus */ } this._render(); }
+    else if (a === "gaxpin") { this._gaP = { ...(this._gaP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");

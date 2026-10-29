@@ -111,6 +111,7 @@
       if (this._admin() && this._hass) this._hass.callWS({ type: "fenster_heizung/bak_list" }).then((r) => fin((r && r.stores) || [])).catch(() => fin([]));
     }
     else if (a.startsWith("ebk")) this._ebkAct(a, b);
+    else if (a.startsWith("gax")) this._gaAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
     else if (a === "bakyes") {

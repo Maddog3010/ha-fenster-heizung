@@ -202,3 +202,34 @@ const MOD_ART = {
   li: `<path d="M20 10h24l5 24H15z" class="f"/><path d="M32 34v16M22 56h20M26 50h12"/><path d="M8 18l4 3M56 18l-4 3M32 2v4"/>`,
   ef: `<path d="M18 30 32 18l14 12v16H18z" class="f"/><path d="M26 46V36h12v10"/><path d="M4 32h8M8 28l4 4-4 4M60 32h-8M56 28l-4 4 4 4"/><circle cx="32" cy="8" r="4"/><path d="M32 12v3"/>`,
 };
+/* Modul 10 (Konzeptseite): Reiter, Bilder und Markierungen. Positionen in Prozent des Bildes. */
+const GA_IMG = "/fenster_heizung_static/img/";
+const GA_TABS = [["an", "Ansicht"], ["bk", "Baukasten"], ["hy", "Handy"], ["te", "Technik"], ["fp", "Fahrplan"]];
+const GA_PINS = {
+  an: { img: "ga-ansicht.jpg", alt: "Gartenplan mit Karte, Zonen, Leitungen und Seitenpanel", pins: [
+    [13, 21, "Zisterne mit Füllstand", "Der Füllstand steht im Tank-Symbol. Die Pumpe daneben dreht sich, solange sie läuft."],
+    [23, 47, "Animierte Leitungen", "Wasser fließt blau gestrichelt in Flussrichtung, solange ein Ventil läuft. Sonst bleibt die Leitung grau und ruhig. Mit einem Durchfluss-Sensor passt sich die Geschwindigkeit an."],
+    [52, 44, "Zone „braucht Wasser“", "Zonen färben sich nach der Bodenfeuchte: trocken orange, feucht blau. Fällt eine Zone unter ihr Ziel, steht dort „braucht Wasser“. Zonen mit Schloss sind gesperrt, zum Beispiel wegen Regenprognose."],
+    [34, 70, "Regner mit Reichweite", "Die Reichweite ist ein Kreis. Läuft der Regner, drehen sich die Tropfen und Wellen pulsieren. Am Bodenfeuchte-Sensor zeigt ein Schild den Prozentwert."],
+    [29, 7, "Karte und Ebenen", "OpenStreetMap, optional Satellit. Feuchte und Regenradar lassen sich zuschalten. Die Quellenangabe „© OpenStreetMap-Mitwirkende“ bleibt immer sichtbar."],
+    [86, 30, "Seitenpanel", "Für die gewählte Zone: Feuchte gegen Ziel, Laufzeit, Wasserverbrauch, nächster Lauf sowie Stopp und +10 min."]] },
+  bk: { img: "ga-baukasten.jpg", alt: "Baukasten zum Platzieren von Regnern, Ventilen, Rohren und Sensoren", pins: [
+    [86, 20, "Palette", "Bewässerung: Regner, Sektor-Regner, Tropfer, Ventil, Pumpe, Zisterne. Messen und Leitung: Bodenfeuchte, Durchfluss, Hahn, Rohr, Beet oder Zone, Text. Element ziehen oder antippen, ein Punktraster hilft beim Andocken."],
+    [57, 30, "Rohre ziehen", "„Rohr“ wählen und von Punkt zu Punkt ziehen, mit Knickpunkten. Die Leitungen leuchten später, wenn ein Ventil läuft."],
+    [37, 45, "Griffe am Element", "Das gewählte Element hat Griffe zum Verschieben, Drehen und für die Reichweite."],
+    [86, 78, "Eigenschaften", "Home-Assistant-Entität (Schalter oder Sensor), Zone oder Ventil und Reichweite. Außerdem Duplizieren und Löschen."],
+    [94, 96, "Speichern", "Das Layout liegt im Speicher der Integration, auf allen Geräten gleich und mit in der Sicherung."]] },
+};
+const GA_TECH = [
+  ["pin", "Karte", "Leaflet (ca. 40 KB), in die Integration gebündelt. Kacheln von OpenStreetMap, die Quellenangabe bleibt immer sichtbar."],
+  ["info", "Kachelserver", "Der OSM-Standardserver ist nicht für Dauerbetrieb gedacht. Geplant: Kachelanbieter mit freiem Kontingent einstellbar oder Kacheln fürs Grundstück zwischenspeichern."],
+  ["shield", "Datenschutz", "Beim Laden der Kacheln sieht der Anbieter deine IP-Adresse und den ungefähren Kartenausschnitt. Dazu kommt ein Hinweis in der Einrichtung."],
+  ["drop", "Animation", "Eine SVG-Ebene über der Karte mit CSS-Animationen, ohne Dauer-Rendern. Flüssig auch auf dem iPad."],
+  ["home", "Standort", "Die Karte zentriert auf den Home-Assistant-Standort oder eine gesuchte Adresse, einmal gespeichert."],
+  ["tools", "Datenmodell", "Elemente mit Typ, Position (Breite und Länge), Entität, Zone und Parametern. Rohre sind Punktfolgen zwischen Elementen."]];
+const GA_STEPS = [
+  ["1", "Karte und Baukasten", "Karte, Elemente platzieren, Rohre ziehen, animierte Leitungen und Bodenfeuchte."],
+  ["2", "Zonen und Automatik", "Zonen zeichnen, Zeitpläne und Automatik nach Feuchte, Regen und PV-Überschuss."],
+  ["3", "Radar und Verbrauch", "Regenradar, Heatmap der Feuchte und Wasserverbrauch."]];
+const GA_IDEAS = ["Regenradar als Ebene", "Wasserverbrauch pro Zone und Tag am Symbol", "Weitere Ebenen: Gartenbeleuchtung, Mähroboter, Pool (Modul 12)", "Frost- und Regenschutz mit Sperrsymbol", "Editor als Sponsor-Lab, Basiskarte frei"];
+const GA_OPEN = ["Kachelanbieter: OSM-Standard mit Zwischenspeicher oder Anbieter mit Kontingent", "Editor als Sponsor-Lab oder frei für alle", "Umfang von Stufe 1"];
