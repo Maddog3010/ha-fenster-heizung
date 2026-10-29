@@ -2,6 +2,12 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.7] - 2026-10-29
+
+### Neu
+- **Labs: Beispielbilder.** Die Detailseiten der Labs zeigen jetzt echte Ausschnitte aus dem Panel, damit du siehst, was dich erwartet.
+- **Konzeptseiten zum Durchklicken** für die Module 5 (Lüftung), 6 (Rollläden), 7 (Wärmepumpe), 10, 12 (Pool & Sauna), 13 (Batteriespeicher) und 15 (Wartung). Sie arbeiten wie die Seite von Modul 10: Reiter mit Bild, nummerierte Pins, Fahrplan, weitere Ideen und offene Fragen. Wo es schon echte Werte gab, steht sie im Reiter „Jetzt“. Alle Beispielwerte in den Bildern sind erfunden, die Module steuern noch nichts.
+
 ## [3.0.6.6] - 2026-10-29
 
 ### Geändert
