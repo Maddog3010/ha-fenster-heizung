@@ -1461,6 +1461,8 @@ button.hzr{cursor:pointer}
 .mvtr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}.mvtr>span{display:flex;flex-direction:column;align-items:center;gap:2px;opacity:.5}.mvtr>span.now{opacity:1}.mvtr>span.now em{box-shadow:0 0 0 2px var(--teal)}.mvtr>span.done{opacity:.8}.mvtr small{font-size:.68rem;color:var(--mut)}.mvtr>i{font-style:normal;color:var(--mut)}
 .mvnx{font-size:.86rem;margin:2px 0 8px;line-height:1.45}.mvrule{display:grid;gap:4px;font-size:.86rem;line-height:1.4}.mvrule b{display:inline-block;min-width:118px}
 @media(max-width:520px){.mvtr>i{display:none}.mvtr{gap:8px 10px}}
+.mlogo:has(.mlv) svg{height:58%;width:58%;margin-top:-12%}.mlv{position:absolute;left:4px;right:4px;bottom:8px;text-align:center;font-size:.64rem;font-weight:800;letter-spacing:.01em;white-space:nowrap;opacity:.92}
+@media(max-width:520px){.mlv{font-size:.5rem;bottom:5px}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -6672,7 +6674,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* ================= Einheitliches Banner für alle Module =================
      Links Titelzeile, große Zahl, Zusatzzeile und Chips, rechts ein Logo-Feld mit dem Symbol des Moduls. */
-  _modLogo(id) { return `<div class="mlogo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${MOD_ART[id] || ""}</svg></div>`; }
+  _modLogo(id) { return `<div class="mlogo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${MOD_ART[id] || ""}</svg>${MV[id] ? `<span class="mlv">v${esc(MV[id].v)} · Build ${MV[id].b}</span>` : ""}</div>`; }
   _modRing(pct, label) {
     const p = Math.max(0, Math.min(100, Math.round(pct)));
     return `<div class="mring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="rb"/><circle cx="60" cy="60" r="50" class="rf" stroke-dasharray="${(p * 3.1416).toFixed(1)} 314.2" transform="rotate(-90 60 60)"/></svg><div class="rv"><b>${p}<small>%</small></b><span>${esc(label)}</span></div></div>`;

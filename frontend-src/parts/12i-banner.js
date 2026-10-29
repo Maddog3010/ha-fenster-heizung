@@ -1,6 +1,6 @@
   /* ================= Einheitliches Banner für alle Module =================
      Links Titelzeile, große Zahl, Zusatzzeile und Chips, rechts ein Logo-Feld mit dem Symbol des Moduls. */
-  _modLogo(id) { return `<div class="mlogo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${MOD_ART[id] || ""}</svg></div>`; }
+  _modLogo(id) { return `<div class="mlogo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${MOD_ART[id] || ""}</svg>${MV[id] ? `<span class="mlv">v${esc(MV[id].v)} · Build ${MV[id].b}</span>` : ""}</div>`; }
   _modRing(pct, label) {
     const p = Math.max(0, Math.min(100, Math.round(pct)));
     return `<div class="mring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="rb"/><circle cx="60" cy="60" r="50" class="rf" stroke-dasharray="${(p * 3.1416).toFixed(1)} 314.2" transform="rotate(-90 60 60)"/></svg><div class="rv"><b>${p}<small>%</small></b><span>${esc(label)}</span></div></div>`;
