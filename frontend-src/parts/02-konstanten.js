@@ -233,27 +233,27 @@ const GA_STEPS = [
   ["3", "Radar und Verbrauch", "Regenradar, Heatmap der Feuchte und Wasserverbrauch."]];
 const GA_IDEAS = ["Regenradar als Ebene", "Wasserverbrauch pro Zone und Tag am Symbol", "Weitere Ebenen: Gartenbeleuchtung, Mähroboter, Pool (Modul 12)", "Frost- und Regenschutz mit Sperrsymbol", "Editor als Sponsor-Lab, Basiskarte frei"];
 const GA_OPEN = ["Kachelanbieter: OSM-Standard mit Zwischenspeicher oder Anbieter mit Kontingent", "Editor als Sponsor-Lab oder frei für alle", "Umfang von Stufe 1"];
-/* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt jede Änderung am Modul. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
+/* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],
   ["beta", "0.5 – 0.8", "Funktioniert mit echten Daten, zum Testen.", "Fehler sind möglich, Einstellungen können sich ändern.", "Weiter zur Vorabversion, wenn alle geplanten Funktionen da sind und Sichern und Wiederherstellen geprüft ist."],
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
-  ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Fehler werden zuerst behoben."]];
+  ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.1", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.1", 2, "3.0.6.2", "Automatische Sicherung auf einen Homeserver"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  ww: { v: "1.0", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.0", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  en: { v: "1.0", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.0", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  gs: { v: "1.0", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.0", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  ev: { v: "0.6", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.6", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  wx: { v: "0.6", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.6", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  ga: { v: "0.1", b: 3, d: "2026-10-29", p: "3.0.6.4", log: [["0.1", 3, "3.0.6.4", "Bilder flackern nicht mehr"], ["0.1", 2, "3.0.6.3", "Konzeptseite zum Durchklicken"], ["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  sf: { v: "0.6", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.6", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.5", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.9", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.9", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  ef: { v: "0.6", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] } };
+  fh: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  ww: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  en: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  gs: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  ev: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  wx: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  sf: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  sp: { v: "0.9", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
+  ef: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] } };

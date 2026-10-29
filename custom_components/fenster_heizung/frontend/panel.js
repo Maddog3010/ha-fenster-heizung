@@ -436,30 +436,30 @@ const GA_STEPS = [
   ["3", "Radar und Verbrauch", "Regenradar, Heatmap der Feuchte und Wasserverbrauch."]];
 const GA_IDEAS = ["Regenradar als Ebene", "Wasserverbrauch pro Zone und Tag am Symbol", "Weitere Ebenen: Gartenbeleuchtung, Mähroboter, Pool (Modul 12)", "Frost- und Regenschutz mit Sperrsymbol", "Editor als Sponsor-Lab, Basiskarte frei"];
 const GA_OPEN = ["Kachelanbieter: OSM-Standard mit Zwischenspeicher oder Anbieter mit Kontingent", "Editor als Sponsor-Lab oder frei für alle", "Umfang von Stufe 1"];
-/* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt jede Änderung am Modul. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
+/* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],
   ["beta", "0.5 – 0.8", "Funktioniert mit echten Daten, zum Testen.", "Fehler sind möglich, Einstellungen können sich ändern.", "Weiter zur Vorabversion, wenn alle geplanten Funktionen da sind und Sichern und Wiederherstellen geprüft ist."],
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
-  ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Fehler werden zuerst behoben."]];
+  ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.1", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.1", 2, "3.0.6.2", "Automatische Sicherung auf einen Homeserver"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  ww: { v: "1.0", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.0", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  en: { v: "1.0", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.0", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  gs: { v: "1.0", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.0", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  ev: { v: "0.6", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.6", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  wx: { v: "0.6", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.6", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  ga: { v: "0.1", b: 3, d: "2026-10-29", p: "3.0.6.4", log: [["0.1", 3, "3.0.6.4", "Bilder flackern nicht mehr"], ["0.1", 2, "3.0.6.3", "Konzeptseite zum Durchklicken"], ["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  sf: { v: "0.6", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.6", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.5", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.9", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.9", 1, "3.0.6.1", "Startwert der Zählung"]] },
-  ef: { v: "0.6", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] } };
+  fh: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  ww: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  en: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  gs: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  ev: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  wx: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  sf: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  sp: { v: "0.9", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
+  ef: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] } };
 const CSS = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -1456,6 +1456,9 @@ button.hzr{cursor:pointer}
 .mvlg{display:grid;gap:10px;margin-top:10px}.mvl{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:start;line-height:1.45;font-size:.86rem}.mvl em{justify-self:start}
 .mtab small{white-space:nowrap}.mtab small .mvv,.mnew{display:none}@media(min-width:821px){.mtab small .mvv{display:inline;font-weight:700}.mnew{display:block;position:absolute;top:-6px;right:-3px;background:#f59e0b;color:#111;border-radius:999px;font-size:.58rem;font-weight:800;padding:1px 6px;font-style:normal;text-transform:none}}
 @media(max-width:520px){.brand div span>em.dvl,.brand div span>em.beta,.brand div span>em.vab,.brand div span>em.stb{display:none}}@media(max-width:600px){.mvd{display:none}.mvl{grid-template-columns:1fr}}
+.mvtr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:8px 0}.mvtr>span{display:flex;flex-direction:column;align-items:center;gap:2px;opacity:.5}.mvtr>span.now{opacity:1}.mvtr>span.now em{box-shadow:0 0 0 2px var(--teal)}.mvtr>span.done{opacity:.8}.mvtr small{font-size:.68rem;color:var(--mut)}.mvtr>i{font-style:normal;color:var(--mut)}
+.mvnx{font-size:.86rem;margin:2px 0 8px;line-height:1.45}.mvrule{display:grid;gap:4px;font-size:.86rem;line-height:1.4}.mvrule b{display:inline-block;min-width:118px}
+@media(max-width:520px){.mvtr>i{display:none}.mvtr{gap:8px 10px}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -7124,19 +7127,20 @@ class FensterHeizungPanel extends HTMLElement {
     const m = MV[id]; if (this._mvO !== id || !m) return "";
     const mm = MODS.find((x) => x.id === id), st = this._mvStg(id);
     return `<div class="card mvpop"><div class="mvh"><b>${esc(mm ? "Modul " + mm.n + " · " + mm.name : id)}</b><button class="ibtn" data-act="mvx" data-k="${id}" aria-label="Schließen">${ic("close", 18)}</button></div>
-      ${st ? `<div class="mvst"><em class="sxc ${STG[st[0]].c}">${STG[st[0]].t}</em> <span class="mut">Version ${st[1]}</span><br>${st[2]} ${st[3]}</div>` : ""}
+      ${st ? `<div class="mvst"><em class="sxc ${STG[st[0]].c}">${STG[st[0]].t}</em> <span class="mut">Version ${st[1]}</span><br>${st[2]} ${st[3]}</div>${this._mvTrack(st[0])}<div class="mvnx"><b>Nächster Schritt:</b> ${st[4]}</div>` : ""}
       <ul class="mvlog">${m.log.map((l) => `<li><b>v${esc(l[0])} · Build ${l[1]}</b> <span class="mut">(Paket ${esc(l[2])})</span> – ${esc(l[3])}</li>`).join("")}</ul>
       <div class="mut sm">Alle Module und die Bedeutung der Stufen stehen unter Einstellungen → Versionen.</div></div>`;
   }
-  _mvNew(id) { const m = MV[id]; return !!(m && this._ver && m.p === this._ver); }
+  _mvNew(id) { const m = MV[id]; return !!(m && this._ver && m.p === this._ver && m.log.length > 1); }
+  _mvTrack(cur) { const i = MV_STG.findIndex((x) => x[0] === cur); return `<div class="mvtr">${MV_STG.map((x, k) => `<span class="${k < i ? "done" : k === i ? "now" : ""}"><em class="sxc ${STG[x[0]].c}">${STG[x[0]].t}</em><small>${x[1]}</small></span>`).join("<i>›</i>")}</div>`; }
   _mvTab(id) { const m = MV[id]; if (!m || this._narrow) return ["", ""]; return [`<span class="mvv"> · v${esc(m.v)}</span>`, this._mvNew(id) ? `<i class="mnew">neu</i>` : ""]; }
   _mvTable() {
     const rows = MODS.filter((x) => MV[x.id]).map((x) => { const m = MV[x.id], s = modSt(x), g = STG[s];
       return `<tr><td><span class="mut">Modul ${x.n}</span> ${esc(x.short)}</td><td>${g ? `<em class="sxc ${g.c}">${g.t}</em>` : ""}</td><td><b>v${esc(m.v)}</b></td><td>${m.b}</td><td class="mut mvd">${esc(new Date(m.d + "T12:00:00").toLocaleDateString("de-DE"))}</td><td>${this._mvNew(x.id) ? `<span class="mvn">NEU</span>` : ""}</td></tr>`; }).join("");
     const leg = MV_STG.slice().reverse().map((s) => `<div class="mvl"><em class="sxc ${STG[s[0]].c}">${STG[s[0]].t}</em><div><b>Version ${s[1]}</b><br>${s[2]} ${s[3]}<br><span class="mut">${s[4]}</span></div></div>`).join("");
     return `<div class="card mvt"><table><thead><tr><th>Modul</th><th>Stufe</th><th>Version</th><th>Build</th><th class="mvd">Geändert</th><th></th></tr></thead><tbody>${rows}</tbody></table>
-      <div class="mut sm" style="margin-top:8px">Paket ${esc(this._ver || "")}. Die Version zeigt den Reifegrad, der Build zählt jede Änderung am Modul. Module ohne Änderung behalten ihre Nummer.</div></div>
-      <div class="card mvlg"><b>So unterscheiden sich die Stufen</b>${leg}</div>`;
+      <div class="mut sm" style="margin-top:8px">Paket ${esc(this._ver || "")}. Die Version zeigt den Reifegrad, der Build zählt Änderungen innerhalb der Version. Module ohne Änderung behalten ihre Nummer.</div></div>
+      <div class="card mvlg"><b>So läuft der Aufstieg</b>${this._mvTrack("")}<div class="mvrule"><div><b>Neue Funktion</b> Version +0.1, Build wieder 1</div><div><b>Fehlerbehebung</b> gleiche Version, Build +1</div><div><b>Aufstieg</b> Version springt auf den Start der nächsten Stufe, Build wieder 1</div></div><b style="margin-top:6px">So unterscheiden sich die Stufen</b>${leg}</div>`;
   }
   _mvAct(a, b) { if (a === "mvx") { this._mvO = this._mvO === b.dataset.k ? null : b.dataset.k; this._render(); } }
   _mdBar() {
