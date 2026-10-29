@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.9] - 2026-10-29
+
+### Neu
+- **Modul 1 (v1.1): Optionaler Raumtemperatur-Sensor je Raum.** Der Thermostat misst am Heizkörper und liegt im Betrieb oft 1 bis 4 K über dem Raum. Mit einem zweiten Sensor im Raum zeigt die Raumkarte den Raumwert groß und den Thermostat klein, samt Hinweis wie „Thermostat 1,7 K wärmer als der Raum“. Der Bericht zeichnet zwei Linien (Raum, Thermostat).
+- Unter „Verwenden für“ lässt sich je Raum einstellen, wofür der Sensor gilt: Anzeige, Aufheizzeit lernen, Taupunkt und Schimmelrisiko, Elektroheizer „warm genug“.
+- Der Thermostat regelt unverändert. Fällt der Sensor aus oder meldet einen unplausiblen Wert (außerhalb −20 bis 50 °C), gilt automatisch wieder der Thermostat, die Karte weist darauf hin. °F und K werden umgerechnet.
+- Gerätediagnose: Der Raumsensor erscheint als Rolle „Raumtemperatur“.
+
 ## [3.0.6.8] - 2026-10-29
 
 ### Behoben
