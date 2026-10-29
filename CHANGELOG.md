@@ -2,6 +2,12 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.7.2] - 2026-10-29
+
+### Geändert
+- **Modul 19 Hausfluss (v0.5 Build 2): Fluss-Bild passt sich dem Bildschirm an.** Auf Tablet und Desktop richtet sich die Kachelgröße nach der Höhe unter dem Banner, sodass das ganze Bild auf den Bildschirm passt. Neue Einstellung „Größe“ (Auto, Klein, Mittel, Groß), pro Gerät gespeichert. Das Banner bleibt oben, das Haus steht mittig zwischen Solar und Batterie, einzelne obere Kacheln werden zentriert, die Linien verlaufen wie im Vorbild (gerade nach oben und unten, als S-Kurve zu den Seitenkacheln). Auf dem Handy bleibt alles wie bisher.
+- **Umschalter „Jetzt | Strom“** unter dem Banner. „Strom“ ist noch ein Platzhalter, die Seiten folgen in den nächsten Builds. Ein Tipp auf das Haus öffnet „Strom“.
+
 ## [3.0.7.1] - 2026-10-29
 
 ### Behoben

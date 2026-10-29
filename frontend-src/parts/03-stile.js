@@ -802,6 +802,12 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efn.on .efs{color:var(--primary-text-color)}.efs i{display:block;font-style:normal;font-size:.72em;font-weight:500;color:var(--mut);overflow:hidden;text-overflow:ellipsis}
 .efs.t{top:8%;left:50%;transform:translateX(-50%)}.efs.b{bottom:8%;left:50%;transform:translateX(-50%)}.efs.l{left:3%;top:50%;transform:translateY(-50%);width:28%}.efs.r{right:3%;top:50%;transform:translateY(-50%);width:28%}
 .efn.hub .efs.t{font-size:10cqw}.efn.hub .efs.b{font-size:9cqw}
+.efseg{display:flex;gap:8px;align-items:center}.efseg button{font:inherit;font-weight:700;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--mut);padding:7px 20px;cursor:pointer}.efseg button.on{color:#2dd4bf;border-color:#2dd4bf;background:color-mix(in srgb,#2dd4bf 16%,var(--card))}.efseg .efszb{margin-left:auto;padding:5px 14px;font-weight:600;font-size:.82rem}
+.efn.hub[data-act]{cursor:pointer}.efx:not(.nar) .efc.ct .efn,.efx:not(.nar) .efc.ct .efg{width:calc(50% - 5px)}
+.efx:not(.nar){max-width:1100px}.efx:not(.nar)>.hero{min-height:0;padding-top:10px;padding-bottom:12px}.efx:not(.nar)>.hero .mlogo{display:none}.efx:not(.nar)>.hero .lbl{max-width:none}.efx:not(.nar)>.hero .big{font-size:2.3rem}
+.efx:not(.nar) .efboard{padding:10px;--eft:128px}.efx:not(.nar) .efgrid{grid-template-columns:repeat(4,minmax(0,var(--eft)));justify-content:center;gap:6px 10px}
+.efx:not(.nar) .efn,.efx:not(.nar) .efg{aspect-ratio:1.15/1}.efx:not(.nar) .efc.z>.efg{aspect-ratio:auto;height:0}
+.efx:not(.nar) .efc.hu.hb .efn{transform:translateY(calc(var(--eft) / -2.3 - 3px))}.efx:not(.nar) .efc.hd.hb .efn{transform:translateY(calc(var(--eft) / 2.3 + 3px))}
 .efx.nar .efboard{padding:12px 10px}.efx.nar .efgrid{grid-template-columns:minmax(0,1fr) clamp(92px,27%,130px) minmax(0,1fr);column-gap:clamp(16px,6%,28px);row-gap:12px}
 .efx.nar .efc.hb .efn{width:100%}.efx.nar .efc.bt .efn{width:clamp(92px,27%,130px)}
 .efx.nar .efs{font-size:max(10.5px,11cqw)}.efx.nar .efs i{font-size:max(9px,.82em)}.efx.nar .efn.hub .efs.t{font-size:max(10.5px,11.5cqw)}.efx.nar .efn.hub .efs.b{font-size:max(10.5px,10.5cqw)}
