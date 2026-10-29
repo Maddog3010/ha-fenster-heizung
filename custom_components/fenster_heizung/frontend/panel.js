@@ -645,6 +645,52 @@ const PL_STEPS = [
   ["3", "Sauna und Verknüpfung", "Aufheizen zur Wunschzeit mit Sicherheit, Verknüpfung mit Modul 9, 11, 14, 15 und 16."]];
 const PL_IDEAS = ["Wasserwerte (pH, Chlor) aus Sensoren", "Abdeckung per Rollladen-Antrieb", "Poolroboter mit Zeitplan", "Saunalicht und Musik als Szene", "Winterbetrieb mit Frostschutz"];
 const PL_OPEN = ["Welche Geräte gehen: Schalter, Steckdosen, Wärmepumpe, Heizstab", "Sauna-Schalten: nur mit Bestätigung oder auch automatisch", "Auswertung als Sponsor-Lab oder frei für alle"];
+const BT_TABS = [["j", "Jetzt"], ["a", "Überblick"], ["b", "Zeitplan"], ["c", "Grenzen"], ["d", "Netzladen"], ["e", "Verlauf"], ["f", "Verknüpfung"], ["fp", "Fahrplan"]];
+const BT_PINS = {
+  a: { img: "bt-a.jpg", t: "Überblick", alt: "Ladestand und Betriebsart auf einen Blick", pins: [
+    [50, 12, "Zähler oben", "Ladestand, PV-Überschuss, aktuelle Betriebsart und Strompreis. Alles kommt aus den Entitäten deines Wechselrichters."],
+    [50, 36, "Speicher jetzt", "Der grüne Balken ist der Ladestand. Gelb markiert die Untergrenze, grau die Obergrenze."],
+    [15, 69, "Betriebsart", "PV laden, Halten, Haus aus Batterie oder Netzladen. Die aktive Art ist grün markiert."],
+    [22, 41, "Legende", "Die Grenzen stellst du im Reiter Grenzen ein."],
+    [50, 90, "Vorschau", "Es wird nichts an der Batterie geschaltet. Das Modul zeigt nur an und schlägt vor."]] },
+  b: { img: "bt-b.jpg", t: "Zeitplan", alt: "Wann welche Betriebsart gilt", pins: [
+    [50, 10, "Zähler oben", "Aktuelle Betriebsart, der nächste Wechsel, die Zahl der Zeiten und das nächste Netzladen."],
+    [11, 30, "Tag wählen", "Werktag, Samstag, Sonntag oder ein eigener Tag haben jeweils einen eigenen Plan."],
+    [50, 41, "Tagesplan", "Der Balken zeigt die 24 Stunden. Jede Farbe ist eine Betriebsart, zum Beispiel blau für Netzladen in der Nacht."],
+    [79, 54, "Ausnahmen", "Schlechte Sonnenprognose oder hoher Abendpreis ändern den Plan. Im Urlaub pausiert er."],
+    [50, 92, "Nur Vorschlag", "Zum Schalten brauchst du später den Wechsel der Betriebsart deines Wechselrichters."]] },
+  c: { img: "bt-c.jpg", t: "Grenzen", alt: "Ladestand-Grenzen", pins: [
+    [50, 12, "Zähler oben", "Untergrenze, Obergrenze, Nachtreserve und Notstrom auf einen Blick."],
+    [30, 30, "Ladestand-Grenzen", "Wie tief die Batterie entladen und wie hoch sie geladen werden darf. 95 Prozent oben schont die Zellen."],
+    [53, 58, "Nachtreserve", "Bis zum Morgen bleibt dieser Anteil erhalten, damit das Haus nachts nicht aus dem Netz zieht."],
+    [96, 62, "Heizer-Untergrenze", "Aus Modul 1: das Heizen nimmt nie den Notstrom der Batterie."],
+    [50, 90, "Beispielwerte", "Du stellst die Werte später selbst ein. Sie werden nur weitergegeben, wenn du das Modul einschaltest."]] },
+  d: { img: "bt-d.jpg", t: "Netzladen", alt: "Netzladen in günstigen Stunden", pins: [
+    [50, 12, "Zähler oben", "Günstigste und teuerste Zeit des Tages, die Menge fürs Netzladen und die Ersparnis am Abend."],
+    [30, 56, "Strompreis heute", "Blau sind die Stunden zum Netzladen. Der Preis kommt aus Modul 14."],
+    [94, 41, "Netzladen nach Preis", "Schaltet die Funktion ein. Aus ist die Standardeinstellung."],
+    [94, 52, "Preisgrenze", "Nur wenn der Preis unter diesem Wert liegt, wird geladen. Dazu eine Obergrenze für den Ladestand."],
+    [50, 89, "Verluste", "Netzladen lohnt sich nur, wenn der Preisabstand die Verluste von etwa 10 Prozent übersteigt."]] },
+  e: { img: "bt-e.jpg", t: "Verlauf", alt: "Ladestand und Bilanz", pins: [
+    [50, 8, "Zähler oben", "Geladene und entladene Energie, Autarkie und Zyklen des Tages."],
+    [50, 37, "Ladestand 24 Stunden", "Die grüne Linie ist der Ladestand, gelb gestrichelt die Untergrenze."],
+    [30, 65, "Woche", "Wie viel aus Solar und aus dem Netz geladen und wie viel ins Haus geliefert wurde."],
+    [79, 65, "Gespart", "Ersparnis gegenüber reinem Netzbezug, gerechnet mit deinem durchschnittlichen Preis."],
+    [22, 57, "Legende", "Der Verlauf kommt aus Home Assistant, es wird nichts extra gespeichert."]] },
+  f: { img: "bt-f.jpg", t: "Verknüpfungen", alt: "Mit anderen Modulen verbinden", pins: [
+    [53, 25, "Stromtarif (Modul 14)", "Netzladen in den günstigsten Stunden, Entladen in den teuersten."],
+    [53, 40, "Solar-Prognose (Modul 16)", "Bei viel Sonne morgen nachts weniger laden, bei wenig Sonne mehr."],
+    [53, 69, "Wärmepumpe (Modul 7)", "Speicher für Heizen und Warmwasser nutzen, ohne ihn zu entleeren."],
+    [53, 83, "Heizer (Modul 1)", "Eigene Untergrenze, damit das Heizen nicht den Notstrom nimmt."],
+    [79, 5, "Vorrang", "Notstrom-Reserve zuerst, dann Haus, dann Auto und Wärmepumpe, zuletzt Netzladen nach Preis."],
+    [79, 31, "Hinweis aufs Handy", "Zum Beispiel „Batterie voll“ oder „Batterie fast leer“. Eine Meldung pro Ereignis, nie nachts."]] },
+};
+const BT_STEPS = [
+  ["1", "Überblick und Modi", "Ladestand, Betriebsart und Grenzen anzeigen, noch ohne zu schalten."],
+  ["2", "Zeitplan und Netzladen", "Tagesplan je Wochentag, Netzladen nach Preis aus Modul 14."],
+  ["3", "Verlauf und Verknüpfung", "Bilanz und Ersparnis, Verknüpfung mit Modul 1, 7, 8, 14 und 16."]];
+const BT_IDEAS = ["Notstrom-Reserve vor Unwetter erhöhen", "Auto-Laden nur aus Überschuss", "Speicher-Alterung und Zyklen im Blick", "Mehrere Speicher zusammenfassen", "Prognose für den Ladestand am Abend"];
+const BT_OPEN = ["Welcher Wechselrichter: Entitäten für Betriebsart und Grenzen", "Schalten: nur Vorschlag oder auch automatisch", "Auswertung als Sponsor-Lab oder frei für alle"];
 /* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],
@@ -2769,6 +2815,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("rbx")) this._rbAct(a, b);
     else if (a.startsWith("wpx")) this._wpAct(a, b);
     else if (a.startsWith("plx")) this._plAct(a, b);
+    else if (a.startsWith("btx")) this._btAct(a, b);
     else if (a.startsWith("mvx")) this._mvAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
@@ -4907,26 +4954,16 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._betaSoon("bell", "Erinnerung", "Aufs Handy, einige Tage vor dem Termin")}
       ${this._betaSoon("clock", "Betriebsstunden aus Sensoren", "Zähler aus Home Assistant lesen und Wartung bei Stundenzahl melden")}`;
   }
-  _btPage() {
+  _btLive() {
     const soc = this._soc(), p = this._pv(), pv = this._pvNow();
     const modes = [["sun", "PV laden", "Überschuss in die Batterie"], ["shield", "Halten", "Ladestand nicht verändern"], ["home", "Haus aus Batterie", "Verbrauch aus dem Speicher decken"], ["energy", "Netzladen", "Bei günstigem Strom aus dem Netz laden"]];
     const mc = modes.map((m, i) => `<div class="luroom ${i ? "off" : ""}"><b>${ic(m[0], 16)} ${m[1]}</b><span class="mut">${m[2]}</span></div>`).join("");
-    const seg = [[0, 6, "#6366f1", "Netzladen"], [6, 10, "#64748b", "Halten"], [10, 16, "#f59e0b", "PV laden"], [16, 22, "#22c55e", "Haus aus Batterie"], [22, 24, "#64748b", "Halten"]];
-    const bar = seg.map((x) => `<div title="${x[3]}" style="flex:${x[1] - x[0]};background:${x[2]};opacity:.85"></div>`).join("");
     const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    return `${this._betaBox("Die Planung ist eine Vorschau mit Beispielwerten. Es wird nichts an der Batterie geschaltet.")}
-      <div class="card"><h2>${ic("energy", 18)}Speicher jetzt</h2><div class="lugrid">
+    return `<div class="card"><h2>${ic("energy", 18)}Speicher jetzt</h2><div class="lugrid">
         ${tile("Ladestand", soc != null ? num(soc, 0) + " %" : "–", soc != null ? "Aus dem Sensor in Modul 1" : "Noch kein Ladestand-Sensor gewählt")}
         ${tile("PV-Überschuss", pv != null ? wfmt(pv) : "–", pv != null ? "Verfügbar zum Laden" : "Noch kein Sensor gewählt")}
         ${tile("Untergrenze", p.soc_min != null && p.soc_sensor ? num(p.soc_min, 0) + " %" : "–", "Heizer erst darüber (Modul 1)")}</div></div>
-      <div class="card"><h2>${ic("sliders", 18)}Betriebsarten</h2><div class="lugrid">${mc}</div></div>
-      <div class="card"><h2>${ic("clock", 18)}Beispiel-Zeitplan</h2>
-        <div style="display:flex;height:26px;border-radius:8px;overflow:hidden;margin:8px 0 4px">${bar}</div>
-        <div style="display:flex;justify-content:space-between" class="mut sm"><span>0 Uhr</span><span>6</span><span>12</span><span>18</span><span>24</span></div>
-        <div class="gst" style="margin-top:10px;flex-wrap:wrap">${seg.map((x) => `<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px"><i style="width:10px;height:10px;border-radius:3px;background:${x[2]}"></i>${x[3]}</span>`).join("")}</div></div>
-      ${this._betaSoon("sliders", "Ladestand-Grenzen", "Untere und obere Grenze je Betriebsart festlegen")}
-      ${this._betaSoon("clock", "Zeitplan", "Betriebsart nach Uhrzeit und Wochentag wählen")}
-      ${this._betaSoon("bolt", "Netzladen nach Preis", "Nur laden, wenn der Strom günstig ist (Modul 14)")}`;
+      <div class="card"><h2>${ic("sliders", 18)}Betriebsarten</h2><div class="lugrid">${mc}</div></div>`;
   }
   _dtPrices() {
     const p = this._pv(), e = p.price_sensor && this._hass.states[p.price_sensor]; if (!e) return null;
@@ -6893,7 +6930,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (id === "ev") { const d = this._evData(); return this._modHero("ev", { icon: "car", lbl: "Elektroauto & Wallbox", big: d.soc != null ? num(d.soc, 0) : "–", unit: d.soc != null ? "%" : "", sub: !d.any ? "Noch kein Fahrzeug eingerichtet" : d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt", chips: [d.range != null ? `Reichweite ${num(d.range, 0)} km` : "", d.odo != null ? `${num(d.odo, 0)} km gefahren` : ""] }); }
       if (id === "ga") return this._modHero("ga", { icon: "plant", lbl: "Garten & Bewässerung", big: "Gartenplan", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "pl") return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: "Pool & Sauna", small: true, sub: "Bedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
-      if (id === "bt") { const soc = this._soc(), pv = this._pvNow(); return this._modHero("bt", { icon: "energy", lbl: "Batteriespeicher", big: soc != null ? num(soc, 0) : "–", unit: soc != null ? "%" : "", sub: soc != null ? "Ladestand" : "Noch kein Ladestand-Sensor gewählt", chips: [pv != null ? `PV-Überschuss ${wfmt(pv)}` : ""] }); }
+      if (id === "bt") return this._modHero("bt", { icon: "energy", lbl: "Batteriespeicher", big: "Batteriespeicher", small: true, sub: "Ladestand jetzt, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "dt") { const h = this._dtPrices(), now = new Date().getHours(); if (!h) return this._modHero("dt", { icon: "chart", lbl: "Dynamischer Stromtarif", big: "–", sub: "Noch keine Stundenpreise" }); const mn = Math.min(...h); return this._modHero("dt", { icon: "chart", lbl: "Strompreis jetzt", big: num(h[now], 1), unit: "ct/kWh", sub: `Günstigste Stunde ${h.indexOf(mn)}:00 Uhr mit ${num(mn, 1)} ct/kWh`, chips: [`Ø ${num(h.reduce((a, b) => a + b, 0) / 24, 1)} ct/kWh heute`] }); }
       if (id === "wa") return this._modHero("wa", { icon: "tools", lbl: "Wartung & Erinnerungen", big: "Wartung", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "sp") { const S = this._sp(); if (!this._spD || S.error || !S.found) return this._modHero("sp", { icon: "sun", lbl: "Solar-Prognose", big: "–", sub: S && S.error ? "Prognose nicht geladen" : "Noch keine Prognose" }); return this._modHero("sp", { icon: "sun", lbl: "Solar heute (Prognose)", big: num(S.today, 1), unit: "kWh", sub: `Morgen ${num(S.tomorrow, 1)} kWh`, chips: [S.got != null ? `Bisher ${num(S.got, 1)} kWh` : ""] }); }
@@ -7491,6 +7528,33 @@ class FensterHeizungPanel extends HTMLElement {
   _plAct(a, b) {
     if (a === "plxtab") { this._plT = b.dataset.k; try { localStorage.setItem("fh_pl_tab", this._plT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "plxpin") { this._plP = { ...(this._plP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
+  }
+  /* ================= Modul 13: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
+  _btTab() {
+    let t = this._btT; if (!t) { try { t = localStorage.getItem("fh_bt_tab"); } catch (_) { /* privater Modus */ } }
+    return BT_TABS.some((x) => x[0] === t) ? t : "j";
+  }
+  _btSel(k) { const s = (this._btP || {})[k], n = BT_PINS[k].pins.length; return Number.isInteger(s) && s >= 0 && s < n ? s : 0; }
+  _btShot(k) {
+    const d = BT_PINS[k], sel = this._btSel(k), cur = d.pins[sel];
+    const pins = d.pins.map((p, i) => `<button class="gapin${i === sel ? " on" : ""}" style="left:${p[0]}%;top:${p[1]}%" data-act="btxpin" data-k="${k}" data-i="${i}" aria-label="${esc(p[2])}" aria-pressed="${i === sel}">${i + 1}</button>`).join("");
+    const rows = d.pins.map((p, i) => i === sel ? "" : `<button class="garow" data-act="btxpin" data-k="${k}" data-i="${i}"><span class="gan">${i + 1}</span>${esc(p[2])}</button>`).join("");
+    return `<div class="card" style="padding:12px 16px"><b>${esc(d.t)}</b><div class="mut sm">${esc(d.alt)}</div></div>
+      <div class="gamain"><div class="gashot"><img data-keep="1" src="${GA_IMG}${d.img}${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(d.alt)}" loading="lazy" decoding="async">${pins}<span class="gatip">Tippe auf eine Zahl</span></div>
+      <div class="galist"><div class="card gacur"><div class="gah"><span class="gan">${sel + 1}</span><b>${esc(cur[2])}</b></div><p>${esc(cur[3])}</p></div>${rows}</div></div>`;
+  }
+  _btPage() {
+    const t = this._btTab();
+    const tabs = `<div class="sftabs gatabs" role="tablist">${BT_TABS.map(([k, l]) => `<button class="${k === t ? "on" : ""}" role="tab" aria-selected="${k === t}" data-act="btxtab" data-k="${k}">${l}</button>`).join("")}</div>`;
+    const body = t === "j" ? this._btLive() : t !== "fp" ? this._btShot(t) : `<div class="gast">${BT_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i === 0 ? "d" : "s"}">Stufe ${n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
+      <div class="card"><h2>${ic("puzzle", 18)}Weitere Ideen</h2><div class="gschips">${BT_IDEAS.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
+      <div class="card"><h2>${ic("info", 18)}Noch offen</h2><ul style="margin:6px 0 0;padding-left:20px;line-height:1.6">${BT_OPEN.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    return `${tabs}<div style="display:grid;gap:12px">${body}</div>
+      <div class="gasoon" style="margin-top:12px">${ic("clock", 22)}<div><b>Coming soon …</b><br><span class="mut">Dieses Modul ist in Entwicklung. Der Reiter „Jetzt“ zeigt den echten Speicher. Alles andere sind Entwürfe mit Beispielwerten, an der Batterie wird nichts geschaltet.</span></div></div>`;
+  }
+  _btAct(a, b) {
+    if (a === "btxtab") { this._btT = b.dataset.k; try { localStorage.setItem("fh_bt_tab", this._btT); } catch (_) { /* privater Modus */ } this._render(); }
+    else if (a === "btxpin") { this._btP = { ...(this._btP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");

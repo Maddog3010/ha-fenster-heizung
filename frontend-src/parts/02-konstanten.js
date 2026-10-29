@@ -442,6 +442,52 @@ const PL_STEPS = [
   ["3", "Sauna und Verknüpfung", "Aufheizen zur Wunschzeit mit Sicherheit, Verknüpfung mit Modul 9, 11, 14, 15 und 16."]];
 const PL_IDEAS = ["Wasserwerte (pH, Chlor) aus Sensoren", "Abdeckung per Rollladen-Antrieb", "Poolroboter mit Zeitplan", "Saunalicht und Musik als Szene", "Winterbetrieb mit Frostschutz"];
 const PL_OPEN = ["Welche Geräte gehen: Schalter, Steckdosen, Wärmepumpe, Heizstab", "Sauna-Schalten: nur mit Bestätigung oder auch automatisch", "Auswertung als Sponsor-Lab oder frei für alle"];
+const BT_TABS = [["j", "Jetzt"], ["a", "Überblick"], ["b", "Zeitplan"], ["c", "Grenzen"], ["d", "Netzladen"], ["e", "Verlauf"], ["f", "Verknüpfung"], ["fp", "Fahrplan"]];
+const BT_PINS = {
+  a: { img: "bt-a.jpg", t: "Überblick", alt: "Ladestand und Betriebsart auf einen Blick", pins: [
+    [50, 12, "Zähler oben", "Ladestand, PV-Überschuss, aktuelle Betriebsart und Strompreis. Alles kommt aus den Entitäten deines Wechselrichters."],
+    [50, 36, "Speicher jetzt", "Der grüne Balken ist der Ladestand. Gelb markiert die Untergrenze, grau die Obergrenze."],
+    [15, 69, "Betriebsart", "PV laden, Halten, Haus aus Batterie oder Netzladen. Die aktive Art ist grün markiert."],
+    [22, 41, "Legende", "Die Grenzen stellst du im Reiter Grenzen ein."],
+    [50, 90, "Vorschau", "Es wird nichts an der Batterie geschaltet. Das Modul zeigt nur an und schlägt vor."]] },
+  b: { img: "bt-b.jpg", t: "Zeitplan", alt: "Wann welche Betriebsart gilt", pins: [
+    [50, 10, "Zähler oben", "Aktuelle Betriebsart, der nächste Wechsel, die Zahl der Zeiten und das nächste Netzladen."],
+    [11, 30, "Tag wählen", "Werktag, Samstag, Sonntag oder ein eigener Tag haben jeweils einen eigenen Plan."],
+    [50, 41, "Tagesplan", "Der Balken zeigt die 24 Stunden. Jede Farbe ist eine Betriebsart, zum Beispiel blau für Netzladen in der Nacht."],
+    [79, 54, "Ausnahmen", "Schlechte Sonnenprognose oder hoher Abendpreis ändern den Plan. Im Urlaub pausiert er."],
+    [50, 92, "Nur Vorschlag", "Zum Schalten brauchst du später den Wechsel der Betriebsart deines Wechselrichters."]] },
+  c: { img: "bt-c.jpg", t: "Grenzen", alt: "Ladestand-Grenzen", pins: [
+    [50, 12, "Zähler oben", "Untergrenze, Obergrenze, Nachtreserve und Notstrom auf einen Blick."],
+    [30, 30, "Ladestand-Grenzen", "Wie tief die Batterie entladen und wie hoch sie geladen werden darf. 95 Prozent oben schont die Zellen."],
+    [53, 58, "Nachtreserve", "Bis zum Morgen bleibt dieser Anteil erhalten, damit das Haus nachts nicht aus dem Netz zieht."],
+    [96, 62, "Heizer-Untergrenze", "Aus Modul 1: das Heizen nimmt nie den Notstrom der Batterie."],
+    [50, 90, "Beispielwerte", "Du stellst die Werte später selbst ein. Sie werden nur weitergegeben, wenn du das Modul einschaltest."]] },
+  d: { img: "bt-d.jpg", t: "Netzladen", alt: "Netzladen in günstigen Stunden", pins: [
+    [50, 12, "Zähler oben", "Günstigste und teuerste Zeit des Tages, die Menge fürs Netzladen und die Ersparnis am Abend."],
+    [30, 56, "Strompreis heute", "Blau sind die Stunden zum Netzladen. Der Preis kommt aus Modul 14."],
+    [94, 41, "Netzladen nach Preis", "Schaltet die Funktion ein. Aus ist die Standardeinstellung."],
+    [94, 52, "Preisgrenze", "Nur wenn der Preis unter diesem Wert liegt, wird geladen. Dazu eine Obergrenze für den Ladestand."],
+    [50, 89, "Verluste", "Netzladen lohnt sich nur, wenn der Preisabstand die Verluste von etwa 10 Prozent übersteigt."]] },
+  e: { img: "bt-e.jpg", t: "Verlauf", alt: "Ladestand und Bilanz", pins: [
+    [50, 8, "Zähler oben", "Geladene und entladene Energie, Autarkie und Zyklen des Tages."],
+    [50, 37, "Ladestand 24 Stunden", "Die grüne Linie ist der Ladestand, gelb gestrichelt die Untergrenze."],
+    [30, 65, "Woche", "Wie viel aus Solar und aus dem Netz geladen und wie viel ins Haus geliefert wurde."],
+    [79, 65, "Gespart", "Ersparnis gegenüber reinem Netzbezug, gerechnet mit deinem durchschnittlichen Preis."],
+    [22, 57, "Legende", "Der Verlauf kommt aus Home Assistant, es wird nichts extra gespeichert."]] },
+  f: { img: "bt-f.jpg", t: "Verknüpfungen", alt: "Mit anderen Modulen verbinden", pins: [
+    [53, 25, "Stromtarif (Modul 14)", "Netzladen in den günstigsten Stunden, Entladen in den teuersten."],
+    [53, 40, "Solar-Prognose (Modul 16)", "Bei viel Sonne morgen nachts weniger laden, bei wenig Sonne mehr."],
+    [53, 69, "Wärmepumpe (Modul 7)", "Speicher für Heizen und Warmwasser nutzen, ohne ihn zu entleeren."],
+    [53, 83, "Heizer (Modul 1)", "Eigene Untergrenze, damit das Heizen nicht den Notstrom nimmt."],
+    [79, 5, "Vorrang", "Notstrom-Reserve zuerst, dann Haus, dann Auto und Wärmepumpe, zuletzt Netzladen nach Preis."],
+    [79, 31, "Hinweis aufs Handy", "Zum Beispiel „Batterie voll“ oder „Batterie fast leer“. Eine Meldung pro Ereignis, nie nachts."]] },
+};
+const BT_STEPS = [
+  ["1", "Überblick und Modi", "Ladestand, Betriebsart und Grenzen anzeigen, noch ohne zu schalten."],
+  ["2", "Zeitplan und Netzladen", "Tagesplan je Wochentag, Netzladen nach Preis aus Modul 14."],
+  ["3", "Verlauf und Verknüpfung", "Bilanz und Ersparnis, Verknüpfung mit Modul 1, 7, 8, 14 und 16."]];
+const BT_IDEAS = ["Notstrom-Reserve vor Unwetter erhöhen", "Auto-Laden nur aus Überschuss", "Speicher-Alterung und Zyklen im Blick", "Mehrere Speicher zusammenfassen", "Prognose für den Ladestand am Abend"];
+const BT_OPEN = ["Welcher Wechselrichter: Entitäten für Betriebsart und Grenzen", "Schalten: nur Vorschlag oder auch automatisch", "Auswertung als Sponsor-Lab oder frei für alle"];
 /* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],

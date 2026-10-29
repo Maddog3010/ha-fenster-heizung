@@ -114,26 +114,16 @@
       ${this._betaSoon("bell", "Erinnerung", "Aufs Handy, einige Tage vor dem Termin")}
       ${this._betaSoon("clock", "Betriebsstunden aus Sensoren", "Zähler aus Home Assistant lesen und Wartung bei Stundenzahl melden")}`;
   }
-  _btPage() {
+  _btLive() {
     const soc = this._soc(), p = this._pv(), pv = this._pvNow();
     const modes = [["sun", "PV laden", "Überschuss in die Batterie"], ["shield", "Halten", "Ladestand nicht verändern"], ["home", "Haus aus Batterie", "Verbrauch aus dem Speicher decken"], ["energy", "Netzladen", "Bei günstigem Strom aus dem Netz laden"]];
     const mc = modes.map((m, i) => `<div class="luroom ${i ? "off" : ""}"><b>${ic(m[0], 16)} ${m[1]}</b><span class="mut">${m[2]}</span></div>`).join("");
-    const seg = [[0, 6, "#6366f1", "Netzladen"], [6, 10, "#64748b", "Halten"], [10, 16, "#f59e0b", "PV laden"], [16, 22, "#22c55e", "Haus aus Batterie"], [22, 24, "#64748b", "Halten"]];
-    const bar = seg.map((x) => `<div title="${x[3]}" style="flex:${x[1] - x[0]};background:${x[2]};opacity:.85"></div>`).join("");
     const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    return `${this._betaBox("Die Planung ist eine Vorschau mit Beispielwerten. Es wird nichts an der Batterie geschaltet.")}
-      <div class="card"><h2>${ic("energy", 18)}Speicher jetzt</h2><div class="lugrid">
+    return `<div class="card"><h2>${ic("energy", 18)}Speicher jetzt</h2><div class="lugrid">
         ${tile("Ladestand", soc != null ? num(soc, 0) + " %" : "–", soc != null ? "Aus dem Sensor in Modul 1" : "Noch kein Ladestand-Sensor gewählt")}
         ${tile("PV-Überschuss", pv != null ? wfmt(pv) : "–", pv != null ? "Verfügbar zum Laden" : "Noch kein Sensor gewählt")}
         ${tile("Untergrenze", p.soc_min != null && p.soc_sensor ? num(p.soc_min, 0) + " %" : "–", "Heizer erst darüber (Modul 1)")}</div></div>
-      <div class="card"><h2>${ic("sliders", 18)}Betriebsarten</h2><div class="lugrid">${mc}</div></div>
-      <div class="card"><h2>${ic("clock", 18)}Beispiel-Zeitplan</h2>
-        <div style="display:flex;height:26px;border-radius:8px;overflow:hidden;margin:8px 0 4px">${bar}</div>
-        <div style="display:flex;justify-content:space-between" class="mut sm"><span>0 Uhr</span><span>6</span><span>12</span><span>18</span><span>24</span></div>
-        <div class="gst" style="margin-top:10px;flex-wrap:wrap">${seg.map((x) => `<span style="display:inline-flex;align-items:center;gap:5px;margin-right:12px"><i style="width:10px;height:10px;border-radius:3px;background:${x[2]}"></i>${x[3]}</span>`).join("")}</div></div>
-      ${this._betaSoon("sliders", "Ladestand-Grenzen", "Untere und obere Grenze je Betriebsart festlegen")}
-      ${this._betaSoon("clock", "Zeitplan", "Betriebsart nach Uhrzeit und Wochentag wählen")}
-      ${this._betaSoon("bolt", "Netzladen nach Preis", "Nur laden, wenn der Strom günstig ist (Modul 14)")}`;
+      <div class="card"><h2>${ic("sliders", 18)}Betriebsarten</h2><div class="lugrid">${mc}</div></div>`;
   }
   _dtPrices() {
     const p = this._pv(), e = p.price_sensor && this._hass.states[p.price_sensor]; if (!e) return null;
