@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.3] - 2026-10-29
+
+### Geändert
+- **Modul 10 „Garten & Bewässerung“ zeigt nur noch das Konzept zum Durchklicken.** Reiter Ansicht, Baukasten, Handy, Technik und Fahrplan mit Bildern und Text; ein Tipp auf die Zahlen im Bild erklärt die Stelle. Dazu die Hinweise „In Entwicklung“ und „Coming soon …“. Bewässern kann das Modul noch nicht. Neue Bilder (ca. 220 KB) unter frontend/img.
+
 ## [3.0.6.2] - 2026-10-29
 
 ### Neu
