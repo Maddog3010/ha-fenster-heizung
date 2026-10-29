@@ -30,7 +30,10 @@
     clearTimeout(this._mdT);
     this._mdT = setTimeout(() => {
       this._mdT = null;
-      if (!this._hass) return; const b = this._mdBackup();
+      if (!this._hass) return;
+      /* Noch nicht vom Server geladen: nicht speichern, sonst würden leere Standardwerte die Einstellungen überschreiben */
+      if (!this._mdState().loaded) { this._toast("Einstellungen werden noch geladen, bitte gleich nochmal versuchen"); this._mdPoll(); return; }
+      const b = this._mdBackup();
       this._hass.callWS({ type: "fenster_heizung/set_modules", modules: b.modules })
         .then(() => this._hass.callWS({ type: "fenster_heizung/set_wasser", ww: b.ww }))
         .then((r) => { this._mdPoll(r); })

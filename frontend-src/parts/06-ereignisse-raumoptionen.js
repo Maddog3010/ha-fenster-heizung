@@ -104,7 +104,21 @@
     else if (a === "gpvsign") { this._gen.pv = { ...this._pv(), sign: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "fhset") { this._modal = { type: "fh" }; this._renderModal(); }
     else if (a === "fhsec") { const s = this._fhOpenSet(); s.has(b.dataset.k) ? s.delete(b.dataset.k) : s.add(b.dataset.k); try { localStorage.setItem("fh-open", JSON.stringify([...s])); } catch (_) {} this._renderModal(); }
-    else if (a === "gen") { this._modal = { type: "gen", restore: null }; this._renderModal(); }
+    else if (a === "gen") {
+      this._modal = { type: "gen", restore: null, baks: null, bakAsk: null }; this._renderModal();
+      const fin = (l) => { if (this._modal && this._modal.type === "gen") { this._modal.baks = l; this._renderModal(); } };
+      if (this._admin() && this._hass) this._hass.callWS({ type: "fenster_heizung/ebk_get" }).then((r) => { if (this._modal && this._modal.type === "gen") { this._modal.ebk = (r && r.cfg) || null; this._modal.ebkErr = !(r && r.cfg); this._renderModal(); } }).catch(() => { if (this._modal && this._modal.type === "gen") { this._modal.ebkErr = true; this._renderModal(); } });
+      if (this._admin() && this._hass) this._hass.callWS({ type: "fenster_heizung/bak_list" }).then((r) => fin((r && r.stores) || [])).catch(() => fin([]));
+    }
+    else if (a.startsWith("ebk")) this._ebkAct(a, b);
+    else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
+    else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
+    else if (a === "bakyes") {
+      const q = this._modal.bakAsk; this._modal.bakAsk = null; this._renderModal(); if (!q) return;
+      this._hass.callWS({ type: "fenster_heizung/bak_restore", key: q.key, i: q.i })
+        .then((r) => this._toast(r && r.ok ? "Vorgemerkt. Lade die Integration neu oder starte Home Assistant neu." : "Das hat nicht geklappt"))
+        .catch(() => this._toast("Das hat nicht geklappt"));
+    }
     else if (a === "news") { this._modal = { type: "news" }; this._renderModal(); }
     else if (a === "updx") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet bis zur nächsten Version"); }
     else if (a === "skipv") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._modal = null; this._renderModal(); this._render(); }

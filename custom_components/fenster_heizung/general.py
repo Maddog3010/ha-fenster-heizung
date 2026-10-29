@@ -12,6 +12,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN, GITHUB_REPO, UPDATE_CACHE_SECONDS
 
 _LOGGER = logging.getLogger(__name__)
@@ -167,7 +168,7 @@ class GeneralManager:
 
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_general")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_general")
         self.data: dict[str, Any] = clean_general({})
         self.summer = False
         self.delta = 0.0

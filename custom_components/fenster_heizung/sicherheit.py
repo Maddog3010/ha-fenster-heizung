@@ -20,6 +20,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -236,7 +237,7 @@ def months_since(iso: str | None, now: Any) -> float | None:
 class SicherheitManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_sicherheit")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_sicherheit")
         self.cfg = default_cfg()
         self.st: dict[str, dict[str, Any]] = {}  # je Melder: a (Alarm), since, off_since, rep
         self.last_test = ""
@@ -568,7 +569,7 @@ class SicherheitManager:
         await self._tick(None)
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
-        self.cfg = clean_cfg(raw)
+        self.cfg = clean_cfg({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
         self._save()
         await self.async_config_changed()
         return await self.snapshot()

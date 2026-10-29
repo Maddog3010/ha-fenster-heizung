@@ -12,6 +12,7 @@ from homeassistant.helpers.event import async_track_time_change
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN
 
 MODES = ("home", "away", "vacation")
@@ -158,7 +159,7 @@ class PresenceManager:
 
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_presence")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_presence")
         self.data: dict[str, Any] = clean_presence({})
         self.override: dict[str, tuple[bool, datetime, datetime]] = {}  # Person -> (zu Hause?, seit, bis), zum Beispiel per Tag
         self._unsub: CALLBACK_TYPE | None = None

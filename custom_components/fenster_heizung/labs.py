@@ -17,6 +17,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN
 from .diag import diag_log
 
@@ -159,7 +160,7 @@ def lab_val(hass: HomeAssistant, key: str) -> float:
 class LabsManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_labs")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_labs")
         self.days: dict[str, dict[str, Any]] = {}   # Duschzeiten: Tag → {n, taps}
         self.ld: dict[str, Any] = {"shift": 0, "dec": ""}
         self._hist: list[tuple[float, float]] = []

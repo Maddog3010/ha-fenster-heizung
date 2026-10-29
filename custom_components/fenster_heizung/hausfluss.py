@@ -11,6 +11,7 @@ from typing import Any
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 
+from .backup import SafeStore
 from .const import DOMAIN
 
 POSITIONS = ("top_1", "top_2", "left_1", "left_2", "left_3", "right_1", "right_2", "right_3", "bottom")
@@ -82,7 +83,7 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
 class FlussManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_hausfluss")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_hausfluss")
         self.cfg = clean_cfg({})
 
     async def async_start(self) -> None:

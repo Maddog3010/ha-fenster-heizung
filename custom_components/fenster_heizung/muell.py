@@ -18,6 +18,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN
 from .diag import diag_log
 from .labs import lab_on
@@ -180,7 +181,7 @@ def names_text(keys: list[str]) -> str:
 class MuellManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_muell")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_muell")
         self.cfg = default_cfg()
         self.done: dict[str, str] = {}
         self.sent: list[str] = []
@@ -211,7 +212,7 @@ class MuellManager:
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
         old = self.cfg
-        self.cfg = clean_cfg(raw)
+        self.cfg = clean_cfg({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
         if self.cfg["cal"] != old["cal"] or self.cfg["bins"] != old["bins"]:
             self.ev_ts = 0.0
         self._save()

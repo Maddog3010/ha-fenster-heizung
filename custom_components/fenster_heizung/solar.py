@@ -12,6 +12,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -89,7 +90,7 @@ def best_window(rows: list[list[Any]], hours: int = 3) -> dict[str, Any] | None:
 class SolarManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_solar")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_solar")
         self.cfg = default_cfg()
         self.hist: dict[str, dict[str, Any]] = {}  # "2026-10-26": {f, a, base}
         self._cache: tuple[float, dict[str, Any]] | None = None
@@ -213,6 +214,6 @@ class SolarManager:
         return {**out, "cfg": self.cfg}
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
-        self.cfg = clean_cfg(raw)
+        self.cfg = clean_cfg({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
         self._save()
         return await self.snapshot(force=True)

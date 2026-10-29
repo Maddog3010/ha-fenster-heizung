@@ -1,3 +1,13 @@
+  _bakHtml(m) {
+    if (!this._admin()) return "";
+    const fd = (t) => { const d = new Date(t); return isNaN(d) ? "?" : d.toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); };
+    const q = m.bakAsk, L = m.baks;
+    let h = `<div class="lsec">${ic("download", 15)}Automatische Sicherungen</div><div class="mut sm" style="margin:2px 0 6px">Vor Änderungen legt die Integration Kopien ihrer Einstellungen an. Sind Einstellungen verschwunden, kannst du hier einen früheren Stand wiederherstellen.</div>`;
+    if (q) return h + `<div class="gbox"><b>${esc(q.n)}</b>Stand vom ${esc(q.t)} wiederherstellen?<br><span class="mut">Das ersetzt den aktuellen Stand, sobald du die Integration neu lädst oder Home Assistant neu startest.</span></div><div class="foot2"><button class="btn2" data-act="bakno">Abbrechen</button><button class="btn2 pri" data-act="bakyes">Wiederherstellen</button></div>`;
+    if (!L) return h + `<div class="mut sm">Wird geladen …</div>`;
+    if (!L.length) return h + `<div class="mut sm">Noch keine Sicherungen vorhanden. Sie entstehen automatisch bei Änderungen.</div>`;
+    return h + L.map((x) => `<div class="gst" style="flex-wrap:wrap;gap:6px">${esc(x.name)}<span style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">${x.snaps.map((s) => `<button class="btn2" data-act="bakgo" data-k="${esc(x.key)}" data-i="${s.i}" data-n="${esc(x.name)}" data-t="${esc(fd(s.ts))}">${esc(fd(s.ts))}</button>`).join("")}</span></div>`).join("");
+  }
   async _savePlan() {
     const m = this._modal, entries = m.draft.entries.filter((e) => e.days.length);
     entries.sort((a, b) => Math.min(...a.days) - Math.min(...b.days) || toMin(a.time) - toMin(b.time));
@@ -437,6 +447,8 @@
         ${rs ? `<div class="gbox"><b>Sicherung gefunden</b>${esc(new Date(rs.created).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" }))} · Version ${esc(rs.version || "?")}<br>${Object.keys(rs.rooms).length} Räume · ${Object.values(rs.plans || {}).filter((p) => p && p.entries && p.entries.length).length} Heizpläne · Aussehen · Anwesenheit<br><span class="mut">Das ersetzt die aktuellen Einstellungen.</span></div>
           <div class="foot2"><button class="btn2" data-act="rsno">Abbrechen</button><button class="btn2 pri" data-act="rsgo">Wiederherstellen</button></div>`
         : `<div class="gbtns"><button class="btn2" data-act="bk">${ic("download", 16)}Sicherung speichern</button><button class="btn2" data-act="rs">${ic("upload", 16)}Sicherung einlesen</button></div><input type="file" accept="application/json,.json" data-f="rsfile" hidden>`}
+        ${rs ? "" : this._ebkHtml(m)}
+        ${rs ? "" : this._bakHtml(m)}
         <div class="lsec">${ic("bell", 15)}Updates</div>
         <div class="ltog"><span>Auf neue Versionen hinweisen</span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Update-Hinweise"></button></div>
         <div class="gst">${ic("info", 15)}Installiert ${esc(this._ver || "–")}${u ? ` · neueste ${esc(u.latest)}` : ""}<button class="lnk" data-act="chk" style="margin-left:auto">Jetzt prüfen</button></div>

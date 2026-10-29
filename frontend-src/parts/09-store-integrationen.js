@@ -10,6 +10,7 @@
       .finally(() => { this._wbBusy = false; if (this._wbVisible()) this._render(); clearTimeout(this._wbT); this._wbT = setTimeout(() => { this._wbT = null; if (this._wbVisible()) this._wbLoad(true); }, 5000); });
   }
   _wbSave(patch, now) {
+    if (!(this._wbD && this._wbD.snap && this._wbD.snap.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; } /* ohne geladenen Stand nicht speichern (sonst würden Standardwerte die Einstellungen überschreiben) */
     const sn = this._wbSnap(); this._wbD = { snap: { ...sn, cfg: { ...sn.cfg, ...patch } }, ts: Date.now() };
     clearTimeout(this._wbSaveT);
     this._wbSaveT = setTimeout(() => {

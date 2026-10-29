@@ -18,6 +18,7 @@ from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN
 from .diag import diag_log
 from .labs import lab_on
@@ -164,7 +165,7 @@ def describe(act: dict[str, Any], names: dict[str, str] | None = None) -> str:
 class TagManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_tags")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_tags")
         self.cfg = default_cfg()
         self.log: list[dict[str, Any]] = []
         self.unknown: dict[str, dict[str, Any]] = {}

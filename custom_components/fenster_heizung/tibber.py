@@ -11,6 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.storage import Store
 
+from .backup import SafeStore
 from .const import DOMAIN
 from .wallbox_plan import hourly_mean, parse_tibber
 
@@ -36,7 +37,7 @@ class TibberError(Exception):
 class TibberManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_tibber")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_tibber")
         self.token = ""
         self.home = ""
         self.res = "h"

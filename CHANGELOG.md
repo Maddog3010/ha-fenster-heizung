@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.2] - 2026-10-29
+
+### Neu
+- **Automatische Sicherung auf einen Homeserver:** Unter „Sichern & Wiederherstellen“ lädt die Integration ihre Einstellungen auf Wunsch automatisch auf einen WebDAV-Server (Nextcloud, Synology, QNAP, FRITZ!NAS …), eine SMB-Freigabe oder in einen Ordner (zum Beispiel unter /media). Zeitpunkt: bei Änderung (mit Wartezeit, höchstens einmal pro Stunde), täglich oder sonntags. Aufbewahrung 7, 14 oder 30 Tage, ältere Dateien werden auf dem Server gelöscht. Mit „Verbindung testen“ und „Jetzt sichern“. Wählbar: Einstellungen, Räume und Heizpläne, Statistik, Grundriss-Bild. Die Datei lässt sich mit „Sicherung einlesen“ zurückspielen. Sponsor-Schlüssel, Tibber-Token und Passwörter sind nie enthalten. Für SMB lädt Home Assistant beim ersten Mal das Paket smbprotocol nach.
+
+### Behoben
+- **Einstellungen von Modul 2, 3 und 4 waren plötzlich weg.** Ein Browser, der seine Daten noch nicht vom Server geladen hatte (oder eine alte, zwischengespeicherte Version der Seite), konnte leere Standardwerte speichern und damit die vorhandenen Einstellungen überschreiben. Jetzt speichert die Seite erst, wenn die Daten geladen sind, und der Server behält fehlende Bereiche bei.
+- **Gleiche Absicherung in allen Modulen:** Wallbox (Modul 8), Solar-Prognose, Wetter, Müllabfuhr und Sicherheit speichern nur noch, wenn ihr Stand vom Server geladen ist. Schlägt das Laden fehl (zum Beispiel direkt nach einem Neustart von Home Assistant), werden keine Standardwerte mehr gespeichert. Fehlende Felder einer alten Browser-Version behalten ihren Stand.
+- **Automatische Sicherungen für alle Module:** Die Integration legt vor Änderungen Kopien aller ihrer Einstellungen an (sofort, wenn ein Stand plötzlich viel weniger Inhalt hat, sonst höchstens alle 6 Stunden; die 3 neuesten und die inhaltsreichste bleiben). Fehlt eine Datei beim Start oder ist sie unlesbar, wird die Kopie geladen. Unter „Sichern & Wiederherstellen“ steht neu die Liste „Automatische Sicherungen“, aus der du einen früheren Stand wiederherstellen kannst (wirkt nach Neuladen der Integration oder Neustart von Home Assistant).
+
 ## [3.0.6.1] - 2026-10-28
 
 ### Geändert

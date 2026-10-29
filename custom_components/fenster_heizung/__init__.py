@@ -40,7 +40,9 @@ from .wasser import WasserManager
 from .heater import HeaterRoom, PvManager
 from .presence import PresenceManager
 from .tibber import TibberManager
+from .extbackup import ExtBackup
 from .wallbox import WallboxManager
+from .backup import SafeStore
 from .const import (
     ACTION_OFF,
     CONF_ACTION,
@@ -163,7 +165,7 @@ class WindowController:
         self._unsub: CALLBACK_TYPE | None = None
         self._unsub_t: CALLBACK_TYPE | None = None
         self._unsub_h: CALLBACK_TYPE | None = None
-        self._store = Store(hass, 1, f"{DOMAIN}_{entry.entry_id}")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_{entry.entry_id}")
         # Statistik "pausiert heute"
         self._day = dt_util.now().date().isoformat()
         self._seconds = 0.0
@@ -1181,6 +1183,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "tibber" not in store:
         store["tibber"] = TibberManager(hass)
         await store["tibber"].async_start()
+    if "extbak" not in store:
+        store["extbak"] = ExtBackup(hass)
+        await store["extbak"].async_start()
     if "wallbox" not in store:
         store["wallbox"] = WallboxManager(hass)
         await store["wallbox"].async_start()
@@ -1277,4 +1282,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             if sfm is not None:
                 sfm.async_stop()
             hass.data.get(DOMAIN, {}).pop("tibber", None)
+            ebm = hass.data.get(DOMAIN, {}).pop("extbak", None)
+            if ebm is not None:
+                ebm.async_stop()
     return ok

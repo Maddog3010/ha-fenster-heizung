@@ -2213,6 +2213,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _genChange(t) {
     const f = t.dataset && t.dataset.f;
+    if (f === "ebk") return this._ebkChange(t);
     if (f === "gwxn") { const v = Number(t.value); this._gen.wxadj = { ...this._gen.wxadj, [t.dataset.k]: isFinite(v) ? v : 0 }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gpvs" || f === "gpvb") { this._gen.pv = { ...this._pv(), [f === "gpvs" ? "sensor" : "soc_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gpvp") { this._gen.pv = { ...this._pv(), [t.dataset.p + "_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
@@ -2460,7 +2461,21 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "gpvsign") { this._gen.pv = { ...this._pv(), sign: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "fhset") { this._modal = { type: "fh" }; this._renderModal(); }
     else if (a === "fhsec") { const s = this._fhOpenSet(); s.has(b.dataset.k) ? s.delete(b.dataset.k) : s.add(b.dataset.k); try { localStorage.setItem("fh-open", JSON.stringify([...s])); } catch (_) {} this._renderModal(); }
-    else if (a === "gen") { this._modal = { type: "gen", restore: null }; this._renderModal(); }
+    else if (a === "gen") {
+      this._modal = { type: "gen", restore: null, baks: null, bakAsk: null }; this._renderModal();
+      const fin = (l) => { if (this._modal && this._modal.type === "gen") { this._modal.baks = l; this._renderModal(); } };
+      if (this._admin() && this._hass) this._hass.callWS({ type: "fenster_heizung/ebk_get" }).then((r) => { if (this._modal && this._modal.type === "gen") { this._modal.ebk = (r && r.cfg) || null; this._modal.ebkErr = !(r && r.cfg); this._renderModal(); } }).catch(() => { if (this._modal && this._modal.type === "gen") { this._modal.ebkErr = true; this._renderModal(); } });
+      if (this._admin() && this._hass) this._hass.callWS({ type: "fenster_heizung/bak_list" }).then((r) => fin((r && r.stores) || [])).catch(() => fin([]));
+    }
+    else if (a.startsWith("ebk")) this._ebkAct(a, b);
+    else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
+    else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
+    else if (a === "bakyes") {
+      const q = this._modal.bakAsk; this._modal.bakAsk = null; this._renderModal(); if (!q) return;
+      this._hass.callWS({ type: "fenster_heizung/bak_restore", key: q.key, i: q.i })
+        .then((r) => this._toast(r && r.ok ? "Vorgemerkt. Lade die Integration neu oder starte Home Assistant neu." : "Das hat nicht geklappt"))
+        .catch(() => this._toast("Das hat nicht geklappt"));
+    }
     else if (a === "news") { this._modal = { type: "news" }; this._renderModal(); }
     else if (a === "updx") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet bis zur nächsten Version"); }
     else if (a === "skipv") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._modal = null; this._renderModal(); this._render(); }
@@ -2648,6 +2663,16 @@ class FensterHeizungPanel extends HTMLElement {
     const draft = { mode: p.mode || "heat", enabled: p.entries.length ? p.enabled : true, entries: p.entries.map((e) => ({ ...e, days: [...e.days], id: e.id || this._uid() })) };
     this._modal = { type: "plan", id, draft, day: Math.floor(nowMin() / 1440) };
     this._renderModal();
+  }
+  _bakHtml(m) {
+    if (!this._admin()) return "";
+    const fd = (t) => { const d = new Date(t); return isNaN(d) ? "?" : d.toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); };
+    const q = m.bakAsk, L = m.baks;
+    let h = `<div class="lsec">${ic("download", 15)}Automatische Sicherungen</div><div class="mut sm" style="margin:2px 0 6px">Vor Änderungen legt die Integration Kopien ihrer Einstellungen an. Sind Einstellungen verschwunden, kannst du hier einen früheren Stand wiederherstellen.</div>`;
+    if (q) return h + `<div class="gbox"><b>${esc(q.n)}</b>Stand vom ${esc(q.t)} wiederherstellen?<br><span class="mut">Das ersetzt den aktuellen Stand, sobald du die Integration neu lädst oder Home Assistant neu startest.</span></div><div class="foot2"><button class="btn2" data-act="bakno">Abbrechen</button><button class="btn2 pri" data-act="bakyes">Wiederherstellen</button></div>`;
+    if (!L) return h + `<div class="mut sm">Wird geladen …</div>`;
+    if (!L.length) return h + `<div class="mut sm">Noch keine Sicherungen vorhanden. Sie entstehen automatisch bei Änderungen.</div>`;
+    return h + L.map((x) => `<div class="gst" style="flex-wrap:wrap;gap:6px">${esc(x.name)}<span style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">${x.snaps.map((s) => `<button class="btn2" data-act="bakgo" data-k="${esc(x.key)}" data-i="${s.i}" data-n="${esc(x.name)}" data-t="${esc(fd(s.ts))}">${esc(fd(s.ts))}</button>`).join("")}</span></div>`).join("");
   }
   async _savePlan() {
     const m = this._modal, entries = m.draft.entries.filter((e) => e.days.length);
@@ -3088,6 +3113,8 @@ class FensterHeizungPanel extends HTMLElement {
         ${rs ? `<div class="gbox"><b>Sicherung gefunden</b>${esc(new Date(rs.created).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" }))} · Version ${esc(rs.version || "?")}<br>${Object.keys(rs.rooms).length} Räume · ${Object.values(rs.plans || {}).filter((p) => p && p.entries && p.entries.length).length} Heizpläne · Aussehen · Anwesenheit<br><span class="mut">Das ersetzt die aktuellen Einstellungen.</span></div>
           <div class="foot2"><button class="btn2" data-act="rsno">Abbrechen</button><button class="btn2 pri" data-act="rsgo">Wiederherstellen</button></div>`
         : `<div class="gbtns"><button class="btn2" data-act="bk">${ic("download", 16)}Sicherung speichern</button><button class="btn2" data-act="rs">${ic("upload", 16)}Sicherung einlesen</button></div><input type="file" accept="application/json,.json" data-f="rsfile" hidden>`}
+        ${rs ? "" : this._ebkHtml(m)}
+        ${rs ? "" : this._bakHtml(m)}
         <div class="lsec">${ic("bell", 15)}Updates</div>
         <div class="ltog"><span>Auf neue Versionen hinweisen</span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Update-Hinweise"></button></div>
         <div class="gst">${ic("info", 15)}Installiert ${esc(this._ver || "–")}${u ? ` · neueste ${esc(u.latest)}` : ""}<button class="lnk" data-act="chk" style="margin-left:auto">Jetzt prüfen</button></div>
@@ -3311,7 +3338,10 @@ class FensterHeizungPanel extends HTMLElement {
     clearTimeout(this._mdT);
     this._mdT = setTimeout(() => {
       this._mdT = null;
-      if (!this._hass) return; const b = this._mdBackup();
+      if (!this._hass) return;
+      /* Noch nicht vom Server geladen: nicht speichern, sonst würden leere Standardwerte die Einstellungen überschreiben */
+      if (!this._mdState().loaded) { this._toast("Einstellungen werden noch geladen, bitte gleich nochmal versuchen"); this._mdPoll(); return; }
+      const b = this._mdBackup();
       this._hass.callWS({ type: "fenster_heizung/set_modules", modules: b.modules })
         .then(() => this._hass.callWS({ type: "fenster_heizung/set_wasser", ww: b.ww }))
         .then((r) => { this._mdPoll(r); })
@@ -3557,6 +3587,7 @@ class FensterHeizungPanel extends HTMLElement {
       .finally(() => { this._wbBusy = false; if (this._wbVisible()) this._render(); clearTimeout(this._wbT); this._wbT = setTimeout(() => { this._wbT = null; if (this._wbVisible()) this._wbLoad(true); }, 5000); });
   }
   _wbSave(patch, now) {
+    if (!(this._wbD && this._wbD.snap && this._wbD.snap.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; } /* ohne geladenen Stand nicht speichern (sonst würden Standardwerte die Einstellungen überschreiben) */
     const sn = this._wbSnap(); this._wbD = { snap: { ...sn, cfg: { ...sn.cfg, ...patch } }, ts: Date.now() };
     clearTimeout(this._wbSaveT);
     this._wbSaveT = setTimeout(() => {
@@ -4475,6 +4506,7 @@ class FensterHeizungPanel extends HTMLElement {
   _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen); }
   _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", ...(d.cfg || {}) } }; }
   _spSave(cfg) {
+    if (!(this._spD && this._spD.d && this._spD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._sp(); this._spD = { d: { ...s, cfg }, ts: Date.now() };
     this._hass.callWS({ type: "fenster_heizung/sp_set", cfg }).then((r) => { this._spD = { d: r || {}, ts: Date.now() }; if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } })
       .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
@@ -4640,6 +4672,7 @@ class FensterHeizungPanel extends HTMLElement {
   _sfxVisible() { return !!(this._modal && this._modal.type === "sfset") || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }
   _sfx() { const d = (this._sfxD && this._sfxD.d) || {}, df = this._sfxDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, bat: { ...df.bat, ...(c.bat || {}) }, off: { ...df.off, ...(c.off || {}) }, test: { ...df.test, ...(c.test || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, kinds: c.kinds || df.kinds, excl: c.excl || [], acts: c.acts || [], meta: c.meta || {}, add: c.add || [], plan: { floors: c.plan && c.plan.floors && c.plan.floors.length ? c.plan.floors : df.plan.floors, items: (c.plan && c.plan.items) || [], bg: (c.plan && c.plan.bg) || {} }, quiet: { ...df.quiet, ...(c.quiet || {}) }, lead: c.lead != null ? c.lead : df.lead, depart: { ...df.depart, ...(c.depart || {}), frost: { ...df.depart.frost, ...((c.depart || {}).frost || {}) } }, proto: { ...df.proto, ...(c.proto || {}) } } }; }
   _sfxSave(cfg) {
+    if (!(this._sfxD && this._sfxD.d && this._sfxD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._sfx(); this._sfxD = { d: { ...s, cfg }, ts: Date.now() };
     clearTimeout(this._sfxT);
     this._sfxT = setTimeout(() => {
@@ -4761,6 +4794,7 @@ class FensterHeizungPanel extends HTMLElement {
   _wxsVisible() { return !!(this._modal && this._modal.type === "wxset") || (!!this._mdActive && this._mdActive() === "wx" && !this._stOpen); }
   _wxs() { const d = (this._wxsD && this._wxsD.d) || {}, df = this._wxsDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, warn: Object.fromEntries(Object.keys(df.warn).map((k) => [k, { ...df.warn[k], ...((c.warn || {})[k] || {}) }])), ahead: { ...df.ahead, ...(c.ahead || {}) }, official: { ...df.official, ...(c.official || {}) }, win: { ...df.win, ...(c.win || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, acts: c.acts || [] } }; }
   _wxsSave(cfg) {
+    if (!(this._wxsD && this._wxsD.d && this._wxsD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._wxs(); this._wxsD = { d: { ...s, cfg }, ts: Date.now() };
     clearTimeout(this._wxsT);
     this._wxsT = setTimeout(() => {
@@ -5292,6 +5326,7 @@ class FensterHeizungPanel extends HTMLElement {
   _muVisible() { return !!(this._modal && this._modal.type === "muset") || (!!this._mdActive && this._mdActive() === "mu" && !this._stOpen && !this._igOpen && !this._labOpen); }
   _muHasWcs() { return Object.values(this._hass.entities || {}).some((e) => e && e.platform === "waste_collection_schedule"); }
   _muSave(cfg, quiet) {
+    if (!(this._muD && this._muD.d && this._muD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._mu(); this._muD = { d: { ...s, cfg }, ts: Date.now() };
     clearTimeout(this._muT);
     this._muT = setTimeout(() => {
@@ -6919,6 +6954,67 @@ class FensterHeizungPanel extends HTMLElement {
     window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
     /* Im Ansichtsmodus: Melder antippen zeigt die Daten */
     sr.addEventListener("click", (e) => { const svg = e.target.closest && e.target.closest("svg.sfpv"); if (!svg || this._sfEd) return; const el = e.target.closest("[data-id]"), it = el && this._sfx().cfg.plan.items.find((i) => i.id === el.dataset.id); this._sfSelDet = it && it.t === "m" && it.e ? it.e : ""; this._render(); });
+  }
+  /* ================= Automatische Sicherung auf einen Homeserver (WebDAV, SMB, Ordner) ================= */
+  _ebkHtml(m) {
+    if (!this._admin()) return "";
+    const c = m.ebk, head = `<div class="lsec">${ic("upload", 15)}Auf einen Homeserver sichern</div>`;
+    if (!c) return head + `<div class="mut sm">${m.ebkErr ? "Nicht verfügbar" : "Wird geladen …"}</div>`;
+    const fd = (t) => { const d = new Date(t); return isNaN(d) ? "?" : d.toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }); };
+    const sw = (k, on, l, sub) => `<div class="ltog"><span>${l}${sub ? `<small class="mut" style="display:block">${sub}</small>` : ""}</span><button class="sw ${on ? "on" : ""}" data-act="ebktog" data-k="${k}" aria-pressed="${!!on}" aria-label="${esc(l)}"></button></div>`;
+    const seg = (k, opts) => `<div class="seg oseg">${opts.map(([v, l]) => `<button class="${String(c[k]) === String(v) ? "sel" : ""}" data-act="ebkset" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
+    const inp = (k, l, ph, type) => `<div class="mut sm" style="margin:8px 0 3px">${l}</div><input class="otxt" type="${type || "text"}" data-f="ebk" data-k="${k}" maxlength="300" value="${type === "password" ? "" : esc(c[k] || "")}" placeholder="${esc(ph || "")}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="${esc(l)}">`;
+    const L = c.last || {}, kb = (n) => Math.max(1, Math.round((n || 0) / 1024)) + " KB";
+    const login = c.kind === "folder" ? "" : inp("user", "Benutzer", "") + inp("pw", "Passwort", c.pw_set ? "gespeichert, zum Ändern neu eingeben" : "", "password") + `<div class="mut sm" style="margin:4px 0 0">Das Passwort liegt nur in deinem Home Assistant und ist nie in den Sicherungen enthalten.</div>`;
+    const where = c.kind === "webdav" ? inp("url", "Adresse", "https://nas.local:5006/ha-sicherung") + sw("verify", c.verify !== false, "Zertifikat prüfen", "Bei selbst signierten Zertifikaten ausschalten")
+      : c.kind === "smb" ? inp("host", "Server", "nas.local oder 192.168.1.20") + inp("share", "Freigabe", "z. B. sicherung") + inp("path", "Unterordner (optional)", "ha/strom-waerme")
+        : inp("folder", "Ordner in Home Assistant", "/media/sicherung") + `<div class="mut sm" style="margin:4px 0 0">Zum Beispiel eine als Netzwerkspeicher eingebundene Freigabe unter /media oder /share.</div>`;
+    return `${head}<div class="mut sm" style="margin:2px 0 6px">Lädt die Einstellungen automatisch als Datei auf deinen Server. Zurückspielen mit „Sicherung einlesen“.</div>
+      ${sw("on", c.on, "Ablage ein")}
+      ${c.on ? `<div class="mut sm" style="margin:4px 0 3px">Ziel</div>${seg("kind", [["webdav", "WebDAV"], ["smb", "SMB"], ["folder", "Ordner"]])}
+      ${where}${login}
+      <div class="mut sm" style="margin:10px 0 3px">Zeitpunkt</div>${seg("when", [["change", "Bei Änderung"], ["daily", "Täglich"], ["weekly", "Sonntags"]])}
+      ${c.when === "change" ? `<div class="mut sm" style="margin:4px 0 0">Nach einer Änderung mit etwas Wartezeit, höchstens einmal pro Stunde.</div>` : inp("time", "Uhrzeit", "03:30", "time")}
+      <div class="mut sm" style="margin:10px 0 3px">Aufbewahren</div>${seg("keep", [[7, "7 Tage"], [14, "14 Tage"], [30, "30 Tage"]])}
+      <div class="mut sm" style="margin:10px 0 0">Was wird gesichert</div>
+      ${sw("inc.settings", c.inc.settings, "Einstellungen aller Module")}${sw("inc.rooms", c.inc.rooms, "Räume und Heizpläne")}${sw("inc.stats", c.inc.stats, "Statistik und Verlauf")}${sw("inc.bg", c.inc.bg, "Grundriss-Hintergrundbild (Modul 11)")}
+      <div class="mut sm" style="margin:2px 0 8px">Nie enthalten: Sponsor-Schlüssel, Tibber-Token und Passwörter.</div>
+      <div class="gbtns"><button class="btn2" data-act="ebktest"${m.ebkBusy ? " disabled" : ""}>Verbindung testen</button><button class="btn2 pri" data-act="ebkrun"${m.ebkBusy ? " disabled" : ""}>${m.ebkBusy ? "Bitte warten …" : "Jetzt sichern"}</button></div>
+      ${m.ebkMsg ? `<div class="gbox" style="margin-top:8px"><b>${m.ebkMsg.ok ? "Hat geklappt" : "Hat nicht geklappt"}</b>${esc(m.ebkMsg.msg)}</div>` : ""}
+      ${L.ts ? `<div class="gst">${ic(L.ok ? "check" : "info", 15)}${L.ok ? `Letzte Sicherung ${esc(fd(L.ts))} · ${L.count || 0} Dateien · ${kb(L.size)}` : `Letzter Versuch ${esc(fd(L.ts))}: ${esc(L.msg || "fehlgeschlagen")}`}</div>` : ""}
+      ${L.ok && (L.files || []).length ? `<div class="mut sm" style="margin:4px 0 0">Auf dem Server: ${L.files.slice(0, 5).map((f) => `${esc(f.n.replace(/^fh-sicherung-|\.json$/g, ""))} (${kb(f.s)})`).join(", ")}</div>` : ""}` : ""}`;
+  }
+  _ebkSave(redraw) {
+    const m = this._modal; if (!m || m.type !== "gen" || !m.ebk) return;
+    clearTimeout(this._ebkT);
+    const go = () => {
+      const c = this._modal && this._modal.ebk; if (!c) return;
+      const cfg = { ...c, pw: (this._modal.ebkPw || "") }; delete cfg.last; delete cfg.pw_set;
+      this._hass.callWS({ type: "fenster_heizung/ebk_set", cfg }).then((r) => { if (this._modal && this._modal.type === "gen" && r && r.cfg) { this._modal.ebk = { ...r.cfg, last: this._modal.ebk.last || r.cfg.last }; this._modal.ebkPw = ""; if (redraw) this._renderModal(); } })
+        .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
+    };
+    if (redraw) { this._renderModal(); go(); } else this._ebkT = setTimeout(go, 400);
+  }
+  _ebkChange(t) {
+    const m = this._modal, c = m && m.ebk, k = t.dataset.k; if (!c || !k) return true;
+    if (k === "pw") { m.ebkPw = t.value; if (t.value) c.pw_set = true; } else c[k] = t.value;
+    this._ebkSave(false); return true;
+  }
+  _ebkAct(a, b) {
+    const m = this._modal, c = m && m.ebk; if (!c) return;
+    const k = b.dataset.k;
+    if (a === "ebktog") { if (k.startsWith("inc.")) c.inc = { ...c.inc, [k.slice(4)]: !c.inc[k.slice(4)] }; else c[k] = !(c[k] !== false && c[k]); this._ebkSave(true); }
+    else if (a === "ebkset") { c[k] = k === "keep" ? +b.dataset.v : b.dataset.v; m.ebkMsg = null; this._ebkSave(true); }
+    else if (a === "ebktest" || a === "ebkrun") {
+      if (m.ebkBusy) return;
+      const run = a === "ebkrun"; m.ebkBusy = true; m.ebkMsg = null; this._renderModal();
+      const cfg = { ...c, pw: m.ebkPw || "" }; delete cfg.last; delete cfg.pw_set;
+      const done = (msg, last) => { if (this._modal !== m) return; m.ebkBusy = false; m.ebkMsg = msg; if (last) c.last = last; this._renderModal(); };
+      const pre = run ? this._hass.callWS({ type: "fenster_heizung/ebk_set", cfg }).then((r) => { m.ebkPw = ""; if (r && r.cfg) Object.assign(c, r.cfg, { last: c.last }); }) : Promise.resolve();
+      pre.then(() => this._hass.callWS(run ? { type: "fenster_heizung/ebk_run" } : { type: "fenster_heizung/ebk_test", cfg }))
+        .then((r) => { if (run) done({ ok: !!(r.res && r.res.ok), msg: (r.res && r.res.msg) || "" }, r.res); else done({ ok: !!r.ok, msg: r.msg || "" }); })
+        .catch(() => done({ ok: false, msg: "Keine Antwort von Home Assistant" }));
+    }
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");

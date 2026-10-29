@@ -11,6 +11,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN
 from .geraete_calc import (
     advice, clean_days, cover_pct, free_solar, grid_import_w, history, money, new_day,
@@ -26,7 +27,7 @@ MAX_DT_S = 600.0
 class GeraeteManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_geraete")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_geraete")
         self.days: dict[str, dict[str, list[float]]] = {}
         self.last: dict[str, dict[str, Any]] = {}
         self.typ: dict[str, float] = {}

@@ -18,6 +18,7 @@ from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.helpers.event import async_call_later, async_track_state_change_event
 from homeassistant.helpers.storage import Store
 
+from .backup import SafeStore
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -91,7 +92,7 @@ def check_pin(pin: str, stored: str) -> bool:
 class TabletManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_tablets")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_tablets")
         self.tablets: dict[str, dict[str, Any]] = {}
         self._fails: dict[str, list[float]] = {}
         self._unsubs: list[CALLBACK_TYPE] = []

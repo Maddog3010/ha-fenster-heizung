@@ -15,6 +15,7 @@
   _muVisible() { return !!(this._modal && this._modal.type === "muset") || (!!this._mdActive && this._mdActive() === "mu" && !this._stOpen && !this._igOpen && !this._labOpen); }
   _muHasWcs() { return Object.values(this._hass.entities || {}).some((e) => e && e.platform === "waste_collection_schedule"); }
   _muSave(cfg, quiet) {
+    if (!(this._muD && this._muD.d && this._muD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._mu(); this._muD = { d: { ...s, cfg }, ts: Date.now() };
     clearTimeout(this._muT);
     this._muT = setTimeout(() => {

@@ -13,6 +13,7 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 
+from .backup import SafeStore
 from .const import (
     BLOCK_IDS,
     CONF_BLOCK_FROM,
@@ -236,7 +237,7 @@ async def _version(hass: HomeAssistant) -> str:
 async def _layout(hass: HomeAssistant) -> dict[str, Any]:
     store = hass.data.setdefault(DOMAIN, {})
     if "layout" not in store:
-        s = Store(hass, 1, f"{DOMAIN}_layout")
+        s = SafeStore(hass, 1, f"{DOMAIN}_layout")
         store["layout_store"] = s
         store["layout"] = clean_layout(await s.async_load())
     return store["layout"]
@@ -387,9 +388,19 @@ async def ws_restore(hass: HomeAssistant, connection, msg: dict) -> None:
             done += 1
         except ValueError:
             skipped_opts += 1  # Entitäten gibt es hier evtl. nicht: Raum behält seine Einstellungen
+    staged = 0
+    raw = data.get("stores")
+    if isinstance(raw, dict):
+        from .backup import stores as _stores
+        for full, st in _stores(hass).items():
+            key = full[len(DOMAIN) + 1:] if full.startswith(DOMAIN + "_") else full
+            if key in ("sponsor", "tibber", "extbak") or len(key) > 20 or not isinstance(raw.get(key), (dict, list)):
+                continue
+            if await st.async_stage(raw[key]):
+                staged += 1
     connection.send_result(
         msg["id"],
-        {"rooms": len(mapping), "missing": len(rooms) - len(mapping), "options": done, "options_skipped": skipped_opts},
+        {"rooms": len(mapping), "missing": len(rooms) - len(mapping), "options": done, "options_skipped": skipped_opts, "staged": staged},
     )
 
 
@@ -566,6 +577,68 @@ async def ws_clear_diag(hass: HomeAssistant, connection, msg: dict) -> None:
 @websocket_api.async_response
 async def ws_get_modules(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], _modules_snapshot(hass))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/bak_list"})
+@websocket_api.async_response
+async def ws_bak_list(hass: HomeAssistant, connection, msg: dict) -> None:
+    from .backup import label, stores
+    out = []
+    for key, st in stores(hass).items():
+        inf = st.info()
+        if inf["snaps"]:
+            out.append({"key": key, "name": label(key), "snaps": inf["snaps"]})
+    out.sort(key=lambda x: x["name"])
+    connection.send_result(msg["id"], {"stores": out})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/bak_restore", vol.Required("key"): str, vol.Required("i"): int})
+@websocket_api.async_response
+async def ws_bak_restore(hass: HomeAssistant, connection, msg: dict) -> None:
+    from .backup import stores
+    st = stores(hass).get(msg["key"])
+    ok = bool(st is not None and await st.async_mark_restore(msg["i"]))
+    connection.send_result(msg["id"], {"ok": ok})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/ebk_get"})
+@websocket_api.async_response
+async def ws_ebk_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    from .extbackup import public
+    m = hass.data.get(DOMAIN, {}).get("extbak")
+    connection.send_result(msg["id"], {"cfg": public(m.cfg)} if m is not None else {"cfg": None})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/ebk_set", vol.Required("cfg"): dict})
+@websocket_api.async_response
+async def ws_ebk_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    m = hass.data.get(DOMAIN, {}).get("extbak")
+    connection.send_result(msg["id"], {"cfg": await m.async_set(msg["cfg"])} if m is not None else {"cfg": None})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/ebk_test", vol.Optional("cfg"): dict})
+@websocket_api.async_response
+async def ws_ebk_test(hass: HomeAssistant, connection, msg: dict) -> None:
+    m = hass.data.get(DOMAIN, {}).get("extbak")
+    connection.send_result(msg["id"], await m.async_test(msg.get("cfg")) if m is not None else {"ok": False, "msg": "Nicht bereit"})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/ebk_run"})
+@websocket_api.async_response
+async def ws_ebk_run(hass: HomeAssistant, connection, msg: dict) -> None:
+    from .extbackup import public
+    m = hass.data.get(DOMAIN, {}).get("extbak")
+    if m is None:
+        connection.send_result(msg["id"], {"ok": False, "msg": "Nicht bereit"})
+        return
+    res = await m.run()
+    connection.send_result(msg["id"], {"res": res, "cfg": public(m.cfg)})
 
 
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/gs_get"})
@@ -1119,7 +1192,7 @@ def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
-        ws_get_diag, ws_clear_diag, ws_get_modules, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
+        ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del,

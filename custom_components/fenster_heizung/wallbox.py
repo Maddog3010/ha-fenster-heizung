@@ -17,6 +17,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN
 from .geraete_calc import grid_import_w, rate_eur, watts
 from .wallbox_calc import (
@@ -105,7 +106,7 @@ def summarize(st: dict[str, Any]) -> dict[str, Any]:
 class WallboxManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_wallbox")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_wallbox")
         self.cfg: dict[str, Any] = clean_wb({})
         self.info: dict[str, Any] = {}  # letzter Status
         self.ok = False
@@ -120,7 +121,7 @@ class WallboxManager:
         self.who: dict[str, Any] | None = None
         self._unsub: CALLBACK_TYPE | None = None
         self._busy = False
-        self._st_store = Store(hass, 1, f"{DOMAIN}_wallbox_stats")
+        self._st_store = SafeStore(hass, 1, f"{DOMAIN}_wallbox_stats")
         self._st: dict[str, Any] = clean_stats(None)
         self._last_ts: float | None = None
         self._st_day = ""
@@ -151,7 +152,7 @@ class WallboxManager:
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
         old = self.cfg
-        self.cfg = clean_wb(raw)
+        self.cfg = clean_wb({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
         if not self.cfg["enabled"]:
             self._quick = None
         if old["enabled"] and not self.cfg["enabled"]:

@@ -18,6 +18,7 @@ from homeassistant.helpers.event import async_track_state_change_event, async_tr
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import DOMAIN
 from .diag import diag_log
 from .geraete_calc import clean_ev, clean_gs
@@ -328,7 +329,10 @@ def shower_count(size: int, temps: list[float]) -> int | None:
 class WasserManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_wasser")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_wasser")
+        self._bak_store = Store(hass, 1, f"{DOMAIN}_wasser_cfgbak")
+        self._bak_ts = 0.0
+        self._bak_score = 0
         self.modules = clean_modules({})
         self.cfg = clean_wasser({})
         self.state: dict[str, Any] = {"away": False, "boost_until": 0.0, "circ_until": 0.0, "demand_until": 0.0, "leg_run": None, "leg_last": None}
@@ -345,6 +349,17 @@ class WasserManager:
         saved = await self._store.async_load() or {}
         self.modules = clean_modules(saved.get("modules"))
         self.cfg = clean_wasser(saved.get("cfg"))
+        if not self._has_data():
+            bak = await self._bak_store.async_load() or {}
+            if isinstance(bak.get("modules"), dict) or isinstance(bak.get("cfg"), dict):
+                m, c = clean_modules(bak.get("modules")), clean_wasser(bak.get("cfg"))
+                old_m, old_c = self.modules, self.cfg
+                self.modules, self.cfg = m, c
+                if self._has_data():
+                    _LOGGER.warning("Modul-Einstellungen waren leer, Sicherung vom %s wiederhergestellt", bak.get("ts"))
+                    self._save()
+                else:
+                    self.modules, self.cfg = old_m, old_c
         st = saved.get("state") if isinstance(saved.get("state"), dict) else {}
         for k in ("boost_until", "circ_until", "demand_until"):
             try:
@@ -373,7 +388,29 @@ class WasserManager:
     def active(self) -> bool:
         return self.modules["on"]["ww"] and configured(self.cfg)
 
+    def _has_data(self) -> bool:
+        return self._score() > 0
+
+    def _score(self) -> int:
+        m, w = self.modules, self.cfg
+        return len(m["gs"].get("devices") or []) + sum(1 for v in m["energy"]["ent"].values() if v) + sum(1 for v in w["ent"].values() if v)
+
+    def _backup(self) -> None:
+        """Sicherungskopie des Stands vor dem Überschreiben. Ein reicherer Stand wird nicht durch einen ärmeren ersetzt (außer nach 24 h)."""
+        now, sc = time.time(), self._score()
+        if sc == 0 or (sc < self._bak_score and now - self._bak_ts < 86400):
+            return
+        self._bak_ts, self._bak_score = now, sc
+        snap = {"ts": datetime.now().isoformat(timespec="seconds"), "modules": self.modules, "cfg": self.cfg}
+        self._bak_store.async_delay_save(lambda: snap, 1)
+
     async def async_set_modules(self, raw: Any) -> None:
+        raw = dict(raw) if isinstance(raw, dict) else {}
+        # Fehlende Bereiche (alter oder noch nicht geladener Browser) behalten ihren Stand
+        for k in ("energy", "gs", "ev"):
+            if not isinstance(raw.get(k), dict):
+                raw[k] = self.modules.get(k)
+        self._backup()
         self.modules = clean_modules(raw)
         self._save()
         gsm = self.hass.data.get(DOMAIN, {}).get("geraete")
@@ -382,6 +419,7 @@ class WasserManager:
         await self._tick(None)
 
     async def async_set_cfg(self, raw: Any) -> None:
+        self._backup()
         self.cfg = clean_wasser(raw)
         self._last_set.clear()
         self._last_set_ts.clear()

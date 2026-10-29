@@ -17,6 +17,7 @@ from homeassistant.helpers.event import (
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
+from .backup import SafeStore
 from .const import CONF_HUMIDITY, CONF_OUTDOOR_SENSOR, CONF_THERMOSTATS, CONF_WINDOWS, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -53,7 +54,7 @@ class DiagManager:
 
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
-        self._store = Store(hass, 1, f"{DOMAIN}_diag")
+        self._store = SafeStore(hass, 1, f"{DOMAIN}_diag")
         self._log: deque[dict[str, Any]] = deque(maxlen=MAX_LOG)
         self._valves: dict[str, dict[str, Any]] = {}
         self._sent: dict[str, float] = {}
