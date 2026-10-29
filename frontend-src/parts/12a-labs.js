@@ -245,7 +245,7 @@
     const vis = cat.filter((x) => st.c === "all" || (st.c === "on" ? this._labOn(x.id) : st.c === "s" || st.c === "g" ? x.k === st.c : x.mid === st.c));
     mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Labs</b><span><em class="tag">Experimentelle Funktionen</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Labs</b><span><em class="tag">Experimentelle Funktionen</em>${this._verTag()}</span></div></div>
         <button class="pillbtn" data-act="labset" aria-label="Labs anzeigen">${ic("sliders", 16)}<span class="bl">Anzeige</span></button>
         <button class="pillbtn" data-act="laboff" ${n ? "" : "disabled"}>${ic("close", 16)}<span class="bl">Alle Labs aus</span></button>
         <button class="pillbtn pri" data-act="labback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>

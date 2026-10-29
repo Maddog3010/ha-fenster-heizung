@@ -303,8 +303,10 @@ function airCalc(t, rh, to, rhOut) {
   return { td, ts, rs, lvl, dry };
 }
 const cdown = (since, need) => { const el = Math.max(0, (Date.now() - since) / 1000), tot = need * 60, left = Math.max(0, tot - el); return { left, pct: Math.min(100, (el / tot) * 100), txt: left > 0 ? `noch ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, "0")} Min.` : "genug gelüftet, Fenster schließen" }; };
-const vnum = (a) => String(a || "0").split(".").map((x) => parseInt(x, 10) || 0);
-const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 4; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
+/* Versionen: altes Schema 3.0.7.6 und neues Schema Jahr.MonatTag.Zähler (2026.1029.0), Testversionen mit b1, b2 … (2026.1029.0b1 < 2026.1029.0) */
+const vnum = (a) => { const m = String(a || "0").trim().replace(/^v/i, "").match(/^([\d.]+?)(?:b(\d+))?$/); const n = (m ? m[1] : "0").split(".").map((x) => parseInt(x, 10) || 0); while (n.length < 4) n.push(0); n.length = 4; n.push(m && m[2] !== undefined ? parseInt(m[2], 10) : Infinity); return n; };
+const vbeta = (a) => /^\s*v?[\d.]+b\d+\s*$/i.test(String(a || ""));
+const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 5; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return false; };
 /* Elektroheizer mit PV-Überschuss */
 const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"] };
 const WZ_STEPS = ["Willkommen", "Räume", "Fenstermeldung", "Heizung & Energie", "Luftfeuchte", "PV & Elektroheizer", "Meldungen", "Zusammenfassung"];
@@ -717,6 +719,8 @@ const MV = {
   ef: { v: "0.5", b: 6, d: "2026-10-29", p: "3.0.7.6", log: [["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   mu: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   li: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] } };
+/* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
+const REL = [{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]},{"v":"3.0.7.5","d":"2026-10-29","t":["Handy-Ansicht, obere Kacheln mittig"],"c":["Modul 19 · v0.5 Build 5"]},{"v":"3.0.7.4","d":"2026-10-29","t":["Der Fluss in den Linien läuft durchgängig","Kein Punkt mehr oben links im Fluss-Bild","Handy-Ansicht wie auf Tablet und Desktop"],"c":["Modul 19 · v0.5 Build 4"]},{"v":"3.0.7.3","d":"2026-10-29","t":["Behoben: Die Jetzt-Ansicht flackerte"],"c":["Modul 19 · v0.5 Build 3"]},{"v":"3.0.7.2","d":"2026-10-29","t":["Fluss-Bild passt sich dem Bildschirm an","Umschalter „Jetzt | Strom“"],"c":["Modul 19 · v0.5 Build 2"]},{"v":"3.0.7.1","d":"2026-10-29","t":["Behoben: Tablet-Modus: Display ging bei Bewegung nicht an"],"c":[]},{"v":"3.0.7.0","d":"2026-10-29","t":["Behoben: Auswahlfelder klappten sofort wieder zu"],"c":[]},{"v":"3.0.6.9","d":"2026-10-29","t":["Optionaler Raumtemperatur-Sensor je Raum","Unter „Verwenden für“ lässt sich je Raum einstellen, wofür der Sensor gilt: Anzeige, Aufheizzeit lernen, Taupunkt und Schimmelrisiko, …","Der Thermostat regelt unverändert"],"c":["Modul 1 · v1.1"]}];
 const CSS = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -1728,6 +1732,22 @@ button.hzr{cursor:pointer}
 
 .rtx{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:12px;color:var(--mut)}.rtx b{color:var(--primary-text-color);font-weight:600;text-align:right}
 .rtn{margin-top:6px;font-size:12px;color:#a78bfa}.rtn.warn{color:#f59e0b}
+
+/* Versionen: Releaseliste, Beta-Hinweis, Versionsschema, Versionshinweis im Kopf */
+.vtag{cursor:pointer}.vtag:hover{text-decoration:underline}.vtag.vbeta{color:var(--amber)}
+.rll{display:grid;margin-top:6px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.rlr{padding:10px 12px}.rlr+.rlr{border-top:1px solid var(--line)}
+.rlh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.rlh .mut{margin-left:auto;font-size:.78rem}
+.rlv{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.rlin{font-style:normal;font-size:.7rem;font-weight:700;color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent);border:1px solid color-mix(in srgb,var(--teal) 40%,transparent);border-radius:8px;padding:1px 8px}
+.rlt{margin:6px 0 0;padding-left:18px;line-height:1.5;font-size:.86rem;color:var(--mut)}
+.rlc{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.rlc em{font-style:normal;font-size:.72rem;border:1px solid var(--line);border-radius:8px;padding:1px 8px;color:var(--mut)}
+.rlbeta{display:flex;gap:10px;align-items:flex-start;margin:10px 0 2px;padding:10px 12px;border-radius:12px;color:var(--amber);background:color-mix(in srgb,var(--amber) 12%,transparent);border:1px solid color-mix(in srgb,var(--amber) 40%,transparent);line-height:1.45;font-size:.86rem}
+.rlbeta b{display:block}.rlbeta span{color:var(--primary-text-color);opacity:.85}
+.rlrows{display:grid;margin-top:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden}.rlrows .sxrow:first-child{border-top:0}.rlrows a.sxrow{text-decoration:none;color:inherit}
+.rlx{margin-top:6px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);font-size:.86rem;line-height:1.5}
+.rlx p{margin:6px 0;color:var(--mut)}.rlx p b{color:var(--primary-text-color)}
+.rlxn{display:flex;align-items:center;gap:3px;font-size:1.05rem;font-weight:700;font-variant-numeric:tabular-nums}.rlxn i{font-style:normal;padding:2px 8px;border-radius:8px;border:1px solid var(--line)}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -2719,7 +2739,7 @@ class FensterHeizungPanel extends HTMLElement {
       : `<div class="card empty">Noch keine Räume eingerichtet.<br>${adm ? `<button class="btn2 pri" data-act="wz" style="margin-top:14px;flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button>` : "Ein Administrator kann die Einrichtung starten."}</div>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._verTag()}</span></div></div>
         ${this._tmBtn()}${this._spnBtn()}${this._labBtn()}${this._stoBtn()}${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
       ${this._mdBar()}<div class="wrap">${edit ? "" : this._mvPop("fh")}${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
         ${!edit ? this._updBanner() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
@@ -2830,6 +2850,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "gpvpm") { this._gen.pv = { ...this._pv(), [b.dataset.p + "_mode"]: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "gpvsign") { this._gen.pv = { ...this._pv(), sign: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "mver") { this._modal = { type: "mver" }; this._renderModal(); }
+    else if (a === "mvsub") { if (this._modal && this._modal.type === "mver") { this._modal.sub = b.dataset.k || null; this._renderModal(); const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; } }
     else if (a === "fhset") { this._modal = { type: "fh" }; this._renderModal(); }
     else if (a === "fhsec") { const s = this._fhOpenSet(); s.has(b.dataset.k) ? s.delete(b.dataset.k) : s.add(b.dataset.k); try { localStorage.setItem("fh-open", JSON.stringify([...s])); } catch (_) {} this._renderModal(); }
     else if (a === "gen") {
@@ -3784,7 +3805,7 @@ class FensterHeizungPanel extends HTMLElement {
     const grp = (ico, ttl, sub, body) => `<div class="sxh2"><span class="sxhi">${ic(ico, 16)}</span><b>${ttl}</b><small>${sub}</small></div>${body}`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Module an einem Ort</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Module an einem Ort</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="mdstx">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap">
         <div class="sxw">
@@ -3803,7 +3824,7 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern und zurückspielen", "gen")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
           ${row("puzzle", "Module verwalten", "Module ein- und ausschalten, eigene Module hinzufügen", "mdmgr")}
-          ${row("layers", "Versionen", "Version, Build und Reifegrad der Module, so läuft der Aufstieg", "mver")}</div>`)}</div>
+          ${row("layers", "Versionen", "Letzte Updates mit Änderungen, Modulversionen und Versionsschema", "mver")}</div>`)}</div>
       </div>`;
   }
   /* ---------------- Personen & Standort: iCloud-Ortung, Personen-Einstellungen, Home-Zone auf der Karte ---------------- */
@@ -3876,7 +3897,7 @@ class FensterHeizungPanel extends HTMLElement {
     }).join("");
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Personen &amp; Standort</b><span><em class="tag">Wer ist zu Hause und wo ist das Zuhause</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Personen &amp; Standort</b><span><em class="tag">Wer ist zu Hause und wo ist das Zuhause</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="ortback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw">
         <div class="card ocard"><h2>${ic("pin", 18)}Standort-Quelle</h2>
@@ -4103,7 +4124,7 @@ class FensterHeizungPanel extends HTMLElement {
     const keep = mainEl.querySelector(".wrap") ? mainEl.scrollTop : 0;
     mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Store</b><span><em class="tag">Integrationen und Dienste</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Store</b><span><em class="tag">Integrationen und Dienste</em>${this._verTag()}</span></div></div>
         <button class="pillbtn" data-act="mdmgr" aria-label="Module verwalten">${ic("layers", 16)}<span class="bl">Module</span></button>
         <button class="pillbtn" data-act="stoset" aria-label="Store anzeigen">${ic("sliders", 16)}<span class="bl">Anzeige</span></button>
         <button class="pillbtn pri" data-act="igback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
@@ -5586,7 +5607,7 @@ class FensterHeizungPanel extends HTMLElement {
     const vis = cat.filter((x) => st.c === "all" || (st.c === "on" ? this._labOn(x.id) : st.c === "s" || st.c === "g" ? x.k === st.c : x.mid === st.c));
     mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Labs</b><span><em class="tag">Experimentelle Funktionen</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Labs</b><span><em class="tag">Experimentelle Funktionen</em>${this._verTag()}</span></div></div>
         <button class="pillbtn" data-act="labset" aria-label="Labs anzeigen">${ic("sliders", 16)}<span class="bl">Anzeige</span></button>
         <button class="pillbtn" data-act="laboff" ${n ? "" : "disabled"}>${ic("close", 16)}<span class="bl">Alle Labs aus</span></button>
         <button class="pillbtn pri" data-act="labback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
@@ -7440,7 +7461,7 @@ class FensterHeizungPanel extends HTMLElement {
     const o = this._mvO === id;
     return `<button class="mvb${o ? " on" : ""}" data-act="mvx" data-k="${id}" aria-expanded="${o}" aria-label="Versionen und Änderungen des Moduls">v${esc(m.v)} · Build ${m.b} ${o ? "▴" : "▾"}</button>`;
   }
-  _mvVer(id) { const m = MV[id]; return m ? `${this._mvChip(id)}${this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : ""}` : (this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""); }
+  _mvVer(id) { const m = MV[id]; return m ? `${this._mvChip(id)}${this._verTag()}` : this._verTag(); }
   _mvStg(id) { const mm = this._mvAll().find((x) => x.id === id), s = mm && modSt(mm); return MV_STG.find((x) => x[0] === s) || null; }
   _mvPop(id) {
     const m = MV[id]; if (this._mvO !== id || !m) return "";
@@ -7454,12 +7475,42 @@ class FensterHeizungPanel extends HTMLElement {
   _mvTrack(cur) { const i = MV_STG.findIndex((x) => x[0] === cur); return `<div class="mvtr">${MV_STG.map((x, k) => `<span class="${k < i ? "done" : k === i ? "now" : ""}"><em class="sxc ${STG[x[0]].c}">${STG[x[0]].t}</em><small>${x[1]}</small></span>`).join("<i>›</i>")}</div>`; }
   _mvTab(id) { const m = MV[id]; if (!m || this._narrow) return ["", ""]; return [`<span class="mvv"> · v${esc(m.v)}</span>`, this._mvNew(id) ? `<i class="mnew">neu</i>` : ""]; }
   _mvAll() { return [...MODS, MOD_MU, MOD_LI].filter((x) => MV[x.id]).sort((x, y) => x.n - y.n); }
+  /* Versionshinweis in der Kopfzeile: stabil „Version 2026.1029.0“, Testversion „Beta 2026.1029.0b1“. Tipp öffnet Versionen. */
+  _verTag() {
+    if (!this._ver) return "";
+    const b = vbeta(this._ver);
+    return `<em class="ver vtag${b ? " vbeta" : ""}" data-act="mver" role="button" tabindex="0" title="Versionen anzeigen">${b ? "Beta" : "Version"} ${esc(this._ver)}</em>`;
+  }
+  _relDate(d) { try { return new Date(d + "T12:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }); } catch (_) { return d; } }
+  /* Einstellungen → System → Versionen: letzte 5 stabile Versionen, Beta-Hinweis, Modulversionen, Erklärung des Schemas */
   _mvModal() {
+    if (this._modal && this._modal.sub === "mod") return this._mvModModal();
+    const cur = this._ver || "", beta = vbeta(cur);
+    const list = REL.filter((r) => !vbeta(r.v)).slice(0, 5);
+    const rels = list.map((r) => `<div class="rlr"><div class="rlh"><b class="rlv">${esc(r.v)}</b>${!beta && r.v === cur ? `<em class="rlin">Installiert</em>` : ""}<span class="mut">${esc(this._relDate(r.d))}</span></div>
+        <ul class="rlt">${r.t.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>${r.c.length ? `<div class="rlc">${r.c.map((c) => `<em>${esc(c)}</em>`).join("")}</div>` : ""}</div>`).join("");
+    const n = this._mvAll().length;
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Versionen</b><span>${beta ? "Beta" : "Version"} ${esc(cur || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${beta ? `<div class="rlbeta">${ic("flask", 18)}<div><b>Beta installiert: ${esc(cur)}</b><span>Testversion, die Änderungen folgen mit dem nächsten stabilen Update.</span></div></div>` : ""}
+      <div class="lsec">${ic("puzzle", 15)}Integration · letzte ${list.length} Versionen</div>
+      <div class="rll">${rels || `<div class="mut sm">Keine Einträge gefunden.</div>`}</div>
+      <div class="rlrows"><button class="sxrow" data-act="mvsub" data-k="mod"><span class="sxi">${ic("layers", 20)}</span><span class="sxt"><b>Modulversionen</b><small>${n} Module: Version, Build und Reifegrad, so läuft der Aufstieg</small></span><span class="sxg">${ic("chev", 16)}</span></button>
+      <a class="sxrow" href="https://github.com/Maddog3010/ha-fenster-heizung/releases" target="_blank" rel="noopener"><span class="sxi">${ic("link", 20)}</span><span class="sxt"><b>Alle Versionen auf GitHub</b><small>Vollständige Änderungen jeder Version</small></span><span class="sxg">${ic("chev", 16)}</span></a></div>
+      <div class="lsec">${ic("info", 15)}So liest du die Hauptversion</div>
+      <div class="rlx"><div class="rlxn"><i>2026</i>.<i>1029</i>.<i>0</i></div>
+        <p><b>Jahr · Monat und Tag · Zähler.</b> Die Nummer zeigt, an welchem Tag das Update erschienen ist. Der Zähler beginnt bei 0 und steigt, wenn am selben Tag noch ein Update kommt.</p>
+        <p>Ab Januar ohne führende Null: der 5. Januar 2027 ist 2027.105.0.</p>
+        <p>Testversionen enden auf b1, b2 … und erscheinen nur, wenn in HACS Beta-Versionen eingeschaltet sind, nicht in dieser Liste.</p>
+        <p>Was sich in einem Modul geändert hat, zeigen die Modulversionen.</p></div>
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _mvModModal() {
     const rows = this._mvAll().map((x) => { const m = MV[x.id], g = STG[modSt(x)];
       return `<tr><td><span class="mut">Modul ${x.n}</span> ${esc(x.short)}</td><td>${g ? `<em class="sxc ${g.c}">${g.t}</em>` : `<em class="sxc lab">Lab</em>`}</td><td><b>v${esc(m.v)}</b></td><td>${m.b}</td><td>${this._mvNew(x.id) ? `<span class="mvn">NEU</span>` : ""}</td></tr>`; }).join("");
     const leg = MV_STG.slice().reverse().map((s) => `<div class="mvl"><em class="sxc ${STG[s[0]].c}">${STG[s[0]].t}</em><div><b>Version ${s[1]}</b><br>${s[2]} ${s[3]}<br><span class="mut">${s[4]}</span></div></div>`).join("");
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Versionen</b><span>Paket ${esc(this._ver || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="sh"><button class="ibtn" data-act="mvsub" data-k="" aria-label="Zurück zu Versionen">${ic("back", 20)}</button><div style="flex:1"><b>Modulversionen</b><span>Version ${esc(this._ver || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("layers", 15)}Module</div>
       <div class="mvt"><table><thead><tr><th>Modul</th><th>Stufe</th><th>Version</th><th>Build</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="mut sm" style="margin:6px 0 4px">Die Version zeigt den Reifegrad, der Build zählt Änderungen innerhalb der Version. Module ohne Änderung behalten ihre Nummer.</div>
@@ -7468,7 +7519,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="mvrule"><div><b>Neue Funktion</b> Version +0.1, Build wieder 1</div><div><b>Fehlerbehebung</b> gleiche Version, Build +1</div><div><b>Aufstieg</b> Version springt auf den Start der nächsten Stufe, Build wieder 1</div></div>
       <div class="lsec">${ic("info", 15)}So unterscheiden sich die Stufen</div>
       <div class="mvlg">${leg}<div class="mvl"><em class="sxc lab">Lab</em><div><b>Version 0.0.1 und höher</b><br>Experimentelle Funktion in den Labs, kein eigenes Modul. Sie startet bei v0.0.1.<br><span class="mut">Wird sie als Modul übernommen, beginnt sie bei v0.1 und folgt den Stufen.</span></div></div></div>
-      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+      <div class="foot2"><button class="btn2" data-act="mvsub" data-k="">Zurück</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _mvAct(a, b) { if (a === "mvx") { this._mvO = this._mvO === b.dataset.k ? null : b.dataset.k; this._render(); } }
   /* ================= Modul 15: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
@@ -7652,7 +7703,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "li" && a !== "st" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? (this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : "") : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? this._verTag() : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
       ${this._mdBar()}<div class="wrap">${this._mvPop(a)}${this._tmHint()}${this._labCards(a)}${body}</div>`;
     /* Das Banner steht in jedem Modul ganz oben, auch wenn davor Labs-Karten oder Hinweise erzeugt werden. */
     const wr = sr.getElementById("main").querySelector(".wrap"), hb = wr && wr.querySelector(":scope > .hero.mh");

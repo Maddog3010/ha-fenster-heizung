@@ -1009,4 +1009,20 @@ button.hzr{cursor:pointer}
 
 .rtx{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:12px;color:var(--mut)}.rtx b{color:var(--primary-text-color);font-weight:600;text-align:right}
 .rtn{margin-top:6px;font-size:12px;color:#a78bfa}.rtn.warn{color:#f59e0b}
+
+/* Versionen: Releaseliste, Beta-Hinweis, Versionsschema, Versionshinweis im Kopf */
+.vtag{cursor:pointer}.vtag:hover{text-decoration:underline}.vtag.vbeta{color:var(--amber)}
+.rll{display:grid;margin-top:6px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.rlr{padding:10px 12px}.rlr+.rlr{border-top:1px solid var(--line)}
+.rlh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.rlh .mut{margin-left:auto;font-size:.78rem}
+.rlv{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.rlin{font-style:normal;font-size:.7rem;font-weight:700;color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent);border:1px solid color-mix(in srgb,var(--teal) 40%,transparent);border-radius:8px;padding:1px 8px}
+.rlt{margin:6px 0 0;padding-left:18px;line-height:1.5;font-size:.86rem;color:var(--mut)}
+.rlc{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.rlc em{font-style:normal;font-size:.72rem;border:1px solid var(--line);border-radius:8px;padding:1px 8px;color:var(--mut)}
+.rlbeta{display:flex;gap:10px;align-items:flex-start;margin:10px 0 2px;padding:10px 12px;border-radius:12px;color:var(--amber);background:color-mix(in srgb,var(--amber) 12%,transparent);border:1px solid color-mix(in srgb,var(--amber) 40%,transparent);line-height:1.45;font-size:.86rem}
+.rlbeta b{display:block}.rlbeta span{color:var(--primary-text-color);opacity:.85}
+.rlrows{display:grid;margin-top:12px;border:1px solid var(--line);border-radius:12px;overflow:hidden}.rlrows .sxrow:first-child{border-top:0}.rlrows a.sxrow{text-decoration:none;color:inherit}
+.rlx{margin-top:6px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);font-size:.86rem;line-height:1.5}
+.rlx p{margin:6px 0;color:var(--mut)}.rlx p b{color:var(--primary-text-color)}
+.rlxn{display:flex;align-items:center;gap:3px;font-size:1.05rem;font-weight:700;font-variant-numeric:tabular-nums}.rlxn i{font-style:normal;padding:2px 8px;border-radius:8px;border:1px solid var(--line)}
 `;

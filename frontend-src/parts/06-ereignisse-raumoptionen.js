@@ -103,6 +103,7 @@
     else if (a === "gpvpm") { this._gen.pv = { ...this._pv(), [b.dataset.p + "_mode"]: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "gpvsign") { this._gen.pv = { ...this._pv(), sign: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "mver") { this._modal = { type: "mver" }; this._renderModal(); }
+    else if (a === "mvsub") { if (this._modal && this._modal.type === "mver") { this._modal.sub = b.dataset.k || null; this._renderModal(); const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; } }
     else if (a === "fhset") { this._modal = { type: "fh" }; this._renderModal(); }
     else if (a === "fhsec") { const s = this._fhOpenSet(); s.has(b.dataset.k) ? s.delete(b.dataset.k) : s.add(b.dataset.k); try { localStorage.setItem("fh-open", JSON.stringify([...s])); } catch (_) {} this._renderModal(); }
     else if (a === "gen") {

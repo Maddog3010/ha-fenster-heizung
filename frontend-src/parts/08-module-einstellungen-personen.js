@@ -89,7 +89,7 @@
     const grp = (ico, ttl, sub, body) => `<div class="sxh2"><span class="sxhi">${ic(ico, 16)}</span><b>${ttl}</b><small>${sub}</small></div>${body}`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Module an einem Ort</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Module an einem Ort</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="mdstx">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap">
         <div class="sxw">
@@ -108,7 +108,7 @@
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern und zurückspielen", "gen")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
           ${row("puzzle", "Module verwalten", "Module ein- und ausschalten, eigene Module hinzufügen", "mdmgr")}
-          ${row("layers", "Versionen", "Version, Build und Reifegrad der Module, so läuft der Aufstieg", "mver")}</div>`)}</div>
+          ${row("layers", "Versionen", "Letzte Updates mit Änderungen, Modulversionen und Versionsschema", "mver")}</div>`)}</div>
       </div>`;
   }
   /* ---------------- Personen & Standort: iCloud-Ortung, Personen-Einstellungen, Home-Zone auf der Karte ---------------- */
@@ -181,7 +181,7 @@
     }).join("");
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Personen &amp; Standort</b><span><em class="tag">Wer ist zu Hause und wo ist das Zuhause</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Personen &amp; Standort</b><span><em class="tag">Wer ist zu Hause und wo ist das Zuhause</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="ortback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw">
         <div class="card ocard"><h2>${ic("pin", 18)}Standort-Quelle</h2>

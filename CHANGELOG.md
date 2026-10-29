@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.1029.0b1] - 2026-10-29
+
+Erste Testversion mit dem neuen Versionsschema. Sie erscheint in HACS nur, wenn für dieses Repository Beta-Versionen eingeschaltet sind.
+
+### Neu
+- **Neues Versionsschema Jahr.MonatTag.Zähler.** Statt 3.0.7.6 heißt die Version jetzt zum Beispiel 2026.1029.0: erschienen am 29. Oktober 2026, erstes Update des Tages. Kommt am selben Tag noch ein Update, steigt der Zähler (2026.1029.1). Ab Januar ohne führende Null, der 5. Januar 2027 ist 2027.105.0.
+- **Beta-Kanal.** Testversionen enden auf b1, b2 … und werden auf GitHub als Pre-Release veröffentlicht. HACS bietet sie nur an, wenn Beta-Versionen eingeschaltet sind. Die stabile Version des Tages liegt immer über ihren Testversionen (2026.1029.0b1 < 2026.1029.0).
+- **Einstellungen → System → Versionen neu.** Die letzten 5 stabilen Versionen stehen offen mit Datum, kurzem Änderungstext und den geänderten Modulen. Testversionen erscheinen dort nicht. Ist eine Beta installiert, weist ein kurzer Hinweis oben darauf hin.
+- **Modulversionen im eigenen Fenster.** Die bisherige Übersicht (Tabelle, Aufstieg, Stufen) öffnet sich über „Modulversionen“ und bleibt unverändert, mit Zurück zu „Versionen“.
+- **Erklärung der Hauptversion** unten im Fenster „Versionen“.
+
+### Geändert
+- **Versionshinweis in der Kopfzeile.** Überall einheitlich „Version 2026.1029.0“, bei einer Testversion „Beta 2026.1029.0b1“ in Gelb. Ein Tipp darauf öffnet „Versionen“.
+- **Update-Hinweis** versteht das neue Schema. Wer eine Beta nutzt, bekommt auch neuere Betas angezeigt, alle anderen nur stabile Versionen. Hinweis: Installationen bis 3.0.7.6 erkennen das neue Schema im eigenen Update-Hinweis noch nicht. HACS zeigt das Update trotzdem an.
+- Die Änderungstexte für „Versionen“ werden beim Bauen aus dieser Datei übernommen (frontend-src/build.py).
+
 ## [3.0.7.6] - 2026-10-29
 
 ### Geändert
