@@ -224,7 +224,7 @@
     let res;
     try { res = await this._hass.callWS({ type: "fenster_heizung/get_options", entry_id: id }); } catch (_) { this._toast("Einstellungen konnten nicht geladen werden"); return; }
     const o = (res && res.options) || {};
-    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1, humidity_sensor: "", air_hint: "on", weather_adj: "on", air_every: 8, htr_on: "off", htr_entity: "", htr_watt: 1500, htr_target: 22, htr_prio: 5, htr_steps: "", htr_thermo: "off", htr_auto: "on", htr_presets: [], htr_devtemp: "max", htr_from: "", htr_to: "" };
+    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1, humidity_sensor: "", room_temp_sensor: "", rt_show: "on", rt_learn: "on", rt_dew: "on", rt_heater: "on", air_hint: "on", weather_adj: "on", air_every: 8, htr_on: "off", htr_entity: "", htr_watt: 1500, htr_target: 22, htr_prio: 5, htr_steps: "", htr_thermo: "off", htr_auto: "on", htr_presets: [], htr_devtemp: "max", htr_from: "", htr_to: "" };
     for (const k of Object.keys(d)) if (o[k] !== undefined && o[k] !== null) d[k] = Array.isArray(o[k]) ? [...o[k]] : o[k];
     if (Array.isArray(d.htr_steps)) d.htr_steps = d.htr_steps.join(", ");
     this._modal = { type: "opt", id, name: (res && res.name) || "", draft: d, open: new Set(["dev", "ctl"]), busy: false };
@@ -283,6 +283,13 @@
         multi("notify_service", notify, "Benachrichtigungs-Aktionen", "Wie in den Entwicklerwerkzeugen, z. B. notify.mobile_app_handy.") +
         num("notify_after", "min", { l: "Erinnerung nach … Minuten offen", h: "0 = aus", min: 0, max: 240, step: 1 }) +
         txt("notify_title", { l: "Titel (optional)", h: "Platzhalter: {raum}, {minuten}, {fenster}" }) + txt("notify_message", { l: "Nachrichtentext" })),
+      sec("rtemp", "thermo", "Raumtemperatur-Sensor", d.room_temp_sensor ? fn(d.room_temp_sensor) : "nur Thermostat",
+        one("room_temp_sensor", ent("sensor", "temperature"), "Temperatursensor im Raum", "Optional. Der Thermostat regelt weiter wie bisher. Der Sensor misst, was im Raum wirklich ankommt, nicht am heißen Heizkörper. Fällt er aus, gilt automatisch wieder der Thermostat.") +
+        (d.room_temp_sensor ? `<div class="mut sm" style="margin:10px 0 2px"><b style="color:var(--primary-text-color)">Verwenden für</b></div>` +
+        row("Anzeige in der Raumkarte", "Raum als große Zahl, Thermostat klein daneben.", seg("rt_show", [["on", "An"], ["off", "Aus"]])) +
+        row("Aufheizzeit lernen", "Die gelernte Dauer bezieht sich auf die echte Raumtemperatur.", seg("rt_learn", [["on", "An"], ["off", "Aus"]])) +
+        row("Taupunkt und Schimmelrisiko", "Genauer, wenn Temperatur und Feuchte am selben Ort gemessen werden.", seg("rt_dew", [["on", "An"], ["off", "Aus"]])) +
+        row("Elektroheizer „warm genug“", "Der Heizer schaltet nach der Raumtemperatur, nicht nach dem Thermostat.", seg("rt_heater", [["on", "An"], ["off", "Aus"]])) : "")),
       sec("air", "drop", "Raumluft", d.humidity_sensor ? fn(d.humidity_sensor) : `ohne Sensor${Number(d.air_every) > 0 ? ` · Lüften nach ${d.air_every} Std.` : ""}`,
         one("humidity_sensor", ent("sensor", "humidity"), "Luftfeuchte-Sensor", "Mit Sensor zeigt die Karte Luftfeuchte, Taupunkt und Schimmelrisiko. Ohne Sensor gibt es Lüftungs-Erinnerung, Wandtemperatur und kritische Feuchte.") +
         num("air_every", "Std.", { l: "Erinnern, wenn länger nicht gelüftet", h: "0 = aus. Gemessen am letzten Schließen des Fensters.", min: 0, max: 48, step: 1 }) +

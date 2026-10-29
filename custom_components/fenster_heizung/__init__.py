@@ -46,6 +46,7 @@ from .backup import SafeStore
 from .const import (
     ACTION_OFF,
     CONF_ACTION,
+    CONF_ROOM_TEMP,
     CONF_BLOCK_FROM,
     CONF_BLOCK_TO,
     CONF_CLOSE_DELAY,
@@ -579,14 +580,37 @@ class WindowController:
     def window_open(self) -> bool:
         return self._any_open()
 
-    def room_temperature(self) -> float | None:
-        """Raumtemperatur laut erstem Thermostat, das einen Wert meldet."""
+    def sensor_temp(self, use: str | None = None) -> float | None:
+        """Wert des optionalen Raumtemperatur-Sensors (None: nicht gesetzt, aus, ausgefallen oder unplausibel)."""
+        eid = self.cfg.get(CONF_ROOM_TEMP)
+        if not eid or (use and self.cfg.get(use) == "off"):
+            return None
+        st = self.hass.states.get(eid)
+        if st is None or st.state in ("unknown", "unavailable", ""):
+            return None
+        try:
+            val = float(st.state)
+        except (TypeError, ValueError):
+            return None
+        unit = str(st.attributes.get("unit_of_measurement") or "")
+        if unit in ("°F", "F"):
+            val = (val - 32) * 5 / 9
+        elif unit == "K":
+            val -= 273.15
+        return round(val, 2) if -20 <= val <= 50 else None
+
+    def thermostat_temperature(self) -> float | None:
         for eid in self.cfg[CONF_THERMOSTATS]:
             st = self.hass.states.get(eid)
             cur = st.attributes.get("current_temperature") if st else None
             if isinstance(cur, (int, float)):
                 return float(cur)
         return None
+
+    def room_temperature(self, use: str = "rt_heater") -> float | None:
+        """Raumtemperatur: Raumsensor (falls gesetzt und für diesen Zweck aktiv), sonst erstes Thermostat."""
+        val = self.sensor_temp(use)
+        return val if val is not None else self.thermostat_temperature()
 
     @property
     def last_aired(self) -> str | None:
@@ -609,7 +633,8 @@ class WindowController:
                 continue
             cur, tgt = st.attributes.get("current_temperature"), st.attributes.get("temperature")
             if isinstance(cur, (int, float)) and isinstance(tgt, (int, float)):
-                return float(cur), float(tgt)
+                own = self.sensor_temp("rt_learn")
+                return (own if own is not None else float(cur)), float(tgt)
         return None
 
     def _outdoor_now(self) -> float | None:

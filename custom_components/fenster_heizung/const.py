@@ -107,6 +107,8 @@ PLAN_MODES = ("keep", "heat", "auto")
 
 # 2.6.0: Raumluft, Wetter-Anpassung, Aufheizzeit, Updates
 CONF_HUMIDITY = "humidity_sensor"
+CONF_ROOM_TEMP = "room_temp_sensor"  # optionaler Raumtemperatur-Sensor
+RT_USES = ("rt_show", "rt_learn", "rt_dew", "rt_heater")  # Verwenden für (je "on"/"off")
 CONF_AIR_HINT = "air_hint"
 CONF_WEATHER_ADJ = "weather_adj"
 CONF_AIR_EVERY = "air_every"  # Erinnerung (Std.), wenn lange nicht gelüftet; 0 = aus
@@ -118,7 +120,7 @@ HTR_KEYS = (
 )
 PV_TICK_SECONDS = 30
 HEATER_KEEP_DAYS = 14
-EXTRA_KEYS = (CONF_HUMIDITY, CONF_AIR_HINT, CONF_WEATHER_ADJ, CONF_AIR_EVERY) + HTR_KEYS  # gehören nicht zum HA-Optionsdialog
+EXTRA_KEYS = (CONF_HUMIDITY, CONF_ROOM_TEMP, *RT_USES, CONF_AIR_HINT, CONF_WEATHER_ADJ, CONF_AIR_EVERY) + HTR_KEYS  # gehören nicht zum HA-Optionsdialog
 GITHUB_REPO = "Maddog3010/ha-fenster-heizung"
 UPDATE_CACHE_SECONDS = 3600
 LEARN_MIN_DELTA = 1.0  # Aufheizphase ab so viel Kelvin unter dem Ziel

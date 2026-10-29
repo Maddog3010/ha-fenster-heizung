@@ -85,7 +85,7 @@
   }
   _tmRoom(r) {
     const st = this._hass.states, cl = (r.thermos || []).map((e) => st[e]).filter(Boolean), A = (cl[0] && cl[0].attributes) || {};
-    const cur = cl.map((x) => parseFloat(x.attributes.current_temperature)).filter(isFinite), ist = cur.length ? cur.reduce((a, b) => a + b, 0) / cur.length : NaN;
+    const cur = cl.map((x) => parseFloat(x.attributes.current_temperature)).filter(isFinite), rt = this._rt(r, "show"), ist = rt.sensor ? rt.t : cur.length ? cur.reduce((a, b) => a + b, 0) / cur.length : NaN;
     const o = (this._tmTgt || {})[r.id], tg = o && Date.now() < o.until ? o.v : parseFloat(A.temperature), paused = r.mode === "heizung_pausiert", off = r.mode === "regelung_aus";
     const sub = paused ? "Fenster offen, Heizung pausiert" : off ? "Regelung aus" : isFinite(ist) ? `Ist ${num(ist, 1)} °C` : "Kein Messwert";
     const can = cl.length && isFinite(tg) && !paused;

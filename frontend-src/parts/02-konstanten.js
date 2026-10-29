@@ -105,7 +105,7 @@ const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 4; i
 /* Elektroheizer mit PV-Überschuss */
 const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"] };
 const WZ_STEPS = ["Willkommen", "Räume", "Fenstermeldung", "Heizung & Energie", "Luftfeuchte", "PV & Elektroheizer", "Meldungen", "Zusammenfassung"];
-const DG_ROLES = { window: "Fenstersensor", thermo: "Thermostat", hum: "Luftfeuchte", heater: "Elektroheizer", power: "Heizer-Leistung", pv: "PV-Einspeisung", soc: "Batterie", price: "Strompreis", feed: "Einspeisevergütung", outdoor: "Außentemperatur", heating: "Heizungs-Status" };
+const DG_ROLES = { window: "Fenstersensor", thermo: "Thermostat", hum: "Luftfeuchte", rtemp: "Raumtemperatur", heater: "Elektroheizer", power: "Heizer-Leistung", pv: "PV-Einspeisung", soc: "Batterie", price: "Strompreis", feed: "Einspeisevergütung", outdoor: "Außentemperatur", heating: "Heizungs-Status" };
 const num2 = (v) => (Number(v) || 0).toLocaleString("de-DE", { maximumFractionDigits: 1 });
 const PVDEF = { sensor: "", sign: "export", reserve: 200, delay: 3, minrun: 10, soc_sensor: "", soc_min: 80, price: 32, feed: 8, price_mode: "fix", price_sensor: "", feed_mode: "fix", feed_sensor: "" };
 const stepsOf = (h) => (Array.isArray(h.stufen) && h.stufen.length ? h.stufen : [Number(h.watt) || 0]).map(Number).filter((x) => x > 0).sort((a, b) => a - b);

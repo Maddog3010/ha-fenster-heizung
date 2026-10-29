@@ -18,7 +18,7 @@ from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore
-from .const import CONF_HUMIDITY, CONF_OUTDOOR_SENSOR, CONF_THERMOSTATS, CONF_WINDOWS, DOMAIN
+from .const import CONF_HUMIDITY, CONF_ROOM_TEMP, CONF_OUTDOOR_SENSOR, CONF_THERMOSTATS, CONF_WINDOWS, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -95,7 +95,7 @@ class DiagManager:
             return ""
         for entry in self.hass.config_entries.async_entries(DOMAIN):
             cfg = {**entry.data, **entry.options}
-            used = [*(cfg.get(CONF_WINDOWS) or []), *(cfg.get(CONF_THERMOSTATS) or []), cfg.get(CONF_HUMIDITY), cfg.get("htr_entity")]
+            used = [*(cfg.get(CONF_WINDOWS) or []), *(cfg.get(CONF_THERMOSTATS) or []), cfg.get(CONF_HUMIDITY), cfg.get(CONF_ROOM_TEMP), cfg.get("htr_entity")]
             if entity in used:
                 return entry.title
         return ""
@@ -159,7 +159,7 @@ class DiagManager:
                 continue
             cfg = {**entry.data, **entry.options}
             out += [*(cfg.get(CONF_WINDOWS) or []), *(cfg.get(CONF_THERMOSTATS) or [])]
-            out += [e for e in (cfg.get(CONF_HUMIDITY), cfg.get("htr_entity"), cfg.get(CONF_OUTDOOR_SENSOR)) if e]
+            out += [e for e in (cfg.get(CONF_HUMIDITY), cfg.get(CONF_ROOM_TEMP), cfg.get("htr_entity"), cfg.get(CONF_OUTDOOR_SENSOR)) if e]
         return sorted(set(out))
 
     def _watch(self) -> None:
@@ -301,6 +301,7 @@ class DiagManager:
             for e in cfg.get(CONF_THERMOSTATS) or []:
                 add("thermo", e)
             add("hum", cfg.get(CONF_HUMIDITY))
+            add("rtemp", cfg.get(CONF_ROOM_TEMP))
             if cfg.get("htr_on") == "on":
                 add("heater", cfg.get("htr_entity"))
             for s in cfg.get("notify_service") or []:

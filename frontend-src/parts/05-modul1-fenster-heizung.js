@@ -11,11 +11,24 @@
     return `<div class="vbar"><button class="myb ${this._my().on ? "on" : ""}" data-act="my">${ic("user", 15)}Meine Ansicht</button><div class="vseg" role="group" aria-label="Ansicht der Raumkarten">${[["compact", "list", "Kompakt"], ["detail", "grid", "Detail"]].map(([k, i, l]) => `<button class="${v === k ? "sel" : ""}" data-act="view" data-k="${k}" aria-pressed="${v === k}">${ic(i, 16)}${l}</button>`).join("")}</div></div>`;
   }
   _rv(r) { return this._view() === "compact" ? this._row(r) : this._room(r); }
+  /* Raumtemperatur: Raumsensor (falls gesetzt, für diesen Zweck aktiv und gültig), sonst Thermostat. use: show | learn | dew | heater */
+  _rt(r, use) {
+    const h = this._hass, th = (r.thermos || []).map((e) => h.states[e]).filter(Boolean), t0 = th[0], tv = t0?.attributes.current_temperature, thv = tv != null && isFinite(Number(tv)) ? Number(tv) : null;
+    let sv = null;
+    const se = r.rtEid && (!r.rtUse || r.rtUse["rt_" + use] !== false) ? h.states[r.rtEid] : null;
+    if (se && !["unknown", "unavailable", ""].includes(se.state)) { let v = parseFloat(se.state); const u = se.attributes.unit_of_measurement; if (u === "°F") v = (v - 32) * 5 / 9; else if (u === "K") v -= 273.15; if (isFinite(v) && v >= -20 && v <= 50) sv = v; }
+    const fail = !!(r.rtEid && se && sv == null);
+    return { t: sv != null ? sv : thv, th: thv, sensor: sv != null, fail, missing: !!(r.rtEid && !se), diff: sv != null && thv != null ? thv - sv : null };
+  }
+  _rtNote(rt) {
+    if (!rt.sensor || rt.diff == null || Math.abs(rt.diff) < 0.5) return "";
+    return `Thermostat ${num(Math.abs(rt.diff), 1)} K ${rt.diff > 0 ? "wärmer" : "kälter"} als der Raum`;
+  }
   _head() { return this._view() === "compact" ? `<div class="chead ${this._edit ? "ed" : ""}">${this._edit ? "<span></span>" : ""}<span></span><span>Raum</span><span>Fenster</span><span>Heizung</span><span>Heizplan</span><span>Pausiert</span><span></span><span></span></div>` : ""; }
   _row(r) {
     const h = this._hass, m = MODE[r.mode] || MODE.regelung_aus, edit = this._edit, adm = this._admin();
     const wins = (r.windows || []).map((e) => h.states[e]).filter(Boolean), open = wins.filter((w) => ["on", "open"].includes(w.state));
-    const th = (r.thermos || []).map((e) => h.states[e]).filter(Boolean), t0 = th[0], cur = t0?.attributes.current_temperature, tgt = t0?.attributes.temperature;
+    const th = (r.thermos || []).map((e) => h.states[e]).filter(Boolean), t0 = th[0], rt = this._rt(r, "show"), cur = rt.t, tgt = t0?.attributes.temperature;
     const hv = t0 ? (t0.state === "off" ? "aus" : t0.state === "heat" ? "heizt" : t0.state === "auto" ? "Automatik" : t0.state) : "–";
     const d = r.sc.day || { min: 0, gas: 0, kwh: 0 };
     const p0 = this._cfg.plans[r.id] || { enabled: false, entries: [] }, pts = points(p0.entries), now = nowMin(), today = Math.floor(now / 1440);
@@ -31,7 +44,7 @@
       <div class="rn"><b>${esc(r.name)}</b><span class="pill ${m.c}">${m.t}</span>${this._airChip(r)}${this._htrChip(r)}${this._devChip(r)}</div>
       <div class="cells">
         <div class="cell w1 win ${open.length ? "amber" : ""}"><b>${ic(open.length ? "windowOpen" : "window", 15)}${open.length ? `${open.length} von ${wins.length} offen` : "geschlossen"}</b>${esc(open.length ? open.map((w) => w.attributes.friendly_name || w.entity_id).join(", ") : wins.length + (wins.length === 1 ? " Fenster" : " Fenster"))}</div>
-        <div class="cell w2"><b>${cur != null ? num(cur, 1) + " °C" : hv}</b>${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} · ` : "") + hv : "kein Thermostat"}</div>
+        <div class="cell w2"><b>${cur != null ? num(cur, 1) + " °C" : hv}</b>${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} · ` : "") + hv + (rt.sensor && rt.th != null ? ` · Thermostat ${num(rt.th, 1)}` : "") : "kein Thermostat"}</div>
         <div class="cell plan2">${plan}</div>
         <div class="cell w4"><b>${num(d.min)} Min.</b>~${num(d.gas, 2)} ${unitOf(FUELS[r.fuel || "erdgas"])}</div>
       </div>
@@ -54,7 +67,7 @@
       const stat = m.length ? `${m.length} ${m.length === 1 ? "Raum" : "Räume"} · ${paused ? paused + " pausiert" : "alle aktiv"} · ${num(min)} Min. · ${amount}` : "Noch keine Räume";
       const mv = edit && adm && !g.fixed ? `<button class="gmv up" data-act="gmv" data-g="${esc(g.id)}" data-dir="-1" ${gi === 0 ? "disabled" : ""} aria-label="Gruppe nach oben">${ic("chev", 16)}</button><button class="gmv" data-act="gmv" data-g="${esc(g.id)}" data-dir="1" ${gi >= groups.length - 1 ? "disabled" : ""} aria-label="Gruppe nach unten">${ic("chev", 16)}</button><button class="gedit" data-act="gedit" data-g="${esc(g.id)}" aria-label="Gruppe bearbeiten">${ic("pencil", 16)}</button>` : "";
       const body = !m.length ? "" : closed
-        ? `<div class="gmini">${m.map((r) => { const t = (r.thermos || []).map((e) => this._hass.states[e]).filter(Boolean)[0]?.attributes.current_temperature; return `<span class="gm" style="--c:${dot[(MODE[r.mode] || MODE.regelung_aus).c]}"><i></i>${esc(r.name)}${t != null ? `<small>${num(t, 1)} °C</small>` : ""}</span>`; }).join("")}</div>`
+        ? `<div class="gmini">${m.map((r) => { const t = this._rt(r, "show").t; return `<span class="gm" style="--c:${dot[(MODE[r.mode] || MODE.regelung_aus).c]}"><i></i>${esc(r.name)}${t != null ? `<small>${num(t, 1)} °C</small>` : ""}</span>`; }).join("")}</div>`
         : `<div class="rooms ${this._view() === "compact" ? "list" : ""}" data-sort-container="room">${m.map((r) => this._rv(r)).join("")}</div>`;
       return `<section class="grp ${closed ? "col" : ""}" data-gid="${esc(g.id)}"><div class="gh">
         <span class="gico">${ic(g.icon || "layers", 20)}</span><div class="gn"><b>${esc(g.name)}</b><span>${stat}</span></div>${mv}
@@ -200,7 +213,7 @@
     if (hit && (day !== this._isoDay(0) ? true : Date.now() - hit.at < 60000)) { m.data = hit.data; m.error = null; m.loading = false; return; }
     const tok = (this._repTok = (this._repTok || 0) + 1);
     m.loading = true; m.data = null; m.error = null; m.tok = tok;
-    const ids = [...(r.thermos || []), ...(r.windows || []), ...(r.modeEid ? [r.modeEid] : [])];
+    const ids = [...(r.thermos || []), ...(r.rtEid ? [r.rtEid] : []), ...(r.windows || []), ...(r.modeEid ? [r.modeEid] : [])];
     try {
       const res = await this._hass.callWS({ type: "history/history_during_period", start_time: start.toISOString(), end_time: end.toISOString(), entity_ids: ids, include_start_time_state: true, significant_changes_only: false, minimal_response: false, no_attributes: false });
       if (m.tok !== tok) return;
@@ -217,16 +230,18 @@
     const t0 = +start / 1000, endMin = Math.max(5, Math.floor((+end - +start) / 60000));
     const ser = (eid) => { let a = {}; return (res[eid] || []).map((x) => { if (x.a) a = x.a; return { t: Math.max(0, ((x.lu ?? x.lc ?? t0) - t0) / 60), s: x.s, a }; }); };
     const at = (list, t) => { let v = null; for (const x of list) { if (x.t <= t) v = x; else break; } return v; };
-    const th = (r.thermos || []).map(ser), wins = (r.windows || []).map((e) => ({ e, list: ser(e), name: this._hass.states[e]?.attributes.friendly_name || "Fenster" })), mode = r.modeEid ? ser(r.modeEid) : [];
+    const th = (r.thermos || []).map(ser), rts = r.rtEid && !(r.rtUse && r.rtUse.rt_show === false) ? ser(r.rtEid) : [], wins = (r.windows || []).map((e) => ({ e, list: ser(e), name: this._hass.states[e]?.attributes.friendly_name || "Fenster" })), mode = r.modeEid ? ser(r.modeEid) : [];
     const num2 = (v) => (typeof v === "number" ? v : Number(v)), ok = (v) => v != null && v !== "" && Number.isFinite(num2(v));
-    const pts = []; let lastTemp = null;
+    const pts = []; let lastTemp = null, lastTh = null, lastRt = null, hasRt = false;
     for (let m = 0; m <= endMin; m += 5) {
       const ts = th.map((l) => at(l, m)).filter(Boolean), cs = ts.map((x) => x.a.current_temperature).filter(ok).map(num2);
-      if (cs.length) lastTemp = cs.reduce((a, b) => a + b, 0) / cs.length;
+      if (cs.length) lastTh = lastTemp = cs.reduce((a, b) => a + b, 0) / cs.length;
+      const rv = at(rts, m); if (rv && ok(rv.s)) { lastRt = num2(rv.s); hasRt = true; } else if (rv) lastRt = null;
+      if (lastRt != null) lastTemp = lastRt;
       const md = at(mode, m), paused = !!md && md.s === "heizung_pausiert";
       const tg = ts.filter((x) => x.s !== "off" && x.s !== "unavailable").map((x) => x.a.temperature).filter(ok).map(num2);
       const w = wins.find((x) => at(x.list, m)?.s === "on");
-      if (lastTemp != null) pts.push({ t: m, temp: Math.round(lastTemp * 10) / 10, tgt: !paused && tg.length ? tg.reduce((a, b) => a + b, 0) / tg.length : null, paused, open: w ? w.name : null });
+      if (lastTemp != null) pts.push({ t: m, temp: Math.round(lastTemp * 10) / 10, th: lastTh != null ? Math.round(lastTh * 10) / 10 : null, rs: lastRt != null, tgt: !paused && tg.length ? tg.reduce((a, b) => a + b, 0) / tg.length : null, paused, open: w ? w.name : null });
     }
     const intervals = (list, on) => { const out = []; let cur = null; for (const x of list) { if (on(x)) { if (!cur) cur = [x.t, endMin]; } else if (cur) { cur[1] = x.t; out.push(cur); cur = null; } } if (cur) out.push(cur); return out; };
     const pauses = intervals(mode, (x) => x.s === "heizung_pausiert").filter(([a, b]) => b > a);
@@ -242,7 +257,7 @@
     for (const p of pts) { if (p.tgt != null) { if (prev != null && Math.abs(p.tgt - prev) >= 0.25) ev.push({ t: p.t, c: "var(--teal)", x: `Solltemperatur ${num(p.tgt, 1)} °C`, y: "Heizplan oder Änderung am Thermostat" }); prev = p.tgt; } }
     ev.sort((a, b) => a.t - b.t).forEach((e) => (e.h = hh(e.t)));
     const temps = pts.map((p) => p.temp), pm = pauses.reduce((a, [x, y]) => a + (y - x), 0), openMin = opens.reduce((a, o) => a + (o.e - o.s), 0);
-    return { pts, pauses, opens, ev, end: endMin, pm, openMin, kwh: pm / 60 * (r.kw || 0), apk: r.apk || 0.1, fuel: r.fuel || "erdgas",
+    return { pts, pauses, opens, ev, hasRt, end: endMin, pm, openMin, kwh: pm / 60 * (r.kw || 0), apk: r.apk || 0.1, fuel: r.fuel || "erdgas",
       avg: temps.length ? temps.reduce((a, b) => a + b, 0) / temps.length : 0, min: temps.length ? Math.min(...temps) : 0, max: temps.length ? Math.max(...temps) : 0 };
   }
   _repHover(min) {
@@ -254,11 +269,11 @@
     if (!tip) return;
     const hh = `${String(Math.floor(p.t / 60)).padStart(2, "0")}:${String(p.t % 60).padStart(2, "0")}`;
     tip.style.left = Math.min(Math.max(x / g.W * 100, 17), 83) + "%";
-    tip.innerHTML = `${hh} Uhr<b>${num(p.temp, 1)} °C</b><div class="st" style="--c:${p.paused ? "#f59e0b" : "#34d399"}"><i></i>${p.paused ? "Heizung pausiert" : p.tgt != null ? "Ziel " + num(p.tgt, 1) + " °C" : "Thermostat aus"}</div>${p.open ? `<div class="wo">${esc(p.open)} offen</div>` : ""}`;
+    tip.innerHTML = `${hh} Uhr<b>${num(p.temp, 1)} °C${d.hasRt && p.rs ? " Raum" : ""}</b>${d.hasRt && p.th != null ? `<div class="st" style="--c:#a78bfa"><i></i>Thermostat ${num(p.th, 1)} °C</div>` : ""}<div class="st" style="--c:${p.paused ? "#f59e0b" : "#34d399"}"><i></i>${p.paused ? "Heizung pausiert" : p.tgt != null ? "Ziel " + num(p.tgt, 1) + " °C" : "Thermostat aus"}</div>${p.open ? `<div class="wo">${esc(p.open)} offen</div>` : ""}`;
   }
   _repChart(d) {
     const cw = this.clientWidth || 390, avail = cw >= 720 ? Math.min(780, cw * 0.94) : cw, W = Math.max(300, Math.min(748, Math.floor(avail - 32))), H = W < 500 ? 250 : 300, L = 34, R = 10, T = 12, B = 26;
-    const iw = W - L - R, ih = H - T - B, vals = d.pts.flatMap((p) => (p.tgt != null ? [p.temp, p.tgt] : [p.temp]));
+    const iw = W - L - R, ih = H - T - B, vals = d.pts.flatMap((p) => [p.temp, ...(p.tgt != null ? [p.tgt] : []), ...(d.hasRt && p.th != null ? [p.th] : [])]);
     let lo = Math.floor(Math.min(...vals) - 1), hi = Math.ceil(Math.max(...vals) + 1); if (hi - lo < 6) { lo -= 2; hi += 2; }
     const x = (m) => L + iw * m / 1440, y = (v) => T + ih * (1 - (v - lo) / (hi - lo));
     this._repGeo = { W, x, y, L, iw };
@@ -275,6 +290,7 @@
     }
     if (tp) s += `<path d="${tp}" fill="none" stroke="#7dd3fc" stroke-width="1.8" stroke-dasharray="5 4" opacity=".9"/>`;
     const line = d.pts.map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)} ${y(p.temp).toFixed(1)}`).join(" "), last = d.pts[d.pts.length - 1];
+    if (d.hasRt) { const tl = d.pts.filter((p) => p.th != null).map((p, i) => `${i ? "L" : "M"}${x(p.t).toFixed(1)} ${y(p.th).toFixed(1)}`).join(" "); if (tl) s += `<path d="${tl}" fill="none" stroke="#a78bfa" stroke-width="1.8" stroke-linejoin="round" opacity=".95"/>`; }
     s += `<path d="${line} L${x(last.t)} ${T + ih} L${x(d.pts[0].t)} ${T + ih} Z" fill="url(#rag)"/><path d="${line}" fill="none" stroke="var(--teal)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
     for (const o of d.opens) { const p = d.pts.find((q) => q.t >= o.s) || last; s += `<circle cx="${x(o.s)}" cy="${y(p.temp)}" r="5" fill="var(--card)" stroke="#60a5fa" stroke-width="2.4"/>`; }
     s += `<line id="rxl" x1="0" x2="0" y1="${T}" y2="${T + ih}" stroke="var(--mut)" opacity=".7"/><circle id="rxc" r="5.5" cx="0" cy="0" fill="var(--card)" stroke="var(--teal)" stroke-width="2.4"/></svg>`;
@@ -296,7 +312,7 @@
         <div class="tile" style="--a:#f59e0b"><div class="t">${ic("radiator", 15)}Pausiert</div><div class="v">${num(d.pm)}<small>Min.</small></div><div class="g">${ic("flame", 13)}~${num(d.kwh * d.apk, 2)} ${F.label.split(" ")[0]}</div></div>
         <div class="tile" style="--a:#60a5fa"><div class="t">${ic("windowOpen", 15)}Fenster offen</div><div class="v">${d.opens.length}<small>×</small></div><div class="g">${num(d.openMin)} Min. gesamt</div></div>
       </div>
-      <div class="rleg"><span style="--c:var(--teal)"><i></i>Temperatur</span><span style="--c:#7dd3fc"><i class="d"></i>Ziel (Thermostat)</span><span style="--c:#f59e0b"><i class="b"></i>Heizung pausiert</span><span style="--c:#60a5fa"><i class="o"></i>Fenster geöffnet</span></div>
+      <div class="rleg"><span style="--c:var(--teal)"><i></i>${d.hasRt ? "Raum (Sensor)" : "Temperatur"}</span>${d.hasRt ? `<span style="--c:#a78bfa"><i></i>Thermostat</span>` : ""}<span style="--c:#7dd3fc"><i class="d"></i>Ziel (Thermostat)</span><span style="--c:#f59e0b"><i class="b"></i>Heizung pausiert</span><span style="--c:#60a5fa"><i class="o"></i>Fenster geöffnet</span></div>
       <div class="rwrap" id="rwrap">${this._repChart(d)}<div class="rtip" id="rtip"></div></div>
       <div class="rbar" aria-hidden="true">${bar.map((b) => `<i style="width:${b.n / 1440 * 100}%;background:${b.k === "p" ? "#f59e0b" : "#34d399"}"></i>`).join("")}</div>
       <div class="rleg" style="margin:6px 0 0"><span style="--c:#34d399"><i class="b" style="background:#34d399"></i>Heizung aktiv</span><span style="--c:#f59e0b"><i class="b" style="background:#f59e0b"></i>pausiert wegen Fenster</span></div>
@@ -382,7 +398,7 @@
   }
   _airData(r) {
     const h = this._hass, he = !r.airOff && r.humEid && h.states[r.humEid]; if (!he) return null;
-    const rh = parseFloat(he.state), t0 = (r.thermos || []).map((e) => h.states[e]).filter(Boolean)[0], t = t0 && t0.attributes.current_temperature;
+    const rh = parseFloat(he.state), t = this._rt(r, "dew").t;
     if (!isFinite(rh) || t == null) return null;
     const o = this._out(), c = airCalc(Number(t), rh, o.t, o.rh);
     const open = (r.windows || []).map((e) => h.states[e]).filter((w) => w && ["on", "open"].includes(w.state));
@@ -475,7 +491,7 @@
   }
   _airLite(r) {
     if (r.airOff || r.humEid) return null;
-    const h = this._hass, t0 = (r.thermos || []).map((e) => h.states[e]).filter(Boolean)[0], t = t0 && t0.attributes.current_temperature;
+    const h = this._hass, t = this._rt(r, "dew").t;
     if (t == null) return null;
     const o = this._out(), ts = o.t == null ? Number(t) - 4 : o.t + 0.7 * (Number(t) - o.t), crit = Math.min(100, (80 * esat(Number(t))) / esat(ts));
     const wins = (r.windows || []).map((e) => h.states[e]).filter(Boolean), open = wins.filter((w) => ["on", "open"].includes(w.state));
@@ -704,7 +720,7 @@
     const h = this._hass, m = MODE[r.mode] || MODE.regelung_aus, edit = this._edit;
     const wins = (r.windows || []).map((e) => h.states[e]).filter(Boolean), open = wins.filter((w) => ["on", "open"].includes(w.state));
     const wc = open.length ? "amber" : "green", winName = (w) => w.attributes.friendly_name || w.entity_id;
-    const th = (r.thermos || []).map((e) => h.states[e]).filter(Boolean), t0 = th[0], cur = t0?.attributes.current_temperature, tgt = t0?.attributes.temperature;
+    const th = (r.thermos || []).map((e) => h.states[e]).filter(Boolean), t0 = th[0], rt = this._rt(r, "show"), cur = rt.t, tgt = t0?.attributes.temperature;
     const hv = t0 ? (t0.state === "off" ? "aus" : t0.state === "heat" ? "heizt" : t0.state === "auto" ? "Automatik" : t0.state) : "–";
     const hc = !t0 ? "gray" : t0.state === "off" ? "slate" : "green";
     const d = r.sc.day || { min: 0, gas: 0, kwh: 0 };
@@ -722,7 +738,7 @@
           <div class="s">${esc(open.length ? open.map(winName).join(", ") : wins.map(winName).join(", ") || "–")}</div></div>
         <div class="box ${hc}"><div class="t">${ic("radiator", 18)}Heizung</div>
           <div class="v">${cur != null ? num(cur, 1) + " °C" : hv}</div>
-          <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div></div>
+          <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div>${rt.sensor ? `<div class="rtx"><span>Raum</span><b>${num(rt.t, 1)} °C</b><span>Thermostat</span><b>${rt.th != null ? num(rt.th, 1) + " °C" : "–"}</b></div>${this._rtNote(rt) ? `<div class="rtn">${esc(this._rtNote(rt))}</div>` : ""}` : rt.fail ? `<div class="rtn warn">Raumsensor meldet nicht, es gilt das Thermostat</div>` : ""}</div>
       </div>
       ${this._planBox(r)}${this._wxaNote(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : this._sum().active ? `<div class="pnote">${ic("sun", 16)}Sommermodus: Der Heizplan ruht, die Fenstermeldung bleibt aktiv.</div>` : ""}
       ${this._htrBox(r)}${this._airBox(r)}
