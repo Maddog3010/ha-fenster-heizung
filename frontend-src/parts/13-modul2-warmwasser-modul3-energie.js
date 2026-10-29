@@ -18,7 +18,7 @@
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? (this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : "") : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
-      ${this._mdBar()}<div class="wrap">${this._mvPop(a)}${this._tmHint()}${this._labCards(a)}${body}</div>`;
+      ${this._mdBar()}<div class="wrap">${this._mvPop(a)}${this._vsHint()}${this._tmHint()}${this._labCards(a)}${body}</div>`;
     /* Das Banner steht in jedem Modul ganz oben, auch wenn davor Labs-Karten oder Hinweise erzeugt werden. */
     const wr = sr.getElementById("main").querySelector(".wrap"), hb = wr && wr.querySelector(":scope > .hero.mh");
     if (hb && wr.firstElementChild !== hb) wr.insertBefore(hb, wr.firstChild);

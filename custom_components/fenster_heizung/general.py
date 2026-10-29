@@ -153,14 +153,23 @@ def parse_notes(body: str) -> list[list[str]]:
     return out
 
 
-def _vkey(tag: str) -> tuple[int, ...]:
-    """Versionsschlüssel mit bis zu vier Teilen (2.9.2 < 2.9.2.1)."""
-    p = [int(x) for x in tag.split(".")]
-    return tuple(p + [0] * (4 - len(p)))
+_TAG_RE = re.compile(r"^(\d{1,4}\.\d{1,4}\.\d{1,3}(?:\.\d{1,3})?)(?:b(\d{1,3}))?$")
+
+
+def _vkey(tag: str) -> tuple[float, ...]:
+    """Versionsschlüssel für das alte Schema (3.0.7.7) und das Datumsschema (2026.1030.0)."""
+    m = _TAG_RE.match(tag)
+    if not m:
+        return (0, 0, 0, 0, 0)
+    p = [int(x) for x in m.group(1).split(".")]
+    p += [0] * (4 - len(p))
+    return (*p, int(m.group(2)) if m.group(2) is not None else float("inf"))
 
 
 def _tag_ok(tag: str) -> bool:
-    return bool(re.match(r"^\d{1,3}\.\d{1,3}\.\d{1,3}(\.\d{1,3})?$", tag))
+    """Gültige stabile Versionsnummer. Testversionen (b1, b2 …) zählen nicht."""
+    m = _TAG_RE.match(tag)
+    return bool(m and m.group(2) is None)
 
 
 class GeneralManager:
@@ -312,7 +321,7 @@ class GeneralManager:
                 for t in tags:
                     name = str(t.get("name") or "").lstrip("vV") if isinstance(t, dict) else ""
                     if _tag_ok(name) and name not in cands:
-                        cands[name] = {"latest": name, "notes": [], "url": f"https://github.com/{GITHUB_REPO}/releases/tag/v{name}"}
+                        cands[name] = {"latest": name, "notes": [], "url": f"https://github.com/{GITHUB_REPO}/releases/tag/{name}"}
             elif status != 404:
                 return {"latest": current, "error": f"GitHub antwortet mit Status {status}"}
         except Exception as err:  # noqa: BLE001  - Netzwerkfehler dürfen nie stören

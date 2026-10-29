@@ -1,4 +1,11 @@
   _setCollapsed(set) { try { localStorage.setItem("fh_collapsed", JSON.stringify([...set])); } catch (_) { /* Speicher gesperrt */ } }
+  /* 3.0.7.7: einmaliger Hinweis auf das neue Versionsschema (nur Administratoren, pro Gerät ausblendbar) */
+  _vsHint() {
+    if (!this._admin() || this._vsOff) return "";
+    try { if (localStorage.getItem("fh_vs_hint") === "1") return ""; } catch (_) { /* egal */ }
+    return `<div class="upd vsh">${ic("today", 22)}<div><b>Neue Versionsnummern ab dem nächsten Update</b><span>Nach 3.0.7.7 heißen Updates nach ihrem Erscheinungstag, zum Beispiel 2026.1030.0 für den 30. Oktober 2026. Deine Einstellungen bleiben erhalten. Testversionen enden auf b1, b2 … und kommen nur, wenn du in HACS Beta-Versionen einschaltest.</span>
+      <span class="vshb"><button class="btn2" data-act="vsx">Verstanden</button><a class="lnk" href="https://github.com/Maddog3010/ha-fenster-heizung#versionen-und-updates" target="_blank" rel="noopener">Mehr dazu</a></span></div></div>`;
+  }
   _updBanner() {
     const u = this._upd, g = this._gen || {};
     if (!this._admin() || !u || g.updates === false || !vgt(u.latest, this._ver)) return "";
@@ -816,6 +823,6 @@
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : ""}</span></div></div>
         ${this._tmBtn()}${this._spnBtn()}${this._labBtn()}${this._stoBtn()}${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
       ${this._mdBar()}<div class="wrap">${edit ? "" : this._mvPop("fh")}${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
-        ${!edit ? this._updBanner() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
+        ${!edit ? this._updBanner() : ""}${!edit ? this._vsHint() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
   }
 

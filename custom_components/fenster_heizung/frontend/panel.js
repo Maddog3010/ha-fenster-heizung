@@ -303,8 +303,9 @@ function airCalc(t, rh, to, rhOut) {
   return { td, ts, rs, lvl, dry };
 }
 const cdown = (since, need) => { const el = Math.max(0, (Date.now() - since) / 1000), tot = need * 60, left = Math.max(0, tot - el); return { left, pct: Math.min(100, (el / tot) * 100), txt: left > 0 ? `noch ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, "0")} Min.` : "genug gelüftet, Fenster schließen" }; };
-const vnum = (a) => String(a || "0").split(".").map((x) => parseInt(x, 10) || 0);
-const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 4; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
+/* Versionen: altes Schema 3.0.7.7 und neues Schema Jahr.MonatTag.Zähler (2026.1030.0), Testversionen mit b1, b2 … liegen davor */
+const vnum = (a) => { const m = String(a || "0").trim().replace(/^v/i, "").match(/^([\d.]+?)(?:b(\d+))?$/); const n = (m ? m[1] : "0").split(".").map((x) => parseInt(x, 10) || 0); while (n.length < 4) n.push(0); n.length = 4; n.push(m && m[2] !== undefined ? parseInt(m[2], 10) : Infinity); return n; };
+const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 5; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return false; };
 /* Elektroheizer mit PV-Überschuss */
 const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"] };
 const WZ_STEPS = ["Willkommen", "Räume", "Fenstermeldung", "Heizung & Energie", "Luftfeuchte", "PV & Elektroheizer", "Meldungen", "Zusammenfassung"];
@@ -1728,6 +1729,8 @@ button.hzr{cursor:pointer}
 
 .rtx{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:12px;color:var(--mut)}.rtx b{color:var(--primary-text-color);font-weight:600;text-align:right}
 .rtn{margin-top:6px;font-size:12px;color:#a78bfa}.rtn.warn{color:#f59e0b}
+
+.vsh{align-items:flex-start}.vsh>div{flex:1;min-width:0}.vsh b{display:block}.vsh span{display:block;line-height:1.45}.vshb{display:flex!important;gap:12px;align-items:center;margin-top:8px}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -1905,6 +1908,13 @@ class FensterHeizungPanel extends HTMLElement {
     try { return new Set(JSON.parse(localStorage.getItem("fh_collapsed") || "[]")); } catch (_) { return new Set(); }
   }
   _setCollapsed(set) { try { localStorage.setItem("fh_collapsed", JSON.stringify([...set])); } catch (_) { /* Speicher gesperrt */ } }
+  /* 3.0.7.7: einmaliger Hinweis auf das neue Versionsschema (nur Administratoren, pro Gerät ausblendbar) */
+  _vsHint() {
+    if (!this._admin() || this._vsOff) return "";
+    try { if (localStorage.getItem("fh_vs_hint") === "1") return ""; } catch (_) { /* egal */ }
+    return `<div class="upd vsh">${ic("today", 22)}<div><b>Neue Versionsnummern ab dem nächsten Update</b><span>Nach 3.0.7.7 heißen Updates nach ihrem Erscheinungstag, zum Beispiel 2026.1030.0 für den 30. Oktober 2026. Deine Einstellungen bleiben erhalten. Testversionen enden auf b1, b2 … und kommen nur, wenn du in HACS Beta-Versionen einschaltest.</span>
+      <span class="vshb"><button class="btn2" data-act="vsx">Verstanden</button><a class="lnk" href="https://github.com/Maddog3010/ha-fenster-heizung#versionen-und-updates" target="_blank" rel="noopener">Mehr dazu</a></span></div></div>`;
+  }
   _updBanner() {
     const u = this._upd, g = this._gen || {};
     if (!this._admin() || !u || g.updates === false || !vgt(u.latest, this._ver)) return "";
@@ -2722,7 +2732,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : ""}</span></div></div>
         ${this._tmBtn()}${this._spnBtn()}${this._labBtn()}${this._stoBtn()}${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
       ${this._mdBar()}<div class="wrap">${edit ? "" : this._mvPop("fh")}${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
-        ${!edit ? this._updBanner() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
+        ${!edit ? this._updBanner() : ""}${!edit ? this._vsHint() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
   }
 
   _build() {
@@ -2856,6 +2866,7 @@ class FensterHeizungPanel extends HTMLElement {
         .catch(() => this._toast("Das hat nicht geklappt"));
     }
     else if (a === "news") { this._modal = { type: "news" }; this._renderModal(); }
+    else if (a === "vsx") { this._vsOff = true; try { localStorage.setItem("fh_vs_hint", "1"); } catch (_) { /* egal */ } this._render(); }
     else if (a === "updx") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet bis zur nächsten Version"); }
     else if (a === "skipv") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._modal = null; this._renderModal(); this._render(); }
     else if (a === "hacs") { this._modal = null; this._renderModal(); this._nav("/hacs"); }
@@ -7653,7 +7664,7 @@ class FensterHeizungPanel extends HTMLElement {
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? (this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : "") : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
-      ${this._mdBar()}<div class="wrap">${this._mvPop(a)}${this._tmHint()}${this._labCards(a)}${body}</div>`;
+      ${this._mdBar()}<div class="wrap">${this._mvPop(a)}${this._vsHint()}${this._tmHint()}${this._labCards(a)}${body}</div>`;
     /* Das Banner steht in jedem Modul ganz oben, auch wenn davor Labs-Karten oder Hinweise erzeugt werden. */
     const wr = sr.getElementById("main").querySelector(".wrap"), hb = wr && wr.querySelector(":scope > .hero.mh");
     if (hb && wr.firstElementChild !== hb) wr.insertBefore(hb, wr.firstChild);

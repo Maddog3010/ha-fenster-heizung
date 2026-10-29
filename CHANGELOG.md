@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.7.7] - 2026-10-29
+
+Brücken-Version zum neuen Versionsschema. Gleicher Stand wie 3.0.7.6, nur Update-Prüfung und Hinweis sind neu.
+
+### Geändert
+- **Update-Prüfung versteht das neue Versionsschema.** Nach 3.0.7.7 heißen Updates nach ihrem Erscheinungstag (Jahr.MonatTag.Zähler, zum Beispiel 2026.1030.0). Bis 3.0.7.6 wurden solche Nummern nicht als Update erkannt. Testversionen (b1, b2 …) werden im Update-Hinweis nicht angezeigt.
+- **Einmaliger Hinweis** für Administratoren oben im Dashboard. Nach „Verstanden“ bleibt er auf diesem Gerät weg.
+
 ## [3.0.7.6] - 2026-10-29
 
 ### Geändert

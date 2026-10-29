@@ -100,8 +100,9 @@ function airCalc(t, rh, to, rhOut) {
   return { td, ts, rs, lvl, dry };
 }
 const cdown = (since, need) => { const el = Math.max(0, (Date.now() - since) / 1000), tot = need * 60, left = Math.max(0, tot - el); return { left, pct: Math.min(100, (el / tot) * 100), txt: left > 0 ? `noch ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, "0")} Min.` : "genug gelüftet, Fenster schließen" }; };
-const vnum = (a) => String(a || "0").split(".").map((x) => parseInt(x, 10) || 0);
-const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 4; i++) { if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0); } return false; };
+/* Versionen: altes Schema 3.0.7.7 und neues Schema Jahr.MonatTag.Zähler (2026.1030.0), Testversionen mit b1, b2 … liegen davor */
+const vnum = (a) => { const m = String(a || "0").trim().replace(/^v/i, "").match(/^([\d.]+?)(?:b(\d+))?$/); const n = (m ? m[1] : "0").split(".").map((x) => parseInt(x, 10) || 0); while (n.length < 4) n.push(0); n.length = 4; n.push(m && m[2] !== undefined ? parseInt(m[2], 10) : Infinity); return n; };
+const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 5; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return false; };
 /* Elektroheizer mit PV-Überschuss */
 const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"] };
 const WZ_STEPS = ["Willkommen", "Räume", "Fenstermeldung", "Heizung & Energie", "Luftfeuchte", "PV & Elektroheizer", "Meldungen", "Zusammenfassung"];

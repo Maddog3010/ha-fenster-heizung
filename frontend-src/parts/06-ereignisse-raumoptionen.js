@@ -129,6 +129,7 @@
         .catch(() => this._toast("Das hat nicht geklappt"));
     }
     else if (a === "news") { this._modal = { type: "news" }; this._renderModal(); }
+    else if (a === "vsx") { this._vsOff = true; try { localStorage.setItem("fh_vs_hint", "1"); } catch (_) { /* egal */ } this._render(); }
     else if (a === "updx") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet bis zur nächsten Version"); }
     else if (a === "skipv") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._modal = null; this._renderModal(); this._render(); }
     else if (a === "hacs") { this._modal = null; this._renderModal(); this._nav("/hacs"); }

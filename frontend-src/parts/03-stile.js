@@ -1009,4 +1009,6 @@ button.hzr{cursor:pointer}
 
 .rtx{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:12px;color:var(--mut)}.rtx b{color:var(--primary-text-color);font-weight:600;text-align:right}
 .rtn{margin-top:6px;font-size:12px;color:#a78bfa}.rtn.warn{color:#f59e0b}
+
+.vsh{align-items:flex-start}.vsh>div{flex:1;min-width:0}.vsh b{display:block}.vsh span{display:block;line-height:1.45}.vshb{display:flex!important;gap:12px;align-items:center;margin-top:8px}
 `;
