@@ -41,7 +41,7 @@
 | 🧪 **Labs** | Neue Funktionen zum Ausprobieren, ab Werk aus. |
 | 💾 **Sicherung** | Einstellungen als Datei sichern oder automatisch auf einen Homeserver legen. |
 
-📖 **Bedienungsanleitung als PDF:** [öffnen](docs/Bedienungsanleitung.pdf) (53 Seiten mit Bildern, Datenstand 3.0.3.1). 📲 **Tags & Karten mit dem iPhone anlernen:** [Anleitung](docs/Anleitung_Tags_iPhone.pdf) (5 Seiten).
+📖 **Bedienungsanleitung als PDF:** [öffnen](docs/Bedienungsanleitung.pdf) (97 Seiten mit Bildern und nummerierten Bilderklärungen, alle Module 1 bis 19, Datenstand 3.0.6.7, 29.10.2026). 📲 **Tags & Karten mit dem iPhone anlernen:** [Anleitung](docs/Anleitung_Tags_iPhone.pdf) (5 Seiten).
 
 ## Installation
 
@@ -198,7 +198,7 @@ Vier Reiter: Übersicht, Grundriss, Wartung, Einstellungen.
 Das Haus in der Mitte, ringsum bis zu acht Kacheln für Solar, Netz, Akku, Auto und Verbraucher. Laufende Punkte zeigen Richtung und Stärke der Leistung. Eigene Namen, Farben, Symbole und Sensoren pro Kachel, mobil und am Desktop.
 </details>
 
-Die ausführliche Beschreibung jedes Moduls mit Bildern steht in der [Bedienungsanleitung](docs/Bedienungsanleitung.pdf).
+Die ausführliche Beschreibung jedes Moduls mit Bildern und Bilderklärungen steht in der [Bedienungsanleitung](docs/Bedienungsanleitung.pdf) (Installation, Oberfläche, jedes Modul einzeln, Tablet-Modus, Einstellungen, Labs, Sponsor, Sichern).
 
 ## So bedienst du es
 
