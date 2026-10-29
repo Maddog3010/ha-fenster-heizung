@@ -460,8 +460,8 @@ const MV = {
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "0.9", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
-  mu: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
-  li: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] } };
+  mu: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  li: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] } };
 const CSS = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -7152,7 +7152,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._mvTrack("")}
       <div class="mvrule"><div><b>Neue Funktion</b> Version +0.1, Build wieder 1</div><div><b>Fehlerbehebung</b> gleiche Version, Build +1</div><div><b>Aufstieg</b> Version springt auf den Start der nächsten Stufe, Build wieder 1</div></div>
       <div class="lsec">${ic("info", 15)}So unterscheiden sich die Stufen</div>
-      <div class="mvlg">${leg}</div>
+      <div class="mvlg">${leg}<div class="mvl"><em class="sxc lab">Lab</em><div><b>Version 0.0.1 und höher</b><br>Experimentelle Funktion in den Labs, kein eigenes Modul. Sie startet bei v0.0.1.<br><span class="mut">Wird sie als Modul übernommen, beginnt sie bei v0.1 und folgt den Stufen.</span></div></div></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _mvAct(a, b) { if (a === "mvx") { this._mvO = this._mvO === b.dataset.k ? null : b.dataset.k; this._render(); } }

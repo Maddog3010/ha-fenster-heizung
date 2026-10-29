@@ -31,7 +31,7 @@
       ${this._mvTrack("")}
       <div class="mvrule"><div><b>Neue Funktion</b> Version +0.1, Build wieder 1</div><div><b>Fehlerbehebung</b> gleiche Version, Build +1</div><div><b>Aufstieg</b> Version springt auf den Start der nächsten Stufe, Build wieder 1</div></div>
       <div class="lsec">${ic("info", 15)}So unterscheiden sich die Stufen</div>
-      <div class="mvlg">${leg}</div>
+      <div class="mvlg">${leg}<div class="mvl"><em class="sxc lab">Lab</em><div><b>Version 0.0.1 und höher</b><br>Experimentelle Funktion in den Labs, kein eigenes Modul. Sie startet bei v0.0.1.<br><span class="mut">Wird sie als Modul übernommen, beginnt sie bei v0.1 und folgt den Stufen.</span></div></div></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _mvAct(a, b) { if (a === "mvx") { this._mvO = this._mvO === b.dataset.k ? null : b.dataset.k; this._render(); } }
