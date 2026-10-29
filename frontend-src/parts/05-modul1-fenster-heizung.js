@@ -754,6 +754,11 @@
       if (this._inHook !== ae0) { this._inHook = ae0; ae0.addEventListener("blur", () => { this._inHook = null; setTimeout(() => this._render(), 0); }, { once: true }); }
       return;
     }
+    /* Auch ein geöffnetes Auswahlfeld darf nicht neu aufgebaut werden, sonst klappt es bei jedem neuen Wert aus Home Assistant sofort wieder zu. Nach der Auswahl oder dem Verlassen wird nachgezogen. */
+    if (ae0 && ae0.tagName === "SELECT" && !(this._inHook === ae0 && Date.now() - (this._selT || 0) > 25000)) {
+      if (this._inHook !== ae0) { this._inHook = ae0; this._selT = Date.now(); const done = () => { ae0.removeEventListener("blur", done); ae0.removeEventListener("change", chg); this._inHook = null; setTimeout(() => this._render(), 0); }, chg = () => setTimeout(() => { try { ae0.blur(); } catch (_) {} if (this._inHook === ae0) done(); }, 60); ae0.addEventListener("blur", done); ae0.addEventListener("change", chg); }
+      return;
+    }
     const bar = sr0 && sr0.querySelector(".mbar"), x = bar ? bar.scrollLeft : null, id = this._mdActive();
     const keep = {}; if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { keep[i.getAttribute("src")] = i; });  /* Bilder behalten, sonst flackern sie bei jedem Neuaufbau */
     try { this._render0(); if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }

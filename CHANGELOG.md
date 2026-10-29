@@ -2,6 +2,12 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.7.0] - 2026-10-29
+
+### Behoben
+- **Auswahlfelder klappten sofort wieder zu.** Home Assistant meldet laufend neue Werte, dabei wurde die Seite neu aufgebaut und ein geöffnetes Auswahlfeld verschwand, zum Beispiel „Art“ bei den Meldern in Modul 11. Ein geöffnetes Auswahlfeld bleibt jetzt stehen, die Seite wird erst nach der Auswahl oder dem Verlassen aktualisiert. Das gilt überall, wo es Auswahlfelder gibt: Modul 1 (Raumeinstellungen, Heizerstufen), Modul 9 (Wetter-Zuordnung), Modul 11 (Melder, Lebensdauer, Prüfintervall), Solar-Prognose und die Labs mit Kalenderauswahl.
+- Modulversionen: Modul 1 v1.1 Build 2, Modul 9, Modul 11 und Solar-Prognose je Build 2.
+
 ## [3.0.6.9] - 2026-10-29
 
 ### Neu
