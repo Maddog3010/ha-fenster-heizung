@@ -1025,4 +1025,30 @@ button.hzr{cursor:pointer}
 .rlx{margin-top:6px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);font-size:.86rem;line-height:1.5}
 .rlx p{margin:6px 0;color:var(--mut)}.rlx p b{color:var(--primary-text-color)}
 .rlxn{display:flex;align-items:center;gap:3px;font-size:1.05rem;font-weight:700;font-variant-numeric:tabular-nums}.rlxn i{font-style:normal;padding:2px 8px;border-radius:8px;border:1px solid var(--line)}
+
+/* Modul 3 v1.1: Zeitraum, Kacheln mit Verlauf, Tooltip, Kosten-Treppe, Vorzeichen-Prüfung */
+.enbil{font-size:.86rem;margin-top:6px;opacity:.95;padding-right:130px}.enbil b.pos{color:#a7f3d0}.enbil b.neg{color:#fecaca}
+.enrg{cursor:pointer}
+.enh .chip.enpr{background:rgba(251,191,36,.22);color:#fde68a}
+.ennav{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+.ennav .enseg{width:auto;max-width:none;margin:0}.ennav .enseg button{padding:8px 18px;flex:1}.enper .nx svg{transform:rotate(180deg)}
+.enper{display:flex;align-items:center;gap:8px}.enper b{font-size:.95rem;white-space:nowrap}
+.enper .nx.dis{opacity:.3;pointer-events:none}.ennow{font-weight:700;color:var(--teal)}
+.entiles{margin-bottom:12px}
+button.tile.entile{font:inherit;color:inherit;text-align:left;cursor:pointer;width:100%;border:1px solid var(--line)}
+button.tile.entile.sel{border-color:var(--a);box-shadow:0 0 0 1px var(--a) inset}
+.tile .tsp{display:block;width:100%;height:28px;margin-top:8px}
+.tcmp{font-weight:700}.tcmp.up{color:#34d399}.tcmp.dn{color:#f87171}
+.enchw{position:relative}
+.enchart{touch-action:pan-y}
+.enhit{cursor:pointer}
+.entt{position:absolute;top:8px;min-width:150px;max-width:240px;background:var(--card);border:1px solid var(--teal);border-radius:12px;padding:8px 10px;font-size:.8rem;line-height:1.45;pointer-events:none;z-index:2;display:flex;flex-direction:column;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+.entt[hidden]{display:none}.entt b{font-size:.84rem}
+.enwf{display:block;width:100%;max-height:210px;margin:4px 0 6px}
+.enchk{border:1px solid color-mix(in srgb,#34d399 45%,transparent);background:color-mix(in srgb,#34d399 9%,transparent);border-radius:14px;padding:10px 12px;margin:8px 0;display:flex;flex-direction:column;gap:6px;font-size:.86rem;line-height:1.45}
+.enchk.warn{border-color:color-mix(in srgb,#f59e0b 55%,transparent);background:color-mix(in srgb,#f59e0b 10%,transparent)}
+.enchk>b{display:flex;align-items:center;gap:6px}.enchk.ok>b{color:#34d399}.enchk.warn>b{color:#f59e0b}
+.enchk .gbtns{margin:2px 0 0}
+.enlive{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.enlive div{border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:.74rem;color:var(--mut)}.enlive b{display:block;font-size:1rem;color:var(--primary-text-color)}
+@media(max-width:600px){.enbil{padding-right:90px}.ennav{flex-direction:column;align-items:stretch}.ennav .enseg{width:100%}.enper{justify-content:space-between}.enper b{flex:1;text-align:center}}
 `;

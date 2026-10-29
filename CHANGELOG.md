@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.1030.0b1] - 2026-10-30
+
+Testversion (Beta) mit Modul 3 v1.1.
+
+### Neu
+- **Modul 3 Energie (v1.1 Build 1): Zeitraum Tag, Woche, Monat und Jahr.** Nach Kalender statt „7 und 30 Tage“. Mit ‹ › blätterst du zu gestern, zur Vorwoche, zum Vormonat oder Vorjahr, „Heute“ springt zurück. Tage älter als die Recorder-Historie kommen als Stundenwerte aus der Langzeitstatistik.
+- **Banner mit Bilanz.** Neue Zeile mit Solar, Verbrauch und Bilanz in Euro für den gewählten Zeitraum. Der Ring zeigt die Autarkie, ein Tipp schaltet auf „gedeckt jetzt“ um. Mit Preissensor zusätzlich der aktuelle Strompreis.
+- **Kacheln mit Verlauf und Vergleich.** Kleine Verlaufslinie je Kachel und Vergleich zur Vorperiode, gleich lang wie der bisher vergangene Teil. Ein Tipp auf eine Kachel hebt die passende Fläche im Diagramm hervor.
+- **Diagramm zum Antippen.** Tag: Solar, aus Batterie, aus dem Netz und Verbrauch, dazu die Prognose aus Modul 16, wenn es eingeschaltet ist. Woche, Monat, Jahr: gestapelte Balken, Einspeisung nach unten. Tippen oder Überfahren zeigt die Werte, ein Tipp auf einen Balken öffnet den Tag oder Monat.
+- **Kosten als Treppe** von Netzkosten über Vergütung und gesparten Bezug zur Bilanz, dazu „Ohne Solar hättest du gezahlt“.
+- **Vorzeichen prüfen** in den Einstellungen: zeigt live, wie Netz und Batterie gerade gelesen werden, und warnt, wenn es nicht zusammenpasst. Geändert wird nur mit „Umdrehen“.
+- **Anzeige-Einstellungen** (pro Gerät): Ring Autarkie oder gedeckt, Vergleich an oder aus.
+
+### Geändert
+- Leistungssensoren werden für Woche, Monat und Jahr immer aus Stunden-Mittelwerten gerechnet. „Wohin der Strom geht“ bleibt bei „Heute“, weil Heizer und Heizstab nur Tageswerte liefern.
+
 ## [2026.1029.0b1] - 2026-10-29
 
 Erste Testversion mit dem neuen Versionsschema. Sie erscheint in HACS nur, wenn für dieses Repository Beta-Versionen eingeschaltet sind.
@@ -17,6 +33,14 @@ Erste Testversion mit dem neuen Versionsschema. Sie erscheint in HACS nur, wenn 
 - **Versionshinweis in der Kopfzeile.** Überall einheitlich „Version 2026.1029.0“, bei einer Testversion „Beta 2026.1029.0b1“ in Gelb. Ein Tipp darauf öffnet „Versionen“.
 - **Update-Hinweis** versteht das neue Schema. Wer eine Beta nutzt, bekommt auch neuere Betas angezeigt, alle anderen nur stabile Versionen. Hinweis: Installationen bis 3.0.7.6 erkennen das neue Schema im eigenen Update-Hinweis noch nicht. HACS zeigt das Update trotzdem an.
 - Die Änderungstexte für „Versionen“ werden beim Bauen aus dieser Datei übernommen (frontend-src/build.py).
+
+## [3.0.7.7] - 2026-10-29
+
+Brücken-Version zum neuen Versionsschema (Zweig release-3.0.7.7). Gleicher Stand wie 3.0.7.6, nur Update-Prüfung und Hinweis sind neu.
+
+### Geändert
+- **Update-Prüfung versteht das neue Versionsschema**, Testversionen werden im Update-Hinweis nicht angezeigt.
+- **Einmaliger Hinweis** auf die neuen Versionsnummern für Administratoren.
 
 ## [3.0.7.6] - 2026-10-29
 

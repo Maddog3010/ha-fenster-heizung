@@ -44,6 +44,7 @@ const PK_HINT = { pv: /solar|pv|photovolt|erzeug|wechselrichter|inverter/i, grid
 const enStep = (mx) => { const raw = Math.max(mx, 1) / 4, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; };
 const WW_ON = ["on", "heat", "heating", "performance", "eco", "electric", "gas", "heat_pump", "high_demand"];
 const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000, MW: 1e6 };
+const EN_RANGES = ["day", "week", "month", "year"];
 const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", bmode: "one", pvn: "", pv2n: "", ent: { pv: "", grid: "", house: "", bat: "", bchg: "", bdis: "", pve: "", pv2: "", pve2: "", imp: "", exp: "" } };
 /* Einstellungen je Modul: neue Module tragen sich hier ein und erscheinen automatisch auf der Einstellungsseite */
 /* Reifegrad der Module: dev = Beispielseite, vorab = Vorabversion (echte Daten, noch nicht endgültig), beta = zum Testen */
@@ -499,7 +500,7 @@ const MV_STG = [
 const MV = {
   fh: { v: "1.1", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  en: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },

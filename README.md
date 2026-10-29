@@ -84,7 +84,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 |---|---|---|---|
 | 1 | **Fenster & Heizung** | Stabil 1.1 | Pause bei offenem Fenster, Heizpläne, Anwesenheit und Urlaub, Berichte, Elektroheizer mit PV-Überschuss, optionaler Raumsensor je Raum |
 | 2 | **Warmwasser & Zirkulation** | Stabil 1.0 | Speicher, Zeitplan, Zirkulationspumpe, Legionellenschutz, Heizstab bei PV-Überschuss |
-| 3 | **Energie** | Stabil 1.0 | Solar, Netz, Batterie und Hausverbrauch, Kosten und Autarkie, zweite Solaranlage |
+| 3 | **Energie** | Stabil 1.1 | Solar, Netz, Batterie und Hausverbrauch, Tag/Woche/Monat/Jahr mit Blättern, Diagramm zum Antippen, Kosten und Autarkie, zweite Solaranlage |
 | 4 | **Gerätestrom** | Stabil 1.0 | Pro Gerät Solar-, Batterie- und Netzanteil, Kosten, Ersparnis, Startempfehlung |
 | 5 | Lüftung & Raumluft | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 6 | Rollläden & Beschattung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
@@ -138,7 +138,7 @@ Zeitplan mit Zieltemperaturen, Zirkulationspumpe, Legionellenschutz und Heizstab
 <summary><b>3 · Energie und 4 · Gerätestrom</b></summary>
 <br>
 
-- **Energie:** Solar, Netz, Batterie und Hausverbrauch mit Kosten, Deckung und Autarkie, optional eine zweite Solaranlage wie ein Balkonkraftwerk.
+- **Energie:** Solar, Netz, Batterie und Hausverbrauch für Tag, Woche, Monat und Jahr, mit ‹ › zum Blättern. Kacheln mit Verlauf und Vergleich zur Vorperiode, Diagramm zum Antippen, Kosten als Treppe bis zur Bilanz, Prüfung der Vorzeichen. Optional eine zweite Solaranlage wie ein Balkonkraftwerk.
 - **Gerätestrom:** pro Lauf eines Geräts der Anteil aus Solar, Batterie und Netz und die Kosten. Die Aufteilung ist eine Näherung aus Messwerten im 20-Sekunden-Takt.
 
 <p align="center"><img src="docs/vorschau_modul_energie.png" width="400" alt="Modul 3"> <img src="docs/vorschau_modul_geraetestrom.png" width="400" alt="Modul 4"></p>
