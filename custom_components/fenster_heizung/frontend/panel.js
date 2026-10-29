@@ -714,7 +714,7 @@ const MV = {
   dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
-  ef: { v: "0.5", b: 4, d: "2026-10-29", p: "3.0.7.4", log: [["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ef: { v: "0.5", b: 5, d: "2026-10-29", p: "3.0.7.5", log: [["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   mu: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   li: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] } };
 const CSS = `
@@ -1526,7 +1526,7 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efx:not(.nar){max-width:1100px}.efx:not(.nar)>.hero{min-height:0;padding-top:10px;padding-bottom:12px}.efx:not(.nar)>.hero .mlogo{display:none}.efx:not(.nar)>.hero .lbl{max-width:none}.efx:not(.nar)>.hero .big{font-size:2.3rem}
 .efx:not(.nar) .efboard{padding:10px;--eft:128px}.efx:not(.nar) .efgrid{grid-template-columns:repeat(4,minmax(0,var(--eft)));justify-content:center;gap:6px 10px}
 .efx:not(.nar) .efn,.efx:not(.nar) .efg{aspect-ratio:1.15/1}.efx:not(.nar) .efc.z>.efg{aspect-ratio:auto;height:0}
-.efc.hu.hb .efn{transform:translateY(calc(-50% - 3px))}.efc.hd.hb .efn{transform:translateY(calc(50% + 3px))}.efx.nar .efc.hu.hb .efn{transform:translateY(calc(-50% - 6px))}.efx.nar .efc.hd.hb .efn{transform:translateY(calc(50% + 6px))}.efx.nar .efc.z>.efg{aspect-ratio:auto;height:0}.efx.nar .efc.ct .efn,.efx.nar .efc.ct .efg{width:100%}
+.efc.hu.hb .efn{transform:translateY(calc(-50% - 3px))}.efc.hd.hb .efn{transform:translateY(calc(50% + 3px))}.efx.nar .efc.hu.hb .efn{transform:translateY(calc(-50% - 6px))}.efx.nar .efc.hd.hb .efn{transform:translateY(calc(50% + 6px))}.efx.nar .efc.z>.efg{aspect-ratio:auto;height:0}.efx.nar .efc.ct .efn,.efx.nar .efc.ct .efg{width:100%}.efx.nar .efc.tp{gap:10px}.efx.nar .efc.tp .efn{width:clamp(92px,27%,130px)}
 .efx.nar .efboard{padding:12px 10px}.efx.nar .efgrid{grid-template-columns:minmax(0,1fr) clamp(92px,27%,130px) minmax(0,1fr);column-gap:clamp(26px,9%,44px);row-gap:8px}.efx.nar .efn,.efx.nar .efg{aspect-ratio:1.1/1}
 .efx.nar .efc.hb .efn{width:100%}.efx.nar .efc.bt .efn{width:clamp(92px,27%,130px)}
 .efx.nar .efs{font-size:max(10.5px,11cqw)}.efx.nar .efs i{font-size:max(9px,.82em)}.efx.nar .efn.hub .efs.t{font-size:max(10.5px,11.5cqw)}.efx.nar .efn.hub .efs.b{font-size:max(10.5px,10.5cqw)}
@@ -6827,7 +6827,8 @@ class FensterHeizungPanel extends HTMLElement {
     const cellAt = (p, html, z) => { const e = EF_POS[p], b = p === "bottom", ct = /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : ct ? "2" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z ? " z" : ""}" style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
     const ghost = '<div class="efg" aria-hidden="true"></div>', ghosts = [[1, "top_1"], [5, "bottom"], [2, "left_1"], [4, "left_3"]].filter(([r]) => keep.includes(r) && !has(r)).map(([r, p]) => cellAt(p, ghost, r === 2 || r === 4)).join("");
     const gUp = keep.includes(4) && !has(4), gDn = keep.includes(2) && !has(2), rows = keep.length - (gUp || gDn ? 1 : 0);
-    const cells = list.map((p) => cellAt(p, this._efxNodeHtml(p, c.nodes[p], hubW))).join("") + ghosts;
+    const pair = narrow && list.includes("top_1") && list.includes("top_2");  /* Handy: beide oberen Kacheln nebeneinander, mittig über dem Haus */
+    const cells = (pair ? `<div class="efc tp" style="grid-column:1/-1;grid-row:${ri(1)}">${this._efxNodeHtml("top_1", c.nodes.top_1, hubW)}${this._efxNodeHtml("top_2", c.nodes.top_2, hubW)}</div>` : "") + list.filter((p) => !(pair && (p === "top_1" || p === "top_2"))).map((p) => cellAt(p, this._efxNodeHtml(p, c.nodes[p], hubW))).join("") + ghosts;
     let hero = "";
     if (c.hero.show) {
       const pe = hub.bottom, w = pe ? this._efxToW(pe) : hubW, chips = [];

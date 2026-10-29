@@ -76,7 +76,8 @@
     const cellAt = (p, html, z) => { const e = EF_POS[p], b = p === "bottom", ct = /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : ct ? "2" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z ? " z" : ""}" style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
     const ghost = '<div class="efg" aria-hidden="true"></div>', ghosts = [[1, "top_1"], [5, "bottom"], [2, "left_1"], [4, "left_3"]].filter(([r]) => keep.includes(r) && !has(r)).map(([r, p]) => cellAt(p, ghost, r === 2 || r === 4)).join("");
     const gUp = keep.includes(4) && !has(4), gDn = keep.includes(2) && !has(2), rows = keep.length - (gUp || gDn ? 1 : 0);
-    const cells = list.map((p) => cellAt(p, this._efxNodeHtml(p, c.nodes[p], hubW))).join("") + ghosts;
+    const pair = narrow && list.includes("top_1") && list.includes("top_2");  /* Handy: beide oberen Kacheln nebeneinander, mittig über dem Haus */
+    const cells = (pair ? `<div class="efc tp" style="grid-column:1/-1;grid-row:${ri(1)}">${this._efxNodeHtml("top_1", c.nodes.top_1, hubW)}${this._efxNodeHtml("top_2", c.nodes.top_2, hubW)}</div>` : "") + list.filter((p) => !(pair && (p === "top_1" || p === "top_2"))).map((p) => cellAt(p, this._efxNodeHtml(p, c.nodes[p], hubW))).join("") + ghosts;
     let hero = "";
     if (c.hero.show) {
       const pe = hub.bottom, w = pe ? this._efxToW(pe) : hubW, chips = [];

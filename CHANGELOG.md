@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.7.5] - 2026-10-29
+
+### Geändert
+- **Modul 19 Hausfluss (v0.5 Build 5): Handy-Ansicht, obere Kacheln mittig.** Sind beide oberen Kacheln belegt, stehen sie nebeneinander mittig über dem Haus statt links und rechts außen.
+
 ## [3.0.7.4] - 2026-10-29
 
 ### Geändert

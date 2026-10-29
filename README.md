@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://hacs.xyz"><img alt="HACS" src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white"></a>
-  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.7.4-2dd4bf"></a>
+  <a href="CHANGELOG.md"><img alt="Version" src="https://img.shields.io/badge/Version-3.0.7.5-2dd4bf"></a>
   <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18bcf2">
   <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white"></a>
 </p>
