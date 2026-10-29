@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.5] - 2026-10-29
+
+### Neu
+- **Version und Build für jedes Modul.** Im Kopf jedes Moduls steht eine Plakette wie „v1.0 · Build 1“. Ein Tipp öffnet die Stufe des Moduls, die Stufenleiste, den nächsten Schritt und die letzten Änderungen. Die Paketversion steht klein dahinter.
+- **Einstellungen → Versionen:** Tabelle aller Module mit Stufe, Version, Build und Datum. Dazu die Karte „So läuft der Aufstieg“ und die Erklärung der Stufen In Entwicklung (0.1 bis 0.4), Beta (0.5 bis 0.8), Vorabversion (0.9) und Stabil (ab 1.0).
+- **Nur am Computer:** In der Modulleiste steht die Version hinter dem Modulnamen, und ein „neu“-Badge zeigt Module, die sich im letzten Update geändert haben.
+- **Zählregeln:** Neue Funktion hebt die Version um 0.1 und setzt den Build auf 1. Eine Fehlerbehebung erhöht den Build um 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe, der Build beginnt wieder bei 1.
+
 ## [3.0.6.4] - 2026-10-29
 
 ### Behoben
