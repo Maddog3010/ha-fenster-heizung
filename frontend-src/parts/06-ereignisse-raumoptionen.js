@@ -102,6 +102,7 @@
     else if (a === "hrday") { m.day = b.dataset.d; this._hrLoad(m); this._renderModal(); }
     else if (a === "gpvpm") { this._gen.pv = { ...this._pv(), [b.dataset.p + "_mode"]: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "gpvsign") { this._gen.pv = { ...this._pv(), sign: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
+    else if (a === "mver") { this._modal = { type: "mver" }; this._renderModal(); }
     else if (a === "fhset") { this._modal = { type: "fh" }; this._renderModal(); }
     else if (a === "fhsec") { const s = this._fhOpenSet(); s.has(b.dataset.k) ? s.delete(b.dataset.k) : s.add(b.dataset.k); try { localStorage.setItem("fh-open", JSON.stringify([...s])); } catch (_) {} this._renderModal(); }
     else if (a === "gen") {
