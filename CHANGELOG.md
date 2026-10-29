@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.8] - 2026-10-29
+
+### Behoben
+- **„Kopieren nicht möglich“ im Sponsor-Bereich** (Schlüssel kopieren, Nachricht kopieren, Listen kopieren). Die Zwischenablage des Browsers steht nur bei einer sicheren Verbindung (https) und in manchen App-Ansichten zur Verfügung. Jetzt gibt es einen Ersatzweg, der auch bei einer http-Adresse oder in der App funktioniert. Dasselbe gilt für „Protokoll kopieren“ (Diagnose), „Link kopieren“ (Tablet-Modus) und „Liste kopieren“ (Modul 11).
+
 ## [3.0.6.7] - 2026-10-29
 
 ### Neu

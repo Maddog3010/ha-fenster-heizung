@@ -363,7 +363,7 @@
     else if (a === "dgbat") m.bat = m.bat === b.dataset.e ? null : b.dataset.e;
     else if (a === "dgre") { this._dgLoad(); return; }
     else if (a === "dgclr") { this._hass.callWS({ type: "fenster_heizung/clear_diag" }).then(() => { m.data.log = []; this._renderModal(); }).catch(() => this._toast("Protokoll konnte nicht geleert werden")); return; }
-    else if (a === "dgcopy") { const t = (m.data.log || []).map((e) => `${e.t} [${e.level}] ${e.room || "Allgemein"}: ${e.msg}`).join("\n"); try { navigator.clipboard.writeText(t).then(() => this._toast("Protokoll kopiert")); } catch (_) { this._toast("Kopieren nicht möglich"); } return; }
+    else if (a === "dgcopy") { const t = (m.data.log || []).map((e) => `${e.t} [${e.level}] ${e.room || "Allgemein"}: ${e.msg}`).join("\n"); this._clip(t, "Protokoll kopiert"); return; }
     this._renderModal();
   }
   _renderModal() {

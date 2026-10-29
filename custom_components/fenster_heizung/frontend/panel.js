@@ -3378,7 +3378,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "dgbat") m.bat = m.bat === b.dataset.e ? null : b.dataset.e;
     else if (a === "dgre") { this._dgLoad(); return; }
     else if (a === "dgclr") { this._hass.callWS({ type: "fenster_heizung/clear_diag" }).then(() => { m.data.log = []; this._renderModal(); }).catch(() => this._toast("Protokoll konnte nicht geleert werden")); return; }
-    else if (a === "dgcopy") { const t = (m.data.log || []).map((e) => `${e.t} [${e.level}] ${e.room || "Allgemein"}: ${e.msg}`).join("\n"); try { navigator.clipboard.writeText(t).then(() => this._toast("Protokoll kopiert")); } catch (_) { this._toast("Kopieren nicht möglich"); } return; }
+    else if (a === "dgcopy") { const t = (m.data.log || []).map((e) => `${e.t} [${e.level}] ${e.room || "Allgemein"}: ${e.msg}`).join("\n"); this._clip(t, "Protokoll kopiert"); return; }
     this._renderModal();
   }
   _renderModal() {
@@ -6165,7 +6165,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "tmoff") this._tmSave({ off_after: +k });
     else if (a === "tmww") this._tmSave({ wake_warn: !this._tmC().wake_warn });
     else if (a === "tmdock") { const h = this._tmC().dock_hide, n = h.includes(k) ? h.filter((x) => x !== k) : [...h, k]; this._tmSave({ dock_hide: n }); }
-    else if (a === "tmcopy") { const u = this._tmUrlStr(); try { navigator.clipboard.writeText(u).then(() => this._toast("Link kopiert")); } catch (_) { this._toast("Kopieren nicht möglich"); } }
+    else if (a === "tmcopy") { const u = this._tmUrlStr(); this._clip(u, "Link kopiert"); }
     else if (a === "tmreset") { this._hass.callWS({ type: "fenster_heizung/tm_reset", tid: b.dataset.id }).then((r) => { this._tm = r; this._toast("PIN zurückgesetzt"); this._renderModal(); }).catch(() => this._toast("Das ging nicht")); }
     else if (a === "tmdel") { this._hass.callWS({ type: "fenster_heizung/tm_del", tid: b.dataset.id }).then((r) => { this._tm = r; this._renderModal(); }).catch(() => this._toast("Das ging nicht")); }
     else if (a === "tmt") {
@@ -6317,7 +6317,20 @@ class FensterHeizungPanel extends HTMLElement {
     }
     else if (a === "spnforget") { this._spnAdm({ act: "forget" }, () => { this._spnLoad().then(() => { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._render(); }); }); }
   }
-  _spnCopy(t, ok) { try { navigator.clipboard.writeText(t).then(() => this._toast(ok)); } catch (_) { this._toast("Kopieren nicht möglich"); } }
+  _spnCopy(t, ok) { this._clip(t, ok); }
+  /* Kopieren: moderne Zwischenablage, sonst Ersatzweg (HTTP-Adresse, App-Ansicht, ältere Browser) */
+  _clip(t, ok) {
+    const done = () => this._toast(ok);
+    const fb = () => {
+      try {
+        const ta = document.createElement("textarea"); ta.value = t; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
+        document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, t.length);
+        const r = document.execCommand("copy"); ta.remove();
+        if (r) done(); else this._toast("Kopieren nicht möglich. Bitte den Text von Hand markieren und kopieren");
+      } catch (_) { this._toast("Kopieren nicht möglich. Bitte den Text von Hand markieren und kopieren"); }
+    };
+    try { if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done, fb); else fb(); } catch (_) { fb(); }
+  }
   _spnRedeem(key, mine) {
     this._hass.callWS({ type: "fenster_heizung/spn_redeem", key }).then((r) => {
       const st = (r.result || {}).state;
@@ -7172,7 +7185,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "sfxsave") { const p = JSON.parse(JSON.stringify(ed.plan)); this._sfEd = null; this._sfxPatch((c) => { c.plan = p; }); this._toast("Grundriss gespeichert"); return true; }
     if (a === "sfxprint") { this._sfxPrint(); return true; }
     if (a === "sfxhtml") { this._sfxHtml(); return true; }
-    if (a === "sfxcopy") { const T = this._sfStat(), C = T.C, sh = {}; T.l.forEach((x) => { if (x.bat != null && (x.bat < C.bat.pct + 10 || (x.bat_days != null && x.bat_days < 90))) { const q = x.btype || "Batterie"; sh[q] = (sh[q] || 0) + 1; } }); const txt = Object.entries(sh).map(([q, n]) => `${n} × ${q}`).concat(T.l.filter((x) => x.life_days != null && x.life_days < 0).map((x) => `1 × neuer Melder (${x.name})`)).join("\n") || "Nichts zu besorgen"; try { navigator.clipboard.writeText(txt); this._toast("Liste kopiert"); } catch (_) { this._toast("Kopieren geht hier nicht"); } return true; }
+    if (a === "sfxcopy") { const T = this._sfStat(), C = T.C, sh = {}; T.l.forEach((x) => { if (x.bat != null && (x.bat < C.bat.pct + 10 || (x.bat_days != null && x.bat_days < 90))) { const q = x.btype || "Batterie"; sh[q] = (sh[q] || 0) + 1; } }); const txt = Object.entries(sh).map(([q, n]) => `${n} × ${q}`).concat(T.l.filter((x) => x.life_days != null && x.life_days < 0).map((x) => `1 × neuer Melder (${x.name})`)).join("\n") || "Nichts zu besorgen"; this._clip(txt, "Liste kopiert"); return true; }
     if (a === "sfxeditdet") { this._sfSelDet = k || ""; this._sfT = "se"; this._render(); return true; }
     if (a === "sfxrmdet") { this._sfSelDet = ""; this._sfxPatch((c) => { if (c.add.includes(k)) { c.add = c.add.filter((x) => x !== k); delete c.meta[k]; } else if (!c.excl.includes(k)) c.excl.push(k); }); return true; }
     if (a === "sfxdep") { this._sfxPatch((c) => { c.depart.on = !c.depart.on; }); return true; }

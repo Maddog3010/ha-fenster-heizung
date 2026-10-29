@@ -186,7 +186,7 @@
     else if (a === "tmoff") this._tmSave({ off_after: +k });
     else if (a === "tmww") this._tmSave({ wake_warn: !this._tmC().wake_warn });
     else if (a === "tmdock") { const h = this._tmC().dock_hide, n = h.includes(k) ? h.filter((x) => x !== k) : [...h, k]; this._tmSave({ dock_hide: n }); }
-    else if (a === "tmcopy") { const u = this._tmUrlStr(); try { navigator.clipboard.writeText(u).then(() => this._toast("Link kopiert")); } catch (_) { this._toast("Kopieren nicht möglich"); } }
+    else if (a === "tmcopy") { const u = this._tmUrlStr(); this._clip(u, "Link kopiert"); }
     else if (a === "tmreset") { this._hass.callWS({ type: "fenster_heizung/tm_reset", tid: b.dataset.id }).then((r) => { this._tm = r; this._toast("PIN zurückgesetzt"); this._renderModal(); }).catch(() => this._toast("Das ging nicht")); }
     else if (a === "tmdel") { this._hass.callWS({ type: "fenster_heizung/tm_del", tid: b.dataset.id }).then((r) => { this._tm = r; this._renderModal(); }).catch(() => this._toast("Das ging nicht")); }
     else if (a === "tmt") {

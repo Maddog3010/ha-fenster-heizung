@@ -82,7 +82,20 @@
     }
     else if (a === "spnforget") { this._spnAdm({ act: "forget" }, () => { this._spnLoad().then(() => { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._render(); }); }); }
   }
-  _spnCopy(t, ok) { try { navigator.clipboard.writeText(t).then(() => this._toast(ok)); } catch (_) { this._toast("Kopieren nicht möglich"); } }
+  _spnCopy(t, ok) { this._clip(t, ok); }
+  /* Kopieren: moderne Zwischenablage, sonst Ersatzweg (HTTP-Adresse, App-Ansicht, ältere Browser) */
+  _clip(t, ok) {
+    const done = () => this._toast(ok);
+    const fb = () => {
+      try {
+        const ta = document.createElement("textarea"); ta.value = t; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
+        document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, t.length);
+        const r = document.execCommand("copy"); ta.remove();
+        if (r) done(); else this._toast("Kopieren nicht möglich. Bitte den Text von Hand markieren und kopieren");
+      } catch (_) { this._toast("Kopieren nicht möglich. Bitte den Text von Hand markieren und kopieren"); }
+    };
+    try { if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done, fb); else fb(); } catch (_) { fb(); }
+  }
   _spnRedeem(key, mine) {
     this._hass.callWS({ type: "fenster_heizung/spn_redeem", key }).then((r) => {
       const st = (r.result || {}).state;
