@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.6] - 2026-10-29
+
+### Geändert
+- **Versionen als Dialog.** Unter Einstellungen → System steht ganz unten die Zeile „Versionen“. Sie öffnet wie „Sichern & Wiederherstellen“ einen Dialog mit der Tabelle aller Module, dem Ablauf des Aufstiegs und den Stufen.
+- **Modul 17 (Müllabfuhr) und Modul 18 (Licht)** stehen jetzt auch in der Tabelle. Labs starten bei v0.0.1 Build 1.
+- **Version und Build im Modul-Icon:** Die Kachel im Banner jedes Moduls zeigt unten zum Beispiel „v1.0 · Build 1“.
+
 ## [3.0.6.5] - 2026-10-29
 
 ### Neu
