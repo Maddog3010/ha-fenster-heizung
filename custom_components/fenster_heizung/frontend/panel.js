@@ -714,7 +714,7 @@ const MV = {
   dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
-  ef: { v: "0.5", b: 2, d: "2026-10-29", p: "3.0.7.2", log: [["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ef: { v: "0.5", b: 3, d: "2026-10-29", p: "3.0.7.3", log: [["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   mu: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   li: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] } };
 const CSS = `
@@ -6841,7 +6841,7 @@ class FensterHeizungPanel extends HTMLElement {
     const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && !narrow ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : ""}</div>`;
     if (tab === "strom") return `<div class="efx${narrow ? " nar" : ""}">${hero}${seg}<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Strom-Seiten in Arbeit</div>Energieverteilung, Verbrauch, Quellen und Messgeräte kommen in den nächsten Builds. Mit „Jetzt“ geht es zurück zum Fluss-Bild.</div></div>`;
     setTimeout(() => this._efxLines(), 0);
-    return `<div class="efx${narrow ? " nar" : ""}">${hero}${seg}<div class="efboard" id="efboard" data-rows="${rows}"><svg class="eflines" aria-hidden="true"></svg><div class="efgrid">${cells}${hubCell}</div></div>
+    return `<div class="efx${narrow ? " nar" : ""}">${hero}${seg}<div class="efboard" id="efboard" data-rows="${rows}"${!narrow && this._efW ? ` style="--eft:${this._efW}px"` : ""}><svg class="eflines" aria-hidden="true">${this._efSvg || ""}</svg><div class="efgrid">${cells}${hubCell}</div></div>
       <div class="mut sm" style="margin:2px 4px">Beta für Sponsoren · Werte live aus deinen Entitäten · Tippe auf einen Wert für den Verlauf</div></div>`;
   }
   /* Kachelgröße: auf Tablet und Desktop nach der Höhe, die unter dem Banner übrig bleibt (Einstellung „Größe“ überschreibt das) */
@@ -6851,7 +6851,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._efK !== key) { this._efK = key; this._efTop = b.getBoundingClientRect().top; }
     const rows = Math.max(3, +b.dataset.rows || 4), avail = vh - (this._efTop || 330) - 70, th = (avail - (rows - 1) * 6) / rows;
     const w = sz === "klein" ? 100 : sz === "mittel" ? 128 : sz === "gross" ? 160 : Math.max(96, Math.min(150, th * 1.15));
-    b.style.setProperty("--eft", Math.round(w) + "px");
+    this._efW = Math.round(w); b.style.setProperty("--eft", this._efW + "px");
   }
   _efxLines() {
     const r = this.shadowRoot, b = r && r.getElementById("efboard"), hub = b && b.querySelector(".efn.hub"), svg = b && b.querySelector("svg.eflines"); if (!b || !hub || !svg) return;
@@ -6875,7 +6875,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (on) act += path + `<circle r="4.5" fill="${col}"><animateMotion dur="2.4s" repeatCount="indefinite" keyPoints="${w > 0 ? "0;1" : "1;0"}" keyTimes="0;1" calcMode="linear"><mpath href="#efp_${el.dataset.p}"/></animateMotion></circle>`;
       else off += path;
     });
-    svg.innerHTML = off + act;
+    const out = off + act; if (svg.innerHTML !== out) svg.innerHTML = out; this._efSvg = out;
   }
   /* ---------------- Einrichtung ---------------- */
   _efxIds() { return Object.keys(this._hass.states).filter((e) => /^(sensor|number|input_number|counter)\./.test(e)); }

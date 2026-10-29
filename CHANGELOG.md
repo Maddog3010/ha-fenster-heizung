@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.7.3] - 2026-10-29
+
+### Behoben
+- **Modul 19 Hausfluss (v0.5 Build 3): Die Jetzt-Ansicht flackerte**, sobald Werte hinterlegt waren und sich änderten. Kachelgröße und Linien wurden bei jedem Neuzeichnen kurz zurückgesetzt und erst danach neu berechnet. Beides bleibt jetzt erhalten.
+
 ## [3.0.7.2] - 2026-10-29
 
 ### Geändert

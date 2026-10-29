@@ -511,6 +511,6 @@ const MV = {
   dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
-  ef: { v: "0.5", b: 2, d: "2026-10-29", p: "3.0.7.2", log: [["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ef: { v: "0.5", b: 3, d: "2026-10-29", p: "3.0.7.3", log: [["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   mu: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   li: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] } };
