@@ -558,6 +558,46 @@ const RB_STEPS = [
   ["3", "Plan und Verknüpfung", "Tagesplan, Urlaub und Verknüpfung mit Modul 1, 9 und 11."]];
 const RB_IDEAS = ["Markisen und Raffstores mit Lamellenwinkel", "Verschattung nach Temperatur im Raum statt nur draußen", "Sonnenschutz nach Prognose (Modul 16)", "Anwesenheit simulieren im Urlaub", "Rollladen-Zähler: Fahrten und Wartung (Modul 15)"];
 const RB_OPEN = ["Welche Rollläden gehen: Home-Assistant-Cover mit Position, auch ohne Positionsangabe", "Welche Ansicht wird Startseite: Räume, Fassade oder Tagesplan", "Automatik als Sponsor-Lab oder frei für alle"];
+const WP_TABS = [["j", "Jetzt"], ["a", "Überblick"], ["b", "Laufzeit"], ["c", "Effizienz"], ["d", "Abtauen"], ["e", "Verknüpfung"], ["fp", "Fahrplan"]];
+const WP_PINS = {
+  a: { img: "wp-a.jpg", t: "Überblick", alt: "Zustand, Leistung, Temperaturen und Effizienz auf einen Blick", pins: [
+    [50, 12, "Zähler oben", "Läuft sie gerade, wie viel Strom zieht sie, wie gut ist der COP jetzt und was kostet es heute."],
+    [30, 42, "Temperaturen", "Vorlauf, Rücklauf und Spreizung. Aus der Spreizung sieht man, ob genug Wasser durch die Anlage fließt."],
+    [44, 59, "Verdichter", "Läuft er und wie stark moduliert er. Auch der Warmwasser-Speicher steht hier."],
+    [88, 54, "Service", "Der Stand der Betriebsstunden kommt auf Wunsch aus Modul 15, mit dem nächsten Service-Termin."],
+    [79, 30, "Hinweise", "Takten, Service, Eis am Gerät. Nur das, was wirklich auffällt, sonst bleibt der Bereich ruhig."],
+    [50, 90, "Fehlende Sensoren", "Fehlt ein Sensor, bleibt die Kachel leer. Es wird nichts geschätzt oder erfunden."]] },
+  b: { img: "wp-b.jpg", t: "Laufzeit und Takten", alt: "Wann die Wärmepumpe läuft und wie oft sie startet", pins: [
+    [50, 12, "Zähler oben", "Starts heute, längster und kürzester Lauf und die Laufzeit über den Tag."],
+    [50, 40, "Laufzeit heute", "Die Balken zeigen, wann der Verdichter lief. Je kräftiger die Farbe, desto höher die Leistung."],
+    [50, 51, "Legende", "Erklärt die Farben. Der Verlauf kommt aus Home Assistant, es wird nichts extra gespeichert."],
+    [56, 72, "Takten erkennen", "Ein Lauf unter 10 Minuten zählt als Takten. Viele davon pro Stunde lösen einen Hinweis aus."],
+    [79, 62, "Wochenansicht", "Starts pro Tag der letzten 7 Tage. Tage mit Takten sind orange markiert."]] },
+  c: { img: "wp-c.jpg", t: "Effizienz", alt: "COP, Jahresarbeitszahl und Kennlinie", pins: [
+    [50, 14, "Zähler oben", "COP heute, Jahresarbeitszahl, erzeugte Wärme und die Spreizung zwischen Vor- und Rücklauf."],
+    [30, 55, "COP nach Außentemperatur", "Jeder Punkt ist ein Messwert der letzten 30 Tage. Die gelbe Linie ist die Kennlinie deiner Anlage."],
+    [30, 74, "Legende", "Punkte weit unter der Linie fallen auf, zum Beispiel bei Vereisung oder zu hohem Vorlauf."],
+    [96, 52, "Was daraus folgt", "Konkrete Vorschläge, etwa Heizkurve senken. Das Modul schlägt vor, ändert aber nichts von allein."],
+    [50, 88, "Ohne Wärmemengenzähler", "Fehlt der Zähler, gibt es keinen COP. Dann wird nur die Spreizung ausgewertet."]] },
+  d: { img: "wp-d.jpg", t: "Abtauen", alt: "Abtauzyklen zählen und auswerten", pins: [
+    [50, 17, "Zähler oben", "Abtauungen heute und pro Woche, durchschnittliche Dauer und wie viel Strom sie kosten."],
+    [20, 65, "Verlauf", "Rote Streifen sind Abtauungen. Dazu Außentemperatur und Luftfeuchte, damit man den Zusammenhang sieht."],
+    [30, 85, "Kritischer Bereich", "Zwischen 0 und 7 °C bei hoher Feuchte vereist die Anlage am häufigsten. Dieser Bereich ist hinterlegt."],
+    [88, 56, "Viele Abtauungen", "Bei Nebel ist das normal. Das Modul erklärt es, statt zu warnen."],
+    [88, 75, "Eis am Gerät", "Mehr als vier Abtauungen am Tag an zwei Tagen in Folge lösen einen Hinweis aus, nach dem Gerät zu sehen."]] },
+  e: { img: "wp-e.jpg", t: "Verknüpfungen", alt: "Mit anderen Modulen verbinden", pins: [
+    [53, 25, "Wartung (Modul 15)", "Betriebsstunden werden ein Zähler, der Service bei 5.000 Stunden ein Termin. Gepflegt wird nichts doppelt."],
+    [53, 40, "Stromtarif (Modul 14)", "In günstigen Stunden kann Warmwasser höher geladen werden. Standardmäßig aus."],
+    [53, 54, "Solar-Prognose (Modul 16)", "Bei PV-Überschuss lädt das Warmwasser höher. Bei wechselhaftem Wetter hilft es, Takten zu vermeiden."],
+    [79, 6, "Schutz", "Das Modul liest nur. Geschaltet werden nur Warmwasser-Sollwert und Heizkurven-Offset, nie der Verdichter."],
+    [79, 35, "Hinweis aufs Handy", "Eine Meldung pro Tag, zum Beispiel „Wärmepumpe taktet seit 3 Tagen“. Nie nachts."]] },
+};
+const WP_STEPS = [
+  ["1", "Überblick", "Zustand, Leistung, Temperaturen und Hinweise aus den Entitäten der Wärmepumpe."],
+  ["2", "Laufzeit und Takten", "Starts, Laufzeiten und Takten erkennen, Betriebsstunden für Modul 15."],
+  ["3", "Effizienz und Abtauen", "COP, Jahresarbeitszahl, Abtauzyklen und Verknüpfung mit Modul 2, 14 und 16."]];
+const WP_IDEAS = ["Heizkurve als Vorschlag mit Begründung", "Bivalenzpunkt und Heizstab-Anteil", "Schallleistung und Nachtabsenkung", "Warmwasser nach PV-Überschuss (Modul 16)", "Wärmemenge je Raum aus Modul 1"];
+const WP_OPEN = ["Welche Anlagen gehen: Entitäten aus Home Assistant, welche Hersteller zuerst", "Welche Ansicht wird Startseite: Überblick, Laufzeit oder Effizienz", "Auswertung als Sponsor-Lab oder frei für alle"];
 /* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],
@@ -2680,6 +2720,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("wax")) this._waAct(a, b);
     else if (a.startsWith("lux")) this._luAct(a, b);
     else if (a.startsWith("rbx")) this._rbAct(a, b);
+    else if (a.startsWith("wpx")) this._wpAct(a, b);
     else if (a.startsWith("mvx")) this._mvAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
@@ -5167,15 +5208,11 @@ class FensterHeizungPanel extends HTMLElement {
         ${tile("Richtung", dir || "–", isFinite(az) ? num(az, 0) + " °" : "")}
         ${tile("Draußen", o.t != null ? num(o.t, 1) + " °C" : "–", o.rh != null ? num(o.rh) + " % Luftfeuchte" : "")}</div></div>`;
   }
-  _wpPage() {
+  _wpLive() {
     const o = this._out(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    return `${this._betaBox("Entitäten der Wärmepumpe wählst du später in den Einstellungen des Moduls.")}
-      <div class="card"><h2>${ic("thermo", 18)}Außenbedingungen</h2><div class="lugrid">
+    return `<div class="card"><h2>${ic("thermo", 18)}Außenbedingungen</h2><div class="lugrid">
         ${tile("Außentemperatur", o.t != null ? num(o.t, 1) + " °C" : "–", o.t != null && o.t < 7 ? "Abtauen wird wahrscheinlicher" : "Kaum Abtau-Bedarf")}
-        ${tile("Luftfeuchte", o.rh != null ? num(o.rh) + " %" : "–", "Draußen")}</div></div>
-      ${this._betaSoon("heatpump", "Laufzeit & Takten", "Starts, Laufzeit am Stück und Taktung erkennen")}
-      ${this._betaSoon("thermo", "Vorlauf, Rücklauf & Effizienz", "Temperaturen, Spreizung und Leistungszahl (COP)")}
-      ${this._betaSoon("snow", "Abtauen", "Abtauzyklen zählen und auswerten")}`;
+        ${tile("Luftfeuchte", o.rh != null ? num(o.rh) + " %" : "–", "Draußen")}</div></div>`;
   }
   _luLive() {
     const rooms = this._collect(), adm = this._admin();
@@ -6807,7 +6844,7 @@ class FensterHeizungPanel extends HTMLElement {
     try {
       if (id === "lu") return this._modHero("lu", { icon: "fan", lbl: "Lüftung & Raumluft", big: "Lüftung", small: true, sub: "Räume heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "rb") return this._modHero("rb", { icon: "sun", lbl: "Rollläden & Beschattung", big: "Rollläden", small: true, sub: "Sonnenstand heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
-      if (id === "wp") { const o = this._out(); return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", big: o.t != null ? num(o.t, 1) : "–", unit: o.t != null ? "°C draußen" : "", small: o.t == null, sub: o.t != null && o.t < 7 ? "Abtauen wird wahrscheinlicher" : "Kaum Abtau-Bedarf", chips: [o.rh != null ? `${num(o.rh)} % Luftfeuchte` : ""] }); }
+      if (id === "wp") return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", big: "Wärmepumpe", small: true, sub: "Außenbedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "li") { const rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on); return this._modHero("li", { icon: "lamp", lbl: "Licht & Lampen", big: String(on.length), unit: on.length === 1 ? "Lampe an" : "Lampen an", sub: lamps.length ? `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}` : "Keine Lampen gefunden" }); }
       if (id === "mu") { const S = this._mu(); const rows = (S && S.bins) || []; if (!S || !S.on || !S.cal) return this._modHero("mu", { icon: "trash", lbl: "Müllabfuhr", big: "–", small: true, sub: "Noch kein Abfallkalender gewählt" }); const due = rows.filter((x) => ["out", "today"].includes(x.state)), soon = rows.filter((x) => x.state === "soon"), up = rows.filter((x) => x.next).sort((a, b) => a.days - b.days)[0]; const big = due.length ? (due.some((x) => x.state === "today") ? "Heute" : "Jetzt raus") : soon.length ? "Morgen" : up ? (up.days === 0 ? "Heute" : `in ${up.days} Tagen`) : "–"; const names = (due.length ? due : soon.length ? soon : up ? [up] : []).map((x) => x.name); return this._modHero("mu", { icon: "trash", lbl: "Nächste Abholung", big, small: true, sub: names.join(", ") || "Keine Termine gefunden" }); }
       if (id === "ev") { const d = this._evData(); return this._modHero("ev", { icon: "car", lbl: "Elektroauto & Wallbox", big: d.soc != null ? num(d.soc, 0) : "–", unit: d.soc != null ? "%" : "", sub: !d.any ? "Noch kein Fahrzeug eingerichtet" : d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt", chips: [d.range != null ? `Reichweite ${num(d.range, 0)} km` : "", d.odo != null ? `${num(d.odo, 0)} km gefahren` : ""] }); }
@@ -7357,6 +7394,33 @@ class FensterHeizungPanel extends HTMLElement {
   _rbAct(a, b) {
     if (a === "rbxtab") { this._rbT = b.dataset.k; try { localStorage.setItem("fh_rb_tab", this._rbT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "rbxpin") { this._rbP = { ...(this._rbP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
+  }
+  /* ================= Modul 7: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
+  _wpTab() {
+    let t = this._wpT; if (!t) { try { t = localStorage.getItem("fh_wp_tab"); } catch (_) { /* privater Modus */ } }
+    return WP_TABS.some((x) => x[0] === t) ? t : "j";
+  }
+  _wpSel(k) { const s = (this._wpP || {})[k], n = WP_PINS[k].pins.length; return Number.isInteger(s) && s >= 0 && s < n ? s : 0; }
+  _wpShot(k) {
+    const d = WP_PINS[k], sel = this._wpSel(k), cur = d.pins[sel];
+    const pins = d.pins.map((p, i) => `<button class="gapin${i === sel ? " on" : ""}" style="left:${p[0]}%;top:${p[1]}%" data-act="wpxpin" data-k="${k}" data-i="${i}" aria-label="${esc(p[2])}" aria-pressed="${i === sel}">${i + 1}</button>`).join("");
+    const rows = d.pins.map((p, i) => i === sel ? "" : `<button class="garow" data-act="wpxpin" data-k="${k}" data-i="${i}"><span class="gan">${i + 1}</span>${esc(p[2])}</button>`).join("");
+    return `<div class="card" style="padding:12px 16px"><b>${esc(d.t)}</b><div class="mut sm">${esc(d.alt)}</div></div>
+      <div class="gamain"><div class="gashot"><img data-keep="1" src="${GA_IMG}${d.img}${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(d.alt)}" loading="lazy" decoding="async">${pins}<span class="gatip">Tippe auf eine Zahl</span></div>
+      <div class="galist"><div class="card gacur"><div class="gah"><span class="gan">${sel + 1}</span><b>${esc(cur[2])}</b></div><p>${esc(cur[3])}</p></div>${rows}</div></div>`;
+  }
+  _wpPage() {
+    const t = this._wpTab();
+    const tabs = `<div class="sftabs gatabs" role="tablist">${WP_TABS.map(([k, l]) => `<button class="${k === t ? "on" : ""}" role="tab" aria-selected="${k === t}" data-act="wpxtab" data-k="${k}">${l}</button>`).join("")}</div>`;
+    const body = t === "j" ? this._wpLive() : t !== "fp" ? this._wpShot(t) : `<div class="gast">${WP_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i === 0 ? "d" : "s"}">Stufe ${n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
+      <div class="card"><h2>${ic("puzzle", 18)}Weitere Ideen</h2><div class="gschips">${WP_IDEAS.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
+      <div class="card"><h2>${ic("info", 18)}Noch offen</h2><ul style="margin:6px 0 0;padding-left:20px;line-height:1.6">${WP_OPEN.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    return `${tabs}<div style="display:grid;gap:12px">${body}</div>
+      <div class="gasoon" style="margin-top:12px">${ic("clock", 22)}<div><b>Coming soon …</b><br><span class="mut">Dieses Modul ist in Entwicklung. Der Reiter „Jetzt“ zeigt die echten Außenbedingungen. Alles andere sind Entwürfe mit Beispielwerten, die Wärmepumpe wird noch nicht ausgewertet.</span></div></div>`;
+  }
+  _wpAct(a, b) {
+    if (a === "wpxtab") { this._wpT = b.dataset.k; try { localStorage.setItem("fh_wp_tab", this._wpT); } catch (_) { /* privater Modus */ } this._render(); }
+    else if (a === "wpxpin") { this._wpP = { ...(this._wpP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");

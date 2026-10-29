@@ -463,15 +463,11 @@
         ${tile("Richtung", dir || "–", isFinite(az) ? num(az, 0) + " °" : "")}
         ${tile("Draußen", o.t != null ? num(o.t, 1) + " °C" : "–", o.rh != null ? num(o.rh) + " % Luftfeuchte" : "")}</div></div>`;
   }
-  _wpPage() {
+  _wpLive() {
     const o = this._out(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    return `${this._betaBox("Entitäten der Wärmepumpe wählst du später in den Einstellungen des Moduls.")}
-      <div class="card"><h2>${ic("thermo", 18)}Außenbedingungen</h2><div class="lugrid">
+    return `<div class="card"><h2>${ic("thermo", 18)}Außenbedingungen</h2><div class="lugrid">
         ${tile("Außentemperatur", o.t != null ? num(o.t, 1) + " °C" : "–", o.t != null && o.t < 7 ? "Abtauen wird wahrscheinlicher" : "Kaum Abtau-Bedarf")}
-        ${tile("Luftfeuchte", o.rh != null ? num(o.rh) + " %" : "–", "Draußen")}</div></div>
-      ${this._betaSoon("heatpump", "Laufzeit & Takten", "Starts, Laufzeit am Stück und Taktung erkennen")}
-      ${this._betaSoon("thermo", "Vorlauf, Rücklauf & Effizienz", "Temperaturen, Spreizung und Leistungszahl (COP)")}
-      ${this._betaSoon("snow", "Abtauen", "Abtauzyklen zählen und auswerten")}`;
+        ${tile("Luftfeuchte", o.rh != null ? num(o.rh) + " %" : "–", "Draußen")}</div></div>`;
   }
   _luLive() {
     const rooms = this._collect(), adm = this._admin();
