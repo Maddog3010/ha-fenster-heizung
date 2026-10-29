@@ -314,6 +314,47 @@ const LU_STEPS = [
   ["3", "Verlauf und Grundriss", "Verlauf mit Lüftungs-Ereignissen, Grundriss und Verknüpfung mit Modul 1, 9 und 15."]];
 const LU_IDEAS = ["Wohnklima-Zeugnis pro Monat", "Wetter berücksichtigen (Frost, Sturm, Pollen)", "Strompreis für Boost nutzen (Modul 14)", "Fenstersensoren als Lüftungs-Ereignis", "Hinweis auch als Ansage"];
 const LU_OPEN = ["Welche Anlagen gehen: nur über eine Home-Assistant-Entität oder auch direkt", "Welche Ansicht wird Startseite: Räume, Verlauf oder Grundriss", "Automatik als Sponsor-Lab oder frei für alle"];
+const RB_TABS = [["j", "Jetzt"], ["a", "Räume"], ["b", "Fassade"], ["c", "Automatik"], ["d", "Tagesplan"], ["e", "Verknüpfung"], ["fp", "Fahrplan"]];
+const RB_PINS = {
+  a: { img: "rb-a.jpg", t: "Rollläden pro Raum", alt: "Position, Betriebsart und Grund der letzten Fahrt", pins: [
+    [50, 9, "Zähler oben", "Wie viele Rollläden es gibt, wie viele beschattet sind, wie viele von Hand gefahren wurden und wo ein Fenster offen ist."],
+    [18, 22, "Betriebsart", "Automatik, Nachts zu oder Hand. Die Plakette oben rechts zeigt, wer gerade bestimmt."],
+    [8, 37, "Position und Knöpfe", "Wie weit der Rollladen zu ist. Auf, Stopp, Zu und Schatten sind direkt am Raum, ohne ins Menü zu gehen."],
+    [18, 49, "Grund der Fahrt", "Ein Satz sagt, warum der Rollladen so steht, zum Beispiel „Hitzeschutz: Sonne scheint aufs Fenster“."],
+    [18, 84, "Fenster offen", "Ist ein Fenster oder eine Tür offen, schließt der Rollladen nicht. Das schützt vor Aussperren und Beschädigung."],
+    [50, 92, "Hand hat Vorrang", "Von Hand gefahrene Rollläden bleiben stehen, bis du sie freigibst oder die gesetzte Uhrzeit erreicht ist."]] },
+  b: { img: "rb-b.jpg", t: "Fassade und Sonne", alt: "Sonnenbahn und Fenster, die gerade Sonne bekommen", pins: [
+    [14, 24, "Seite wählen", "Süd, West, Ost oder Nord. Zu jeder Seite zeigt die Fassade, welche Fenster dort liegen."],
+    [50, 37, "Sonnenbahn", "Die gestrichelte Linie ist die Bahn der Sonne heute. Der Punkt ist ihr Stand jetzt, mit Höhe und Richtung."],
+    [59, 70, "Fenster mit Rollladen", "Der Rollladen zeigt seine Position. Orange heißt: Hier scheint gerade die Sonne herein."],
+    [38, 8, "Sonne auf Fenster", "Wie viele Fenster gerade Sonne bekommen. Nur diese werden im Sommer beschattet."],
+    [30, 90, "Nordfenster", "Fenster ohne Sonne bleiben offen. Himmelsrichtung und Neigung stellst du pro Fenster einmal ein."]] },
+  c: { img: "rb-c.jpg", t: "Regeln und Zeitplan", alt: "Hitzeschutz, Winterwärme, Nacht und Zeitplan", pins: [
+    [50, 11, "Schalter oben", "Hitzeschutz, Winterwärme, Nacht und Urlaub sind einzeln an oder aus."],
+    [56, 35, "Hitzeschutz", "Scheint die Sonne aufs Fenster und ist es draußen warm genug, fährt der Rollladen zu einem Teil herunter, zum Beispiel 70 %."],
+    [56, 58, "Sturm und Hagel", "Bei Warnungen aus Modul 9 fahren Raffstores und Markisen ein. Dieser Schutz schlägt jede andere Regel."],
+    [56, 73, "Hand pausiert", "Wer von Hand fährt, pausiert die Automatik für diesen Raum bis zur gesetzten Uhrzeit."],
+    [79, 29, "Zeitplan", "Morgens auf, abends zu, getrennt für Werktage, Wochenende und Urlaub. Mit Sonnenaufgang als Grenze."],
+    [79, 78, "Urlaub", "Fährt abends und morgens unregelmäßig, damit das Haus bewohnt wirkt. Nur, wenn niemand zu Hause ist."]] },
+  d: { img: "rb-d.jpg", t: "Tagesplan", alt: "Wann welcher Rollladen wie weit zu ist", pins: [
+    [50, 11, "Zähler oben", "Fahrten heute, Rollläden, die lange zu waren, und wie viele Stunden das Tageslicht genutzt wurde."],
+    [55, 38, "Sonnenhöhe", "Die gelbe Kurve ist die Sonnenhöhe über den Tag. So siehst du, ob Hitzeschutz zur richtigen Zeit greift."],
+    [50, 50, "Bänder pro Raum", "Je heller, desto weiter ist der Rollladen zu. So erkennst du Muster, etwa ein Zimmer, das den ganzen Nachmittag dunkel bleibt."],
+    [50, 80, "Legende", "Erklärt die Farben. Die Bänder entstehen aus dem Verlauf von Home Assistant, es wird nichts extra gespeichert."],
+    [50, 91, "Zeiten verschieben", "Im Plan lassen sich Zeiten ziehen. So prüfst du, ob Hitzeschutz und Nacht wann greifen, wann du es willst."]] },
+  e: { img: "rb-e.jpg", t: "Verknüpfungen", alt: "Mit anderen Modulen verbinden", pins: [
+    [53, 25, "Wetter (Modul 9)", "Bei Sturm oder Hagel einfahren, bei Frost nicht fahren, damit nichts festfriert."],
+    [53, 40, "Fenster & Heizung (Modul 1)", "Scheint die Sonne im Winter mit, bleibt der Rollladen offen und die Heizung kann sinken. Offene Fenster werden nicht geschlossen."],
+    [53, 69, "Sicherheit (Modul 11)", "Bei Rauchalarm öffnen alle Rollläden als Fluchtweg. Bei der Abfahrt-Prüfung zählen die Rollläden mit."],
+    [79, 6, "Vorrang", "Alarm und Sturmschutz schlagen jede Automatik. Dann kommen offenes Fenster, Hitzeschutz und zuletzt der Zeitplan."],
+    [79, 35, "Hinweis aufs Handy", "Eine kurze Meldung, wenn ein Rollladen automatisch fährt. Nur wenn du es einschaltest, nie nachts."]] },
+};
+const RB_STEPS = [
+  ["1", "Räume und Sonnenstand", "Rollläden pro Raum steuern, Betriebsart und Grund anzeigen, Sonnenstand pro Fenster."],
+  ["2", "Automatik", "Hitzeschutz im Sommer, Winterwärme, Nacht und Zeitplan."],
+  ["3", "Plan und Verknüpfung", "Tagesplan, Urlaub und Verknüpfung mit Modul 1, 9 und 11."]];
+const RB_IDEAS = ["Markisen und Raffstores mit Lamellenwinkel", "Verschattung nach Temperatur im Raum statt nur draußen", "Sonnenschutz nach Prognose (Modul 16)", "Anwesenheit simulieren im Urlaub", "Rollladen-Zähler: Fahrten und Wartung (Modul 15)"];
+const RB_OPEN = ["Welche Rollläden gehen: Home-Assistant-Cover mit Position, auch ohne Positionsangabe", "Welche Ansicht wird Startseite: Räume, Fassade oder Tagesplan", "Automatik als Sponsor-Lab oder frei für alle"];
 /* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],

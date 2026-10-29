@@ -517,6 +517,47 @@ const LU_STEPS = [
   ["3", "Verlauf und Grundriss", "Verlauf mit Lüftungs-Ereignissen, Grundriss und Verknüpfung mit Modul 1, 9 und 15."]];
 const LU_IDEAS = ["Wohnklima-Zeugnis pro Monat", "Wetter berücksichtigen (Frost, Sturm, Pollen)", "Strompreis für Boost nutzen (Modul 14)", "Fenstersensoren als Lüftungs-Ereignis", "Hinweis auch als Ansage"];
 const LU_OPEN = ["Welche Anlagen gehen: nur über eine Home-Assistant-Entität oder auch direkt", "Welche Ansicht wird Startseite: Räume, Verlauf oder Grundriss", "Automatik als Sponsor-Lab oder frei für alle"];
+const RB_TABS = [["j", "Jetzt"], ["a", "Räume"], ["b", "Fassade"], ["c", "Automatik"], ["d", "Tagesplan"], ["e", "Verknüpfung"], ["fp", "Fahrplan"]];
+const RB_PINS = {
+  a: { img: "rb-a.jpg", t: "Rollläden pro Raum", alt: "Position, Betriebsart und Grund der letzten Fahrt", pins: [
+    [50, 9, "Zähler oben", "Wie viele Rollläden es gibt, wie viele beschattet sind, wie viele von Hand gefahren wurden und wo ein Fenster offen ist."],
+    [18, 22, "Betriebsart", "Automatik, Nachts zu oder Hand. Die Plakette oben rechts zeigt, wer gerade bestimmt."],
+    [8, 37, "Position und Knöpfe", "Wie weit der Rollladen zu ist. Auf, Stopp, Zu und Schatten sind direkt am Raum, ohne ins Menü zu gehen."],
+    [18, 49, "Grund der Fahrt", "Ein Satz sagt, warum der Rollladen so steht, zum Beispiel „Hitzeschutz: Sonne scheint aufs Fenster“."],
+    [18, 84, "Fenster offen", "Ist ein Fenster oder eine Tür offen, schließt der Rollladen nicht. Das schützt vor Aussperren und Beschädigung."],
+    [50, 92, "Hand hat Vorrang", "Von Hand gefahrene Rollläden bleiben stehen, bis du sie freigibst oder die gesetzte Uhrzeit erreicht ist."]] },
+  b: { img: "rb-b.jpg", t: "Fassade und Sonne", alt: "Sonnenbahn und Fenster, die gerade Sonne bekommen", pins: [
+    [14, 24, "Seite wählen", "Süd, West, Ost oder Nord. Zu jeder Seite zeigt die Fassade, welche Fenster dort liegen."],
+    [50, 37, "Sonnenbahn", "Die gestrichelte Linie ist die Bahn der Sonne heute. Der Punkt ist ihr Stand jetzt, mit Höhe und Richtung."],
+    [59, 70, "Fenster mit Rollladen", "Der Rollladen zeigt seine Position. Orange heißt: Hier scheint gerade die Sonne herein."],
+    [38, 8, "Sonne auf Fenster", "Wie viele Fenster gerade Sonne bekommen. Nur diese werden im Sommer beschattet."],
+    [30, 90, "Nordfenster", "Fenster ohne Sonne bleiben offen. Himmelsrichtung und Neigung stellst du pro Fenster einmal ein."]] },
+  c: { img: "rb-c.jpg", t: "Regeln und Zeitplan", alt: "Hitzeschutz, Winterwärme, Nacht und Zeitplan", pins: [
+    [50, 11, "Schalter oben", "Hitzeschutz, Winterwärme, Nacht und Urlaub sind einzeln an oder aus."],
+    [56, 35, "Hitzeschutz", "Scheint die Sonne aufs Fenster und ist es draußen warm genug, fährt der Rollladen zu einem Teil herunter, zum Beispiel 70 %."],
+    [56, 58, "Sturm und Hagel", "Bei Warnungen aus Modul 9 fahren Raffstores und Markisen ein. Dieser Schutz schlägt jede andere Regel."],
+    [56, 73, "Hand pausiert", "Wer von Hand fährt, pausiert die Automatik für diesen Raum bis zur gesetzten Uhrzeit."],
+    [79, 29, "Zeitplan", "Morgens auf, abends zu, getrennt für Werktage, Wochenende und Urlaub. Mit Sonnenaufgang als Grenze."],
+    [79, 78, "Urlaub", "Fährt abends und morgens unregelmäßig, damit das Haus bewohnt wirkt. Nur, wenn niemand zu Hause ist."]] },
+  d: { img: "rb-d.jpg", t: "Tagesplan", alt: "Wann welcher Rollladen wie weit zu ist", pins: [
+    [50, 11, "Zähler oben", "Fahrten heute, Rollläden, die lange zu waren, und wie viele Stunden das Tageslicht genutzt wurde."],
+    [55, 38, "Sonnenhöhe", "Die gelbe Kurve ist die Sonnenhöhe über den Tag. So siehst du, ob Hitzeschutz zur richtigen Zeit greift."],
+    [50, 50, "Bänder pro Raum", "Je heller, desto weiter ist der Rollladen zu. So erkennst du Muster, etwa ein Zimmer, das den ganzen Nachmittag dunkel bleibt."],
+    [50, 80, "Legende", "Erklärt die Farben. Die Bänder entstehen aus dem Verlauf von Home Assistant, es wird nichts extra gespeichert."],
+    [50, 91, "Zeiten verschieben", "Im Plan lassen sich Zeiten ziehen. So prüfst du, ob Hitzeschutz und Nacht wann greifen, wann du es willst."]] },
+  e: { img: "rb-e.jpg", t: "Verknüpfungen", alt: "Mit anderen Modulen verbinden", pins: [
+    [53, 25, "Wetter (Modul 9)", "Bei Sturm oder Hagel einfahren, bei Frost nicht fahren, damit nichts festfriert."],
+    [53, 40, "Fenster & Heizung (Modul 1)", "Scheint die Sonne im Winter mit, bleibt der Rollladen offen und die Heizung kann sinken. Offene Fenster werden nicht geschlossen."],
+    [53, 69, "Sicherheit (Modul 11)", "Bei Rauchalarm öffnen alle Rollläden als Fluchtweg. Bei der Abfahrt-Prüfung zählen die Rollläden mit."],
+    [79, 6, "Vorrang", "Alarm und Sturmschutz schlagen jede Automatik. Dann kommen offenes Fenster, Hitzeschutz und zuletzt der Zeitplan."],
+    [79, 35, "Hinweis aufs Handy", "Eine kurze Meldung, wenn ein Rollladen automatisch fährt. Nur wenn du es einschaltest, nie nachts."]] },
+};
+const RB_STEPS = [
+  ["1", "Räume und Sonnenstand", "Rollläden pro Raum steuern, Betriebsart und Grund anzeigen, Sonnenstand pro Fenster."],
+  ["2", "Automatik", "Hitzeschutz im Sommer, Winterwärme, Nacht und Zeitplan."],
+  ["3", "Plan und Verknüpfung", "Tagesplan, Urlaub und Verknüpfung mit Modul 1, 9 und 11."]];
+const RB_IDEAS = ["Markisen und Raffstores mit Lamellenwinkel", "Verschattung nach Temperatur im Raum statt nur draußen", "Sonnenschutz nach Prognose (Modul 16)", "Anwesenheit simulieren im Urlaub", "Rollladen-Zähler: Fahrten und Wartung (Modul 15)"];
+const RB_OPEN = ["Welche Rollläden gehen: Home-Assistant-Cover mit Position, auch ohne Positionsangabe", "Welche Ansicht wird Startseite: Räume, Fassade oder Tagesplan", "Automatik als Sponsor-Lab oder frei für alle"];
 /* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],
@@ -2638,6 +2679,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("gax")) this._gaAct(a, b);
     else if (a.startsWith("wax")) this._waAct(a, b);
     else if (a.startsWith("lux")) this._luAct(a, b);
+    else if (a.startsWith("rbx")) this._rbAct(a, b);
     else if (a.startsWith("mvx")) this._mvAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
@@ -5116,18 +5158,14 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._labFields("wx")}
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wxstest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
-  _rbPage() {
+  _rbLive() {
     const h = this._hass, sun = h.states["sun.sun"], o = this._out(), el = sun ? Number(sun.attributes.elevation) : NaN, az = sun ? Number(sun.attributes.azimuth) : NaN;
     const dir = isFinite(az) ? ["Nord", "Nordost", "Ost", "Südost", "Süd", "Südwest", "West", "Nordwest"][Math.round(az / 45) % 8] : "";
     const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    return `${this._betaBox("Der Sonnenstand kommt aus der Sonnen-Entität von Home Assistant.")}
-      <div class="card"><h2>${ic("sun", 18)}Sonne &amp; Wetter jetzt</h2><div class="lugrid">
+    return `<div class="card"><h2>${ic("sun", 18)}Sonne &amp; Wetter jetzt</h2><div class="lugrid">
         ${tile("Sonnenhöhe", isFinite(el) ? num(el, 0) + " °" : "–", isFinite(el) ? (el > 0 ? "Sonne über dem Horizont" : "Sonne unter dem Horizont") : "Keine Sonnen-Entität gefunden")}
         ${tile("Richtung", dir || "–", isFinite(az) ? num(az, 0) + " °" : "")}
-        ${tile("Draußen", o.t != null ? num(o.t, 1) + " °C" : "–", o.rh != null ? num(o.rh) + " % Luftfeuchte" : "")}</div></div>
-      ${this._betaSoon("blinds", "Rollläden steuern", "Zeitpläne, Sonnenstand und Fenster-Stellung")}
-      ${this._betaSoon("sun", "Hitzeschutz im Sommer", "Beschatten, wenn die Sonne aufs Fenster scheint")}
-      ${this._betaSoon("thermo", "Wärme nutzen im Winter", "Rollläden öffnen, wenn die Sonne mitheizt, und nachts schließen")}`;
+        ${tile("Draußen", o.t != null ? num(o.t, 1) + " °C" : "–", o.rh != null ? num(o.rh) + " % Luftfeuchte" : "")}</div></div>`;
   }
   _wpPage() {
     const o = this._out(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
@@ -6768,7 +6806,7 @@ class FensterHeizungPanel extends HTMLElement {
   _modHeroFor(id) {
     try {
       if (id === "lu") return this._modHero("lu", { icon: "fan", lbl: "Lüftung & Raumluft", big: "Lüftung", small: true, sub: "Räume heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
-      if (id === "rb") { const sun = this._hass.states["sun.sun"], o = this._out(), el = sun ? Number(sun.attributes.elevation) : NaN, az = sun ? Number(sun.attributes.azimuth) : NaN; const dir = isFinite(az) ? ["Nord", "Nordost", "Ost", "Südost", "Süd", "Südwest", "West", "Nordwest"][Math.round(az / 45) % 8] : ""; return this._modHero("rb", { icon: "sun", lbl: "Rollläden & Beschattung", big: isFinite(el) ? num(el, 0) : "–", unit: isFinite(el) ? "° Sonnenhöhe" : "", small: !isFinite(el), sub: isFinite(el) ? (el > 0 ? "Sonne über dem Horizont" : "Sonne unter dem Horizont") : "Keine Sonnen-Entität gefunden", chips: [dir ? `Richtung ${dir}` : "", o.t != null ? `${num(o.t, 1)} °C draußen` : ""] }); }
+      if (id === "rb") return this._modHero("rb", { icon: "sun", lbl: "Rollläden & Beschattung", big: "Rollläden", small: true, sub: "Sonnenstand heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "wp") { const o = this._out(); return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", big: o.t != null ? num(o.t, 1) : "–", unit: o.t != null ? "°C draußen" : "", small: o.t == null, sub: o.t != null && o.t < 7 ? "Abtauen wird wahrscheinlicher" : "Kaum Abtau-Bedarf", chips: [o.rh != null ? `${num(o.rh)} % Luftfeuchte` : ""] }); }
       if (id === "li") { const rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on); return this._modHero("li", { icon: "lamp", lbl: "Licht & Lampen", big: String(on.length), unit: on.length === 1 ? "Lampe an" : "Lampen an", sub: lamps.length ? `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}` : "Keine Lampen gefunden" }); }
       if (id === "mu") { const S = this._mu(); const rows = (S && S.bins) || []; if (!S || !S.on || !S.cal) return this._modHero("mu", { icon: "trash", lbl: "Müllabfuhr", big: "–", small: true, sub: "Noch kein Abfallkalender gewählt" }); const due = rows.filter((x) => ["out", "today"].includes(x.state)), soon = rows.filter((x) => x.state === "soon"), up = rows.filter((x) => x.next).sort((a, b) => a.days - b.days)[0]; const big = due.length ? (due.some((x) => x.state === "today") ? "Heute" : "Jetzt raus") : soon.length ? "Morgen" : up ? (up.days === 0 ? "Heute" : `in ${up.days} Tagen`) : "–"; const names = (due.length ? due : soon.length ? soon : up ? [up] : []).map((x) => x.name); return this._modHero("mu", { icon: "trash", lbl: "Nächste Abholung", big, small: true, sub: names.join(", ") || "Keine Termine gefunden" }); }
@@ -7292,6 +7330,33 @@ class FensterHeizungPanel extends HTMLElement {
   _luAct(a, b) {
     if (a === "luxtab") { this._luT = b.dataset.k; try { localStorage.setItem("fh_lu_tab", this._luT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "luxpin") { this._luP = { ...(this._luP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
+  }
+  /* ================= Modul 6: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
+  _rbTab() {
+    let t = this._rbT; if (!t) { try { t = localStorage.getItem("fh_rb_tab"); } catch (_) { /* privater Modus */ } }
+    return RB_TABS.some((x) => x[0] === t) ? t : "j";
+  }
+  _rbSel(k) { const s = (this._rbP || {})[k], n = RB_PINS[k].pins.length; return Number.isInteger(s) && s >= 0 && s < n ? s : 0; }
+  _rbShot(k) {
+    const d = RB_PINS[k], sel = this._rbSel(k), cur = d.pins[sel];
+    const pins = d.pins.map((p, i) => `<button class="gapin${i === sel ? " on" : ""}" style="left:${p[0]}%;top:${p[1]}%" data-act="rbxpin" data-k="${k}" data-i="${i}" aria-label="${esc(p[2])}" aria-pressed="${i === sel}">${i + 1}</button>`).join("");
+    const rows = d.pins.map((p, i) => i === sel ? "" : `<button class="garow" data-act="rbxpin" data-k="${k}" data-i="${i}"><span class="gan">${i + 1}</span>${esc(p[2])}</button>`).join("");
+    return `<div class="card" style="padding:12px 16px"><b>${esc(d.t)}</b><div class="mut sm">${esc(d.alt)}</div></div>
+      <div class="gamain"><div class="gashot"><img data-keep="1" src="${GA_IMG}${d.img}${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(d.alt)}" loading="lazy" decoding="async">${pins}<span class="gatip">Tippe auf eine Zahl</span></div>
+      <div class="galist"><div class="card gacur"><div class="gah"><span class="gan">${sel + 1}</span><b>${esc(cur[2])}</b></div><p>${esc(cur[3])}</p></div>${rows}</div></div>`;
+  }
+  _rbPage() {
+    const t = this._rbTab();
+    const tabs = `<div class="sftabs gatabs" role="tablist">${RB_TABS.map(([k, l]) => `<button class="${k === t ? "on" : ""}" role="tab" aria-selected="${k === t}" data-act="rbxtab" data-k="${k}">${l}</button>`).join("")}</div>`;
+    const body = t === "j" ? this._rbLive() : t !== "fp" ? this._rbShot(t) : `<div class="gast">${RB_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i === 0 ? "d" : "s"}">Stufe ${n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
+      <div class="card"><h2>${ic("puzzle", 18)}Weitere Ideen</h2><div class="gschips">${RB_IDEAS.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
+      <div class="card"><h2>${ic("info", 18)}Noch offen</h2><ul style="margin:6px 0 0;padding-left:20px;line-height:1.6">${RB_OPEN.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    return `${tabs}<div style="display:grid;gap:12px">${body}</div>
+      <div class="gasoon" style="margin-top:12px">${ic("clock", 22)}<div><b>Coming soon …</b><br><span class="mut">Dieses Modul ist in Entwicklung. Der Reiter „Jetzt“ zeigt den echten Sonnenstand. Alles andere sind Entwürfe mit Beispielwerten, Rollläden werden noch nicht gesteuert.</span></div></div>`;
+  }
+  _rbAct(a, b) {
+    if (a === "rbxtab") { this._rbT = b.dataset.k; try { localStorage.setItem("fh_rb_tab", this._rbT); } catch (_) { /* privater Modus */ } this._render(); }
+    else if (a === "rbxpin") { this._rbP = { ...(this._rbP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");

@@ -454,18 +454,14 @@
       ${this._labFields("wx")}
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wxstest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
-  _rbPage() {
+  _rbLive() {
     const h = this._hass, sun = h.states["sun.sun"], o = this._out(), el = sun ? Number(sun.attributes.elevation) : NaN, az = sun ? Number(sun.attributes.azimuth) : NaN;
     const dir = isFinite(az) ? ["Nord", "Nordost", "Ost", "Südost", "Süd", "Südwest", "West", "Nordwest"][Math.round(az / 45) % 8] : "";
     const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    return `${this._betaBox("Der Sonnenstand kommt aus der Sonnen-Entität von Home Assistant.")}
-      <div class="card"><h2>${ic("sun", 18)}Sonne &amp; Wetter jetzt</h2><div class="lugrid">
+    return `<div class="card"><h2>${ic("sun", 18)}Sonne &amp; Wetter jetzt</h2><div class="lugrid">
         ${tile("Sonnenhöhe", isFinite(el) ? num(el, 0) + " °" : "–", isFinite(el) ? (el > 0 ? "Sonne über dem Horizont" : "Sonne unter dem Horizont") : "Keine Sonnen-Entität gefunden")}
         ${tile("Richtung", dir || "–", isFinite(az) ? num(az, 0) + " °" : "")}
-        ${tile("Draußen", o.t != null ? num(o.t, 1) + " °C" : "–", o.rh != null ? num(o.rh) + " % Luftfeuchte" : "")}</div></div>
-      ${this._betaSoon("blinds", "Rollläden steuern", "Zeitpläne, Sonnenstand und Fenster-Stellung")}
-      ${this._betaSoon("sun", "Hitzeschutz im Sommer", "Beschatten, wenn die Sonne aufs Fenster scheint")}
-      ${this._betaSoon("thermo", "Wärme nutzen im Winter", "Rollläden öffnen, wenn die Sonne mitheizt, und nachts schließen")}`;
+        ${tile("Draußen", o.t != null ? num(o.t, 1) + " °C" : "–", o.rh != null ? num(o.rh) + " % Luftfeuchte" : "")}</div></div>`;
   }
   _wpPage() {
     const o = this._out(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
