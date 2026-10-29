@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.6.4] - 2026-10-29
+
+### Behoben
+- **Die Bilder in Modul 10 flackerten** (Reiter Ansicht, Baukasten und Handy). Home Assistant meldet laufend neue Werte, dabei wurde die Seite neu aufgebaut und die Bilder jedes Mal neu geladen. Jetzt bleiben die Bilder beim Neuaufbau stehen.
+
 ## [3.0.6.3] - 2026-10-29
 
 ### Geändert

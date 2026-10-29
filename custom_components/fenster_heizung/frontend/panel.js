@@ -2343,7 +2343,8 @@ class FensterHeizungPanel extends HTMLElement {
       return;
     }
     const bar = sr0 && sr0.querySelector(".mbar"), x = bar ? bar.scrollLeft : null, id = this._mdActive();
-    try { this._render0(); } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
+    const keep = {}; if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { keep[i.getAttribute("src")] = i; });  /* Bilder behalten, sonst flackern sie bei jedem Neuaufbau */
+    try { this._render0(); if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {
       const t = nb.querySelector(".mtab.sel"); if (t) nb.scrollLeft = Math.max(0, t.offsetLeft - (nb.clientWidth - t.offsetWidth) / 2);
@@ -7059,7 +7060,7 @@ class FensterHeizungPanel extends HTMLElement {
     const d = GA_PINS[k], sel = this._gaSel(k), cur = d.pins[sel];
     const pins = d.pins.map((p, i) => `<button class="gapin${i === sel ? " on" : ""}" style="left:${p[0]}%;top:${p[1]}%" data-act="gaxpin" data-k="${k}" data-i="${i}" aria-label="${esc(p[2])}" aria-pressed="${i === sel}">${i + 1}</button>`).join("");
     const rows = d.pins.map((p, i) => i === sel ? "" : `<button class="garow" data-act="gaxpin" data-k="${k}" data-i="${i}"><span class="gan">${i + 1}</span>${esc(p[2])}</button>`).join("");
-    return `<div class="gamain"><div class="gashot"><img src="${GA_IMG}${d.img}${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(d.alt)}" loading="lazy" decoding="async">${pins}<span class="gatip">Tippe auf eine Zahl</span></div>
+    return `<div class="gamain"><div class="gashot"><img data-keep="1" src="${GA_IMG}${d.img}${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(d.alt)}" loading="lazy" decoding="async">${pins}<span class="gatip">Tippe auf eine Zahl</span></div>
       <div class="galist"><div class="card gacur"><div class="gah"><span class="gan">${sel + 1}</span><b>${esc(cur[2])}</b></div><p>${esc(cur[3])}</p></div>${rows}</div></div>`;
   }
   _gaPage() {
@@ -7067,7 +7068,7 @@ class FensterHeizungPanel extends HTMLElement {
     const tabs = `<div class="sftabs gatabs" role="tablist">${GA_TABS.map(([k, l]) => `<button class="${k === t ? "on" : ""}" role="tab" aria-selected="${k === t}" data-act="gaxtab" data-k="${k}">${l}</button>`).join("")}</div>`;
     let body = "";
     if (t === "an" || t === "bk") body = this._gaShot(t);
-    else if (t === "hy") body = `<div class="card"><h2>${ic("tablet", 18)}Auch auf dem Handy</h2><div class="mut sm" style="margin:0 0 10px">Die Karte steht oben, Baukasten und Eigenschaften darunter. Bedient wird per Touch.</div><div class="gaph"><figure><div class="gashot"><img src="${GA_IMG}ga-handy1.jpg" alt="Gartenplan auf dem Handy" loading="lazy" decoding="async"></div><figcaption>Ansicht</figcaption></figure><figure><div class="gashot"><img src="${GA_IMG}ga-handy2.jpg" alt="Baukasten auf dem Handy" loading="lazy" decoding="async"></div><figcaption>Baukasten</figcaption></figure></div></div>`;
+    else if (t === "hy") body = `<div class="card"><h2>${ic("tablet", 18)}Auch auf dem Handy</h2><div class="mut sm" style="margin:0 0 10px">Die Karte steht oben, Baukasten und Eigenschaften darunter. Bedient wird per Touch.</div><div class="gaph"><figure><div class="gashot"><img data-keep="1" src="${GA_IMG}ga-handy1.jpg" alt="Gartenplan auf dem Handy" loading="lazy" decoding="async"></div><figcaption>Ansicht</figcaption></figure><figure><div class="gashot"><img data-keep="1" src="${GA_IMG}ga-handy2.jpg" alt="Baukasten auf dem Handy" loading="lazy" decoding="async"></div><figcaption>Baukasten</figcaption></figure></div></div>`;
     else if (t === "te") body = `<div class="gafeat">${GA_TECH.map(([i, n, d]) => `<div class="gafc"><b>${ic(i, 18)}${n}</b><span>${d}</span></div>`).join("")}</div>`;
     else body = `<div class="gast">${GA_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i === 0 ? "d" : "s"}">Stufe ${n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
       <div class="card"><h2>${ic("puzzle", 18)}Weitere Ideen</h2><div class="gschips">${GA_IDEAS.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
