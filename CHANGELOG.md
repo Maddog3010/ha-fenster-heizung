@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.7.4] - 2026-10-29
+
+### Geändert
+- **Modul 19 Hausfluss (v0.5 Build 4): Der Fluss in den Linien läuft durchgängig.** Pro Linie wandern drei Punkte hintereinander, und beim Neuzeichnen durch neue Werte springen sie nicht mehr zurück an den Anfang.
+- **Kein Punkt mehr oben links im Fluss-Bild.** Die wandernden Punkte sind erst sichtbar, wenn sie auf ihrer Linie laufen.
+- **Handy-Ansicht wie auf Tablet und Desktop:** Haus mittig zwischen Solar und Batterie, einzelne obere Kachel zentriert, Linien wie im Vorbild, Kacheln etwas flacher und mit mehr Abstand zum Haus.
+
 ## [3.0.7.3] - 2026-10-29
 
 ### Behoben

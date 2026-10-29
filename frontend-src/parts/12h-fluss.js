@@ -73,7 +73,7 @@
     /* Das Haus sitzt immer genau in der Mitte: Zeilen oben und unten werden paarweise gehalten oder weggelassen, leere Gegenstücke bekommen einen unsichtbaren Platzhalter */
     const has = (r) => list.some((p) => EF_POS[p][1] === r), keep = [1, 2, 3, 4, 5].filter((r) => r === 3 || (r === 1 || r === 5 ? has(1) || has(5) : has(2) || has(4)));
     const ri = (r) => keep.indexOf(r) + 1, COL = { top_1: 1, top_2: 3, left_1: 1, left_2: 1, left_3: 1, right_1: 3, right_2: 3, right_3: 3 };
-    const cellAt = (p, html, z) => { const e = EF_POS[p], b = p === "bottom", ct = !narrow && /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z && !narrow ? " z" : ""}" style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
+    const cellAt = (p, html, z) => { const e = EF_POS[p], b = p === "bottom", ct = /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : ct ? "2" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z ? " z" : ""}" style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
     const ghost = '<div class="efg" aria-hidden="true"></div>', ghosts = [[1, "top_1"], [5, "bottom"], [2, "left_1"], [4, "left_3"]].filter(([r]) => keep.includes(r) && !has(r)).map(([r, p]) => cellAt(p, ghost, r === 2 || r === 4)).join("");
     const gUp = keep.includes(4) && !has(4), gDn = keep.includes(2) && !has(2), rows = keep.length - (gUp || gDn ? 1 : 0);
     const cells = list.map((p) => cellAt(p, this._efxNodeHtml(p, c.nodes[p], hubW))).join("") + ghosts;
@@ -85,7 +85,7 @@
       (hub.chips || []).forEach((id) => { if (this._hass.states[id]) { const [v, u] = this._efxFmt(id); chips.push(`${this._wzName(id)} ${v} ${u}`); } });
       hero = this._modHero("ef", { icon: "energy", lbl: !isNaN(w) && w < 0 ? "Einspeisung jetzt" : !pe && hub.calc === "rest" ? "Restverbrauch jetzt" : "Hausverbrauch jetzt", big: isNaN(w) ? "–" : Math.abs(Math.round(w)).toLocaleString("de-DE"), unit: "W", chips });
     }
-    const hubCell = `<div class="efc hb${narrow ? "" : gUp ? " hu" : gDn ? " hd" : ""}" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
+    const hubCell = `<div class="efc hb${gUp ? " hu" : gDn ? " hd" : ""}" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
     const tab = this._efTab(), sz = this._efSize(), SZ = { auto: "Auto", klein: "Klein", mittel: "Mittel", gross: "Groß" };
     const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && !narrow ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : ""}</div>`;
     if (tab === "strom") return `<div class="efx${narrow ? " nar" : ""}">${hero}${seg}<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Strom-Seiten in Arbeit</div>Energieverteilung, Verbrauch, Quellen und Messgeräte kommen in den nächsten Builds. Mit „Jetzt“ geht es zurück zum Fluss-Bild.</div></div>`;
@@ -112,16 +112,15 @@
       const p = EF_POS[el.dataset.p], q = el.getBoundingClientRect(), nx = q.left - g.left + q.width / 2, ny = q.top - g.top + q.height / 2, on = el.classList.contains("on"), col = el.dataset.c, w = +el.dataset.w;
       const vert = p[1] === 1 || p[1] === 5, mx = (hx + nx) / 2, my = (hy + ny) / 2;
       let d = vert ? `M${hx},${hy} C${hx},${my} ${nx},${my} ${nx},${ny}` : `M${hx},${hy} C${mx},${hy} ${mx},${ny} ${nx},${ny}`;
-      if (!narrow) {  /* Linien beginnen am Rand des Hauses und enden an der Kachelkante: gerade nach oben oder unten, zur Seite als lange S-Kurve */
+      {  /* Linien beginnen am Rand des Hauses und enden an der Kachelkante: gerade nach oben oder unten, zur Seite als lange S-Kurve */
         const hl = hb.left - g.left, hr = hb.right - g.left, ht = hb.top - g.top, hbt = hb.bottom - g.top, ql = q.left - g.left, qr = q.right - g.left, qt = q.top - g.top, qb = q.bottom - g.top;
         if (vert) { const up = ny < hy, y0 = up ? ht : hbt, y1 = up ? qb : qt, k = Math.abs(y1 - y0) * 0.5; d = Math.abs(nx - hx) < 20 ? `M${hx},${y0} L${nx},${y1}` : `M${hx},${y0} C${hx},${y0 + (up ? -k : k)} ${nx},${y1 + (up ? k : -k)} ${nx},${y1}`; }
         else if (nx < hx) { const k = (hl - qr) * 0.55; d = `M${hl},${hy} C${hl - k},${hy} ${qr + k},${ny} ${qr},${ny}`; }
         else { const k = (ql - hr) * 0.55; d = `M${hr},${hy} C${hr + k},${hy} ${ql - k},${ny} ${ql},${ny}`; }
       }
-      if (narrow && vert && Math.abs(nx - hx) > 20) { const lf = nx < hx, ex = (lf ? q.right : q.left) - g.left; d = `M${hx},${hy} C${hx},${ny + (hy - ny) * 0.35} ${hx + (lf ? -1 : 1) * Math.abs(ex - hx) * 0.45},${ny} ${ex},${ny}`; }  /* Handy: Kurve läuft in der Mitte hoch und biegt seitlich in die Kachel ein */
       const st = `fill="none" stroke="${col}" stroke-opacity="${on ? 0.9 : 0.25}" stroke-width="${on ? 3 : 2}" stroke-linecap="round" stroke-linejoin="round"`;
       const path = `<path id="efp_${el.dataset.p}" d="${d}" ${st}/>`;
-      if (on) act += path + `<circle r="4.5" fill="${col}"><animateMotion dur="2.4s" repeatCount="indefinite" keyPoints="${w > 0 ? "0;1" : "1;0"}" keyTimes="0;1" calcMode="linear"><mpath href="#efp_${el.dataset.p}"/></animateMotion></circle>`;
+      if (on) { const ph = (Date.now() % 2400) / 1000, kp = w > 0 ? "0;1" : "1;0"; act += path + [0, 1, 2].map((i) => `<circle r="4" fill="${col}" opacity="0"><set attributeName="opacity" to="1" begin="0.12s" fill="freeze"/><animateMotion dur="2.4s" begin="${(-ph - i * 0.8).toFixed(2)}s" repeatCount="indefinite" keyPoints="${kp}" keyTimes="0;1" calcMode="linear"><mpath href="#efp_${el.dataset.p}"/></animateMotion></circle>`).join(""); }
       else off += path;
     });
     const out = off + act; if (svg.innerHTML !== out) svg.innerHTML = out; this._efSvg = out;
