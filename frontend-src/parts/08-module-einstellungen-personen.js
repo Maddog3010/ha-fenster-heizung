@@ -104,6 +104,7 @@
           ${this._spnRow()}</div>`)}
         ${grp("layers", "Meine Module", `${act.length + labM.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${labRows}${ext}</div>`)}
         ${off.length || soon ? grp("plus", "Weitere Module", "Ausgeschaltet – mit einem Tipp einschalten", `<div class="sxgrid">${offG}${soon}</div>`) : ""}
+        ${grp("layers", "Versionen", "Version, Build und Reifegrad der Module", this._mvTable())}
         ${grp("shield", "System", "Sichern, prüfen, verwalten", `<div class="card sxl">
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern und zurückspielen", "gen")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}

@@ -436,6 +436,30 @@ const GA_STEPS = [
   ["3", "Radar und Verbrauch", "Regenradar, Heatmap der Feuchte und Wasserverbrauch."]];
 const GA_IDEAS = ["Regenradar als Ebene", "Wasserverbrauch pro Zone und Tag am Symbol", "Weitere Ebenen: Gartenbeleuchtung, Mähroboter, Pool (Modul 12)", "Frost- und Regenschutz mit Sperrsymbol", "Editor als Sponsor-Lab, Basiskarte frei"];
 const GA_OPEN = ["Kachelanbieter: OSM-Standard mit Zwischenspeicher oder Anbieter mit Kontingent", "Editor als Sponsor-Lab oder frei für alle", "Umfang von Stufe 1"];
+/* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt jede Änderung am Modul. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
+const MV_STG = [
+  ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],
+  ["beta", "0.5 – 0.8", "Funktioniert mit echten Daten, zum Testen.", "Fehler sind möglich, Einstellungen können sich ändern.", "Weiter zur Vorabversion, wenn alle geplanten Funktionen da sind und Sichern und Wiederherstellen geprüft ist."],
+  ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
+  ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Fehler werden zuerst behoben."]];
+const MV = {
+  fh: { v: "1.1", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.1", 2, "3.0.6.2", "Automatische Sicherung auf einen Homeserver"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  ww: { v: "1.0", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.0", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  en: { v: "1.0", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.0", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  gs: { v: "1.0", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["1.0", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["1.0", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  ev: { v: "0.6", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.6", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  wx: { v: "0.6", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.6", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  ga: { v: "0.1", b: 3, d: "2026-10-29", p: "3.0.6.4", log: [["0.1", 3, "3.0.6.4", "Bilder flackern nicht mehr"], ["0.1", 2, "3.0.6.3", "Konzeptseite zum Durchklicken"], ["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  sf: { v: "0.6", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.6", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.5", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.1", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.6.2", log: [["0.9", 2, "3.0.6.2", "Einstellungen gehen nicht mehr verloren, automatische Sicherung"], ["0.9", 1, "3.0.6.1", "Startwert der Zählung"]] },
+  ef: { v: "0.6", b: 1, d: "2026-10-29", p: "3.0.6.1", log: [["0.6", 1, "3.0.6.1", "Startwert der Zählung"]] } };
 const CSS = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -1426,6 +1450,12 @@ button.hzr{cursor:pointer}
 .gastg{font-size:.64rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:2px 9px}.gastg.d{background:#3a2a05;color:#fbbf24;border:1px solid rgba(251,191,36,.4)}.gastg.s{background:#241a45;color:#c4b5fd;border:1px solid rgba(139,92,246,.4)}
 .gasoon{border:1px dashed rgba(139,92,246,.55);background:rgba(139,92,246,.12);border-radius:16px;padding:12px 16px;line-height:1.4;display:flex;gap:12px;align-items:center}.gasoon svg{flex:none;color:#c4b5fd}
 @media(max-width:820px){.gamain{grid-template-columns:1fr}}
+.mvb{font:inherit;font-size:.72rem;font-weight:700;cursor:pointer;color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent);border:1px solid color-mix(in srgb,var(--teal) 40%,transparent);border-radius:8px;padding:1px 9px;margin-right:6px}.mvb:hover,.mvb.on{background:color-mix(in srgb,var(--teal) 24%,transparent)}.brand .mvb+.ver::before{content:""!important}
+.mvpop{border-color:color-mix(in srgb,var(--teal) 45%,transparent);margin-bottom:12px}.mvh{display:flex;justify-content:space-between;align-items:center;gap:8px}.mvh b{font-size:1rem}.mvst{margin:8px 0;line-height:1.5}.mvlog{margin:6px 0 10px;padding-left:18px;line-height:1.6}
+.mvt{overflow-x:auto}.mvt table{width:100%;border-collapse:collapse;font-size:.86rem}.mvt th{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);text-align:left;font-weight:600}.mvt th,.mvt td{padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}.mvn{color:#fbbf24;font-weight:800;font-size:.7rem}
+.mvlg{display:grid;gap:10px;margin-top:10px}.mvl{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:start;line-height:1.45;font-size:.86rem}.mvl em{justify-self:start}
+.mtab small{white-space:nowrap}.mtab small .mvv,.mnew{display:none}@media(min-width:821px){.mtab small .mvv{display:inline;font-weight:700}.mnew{display:block;position:absolute;top:-6px;right:-3px;background:#f59e0b;color:#111;border-radius:999px;font-size:.58rem;font-weight:800;padding:1px 6px;font-style:normal;text-transform:none}}
+@media(max-width:520px){.brand div span>em.dvl,.brand div span>em.beta,.brand div span>em.vab,.brand div span>em.stb{display:none}}@media(max-width:600px){.mvd{display:none}.mvl{grid-template-columns:1fr}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -2396,9 +2426,9 @@ class FensterHeizungPanel extends HTMLElement {
       : `<div class="card empty">Noch keine Räume eingerichtet.<br>${adm ? `<button class="btn2 pri" data-act="wz" style="margin-top:14px;flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button>` : "Ein Administrator kann die Einrichtung starten."}</div>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span><em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : ""}</span></div></div>
         ${this._tmBtn()}${this._spnBtn()}${this._labBtn()}${this._stoBtn()}${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
-      ${this._mdBar()}<div class="wrap">${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
+      ${this._mdBar()}<div class="wrap">${edit ? "" : this._mvPop("fh")}${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
         ${!edit ? this._updBanner() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
   }
 
@@ -2516,6 +2546,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     else if (a.startsWith("ebk")) this._ebkAct(a, b);
     else if (a.startsWith("gax")) this._gaAct(a, b);
+    else if (a.startsWith("mvx")) this._mvAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
     else if (a === "bakyes") {
@@ -3460,6 +3491,7 @@ class FensterHeizungPanel extends HTMLElement {
           ${this._spnRow()}</div>`)}
         ${grp("layers", "Meine Module", `${act.length + labM.length} aktiv · Einstellungen je Modul`, `<div class="card sxl">${labRows}${ext}</div>`)}
         ${off.length || soon ? grp("plus", "Weitere Module", "Ausgeschaltet – mit einem Tipp einschalten", `<div class="sxgrid">${offG}${soon}</div>`) : ""}
+        ${grp("layers", "Versionen", "Version, Build und Reifegrad der Module", this._mvTable())}
         ${grp("shield", "System", "Sichern, prüfen, verwalten", `<div class="card sxl">
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern und zurückspielen", "gen")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
@@ -7080,9 +7112,36 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "gaxtab") { this._gaT = b.dataset.k; try { localStorage.setItem("fh_ga_tab", this._gaT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "gaxpin") { this._gaP = { ...(this._gaP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
+  /* ---------------- Versionen und Builds der Module ---------------- */
+  _mvChip(id) {
+    const m = MV[id]; if (!m) return "";
+    const o = this._mvO === id;
+    return `<button class="mvb${o ? " on" : ""}" data-act="mvx" data-k="${id}" aria-expanded="${o}" aria-label="Versionen und Änderungen des Moduls">v${esc(m.v)} · Build ${m.b} ${o ? "▴" : "▾"}</button>`;
+  }
+  _mvVer(id) { const m = MV[id]; return m ? `${this._mvChip(id)}${this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : ""}` : (this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""); }
+  _mvStg(id) { const mm = MODS.find((x) => x.id === id), s = mm && modSt(mm); return MV_STG.find((x) => x[0] === s) || null; }
+  _mvPop(id) {
+    const m = MV[id]; if (this._mvO !== id || !m) return "";
+    const mm = MODS.find((x) => x.id === id), st = this._mvStg(id);
+    return `<div class="card mvpop"><div class="mvh"><b>${esc(mm ? "Modul " + mm.n + " · " + mm.name : id)}</b><button class="ibtn" data-act="mvx" data-k="${id}" aria-label="Schließen">${ic("close", 18)}</button></div>
+      ${st ? `<div class="mvst"><em class="sxc ${STG[st[0]].c}">${STG[st[0]].t}</em> <span class="mut">Version ${st[1]}</span><br>${st[2]} ${st[3]}</div>` : ""}
+      <ul class="mvlog">${m.log.map((l) => `<li><b>v${esc(l[0])} · Build ${l[1]}</b> <span class="mut">(Paket ${esc(l[2])})</span> – ${esc(l[3])}</li>`).join("")}</ul>
+      <div class="mut sm">Alle Module und die Bedeutung der Stufen stehen unter Einstellungen → Versionen.</div></div>`;
+  }
+  _mvNew(id) { const m = MV[id]; return !!(m && this._ver && m.p === this._ver); }
+  _mvTab(id) { const m = MV[id]; if (!m || this._narrow) return ["", ""]; return [`<span class="mvv"> · v${esc(m.v)}</span>`, this._mvNew(id) ? `<i class="mnew">neu</i>` : ""]; }
+  _mvTable() {
+    const rows = MODS.filter((x) => MV[x.id]).map((x) => { const m = MV[x.id], s = modSt(x), g = STG[s];
+      return `<tr><td><span class="mut">Modul ${x.n}</span> ${esc(x.short)}</td><td>${g ? `<em class="sxc ${g.c}">${g.t}</em>` : ""}</td><td><b>v${esc(m.v)}</b></td><td>${m.b}</td><td class="mut mvd">${esc(new Date(m.d + "T12:00:00").toLocaleDateString("de-DE"))}</td><td>${this._mvNew(x.id) ? `<span class="mvn">NEU</span>` : ""}</td></tr>`; }).join("");
+    const leg = MV_STG.slice().reverse().map((s) => `<div class="mvl"><em class="sxc ${STG[s[0]].c}">${STG[s[0]].t}</em><div><b>Version ${s[1]}</b><br>${s[2]} ${s[3]}<br><span class="mut">${s[4]}</span></div></div>`).join("");
+    return `<div class="card mvt"><table><thead><tr><th>Modul</th><th>Stufe</th><th>Version</th><th>Build</th><th class="mvd">Geändert</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="mut sm" style="margin-top:8px">Paket ${esc(this._ver || "")}. Die Version zeigt den Reifegrad, der Build zählt jede Änderung am Modul. Module ohne Änderung behalten ihre Nummer.</div></div>
+      <div class="card mvlg"><b>So unterscheiden sich die Stufen</b>${leg}</div>`;
+  }
+  _mvAct(a, b) { if (a === "mvx") { this._mvO = this._mvO === b.dataset.k ? null : b.dataset.k; this._render(); } }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
-    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : ""}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
+    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}${this._mvTab(m.id)[0]}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : this._mvTab(m.id)[1]}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
   }
   _mdRender() {
     const sr = this.shadowRoot, a = this._mdActive(), m = this._mdList().find((x) => x.id === a), adm = this._admin();
@@ -7099,8 +7158,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "li" && a !== "st" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${this._ver ? `<em class="ver">Version ${esc(this._ver)}</em>` : ""}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
-      ${this._mdBar()}<div class="wrap">${this._tmHint()}${this._labCards(a)}${body}</div>`;
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? (this._ver ? `<em class="ver">Paket ${esc(this._ver)}</em>` : "") : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
+      ${this._mdBar()}<div class="wrap">${this._mvPop(a)}${this._tmHint()}${this._labCards(a)}${body}</div>`;
     /* Das Banner steht in jedem Modul ganz oben, auch wenn davor Labs-Karten oder Hinweise erzeugt werden. */
     const wr = sr.getElementById("main").querySelector(".wrap"), hb = wr && wr.querySelector(":scope > .hero.mh");
     if (hb && wr.firstElementChild !== hb) wr.insertBefore(hb, wr.firstChild);
