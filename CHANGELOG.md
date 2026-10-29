@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [3.0.7.6] - 2026-10-29
+
+### Geändert
+- **Modul 19 Hausfluss (v0.5 Build 6): Der Fluss in den Linien richtet sich nach der Leistung.** Bei wenigen Watt laufen wenige, langsame, kleine Punkte, bei mehreren Kilowatt viele, schnelle und etwas größere. So siehst du auf einen Blick, wie stark die Energie fließt. Bei neuen Werten bleibt der Fluss im Takt.
+
 ## [3.0.7.5] - 2026-10-29
 
 ### Geändert

@@ -121,7 +121,10 @@
       }
       const st = `fill="none" stroke="${col}" stroke-opacity="${on ? 0.9 : 0.25}" stroke-width="${on ? 3 : 2}" stroke-linecap="round" stroke-linejoin="round"`;
       const path = `<path id="efp_${el.dataset.p}" d="${d}" ${st}/>`;
-      if (on) { const ph = (Date.now() % 2400) / 1000, kp = w > 0 ? "0;1" : "1;0"; act += path + [0, 1, 2].map((i) => `<circle r="4" fill="${col}" opacity="0"><set attributeName="opacity" to="1" begin="0.12s" fill="freeze"/><animateMotion dur="2.4s" begin="${(-ph - i * 0.8).toFixed(2)}s" repeatCount="indefinite" keyPoints="${kp}" keyTimes="0;1" calcMode="linear"><mpath href="#efp_${el.dataset.p}"/></animateMotion></circle>`).join(""); }
+      if (on) {  /* Fluss nach Leistung: wenig Watt = wenige, langsame, kleine Punkte; viel Watt = viele, schnelle, größere. Phase an die Uhr gebunden, damit der Fluss beim Neuzeichnen nicht springt. */
+        const f = Math.max(0, Math.min(1, (Math.log10(Math.max(10, Math.abs(w))) - 1) / 2.5)), n = Math.round(2 + 7 * f), dur = +(4.5 - 3 * f).toFixed(2), r = (3.4 - 0.4 * f).toFixed(1), ph = (Date.now() / 1000) % dur, kp = w > 0 ? "0;1" : "1;0";
+        act += path + Array.from({ length: n }, (_, k) => `<circle r="${r}" fill="${col}" opacity="0"><set attributeName="opacity" to="1" begin="0.12s" fill="freeze"/><animateMotion dur="${dur}s" begin="${(-ph - k * dur / n).toFixed(2)}s" repeatCount="indefinite" keyPoints="${kp}" keyTimes="0;1" calcMode="linear"><mpath href="#efp_${el.dataset.p}"/></animateMotion></circle>`).join("");
+      }
       else off += path;
     });
     const out = off + act; if (svg.innerHTML !== out) svg.innerHTML = out; this._efSvg = out;
