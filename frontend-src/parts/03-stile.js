@@ -1051,4 +1051,18 @@ button.tile.entile.sel{border-color:var(--a);box-shadow:0 0 0 1px var(--a) inset
 .enchk .gbtns{margin:2px 0 0}
 .enlive{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.enlive div{border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:.74rem;color:var(--mut)}.enlive b{display:block;font-size:1rem;color:var(--primary-text-color)}
 @media(max-width:600px){.enbil{padding-right:90px}.ennav{flex-direction:column;align-items:stretch}.ennav .enseg{width:100%}.enper{justify-content:space-between}.enper b{flex:1;text-align:center}}
+
+/* Modul 4 v1.1: Gerätetypen, Zeitraum, Karten, Tagesbalken */
+.gshb{font:inherit;color:inherit;background:none;border:0;padding:0;width:100%;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer}
+.gsn{display:flex;flex-direction:column;flex:1;min-width:0}.gsn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gsn small{font-size:.72rem;color:var(--mut)}
+.gsdev.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}
+.gssp{display:block;width:100%;height:26px}
+.gstyp{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.gstyp .gsch{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;font-size:.78rem}
+.gshero .chips{margin-top:10px}.gshero .chip{background:rgba(27,21,0,.14);color:#1b1500}
+.gshb2{display:grid;gap:10px;margin:10px 0 4px}
+.gshr{display:grid;grid-template-columns:minmax(90px,150px) 1fr auto;gap:10px;align-items:center;font-size:.84rem}
+.gshn{display:flex;align-items:center;gap:6px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gshbar{height:14px;border-radius:7px;background:color-mix(in srgb,var(--line) 60%,transparent);overflow:hidden}.gshbar>div{display:flex;height:100%;gap:2px;min-width:2px}
+.gshv{font-size:.78rem;color:var(--mut);white-space:nowrap}
+@media(max-width:600px){.gshr{grid-template-columns:1fr auto}.gshbar{grid-column:1/3;grid-row:2}}
 `;

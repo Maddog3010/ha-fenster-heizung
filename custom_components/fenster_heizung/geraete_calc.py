@@ -10,6 +10,8 @@ MAX_DEVICES = 8
 MAX_NOTIFY = 8
 KEEP_DAYS = 800
 DEFAULT_TYPICAL_W = 1500.0
+# Gerätetypen (Symbol und Startwerte im Dashboard), "" = aus dem Namen erraten
+GS_TYPES = ("", "wasch", "trockner", "spuel", "kuehl", "ofen", "pool", "pc", "tv", "werk", "sonst")
 
 _ENTITY = re.compile(r"^[a-z_]+\.[a-z0-9_]+$")
 _NOTIFY = re.compile(r"^notify\.[a-z0-9_]+$")
@@ -135,7 +137,7 @@ def clean_days(raw: Any) -> dict[str, list[float]]:
 
 
 def history(days: dict[str, list[float]]) -> list[dict[str, Any]]:
-    return [{"d": k, "s": round(v[0], 4), "b": round(v[1], 4), "g": round(v[2], 4), "cost": round(v[3], 4), "saved": round(v[4], 4)}
+    return [{"d": k, "s": round(v[0], 4), "b": round(v[1], 4), "g": round(v[2], 4), "cost": round(v[3], 4), "saved": round(v[4], 4), "n": int(v[5])}
             for k, v in sorted(days.items())]
 
 
@@ -171,6 +173,7 @@ def clean_gs(raw: Any) -> dict[str, Any]:
         devices.append({
             "id": did, "name": _text(d.get("name"), 30) or "Gerät", "ent": _entity(d.get("ent"), ("sensor",)),
             "thr": int(_num(d.get("thr"), 1, 500, 20)), "end": int(_num(d.get("end"), 1, 120, 5)),
+            "typ": d.get("typ") if d.get("typ") in GS_TYPES else "",
         })
     notify: list[str] = []
     for n in raw.get("notify") if isinstance(raw.get("notify"), list) else []:

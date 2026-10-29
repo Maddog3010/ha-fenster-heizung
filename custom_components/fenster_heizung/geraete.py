@@ -218,7 +218,8 @@ class GeraeteManager:
             est = free_solar(self._solar_now, others)
             cover = cover_pct(est, self.typ.get(did) or DEFAULT_TYPICAL_W)
             devices.append({
-                "id": did, "name": d["name"], "running": run is not None,
+                "id": did, "name": d["name"], "typ": d.get("typ", ""), "running": run is not None,
+                "since": round(run["start"]) if run else None,
                 "w": [round(x) for x in self._live.get(did, [0.0, 0.0, 0.0])],
                 "e": [round(x, 4) for x in (run["e"] if run else [0.0, 0.0, 0.0])],
                 "day": period_sum(days, d0), "month": period_sum(days, m0), "year": period_sum(days, y0), "total": period_sum(days, ""),

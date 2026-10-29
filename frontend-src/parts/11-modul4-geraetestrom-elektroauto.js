@@ -14,11 +14,19 @@
     const G = this._gsState(), k = b.dataset.k, i = +b.dataset.i;
     if (a === "gsset") { this._modal = { type: "gsset" }; this._renderModal(); }
     else if (a === "gsdone") { this._pkId = null; this._modal = null; this._renderModal(); this._gsLoad(true); this._render(); }
-    else if (a === "gsadd") { if (G.devices.length < 8) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5 }); this._mdSave(); this._renderModal(); } }
+    else if (a === "gsadd") { if (G.devices.length < 8) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5, typ: "" }); this._mdSave(); this._renderModal(); } }
     else if (a === "gsdel") { G.devices.splice(i, 1); this._pkId = null; this._mdSave(); this._renderModal(); }
     else if (a === "gsnot") { const n = new Set(G.notify); if (n.has(k)) n.delete(k); else n.add(k); G.notify = [...n]; this._mdSave(); this._renderModal(); }
-    else if (a === "gsper") { this._gsRange = k; this._render(); }
-    else if (a === "gsdev") { this._gsSel = k; this._render(); }
+    else if (a === "gsrange") { if (this._gsRg !== k) { this._gsRg = k; this._gsOff = 0; this._gsTipX = null; try { localStorage.setItem("fh_gs_range", k); } catch (_) { /* Speicher gesperrt */ } } this._render(); }
+    else if (a === "gsoff") { const v = Number(k); this._gsOff = v === 0 ? 0 : Math.min(0, (this._gsOff || 0) + v); this._gsTipX = null; this._render(); }
+    else if (a === "gspick") {
+      const P = this._gsPer(), i = Number(k) || 0, now = new Date();
+      if (P.u === "m") { this._gsRg = "month"; this._gsOff = (P.s.getFullYear() - now.getFullYear()) * 12 + i - now.getMonth(); }
+      else { const d = new Date(P.s.getFullYear(), P.s.getMonth(), P.s.getDate() + i); this._gsRg = "day"; this._gsOff = Math.round((d - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5); }
+      this._gsOff = Math.min(0, this._gsOff); this._gsTipX = null; this._render();
+    }
+    else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }
+    else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._mdSave(); this._renderModal(); } }
   }
   _gsChange(t) {
     const f = t.dataset.f, G = this._gsState(), d = G.devices[+t.dataset.i];
@@ -39,8 +47,9 @@
     return `<div class="ov" data-act="gsdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Gerätestrom</b><span>Einstellungen</span></div><button class="ibtn" data-act="gsdone" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("laundry", 15)}Geräte</div>
-      <div class="mut sm" style="margin:2px 0 6px">Je Gerät ein Leistungssensor (Steckdose oder Zähler, in Watt). Ein Durchlauf beginnt über der Startschwelle und endet, wenn die Leistung die eingestellte Zeit darunter bleibt.</div>
+      <div class="mut sm" style="margin:2px 0 6px">Je Gerät ein Leistungssensor (Steckdose oder Zähler, in Watt). Ein Durchlauf beginnt über der Startschwelle und endet, wenn die Leistung die eingestellte Zeit darunter bleibt. Der Gerätetyp setzt Symbol und passende Startwerte.</div>
       ${G.devices.map((d, i) => `<div class="gsdc"><div class="gsdh"><input class="otxt" type="text" maxlength="30" placeholder="Name, z. B. Waschmaschine" value="${esc(d.name)}" data-f="gsname" data-i="${i}" aria-label="Gerätename"><button class="ibtn" data-act="gsdel" data-i="${i}" aria-label="Gerät entfernen">${ic("trash", 17)}</button></div>
+        <div class="gstyp" role="group" aria-label="Gerätetyp">${Object.entries(GS_TYP).map(([k, t]) => `<button class="gsch ${this._gsTyp(d) === k ? "sel" : ""}" data-act="gstyp" data-i="${i}" data-k="${k}" aria-pressed="${this._gsTyp(d) === k}">${ic(t.i, 14)}${t.n}</button>`).join("")}</div>
         ${this._wzSel(pw, d.ent, "gsent", `data-i="${i}" data-k="ent"`, "– Leistungssensor wählen –", /wasch|trockn|sp(ü|u)l|geschirr|power|leistung/i)}
         <div class="gsnums"><label>Startschwelle<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="thr" value="${d.thr}" min="1" max="500"><u>W</u></span></label><label>Ende nach<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="end" value="${d.end}" min="1" max="120"><u>min</u></span></label></div></div>`).join("")}
       ${G.devices.length < 8 ? `<button class="btn2" data-act="gsadd" style="width:100%;flex:none">${ic("plus", 16)} Gerät hinzufügen</button>` : ""}
@@ -57,53 +66,135 @@
       <div class="mut sm" style="margin:6px 0 0">Zusätzlich wird das Ereignis <code>geraetestrom_run_finished</code> ausgelöst.</div>
       <div class="foot2"><button class="btn2 pri" data-act="gsdone">Fertig</button></div></div>`;
   }
+  /* ---- Modul 4 v1.1: Zeitraum, Gerätetypen, einheitliche Farben ---- */
+  _gsTyp(d) {
+    if (d && GS_TYP[d.typ]) return d.typ;
+    const n = String((d && d.name) || "").toLowerCase();
+    return /wasch/.test(n) ? "wasch" : /trock/.test(n) ? "trockner" : /sp(ü|u)l|geschirr/.test(n) ? "spuel" : /k(ü|u)hl|gefrier/.test(n) ? "kuehl" : /ofen|herd|thermomix|koch|mikro/.test(n) ? "ofen" : /pool|pumpe/.test(n) ? "pool" : /pc|computer|rechner|server/.test(n) ? "pc" : /tv|fernseh/.test(n) ? "tv" : /werk|s(ä|a)ge|kompressor/.test(n) ? "werk" : "sonst";
+  }
+  _gsPer(shift = 0) {
+    if (this._gsRg === undefined) { try { this._gsRg = localStorage.getItem("fh_gs_range") || "day"; } catch (_) { this._gsRg = "day"; } }
+    const rg = GS_RANGES.includes(this._gsRg) ? this._gsRg : "day", o = (this._gsOff || 0) + shift, now = new Date(), y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+    let s, e, n, u;
+    if (rg === "week") { const wd = (now.getDay() + 6) % 7; s = new Date(y, m, d - wd + 7 * o); e = new Date(y, m, d - wd + 7 * o + 7); n = 7; u = "d"; }
+    else if (rg === "month") { s = new Date(y, m + o, 1); e = new Date(y, m + o + 1, 1); n = new Date(y, m + o + 1, 0).getDate(); u = "d"; }
+    else if (rg === "year") { s = new Date(y + o, 0, 1); e = new Date(y + o + 1, 0, 1); n = 12; u = "m"; }
+    else { s = new Date(y, m, d + o); e = new Date(y, m, d + o + 1); n = 1; u = "d"; }
+    return { rg, s, e, n, u, off: o, cur: o === 0 };
+  }
+  _gsLabel(P) {
+    const f = (dt, o) => dt.toLocaleDateString("de-DE", o);
+    if (P.rg === "day") return P.off === 0 ? "Heute" : P.off === -1 ? "Gestern" : f(P.s, { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" });
+    if (P.rg === "week") { const l = new Date(+P.e - 864e5), t = new Date(Date.UTC(P.s.getFullYear(), P.s.getMonth(), P.s.getDate() + 3)), w = Math.ceil(((t - Date.UTC(t.getUTCFullYear(), 0, 1)) / 864e5 + 1) / 7); return `KW ${w} · ${f(P.s, { day: "2-digit", month: "2-digit" })}–${f(l, { day: "2-digit", month: "2-digit" })}`; }
+    if (P.rg === "month") return f(P.s, { month: "long", year: "numeric" });
+    return String(P.s.getFullYear());
+  }
+  /* Summen je Abschnitt (Tag oder Monat) aus den Tageswerten von Modul 4; lim = nur die ersten lim Tage (Vergleich) */
+  _gsAgg(ids, P, lim) {
+    const H = (this._gsD && this._gsD.hist) || {}, key = (dt) => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+    const b = []; for (let i = 0; i < P.n; i++) b.push({ d: P.u === "m" ? new Date(P.s.getFullYear(), i, 15) : new Date(P.s.getFullYear(), P.s.getMonth(), P.s.getDate() + i, 12), v: [0, 0, 0], c: 0, sv: 0, n: 0 });
+    const s0 = key(P.s), e0 = key(lim != null ? new Date(+P.s + lim * 864e5) : P.e);
+    ids.forEach((id) => (H[id] || []).forEach((r) => {
+      if (r.d < s0 || r.d >= e0) return;
+      const i = P.u === "m" ? +r.d.slice(5, 7) - 1 : Math.round((new Date(r.d + "T12:00:00") - new Date(P.s.getFullYear(), P.s.getMonth(), P.s.getDate(), 12)) / 864e5);
+      const x = b[i]; if (!x) return; x.v[0] += r.s; x.v[1] += r.b; x.v[2] += r.g; x.c += r.cost; x.sv += r.saved; x.n += r.n || 0;
+    }));
+    const t = b.reduce((a, x) => ({ v: [a.v[0] + x.v[0], a.v[1] + x.v[1], a.v[2] + x.v[2]], c: a.c + x.c, sv: a.sv + x.sv, n: a.n + x.n }), { v: [0, 0, 0], c: 0, sv: 0, n: 0 });
+    t.kwh = t.v[0] + t.v[1] + t.v[2]; t.own = t.kwh > 0 ? (t.v[0] + t.v[1]) / t.kwh * 100 : null;
+    return { b, t };
+  }
+  _gsPrev(ids, P) {
+    if (P.rg === "day" && P.cur) return null;
+    const V = this._gsPer(-1), el = P.cur ? Math.max(1, Math.ceil((Date.now() - P.s) / 864e5)) : null;
+    return this._gsAgg(ids, V, el).t;
+  }
+  _gsSpark(id, P) {
+    const Q = P.rg === "day" ? { ...this._gsPer(), rg: "week", s: new Date(P.s.getFullYear(), P.s.getMonth(), P.s.getDate() - 6), n: 7, u: "d" } : P;
+    const b = this._gsAgg([id], Q).b, v = b.map((x) => x.v[0] + x.v[1] + x.v[2]), mx = Math.max(...v, 1e-6); if (v.filter((x) => x > 0).length < 2) return "";
+    const X = (i) => (i / Math.max(1, v.length - 1)) * 100, d = v.map((y, i) => `${i ? "L" : "M"}${X(i).toFixed(1)} ${(26 - y / mx * 22).toFixed(1)}`).join("");
+    return `<svg class="gssp" viewBox="0 0 100 28" preserveAspectRatio="none" aria-hidden="true"><path d="${d}L100 28L0 28Z" fill="#2dd4bf" opacity=".12"/><path d="${d}" fill="none" stroke="#2dd4bf" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg>`;
+  }
   _gsPage() {
     const adm = this._admin(), G = this._gsState();
     this._gsLoad();
     const D = this._gsD, eur = (v) => num(v, 2) + " €";
     if (!G.devices.length) return `<div class="card empty">${ic("laundry", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Gerät eingerichtet</div>
       <div class="sm" style="max-width:480px;margin:0 auto 14px">Zeigt pro Gerät (Waschmaschine, Trockner, Spülmaschine …), woher der Strom kommt – Solar, Batterie oder Netz – und was er kostet. Dazu Ersparnis, Durchläufe und eine Startempfehlung.</div>
-      <ul class="wwl"><li>${ic("sun", 16)}Anteile Solar, Batterie, Netz pro Gerät</li><li>${ic("chart", 16)}Kosten und Ersparnis: heute, Monat, Jahr, gesamt</li><li>${ic("bell", 16)}Meldung am Ende eines Durchlaufs</li></ul>
+      <ul class="wwl"><li>${ic("sun", 16)}Anteile Solar, Batterie, Netz pro Gerät</li><li>${ic("chart", 16)}Kosten und Ersparnis: Tag, Woche, Monat, Jahr</li><li>${ic("bell", 16)}Meldung am Ende eines Durchlaufs</li></ul>
       ${adm ? `<button class="btn2 pri" data-act="gsset" style="margin-top:16px;flex:none;padding:12px 22px">${ic("tools", 16)} Gerät hinzufügen</button>` : "Ein Administrator kann das Modul einrichten."}</div>`;
     const warn = !this._gsReady() ? `<div class="banner">${ic("alert", 18)}<div><b>Solar- und Netz-Sensor fehlen.</b> Sie werden in Modul 3 – Energie-Übersicht gewählt. Bis dahin gilt der gesamte Strom als Netzstrom.${adm ? ` <button class="lnk" data-act="mdensetup">Modul 3 öffnen</button>` : ""}</div></div>` : "";
     if (!D) return `${warn}<div class="card empty">Lade Gerätestrom …</div>`;
-    const devs = D.devices || [];
-    const sum = (f) => devs.reduce((a, d) => a + (f(d) || 0), 0), cols = ["#e9a413", "#13a97b", "#6f78e8"], srcN = ["Solar", "Batterie", "Netz"];
-    const per = [["Heute", "day", "today", "#2dd4bf"], ["Monat", "month", "month", "#60a5fa"], ["Jahr", "year", "year", "#a78bfa"], ["Gesamt", "total", "total", "#f472b6"]];
-    const tiles = per.map(([t, k, ico, c]) => `<div class="card gstile" style="--c:${c}"><div class="gst"><span class="gsi">${ic(ico, 15)}</span>${t}</div><div class="gsv">${eur(sum((d) => d[k].saved))}</div><div class="mut sm">gespart · Kosten ${eur(sum((d) => d[k].cost))} · ${num(sum((d) => d[k].kwh), 1)} kWh</div></div>`).join("");
+    this._gsTipBind();
+    const devs = D.devices || [], ids = devs.map((d) => d.id), P = this._gsPer(), A = this._gsAgg(ids, P), T = A.t, V = this._gsPrev(ids, P), per = this._gsLabel(P);
+    const cl = { day: "zum Vortag", week: "zur Vorwoche", month: "zum Vormonat", year: "zum Vorjahr" }[P.rg];
+    const cmp = (cur, old, good) => { if (!V || old == null || old < 0.005) return ""; const d = Math.round((cur - old) / old * 100); if (!isFinite(d)) return ""; const c = d === 0 || good === "none" ? "" : (d > 0) === (good === "up") ? "up" : "dn"; return `<div class="g"><span class="tcmp ${c}">${d > 0 ? "▲" : d < 0 ? "▼" : "="} ${Math.abs(d)} %</span> ${cl}</div>`; };
+    const today = new Date().toDateString(), hm = (ts) => new Date(ts).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    const chips = [...devs.filter((d) => d.running).map((d) => `<span class="chip">${ic(GS_TYP[this._gsTyp(d)].i, 16)}${esc(d.name)} läuft · ${wfmt(d.w[0] + d.w[1] + d.w[2])}</span>`),
+      ...devs.filter((d) => !d.running && d.last && d.last.ts && new Date(d.last.ts).toDateString() === today).map((d) => `<span class="chip">${ic("check", 16)}${esc(d.name)} fertig ${hm(d.last.ts)}</span>`)].slice(0, 4).join("");
+    const ring = this._modRing(T.own != null ? T.own : 0, "eigener Strom");
+    const hero = `${warn}<div class="card hero mh hr a-gs gshero">${this._modLogo("gs")}${ring}<div class="mut" style="opacity:.85">${ic("laundry", 16)} ${esc(per)} gespart</div><div class="gsbig">${eur(T.sv)}</div>
+      <div style="opacity:.85">${num(T.n)} ${T.n === 1 ? "Durchlauf" : "Durchläufe"} · ${num(T.kwh, 1)} kWh · Kosten ${eur(T.c)}</div>${chips ? `<div class="chips">${chips}</div>` : ""}</div>`;
+    const nav = `<div class="ennav"><div class="seg wwseg enseg" role="group" aria-label="Zeitraum">${[["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]].map(([k, l]) => `<button class="${P.rg === k ? "sel" : ""}" data-act="gsrange" data-k="${k}" aria-pressed="${P.rg === k}">${l}</button>`).join("")}</div>
+      <div class="enper"><button class="ibtn" data-act="gsoff" data-k="-1" aria-label="Zurück">${ic("back", 18)}</button><b>${esc(per)}</b><button class="ibtn nx${P.cur ? " dis" : ""}" data-act="gsoff" data-k="1" aria-label="Weiter"${P.cur ? ' aria-disabled="true"' : ""}>${ic("back", 18)}</button>${P.cur ? "" : `<button class="lnk ennow" data-act="gsoff" data-k="0">Heute</button>`}</div></div>`;
+    const tl = [["saved", "total", "Gespart", eur(T.sv), "#34d399", `${eur(T.c)} Kosten`, cmp(T.sv, V && V.sv, "up")], ["cost", "bolt", "Kosten", eur(T.c), "#f87171", T.n ? `Ø ${eur(T.c / T.n)} je Durchlauf` : "kein Durchlauf", cmp(T.c, V && V.c, "down")],
+      ["kwh", "energy", "Energie", `${num(T.kwh, T.kwh >= 100 ? 0 : 1)}<small>kWh</small>`, "#2dd4bf", `${num(T.n)} ${T.n === 1 ? "Durchlauf" : "Durchläufe"}`, cmp(T.kwh, V && V.kwh, "none")], ["own", "sun", "Eigener Strom", T.own != null ? `${num(T.own, 0)}<small>%</small>` : "–", "#fbbf24", T.kwh ? `${num(T.v[0], 1)} kWh Solar · ${num(T.v[1], 1)} kWh Batterie` : "Keine Daten", V && V.own != null && T.own != null ? `<div class="g"><span class="tcmp ${T.own >= V.own ? "up" : "dn"}">${T.own >= V.own ? "▲" : "▼"} ${num(Math.abs(T.own - V.own), 0)} Punkte</span> ${cl}</div>` : ""]];
+    const tiles = `<div class="tiles entiles">${tl.map(([k, ico, lab, v, c, sub, cm]) => `<div class="tile" style="--a:${c}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}</div><div class="g">${sub}</div>${cm}</div>`).join("")}</div>`;
     const cards = devs.map((d) => {
-      const run = d.running, base = run ? d.w : d.e, tot = base[0] + base[1] + base[2] || 1, adv = d.advice || "", ac = /^Jetzt/.test(adv) ? "green" : /^Teil/.test(adv) ? "amber" : "slate";
-      return `<div class="card gsdev"><div class="gsh"><span class="gsi big">${ic("laundry", 20)}</span><b>${esc(d.name)}</b><span class="gsst ${run ? "on" : ""}">${run ? num(d.w[0] + d.w[1] + d.w[2], 0) + " W" : "Aus"}</span></div>
-        <div class="gsbar" role="img" aria-label="Anteile Solar, Batterie, Netz">${base.map((v, i) => `<i style="width:${v / tot * 100}%;background:${cols[i]}"></i>`).join("")}</div>
-        <div class="gsleg">${srcN.map((t, i) => `<span><i style="background:${cols[i]}"></i><em>${t}</em><b>${run ? num(d.w[i], 0) + " W" : num(d.e[i], 1) + " kWh"}</b></span>`).join("")}</div>
-        <div class="gsrows"><div class="gsrow"><span class="mut">Heute</span><b>${eur(d.day.cost)} Kosten</b><em>${eur(d.day.saved)} gespart</em></div>
-        <div class="gsrow"><span class="mut">Letzter Durchlauf</span><b>${d.last ? eur(d.last.cost) + " · " + num(d.last.kwh, 2) + " kWh" : "noch keiner"}</b><em>${d.last ? num(d.last.share, 0) + " % Eigenanteil" : ""}</em></div></div>
-        ${adv ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung ${num(d.cover, 0)} %</span></div>` : ""}</div>`; }).join("");
-    return `${warn}<div class="card hero mh hr a-gs gshero">${this._modLogo("gs")}${(() => { const e0 = sum((d) => d.e[0] + d.e[1]), et = sum((d) => d.e[0] + d.e[1] + d.e[2]); return this._modRing(et > 0 ? Math.round(e0 / et * 100) : 0, "Eigenstrom"); })()}<div class="mut" style="opacity:.85">${ic("laundry", 16)} Heute gespart</div><div class="gsbig">${eur(sum((d) => d.day.saved))}</div><div style="opacity:.85">${num(sum((d) => d.day.runs))} ${sum((d) => d.day.runs) === 1 ? "Durchlauf" : "Durchläufe"} heute · ${num(sum((d) => d.day.kwh), 1)} kWh</div></div>
-      <div class="gstiles">${tiles}</div><div class="gsgrid">${cards}</div>${this._gsChart(D, devs, cols, srcN)}`;
+      const a = this._gsAgg([d.id], P).t, run = d.running, base = run ? d.w : a.v, tot = base[0] + base[1] + base[2], ty = GS_TYP[this._gsTyp(d)], adv = d.advice || "", ac = /^Jetzt/.test(adv) ? "green" : /^Teil/.test(adv) ? "amber" : "slate";
+      const since = run && d.since ? Math.max(0, Math.round((Date.now() / 1000 - d.since) / 60)) : null;
+      return `<div class="card gsdev${this._gsSel === d.id ? " sel" : ""}"><button class="gsh gshb" data-act="gsdev" data-k="${esc(d.id)}" aria-pressed="${this._gsSel === d.id}"><span class="gsi big">${ic(ty.i, 20)}</span><span class="gsn"><b>${esc(d.name)}</b><small>${ty.n}</small></span><span class="gsst ${run ? "on" : ""}">${run ? `${wfmt(d.w[0] + d.w[1] + d.w[2])}${since != null ? ` · ${since >= 60 ? Math.floor(since / 60) + " h " + (since % 60) + " min" : since + " min"}` : ""}` : "Aus"}</span></button>
+        <div class="gsbar" role="img" aria-label="Anteile Solar, Batterie, Netz">${tot > 0 ? base.map((v, i) => `<i style="width:${v / tot * 100}%;background:${GS_COL[i]}"></i>`).join("") : `<i style="width:100%;background:var(--line)"></i>`}</div>
+        <div class="gsleg">${GS_SRC.map((t, i) => `<span><i style="background:${GS_COL[i]}"></i><em>${t}</em><b>${run ? wfmt(d.w[i]) : num(a.v[i], a.v[i] >= 10 ? 1 : 2) + " kWh"}</b></span>`).join("")}</div>
+        <div class="gsrows"><div class="gsrow"><span class="mut">${esc(per)}</span><b>${eur(a.c)} Kosten</b><em>${eur(a.sv)} gespart · ${num(a.n)} ${a.n === 1 ? "Lauf" : "Läufe"}</em></div>
+        <div class="gsrow"><span class="mut">Letzter Durchlauf</span><b>${d.last ? eur(d.last.cost) + " · " + num(d.last.kwh, 2) + " kWh" : "noch keiner"}</b><em>${d.last ? num(d.last.share, 0) + " % eigener Strom" + (d.last.ts ? " · " + new Date(d.last.ts).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }) + " " + hm(d.last.ts) : "") : ""}</em></div></div>
+        ${this._gsSpark(d.id, P)}
+        ${adv && !run ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung jetzt ${num(d.cover, 0)} %</span></div>` : ""}</div>`; }).join("");
+    if (this._gsTipX != null) Promise.resolve().then(() => this._gsTipShow());
+    return `${hero}${nav}${tiles}<div class="gsgrid">${cards}</div>${this._gsChart(D, devs, P)}`;
   }
-  _gsChart(D, devs, cols, srcN) {
-    const rg = this._gsRange || "7", sel = devs.some((d) => d.id === this._gsSel) ? this._gsSel : "", H = D.hist || {};
-    const pick = sel ? [sel] : devs.map((d) => d.id), mon = rg === "12", n = rg === "30" ? 30 : rg === "7" ? 7 : 12;
-    const today = new Date(); today.setHours(12, 0, 0, 0);
-    const keyOf = (dt) => mon ? dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0") : dt.getFullYear() + "-" + String(dt.getMonth() + 1).padStart(2, "0") + "-" + String(dt.getDate()).padStart(2, "0");
-    const slots = []; for (let i = n - 1; i >= 0; i--) { const dt = new Date(today); if (mon) dt.setMonth(dt.getMonth() - i, 1); else dt.setDate(dt.getDate() - i); slots.push({ k: keyOf(dt), dt, v: [0, 0, 0], c: 0, s: 0 }); }
-    const ix = Object.fromEntries(slots.map((s, i) => [s.k, i]));
-    pick.forEach((id) => (H[id] || []).forEach((r) => { const i = ix[mon ? r.d.slice(0, 7) : r.d]; if (i == null) return; slots[i].v[0] += r.s; slots[i].v[1] += r.b; slots[i].v[2] += r.g; slots[i].c += r.cost; slots[i].s += r.saved; }));
-    const mx = Math.max(...slots.map((s) => s.v[0] + s.v[1] + s.v[2]), 0.1), step = enStep(mx), top = Math.ceil(mx / step) * step, W = 640, Hh = 190, pl = 34, pb = 22, bw = (W - pl) / n, bar = Math.min(bw * 0.62, 34);
-    const lab = (s) => mon ? s.dt.toLocaleDateString("de-DE", { month: "short" }) : n > 7 ? String(s.dt.getDate()) : s.dt.toLocaleDateString("de-DE", { weekday: "short" });
-    let grid = "", bars = "";
-    for (let v = 0; v <= top + 1e-9; v += step) { const y = Hh - pb - (v / top) * (Hh - pb - 8); grid += `<line x1="${pl}" x2="${W}" y1="${y}" y2="${y}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${pl - 6}" y="${y + 4}" text-anchor="end" font-size="11" fill="var(--mut)">${num(v, step < 1 ? 1 : 0)}</text>`; }
-    slots.forEach((s, i) => { let y = Hh - pb; const x = pl + i * bw + (bw - bar) / 2; s.v.forEach((v, j) => { const h = (v / top) * (Hh - pb - 8); if (h > 0.4) { y -= h; bars += `<rect x="${x}" y="${y}" width="${bar}" height="${h}" fill="${cols[j]}" rx="3"><title>${srcN[j]} ${num(v, 2)} kWh</title></rect>`; } });
-      bars += `<text x="${x + bar / 2}" y="${Hh - 6}" text-anchor="middle" font-size="11" fill="var(--mut)">${esc(lab(s))}</text>`; });
-    const totE = slots.reduce((a, s) => a + s.v[0] + s.v[1] + s.v[2], 0), totS = slots.reduce((a, s) => a + s.s, 0), totC = slots.reduce((a, s) => a + s.c, 0);
-    const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${on}">${t}</button>`;
-    return `<div class="card gsc"><h2>${ic("chart", 18)}Verlauf nach Quelle</h2>
-      <div class="gschips">${[["7", "7 Tage"], ["30", "30 Tage"], ["12", "12 Monate"]].map(([k, t]) => chip("gsper", k, t, rg === k)).join("")}</div>
-      <div class="gschips">${chip("gsdev", "", "Alle Geräte", !sel)}${devs.map((d) => chip("gsdev", esc(d.id), esc(d.name), sel === d.id)).join("")}</div>
-      <svg viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="Energie nach Quelle in kWh">${grid}${bars}</svg>
-      <div class="gsleg" style="margin-top:6px">${srcN.map((t, i) => `<span><i style="background:${cols[i]}"></i>${t}</span>`).join("")}<span class="mut">kWh pro ${mon ? "Monat" : "Tag"}</span></div>
-      <div class="mut sm" style="margin:8px 0 0">Zeitraum: ${num(totE, 1)} kWh · Kosten ${num(totC, 2)} € · gespart ${num(totS, 2)} €</div></div>`;
+  _gsChart(D, devs, P) {
+    const sel = devs.some((d) => d.id === this._gsSel) ? this._gsSel : "", pick = sel ? [sel] : devs.map((d) => d.id), W = 640, Hh = 210, pl = 40, pb = 24, pt = 14, ih = Hh - pb - pt;
+    const chip = (k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="gsdev" data-k="${k}" aria-pressed="${on}">${t}</button>`;
+    const chips = `<div class="gschips">${chip("", "Alle Geräte", !sel)}${devs.map((d) => chip(esc(d.id), esc(d.name), sel === d.id)).join("")}</div>`;
+    const leg = `<div class="legend">${GS_SRC.map((t, i) => `<span><i style="background:${GS_COL[i]}"></i>${t}</span>`).join("")}</div>`;
+    this._gsTipD = null;
+    if (P.rg === "day") {
+      const rows = devs.filter((d) => !sel || d.id === sel).map((d) => ({ d, t: this._gsAgg([d.id], P).t })).sort((a, b) => b.t.kwh - a.t.kwh), mx = Math.max(0.01, ...rows.map((r) => r.t.kwh));
+      return `<div class="card gsc"><h2>${ic("chart", 18)}Woher der Strom kam · ${esc(this._gsLabel(P))}</h2>${chips}
+        <div class="gshb2">${rows.map(({ d, t }) => `<div class="gshr"><span class="gshn">${ic(GS_TYP[this._gsTyp(d)].i, 15)}${esc(d.name)}</span><div class="gshbar"><div style="width:${(t.kwh / mx * 100).toFixed(1)}%">${t.v.map((v, i) => (v > 0 ? `<i style="flex:${v};background:${GS_COL[i]}"></i>` : "")).join("")}</div></div><span class="gshv">${num(t.kwh, 2)} kWh · ${num(t.c, 2)} €</span></div>`).join("")}</div>
+        ${leg}<div class="mut sm" style="margin:6px 0 0">Woche, Monat und Jahr zeigen den Verlauf als Balken.</div></div>`;
+    }
+    const A = this._gsAgg(pick, P), now = Date.now(), b = A.b.map((x) => ({ ...x, fut: +x.d - (P.u === "m" ? 15 * 864e5 : 432e5) > now }));
+    const mx = Math.max(...b.map((s) => s.v[0] + s.v[1] + s.v[2]), 0.1), step = enStep(mx), top = Math.ceil(mx / step) * step, gw = (W - pl) / b.length, bar = Math.max(3, Math.min(gw * 0.62, 34));
+    const Y = (v) => pt + ih - (v / top) * ih;
+    let s = ""; for (let v = 0, c = 0; v <= top + 1e-9 && c < 12; v += step, c++) s += `<line x1="${pl}" x2="${W}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${pl - 6}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="var(--mut)">${num(v, step < 1 ? 1 : 0)}</text>`;
+    b.forEach((x, i) => {
+      const bx = pl + i * gw + (gw - bar) / 2;
+      if (x.fut) s += `<rect x="${bx.toFixed(1)}" y="${(Y(0) - 2).toFixed(1)}" width="${bar.toFixed(1)}" height="3" rx="1.5" fill="var(--line)"/>`;
+      else { let y0 = 0; x.v.forEach((v, j) => { if (v <= 0) return; s += `<rect x="${bx.toFixed(1)}" y="${Y(y0 + v).toFixed(1)}" width="${bar.toFixed(1)}" height="${Math.max(0, Y(y0) - Y(y0 + v)).toFixed(1)}" fill="${GS_COL[j]}" rx="2"/>`; y0 += v; }); s += `<rect class="enhit" x="${(pl + i * gw).toFixed(1)}" y="${pt}" width="${gw.toFixed(1)}" height="${ih}" fill="transparent" data-act="gspick" data-k="${i}"/>`; }
+      const lab = P.u === "m" ? x.d.toLocaleDateString("de-DE", { month: "short" }).replace(".", "") : P.rg === "week" ? x.d.toLocaleDateString("de-DE", { weekday: "short" }).replace(".", "") : String(x.d.getDate());
+      if (P.u === "m" || P.rg === "week" || i % 5 === 0 || i === b.length - 1) s += `<text x="${(pl + i * gw + gw / 2).toFixed(1)}" y="${Hh - 6}" text-anchor="middle" font-size="11" fill="var(--mut)">${esc(lab)}</text>`;
+    });
+    this._gsTipD = { W, pl, gw, b, u: P.u };
+    return `<div class="card gsc"><h2>${ic("chart", 18)}Verlauf nach Quelle · ${esc(this._gsLabel(P))}</h2>${chips}
+      <div class="enchw"><svg class="gschart" viewBox="0 0 ${W} ${Hh}" width="100%" role="img" aria-label="Energie nach Quelle in kWh">${s}<rect class="encur" x="0" y="${pt}" width="0" height="${ih}" rx="4" fill="none" stroke="currentColor" opacity="0"/></svg><div class="entt" hidden></div></div>
+      ${leg}<div class="mut sm" style="margin:6px 0 0">Zeitraum: ${num(A.t.kwh, 1)} kWh · Kosten ${num(A.t.c, 2)} € · gespart ${num(A.t.sv, 2)} € · ein Tipp auf einen Balken öffnet ${P.u === "m" ? "den Monat" : "den Tag"}.</div></div>`;
+  }
+  _gsTipBind() {
+    if (this._gsTipOn) return; this._gsTipOn = true;
+    const mv = (e) => { const svg = e.target && e.target.closest && e.target.closest(".gschart"); if (!svg) { if (this._gsTipX != null && e.type === "pointermove") { this._gsTipX = null; this._gsTipShow(); } return; } const r = svg.getBoundingClientRect(); this._gsTipX = (e.clientX - r.left) / r.width; this._gsTipT = Date.now(); this._gsTipShow(); };
+    this.shadowRoot.addEventListener("pointermove", mv); this.shadowRoot.addEventListener("pointerdown", mv);
+  }
+  _gsTipShow() {
+    const D = this._gsTipD, svg = this.shadowRoot.querySelector(".gschart"), w = svg && svg.parentElement; if (!w) return;
+    const tt = w.querySelector(".entt"), cur = w.querySelector(".encur"), off = () => { tt.hidden = true; cur.setAttribute("opacity", "0"); };
+    if (!D || this._gsTipX == null || Date.now() - (this._gsTipT || 0) > 8000) return off();
+    const fx = this._gsTipX * D.W, i = Math.floor((fx - D.pl) / D.gw), x = D.b[i]; if (fx < D.pl || !x || x.fut) return off();
+    const k = x.v[0] + x.v[1] + x.v[2];
+    tt.innerHTML = `<b>${D.u === "m" ? x.d.toLocaleDateString("de-DE", { month: "long", year: "numeric" }) : x.d.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" })}</b>${GS_SRC.map((t, j) => `<span style="color:${GS_COL[j]}">${t} ${num(x.v[j], 2)} kWh</span>`).join("")}<span>Kosten ${num(x.c, 2)} € · gespart ${num(x.sv, 2)} €</span><span>${num(x.n)} ${x.n === 1 ? "Durchlauf" : "Durchläufe"}${k > 0 ? ` · ${num((x.v[0] + x.v[1]) / k * 100, 0)} % eigen` : ""}</span>`;
+    tt.hidden = false; cur.setAttribute("x", (D.pl + i * D.gw).toFixed(1)); cur.setAttribute("width", D.gw.toFixed(1)); cur.setAttribute("opacity", ".5");
+    const Wp = svg.getBoundingClientRect().width, px = (D.pl + i * D.gw + D.gw / 2) / D.W * Wp, tw = tt.offsetWidth || 180;
+    tt.style.left = Math.max(0, Math.min(Wp - tw, px + (px + 14 + tw > Wp ? -tw - 14 : 14))) + "px";
   }
   /* Elektroauto & Wallbox (Beta) */
   _evState() { const s = this._mdState(); return s.ev || (s.ev = { brand: "", model: "", body: "limousine", color: "blue", ent: { soc: "", odo: "", range: "", plug: "", power: "", charging: "" } }); }

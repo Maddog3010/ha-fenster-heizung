@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.1030.0b2] - 2026-10-30
+
+Testversion (Beta) mit Modul 4 v1.1.
+
+### Neu
+- **Modul 4 Gerätestrom (v1.1 Build 1): Zeitraum Tag, Woche, Monat und Jahr** nach Kalender wie in Modul 3, mit ‹ › zum Blättern. Statt „7 Tage, 30 Tage, 12 Monate“.
+- **Banner für den Zeitraum:** gespart, Durchläufe, Energie und Kosten, Ring „eigener Strom“. Chips für laufende und heute fertige Geräte.
+- **Kacheln** Gespart, Kosten (mit Ø je Durchlauf), Energie und Eigener Strom, mit Vergleich zur Vorperiode, gleich lang wie der bisher vergangene Teil.
+- **Gerätetypen mit Symbol** (Waschmaschine, Trockner, Spülmaschine, Kühlgerät, Küche, Pool, Computer, Fernseher, Werkstatt, Gerät). Der Typ wird aus dem Namen erraten und lässt sich in den Einstellungen ändern, dabei werden passende Startwerte gesetzt.
+- **Gerätekarten:** Laufzeit bei laufenden Geräten, Werte für den gewählten Zeitraum mit Zahl der Läufe, Datum des letzten Durchlaufs, kleine Verlaufslinie. Ein Tipp auf den Kopf der Karte filtert das Diagramm.
+- **Diagramm zum Antippen:** Tag als Balken je Gerät, Woche, Monat und Jahr als gestapelte Balken mit Werten unter Finger oder Maus, ein Tipp auf einen Balken öffnet den Tag oder Monat.
+
+### Geändert
+- **Farben wie in Modul 3:** Solar gelb, Batterie violett, Netz rot.
+- Die Tageswerte enthalten jetzt die Zahl der Durchläufe, und die Seite kennt den Startzeitpunkt laufender Geräte.
+
 ## [2026.1030.0b1] - 2026-10-30
 
 Testversion (Beta) mit Modul 3 v1.1.
