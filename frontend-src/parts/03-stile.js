@@ -999,4 +999,5 @@ button.hzr{cursor:pointer}
 @media(max-width:520px){.mvtr>i{display:none}.mvtr{gap:8px 10px}}
 .mlogo:has(.mlv) svg{height:58%;width:58%;margin-top:-12%}.mlv{position:absolute;left:4px;right:4px;bottom:8px;text-align:center;font-size:.64rem;font-weight:800;letter-spacing:.01em;white-space:nowrap;opacity:.92}
 @media(max-width:520px){.mlv{font-size:.5rem;bottom:5px}}
+.labfig{margin:4px 0 12px}.labfig img{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--line)}.labfig figcaption{display:flex;gap:6px;align-items:center;font-size:.74rem;color:var(--mut);margin-top:6px}
 `;

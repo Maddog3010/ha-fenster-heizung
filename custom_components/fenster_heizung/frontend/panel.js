@@ -407,6 +407,7 @@ const MOD_ART = {
 };
 /* Modul 10 (Konzeptseite): Reiter, Bilder und Markierungen. Positionen in Prozent des Bildes. */
 const GA_IMG = "/fenster_heizung_static/img/";
+const LAB_IMG = { lx: "Zwei Räume mit „Lüften lohnt“, einer mit „Warten“", ae: "Autarkie-Anteil für heute mit Solarertrag und Verbrauch", wl: "Ampel für Wäsche-Wetter mit Luftfeuchte, Wind und Regen", lf: "Prognose und korrigierte Prognose mit Lernfaktor", vh: "Räume mit früherem Start des Heizplans", dz: "Erkannte Duschzeiten über den Tag", ld: "Lauf wandert auf den sonnigeren Tag", lk: "Ziel-Ladestand nach langem Kalendertermin", mm: "Tonnen-Ampel mit den nächsten Abholungen", sb: "Runde Kurzinfos auf der Startseite", st: "Spartipp mit Gerät und bester Sonnenzeit", li: "Lampen nach Räumen mit Szenenknöpfen", ef: "Haus in der Mitte mit Kacheln und Flusslinien", tg: "Angelernte Tags mit Aktion und Protokoll" };
 const GA_TABS = [["an", "Ansicht"], ["bk", "Baukasten"], ["hy", "Handy"], ["te", "Technik"], ["fp", "Fahrplan"]];
 const GA_PINS = {
   an: { img: "ga-ansicht.jpg", alt: "Gartenplan mit Karte, Zonen, Leitungen und Seitenpanel", pins: [
@@ -1463,6 +1464,7 @@ button.hzr{cursor:pointer}
 @media(max-width:520px){.mvtr>i{display:none}.mvtr{gap:8px 10px}}
 .mlogo:has(.mlv) svg{height:58%;width:58%;margin-top:-12%}.mlv{position:absolute;left:4px;right:4px;bottom:8px;text-align:center;font-size:.64rem;font-weight:800;letter-spacing:.01em;white-space:nowrap;opacity:.92}
 @media(max-width:520px){.mlv{font-size:.5rem;bottom:5px}}
+.labfig{margin:4px 0 12px}.labfig img{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--line)}.labfig figcaption{display:flex;gap:6px;align-items:center;font-size:.74rem;color:var(--mut);margin-top:6px}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -5338,6 +5340,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="ov" data-act="close"></div><div class="sheet wide stosh" role="dialog" aria-modal="true">
       <div class="stohd"><span class="stoi big labi">${ic(x.i, 38)}</span><div><b>${esc(x.n)}</b><small>Labs · ${esc(x.mod)} ${esc(x.mn)}</small><div class="stoact">${x.soon ? `<span class="risk">In Vorbereitung</span>` : `<button class="btn2 pri" data-act="labtog" data-k="${x.id}" ${adm ? "" : "disabled"}>${on ? "Ausschalten" : "Einschalten"}</button>${on ? `<span class="stos ok">● Eingeschaltet</span>` : ""}`}</div></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="mut sm" style="margin:0 0 8px">${esc(x.d)}</div>
+      ${LAB_IMG[x.id] ? `<figure class="labfig"><img src="${GA_IMG}lab-${x.id}.jpg${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(LAB_IMG[x.id])}" loading="lazy" decoding="async"><figcaption>${ic("info", 13)}Beispielbild mit erfundenen Werten: ${esc(LAB_IMG[x.id])}</figcaption></figure>` : ""}
       ${x.sponsor ? `<div class="spnote">${ic("heart", 18)}<span><b>Nur für Sponsoren</b>${this._spnS().active ? "Dein Sponsor-Schlüssel ist aktiv, du kannst das Modul einschalten." : "Zum Einschalten brauchst du einen aktiven Sponsor-Schlüssel."}</span>${this._spnS().active ? "" : `<button class="btn2" data-act="spnopen">Sponsor werden</button>`}</div>` : ""}
       <div class="stofa"><div><b>${esc(x.mod)}</b><small>wird angezeigt in</small></div><div><b>${this._labK(x)[0]}</b><small>Art</small></div><div><b>${esc(x.st)}${this._labIsEarly(x) ? ` · Vorab bis ${this._labEarlyDate(x)}` : ""}</b><small>Stand</small></div></div>
       <div class="lsec">${ic("check", 15)}Was du bekommst</div><ul class="stoul">${x.feats.map((f) => `<li>${esc(f)}</li>`).join("")}</ul>

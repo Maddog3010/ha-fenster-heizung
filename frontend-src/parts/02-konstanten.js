@@ -204,6 +204,7 @@ const MOD_ART = {
 };
 /* Modul 10 (Konzeptseite): Reiter, Bilder und Markierungen. Positionen in Prozent des Bildes. */
 const GA_IMG = "/fenster_heizung_static/img/";
+const LAB_IMG = { lx: "Zwei Räume mit „Lüften lohnt“, einer mit „Warten“", ae: "Autarkie-Anteil für heute mit Solarertrag und Verbrauch", wl: "Ampel für Wäsche-Wetter mit Luftfeuchte, Wind und Regen", lf: "Prognose und korrigierte Prognose mit Lernfaktor", vh: "Räume mit früherem Start des Heizplans", dz: "Erkannte Duschzeiten über den Tag", ld: "Lauf wandert auf den sonnigeren Tag", lk: "Ziel-Ladestand nach langem Kalendertermin", mm: "Tonnen-Ampel mit den nächsten Abholungen", sb: "Runde Kurzinfos auf der Startseite", st: "Spartipp mit Gerät und bester Sonnenzeit", li: "Lampen nach Räumen mit Szenenknöpfen", ef: "Haus in der Mitte mit Kacheln und Flusslinien", tg: "Angelernte Tags mit Aktion und Protokoll" };
 const GA_TABS = [["an", "Ansicht"], ["bk", "Baukasten"], ["hy", "Handy"], ["te", "Technik"], ["fp", "Fahrplan"]];
 const GA_PINS = {
   an: { img: "ga-ansicht.jpg", alt: "Gartenplan mit Karte, Zonen, Leitungen und Seitenpanel", pins: [
