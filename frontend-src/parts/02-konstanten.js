@@ -234,6 +234,86 @@ const GA_STEPS = [
   ["3", "Radar und Verbrauch", "Regenradar, Heatmap der Feuchte und Wasserverbrauch."]];
 const GA_IDEAS = ["Regenradar als Ebene", "Wasserverbrauch pro Zone und Tag am Symbol", "Weitere Ebenen: Gartenbeleuchtung, Mähroboter, Pool (Modul 12)", "Frost- und Regenschutz mit Sperrsymbol", "Editor als Sponsor-Lab, Basiskarte frei"];
 const GA_OPEN = ["Kachelanbieter: OSM-Standard mit Zwischenspeicher oder Anbieter mit Kontingent", "Editor als Sponsor-Lab oder frei für alle", "Umfang von Stufe 1"];
+const WA_TABS = [["a", "Liste"], ["b", "Jahresband"], ["c", "Anlagen"], ["d", "Heft"], ["e", "Modul 11"], ["fp", "Fahrplan"]];
+const WA_PINS = {
+  a: { img: "wa-a.jpg", t: "Fälligkeitsliste", alt: "Überfällige und bald fällige Termine links, spätere rechts, mit Ampelfarben", pins: [
+    [50, 12, "Zähler oben", "Überfällig, in 30 Tagen fällig, später und was dieses Jahr erledigt wurde. Die Zahlen sind der schnelle Blick, ohne zu scrollen."],
+    [44, 41, "Termin mit Ampel", "Rot ist überfällig, Orange in den nächsten 30 Tagen, Grün später. Unter dem Namen stehen Abstand und letztes Datum."],
+    [54, 41, "Erledigt-Knopf", "Ein Tipp setzt das Datum auf heute. Der nächste Termin rechnet sich aus dem Abstand, zum Beispiel alle 3 Monate."],
+    [25, 80, "Aufdruck „Aus Modul 11“", "Termine, die aus einem anderen Modul kommen, tragen den Aufdruck. Sie lassen sich dort und hier abhaken."],
+    [79, 33, "Später", "Alles, was nicht drängt, steht in einer eigenen Spalte. Auch Zähler wie die Wärmepumpe nach Betriebsstunden."],
+    [79, 84, "Hinweis", "Der Erledigt-Knopf ist der einzige Handgriff im Alltag."]] },
+  b: { img: "wa-b.jpg", t: "Jahresband", alt: "Alle Termine der nächsten 12 Monate als Zeitstrahl mit einem Punkt pro Termin", pins: [
+    [50, 36, "Zeitstrahl", "Die nächsten 12 Monate auf einen Blick. Die senkrechte Linie ist heute. So siehst du, wann viel auf einmal ansteht."],
+    [8, 34, "Punkt pro Termin", "Farbe nach Dringlichkeit. Ein Tipp öffnet den Termin mit Erledigt und Notiz."],
+    [50, 50, "Legende", "Rot für überfällig oder Sicherheit, Orange in 30 Tagen, Grün später, Türkis für Termine nach Betriebsstunden."],
+    [86, 9, "Kosten", "Zeigt, was die Wartung dieses Jahr gekostet hat. Die Zahl kommt aus dem Wartungsheft."],
+    [79, 60, "Erinnerung", "Aufs Handy und als Ansage: 7 Tage vorher, am Tag selbst und wöchentlich, solange etwas überfällig ist."]] },
+  c: { img: "wa-c.jpg", t: "Nach Anlage", alt: "Pro Anlage eine Karte mit Terminen, Zählern und Verlauf", pins: [
+    [18, 7, "Anlagenkarte", "Heizung, Lüftung und mehr. Jede Karte bündelt Termine, letzte Wartung und Betrieb an einem Ort."],
+    [82, 21, "Betriebsstunden", "Ein Balken zeigt, wie weit die Wärmepumpe bis zum Service ist. Bei 90 % wird er orange."],
+    [50, 48, "Melder", "Die Karte kommt aus Modul 11 und zeigt Prüfung, Batterie und Jahresprotokoll."],
+    [85, 8, "Herkunft", "Der Aufdruck sagt, aus welchem Modul die Daten kommen."],
+    [82, 48, "Eigene Anlage", "Name, Abstand und nächstes Datum, mehr braucht es nicht. Zum Beispiel Rasenmäher oder Regenrinne."],
+    [50, 90, "Aufbau", "Jede Karte hat eigene Termine, Zähler und Verlauf. Nur Karten mit Aufdruck holen Daten aus anderen Modulen."]] },
+  d: { img: "wa-d.jpg", t: "Wartungsheft", alt: "Jede erledigte Wartung wird ein Eintrag mit Datum, Kosten und Notiz", pins: [
+    [25, 38, "Verlauf", "Die Einträge stehen in Reihenfolge. Selbst Erledigtes und Fachbetriebe sind getrennt vermerkt."],
+    [11, 49, "Eintrag aus Modul 11", "Die Rauchmelder-Prüfung landet auch hier, ohne Kosten, mit Hinweis auf die Herkunft."],
+    [79, 7, "Kosten", "Summe des Jahres und Anteile nach Bereichen. Hilft bei der Nebenkostenabrechnung."],
+    [67, 58, "PDF oder Drucken", "Eine Seite zum Abheften, für Vermieter, Versicherung oder Verkauf. Auch als Datei zum Speichern."],
+    [79, 72, "Als Nächstes", "Der nächste Termin steht immer daneben, damit du nicht erst wechseln musst."]] },
+  e: { img: "wa-e.jpg", t: "Mit Modul 11", alt: "Wartungsdaten anderer Module auf Wunsch übernehmen", pins: [
+    [53, 26, "Quelle einschalten", "Standardmäßig ist alles aus. Du schaltest pro Modul ein, ob Modul 15 seine Wartungsdaten mitzeigt. Gepflegt werden sie weiter dort, nichts wird doppelt eingetragen."],
+    [53, 53, "Aus gelassen", "Lüftung und Garten bleiben aus, bis du sie brauchst. Garten kommt erst, wenn Modul 10 fertig ist."],
+    [79, 8, "Was aus Modul 11 kommt", "Offene Prüfungen, Batterie- und Tauschtermine und das Jahresprotokoll. „Geprüft“ gilt in beiden Modulen."],
+    [79, 46, "Einstellungen bleiben", "Melder, Räume und Grundriss bearbeitest du weiter nur in Modul 11."],
+    [50, 88, "Wieder abschalten", "Beim Ausschalten verschwinden nur die Einträge „Aus Modul 11“. Eigene Termine und das Heft bleiben."]] },
+};
+const WA_STEPS = [
+  ["1", "Liste und Erledigt", "Eigene Termine anlegen, mit Abstand, Erledigt-Knopf und Ampel."],
+  ["2", "Erinnerung und Zähler", "Erinnerung aufs Handy, Betriebsstunden aus Sensoren, Wartung bei einer Stundenzahl."],
+  ["3", "Modul 11 und Heft", "Wartungsdaten aus Modul 11 auf Wunsch übernehmen, Wartungsheft mit Kosten und PDF."]];
+const WA_IDEAS = ["Jahresband und Anlagenkarten als zusätzliche Ansichten", "Weitere Quellen: Wärmepumpe (Modul 7), Lüftung (Modul 5), Garten (Modul 10)", "Beleg als Foto zum Eintrag", "Termine in den Kalender von Home Assistant schreiben", "Erinnerung auch als Ansage"];
+const WA_OPEN = ["Welche Ansicht kommt als Startseite: Liste, Jahresband oder Anlagen", "Wartungsheft als Sponsor-Lab oder frei für alle", "Welche Quellen aus anderen Modulen in Stufe 1"];
+const LU_TABS = [["j", "Jetzt"], ["a", "Räume"], ["b", "Verlauf"], ["c", "Anlage"], ["d", "Grundriss"], ["e", "Verknüpfung"], ["fp", "Fahrplan"]];
+const LU_PINS = {
+  a: { img: "lu-a.jpg", t: "Räume mit Ampel", alt: "Jeder Raum mit CO₂, Luftfeuchte, Temperatur, Taupunkt und Lüftungsempfehlung", pins: [
+    [50, 10, "Zähler oben", "Wie viele Räume einen Sensor haben, wo jetzt oder bald gelüftet werden sollte und wie das Schimmelrisiko aussieht."],
+    [50, 22, "Ampel am Rand", "Grün ist gut, Orange bald lüften, Rot jetzt lüften. Der Streifen links und der Knopf oben rechts zeigen es auf einen Blick."],
+    [50, 47, "Empfehlung", "Ein Satz pro Raum, zum Beispiel „Fenster 10 Minuten kippen“. Er kommt aus CO₂, Luftfeuchte und Taupunkt."],
+    [50, 80, "Feuchte im Bad", "Bei hoher Feuchte schaltet die Anlage auf Stufe 3, wenn du das möchtest. Sonst bleibt es bei der Empfehlung."],
+    [50, 90, "Ohne CO₂-Sensor", "Räume ohne CO₂-Sensor zeigen nur Luftfeuchte und Schimmelrisiko, so wie die Übersicht im ersten Reiter heute."]] },
+  b: { img: "lu-b.jpg", t: "Verlauf", alt: "CO₂ und Luftfeuchte über 24 Stunden, mit Lüftungs-Ereignissen", pins: [
+    [50, 8, "Zähler oben", "Aktueller und höchster Wert, wie oft heute gelüftet wurde und wie lange die Luft über der Grenze lag."],
+    [22, 26, "Raum wählen", "Ein Raum nach dem anderen. Der Verlauf kommt aus dem Verlauf von Home Assistant, es wird nichts extra gespeichert."],
+    [22, 46, "Lüftung im Verlauf", "Die grünen Streifen zeigen, wann gelüftet wurde, per Fenster oder Anlage. So siehst du, wie schnell die Luft wieder gut wird."],
+    [87, 46, "Grenze", "Die rote Linie ist deine Grenze, standardmäßig 1.200 ppm. Sie lässt sich ändern."],
+    [79, 73, "Auswertung", "Wie lange die Luft gut war und wie oft gelüftet wurde, pro Woche und Monat. Daraus kann ein Wohnklima-Zeugnis werden."]] },
+  c: { img: "lu-c.jpg", t: "Lüftungsanlage", alt: "Stufen, Temperaturen, Filter und Automatik der KWL", pins: [
+    [25, 40, "Stufe wählen", "Abwesend, Stufe 1 bis 3 oder Boost für 30 Minuten. Mit Automatik regelt die Anlage nach deinen Regeln."],
+    [30, 55, "Temperaturen", "Zuluft, Abluft, Fortluft und Außenluft. Daraus rechnet sich die Wärmerückgewinnung."],
+    [30, 75, "Filterwechsel", "Der Termin steht auch in Modul 15, wenn du das möchtest. Erledigt wird er dort oder hier."],
+    [79, 28, "Automatik", "Regeln wie „CO₂ über 1.000 ppm, dann Stufe 3“ oder „Fenster offen, dann Anlage aus“. Jede Regel ist einzeln an oder aus."],
+    [50, 88, "Geräte", "Gesteuert wird über eine Entität in Home Assistant. Welche Geräte gehen, hängt davon ab, was bei dir als Entität erscheint."]] },
+  d: { img: "lu-d.jpg", t: "Grundriss", alt: "Räume nach Luftqualität eingefärbt", pins: [
+    [19, 15, "Messwert wählen", "CO₂, Feuchte, Temperatur oder Taupunkt. Die Räume färben sich danach."],
+    [21, 54, "Raum antippen", "Öffnet Verlauf, Empfehlung und die Schalter für Fenster und Anlage."],
+    [78, 54, "Flur mit Anlage", "Die Lüftungsanlage steht als eigener Eintrag im Grundriss, mit Stufe und Zulufttemperatur."],
+    [30, 85, "Grundriss teilen", "Der Grundriss kommt aus dem Baukasten von Modul 11, wenn du ihn dort gezeichnet hast. Sonst zeichnest du ihn einmal für beide."],
+    [79, 85, "Bedienung", "Auf dem Handy steht der Grundriss oben, die Details darunter."]] },
+  e: { img: "lu-e.jpg", t: "Verknüpfungen", alt: "Mit anderen Modulen und Labs verbinden", pins: [
+    [53, 28, "Wartung (Modul 15)", "Filterwechsel und Betriebsstunden der Anlage erscheinen in Modul 15 als Termine. Gepflegt wird nichts doppelt."],
+    [53, 42, "Fenster & Heizung (Modul 1)", "Ist ein Fenster offen, schaltet die Anlage aus, damit sie nicht gegen die offene Luft arbeitet."],
+    [53, 56, "Wetter (Modul 9)", "Bei Frost oder Sturm wird nicht Kippen empfohlen, bei Regen bleibt das Fenster zu. Standardmäßig aus."],
+    [79, 5, "Hinweis aufs Handy", "Nur wenn jemand zu Hause ist und nicht nachts. Eine Meldung pro Raum und Stunde."],
+    [79, 30, "Schutz", "Die Anlage schaltet nur Stufen. Frostschutz und Fenster-Vorrang des Herstellers bleiben bestehen."]] },
+};
+const LU_STEPS = [
+  ["1", "Räume mit Ampel", "CO₂-Sensoren auswerten, Empfehlung pro Raum, Hinweis aufs Handy."],
+  ["2", "Anlage steuern", "Stufen, Temperaturen und Automatik der Lüftungsanlage."],
+  ["3", "Verlauf und Grundriss", "Verlauf mit Lüftungs-Ereignissen, Grundriss und Verknüpfung mit Modul 1, 9 und 15."]];
+const LU_IDEAS = ["Wohnklima-Zeugnis pro Monat", "Wetter berücksichtigen (Frost, Sturm, Pollen)", "Strompreis für Boost nutzen (Modul 14)", "Fenstersensoren als Lüftungs-Ereignis", "Hinweis auch als Ansage"];
+const LU_OPEN = ["Welche Anlagen gehen: nur über eine Home-Assistant-Entität oder auch direkt", "Welche Ansicht wird Startseite: Räume, Verlauf oder Grundriss", "Automatik als Sponsor-Lab oder frei für alle"];
 /* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],

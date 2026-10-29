@@ -437,6 +437,86 @@ const GA_STEPS = [
   ["3", "Radar und Verbrauch", "Regenradar, Heatmap der Feuchte und Wasserverbrauch."]];
 const GA_IDEAS = ["Regenradar als Ebene", "Wasserverbrauch pro Zone und Tag am Symbol", "Weitere Ebenen: Gartenbeleuchtung, Mähroboter, Pool (Modul 12)", "Frost- und Regenschutz mit Sperrsymbol", "Editor als Sponsor-Lab, Basiskarte frei"];
 const GA_OPEN = ["Kachelanbieter: OSM-Standard mit Zwischenspeicher oder Anbieter mit Kontingent", "Editor als Sponsor-Lab oder frei für alle", "Umfang von Stufe 1"];
+const WA_TABS = [["a", "Liste"], ["b", "Jahresband"], ["c", "Anlagen"], ["d", "Heft"], ["e", "Modul 11"], ["fp", "Fahrplan"]];
+const WA_PINS = {
+  a: { img: "wa-a.jpg", t: "Fälligkeitsliste", alt: "Überfällige und bald fällige Termine links, spätere rechts, mit Ampelfarben", pins: [
+    [50, 12, "Zähler oben", "Überfällig, in 30 Tagen fällig, später und was dieses Jahr erledigt wurde. Die Zahlen sind der schnelle Blick, ohne zu scrollen."],
+    [44, 41, "Termin mit Ampel", "Rot ist überfällig, Orange in den nächsten 30 Tagen, Grün später. Unter dem Namen stehen Abstand und letztes Datum."],
+    [54, 41, "Erledigt-Knopf", "Ein Tipp setzt das Datum auf heute. Der nächste Termin rechnet sich aus dem Abstand, zum Beispiel alle 3 Monate."],
+    [25, 80, "Aufdruck „Aus Modul 11“", "Termine, die aus einem anderen Modul kommen, tragen den Aufdruck. Sie lassen sich dort und hier abhaken."],
+    [79, 33, "Später", "Alles, was nicht drängt, steht in einer eigenen Spalte. Auch Zähler wie die Wärmepumpe nach Betriebsstunden."],
+    [79, 84, "Hinweis", "Der Erledigt-Knopf ist der einzige Handgriff im Alltag."]] },
+  b: { img: "wa-b.jpg", t: "Jahresband", alt: "Alle Termine der nächsten 12 Monate als Zeitstrahl mit einem Punkt pro Termin", pins: [
+    [50, 36, "Zeitstrahl", "Die nächsten 12 Monate auf einen Blick. Die senkrechte Linie ist heute. So siehst du, wann viel auf einmal ansteht."],
+    [8, 34, "Punkt pro Termin", "Farbe nach Dringlichkeit. Ein Tipp öffnet den Termin mit Erledigt und Notiz."],
+    [50, 50, "Legende", "Rot für überfällig oder Sicherheit, Orange in 30 Tagen, Grün später, Türkis für Termine nach Betriebsstunden."],
+    [86, 9, "Kosten", "Zeigt, was die Wartung dieses Jahr gekostet hat. Die Zahl kommt aus dem Wartungsheft."],
+    [79, 60, "Erinnerung", "Aufs Handy und als Ansage: 7 Tage vorher, am Tag selbst und wöchentlich, solange etwas überfällig ist."]] },
+  c: { img: "wa-c.jpg", t: "Nach Anlage", alt: "Pro Anlage eine Karte mit Terminen, Zählern und Verlauf", pins: [
+    [18, 7, "Anlagenkarte", "Heizung, Lüftung und mehr. Jede Karte bündelt Termine, letzte Wartung und Betrieb an einem Ort."],
+    [82, 21, "Betriebsstunden", "Ein Balken zeigt, wie weit die Wärmepumpe bis zum Service ist. Bei 90 % wird er orange."],
+    [50, 48, "Melder", "Die Karte kommt aus Modul 11 und zeigt Prüfung, Batterie und Jahresprotokoll."],
+    [85, 8, "Herkunft", "Der Aufdruck sagt, aus welchem Modul die Daten kommen."],
+    [82, 48, "Eigene Anlage", "Name, Abstand und nächstes Datum, mehr braucht es nicht. Zum Beispiel Rasenmäher oder Regenrinne."],
+    [50, 90, "Aufbau", "Jede Karte hat eigene Termine, Zähler und Verlauf. Nur Karten mit Aufdruck holen Daten aus anderen Modulen."]] },
+  d: { img: "wa-d.jpg", t: "Wartungsheft", alt: "Jede erledigte Wartung wird ein Eintrag mit Datum, Kosten und Notiz", pins: [
+    [25, 38, "Verlauf", "Die Einträge stehen in Reihenfolge. Selbst Erledigtes und Fachbetriebe sind getrennt vermerkt."],
+    [11, 49, "Eintrag aus Modul 11", "Die Rauchmelder-Prüfung landet auch hier, ohne Kosten, mit Hinweis auf die Herkunft."],
+    [79, 7, "Kosten", "Summe des Jahres und Anteile nach Bereichen. Hilft bei der Nebenkostenabrechnung."],
+    [67, 58, "PDF oder Drucken", "Eine Seite zum Abheften, für Vermieter, Versicherung oder Verkauf. Auch als Datei zum Speichern."],
+    [79, 72, "Als Nächstes", "Der nächste Termin steht immer daneben, damit du nicht erst wechseln musst."]] },
+  e: { img: "wa-e.jpg", t: "Mit Modul 11", alt: "Wartungsdaten anderer Module auf Wunsch übernehmen", pins: [
+    [53, 26, "Quelle einschalten", "Standardmäßig ist alles aus. Du schaltest pro Modul ein, ob Modul 15 seine Wartungsdaten mitzeigt. Gepflegt werden sie weiter dort, nichts wird doppelt eingetragen."],
+    [53, 53, "Aus gelassen", "Lüftung und Garten bleiben aus, bis du sie brauchst. Garten kommt erst, wenn Modul 10 fertig ist."],
+    [79, 8, "Was aus Modul 11 kommt", "Offene Prüfungen, Batterie- und Tauschtermine und das Jahresprotokoll. „Geprüft“ gilt in beiden Modulen."],
+    [79, 46, "Einstellungen bleiben", "Melder, Räume und Grundriss bearbeitest du weiter nur in Modul 11."],
+    [50, 88, "Wieder abschalten", "Beim Ausschalten verschwinden nur die Einträge „Aus Modul 11“. Eigene Termine und das Heft bleiben."]] },
+};
+const WA_STEPS = [
+  ["1", "Liste und Erledigt", "Eigene Termine anlegen, mit Abstand, Erledigt-Knopf und Ampel."],
+  ["2", "Erinnerung und Zähler", "Erinnerung aufs Handy, Betriebsstunden aus Sensoren, Wartung bei einer Stundenzahl."],
+  ["3", "Modul 11 und Heft", "Wartungsdaten aus Modul 11 auf Wunsch übernehmen, Wartungsheft mit Kosten und PDF."]];
+const WA_IDEAS = ["Jahresband und Anlagenkarten als zusätzliche Ansichten", "Weitere Quellen: Wärmepumpe (Modul 7), Lüftung (Modul 5), Garten (Modul 10)", "Beleg als Foto zum Eintrag", "Termine in den Kalender von Home Assistant schreiben", "Erinnerung auch als Ansage"];
+const WA_OPEN = ["Welche Ansicht kommt als Startseite: Liste, Jahresband oder Anlagen", "Wartungsheft als Sponsor-Lab oder frei für alle", "Welche Quellen aus anderen Modulen in Stufe 1"];
+const LU_TABS = [["j", "Jetzt"], ["a", "Räume"], ["b", "Verlauf"], ["c", "Anlage"], ["d", "Grundriss"], ["e", "Verknüpfung"], ["fp", "Fahrplan"]];
+const LU_PINS = {
+  a: { img: "lu-a.jpg", t: "Räume mit Ampel", alt: "Jeder Raum mit CO₂, Luftfeuchte, Temperatur, Taupunkt und Lüftungsempfehlung", pins: [
+    [50, 10, "Zähler oben", "Wie viele Räume einen Sensor haben, wo jetzt oder bald gelüftet werden sollte und wie das Schimmelrisiko aussieht."],
+    [50, 22, "Ampel am Rand", "Grün ist gut, Orange bald lüften, Rot jetzt lüften. Der Streifen links und der Knopf oben rechts zeigen es auf einen Blick."],
+    [50, 47, "Empfehlung", "Ein Satz pro Raum, zum Beispiel „Fenster 10 Minuten kippen“. Er kommt aus CO₂, Luftfeuchte und Taupunkt."],
+    [50, 80, "Feuchte im Bad", "Bei hoher Feuchte schaltet die Anlage auf Stufe 3, wenn du das möchtest. Sonst bleibt es bei der Empfehlung."],
+    [50, 90, "Ohne CO₂-Sensor", "Räume ohne CO₂-Sensor zeigen nur Luftfeuchte und Schimmelrisiko, so wie die Übersicht im ersten Reiter heute."]] },
+  b: { img: "lu-b.jpg", t: "Verlauf", alt: "CO₂ und Luftfeuchte über 24 Stunden, mit Lüftungs-Ereignissen", pins: [
+    [50, 8, "Zähler oben", "Aktueller und höchster Wert, wie oft heute gelüftet wurde und wie lange die Luft über der Grenze lag."],
+    [22, 26, "Raum wählen", "Ein Raum nach dem anderen. Der Verlauf kommt aus dem Verlauf von Home Assistant, es wird nichts extra gespeichert."],
+    [22, 46, "Lüftung im Verlauf", "Die grünen Streifen zeigen, wann gelüftet wurde, per Fenster oder Anlage. So siehst du, wie schnell die Luft wieder gut wird."],
+    [87, 46, "Grenze", "Die rote Linie ist deine Grenze, standardmäßig 1.200 ppm. Sie lässt sich ändern."],
+    [79, 73, "Auswertung", "Wie lange die Luft gut war und wie oft gelüftet wurde, pro Woche und Monat. Daraus kann ein Wohnklima-Zeugnis werden."]] },
+  c: { img: "lu-c.jpg", t: "Lüftungsanlage", alt: "Stufen, Temperaturen, Filter und Automatik der KWL", pins: [
+    [25, 40, "Stufe wählen", "Abwesend, Stufe 1 bis 3 oder Boost für 30 Minuten. Mit Automatik regelt die Anlage nach deinen Regeln."],
+    [30, 55, "Temperaturen", "Zuluft, Abluft, Fortluft und Außenluft. Daraus rechnet sich die Wärmerückgewinnung."],
+    [30, 75, "Filterwechsel", "Der Termin steht auch in Modul 15, wenn du das möchtest. Erledigt wird er dort oder hier."],
+    [79, 28, "Automatik", "Regeln wie „CO₂ über 1.000 ppm, dann Stufe 3“ oder „Fenster offen, dann Anlage aus“. Jede Regel ist einzeln an oder aus."],
+    [50, 88, "Geräte", "Gesteuert wird über eine Entität in Home Assistant. Welche Geräte gehen, hängt davon ab, was bei dir als Entität erscheint."]] },
+  d: { img: "lu-d.jpg", t: "Grundriss", alt: "Räume nach Luftqualität eingefärbt", pins: [
+    [19, 15, "Messwert wählen", "CO₂, Feuchte, Temperatur oder Taupunkt. Die Räume färben sich danach."],
+    [21, 54, "Raum antippen", "Öffnet Verlauf, Empfehlung und die Schalter für Fenster und Anlage."],
+    [78, 54, "Flur mit Anlage", "Die Lüftungsanlage steht als eigener Eintrag im Grundriss, mit Stufe und Zulufttemperatur."],
+    [30, 85, "Grundriss teilen", "Der Grundriss kommt aus dem Baukasten von Modul 11, wenn du ihn dort gezeichnet hast. Sonst zeichnest du ihn einmal für beide."],
+    [79, 85, "Bedienung", "Auf dem Handy steht der Grundriss oben, die Details darunter."]] },
+  e: { img: "lu-e.jpg", t: "Verknüpfungen", alt: "Mit anderen Modulen und Labs verbinden", pins: [
+    [53, 28, "Wartung (Modul 15)", "Filterwechsel und Betriebsstunden der Anlage erscheinen in Modul 15 als Termine. Gepflegt wird nichts doppelt."],
+    [53, 42, "Fenster & Heizung (Modul 1)", "Ist ein Fenster offen, schaltet die Anlage aus, damit sie nicht gegen die offene Luft arbeitet."],
+    [53, 56, "Wetter (Modul 9)", "Bei Frost oder Sturm wird nicht Kippen empfohlen, bei Regen bleibt das Fenster zu. Standardmäßig aus."],
+    [79, 5, "Hinweis aufs Handy", "Nur wenn jemand zu Hause ist und nicht nachts. Eine Meldung pro Raum und Stunde."],
+    [79, 30, "Schutz", "Die Anlage schaltet nur Stufen. Frostschutz und Fenster-Vorrang des Herstellers bleiben bestehen."]] },
+};
+const LU_STEPS = [
+  ["1", "Räume mit Ampel", "CO₂-Sensoren auswerten, Empfehlung pro Raum, Hinweis aufs Handy."],
+  ["2", "Anlage steuern", "Stufen, Temperaturen und Automatik der Lüftungsanlage."],
+  ["3", "Verlauf und Grundriss", "Verlauf mit Lüftungs-Ereignissen, Grundriss und Verknüpfung mit Modul 1, 9 und 15."]];
+const LU_IDEAS = ["Wohnklima-Zeugnis pro Monat", "Wetter berücksichtigen (Frost, Sturm, Pollen)", "Strompreis für Boost nutzen (Modul 14)", "Fenstersensoren als Lüftungs-Ereignis", "Hinweis auch als Ansage"];
+const LU_OPEN = ["Welche Anlagen gehen: nur über eine Home-Assistant-Entität oder auch direkt", "Welche Ansicht wird Startseite: Räume, Verlauf oder Grundriss", "Automatik als Sponsor-Lab oder frei für alle"];
 /* Versionen und Builds der Module. Version: 0.1 bis 0.4 In Entwicklung, 0.5 bis 0.8 Beta, 0.9 Vorabversion, ab 1.0 Stabil. Build: zählt Änderungen innerhalb einer Version und beginnt bei jeder neuen Version wieder bei 1. Beim Aufstieg springt die Version auf den Start der nächsten Stufe. p = Paketversion der letzten Änderung. log = [Version, Build, Paket, Text], neueste zuerst. */
 const MV_STG = [
   ["dev", "0.1 – 0.4", "Beispielseite oder Konzept, noch ohne echte Funktion.", "Es kann sich jederzeit alles ändern.", "Weiter zur Beta, sobald die Grundfunktion mit echten Daten läuft."],
@@ -2556,6 +2636,8 @@ class FensterHeizungPanel extends HTMLElement {
     }
     else if (a.startsWith("ebk")) this._ebkAct(a, b);
     else if (a.startsWith("gax")) this._gaAct(a, b);
+    else if (a.startsWith("wax")) this._waAct(a, b);
+    else if (a.startsWith("lux")) this._luAct(a, b);
     else if (a.startsWith("mvx")) this._mvAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
@@ -5057,17 +5139,13 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._betaSoon("thermo", "Vorlauf, Rücklauf & Effizienz", "Temperaturen, Spreizung und Leistungszahl (COP)")}
       ${this._betaSoon("snow", "Abtauen", "Abtauzyklen zählen und auswerten")}`;
   }
-  _luPage() {
+  _luLive() {
     const rooms = this._collect(), adm = this._admin();
     const cards = rooms.map((r) => { const a = this._airData(r); if (!a) return `<div class="luroom off"><b>${esc(r.name)}</b><span class="mut">Kein Luftfeuchte-Sensor</span></div>`;
       const [ml, mc] = MOLD[a.lvl], hc = a.rh >= 70 ? "red" : a.rh >= 60 ? "amber" : "green";
       return `<div class="luroom ${mc}"><b>${esc(r.name)}</b><span class="lv ${hc}">${num(a.rh)} %</span><span class="mut">Taupunkt ${num(a.td, 1)} °C · Schimmel ${ml}</span></div>`; }).join("");
-    const soon = (ico, t, d) => `<div class="card lusoon">${ic(ico, 26)}<div><b>${t}</b><span class="mut">${d}</span></div><em class="beta">In Entwicklung</em></div>`;
-    return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. Die Raumluft-Übersicht nutzt die Luftfeuchte-Sensoren aus Modul 1. Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>
-      <div class="card"><h2>${ic("drop", 18)}Raumluft-Übersicht</h2>${rooms.length ? `<div class="lugrid">${cards}</div>` : `<div class="mut sm">Noch keine Räume eingerichtet.</div>`}
-        <div class="mut sm" style="margin:10px 0 0">Luftfeuchte, Taupunkt und Schimmelrisiko je Raum. Sensoren wählst du in den Raumeinstellungen von Modul 1.</div></div>
-      ${soon("fan", "Lüftungsanlage (KWL)", "Stufen, Bypass und Filterwechsel schalten und überwachen")}
-      ${soon("windy", "CO₂ & Luftqualität", "CO₂-Sensoren auswerten und Lüften empfehlen")}`;
+    return `<div class="card"><h2>${ic("drop", 18)}Raumluft-Übersicht</h2>${rooms.length ? `<div class="lugrid">${cards}</div>` : `<div class="mut sm">Noch keine Räume eingerichtet.</div>`}
+        <div class="mut sm" style="margin:10px 0 0">Luftfeuchte, Taupunkt und Schimmelrisiko je Raum. Sensoren wählst du in den Raumeinstellungen von Modul 1.</div></div>`;
   }
   /* Labs: experimentelle Funktionen. Ein/Aus und Werte stehen im Layout (layout.labs), gelten für alle Nutzer.
      Eingeschaltet erscheinen sie als Karte mit Labs-Zeichen im passenden Modul, ausgeschaltet sind sie dort komplett weg. */
@@ -6689,7 +6767,7 @@ class FensterHeizungPanel extends HTMLElement {
   /* Banner der Module ohne eigenes Banner (aus den Werten, die die Seite ohnehin zeigt) */
   _modHeroFor(id) {
     try {
-      if (id === "lu") { const rs = this._collect().map((r) => this._airData(r)).filter((a) => a && a.rh != null); const rh = rs.length ? rs.reduce((x, a) => x + a.rh, 0) / rs.length : null; return this._modHero("lu", { icon: "fan", lbl: "Lüftung & Raumluft", big: rh != null ? num(rh, 0) : "–", unit: rh != null ? "% Luftfeuchte" : "", small: rh == null, sub: rs.length ? `Durchschnitt aus ${rs.length} ${rs.length === 1 ? "Raum" : "Räumen"}` : "Noch kein Raum mit Luftfeuchte-Sensor" }); }
+      if (id === "lu") return this._modHero("lu", { icon: "fan", lbl: "Lüftung & Raumluft", big: "Lüftung", small: true, sub: "Räume heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "rb") { const sun = this._hass.states["sun.sun"], o = this._out(), el = sun ? Number(sun.attributes.elevation) : NaN, az = sun ? Number(sun.attributes.azimuth) : NaN; const dir = isFinite(az) ? ["Nord", "Nordost", "Ost", "Südost", "Süd", "Südwest", "West", "Nordwest"][Math.round(az / 45) % 8] : ""; return this._modHero("rb", { icon: "sun", lbl: "Rollläden & Beschattung", big: isFinite(el) ? num(el, 0) : "–", unit: isFinite(el) ? "° Sonnenhöhe" : "", small: !isFinite(el), sub: isFinite(el) ? (el > 0 ? "Sonne über dem Horizont" : "Sonne unter dem Horizont") : "Keine Sonnen-Entität gefunden", chips: [dir ? `Richtung ${dir}` : "", o.t != null ? `${num(o.t, 1)} °C draußen` : ""] }); }
       if (id === "wp") { const o = this._out(); return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", big: o.t != null ? num(o.t, 1) : "–", unit: o.t != null ? "°C draußen" : "", small: o.t == null, sub: o.t != null && o.t < 7 ? "Abtauen wird wahrscheinlicher" : "Kaum Abtau-Bedarf", chips: [o.rh != null ? `${num(o.rh)} % Luftfeuchte` : ""] }); }
       if (id === "li") { const rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on); return this._modHero("li", { icon: "lamp", lbl: "Licht & Lampen", big: String(on.length), unit: on.length === 1 ? "Lampe an" : "Lampen an", sub: lamps.length ? `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}` : "Keine Lampen gefunden" }); }
@@ -6699,7 +6777,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (id === "pl") { const pv = this._pvNow(), pr = this._price(), o = this._out(); return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: pv != null ? wfmt(pv) : "–", small: true, sub: pv != null ? (pv >= 1000 ? "PV-Überschuss, gut für Pumpe und Heizung" : "PV-Überschuss, eher wenig") : "Noch kein Überschuss-Sensor gewählt", chips: [pr ? `${num(pr, 1)} ct/kWh` : "", o.t != null ? `${num(o.t, 1)} °C draußen` : ""] }); }
       if (id === "bt") { const soc = this._soc(), pv = this._pvNow(); return this._modHero("bt", { icon: "energy", lbl: "Batteriespeicher", big: soc != null ? num(soc, 0) : "–", unit: soc != null ? "%" : "", sub: soc != null ? "Ladestand" : "Noch kein Ladestand-Sensor gewählt", chips: [pv != null ? `PV-Überschuss ${wfmt(pv)}` : ""] }); }
       if (id === "dt") { const h = this._dtPrices(), now = new Date().getHours(); if (!h) return this._modHero("dt", { icon: "chart", lbl: "Dynamischer Stromtarif", big: "–", sub: "Noch keine Stundenpreise" }); const mn = Math.min(...h); return this._modHero("dt", { icon: "chart", lbl: "Strompreis jetzt", big: num(h[now], 1), unit: "ct/kWh", sub: `Günstigste Stunde ${h.indexOf(mn)}:00 Uhr mit ${num(mn, 1)} ct/kWh`, chips: [`Ø ${num(h.reduce((a, b) => a + b, 0) / 24, 1)} ct/kWh heute`] }); }
-      if (id === "wa") return this._modHero("wa", { icon: "tools", lbl: "Wartung & Erinnerungen", big: "2", unit: "bald fällig", sub: "Beispieleinträge, eigene Termine folgen", chips: ["Filter", "Schornsteinfeger", "Betriebsstunden"] });
+      if (id === "wa") return this._modHero("wa", { icon: "tools", lbl: "Wartung & Erinnerungen", big: "Wartung", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "sp") { const S = this._sp(); if (!this._spD || S.error || !S.found) return this._modHero("sp", { icon: "sun", lbl: "Solar-Prognose", big: "–", sub: S && S.error ? "Prognose nicht geladen" : "Noch keine Prognose" }); return this._modHero("sp", { icon: "sun", lbl: "Solar heute (Prognose)", big: num(S.today, 1), unit: "kWh", sub: `Morgen ${num(S.tomorrow, 1)} kWh`, chips: [S.got != null ? `Bisher ${num(S.got, 1)} kWh` : ""] }); }
     } catch (e) { return ""; }
     return "";
@@ -7161,6 +7239,60 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _mvAct(a, b) { if (a === "mvx") { this._mvO = this._mvO === b.dataset.k ? null : b.dataset.k; this._render(); } }
+  /* ================= Modul 15: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
+  _waTab() {
+    let t = this._waT; if (!t) { try { t = localStorage.getItem("fh_wa_tab"); } catch (_) { /* privater Modus */ } }
+    return WA_TABS.some((x) => x[0] === t) ? t : "a";
+  }
+  _waSel(k) { const s = (this._waP || {})[k], n = WA_PINS[k].pins.length; return Number.isInteger(s) && s >= 0 && s < n ? s : 0; }
+  _waShot(k) {
+    const d = WA_PINS[k], sel = this._waSel(k), cur = d.pins[sel];
+    const pins = d.pins.map((p, i) => `<button class="gapin${i === sel ? " on" : ""}" style="left:${p[0]}%;top:${p[1]}%" data-act="waxpin" data-k="${k}" data-i="${i}" aria-label="${esc(p[2])}" aria-pressed="${i === sel}">${i + 1}</button>`).join("");
+    const rows = d.pins.map((p, i) => i === sel ? "" : `<button class="garow" data-act="waxpin" data-k="${k}" data-i="${i}"><span class="gan">${i + 1}</span>${esc(p[2])}</button>`).join("");
+    return `<div class="card" style="padding:12px 16px"><b>${esc(d.t)}</b><div class="mut sm">${esc(d.alt)}</div></div>
+      <div class="gamain"><div class="gashot"><img data-keep="1" src="${GA_IMG}${d.img}${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(d.alt)}" loading="lazy" decoding="async">${pins}<span class="gatip">Tippe auf eine Zahl</span></div>
+      <div class="galist"><div class="card gacur"><div class="gah"><span class="gan">${sel + 1}</span><b>${esc(cur[2])}</b></div><p>${esc(cur[3])}</p></div>${rows}</div></div>`;
+  }
+  _waPage() {
+    const t = this._waTab();
+    const tabs = `<div class="sftabs gatabs" role="tablist">${WA_TABS.map(([k, l]) => `<button class="${k === t ? "on" : ""}" role="tab" aria-selected="${k === t}" data-act="waxtab" data-k="${k}">${l}</button>`).join("")}</div>`;
+    const body = t !== "fp" ? this._waShot(t) : `<div class="gast">${WA_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i === 0 ? "d" : "s"}">Stufe ${n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
+      <div class="card"><h2>${ic("puzzle", 18)}Weitere Ideen</h2><div class="gschips">${WA_IDEAS.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
+      <div class="card"><h2>${ic("info", 18)}Noch offen</h2><ul style="margin:6px 0 0;padding-left:20px;line-height:1.6">${WA_OPEN.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    return `${tabs}<div style="display:grid;gap:12px">${body}</div>
+      <div class="gasoon" style="margin-top:12px">${ic("clock", 22)}<div><b>Coming soon …</b><br><span class="mut">Dieses Modul ist in Entwicklung. Die Seite zeigt vier mögliche Ansichten und die Verknüpfung mit Modul 11. Erinnern kann es noch nicht. Die Termine in den Bildern sind Beispiele.</span></div></div>`;
+  }
+  _waAct(a, b) {
+    if (a === "waxtab") { this._waT = b.dataset.k; try { localStorage.setItem("fh_wa_tab", this._waT); } catch (_) { /* privater Modus */ } this._render(); }
+    else if (a === "waxpin") { this._waP = { ...(this._waP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
+  }
+  /* ================= Modul 5: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
+  _luTab() {
+    let t = this._luT; if (!t) { try { t = localStorage.getItem("fh_lu_tab"); } catch (_) { /* privater Modus */ } }
+    return LU_TABS.some((x) => x[0] === t) ? t : "j";
+  }
+  _luSel(k) { const s = (this._luP || {})[k], n = LU_PINS[k].pins.length; return Number.isInteger(s) && s >= 0 && s < n ? s : 0; }
+  _luShot(k) {
+    const d = LU_PINS[k], sel = this._luSel(k), cur = d.pins[sel];
+    const pins = d.pins.map((p, i) => `<button class="gapin${i === sel ? " on" : ""}" style="left:${p[0]}%;top:${p[1]}%" data-act="luxpin" data-k="${k}" data-i="${i}" aria-label="${esc(p[2])}" aria-pressed="${i === sel}">${i + 1}</button>`).join("");
+    const rows = d.pins.map((p, i) => i === sel ? "" : `<button class="garow" data-act="luxpin" data-k="${k}" data-i="${i}"><span class="gan">${i + 1}</span>${esc(p[2])}</button>`).join("");
+    return `<div class="card" style="padding:12px 16px"><b>${esc(d.t)}</b><div class="mut sm">${esc(d.alt)}</div></div>
+      <div class="gamain"><div class="gashot"><img data-keep="1" src="${GA_IMG}${d.img}${this._ver ? "?v=" + encodeURIComponent(this._ver) : ""}" alt="${esc(d.alt)}" loading="lazy" decoding="async">${pins}<span class="gatip">Tippe auf eine Zahl</span></div>
+      <div class="galist"><div class="card gacur"><div class="gah"><span class="gan">${sel + 1}</span><b>${esc(cur[2])}</b></div><p>${esc(cur[3])}</p></div>${rows}</div></div>`;
+  }
+  _luPage() {
+    const t = this._luTab();
+    const tabs = `<div class="sftabs gatabs" role="tablist">${LU_TABS.map(([k, l]) => `<button class="${k === t ? "on" : ""}" role="tab" aria-selected="${k === t}" data-act="luxtab" data-k="${k}">${l}</button>`).join("")}</div>`;
+    const body = t === "j" ? this._luLive() : t !== "fp" ? this._luShot(t) : `<div class="gast">${LU_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i === 0 ? "d" : "s"}">Stufe ${n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
+      <div class="card"><h2>${ic("puzzle", 18)}Weitere Ideen</h2><div class="gschips">${LU_IDEAS.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
+      <div class="card"><h2>${ic("info", 18)}Noch offen</h2><ul style="margin:6px 0 0;padding-left:20px;line-height:1.6">${LU_OPEN.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    return `${tabs}<div style="display:grid;gap:12px">${body}</div>
+      <div class="gasoon" style="margin-top:12px">${ic("clock", 22)}<div><b>Coming soon …</b><br><span class="mut">Dieses Modul ist in Entwicklung. Der Reiter „Jetzt“ zeigt deine echten Räume. Alles andere sind Entwürfe mit Beispielwerten, CO₂ und die Anlage werden noch nicht ausgewertet oder gesteuert.</span></div></div>`;
+  }
+  _luAct(a, b) {
+    if (a === "luxtab") { this._luT = b.dataset.k; try { localStorage.setItem("fh_lu_tab", this._luT); } catch (_) { /* privater Modus */ } this._render(); }
+    else if (a === "luxpin") { this._luP = { ...(this._luP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
+  }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
     return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}${this._mvTab(m.id)[0]}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : this._mvTab(m.id)[1]}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
