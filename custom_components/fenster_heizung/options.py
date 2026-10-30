@@ -24,6 +24,7 @@ from .const import (
     CONF_HEATING_OFF_STATES,
     CONF_HUMIDITY,
     CONF_ROOM_TEMP,
+    RT_CTRL,
     RT_USES,
     CONF_WEATHER_ADJ,
     CONF_NOTIFY_AFTER,
@@ -191,6 +192,8 @@ def clean_options(raw: Any) -> dict[str, Any]:
     out[CONF_ROOM_TEMP] = _opt_entity(raw, CONF_ROOM_TEMP, ("sensor",))
     for key in (*RT_USES, CONF_AIR_HINT, CONF_WEATHER_ADJ):
         out[key] = "off" if raw.get(key) == "off" else "on"
+    for key in RT_CTRL:
+        out[key] = "on" if raw.get(key) == "on" and out[CONF_ROOM_TEMP] else "off"
     _heater(raw, out)
     out[CONF_BLOCK_FROM] = _time(raw, CONF_BLOCK_FROM)
     out[CONF_BLOCK_TO] = _time(raw, CONF_BLOCK_TO)

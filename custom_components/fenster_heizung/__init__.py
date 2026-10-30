@@ -27,6 +27,7 @@ from .diag import DiagManager, diag_expect, diag_log
 from .general import GeneralManager
 from .geraete import GeraeteManager
 from .hersteller import logic as hs_logic, lookup as hs_lookup
+from .raumregelung import RoomRegulator
 from .sicherheit import SicherheitManager
 from .labs import LabsManager
 from .muell import MuellManager
@@ -189,6 +190,7 @@ class WindowController:
         self._last_aired: str | None = None  # Zeitpunkt, zu dem zuletzt ein Fenster geschlossen wurde
         self._was_open = False
         self.heater = HeaterRoom(self)
+        self.rt = RoomRegulator(self)  # Regelung mit Raumsensor (Offset-Ausgleich, Abschalten bei Ziel)
 
     @property
     def cfg(self) -> dict[str, Any]:
@@ -221,6 +223,7 @@ class WindowController:
             la = data.get("last_aired")
             self._last_aired = la if isinstance(la, str) and dt_util.parse_datetime(la) else None
             self.heater.load(data.get("heater"))
+            self.rt.load(data.get("rt"))
             self._learn = [x for x in (data.get("learn") or []) if isinstance(x, dict)][-LEARN_MAX_SAMPLES:]
             at = data.get("away_temp")
             self._away_temp = float(at) if isinstance(at, (int, float)) else None
@@ -233,6 +236,11 @@ class WindowController:
         if self.active and self._paused_since is None:
             self._paused_since = dt_util.now()
         self._roll()
+        if self.rt.comp_on != bool(self.rt.sent):
+            # Ausgleich gerade ein- oder ausgeschaltet: Ziel beim nächsten Takt neu setzen
+            self._plan_key = None
+            if not self.rt.comp_on:
+                self.rt.sent, self.rt.when = {}, {}
         self._unsub = async_track_state_change_event(
             self.hass, self.cfg[CONF_WINDOWS], self._window_changed
         )
@@ -724,7 +732,9 @@ class WindowController:
                 value = max(value, lo)
             if isinstance(hi, (int, float)):
                 value = min(value, hi)
+            value = self.rt.clamp(st, round((value + self.rt.offset(eid)) * 2) / 2) if self.rt.offset(eid) else value
             await self._call("set_temperature", eid, temperature=value)
+            self.rt.noted(eid, value)
 
     async def _plan_apply_if_due(self, force: bool = False) -> None:
         """Plan- oder Absenktemperatur setzen, wenn sich das Ziel geändert hat."""
@@ -732,8 +742,8 @@ class WindowController:
         if target is None:
             return
         key, temp, turn_on = target
-        if self.active or self._heating_off() or self.heater.thermo_off_active:
-            return  # Fenster offen, Heizung aus oder Elektroheizer läuft: später erneut prüfen
+        if self.active or self._heating_off() or self.heater.thermo_off_active or self.rt.cutting:
+            return  # Fenster offen, Heizung aus, Elektroheizer läuft oder Ziel erreicht: später erneut prüfen
         if not force and key == self._plan_key:
             return
         await self._plan_apply(temp, turn_on)
@@ -836,6 +846,17 @@ class WindowController:
             add("info", "Die Thermostate stehen auf „aus“, es gibt nichts zu regeln")
         if self._heating_off() and not opened:
             add("info", "Der Heizungs-Sensor meldet „Heizung aus“: Es bleibt nur die Fenstermeldung")
+        if self.rt.cutting:
+            add("ok", "Raumsensor hat das Ziel erreicht: Thermostate sind aus, ab 0,5 K darunter heizen sie wieder")
+        if self.rt.comp_on and self.sensor_temp() is not None and not self.rt.cutting:
+            offs = [self.rt.offset(e) for e in cfg[CONF_THERMOSTATS] if e in self.rt.ema]
+            if self._current_target() is None:
+                add("info", "Offset-Ausgleich wartet: Er wirkt nur mit Heizplan oder Abwesenheit")
+            elif offs:
+                big = max(offs, key=abs)
+                add("info", f"Offset-Ausgleich: Thermostat misst {abs(big):.1f} K {'mehr' if big >= 0 else 'weniger'} als der Raum, Soll wird angepasst".replace(".", ","))
+        if (self.rt.comp_on or self.rt.cut_on) and cfg.get(CONF_ROOM_TEMP) and self.sensor_temp() is None:
+            add("warn", "Raumsensor liefert keinen Wert: Die Thermostate regeln wieder allein")
         if self._away_temp is not None:
             add("warn", f"Abwesenheit oder Urlaub: Absenkung auf {deg(self._away_temp)}")
         if self._plan["entries"]:
@@ -856,6 +877,7 @@ class WindowController:
     async def _plan_tick(self, _now) -> None:
         self._learn_step()
         await self._plan_apply_if_due()
+        await self.rt.tick()
 
     async def async_set_plan(self, enabled: bool, entries: Any, mode: str | None = None) -> None:
         clean = normalize_entries(entries)
@@ -920,6 +942,7 @@ class WindowController:
             "learn": self._learn,
             "last_aired": self._last_aired,
             "heater": self.heater.data(),
+            "rt": self.rt.data(),
         }
 
     async def _save(self) -> None:

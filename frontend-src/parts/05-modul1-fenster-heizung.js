@@ -20,9 +20,32 @@
     const fail = !!(r.rtEid && se && sv == null);
     return { t: sv != null ? sv : thv, th: thv, sensor: sv != null, fail, missing: !!(r.rtEid && !se), diff: sv != null && thv != null ? thv - sv : null };
   }
-  _rtNote(rt) {
-    if (!rt.sensor || rt.diff == null || Math.abs(rt.diff) < 0.5) return "";
-    return `Thermostat ${num(Math.abs(rt.diff), 1)} K ${rt.diff > 0 ? "wärmer" : "kälter"} als der Raum`;
+  /* Diagnose der Regelung: Ziel, Raum, je Thermostat Soll, Messwert, Unterschied, Ventil, Ausgleich */
+  _regDiag(r) {
+    const g = r.reg, h = this._hass;
+    if (!g || !(g.geraete || []).length) return "";
+    const deg = (v) => (v == null ? "–" : num(v, 1) + " °C"), sg = (v) => (v > 0 ? "+" : v < 0 ? "−" : "±") + num(Math.abs(v), 1) + " K";
+    const head = `<div class="rgh"><div><span>Ziel</span><b>${deg(g.ziel)}</b><i>${g.ziel == null ? "kein Heizplan aktiv" : "Heizplan / Abwesenheit"}</i></div><div><span>Raum</span><b>${g.raum != null ? deg(g.raum) : "–"}</b><i>${r.rtEid ? (g.raum != null ? "Raumsensor" : "Raumsensor ohne Wert") : "kein Raumsensor"}</i></div></div>`;
+    let tip = "";
+    const rows = g.geraete.map((x) => {
+      const name = h.states[x.e]?.attributes.friendly_name || x.e, live = x.ist != null && g.raum != null ? x.ist - g.raum : null;
+      if (live != null && Math.abs(live) >= 1 && !g.ausgleich && !g.aus_bei_ziel) tip = `Das Thermostat misst ${num(Math.abs(live), 1)} K ${live > 0 ? "mehr" : "weniger"} als der Raum. Offset-Ausgleich oder „Aus bei Ziel“ in den Raumeinstellungen kann helfen.`;
+      const tags = [];
+      if (g.satt) tags.push(`<em class="ok">aus: Ziel erreicht</em>`);
+      else if (x.manuell) tags.push(`<em class="warn">von Hand geändert: Ausgleich pausiert bis zum nächsten Schaltpunkt</em>`);
+      else if (g.ausgleich && Math.abs(x.ausgleich || 0) >= 0.1) tags.push(`<em>Ausgleich ${sg(x.ausgleich)}</em>`);
+      return `<div class="rgr"><div class="rgn">${esc(name)}<span>${esc({ off: "aus", heat: "Heizen", auto: "Automatik", unavailable: "nicht erreichbar" }[x.modus] || x.modus)}</span></div>
+        <div class="rgv"><div><span>Soll</span><b>${deg(x.soll)}</b></div><div><span>misst</span><b>${deg(x.ist)}</b></div><div><span>Unterschied</span><b>${live != null ? sg(live) : "–"}</b></div><div><span>Ventil</span><b>${x.ventil != null ? Math.round(x.ventil) + " %" : "–"}</b></div></div>${tags.join("")}</div>`;
+    }).join("");
+    const foot = r.rtEid ? `Offset-Ausgleich ${g.ausgleich ? "an" : "aus"} · Aus bei Ziel ${g.aus_bei_ziel ? "an" : "aus"}` : "Mit einem Raumsensor kann die Integration das Thermostat korrigieren (Raumeinstellungen → Raumtemperatur-Sensor).";
+    return `<div class="lsec">${ic("thermo", 15)}Regelung im Detail</div><div class="rgd">${head}${rows}${tip ? `<div class="rtn">${esc(tip)}</div>` : ""}<div class="mut sm">${foot}</div></div>`;
+  }
+  _rtNote(rt, r) {
+    const g = r && r.reg;
+    if (g && g.satt) return "Ziel erreicht: Thermostate aus";
+    const base = !rt.sensor || rt.diff == null || Math.abs(rt.diff) < 0.5 ? "" : `Thermostat ${num(Math.abs(rt.diff), 1)} K ${rt.diff > 0 ? "wärmer" : "kälter"} als der Raum`;
+    const comp = g && g.ausgleich && g.ziel != null && (g.geraete || []).some((x) => Math.abs(x.ausgleich || 0) >= 0.5) ? "wird ausgeglichen" : "";
+    return base && comp ? base + ", " + comp : base;
   }
   _head() { return this._view() === "compact" ? `<div class="chead ${this._edit ? "ed" : ""}">${this._edit ? "<span></span>" : ""}<span></span><span>Raum</span><span>Fenster</span><span>Heizung</span><span>Heizplan</span><span>Pausiert</span><span></span><span></span></div>` : ""; }
   _row(r) {
@@ -738,7 +761,7 @@
           <div class="s">${esc(open.length ? open.map(winName).join(", ") : wins.map(winName).join(", ") || "–")}</div></div>
         <div class="box ${hc}"><div class="t">${ic("radiator", 18)}Heizung</div>
           <div class="v">${cur != null ? num(cur, 1) + " °C" : hv}</div>
-          <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div>${rt.sensor ? `<div class="rtx"><span>Raum</span><b>${num(rt.t, 1)} °C</b><span>Thermostat</span><b>${rt.th != null ? num(rt.th, 1) + " °C" : "–"}</b></div>${this._rtNote(rt) ? `<div class="rtn">${esc(this._rtNote(rt))}</div>` : ""}` : rt.fail ? `<div class="rtn warn">Raumsensor meldet nicht, es gilt das Thermostat</div>` : ""}</div>
+          <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div>${rt.sensor ? `<div class="rtx"><span>Raum</span><b>${num(rt.t, 1)} °C</b><span>Thermostat</span><b>${rt.th != null ? num(rt.th, 1) + " °C" : "–"}</b></div>${this._rtNote(rt, r) ? `<div class="rtn">${esc(this._rtNote(rt, r))}</div>` : ""}` : rt.fail ? `<div class="rtn warn">Raumsensor meldet nicht, es gilt das Thermostat</div>` : ""}</div>
       </div>
       ${this._planBox(r)}${this._wxaNote(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : this._sum().active ? `<div class="pnote">${ic("sun", 16)}Sommermodus: Der Heizplan ruht, die Fenstermeldung bleibt aktiv.</div>` : ""}
       ${this._htrBox(r)}${this._airBox(r)}

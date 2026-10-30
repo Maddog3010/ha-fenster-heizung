@@ -1009,6 +1009,10 @@ button.hzr{cursor:pointer}
 
 .rtx{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:12px;color:var(--mut)}.rtx b{color:var(--primary-text-color);font-weight:600;text-align:right}
 .rtn{margin-top:6px;font-size:12px;color:#a78bfa}.rtn.warn{color:#f59e0b}
+.rgd{display:grid;gap:8px;margin:6px 0 14px}.rgh{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rgh>div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid}.rgh span,.rgv span{font-size:11px;color:var(--mut)}.rgh b{font-size:1.15rem}.rgh i{font-style:normal;font-size:11px;color:var(--mut)}
+.rgr{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:6px}.rgn{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:.88rem}.rgn span{font-weight:400;font-size:11px;color:var(--mut)}
+.rgv{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.rgv>div{display:grid}.rgv b{font-size:.86rem;font-weight:600}
+.rgr em{font-style:normal;font-size:11.5px;color:#a78bfa}.rgr em.ok{color:var(--green)}.rgr em.warn{color:#f59e0b}
 
 /* Versionen: Releaseliste, Beta-Hinweis, Versionsschema, Versionshinweis im Kopf */
 .vtag{cursor:pointer}.vtag:hover{text-decoration:underline}.vtag.vbeta{color:var(--amber)}

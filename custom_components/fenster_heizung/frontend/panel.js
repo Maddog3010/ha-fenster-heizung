@@ -704,7 +704,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.1", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.2", b: 1, d: "2026-10-30", p: "2026.1030.0b5", log: [["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b2", log: [["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -1736,6 +1736,10 @@ button.hzr{cursor:pointer}
 
 .rtx{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin-top:6px;font-size:12px;color:var(--mut)}.rtx b{color:var(--primary-text-color);font-weight:600;text-align:right}
 .rtn{margin-top:6px;font-size:12px;color:#a78bfa}.rtn.warn{color:#f59e0b}
+.rgd{display:grid;gap:8px;margin:6px 0 14px}.rgh{display:grid;grid-template-columns:1fr 1fr;gap:8px}.rgh>div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid}.rgh span,.rgv span{font-size:11px;color:var(--mut)}.rgh b{font-size:1.15rem}.rgh i{font-style:normal;font-size:11px;color:var(--mut)}
+.rgr{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;gap:6px}.rgn{display:flex;justify-content:space-between;gap:8px;font-weight:600;font-size:.88rem}.rgn span{font-weight:400;font-size:11px;color:var(--mut)}
+.rgv{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.rgv>div{display:grid}.rgv b{font-size:.86rem;font-weight:600}
+.rgr em{font-style:normal;font-size:11.5px;color:#a78bfa}.rgr em.ok{color:var(--green)}.rgr em.warn{color:#f59e0b}
 
 /* Versionen: Releaseliste, Beta-Hinweis, Versionsschema, Versionshinweis im Kopf */
 .vtag{cursor:pointer}.vtag:hover{text-decoration:underline}.vtag.vbeta{color:var(--amber)}
@@ -1912,7 +1916,7 @@ class FensterHeizungPanel extends HTMLElement {
         r.apk = Number(a.menge_pro_kwh) || r.apk || 0.1;
         if (a.zeitraum === "day") { r.pauses = a.pausen_heute || 0; r.kw = a.aktuelle_leistung_kw || 0; r.hist = a.verlauf || {}; }
       } else if ("thermostate" in a) {
-        r.modeEid = eid; r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id; r.humEid = a.luftfeuchte_sensor || ""; r.rtEid = a.raumtemperatur_sensor || ""; r.rtUse = a.raumtemperatur_nutzung || {}; r.rtVal = typeof a.raumtemperatur_wert === "number" ? a.raumtemperatur_wert : null; r.wxOff = a.wetter_anpassung === "aus"; r.htr = a.heizer || null; r.airOff = a.lueftungshinweise === "aus"; r.airEvery = a.lueften_nach_h != null ? Number(a.lueften_nach_h) : 8; r.lastAir = a.zuletzt_gelueftet ? new Date(a.zuletzt_gelueftet).getTime() : 0;
+        r.modeEid = eid; r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id; r.humEid = a.luftfeuchte_sensor || ""; r.rtEid = a.raumtemperatur_sensor || ""; r.rtUse = a.raumtemperatur_nutzung || {}; r.rtVal = typeof a.raumtemperatur_wert === "number" ? a.raumtemperatur_wert : null; r.wxOff = a.wetter_anpassung === "aus"; r.htr = a.heizer || null; r.reg = a.regelung || null; r.airOff = a.lueftungshinweise === "aus"; r.airEvery = a.lueften_nach_h != null ? Number(a.lueften_nach_h) : 8; r.lastAir = a.zuletzt_gelueftet ? new Date(a.zuletzt_gelueftet).getTime() : 0;
       }
     }
     const list = [...rooms.values()];
@@ -2020,9 +2024,32 @@ class FensterHeizungPanel extends HTMLElement {
     const fail = !!(r.rtEid && se && sv == null);
     return { t: sv != null ? sv : thv, th: thv, sensor: sv != null, fail, missing: !!(r.rtEid && !se), diff: sv != null && thv != null ? thv - sv : null };
   }
-  _rtNote(rt) {
-    if (!rt.sensor || rt.diff == null || Math.abs(rt.diff) < 0.5) return "";
-    return `Thermostat ${num(Math.abs(rt.diff), 1)} K ${rt.diff > 0 ? "wärmer" : "kälter"} als der Raum`;
+  /* Diagnose der Regelung: Ziel, Raum, je Thermostat Soll, Messwert, Unterschied, Ventil, Ausgleich */
+  _regDiag(r) {
+    const g = r.reg, h = this._hass;
+    if (!g || !(g.geraete || []).length) return "";
+    const deg = (v) => (v == null ? "–" : num(v, 1) + " °C"), sg = (v) => (v > 0 ? "+" : v < 0 ? "−" : "±") + num(Math.abs(v), 1) + " K";
+    const head = `<div class="rgh"><div><span>Ziel</span><b>${deg(g.ziel)}</b><i>${g.ziel == null ? "kein Heizplan aktiv" : "Heizplan / Abwesenheit"}</i></div><div><span>Raum</span><b>${g.raum != null ? deg(g.raum) : "–"}</b><i>${r.rtEid ? (g.raum != null ? "Raumsensor" : "Raumsensor ohne Wert") : "kein Raumsensor"}</i></div></div>`;
+    let tip = "";
+    const rows = g.geraete.map((x) => {
+      const name = h.states[x.e]?.attributes.friendly_name || x.e, live = x.ist != null && g.raum != null ? x.ist - g.raum : null;
+      if (live != null && Math.abs(live) >= 1 && !g.ausgleich && !g.aus_bei_ziel) tip = `Das Thermostat misst ${num(Math.abs(live), 1)} K ${live > 0 ? "mehr" : "weniger"} als der Raum. Offset-Ausgleich oder „Aus bei Ziel“ in den Raumeinstellungen kann helfen.`;
+      const tags = [];
+      if (g.satt) tags.push(`<em class="ok">aus: Ziel erreicht</em>`);
+      else if (x.manuell) tags.push(`<em class="warn">von Hand geändert: Ausgleich pausiert bis zum nächsten Schaltpunkt</em>`);
+      else if (g.ausgleich && Math.abs(x.ausgleich || 0) >= 0.1) tags.push(`<em>Ausgleich ${sg(x.ausgleich)}</em>`);
+      return `<div class="rgr"><div class="rgn">${esc(name)}<span>${esc({ off: "aus", heat: "Heizen", auto: "Automatik", unavailable: "nicht erreichbar" }[x.modus] || x.modus)}</span></div>
+        <div class="rgv"><div><span>Soll</span><b>${deg(x.soll)}</b></div><div><span>misst</span><b>${deg(x.ist)}</b></div><div><span>Unterschied</span><b>${live != null ? sg(live) : "–"}</b></div><div><span>Ventil</span><b>${x.ventil != null ? Math.round(x.ventil) + " %" : "–"}</b></div></div>${tags.join("")}</div>`;
+    }).join("");
+    const foot = r.rtEid ? `Offset-Ausgleich ${g.ausgleich ? "an" : "aus"} · Aus bei Ziel ${g.aus_bei_ziel ? "an" : "aus"}` : "Mit einem Raumsensor kann die Integration das Thermostat korrigieren (Raumeinstellungen → Raumtemperatur-Sensor).";
+    return `<div class="lsec">${ic("thermo", 15)}Regelung im Detail</div><div class="rgd">${head}${rows}${tip ? `<div class="rtn">${esc(tip)}</div>` : ""}<div class="mut sm">${foot}</div></div>`;
+  }
+  _rtNote(rt, r) {
+    const g = r && r.reg;
+    if (g && g.satt) return "Ziel erreicht: Thermostate aus";
+    const base = !rt.sensor || rt.diff == null || Math.abs(rt.diff) < 0.5 ? "" : `Thermostat ${num(Math.abs(rt.diff), 1)} K ${rt.diff > 0 ? "wärmer" : "kälter"} als der Raum`;
+    const comp = g && g.ausgleich && g.ziel != null && (g.geraete || []).some((x) => Math.abs(x.ausgleich || 0) >= 0.5) ? "wird ausgeglichen" : "";
+    return base && comp ? base + ", " + comp : base;
   }
   _head() { return this._view() === "compact" ? `<div class="chead ${this._edit ? "ed" : ""}">${this._edit ? "<span></span>" : ""}<span></span><span>Raum</span><span>Fenster</span><span>Heizung</span><span>Heizplan</span><span>Pausiert</span><span></span><span></span></div>` : ""; }
   _row(r) {
@@ -2738,7 +2765,7 @@ class FensterHeizungPanel extends HTMLElement {
           <div class="s">${esc(open.length ? open.map(winName).join(", ") : wins.map(winName).join(", ") || "–")}</div></div>
         <div class="box ${hc}"><div class="t">${ic("radiator", 18)}Heizung</div>
           <div class="v">${cur != null ? num(cur, 1) + " °C" : hv}</div>
-          <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div>${rt.sensor ? `<div class="rtx"><span>Raum</span><b>${num(rt.t, 1)} °C</b><span>Thermostat</span><b>${rt.th != null ? num(rt.th, 1) + " °C" : "–"}</b></div>${this._rtNote(rt) ? `<div class="rtn">${esc(this._rtNote(rt))}</div>` : ""}` : rt.fail ? `<div class="rtn warn">Raumsensor meldet nicht, es gilt das Thermostat</div>` : ""}</div>
+          <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div>${rt.sensor ? `<div class="rtx"><span>Raum</span><b>${num(rt.t, 1)} °C</b><span>Thermostat</span><b>${rt.th != null ? num(rt.th, 1) + " °C" : "–"}</b></div>${this._rtNote(rt, r) ? `<div class="rtn">${esc(this._rtNote(rt, r))}</div>` : ""}` : rt.fail ? `<div class="rtn warn">Raumsensor meldet nicht, es gilt das Thermostat</div>` : ""}</div>
       </div>
       ${this._planBox(r)}${this._wxaNote(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : this._sum().active ? `<div class="pnote">${ic("sun", 16)}Sommermodus: Der Heizplan ruht, die Fenstermeldung bleibt aktiv.</div>` : ""}
       ${this._htrBox(r)}${this._airBox(r)}
@@ -3046,7 +3073,7 @@ class FensterHeizungPanel extends HTMLElement {
     let res;
     try { res = await this._hass.callWS({ type: "fenster_heizung/get_options", entry_id: id }); } catch (_) { this._toast("Einstellungen konnten nicht geladen werden"); return; }
     const o = (res && res.options) || {};
-    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1, humidity_sensor: "", room_temp_sensor: "", rt_show: "on", rt_learn: "on", rt_dew: "on", rt_heater: "on", air_hint: "on", weather_adj: "on", air_every: 8, htr_on: "off", htr_entity: "", htr_watt: 1500, htr_target: 22, htr_prio: 5, htr_steps: "", htr_thermo: "off", htr_auto: "on", htr_presets: [], htr_devtemp: "max", htr_from: "", htr_to: "" };
+    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1, humidity_sensor: "", room_temp_sensor: "", rt_show: "on", rt_learn: "on", rt_dew: "on", rt_heater: "on", rt_comp: "off", rt_off: "off", air_hint: "on", weather_adj: "on", air_every: 8, htr_on: "off", htr_entity: "", htr_watt: 1500, htr_target: 22, htr_prio: 5, htr_steps: "", htr_thermo: "off", htr_auto: "on", htr_presets: [], htr_devtemp: "max", htr_from: "", htr_to: "" };
     for (const k of Object.keys(d)) if (o[k] !== undefined && o[k] !== null) d[k] = Array.isArray(o[k]) ? [...o[k]] : o[k];
     if (Array.isArray(d.htr_steps)) d.htr_steps = d.htr_steps.join(", ");
     this._modal = { type: "opt", id, name: (res && res.name) || "", draft: d, open: new Set(["dev", "ctl"]), busy: false };
@@ -3111,7 +3138,10 @@ class FensterHeizungPanel extends HTMLElement {
         row("Anzeige in der Raumkarte", "Raum als große Zahl, Thermostat klein daneben.", seg("rt_show", [["on", "An"], ["off", "Aus"]])) +
         row("Aufheizzeit lernen", "Die gelernte Dauer bezieht sich auf die echte Raumtemperatur.", seg("rt_learn", [["on", "An"], ["off", "Aus"]])) +
         row("Taupunkt und Schimmelrisiko", "Genauer, wenn Temperatur und Feuchte am selben Ort gemessen werden.", seg("rt_dew", [["on", "An"], ["off", "Aus"]])) +
-        row("Elektroheizer „warm genug“", "Der Heizer schaltet nach der Raumtemperatur, nicht nach dem Thermostat.", seg("rt_heater", [["on", "An"], ["off", "Aus"]])) : "")),
+        row("Elektroheizer „warm genug“", "Der Heizer schaltet nach der Raumtemperatur, nicht nach dem Thermostat.", seg("rt_heater", [["on", "An"], ["off", "Aus"]])) +
+        `<div class="mut sm" style="margin:14px 0 2px"><b style="color:var(--primary-text-color)">Thermostate regeln mit</b></div>` +
+        row("Offset-Ausgleich", "Misst das Thermostat am Heizkörper mehr oder weniger als der Raum, wird sein Soll um den Unterschied verschoben (höchstens ±3 K). Wirkt mit Heizplan oder Abwesenheit, pausiert nach einer Änderung am Gerät bis zum nächsten Schaltpunkt.", seg("rt_comp", [["on", "An"], ["off", "Aus"]])) +
+        row("Aus bei Ziel", "Erreicht der Raum das Ziel, gehen die Thermostate aus (ohne Aus-Zustand: kleinste Temperatur). 0,5 K darunter heizen sie wieder. Fällt der Sensor aus, regeln sie sofort wieder selbst.", seg("rt_off", [["on", "An"], ["off", "Aus"]])) : "")),
       sec("air", "drop", "Raumluft", d.humidity_sensor ? fn(d.humidity_sensor) : `ohne Sensor${Number(d.air_every) > 0 ? ` · Lüften nach ${d.air_every} Std.` : ""}`,
         one("humidity_sensor", ent("sensor", "humidity"), "Luftfeuchte-Sensor", "Mit Sensor zeigt die Karte Luftfeuchte, Taupunkt und Schimmelrisiko. Ohne Sensor gibt es Lüftungs-Erinnerung, Wandtemperatur und kritische Feuchte.") +
         num("air_every", "Std.", { l: "Erinnern, wenn länger nicht gelüftet", h: "0 = aus. Gemessen am letzten Schließen des Fensters.", min: 0, max: 48, step: 1 }) +
@@ -3670,6 +3700,7 @@ class FensterHeizungPanel extends HTMLElement {
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>${r.mode === "heizung_pausiert" ? "Warum pausiert die Heizung?" : "Warum „" + mm.t + "“?"}</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="why-l">${(r.why || []).map((w) => `<div class="wl ${w.s}"><i></i><span>${esc(w.t)}</span></div>`).join("") || `<div class="mut">Keine Angaben vorhanden.</div>`}</div>
+        ${this._regDiag(r)}
         <div class="foot2"><button class="btn2" data-act="close">Schließen</button></div></div>`;
     } else if (m.type === "vac") {
       const d = m.draft;

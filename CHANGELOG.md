@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.1030.0b5] - 2026-10-30
+
+Testversion (Beta) mit besserer Regelung in Modul 1.
+
+### Neu
+- **Modul 1: Thermostate regeln mit dem Raumsensor (je Raum, Standard aus).** Ein Thermostat misst direkt am Heizkörper und schließt deshalb oft zu früh oder zu spät. Unter Raumeinstellungen → Raumtemperatur-Sensor gibt es zwei neue Schalter:
+  - **Offset-Ausgleich:** Das Soll wird um den geglätteten Unterschied zwischen Thermostat und Raum verschoben (höchstens ±3 K, frühestens alle 10 Minuten). Wirkt mit Heizplan oder Abwesenheit. Wurde die Temperatur am Gerät von Hand geändert, pausiert der Ausgleich bis zum nächsten Schaltpunkt.
+  - **Aus bei Ziel:** Erreicht der Raum das Ziel, gehen die Thermostate aus (Geräte ohne Aus-Zustand wie Homematic IP, Shelly oder Danfoss: kleinste Temperatur). 0,5 K darunter heizen sie wieder. Fällt der Sensor aus, regeln sie sofort wieder selbst.
+- **Modul 1: Regelung im Detail** im Fenster „Warum?“: Ziel, Raumtemperatur und je Thermostat Soll, Messwert, Unterschied, Ventilstellung (falls das Gerät sie meldet) und der aktuelle Ausgleich. Mit Tipp, wenn ein Thermostat deutlich falsch misst.
+
+### Geändert
+- Die Raumkarte zeigt „Ziel erreicht: Thermostate aus“ bzw. „wird ausgeglichen“ beim Hinweis zum Unterschied.
+- Bei offenem Fenster, „Heizung aus“ oder laufendem Elektroheizer verändert die neue Regelung nichts.
+
 ## [2026.1030.0b4] - 2026-10-30
 
 Testversion (Beta).

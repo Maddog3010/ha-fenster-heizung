@@ -87,7 +87,7 @@ class FensterHeizungPanel extends HTMLElement {
         r.apk = Number(a.menge_pro_kwh) || r.apk || 0.1;
         if (a.zeitraum === "day") { r.pauses = a.pausen_heute || 0; r.kw = a.aktuelle_leistung_kw || 0; r.hist = a.verlauf || {}; }
       } else if ("thermostate" in a) {
-        r.modeEid = eid; r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id; r.humEid = a.luftfeuchte_sensor || ""; r.rtEid = a.raumtemperatur_sensor || ""; r.rtUse = a.raumtemperatur_nutzung || {}; r.rtVal = typeof a.raumtemperatur_wert === "number" ? a.raumtemperatur_wert : null; r.wxOff = a.wetter_anpassung === "aus"; r.htr = a.heizer || null; r.airOff = a.lueftungshinweise === "aus"; r.airEvery = a.lueften_nach_h != null ? Number(a.lueften_nach_h) : 8; r.lastAir = a.zuletzt_gelueftet ? new Date(a.zuletzt_gelueftet).getTime() : 0;
+        r.modeEid = eid; r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id; r.humEid = a.luftfeuchte_sensor || ""; r.rtEid = a.raumtemperatur_sensor || ""; r.rtUse = a.raumtemperatur_nutzung || {}; r.rtVal = typeof a.raumtemperatur_wert === "number" ? a.raumtemperatur_wert : null; r.wxOff = a.wetter_anpassung === "aus"; r.htr = a.heizer || null; r.reg = a.regelung || null; r.airOff = a.lueftungshinweise === "aus"; r.airEvery = a.lueften_nach_h != null ? Number(a.lueften_nach_h) : 8; r.lastAir = a.zuletzt_gelueftet ? new Date(a.zuletzt_gelueftet).getTime() : 0;
       }
     }
     const list = [...rooms.values()];
