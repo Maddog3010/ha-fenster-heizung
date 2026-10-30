@@ -236,11 +236,13 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 
 <p align="center"><img src="docs/vorschau_einstellungen.png" width="420" alt="Einstellungen"> <img src="docs/vorschau_beta_module.png" width="420" alt="Module verwalten"></p>
 
-Der Knopf **Einstellungen** öffnet in jedem Modul dieselbe Seite:
+Der Knopf **Einstellungen** öffnet in jedem Modul dieselbe Seite. Am Desktop stehen die Bereiche links, auf dem Handy öffnet jeder Bereich eine eigene Seite:
 
-- **Allgemein:** Einrichtungsassistent, Store, Labs, Personen & Standort, Darstellung
-- **Meine Module** und **Weitere Module:** ein Tipp schaltet ein
-- **System:** Sichern & Wiederherstellen, Diagnose, Module verwalten, **Versionen**
+- **Übersicht:** Einrichtungsstand und eine Prüfung, die Sensoren ohne Wert, offene Module, die Homeserver-Sicherung und neue Versionen meldet
+- **Haus:** Räume, Personen & Standort, Energiequellen, Preise & Tarif, Wetterquelle
+- **Module:** eingeschaltete Module mit Status, ausgeschaltete als kleines Raster (ein Tipp schaltet ein)
+- **Darstellung**, **Dieses Gerät** (was nur in diesem Browser gilt), **Erweiterungen** (Store, Labs, Module verwalten)
+- **System:** Sichern & Wiederherstellen, Diagnose, **Versionen** · **Sponsor**
 
 Der **Store** zeigt Dienste, die zu deinen Modulen passen (go-e, Tibber, Wetter, Melder, Thermostate), erkennt, was schon läuft, und führt durch die Einrichtung.
 </details>

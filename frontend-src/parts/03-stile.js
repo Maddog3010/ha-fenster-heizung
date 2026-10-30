@@ -1065,4 +1065,34 @@ button.tile.entile.sel{border-color:var(--a);box-shadow:0 0 0 1px var(--a) inset
 .gshbar{height:14px;border-radius:7px;background:color-mix(in srgb,var(--line) 60%,transparent);overflow:hidden}.gshbar>div{display:flex;height:100%;gap:2px;min-width:2px}
 .gshv{font-size:.78rem;color:var(--mut);white-space:nowrap}
 @media(max-width:600px){.gshr{grid-template-columns:1fr auto}.gshbar{grid-column:1/3;grid-row:2}}
+
+/* Einstellungen Stufe 1: Bereiche links, Inhalt rechts; Handy: Liste und Unterseiten */
+.stw{max-width:1100px}
+.stlay{display:grid;grid-template-columns:240px minmax(0,1fr);gap:18px;align-items:start}
+.stnav{display:flex;flex-direction:column}
+.stlay .stnav{gap:2px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:8px;position:sticky;top:8px}
+.stni{display:flex;align-items:center;gap:10px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;padding:8px 10px;border-radius:12px;cursor:pointer}
+.stni .sxi{width:32px;height:32px;border-radius:10px;display:grid}
+.stni b{flex:1;font-weight:600}.stni.sel{background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal)}.stni.sel b{font-weight:800}
+.stni .sxc{display:inline-block}
+.stmain{min-width:0}.sthd{margin:0 4px 10px}.sthd h2{margin:2px 0 0;font-size:1.35rem}
+.stbk{font-weight:700;color:var(--teal);padding:0;margin:0 0 4px}
+.stcard{margin-bottom:14px}
+.stch{display:flex;align-items:center;gap:6px;padding:12px 16px 6px;font-weight:700;width:100%;border:0;background:transparent;color:inherit;font:inherit;font-weight:700;text-align:left}
+.stch small{font-weight:400;color:var(--mut)}.sttg{cursor:pointer}.stgo{margin-left:auto;color:var(--teal);font-weight:700;font-size:.82rem;display:inline-flex;align-items:center;gap:2px;white-space:nowrap}
+.stck{display:flex;align-items:flex-start;gap:12px;width:100%;border:0;border-top:1px solid var(--line);background:transparent;color:inherit;font:inherit;text-align:left;padding:11px 16px}
+button.stck{cursor:pointer}
+.stdot{flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px}.stdot.wn{background:#f59e0b}.stdot.ok{background:#34d399}.stdot.in{background:var(--teal)}
+.stlv{font-style:normal;font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:7px;margin-left:6px;vertical-align:1px;white-space:nowrap}
+.stlv.l1{background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal)}.stlv.l3{background:color-mix(in srgb,#fbbf24 16%,transparent);color:#d97706}
+.stleg{font-size:.78rem;color:var(--mut);margin:-6px 6px 14px}
+.stmn{font-style:normal;font-weight:400;font-size:.76rem;color:var(--mut);margin-left:6px}
+.stinfo{cursor:default}
+.stmini{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;padding:6px 14px 14px}
+.stmb{display:flex;align-items:center;gap:8px;border:1px dashed var(--line);border-radius:12px;background:transparent;color:inherit;font:inherit;text-align:left;padding:8px 10px;cursor:pointer}
+.stmt{display:flex;flex-direction:column;min-width:0;line-height:1.25}.stmb b{font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stmb small{font-size:.68rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stgo svg{transform:rotate(-90deg)}
+.sxc.er{border-color:color-mix(in srgb,#ef4444 50%,transparent);color:#f87171;background:color-mix(in srgb,#ef4444 9%,transparent)}
+.sxc.wa{border-color:color-mix(in srgb,#f59e0b 50%,transparent);color:#f59e0b;background:color-mix(in srgb,#f59e0b 9%,transparent)}
+.stw .sxsum{margin:0 0 14px}
+@media(max-width:760px){.stw .sxi{display:grid}.stw .sxc{display:inline-block}.stw .sxsum{grid-template-columns:1fr 1fr}}
 `;

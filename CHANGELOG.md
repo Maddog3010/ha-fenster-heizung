@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.1030.0b3] - 2026-10-30
+
+Testversion (Beta) mit dem neuen Aufbau der Einstellungen (Stufe 1).
+
+### Neu
+- **Einstellungen nach Bereichen:** Übersicht, Haus, Module, Darstellung, Dieses Gerät, Erweiterungen, System und Sponsor. Am Desktop und Tablet quer stehen die Bereiche links und der Inhalt rechts, auf dem Handy öffnet jeder Bereich eine eigene Seite mit „‹ Einstellungen“.
+- **Übersicht mit Prüfung:** Kennzahlen (aktive Module, Einrichtungsstand, Räume und Personen, letzte Sicherung auf den Homeserver) und eine Prüfung, die Sensoren ohne Wert, noch nicht eingerichtete Module, eine fehlgeschlagene oder alte Homeserver-Sicherung, neue Versionen und Testversionen meldet. Jeder Hinweis öffnet direkt die passende Einstellung.
+- **Haus:** Räume, Personen & Standort, Energiequellen, Preise & Tarif und Wetterquelle an einer Stelle. Energiequellen, Preise und Wetterquelle öffnen vorerst noch die Einstellungen von Modul 3, Modul 1 und Modul 9.
+- **Dieses Gerät:** zeigt, was nur in diesem Browser gespeichert ist (Tablet-Modus, Zeitraum in Modul 3 und 4, Ansicht der Raumkarten).
+- **Markierung** „für alle“ und „nur dieses Gerät“ an den Einstellungen.
+
+### Geändert
+- **Module:** Status je Modul zeigt jetzt auch Sensoren ohne Wert. Ausgeschaltete Module stehen als kleines, einklappbares Raster darunter.
+- Store, Labs und „Module verwalten“ stehen unter „Erweiterungen“, Sichern, Diagnose und Versionen unter „System“.
+- Die bisherigen Einstellungsfenster der Module bleiben unverändert.
+
 ## [2026.1030.0b2] - 2026-10-30
 
 Testversion (Beta) mit Modul 4 v1.1.

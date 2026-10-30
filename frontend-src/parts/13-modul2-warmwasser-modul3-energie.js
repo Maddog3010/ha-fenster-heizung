@@ -26,7 +26,10 @@
   _mdAct(a, b) {
     const s = this._mdState(), m = this._modal, k = b.dataset.k;
     if (a === "mdgo") { this._stOpen = false; this._edit = false; this._mdActiveSet(k); this._render(); }
-    else if (a === "mdst") { this._stOpen = true; this._render(); }
+    else if (a === "mdst") { this._stOpen = true; this._stA = ""; this._stEbk = null; this._render(); }
+    else if (a === "mdsta") { this._stA = k || ""; this._render(); const m = this.shadowRoot.getElementById("main"); if (m && m.scrollIntoView) window.scrollTo && window.scrollTo(0, 0); }
+    else if (a === "mdstoff") { this._stOffC = !this._stOffC; this._render(); }
+    else if (a === "mdstpv") { const o = this._fhOpenSet(); o.clear(); o.add("pv"); this._modal = { type: "fh" }; this._renderModal(); }
     else if (a === "mdstx") { this._stOpen = false; this._render(); }
     else if (a === "mdmgr") { this._modal = { type: "mods" }; this._renderModal(); }
     else if (a === "mdsetup") { this._modal = { type: "wwset" }; this._renderModal(); }
