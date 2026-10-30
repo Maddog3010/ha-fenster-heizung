@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.1030.0b4] - 2026-10-30
+
+Testversion (Beta).
+
+### Behoben
+- **Modul 17, 18 und 19: Der Knopf „Einstellungen“ öffnet jetzt die Haupteinstellungen** wie in allen anderen Modulen. Bisher öffnete er nur das Fenster des Moduls. Die Einstellungen der Module erreichst du über Einstellungen → Module.
+- **Modul 19:** Der Knopf im Kopf heißt jetzt „Einstellungen“ statt „Einrichten“.
+- Einstellungen → Erweiterungen zeigt „1 Lab“ statt „1 Labs“. Modul 17 und 18 zeigen in der Modulliste ihre Version.
+
 ## [2026.1030.0b3] - 2026-10-30
 
 Testversion (Beta) mit dem neuen Aufbau der Einstellungen (Stufe 1).
