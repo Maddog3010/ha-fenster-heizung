@@ -44,6 +44,8 @@ const ICONS = {
   baby: '<circle cx="12" cy="13.5" r="6.5"/><circle cx="6.3" cy="6.8" r="2.3"/><circle cx="17.7" cy="6.8" r="2.3"/><path d="M9.8 12.5h.01M14.2 12.5h.01M10.4 16c1 .8 2.2.8 3.2 0"/>',
   desk: '<rect x="3" y="5" width="18" height="11" rx="2"/><path d="M8 20h8M12 16v4"/>',
   book: '<path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5zM12 6.5v13"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
+  gauge: '<path d="M4.5 16.5a8 8 0 1 1 15 0"/><path d="M12 15l3.5-4.5"/><circle cx="12" cy="15.5" r="1.3"/>',
   drop: '<path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/>',
   laundry: '<rect x="4" y="3" width="16" height="18" rx="2.5"/><circle cx="12" cy="13.5" r="4.5"/><path d="M8 6.5h.01M11 6.5h.01"/>',
   door: '<rect x="6" y="3" width="12" height="18" rx="1.8"/><circle cx="15" cy="12" r=".9" fill="currentColor"/>',
@@ -1835,7 +1837,7 @@ button.stck{cursor:pointer}
 .stw .sxsum{margin:0 0 14px}
 @media(max-width:760px){.stw .sxi{display:grid}.stw .sxc{display:inline-block}.stw .sxsum{grid-template-columns:1fr 1fr}}
 .hsuse{font-size:.8rem;color:var(--mut);margin:-4px 4px 10px}
-.hsr .sxt small{overflow-wrap:anywhere}.hsr .sxt{min-width:0;flex:1}.stmain,.stw{min-width:0;max-width:100%}.stw .card{max-width:100%;box-sizing:border-box}
+.hsr .sxt small{overflow-wrap:anywhere}.hsr .sxt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hsr .sxt{min-width:0;flex:1}.stmain,.stw{min-width:0;max-width:100%}.stw .card{max-width:100%;box-sizing:border-box}
 .hsv{flex:none;font-style:normal;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:10px;border:1px solid var(--line);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .hsv svg{color:var(--teal)}.hsv.bad{color:#f87171;border-color:color-mix(in srgb,#ef4444 50%,transparent);background:color-mix(in srgb,#ef4444 9%,transparent)}
 .hsck{border:1px solid color-mix(in srgb,#34d399 45%,transparent);background:color-mix(in srgb,#34d399 8%,transparent);border-radius:14px;margin:0 0 12px}
@@ -1887,6 +1889,32 @@ button.stck{cursor:pointer}
 .lfkind{display:grid;gap:8px}.lfkind button{text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:none;color:inherit;font:inherit;cursor:pointer}
 .lfkind button b{display:block;font-size:.88rem}.lfkind button span{display:block;font-size:.74rem;color:var(--mut);margin-top:3px}.lfkind button.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}
 .lfstep{display:flex;align-items:center;gap:8px}.lfstep b{min-width:72px;text-align:center;font-size:1.05rem;font-variant-numeric:tabular-nums}.lfstep b small{font-size:.75rem;color:var(--mut);font-weight:600}
+
+.stside{display:flex;flex-direction:column;gap:10px;position:sticky;top:8px}.stside .stnav{position:static}
+.stq{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 10px;margin:0 0 12px;color:var(--mut)}.stside .stq{margin:0}
+.stq:focus-within{border-color:color-mix(in srgb,var(--teal) 60%,var(--line))}
+.stq input{flex:1;min-width:0;border:0;background:transparent;color:var(--primary-text-color,#e6edf3);font:inherit;padding:11px 0;outline:none}
+.sthx{border:0;background:transparent;color:var(--mut);display:grid;cursor:pointer;padding:4px}
+.strs{display:flex;align-items:center;border-top:1px solid var(--line)}.strs:first-of-type{border-top:0}.strs .sxrow{flex:1;min-width:0}.strs .sxrow+.sxrow{border-top:0}.strs .sthq{margin-right:12px}
+.sthq{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--teal);font:inherit;font-size:.74rem;font-weight:800;cursor:pointer;margin-left:8px;vertical-align:1px;display:inline-grid;place-items:center;padding:0}
+.sthq:hover{background:color-mix(in srgb,var(--teal) 14%,transparent)}
+a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center;justify-content:center;gap:6px}.stq:not(:focus-within) .sthx{opacity:.5}
+.sthtx{font-size:.92rem;line-height:1.5;margin:4px 0 10px}
+.stlr{display:flex;align-items:center;gap:12px;padding:10px 16px;border-top:1px solid var(--line)}.stcard .stlr:first-of-type,.stlog .stlr:first-child{border-top:0}.stlog{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stlr.done{opacity:.55}.stlw{flex:none;width:92px;font-size:.78rem;font-weight:650;font-variant-numeric:tabular-nums}.stlw small{display:block;font-weight:400;color:var(--mut)}
+.stlr .sxt{flex:1;min-width:0;display:flex;flex-direction:column}.stlr .sxt small{color:var(--mut);font-size:.78rem;overflow-wrap:anywhere}
+.stlu{flex:none;font-size:1.1rem;font-weight:700;color:var(--teal)}
+.toast.stun{display:flex;align-items:center;gap:10px;border-radius:16px;width:max-content;max-width:calc(100vw - 32px);box-sizing:border-box}.toast.stun span{flex:1;min-width:0}.toast.stun svg{flex:none;color:var(--teal)}.toast.stun .lnk{color:var(--teal);font-weight:800;padding:0 0 0 4px;white-space:nowrap}
+.mdtabs{margin:2px 0 12px}.mdtabs button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.fhst .sxrow{cursor:default}.fhst .sxrow:hover{background:none}
+@media(max-width:620px){.mdtabs button svg{display:none}.stlw{width:70px}.strs .stlv{display:none}}
+.mwms{display:inline-flex;gap:2px;flex:none;flex-wrap:wrap;max-width:110px;justify-content:flex-end}.mwms i{font-style:normal;font-size:.62rem;font-weight:800;min-width:16px;height:16px;padding:0 3px;box-sizing:border-box;border-radius:5px;background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal);display:inline-grid;place-items:center}.mwms i.off{background:color-mix(in srgb,var(--mut) 14%,transparent);color:var(--mut)}
+.mwr .sxt{min-width:0}.mwr .sxt small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}.mwr{gap:10px}
+.hsv.wa{color:#f59e0b;border-color:color-mix(in srgb,#f59e0b 50%,transparent)}.sxsum b.wa{color:#f59e0b}
+.mwf{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.mwf .chip{border:1px solid var(--line);background:transparent;color:inherit;font:inherit;font-size:.78rem;font-weight:700;padding:5px 11px;border-radius:999px;cursor:pointer}.mwf .chip.sel{background:var(--teal);color:#062a28;border-color:var(--teal)}.mwf .chip.wa:not(.sel){color:#f59e0b;border-color:color-mix(in srgb,#f59e0b 50%,transparent)}
+.mwbox{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:6px 0 10px;display:block}.mwbox .sxrow+.sxrow,.mwsen+.mwsen{border-top:1px solid var(--line)}.mwsen .stck{border-top:1px solid var(--line)}
+.mwn{flex:none;min-width:26px;height:26px;border-radius:8px;background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal);font-weight:800;font-size:.8rem;display:grid;place-items:center}.mwu.off{opacity:.55}.mwu.off .mwn{background:color-mix(in srgb,var(--mut) 14%,transparent);color:var(--mut)}
+@media(max-width:620px){.mwms{max-width:64px}.mwr .hsv{display:none}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -2733,7 +2761,7 @@ class FensterHeizungPanel extends HTMLElement {
   _saveGen() {
     this._hass.callWS({ type: "fenster_heizung/set_general", general: this._gen }).then((r) => {
       if (r && r.general) { this._gen = { ...this._gen, ...r.general }; this._st = r.status || null; this._render(); if (this._modal && ["gen", "fh", "hspr", "enset"].includes(this._modal.type)) this._renderModal(); }
-      this._mdPoll(); this._hsPoll();  /* Haus verteilt Netz, Ladestand und Preise auch an Modul 3 */
+      this._mdPoll(); this._hsPoll(); this._stSaved();  /* Haus verteilt Netz, Ladestand und Preise auch an Modul 3 */
     }).catch(() => this._toast("Einstellung konnte nicht gespeichert werden"));
   }
   _pollGen() {
@@ -3288,7 +3316,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (t.dataset && t.dataset.f === "gname" && this._modal) { this._modal.draft.name = t.value; }
       else if (t.dataset && t.dataset.f === "time" && this._modal) { this._modal.draft.entries[+t.dataset.i].time = t.value || "00:00"; this._renderModal(); }
   }
-  _onInput(t) { if (t.dataset && (t.dataset.f === "msxname" || t.dataset.f === "msxn") && this._msChange(t)) return; if (t.dataset && t.dataset.f === "lfxname" && this._lfChange(t)) return; if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
+  _onInput(t) { if (t.dataset && t.dataset.f === "stq") { this._stInput(t); return; } if (t.dataset && (t.dataset.f === "msxname" || t.dataset.f === "msxn") && this._msChange(t)) return; if (t.dataset && t.dataset.f === "lfxname" && this._lfChange(t)) return; if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
 
   /* ---------------- Aktionen ---------------- */
   _act(a, b) {
@@ -3339,7 +3367,8 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "gpvsign") { this._gen.pv = { ...this._pv(), sign: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "mver") { this._modal = { type: "mver" }; this._renderModal(); }
     else if (a === "mvsub") { if (this._modal && this._modal.type === "mver") { this._modal.sub = b.dataset.k || null; this._renderModal(); const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; } }
-    else if (a === "fhset") { this._modal = { type: "fh" }; this._renderModal(); }
+    else if (a === "fhset") { this._modal = { type: "fh", tab: b.dataset.k || "" }; this._renderModal(); }
+    else if (a === "fhtab") { if (this._modal) { this._modal.tab = b.dataset.k; this._pkId = null; this._renderModal(); const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; } }
     else if (a === "fhsec") { const s = this._fhOpenSet(); s.has(b.dataset.k) ? s.delete(b.dataset.k) : s.add(b.dataset.k); try { localStorage.setItem("fh-open", JSON.stringify([...s])); } catch (_) {} this._renderModal(); }
     else if (a === "gen") {
       this._modal = { type: "gen", restore: null, baks: null, bakAsk: null }; this._renderModal();
@@ -3951,6 +3980,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lixset", "lixdet", "lixoff"].includes(m.type)) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "mwdet") { box.innerHTML = this._mwDetModal(); return; }
+    if (m.type === "sthelp" || m.type === "stlog") { box.innerHTML = m.type === "sthelp" ? this._stHelpModal() : this._stLogModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "hspr" || m.type === "hswx" || m.type === "hsmig") { box.innerHTML = m.type === "hspr" ? this._hsPrModal() : m.type === "hswx" ? this._hsWxModal() : this._hsMigModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; if (this._stOpen) this._render(); return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -3981,9 +4012,12 @@ class FensterHeizungPanel extends HTMLElement {
       const g = this._gen, sm = g.summer, S = this._sum(), wa = g.wxadj, wadj = this._wxAdj(), pv = this._pv();
       const sumInfo = S.active ? `Aktiv${S.out != null ? `: ${num(S.out, 1)} °C draußen` : ""}. Der Heizplan ruht, die Fenstermeldung bleibt.` : sm.mode === "off" ? "Aus. Der Heizplan läuft wie gewohnt." : `Inaktiv${S.out != null ? `: ${num(S.out, 1)} °C draußen, Schwelle ${num(sm.temp, 1)} °C` : ""}.`;
       const open = this._fhOpenSet(), pvn = this._pvNow(), rp = this._rate("price"), rf = this._rate("feed"), dn = (n) => (n === 1 ? "1 Tag" : n + " Tage");
-      const sec = (id, ico, ttl, txt, chip, tone, body) => `<div class="fhs ${open.has(id) ? "open" : ""}"><button class="sxrow" data-act="fhsec" data-k="${id}" aria-expanded="${open.has(id)}"><span class="sxi">${ic(ico, 20)}</span><span class="sxt"><b>${ttl}</b><small>${txt}</small></span><em class="sxc ${tone}">${chip}</em><span class="sxg">${ic("chev", 16)}</span></button>${open.has(id) ? `<div class="fhb">${body}</div>` : ""}</div>`;
+      /* Stufe 3 (A5): Reiter statt Aufklappen. Jeder Abschnitt steht offen in seinem Reiter. */
+      const TABS = [["rg", "Regeln", "sliders"], ["pv", "Elektroheizer", "bolt"], ["gr", "Geräte", "tools"], ...(this._labFields("fh") ? [["lb", "Labs", "flask"]] : [])], tab = TABS.some((x) => x[0] === m.tab) ? m.tab : "rg", IN = { sum: "rg", wx: "rg", pv: "pv" }, HID = { sum: "general.summer.mode", wx: "general.wxadj.on", pv: "general.pv.reserve" };
+      const sec = (id, ico, ttl, txt, chip, tone, body) => IN[id] !== tab ? "" : `<div class="fhs open fhst"><div class="sxrow stinfo"><span class="sxi">${ic(ico, 20)}</span><span class="sxt"><b>${ttl}${this._stHelpBtn(HID[id])}</b><small>${txt}</small></span><em class="sxc ${tone}">${chip}</em></div><div class="fhb">${body}</div></div>`;
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
         <div class="sh"><div><b>Modul 1 · Einstellungen</b><span>Fenster &amp; Heizung, gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="seg mdtabs" role="tablist">${TABS.map(([k, l, i]) => `<button class="${tab === k ? "sel" : ""}" data-act="fhtab" data-k="${k}" role="tab" aria-selected="${tab === k}">${ic(i, 15)}<span>${l}</span></button>`).join("")}</div>
         ${sec("sum", "sun", "Sommermodus", sm.mode === "off" ? "Die Heizpläne laufen wie gewohnt." : sm.mode === "on" ? "Die Heizpläne ruhen." : `Automatisch ab ${num(sm.temp, 1)} °C, Mittel über ${dn(sm.days)}.`, S.active ? "Aktiv" : sm.mode === "off" ? "Aus" : "Bereit", S.active ? "ok" : "off", `
         <div class="mut sm" style="margin:10px 0 8px">Wenn es draußen warm genug ist, ruhen die Heizpläne. Die Fenstermeldung und alle Erinnerungen bleiben aktiv.</div>
         <div class="seg">${[["off", "Aus"], ["auto", "Automatisch"], ["on", "Immer an"]].map(([k, l]) => `<button class="${sm.mode === k ? "sel" : ""}" data-act="gsum" data-k="${k}">${l}</button>`).join("")}</div>
@@ -4001,8 +4035,10 @@ class FensterHeizungPanel extends HTMLElement {
         ${[["reserve", "Reserve", "W", "Bleibt zusätzlich zur Heizerleistung übrig.", 0, 2000, 50], ["delay", "Einschalten nach", "Min.", "So lange muss der Überschuss anliegen.", 0, 30, 1], ["minrun", "Mindestlaufzeit", "Min.", "Kürzer läuft ein Heizer nicht an einem Stück.", 0, 120, 5]].map(([k, l, u, h, lo, hi, st]) => `<div class="of"><div class="ol"><b>${l}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="${lo}" max="${hi}" step="${st}"><i>${u}</i></span></div></div>`).join("")}
         ${pv.soc_sensor ? `<div class="of"><div class="ol"><b>Heizer erst ab</b><span>Die Batterie wird zuerst geladen.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="soc_min" value="${pv.soc_min}" min="0" max="100" step="5"><i>%</i></span></div></div>` : ""}
         <div class="gst ${this._pvNow() != null ? "on" : ""}">${ic(this._pvNow() != null ? "bolt" : "info", 15)}${this._pvNow() != null ? `Aktuell ${wfmt(this._pvNow())} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Noch kein Sensor gewählt."}</div>`)}
-        <div class="hslk">${this._hsLink("pr", `Bezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh`)}</div>
-        <button class="sxrow" data-act="lfxset"><span class="sxi">${ic("fan", 20)}</span><span class="sxt"><b>Luftentfeuchter</b><small>${(() => { const dv = this._lfDev(); return dv ? `${esc(dv.name)} · Ein über ${num(dv.hi, 0)} %, aus bei ${num(dv.lo, 0)} %` : "Mobilen Entfeuchter einbinden und mit der Raumfeuchte regeln"; })()}</small></span><em class="sxc ${this._lfDev() ? "ok" : ""}">${this._lfDev() ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>
+        ${tab === "pv" ? `<div class="hslk">${this._hsLink("pr", `Bezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh`)}</div>` : ""}
+        ${tab === "lb" ? `<div class="mut sm" style="margin:2px 0 6px">Eingeschaltete Labs mit Einstellungen für Modul 1.</div>${this._labFields("fh")}` : ""}
+        ${tab !== "gr" ? "" : `<div class="fhs"><button class="sxrow" data-act="lfxset"><span class="sxi">${ic("fan", 20)}</span><span class="sxt"><b>Luftentfeuchter</b><small>${(() => { const dv = this._lfDev(); return dv ? `${esc(dv.name)} · Ein über ${num(dv.hi, 0)} %, aus bei ${num(dv.lo, 0)} %` : "Mobilen Entfeuchter einbinden und mit der Raumfeuchte regeln"; })()}</small></span><em class="sxc ${this._lfDev() ? "ok" : ""}">${this._lfDev() ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>
+        <button class="sxrow" data-act="diag"><span class="sxi">${ic("shield", 20)}</span><span class="sxt"><b>Ventile &amp; Batterien</b><small>Diagnose, Batterie schwach ab ${num((g.valve || {}).warn || 20, 0)} %, Meldung bei Problemen</small></span><span class="sxg">${ic("chev", 16)}</span></button></div>`}
         <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     } else if (m.type === "gen") {
       const g = this._gen, rs = m.restore, u = this._upd;
@@ -4243,7 +4279,7 @@ class FensterHeizungPanel extends HTMLElement {
       const b = this._mdBackup();
       this._hass.callWS({ type: "fenster_heizung/set_modules", modules: b.modules })
         .then(() => this._hass.callWS({ type: "fenster_heizung/set_wasser", ww: b.ww }))
-        .then((r) => { this._mdPoll(r); this._pollGen(); this._hsPoll(); })
+        .then((r) => { this._mdPoll(r); this._pollGen(); this._hsPoll(); this._stSaved(); })
         .catch(() => this._toast("Modul-Einstellung konnte nicht gespeichert werden"));
     }, 500);
   }
@@ -4294,7 +4330,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _stChecks() {
     const out = [], dead = this._stDead(), act = MODS.filter((m) => this._stIsOn(m)), mn = (id) => MODS.find((m) => m.id === id) || { n: "", name: id };
-    Object.entries(dead).forEach(([id, l]) => out.push(["wn", `Modul ${mn(id).n}: ${l.length === 1 ? "1 Sensor liefert" : l.length + " Sensoren liefern"} keinen Wert`, l.slice(0, 2).map((x) => esc(this._wzName(x))).join(", ") + (l.length > 2 ? " …" : "") + " · nicht verfügbar", MOD_SET[id] ? MOD_SET[id].act : "mdmgr"]));
+    if (this._mwD) this._mwChecks().forEach((x) => out.push(x)); else Object.entries(dead).forEach(([id, l]) => out.push(["wn", `Modul ${mn(id).n}: ${l.length === 1 ? "1 Sensor liefert" : l.length + " Sensoren liefern"} keinen Wert`, l.slice(0, 2).map((x) => esc(this._wzName(x))).join(", ") + (l.length > 2 ? " …" : "") + " · nicht verfügbar", MOD_SET[id] ? MOD_SET[id].act : "mdmgr"]));
     act.filter((m) => !m.beta && !this._stDone(m.id)).forEach((m) => out.push(["wn", `Modul ${m.n} ${m.name} ist noch nicht eingerichtet`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act]));
     const eb = this._stEbk && this._stEbk.cfg;
     if (eb && eb.on && eb.last && eb.last.ok === false) out.push(["wn", "Sicherung auf den Homeserver fehlgeschlagen", esc(eb.last.msg || ""), "gen"]);
@@ -4305,7 +4341,8 @@ class FensterHeizungPanel extends HTMLElement {
     const mig = this._haus && this._haus.mig;
     if (mig && mig.conflicts && mig.conflicts.length && !mig.seen) out.push(["wn", "Haus-Werte: bitte einmal prüfen", esc(mig.conflicts[0]), "mdhsmig"]);
     else if (mig && !mig.seen) out.push(["in", "Gemeinsame Werte liegen jetzt im Haus", "Energiequellen, Preise, Ladestand und Wetterquelle an einer Stelle", "mdhsmig"]);
-    if (!out.some((x) => x[0] === "wn")) out.unshift(["ok", "Alles eingerichtet", "Alle gewählten Sensoren liefern Werte", ""]);
+    this._stRules().forEach((x) => out.push(x));
+    if (!out.some((x) => x[0] === "wn")) out.unshift(["ok", "Alles eingerichtet", "Alle gewählten Sensoren liefern Werte, Einheiten und Vorzeichen passen", ""]);
     return out;
   }
   _stRender() {
@@ -4322,6 +4359,7 @@ class FensterHeizungPanel extends HTMLElement {
     const modChip = (m) => { if (dead[m.id]) return `<em class="sxc er">${dead[m.id].length === 1 ? "1 Sensor ohne Wert" : dead[m.id].length + " Sensoren ohne Wert"}</em>`; if (m.beta) return `<em class="sxc ${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>`; const d = this._stDone(m.id); return d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc wa">Offen</em>`; };
     const AREAS = [
       ["ov", "info", "Übersicht", `${done} von ${core.length} eingerichtet${nWarn ? " · " + nWarn + (nWarn === 1 ? " Hinweis" : " Hinweise") : ""}`, nWarn ? `<em class="sxc wa">${nWarn}</em>` : ""],
+      ["mw", "gauge", "Messwerk", this._mwD ? `${this._mwD.stats.sensors} Sensoren · ${this._mwD.stats.bad ? this._mwD.stats.bad + " mit Problem" : "alle liefern"}` : "Alle Sensoren aller Module", this._mwD && this._mwD.stats.bad ? `<em class="sxc wa">${this._mwD.stats.bad}</em>` : ""],
       ["hs", "home", "Haus", "Räume, Personen, Energie, Preise", ""],
       ["md", "puzzle", "Module", `${act.length} an · ${off.length} aus`, ""],
       ["lk", "palette", "Darstellung", "Farben, Wetter, Raumsymbole", ""],
@@ -4333,11 +4371,13 @@ class FensterHeizungPanel extends HTMLElement {
     const card = (body, ttl) => `<div class="card sxl stcard">${ttl ? `<div class="stch">${ttl}</div>` : ""}${body}</div>`;
     const page = {
       ov: () => `<div class="sxsum"><div><b>${act.length}</b><span>${act.length === 1 ? "Modul aktiv" : "Module aktiv"}</span></div><div><b>${done} / ${core.length}</b><span>Einrichtung erledigt</span></div><div><b>${this._collect().length}</b><span>Räume · ${P.length} ${P.length === 1 ? "Person" : "Personen"}</span></div><div><b>${esc(ltTxt)}</b><span>Sicherung Homeserver</span></div></div>
-        ${card(chk.map(([l, t, sub, a]) => `<${a ? `button class="stck" data-act="${a}"` : 'div class="stck"'}><span class="stdot ${l}"></span><span class="sxt"><b>${t}</b>${sub ? `<small>${sub}</small>` : ""}</span>${a ? `<span class="stgo">Öffnen ${ic("chev", 14)}</span>` : ""}</${a ? "button" : "div"}>`).join(""), `Prüfung <small>· gerade eben</small>`)}
+        ${card(chk.map(([l, t, sub, a, k]) => `<${a ? `button class="stck" data-act="${a}"${k ? ` data-k="${esc(k)}"` : ""}` : 'div class="stck"'}><span class="stdot ${l}"></span><span class="sxt"><b>${t}</b>${sub ? `<small>${sub}</small>` : ""}</span>${a ? `<span class="stgo">${l === "wn" ? "Beheben" : "Öffnen"} ${ic("chev", 14)}</span>` : ""}</${a ? "button" : "div"}>`).join(""), `Prüfung <small>· gerade eben</small>`)}
+        ${card(`${this._stLogRows(this._stLog || [], 3)}${(this._stLog || []).length > 3 ? `<button class="stck" data-act="mdstlog"><span class="sxt"><b>Alle ${this._stLog.length} Änderungen anzeigen</b></span><span class="stgo">Verlauf ${ic("chev", 14)}</span></button>` : ""}`, `Letzte Änderungen <small>· mit Rückgängig</small>`)}
         ${card(`${row("total", `Preise &amp; Tarif ${lv("all")}`, `${num(this._price(), 1)} ct Bezug · ${num(this._feed(), 1)} ct Einspeisung · Haus`, "mdsts", "pr")}
           ${row("sun", `Energiequellen ${lv("all")}`, "Solar, Netz, Batterie, Ladestand · Haus", "mdsts", "en", this._enConfigured() ? `<em class="sxc ok">Eingerichtet</em>` : `<em class="sxc wa">Offen</em>`)}
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Datei und Homeserver", "gen")}`, "Häufig gebraucht")}`,
       hs: () => this._hsPage(row, card, lv),
+      mw: () => this._mwPage(card),
       md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
         ${off.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdstoff" aria-expanded="${!this._stOffC}">Ausgeschaltet <small>· ${off.length} · ein Tipp schaltet ein</small><span class="stgo">${this._stOffC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>
           ${this._stOffC ? "" : `<div class="stmini">${off.map((m) => `<button class="stmb" data-act="mdtog" data-k="${m.id}" title="${esc(m.name)} einschalten">${ic(m.icon, 16)}<span class="stmt"><b>${esc(m.short)}</b><small>Modul ${m.n}${m.sponsor ? " · Sponsor" : m.beta && modSt(m) ? " · " + STG[modSt(m)].t : ""}</small></span></button>`).join("")}</div>`}</div>` : ""}`,
@@ -4349,6 +4389,7 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("flask", "Labs", "Experimentelle Funktionen ansehen und einschalten", "labopen", "", `<em class="sxc ${this._labCount() ? "ok" : "off"}">${this._labCount() ? this._labCount() + " an" : "Aus"}</em>`)}
           ${row("layers", "Module verwalten", "Module ein- und ausschalten, eigene Module hinzufügen", "mdmgr")}`),
       sy: () => card(`${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern, Homeserver, interne Kopien", "gen", "", `<em class="sxc ${lt ? "ok" : ""}">${esc(ltTxt)}</em>`)}
+          ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
           ${row("layers", "Versionen", "Letzte Updates mit Änderungen, Modulversionen und Versionsschema", "mver")}`),
       sp: () => card(this._spnRow()),
@@ -4359,12 +4400,19 @@ class FensterHeizungPanel extends HTMLElement {
       : `<button class="sxrow" data-act="mdsta" data-k="${k}"><span class="sxi">${ic(i, 20)}</span><span class="sxt"><b>${t}</b><small>${sub}</small></span>${ch}<span class="sxg">${ic("chev", 16)}</span></button>`).join("")}</nav>`;
     const SUB = { en: "Energiequellen", pr: "Preise &amp; Tarif", wx: "Wetterquelle" }, sub = area === "hs" && SUB[this._stS] ? this._stS : "";
     const head = A ? sub ? `<div class="sthd"><button class="lnk stbk" data-act="mdsts" data-k="">‹ Haus</button><h2>${SUB[sub]}</h2></div>` : `<div class="sthd">${!wide ? `<button class="lnk stbk" data-act="mdsta" data-k="">‹ Einstellungen</button>` : `<div class="mut sm" style="margin:0">Einstellungen</div>`}<h2>${A[2]}</h2></div>` : "";
-    const body = !wide && !A ? `<div class="card sxl stcard">${nav}</div>` : wide ? `<div class="stlay">${nav}<div class="stmain">${head}${page[area]()}</div></div>` : `${head}${page[area]()}`;
+    /* Suche: Treffer und normaler Inhalt stehen nebeneinander im DOM, beim Tippen wird nur umgeschaltet (das Eingabefeld bleibt erhalten). */
+    const q = !!this._stQ, res = `<div id="stres">${q ? this._stResHtml(wide) : ""}</div>`, sbox = this._stSearchBox(), wrapB = (x) => `<div id="stbody"${q ? " hidden" : ""}>${x}</div>`;
+    const body = wide ? `<div class="stlay"><div class="stside">${sbox}${nav}</div><div class="stmain">${res}${wrapB(head + page[area]())}</div></div>`
+      : !A || q ? `${sbox}${res}${wrapB(`<div class="card sxl stcard">${nav}</div>`)}` : `${head}${page[area]()}`;
+    if (!this._stLogTs || Date.now() - this._stLogTs > 30000) { this._stLogTs = Date.now(); this._stLogLoad(); }
+    this._mwLoad();
+    const ae = sr.activeElement, foc = ae && ae.dataset && ae.dataset.f === "stq" ? [ae.selectionStart, ae.selectionEnd] : null;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Bereiche an einem Ort</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="mdstx">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw stw">${body}</div></div>`;
+    if (foc) { const i = sr.querySelector('[data-f="stq"]'); if (i) { i.focus(); try { i.setSelectionRange(foc[0], foc[1]); } catch (_) { /* Suchfeld */ } } }
   }
   /* ---------------- Haus (Stufe 2): gemeinsame Werte an einer Stelle. Der Haus-Speicher im Backend ist führend und verteilt die Werte an die Module. ---------------- */
   _hsPoll() {
@@ -4386,8 +4434,8 @@ class FensterHeizungPanel extends HTMLElement {
     const txt = isFinite(v) ? `${sign && v > 0 ? "+" : v < 0 ? "−" : ""}${num(Math.abs(v), Math.abs(v) >= 100 || u === "%" ? 0 : 1)}${u ? " " + u : ""}` : esc(s.state);
     return `<em class="hsv">${txt} ${ic("check", 12)}</em>`;
   }
-  _hsRow(icn, ttl, id, note, sign, empty) {
-    return `<div class="sxrow stinfo hsr"><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}</b><small>${id ? esc(id) + (note ? " · " + note : "") : esc(empty || "nicht gewählt")}</small></span>${this._hsVal(id, sign)}</div>`;
+  _hsRow(icn, ttl, id, note, sign, empty, cid) {
+    return `<div class="sxrow stinfo hsr"><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}${cid ? this._stHelpBtn(cid) : ""}</b><small>${id ? esc(id) + (note ? " · " + note : "") : esc(empty || "nicht gewählt")}</small></span>${this._hsVal(id, sign)}</div>`;
   }
   _hsEnCheck() {
     const E = this._enState(), g = this._enGrid(), st = this._hass.states, ids = [E.ent.pv, E.ent.pv2, g.ent, E.ent.house, E.ent.bat, E.ent.bchg, E.ent.bdis, this._pv().soc_sensor].filter(Boolean);
@@ -4407,27 +4455,27 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="gbtns" style="margin-top:8px"><button class="btn2" data-act="mdhsmig">Was wurde übernommen?</button>${adm ? `<button class="btn2 pri" data-act="mdhsseen">Verstanden</button>` : ""}</div></div>` : "";
     if (sub === "en") {
       const ck = this._hsEnCheck(), nm = this._enPvNames(), cnt = ["pve", "pve2", "imp", "exp"].filter((k) => E.ent[k]).length;
-      return `${use("energy")}${card(`${this._hsRow("sun", esc(nm[0]), E.ent.pv, "", false)}
+      return `${use("energy")}${card(`${this._hsRow("sun", esc(nm[0]), E.ent.pv, "", false, "", "haus.energy.ent.pv")}
         ${E.ent.pv2 ? this._hsRow("sun", `Zweite Anlage „${esc(nm[1])}“`, E.ent.pv2, "", false) : ""}
-        ${this._hsRow("bolt", "Netz", g.ent, g.sign === "import" ? "Bezug positiv" : "Einspeisung positiv", true)}
+        ${this._hsRow("bolt", "Netz", g.ent, g.sign === "import" ? "Bezug positiv" : "Einspeisung positiv", true, "", "haus.energy.ent.grid")}
         ${E.bmode === "two" ? this._hsRow("energy", "Batterie lädt", E.ent.bchg, "", false) + this._hsRow("energy", "Batterie entlädt", E.ent.bdis, "", false) : this._hsRow("energy", "Batterie", E.ent.bat, E.bsign === "discharge" ? "Entladen positiv" : "Laden positiv", true, "keine Batterie")}
-        ${this._hsRow("energy", "Ladestand", p.soc_sensor, "", false, "kein Ladestand")}
-        ${this._hsRow("home", "Hausverbrauch", E.ent.house, "", false, "wird aus Solar, Netz und Batterie berechnet")}
+        ${this._hsRow("energy", "Ladestand", p.soc_sensor, "", false, "kein Ladestand", "general.pv.soc_sensor")}
+        ${this._hsRow("home", "Hausverbrauch", E.ent.house, "", false, "wird aus Solar, Netz und Batterie berechnet", "haus.energy.ent.house")}
         <div class="sxrow stinfo"><span class="sxi">${ic("chart", 20)}</span><span class="sxt"><b>Zähler für Tagessummen</b><small>${cnt ? `${cnt} ${cnt === 1 ? "Zähler" : "Zähler"} gewählt` : "keine, Woche, Monat und Jahr werden aus der Leistung berechnet"}</small></span></div>`)}
         <div class="stck hsck ${ck[0]}"><span class="stdot ${ck[0]}"></span><span class="sxt"><b>${ck[1]}</b>${ck[2] ? `<small>${ck[2]}</small>` : ""}</span></div>
         ${edit("mdhsen")}`;
     }
     if (sub === "pr") {
       const src = (k) => p[k + "_mode"] === "entity" && p[k + "_sensor"] ? `Sensor ${esc(this._wzName(p[k + "_sensor"]))}${Number(p[k]) ? ` · Ersatzwert ${num(p[k], 2)} ct` : ""}` : "Festwert";
-      return `${use("price")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("total", 20)}</span><span class="sxt"><b>Bezugspreis</b><small>${src("price")}</small></span><em class="hsv">${num(this._rate("price"), 2)} ct/kWh</em></div>
-        <div class="sxrow stinfo hsr"><span class="sxi">${ic("sun", 20)}</span><span class="sxt"><b>Einspeisevergütung</b><small>${src("feed")}</small></span><em class="hsv">${num(this._rate("feed"), 2)} ct/kWh</em></div>
+      return `${use("price")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("total", 20)}</span><span class="sxt"><b>Bezugspreis${this._stHelpBtn("general.pv.price")}</b><small>${src("price")}</small></span><em class="hsv">${num(this._rate("price"), 2)} ct/kWh</em></div>
+        <div class="sxrow stinfo hsr"><span class="sxi">${ic("sun", 20)}</span><span class="sxt"><b>Einspeisevergütung${this._stHelpBtn("general.pv.feed")}</b><small>${src("feed")}</small></span><em class="hsv">${num(this._rate("feed"), 2)} ct/kWh</em></div>
         ${s.on.dt ? row("chart", "Stundenpreise", "Börsenpreise und günstigste Fenster · Modul 14", "mdbeta") : ""}`)}
         ${edit("mdhspr")}`;
     }
     if (sub === "wx") {
       this._wxsLoad(); const W = this._wxs().cfg, wl = Object.keys(st).filter((k) => k.startsWith("weather.")), auto = (x) => x ? `automatisch: ${esc(this._wzName(x))}` : "keine gefunden";
       const wv = (id) => { const w = id && st[id]; return w ? `<em class="hsv">${esc((WX[w.state] || ["", w.state])[1])}${w.attributes.temperature != null ? " · " + num(w.attributes.temperature, 1) + " °C" : ""} ${ic("check", 12)}</em>` : ""; };
-      return `${use("wx")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("partly", 20)}</span><span class="sxt"><b>Wetter</b><small>${L.entity ? esc(L.entity) : auto(wl[0])}</small></span>${wv(L.entity || wl[0])}</div>
+      return `${use("wx")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("partly", 20)}</span><span class="sxt"><b>Wetter${this._stHelpBtn("layout.wx.entity")}</b><small>${L.entity ? esc(L.entity) : auto(wl[0])}</small></span>${wv(L.entity || wl[0])}</div>
         ${this._hsRow("thermo", "Außentemperatur", L.outdoor, "", false, "aus der Wetter-Entität")}
         ${this._hsRow("fan", "Wind", W.wind, "", false, "aus der Wetter-Entität")}
         <div class="sxrow stinfo hsr"><span class="sxi">${ic("shield", 20)}</span><span class="sxt"><b>Amtliche Warnungen</b><small>${!W.official.on ? "nicht verwenden" : W.official.ent ? esc(W.official.ent) : "automatisch (DWD, NINA)"}</small></span>${W.official.ent ? this._hsVal(W.official.ent) : ""}</div>`)}
@@ -8435,6 +8483,264 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "btxtab") { this._btT = b.dataset.k; try { localStorage.setItem("fh_bt_tab", this._btT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "btxpin") { this._btP = { ...(this._btP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
+  /* ================= Einstellungen Stufe 3: Katalog (B1), Suche (C1), Verlauf und Rückgängig (B4, C4), Prüfregeln (B10, C2), Hilfe an der Stelle (C11) ================= */
+  /* Jede Einstellung ist hier einmal beschrieben. Daraus entstehen Suche, Hilfe, Verlauf (Namen der Werte) und Prüfung.
+     id = Pfad wie im Backend-Verlauf (z. B. general.summer.temp), go = wie man hinkommt, tab = Reiter im Modulfenster. */
+  _cat() {
+    if (this._catC) return this._catC;
+    const onoff = (v) => (v ? "An" : "Aus"), ct = (v) => `${num(v, 2)} ct/kWh`, g = () => this._gen, pv = () => this._pv(), E = () => this._enState(), L = () => this._wxCfg(), nm = (e) => (e ? this._wzName(e) : "–");
+    const H = "Haus", M1 = "Module › Modul 1", A = "all";
+    const C = [
+      // Haus
+      { id: "haus.energy.ent.pv", t: "Solar-Leistung", p: `${H} › Energiequellen`, k: "pv photovoltaik sonne erzeugung wechselrichter fronius", go: ["mdsts", "en"], v: () => nm(E().ent.pv), u: /^k?W$/, h: "Leistungssensor der Solaranlage in Watt oder Kilowatt. Grundlage für Überschuss, Autarkie und Energiefluss." },
+      { id: "haus.energy.ent.pv2", t: "Zweite Solaranlage", p: `${H} › Energiequellen`, k: "balkonkraftwerk balkon zweite anlage", go: ["mdsts", "en"], v: () => nm(E().ent.pv2), u: /^k?W$/, h: "Optional, zum Beispiel ein Balkonkraftwerk. Die Leistung wird zur ersten Anlage addiert." },
+      { id: "haus.energy.ent.grid", t: "Netz-Sensor", p: `${H} › Energiequellen`, k: "netz einspeisung bezug zähler smartmeter tibber pulse shelly überschuss", go: ["mdsts", "en"], v: () => nm(this._enGrid().ent), u: /^k?W$/, h: "Ein Sensor für Einspeisung und Bezug. Das Vorzeichen legst du darunter fest. Modul 1 nutzt ihn auch für den PV-Überschuss der Elektroheizer." },
+      { id: "haus.energy.sign", t: "Vorzeichen Netz", p: `${H} › Energiequellen`, k: "vorzeichen positiv negativ einspeisung bezug umdrehen", go: ["mdsts", "en"], v: () => (this._enGrid().sign === "import" ? "Bezug positiv" : "Einspeisung positiv"), h: "Ob dein Netz-Sensor Einspeisung oder Bezug als positiven Wert meldet. Die Prüfung unter Energiequellen zeigt, ob es passt." },
+      { id: "haus.energy.ent.bat", t: "Batterie-Leistung", p: `${H} › Energiequellen`, k: "batterie speicher akku laden entladen zendure", go: ["mdsts", "en"], v: () => nm(E().ent.bat), u: /^k?W$/, h: "Leistung des Batteriespeichers. Ein Sensor mit Vorzeichen oder zwei Sensoren für Laden und Entladen." },
+      { id: "general.pv.soc_sensor", t: "Batterie-Ladestand", p: `${H} › Energiequellen`, k: "ladestand soc prozent akku batterie", go: ["mdsts", "en"], v: () => nm(pv().soc_sensor), u: /^%$/, h: "Ladestand in Prozent. Elektroheizer in Modul 1 und der Heizstab in Modul 2 warten, bis die Batterie voll genug ist." },
+      { id: "haus.energy.ent.house", t: "Hausverbrauch", p: `${H} › Energiequellen`, k: "verbrauch haus last", go: ["mdsts", "en"], v: () => nm(E().ent.house) === "–" ? "berechnet" : nm(E().ent.house), u: /^k?W$/, h: "Optional. Ohne eigenen Sensor wird der Verbrauch aus Solar, Netz und Batterie berechnet." },
+      { id: "haus.energy.ent.imp", t: "Zähler für Tagessummen", p: `${H} › Energiequellen`, k: "zähler kwh energie statistik woche monat jahr netzbezug einspeisung ertrag", go: ["mdsts", "en"], v: () => `${["pve", "pve2", "imp", "exp"].filter((x) => E().ent[x]).length} gewählt`, h: "Energiezähler in kWh für Woche, Monat und Jahr in Modul 3 und 4. Sie müssen als Langzeitstatistik in Home Assistant geführt werden." },
+      { id: "general.pv.price", t: "Bezugspreis", p: `${H} › Preise & Tarif`, k: "strompreis preis ct kosten tarif tibber netzbezug", go: ["mdsts", "pr"], v: () => ct(this._rate("price")), h: "Preis pro kWh aus dem Netz, als Festwert oder Sensor (zum Beispiel Tibber). Fällt der Sensor aus, gilt der Festwert." },
+      { id: "general.pv.feed", t: "Einspeisevergütung", p: `${H} › Preise & Tarif`, k: "einspeisung vergütung preis ct", go: ["mdsts", "pr"], v: () => ct(this._rate("feed")), h: "Vergütung pro eingespeister kWh. Daraus rechnen Modul 1, 3, 4 und 8 den Vorteil von eigenem Strom." },
+      { id: "general.pv.price_sensor", t: "Stundenpreis-Sensor", p: `${H} › Preise & Tarif`, k: "stundenpreis dynamisch börse sensor tibber awattar", go: ["mdsts", "pr"], v: () => (pv().price_mode === "entity" ? nm(pv().price_sensor) : "Festwert"), u: /(ct|€|eur|cent)/i, h: "Sensor mit dem aktuellen Strompreis in ct/kWh oder €/kWh." },
+      { id: "layout.wx.entity", t: "Wetter-Entität", p: `${H} › Wetterquelle`, k: "wetter weather vorhersage dwd", go: ["mdsts", "wx"], v: () => (L().entity ? nm(L().entity) : "automatisch"), h: "Wetter für Kopfkarte, Sommermodus, wetterabhängige Absenkung und Modul 9." },
+      { id: "layout.wx.outdoor", t: "Außentemperatur", p: `${H} › Wetterquelle`, k: "außentemperatur aussen draußen temperatur sensor", go: ["mdsts", "wx"], v: () => (L().outdoor ? nm(L().outdoor) : "aus der Wetter-Entität"), u: /°[CF]/, h: "Eigener Außensensor. Ohne ihn kommt die Temperatur aus der Wetter-Entität." },
+      { id: "haus.wx.wind", t: "Wind-Sensor", p: `${H} › Wetterquelle`, k: "wind sturm böe km/h", go: ["mdsts", "wx"], v: () => nm((this._wxs().cfg || {}).wind), h: "Für die Sturmwarnung in Modul 9. Ohne Sensor gilt der Wind aus der Wetter-Entität." },
+      { id: "haus.wx.official", t: "Amtliche Warnungen", p: `${H} › Wetterquelle`, k: "dwd nina unwetter warnung amtlich", go: ["mdsts", "wx"], h: "Warnungen des Deutschen Wetterdienstes oder von NINA für Modul 9." },
+      { id: "presence", t: "Personen & Standort", p: H, k: "personen anwesenheit abwesend urlaub icloud handy standort home-zone zuhause karte", go: ["ortopen"], h: "Wer zu Hause ist und wo das Zuhause liegt. Steuert Abwesenheit und Urlaub in Modul 1 und Modul 2." },
+      { id: "messwerk", t: "Messwerk", p: "Einstellungen", k: "sensoren sensor entität alle genutzt module ausfall messwerk", go: ["mdsta", "mw"], v: () => (this._mwD ? `${this._mwD.stats.sensors} Sensoren` : ""), h: "Alle Sensoren, die in einem Modul eingestellt sind, an einer Stelle. Zu jedem Sensor siehst du, in welchen Modulen er wofür genutzt wird und ob er liefert." },
+      { id: "rooms", t: "Räume", p: H, k: "raum räume assistent thermostat fenster", go: ["wz"], v: () => `${this._collect().length}`, h: "Räume mit Thermostaten und Fenstern. Der Einrichtungsassistent ordnet sie zu." },
+      // Modul 1
+      { id: "general.summer.mode", t: "Sommermodus", p: `${M1} › Regeln`, k: "sommer heizplan pause warm", go: ["fhset"], tab: "rg", v: () => ({ off: "Aus", auto: "Automatisch", on: "Immer an" }[g().summer.mode]), h: "Wenn es draußen warm genug ist, ruhen die Heizpläne. Die Fenstermeldung bleibt aktiv." },
+      { id: "general.summer.temp", t: "Sommermodus ab", p: `${M1} › Regeln`, k: "sommer schwelle außentemperatur", go: ["fhset"], tab: "rg", v: () => `${num(g().summer.temp, 1)} °C`, n: "°C", h: "Außentemperatur, gemittelt über die gewählten Tage, ab der der Sommermodus gilt." },
+      { id: "general.summer.days", t: "Sommermodus gemittelt über", p: `${M1} › Regeln`, k: "sommer tage mittel", go: ["fhset"], tab: "rg", v: () => `${g().summer.days} Tage`, h: "Über wie viele Tage die Außentemperatur gemittelt wird." },
+      { id: "general.wxadj.on", t: "Wetterabhängige Absenkung", p: `${M1} › Regeln`, k: "wetter absenkung sonne frost anheben mild", go: ["fhset"], tab: "rg", v: () => onoff(g().wxadj.on), h: "Bei Sonne oder milder Luft sinkt die Zieltemperatur, bei Frost steigt sie." },
+      { id: "general.wxadj.down", t: "Absenkung bei mildem Wetter", p: `${M1} › Regeln`, k: "absenken kelvin mild", go: ["fhset"], tab: "rg", v: () => `${num(g().wxadj.down, 1)} K`, n: "K" },
+      { id: "general.wxadj.up", t: "Anhebung bei Frost", p: `${M1} › Regeln`, k: "anheben frost kelvin", go: ["fhset"], tab: "rg", v: () => `${num(g().wxadj.up, 1)} K`, n: "K" },
+      { id: "general.pv.reserve", t: "Reserve für Elektroheizer", p: `${M1} › Elektroheizer`, k: "elektroheizer reserve watt überschuss heizer", go: ["fhset"], tab: "pv", v: () => `${pv().reserve} W`, n: "W", h: "So viel Leistung bleibt zusätzlich zur Heizerleistung übrig, bevor ein Heizer einschaltet." },
+      { id: "general.pv.delay", t: "Elektroheizer einschalten nach", p: `${M1} › Elektroheizer`, k: "verzögerung einschalten minuten heizer", go: ["fhset"], tab: "pv", v: () => `${pv().delay} Min.`, n: "Min." },
+      { id: "general.pv.minrun", t: "Mindestlaufzeit Elektroheizer", p: `${M1} › Elektroheizer`, k: "mindestlaufzeit heizer minuten", go: ["fhset"], tab: "pv", v: () => `${pv().minrun} Min.`, n: "Min." },
+      { id: "general.pv.soc_min", t: "Elektroheizer erst ab Ladestand", p: `${M1} › Elektroheizer`, k: "ladestand batterie heizer prozent", go: ["fhset"], tab: "pv", v: () => `${pv().soc_min} %`, n: "%", h: "Die Batterie wird zuerst bis zu diesem Ladestand geladen." },
+      { id: "entfeuchter", t: "Luftentfeuchter", p: `${M1} › Geräte`, k: "entfeuchter luftfeuchte feucht schimmel keller", go: ["fhset"], tab: "gr", h: "Mobilen Entfeuchter einbinden und mit der Raumfeuchte regeln." },
+      { id: "general.valve.warn", t: "Batterie schwach ab", p: `${M1} › Geräte`, k: "batterie thermostat ventil schwach warnung", go: ["diag"], v: () => `${(g().valve || {}).warn || 20} %`, n: "%", h: "Ab diesem Batteriestand meldet die Diagnose ein Thermostat als schwach." },
+      { id: "general.valve.notify", t: "Meldung bei Ventil-Problemen", p: `${M1} › Geräte`, k: "benachrichtigung ventil problem meldung", go: ["diag"], h: "Benachrichtigungsdienst für ausgefallene Ventile und schwache Batterien." },
+      // Darstellung, Gerät, Erweiterungen, System
+      { id: "layout.accent", t: "Akzentfarbe", p: "Darstellung", k: "farbe akzent design theme", go: ["look"], h: "Farbe für Knöpfe und Markierungen. Gilt für alle." },
+      { id: "layout.wx.on", t: "Wetter in der Kopfkarte", p: "Darstellung", k: "wetter anzeige kopfkarte", go: ["look"], v: () => onoff(L().on) },
+      { id: "hz", t: "Startseite", p: "Darstellung", k: "startseite begrüßung karten bubbles", go: ["hzopen"] },
+      { id: "tablet", t: "Tablet-Modus", p: "Dieses Gerät", k: "tablet fully kiosk pin wandtablet", lv: "dev", go: ["tmopen"], v: () => onoff(this._tmOn()), h: "Nur für diesen Browser: Vollbild für ein Wandtablet mit PIN und Ruhemodus." },
+      { id: "store", t: "Store & Integrationen", p: "Erweiterungen", k: "store integration dienst tibber go-e forecast", go: ["igopen"] },
+      { id: "labs", t: "Labs", p: "Erweiterungen", k: "labs experimentell test", go: ["labopen"] },
+      { id: "mods", t: "Module verwalten", p: "Erweiterungen", k: "module ein aus eigenes modul", go: ["mdmgr"] },
+      { id: "general.updates", t: "Update-Hinweise", p: "System › Sichern", k: "update version hinweis", go: ["gen"], v: () => onoff(g().updates !== false) },
+      { id: "backup", t: "Sichern & Wiederherstellen", p: "System", k: "sicherung backup homeserver webdav smb wiederherstellen datei", go: ["gen"], h: "Einstellungen als Datei sichern, automatisch auf einen Homeserver kopieren oder interne Kopien zurückholen." },
+      { id: "verlauf", t: "Änderungsverlauf", p: "System", k: "verlauf rückgängig änderung wer wann undo", go: ["mdstlog"], h: "Die letzten 50 Änderungen mit Benutzer und Zeit. Jede lässt sich einzeln zurücknehmen." },
+      { id: "diag", t: "Diagnose", p: "System", k: "diagnose ventil thermostat batterie problem", go: ["diag"] },
+      { id: "versions", t: "Versionen", p: "System", k: "version changelog beta modulversion", go: ["mver"] },
+    ];
+    MODS.forEach((m) => { const ms = MOD_SET[m.id]; if (ms) C.push({ id: `modules.on.${m.id}`, t: `Modul ${m.n} ${m.name}`, p: "Module", k: `modul ${m.short} ${ms.txt}`.toLowerCase(), go: [ms.act], v: () => (this._stIsOn(m) ? "An" : "Aus"), h: ms.txt }); });
+    this._catC = C;
+    return C;
+  }
+  _catBy(path) {
+    const C = this._cat(); let e = C.find((x) => x.id === path);
+    if (!e) { const p = path.replace(/^haus\.price\./, "general.pv.").replace(/^haus\.soc$/, "general.pv.soc_sensor").replace(/^modules\.energy\./, "haus.energy.").replace(/^general\.pv\.sensor$/, "haus.energy.ent.grid").replace(/^general\.pv\.sign$/, "haus.energy.sign").replace(/^haus\.wx\.(entity|outdoor)$/, "layout.wx.$1"); e = C.find((x) => x.id === p); }
+    return e || null;
+  }
+  _catLabel(path) {
+    const e = this._catBy(path); if (e) return e.t;
+    const m = /^modules\.on\.(\w+)$/.exec(path); if (m) { const x = MODS.find((y) => y.id === m[1]); if (x) return `Modul ${x.n} ${x.name}`; }
+    const parts = path.split("."), A = { general: "Allgemeine Einstellungen", haus: "Haus", modules: "Module", ww: "Modul 2 Warmwasser" }[parts[0]] || parts[0];
+    return parts.length > 1 ? `${A}: ${parts.slice(1).join(" › ")}` : A;
+  }
+  _stNorm(s) { return String(s || "").toLowerCase().replace(/ä/g, "a").replace(/ö/g, "o").replace(/ü/g, "u").replace(/ß/g, "ss").replace(/&amp;/g, "&"); }
+  _stFind(q) {
+    const w = this._stNorm(q).split(/\s+/).filter(Boolean); if (!w.length) return [];
+    return this._cat().map((e) => { const t = this._stNorm(e.t), all = `${t} ${this._stNorm(e.p)} ${this._stNorm(e.k)}`; if (!w.every((x) => all.includes(x))) return null; return [w.every((x) => t.includes(x)) ? (t.startsWith(w[0]) ? 0 : 1) : 2, e]; })
+      .filter(Boolean).sort((a, b) => a[0] - b[0] || a[1].t.localeCompare(b[1].t, "de")).map((x) => x[1]).slice(0, 14);
+  }
+  _stVal(e) { try { return e.v ? e.v() : ""; } catch (_) { return ""; } }
+  _stResults() {
+    const q = this._stQ || "", r = this._stFind(q), mw = this._mwFind(q), lv = (k) => k === "dev" ? `<em class="stlv l3">📱</em>` : `<em class="stlv l1">🏠</em>`;
+    const mwc = mw.length ? `<div class="card sxl stcard"><div class="stch">Sensoren im Messwerk <small>· ${mw.length}</small></div>${mw.map((t) => `<button class="sxrow" data-act="mdmwd" data-k="${esc(t.id)}"><span class="sxi">${ic(this._mwIcon(t.g), 18)}</span><span class="sxt"><b>${esc(t.n)}</b><small>${esc(t.ents.map((e) => this._wzName(e)).join(", "))}</small></span>${this._mwChips(t.uses)}<span class="sxg">${ic("chev", 16)}</span></button>`).join("")}</div>` : "";
+    if (!r.length && mw.length) return mwc;
+    if (!r.length) return `<div class="card stcard"><div class="stck"><span class="stdot in"></span><span class="sxt"><b>Nichts gefunden für „${esc(q)}“</b><small>Versuch es mit einem anderen Wort, zum Beispiel Preis, Batterie, Wetter oder Sommer.</small></span></div></div>`;
+    return `<div class="card sxl stcard"><div class="stch">${r.length} ${r.length === 1 ? "Treffer" : "Treffer"} <small>· „${esc(q)}“</small></div>${r.map((e) => { const v = this._stVal(e); return `<div class="strs"><button class="sxrow" data-act="mdstgo" data-k="${esc(e.id)}"><span class="sxt"><b>${esc(e.t)} ${lv(e.lv)}</b><small>${esc(e.p)}</small></span>${v ? `<em class="hsv">${esc(v)}</em>` : ""}<span class="sxg">${ic("chev", 16)}</span></button>${e.h ? `<button class="sthq" data-act="mdsthelp" data-k="${esc(e.id)}" aria-label="Hilfe zu ${esc(e.t)}">?</button>` : ""}</div>`; }).join("")}</div>${mwc}`;
+  }
+  _stSearchBox() { return `<div class="stq">${ic("search", 16)}<input type="text" enterkeyhint="search" data-f="stq" placeholder="Einstellung suchen" value="${esc(this._stQ || "")}" autocomplete="off" aria-label="Einstellung suchen"><button class="sthx" data-act="mdstqx" aria-label="Suche löschen">${ic("close", 14)}</button></div>`; }
+  _stResHtml(wide) { return `${wide ? `<div class="sthd"><div class="mut sm" style="margin:0">Einstellungen</div><h2>Suche</h2></div>` : ""}${this._stResults()}`; }
+  _stInput(t) {
+    this._stQ = t.value;
+    const sr = this.shadowRoot, box = sr.getElementById("stres"), bd = sr.getElementById("stbody"), wide = (this.clientWidth || window.innerWidth) >= 760;
+    if (!box) { this._render(); return; }
+    box.innerHTML = this._stQ.trim() ? this._stResHtml(wide) : "";
+    if (bd) bd.hidden = !!this._stQ.trim();
+  }
+  _stGo(id) {
+    const e = this._cat().find((x) => x.id === id); if (!e) return;
+    this._stQ = ""; const [a, k] = e.go;
+    if (a === "mdsts") { this._stOpen = true; this._stA = "hs"; this._stS = k || ""; this._modal = null; this._renderModal(); this._render(); return; }
+    if (a === "mdstlog") { this._render(); this._stLogOpen(); return; }
+    if (a === "mdsta") { this._stOpen = true; this._stA = k; this._stS = ""; this._modal = null; this._renderModal(); this._render(); return; }
+    this._render();
+    const b = document.createElement("button"); b.dataset.k = k || ""; this._act(a, b);
+    if (e.tab && this._modal) { this._modal.tab = e.tab; this._renderModal(); }
+  }
+  /* ---- Hilfe an der Stelle */
+  _stHelpModal() {
+    const e = this._cat().find((x) => x.id === (this._modal || {}).k) || { t: "Hilfe", p: "", h: "" }, v = this._stVal(e);
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${esc(e.t)}</b><span>${esc(e.p)} · ${e.lv === "dev" ? "📱 nur dieses Gerät" : "🏠 für alle"}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${e.h ? `<div class="sthtx">${esc(e.h)}</div>` : ""}${v ? `<div class="gst">${ic("info", 15)}<span>Aktuell: <b>${esc(v)}</b></span></div>` : ""}
+      <div class="foot2"><a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf" target="_blank" rel="noopener">${ic("book", 15)} Bedienungsanleitung</a><button class="btn2 pri" data-act="mdstgo" data-k="${esc(e.id)}">Zur Einstellung</button></div></div>`;
+  }
+  _stHelpBtn(id) { return this._cat().some((x) => x.id === id && x.h) ? `<button class="sthq" data-act="mdsthelp" data-k="${esc(id)}" aria-label="Hilfe">?</button>` : ""; }
+  /* ---- Verlauf und Rückgängig */
+  _stLogLoad(then) {
+    if (!this._hass) return;
+    this._hass.callWS({ type: "fenster_heizung/log_get" }).then((r) => { this._stLog = (r && r.log) || []; this._stLogTs = Date.now(); if (then) then(); else { if (this._stOpen) this._render(); if (this._modal && this._modal.type === "stlog") this._renderModal(); } }).catch(() => { this._stLog = this._stLog || []; });
+  }
+  _stLogOpen() { this._modal = { type: "stlog" }; this._renderModal(); this._stLogLoad(); }
+  _stFmt(path, v) {
+    if (v === null || v === undefined || v === "") return "–";
+    if (typeof v === "boolean") return v ? "an" : "aus";
+    if (typeof v === "number") { const e = this._catBy(path); return `${num(v, Number.isInteger(v) ? 0 : Number.isInteger(v * 10) ? 1 : 2)}${e && e.n ? " " + e.n : /price|feed/.test(path) ? " ct" : ""}`; }
+    if (typeof v === "string") { if (/^[a-z_]+\.[a-z0-9_]+$/.test(v)) return this._wzName(v); return { off: "aus", auto: "automatisch", on: "an", export: "Einspeisung positiv", import: "Bezug positiv", entity: "Sensor", fix: "Festwert", charge: "Laden positiv", discharge: "Entladen positiv", one: "ein Sensor", two: "zwei Sensoren" }[v] || v; }
+    if (Array.isArray(v)) return `${v.length} ${v.length === 1 ? "Eintrag" : "Einträge"}`;
+    return "geändert";
+  }
+  _stWhen(t) {
+    const d = new Date(t * 1000), now = new Date(), hm = d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    if (d.toDateString() === now.toDateString()) return `heute ${hm}`;
+    if (d.toDateString() === new Date(Date.now() - 864e5).toDateString()) return `gestern ${hm}`;
+    return `${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} ${hm}`;
+  }
+  _stLogRows(list, max) {
+    const adm = this._admin();
+    return (list || []).slice(0, max || 50).map((e) => `<div class="stlr ${e.undone ? "done" : ""}"><span class="stlw">${esc(this._stWhen(e.t))}<small>${esc(e.who || "")}</small></span>
+      <span class="sxt"><b>${esc(e.many ? `${e.many} Werte (${this._catLabel(e.path)})` : this._catLabel(e.path))}</b><small>${e.many ? "Sicherung eingelesen oder viele Werte auf einmal" : `${esc(this._stFmt(e.path, e.old))} → ${esc(this._stFmt(e.path, e.new))}`}${String(e.note || "").startsWith("undo:") ? " · Rücknahme" : ""}${e.undone ? " · zurückgenommen" : ""}</small></span>
+      ${adm && e.undo && !e.undone ? `<button class="ibtn stlu" data-act="mdstundo" data-k="${e.id}" aria-label="Zurücknehmen" title="Zurücknehmen">↶</button>` : ""}</div>`).join("") || `<div class="stck"><span class="stdot in"></span><span class="sxt"><b>Noch keine Änderungen</b><small>Ab jetzt erscheint hier jede Änderung mit Benutzer und Zeit.</small></span></div>`;
+  }
+  _stLogModal() {
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Änderungsverlauf</b><span>Die letzten 50 Änderungen · gilt für alle</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:2px 0 8px">Jede Zeile lässt sich einzeln mit ↶ zurücknehmen. Das Zurücknehmen erscheint selbst im Verlauf. Nur dieses Gerät betreffende Einstellungen (📱) stehen nicht hier.</div>
+      <div class="stlog">${this._stLog ? this._stLogRows(this._stLog) : `<div class="mut sm">Wird geladen …</div>`}</div>
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _stUndo(id) {
+    this._hass.callWS({ type: "fenster_heizung/log_undo", id: Number(id) }).then((r) => {
+      if (r && r.general) this._gen = { ...this._gen, ...r.general }; if (r) this._mdApply(r); if (r && r.haus) this._haus = r.haus; if (r && r.layout) this._cfg.layout = { ...this._cfg.layout, ...r.layout };
+      this._stLog = (r && r.log) || this._stLog; this._toast("Zurückgenommen"); this._render(); if (this._modal) this._renderModal();
+    }).catch((e) => this._toast((e && e.message) || "Konnte nicht zurückgenommen werden"));
+  }
+  /* Nach dem Speichern: „Gespeichert · Rückgängig“ für 10 Sekunden */
+  _stSaved() {
+    clearTimeout(this._stSvT);
+    this._stSvT = setTimeout(() => this._stLogLoad(() => {
+      const me = (this._hass.user || {}).name, e = (this._stLog || []).find((x) => x.undo && !x.undone && Date.now() / 1000 - x.t < 8 && (!me || x.who === me));
+      if (this._stOpen) this._render();
+      if (!e) return;
+      const t = this.shadowRoot.getElementById("toast"); if (!t) return;
+      t.innerHTML = `<div class="toast stun">${ic("check", 18)}<span>Gespeichert: ${esc(this._catLabel(e.path))} ${esc(this._stFmt(e.path, e.new))}</span><button class="lnk" data-act="mdstundo" data-k="${e.id}">Rückgängig</button></div>`;
+      clearTimeout(this._tt); this._tt = setTimeout(() => (t.innerHTML = ""), 10000);
+    }), 700);
+  }
+  /* ---- Prüfregeln aus dem Katalog: Sensor liefert, Einheit passt */
+  _stRules() {
+    const st = this._hass.states, out = [], E = this._enState(), p = this._pv(), L = this._wxCfg();
+    const ent = { "haus.energy.ent.pv": E.ent.pv, "haus.energy.ent.pv2": E.ent.pv2, "haus.energy.ent.grid": this._enGrid().ent, "haus.energy.ent.bat": E.bmode === "two" ? "" : E.ent.bat, "haus.energy.ent.house": E.ent.house, "general.pv.soc_sensor": p.soc_sensor, "general.pv.price_sensor": p.price_mode === "entity" ? p.price_sensor : "", "layout.wx.outdoor": L.outdoor };
+    Object.entries(ent).forEach(([id, eid]) => {
+      const e = this._catBy(id), s = eid && st[eid]; if (!e || !e.u || !s) return;
+      const un = (s.attributes || {}).unit_of_measurement || "";
+      if (!e.u.test(un)) out.push(["wn", `Einheit passt nicht: ${e.t}`, `${esc(this._wzName(eid))} liefert „${esc(un || "ohne Einheit")}“, erwartet ${{ "%": "Prozent", "°": "°C" }[String(e.u).slice(2, 3)] || (String(e.u).includes("W") ? "W oder kW" : "ct/kWh oder €/kWh")}`, "mdstgo", id]);
+    });
+    const ck = this._enConfigured() ? this._hsEnCheck() : null;
+    if (ck && ck[0] === "wn" && /Vorzeichen/.test(ck[1])) out.push(["wn", ck[1], ck[2], "mdsts", "en"]);
+    return out;
+  }
+  /* ================= Messwerk (M1): alle Sensoren der Module 1–19 an einer Stelle, „genutzt in“ ================= */
+  _mwLoad(force) {
+    if (!this._hass || this._mwBusy) return;
+    if (!force && this._mwD && Date.now() - this._mwTs < 20000) return;
+    this._mwBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/mw_get" }).then((r) => { this._mwD = r && r.ready ? r : null; this._mwTs = Date.now(); })
+      .catch(() => { this._mwD = null; this._mwTs = Date.now(); })
+      .finally(() => { this._mwBusy = false; if (this._stOpen) this._render(); if (this._modal && this._modal.type === "mwdet") this._renderModal(); });
+  }
+  _mwMod(m) { return m === 0 ? "Allgemein" : `Modul ${m}`; }
+  _mwModName(m) { const x = MODS.find((y) => y.n === m) || [MOD_MU, MOD_LI].find((y) => y && y.n === m); return m === 0 ? "Start, Tablet, Personen, Labs" : x ? x.name : ((this._mwD || {}).mods || {})[m] || ""; }
+  _mwVal(eid) {
+    const s = eid && this._hass.states[eid]; if (!s) return "fehlt";
+    if (["unavailable", "unknown"].includes(String(s.state))) return "kein Wert";
+    const u = (s.attributes || {}).unit_of_measurement || "", v = parseFloat(s.state), dom = eid.split(".")[0];
+    if (dom === "binary_sensor") return { on: "an", off: "aus" }[s.state] || s.state;
+    if (dom === "climate") return s.attributes.current_temperature != null ? `${num(s.attributes.current_temperature, 1)} °C` : s.state;
+    if (dom === "weather") return (WX[s.state] || ["", s.state])[1];
+    return isFinite(v) && /^-?[\d.]+$/.test(String(s.state)) ? `${num(v, Math.abs(v) >= 100 || u === "%" ? 0 : Math.abs(v) < 1 && v !== 0 ? 2 : 1)}${u ? " " + u : ""}` : String(s.state).slice(0, 18);
+  }
+  _mwChips(uses) { const ms = [...new Set((uses || []).map((u) => u.m))].sort((a, b) => a - b); return `<span class="mwms">${ms.map((m) => `<i class="${(uses.find((u) => u.m === m) || {}).on === false ? "off" : ""}" title="${esc(this._mwMod(m) + " " + this._mwModName(m))}">${m === 0 ? "A" : m}</i>`).join("")}</span>`; }
+  _mwIcon(g) { return { strom: "bolt", klima: "thermo", fenster: "window", wetter: "partly", wasser: "boiler", geraete: "laundry", auto: "car", sicher: "shield", alltag: "month", person: "users", sonst: "tablet" }[g] || "info"; }
+  _mwPage(card) {
+    this._mwLoad();
+    const D = this._mwD;
+    if (!D) return card(`<div class="stck"><span class="stdot in"></span><span class="sxt"><b>Messwerk wird geladen …</b><small>Alle Sensoren aller Module werden gesammelt.</small></span></div>`);
+    const S = D.stats, G = D.groups, f = this._mwG || "", only = !!this._mwBad;
+    const by = {}; D.tasks.forEach((t) => (by[t.g] = by[t.g] || []).push(t));
+    const order = Object.keys(G).filter((g) => by[g]);
+    const list = D.tasks.filter((t) => (!f || t.g === f) && (!only || t.st !== "ok"));
+    const stc = { ok: "", dead: "bad", missing: "bad", unit: "wa" };
+    const rows = (ts) => ts.map((t) => `<button class="sxrow mwr" data-act="mdmwd" data-k="${esc(t.id)}"><span class="sxi">${ic(this._mwIcon(t.g), 18)}</span><span class="sxt"><b>${esc(t.n)}</b><small>${esc(t.ents.map((e) => this._wzName(e)).join(", "))} · ${esc(t.where)}</small></span><em class="hsv ${stc[t.st] || ""}">${esc(t.st === "ok" ? this._mwVal(t.ents[0]) : t.chk.find((c) => c.st !== "ok").txt)}</em>${this._mwChips(t.uses)}<span class="sxg">${ic("chev", 16)}</span></button>`).join("");
+    const groups = (f ? [f] : order).map((g) => { const ts = list.filter((t) => t.g === g); return ts.length ? card(rows(ts), `${esc(G[g])} <small>· ${ts.length}</small>`) : ""; }).join("");
+    const hints = (D.hints || []).length ? card(D.hints.map((h) => `<${h.go ? `button class="stck" data-act="mdmwgo" data-k="${esc(h.go)}"` : 'div class="stck"'}><span class="stdot ${h.lvl || "wn"}"></span><span class="sxt"><b>${esc(h.t)}</b><small>${esc(h.x)}</small></span>${h.go ? `<span class="stgo">Ansehen ${ic("chev", 14)}</span>` : ""}</${h.go ? "button" : "div"}>`).join(""), "Hinweise des Messwerks") : "";
+    return `<div class="hsuse">Jeder Sensor, der in einem Modul eingestellt ist, mit Aufgabe, Live-Wert und den Modulen, die ihn nutzen · <em class="stlv l1">🏠 für alle</em></div>
+      <div class="sxsum"><div><b>${S.sensors}</b><span>Sensoren</span></div><div><b>${S.ok}</b><span>liefern</span></div><div><b class="${S.bad ? "wa" : ""}">${S.bad}</b><span>${S.bad === 1 ? "Aufgabe mit Problem" : "Aufgaben mit Problem"}</span></div><div><b>${S.mods}</b><span>Module versorgt</span></div></div>
+      ${hints}
+      <div class="chips mwf"><button class="chip ${!f && !only ? "sel" : ""}" data-act="mdmwg" data-k="">Alle ${D.tasks.length}</button>${S.bad ? `<button class="chip ${only ? "sel" : ""} wa" data-act="mdmwbad">⚠ Probleme ${S.bad}</button>` : ""}${order.map((g) => `<button class="chip ${f === g ? "sel" : ""}" data-act="mdmwg" data-k="${g}">${esc(G[g])} ${by[g].length}</button>`).join("")}</div>
+      ${groups || card(`<div class="stck"><span class="stdot ok"></span><span class="sxt"><b>Keine Probleme</b><small>Alle Sensoren liefern Werte.</small></span></div>`)}
+      <div class="stleg">Die Zahlen rechts sind die Module, die den Sensor nutzen (A = Allgemein: Start, Tablet, Personen, Labs). Grau = Modul ist aus. Eingestellt wird in M1 noch an der genannten Stelle, Zuordnen und Tauschen direkt im Messwerk folgen.</div>`;
+  }
+  _mwDetModal() {
+    const D = this._mwD || { tasks: [], sensors: {} }, t = D.tasks.find((x) => x.id === (this._modal || {}).k);
+    if (!t) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Messwerk</b></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div><div class="mut">Nicht gefunden.</div></div>`;
+    const ago = (ts) => { if (!ts) return "noch nie"; const m = Math.round((Date.now() / 1000 - ts) / 60); return m < 2 ? "gerade eben" : m < 60 ? `vor ${m} Min.` : m < 1440 ? `vor ${Math.round(m / 60)} Std.` : `vor ${Math.round(m / 1440)} Tagen`; };
+    const sens = t.ents.map((e, i) => { const c = t.chk[i] || {}, s = D.sensors[e] || { uses: [], tasks: [] }, other = s.tasks.filter((x) => x !== t.id).map((x) => (D.tasks.find((y) => y.id === x) || {}).n).filter(Boolean);
+      return `<div class="mwsen"><div class="sxrow stinfo hsr"><span class="sxi">${ic(this._mwIcon(t.g), 20)}</span><span class="sxt"><b>${esc(this._wzName(e))}</b><small>${esc(e)}${c.unit ? " · " + esc(c.unit) : ""}</small></span><em class="hsv ${c.st === "ok" ? "" : c.st === "unit" ? "wa" : "bad"}">${esc(c.st === "ok" ? this._mwVal(e) : c.txt)}</em></div>
+        <div class="stck"><span class="stdot ${c.st === "ok" ? "ok" : "wn"}"></span><span class="sxt"><b>Prüfung: ${esc(c.txt || "")}</b><small>zuletzt mit Wert ${ago(t.since[i])}${other.length ? ` · auch Aufgabe: ${esc(other.join(", "))}` : ""}</small></span></div></div>`; }).join("");
+    const all = [...new Map(t.ents.flatMap((e) => (D.sensors[e] || { uses: [] }).uses).map((u) => [u.m + "|" + u.why, u])).values()].sort((a, b) => a.m - b.m);
+    const nm = new Set(all.map((u) => u.m)).size;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Messwerk › ${esc(t.n)}</b><span>${esc((D.groups || {})[t.g] || "")} · 🏠 für alle</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mwbox">${sens}</div>
+      <div class="lsec">${ic("layers", 15)}Genutzt in ${nm} ${nm === 1 ? "Modul" : "Modulen"}</div>
+      <div class="mwbox">${all.map((u) => `<div class="sxrow stinfo mwu ${u.on === false ? "off" : ""}"><span class="mwn">${u.m === 0 ? "A" : u.m}</span><span class="sxt"><b>${esc(this._mwMod(u.m))} ${esc(this._mwModName(u.m))}${u.on === false ? " · aus" : ""}</b><small>${esc(u.why)}</small></span></div>`).join("")}</div>
+      <div class="lsec">${ic("pencil", 15)}Eingestellt in</div>
+      <div class="mwbox"><button class="sxrow hslink" data-act="mdmwgo" data-k="${esc(t.go)}"><span class="sxi">${ic("sliders", 20)}</span><span class="sxt"><b>${esc(t.where)}</b><small>Dort ändern · gilt danach für alle oben genannten Module</small></span><span class="sxg">${ic("chev", 16)}</span></button></div>
+      <div class="gst">${ic("info", 15)}<span>Ab der nächsten Stufe (M2) ordnest du Sensoren direkt hier zu und tauschst sie für alle Module auf einmal.</span></div>
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _mwGo(go) {
+    const [k, v] = String(go || "").split(":"); const b = document.createElement("button"); b.dataset.k = "";
+    this._modal = null; this._renderModal();
+    if (k === "hs") { this._stOpen = true; this._stA = "hs"; this._stS = v; this._render(); return; }
+    if (k === "room") { this._optOpen(v); return; }
+    if (k === "mess") { this._msOpen(v); return; }
+    if (k === "mod") { const m = { mu: "muxopen", li: "lixopen" }[v] || (MOD_SET[v] || {}).act; if (m) this._act(m, b); return; }
+    const a = { diag: "diag", lfx: "lfxset", tgx: "tgxopen", tm: "tmopen", ort: "ortopen", hz: "hzopen" }[k]; if (a) this._act(a, b);
+  }
+  /* Suche: Sensoren nach Name oder ID */
+  _mwFind(q) {
+    const D = this._mwD; if (!D || !q) return [];
+    const w = this._stNorm(q).split(/\s+/).filter(Boolean);
+    return D.tasks.filter((t) => { const all = this._stNorm(`${t.n} ${t.ents.join(" ")} ${t.ents.map((e) => this._wzName(e)).join(" ")}`); return w.every((x) => all.includes(x)); }).slice(0, 8);
+  }
+  _mwChecks() {
+    const D = this._mwD; if (!D) return [];
+    const bad = D.tasks.filter((t) => t.st !== "ok"), out = [];
+    if (bad.length) out.push(["wn", `Messwerk: ${bad.length === 1 ? "1 Sensor hat" : bad.length + " Sensoren haben"} ein Problem`, bad.slice(0, 3).map((t) => esc(`${t.n} (${t.chk.find((c) => c.st !== "ok").txt})`)).join(", ") + (bad.length > 3 ? " …" : ""), "mdmwopen", "bad"]);
+    (D.hints || []).filter((h) => h.lvl !== "in").forEach((h) => out.push(["wn", esc(h.t), esc(h.x), "mdmwgo", h.go]));
+    return out;
+  }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
     return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}${this._mvTab(m.id)[0]}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : this._mvTab(m.id)[1]}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
@@ -8469,6 +8775,16 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "mdhspr") { this._modal = { type: "hspr" }; this._renderModal(); }
     else if (a === "mdhswx") { this._wxsLoad(true); this._modal = { type: "hswx" }; this._renderModal(); }
     else if (a === "mdhsmig") { if (!this._haus) this._hsPoll(); this._modal = { type: "hsmig" }; this._renderModal(); }
+    else if (a === "mdstgo") { this._stGo(k); }
+    else if (a === "mdmwd") { this._modal = { type: "mwdet", k }; this._renderModal(); }
+    else if (a === "mdmwgo") { this._mwGo(k); }
+    else if (a === "mdmwg") { this._mwG = k || ""; this._mwBad = false; this._render(); }
+    else if (a === "mdmwbad") { this._mwBad = !this._mwBad; this._mwG = ""; this._render(); }
+    else if (a === "mdmwopen") { this._stOpen = true; this._stA = "mw"; this._stQ = ""; this._mwBad = k === "bad"; this._mwG = ""; this._modal = null; this._renderModal(); this._render(); }
+    else if (a === "mdsthelp") { this._modal = { type: "sthelp", k }; this._renderModal(); }
+    else if (a === "mdstlog") { this._stLogOpen(); }
+    else if (a === "mdstundo") { this._stUndo(k); }
+    else if (a === "mdstqx") { this._stQ = ""; this._render(); }
     else if (a === "mdhsgo") { this._pkId = null; this._modal = null; this._renderModal(); this._stOpen = true; this._stA = "hs"; this._stS = k || ""; this._render(); window.scrollTo && window.scrollTo(0, 0); }
     else if (a === "mdhsgoen") { this._modal = null; this._renderModal(); this._stOpen = true; this._stA = "hs"; this._stS = "en"; this._render(); }
     else if (a === "mdhsseen") {

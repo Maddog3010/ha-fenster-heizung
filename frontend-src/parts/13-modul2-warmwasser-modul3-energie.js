@@ -32,6 +32,16 @@
     else if (a === "mdhspr") { this._modal = { type: "hspr" }; this._renderModal(); }
     else if (a === "mdhswx") { this._wxsLoad(true); this._modal = { type: "hswx" }; this._renderModal(); }
     else if (a === "mdhsmig") { if (!this._haus) this._hsPoll(); this._modal = { type: "hsmig" }; this._renderModal(); }
+    else if (a === "mdstgo") { this._stGo(k); }
+    else if (a === "mdmwd") { this._modal = { type: "mwdet", k }; this._renderModal(); }
+    else if (a === "mdmwgo") { this._mwGo(k); }
+    else if (a === "mdmwg") { this._mwG = k || ""; this._mwBad = false; this._render(); }
+    else if (a === "mdmwbad") { this._mwBad = !this._mwBad; this._mwG = ""; this._render(); }
+    else if (a === "mdmwopen") { this._stOpen = true; this._stA = "mw"; this._stQ = ""; this._mwBad = k === "bad"; this._mwG = ""; this._modal = null; this._renderModal(); this._render(); }
+    else if (a === "mdsthelp") { this._modal = { type: "sthelp", k }; this._renderModal(); }
+    else if (a === "mdstlog") { this._stLogOpen(); }
+    else if (a === "mdstundo") { this._stUndo(k); }
+    else if (a === "mdstqx") { this._stQ = ""; this._render(); }
     else if (a === "mdhsgo") { this._pkId = null; this._modal = null; this._renderModal(); this._stOpen = true; this._stA = "hs"; this._stS = k || ""; this._render(); window.scrollTo && window.scrollTo(0, 0); }
     else if (a === "mdhsgoen") { this._modal = null; this._renderModal(); this._stOpen = true; this._stA = "hs"; this._stS = "en"; this._render(); }
     else if (a === "mdhsseen") {

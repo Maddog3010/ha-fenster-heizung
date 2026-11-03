@@ -415,8 +415,12 @@ class WasserManager:
             if not isinstance(raw.get(k), dict):
                 raw[k] = self.modules.get(k)
         self._backup()
+        old = self.modules
         self.modules = clean_modules(raw)
         self._save()
+        vl = self.hass.data.get(DOMAIN, {}).get("verlauf")
+        if vl is not None:
+            vl.record("modules", old, self.modules)
         haus = self.hass.data.get(DOMAIN, {}).get("haus")
         if haus is not None:  # Energiequellen gehören dem Haus
             await haus.async_adopt("wasser", self.modules["energy"])
@@ -427,7 +431,11 @@ class WasserManager:
 
     async def async_set_cfg(self, raw: Any) -> None:
         self._backup()
+        old = self.cfg
         self.cfg = clean_wasser(raw)
+        vl = self.hass.data.get(DOMAIN, {}).get("verlauf")
+        if vl is not None:
+            vl.record("ww", old, self.cfg)
         self._last_set.clear()
         self._last_set_ts.clear()
         self._watch_trigger()

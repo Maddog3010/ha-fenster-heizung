@@ -404,7 +404,11 @@ class HausManager:
             cur["soc"] = raw["soc"]
         if raw.get("mig_seen") and cur.get("mig"):
             cur["mig"]["seen"] = True
+        old = self.data
         self.data = clean(cur)
+        vl = self._mgr("verlauf")
+        if vl is not None:
+            vl.record("haus", old, self.data)
         await self._changed("")
         return self.snapshot()
 

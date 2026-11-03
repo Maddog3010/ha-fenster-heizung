@@ -2,6 +2,38 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b5] - 2026-11-03
+
+Testversion (Beta) mit dem Messwerk, Stufe M1: alle Sensoren der Module 1–19 an einer Stelle.
+
+### Neu
+- **Einstellungen → Messwerk.** Jeder Sensor, der irgendwo in der Integration eingestellt ist, erscheint hier einmal mit seiner Aufgabe („Netzleistung“, „Fenster · Bad“, „Speicher oben“), Live-Wert, Zustand und den Nummern der Module, die ihn nutzen. Gesammelt wird aus Haus, Räumen, Messräumen, Thermostat-Batterien, Modul 2, 4, 8, 9, 11, 16, 17, 18, 19, Luftentfeuchter, Tags, Tablet-Modus und Personen.
+- **Genutzt in:** Ein Tipp auf einen Sensor zeigt, in welchen Modulen er wofür verwendet wird (ausgeschaltete Module grau), wann er zuletzt einen Wert geliefert hat und wo er eingestellt wird, mit Sprung dorthin.
+- **Gruppen und Filter:** Strom, Klima, Fenster & Türen, Wetter, Wasser & Wärme, Geräte, Fahrzeug, Sicherheit, Alltag, Personen. „Probleme“ zeigt nur Sensoren ohne Wert, mit falscher Einheit oder die in Home Assistant fehlen.
+- **Hinweise des Messwerks:** zum Beispiel ein eigener Außensensor in einem Raum, der vom Haus abweicht, oder ein Sensor, von dem viele Module abhängen.
+- **Prüfung in der Übersicht** meldet Sensorprobleme jetzt einmal je Sensor für alle Module statt je Modul.
+- **Suche** findet auch Sensoren nach Name oder Entity-ID („tibber“ zeigt Netzleistung und Strompreis mit ihren Modulen).
+- Eigener Speicher mit Schema-Version, der sich merkt, wann ein Sensor zuletzt geliefert hat. Ist in den Sicherungen enthalten.
+
+### Hinweis
+- In M1 liest das Messwerk nur. Eingestellt wird weiter an der angezeigten Stelle. Zuordnen und Tauschen direkt im Messwerk folgen mit M2 und M3.
+
+## [2026.11.1b4] - 2026-11-03
+
+Testversion (Beta) mit Stufe 3 des neuen Aufbaus der Einstellungen: Katalog, Suche, Verlauf mit Rückgängig, erweiterte Prüfung, Hilfe an der Stelle und Modul 1 mit Reitern.
+
+### Neu
+- **Suche in den Einstellungen.** Oben über den Bereichen (am Handy über der Liste). „Preis“ findet Bezugspreis, Einspeisevergütung und Stundenpreis-Sensor mit Pfad und aktuellem Wert, ein Tipp springt zur Stelle. Gesucht wird auch nach Stichworten wie „Tibber“, „Akku“ oder „Balkon“.
+- **Änderungsverlauf mit Rückgängig.** Jede Änderung an allgemeinen Einstellungen, Haus-Werten, Modulen und Modul 2 wird mit Benutzer und Zeit gemerkt (die letzten 50). Unter System → Änderungsverlauf lässt sich jede Zeile einzeln mit ↶ zurücknehmen. Die Übersicht zeigt die letzten drei Änderungen.
+- **„Gespeichert · Rückgängig“** erscheint nach jeder Änderung für 10 Sekunden.
+- **Prüfung mit Regeln:** Zusätzlich zu Sensoren ohne Wert prüft die Übersicht jetzt, ob die Einheit passt (Leistung in W oder kW, Ladestand in %, Preis in ct oder €, Außentemperatur in °C) und ob das Vorzeichen des Netzes plausibel ist. Jeder Hinweis hat „Beheben“ und springt zur passenden Einstellung.
+- **Hilfe an der Stelle:** „?“ an vielen Einstellungen erklärt kurz, was sie bewirkt, zeigt den aktuellen Wert und führt zur Einstellung oder zur Bedienungsanleitung.
+- **Einstellungs-Katalog:** Alle wichtigen Einstellungen sind einmal beschrieben (Name, Bereich, Ebene, Einheit, Hilfe, Prüfregel). Daraus entstehen Suche, Hilfe, die Namen im Verlauf und die Prüfung.
+
+### Geändert
+- **Modul 1 · Einstellungen mit Reitern** statt Abschnitten zum Aufklappen: Regeln (Sommermodus, wetterabhängige Absenkung), Elektroheizer und Geräte (Luftentfeuchter, Ventile & Batterien), dazu Labs, wenn eingeschaltet. Die anderen Module folgen nach und nach.
+- Hinweise der Prüfung, die etwas zu tun haben, heißen jetzt „Beheben“ statt „Öffnen“.
+
 ## [2026.11.1b3] - 2026-11-03
 
 Testversion (Beta) mit Stufe 2 des neuen Aufbaus der Einstellungen: gemeinsame Werte liegen zentral im Haus.

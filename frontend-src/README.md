@@ -25,5 +25,7 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 10-modul8-wallbox | Modul 8: Wallbox und Laderegelung |
 | 11-modul4-geraetestrom-elektroauto | Modul 4 und Elektroauto-Ansicht |
 | 12-beta-module | Beta-Module (Prognose, Wartung, Batterie, Tarif, Sicherheit, Pool, Wetter, Garten, Rollläden, Wärmepumpe, Lüftung) |
+| 12w-katalog | Einstellungs-Katalog, Suche, Änderungsverlauf, Hilfe, Prüfregeln |
+| 12x-messwerk | Messwerk: alle Sensoren, genutzt in, Prüfung |
 | 13-modul2-warmwasser-modul3-energie | Modul-Seiten, Modul 2 und Modul 3 |
 | 14-registrierung | Registrierung der Komponente |

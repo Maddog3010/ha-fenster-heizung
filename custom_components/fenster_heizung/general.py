@@ -301,8 +301,12 @@ class GeneralManager:
         await self._store.async_save(self._data())
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
+        old = self.data
         self.data = clean_general(raw)
         await self._store.async_save(self._data())
+        vl = self.hass.data.get(DOMAIN, {}).get("verlauf")
+        if vl is not None:
+            vl.record("general", old, self.data)
         haus = self.hass.data.get(DOMAIN, {}).get("haus")
         if haus is not None:  # Preise, Netz und Ladestand gehören dem Haus
             await haus.async_adopt("general", (raw or {}).get("pv") if isinstance(raw, dict) else None)

@@ -30,7 +30,9 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
-> 🧪 **Neu: Versionsnummern nach Jahr, Monat und Release.** Ab November 2026 heißen stabile Updates `2026.11.1`, `2026.11.2` …, Testversionen tragen die Nummer des kommenden Updates (`2026.11.1b1`). Testversionen gibt es nur, wenn du in HACS Beta-Versionen einschaltest. [Mehr dazu](#versionen-und-updates)
+> 🧭 **Neu in der Beta 2026.11.1b5: Einstellungen neu gedacht.** Gemeinsame Werte liegen zentral im **Haus**, das **Messwerk** zeigt alle Sensoren aller Module mit „genutzt in“, dazu Suche, Änderungsverlauf mit Rückgängig und Hilfe an jeder Stelle. [Mehr dazu](#einstellungen)
+
+> 🧪 **Versionsnummern nach Jahr, Monat und Release.** Ab November 2026 heißen stabile Updates `2026.11.1`, `2026.11.2` …, Testversionen tragen die Nummer des kommenden Updates (`2026.11.1b1`). Testversionen gibt es nur, wenn du in HACS Beta-Versionen einschaltest. [Mehr dazu](#versionen-und-updates)
 
 ---
 
@@ -46,6 +48,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | 🏠 | **Startseite** | Ampel, Wetter, Personen, Alarm und Hinweise auf einen Blick |
 | 📱 | **Tablet-Modus** | Große Knöpfe, Ruhemodus, PIN und Display per Bewegungsmelder |
 | 🧪 | **Labs** | Neue Funktionen zum Ausprobieren, ab Werk aus |
+| ⚙️ | **Einstellungen** | Alles an einem Ort: Haus-Werte für alle Module, Messwerk mit allen Sensoren, Suche, Verlauf mit Rückgängig |
 | 💾 | **Sicherung** | Als Datei oder automatisch auf deinen Homeserver |
 
 📖 [**Bedienungsanleitung (PDF)**](docs/Bedienungsanleitung.pdf): 97 Seiten mit Bildern, alle Module 1 bis 19, Datenstand 3.0.6.7 · 📲 [**Tags & Karten mit dem iPhone anlernen**](docs/Anleitung_Tags_iPhone.pdf): 5 Seiten
@@ -230,19 +233,25 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 <p align="center"><img src="docs/vorschau_tablet_pin.png" width="340" alt="PIN"> <img src="docs/vorschau_tablet_hoch.png" width="180" alt="Hochformat"> <img src="docs/vorschau_tablet_ruhe.png" width="340" alt="Ruhemodus"></p>
 </details>
 
-<details>
-<summary><b>Einstellungen und Store</b></summary>
+<a id="einstellungen"></a>
+<details open>
+<summary><b>Einstellungen, Messwerk und Store</b></summary>
 <br>
 
 <p align="center"><img src="docs/vorschau_einstellungen.png" width="420" alt="Einstellungen"> <img src="docs/vorschau_beta_module.png" width="420" alt="Module verwalten"></p>
 
-Der Knopf **Einstellungen** öffnet in jedem Modul dieselbe Seite. Am Desktop stehen die Bereiche links, auf dem Handy öffnet jeder Bereich eine eigene Seite:
+Der Knopf **Einstellungen** öffnet in jedem Modul dieselbe Seite. Am Desktop stehen die Bereiche links, auf dem Handy öffnet jeder Bereich eine eigene Seite. Ganz oben steht die **Suche**: „Preis“ findet Bezugspreis, Einspeisevergütung und Stundenpreis-Sensor, „tibber“ auch die Sensoren mit ihren Modulen. Ein Tipp springt direkt an die Stelle.
 
-- **Übersicht:** Einrichtungsstand und eine Prüfung, die Sensoren ohne Wert, offene Module, die Homeserver-Sicherung und neue Versionen meldet
-- **Haus:** Räume, Personen & Standort, Energiequellen, Preise & Tarif, Wetterquelle
-- **Module:** eingeschaltete Module mit Status, ausgeschaltete als kleines Raster (ein Tipp schaltet ein)
+- **Übersicht:** Einrichtungsstand, eine **Prüfung** (Sensoren ohne Wert, falsche Einheit, Vorzeichen des Netzes, offene Module, Homeserver-Sicherung, neue Versionen) mit „Beheben“ und die **letzten Änderungen** mit ↶
+- **Messwerk:** jeder Sensor, der irgendwo eingestellt ist, einmal mit Aufgabe („Netzleistung“, „Fenster · Bad“), Live-Wert, Zustand und den Modulen, die ihn nutzen. Ein Tipp zeigt **„genutzt in“** mit dem Zweck je Modul und wo er eingestellt wird. Hinweise, wenn zum Beispiel ein Raum einen anderen Außensensor nutzt als das Haus
+- **Haus:** Räume, Personen & Standort und die **gemeinsamen Werte für alle Module**: Energiequellen mit Ladestand, Preise & Tarif, Wetterquelle. Jeder Wert steht nur hier, mit Live-Werten und „Gilt für Modul …“
+- **Module:** eingeschaltete Module mit Status, ausgeschaltete als kleines Raster (ein Tipp schaltet ein). Modul 1 hat Reiter statt Abschnitten zum Aufklappen
 - **Darstellung**, **Dieses Gerät** (was nur in diesem Browser gilt), **Erweiterungen** (Store, Labs, Module verwalten)
-- **System:** Sichern & Wiederherstellen, Diagnose, **Versionen** · **Sponsor**
+- **System:** Sichern & Wiederherstellen, **Änderungsverlauf**, Diagnose, Versionen · **Sponsor**
+
+**Änderungsverlauf und Rückgängig:** Jede Änderung an allgemeinen Einstellungen, Haus-Werten, Modulen und Modul 2 wird mit Benutzer und Zeit gemerkt (die letzten 50) und lässt sich einzeln zurücknehmen. Nach dem Speichern erscheint 10 Sekunden lang „Gespeichert · Rückgängig“.
+
+**Hilfe an der Stelle:** „?“ an vielen Einstellungen erklärt kurz, was sie bewirkt, und führt zur Einstellung oder zur Bedienungsanleitung.
 
 Der **Store** zeigt Dienste, die zu deinen Modulen passen (go-e, Tibber, Wetter, Melder, Thermostate), erkennt, was schon läuft, und führt durch die Einrichtung.
 </details>
@@ -262,6 +271,7 @@ Der **Store** zeigt Dienste, die zu deinen Modulen passen (go-e, Tibber, Wetter,
 
 - **Diagnose:** ob alle Geräte melden, Batterie der Ventile, Fenstersensoren, Protokoll fehlgeschlagener Schaltvorgänge.
 - **Entitäten wählen:** Suchauswahl mit Name, Entity-ID und Wert, passende stehen oben.
+- **Messwerk:** alle gewählten Sensoren an einer Stelle, mit Zustand und den Modulen, die sie nutzen.
 - **Pro Raum** gibt es Schalter für Fensterregelung, Heizplan und Elektroheizer und Sensoren für die pausierte Heizzeit (heute, Monat, Jahr, gesamt).
 </details>
 
@@ -378,6 +388,15 @@ Diese Module sind „In Entwicklung“ und zeigen Konzepte mit Beispielwerten. D
 **Gehen meine Einstellungen bei einem Update verloren?**
 Nein. Sie bleiben erhalten, dazu gibt es interne Kopien und auf Wunsch eine Sicherung auf deinem Homeserver.
 
+**Wo sehe ich, welche Module einen Sensor nutzen?**
+Unter **Einstellungen → Messwerk**. Ein Tipp auf den Sensor zeigt „genutzt in“ mit dem Zweck je Modul. Die Suche oben findet Sensoren auch nach Name oder Entity-ID.
+
+**Wo stelle ich Strompreis, Netz-Sensor oder Außentemperatur ein?**
+Seit 2026.11.1b3 an einer Stelle für alle Module: **Einstellungen → Haus** (Energiequellen, Preise & Tarif, Wetterquelle). Beim Update wurden die Werte aus Modul 1, Modul 3, der Darstellung und Modul 9 einmalig übernommen, vorher wurde automatisch gesichert.
+
+**Kann ich eine Änderung zurücknehmen?**
+Ja, unter **Einstellungen → System → Änderungsverlauf** jede einzeln, oder direkt nach dem Speichern über „Rückgängig“.
+
 **Werden Daten an einen Server geschickt?**
 Nur an die Dienste, die du selbst einrichtest (Wetter, Strompreis, Tibber). Für den Update-Hinweis und die Sponsor-Sperrliste fragt die Integration GitHub.
 
@@ -393,6 +412,7 @@ Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues),
   2. `version` in `manifest.json` setzen und `build.py` ausführen.
   3. Auf GitHub ein Release mit demselben Tag ohne `v` anlegen. Für eine Testversion (`…b1`) den Haken **Set as a pre-release** setzen.
 - Schreibende WebSocket-Befehle sind Administratoren vorbehalten.
+- **Einstellungen:** `haus.py` hält die gemeinsamen Werte (Schema-Version, einmalige Übernahme, Spiegel an die alten Stellen), `verlauf.py` den Änderungsverlauf mit Rückgängig, `messwerk.py` sammelt alle Sensoren aller Module mit „genutzt in“. Im Dashboard beschreibt `12w-katalog.js` jede Einstellung einmal (Suche, Hilfe, Prüfregeln), `12x-messwerk.js` zeigt das Messwerk.
 
 ---
 <p align="center"><a href="https://github.com/sponsors/Maddog3010"><img src="docs/sponsor_banner.png" alt="Sponsor werden" width="70%"></a></p>

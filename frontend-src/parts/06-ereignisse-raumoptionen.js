@@ -57,7 +57,7 @@
       else if (t.dataset && t.dataset.f === "gname" && this._modal) { this._modal.draft.name = t.value; }
       else if (t.dataset && t.dataset.f === "time" && this._modal) { this._modal.draft.entries[+t.dataset.i].time = t.value || "00:00"; this._renderModal(); }
   }
-  _onInput(t) { if (t.dataset && (t.dataset.f === "msxname" || t.dataset.f === "msxn") && this._msChange(t)) return; if (t.dataset && t.dataset.f === "lfxname" && this._lfChange(t)) return; if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
+  _onInput(t) { if (t.dataset && t.dataset.f === "stq") { this._stInput(t); return; } if (t.dataset && (t.dataset.f === "msxname" || t.dataset.f === "msxn") && this._msChange(t)) return; if (t.dataset && t.dataset.f === "lfxname" && this._lfChange(t)) return; if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
 
   /* ---------------- Aktionen ---------------- */
   _act(a, b) {
@@ -108,7 +108,8 @@
     else if (a === "gpvsign") { this._gen.pv = { ...this._pv(), sign: b.dataset.k }; this._saveGen(); this._render(); this._renderModal(); }
     else if (a === "mver") { this._modal = { type: "mver" }; this._renderModal(); }
     else if (a === "mvsub") { if (this._modal && this._modal.type === "mver") { this._modal.sub = b.dataset.k || null; this._renderModal(); const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; } }
-    else if (a === "fhset") { this._modal = { type: "fh" }; this._renderModal(); }
+    else if (a === "fhset") { this._modal = { type: "fh", tab: b.dataset.k || "" }; this._renderModal(); }
+    else if (a === "fhtab") { if (this._modal) { this._modal.tab = b.dataset.k; this._pkId = null; this._renderModal(); const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; } }
     else if (a === "fhsec") { const s = this._fhOpenSet(); s.has(b.dataset.k) ? s.delete(b.dataset.k) : s.add(b.dataset.k); try { localStorage.setItem("fh-open", JSON.stringify([...s])); } catch (_) {} this._renderModal(); }
     else if (a === "gen") {
       this._modal = { type: "gen", restore: null, baks: null, bakAsk: null }; this._renderModal();

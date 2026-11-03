@@ -35,7 +35,7 @@ LABELS = {
     "wallbox": "Modul 8 Wallbox", "wallbox_stats": "Modul 8 Statistik", "solar": "Modul 16 Solar-Prognose",
     "wetter": "Modul 9 Wetter", "entfeuchter": "Modul 1 Luftentfeuchter", "sicherheit": "Modul 11 Sicherheit", "muell": "Modul 17 Müllabfuhr",
     "hausfluss": "Modul 19 Hausfluss", "tags": "Lab Tags & Karten", "tablets": "Tablet-Modus", "labs": "Labs",
-    "tibber": "Tibber", "diag": "Diagnose", "haus": "Haus (Energiequellen, Preise, Wetterquelle)",
+    "tibber": "Tibber", "diag": "Diagnose", "haus": "Haus (Energiequellen, Preise, Wetterquelle)", "messwerk": "Messwerk",
 }
 
 

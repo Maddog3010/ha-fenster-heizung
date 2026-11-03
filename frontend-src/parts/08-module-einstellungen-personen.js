@@ -36,7 +36,7 @@
       const b = this._mdBackup();
       this._hass.callWS({ type: "fenster_heizung/set_modules", modules: b.modules })
         .then(() => this._hass.callWS({ type: "fenster_heizung/set_wasser", ww: b.ww }))
-        .then((r) => { this._mdPoll(r); this._pollGen(); this._hsPoll(); })
+        .then((r) => { this._mdPoll(r); this._pollGen(); this._hsPoll(); this._stSaved(); })
         .catch(() => this._toast("Modul-Einstellung konnte nicht gespeichert werden"));
     }, 500);
   }
@@ -87,7 +87,7 @@
   }
   _stChecks() {
     const out = [], dead = this._stDead(), act = MODS.filter((m) => this._stIsOn(m)), mn = (id) => MODS.find((m) => m.id === id) || { n: "", name: id };
-    Object.entries(dead).forEach(([id, l]) => out.push(["wn", `Modul ${mn(id).n}: ${l.length === 1 ? "1 Sensor liefert" : l.length + " Sensoren liefern"} keinen Wert`, l.slice(0, 2).map((x) => esc(this._wzName(x))).join(", ") + (l.length > 2 ? " …" : "") + " · nicht verfügbar", MOD_SET[id] ? MOD_SET[id].act : "mdmgr"]));
+    if (this._mwD) this._mwChecks().forEach((x) => out.push(x)); else Object.entries(dead).forEach(([id, l]) => out.push(["wn", `Modul ${mn(id).n}: ${l.length === 1 ? "1 Sensor liefert" : l.length + " Sensoren liefern"} keinen Wert`, l.slice(0, 2).map((x) => esc(this._wzName(x))).join(", ") + (l.length > 2 ? " …" : "") + " · nicht verfügbar", MOD_SET[id] ? MOD_SET[id].act : "mdmgr"]));
     act.filter((m) => !m.beta && !this._stDone(m.id)).forEach((m) => out.push(["wn", `Modul ${m.n} ${m.name} ist noch nicht eingerichtet`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act]));
     const eb = this._stEbk && this._stEbk.cfg;
     if (eb && eb.on && eb.last && eb.last.ok === false) out.push(["wn", "Sicherung auf den Homeserver fehlgeschlagen", esc(eb.last.msg || ""), "gen"]);
@@ -98,7 +98,8 @@
     const mig = this._haus && this._haus.mig;
     if (mig && mig.conflicts && mig.conflicts.length && !mig.seen) out.push(["wn", "Haus-Werte: bitte einmal prüfen", esc(mig.conflicts[0]), "mdhsmig"]);
     else if (mig && !mig.seen) out.push(["in", "Gemeinsame Werte liegen jetzt im Haus", "Energiequellen, Preise, Ladestand und Wetterquelle an einer Stelle", "mdhsmig"]);
-    if (!out.some((x) => x[0] === "wn")) out.unshift(["ok", "Alles eingerichtet", "Alle gewählten Sensoren liefern Werte", ""]);
+    this._stRules().forEach((x) => out.push(x));
+    if (!out.some((x) => x[0] === "wn")) out.unshift(["ok", "Alles eingerichtet", "Alle gewählten Sensoren liefern Werte, Einheiten und Vorzeichen passen", ""]);
     return out;
   }
   _stRender() {
@@ -115,6 +116,7 @@
     const modChip = (m) => { if (dead[m.id]) return `<em class="sxc er">${dead[m.id].length === 1 ? "1 Sensor ohne Wert" : dead[m.id].length + " Sensoren ohne Wert"}</em>`; if (m.beta) return `<em class="sxc ${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>`; const d = this._stDone(m.id); return d ? `<em class="sxc ok">${esc(d)}</em>` : `<em class="sxc wa">Offen</em>`; };
     const AREAS = [
       ["ov", "info", "Übersicht", `${done} von ${core.length} eingerichtet${nWarn ? " · " + nWarn + (nWarn === 1 ? " Hinweis" : " Hinweise") : ""}`, nWarn ? `<em class="sxc wa">${nWarn}</em>` : ""],
+      ["mw", "gauge", "Messwerk", this._mwD ? `${this._mwD.stats.sensors} Sensoren · ${this._mwD.stats.bad ? this._mwD.stats.bad + " mit Problem" : "alle liefern"}` : "Alle Sensoren aller Module", this._mwD && this._mwD.stats.bad ? `<em class="sxc wa">${this._mwD.stats.bad}</em>` : ""],
       ["hs", "home", "Haus", "Räume, Personen, Energie, Preise", ""],
       ["md", "puzzle", "Module", `${act.length} an · ${off.length} aus`, ""],
       ["lk", "palette", "Darstellung", "Farben, Wetter, Raumsymbole", ""],
@@ -126,11 +128,13 @@
     const card = (body, ttl) => `<div class="card sxl stcard">${ttl ? `<div class="stch">${ttl}</div>` : ""}${body}</div>`;
     const page = {
       ov: () => `<div class="sxsum"><div><b>${act.length}</b><span>${act.length === 1 ? "Modul aktiv" : "Module aktiv"}</span></div><div><b>${done} / ${core.length}</b><span>Einrichtung erledigt</span></div><div><b>${this._collect().length}</b><span>Räume · ${P.length} ${P.length === 1 ? "Person" : "Personen"}</span></div><div><b>${esc(ltTxt)}</b><span>Sicherung Homeserver</span></div></div>
-        ${card(chk.map(([l, t, sub, a]) => `<${a ? `button class="stck" data-act="${a}"` : 'div class="stck"'}><span class="stdot ${l}"></span><span class="sxt"><b>${t}</b>${sub ? `<small>${sub}</small>` : ""}</span>${a ? `<span class="stgo">Öffnen ${ic("chev", 14)}</span>` : ""}</${a ? "button" : "div"}>`).join(""), `Prüfung <small>· gerade eben</small>`)}
+        ${card(chk.map(([l, t, sub, a, k]) => `<${a ? `button class="stck" data-act="${a}"${k ? ` data-k="${esc(k)}"` : ""}` : 'div class="stck"'}><span class="stdot ${l}"></span><span class="sxt"><b>${t}</b>${sub ? `<small>${sub}</small>` : ""}</span>${a ? `<span class="stgo">${l === "wn" ? "Beheben" : "Öffnen"} ${ic("chev", 14)}</span>` : ""}</${a ? "button" : "div"}>`).join(""), `Prüfung <small>· gerade eben</small>`)}
+        ${card(`${this._stLogRows(this._stLog || [], 3)}${(this._stLog || []).length > 3 ? `<button class="stck" data-act="mdstlog"><span class="sxt"><b>Alle ${this._stLog.length} Änderungen anzeigen</b></span><span class="stgo">Verlauf ${ic("chev", 14)}</span></button>` : ""}`, `Letzte Änderungen <small>· mit Rückgängig</small>`)}
         ${card(`${row("total", `Preise &amp; Tarif ${lv("all")}`, `${num(this._price(), 1)} ct Bezug · ${num(this._feed(), 1)} ct Einspeisung · Haus`, "mdsts", "pr")}
           ${row("sun", `Energiequellen ${lv("all")}`, "Solar, Netz, Batterie, Ladestand · Haus", "mdsts", "en", this._enConfigured() ? `<em class="sxc ok">Eingerichtet</em>` : `<em class="sxc wa">Offen</em>`)}
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Datei und Homeserver", "gen")}`, "Häufig gebraucht")}`,
       hs: () => this._hsPage(row, card, lv),
+      mw: () => this._mwPage(card),
       md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
         ${off.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdstoff" aria-expanded="${!this._stOffC}">Ausgeschaltet <small>· ${off.length} · ein Tipp schaltet ein</small><span class="stgo">${this._stOffC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>
           ${this._stOffC ? "" : `<div class="stmini">${off.map((m) => `<button class="stmb" data-act="mdtog" data-k="${m.id}" title="${esc(m.name)} einschalten">${ic(m.icon, 16)}<span class="stmt"><b>${esc(m.short)}</b><small>Modul ${m.n}${m.sponsor ? " · Sponsor" : m.beta && modSt(m) ? " · " + STG[modSt(m)].t : ""}</small></span></button>`).join("")}</div>`}</div>` : ""}`,
@@ -142,6 +146,7 @@
           ${row("flask", "Labs", "Experimentelle Funktionen ansehen und einschalten", "labopen", "", `<em class="sxc ${this._labCount() ? "ok" : "off"}">${this._labCount() ? this._labCount() + " an" : "Aus"}</em>`)}
           ${row("layers", "Module verwalten", "Module ein- und ausschalten, eigene Module hinzufügen", "mdmgr")}`),
       sy: () => card(`${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern, Homeserver, interne Kopien", "gen", "", `<em class="sxc ${lt ? "ok" : ""}">${esc(ltTxt)}</em>`)}
+          ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
           ${row("layers", "Versionen", "Letzte Updates mit Änderungen, Modulversionen und Versionsschema", "mver")}`),
       sp: () => card(this._spnRow()),
@@ -152,12 +157,19 @@
       : `<button class="sxrow" data-act="mdsta" data-k="${k}"><span class="sxi">${ic(i, 20)}</span><span class="sxt"><b>${t}</b><small>${sub}</small></span>${ch}<span class="sxg">${ic("chev", 16)}</span></button>`).join("")}</nav>`;
     const SUB = { en: "Energiequellen", pr: "Preise &amp; Tarif", wx: "Wetterquelle" }, sub = area === "hs" && SUB[this._stS] ? this._stS : "";
     const head = A ? sub ? `<div class="sthd"><button class="lnk stbk" data-act="mdsts" data-k="">‹ Haus</button><h2>${SUB[sub]}</h2></div>` : `<div class="sthd">${!wide ? `<button class="lnk stbk" data-act="mdsta" data-k="">‹ Einstellungen</button>` : `<div class="mut sm" style="margin:0">Einstellungen</div>`}<h2>${A[2]}</h2></div>` : "";
-    const body = !wide && !A ? `<div class="card sxl stcard">${nav}</div>` : wide ? `<div class="stlay">${nav}<div class="stmain">${head}${page[area]()}</div></div>` : `${head}${page[area]()}`;
+    /* Suche: Treffer und normaler Inhalt stehen nebeneinander im DOM, beim Tippen wird nur umgeschaltet (das Eingabefeld bleibt erhalten). */
+    const q = !!this._stQ, res = `<div id="stres">${q ? this._stResHtml(wide) : ""}</div>`, sbox = this._stSearchBox(), wrapB = (x) => `<div id="stbody"${q ? " hidden" : ""}>${x}</div>`;
+    const body = wide ? `<div class="stlay"><div class="stside">${sbox}${nav}</div><div class="stmain">${res}${wrapB(head + page[area]())}</div></div>`
+      : !A || q ? `${sbox}${res}${wrapB(`<div class="card sxl stcard">${nav}</div>`)}` : `${head}${page[area]()}`;
+    if (!this._stLogTs || Date.now() - this._stLogTs > 30000) { this._stLogTs = Date.now(); this._stLogLoad(); }
+    this._mwLoad();
+    const ae = sr.activeElement, foc = ae && ae.dataset && ae.dataset.f === "stq" ? [ae.selectionStart, ae.selectionEnd] : null;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Bereiche an einem Ort</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="mdstx">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw stw">${body}</div></div>`;
+    if (foc) { const i = sr.querySelector('[data-f="stq"]'); if (i) { i.focus(); try { i.setSelectionRange(foc[0], foc[1]); } catch (_) { /* Suchfeld */ } } }
   }
   /* ---------------- Haus (Stufe 2): gemeinsame Werte an einer Stelle. Der Haus-Speicher im Backend ist führend und verteilt die Werte an die Module. ---------------- */
   _hsPoll() {
@@ -179,8 +191,8 @@
     const txt = isFinite(v) ? `${sign && v > 0 ? "+" : v < 0 ? "−" : ""}${num(Math.abs(v), Math.abs(v) >= 100 || u === "%" ? 0 : 1)}${u ? " " + u : ""}` : esc(s.state);
     return `<em class="hsv">${txt} ${ic("check", 12)}</em>`;
   }
-  _hsRow(icn, ttl, id, note, sign, empty) {
-    return `<div class="sxrow stinfo hsr"><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}</b><small>${id ? esc(id) + (note ? " · " + note : "") : esc(empty || "nicht gewählt")}</small></span>${this._hsVal(id, sign)}</div>`;
+  _hsRow(icn, ttl, id, note, sign, empty, cid) {
+    return `<div class="sxrow stinfo hsr"><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}${cid ? this._stHelpBtn(cid) : ""}</b><small>${id ? esc(id) + (note ? " · " + note : "") : esc(empty || "nicht gewählt")}</small></span>${this._hsVal(id, sign)}</div>`;
   }
   _hsEnCheck() {
     const E = this._enState(), g = this._enGrid(), st = this._hass.states, ids = [E.ent.pv, E.ent.pv2, g.ent, E.ent.house, E.ent.bat, E.ent.bchg, E.ent.bdis, this._pv().soc_sensor].filter(Boolean);
@@ -200,27 +212,27 @@
       <div class="gbtns" style="margin-top:8px"><button class="btn2" data-act="mdhsmig">Was wurde übernommen?</button>${adm ? `<button class="btn2 pri" data-act="mdhsseen">Verstanden</button>` : ""}</div></div>` : "";
     if (sub === "en") {
       const ck = this._hsEnCheck(), nm = this._enPvNames(), cnt = ["pve", "pve2", "imp", "exp"].filter((k) => E.ent[k]).length;
-      return `${use("energy")}${card(`${this._hsRow("sun", esc(nm[0]), E.ent.pv, "", false)}
+      return `${use("energy")}${card(`${this._hsRow("sun", esc(nm[0]), E.ent.pv, "", false, "", "haus.energy.ent.pv")}
         ${E.ent.pv2 ? this._hsRow("sun", `Zweite Anlage „${esc(nm[1])}“`, E.ent.pv2, "", false) : ""}
-        ${this._hsRow("bolt", "Netz", g.ent, g.sign === "import" ? "Bezug positiv" : "Einspeisung positiv", true)}
+        ${this._hsRow("bolt", "Netz", g.ent, g.sign === "import" ? "Bezug positiv" : "Einspeisung positiv", true, "", "haus.energy.ent.grid")}
         ${E.bmode === "two" ? this._hsRow("energy", "Batterie lädt", E.ent.bchg, "", false) + this._hsRow("energy", "Batterie entlädt", E.ent.bdis, "", false) : this._hsRow("energy", "Batterie", E.ent.bat, E.bsign === "discharge" ? "Entladen positiv" : "Laden positiv", true, "keine Batterie")}
-        ${this._hsRow("energy", "Ladestand", p.soc_sensor, "", false, "kein Ladestand")}
-        ${this._hsRow("home", "Hausverbrauch", E.ent.house, "", false, "wird aus Solar, Netz und Batterie berechnet")}
+        ${this._hsRow("energy", "Ladestand", p.soc_sensor, "", false, "kein Ladestand", "general.pv.soc_sensor")}
+        ${this._hsRow("home", "Hausverbrauch", E.ent.house, "", false, "wird aus Solar, Netz und Batterie berechnet", "haus.energy.ent.house")}
         <div class="sxrow stinfo"><span class="sxi">${ic("chart", 20)}</span><span class="sxt"><b>Zähler für Tagessummen</b><small>${cnt ? `${cnt} ${cnt === 1 ? "Zähler" : "Zähler"} gewählt` : "keine, Woche, Monat und Jahr werden aus der Leistung berechnet"}</small></span></div>`)}
         <div class="stck hsck ${ck[0]}"><span class="stdot ${ck[0]}"></span><span class="sxt"><b>${ck[1]}</b>${ck[2] ? `<small>${ck[2]}</small>` : ""}</span></div>
         ${edit("mdhsen")}`;
     }
     if (sub === "pr") {
       const src = (k) => p[k + "_mode"] === "entity" && p[k + "_sensor"] ? `Sensor ${esc(this._wzName(p[k + "_sensor"]))}${Number(p[k]) ? ` · Ersatzwert ${num(p[k], 2)} ct` : ""}` : "Festwert";
-      return `${use("price")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("total", 20)}</span><span class="sxt"><b>Bezugspreis</b><small>${src("price")}</small></span><em class="hsv">${num(this._rate("price"), 2)} ct/kWh</em></div>
-        <div class="sxrow stinfo hsr"><span class="sxi">${ic("sun", 20)}</span><span class="sxt"><b>Einspeisevergütung</b><small>${src("feed")}</small></span><em class="hsv">${num(this._rate("feed"), 2)} ct/kWh</em></div>
+      return `${use("price")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("total", 20)}</span><span class="sxt"><b>Bezugspreis${this._stHelpBtn("general.pv.price")}</b><small>${src("price")}</small></span><em class="hsv">${num(this._rate("price"), 2)} ct/kWh</em></div>
+        <div class="sxrow stinfo hsr"><span class="sxi">${ic("sun", 20)}</span><span class="sxt"><b>Einspeisevergütung${this._stHelpBtn("general.pv.feed")}</b><small>${src("feed")}</small></span><em class="hsv">${num(this._rate("feed"), 2)} ct/kWh</em></div>
         ${s.on.dt ? row("chart", "Stundenpreise", "Börsenpreise und günstigste Fenster · Modul 14", "mdbeta") : ""}`)}
         ${edit("mdhspr")}`;
     }
     if (sub === "wx") {
       this._wxsLoad(); const W = this._wxs().cfg, wl = Object.keys(st).filter((k) => k.startsWith("weather.")), auto = (x) => x ? `automatisch: ${esc(this._wzName(x))}` : "keine gefunden";
       const wv = (id) => { const w = id && st[id]; return w ? `<em class="hsv">${esc((WX[w.state] || ["", w.state])[1])}${w.attributes.temperature != null ? " · " + num(w.attributes.temperature, 1) + " °C" : ""} ${ic("check", 12)}</em>` : ""; };
-      return `${use("wx")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("partly", 20)}</span><span class="sxt"><b>Wetter</b><small>${L.entity ? esc(L.entity) : auto(wl[0])}</small></span>${wv(L.entity || wl[0])}</div>
+      return `${use("wx")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("partly", 20)}</span><span class="sxt"><b>Wetter${this._stHelpBtn("layout.wx.entity")}</b><small>${L.entity ? esc(L.entity) : auto(wl[0])}</small></span>${wv(L.entity || wl[0])}</div>
         ${this._hsRow("thermo", "Außentemperatur", L.outdoor, "", false, "aus der Wetter-Entität")}
         ${this._hsRow("fan", "Wind", W.wind, "", false, "aus der Wetter-Entität")}
         <div class="sxrow stinfo hsr"><span class="sxi">${ic("shield", 20)}</span><span class="sxt"><b>Amtliche Warnungen</b><small>${!W.official.on ? "nicht verwenden" : W.official.ent ? esc(W.official.ent) : "automatisch (DWD, NINA)"}</small></span>${W.official.ent ? this._hsVal(W.official.ent) : ""}</div>`)}

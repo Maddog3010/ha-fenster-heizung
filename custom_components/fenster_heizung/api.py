@@ -13,6 +13,7 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.storage import Store
 
+from .verlauf import WHO
 from .backup import SafeStore
 from .const import (
     BLOCK_IDS,
@@ -316,6 +317,7 @@ async def ws_get_general(hass: HomeAssistant, connection, msg: dict) -> None:
 )
 @websocket_api.async_response
 async def ws_set_general(hass: HomeAssistant, connection, msg: dict) -> None:
+    _who(connection)
     mgr = hass.data.get(DOMAIN, {}).get("general")
     if mgr is None:
         connection.send_error(msg["id"], "not_ready", "Noch nicht bereit")
@@ -375,6 +377,7 @@ def match_rooms(backup_rooms: dict[str, Any], entries: list[tuple[str, str]]) ->
 @websocket_api.async_response
 async def ws_restore(hass: HomeAssistant, connection, msg: dict) -> None:
     """Sicherung einspielen: Aussehen, Allgemeines, Anwesenheit, Heizpläne, Raumeinstellungen."""
+    _who(connection)
     data = msg["data"]
     rooms = data.get("rooms")
     if data.get("app") != DOMAIN or data.get("format") != BACKUP_FORMAT or not isinstance(rooms, dict):
@@ -503,6 +506,47 @@ async def ws_set_layout(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], store["layout"])
 
 
+def _who(connection) -> None:
+    """Name des Benutzers für den Änderungsverlauf."""
+    user = getattr(connection, "user", None)
+    WHO.set((getattr(user, "name", "") or "Benutzer")[:40])
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mw_get"})
+@websocket_api.async_response
+async def ws_mw_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mw = hass.data.get(DOMAIN, {}).get("messwerk")
+    if mw is None:
+        connection.send_result(msg["id"], {"ready": False})
+        return
+    await _layout(hass)  # Messräume und Szenen stehen im Layout
+    connection.send_result(msg["id"], {"ready": True, **mw.snapshot()})
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/log_get"})
+@websocket_api.async_response
+async def ws_log_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    vl = hass.data.get(DOMAIN, {}).get("verlauf")
+    connection.send_result(msg["id"], {"log": vl.snapshot() if vl is not None else []})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/log_undo", vol.Required("id"): int})
+@websocket_api.async_response
+async def ws_log_undo(hass: HomeAssistant, connection, msg: dict) -> None:
+    vl = hass.data.get(DOMAIN, {}).get("verlauf")
+    if vl is None:
+        connection.send_error(msg["id"], "not_ready", "Verlauf ist noch nicht bereit")
+        return
+    _who(connection)
+    try:
+        r = await vl.async_undo(msg["id"])
+    except ValueError as err:
+        connection.send_error(msg["id"], "invalid", str(err))
+        return
+    connection.send_result(msg["id"], {**r, "haus": _haus_snapshot(hass), "layout": hass.data[DOMAIN].get("layout"), **_general_snapshot(hass), **_modules_snapshot(hass)})
+
+
 def _haus_snapshot(hass: HomeAssistant) -> dict[str, Any] | None:
     mgr = hass.data.get(DOMAIN, {}).get("haus")
     return mgr.snapshot() if mgr is not None and mgr.ready else None
@@ -518,6 +562,7 @@ async def ws_haus_get(hass: HomeAssistant, connection, msg: dict) -> None:
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/haus_set", vol.Required("haus"): dict})
 @websocket_api.async_response
 async def ws_haus_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    _who(connection)
     mgr = hass.data.get(DOMAIN, {}).get("haus")
     if mgr is None or not mgr.ready:
         connection.send_error(msg["id"], "not_ready", "Haus-Werte sind noch nicht bereit")
@@ -729,6 +774,7 @@ async def ws_gs_get(hass: HomeAssistant, connection, msg: dict) -> None:
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/set_modules", vol.Required("modules"): dict})
 @websocket_api.async_response
 async def ws_set_modules(hass: HomeAssistant, connection, msg: dict) -> None:
+    _who(connection)
     mgr = hass.data.get(DOMAIN, {}).get("wasser")
     if mgr is not None:
         await mgr.async_set_modules(msg["modules"])
@@ -739,6 +785,7 @@ async def ws_set_modules(hass: HomeAssistant, connection, msg: dict) -> None:
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/set_wasser", vol.Required("ww"): dict})
 @websocket_api.async_response
 async def ws_set_wasser(hass: HomeAssistant, connection, msg: dict) -> None:
+    _who(connection)
     mgr = hass.data.get(DOMAIN, {}).get("wasser")
     if mgr is not None:
         await mgr.async_set_cfg(msg["ww"])
@@ -1299,7 +1346,7 @@ async def ws_lf_cmd(hass: HomeAssistant, connection, msg: dict) -> None:
 
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
-        ws_get_state, ws_set_layout, ws_haus_get, ws_haus_set, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
+        ws_get_state, ws_set_layout, ws_haus_get, ws_haus_set, ws_log_get, ws_log_undo, ws_mw_get, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,

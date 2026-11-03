@@ -26,6 +26,8 @@ from .api import _version as _api_version, async_register_api
 from .diag import DiagManager, diag_expect, diag_log
 from .general import GeneralManager
 from .haus import HausManager
+from .verlauf import Verlauf
+from .messwerk import Messwerk
 from .geraete import GeraeteManager
 from .hersteller import logic as hs_logic, lookup as hs_lookup
 from .raumregelung import RoomRegulator
@@ -1212,6 +1214,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry.async_on_unload(entry.add_update_listener(_reload))
     await _async_register_panel(hass)
     store = hass.data.setdefault(DOMAIN, {})
+    if "verlauf" not in store:
+        store["verlauf"] = Verlauf(hass)
+        await store["verlauf"].async_start()
     if "presence" not in store:
         store["presence"] = PresenceManager(hass)
         await store["presence"].async_start()
@@ -1272,6 +1277,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "sicherheit" not in store:
         store["sicherheit"] = SicherheitManager(hass)
         await store["sicherheit"].async_start()
+    if "messwerk" not in store:  # liest alle anderen Speicher, deshalb als Letztes
+        store["messwerk"] = Messwerk(hass)
+        await store["messwerk"].async_start()
     return True
 
 
@@ -1338,6 +1346,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             if spn is not None:
                 spn.async_stop()
             hass.data.get(DOMAIN, {}).pop("haus", None)
+            hass.data.get(DOMAIN, {}).pop("verlauf", None)
+            hass.data.get(DOMAIN, {}).pop("messwerk", None)
             sfm = hass.data.get(DOMAIN, {}).pop("sicherheit", None)
             if sfm is not None:
                 sfm.async_stop()

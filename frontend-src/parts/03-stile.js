@@ -1100,7 +1100,7 @@ button.stck{cursor:pointer}
 .stw .sxsum{margin:0 0 14px}
 @media(max-width:760px){.stw .sxi{display:grid}.stw .sxc{display:inline-block}.stw .sxsum{grid-template-columns:1fr 1fr}}
 .hsuse{font-size:.8rem;color:var(--mut);margin:-4px 4px 10px}
-.hsr .sxt small{overflow-wrap:anywhere}.hsr .sxt{min-width:0;flex:1}.stmain,.stw{min-width:0;max-width:100%}.stw .card{max-width:100%;box-sizing:border-box}
+.hsr .sxt small{overflow-wrap:anywhere}.hsr .sxt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hsr .sxt{min-width:0;flex:1}.stmain,.stw{min-width:0;max-width:100%}.stw .card{max-width:100%;box-sizing:border-box}
 .hsv{flex:none;font-style:normal;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:10px;border:1px solid var(--line);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .hsv svg{color:var(--teal)}.hsv.bad{color:#f87171;border-color:color-mix(in srgb,#ef4444 50%,transparent);background:color-mix(in srgb,#ef4444 9%,transparent)}
 .hsck{border:1px solid color-mix(in srgb,#34d399 45%,transparent);background:color-mix(in srgb,#34d399 8%,transparent);border-radius:14px;margin:0 0 12px}
@@ -1152,4 +1152,30 @@ button.stck{cursor:pointer}
 .lfkind{display:grid;gap:8px}.lfkind button{text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:none;color:inherit;font:inherit;cursor:pointer}
 .lfkind button b{display:block;font-size:.88rem}.lfkind button span{display:block;font-size:.74rem;color:var(--mut);margin-top:3px}.lfkind button.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}
 .lfstep{display:flex;align-items:center;gap:8px}.lfstep b{min-width:72px;text-align:center;font-size:1.05rem;font-variant-numeric:tabular-nums}.lfstep b small{font-size:.75rem;color:var(--mut);font-weight:600}
+
+.stside{display:flex;flex-direction:column;gap:10px;position:sticky;top:8px}.stside .stnav{position:static}
+.stq{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0 10px;margin:0 0 12px;color:var(--mut)}.stside .stq{margin:0}
+.stq:focus-within{border-color:color-mix(in srgb,var(--teal) 60%,var(--line))}
+.stq input{flex:1;min-width:0;border:0;background:transparent;color:var(--primary-text-color,#e6edf3);font:inherit;padding:11px 0;outline:none}
+.sthx{border:0;background:transparent;color:var(--mut);display:grid;cursor:pointer;padding:4px}
+.strs{display:flex;align-items:center;border-top:1px solid var(--line)}.strs:first-of-type{border-top:0}.strs .sxrow{flex:1;min-width:0}.strs .sxrow+.sxrow{border-top:0}.strs .sthq{margin-right:12px}
+.sthq{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--teal);font:inherit;font-size:.74rem;font-weight:800;cursor:pointer;margin-left:8px;vertical-align:1px;display:inline-grid;place-items:center;padding:0}
+.sthq:hover{background:color-mix(in srgb,var(--teal) 14%,transparent)}
+a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center;justify-content:center;gap:6px}.stq:not(:focus-within) .sthx{opacity:.5}
+.sthtx{font-size:.92rem;line-height:1.5;margin:4px 0 10px}
+.stlr{display:flex;align-items:center;gap:12px;padding:10px 16px;border-top:1px solid var(--line)}.stcard .stlr:first-of-type,.stlog .stlr:first-child{border-top:0}.stlog{border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stlr.done{opacity:.55}.stlw{flex:none;width:92px;font-size:.78rem;font-weight:650;font-variant-numeric:tabular-nums}.stlw small{display:block;font-weight:400;color:var(--mut)}
+.stlr .sxt{flex:1;min-width:0;display:flex;flex-direction:column}.stlr .sxt small{color:var(--mut);font-size:.78rem;overflow-wrap:anywhere}
+.stlu{flex:none;font-size:1.1rem;font-weight:700;color:var(--teal)}
+.toast.stun{display:flex;align-items:center;gap:10px;border-radius:16px;width:max-content;max-width:calc(100vw - 32px);box-sizing:border-box}.toast.stun span{flex:1;min-width:0}.toast.stun svg{flex:none;color:var(--teal)}.toast.stun .lnk{color:var(--teal);font-weight:800;padding:0 0 0 4px;white-space:nowrap}
+.mdtabs{margin:2px 0 12px}.mdtabs button{display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.fhst .sxrow{cursor:default}.fhst .sxrow:hover{background:none}
+@media(max-width:620px){.mdtabs button svg{display:none}.stlw{width:70px}.strs .stlv{display:none}}
+.mwms{display:inline-flex;gap:2px;flex:none;flex-wrap:wrap;max-width:110px;justify-content:flex-end}.mwms i{font-style:normal;font-size:.62rem;font-weight:800;min-width:16px;height:16px;padding:0 3px;box-sizing:border-box;border-radius:5px;background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal);display:inline-grid;place-items:center}.mwms i.off{background:color-mix(in srgb,var(--mut) 14%,transparent);color:var(--mut)}
+.mwr .sxt{min-width:0}.mwr .sxt small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}.mwr{gap:10px}
+.hsv.wa{color:#f59e0b;border-color:color-mix(in srgb,#f59e0b 50%,transparent)}.sxsum b.wa{color:#f59e0b}
+.mwf{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.mwf .chip{border:1px solid var(--line);background:transparent;color:inherit;font:inherit;font-size:.78rem;font-weight:700;padding:5px 11px;border-radius:999px;cursor:pointer}.mwf .chip.sel{background:var(--teal);color:#062a28;border-color:var(--teal)}.mwf .chip.wa:not(.sel){color:#f59e0b;border-color:color-mix(in srgb,#f59e0b 50%,transparent)}
+.mwbox{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:6px 0 10px;display:block}.mwbox .sxrow+.sxrow,.mwsen+.mwsen{border-top:1px solid var(--line)}.mwsen .stck{border-top:1px solid var(--line)}
+.mwn{flex:none;min-width:26px;height:26px;border-radius:8px;background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal);font-weight:800;font-size:.8rem;display:grid;place-items:center}.mwu.off{opacity:.55}.mwu.off .mwn{background:color-mix(in srgb,var(--mut) 14%,transparent);color:var(--mut)}
+@media(max-width:620px){.mwms{max-width:64px}.mwr .hsv{display:none}}
 `;

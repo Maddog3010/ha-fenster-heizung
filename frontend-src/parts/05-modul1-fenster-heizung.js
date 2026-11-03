@@ -668,7 +668,7 @@
   _saveGen() {
     this._hass.callWS({ type: "fenster_heizung/set_general", general: this._gen }).then((r) => {
       if (r && r.general) { this._gen = { ...this._gen, ...r.general }; this._st = r.status || null; this._render(); if (this._modal && ["gen", "fh", "hspr", "enset"].includes(this._modal.type)) this._renderModal(); }
-      this._mdPoll(); this._hsPoll();  /* Haus verteilt Netz, Ladestand und Preise auch an Modul 3 */
+      this._mdPoll(); this._hsPoll(); this._stSaved();  /* Haus verteilt Netz, Ladestand und Preise auch an Modul 3 */
     }).catch(() => this._toast("Einstellung konnte nicht gespeichert werden"));
   }
   _pollGen() {
