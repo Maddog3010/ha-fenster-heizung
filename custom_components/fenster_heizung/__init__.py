@@ -22,9 +22,10 @@ from homeassistant.helpers.event import (
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
-from .api import async_register_api
+from .api import _version as _api_version, async_register_api
 from .diag import DiagManager, diag_expect, diag_log
 from .general import GeneralManager
+from .haus import HausManager
 from .geraete import GeraeteManager
 from .hersteller import logic as hs_logic, lookup as hs_lookup
 from .raumregelung import RoomRegulator
@@ -1241,6 +1242,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "wetter" not in store:
         store["wetter"] = WetterManager(hass)
         await store["wetter"].async_start()
+    if "haus" not in store:  # nach general, wasser und wetter: übernimmt deren Werte einmalig
+        store["haus"] = HausManager(hass)
+        await store["haus"].async_start(await _api_version(hass))
     if "solar" not in store:
         store["solar"] = SolarManager(hass)
         await store["solar"].async_start()
@@ -1333,6 +1337,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             spn = hass.data.get(DOMAIN, {}).pop("sponsor", None)
             if spn is not None:
                 spn.async_stop()
+            hass.data.get(DOMAIN, {}).pop("haus", None)
             sfm = hass.data.get(DOMAIN, {}).pop("sicherheit", None)
             if sfm is not None:
                 sfm.async_stop()

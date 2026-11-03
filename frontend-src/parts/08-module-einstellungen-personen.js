@@ -36,7 +36,7 @@
       const b = this._mdBackup();
       this._hass.callWS({ type: "fenster_heizung/set_modules", modules: b.modules })
         .then(() => this._hass.callWS({ type: "fenster_heizung/set_wasser", ww: b.ww }))
-        .then((r) => { this._mdPoll(r); })
+        .then((r) => { this._mdPoll(r); this._pollGen(); this._hsPoll(); })
         .catch(() => this._toast("Modul-Einstellung konnte nicht gespeichert werden"));
     }, 500);
   }
@@ -79,7 +79,7 @@
     const st = (this._hass && this._hass.states) || {}, s = this._mdState(), out = {}, bad = (id) => !st[id] || ["unavailable", "unknown"].includes(String(st[id].state));
     const add = (k, ids) => { const l = [...new Set(ids.filter((x) => typeof x === "string" && /^[a-z_]+\.[a-z0-9_]+$/.test(x) && bad(x)))]; if (l.length) out[k] = l; };
     const p = this._pv() || {};
-    add("fh", [p.sensor, p.soc_sensor, p.price_mode === "sensor" ? p.price_sensor : "", p.feed_mode === "sensor" ? p.feed_sensor : ""]);
+    add("fh", [p.sensor, p.soc_sensor, p.price_mode === "entity" ? p.price_sensor : "", p.feed_mode === "entity" ? p.feed_sensor : ""]);
     if (s.on.ww) add("ww", Object.values(s.ww.ent || {}));
     if (this._enOn()) { const E = this._enState().ent || {}; add("en", Object.entries(E).filter(([k]) => !["pv", "pv2", "pve", "pve2"].includes(k)).map(([, v]) => v)); }
     if (s.on.gs !== false) add("gs", (this._gsState().devices || []).map((d) => d.ent));
@@ -95,6 +95,9 @@
     const u = this._upd;
     if (u && this._ver && vgt(u.latest, this._ver)) out.push(["in", `Neue Version ${esc(u.latest)} verfügbar`, `Installiert ist ${esc(this._ver)}`, "mver"]);
     if (vbeta(this._ver)) out.push(["in", `Testversion installiert: ${esc(this._ver)}`, "Änderungen unter System → Versionen", "mver"]);
+    const mig = this._haus && this._haus.mig;
+    if (mig && mig.conflicts && mig.conflicts.length && !mig.seen) out.push(["wn", "Haus-Werte: bitte einmal prüfen", esc(mig.conflicts[0]), "mdhsmig"]);
+    else if (mig && !mig.seen) out.push(["in", "Gemeinsame Werte liegen jetzt im Haus", "Energiequellen, Preise, Ladestand und Wetterquelle an einer Stelle", "mdhsmig"]);
     if (!out.some((x) => x[0] === "wn")) out.unshift(["ok", "Alles eingerichtet", "Alle gewählten Sensoren liefern Werte", ""]);
     return out;
   }
@@ -124,15 +127,10 @@
     const page = {
       ov: () => `<div class="sxsum"><div><b>${act.length}</b><span>${act.length === 1 ? "Modul aktiv" : "Module aktiv"}</span></div><div><b>${done} / ${core.length}</b><span>Einrichtung erledigt</span></div><div><b>${this._collect().length}</b><span>Räume · ${P.length} ${P.length === 1 ? "Person" : "Personen"}</span></div><div><b>${esc(ltTxt)}</b><span>Sicherung Homeserver</span></div></div>
         ${card(chk.map(([l, t, sub, a]) => `<${a ? `button class="stck" data-act="${a}"` : 'div class="stck"'}><span class="stdot ${l}"></span><span class="sxt"><b>${t}</b>${sub ? `<small>${sub}</small>` : ""}</span>${a ? `<span class="stgo">Öffnen ${ic("chev", 14)}</span>` : ""}</${a ? "button" : "div"}>`).join(""), `Prüfung <small>· gerade eben</small>`)}
-        ${card(`${row("total", `Strompreis und Einspeisung ${lv("all")}`, `${num(this._price(), 1)} ct Bezug · ${num(this._feed(), 1)} ct Einspeisung · in Modul 1 → Allgemein`, "mdstpv")}
-          ${row("sun", `Energiequellen ${lv("all")}`, "Solar, Netz, Batterie · in Modul 3", "mdensetup", "", this._enConfigured() ? `<em class="sxc ok">Eingerichtet</em>` : `<em class="sxc wa">Offen</em>`)}
+        ${card(`${row("total", `Preise &amp; Tarif ${lv("all")}`, `${num(this._price(), 1)} ct Bezug · ${num(this._feed(), 1)} ct Einspeisung · Haus`, "mdsts", "pr")}
+          ${row("sun", `Energiequellen ${lv("all")}`, "Solar, Netz, Batterie, Ladestand · Haus", "mdsts", "en", this._enConfigured() ? `<em class="sxc ok">Eingerichtet</em>` : `<em class="sxc wa">Offen</em>`)}
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Datei und Homeserver", "gen")}`, "Häufig gebraucht")}`,
-      hs: () => `${card(`${row("tools", "Räume", `${this._collect().length} Räume · Einrichtungsassistent`, "wz")}
-          ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
-          ${row("sun", "Energiequellen", "Solar, Netz, Batterie · öffnet vorerst Modul 3", "mdensetup", "", this._enConfigured() ? `<em class="sxc ok">OK</em>` : `<em class="sxc wa">Offen</em>`)}
-          ${row("total", "Preise &amp; Tarif", `${num(this._price(), 1)} ct Bezug · öffnet vorerst Modul 1 → Allgemein`, "mdstpv")}
-          ${s.on.wx ? row("partly", "Wetterquelle", "Zuordnung für Wetter und Warnungen · öffnet vorerst Modul 9", "wxsopen") : ""}
-          ${this._labOn("tg") ? row("nfc", "Tags &amp; Karten", "RFID-Karten und NFC-Sticker anlernen und zuordnen", "tgxopen") : ""}`)}<div class="stleg">${lv("all")} Alles hier gilt für alle Benutzer und Geräte.</div>`,
+      hs: () => this._hsPage(row, card, lv),
       md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
         ${off.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdstoff" aria-expanded="${!this._stOffC}">Ausgeschaltet <small>· ${off.length} · ein Tipp schaltet ein</small><span class="stgo">${this._stOffC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>
           ${this._stOffC ? "" : `<div class="stmini">${off.map((m) => `<button class="stmb" data-act="mdtog" data-k="${m.id}" title="${esc(m.name)} einschalten">${ic(m.icon, 16)}<span class="stmt"><b>${esc(m.short)}</b><small>Modul ${m.n}${m.sponsor ? " · Sponsor" : m.beta && modSt(m) ? " · " + STG[modSt(m)].t : ""}</small></span></button>`).join("")}</div>`}</div>` : ""}`,
@@ -152,13 +150,128 @@
     const nav = `<nav class="stnav" aria-label="Bereiche der Einstellungen">${AREAS.map(([k, i, t, sub, ch]) => wide
       ? `<button class="stni ${k === area ? "sel" : ""}" data-act="mdsta" data-k="${k}" aria-current="${k === area}"><span class="sxi">${ic(i, 18)}</span><b>${t}</b>${ch}</button>`
       : `<button class="sxrow" data-act="mdsta" data-k="${k}"><span class="sxi">${ic(i, 20)}</span><span class="sxt"><b>${t}</b><small>${sub}</small></span>${ch}<span class="sxg">${ic("chev", 16)}</span></button>`).join("")}</nav>`;
-    const head = A ? `<div class="sthd">${!wide ? `<button class="lnk stbk" data-act="mdsta" data-k="">‹ Einstellungen</button>` : `<div class="mut sm" style="margin:0">Einstellungen</div>`}<h2>${A[2]}</h2></div>` : "";
+    const SUB = { en: "Energiequellen", pr: "Preise &amp; Tarif", wx: "Wetterquelle" }, sub = area === "hs" && SUB[this._stS] ? this._stS : "";
+    const head = A ? sub ? `<div class="sthd"><button class="lnk stbk" data-act="mdsts" data-k="">‹ Haus</button><h2>${SUB[sub]}</h2></div>` : `<div class="sthd">${!wide ? `<button class="lnk stbk" data-act="mdsta" data-k="">‹ Einstellungen</button>` : `<div class="mut sm" style="margin:0">Einstellungen</div>`}<h2>${A[2]}</h2></div>` : "";
     const body = !wide && !A ? `<div class="card sxl stcard">${nav}</div>` : wide ? `<div class="stlay">${nav}<div class="stmain">${head}${page[area]()}</div></div>` : `${head}${page[area]()}`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Einstellungen</b><span><em class="tag">Alle Bereiche an einem Ort</em>${this._verTag()}</span></div></div>
         <button class="pillbtn pri" data-act="mdstx">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw stw">${body}</div></div>`;
+  }
+  /* ---------------- Haus (Stufe 2): gemeinsame Werte an einer Stelle. Der Haus-Speicher im Backend ist führend und verteilt die Werte an die Module. ---------------- */
+  _hsPoll() {
+    if (!this._hass) return;
+    clearTimeout(this._hsT);
+    this._hsT = setTimeout(() => this._hass.callWS({ type: "fenster_heizung/haus_get" }).then((r) => { this._haus = (r && r.haus) || null; if (this._stOpen) this._render(); if (this._modal && this._modal.type === "hsmig") this._renderModal(); }).catch(() => {}), 400);
+  }
+  _hsUsed(k) {
+    const u = ((this._haus && this._haus.used) || {})[k] || { energy: [3, 4, 8, 13, 16, 19], soc: [1, 3, 8, 13], price: [1, 3, 4, 8, "Labs"], wx: [1, 9, "Start", "Labs"] }[k] || [];
+    const n = u.filter((x) => typeof x === "number"), o = u.filter((x) => typeof x !== "number");
+    const l = [...(n.length ? [`Modul ${n.join(", ")}`] : []), ...o];
+    return l.join(", ").replace(/, ([^,]*)$/, " und $1");
+  }
+  _hsVal(id, sign) {
+    const s = id && this._hass.states[id];
+    if (!id) return "";
+    if (!s || ["unavailable", "unknown"].includes(String(s.state))) return `<em class="hsv bad">kein Wert</em>`;
+    const u = (s.attributes || {}).unit_of_measurement || "", v = parseFloat(s.state);
+    const txt = isFinite(v) ? `${sign && v > 0 ? "+" : v < 0 ? "−" : ""}${num(Math.abs(v), Math.abs(v) >= 100 || u === "%" ? 0 : 1)}${u ? " " + u : ""}` : esc(s.state);
+    return `<em class="hsv">${txt} ${ic("check", 12)}</em>`;
+  }
+  _hsRow(icn, ttl, id, note, sign, empty) {
+    return `<div class="sxrow stinfo hsr"><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}</b><small>${id ? esc(id) + (note ? " · " + note : "") : esc(empty || "nicht gewählt")}</small></span>${this._hsVal(id, sign)}</div>`;
+  }
+  _hsEnCheck() {
+    const E = this._enState(), g = this._enGrid(), st = this._hass.states, ids = [E.ent.pv, E.ent.pv2, g.ent, E.ent.house, E.ent.bat, E.ent.bchg, E.ent.bdis, this._pv().soc_sensor].filter(Boolean);
+    const dead = ids.filter((x) => !st[x] || ["unavailable", "unknown"].includes(String(st[x].state)) && !(x === E.ent.pv || x === E.ent.pv2));
+    if (!E.ent.pv || !g.ent) return ["wn", "Solar und Netz fehlen noch", "Ohne diese beiden Sensoren rechnen Modul 3, 4 und 8 nicht."];
+    if (dead.length) return ["wn", dead.length === 1 ? "1 Sensor liefert keinen Wert" : `${dead.length} Sensoren liefern keinen Wert`, dead.map((x) => esc(this._wzName(x))).join(", ")];
+    const pv = this._enPvW(), gr = this._enW(g.ent), b = this._enBatW();
+    if (pv != null && gr != null) { const exp = g.sign === "import" ? -gr : gr, house = pv - exp - (b || 0); if (house < -80 || (pv < 30 && exp > 80)) return ["wn", "Vorzeichen prüfen: Netz", "Der Hausverbrauch wäre gerade negativ. Unter „Bearbeiten“ prüfen und umdrehen."]; }
+    return ["ok", "Vorzeichen geprüft · alle Sensoren liefern Werte", ""];
+  }
+  _hsPage(row, card, lv) {
+    const s = this._mdState(), sub = this._stS || "", adm = this._admin(), E = this._enState(), g = this._enGrid(), p = this._pv(), L = this._wxCfg(), st = this._hass.states;
+    const use = (k) => `<div class="hsuse">Gilt für ${this._hsUsed(k)} · ${lv("all")}</div>`, edit = (act, t) => adm ? `<div class="gbtns hsed"><button class="btn2 pri" data-act="${act}">${ic("pencil", 15)} ${t || "Bearbeiten"}</button></div>` : `<div class="mut sm">Ändern können nur Administratoren.</div>`;
+    const mig = this._haus && this._haus.mig, banner = mig && !mig.seen ? `<div class="card stcard hsmig ${mig.conflicts && mig.conflicts.length ? "warn" : ""}"><div class="hsmh">${ic("home", 18)}<b>Gemeinsame Werte liegen jetzt im Haus</b></div>
+      <div class="mut sm">Energiequellen, Ladestand, Preise und Wetterquelle wurden einmalig aus Modul 1, Modul 3, der Darstellung und Modul 9 übernommen. Alle Module lesen sie ab jetzt von hier. Vorher wurde automatisch gesichert.</div>
+      ${mig.conflicts && mig.conflicts.length ? `<div class="enchk warn" style="margin:8px 0 0"><b>${ic("alert", 16)}Bitte einmal prüfen</b><span>${mig.conflicts.map(esc).join("<br>")}</span></div>` : ""}
+      <div class="gbtns" style="margin-top:8px"><button class="btn2" data-act="mdhsmig">Was wurde übernommen?</button>${adm ? `<button class="btn2 pri" data-act="mdhsseen">Verstanden</button>` : ""}</div></div>` : "";
+    if (sub === "en") {
+      const ck = this._hsEnCheck(), nm = this._enPvNames(), cnt = ["pve", "pve2", "imp", "exp"].filter((k) => E.ent[k]).length;
+      return `${use("energy")}${card(`${this._hsRow("sun", esc(nm[0]), E.ent.pv, "", false)}
+        ${E.ent.pv2 ? this._hsRow("sun", `Zweite Anlage „${esc(nm[1])}“`, E.ent.pv2, "", false) : ""}
+        ${this._hsRow("bolt", "Netz", g.ent, g.sign === "import" ? "Bezug positiv" : "Einspeisung positiv", true)}
+        ${E.bmode === "two" ? this._hsRow("energy", "Batterie lädt", E.ent.bchg, "", false) + this._hsRow("energy", "Batterie entlädt", E.ent.bdis, "", false) : this._hsRow("energy", "Batterie", E.ent.bat, E.bsign === "discharge" ? "Entladen positiv" : "Laden positiv", true, "keine Batterie")}
+        ${this._hsRow("energy", "Ladestand", p.soc_sensor, "", false, "kein Ladestand")}
+        ${this._hsRow("home", "Hausverbrauch", E.ent.house, "", false, "wird aus Solar, Netz und Batterie berechnet")}
+        <div class="sxrow stinfo"><span class="sxi">${ic("chart", 20)}</span><span class="sxt"><b>Zähler für Tagessummen</b><small>${cnt ? `${cnt} ${cnt === 1 ? "Zähler" : "Zähler"} gewählt` : "keine, Woche, Monat und Jahr werden aus der Leistung berechnet"}</small></span></div>`)}
+        <div class="stck hsck ${ck[0]}"><span class="stdot ${ck[0]}"></span><span class="sxt"><b>${ck[1]}</b>${ck[2] ? `<small>${ck[2]}</small>` : ""}</span></div>
+        ${edit("mdhsen")}`;
+    }
+    if (sub === "pr") {
+      const src = (k) => p[k + "_mode"] === "entity" && p[k + "_sensor"] ? `Sensor ${esc(this._wzName(p[k + "_sensor"]))}${Number(p[k]) ? ` · Ersatzwert ${num(p[k], 2)} ct` : ""}` : "Festwert";
+      return `${use("price")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("total", 20)}</span><span class="sxt"><b>Bezugspreis</b><small>${src("price")}</small></span><em class="hsv">${num(this._rate("price"), 2)} ct/kWh</em></div>
+        <div class="sxrow stinfo hsr"><span class="sxi">${ic("sun", 20)}</span><span class="sxt"><b>Einspeisevergütung</b><small>${src("feed")}</small></span><em class="hsv">${num(this._rate("feed"), 2)} ct/kWh</em></div>
+        ${s.on.dt ? row("chart", "Stundenpreise", "Börsenpreise und günstigste Fenster · Modul 14", "mdbeta") : ""}`)}
+        ${edit("mdhspr")}`;
+    }
+    if (sub === "wx") {
+      this._wxsLoad(); const W = this._wxs().cfg, wl = Object.keys(st).filter((k) => k.startsWith("weather.")), auto = (x) => x ? `automatisch: ${esc(this._wzName(x))}` : "keine gefunden";
+      const wv = (id) => { const w = id && st[id]; return w ? `<em class="hsv">${esc((WX[w.state] || ["", w.state])[1])}${w.attributes.temperature != null ? " · " + num(w.attributes.temperature, 1) + " °C" : ""} ${ic("check", 12)}</em>` : ""; };
+      return `${use("wx")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("partly", 20)}</span><span class="sxt"><b>Wetter</b><small>${L.entity ? esc(L.entity) : auto(wl[0])}</small></span>${wv(L.entity || wl[0])}</div>
+        ${this._hsRow("thermo", "Außentemperatur", L.outdoor, "", false, "aus der Wetter-Entität")}
+        ${this._hsRow("fan", "Wind", W.wind, "", false, "aus der Wetter-Entität")}
+        <div class="sxrow stinfo hsr"><span class="sxi">${ic("shield", 20)}</span><span class="sxt"><b>Amtliche Warnungen</b><small>${!W.official.on ? "nicht verwenden" : W.official.ent ? esc(W.official.ent) : "automatisch (DWD, NINA)"}</small></span>${W.official.ent ? this._hsVal(W.official.ent) : ""}</div>`)}
+        <div class="mut sm" style="margin:-4px 2px 12px">Die Anzeige im Dashboard (an oder aus) stellst du unter Darstellung ein, Grenzwerte und Aktionen in Modul 9.</div>
+        ${edit("mdhswx")}`;
+    }
+    const pr = `${num(this._rate("price"), 1)} ct Bezug · ${num(this._rate("feed"), 1)} ct Einspeisung`;
+    const wxt = L.entity ? this._wzName(L.entity) : "automatisch";
+    return `${banner}${card(`${row("tools", "Räume", `${this._collect().length} Räume · Einrichtungsassistent`, "wz")}
+        ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
+        ${this._labOn("tg") ? row("nfc", "Tags &amp; Karten", "RFID-Karten und NFC-Sticker anlernen und zuordnen", "tgxopen") : ""}`, "Bewohner und Räume")}
+      ${card(`${row("sun", "Energiequellen", `Solar, Netz, Batterie, Ladestand · für ${this._hsUsed("energy")}`, "mdsts", "en", this._hsEnCheck()[0] === "ok" ? `<em class="sxc ok">OK</em>` : `<em class="sxc wa">${this._enConfigured() ? "Prüfen" : "Offen"}</em>`)}
+        ${row("total", "Preise &amp; Tarif", `${pr}`, "mdsts", "pr", `<em class="sxc ok">${p.price_mode === "entity" && p.price_sensor ? "Sensor" : "Festwert"}</em>`)}
+        ${row("partly", "Wetterquelle", `Wetter ${esc(wxt)}${L.outdoor ? " · Außensensor" : ""}`, "mdsts", "wx")}`, "Gemeinsame Werte")}
+      <div class="stleg">${lv("all")} Alles hier gilt für alle Benutzer und Geräte. Jeder Wert steht nur hier, die Module lesen ihn von hier.</div>`;
+  }
+  /* Verweis an den alten Stellen: der Wert liegt jetzt im Haus */
+  _hsLink(k, txt) {
+    const t = { en: "Haus › Energiequellen", pr: "Haus › Preise &amp; Tarif", wx: "Haus › Wetterquelle" }[k];
+    return `<button class="sxrow hslink" data-act="mdhsgo" data-k="${k}"><span class="sxi">${ic("home", 20)}</span><span class="sxt"><b>${t}</b><small>${txt} · gilt für alle Module</small></span><em class="stlv l1">🏠 Haus</em><span class="sxg">${ic("chev", 16)}</span></button>`;
+  }
+  _hsPrModal() {
+    const pv = this._pv();
+    const body = [["price", "Bezugspreis (Netzbezug)", "Festpreis", "Preis pro kWh aus dem Netz."], ["feed", "Einspeisevergütung", "Festvergütung", "Vergütung pro eingespeister kWh."]].map(([k, l, fl, h]) => { const ent = pv[k + "_mode"] === "entity", sn = pv[k + "_sensor"]; return `<div class="lsec">${ic(k === "price" ? "total" : "sun", 15)}${l}</div>
+        <div class="seg">${[["fix", "Festwert"], ["entity", "Sensor"]].map(([m, t]) => `<button class="${(ent ? "entity" : "fix") === m ? "sel" : ""}" data-act="gpvpm" data-p="${k}" data-k="${m}">${t}</button>`).join("")}</div>
+        ${ent ? `${this._wzSel(Object.keys(this._hass.states).filter((e) => e.startsWith("sensor.") && (this._hass.states[e].attributes.device_class === "monetary" || (/(kwh|wh)$/i.test(this._hass.states[e].attributes.unit_of_measurement || "") && /€|eur|ct|cent/i.test(this._hass.states[e].attributes.unit_of_measurement || "")) || e === sn)), sn, "gpvp", `data-p="${k}"`, "– keiner –", /preis|price|tarif|tibber|awattar|strom/i)}
+        <div class="of"><div class="ol"><b>Ersatzwert</b><span>${sn ? `Aktuell ${num(this._rate(k), 2)} ct/kWh. Gilt, falls der Sensor ausfällt.` : "Gilt, solange kein Sensor gewählt ist."}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="0" max="100" step="0.01"><i>ct/kWh</i></span></div></div>` : `<div class="of"><div class="ol"><b>${fl}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="0" max="100" step="0.01"><i>ct/kWh</i></span></div></div>`}`; }).join("");
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Haus › Preise &amp; Tarif</b><span>Gilt für ${this._hsUsed("price")} · für alle</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${body}
+      <div class="gst">${ic("info", 15)}<span>Sensor in ct/kWh oder €/kWh, zum Beispiel von Tibber. Wird sofort in allen Modulen verwendet.</span></div>
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _hsWxModal() {
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Haus › Wetterquelle</b><span>Gilt für ${this._hsUsed("wx")} · für alle</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${this._wxsAssign()}
+      <div class="gst">${ic("info", 15)}<span>Weitere Dienste für Wetter und Warnungen findest du im <button class="lnk" data-act="wxsgoig">Store</button>.</span></div>
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _hsMigModal() {
+    const m = (this._haus && this._haus.mig) || { items: [], conflicts: [] }, d = m.ts ? new Date(m.ts) : null;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Übernahme ins Haus</b><span>${d && isFinite(d) ? d.toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" }) : ""}${m.ver ? " · Version " + esc(m.ver) : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:2px 0 6px">Beim ersten Start mit dieser Version wurden die gemeinsamen Werte einmalig an ihren alten Stellen gelesen und im Haus gespeichert. Es ging nichts verloren: Die Module finden ihre Werte weiter, und vorher wurde von allen betroffenen Bereichen eine Sicherungskopie angelegt (System → Sichern &amp; Wiederherstellen → Interne Kopien).</div>
+      <div class="lsec">${ic("check", 15)}Übernommen</div>
+      <ul class="news">${(m.items || []).map((t) => `<li>${ic("check", 16)}<span>${esc(t)}</span></li>`).join("") || `<li>${ic("info", 16)}<span>Es war noch nichts eingerichtet.</span></li>`}</ul>
+      ${(m.conflicts || []).length ? `<div class="lsec">${ic("alert", 15)}Bitte prüfen</div>${m.conflicts.map((t) => `<div class="enchk warn"><span>${esc(t)}</span></div>`).join("")}<div class="gbtns"><button class="btn2" data-act="mdhsgoen">Energiequellen öffnen</button></div>` : ""}
+      <div class="lsec">${ic("info", 15)}Wo stelle ich das jetzt ein?</div>
+      <ul class="news"><li>${ic("sun", 16)}<span>Solar, Netz, Batterie, Ladestand: Einstellungen → Haus → Energiequellen (bisher Modul 3 und Modul 1 → PV-Überschuss)</span></li><li>${ic("total", 16)}<span>Bezugspreis und Einspeisevergütung: Haus → Preise &amp; Tarif (bisher Modul 1 → Allgemein)</span></li><li>${ic("partly", 16)}<span>Wetter, Außentemperatur, Wind, amtliche Warnungen: Haus → Wetterquelle (bisher Darstellung und Modul 9)</span></li></ul>
+      <div class="foot2">${this._admin() && !m.seen ? `<button class="btn2" data-act="close">Später</button><button class="btn2 pri" data-act="mdhsseen">Verstanden</button>` : `<button class="btn2 pri" data-act="close">Fertig</button>`}</div></div>`;
   }
   /* ---------------- Personen & Standort: iCloud-Ortung, Personen-Einstellungen, Home-Zone auf der Karte ---------------- */
   _ort() {

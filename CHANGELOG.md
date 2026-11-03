@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b3] - 2026-11-03
+
+Testversion (Beta) mit Stufe 2 des neuen Aufbaus der Einstellungen: gemeinsame Werte liegen zentral im Haus.
+
+### Neu
+- **Haus-Werte zentral.** Energiequellen (Solar, zweite Anlage, Netz mit Vorzeichen, Hausverbrauch, Batterie, Zähler), Batterie-Ladestand, Preise & Tarif (Bezugspreis und Einspeisevergütung, Festwert oder Sensor) und Wetterquelle (Wetter, Außentemperatur, Wind, amtliche Warnungen) haben einen eigenen Speicher „Haus“. Alle Module lesen sie von dort.
+- **Einstellungen → Haus** mit eigenen Seiten für Energiequellen, Preise & Tarif und Wetterquelle: jeder Sensor mit Live-Wert, „Gilt für Modul …“, Prüfung von Vorzeichen und fehlenden Werten, „Bearbeiten“.
+- **Einmalige Übernahme** beim ersten Start aus Modul 1, Modul 3, der Darstellung und Modul 9. Vorher wird von jedem betroffenen Bereich automatisch eine interne Sicherungskopie angelegt. Haben Modul 1 und Modul 3 verschiedene Netz-Sensoren genutzt, gilt Modul 3, und die Übersicht weist darauf hin. „Was wurde übernommen?“ zeigt alles im Einzelnen.
+- **Schema-Versionen:** Der Haus-Speicher trägt eine Versionsnummer. Spätere Updates wandeln alte Stände gezielt um, statt Standardwerte einzusetzen.
+
+### Geändert
+- Modul 1 (PV-Überschuss, Strompreis), Modul 3, die Darstellung und Modul 9 zeigen an diesen Stellen einen Verweis „🏠 Haus“ statt eigener Auswahl. Netz-Sensor und Vorzeichen sind für Modul 1 und Modul 3 jetzt immer gleich.
+- Ältere Fenster und Browser mit alter Oberfläche dürfen die Werte weiter an der alten Stelle ändern: Die Änderung wird ins Haus übernommen und an alle Module verteilt.
+- Die Datei-Sicherung enthält die Haus-Werte. Ältere Sicherungen werden wie bisher eingelesen und ins Haus übernommen.
+
+### Behoben
+- Die Prüfung erkannte einen Strompreis-Sensor ohne Wert nicht, und Modul 3 zeigte den aktuellen Strompreis im Banner nicht an.
+
 ## [2026.11.1b2] - 2026-11-03
 
 Testversion (Beta) mit dem neuen Messraum und dem Luftentfeuchter in Modul 1.

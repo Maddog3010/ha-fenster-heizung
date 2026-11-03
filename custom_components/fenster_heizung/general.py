@@ -296,9 +296,16 @@ class GeneralManager:
     def _data(self) -> dict[str, Any]:
         return {"general": self.data, "daily": self._daily}
 
+    async def async_persist(self) -> None:
+        """Speichern ohne Übernahme ins Haus (der Haus-Speicher schreibt seine Werte hierher)."""
+        await self._store.async_save(self._data())
+
     async def async_set(self, raw: Any) -> dict[str, Any]:
         self.data = clean_general(raw)
         await self._store.async_save(self._data())
+        haus = self.hass.data.get(DOMAIN, {}).get("haus")
+        if haus is not None:  # Preise, Netz und Ladestand gehören dem Haus
+            await haus.async_adopt("general", (raw or {}).get("pv") if isinstance(raw, dict) else None)
         await self.async_recalc()
         pv = self.hass.data.get(DOMAIN, {}).get("pv")
         if pv is not None:  # neue PV-Einstellungen gleich anwenden

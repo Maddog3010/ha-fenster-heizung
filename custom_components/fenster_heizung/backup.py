@@ -35,7 +35,7 @@ LABELS = {
     "wallbox": "Modul 8 Wallbox", "wallbox_stats": "Modul 8 Statistik", "solar": "Modul 16 Solar-Prognose",
     "wetter": "Modul 9 Wetter", "entfeuchter": "Modul 1 Luftentfeuchter", "sicherheit": "Modul 11 Sicherheit", "muell": "Modul 17 Müllabfuhr",
     "hausfluss": "Modul 19 Hausfluss", "tags": "Lab Tags & Karten", "tablets": "Tablet-Modus", "labs": "Labs",
-    "tibber": "Tibber", "diag": "Diagnose",
+    "tibber": "Tibber", "diag": "Diagnose", "haus": "Haus (Energiequellen, Preise, Wetterquelle)",
 }
 
 
@@ -155,6 +155,12 @@ class SafeStore(Store):
     async def async_save(self, data: Any) -> None:
         self._note(data)
         await super().async_save(data)
+
+    def snapshot_now(self) -> None:
+        """Sofort eine Kopie des aktuellen Stands anlegen (z. B. vor einer Datenübernahme)."""
+        if self._prev:
+            self._add_snap(json.loads(self._prev[1]))
+            self._flush_bk()
 
     def current(self) -> Any:
         """Letzter bekannter Stand (Kopie) oder None."""

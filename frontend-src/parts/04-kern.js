@@ -36,7 +36,7 @@ class FensterHeizungPanel extends HTMLElement {
     try {
       const r = await this._hass.callWS({ type: "fenster_heizung/get_state" });
       this._cfg = { layout: { blocks: [], rooms: [], icons: {}, groups: [], ...(r.layout || {}) }, plans: r.plans || {}, presence: r.presence || { mode: "home" } };
-      this._ver = r.version || "";
+      this._ver = r.version || ""; this._haus = r.haus || null;
       this._st = r.status || null;
       this._gen = { updates: true, summer: { mode: "auto", temp: 18, days: 3 }, wxadj: { on: false, mild: 12, down: 1, frost: 0, up: 1 }, ...(r.general || {}) };
       this._gen.summer = { mode: "auto", temp: 18, days: 3, ...(this._gen.summer || {}) };
@@ -51,7 +51,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._render();
   }
   _admin() { return !!(this._hass && this._hass.user && this._hass.user.is_admin); }
-  _saveLayout() { this._hass.callWS({ type: "fenster_heizung/set_layout", layout: this._cfg.layout }).catch(() => this._toast("Layout konnte nicht gespeichert werden")); }
+  _saveLayout() { this._hass.callWS({ type: "fenster_heizung/set_layout", layout: this._cfg.layout }).then(() => this._hsPoll()).catch(() => this._toast("Layout konnte nicht gespeichert werden")); }
   _toast(msg) {
     const t = this.shadowRoot.getElementById("toast"); if (!t) return;
     t.innerHTML = `<div class="toast">${esc(msg)}</div>`; clearTimeout(this._tt);

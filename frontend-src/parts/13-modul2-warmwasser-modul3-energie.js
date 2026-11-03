@@ -27,7 +27,20 @@
     const s = this._mdState(), m = this._modal, k = b.dataset.k;
     if (a === "mdgo") { this._stOpen = false; this._edit = false; this._mdActiveSet(k); this._render(); }
     else if (a === "mdst") { this._stOpen = true; this._stA = ""; this._stEbk = null; this._render(); }
-    else if (a === "mdsta") { this._stA = k || ""; this._render(); const m = this.shadowRoot.getElementById("main"); if (m && m.scrollIntoView) window.scrollTo && window.scrollTo(0, 0); }
+    else if (a === "mdsts") { this._stA = "hs"; this._stS = k || ""; this._render(); window.scrollTo && window.scrollTo(0, 0); }
+    else if (a === "mdhsen") { this._modal = { type: "enset", haus: true }; this._renderModal(); }
+    else if (a === "mdhspr") { this._modal = { type: "hspr" }; this._renderModal(); }
+    else if (a === "mdhswx") { this._wxsLoad(true); this._modal = { type: "hswx" }; this._renderModal(); }
+    else if (a === "mdhsmig") { if (!this._haus) this._hsPoll(); this._modal = { type: "hsmig" }; this._renderModal(); }
+    else if (a === "mdhsgo") { this._pkId = null; this._modal = null; this._renderModal(); this._stOpen = true; this._stA = "hs"; this._stS = k || ""; this._render(); window.scrollTo && window.scrollTo(0, 0); }
+    else if (a === "mdhsgoen") { this._modal = null; this._renderModal(); this._stOpen = true; this._stA = "hs"; this._stS = "en"; this._render(); }
+    else if (a === "mdhsseen") {
+      if (this._haus && this._haus.mig) this._haus.mig.seen = true;
+      if (this._modal && this._modal.type === "hsmig") { this._modal = null; this._renderModal(); }
+      this._render();
+      this._hass.callWS({ type: "fenster_heizung/haus_set", haus: { mig_seen: true } }).then((r) => { if (r && r.haus) this._haus = r.haus; }).catch(() => {});
+    }
+    else if (a === "mdsta") { this._stA = k || ""; this._stS = ""; this._render(); const m = this.shadowRoot.getElementById("main"); if (m && m.scrollIntoView) window.scrollTo && window.scrollTo(0, 0); }
     else if (a === "mdstoff") { this._stOffC = !this._stOffC; this._render(); }
     else if (a === "mdstpv") { const o = this._fhOpenSet(); o.clear(); o.add("pv"); this._modal = { type: "fh" }; this._renderModal(); }
     else if (a === "mdstx") { this._stOpen = false; this._render(); }
@@ -403,7 +416,7 @@
   }
   _enSave(cfg) { const E = this._ens; try { localStorage.setItem("fh_energy", JSON.stringify({ range: E.range, ring: E.ring, cmp: E.cmp })); } catch (_) { /* Speicher gesperrt */ } if (cfg && this._admin()) this._mdSave(); }
   _enOn() { return this._enState().on !== false; }
-  _enGrid() { const E = this._enState(), p = this._pv(); return { ent: E.ent.grid || p.sensor || "", sign: E.sign || p.sign || "export" }; }
+  _enGrid() { const E = this._enState(), p = this._pv(); return { ent: E.ent.grid || p.sensor || "", sign: E.sign || p.sign || "export" }; }  /* seit Stufe 2 schreibt das Haus beide Stellen gleich */
   _enConfigured() { return !!(this._enState().ent.pv && this._enGrid().ent); }
   _enW(eid) {
     const st = eid && this._hass.states[eid]; if (!st) return null;
@@ -723,7 +736,7 @@
     const buy = ok ? eur(sum.imp, price) : 0, sell = ok ? eur(sum.exp, feed) : 0, saved = ok ? eur(self, price) : 0, net = sell + saved - buy, per = this._enLabel(P);
     const ringA = E.ring !== "now" && autarky != null, perW = isToday ? "heute" : "";
     const ring = this._modRing(ringA ? autarky : covered, ringA ? `Autarkie${perW ? " " + perW : ""}` : "gedeckt jetzt").replace('<div class="mring" aria-hidden="true"', `<div class="mring enrg" data-act="enring" role="button" tabindex="0" title="Tippen: ${ringA ? "gedeckt jetzt" : "Autarkie"}" aria-label="${ringA ? "Autarkie" : "Gedeckt jetzt"}, tippen zum Umschalten"`);
-    const pv0 = this._pv(), prC = pv0.price_mode === "sensor" && pv0.price_sensor ? `<span class="chip enpr">${ic("bolt", 16)}Strom jetzt ${num(price, 1)} ct</span>` : "";
+    const pv0 = this._pv(), prC = pv0.price_mode === "entity" && pv0.price_sensor ? `<span class="chip enpr">${ic("bolt", 16)}Strom jetzt ${num(price, 1)} ct</span>` : "";
     const hero = `<div class="card hero mh hr a-en enh">${this._modLogo("en")}${ring}<div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
       ${ok ? `<div class="enbil">${esc(per)}: ${kwh(sum.pv)} kWh Solar · ${kwh(sum.house)} kWh verbraucht · <b class="${net >= 0 ? "pos" : "neg"}">${net >= 0 ? "+" : "−"}${num(Math.abs(net), 2)} € Bilanz</b></div>` : ""}
       <div class="chips"><span class="chip">${ic("sun", 16)}Solar ${wfmt(n.pv)}</span>${n.pvb != null && n.pvb >= 1 ? `<span class="chip">${ic("sun", 16)}davon ${esc(this._enPvNames()[1])} ${wfmt(n.pvb)}</span>` : ""}<span class="chip st ${n.exp > 20 ? "ok" : n.imp > 20 ? "warn" : ""}">${ic("bolt", 16)}${n.exp > 20 ? "Einspeisung " + wfmt(n.exp) : n.imp > 20 ? "Netzbezug " + wfmt(n.imp) : "Netz ausgeglichen"}</span>${n.hasBat ? `<span class="chip">${ic("energy", 16)}Batterie ${n.soc != null ? Math.round(n.soc) + " %" : ""}${n.bc > 20 ? " lädt" : n.dis > 20 ? " entlädt" : ""}</span>` : ""}${prC}${!ringA && autarky != null && isToday ? `<span class="chip st ok">${ic("check", 16)}Autarkie heute ${autarky} %</span>` : ""}</div></div>`;
@@ -792,8 +805,8 @@
       E.off = Math.min(0, E.off); this._enTipX = null; this._enSave(); this._render();
     }
     else if (a === "enreload") { this._enH = null; this._enLoad(true); this._render(); }
-    else if (a === "ensdone") { this._pkId = null; this._modal = null; this._renderModal(); this._enH = null; this._render(); }
-    else if (a === "enssign") { E.sign = k; this._enSave(true); this._renderModal(); }
+    else if (a === "ensdone") { this._pkId = null; this._modal = null; this._renderModal(); this._enH = null; this._render(); this._hsPoll(); }
+    else if (a === "enssign") { E.sign = k; this._gen.pv = { ...this._pv(), sign: k }; this._enSave(true); this._renderModal(); if (this._stOpen) this._render(); }
     else if (a === "ensflip") { const g = this._enGrid(); E.sign = g.sign === "import" ? "export" : "import"; this._enH = null; this._enSave(true); this._renderModal(); this._toast("Vorzeichen des Netz-Sensors umgedreht"); }
     else if (a === "ensbflip") { E.bsign = E.bsign === "discharge" ? "charge" : "discharge"; this._enH = null; this._enSave(true); this._renderModal(); this._toast("Vorzeichen der Batterie umgedreht"); }
     else if (a === "enschk") { this._renderModal(); }
@@ -805,7 +818,7 @@
   }
   _enChange(t) {
     const f = t.dataset.f, E = this._enState();
-    if (f === "enent") { E.ent[t.dataset.k] = t.value; this._enSave(true); return true; }
+    if (f === "enent") { E.ent[t.dataset.k] = t.value; if (t.dataset.k === "grid") this._gen.pv = { ...this._pv(), sensor: t.value }; this._enSave(true); if (this._stOpen) this._render(); return true; }
     if (f === "enname") { E[t.dataset.k] = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 20); this._enSave(true); this._render(); return true; }
     return false;
   }
@@ -835,29 +848,30 @@
     const en = ks.filter((e) => e.startsWith("sensor.") && (["energy", "power"].includes(st[e].attributes.device_class) || /^[kM]?Wh?$/.test(st[e].attributes.unit_of_measurement || "")));
     const sel = (k, o, none) => this._wzSel(o, E.ent[k], "enent", `data-k="${k}"`, none || "– keiner –"), chk = this._enCheck();
     return `<div class="ov" data-act="ensdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Energie-Übersicht</b><span>Einstellungen</span></div><button class="ibtn" data-act="ensdone" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="sh"><div><b>Haus › Energiequellen</b><span>Gilt für ${this._hsUsed("energy")} · für alle</span></div><button class="ibtn" data-act="ensdone" aria-label="Schließen">${ic("close", 20)}</button></div>
       ${chk}${chk ? `<div class="gbtns" style="margin:6px 0 0"><button class="btn2" data-act="enschk">${ic("clock", 15)} Neu messen</button></div>` : ""}
       <div class="lsec">${ic("sun", 15)}Leistung (Watt)</div>
       <div class="mut sm" style="margin:2px 0 0">Solar-Leistung</div>${sel("pv", pw)}
       <div class="mut sm" style="margin:0">Zweite Solaranlage, z. B. Balkonkraftwerk (optional, wird addiert)</div>${sel("pv2", pw)}
       ${E.ent.pv2 ? `<div class="mut sm" style="margin:0">Namen der Anlagen (für die Anzeige)</div><div class="enn"><input class="otxt" type="text" maxlength="20" placeholder="Solar" value="${esc(E.pvn || "")}" data-f="enname" data-k="pvn" aria-label="Name der ersten Anlage"><input class="otxt" type="text" maxlength="20" placeholder="Balkon" value="${esc(E.pv2n || "")}" data-f="enname" data-k="pv2n" aria-label="Name der zweiten Anlage"></div>` : ""}
-      <div class="mut sm" style="margin:0">Netz${p.sensor ? ` (leer = ${esc(this._wzName(p.sensor))} aus Modul 1)` : ""}</div>${sel("grid", pw, p.sensor ? "– wie Modul 1 –" : "– keiner –")}
-      <div class="seg">${[["", "Wie Modul 1"], ["export", "Einspeisung positiv"], ["import", "Bezug positiv"]].map(([k, l]) => `<button class="${(E.sign || "") === k ? "sel" : ""}" data-act="enssign" data-k="${k}">${l}</button>`).join("")}</div>
+      <div class="mut sm" style="margin:0">Netz (Einspeisung und Bezug, auch für den PV-Überschuss in Modul 1)</div>${sel("grid", pw)}
+      <div class="seg">${[["export", "Einspeisung positiv"], ["import", "Bezug positiv"]].map(([k, l]) => `<button class="${(this._enGrid().sign || "export") === k ? "sel" : ""}" data-act="enssign" data-k="${k}">${l}</button>`).join("")}</div>
       <div class="mut sm" style="margin:0">Hausverbrauch (optional, sonst berechnet)</div>${sel("house", pw)}
       <div class="mut sm" style="margin:0">Batterie-Leistung (optional)</div>
       <div class="seg">${[["one", "Ein Sensor"], ["two", "Zwei Sensoren (Laden / Entladen)"]].map(([k, l]) => `<button class="${E.bmode === k ? "sel" : ""}" data-act="ensbm" data-k="${k}">${l}</button>`).join("")}</div>
       ${E.bmode === "two" ? `<div class="mut sm" style="margin:0">Batterie lädt (Watt, positiver Wert)</div>${sel("bchg", pw)}<div class="mut sm" style="margin:0">Batterie entlädt (Watt, positiver Wert)</div>${sel("bdis", pw)}` : `${sel("bat", pw)}${E.ent.bat ? `<div class="seg">${[["charge", "Laden positiv"], ["discharge", "Entladen positiv"]].map(([k, l]) => `<button class="${E.bsign === k ? "sel" : ""}" data-act="ensbs" data-k="${k}">${l}</button>`).join("")}</div>` : ""}`}
+      <div class="mut sm" style="margin:0">Batterie-Ladestand in % (optional)</div>${this._wzSel(ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "battery" || st[e].attributes.unit_of_measurement === "%")), p.soc_sensor, "gpvb", "", "– keiner –", PK_HINT.bat)}
       <div class="lsec">${ic("chart", 15)}Tagessummen für Woche, Monat und Jahr</div>
       <div class="mut sm" style="margin:2px 0 6px">Energiezähler (Wh, kWh, MWh) sind am genauesten. Leistungssensoren (W, kW) gehen auch. Leer lassen: es wird aus Solar und Netz oben berechnet.</div>
       <div class="mut sm" style="margin:2px 0 0">Solar-Ertrag gesamt</div>${sel("pve", en)}
       ${E.ent.pv2 ? `<div class="mut sm" style="margin:0">Ertrag ${esc(this._enPvNames()[1])} gesamt</div>${sel("pve2", en)}` : ""}
       <div class="mut sm" style="margin:0">Netzbezug gesamt</div>${sel("imp", en)}
       <div class="mut sm" style="margin:0">Einspeisung gesamt</div>${sel("exp", en)}
-      <div class="gst">${ic("info", 15)}Batterie-Ladestand, Strompreis und Einspeisevergütung kommen aus Modul 1 → Allgemein. Zähler müssen als Langzeitstatistik in Home Assistant geführt werden.</div>
-      <div class="lsec">${ic("eye", 15)}Anzeige (gilt für dieses Gerät)</div>
-      <div class="mut sm" style="margin:2px 0 0">Ring im Banner</div><div class="seg">${[["aut", "Autarkie im Zeitraum"], ["now", "Gedeckt jetzt"]].map(([k, l]) => `<button class="${(E.ring || "aut") === k ? "sel" : ""}" data-act="ensring" data-k="${k}">${l}</button>`).join("")}</div>
+      <div class="gst">${ic("info", 15)}<span>Zähler müssen als Langzeitstatistik in Home Assistant geführt werden. Bezugspreis und Einspeisevergütung stehen unter Haus → Preise &amp; Tarif.</span></div>
+      ${this._modal && this._modal.haus ? "" : `<div class="lsec">${ic("eye", 15)}Anzeige in Modul 3 (gilt für dieses Gerät)</div>`}
+      ${this._modal && this._modal.haus ? "" : `<div class="mut sm" style="margin:2px 0 0">Ring im Banner</div><div class="seg">${[["aut", "Autarkie im Zeitraum"], ["now", "Gedeckt jetzt"]].map(([k, l]) => `<button class="${(E.ring || "aut") === k ? "sel" : ""}" data-act="ensring" data-k="${k}">${l}</button>`).join("")}</div>
       <div class="mut sm" style="margin:0">Vergleich in den Kacheln</div><div class="seg">${[["prev", "Zur Vorperiode"], ["off", "Aus"]].map(([k, l]) => `<button class="${(E.cmp || "prev") === k ? "sel" : ""}" data-act="enscmp" data-k="${k}">${l}</button>`).join("")}</div>
-      ${this._labFields("en")}
+      ${this._labFields("en")}`}
       <div class="foot2"><button class="btn2 pri" data-act="ensdone">Fertig</button></div></div>`;
   }
 }

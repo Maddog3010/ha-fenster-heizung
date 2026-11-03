@@ -415,6 +415,9 @@ async def ws_restore(hass: HomeAssistant, connection, msg: dict) -> None:
             await wmgr.async_set_modules(data["modules"])
         if isinstance(data.get("wasser"), dict):
             await wmgr.async_set_cfg(data["wasser"])
+    hmgr = hass.data[DOMAIN].get("haus")
+    if hmgr is not None and isinstance(data.get("haus"), dict):  # neuere Sicherung: Haus-Werte haben Vorrang
+        await hmgr.async_set({k: data["haus"][k] for k in ("energy", "soc", "price", "wx") if k in data["haus"]})
     plans = data.get("plans") if isinstance(data.get("plans"), dict) else {}
     done = skipped_opts = 0
     for old, new in mapping.items():
@@ -476,6 +479,7 @@ async def ws_get_state(hass: HomeAssistant, connection, msg: dict) -> None:
             "plans": plans,
             "presence": _presence_snapshot(hass),
             "version": await _version(hass),
+            "haus": _haus_snapshot(hass),
             **_general_snapshot(hass),
             **_modules_snapshot(hass),
         },
@@ -494,7 +498,32 @@ async def ws_set_layout(hass: HomeAssistant, connection, msg: dict) -> None:
     await store["layout_store"].async_save(store["layout"])
     if store.get("wetter") is not None:
         store["wetter"]._fc_ts = 0.0  # neue Wetter-Entität: Vorhersage neu holen
+    if store.get("haus") is not None and isinstance(msg["layout"].get("wx"), dict):  # Wetterquelle gehört dem Haus
+        await store["haus"].async_adopt("layout", store["layout"].get("wx") or {})
     connection.send_result(msg["id"], store["layout"])
+
+
+def _haus_snapshot(hass: HomeAssistant) -> dict[str, Any] | None:
+    mgr = hass.data.get(DOMAIN, {}).get("haus")
+    return mgr.snapshot() if mgr is not None and mgr.ready else None
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/haus_get"})
+@websocket_api.async_response
+async def ws_haus_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    connection.send_result(msg["id"], {"haus": _haus_snapshot(hass)})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/haus_set", vol.Required("haus"): dict})
+@websocket_api.async_response
+async def ws_haus_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("haus")
+    if mgr is None or not mgr.ready:
+        connection.send_error(msg["id"], "not_ready", "Haus-Werte sind noch nicht bereit")
+        return
+    await mgr.async_set(msg["haus"])
+    connection.send_result(msg["id"], {"haus": mgr.snapshot(), "layout": hass.data[DOMAIN].get("layout"), **_general_snapshot(hass), **_modules_snapshot(hass)})
 
 
 @websocket_api.require_admin
@@ -1270,7 +1299,7 @@ async def ws_lf_cmd(hass: HomeAssistant, connection, msg: dict) -> None:
 
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
-        ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
+        ws_get_state, ws_set_layout, ws_haus_get, ws_haus_set, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,

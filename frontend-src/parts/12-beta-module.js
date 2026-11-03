@@ -285,9 +285,9 @@
     if (!force && this._wxsD && Date.now() - this._wxsD.ts < 20000) return;
     this._wxsBusy = true;
     this._hass.callWS({ type: "fenster_heizung/wx_get" }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._wxsD = { d: { error: true }, ts: Date.now() }; })
-      .finally(() => { this._wxsBusy = false; if (this._wxsVisible()) { this._render(); if (this._modal && this._modal.type === "wxset") this._renderModal(); } });
+      .finally(() => { this._wxsBusy = false; if (this._wxsVisible()) { this._render(); if (this._modal && ["wxset", "hswx"].includes(this._modal.type)) this._renderModal(); } });
   }
-  _wxsVisible() { return !!(this._modal && this._modal.type === "wxset") || (!!this._mdActive && this._mdActive() === "wx" && !this._stOpen); }
+  _wxsVisible() { return !!(this._modal && ["wxset", "hswx"].includes(this._modal.type)) || (this._stOpen && this._stA === "hs" && this._stS === "wx") || (!!this._mdActive && this._mdActive() === "wx" && !this._stOpen); }
   _wxs() { const d = (this._wxsD && this._wxsD.d) || {}, df = this._wxsDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, warn: Object.fromEntries(Object.keys(df.warn).map((k) => [k, { ...df.warn[k], ...((c.warn || {})[k] || {}) }])), ahead: { ...df.ahead, ...(c.ahead || {}) }, official: { ...df.official, ...(c.official || {}) }, win: { ...df.win, ...(c.win || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, acts: c.acts || [] } }; }
   _wxsSave(cfg) {
     if (!(this._wxsD && this._wxsD.d && this._wxsD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
@@ -295,10 +295,10 @@
     clearTimeout(this._wxsT);
     this._wxsT = setTimeout(() => {
       this._wxsT = null;
-      this._hass.callWS({ type: "fenster_heizung/wx_set", cfg: this._wxs().cfg }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; if (this._wxsVisible()) this._render(); })
+      this._hass.callWS({ type: "fenster_heizung/wx_set", cfg: this._wxs().cfg }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; if (this._wxsVisible()) this._render(); this._hsPoll(); })
         .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
     }, 500);
-    this._render(); if (this._modal && this._modal.type === "wxset") this._renderModal();
+    this._render(); if (this._modal && ["wxset", "hswx"].includes(this._modal.type)) this._renderModal();
   }
   _wxsPatch(fn) { const c = JSON.parse(JSON.stringify(this._wxs().cfg)); fn(c); this._wxsSave(c); }
   _wxsAct(a, b) {
@@ -422,8 +422,7 @@
       <div class="lsec">${ic("alert", 15)}Warnstufen</div>
       ${WR.map(([k, t, h, ctl]) => `<div class="vrow"><span>${t}<small class="mut" style="display:block">${h}</small></span>${C.warn[k].on && ctl ? ctl : ""}${sw("wxsw", k, C.warn[k].on, t)}</div>`).join("")}
       <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Datenquellen</div>
-      ${this._wxsAssign()}
-      <div class="gst">${ic("info", 15)}<span>Weitere Dienste für Wetter und Warnungen findest du im <button class="lnk" data-act="wxsgoig">Store</button>.</span></div>
+      ${this._hsLink("wx", "Wetter, Wind, Außentemperatur und amtliche Warnungen")}
       <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Vorwarnung</div>
       <div class="vrow"><span>Warnung vorab melden<small class="mut" style="display:block">Aus der Stundenprognose der Wetter-Entität. Gilt für Sturm, Gewitter, Frost, Hitze und Starkregen.</small></span>${C.ahead.on ? step("wxsaheadh", "", "", C.ahead.hours, C.ahead.hours === 1 ? "Std." : "Std.", 1) : ""}${sw("wxsahead", "", C.ahead.on, "Vorwarnung")}</div>
       <div class="lsec" style="margin-top:12px">${ic("blinds", 15)}Aktionen bei einer Warnung</div>

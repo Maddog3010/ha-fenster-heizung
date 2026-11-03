@@ -226,6 +226,10 @@ class WetterManager:
             }, 10,
         )
 
+    def persist(self) -> None:
+        """Speichern ohne Übernahme ins Haus."""
+        self._save()
+
     def _add(self, text: str) -> None:
         self.log.insert(0, {"t": dt_util.now().isoformat(), "x": text})
         del self.log[MAX_LOG:]
@@ -499,6 +503,9 @@ class WetterManager:
     async def async_set(self, raw: Any) -> dict[str, Any]:
         self.cfg = clean_cfg({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
         self._save()
+        haus = self.hass.data.get(DOMAIN, {}).get("haus")
+        if haus is not None and isinstance(raw, dict) and ("wind" in raw or "official" in raw):  # Wetterquelle gehört dem Haus
+            await haus.async_adopt("wetter", self.cfg)
         await self.async_config_changed()
         return await self.snapshot()
 

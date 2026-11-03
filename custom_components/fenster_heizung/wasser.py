@@ -385,6 +385,10 @@ class WasserManager:
     def _save(self) -> None:
         self._store.async_delay_save(lambda: {"modules": self.modules, "cfg": self.cfg, "state": self.state}, 5)
 
+    def persist(self) -> None:
+        """Speichern ohne Übernahme ins Haus (der Haus-Speicher schreibt die Energiequellen hierher)."""
+        self._save()
+
     def active(self) -> bool:
         return self.modules["on"]["ww"] and configured(self.cfg)
 
@@ -413,6 +417,9 @@ class WasserManager:
         self._backup()
         self.modules = clean_modules(raw)
         self._save()
+        haus = self.hass.data.get(DOMAIN, {}).get("haus")
+        if haus is not None:  # Energiequellen gehören dem Haus
+            await haus.async_adopt("wasser", self.modules["energy"])
         gsm = self.hass.data.get(DOMAIN, {}).get("geraete")
         if gsm is not None:
             await gsm.async_config_changed()

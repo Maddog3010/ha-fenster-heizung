@@ -1099,6 +1099,16 @@ button.stck{cursor:pointer}
 .sxc.wa{border-color:color-mix(in srgb,#f59e0b 50%,transparent);color:#f59e0b;background:color-mix(in srgb,#f59e0b 9%,transparent)}
 .stw .sxsum{margin:0 0 14px}
 @media(max-width:760px){.stw .sxi{display:grid}.stw .sxc{display:inline-block}.stw .sxsum{grid-template-columns:1fr 1fr}}
+.hsuse{font-size:.8rem;color:var(--mut);margin:-4px 4px 10px}
+.hsr .sxt small{overflow-wrap:anywhere}.hsr .sxt{min-width:0;flex:1}.stmain,.stw{min-width:0;max-width:100%}.stw .card{max-width:100%;box-sizing:border-box}
+.hsv{flex:none;font-style:normal;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:10px;border:1px solid var(--line);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.hsv svg{color:var(--teal)}.hsv.bad{color:#f87171;border-color:color-mix(in srgb,#ef4444 50%,transparent);background:color-mix(in srgb,#ef4444 9%,transparent)}
+.hsck{border:1px solid color-mix(in srgb,#34d399 45%,transparent);background:color-mix(in srgb,#34d399 8%,transparent);border-radius:14px;margin:0 0 12px}
+.hsck.wn{border-color:color-mix(in srgb,#f59e0b 50%,transparent);background:color-mix(in srgb,#f59e0b 8%,transparent)}
+.hsed{margin:0 0 14px}
+.hsmig{padding:14px 16px;border-color:color-mix(in srgb,var(--teal) 45%,var(--line))}.hsmig.warn{border-color:color-mix(in srgb,#f59e0b 50%,var(--line))}
+.hsmh{display:flex;align-items:center;gap:8px;margin:0 0 6px;color:var(--teal)}.hsmh b{color:var(--primary-text-color,#e6edf3)}
+.hslk{border:1px solid color-mix(in srgb,var(--teal) 35%,var(--line));border-radius:14px;margin:8px 0;overflow:hidden}.hslink .stlv{margin-left:0}.hslink .sxg,.fhs.open .hslink .sxg{transform:rotate(-90deg)}.hslink .sxt small{overflow-wrap:anywhere}
 /* Modul 1: Messraum */
 .msh{display:flex;align-items:center;gap:10px;margin:18px 2px 10px}.msh .gico{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal);flex:none}
 .msh b{display:block;font-size:1rem}.msh span{font-size:.78rem;color:var(--mut)}
