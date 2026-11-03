@@ -76,6 +76,13 @@ const ICONS = {
   eyeOff: '<path d="M3 3l18 18M10.6 6.2A9.7 9.7 0 0112 6c6.4 0 10 6 10 6a17 17 0 01-3.2 3.9M6.6 7.6C3.9 9.3 2 12 2 12s3.6 6 10 6c1.5 0 2.9-.3 4.1-.8M9.9 9.9a3 3 0 004.2 4.2"/>',
   trash: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6"/>',
   boiler: '<rect x="6" y="3.5" width="12" height="17" rx="4.5"/><path d="M9 10.5c1.2-1.4 2.4 1.4 3.6 0s2.4 1.4 3.6 0M9 14.5c1.2-1.4 2.4 1.4 3.6 0s2.4 1.4 3.6 0M12 3.5V2M12 20.5V22"/>',
+  robot: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="9" r="2.2"/><path d="M7.5 15.5h9"/>',
+  refresh: '<path d="M20 11a8 8 0 0 0-14.5-4.5L4 8M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5L20 16M20 20v-4h-4"/>',
+  stop: '<rect x="6" y="6" width="12" height="12" rx="2"/>',
+  play: '<path d="M8 5.5v13l10.5-6.5z"/>',
+  pause: '<path d="M8.5 5.5v13M15.5 5.5v13"/>',
+  dock: '<path d="M4 20h16M7 20v-6a5 5 0 0 1 10 0v6"/><path d="M12 6V3"/>',
+  package: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
   puzzle: '<path d="M10 4a2 2 0 1 1 4 0v1.5h4V10h-1.5a2 2 0 1 0 0 4H18v4.5h-4.5V17a2 2 0 1 0-4 0v1.5H5V14h1.5a2 2 0 1 0 0-4H5V5.5h5z"/>',
   shield: '<path d="M12 3l7.5 3v5.5c0 4.5-3.2 8-7.5 9.5-4.3-1.5-7.5-5-7.5-9.5V6z"/><path d="M8.7 12l2.3 2.3 4.3-4.6"/>',
   blinds: '<rect x="4" y="3.5" width="16" height="4" rx="1"/><path d="M5.5 7.5v10M18.5 7.5v10M5.5 11h13M5.5 14.5h13M5.5 18h13"/>',
@@ -271,7 +278,7 @@ const MU_NAMES = { tonnen: "Tonnen", next: "Nächste Abholungen", cal: "Kalender
 const MU_WIDE = ["tonnen", "cost"];
 const DAYS_SHORT_MU = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 const MOD_ST = { ef: "beta", sf: "beta", sp: "vorab", ev: "beta", wx: "beta", dt: "beta" };
-const modSt = (m) => (!m ? "" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
+const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
 const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
@@ -1925,6 +1932,17 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .pkdev{border:1px solid var(--line);border-radius:12px;margin:0 0 7px;padding:4px}.pkdh{display:flex;align-items:center;gap:6px;padding:5px 6px;font-size:.82rem;color:var(--teal)}.pkdh b{color:var(--primary-text-color)}.pkdh small{color:var(--mut);margin-left:auto;font-size:.7rem}
 .pkfl{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:0 0 7px}.pkfl>span{font-size:.7rem;color:var(--mut);font-weight:700;min-width:62px}.pkchip{border:1px solid var(--line);background:transparent;color:inherit;font:inherit;font-size:.74rem;font-weight:650;border-radius:999px;padding:4px 10px;cursor:pointer}.pkchip.sel{background:var(--teal);color:#062a28;border-color:var(--teal)}
 .pkf .pklist{max-height:none;overflow:visible}.pkcnt{font-size:.76rem;color:var(--mut);margin:2px 2px 4px}.pkmorebtn{margin:4px 6px 8px}
+/* Addons */
+.adseg{max-width:420px}.adrow{padding:12px 14px;border-bottom:1px solid var(--line)}.adrow:last-child{border-bottom:0}.adtop{display:flex;align-items:center;gap:12px}.adtop .sxt{flex:1;min-width:0}
+.adrow.paused .adtop .sxi,.adrow.error .adtop .sxi{opacity:.55}.adbtn{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 0 46px}.adbtn .gsch{display:inline-flex;align-items:center;gap:5px}
+.adds{margin:8px 0 0 46px;font-size:.84rem;color:var(--mut);line-height:1.45}.adrow .gst{margin:8px 0 0 46px}
+.gst.bad{color:#f87171}.btn2.dng{background:#ef4444;border-color:#ef4444;color:#fff}
+.adhero{display:flex;gap:14px;align-items:flex-start;padding:14px;border-radius:16px;background:color-mix(in srgb,var(--teal) 10%,transparent);border:1px solid color-mix(in srgb,var(--teal) 35%,transparent);margin:4px 0 10px;color:var(--teal)}
+.adhero b{display:block;color:var(--primary-text-color);margin-bottom:4px}.adhero span{font-size:.85rem;color:var(--mut);line-height:1.45}
+.adkv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.84rem;margin:0 0 10px}.adkv span{color:var(--mut)}.adkv b{font-weight:600}
+.adopt{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;background:transparent;border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:0 0 8px;cursor:pointer;color:inherit;font:inherit}
+.adopt i{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--mut);margin-top:2px}.adopt.sel{border-color:var(--teal)}.adopt.sel i{border-color:var(--teal);background:radial-gradient(var(--teal) 45%,transparent 50%)}
+.adopt b{display:block}.adopt small{color:var(--mut);font-size:.8rem}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -1943,7 +1961,7 @@ class FensterHeizungPanel extends HTMLElement {
   disconnectedCallback() { this._ro && this._ro.disconnect(); clearInterval(this._ti); }
   _tick() {
     this._tmTick();
-    if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); }
+    if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); this._adLoad(true); }
     this.shadowRoot.querySelectorAll("[data-since]").forEach((el) => {
       const c = cdown(+el.dataset.since, +el.dataset.need), b = el.querySelector("[data-cd]"), f = el.querySelector("[data-bar]");
       if (b) b.textContent = c.txt; if (f) f.style.width = c.pct + "%"; el.classList.toggle("done", c.left <= 0);
@@ -1976,6 +1994,7 @@ class FensterHeizungPanel extends HTMLElement {
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
+    this._adLoad(true);
     this._render();
   }
   _admin() { return !!(this._hass && this._hass.user && this._hass.user.is_admin); }
@@ -3313,6 +3332,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mux") && this._muxChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("adx") && this._adxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lix") && this._lixChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("efx") && this._efxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tgx") && this._tgxChange(t)) return;
@@ -3346,6 +3366,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("ig")) this._igAct(a, b);
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
     else if (a.startsWith("mux")) this._muxAct(a, b);
+    else if (a.startsWith("adx")) this._adxAct(a, b);
     else if (a.startsWith("lix")) this._lixAct(a, b);
     else if (a.startsWith("tgx")) this._tgxAct(a, b);
     else if (a.startsWith("efx")) this._efxAct(a, b);
@@ -3993,6 +4014,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (["efxmgr", "efxedit"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lixset", "lixdet", "lixoff"].includes(m.type)) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["adinst", "addel", "adx"].includes(m.type)) { box.innerHTML = this._adModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "mwdet") { box.innerHTML = this._mwDetModal(); return; }
     if (m.type === "mwpick") { box.innerHTML = this._mwPickModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -4307,7 +4329,7 @@ class FensterHeizungPanel extends HTMLElement {
   _mdActiveSet(id) { const s = this._mdState(); s.active = id; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
   _mdList() {
     const s = this._mdState(), home = this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : [];
-    const rest = [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...(this._labOn("mm") ? [MOD_MU] : []), ...(this._labOn("li") ? [MOD_LI] : [])];
+    const rest = [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...(this._labOn("mm") ? [MOD_MU] : []), ...(this._labOn("li") ? [MOD_LI] : []), ...this._adMods()];
     rest.sort((a, b) => a.n - b.n);
     return [...home, ...rest, ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))];
   }
@@ -4379,6 +4401,7 @@ class FensterHeizungPanel extends HTMLElement {
       ["md", "puzzle", "Module", `${act.length} an · ${off.length} aus`, ""],
       ["lk", "palette", "Darstellung", "Farben, Wetter, Raumsymbole", ""],
       ["dv", "tablet", "Dieses Gerät", "Tablet-Modus, Zeiträume, Ansicht", ""],
+      ["ad", "package", "Addons", (() => { const L = this._adState().addons || [], n = L.filter((a) => a.installed).length; return `${n} installiert · ${L.length - n} im Katalog`; })(), (() => { const L = this._adState().addons || [], u = L.filter((a) => a.update).length, e = L.filter((a) => a.status === "error").length; return e ? `<em class="sxc er">${e}</em>` : u ? `<em class="sxc wa">${u}</em>` : ""; })()],
       ["ex", "flask", "Erweiterungen", "Store, Labs, eigene Module", this._labCount() ? `<em class="sxc ok">${this._labCount()} ${this._labCount() === 1 ? "Lab" : "Labs"}</em>` : ""],
       ["sy", "shield", "System", "Sichern, Diagnose, Versionen", ""],
       ["sp", "heart", "Sponsor", "Schlüssel und Extras", ""]];
@@ -4408,6 +4431,7 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
           ${row("layers", "Versionen", "Letzte Updates mit Änderungen, Modulversionen und Versionsschema", "mver")}`),
       sp: () => card(this._spnRow()),
+      ad: () => this._adSetPage(card),
     };
     const A = AREAS.find((a) => a[0] === area);
     const nav = `<nav class="stnav" aria-label="Bereiche der Einstellungen">${AREAS.map(([k, i, t, sub, ch]) => wide
@@ -6670,6 +6694,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
     });
     try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: "wa" }); } catch (_) { /* egal */ }
+    this._adHints().forEach((h) => out.push(h));
     const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
   }
   /* Kachel je aktives Modul */
@@ -6682,6 +6707,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (m.id === "ev") { const e = (this._evState().ent || {}).soc, v = e && st[e] ? parseFloat(st[e].state) : NaN; sub = isFinite(v) ? `${num(v, 0)} %` : "Nicht eingerichtet"; c = isFinite(v) ? "" : "mut"; }
     else if (m.id === "mu") { const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; sub = x ? `${esc(x.name)} ${this._muWhen(x.days)}` : "Keine Termine"; c = x && x.days <= 1 ? "wa" : x ? "" : "mut"; this._muLoad(); }
     else if (m.id === "li") { const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; sub = L.length ? (n ? `${n} von ${L.length} an` : "Alles aus") : "Keine Lampen"; c = n ? "wa" : "mut"; }
+    else if (m.addon) { const t = this._adTile(m); sub = t.sub; c = t.c; }
     else { sub = modSt(m) && STG[modSt(m)] ? STG[modSt(m)].t : ""; c = "mut"; }
     return `<button class="hzt ${c}" data-act="hzgo" data-k="${m.id}"><span class="hti">${ic(m.icon, 22)}</span><b>${esc(m.short)}</b><small>${sub}</small></button>`;
   }
@@ -6926,6 +6952,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (id === "gs") return this._gsPage();
     if (id === "mu") return this._muPage();
     if (id === "li") return this._liPage();
+    if (m.addon) return this._adPage(m);
     if (m.beta) return this._betaPage(id);
     if (id === "en") return this._enPage();
     return `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Dieses Modul gibt es im Tablet-Modus noch nicht.</div>`;
@@ -8903,6 +8930,116 @@ class FensterHeizungPanel extends HTMLElement {
     this._pkId = null; this._pkS = null; this._modal = { type: "mwdet", k: tid }; this._renderModal();
     setTimeout(() => this._mwLoad(true), 1800);
   }
+  /* ================= Addons (Addon-Schnittstelle API 1) =================
+     Ein Addon bringt seinen Python-Teil und seine Seite (www/panel.js) selbst mit. Der Kern lädt die Liste aus
+     fenster_heizung/addons_get, lädt die Seite eines aktiven Addons per import() nach und gibt ihr die Bausteine
+     des Kerns (Symbole, Texte, Aufruf des Backends). Die Seite eines Addons ist ein ES-Modul:
+       export default (api) => ({ page(p, m), tile(p, s), act(p, a, el), change(p, el), modal(p, type), icons, art, css })
+     Aktionen eines Addons heißen data-act="adxa" data-ad="<id>" data-a="<aktion>". */
+  _adState() { return (this._ad && this._ad.d) || { addons: [] }; }
+  _adLoad(force) {
+    if (!this._hass || this._adBusy) return;
+    if (!force && this._ad && Date.now() - this._ad.ts < 30000) return;
+    this._adBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/addons_get" }).then((r) => { this._ad = { d: r || { addons: [] }, ts: Date.now() }; this._adImport(); })
+      .catch(() => { this._ad = { d: { addons: [], error: true }, ts: Date.now() }; })
+      .finally(() => { this._adBusy = false; this._render(); if (this._modal && String(this._modal.type).startsWith("ad")) this._renderModal(); });
+  }
+  _adApi() {
+    return { v: 1, ic, esc, num, ICONS, MOD_ART, STG,
+      call: (id, cmd, data) => this._hass.callWS({ type: "fenster_heizung/addon_call", addon: id, cmd, data: data || {} }) };
+  }
+  _adImport() {
+    this._adDefs = this._adDefs || {}; this._adJs = this._adJs || {};
+    this._adState().addons.filter((a) => a.status === "on" && a.js).forEach((a) => {
+      if (this._adJs[a.id] === a.js) return;
+      this._adJs[a.id] = a.js;
+      import(a.js).then((mod) => {
+        const def = (mod.default || mod)(this._adApi()) || {};
+        Object.assign(ICONS, def.icons || {}); if (def.art) MOD_ART[a.id] = def.art;
+        this._adDefs[a.id] = def; this._render(); if (this._modal) this._renderModal();
+      }).catch((e) => { this._adDefs[a.id] = { err: String(e && e.message || e) }; this._render(); });
+    });
+  }
+  _adMods() {
+    return this._adState().addons.filter((a) => a.status === "on").map((a) => ({ id: a.id, n: a.n, name: a.name, short: a.short || a.name, icon: ICONS[a.icon] ? a.icon : "puzzle", tag: a.tag, addon: true, beta: a.stage !== "stabil", stage: a.stage, ad: a }));
+  }
+  _adDef(id) { return (this._adDefs || {})[id]; }
+  _adPage(m) {
+    const d = this._adDef(m.id);
+    if (!d) return `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Seite des Addons wird geladen …</div>`;
+    if (d.err) return `<div class="card empty">${ic("alert", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Die Seite des Addons ließ sich nicht laden.<br><span class="sm">${esc(d.err)}</span></div>`;
+    try { return (d.css ? `<style>${d.css}</style>` : "") + d.page(this, m); } catch (e) { return `<div class="card empty">${ic("alert", 36)}<div style="margin:10px 0 4px;font-weight:700">Fehler in der Seite des Addons</div><span class="sm">${esc(e.message)}</span></div>`; }
+  }
+  _adTile(m) { const s = (m.ad && m.ad.summary && m.ad.summary.tile) || {}; return { sub: esc(s.sub || ""), c: s.c || "" }; }
+  _adHints() { return this._adState().addons.filter((a) => a.status === "on").flatMap((a) => ((a.summary || {}).hints || []).map((h) => ({ i: ICONS[h.i] ? h.i : "info", t: esc(h.t), s: esc(h.s || ""), r: h.c === "bad" ? "jetzt" : "", c: h.c || "", mod: a.id }))); }
+  _adModal() {
+    const m = this._modal, A = this._adState().addons.find((x) => x.id === m.id);
+    if (m.type === "adx" || !A) { const d = this._adDef(m.id); return d && d.modal ? d.modal(this, m) : ""; }
+    const hd = (t, s) => `<div class="sh"><div><b>${t}</b><span>${s}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>`;
+    const kb = (b) => b >= 1e6 ? `${num(b / 1e6, 1)} MB` : `${Math.max(1, Math.round(b / 1000))} kB`;
+    if (m.type === "adinst") {
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">${hd(`Modul ${A.n} · ${esc(A.name)}`, `Addon · v${esc(A.version)} Build ${A.build} · ${STG[A.stage] ? STG[A.stage].t : ""}`)}
+        <div class="adhero">${ic(ICONS[A.icon] ? A.icon : "puzzle", 34)}<div><b>${esc(A.tag)}</b><span>${esc(A.desc)}</span></div></div>
+        <div class="lsec">${ic("info", 15)}Steckbrief</div>
+        <div class="adkv"><span>Ablage</span><b>${A.src === "ext" ? `Eigener Ordner (${esc(this._adState().ext_dir || "")})` : "Mitgeliefert in der Integration"}</b><span>Größe</span><b>${kb(A.size || 0)}</b><span>Braucht</span><b>Strom &amp; Wärme ${esc(A.core_min || "–")} · Addon-API ${A.api}</b><span>Unterstützt</span><b>${(A.optional || []).map(esc).join(", ") || "–"}</b><span>Internet</span><b>${(A.network || []).length ? A.network.map(esc).join(", ") : "keine Verbindung nach außen"}</b></div>
+        ${(A.hints || []).map((h) => `<div class="gst">${ic("info", 15)}<span>${esc(h)} Du kannst das Addon trotzdem schon installieren.</span></div>`).join("")}
+        ${A.can ? "" : `<div class="gst bad">${ic("alert", 15)}<span>${esc(A.why)}</span></div>`}
+        ${A.kept ? `<div class="gst">${ic("check", 15)}<span>Deine Daten von der letzten Installation sind noch da und werden übernommen.</span></div>` : ""}
+        <div class="gst">${ic("shield", 15)}<span>Ein Addon läuft mit denselben Rechten wie die Integration. Mitgelieferte Addons kommen direkt von Maddog3010.</span></div>
+        <div class="gbtns"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="adxdo" data-k="${A.id}" ${A.can && !this._adWork ? "" : "disabled"}>${this._adWork ? "Wird installiert …" : "Installieren"}</button></div></div>`;
+    }
+    if (m.type === "addel") {
+      const keep = m.keep !== false;
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">${hd(`${esc(A.name)} deinstallieren?`, `Modul ${A.n} · Addon`)}
+        <div class="lsec">${ic("info", 15)}Was passiert</div>
+        <div class="wxl"><div class="wxr"><span class="wxi">${ic("stop", 18)}</span><div class="wxm"><div class="wxt"><b>Das Addon stoppt</b></div><small>Hintergrund-Logik, Seite und Kachel auf Start und Tablet verschwinden. Laufende Reinigungen fahren weiter.</small></div></div>
+          <div class="wxr"><span class="wxi">${ic("layers", 18)}</span><div class="wxm"><div class="wxt"><b>Dateien bleiben in der Integration</b></div><small>Mitgelieferte Addons kannst du jederzeit wieder installieren.</small></div></div></div>
+        <div class="lsec">${ic("sliders", 15)}Deine Daten</div>
+        <button class="adopt ${keep ? "sel" : ""}" data-act="adxkeep" data-k="1"><i></i><span><b>Behalten</b><small>Räume, Ziele und Verlauf. Bei erneuter Installation wieder da.</small></span></button>
+        <button class="adopt ${keep ? "" : "sel"}" data-act="adxkeep" data-k="0"><i></i><span><b>Auch löschen</b><small>Die Sicherung im Ablagefach bleibt, bis sie überschrieben wird.</small></span></button>
+        <div class="gbtns"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri dng" data-act="adxrm" data-k="${A.id}" ${this._adWork ? "disabled" : ""}>${this._adWork ? "Wird entfernt …" : "Deinstallieren"}</button></div></div>`;
+    }
+    return "";
+  }
+  /* Einstellungen › Addons */
+  _adSetPage(card) {
+    this._adLoad();
+    const S = this._adState(), L = S.addons || [], tab = this._adTab || "inst", kb = (b) => b >= 1e6 ? `${num(b / 1e6, 1)} MB` : `${Math.max(1, Math.round(b / 1000))} kB`;
+    const inst = L.filter((a) => a.installed), cat = L.filter((a) => !a.installed), upd = L.filter((a) => a.update);
+    const stc = (a) => a.status === "on" ? (a.update ? `<em class="sxc wa">Update v${esc(a.version)}</em>` : `<em class="sxc ok">aktiv</em>`) : a.status === "paused" ? `<em class="sxc off">pausiert</em>` : a.status === "error" ? `<em class="sxc er">Fehler</em>` : "";
+    const row = (a) => `<div class="adrow ${a.status}"><div class="adtop"><span class="sxi">${ic(ICONS[a.icon] ? a.icon : "puzzle", 22)}</span><span class="sxt"><b>Modul ${a.n} · ${esc(a.name)}</b><small>v${esc(a.version)} Build ${a.build} · ${STG[a.stage] ? STG[a.stage].t : ""} · ${a.src === "ext" ? "aus eigenem Ordner" : "mitgeliefert"}${a.status === "on" && a.summary && a.summary.info ? " · " + esc(a.summary.info) : ""}</small></span>${a.installed ? stc(a) : a.sponsor ? `<em class="sxc sp">Sponsor</em>` : ""}</div>
+      ${a.err && a.status !== "on" ? `<div class="gst bad">${ic("alert", 15)}<span>${esc(a.err)}</span></div>` : ""}
+      ${!a.installed ? `<p class="adds">${esc(a.desc || a.tag)}</p>` : ""}
+      <div class="adbtn">${a.installed ? `${a.status === "on" ? `<button class="gsch sel" data-act="adxopen" data-k="${a.id}">Öffnen</button>` : ""}${a.status === "error" ? `<button class="gsch sel" data-act="adxretry" data-k="${a.id}">Erneut versuchen</button>` : ""}${a.update ? `<button class="gsch" data-act="adxretry" data-k="${a.id}">Aktualisieren</button>` : ""}${a.status === "paused" ? `<button class="gsch sel" data-act="adxresume" data-k="${a.id}">Fortsetzen</button>` : a.status === "on" ? `<button class="gsch" data-act="adxpause" data-k="${a.id}">Pausieren</button>` : ""}<button class="gsch" data-act="adxdel" data-k="${a.id}">Deinstallieren</button>`
+        : `<button class="gsch sel" data-act="adxinst" data-k="${a.id}">${ic("download", 14)} Installieren</button>${a.kept ? `<span class="mut sm">Daten von früher vorhanden</span>` : ""}`}</div></div>`;
+    const seg = `<div class="seg adseg"><button class="${tab === "inst" ? "sel" : ""}" data-act="adxtab" data-k="inst">Installiert ${inst.length}</button><button class="${tab === "cat" ? "sel" : ""}" data-act="adxtab" data-k="cat">Katalog ${cat.length}</button><button class="${tab === "upd" ? "sel" : ""}" data-act="adxtab" data-k="upd">Updates ${upd.length}</button></div>`;
+    const list = tab === "cat" ? cat : tab === "upd" ? upd : inst;
+    const empty = tab === "inst" ? `Noch kein Addon installiert. Im Katalog findest du ${cat.length === 1 ? "ein Addon" : cat.length + " Addons"}.` : tab === "upd" ? "Alle Addons sind aktuell." : "Alle verfügbaren Addons sind installiert.";
+    const total = inst.reduce((s, a) => s + (a.size || 0), 0);
+    return `${seg}${card(list.length ? list.map(row).join("") : `<div class="mut sm" style="padding:14px">${S.error ? "Die Addon-Verwaltung antwortet nicht. Ist die Integration aktuell?" : this._ad ? empty : "Lädt …"}</div>`)}
+      <div class="stleg">${ic("info", 14)} Addons sind Module mit eigener Version, die du hier installierst und wieder entfernst. Mitgelieferte Addons liegen in der Integration (Ordner <code>addons/</code>), weitere kommen später aus <code>Maddog3010/strom-waerme-addons</code>. Addon-API ${S.api || 1} · Kern ${esc(S.core || this._ver || "")} · ${inst.length} installiert · ${kb(total)}</div>`;
+  }
+  _adxAct(a, b) {
+    const k = b.dataset.k;
+    const run = (act, id, keep, ok) => {
+      this._adWork = true; this._renderModal();
+      this._hass.callWS({ type: "fenster_heizung/addons_act", act, addon: id, keep: keep !== false }).then((r) => { this._ad = { d: r, ts: Date.now() }; this._adImport(); if (ok) ok(); })
+        .catch((e) => this._toast((e && e.message) || "Das hat nicht geklappt"))
+        .finally(() => { this._adWork = false; this._render(); this._renderModal(); });
+    };
+    if (a === "adxtab") { this._adTab = k; this._render(); }
+    else if (a === "adxinst") { this._modal = { type: "adinst", id: k }; this._renderModal(); }
+    else if (a === "adxdo") run("install", k, true, () => { this._modal = null; this._toast("Installiert. Das Modul steht jetzt in der Leiste."); this._adTab = "inst"; });
+    else if (a === "adxdel") { this._modal = { type: "addel", id: k, keep: true }; this._renderModal(); }
+    else if (a === "adxkeep") { this._modal.keep = k === "1"; this._renderModal(); }
+    else if (a === "adxrm") { const keep = this._modal.keep !== false; run("uninstall", k, keep, () => { this._modal = null; delete (this._adJs || {})[k]; this._toast(keep ? "Deinstalliert, deine Daten bleiben erhalten" : "Deinstalliert und Daten gelöscht"); }); }
+    else if (a === "adxpause") run("pause", k, true, () => this._toast("Pausiert"));
+    else if (a === "adxresume" || a === "adxretry") { delete (this._adJs || {})[k]; run(a === "adxresume" ? "resume" : "retry", k, true, () => this._toast("Läuft wieder")); }
+    else if (a === "adxopen") { this._stOpen = false; this._mdActiveSet(k); this._render(); }
+    else if (a === "adxa") { const d = this._adDef(b.dataset.ad); if (d && d.act) d.act(this, b.dataset.a, b); }
+  }
+  _adxChange(t) { const d = this._adDef(t.dataset.ad); if (d && d.change) { d.change(this, t); return true; } return false; }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
     return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}${this._mvTab(m.id)[0]}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : this._mvTab(m.id)[1]}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
@@ -8916,10 +9053,11 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "mu") { body = this._modHeroFor("mu") + this._muPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; this._muLoad(); }
     else if (a === "li") { body = this._modHeroFor("li") + this._liPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "ef") { body = this._efPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
+    else if (m.addon) { body = this._adPage(m); const d = this._adDef(a); pills = adm && d && d.settings ? `<button class="pillbtn" data-act="adxa" data-ad="${a}" data-a="settings" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (m.beta) { body = this._betaPage(a); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "en") { body = this._enPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else body = `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">${esc(m.name)}</div>Dieses Modul wird aus <code>${esc(m.ext.url)}</code> geladen.<br><span class="sm">Externe Module werden in einer späteren Version geladen.</span></div>`;
-    if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "li" && a !== "st" && !m.beta && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
+    if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "li" && a !== "st" && !m.beta && !m.addon && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? this._verTag() : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>

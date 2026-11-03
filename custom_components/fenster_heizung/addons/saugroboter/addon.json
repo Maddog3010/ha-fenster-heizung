@@ -1,0 +1,18 @@
+{
+  "id": "saugroboter",
+  "n": 21,
+  "name": "Saugroboter",
+  "short": "Saugroboter",
+  "icon": "robot",
+  "tag": "Räume, Karte, Status und Wartung deiner Saugroboter",
+  "desc": "Alle Saugroboter im Haus auf einer Seite: Status und Fortschritt, wann welcher Raum zuletzt gereinigt wurde, Raumreinigung mit einem Tipp, Karte, Woche und Verschleißteile. Zuerst für Roborock, Grundfunktionen für jeden Saugroboter.",
+  "version": "0.1.0",
+  "build": 1,
+  "stage": "dev",
+  "api": 1,
+  "core_min": "2026.11.1b7",
+  "needs": { "domains": ["vacuum"], "text": "Noch kein Saugroboter in Home Assistant gefunden." },
+  "optional": ["roborock", "ecovacs", "dreame_vacuum", "mqtt"],
+  "sponsor": false,
+  "network": []
+}

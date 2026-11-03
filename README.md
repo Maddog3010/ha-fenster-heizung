@@ -30,7 +30,9 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
-> 🧭 **Neu in der Beta 2026.11.1b6: Einstellungen neu gedacht.** Gemeinsame Werte liegen zentral im **Haus**, das **Messwerk** zeigt alle Sensoren aller Module mit „genutzt in“, dazu eine neue Sensorsuche ohne lange Listen, Suche, Änderungsverlauf mit Rückgängig und Hilfe an jeder Stelle. [Mehr dazu](#einstellungen)
+> 🧩 **Neu in der Beta 2026.11.1b7: Addons.** Module lassen sich jetzt unter **Einstellungen → Addons** installieren, pausieren und wieder deinstallieren. Das erste Addon ist **Modul 21 Saugroboter** (zuerst für Roborock). [Mehr dazu](#addons)
+
+> 🧭 **Seit der Beta 2026.11.1b6: Einstellungen neu gedacht.** Gemeinsame Werte liegen zentral im **Haus**, das **Messwerk** zeigt alle Sensoren aller Module mit „genutzt in“, dazu eine neue Sensorsuche ohne lange Listen, Suche, Änderungsverlauf mit Rückgängig und Hilfe an jeder Stelle. [Mehr dazu](#einstellungen)
 
 > 🧪 **Versionsnummern nach Jahr, Monat und Release.** Ab November 2026 heißen stabile Updates `2026.11.1`, `2026.11.2` …, Testversionen tragen die Nummer des kommenden Updates (`2026.11.1b1`). Testversionen gibt es nur, wenn du in HACS Beta-Versionen einschaltest. [Mehr dazu](#versionen-und-updates)
 
@@ -48,6 +50,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | 🏠 | **Startseite** | Ampel, Wetter, Personen, Alarm und Hinweise auf einen Blick |
 | 📱 | **Tablet-Modus** | Große Knöpfe, Ruhemodus, PIN und Display per Bewegungsmelder |
 | 🧪 | **Labs** | Neue Funktionen zum Ausprobieren, ab Werk aus |
+| 🧩 | **Addons** | Module zum Installieren und Deinstallieren, als erstes Modul 21 Saugroboter |
 | ⚙️ | **Einstellungen** | Alles an einem Ort: Haus-Werte für alle Module, Messwerk mit allen Sensoren, Suche, Verlauf mit Rückgängig |
 | 💾 | **Sicherung** | Als Datei oder automatisch auf deinen Homeserver |
 
@@ -193,6 +196,24 @@ Eigene Schwellen für Sturm, Gewitter, Frost, Hitze und Starkregen mit Vorwarnun
 Das Haus in der Mitte, ringsum bis zu acht Kacheln für Solar, Netz, Akku, Auto und Verbraucher. Die Punkte in den Linien zeigen Richtung und Stärke: wenige langsame bei wenig Watt, viele schnelle bei mehreren Kilowatt. Namen, Farben, Symbole und Sensoren kannst du pro Kachel wählen, Größe passend für Handy, Tablet und Desktop.
 </details>
 
+<a id="addons"></a>
+<details>
+<summary><b>21 · Saugroboter</b> (Addon, in Entwicklung)</summary>
+<br>
+
+<p align="center"><img src="docs/vorschau_modul_saugroboter.png" width="640" alt="Modul 21 Saugroboter"></p>
+
+Das erste **Addon**: Du installierst es unter **Einstellungen → Addons** und kannst es dort jederzeit pausieren oder wieder deinstallieren, auf Wunsch mit oder ohne deine Daten.
+
+- **Roboter-Karte** je Saugroboter: Fortschritt oder Akku als Ring, aktueller Raum, Zeit, Fläche, Start/Pause, Zur Station, Finden
+- **Raum-Kacheln** mit „zuletzt gereinigt“ und Ampel (sauber, fällig, überfällig). Räume antippen und reinigen lassen oder alle fälligen auf einmal, bei mehreren Robotern bekommt jeder seine Räume
+- **Karte** des Roboters, wenn er eine liefert (Roborock)
+- **Woche:** alle Fahrten der letzten 7 Tage, auch aus der App des Herstellers · **Wartung:** Verschleißteile in Prozent
+- Kachel und Hinweise auf **Start und Tablet**, Meldung wenn der Roboter Hilfe braucht
+- **Räume:** am besten in Home Assistant unter den Einstellungen der Roboter-Entität „Segmente Bereichen zuordnen“ (ab HA 2026.3). Bei Roborock ordnet Modul 21 die Räume sonst über den Namen zu, auch „Kitchen“ zu „Küche“
+- Zuerst für **Roborock**, Grundfunktionen (Status, Akku, Start, Station) für jeden Saugroboter
+</details>
+
 ---
 
 ## Bedienung
@@ -246,7 +267,9 @@ Der Knopf **Einstellungen** öffnet in jedem Modul dieselbe Seite. Am Desktop st
 - **Messwerk:** jeder Sensor, der irgendwo eingestellt ist, einmal mit Aufgabe („Netzleistung“, „Fenster · Bad“), Live-Wert, Zustand und den Modulen, die ihn nutzen. Ein Tipp zeigt **„genutzt in“** mit dem Zweck je Modul und wo er eingestellt wird. Hinweise, wenn zum Beispiel ein Raum einen anderen Außensensor nutzt als das Haus. Sensoren lassen sich hier direkt **zuordnen und tauschen** (Haus, Räume, Modul 2, 4 und 8), die Änderung gilt sofort für alle Module
 - **Haus:** Räume, Personen & Standort und die **gemeinsamen Werte für alle Module**: Energiequellen mit Ladestand, Preise & Tarif, Wetterquelle. Jeder Wert steht nur hier, mit Live-Werten und „Gilt für Modul …“
 - **Module:** eingeschaltete Module mit Status, ausgeschaltete als kleines Raster (ein Tipp schaltet ein). Modul 1 hat Reiter statt Abschnitten zum Aufklappen
-- **Darstellung**, **Dieses Gerät** (was nur in diesem Browser gilt), **Erweiterungen** (Store, Labs, Module verwalten)
+- **Darstellung**, **Dieses Gerät** (was nur in diesem Browser gilt)
+- **Addons:** installierte Addons mit Version und Status (Öffnen, Pausieren, Deinstallieren), **Katalog** zum Installieren mit Steckbrief und **Updates**. Beim Deinstallieren wählst du, ob deine Daten bleiben
+- **Erweiterungen** (Store, Labs, Module verwalten)
 - **System:** Sichern & Wiederherstellen, **Änderungsverlauf**, Diagnose, Versionen · **Sponsor**
 
 **Änderungsverlauf und Rückgängig:** Jede Änderung an allgemeinen Einstellungen, Haus-Werten, Modulen und Modul 2 wird mit Benutzer und Zeit gemerkt (die letzten 50) und lässt sich einzeln zurücknehmen. Nach dem Speichern erscheint 10 Sekunden lang „Gespeichert · Rückgängig“.
@@ -413,6 +436,7 @@ Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues),
   3. Auf GitHub ein Release mit demselben Tag ohne `v` anlegen. Für eine Testversion (`…b1`) den Haken **Set as a pre-release** setzen.
 - Schreibende WebSocket-Befehle sind Administratoren vorbehalten.
 - **Einstellungen:** `haus.py` hält die gemeinsamen Werte (Schema-Version, einmalige Übernahme, Spiegel an die alten Stellen), `verlauf.py` den Änderungsverlauf mit Rückgängig, `messwerk.py` sammelt alle Sensoren aller Module mit „genutzt in“. Im Dashboard beschreibt `12w-katalog.js` jede Einstellung einmal (Suche, Hilfe, Prüfregeln), `12x-messwerk.js` zeigt das Messwerk, `12y-sensorsuche.js` ist die Sensorsuche (Vorschläge, Nach Raum, Filter) für alle Auswahlfelder.
+- **Addons (API 1):** `addon_manager.py` findet, installiert, lädt und entlädt Addons, `addon_api.py` ist die Schnittstelle (`SWAddon`, `AddonCore` mit Speicher, Befehlen, Beobachtern, Bereichen, Meldungen). Ein Addon ist ein Ordner mit `addon.json` (Steckbrief: id, Modulnummer, Version, Build, Stufe, `api`, `core_min`, `needs`), `__init__.py` mit der Klasse `Addon` und `www/panel.js` (ES-Modul, wird vom Dashboard per `import()` nachgeladen). Mitgelieferte Addons liegen in `custom_components/fenster_heizung/addons/`, eigene in `<config>/strom_waerme_addons/` (überstehen HACS-Updates). Die Seite spricht über `fenster_heizung/addon_call` mit ihrem Python-Teil, die Verwaltung über `addons_get` und `addons_act`. Im Dashboard steckt der Kern-Teil in `12z-addons.js`.
 
 ---
 <p align="center"><a href="https://github.com/sponsors/Maddog3010"><img src="docs/sponsor_banner.png" alt="Sponsor werden" width="70%"></a></p>

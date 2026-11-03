@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b7] - 2026-11-03
+
+Testversion (Beta) mit dem neuen Addon-System und dem ersten Addon, Modul 21 Saugroboter.
+
+### Neu
+- **Addons:** Module lassen sich unter **Einstellungen → Addons** installieren, pausieren, fortsetzen und deinstallieren, ohne Home Assistant neu zu starten. Reiter Installiert, Katalog und Updates, Steckbrief vor dem Installieren (Ablage, Größe, benötigte Version, Internet). Beim Deinstallieren wählst du, ob deine Daten bleiben. Ein fehlerhaftes Addon stört den Rest nicht und wird nach wiederholten Fehlern pausiert.
+- **Ablage der Addons:** mitgeliefert im Ordner `addons/` der Integration oder in einem eigenen Ordner `strom_waerme_addons` in der Konfiguration, der HACS-Updates übersteht. Das Laden aus einem eigenen GitHub-Repository folgt.
+- **Modul 21 Saugroboter (v0.1.0 Build 1):** erstes Addon, in Entwicklung. Roboter-Karte mit Fortschritt, Akku, Raum, Zeit und Fläche, Start/Pause, Zur Station, Finden.
+- **Modul 21 Saugroboter (v0.1.0 Build 1):** Raum-Kacheln mit „zuletzt gereinigt“ und Ampel, Räume antippen und reinigen lassen oder alle fälligen auf einmal. Räume über die Bereichs-Zuordnung von Home Assistant (ab 2026.3) oder bei Roborock über den Namen.
+- **Modul 21 Saugroboter (v0.1.0 Build 1):** Karte des Roboters, Woche mit allen Fahrten der letzten 7 Tage (auch aus der App des Herstellers), Verschleißteile, Kachel und Hinweise auf Start und Tablet, Meldung wenn der Roboter Hilfe braucht.
+
 ## [2026.11.1b6] - 2026-11-03
 
 Testversion (Beta) mit der neuen Sensorsuche im Messwerk (S1, S2, S4) und Zuordnen direkt im Messwerk.

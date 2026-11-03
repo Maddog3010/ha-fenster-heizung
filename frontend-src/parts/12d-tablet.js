@@ -74,6 +74,7 @@
     if (id === "gs") return this._gsPage();
     if (id === "mu") return this._muPage();
     if (id === "li") return this._liPage();
+    if (m.addon) return this._adPage(m);
     if (m.beta) return this._betaPage(id);
     if (id === "en") return this._enPage();
     return `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Dieses Modul gibt es im Tablet-Modus noch nicht.</div>`;

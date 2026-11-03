@@ -45,6 +45,7 @@
       else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
     });
     try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: "wa" }); } catch (_) { /* egal */ }
+    this._adHints().forEach((h) => out.push(h));
     const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
   }
   /* Kachel je aktives Modul */
@@ -57,6 +58,7 @@
     else if (m.id === "ev") { const e = (this._evState().ent || {}).soc, v = e && st[e] ? parseFloat(st[e].state) : NaN; sub = isFinite(v) ? `${num(v, 0)} %` : "Nicht eingerichtet"; c = isFinite(v) ? "" : "mut"; }
     else if (m.id === "mu") { const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; sub = x ? `${esc(x.name)} ${this._muWhen(x.days)}` : "Keine Termine"; c = x && x.days <= 1 ? "wa" : x ? "" : "mut"; this._muLoad(); }
     else if (m.id === "li") { const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; sub = L.length ? (n ? `${n} von ${L.length} an` : "Alles aus") : "Keine Lampen"; c = n ? "wa" : "mut"; }
+    else if (m.addon) { const t = this._adTile(m); sub = t.sub; c = t.c; }
     else { sub = modSt(m) && STG[modSt(m)] ? STG[modSt(m)].t : ""; c = "mut"; }
     return `<button class="hzt ${c}" data-act="hzgo" data-k="${m.id}"><span class="hti">${ic(m.icon, 22)}</span><b>${esc(m.short)}</b><small>${sub}</small></button>`;
   }

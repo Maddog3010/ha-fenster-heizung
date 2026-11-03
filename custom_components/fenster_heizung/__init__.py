@@ -23,6 +23,7 @@ from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .api import _version as _api_version, async_register_api
+from .addon_manager import AddonManager, async_register_addon_api
 from .diag import DiagManager, diag_expect, diag_log
 from .general import GeneralManager
 from .haus import HausManager
@@ -1174,6 +1175,7 @@ async def _async_register_panel(hass: HomeAssistant) -> None:
     store = hass.data.setdefault(DOMAIN, {})
     if not store.get("api"):
         async_register_api(hass)
+        async_register_addon_api(hass)
         store["api"] = True
     path = os.path.join(os.path.dirname(__file__), "frontend")
     if not store.get("static"):
@@ -1280,6 +1282,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "messwerk" not in store:  # liest alle anderen Speicher, deshalb als Letztes
         store["messwerk"] = Messwerk(hass)
         await store["messwerk"].async_start()
+    if "addons" not in store:  # Addons zuletzt: sie nutzen die Dienste aller anderen Module
+        store["addons"] = AddonManager(hass)
+        await store["addons"].async_start(await _api_version(hass))
     return True
 
 
@@ -1345,6 +1350,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             spn = hass.data.get(DOMAIN, {}).pop("sponsor", None)
             if spn is not None:
                 spn.async_stop()
+            adm = hass.data.get(DOMAIN, {}).pop("addons", None)
+            if adm is not None:
+                await adm.async_stop()
             hass.data.get(DOMAIN, {}).pop("haus", None)
             hass.data.get(DOMAIN, {}).pop("verlauf", None)
             hass.data.get(DOMAIN, {}).pop("messwerk", None)

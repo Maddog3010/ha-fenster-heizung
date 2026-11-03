@@ -387,6 +387,7 @@
     if (["efxmgr", "efxedit"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lixset", "lixdet", "lixoff"].includes(m.type)) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["adinst", "addel", "adx"].includes(m.type)) { box.innerHTML = this._adModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "mwdet") { box.innerHTML = this._mwDetModal(); return; }
     if (m.type === "mwpick") { box.innerHTML = this._mwPickModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

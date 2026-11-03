@@ -15,7 +15,7 @@ class FensterHeizungPanel extends HTMLElement {
   disconnectedCallback() { this._ro && this._ro.disconnect(); clearInterval(this._ti); }
   _tick() {
     this._tmTick();
-    if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); }
+    if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); this._adLoad(true); }
     this.shadowRoot.querySelectorAll("[data-since]").forEach((el) => {
       const c = cdown(+el.dataset.since, +el.dataset.need), b = el.querySelector("[data-cd]"), f = el.querySelector("[data-bar]");
       if (b) b.textContent = c.txt; if (f) f.style.width = c.pct + "%"; el.classList.toggle("done", c.left <= 0);
@@ -48,6 +48,7 @@ class FensterHeizungPanel extends HTMLElement {
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
+    this._adLoad(true);
     this._render();
   }
   _admin() { return !!(this._hass && this._hass.user && this._hass.user.is_admin); }
