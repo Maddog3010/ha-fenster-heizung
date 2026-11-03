@@ -55,6 +55,8 @@ HAUS = {
     "wx.wind": ("Wind", "wetter", "", [(9, "Sturmwarnung")]),
     "wx.official": ("Amtliche Warnungen", "wetter", "", [(9, "DWD- und NINA-Warnungen")]),
 }
+# Haus-Aufgaben, die offen angezeigt werden, solange kein Sensor gewählt ist
+OPEN_HAUS = {"energy.ent.pv", "energy.ent.grid", "energy.ent.bat", "soc", "wx.outdoor", "energy.ent.imp", "energy.ent.exp", "energy.ent.pve"}
 UNIT = {"power": re.compile(r"^k?W$"), "energy": re.compile(r"^[kM]?Wh$"), "pct": re.compile(r"^%$"), "temp": re.compile(r"^°[CF]$"), "price": re.compile(r"(ct|€|eur|cent)", re.I)}
 
 # Räume (Modul 1): Optionsschlüssel → (Aufgabe, Gruppe, Zweck, Einheit)
@@ -180,9 +182,12 @@ class Messwerk:
                     cur = cur.get(p) if isinstance(cur, dict) else None
                 if path.startswith("price.") and hd.get("price", {}).get(path.split(".")[1].replace("_sensor", "_mode")) != "entity":
                     continue
+                sub = {"energy": "en", "soc": "en", "price": "pr", "wx": "wx"}[path.split(".")[0]]
+                where = f"Haus › {'Energiequellen' if sub == 'en' else 'Preise & Tarif' if sub == 'pr' else 'Wetterquelle'}"
                 if isinstance(cur, str) and EID.match(cur):
-                    sub = {"energy": "en", "soc": "en", "price": "pr", "wx": "wx"}[path.split(".")[0]]
-                    add(f"haus.{path}", name, g, unit, cur, uses, f"Haus › {'Energiequellen' if sub == 'en' else 'Preise & Tarif' if sub == 'pr' else 'Wetterquelle'}", f"hs:{sub}")
+                    add(f"haus.{path}", name, g, unit, cur, uses, where, f"hs:{sub}")
+                elif path in OPEN_HAUS:  # noch nicht zugeordnet: als offene Aufgabe zeigen (S1, S2, S4 im Messwerk)
+                    tasks[f"haus.{path}"] = {"id": f"haus.{path}", "n": name, "g": g, "u": unit, "ents": [], "uses": [{"m": m, "why": why, "on": on.get(m, True)} for m, why in uses], "where": where, "go": f"hs:{sub}", "open": True}
         # Räume (Modul 1)
         for entry in self.hass.config_entries.async_entries(DOMAIN):
             cfg = {**entry.data, **entry.options}
@@ -281,7 +286,7 @@ class Messwerk:
         tasks = []
         for t in snap["tasks"].values():
             chk = [self._check(e, t["u"]) for e in t["ents"]]
-            st = next((c["st"] for c in chk if c["st"] != "ok"), "ok")
+            st = "open" if t.get("open") else next((c["st"] for c in chk if c["st"] != "ok"), "ok")
             if st == "dead" and t["n"] in ("Solarleistung", "Zweite Solaranlage"):
                 st = "ok"  # nachts oft „nicht verfügbar“
             tasks.append({**t, "st": st, "chk": chk, "since": [seen.get(e, {}).get("ok", 0) for e in t["ents"]]})
@@ -290,7 +295,7 @@ class Messwerk:
         out = {
             "v": SCHEMA, "mig": self.data.get("mig"), "groups": GROUPS, "mods": MODN, "tasks": tasks,
             "sensors": {e: {"tasks": s["tasks"], "uses": [{k: u[k] for k in ("m", "why", "on", "where", "go")} for u in s["uses"]]} for e, s in snap["sensors"].items()},
-            "stats": {"sensors": len(snap["sensors"]), "tasks": len(tasks), "ok": sum(1 for t in tasks if t["st"] == "ok"), "bad": sum(1 for t in tasks if t["st"] != "ok"), "mods": len(mods)},
+            "stats": {"sensors": len(snap["sensors"]), "tasks": sum(1 for t in tasks if t["st"] != "open"), "ok": sum(1 for t in tasks if t["st"] == "ok"), "bad": sum(1 for t in tasks if t["st"] not in ("ok", "open")), "open": sum(1 for t in tasks if t["st"] == "open"), "mods": len(mods)},
             "hints": hints,
         }
         self._cache = (now, out)
@@ -303,7 +308,7 @@ class Messwerk:
         outdoor = (T.get("haus.wx.outdoor") or {}).get("ents") or []
         for t in T.values():
             if t["id"].endswith(".outdoor_sensor") and outdoor and t["ents"] and t["ents"][0] not in outdoor:
-                out.append({"t": f"{t['n']} weicht vom Haus ab", "x": f"{self._fn(t['ents'][0])} statt {self._fn(outdoor[0])}. Ab M2 lässt sich das an einer Stelle vereinen.", "go": t["go"]})
+                out.append({"t": f"{t['n']} weicht vom Haus ab", "x": f"{self._fn(t['ents'][0])} statt {self._fn(outdoor[0])}. Antippen, um den Raum im Messwerk auf einen anderen Sensor umzustellen.", "go": t["go"]})
         grid = ((T.get("haus.energy.ent.grid") or {}).get("ents") or [""])[0]
         if grid:
             for t in T.values():

@@ -2,6 +2,21 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b6] - 2026-11-03
+
+Testversion (Beta) mit der neuen Sensorsuche im Messwerk (S1, S2, S4) und Zuordnen direkt im Messwerk.
+
+### Neu
+- **Sensorsuche ohne lange Liste**, überall wo ein Sensor gewählt wird (Haus, Raumeinstellungen, Module, Messwerk), in drei Reitern:
+  - **Vorschläge (S1):** die drei besten Treffer als Karten mit Live-Wert, Trefferquote und Begründung („im Bereich Bad · Name passt · %“). Ein Tipp auf „Passt“ übernimmt. Sensoren, die schon für etwas anderes genutzt werden oder am Heizkörper messen, rutschen nach unten.
+  - **Nach Raum (S2):** Bereiche aus Home Assistant als Kacheln (der passende Raum ist markiert), dann die Geräte mit Hersteller, dann ihre Werte.
+  - **Filter (S4):** Einheit, Raum und Integration als Chips antippen, die Liste wird mit jedem Tipp kürzer.
+- **Messwerk: Zuordnen und Tauschen direkt im Messwerk** für Haus-Werte (Energiequellen, Ladestand, Preise, Wetter, Außentemperatur, Wind), Raumeinstellungen in Modul 1 (Fenster und Thermostate auch hinzufügen), Modul 2, Modul 4 und Modul 8. Gilt sofort für alle Module, die den Sensor nutzen, mit Verlauf und Rückgängig.
+- **Offene Aufgaben im Messwerk:** fehlen wichtige Haus-Sensoren (Solar, Netz, Batterie, Ladestand, Außentemperatur, Zähler), stehen sie mit „Zuordnen“ in der Liste.
+
+### Geändert
+- Das Suchfeld in der Sensor-Auswahl entfällt. Nach Namen suchen geht weiter über die Suche oben in den Einstellungen.
+
 ## [2026.11.1b5] - 2026-11-03
 
 Testversion (Beta) mit dem Messwerk, Stufe M1: alle Sensoren der Module 1–19 an einer Stelle.

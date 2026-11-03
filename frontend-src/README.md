@@ -27,5 +27,6 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 12-beta-module | Beta-Module (Prognose, Wartung, Batterie, Tarif, Sicherheit, Pool, Wetter, Garten, Rollläden, Wärmepumpe, Lüftung) |
 | 12w-katalog | Einstellungs-Katalog, Suche, Änderungsverlauf, Hilfe, Prüfregeln |
 | 12x-messwerk | Messwerk: alle Sensoren, genutzt in, Prüfung |
+| 12y-sensorsuche | Sensorsuche S1 Vorschläge, S2 Nach Raum, S4 Filter, Zuordnen im Messwerk |
 | 13-modul2-warmwasser-modul3-energie | Modul-Seiten, Modul 2 und Modul 3 |
 | 14-registrierung | Registrierung der Komponente |

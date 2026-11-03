@@ -44,6 +44,7 @@
     const h = hint || PK_HINT[meta.k] || null, val = (e) => { const x = st[e]; return x ? `${esc(x.state)}${x.attributes.unit_of_measurement ? " " + esc(x.attributes.unit_of_measurement) : ""}` : "nicht verfügbar"; };
     const btn = `<button class="pkbtn ${cur ? "set" : ""}" data-act="pkopen" data-pid="${esc(id)}" aria-expanded="${open}"><span class="pkt">${cur ? `<b>${esc(this._wzName(cur))}</b><small>${esc(cur)} · ${val(cur)}</small>` : `<span class="mut">${esc(none)}</span>`}</span>${ic(open ? "close" : "pencil", 16)}</button>`;
     if (!open) return btn;
+    if (!this._pkOld) return btn + this._pkFinder(id, opts, cur, f, none, h);
     const all = [...new Set([...opts, ...(cur && !opts.includes(cur) ? [cur] : [])])], sc = (e) => (h && (h.test(e) || h.test(this._wzName(e))) ? 0 : 1);
     all.sort((a, b) => sc(a) - sc(b) || this._wzName(a).localeCompare(this._wzName(b), "de"));
     return btn + `<div class="pkbox"><input class="pksearch" data-f="enq" type="search" placeholder="Suchen: Name oder Entity-ID" autocomplete="off">
@@ -388,6 +389,7 @@
     if (["lixset", "lixdet", "lixoff"].includes(m.type)) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "mwdet") { box.innerHTML = this._mwDetModal(); return; }
+    if (m.type === "mwpick") { box.innerHTML = this._mwPickModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sthelp" || m.type === "stlog") { box.innerHTML = m.type === "sthelp" ? this._stHelpModal() : this._stLogModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "hspr" || m.type === "hswx" || m.type === "hsmig") { box.innerHTML = m.type === "hspr" ? this._hsPrModal() : m.type === "hswx" ? this._hsWxModal() : this._hsMigModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; if (this._stOpen) this._render(); return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

@@ -30,7 +30,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
-> 🧭 **Neu in der Beta 2026.11.1b5: Einstellungen neu gedacht.** Gemeinsame Werte liegen zentral im **Haus**, das **Messwerk** zeigt alle Sensoren aller Module mit „genutzt in“, dazu Suche, Änderungsverlauf mit Rückgängig und Hilfe an jeder Stelle. [Mehr dazu](#einstellungen)
+> 🧭 **Neu in der Beta 2026.11.1b6: Einstellungen neu gedacht.** Gemeinsame Werte liegen zentral im **Haus**, das **Messwerk** zeigt alle Sensoren aller Module mit „genutzt in“, dazu eine neue Sensorsuche ohne lange Listen, Suche, Änderungsverlauf mit Rückgängig und Hilfe an jeder Stelle. [Mehr dazu](#einstellungen)
 
 > 🧪 **Versionsnummern nach Jahr, Monat und Release.** Ab November 2026 heißen stabile Updates `2026.11.1`, `2026.11.2` …, Testversionen tragen die Nummer des kommenden Updates (`2026.11.1b1`). Testversionen gibt es nur, wenn du in HACS Beta-Versionen einschaltest. [Mehr dazu](#versionen-und-updates)
 
@@ -243,7 +243,7 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 Der Knopf **Einstellungen** öffnet in jedem Modul dieselbe Seite. Am Desktop stehen die Bereiche links, auf dem Handy öffnet jeder Bereich eine eigene Seite. Ganz oben steht die **Suche**: „Preis“ findet Bezugspreis, Einspeisevergütung und Stundenpreis-Sensor, „tibber“ auch die Sensoren mit ihren Modulen. Ein Tipp springt direkt an die Stelle.
 
 - **Übersicht:** Einrichtungsstand, eine **Prüfung** (Sensoren ohne Wert, falsche Einheit, Vorzeichen des Netzes, offene Module, Homeserver-Sicherung, neue Versionen) mit „Beheben“ und die **letzten Änderungen** mit ↶
-- **Messwerk:** jeder Sensor, der irgendwo eingestellt ist, einmal mit Aufgabe („Netzleistung“, „Fenster · Bad“), Live-Wert, Zustand und den Modulen, die ihn nutzen. Ein Tipp zeigt **„genutzt in“** mit dem Zweck je Modul und wo er eingestellt wird. Hinweise, wenn zum Beispiel ein Raum einen anderen Außensensor nutzt als das Haus
+- **Messwerk:** jeder Sensor, der irgendwo eingestellt ist, einmal mit Aufgabe („Netzleistung“, „Fenster · Bad“), Live-Wert, Zustand und den Modulen, die ihn nutzen. Ein Tipp zeigt **„genutzt in“** mit dem Zweck je Modul und wo er eingestellt wird. Hinweise, wenn zum Beispiel ein Raum einen anderen Außensensor nutzt als das Haus. Sensoren lassen sich hier direkt **zuordnen und tauschen** (Haus, Räume, Modul 2, 4 und 8), die Änderung gilt sofort für alle Module
 - **Haus:** Räume, Personen & Standort und die **gemeinsamen Werte für alle Module**: Energiequellen mit Ladestand, Preise & Tarif, Wetterquelle. Jeder Wert steht nur hier, mit Live-Werten und „Gilt für Modul …“
 - **Module:** eingeschaltete Module mit Status, ausgeschaltete als kleines Raster (ein Tipp schaltet ein). Modul 1 hat Reiter statt Abschnitten zum Aufklappen
 - **Darstellung**, **Dieses Gerät** (was nur in diesem Browser gilt), **Erweiterungen** (Store, Labs, Module verwalten)
@@ -270,7 +270,7 @@ Der **Store** zeigt Dienste, die zu deinen Modulen passen (go-e, Tibber, Wetter,
 <br>
 
 - **Diagnose:** ob alle Geräte melden, Batterie der Ventile, Fenstersensoren, Protokoll fehlgeschlagener Schaltvorgänge.
-- **Entitäten wählen:** Suchauswahl mit Name, Entity-ID und Wert, passende stehen oben.
+- **Sensoren wählen:** ohne lange Liste in drei Reitern: **Vorschläge** (beste Treffer mit Begründung und Live-Wert, „Passt“ tippen), **Nach Raum** (Bereich → Gerät → Wert) und **Filter** (Einheit, Raum, Integration als Chips).
 - **Messwerk:** alle gewählten Sensoren an einer Stelle, mit Zustand und den Modulen, die sie nutzen.
 - **Pro Raum** gibt es Schalter für Fensterregelung, Heizplan und Elektroheizer und Sensoren für die pausierte Heizzeit (heute, Monat, Jahr, gesamt).
 </details>
@@ -412,7 +412,7 @@ Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues),
   2. `version` in `manifest.json` setzen und `build.py` ausführen.
   3. Auf GitHub ein Release mit demselben Tag ohne `v` anlegen. Für eine Testversion (`…b1`) den Haken **Set as a pre-release** setzen.
 - Schreibende WebSocket-Befehle sind Administratoren vorbehalten.
-- **Einstellungen:** `haus.py` hält die gemeinsamen Werte (Schema-Version, einmalige Übernahme, Spiegel an die alten Stellen), `verlauf.py` den Änderungsverlauf mit Rückgängig, `messwerk.py` sammelt alle Sensoren aller Module mit „genutzt in“. Im Dashboard beschreibt `12w-katalog.js` jede Einstellung einmal (Suche, Hilfe, Prüfregeln), `12x-messwerk.js` zeigt das Messwerk.
+- **Einstellungen:** `haus.py` hält die gemeinsamen Werte (Schema-Version, einmalige Übernahme, Spiegel an die alten Stellen), `verlauf.py` den Änderungsverlauf mit Rückgängig, `messwerk.py` sammelt alle Sensoren aller Module mit „genutzt in“. Im Dashboard beschreibt `12w-katalog.js` jede Einstellung einmal (Suche, Hilfe, Prüfregeln), `12x-messwerk.js` zeigt das Messwerk, `12y-sensorsuche.js` ist die Sensorsuche (Vorschläge, Nach Raum, Filter) für alle Auswahlfelder.
 
 ---
 <p align="center"><a href="https://github.com/sponsors/Maddog3010"><img src="docs/sponsor_banner.png" alt="Sponsor werden" width="70%"></a></p>

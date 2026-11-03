@@ -28,16 +28,16 @@
     const by = {}; D.tasks.forEach((t) => (by[t.g] = by[t.g] || []).push(t));
     const order = Object.keys(G).filter((g) => by[g]);
     const list = D.tasks.filter((t) => (!f || t.g === f) && (!only || t.st !== "ok"));
-    const stc = { ok: "", dead: "bad", missing: "bad", unit: "wa" };
-    const rows = (ts) => ts.map((t) => `<button class="sxrow mwr" data-act="mdmwd" data-k="${esc(t.id)}"><span class="sxi">${ic(this._mwIcon(t.g), 18)}</span><span class="sxt"><b>${esc(t.n)}</b><small>${esc(t.ents.map((e) => this._wzName(e)).join(", "))} · ${esc(t.where)}</small></span><em class="hsv ${stc[t.st] || ""}">${esc(t.st === "ok" ? this._mwVal(t.ents[0]) : t.chk.find((c) => c.st !== "ok").txt)}</em>${this._mwChips(t.uses)}<span class="sxg">${ic("chev", 16)}</span></button>`).join("");
+    const stc = { ok: "", dead: "bad", missing: "bad", unit: "wa", open: "wa" };
+    const rows = (ts) => ts.map((t) => `<button class="sxrow mwr" data-act="${t.st === "open" && this._mwCan(t) ? "mdmwpick" : "mdmwd"}" data-k="${esc(t.id)}"><span class="sxi">${ic(this._mwIcon(t.g), 18)}</span><span class="sxt"><b>${esc(t.n)}</b><small>${t.st === "open" ? "noch kein Sensor · " + esc(t.where) : esc(t.ents.map((e) => this._wzName(e)).join(", ")) + " · " + esc(t.where)}</small></span><em class="hsv ${stc[t.st] || ""}">${esc(t.st === "ok" ? this._mwVal(t.ents[0]) : t.st === "open" ? "Zuordnen" : t.chk.find((c) => c.st !== "ok").txt)}</em>${this._mwChips(t.uses)}<span class="sxg">${ic("chev", 16)}</span></button>`).join("");
     const groups = (f ? [f] : order).map((g) => { const ts = list.filter((t) => t.g === g); return ts.length ? card(rows(ts), `${esc(G[g])} <small>· ${ts.length}</small>`) : ""; }).join("");
     const hints = (D.hints || []).length ? card(D.hints.map((h) => `<${h.go ? `button class="stck" data-act="mdmwgo" data-k="${esc(h.go)}"` : 'div class="stck"'}><span class="stdot ${h.lvl || "wn"}"></span><span class="sxt"><b>${esc(h.t)}</b><small>${esc(h.x)}</small></span>${h.go ? `<span class="stgo">Ansehen ${ic("chev", 14)}</span>` : ""}</${h.go ? "button" : "div"}>`).join(""), "Hinweise des Messwerks") : "";
     return `<div class="hsuse">Jeder Sensor, der in einem Modul eingestellt ist, mit Aufgabe, Live-Wert und den Modulen, die ihn nutzen · <em class="stlv l1">🏠 für alle</em></div>
-      <div class="sxsum"><div><b>${S.sensors}</b><span>Sensoren</span></div><div><b>${S.ok}</b><span>liefern</span></div><div><b class="${S.bad ? "wa" : ""}">${S.bad}</b><span>${S.bad === 1 ? "Aufgabe mit Problem" : "Aufgaben mit Problem"}</span></div><div><b>${S.mods}</b><span>Module versorgt</span></div></div>
+      <div class="sxsum"><div><b>${S.sensors}</b><span>Sensoren</span></div><div><b>${S.ok}</b><span>liefern</span></div><div><b class="${S.bad ? "wa" : ""}">${S.bad}${S.open ? ` <small>+${S.open} offen</small>` : ""}</b><span>${S.bad === 1 ? "Aufgabe mit Problem" : "Aufgaben mit Problem"}</span></div><div><b>${S.mods}</b><span>Module versorgt</span></div></div>
       ${hints}
-      <div class="chips mwf"><button class="chip ${!f && !only ? "sel" : ""}" data-act="mdmwg" data-k="">Alle ${D.tasks.length}</button>${S.bad ? `<button class="chip ${only ? "sel" : ""} wa" data-act="mdmwbad">⚠ Probleme ${S.bad}</button>` : ""}${order.map((g) => `<button class="chip ${f === g ? "sel" : ""}" data-act="mdmwg" data-k="${g}">${esc(G[g])} ${by[g].length}</button>`).join("")}</div>
+      <div class="chips mwf"><button class="chip ${!f && !only ? "sel" : ""}" data-act="mdmwg" data-k="">Alle ${D.tasks.length}</button>${S.bad || S.open ? `<button class="chip ${only ? "sel" : ""} wa" data-act="mdmwbad">⚠ Probleme ${S.bad}${S.open ? " · offen " + S.open : ""}</button>` : ""}${order.map((g) => `<button class="chip ${f === g ? "sel" : ""}" data-act="mdmwg" data-k="${g}">${esc(G[g])} ${by[g].length}</button>`).join("")}</div>
       ${groups || card(`<div class="stck"><span class="stdot ok"></span><span class="sxt"><b>Keine Probleme</b><small>Alle Sensoren liefern Werte.</small></span></div>`)}
-      <div class="stleg">Die Zahlen rechts sind die Module, die den Sensor nutzen (A = Allgemein: Start, Tablet, Personen, Labs). Grau = Modul ist aus. Eingestellt wird in M1 noch an der genannten Stelle, Zuordnen und Tauschen direkt im Messwerk folgen.</div>`;
+      <div class="stleg">Die Zahlen rechts sind die Module, die den Sensor nutzen (A = Allgemein: Start, Tablet, Personen, Labs). Grau = Modul ist aus. Zuordnen und Tauschen geht direkt hier (Haus, Räume, Modul 2, 4 und 8), alles andere an der genannten Stelle.</div>`;
   }
   _mwDetModal() {
     const D = this._mwD || { tasks: [], sensors: {} }, t = D.tasks.find((x) => x.id === (this._modal || {}).k);
@@ -53,9 +53,10 @@
       <div class="mwbox">${sens}</div>
       <div class="lsec">${ic("layers", 15)}Genutzt in ${nm} ${nm === 1 ? "Modul" : "Modulen"}</div>
       <div class="mwbox">${all.map((u) => `<div class="sxrow stinfo mwu ${u.on === false ? "off" : ""}"><span class="mwn">${u.m === 0 ? "A" : u.m}</span><span class="sxt"><b>${esc(this._mwMod(u.m))} ${esc(this._mwModName(u.m))}${u.on === false ? " · aus" : ""}</b><small>${esc(u.why)}</small></span></div>`).join("")}</div>
+      ${this._mwCan(t) ? `<div class="gbtns">${t.ents.length ? t.ents.map((e) => `<button class="btn2 pri" data-act="mdmwpick" data-k="${esc(t.id)}" data-e="${esc(e)}">${ic("search", 15)} ${t.ents.length > 1 ? esc(this._wzName(e)) + " tauschen" : "Anderen Sensor wählen"}</button>`).join("") : `<button class="btn2 pri" data-act="mdmwpick" data-k="${esc(t.id)}">${ic("search", 15)} Sensor zuordnen</button>`}${this._mwMulti(t) ? `<button class="btn2" data-act="mdmwpick" data-k="${esc(t.id)}" data-add="1">${ic("plus", 15)} Weiteren hinzufügen</button>` : ""}</div>` : ""}
       <div class="lsec">${ic("pencil", 15)}Eingestellt in</div>
       <div class="mwbox"><button class="sxrow hslink" data-act="mdmwgo" data-k="${esc(t.go)}"><span class="sxi">${ic("sliders", 20)}</span><span class="sxt"><b>${esc(t.where)}</b><small>Dort ändern · gilt danach für alle oben genannten Module</small></span><span class="sxg">${ic("chev", 16)}</span></button></div>
-      <div class="gst">${ic("info", 15)}<span>Ab der nächsten Stufe (M2) ordnest du Sensoren direkt hier zu und tauschst sie für alle Module auf einmal.</span></div>
+      <div class="gst">${ic("info", 15)}<span>${this._mwCan(t) ? "Zuordnen und Tauschen hier gilt sofort für alle oben genannten Module. Gespeichert wird an der genannten Stelle, mit Verlauf und Rückgängig." : "Diese Aufgabe stellst du noch an der genannten Stelle ein."}</span></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _mwGo(go) {
@@ -75,7 +76,7 @@
   }
   _mwChecks() {
     const D = this._mwD; if (!D) return [];
-    const bad = D.tasks.filter((t) => t.st !== "ok"), out = [];
+    const bad = D.tasks.filter((t) => t.st !== "ok" && t.st !== "open"), out = [];
     if (bad.length) out.push(["wn", `Messwerk: ${bad.length === 1 ? "1 Sensor hat" : bad.length + " Sensoren haben"} ein Problem`, bad.slice(0, 3).map((t) => esc(`${t.n} (${t.chk.find((c) => c.st !== "ok").txt})`)).join(", ") + (bad.length > 3 ? " …" : ""), "mdmwopen", "bad"]);
     (D.hints || []).filter((h) => h.lvl !== "in").forEach((h) => out.push(["wn", esc(h.t), esc(h.x), "mdmwgo", h.go]));
     return out;
