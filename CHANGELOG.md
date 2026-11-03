@@ -2,6 +2,27 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b2] - 2026-11-03
+
+Testversion (Beta) mit dem neuen Messraum und dem Luftentfeuchter in Modul 1.
+
+### Neu
+- **Modul 1 (v1.3): Messraum.** Ein Raum nur zum Messen, ohne Thermostat und ohne Fenstersensor, zum Beispiel für Keller, Dachboden, Gästezimmer oder Vorratsraum. Er zeigt nur Temperatur und Luftfeuchte und steuert nichts. Ein Sensor genügt.
+  - **Anlegen:** In Modul 1 unten „Raum hinzufügen“ → „Nur Messwerte“: Name, Temperatursensor, Luftfeuchte-Sensor und optional ein Batterie-Sensor. Es werden nur passende Sensoren vorgeschlagen. Ist ein Sensor schon in einem anderen Raum eingetragen, kommt nur ein Hinweis. Heizungsräume legst du wie bisher über Geräte & Dienste oder den Einrichtungsassistenten an.
+  - **Vorschläge:** Bereiche in Home Assistant mit Temperatur- oder Feuchtesensor, aber ohne Thermostat, erscheinen im Dialog und im Einrichtungsassistenten mit „Als Messraum hinzufügen“.
+  - **Anzeige:** eigene, kleinere Karte unter den Heizungsräumen. Grün im Wohlfühlbereich (Standard 18 bis 24 °C und 40 bis 60 %), blau zu kalt, gelb zu warm, zu feucht oder zu trocken. Min und Max von heute aus dem Verlauf von Home Assistant. „Keine Daten“ mit gestricheltem Rahmen, wenn der Sensor ausfällt; graue Zahl mit „vor X Std.“, wenn er sich länger nicht meldet (Standard 60 Min.). Unplausible Werte werden nicht gezeigt. Taupunkt und Schimmelhinweis lassen sich einzeln zuschalten.
+  - **Raumeinstellungen** über das Zahnrad: Sensoren, Anzeige, Wohlfühlbereich, Sensor-Alter, Löschen. Symbol, Farbe und Foto wie bei Heizungsräumen.
+  - Die Kopfkarte zeigt die Zahl der Messräume. Messräume sind in den Sicherungen enthalten.
+- **Modul 1: Luftentfeuchter (Schritt 1: Gerät und Regelung).** Ein mobiler Entfeuchter wird mit der Luftfeuchte und den Fenstern des Raums geregelt, in dem er gerade steht. Einrichten unter Einstellungen → Modul 1 → Luftentfeuchter, in Reitern ohne Aufklappmenüs und mit Zahlen über Minus und Plus.
+  - **Gerät:** eigene Entität (z. B. humidifier), Schaltsteckdose oder „nur beobachten“ für Geräte mit eigenem Hygrostat. Optional Leistung (zeigt, ob er wirklich läuft) und Wassertank-Sensor. Ohne Tank-Sensor schätzt Modul 1 die Füllung aus Laufzeit, Tankinhalt und Liter pro Stunde.
+  - **Regelung:** ein über der Obergrenze (Standard 60 %), aus bei der Untergrenze (55 %). Bei Abwesenheit oder Urlaub gilt eine höhere Obergrenze (65 %). Mindestlaufzeit und Sperrzeit verhindern ständiges Schalten. Aus bei offenem Fenster, vollem Tank, fehlender Raumfeuchte oder unbekanntem Standort. Optional „Lüften vor Entfeuchten“, wenn die Luft draußen trockener ist (ab Werk aus).
+  - **Raumkarte:** Im Raum des Standorts erscheint ein türkiser Kasten mit Status, Laufzeit, Tankstand und „Warum?“, dazu „Standort ändern“, „Heute aus“ und „Tank geleert“. Als Standort sind alle Räume mit Luftfeuchte-Sensor wählbar, auch Messräume.
+  - **Standort:** Ohne Standort zeigt Modul 1 eine Karte „Wo steht der Luftentfeuchter?“ mit Kacheln aller Räume und ihrer Feuchte. Der Standort gilt, bis du ihn änderst, und wird je Tag gespeichert. Die tägliche Bestätigung folgt in einem späteren Schritt.
+  - Standort setzen, „Heute aus“ und „Tank geleert“ dürfen alle im Haushalt, die Einstellungen nur Administratoren. Der Entfeuchter ist in den Sicherungen enthalten.
+
+### Geändert
+- „Raum hinzufügen“ in Modul 1 fragt zuerst nach der Art des Raums. „Mit Heizung und Fenster“ führt wie bisher zu Geräte & Dienste.
+
 ## [2026.11.1b1] - 2026-11-03
 
 Testversion (Beta) für das erste stabile Update im November (2026.11.1): neue Versionsnummern, eine Korrektur bei den Personen und mehr Geräte in Modul 4.

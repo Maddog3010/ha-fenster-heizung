@@ -1099,4 +1099,47 @@ button.stck{cursor:pointer}
 .sxc.wa{border-color:color-mix(in srgb,#f59e0b 50%,transparent);color:#f59e0b;background:color-mix(in srgb,#f59e0b 9%,transparent)}
 .stw .sxsum{margin:0 0 14px}
 @media(max-width:760px){.stw .sxi{display:grid}.stw .sxc{display:inline-block}.stw .sxsum{grid-template-columns:1fr 1fr}}
+/* Modul 1: Messraum */
+.msh{display:flex;align-items:center;gap:10px;margin:18px 2px 10px}.msh .gico{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal);flex:none}
+.msh b{display:block;font-size:1rem}.msh span{font-size:.78rem;color:var(--mut)}
+.rooms.msg{margin-bottom:12px}
+.room.msr{padding:14px;gap:10px}.room.msr .rico{width:40px;height:40px;border-radius:13px}
+.msbadge{font-size:.68rem;font-weight:600;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
+.msv{display:grid;grid-template-columns:1fr 1fr;gap:8px}.msv.one{grid-template-columns:1fr}
+.msb{--c:var(--gray);border-radius:14px;padding:10px 12px;border:1px solid var(--line);min-width:0;background:color-mix(in srgb,var(--c) 6%,transparent)}
+.msb .t{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--mut)}
+.msb .v{font-size:1.55rem;font-weight:700;letter-spacing:-.02em;margin-top:2px;color:var(--c);font-variant-numeric:tabular-nums}.msb .v small{font-size:.85rem;font-weight:600;margin-left:2px}
+.msb .s{font-size:.7rem;color:var(--mut);margin-top:3px}
+.msb.green{--c:var(--green)}.msb.amber{--c:var(--amber);border-color:color-mix(in srgb,var(--amber) 45%,transparent)}.msb.blue{--c:#60a5fa;border-color:color-mix(in srgb,#60a5fa 45%,transparent)}.msb.gray .v{color:var(--mut)}
+.msb .gauge{height:5px;border-radius:9px;background:color-mix(in srgb,var(--primary-text-color) 10%,transparent);margin-top:6px;overflow:hidden}.msb .gauge i{display:block;height:100%;background:var(--c);border-radius:9px}
+.msb.none .v{font-size:.98rem;color:var(--mut);margin-top:6px}
+.room.msnone{border-style:dashed;background-image:repeating-linear-gradient(135deg,transparent 0 10px,color-mix(in srgb,var(--primary-text-color) 3%,transparent) 10px 20px)}
+.msx{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--mut)}.msx span{display:flex;align-items:center;gap:4px}.msx b{color:var(--primary-text-color)}.msx .amber b{color:var(--amber)}.msx .red b{color:#f87171}
+.msn{font-size:.74rem;color:var(--mut)}.msn.amber{color:var(--amber)}
+.mskind{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}.mskind button{text-align:left;border:1px solid var(--line);border-radius:14px;padding:11px 12px;background:none;color:inherit;font:inherit;cursor:pointer}
+.mskind button b{display:flex;align-items:center;gap:6px;font-size:.88rem}.mskind button span{display:block;font-size:.74rem;color:var(--mut);margin-top:4px}
+.mskind button.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset;background:color-mix(in srgb,var(--teal) 8%,transparent)}
+.msnew{font-style:normal;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--teal);color:var(--on-acc)}
+.msdup{margin:-4px 0 6px;color:var(--amber)}
+.msrg{display:flex;align-items:center;gap:8px}.msrg .onum{flex:1;min-width:0}.msrg .onum input{width:100%;min-width:0}
+@media(max-width:520px){.mskind{grid-template-columns:1fr}}
+/* Modul 1: Luftentfeuchter (Türkis, damit er sich von Heizen und Fenster unterscheidet) */
+.lfbox{--lf:#22d3ee;border:1px solid color-mix(in srgb,var(--lf) 40%,var(--line));border-radius:16px;padding:12px;background:color-mix(in srgb,var(--lf) 6%,transparent);display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}.lfbox>*{min-width:0}
+.lfh{display:flex;align-items:center;gap:10px}.lfi{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--lf,#22d3ee) 18%,transparent);color:var(--lf,#22d3ee);flex:none}
+.lft{flex:1;min-width:0}.lft b{display:flex;align-items:center;gap:6px;font-size:.92rem}.lft span{display:block;font-size:.74rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lfhere{font-style:normal;font-size:.62rem;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--lf,#22d3ee);color:#042f2e}
+.lfst{font-weight:700;font-size:.95rem;color:var(--mut);white-space:nowrap}.lfbox.run .lfst{color:var(--lf)}.lfbox.warn .lfst{color:var(--amber)}.lfbox.wait .lfst{color:#60a5fa}
+.lfbox.run .lfi svg{animation:lfspin 2.4s linear infinite}@keyframes lfspin{to{transform:rotate(360deg)}}
+.lfbar{height:5px;border-radius:9px;background:color-mix(in srgb,var(--primary-text-color) 10%,transparent);overflow:hidden}.lfbar i{display:block;height:100%;background:var(--lf);border-radius:9px}
+.lfwhy{font-size:.76rem;color:var(--mut);background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);border-radius:10px;padding:7px 9px}.lfwhy b{color:#60a5fa}.lfhint{color:var(--amber)}
+.lfbtns{display:flex;flex-wrap:wrap;gap:6px}.lfbtns .btn2{flex:1 1 auto;min-width:0;padding:8px 10px;font-size:.8rem}
+.card.lfloc{--lf:#22d3ee;border-color:color-mix(in srgb,#facc15 55%,var(--line));display:grid;gap:10px}
+.lftiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.lftile{text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:none;color:inherit;font:inherit;cursor:pointer}
+.lftile b{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:.9rem}.lftile span{display:block;font-size:.74rem;color:var(--mut);margin-top:3px}.lftile span.amber{color:var(--amber)}
+.lftile.sel{border-color:#22d3ee;box-shadow:0 0 0 1px #22d3ee inset;background:color-mix(in srgb,#22d3ee 9%,transparent)}.lftile.sel b .ic{color:#22d3ee}
+.lftabs{margin:2px 0 6px}
+.lfkind{display:grid;gap:8px}.lfkind button{text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:none;color:inherit;font:inherit;cursor:pointer}
+.lfkind button b{display:block;font-size:.88rem}.lfkind button span{display:block;font-size:.74rem;color:var(--mut);margin-top:3px}.lfkind button.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}
+.lfstep{display:flex;align-items:center;gap:8px}.lfstep b{min-width:72px;text-align:center;font-size:1.05rem;font-variant-numeric:tabular-nums}.lfstep b small{font-size:.75rem;color:var(--mut);font-weight:600}
 `;

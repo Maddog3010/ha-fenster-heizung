@@ -31,6 +31,7 @@ from .raumregelung import RoomRegulator
 from .sicherheit import SicherheitManager
 from .labs import LabsManager
 from .muell import MuellManager
+from .entfeuchter import EntfeuchterManager
 from .hausfluss import FlussManager
 from .tags import TagManager
 from .sponsor import SponsorManager
@@ -1249,6 +1250,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "muell" not in store:
         store["muell"] = MuellManager(hass)
         await store["muell"].async_start()
+    if "entfeuchter" not in store:
+        store["entfeuchter"] = EntfeuchterManager(hass)
+        await store["entfeuchter"].async_start()
     if "fluss" not in store:
         store["fluss"] = FlussManager(hass)
         await store["fluss"].async_start()
@@ -1316,6 +1320,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             mum = hass.data.get(DOMAIN, {}).pop("muell", None)
             if mum is not None:
                 mum.async_stop()
+            lfm = hass.data.get(DOMAIN, {}).pop("entfeuchter", None)
+            if lfm is not None:
+                lfm.async_stop()
             tgm = hass.data.get(DOMAIN, {}).pop("tags", None)
             if tgm is not None:
                 tgm.async_stop()

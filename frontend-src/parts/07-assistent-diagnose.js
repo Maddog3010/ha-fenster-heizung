@@ -118,14 +118,15 @@
       <div class="mut" style="margin-bottom:10px">In wenigen Schritten richtest du Räume, Fenstermeldung, Heizung und optional PV-Elektroheizer ein. Du kannst jeden Schritt überspringen und später alles ändern.</div>
       <div class="gbox"><b>Das hat der Assistent gefunden</b>${F.cl.length} Thermostate · ${F.win.length} Fenster- und Türsensoren · ${F.hum.length} Luftfeuchte-Sensoren${F.sug.length ? `<br>${F.sug.length} Räume lassen sich aus deinen Bereichen vorschlagen.` : ""}</div>
       <div class="mut sm">${ex.length ? `Bereits eingerichtet: ${ex.length} ${ex.length === 1 ? "Raum" : "Räume"}. Sie bleiben unverändert.` : "Es ist noch kein Raum eingerichtet."}</div>`;
-    if (s === 1) return `<h3 class="wzt">Räume</h3><div class="mut sm" style="margin-bottom:8px">Ein Raum braucht mindestens einen Fenstersensor und ein Thermostat.</div>
+    if (s === 1) return `<h3 class="wzt">Räume</h3><div class="mut sm" style="margin-bottom:8px">Ein Raum mit Heizung braucht mindestens einen Fenstersensor und ein Thermostat. Räume nur mit Temperatur und Luftfeuchte stehen unten als Messraum.</div>
       ${ex.length ? `<div class="wzex">${ex.map((r) => `<span class="wzc ok">${ic("check", 12)}${esc(r.name)}</span>`).join("")}</div>` : ""}
       ${F.sug.length ? `<div class="lsec">${ic("home", 15)}Vorschläge aus deinen Bereichen</div>${F.sug.map((x, i) => { const on = d.rooms.some((r) => r.name === x.name); return `<div class="wzs"><div><b>${esc(x.name)}</b><span>${x.windows.length} Fenster · ${x.thermos.length} Thermostat${x.thermos.length > 1 ? "e" : ""}</span></div><button class="btn2 ${on ? "" : "pri"}" ${on ? "disabled" : ""} data-act="wzsug" data-i="${i}">${on ? "Hinzugefügt" : "Übernehmen"}</button></div>`; }).join("")}${F.sug.some((x) => !d.rooms.some((r) => r.name === x.name)) ? `<button class="lnk" data-act="wzsugall">Alle Vorschläge übernehmen</button>` : ""}` : ""}
       <div class="lsec">${ic("plus", 15)}Neue Räume</div>
       ${d.rooms.map((r, i) => `<div class="wzr ${r.name.trim() && r.windows.length && r.thermos.length ? "" : "inc"}"><div class="wzrh"><input class="otxt" data-f="wzr" data-i="${i}" data-k="name" value="${esc(r.name)}" placeholder="Raumname"><button class="ibtn" data-act="wzdel" data-i="${i}" aria-label="Raum entfernen">${ic("trash", 18)}</button></div>
         <div class="mut sm">Fenster- und Türsensoren</div>${chips(r, i, "windows", r.windows)}${this._wzSel(F.win.filter((e) => !r.windows.includes(e)), "", "wzadd", `data-i="${i}" data-k="windows"`, "+ Sensor hinzufügen")}
         <div class="mut sm">Thermostate</div>${chips(r, i, "thermos", r.thermos)}${this._wzSel(F.cl.filter((e) => !r.thermos.includes(e)), "", "wzadd", `data-i="${i}" data-k="thermos"`, "+ Thermostat hinzufügen")}</div>`).join("")}
-      <button class="btn2" data-act="wzroom" style="width:100%">${ic("plus", 16)} Raum manuell hinzufügen</button>`;
+      <button class="btn2" data-act="wzroom" style="width:100%">${ic("plus", 16)} Raum manuell hinzufügen</button>
+      ${(() => { const ms = this._msSug(); return ms.length ? `<div class="lsec">${ic("drop", 15)}Räume nur zum Messen</div><div class="mut sm" style="margin:-2px 0 6px">Diese Bereiche haben einen Temperatur- oder Feuchtesensor, aber kein Thermostat. Als Messraum zeigen sie nur Temperatur und Luftfeuchte und steuern nichts.</div>${ms.slice(0, 8).map((x, i) => `<div class="wzs"><div><b>${esc(x.name)}</b><span>${[x.temp ? "Temperatur" : "", x.hum ? "Luftfeuchte" : ""].filter(Boolean).join(" und ")}</span></div><button class="btn2 pri" data-act="msxwz" data-i="${i}">Als Messraum</button></div>`).join("")}` : ""; })()}`;
     if (s === 2) return `<h3 class="wzt">Fenstermeldung</h3><div class="mut sm" style="margin-bottom:6px">Gilt für alle neuen Räume. Pro Raum änderst du es später in den Einstellungen.</div>
       ${num("Fenster offen nach", "So lange muss es offen sein, bevor geheizt wird.", "open_delay", "s", 0, 3600, 5)}${num("Fenster zu nach", "Wartezeit, bevor wieder geheizt wird.", "close_delay", "s", 0, 3600, 5)}
       <div class="mut sm" style="margin:8px 0 0">Bei offenem Fenster</div><div class="seg">${[["off", "Thermostat aus"], ["setback", "Absenken"]].map(([k, l]) => `<button class="${d.action === k ? "sel" : ""}" data-act="wzact" data-k="${k}">${l}</button>`).join("")}</div>
@@ -370,7 +371,10 @@
     const box = this.shadowRoot.getElementById("modal"), m = this._modal;
     const old = box.querySelector(".sheet"), top = old ? old.scrollTop : 0;
     if (!m) { box.innerHTML = ""; return; }
-    const r = this._collect().find((x) => x.id === m.id) || { name: "" };
+    const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
+    if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "lfloc") { box.innerHTML = this._lfLocModal(); return; }
+    if (m.type === "msx") { box.innerHTML = this._msModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "mver") { box.innerHTML = this._mvModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
@@ -439,6 +443,7 @@
         <div class="seg">${[["fix", "Festwert"], ["entity", "Entität"]].map(([m, t]) => `<button class="${(ent ? "entity" : "fix") === m ? "sel" : ""}" data-act="gpvpm" data-p="${k}" data-k="${m}">${t}</button>`).join("")}</div>
         ${ent ? `${this._wzSel(Object.keys(this._hass.states).filter((e) => e.startsWith("sensor.") && (this._hass.states[e].attributes.device_class === "monetary" || (/(kwh|wh)$/i.test(this._hass.states[e].attributes.unit_of_measurement || "") && /€|eur|ct|cent/i.test(this._hass.states[e].attributes.unit_of_measurement || "")) || e === sn)), sn, "gpvp", `data-p="${k}"`, "– keiner –", /preis|price|tarif|tibber|awattar|strom/i)}
         <div class="mut sm" style="margin:2px 0 0">${sn ? `Aktuell ${num(this._rate(k), 2)} ct/kWh${Number(pv[k]) ? ` (${fl} ${num(pv[k], 2)} ct/kWh, falls der Sensor ausfällt)` : ""}` : `Ohne Sensor gilt der ${fl}.`}</div>` : `<div class="of"><div class="ol"><b>${fl}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="0" max="100" step="0.01"><i>ct/kWh</i></span></div></div>`}`; }).join("")}`)}
+        <button class="sxrow" data-act="lfxset"><span class="sxi">${ic("fan", 20)}</span><span class="sxt"><b>Luftentfeuchter</b><small>${(() => { const dv = this._lfDev(); return dv ? `${esc(dv.name)} · Ein über ${num(dv.hi, 0)} %, aus bei ${num(dv.lo, 0)} %` : "Mobilen Entfeuchter einbinden und mit der Raumfeuchte regeln"; })()}</small></span><em class="sxc ${this._lfDev() ? "ok" : ""}">${this._lfDev() ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>
         <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     } else if (m.type === "gen") {
       const g = this._gen, rs = m.restore, u = this._upd;

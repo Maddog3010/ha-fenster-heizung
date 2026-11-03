@@ -76,9 +76,9 @@
   }
   _groupsHtml(rooms) {
     const groups = (this._cfg.layout.groups || []).filter((g) => g && g.name), edit = this._edit, adm = this._admin();
-    const roomBtn = adm ? `<button class="gadd" data-act="oadd">${ic("plus", 18)}Raum hinzufügen</button>` : "";
+    const roomBtn = adm ? `<button class="gadd" data-act="msxadd">${ic("plus", 18)}Raum hinzufügen</button>` : "";
     const addBtn = (edit && adm ? `<button class="gadd" data-act="gadd">${ic("plus", 18)}Gruppe hinzufügen</button>` : "") + roomBtn;
-    if (!groups.length) return this._viewBar() + this._head() + `<div class="rooms ${this._view() === "compact" ? "list" : ""}" data-sort-container="room">${rooms.map((r) => this._rv(r)).join("")}</div>${addBtn}`;
+    if (!groups.length) return this._viewBar() + this._head() + `<div class="rooms ${this._view() === "compact" ? "list" : ""}" data-sort-container="room">${rooms.map((r) => this._rv(r)).join("")}</div>${this._msSection()}${addBtn}`;
     const used = new Set(groups.flatMap((g) => g.rooms || [])), rest = rooms.filter((r) => !used.has(r.id)), col = this._collapsed();
     const list = groups.map((g) => ({ ...g, members: rooms.filter((r) => (g.rooms || []).includes(r.id)) }));
     if (rest.length) list.push({ id: "_rest", name: "Weitere Räume", icon: "home", members: rest, fixed: true });
@@ -97,7 +97,7 @@
         ${m.some((r) => r.sw) ? `<div class="gsw"><span>Fensterregelung</span><button class="sw ${allOn ? "on" : ""}" data-act="gsw" data-g="${esc(g.id)}" aria-label="Fensterregelung der Gruppe ${esc(g.name)} umschalten" aria-pressed="${allOn}"></button></div>` : ""}
         <button class="gtog" data-act="gtog" data-g="${esc(g.id)}" aria-label="Gruppe ein- oder ausklappen" aria-expanded="${!closed}">${ic("chev", 18)}</button></div>${body}</section>`;
     }).join("");
-    return this._viewBar() + this._head() + html + addBtn;
+    return this._viewBar() + this._head() + html + this._msSection() + addBtn;
   }
   _gActions(a, b) {
     const L = this._cfg.layout; L.groups = L.groups || [];
@@ -764,7 +764,7 @@
           <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div>${rt.sensor ? `<div class="rtx"><span>Raum</span><b>${num(rt.t, 1)} °C</b><span>Thermostat</span><b>${rt.th != null ? num(rt.th, 1) + " °C" : "–"}</b></div>${this._rtNote(rt, r) ? `<div class="rtn">${esc(this._rtNote(rt, r))}</div>` : ""}` : rt.fail ? `<div class="rtn warn">Raumsensor meldet nicht, es gilt das Thermostat</div>` : ""}</div>
       </div>
       ${this._planBox(r)}${this._wxaNote(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : this._sum().active ? `<div class="pnote">${ic("sun", 16)}Sommermodus: Der Heizplan ruht, die Fenstermeldung bleibt aktiv.</div>` : ""}
-      ${this._htrBox(r)}${this._airBox(r)}
+      ${this._htrBox(r)}${this._airBox(r)}${this._lfBox(r.id)}
       <div class="foot"><div class="a"><b>${num(d.min)} Min. pausiert</b><span>${r.pauses || 0}× heute · ~${num(d.gas, 2)} ${FUELS[r.fuel || "erdgas"].label} · ${num(r.kw, 2)} kW</span></div>${this._spark(r)}</div></div>`;
   }
 
@@ -817,7 +817,7 @@
         <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>${this._wx()}
         <div class="chips">${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
           <span class="chip">${ic("radiator", 16)}${paused} von ${rooms.length} ${rooms.length === 1 ? "Raum" : "Räumen"} pausiert</span>
-          <span class="chip">${ic("thermo", 16)}${num(sum("day", "kwh"), 1)} kWh Wärme</span></div></div>`,
+          <span class="chip">${ic("thermo", 16)}${num(sum("day", "kwh"), 1)} kWh Wärme</span>${this._msList().length ? `<span class="chip">${ic("drop", 16)}${this._msList().length} ${this._msList().length === 1 ? "Messraum" : "Messräume"}</span>` : ""}</div></div>`,
       presence: () => this._presenceCard(),
       pv: () => this._pvBlock(),
       tiles: () => `<div class="tiles">${tiles.map(([sc, ico, lab, col]) => `<div class="tile" style="--a:${col}">
@@ -825,7 +825,7 @@
         <div class="g">${ic("flame", 14)}${num(amt(sc), 2)} ${unitOf(F)}</div></div>`).join("")}</div>`,
       chart: () => `<div class="card"><h2>${ic("clock", 18)}Pausenzeit pro Tag · letzte 14 Tage</h2>${this._chart(rooms)}
         <div class="legend">${[...rooms].sort((a, b) => a.ci - b.ci).map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div></div>`,
-      rooms: () => this._groupsHtml(rooms),
+      rooms: () => this._lfLocCard() + this._groupsHtml(rooms),
     };
     // Reihenfolge der Räume im Diagramm = Reihenfolge der Farben, deshalb nach Farbe
     const chartRooms = [...rooms].sort((a, b) => a.ci - b.ci);
@@ -833,7 +833,7 @@
         <div class="legend">${chartRooms.map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div></div>`;
     const blocks = rooms.length ? this._blockOrder().map((id) => (!content[id]() && !edit ? "" : `<section class="blk ${edit ? "editing" : ""}" data-sort="block" data-id="${id}">
         ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${BLOCKS[id]}</div>` : ""}${content[id]()}</section>`)).join("")
-      : `<div class="card empty">Noch keine Räume eingerichtet.<br>${adm ? `<button class="btn2 pri" data-act="wz" style="margin-top:14px;flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button>` : "Ein Administrator kann die Einrichtung starten."}</div>`;
+      : `<div class="card empty">${this._msList().length ? "Noch keine Räume mit Heizung eingerichtet." : "Noch keine Räume eingerichtet."}<br>${adm ? `<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn2 pri" data-act="wz" style="flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button><button class="btn2" data-act="msxadd" style="flex:none;padding:12px 22px">${ic("plus", 16)} Raum hinzufügen</button></div>` : "Ein Administrator kann die Einrichtung starten."}</div>${this._lfLocCard()}${this._msSection()}`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._verTag()}</span></div></div>

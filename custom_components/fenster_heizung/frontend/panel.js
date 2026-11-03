@@ -248,6 +248,8 @@ const enStep = (mx) => { const raw = Math.max(mx, 1) / 4, p = Math.pow(10, Math.
 const WW_ON = ["on", "heat", "heating", "performance", "eco", "electric", "gas", "heat_pump", "high_demand"];
 const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000, MW: 1e6 };
 /* Modul 4: Gerätetypen (Symbol, Startschwelle W, Ende nach min) und Farben wie in Modul 3 */
+/* Modul 1: Standardwerte eines Messraums (Raum nur mit Temperatur und Luftfeuchte) */
+const MS_DEF = { parts: ["mess"], temp: "", hum: "", bat: "", mm: true, dew: false, mold: false, t_lo: 18, t_hi: 24, h_lo: 40, h_hi: 60, stale: 60 };
 const GS_MAX = 15; /* Modul 4: höchstens so viele Geräte (Backend: MAX_DEVICES) */
 const GS_TYP = { wasch: { n: "Waschmaschine", i: "laundry", thr: 5, end: 15 }, trockner: { n: "Trockner", i: "windy", thr: 50, end: 5 }, spuel: { n: "Spülmaschine", i: "dining", thr: 5, end: 30 }, kuehl: { n: "Kühlgerät", i: "fridge", thr: 20, end: 5 }, ofen: { n: "Küche", i: "pot", thr: 100, end: 10 }, pool: { n: "Pool", i: "wave", thr: 50, end: 5 }, pc: { n: "Computer", i: "gamepad", thr: 30, end: 5 }, tv: { n: "Fernseher", i: "tv", thr: 20, end: 5 }, werk: { n: "Werkstatt", i: "tools", thr: 50, end: 5 }, sonst: { n: "Gerät", i: "bolt", thr: 20, end: 5 } };
 const GS_COL = ["#fbbf24", "#a78bfa", "#f87171"], GS_SRC = ["Solar", "Batterie", "Netz"], GS_RANGES = ["day", "week", "month", "year"];
@@ -710,7 +712,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.2", b: 2, d: "2026-11-03", p: "2026.11.1b1", log: [["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.3", b: 1, d: "2026-11-03", p: "2026.11.1b2", log: [["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.1", b: 2, d: "2026-11-03", p: "2026.11.1b1", log: [["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -1832,6 +1834,49 @@ button.stck{cursor:pointer}
 .sxc.wa{border-color:color-mix(in srgb,#f59e0b 50%,transparent);color:#f59e0b;background:color-mix(in srgb,#f59e0b 9%,transparent)}
 .stw .sxsum{margin:0 0 14px}
 @media(max-width:760px){.stw .sxi{display:grid}.stw .sxc{display:inline-block}.stw .sxsum{grid-template-columns:1fr 1fr}}
+/* Modul 1: Messraum */
+.msh{display:flex;align-items:center;gap:10px;margin:18px 2px 10px}.msh .gico{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--teal) 14%,transparent);color:var(--teal);flex:none}
+.msh b{display:block;font-size:1rem}.msh span{font-size:.78rem;color:var(--mut)}
+.rooms.msg{margin-bottom:12px}
+.room.msr{padding:14px;gap:10px}.room.msr .rico{width:40px;height:40px;border-radius:13px}
+.msbadge{font-size:.68rem;font-weight:600;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--mut)}
+.msv{display:grid;grid-template-columns:1fr 1fr;gap:8px}.msv.one{grid-template-columns:1fr}
+.msb{--c:var(--gray);border-radius:14px;padding:10px 12px;border:1px solid var(--line);min-width:0;background:color-mix(in srgb,var(--c) 6%,transparent)}
+.msb .t{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--mut)}
+.msb .v{font-size:1.55rem;font-weight:700;letter-spacing:-.02em;margin-top:2px;color:var(--c);font-variant-numeric:tabular-nums}.msb .v small{font-size:.85rem;font-weight:600;margin-left:2px}
+.msb .s{font-size:.7rem;color:var(--mut);margin-top:3px}
+.msb.green{--c:var(--green)}.msb.amber{--c:var(--amber);border-color:color-mix(in srgb,var(--amber) 45%,transparent)}.msb.blue{--c:#60a5fa;border-color:color-mix(in srgb,#60a5fa 45%,transparent)}.msb.gray .v{color:var(--mut)}
+.msb .gauge{height:5px;border-radius:9px;background:color-mix(in srgb,var(--primary-text-color) 10%,transparent);margin-top:6px;overflow:hidden}.msb .gauge i{display:block;height:100%;background:var(--c);border-radius:9px}
+.msb.none .v{font-size:.98rem;color:var(--mut);margin-top:6px}
+.room.msnone{border-style:dashed;background-image:repeating-linear-gradient(135deg,transparent 0 10px,color-mix(in srgb,var(--primary-text-color) 3%,transparent) 10px 20px)}
+.msx{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--mut)}.msx span{display:flex;align-items:center;gap:4px}.msx b{color:var(--primary-text-color)}.msx .amber b{color:var(--amber)}.msx .red b{color:#f87171}
+.msn{font-size:.74rem;color:var(--mut)}.msn.amber{color:var(--amber)}
+.mskind{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 10px}.mskind button{text-align:left;border:1px solid var(--line);border-radius:14px;padding:11px 12px;background:none;color:inherit;font:inherit;cursor:pointer}
+.mskind button b{display:flex;align-items:center;gap:6px;font-size:.88rem}.mskind button span{display:block;font-size:.74rem;color:var(--mut);margin-top:4px}
+.mskind button.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset;background:color-mix(in srgb,var(--teal) 8%,transparent)}
+.msnew{font-style:normal;font-size:.6rem;font-weight:700;padding:1px 6px;border-radius:999px;background:var(--teal);color:var(--on-acc)}
+.msdup{margin:-4px 0 6px;color:var(--amber)}
+.msrg{display:flex;align-items:center;gap:8px}.msrg .onum{flex:1;min-width:0}.msrg .onum input{width:100%;min-width:0}
+@media(max-width:520px){.mskind{grid-template-columns:1fr}}
+/* Modul 1: Luftentfeuchter (Türkis, damit er sich von Heizen und Fenster unterscheidet) */
+.lfbox{--lf:#22d3ee;border:1px solid color-mix(in srgb,var(--lf) 40%,var(--line));border-radius:16px;padding:12px;background:color-mix(in srgb,var(--lf) 6%,transparent);display:grid;grid-template-columns:minmax(0,1fr);gap:8px;min-width:0}.lfbox>*{min-width:0}
+.lfh{display:flex;align-items:center;gap:10px}.lfi{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--lf,#22d3ee) 18%,transparent);color:var(--lf,#22d3ee);flex:none}
+.lft{flex:1;min-width:0}.lft b{display:flex;align-items:center;gap:6px;font-size:.92rem}.lft span{display:block;font-size:.74rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lfhere{font-style:normal;font-size:.62rem;font-weight:700;padding:1px 7px;border-radius:999px;background:var(--lf,#22d3ee);color:#042f2e}
+.lfst{font-weight:700;font-size:.95rem;color:var(--mut);white-space:nowrap}.lfbox.run .lfst{color:var(--lf)}.lfbox.warn .lfst{color:var(--amber)}.lfbox.wait .lfst{color:#60a5fa}
+.lfbox.run .lfi svg{animation:lfspin 2.4s linear infinite}@keyframes lfspin{to{transform:rotate(360deg)}}
+.lfbar{height:5px;border-radius:9px;background:color-mix(in srgb,var(--primary-text-color) 10%,transparent);overflow:hidden}.lfbar i{display:block;height:100%;background:var(--lf);border-radius:9px}
+.lfwhy{font-size:.76rem;color:var(--mut);background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);border-radius:10px;padding:7px 9px}.lfwhy b{color:#60a5fa}.lfhint{color:var(--amber)}
+.lfbtns{display:flex;flex-wrap:wrap;gap:6px}.lfbtns .btn2{flex:1 1 auto;min-width:0;padding:8px 10px;font-size:.8rem}
+.card.lfloc{--lf:#22d3ee;border-color:color-mix(in srgb,#facc15 55%,var(--line));display:grid;gap:10px}
+.lftiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.lftile{text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:none;color:inherit;font:inherit;cursor:pointer}
+.lftile b{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:.9rem}.lftile span{display:block;font-size:.74rem;color:var(--mut);margin-top:3px}.lftile span.amber{color:var(--amber)}
+.lftile.sel{border-color:#22d3ee;box-shadow:0 0 0 1px #22d3ee inset;background:color-mix(in srgb,#22d3ee 9%,transparent)}.lftile.sel b .ic{color:#22d3ee}
+.lftabs{margin:2px 0 6px}
+.lfkind{display:grid;gap:8px}.lfkind button{text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:none;color:inherit;font:inherit;cursor:pointer}
+.lfkind button b{display:block;font-size:.88rem}.lfkind button span{display:block;font-size:.74rem;color:var(--mut);margin-top:3px}.lfkind button.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}
+.lfstep{display:flex;align-items:center;gap:8px}.lfstep b{min-width:72px;text-align:center;font-size:1.05rem;font-variant-numeric:tabular-nums}.lfstep b small{font-size:.75rem;color:var(--mut);font-weight:600}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -2086,9 +2131,9 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _groupsHtml(rooms) {
     const groups = (this._cfg.layout.groups || []).filter((g) => g && g.name), edit = this._edit, adm = this._admin();
-    const roomBtn = adm ? `<button class="gadd" data-act="oadd">${ic("plus", 18)}Raum hinzufügen</button>` : "";
+    const roomBtn = adm ? `<button class="gadd" data-act="msxadd">${ic("plus", 18)}Raum hinzufügen</button>` : "";
     const addBtn = (edit && adm ? `<button class="gadd" data-act="gadd">${ic("plus", 18)}Gruppe hinzufügen</button>` : "") + roomBtn;
-    if (!groups.length) return this._viewBar() + this._head() + `<div class="rooms ${this._view() === "compact" ? "list" : ""}" data-sort-container="room">${rooms.map((r) => this._rv(r)).join("")}</div>${addBtn}`;
+    if (!groups.length) return this._viewBar() + this._head() + `<div class="rooms ${this._view() === "compact" ? "list" : ""}" data-sort-container="room">${rooms.map((r) => this._rv(r)).join("")}</div>${this._msSection()}${addBtn}`;
     const used = new Set(groups.flatMap((g) => g.rooms || [])), rest = rooms.filter((r) => !used.has(r.id)), col = this._collapsed();
     const list = groups.map((g) => ({ ...g, members: rooms.filter((r) => (g.rooms || []).includes(r.id)) }));
     if (rest.length) list.push({ id: "_rest", name: "Weitere Räume", icon: "home", members: rest, fixed: true });
@@ -2107,7 +2152,7 @@ class FensterHeizungPanel extends HTMLElement {
         ${m.some((r) => r.sw) ? `<div class="gsw"><span>Fensterregelung</span><button class="sw ${allOn ? "on" : ""}" data-act="gsw" data-g="${esc(g.id)}" aria-label="Fensterregelung der Gruppe ${esc(g.name)} umschalten" aria-pressed="${allOn}"></button></div>` : ""}
         <button class="gtog" data-act="gtog" data-g="${esc(g.id)}" aria-label="Gruppe ein- oder ausklappen" aria-expanded="${!closed}">${ic("chev", 18)}</button></div>${body}</section>`;
     }).join("");
-    return this._viewBar() + this._head() + html + addBtn;
+    return this._viewBar() + this._head() + html + this._msSection() + addBtn;
   }
   _gActions(a, b) {
     const L = this._cfg.layout; L.groups = L.groups || [];
@@ -2774,7 +2819,7 @@ class FensterHeizungPanel extends HTMLElement {
           <div class="s">${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} °C · ` : "") + hv : "kein Thermostat"}${th.length > 1 ? ` (+${th.length - 1})` : ""}</div>${rt.sensor ? `<div class="rtx"><span>Raum</span><b>${num(rt.t, 1)} °C</b><span>Thermostat</span><b>${rt.th != null ? num(rt.th, 1) + " °C" : "–"}</b></div>${this._rtNote(rt, r) ? `<div class="rtn">${esc(this._rtNote(rt, r))}</div>` : ""}` : rt.fail ? `<div class="rtn warn">Raumsensor meldet nicht, es gilt das Thermostat</div>` : ""}</div>
       </div>
       ${this._planBox(r)}${this._wxaNote(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : this._sum().active ? `<div class="pnote">${ic("sun", 16)}Sommermodus: Der Heizplan ruht, die Fenstermeldung bleibt aktiv.</div>` : ""}
-      ${this._htrBox(r)}${this._airBox(r)}
+      ${this._htrBox(r)}${this._airBox(r)}${this._lfBox(r.id)}
       <div class="foot"><div class="a"><b>${num(d.min)} Min. pausiert</b><span>${r.pauses || 0}× heute · ~${num(d.gas, 2)} ${FUELS[r.fuel || "erdgas"].label} · ${num(r.kw, 2)} kW</span></div>${this._spark(r)}</div></div>`;
   }
 
@@ -2827,7 +2872,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>${this._wx()}
         <div class="chips">${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
           <span class="chip">${ic("radiator", 16)}${paused} von ${rooms.length} ${rooms.length === 1 ? "Raum" : "Räumen"} pausiert</span>
-          <span class="chip">${ic("thermo", 16)}${num(sum("day", "kwh"), 1)} kWh Wärme</span></div></div>`,
+          <span class="chip">${ic("thermo", 16)}${num(sum("day", "kwh"), 1)} kWh Wärme</span>${this._msList().length ? `<span class="chip">${ic("drop", 16)}${this._msList().length} ${this._msList().length === 1 ? "Messraum" : "Messräume"}</span>` : ""}</div></div>`,
       presence: () => this._presenceCard(),
       pv: () => this._pvBlock(),
       tiles: () => `<div class="tiles">${tiles.map(([sc, ico, lab, col]) => `<div class="tile" style="--a:${col}">
@@ -2835,7 +2880,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="g">${ic("flame", 14)}${num(amt(sc), 2)} ${unitOf(F)}</div></div>`).join("")}</div>`,
       chart: () => `<div class="card"><h2>${ic("clock", 18)}Pausenzeit pro Tag · letzte 14 Tage</h2>${this._chart(rooms)}
         <div class="legend">${[...rooms].sort((a, b) => a.ci - b.ci).map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div></div>`,
-      rooms: () => this._groupsHtml(rooms),
+      rooms: () => this._lfLocCard() + this._groupsHtml(rooms),
     };
     // Reihenfolge der Räume im Diagramm = Reihenfolge der Farben, deshalb nach Farbe
     const chartRooms = [...rooms].sort((a, b) => a.ci - b.ci);
@@ -2843,7 +2888,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="legend">${chartRooms.map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div></div>`;
     const blocks = rooms.length ? this._blockOrder().map((id) => (!content[id]() && !edit ? "" : `<section class="blk ${edit ? "editing" : ""}" data-sort="block" data-id="${id}">
         ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${BLOCKS[id]}</div>` : ""}${content[id]()}</section>`)).join("")
-      : `<div class="card empty">Noch keine Räume eingerichtet.<br>${adm ? `<button class="btn2 pri" data-act="wz" style="margin-top:14px;flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button>` : "Ein Administrator kann die Einrichtung starten."}</div>`;
+      : `<div class="card empty">${this._msList().length ? "Noch keine Räume mit Heizung eingerichtet." : "Noch keine Räume eingerichtet."}<br>${adm ? `<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn2 pri" data-act="wz" style="flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button><button class="btn2" data-act="msxadd" style="flex:none;padding:12px 22px">${ic("plus", 16)} Raum hinzufügen</button></div>` : "Ein Administrator kann die Einrichtung starten."}</div>${this._lfLocCard()}${this._msSection()}`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._verTag()}</span></div></div>
@@ -2852,6 +2897,327 @@ class FensterHeizungPanel extends HTMLElement {
         ${!edit ? this._updBanner() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
   }
 
+  /* ================= Modul 1: Messraum (Raum nur mit Temperatur und Luftfeuchte, steuert nichts) =================
+     Gespeichert im Layout unter "mess" (für alle Nutzer, in Sicherungen enthalten). Symbol, Farbe und Foto wie bei
+     Heizungsräumen unter layout.icons/colors/photos mit der Messraum-ID. "parts" hält die Bausteine des Raums
+     (heute nur "mess"), damit später Räume aus Bausteinen (Heizung, Fenster, Luft, Messen) möglich sind. */
+  _msList() {
+    const L = this._cfg.layout || {}, cc = L.colors || {}, n0 = this._collect0 ? this._collect0().length : 0;
+    return (Array.isArray(L.mess) ? L.mess : []).map((m, i) => ({ ...MS_DEF, ...m, color: HEX.test(cc[m.id] || "") ? cc[m.id] : COLORS[(n0 + i) % COLORS.length], ms: true }));
+  }
+  _msSave(list) { this._cfg.layout.mess = list.map(({ color, ms, ...x }) => x); this._saveLayout(); this._render(); }
+  /* Ein Messwert: Zahl (Temperatur in °C), Zustand ok | none | stale | bad und Alter in Stunden */
+  _msVal(eid, kind, stale) {
+    const s = eid && this._hass.states[eid];
+    if (!s || s.state === "unavailable" || s.state === "unknown" || s.state === "") return { st: "none" };
+    let v = parseFloat(s.state); if (!isFinite(v)) return { st: "none" };
+    if (kind === "t" && /F$/i.test(String((s.attributes || {}).unit_of_measurement || ""))) v = (v - 32) * 5 / 9;
+    const age = (Date.now() - new Date(s.last_updated || s.last_changed || Date.now()).getTime()) / 3600000;
+    if (kind === "t" ? v < -40 || v > 80 : v < 0 || v > 100) return { st: "bad", v, age };
+    return { v: Math.round(v * 10) / 10, age, st: age * 60 > stale ? "stale" : "ok" };
+  }
+  /* Min und Max heute aus dem Verlauf von Home Assistant (nicht doppelt gespeichert), höchstens alle 10 Minuten neu */
+  _msMM(m) {
+    const ids = [m.temp, m.hum].filter(Boolean); if (!ids.length || !m.mm) return null;
+    const c = (this._msH = this._msH || {})[m.id], key = ids.join(","), d0 = new Date(); d0.setHours(0, 0, 0, 0);
+    if (!c || c.key !== key || c.day !== d0.getTime() || Date.now() - c.ts > 600000) {
+      if (!c || !c.busy) {
+        this._msH[m.id] = { ...(c || {}), key, day: d0.getTime(), ts: Date.now(), busy: true };
+        this._hass.callWS({ type: "history/history_during_period", start_time: d0.toISOString(), entity_ids: ids, minimal_response: true, no_attributes: true, significant_changes_only: false })
+          .then((r) => {
+            const rng = (eid, kind) => { const st = this._hass.states[eid], f = kind === "t" && /F$/i.test(String(((st || {}).attributes || {}).unit_of_measurement || "")); const xs = ((r || {})[eid] || []).map((x) => parseFloat(x.s ?? x.state)).filter((x) => isFinite(x)).map((x) => (f ? (x - 32) * 5 / 9 : x)).filter((x) => (kind === "t" ? x >= -40 && x <= 80 : x >= 0 && x <= 100)); return xs.length ? [Math.min(...xs), Math.max(...xs)] : null; };
+            this._msH[m.id] = { key, day: d0.getTime(), ts: Date.now(), t: m.temp ? rng(m.temp, "t") : null, h: m.hum ? rng(m.hum, "h") : null };
+            this._render();
+          })
+          .catch(() => { this._msH[m.id] = { key, day: d0.getTime(), ts: Date.now(), err: true }; });
+      }
+    }
+    return this._msH[m.id] || null;
+  }
+  _msAgo(h) { const m = Math.round(h * 60); return m < 2 ? "gerade eben" : m < 60 ? `vor ${m} Min.` : m < 1440 ? `vor ${Math.round(m / 60)} Std.` : `vor ${Math.round(m / 1440)} Tagen`; }
+  _msCard(m) {
+    const T = m.temp ? this._msVal(m.temp, "t", m.stale) : null, Hm = m.hum ? this._msVal(m.hum, "h", m.stale) : null, edit = this._edit, adm = this._admin();
+    const vals = [T, Hm].filter(Boolean), none = vals.length && vals.every((x) => x.st === "none" || x.st === "bad");
+    const mm = !none ? this._msMM(m) : null, fmtR = (r, d) => (r ? `Min ${num(r[0], d)} · Max ${num(r[1], d)} heute` : "");
+    const tone = (x, lo, hi, cold) => (x.st !== "ok" ? "gray" : x.v < lo ? cold : x.v > hi ? "amber" : "green");
+    const tT = T ? tone(T, m.t_lo, m.t_hi, "blue") : "", tH = Hm ? tone(Hm, m.h_lo, m.h_hi, "amber") : "";
+    const box = (x, ttl, icon, unit, d, tn, rng, gauge) => {
+      if (x.st === "none") return `<div class="msb none"><div class="t">${ic(icon, 15)}${ttl}</div><div class="v">keine Daten</div></div>`;
+      if (x.st === "bad") return `<div class="msb none"><div class="t">${ic(icon, 15)}${ttl}</div><div class="v">unplausibel</div><div class="s">Sensor meldet ${num(x.v, 1)}${unit}</div></div>`;
+      return `<div class="msb ${tn}"><div class="t">${ic(icon, 15)}${ttl}</div><div class="v">${num(x.v, d)}<small>${unit}</small></div>${gauge ? `<div class="gauge"><i style="width:${Math.max(0, Math.min(100, x.v))}%"></i></div>` : ""}${rng ? `<div class="s">${rng}</div>` : ""}</div>`;
+    };
+    const boxes = [T ? box(T, "Temperatur", "thermo", " °C", 1, tT, fmtR(mm && mm.t, 1)) : "", Hm ? box(Hm, "Luftfeuchte", "drop", " %", 0, tH, fmtR(mm && mm.h, 0), true) : ""].join("");
+    /* Zuschaltbar: Taupunkt und Schimmelhinweis */
+    let extra = "";
+    if (T && Hm && T.st !== "none" && T.st !== "bad" && Hm.st !== "none" && Hm.st !== "bad" && (m.dew || m.mold)) {
+      const o = this._out(), a = airCalc(T.v, Hm.v, o.t, o.rh), [ml, mc] = MOLD[a.lvl];
+      extra = `<div class="msx">${m.dew ? `<span>${ic("thermo", 13)}Taupunkt <b>${num(a.td, 1)} °C</b></span>` : ""}${m.mold ? `<span class="${mc}">${ic("alert", 13)}Schimmel <b>${ml}</b></span>` : ""}</div>`;
+    }
+    /* Hinweiszeile */
+    const ok = vals.filter((x) => x.st === "ok"), stale = vals.filter((x) => x.st === "stale");
+    let note = "", ntone = "";
+    if (none) note = "Sensor meldet keine Daten";
+    else if (vals.some((x) => x.st === "bad")) { note = "Ein Sensor meldet einen unplausiblen Wert"; ntone = "amber"; }
+    else if (stale.length && !ok.length) note = `Letzter Wert ${this._msAgo(Math.min(...stale.map((x) => x.age)))}, Sensor meldet sich nicht`;
+    else {
+      const out = [];
+      if (T && T.st === "ok") { if (T.v < m.t_lo) out.push(`Zu kalt (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); else if (T.v > m.t_hi) out.push(`Zu warm (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); }
+      if (Hm && Hm.st === "ok") { if (Hm.v > m.h_hi) out.push(`Zu feucht (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); else if (Hm.v < m.h_lo) out.push(`Zu trocken (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); }
+      const age = Math.min(...vals.filter((x) => x.age != null).map((x) => x.age));
+      note = out.length ? out.join(" · ") : `Aktualisiert ${this._msAgo(age)} · im Wohlfühlbereich`; ntone = out.length ? "amber" : "";
+      if (stale.length) note += ` · ${stale.length === 1 && vals.length > 1 ? "ein Sensor" : "Sensor"} ${this._msAgo(Math.min(...stale.map((x) => x.age)))}`;
+    }
+    const bs = m.bat && this._hass.states[m.bat], bv = bs ? parseFloat(bs.state) : NaN, batLow = bs && ((isFinite(bv) && bv <= 15) || bs.state === "on" || /low|niedrig/i.test(bs.state));
+    const icon = edit ? `<button class="rico" style="${rcStyle(m.color)}" data-act="icon" data-id="${esc(m.id)}" aria-label="Symbol ändern">${ico(this._icon(m), 26)}<span class="pen">${ic("pencil", 11)}</span></button>` : `<div class="rico" style="${rcStyle(m.color)}">${ico(this._icon(m), 26)}</div>`;
+    return `<div class="card room msr${none ? " msnone" : ""}${this._ph(m).c}"${this._ph(m).s} data-id="${esc(m.id)}"><div class="rh">${icon}
+        <div class="rn"><b>${esc(m.name)}</b><div class="pl"><span class="msbadge">Messraum</span>${batLow ? `<span class="pill amber">Batterie leer</span>` : ""}</div></div>
+        ${adm ? `<button class="ibtn gear" data-act="msxedit" data-id="${esc(m.id)}" aria-label="Messraum einstellen">${ic("sliders", 17)}</button>` : ""}</div>
+      <div class="msv${T && Hm ? "" : " one"}">${boxes}</div>${extra}${this._lfBox(m.id)}
+      <div class="msn ${ntone}">${esc(note)}</div></div>`;
+  }
+  _msSection() {
+    const L = this._msList(); if (!L.length) return "";
+    return `<div class="msh"><span class="gico">${ic("thermo", 18)}</span><div><b>Messräume</b><span>${L.length} ${L.length === 1 ? "Raum" : "Räume"} · nur Temperatur und Luftfeuchte, es wird nichts gesteuert</span></div></div>
+      <div class="rooms msg">${L.map((m) => this._msCard(m)).join("")}</div>`;
+  }
+  /* Vorschläge: Bereiche in Home Assistant mit Temperatur- oder Feuchtesensor, aber ohne Thermostat und noch ohne Raum */
+  _msSug() {
+    const H = this._hass, st = H.states || {}, dc = (e) => ((st[e] || {}).attributes || {}).device_class || "";
+    const area = (e) => { const en = (H.entities || {})[e]; if (!en) return ""; if (en.area_id) return en.area_id; const dv = en.device_id && (H.devices || {})[en.device_id]; return (dv && dv.area_id) || ""; };
+    const have = new Set([...this._collect(true).map((r) => r.name), ...this._msList().map((m) => m.name)].map((x) => (x || "").toLowerCase().trim()));
+    const used = new Set(this._msList().flatMap((m) => [m.temp, m.hum]).filter(Boolean)), g = {};
+    for (const e of Object.keys(st)) {
+      const a = area(e); if (!a) continue;
+      if (e.startsWith("climate.") && !((H.entities || {})[e] || {}).platform?.includes?.("fenster_heizung")) { (g[a] = g[a] || { t: [], h: [], c: 0 }).c++; continue; }
+      if (!e.startsWith("sensor.") || used.has(e) || ((H.entities || {})[e] || {}).platform === "fenster_heizung") continue;
+      if (dc(e) === "temperature") (g[a] = g[a] || { t: [], h: [], c: 0 }).t.push(e); else if (dc(e) === "humidity") (g[a] = g[a] || { t: [], h: [], c: 0 }).h.push(e);
+    }
+    return Object.entries(g).filter(([, x]) => !x.c && (x.t.length || x.h.length)).map(([a, x]) => ({ name: ((H.areas || {})[a] || {}).name || a, temp: x.t[0] || "", hum: x.h[0] || "", n: x.t.length + x.h.length }))
+      .filter((s) => !have.has(s.name.toLowerCase().trim())).sort((x, y) => x.name.localeCompare(y.name, "de"));
+  }
+  _msAddFromSug(s) {
+    const L = this._msList(), id = "ms_" + Date.now().toString(36);
+    this._msSave([...L, { ...MS_DEF, id, name: s.name, temp: s.temp, hum: s.hum }]);
+    this._toast(`Messraum „${s.name}“ angelegt`);
+  }
+  _msOpen(id) {
+    const cur = id ? this._msList().find((x) => x.id === id) : null;
+    this._pkId = null;
+    this._modal = { type: "msx", id: id || null, kind: cur ? "mess" : null, err: "", del: false, draft: cur ? { ...cur } : { ...MS_DEF, id: "", name: "" } };
+    this._renderModal();
+  }
+  _msModal() {
+    const M = this._modal, d = M.draft, st = this._hass.states, isNew = !M.id;
+    const ks = Object.keys(st), dc = (e) => (st[e].attributes || {}).device_class || "";
+    const tmp = ks.filter((e) => e.startsWith("sensor.") && dc(e) === "temperature"), hum = ks.filter((e) => e.startsWith("sensor.") && dc(e) === "humidity");
+    const bat = ks.filter((e) => (e.startsWith("sensor.") && dc(e) === "battery") || (e.startsWith("binary_sensor.") && dc(e) === "battery"));
+    const head = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${isNew ? "Raum hinzufügen" : "Raumeinstellungen"}</b><span>${isNew ? (M.kind ? "Schritt 2: Angaben" : "Schritt 1: Was für ein Raum?") : `${esc(d.name)} · Messraum · gilt nach dem Speichern`}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>`;
+    const kinds = `<div class="mskind">
+        <button class="${M.kind === "heat" ? "sel" : ""}" data-act="msxkind" data-k="heat"><b>${ic("radiator", 18)}Mit Heizung und Fenster</b><span>Thermostate pausieren bei offenem Fenster, Heizplan, Berichte.</span></button>
+        <button class="${M.kind === "mess" ? "sel" : ""}" data-act="msxkind" data-k="mess"><b>${ic("thermo", 18)}Nur Messwerte <em class="msnew">NEU</em></b><span>Temperatur und Luftfeuchte anzeigen. Es wird nichts gesteuert.</span></button></div>`;
+    if (isNew && M.kind !== "mess") {
+      const sug = this._msSug();
+      return head + kinds + (M.kind === "heat" ? `<div class="gst">${ic("info", 15)}<div>Heizungsräume legst du wie gewohnt in Home Assistant an: <b>Einstellungen → Geräte &amp; Dienste → Integration hinzufügen → „Strom &amp; Wärme“</b>. Pro Raum ein Eintrag mit Fenstersensoren und Thermostaten. Mehrere Räume auf einmal gehen schneller mit dem Einrichtungsassistenten.</div></div>
+        <div class="foot2"><button class="btn2" data-act="wz">${ic("tools", 15)} Assistent</button><button class="btn2 pri" data-act="msxha">Zu Geräte &amp; Dienste</button></div></div>`
+        : `${sug.length ? `<div class="lsec">${ic("home", 15)}Gefunden in deinen Bereichen</div><div class="mut sm" style="margin:-2px 0 6px">Bereiche mit Temperatur- oder Feuchtesensor, aber ohne Thermostat.</div>${sug.slice(0, 6).map((s, i) => `<div class="wzs"><div><b>${esc(s.name)}</b><span>${[s.temp ? "Temperatur" : "", s.hum ? "Luftfeuchte" : ""].filter(Boolean).join(" und ")}</span></div><button class="btn2" data-act="msxsug" data-i="${i}">Übernehmen</button></div>`).join("")}` : ""}
+        <div class="foot2"><button class="btn2" data-act="close">Abbrechen</button></div></div>`);
+    }
+    const row = (l, h, ctl) => `<div class="of"><div class="ol"><b>${l}</b>${h ? `<small>${h}</small>` : ""}</div><div class="oc">${ctl}</div></div>`;
+    const sw = (k, l, h) => `<div class="vrow"><span>${l}${h ? `<small class="mut" style="display:block">${h}</small>` : ""}</span><button class="sw ${d[k] ? "on" : ""}" data-act="msxsw" data-k="${k}" aria-pressed="${!!d[k]}" aria-label="${l}"></button></div>`;
+    const nm = (k, unit, min, max, step) => `<span class="onum"><input type="number" inputmode="decimal" data-f="msxn" data-k="${k}" value="${d[k]}" min="${min}" max="${max}" step="${step}"><i>${unit}</i></span>`;
+    /* Hinweis bei Doppelung: Sensor schon in einem anderen Raum */
+    const dup = (e) => { if (!e) return ""; const r = this._collect(true).find((x) => x.rtEid === e || x.humEid === e); if (r) return `Auch in „${r.name}“ eingetragen. Das ist erlaubt.`; const o = this._msList().find((x) => x.id !== M.id && (x.temp === e || x.hum === e)); return o ? `Auch im Messraum „${o.name}“ eingetragen. Das ist erlaubt.` : ""; };
+    const dT = dup(d.temp), dH = dup(d.hum);
+    return head + (isNew ? kinds : "") + `
+      <div class="lsec">${ic("pencil", 15)}Name</div>
+      <input class="otxt" type="text" maxlength="30" data-f="msxname" value="${esc(d.name)}" placeholder="z. B. Keller" aria-label="Name des Messraums">
+      ${!isNew ? `<button class="lnk" data-act="icon" data-id="${esc(d.id)}" style="margin:6px 0 0">${ic("image", 14)} Symbol, Farbe und Foto ändern</button>` : `<div class="mut sm" style="margin:6px 0 0">Das Symbol wird nach dem Namen gewählt. Symbol, Farbe und Foto änderst du später unter „Anpassen“.</div>`}
+      <div class="lsec">${ic("thermo", 15)}Sensoren</div>
+      <div class="mut sm" style="margin:-2px 0 6px">Mindestens einer von beiden. Es werden nur passende Sensoren vorgeschlagen.</div>
+      ${row("Temperatur", "Geräteklasse Temperatur", this._wzSel(tmp, d.temp, "msxe", `data-k="temp"`, "– kein Sensor –", /temp/i))}${dT ? `<div class="mut sm msdup">${esc(dT)}</div>` : ""}
+      ${row("Luftfeuchte", "Hygrometer, Geräteklasse Luftfeuchte", this._wzSel(hum, d.hum, "msxe", `data-k="hum"`, "– kein Sensor –", /feucht|humid/i))}${dH ? `<div class="mut sm msdup">${esc(dH)}</div>` : ""}
+      ${row("Batterie", "optional, Hinweis „Batterie leer“ ab 15 %", this._wzSel(bat, d.bat, "msxe", `data-k="bat"`, "– keine –", /bat/i))}
+      <div class="lsec">${ic("eye", 15)}Anzeige</div>
+      ${sw("mm", "Min und Max heute", "Aus dem Verlauf von Home Assistant")}${sw("dew", "Taupunkt zeigen", "Braucht beide Sensoren")}${sw("mold", "Schimmelhinweis zeigen", "Geschätzt, braucht beide Sensoren")}
+      <div class="lsec">${ic("check", 15)}Wohlfühlbereich und Sensor-Alter</div>
+      ${row("Temperatur", "Darunter blau, darüber gelb", `<div class="msrg">${nm("t_lo", "°C", -20, 40, 0.5)}<span class="mut">bis</span>${nm("t_hi", "°C", -20, 40, 0.5)}</div>`)}
+      ${row("Luftfeuchte", "Außerhalb gelb", `<div class="msrg">${nm("h_lo", "%", 0, 100, 1)}<span class="mut">bis</span>${nm("h_hi", "%", 0, 100, 1)}</div>`)}
+      ${row("Gilt als veraltet nach", "Danach wird die Zahl grau", nm("stale", "Min.", 10, 1440, 5))}
+      ${M.err ? `<div class="gst on">${ic("alert", 15)}<div>${esc(M.err)}</div></div>` : ""}
+      ${!isNew ? (M.del ? `<div class="gbox"><b>Messraum „${esc(d.name)}“ löschen?</b>Sensoren in Home Assistant bleiben unverändert.</div><div class="foot2"><button class="btn2" data-act="msxdelno">Abbrechen</button><button class="btn2" style="color:#f87171;border-color:color-mix(in srgb,#f87171 45%,transparent)" data-act="msxdelok">Löschen</button></div>` : `<button class="lnk dng" data-act="msxdel" style="margin:10px 0 0">${ic("trash", 14)} Messraum löschen</button>`) : ""}
+      ${M.del ? "" : `<div class="foot2"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="msxsave">${isNew ? "Raum anlegen" : "Speichern"}</button></div>`}</div>`;
+  }
+  _msChange(t) {
+    const M = this._modal; if (!M || M.type !== "msx") return false;
+    const f = t.dataset.f, d = M.draft;
+    if (f === "msxname") { d.name = t.value; return true; }
+    if (f === "msxe") { d[t.dataset.k] = t.value || ""; M.err = ""; return true; }
+    if (f === "msxn") { const v = parseFloat(String(t.value).replace(",", ".")); if (isFinite(v)) d[t.dataset.k] = v; return true; }
+    return false;
+  }
+  _msAct(a, b) {
+    const M = this._modal;
+    if (a === "msxadd") { this._msOpen(null); return; }
+    if (a === "msxedit") { this._msOpen(b.dataset.id); return; }
+    if (a === "msxwz") { const s = this._msSug()[+b.dataset.i]; if (s) this._msAddFromSug(s); this._renderModal(); return; }
+    if (!M || M.type !== "msx") return;
+    const d = M.draft;
+    if (a === "msxkind") { M.kind = b.dataset.k; this._renderModal(); }
+    else if (a === "msxha") { this._modal = null; this._renderModal(); this._nav(HA_PAGE); }
+    else if (a === "msxsug") { const s = this._msSug()[+b.dataset.i]; if (s) { M.kind = "mess"; Object.assign(d, { name: s.name, temp: s.temp, hum: s.hum }); this._renderModal(); } }
+    else if (a === "msxsw") { d[b.dataset.k] = !d[b.dataset.k]; this._renderModal(); }
+    else if (a === "msxdel") { M.del = true; this._renderModal(); }
+    else if (a === "msxdelno") { M.del = false; this._renderModal(); }
+    else if (a === "msxdelok") {
+      const L = this._cfg.layout; for (const k of ["icons", "colors", "photos"]) if (L[k] && L[k][M.id]) { const c = { ...L[k] }; delete c[M.id]; L[k] = c; }
+      this._msSave(this._msList().filter((x) => x.id !== M.id)); this._modal = null; this._renderModal(); this._toast("Messraum gelöscht");
+    }
+    else if (a === "msxsave") {
+      const name = String(d.name || "").trim(), low = name.toLowerCase();
+      const taken = [...this._collect(true).map((r) => r.name), ...this._msList().filter((x) => x.id !== M.id).map((x) => x.name)].some((x) => (x || "").toLowerCase().trim() === low);
+      M.err = !name ? "Bitte einen Namen eingeben." : taken ? `Es gibt schon einen Raum „${name}“.` : !d.temp && !d.hum ? "Bitte mindestens einen Sensor wählen: Temperatur oder Luftfeuchte." : d.t_lo >= d.t_hi || d.h_lo >= d.h_hi ? "Beim Wohlfühlbereich muss der erste Wert kleiner sein als der zweite." : "";
+      if (M.err) { this._renderModal(); return; }
+      const rec = { ...MS_DEF, ...d, name, id: M.id || "ms_" + Date.now().toString(36), parts: ["mess"] };
+      const L = this._msList(), i = L.findIndex((x) => x.id === rec.id);
+      if (i >= 0) L[i] = rec; else L.push(rec);
+      this._msSave(L); this._modal = null; this._renderModal(); this._toast(i >= 0 ? "Messraum gespeichert" : `Messraum „${name}“ angelegt`);
+    }
+  }
+  /* ================= Modul 1: Luftentfeuchter (Schritt 1: Gerät und Regelung) =================
+     Regelung im Backend (entfeuchter.py). Hier: Anzeige auf der Raumkarte des Standorts mit „Warum?“, Standortwahl
+     über Raumkacheln, Einstellungen in Reitern ohne Aufklappmenüs, Zahlen mit Minus und Plus. */
+  _lf() {
+    const D = this._lfD;
+    if ((!D || Date.now() - D.ts > 20000) && !this._lfBusy && this._hass) {
+      this._lfBusy = true;
+      this._hass.callWS({ type: "fenster_heizung/lf_get" }).then((r) => { this._lfD = { ...(r || {}), ts: Date.now() }; this._lfBusy = false; this._render(); if (this._modal && /^lf/.test(this._modal.type)) this._renderModal(); })
+        .catch(() => { this._lfD = { cfg: { devs: [] }, live: {}, rooms: [], ts: Date.now(), err: true }; this._lfBusy = false; });
+    }
+    return D || null;
+  }
+  _lfDev() { const D = this._lf(); return D && D.cfg && D.cfg.devs && D.cfg.devs[0] && D.cfg.devs[0].ent ? D.cfg.devs[0] : null; }
+  async _lfCmd(cmd, arg = "") {
+    try { const r = await this._hass.callWS({ type: "fenster_heizung/lf_cmd", cmd, arg }); this._lfD = { ...r, ts: Date.now() }; this._render(); if (this._modal && /^lf/.test(this._modal.type)) this._renderModal(); }
+    catch (e) { this._toast("Entfeuchter: " + ((e && e.message) || "Befehl fehlgeschlagen")); }
+  }
+  _lfState(L) {
+    if (!L || !L.code) return ["off", "–"];
+    if (L.on == null) return ["off", "nicht erreichbar"];
+    if (L.running) return ["run", "läuft"];
+    if (L.on) return ["run", "an"];
+    return { full: ["warn", "Tank voll"], window: ["wait", "pausiert"], vent: ["wait", "lüften"], day_off: ["off", "heute aus"], no_hum: ["warn", "aus"], no_loc: ["off", "aus"] }[L.code] || ["off", "aus"];
+  }
+  _lfSince(ts) { if (!ts) return ""; const m = Math.max(0, Math.round((Date.now() / 1000 - ts) / 60)); return m < 60 ? `seit ${m} Min.` : `seit ${Math.floor(m / 60)} h ${m % 60} min`; }
+  /* Kasten auf der Raumkarte des Standorts (Heizungsraum oder Messraum) */
+  _lfBox(rid) {
+    const D = this._lf(), dev = this._lfDev(); if (!D || !dev || D.loc !== rid) return "";
+    const L = D.live || {}, [k, t] = this._lfState(L), adm = this._admin();
+    const tank = L.fill != null ? `Tank ${Math.min(100, Math.round(L.fill * 100))} %` : L.full ? "Tank voll" : "";
+    const sub = [L.on ? this._lfSince(L.since) : "", tank, L.today_min ? `heute ${hmin(L.today_min)}` : ""].filter(Boolean).join(" · ");
+    return `<div class="lfbox ${k}"><div class="lfh"><span class="lfi">${ic("fan", 18)}</span><div class="lft"><b>${esc(dev.name)} <em class="lfhere">hier</em></b><span>${esc(sub || (dev.kind === "watch" ? "nur beobachten" : "Modul 1 regelt"))}</span></div><span class="lfst">${esc(t)}</span>${adm ? `<button class="ibtn" data-act="lfxset" aria-label="Entfeuchter einstellen">${ic("sliders", 16)}</button>` : ""}</div>
+      ${L.fill != null ? `<div class="lfbar"><i style="width:${Math.min(100, Math.round(L.fill * 100))}%"></i></div>` : ""}
+      <div class="lfwhy"><b>Warum?</b> ${esc((L.why || []).join(" "))}${L.hint ? `<br><span class="lfhint">${esc(L.hint)}</span>` : ""}</div>
+      <div class="lfbtns"><button class="btn2" data-act="lfxloc">${ic("pin", 15)} Standort ändern</button>${D.off_day ? `<button class="btn2" data-act="lfxon">${ic("check", 15)} Wieder regeln</button>` : `<button class="btn2" data-act="lfxoff">${ic("close", 15)} Heute aus</button>`}${L.full || (L.fill != null && L.fill > 0.05) ? `<button class="btn2" data-act="lfxtank">${ic("drop", 15)} Tank geleert</button>` : ""}</div></div>`;
+  }
+  /* Ohne Standort: Karte mit Raumkacheln oben bei den Räumen */
+  _lfLocCard() {
+    const D = this._lf(), dev = this._lfDev(); if (!D || !dev) return "";
+    if (D.loc && (D.rooms || []).some((r) => r.id === D.loc)) return "";
+    return `<div class="card lfloc"><div class="lfh"><span class="lfi">${ic("fan", 18)}</span><div class="lft"><b>Wo steht der ${esc(dev.name)}?</b><span>${D.off_day ? "Heute nicht in Betrieb." : "Ohne Standort bleibt er aus. Tippe auf den Raum."}</span></div></div>${this._lfTiles(D)}</div>`;
+  }
+  _lfTiles(D) {
+    const R = D.rooms || [], dev = (D.cfg.devs || [])[0] || {};
+    if (!R.length) return `<div class="mut sm">Kein Raum mit Luftfeuchte-Sensor gefunden. Wähle in den Raumeinstellungen einen Luftfeuchte-Sensor oder lege einen Messraum an.</div>`;
+    return `<div class="lftiles">${R.map((r) => `<button class="lftile ${D.loc === r.id ? "sel" : ""}" data-act="lfxpick" data-k="${esc(r.id)}"><b>${esc(r.name)}${D.loc === r.id ? ic("check", 15) : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}${r.ms ? " · Messraum" : ""}</span></button>`).join("")}</div>
+      <div class="lfbtns"><button class="btn2" data-act="${D.off_day ? "lfxon" : "lfxoff"}">${D.off_day ? "Heute wieder in Betrieb" : "Heute nicht in Betrieb"}</button></div>`;
+  }
+  _lfLocModal() {
+    const D = this._lf() || { rooms: [], cfg: { devs: [] } }, dev = (D.cfg.devs || [])[0] || { name: "Luftentfeuchter" };
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Wo steht der ${esc(dev.name)}?</b><span>Modul 1 regelt mit Luftfeuchte und Fenstern dieses Raums</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${this._lfTiles(D)}<div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  /* Einstellungen: Reiter Gerät, Zielwerte, Standort */
+  _lfSetOpen() {
+    const D = this._lf(), d0 = (D && D.cfg && D.cfg.devs && D.cfg.devs[0]) || null;
+    this._pkId = null;
+    this._modal = { type: "lfset", tab: d0 && d0.ent ? "ziel" : "geraet", draft: { id: "d1", name: "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, minrun: 15, lock: 10, vent: false, ...(d0 || {}) } };
+    this._renderModal();
+  }
+  _lfSetModal() {
+    const M = this._modal, d = M.draft, st = this._hass.states, ks = Object.keys(st), D = this._lf() || {};
+    const tabs = [["geraet", "Gerät"], ["ziel", "Zielwerte"], ["ort", "Standort"]];
+    const step = (k, unit, s, lo, hi, dec = 0) => `<div class="lfstep"><button class="ibtn" data-act="lfxstep" data-k="${k}" data-d="${-s}" data-lo="${lo}" data-hi="${hi}" aria-label="weniger">${ic("minus", 16)}</button><b>${num(d[k], dec)}<small> ${unit}</small></b><button class="ibtn" data-act="lfxstep" data-k="${k}" data-d="${s}" data-lo="${lo}" data-hi="${hi}" aria-label="mehr">${ic("plus", 16)}</button></div>`;
+    const row = (l, h, ctl) => `<div class="of"><div class="ol"><b>${l}</b>${h ? `<small>${h}</small>` : ""}</div><div class="oc">${ctl}</div></div>`;
+    const seg = (k, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${d[k] === v ? "sel" : ""}" data-act="lfxseg" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
+    let body = "";
+    if (M.tab === "geraet") {
+      const dom = d.kind === "plug" ? ["switch."] : ["humidifier.", "switch.", "fan.", "input_boolean."];
+      const devs = ks.filter((e) => dom.some((p) => e.startsWith(p)));
+      const pw = ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "power" || /^k?W$/.test(st[e].attributes.unit_of_measurement || "")));
+      const tk = ks.filter((e) => (e.startsWith("binary_sensor.") || e.startsWith("sensor.")) && /tank|wasser|water|bucket|voll|full/i.test(e + " " + (st[e].attributes.friendly_name || "")));
+      body = `<div class="lsec">${ic("fan", 15)}Art des Geräts</div>
+        <div class="lfkind">${[["entity", "Eigene Entität", "Smarter Entfeuchter in Home Assistant (humidifier, Schalter)."], ["plug", "Schaltsteckdose", "Normaler Entfeuchter an einer Steckdose, am Gerät auf Dauerbetrieb."], ["watch", "Nur beobachten", "Gerät mit eigenem Hygrostat. Modul 1 zeigt an, schaltet aber nicht."]].map(([v, l, h]) => `<button class="${d.kind === v ? "sel" : ""}" data-act="lfxseg" data-k="kind" data-v="${v}"><b>${l}</b><span>${h}</span></button>`).join("")}</div>
+        <div class="lsec">${ic("pencil", 15)}Name</div><input class="otxt" type="text" maxlength="30" data-f="lfxname" value="${esc(d.name)}" aria-label="Name des Entfeuchters">
+        <div class="lsec">${ic("bolt", 15)}Gerät und Sensoren</div>
+        ${row(d.kind === "plug" ? "Schaltsteckdose" : "Entfeuchter", d.kind === "plug" ? "switch.*" : "humidifier.*, Schalter oder Lüfter", this._wzSel(devs, d.ent, "lfxe", `data-k="ent"`, "– Gerät wählen –", /entfeucht|dehumid|humid|trockn/i))}
+        ${row("Leistung", "optional, zeigt ob er wirklich läuft", this._wzSel(pw, d.power, "lfxe", `data-k="power"`, "– keine –", /entfeucht|dehumid|steckdose|plug/i))}
+        ${d.power ? row("Läuft ab", "darunter gilt er als aus", step("run_w", "W", 5, 1, 500)) : ""}
+        ${row("Wassertank-Sensor", "optional, meldet „voll“", this._wzSel(tk, d.tank, "lfxe", `data-k="tank"`, "– keiner –", /tank|voll|full/i))}
+        ${!d.tank ? `<div class="mut sm" style="margin:6px 0 2px">Ohne Tank-Sensor schätzt Modul 1 die Füllung aus der Laufzeit. 0 = keine Schätzung.</div>${row("Tankinhalt", "", step("cap_l", "l", 0.5, 0, 50, 1))}${row("Entfeuchtung", "pro Stunde Betrieb", step("lph", "l/h", 0.05, 0, 10, 2))}` : ""}
+        ${d.kind === "plug" ? `<div class="gst">${ic("info", 15)}<div>Das Gerät muss auf Dauerbetrieb stehen und nach einer Stromunterbrechung von selbst wieder anlaufen. Bitte am Gerät prüfen. Die Steckdose muss für die Leistung des Geräts ausgelegt sein.</div></div>` : ""}`;
+    } else if (M.tab === "ziel") {
+      body = `<div class="lsec">${ic("drop", 15)}Zielfeuchte</div>
+        ${row("Einschalten über", "Obergrenze", step("hi", "%", 1, 35, 90))}
+        ${row("Ausschalten bei", "Untergrenze", step("lo", "%", 1, 30, 85))}
+        ${row("Bei Abwesenheit oder Urlaub", "Einschalten über (nur Schutz vor Schimmel)", step("hi_away", "%", 1, 35, 95))}
+        <div class="lsec">${ic("clock", 15)}Gegen ständiges Schalten</div>
+        ${row("Mindestlaufzeit", "", step("minrun", "Min.", 5, 0, 120))}
+        ${row("Sperrzeit nach dem Ausschalten", "", step("lock", "Min.", 5, 0, 120))}
+        <div class="lsec">${ic("windy", 15)}Lüften vor Entfeuchten</div>
+        <div class="mut sm" style="margin:-2px 0 6px">Ist die Luft draußen trockener, bleibt der Entfeuchter aus und Modul 1 empfiehlt Lüften. Im Winter ist das oft der Fall, deshalb ab Werk aus.</div>
+        ${seg("vent", [[false, "Aus"], [true, "Ein"]])}
+        <div class="gst">${ic("window", 15)}<div>Bei offenem Fenster im Raum des Standorts bleibt der Entfeuchter immer aus.</div></div>`;
+    } else {
+      body = `<div class="mut sm" style="margin:4px 0 8px">Der Standort gilt, bis du ihn änderst. Die tägliche Bestätigung kommt in einem späteren Schritt.</div>${this._lfTiles(D)}`;
+    }
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Luftentfeuchter</b><span>Modul 1 · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="seg lftabs">${tabs.map(([k, l]) => `<button class="${M.tab === k ? "sel" : ""}" data-act="lfxtab" data-k="${k}">${l}</button>`).join("")}</div>
+      ${body}${M.err ? `<div class="gst on">${ic("alert", 15)}<div>${esc(M.err)}</div></div>` : ""}
+      <div class="foot2">${d.ent ? `<button class="btn2" data-act="lfxdel">Entfernen</button>` : `<button class="btn2" data-act="close">Abbrechen</button>`}<button class="btn2 pri" data-act="lfxsave">Speichern</button></div></div>`;
+  }
+  _lfChange(t) {
+    const M = this._modal; if (!M || M.type !== "lfset") return false;
+    if (t.dataset.f === "lfxname") { M.draft.name = t.value; return true; }
+    if (t.dataset.f === "lfxe") { M.draft[t.dataset.k] = t.value || ""; return true; }
+    return false;
+  }
+  async _lfSave(devs) {
+    try { const r = await this._hass.callWS({ type: "fenster_heizung/lf_set", cfg: { devs } }); this._lfD = { ...r, ts: Date.now() }; this._modal = null; this._renderModal(); this._render(); this._toast(devs.length ? "Entfeuchter gespeichert" : "Entfeuchter entfernt"); }
+    catch (e) { this._toast("Speichern fehlgeschlagen"); }
+  }
+  _lfAct(a, b) {
+    const M = this._modal;
+    if (a === "lfxset") { this._lfSetOpen(); return; }
+    if (a === "lfxloc") { this._modal = { type: "lfloc" }; this._renderModal(); return; }
+    if (a === "lfxpick") { this._lfCmd("loc", b.dataset.k); if (M && M.type === "lfloc") { this._modal = null; this._renderModal(); } return; }
+    if (a === "lfxoff") { this._lfCmd("off_today"); return; }
+    if (a === "lfxon") { this._lfCmd("on_today"); return; }
+    if (a === "lfxtank") { this._lfCmd("tank_empty"); this._toast("Tank als geleert vermerkt"); return; }
+    if (!M || M.type !== "lfset") return;
+    const d = M.draft;
+    if (a === "lfxtab") { M.tab = b.dataset.k; this._pkId = null; this._renderModal(); }
+    else if (a === "lfxseg") { const v = b.dataset.v; d[b.dataset.k] = v === "true" ? true : v === "false" ? false : v; if (b.dataset.k === "kind" && v === "plug" && d.ent && !d.ent.startsWith("switch.")) d.ent = ""; this._renderModal(); }
+    else if (a === "lfxstep") { const k = b.dataset.k, s = parseFloat(b.dataset.d); d[k] = Math.round(Math.min(parseFloat(b.dataset.hi), Math.max(parseFloat(b.dataset.lo), (Number(d[k]) || 0) + s)) * 100) / 100; this._renderModal(); }
+    else if (a === "lfxdel") { this._lfSave([]); }
+    else if (a === "lfxsave") {
+      M.err = !d.ent ? "Bitte das Gerät wählen (Reiter „Gerät“)." : d.lo >= d.hi ? "Die Untergrenze muss unter der Obergrenze liegen." : "";
+      if (M.err) { this._renderModal(); return; }
+      this._lfSave([{ ...d, name: String(d.name || "").trim() || "Luftentfeuchter" }]);
+    }
+  }
   _build() {
     const sr = this.shadowRoot;
     sr.innerHTML = `<style>${CSS}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
@@ -2888,6 +3254,8 @@ class FensterHeizungPanel extends HTMLElement {
 
   _onChange(t) {
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("msx") && this._msChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lfx") && this._lfChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wz") && this._wzChange(t)) return;
       if (t.dataset && t.dataset.f && (t.dataset.f.startsWith("md") || t.dataset.f.startsWith("ww") || t.dataset.f.startsWith("en") || t.dataset.f.startsWith("gs") || t.dataset.f.startsWith("ev")) && this._mdChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("labf_") && this._labChange(t)) return;
@@ -2909,7 +3277,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (t.dataset && t.dataset.f === "gname" && this._modal) { this._modal.draft.name = t.value; }
       else if (t.dataset && t.dataset.f === "time" && this._modal) { this._modal.draft.entries[+t.dataset.i].time = t.value || "00:00"; this._renderModal(); }
   }
-  _onInput(t) { if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
+  _onInput(t) { if (t.dataset && (t.dataset.f === "msxname" || t.dataset.f === "msxn") && this._msChange(t)) return; if (t.dataset && t.dataset.f === "lfxname" && this._lfChange(t)) return; if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
 
   /* ---------------- Aktionen ---------------- */
   _act(a, b) {
@@ -2918,6 +3286,8 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "pkopen") { this._pkId = this._pkId === b.dataset.pid ? null : b.dataset.pid; this._renderModal(); const q = this.shadowRoot.querySelector(".pksearch"); if (q) q.focus(); }
     else if (a === "pkpick") { const meta = (this._pkReg || {})[b.dataset.pid]; this._pkId = null; if (meta) { const t = { dataset: { ...meta }, value: b.dataset.v, tagName: "SELECT" }; this._onInput(t); this._onChange(t); } this._renderModal(); }
     else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || (a.startsWith("gs") && a !== "gsum") || a.startsWith("ev")) this._mdAct(a, b);
+    else if (a.startsWith("msx")) this._msAct(a, b);
+    else if (a.startsWith("lfx")) this._lfAct(a, b);
     else if (a.startsWith("ort")) this._ortAct(a, b);
     else if (a.startsWith("lab")) this._labAct(a, b);
     else if (a.startsWith("sto")) this._stoAct(a, b);
@@ -3301,14 +3671,15 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="mut" style="margin-bottom:10px">In wenigen Schritten richtest du Räume, Fenstermeldung, Heizung und optional PV-Elektroheizer ein. Du kannst jeden Schritt überspringen und später alles ändern.</div>
       <div class="gbox"><b>Das hat der Assistent gefunden</b>${F.cl.length} Thermostate · ${F.win.length} Fenster- und Türsensoren · ${F.hum.length} Luftfeuchte-Sensoren${F.sug.length ? `<br>${F.sug.length} Räume lassen sich aus deinen Bereichen vorschlagen.` : ""}</div>
       <div class="mut sm">${ex.length ? `Bereits eingerichtet: ${ex.length} ${ex.length === 1 ? "Raum" : "Räume"}. Sie bleiben unverändert.` : "Es ist noch kein Raum eingerichtet."}</div>`;
-    if (s === 1) return `<h3 class="wzt">Räume</h3><div class="mut sm" style="margin-bottom:8px">Ein Raum braucht mindestens einen Fenstersensor und ein Thermostat.</div>
+    if (s === 1) return `<h3 class="wzt">Räume</h3><div class="mut sm" style="margin-bottom:8px">Ein Raum mit Heizung braucht mindestens einen Fenstersensor und ein Thermostat. Räume nur mit Temperatur und Luftfeuchte stehen unten als Messraum.</div>
       ${ex.length ? `<div class="wzex">${ex.map((r) => `<span class="wzc ok">${ic("check", 12)}${esc(r.name)}</span>`).join("")}</div>` : ""}
       ${F.sug.length ? `<div class="lsec">${ic("home", 15)}Vorschläge aus deinen Bereichen</div>${F.sug.map((x, i) => { const on = d.rooms.some((r) => r.name === x.name); return `<div class="wzs"><div><b>${esc(x.name)}</b><span>${x.windows.length} Fenster · ${x.thermos.length} Thermostat${x.thermos.length > 1 ? "e" : ""}</span></div><button class="btn2 ${on ? "" : "pri"}" ${on ? "disabled" : ""} data-act="wzsug" data-i="${i}">${on ? "Hinzugefügt" : "Übernehmen"}</button></div>`; }).join("")}${F.sug.some((x) => !d.rooms.some((r) => r.name === x.name)) ? `<button class="lnk" data-act="wzsugall">Alle Vorschläge übernehmen</button>` : ""}` : ""}
       <div class="lsec">${ic("plus", 15)}Neue Räume</div>
       ${d.rooms.map((r, i) => `<div class="wzr ${r.name.trim() && r.windows.length && r.thermos.length ? "" : "inc"}"><div class="wzrh"><input class="otxt" data-f="wzr" data-i="${i}" data-k="name" value="${esc(r.name)}" placeholder="Raumname"><button class="ibtn" data-act="wzdel" data-i="${i}" aria-label="Raum entfernen">${ic("trash", 18)}</button></div>
         <div class="mut sm">Fenster- und Türsensoren</div>${chips(r, i, "windows", r.windows)}${this._wzSel(F.win.filter((e) => !r.windows.includes(e)), "", "wzadd", `data-i="${i}" data-k="windows"`, "+ Sensor hinzufügen")}
         <div class="mut sm">Thermostate</div>${chips(r, i, "thermos", r.thermos)}${this._wzSel(F.cl.filter((e) => !r.thermos.includes(e)), "", "wzadd", `data-i="${i}" data-k="thermos"`, "+ Thermostat hinzufügen")}</div>`).join("")}
-      <button class="btn2" data-act="wzroom" style="width:100%">${ic("plus", 16)} Raum manuell hinzufügen</button>`;
+      <button class="btn2" data-act="wzroom" style="width:100%">${ic("plus", 16)} Raum manuell hinzufügen</button>
+      ${(() => { const ms = this._msSug(); return ms.length ? `<div class="lsec">${ic("drop", 15)}Räume nur zum Messen</div><div class="mut sm" style="margin:-2px 0 6px">Diese Bereiche haben einen Temperatur- oder Feuchtesensor, aber kein Thermostat. Als Messraum zeigen sie nur Temperatur und Luftfeuchte und steuern nichts.</div>${ms.slice(0, 8).map((x, i) => `<div class="wzs"><div><b>${esc(x.name)}</b><span>${[x.temp ? "Temperatur" : "", x.hum ? "Luftfeuchte" : ""].filter(Boolean).join(" und ")}</span></div><button class="btn2 pri" data-act="msxwz" data-i="${i}">Als Messraum</button></div>`).join("")}` : ""; })()}`;
     if (s === 2) return `<h3 class="wzt">Fenstermeldung</h3><div class="mut sm" style="margin-bottom:6px">Gilt für alle neuen Räume. Pro Raum änderst du es später in den Einstellungen.</div>
       ${num("Fenster offen nach", "So lange muss es offen sein, bevor geheizt wird.", "open_delay", "s", 0, 3600, 5)}${num("Fenster zu nach", "Wartezeit, bevor wieder geheizt wird.", "close_delay", "s", 0, 3600, 5)}
       <div class="mut sm" style="margin:8px 0 0">Bei offenem Fenster</div><div class="seg">${[["off", "Thermostat aus"], ["setback", "Absenken"]].map(([k, l]) => `<button class="${d.action === k ? "sel" : ""}" data-act="wzact" data-k="${k}">${l}</button>`).join("")}</div>
@@ -3553,7 +3924,10 @@ class FensterHeizungPanel extends HTMLElement {
     const box = this.shadowRoot.getElementById("modal"), m = this._modal;
     const old = box.querySelector(".sheet"), top = old ? old.scrollTop : 0;
     if (!m) { box.innerHTML = ""; return; }
-    const r = this._collect().find((x) => x.id === m.id) || { name: "" };
+    const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
+    if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "lfloc") { box.innerHTML = this._lfLocModal(); return; }
+    if (m.type === "msx") { box.innerHTML = this._msModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "mver") { box.innerHTML = this._mvModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
@@ -3622,6 +3996,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="seg">${[["fix", "Festwert"], ["entity", "Entität"]].map(([m, t]) => `<button class="${(ent ? "entity" : "fix") === m ? "sel" : ""}" data-act="gpvpm" data-p="${k}" data-k="${m}">${t}</button>`).join("")}</div>
         ${ent ? `${this._wzSel(Object.keys(this._hass.states).filter((e) => e.startsWith("sensor.") && (this._hass.states[e].attributes.device_class === "monetary" || (/(kwh|wh)$/i.test(this._hass.states[e].attributes.unit_of_measurement || "") && /€|eur|ct|cent/i.test(this._hass.states[e].attributes.unit_of_measurement || "")) || e === sn)), sn, "gpvp", `data-p="${k}"`, "– keiner –", /preis|price|tarif|tibber|awattar|strom/i)}
         <div class="mut sm" style="margin:2px 0 0">${sn ? `Aktuell ${num(this._rate(k), 2)} ct/kWh${Number(pv[k]) ? ` (${fl} ${num(pv[k], 2)} ct/kWh, falls der Sensor ausfällt)` : ""}` : `Ohne Sensor gilt der ${fl}.`}</div>` : `<div class="of"><div class="ol"><b>${fl}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="0" max="100" step="0.01"><i>ct/kWh</i></span></div></div>`}`; }).join("")}`)}
+        <button class="sxrow" data-act="lfxset"><span class="sxi">${ic("fan", 20)}</span><span class="sxt"><b>Luftentfeuchter</b><small>${(() => { const dv = this._lfDev(); return dv ? `${esc(dv.name)} · Ein über ${num(dv.hi, 0)} %, aus bei ${num(dv.lo, 0)} %` : "Mobilen Entfeuchter einbinden und mit der Raumfeuchte regeln"; })()}</small></span><em class="sxc ${this._lfDev() ? "ok" : ""}">${this._lfDev() ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>
         <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     } else if (m.type === "gen") {
       const g = this._gen, rs = m.restore, u = this._upd;

@@ -82,8 +82,55 @@ def clean_layout(raw: Any) -> dict[str, Any]:
                 "rooms": members,
             }
         )
-    out: dict[str, Any] = {"blocks": blocks, "rooms": rooms, "icons": icons, "groups": groups}
+    out: dict[str, Any] = {"blocks": blocks, "rooms": rooms, "icons": icons, "groups": groups, "mess": clean_mess(raw.get("mess"))}
     out.update(_clean_look(raw))
+    return out
+
+
+MAX_MESS = 20
+_MS_ID = re.compile(r"^ms_[a-z0-9]{1,16}$")
+_MS_ENT = re.compile(r"^(sensor|binary_sensor)\.[a-z0-9_]{1,200}$")
+
+
+def clean_mess(raw: Any) -> list[dict[str, Any]]:
+    """Messräume in Modul 1: Raum nur mit Temperatur und Luftfeuchte, steuert nichts.
+
+    "parts" hält die Bausteine des Raums (heute nur "mess"), damit später Räume aus Bausteinen möglich sind.
+    """
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    def num(v: Any, d: float, lo: float, hi: float) -> float:
+        try:
+            x = float(v)
+        except (TypeError, ValueError):
+            return d
+        return d if x != x else min(max(x, lo), hi)
+
+    def ent(v: Any, sensor_only: bool = True) -> str:
+        if not isinstance(v, str) or not _MS_ENT.match(v):
+            return ""
+        return v if (v.startswith("sensor.") or not sensor_only) else ""
+
+    for m in (raw if isinstance(raw, list) else [])[:MAX_MESS]:
+        if not isinstance(m, dict):
+            continue
+        mid, name = str(m.get("id") or ""), str(m.get("name") or "").strip()[:30]
+        temp, hum = ent(m.get("temp")), ent(m.get("hum"))
+        if not _MS_ID.match(mid) or mid in seen or not name or not (temp or hum):
+            continue
+        seen.add(mid)
+        t_lo, t_hi = num(m.get("t_lo"), 18, -20, 40), num(m.get("t_hi"), 24, -20, 40)
+        h_lo, h_hi = num(m.get("h_lo"), 40, 0, 100), num(m.get("h_hi"), 60, 0, 100)
+        if t_lo >= t_hi:
+            t_lo, t_hi = 18.0, 24.0
+        if h_lo >= h_hi:
+            h_lo, h_hi = 40.0, 60.0
+        out.append({
+            "id": mid, "name": name, "parts": ["mess"], "temp": temp, "hum": hum, "bat": ent(m.get("bat"), False),
+            "mm": m.get("mm") is not False, "dew": m.get("dew") is True, "mold": m.get("mold") is True,
+            "t_lo": t_lo, "t_hi": t_hi, "h_lo": h_lo, "h_hi": h_hi, "stale": int(num(m.get("stale"), 60, 10, 1440)),
+        })
     return out
 
 
@@ -342,7 +389,8 @@ async def ws_restore(hass: HomeAssistant, connection, msg: dict) -> None:
         return [mapping[i] for i in ids if i in mapping]
 
     def remap_dict(d):
-        return {mapping[k]: v for k, v in (d or {}).items() if k in mapping}
+        # Messräume (ms_…) gehören zu keinem Home-Assistant-Eintrag und behalten ihre ID
+        return {(k if k.startswith("ms_") else mapping[k]): v for k, v in (d or {}).items() if k in mapping or k.startswith("ms_")}
 
     layout["rooms"] = remap(layout.get("rooms") or [])
     for key in ("icons", "colors", "photos"):
@@ -1188,6 +1236,38 @@ async def ws_spn_admin_act(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], {**res, **mgr.admin_list()})
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/lf_get"})
+@websocket_api.async_response
+async def ws_lf_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("entfeuchter")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Luftentfeuchter ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], mgr.snapshot())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/lf_set", vol.Required("cfg"): dict})
+@websocket_api.async_response
+async def ws_lf_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("entfeuchter")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Luftentfeuchter ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.async_set(msg["cfg"]))
+
+
+# Standort setzen, heute aus/an und „Tank geleert“ darf jeder im Haushalt (tägliche Bedienung)
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/lf_cmd", vol.Required("cmd"): vol.In(["loc", "off_today", "on_today", "tank_empty"]), vol.Optional("arg", default=""): str})
+@websocket_api.async_response
+async def ws_lf_cmd(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("entfeuchter")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Luftentfeuchter ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], await mgr.async_cmd(msg["cmd"], msg.get("arg") or ""))
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
@@ -1195,7 +1275,7 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_ef_get, ws_ef_set,
-        ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del,
+        ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
         ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
     ):
         websocket_api.async_register_command(hass, command)
