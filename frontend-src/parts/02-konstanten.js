@@ -45,6 +45,7 @@ const enStep = (mx) => { const raw = Math.max(mx, 1) / 4, p = Math.pow(10, Math.
 const WW_ON = ["on", "heat", "heating", "performance", "eco", "electric", "gas", "heat_pump", "high_demand"];
 const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000, MW: 1e6 };
 /* Modul 4: Gerätetypen (Symbol, Startschwelle W, Ende nach min) und Farben wie in Modul 3 */
+const GS_MAX = 15; /* Modul 4: höchstens so viele Geräte (Backend: MAX_DEVICES) */
 const GS_TYP = { wasch: { n: "Waschmaschine", i: "laundry", thr: 5, end: 15 }, trockner: { n: "Trockner", i: "windy", thr: 50, end: 5 }, spuel: { n: "Spülmaschine", i: "dining", thr: 5, end: 30 }, kuehl: { n: "Kühlgerät", i: "fridge", thr: 20, end: 5 }, ofen: { n: "Küche", i: "pot", thr: 100, end: 10 }, pool: { n: "Pool", i: "wave", thr: 50, end: 5 }, pc: { n: "Computer", i: "gamepad", thr: 30, end: 5 }, tv: { n: "Fernseher", i: "tv", thr: 20, end: 5 }, werk: { n: "Werkstatt", i: "tools", thr: 50, end: 5 }, sonst: { n: "Gerät", i: "bolt", thr: 20, end: 5 } };
 const GS_COL = ["#fbbf24", "#a78bfa", "#f87171"], GS_SRC = ["Solar", "Batterie", "Netz"], GS_RANGES = ["day", "week", "month", "year"];
 const EN_RANGES = ["day", "week", "month", "year"];
@@ -104,10 +105,15 @@ function airCalc(t, rh, to, rhOut) {
   return { td, ts, rs, lvl, dry };
 }
 const cdown = (since, need) => { const el = Math.max(0, (Date.now() - since) / 1000), tot = need * 60, left = Math.max(0, tot - el); return { left, pct: Math.min(100, (el / tot) * 100), txt: left > 0 ? `noch ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, "0")} Min.` : "genug gelüftet, Fenster schließen" }; };
-/* Versionen: altes Schema 3.0.7.6 und neues Schema Jahr.MonatTag.Zähler (2026.1029.0), Testversionen mit b1, b2 … (2026.1029.0b1 < 2026.1029.0) */
-const vnum = (a) => { const m = String(a || "0").trim().replace(/^v/i, "").match(/^([\d.]+?)(?:b(\d+))?$/); const n = (m ? m[1] : "0").split(".").map((x) => parseInt(x, 10) || 0); while (n.length < 4) n.push(0); n.length = 4; n.push(m && m[2] !== undefined ? parseInt(m[2], 10) : Infinity); return n; };
+/* Versionen (gleiche Sortierung wie im Backend): altes Schema 3.0.7.6, Datumsschema der Testversionen bis Oktober 2026 (2026.1030.0b5)
+   und aktuelles Schema Jahr.Monat.Release (2026.11.1). Testversionen tragen die Nummer des kommenden Updates: 2026.11.2b1 < 2026.11.2.
+   Schlüssel: Hauptnummer, Monat, Release, Tag, Zähler, Testversion */
+const vnum = (a) => { const m = String(a || "0").trim().replace(/^v/i, "").match(/^([\d.]+?)(?:b(\d+))?$/); const n = (m ? m[1] : "0").split(".").map((x) => parseInt(x, 10) || 0); while (n.length < 4) n.push(0); n.length = 4; const b = m && m[2] !== undefined ? parseInt(m[2], 10) : Infinity;
+  if (n[0] >= 2000 && n[1] > 12) return [n[0], Math.floor(n[1] / 100), 0, n[1] % 100, n[2], b];
+  if (n[0] >= 2000) return [n[0], n[1], n[2], 0, 0, b];
+  return [...n, 0, b]; };
 const vbeta = (a) => /^\s*v?[\d.]+b\d+\s*$/i.test(String(a || ""));
-const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 5; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return false; };
+const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 6; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return false; };
 /* Elektroheizer mit PV-Überschuss */
 const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"] };
 const WZ_STEPS = ["Willkommen", "Räume", "Fenstermeldung", "Heizung & Energie", "Luftfeuchte", "PV & Elektroheizer", "Meldungen", "Zusammenfassung"];
@@ -501,10 +507,10 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.2", b: 1, d: "2026-10-30", p: "2026.1030.0b5", log: [["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.2", b: 2, d: "2026-11-03", p: "2026.11.1b1", log: [["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  gs: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b2", log: [["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  gs: { v: "1.1", b: 2, d: "2026-11-03", p: "2026.11.1b1", log: [["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },

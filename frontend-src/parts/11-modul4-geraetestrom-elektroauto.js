@@ -14,7 +14,7 @@
     const G = this._gsState(), k = b.dataset.k, i = +b.dataset.i;
     if (a === "gsset") { this._modal = { type: "gsset" }; this._renderModal(); }
     else if (a === "gsdone") { this._pkId = null; this._modal = null; this._renderModal(); this._gsLoad(true); this._render(); }
-    else if (a === "gsadd") { if (G.devices.length < 8) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5, typ: "" }); this._mdSave(); this._renderModal(); } }
+    else if (a === "gsadd") { if (G.devices.length < GS_MAX) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5, typ: "" }); this._mdSave(); this._renderModal(); } }
     else if (a === "gsdel") { G.devices.splice(i, 1); this._pkId = null; this._mdSave(); this._renderModal(); }
     else if (a === "gsnot") { const n = new Set(G.notify); if (n.has(k)) n.delete(k); else n.add(k); G.notify = [...n]; this._mdSave(); this._renderModal(); }
     else if (a === "gsrange") { if (this._gsRg !== k) { this._gsRg = k; this._gsOff = 0; this._gsTipX = null; try { localStorage.setItem("fh_gs_range", k); } catch (_) { /* Speicher gesperrt */ } } this._render(); }
@@ -52,7 +52,7 @@
         <div class="gstyp" role="group" aria-label="Gerätetyp">${Object.entries(GS_TYP).map(([k, t]) => `<button class="gsch ${this._gsTyp(d) === k ? "sel" : ""}" data-act="gstyp" data-i="${i}" data-k="${k}" aria-pressed="${this._gsTyp(d) === k}">${ic(t.i, 14)}${t.n}</button>`).join("")}</div>
         ${this._wzSel(pw, d.ent, "gsent", `data-i="${i}" data-k="ent"`, "– Leistungssensor wählen –", /wasch|trockn|sp(ü|u)l|geschirr|power|leistung/i)}
         <div class="gsnums"><label>Startschwelle<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="thr" value="${d.thr}" min="1" max="500"><u>W</u></span></label><label>Ende nach<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="end" value="${d.end}" min="1" max="120"><u>min</u></span></label></div></div>`).join("")}
-      ${G.devices.length < 8 ? `<button class="btn2" data-act="gsadd" style="width:100%;flex:none">${ic("plus", 16)} Gerät hinzufügen</button>` : ""}
+      ${G.devices.length < GS_MAX ? `<button class="btn2" data-act="gsadd" style="width:100%;flex:none">${ic("plus", 16)} Gerät hinzufügen <span class="mut">(${G.devices.length} von ${GS_MAX})</span></button>` : `<div class="mut sm" style="text-align:center;margin:4px 0 8px">Höchstzahl erreicht: ${GS_MAX} von ${GS_MAX} Geräten.</div>`}
       <div class="lsec">${ic("sun", 15)}Quellen und Preise</div>
       <div class="gst ${this._gsReady() ? "" : "on"}">${ic(this._gsReady() ? "check" : "alert", 15)}<div>${this._gsReady() ? `Solar: <b>${nm(E.ent.pv)}</b>${E.ent.pv2 ? " + " + nm(E.ent.pv2) : ""} · Netz: <b>${nm(g.ent)}</b>${E.ent.bat || E.ent.bdis ? ` · Batterie: <b>${nm(E.ent.bat || E.ent.bdis)}</b>` : ""}<br><span class="mut">kommen aus Modul 3 – Energie-Übersicht.</span>` : "Solar- und Netz-Sensor fehlen. Sie werden einmal in Modul 3 – Energie-Übersicht gewählt und hier mitgenutzt."}</div></div>
       <div class="gst">${ic("info", 15)}<div>Bezugspreis <b>${eur(p.price)}</b>${p.price_mode === "entity" ? " (Sensor)" : ""}, Einspeisevergütung <b>${eur(p.feed)}</b>${p.feed_mode === "entity" ? " (Sensor)" : ""}<br><span class="mut">kommen aus Modul 1 → Allgemein → Photovoltaik.</span></div></div>

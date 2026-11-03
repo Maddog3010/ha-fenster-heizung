@@ -157,16 +157,27 @@ _TAG_RE = re.compile(r"^(\d{1,4}\.\d{1,4}\.\d{1,3}(?:\.\d{1,3})?)(?:b(\d{1,3}))?
 
 
 def _vkey(tag: str) -> tuple[float, ...]:
-    """Versionsschlüssel für das alte Schema (3.0.7.6) und das Datumsschema (2026.1029.0).
+    """Versionsschlüssel für alle Schemata, chronologisch sortiert.
 
-    Testversionen mit b1, b2 … liegen vor der stabilen Version: 2026.1029.0b1 < 2026.1029.0.
+    - altes Schema: 3.0.7.6
+    - Datumsschema (nur Testversionen bis Oktober 2026): Jahr.MonatTag.Zähler, z. B. 2026.1030.0b5
+    - aktuelles Schema: Jahr.Monat.Release, z. B. 2026.11.1; Testversionen tragen die Nummer des
+      kommenden Updates: 2026.11.2b1 < 2026.11.2b2 < 2026.11.2
+
+    Schlüssel: (Hauptnummer, Monat, Release, Tag, Zähler, Testversion). Testversionen liegen vor der
+    stabilen Version; das Datumsschema liegt vor dem ersten Release desselben Monats.
     """
     m = _TAG_RE.match(tag)
     if not m:
-        return (0, 0, 0, 0, 0)
+        return (0, 0, 0, 0, 0, 0)
     p = [int(x) for x in m.group(1).split(".")]
     p += [0] * (4 - len(p))
-    return (*p, int(m.group(2)) if m.group(2) is not None else float("inf"))
+    b = int(m.group(2)) if m.group(2) is not None else float("inf")
+    if p[0] >= 2000 and p[1] > 12:  # Datumsschema Jahr.MonatTag.Zähler
+        return (p[0], p[1] // 100, 0, p[1] % 100, p[2], b)
+    if p[0] >= 2000:  # Jahr.Monat.Release
+        return (p[0], p[1], p[2], 0, 0, b)
+    return (*p, 0, b)
 
 
 def _is_beta(tag: str) -> bool:

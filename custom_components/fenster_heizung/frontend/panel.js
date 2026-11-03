@@ -248,6 +248,7 @@ const enStep = (mx) => { const raw = Math.max(mx, 1) / 4, p = Math.pow(10, Math.
 const WW_ON = ["on", "heat", "heating", "performance", "eco", "electric", "gas", "heat_pump", "high_demand"];
 const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000, MW: 1e6 };
 /* Modul 4: Gerätetypen (Symbol, Startschwelle W, Ende nach min) und Farben wie in Modul 3 */
+const GS_MAX = 15; /* Modul 4: höchstens so viele Geräte (Backend: MAX_DEVICES) */
 const GS_TYP = { wasch: { n: "Waschmaschine", i: "laundry", thr: 5, end: 15 }, trockner: { n: "Trockner", i: "windy", thr: 50, end: 5 }, spuel: { n: "Spülmaschine", i: "dining", thr: 5, end: 30 }, kuehl: { n: "Kühlgerät", i: "fridge", thr: 20, end: 5 }, ofen: { n: "Küche", i: "pot", thr: 100, end: 10 }, pool: { n: "Pool", i: "wave", thr: 50, end: 5 }, pc: { n: "Computer", i: "gamepad", thr: 30, end: 5 }, tv: { n: "Fernseher", i: "tv", thr: 20, end: 5 }, werk: { n: "Werkstatt", i: "tools", thr: 50, end: 5 }, sonst: { n: "Gerät", i: "bolt", thr: 20, end: 5 } };
 const GS_COL = ["#fbbf24", "#a78bfa", "#f87171"], GS_SRC = ["Solar", "Batterie", "Netz"], GS_RANGES = ["day", "week", "month", "year"];
 const EN_RANGES = ["day", "week", "month", "year"];
@@ -307,10 +308,15 @@ function airCalc(t, rh, to, rhOut) {
   return { td, ts, rs, lvl, dry };
 }
 const cdown = (since, need) => { const el = Math.max(0, (Date.now() - since) / 1000), tot = need * 60, left = Math.max(0, tot - el); return { left, pct: Math.min(100, (el / tot) * 100), txt: left > 0 ? `noch ${Math.floor(left / 60)}:${String(Math.floor(left % 60)).padStart(2, "0")} Min.` : "genug gelüftet, Fenster schließen" }; };
-/* Versionen: altes Schema 3.0.7.6 und neues Schema Jahr.MonatTag.Zähler (2026.1029.0), Testversionen mit b1, b2 … (2026.1029.0b1 < 2026.1029.0) */
-const vnum = (a) => { const m = String(a || "0").trim().replace(/^v/i, "").match(/^([\d.]+?)(?:b(\d+))?$/); const n = (m ? m[1] : "0").split(".").map((x) => parseInt(x, 10) || 0); while (n.length < 4) n.push(0); n.length = 4; n.push(m && m[2] !== undefined ? parseInt(m[2], 10) : Infinity); return n; };
+/* Versionen (gleiche Sortierung wie im Backend): altes Schema 3.0.7.6, Datumsschema der Testversionen bis Oktober 2026 (2026.1030.0b5)
+   und aktuelles Schema Jahr.Monat.Release (2026.11.1). Testversionen tragen die Nummer des kommenden Updates: 2026.11.2b1 < 2026.11.2.
+   Schlüssel: Hauptnummer, Monat, Release, Tag, Zähler, Testversion */
+const vnum = (a) => { const m = String(a || "0").trim().replace(/^v/i, "").match(/^([\d.]+?)(?:b(\d+))?$/); const n = (m ? m[1] : "0").split(".").map((x) => parseInt(x, 10) || 0); while (n.length < 4) n.push(0); n.length = 4; const b = m && m[2] !== undefined ? parseInt(m[2], 10) : Infinity;
+  if (n[0] >= 2000 && n[1] > 12) return [n[0], Math.floor(n[1] / 100), 0, n[1] % 100, n[2], b];
+  if (n[0] >= 2000) return [n[0], n[1], n[2], 0, 0, b];
+  return [...n, 0, b]; };
 const vbeta = (a) => /^\s*v?[\d.]+b\d+\s*$/i.test(String(a || ""));
-const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 5; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return false; };
+const vgt = (a, b) => { const x = vnum(a), y = vnum(b); for (let i = 0; i < 6; i++) { if (x[i] !== y[i]) return x[i] > y[i]; } return false; };
 /* Elektroheizer mit PV-Überschuss */
 const HTR = { pv: ["Heizt mit PV-Überschuss", "green"], wartet: ["Wartet auf Überschuss", "amber"], warm: ["Raum warm genug", "slate"], fenster: ["Fenster offen", "amber"], zeit: ["Außerhalb des Zeitfensters", "gray"], aus: ["Heizer pausiert", "gray"], soc: ["Batterie lädt zuerst", "amber"] };
 const WZ_STEPS = ["Willkommen", "Räume", "Fenstermeldung", "Heizung & Energie", "Luftfeuchte", "PV & Elektroheizer", "Meldungen", "Zusammenfassung"];
@@ -704,10 +710,10 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.2", b: 1, d: "2026-10-30", p: "2026.1030.0b5", log: [["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.2", b: 2, d: "2026-11-03", p: "2026.11.1b1", log: [["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  gs: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b2", log: [["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  gs: { v: "1.1", b: 2, d: "2026-11-03", p: "2026.11.1b1", log: [["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -4003,20 +4009,29 @@ class FensterHeizungPanel extends HTMLElement {
     const h = this._hass, s = h.states[id]; if (!s) return { id, name: id, missing: true };
     const a = s.attributes || {}, reg = (h.entities || {})[id], cloud = (reg && reg.platform === "icloud") || /icloud/i.test(id) || a.source_type === "gps" && /iphone|ipad|apple/i.test(String(a.friendly_name || id));
     const bat = a.battery_level ?? a.battery;
-    return { id, name: a.friendly_name || id, state: s.state, icloud: !!cloud, bat: bat != null && isFinite(Number(bat)) ? Number(bat) : null, acc: a.gps_accuracy != null ? Number(a.gps_accuracy) : null, lat: a.latitude != null ? Number(a.latitude) : null, lon: a.longitude != null ? Number(a.longitude) : null, seen: this._ortAgo(s.last_updated || s.last_changed) };
+    return { id, name: a.friendly_name || id, state: s.state, icloud: !!cloud, bat: bat != null && isFinite(Number(bat)) ? Number(bat) : null, acc: a.gps_accuracy != null ? Number(a.gps_accuracy) : null, lat: a.latitude != null ? Number(a.latitude) : null, lon: a.longitude != null ? Number(a.longitude) : null, seen: this._ortAgo(s.last_updated || s.last_changed), ts: new Date(s.last_updated || s.last_changed || 0).getTime() || 0 };
   }
   _ortPersons() {
     const h = this._hass, st = h.states, o = this._ort(), COL = ["#14b8a6", "#6366f1", "#f59e0b", "#ec4899", "#22c55e", "#0ea5e9"];
     return Object.keys(st).filter((e) => e.startsWith("person.")).map((id, i) => {
       const s = st[id], a = s.attributes || {}, cfg = o.per[id] || {};
       const trackers = cfg.trackers ? cfg.trackers.slice() : [...new Set([...(a.device_trackers || []), ...(a.source ? [a.source] : [])])].filter((x) => x.startsWith("device_tracker."));
-      const tr = trackers.map((t) => this._ortTracker(t));
-      const good = tr.filter((x) => x.lat != null && (cfg.acc ?? 100) >= (x.acc ?? 0));
-      let lat = a.latitude != null ? Number(a.latitude) : null, lon = a.longitude != null ? Number(a.longitude) : null;
-      if (lat == null && good[0]) { lat = good[0].lat; lon = good[0].lon; }
-      const dist = lat != null ? this._ortDist(lat, lon) : null, inZone = o.own && dist != null && dist <= o.zone.r;
-      const home = s.state === "home" || inZone || tr.some((x) => x.state === "home") || (cfg.wifi && (st[cfg.wifi] || {}).state === "home");
-      return { id, name: cfg.label || a.friendly_name || id, state: s.state, col: COL[i % COL.length], tr, lat, lon, dist, home, count: cfg.count !== false, acc: cfg.acc ?? 100, wifi: cfg.wifi || "", noSrc: !tr.length && !cfg.wifi, unavailable: s.state === "unavailable" || s.state === "unknown" };
+      const tr = trackers.map((t) => this._ortTracker(t)), acc = cfg.acc ?? 100;
+      /* Eigene Quellen gewählt: nur diese zählen (wie im Backend). Die Personen-Entität kann über weitere Tracker oder eine alte Position noch „home“ melden. */
+      const own = !!((cfg.trackers && cfg.trackers.length) || cfg.wifi);
+      const live = tr.filter((x) => !x.missing && x.state !== "unknown" && x.state !== "unavailable");
+      const good = live.filter((x) => x.lat != null && acc >= (x.acc ?? 0)).sort((x, y) => (y.ts || 0) - (x.ts || 0));
+      const zin = (q) => o.own && q.lat != null && acc >= (q.acc ?? 0) && this._ortDist(q.lat, q.lon) <= o.zone.r;
+      const wst = cfg.wifi ? (st[cfg.wifi] || {}).state : null, wifiHome = wst === "home" || wst === "on";
+      let lat = null, lon = null;
+      if (own) { if (good[0]) { lat = good[0].lat; lon = good[0].lon; } }
+      else { lat = a.latitude != null ? Number(a.latitude) : null; lon = a.longitude != null ? Number(a.longitude) : null; if (lat == null && good[0]) { lat = good[0].lat; lon = good[0].lon; } }
+      const dist = lat != null ? this._ortDist(lat, lon) : null;
+      const home = own
+        ? live.some((x) => x.state === "home" || zin(x)) || wifiHome
+        : s.state === "home" || (o.own && dist != null && dist <= o.zone.r && (a.gps_accuracy == null || acc >= Number(a.gps_accuracy))) || live.some((x) => x.state === "home");
+      const unavailable = own ? !live.length && !(wst && wst !== "unknown" && wst !== "unavailable") : s.state === "unavailable" || s.state === "unknown";
+      return { id, name: cfg.label || a.friendly_name || id, state: own ? (home ? "home" : (good[0] || live[0] || {}).state || s.state) : s.state, col: COL[i % COL.length], tr, lat, lon, dist, home, count: cfg.count !== false, acc, wifi: cfg.wifi || "", noSrc: !tr.length && !cfg.wifi, unavailable };
     });
   }
   _ortChip() {
@@ -4838,7 +4853,7 @@ class FensterHeizungPanel extends HTMLElement {
     const G = this._gsState(), k = b.dataset.k, i = +b.dataset.i;
     if (a === "gsset") { this._modal = { type: "gsset" }; this._renderModal(); }
     else if (a === "gsdone") { this._pkId = null; this._modal = null; this._renderModal(); this._gsLoad(true); this._render(); }
-    else if (a === "gsadd") { if (G.devices.length < 8) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5, typ: "" }); this._mdSave(); this._renderModal(); } }
+    else if (a === "gsadd") { if (G.devices.length < GS_MAX) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5, typ: "" }); this._mdSave(); this._renderModal(); } }
     else if (a === "gsdel") { G.devices.splice(i, 1); this._pkId = null; this._mdSave(); this._renderModal(); }
     else if (a === "gsnot") { const n = new Set(G.notify); if (n.has(k)) n.delete(k); else n.add(k); G.notify = [...n]; this._mdSave(); this._renderModal(); }
     else if (a === "gsrange") { if (this._gsRg !== k) { this._gsRg = k; this._gsOff = 0; this._gsTipX = null; try { localStorage.setItem("fh_gs_range", k); } catch (_) { /* Speicher gesperrt */ } } this._render(); }
@@ -4876,7 +4891,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="gstyp" role="group" aria-label="Gerätetyp">${Object.entries(GS_TYP).map(([k, t]) => `<button class="gsch ${this._gsTyp(d) === k ? "sel" : ""}" data-act="gstyp" data-i="${i}" data-k="${k}" aria-pressed="${this._gsTyp(d) === k}">${ic(t.i, 14)}${t.n}</button>`).join("")}</div>
         ${this._wzSel(pw, d.ent, "gsent", `data-i="${i}" data-k="ent"`, "– Leistungssensor wählen –", /wasch|trockn|sp(ü|u)l|geschirr|power|leistung/i)}
         <div class="gsnums"><label>Startschwelle<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="thr" value="${d.thr}" min="1" max="500"><u>W</u></span></label><label>Ende nach<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="end" value="${d.end}" min="1" max="120"><u>min</u></span></label></div></div>`).join("")}
-      ${G.devices.length < 8 ? `<button class="btn2" data-act="gsadd" style="width:100%;flex:none">${ic("plus", 16)} Gerät hinzufügen</button>` : ""}
+      ${G.devices.length < GS_MAX ? `<button class="btn2" data-act="gsadd" style="width:100%;flex:none">${ic("plus", 16)} Gerät hinzufügen <span class="mut">(${G.devices.length} von ${GS_MAX})</span></button>` : `<div class="mut sm" style="text-align:center;margin:4px 0 8px">Höchstzahl erreicht: ${GS_MAX} von ${GS_MAX} Geräten.</div>`}
       <div class="lsec">${ic("sun", 15)}Quellen und Preise</div>
       <div class="gst ${this._gsReady() ? "" : "on"}">${ic(this._gsReady() ? "check" : "alert", 15)}<div>${this._gsReady() ? `Solar: <b>${nm(E.ent.pv)}</b>${E.ent.pv2 ? " + " + nm(E.ent.pv2) : ""} · Netz: <b>${nm(g.ent)}</b>${E.ent.bat || E.ent.bdis ? ` · Batterie: <b>${nm(E.ent.bat || E.ent.bdis)}</b>` : ""}<br><span class="mut">kommen aus Modul 3 – Energie-Übersicht.</span>` : "Solar- und Netz-Sensor fehlen. Sie werden einmal in Modul 3 – Energie-Übersicht gewählt und hier mitgenutzt."}</div></div>
       <div class="gst">${ic("info", 15)}<div>Bezugspreis <b>${eur(p.price)}</b>${p.price_mode === "entity" ? " (Sensor)" : ""}, Einspeisevergütung <b>${eur(p.feed)}</b>${p.feed_mode === "entity" ? " (Sensor)" : ""}<br><span class="mut">kommen aus Modul 1 → Allgemein → Photovoltaik.</span></div></div>
@@ -7720,7 +7735,7 @@ class FensterHeizungPanel extends HTMLElement {
   _mvTrack(cur) { const i = MV_STG.findIndex((x) => x[0] === cur); return `<div class="mvtr">${MV_STG.map((x, k) => `<span class="${k < i ? "done" : k === i ? "now" : ""}"><em class="sxc ${STG[x[0]].c}">${STG[x[0]].t}</em><small>${x[1]}</small></span>`).join("<i>›</i>")}</div>`; }
   _mvTab(id) { const m = MV[id]; if (!m || this._narrow) return ["", ""]; return [`<span class="mvv"> · v${esc(m.v)}</span>`, this._mvNew(id) ? `<i class="mnew">neu</i>` : ""]; }
   _mvAll() { return [...MODS, MOD_MU, MOD_LI].filter((x) => MV[x.id]).sort((x, y) => x.n - y.n); }
-  /* Versionshinweis in der Kopfzeile: stabil „Version 2026.1029.0“, Testversion „Beta 2026.1029.0b1“. Tipp öffnet Versionen. */
+  /* Versionshinweis in der Kopfzeile: stabil „Version 2026.11.1“, Testversion „Beta 2026.11.2b1“. Tipp öffnet Versionen. */
   _verTag() {
     if (!this._ver) return "";
     const b = vbeta(this._ver);
@@ -7743,10 +7758,9 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="rlrows"><button class="sxrow" data-act="mvsub" data-k="mod"><span class="sxi">${ic("layers", 20)}</span><span class="sxt"><b>Modulversionen</b><small>${n} Module: Version, Build und Reifegrad, so läuft der Aufstieg</small></span><span class="sxg">${ic("chev", 16)}</span></button>
       <a class="sxrow" href="https://github.com/Maddog3010/ha-fenster-heizung/releases" target="_blank" rel="noopener"><span class="sxi">${ic("link", 20)}</span><span class="sxt"><b>Alle Versionen auf GitHub</b><small>Vollständige Änderungen jeder Version</small></span><span class="sxg">${ic("chev", 16)}</span></a></div>
       <div class="lsec">${ic("info", 15)}So liest du die Hauptversion</div>
-      <div class="rlx"><div class="rlxn"><i>2026</i>.<i>1029</i>.<i>0</i></div>
-        <p><b>Jahr · Monat und Tag · Zähler.</b> Die Nummer zeigt, an welchem Tag das Update erschienen ist. Der Zähler beginnt bei 0 und steigt, wenn am selben Tag noch ein Update kommt.</p>
-        <p>Ab Januar ohne führende Null: der 5. Januar 2027 ist 2027.105.0.</p>
-        <p>Testversionen enden auf b1, b2 … und erscheinen nur, wenn in HACS Beta-Versionen eingeschaltet sind, nicht in dieser Liste.</p>
+      <div class="rlx"><div class="rlxn"><i>2026</i>.<i>11</i>.<i>1</i></div>
+        <p><b>Jahr · Monat · Release.</b> 2026.11.1 ist das erste Update im November 2026, 2026.11.2 das zweite. Mit jedem neuen Monat beginnt der Zähler wieder bei 1, zum Beispiel 2026.12.1 oder 2027.1.1.</p>
+        <p>Testversionen tragen die Nummer des Updates, das sie vorbereiten, mit b1, b2 … am Ende: 2026.11.2b1 und 2026.11.2b2 werden zu 2026.11.2. Sie erscheinen nur, wenn in HACS Beta-Versionen eingeschaltet sind, nicht in dieser Liste.</p>
         <p>Was sich in einem Modul geändert hat, zeigen die Modulversionen.</p></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }

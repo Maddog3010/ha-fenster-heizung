@@ -18,7 +18,7 @@
   _mvTrack(cur) { const i = MV_STG.findIndex((x) => x[0] === cur); return `<div class="mvtr">${MV_STG.map((x, k) => `<span class="${k < i ? "done" : k === i ? "now" : ""}"><em class="sxc ${STG[x[0]].c}">${STG[x[0]].t}</em><small>${x[1]}</small></span>`).join("<i>›</i>")}</div>`; }
   _mvTab(id) { const m = MV[id]; if (!m || this._narrow) return ["", ""]; return [`<span class="mvv"> · v${esc(m.v)}</span>`, this._mvNew(id) ? `<i class="mnew">neu</i>` : ""]; }
   _mvAll() { return [...MODS, MOD_MU, MOD_LI].filter((x) => MV[x.id]).sort((x, y) => x.n - y.n); }
-  /* Versionshinweis in der Kopfzeile: stabil „Version 2026.1029.0“, Testversion „Beta 2026.1029.0b1“. Tipp öffnet Versionen. */
+  /* Versionshinweis in der Kopfzeile: stabil „Version 2026.11.1“, Testversion „Beta 2026.11.2b1“. Tipp öffnet Versionen. */
   _verTag() {
     if (!this._ver) return "";
     const b = vbeta(this._ver);
@@ -41,10 +41,9 @@
       <div class="rlrows"><button class="sxrow" data-act="mvsub" data-k="mod"><span class="sxi">${ic("layers", 20)}</span><span class="sxt"><b>Modulversionen</b><small>${n} Module: Version, Build und Reifegrad, so läuft der Aufstieg</small></span><span class="sxg">${ic("chev", 16)}</span></button>
       <a class="sxrow" href="https://github.com/Maddog3010/ha-fenster-heizung/releases" target="_blank" rel="noopener"><span class="sxi">${ic("link", 20)}</span><span class="sxt"><b>Alle Versionen auf GitHub</b><small>Vollständige Änderungen jeder Version</small></span><span class="sxg">${ic("chev", 16)}</span></a></div>
       <div class="lsec">${ic("info", 15)}So liest du die Hauptversion</div>
-      <div class="rlx"><div class="rlxn"><i>2026</i>.<i>1029</i>.<i>0</i></div>
-        <p><b>Jahr · Monat und Tag · Zähler.</b> Die Nummer zeigt, an welchem Tag das Update erschienen ist. Der Zähler beginnt bei 0 und steigt, wenn am selben Tag noch ein Update kommt.</p>
-        <p>Ab Januar ohne führende Null: der 5. Januar 2027 ist 2027.105.0.</p>
-        <p>Testversionen enden auf b1, b2 … und erscheinen nur, wenn in HACS Beta-Versionen eingeschaltet sind, nicht in dieser Liste.</p>
+      <div class="rlx"><div class="rlxn"><i>2026</i>.<i>11</i>.<i>1</i></div>
+        <p><b>Jahr · Monat · Release.</b> 2026.11.1 ist das erste Update im November 2026, 2026.11.2 das zweite. Mit jedem neuen Monat beginnt der Zähler wieder bei 1, zum Beispiel 2026.12.1 oder 2027.1.1.</p>
+        <p>Testversionen tragen die Nummer des Updates, das sie vorbereiten, mit b1, b2 … am Ende: 2026.11.2b1 und 2026.11.2b2 werden zu 2026.11.2. Sie erscheinen nur, wenn in HACS Beta-Versionen eingeschaltet sind, nicht in dieser Liste.</p>
         <p>Was sich in einem Modul geändert hat, zeigen die Modulversionen.</p></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }

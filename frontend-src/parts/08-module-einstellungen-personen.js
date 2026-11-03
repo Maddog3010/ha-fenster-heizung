@@ -182,20 +182,29 @@
     const h = this._hass, s = h.states[id]; if (!s) return { id, name: id, missing: true };
     const a = s.attributes || {}, reg = (h.entities || {})[id], cloud = (reg && reg.platform === "icloud") || /icloud/i.test(id) || a.source_type === "gps" && /iphone|ipad|apple/i.test(String(a.friendly_name || id));
     const bat = a.battery_level ?? a.battery;
-    return { id, name: a.friendly_name || id, state: s.state, icloud: !!cloud, bat: bat != null && isFinite(Number(bat)) ? Number(bat) : null, acc: a.gps_accuracy != null ? Number(a.gps_accuracy) : null, lat: a.latitude != null ? Number(a.latitude) : null, lon: a.longitude != null ? Number(a.longitude) : null, seen: this._ortAgo(s.last_updated || s.last_changed) };
+    return { id, name: a.friendly_name || id, state: s.state, icloud: !!cloud, bat: bat != null && isFinite(Number(bat)) ? Number(bat) : null, acc: a.gps_accuracy != null ? Number(a.gps_accuracy) : null, lat: a.latitude != null ? Number(a.latitude) : null, lon: a.longitude != null ? Number(a.longitude) : null, seen: this._ortAgo(s.last_updated || s.last_changed), ts: new Date(s.last_updated || s.last_changed || 0).getTime() || 0 };
   }
   _ortPersons() {
     const h = this._hass, st = h.states, o = this._ort(), COL = ["#14b8a6", "#6366f1", "#f59e0b", "#ec4899", "#22c55e", "#0ea5e9"];
     return Object.keys(st).filter((e) => e.startsWith("person.")).map((id, i) => {
       const s = st[id], a = s.attributes || {}, cfg = o.per[id] || {};
       const trackers = cfg.trackers ? cfg.trackers.slice() : [...new Set([...(a.device_trackers || []), ...(a.source ? [a.source] : [])])].filter((x) => x.startsWith("device_tracker."));
-      const tr = trackers.map((t) => this._ortTracker(t));
-      const good = tr.filter((x) => x.lat != null && (cfg.acc ?? 100) >= (x.acc ?? 0));
-      let lat = a.latitude != null ? Number(a.latitude) : null, lon = a.longitude != null ? Number(a.longitude) : null;
-      if (lat == null && good[0]) { lat = good[0].lat; lon = good[0].lon; }
-      const dist = lat != null ? this._ortDist(lat, lon) : null, inZone = o.own && dist != null && dist <= o.zone.r;
-      const home = s.state === "home" || inZone || tr.some((x) => x.state === "home") || (cfg.wifi && (st[cfg.wifi] || {}).state === "home");
-      return { id, name: cfg.label || a.friendly_name || id, state: s.state, col: COL[i % COL.length], tr, lat, lon, dist, home, count: cfg.count !== false, acc: cfg.acc ?? 100, wifi: cfg.wifi || "", noSrc: !tr.length && !cfg.wifi, unavailable: s.state === "unavailable" || s.state === "unknown" };
+      const tr = trackers.map((t) => this._ortTracker(t)), acc = cfg.acc ?? 100;
+      /* Eigene Quellen gewählt: nur diese zählen (wie im Backend). Die Personen-Entität kann über weitere Tracker oder eine alte Position noch „home“ melden. */
+      const own = !!((cfg.trackers && cfg.trackers.length) || cfg.wifi);
+      const live = tr.filter((x) => !x.missing && x.state !== "unknown" && x.state !== "unavailable");
+      const good = live.filter((x) => x.lat != null && acc >= (x.acc ?? 0)).sort((x, y) => (y.ts || 0) - (x.ts || 0));
+      const zin = (q) => o.own && q.lat != null && acc >= (q.acc ?? 0) && this._ortDist(q.lat, q.lon) <= o.zone.r;
+      const wst = cfg.wifi ? (st[cfg.wifi] || {}).state : null, wifiHome = wst === "home" || wst === "on";
+      let lat = null, lon = null;
+      if (own) { if (good[0]) { lat = good[0].lat; lon = good[0].lon; } }
+      else { lat = a.latitude != null ? Number(a.latitude) : null; lon = a.longitude != null ? Number(a.longitude) : null; if (lat == null && good[0]) { lat = good[0].lat; lon = good[0].lon; } }
+      const dist = lat != null ? this._ortDist(lat, lon) : null;
+      const home = own
+        ? live.some((x) => x.state === "home" || zin(x)) || wifiHome
+        : s.state === "home" || (o.own && dist != null && dist <= o.zone.r && (a.gps_accuracy == null || acc >= Number(a.gps_accuracy))) || live.some((x) => x.state === "home");
+      const unavailable = own ? !live.length && !(wst && wst !== "unknown" && wst !== "unavailable") : s.state === "unavailable" || s.state === "unknown";
+      return { id, name: cfg.label || a.friendly_name || id, state: own ? (home ? "home" : (good[0] || live[0] || {}).state || s.state) : s.state, col: COL[i % COL.length], tr, lat, lon, dist, home, count: cfg.count !== false, acc, wifi: cfg.wifi || "", noSrc: !tr.length && !cfg.wifi, unavailable };
     });
   }
   _ortChip() {

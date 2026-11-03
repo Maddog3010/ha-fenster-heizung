@@ -6,7 +6,7 @@ from datetime import date
 from typing import Any
 
 SOURCES = ("solar", "battery", "grid")
-MAX_DEVICES = 8
+MAX_DEVICES = 15
 MAX_NOTIFY = 8
 KEEP_DAYS = 800
 DEFAULT_TYPICAL_W = 1500.0

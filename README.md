@@ -30,7 +30,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
-> 🧪 **Neu: Versionsschema nach Datum und Beta-Kanal.** Ab `2026.1029.0b1` zeigt die Versionsnummer den Tag, an dem das Update erschienen ist. Testversionen gibt es nur, wenn du in HACS Beta-Versionen einschaltest. [Mehr dazu](#versionen-und-updates)
+> 🧪 **Neu: Versionsnummern nach Jahr, Monat und Release.** Ab November 2026 heißen stabile Updates `2026.11.1`, `2026.11.2` …, Testversionen tragen die Nummer des kommenden Updates (`2026.11.1b1`). Testversionen gibt es nur, wenn du in HACS Beta-Versionen einschaltest. [Mehr dazu](#versionen-und-updates)
 
 ---
 
@@ -297,16 +297,19 @@ Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt 
 
 ### So liest du die Versionsnummer
 
-Ab `2026.1029.0b1` folgt die Integration dem Schema **Jahr.MonatTag.Zähler**:
+Die Integration folgt dem Schema **Jahr.Monat.Release**:
 
 | Version | Bedeutung |
 |---|---|
-| `2026.1029.0` | Erschienen am 29. Oktober 2026, erstes Update des Tages |
-| `2026.1029.1` | Zweites Update am selben Tag |
-| `2027.105.0` | 5. Januar 2027, ab Januar ohne führende Null |
-| `2026.1030.0b1` | **Testversion** (Beta), erscheint nur bei eingeschalteten Beta-Versionen |
+| `2026.11.1` | Erstes Update im November 2026 |
+| `2026.11.2` | Zweites Update im November 2026 |
+| `2026.12.1` | Erstes Update im Dezember, mit jedem Monat beginnt der Zähler wieder bei 1 |
+| `2027.1.1` | Erstes Update im Januar 2027, ohne führende Null |
+| `2026.11.2b1` | **Testversion** (Beta) für das kommende Update `2026.11.2`, erscheint nur bei eingeschalteten Beta-Versionen |
 
-Die stabile Version eines Tages liegt immer über ihren Testversionen: `2026.1030.0b1` < `2026.1030.0b2` < `2026.1030.0`. Was sich in einem Modul geändert hat, zeigt die **Modulversion** (siehe [Module](#module)). Bis 3.0.7.6 galt das alte Schema mit vier Stellen.
+Testversionen tragen die Nummer des Updates, das sie vorbereiten. Die stabile Version liegt immer über ihren Testversionen: `2026.11.2b1` < `2026.11.2b2` < `2026.11.2`. Was sich in einem Modul geändert hat, zeigt die **Modulversion** (siehe [Module](#module)).
+
+Frühere Schemata: bis 3.0.7.7 vierstellig (3.0.7.6), dazwischen gab es Testversionen nach Datum (`2026.1029.0b1` bis `2026.1030.0b5`).
 
 ### Stabil oder Beta
 
@@ -319,7 +322,9 @@ Im Dashboard steht die installierte Version oben im Kopf, bei einer Testversion 
 
 Über HACS aktualisieren, Home Assistant neu starten und die Seite neu laden (Strg+F5, in der App nach unten ziehen). Deine Einstellungen bleiben erhalten. Administratoren sehen im Dashboard einen Hinweis, sobald eine neuere Version erschienen ist. Wer eine Beta nutzt, bekommt dort auch neuere Betas angezeigt.
 
-> **Hinweis für Installationen bis 3.0.7.6:** Der eingebaute Update-Hinweis kennt das neue Schema noch nicht. HACS zeigt das Update trotzdem an. Ab `2026.1029.0b1` funktioniert der Hinweis wieder.
+> **Hinweis für Installationen bis 3.0.7.6:** Der eingebaute Update-Hinweis kennt die neuen Nummern noch nicht. HACS zeigt das Update trotzdem an.
+
+> **Hinweis für die Testversionen `2026.1029.0b1` bis `2026.1030.0b5`:** Home Assistant und HACS vergleichen Zahl für Zahl und halten diese Nummern (1030) für neuer als `2026.11.x`. Das Update wird deshalb nicht von selbst angeboten. Einmal in HACS das Repository öffnen, über die drei Punkte **Neu herunterladen** wählen und die gewünschte Version installieren. Danach laufen Updates wieder normal.
 
 ---
 
@@ -365,7 +370,7 @@ Nein. Ein Sponsoring ist freiwillig.
 Nein. Sie sind für alle, die neue Funktionen früh testen möchten. Für den Alltag reicht die stabile Version.
 
 **Warum steht bei mir noch 3.0.7.6?**
-Die erste Version im neuen Schema ist eine Testversion. Du bekommst sie nur mit eingeschalteten Beta-Versionen in HACS. Sonst kommt das nächste stabile Update mit Datum, zum Beispiel `2026.1030.0`.
+Die erste Version im neuen Schema ist eine Testversion. Du bekommst sie nur mit eingeschalteten Beta-Versionen in HACS. Sonst kommt das nächste stabile Update, zum Beispiel `2026.11.1`.
 
 **Warum steuert Modul 5 (oder 6, 7, 10, 12, 13, 15) nichts?**
 Diese Module sind „In Entwicklung“ und zeigen Konzepte mit Beispielwerten. Der Reiter „Jetzt“ zeigt, wo es schon geht, echte Werte.
@@ -384,7 +389,7 @@ Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues),
 - Die technische Kennung bleibt `fenster_heizung`, nur der Anzeigename ist „Strom & Wärme“.
 - `panel.js` wird aus `frontend-src/parts` gebaut: `python3 frontend-src/build.py` (mit `--check` nur prüfen). Dabei entsteht `02b-releases.js` aus `CHANGELOG.md`, daraus kommt die Liste unter „Versionen“.
 - **Neue Version veröffentlichen:**
-  1. Eintrag `## [2026.1030.0] - 2026-10-30` in `CHANGELOG.md` mit kurzen Punkten.
+  1. Eintrag `## [2026.11.1] - 2026-11-03` in `CHANGELOG.md` mit kurzen Punkten. Stabil: `Jahr.Monat.Release`, Release beginnt jeden Monat bei 1. Testversion: Nummer des kommenden Updates plus `b1`, `b2` … (`2026.11.2b1`).
   2. `version` in `manifest.json` setzen und `build.py` ausführen.
   3. Auf GitHub ein Release mit demselben Tag ohne `v` anlegen. Für eine Testversion (`…b1`) den Haken **Set as a pre-release** setzen.
 - Schreibende WebSocket-Befehle sind Administratoren vorbehalten.

@@ -84,26 +84,38 @@ def _in_zone(attrs: dict[str, Any], zone: dict[str, Any] | None, acc: int) -> bo
 def person_home(get_state, pid: str, cfg: dict[str, Any] | None, zone: dict[str, Any] | None):
     """(zu Hause?, letzte Änderung) einer Person oder (None, None) ohne verwertbare Daten.
 
-    Zu Hause, wenn Home Assistant "home" meldet, eine Quelle "home" meldet, eine genaue Position
-    in der Zone liegt oder die WLAN-/Router-Quelle "home" meldet.
+    Sind für die Person eigene Quellen gewählt (Geräte oder WLAN-/Router-Erkennung), zählen nur
+    diese: zu Hause, sobald eine davon "home" meldet oder eine genaue Position in der Zone liegt.
+    Die Personen-Entität von Home Assistant wird dann nicht mehr ausgewertet, denn sie kann über
+    weitere, dort hinterlegte Tracker oder eine alte Position noch "home" melden, obwohl das
+    gewählte Gerät längst unterwegs ist.
+    Ohne eigene Quellen gilt wie bisher die Personen-Entität samt ihren Trackern.
     """
     cfg = cfg or {}
+    acc = cfg.get("acc", 100)
+    wifi = cfg.get("wifi") or None
+    own = [t for t in (cfg.get("trackers") or []) if isinstance(t, str)]
     s = get_state(pid)
-    usable, home, last = [], False, []
-    if s is not None:
-        last.append(s.last_changed)
-        if s.state not in ("unknown", "unavailable"):
-            usable.append(True)
-            home = home or s.state == "home" or _in_zone(s.attributes, zone, cfg.get("acc", 100))
-    trackers = cfg.get("trackers") or ((s.attributes.get("device_trackers") or []) if s is not None else [])
-    for tid in list(trackers) + ([cfg["wifi"]] if cfg.get("wifi") else []):
+    usable, home, last = False, False, []
+    if own or wifi:
+        sources = own + ([wifi] if wifi else [])
+    else:
+        sources = list((s.attributes.get("device_trackers") or []) if s is not None else [])
+        if s is not None:
+            last.append(s.last_changed)
+            if s.state not in ("unknown", "unavailable"):
+                usable = True
+                home = s.state == "home" or _in_zone(s.attributes, zone, acc)
+    for tid in sources:
         t = get_state(tid)
         if t is None or t.state in ("unknown", "unavailable"):
             continue
-        usable.append(True)
+        usable = True
         last.append(t.last_changed)
-        is_wifi = tid == cfg.get("wifi")
-        home = home or t.state in ("home", "on") and is_wifi or t.state == "home" or _in_zone(t.attributes, zone, cfg.get("acc", 100))
+        if tid == wifi:
+            home = home or t.state in ("home", "on")
+        else:
+            home = home or t.state == "home" or _in_zone(t.attributes, zone, acc)
     if not usable:
         return None, None
     return home, (max(last) if last else None)

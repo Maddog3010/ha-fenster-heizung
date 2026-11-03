@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b1] - 2026-11-03
+
+Testversion (Beta) für das erste stabile Update im November (2026.11.1): neue Versionsnummern, eine Korrektur bei den Personen und mehr Geräte in Modul 4.
+
+### Behoben
+- **Personen & Standort: Eine Person blieb „Zu Hause“, obwohl ihr gewähltes Gerät „Unterwegs“ meldete.** Bisher wurde zusätzlich immer die Personen-Entität von Home Assistant ausgewertet. Meldete sie noch „home“ – etwa über einen weiteren dort hinterlegten Tracker oder eine alte Position –, blieb die Person zu Hause, und das automatische Abwesend schaltete nicht. Jetzt gilt: Sind für eine Person eigene Standortquellen (Geräte oder WLAN-/Router-Erkennung) gewählt, zählen nur diese. Entfernung und Kartenpunkt kommen dann vom gewählten Gerät. Personen ohne eigene Quelle verhalten sich wie bisher.
+
+### Geändert
+- **Neue Versionsnummern: Jahr.Monat.Release.** Stabile Updates heißen jetzt `2026.11.1`, `2026.11.2` …, mit jedem Monat beginnt der Zähler wieder bei 1 (`2026.12.1`, `2027.1.1`). Testversionen tragen die Nummer des Updates, das sie vorbereiten, mit b1, b2 … (`2026.11.2b1` → `2026.11.2`). So sortieren Home Assistant und HACS stabile Versionen und Testversionen immer richtig. Update-Hinweis und das Fenster „Versionen“ verstehen alle bisherigen Schemata.
+- **Wichtig für die Testversionen `2026.1029.0b1` bis `2026.1030.0b5`:** HACS hält diese Nummern für neuer als `2026.11.x` und bietet das Update nicht von selbst an. Einmal in HACS über die drei Punkte **Neu herunterladen** die gewünschte Version wählen, danach laufen Updates wieder normal.
+- **Modul 4: bis zu 15 statt 8 Geräte.** Der Knopf „Gerät hinzufügen“ zeigt, wie viele schon eingerichtet sind.
+
 ## [2026.1030.0b5] - 2026-10-30
 
 Testversion (Beta) mit besserer Regelung in Modul 1.
