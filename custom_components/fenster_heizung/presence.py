@@ -19,8 +19,9 @@ MODES = ("home", "away", "vacation")
 DEFAULT: dict[str, Any] = {
     "mode": "home", "origin": "manual", "from": None, "to": None, "temp": 16.0,
     "preheat": True, "preheat_time": "12:00", "auto": True, "persons": [], "away_after": 30,
-    "zone": None, "people": {},
+    "zone": None, "people": {}, "since": None,
 }
+KEEP = ("mode", "origin", "from", "to", "since")  # Zustand, den reine Einstellungs-Änderungen nie anfassen
 
 
 def clean_zone(raw: Any) -> dict[str, Any] | None:
@@ -148,6 +149,10 @@ def clean_presence(raw: Any) -> dict[str, Any]:
         pass
     out["zone"] = clean_zone(raw.get("zone"))
     out["people"] = clean_people(raw.get("people"))
+    try:
+        out["since"] = datetime.fromisoformat(raw["since"]).isoformat() if raw.get("since") else None
+    except (TypeError, ValueError):
+        out["since"] = None
     if out["mode"] == "vacation" and not (out["from"] and out["to"] and out["from"] <= out["to"]):
         out["mode"] = "home"  # Urlaub ohne gültige Daten gibt es nicht
     return out
@@ -197,8 +202,25 @@ class PresenceManager:
         return {**self.data, "effective": self.effective()}
 
     async def async_set(self, raw: Any, origin: str = "manual") -> dict[str, Any]:
-        self.data = clean_presence({**(raw if isinstance(raw, dict) else {}), "origin": origin})
+        """Neue Einstellungen übernehmen.
+
+        Ein Wechsel von Modus oder Urlaubsdaten gilt als Entscheidung (origin, since neu). Kommt nur eine Einstellung
+        (Temperatur, Personen, Zone …) oder ausdrücklich keep_mode, bleiben Modus, Herkunft und Zeitpunkt wie sie sind.
+        Sonst würde ein automatisches „Abwesend“ beim Speichern einer Einstellung zu einem manuellen und käme nie
+        mehr von selbst auf „Zu Hause“ zurück. Ein veralteter Browser kann so auch keinen alten Modus zurückschreiben.
+        """
+        raw = dict(raw) if isinstance(raw, dict) else {}
+        cur = self.data
+        if raw.pop("keep_mode", False):
+            raw.update({k: cur.get(k) for k in KEEP})
+        new = clean_presence({**raw, "origin": origin})
+        if all(new.get(k) == cur.get(k) for k in ("mode", "from", "to")):
+            new.update({k: cur.get(k) for k in ("origin", "since")})
+        else:
+            new["since"] = dt_util.now().isoformat()
+        self.data = new
         await self._store.async_save(self.data)
+        await self._tick(dt_util.now(), sync=False)
         await self._sync()
         return self.snapshot()
 
@@ -229,22 +251,39 @@ class PresenceManager:
         await self._tick(now)
         return True
 
-    async def _tick(self, now: datetime) -> None:
+    def _arrived(self, states: list, since: str | None) -> bool:
+        """Ist seit dem manuellen „Abwesend“ jemand nach Hause gekommen?"""
+        try:
+            t0 = datetime.fromisoformat(since) if since else None
+        except ValueError:
+            t0 = None
+        return any(h and (t0 is None or (t is not None and t >= t0)) for h, t in states)
+
+    async def _tick(self, now: datetime, sync: bool = True) -> None:
         p, changed = self.data, False
+        stamp = {"since": now.isoformat()}
         if p["mode"] == "vacation":
             if now >= vacation_window(p)[1]:  # Urlaub vorbei: zurück auf "Zu Hause"
-                self.data, changed = {**p, "mode": "home", "origin": "auto"}, True
+                self.data, changed = {**p, "mode": "home", "origin": "auto", **stamp}, True
         elif p["auto"]:
             states = self._person_states()
             if p["mode"] == "home" and states and not any(h for h, _ in states):
-                latest = max(t for _, t in states)
+                latest = max((t for _, t in states if t is not None), default=now)
+                try:  # nach einem „Zu Hause“ von Hand erst wieder zählen, wenn die Wartezeit ab da vorbei ist
+                    latest = max(latest, datetime.fromisoformat(p["since"])) if p.get("since") else latest
+                except (TypeError, ValueError):
+                    pass
                 if now - latest >= timedelta(minutes=p["away_after"]):
-                    self.data, changed = {**p, "mode": "away", "origin": "auto"}, True
-            elif p["mode"] == "away" and p["origin"] == "auto" and any(h for h, _ in states):
-                self.data, changed = {**p, "mode": "home", "origin": "auto"}, True
+                    self.data, changed = {**p, "mode": "away", "origin": "auto", **stamp}, True
+            elif p["mode"] == "away" and states and (
+                any(h for h, _ in states) if p["origin"] == "auto" else self._arrived(states, p.get("since"))
+            ):
+                # automatisch abwesend: zurück, sobald jemand da ist. Von Hand abwesend: zurück, sobald jemand ankommt.
+                self.data, changed = {**p, "mode": "home", "origin": "auto", **stamp}, True
         if changed:
             await self._store.async_save(self.data)
-        await self._sync()
+        if sync:
+            await self._sync()
 
     async def _sync(self) -> None:
         eff = self.effective()

@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b9] - 2026-11-04
+
+Testversion (Beta) mit einer Fehlerbehebung in Modul 1.
+
+### Behoben
+- **Modul 1 Fenster & Heizung (v1.3 Build 2): Anwesenheit schaltet wieder auf „Zu Hause“ zurück.** Nach dem automatischen „Abwesend“ machte jede gespeicherte Einstellung (Absenk-Temperatur, Personen, Standort) daraus ein „Abwesend von Hand“, das nie mehr von selbst zurückging. Einstellungen ändern den Modus jetzt nicht mehr.
+- **Von Hand „Abwesend“** endet, sobald danach jemand nach Hause kommt. **Von Hand „Zu Hause“**, obwohl niemand da ist, wechselt erst nach der eingestellten Wartezeit wieder auf abwesend.
+- Das Dashboard lädt die Anwesenheit jede Minute nach. Ein lange offenes Fenster zeigt keinen veralteten Stand mehr und kann ihn beim Speichern nicht zurückschreiben.
+
 ## [2026.11.1b8] - 2026-11-04
 
 Testversion (Beta): Addons kommen jetzt aus einem signierten Katalog auf GitHub.

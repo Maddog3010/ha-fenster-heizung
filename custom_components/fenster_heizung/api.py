@@ -308,7 +308,7 @@ def _general_snapshot(hass: HomeAssistant) -> dict[str, Any]:
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/get_general"})
 @websocket_api.async_response
 async def ws_get_general(hass: HomeAssistant, connection, msg: dict) -> None:
-    connection.send_result(msg["id"], _general_snapshot(hass))
+    connection.send_result(msg["id"], {**_general_snapshot(hass), "presence": _presence_snapshot(hass)})
 
 
 @websocket_api.require_admin

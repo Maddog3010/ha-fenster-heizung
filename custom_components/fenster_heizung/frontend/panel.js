@@ -721,7 +721,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.3", b: 1, d: "2026-11-03", p: "2026.11.1b2", log: [["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.3", b: 2, d: "2026-11-04", p: "2026.11.1b9", log: [["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.1", b: 2, d: "2026-11-03", p: "2026.11.1b1", log: [["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2799,7 +2799,10 @@ class FensterHeizungPanel extends HTMLElement {
   _pollGen() {
     this._hass.callWS({ type: "fenster_heizung/get_general" }).then((r) => {
       if (!r || this._dragging || (this._modal && (this._modal.type === "gen" || this._modal.type === "fh"))) return;
-      this._st = r.status || null; this._gen = { ...this._gen, ...(r.general || {}) }; this._render();
+      this._st = r.status || null; this._gen = { ...this._gen, ...(r.general || {}) };
+      /* Anwesenheit nachladen: das Backend schaltet selbst zwischen „Zu Hause“ und „Abwesend“ um. Während ein Fenster dazu offen ist, nicht dazwischenfunken. */
+      if (r.presence && !(this._modal && ["pset", "vac"].includes(this._modal.type)) && !String((this._modal || {}).type || "").startsWith("ort")) this._cfg.presence = r.presence;
+      this._render();
     }).catch(() => {});
   }
   async _backup() {
@@ -3493,7 +3496,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (a === "vawp") d.away_after = Math.min(120, d.away_after + 15);
       else if (a === "vper") { const e = b.dataset.e; d.persons = d.persons.includes(e) ? d.persons.filter((x) => x !== e) : [...d.persons, e]; }
       else if (a === "psetsave") {
-        this._cfg.presence = { ...this._pres(), temp: d.temp, auto: d.auto, away_after: d.away_after, persons: d.persons }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Einstellungen gespeichert"); return;
+        this._cfg.presence = { ...this._pres(), temp: d.temp, auto: d.auto, away_after: d.away_after, persons: d.persons, keep_mode: true }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Einstellungen gespeichert"); return;
       }
       else if (a === "vsave") {
         if (!d.from || !d.to || d.to < d.from) { this._toast("Bitte ein gültiges Datum wählen"); return; }
@@ -4722,12 +4725,12 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "ortrm") { o.draft.trackers = o.draft.trackers.filter((e) => e !== k); this._renderModal(); }
     else if (a === "ortcount") { o.draft.count = !o.draft.count; this._renderModal(); }
     else if (a === "ortacc") { o.draft.acc = Math.max(20, Math.min(500, o.draft.acc + Number(k))); this._renderModal(); }
-    else if (a === "ortpsave") { const d = o.draft; this._cfg.presence = { ...this._pres(), people: { ...o.per, [d.id]: { label: d.label.trim(), trackers: d.trackers, wifi: d.wifi, count: d.count, acc: d.acc } } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Person gespeichert"); }
+    else if (a === "ortpsave") { const d = o.draft; this._cfg.presence = { ...this._pres(), keep_mode: true, people: { ...o.per, [d.id]: { label: d.label.trim(), trackers: d.trackers, wifi: d.wifi, count: d.count, acc: d.acc } } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Person gespeichert"); }
     else if (a === "ortzone") { const z = o.zone; o.map = { lat: z.lat, lon: z.lon, r: z.r, z: this._ortZoomFor(z.r) }; this._modal = { type: "ortzone" }; this._renderModal(); }
     else if (a === "ortz") { const m = o.map; m.z = Math.max(5, Math.min(19, m.z + Number(k))); this._renderModal(); }
     else if (a === "ortha") { const hz = this._hass.states["zone.home"], hc = this._hass.config || {}; const la = Number(hz ? hz.attributes.latitude : hc.latitude), lo = Number(hz ? hz.attributes.longitude : hc.longitude); if (isFinite(la) && isFinite(lo)) { o.map.lat = la; o.map.lon = lo; this._renderModal(); } }
     else if (a === "ortme") { const x = this._ortPersons().find((q) => q.lat != null); if (x) { o.map.lat = x.lat; o.map.lon = x.lon; this._renderModal(); this._toast(`Position von ${x.name} übernommen`); } else this._toast("Keine Position verfügbar"); }
-    else if (a === "ortzsave") { const m = o.map; this._cfg.presence = { ...this._pres(), zone: { lat: Math.round(m.lat * 1e6) / 1e6, lon: Math.round(m.lon * 1e6) / 1e6, r: m.r } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Home-Zone gespeichert"); }
+    else if (a === "ortzsave") { const m = o.map; this._cfg.presence = { ...this._pres(), keep_mode: true, zone: { lat: Math.round(m.lat * 1e6) / 1e6, lon: Math.round(m.lon * 1e6) / 1e6, r: m.r } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Home-Zone gespeichert"); }
   }
   _ortChange(t) {
     const o = this._ort(), f = t.dataset.f;

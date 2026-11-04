@@ -439,12 +439,12 @@
     else if (a === "ortrm") { o.draft.trackers = o.draft.trackers.filter((e) => e !== k); this._renderModal(); }
     else if (a === "ortcount") { o.draft.count = !o.draft.count; this._renderModal(); }
     else if (a === "ortacc") { o.draft.acc = Math.max(20, Math.min(500, o.draft.acc + Number(k))); this._renderModal(); }
-    else if (a === "ortpsave") { const d = o.draft; this._cfg.presence = { ...this._pres(), people: { ...o.per, [d.id]: { label: d.label.trim(), trackers: d.trackers, wifi: d.wifi, count: d.count, acc: d.acc } } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Person gespeichert"); }
+    else if (a === "ortpsave") { const d = o.draft; this._cfg.presence = { ...this._pres(), keep_mode: true, people: { ...o.per, [d.id]: { label: d.label.trim(), trackers: d.trackers, wifi: d.wifi, count: d.count, acc: d.acc } } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Person gespeichert"); }
     else if (a === "ortzone") { const z = o.zone; o.map = { lat: z.lat, lon: z.lon, r: z.r, z: this._ortZoomFor(z.r) }; this._modal = { type: "ortzone" }; this._renderModal(); }
     else if (a === "ortz") { const m = o.map; m.z = Math.max(5, Math.min(19, m.z + Number(k))); this._renderModal(); }
     else if (a === "ortha") { const hz = this._hass.states["zone.home"], hc = this._hass.config || {}; const la = Number(hz ? hz.attributes.latitude : hc.latitude), lo = Number(hz ? hz.attributes.longitude : hc.longitude); if (isFinite(la) && isFinite(lo)) { o.map.lat = la; o.map.lon = lo; this._renderModal(); } }
     else if (a === "ortme") { const x = this._ortPersons().find((q) => q.lat != null); if (x) { o.map.lat = x.lat; o.map.lon = x.lon; this._renderModal(); this._toast(`Position von ${x.name} übernommen`); } else this._toast("Keine Position verfügbar"); }
-    else if (a === "ortzsave") { const m = o.map; this._cfg.presence = { ...this._pres(), zone: { lat: Math.round(m.lat * 1e6) / 1e6, lon: Math.round(m.lon * 1e6) / 1e6, r: m.r } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Home-Zone gespeichert"); }
+    else if (a === "ortzsave") { const m = o.map; this._cfg.presence = { ...this._pres(), keep_mode: true, zone: { lat: Math.round(m.lat * 1e6) / 1e6, lon: Math.round(m.lon * 1e6) / 1e6, r: m.r } }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Home-Zone gespeichert"); }
   }
   _ortChange(t) {
     const o = this._ort(), f = t.dataset.f;

@@ -674,7 +674,10 @@
   _pollGen() {
     this._hass.callWS({ type: "fenster_heizung/get_general" }).then((r) => {
       if (!r || this._dragging || (this._modal && (this._modal.type === "gen" || this._modal.type === "fh"))) return;
-      this._st = r.status || null; this._gen = { ...this._gen, ...(r.general || {}) }; this._render();
+      this._st = r.status || null; this._gen = { ...this._gen, ...(r.general || {}) };
+      /* Anwesenheit nachladen: das Backend schaltet selbst zwischen „Zu Hause“ und „Abwesend“ um. Während ein Fenster dazu offen ist, nicht dazwischenfunken. */
+      if (r.presence && !(this._modal && ["pset", "vac"].includes(this._modal.type)) && !String((this._modal || {}).type || "").startsWith("ort")) this._cfg.presence = r.presence;
+      this._render();
     }).catch(() => {});
   }
   async _backup() {
