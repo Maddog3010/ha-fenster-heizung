@@ -100,13 +100,7 @@
         needs: () => [["Aktiver Sponsor-Schlüssel", !!this._spnS().active], ["Leistungssensoren in Home Assistant (Solar, Netz, Akku)", Object.keys(this._hass.states).some((k) => k.startsWith("sensor."))]],
         after: "Ausgeschaltet verschwindet Modul 19. Deine Kacheln bleiben gespeichert.",
         f: [] },
-      { id: "tg", k: "g", mid: "tg", mod: "Übergreifend", mn: "Tags & Karten", n: "Tags & Karten", st: "Früh", i: "nfc", early: "2026-11-11",
-        d: "RFID-Karten und NFC-Sticker lösen feste Aktionen aus, zum Beispiel Abwesend, Warmwasser-Boost oder Licht aus.",
-        feats: ["Karten oder Sticker anlernen: einmal an einen Leser halten, fertig", "Jeder Tag führt genau eine Aktion aus einer festen Liste aus, auch „Person ist zu Hause/unterwegs“", "Optional nur für bestimmte Personen und nur in einem Zeitfenster", "Rückmeldung per Handy-Nachricht, Ansage oder blinkendem Licht, dazu ein Protokoll"],
-        how: ["Home Assistant meldet jeden Scan als Ereignis. Die Integration prüft die Kennung, Person und Zeit und führt dann die gewählte Aktion aus.", "Es gibt keine freien Dienstaufrufe, keine Alarm- und keine Türaktionen, weil sich Karten kopieren lassen.", "Doppelte Scans innerhalb von 3 Sekunden zählen einmal."],
-        needs: () => [["Ein Leser, der Tags an Home Assistant meldet (Handy mit NFC, ESPHome PN532/RC522)", true]],
-        after: "Ausgeschaltet reagiert kein Tag mehr. Die angelernten Tags bleiben gespeichert.",
-        f: [] },
+      /* „Tags & Karten“ (tg) ist seit 2026.11.1b16 fest eingebaut: Einstellungen → Haus → Tags & Karten */
     ];
   }
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }

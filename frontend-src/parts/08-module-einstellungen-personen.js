@@ -247,7 +247,7 @@
     const wxt = L.entity ? this._wzName(L.entity) : "automatisch";
     return `${banner}${card(`${row("tools", "Räume", `${this._collect().length} Räume · Einrichtungsassistent`, "wz")}
         ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
-        ${this._labOn("tg") ? row("nfc", "Tags &amp; Karten", "RFID-Karten und NFC-Sticker anlernen und zuordnen", "tgxopen") : ""}`, "Bewohner und Räume")}
+        ${row("nfc", "Tags &amp; Karten", "RFID-Karten und NFC-Sticker anlernen, auch für den Luftentfeuchter", "tgxopen")}`, "Bewohner und Räume")}
       ${card(`${row("sun", "Energiequellen", `Solar, Netz, Batterie, Ladestand · für ${this._hsUsed("energy")}`, "mdsts", "en", this._hsEnCheck()[0] === "ok" ? `<em class="sxc ok">OK</em>` : `<em class="sxc wa">${this._enConfigured() ? "Prüfen" : "Offen"}</em>`)}
         ${row("total", "Preise &amp; Tarif", `${pr}`, "mdsts", "pr", `<em class="sxc ok">${p.price_mode === "entity" && p.price_sensor ? "Sensor" : "Festwert"}</em>`)}
         ${row("partly", "Wetterquelle", `Wetter ${esc(wxt)}${L.outdoor ? " · Außensensor" : ""}`, "mdsts", "wx")}`, "Gemeinsame Werte")}

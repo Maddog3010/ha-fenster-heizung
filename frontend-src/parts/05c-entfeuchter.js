@@ -219,23 +219,34 @@
       ${M.del ? `<div class="gbox"><b>„${esc(d.name)}“ entfernen?</b>Statistik und Verlauf dieses Geräts werden gelöscht. Das Gerät selbst bleibt in Home Assistant.</div><div class="foot2"><button class="btn2" data-act="lfxdelno">Abbrechen</button><button class="btn2" style="color:#f87171" data-act="lfxdelok">Entfernen</button></div>`
       : `<div class="foot2">${!M.isNew ? `<button class="btn2" data-act="lfxdel">Entfernen</button>` : `<button class="btn2" data-act="close">Abbrechen</button>`}<button class="btn2 pri" data-act="lfxsave">Speichern</button></div>`}</div>`;
   }
-  /* Schritt 5: NFC-Tag am Stellplatz – je Raum ein Tag, anlernen durch Scannen */
+  /* Schritt 5: NFC-Tag am Stellplatz. Die Tags gehören zu „Tags & Karten“ (Aktion „Entfeuchter steht hier“, Gerät|Raum).
+     Hier nur die passende Ansicht je Raum: anlernen mit fester Aktion, entfernen, Verwaltung öffnen. */
   _lfNfc(d) {
-    const D = this._lf() || {}, R = D.rooms || [], NL = D.nfc_learn || {}, cur = ((D.cfg || {}).devs || []).find((x) => x.id === d.id) || {}, map = cur.nfc || {};
-    const others = ((D.cfg || {}).devs || []).filter((x) => x.id !== d.id);
-    if (NL.active) { clearTimeout(this._lfNfcT); this._lfNfcT = setTimeout(() => { if (this._modal && this._modal.type === "lfset" && this._lfD) { this._lfD.ts = 0; this._lf(); } }, 1500); }
-    const res = NL.res && NL.res.dev === d.id ? NL.res : null;
+    this._tgxLoad();
+    const T = this._tgxD, R = (this._lf() || {}).rooms || [];
+    const head = `<div class="lsec">${ic("tablet", 15)}NFC-Tag am Stellplatz</div>
+      <div class="mut sm" style="margin:-2px 0 6px">Klebe an jeden Stellplatz ein NFC-Tag. Hältst du das Handy daran, steht ${esc(d.name)} dort und der Standort gilt für heute als bestätigt. Die Tags gehören zu Einstellungen → Haus → Tags &amp; Karten, dort gelten auch Personen, Zeitfenster und Protokoll.</div>`;
+    if (!T) return head + `<div class="mut sm">Tags werden geladen …</div>`;
+    const tags = Object.entries((T.cfg || {}).tags || {}), L = T.learn || {}, mine = this._lfNfcRoom && this._lfNfcRoom.d === d.id ? this._lfNfcRoom.r : "";
+    const tagFor = (dv, rm) => tags.find(([, t]) => t.act && t.act.k === "lf_here" && t.act.arg === `${dv}|${rm}`);
+    const others = this._lfDevs().filter((x) => x.id !== d.id);
+    if (L.active) { clearTimeout(this._lfNfcT); this._lfNfcT = setTimeout(() => this._lfNfcPoll(), 1500); }
+    const F = L.found && mine && L.found.created ? L.found : null;
     const rows = R.map((r) => {
-      const tid = map[r.id], learning = NL.active && NL.dev === d.id && NL.room === r.id, other = others.find((o) => (o.nfc || {})[r.id]);
-      const stat = learning ? `<b class="lfnl">Jetzt das Handy an das Tag halten … noch ${NL.left} s</b>` : tid ? `Tag zugeordnet <span class="mut">· ${esc(tid.length > 14 ? "…" + tid.slice(-10) : tid)}</span>` : other ? `<span class="mut">Tag gehört zu ${esc(other.name)}</span>` : `<span class="mut">kein Tag</span>`;
-      const btns = learning ? `<button class="btn2" data-act="lfxnfcstop" data-d="${esc(d.id)}">Abbrechen</button>` : `${tid ? `<button class="btn2" data-act="lfxnfcdel" data-d="${esc(d.id)}" data-k="${esc(r.id)}" aria-label="Tag für ${esc(r.name)} entfernen">${ic("trash", 15)}</button>` : ""}<button class="btn2 ${tid ? "" : "pri"}" data-act="lfxnfc" data-d="${esc(d.id)}" data-k="${esc(r.id)}" ${NL.active ? "disabled" : ""}>${tid ? "Neu anlernen" : "Tag anlernen"}</button>`;
-      return `<div class="lfnr ${learning ? "on" : ""} ${tid ? "set" : ""}"><span class="lfni">${ic(tid ? "check" : "pin", 15)}</span><div><b>${esc(r.name)}</b><small>${stat}</small></div><span class="lfnb">${btns}</span></div>`;
+      const own = tagFor(d.id, r.id), other = others.map((o) => [o, tagFor(o.id, r.id)]).find((x) => x[1]), learning = L.active && mine === r.id;
+      const lastScan = own && T.last && T.last[own[0]] ? ` · zuletzt ${this._tgxWhen(T.last[own[0]].ts)}` : "";
+      const stat = learning ? `<b class="lfnl">Jetzt das Handy an das Tag halten … noch ${L.left} s</b>` : own ? `${esc(own[1].name)}${own[1].on ? "" : " · ausgeschaltet"}<span class="mut">${esc(lastScan)}</span>` : other ? `<span class="mut">Tag für ${esc(other[0].name)} vorhanden</span>` : `<span class="mut">kein Tag</span>`;
+      const btns = learning ? `<button class="btn2" data-act="lfxnfcstop">Abbrechen</button>` : `${own ? `<button class="btn2" data-act="lfxnfcdel" data-k="${esc(own[0])}" aria-label="Tag für ${esc(r.name)} entfernen">${ic("trash", 15)}</button>` : ""}<button class="btn2 ${own ? "" : "pri"}" data-act="lfxnfc" data-d="${esc(d.id)}" data-k="${esc(r.id)}" ${L.active ? "disabled" : ""}>${own ? "Neu anlernen" : "Tag anlernen"}</button>`;
+      return `<div class="lfnr ${learning ? "on" : ""} ${own ? "set" : ""}"><span class="lfni">${ic(own ? "check" : "pin", 15)}</span><div><b>${esc(r.name)}</b><small>${stat}</small></div><span class="lfnb">${btns}</span></div>`;
     }).join("");
-    return `<div class="lsec">${ic("tablet", 15)}NFC-Tag am Stellplatz</div>
-      <div class="mut sm" style="margin:-2px 0 6px">Klebe an jeden Stellplatz ein NFC-Tag. Hältst du das Handy daran, steht ${esc(d.name)} dort und der Standort gilt für heute als bestätigt. Funktioniert mit der Home-Assistant-App, auch ohne das Lab „Tags &amp; Karten“.</div>
-      ${res ? `<div class="gst">${ic("check", 15)}<div>Tag für <b>${esc(res.name)}</b> angelernt.${res.lab ? `<br><span class="lfhint">Dieses Tag löst auch eine Aktion im Lab „Tags &amp; Karten“ aus. Besser ein eigenes Tag nehmen.</span>` : ""}</div></div>` : ""}
+    return head + `${F ? `<div class="gst">${ic("check", 15)}<div>Tag für <b>${esc(this._lfRoomName(mine))}</b> angelernt.${F.was ? `<br><span class="lfhint">Das Tag war vorher „${esc(F.was)}“ und ist jetzt für den Entfeuchter umgestellt.</span>` : ""}</div></div>` : ""}
       ${R.length ? `<div class="lfnl0">${rows}</div>` : `<div class="mut sm">Kein Raum mit Luftfeuchte-Sensor gefunden.</div>`}
-      <div class="mut sm" style="margin:6px 0 0">Tag neu? In der Home-Assistant-App unter Einstellungen → Tags ein Tag hinzufügen und beschreiben. <a class="lnk" href="https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf" target="_blank" rel="noopener">Anleitung fürs iPhone</a></div>`;
+      <div class="mut sm" style="margin:6px 0 0">Tag neu? In der Home-Assistant-App unter Einstellungen → Tags ein Tag hinzufügen und beschreiben. <a class="lnk" href="https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf" target="_blank" rel="noopener">Anleitung fürs iPhone</a></div>
+      <button class="lnk" data-act="tgxopen" style="margin:6px 0 0">${ic("nfc", 14)} Alle Tags &amp; Karten verwalten</button>`;
+  }
+  _lfNfcPoll() {
+    if (!this._hass) return;
+    this._hass.callWS({ type: "fenster_heizung/tg_get" }).then((r) => { this._tgxD = r; this._tgxTs = Date.now(); if (this._modal && this._modal.type === "lfset" && this._modal.tab === "ort") this._renderModal(); }).catch(() => {});
   }
   _lfChange(t) {
     const M = this._modal; if (!M || M.type !== "lfset") return false;
@@ -265,9 +276,10 @@
     if (a === "lfxper") { if (M && M.type === "lfstat") { M.per = b.dataset.k; this._renderModal(); } return; }
     if (a === "lfxtest") { this._lfCmd("ask_test", "", did).then((r) => this._toast(r && r.test_sent ? `Test-Abfrage an ${r.test_sent} ${r.test_sent === 1 ? "Handy" : "Handys"} gesendet` : "Nicht gesendet: erst speichern, dann testen")); return; }
     if (a === "lfxtank") { this._lfCmd("tank_empty", "", did); this._toast("Tank als geleert vermerkt"); return; }
-    if (a === "lfxnfc") { this._lfCmd("nfc_learn", b.dataset.k, did); return; }
-    if (a === "lfxnfcstop") { this._lfCmd("nfc_stop", "", did); return; }
-    if (a === "lfxnfcdel") { this._lfCmd("nfc_forget", b.dataset.k, did).then((r) => { if (r) this._toast("NFC-Tag entfernt"); }); return; }
+    if (a === "lfxnfc") { const dv = this._lfDev(did) || ((((this._lf() || {}).cfg || {}).devs || []).find((x) => x.id === did)) || { name: "Entfeuchter" }; this._lfNfcRoom = { d: did, r: b.dataset.k };
+      this._hass.callWS({ type: "fenster_heizung/tg_act", act: "learn", preset: { name: `${dv.name} · ${this._lfRoomName(b.dataset.k)}`.slice(0, 40), act: { k: "lf_here", arg: `${did}|${b.dataset.k}` } } }).then((r) => { this._tgxD = r; this._tgxTs = Date.now(); this._renderModal(); }).catch(() => this._toast("Anlernen nicht möglich")); return; }
+    if (a === "lfxnfcstop") { clearTimeout(this._lfNfcT); this._lfNfcRoom = null; this._tgxCall("stop").then(() => this._renderModal()); return; }
+    if (a === "lfxnfcdel") { if (!this._tgxD) return; const c = this._tgxCfgNow(); delete c.tags[b.dataset.k]; this._tgxPut(c).then(() => { this._renderModal(); this._toast("NFC-Tag entfernt"); }); return; }
     if (a === "lfxfilt") { this._lfCmd("filter_reset", "", did); this._toast("Filter als gereinigt vermerkt"); return; }
     if (!M || M.type !== "lfset") return;
     const d = M.draft, all = ((this._lf() || {}).cfg || {}).devs || [];

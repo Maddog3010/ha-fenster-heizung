@@ -720,7 +720,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.5", b: 2, d: "2026-11-04", p: "2026.11.1b15", log: [["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.6", b: 1, d: "2026-11-04", p: "2026.11.1b16", log: [["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.0", b: 2, d: "2026-11-04", p: "2026.11.1b15", log: [["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.1", b: 2, d: "2026-11-03", p: "2026.11.1b1", log: [["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -730,7 +730,7 @@ const MV = {
   ev: { v: "0.5", b: 2, d: "2026-11-04", p: "2026.11.1b15", log: [["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "0.5", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  sf: { v: "0.5", b: 3, d: "2026-11-04", p: "2026.11.1b15", log: [["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  sf: { v: "0.5", b: 4, d: "2026-11-04", p: "2026.11.1b16", log: [["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3414,23 +3414,34 @@ class FensterHeizungPanel extends HTMLElement {
       ${M.del ? `<div class="gbox"><b>„${esc(d.name)}“ entfernen?</b>Statistik und Verlauf dieses Geräts werden gelöscht. Das Gerät selbst bleibt in Home Assistant.</div><div class="foot2"><button class="btn2" data-act="lfxdelno">Abbrechen</button><button class="btn2" style="color:#f87171" data-act="lfxdelok">Entfernen</button></div>`
       : `<div class="foot2">${!M.isNew ? `<button class="btn2" data-act="lfxdel">Entfernen</button>` : `<button class="btn2" data-act="close">Abbrechen</button>`}<button class="btn2 pri" data-act="lfxsave">Speichern</button></div>`}</div>`;
   }
-  /* Schritt 5: NFC-Tag am Stellplatz – je Raum ein Tag, anlernen durch Scannen */
+  /* Schritt 5: NFC-Tag am Stellplatz. Die Tags gehören zu „Tags & Karten“ (Aktion „Entfeuchter steht hier“, Gerät|Raum).
+     Hier nur die passende Ansicht je Raum: anlernen mit fester Aktion, entfernen, Verwaltung öffnen. */
   _lfNfc(d) {
-    const D = this._lf() || {}, R = D.rooms || [], NL = D.nfc_learn || {}, cur = ((D.cfg || {}).devs || []).find((x) => x.id === d.id) || {}, map = cur.nfc || {};
-    const others = ((D.cfg || {}).devs || []).filter((x) => x.id !== d.id);
-    if (NL.active) { clearTimeout(this._lfNfcT); this._lfNfcT = setTimeout(() => { if (this._modal && this._modal.type === "lfset" && this._lfD) { this._lfD.ts = 0; this._lf(); } }, 1500); }
-    const res = NL.res && NL.res.dev === d.id ? NL.res : null;
+    this._tgxLoad();
+    const T = this._tgxD, R = (this._lf() || {}).rooms || [];
+    const head = `<div class="lsec">${ic("tablet", 15)}NFC-Tag am Stellplatz</div>
+      <div class="mut sm" style="margin:-2px 0 6px">Klebe an jeden Stellplatz ein NFC-Tag. Hältst du das Handy daran, steht ${esc(d.name)} dort und der Standort gilt für heute als bestätigt. Die Tags gehören zu Einstellungen → Haus → Tags &amp; Karten, dort gelten auch Personen, Zeitfenster und Protokoll.</div>`;
+    if (!T) return head + `<div class="mut sm">Tags werden geladen …</div>`;
+    const tags = Object.entries((T.cfg || {}).tags || {}), L = T.learn || {}, mine = this._lfNfcRoom && this._lfNfcRoom.d === d.id ? this._lfNfcRoom.r : "";
+    const tagFor = (dv, rm) => tags.find(([, t]) => t.act && t.act.k === "lf_here" && t.act.arg === `${dv}|${rm}`);
+    const others = this._lfDevs().filter((x) => x.id !== d.id);
+    if (L.active) { clearTimeout(this._lfNfcT); this._lfNfcT = setTimeout(() => this._lfNfcPoll(), 1500); }
+    const F = L.found && mine && L.found.created ? L.found : null;
     const rows = R.map((r) => {
-      const tid = map[r.id], learning = NL.active && NL.dev === d.id && NL.room === r.id, other = others.find((o) => (o.nfc || {})[r.id]);
-      const stat = learning ? `<b class="lfnl">Jetzt das Handy an das Tag halten … noch ${NL.left} s</b>` : tid ? `Tag zugeordnet <span class="mut">· ${esc(tid.length > 14 ? "…" + tid.slice(-10) : tid)}</span>` : other ? `<span class="mut">Tag gehört zu ${esc(other.name)}</span>` : `<span class="mut">kein Tag</span>`;
-      const btns = learning ? `<button class="btn2" data-act="lfxnfcstop" data-d="${esc(d.id)}">Abbrechen</button>` : `${tid ? `<button class="btn2" data-act="lfxnfcdel" data-d="${esc(d.id)}" data-k="${esc(r.id)}" aria-label="Tag für ${esc(r.name)} entfernen">${ic("trash", 15)}</button>` : ""}<button class="btn2 ${tid ? "" : "pri"}" data-act="lfxnfc" data-d="${esc(d.id)}" data-k="${esc(r.id)}" ${NL.active ? "disabled" : ""}>${tid ? "Neu anlernen" : "Tag anlernen"}</button>`;
-      return `<div class="lfnr ${learning ? "on" : ""} ${tid ? "set" : ""}"><span class="lfni">${ic(tid ? "check" : "pin", 15)}</span><div><b>${esc(r.name)}</b><small>${stat}</small></div><span class="lfnb">${btns}</span></div>`;
+      const own = tagFor(d.id, r.id), other = others.map((o) => [o, tagFor(o.id, r.id)]).find((x) => x[1]), learning = L.active && mine === r.id;
+      const lastScan = own && T.last && T.last[own[0]] ? ` · zuletzt ${this._tgxWhen(T.last[own[0]].ts)}` : "";
+      const stat = learning ? `<b class="lfnl">Jetzt das Handy an das Tag halten … noch ${L.left} s</b>` : own ? `${esc(own[1].name)}${own[1].on ? "" : " · ausgeschaltet"}<span class="mut">${esc(lastScan)}</span>` : other ? `<span class="mut">Tag für ${esc(other[0].name)} vorhanden</span>` : `<span class="mut">kein Tag</span>`;
+      const btns = learning ? `<button class="btn2" data-act="lfxnfcstop">Abbrechen</button>` : `${own ? `<button class="btn2" data-act="lfxnfcdel" data-k="${esc(own[0])}" aria-label="Tag für ${esc(r.name)} entfernen">${ic("trash", 15)}</button>` : ""}<button class="btn2 ${own ? "" : "pri"}" data-act="lfxnfc" data-d="${esc(d.id)}" data-k="${esc(r.id)}" ${L.active ? "disabled" : ""}>${own ? "Neu anlernen" : "Tag anlernen"}</button>`;
+      return `<div class="lfnr ${learning ? "on" : ""} ${own ? "set" : ""}"><span class="lfni">${ic(own ? "check" : "pin", 15)}</span><div><b>${esc(r.name)}</b><small>${stat}</small></div><span class="lfnb">${btns}</span></div>`;
     }).join("");
-    return `<div class="lsec">${ic("tablet", 15)}NFC-Tag am Stellplatz</div>
-      <div class="mut sm" style="margin:-2px 0 6px">Klebe an jeden Stellplatz ein NFC-Tag. Hältst du das Handy daran, steht ${esc(d.name)} dort und der Standort gilt für heute als bestätigt. Funktioniert mit der Home-Assistant-App, auch ohne das Lab „Tags &amp; Karten“.</div>
-      ${res ? `<div class="gst">${ic("check", 15)}<div>Tag für <b>${esc(res.name)}</b> angelernt.${res.lab ? `<br><span class="lfhint">Dieses Tag löst auch eine Aktion im Lab „Tags &amp; Karten“ aus. Besser ein eigenes Tag nehmen.</span>` : ""}</div></div>` : ""}
+    return head + `${F ? `<div class="gst">${ic("check", 15)}<div>Tag für <b>${esc(this._lfRoomName(mine))}</b> angelernt.${F.was ? `<br><span class="lfhint">Das Tag war vorher „${esc(F.was)}“ und ist jetzt für den Entfeuchter umgestellt.</span>` : ""}</div></div>` : ""}
       ${R.length ? `<div class="lfnl0">${rows}</div>` : `<div class="mut sm">Kein Raum mit Luftfeuchte-Sensor gefunden.</div>`}
-      <div class="mut sm" style="margin:6px 0 0">Tag neu? In der Home-Assistant-App unter Einstellungen → Tags ein Tag hinzufügen und beschreiben. <a class="lnk" href="https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf" target="_blank" rel="noopener">Anleitung fürs iPhone</a></div>`;
+      <div class="mut sm" style="margin:6px 0 0">Tag neu? In der Home-Assistant-App unter Einstellungen → Tags ein Tag hinzufügen und beschreiben. <a class="lnk" href="https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf" target="_blank" rel="noopener">Anleitung fürs iPhone</a></div>
+      <button class="lnk" data-act="tgxopen" style="margin:6px 0 0">${ic("nfc", 14)} Alle Tags &amp; Karten verwalten</button>`;
+  }
+  _lfNfcPoll() {
+    if (!this._hass) return;
+    this._hass.callWS({ type: "fenster_heizung/tg_get" }).then((r) => { this._tgxD = r; this._tgxTs = Date.now(); if (this._modal && this._modal.type === "lfset" && this._modal.tab === "ort") this._renderModal(); }).catch(() => {});
   }
   _lfChange(t) {
     const M = this._modal; if (!M || M.type !== "lfset") return false;
@@ -3460,9 +3471,10 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "lfxper") { if (M && M.type === "lfstat") { M.per = b.dataset.k; this._renderModal(); } return; }
     if (a === "lfxtest") { this._lfCmd("ask_test", "", did).then((r) => this._toast(r && r.test_sent ? `Test-Abfrage an ${r.test_sent} ${r.test_sent === 1 ? "Handy" : "Handys"} gesendet` : "Nicht gesendet: erst speichern, dann testen")); return; }
     if (a === "lfxtank") { this._lfCmd("tank_empty", "", did); this._toast("Tank als geleert vermerkt"); return; }
-    if (a === "lfxnfc") { this._lfCmd("nfc_learn", b.dataset.k, did); return; }
-    if (a === "lfxnfcstop") { this._lfCmd("nfc_stop", "", did); return; }
-    if (a === "lfxnfcdel") { this._lfCmd("nfc_forget", b.dataset.k, did).then((r) => { if (r) this._toast("NFC-Tag entfernt"); }); return; }
+    if (a === "lfxnfc") { const dv = this._lfDev(did) || ((((this._lf() || {}).cfg || {}).devs || []).find((x) => x.id === did)) || { name: "Entfeuchter" }; this._lfNfcRoom = { d: did, r: b.dataset.k };
+      this._hass.callWS({ type: "fenster_heizung/tg_act", act: "learn", preset: { name: `${dv.name} · ${this._lfRoomName(b.dataset.k)}`.slice(0, 40), act: { k: "lf_here", arg: `${did}|${b.dataset.k}` } } }).then((r) => { this._tgxD = r; this._tgxTs = Date.now(); this._renderModal(); }).catch(() => this._toast("Anlernen nicht möglich")); return; }
+    if (a === "lfxnfcstop") { clearTimeout(this._lfNfcT); this._lfNfcRoom = null; this._tgxCall("stop").then(() => this._renderModal()); return; }
+    if (a === "lfxnfcdel") { if (!this._tgxD) return; const c = this._tgxCfgNow(); delete c.tags[b.dataset.k]; this._tgxPut(c).then(() => { this._renderModal(); this._toast("NFC-Tag entfernt"); }); return; }
     if (a === "lfxfilt") { this._lfCmd("filter_reset", "", did); this._toast("Filter als gereinigt vermerkt"); return; }
     if (!M || M.type !== "lfset") return;
     const d = M.draft, all = ((this._lf() || {}).cfg || {}).devs || [];
@@ -4750,7 +4762,7 @@ class FensterHeizungPanel extends HTMLElement {
     const wxt = L.entity ? this._wzName(L.entity) : "automatisch";
     return `${banner}${card(`${row("tools", "Räume", `${this._collect().length} Räume · Einrichtungsassistent`, "wz")}
         ${row("users", "Personen &amp; Standort", "Personen, iCloud-Standort und Home-Zone auf der Karte", "ortopen", "", this._ortChip())}
-        ${this._labOn("tg") ? row("nfc", "Tags &amp; Karten", "RFID-Karten und NFC-Sticker anlernen und zuordnen", "tgxopen") : ""}`, "Bewohner und Räume")}
+        ${row("nfc", "Tags &amp; Karten", "RFID-Karten und NFC-Sticker anlernen, auch für den Luftentfeuchter", "tgxopen")}`, "Bewohner und Räume")}
       ${card(`${row("sun", "Energiequellen", `Solar, Netz, Batterie, Ladestand · für ${this._hsUsed("energy")}`, "mdsts", "en", this._hsEnCheck()[0] === "ok" ? `<em class="sxc ok">OK</em>` : `<em class="sxc wa">${this._enConfigured() ? "Prüfen" : "Offen"}</em>`)}
         ${row("total", "Preise &amp; Tarif", `${pr}`, "mdsts", "pr", `<em class="sxc ok">${p.price_mode === "entity" && p.price_sensor ? "Sensor" : "Festwert"}</em>`)}
         ${row("partly", "Wetterquelle", `Wetter ${esc(wxt)}${L.outdoor ? " · Außensensor" : ""}`, "mdsts", "wx")}`, "Gemeinsame Werte")}
@@ -6526,13 +6538,7 @@ class FensterHeizungPanel extends HTMLElement {
         needs: () => [["Aktiver Sponsor-Schlüssel", !!this._spnS().active], ["Leistungssensoren in Home Assistant (Solar, Netz, Akku)", Object.keys(this._hass.states).some((k) => k.startsWith("sensor."))]],
         after: "Ausgeschaltet verschwindet Modul 19. Deine Kacheln bleiben gespeichert.",
         f: [] },
-      { id: "tg", k: "g", mid: "tg", mod: "Übergreifend", mn: "Tags & Karten", n: "Tags & Karten", st: "Früh", i: "nfc", early: "2026-11-11",
-        d: "RFID-Karten und NFC-Sticker lösen feste Aktionen aus, zum Beispiel Abwesend, Warmwasser-Boost oder Licht aus.",
-        feats: ["Karten oder Sticker anlernen: einmal an einen Leser halten, fertig", "Jeder Tag führt genau eine Aktion aus einer festen Liste aus, auch „Person ist zu Hause/unterwegs“", "Optional nur für bestimmte Personen und nur in einem Zeitfenster", "Rückmeldung per Handy-Nachricht, Ansage oder blinkendem Licht, dazu ein Protokoll"],
-        how: ["Home Assistant meldet jeden Scan als Ereignis. Die Integration prüft die Kennung, Person und Zeit und führt dann die gewählte Aktion aus.", "Es gibt keine freien Dienstaufrufe, keine Alarm- und keine Türaktionen, weil sich Karten kopieren lassen.", "Doppelte Scans innerhalb von 3 Sekunden zählen einmal."],
-        needs: () => [["Ein Leser, der Tags an Home Assistant meldet (Handy mit NFC, ESPHome PN532/RC522)", true]],
-        after: "Ausgeschaltet reagiert kein Tag mehr. Die angelernten Tags bleiben gespeichert.",
-        f: [] },
+      /* „Tags & Karten“ (tg) ist seit 2026.11.1b16 fest eingebaut: Einstellungen → Haus → Tags & Karten */
     ];
   }
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
@@ -7424,7 +7430,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="mut sm" style="margin-top:10px">Namen, Daten und Notizen bleiben in deinem Home Assistant. Das Dashboard weist dich ${30} Tage vor Ablauf darauf hin.</div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
   }
-  /* Lab „Tags & Karten“ (tg): RFID-Karten und NFC-Sticker lösen feste Aktionen aus. Die Tags und ihre Aktionen liegen im Backend (tags.py),
+  /* „Tags & Karten“ (fest eingebaut, bis 2026.11.1b15 ein Lab): RFID-Karten und NFC-Sticker lösen feste Aktionen aus, auch die NFC-Tags am Stellplatz des Luftentfeuchters. Die Tags und ihre Aktionen liegen im Backend (tags.py),
      hier stehen nur Anzeige und Bedienung. Es gibt keine freien Dienstaufrufe, nur die feste Liste des Backends. */
   _tgxLoad(force) {
     if (!this._hass || this._tgxBusy) return;
@@ -7434,7 +7440,7 @@ class FensterHeizungPanel extends HTMLElement {
       .finally(() => { this._tgxBusy = false; this._tgxRefresh(); });
   }
   _tgxIs() { const m = this._modal; return !!(m && ["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)); }
-  _tgxRefresh() { if (this._tgxIs() && this._modal.type === "tgxmgr") { this._renderModal(); this._tgxPoll(); } }
+  _tgxRefresh() { if (this._tgxIs() && this._modal.type === "tgxmgr") { this._renderModal(); this._tgxPoll(); } else if (this._modal && this._modal.type === "lfset" && this._modal.tab === "ort") this._renderModal(); }
   _tgxPoll() {
     clearTimeout(this._tgxT);
     const D = this._tgxD;
@@ -7457,13 +7463,20 @@ class FensterHeizungPanel extends HTMLElement {
     if (a.k === "pres_vac") return `Urlaub für ${a.arg} ${a.arg === 1 ? "Tag" : "Tage"}`;
     if (a.k === "person_home" || a.k === "person_away") return `${this._tgxPerson(a.arg)} ist ${a.k === "person_home" ? "zu Hause" : "unterwegs"}`;
     if (a.k === "mu_done") return `${(D.bins || {})[a.arg] || "Tonne"} ist draußen`;
+    if (a.k === "lf_here") { const [dv, rm] = String(a.arg || "").split("|"); return `${(this._lfDev(dv) || {}).name || "Entfeuchter"} steht in ${this._lfRoomName(rm) || "einem Raum"}`; }
+    if (a.k === "lf_off" || a.k === "lf_tank") { const n = (this._lfDev(a.arg) || {}).name || "Entfeuchter"; return a.k === "lf_off" ? `${n} heute aus` : `${n}: Wassertank geleert`; }
+    if (a.k === "sf_tested") return `${a.arg ? this._tgxName(a.arg) : "Alle Melder"} geprüft`;
     return c.n;
   }
-  _tgxIcon(a) { const g = (this._tgxD.actions.find((x) => x.k === a.k) || {}).g; return { fh: "home", pe: "user", ww: "drop", ev: "car", mu: "trash", li: "lamp" }[g] || "nfc"; }
+  _tgxIcon(a) { const g = (this._tgxD.actions.find((x) => x.k === a.k) || {}).g; return { fh: "home", pe: "user", lf: "fan", ww: "drop", ev: "car", sf: "shield", mu: "trash", li: "lamp" }[g] || "nfc"; }
+  _tgxName(e) { const s = this._hass.states[e]; return (s && s.attributes.friendly_name) || String(e || "").split(".").pop(); }
+  _tgxDets() { const st = this._hass.states; return Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["smoke", "carbon_monoxide", "gas", "heat"].includes((st[e].attributes || {}).device_class)); }
   _tgxNeed(k) {
     const g = ((this._tgxD.actions.find((x) => x.k === k)) || {}).g;
-    if (g === "li" && !this._liOn()) return "Modul 18 ist nicht eingeschaltet (Labs).";
-    if (g === "mu" && !this._muOn()) return "Modul 17 ist nicht eingeschaltet (Labs).";
+    if (g === "li" && !this._liOn()) return "Modul 18 Licht ist nicht installiert oder ausgeschaltet (Einstellungen → Addons).";
+    if (g === "mu" && !this._muOn()) return "Modul 17 Müllabfuhr ist nicht installiert oder ausgeschaltet (Einstellungen → Addons).";
+    if (g === "lf" && !this._lfDevs().length) return "Es ist noch kein Luftentfeuchter eingerichtet (Einstellungen → Modul 1 → Geräte).";
+    if (g === "sf" && !(this._mdState().on || {}).sf) return "Modul 11 Sicherheit ist ausgeschaltet.";
     return "";
   }
   _tgxCfgNow() { const c = this._tgxD.cfg; return { tags: { ...c.tags }, fb: { ...c.fb } }; }
@@ -7484,7 +7497,10 @@ class FensterHeizungPanel extends HTMLElement {
     if (!m || m.type !== "tgxedit") return;
     const d = m.draft;
     if (a === "tgxg") { d.g = k; if (!D.actions.some((x) => x.g === k && x.k === d.act.k)) d.act = { k: "", arg: null }; }
-    else if (a === "tgxa") { const c = D.actions.find((x) => x.k === k); d.act = { k, arg: c.arg === "days" ? 7 : c.arg === "bin" ? "rest" : c.arg === "person" ? "" : null }; }
+    else if (a === "tgxa") { const c = D.actions.find((x) => x.k === k), L = this._lfDevs(); d.act = { k, arg: c.arg === "days" ? 7 : c.arg === "bin" ? "rest" : c.arg === "person" ? "" : c.arg === "lfdev" ? (L[0] ? L[0].id : "") : c.arg === "lfroom" ? (L[0] ? L[0].id + "|" : "") : c.arg === "det" ? "" : null }; }
+    else if (a === "tgxlfd") { const rm = d.act.k === "lf_here" ? String(d.act.arg || "").split("|")[1] || "" : null; d.act.arg = rm === null ? k : `${k}|${rm}`; }
+    else if (a === "tgxlfr") { const dv = String(d.act.arg || "").split("|")[0]; d.act.arg = `${dv}|${k}`; }
+    else if (a === "tgxdet") d.act.arg = k;
     else if (a === "tgxdays") d.act.arg = Math.min(21, Math.max(1, (d.act.arg || 7) + Number(b.dataset.s)));
     else if (a === "tgxbin") d.act.arg = k;
     else if (a === "tgxwho") d.persons = d.persons.includes(k) ? d.persons.filter((x) => x !== k) : [...d.persons, k];
@@ -7492,6 +7508,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "tgxwclr") { d.from = ""; d.to = ""; }
     else if (a === "tgxsave") {
       if (!d.act.k || (d.act.k.startsWith("person_") && !d.act.arg)) { this._toast("Bitte eine Aktion wählen"); return; }
+      if ((d.act.k === "lf_here" && !/^d\w+\|.+/.test(d.act.arg || "")) || ((d.act.k === "lf_off" || d.act.k === "lf_tank") && !d.act.arg)) { this._toast(d.act.k === "lf_here" ? "Bitte Entfeuchter und Raum wählen" : "Bitte einen Entfeuchter wählen"); return; }
       const c = this._tgxCfgNow(), { id, isNew, g, ...t } = d; t.name = (d.name || "").trim() || "Tag"; t.from = d.from && d.to ? d.from : ""; t.to = d.from && d.to ? d.to : "";
       c.tags[id] = t; this._tgxPut(c).then(() => { this._modal = { type: "tgxmgr" }; this._renderModal(); this._tgxPoll(); this._toast("Tag gespeichert"); }); return;
     }
@@ -7520,7 +7537,7 @@ class FensterHeizungPanel extends HTMLElement {
   _tgxModal() {
     const m = this._modal, D = this._tgxD, adm = this._admin();
     const hd = (t, s, back) => `<div class="sh"><div><b>${t}</b><span>${s}</span></div><button class="ibtn" data-act="${back ? "tgxback" : "close"}" aria-label="${back ? "Zurück" : "Schließen"}">${ic(back ? "back" : "close", 20)}</button></div>`;
-    if (!D) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">${hd("Tags & Karten", "Labs · lädt …")}<div class="mut sm">Die Tags werden geladen.</div></div>`;
+    if (!D) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">${hd("Tags & Karten", "Einstellungen · Haus · lädt …")}<div class="mut sm">Die Tags werden geladen.</div></div>`;
     if (m.type === "tgxfb") {
       const F = D.cfg.fb, st = this._hass.states, ids = (p) => Object.keys(st).filter((e) => e.startsWith(p)), svc = Object.keys((this._hass.services || {}).notify || {}).filter((x) => x !== "notify" && x !== "send_message").map((x) => "notify." + x);
       return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Rückmeldung einrichten", "Tags & Karten · gilt für alle Tags", true)}
@@ -7542,6 +7559,10 @@ class FensterHeizungPanel extends HTMLElement {
       const need = d.act.k ? this._tgxNeed(d.act.k) : "";
       const arg = !cur ? "" : cur.arg === "days" ? `<div class="vrow"><span>Dauer</span><div class="step" style="flex:none"><button data-act="tgxdays" data-s="-1" aria-label="weniger">${ic("minus", 18)}</button><b>${d.act.arg} ${d.act.arg === 1 ? "Tag" : "Tage"}</b><button data-act="tgxdays" data-s="1" aria-label="mehr">${ic("plus", 18)}</button></div></div>`
         : cur.arg === "bin" ? `<div class="gschips" style="margin:6px 0">${Object.entries(D.bins).map(([k, n]) => chip("tgxbin", k, n, d.act.arg === k)).join("")}</div>`
+        : cur.arg === "lfdev" || cur.arg === "lfroom" ? (() => { const L = this._lfDevs(), [dv, rm] = String(d.act.arg || "").split("|"), R = ((this._lf() || {}).rooms || []);
+            return `${L.length ? `<div class="mut sm" style="margin:8px 0 4px">Entfeuchter</div><div class="gschips">${L.map((x) => chip("tgxlfd", x.id, x.name, dv === x.id)).join("")}</div>` : `<div class="mut sm" style="margin-top:6px">Noch kein Luftentfeuchter eingerichtet.</div>`}
+              ${cur.arg === "lfroom" ? `<div class="mut sm" style="margin:8px 0 4px">Stellplatz (Raum mit Luftfeuchte-Sensor)</div><div class="gschips">${R.length ? R.map((r) => chip("tgxlfr", r.id, r.name, rm === r.id)).join("") : `<span class="mut sm">Kein Raum mit Luftfeuchte-Sensor.</span>`}</div><div class="mut sm" style="margin-top:4px">Beim Scannen steht der Entfeuchter dort, der Standort gilt für heute als bestätigt.</div>` : ""}`; })()
+        : cur.arg === "det" ? `<div class="mut sm" style="margin:8px 0 4px">Welcher Melder? Klebe das Tag neben den Melder und scanne es nach dem Test.</div><div class="gschips">${chip("tgxdet", "", "Alle Melder", !d.act.arg)}${this._tgxDets().map((e) => chip("tgxdet", e, this._tgxName(e), d.act.arg === e)).join("")}</div>`
         : cur.arg === "person" ? `<div style="margin:6px 0">${this._wzSel(persons, d.act.arg || "", "tgxperson", "", "– Person wählen –")}</div><div class="mut sm">${d.act.k === "person_home" ? "Zählt für die automatische Abwesenheit als „zu Hause“, höchstens 12 Stunden." : "Gilt als „unterwegs“. Sind alle unterwegs, wechseln die Räume nach der eingestellten Zeit auf „Abwesend“."}</div>` : "";
       const fbk = (k, t, ok, why) => chip("tgxfbt", k, t, !!d.fb[k] && ok, ok ? "" : `disabled title="${esc(why)}"`);
       return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd(d.isNew ? "Neuen Tag einrichten" : "Tag bearbeiten", `${esc(d.name || "Tag")} · gilt für alle Nutzer`, true)}
@@ -7563,7 +7584,7 @@ class FensterHeizungPanel extends HTMLElement {
     const tags = Object.entries(D.cfg.tags), L = D.learn || {}, F = L.found, lg = (D.log || []).slice(0, 6);
     const rc = { ok: "#2dd4bf", fail: "#fb7185", unknown: "#fb7185", deny: "#fbbf24", off: "#fbbf24", time: "#fbbf24" };
     const ready = this._tgxReady();
-    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Tags & Karten", "Labs · gilt für alle Nutzer")}
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Tags & Karten", "Einstellungen · Haus · gilt für alle Nutzer")}
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px"><div class="mut sm">${tags.length ? `${tags.length} ${tags.length === 1 ? "Tag" : "Tags"} angelernt` : "Noch kein Tag angelernt"}${D.unknown.length ? ` · ${D.unknown.length} unbekannt gescannt` : ""}</div><button class="btn2 pri" data-act="tgxlearn" ${adm && !L.active ? "" : "disabled"}>${ic("plus", 16)} Tag anlernen</button></div>
       ${L.active && !F ? `<div class="tgxscan"><span class="tgxpulse">${ic("nfc", 30)}</span><b>Jetzt Karte oder Sticker an einen Leser halten …</b><span class="mut sm">Wartet noch ${L.left} Sekunden</span><button class="btn2" data-act="tgxstop">Abbrechen</button></div>` : ""}
       ${F ? `<div class="tgxscan found"><span class="tgxpulse">${ic("check", 30)}</span><b>${F.known ? "Bekannter Tag erkannt" : "Neuer Tag erkannt"}</b><span class="mut sm">${esc(F.id)} · ${esc(F.reader)}</span><button class="btn2 pri" data-act="tgxnew" data-k="${esc(F.id)}">${F.known ? "Bearbeiten" : "Einrichten"}</button></div>` : ""}
@@ -7577,7 +7598,6 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _tgxReady() {
-    const D = this._tgxD; if (!D || !D.on) return "Das Lab „Tags & Karten“ ist ausgeschaltet. Tags werden erst nach dem Einschalten ausgeführt.";
     return "";
   }
   /* ================= Modul 19 Hausfluss (Beta, nur für Sponsoren) =================
@@ -8519,6 +8539,7 @@ class FensterHeizungPanel extends HTMLElement {
       { id: "haus.wx.official", t: "Amtliche Warnungen", p: `${H} › Wetterquelle`, k: "dwd nina unwetter warnung amtlich", go: ["mdsts", "wx"], h: "Warnungen des Deutschen Wetterdienstes oder von NINA für Modul 9." },
       { id: "presence", t: "Personen & Standort", p: H, k: "personen anwesenheit abwesend urlaub icloud handy standort home-zone zuhause karte", go: ["ortopen"], h: "Wer zu Hause ist und wo das Zuhause liegt. Steuert Abwesenheit und Urlaub in Modul 1 und Modul 2." },
       { id: "messwerk", t: "Messwerk", p: "Einstellungen", k: "sensoren sensor entität alle genutzt module ausfall messwerk", go: ["mdsta", "mw"], v: () => (this._mwD ? `${this._mwD.stats.sensors} Sensoren` : ""), h: "Alle Sensoren, die in einem Modul eingestellt sind, an einer Stelle. Zu jedem Sensor siehst du, in welchen Modulen er wofür genutzt wird und ob er liefert." },
+      { id: "tags", t: "Tags & Karten", p: H, k: "tag tags nfc rfid karte sticker aufkleber scannen anlernen entfeuchter stellplatz melder", go: ["tgxopen"], v: () => (this._tgxD ? `${Object.keys(this._tgxD.cfg.tags || {}).length} Tags` : ""), h: "RFID-Karten und NFC-Sticker lösen feste Aktionen aus, zum Beispiel Abwesend, Warmwasser, Entfeuchter steht hier oder Melder geprüft." },
       { id: "rooms", t: "Räume", p: H, k: "raum räume assistent thermostat fenster", go: ["wz"], v: () => `${this._collect().length}`, h: "Räume mit Thermostaten und Fenstern. Der Einrichtungsassistent ordnet sie zu." },
       // Modul 1
       { id: "general.summer.mode", t: "Sommermodus", p: `${M1} › Regeln`, k: "sommer heizplan pause warm", go: ["fhset"], tab: "rg", v: () => ({ off: "Aus", auto: "Automatisch", on: "Immer an" }[g().summer.mode]), h: "Wenn es draußen warm genug ist, ruhen die Heizpläne. Die Fenstermeldung bleibt aktiv." },
@@ -8531,7 +8552,7 @@ class FensterHeizungPanel extends HTMLElement {
       { id: "general.pv.delay", t: "Elektroheizer einschalten nach", p: `${M1} › Elektroheizer`, k: "verzögerung einschalten minuten heizer", go: ["fhset"], tab: "pv", v: () => `${pv().delay} Min.`, n: "Min." },
       { id: "general.pv.minrun", t: "Mindestlaufzeit Elektroheizer", p: `${M1} › Elektroheizer`, k: "mindestlaufzeit heizer minuten", go: ["fhset"], tab: "pv", v: () => `${pv().minrun} Min.`, n: "Min." },
       { id: "general.pv.soc_min", t: "Elektroheizer erst ab Ladestand", p: `${M1} › Elektroheizer`, k: "ladestand batterie heizer prozent", go: ["fhset"], tab: "pv", v: () => `${pv().soc_min} %`, n: "%", h: "Die Batterie wird zuerst bis zu diesem Ladestand geladen." },
-      { id: "entfeuchter", t: "Luftentfeuchter", p: `${M1} › Geräte`, k: "entfeuchter luftfeuchte feucht schimmel keller", go: ["fhset"], tab: "gr", h: "Mobilen Entfeuchter einbinden und mit der Raumfeuchte regeln." },
+      { id: "entfeuchter", t: "Luftentfeuchter", p: `${M1} › Geräte`, k: "entfeuchter luftfeuchte feucht schimmel keller nfc tag stellplatz", go: ["fhset"], tab: "gr", h: "Mobile Entfeuchter einbinden und mit der Raumfeuchte regeln. NFC-Tags am Stellplatz unter Gerät → Standort." },
       { id: "general.valve.warn", t: "Batterie schwach ab", p: `${M1} › Geräte`, k: "batterie thermostat ventil schwach warnung", go: ["diag"], v: () => `${(g().valve || {}).warn || 20} %`, n: "%", h: "Ab diesem Batteriestand meldet die Diagnose ein Thermostat als schwach." },
       { id: "general.valve.notify", t: "Meldung bei Ventil-Problemen", p: `${M1} › Geräte`, k: "benachrichtigung ventil problem meldung", go: ["diag"], h: "Benachrichtigungsdienst für ausgefallene Ventile und schwache Batterien." },
       // Darstellung, Gerät, Erweiterungen, System

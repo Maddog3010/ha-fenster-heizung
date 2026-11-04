@@ -1,8 +1,9 @@
-"""Lab „Tags & Karten“ (id tg): RFID-Karten und NFC-Sticker lösen feste Aktionen aus.
+"""„Tags & Karten“: RFID-Karten und NFC-Sticker lösen feste Aktionen aus (fest eingebaut, bis 2026.11.1b15 ein Lab).
 
 Home Assistant meldet jeden Scan als Ereignis `tag_scanned` (Handy mit NFC, ESPHome PN532/RC522 und andere Leser).
 Dieses Modul ordnet jedem angelernten Tag genau eine Aktion aus einer festen Liste zu. Es gibt bewusst keine freien
 Dienstaufrufe und keine Aktionen, die einen Alarm entschärfen oder etwas aufschließen: Karten lassen sich kopieren.
+Auch die NFC-Tags am Stellplatz des Luftentfeuchters (Modul 1) sind hier gespeichert, als Aktion „Entfeuchter steht hier“.
 Die reinen Prüffunktionen stehen oben, der Manager (Ereignis, Aktionen, Speicher) unten.
 """
 from __future__ import annotations
@@ -21,7 +22,6 @@ from homeassistant.util import dt as dt_util
 from .backup import SafeStore
 from .const import DOMAIN
 from .diag import diag_log
-from .labs import lab_on
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -39,8 +39,9 @@ BINS = ("rest", "bio", "papier", "gelb")
 
 # Aktion -> (Gruppe, Name, Zusatzangabe). Nur diese Liste ist erlaubt.
 GROUPS = {
-    "fh": "Modul 1 · Fenster & Heizung", "pe": "Personen", "ww": "Modul 2 · Warmwasser",
-    "ev": "Modul 8 · Elektroauto", "mu": "Modul 17 · Müllabfuhr", "li": "Modul 18 · Licht",
+    "fh": "Modul 1 · Fenster & Heizung", "lf": "Modul 1 · Luftentfeuchter", "pe": "Personen", "ww": "Modul 2 · Warmwasser",
+    "ev": "Modul 8 · Elektroauto", "sf": "Modul 11 · Sicherheit",
+    "mu": "Modul 17 · Müllabfuhr", "li": "Modul 18 · Licht",
 }
 ACTIONS: dict[str, tuple[str, str, str | None]] = {
     "pres_home": ("fh", "Alle Räume auf „Zu Hause“", None),
@@ -52,6 +53,9 @@ ACTIONS: dict[str, tuple[str, str, str | None]] = {
     "plan_off": ("fh", "Heizpläne ausschalten", None),
     "person_home": ("pe", "Person ist zu Hause", "person"),
     "person_away": ("pe", "Person ist unterwegs", "person"),
+    "lf_here": ("lf", "Entfeuchter steht hier", "lfroom"),
+    "lf_off": ("lf", "Entfeuchter heute aus", "lfdev"),
+    "lf_tank": ("lf", "Wassertank geleert", "lfdev"),
     "ww_boost": ("ww", "Einmal aufheizen", None),
     "ww_circ": ("ww", "Zirkulation 5 Minuten", None),
     "ww_away_on": ("ww", "Warmwasser auf „Abwesend“", None),
@@ -60,6 +64,7 @@ ACTIONS: dict[str, tuple[str, str, str | None]] = {
     "ev_goal": ("ev", "Schnellstart: bis zum Ziel voll", None),
     "ev_sun": ("ev", "Schnellstart: heute nur Sonne", None),
     "ev_stop": ("ev", "Schnellstart stoppen", None),
+    "sf_tested": ("sf", "Melder geprüft", "det"),
     "mu_done": ("mu", "Tonne ist draußen", "bin"),
     "li_night": ("li", "Szene „Gute Nacht“", None),
     "li_arrive": ("li", "Szene „Ankommen“", None),
@@ -100,6 +105,16 @@ def clean_tag(raw: Any) -> dict[str, Any] | None:
             return None
     elif need == "bin":
         arg = arg if arg in BINS else "rest"
+    elif need == "lfroom":  # Gerät|Raum
+        arg = arg if isinstance(arg, str) and re.match(r"^d[0-9a-z]{1,10}\|(ms_[a-z0-9]{1,16}|[A-Za-z0-9]{8,40})$", arg) else ""
+        if not arg:
+            return None
+    elif need == "lfdev":
+        arg = arg if isinstance(arg, str) and re.match(r"^d[0-9a-z]{1,10}$", arg) else ""
+        if not arg:
+            return None
+    elif need == "det":  # ein Melder oder alle (leer)
+        arg = arg if isinstance(arg, str) and re.match(r"^binary_sensor\.[a-z0-9_]+$", arg) else ""
     else:
         arg = None
     persons = [p for p in dict.fromkeys(r.get("persons") or []) if isinstance(p, str) and re.match(r"^person\.[a-z0-9_]+$", p)][:12]
@@ -158,6 +173,15 @@ def describe(act: dict[str, Any], names: dict[str, str] | None = None) -> str:
         return f"{p} ist {'zu Hause' if k == 'person_home' else 'unterwegs'}"
     if k == "mu_done":
         return f"{BIN_NAMES.get(arg, 'Tonne')} ist draußen"
+    N = names or {}
+    if k == "lf_here":
+        did, _, room = str(arg).partition("|")
+        return f"{N.get('lf:' + did, 'Entfeuchter')} steht in {N.get('room:' + room, 'einem Raum')}"
+    if k in ("lf_off", "lf_tank"):
+        dn = N.get("lf:" + str(arg), "Entfeuchter")
+        return f"{dn} heute aus" if k == "lf_off" else f"{dn}: Wassertank geleert"
+    if k == "sf_tested":
+        return f"{N.get(arg, 'Melder') if arg else 'Alle Melder'} geprüft"
     return n
 
 
@@ -172,6 +196,7 @@ class TagManager:
         self._last: dict[str, float] = {}
         self.learn_until = 0.0
         self.learned: dict[str, Any] | None = None
+        self.preset: dict[str, Any] | None = None   # Anlernen mit fester Aktion (z. B. vom Luftentfeuchter aus)
         self._unsub: CALLBACK_TYPE | None = None
 
     async def async_start(self) -> None:
@@ -180,7 +205,28 @@ class TagManager:
             self.cfg = clean_cfg(d.get("cfg"))
             self.log = [x for x in d.get("log") or [] if isinstance(x, dict)][-LOG_KEEP:]
             self.unknown = {k: v for k, v in (d.get("unknown") or {}).items() if isinstance(k, str) and isinstance(v, dict)}
+        self._adopt_entfeuchter()
         self._unsub = self.hass.bus.async_listen("tag_scanned", self._on_scan)
+
+    def _adopt_entfeuchter(self) -> None:
+        """Einmalig: NFC-Tags, die bis 2026.11.1b15 direkt beim Luftentfeuchter angelernt wurden, hierher übernehmen."""
+        lm = self.hass.data.get(DOMAIN, {}).get("entfeuchter")
+        if lm is None:
+            return
+        n = 0
+        names = self._names()
+        for dev in lm.cfg.get("devs") or []:
+            for room, tid in list((dev.get("nfc") or {}).items()):
+                if _TID.match(tid) and tid not in self.cfg["tags"] and len(self.cfg["tags"]) < MAX_TAGS:
+                    t = clean_tag({"name": f"{dev['name']} · {names.get('room:' + room, 'Stellplatz')}"[:40], "act": {"k": "lf_here", "arg": f"{dev['id']}|{room}"}})
+                    if t:
+                        self.cfg["tags"][tid] = t
+                        n += 1
+            dev["nfc"] = {}
+        if n:
+            lm._save()
+            self._save()
+            _LOGGER.info("Tags & Karten: %s NFC-Tag(s) vom Luftentfeuchter übernommen", n)
 
     def async_stop(self) -> None:
         if self._unsub:
@@ -191,11 +237,24 @@ class TagManager:
         self._store.async_delay_save(lambda: {"cfg": self.cfg, "log": self.log[-LOG_KEEP:], "unknown": self.unknown}, 5)
 
     def active(self) -> bool:
-        return lab_on(self.hass, "tg")
+        return True  # fest eingebaut
 
     # ---- Wer und wo
     def _names(self) -> dict[str, str]:
-        return {s.entity_id: str(s.attributes.get("friendly_name") or s.entity_id) for s in self.hass.states.async_all("person")}
+        """Anzeigenamen: Personen, Melder, Entfeuchter (lf:<id>) und Räume (room:<id>)."""
+        out = {s.entity_id: str(s.attributes.get("friendly_name") or s.entity_id) for s in self.hass.states.async_all("person")}
+        for s in self.hass.states.async_all("binary_sensor"):
+            if s.attributes.get("device_class") in ("smoke", "carbon_monoxide", "gas", "heat"):
+                out[s.entity_id] = str(s.attributes.get("friendly_name") or s.entity_id)
+        D = self.hass.data.get(DOMAIN, {})
+        lm = D.get("entfeuchter")
+        for dev in (lm.cfg.get("devs") or []) if lm is not None else []:
+            out["lf:" + dev["id"]] = dev["name"]
+        for e in self.hass.config_entries.async_entries(DOMAIN):
+            out["room:" + e.entry_id] = e.title
+        for m in (D.get("layout") or {}).get("mess") or []:
+            out["room:" + str(m.get("id"))] = str(m.get("name") or "")
+        return out
 
     def _who(self, event: Event) -> str | None:
         uid = getattr(getattr(event, "context", None), "user_id", None)
@@ -233,8 +292,18 @@ class TagManager:
         who = self._who(event)
         reader = self._reader(event, who)
         if now < self.learn_until:
-            self.learned = {"id": tid, "ts": now, "reader": reader, "known": tid in self.cfg["tags"]}
+            known = tid in self.cfg["tags"]
+            self.learned = {"id": tid, "ts": now, "reader": reader, "known": known, "created": False}
             self.learn_until = 0.0
+            if self.preset:  # Anlernen mit fester Aktion: Tag gleich anlegen (ein vorhandenes wird umgestellt)
+                old = self.cfg["tags"].get(tid)
+                t = clean_tag({**(old or {}), **self.preset})
+                if t:
+                    self.cfg["tags"][tid] = t
+                    self.unknown.pop(tid, None)
+                    self.learned.update(created=True, was=(old or {}).get("name") or "")
+                    self._save()
+                self.preset = None
             return
         t = self.cfg["tags"].get(tid)
         if t is None:
@@ -324,6 +393,24 @@ class TagManager:
                 return False, "Die Wallbox-Regelung ist aus"
             await wb.async_quick({"ev_h1": "h1", "ev_goal": "goal", "ev_sun": "sun", "ev_stop": ""}[k])
             return True, ""
+        if k.startswith("lf_"):
+            lm = D.get("entfeuchter")
+            did, _, room = str(arg).partition("|")
+            if lm is None or lm.dev(did) is None:
+                return False, "Dieser Luftentfeuchter ist nicht mehr eingerichtet"
+            if k == "lf_here":
+                if lm._room(room) is None:
+                    return False, "Den Raum gibt es nicht mehr"
+                await lm.async_cmd("loc", room, did, how="nfc")
+            else:
+                await lm.async_cmd("off_today" if k == "lf_off" else "tank_empty", "", did)
+            return True, ""
+        if k == "sf_tested":
+            sm = D.get("sicherheit")
+            if sm is None or not sm.active():
+                return False, "Modul 11 ist aus"
+            await sm.async_mark_tested(str(arg or ""))
+            return True, ""
         if k == "mu_done":
             mm = D.get("muell")
             if mm is None:
@@ -373,9 +460,11 @@ class TagManager:
         self._save()
         return self.snapshot()
 
-    def async_learn(self, on: bool) -> dict[str, Any]:
+    def async_learn(self, on: bool, preset: Any = None) -> dict[str, Any]:
         self.learned = None
         self.learn_until = time.time() + LEARN_S if on else 0.0
+        p = preset if isinstance(preset, dict) else None
+        self.preset = {"name": str(p.get("name") or "Tag")[:40], "act": p.get("act")} if on and p and clean_tag({"act": p.get("act")}) else None
         return self.snapshot()
 
     async def async_test(self, tid: str) -> dict[str, Any]:

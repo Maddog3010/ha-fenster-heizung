@@ -21,9 +21,9 @@ Kosten (aktueller Strompreis der Haus-Werte), entfeuchtete Menge (Liter pro Stun
 Meldungen: Tank voll, Feuchte bleibt trotz Betrieb zu hoch, Standort fehlt, Filter reinigen nach Betriebsstunden.
 Ereignis „fenster_heizung_entfeuchter“ bei Start, Stopp, Tank voll und Standortwechsel für eigene Automationen.
 
-Schritt 5 (nur NFC): Am Stellplatz klebt ein NFC-Tag. Wird es mit dem Handy gescannt (Ereignis `tag_scanned`), steht
-das zugeordnete Gerät dort und der Tag gilt als bestätigt. Tags werden je Gerät und Raum angelernt (30 Sekunden auf den
-nächsten Scan warten). Funktioniert unabhängig vom Lab „Tags & Karten“.
+Schritt 5 (nur NFC): Am Stellplatz klebt ein NFC-Tag. Die Tags gehören zu „Tags & Karten“ (tags.py) mit der Aktion
+„Entfeuchter steht hier“ (lf_here, Gerät|Raum); dort laufen auch Personen, Zeitfenster und Protokoll. Das Feld „nfc“ je
+Gerät wird nur noch gelesen, um Tags aus 2026.11.1b14/b15 einmalig dorthin zu übernehmen.
 
 Oben stehen reine Rechenfunktionen ohne Home-Assistant-Importe (testbar), unten der Manager.
 """
@@ -47,8 +47,6 @@ BOOSTS = ("off", "pv", "cheap", "both")
 EVENT = "fenster_heizung_entfeuchter"
 _DID = re.compile(r"^d[0-9a-z]{1,10}$")
 _TID = re.compile(r"^[A-Za-z0-9_\-:.]{1,100}$")
-NFC_LEARN_S = 30
-NFC_DEBOUNCE_S = 3.0
 _ENT = re.compile(r"^[a-z_]+\.[a-z0-9_]{1,200}$")
 _LOC = re.compile(r"^(ms_[a-z0-9]{1,16}|[A-Za-z0-9]{8,40})$")
 FULL_STATES = {"on", "true", "full", "voll", "problem", "1"}
@@ -311,10 +309,6 @@ class EntfeuchterManager:
         self._was: dict[str, bool] = {}
         self._unsub: CALLBACK_TYPE | None = None
         self._unsub_ev: CALLBACK_TYPE | None = None
-        self._unsub_tag: CALLBACK_TYPE | None = None
-        self._learn: dict[str, Any] = {"until": 0.0, "dev": "", "room": "", "res": None}
-        self._scan_ts: dict[str, float] = {}
-        self._nfc_last: dict[str, dict[str, Any]] = {}
 
     async def async_start(self) -> None:
         from .api import _layout  # Messräume stehen im Layout
@@ -328,12 +322,8 @@ class EntfeuchterManager:
                 self.st = {self.cfg["devs"][0]["id"]: load_state(d["st"])}
         self._unsub = async_track_time_interval(self.hass, self._tick, timedelta(seconds=TICK_SECONDS))
         self._unsub_ev = self.hass.bus.async_listen("mobile_app_notification_action", self._on_action)
-        self._unsub_tag = self.hass.bus.async_listen("tag_scanned", self._on_tag)
 
     def async_stop(self) -> None:
-        if self._unsub_tag:
-            self._unsub_tag()
-            self._unsub_tag = None
         if self._unsub:
             self._unsub()
             self._unsub = None
@@ -363,40 +353,6 @@ class EntfeuchterManager:
             await self.async_cmd("off_today", "", did)
         elif rest.startswith("L_"):
             await self.async_cmd("loc", rest[2:], did)
-
-    # ---- NFC-Tag am Stellplatz (Schritt 5)
-    def _tag_elsewhere(self, tid: str) -> bool:
-        """Ist das Tag auch im Lab „Tags & Karten“ mit einer Aktion belegt?"""
-        tm = self.hass.data.get(DOMAIN, {}).get("tags")
-        try:
-            return tid in ((getattr(tm, "cfg", None) or {}).get("tags") or {})
-        except Exception:  # noqa: BLE001
-            return False
-
-    async def _on_tag(self, event) -> None:
-        tid = str((event.data or {}).get("tag_id") or "")
-        if not _TID.match(tid):
-            return
-        now = time.time()
-        L = self._learn
-        if now < L["until"]:
-            dev = self.dev(L["dev"])
-            if dev is not None:
-                for d in self.cfg["devs"]:  # ein Tag gehört genau einem Gerät und Raum
-                    d["nfc"] = {k: v for k, v in d["nfc"].items() if v != tid}
-                dev["nfc"][L["room"]] = tid
-                L.update(until=0.0, res={"tid": tid, "room": L["room"], "dev": L["dev"], "name": self._name(L["room"]), "lab": self._tag_elsewhere(tid)})
-                self._save()
-            return
-        if now - self._scan_ts.get(tid, 0) < NFC_DEBOUNCE_S:
-            return
-        self._scan_ts[tid] = now
-        for d in self.cfg["devs"]:
-            room = next((k for k, v in d["nfc"].items() if v == tid), None)
-            if room and self._room(room) is not None:
-                await self.async_cmd("loc", room, d["id"], how="nfc")
-                self._nfc_last[d["id"]] = {"ts": now, "room": room}
-                return
 
     def _save(self) -> None:
         for ds in self.st.values():
@@ -781,22 +737,18 @@ class EntfeuchterManager:
         ph = ask_phase(dev["ask"], dt_util.now().strftime("%H:%M"), ds["conf_day"] == today)
         y = self._yesterday(ds)
         rec = ds["locs"].get(today) or {}
-        nl = self._nfc_last.get(dev["id"])
         return {"id": dev["id"], "loc": ds["loc"], "off_day": ds["off_day"], "live": self.live.get(dev["id"], {}),
-                "nfc_last": {"ago": int(time.time() - nl["ts"]), "room": nl["room"]} if nl else None,
                 "ask": {"phase": ph, "conf": ds["conf_day"] == today, "how": rec.get("h") or "", "yest": y, "yest_name": self._name(y) if y else "",
                         "sent": ds["sent_day"] == today, "offer": [r["id"] for r in self._offer(dev)]},
                 "hist": self._hist(ds), "stats": self._stats(ds)}
 
     def snapshot(self) -> dict[str, Any]:
-        L, now = self._learn, time.time()
-        learn = {"active": now < L["until"], "left": max(0, int(L["until"] - now)), "dev": L["dev"], "room": L["room"], "res": L["res"]}
-        return {"cfg": self.cfg, "rooms": self.rooms(), "devs": {d["id"]: self._dev_snap(d) for d in self.cfg["devs"]}, "max": MAX_DEVS, "nfc_learn": learn}
+        return {"cfg": self.cfg, "rooms": self.rooms(), "devs": {d["id"]: self._dev_snap(d) for d in self.cfg["devs"]}, "max": MAX_DEVS}
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
         old = {d["id"]: d for d in self.cfg["devs"]}
         self.cfg = clean_cfg(raw)
-        for d in self.cfg["devs"]:  # NFC-Tags werden nur über Anlernen und Entfernen geändert
+        for d in self.cfg["devs"]:  # alte NFC-Zuordnung bleibt bis zur Übernahme durch „Tags & Karten“ erhalten
             d["nfc"] = dict(old[d["id"]]["nfc"]) if d["id"] in old else {}
         for d in self.cfg["devs"]:  # neues Gerät oder anderes Gerät: Zustand neu
             if d["id"] in old and old[d["id"]]["ent"] and old[d["id"]]["ent"] != d["ent"]:
@@ -834,17 +786,6 @@ class EntfeuchterManager:
         elif cmd == "filter_reset":
             ds["filter_h"] = 0.0
             ds["sent"].pop("filter", None)
-        elif cmd == "nfc_learn":
-            if _LOC.match(arg) and self._room(arg) is not None:
-                self._learn = {"until": time.time() + NFC_LEARN_S, "dev": dev["id"], "room": arg, "res": None}
-            return self.snapshot()
-        elif cmd == "nfc_stop":
-            self._learn = {"until": 0.0, "dev": "", "room": "", "res": None}
-            return self.snapshot()
-        elif cmd == "nfc_forget":
-            dev["nfc"].pop(arg, None)
-            self._save()
-            return self.snapshot()
         elif cmd == "ask_test":
             n = await self._send_ask(dev)
             snap = self.snapshot()

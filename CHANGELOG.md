@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b16] - 2026-11-04
+
+Testversion (Beta): „Tags & Karten“ ist fest eingebaut.
+
+### Geändert
+- **„Tags & Karten“ ist kein Lab mehr, sondern fest eingebaut.** Du findest es unter Einstellungen → Haus → Tags & Karten und in der Einstellungs-Suche. Angelernte Tags, Rückmeldung und Protokoll bleiben erhalten. Tags werden jetzt immer ausgeführt, auch wenn das Lab vorher aus war. Der Sponsor-Vorlauf des Labs entfällt.
+- **Luftentfeuchter: Die NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“**, als Aktion „Entfeuchter steht hier“. Angelernt wird weiter bequem beim Entfeuchter unter Gerät → Standort. Für diese Tags gelten damit auch Personen, Zeitfenster, Rückmeldung und Protokoll. Ein Tag, das schon eine andere Aktion hatte, wird beim Anlernen umgestellt, mit Hinweis. Bereits beim Entfeuchter angelernte Tags werden beim Update übernommen.
+
+### Neu
+- **Neue Tag-Aktionen:**
+  - Modul 1 · Luftentfeuchter: „Entfeuchter steht hier“ (Gerät und Raum), „Entfeuchter heute aus“ und „Wassertank geleert“ – zum Beispiel ein Sticker direkt am Gerät für den Tank.
+  - Modul 11 · Sicherheit: „Melder geprüft“ für einen bestimmten Melder oder alle. Ein Sticker neben dem Melder, nach dem Test kurz scannen, und die Prüfung steht im Jahresprotokoll.
+- Hinweise im Tag-Editor, wenn das zugehörige Modul aus ist oder Müllabfuhr und Licht nicht als Addon installiert sind.
+
 ## [2026.11.1b15] - 2026-11-04
 
 Testversion (Beta) mit einer wichtigen Korrektur für die Mac-App.

@@ -1,4 +1,4 @@
-  /* Lab „Tags & Karten“ (tg): RFID-Karten und NFC-Sticker lösen feste Aktionen aus. Die Tags und ihre Aktionen liegen im Backend (tags.py),
+  /* „Tags & Karten“ (fest eingebaut, bis 2026.11.1b15 ein Lab): RFID-Karten und NFC-Sticker lösen feste Aktionen aus, auch die NFC-Tags am Stellplatz des Luftentfeuchters. Die Tags und ihre Aktionen liegen im Backend (tags.py),
      hier stehen nur Anzeige und Bedienung. Es gibt keine freien Dienstaufrufe, nur die feste Liste des Backends. */
   _tgxLoad(force) {
     if (!this._hass || this._tgxBusy) return;
@@ -8,7 +8,7 @@
       .finally(() => { this._tgxBusy = false; this._tgxRefresh(); });
   }
   _tgxIs() { const m = this._modal; return !!(m && ["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)); }
-  _tgxRefresh() { if (this._tgxIs() && this._modal.type === "tgxmgr") { this._renderModal(); this._tgxPoll(); } }
+  _tgxRefresh() { if (this._tgxIs() && this._modal.type === "tgxmgr") { this._renderModal(); this._tgxPoll(); } else if (this._modal && this._modal.type === "lfset" && this._modal.tab === "ort") this._renderModal(); }
   _tgxPoll() {
     clearTimeout(this._tgxT);
     const D = this._tgxD;
@@ -31,13 +31,20 @@
     if (a.k === "pres_vac") return `Urlaub für ${a.arg} ${a.arg === 1 ? "Tag" : "Tage"}`;
     if (a.k === "person_home" || a.k === "person_away") return `${this._tgxPerson(a.arg)} ist ${a.k === "person_home" ? "zu Hause" : "unterwegs"}`;
     if (a.k === "mu_done") return `${(D.bins || {})[a.arg] || "Tonne"} ist draußen`;
+    if (a.k === "lf_here") { const [dv, rm] = String(a.arg || "").split("|"); return `${(this._lfDev(dv) || {}).name || "Entfeuchter"} steht in ${this._lfRoomName(rm) || "einem Raum"}`; }
+    if (a.k === "lf_off" || a.k === "lf_tank") { const n = (this._lfDev(a.arg) || {}).name || "Entfeuchter"; return a.k === "lf_off" ? `${n} heute aus` : `${n}: Wassertank geleert`; }
+    if (a.k === "sf_tested") return `${a.arg ? this._tgxName(a.arg) : "Alle Melder"} geprüft`;
     return c.n;
   }
-  _tgxIcon(a) { const g = (this._tgxD.actions.find((x) => x.k === a.k) || {}).g; return { fh: "home", pe: "user", ww: "drop", ev: "car", mu: "trash", li: "lamp" }[g] || "nfc"; }
+  _tgxIcon(a) { const g = (this._tgxD.actions.find((x) => x.k === a.k) || {}).g; return { fh: "home", pe: "user", lf: "fan", ww: "drop", ev: "car", sf: "shield", mu: "trash", li: "lamp" }[g] || "nfc"; }
+  _tgxName(e) { const s = this._hass.states[e]; return (s && s.attributes.friendly_name) || String(e || "").split(".").pop(); }
+  _tgxDets() { const st = this._hass.states; return Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["smoke", "carbon_monoxide", "gas", "heat"].includes((st[e].attributes || {}).device_class)); }
   _tgxNeed(k) {
     const g = ((this._tgxD.actions.find((x) => x.k === k)) || {}).g;
-    if (g === "li" && !this._liOn()) return "Modul 18 ist nicht eingeschaltet (Labs).";
-    if (g === "mu" && !this._muOn()) return "Modul 17 ist nicht eingeschaltet (Labs).";
+    if (g === "li" && !this._liOn()) return "Modul 18 Licht ist nicht installiert oder ausgeschaltet (Einstellungen → Addons).";
+    if (g === "mu" && !this._muOn()) return "Modul 17 Müllabfuhr ist nicht installiert oder ausgeschaltet (Einstellungen → Addons).";
+    if (g === "lf" && !this._lfDevs().length) return "Es ist noch kein Luftentfeuchter eingerichtet (Einstellungen → Modul 1 → Geräte).";
+    if (g === "sf" && !(this._mdState().on || {}).sf) return "Modul 11 Sicherheit ist ausgeschaltet.";
     return "";
   }
   _tgxCfgNow() { const c = this._tgxD.cfg; return { tags: { ...c.tags }, fb: { ...c.fb } }; }
@@ -58,7 +65,10 @@
     if (!m || m.type !== "tgxedit") return;
     const d = m.draft;
     if (a === "tgxg") { d.g = k; if (!D.actions.some((x) => x.g === k && x.k === d.act.k)) d.act = { k: "", arg: null }; }
-    else if (a === "tgxa") { const c = D.actions.find((x) => x.k === k); d.act = { k, arg: c.arg === "days" ? 7 : c.arg === "bin" ? "rest" : c.arg === "person" ? "" : null }; }
+    else if (a === "tgxa") { const c = D.actions.find((x) => x.k === k), L = this._lfDevs(); d.act = { k, arg: c.arg === "days" ? 7 : c.arg === "bin" ? "rest" : c.arg === "person" ? "" : c.arg === "lfdev" ? (L[0] ? L[0].id : "") : c.arg === "lfroom" ? (L[0] ? L[0].id + "|" : "") : c.arg === "det" ? "" : null }; }
+    else if (a === "tgxlfd") { const rm = d.act.k === "lf_here" ? String(d.act.arg || "").split("|")[1] || "" : null; d.act.arg = rm === null ? k : `${k}|${rm}`; }
+    else if (a === "tgxlfr") { const dv = String(d.act.arg || "").split("|")[0]; d.act.arg = `${dv}|${k}`; }
+    else if (a === "tgxdet") d.act.arg = k;
     else if (a === "tgxdays") d.act.arg = Math.min(21, Math.max(1, (d.act.arg || 7) + Number(b.dataset.s)));
     else if (a === "tgxbin") d.act.arg = k;
     else if (a === "tgxwho") d.persons = d.persons.includes(k) ? d.persons.filter((x) => x !== k) : [...d.persons, k];
@@ -66,6 +76,7 @@
     else if (a === "tgxwclr") { d.from = ""; d.to = ""; }
     else if (a === "tgxsave") {
       if (!d.act.k || (d.act.k.startsWith("person_") && !d.act.arg)) { this._toast("Bitte eine Aktion wählen"); return; }
+      if ((d.act.k === "lf_here" && !/^d\w+\|.+/.test(d.act.arg || "")) || ((d.act.k === "lf_off" || d.act.k === "lf_tank") && !d.act.arg)) { this._toast(d.act.k === "lf_here" ? "Bitte Entfeuchter und Raum wählen" : "Bitte einen Entfeuchter wählen"); return; }
       const c = this._tgxCfgNow(), { id, isNew, g, ...t } = d; t.name = (d.name || "").trim() || "Tag"; t.from = d.from && d.to ? d.from : ""; t.to = d.from && d.to ? d.to : "";
       c.tags[id] = t; this._tgxPut(c).then(() => { this._modal = { type: "tgxmgr" }; this._renderModal(); this._tgxPoll(); this._toast("Tag gespeichert"); }); return;
     }
@@ -94,7 +105,7 @@
   _tgxModal() {
     const m = this._modal, D = this._tgxD, adm = this._admin();
     const hd = (t, s, back) => `<div class="sh"><div><b>${t}</b><span>${s}</span></div><button class="ibtn" data-act="${back ? "tgxback" : "close"}" aria-label="${back ? "Zurück" : "Schließen"}">${ic(back ? "back" : "close", 20)}</button></div>`;
-    if (!D) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">${hd("Tags & Karten", "Labs · lädt …")}<div class="mut sm">Die Tags werden geladen.</div></div>`;
+    if (!D) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">${hd("Tags & Karten", "Einstellungen · Haus · lädt …")}<div class="mut sm">Die Tags werden geladen.</div></div>`;
     if (m.type === "tgxfb") {
       const F = D.cfg.fb, st = this._hass.states, ids = (p) => Object.keys(st).filter((e) => e.startsWith(p)), svc = Object.keys((this._hass.services || {}).notify || {}).filter((x) => x !== "notify" && x !== "send_message").map((x) => "notify." + x);
       return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Rückmeldung einrichten", "Tags & Karten · gilt für alle Tags", true)}
@@ -116,6 +127,10 @@
       const need = d.act.k ? this._tgxNeed(d.act.k) : "";
       const arg = !cur ? "" : cur.arg === "days" ? `<div class="vrow"><span>Dauer</span><div class="step" style="flex:none"><button data-act="tgxdays" data-s="-1" aria-label="weniger">${ic("minus", 18)}</button><b>${d.act.arg} ${d.act.arg === 1 ? "Tag" : "Tage"}</b><button data-act="tgxdays" data-s="1" aria-label="mehr">${ic("plus", 18)}</button></div></div>`
         : cur.arg === "bin" ? `<div class="gschips" style="margin:6px 0">${Object.entries(D.bins).map(([k, n]) => chip("tgxbin", k, n, d.act.arg === k)).join("")}</div>`
+        : cur.arg === "lfdev" || cur.arg === "lfroom" ? (() => { const L = this._lfDevs(), [dv, rm] = String(d.act.arg || "").split("|"), R = ((this._lf() || {}).rooms || []);
+            return `${L.length ? `<div class="mut sm" style="margin:8px 0 4px">Entfeuchter</div><div class="gschips">${L.map((x) => chip("tgxlfd", x.id, x.name, dv === x.id)).join("")}</div>` : `<div class="mut sm" style="margin-top:6px">Noch kein Luftentfeuchter eingerichtet.</div>`}
+              ${cur.arg === "lfroom" ? `<div class="mut sm" style="margin:8px 0 4px">Stellplatz (Raum mit Luftfeuchte-Sensor)</div><div class="gschips">${R.length ? R.map((r) => chip("tgxlfr", r.id, r.name, rm === r.id)).join("") : `<span class="mut sm">Kein Raum mit Luftfeuchte-Sensor.</span>`}</div><div class="mut sm" style="margin-top:4px">Beim Scannen steht der Entfeuchter dort, der Standort gilt für heute als bestätigt.</div>` : ""}`; })()
+        : cur.arg === "det" ? `<div class="mut sm" style="margin:8px 0 4px">Welcher Melder? Klebe das Tag neben den Melder und scanne es nach dem Test.</div><div class="gschips">${chip("tgxdet", "", "Alle Melder", !d.act.arg)}${this._tgxDets().map((e) => chip("tgxdet", e, this._tgxName(e), d.act.arg === e)).join("")}</div>`
         : cur.arg === "person" ? `<div style="margin:6px 0">${this._wzSel(persons, d.act.arg || "", "tgxperson", "", "– Person wählen –")}</div><div class="mut sm">${d.act.k === "person_home" ? "Zählt für die automatische Abwesenheit als „zu Hause“, höchstens 12 Stunden." : "Gilt als „unterwegs“. Sind alle unterwegs, wechseln die Räume nach der eingestellten Zeit auf „Abwesend“."}</div>` : "";
       const fbk = (k, t, ok, why) => chip("tgxfbt", k, t, !!d.fb[k] && ok, ok ? "" : `disabled title="${esc(why)}"`);
       return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd(d.isNew ? "Neuen Tag einrichten" : "Tag bearbeiten", `${esc(d.name || "Tag")} · gilt für alle Nutzer`, true)}
@@ -137,7 +152,7 @@
     const tags = Object.entries(D.cfg.tags), L = D.learn || {}, F = L.found, lg = (D.log || []).slice(0, 6);
     const rc = { ok: "#2dd4bf", fail: "#fb7185", unknown: "#fb7185", deny: "#fbbf24", off: "#fbbf24", time: "#fbbf24" };
     const ready = this._tgxReady();
-    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Tags & Karten", "Labs · gilt für alle Nutzer")}
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Tags & Karten", "Einstellungen · Haus · gilt für alle Nutzer")}
       <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px"><div class="mut sm">${tags.length ? `${tags.length} ${tags.length === 1 ? "Tag" : "Tags"} angelernt` : "Noch kein Tag angelernt"}${D.unknown.length ? ` · ${D.unknown.length} unbekannt gescannt` : ""}</div><button class="btn2 pri" data-act="tgxlearn" ${adm && !L.active ? "" : "disabled"}>${ic("plus", 16)} Tag anlernen</button></div>
       ${L.active && !F ? `<div class="tgxscan"><span class="tgxpulse">${ic("nfc", 30)}</span><b>Jetzt Karte oder Sticker an einen Leser halten …</b><span class="mut sm">Wartet noch ${L.left} Sekunden</span><button class="btn2" data-act="tgxstop">Abbrechen</button></div>` : ""}
       ${F ? `<div class="tgxscan found"><span class="tgxpulse">${ic("check", 30)}</span><b>${F.known ? "Bekannter Tag erkannt" : "Neuer Tag erkannt"}</b><span class="mut sm">${esc(F.id)} · ${esc(F.reader)}</span><button class="btn2 pri" data-act="tgxnew" data-k="${esc(F.id)}">${F.known ? "Bearbeiten" : "Einrichten"}</button></div>` : ""}
@@ -151,6 +166,5 @@
       <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _tgxReady() {
-    const D = this._tgxD; if (!D || !D.on) return "Das Lab „Tags & Karten“ ist ausgeschaltet. Tags werden erst nach dem Einschalten ausgeführt.";
     return "";
   }

@@ -49,6 +49,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | 🌦️ | **Wetter und Sicherheit** | Eigene und amtliche Warnungen, Rauch-, Gas- und Wassermelder mit Grundriss und Wartung |
 | 🏠 | **Startseite** | Ampel, Wetter, Personen, Alarm und Hinweise auf einen Blick |
 | 📱 | **Tablet-Modus** | Große Knöpfe, Ruhemodus, PIN und Display per Bewegungsmelder |
+| 🏷️ | **Tags & Karten** | RFID-Karten und NFC-Sticker lösen feste Aktionen aus: Abwesend, Warmwasser, Wallbox, Entfeuchter steht hier, Melder geprüft und mehr |
 | 🧪 | **Labs** | Neue Funktionen zum Ausprobieren, ab Werk aus |
 | 🧩 | **Addons** | Module zum Installieren und Deinstallieren, als erstes Modul 21 Saugroboter |
 | ⚙️ | **Einstellungen** | Alles an einem Ort: Haus-Werte für alle Module, Messwerk mit allen Sensoren, Suche, Verlauf mit Rückgängig |
@@ -266,7 +267,7 @@ Der Knopf **Einstellungen** öffnet in jedem Modul dieselbe Seite. Am Desktop st
 
 - **Übersicht:** Einrichtungsstand, eine **Prüfung** (Sensoren ohne Wert, falsche Einheit, Vorzeichen des Netzes, offene Module, Homeserver-Sicherung, neue Versionen) mit „Beheben“ und die **letzten Änderungen** mit ↶
 - **Messwerk:** jeder Sensor, der irgendwo eingestellt ist, einmal mit Aufgabe („Netzleistung“, „Fenster · Bad“), Live-Wert, Zustand und den Modulen, die ihn nutzen. Ein Tipp zeigt **„genutzt in“** mit dem Zweck je Modul und wo er eingestellt wird. Hinweise, wenn zum Beispiel ein Raum einen anderen Außensensor nutzt als das Haus. Sensoren lassen sich hier direkt **zuordnen und tauschen** (Haus, Räume, Modul 2, 4 und 8), die Änderung gilt sofort für alle Module
-- **Haus:** Räume, Personen & Standort und die **gemeinsamen Werte für alle Module**: Energiequellen mit Ladestand, Preise & Tarif, Wetterquelle. Jeder Wert steht nur hier, mit Live-Werten und „Gilt für Modul …“
+- **Haus:** Räume, Personen & Standort, **Tags & Karten** und die **gemeinsamen Werte für alle Module**: Energiequellen mit Ladestand, Preise & Tarif, Wetterquelle. Jeder Wert steht nur hier, mit Live-Werten und „Gilt für Modul …“
 - **Module:** eingeschaltete Module mit Status, ausgeschaltete als kleines Raster (ein Tipp schaltet ein). Modul 1 hat Reiter statt Abschnitten zum Aufklappen
 - **Darstellung**, **Dieses Gerät** (was nur in diesem Browser gilt)
 - **Addons:** installierte Addons mit Version und Status (Öffnen, Pausieren, Deinstallieren, Zurück zur früheren Version), **Katalog** zum Installieren mit Steckbrief und **Updates** mit „Was ist neu“. Der Katalog wird beim Start und dann einmal am Tag geprüft, „Jetzt prüfen“ geht sofort. Beim Deinstallieren wählst du, ob deine Daten bleiben
@@ -321,7 +322,6 @@ Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt 
 | Duschzeiten lernen | 2 | Schaltet | Heizt vor den typischen Duschzeiten vor |
 | Legionellenschutz nach Sonne | 2 | Schaltet | Legt den Schutz auf sonnige Tage |
 | Ladeziel nach Kalender | 8 | Schaltet | Hebt das Ladeziel vor langen Terminen an |
-| Tags & Karten | alle | Schaltet | RFID-Karten und NFC-Sticker lösen feste Aktionen aus |
 
 ---
 

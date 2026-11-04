@@ -261,7 +261,7 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
 MU_BLOCKS = {"tonnen", "next", "cal", "rem", "hint", "cost"}
 ST_BLOCKS = {"zuhause", "wetter", "personen", "hinweise", "alarm", "energie", "muell"}
 ST_BUBBLES = {"wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell", "warmwasser", "preis", "hinweise"}
-LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm", "sb", "li", "tg"}
+LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm", "sb", "li"}  # tg (Tags & Karten) ist seit 2026.11.1b16 fest eingebaut
 LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "lf_days", "vh_dk", "vh_max", "dz_days", "dz_lead", "ld_wait", "ld_min", "lk_hi", "lk_dur"}
 
 
@@ -1004,7 +1004,7 @@ async def ws_tg_set(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 @websocket_api.require_admin
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tg_act", vol.Required("act"): vol.In(["learn", "stop", "test", "forget"]), vol.Optional("tid"): str})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tg_act", vol.Required("act"): vol.In(["learn", "stop", "test", "forget"]), vol.Optional("tid"): str, vol.Optional("preset"): dict})
 @websocket_api.async_response
 async def ws_tg_act(hass: HomeAssistant, connection, msg: dict) -> None:
     mgr = hass.data.get(DOMAIN, {}).get("tags")
@@ -1017,7 +1017,7 @@ async def ws_tg_act(hass: HomeAssistant, connection, msg: dict) -> None:
     elif act == "forget":
         connection.send_result(msg["id"], mgr.async_clear_unknown(tid))
     else:
-        connection.send_result(msg["id"], mgr.async_learn(act == "learn"))
+        connection.send_result(msg["id"], mgr.async_learn(act == "learn", msg.get("preset")))
 
 
 @websocket_api.require_admin
@@ -1334,15 +1334,12 @@ async def ws_lf_set(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 # Standort setzen, heute aus/an und „Tank geleert“ darf jeder im Haushalt (tägliche Bedienung)
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/lf_cmd", vol.Required("cmd"): vol.In(["loc", "off_today", "on_today", "tank_empty", "filter_reset", "ask_test", "nfc_learn", "nfc_stop", "nfc_forget"]), vol.Optional("arg", default=""): str, vol.Optional("dev", default=""): str})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/lf_cmd", vol.Required("cmd"): vol.In(["loc", "off_today", "on_today", "tank_empty", "filter_reset", "ask_test"]), vol.Optional("arg", default=""): str, vol.Optional("dev", default=""): str})
 @websocket_api.async_response
 async def ws_lf_cmd(hass: HomeAssistant, connection, msg: dict) -> None:
     mgr = hass.data.get(DOMAIN, {}).get("entfeuchter")
     if mgr is None:
         connection.send_error(msg["id"], "not_ready", "Luftentfeuchter ist noch nicht bereit")
-        return
-    if msg["cmd"] in ("nfc_learn", "nfc_forget") and not connection.user.is_admin:
-        connection.send_error(msg["id"], "unauthorized", "Nur Administratoren können NFC-Tags anlernen")
         return
     connection.send_result(msg["id"], await mgr.async_cmd(msg["cmd"], msg.get("arg") or "", msg.get("dev") or ""))
 
