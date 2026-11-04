@@ -1,8 +1,9 @@
-"""Addon-Verwaltung: Addons finden, installieren, laden, pausieren und deinstallieren.
+"""Addon-Verwaltung: Addons finden, installieren, laden, pausieren, aktualisieren und deinstallieren.
 
 Ablage (Konzept A + B):
   A  mitgeliefert:  custom_components/fenster_heizung/addons/<id>/   kommt mit jeder Version der Integration
-  B  extern:        <config>/strom_waerme_addons/<id>/                 übersteht HACS-Updates (Download folgt in Phase 2)
+  B  extern:        <config>/strom_waerme_addons/<id>/                 übersteht HACS-Updates, kommt aus dem Katalog
+                    (Repository Maddog3010/strom-waerme-addons, signiert, siehe addon_repo.py)
 Liegt dasselbe Addon an beiden Orten, gewinnt die neuere Version.
 
 Ein Addon-Ordner enthält addon.json (Steckbrief), __init__.py mit der Klasse ``Addon`` und www/panel.js für die Seite.
@@ -24,6 +25,7 @@ from homeassistant.components import websocket_api
 from homeassistant.components.http import StaticPathConfig
 from homeassistant.core import HomeAssistant
 
+from . import addon_repo as R
 from .addon_api import API_VERSION, AddonCore, AddonError, SWAddon
 from .backup import SafeStore
 from .const import DOMAIN
@@ -37,6 +39,9 @@ URL_PREFIX = "/fenster_heizung_addon"
 _ID = re.compile(r"^[a-z][a-z0-9_]{1,30}$")
 ERR_MAX = 5           # so viele Fehler ...
 ERR_WINDOW = 600      # ... in 10 Minuten pausieren ein Addon
+CHECK_FIRST = 90      # Katalog 90 Sekunden nach dem Start prüfen ...
+CHECK_EVERY = 86400   # ... und danach einmal am Tag
+DL_TIMEOUT = 60
 STAGES = ("dev", "beta", "vorab", "stabil")
 
 
@@ -81,7 +86,7 @@ def _scan_dir(base: str, src: str) -> dict[str, dict[str, Any]]:
         except (OSError, ValueError):
             _LOGGER.warning("Addon %s: addon.json ist nicht lesbar", name)
             continue
-        if meta and meta["id"] == name:
+        if meta and meta["id"] == name:  # <id>.old und .neu_<id> fallen hier heraus
             js = os.path.join(p, "www", "panel.js")
             meta["js_mtime"] = int(os.path.getmtime(js)) if os.path.isfile(js) else 0
             meta["size"] = sum(os.path.getsize(os.path.join(r, x)) for r, _, fs in os.walk(p) for x in fs if "__pycache__" not in r)
@@ -109,6 +114,11 @@ class AddonManager:
         self.err: dict[str, str] = {}
         self._errs: dict[str, list[float]] = {}
         self.core_ver = ""
+        self.remote: dict[str, dict[str, Any]] = {}  # Katalog aus GitHub
+        self.cat: dict[str, Any] = {"ok": None, "err": "", "checked": 0, "ts": ""}
+        self.olds: dict[str, str] = {}               # id → Version, die als <id>.old bereitliegt
+        self.busy: dict[str, str] = {}               # id → was gerade passiert (für die Oberfläche)
+        self._unsubs: list[Any] = []
 
     # ---- Start / Stopp
     async def async_start(self, core_ver: str) -> None:
@@ -117,20 +127,147 @@ class AddonManager:
         if isinstance(d, dict):
             self.inst = {k: v for k, v in (d.get("inst") or {}).items() if isinstance(v, dict) and _ID.match(k)}
             self.kept = [k for k in d.get("kept") or [] if isinstance(k, str)]
+            self.remote = {k: v for k, v in (d.get("remote") or {}).items() if isinstance(v, dict) and _ID.match(k) and v.get("url", "").startswith(R.DL_PREFIX)}
+            if isinstance(d.get("cat"), dict):
+                self.cat.update({k: d["cat"][k] for k in ("ok", "err", "checked", "ts") if k in d["cat"]})
         await self.async_rescan()
         for aid, st in list(self.inst.items()):
             if not st.get("paused") and aid in self.avail:
                 await self._load(aid)
+        from homeassistant.helpers.event import async_call_later, async_track_time_interval
+        from datetime import timedelta
+
+        self._unsubs.append(async_call_later(self.hass, CHECK_FIRST, self._check_cb))
+        self._unsubs.append(async_track_time_interval(self.hass, self._check_cb, timedelta(seconds=CHECK_EVERY)))
 
     async def async_stop(self) -> None:
+        for u in self._unsubs:
+            try:
+                u()
+            except Exception:  # noqa: BLE001
+                pass
+        self._unsubs.clear()
         for aid in list(self.live):
             await self._unload(aid)
 
     async def async_rescan(self) -> None:
-        self.avail = await self.hass.async_add_executor_job(scan, self.ext_dir)
+        def _scan() -> tuple[dict[str, dict[str, Any]], dict[str, str]]:
+            av = scan(self.ext_dir)
+            olds = {}
+            if os.path.isdir(self.ext_dir):
+                for n in os.listdir(self.ext_dir):
+                    if n.endswith(".old") and _ID.match(n[:-4]):
+                        v = R.old_version(self.ext_dir, n[:-4])
+                        if v:
+                            olds[n[:-4]] = v
+            return av, olds
+
+        self.avail, self.olds = await self.hass.async_add_executor_job(_scan)
 
     def _save(self) -> None:
-        self._store.async_delay_save(lambda: {"inst": self.inst, "kept": self.kept}, 2)
+        self._store.async_delay_save(lambda: {"inst": self.inst, "kept": self.kept, "remote": self.remote, "cat": self.cat}, 2)
+
+    # ---- Katalog aus GitHub
+    async def _check_cb(self, _now: Any = None) -> None:
+        try:
+            await self.async_check()
+        except Exception:  # noqa: BLE001 - ohne GitHub läuft alles weiter wie bisher
+            _LOGGER.debug("Addon-Katalog: Prüfung fehlgeschlagen", exc_info=True)
+
+    async def _get(self, url: str, limit: int) -> bytes:
+        import aiohttp
+        from homeassistant.helpers.aiohttp_client import async_get_clientsession
+
+        sess = async_get_clientsession(self.hass)
+        try:
+            async with sess.get(url, timeout=aiohttp.ClientTimeout(total=DL_TIMEOUT)) as r:
+                if r.status != 200:
+                    raise R.RepoError(f"GitHub antwortet mit {r.status}")
+                data = await r.content.read(limit + 1)
+        except R.RepoError:
+            raise
+        except Exception as e:  # noqa: BLE001
+            raise R.RepoError("GitHub ist nicht erreichbar") from e
+        if len(data) > limit:
+            raise R.RepoError("Datei ist zu groß")
+        return data
+
+    async def async_check(self) -> dict[str, Any]:
+        """Katalog laden und Unterschrift prüfen. Bei Fehlern bleibt der letzte gültige Katalog stehen."""
+        from .sponsor import PUBLIC_KEY
+
+        self.cat["checked"] = int(time.time())
+        try:
+            raw = await self._get(R.CATALOG_URL, R.CATALOG_MAX)
+            sig = (await self._get(R.SIG_URL, 400)).decode("ascii", "replace")
+            c = R.parse_catalog(raw, sig, PUBLIC_KEY, clean_meta)
+        except R.RepoError as e:
+            self.cat.update(ok=False, err=str(e))
+            self._save()
+            return self.cat
+        self.remote = c["addons"]
+        self.cat.update(ok=True, err="", ts=c["ts"])
+        self._save()
+        return self.cat
+
+    def _newer(self, a: dict[str, Any] | None, b: dict[str, Any] | None) -> bool:
+        """Ist a neuer als b (Version, dann Build)?"""
+        if not a:
+            return False
+        if not b:
+            return True
+        return (vkey(a.get("version") or a.get("v")), int(a.get("build") or a.get("b") or 0)) > (vkey(b.get("version") or b.get("v")), int(b.get("build") or b.get("b") or 0))
+
+    async def _install_remote(self, aid: str) -> None:
+        e = self.remote.get(aid)
+        if not e:
+            raise AddonError("Addon ist nicht im Katalog")
+        ok, why, _ = self.check(e)
+        if not ok:
+            raise AddonError(why)
+        try:
+            self.busy[aid] = "Wird geladen"
+            data = await self._get(e["url"], R.ZIP_MAX)
+            self.busy[aid] = "Wird geprüft"
+            R.check_zip(data, e)
+            path = await self.hass.async_add_executor_job(R.extract, data, aid, self.ext_dir)
+
+            def _meta() -> dict[str, Any] | None:
+                with open(os.path.join(path, "addon.json"), encoding="utf-8") as fh:
+                    return clean_meta(json.load(fh), path, "ext")
+
+            m = await self.hass.async_add_executor_job(_meta)
+            if not m or m["id"] != aid or m["version"] != e["version"] or m["build"] != e["build"]:
+                raise R.RepoError("Inhalt passt nicht zum Katalog")
+        except R.RepoError as err:
+            self.busy.pop(aid, None)
+            await self.hass.async_add_executor_job(lambda: __import__("shutil").rmtree(os.path.join(self.ext_dir, f".neu_{aid}"), ignore_errors=True))
+            raise AddonError(str(err)) from err
+        self.busy[aid] = "Wird installiert"
+        await self._unload(aid)
+        had = await self.hass.async_add_executor_job(R.swap_in, path, self.ext_dir, aid)
+        await self.async_rescan()
+        self.inst[aid] = {"v": e["version"], "b": e["build"], "src": "ext", "ts": int(time.time()), "paused": False}
+        self.kept = [k for k in self.kept if k != aid]
+        ok = await self._load(aid)
+        self.busy.pop(aid, None)
+        if not ok:
+            why = self.err.get(aid, "Start fehlgeschlagen")
+            if had:
+                await self.hass.async_add_executor_job(R.roll_back, self.ext_dir, aid)
+            else:
+                await self.hass.async_add_executor_job(R.remove, self.ext_dir, aid)
+            await self.async_rescan()
+            if aid in self.avail and await self._load(aid):
+                m = self.avail[aid]
+                self.inst[aid].update(v=m["version"], b=m["build"], src=m["src"])
+                self._save()
+                raise AddonError(f"Die neue Version startete nicht ({why}). Die bisherige Version läuft wieder.")
+            self.inst.pop(aid, None)
+            self._save()
+            raise AddonError(why)
+        self._save()
+        diag_log(self.hass, "info", f"Addon {e['name']} v{e['version']} Build {e['build']} aus dem Katalog installiert")
 
     # ---- Prüfen
     def check(self, meta: dict[str, Any]) -> tuple[bool, str, list[str]]:
@@ -177,11 +314,11 @@ class AddonManager:
     async def _static(self, meta: dict[str, Any]) -> None:
         done = self.hass.data.setdefault(f"{DOMAIN}_addon_static", set())
         www = os.path.join(meta["path"], "www")
-        key = (meta["id"], www)
+        key = (meta["id"], meta["src"])
         if key in done or not os.path.isdir(www):
             return
         try:
-            await self.hass.http.async_register_static_paths([StaticPathConfig(f"{URL_PREFIX}/{meta['id']}", www, False)])
+            await self.hass.http.async_register_static_paths([StaticPathConfig(f"{URL_PREFIX}/{meta['src']}/{meta['id']}", www, False)])
         except RuntimeError:  # schon registriert (z. B. nach Neuinstallation)
             pass
         done.add(key)
@@ -231,6 +368,28 @@ class AddonManager:
             await self.async_rescan()
             return
         meta = self.avail.get(aid)
+        if act == "check":
+            await self.async_check()
+            return
+        if act in ("install", "update") and self._newer(self.remote.get(aid), meta):
+            await self._install_remote(aid)
+            return
+        if act == "update":
+            act = "retry"  # neuere mitgelieferte Version: nur neu laden
+        if act == "rollback":
+            if aid not in self.olds:
+                raise AddonError("Keine frühere Version vorhanden")
+            await self._unload(aid)
+            await self.hass.async_add_executor_job(R.roll_back, self.ext_dir, aid)
+            await self.async_rescan()
+            m = self.avail.get(aid)
+            if m and aid in self.inst:
+                self.inst[aid].update(v=m["version"], b=m["build"], src=m["src"], paused=False)
+            self._save()
+            if not await self._load(aid):
+                raise AddonError(self.err.get(aid, "Start fehlgeschlagen"))
+            diag_log(self.hass, "info", f"Addon {aid}: zurück zu v{m['version'] if m else '?'}")
+            return
         if act == "install":
             if meta is None:
                 raise AddonError("Addon nicht gefunden")
@@ -258,6 +417,9 @@ class AddonManager:
                 if not core._stores:  # noqa: SLF001 - nicht geladen: Speicher trotzdem finden
                     core.store()
                 await core.async_remove_stores()
+            if (meta or {}).get("src") == "ext" or aid in self.olds:
+                await self.hass.async_add_executor_job(R.remove, self.ext_dir, aid)
+                await self.async_rescan()
             self.inst.pop(aid, None)
             self.err.pop(aid, None)
             self.kept = [k for k in self.kept if k != aid] + ([aid] if keep else [])
@@ -307,11 +469,14 @@ class AddonManager:
     # ---- Für die Oberfläche
     def snapshot(self) -> dict[str, Any]:
         rows = []
-        for aid in sorted(set(self.avail) | set(self.inst), key=lambda k: (self.avail.get(k, {}).get("n", 99), k)):
+        ids = set(self.avail) | set(self.inst) | set(self.remote)
+        for aid in sorted(ids, key=lambda k: ((self.avail.get(k) or self.remote.get(k) or {}).get("n", 99), k)):
             m = self.avail.get(aid)
+            rm = self.remote.get(aid)
             st = self.inst.get(aid)
             live = self.live.get(aid)
-            ok, why, hints = self.check(m) if m else (False, "Dateien des Addons fehlen", [])
+            base = m or rm
+            ok, why, hints = self.check(base) if base else (False, "Dateien des Addons fehlen", [])
             status = "off" if not st else "paused" if st.get("paused") else "on" if live else "error"
             summ: dict[str, Any] = {}
             if live:
@@ -319,15 +484,21 @@ class AddonManager:
                     summ = live[1].summary() or {}
                 except Exception:  # noqa: BLE001
                     summ = {}
-            row = {k: v for k, v in (m or {"id": aid, "name": aid}).items() if k not in ("path",)}
+            row = {k: v for k, v in (base or {"id": aid, "name": aid}).items() if k not in ("path", "url", "sha256")}
+            upd_r = bool(st and self._newer(rm, st))
+            upd_l = bool(st and m and self._newer(m, st))
             row.update(
                 status=status, installed=bool(st), can=ok, why=why, hints=hints, err=self.err.get(aid, ""),
                 kept=aid in self.kept, since=(st or {}).get("ts", 0), summary=summ,
-                update=bool(st and m and (vkey(m["version"]), m["build"]) > (vkey(st.get("v")), int(st.get("b") or 0))),
-                js=f"{URL_PREFIX}/{aid}/panel.js?v={(m or {}).get('js_mtime', 0)}" if live and (m or {}).get("js_mtime") else "",
+                cur=f"{st.get('v')} Build {st.get('b') or 1}" if st else "",
+                update=upd_r or upd_l, upd_src="remote" if upd_r else "local" if upd_l else "",
+                remote={"version": rm["version"], "build": rm["build"], "notes": rm.get("notes", []), "size": rm.get("dl_size", 0), "date": rm.get("date", ""), "stage": rm.get("stage")} if rm else None,
+                src=(m or {}).get("src") or "remote", old=self.olds.get(aid, ""), busy=self.busy.get(aid, ""),
+                js=f"{URL_PREFIX}/{m['src']}/{aid}/panel.js?v={m.get('js_mtime', 0)}" if live and m and m.get("js_mtime") else "",
             )
             rows.append(row)
-        return {"api": API_VERSION, "core": self.core_ver, "ext_dir": EXT_DIRNAME, "addons": rows}
+        return {"api": API_VERSION, "core": self.core_ver, "ext_dir": EXT_DIRNAME, "addons": rows,
+                "cat": {**self.cat, "repo": R.REPO, "count": len(self.remote)}}
 
 
 def _mgr(hass: HomeAssistant) -> AddonManager | None:
@@ -346,7 +517,7 @@ async def ws_addons_get(hass: HomeAssistant, connection, msg: dict) -> None:
 
 @websocket_api.websocket_command({
     vol.Required("type"): "fenster_heizung/addons_act",
-    vol.Required("act"): vol.In(["install", "uninstall", "pause", "resume", "retry", "rescan"]),
+    vol.Required("act"): vol.In(["install", "update", "rollback", "check", "uninstall", "pause", "resume", "retry", "rescan"]),
     vol.Optional("addon", default=""): str, vol.Optional("keep", default=True): bool,
 })
 @websocket_api.require_admin

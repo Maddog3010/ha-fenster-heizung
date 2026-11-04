@@ -30,7 +30,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
-> 🧩 **Neu in der Beta 2026.11.1b7: Addons.** Module lassen sich jetzt unter **Einstellungen → Addons** installieren, pausieren und wieder deinstallieren. Das erste Addon ist **Modul 21 Saugroboter** (zuerst für Roborock). [Mehr dazu](#addons)
+> 🧩 **Neu in der Beta 2026.11.1b8: Addons aus dem Katalog.** Module lassen sich unter **Einstellungen → Addons** installieren, aktualisieren und wieder deinstallieren. Updates kommen jetzt aus dem signierten Katalog [Maddog3010/strom-waerme-addons](https://github.com/Maddog3010/strom-waerme-addons), unabhängig von der Integration, mit Rücksprung auf die frühere Version. Das erste Addon ist **Modul 21 Saugroboter** (zuerst für Roborock). [Mehr dazu](#addons)
 
 > 🧭 **Seit der Beta 2026.11.1b6: Einstellungen neu gedacht.** Gemeinsame Werte liegen zentral im **Haus**, das **Messwerk** zeigt alle Sensoren aller Module mit „genutzt in“, dazu eine neue Sensorsuche ohne lange Listen, Suche, Änderungsverlauf mit Rückgängig und Hilfe an jeder Stelle. [Mehr dazu](#einstellungen)
 
@@ -203,7 +203,7 @@ Das Haus in der Mitte, ringsum bis zu acht Kacheln für Solar, Netz, Akku, Auto 
 
 <p align="center"><img src="docs/vorschau_modul_saugroboter.png" width="640" alt="Modul 21 Saugroboter"></p>
 
-Das erste **Addon**: Du installierst es unter **Einstellungen → Addons** und kannst es dort jederzeit pausieren oder wieder deinstallieren, auf Wunsch mit oder ohne deine Daten.
+Das erste **Addon**: Du installierst es unter **Einstellungen → Addons** und kannst es dort jederzeit pausieren oder wieder deinstallieren, auf Wunsch mit oder ohne deine Daten. Neue Versionen kommen aus dem Addon-Katalog und erscheinen im Reiter **Updates**.
 
 - **Roboter-Karte** je Saugroboter: Fortschritt oder Akku als Ring, aktueller Raum, Zeit, Fläche, Start/Pause, Zur Station, Finden
 - **Raum-Kacheln** mit „zuletzt gereinigt“ und Ampel (sauber, fällig, überfällig). Räume antippen und reinigen lassen oder alle fälligen auf einmal, bei mehreren Robotern bekommt jeder seine Räume
@@ -268,7 +268,7 @@ Der Knopf **Einstellungen** öffnet in jedem Modul dieselbe Seite. Am Desktop st
 - **Haus:** Räume, Personen & Standort und die **gemeinsamen Werte für alle Module**: Energiequellen mit Ladestand, Preise & Tarif, Wetterquelle. Jeder Wert steht nur hier, mit Live-Werten und „Gilt für Modul …“
 - **Module:** eingeschaltete Module mit Status, ausgeschaltete als kleines Raster (ein Tipp schaltet ein). Modul 1 hat Reiter statt Abschnitten zum Aufklappen
 - **Darstellung**, **Dieses Gerät** (was nur in diesem Browser gilt)
-- **Addons:** installierte Addons mit Version und Status (Öffnen, Pausieren, Deinstallieren), **Katalog** zum Installieren mit Steckbrief und **Updates**. Beim Deinstallieren wählst du, ob deine Daten bleiben
+- **Addons:** installierte Addons mit Version und Status (Öffnen, Pausieren, Deinstallieren, Zurück zur früheren Version), **Katalog** zum Installieren mit Steckbrief und **Updates** mit „Was ist neu“. Der Katalog wird beim Start und dann einmal am Tag geprüft, „Jetzt prüfen“ geht sofort. Beim Deinstallieren wählst du, ob deine Daten bleiben
 - **Erweiterungen** (Store, Labs, Module verwalten)
 - **System:** Sichern & Wiederherstellen, **Änderungsverlauf**, Diagnose, Versionen · **Sponsor**
 
@@ -436,7 +436,7 @@ Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues),
   3. Auf GitHub ein Release mit demselben Tag ohne `v` anlegen. Für eine Testversion (`…b1`) den Haken **Set as a pre-release** setzen.
 - Schreibende WebSocket-Befehle sind Administratoren vorbehalten.
 - **Einstellungen:** `haus.py` hält die gemeinsamen Werte (Schema-Version, einmalige Übernahme, Spiegel an die alten Stellen), `verlauf.py` den Änderungsverlauf mit Rückgängig, `messwerk.py` sammelt alle Sensoren aller Module mit „genutzt in“. Im Dashboard beschreibt `12w-katalog.js` jede Einstellung einmal (Suche, Hilfe, Prüfregeln), `12x-messwerk.js` zeigt das Messwerk, `12y-sensorsuche.js` ist die Sensorsuche (Vorschläge, Nach Raum, Filter) für alle Auswahlfelder.
-- **Addons (API 1):** `addon_manager.py` findet, installiert, lädt und entlädt Addons, `addon_api.py` ist die Schnittstelle (`SWAddon`, `AddonCore` mit Speicher, Befehlen, Beobachtern, Bereichen, Meldungen). Ein Addon ist ein Ordner mit `addon.json` (Steckbrief: id, Modulnummer, Version, Build, Stufe, `api`, `core_min`, `needs`), `__init__.py` mit der Klasse `Addon` und `www/panel.js` (ES-Modul, wird vom Dashboard per `import()` nachgeladen). Mitgelieferte Addons liegen in `custom_components/fenster_heizung/addons/`, eigene in `<config>/strom_waerme_addons/` (überstehen HACS-Updates). Die Seite spricht über `fenster_heizung/addon_call` mit ihrem Python-Teil, die Verwaltung über `addons_get` und `addons_act`. Im Dashboard steckt der Kern-Teil in `12z-addons.js`.
+- **Addons (API 1):** `addon_manager.py` findet, installiert, lädt und entlädt Addons, `addon_api.py` ist die Schnittstelle (`SWAddon`, `AddonCore` mit Speicher, Befehlen, Beobachtern, Bereichen, Meldungen). Ein Addon ist ein Ordner mit `addon.json` (Steckbrief: id, Modulnummer, Version, Build, Stufe, `api`, `core_min`, `needs`), `__init__.py` mit der Klasse `Addon` und `www/panel.js` (ES-Modul, wird vom Dashboard per `import()` nachgeladen). Mitgelieferte Addons liegen in `custom_components/fenster_heizung/addons/`, eigene in `<config>/strom_waerme_addons/` (überstehen HACS-Updates). Die Seite spricht über `fenster_heizung/addon_call` mit ihrem Python-Teil, die Verwaltung über `addons_get` und `addons_act`. Im Dashboard steckt der Kern-Teil in `12z-addons.js`. `addon_repo.py` lädt den Katalog aus `Maddog3010/strom-waerme-addons` (`catalog.json` + `catalog.sig`, Ed25519 mit dem Entwickler-Schlüssel aus `sponsor.py`), prüft Größe und SHA-256 jeder ZIP, entpackt sicher nach `<config>/strom_waerme_addons/<id>` und behält die vorige Version als `<id>.old` für den Rücksprung. Veröffentlicht wird mit dem Tool im Addon-Repository (`Veröffentlichen.command`).
 
 ---
 <p align="center"><a href="https://github.com/sponsors/Maddog3010"><img src="docs/sponsor_banner.png" alt="Sponsor werden" width="70%"></a></p>

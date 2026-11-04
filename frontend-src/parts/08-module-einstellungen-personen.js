@@ -98,6 +98,8 @@
     const mig = this._haus && this._haus.mig;
     if (mig && mig.conflicts && mig.conflicts.length && !mig.seen) out.push(["wn", "Haus-Werte: bitte einmal prüfen", esc(mig.conflicts[0]), "mdhsmig"]);
     else if (mig && !mig.seen) out.push(["in", "Gemeinsame Werte liegen jetzt im Haus", "Energiequellen, Preise, Ladestand und Wetterquelle an einer Stelle", "mdhsmig"]);
+    (this._adState().addons || []).filter((a) => a.update).forEach((a) => out.push(["in", `Update für Addon ${esc(a.name)}: v${esc(a.upd_src === "remote" && a.remote ? a.remote.version : a.version)}`, esc(((a.remote || {}).notes || [])[0] || "Einstellungen › Addons › Updates"), "adxgo"]));
+    (this._adState().addons || []).filter((a) => a.status === "error").forEach((a) => out.push(["wn", `Addon ${esc(a.name)} läuft nicht`, esc(a.err || ""), "adxgo"]));
     this._stRules().forEach((x) => out.push(x));
     if (!out.some((x) => x[0] === "wn")) out.unshift(["ok", "Alles eingerichtet", "Alle gewählten Sensoren liefern Werte, Einheiten und Vorzeichen passen", ""]);
     return out;

@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b8] - 2026-11-04
+
+Testversion (Beta): Addons kommen jetzt aus einem signierten Katalog auf GitHub.
+
+### Neu
+- **Addon-Katalog** Maddog3010/strom-waerme-addons: Die Integration prüft ihn beim Start und einmal am Tag, unter Einstellungen → Addons auch mit „Jetzt prüfen“. Ohne gültige Unterschrift wird nichts angeboten.
+- **Updates für Addons unabhängig von der Integration:** Reiter Updates mit „Was ist neu“, Größe und Prüfung. Vor dem Entpacken werden Unterschrift, Größe und SHA-256 der Datei geprüft.
+- **Rücksprung:** Die bisherige Version bleibt liegen. Startet eine neue nicht, läuft automatisch wieder die alte, von Hand mit „Zurück zu …“.
+- **Addons direkt aus dem Katalog installieren**, auch wenn sie nicht in der Integration mitgeliefert sind. Sie liegen in config/strom_waerme_addons und überstehen HACS-Updates.
+- **Übersicht der Einstellungen:** Hinweis auf verfügbare Addon-Updates und auf Addons, die nicht laufen.
+
+### Geändert
+- Ohne Internet laufen installierte Addons weiter, der letzte gültige Katalog bleibt stehen.
+
 ## [2026.11.1b7] - 2026-11-03
 
 Testversion (Beta) mit dem neuen Addon-System und dem ersten Addon, Modul 21 Saugroboter.
