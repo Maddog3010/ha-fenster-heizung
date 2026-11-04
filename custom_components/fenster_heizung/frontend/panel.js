@@ -720,17 +720,17 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.5", b: 1, d: "2026-11-04", p: "2026.11.1b14", log: [["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  ww: { v: "1.0", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.5", b: 2, d: "2026-11-04", p: "2026.11.1b15", log: [["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  ww: { v: "1.0", b: 2, d: "2026-11-04", p: "2026.11.1b15", log: [["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.1030.0b1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.1", b: 2, d: "2026-11-03", p: "2026.11.1b1", log: [["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  ev: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ev: { v: "0.5", b: 2, d: "2026-11-04", p: "2026.11.1b15", log: [["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "0.5", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  sf: { v: "0.5", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  sf: { v: "0.5", b: 3, d: "2026-11-04", p: "2026.11.1b15", log: [["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -1976,6 +1976,11 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .lfnr.set .lfni{background:color-mix(in srgb,#22d3ee 18%,transparent);color:#22d3ee}
 .lfnr.on{border-color:#22d3ee;box-shadow:0 0 0 1px #22d3ee inset;background:color-mix(in srgb,#22d3ee 7%,transparent)}.lfnl{color:#22d3ee}
 .lfnb{display:flex;gap:6px}.lfnb .btn2{padding:7px 10px;font-size:.78rem;flex:none}
+/* Uhrzeit aus zwei Feldern (statt Auswahlrad, das die Mac-App abstürzen lässt) */
+.tin{display:inline-flex;align-items:center;gap:4px;vertical-align:middle}
+.tinp{width:3.1em;text-align:center;font:inherit;font-size:1rem;font-variant-numeric:tabular-nums;padding:8px 4px;border-radius:10px;border:1px solid var(--line);background:var(--primary-background-color);color:var(--primary-text-color);box-sizing:border-box}
+.tinp:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}.tinp:disabled{opacity:.55}
+.tinc{font-weight:700;color:var(--mut)}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -3196,7 +3201,7 @@ class FensterHeizungPanel extends HTMLElement {
     const D = this._lfD;
     if ((!D || Date.now() - D.ts > 20000) && !this._lfBusy && this._hass) {
       this._lfBusy = true;
-      this._hass.callWS({ type: "fenster_heizung/lf_get" }).then((r) => { this._lfD = { ...(r || {}), ts: Date.now() }; this._lfBusy = false; this._render(); if (this._modal && /^lf/.test(this._modal.type)) this._renderModal(); })
+      this._hass.callWS({ type: "fenster_heizung/lf_get" }).then((r) => { this._lfD = { ...(r || {}), ts: Date.now() }; this._lfBusy = false; this._render(); const ae = this.shadowRoot && this.shadowRoot.activeElement; if (this._modal && /^lf/.test(this._modal.type) && !(ae && ae.tagName === "INPUT")) this._renderModal(); })
         .catch(() => { this._lfD = { cfg: { devs: [] }, devs: {}, rooms: [], ts: Date.now(), err: true }; this._lfBusy = false; });
     }
     return D || null;
@@ -3369,9 +3374,9 @@ class FensterHeizungPanel extends HTMLElement {
       body = `<div class="lsec">${ic("today", 15)}Tägliche Standortabfrage</div>
         <div class="mut sm" style="margin:-2px 0 6px">Einmal am Tag wird bestätigt, in welchem Raum der Entfeuchter steht. Bis dahin gilt der Raum von gestern.</div>
         ${aseg("on", [[true, "Ein"], [false, "Aus"]])}
-        ${a.on ? `${row("Uhrzeit der Abfrage", "Ab dann erscheint die Standort-Karte", `<input class="otxt lftime" type="time" data-f="lfxt" data-k="time" value="${esc(a.time)}" aria-label="Uhrzeit der Abfrage">`)}
+        ${a.on ? `${row("Uhrzeit der Abfrage", "Ab dann erscheint die Standort-Karte", `<span class="tin">${this._tIn(esc(a.time), false, `Uhrzeit der Abfrage`)}<input type="hidden" data-f="lfxt" data-k="time" value="${esc(a.time)}" aria-label="Uhrzeit der Abfrage"></span>`)}
         <div class="mut sm" style="margin:8px 0 4px">Abfrage am Handy nur, wenn jemand zu Hause ist</div>${aseg("home_only", [[true, "Ja"], [false, "Nein"]])}
-        ${row("Ohne Antwort bis", "Danach gilt die Wahl darunter", `<input class="otxt lftime" type="time" data-f="lfxt" data-k="until" value="${esc(a.until)}" aria-label="Frist für die Antwort">`)}
+        ${row("Ohne Antwort bis", "Danach gilt die Wahl darunter", `<span class="tin">${this._tIn(esc(a.until), false, `Frist für die Antwort`)}<input type="hidden" data-f="lfxt" data-k="until" value="${esc(a.until)}" aria-label="Frist für die Antwort"></span>`)}
         ${aseg("miss", [["same", "Wie gestern"], ["pause", "Pausieren"], ["hint", "Nur Hinweis"]])}
         <div class="mut sm" style="margin:4px 0 0">${{ same: "Der Raum von gestern wird für heute übernommen.", pause: "Der Entfeuchter bleibt aus, bis jemand den Standort bestätigt.", hint: "Er läuft wie gestern weiter, die Karte erinnert weiter." }[a.miss]}</div>
         <div class="lsec">${ic("home", 15)}Räume zur Auswahl (je ein Antippen)</div>
@@ -3381,7 +3386,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="mut sm" style="margin:-2px 0 6px">Bekommen die tägliche Abfrage mit Tasten für bis zu drei Räume und die Meldungen dieses Geräts. Ein Tipp auf die Nachricht öffnet das Dashboard.</div>
         ${pushAll.length ? chips(pushAll, a.push, "lfxpush", (v) => v.replace(/^notify\.(mobile_app_)?/, "").replace(/_/g, " ")) : `<div class="mut sm">Kein Benachrichtigungsdienst gefunden. Mit der Home-Assistant-App am Handy gibt es „mobile_app“-Dienste.</div>`}
         ${a.push.length && !M.isNew ? `<button class="lnk" data-act="lfxtest" data-d="${esc(d.id)}" style="margin:6px 0 0">${ic("bell", 14)} Jetzt eine Test-Abfrage senden</button>` : ""}
-        ${!M.isNew ? this._lfNfc(d) : ""}
+        ${M.isNew ? `<div class="lsec">${ic("tablet", 15)}NFC-Tag am Stellplatz</div><div class="mut sm" style="margin:-2px 0 6px">Je Raum lässt sich ein NFC-Tag anlernen: Handy dranhalten, und der Entfeuchter steht dort. Erst das Gerät speichern, dann erscheinen hier die Räume zum Anlernen.</div>` : this._lfNfc(d)}
         ${!M.isNew ? `<div class="lsec">${ic("pin", 15)}Standort jetzt</div>${this._lfTiles({ ...d, S })}` : ""}`;
     } else if (M.tab === "strom") {
       const now = [L.price != null ? `Strompreis jetzt ${num(L.price, 1)} ct/kWh` : "kein Strompreis", L.pv_w != null ? `Überschuss jetzt ${wfmt(Math.max(0, L.pv_w))}` : "kein Netz-Sensor"].join(" · ");
@@ -3509,10 +3514,32 @@ class FensterHeizungPanel extends HTMLElement {
     sr.addEventListener("input", (e) => this._onInput(e.target));
     sr.addEventListener("pointerdown", (e) => { const g = e.target.closest("[data-handle]"); if (g) this._dragStart(e, g); });
     sr.addEventListener("input", (e) => { const t = e.target; if (t.dataset && t.dataset.f === "enq") { const q = t.value.trim().toLowerCase(); let n = 0; t.closest(".pkbox").querySelectorAll(".pkrow").forEach((r) => { const ok = !q || r.dataset.s.includes(q); r.hidden = !ok; if (ok) n++; }); const z = t.closest(".pkbox").querySelector(".pkno"); if (z) z.hidden = n > 0; } });
+    /* Uhrzeit aus zwei Feldern (Stunde, Minute) statt <input type="time">: Das Auswahlrad der Mac-App von Home Assistant
+       (iPad-App auf dem Mac) bringt die App zum Absturz. Das unsichtbare Feld dahinter trägt Wert und data-Angaben wie bisher. */
+    sr.addEventListener("change", (e) => { const t = e.target; if (t && t.dataset && t.dataset.tin) { e.stopImmediatePropagation(); this._tInDone(t); } }, true);
+    sr.addEventListener("keydown", (e) => { const t = e.target; if (t && t.dataset && t.dataset.tin && e.key === "Enter") { e.preventDefault(); t.blur(); } });
     sr.addEventListener("change", (e) => this._onChange(e.target));
     this._sfxBind(sr);
   }
 
+  /* Uhrzeit-Felder: zwei kleine Zahlenfelder „08 : 00“, funktionieren in allen Apps und Browsern */
+  _tIn(v, dis = false, label = "Uhrzeit") {
+    const m = /^(\d{1,2}):(\d{2})/.exec(String(v || "")), h = m ? m[1].padStart(2, "0") : "", mi = m ? m[2] : "";
+    const a = (k, val, l) => `<input class="tinp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" data-tin="${k}" value="${val}" placeholder="${k === "h" ? "hh" : "mm"}" aria-label="${esc(label)}: ${l}" ${dis ? "disabled" : ""}>`;
+    return a("h", h, "Stunde") + `<b class="tinc">:</b>` + a("m", mi, "Minute");
+  }
+  _tInDone(t) {
+    const w = t.closest(".tin"); if (!w) return;
+    const H = w.querySelector('[data-tin="h"]'), M = w.querySelector('[data-tin="m"]'), hid = w.querySelector('input[type="hidden"]'); if (!H || !M || !hid) return;
+    const n = (x, mx) => { const v = parseInt(String(x.value).replace(/\D/g, ""), 10); return isFinite(v) ? Math.min(mx, Math.max(0, v)) : null; };
+    let h = n(H, 23), m = n(M, 59);
+    if (h == null && m == null) return;
+    if (h == null) h = 0; if (m == null) m = 0;
+    H.value = String(h).padStart(2, "0"); M.value = String(m).padStart(2, "0");
+    const val = `${H.value}:${M.value}`; if (hid.value === val) return;
+    hid.value = val;
+    this._onInput(hid); this._onChange(hid);
+  }
   _onChange(t) {
       if (t.dataset && t.dataset.f === "mwset") { this._mwAssign(t.dataset.k, t.value); return; }
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
@@ -3750,7 +3777,7 @@ class FensterHeizungPanel extends HTMLElement {
     const row = (label, hint, ctl) => `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc">${ctl}</div></div>`;
     const num = (k, unit, o = {}) => row(o.l, o.h, `<span class="onum"><input type="number" inputmode="decimal" data-f="oval" data-k="${k}" data-num="1" value="${d[k]}" min="${o.min ?? ""}" max="${o.max ?? ""}" step="${o.step ?? 1}" ${o.ph ? `placeholder="${o.ph}"` : ""}><i>${unit}</i></span>`);
     const txt = (k, o = {}) => row(o.l, o.h, `<input class="otxt" data-f="oval" data-k="${k}" value="${esc(d[k])}">`);
-    const time = (k, o) => row(o.l, o.h, `<span class="onum"><input type="time" data-f="oval" data-k="${k}" value="${d[k] || ""}">${d[k] ? `<button class="oclr" data-act="oclr" data-k="${k}" aria-label="Zurücksetzen">${ic("close", 14)}</button>` : ""}</span>`);
+    const time = (k, o) => row(o.l, o.h, `<span class="onum"><span class="tin">${this._tIn(d[k] || "", false, `Uhrzeit`)}<input type="hidden" data-f="oval" data-k="${k}" value="${d[k] || ""}"></span>${d[k] ? `<button class="oclr" data-act="oclr" data-k="${k}" aria-label="Zurücksetzen">${ic("close", 14)}</button>` : ""}</span>`);
     const seg = (k, opts) => `<div class="seg oseg">${opts.map(([v, l]) => `<button class="${d[k] === v ? "sel" : ""}" data-act="oset" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
     const multi = (k, cand, l, h) => row(l, h, `<div class="ochips">${d[k].map((e) => `<span class="och">${fn(e)}<button data-act="orm" data-k="${k}" data-e="${esc(e)}" aria-label="Entfernen">${ic("close", 12)}</button></span>`).join("")}${this._wzSel(cand.filter((e) => !d[k].includes(e)), "", "oadd", `data-k="${k}"`, "＋ hinzufügen")}</div>`);
     const one = (k, cand, l, h) => { const c = d[k] && !cand.includes(d[k]) ? [d[k], ...cand] : cand; return row(l, h, this._wzSel(c, d[k], "oval", `data-k="${k}"`, "– keine –")); };
@@ -4364,7 +4391,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="vrow"><span>Von</span><input type="date" value="${d.from}" data-f="vfrom"></div>
         <div class="vrow"><span>Bis</span><input type="date" value="${d.to}" data-f="vto" min="${d.from}"></div>
         <div class="vrow"><span>Am Rückkehrtag vorheizen</span><button class="sw ${d.preheat ? "on" : ""}" data-act="vpre" aria-pressed="${d.preheat}"></button></div>
-        ${d.preheat ? `<div class="vrow"><span>Vorheizen ab</span><input type="time" value="${d.preheat_time}" data-f="vtime" style="background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit"></div>` : ""}
+        ${d.preheat ? `<div class="vrow"><span>Vorheizen ab</span><span class="tin">${this._tIn(d.preheat_time, false, `Uhrzeit`)}<input type="hidden" value="${d.preheat_time}" data-f="vtime"></span></div>` : ""}
         <div class="mut sm" style="margin:2px 0 0">${d.preheat ? `Am Bis-Tag gilt ab ${d.preheat_time} Uhr wieder der Heizplan.` : "Der Heizplan gilt wieder ab dem Tag nach dem Bis-Datum."}</div>
         <div class="mut sm" style="margin:10px 0 0">Die Absenktemperatur und die automatische Erkennung stellst du unter „Einstellungen“ ein.</div>
         <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="vsave">Urlaub starten</button></div></div>`;
@@ -4391,7 +4418,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="week">${DAYS.map((x, k) => { const sg = segs(pts, k), lo = Math.min(...sg.map((q) => q.t)), hi = Math.max(...sg.map((q) => q.t)); return `<button class="wd ${m.day === k ? "sel" : ""} ${k === today ? "today" : ""}" data-act="pday" data-d="${k}" aria-pressed="${m.day === k}" aria-label="${DAYS_LONG[k]}"><span>${x}</span>${barRow(pts, k, k === today ? nowMin() : null)}<em>${lo === hi ? num(lo, 1) + "°" : num(lo, 1) + "–" + num(hi, 1) + "°"}</em></button>`; }).join("")}</div>` : `<div class="mut">Noch keine Schaltpunkte.</div>`}
         <div class="mut sm">Farbe = Temperatur</div>
         ${d.entries.map((e, i) => `<div class="sp ${m.day != null && !e.days.includes(m.day) ? "dim" : ""}"><div class="sp1">
-          <input type="time" value="${e.time}" data-i="${i}" data-f="time" aria-label="Uhrzeit">
+          <span class="tin">${this._tIn(e.time, false, `Uhrzeit`)}<input type="hidden" value="${e.time}" data-i="${i}" data-f="time" aria-label="Uhrzeit"></span>
           <div class="step"><button data-act="tmin" data-i="${i}" aria-label="kälter">${ic("minus", 18)}</button><b style="color:${heat(e.temp)}">${num(e.temp, 1)} °C</b><button data-act="tplus" data-i="${i}" aria-label="wärmer">${ic("plus", 18)}</button></div>
           <button class="ibtn" data-act="pdel" data-i="${i}" aria-label="Schaltpunkt löschen">${ic("trash", 17)}</button></div>
           <div class="mut sm" style="margin:2px 0 2px">Gilt an (mehrere Tage möglich)</div>
@@ -5405,7 +5432,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="mut sm" style="margin:0 0 8px">Jedes Fahrzeug kann sein eigenes Ziel und seine eigene Uhrzeit haben. Es gilt das Fahrzeug, das an der Karte erkannt wird. Ohne eigene Abfahrt, bei Gästen und ohne erkannte Karte gilt die Standard-Abfahrt (<b>${c.planSoc} %</b> bis <b>${esc(c.planTime)} Uhr</b>).</div>
         ${c.vehicles.length ? c.vehicles.map((x) => { const dd = this._wbDep(x), act = veh && veh.id === x.id; return `<div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#2dd4bf">${ic("car", 20)}</span><div class="opi"><b>${esc(x.name)}</b><small>${dd.on ? `${dd.soc} % bis ${esc(dd.time)} Uhr · ${({ all: "täglich", wk: "Mo–Fr", we: "Wochenende" })[dd.days]}` : "Nutzt den Ladeplan"}</small></div>${act ? `<span class="ost home">Aktiv</span>` : ""}<button class="sw ${dd.on ? "on" : ""}" data-act="wbdsw" data-v="${x.id}" aria-pressed="${dd.on}" aria-label="Eigene Abfahrt für ${esc(x.name)}" ${adm ? "" : "disabled"}></button></div>
           ${dd.on ? `<div class="vrow"><span>Ziel-Ladestand</span><div class="step" style="flex:none"><button data-act="wbdsoc" data-v="${x.id}" data-s="-5" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${dd.soc} %</b><button data-act="wbdsoc" data-v="${x.id}" data-s="5" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>
-          <div class="vrow"><span>Abfahrt</span><input class="osel" type="time" data-f="wbdt" data-v="${x.id}" value="${esc(dd.time)}" style="width:auto;margin:0" aria-label="Abfahrtszeit ${esc(x.name)}" ${adm ? "" : "disabled"}></div>
+          <div class="vrow"><span>Abfahrt</span><span class="tin">${this._tIn(esc(dd.time), !adm, `Abfahrtszeit ${esc(x.name)}`)}<input type="hidden" data-f="wbdt" data-v="${x.id}" value="${esc(dd.time)}" aria-label="Abfahrtszeit ${esc(x.name)}" ></span></div>
           <div class="gschips">${[["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]].map(([k, t]) => `<button class="gsch ${dd.days === k ? "sel" : ""}" data-act="wbddays" data-v="${x.id}" data-k="${k}" aria-pressed="${dd.days === k}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</div>` : ""}</div>`; }).join("") : `<div class="mut sm">Lege unter „Laden“ → Fahrzeuge &amp; Karten ein Fahrzeug an, dann kannst du hier seine Abfahrtszeit einstellen.</div>`}</div>
       <div class="card"><h2>${ic("clock", 18)}Geplante Ladefenster</h2>${win.length ? `<div class="wbses">${win.map((w) => { const x = wsum(w), d0 = new Date(hrs[w.start].t), tom = d0.toDateString() !== new Date().toDateString(); return `<div class="wbse"><div><b>${hm(w.start)} – ${hend(w.end - 1)}</b><span class="mut sm">${tom ? "morgen" : "heute"} · ${SL < 1 ? num((w.end - w.start) * SL * 60, 0) + " Min." : (w.end - w.start) + " " + (w.end - w.start === 1 ? "Stunde" : "Stunden")}</span></div><div class="wbsb"><i style="width:${x.s}%"></i></div><div class="wbsv"><b>${num(w.kwh, 1)} kWh</b><span class="mut sm">${num(x.s, 0)} % Sonne · ${num(x.c, 2)} €</span></div></div>`; }).join("")}</div>` : `<div class="mut sm">Es ist keine Ladung nötig, das Ziel ist schon erreicht.</div>`}
       <div class="mut sm" style="margin:10px 0 0">Quellen: Preis ${src === "tibber" ? "Tibber" + (TB.home ? " · " + esc(TB.home) : "") : esc(F.price_src || "–")} · PV-Prognose ${pvs === "forecast" ? "Forecast.Solar" : esc(F.pv_src || "–")}. Die Vorhersage ändert sich im Laufe des Tages, der Plan wird alle paar Minuten neu berechnet.</div></div>
@@ -5527,7 +5554,7 @@ class FensterHeizungPanel extends HTMLElement {
     const depCard = `<div class="card ocard"><h2>${ic("clock", 18)}Standard-Abfahrt</h2>
         <div class="mut sm" style="margin:0 0 8px">Gilt für alle Fahrzeuge ohne eigene Abfahrt, für Gäste und ohne erkannte Karte. Braucht den Ladestand-Sensor des Fahrzeugs.</div>
         ${stp("Ziel-Ladestand", "planSoc", c.planSoc, "%", 5)}
-        <div class="vrow"><span>Bis</span><input class="osel" type="time" data-f="wbtime" value="${esc(c.planTime)}" style="width:auto;margin:0" aria-label="Uhrzeit" ${adm ? "" : "disabled"}></div>${chips("planDays", [["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]], c.planDays)}
+        <div class="vrow"><span>Bis</span><span class="tin">${this._tIn(esc(c.planTime), !adm, `Uhrzeit`)}<input type="hidden" data-f="wbtime" value="${esc(c.planTime)}" aria-label="Uhrzeit" ></span></div>${chips("planDays", [["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]], c.planDays)}
         ${sw("Spätestens mit Netzstrom nachladen", "plan", c.plan, "Reicht die Sonne nicht, startet die Wallbox im Modus „Sonne“ zur berechneten Zeit mit Netzstrom. Die Planung nach Preis und Sonne ersetzt das, wenn sie aktiv ist.")}
         <div class="gst">${ic("clock", 15)}<span>${soc == null ? "Ohne Ladestand-Sensor ist keine Planung möglich (Fahrzeug einrichten)." : pl.need_kwh > 0 && pl.start ? `Es fehlen etwa <b>${num(pl.need_kwh, 0)} kWh</b>. Reicht die Sonne bis ${esc(c.planTime)} nicht, startet die Wallbox spätestens um <b>${hhmm(pl.start)} Uhr</b> mit Netzstrom.` : pl.need_kwh > 0 ? "Für diesen Tag ist keine Ladung geplant." : "Das Ziel ist schon erreicht."}</span></div></div>`;
     if (part === "dep") return depCard;
@@ -5612,7 +5639,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="gst">${ic("info", 15)}Tipp für den ersten Test: Modus „Aus“ lassen, dann „Voll“ mit niedrigem Höchststrom (zum Beispiel 6 A) und die Wirkung in der go-e-App beobachten.</div>
       <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="wbyes">Einschalten</button></div></div>`;
   }
-  _wbLater(t) { /* Zeitfeld nicht mitten in der Eingabe neu aufbauen (Safari meldet jede Ziffer einzeln) */ clearTimeout(this._wbLT); this._wbLT = setTimeout(() => { const ae = this.shadowRoot.activeElement; if (ae && ae.type === "time") { ae.addEventListener("blur", () => this._render(), { once: true }); } else this._render(); }, 700); }
+  _wbLater(t) { /* Zeitfeld nicht mitten in der Eingabe neu aufbauen (Safari meldet jede Ziffer einzeln) */ clearTimeout(this._wbLT); this._wbLT = setTimeout(() => { const ae = this.shadowRoot.activeElement; if (ae && (ae.type === "time" || (ae.dataset && ae.dataset.tin))) { ae.addEventListener("blur", () => this._render(), { once: true }); } else this._render(); }, 700); }
   _wbChange(t) { const f = t.dataset.f; if (f === "wbdt") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), time: t.value } } : x)) }); this._wbLater(t); } return true; } if (f === "wbradd") { const c = this._wb(); if (t.value) { this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, ids: [...x.ids, Number(t.value)] } : x)) }, true); this._render(); } return true; } if (f === "wbtime") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { this._wbSave({ planTime: t.value }); this._wbLater(t); } return true; } return false; }
   /* Gerätestrom: eigene Berechnung im Backend (fenster_heizung/gs_get). Solar, Netz, Batterie kommen aus Modul 3, Preise aus Modul 1. */
   _gsState() {
@@ -7530,7 +7557,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Rückmeldung</div>
         <div class="gschips">${fbk("notify", "Handy-Nachricht", fb.notify.length > 0, "Erst unter „Rückmeldung einrichten“ einen Dienst wählen")}${fbk("tts", "Ansage", !!(fb.tts.ent && fb.tts.player), "Erst unter „Rückmeldung einrichten“ Sprachdienst und Lautsprecher wählen")}${fbk("blink", "Licht blinkt", !!fb.light, "Erst unter „Rückmeldung einrichten“ eine Lampe wählen")}</div>
         <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Zeitfenster (optional)</div>
-        <div class="vrow"><span>Nur zwischen<small class="mut" style="display:block">Über Mitternacht möglich, zum Beispiel 20:00 bis 06:00</small></span><span style="display:flex;gap:6px;align-items:center"><input type="time" data-f="tgxfrom" value="${esc(d.from)}" aria-label="von" style="background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px"> bis <input type="time" data-f="tgxto" value="${esc(d.to)}" aria-label="bis" style="background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:10px;padding:8px">${d.from ? `<button class="oclr" data-act="tgxwclr" aria-label="Zurücksetzen">${ic("close", 14)}</button>` : ""}</span></div>
+        <div class="vrow"><span>Nur zwischen<small class="mut" style="display:block">Über Mitternacht möglich, zum Beispiel 20:00 bis 06:00</small></span><span style="display:flex;gap:6px;align-items:center"><span class="tin">${this._tIn(esc(d.from), false, `von`)}<input type="hidden" data-f="tgxfrom" value="${esc(d.from)}" aria-label="von"></span> bis <span class="tin">${this._tIn(esc(d.to), false, `bis`)}<input type="hidden" data-f="tgxto" value="${esc(d.to)}" aria-label="bis"></span>${d.from ? `<button class="oclr" data-act="tgxwclr" aria-label="Zurücksetzen">${ic("close", 14)}</button>` : ""}</span></div>
         <div class="foot2" style="margin-top:12px">${d.isNew ? "" : `<button class="btn2" data-act="tgxdel" style="color:#fb7185">Löschen</button>`}<button class="btn2" data-act="tgxtest" ${d.isNew ? "disabled" : ""}>Testen</button><button class="btn2 pri" data-act="tgxsave" ${adm ? "" : "disabled"}>Speichern</button></div></div>`;
     }
     const tags = Object.entries(D.cfg.tags), L = D.learn || {}, F = L.found, lg = (D.log || []).slice(0, 6);
@@ -8035,7 +8062,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${fr.on ? `<div class="sffld"><label>Außentemperatur</label>${this._wzSel(wx, fr.ent, "sfxfent", "", "– wählen –", /außen|outdoor|aussen|weather/i)}</div><div class="vrow"><span>Hinweis unter</span><div class="step" style="flex:none"><button data-act="sfxfb" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${fr.below} °C</b><button data-act="sfxfb" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>` : ""}</div>`;
     const q = C.quiet, gen = `<div class="card sfc"><h2>${ic("bell", 18)}Allgemein</h2>
       <div class="vrow"><span>Ruhezeit<small class="mut" style="display:block">Nur Alarme kommen durch, Hinweise warten</small></span>${sw("sfxq", "", q.on, "Ruhezeit")}</div>
-      ${q.on ? `<div class="sfbtn"><div class="sffld" style="flex:1"><label>Von</label><input class="osel" type="time" data-f="sfxqt" data-k="from" value="${q.from}"></div><div class="sffld" style="flex:1"><label>Bis</label><input class="osel" type="time" data-f="sfxqt" data-k="to" value="${q.to}"></div></div>` : ""}
+      ${q.on ? `<div class="sfbtn"><div class="sffld" style="flex:1"><label>Von</label><span class="tin">${this._tIn(q.from, false, `Uhrzeit`)}<input type="hidden" data-f="sfxqt" data-k="from" value="${q.from}"></span></div><div class="sffld" style="flex:1"><label>Bis</label><span class="tin">${this._tIn(q.to, false, `Uhrzeit`)}<input type="hidden" data-f="sfxqt" data-k="to" value="${q.to}"></span></div></div>` : ""}
       <div class="sffld"><label>Erinnerung vor Ablauf der Lebensdauer</label><div class="gschips">${[[0, "Aus"], [7, "7 Tage"], [14, "14 Tage"], [30, "30 Tage"], [60, "60 Tage"]].map(([k, t]) => `<button class="gsch ${C.lead === k ? "sel" : ""}" data-act="sfxlead" data-k="${k}" aria-pressed="${C.lead === k}">${t}</button>`).join("")}</div></div>
       <div class="sfgrp">KOPF DES JAHRESPROTOKOLLS</div>
       ${[["name", "Name", "zum Beispiel Familie Müller"], ["addr", "Adresse", "Straße, Ort"], ["who", "Geprüft von", "Name"]].map(([k, t, p]) => `<div class="sffld"><label>${t}</label><input class="osel" data-f="sfxpr" data-k="${k}" value="${esc(C.proto[k])}" maxlength="60" placeholder="${p}"></div>`).join("")}
@@ -9355,7 +9382,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="wwnum" data-k="${path}" data-min="${lo}" data-max="${hi}" data-step="${step}" value="${val}" min="${lo}" max="${hi}" step="${step}" ${adm ? "" : "disabled"}><i>${unit}</i></span></div></div>`;
   }
   _wwNumT(label, hint, path, val, adm) {
-    return `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc"><span class="onum"><input type="time" data-f="wwnum" data-k="${path}" data-t="1" value="${val}" ${adm ? "" : "disabled"}></span></div></div>`;
+    return `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc"><span class="onum"><span class="tin">${this._tIn(val, !adm, `Uhrzeit`)}<input type="hidden" data-f="wwnum" data-k="${path}" data-t="1" value="${val}" ></span></span></div></div>`;
   }
   _wwSet(path, v) { const W = this._mdState().ww, p = path.split("."); let o = W; for (let i = 0; i < p.length - 1; i++) o = o[p[i]]; o[p[p.length - 1]] = v; this._mdSave(); }
   _wwChange(t) {
@@ -9404,7 +9431,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="sh"><div><b>${heat ? "Warmwasser-Zeitplan" : "Zirkulationszeiten"}</b><span>${heat ? "Wann der Speicher auf Soll gehalten wird" : "Wann die Pumpe laufen darf"}</span></div><button class="ibtn" data-act="wwschdone" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="seg wwseg" role="group">${[["wd", "Montag–Freitag"], ["we", "Wochenende"]].map(([k, l]) => `<button class="${key === k ? "sel" : ""}" data-act="wwschday" data-k="${k}">${l}</button>`).join("")}</div>
       ${this._wwBar(list, m.kind)}
-      ${list.length ? list.map((x, i) => `<div class="wsr"><input type="time" data-f="wwsch" data-i="${i}" data-k="from" value="${x.from}" aria-label="Von"><span>bis</span><input type="time" data-f="wwsch" data-i="${i}" data-k="to" value="${x.to}" aria-label="Bis">${heat ? `<span class="onum"><input type="number" inputmode="numeric" data-f="wwsch" data-i="${i}" data-k="temp" value="${x.temp}" min="30" max="70" aria-label="Temperatur"><i>°C</i></span>` : ""}<button class="ibtn" data-act="wwschdel" data-i="${i}" aria-label="Zeitfenster löschen">${ic("trash", 17)}</button></div>`).join("") : `<div class="mut sm" style="padding:10px 0">Noch keine Zeitfenster.</div>`}
+      ${list.length ? list.map((x, i) => `<div class="wsr"><span class="tin">${this._tIn(x.from, false, `Von`)}<input type="hidden" data-f="wwsch" data-i="${i}" data-k="from" value="${x.from}" aria-label="Von"></span><span>bis</span><span class="tin">${this._tIn(x.to, false, `Bis`)}<input type="hidden" data-f="wwsch" data-i="${i}" data-k="to" value="${x.to}" aria-label="Bis"></span>${heat ? `<span class="onum"><input type="number" inputmode="numeric" data-f="wwsch" data-i="${i}" data-k="temp" value="${x.temp}" min="30" max="70" aria-label="Temperatur"><i>°C</i></span>` : ""}<button class="ibtn" data-act="wwschdel" data-i="${i}" aria-label="Zeitfenster löschen">${ic("trash", 17)}</button></div>`).join("") : `<div class="mut sm" style="padding:10px 0">Noch keine Zeitfenster.</div>`}
       <div class="gbtns"><button class="btn2" data-act="wwschadd">${ic("plus", 16)} Zeitfenster</button><button class="btn2" data-act="wwschcopy">${ic("copy", 16)} Auf ${key === "wd" ? "Wochenende" : "Mo–Fr"} kopieren</button></div>
       ${heat ? `<div class="mut sm" style="margin:6px 0 0">Absenktemperatur außerhalb der Zeiten und Soll werden unter „Einstellungen“ festgelegt.</div>` : ""}
       <div class="foot2"><button class="btn2 pri" data-act="wwschdone">Fertig</button></div></div>`;

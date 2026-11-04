@@ -1234,4 +1234,9 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .lfnr.set .lfni{background:color-mix(in srgb,#22d3ee 18%,transparent);color:#22d3ee}
 .lfnr.on{border-color:#22d3ee;box-shadow:0 0 0 1px #22d3ee inset;background:color-mix(in srgb,#22d3ee 7%,transparent)}.lfnl{color:#22d3ee}
 .lfnb{display:flex;gap:6px}.lfnb .btn2{padding:7px 10px;font-size:.78rem;flex:none}
+/* Uhrzeit aus zwei Feldern (statt Auswahlrad, das die Mac-App abstürzen lässt) */
+.tin{display:inline-flex;align-items:center;gap:4px;vertical-align:middle}
+.tinp{width:3.1em;text-align:center;font:inherit;font-size:1rem;font-variant-numeric:tabular-nums;padding:8px 4px;border-radius:10px;border:1px solid var(--line);background:var(--primary-background-color);color:var(--primary-text-color);box-sizing:border-box}
+.tinp:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}.tinp:disabled{opacity:.55}
+.tinc{font-weight:700;color:var(--mut)}
 `;

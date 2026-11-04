@@ -6,7 +6,7 @@
     const D = this._lfD;
     if ((!D || Date.now() - D.ts > 20000) && !this._lfBusy && this._hass) {
       this._lfBusy = true;
-      this._hass.callWS({ type: "fenster_heizung/lf_get" }).then((r) => { this._lfD = { ...(r || {}), ts: Date.now() }; this._lfBusy = false; this._render(); if (this._modal && /^lf/.test(this._modal.type)) this._renderModal(); })
+      this._hass.callWS({ type: "fenster_heizung/lf_get" }).then((r) => { this._lfD = { ...(r || {}), ts: Date.now() }; this._lfBusy = false; this._render(); const ae = this.shadowRoot && this.shadowRoot.activeElement; if (this._modal && /^lf/.test(this._modal.type) && !(ae && ae.tagName === "INPUT")) this._renderModal(); })
         .catch(() => { this._lfD = { cfg: { devs: [] }, devs: {}, rooms: [], ts: Date.now(), err: true }; this._lfBusy = false; });
     }
     return D || null;
@@ -179,9 +179,9 @@
       body = `<div class="lsec">${ic("today", 15)}Tägliche Standortabfrage</div>
         <div class="mut sm" style="margin:-2px 0 6px">Einmal am Tag wird bestätigt, in welchem Raum der Entfeuchter steht. Bis dahin gilt der Raum von gestern.</div>
         ${aseg("on", [[true, "Ein"], [false, "Aus"]])}
-        ${a.on ? `${row("Uhrzeit der Abfrage", "Ab dann erscheint die Standort-Karte", `<input class="otxt lftime" type="time" data-f="lfxt" data-k="time" value="${esc(a.time)}" aria-label="Uhrzeit der Abfrage">`)}
+        ${a.on ? `${row("Uhrzeit der Abfrage", "Ab dann erscheint die Standort-Karte", `<span class="tin">${this._tIn(esc(a.time), false, `Uhrzeit der Abfrage`)}<input type="hidden" data-f="lfxt" data-k="time" value="${esc(a.time)}" aria-label="Uhrzeit der Abfrage"></span>`)}
         <div class="mut sm" style="margin:8px 0 4px">Abfrage am Handy nur, wenn jemand zu Hause ist</div>${aseg("home_only", [[true, "Ja"], [false, "Nein"]])}
-        ${row("Ohne Antwort bis", "Danach gilt die Wahl darunter", `<input class="otxt lftime" type="time" data-f="lfxt" data-k="until" value="${esc(a.until)}" aria-label="Frist für die Antwort">`)}
+        ${row("Ohne Antwort bis", "Danach gilt die Wahl darunter", `<span class="tin">${this._tIn(esc(a.until), false, `Frist für die Antwort`)}<input type="hidden" data-f="lfxt" data-k="until" value="${esc(a.until)}" aria-label="Frist für die Antwort"></span>`)}
         ${aseg("miss", [["same", "Wie gestern"], ["pause", "Pausieren"], ["hint", "Nur Hinweis"]])}
         <div class="mut sm" style="margin:4px 0 0">${{ same: "Der Raum von gestern wird für heute übernommen.", pause: "Der Entfeuchter bleibt aus, bis jemand den Standort bestätigt.", hint: "Er läuft wie gestern weiter, die Karte erinnert weiter." }[a.miss]}</div>
         <div class="lsec">${ic("home", 15)}Räume zur Auswahl (je ein Antippen)</div>
@@ -191,7 +191,7 @@
         <div class="mut sm" style="margin:-2px 0 6px">Bekommen die tägliche Abfrage mit Tasten für bis zu drei Räume und die Meldungen dieses Geräts. Ein Tipp auf die Nachricht öffnet das Dashboard.</div>
         ${pushAll.length ? chips(pushAll, a.push, "lfxpush", (v) => v.replace(/^notify\.(mobile_app_)?/, "").replace(/_/g, " ")) : `<div class="mut sm">Kein Benachrichtigungsdienst gefunden. Mit der Home-Assistant-App am Handy gibt es „mobile_app“-Dienste.</div>`}
         ${a.push.length && !M.isNew ? `<button class="lnk" data-act="lfxtest" data-d="${esc(d.id)}" style="margin:6px 0 0">${ic("bell", 14)} Jetzt eine Test-Abfrage senden</button>` : ""}
-        ${!M.isNew ? this._lfNfc(d) : ""}
+        ${M.isNew ? `<div class="lsec">${ic("tablet", 15)}NFC-Tag am Stellplatz</div><div class="mut sm" style="margin:-2px 0 6px">Je Raum lässt sich ein NFC-Tag anlernen: Handy dranhalten, und der Entfeuchter steht dort. Erst das Gerät speichern, dann erscheinen hier die Räume zum Anlernen.</div>` : this._lfNfc(d)}
         ${!M.isNew ? `<div class="lsec">${ic("pin", 15)}Standort jetzt</div>${this._lfTiles({ ...d, S })}` : ""}`;
     } else if (M.tab === "strom") {
       const now = [L.price != null ? `Strompreis jetzt ${num(L.price, 1)} ct/kWh` : "kein Strompreis", L.pv_w != null ? `Überschuss jetzt ${wfmt(Math.max(0, L.pv_w))}` : "kein Netz-Sensor"].join(" · ");

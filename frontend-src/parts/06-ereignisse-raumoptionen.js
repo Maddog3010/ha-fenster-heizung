@@ -28,10 +28,32 @@
     sr.addEventListener("input", (e) => this._onInput(e.target));
     sr.addEventListener("pointerdown", (e) => { const g = e.target.closest("[data-handle]"); if (g) this._dragStart(e, g); });
     sr.addEventListener("input", (e) => { const t = e.target; if (t.dataset && t.dataset.f === "enq") { const q = t.value.trim().toLowerCase(); let n = 0; t.closest(".pkbox").querySelectorAll(".pkrow").forEach((r) => { const ok = !q || r.dataset.s.includes(q); r.hidden = !ok; if (ok) n++; }); const z = t.closest(".pkbox").querySelector(".pkno"); if (z) z.hidden = n > 0; } });
+    /* Uhrzeit aus zwei Feldern (Stunde, Minute) statt <input type="time">: Das Auswahlrad der Mac-App von Home Assistant
+       (iPad-App auf dem Mac) bringt die App zum Absturz. Das unsichtbare Feld dahinter trägt Wert und data-Angaben wie bisher. */
+    sr.addEventListener("change", (e) => { const t = e.target; if (t && t.dataset && t.dataset.tin) { e.stopImmediatePropagation(); this._tInDone(t); } }, true);
+    sr.addEventListener("keydown", (e) => { const t = e.target; if (t && t.dataset && t.dataset.tin && e.key === "Enter") { e.preventDefault(); t.blur(); } });
     sr.addEventListener("change", (e) => this._onChange(e.target));
     this._sfxBind(sr);
   }
 
+  /* Uhrzeit-Felder: zwei kleine Zahlenfelder „08 : 00“, funktionieren in allen Apps und Browsern */
+  _tIn(v, dis = false, label = "Uhrzeit") {
+    const m = /^(\d{1,2}):(\d{2})/.exec(String(v || "")), h = m ? m[1].padStart(2, "0") : "", mi = m ? m[2] : "";
+    const a = (k, val, l) => `<input class="tinp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" autocomplete="off" data-tin="${k}" value="${val}" placeholder="${k === "h" ? "hh" : "mm"}" aria-label="${esc(label)}: ${l}" ${dis ? "disabled" : ""}>`;
+    return a("h", h, "Stunde") + `<b class="tinc">:</b>` + a("m", mi, "Minute");
+  }
+  _tInDone(t) {
+    const w = t.closest(".tin"); if (!w) return;
+    const H = w.querySelector('[data-tin="h"]'), M = w.querySelector('[data-tin="m"]'), hid = w.querySelector('input[type="hidden"]'); if (!H || !M || !hid) return;
+    const n = (x, mx) => { const v = parseInt(String(x.value).replace(/\D/g, ""), 10); return isFinite(v) ? Math.min(mx, Math.max(0, v)) : null; };
+    let h = n(H, 23), m = n(M, 59);
+    if (h == null && m == null) return;
+    if (h == null) h = 0; if (m == null) m = 0;
+    H.value = String(h).padStart(2, "0"); M.value = String(m).padStart(2, "0");
+    const val = `${H.value}:${M.value}`; if (hid.value === val) return;
+    hid.value = val;
+    this._onInput(hid); this._onChange(hid);
+  }
   _onChange(t) {
       if (t.dataset && t.dataset.f === "mwset") { this._mwAssign(t.dataset.k, t.value); return; }
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
@@ -269,7 +291,7 @@
     const row = (label, hint, ctl) => `<div class="of"><div class="ol"><b>${label}</b>${hint ? `<span>${hint}</span>` : ""}</div><div class="oc">${ctl}</div></div>`;
     const num = (k, unit, o = {}) => row(o.l, o.h, `<span class="onum"><input type="number" inputmode="decimal" data-f="oval" data-k="${k}" data-num="1" value="${d[k]}" min="${o.min ?? ""}" max="${o.max ?? ""}" step="${o.step ?? 1}" ${o.ph ? `placeholder="${o.ph}"` : ""}><i>${unit}</i></span>`);
     const txt = (k, o = {}) => row(o.l, o.h, `<input class="otxt" data-f="oval" data-k="${k}" value="${esc(d[k])}">`);
-    const time = (k, o) => row(o.l, o.h, `<span class="onum"><input type="time" data-f="oval" data-k="${k}" value="${d[k] || ""}">${d[k] ? `<button class="oclr" data-act="oclr" data-k="${k}" aria-label="Zurücksetzen">${ic("close", 14)}</button>` : ""}</span>`);
+    const time = (k, o) => row(o.l, o.h, `<span class="onum"><span class="tin">${this._tIn(d[k] || "", false, `Uhrzeit`)}<input type="hidden" data-f="oval" data-k="${k}" value="${d[k] || ""}"></span>${d[k] ? `<button class="oclr" data-act="oclr" data-k="${k}" aria-label="Zurücksetzen">${ic("close", 14)}</button>` : ""}</span>`);
     const seg = (k, opts) => `<div class="seg oseg">${opts.map(([v, l]) => `<button class="${d[k] === v ? "sel" : ""}" data-act="oset" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
     const multi = (k, cand, l, h) => row(l, h, `<div class="ochips">${d[k].map((e) => `<span class="och">${fn(e)}<button data-act="orm" data-k="${k}" data-e="${esc(e)}" aria-label="Entfernen">${ic("close", 12)}</button></span>`).join("")}${this._wzSel(cand.filter((e) => !d[k].includes(e)), "", "oadd", `data-k="${k}"`, "＋ hinzufügen")}</div>`);
     const one = (k, cand, l, h) => { const c = d[k] && !cand.includes(d[k]) ? [d[k], ...cand] : cand; return row(l, h, this._wzSel(c, d[k], "oval", `data-k="${k}"`, "– keine –")); };

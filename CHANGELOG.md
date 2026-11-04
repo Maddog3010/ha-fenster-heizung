@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b15] - 2026-11-04
+
+Testversion (Beta) mit einer wichtigen Korrektur für die Mac-App.
+
+### Behoben
+- **Die Mac-App von Home Assistant stürzte ab, wenn man auf ein Uhrzeit-Feld tippte**, zum Beispiel beim Luftentfeuchter auf „Uhrzeit der Abfrage“. Das Auswahlrad für Uhrzeiten wird in der Mac-App (iPad-App auf dem Mac) nicht unterstützt. Alle Uhrzeiten werden jetzt in zwei kleinen Feldern für Stunde und Minute eingegeben („08 : 00“). Das gilt in allen Apps und Browsern für Luftentfeuchter, Heizplan, Raumeinstellungen, Urlaub (Vorheizen), Modul 2 Warmwasser, Modul 8 Wallbox, Modul 11 Ruhezeiten und Tags & Karten. Werte außerhalb des Bereichs werden begrenzt (z. B. 75 Minuten → 59).
+- **Luftentfeuchter: Der Bereich „NFC-Tag am Stellplatz“ im Reiter „Standort“ ist jetzt immer zu sehen.** Bei einem noch nicht gespeicherten Gerät steht dort ein Hinweis, dass Tags nach dem Speichern angelernt werden.
+
 ## [2026.11.1b14] - 2026-11-04
 
 Testversion (Beta) mit Schritt 3, 4 und 5 (NFC) des Luftentfeuchters in Modul 1.
