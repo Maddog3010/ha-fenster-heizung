@@ -48,13 +48,26 @@ class AddonCore:
         self._cmds: dict[str, Handler] = {}
         self._unsubs: list[CALLBACK_TYPE] = []
         self._stores: list[SafeStore] = []
+        self._provided: list[str] = []
 
     # ---- Speicher
-    def store(self, version: int = 1, name: str = "") -> SafeStore:
-        key = f"{DOMAIN}_addon_{self.id}" + (f"_{name}" if name else "")
+    def store(self, version: int = 1, name: str = "", legacy: str = "") -> SafeStore:
+        """Eigener Speicher. legacy = Name des Speichers, den das Modul schon vor dem Umzug ins Addon hatte
+        (z. B. fenster_heizung_muell): so bleiben alle Daten erhalten."""
+        key = legacy or (f"{DOMAIN}_addon_{self.id}" + (f"_{name}" if name else ""))
         s = SafeStore(self.hass, version, key)
         self._stores.append(s)
         return s
+
+    def adopt_store(self, s: SafeStore) -> None:
+        """Einen Speicher, den das Addon selbst angelegt hat, zum Addon zählen (für Deinstallieren ohne Daten)."""
+        if s not in self._stores:
+            self._stores.append(s)
+
+    def provide(self, key: str, obj: Any) -> None:
+        """Unter hass.data[DOMAIN][key] bereitstellen, wie es ein Modul im Kern tat (Start, Tags, Messwerk finden es dort)."""
+        self.hass.data.setdefault(DOMAIN, {})[key] = obj
+        self._provided.append(key)
 
     async def async_remove_stores(self) -> None:
         for s in self._stores:
@@ -97,6 +110,9 @@ class AddonCore:
                 pass
         self._unsubs.clear()
         self._cmds.clear()
+        for k in self._provided:
+            self.hass.data.get(DOMAIN, {}).pop(k, None)
+        self._provided.clear()
 
     # ---- Haus
     def areas(self) -> list[dict[str, Any]]:
@@ -137,6 +153,12 @@ class AddonCore:
 
     def log(self, level: str, msg: str, entity: str | None = None) -> None:
         diag_log(self.hass, level, f"Modul {self.meta.get('n')} {self.meta.get('name')}: {msg}", entity=entity)
+
+
+def addon_on(hass: HomeAssistant, aid: str) -> bool:
+    """Läuft das Addon gerade?"""
+    mgr = hass.data.get(DOMAIN, {}).get("addons")
+    return bool(mgr is not None and aid in getattr(mgr, "live", {}))
 
 
 class SWAddon:

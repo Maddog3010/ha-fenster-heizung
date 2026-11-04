@@ -62,9 +62,8 @@ const HZ_BUB_DEF = ["wetter", "personen", "alarm", "solar", "batterie", "auto", 
 const HZ_BUB_N = { wetter: ["Wetter", "Außentemperatur und Wetterlage", "cloud"], personen: ["Personen zu Hause", "Anzahl der Personen daheim", "users"], alarm: ["Alarm", "Zustand der Alarmanlage", "shield"], solar: ["Solar jetzt", "Leistung der PV-Anlage", "sun"], batterie: ["Batterie", "Ladestand des Speichers", "bolt"], auto: ["E-Auto", "Ladestand und ob es lädt", "car"], fenster: ["Offene Fenster", "Anzahl offener Fenster", "windowOpen"], muell: ["Nächste Müllabfuhr", "nur wenn Modul 17 an ist", "trash"], warmwasser: ["Warmwasser", "Temperatur im Speicher", "drop"], preis: ["Strompreis", "Preis aus Modul 3", "chart"], hinweise: ["Hinweise", "Anzahl der Hinweise", "info"] };
 const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", icon: "trash", tag: "Abholtermine, Tonnen-Ampel und Erinnerung", lab: true };
 const MOD_LI = { id: "li", n: 18, name: "Licht & Lampen", short: "Licht", icon: "lamp", tag: "Lampen schalten, dimmen und Szenen", lab: true };
-const MU_NAMES = { tonnen: "Tonnen", next: "Nächste Abholungen", cal: "Kalender", rem: "Erinnerung am Vorabend", hint: "Hinweise", cost: "Kosten" };
-const MU_WIDE = ["tonnen", "cost"];
-const DAYS_SHORT_MU = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+/* Phase 3: Labs, die jetzt Addons sind (Müllabfuhr → Addon muell, Licht → Addon licht) */
+const LAB_GONE = ["mm", "li"];
 const MOD_ST = { ef: "beta", sf: "beta", sp: "vorab", ev: "beta", wx: "beta", dt: "beta" };
 const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
@@ -526,5 +525,4 @@ const MV = {
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "0.5", b: 6, d: "2026-10-29", p: "3.0.7.6", log: [["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
-  mu: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  li: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] } };
+};

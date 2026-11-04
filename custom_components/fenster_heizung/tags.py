@@ -326,12 +326,13 @@ class TagManager:
             return True, ""
         if k == "mu_done":
             mm = D.get("muell")
-            if mm is None or not lab_on(self.hass, "mm"):
+            if mm is None:
                 return False, "Modul 17 ist aus"
             await mm.async_done(str(arg))
             return True, ""
         if k.startswith("li_"):
-            if not lab_on(self.hass, "li"):
+            from .addon_api import addon_on
+            if not addon_on(self.hass, "licht"):
                 return False, "Modul 18 ist aus"
             if k == "li_off":
                 ids = [s.entity_id for s in self.hass.states.async_all("light") if s.state == "on" and not isinstance(s.attributes.get("entity_id"), (list, tuple))]

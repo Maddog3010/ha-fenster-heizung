@@ -30,7 +30,7 @@
     });
     return out;
   }
-  _hzMu() { return this._labOn("mm") ? (this._mu().bins || []) : []; }
+  _hzMu() { return this._muOn() ? (this._mu().bins || []) : []; }
   _hzHints() {
     const H = this._hass, st = H.states, out = [], o = this._out();
     this._hzWin().forEach((w) => { const m = Math.round((Date.now() - w.since) / 60000); if (m >= 15) out.push({ i: "windowOpen", t: `${esc(w.name)}: Fenster seit ${this._hzSince(new Date(w.since).toISOString())} offen`, s: o.t != null ? `Außen ${num(o.t, 0)} °C` : "", r: "jetzt", c: "wa", mod: "fh" }); });
@@ -56,8 +56,8 @@
     else if (m.id === "en") { const N = this._enOn() ? this._enNow() : null; sub = N ? `${num(N.pv / 1000, 1)} kW PV` : "Nicht eingerichtet"; c = N ? "" : "mut"; }
     else if (m.id === "gs") { const n = this._gsState().devices.length; sub = n ? `${n} ${n === 1 ? "Gerät" : "Geräte"}` : "Keine Geräte"; c = n ? "" : "mut"; }
     else if (m.id === "ev") { const e = (this._evState().ent || {}).soc, v = e && st[e] ? parseFloat(st[e].state) : NaN; sub = isFinite(v) ? `${num(v, 0)} %` : "Nicht eingerichtet"; c = isFinite(v) ? "" : "mut"; }
-    else if (m.id === "mu") { const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; sub = x ? `${esc(x.name)} ${this._muWhen(x.days)}` : "Keine Termine"; c = x && x.days <= 1 ? "wa" : x ? "" : "mut"; this._muLoad(); }
-    else if (m.id === "li") { const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; sub = L.length ? (n ? `${n} von ${L.length} an` : "Alles aus") : "Keine Lampen"; c = n ? "wa" : "mut"; }
+    else if (m.id === "mu" && this._muOn()) { const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; sub = x ? `${esc(x.name)} ${this._muWhen(x.days)}` : "Keine Termine"; c = x && x.days <= 1 ? "wa" : x ? "" : "mut"; this._muLoad(); }
+    else if (m.id === "li" && this._liOn()) { const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; sub = L.length ? (n ? `${n} von ${L.length} an` : "Alles aus") : "Keine Lampen"; c = n ? "wa" : "mut"; }
     else if (m.addon) { const t = this._adTile(m); sub = t.sub; c = t.c; }
     else { sub = modSt(m) && STG[modSt(m)] ? STG[modSt(m)].t : ""; c = "mut"; }
     return `<button class="hzt ${c}" data-act="hzgo" data-k="${m.id}"><span class="hti">${ic(m.icon, 22)}</span><b>${esc(m.short)}</b><small>${sub}</small></button>`;
@@ -118,7 +118,7 @@
     return `<div class="card hzgo" data-act="hzgo" data-k="en" role="button" tabindex="0"><h2>${ic("energy", 18)}Energie jetzt<span class="hzrt">Modul 3</span></h2><div class="lugrid">${this._labTile("Solar", `${num(N.pv / 1000, 1)} kW`, `Haus ${num(N.house / 1000, 1)} kW`)}${N.soc != null ? this._labTile("Batterie", `${num(N.soc, 0)} %`, N.bc > 0 ? `lädt mit ${num(N.bc / 1000, 1)} kW` : N.dis > 0 ? `entlädt mit ${num(N.dis / 1000, 1)} kW` : "ruht") : ""}${net}</div></div>`;
   }
   _hzMuell() {
-    if (!this._labOn("mm")) return ""; this._muLoad(); const S = this._mu(), rows = (S.bins || []).filter((x) => x.next); if (!S.on || !rows.length) return "";
+    if (!this._muOn()) return ""; this._muLoad(); const S = this._mu(), rows = (S.bins || []).filter((x) => x.next); if (!S.on || !rows.length) return "";
     const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", none: "–" };
     return `<div class="card"><h2>${ic("trash", 18)}Müllabfuhr<span class="hzrt">Modul 17</span></h2><div class="mugrid">${(S.bins || []).map((x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}"><i class="bin" style="background:${x.color}"></i><b>${esc(x.name)}</b><small>${x.next ? (x.days <= 1 ? lbl[x.state] : this._muWhen(x.days)) : "–"}</small></${tap ? "button" : "div"}>`; }).join("")}</div></div>`;
   }
@@ -131,7 +131,7 @@
     if (id === "solar" || id === "batterie") { if (!this._enOn()) return null; const N = this._enNow(); if (!N) return null; return id === "solar" ? { i: "sun", b: `${num(N.pv / 1000, 1)} kW`, s: "Solar", mod: "en", blk: "energie" } : N.soc != null ? { i: "bolt", b: `${num(N.soc, 0)} %`, s: "Batterie", mod: "en", blk: "energie" } : null; }
     if (id === "auto") { const E = this._evState().ent || {}, v = E.soc && st[E.soc] ? parseFloat(st[E.soc].state) : NaN; if (!isFinite(v)) return null; const ch = E.charging && st[E.charging] && ["on", "charging"].includes(st[E.charging].state); return { i: "car", b: `${num(v, 0)} %`, s: ch ? "lädt" : "E-Auto", c: ch ? "ok" : "", mod: "ev" }; }
     if (id === "fenster") { const n = this._hzWin().reduce((s, w) => s + w.n, 0); return { i: "windowOpen", b: n ? `${n} offen` : "alle zu", s: "Fenster", c: n ? "wa" : "ok", mod: "fh" }; }
-    if (id === "muell") { if (!this._labOn("mm")) return null; this._muLoad(); const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; return x ? { i: "trash", b: x.days === 0 ? "Heute" : x.days === 1 ? "Morgen" : `in ${x.days} Tg.`, s: x.name, c: x.days <= 1 ? "wa" : "", mod: "mu", blk: "muell" } : null; }
+    if (id === "muell") { if (!this._muOn()) return null; this._muLoad(); const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; return x ? { i: "trash", b: x.days === 0 ? "Heute" : x.days === 1 ? "Morgen" : `in ${x.days} Tg.`, s: x.name, c: x.days <= 1 ? "wa" : "", mod: "mu", blk: "muell" } : null; }
     if (id === "warmwasser") { if (!this._mdState().on.ww) return null; const E = this._mdState().ww.ent || {}, v = E.top && st[E.top] ? parseFloat(st[E.top].state) : NaN; return isFinite(v) ? { i: "drop", b: `${num(v, 0)} °C`, s: "Warmwasser", mod: "ww" } : null; }
     if (id === "preis") { if (!this._enOn()) return null; const p = this._price(); return p ? { i: "chart", b: `${num(p, 1)} ct`, s: "Strompreis", mod: "en" } : null; }
     if (id === "hinweise") { const n = this._hzHints().length; return { i: "info", b: n ? `${n} ${n === 1 ? "Hinweis" : "Hinweise"}` : "keine", s: "Hinweise", c: n ? "wa" : "ok", blk: "hinweise" }; }

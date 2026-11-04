@@ -30,7 +30,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
-> 🧩 **Neu in der Beta 2026.11.1b11: Addons aus dem Katalog, eingebunden in die Einstellungen.** Module lassen sich unter **Einstellungen → Addons** installieren, aktualisieren und wieder deinstallieren. Updates kommen jetzt aus dem signierten Katalog [Maddog3010/strom-waerme-addons](https://github.com/Maddog3010/strom-waerme-addons), unabhängig von der Integration, mit Rücksprung auf die frühere Version. Ihre Einstellungen stehen unter Module, in der Suche und im Messwerk. Das erste Addon ist **Modul 21 Saugroboter** (zuerst für Roborock). [Mehr dazu](#addons)
+> 🧩 **Neu in der Beta 2026.11.1b12: Müllabfuhr und Licht sind jetzt Addons.** Wer die Labs an hatte, bekommt sie automatisch mit allen Einstellungen. Addons kommen aus dem Katalog und sind in die Einstellungen eingebunden. Module lassen sich unter **Einstellungen → Addons** installieren, aktualisieren und wieder deinstallieren. Updates kommen jetzt aus dem signierten Katalog [Maddog3010/strom-waerme-addons](https://github.com/Maddog3010/strom-waerme-addons), unabhängig von der Integration, mit Rücksprung auf die frühere Version. Ihre Einstellungen stehen unter Module, in der Suche und im Messwerk. Das erste Addon ist **Modul 21 Saugroboter** (zuerst für Roborock). [Mehr dazu](#addons)
 
 > 🧭 **Seit der Beta 2026.11.1b6: Einstellungen neu gedacht.** Gemeinsame Werte liegen zentral im **Haus**, das **Messwerk** zeigt alle Sensoren aller Module mit „genutzt in“, dazu eine neue Sensorsuche ohne lange Listen, Suche, Änderungsverlauf mit Rückgängig und Hilfe an jeder Stelle. [Mehr dazu](#einstellungen)
 
@@ -104,9 +104,10 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 14 | **Dynamischer Stromtarif** | Beta 0.5 | Stundenpreise, Preisverlauf, günstigste Zeiten |
 | 15 | Wartung & Erinnerungen | In Entwicklung 0.1 | Konzept, auf Wunsch mit den Daten aus Modul 11 |
 | 16 | **Solar-Prognose** | Vorabversion 0.9 | Heute und morgen, Stundenverlauf, Prognose gegen Ertrag |
-| 17 | Müllabfuhr | Lab 0.0.1 | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend |
-| 18 | Licht & Lampen | Lab 0.0.1 | Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe |
+| 17 | Müllabfuhr | Addon 0.1.0 | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend |
+| 18 | Licht & Lampen | Addon 0.1.0 | Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe |
 | 19 | **Hausfluss** | Beta 0.5 · Sponsoren | Dein Haus als Fluss-Bild, die Punkte laufen je nach Leistung schneller oder langsamer |
+| 21 | Saugroboter | Addon 0.1.2 | Roboter-Karte, Raum-Kacheln mit Ampel, Karte, Woche, Wartung |
 
 Die Module 5, 6, 7, 10, 12, 13 und 15 zeigen **Konzeptseiten** zum Durchklicken. Alle Zahlen in den Bildern sind erfundene Beispiele, diese Module schalten nichts.
 
@@ -320,8 +321,6 @@ Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt 
 | Duschzeiten lernen | 2 | Schaltet | Heizt vor den typischen Duschzeiten vor |
 | Legionellenschutz nach Sonne | 2 | Schaltet | Legt den Schutz auf sonnige Tage |
 | Ladeziel nach Kalender | 8 | Schaltet | Hebt das Ladeziel vor langen Terminen an |
-| Müllabfuhr | 17 | Schaltet | Schaltet Modul 17 frei |
-| Licht & Lampen | 18 | Schaltet | Schaltet Modul 18 frei |
 | Tags & Karten | alle | Schaltet | RFID-Karten und NFC-Sticker lösen feste Aktionen aus |
 
 ---

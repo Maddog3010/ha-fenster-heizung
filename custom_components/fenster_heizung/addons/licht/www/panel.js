@@ -1,5 +1,10 @@
-  /* Modul 18: Licht & Lampen (Labs). Schaltet nur auf Fingertipp über Home Assistant (light.*, scene.*, script.*).
-     Das Modul gibt es nur, solange das Lab „Licht & Lampen“ (li) an ist. Verknüpfte Szenen und ausgeblendete Räume stehen im Layout (layout.li). */
+/* Addon „licht“ (Addon-API 1). Phase 3: das frühere Modul des Kerns, unverändert als Mixin.
+   Der Kern hängt die Methoden der Klasse unten an das Panel. Daten und Backend bleiben wie bisher. */
+export default (api) => {
+  const { ic, esc, num, ico } = api;
+  const Mixin = class {
+  /* Modul 18: Licht & Lampen (Addon, früher Lab). Schaltet nur auf Fingertipp über Home Assistant (light.*, scene.*, script.*).
+     Das Modul gibt es, solange das Addon installiert ist. Verknüpfte Szenen und ausgeblendete Räume stehen im Layout (layout.li). */
   _liLay() {
     const l = (this._cfg && this._cfg.layout && this._cfg.layout.li) || {}, sc = l.scenes && typeof l.scenes === "object" ? l.scenes : {};
     return { scenes: { night: sc.night || "", arrive: sc.arrive || "", cozy: sc.cozy || "" }, hours: [1, 2, 4].includes(l.hours) ? l.hours : 2, hidden: Array.isArray(l.hidden) ? l.hidden.filter((x) => typeof x === "string") : [] };
@@ -49,11 +54,11 @@
   }
   _liPage() {
     const adm = this._admin(), rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un);
-    const banner = `<div class="labban">${ic("flask", 22)}<div><b>Labs · Licht & Lampen</b>Dieses Modul ist ein Experiment und nur da, solange das Lab eingeschaltet ist. Es schaltet nur, wenn du tippst.</div></div>`;
+    const banner = "";
     if (!rooms.length) return `${banner}<div class="card empty">${ic("lamp", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Keine Lampen gefunden</div>Es gibt in Home Assistant keine Entität light.*. Lampen richtest du in Home Assistant unter Geräte und Dienste ein.</div>`;
     const on = lamps.filter((x) => x.on), L = this._liLay(), long = this._liLong();
     const top = shown.slice().sort((a, b) => b.on.length - a.on.length)[0], mx = on.length ? Math.max(...on.map((x) => x.since)) : 0, longest = on.find((x) => x.since === mx);
-    const mu = this._labOn("mm") ? this._mu() : null, mul = mu && mu.cfg && mu.cfg.light && mu.cfg.light.on && mu.cfg.light.ent ? mu.cfg.light.ent : "";
+    const mu = this._muOn() ? this._mu() : null, mul = mu && mu.cfg && mu.cfg.light && mu.cfg.light.on && mu.cfg.light.ent ? mu.cfg.light.ent : "";
     const tiles = `<div class="lugrid lixtiles">${this._labTile("Lampen an", String(on.length), `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}`, on.length ? "amber" : "")}${this._labTile("Meiste Lampen an", top && top.on.length ? esc(top.name) : "–", top && top.on.length ? `${top.on.length} von ${top.lamps.length} an` : "Alles aus")}${this._labTile("Längste an", on.length ? this._liDur(mx) : "–", on.length && longest ? esc(longest.name) : "Nichts an")}${mul ? this._labTile("Müll-Licht", this._hass.states[mul] && this._hass.states[mul].state === "on" ? "An" : "Aus", esc(this._wzName(mul)) + " (Modul 17)") : ""}</div>`;
     const scn = `<div class="gbtns lixscn">${this._liSceneBtn("night", "Gute Nacht", "moon", true)}<button class="btn2" data-act="lixalloff" ${on.length ? "" : "disabled"}>${ic("lamp", 15)} Alle aus</button>${this._liSceneBtn("arrive", "Ankommen", "home")}${this._liSceneBtn("cozy", "Gemütlich", "fireplace")}</div>`;
     const names = ["night", "arrive", "cozy"].filter((k) => L.scenes[k] && this._hass.states[L.scenes[k]]).map((k) => `${{ night: "Gute Nacht", arrive: "Ankommen", cozy: "Gemütlich" }[k]}: ${esc(this._wzName(L.scenes[k]))}`);
@@ -114,7 +119,7 @@
     }
     const L = this._liLay(), H = this._hass, st = H.states, sc = Object.keys(st).filter((e) => e.startsWith("scene.") || e.startsWith("script.")), rooms = this._liRooms();
     const slot = (k, t, h) => `<div class="lsec" style="margin-top:10px">${ic("link", 15)}${t}</div><div class="mut sm" style="margin:0 0 4px">${h}</div>${this._wzSel(sc, L.scenes[k], "lixsel", `data-k="${k}"`, "– nicht verknüpft –", /schlaf|nacht|aus|bed|night|ankomm|heim|home|arriv|gem(ü|u)t|cozy|relax|abend/i)}`;
-    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Licht & Lampen</b><span>Modul 18 · Labs · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Licht & Lampen</b><span>Modul 18 · Addon · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("lamp", 15)}Szenenknöpfe</div>
       <div class="mut sm" style="margin:0 0 4px">Jeder Knopf ruft eine Szene oder ein Skript aus Home Assistant auf. Ohne Auswahl bleibt er unverknüpft und öffnet diese Einstellungen. „Alle aus“ ist eingebaut.</div>
       ${slot("night", "Gute Nacht", "Zum Beispiel deine Szene zum Schlafengehen")}${slot("arrive", "Ankommen", "Zum Beispiel Licht im Flur und Wohnzimmer")}${slot("cozy", "Gemütlich", "Zum Beispiel warmes, gedimmtes Licht")}
@@ -125,3 +130,14 @@
       <div class="gschips">${rooms.map((r) => `<button class="gsch ${r.hid ? "" : "sel"}" data-act="lixhide" data-k="${esc(r.k)}" aria-pressed="${!r.hid}" ${adm ? "" : "disabled"}>${esc(r.name)} (${r.lamps.length})</button>`).join("")}</div>
       <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
+  };
+  return {
+    id: "licht", mixin: Mixin, settings: true, settingsTxt: "Szenen, ausgeblendete Räume, Hinweis bei langem Licht",
+    page: (p) => p._modHeroFor("li") + p._liPage(),
+    act: (p, a, el) => { if (a === "settings") p._act("lixopen", el); },
+    search: [
+      { id: "scenes", t: "Licht: Szenen", k: "licht lampe szene gute nacht ankommen gemütlich", h: "Szenenknöpfe wie „Gute Nacht“ und „Ankommen“." },
+      { id: "long", t: "Licht: Hinweis bei langem Licht", k: "licht lange an hinweis leer raum vergessen", h: "Hinweis, wenn Licht lange brennt." },
+    ],
+  };
+};

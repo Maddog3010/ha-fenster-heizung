@@ -72,8 +72,8 @@
     if (id === "fh") return this._tmHeiz();
     if (id === "ww") { this._wwLoad(); return this._wwPage(); }
     if (id === "gs") return this._gsPage();
-    if (id === "mu") return this._muPage();
-    if (id === "li") return this._liPage();
+    if (id === "mu" && this._muOn()) return this._muPage();
+    if (id === "li" && this._liOn()) return this._liPage();
     if (m.addon) return this._adPage(m);
     if (m.beta) return this._betaPage(id);
     if (id === "en") return this._enPage();

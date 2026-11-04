@@ -1,0 +1,26 @@
+{
+  "id": "muell",
+  "n": 17,
+  "mid": "mu",
+  "name": "Müllabfuhr",
+  "short": "Müllabfuhr",
+  "icon": "trash",
+  "tag": "Abholtermine, Tonnen-Ampel und Erinnerung",
+  "desc": "Abholtermine aus deinem Abfallkalender (zum Beispiel waste_collection_schedule), Tonnen-Ampel, Erinnerung am Vorabend aufs Handy, Ansage und Licht in der Farbe der Tonne, Monatskalender und Kosten für den Restmüll.",
+  "version": "0.1.0",
+  "build": 1,
+  "stage": "dev",
+  "api": 1,
+  "core_min": "2026.11.1b12",
+  "needs": {
+    "domains": [
+      "calendar"
+    ],
+    "text": "Noch kein Kalender in Home Assistant gefunden."
+  },
+  "optional": [
+    "waste_collection_schedule"
+  ],
+  "sponsor": false,
+  "network": []
+}

@@ -8,7 +8,7 @@
   _labPill(t = "Labs") { return `<em class="labp">${ic("flask", 11)}${t}</em>`; }
   /* Katalog: nur Funktionen, die etwas anzeigen */
   _labCat() {
-    return this._labCat0().filter((x) => this._labVisible(x)).map((x) => ({ k: "s", ...x }));
+    return this._labCat0().filter((x) => this._labVisible(x) && !LAB_GONE.includes(x.id)).map((x) => ({ k: "s", ...x }));
   }
   /* Vorabversionen: ein Lab mit early: "JJJJ-MM-TT" sehen Sponsoren (Schalter „Vorabversionen zuerst“) vorher, alle anderen ab diesem Tag */
   _labEarlyTs(x) { if (!x.early) return 0; const t = new Date(x.early + "T00:00:00").getTime(); return isFinite(t) ? t : 0; }
@@ -70,7 +70,7 @@
         d: "Neues Modul 17: Abholtermine aus deinem Abfallkalender, Tonnen-Ampel, Erinnerung am Vorabend, Ansage und Licht.",
         feats: ["Nächste Abholungen und Monatskalender für Rest, Bio, Papier und Gelben Sack", "Tonnen-Ampel: am Vorabend orange, nach dem Abhaken grün", "Nachricht aufs Handy zu einer Uhrzeit, die du einstellst", "Ansage über einen Lautsprecher und Licht in der Farbe der Tonne", "Hinweise bei verschobenen Terminen, Sturm und Frost", "Leerungen und Kosten im Jahr"],
         how: ["Die Termine liest das Modul aus einem Kalender von Home Assistant, zum Beispiel dem von waste_collection_schedule. Den Eintrag dafür gibt es im Store, solange dieses Lab an ist.", "Der Titel jedes Termins wird den Tonnen zugeordnet. Die Erkennungswörter kannst du in den Einstellungen ändern.", "Am Vorabend zur eingestellten Uhrzeit schickt das Modul die Nachricht, sagt sie an und schaltet das Licht, wenn du das eingeschaltet hast. Einmal pro Tag, und nur für Tonnen, die noch nicht als draußen markiert sind."],
-        needs: () => [["Abfallkalender in Home Assistant (waste_collection_schedule)", this._muHasWcs()], ["Ein Kalender mit den Abholterminen", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Benachrichtigungsdienst für die Erinnerung (optional)", Object.keys((this._hass.services || {}).notify || {}).some((n) => !["send_message", "reload", "persistent_notification"].includes(n))]],
+        needs: () => [["Abfallkalender in Home Assistant (waste_collection_schedule)", Object.values(this._hass.entities || {}).some((e) => e && e.platform === "waste_collection_schedule")], ["Ein Kalender mit den Abholterminen", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Benachrichtigungsdienst für die Erinnerung (optional)", Object.keys((this._hass.services || {}).notify || {}).some((n) => !["send_message", "reload", "persistent_notification"].includes(n))]],
         after: "Ausgeschaltet verschwinden Modul 17 und der Eintrag „Abfallkalender“ im Store. Gesendet und geschaltet wird dann nichts mehr. Die Einstellungen bleiben gespeichert. Die Integration waste_collection_schedule selbst bleibt in Home Assistant installiert, sie entfernst du dort.",
         f: [] },
       { id: "sb", mid: "st", mod: "Startseite", mn: "", n: "Start-Bubbles", st: "Früh", i: "layers",

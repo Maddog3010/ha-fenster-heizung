@@ -1,7 +1,7 @@
-"""Modul 17: Müllabfuhr (Labs) – Termine aus einem Kalender (z. B. waste_collection_schedule), Ampel, Erinnerung, Ansage, Licht, Statistik.
+"""Modul 17: Müllabfuhr (Addon) – Termine aus einem Kalender (z. B. waste_collection_schedule), Ampel, Erinnerung, Ansage, Licht, Statistik.
 
-Das Modul gehört zum Lab „Müllabfuhr“ (id mm) und ist nur aktiv, solange dieses Lab eingeschaltet ist. Die reinen
-Rechenfunktionen stehen oben, der Manager (Abruf, Meldungen, Speicher) unten.
+Früher das Lab „Müllabfuhr“ (id mm) im Kern, seit Phase 3 ein Addon. Der Speicher heißt weiter fenster_heizung_muell,
+damit alle Einstellungen und Termine erhalten bleiben. Die reinen Rechenfunktionen stehen oben, der Manager unten.
 """
 from __future__ import annotations
 
@@ -18,10 +18,9 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
-from .backup import SafeStore
-from .const import DOMAIN
-from .diag import diag_log
-from .labs import lab_on
+from custom_components.fenster_heizung.backup import SafeStore
+from custom_components.fenster_heizung.const import DOMAIN
+from custom_components.fenster_heizung.diag import diag_log
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -219,7 +218,7 @@ class MuellManager:
         return await self.snapshot()
 
     def active(self) -> bool:
-        return lab_on(self.hass, "mm")
+        return True  # als Addon aktiv, solange es installiert und nicht pausiert ist
 
     def cal_entity(self) -> str:
         if self.cfg["cal"]:

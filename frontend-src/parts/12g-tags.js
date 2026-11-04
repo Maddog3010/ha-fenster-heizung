@@ -36,8 +36,8 @@
   _tgxIcon(a) { const g = (this._tgxD.actions.find((x) => x.k === a.k) || {}).g; return { fh: "home", pe: "user", ww: "drop", ev: "car", mu: "trash", li: "lamp" }[g] || "nfc"; }
   _tgxNeed(k) {
     const g = ((this._tgxD.actions.find((x) => x.k === k)) || {}).g;
-    if (g === "li" && !this._labOn("li")) return "Modul 18 ist nicht eingeschaltet (Labs).";
-    if (g === "mu" && !this._labOn("mm")) return "Modul 17 ist nicht eingeschaltet (Labs).";
+    if (g === "li" && !this._liOn()) return "Modul 18 ist nicht eingeschaltet (Labs).";
+    if (g === "mu" && !this._muOn()) return "Modul 17 ist nicht eingeschaltet (Labs).";
     return "";
   }
   _tgxCfgNow() { const c = this._tgxD.cfg; return { tags: { ...c.tags }, fb: { ...c.fb } }; }

@@ -43,6 +43,8 @@ CHECK_FIRST = 90      # Katalog 90 Sekunden nach dem Start prüfen ...
 CHECK_EVERY = 86400   # ... und danach einmal am Tag
 DL_TIMEOUT = 60
 STAGES = ("dev", "beta", "vorab", "stabil")
+# Phase 3: frühere Labs, die jetzt Addons sind. Wer das Lab an hatte, bekommt das Addon einmal automatisch.
+MIGRATE = {"mm": "muell", "li": "licht"}
 
 
 def vkey(v: Any) -> tuple[int, ...]:
@@ -58,7 +60,7 @@ def clean_meta(raw: Any, path: str, src: str) -> dict[str, Any] | None:
         return None
     needs = raw.get("needs") if isinstance(raw.get("needs"), dict) else {}
     return {
-        "id": raw["id"], "n": int(raw.get("n") or 0), "name": str(raw.get("name") or raw["id"])[:40],
+        "id": raw["id"], "n": int(raw.get("n") or 0), "mid": raw["mid"] if isinstance(raw.get("mid"), str) and re.match(r"^[a-z]{2,12}$", raw["mid"]) else raw["id"], "name": str(raw.get("name") or raw["id"])[:40],
         "short": str(raw.get("short") or raw.get("name") or raw["id"])[:20], "icon": str(raw.get("icon") or "puzzle")[:20],
         "tag": str(raw.get("tag") or "")[:90], "desc": str(raw.get("desc") or "")[:400],
         "version": str(raw.get("version") or "0.0.0")[:20], "build": int(raw.get("build") or 1),
@@ -118,6 +120,7 @@ class AddonManager:
         self.cat: dict[str, Any] = {"ok": None, "err": "", "checked": 0, "ts": ""}
         self.olds: dict[str, str] = {}               # id → Version, die als <id>.old bereitliegt
         self.busy: dict[str, str] = {}               # id → was gerade passiert (für die Oberfläche)
+        self.migrated: list[str] = []                # Labs, die schon zu Addons umgezogen sind
         self._unsubs: list[Any] = []
 
     # ---- Start / Stopp
@@ -127,6 +130,7 @@ class AddonManager:
         if isinstance(d, dict):
             self.inst = {k: v for k, v in (d.get("inst") or {}).items() if isinstance(v, dict) and _ID.match(k)}
             self.kept = [k for k in d.get("kept") or [] if isinstance(k, str)]
+            self.migrated = [k for k in d.get("migrated") or [] if isinstance(k, str)]
             self.remote = {k: v for k, v in (d.get("remote") or {}).items() if isinstance(v, dict) and _ID.match(k) and v.get("url", "").startswith(R.DL_PREFIX)}
             if isinstance(d.get("cat"), dict):
                 self.cat.update({k: d["cat"][k] for k in ("ok", "err", "checked", "ts") if k in d["cat"]})
@@ -134,11 +138,48 @@ class AddonManager:
         for aid, st in list(self.inst.items()):
             if not st.get("paused") and aid in self.avail:
                 await self._load(aid)
+        await self._migrate_labs()
         from homeassistant.helpers.event import async_call_later, async_track_time_interval
         from datetime import timedelta
 
         self._unsubs.append(async_call_later(self.hass, CHECK_FIRST, self._check_cb))
         self._unsubs.append(async_track_time_interval(self.hass, self._check_cb, timedelta(seconds=CHECK_EVERY)))
+
+    async def _migrate_labs(self) -> None:
+        """Frühere Labs (Müllabfuhr, Licht) einmal als Addon installieren und das Lab ausschalten. Daten bleiben, wo sie waren."""
+        lay = self.hass.data.get(DOMAIN, {}).get("layout")
+        if not isinstance(lay, dict):
+            try:
+                from .api import _layout
+
+                lay = await _layout(self.hass)
+            except Exception:  # noqa: BLE001
+                return
+        labs = lay.get("labs") if isinstance(lay.get("labs"), dict) else {}
+        on = list(labs.get("on") or [])
+        changed = False
+        for lab, aid in MIGRATE.items():
+            if lab in self.migrated:
+                continue
+            if lab in on and aid in self.avail and aid not in self.inst:
+                m = self.avail[aid]
+                self.inst[aid] = {"v": m["version"], "b": m["build"], "src": m["src"], "ts": int(time.time()), "paused": False}
+                if await self._load(aid):
+                    diag_log(self.hass, "info", f"{m['name']}: das Lab ist jetzt ein Addon und wurde mit deinen Einstellungen übernommen")
+                else:
+                    self.inst.pop(aid, None)
+                    continue
+            if lab in on:
+                on.remove(lab)
+                changed = True
+            self.migrated.append(lab)
+        if changed:
+            labs["on"] = on
+            lay["labs"] = labs
+            st = self.hass.data.get(DOMAIN, {}).get("layout_store")
+            if st is not None:
+                await st.async_save(lay)
+        self._save()
 
     async def async_stop(self) -> None:
         for u in self._unsubs:
@@ -165,7 +206,7 @@ class AddonManager:
         self.avail, self.olds = await self.hass.async_add_executor_job(_scan)
 
     def _save(self) -> None:
-        self._store.async_delay_save(lambda: {"inst": self.inst, "kept": self.kept, "remote": self.remote, "cat": self.cat}, 2)
+        self._store.async_delay_save(lambda: {"inst": self.inst, "kept": self.kept, "remote": self.remote, "cat": self.cat, "migrated": self.migrated}, 2)
 
     # ---- Katalog aus GitHub
     async def _check_cb(self, _now: Any = None) -> None:
@@ -500,6 +541,7 @@ class AddonManager:
                 cur=f"{st.get('v')} Build {st.get('b') or 1}" if st else "",
                 update=upd_r or upd_l, upd_src="remote" if upd_r else "local" if upd_l else "",
                 remote={"version": rm["version"], "build": rm["build"], "notes": rm.get("notes", []), "size": rm.get("dl_size", 0), "date": rm.get("date", ""), "stage": rm.get("stage")} if rm else None,
+                from_lab=next((lab for lab, x in MIGRATE.items() if x == aid and lab in self.migrated), "") if st else "",
                 src="remote" if base is rm else (m or {}).get("src") or "remote", old=self.olds.get(aid, ""), busy=self.busy.get(aid, ""),
                 js=f"{URL_PREFIX}/{m['src']}/{aid}/panel.js?v={m.get('js_mtime', 0)}" if live and m and m.get("js_mtime") else "",
             )

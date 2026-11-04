@@ -274,9 +274,8 @@ const HZ_BUB_DEF = ["wetter", "personen", "alarm", "solar", "batterie", "auto", 
 const HZ_BUB_N = { wetter: ["Wetter", "Außentemperatur und Wetterlage", "cloud"], personen: ["Personen zu Hause", "Anzahl der Personen daheim", "users"], alarm: ["Alarm", "Zustand der Alarmanlage", "shield"], solar: ["Solar jetzt", "Leistung der PV-Anlage", "sun"], batterie: ["Batterie", "Ladestand des Speichers", "bolt"], auto: ["E-Auto", "Ladestand und ob es lädt", "car"], fenster: ["Offene Fenster", "Anzahl offener Fenster", "windowOpen"], muell: ["Nächste Müllabfuhr", "nur wenn Modul 17 an ist", "trash"], warmwasser: ["Warmwasser", "Temperatur im Speicher", "drop"], preis: ["Strompreis", "Preis aus Modul 3", "chart"], hinweise: ["Hinweise", "Anzahl der Hinweise", "info"] };
 const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", icon: "trash", tag: "Abholtermine, Tonnen-Ampel und Erinnerung", lab: true };
 const MOD_LI = { id: "li", n: 18, name: "Licht & Lampen", short: "Licht", icon: "lamp", tag: "Lampen schalten, dimmen und Szenen", lab: true };
-const MU_NAMES = { tonnen: "Tonnen", next: "Nächste Abholungen", cal: "Kalender", rem: "Erinnerung am Vorabend", hint: "Hinweise", cost: "Kosten" };
-const MU_WIDE = ["tonnen", "cost"];
-const DAYS_SHORT_MU = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+/* Phase 3: Labs, die jetzt Addons sind (Müllabfuhr → Addon muell, Licht → Addon licht) */
+const LAB_GONE = ["mm", "li"];
 const MOD_ST = { ef: "beta", sf: "beta", sp: "vorab", ev: "beta", wx: "beta", dt: "beta" };
 const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
@@ -738,8 +737,7 @@ const MV = {
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "0.5", b: 6, d: "2026-10-29", p: "3.0.7.6", log: [["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
-  mu: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  li: { v: "0.0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.0.1", 1, "3.0.6.5", "Start der Zählung"]] } };
+};
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
 const REL = [{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]},{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]},{"v":"3.0.7.5","d":"2026-10-29","t":["Handy-Ansicht, obere Kacheln mittig"],"c":["Modul 19 · v0.5 Build 5"]},{"v":"3.0.7.4","d":"2026-10-29","t":["Der Fluss in den Linien läuft durchgängig","Kein Punkt mehr oben links im Fluss-Bild","Handy-Ansicht wie auf Tablet und Desktop"],"c":["Modul 19 · v0.5 Build 4"]},{"v":"3.0.7.3","d":"2026-10-29","t":["Behoben: Die Jetzt-Ansicht flackerte"],"c":["Modul 19 · v0.5 Build 3"]},{"v":"3.0.7.2","d":"2026-10-29","t":["Fluss-Bild passt sich dem Bildschirm an","Umschalter „Jetzt | Strom“"],"c":["Modul 19 · v0.5 Build 2"]},{"v":"3.0.7.1","d":"2026-10-29","t":["Behoben: Tablet-Modus: Display ging bei Bewegung nicht an"],"c":[]},{"v":"3.0.7.0","d":"2026-10-29","t":["Behoben: Auswahlfelder klappten sofort wieder zu"],"c":[]}];
 const CSS = `
@@ -3337,9 +3335,9 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ort") && this._ortChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ig") && this._igChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wxs") && this._wxsChange(t)) return;
-      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mux") && this._muxChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mux") && this._muxChange && this._muxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("adx") && this._adxChange(t)) return;
-      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lix") && this._lixChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lix") && this._lixChange && this._lixChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("efx") && this._efxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tgx") && this._tgxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("hz") && this._hzChange(t)) return;
@@ -3371,9 +3369,9 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("sto")) this._stoAct(a, b);
     else if (a.startsWith("ig")) this._igAct(a, b);
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
-    else if (a.startsWith("mux")) this._muxAct(a, b);
+    else if (a.startsWith("mux")) { if (this._muxAct) this._muxAct(a, b); }
     else if (a.startsWith("adx")) this._adxAct(a, b);
-    else if (a.startsWith("lix")) this._lixAct(a, b);
+    else if (a.startsWith("lix")) { if (this._lixAct) this._lixAct(a, b); }
     else if (a.startsWith("tgx")) this._tgxAct(a, b);
     else if (a.startsWith("efx")) this._efxAct(a, b);
     else if (a.startsWith("hz")) this._hzAct(a, b);
@@ -4019,9 +4017,9 @@ class FensterHeizungPanel extends HTMLElement {
     if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["efxmgr", "efxedit"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
-    if (["lixset", "lixdet", "lixoff"].includes(m.type)) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["lixset", "lixdet", "lixoff"].includes(m.type) && this._lixModal) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["adinst", "addel", "adupd", "adx"].includes(m.type)) { box.innerHTML = this._adModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
-    if (m.type === "muset") { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "muset" && this._muxModal) { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "mwdet") { box.innerHTML = this._mwDetModal(); return; }
     if (m.type === "mwpick") { box.innerHTML = this._mwPickModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sthelp" || m.type === "stlog") { box.innerHTML = m.type === "sthelp" ? this._stHelpModal() : this._stLogModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -4335,7 +4333,7 @@ class FensterHeizungPanel extends HTMLElement {
   _mdActiveSet(id) { const s = this._mdState(); s.active = id; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
   _mdList() {
     const s = this._mdState(), home = this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : [];
-    const rest = [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...(this._labOn("mm") ? [MOD_MU] : []), ...(this._labOn("li") ? [MOD_LI] : []), ...this._adMods()];
+    const rest = [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...this._adMods()];
     rest.sort((a, b) => a.n - b.n);
     return [...home, ...rest, ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))];
   }
@@ -4396,7 +4394,7 @@ class FensterHeizungPanel extends HTMLElement {
     const row = (icn, ttl, txt, act, k, extra) => `<button class="sxrow" data-act="${act}"${k ? ` data-k="${k}"` : ""}><span class="sxi">${ic(icn, 20)}</span><span class="sxt"><b>${ttl}</b><small>${txt}</small></span>${extra || ""}<span class="sxg">${ic("chev", 16)}</span></button>`;
     const lv = (k) => k === "all" ? `<em class="stlv l1" title="Gilt für alle Benutzer und Geräte">🏠 für alle</em>` : `<em class="stlv l3" title="Nur in diesem Browser gespeichert">📱 nur dieses Gerät</em>`;
     const act = MODS.filter((m) => this._stIsOn(m)), off = MODS.filter((m) => !this._stIsOn(m)), dead = this._stDead();
-    const labM = [[MOD_MU, "mm", "muxopen", "Abholtermine, Tonnen-Ampel und Erinnerung"], [MOD_LI, "li", "lixopen", "Lampen, Szenenknöpfe und Hinweis bei langem Licht"]];
+    const labM = [];  // Müllabfuhr und Licht sind seit Phase 3 Addons und stehen mit den anderen Addons in der Liste
     const chk = this._stChecks(), nWarn = chk.filter((x) => x[0] === "wn").length;
     const core = act.filter((m) => !m.beta), done = core.filter((m) => this._stDone(m.id)).length + (this._enConfigured() ? 0 : 0);
     const P = this._ortPersons(), eb = this._stEbk && this._stEbk.cfg, lt = eb && eb.on && eb.last && eb.last.t ? new Date(eb.last.t * 1000) : null;
@@ -4424,7 +4422,7 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Datei und Homeserver", "gen")}`, "Häufig gebraucht")}`,
       hs: () => this._hsPage(row, card, lv),
       mw: () => this._mwPage(card),
-      md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).concat(this._adMods().map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n} · v${esc(m.ad.version)}</i>`, esc((this._adDef(m.id) || {}).settingsTxt || m.tag), "adxset", m.id, `<em class="sxc ${STG[m.stage] ? STG[m.stage].c : ""}">Addon</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
+      md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).concat(this._adMods().map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n} · v${esc(m.ad.version)}</i>`, esc((this._adDef(m.aid) || {}).settingsTxt || m.tag), "adxset", m.aid, `<em class="sxc ${STG[m.stage] ? STG[m.stage].c : ""}">Addon</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
         ${off.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdstoff" aria-expanded="${!this._stOffC}">Ausgeschaltet <small>· ${off.length} · ein Tipp schaltet ein</small><span class="stgo">${this._stOffC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>
           ${this._stOffC ? "" : `<div class="stmini">${off.map((m) => `<button class="stmb" data-act="mdtog" data-k="${m.id}" title="${esc(m.name)} einschalten">${ic(m.icon, 16)}<span class="stmt"><b>${esc(m.short)}</b><small>Modul ${m.n}${m.sponsor ? " · Sponsor" : m.beta && modSt(m) ? " · " + STG[modSt(m)].t : ""}</small></span></button>`).join("")}</div>`}</div>` : ""}`,
       lk: () => card(`${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}${this._hzOn() ? row("home", "Startseite", "Karten, Bubbles und Begrüßung", "hzopen") : ""}`),
@@ -4836,7 +4834,7 @@ class FensterHeizungPanel extends HTMLElement {
     const hp = this._hsProfiles(), cnt = {}; ids.filter((k) => k.startsWith("climate.")).forEach((k) => { const id = this._hsOf(k); if (id) cnt[id] = (cnt[id] || 0) + 1; });
     for (const id of Object.keys(hp)) { const x = hp[id], n = cnt[id] || 0;
       out.push({ id: "hs_" + id, d: x.d, n: x.n, sub: x.sub, cat: "heizung", c: x.c, i: "thermo", mid: "fh", mods: ["Modul 1"], on: n > 0, top: 1, nodot: 1, conn: x.conn, src: x.src, st: n ? `${n} ${n === 1 ? "Thermostat" : "Thermostate"} in Home Assistant gefunden` : "", desc: x.desc, feats: x.feats, quirks: x.quirks, steps: x.steps, note: x.note }); }
-    if (this._labOn("mm")) { const n = ids.filter((k) => (E[k] || {}).platform === "waste_collection_schedule").length;
+    if (this._muOn()) { const n = ids.filter((k) => (E[k] || {}).platform === "waste_collection_schedule").length;
       out.push({ id: "wcs", d: "waste_collection_schedule", n: "Abfallkalender", sub: "waste_collection_schedule", cat: "haus", c: "#16a34a", i: "trash", mid: "mu", mods: ["Modul 17"], on: n > 0, top: 1, hacs: "https://github.com/mampfes/hacs_waste_collection_schedule", conn: "Cloud", src: "Community", st: n ? `${n} ${n === 1 ? "Entität" : "Entitäten"} · genutzt von Modul 17` : "",
         desc: "Holt die Abholtermine deines Entsorgers in einen Kalender von Home Assistant. Dafür gibt es Hunderte Anbieter.",
         feats: ["Termine für Restmüll, Bio, Papier und Gelben Sack als Kalender", "Modul 17 zeigt sie an und erinnert am Vorabend", "Kennt viele Entsorger in Deutschland, Österreich und der Schweiz"],
@@ -6217,7 +6215,7 @@ class FensterHeizungPanel extends HTMLElement {
   _labPill(t = "Labs") { return `<em class="labp">${ic("flask", 11)}${t}</em>`; }
   /* Katalog: nur Funktionen, die etwas anzeigen */
   _labCat() {
-    return this._labCat0().filter((x) => this._labVisible(x)).map((x) => ({ k: "s", ...x }));
+    return this._labCat0().filter((x) => this._labVisible(x) && !LAB_GONE.includes(x.id)).map((x) => ({ k: "s", ...x }));
   }
   /* Vorabversionen: ein Lab mit early: "JJJJ-MM-TT" sehen Sponsoren (Schalter „Vorabversionen zuerst“) vorher, alle anderen ab diesem Tag */
   _labEarlyTs(x) { if (!x.early) return 0; const t = new Date(x.early + "T00:00:00").getTime(); return isFinite(t) ? t : 0; }
@@ -6279,7 +6277,7 @@ class FensterHeizungPanel extends HTMLElement {
         d: "Neues Modul 17: Abholtermine aus deinem Abfallkalender, Tonnen-Ampel, Erinnerung am Vorabend, Ansage und Licht.",
         feats: ["Nächste Abholungen und Monatskalender für Rest, Bio, Papier und Gelben Sack", "Tonnen-Ampel: am Vorabend orange, nach dem Abhaken grün", "Nachricht aufs Handy zu einer Uhrzeit, die du einstellst", "Ansage über einen Lautsprecher und Licht in der Farbe der Tonne", "Hinweise bei verschobenen Terminen, Sturm und Frost", "Leerungen und Kosten im Jahr"],
         how: ["Die Termine liest das Modul aus einem Kalender von Home Assistant, zum Beispiel dem von waste_collection_schedule. Den Eintrag dafür gibt es im Store, solange dieses Lab an ist.", "Der Titel jedes Termins wird den Tonnen zugeordnet. Die Erkennungswörter kannst du in den Einstellungen ändern.", "Am Vorabend zur eingestellten Uhrzeit schickt das Modul die Nachricht, sagt sie an und schaltet das Licht, wenn du das eingeschaltet hast. Einmal pro Tag, und nur für Tonnen, die noch nicht als draußen markiert sind."],
-        needs: () => [["Abfallkalender in Home Assistant (waste_collection_schedule)", this._muHasWcs()], ["Ein Kalender mit den Abholterminen", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Benachrichtigungsdienst für die Erinnerung (optional)", Object.keys((this._hass.services || {}).notify || {}).some((n) => !["send_message", "reload", "persistent_notification"].includes(n))]],
+        needs: () => [["Abfallkalender in Home Assistant (waste_collection_schedule)", Object.values(this._hass.entities || {}).some((e) => e && e.platform === "waste_collection_schedule")], ["Ein Kalender mit den Abholterminen", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Benachrichtigungsdienst für die Erinnerung (optional)", Object.keys((this._hass.services || {}).notify || {}).some((n) => !["send_message", "reload", "persistent_notification"].includes(n))]],
         after: "Ausgeschaltet verschwinden Modul 17 und der Eintrag „Abfallkalender“ im Store. Gesendet und geschaltet wird dann nichts mehr. Die Einstellungen bleiben gespeichert. Die Integration waste_collection_schedule selbst bleibt in Home Assistant installiert, sie entfernst du dort.",
         f: [] },
       { id: "sb", mid: "st", mod: "Startseite", mn: "", n: "Start-Bubbles", st: "Früh", i: "layers",
@@ -6525,136 +6523,6 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "laboff") { this._labSet({ on: [] }); this._toast("Alle Labs sind aus"); }
     else if (a === "labstep") { const c = this._labCfg(), v = Math.min(Number(b.dataset.hi), Math.max(Number(b.dataset.lo), Math.round((this._labV(k) + Number(b.dataset.s)) * 100) / 100)); this._labSet({ cfg: { ...c.cfg, [k]: v } }); }
   }
-  /* Modul 17: Müllabfuhr (Labs). Termine, Ampel, Erinnerung, Ansage und Licht laufen im Backend (muell.py).
-     Das Modul gibt es nur, solange das Lab „Müllabfuhr“ (mm) an ist. Ausgeschaltet verschwinden Modul und Store-Eintrag. */
-  _muDef() { return { cal: "", time: "18:30", bins: { rest: { on: true, match: "rest,hausmüll,hausmuell,schwarz" }, bio: { on: true, match: "bio" }, papier: { on: true, match: "papier,pappe,blau" }, gelb: { on: true, match: "gelb,wertstoff,verpackung,lvp" } }, push: { on: false, to: [] }, cost: { on: false, fee: 0, incl: 0 }, wx: true, tts: { on: false, ent: "", player: "", text: "Morgen wird {tonnen} abgeholt." }, light: { on: false, ent: "" } }; }
-  _mu() {
-    const d = (this._muD && this._muD.d) || {}, df = this._muDef(), c = d.cfg || {};
-    return { ...d, cfg: { ...df, ...c, bins: Object.fromEntries(Object.keys(df.bins).map((k) => [k, { ...df.bins[k], ...((c.bins || {})[k] || {}) }])), push: { ...df.push, ...(c.push || {}) }, cost: { ...df.cost, ...(c.cost || {}) }, tts: { ...df.tts, ...(c.tts || {}) }, light: { ...df.light, ...(c.light || {}) } } };
-  }
-  _muLoad(force) {
-    if (!this._hass || this._muBusy) return;
-    if (!force && this._muD && Date.now() - this._muD.ts < 20000) return;
-    this._muBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/mu_get" }).then((r) => { if (!this._muT) this._muD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._muD = { d: { error: "Keine Antwort von Home Assistant" }, ts: Date.now() }; })
-      .finally(() => { this._muBusy = false; if (this._muVisible()) { this._render(); if (this._modal && this._modal.type === "muset") this._renderModal(); } });
-  }
-  _muVisible() { return !!(this._modal && this._modal.type === "muset") || (!!this._mdActive && this._mdActive() === "mu" && !this._stOpen && !this._igOpen && !this._labOpen); }
-  _muHasWcs() { return Object.values(this._hass.entities || {}).some((e) => e && e.platform === "waste_collection_schedule"); }
-  _muSave(cfg, quiet) {
-    if (!(this._muD && this._muD.d && this._muD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
-    const s = this._mu(); this._muD = { d: { ...s, cfg }, ts: Date.now() };
-    clearTimeout(this._muT);
-    this._muT = setTimeout(() => {
-      this._muT = null;
-      this._hass.callWS({ type: "fenster_heizung/mu_set", cfg: this._mu().cfg }).then((r) => { this._muD = { d: r || {}, ts: Date.now() }; if (this._muVisible() && !this._muQuiet) { this._render(); if (this._modal && this._modal.type === "muset") this._renderModal(); } })
-        .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
-    }, 500);
-    this._muQuiet = !!quiet;
-    if (!quiet) { this._render(); if (this._modal && this._modal.type === "muset") this._renderModal(); }
-  }
-  _muPatch(fn, quiet) { const c = JSON.parse(JSON.stringify(this._mu().cfg)); fn(c); this._muSave(c, quiet); }
-  _muCall(act, bin) { this._hass.callWS({ type: "fenster_heizung/mu_act", act, ...(bin ? { bin } : {}) }).then((r) => { this._muD = { d: r || {}, ts: Date.now() }; this._render(); }).catch(() => this._toast("Das hat nicht geklappt")); }
-  _muDate(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }) : ""; }
-  _muWhen(d) { return d == null ? "" : d === 0 ? "heute" : d === 1 ? "morgen" : `in ${d} Tagen`; }
-  _muxAct(a, b) {
-    const k = b.dataset.k;
-    if (a === "muxopen") { this._muLoad(true); this._modal = { type: "muset" }; this._renderModal(); return; }
-    if (a === "muxdone") { this._muCall("done", k); return; }
-    if (a === "muxundo") { this._muCall("undo", k); return; }
-    if (a === "muxsnooze") { this._muCall("snooze"); this._toast("Ich erinnere in einer Stunde noch einmal"); return; }
-    if (a === "muxtest") { this._hass.callWS({ type: "fenster_heizung/mu_test" }).then((r) => this._toast(r && r.sent ? `Test an ${r.sent} ${r.sent === 1 ? "Dienst" : "Diensten"} gesendet` : "Kein Benachrichtigungsdienst gewählt")).catch(() => this._toast("Test fehlgeschlagen")); return; }
-    if (a === "muxhide") { const h = this._muLay().hidden; this._muLaySave({ hidden: h.includes(k) ? h.filter((x) => x !== k) : [...h, k] }); return; }
-    if (a === "muxreset") { this._muLaySave({ order: Object.keys(MU_NAMES), hidden: [] }); this._toast("Anordnung zurückgesetzt"); return; }
-    if (a === "muxstore") { this._modal = null; this._renderModal(); this._sto = { q: "", c: "haus" }; this._igOpen = true; this._labOpen = false; this._render(); return; }
-    this._muPatch((c) => {
-      if (a === "muxsw") { if (k.startsWith("bin:")) c.bins[k.slice(4)].on = !c.bins[k.slice(4)].on; else if (k === "push") c.push.on = !c.push.on; else if (k === "tts") c.tts.on = !c.tts.on; else if (k === "light") c.light.on = !c.light.on; else if (k === "cost") c.cost.on = !c.cost.on; else if (k === "wx") c.wx = !c.wx; }
-      else if (a === "muxns") c.push.to = c.push.to.includes(k) ? c.push.to.filter((x) => x !== k) : [...c.push.to, k];
-    });
-  }
-  _muxChange(t) {
-    const f = t.dataset.f, k = t.dataset.k, v = t.value || "";
-    if (f === "muxsel") { this._muPatch((c) => { if (k === "cal") c.cal = v; else if (k === "tts_ent") c.tts.ent = v; else if (k === "tts_player") c.tts.player = v; else if (k === "light") c.light.ent = v; }); return true; }
-    if (f === "muxtime") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) this._muPatch((c) => { c.time = v; }, true); return true; }
-    if (f === "muxmatch") { this._muPatch((c) => { c.bins[k].match = v; }, true); return true; }
-    if (f === "muxtext") { this._muPatch((c) => { c.tts.text = v; }, true); return true; }
-    if (f === "muxnum") { const n = Number(String(v).replace(",", ".")); if (isFinite(n)) this._muPatch((c) => { c.cost[k] = Math.max(0, n); }, true); return true; }
-    return false;
-  }
-  _muSetupCard(S) {
-    const none = !S.cal;
-    return `<div class="card"><h2>${ic("trash", 18)}${none ? "Noch kein Abfallkalender" : "Kalender liefert keine Termine"}</h2>
-      <div class="mut sm" style="margin:0 0 10px">${none ? "Modul 17 liest die Abholtermine aus einem Kalender von Home Assistant. Am einfachsten geht das mit der Integration waste_collection_schedule, sie kennt viele Entsorger." : esc(S.error || "Bitte einen anderen Kalender wählen.")}</div>
-      ${none ? `<div class="stost"><b>1</b><span>Im Store „Abfallkalender“ öffnen und einrichten</span></div><div class="stost"><b>2</b><span>Dort deinen Entsorger wählen, es entsteht ein Kalender</span></div><div class="stost"><b>3</b><span>Hier erscheint er automatisch, oder du wählst ihn in den Einstellungen</span></div>` : ""}
-      <div class="gbtns" style="margin-top:10px">${this._admin() ? `<button class="btn2 pri" data-act="muxstore">${ic("puzzle", 16)} Zum Store</button><button class="btn2" data-act="muxopen">${ic("sliders", 16)} Einstellungen</button>` : `<span class="mut sm">Das richtet ein Administrator ein.</span>`}</div></div>`;
-  }
-  _muPage() {
-    this._muLoad(); const S = this._mu(), C = S.cfg, adm = this._admin();
-    const banner = `<div class="labban">${ic("flask", 22)}<div><b>Labs · Müllabfuhr</b>Dieses Modul ist ein Experiment und nur da, solange das Lab eingeschaltet ist. Die Termine kommen aus deinem Abfallkalender, die Erinnerungen laufen im Hintergrund.</div></div>`;
-    if (!S.on) return `${banner}<div class="card empty">${S.error ? esc(S.error) : "Lädt …"}</div>`;
-    if (!S.cal || (S.error && !(S.bins || []).some((x) => x.next))) return `${banner}${this._muSetupCard(S)}`;
-    const rows = S.bins || [], due = rows.filter((x) => ["out", "today"].includes(x.state)), up = rows.filter((x) => x.next);
-    const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", none: "–" };
-    const tile = (x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}" ${tap ? `aria-label="${esc(x.name)}: ${tap === "muxdone" ? "steht draußen" : "wieder zurücknehmen"}"` : ""}><i class="bin" style="background:${x.color}"></i><b>${esc(x.name)}</b><small>${lbl[x.state]}</small></${tap ? "button" : "div"}>`; };
-    const head = due.length ? `<div class="mulead"><b>${due.some((x) => x.state === "today") ? "Heute wird abgeholt" : "Morgen wird abgeholt"}</b><span>${due.map((x) => esc(x.name)).join(", ")}. Tippe auf die Tonne, wenn sie draußen steht.</span></div>` : `<div class="mulead ok"><b>Nichts zu tun</b><span>${up[0] ? `Als Nächstes: ${esc(up[0].name)}, ${this._muWhen(up[0].days)}.` : "Keine Termine in den nächsten Wochen."}</span></div>`;
-    const ampel = `<div class="card"><h2>${ic("trash", 18)}Tonnen</h2>${head}<div class="mugrid">${rows.map(tile).join("")}</div>${C.push.on && due.some((x) => x.state === "out") ? `<div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="muxsnooze">${ic("clock", 16)} Später erinnern</button></div>` : ""}</div>`;
-    const next = `<div class="card"><h2>${ic("clock", 18)}Nächste Abholungen</h2><div class="wxl">${up.map((x) => `<div class="wxr ${x.days <= 1 ? "hot" : ""}"><span class="wxi"><i class="bin sm" style="background:${x.color}"></i></span><div class="wxm"><div class="wxt"><b>${esc(x.name)}</b><em>${this._muWhen(x.days)}</em></div><small>${this._muDate(x.next)}</small></div></div>`).join("") || `<div class="mut sm">Keine Termine gefunden.</div>`}</div></div>`;
-    const M = S.month || {}, first = (new Date(M.y || 2026, (M.m || 1) - 1, 1).getDay() + 6) % 7, n = new Date(M.y || 2026, M.m || 1, 0).getDate(), col = Object.fromEntries(rows.map((x) => [x.k, x.color]));
-    const cells = [...Array(first).fill(`<i class="mucd e"></i>`), ...Array.from({ length: n }, (_, i) => { const d = i + 1, bs = (M.d || {})[d] || []; return `<i class="mucd ${d === M.today ? "today" : ""}"><b>${d}</b><span>${bs.map((k) => `<u style="background:${col[k] || "#999"}"></u>`).join("")}</span></i>`; })];
-    const mon = new Date(M.y || 2026, (M.m || 1) - 1, 1).toLocaleDateString("de-DE", { month: "long", year: "numeric" });
-    const cal = `<div class="card"><h2>${ic("today", 18)}${esc(mon)}</h2><div class="mucal">${DAYS_SHORT_MU.map((d) => `<em>${d}</em>`).join("")}${cells.join("")}</div></div>`;
-    const notes = S.notes || [], nt = `<div class="card"><h2>${ic("info", 18)}Hinweise</h2>${notes.length ? `<div class="wxl">${notes.map((x) => `<div class="wxr hot"><span class="wxi">${ic(x.k === "storm" ? "windy" : x.k === "frost" ? "snow" : "alert", 18)}</span><div class="wxm"><small>${esc(x.text)}</small></div></div>`).join("")}</div>` : `<div class="mut sm">Keine Verschiebung und keine Wetterwarnung für die nächsten Abholungen.${C.wx ? "" : " Wetter-Hinweise sind aus."}</div>`}</div>`;
-    const info = (ico, t, txt, on) => `<div class="wxr ${on ? "" : "off"}"><span class="wxi">${ic(ico, 18)}</span><div class="wxm"><div class="wxt"><b>${t}</b><em>${on ? "An" : "Aus"}</em></div><small>${txt}</small></div></div>`;
-    const nTo = C.push.to.length, tn = (e) => esc(this._wzName(e) || e);
-    const rem = `<div class="card"><h2>${ic("bell", 18)}Erinnerung am Vorabend</h2><div class="wxl">
-      ${info("bell", "Nachricht aufs Handy", C.push.on ? (nTo ? `Um ${esc(C.time)} Uhr an ${nTo} ${nTo === 1 ? "Dienst" : "Dienste"}.` : "An, aber noch kein Dienst gewählt (Einstellungen).") : "Aus. In den Einstellungen einschalten.", C.push.on)}
-      ${info("music", "Ansage", C.tts.on && C.tts.ent && C.tts.player ? `Sprachausgabe auf ${tn(C.tts.player)} um ${esc(C.time)} Uhr.` : "Sprachausgabe über einen Lautsprecher, zum Beispiel im Flur.", C.tts.on && !!C.tts.ent && !!C.tts.player)}
-      ${info("lamp", "Licht", C.light.on && C.light.ent ? `${tn(C.light.ent)} leuchtet in der Farbe der Tonne ab ${esc(C.time)} Uhr${S.light_on ? " (jetzt an)" : ""}, bis sie als draußen markiert ist.` : "Ein Licht in der Farbe der Tonne, bis sie draußen steht.", C.light.on && !!C.light.ent)}</div>
-      ${adm ? `<div class="gbtns" style="margin-top:8px"><button class="btn2" data-act="muxopen">${ic("sliders", 16)} Einstellungen</button></div>` : ""}</div>`;
-    let cost = ""; if (C.cost.on && S.stats) { const s = S.stats; cost = `<div class="card"><h2>${ic("chart", 18)}Restmüll ${s.year}: Leerungen und Kosten</h2><div class="lugrid">${this._labTile("Bisher geleert", `${s.done} von ${s.total}`, "Restmüll in diesem Jahr")}${this._labTile("Enthalten", s.incl ? String(s.incl) : "–", s.incl ? `noch ${s.free} frei` : "Keine Zahl eingetragen", s.incl && s.free === 0 ? "amber" : "")}${this._labTile("Extra", s.extra != null ? String(s.extra) : "–", s.cost != null ? `${num(s.cost, 2)} € zusätzlich` : "Gebühr je Leerung eintragen", s.extra ? "amber" : "green")}</div></div>`; }
-    const B = { tonnen: ampel, next, cal, rem, hint: nt, cost }, lay = this._muLay(), edit = this._edit && adm;
-    const eb = edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe die Karten an den Griffen, um sie zu verschieben. Mit dem Auge blendest du eine Karte aus. <button class="lnk" data-act="muxreset">Zurücksetzen</button></div></div>` : "";
-    const blocks = lay.order.filter((id) => B[id] && (edit || !lay.hidden.includes(id))).map((id) => `<section class="blk mub ${MU_WIDE.includes(id) ? "wide" : ""} ${edit ? "editing" : ""} ${lay.hidden.includes(id) ? "hid" : ""}" data-sort="mublk" data-id="${id}">
-      ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${MU_NAMES[id]}<button class="eyeb" data-act="muxhide" data-k="${id}" aria-pressed="${!lay.hidden.includes(id)}" aria-label="${MU_NAMES[id]} ${lay.hidden.includes(id) ? "einblenden" : "ausblenden"}" title="${lay.hidden.includes(id) ? "Einblenden" : "Ausblenden"}">${ic(lay.hidden.includes(id) ? "eyeOff" : "eye", 18)}<span>${lay.hidden.includes(id) ? "Ausgeblendet" : "Sichtbar"}</span></button></div>` : ""}${B[id]}</section>`).join("");
-    return `${banner}${eb}<div class="mublks">${blocks}</div>`;
-  }
-  _muLay() { const l = (this._cfg && this._cfg.layout && this._cfg.layout.mu) || {}, known = Object.keys(MU_NAMES), o = (Array.isArray(l.order) ? l.order : []).filter((x) => known.includes(x)); return { order: [...o, ...known.filter((x) => !o.includes(x))], hidden: (Array.isArray(l.hidden) ? l.hidden : []).filter((x) => known.includes(x)) }; }
-  _muLaySave(patch) { const l = this._muLay(); this._cfg.layout.mu = { order: l.order, hidden: l.hidden, ...patch }; this._saveLayout(); this._render(); }
-  _muxModal() {
-    const S = this._mu(), C = S.cfg, H = this._hass, st = H.states, adm = this._admin();
-    const sw = (k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="muxsw" data-k="${k}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm ? "" : "disabled"}></button>`;
-    const cals = Object.keys(st).filter((e) => e.startsWith("calendar.")), tts = Object.keys(st).filter((e) => e.startsWith("tts.")), pl = Object.keys(st).filter((e) => e.startsWith("media_player.")), li = Object.keys(st).filter((e) => e.startsWith("light."));
-    const svc = [...new Set([...Object.keys((H.services || {}).notify || {}).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).sort().map((n) => "notify." + n), ...C.push.to])];
-    const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${esc(k)}" aria-pressed="${!!on}">${t}</button>`;
-    const BN = { rest: "Restmüll", bio: "Bio", papier: "Papier", gelb: "Gelber Sack" }, COL = { rest: "#78716c", bio: "#92400e", papier: "#3b82f6", gelb: "#eab308" };
-    const cur = C.cal || S.cal || "";
-    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Müllabfuhr</b><span>Modul 17 · Labs · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="lsec">${ic("today", 15)}Abfallkalender</div>
-      ${this._wzSel(cals, cur, "muxsel", 'data-k="cal"', "– Kalender wählen –", /abfall|müll|waste|tonne|entsorg/i)}
-      <div class="gst">${ic("info", 15)}<span>${C.cal ? "Gewählt." : cur ? "Automatisch erkannt (waste_collection_schedule)." : "Noch keiner gefunden."} Die Integration richtest du im <button class="lnk" data-act="muxstore">Store</button> ein.</span></div>
-      <div class="lsec" style="margin-top:12px">${ic("trash", 15)}Tonnen</div>
-      <div class="mut sm" style="margin:0 0 6px">Welche Tonnen du hast und woran Modul 17 sie im Kalendertitel erkennt. Mehrere Wörter mit Komma trennen.</div>
-      ${Object.keys(BN).map((k) => `<div class="vrow"><span style="display:flex;align-items:center;gap:8px"><i class="bin sm" style="background:${COL[k]}"></i><b>${BN[k]}</b></span><input class="osel" type="text" data-f="muxmatch" data-k="${k}" value="${esc(C.bins[k].match)}" style="width:48%;flex:none;margin:0" aria-label="Erkennungswörter ${BN[k]}" ${adm ? "" : "disabled"}>${sw("bin:" + k, C.bins[k].on, BN[k])}</div>`).join("")}
-      <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Vorabend</div>
-      <div class="vrow"><span>Uhrzeit<small class="mut" style="display:block">Ab dann gilt „morgen wird abgeholt“: Ampel, Nachricht, Ansage und Licht.</small></span><input class="osel" type="time" data-f="muxtime" value="${esc(C.time)}" style="width:auto;margin:0" aria-label="Uhrzeit am Vorabend" ${adm ? "" : "disabled"}></div>
-      <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Nachricht aufs Handy</div>
-      <div class="vrow"><span>Am Vorabend erinnern<small class="mut" style="display:block">Eine Nachricht, wenn morgen eine Tonne abgeholt wird und sie noch nicht als draußen markiert ist.</small></span>${sw("push", C.push.on, "Nachricht aufs Handy")}</div>
-      ${svc.length ? `<div class="gschips">${svc.map((n) => chip("muxns", n, esc(n), C.push.to.includes(n))).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
-      <div class="mut sm" style="margin:2px 0 6px">${C.push.to.length ? `Gesendet wird an: ${C.push.to.map(esc).join(", ")}.` : "Es ist noch kein Dienst gewählt."}</div>
-      <div class="lsec" style="margin-top:12px">${ic("music", 15)}Ansage</div>
-      <div class="vrow"><span>Sprachausgabe<small class="mut" style="display:block">Sagt die Erinnerung über einen Lautsprecher an. Im Text steht {tonnen} für die Tonnen.</small></span>${sw("tts", C.tts.on, "Ansage")}</div>
-      ${C.tts.on ? `${this._wzSel(tts, C.tts.ent, "muxsel", 'data-k="tts_ent"', "– Sprachdienst (tts) wählen –", /cloud|piper|google|tts/i)}${this._wzSel(pl, C.tts.player, "muxsel", 'data-k="tts_player"', "– Lautsprecher wählen –", /flur|wohn|küche|speaker|echo|nest|sonos/i)}<input class="osel" type="text" data-f="muxtext" value="${esc(C.tts.text)}" style="margin:6px 0" aria-label="Text der Ansage" ${adm ? "" : "disabled"}>` : ""}
-      <div class="lsec" style="margin-top:12px">${ic("lamp", 15)}Licht</div>
-      <div class="vrow"><span>Licht in der Farbe der Tonne<small class="mut" style="display:block">Leuchtet ab der Vorabend-Uhrzeit, bis die Tonne als draußen markiert ist, und geht dann wieder aus.</small></span>${sw("light", C.light.on, "Licht")}</div>
-      ${C.light.on ? this._wzSel(li, C.light.ent, "muxsel", 'data-k="light"', "– Licht wählen –", /flur|eingang|tür|tuer|diele/i) : ""}
-      <div class="lsec" style="margin-top:12px">${ic("chart", 15)}Kosten</div>
-      <div class="vrow"><span>Leerungen zählen<small class="mut" style="display:block">Zeigt Restmüll-Leerungen im Jahr und was darüber hinaus kostet.</small></span>${sw("cost", C.cost.on, "Kosten")}</div>
-      ${C.cost.on ? `<div class="vrow"><span>Enthaltene Leerungen pro Jahr</span><input class="osel" type="number" inputmode="numeric" min="0" max="99" data-f="muxnum" data-k="incl" value="${C.cost.incl}" style="width:90px;margin:0" ${adm ? "" : "disabled"}></div><div class="vrow"><span>Gebühr je weitere Leerung (€)</span><input class="osel" type="number" inputmode="decimal" min="0" step="0.01" data-f="muxnum" data-k="fee" value="${C.cost.fee}" style="width:90px;margin:0" ${adm ? "" : "disabled"}></div>` : ""}
-      <div class="lsec" style="margin-top:12px">${ic("alert", 15)}Hinweise</div>
-      <div class="vrow"><span>Wetter-Hinweise<small class="mut" style="display:block">Warnt vor Sturm und Frost an Abholtagen. Nutzt Modul 9, falls eingeschaltet.</small></span>${sw("wx", C.wx, "Wetter-Hinweise")}</div>
-      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="muxtest" ${C.push.to.length || C.tts.on ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
-  }
   /* Startseite: der Überblick über das Zuhause. Erscheint nach dem Laden des Dashboards zuerst (abschaltbar).
      Blöcke: Zuhause, Wetter, Personen, Hinweise, Alarm, Energie, Müllabfuhr. Anordnung und Sichtbarkeit stehen in layout.start.
      Lab „Start-Bubbles“ (sb): runde Kurzinfos ganz oben, Auswahl in layout.start.bub. Alles nur Anzeige, nur der Alarm kann (optional) schalten. */
@@ -6687,7 +6555,7 @@ class FensterHeizungPanel extends HTMLElement {
     });
     return out;
   }
-  _hzMu() { return this._labOn("mm") ? (this._mu().bins || []) : []; }
+  _hzMu() { return this._muOn() ? (this._mu().bins || []) : []; }
   _hzHints() {
     const H = this._hass, st = H.states, out = [], o = this._out();
     this._hzWin().forEach((w) => { const m = Math.round((Date.now() - w.since) / 60000); if (m >= 15) out.push({ i: "windowOpen", t: `${esc(w.name)}: Fenster seit ${this._hzSince(new Date(w.since).toISOString())} offen`, s: o.t != null ? `Außen ${num(o.t, 0)} °C` : "", r: "jetzt", c: "wa", mod: "fh" }); });
@@ -6713,8 +6581,8 @@ class FensterHeizungPanel extends HTMLElement {
     else if (m.id === "en") { const N = this._enOn() ? this._enNow() : null; sub = N ? `${num(N.pv / 1000, 1)} kW PV` : "Nicht eingerichtet"; c = N ? "" : "mut"; }
     else if (m.id === "gs") { const n = this._gsState().devices.length; sub = n ? `${n} ${n === 1 ? "Gerät" : "Geräte"}` : "Keine Geräte"; c = n ? "" : "mut"; }
     else if (m.id === "ev") { const e = (this._evState().ent || {}).soc, v = e && st[e] ? parseFloat(st[e].state) : NaN; sub = isFinite(v) ? `${num(v, 0)} %` : "Nicht eingerichtet"; c = isFinite(v) ? "" : "mut"; }
-    else if (m.id === "mu") { const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; sub = x ? `${esc(x.name)} ${this._muWhen(x.days)}` : "Keine Termine"; c = x && x.days <= 1 ? "wa" : x ? "" : "mut"; this._muLoad(); }
-    else if (m.id === "li") { const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; sub = L.length ? (n ? `${n} von ${L.length} an` : "Alles aus") : "Keine Lampen"; c = n ? "wa" : "mut"; }
+    else if (m.id === "mu" && this._muOn()) { const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; sub = x ? `${esc(x.name)} ${this._muWhen(x.days)}` : "Keine Termine"; c = x && x.days <= 1 ? "wa" : x ? "" : "mut"; this._muLoad(); }
+    else if (m.id === "li" && this._liOn()) { const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; sub = L.length ? (n ? `${n} von ${L.length} an` : "Alles aus") : "Keine Lampen"; c = n ? "wa" : "mut"; }
     else if (m.addon) { const t = this._adTile(m); sub = t.sub; c = t.c; }
     else { sub = modSt(m) && STG[modSt(m)] ? STG[modSt(m)].t : ""; c = "mut"; }
     return `<button class="hzt ${c}" data-act="hzgo" data-k="${m.id}"><span class="hti">${ic(m.icon, 22)}</span><b>${esc(m.short)}</b><small>${sub}</small></button>`;
@@ -6775,7 +6643,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="card hzgo" data-act="hzgo" data-k="en" role="button" tabindex="0"><h2>${ic("energy", 18)}Energie jetzt<span class="hzrt">Modul 3</span></h2><div class="lugrid">${this._labTile("Solar", `${num(N.pv / 1000, 1)} kW`, `Haus ${num(N.house / 1000, 1)} kW`)}${N.soc != null ? this._labTile("Batterie", `${num(N.soc, 0)} %`, N.bc > 0 ? `lädt mit ${num(N.bc / 1000, 1)} kW` : N.dis > 0 ? `entlädt mit ${num(N.dis / 1000, 1)} kW` : "ruht") : ""}${net}</div></div>`;
   }
   _hzMuell() {
-    if (!this._labOn("mm")) return ""; this._muLoad(); const S = this._mu(), rows = (S.bins || []).filter((x) => x.next); if (!S.on || !rows.length) return "";
+    if (!this._muOn()) return ""; this._muLoad(); const S = this._mu(), rows = (S.bins || []).filter((x) => x.next); if (!S.on || !rows.length) return "";
     const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", none: "–" };
     return `<div class="card"><h2>${ic("trash", 18)}Müllabfuhr<span class="hzrt">Modul 17</span></h2><div class="mugrid">${(S.bins || []).map((x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}"><i class="bin" style="background:${x.color}"></i><b>${esc(x.name)}</b><small>${x.next ? (x.days <= 1 ? lbl[x.state] : this._muWhen(x.days)) : "–"}</small></${tap ? "button" : "div"}>`; }).join("")}</div></div>`;
   }
@@ -6788,7 +6656,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (id === "solar" || id === "batterie") { if (!this._enOn()) return null; const N = this._enNow(); if (!N) return null; return id === "solar" ? { i: "sun", b: `${num(N.pv / 1000, 1)} kW`, s: "Solar", mod: "en", blk: "energie" } : N.soc != null ? { i: "bolt", b: `${num(N.soc, 0)} %`, s: "Batterie", mod: "en", blk: "energie" } : null; }
     if (id === "auto") { const E = this._evState().ent || {}, v = E.soc && st[E.soc] ? parseFloat(st[E.soc].state) : NaN; if (!isFinite(v)) return null; const ch = E.charging && st[E.charging] && ["on", "charging"].includes(st[E.charging].state); return { i: "car", b: `${num(v, 0)} %`, s: ch ? "lädt" : "E-Auto", c: ch ? "ok" : "", mod: "ev" }; }
     if (id === "fenster") { const n = this._hzWin().reduce((s, w) => s + w.n, 0); return { i: "windowOpen", b: n ? `${n} offen` : "alle zu", s: "Fenster", c: n ? "wa" : "ok", mod: "fh" }; }
-    if (id === "muell") { if (!this._labOn("mm")) return null; this._muLoad(); const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; return x ? { i: "trash", b: x.days === 0 ? "Heute" : x.days === 1 ? "Morgen" : `in ${x.days} Tg.`, s: x.name, c: x.days <= 1 ? "wa" : "", mod: "mu", blk: "muell" } : null; }
+    if (id === "muell") { if (!this._muOn()) return null; this._muLoad(); const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; return x ? { i: "trash", b: x.days === 0 ? "Heute" : x.days === 1 ? "Morgen" : `in ${x.days} Tg.`, s: x.name, c: x.days <= 1 ? "wa" : "", mod: "mu", blk: "muell" } : null; }
     if (id === "warmwasser") { if (!this._mdState().on.ww) return null; const E = this._mdState().ww.ent || {}, v = E.top && st[E.top] ? parseFloat(st[E.top].state) : NaN; return isFinite(v) ? { i: "drop", b: `${num(v, 0)} °C`, s: "Warmwasser", mod: "ww" } : null; }
     if (id === "preis") { if (!this._enOn()) return null; const p = this._price(); return p ? { i: "chart", b: `${num(p, 1)} ct`, s: "Strompreis", mod: "en" } : null; }
     if (id === "hinweise") { const n = this._hzHints().length; return { i: "info", b: n ? `${n} ${n === 1 ? "Hinweis" : "Hinweise"}` : "keine", s: "Hinweise", c: n ? "wa" : "ok", blk: "hinweise" }; }
@@ -6958,8 +6826,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (id === "fh") return this._tmHeiz();
     if (id === "ww") { this._wwLoad(); return this._wwPage(); }
     if (id === "gs") return this._gsPage();
-    if (id === "mu") return this._muPage();
-    if (id === "li") return this._liPage();
+    if (id === "mu" && this._muOn()) return this._muPage();
+    if (id === "li" && this._liOn()) return this._liPage();
     if (m.addon) return this._adPage(m);
     if (m.beta) return this._betaPage(id);
     if (id === "en") return this._enPage();
@@ -7337,133 +7205,6 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="mut sm" style="margin-top:10px">Namen, Daten und Notizen bleiben in deinem Home Assistant. Das Dashboard weist dich ${30} Tage vor Ablauf darauf hin.</div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
   }
-  /* Modul 18: Licht & Lampen (Labs). Schaltet nur auf Fingertipp über Home Assistant (light.*, scene.*, script.*).
-     Das Modul gibt es nur, solange das Lab „Licht & Lampen“ (li) an ist. Verknüpfte Szenen und ausgeblendete Räume stehen im Layout (layout.li). */
-  _liLay() {
-    const l = (this._cfg && this._cfg.layout && this._cfg.layout.li) || {}, sc = l.scenes && typeof l.scenes === "object" ? l.scenes : {};
-    return { scenes: { night: sc.night || "", arrive: sc.arrive || "", cozy: sc.cozy || "" }, hours: [1, 2, 4].includes(l.hours) ? l.hours : 2, hidden: Array.isArray(l.hidden) ? l.hidden.filter((x) => typeof x === "string") : [] };
-  }
-  _liSave(patch) { const l = this._liLay(); this._cfg.layout.li = { scenes: l.scenes, hours: l.hours, hidden: l.hidden, ...patch }; this._saveLayout(); this._render(); if (this._modal) this._renderModal(); }
-  _liAreaOf(eid) {
-    const H = this._hass, en = (H.entities || {})[eid]; if (!en) return "";
-    if (en.area_id) return en.area_id;
-    const dv = en.device_id && (H.devices || {})[en.device_id]; return (dv && dv.area_id) || "";
-  }
-  _liAreaName(a) { if (!a) return "Ohne Raum"; const x = (this._hass.areas || {})[a]; return (x && x.name) || a; }
-  /* Alle einzelnen Lampen. Lichtgruppen (mit entity_id-Liste) werden ausgelassen, sonst zählt jede Lampe doppelt. */
-  _liLamps() {
-    const st = this._hass.states, now = Date.now();
-    return Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).map((e) => {
-      const s = st[e], a = s.attributes || {}, modes = Array.isArray(a.supported_color_modes) ? a.supported_color_modes : [], un = s.state === "unavailable" || s.state === "unknown";
-      const dim = modes.some((m) => m !== "onoff"), ct = modes.includes("color_temp"), col = modes.some((m) => ["hs", "xy", "rgb", "rgbw", "rgbww"].includes(m));
-      const t = new Date(s.last_changed).getTime();
-      return { id: e, name: a.friendly_name || e, on: s.state === "on", un, dim, ct, col, br: a.brightness != null ? Math.round(Number(a.brightness) / 2.55) : (s.state === "on" ? 100 : 0), kel: a.color_temp_kelvin || null, kmin: a.min_color_temp_kelvin || 2000, kmax: a.max_color_temp_kelvin || 6500, since: isFinite(t) ? now - t : 0, area: this._liAreaOf(e) };
-    });
-  }
-  _liRooms() {
-    const L = this._liLay(), by = {};
-    this._liLamps().forEach((x) => { const k = x.area || "_"; (by[k] = by[k] || { k, name: this._liAreaName(x.area), lamps: [] }).lamps.push(x); });
-    const all = Object.values(by).sort((a, b) => (a.k === "_") - (b.k === "_") || a.name.localeCompare(b.name, "de"));
-    all.forEach((r) => { r.lamps.sort((a, b) => a.name.localeCompare(b.name, "de")); r.on = r.lamps.filter((x) => x.on); r.dim = r.lamps.filter((x) => x.dim && !x.un); r.hid = L.hidden.includes(r.k); });
-    return all;
-  }
-  /* Ist im Raum ein Bewegungs-, Anwesenheits- oder Belegungssensor aktiv? Dann kein „Licht lange an“-Hinweis. */
-  _liBusy(area) {
-    if (!area) return false; const st = this._hass.states;
-    return Object.keys(st).some((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class) && st[e].state === "on" && this._liAreaOf(e) === area);
-  }
-  _liDur(ms) { const m = Math.round(ms / 60000); return m < 60 ? `${m} Min.` : `${num(Math.floor(m / 60), 0)} Std.${m % 60 >= 10 ? " " + (m % 60) + " Min." : ""}`; }
-  _liLong() { const lim = this._liLay().hours * 36e5; return this._liRooms().filter((r) => !r.hid).map((r) => ({ r, l: r.on.filter((x) => x.since >= lim) })).filter((x) => x.l.length && !this._liBusy(x.r.k === "_" ? "" : x.r.k)).map((x) => ({ r: x.r, ms: Math.max(...x.l.map((y) => y.since)), l: x.l })).sort((a, b) => b.ms - a.ms); }
-  _liCall(dom, svc, data) { return this._hass.callService(dom, svc, data).catch(() => this._toast("Das hat nicht geklappt")); }
-  _liSwatches(x) {
-    const out = [];
-    if (x.ct) [[2700, "Warmweiß"], [4000, "Neutralweiß"], [6000, "Kaltweiß"]].forEach(([k, t]) => out.push({ t, bg: k < 3500 ? "#ffb36b" : k < 5000 ? "#fff3e0" : "#cfe8ff", d: `data-kel="${Math.min(x.kmax, Math.max(x.kmin, k))}"`, on: x.kel && Math.abs(x.kel - Math.min(x.kmax, Math.max(x.kmin, k))) < 200 }));
-    if (x.col) [[[167, 139, 250], "Violett"], [[244, 114, 182], "Rosa"], [[96, 165, 250], "Blau"], [[52, 211, 153], "Grün"], [[251, 191, 36], "Gelb"], [[248, 113, 113], "Rot"]].forEach(([c, t]) => out.push({ t, bg: `rgb(${c.join(",")})`, d: `data-rgb="${c.join(",")}"`, on: false }));
-    return out;
-  }
-  _liSceneBtn(k, label, ico, pri) {
-    const L = this._liLay(), e = L.scenes[k], ok = e && this._hass.states[e];
-    if (!ok) return `<button class="btn2 lixun" data-act="lixscn" data-k="${k}" title="Noch nicht verknüpft">${ic("link", 15)} ${label}<small>verknüpfen</small></button>`;
-    return `<button class="btn2 ${pri ? "pri" : ""}" data-act="lixscn" data-k="${k}" title="${esc(this._wzName(e))}">${ic(ico, 15)} ${label}</button>`;
-  }
-  _liPage() {
-    const adm = this._admin(), rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un);
-    const banner = `<div class="labban">${ic("flask", 22)}<div><b>Labs · Licht & Lampen</b>Dieses Modul ist ein Experiment und nur da, solange das Lab eingeschaltet ist. Es schaltet nur, wenn du tippst.</div></div>`;
-    if (!rooms.length) return `${banner}<div class="card empty">${ic("lamp", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Keine Lampen gefunden</div>Es gibt in Home Assistant keine Entität light.*. Lampen richtest du in Home Assistant unter Geräte und Dienste ein.</div>`;
-    const on = lamps.filter((x) => x.on), L = this._liLay(), long = this._liLong();
-    const top = shown.slice().sort((a, b) => b.on.length - a.on.length)[0], mx = on.length ? Math.max(...on.map((x) => x.since)) : 0, longest = on.find((x) => x.since === mx);
-    const mu = this._labOn("mm") ? this._mu() : null, mul = mu && mu.cfg && mu.cfg.light && mu.cfg.light.on && mu.cfg.light.ent ? mu.cfg.light.ent : "";
-    const tiles = `<div class="lugrid lixtiles">${this._labTile("Lampen an", String(on.length), `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}`, on.length ? "amber" : "")}${this._labTile("Meiste Lampen an", top && top.on.length ? esc(top.name) : "–", top && top.on.length ? `${top.on.length} von ${top.lamps.length} an` : "Alles aus")}${this._labTile("Längste an", on.length ? this._liDur(mx) : "–", on.length && longest ? esc(longest.name) : "Nichts an")}${mul ? this._labTile("Müll-Licht", this._hass.states[mul] && this._hass.states[mul].state === "on" ? "An" : "Aus", esc(this._wzName(mul)) + " (Modul 17)") : ""}</div>`;
-    const scn = `<div class="gbtns lixscn">${this._liSceneBtn("night", "Gute Nacht", "moon", true)}<button class="btn2" data-act="lixalloff" ${on.length ? "" : "disabled"}>${ic("lamp", 15)} Alle aus</button>${this._liSceneBtn("arrive", "Ankommen", "home")}${this._liSceneBtn("cozy", "Gemütlich", "fireplace")}</div>`;
-    const names = ["night", "arrive", "cozy"].filter((k) => L.scenes[k] && this._hass.states[L.scenes[k]]).map((k) => `${{ night: "Gute Nacht", arrive: "Ankommen", cozy: "Gemütlich" }[k]}: ${esc(this._wzName(L.scenes[k]))}`);
-    const now = `<div class="card"><h2>${ic("lamp", 18)}Jetzt</h2>${tiles}<div style="margin-top:12px">${scn}</div>${names.length ? `<div class="mut sm" style="margin-top:8px">${names.join(" · ")}</div>` : adm ? `<div class="mut sm" style="margin-top:8px">Die drei Knöpfe verknüpfst du in den Einstellungen mit deinen Szenen oder Skripten.</div>` : ""}</div>`;
-    const hint = long.slice(0, 3).map((x) => `<div class="gst on lixhint">${ic("bell", 15)}<span><b>${esc(x.r.name === "Ohne Raum" ? "Licht ohne Raum" : "Im Raum „" + x.r.name + "“")} brennt seit ${this._liDur(x.ms)}</b> · ${x.l.map((y) => esc(y.name)).join(", ")}</span><button class="lnk" data-act="lixroomoff" data-k="${esc(x.r.k)}">Ausschalten</button></div>`).join("");
-    const room = (r) => {
-      const n = r.on.length, bp = r.dim.filter((x) => x.on), avg = bp.length ? Math.round(bp.reduce((a, x) => a + x.br, 0) / bp.length) : 0;
-      return `<div class="card lixroom ${n ? "on" : ""}"><div class="lixhd"><span class="lixico">${ic("lamp", 20)}</span><div class="lixt"><b>${esc(r.name)}</b><small>${n ? `${n} von ${r.lamps.length} an` : "aus"}</small></div><button class="sw ${n ? "on" : ""}" data-act="lixroom" data-k="${esc(r.k)}" aria-pressed="${!!n}" aria-label="${esc(r.name)}: ${n ? "alle ausschalten" : "alle einschalten"}"></button></div>
-        ${bp.length ? `<div class="lixrng"><span>${ic("sun", 14)}</span><input type="range" min="1" max="100" value="${avg}" data-f="lixbr" data-k="${esc(r.k)}" aria-label="Helligkeit ${esc(r.name)}"><b>${avg} %</b></div>` : ""}
-        <div class="lixl">${r.lamps.map((x) => `<div class="lixlamp ${x.on ? "on" : ""} ${x.un ? "un" : ""}"><button class="lixnm" data-act="lixdet" data-k="${esc(x.id)}" ${x.un ? "disabled" : ""} aria-label="${esc(x.name)}: Details">${ic("lamp", 16)}<span>${esc(x.name)}${x.un ? `<small>nicht erreichbar</small>` : x.on && x.dim ? `<small>${x.br} %</small>` : ""}</span></button><button class="sw ${x.on ? "on" : ""}" data-act="lixsw" data-k="${esc(x.id)}" aria-pressed="${x.on}" aria-label="${esc(x.name)} ${x.on ? "ausschalten" : "einschalten"}" ${x.un ? "disabled" : ""}></button></div>`).join("")}</div></div>`;
-    };
-    return `${banner}${now}${hint}<div class="lixgrid">${shown.map(room).join("") || `<div class="card empty">Alle Räume sind ausgeblendet. Einblenden kannst du sie in den Einstellungen.</div>`}</div>`;
-  }
-  _lixAct(a, b) {
-    const k = b.dataset.k, rooms = this._liRooms();
-    if (a === "lixopen") { this._modal = { type: "lixset" }; this._renderModal(); return; }
-    if (a === "lixdet") { this._modal = { type: "lixdet", id: k }; this._renderModal(); return; }
-    if (a === "lixalloff") { this._modal = { type: "lixoff" }; this._renderModal(); return; }
-    if (a === "lixalloffgo") { const ids = this._liLamps().filter((x) => x.on).map((x) => x.id); this._modal = null; this._renderModal(); if (ids.length) this._liCall("light", "turn_off", { entity_id: ids }); this._toast("Alle Lampen werden ausgeschaltet"); return; }
-    if (a === "lixsw") { const x = this._liLamps().find((y) => y.id === k); if (x) this._liCall("light", x.on ? "turn_off" : "turn_on", { entity_id: k }); return; }
-    if (a === "lixroom") { const r = rooms.find((y) => y.k === k); if (r) this._liCall("light", r.on.length ? "turn_off" : "turn_on", { entity_id: (r.on.length ? r.on : r.lamps.filter((x) => !x.un)).map((x) => x.id) }); return; }
-    if (a === "lixroomoff") { const r = rooms.find((y) => y.k === k); if (r && r.on.length) this._liCall("light", "turn_off", { entity_id: r.on.map((x) => x.id) }); return; }
-    if (a === "lixscn") {
-      const e = this._liLay().scenes[k];
-      if (!e || !this._hass.states[e]) { if (this._admin()) { this._modal = { type: "lixset" }; this._renderModal(); } else this._toast("Dieser Knopf ist noch nicht mit einer Szene verknüpft"); return; }
-      this._liCall(e.split(".")[0], "turn_on", { entity_id: e }); this._toast(`${this._wzName(e)} wird ausgeführt`); return;
-    }
-    if (a === "lixcol") { const m = this._modal; if (!m || m.type !== "lixdet") return; const d = { entity_id: m.id }; if (b.dataset.kel) d.color_temp_kelvin = +b.dataset.kel; else if (b.dataset.rgb) d.rgb_color = b.dataset.rgb.split(",").map(Number); this._liCall("light", "turn_on", d); return; }
-    if (a === "lixhrs") { this._liSave({ hours: +k }); return; }
-    if (a === "lixhide") { const h = this._liLay().hidden; this._liSave({ hidden: h.includes(k) ? h.filter((x) => x !== k) : [...h, k] }); return; }
-    if (a === "lixunlink") { const l = this._liLay(); this._liSave({ scenes: { ...l.scenes, [k]: "" } }); return; }
-  }
-  _lixChange(t) {
-    const f = t.dataset.f, k = t.dataset.k, v = t.value || "";
-    if (f === "lixsel") { if (["night", "arrive", "cozy"].includes(k) && (v === "" || /^(scene|script)\.[a-z0-9_]+$/.test(v))) { const l = this._liLay(); this._liSave({ scenes: { ...l.scenes, [k]: v } }); } return true; }
-    if (f === "lixbr") { const r = this._liRooms().find((y) => y.k === k), p = Math.max(1, Math.min(100, Math.round(Number(v)))); if (r && r.dim.some((x) => x.on)) this._liCall("light", "turn_on", { entity_id: r.dim.filter((x) => x.on).map((x) => x.id), brightness_pct: p }); return true; }
-    if (f === "lixdbr") { const m = this._modal; if (m && m.type === "lixdet") this._liCall("light", "turn_on", { entity_id: m.id, brightness_pct: Math.max(1, Math.min(100, Math.round(Number(v)))) }); return true; }
-    if (f === "lixkel") { const m = this._modal; if (m && m.type === "lixdet") this._liCall("light", "turn_on", { entity_id: m.id, color_temp_kelvin: Math.round(Number(v)) }); return true; }
-    return false;
-  }
-  _lixModal() {
-    const m = this._modal, adm = this._admin();
-    if (m.type === "lixoff") {
-      const n = this._liLamps().filter((x) => x.on).length;
-      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Alle Lampen ausschalten?</b><span>Modul 18 · Licht & Lampen</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-        <div class="mut sm">${n ? `${n} ${n === 1 ? "Lampe ist" : "Lampen sind"} an und ${n === 1 ? "wird" : "werden"} jetzt ausgeschaltet. Das gilt für alle Räume, auch ausgeblendete.` : "Es ist keine Lampe an."}</div>
-        <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="lixalloffgo" ${n ? "" : "disabled"}>Alle aus</button></div></div>`;
-    }
-    if (m.type === "lixdet") {
-      const x = this._liLamps().find((y) => y.id === m.id); if (!x) return `<div class="ov" data-act="close"></div><div class="sheet"><div class="sh"><div><b>Lampe nicht gefunden</b></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div></div>`;
-      const sw = this._liSwatches(x);
-      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${esc(x.name)}</b><span>${esc(this._liAreaName(x.area))} · ${x.un ? "nicht erreichbar" : x.on ? "an" : "aus"}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-        <div class="vrow"><span>Lampe</span><button class="sw ${x.on ? "on" : ""}" data-act="lixsw" data-k="${esc(x.id)}" aria-pressed="${x.on}" aria-label="${esc(x.name)} ${x.on ? "ausschalten" : "einschalten"}"></button></div>
-        ${x.dim ? `<div class="vrow"><span>Helligkeit</span><span class="lixrng" style="flex:1;max-width:60%"><input type="range" min="1" max="100" value="${x.on ? x.br : 50}" data-f="lixdbr" aria-label="Helligkeit"><b>${x.on ? x.br + " %" : "aus"}</b></span></div>` : `<div class="mut sm" style="margin:8px 0">Diese Lampe kann nur ein- und ausgeschaltet werden.</div>`}
-        ${x.ct ? `<div class="vrow"><span>Weißton<small class="mut" style="display:block">${x.kel ? x.kel + " Kelvin" : "warm bis kalt"}</small></span><span class="lixrng" style="flex:1;max-width:60%"><input type="range" min="${x.kmin}" max="${x.kmax}" step="100" value="${x.kel || Math.round((x.kmin + x.kmax) / 2)}" data-f="lixkel" aria-label="Weißton"></span></div>` : ""}
-        ${sw.length ? `<div class="lsec">${ic("palette", 15)}Lichtfarbe</div><div class="lixsw">${sw.map((s) => `<button class="lixc ${s.on ? "on" : ""}" style="background:${s.bg}" data-act="lixcol" ${s.d} aria-label="${esc(s.t)}" title="${esc(s.t)}"></button>`).join("")}</div>` : ""}
-        <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
-    }
-    const L = this._liLay(), H = this._hass, st = H.states, sc = Object.keys(st).filter((e) => e.startsWith("scene.") || e.startsWith("script.")), rooms = this._liRooms();
-    const slot = (k, t, h) => `<div class="lsec" style="margin-top:10px">${ic("link", 15)}${t}</div><div class="mut sm" style="margin:0 0 4px">${h}</div>${this._wzSel(sc, L.scenes[k], "lixsel", `data-k="${k}"`, "– nicht verknüpft –", /schlaf|nacht|aus|bed|night|ankomm|heim|home|arriv|gem(ü|u)t|cozy|relax|abend/i)}`;
-    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Licht & Lampen</b><span>Modul 18 · Labs · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="lsec">${ic("lamp", 15)}Szenenknöpfe</div>
-      <div class="mut sm" style="margin:0 0 4px">Jeder Knopf ruft eine Szene oder ein Skript aus Home Assistant auf. Ohne Auswahl bleibt er unverknüpft und öffnet diese Einstellungen. „Alle aus“ ist eingebaut.</div>
-      ${slot("night", "Gute Nacht", "Zum Beispiel deine Szene zum Schlafengehen")}${slot("arrive", "Ankommen", "Zum Beispiel Licht im Flur und Wohnzimmer")}${slot("cozy", "Gemütlich", "Zum Beispiel warmes, gedimmtes Licht")}
-      <div class="lsec" style="margin-top:14px">${ic("bell", 15)}Hinweis „Licht lange an“</div>
-      <div class="vrow"><span>Hinweis ab<small class="mut" style="display:block">So lange darf eine Lampe an sein. Meldet ein Bewegungs- oder Anwesenheitssensor im Raum etwas, kommt kein Hinweis.</small></span><div class="seg">${[1, 2, 4].map((h) => `<button class="${L.hours === h ? "sel" : ""}" data-act="lixhrs" data-k="${h}" ${adm ? "" : "disabled"}>${h} Std.</button>`).join("")}</div></div>
-      <div class="lsec" style="margin-top:14px">${ic("door", 15)}Räume</div>
-      <div class="mut sm" style="margin:0 0 6px">Ausgeblendete Räume (zum Beispiel Garten oder Keller) fehlen auf der Seite, auch bei „Alle aus“ der Seitenübersicht. „Alle aus“ schaltet trotzdem jede Lampe.</div>
-      <div class="gschips">${rooms.map((r) => `<button class="gsch ${r.hid ? "" : "sel"}" data-act="lixhide" data-k="${esc(r.k)}" aria-pressed="${!r.hid}" ${adm ? "" : "disabled"}>${esc(r.name)} (${r.lamps.length})</button>`).join("")}</div>
-      <div class="foot2" style="margin-top:12px"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
-  }
   /* Lab „Tags & Karten“ (tg): RFID-Karten und NFC-Sticker lösen feste Aktionen aus. Die Tags und ihre Aktionen liegen im Backend (tags.py),
      hier stehen nur Anzeige und Bedienung. Es gibt keine freien Dienstaufrufe, nur die feste Liste des Backends. */
   _tgxLoad(force) {
@@ -7502,8 +7243,8 @@ class FensterHeizungPanel extends HTMLElement {
   _tgxIcon(a) { const g = (this._tgxD.actions.find((x) => x.k === a.k) || {}).g; return { fh: "home", pe: "user", ww: "drop", ev: "car", mu: "trash", li: "lamp" }[g] || "nfc"; }
   _tgxNeed(k) {
     const g = ((this._tgxD.actions.find((x) => x.k === k)) || {}).g;
-    if (g === "li" && !this._labOn("li")) return "Modul 18 ist nicht eingeschaltet (Labs).";
-    if (g === "mu" && !this._labOn("mm")) return "Modul 17 ist nicht eingeschaltet (Labs).";
+    if (g === "li" && !this._liOn()) return "Modul 18 ist nicht eingeschaltet (Labs).";
+    if (g === "mu" && !this._muOn()) return "Modul 17 ist nicht eingeschaltet (Labs).";
     return "";
   }
   _tgxCfgNow() { const c = this._tgxD.cfg; return { tags: { ...c.tags }, fb: { ...c.fb } }; }
@@ -7873,8 +7614,8 @@ class FensterHeizungPanel extends HTMLElement {
       if (id === "lu") return this._modHero("lu", { icon: "fan", lbl: "Lüftung & Raumluft", big: "Lüftung", small: true, sub: "Räume heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "rb") return this._modHero("rb", { icon: "sun", lbl: "Rollläden & Beschattung", big: "Rollläden", small: true, sub: "Sonnenstand heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "wp") return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", big: "Wärmepumpe", small: true, sub: "Außenbedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
-      if (id === "li") { const rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on); return this._modHero("li", { icon: "lamp", lbl: "Licht & Lampen", big: String(on.length), unit: on.length === 1 ? "Lampe an" : "Lampen an", sub: lamps.length ? `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}` : "Keine Lampen gefunden" }); }
-      if (id === "mu") { const S = this._mu(); const rows = (S && S.bins) || []; if (!S || !S.on || !S.cal) return this._modHero("mu", { icon: "trash", lbl: "Müllabfuhr", big: "–", small: true, sub: "Noch kein Abfallkalender gewählt" }); const due = rows.filter((x) => ["out", "today"].includes(x.state)), soon = rows.filter((x) => x.state === "soon"), up = rows.filter((x) => x.next).sort((a, b) => a.days - b.days)[0]; const big = due.length ? (due.some((x) => x.state === "today") ? "Heute" : "Jetzt raus") : soon.length ? "Morgen" : up ? (up.days === 0 ? "Heute" : `in ${up.days} Tagen`) : "–"; const names = (due.length ? due : soon.length ? soon : up ? [up] : []).map((x) => x.name); return this._modHero("mu", { icon: "trash", lbl: "Nächste Abholung", big, small: true, sub: names.join(", ") || "Keine Termine gefunden" }); }
+      if (id === "li" && this._liOn()) { const rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on); return this._modHero("li", { icon: "lamp", lbl: "Licht & Lampen", big: String(on.length), unit: on.length === 1 ? "Lampe an" : "Lampen an", sub: lamps.length ? `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}` : "Keine Lampen gefunden" }); }
+      if (id === "mu" && this._muOn()) { const S = this._mu(); const rows = (S && S.bins) || []; if (!S || !S.on || !S.cal) return this._modHero("mu", { icon: "trash", lbl: "Müllabfuhr", big: "–", small: true, sub: "Noch kein Abfallkalender gewählt" }); const due = rows.filter((x) => ["out", "today"].includes(x.state)), soon = rows.filter((x) => x.state === "soon"), up = rows.filter((x) => x.next).sort((a, b) => a.days - b.days)[0]; const big = due.length ? (due.some((x) => x.state === "today") ? "Heute" : "Jetzt raus") : soon.length ? "Morgen" : up ? (up.days === 0 ? "Heute" : `in ${up.days} Tagen`) : "–"; const names = (due.length ? due : soon.length ? soon : up ? [up] : []).map((x) => x.name); return this._modHero("mu", { icon: "trash", lbl: "Nächste Abholung", big, small: true, sub: names.join(", ") || "Keine Termine gefunden" }); }
       if (id === "ev") { const d = this._evData(); return this._modHero("ev", { icon: "car", lbl: "Elektroauto & Wallbox", big: d.soc != null ? num(d.soc, 0) : "–", unit: d.soc != null ? "%" : "", sub: !d.any ? "Noch kein Fahrzeug eingerichtet" : d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt", chips: [d.range != null ? `Reichweite ${num(d.range, 0)} km` : "", d.odo != null ? `${num(d.odo, 0)} km gefahren` : ""] }); }
       if (id === "ga") return this._modHero("ga", { icon: "plant", lbl: "Garten & Bewässerung", big: "Gartenplan", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "pl") return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: "Pool & Sauna", small: true, sub: "Bedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
@@ -8946,6 +8687,10 @@ class FensterHeizungPanel extends HTMLElement {
        export default (api) => ({ page(p, m), tile(p, s), act(p, a, el), change(p, el), modal(p, type), icons, art, css })
      Aktionen eines Addons heißen data-act="adxa" data-ad="<id>" data-a="<aktion>". */
   _adState() { return (this._ad && this._ad.d) || { addons: [] }; }
+  _adOn(id) { return this._adState().addons.some((a) => a.id === id && a.status === "on"); }
+  /* Phase 3: Müllabfuhr und Licht sind Addons. Ihre Methoden (_mu…, _li…) bringt das Addon als Mixin mit. */
+  _muOn() { return this._adOn("muell") && typeof this._mu === "function"; }
+  _liOn() { return this._adOn("licht") && typeof this._liPage === "function"; }
   _adLoad(force) {
     if (!this._hass || this._adBusy) return;
     if (!force && this._ad && Date.now() - this._ad.ts < 30000) return;
@@ -8955,7 +8700,7 @@ class FensterHeizungPanel extends HTMLElement {
       .finally(() => { this._adBusy = false; this._render(); if (this._modal && String(this._modal.type).startsWith("ad")) this._renderModal(); });
   }
   _adApi() {
-    return { v: 1, ic, esc, num, ICONS, MOD_ART, STG,
+    return { v: 1, ic, esc, num, ico, ICONS, MOD_ART, STG,
       call: (id, cmd, data) => this._hass.callWS({ type: "fenster_heizung/addon_call", addon: id, cmd, data: data || {} }) };
   }
   _adImport() {
@@ -8965,23 +8710,27 @@ class FensterHeizungPanel extends HTMLElement {
       this._adJs[a.id] = a.js;
       import(a.js).then((mod) => {
         const def = (mod.default || mod)(this._adApi()) || {};
+        if (typeof def.mixin === "function") {  // Methoden des Addons an das Panel hängen (frühere Module des Kerns)
+          const P = Object.getPrototypeOf(this);
+          Object.getOwnPropertyNames(def.mixin.prototype).filter((n) => n !== "constructor").forEach((n) => { P[n] = def.mixin.prototype[n]; });
+        }
         Object.assign(ICONS, def.icons || {}); if (def.art) MOD_ART[a.id] = def.art;
         this._adDefs[a.id] = def; this._render(); if (this._modal) this._renderModal();
       }).catch((e) => { this._adDefs[a.id] = { err: String(e && e.message || e) }; this._render(); });
     });
   }
   _adMods() {
-    return this._adState().addons.filter((a) => a.status === "on").map((a) => ({ id: a.id, n: a.n, name: a.name, short: a.short || a.name, icon: ICONS[a.icon] ? a.icon : "puzzle", tag: a.tag, addon: true, beta: a.stage !== "stabil", stage: a.stage, ad: a }));
+    return this._adState().addons.filter((a) => a.status === "on").map((a) => ({ id: a.mid || a.id, aid: a.id, n: a.n, name: a.name, short: a.short || a.name, icon: ICONS[a.icon] ? a.icon : "puzzle", tag: a.tag, addon: true, beta: a.stage !== "stabil", stage: a.stage, ad: a }));
   }
   _adDef(id) { return (this._adDefs || {})[id]; }
   _adPage(m) {
-    const d = this._adDef(m.id);
+    const d = this._adDef(m.aid || m.id);
     if (!d) return `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Seite des Addons wird geladen …</div>`;
     if (d.err) return `<div class="card empty">${ic("alert", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Die Seite des Addons ließ sich nicht laden.<br><span class="sm">${esc(d.err)}</span></div>`;
     try { return (d.css ? `<style>${d.css}</style>` : "") + d.page(this, m); } catch (e) { return `<div class="card empty">${ic("alert", 36)}<div style="margin:10px 0 4px;font-weight:700">Fehler in der Seite des Addons</div><span class="sm">${esc(e.message)}</span></div>`; }
   }
   _adTile(m) { const s = (m.ad && m.ad.summary && m.ad.summary.tile) || {}; return { sub: esc(s.sub || ""), c: s.c || "" }; }
-  _adHints() { return this._adState().addons.filter((a) => a.status === "on").flatMap((a) => ((a.summary || {}).hints || []).map((h) => ({ i: ICONS[h.i] ? h.i : "info", t: esc(h.t), s: esc(h.s || ""), r: h.c === "bad" ? "jetzt" : "", c: h.c || "", mod: a.id }))); }
+  _adHints() { return this._adState().addons.filter((a) => a.status === "on").flatMap((a) => ((a.summary || {}).hints || []).map((h) => ({ i: ICONS[h.i] ? h.i : "info", t: esc(h.t), s: esc(h.s || ""), r: h.c === "bad" ? "jetzt" : "", c: h.c || "", mod: a.mid || a.id }))); }
   _adModal() {
     const m = this._modal, A = this._adState().addons.find((x) => x.id === m.id);
     if (m.type === "adx" || !A) { const d = this._adDef(m.id); return d && d.modal ? (d.css ? `<style>${d.css}</style>` : "") + d.modal(this, m) : ""; }
@@ -9028,7 +8777,7 @@ class FensterHeizungPanel extends HTMLElement {
     const inst = L.filter((a) => a.installed), cat = L.filter((a) => !a.installed), upd = L.filter((a) => a.update);
     const nv = (a) => a.upd_src === "remote" && a.remote ? a.remote.version : a.version;
     const stc = (a) => a.busy ? `<em class="sxc wa">${esc(a.busy)} …</em>` : a.status === "on" ? (a.update ? `<em class="sxc wa">Update v${esc(nv(a))}</em>` : `<em class="sxc ok">aktiv</em>`) : a.status === "paused" ? `<em class="sxc off">pausiert</em>` : a.status === "error" ? `<em class="sxc er">Fehler</em>` : "";
-    const row = (a) => `<div class="adrow ${a.status}"><div class="adtop"><span class="sxi">${ic(ICONS[a.icon] ? a.icon : "puzzle", 22)}</span><span class="sxt"><b>Modul ${a.n} · ${esc(a.name)}</b><small>v${esc(a.installed && a.cur ? a.cur : a.version + " Build " + a.build)} · ${STG[a.stage] ? STG[a.stage].t : ""} · ${a.src === "ext" ? "aus dem Katalog" : a.src === "remote" ? `aus dem Katalog · ${kb(a.dl_size || (a.remote || {}).size || 0)}` : "mitgeliefert"}${a.status === "on" && a.summary && a.summary.info ? " · " + esc(a.summary.info) : ""}</small></span>${a.installed ? stc(a) : a.sponsor ? `<em class="sxc sp">Sponsor</em>` : ""}</div>
+    const row = (a) => `<div class="adrow ${a.status}"><div class="adtop"><span class="sxi">${ic(ICONS[a.icon] ? a.icon : "puzzle", 22)}</span><span class="sxt"><b>Modul ${a.n} · ${esc(a.name)}</b><small>v${esc(a.installed && a.cur ? a.cur : a.version + " Build " + a.build)} · ${STG[a.stage] ? STG[a.stage].t : ""} · ${a.src === "ext" ? "aus dem Katalog" : a.src === "remote" ? `aus dem Katalog · ${kb(a.dl_size || (a.remote || {}).size || 0)}` : "mitgeliefert"}${a.status === "on" && a.summary && a.summary.info ? " · " + esc(a.summary.info) : ""}${a.from_lab ? " · früher Lab, Einstellungen übernommen" : ""}</small></span>${a.installed ? stc(a) : a.sponsor ? `<em class="sxc sp">Sponsor</em>` : ""}</div>
       ${a.err && a.status !== "on" ? `<div class="gst bad">${ic("alert", 15)}<span>${esc(a.err)}</span></div>` : ""}
       ${!a.installed ? `<p class="adds">${esc(a.desc || a.tag)}</p>` : ""}${a.update && tab === "upd" && a.remote && (a.remote.notes || []).length ? `<ul class="adnotes adin">${a.remote.notes.slice(0, 4).map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}
       <div class="adbtn">${a.installed ? `${a.status === "on" ? `<button class="gsch sel" data-act="adxopen" data-k="${a.id}">Öffnen</button>` : ""}${a.status === "on" && (this._adDef(a.id) || {}).settings ? `<button class="gsch" data-act="adxset" data-k="${a.id}">${ic("sliders", 14)} Einstellungen</button>` : ""}${a.status === "error" ? `<button class="gsch sel" data-act="adxretry" data-k="${a.id}">Erneut versuchen</button>` : ""}${a.update ? `<button class="gsch sel" data-act="adxupd" data-k="${a.id}">${ic("download", 14)} Aktualisieren auf v${esc(nv(a))}</button>` : ""}${a.old ? `<button class="gsch" data-act="adxold" data-k="${a.id}">${ic("back", 14)} Zurück zu v${esc(a.old)}</button>` : ""}${a.status === "paused" ? `<button class="gsch sel" data-act="adxresume" data-k="${a.id}">Fortsetzen</button>` : a.status === "on" ? `<button class="gsch" data-act="adxpause" data-k="${a.id}">Pausieren</button>` : ""}<button class="gsch" data-act="adxdel" data-k="${a.id}">Deinstallieren</button>`
@@ -9064,14 +8813,14 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "adxcheck") { this._adWork = "check"; this._render(); this._hass.callWS({ type: "fenster_heizung/addons_act", act: "check" }).then((r) => { this._ad = { d: r, ts: Date.now() }; const C = r.cat || {}; this._toast(C.ok ? (r.addons.some((x) => x.update) ? "Update gefunden" : "Katalog geprüft, alles aktuell") : `Katalog: ${C.err || "nicht erreichbar"}`); }).catch(() => this._toast("Prüfung fehlgeschlagen")).finally(() => { this._adWork = false; this._render(); }); }
     else if (a === "adxgo") { this._stOpen = true; this._stA = "ad"; this._adTab = "upd"; this._render(); }
     else if (a === "adxset") { const d = this._adDef(k); if (!d || !d.act) { this._toast("Die Seite des Addons wird noch geladen"); return; } const t = b.dataset.t || ""; d.act(this, "settings", b); if (this._modal && this._modal.type === "adx") { if (t) this._modal.tab = t; this._renderModal(); } }
-    else if (a === "adxopen") { this._stOpen = false; this._mdActiveSet(k); this._render(); }
+    else if (a === "adxopen") { const A = this._adState().addons.find((x) => x.id === k); this._stOpen = false; this._mdActiveSet((A && A.mid) || k); this._render(); }
     else if (a === "adxa") { const d = this._adDef(b.dataset.ad); if (d && d.act) d.act(this, b.dataset.a, b); }
   }
   /* Suche in den Einstellungen: jedes Addon bringt seine Einträge mit (def.search), sonst einen Eintrag fürs ganze Addon */
   _adCatAdd(C) {
-    const extra = this._adMods().flatMap((m) => { const d = this._adDef(m.id) || {}, P = `Module › Modul ${m.n}`;
+    const extra = this._adMods().flatMap((m) => { const d = this._adDef(m.aid) || {}, P = `Module › Modul ${m.n}`;
       const L = Array.isArray(d.search) && d.search.length ? d.search : [{ id: "", t: `Modul ${m.n} ${m.name}`, k: `${m.short} ${m.tag}`, h: m.tag }];
-      return L.map((x) => ({ id: `addon.${m.id}${x.id ? "." + x.id : ""}`, t: x.t, p: x.p || P, k: `addon modul ${m.n} ${m.name} ${x.k || ""}`.toLowerCase(), go: ["adxset", m.id], tab: x.tab || "", h: x.h || "", v: x.v ? () => { try { return x.v(this); } catch (_) { return ""; } } : undefined })); });
+      return L.map((x) => ({ id: `addon.${m.aid}${x.id ? "." + x.id : ""}`, t: x.t, p: x.p || P, k: `addon modul ${m.n} ${m.name} ${x.k || ""}`.toLowerCase(), go: ["adxset", m.aid], tab: x.tab || "", h: x.h || "", v: x.v ? () => { try { return x.v(this); } catch (_) { return ""; } } : undefined })); });
     return extra.length ? C.concat(extra) : C;
   }
   _adxChange(t) { const d = this._adDef(t.dataset.ad); if (d && d.change) { d.change(this, t); return true; } return false; }
@@ -9085,10 +8834,10 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "ww") { body = this._wwPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; this._wwLoad(); }
     else if (a === "gs") { body = this._gsPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "st") { body = this._hzPage(); pills = adm ? `<button class="pillbtn" data-act="hzopen" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; }
-    else if (a === "mu") { body = this._modHeroFor("mu") + this._muPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; this._muLoad(); }
-    else if (a === "li") { body = this._modHeroFor("li") + this._liPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
+    else if (a === "mu" && this._muOn()) { body = this._modHeroFor("mu") + this._muPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; this._muLoad(); }
+    else if (a === "li" && this._liOn()) { body = this._modHeroFor("li") + this._liPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "ef") { body = this._efPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
-    else if (m.addon) { body = this._adPage(m); const d = this._adDef(a); pills = adm && d && d.settings ? `<button class="pillbtn" data-act="adxa" data-ad="${a}" data-a="settings" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
+    else if (m.addon) { body = this._adPage(m); const d = this._adDef(m.aid); pills = adm && d && d.settings ? `<button class="pillbtn" data-act="adxa" data-ad="${m.aid}" data-a="settings" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (m.beta) { body = this._betaPage(a); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "en") { body = this._enPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else body = `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">${esc(m.name)}</div>Dieses Modul wird aus <code>${esc(m.ext.url)}</code> geladen.<br><span class="sm">Externe Module werden in einer späteren Version geladen.</span></div>`;

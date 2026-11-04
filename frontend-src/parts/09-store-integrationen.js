@@ -93,7 +93,7 @@
     const hp = this._hsProfiles(), cnt = {}; ids.filter((k) => k.startsWith("climate.")).forEach((k) => { const id = this._hsOf(k); if (id) cnt[id] = (cnt[id] || 0) + 1; });
     for (const id of Object.keys(hp)) { const x = hp[id], n = cnt[id] || 0;
       out.push({ id: "hs_" + id, d: x.d, n: x.n, sub: x.sub, cat: "heizung", c: x.c, i: "thermo", mid: "fh", mods: ["Modul 1"], on: n > 0, top: 1, nodot: 1, conn: x.conn, src: x.src, st: n ? `${n} ${n === 1 ? "Thermostat" : "Thermostate"} in Home Assistant gefunden` : "", desc: x.desc, feats: x.feats, quirks: x.quirks, steps: x.steps, note: x.note }); }
-    if (this._labOn("mm")) { const n = ids.filter((k) => (E[k] || {}).platform === "waste_collection_schedule").length;
+    if (this._muOn()) { const n = ids.filter((k) => (E[k] || {}).platform === "waste_collection_schedule").length;
       out.push({ id: "wcs", d: "waste_collection_schedule", n: "Abfallkalender", sub: "waste_collection_schedule", cat: "haus", c: "#16a34a", i: "trash", mid: "mu", mods: ["Modul 17"], on: n > 0, top: 1, hacs: "https://github.com/mampfes/hacs_waste_collection_schedule", conn: "Cloud", src: "Community", st: n ? `${n} ${n === 1 ? "Entität" : "Entitäten"} · genutzt von Modul 17` : "",
         desc: "Holt die Abholtermine deines Entsorgers in einen Kalender von Home Assistant. Dafür gibt es Hunderte Anbieter.",
         feats: ["Termine für Restmüll, Bio, Papier und Gelben Sack als Kalender", "Modul 17 zeigt sie an und erinnert am Vorabend", "Kennt viele Entsorger in Deutschland, Österreich und der Schweiz"],

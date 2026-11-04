@@ -5,6 +5,10 @@
        export default (api) => ({ page(p, m), tile(p, s), act(p, a, el), change(p, el), modal(p, type), icons, art, css })
      Aktionen eines Addons heißen data-act="adxa" data-ad="<id>" data-a="<aktion>". */
   _adState() { return (this._ad && this._ad.d) || { addons: [] }; }
+  _adOn(id) { return this._adState().addons.some((a) => a.id === id && a.status === "on"); }
+  /* Phase 3: Müllabfuhr und Licht sind Addons. Ihre Methoden (_mu…, _li…) bringt das Addon als Mixin mit. */
+  _muOn() { return this._adOn("muell") && typeof this._mu === "function"; }
+  _liOn() { return this._adOn("licht") && typeof this._liPage === "function"; }
   _adLoad(force) {
     if (!this._hass || this._adBusy) return;
     if (!force && this._ad && Date.now() - this._ad.ts < 30000) return;
@@ -14,7 +18,7 @@
       .finally(() => { this._adBusy = false; this._render(); if (this._modal && String(this._modal.type).startsWith("ad")) this._renderModal(); });
   }
   _adApi() {
-    return { v: 1, ic, esc, num, ICONS, MOD_ART, STG,
+    return { v: 1, ic, esc, num, ico, ICONS, MOD_ART, STG,
       call: (id, cmd, data) => this._hass.callWS({ type: "fenster_heizung/addon_call", addon: id, cmd, data: data || {} }) };
   }
   _adImport() {
@@ -24,23 +28,27 @@
       this._adJs[a.id] = a.js;
       import(a.js).then((mod) => {
         const def = (mod.default || mod)(this._adApi()) || {};
+        if (typeof def.mixin === "function") {  // Methoden des Addons an das Panel hängen (frühere Module des Kerns)
+          const P = Object.getPrototypeOf(this);
+          Object.getOwnPropertyNames(def.mixin.prototype).filter((n) => n !== "constructor").forEach((n) => { P[n] = def.mixin.prototype[n]; });
+        }
         Object.assign(ICONS, def.icons || {}); if (def.art) MOD_ART[a.id] = def.art;
         this._adDefs[a.id] = def; this._render(); if (this._modal) this._renderModal();
       }).catch((e) => { this._adDefs[a.id] = { err: String(e && e.message || e) }; this._render(); });
     });
   }
   _adMods() {
-    return this._adState().addons.filter((a) => a.status === "on").map((a) => ({ id: a.id, n: a.n, name: a.name, short: a.short || a.name, icon: ICONS[a.icon] ? a.icon : "puzzle", tag: a.tag, addon: true, beta: a.stage !== "stabil", stage: a.stage, ad: a }));
+    return this._adState().addons.filter((a) => a.status === "on").map((a) => ({ id: a.mid || a.id, aid: a.id, n: a.n, name: a.name, short: a.short || a.name, icon: ICONS[a.icon] ? a.icon : "puzzle", tag: a.tag, addon: true, beta: a.stage !== "stabil", stage: a.stage, ad: a }));
   }
   _adDef(id) { return (this._adDefs || {})[id]; }
   _adPage(m) {
-    const d = this._adDef(m.id);
+    const d = this._adDef(m.aid || m.id);
     if (!d) return `<div class="card empty">${ic("puzzle", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Seite des Addons wird geladen …</div>`;
     if (d.err) return `<div class="card empty">${ic("alert", 36)}<div style="margin:10px 0 4px;font-weight:700">${esc(m.name)}</div>Die Seite des Addons ließ sich nicht laden.<br><span class="sm">${esc(d.err)}</span></div>`;
     try { return (d.css ? `<style>${d.css}</style>` : "") + d.page(this, m); } catch (e) { return `<div class="card empty">${ic("alert", 36)}<div style="margin:10px 0 4px;font-weight:700">Fehler in der Seite des Addons</div><span class="sm">${esc(e.message)}</span></div>`; }
   }
   _adTile(m) { const s = (m.ad && m.ad.summary && m.ad.summary.tile) || {}; return { sub: esc(s.sub || ""), c: s.c || "" }; }
-  _adHints() { return this._adState().addons.filter((a) => a.status === "on").flatMap((a) => ((a.summary || {}).hints || []).map((h) => ({ i: ICONS[h.i] ? h.i : "info", t: esc(h.t), s: esc(h.s || ""), r: h.c === "bad" ? "jetzt" : "", c: h.c || "", mod: a.id }))); }
+  _adHints() { return this._adState().addons.filter((a) => a.status === "on").flatMap((a) => ((a.summary || {}).hints || []).map((h) => ({ i: ICONS[h.i] ? h.i : "info", t: esc(h.t), s: esc(h.s || ""), r: h.c === "bad" ? "jetzt" : "", c: h.c || "", mod: a.mid || a.id }))); }
   _adModal() {
     const m = this._modal, A = this._adState().addons.find((x) => x.id === m.id);
     if (m.type === "adx" || !A) { const d = this._adDef(m.id); return d && d.modal ? (d.css ? `<style>${d.css}</style>` : "") + d.modal(this, m) : ""; }
@@ -87,7 +95,7 @@
     const inst = L.filter((a) => a.installed), cat = L.filter((a) => !a.installed), upd = L.filter((a) => a.update);
     const nv = (a) => a.upd_src === "remote" && a.remote ? a.remote.version : a.version;
     const stc = (a) => a.busy ? `<em class="sxc wa">${esc(a.busy)} …</em>` : a.status === "on" ? (a.update ? `<em class="sxc wa">Update v${esc(nv(a))}</em>` : `<em class="sxc ok">aktiv</em>`) : a.status === "paused" ? `<em class="sxc off">pausiert</em>` : a.status === "error" ? `<em class="sxc er">Fehler</em>` : "";
-    const row = (a) => `<div class="adrow ${a.status}"><div class="adtop"><span class="sxi">${ic(ICONS[a.icon] ? a.icon : "puzzle", 22)}</span><span class="sxt"><b>Modul ${a.n} · ${esc(a.name)}</b><small>v${esc(a.installed && a.cur ? a.cur : a.version + " Build " + a.build)} · ${STG[a.stage] ? STG[a.stage].t : ""} · ${a.src === "ext" ? "aus dem Katalog" : a.src === "remote" ? `aus dem Katalog · ${kb(a.dl_size || (a.remote || {}).size || 0)}` : "mitgeliefert"}${a.status === "on" && a.summary && a.summary.info ? " · " + esc(a.summary.info) : ""}</small></span>${a.installed ? stc(a) : a.sponsor ? `<em class="sxc sp">Sponsor</em>` : ""}</div>
+    const row = (a) => `<div class="adrow ${a.status}"><div class="adtop"><span class="sxi">${ic(ICONS[a.icon] ? a.icon : "puzzle", 22)}</span><span class="sxt"><b>Modul ${a.n} · ${esc(a.name)}</b><small>v${esc(a.installed && a.cur ? a.cur : a.version + " Build " + a.build)} · ${STG[a.stage] ? STG[a.stage].t : ""} · ${a.src === "ext" ? "aus dem Katalog" : a.src === "remote" ? `aus dem Katalog · ${kb(a.dl_size || (a.remote || {}).size || 0)}` : "mitgeliefert"}${a.status === "on" && a.summary && a.summary.info ? " · " + esc(a.summary.info) : ""}${a.from_lab ? " · früher Lab, Einstellungen übernommen" : ""}</small></span>${a.installed ? stc(a) : a.sponsor ? `<em class="sxc sp">Sponsor</em>` : ""}</div>
       ${a.err && a.status !== "on" ? `<div class="gst bad">${ic("alert", 15)}<span>${esc(a.err)}</span></div>` : ""}
       ${!a.installed ? `<p class="adds">${esc(a.desc || a.tag)}</p>` : ""}${a.update && tab === "upd" && a.remote && (a.remote.notes || []).length ? `<ul class="adnotes adin">${a.remote.notes.slice(0, 4).map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}
       <div class="adbtn">${a.installed ? `${a.status === "on" ? `<button class="gsch sel" data-act="adxopen" data-k="${a.id}">Öffnen</button>` : ""}${a.status === "on" && (this._adDef(a.id) || {}).settings ? `<button class="gsch" data-act="adxset" data-k="${a.id}">${ic("sliders", 14)} Einstellungen</button>` : ""}${a.status === "error" ? `<button class="gsch sel" data-act="adxretry" data-k="${a.id}">Erneut versuchen</button>` : ""}${a.update ? `<button class="gsch sel" data-act="adxupd" data-k="${a.id}">${ic("download", 14)} Aktualisieren auf v${esc(nv(a))}</button>` : ""}${a.old ? `<button class="gsch" data-act="adxold" data-k="${a.id}">${ic("back", 14)} Zurück zu v${esc(a.old)}</button>` : ""}${a.status === "paused" ? `<button class="gsch sel" data-act="adxresume" data-k="${a.id}">Fortsetzen</button>` : a.status === "on" ? `<button class="gsch" data-act="adxpause" data-k="${a.id}">Pausieren</button>` : ""}<button class="gsch" data-act="adxdel" data-k="${a.id}">Deinstallieren</button>`
@@ -123,14 +131,14 @@
     else if (a === "adxcheck") { this._adWork = "check"; this._render(); this._hass.callWS({ type: "fenster_heizung/addons_act", act: "check" }).then((r) => { this._ad = { d: r, ts: Date.now() }; const C = r.cat || {}; this._toast(C.ok ? (r.addons.some((x) => x.update) ? "Update gefunden" : "Katalog geprüft, alles aktuell") : `Katalog: ${C.err || "nicht erreichbar"}`); }).catch(() => this._toast("Prüfung fehlgeschlagen")).finally(() => { this._adWork = false; this._render(); }); }
     else if (a === "adxgo") { this._stOpen = true; this._stA = "ad"; this._adTab = "upd"; this._render(); }
     else if (a === "adxset") { const d = this._adDef(k); if (!d || !d.act) { this._toast("Die Seite des Addons wird noch geladen"); return; } const t = b.dataset.t || ""; d.act(this, "settings", b); if (this._modal && this._modal.type === "adx") { if (t) this._modal.tab = t; this._renderModal(); } }
-    else if (a === "adxopen") { this._stOpen = false; this._mdActiveSet(k); this._render(); }
+    else if (a === "adxopen") { const A = this._adState().addons.find((x) => x.id === k); this._stOpen = false; this._mdActiveSet((A && A.mid) || k); this._render(); }
     else if (a === "adxa") { const d = this._adDef(b.dataset.ad); if (d && d.act) d.act(this, b.dataset.a, b); }
   }
   /* Suche in den Einstellungen: jedes Addon bringt seine Einträge mit (def.search), sonst einen Eintrag fürs ganze Addon */
   _adCatAdd(C) {
-    const extra = this._adMods().flatMap((m) => { const d = this._adDef(m.id) || {}, P = `Module › Modul ${m.n}`;
+    const extra = this._adMods().flatMap((m) => { const d = this._adDef(m.aid) || {}, P = `Module › Modul ${m.n}`;
       const L = Array.isArray(d.search) && d.search.length ? d.search : [{ id: "", t: `Modul ${m.n} ${m.name}`, k: `${m.short} ${m.tag}`, h: m.tag }];
-      return L.map((x) => ({ id: `addon.${m.id}${x.id ? "." + x.id : ""}`, t: x.t, p: x.p || P, k: `addon modul ${m.n} ${m.name} ${x.k || ""}`.toLowerCase(), go: ["adxset", m.id], tab: x.tab || "", h: x.h || "", v: x.v ? () => { try { return x.v(this); } catch (_) { return ""; } } : undefined })); });
+      return L.map((x) => ({ id: `addon.${m.aid}${x.id ? "." + x.id : ""}`, t: x.t, p: x.p || P, k: `addon modul ${m.n} ${m.name} ${x.k || ""}`.toLowerCase(), go: ["adxset", m.aid], tab: x.tab || "", h: x.h || "", v: x.v ? () => { try { return x.v(this); } catch (_) { return ""; } } : undefined })); });
     return extra.length ? C.concat(extra) : C;
   }
   _adxChange(t) { const d = this._adDef(t.dataset.ad); if (d && d.change) { d.change(this, t); return true; } return false; }

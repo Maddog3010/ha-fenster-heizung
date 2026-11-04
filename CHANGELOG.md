@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b12] - 2026-11-04
+
+Testversion (Beta) mit Phase 3 des Addon-Konzepts: Müllabfuhr und Licht sind jetzt Addons.
+
+### Neu
+- **Modul 17 Müllabfuhr (v0.1.0 Build 1) als Addon:** Abholtermine, Tonnen-Ampel, Erinnerung, Ansage, Licht und Kosten wie bisher, jetzt unter Einstellungen → Addons installierbar, pausierbar und über den Katalog aktualisierbar.
+- **Modul 18 Licht & Lampen (v0.1.0 Build 1) als Addon:** Lampen nach Räumen, Szenenknöpfe und Hinweis bei langem Licht wie bisher.
+- **Automatischer Umzug:** Wer das Lab „Müllabfuhr“ oder „Licht & Lampen“ an hatte, bekommt das Addon beim ersten Start einmal automatisch, das Lab wird ausgeschaltet. Alle Einstellungen bleiben erhalten.
+
+### Geändert
+- Müllabfuhr und Licht stehen nicht mehr unter Labs, sondern unter Einstellungen → Addons. Das Dashboard ist dadurch rund 38 kB kleiner.
+- Addons können Module mitbringen, die vorher im Kern lagen, samt ihrem bisherigen Speicher.
+
 ## [2026.11.1b11] - 2026-11-04
 
 Testversion (Beta): Addons sind jetzt Teil der Einstellungen.

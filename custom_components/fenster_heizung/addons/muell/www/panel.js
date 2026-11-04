@@ -1,5 +1,13 @@
-  /* Modul 17: Müllabfuhr (Labs). Termine, Ampel, Erinnerung, Ansage und Licht laufen im Backend (muell.py).
-     Das Modul gibt es nur, solange das Lab „Müllabfuhr“ (mm) an ist. Ausgeschaltet verschwinden Modul und Store-Eintrag. */
+/* Addon „muell“ (Addon-API 1). Phase 3: das frühere Modul des Kerns, unverändert als Mixin.
+   Der Kern hängt die Methoden der Klasse unten an das Panel. Daten und Backend bleiben wie bisher. */
+export default (api) => {
+  const { ic, esc, num, ico } = api;
+  const MU_NAMES = { tonnen: "Tonnen", next: "Nächste Abholungen", cal: "Kalender", rem: "Erinnerung am Vorabend", hint: "Hinweise", cost: "Kosten" };
+  const MU_WIDE = ["tonnen", "cost"];
+  const DAYS_SHORT_MU = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+  const Mixin = class {
+  /* Modul 17: Müllabfuhr (Addon, früher Lab). Termine, Ampel, Erinnerung, Ansage und Licht laufen im Python-Teil des Addons.
+     Das Modul gibt es, solange das Addon installiert ist. */
   _muDef() { return { cal: "", time: "18:30", bins: { rest: { on: true, match: "rest,hausmüll,hausmuell,schwarz" }, bio: { on: true, match: "bio" }, papier: { on: true, match: "papier,pappe,blau" }, gelb: { on: true, match: "gelb,wertstoff,verpackung,lvp" } }, push: { on: false, to: [] }, cost: { on: false, fee: 0, incl: 0 }, wx: true, tts: { on: false, ent: "", player: "", text: "Morgen wird {tonnen} abgeholt." }, light: { on: false, ent: "" } }; }
   _mu() {
     const d = (this._muD && this._muD.d) || {}, df = this._muDef(), c = d.cfg || {};
@@ -63,7 +71,7 @@
   }
   _muPage() {
     this._muLoad(); const S = this._mu(), C = S.cfg, adm = this._admin();
-    const banner = `<div class="labban">${ic("flask", 22)}<div><b>Labs · Müllabfuhr</b>Dieses Modul ist ein Experiment und nur da, solange das Lab eingeschaltet ist. Die Termine kommen aus deinem Abfallkalender, die Erinnerungen laufen im Hintergrund.</div></div>`;
+    const banner = "";
     if (!S.on) return `${banner}<div class="card empty">${S.error ? esc(S.error) : "Lädt …"}</div>`;
     if (!S.cal || (S.error && !(S.bins || []).some((x) => x.next))) return `${banner}${this._muSetupCard(S)}`;
     const rows = S.bins || [], due = rows.filter((x) => ["out", "today"].includes(x.state)), up = rows.filter((x) => x.next);
@@ -102,7 +110,7 @@
     const BN = { rest: "Restmüll", bio: "Bio", papier: "Papier", gelb: "Gelber Sack" }, COL = { rest: "#78716c", bio: "#92400e", papier: "#3b82f6", gelb: "#eab308" };
     const cur = C.cal || S.cal || "";
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Müllabfuhr</b><span>Modul 17 · Labs · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="sh"><div><b>Müllabfuhr</b><span>Modul 17 · Addon · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("today", 15)}Abfallkalender</div>
       ${this._wzSel(cals, cur, "muxsel", 'data-k="cal"', "– Kalender wählen –", /abfall|müll|waste|tonne|entsorg/i)}
       <div class="gst">${ic("info", 15)}<span>${C.cal ? "Gewählt." : cur ? "Automatisch erkannt (waste_collection_schedule)." : "Noch keiner gefunden."} Die Integration richtest du im <button class="lnk" data-act="muxstore">Store</button> ein.</span></div>
@@ -128,3 +136,15 @@
       <div class="vrow"><span>Wetter-Hinweise<small class="mut" style="display:block">Warnt vor Sturm und Frost an Abholtagen. Nutzt Modul 9, falls eingeschaltet.</small></span>${sw("wx", C.wx, "Wetter-Hinweise")}</div>
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="muxtest" ${C.push.to.length || C.tts.on ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
+  };
+  return {
+    id: "muell", mixin: Mixin, settings: true, settingsTxt: "Abfallkalender, Tonnen, Erinnerung, Ansage, Licht, Kosten",
+    page: (p) => p._modHeroFor("mu") + p._muPage(),
+    act: (p, a, el) => { if (a === "settings") p._act("muxopen", el); },
+    search: [
+      { id: "cal", t: "Müllabfuhr: Abfallkalender", k: "müll abfall tonne kalender waste collection termine", h: "Aus diesem Kalender kommen die Abholtermine." },
+      { id: "rem", t: "Müllabfuhr: Erinnerung", k: "erinnerung vorabend handy ansage licht uhrzeit", h: "Nachricht, Ansage und Licht am Vorabend der Abholung." },
+      { id: "cost", t: "Müllabfuhr: Kosten Restmüll", k: "kosten gebühr leerungen restmüll", h: "Leerungen und Kosten für den Restmüll im Jahr." },
+    ],
+  };
+};
