@@ -11,8 +11,19 @@ Leistungsmessung, oder „nur beobachten“ (Gerät mit eigenem Hygrostat, Modul
 Schritt 2 (Standort): Einmal am Tag wird bestätigt, in welchem Raum der Entfeuchter steht – über die Standort-Karte
 im Dashboard und auf Wunsch per Benachrichtigung am Handy mit Tasten für die häufigsten Räume. Bis zur Antwort gilt der
 Standort von gestern. Ohne Antwort bis zur eingestellten Uhrzeit gilt „Wie gestern“, „Pausieren“ oder „Nur Hinweis“.
-Der Standort jedes Tages wird mit der Art der Bestätigung gespeichert (Verlauf, später Statistik). Die Daten sind als Liste von Geräten angelegt, damit später mehrere Geräte möglich
-sind; heute wird nur das erste genutzt.
+Der Standort jedes Tages wird mit der Art der Bestätigung gespeichert.
+
+Schritt 3 (Schnellumzug): „Hierher stellen“ auf jeder Raumkarte, bis zu vier Geräte mit eigenem Standort.
+
+Schritt 4 (Strom und Statistik): Bei PV-Überschuss oder günstigem Strom startet das Gerät schon bei einer niedrigeren
+Schwelle (Vorziehen), die Obergrenze gilt immer. Je Tag werden Laufzeit, Strom (aus der Leistung oder der Nennleistung),
+Kosten (aktueller Strompreis der Haus-Werte), entfeuchtete Menge (Liter pro Stunde) und Standort gespeichert.
+Meldungen: Tank voll, Feuchte bleibt trotz Betrieb zu hoch, Standort fehlt, Filter reinigen nach Betriebsstunden.
+Ereignis „fenster_heizung_entfeuchter“ bei Start, Stopp, Tank voll und Standortwechsel für eigene Automationen.
+
+Schritt 5 (nur NFC): Am Stellplatz klebt ein NFC-Tag. Wird es mit dem Handy gescannt (Ereignis `tag_scanned`), steht
+das zugeordnete Gerät dort und der Tag gilt als bestätigt. Tags werden je Gerät und Raum angelernt (30 Sekunden auf den
+nächsten Scan warten). Funktioniert unabhängig vom Lab „Tags & Karten“.
 
 Oben stehen reine Rechenfunktionen ohne Home-Assistant-Importe (testbar), unten der Manager.
 """
@@ -31,13 +42,20 @@ TICK_SECONDS = 30
 HIST_DAYS = 60
 CMD_GAP_S = 60          # höchstens ein Schaltbefehl pro Minute, falls das Gerät nicht reagiert
 KINDS = ("entity", "plug", "watch")
+MAX_DEVS = 4
+BOOSTS = ("off", "pv", "cheap", "both")
+EVENT = "fenster_heizung_entfeuchter"
+_DID = re.compile(r"^d[0-9a-z]{1,10}$")
+_TID = re.compile(r"^[A-Za-z0-9_\-:.]{1,100}$")
+NFC_LEARN_S = 30
+NFC_DEBOUNCE_S = 3.0
 _ENT = re.compile(r"^[a-z_]+\.[a-z0-9_]{1,200}$")
 _LOC = re.compile(r"^(ms_[a-z0-9]{1,16}|[A-Za-z0-9]{8,40})$")
 FULL_STATES = {"on", "true", "full", "voll", "problem", "1"}
 _HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 _NOTIFY = re.compile(r"^notify\.[a-z0-9_]{1,120}$")
 MISS = ("same", "pause", "hint")
-ACT_PREFIX = "FHLF_"          # Aktionen der Handy-Benachrichtigung: FHLF_L_<Standort> und FHLF_OFF
+ACT_PREFIX = "FHLF_"          # Aktionen der Handy-Benachrichtigung: FHLF_<Gerät>_L_<Standort> und FHLF_<Gerät>_OFF (alt: FHLF_L_…)
 PUSH_ROOMS = 3                # so viele Raum-Tasten in der Benachrichtigung (Android zeigt höchstens drei)
 
 
@@ -47,6 +65,9 @@ def default_dev() -> dict[str, Any]:
         "cap_l": 0.0, "lph": 0.0,  # Tankschätzung ohne Sensor: Tankinhalt und Entfeuchtung pro Stunde (0 = aus)
         "hi": 60.0, "lo": 55.0, "hi_away": 65.0, "minrun": 15, "lock": 10, "vent": False,
         "ask": default_ask(),
+        # Schritt 4: Nennleistung ohne Messung, Vorziehen bei PV-Überschuss oder günstigem Strom, Meldungen
+        "watt": 250.0, "boost": "off", "boost_hi": 57.0, "cheap_ct": 25.0, "pv_min": 300.0,
+        "msg": {"full": True, "high": True, "noloc": True, "filter": True}, "high_h": 4.0, "filter_h": 0.0,
     }
 
 
@@ -99,11 +120,12 @@ def _ent(v: Any, domains: tuple[str, ...]) -> str:
     return v if isinstance(v, str) and _ENT.match(v) and v.split(".")[0] in domains else ""
 
 
-def clean_dev(raw: Any) -> dict[str, Any]:
+def clean_dev(raw: Any, did: str = "d1") -> dict[str, Any]:
     d, r = default_dev(), raw if isinstance(raw, dict) else {}
     kind = r.get("kind") if r.get("kind") in KINDS else d["kind"]
+    m = r.get("msg") if isinstance(r.get("msg"), dict) else {}
     out = {
-        "id": "d1", "name": str(r.get("name") or d["name"]).strip()[:30] or d["name"], "kind": kind,
+        "id": did, "name": str(r.get("name") or d["name"]).strip()[:30] or d["name"], "kind": kind,
         "ent": _ent(r.get("ent"), ("switch",) if kind == "plug" else ("humidifier", "switch", "fan", "input_boolean")),
         "power": _ent(r.get("power"), ("sensor",)), "run_w": _num(r.get("run_w"), 1, 2000, d["run_w"]),
         "tank": _ent(r.get("tank"), ("binary_sensor", "sensor")),
@@ -112,18 +134,71 @@ def clean_dev(raw: Any) -> dict[str, Any]:
         "hi_away": _num(r.get("hi_away"), 30, 95, d["hi_away"]),
         "minrun": int(_num(r.get("minrun"), 0, 120, d["minrun"])), "lock": int(_num(r.get("lock"), 0, 120, d["lock"])),
         "vent": r.get("vent") is True, "ask": clean_ask(r.get("ask")),
+        "watt": _num(r.get("watt"), 0, 3000, d["watt"]), "boost": r.get("boost") if r.get("boost") in BOOSTS else "off",
+        "boost_hi": _num(r.get("boost_hi"), 26, 90, d["boost_hi"]), "cheap_ct": _num(r.get("cheap_ct"), 0, 100, d["cheap_ct"]),
+        "pv_min": _num(r.get("pv_min"), 0, 5000, d["pv_min"]),
+        "msg": {k: m.get(k) is not False for k in ("full", "high", "noloc", "filter")},
+        "high_h": _num(r.get("high_h"), 1, 48, d["high_h"]), "filter_h": _num(r.get("filter_h"), 0, 5000, 0),
+        "nfc": clean_nfc(r.get("nfc")),
     }
     if out["lo"] >= out["hi"]:
         out["lo"] = max(25.0, out["hi"] - 5)
     if out["hi_away"] < out["hi"]:
         out["hi_away"] = out["hi"]
+    if not out["lo"] < out["boost_hi"] <= out["hi"]:  # Vorziehen liegt zwischen Unter- und Obergrenze
+        out["boost_hi"] = min(out["hi"], out["lo"] + 2)
     return out
+
+
+def clean_nfc(raw: Any) -> dict[str, str]:
+    """NFC-Tags am Stellplatz: Raum -> Tag-ID (ein Tag je Raum und Gerät)."""
+    out: dict[str, str] = {}
+    for k, v in (raw.items() if isinstance(raw, dict) else []):
+        if isinstance(k, str) and _LOC.match(k) and isinstance(v, str) and _TID.match(v) and v not in out.values():
+            out[k] = v
+    return dict(list(out.items())[:30])
 
 
 def clean_cfg(raw: Any) -> dict[str, Any]:
     r = raw if isinstance(raw, dict) else {}
-    devs = [clean_dev(x) for x in (r.get("devs") or [])[:1] if isinstance(x, dict)]
+    devs, seen = [], set()
+    for i, x in enumerate((r.get("devs") or [])[:MAX_DEVS]):
+        if not isinstance(x, dict):
+            continue
+        did = str(x.get("id") or "")
+        if not _DID.match(did) or did in seen:
+            did = next(f"d{n}" for n in range(1, 50) if f"d{n}" not in seen)
+        seen.add(did)
+        devs.append(clean_dev(x, did))
     return {"devs": devs}
+
+
+def price_ct(value: float | None, unit: str = "") -> float | None:
+    """Strompreis in ct/kWh. Sensoren in €/kWh (z. B. Tibber) werden umgerechnet."""
+    if value is None:
+        return None
+    if "ct" in unit.lower() or "cent" in unit.lower():
+        return value
+    return value * 100 if value < 3 else value
+
+
+def boost_reason(dev: dict[str, Any], pv_w: float | None, price: float | None) -> str:
+    """Grund zum Vorziehen: „pv“, „cheap“ oder „“."""
+    if dev["boost"] in ("pv", "both") and pv_w is not None and pv_w >= dev["pv_min"]:
+        return "pv"
+    if dev["boost"] in ("cheap", "both") and price is not None and price <= dev["cheap_ct"]:
+        return "cheap"
+    return ""
+
+
+def period_sum(days: dict[str, dict[str, float]], keys: list[str]) -> dict[str, float]:
+    """Summe von Laufzeit (min), Strom (kWh), Kosten (€) und Litern über die angegebenen Tage."""
+    out = {"min": 0.0, "kwh": 0.0, "eur": 0.0, "lit": 0.0}
+    for k in keys:
+        d = days.get(k) or {}
+        for f in out:
+            out[f] += float(d.get(f) or 0)
+    return {k: round(v, 3) for k, v in out.items()}
 
 
 def abs_h(t: float, rh: float) -> float:
@@ -174,7 +249,12 @@ def decide(dev: dict[str, Any], ctx: dict[str, Any], is_on: bool) -> tuple[bool 
         return False, False, "target", [f"Ziel erreicht: Feuchte {hum:.0f} % ist bei {lo:.0f} % oder darunter{tag}."]
     if hum > hi:
         return True, False, "start", [f"Feuchte {hum:.0f} % über der Obergrenze {hi:.0f} %: einschalten bis {lo:.0f} %{tag}."]
-    return False, False, "ok", [f"Feuchte {hum:.0f} % in Ordnung. Ein ab {hi:.0f} %{tag}."]
+    b = ctx.get("boost") or ""
+    bhi = dev["boost_hi"] + (hi - dev["hi"])
+    if b and hum > bhi:
+        why = "PV-Überschuss" if b == "pv" else "Strom gerade günstig"
+        return True, False, "boost", [f"{why}: Feuchte {hum:.0f} % über {bhi:.0f} %, vorgezogen bis {lo:.0f} %{tag}."]
+    return False, False, "ok", [f"Feuchte {hum:.0f} % in Ordnung. Ein ab {hi:.0f} %" + (f", bei PV-Überschuss oder günstigem Strom ab {bhi:.0f} %" if dev["boost"] != "off" else "") + f"{tag}."]
 
 
 # --------------------------------------------------------------------------- Manager
@@ -194,20 +274,47 @@ def _fnum(st: Any) -> float | None:
     return None if math.isnan(x) else x
 
 
+def new_state() -> dict[str, Any]:
+    """Laufzustand eines Geräts. days: je Tag min, kwh, eur, lit. locs: je Tag {"l": Standort oder "off", "h": Art}."""
+    return {"loc": "", "off_day": "", "on_ts": 0.0, "off_ts": 0.0, "days": {}, "locs": {}, "tank_h": 0.0, "full_ts": 0.0,
+            "conf_day": "", "sent_day": "", "miss_day": "", "filter_h": 0.0, "high_ts": 0.0, "sent": {}}
+
+
+def load_state(s: Any) -> dict[str, Any]:
+    s = s if isinstance(s, dict) else {}
+    st = new_state()
+    st.update({
+        "loc": str(s.get("loc") or "") if _LOC.match(str(s.get("loc") or "")) else "",
+        "off_day": str(s.get("off_day") or ""), "on_ts": float(s.get("on_ts") or 0), "off_ts": float(s.get("off_ts") or 0),
+        "locs": {str(k): ({"l": str(v.get("l") or ""), "h": str(v.get("h") or "")} if isinstance(v, dict) else {"l": str(v), "h": ""}) for k, v in (s.get("locs") or {}).items()},
+        "tank_h": float(s.get("tank_h") or 0), "full_ts": float(s.get("full_ts") or 0), "filter_h": float(s.get("filter_h") or 0),
+        "conf_day": str(s.get("conf_day") or ""), "sent_day": str(s.get("sent_day") or ""), "miss_day": str(s.get("miss_day") or ""),
+        "high_ts": float(s.get("high_ts") or 0), "sent": {str(k): str(v) for k, v in (s.get("sent") or {}).items()},
+    })
+    days = s.get("days") if isinstance(s.get("days"), dict) else {}
+    st["days"] = {str(k): {f: float((v or {}).get(f) or 0) for f in ("min", "kwh", "eur", "lit")} for k, v in days.items() if isinstance(v, dict)}
+    for k, v in (s.get("run") or {}).items():  # bis 2026.11.1b13: nur Laufzeit je Tag
+        if isinstance(v, (int, float)):
+            st["days"].setdefault(str(k), {"min": 0.0, "kwh": 0.0, "eur": 0.0, "lit": 0.0})["min"] = float(v)
+    return st
+
+
 class EntfeuchterManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
         self._store = SafeStore(hass, 1, f"{DOMAIN}_entfeuchter")
         self.cfg = clean_cfg({})
-        # Laufzustand: Standort, heute aus, Zeiten, Laufzeit je Tag, Standort je Tag, Stunden seit dem Leeren
-        # locs: je Tag {"l": Standort oder "off", "h": Art} mit h = ok (bestätigt), auto (wie gestern übernommen), pause (ohne Antwort pausiert), hint (ohne Antwort), "" (offen)
-        self.st: dict[str, Any] = {"loc": "", "off_day": "", "on_ts": 0.0, "off_ts": 0.0, "run": {}, "locs": {}, "tank_h": 0.0, "full_ts": 0.0,
-                                   "conf_day": "", "sent_day": "", "miss_day": ""}
-        self.live: dict[str, Any] = {}
+        self.st: dict[str, dict[str, Any]] = {}     # je Gerät
+        self.live: dict[str, dict[str, Any]] = {}
         self._last_tick = 0.0
-        self._cmd_ts = 0.0
+        self._cmd_ts: dict[str, float] = {}
+        self._was: dict[str, bool] = {}
         self._unsub: CALLBACK_TYPE | None = None
         self._unsub_ev: CALLBACK_TYPE | None = None
+        self._unsub_tag: CALLBACK_TYPE | None = None
+        self._learn: dict[str, Any] = {"until": 0.0, "dev": "", "room": "", "res": None}
+        self._scan_ts: dict[str, float] = {}
+        self._nfc_last: dict[str, dict[str, Any]] = {}
 
     async def async_start(self) -> None:
         from .api import _layout  # Messräume stehen im Layout
@@ -215,19 +322,18 @@ class EntfeuchterManager:
         d = await self._store.async_load()
         if isinstance(d, dict):
             self.cfg = clean_cfg(d.get("cfg"))
-            s = d.get("st") if isinstance(d.get("st"), dict) else {}
-            self.st.update({
-                "loc": str(s.get("loc") or "") if _LOC.match(str(s.get("loc") or "")) else "",
-                "off_day": str(s.get("off_day") or ""), "on_ts": float(s.get("on_ts") or 0), "off_ts": float(s.get("off_ts") or 0),
-                "run": {str(k): float(v) for k, v in (s.get("run") or {}).items() if isinstance(v, (int, float))},
-                "locs": {str(k): ({"l": str(v.get("l") or ""), "h": str(v.get("h") or "")} if isinstance(v, dict) else {"l": str(v), "h": ""}) for k, v in (s.get("locs") or {}).items()},
-                "conf_day": str(s.get("conf_day") or ""), "sent_day": str(s.get("sent_day") or ""), "miss_day": str(s.get("miss_day") or ""),
-                "tank_h": float(s.get("tank_h") or 0), "full_ts": float(s.get("full_ts") or 0),
-            })
+            if isinstance(d.get("devs"), dict):
+                self.st = {k: load_state(v) for k, v in d["devs"].items()}
+            elif isinstance(d.get("st"), dict) and self.cfg["devs"]:  # bis 2026.11.1b13: ein Gerät, Zustand flach
+                self.st = {self.cfg["devs"][0]["id"]: load_state(d["st"])}
         self._unsub = async_track_time_interval(self.hass, self._tick, timedelta(seconds=TICK_SECONDS))
         self._unsub_ev = self.hass.bus.async_listen("mobile_app_notification_action", self._on_action)
+        self._unsub_tag = self.hass.bus.async_listen("tag_scanned", self._on_tag)
 
     def async_stop(self) -> None:
+        if self._unsub_tag:
+            self._unsub_tag()
+            self._unsub_tag = None
         if self._unsub:
             self._unsub()
             self._unsub = None
@@ -235,24 +341,70 @@ class EntfeuchterManager:
             self._unsub_ev()
             self._unsub_ev = None
 
+    def _ds(self, did: str) -> dict[str, Any]:
+        return self.st.setdefault(did, new_state())
+
+    def dev(self, did: str = "") -> dict[str, Any] | None:
+        devs = self.cfg["devs"]
+        if did:
+            return next((x for x in devs if x["id"] == did), None)
+        return devs[0] if devs else None
+
     async def _on_action(self, event) -> None:
         """Antwort aus der Handy-Benachrichtigung."""
         act = str((event.data or {}).get("action") or "")
         if not act.startswith(ACT_PREFIX):
             return
-        if act == ACT_PREFIX + "OFF":
-            await self.async_cmd("off_today")
-        elif act.startswith(ACT_PREFIX + "L_"):
-            await self.async_cmd("loc", act[len(ACT_PREFIX) + 2:])
+        rest = act[len(ACT_PREFIX):]
+        did = ""
+        if not rest.startswith(("L_", "OFF")):  # FHLF_<Gerät>_…
+            did, _, rest = rest.partition("_")
+        if rest == "OFF":
+            await self.async_cmd("off_today", "", did)
+        elif rest.startswith("L_"):
+            await self.async_cmd("loc", rest[2:], did)
+
+    # ---- NFC-Tag am Stellplatz (Schritt 5)
+    def _tag_elsewhere(self, tid: str) -> bool:
+        """Ist das Tag auch im Lab „Tags & Karten“ mit einer Aktion belegt?"""
+        tm = self.hass.data.get(DOMAIN, {}).get("tags")
+        try:
+            return tid in ((getattr(tm, "cfg", None) or {}).get("tags") or {})
+        except Exception:  # noqa: BLE001
+            return False
+
+    async def _on_tag(self, event) -> None:
+        tid = str((event.data or {}).get("tag_id") or "")
+        if not _TID.match(tid):
+            return
+        now = time.time()
+        L = self._learn
+        if now < L["until"]:
+            dev = self.dev(L["dev"])
+            if dev is not None:
+                for d in self.cfg["devs"]:  # ein Tag gehört genau einem Gerät und Raum
+                    d["nfc"] = {k: v for k, v in d["nfc"].items() if v != tid}
+                dev["nfc"][L["room"]] = tid
+                L.update(until=0.0, res={"tid": tid, "room": L["room"], "dev": L["dev"], "name": self._name(L["room"]), "lab": self._tag_elsewhere(tid)})
+                self._save()
+            return
+        if now - self._scan_ts.get(tid, 0) < NFC_DEBOUNCE_S:
+            return
+        self._scan_ts[tid] = now
+        for d in self.cfg["devs"]:
+            room = next((k for k, v in d["nfc"].items() if v == tid), None)
+            if room and self._room(room) is not None:
+                await self.async_cmd("loc", room, d["id"], how="nfc")
+                self._nfc_last[d["id"]] = {"ts": now, "room": room}
+                return
 
     def _save(self) -> None:
-        keep = sorted(self.st["run"])[-HIST_DAYS:]
-        self.st["run"] = {k: self.st["run"][k] for k in keep}
-        self.st["locs"] = {k: self.st["locs"][k] for k in sorted(self.st["locs"])[-HIST_DAYS:]}
-        self._store.async_delay_save(lambda: {"cfg": self.cfg, "st": self.st}, 5)
-
-    def dev(self) -> dict[str, Any] | None:
-        return self.cfg["devs"][0] if self.cfg["devs"] else None
+        for ds in self.st.values():
+            ds["days"] = {k: ds["days"][k] for k in sorted(ds["days"])[-HIST_DAYS * 7:]}   # gut ein Jahr für die Statistik
+            ds["locs"] = {k: ds["locs"][k] for k in sorted(ds["locs"])[-HIST_DAYS * 7:]}
+        keep = {d["id"] for d in self.cfg["devs"]}
+        self.st = {k: v for k, v in self.st.items() if k in keep}
+        self._store.async_delay_save(lambda: {"cfg": self.cfg, "devs": self.st}, 5)
 
     # ---- Raum des Standorts: Name, Luftfeuchte, Temperatur, Fenster
     def _room(self, loc: str) -> dict[str, Any] | None:
@@ -261,7 +413,7 @@ class EntfeuchterManager:
         if loc.startswith("ms_"):
             lay = self.hass.data.get(DOMAIN, {}).get("layout") or {}
             m = next((x for x in lay.get("mess") or [] if x.get("id") == loc), None)
-            return {"name": m["name"], "hum": m.get("hum") or "", "temp": m.get("temp") or "", "win": []} if m else None
+            return {"name": m["name"], "hum": m.get("hum") or "", "temp": m.get("temp") or "", "win": [], "th": []} if m else None
         e = self.hass.config_entries.async_get_entry(loc)
         if e is None or e.domain != DOMAIN:
             return None
@@ -298,6 +450,35 @@ class EntfeuchterManager:
         except (TypeError, ValueError):
             return None, None
 
+    def _haus(self) -> dict[str, Any]:
+        hm = self.hass.data.get(DOMAIN, {}).get("haus")
+        return getattr(hm, "data", None) or {}
+
+    def _price(self) -> float | None:
+        """Aktueller Strompreis in ct/kWh aus den Haus-Werten (Sensor oder Festpreis)."""
+        p = self._haus().get("price") or {}
+        if p.get("price_mode") == "entity" and p.get("price_sensor"):
+            s = self.hass.states.get(p["price_sensor"])
+            v = _fnum(s)
+            if v is not None:
+                return price_ct(v, str(s.attributes.get("unit_of_measurement") or ""))
+        try:
+            return float(p.get("price")) if p.get("price") is not None else None
+        except (TypeError, ValueError):
+            return None
+
+    def _export_w(self) -> float | None:
+        """Einspeisung am Netzanschluss in Watt (positiv), aus den Haus-Werten."""
+        e = self._haus().get("energy") or {}
+        ent = (e.get("ent") or {}).get("grid") or ""
+        s = self.hass.states.get(ent) if ent else None
+        v = _fnum(s)
+        if v is None:
+            return None
+        if str(s.attributes.get("unit_of_measurement") or "").lower() == "kw":
+            v *= 1000
+        return -v if e.get("sign") == "import" else v
+
     def _away(self) -> bool:
         pm = self.hass.data.get(DOMAIN, {}).get("presence")
         try:
@@ -311,6 +492,13 @@ class EntfeuchterManager:
             return None
         return s.state == "on"
 
+    def _power(self, dev: dict[str, Any], running: bool) -> float:
+        if dev["power"]:
+            p = _fnum(self.hass.states.get(dev["power"]))
+            if p is not None:
+                return max(0.0, p)
+        return dev["watt"] if running else 0.0
+
     def _running(self, dev: dict[str, Any], on: bool | None) -> bool:
         if not on:
             return False
@@ -320,7 +508,7 @@ class EntfeuchterManager:
                 return p >= dev["run_w"]
         return True
 
-    def _tank_full(self, dev: dict[str, Any]) -> tuple[bool, float | None]:
+    def _tank_full(self, dev: dict[str, Any], ds: dict[str, Any]) -> tuple[bool, float | None]:
         if dev["tank"]:
             s = self.hass.states.get(dev["tank"])
             if s is not None:
@@ -328,7 +516,7 @@ class EntfeuchterManager:
                 if v is not None and dev["tank"].startswith("sensor."):
                     return v >= 95, min(1.0, v / 100)
                 return s.state.lower() in FULL_STATES, None
-        f = tank_fill(dev, self.st["tank_h"])
+        f = tank_fill(dev, ds["tank_h"])
         return (f is not None and f >= 1.0), f
 
     async def _switch(self, dev: dict[str, Any], on: bool) -> None:
@@ -339,38 +527,75 @@ class EntfeuchterManager:
         except Exception as err:  # noqa: BLE001
             _LOGGER.warning("Luftentfeuchter %s konnte nicht geschaltet werden: %s", dev["ent"], err)
 
+    def _event(self, dev: dict[str, Any], typ: str, **extra: Any) -> None:
+        ds = self._ds(dev["id"])
+        self.hass.bus.async_fire(EVENT, {"type": typ, "device": dev["id"], "name": dev["name"], "room": self._name(ds["loc"]), "location": ds["loc"], **extra})
+
+    async def _notify(self, dev: dict[str, Any], key: str, mark: str, text: str) -> None:
+        """Meldung einmal je Anlass (mark) an die Handys des Geräts."""
+        ds = self._ds(dev["id"])
+        if not dev["msg"].get(key) or ds["sent"].get(key) == mark:
+            return
+        ds["sent"][key] = mark
+        for svc in dev["ask"]["push"]:
+            name = svc.split(".", 1)[1]
+            if self.hass.services.has_service("notify", name):
+                try:
+                    await self.hass.services.async_call("notify", name, {"title": dev["name"], "message": text, "data": {"tag": f"fh_lf_{dev['id']}_{key}", "url": f"/{PANEL_URL}?modul=fh", "clickAction": f"/{PANEL_URL}?modul=fh"}}, blocking=False)
+                except Exception as err:  # noqa: BLE001
+                    _LOGGER.warning("Entfeuchter-Meldung an %s fehlgeschlagen: %s", svc, err)
+
     # ---- Regelung
     async def _tick(self, _now=None) -> None:
-        dev = self.dev()
         now = time.time()
         dt = min(max(now - (self._last_tick or now), 0.0), 120.0)
         self._last_tick = now
-        if dev is None or not dev["ent"]:
-            self.live = {"code": "setup", "why": ["Noch kein Gerät eingerichtet."]}
+        price, export = self._price(), self._export_w()
+        ot, orh = self._outdoor()
+        away = self._away()
+        for dev in self.cfg["devs"]:
+            try:
+                await self._tick_dev(dev, now, dt, price, export, ot, orh, away)
+            except Exception:  # noqa: BLE001
+                _LOGGER.exception("Luftentfeuchter %s: Fehler in der Regelung", dev["id"])
+        self._save()
+
+    async def _tick_dev(self, dev, now, dt, price, export, ot, orh, away) -> None:
+        did, ds = dev["id"], self._ds(dev["id"])
+        if not dev["ent"]:
+            self.live[did] = {"code": "setup", "why": ["Noch kein Gerät gewählt."]}
             return
         today = dt_util.now().date().isoformat()
         on = self._is_on(dev)
         running = self._running(dev, on)
-        # Laufzeit zählen (Tag und seit dem letzten Leeren)
-        if running and dt:
-            self.st["run"][today] = self.st["run"].get(today, 0.0) + dt / 60
-            self.st["tank_h"] += dt / 3600
-        if self.st["off_day"] and self.st["off_day"] != today:
-            self.st["off_day"] = ""
-        await self._ask_step(dev, today)
-        rec = self.st["locs"].get(today) or {"l": "", "h": ""}
-        rec["l"] = "off" if self.st["off_day"] == today else self.st["loc"]
+        pw = self._power(dev, running)
+        # Laufzeit, Strom, Kosten und Liter je Tag
+        if dt:
+            day = ds["days"].setdefault(today, {"min": 0.0, "kwh": 0.0, "eur": 0.0, "lit": 0.0})
+            kwh = pw * dt / 3.6e6
+            day["kwh"] += kwh
+            day["eur"] += kwh * (price or 0) / 100
+            if running:
+                day["min"] += dt / 60
+                day["lit"] += dev["lph"] * dt / 3600
+                ds["tank_h"] += dt / 3600
+                ds["filter_h"] += dt / 3600
+        if ds["off_day"] and ds["off_day"] != today:
+            ds["off_day"] = ""
+        await self._ask_step(dev, ds, today)
+        rec = ds["locs"].get(today) or {"l": "", "h": ""}
+        rec["l"] = "off" if ds["off_day"] == today else ds["loc"]
         if rec["l"]:
-            self.st["locs"][today] = rec
-        room = self._room(self.st["loc"])
-        if self.st["loc"] and room is None:  # Raum gelöscht
-            self.st["loc"] = ""
+            ds["locs"][today] = rec
+        room = self._room(ds["loc"])
+        if ds["loc"] and room is None:  # Raum gelöscht
+            ds["loc"] = ""
         hum = _fnum(self.hass.states.get(room["hum"])) if room and room["hum"] else None
         if hum is not None and not 0 <= hum <= 100:
             hum = None
         t = _fnum(self.hass.states.get(room["temp"])) if room and room["temp"] else None
         if t is None and room:
-            for th in room.get("th") or []:  # sonst die Temperatur am ersten Thermostat
+            for th in room.get("th") or []:
                 s = self.hass.states.get(th)
                 try:
                     t = float(s.attributes.get("current_temperature")) if s is not None and s.attributes.get("current_temperature") is not None else None
@@ -383,54 +608,83 @@ class EntfeuchterManager:
             s = self.hass.states.get(w)
             if s is not None and s.state in ("on", "open"):
                 open_w.append(s.attributes.get("friendly_name") or w)
-        full, fill = self._tank_full(dev)
-        if full and not self.st["full_ts"]:
-            self.st["full_ts"] = now
-        ot, orh = self._outdoor()
-        ctx = {"loc": self.st["loc"] if room else "", "loc_name": room["name"] if room else "", "hum": hum, "t": t, "open": open_w,
-               "away": self._away(), "out_t": ot, "out_rh": orh, "avail": on is not None, "full": full,
-               "day_off": ("pause" if (self.st["locs"].get(today) or {}).get("h") == "pause" else True) if self.st["off_day"] == today else False}
+        full, fill = self._tank_full(dev, ds)
+        if full and not ds["full_ts"]:
+            ds["full_ts"] = now
+            self._event(dev, "tank_full")
+        pv_w = (export + (pw if running else 0)) if export is not None else None  # eigener Verbrauch zählt zum Überschuss
+        boost = boost_reason(dev, pv_w, price)
+        ctx = {"loc": ds["loc"] if room else "", "loc_name": room["name"] if room else "", "hum": hum, "t": t, "open": open_w,
+               "away": away, "out_t": ot, "out_rh": orh, "avail": on is not None, "full": full, "boost": boost,
+               "day_off": ("pause" if (ds["locs"].get(today) or {}).get("h") == "pause" else True) if ds["off_day"] == today else False}
         want, hard, code, why = decide(dev, ctx, bool(on))
         hint = ""
         if on and dev["power"] and not running:
             hint = "Eingeschaltet, zieht aber keinen Strom. Ist der Tank voll?"
-        # Mindestlaufzeit und Sperrzeit
         if want is not None and on is not None and want != on and not hard:
-            if on and now - self.st["on_ts"] < dev["minrun"] * 60:
-                left = math.ceil((dev["minrun"] * 60 - (now - self.st["on_ts"])) / 60)
+            if on and now - ds["on_ts"] < dev["minrun"] * 60:
+                left = math.ceil((dev["minrun"] * 60 - (now - ds["on_ts"])) / 60)
                 want, why = True, why + [f"Mindestlaufzeit: noch {left} Min."]
-            elif not on and now - self.st["off_ts"] < dev["lock"] * 60:
-                left = math.ceil((dev["lock"] * 60 - (now - self.st["off_ts"])) / 60)
+            elif not on and now - ds["off_ts"] < dev["lock"] * 60:
+                left = math.ceil((dev["lock"] * 60 - (now - ds["off_ts"])) / 60)
                 want, why = False, why + [f"Sperrzeit nach dem Ausschalten: noch {left} Min."]
         if dev["kind"] == "watch":
             why = ["Nur beobachten: Das Gerät regelt selbst, Modul 1 schaltet nichts."] + why
-        elif want is not None and on is not None and want != on and now - self._cmd_ts >= CMD_GAP_S:
-            self._cmd_ts = now
+        elif want is not None and on is not None and want != on and now - self._cmd_ts.get(did, 0) >= CMD_GAP_S:
+            self._cmd_ts[did] = now
             await self._switch(dev, want)
             if want:
-                self.st["on_ts"] = now
+                ds["on_ts"] = now
             else:
-                self.st["off_ts"] = now
-        if on and not self.st["on_ts"]:
-            self.st["on_ts"] = now
-        self.live = {
+                ds["off_ts"] = now
+        if on and not ds["on_ts"]:
+            ds["on_ts"] = now
+        if did in self._was and self._was[did] != running:
+            self._event(dev, "start" if running else "stop", reason=code)
+        self._was[did] = running
+        # Meldungen
+        rname = room["name"] if room else ""
+        if full:
+            await self._notify(dev, "full", str(int(ds["full_ts"])), f"Wassertank voll{f' ({rname})' if rname else ''}. Bitte leeren und im Dashboard „Tank geleert“ tippen.")
+        hi_now = dev["hi_away"] if away else dev["hi"]
+        if running and hum is not None and hum > hi_now:
+            ds["high_ts"] = ds["high_ts"] or now
+        else:
+            ds["high_ts"] = 0.0
+        high = bool(ds["high_ts"]) and now - ds["high_ts"] >= dev["high_h"] * 3600
+        if high:
+            await self._notify(dev, "high", today, f"Feuchte in {rname} bleibt trotz {dev['high_h']:.0f} Std. Betrieb über {hi_now:.0f} %. Tür zu? Gerät zu klein oder Filter voll?")
+        noloc = dev["ask"]["on"] and ds["miss_day"] == today and (not ds["loc"] or (ds["locs"].get(today) or {}).get("h") in ("pause", "hint"))
+        if noloc:
+            await self._notify(dev, "noloc", today, "Standort heute nicht bestätigt. Wo steht der Entfeuchter?")
+        filt = dev["filter_h"] > 0 and ds["filter_h"] >= dev["filter_h"]
+        if filt:
+            await self._notify(dev, "filter", "due", f"Filter reinigen: {ds['filter_h']:.0f} Betriebsstunden seit der letzten Reinigung.")
+        msgs = []
+        if full:
+            msgs.append(["full", "Wassertank voll"])
+        if high:
+            msgs.append(["high", f"Feuchte bleibt trotz {dev['high_h']:.0f} Std. Betrieb zu hoch"])
+        if noloc:
+            msgs.append(["noloc", "Standort heute nicht bestätigt"])
+        if filt:
+            msgs.append(["filter", f"Filter reinigen ({ds['filter_h']:.0f} Betriebsstunden)"])
+        self.live[did] = {
             "code": code, "why": why, "hint": hint, "on": on, "running": running, "want": want, "hum": hum, "t": t,
-            "loc_name": room["name"] if room else "", "open": open_w, "away": ctx["away"], "full": full,
-            "fill": fill, "since": self.st["on_ts"] if on else self.st["off_ts"], "today_min": round(self.st["run"].get(today, 0.0), 1),
+            "loc_name": rname, "open": open_w, "away": away, "full": full, "fill": fill, "boost": boost, "power": round(pw),
+            "since": ds["on_ts"] if on else ds["off_ts"], "today_min": round((ds["days"].get(today) or {}).get("min", 0.0), 1),
+            "msgs": msgs, "filter_h": round(ds["filter_h"], 1), "price": price, "pv_w": round(pv_w) if pv_w is not None else None,
         }
-        self._save()
 
     # ---- Tägliche Standortabfrage (Schritt 2)
     def _offer(self, dev: dict[str, Any]) -> list[dict[str, Any]]:
-        """Räume zur Auswahl: die gewählten, sonst alle Räume mit Luftfeuchte-Sensor."""
         allr = self.rooms()
         sel = dev["ask"]["rooms"]
         return [r for r in allr if r["id"] in sel] if sel and any(r["id"] in sel for r in allr) else allr
 
-    def _yesterday(self) -> str:
+    def _yesterday(self, ds: dict[str, Any]) -> str:
         y = (dt_util.now().date() - timedelta(days=1)).isoformat()
-        rec = self.st["locs"].get(y) or {}
-        return rec.get("l") or ""
+        return (ds["locs"].get(y) or {}).get("l") or ""
 
     def _someone_home(self) -> bool:
         pm = self.hass.data.get(DOMAIN, {}).get("presence")
@@ -440,20 +694,20 @@ class EntfeuchterManager:
             states = []
         return (not states) or any(h for h, _ in states)
 
-    async def _ask_step(self, dev: dict[str, Any], today: str) -> None:
+    async def _ask_step(self, dev: dict[str, Any], ds: dict[str, Any], today: str) -> None:
         ask = dev["ask"]
         hm = dt_util.now().strftime("%H:%M")
-        phase = ask_phase(ask, hm, self.st["conf_day"] == today)
-        if phase == "open" and ask["push"] and self.st["sent_day"] != today and (not ask["home_only"] or self._someone_home()):
-            self.st["sent_day"] = today
+        phase = ask_phase(ask, hm, ds["conf_day"] == today)
+        if phase == "open" and ask["push"] and ds["sent_day"] != today and (not ask["home_only"] or self._someone_home()):
+            ds["sent_day"] = today
             await self._send_ask(dev)
-        if phase == "missed" and self.st["miss_day"] != today:
-            self.st["miss_day"] = today
-            rec = self.st["locs"].setdefault(today, {"l": self.st["loc"], "h": ""})
-            if ask["miss"] == "same" and self.st["loc"]:
-                self.st["conf_day"], rec["h"] = today, "auto"
+        if phase == "missed" and ds["miss_day"] != today:
+            ds["miss_day"] = today
+            rec = ds["locs"].setdefault(today, {"l": ds["loc"], "h": ""})
+            if ask["miss"] == "same" and ds["loc"]:
+                ds["conf_day"], rec["h"] = today, "auto"
             elif ask["miss"] == "pause":
-                self.st["off_day"], rec["h"] = today, "pause"
+                ds["off_day"], rec["h"] = today, "pause"
             else:
                 rec["h"] = "hint"
 
@@ -465,18 +719,19 @@ class EntfeuchterManager:
 
     async def _send_ask(self, dev: dict[str, Any], targets: list[str] | None = None) -> int:
         """Benachrichtigung „Wo steht der Entfeuchter heute?“ mit Tasten für die häufigsten Räume."""
+        ds = self._ds(dev["id"])
         offer = self._offer(dev)
         counts: dict[str, int] = {}
-        for rec in self.st["locs"].values():
+        for rec in ds["locs"].values():
             if rec.get("l") and rec["l"] != "off":
                 counts[rec["l"]] = counts.get(rec["l"], 0) + 1
-        ids = push_rooms([r["id"] for r in offer], self.st["loc"] or self._yesterday(), counts)
+        ids = push_rooms([r["id"] for r in offer], ds["loc"] or self._yesterday(ds), counts)
         names = {r["id"]: r["name"] for r in offer}
         hum = {r["id"]: r["hum"] for r in offer}
-        cur = self.st["loc"]
+        cur = ds["loc"]
         msg = f"Gestern: {names.get(cur) or self._name(cur)}" + (f" · Feuchte dort {hum[cur]:.0f} %" if cur in hum and hum[cur] is not None else "") if cur else "Noch kein Standort gewählt."
-        data = {"tag": "fh_entfeuchter", "url": f"/{PANEL_URL}?modul=fh", "clickAction": f"/{PANEL_URL}?modul=fh",
-                "actions": [{"action": f"{ACT_PREFIX}L_{i}", "title": names[i]} for i in ids]}
+        data = {"tag": f"fh_entfeuchter_{dev['id']}", "url": f"/{PANEL_URL}?modul=fh", "clickAction": f"/{PANEL_URL}?modul=fh",
+                "actions": [{"action": f"{ACT_PREFIX}{dev['id']}_L_{i}", "title": names[i]} for i in ids]}
         sent = 0
         for svc in targets if targets is not None else dev["ask"]["push"]:
             name = svc.split(".", 1)[1]
@@ -489,61 +744,112 @@ class EntfeuchterManager:
                 _LOGGER.warning("Entfeuchter-Abfrage an %s fehlgeschlagen: %s", svc, err)
         return sent
 
-    def _hist(self, days: int = 14) -> list[dict[str, Any]]:
+    def _hist(self, ds: dict[str, Any], days: int = 14) -> list[dict[str, Any]]:
         out = []
         base = dt_util.now().date()
         for i in range(days):
             d = (base - timedelta(days=i)).isoformat()
-            rec = self.st["locs"].get(d)
+            rec = ds["locs"].get(d)
             out.append({"d": d, "l": rec["l"] if rec else "", "name": self._name(rec["l"]) if rec and rec["l"] else "", "h": rec["h"] if rec else "",
-                        "min": round(self.st["run"].get(d, 0.0))})
+                        "min": round((ds["days"].get(d) or {}).get("min", 0.0))})
+        return out
+
+    def _stats(self, ds: dict[str, Any]) -> dict[str, Any]:
+        """Statistik: Heute, 7 Tage, dieser Monat, dieses Jahr – Summen und Tage pro Raum."""
+        base = dt_util.now().date()
+        per = {
+            "day": [base.isoformat()],
+            "week": [(base - timedelta(days=i)).isoformat() for i in range(7)],
+            "month": [k for k in set(ds["days"]) | set(ds["locs"]) if k[:7] == base.isoformat()[:7]],
+            "year": [k for k in set(ds["days"]) | set(ds["locs"]) if k[:4] == base.isoformat()[:4]],
+        }
+        out = {}
+        for k, keys in per.items():
+            rooms: dict[str, int] = {}
+            for d in keys:
+                rec = ds["locs"].get(d)
+                if rec and rec.get("l"):
+                    n = self._name(rec["l"]) or "Raum gelöscht"
+                    rooms[n] = rooms.get(n, 0) + 1
+            out[k] = {**period_sum(ds["days"], keys), "rooms": sorted(rooms.items(), key=lambda x: -x[1])}
         return out
 
     # ---- Bedienung
-    def snapshot(self) -> dict[str, Any]:
-        dev = self.dev()
+    def _dev_snap(self, dev: dict[str, Any]) -> dict[str, Any]:
+        ds = self._ds(dev["id"])
         today = dt_util.now().date().isoformat()
-        ask = None
-        if dev is not None:
-            ph = ask_phase(dev["ask"], dt_util.now().strftime("%H:%M"), self.st["conf_day"] == today)
-            y = self._yesterday()
-            rec = self.st["locs"].get(today) or {}
-            ask = {"phase": ph, "conf": self.st["conf_day"] == today, "how": rec.get("h") or "", "yest": y, "yest_name": self._name(y) if y else "",
-                   "sent": self.st["sent_day"] == today, "offer": [r["id"] for r in self._offer(dev)]}
-        return {"cfg": self.cfg, "loc": self.st["loc"], "off_day": self.st["off_day"], "live": self.live, "rooms": self.rooms(),
-                "ask": ask, "hist": self._hist()}
+        ph = ask_phase(dev["ask"], dt_util.now().strftime("%H:%M"), ds["conf_day"] == today)
+        y = self._yesterday(ds)
+        rec = ds["locs"].get(today) or {}
+        nl = self._nfc_last.get(dev["id"])
+        return {"id": dev["id"], "loc": ds["loc"], "off_day": ds["off_day"], "live": self.live.get(dev["id"], {}),
+                "nfc_last": {"ago": int(time.time() - nl["ts"]), "room": nl["room"]} if nl else None,
+                "ask": {"phase": ph, "conf": ds["conf_day"] == today, "how": rec.get("h") or "", "yest": y, "yest_name": self._name(y) if y else "",
+                        "sent": ds["sent_day"] == today, "offer": [r["id"] for r in self._offer(dev)]},
+                "hist": self._hist(ds), "stats": self._stats(ds)}
+
+    def snapshot(self) -> dict[str, Any]:
+        L, now = self._learn, time.time()
+        learn = {"active": now < L["until"], "left": max(0, int(L["until"] - now)), "dev": L["dev"], "room": L["room"], "res": L["res"]}
+        return {"cfg": self.cfg, "rooms": self.rooms(), "devs": {d["id"]: self._dev_snap(d) for d in self.cfg["devs"]}, "max": MAX_DEVS, "nfc_learn": learn}
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
+        old = {d["id"]: d for d in self.cfg["devs"]}
         self.cfg = clean_cfg(raw)
+        for d in self.cfg["devs"]:  # NFC-Tags werden nur über Anlernen und Entfernen geändert
+            d["nfc"] = dict(old[d["id"]]["nfc"]) if d["id"] in old else {}
+        for d in self.cfg["devs"]:  # neues Gerät oder anderes Gerät: Zustand neu
+            if d["id"] in old and old[d["id"]]["ent"] and old[d["id"]]["ent"] != d["ent"]:
+                ds = self._ds(d["id"])
+                ds["on_ts"] = ds["off_ts"] = 0.0
         self._save()
         await self._tick()
         return self.snapshot()
 
-    async def async_cmd(self, cmd: str, arg: str = "") -> dict[str, Any]:
+    async def async_cmd(self, cmd: str, arg: str = "", did: str = "", how: str = "ok") -> dict[str, Any]:
+        dev = self.dev(did)
+        if dev is None:
+            return self.snapshot()
+        ds = self._ds(dev["id"])
         today = dt_util.now().date().isoformat()
-        if cmd == "loc":  # Standort setzen oder bestätigen, gilt für den Tag
-            ok = arg == "" or (_LOC.match(arg) and self._room(arg) is not None)
-            if ok:
-                self.st["loc"] = arg
-                self.st["off_day"] = ""
+        if cmd == "loc":  # Standort setzen oder bestätigen (auch „Hierher stellen“), gilt für den Tag
+            if arg == "" or (_LOC.match(arg) and self._room(arg) is not None):
+                moved = arg != ds["loc"]
+                ds["loc"], ds["off_day"] = arg, ""
                 if arg:
-                    self.st["conf_day"] = today
-                    self.st["locs"][today] = {"l": arg, "h": "ok"}
-        elif cmd == "off_today":  # Antwort „Heute nicht in Betrieb“
-            self.st["off_day"], self.st["conf_day"] = today, today
-            self.st["locs"][today] = {"l": "off", "h": "ok"}
+                    ds["conf_day"] = today
+                    ds["locs"][today] = {"l": arg, "h": how}
+                if moved:
+                    self._event(dev, "location")
+        elif cmd == "off_today":
+            ds["off_day"], ds["conf_day"] = today, today
+            ds["locs"][today] = {"l": "off", "h": "ok"}
         elif cmd == "on_today":
-            self.st["off_day"] = ""
-            if self.st["loc"]:
-                self.st["locs"][today] = {"l": self.st["loc"], "h": (self.st["locs"].get(today) or {}).get("h") or "ok"}
+            ds["off_day"] = ""
+            if ds["loc"]:
+                ds["locs"][today] = {"l": ds["loc"], "h": (ds["locs"].get(today) or {}).get("h") or "ok"}
+        elif cmd == "tank_empty":
+            ds["tank_h"], ds["full_ts"] = 0.0, 0.0
+            ds["sent"].pop("full", None)
+        elif cmd == "filter_reset":
+            ds["filter_h"] = 0.0
+            ds["sent"].pop("filter", None)
+        elif cmd == "nfc_learn":
+            if _LOC.match(arg) and self._room(arg) is not None:
+                self._learn = {"until": time.time() + NFC_LEARN_S, "dev": dev["id"], "room": arg, "res": None}
+            return self.snapshot()
+        elif cmd == "nfc_stop":
+            self._learn = {"until": 0.0, "dev": "", "room": "", "res": None}
+            return self.snapshot()
+        elif cmd == "nfc_forget":
+            dev["nfc"].pop(arg, None)
+            self._save()
+            return self.snapshot()
         elif cmd == "ask_test":
-            dev = self.dev()
-            n = await self._send_ask(dev, [arg] if arg else None) if dev else 0
+            n = await self._send_ask(dev)
             snap = self.snapshot()
             snap["test_sent"] = n
             return snap
-        elif cmd == "tank_empty":
-            self.st["tank_h"], self.st["full_ts"] = 0.0, 0.0
         self._save()
         await self._tick()
         return self.snapshot()

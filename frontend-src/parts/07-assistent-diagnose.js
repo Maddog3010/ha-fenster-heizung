@@ -375,6 +375,8 @@
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfloc") { box.innerHTML = this._lfLocModal(); return; }
+    if (m.type === "lflist") { box.innerHTML = this._lfListModal(); return; }
+    if (m.type === "lfstat") { box.innerHTML = this._lfStatModal(); return; }
     if (m.type === "lfhist") { box.innerHTML = this._lfHistModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "msx") { box.innerHTML = this._msModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -448,7 +450,7 @@
         <div class="gst ${this._pvNow() != null ? "on" : ""}">${ic(this._pvNow() != null ? "bolt" : "info", 15)}${this._pvNow() != null ? `Aktuell ${wfmt(this._pvNow())} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Noch kein Sensor gewählt."}</div>`)}
         ${tab === "pv" ? `<div class="hslk">${this._hsLink("pr", `Bezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh`)}</div>` : ""}
         ${tab === "lb" ? `<div class="mut sm" style="margin:2px 0 6px">Eingeschaltete Labs mit Einstellungen für Modul 1.</div>${this._labFields("fh")}` : ""}
-        ${tab !== "gr" ? "" : `<div class="fhs"><button class="sxrow" data-act="lfxset"><span class="sxi">${ic("fan", 20)}</span><span class="sxt"><b>Luftentfeuchter</b><small>${(() => { const dv = this._lfDev(); return dv ? `${esc(dv.name)} · Ein über ${num(dv.hi, 0)} %, aus bei ${num(dv.lo, 0)} %` : "Mobilen Entfeuchter einbinden und mit der Raumfeuchte regeln"; })()}</small></span><em class="sxc ${this._lfDev() ? "ok" : ""}">${this._lfDev() ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>
+        ${tab !== "gr" ? "" : `<div class="fhs"><button class="sxrow" data-act="lfxset"><span class="sxi">${ic("fan", 20)}</span><span class="sxt"><b>Luftentfeuchter</b><small>${(() => { const L = this._lfDevs(); return L.length === 1 ? `${esc(L[0].name)} · Ein über ${num(L[0].hi, 0)} %, aus bei ${num(L[0].lo, 0)} %` : L.length ? `${L.length} Geräte: ${esc(L.map((x) => x.name).join(", "))}` : "Mobile Entfeuchter einbinden und mit der Raumfeuchte regeln"; })()}</small></span><em class="sxc ${this._lfDevs().length ? "ok" : ""}">${this._lfDevs().length ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>
         <button class="sxrow" data-act="diag"><span class="sxi">${ic("shield", 20)}</span><span class="sxt"><b>Ventile &amp; Batterien</b><small>Diagnose, Batterie schwach ab ${num((g.valve || {}).warn || 20, 0)} %, Meldung bei Problemen</small></span><span class="sxg">${ic("chev", 16)}</span></button></div>`}
         <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     } else if (m.type === "gen") {

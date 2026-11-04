@@ -2,6 +2,25 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b14] - 2026-11-04
+
+Testversion (Beta) mit Schritt 3, 4 und 5 (NFC) des Luftentfeuchters in Modul 1.
+
+### Neu
+- **Modul 1 (v1.5): Luftentfeuchter – Schnellumzug und mehrere Geräte.**
+  - **„Hierher stellen“** auf jeder Raumkarte mit Luftfeuchte-Sensor, auch bei Messräumen. Ein Tipp setzt den Standort um, der Tag gilt damit als bestätigt.
+  - **Bis zu vier Geräte**, jedes mit eigenem Standort, eigener täglicher Abfrage, eigenen Zielwerten und eigener Statistik. Einstellungen → Modul 1 → Luftentfeuchter zeigt die Geräteliste mit „Gerät hinzufügen“.
+- **Modul 1: Luftentfeuchter – Strom und Statistik.**
+  - **Vorziehen bei PV-Überschuss oder günstigem Strom** (Reiter „Strom“): Der Entfeuchter startet dann schon über einer niedrigeren Schwelle (Standard 57 %) und trocknet vor. Die Obergrenze gilt immer. Überschuss aus dem Netz-Sensor, Strompreis aus Einstellungen → Haus.
+  - **Statistik** für Heute, 7 Tage, Monat und Jahr: Laufzeit, Strom (gemessen oder mit der Nennleistung geschätzt), Kosten zum jeweiligen Strompreis, entfeuchtete Menge (Liter pro Stunde) und Tage pro Raum.
+  - **Meldungen** auf der Raumkarte und an die Handys des Geräts: Tank voll, Feuchte bleibt trotz Betrieb zu hoch (nach einstellbaren Stunden), Standort fehlt, Filter reinigen nach Betriebsstunden (mit „Filter gereinigt“). Jede Meldung kommt einmal je Anlass.
+  - **Ereignis `fenster_heizung_entfeuchter`** bei Start, Stopp, Tank voll und Standortwechsel für eigene Automationen.
+- **Modul 1: Luftentfeuchter – NFC-Tag am Stellplatz.** Je Raum lässt sich ein NFC-Tag anlernen (Einstellungen → Modul 1 → Luftentfeuchter → Gerät → Reiter „Standort“). Hältst du das Handy mit der Home-Assistant-App daran, steht das Gerät dort und der Standort gilt für heute als bestätigt, im Verlauf als „per NFC-Tag bestätigt“. Ein Tag gehört genau einem Gerät und Raum. Funktioniert auch ohne das Lab „Tags & Karten“. Ist ein Tag dort schon mit einer Aktion belegt, kommt ein Hinweis.
+
+### Geändert
+- Die bisherigen Daten des Entfeuchters (Standort, Verlauf, Laufzeit) werden beim Update übernommen.
+- Benachrichtigungen enthalten jetzt die Geräte-ID in den Tasten. Ältere Benachrichtigungen funktionieren weiter.
+
 ## [2026.11.1b13] - 2026-11-04
 
 Testversion (Beta) mit Schritt 2 des Luftentfeuchters in Modul 1.

@@ -1214,4 +1214,24 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .lfhd{color:var(--mut)}.lfhh{font-size:.72rem;color:var(--mut)}.lfhh.ok{color:#34d399}.lfhh.warn{color:var(--amber)}.lfhm{text-align:right;color:var(--mut);font-size:.74rem;font-variant-numeric:tabular-nums}
 .lfdays{display:grid;gap:6px}.lfdays div{display:grid;grid-template-columns:110px 1fr auto;gap:8px;align-items:center;font-size:.8rem}.lfdays i{display:block;height:10px;border-radius:6px;background:#22d3ee}.lfdays i.off{background:var(--gray)}.lfdays b{font-size:.74rem;color:var(--mut);font-weight:600}
 @media(max-width:520px){.lfhr{grid-template-columns:70px 1fr 50px}.lfhh{grid-column:2/3}.lfhm{grid-row:1;grid-column:3}}
+/* Modul 1: Luftentfeuchter – Hierher stellen, Meldungen, Statistik (Schritt 3 und 4) */
+.lfmoves{display:grid;gap:6px}
+.lfmove{display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:1px dashed color-mix(in srgb,#22d3ee 55%,var(--line));border-radius:14px;padding:9px 12px;background:none;color:inherit;font:inherit;cursor:pointer}
+.lfmove .ic{color:#22d3ee;flex:none}.lfmany{cursor:default;align-items:flex-start}.lfmany>span{flex:1;min-width:0}.lfmb{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.lfmb .btn2{flex:1 1 auto;padding:7px 10px;font-size:.8rem;text-align:left}.lfmb .btn2 small{display:block;font-size:.66rem;color:var(--mut);font-weight:500}.lfmove b{display:block;font-size:.86rem}.lfmove small{display:block;font-size:.72rem;color:var(--mut)}
+.lfboost{display:inline-flex;align-items:center;gap:3px;font-style:normal;font-size:.62rem;font-weight:700;padding:1px 7px;border-radius:999px;background:color-mix(in srgb,#facc15 22%,transparent);color:#facc15}
+.lfmsg{display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--amber);background:color-mix(in srgb,var(--amber) 9%,transparent);border-radius:10px;padding:6px 9px}
+.lfoth{color:#22d3ee!important}
+.lfstg{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:10px 0 4px}@media(min-width:620px){.lfstg{grid-template-columns:repeat(4,1fr)}}
+.lfstt{--c:#22d3ee;border:1px solid color-mix(in srgb,var(--c) 55%,var(--line));border-radius:14px;padding:10px 12px;min-width:0}.lfstt span{display:block;font-size:.74rem;color:var(--mut)}
+.lfstt b{display:block;font-size:1.35rem;color:var(--c);margin-top:3px;font-variant-numeric:tabular-nums;white-space:nowrap}.lfstt small{display:block;font-size:.66rem;color:var(--mut);margin-top:2px}
+.lfstt.y{--c:#facc15}.lfstt.o{--c:#fb923c}.lfstt.b{--c:#60a5fa}
+.lftabs button{padding-left:4px;padding-right:4px;font-size:.8rem}
+/* Modul 1: Luftentfeuchter – NFC-Tag am Stellplatz (Schritt 5) */
+.lfnl0{display:grid;gap:6px}
+.lfnr{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:9px 10px}
+.lfnr b{display:block;font-size:.88rem}.lfnr small{display:block;font-size:.74rem;margin-top:2px}
+.lfni{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--primary-text-color) 6%,transparent);color:var(--mut)}
+.lfnr.set .lfni{background:color-mix(in srgb,#22d3ee 18%,transparent);color:#22d3ee}
+.lfnr.on{border-color:#22d3ee;box-shadow:0 0 0 1px #22d3ee inset;background:color-mix(in srgb,#22d3ee 7%,transparent)}.lfnl{color:#22d3ee}
+.lfnb{display:flex;gap:6px}.lfnb .btn2{padding:7px 10px;font-size:.78rem;flex:none}
 `;

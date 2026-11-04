@@ -1334,14 +1334,17 @@ async def ws_lf_set(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 # Standort setzen, heute aus/an und „Tank geleert“ darf jeder im Haushalt (tägliche Bedienung)
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/lf_cmd", vol.Required("cmd"): vol.In(["loc", "off_today", "on_today", "tank_empty", "ask_test"]), vol.Optional("arg", default=""): str})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/lf_cmd", vol.Required("cmd"): vol.In(["loc", "off_today", "on_today", "tank_empty", "filter_reset", "ask_test", "nfc_learn", "nfc_stop", "nfc_forget"]), vol.Optional("arg", default=""): str, vol.Optional("dev", default=""): str})
 @websocket_api.async_response
 async def ws_lf_cmd(hass: HomeAssistant, connection, msg: dict) -> None:
     mgr = hass.data.get(DOMAIN, {}).get("entfeuchter")
     if mgr is None:
         connection.send_error(msg["id"], "not_ready", "Luftentfeuchter ist noch nicht bereit")
         return
-    connection.send_result(msg["id"], await mgr.async_cmd(msg["cmd"], msg.get("arg") or ""))
+    if msg["cmd"] in ("nfc_learn", "nfc_forget") and not connection.user.is_admin:
+        connection.send_error(msg["id"], "unauthorized", "Nur Administratoren können NFC-Tags anlernen")
+        return
+    connection.send_result(msg["id"], await mgr.async_cmd(msg["cmd"], msg.get("arg") or "", msg.get("dev") or ""))
 
 
 def async_register_api(hass: HomeAssistant) -> None:
