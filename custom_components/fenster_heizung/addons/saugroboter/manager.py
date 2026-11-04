@@ -392,6 +392,26 @@ class Addon(SWAddon):
                 "c": "bad" if any(h["c"] == "bad" for h in hints) else "wa" if due else "" if n else "mut"}
         return {"tile": tile, "hints": hints, "info": f"{n} {'Roboter' if n == 1 else 'Roboter'}" if n else "noch kein Roboter"}
 
+    def messwerk(self) -> list[dict[str, Any]]:
+        """Sensoren für das Messwerk (ohne Dienst-Aufrufe)."""
+        out: list[dict[str, Any]] = []
+        for ent in self._robots():
+            nm = self._name(ent)
+            out.append({"id": ent, "name": f"Saugroboter · {nm}", "eid": ent, "why": "Status, Start und Raumreinigung", "tab": "rob"})
+            dv = self._dev(ent)
+            for e in dv["bat"][:1]:
+                out.append({"id": f"{ent}.bat", "name": f"Akku · {nm}", "eid": e, "why": "Akku in der Roboter-Karte", "unit": "pct", "tab": "rob"})
+            for e in dv["room"][:1]:
+                out.append({"id": f"{ent}.room", "name": f"Aktueller Raum · {nm}", "eid": e, "why": "Fahrten den Räumen zuordnen", "tab": "rob"})
+            for e in dv["err"][:1]:
+                out.append({"id": f"{ent}.err", "name": f"Fehler · {nm}", "eid": e, "why": "Meldung, wenn er Hilfe braucht", "tab": "msg"})
+            for key, e in dv["part"]:
+                p = L.part_of(key)
+                out.append({"id": f"{ent}.{key}", "name": f"{p[1] if p else key} · {nm}", "eid": e, "why": "Wartung der Verschleißteile", "tab": "rob"})
+            for e in dv["map"][:2]:
+                out.append({"id": f"{ent}.{e}", "name": f"Karte · {nm}", "eid": e, "why": "Karte auf der Seite", "tab": "view"})
+        return out
+
     def _last_map_areas(self, ent: str) -> list[str]:
         return list(self._last_map.get(ent, {}))
 

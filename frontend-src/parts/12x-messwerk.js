@@ -65,6 +65,7 @@
     if (k === "hs") { this._stOpen = true; this._stA = "hs"; this._stS = v; this._render(); return; }
     if (k === "room") { this._optOpen(v); return; }
     if (k === "mess") { this._msOpen(v); return; }
+    if (k === "ad") { const t = String(go).split(":")[2] || ""; b.dataset.k = v; b.dataset.t = t; this._act("adxset", b); return; }
     if (k === "mod") { const m = { mu: "muxopen", li: "lixopen" }[v] || (MOD_SET[v] || {}).act; if (m) this._act(m, b); return; }
     const a = { diag: "diag", lfx: "lfxset", tgx: "tgxopen", tm: "tmopen", ort: "ortopen", hz: "hzopen" }[k]; if (a) this._act(a, b);
   }

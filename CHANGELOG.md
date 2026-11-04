@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b11] - 2026-11-04
+
+Testversion (Beta): Addons sind jetzt Teil der Einstellungen.
+
+### Neu
+- **Addons in den Einstellungen:** Unter Module stehen aktive Addons neben den anderen Modulen, unter Addons hat jede Zeile den Knopf „Einstellungen“.
+- **Suche findet Einstellungen von Addons** und öffnet gleich den passenden Reiter.
+- **Messwerk zeigt die Sensoren der Addons** mit „genutzt in“ und dem Weg zur Einstellung. Jedes Addon meldet seine Sensoren selbst.
+- **Modul 21 Saugroboter (v0.1.2 Build 1):** Einstellungen in den Haupteinstellungen, Suche nach Roboter, Räumen und Meldungen, Roboter-Sensoren im Messwerk.
+
+### Behoben
+- Die Einstellungen eines Addons waren außerhalb seiner Seite ohne Gestaltung.
+
 ## [2026.11.1b10] - 2026-11-04
 
 Testversion (Beta) mit zwei Fehlerbehebungen für Addons aus dem Katalog.

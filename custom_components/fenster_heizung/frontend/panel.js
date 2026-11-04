@@ -4424,7 +4424,7 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Datei und Homeserver", "gen")}`, "Häufig gebraucht")}`,
       hs: () => this._hsPage(row, card, lv),
       mw: () => this._mwPage(card),
-      md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
+      md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).concat(this._adMods().map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n} · v${esc(m.ad.version)}</i>`, esc((this._adDef(m.id) || {}).settingsTxt || m.tag), "adxset", m.id, `<em class="sxc ${STG[m.stage] ? STG[m.stage].c : ""}">Addon</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
         ${off.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdstoff" aria-expanded="${!this._stOffC}">Ausgeschaltet <small>· ${off.length} · ein Tipp schaltet ein</small><span class="stgo">${this._stOffC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>
           ${this._stOffC ? "" : `<div class="stmini">${off.map((m) => `<button class="stmb" data-act="mdtog" data-k="${m.id}" title="${esc(m.name)} einschalten">${ic(m.icon, 16)}<span class="stmt"><b>${esc(m.short)}</b><small>Modul ${m.n}${m.sponsor ? " · Sponsor" : m.beta && modSt(m) ? " · " + STG[modSt(m)].t : ""}</small></span></button>`).join("")}</div>`}</div>` : ""}`,
       lk: () => card(`${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}${this._hzOn() ? row("home", "Startseite", "Karten, Bubbles und Begrüßung", "hzopen") : ""}`),
@@ -8537,7 +8537,7 @@ class FensterHeizungPanel extends HTMLElement {
   /* Jede Einstellung ist hier einmal beschrieben. Daraus entstehen Suche, Hilfe, Verlauf (Namen der Werte) und Prüfung.
      id = Pfad wie im Backend-Verlauf (z. B. general.summer.temp), go = wie man hinkommt, tab = Reiter im Modulfenster. */
   _cat() {
-    if (this._catC) return this._catC;
+    if (this._catC) return this._adCatAdd(this._catC);
     const onoff = (v) => (v ? "An" : "Aus"), ct = (v) => `${num(v, 2)} ct/kWh`, g = () => this._gen, pv = () => this._pv(), E = () => this._enState(), L = () => this._wxCfg(), nm = (e) => (e ? this._wzName(e) : "–");
     const H = "Haus", M1 = "Module › Modul 1", A = "all";
     const C = [
@@ -8590,7 +8590,7 @@ class FensterHeizungPanel extends HTMLElement {
     ];
     MODS.forEach((m) => { const ms = MOD_SET[m.id]; if (ms) C.push({ id: `modules.on.${m.id}`, t: `Modul ${m.n} ${m.name}`, p: "Module", k: `modul ${m.short} ${ms.txt}`.toLowerCase(), go: [ms.act], v: () => (this._stIsOn(m) ? "An" : "Aus"), h: ms.txt }); });
     this._catC = C;
-    return C;
+    return this._adCatAdd(C);
   }
   _catBy(path) {
     const C = this._cat(); let e = C.find((x) => x.id === path);
@@ -8776,6 +8776,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (k === "hs") { this._stOpen = true; this._stA = "hs"; this._stS = v; this._render(); return; }
     if (k === "room") { this._optOpen(v); return; }
     if (k === "mess") { this._msOpen(v); return; }
+    if (k === "ad") { const t = String(go).split(":")[2] || ""; b.dataset.k = v; b.dataset.t = t; this._act("adxset", b); return; }
     if (k === "mod") { const m = { mu: "muxopen", li: "lixopen" }[v] || (MOD_SET[v] || {}).act; if (m) this._act(m, b); return; }
     const a = { diag: "diag", lfx: "lfxset", tgx: "tgxopen", tm: "tmopen", ort: "ortopen", hz: "hzopen" }[k]; if (a) this._act(a, b);
   }
@@ -8983,7 +8984,7 @@ class FensterHeizungPanel extends HTMLElement {
   _adHints() { return this._adState().addons.filter((a) => a.status === "on").flatMap((a) => ((a.summary || {}).hints || []).map((h) => ({ i: ICONS[h.i] ? h.i : "info", t: esc(h.t), s: esc(h.s || ""), r: h.c === "bad" ? "jetzt" : "", c: h.c || "", mod: a.id }))); }
   _adModal() {
     const m = this._modal, A = this._adState().addons.find((x) => x.id === m.id);
-    if (m.type === "adx" || !A) { const d = this._adDef(m.id); return d && d.modal ? d.modal(this, m) : ""; }
+    if (m.type === "adx" || !A) { const d = this._adDef(m.id); return d && d.modal ? (d.css ? `<style>${d.css}</style>` : "") + d.modal(this, m) : ""; }
     const hd = (t, s) => `<div class="sh"><div><b>${t}</b><span>${s}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>`;
     const kb = (b) => b >= 1e6 ? `${num(b / 1e6, 1)} MB` : `${Math.max(1, Math.round(b / 1000))} kB`;
     if (m.type === "adinst") {
@@ -9030,7 +9031,7 @@ class FensterHeizungPanel extends HTMLElement {
     const row = (a) => `<div class="adrow ${a.status}"><div class="adtop"><span class="sxi">${ic(ICONS[a.icon] ? a.icon : "puzzle", 22)}</span><span class="sxt"><b>Modul ${a.n} · ${esc(a.name)}</b><small>v${esc(a.installed && a.cur ? a.cur : a.version + " Build " + a.build)} · ${STG[a.stage] ? STG[a.stage].t : ""} · ${a.src === "ext" ? "aus dem Katalog" : a.src === "remote" ? `aus dem Katalog · ${kb(a.dl_size || (a.remote || {}).size || 0)}` : "mitgeliefert"}${a.status === "on" && a.summary && a.summary.info ? " · " + esc(a.summary.info) : ""}</small></span>${a.installed ? stc(a) : a.sponsor ? `<em class="sxc sp">Sponsor</em>` : ""}</div>
       ${a.err && a.status !== "on" ? `<div class="gst bad">${ic("alert", 15)}<span>${esc(a.err)}</span></div>` : ""}
       ${!a.installed ? `<p class="adds">${esc(a.desc || a.tag)}</p>` : ""}${a.update && tab === "upd" && a.remote && (a.remote.notes || []).length ? `<ul class="adnotes adin">${a.remote.notes.slice(0, 4).map((n) => `<li>${esc(n)}</li>`).join("")}</ul>` : ""}
-      <div class="adbtn">${a.installed ? `${a.status === "on" ? `<button class="gsch sel" data-act="adxopen" data-k="${a.id}">Öffnen</button>` : ""}${a.status === "error" ? `<button class="gsch sel" data-act="adxretry" data-k="${a.id}">Erneut versuchen</button>` : ""}${a.update ? `<button class="gsch sel" data-act="adxupd" data-k="${a.id}">${ic("download", 14)} Aktualisieren auf v${esc(nv(a))}</button>` : ""}${a.old ? `<button class="gsch" data-act="adxold" data-k="${a.id}">${ic("back", 14)} Zurück zu v${esc(a.old)}</button>` : ""}${a.status === "paused" ? `<button class="gsch sel" data-act="adxresume" data-k="${a.id}">Fortsetzen</button>` : a.status === "on" ? `<button class="gsch" data-act="adxpause" data-k="${a.id}">Pausieren</button>` : ""}<button class="gsch" data-act="adxdel" data-k="${a.id}">Deinstallieren</button>`
+      <div class="adbtn">${a.installed ? `${a.status === "on" ? `<button class="gsch sel" data-act="adxopen" data-k="${a.id}">Öffnen</button>` : ""}${a.status === "on" && (this._adDef(a.id) || {}).settings ? `<button class="gsch" data-act="adxset" data-k="${a.id}">${ic("sliders", 14)} Einstellungen</button>` : ""}${a.status === "error" ? `<button class="gsch sel" data-act="adxretry" data-k="${a.id}">Erneut versuchen</button>` : ""}${a.update ? `<button class="gsch sel" data-act="adxupd" data-k="${a.id}">${ic("download", 14)} Aktualisieren auf v${esc(nv(a))}</button>` : ""}${a.old ? `<button class="gsch" data-act="adxold" data-k="${a.id}">${ic("back", 14)} Zurück zu v${esc(a.old)}</button>` : ""}${a.status === "paused" ? `<button class="gsch sel" data-act="adxresume" data-k="${a.id}">Fortsetzen</button>` : a.status === "on" ? `<button class="gsch" data-act="adxpause" data-k="${a.id}">Pausieren</button>` : ""}<button class="gsch" data-act="adxdel" data-k="${a.id}">Deinstallieren</button>`
         : `<button class="gsch sel" data-act="adxinst" data-k="${a.id}">${ic("download", 14)} Installieren</button>${a.kept ? `<span class="mut sm">Daten von früher vorhanden</span>` : ""}`}</div></div>`;
     const seg = `<div class="seg adseg"><button class="${tab === "inst" ? "sel" : ""}" data-act="adxtab" data-k="inst">Installiert ${inst.length}</button><button class="${tab === "cat" ? "sel" : ""}" data-act="adxtab" data-k="cat">Katalog ${cat.length}</button><button class="${tab === "upd" ? "sel" : ""}" data-act="adxtab" data-k="upd">Updates ${upd.length}</button></div>`;
     const list = tab === "cat" ? cat : tab === "upd" ? upd : inst;
@@ -9062,8 +9063,16 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "adxold") { delete (this._adJs || {})[k]; run("rollback", k, true, () => { const A = this._adState().addons.find((x) => x.id === k); this._toast(A ? `Zurück auf v${A.version}` : "Zurück auf die frühere Version"); }); }
     else if (a === "adxcheck") { this._adWork = "check"; this._render(); this._hass.callWS({ type: "fenster_heizung/addons_act", act: "check" }).then((r) => { this._ad = { d: r, ts: Date.now() }; const C = r.cat || {}; this._toast(C.ok ? (r.addons.some((x) => x.update) ? "Update gefunden" : "Katalog geprüft, alles aktuell") : `Katalog: ${C.err || "nicht erreichbar"}`); }).catch(() => this._toast("Prüfung fehlgeschlagen")).finally(() => { this._adWork = false; this._render(); }); }
     else if (a === "adxgo") { this._stOpen = true; this._stA = "ad"; this._adTab = "upd"; this._render(); }
+    else if (a === "adxset") { const d = this._adDef(k); if (!d || !d.act) { this._toast("Die Seite des Addons wird noch geladen"); return; } const t = b.dataset.t || ""; d.act(this, "settings", b); if (this._modal && this._modal.type === "adx") { if (t) this._modal.tab = t; this._renderModal(); } }
     else if (a === "adxopen") { this._stOpen = false; this._mdActiveSet(k); this._render(); }
     else if (a === "adxa") { const d = this._adDef(b.dataset.ad); if (d && d.act) d.act(this, b.dataset.a, b); }
+  }
+  /* Suche in den Einstellungen: jedes Addon bringt seine Einträge mit (def.search), sonst einen Eintrag fürs ganze Addon */
+  _adCatAdd(C) {
+    const extra = this._adMods().flatMap((m) => { const d = this._adDef(m.id) || {}, P = `Module › Modul ${m.n}`;
+      const L = Array.isArray(d.search) && d.search.length ? d.search : [{ id: "", t: `Modul ${m.n} ${m.name}`, k: `${m.short} ${m.tag}`, h: m.tag }];
+      return L.map((x) => ({ id: `addon.${m.id}${x.id ? "." + x.id : ""}`, t: x.t, p: x.p || P, k: `addon modul ${m.n} ${m.name} ${x.k || ""}`.toLowerCase(), go: ["adxset", m.id], tab: x.tab || "", h: x.h || "", v: x.v ? () => { try { return x.v(this); } catch (_) { return ""; } } : undefined })); });
+    return extra.length ? C.concat(extra) : C;
   }
   _adxChange(t) { const d = this._adDef(t.dataset.ad); if (d && d.change) { d.change(this, t); return true; } return false; }
   _mdBar() {

@@ -155,6 +155,10 @@ class SWAddon:
     async def async_remove(self, keep: bool) -> None:
         """Wird beim Deinstallieren nach async_unload gerufen. Ohne keep löscht der Kern danach den Speicher."""
 
+    def messwerk(self) -> list[dict[str, Any]]:
+        """Sensoren für das Messwerk: [{"id", "name", "eid", "why", "group", "unit", "where", "tab"}]. tab = Reiter der Einstellungen."""
+        return []
+
     def summary(self) -> dict[str, Any]:
         """Kurzfassung für Start, Tablet und Einstellungen: {"tile": {...}, "hints": [...], "info": "..."}"""
         return {}

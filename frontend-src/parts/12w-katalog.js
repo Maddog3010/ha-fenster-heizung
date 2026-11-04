@@ -2,7 +2,7 @@
   /* Jede Einstellung ist hier einmal beschrieben. Daraus entstehen Suche, Hilfe, Verlauf (Namen der Werte) und Prüfung.
      id = Pfad wie im Backend-Verlauf (z. B. general.summer.temp), go = wie man hinkommt, tab = Reiter im Modulfenster. */
   _cat() {
-    if (this._catC) return this._catC;
+    if (this._catC) return this._adCatAdd(this._catC);
     const onoff = (v) => (v ? "An" : "Aus"), ct = (v) => `${num(v, 2)} ct/kWh`, g = () => this._gen, pv = () => this._pv(), E = () => this._enState(), L = () => this._wxCfg(), nm = (e) => (e ? this._wzName(e) : "–");
     const H = "Haus", M1 = "Module › Modul 1", A = "all";
     const C = [
@@ -55,7 +55,7 @@
     ];
     MODS.forEach((m) => { const ms = MOD_SET[m.id]; if (ms) C.push({ id: `modules.on.${m.id}`, t: `Modul ${m.n} ${m.name}`, p: "Module", k: `modul ${m.short} ${ms.txt}`.toLowerCase(), go: [ms.act], v: () => (this._stIsOn(m) ? "An" : "Aus"), h: ms.txt }); });
     this._catC = C;
-    return C;
+    return this._adCatAdd(C);
   }
   _catBy(path) {
     const C = this._cat(); let e = C.find((x) => x.id === path);

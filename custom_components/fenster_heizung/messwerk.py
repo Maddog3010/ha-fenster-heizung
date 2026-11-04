@@ -150,6 +150,9 @@ class Messwerk:
         out[0] = True
         labs = (((self.hass.data.get(DOMAIN, {}).get("layout") or {}).get("labs") or {}).get("on")) or []
         out[17], out[18] = "mm" in labs, "li" in labs
+        adm = self.hass.data.get(DOMAIN, {}).get("addons")
+        for core, _ in (getattr(adm, "live", None) or {}).values():
+            out[int(core.meta.get("n") or 0)] = True
         return out
 
     def _collect(self) -> dict[str, Any]:
@@ -258,6 +261,20 @@ class Messwerk:
                 elif key == "sicherheit" and eid.startswith("binary_sensor.") and why not in ("Abfahrt-Prüfung",):
                     name, why = f"Melder · {self._fn(eid)}", "Alarm und Wartung"
                 add(f"{key}.{path}", name, g, "", eid, [(mod, why)], where, go)
+        # Addons: jedes aktive Addon meldet seine Sensoren selbst (SWAddon.messwerk)
+        adm = store.get("addons")
+        for aid, (core, inst) in (getattr(adm, "live", None) or {}).items():
+            try:
+                items = inst.messwerk() or []
+            except Exception:  # noqa: BLE001 - ein Addon darf das Messwerk nicht stören
+                items = []
+            n = int(core.meta.get("n") or 0)
+            for x in items[:60]:
+                eid = str(x.get("eid") or "")
+                if not EID.match(eid):
+                    continue
+                add(f"addon.{aid}.{x.get('id') or eid}", str(x.get("name") or eid)[:60], str(x.get("group") or "geraete"), str(x.get("unit") or ""), eid,
+                    [(n, str(x.get("why") or "genutzt"))], str(x.get("where") or f"Modul {n} · Einstellungen"), f"ad:{aid}" + (f":{x['tab']}" if x.get("tab") else ""))
         return {"tasks": tasks, "sensors": sensors, "on": on}
 
     def _fn(self, eid: str) -> str:
@@ -293,7 +310,7 @@ class Messwerk:
         hints = self._hints(snap)
         mods = sorted({u["m"] for s in snap["sensors"].values() for u in s["uses"] if u["m"]})
         out = {
-            "v": SCHEMA, "mig": self.data.get("mig"), "groups": GROUPS, "mods": MODN, "tasks": tasks,
+            "v": SCHEMA, "mig": self.data.get("mig"), "groups": GROUPS, "mods": {**MODN, **{int(c.meta.get("n") or 0): c.meta.get("name", "") for c, _ in (getattr(self.hass.data.get(DOMAIN, {}).get("addons"), "live", None) or {}).values()}}, "tasks": tasks,
             "sensors": {e: {"tasks": s["tasks"], "uses": [{k: u[k] for k in ("m", "why", "on", "where", "go")} for u in s["uses"]]} for e, s in snap["sensors"].items()},
             "stats": {"sensors": len(snap["sensors"]), "tasks": sum(1 for t in tasks if t["st"] != "open"), "ok": sum(1 for t in tasks if t["st"] == "ok"), "bad": sum(1 for t in tasks if t["st"] not in ("ok", "open")), "open": sum(1 for t in tasks if t["st"] == "open"), "mods": len(mods)},
             "hints": hints,

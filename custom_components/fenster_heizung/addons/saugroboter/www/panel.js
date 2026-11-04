@@ -159,7 +159,9 @@ export default (api) => {
 
   /* ---------- Einstellungen (Admin) ---------- */
   const modal = (p, m) => {
-    const s = S(p), D = s.d, hd = `<div class="sh"><div><b>Saugroboter</b><span>Modul 21 · Addon · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>`;
+    const s = S(p);
+    if (m.tab) { s.stab = m.tab; m.tab = ""; }  // aus der Suche oder dem Messwerk: gleich den passenden Reiter
+    const D = s.d, hd = `<div class="sh"><div><b>Saugroboter</b><span>Modul 21 · Addon · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>`;
     if (!D) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">${hd}<div class="mut">Lädt …</div></div>`;
     const C = D.cfg, t = s.stab, sw = (a, k, on, lbl) => `<button class="sw ${on ? "on" : ""}" data-act="adxa" data-ad="${ID}" data-a="${a}" data-k="${esc(k)}" aria-pressed="${!!on}" aria-label="${esc(lbl)}"></button>`;
     const tabs = `<div class="seg">${[["rob", "Roboter"], ["area", "Räume"], ["msg", "Meldungen"], ["view", "Anzeige"]].map(([k, l]) => `<button class="${t === k ? "sel" : ""}" data-act="adxa" data-ad="${ID}" data-a="stab" data-k="${k}">${l}</button>`).join("")}</div>`;
@@ -257,5 +259,13 @@ export default (api) => {
 .srchk{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.srstep{display:flex;align-items:center;gap:6px}.srstep button{width:32px;height:32px;border-radius:50%;border:1px solid var(--line);background:transparent;color:inherit;font-size:1.1rem;cursor:pointer}.srstep b{min-width:88px;text-align:center;font-size:.84rem}
 `;
   const art = `<circle cx="32" cy="34" r="22" class="f"/><circle cx="32" cy="34" r="22"/><circle cx="32" cy="26" r="6"/><path d="M20 44h24"/><path d="M14 22l-4-4M50 22l4-4"/>`;
-  return { id: ID, page, modal, act: actFn, change, css, art, settings: true, icons: { robot: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="9" r="2.2"/><path d="M7.5 15.5h9"/>' } };
+  /* Einträge für die Suche in den Einstellungen */
+  const robs = (p) => ((S(p).d || {}).robots || []).map((r) => r.name).join(", ");
+  const search = [
+    { id: "robots", t: "Saugroboter: Roboter", k: "roboter staubsauger saugroboter roborock name etage räume zuordnen", tab: "rob", h: "Welche Saugroboter Modul 21 nutzt, ihre Namen, Etagen und welche Räume jeder reinigt.", v: robs },
+    { id: "areas", t: "Saugroboter: Wie oft je Raum", k: "raum räume ziel tage fällig überfällig reinigen intervall", tab: "area", h: "Nach wie vielen Tagen ein Raum als fällig gilt. Ab dem Doppelten wird er rot." },
+    { id: "notify", t: "Saugroboter: Meldungen", k: "meldung benachrichtigung handy festgefahren fehler fertig", tab: "msg", h: "Meldung aufs Handy, wenn ein Roboter Hilfe braucht oder fertig ist." },
+    { id: "view", t: "Saugroboter: Hauptbild", k: "karte kacheln anzeige hauptbild", tab: "view", h: "Raum-Kacheln, Karte dazu oder Karte zuerst." },
+  ];
+  return { id: ID, page, modal, act: actFn, change, css, art, settings: true, settingsTxt: "Roboter, Räume, wie oft reinigen, Meldungen", search, icons: { robot: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="9" r="2.2"/><path d="M7.5 15.5h9"/>' } };
 };

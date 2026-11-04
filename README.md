@@ -30,7 +30,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
-> 🧩 **Neu in der Beta 2026.11.1b8: Addons aus dem Katalog.** Module lassen sich unter **Einstellungen → Addons** installieren, aktualisieren und wieder deinstallieren. Updates kommen jetzt aus dem signierten Katalog [Maddog3010/strom-waerme-addons](https://github.com/Maddog3010/strom-waerme-addons), unabhängig von der Integration, mit Rücksprung auf die frühere Version. Das erste Addon ist **Modul 21 Saugroboter** (zuerst für Roborock). [Mehr dazu](#addons)
+> 🧩 **Neu in der Beta 2026.11.1b11: Addons aus dem Katalog, eingebunden in die Einstellungen.** Module lassen sich unter **Einstellungen → Addons** installieren, aktualisieren und wieder deinstallieren. Updates kommen jetzt aus dem signierten Katalog [Maddog3010/strom-waerme-addons](https://github.com/Maddog3010/strom-waerme-addons), unabhängig von der Integration, mit Rücksprung auf die frühere Version. Ihre Einstellungen stehen unter Module, in der Suche und im Messwerk. Das erste Addon ist **Modul 21 Saugroboter** (zuerst für Roborock). [Mehr dazu](#addons)
 
 > 🧭 **Seit der Beta 2026.11.1b6: Einstellungen neu gedacht.** Gemeinsame Werte liegen zentral im **Haus**, das **Messwerk** zeigt alle Sensoren aller Module mit „genutzt in“, dazu eine neue Sensorsuche ohne lange Listen, Suche, Änderungsverlauf mit Rückgängig und Hilfe an jeder Stelle. [Mehr dazu](#einstellungen)
 
