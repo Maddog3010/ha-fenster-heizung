@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b10] - 2026-11-04
+
+Testversion (Beta) mit zwei Fehlerbehebungen für Addons aus dem Katalog.
+
+### Behoben
+- **Installieren aus dem Katalog brach mit „Die Größe der Datei stimmt nicht mit dem Katalog überein“ ab.** Beim Herunterladen wurde nur der erste Datenblock gelesen. Jetzt wird die Datei vollständig geladen und danach wie bisher auf Größe und Prüfsumme geprüft.
+- **Der Reiter Katalog zeigte bei nicht installierten Addons die mitgelieferte Version** statt der neueren aus dem Katalog. Jetzt steht dort die Version, die du beim Installieren bekommst, mit „aus dem Katalog“.
+
 ## [2026.11.1b9] - 2026-11-04
 
 Testversion (Beta) mit einer Fehlerbehebung in Modul 1.

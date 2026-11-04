@@ -183,7 +183,12 @@ class AddonManager:
             async with sess.get(url, timeout=aiohttp.ClientTimeout(total=DL_TIMEOUT)) as r:
                 if r.status != 200:
                     raise R.RepoError(f"GitHub antwortet mit {r.status}")
-                data = await r.content.read(limit + 1)
+                buf = bytearray()  # content.read(n) liefert nur, was gerade da ist: bis zum Ende lesen
+                async for chunk in r.content.iter_chunked(65536):
+                    buf.extend(chunk)
+                    if len(buf) > limit:
+                        break
+                data = bytes(buf)
         except R.RepoError:
             raise
         except Exception as e:  # noqa: BLE001
@@ -484,6 +489,8 @@ class AddonManager:
                     summ = live[1].summary() or {}
                 except Exception:  # noqa: BLE001
                     summ = {}
+            if not st and rm and self._newer(rm, m):  # nicht installiert: die neueste Version zeigen, die man bekommen würde
+                base = rm
             row = {k: v for k, v in (base or {"id": aid, "name": aid}).items() if k not in ("path", "url", "sha256")}
             upd_r = bool(st and self._newer(rm, st))
             upd_l = bool(st and m and self._newer(m, st))
@@ -493,7 +500,7 @@ class AddonManager:
                 cur=f"{st.get('v')} Build {st.get('b') or 1}" if st else "",
                 update=upd_r or upd_l, upd_src="remote" if upd_r else "local" if upd_l else "",
                 remote={"version": rm["version"], "build": rm["build"], "notes": rm.get("notes", []), "size": rm.get("dl_size", 0), "date": rm.get("date", ""), "stage": rm.get("stage")} if rm else None,
-                src=(m or {}).get("src") or "remote", old=self.olds.get(aid, ""), busy=self.busy.get(aid, ""),
+                src="remote" if base is rm else (m or {}).get("src") or "remote", old=self.olds.get(aid, ""), busy=self.busy.get(aid, ""),
                 js=f"{URL_PREFIX}/{m['src']}/{aid}/panel.js?v={m.get('js_mtime', 0)}" if live and m and m.get("js_mtime") else "",
             )
             rows.append(row)
