@@ -8,8 +8,10 @@ Bei Abwesenheit oder Urlaub gilt eine höhere Obergrenze (Mindestschutz vor Schi
 Gerätearten: eigene Entität (humidifier.*, auch switch.* oder fan.*), Schaltsteckdose (switch.*) mit optionaler
 Leistungsmessung, oder „nur beobachten“ (Gerät mit eigenem Hygrostat, Modul 1 schaltet nichts).
 
-Der Standort wird vorerst von Hand gewählt. Er wird je Tag gespeichert (für die tägliche Bestätigung und die
-Statistik in späteren Schritten). Die Daten sind als Liste von Geräten angelegt, damit später mehrere Geräte möglich
+Schritt 2 (Standort): Einmal am Tag wird bestätigt, in welchem Raum der Entfeuchter steht – über die Standort-Karte
+im Dashboard und auf Wunsch per Benachrichtigung am Handy mit Tasten für die häufigsten Räume. Bis zur Antwort gilt der
+Standort von gestern. Ohne Antwort bis zur eingestellten Uhrzeit gilt „Wie gestern“, „Pausieren“ oder „Nur Hinweis“.
+Der Standort jedes Tages wird mit der Art der Bestätigung gespeichert (Verlauf, später Statistik). Die Daten sind als Liste von Geräten angelegt, damit später mehrere Geräte möglich
 sind; heute wird nur das erste genutzt.
 
 Oben stehen reine Rechenfunktionen ohne Home-Assistant-Importe (testbar), unten der Manager.
@@ -32,6 +34,11 @@ KINDS = ("entity", "plug", "watch")
 _ENT = re.compile(r"^[a-z_]+\.[a-z0-9_]{1,200}$")
 _LOC = re.compile(r"^(ms_[a-z0-9]{1,16}|[A-Za-z0-9]{8,40})$")
 FULL_STATES = {"on", "true", "full", "voll", "problem", "1"}
+_HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
+_NOTIFY = re.compile(r"^notify\.[a-z0-9_]{1,120}$")
+MISS = ("same", "pause", "hint")
+ACT_PREFIX = "FHLF_"          # Aktionen der Handy-Benachrichtigung: FHLF_L_<Standort> und FHLF_OFF
+PUSH_ROOMS = 3                # so viele Raum-Tasten in der Benachrichtigung (Android zeigt höchstens drei)
 
 
 def default_dev() -> dict[str, Any]:
@@ -39,7 +46,45 @@ def default_dev() -> dict[str, Any]:
         "id": "d1", "name": "Luftentfeuchter", "kind": "entity", "ent": "", "power": "", "run_w": 20.0, "tank": "",
         "cap_l": 0.0, "lph": 0.0,  # Tankschätzung ohne Sensor: Tankinhalt und Entfeuchtung pro Stunde (0 = aus)
         "hi": 60.0, "lo": 55.0, "hi_away": 65.0, "minrun": 15, "lock": 10, "vent": False,
+        "ask": default_ask(),
     }
+
+
+def default_ask() -> dict[str, Any]:
+    """Tägliche Standortabfrage: Uhrzeit, nur wenn jemand zu Hause ist, Verhalten ohne Antwort bis …, Räume, Handys."""
+    return {"on": True, "time": "08:00", "home_only": True, "until": "12:00", "miss": "same", "rooms": [], "push": []}
+
+
+def clean_ask(raw: Any) -> dict[str, Any]:
+    d, r = default_ask(), raw if isinstance(raw, dict) else {}
+    t = r.get("time") if isinstance(r.get("time"), str) and _HM.match(r.get("time")) else d["time"]
+    u = r.get("until") if isinstance(r.get("until"), str) and _HM.match(r.get("until")) else d["until"]
+    if u <= t:  # die Frist liegt immer nach der Abfrage
+        u = "23:59" if t >= "23:00" else f"{int(t[:2]) + 1:02d}:{t[3:]}"
+    rooms = [x for x in (r.get("rooms") or []) if isinstance(x, str) and _LOC.match(x)]
+    push = [x for x in (r.get("push") or []) if isinstance(x, str) and _NOTIFY.match(x)]
+    return {"on": r.get("on") is not False, "time": t, "home_only": r.get("home_only") is not False, "until": u,
+            "miss": r.get("miss") if r.get("miss") in MISS else d["miss"], "rooms": list(dict.fromkeys(rooms))[:20], "push": list(dict.fromkeys(push))[:6]}
+
+
+def push_rooms(offer: list[str], yest: str, counts: dict[str, int]) -> list[str]:
+    """Raum-Tasten für die Benachrichtigung: zuerst der Raum von gestern, dann die meistgenutzten."""
+    order = sorted(offer, key=lambda x: (-counts.get(x, 0), offer.index(x)))
+    if yest in order:
+        order.remove(yest)
+        order.insert(0, yest)
+    return order[:PUSH_ROOMS]
+
+
+def ask_phase(ask: dict[str, Any], hm: str, confirmed: bool) -> str:
+    """Stand der Abfrage am Tag: off (keine tägliche Abfrage), done (bestätigt), wait (vor der Uhrzeit), open, missed."""
+    if not ask["on"]:
+        return "off"
+    if confirmed:
+        return "done"
+    if hm < ask["time"]:
+        return "wait"
+    return "missed" if hm >= ask["until"] else "open"
 
 
 def _num(v: Any, lo: float, hi: float, d: float) -> float:
@@ -66,7 +111,7 @@ def clean_dev(raw: Any) -> dict[str, Any]:
         "hi": _num(r.get("hi"), 30, 90, d["hi"]), "lo": _num(r.get("lo"), 25, 85, d["lo"]),
         "hi_away": _num(r.get("hi_away"), 30, 95, d["hi_away"]),
         "minrun": int(_num(r.get("minrun"), 0, 120, d["minrun"])), "lock": int(_num(r.get("lock"), 0, 120, d["lock"])),
-        "vent": r.get("vent") is True,
+        "vent": r.get("vent") is True, "ask": clean_ask(r.get("ask")),
     }
     if out["lo"] >= out["hi"]:
         out["lo"] = max(25.0, out["hi"] - 5)
@@ -101,8 +146,10 @@ def decide(dev: dict[str, Any], ctx: dict[str, Any], is_on: bool) -> tuple[bool 
     Mindestlaufzeit. None heißt: nicht schalten (Gerät nicht erreichbar).
     ctx: loc, loc_name, hum, open (Namen offener Fenster), away, out_t, out_rh, avail, full, day_off
     """
+    if ctx.get("day_off") == "pause":
+        return False, True, "pause", ["Pausiert: Der Standort wurde heute nicht bestätigt. Bestätige ihn, dann regelt Modul 1 wieder."]
     if ctx.get("day_off"):
-        return False, True, "day_off", ["Für heute ausgeschaltet. Morgen regelt Modul 1 wieder."]
+        return False, True, "day_off", ["Heute nicht in Betrieb. Morgen regelt Modul 1 wieder."]
     if not ctx.get("loc"):
         return False, True, "no_loc", ["Standort unbekannt: Wähle, in welchem Raum der Entfeuchter steht."]
     if not ctx.get("avail"):
@@ -136,7 +183,7 @@ from homeassistant.helpers.event import async_track_time_interval  # noqa: E402
 from homeassistant.util import dt as dt_util  # noqa: E402
 
 from .backup import SafeStore  # noqa: E402
-from .const import CONF_HUMIDITY, CONF_ROOM_TEMP, CONF_THERMOSTATS, CONF_WINDOWS, DOMAIN  # noqa: E402
+from .const import CONF_HUMIDITY, CONF_ROOM_TEMP, CONF_THERMOSTATS, CONF_WINDOWS, DOMAIN, PANEL_URL  # noqa: E402
 
 
 def _fnum(st: Any) -> float | None:
@@ -153,11 +200,14 @@ class EntfeuchterManager:
         self._store = SafeStore(hass, 1, f"{DOMAIN}_entfeuchter")
         self.cfg = clean_cfg({})
         # Laufzustand: Standort, heute aus, Zeiten, Laufzeit je Tag, Standort je Tag, Stunden seit dem Leeren
-        self.st: dict[str, Any] = {"loc": "", "off_day": "", "on_ts": 0.0, "off_ts": 0.0, "run": {}, "locs": {}, "tank_h": 0.0, "full_ts": 0.0}
+        # locs: je Tag {"l": Standort oder "off", "h": Art} mit h = ok (bestätigt), auto (wie gestern übernommen), pause (ohne Antwort pausiert), hint (ohne Antwort), "" (offen)
+        self.st: dict[str, Any] = {"loc": "", "off_day": "", "on_ts": 0.0, "off_ts": 0.0, "run": {}, "locs": {}, "tank_h": 0.0, "full_ts": 0.0,
+                                   "conf_day": "", "sent_day": "", "miss_day": ""}
         self.live: dict[str, Any] = {}
         self._last_tick = 0.0
         self._cmd_ts = 0.0
         self._unsub: CALLBACK_TYPE | None = None
+        self._unsub_ev: CALLBACK_TYPE | None = None
 
     async def async_start(self) -> None:
         from .api import _layout  # Messräume stehen im Layout
@@ -170,15 +220,30 @@ class EntfeuchterManager:
                 "loc": str(s.get("loc") or "") if _LOC.match(str(s.get("loc") or "")) else "",
                 "off_day": str(s.get("off_day") or ""), "on_ts": float(s.get("on_ts") or 0), "off_ts": float(s.get("off_ts") or 0),
                 "run": {str(k): float(v) for k, v in (s.get("run") or {}).items() if isinstance(v, (int, float))},
-                "locs": {str(k): str(v) for k, v in (s.get("locs") or {}).items()},
+                "locs": {str(k): ({"l": str(v.get("l") or ""), "h": str(v.get("h") or "")} if isinstance(v, dict) else {"l": str(v), "h": ""}) for k, v in (s.get("locs") or {}).items()},
+                "conf_day": str(s.get("conf_day") or ""), "sent_day": str(s.get("sent_day") or ""), "miss_day": str(s.get("miss_day") or ""),
                 "tank_h": float(s.get("tank_h") or 0), "full_ts": float(s.get("full_ts") or 0),
             })
         self._unsub = async_track_time_interval(self.hass, self._tick, timedelta(seconds=TICK_SECONDS))
+        self._unsub_ev = self.hass.bus.async_listen("mobile_app_notification_action", self._on_action)
 
     def async_stop(self) -> None:
         if self._unsub:
             self._unsub()
             self._unsub = None
+        if self._unsub_ev:
+            self._unsub_ev()
+            self._unsub_ev = None
+
+    async def _on_action(self, event) -> None:
+        """Antwort aus der Handy-Benachrichtigung."""
+        act = str((event.data or {}).get("action") or "")
+        if not act.startswith(ACT_PREFIX):
+            return
+        if act == ACT_PREFIX + "OFF":
+            await self.async_cmd("off_today")
+        elif act.startswith(ACT_PREFIX + "L_"):
+            await self.async_cmd("loc", act[len(ACT_PREFIX) + 2:])
 
     def _save(self) -> None:
         keep = sorted(self.st["run"])[-HIST_DAYS:]
@@ -290,10 +355,13 @@ class EntfeuchterManager:
         if running and dt:
             self.st["run"][today] = self.st["run"].get(today, 0.0) + dt / 60
             self.st["tank_h"] += dt / 3600
-        if self.st["loc"]:
-            self.st["locs"][today] = self.st["loc"]
         if self.st["off_day"] and self.st["off_day"] != today:
             self.st["off_day"] = ""
+        await self._ask_step(dev, today)
+        rec = self.st["locs"].get(today) or {"l": "", "h": ""}
+        rec["l"] = "off" if self.st["off_day"] == today else self.st["loc"]
+        if rec["l"]:
+            self.st["locs"][today] = rec
         room = self._room(self.st["loc"])
         if self.st["loc"] and room is None:  # Raum gelöscht
             self.st["loc"] = ""
@@ -320,7 +388,8 @@ class EntfeuchterManager:
             self.st["full_ts"] = now
         ot, orh = self._outdoor()
         ctx = {"loc": self.st["loc"] if room else "", "loc_name": room["name"] if room else "", "hum": hum, "t": t, "open": open_w,
-               "away": self._away(), "out_t": ot, "out_rh": orh, "avail": on is not None, "full": full, "day_off": self.st["off_day"] == today}
+               "away": self._away(), "out_t": ot, "out_rh": orh, "avail": on is not None, "full": full,
+               "day_off": ("pause" if (self.st["locs"].get(today) or {}).get("h") == "pause" else True) if self.st["off_day"] == today else False}
         want, hard, code, why = decide(dev, ctx, bool(on))
         hint = ""
         if on and dev["power"] and not running:
@@ -351,10 +420,98 @@ class EntfeuchterManager:
         }
         self._save()
 
+    # ---- Tägliche Standortabfrage (Schritt 2)
+    def _offer(self, dev: dict[str, Any]) -> list[dict[str, Any]]:
+        """Räume zur Auswahl: die gewählten, sonst alle Räume mit Luftfeuchte-Sensor."""
+        allr = self.rooms()
+        sel = dev["ask"]["rooms"]
+        return [r for r in allr if r["id"] in sel] if sel and any(r["id"] in sel for r in allr) else allr
+
+    def _yesterday(self) -> str:
+        y = (dt_util.now().date() - timedelta(days=1)).isoformat()
+        rec = self.st["locs"].get(y) or {}
+        return rec.get("l") or ""
+
+    def _someone_home(self) -> bool:
+        pm = self.hass.data.get(DOMAIN, {}).get("presence")
+        try:
+            states = pm._person_states() if pm is not None else []
+        except Exception:  # noqa: BLE001
+            states = []
+        return (not states) or any(h for h, _ in states)
+
+    async def _ask_step(self, dev: dict[str, Any], today: str) -> None:
+        ask = dev["ask"]
+        hm = dt_util.now().strftime("%H:%M")
+        phase = ask_phase(ask, hm, self.st["conf_day"] == today)
+        if phase == "open" and ask["push"] and self.st["sent_day"] != today and (not ask["home_only"] or self._someone_home()):
+            self.st["sent_day"] = today
+            await self._send_ask(dev)
+        if phase == "missed" and self.st["miss_day"] != today:
+            self.st["miss_day"] = today
+            rec = self.st["locs"].setdefault(today, {"l": self.st["loc"], "h": ""})
+            if ask["miss"] == "same" and self.st["loc"]:
+                self.st["conf_day"], rec["h"] = today, "auto"
+            elif ask["miss"] == "pause":
+                self.st["off_day"], rec["h"] = today, "pause"
+            else:
+                rec["h"] = "hint"
+
+    def _name(self, loc: str) -> str:
+        if loc == "off":
+            return "nicht in Betrieb"
+        r = self._room(loc)
+        return r["name"] if r else ""
+
+    async def _send_ask(self, dev: dict[str, Any], targets: list[str] | None = None) -> int:
+        """Benachrichtigung „Wo steht der Entfeuchter heute?“ mit Tasten für die häufigsten Räume."""
+        offer = self._offer(dev)
+        counts: dict[str, int] = {}
+        for rec in self.st["locs"].values():
+            if rec.get("l") and rec["l"] != "off":
+                counts[rec["l"]] = counts.get(rec["l"], 0) + 1
+        ids = push_rooms([r["id"] for r in offer], self.st["loc"] or self._yesterday(), counts)
+        names = {r["id"]: r["name"] for r in offer}
+        hum = {r["id"]: r["hum"] for r in offer}
+        cur = self.st["loc"]
+        msg = f"Gestern: {names.get(cur) or self._name(cur)}" + (f" · Feuchte dort {hum[cur]:.0f} %" if cur in hum and hum[cur] is not None else "") if cur else "Noch kein Standort gewählt."
+        data = {"tag": "fh_entfeuchter", "url": f"/{PANEL_URL}?modul=fh", "clickAction": f"/{PANEL_URL}?modul=fh",
+                "actions": [{"action": f"{ACT_PREFIX}L_{i}", "title": names[i]} for i in ids]}
+        sent = 0
+        for svc in targets if targets is not None else dev["ask"]["push"]:
+            name = svc.split(".", 1)[1]
+            if not self.hass.services.has_service("notify", name):
+                continue
+            try:
+                await self.hass.services.async_call("notify", name, {"title": f"Wo steht der {dev['name']} heute?", "message": msg + " Anderer Raum oder heute aus: im Dashboard.", "data": data}, blocking=False)
+                sent += 1
+            except Exception as err:  # noqa: BLE001
+                _LOGGER.warning("Entfeuchter-Abfrage an %s fehlgeschlagen: %s", svc, err)
+        return sent
+
+    def _hist(self, days: int = 14) -> list[dict[str, Any]]:
+        out = []
+        base = dt_util.now().date()
+        for i in range(days):
+            d = (base - timedelta(days=i)).isoformat()
+            rec = self.st["locs"].get(d)
+            out.append({"d": d, "l": rec["l"] if rec else "", "name": self._name(rec["l"]) if rec and rec["l"] else "", "h": rec["h"] if rec else "",
+                        "min": round(self.st["run"].get(d, 0.0))})
+        return out
+
     # ---- Bedienung
     def snapshot(self) -> dict[str, Any]:
+        dev = self.dev()
+        today = dt_util.now().date().isoformat()
+        ask = None
+        if dev is not None:
+            ph = ask_phase(dev["ask"], dt_util.now().strftime("%H:%M"), self.st["conf_day"] == today)
+            y = self._yesterday()
+            rec = self.st["locs"].get(today) or {}
+            ask = {"phase": ph, "conf": self.st["conf_day"] == today, "how": rec.get("h") or "", "yest": y, "yest_name": self._name(y) if y else "",
+                   "sent": self.st["sent_day"] == today, "offer": [r["id"] for r in self._offer(dev)]}
         return {"cfg": self.cfg, "loc": self.st["loc"], "off_day": self.st["off_day"], "live": self.live, "rooms": self.rooms(),
-                "locs": dict(sorted(self.st["locs"].items())[-14:])}
+                "ask": ask, "hist": self._hist()}
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
         self.cfg = clean_cfg(raw)
@@ -364,15 +521,27 @@ class EntfeuchterManager:
 
     async def async_cmd(self, cmd: str, arg: str = "") -> dict[str, Any]:
         today = dt_util.now().date().isoformat()
-        if cmd == "loc":
-            self.st["loc"] = arg if (arg == "" or (_LOC.match(arg) and self._room(arg) is not None)) else self.st["loc"]
-            self.st["off_day"] = ""
-            if self.st["loc"]:
-                self.st["locs"][today] = self.st["loc"]
-        elif cmd == "off_today":
-            self.st["off_day"] = today
+        if cmd == "loc":  # Standort setzen oder bestätigen, gilt für den Tag
+            ok = arg == "" or (_LOC.match(arg) and self._room(arg) is not None)
+            if ok:
+                self.st["loc"] = arg
+                self.st["off_day"] = ""
+                if arg:
+                    self.st["conf_day"] = today
+                    self.st["locs"][today] = {"l": arg, "h": "ok"}
+        elif cmd == "off_today":  # Antwort „Heute nicht in Betrieb“
+            self.st["off_day"], self.st["conf_day"] = today, today
+            self.st["locs"][today] = {"l": "off", "h": "ok"}
         elif cmd == "on_today":
             self.st["off_day"] = ""
+            if self.st["loc"]:
+                self.st["locs"][today] = {"l": self.st["loc"], "h": (self.st["locs"].get(today) or {}).get("h") or "ok"}
+        elif cmd == "ask_test":
+            dev = self.dev()
+            n = await self._send_ask(dev, [arg] if arg else None) if dev else 0
+            snap = self.snapshot()
+            snap["test_sent"] = n
+            return snap
         elif cmd == "tank_empty":
             self.st["tank_h"], self.st["full_ts"] = 0.0, 0.0
         self._save()

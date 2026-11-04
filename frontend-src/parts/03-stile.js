@@ -1202,4 +1202,16 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .adcat{display:flex;gap:12px;align-items:center;padding:12px 14px}.adcat .sxt{flex:1;min-width:0}.adcat.ok .sxi{color:var(--teal)}.adcat.bad .sxi{color:#f87171}.adcat.bad small{color:#fca5a5}.adcat .gsch{display:inline-flex;gap:5px;align-items:center;flex:none}
 .adver{display:flex;align-items:center;justify-content:center;gap:16px;margin:6px 0 12px;padding:14px;border:1px solid var(--line);border-radius:16px}.adver div{text-align:center}.adver small{display:block;color:var(--mut);font-size:.74rem}.adver b{font-size:1.15rem}.adver .nw b{color:var(--teal)}.adver>span{transform:rotate(-90deg);color:var(--mut)}
 .adnotes{margin:0 0 12px;padding-left:20px;font-size:.86rem;line-height:1.5}.adnotes.adin{margin:8px 0 0 46px;color:var(--mut);font-size:.82rem}
+/* Modul 1: Luftentfeuchter – Standort (Schritt 2) */
+.lfloc .lftile{position:relative}.lftile.sel .lfok .ic,.lfok .ic{color:#042f2e}.lfok{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#22d3ee;color:#042f2e;font-style:normal}
+.lfmeta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.78rem;color:var(--mut)}.lfmeta b{color:var(--primary-text-color)}.lfst2.warn{color:var(--amber)}
+.lfbig .btn2{padding:11px 12px;font-size:.84rem}.lfbig .btn2.pri{flex:1 1 100%;background:#34d399;border-color:#34d399;color:#052e16}
+.lfconf{display:flex;align-items:center;gap:6px;font-size:.74rem;color:var(--mut)}.lfconf.ok .ic{color:#34d399}.lfconf.open{color:var(--amber)}.lfconf .lnk{margin-left:auto;font-size:.74rem}
+.lfchips{display:flex;flex-wrap:wrap;gap:6px}.lfchips button{border:1px solid var(--line);border-radius:12px;padding:9px 12px;background:none;color:inherit;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+.lfchips button.sel{background:#22d3ee;border-color:#22d3ee;color:#042f2e}
+.lftime{max-width:130px;font-variant-numeric:tabular-nums}
+.lfhist{display:grid;gap:2px}.lfhr{display:grid;grid-template-columns:84px 1fr auto 56px;gap:8px;align-items:center;padding:7px 2px;border-bottom:1px solid var(--line);font-size:.82rem}
+.lfhd{color:var(--mut)}.lfhh{font-size:.72rem;color:var(--mut)}.lfhh.ok{color:#34d399}.lfhh.warn{color:var(--amber)}.lfhm{text-align:right;color:var(--mut);font-size:.74rem;font-variant-numeric:tabular-nums}
+.lfdays{display:grid;gap:6px}.lfdays div{display:grid;grid-template-columns:110px 1fr auto;gap:8px;align-items:center;font-size:.8rem}.lfdays i{display:block;height:10px;border-radius:6px;background:#22d3ee}.lfdays i.off{background:var(--gray)}.lfdays b{font-size:.74rem;color:var(--mut);font-weight:600}
+@media(max-width:520px){.lfhr{grid-template-columns:70px 1fr 50px}.lfhh{grid-column:2/3}.lfhm{grid-row:1;grid-column:3}}
 `;

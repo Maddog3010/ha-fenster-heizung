@@ -375,6 +375,7 @@
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfloc") { box.innerHTML = this._lfLocModal(); return; }
+    if (m.type === "lfhist") { box.innerHTML = this._lfHistModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "msx") { box.innerHTML = this._msModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "mver") { box.innerHTML = this._mvModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1b13] - 2026-11-04
+
+Testversion (Beta) mit Schritt 2 des Luftentfeuchters in Modul 1.
+
+### Neu
+- **Modul 1 (v1.4): Luftentfeuchter – tägliche Standortbestätigung.** Einmal am Tag wird bestätigt, in welchem Raum der Entfeuchter steht. Bis zur Antwort gilt der Raum von gestern.
+  - **Standort-Karte:** Ab der eingestellten Uhrzeit (Standard 8:00) erscheint in Modul 1 „Wo steht der Luftentfeuchter heute?“ mit Kacheln der Räume und ihrer Luftfeuchte. Der Raum von gestern ist vorgewählt. Dazu „Bestätigen: …“, „Heute nicht in Betrieb“ und „Verlauf ansehen“.
+  - **Erinnerung am Handy:** Benachrichtigung über die Home-Assistant-App mit Tasten für bis zu drei Räume (zuerst der von gestern, dann die meistgenutzten). Ein Tipp auf eine Taste bestätigt den Standort, ein Tipp auf die Nachricht öffnet das Dashboard. Auf Wunsch nur, wenn jemand zu Hause ist. Mit Test-Abfrage in den Einstellungen.
+  - **Ohne Antwort** bis zur eingestellten Uhrzeit (Standard 12:00): „Wie gestern“ (Raum von gestern wird übernommen), „Pausieren“ (Entfeuchter bleibt aus, bis jemand bestätigt) oder „Nur Hinweis“ (läuft wie gestern, die Karte erinnert weiter).
+  - **Standortverlauf:** Raum und Art der Bestätigung je Tag, Laufzeit des Tages und Tage pro Raum der letzten 14 Tage.
+  - **Raumkarte:** Der Entfeuchter-Kasten zeigt, ob der Standort heute bestätigt ist, mit Link zum Verlauf.
+  - **Einstellungen:** Reiter „Standort“ mit Uhrzeit, „nur wenn jemand zu Hause ist“, Frist und Verhalten ohne Antwort, Räumen zur Auswahl und Handys, alles ohne Aufklappmenüs. Zwischendurch ändern geht jederzeit, die Regelung folgt sofort.
+
 ## [2026.11.1b12] - 2026-11-04
 
 Testversion (Beta) mit Phase 3 des Addon-Konzepts: Müllabfuhr und Licht sind jetzt Addons.

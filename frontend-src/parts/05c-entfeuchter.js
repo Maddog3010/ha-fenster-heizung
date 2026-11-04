@@ -1,4 +1,4 @@
-  /* ================= Modul 1: Luftentfeuchter (Schritt 1: Gerät und Regelung) =================
+  /* ================= Modul 1: Luftentfeuchter (Schritt 1: Gerät und Regelung, Schritt 2: Standort) =================
      Regelung im Backend (entfeuchter.py). Hier: Anzeige auf der Raumkarte des Standorts mit „Warum?“, Standortwahl
      über Raumkacheln, Einstellungen in Reitern ohne Aufklappmenüs, Zahlen mit Minus und Plus. */
   _lf() {
@@ -32,13 +32,39 @@
     return `<div class="lfbox ${k}"><div class="lfh"><span class="lfi">${ic("fan", 18)}</span><div class="lft"><b>${esc(dev.name)} <em class="lfhere">hier</em></b><span>${esc(sub || (dev.kind === "watch" ? "nur beobachten" : "Modul 1 regelt"))}</span></div><span class="lfst">${esc(t)}</span>${adm ? `<button class="ibtn" data-act="lfxset" aria-label="Entfeuchter einstellen">${ic("sliders", 16)}</button>` : ""}</div>
       ${L.fill != null ? `<div class="lfbar"><i style="width:${Math.min(100, Math.round(L.fill * 100))}%"></i></div>` : ""}
       <div class="lfwhy"><b>Warum?</b> ${esc((L.why || []).join(" "))}${L.hint ? `<br><span class="lfhint">${esc(L.hint)}</span>` : ""}</div>
+      ${(() => { const A = D.ask || {}; if (!A.phase || A.phase === "off") return ""; const t = A.conf ? (A.how === "auto" ? "Standort heute wie gestern übernommen" : "Standort heute bestätigt") : A.phase === "wait" ? "Standort gilt wie gestern, die Abfrage kommt später" : "Standort heute noch nicht bestätigt"; return `<div class="lfconf ${A.conf ? "ok" : "open"}">${ic(A.conf ? "check" : "pin", 13)}${esc(t)}<button class="lnk" data-act="lfxhist">Verlauf</button></div>`; })()}
       <div class="lfbtns"><button class="btn2" data-act="lfxloc">${ic("pin", 15)} Standort ändern</button>${D.off_day ? `<button class="btn2" data-act="lfxon">${ic("check", 15)} Wieder regeln</button>` : `<button class="btn2" data-act="lfxoff">${ic("close", 15)} Heute aus</button>`}${L.full || (L.fill != null && L.fill > 0.05) ? `<button class="btn2" data-act="lfxtank">${ic("drop", 15)} Tank geleert</button>` : ""}</div></div>`;
   }
-  /* Ohne Standort: Karte mit Raumkacheln oben bei den Räumen */
+  /* Standort-Karte (Schritt 2, Vorschlag 2): erscheint ohne Standort oder ab der Uhrzeit der Abfrage, bis der Tag bestätigt ist */
   _lfLocCard() {
     const D = this._lf(), dev = this._lfDev(); if (!D || !dev) return "";
-    if (D.loc && (D.rooms || []).some((r) => r.id === D.loc)) return "";
-    return `<div class="card lfloc"><div class="lfh"><span class="lfi">${ic("fan", 18)}</span><div class="lft"><b>Wo steht der ${esc(dev.name)}?</b><span>${D.off_day ? "Heute nicht in Betrieb." : "Ohne Standort bleibt er aus. Tippe auf den Raum."}</span></div></div>${this._lfTiles(D)}</div>`;
+    const R = D.rooms || [], A = D.ask || {}, hasLoc = D.loc && R.some((r) => r.id === D.loc), due = A.phase === "open" || A.phase === "missed";
+    if (hasLoc && !due) { this._lfPick = null; return ""; }
+    const offer = R.filter((r) => !(A.offer || []).length || A.offer.includes(r.id)), list = offer.length ? offer : R;
+    const pick = list.some((r) => r.id === this._lfPick) ? this._lfPick : hasLoc && list.some((r) => r.id === D.loc) ? D.loc : (list.find((r) => r.id === A.yest) || list[0] || {}).id;
+    const pn = (R.find((r) => r.id === pick) || {}).name || "";
+    const day = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
+    const state = A.how === "pause" ? `<span class="lfst2 warn">Pausiert, bis du den Standort bestätigst.</span>` : A.how === "hint" ? `<span class="lfst2 warn">Noch nicht bestätigt. Er läuft wie gestern.</span>` : D.off_day ? `<span class="lfst2">Heute nicht in Betrieb.</span>` : !hasLoc ? `<span class="lfst2">Ohne Standort bleibt er aus.</span>` : "";
+    const tiles = list.length ? `<div class="lftiles">${list.map((r) => `<button class="lftile ${pick === r.id ? "sel" : ""}" data-act="lfxsel" data-k="${esc(r.id)}" aria-pressed="${pick === r.id}"><b>${esc(r.name)}${pick === r.id ? `<i class="lfok">${ic("check", 13)}</i>` : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}</span></button>`).join("")}</div>`
+      : `<div class="mut sm">Kein Raum mit Luftfeuchte-Sensor gefunden. Wähle in den Raumeinstellungen einen Luftfeuchte-Sensor oder lege einen Messraum an.</div>`;
+    return `<div class="card lfloc"><div class="lfh"><span class="lfi">${ic("fan", 18)}</span><div class="lft"><b>Wo steht der ${esc(dev.name)} heute?</b><span>${esc(day)}</span></div></div>
+      ${tiles}<div class="lfmeta">${A.yest_name ? `Gestern: <b>${esc(A.yest_name)}</b>` : "Gestern: noch kein Eintrag"}${state}</div>
+      <div class="lfbtns lfbig">${pick ? `<button class="btn2 pri" data-act="lfxconf" data-k="${esc(pick)}">${ic("check", 16)} Bestätigen: ${esc(pn)}</button>` : ""}<button class="btn2" data-act="lfxoff">Heute nicht in Betrieb</button><button class="btn2" data-act="lfxhist">Verlauf ansehen</button></div></div>`;
+  }
+  /* Standortverlauf der letzten 14 Tage */
+  _lfHistModal() {
+    const D = this._lf() || {}, H = D.hist || [], dev = this._lfDev() || { name: "Luftentfeuchter" };
+    const how = { ok: ["ok", "bestätigt"], auto: ["", "wie gestern übernommen"], pause: ["warn", "ohne Antwort pausiert"], hint: ["warn", "ohne Antwort, lief wie gestern"], "": ["", "nicht bestätigt"] };
+    const cnt = {}; H.forEach((x) => { if (x.l) cnt[x.name || x.l] = (cnt[x.name || x.l] || 0) + 1; });
+    const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]), mx = Math.max(1, ...top.map((x) => x[1]));
+    const rows = H.map((x, i) => { const d = new Date(x.d + "T12:00:00"), lbl = i === 0 ? "Heute" : i === 1 ? "Gestern" : d.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }), hw = how[x.h] || how[""];
+      return `<div class="lfhr"><span class="lfhd">${esc(lbl)}</span><b class="${x.l === "off" ? "mut" : ""}">${x.l ? esc(x.name || "Raum gelöscht") : `<span class="mut">kein Eintrag</span>`}</b><span class="lfhh ${hw[0]}">${x.l ? esc(hw[1]) : ""}</span><span class="lfhm">${x.min ? hmin(x.min) : ""}</span></div>`; }).join("");
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Standortverlauf</b><span>${esc(dev.name)} · letzte 14 Tage</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${top.length ? `<div class="lsec">${ic("chart", 15)}Tage pro Raum</div><div class="lfdays">${top.map(([n, c]) => `<div><span>${esc(n)}</span><i style="width:${(c / mx) * 100}%" class="${n === "nicht in Betrieb" ? "off" : ""}"></i><b>${c} ${c === 1 ? "Tag" : "Tage"}</b></div>`).join("")}</div>` : ""}
+      <div class="lsec">${ic("today", 15)}Tag für Tag</div><div class="lfhist">${rows}</div>
+      <div class="mut sm" style="margin:8px 0 0">Rechts die Laufzeit des Tages. Ausführliche Statistik mit Strom und Kosten folgt in einem späteren Schritt.</div>
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _lfTiles(D) {
     const R = D.rooms || [], dev = (D.cfg.devs || [])[0] || {};
@@ -56,7 +82,7 @@
   _lfSetOpen() {
     const D = this._lf(), d0 = (D && D.cfg && D.cfg.devs && D.cfg.devs[0]) || null;
     this._pkId = null;
-    this._modal = { type: "lfset", tab: d0 && d0.ent ? "ziel" : "geraet", draft: { id: "d1", name: "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, minrun: 15, lock: 10, vent: false, ...(d0 || {}) } };
+    this._modal = { type: "lfset", tab: d0 && d0.ent ? "ziel" : "geraet", draft: { id: "d1", name: "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, minrun: 15, lock: 10, vent: false, ...(d0 || {}), ask: { on: true, time: "08:00", home_only: true, until: "12:00", miss: "same", rooms: [], push: [], ...((d0 && d0.ask) || {}) } } };
     this._renderModal();
   }
   _lfSetModal() {
@@ -94,7 +120,26 @@
         ${seg("vent", [[false, "Aus"], [true, "Ein"]])}
         <div class="gst">${ic("window", 15)}<div>Bei offenem Fenster im Raum des Standorts bleibt der Entfeuchter immer aus.</div></div>`;
     } else {
-      body = `<div class="mut sm" style="margin:4px 0 8px">Der Standort gilt, bis du ihn änderst. Die tägliche Bestätigung kommt in einem späteren Schritt.</div>${this._lfTiles(D)}`;
+      const a = d.ask, R = D.rooms || [], svc = Object.keys((this._hass.services || {}).notify || {}).filter((n) => !["send_message", "persistent_notification", "reload"].includes(n)).sort((x, y) => Number(y.startsWith("mobile_app")) - Number(x.startsWith("mobile_app")) || x.localeCompare(y)).map((n) => "notify." + n);
+      const pushAll = [...new Set([...svc, ...a.push])];
+      const chips = (arr, sel, act, lbl) => `<div class="lfchips">${arr.map((v) => `<button class="${sel.includes(v) ? "sel" : ""}" data-act="${act}" data-k="${esc(v)}" aria-pressed="${sel.includes(v)}">${esc(lbl(v))}</button>`).join("")}</div>`;
+      const aseg = (k, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${a[k] === v ? "sel" : ""}" data-act="lfxaseg" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
+      body = `<div class="lsec">${ic("today", 15)}Tägliche Standortabfrage</div>
+        <div class="mut sm" style="margin:-2px 0 6px">Einmal am Tag wird bestätigt, in welchem Raum der Entfeuchter steht. Bis dahin gilt der Raum von gestern.</div>
+        ${aseg("on", [[true, "Ein"], [false, "Aus"]])}
+        ${a.on ? `${row("Uhrzeit der Abfrage", "Ab dann erscheint die Standort-Karte", `<input class="otxt lftime" type="time" data-f="lfxt" data-k="time" value="${esc(a.time)}" aria-label="Uhrzeit der Abfrage">`)}
+        <div class="mut sm" style="margin:8px 0 4px">Abfrage am Handy nur, wenn jemand zu Hause ist</div>${aseg("home_only", [[true, "Ja"], [false, "Nein"]])}
+        ${row("Ohne Antwort bis", "Danach gilt die Wahl darunter", `<input class="otxt lftime" type="time" data-f="lfxt" data-k="until" value="${esc(a.until)}" aria-label="Frist für die Antwort">`)}
+        ${aseg("miss", [["same", "Wie gestern"], ["pause", "Pausieren"], ["hint", "Nur Hinweis"]])}
+        <div class="mut sm" style="margin:4px 0 0">${{ same: "Der Raum von gestern wird für heute übernommen.", pause: "Der Entfeuchter bleibt aus, bis jemand den Standort bestätigt.", hint: "Er läuft wie gestern weiter, die Karte erinnert weiter." }[a.miss]}</div>
+        <div class="lsec">${ic("home", 15)}Räume zur Auswahl (je ein Antippen)</div>
+        ${R.length ? chips(R.map((r) => r.id), a.rooms.length ? a.rooms : R.map((r) => r.id), "lfxroom", (v) => (R.find((r) => r.id === v) || {}).name || v) : `<div class="mut sm">Kein Raum mit Luftfeuchte-Sensor gefunden.</div>`}
+        <div class="mut sm" style="margin:2px 0 0">Alle markiert = alle Räume mit Luftfeuchte-Sensor, auch neue.</div>
+        <div class="lsec">${ic("bell", 15)}Erinnerung am Handy</div>
+        <div class="mut sm" style="margin:-2px 0 6px">Benachrichtigung mit Tasten für bis zu drei Räume: zuerst der von gestern, dann die meistgenutzten. Ein Tipp auf die Nachricht öffnet das Dashboard.</div>
+        ${pushAll.length ? chips(pushAll, a.push, "lfxpush", (v) => v.replace(/^notify\.(mobile_app_)?/, "").replace(/_/g, " ")) : `<div class="mut sm">Kein Benachrichtigungsdienst gefunden. Mit der Home-Assistant-App am Handy gibt es „mobile_app“-Dienste.</div>`}
+        ${a.push.length ? `<button class="lnk" data-act="lfxtest" style="margin:6px 0 0">${ic("bell", 14)} Jetzt eine Test-Abfrage senden</button>` : ""}` : ""}
+        <div class="lsec">${ic("pin", 15)}Standort jetzt</div>${this._lfTiles(D)}`;
     }
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Luftentfeuchter</b><span>Modul 1 · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -106,6 +151,7 @@
     const M = this._modal; if (!M || M.type !== "lfset") return false;
     if (t.dataset.f === "lfxname") { M.draft.name = t.value; return true; }
     if (t.dataset.f === "lfxe") { M.draft[t.dataset.k] = t.value || ""; return true; }
+    if (t.dataset.f === "lfxt") { if (/^\d\d:\d\d$/.test(t.value)) M.draft.ask[t.dataset.k] = t.value; return true; }
     return false;
   }
   async _lfSave(devs) {
@@ -119,11 +165,18 @@
     if (a === "lfxpick") { this._lfCmd("loc", b.dataset.k); if (M && M.type === "lfloc") { this._modal = null; this._renderModal(); } return; }
     if (a === "lfxoff") { this._lfCmd("off_today"); return; }
     if (a === "lfxon") { this._lfCmd("on_today"); return; }
+    if (a === "lfxsel") { this._lfPick = b.dataset.k; this._render(); return; }
+    if (a === "lfxconf") { this._lfPick = null; this._lfCmd("loc", b.dataset.k); this._toast("Standort für heute bestätigt"); return; }
+    if (a === "lfxhist") { this._modal = { type: "lfhist" }; this._renderModal(); return; }
+    if (a === "lfxtest") { this._hass.callWS({ type: "fenster_heizung/lf_cmd", cmd: "ask_test" }).then((r) => this._toast(r && r.test_sent ? `Test-Abfrage an ${r.test_sent} ${r.test_sent === 1 ? "Handy" : "Handys"} gesendet` : "Nicht gesendet: erst speichern, dann testen")).catch(() => this._toast("Test fehlgeschlagen")); return; }
     if (a === "lfxtank") { this._lfCmd("tank_empty"); this._toast("Tank als geleert vermerkt"); return; }
     if (!M || M.type !== "lfset") return;
     const d = M.draft;
     if (a === "lfxtab") { M.tab = b.dataset.k; this._pkId = null; this._renderModal(); }
     else if (a === "lfxseg") { const v = b.dataset.v; d[b.dataset.k] = v === "true" ? true : v === "false" ? false : v; if (b.dataset.k === "kind" && v === "plug" && d.ent && !d.ent.startsWith("switch.")) d.ent = ""; this._renderModal(); }
+    else if (a === "lfxaseg") { const v = b.dataset.v; d.ask[b.dataset.k] = v === "true" ? true : v === "false" ? false : v; this._renderModal(); }
+    else if (a === "lfxroom") { const all = (this._lf() || {}).rooms.map((r) => r.id), cur = d.ask.rooms.length ? [...d.ask.rooms] : [...all], k = b.dataset.k, i = cur.indexOf(k); if (i >= 0) cur.splice(i, 1); else cur.push(k); d.ask.rooms = cur.length === all.length || !cur.length ? [] : cur; this._renderModal(); }
+    else if (a === "lfxpush") { const k = b.dataset.k, cur = [...d.ask.push], i = cur.indexOf(k); if (i >= 0) cur.splice(i, 1); else cur.push(k); d.ask.push = cur; this._renderModal(); }
     else if (a === "lfxstep") { const k = b.dataset.k, s = parseFloat(b.dataset.d); d[k] = Math.round(Math.min(parseFloat(b.dataset.hi), Math.max(parseFloat(b.dataset.lo), (Number(d[k]) || 0) + s)) * 100) / 100; this._renderModal(); }
     else if (a === "lfxdel") { this._lfSave([]); }
     else if (a === "lfxsave") {
