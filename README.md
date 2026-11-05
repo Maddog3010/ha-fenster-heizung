@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.png" alt="Strom &amp; Wärme: Heizung, Strom und Haus in Home Assistant">
+  <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/banner.png" alt="Strom &amp; Wärme: Heizung, Strom und Haus in Home Assistant">
 </p>
 
 <h1 align="center">Strom & Wärme</h1>
@@ -15,7 +15,7 @@
 <p align="center"><b>Heizung, Strom und Haus auf einer Seite in Home Assistant.</b><br>
 Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmwasser und im Auto,<br>und du siehst, woher der Strom deiner Geräte kommt. Du schaltest nur die Module ein, die du brauchst.</p>
 
-<p align="center"><img src="docs/vorschau_desktop.png" width="680" alt="Dashboard auf dem Desktop"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_desktop.png" width="680" alt="Dashboard auf dem Desktop"></p>
 
 <p align="center">
   <a href="#installation">Installation</a> ·
@@ -25,12 +25,12 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
   <a href="#versionen-und-updates">Versionen</a> ·
   <a href="#sponsor-werden">Sponsor</a> ·
   <a href="#häufige-fragen">Fragen</a> ·
-  <a href="CHANGELOG.md">Änderungen</a>
+  <a href="https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md">Änderungen</a>
 </p>
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
-> 🎉 **Neu in Version 2026.11.1:** Einstellungen neu gedacht mit **Haus**-Werten für alle Module, **Messwerk** und neuer Sensorsuche · **Addons** zum Installieren (Müllabfuhr, Licht, neu Modul 21 Saugroboter) · Modul 1 mit **Messraum**, **Luftentfeuchter** (Standort per Tipp, Handy oder NFC, bis zu vier Geräte) und Regelung mit dem Raumsensor · **Tags & Karten** fest eingebaut · neue **Versionsnummern** `Jahr.Monat.Release`. [Alle Änderungen](CHANGELOG.md) · [Update-Hinweise](#versionen-und-updates)
+> 🎉 **Neu in Version 2026.11.1:** Einstellungen neu gedacht mit **Haus**-Werten für alle Module, **Messwerk** und neuer Sensorsuche · **Addons** zum Installieren (Müllabfuhr, Licht, neu Modul 21 Saugroboter) · Modul 1 mit **Messraum**, **Luftentfeuchter** (Standort per Tipp, Handy oder NFC, bis zu vier Geräte) und Regelung mit dem Raumsensor · **Tags & Karten** fest eingebaut · neue **Versionsnummern** `Jahr.Monat.Release`. [Alle Änderungen](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md) · [Update-Hinweise](#versionen-und-updates)
 
 ---
 
@@ -51,7 +51,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | ⚙️ | **Einstellungen** | Alles an einem Ort: Haus-Werte für alle Module, Messwerk mit allen Sensoren, Suche, Verlauf mit Rückgängig |
 | 💾 | **Sicherung** | Als Datei oder automatisch auf deinen Homeserver |
 
-📖 [**Bedienungsanleitung (PDF)**](docs/Bedienungsanleitung.pdf): 110 Seiten mit Bildern, alle Module, Datenstand 2026.11.1 (neu: Kapitel 29 „Neu in Version 2026.11.1“ ab Seite 98) · 📲 [**Tags & Karten mit dem iPhone anlernen**](docs/Anleitung_Tags_iPhone.pdf): 5 Seiten
+📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf): 110 Seiten mit Bildern, alle Module, Datenstand 2026.11.1 (neu: Kapitel 29 „Neu in Version 2026.11.1“ ab Seite 98) · 📲 [**Tags & Karten mit dem iPhone anlernen**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf): 5 Seiten
 
 ---
 
@@ -109,10 +109,10 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 Die Module 5, 6, 7, 10, 12, 13 und 15 zeigen **Konzeptseiten** zum Durchklicken. Alle Zahlen in den Bildern sind erfundene Beispiele, diese Module schalten nichts.
 
 <p align="center">
-  <img src="docs/vorschau_handy_modul1.png" width="190" alt="Modul 1 auf dem Handy">
-  <img src="docs/vorschau_handy_modul2.png" width="190" alt="Modul 2 auf dem Handy">
-  <img src="docs/vorschau_handy_modul3.png" width="190" alt="Modul 3 auf dem Handy">
-  <img src="docs/vorschau_startseite_handy.png" width="190" alt="Startseite auf dem Handy">
+  <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_handy_modul1.png" width="190" alt="Modul 1 auf dem Handy">
+  <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_handy_modul2.png" width="190" alt="Modul 2 auf dem Handy">
+  <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_handy_modul3.png" width="190" alt="Modul 3 auf dem Handy">
+  <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_startseite_handy.png" width="190" alt="Startseite auf dem Handy">
 </p>
 
 <details>
@@ -126,7 +126,7 @@ Die Module 5, 6, 7, 10, 12, 13 und 15 zeigen **Konzeptseiten** zum Durchklicken.
 - **Elektroheizer mit PV-Überschuss:** schaltet stufenweise, wenn Solarstrom übrig ist. Die Energie wird aus der Nennleistung berechnet.
 - **Bericht:** Heizzeit, Pausen und geschätzte Ersparnis in kWh, m³ oder Liter.
 
-<p align="center"><img src="docs/vorschau_modul_fenster_heizung.png" width="560" alt="Modul 1"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_fenster_heizung.png" width="560" alt="Modul 1"></p>
 </details>
 
 <details>
@@ -135,7 +135,7 @@ Die Module 5, 6, 7, 10, 12, 13 und 15 zeigen **Konzeptseiten** zum Durchklicken.
 
 Zeitplan mit Zieltemperaturen, Zirkulationspumpe, Legionellenschutz und Heizstab bei PV-Überschuss. Die Sicherheitsgrenze (zum Beispiel 65 °C) hat immer Vorrang und ersetzt keinen Verbrühschutz.
 
-<p align="center"><img src="docs/vorschau_modul_warmwasser.png" width="560" alt="Modul 2"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_warmwasser.png" width="560" alt="Modul 2"></p>
 </details>
 
 <details>
@@ -145,7 +145,7 @@ Zeitplan mit Zieltemperaturen, Zirkulationspumpe, Legionellenschutz und Heizstab
 - **Energie:** Solar, Netz, Batterie und Hausverbrauch für Tag, Woche, Monat und Jahr, mit ‹ › zum Blättern. Kacheln mit Verlauf und Vergleich zur Vorperiode, Diagramm zum Antippen, Kosten als Treppe bis zur Bilanz, Prüfung der Vorzeichen. Optional eine zweite Solaranlage wie ein Balkonkraftwerk.
 - **Gerätestrom:** pro Lauf eines Geräts der Anteil aus Solar, Batterie und Netz und die Kosten, für Tag, Woche, Monat und Jahr mit Blättern. Gerätetypen mit Symbol und passenden Startwerten. Die Aufteilung ist eine Näherung aus Messwerten im 20-Sekunden-Takt.
 
-<p align="center"><img src="docs/vorschau_modul_energie.png" width="400" alt="Modul 3"> <img src="docs/vorschau_modul_geraetestrom.png" width="400" alt="Modul 4"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_energie.png" width="400" alt="Modul 3"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_geraetestrom.png" width="400" alt="Modul 4"></p>
 </details>
 
 <details>
@@ -154,7 +154,7 @@ Zeitplan mit Zieltemperaturen, Zirkulationspumpe, Legionellenschutz und Heizstab
 
 go-e Charger lokal im Netzwerk. Betriebsarten Aus, Sonne, Sonne + Netz, Voll und Ladeplan mit Abfahrtszeit, Ziel-Ladestand, Strompreis und PV-Prognose. Dazu RFID-Karten je Fahrzeug, Ladestatistik und Hausanschluss-Schutz.
 
-<p align="center"><img src="docs/vorschau_modul_elektroauto.png" width="560" alt="Modul 8"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_elektroauto.png" width="560" alt="Modul 8"></p>
 </details>
 
 <details>
@@ -163,7 +163,7 @@ go-e Charger lokal im Netzwerk. Betriebsarten Aus, Sonne, Sonne + Netz, Voll und
 
 Eigene Schwellen für Sturm, Gewitter, Frost, Hitze und Starkregen mit Vorwarnung, dazu amtliche Warnungen von DWD, NINA und MeteoAlarm. Aktionen und Meldungen aufs Handy sind einstellbar.
 
-<p align="center"><img src="docs/vorschau_modul_wetter.png" width="560" alt="Modul 9"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_wetter.png" width="560" alt="Modul 9"></p>
 </details>
 
 <details>
@@ -174,7 +174,7 @@ Eigene Schwellen für Sturm, Gewitter, Frost, Hitze und Starkregen mit Vorwarnun
 - **Wartung:** Einbaudatum, Lebensdauer, Prüfintervall, Batterie-Prognose, Einkaufsliste und Jahresprotokoll.
 - **Abfahrt-Prüfung:** zeigt offene Fenster, Türen und Geräte, wenn du das Haus verlässt.
 
-<p align="center"><img src="docs/vorschau_modul_sicherheit.png" width="560" alt="Modul 11"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_sicherheit.png" width="560" alt="Modul 11"></p>
 </details>
 
 <details>
@@ -184,7 +184,7 @@ Eigene Schwellen für Sturm, Gewitter, Frost, Hitze und Starkregen mit Vorwarnun
 - **Dynamischer Stromtarif (Beta):** Stundenpreise, Preisverlauf und die günstigsten Zeiten, zum Beispiel aus Tibber.
 - **Solar-Prognose (Vorabversion):** heute und morgen, Stundenverlauf und Vergleich mit dem tatsächlichen Ertrag. Die Module 2, 3 und 8 nutzen sie.
 
-<p align="center"><img src="docs/vorschau_modul_stromtarif.png" width="400" alt="Modul 14"> <img src="docs/vorschau_modul_prognose.png" width="400" alt="Modul 16"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_stromtarif.png" width="400" alt="Modul 14"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_prognose.png" width="400" alt="Modul 16"></p>
 </details>
 
 <details>
@@ -199,7 +199,7 @@ Das Haus in der Mitte, ringsum bis zu acht Kacheln für Solar, Netz, Akku, Auto 
 <summary><b>21 · Saugroboter</b> (Addon, in Entwicklung)</summary>
 <br>
 
-<p align="center"><img src="docs/vorschau_modul_saugroboter.png" width="640" alt="Modul 21 Saugroboter"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_saugroboter.png" width="640" alt="Modul 21 Saugroboter"></p>
 
 Das erste **Addon**: Du installierst es unter **Einstellungen → Addons** und kannst es dort jederzeit pausieren oder wieder deinstallieren, auf Wunsch mit oder ohne deine Daten. Neue Versionen kommen aus dem Addon-Katalog und erscheinen im Reiter **Updates**.
 
@@ -220,21 +220,21 @@ Das erste **Addon**: Du installierst es unter **Einstellungen → Addons** und k
 <summary><b>Startseite</b></summary>
 <br>
 
-<p align="center"><img src="docs/vorschau_startseite.png" width="760" alt="Startseite"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_startseite.png" width="760" alt="Startseite"></p>
 
 - **Zuhause:** eine Ampel-Kachel je aktivem Modul, ein Tipp öffnet das Modul.
 - **Wetter**, **Personen** und **Alarm** (Schalten ist ab Werk aus und wird immer bestätigt).
 - **Hinweise:** Fenster zu lange offen, Warmwasser, schwache Batterien, Müllabfuhr, Alarm.
 - Mit **Anpassen** verschiebst du Karten oder blendest sie aus. Ein Direktlink wie `?modul=mu` öffnet gleich ein Modul.
 
-<p align="center"><img src="docs/vorschau_startseite_anpassen.png" width="420" alt="Anpassen"> <img src="docs/vorschau_startseite_bubbles.png" width="420" alt="Bubbles"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_startseite_anpassen.png" width="420" alt="Anpassen"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_startseite_bubbles.png" width="420" alt="Bubbles"></p>
 </details>
 
 <details>
 <summary><b>Tablet-Modus</b></summary>
 <br>
 
-<p align="center"><img src="docs/vorschau_tablet.png" width="760" alt="Tablet-Modus"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_tablet.png" width="760" alt="Tablet-Modus"></p>
 
 Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den aktiven Modulen. Die Einstellungen gelten nur für das jeweilige Gerät.
 
@@ -249,7 +249,7 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 | Display einschalten bei Bewegung | ja | ja | nein |
 | Display ausschalten | ja | teilweise | nein |
 
-<p align="center"><img src="docs/vorschau_tablet_pin.png" width="340" alt="PIN"> <img src="docs/vorschau_tablet_hoch.png" width="180" alt="Hochformat"> <img src="docs/vorschau_tablet_ruhe.png" width="340" alt="Ruhemodus"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_tablet_pin.png" width="340" alt="PIN"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_tablet_hoch.png" width="180" alt="Hochformat"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_tablet_ruhe.png" width="340" alt="Ruhemodus"></p>
 </details>
 
 <a id="einstellungen"></a>
@@ -257,7 +257,7 @@ Für Tablets an der Wand: große Knöpfe, Uhr im Kopf, untere Leiste mit den akt
 <summary><b>Einstellungen, Messwerk und Store</b></summary>
 <br>
 
-<p align="center"><img src="docs/vorschau_einstellungen.png" width="420" alt="Einstellungen"> <img src="docs/vorschau_beta_module.png" width="420" alt="Module verwalten"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_einstellungen.png" width="420" alt="Einstellungen"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_beta_module.png" width="420" alt="Module verwalten"></p>
 
 Der Knopf **Einstellungen** öffnet in jedem Modul dieselbe Seite. Am Desktop stehen die Bereiche links, auf dem Handy öffnet jeder Bereich eine eigene Seite. Ganz oben steht die **Suche**: „Preis“ findet Bezugspreis, Einspeisevergütung und Stundenpreis-Sensor, „tibber“ auch die Sensoren mit ihren Modulen. Ein Tipp springt direkt an die Stelle.
 
@@ -302,7 +302,7 @@ Der **Store** zeigt Dienste, die zu deinen Modulen passen (go-e, Tibber, Wetter,
 
 Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt sind. Sie sind **ab Werk aus** und lassen sich einzeln einschalten (Kolben-Symbol im Kopf oder Tab „Labs“). Jedes Lab hat eine Infoseite mit Bildern und Voraussetzungen.
 
-<p align="center"><img src="docs/vorschau_labs.png" width="420" alt="Labs-Seite"> <img src="docs/vorschau_labs_info.png" width="420" alt="Infoseite"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_labs.png" width="420" alt="Labs-Seite"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_labs_info.png" width="420" alt="Infoseite"></p>
 
 **Nur Anzeige** (grün) zeigt etwas an. **Schaltet Geräte** (orange) greift ein und fragt vorher nach. Fenster auf, Abwesend und Urlaub, die Sicherheitsgrenzen und der Hausanschluss-Schutz haben immer Vorrang.
 
@@ -350,7 +350,7 @@ Im Dashboard steht die installierte Version oben im Kopf, bei einer Testversion 
 
 Über HACS aktualisieren, Home Assistant neu starten und die Seite neu laden (Strg+F5, in der App nach unten ziehen). Deine Einstellungen bleiben erhalten. Administratoren sehen im Dashboard einen Hinweis, sobald eine neuere Version erschienen ist. Wer eine Beta nutzt, bekommt dort auch neuere Betas angezeigt.
 
-> **Update von 3.0.7.x auf 2026.11.1:** Beim ersten Start werden gemeinsame Werte (Energiequellen, Preise, Wetterquelle) einmalig nach **Einstellungen → Haus** übernommen, vorher wird automatisch gesichert. Wer die Labs „Müllabfuhr“ oder „Licht & Lampen“ an hatte, bekommt sie als Addon mit allen Einstellungen. „Tags & Karten“ ist kein Lab mehr, angelernte Tags bleiben. Was sich in der Bedienung geändert hat, steht in Kapitel 29 der [Bedienungsanleitung](docs/Bedienungsanleitung.pdf).
+> **Update von 3.0.7.x auf 2026.11.1:** Beim ersten Start werden gemeinsame Werte (Energiequellen, Preise, Wetterquelle) einmalig nach **Einstellungen → Haus** übernommen, vorher wird automatisch gesichert. Wer die Labs „Müllabfuhr“ oder „Licht & Lampen“ an hatte, bekommt sie als Addon mit allen Einstellungen. „Tags & Karten“ ist kein Lab mehr, angelernte Tags bleiben. Was sich in der Bedienung geändert hat, steht in Kapitel 29 der [Bedienungsanleitung](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf).
 
 > **Hinweis für Installationen bis 3.0.7.6:** Der eingebaute Update-Hinweis kennt die neuen Nummern noch nicht. HACS zeigt das Update trotzdem an.
 
@@ -371,8 +371,8 @@ Im Dashboard steht die installierte Version oben im Kopf, bei einer Testversion 
 | 🌊 **Modul 19 „Hausfluss“** | Das Fluss-Bild deines Hauses, nur für Sponsoren |
 
 <p align="center">
-  <img src="docs/vorschau_sponsor_gesperrt.png" width="420" alt="Sponsor-Bereich vor dem Einlösen">
-  <img src="docs/vorschau_sponsor_bereich.png" width="420" alt="Sponsor-Bereich mit Schlüssel">
+  <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_sponsor_gesperrt.png" width="420" alt="Sponsor-Bereich vor dem Einlösen">
+  <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_sponsor_bereich.png" width="420" alt="Sponsor-Bereich mit Schlüssel">
 </p>
 
 1. Auf [GitHub Sponsors](https://github.com/sponsors/Maddog3010) Sponsor werden.
@@ -436,5 +436,5 @@ Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues),
 - **Addons (API 1):** `addon_manager.py` findet, installiert, lädt und entlädt Addons, `addon_api.py` ist die Schnittstelle (`SWAddon`, `AddonCore` mit Speicher, Befehlen, Beobachtern, Bereichen, Meldungen). Ein Addon ist ein Ordner mit `addon.json` (Steckbrief: id, Modulnummer, Version, Build, Stufe, `api`, `core_min`, `needs`), `__init__.py` mit der Klasse `Addon` und `www/panel.js` (ES-Modul, wird vom Dashboard per `import()` nachgeladen). Mitgelieferte Addons liegen in `custom_components/fenster_heizung/addons/`, eigene in `<config>/strom_waerme_addons/` (überstehen HACS-Updates). Die Seite spricht über `fenster_heizung/addon_call` mit ihrem Python-Teil, die Verwaltung über `addons_get` und `addons_act`. Im Dashboard steckt der Kern-Teil in `12z-addons.js`. `addon_repo.py` lädt den Katalog aus `Maddog3010/strom-waerme-addons` (`catalog.json` + `catalog.sig`, Ed25519 mit dem Entwickler-Schlüssel aus `sponsor.py`), prüft Größe und SHA-256 jeder ZIP, entpackt sicher nach `<config>/strom_waerme_addons/<id>` und behält die vorige Version als `<id>.old` für den Rücksprung. Veröffentlicht wird mit dem Tool im Addon-Repository (`Veröffentlichen.command`).
 
 ---
-<p align="center"><a href="https://github.com/sponsors/Maddog3010"><img src="docs/sponsor_banner.png" alt="Sponsor werden" width="70%"></a></p>
+<p align="center"><a href="https://github.com/sponsors/Maddog3010"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/sponsor_banner.png" alt="Sponsor werden" width="70%"></a></p>
 <p align="center"><sub>Made with ❤ by <b>MADDOG3010</b> · „Strom &amp; Wärme“ ist ein privates Projekt und steht in keiner Verbindung zu Home Assistant oder Nabu Casa.</sub></p>
