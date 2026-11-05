@@ -2,6 +2,37 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.1] - 2026-11-05
+
+Erste stabile Version im neuen Versionsschema. Sie enthält alles aus den Testversionen 2026.1029.0b1 bis 2026.11.1b16. Die Bedienungsanleitung hat dazu das neue Kapitel 29 „Neu in Version 2026.11.1“.
+
+### Neu
+- **Einstellungen neu gedacht:** Bereiche statt einer langen Seite, gemeinsame Werte für alle Module zentral unter **Haus**, Suche nach Einstellungen und Sensoren, Änderungsverlauf mit Rückgängig, Prüfung mit „Beheben“ und Hilfe „?“ an jeder Stelle.
+- **Messwerk und neue Sensorsuche:** Alle Sensoren aller Module an einer Stelle mit „genutzt in“, Live-Wert und Zustand, Zuordnen und Tauschen direkt dort. Bei jeder Sensorauswahl gibt es Vorschläge mit Begründung, eine Auswahl nach Raum und Filter statt langer Listen.
+- **Addons:** Module lassen sich unter Einstellungen → Addons installieren, aktualisieren, pausieren und deinstallieren, aus dem signierten Katalog Maddog3010/strom-waerme-addons, mit Rücksprung auf die frühere Version. Müllabfuhr (Modul 17) und Licht & Lampen (Modul 18) sind jetzt Addons, neu ist Modul 21 Saugroboter (in Entwicklung).
+- **Modul 1 Fenster & Heizung (v1.6 Build 1):** Messräume nur mit Temperatur und Luftfeuchte, Luftentfeuchter mit Regelung nach der Raumfeuchte, täglicher Standortbestätigung (Karte, Handy, NFC-Tag), „hierher stellen“, bis zu vier Geräten, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik und Meldungen. Dazu Regelung mit dem Raumsensor (Offset-Ausgleich, „Aus bei Ziel“, Regelung im Detail).
+- **Modul 3 Energie (v1.1 Build 1):** Tag, Woche, Monat und Jahr mit Blättern, Bilanz in Euro, Autarkie-Ring, Kacheln mit Vergleich zur Vorperiode, Kosten als Treppe, Diagramme zum Antippen.
+- **Modul 4 Gerätestrom (v1.1 Build 2):** Gerätetypen mit passenden Startwerten, Gerätekarten mit Laufzeit und Verlaufslinie, bis zu 15 Geräte statt 8.
+- **Versionen:** Unter Einstellungen → System → Versionen stehen die letzten fünf Updates mit ihren Änderungen, die Modulversionen und eine Erklärung der Versionsnummer.
+
+### Geändert
+- **Neue Versionsnummern nach Jahr, Monat und Release** (2026.11.1, 2026.11.2 …). Testversionen tragen die Nummer des kommenden Updates mit b1, b2 … Der Update-Hinweis im Dashboard versteht alle bisherigen Schemata.
+- **„Tags & Karten“ ist fest eingebaut** (Einstellungen → Haus → Tags & Karten) und kein Lab mehr. Neue Aktionen: Entfeuchter steht hier, Entfeuchter heute aus, Wassertank geleert und Melder geprüft (Modul 11).
+- Uhrzeiten werden überall in zwei Feldern für Stunde und Minute eingegeben.
+- Die Sicherung enthält jetzt auch Haus-Werte, Messräume, Luftentfeuchter, Messwerk und Tags.
+
+### Behoben
+- Die Mac-App von Home Assistant stürzte ab, wenn man auf ein Uhrzeit-Feld tippte.
+- Modul 1: Nach dem automatischen „Abwesend“ schaltete die Anwesenheit nicht mehr zuverlässig auf „Zu Hause“ zurück.
+- Modul 1: Personen mit eigenen Standortquellen wurden über die Personen-Entität fälschlich als „Zu Hause“ gezählt.
+- Auswahlfelder klappten von selbst zu, wenn Home Assistant neue Werte meldete.
+
+### Wichtig beim Update
+- Nach dem Update Home Assistant neu starten und die Seite neu laden (Strg+F5, in der App ganz schließen und neu öffnen). Deine Einstellungen bleiben erhalten.
+- Beim ersten Start werden gemeinsame Werte (Energiequellen, Preise, Wetterquelle) einmalig nach Einstellungen → Haus übernommen. Vorher wird automatisch gesichert. Unter Einstellungen → Haus zeigt „Was wurde übernommen?“ alles im Einzelnen.
+- Wer die Labs „Müllabfuhr“ oder „Licht & Lampen“ an hatte, bekommt sie als Addon mit allen Einstellungen. Angelernte Tags aus „Tags & Karten“ bleiben erhalten.
+- Wer eine Testversion von Ende Oktober nutzt (2026.1029.0b1 bis 2026.1030.0b5): HACS hält diese Nummern für neuer. Einmal in HACS über die drei Punkte „Neu herunterladen“ wählen und 2026.11.1 installieren.
+
 ## [2026.11.1b16] - 2026-11-04
 
 Testversion (Beta): „Tags & Karten“ ist fest eingebaut.

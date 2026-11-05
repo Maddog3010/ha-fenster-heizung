@@ -30,11 +30,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
-> 🧩 **Neu in der Beta 2026.11.1b12: Müllabfuhr und Licht sind jetzt Addons.** Wer die Labs an hatte, bekommt sie automatisch mit allen Einstellungen. Addons kommen aus dem Katalog und sind in die Einstellungen eingebunden. Module lassen sich unter **Einstellungen → Addons** installieren, aktualisieren und wieder deinstallieren. Updates kommen jetzt aus dem signierten Katalog [Maddog3010/strom-waerme-addons](https://github.com/Maddog3010/strom-waerme-addons), unabhängig von der Integration, mit Rücksprung auf die frühere Version. Ihre Einstellungen stehen unter Module, in der Suche und im Messwerk. Das erste Addon ist **Modul 21 Saugroboter** (zuerst für Roborock). [Mehr dazu](#addons)
-
-> 🧭 **Seit der Beta 2026.11.1b6: Einstellungen neu gedacht.** Gemeinsame Werte liegen zentral im **Haus**, das **Messwerk** zeigt alle Sensoren aller Module mit „genutzt in“, dazu eine neue Sensorsuche ohne lange Listen, Suche, Änderungsverlauf mit Rückgängig und Hilfe an jeder Stelle. [Mehr dazu](#einstellungen)
-
-> 🧪 **Versionsnummern nach Jahr, Monat und Release.** Ab November 2026 heißen stabile Updates `2026.11.1`, `2026.11.2` …, Testversionen tragen die Nummer des kommenden Updates (`2026.11.1b1`). Testversionen gibt es nur, wenn du in HACS Beta-Versionen einschaltest. [Mehr dazu](#versionen-und-updates)
+> 🎉 **Neu in Version 2026.11.1:** Einstellungen neu gedacht mit **Haus**-Werten für alle Module, **Messwerk** und neuer Sensorsuche · **Addons** zum Installieren (Müllabfuhr, Licht, neu Modul 21 Saugroboter) · Modul 1 mit **Messraum**, **Luftentfeuchter** (Standort per Tipp, Handy oder NFC, bis zu vier Geräte) und Regelung mit dem Raumsensor · **Tags & Karten** fest eingebaut · neue **Versionsnummern** `Jahr.Monat.Release`. [Alle Änderungen](CHANGELOG.md) · [Update-Hinweise](#versionen-und-updates)
 
 ---
 
@@ -55,7 +51,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | ⚙️ | **Einstellungen** | Alles an einem Ort: Haus-Werte für alle Module, Messwerk mit allen Sensoren, Suche, Verlauf mit Rückgängig |
 | 💾 | **Sicherung** | Als Datei oder automatisch auf deinen Homeserver |
 
-📖 [**Bedienungsanleitung (PDF)**](docs/Bedienungsanleitung.pdf): 97 Seiten mit Bildern, alle Module 1 bis 19, Datenstand 3.0.6.7 · 📲 [**Tags & Karten mit dem iPhone anlernen**](docs/Anleitung_Tags_iPhone.pdf): 5 Seiten
+📖 [**Bedienungsanleitung (PDF)**](docs/Bedienungsanleitung.pdf): 110 Seiten mit Bildern, alle Module, Datenstand 2026.11.1 (neu: Kapitel 29 „Neu in Version 2026.11.1“ ab Seite 98) · 📲 [**Tags & Karten mit dem iPhone anlernen**](docs/Anleitung_Tags_iPhone.pdf): 5 Seiten
 
 ---
 
@@ -354,6 +350,8 @@ Im Dashboard steht die installierte Version oben im Kopf, bei einer Testversion 
 
 Über HACS aktualisieren, Home Assistant neu starten und die Seite neu laden (Strg+F5, in der App nach unten ziehen). Deine Einstellungen bleiben erhalten. Administratoren sehen im Dashboard einen Hinweis, sobald eine neuere Version erschienen ist. Wer eine Beta nutzt, bekommt dort auch neuere Betas angezeigt.
 
+> **Update von 3.0.7.x auf 2026.11.1:** Beim ersten Start werden gemeinsame Werte (Energiequellen, Preise, Wetterquelle) einmalig nach **Einstellungen → Haus** übernommen, vorher wird automatisch gesichert. Wer die Labs „Müllabfuhr“ oder „Licht & Lampen“ an hatte, bekommt sie als Addon mit allen Einstellungen. „Tags & Karten“ ist kein Lab mehr, angelernte Tags bleiben. Was sich in der Bedienung geändert hat, steht in Kapitel 29 der [Bedienungsanleitung](docs/Bedienungsanleitung.pdf).
+
 > **Hinweis für Installationen bis 3.0.7.6:** Der eingebaute Update-Hinweis kennt die neuen Nummern noch nicht. HACS zeigt das Update trotzdem an.
 
 > **Hinweis für die Testversionen `2026.1029.0b1` bis `2026.1030.0b5`:** Home Assistant und HACS vergleichen Zahl für Zahl und halten diese Nummern (1030) für neuer als `2026.11.x`. Das Update wird deshalb nicht von selbst angeboten. Einmal in HACS das Repository öffnen, über die drei Punkte **Neu herunterladen** wählen und die gewünschte Version installieren. Danach laufen Updates wieder normal.
@@ -401,8 +399,8 @@ Nein. Ein Sponsoring ist freiwillig.
 **Brauche ich die Beta-Versionen?**
 Nein. Sie sind für alle, die neue Funktionen früh testen möchten. Für den Alltag reicht die stabile Version.
 
-**Warum steht bei mir noch 3.0.7.6?**
-Die erste Version im neuen Schema ist eine Testversion. Du bekommst sie nur mit eingeschalteten Beta-Versionen in HACS. Sonst kommt das nächste stabile Update, zum Beispiel `2026.11.1`.
+**Warum steht bei mir noch 3.0.7.x?**
+Das Update auf `2026.11.1` kommt über HACS wie gewohnt. Der eingebaute Update-Hinweis von 3.0.7.6 und älter kennt die neuen Nummern noch nicht, HACS zeigt das Update trotzdem an.
 
 **Warum steuert Modul 5 (oder 6, 7, 10, 12, 13, 15) nichts?**
 Diese Module sind „In Entwicklung“ und zeigen Konzepte mit Beispielwerten. Der Reiter „Jetzt“ zeigt, wo es schon geht, echte Werte.
@@ -414,7 +412,7 @@ Nein. Sie bleiben erhalten, dazu gibt es interne Kopien und auf Wunsch eine Sich
 Unter **Einstellungen → Messwerk**. Ein Tipp auf den Sensor zeigt „genutzt in“ mit dem Zweck je Modul. Die Suche oben findet Sensoren auch nach Name oder Entity-ID.
 
 **Wo stelle ich Strompreis, Netz-Sensor oder Außentemperatur ein?**
-Seit 2026.11.1b3 an einer Stelle für alle Module: **Einstellungen → Haus** (Energiequellen, Preise & Tarif, Wetterquelle). Beim Update wurden die Werte aus Modul 1, Modul 3, der Darstellung und Modul 9 einmalig übernommen, vorher wurde automatisch gesichert.
+Seit 2026.11.1 an einer Stelle für alle Module: **Einstellungen → Haus** (Energiequellen, Preise & Tarif, Wetterquelle). Beim Update wurden die Werte aus Modul 1, Modul 3, der Darstellung und Modul 9 einmalig übernommen, vorher wurde automatisch gesichert.
 
 **Kann ich eine Änderung zurücknehmen?**
 Ja, unter **Einstellungen → System → Änderungsverlauf** jede einzeln, oder direkt nach dem Speichern über „Rückgängig“.
@@ -430,7 +428,7 @@ Als [Issue auf GitHub](https://github.com/Maddog3010/ha-fenster-heizung/issues),
 - Die technische Kennung bleibt `fenster_heizung`, nur der Anzeigename ist „Strom & Wärme“.
 - `panel.js` wird aus `frontend-src/parts` gebaut: `python3 frontend-src/build.py` (mit `--check` nur prüfen). Dabei entsteht `02b-releases.js` aus `CHANGELOG.md`, daraus kommt die Liste unter „Versionen“.
 - **Neue Version veröffentlichen:**
-  1. Eintrag `## [2026.11.1] - 2026-11-03` in `CHANGELOG.md` mit kurzen Punkten. Stabil: `Jahr.Monat.Release`, Release beginnt jeden Monat bei 1. Testversion: Nummer des kommenden Updates plus `b1`, `b2` … (`2026.11.2b1`).
+  1. Eintrag `## [2026.11.2] - 2026-11-20` in `CHANGELOG.md` mit kurzen Punkten. Stabil: `Jahr.Monat.Release`, Release beginnt jeden Monat bei 1. Testversion: Nummer des kommenden Updates plus `b1`, `b2` … (`2026.11.2b1`).
   2. `version` in `manifest.json` setzen und `build.py` ausführen.
   3. Auf GitHub ein Release mit demselben Tag ohne `v` anlegen. Für eine Testversion (`…b1`) den Haken **Set as a pre-release** setzen.
 - Schreibende WebSocket-Befehle sind Administratoren vorbehalten.
