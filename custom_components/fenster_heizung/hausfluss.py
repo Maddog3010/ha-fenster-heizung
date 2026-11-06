@@ -19,8 +19,8 @@ _LOGGER = logging.getLogger(__name__)
 
 # v0.6: eingebaute Symbole (svg:…) → HD-Bilder aus der Grafik-Bibliothek (hd:…). Emojis, mdi und eigene Bilder bleiben.
 HD_MAP = {
-    "sonne": "sun", "solar": "pvRoof", "haus": "house", "akku": "battery", "auto": "car", "wallbox": "wallbox",
-    "steckdose": "plug", "waschmaschine": "washer", "trockner": "dryer", "kuehlschrank": "fridge", "wasser": "water",
+    "sonne": "pvRoof", "solar": "pvRoof", "haus": "house", "akku": "battery", "auto": "car", "wallbox": "wallbox",
+    "steckdose": "plug", "waschmaschine": "washer", "trockner": "dryer", "kuehlschrank": "fridge", "wasser": "boiler",
     "blitz": "bolt", "heizung": "radiator", "netz": "grid", "lampe": "lamp",
 }
 HD_MIG = 1  # Stand der einmaligen Umstellung

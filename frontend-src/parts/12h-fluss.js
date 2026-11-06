@@ -17,7 +17,7 @@
   _efxClone() { return JSON.parse(JSON.stringify(this._efxCfg())); }
   _efxBlank(pos) {
     const p = EF_POS[pos];
-    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:sun" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false };
+    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:pvRoof" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false };
   }
   /* ---- Rechnen: Leistung einer Kachel in W, positiv = zur Kachel, negativ = ins Haus ---- */
   _efxToW(id) { const st = id && this._hass.states[id]; if (!st) return NaN; const v = parseFloat(st.state); return isNaN(v) ? NaN : /^kW$/i.test(st.attributes.unit_of_measurement || "") ? v * 1000 : v; }
@@ -46,10 +46,15 @@
     return [isNaN(v) ? st.state : v.toLocaleString("de-DE", { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 2 }), u, String(st.attributes.friendly_name || id).split(" ").pop()];
   }
   /* Bild einer Kachel: mit „Alte Symbole behalten“ das ursprüngliche Symbol (image_alt), sonst das HD-Bild */
-  _efxImgN(n) { const c = this._efxCfg(); return this._efxImg(c.keep_old && n && n.image_alt ? n.image_alt : n && n.image); }
-  _efxImg(v) {
+  _efxImgN(n, o) { const c = this._efxCfg(); return this._efxImg(c.keep_old && n && n.image_alt ? n.image_alt : n && n.image, o); }
+  /* Zustand für HD-Bilder aus den Werten der Kachel: läuft (Leistung über 10 W), Füllstand aus einem %-Wert */
+  _efxState(n, w) {
+    const pct = EF_SIDES.map(([s]) => n[s] && this._hass.states[n[s]]).find((x) => x && (x.attributes.unit_of_measurement || "") === "%"), v = pct ? parseFloat(pct.state) : NaN;
+    return { on: Math.abs(w) > 10, lvl: isNaN(v) ? undefined : v };
+  }
+  _efxImg(v, o) {
     v = String(v || "");
-    if (v.startsWith("hd:")) return this._gx(v.slice(3), 64, { on: true, lvl: 80 }).replace('class="gx"', 'class="gx efhd"');
+    if (v.startsWith("hd:")) return this._gx(v.slice(3), 64, o || { on: true, lvl: 80 }).replace('class="gx"', 'class="gx efhd"');
     if (v.startsWith("svg:")) { const i = EF_IMGS.find((x) => x.id === v.slice(4)); return i ? `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${i.s}</svg>` : ""; }
     if (/^(\/local\/|https:)/.test(v)) return `<img src="${esc(v)}" alt="" loading="lazy">`;
     if (v.startsWith("mdi:")) return `<ha-icon icon="${esc(v)}"></ha-icon>`;
@@ -65,7 +70,7 @@
   _efxNodeHtml(pos, n, hubW) {
     const hub = pos === "hub", col = n.color || (EF_POS[pos] || [])[3] || "#2dd4bf", w = hub ? 0 : this._efxNodeW(n), on = hub || Math.abs(w) > 5;
     const sides = EF_SIDES.map(([s]) => { const o = this._efxSide(n, s, hub, hubW), tag = o.id ? "button" : "span"; return `<${tag} class="efs ${s[0]}" ${o.id ? `data-act="efxmore" data-e="${esc(o.id)}" title="${esc((this._hass.states[o.id] || { attributes: {} }).attributes.friendly_name || o.id)}"` : ""}>${o.html}</${tag}>`; }).join("");
-    return `<div class="efn${hub ? " hub" : ""}${on ? " on" : ""}" ${hub ? 'data-act="efxtab" data-v="strom" title="Strom öffnen"' : ""} data-p="${pos}" data-w="${Math.round(w)}" data-c="${col}" style="--c:${col}" role="group" aria-label="${esc(n.name)}">${sides}<div class="efi${String(this._efxCfg().keep_old && n.image_alt ? n.image_alt : n.image || "").startsWith("hd:") ? " hd" : ""}">${this._efxImgN(n)}</div><span class="efnm">${esc(n.name)}</span></div>`;
+    return `<div class="efn${hub ? " hub" : ""}${on ? " on" : ""}" ${hub ? 'data-act="efxtab" data-v="strom" title="Strom öffnen"' : ""} data-p="${pos}" data-w="${Math.round(w)}" data-c="${col}" style="--c:${col}" role="group" aria-label="${esc(n.name)}">${sides}<div class="efi${String(this._efxCfg().keep_old && n.image_alt ? n.image_alt : n.image || "").startsWith("hd:") ? " hd" : ""}">${this._efxImgN(n, hub ? { on: true } : this._efxState(n, w))}</div><span class="efnm">${esc(n.name)}</span></div>`;
   }
   _efPage() {
     if (!this._efxD) { this._efxLoad(); return `<div class="card empty">Hausfluss wird geladen …</div>`; }

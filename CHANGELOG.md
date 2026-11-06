@@ -8,7 +8,8 @@ Testversion für 2026.11.2 (Woche 1, Teil 2): die neue Optik in Modul 4 und Modu
 
 ### Neu
 - **Modul 4 Gerätestrom (v1.2 Build 1): Gerätekarten 2.0.** Jedes Gerät mit HD-Bild und Herkunfts-Ring (Solar, Batterie, Netz), darunter die Prozentzeile. Zustand „läuft“ (grün), „fertig“ mit Uhrzeit (türkis) oder „bereit“ (grau). Läuft ein Gerät, steht „noch ~ Min. · fertig ~ Uhr“ mit Fortschritt dabei, sobald es 3 Läufe gelernt hat (Median der letzten 10). Drei Felder für Kosten, Ersparnis und letzten Lauf. Startempfehlung „Am besten ab … starten“ nach der Solarprognose mit Knopf **Erinnern**: zur Startzeit kommt eine Meldung über die Meldedienste von Modul 4.
-- **Modul 19 Hausfluss (v0.6 Build 1):** 24 HD-Bilder im Bildkatalog.
+- **Modul 19 Hausfluss (v0.6 Build 1):** 24 HD-Bilder im Bildkatalog (Solar Dach, Balkon, Stromnetz, Akku, Wallbox, Auto, Haus, Warmwasser, Heizkörper, Wärmepumpe, Elektroheizer, Waschmaschine, Trockner, Spülmaschine, Kühlschrank, Herd / Küche, Pool / Pumpe, Licht, PC / Server, Steckdose, Entfeuchter, Prognose, Strompreis, Kosten). Die Bilder zeigen den Zustand aus den Werten der Kachel: Waschmaschine mit Wasser in der Trommel, sobald sie über 10 W zieht, Lampe leuchtet, Akku mit Füllstand aus dem %-Wert, Spülmaschine mit Tropfen.
+- **Modul 4:** Karten mit Haken bei „fertig“, gelber Linie, wenn jetzt ein guter Startzeitpunkt ist, und roter Linie bei „keine Daten“.
 
 ### Geändert
 - Modul 4: Prozentzeile statt Balken. Unter Einstellungen → Modul 4 → Darstellung holt **Karten wie bisher** die alten Karten zurück.

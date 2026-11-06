@@ -185,7 +185,8 @@
     const m = this._gsMode(d), run = m === "run", ty = GS_TYP[this._gsTyp(d)], base = run ? d.w : a.v, tot = base[0] + base[1] + base[2];
     const mix = tot > 0 ? { pv: base[0], bat: base[1], net: base[2] } : {};
     const R = this._gsRestInfo(d), dur = (s) => { const x = Math.round(s / 60); return x >= 60 ? `${Math.floor(x / 60)} h ${x % 60} min` : `${x} min`; };
-    const pill = run ? `<span class="g2st run">läuft</span>` : m === "done" ? `<span class="g2st done">fertig ${hm(d.last.ts)}</span>` : `<span class="g2st">bereit</span>`;
+    const none = !run && tot <= 0 && !d.last, go = m === "idle" && !none && /^Jetzt/.test(d.advice || "");
+    const pill = run ? `<span class="g2st run">läuft</span>` : m === "done" ? `<span class="g2st done">${ic("check", 12)} fertig ${hm(d.last.ts)}</span>` : none ? `<span class="g2st none">keine Daten</span>` : `<span class="g2st">bereit</span>`;
     const sub = run ? `${wfmt(d.w[0] + d.w[1] + d.w[2])}${R ? ` · seit ${dur(R.el)}` : ""}` : `${ty.n}${tot > 0 ? ` · ${num(a.kwh != null ? a.kwh : tot, 2)} kWh ${esc(per)}` : ""}`;
     const rest = !run || !R ? "" : R.learn ? `<div class="g2rest"><span class="gxrest learn">lernt die Laufzeit · ${R.n}/3 Läufe</span></div>`
       : `<div class="g2rest"><span class="gxrest">${R.rest < 90 ? "gleich fertig" : `noch ~${Math.round(R.rest / 60)} Min.`} · fertig ~ ${hm(R.end)} Uhr</span><div class="g2prog"><i style="width:${Math.round(R.p * 100)}%"></i></div></div>`;
@@ -195,8 +196,8 @@
     const adv = run || !(B || d.advice) ? "" : B && B.ts * 1000 > Date.now() + 15 * 60000
       ? `<div class="g2adv">${this._gx("sun", 26)}<span>Am besten ${B.day === "tomorrow" ? "morgen " : ""}ab ${hm(B.ts * 1000)} starten<small>~${num(B.pct, 0)} % Solar erwartet</small></span><button class="g2rem${rem ? " on" : ""}" data-act="gsrem" data-k="${esc(d.id)}" aria-pressed="${rem}">${rem ? `${ic("check", 14)} Erinnert` : `${ic("bell", 14)} Erinnern`}</button></div>`
       : `<div class="g2adv ${/^Jetzt/.test(d.advice || "") ? "go" : ""}">${this._gx("sun", 26)}<span>${esc(d.advice || "")}<small>Solardeckung jetzt ${num(d.cover, 0)} %</small></span></div>`;
-    return `<div class="card gsdev g2 g2-${m}${this._gsSel === d.id ? " sel" : ""}">
-      <button class="g2h" data-act="gsdev" data-k="${esc(d.id)}" aria-pressed="${this._gsSel === d.id}" aria-label="${esc(d.name)} im Diagramm hervorheben">${this._gxRing(this._gsHd(d), mix, 76, { on: run })}
+    return `<div class="card gsdev g2 g2-${none ? "none" : go ? "go" : m}${this._gsSel === d.id ? " sel" : ""}">
+      <button class="g2h" data-act="gsdev" data-k="${esc(d.id)}" aria-pressed="${this._gsSel === d.id}" aria-label="${esc(d.name)} im Diagramm hervorheben"><span class="g2img">${this._gxRing(this._gsHd(d), mix, 76, { on: run })}${m === "done" ? `<i class="g2ok">${ic("check", 12)}</i>` : ""}</span>
         <span class="g2n"><b>${esc(d.name)}</b><span class="g2s">${pill}<small>${sub}</small></span></span></button>
       ${this._gxPct(mix).replace("noch keine Daten", "keine Daten")}${rest}
       <div class="g2f">${f3.map(([l, v, s]) => `<div><span>${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>

@@ -176,12 +176,12 @@ const EF_IMGS = [
   { id: 'lampe', n: 'Lampe', k: 'lampe licht beleuchtung glühbirne', s: '<path d="M32 7a17 17 0 0 0-9 31v7h18v-7a17 17 0 0 0-9-31z" fill="#fde047"/><rect x="25" y="48" width="14" height="5.5" rx="2.7" fill="#94a3b8"/>' },
 ];
 /* Modul 19 v0.6: 24 HD-Bilder aus der Grafik-Bibliothek (05d), gespeichert als „hd:<Name>“ */
-const EF_HD = [["sun", "Sonne", "sonne solar pv erzeugung"], ["pvRoof", "PV-Dach", "solar pv dach modul photovoltaik"], ["balcony", "Balkonkraftwerk", "balkon solar modul pv"], ["battery", "Akku", "batterie speicher akku ladestand"],
-  ["grid", "Stromnetz", "netz strommast bezug einspeisung"], ["house", "Haus", "haus gebäude zuhause verbrauch"], ["meter", "Zähler", "zähler stromzähler smartmeter"], ["euro", "Kosten", "euro preis kosten tarif"],
-  ["car", "Elektroauto", "auto elektroauto fahrzeug"], ["wallbox", "Wallbox", "wallbox ladestation laden"], ["heatpump", "Wärmepumpe", "wärmepumpe heizung klima"], ["bolt", "Strom", "blitz strom energie"],
-  ["lamp", "Lampe", "lampe licht beleuchtung"], ["water", "Wasser", "wasser warmwasser hahn"], ["washer", "Waschmaschine", "waschmaschine wäsche waschen"], ["dryer", "Trockner", "trockner wäsche trocknen"],
-  ["dishwasher", "Spülmaschine", "spülmaschine geschirr"], ["fridge", "Kühlschrank", "kühlschrank kühlgerät gefrier"], ["oven", "Küche", "küche ofen herd thermomix kochen"], ["pool", "Pool", "pool poolpumpe schwimmbad"],
-  ["pc", "Computer", "computer pc rechner server"], ["tvset", "Fernseher", "fernseher tv"], ["workshop", "Werkstatt", "werkstatt werkzeug bohrmaschine"], ["plug", "Steckdose", "steckdose stecker gerät verbraucher"]];
+const EF_HD = [["pvRoof", "Solar Dach", "solar pv dach modul photovoltaik sonne erzeugung"], ["balcony", "Balkon", "balkon balkonkraftwerk solar modul pv"], ["grid", "Stromnetz", "netz strommast bezug einspeisung"], ["battery", "Akku", "batterie speicher akku ladestand"],
+  ["wallbox", "Wallbox", "wallbox ladestation laden"], ["car", "Auto", "auto elektroauto fahrzeug"], ["house", "Haus", "haus gebäude zuhause verbrauch"], ["boiler", "Warmwasser", "warmwasser boiler speicher wasser"],
+  ["radiator", "Heizkörper", "heizkörper heizung wärme"], ["heatpump", "Wärmepumpe", "wärmepumpe heizung klima"], ["heater", "Elektroheizer", "elektroheizer heizlüfter heizgerät"], ["washer", "Waschmaschine", "waschmaschine wäsche waschen"],
+  ["dryer", "Trockner", "trockner wäsche trocknen"], ["dishwasher", "Spülmaschine", "spülmaschine geschirr"], ["fridge", "Kühlschrank", "kühlschrank kühlgerät gefrier"], ["oven", "Herd / Küche", "herd küche ofen thermomix kochen"],
+  ["pool", "Pool / Pumpe", "pool poolpumpe pumpe schwimmbad"], ["lamp", "Licht", "licht lampe beleuchtung"], ["pc", "PC / Server", "computer pc rechner server"], ["plug", "Steckdose", "steckdose stecker gerät verbraucher"],
+  ["dehumid", "Entfeuchter", "entfeuchter luftentfeuchter feuchte"], ["forecast", "Prognose", "prognose solarprognose vorhersage"], ["price", "Strompreis", "strompreis preis tarif tibber"], ["euro", "Kosten", "kosten euro geld"]];
 const EF_EMO = [
   ['☀️', 'Sonne', 'solar'], ['🌤️', 'Wolkig', 'sonne wolke wetter'], ['🔌', 'Stecker', 'steckdose strom'], ['🫧', 'Seifenblasen', 'waschmaschine wäsche'], ['🌀', 'Wirbel', 'trockner'],
   ['🧊', 'Eiswürfel', 'kühlschrank kühlen'], ['🚰', 'Wasserhahn', 'wasser'], ['🚗', 'Auto', 'fahrzeug'], ['🔋', 'Batterie', 'akku speicher'], ['🏠', 'Haus', 'gebäude'],
