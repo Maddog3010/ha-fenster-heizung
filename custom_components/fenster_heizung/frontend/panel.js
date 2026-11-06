@@ -730,7 +730,7 @@ const MV = {
   fh: { v: "1.6", b: 2, d: "2026-11-06", p: "2026.11.2b2", log: [["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.0", b: 2, d: "2026-11-04", p: "2026.11.1", log: [["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.11.1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  gs: { v: "1.2", b: 1, d: "2026-11-06", p: "2026.11.2b2", log: [["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  gs: { v: "1.2", b: 2, d: "2026-11-06", p: "2026.11.2b3", log: [["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -6035,11 +6035,11 @@ class FensterHeizungPanel extends HTMLElement {
     }
     else if (a === "gsrem") {
       const d = ((this._gsD && this._gsD.devices) || []).find((x) => x.id === k), on = !(d && d.remind && d.remind * 1000 > Date.now());
-      this._hass.callWS({ type: "fenster_heizung/gs_remind", id: k, on }).then((r) => {
+      this._hass.callWS({ type: "fenster_heizung/gs_remind", dev: k, on }).then((r) => {
         if (r && r.devices) this._gsD = { ...r, ts: Date.now() };
         this._toast(!r || !r.ok ? (r && r.msg) || "Das hat nicht geklappt" : on ? `Erinnerung um ${new Date(r.ts * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr` : "Erinnerung gelöscht");
         this._render();
-      }).catch(() => this._toast("Das hat nicht geklappt"));
+      }).catch((e) => this._toast("Erinnern: " + ((e && e.message) || "das hat nicht geklappt")));
     }
     else if (a === "gsold") { G.cards_old = !G.cards_old; this._mdSave(); this._renderModal(); }
     else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }
@@ -9074,7 +9074,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _stUndo(id) {
-    this._hass.callWS({ type: "fenster_heizung/log_undo", id: Number(id) }).then((r) => {
+    this._hass.callWS({ type: "fenster_heizung/log_undo", entry: Number(id) }).then((r) => {
       if (r && r.general) this._gen = { ...this._gen, ...r.general }; if (r) this._mdApply(r); if (r && r.haus) this._haus = r.haus; if (r && r.layout) this._cfg.layout = { ...this._cfg.layout, ...r.layout };
       this._stLog = (r && r.log) || this._stLog; this._toast("Zurückgenommen"); this._render(); if (this._modal) this._renderModal();
     }).catch((e) => this._toast((e && e.message) || "Konnte nicht zurückgenommen werden"));

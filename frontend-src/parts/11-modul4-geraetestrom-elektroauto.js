@@ -27,11 +27,11 @@
     }
     else if (a === "gsrem") {
       const d = ((this._gsD && this._gsD.devices) || []).find((x) => x.id === k), on = !(d && d.remind && d.remind * 1000 > Date.now());
-      this._hass.callWS({ type: "fenster_heizung/gs_remind", id: k, on }).then((r) => {
+      this._hass.callWS({ type: "fenster_heizung/gs_remind", dev: k, on }).then((r) => {
         if (r && r.devices) this._gsD = { ...r, ts: Date.now() };
         this._toast(!r || !r.ok ? (r && r.msg) || "Das hat nicht geklappt" : on ? `Erinnerung um ${new Date(r.ts * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr` : "Erinnerung gelöscht");
         this._render();
-      }).catch(() => this._toast("Das hat nicht geklappt"));
+      }).catch((e) => this._toast("Erinnern: " + ((e && e.message) || "das hat nicht geklappt")));
     }
     else if (a === "gsold") { G.cards_old = !G.cards_old; this._mdSave(); this._renderModal(); }
     else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }

@@ -531,7 +531,7 @@ async def ws_log_get(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 @websocket_api.require_admin
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/log_undo", vol.Required("id"): int})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/log_undo", vol.Required("entry"): int})
 @websocket_api.async_response
 async def ws_log_undo(hass: HomeAssistant, connection, msg: dict) -> None:
     vl = hass.data.get(DOMAIN, {}).get("verlauf")
@@ -540,7 +540,7 @@ async def ws_log_undo(hass: HomeAssistant, connection, msg: dict) -> None:
         return
     _who(connection)
     try:
-        r = await vl.async_undo(msg["id"])
+        r = await vl.async_undo(msg["entry"])  # „id“ ist bei Home Assistant die Nachrichtennummer
     except ValueError as err:
         connection.send_error(msg["id"], "invalid", str(err))
         return
@@ -770,7 +770,7 @@ async def ws_gs_get(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], mgr.snapshot() if mgr is not None else {"ready": False, "devices": [], "hist": {}})
 
 
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/gs_remind", vol.Required("id"): str, vol.Required("on"): bool})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/gs_remind", vol.Required("dev"): str, vol.Required("on"): bool})
 @websocket_api.async_response
 async def ws_gs_remind(hass: HomeAssistant, connection, msg: dict) -> None:
     """Modul 4 v1.2: Erinnerung „jetzt starten“ zur besten Startzeit setzen oder löschen."""
@@ -778,7 +778,7 @@ async def ws_gs_remind(hass: HomeAssistant, connection, msg: dict) -> None:
     if mgr is None:
         connection.send_result(msg["id"], {"ok": False, "msg": "Gerätestrom ist noch nicht bereit"})
         return
-    res = mgr.set_remind(msg["id"][:16], msg["on"])
+    res = mgr.set_remind(msg["dev"][:16], msg["on"])  # „id“ ist bei Home Assistant die Nachrichtennummer
     connection.send_result(msg["id"], {**res, **mgr.snapshot()})
 
 

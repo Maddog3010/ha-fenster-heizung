@@ -145,7 +145,7 @@
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _stUndo(id) {
-    this._hass.callWS({ type: "fenster_heizung/log_undo", id: Number(id) }).then((r) => {
+    this._hass.callWS({ type: "fenster_heizung/log_undo", entry: Number(id) }).then((r) => {
       if (r && r.general) this._gen = { ...this._gen, ...r.general }; if (r) this._mdApply(r); if (r && r.haus) this._haus = r.haus; if (r && r.layout) this._cfg.layout = { ...this._cfg.layout, ...r.layout };
       this._stLog = (r && r.log) || this._stLog; this._toast("Zurückgenommen"); this._render(); if (this._modal) this._renderModal();
     }).catch((e) => this._toast((e && e.message) || "Konnte nicht zurückgenommen werden"));

@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b3] - 2026-11-06
+
+Testversion für 2026.11.2: Fehlerkorrekturen.
+
+### Behoben
+- Modul 4 (v1.2 Build 2): „Erinnern“ meldete immer „Das hat nicht geklappt“. Die Erinnerung wird jetzt gesetzt und kommt zur Startzeit über die Meldedienste von Modul 4.
+- Einstellungen → Verlauf: „Rückgängig“ traf nicht den gewählten Eintrag.
+
+### Wichtig beim Update
+- Home Assistant neu starten und die Seite neu laden.
+
 ## [2026.11.2b2] - 2026-11-06
 
 Testversion für 2026.11.2 (Woche 1, Teil 2): die neue Optik in Modul 4 und Modul 19.
