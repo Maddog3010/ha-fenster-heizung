@@ -40,7 +40,7 @@ CLOCKS = ("standard", "duenn", "kraeftig", "digital")
 SOON_DAYS = 30
 SOON_DAYS_MAX = 14
 TIERS = ("sponsor", "max")
-BADGES = ("heart", "gold")
+BADGES = ("heart", "gold", "sun", "snow")
 MAX_SPONSORS = 200
 
 
@@ -128,7 +128,7 @@ def priv_matches(priv: Any) -> bool:
 
 
 def default_prefs() -> dict[str, Any]:
-    return {"badge": True, "grad": "none", "clock": "standard", "early": False, "badge_style": "gold", "name_head": False, "brief": True, "poster": True}
+    return {"badge": True, "grad": "none", "clock": "standard", "early": False, "badge_style": "gold", "name_head": False, "brief": True, "poster": True, "thanks": False}
 
 
 def clean_prefs(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -144,7 +144,7 @@ def clean_prefs(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
         out["clock"] = raw["clock"]
     if raw.get("badge_style") in BADGES:
         out["badge_style"] = raw["badge_style"]
-    for k in ("name_head", "brief", "poster"):
+    for k in ("name_head", "brief", "poster", "thanks"):
         if isinstance(raw.get(k), bool):
             out[k] = raw[k]
     for k, v in default_prefs().items():

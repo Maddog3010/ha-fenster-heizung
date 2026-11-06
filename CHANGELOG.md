@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b5] - 2026-11-06
+
+Testversion: Sponsor-Lounge und „Sponsor werden“ genauer nach dem Konzept Sponsor-Bereich 2.0.
+
+### Geändert
+- **Sponsor-Lounge:** oben „♥ Sponsor seit …“ und „Schlüssel gültig bis …“, große Begrüßung „Danke, dass du Strom & Wärme trägst.“ mit Haus-Szene, daneben „Neu für dich – vor allen anderen“ mit HD-Bildern und Schalter oder „Öffnen“. Darunter drei Spalten: Deine Extras (Schalterliste), Wunsch des Monats (Abstimmung folgt mit Stufe S3, bis dahin per Mail) und Dein Abzeichen.
+- **Abzeichen:** zur Wahl Herz, Sonne, Schneeflocke und – für Max – goldener Stern; neuer Schalter „In der Danke-Liste (README) nennen“ (bereitet die Mail vor).
+- **Sponsor werden:** Seite heißt „Sponsor-Bereich“ mit „Ich habe schon einen Schlüssel“ oben, Begrüßung mit Szene, „Das hat Strom & Wärme bei dir schon geschafft“ mit HD-Bildern, „So wirst du Sponsor“ in drei Spalten und acht Extras als Kacheln mit NEU, ★ MAX oder BALD.
+- Was noch nicht gebaut ist (Energie-Coach, Monatsbericht, Wohnklima-Zeugnis, Heizkosten je Raum, Wand-Tablet-Extras, Wunsch des Monats), steht ehrlich mit „bald“ da.
+
 ## [2026.11.2b4] - 2026-11-06
 
 Testversion: Sponsor-Lounge (Stufe S1), zwei Stufen mit Verwaltung (Stufe S2) und Sponsor Max 1. Alles, was frei ist, bleibt frei.

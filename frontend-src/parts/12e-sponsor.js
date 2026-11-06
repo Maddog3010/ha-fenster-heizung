@@ -18,7 +18,7 @@
   _spnBtn() {
     const s = this._spnS(), adm = this._admin();
     if (s.active && s.prefs.badge) { const gold = s.tier === "max" && s.prefs.badge_style !== "heart", lab = s.prefs.name_head && s.name && s.state !== "dev" ? "Hallo " + s.name.split(" ")[0] : gold ? "Max" : "Sponsor";
-      return `<button class="pillbtn spnb on ${gold ? "gold" : ""}" data-act="spnopen" aria-label="Sponsor-Lounge" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${gold ? `<span class="spnstar">★</span>` : ic("heart", 15)}<span class="bl">${esc(lab)}</span></button>`; }
+      return `<button class="pillbtn spnb on ${gold ? "gold" : ""}" data-act="spnopen" aria-label="Sponsor-Lounge" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${gold ? `<span class="spnstar">★</span>` : s.prefs.badge_style === "sun" ? `<span class="spnstar sun">☀</span>` : s.prefs.badge_style === "snow" ? `<span class="spnstar snow">❄</span>` : ic("heart", 15)}<span class="bl">${esc(lab)}</span></button>`; }
     if (!adm) return "";
     return `<button class="pillbtn spnb" data-act="spnopen" aria-label="Sponsor-Lounge" title="Sponsor werden oder Schlüssel eingeben">${ic("heart", 15)}<span class="bl">Sponsor</span></button>`;
   }

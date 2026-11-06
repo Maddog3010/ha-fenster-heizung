@@ -2047,6 +2047,40 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .lgex{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
 .lgxt{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;background:var(--card);border:0;border-radius:16px;padding:14px 10px;color:inherit;cursor:pointer;font:inherit}.lgxt b{font-size:.88rem}.lgxt small{font-size:.72rem;color:var(--mut)}
 .lgtiers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.lgtiers .lgt{display:flex;flex-direction:column;gap:4px}.lgtiers small{font-size:.76rem;color:var(--mut)}@media(max-width:560px){.lgtiers{grid-template-columns:1fr}}
+.lgchips,.lgchipsn{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-left:auto}.lgchipsn{margin:0 0 10px}.lgchips+.pillbtn{margin-left:8px}
+.lgchip{font-style:normal;font-size:.74rem;font-weight:600;border-radius:99px;padding:4px 10px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:var(--primary-text-color);white-space:nowrap}
+.lgchip.pk{color:#f472b6;background:color-mix(in srgb,#ea4aaa 15%,transparent)}.lgchip.gd{color:#d97706;background:color-mix(in srgb,#fbbf24 18%,transparent)}.lgchip.btn{border:0;cursor:pointer;font-family:inherit;margin-left:auto}
+.lgtop{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:12px}@media(max-width:900px){.lgtop{grid-template-columns:1fr}}
+.lghero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px;align-items:center;background:var(--card);border-radius:20px;padding:20px 20px 20px 22px;overflow:hidden;position:relative;box-shadow:inset 0 0 0 1px color-mix(in srgb,#ea4aaa 22%,transparent)}
+.lghero::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(60% 90% at 0% 0%,color-mix(in srgb,#ea4aaa 10%,transparent),transparent 70%)}.lghero.mx{box-shadow:inset 0 0 0 1px color-mix(in srgb,#fbbf24 32%,transparent)}
+.lghero.out{margin-bottom:12px;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.lghl{display:flex;flex-direction:column;gap:8px;min-width:0;position:relative;z-index:1}.lghl .lgchip{align-self:flex-start}
+.lghi{font-size:.9rem;color:#f472b6;font-weight:600}.lghl h2{margin:0;font-size:1.75rem;line-height:1.15;font-weight:800;overflow-wrap:break-word}.lghl p{margin:0;font-size:.86rem;color:var(--mut);line-height:1.45}
+.lgbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;align-items:center}.lgbtns .btn2{flex:none;min-width:0;width:auto;padding:8px 14px;border-radius:99px;font-size:.84rem;display:inline-flex;align-items:center;gap:6px}
+.btn2.lgpk{background:#ec4899!important;color:#fff!important;border-color:transparent!important;font-weight:700}
+.lghr{position:relative;z-index:1;border-radius:14px;overflow:hidden;aspect-ratio:2/1.05;min-height:120px}.lgscene{display:block;width:100%;height:100%}
+@media(max-width:620px){.lghero,.lghero.out{grid-template-columns:1fr;padding:16px}.lghr{order:-1;aspect-ratio:2/1}.lghl h2{font-size:1.4rem}}
+.lgt h4{margin:0 0 8px;font-size:.7rem;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;color:var(--mut)}
+.lgnew .lgit{background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);border:0;border-radius:12px;padding:8px 10px;margin-top:6px}.lgnew .lgit .n{font-weight:700}.lgnew .lgit small{font-weight:400}
+.lgg{flex:none;width:34px;height:34px;display:grid;place-items:center}.lgg svg{width:34px;height:34px}
+.lgopen{flex:none;margin-left:auto;border:0;border-radius:99px;padding:4px 12px;font:inherit;font-size:.76rem;font-weight:700;cursor:pointer;color:#10b981;background:color-mix(in srgb,#10b981 15%,transparent)}
+.lg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}@media(max-width:980px){.lg3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}}
+.lgli{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;padding:8px 0;border-top:1px solid var(--line);font-size:.86rem}.lgli:first-of-type{border-top:0}.lgli>span:first-child{flex:1 1 140px;min-width:0;display:flex;flex-direction:column}.lgli>span:first-child>span{display:block}.lgli small{font-size:.72rem;color:var(--mut)}.lgli>.sw,.lgli>.gschs,.lgli>.lgsoon{flex:none;margin-left:auto}.lgli .gschs{flex-wrap:wrap}
+.lgpoll{display:flex;flex-direction:column;gap:4px;padding:6px 0;font-size:.84rem}.lgpoll i{display:block;height:6px;border-radius:9px;background:color-mix(in srgb,var(--primary-text-color) 9%,transparent);overflow:hidden}.lgpoll i b{display:block;height:100%;background:#ec4899}
+.lgnote2{font-size:.74rem;color:var(--mut);line-height:1.4;margin-top:8px}.lgnote2 .lnk{font-size:.74rem}
+.lgbadges{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 6px}.lgbd{width:58px;height:58px;border-radius:50%;border:0;cursor:pointer;font-size:24px;line-height:1;color:var(--c);background:radial-gradient(circle,color-mix(in srgb,var(--c) 22%,transparent),color-mix(in srgb,var(--c) 6%,transparent) 70%);transition:transform .15s}
+.lgbd.sel{box-shadow:0 0 0 2px var(--c),0 0 18px color-mix(in srgb,var(--c) 45%,transparent)}.lgbd.lock{opacity:.45;cursor:default}.lgbd:not(:disabled):hover{transform:scale(1.06)}.lgbdoff{font-size:.74rem;margin-bottom:4px}.lgbdoff .lnk{font-size:.74rem}
+.lg2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:12px}
+.lgnums{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.lgnums>div{display:flex;align-items:center;gap:8px;min-width:0}.lgnums svg{flex:none;width:34px;height:34px}.lgnums span{display:flex;flex-direction:column;min-width:0}.lgnums b{font-size:1.25rem;font-weight:800}.lgnums small{font-size:.72rem;color:var(--mut)}
+.lgsteps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}@media(max-width:480px){.lgsteps{grid-template-columns:1fr}}
+.lgstp{display:flex;flex-direction:column;gap:2px;text-align:left;text-decoration:none;color:inherit;background:none;border:0;padding:4px 2px;font:inherit;cursor:pointer;border-radius:10px;min-width:0}div.lgstp{cursor:default}.lgstp em{font-style:normal;font-size:1.5rem;font-weight:800;color:#ec4899;line-height:1.1}.lgstp b{font-size:.84rem}.lgstp small{font-size:.72rem;color:var(--mut)}
+.lgh4{font-size:.7rem;letter-spacing:1.4px;text-transform:uppercase;font-weight:700;color:var(--mut);margin:18px 2px 8px}
+.lgget{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}@media(max-width:900px){.lgget{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lgxt2{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;background:var(--card);border:0;border-radius:16px;padding:14px;color:inherit;cursor:pointer;font:inherit;overflow:hidden;min-width:0}
+.lgxt2::before{content:"";position:absolute;top:0;left:22%;right:22%;height:2px;border-radius:0 0 3px 3px;background:var(--c)}.lgxt2 svg{width:36px;height:36px;margin-bottom:4px}.lgxt2 b{font-size:.86rem}.lgxt2 small{font-size:.72rem;color:var(--mut);line-height:1.35}
+.lgtag{position:absolute;top:10px;right:10px;font-style:normal;font-size:.62rem;font-weight:800;letter-spacing:.5px;border-radius:99px;padding:2px 8px;color:var(--mut);background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.lgtag.neu{color:#d97706;background:color-mix(in srgb,#fbbf24 18%,transparent)}.lgtag.mx{color:#d97706;background:color-mix(in srgb,#fbbf24 22%,transparent)}
+.spnstar.sun{color:#f59e0b}.spnstar.snow{color:#38bdf8}
+.lgn .lgtop,.lgn .lg3,.lgn .lg2{grid-template-columns:1fr}.lgn .lghero,.lgn .lghero.out{grid-template-columns:1fr;padding:16px}.lgn .lghr{order:-1;aspect-ratio:2/1}.lgn .lghl h2{font-size:1.4rem}.lgn .lgget{grid-template-columns:repeat(2,minmax(0,1fr))}.lgn .lgtiers{grid-template-columns:1fr}
 .lgfoot{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:22px 0 8px;font-size:.74rem;color:var(--mut)}.lgfoot .lnk{font-size:.74rem;opacity:.7}
 .lgexd{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}.lgexd p{margin:0;font-size:.92rem;line-height:1.45}
 .lgposter{background:#0b0e12;border-radius:14px;padding:10px}
@@ -7697,7 +7731,7 @@ class FensterHeizungPanel extends HTMLElement {
   _spnBtn() {
     const s = this._spnS(), adm = this._admin();
     if (s.active && s.prefs.badge) { const gold = s.tier === "max" && s.prefs.badge_style !== "heart", lab = s.prefs.name_head && s.name && s.state !== "dev" ? "Hallo " + s.name.split(" ")[0] : gold ? "Max" : "Sponsor";
-      return `<button class="pillbtn spnb on ${gold ? "gold" : ""}" data-act="spnopen" aria-label="Sponsor-Lounge" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${gold ? `<span class="spnstar">★</span>` : ic("heart", 15)}<span class="bl">${esc(lab)}</span></button>`; }
+      return `<button class="pillbtn spnb on ${gold ? "gold" : ""}" data-act="spnopen" aria-label="Sponsor-Lounge" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${gold ? `<span class="spnstar">★</span>` : s.prefs.badge_style === "sun" ? `<span class="spnstar sun">☀</span>` : s.prefs.badge_style === "snow" ? `<span class="spnstar snow">❄</span>` : ic("heart", 15)}<span class="bl">${esc(lab)}</span></button>`; }
     if (!adm) return "";
     return `<button class="pillbtn spnb" data-act="spnopen" aria-label="Sponsor-Lounge" title="Sponsor werden oder Schlüssel eingeben">${ic("heart", 15)}<span class="bl">Sponsor</span></button>`;
   }
@@ -7898,56 +7932,95 @@ class FensterHeizungPanel extends HTMLElement {
     const sr = this.shadowRoot, mainEl = sr.getElementById("main"), s = this._spnS(), adm = this._admin();
     if (!this._gsD && this._gsLoad) this._gsLoad();
     if (s.active && this._lgMax()) this._lgBLoad();
-    const sw = (act, on, label, k = "") => `<button class="sw ${on ? "on" : ""}" data-act="${act}" ${k ? `data-k="${k}"` : ""} aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm ? "" : "disabled"}></button>`;
-    const foot = `<div class="lgfoot">${adm ? `<button class="lnk" data-act="spnkeydlg">Schlüssel ${s.active ? "ändern" : "eingeben"}</button>` : ""}${adm && s.manage ? `<span>·</span><button class="lnk" data-act="spnadm">Sponsoren verwalten</button>` : ""}${adm && !s.manage ? `<span>·</span><button class="lnk" data-act="spnadm">Entwickler-Zugang</button>` : ""}</div>`;
+    const sw = (act, on, label, k = "", dis = false) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" ${k ? `data-k="${k}"` : ""} aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm && !dis ? "" : "disabled"}></button>`;
+    const foot = `<div class="lgfoot">${adm && s.active ? `<button class="lnk" data-act="spnkeydlg">Schlüssel ändern</button>` : ""}${adm && s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Sponsoren verwalten</button>` : ""}${adm && !s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Entwickler-Zugang</button>` : ""}</div>`;
+    const dev = s.state === "dev", mx = s.tier === "max";
+    const chips = s.active ? `<span class="lgchips">${dev ? `<em class="lgchip pk">Entwickler-Zugang</em>` : `<em class="lgchip ${mx ? "gd" : "pk"}">${mx ? "★ Sponsor Max" : "♥ Sponsor"}${s.since ? " seit " + esc(this._spnDate(s.since)) : ""}</em><em class="lgchip">Schlüssel gültig bis ${esc(this._spnDate(s.bis))}</em>`}</span>`
+      : adm ? `<button class="lgchip btn" data-act="spnkeydlg">Ich habe schon einen Schlüssel</button>` : "";
     const bar = `<div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Sponsor-Lounge</b><span><em class="tag">${s.active ? (s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor") : "Sponsor werden"}</em>${this._verTag()}</span></div></div>
-        <button class="pillbtn pri" data-act="lgxback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>`;
-    mainEl.innerHTML = `${bar}<div class="wrap"><div class="sxw stow lgw">${s.active ? this._lgIn(s, sw) : this._lgOut(s)}${foot}</div></div>`;
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${s.active ? "Sponsor-Lounge" : "Sponsor-Bereich"}</b><span>${this._verTag()}</span></div></div>
+        ${this._narrow ? "" : chips}<button class="pillbtn pri" data-act="lgxback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>`;
+    mainEl.innerHTML = `${bar}<div class="wrap"><div class="sxw stow lgw${this._narrow ? " lgn" : ""}">${this._narrow && chips ? `<div class="lgchipsn">${chips}</div>` : ""}${s.active ? this._lgIn(s, sw) : this._lgOut(s)}${foot}</div></div>`;
     if (s.active) { try { localStorage.setItem("fh_lg_seen", String(Date.now())); } catch (_) { /* egal */ } }
   }
-  /* ---- mit Schlüssel: B1–B4 und Max ---- */
-  _lgIn(s, sw) {
-    const P = s.saved_prefs || s.prefs, mx = s.tier === "max", dev = s.state === "dev", nw = this._lgNew(), B = this._lgB, bc = (B && B.cfg) || {};
-    const since = s.since ? new Date(s.since + "T12:00:00").toLocaleDateString("de-DE", { month: "short", year: "numeric" }) : "";
-    const b1 = `<div class="lgban ${mx ? "mx" : ""}">${mx ? `<div class="lgstar">★</div>` : `<div class="lgstar hz">${ic("heart", 30)}</div>`}<div class="lgbt"><small>Sponsor-Lounge</small><b>${dev ? "Entwickler-Zugang" : `Willkommen zurück${s.name ? ", " + esc(s.name.split(" ")[0]) : ""}!`}</b>
-      <span>${dev ? "Alle Extras und Max sind für dich frei, ohne Schlüssel." : `${mx ? "★ Sponsor Max" : "♥ Sponsor"}${since ? " seit " + esc(since) : ""} · gilt bis ${esc(this._spnDate(s.bis))}${s.max_ended ? " · Max ist am " + esc(this._spnDate(s.max_ended)) + " ausgelaufen, Sponsor gilt weiter" : ""}`}${nw.fresh ? ` · Seit deinem letzten Besuch: ${nw.fresh} neue Vorabversion${nw.fresh === 1 ? "" : "en"}` : ""}</span></div>
-      ${!dev && s.days != null && s.days <= (mx ? 14 : 30) ? `<a class="btn2 ${mx ? "lggold" : "spnb"}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">${mx ? "★ Max verlängern" : "♥ Verlängern"}</a>` : ""}</div>`;
-    const b2 = `<div class="lgt" style="--c:#34d399"><h3>${ic("flask", 17)}Neu für dich</h3>${nw.early.length ? nw.early.slice(0, 4).map((x) => `<div class="lgit"><span class="lgi">${ic("flask", 16)}</span><span class="n">${esc(x.n || x.t || x.id)}<small>Vorabversion · für alle ab ${esc(this._labEarlyDate(x))}</small></span><button class="btn2" data-act="labopen" style="flex:none">Öffnen</button></div>`).join("") : `<div class="mut sm">Gerade gibt es keine neuen Vorabversionen. Neue Labs siehst du hier 14 Tage vor allen anderen${P.early ? "" : " – schalte dafür unten „Vorabversionen zuerst“ ein"}.</div>`}
-      <div class="lgit"><span class="lgi">${ic("chart", 16)}</span><span class="n">Monatsberichte<small>kommen mit Stufe S3</small></span><em class="lgsoon">bald</em></div></div>`;
-    const b4 = `<div class="lgt" style="--c:#a78bfa"><h3>${ic("users", 17)}Mitreden &amp; Abzeichen</h3>
-      <div class="vrow"><span>Abzeichen im Kopf<small class="mut" style="display:block">${mx ? "Herz oder goldener Stern" : "Herz neben den Knöpfen"}</small></span>${mx ? `<span class="gschs"><button class="gsch ${P.badge && P.badge_style === "heart" ? "sel" : ""}" data-act="lgxbadge" data-k="heart">${ic("heart", 12)} Herz</button><button class="gsch spng ${P.badge && P.badge_style !== "heart" ? "sel" : ""}" data-act="lgxbadge" data-k="gold">★ Gold</button><button class="gsch ${P.badge ? "" : "sel"}" data-act="lgxbadge" data-k="off">Aus</button></span>` : sw("spnbadge", P.badge, "Abzeichen")}</div>
-      <div class="vrow"><span>Name im Kopf<small class="mut" style="display:block">„Hallo ${esc((s.name || "…").split(" ")[0])}“ statt „Sponsor“</small></span>${sw("lgxname", P.name_head, "Name im Kopf")}</div>
-      <div class="vrow"><span>In der Danke-Liste stehen<small class="mut" style="display:block">freiwillig, im README – einfach kurz per Mail Bescheid geben</small></span><a class="btn2" href="mailto:${SPN_MAIL}?subject=${encodeURIComponent("Danke-Liste Strom & Wärme")}" style="flex:none;text-decoration:none">${ic("mail", 14)} Mail</a></div>
-      <div class="vrow"><span>Wunsch des Monats<small class="mut" style="display:block">abstimmen über GitHub · kommt mit Stufe S3</small></span><em class="lgsoon">bald</em></div></div>`;
-    const tile = (icon, t, sub, ctl, max) => `<div class="lgx ${max ? "mx" : ""}">${icon}<span class="n"><b>${t}${max ? ` <span class="lggd">★</span>` : ""}</b><small>${sub}</small></span>${ctl}</div>`;
-    const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}">${t}</button>`).join("")}</span>`;
-    const maxT = mx ? [
-      tile(this._gx("sun", 40), "Morgen-Briefing", bc.on ? `jeden Morgen um ${esc(bc.time || "06:30")}${(bc.notify || []).length ? "" : " · noch kein Meldedienst"}` : "aus · eine Meldung am Morgen", `<button class="btn2" data-act="lgxbrief" style="flex:none">Einstellen</button>`, true),
-      tile(this._gx("house", 40), `Jahres-Poster ${new Date().getFullYear()}`, new Date().getMonth() === 11 ? "jetzt verfügbar · A3 zum Drucken oder als Bild" : "ab 1. Dezember · Vorschau schon jetzt", `<button class="btn2" data-act="lgxposter" style="flex:none">${new Date().getMonth() === 11 ? "Erstellen" : "Vorschau"}</button>`, true),
-    ] : [];
-    const b3 = `<div class="lgsec">${ic("heart", 15)}Deine Extras <span class="mut">– alle an einer Stelle, jedes abschaltbar</span></div><div class="lgxs">${[
-      ...maxT,
-      tile(`<span class="lgi big">${ic("palette", 20)}</span>`, "Farbverlauf im Kopf", "zusätzliche Verläufe", seg("spngrad", P.grad, [["none", "Aus"], ["meer", "Meer"], ["abend", "Abend"]])),
-      tile(`<span class="lgi big">${ic("moon", 20)}</span>`, "Uhr-Stil im Ruhemodus", "Tablet-Modus", seg("spnclk", P.clock, [["standard", "Std."], ["duenn", "Dünn"], ["kraeftig", "Kräftig"], ["digital", "Digital"]])),
-      tile(`<span class="lgi big">${ic("flask", 20)}</span>`, "Vorabversionen zuerst", "neue Labs 14 Tage früher", sw("spnearly", P.early, "Vorabversionen")),
-      tile(this._gx("bolt", 40), "Hausfluss (Modul 19)", this._mdState().on.ef === true ? "eingeschaltet" : "unter Labs einschalten", `<button class="btn2" data-act="labopen" style="flex:none">Labs</button>`),
-    ].join("")}</div>${mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Morgen-Briefing aufs Handy, Jahres-Poster und goldenes Abzeichen – nur monatlich, Schlüssel 3 Monate. Bald auch Wächter, Woche voraus und Was-wäre-wenn.</small></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`}`;
-    return `${b1}<div class="lgcols">${b2}${b4}</div>${b3}`;
+  /* Szene für den Kopf der Seite: Haus im Herkunfts-Ring, Flusslinien aus allen Richtungen (immer dunkel, wie im Konzept) */
+  _lgScene(gold) {
+    const hs = this._gx("house", 46, { on: true, lvl: 90 }).replace(/^<svg[^>]*>/, '<svg x="177" y="80" width="46" height="46" viewBox="0 0 64 64">');
+    const ln = (d, c, w = 4) => `<path d="${d}" fill="none" stroke="${c}" stroke-width="${w * 3}" stroke-linecap="round" opacity=".18"/><path d="${d}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
+    const arc = (a0, a1, c) => { const r = 40, p = (a) => [200 + r * Math.cos(a * Math.PI / 180), 103 + r * Math.sin(a * Math.PI / 180)]; const [x0, y0] = p(a0), [x1, y1] = p(a1); return `<path d="M${x0.toFixed(1)} ${y0.toFixed(1)}A${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}" fill="none" stroke="${c}" stroke-width="7" stroke-linecap="round"/>`; };
+    const dots = [[40, 30], [92, 160], [140, 22], [262, 40], [318, 170], [360, 24], [70, 96], [300, 120], [380, 88], [230, 180]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.2" fill="#cbd5e1" opacity=".6"/>`).join("");
+    const grid = Array.from({ length: 13 }, (_, i) => `<path d="M${i * 34} 0V206" stroke="#5eead4" stroke-opacity=".05"/>`).join("") + Array.from({ length: 7 }, (_, i) => `<path d="M0 ${i * 34}H400" stroke="#5eead4" stroke-opacity=".05"/>`).join("");
+    return `<svg class="lgscene" viewBox="0 0 400 206" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="lgsg" cx=".5" cy=".5" r=".55"><stop offset="0" stop-color="${gold ? "#3b2a0c" : "#0f3b3a"}"/><stop offset="1" stop-color="#0b1220"/></radialGradient></defs>
+      <rect width="400" height="206" fill="url(#lgsg)"/>${grid}${dots}
+      ${ln("M150 0C170 40 186 60 190 66", "#fbbf24", 5)}${ln("M400 46C330 52 270 72 238 92", "#fb923c")}${ln("M400 112C340 106 280 104 242 104", "#38bdf8", 3)}
+      ${ln("M400 196C330 170 270 140 232 120", "#f472b6")}${ln("M0 160C60 150 120 130 162 114", "#a78bfa")}${ln("M60 70C100 80 130 92 160 98", "#fb7185", 2)}
+      <circle cx="200" cy="103" r="40" fill="#0b1220" fill-opacity=".7"/>${arc(-80, 40, "#fbbf24")}${arc(48, 128, "#f472b6")}${arc(136, 200, "#a78bfa")}${arc(208, 272, "#fb923c")}${hs}</svg>`;
   }
-  /* ---- ohne Schlüssel: A1–A4 ---- */
+  /* ---- mit Schlüssel: B1 Begrüßung, B2 Neu für dich, B3 Deine Extras, B4 Wunsch des Monats und Abzeichen ---- */
+  _lgIn(s, sw) {
+    const P = s.saved_prefs || s.prefs, mx = s.tier === "max", dev = s.state === "dev", nw = this._lgNew(), B = this._lgB, bc = (B && B.cfg) || {}, lc = this._labCfg();
+    const first = dev ? "" : (s.name || "").split(" ")[0], yr = new Date().getFullYear(), dez = new Date().getMonth() === 11;
+    const sub = [nw.fresh ? `${nw.fresh} ${nw.fresh === 1 ? "neue Vorabversion" : "neue Vorabversionen"} seit deinem letzten Besuch` : nw.early.length ? `${nw.early.length} ${nw.early.length === 1 ? "Vorabversion" : "Vorabversionen"} für dich vor allen anderen` : "Alles, was du nutzt, bleibt frei – deine Extras kommen obendrauf",
+      dev ? "Entwickler-Zugang: alle Extras und Max sind frei" : s.max_ended ? `Max ist am ${esc(this._spnDate(s.max_ended))} ausgelaufen, Sponsor gilt weiter` : mx ? "Sponsor Max mit Morgen-Briefing und Jahres-Poster" : ""].filter(Boolean).join(" · ");
+    const renew = !dev && s.days != null && s.days <= (mx ? 14 : 30) ? `<a class="btn2 ${mx ? "lggold" : "lgpk"}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${mx ? "★ Max verlängern" : "♥ Verlängern"}</a>` : "";
+    const b1 = `<div class="lghero ${mx ? "mx" : ""}"><div class="lghl"><small class="lghi">${first ? `Hallo ${esc(first)} ` : "Hallo "}${mx ? `<span class="lggd">★</span>` : "♥"}</small><h2>Danke, dass du Strom &amp; Wärme trägst.</h2><p>${sub}</p>
+      <div class="lgbtns">${renew}<button class="btn2 ${renew ? "" : "lgpk"}" data-act="lgxgo" data-k="lgnew">Was ist neu?</button><button class="btn2" data-act="lgxgo" data-k="lgwish">Wunsch des Monats</button></div></div><div class="lghr">${this._lgScene(mx)}</div></div>`;
+    const row = (icon, t, subt, ctl) => `<div class="lgit">${icon}<span class="n">${t}<small>${subt}</small></span>${ctl}</div>`;
+    const gi = (k) => `<span class="lgg">${this._gx(k, 30, { on: true, lvl: 80 })}</span>`;
+    const opn = (act, t = "Öffnen") => `<button class="lgopen" data-act="${act}">${t}</button>`;
+    const nItems = [
+      ...nw.early.slice(0, 3).map((x) => row(gi(x.hd || "bolt"), esc(x.n || x.id), `Vorabversion · für alle ab ${esc(this._labEarlyDate(x))}`, sw("labtog", lc.on.includes(x.id), x.n || x.id, x.id))),
+      ...(mx ? [row(gi("sun"), "Morgen-Briefing", bc.on ? `jeden Morgen um ${esc(bc.time || "06:30")}` : "★ Max · eine Meldung am Morgen", opn("lgxbrief", "Einstellen")), row(gi("house"), `Jahres-Poster ${yr}`, dez ? "fertig · als Bild teilen" : "ab 1. Dezember · Vorschau schon jetzt", opn("lgxposter", dez ? "Öffnen" : "Vorschau"))] : []),
+    ];
+    if (!nw.early.length) nItems.push(row(gi("forecast"), "Vorabversionen zuerst", P.early ? "an · neue Labs siehst du hier 14 Tage vor allen" : "neue Labs 14 Tage vor allen anderen", sw("spnearly", P.early, "Vorabversionen")));
+    nItems.push(row(gi("price"), "Monatsbericht", "„Dein Haus im Monat“ als Bild · kommt mit Stufe S3", `<em class="lgsoon">bald</em>`));
+    const b2 = `<div class="lgt lgnew" id="lgnew" style="--c:#fbbf24"><h4>Neu für dich – vor allen anderen</h4>${nItems.slice(0, 4).join("")}</div>`;
+    const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}">${t}</button>`).join("")}</span>`;
+    const li = (t, ctl, small = "") => `<div class="lgli"><span><span>${t}</span>${small ? `<small>${small}</small>` : ""}</span>${ctl}</div>`;
+    const soon = (t) => li(t, `<em class="lgsoon">bald</em>`);
+    const b3 = `<div class="lgt" style="--c:#2dd4bf"><h4>Deine Extras</h4>
+      ${li("Hausfluss (Modul 19)", sw("labtog", this._mdState().on.ef === true, "Hausfluss", "ef"))}
+      ${li("Vorabversionen zuerst", sw("spnearly", P.early, "Vorabversionen"))}
+      ${li("Farbverlauf im Kopf", seg("spngrad", P.grad, [["none", "Aus"], ["meer", "Meer"], ["abend", "Abend"]]))}
+      ${li("Uhr-Stil im Ruhemodus", seg("spnclk", P.clock, [["standard", "Std."], ["duenn", "Dünn"], ["kraeftig", "Kräftig"], ["digital", "Digital"]]))}
+      ${mx ? li(`Morgen-Briefing <span class="lggd">★</span>`, sw("lgxbon1", !!bc.on, "Morgen-Briefing", "", !B || !B.cfg)) : ""}
+      ${soon("Energie-Coach")}${soon("Wohnklima-Zeugnis")}${soon("Heizkosten je Raum")}${soon("Wand-Tablet-Extras")}</div>`;
+    const mon = new Date().toLocaleDateString("de-DE", { month: "long" });
+    const wish = ["Gartenplan früher (Modul 10)", "Einkaufsliste im Tablet-Modus", "Pool nach Strompreis", "Saugroboter nach Abwesenheit"];
+    const b4a = `<div class="lgt" id="lgwish" style="--c:#f472b6"><h4>Wunsch des Monats · ${esc(mon)}</h4>${wish.map((w) => `<div class="lgpoll"><span>${esc(w)}</span><i><b style="width:0"></b></i></div>`).join("")}
+      <div class="lgnote2">Abstimmen kommt mit Stufe S3 – dann siehst du hier den Stand, der Gewinner kommt in die Roadmap. Bis dahin: Wunsch einfach per Mail.</div>
+      <div class="lgbtns"><em class="lgsoon">bald</em><a class="lgopen" href="mailto:${SPN_MAIL}?subject=${encodeURIComponent("Wunsch für Strom & Wärme")}" style="text-decoration:none">Wunsch per Mail</a></div></div>`;
+    const st = P.badge ? (P.badge_style === "gold" && !mx ? "heart" : P.badge_style) : "off";
+    const bd = [["heart", "♥", "Herz", "#f472b6"], ["gold", "★", mx ? "Goldener Stern" : "Goldener Stern · nur Max", "#fbbf24"], ["sun", "☀", "Sonne", "#fbbf24"], ["snow", "❄", "Schneeflocke", "#38bdf8"]];
+    const b4b = `<div class="lgt" style="--c:#a78bfa"><h4>Dein Abzeichen</h4><div class="lgbadges">${bd.map(([k, g, t, c]) => `<button class="lgbd ${st === k ? "sel" : ""} ${k === "gold" && !mx ? "lock" : ""}" style="--c:${c}" data-act="lgxbadge" data-k="${k}" aria-pressed="${st === k}" aria-label="${t}" title="${t}" ${this._admin() && (k !== "gold" || mx) ? "" : "disabled"}>${g}</button>`).join("")}</div>
+      <div class="lgbdoff">${P.badge ? `<button class="lnk" data-act="lgxbadge" data-k="off">Abzeichen im Kopf ausblenden</button>` : `<span class="mut">Abzeichen ist ausgeblendet – tippe eins an</span>`}</div>
+      ${li("Name im Kopf zeigen", sw("lgxname", P.name_head, "Name im Kopf"), first ? `„Hallo ${esc(first)}“ statt „Sponsor“` : "")}
+      ${li("In der Danke-Liste (README) nennen", sw("lgxthanks", P.thanks, "Danke-Liste"), P.thanks ? "freiwillig · Bescheid per Mail ist vorbereitet" : "freiwillig")}</div>`;
+    const up = mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Morgen-Briefing aufs Handy, Jahres-Poster und goldener Stern – nur monatlich, Schlüssel 3 Monate.</small></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`;
+    return `<div class="lgtop">${b1}${b2}</div><div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
+  }
+  /* ---- ohne Schlüssel: A1 Botschaft, A2 Ersparnis, A3 drei Schritte, A4 Extras als Kacheln ---- */
   _lgOut(s) {
-    const N = this._lgNums(), hide = (() => { try { return localStorage.getItem("fh_lg_a2") === "1"; } catch (_) { return false; } })();
-    const nums = [N.rooms && N.gas > 0 ? [`${num(N.gas, N.gas >= 100 ? 0 : 1)} ${esc(unitOf(N.F))}`, `${esc(N.F.short)} gespart`] : null, N.sv > 0 ? [`${num(N.sv, N.sv >= 100 ? 0 : 2)} €`, "Vorteil durch eigenen Strom"] : null, N.rooms && N.min > 0 ? [`${num(N.min / 60, 0)} h`, "Heizpausen beim Lüften"] : null].filter(Boolean);
-    const exs = [["bolt", "Hausfluss", "Modul 19 · dein Haus als Fluss-Bild", "", "ef"], ["sun", "Morgen-Briefing", "jeden Morgen dein Tag aufs Handy", "max", "brief"], ["house", "Jahres-Poster", "dein Jahr als Poster zum Drucken", "max", "poster"], ["lamp", "Uhr-Stile & Verläufe", "für Kopf und Tablet-Ruhemodus", "", "look"], ["forecast", "Vorabversionen", "neue Labs 14 Tage früher", "", "early"], ["euro", "Energie-Coach", "drei Spartipps pro Woche", "bald", "coach"]];
+    const N = this._lgNums(), hide = (() => { try { return localStorage.getItem("fh_lg_a2") === "1"; } catch (_) { return false; } })(), adm = this._admin();
+    const nums = [N.rooms && N.gas > 0 ? ["eco", `${num(N.gas, N.gas >= 100 ? 0 : 1)} ${esc(unitOf(N.F))}`, `${esc(N.F.short)} gespart`] : null, N.sv > 0 ? ["euro", `${num(N.sv, N.sv >= 100 ? 0 : 2)} €`, "Vorteil durch Solar"] : null, N.rooms && N.min > 0 ? ["windowOpen", `${num(N.min / 60, 0)} h`, "Pausen beim Lüften"] : null].filter(Boolean);
     const mail = `mailto:${SPN_MAIL}?subject=${encodeURIComponent("Sponsor-Schlüssel Strom & Wärme")}&body=${encodeURIComponent("Hallo, ich habe auf GitHub gesponsert.\nMein GitHub-Name: \nStufe: Sponsor / Sponsor Max\n\nDanke!")}`;
-    return `<div class="lgban out"><div class="lgbt"><small>Sponsor-Lounge</small><b>Strom &amp; Wärme bleibt kostenlos – mit dir wird es schneller besser.</b><span>Nichts, was du jetzt nutzt, wird gesperrt. Sponsoren bekommen Schönes obendrauf.</span></div></div>
-      ${nums.length && !hide ? `<div class="lgt" style="--c:#2dd4bf"><h3>${ic("total", 17)}Das hat es dir schon gebracht</h3><div class="lgst">${nums.map(([v, l]) => `<div><b>${v}</b><small>${l}</small></div>`).join("")}</div><div class="lgnote"><span>seit der Installation · nur aus deinen Daten, nichts wird gesendet</span><button class="lnk" data-act="lgxa2">ausblenden</button></div></div>` : ""}
-      <div class="lgt"><h3>${ic("heart", 17)}In 3 Schritten</h3>${["Auf GitHub Sponsors unterstützen", "Kurz per Mail Bescheid geben – der Text ist fertig", "Den Schlüssel aus der Antwort hier einfügen"].map((t, i) => `<div class="lgit"><span class="lgnum">${i + 1}</span><span class="n">${t}</span></div>`).join("")}
-        <div class="gbtns" style="margin-top:8px"><a class="btn2 spnb pri" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">${ic("heart", 16)} Sponsor werden</a><a class="btn2" href="${mail}" style="flex:none;text-decoration:none">${ic("mail", 16)} Mail schreiben</a>${this._admin() ? `<button class="btn2" data-act="spnkeydlg">${ic("key", 16)} Schlüssel einlösen</button>` : ""}</div></div>
-      <div class="lgsec">${ic("heart", 15)}Die Extras <span class="mut">– antippen für ein Beispiel</span></div>
-      <div class="lgex">${exs.map(([k, t, sub, tag, id]) => `<button class="lgxt" data-act="lgxex" data-k="${id}">${this._gx(k, 52)}<b>${t}${tag === "max" ? ` <span class="lggd">★</span>` : ""}</b><small>${sub}</small>${tag === "bald" ? `<em class="lgsoon">bald</em>` : tag === "max" ? `<em class="lgsoon mx">Max</em>` : ""}</button>`).join("")}</div>
-      <div class="lgtiers"><div class="lgt"><b>${ic("heart", 15)} Sponsor</b><small>einmalig oder monatlich · Schlüssel 1 Jahr · alle Extras, Vorabversionen, Hausfluss</small></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max</b><small>nur monatlich · Schlüssel 3 Monate · zusätzlich Morgen-Briefing, Jahres-Poster, goldenes Abzeichen</small></div></div>`;
+    const hero = `<div class="lghero out"><div class="lghl"><em class="lgchip pk">♥ Strom &amp; Wärme bleibt kostenlos</em><h2>Mit dir wird es schneller besser.</h2><p>Alles, was heute frei ist, bleibt frei. Sponsoren bekommen Extras obendrauf – und bestimmen mit, was als Nächstes kommt.</p>
+      <div class="lgbtns"><a class="btn2 lgpk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a><button class="btn2" data-act="lgxgo" data-k="lgget">Extras ansehen</button></div></div><div class="lghr">${this._lgScene(false)}</div></div>`;
+    const a2 = nums.length && !hide ? `<div class="lgt" style="--c:#fbbf24"><h4>Das hat Strom &amp; Wärme bei dir schon geschafft</h4><div class="lgnums">${nums.map(([k, v, l]) => `<div>${this._gx(k, 34, { on: true, lvl: 80 })}<span><b>${v}</b><small>${l}</small></span></div>`).join("")}</div>
+      <div class="lgnote2">Aus deinen eigenen Daten seit der Installation. Wird nur hier angezeigt, nichts verlässt dein Home Assistant. <button class="lnk" data-act="lgxa2">ausblenden</button></div></div>` : "";
+    const step = (n, t, sub, attr) => `<${attr ? attr[0] : "div"} class="lgstp" ${attr ? attr[1] : ""}><em>${n}</em><b>${t}</b><small>${sub}</small></${attr ? attr[0] : "div"}>`;
+    const a3 = `<div class="lgt" style="--c:#f472b6"><h4>So wirst du Sponsor</h4><div class="lgsteps">
+      ${step(1, "Auf GitHub sponsern", "einmalig oder monatlich", ["a", `href="${esc(s.url)}" target="_blank" rel="noopener noreferrer"`])}
+      ${step(2, "Kurze Mail", "Text ist schon fertig", ["a", `href="${mail}"`])}
+      ${step(3, "Schlüssel einfügen", "Extras sofort an", adm ? ["button", `data-act="spnkeydlg"`] : null)}</div></div>`;
+    const T = [["bolt", "Hausfluss (Modul 19)", "Dein Haus als Fluss-Bild mit HD-Bildern", "neu", "ef", "#2dd4bf"], ["forecast", "Vorabversionen", "Neue Funktionen 14 Tage vor allen", "", "early", "#38bdf8"],
+      ["sun", "Morgen-Briefing", "Dein Tag jeden Morgen aufs Handy", "max", "brief", "#fbbf24"], ["house", "Jahres-Poster", "Dein Jahr als Poster zum Drucken", "max", "poster", "#fbbf24"],
+      ["lamp", "Uhr-Stile & Verläufe", "Für Kopf und Tablet-Ruhemodus", "", "look", "#a78bfa"], ["euro", "Energie-Coach", "Jeden Montag 3 Tipps mit Euro-Betrag", "bald", "coach", "#fbbf24"],
+      ["price", "Monatsbericht", "„Dein Haus im Monat“ als Bild", "bald", "report", "#2dd4bf"], ["person", "Wunsch des Monats", "Abstimmen, was als Nächstes kommt", "bald", "wish", "#f472b6"]];
+    const tag = (t) => t === "neu" ? `<em class="lgtag neu">NEU</em>` : t === "max" ? `<em class="lgtag mx">★ MAX</em>` : t === "bald" ? `<em class="lgtag">BALD</em>` : "";
+    const a4 = `<div class="lgh4" id="lgget">Was du bekommst – Auswahl</div><div class="lgget">${T.map(([k, t, sub, tg, id, c]) => `<button class="lgxt2" style="--c:${c}" data-act="lgxex" data-k="${id}">${tag(tg)}${this._gx(k, 36, { on: true, lvl: 80 })}<b>${esc(t)}</b><small>${sub}</small></button>`).join("")}</div>`;
+    const tiers = `<div class="lgtiers"><div class="lgt"><b>♥ Sponsor</b><small>einmalig oder monatlich · Schlüssel 1 Jahr · alle Extras, Vorabversionen, Hausfluss</small></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max</b><small>nur monatlich · Schlüssel 3 Monate · zusätzlich Morgen-Briefing, Jahres-Poster, goldener Stern</small></div></div>`;
+    return `${hero}<div class="lg2">${a2}${a3}</div>${a4}${tiers}`;
   }
   /* ---- Aktionen ---- */
   _lgAct(a, b) {
@@ -7955,7 +8028,9 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "lgxback") { this._loOpen = false; this._render(); return; }
     if (a === "lgxa2") { try { localStorage.setItem("fh_lg_a2", "1"); } catch (_) { /* egal */ } this._render(); return; }
     if (a === "lgxname") { this._spnPref({ name_head: !this._spnS().saved_prefs.name_head }); return; }
-    if (a === "lgxbadge") { if (k === "off") this._spnPref({ badge: false }); else this._spnPref({ badge: true, badge_style: k }); return; }
+    if (a === "lgxbadge") { if (k === "off") this._spnPref({ badge: false }); else if (k !== "gold" || this._lgMax()) this._spnPref({ badge: true, badge_style: k }); return; }
+    if (a === "lgxgo") { const el = this.shadowRoot.getElementById(k); if (el) { el.scrollIntoView({ behavior: "smooth", block: "start" }); el.classList.add("hzflash"); setTimeout(() => el.classList.remove("hzflash"), 1600); } return; }
+    if (a === "lgxthanks") { const s = this._spnS(), on = !s.saved_prefs.thanks; this._spnPref({ thanks: on }); if (on && s.state !== "dev") window.open(`mailto:${SPN_MAIL}?subject=${encodeURIComponent("Danke-Liste Strom & Wärme")}&body=${encodeURIComponent(`Hallo, bitte nenne mich in der Danke-Liste im README.\nName: ${s.name || ""}\n\nDanke!`)}`, "_self"); return; }
     if (a === "lgxex") { this._modal = { type: "lgex", k }; this._renderModal(); return; }
     if (a === "lgxposter") { this._modal = { type: "lgposter" }; this._renderModal(); return; }
     if (a === "lgxbrief") { this._modal = { type: "lgbrief" }; this._lgBLoad(true); this._renderModal(); return; }
@@ -7963,7 +8038,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "lgxprint") { this._lgPosterPrint(); return; }
     if (!B || !B.cfg) return;
     const c = { ...B.cfg };
-    if (a === "lgxbon") c.on = !c.on;
+    if (a === "lgxbon" || a === "lgxbon1") c.on = !c.on;
     else if (a === "lgxbev") c.evening = !c.evening;
     else if (a === "lgxbt") { const [h, m] = c.time.split(":").map(Number), t = (h * 60 + m + Number(k) + 1440) % 1440; c.time = `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`; }
     else if (a === "lgxbblk") { const s = new Set(c.blocks); if (s.has(k)) s.delete(k); else s.add(k); c.blocks = [...s]; }
@@ -7973,8 +8048,8 @@ class FensterHeizungPanel extends HTMLElement {
         .catch((e) => this._toast("Briefing: " + ((e && e.message) || "das hat nicht geklappt")));
       return;
     } else return;
-    this._lgB = { ...B, cfg: c }; this._renderModal();
-    this._hass.callWS({ type: "fenster_heizung/brief_set", cfg: c }).then((r) => { this._lgB = r; this._renderModal(); if (this._loOpen) this._render(); }).catch(() => this._toast("Das ging nicht"));
+    this._lgB = { ...B, cfg: c }; if (this._modal) this._renderModal(); else if (this._loOpen) this._render();
+    this._hass.callWS({ type: "fenster_heizung/brief_set", cfg: c }).then((r) => { this._lgB = r; if (this._modal) this._renderModal(); if (this._loOpen) this._render(); }).catch(() => this._toast("Das ging nicht"));
   }
   /* ---- Fenster: Briefing, Poster, Beispiel ---- */
   _lgModal() {
