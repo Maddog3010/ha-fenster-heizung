@@ -5,6 +5,7 @@ aus Home Assistant, es wird nichts geschaltet.
 """
 from __future__ import annotations
 
+import logging
 import re
 from typing import Any
 
@@ -14,17 +15,41 @@ from homeassistant.helpers.storage import Store
 from .backup import SafeStore
 from .const import DOMAIN
 
+_LOGGER = logging.getLogger(__name__)
+
+# v0.6: eingebaute Symbole (svg:…) → HD-Bilder aus der Grafik-Bibliothek (hd:…). Emojis, mdi und eigene Bilder bleiben.
+HD_MAP = {
+    "sonne": "sun", "solar": "pvRoof", "haus": "house", "akku": "battery", "auto": "car", "wallbox": "wallbox",
+    "steckdose": "plug", "waschmaschine": "washer", "trockner": "dryer", "kuehlschrank": "fridge", "wasser": "water",
+    "blitz": "bolt", "heizung": "radiator", "netz": "grid", "lampe": "lamp",
+}
+HD_MIG = 1  # Stand der einmaligen Umstellung
+
 POSITIONS = ("top_1", "top_2", "left_1", "left_2", "left_3", "right_1", "right_2", "right_3", "bottom")
 FLOWS = ("consume", "supply", "both", "split")
 SIDES = ("top", "bottom", "left", "right")
 MAX_CHIPS = 4
 _ENT = re.compile(r"^(sensor|number|input_number|counter)\.[a-z0-9_]+$")
 _COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
-_IMG = re.compile(r"^(svg:[a-z]{2,20}|mdi:[a-z0-9-]{2,60}|/local/[A-Za-z0-9_./-]{1,150}|https://[^\s<>\"']{4,200})$")
+_IMG = re.compile(r"^(svg:[a-z]{2,20}|hd:[A-Za-z]{2,24}|mdi:[a-z0-9-]{2,60}|/local/[A-Za-z0-9_./-]{1,150}|https://[^\s<>\"']{4,200})$")
 
 
 def _ent(v: Any) -> str:
     return v if isinstance(v, str) and _ENT.match(v) else ""
+
+
+def migrate_hd(cfg: dict[str, Any]) -> int:
+    """Einmalig: eingebaute Symbole auf HD-Bilder umstellen, das Original bleibt in image_alt. Gibt die Zahl der Kacheln zurück."""
+    if cfg.get("hd_mig", 0) >= HD_MIG:
+        return 0
+    n = 0
+    for node in [cfg["hub"], *cfg["nodes"].values()]:
+        img = node.get("image", "")
+        if img.startswith("svg:") and img[4:] in HD_MAP:
+            node["image_alt"], node["image"] = img, "hd:" + HD_MAP[img[4:]]
+            n += 1
+    cfg["hd_mig"] = HD_MIG
+    return n
 
 
 def _img(v: Any, default: str) -> str:
@@ -52,6 +77,7 @@ def clean_node(raw: Any, hub: bool = False) -> dict[str, Any]:
         "on": bool(r.get("on", True)),
         "name": _name(r.get("name"), "Haus" if hub else "Kachel"),
         "image": _img(r.get("image"), "🏠" if hub else "⚡"),
+        "image_alt": _img(r.get("image_alt"), ""),
         "color": r.get("color") if isinstance(r.get("color"), str) and _COLOR.match(r["color"]) else "",
     }
     for s in SIDES:
@@ -75,6 +101,8 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
     nodes_raw = r.get("nodes") if isinstance(r.get("nodes"), dict) else {}
     return {
         "hero": {"show": hero.get("show") is not False},
+        "keep_old": bool(r.get("keep_old", False)),
+        "hd_mig": int(r.get("hd_mig") or 0) if str(r.get("hd_mig") or 0).isdigit() else 0,
         "hub": clean_node(r.get("hub"), hub=True),
         "nodes": {p: clean_node(nodes_raw[p]) for p in POSITIONS if isinstance(nodes_raw.get(p), dict)},
     }
@@ -89,6 +117,11 @@ class FlussManager:
     async def async_start(self) -> None:
         d = await self._store.async_load()
         self.cfg = clean_cfg(d)
+        if self.cfg["hd_mig"] < HD_MIG:
+            n = migrate_hd(self.cfg)
+            await self._store.async_save(self.cfg)
+            if n:
+                _LOGGER.info("Hausfluss: %s Kachel(n) einmalig auf HD-Bilder umgestellt (Original in image_alt)", n)
 
     def sponsor(self) -> bool:
         sm = self.hass.data.get(DOMAIN, {}).get("sponsor")
@@ -104,6 +137,8 @@ class FlussManager:
     async def async_set(self, raw: Any) -> dict[str, Any]:
         if not self.sponsor():
             return self.snapshot()
-        self.cfg = clean_cfg(raw)
+        cfg = clean_cfg(raw)
+        cfg["hd_mig"] = max(cfg["hd_mig"], self.cfg.get("hd_mig", 0))  # die Umstellung läuft nur einmal
+        self.cfg = cfg
         await self._store.async_save(self.cfg)
         return self.snapshot()

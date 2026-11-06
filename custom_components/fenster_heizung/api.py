@@ -770,6 +770,18 @@ async def ws_gs_get(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], mgr.snapshot() if mgr is not None else {"ready": False, "devices": [], "hist": {}})
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/gs_remind", vol.Required("id"): str, vol.Required("on"): bool})
+@websocket_api.async_response
+async def ws_gs_remind(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Modul 4 v1.2: Erinnerung „jetzt starten“ zur besten Startzeit setzen oder löschen."""
+    mgr = hass.data.get(DOMAIN, {}).get("geraete")
+    if mgr is None:
+        connection.send_result(msg["id"], {"ok": False, "msg": "Gerätestrom ist noch nicht bereit"})
+        return
+    res = mgr.set_remind(msg["id"][:16], msg["on"])
+    connection.send_result(msg["id"], {**res, **mgr.snapshot()})
+
+
 @websocket_api.require_admin
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/set_modules", vol.Required("modules"): dict})
 @websocket_api.async_response
@@ -1348,7 +1360,7 @@ def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_haus_get, ws_haus_set, ws_log_get, ws_log_undo, ws_mw_get, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_get_learning, ws_restore,
-        ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
+        ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_gs_remind, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,

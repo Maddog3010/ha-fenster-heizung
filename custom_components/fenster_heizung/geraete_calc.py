@@ -61,6 +61,38 @@ def cover_pct(estimate_w: float, typical_w: float) -> float:
     return max(0.0, min(estimate_w / typical_w, 1.0)) * 100
 
 
+RUNS_KEEP = 10  # so viele Laufzeiten je Gerät werden für den Median gemerkt
+RUNS_MIN = 3  # ab so vielen Läufen zeigt Modul 4 „noch ~ Min.“
+
+
+def median(values: list[float]) -> float:
+    v = sorted(x for x in values if x > 0)
+    if not v:
+        return 0.0
+    m = len(v) // 2
+    return v[m] if len(v) % 2 else (v[m - 1] + v[m]) / 2
+
+
+def best_start(hours: dict[int, float], now_ts: float, dur_s: float, typ_w: float) -> dict[str, float] | None:
+    """Beste Startzeit nach der Solarprognose: Fenster mit der höchsten Erzeugung über die Laufzeit des Geräts.
+
+    hours: Stundenbeginn (Unix-Zeit) → erwartete Erzeugung in Wh in dieser Stunde. Betrachtet werden die nächsten 24 Stunden.
+    Rückgabe: {"ts": Startzeit, "pct": erwartete Solardeckung in %} oder None ohne Prognose.
+    """
+    n = max(1, min(4, int(-(-max(dur_s, 1800) // 3600))))
+    h0 = int(now_ts // 3600 * 3600)
+    starts = [h for h in sorted(hours) if h0 <= h <= now_ts + 86400]
+    best, at = 0.0, None
+    for h in starts:
+        wh = sum(hours.get(h + i * 3600, 0.0) for i in range(n))
+        if wh > best + 1e-6:
+            best, at = wh, h
+    if at is None or best <= 0:
+        return None
+    pct = min(100.0, best / n / max(typ_w, 1.0) * 100)
+    return {"ts": float(max(at, now_ts)), "pct": round(pct)}
+
+
 def advice(cover: float) -> str:
     if cover >= 70:
         return "Jetzt starten"
@@ -180,7 +212,7 @@ def clean_gs(raw: Any) -> dict[str, Any]:
         if isinstance(n, str) and _NOTIFY.match(n) and n not in notify and len(notify) < MAX_NOTIFY:
             notify.append(n)
     return {"devices": devices, "bat_cost": round(_num(raw.get("bat_cost"), 0, 100, 0.0), 2),
-            "forecast": _entity(raw.get("forecast"), ("sensor",)), "notify": notify}
+            "forecast": _entity(raw.get("forecast"), ("sensor",)), "notify": notify, "cards_old": bool(raw.get("cards_old", False))}
 
 
 def clean_ev(raw: Any) -> dict[str, Any]:

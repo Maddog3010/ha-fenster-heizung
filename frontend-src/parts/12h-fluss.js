@@ -17,7 +17,7 @@
   _efxClone() { return JSON.parse(JSON.stringify(this._efxCfg())); }
   _efxBlank(pos) {
     const p = EF_POS[pos];
-    return { on: true, name: p[4], image: p[2] === "supply" ? "svg:sonne" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false };
+    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:sun" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false };
   }
   /* ---- Rechnen: Leistung einer Kachel in W, positiv = zur Kachel, negativ = ins Haus ---- */
   _efxToW(id) { const st = id && this._hass.states[id]; if (!st) return NaN; const v = parseFloat(st.state); return isNaN(v) ? NaN : /^kW$/i.test(st.attributes.unit_of_measurement || "") ? v * 1000 : v; }
@@ -45,8 +45,11 @@
     const v = parseFloat(st.state), u = st.attributes.unit_of_measurement || "";
     return [isNaN(v) ? st.state : v.toLocaleString("de-DE", { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 2 }), u, String(st.attributes.friendly_name || id).split(" ").pop()];
   }
+  /* Bild einer Kachel: mit „Alte Symbole behalten“ das ursprüngliche Symbol (image_alt), sonst das HD-Bild */
+  _efxImgN(n) { const c = this._efxCfg(); return this._efxImg(c.keep_old && n && n.image_alt ? n.image_alt : n && n.image); }
   _efxImg(v) {
     v = String(v || "");
+    if (v.startsWith("hd:")) return this._gx(v.slice(3), 64, { on: true, lvl: 80 }).replace('class="gx"', 'class="gx efhd"');
     if (v.startsWith("svg:")) { const i = EF_IMGS.find((x) => x.id === v.slice(4)); return i ? `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${i.s}</svg>` : ""; }
     if (/^(\/local\/|https:)/.test(v)) return `<img src="${esc(v)}" alt="" loading="lazy">`;
     if (v.startsWith("mdi:")) return `<ha-icon icon="${esc(v)}"></ha-icon>`;
@@ -62,7 +65,7 @@
   _efxNodeHtml(pos, n, hubW) {
     const hub = pos === "hub", col = n.color || (EF_POS[pos] || [])[3] || "#2dd4bf", w = hub ? 0 : this._efxNodeW(n), on = hub || Math.abs(w) > 5;
     const sides = EF_SIDES.map(([s]) => { const o = this._efxSide(n, s, hub, hubW), tag = o.id ? "button" : "span"; return `<${tag} class="efs ${s[0]}" ${o.id ? `data-act="efxmore" data-e="${esc(o.id)}" title="${esc((this._hass.states[o.id] || { attributes: {} }).attributes.friendly_name || o.id)}"` : ""}>${o.html}</${tag}>`; }).join("");
-    return `<div class="efn${hub ? " hub" : ""}${on ? " on" : ""}" ${hub ? 'data-act="efxtab" data-v="strom" title="Strom öffnen"' : ""} data-p="${pos}" data-w="${Math.round(w)}" data-c="${col}" style="--c:${col}" role="group" aria-label="${esc(n.name)}">${sides}<div class="efi">${this._efxImg(n.image)}</div><span class="efnm">${esc(n.name)}</span></div>`;
+    return `<div class="efn${hub ? " hub" : ""}${on ? " on" : ""}" ${hub ? 'data-act="efxtab" data-v="strom" title="Strom öffnen"' : ""} data-p="${pos}" data-w="${Math.round(w)}" data-c="${col}" style="--c:${col}" role="group" aria-label="${esc(n.name)}">${sides}<div class="efi${String(this._efxCfg().keep_old && n.image_alt ? n.image_alt : n.image || "").startsWith("hd:") ? " hd" : ""}">${this._efxImgN(n)}</div><span class="efnm">${esc(n.name)}</span></div>`;
   }
   _efPage() {
     if (!this._efxD) { this._efxLoad(); return `<div class="card empty">Hausfluss wird geladen …</div>`; }
@@ -137,14 +140,16 @@
     if (m.type === "efxedit") return this._efxEditModal(hd);
     const row = (pos, n) => {
       const e = EF_POS[pos], fl = n ? EF_FLOWS.find((x) => x[0] === n.flow)[1] : "";
-      return `<div class="efrow"><button class="sxrow" data-act="efxedit" data-k="${pos}"><span class="sxi">${n ? `<span class="efmini" style="--c:${n.color || e[3]}">${this._efxImg(n.image)}</span>` : ic("plus", 20)}</span><span class="sxt"><b>${n ? esc(n.name) : "Kachel hinzufügen"}</b><small>${e[4]}${n ? " · " + fl : ""}</small></span></button>${n ? `<button class="sw ${n.on ? "on" : ""}" data-act="efxtog" data-k="${pos}" aria-pressed="${n.on}" aria-label="${esc(n.name)} ${n.on ? "ausblenden" : "einblenden"}" ${adm ? "" : "disabled"}></button>` : ""}</div>`;
+      return `<div class="efrow"><button class="sxrow" data-act="efxedit" data-k="${pos}"><span class="sxi">${n ? `<span class="efmini" style="--c:${n.color || e[3]}">${this._efxImgN(n)}</span>` : ic("plus", 20)}</span><span class="sxt"><b>${n ? esc(n.name) : "Kachel hinzufügen"}</b><small>${e[4]}${n ? " · " + fl : ""}</small></span></button>${n ? `<button class="sw ${n.on ? "on" : ""}" data-act="efxtog" data-k="${pos}" aria-pressed="${n.on}" aria-label="${esc(n.name)} ${n.on ? "ausblenden" : "einblenden"}" ${adm ? "" : "disabled"}></button>` : ""}</div>`;
     };
     const h = c.hub;
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Hausfluss einrichten", "Modul 19 · Beta · gilt für alle Nutzer")}
       <div class="lsec">${ic("home", 15)}Haus (Mitte)</div>
-      <div class="efrow"><button class="sxrow" data-act="efxedit" data-k="hub"><span class="sxi"><span class="efmini" style="--c:${h.color || "#2dd4bf"}">${this._efxImg(h.image)}</span></span><span class="sxt"><b>${esc(h.name)}</b><small>${h.bottom ? "Eigener Sensor für den Hausverbrauch" : "Hausverbrauch wird berechnet: " + (h.calc === "rest" ? "Restverbrauch" : "Gesamtverbrauch")}</small></span></button></div>
+      <div class="efrow"><button class="sxrow" data-act="efxedit" data-k="hub"><span class="sxi"><span class="efmini" style="--c:${h.color || "#2dd4bf"}">${this._efxImgN(h)}</span></span><span class="sxt"><b>${esc(h.name)}</b><small>${h.bottom ? "Eigener Sensor für den Hausverbrauch" : "Hausverbrauch wird berechnet: " + (h.calc === "rest" ? "Restverbrauch" : "Gesamtverbrauch")}</small></span></button></div>
       <div class="lsec">${ic("energy", 15)}Kacheln</div>
       <div class="efl">${Object.keys(EF_POS).map((p) => row(p, c.nodes[p])).join("")}</div>
+      <div class="lsec">${ic("image", 15)}Bilder</div>
+      <div class="vrow"><span>Alte Symbole behalten<small class="mut" style="display:block">Aus: eingebaute Symbole erscheinen als HD-Bilder. Emojis und eigene Bilder bleiben immer.</small></span><button class="sw ${c.keep_old ? "on" : ""}" data-act="efxkeep" aria-pressed="${!!c.keep_old}" aria-label="Alte Symbole behalten" ${adm ? "" : "disabled"}></button></div>
       <div class="lsec">${ic("sliders", 15)}Kopfbereich</div>
       <div class="vrow"><span>Hausverbrauch jetzt anzeigen<small class="mut" style="display:block">Große Zahl mit Chips oben auf der Seite</small></span><button class="sw ${c.hero.show ? "on" : ""}" data-act="efxhero" aria-pressed="${c.hero.show}" aria-label="Kopfbereich" ${adm ? "" : "disabled"}></button></div>
       <div class="stowarn" style="margin-top:12px">${ic("info", 16)}<span>Das Modul zeigt nur an und schaltet nichts. Es nutzt Sensoren aus Home Assistant (Leistung in W oder kW, Energie, Ladestand).</span></div>
@@ -155,9 +160,9 @@
     const sel = (k, none = "– keiner –") => this._wzSel(ids, n[k] || "", "efxe", `data-w="${k}"`, none);
     const lab = (s) => `<input type="text" class="efli" data-f="efxlab" data-w="${s}" value="${esc(n[s + "_label"])}" maxlength="24" placeholder="Beschriftung (leer = automatisch)" aria-label="Beschriftung">`;
     const chip = (act, k, label, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${esc(k)}" aria-pressed="${on}">${esc(label)}</button>`;
-    const q = (this._modal.q || "").toLowerCase(), imgs = EF_IMGS.filter((x) => !q || (x.n + " " + x.k).toLowerCase().includes(q)), emo = EF_EMO.filter((x) => !q || (x[1] + " " + x[2]).toLowerCase().includes(q));
+    const q = (this._modal.q || "").toLowerCase(), hdi = EF_HD.filter((x) => !q || (x[1] + " " + x[2]).toLowerCase().includes(q)), imgs = this._efxCfg().keep_old ? EF_IMGS.filter((x) => !q || (x.n + " " + x.k).toLowerCase().includes(q)) : [], emo = EF_EMO.filter((x) => !q || (x[1] + " " + x[2]).toLowerCase().includes(q));
     const imgp = this._modal.imgOpen ? `<div class="efpick"><input type="search" data-f="efximgq" value="${esc(this._modal.q || "")}" placeholder="Suchen: Solar, Auto, Waschmaschine …" class="efli" aria-label="Bild suchen" autocomplete="off">
-      <div class="efgal">${imgs.map((x) => `<button class="efpi ${n.image === "svg:" + x.id ? "sel" : ""}" data-act="efximg" data-k="svg:${x.id}" title="${esc(x.n)}"><svg viewBox="0 0 64 64">${x.s}</svg></button>`).join("")}${emo.map((x) => `<button class="efpi ${n.image === x[0] ? "sel" : ""}" data-act="efximg" data-k="${esc(x[0])}" title="${esc(x[1])}"><span>${x[0]}</span></button>`).join("")}</div>
+      <div class="efgal">${hdi.map((x) => `<button class="efpi hd ${n.image === "hd:" + x[0] ? "sel" : ""}" data-act="efximg" data-k="hd:${x[0]}" title="${esc(x[1])}">${this._gx(x[0], 40, { on: true, lvl: 80 })}</button>`).join("")}${imgs.map((x) => `<button class="efpi ${n.image === "svg:" + x.id ? "sel" : ""}" data-act="efximg" data-k="svg:${x.id}" title="${esc(x.n)}"><svg viewBox="0 0 64 64">${x.s}</svg></button>`).join("")}${emo.map((x) => `<button class="efpi ${n.image === x[0] ? "sel" : ""}" data-act="efximg" data-k="${esc(x[0])}" title="${esc(x[1])}"><span>${x[0]}</span></button>`).join("")}</div>
       <input type="text" class="efli" data-f="efximgc" value="${/^(mdi:|\/local\/|https:)/.test(n.image) ? esc(n.image) : ""}" placeholder="Eigenes: mdi:flash oder /local/bild.png" aria-label="Eigenes Bild"></div>` : "";
     const flow = hub ? "" : `<div class="lsec">${ic("energy", 15)}Flussart</div><div class="gschips">${EF_FLOWS.map((f) => chip("efxflow", f[0], f[1], n.flow === f[0])).join("")}</div><div class="mut sm">${esc(EF_FLOWS.find((f) => f[0] === n.flow)[2])}</div>`;
     const pw = hub ? "" : n.flow === "split" ? `<div class="vrow efv"><span>Leistung zur Kachel<small class="mut" style="display:block">zum Beispiel Einspeisung</small></span>${sel("power_to_node")}</div><div class="vrow efv"><span>Leistung ins Haus<small class="mut" style="display:block">zum Beispiel Netzbezug</small></span>${sel("power_to_house")}</div>`
@@ -194,12 +199,13 @@
     if (a === "efxopen") { this._modal = { type: "efxmgr" }; this._efxLoad(true); this._renderModal(); return; }
     if (a === "efxstart") {
       const c = this._efxClone(), mk = (p, o) => ({ ...this._efxBlank(p), ...o });
-      c.nodes = { top_1: mk("top_1", { name: "PV Dach", image: "svg:solar", flow: "supply" }), left_1: mk("left_1", { name: "Netz", image: "svg:netz", flow: "split", color: "#a78bfa" }), left_2: mk("left_2", { name: "Steckdose", image: "svg:steckdose", flow: "consume", color: "#f97316" }), right_1: mk("right_1", { name: "Auto", image: "svg:auto", flow: "consume", color: "#f472b6" }), bottom: mk("bottom", { name: "Akku", image: "svg:akku", flow: "both" }) };
+      c.nodes = { top_1: mk("top_1", { name: "PV Dach", image: "hd:pvRoof", flow: "supply" }), left_1: mk("left_1", { name: "Netz", image: "hd:grid", flow: "split", color: "#a78bfa" }), left_2: mk("left_2", { name: "Steckdose", image: "hd:plug", flow: "consume", color: "#f97316" }), right_1: mk("right_1", { name: "Auto", image: "hd:car", flow: "consume", color: "#f472b6" }), bottom: mk("bottom", { name: "Akku", image: "hd:battery", flow: "both" }) };
       this._efxPut(c).then(() => { this._render(); this._toast("Beispiel-Kacheln angelegt, jetzt Entitäten zuordnen"); this._modal = { type: "efxmgr" }; this._renderModal(); }); return;
     }
     if (a === "efxtab") { this._efT = b.dataset.v === "strom" ? "strom" : "now"; try { localStorage.setItem("fh_ef_tab", this._efT); } catch (e) { /* egal */ } this._render(); return; }
     if (a === "efxsize") { const o = ["auto", "klein", "mittel", "gross"]; this._efS = o[(o.indexOf(this._efSize()) + 1) % 4]; try { localStorage.setItem("fh_ef_size", this._efS); } catch (e) { /* egal */ } this._render(); return; }
     if (a === "efxback") { this._modal = { type: "efxmgr" }; this._renderModal(); return; }
+    if (a === "efxkeep") { const c = this._efxClone(); c.keep_old = !c.keep_old; this._efxPut(c).then(() => { this._renderModal(); this._render(); this._toast(c.keep_old ? "Alte Symbole werden angezeigt" : "HD-Bilder werden angezeigt"); }); return; }
     if (a === "efxhero") { const c = this._efxClone(); c.hero.show = !c.hero.show; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
     if (a === "efxtog") { const c = this._efxClone(); if (c.nodes[k]) c.nodes[k].on = !c.nodes[k].on; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
     if (a === "efxedit") {
@@ -209,7 +215,7 @@
     if (!m || m.type !== "efxedit") return;
     const d = m.draft;
     if (a === "efximgtog") m.imgOpen = !m.imgOpen;
-    else if (a === "efximg") { d.image = k; m.imgOpen = false; m.q = ""; }
+    else if (a === "efximg") { d.image = k; d.image_alt = ""; m.imgOpen = false; m.q = ""; }
     else if (a === "efxcol") d.color = k;
     else if (a === "efxflow") d.flow = k;
     else if (a === "efxinv") d.invert = !d.invert;
@@ -231,6 +237,6 @@
     if (f === "efxlab") { d[t.dataset.w + "_label"] = v.slice(0, 24); return true; }
     if (f === "efxchipadd") { const e = ent(v); if (e && !d.chips.includes(e) && d.chips.length < 4) d.chips.push(e); return true; }
     if (f === "efximgq") { m.q = v; this._renderModal(); const i = this.shadowRoot.querySelector('[data-f="efximgq"]'); if (i) { i.focus(); i.setSelectionRange(v.length, v.length); } return true; }
-    if (f === "efximgc") { if (/^(mdi:[a-z0-9-]{2,60}|\/local\/[A-Za-z0-9_.\/-]{1,150}|https:\/\/\S{4,200})$/.test(v)) { d.image = v; this._renderModal(); } return true; }
+    if (f === "efximgc") { if (/^(mdi:[a-z0-9-]{2,60}|\/local\/[A-Za-z0-9_.\/-]{1,150}|https:\/\/\S{4,200})$/.test(v)) { d.image = v; d.image_alt = ""; this._renderModal(); } return true; }
     return false;
   }

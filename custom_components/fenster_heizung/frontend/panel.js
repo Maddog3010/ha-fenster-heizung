@@ -387,6 +387,13 @@ const EF_IMGS = [
   { id: 'netz', n: 'Stromnetz', k: 'netz strommast netzbezug einspeisung zähler', s: '<path d="M32 6L20 58M32 6l12 52M25 24h14M22 38h20M12 17h40" stroke="#cbd5e1" stroke-width="3.5" stroke-linecap="round" fill="none"/>' },
   { id: 'lampe', n: 'Lampe', k: 'lampe licht beleuchtung glühbirne', s: '<path d="M32 7a17 17 0 0 0-9 31v7h18v-7a17 17 0 0 0-9-31z" fill="#fde047"/><rect x="25" y="48" width="14" height="5.5" rx="2.7" fill="#94a3b8"/>' },
 ];
+/* Modul 19 v0.6: 24 HD-Bilder aus der Grafik-Bibliothek (05d), gespeichert als „hd:<Name>“ */
+const EF_HD = [["sun", "Sonne", "sonne solar pv erzeugung"], ["pvRoof", "PV-Dach", "solar pv dach modul photovoltaik"], ["balcony", "Balkonkraftwerk", "balkon solar modul pv"], ["battery", "Akku", "batterie speicher akku ladestand"],
+  ["grid", "Stromnetz", "netz strommast bezug einspeisung"], ["house", "Haus", "haus gebäude zuhause verbrauch"], ["meter", "Zähler", "zähler stromzähler smartmeter"], ["euro", "Kosten", "euro preis kosten tarif"],
+  ["car", "Elektroauto", "auto elektroauto fahrzeug"], ["wallbox", "Wallbox", "wallbox ladestation laden"], ["heatpump", "Wärmepumpe", "wärmepumpe heizung klima"], ["bolt", "Strom", "blitz strom energie"],
+  ["lamp", "Lampe", "lampe licht beleuchtung"], ["water", "Wasser", "wasser warmwasser hahn"], ["washer", "Waschmaschine", "waschmaschine wäsche waschen"], ["dryer", "Trockner", "trockner wäsche trocknen"],
+  ["dishwasher", "Spülmaschine", "spülmaschine geschirr"], ["fridge", "Kühlschrank", "kühlschrank kühlgerät gefrier"], ["oven", "Küche", "küche ofen herd thermomix kochen"], ["pool", "Pool", "pool poolpumpe schwimmbad"],
+  ["pc", "Computer", "computer pc rechner server"], ["tvset", "Fernseher", "fernseher tv"], ["workshop", "Werkstatt", "werkstatt werkzeug bohrmaschine"], ["plug", "Steckdose", "steckdose stecker gerät verbraucher"]];
 const EF_EMO = [
   ['☀️', 'Sonne', 'solar'], ['🌤️', 'Wolkig', 'sonne wolke wetter'], ['🔌', 'Stecker', 'steckdose strom'], ['🫧', 'Seifenblasen', 'waschmaschine wäsche'], ['🌀', 'Wirbel', 'trockner'],
   ['🧊', 'Eiswürfel', 'kühlschrank kühlen'], ['🚰', 'Wasserhahn', 'wasser'], ['🚗', 'Auto', 'fahrzeug'], ['🔋', 'Batterie', 'akku speicher'], ['🏠', 'Haus', 'gebäude'],
@@ -723,7 +730,7 @@ const MV = {
   fh: { v: "1.6", b: 1, d: "2026-11-04", p: "2026.11.1", log: [["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.0", b: 2, d: "2026-11-04", p: "2026.11.1", log: [["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.1", b: 1, d: "2026-10-30", p: "2026.11.1", log: [["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  gs: { v: "1.1", b: 2, d: "2026-11-03", p: "2026.11.1", log: [["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  gs: { v: "1.2", b: 1, d: "2026-11-06", p: "2026.11.2b2", log: [["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -736,7 +743,7 @@ const MV = {
   dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
-  ef: { v: "0.5", b: 6, d: "2026-10-29", p: "3.0.7.6", log: [["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ef: { v: "0.6", b: 1, d: "2026-11-06", p: "2026.11.2b2", log: [["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
 };
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
 const REL = [{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]},{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]},{"v":"3.0.7.5","d":"2026-10-29","t":["Handy-Ansicht, obere Kacheln mittig"],"c":["Modul 19 · v0.5 Build 5"]},{"v":"3.0.7.4","d":"2026-10-29","t":["Der Fluss in den Linien läuft durchgängig","Kein Punkt mehr oben links im Fluss-Bild","Handy-Ansicht wie auf Tablet und Desktop"],"c":["Modul 19 · v0.5 Build 4"]},{"v":"3.0.7.3","d":"2026-10-29","t":["Behoben: Die Jetzt-Ansicht flackerte"],"c":["Modul 19 · v0.5 Build 3"]},{"v":"3.0.7.2","d":"2026-10-29","t":["Fluss-Bild passt sich dem Bildschirm an","Umschalter „Jetzt | Strom“"],"c":["Modul 19 · v0.5 Build 2"]},{"v":"3.0.7.1","d":"2026-10-29","t":["Behoben: Tablet-Modus: Display ging bei Bewegung nicht an"],"c":[]}];
@@ -1535,10 +1542,12 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efgrid{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;z-index:1}
 .eflines{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:visible}
 .efc{display:flex;justify-content:center;align-items:center}.efc.hb .efn,.efc.bt .efn{width:calc(50% - 6px)}
-.efn{--c:#2dd4bf;container-type:inline-size;width:100%;aspect-ratio:1;position:relative;border-radius:20px;background:color-mix(in srgb,var(--primary-text-color) 5%,var(--card));border:1.5px solid color-mix(in srgb,var(--c) 45%,transparent);transition:border-color .2s,box-shadow .2s}
-.efg{width:100%;aspect-ratio:1;visibility:hidden}.efc.bt .efg{width:calc(50% - 6px)}.efx.nar .efc.bt .efg{width:clamp(92px,27%,130px)}.efn.on{border-color:var(--c);box-shadow:0 0 0 1px color-mix(in srgb,var(--c) 40%,transparent),0 8px 28px -10px var(--c)}
-.efi{position:absolute;left:50%;top:50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;font-size:14cqw;overflow:hidden;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 38%,transparent),color-mix(in srgb,var(--c) 10%,var(--card)) 75%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 40%,transparent)}
-.efi svg{width:64%;height:64%}.efi img{width:100%;height:100%;object-fit:cover}.efi ha-icon{--mdc-icon-size:14cqw}.efn:not(.on) .efi{filter:saturate(.45) brightness(.85)}
+.efn{--c:#2dd4bf;container-type:inline-size;width:100%;aspect-ratio:1;position:relative;border-radius:20px;background:color-mix(in srgb,var(--primary-text-color) 5%,var(--card));border:0;overflow:hidden;transition:background .2s,box-shadow .2s;box-shadow:inset 0 1px 0 color-mix(in srgb,var(--primary-text-color) 6%,transparent)}
+.efn::before{content:"";position:absolute;top:0;left:16%;right:16%;height:2px;border-radius:0 0 3px 3px;background:var(--c);opacity:.35;transition:opacity .2s}
+.efn::after{content:"";position:absolute;left:50%;top:50%;width:62%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 30%,transparent),transparent 68%);opacity:.45;pointer-events:none;transition:opacity .2s}
+.efg{width:100%;aspect-ratio:1;visibility:hidden}.efc.bt .efg{width:calc(50% - 6px)}.efx.nar .efc.bt .efg{width:clamp(92px,27%,130px)}.efn.on{background:color-mix(in srgb,var(--c) 7%,color-mix(in srgb,var(--primary-text-color) 6%,var(--card)))}.efn.on::before{opacity:.9}.efn.on::after{opacity:1}
+.efi{position:absolute;left:50%;top:50%;width:30%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;font-size:14cqw;overflow:hidden;z-index:1}
+.efi svg{width:64%;height:64%}.efi svg.efhd{width:100%;height:100%}.efi.hd{width:40%;border-radius:0;overflow:visible}.efs{z-index:1}.efpi.hd{padding:3px}.efpi .gx{width:100%;height:100%}.efi img{width:100%;height:100%;object-fit:cover}.efi ha-icon{--mdc-icon-size:14cqw}.efn:not(.on) .efi{filter:saturate(.45) brightness(.85)}
 .efnm{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .efs{position:absolute;font:inherit;font-size:8.5cqw;font-weight:700;color:var(--mut);white-space:nowrap;line-height:1.15;text-align:center;background:none;border:0;padding:0;cursor:pointer}span.efs{cursor:default}
 .efn.on .efs{color:var(--primary-text-color)}.efs i{display:block;font-style:normal;font-size:.72em;font-weight:500;color:var(--mut);overflow:hidden;text-overflow:ellipsis}
@@ -1987,6 +1996,28 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .gxpct i{width:8px;height:8px;border-radius:50%;display:inline-block}
 .gxrest{font-size:.76rem;font-weight:600;color:var(--teal);background:color-mix(in srgb,var(--teal) 16%,transparent);padding:3px 10px;border-radius:99px}
 .gxrest.learn{color:var(--mut);background:color-mix(in srgb,var(--mut) 12%,transparent);font-weight:500}
+/* Modul 4 v1.2: Gerätekarten 2.0 */
+.gsdev.g2{border:0;position:relative;overflow:hidden;--st:var(--mut);padding:14px 16px 16px;gap:10px;grid-template-columns:minmax(0,1fr);min-width:0}
+.gsdev.g2>*{min-width:0}
+.gsdev.g2::before{content:"";position:absolute;top:0;left:18px;right:18px;height:2px;border-radius:0 0 3px 3px;background:var(--st);opacity:.75}
+.g2-run{--st:#34d399}.gsdev.g2-done{--st:var(--teal)}.gsdev.g2-idle::before{opacity:.35}
+.gsdev.g2.sel{box-shadow:0 0 0 1px var(--teal) inset}
+.g2h{display:flex;align-items:center;gap:12px;background:none;border:0;padding:0;text-align:left;cursor:pointer;width:100%;color:inherit}
+.g2n{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.g2n b{font-size:1.06rem;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:break-word;hyphens:auto}.g2n small{font-size:.8rem;color:var(--mut)}
+.g2s{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px}.g2st{flex:none;font-size:.75rem;font-weight:700;padding:4px 11px;border-radius:999px;color:var(--mut);background:color-mix(in srgb,var(--mut) 12%,transparent)}
+.g2st.run{color:#34d399;background:color-mix(in srgb,#34d399 14%,transparent)}.g2st.run::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#34d399;margin-right:6px;vertical-align:1px}
+.g2st.done{color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,transparent)}
+.g2 .gxpct{justify-content:flex-start;color:var(--mut)}
+.g2rest{display:flex;flex-direction:column;gap:6px;align-items:flex-start}.g2prog{width:100%;height:4px;border-radius:4px;background:var(--line);overflow:hidden}.g2prog i{display:block;height:100%;background:#34d399;border-radius:4px}
+.g2f{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.g2f div{background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 5%,transparent);border-radius:12px;padding:7px 9px;display:flex;flex-direction:column;gap:1px;min-width:0}
+.g2f span{font-size:.7rem;color:var(--mut)}.g2f b{font-size:.92rem;font-weight:700;white-space:nowrap}.g2f small{font-size:.7rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g2adv{display:flex;align-items:center;gap:10px;border-radius:14px;padding:8px 10px;background:color-mix(in srgb,#fbbf24 10%,transparent);font-size:.84rem;font-weight:600}
+.g2adv.go{background:color-mix(in srgb,#34d399 12%,transparent)}
+.g2adv span{flex:1;display:flex;flex-direction:column;gap:1px}.g2adv small{font-weight:400;font-size:.74rem;color:var(--mut)}
+.g2rem{flex:none;display:inline-flex;align-items:center;gap:5px;border:0;border-radius:999px;padding:7px 13px;font-weight:700;font-size:.8rem;cursor:pointer;background:var(--teal);color:var(--on-acc)}
+.g2rem.on{background:color-mix(in srgb,var(--teal) 18%,transparent);color:var(--teal)}
+@media(max-width:520px){.g2f b{font-size:.86rem}.gsdev.g2{padding:12px 13px 14px}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -3748,8 +3779,8 @@ class FensterHeizungPanel extends HTMLElement {
     const X = this._gxLib();
     return X.L[old] ? old : X.A[old] || null;
   }
-  /* Herkunft: Solar, Batterie, Netz – dieselben Farben in Modul 3, 4 und 19 */
-  static GX_SRC = [["pv", "Solar", "#f59e0b"], ["bat", "Batterie", "#22c55e"], ["net", "Netz", "#6366f1"]];
+  /* Herkunft: Solar, Batterie, Netz – Farben wie die bisherigen Balken in Modul 4 (gelb, violett, rot) */
+  static GX_SRC = [["pv", "Solar", "#fbbf24"], ["bat", "Batterie", "#a78bfa"], ["net", "Netz", "#f87171"]]; /* wie GS_COL in Modul 4 */
   _gxRing(k, mix = {}, s = 72, o = {}) {
     const r = 29, C = 2 * Math.PI * r, tot = this.constructor.GX_SRC.reduce((a, [id]) => a + (Number(mix[id]) || 0), 0) || 1;
     let off = 0;
@@ -5957,6 +5988,15 @@ class FensterHeizungPanel extends HTMLElement {
       else { const d = new Date(P.s.getFullYear(), P.s.getMonth(), P.s.getDate() + i); this._gsRg = "day"; this._gsOff = Math.round((d - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5); }
       this._gsOff = Math.min(0, this._gsOff); this._gsTipX = null; this._render();
     }
+    else if (a === "gsrem") {
+      const d = ((this._gsD && this._gsD.devices) || []).find((x) => x.id === k), on = !(d && d.remind && d.remind * 1000 > Date.now());
+      this._hass.callWS({ type: "fenster_heizung/gs_remind", id: k, on }).then((r) => {
+        if (r && r.devices) this._gsD = { ...r, ts: Date.now() };
+        this._toast(!r || !r.ok ? (r && r.msg) || "Das hat nicht geklappt" : on ? `Erinnerung um ${new Date(r.ts * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr` : "Erinnerung gelöscht");
+        this._render();
+      }).catch(() => this._toast("Das hat nicht geklappt"));
+    }
+    else if (a === "gsold") { G.cards_old = !G.cards_old; this._mdSave(); this._renderModal(); }
     else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }
     else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._mdSave(); this._renderModal(); } }
   }
@@ -5993,7 +6033,9 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="of"><div class="ol"><b>Speicherkosten</b><span>Was eine kWh aus der Batterie kostet. 0 = Batteriestrom gilt als kostenlos.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gsbat" value="${G.bat_cost}" min="0" max="100" step="0.5"><u>ct/kWh</u></span></div></div>
       <div class="lsec">${ic("sun", 15)}Startempfehlung</div>
       <div class="mut sm" style="margin:2px 0 0">Prognose-Sensor in Watt (optional). Ohne Sensor zählt die aktuelle Solarleistung.</div>${this._wzSel(pw, G.forecast, "gsfc", "", "– keiner –", /prognose|forecast|solar|pv/i)}
-      <div class="lsec">${ic("bell", 15)}Meldung am Ende eines Durchlaufs</div>
+      <div class="lsec">${ic("grid", 15)}Darstellung</div>
+      <div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Gerätekarten aus v1.1 mit Balken statt HD-Bild und Herkunfts-Ring</small></span><button class="sw ${G.cards_old ? "on" : ""}" data-act="gsold" aria-pressed="${!!G.cards_old}" aria-label="Karten wie bisher"></button></div>
+      <div class="lsec">${ic("bell", 15)}Meldung am Ende eines Durchlaufs und für „Erinnern“</div>
       ${opts.length ? `<div class="gschips">${opts.map((n) => `<button class="gsch ${G.notify.includes(n) ? "sel" : ""}" data-act="gsnot" data-k="${esc(n)}" aria-pressed="${G.notify.includes(n)}">${esc(n.replace("notify.", ""))}</button>`).join("")}</div>` : `<div class="mut sm">Keine Benachrichtigungsdienste gefunden.</div>`}
       <div class="mut sm" style="margin:6px 0 0">Zusätzlich wird das Ereignis <code>geraetestrom_run_finished</code> ausgelöst.</div>
       <div class="foot2"><button class="btn2 pri" data-act="gsdone">Fertig</button></div></div>`;
@@ -6071,7 +6113,7 @@ class FensterHeizungPanel extends HTMLElement {
     const tl = [["saved", "total", "Gespart", eur(T.sv), "#34d399", `${eur(T.c)} Kosten`, cmp(T.sv, V && V.sv, "up")], ["cost", "bolt", "Kosten", eur(T.c), "#f87171", T.n ? `Ø ${eur(T.c / T.n)} je Durchlauf` : "kein Durchlauf", cmp(T.c, V && V.c, "down")],
       ["kwh", "energy", "Energie", `${num(T.kwh, T.kwh >= 100 ? 0 : 1)}<small>kWh</small>`, "#2dd4bf", `${num(T.n)} ${T.n === 1 ? "Durchlauf" : "Durchläufe"}`, cmp(T.kwh, V && V.kwh, "none")], ["own", "sun", "Eigener Strom", T.own != null ? `${num(T.own, 0)}<small>%</small>` : "–", "#fbbf24", T.kwh ? `${num(T.v[0], 1)} kWh Solar · ${num(T.v[1], 1)} kWh Batterie` : "Keine Daten", V && V.own != null && T.own != null ? `<div class="g"><span class="tcmp ${T.own >= V.own ? "up" : "dn"}">${T.own >= V.own ? "▲" : "▼"} ${num(Math.abs(T.own - V.own), 0)} Punkte</span> ${cl}</div>` : ""]];
     const tiles = `<div class="tiles entiles">${tl.map(([k, ico, lab, v, c, sub, cm]) => `<div class="tile" style="--a:${c}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}</div><div class="g">${sub}</div>${cm}</div>`).join("")}</div>`;
-    const cards = devs.map((d) => {
+    const cards = this._gsNewCards() ? devs.map((d) => this._gsCard2(d, this._gsAgg([d.id], P).t, per)).join("") : devs.map((d) => {
       const a = this._gsAgg([d.id], P).t, run = d.running, base = run ? d.w : a.v, tot = base[0] + base[1] + base[2], ty = GS_TYP[this._gsTyp(d)], adv = d.advice || "", ac = /^Jetzt/.test(adv) ? "green" : /^Teil/.test(adv) ? "amber" : "slate";
       const since = run && d.since ? Math.max(0, Math.round((Date.now() / 1000 - d.since) / 60)) : null;
       return `<div class="card gsdev${this._gsSel === d.id ? " sel" : ""}"><button class="gsh gshb" data-act="gsdev" data-k="${esc(d.id)}" aria-pressed="${this._gsSel === d.id}"><span class="gsi big">${ic(ty.i, 20)}</span><span class="gsn"><b>${esc(d.name)}</b><small>${ty.n}</small></span><span class="gsst ${run ? "on" : ""}">${run ? `${wfmt(d.w[0] + d.w[1] + d.w[2])}${since != null ? ` · ${since >= 60 ? Math.floor(since / 60) + " h " + (since % 60) + " min" : since + " min"}` : ""}` : "Aus"}</span></button>
@@ -6083,6 +6125,45 @@ class FensterHeizungPanel extends HTMLElement {
         ${adv && !run ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung jetzt ${num(d.cover, 0)} %</span></div>` : ""}</div>`; }).join("");
     if (this._gsTipX != null) Promise.resolve().then(() => this._gsTipShow());
     return `${hero}${nav}${tiles}<div class="gsgrid">${cards}</div>${this._gsChart(D, devs, P)}`;
+  }
+  /* ---- Modul 4 v1.2: Gerätekarten 2.0 (HD-Bild mit Herkunfts-Ring, Prozentzeile, Restzeit ab 3 Läufen, drei Felder, Empfehlung mit „Erinnern“).
+     Schalter „Karten wie bisher“ (G.cards_old) oder Neue Optik „wie bisher“ zeigt die Karten aus v1.1. */
+  _gsNewCards() { return !this._gsState().cards_old && !this._gxCfg().classic; }
+  _gsHd(d) { return this._gxAlt(this._gsTyp(d)) || "plug"; }
+  /* Zustand der Karte: run (läuft, grün), done (heute fertig, türkis mit Uhrzeit), idle (bereit, grau) */
+  _gsMode(d) {
+    if (d.running) return "run";
+    return d.last && d.last.ts && new Date(d.last.ts).toDateString() === new Date().toDateString() ? "done" : "idle";
+  }
+  /* Restzeit aus dem Median der letzten 10 Läufe (Backend: d.med in s, d.runs = gezählte Läufe); erst ab 3 Läufen */
+  _gsRestInfo(d) {
+    if (!d.running || !d.since) return null;
+    const el = Math.max(0, Date.now() / 1000 - d.since), n = d.runs || 0;
+    if (n < 3 || !(d.med > 0)) return { learn: true, n, el };
+    const rest = Math.max(0, d.med - el), end = new Date((d.since + Math.max(d.med, el + 60)) * 1000);
+    return { learn: false, n, el, rest, end, p: Math.min(1, el / d.med) };
+  }
+  _gsCard2(d, a, per) {
+    const hm = (t) => new Date(t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), eur = (v) => num(v, 2) + " €";
+    const m = this._gsMode(d), run = m === "run", ty = GS_TYP[this._gsTyp(d)], base = run ? d.w : a.v, tot = base[0] + base[1] + base[2];
+    const mix = tot > 0 ? { pv: base[0], bat: base[1], net: base[2] } : {};
+    const R = this._gsRestInfo(d), dur = (s) => { const x = Math.round(s / 60); return x >= 60 ? `${Math.floor(x / 60)} h ${x % 60} min` : `${x} min`; };
+    const pill = run ? `<span class="g2st run">läuft</span>` : m === "done" ? `<span class="g2st done">fertig ${hm(d.last.ts)}</span>` : `<span class="g2st">bereit</span>`;
+    const sub = run ? `${wfmt(d.w[0] + d.w[1] + d.w[2])}${R ? ` · seit ${dur(R.el)}` : ""}` : `${ty.n}${tot > 0 ? ` · ${num(a.kwh != null ? a.kwh : tot, 2)} kWh ${esc(per)}` : ""}`;
+    const rest = !run || !R ? "" : R.learn ? `<div class="g2rest"><span class="gxrest learn">lernt die Laufzeit · ${R.n}/3 Läufe</span></div>`
+      : `<div class="g2rest"><span class="gxrest">${R.rest < 90 ? "gleich fertig" : `noch ~${Math.round(R.rest / 60)} Min.`} · fertig ~ ${hm(R.end)} Uhr</span><div class="g2prog"><i style="width:${Math.round(R.p * 100)}%"></i></div></div>`;
+    const f3 = [["Kosten", eur(a.c), esc(per)], ["Gespart", eur(a.sv), `${num(a.n)} ${a.n === 1 ? "Lauf" : "Läufe"}`],
+      ["Letzter Lauf", d.last ? num(d.last.kwh, 2) + " kWh" : "–", d.last ? `${num(d.last.share, 0)} % eigen` : "noch keiner"]];
+    const B = d.best, rem = d.remind && d.remind * 1000 > Date.now();
+    const adv = run || !(B || d.advice) ? "" : B && B.ts * 1000 > Date.now() + 15 * 60000
+      ? `<div class="g2adv">${this._gx("sun", 26)}<span>Am besten ${B.day === "tomorrow" ? "morgen " : ""}ab ${hm(B.ts * 1000)} starten<small>~${num(B.pct, 0)} % Solar erwartet</small></span><button class="g2rem${rem ? " on" : ""}" data-act="gsrem" data-k="${esc(d.id)}" aria-pressed="${rem}">${rem ? `${ic("check", 14)} Erinnert` : `${ic("bell", 14)} Erinnern`}</button></div>`
+      : `<div class="g2adv ${/^Jetzt/.test(d.advice || "") ? "go" : ""}">${this._gx("sun", 26)}<span>${esc(d.advice || "")}<small>Solardeckung jetzt ${num(d.cover, 0)} %</small></span></div>`;
+    return `<div class="card gsdev g2 g2-${m}${this._gsSel === d.id ? " sel" : ""}">
+      <button class="g2h" data-act="gsdev" data-k="${esc(d.id)}" aria-pressed="${this._gsSel === d.id}" aria-label="${esc(d.name)} im Diagramm hervorheben">${this._gxRing(this._gsHd(d), mix, 76, { on: run })}
+        <span class="g2n"><b>${esc(d.name)}</b><span class="g2s">${pill}<small>${sub}</small></span></span></button>
+      ${this._gxPct(mix).replace("noch keine Daten", "keine Daten")}${rest}
+      <div class="g2f">${f3.map(([l, v, s]) => `<div><span>${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>
+      ${this._gsSpark(d.id, this._gsPer())}${adv}</div>`;
   }
   _gsChart(D, devs, P) {
     const sel = devs.some((d) => d.id === this._gsSel) ? this._gsSel : "", pick = sel ? [sel] : devs.map((d) => d.id), W = 640, Hh = 210, pl = 40, pb = 24, pt = 14, ih = Hh - pb - pt;
@@ -7895,7 +7976,7 @@ class FensterHeizungPanel extends HTMLElement {
   _efxClone() { return JSON.parse(JSON.stringify(this._efxCfg())); }
   _efxBlank(pos) {
     const p = EF_POS[pos];
-    return { on: true, name: p[4], image: p[2] === "supply" ? "svg:sonne" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false };
+    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:sun" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false };
   }
   /* ---- Rechnen: Leistung einer Kachel in W, positiv = zur Kachel, negativ = ins Haus ---- */
   _efxToW(id) { const st = id && this._hass.states[id]; if (!st) return NaN; const v = parseFloat(st.state); return isNaN(v) ? NaN : /^kW$/i.test(st.attributes.unit_of_measurement || "") ? v * 1000 : v; }
@@ -7923,8 +8004,11 @@ class FensterHeizungPanel extends HTMLElement {
     const v = parseFloat(st.state), u = st.attributes.unit_of_measurement || "";
     return [isNaN(v) ? st.state : v.toLocaleString("de-DE", { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 2 }), u, String(st.attributes.friendly_name || id).split(" ").pop()];
   }
+  /* Bild einer Kachel: mit „Alte Symbole behalten“ das ursprüngliche Symbol (image_alt), sonst das HD-Bild */
+  _efxImgN(n) { const c = this._efxCfg(); return this._efxImg(c.keep_old && n && n.image_alt ? n.image_alt : n && n.image); }
   _efxImg(v) {
     v = String(v || "");
+    if (v.startsWith("hd:")) return this._gx(v.slice(3), 64, { on: true, lvl: 80 }).replace('class="gx"', 'class="gx efhd"');
     if (v.startsWith("svg:")) { const i = EF_IMGS.find((x) => x.id === v.slice(4)); return i ? `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">${i.s}</svg>` : ""; }
     if (/^(\/local\/|https:)/.test(v)) return `<img src="${esc(v)}" alt="" loading="lazy">`;
     if (v.startsWith("mdi:")) return `<ha-icon icon="${esc(v)}"></ha-icon>`;
@@ -7940,7 +8024,7 @@ class FensterHeizungPanel extends HTMLElement {
   _efxNodeHtml(pos, n, hubW) {
     const hub = pos === "hub", col = n.color || (EF_POS[pos] || [])[3] || "#2dd4bf", w = hub ? 0 : this._efxNodeW(n), on = hub || Math.abs(w) > 5;
     const sides = EF_SIDES.map(([s]) => { const o = this._efxSide(n, s, hub, hubW), tag = o.id ? "button" : "span"; return `<${tag} class="efs ${s[0]}" ${o.id ? `data-act="efxmore" data-e="${esc(o.id)}" title="${esc((this._hass.states[o.id] || { attributes: {} }).attributes.friendly_name || o.id)}"` : ""}>${o.html}</${tag}>`; }).join("");
-    return `<div class="efn${hub ? " hub" : ""}${on ? " on" : ""}" ${hub ? 'data-act="efxtab" data-v="strom" title="Strom öffnen"' : ""} data-p="${pos}" data-w="${Math.round(w)}" data-c="${col}" style="--c:${col}" role="group" aria-label="${esc(n.name)}">${sides}<div class="efi">${this._efxImg(n.image)}</div><span class="efnm">${esc(n.name)}</span></div>`;
+    return `<div class="efn${hub ? " hub" : ""}${on ? " on" : ""}" ${hub ? 'data-act="efxtab" data-v="strom" title="Strom öffnen"' : ""} data-p="${pos}" data-w="${Math.round(w)}" data-c="${col}" style="--c:${col}" role="group" aria-label="${esc(n.name)}">${sides}<div class="efi${String(this._efxCfg().keep_old && n.image_alt ? n.image_alt : n.image || "").startsWith("hd:") ? " hd" : ""}">${this._efxImgN(n)}</div><span class="efnm">${esc(n.name)}</span></div>`;
   }
   _efPage() {
     if (!this._efxD) { this._efxLoad(); return `<div class="card empty">Hausfluss wird geladen …</div>`; }
@@ -8015,14 +8099,16 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "efxedit") return this._efxEditModal(hd);
     const row = (pos, n) => {
       const e = EF_POS[pos], fl = n ? EF_FLOWS.find((x) => x[0] === n.flow)[1] : "";
-      return `<div class="efrow"><button class="sxrow" data-act="efxedit" data-k="${pos}"><span class="sxi">${n ? `<span class="efmini" style="--c:${n.color || e[3]}">${this._efxImg(n.image)}</span>` : ic("plus", 20)}</span><span class="sxt"><b>${n ? esc(n.name) : "Kachel hinzufügen"}</b><small>${e[4]}${n ? " · " + fl : ""}</small></span></button>${n ? `<button class="sw ${n.on ? "on" : ""}" data-act="efxtog" data-k="${pos}" aria-pressed="${n.on}" aria-label="${esc(n.name)} ${n.on ? "ausblenden" : "einblenden"}" ${adm ? "" : "disabled"}></button>` : ""}</div>`;
+      return `<div class="efrow"><button class="sxrow" data-act="efxedit" data-k="${pos}"><span class="sxi">${n ? `<span class="efmini" style="--c:${n.color || e[3]}">${this._efxImgN(n)}</span>` : ic("plus", 20)}</span><span class="sxt"><b>${n ? esc(n.name) : "Kachel hinzufügen"}</b><small>${e[4]}${n ? " · " + fl : ""}</small></span></button>${n ? `<button class="sw ${n.on ? "on" : ""}" data-act="efxtog" data-k="${pos}" aria-pressed="${n.on}" aria-label="${esc(n.name)} ${n.on ? "ausblenden" : "einblenden"}" ${adm ? "" : "disabled"}></button>` : ""}</div>`;
     };
     const h = c.hub;
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Hausfluss einrichten", "Modul 19 · Beta · gilt für alle Nutzer")}
       <div class="lsec">${ic("home", 15)}Haus (Mitte)</div>
-      <div class="efrow"><button class="sxrow" data-act="efxedit" data-k="hub"><span class="sxi"><span class="efmini" style="--c:${h.color || "#2dd4bf"}">${this._efxImg(h.image)}</span></span><span class="sxt"><b>${esc(h.name)}</b><small>${h.bottom ? "Eigener Sensor für den Hausverbrauch" : "Hausverbrauch wird berechnet: " + (h.calc === "rest" ? "Restverbrauch" : "Gesamtverbrauch")}</small></span></button></div>
+      <div class="efrow"><button class="sxrow" data-act="efxedit" data-k="hub"><span class="sxi"><span class="efmini" style="--c:${h.color || "#2dd4bf"}">${this._efxImgN(h)}</span></span><span class="sxt"><b>${esc(h.name)}</b><small>${h.bottom ? "Eigener Sensor für den Hausverbrauch" : "Hausverbrauch wird berechnet: " + (h.calc === "rest" ? "Restverbrauch" : "Gesamtverbrauch")}</small></span></button></div>
       <div class="lsec">${ic("energy", 15)}Kacheln</div>
       <div class="efl">${Object.keys(EF_POS).map((p) => row(p, c.nodes[p])).join("")}</div>
+      <div class="lsec">${ic("image", 15)}Bilder</div>
+      <div class="vrow"><span>Alte Symbole behalten<small class="mut" style="display:block">Aus: eingebaute Symbole erscheinen als HD-Bilder. Emojis und eigene Bilder bleiben immer.</small></span><button class="sw ${c.keep_old ? "on" : ""}" data-act="efxkeep" aria-pressed="${!!c.keep_old}" aria-label="Alte Symbole behalten" ${adm ? "" : "disabled"}></button></div>
       <div class="lsec">${ic("sliders", 15)}Kopfbereich</div>
       <div class="vrow"><span>Hausverbrauch jetzt anzeigen<small class="mut" style="display:block">Große Zahl mit Chips oben auf der Seite</small></span><button class="sw ${c.hero.show ? "on" : ""}" data-act="efxhero" aria-pressed="${c.hero.show}" aria-label="Kopfbereich" ${adm ? "" : "disabled"}></button></div>
       <div class="stowarn" style="margin-top:12px">${ic("info", 16)}<span>Das Modul zeigt nur an und schaltet nichts. Es nutzt Sensoren aus Home Assistant (Leistung in W oder kW, Energie, Ladestand).</span></div>
@@ -8033,9 +8119,9 @@ class FensterHeizungPanel extends HTMLElement {
     const sel = (k, none = "– keiner –") => this._wzSel(ids, n[k] || "", "efxe", `data-w="${k}"`, none);
     const lab = (s) => `<input type="text" class="efli" data-f="efxlab" data-w="${s}" value="${esc(n[s + "_label"])}" maxlength="24" placeholder="Beschriftung (leer = automatisch)" aria-label="Beschriftung">`;
     const chip = (act, k, label, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${esc(k)}" aria-pressed="${on}">${esc(label)}</button>`;
-    const q = (this._modal.q || "").toLowerCase(), imgs = EF_IMGS.filter((x) => !q || (x.n + " " + x.k).toLowerCase().includes(q)), emo = EF_EMO.filter((x) => !q || (x[1] + " " + x[2]).toLowerCase().includes(q));
+    const q = (this._modal.q || "").toLowerCase(), hdi = EF_HD.filter((x) => !q || (x[1] + " " + x[2]).toLowerCase().includes(q)), imgs = this._efxCfg().keep_old ? EF_IMGS.filter((x) => !q || (x.n + " " + x.k).toLowerCase().includes(q)) : [], emo = EF_EMO.filter((x) => !q || (x[1] + " " + x[2]).toLowerCase().includes(q));
     const imgp = this._modal.imgOpen ? `<div class="efpick"><input type="search" data-f="efximgq" value="${esc(this._modal.q || "")}" placeholder="Suchen: Solar, Auto, Waschmaschine …" class="efli" aria-label="Bild suchen" autocomplete="off">
-      <div class="efgal">${imgs.map((x) => `<button class="efpi ${n.image === "svg:" + x.id ? "sel" : ""}" data-act="efximg" data-k="svg:${x.id}" title="${esc(x.n)}"><svg viewBox="0 0 64 64">${x.s}</svg></button>`).join("")}${emo.map((x) => `<button class="efpi ${n.image === x[0] ? "sel" : ""}" data-act="efximg" data-k="${esc(x[0])}" title="${esc(x[1])}"><span>${x[0]}</span></button>`).join("")}</div>
+      <div class="efgal">${hdi.map((x) => `<button class="efpi hd ${n.image === "hd:" + x[0] ? "sel" : ""}" data-act="efximg" data-k="hd:${x[0]}" title="${esc(x[1])}">${this._gx(x[0], 40, { on: true, lvl: 80 })}</button>`).join("")}${imgs.map((x) => `<button class="efpi ${n.image === "svg:" + x.id ? "sel" : ""}" data-act="efximg" data-k="svg:${x.id}" title="${esc(x.n)}"><svg viewBox="0 0 64 64">${x.s}</svg></button>`).join("")}${emo.map((x) => `<button class="efpi ${n.image === x[0] ? "sel" : ""}" data-act="efximg" data-k="${esc(x[0])}" title="${esc(x[1])}"><span>${x[0]}</span></button>`).join("")}</div>
       <input type="text" class="efli" data-f="efximgc" value="${/^(mdi:|\/local\/|https:)/.test(n.image) ? esc(n.image) : ""}" placeholder="Eigenes: mdi:flash oder /local/bild.png" aria-label="Eigenes Bild"></div>` : "";
     const flow = hub ? "" : `<div class="lsec">${ic("energy", 15)}Flussart</div><div class="gschips">${EF_FLOWS.map((f) => chip("efxflow", f[0], f[1], n.flow === f[0])).join("")}</div><div class="mut sm">${esc(EF_FLOWS.find((f) => f[0] === n.flow)[2])}</div>`;
     const pw = hub ? "" : n.flow === "split" ? `<div class="vrow efv"><span>Leistung zur Kachel<small class="mut" style="display:block">zum Beispiel Einspeisung</small></span>${sel("power_to_node")}</div><div class="vrow efv"><span>Leistung ins Haus<small class="mut" style="display:block">zum Beispiel Netzbezug</small></span>${sel("power_to_house")}</div>`
@@ -8072,12 +8158,13 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "efxopen") { this._modal = { type: "efxmgr" }; this._efxLoad(true); this._renderModal(); return; }
     if (a === "efxstart") {
       const c = this._efxClone(), mk = (p, o) => ({ ...this._efxBlank(p), ...o });
-      c.nodes = { top_1: mk("top_1", { name: "PV Dach", image: "svg:solar", flow: "supply" }), left_1: mk("left_1", { name: "Netz", image: "svg:netz", flow: "split", color: "#a78bfa" }), left_2: mk("left_2", { name: "Steckdose", image: "svg:steckdose", flow: "consume", color: "#f97316" }), right_1: mk("right_1", { name: "Auto", image: "svg:auto", flow: "consume", color: "#f472b6" }), bottom: mk("bottom", { name: "Akku", image: "svg:akku", flow: "both" }) };
+      c.nodes = { top_1: mk("top_1", { name: "PV Dach", image: "hd:pvRoof", flow: "supply" }), left_1: mk("left_1", { name: "Netz", image: "hd:grid", flow: "split", color: "#a78bfa" }), left_2: mk("left_2", { name: "Steckdose", image: "hd:plug", flow: "consume", color: "#f97316" }), right_1: mk("right_1", { name: "Auto", image: "hd:car", flow: "consume", color: "#f472b6" }), bottom: mk("bottom", { name: "Akku", image: "hd:battery", flow: "both" }) };
       this._efxPut(c).then(() => { this._render(); this._toast("Beispiel-Kacheln angelegt, jetzt Entitäten zuordnen"); this._modal = { type: "efxmgr" }; this._renderModal(); }); return;
     }
     if (a === "efxtab") { this._efT = b.dataset.v === "strom" ? "strom" : "now"; try { localStorage.setItem("fh_ef_tab", this._efT); } catch (e) { /* egal */ } this._render(); return; }
     if (a === "efxsize") { const o = ["auto", "klein", "mittel", "gross"]; this._efS = o[(o.indexOf(this._efSize()) + 1) % 4]; try { localStorage.setItem("fh_ef_size", this._efS); } catch (e) { /* egal */ } this._render(); return; }
     if (a === "efxback") { this._modal = { type: "efxmgr" }; this._renderModal(); return; }
+    if (a === "efxkeep") { const c = this._efxClone(); c.keep_old = !c.keep_old; this._efxPut(c).then(() => { this._renderModal(); this._render(); this._toast(c.keep_old ? "Alte Symbole werden angezeigt" : "HD-Bilder werden angezeigt"); }); return; }
     if (a === "efxhero") { const c = this._efxClone(); c.hero.show = !c.hero.show; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
     if (a === "efxtog") { const c = this._efxClone(); if (c.nodes[k]) c.nodes[k].on = !c.nodes[k].on; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
     if (a === "efxedit") {
@@ -8087,7 +8174,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!m || m.type !== "efxedit") return;
     const d = m.draft;
     if (a === "efximgtog") m.imgOpen = !m.imgOpen;
-    else if (a === "efximg") { d.image = k; m.imgOpen = false; m.q = ""; }
+    else if (a === "efximg") { d.image = k; d.image_alt = ""; m.imgOpen = false; m.q = ""; }
     else if (a === "efxcol") d.color = k;
     else if (a === "efxflow") d.flow = k;
     else if (a === "efxinv") d.invert = !d.invert;
@@ -8109,7 +8196,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (f === "efxlab") { d[t.dataset.w + "_label"] = v.slice(0, 24); return true; }
     if (f === "efxchipadd") { const e = ent(v); if (e && !d.chips.includes(e) && d.chips.length < 4) d.chips.push(e); return true; }
     if (f === "efximgq") { m.q = v; this._renderModal(); const i = this.shadowRoot.querySelector('[data-f="efximgq"]'); if (i) { i.focus(); i.setSelectionRange(v.length, v.length); } return true; }
-    if (f === "efximgc") { if (/^(mdi:[a-z0-9-]{2,60}|\/local\/[A-Za-z0-9_.\/-]{1,150}|https:\/\/\S{4,200})$/.test(v)) { d.image = v; this._renderModal(); } return true; }
+    if (f === "efximgc") { if (/^(mdi:[a-z0-9-]{2,60}|\/local\/[A-Za-z0-9_.\/-]{1,150}|https:\/\/\S{4,200})$/.test(v)) { d.image = v; d.image_alt = ""; this._renderModal(); } return true; }
     return false;
   }
   /* ================= Einheitliches Banner für alle Module =================

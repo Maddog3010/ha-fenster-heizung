@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b2] - 2026-11-06
+
+Testversion für 2026.11.2 (Woche 1, Teil 2): die neue Optik in Modul 4 und Modul 19.
+
+### Neu
+- **Modul 4 Gerätestrom (v1.2 Build 1): Gerätekarten 2.0.** Jedes Gerät mit HD-Bild und Herkunfts-Ring (Solar, Batterie, Netz), darunter die Prozentzeile. Zustand „läuft“ (grün), „fertig“ mit Uhrzeit (türkis) oder „bereit“ (grau). Läuft ein Gerät, steht „noch ~ Min. · fertig ~ Uhr“ mit Fortschritt dabei, sobald es 3 Läufe gelernt hat (Median der letzten 10). Drei Felder für Kosten, Ersparnis und letzten Lauf. Startempfehlung „Am besten ab … starten“ nach der Solarprognose mit Knopf **Erinnern**: zur Startzeit kommt eine Meldung über die Meldedienste von Modul 4.
+- **Modul 19 Hausfluss (v0.6 Build 1):** 24 HD-Bilder im Bildkatalog.
+
+### Geändert
+- Modul 4: Prozentzeile statt Balken. Unter Einstellungen → Modul 4 → Darstellung holt **Karten wie bisher** die alten Karten zurück.
+- Modul 19: ruhige Kacheln ohne farbigen Rahmen, die Farbe leuchtet nur hinter dem Bild und als feine Linie oben. Aktive Kacheln sind heller.
+
+### Wichtig beim Update
+- Home Assistant neu starten und die Seite neu laden.
+- Modul 4: Die Laufzeiten werden ab dieser Version gemerkt. „noch ~ Min.“ erscheint je Gerät nach 3 neuen Läufen, vorher steht „lernt die Laufzeit“.
+- Modul 4: Die Startzeit der Empfehlung kommt aus Forecast.Solar (oder dem Prognose-Sensor aus Modul 16). Ohne Prognose bleibt die bisherige Empfehlung.
+- Modul 19: Kacheln mit eingebauten Symbolen bekommen einmalig die neuen HD-Bilder, das Original wird gemerkt. Wer die alten möchte: Einstellungen → Modul 19 → **Alte Symbole behalten**. Emojis, mdi-Symbole und eigene Bilder bleiben unverändert.
+
 ## [2026.11.2b1] - 2026-11-06
 
 Testversion für 2026.11.2 (Woche 1 der Roadmap). Im Dashboard ändert sich noch nichts sichtbar.

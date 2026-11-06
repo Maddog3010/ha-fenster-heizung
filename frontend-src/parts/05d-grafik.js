@@ -244,8 +244,8 @@
     const X = this._gxLib();
     return X.L[old] ? old : X.A[old] || null;
   }
-  /* Herkunft: Solar, Batterie, Netz – dieselben Farben in Modul 3, 4 und 19 */
-  static GX_SRC = [["pv", "Solar", "#f59e0b"], ["bat", "Batterie", "#22c55e"], ["net", "Netz", "#6366f1"]];
+  /* Herkunft: Solar, Batterie, Netz – Farben wie die bisherigen Balken in Modul 4 (gelb, violett, rot) */
+  static GX_SRC = [["pv", "Solar", "#fbbf24"], ["bat", "Batterie", "#a78bfa"], ["net", "Netz", "#f87171"]]; /* wie GS_COL in Modul 4 */
   _gxRing(k, mix = {}, s = 72, o = {}) {
     const r = 29, C = 2 * Math.PI * r, tot = this.constructor.GX_SRC.reduce((a, [id]) => a + (Number(mix[id]) || 0), 0) || 1;
     let off = 0;

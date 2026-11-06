@@ -3,18 +3,18 @@ from __future__ import annotations
 
 import logging
 import time
-from datetime import timedelta
+from datetime import datetime, timedelta
 from typing import Any
 
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
-from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers.event import async_track_point_in_utc_time, async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore
 from .const import DOMAIN
 from .geraete_calc import (
-    advice, clean_days, cover_pct, free_solar, grid_import_w, history, money, new_day,
+    RUNS_KEEP, advice, best_start, clean_days, median, cover_pct, free_solar, grid_import_w, history, money, new_day,
     period_sum, rate_eur, solar_for_house, split_power, watts, DEFAULT_TYPICAL_W,
 )
 
@@ -22,6 +22,7 @@ _LOGGER = logging.getLogger(__name__)
 
 TICK_SECONDS = 20
 MAX_DT_S = 600.0
+FC_REFRESH_S = 600.0  # Stundenprognose für die Startempfehlung alle 10 Minuten neu holen
 
 
 class GeraeteManager:
@@ -36,6 +37,11 @@ class GeraeteManager:
         self._tick_ts = 0.0
         self._solar_now = 0.0
         self._unsub: CALLBACK_TYPE | None = None
+        self.durs: dict[str, list[float]] = {}  # v1.2: Laufzeiten (s) der letzten Läufe je Gerät
+        self.remind: dict[str, float] = {}  # v1.2: Erinnerung „jetzt starten“ je Gerät (Unix-Zeit)
+        self._rem_unsub: dict[str, CALLBACK_TYPE] = {}
+        self._fc: dict[int, float] = {}  # Stundenbeginn → erwartete Solarerzeugung (Wh)
+        self._fc_ts = 0.0
 
     # ---- Konfiguration aus dem Modul-Manager
     def _modules(self) -> dict[str, Any]:
@@ -68,6 +74,14 @@ class GeraeteManager:
                 self.typ[str(k)] = max(float(v), 0.0)
             except (TypeError, ValueError):
                 pass
+        durs = saved.get("durs") if isinstance(saved.get("durs"), dict) else {}
+        for k, v in durs.items():
+            if isinstance(v, list):
+                self.durs[str(k)] = [float(x) for x in v if isinstance(x, (int, float)) and x > 0][-RUNS_KEEP:]
+        rem = saved.get("remind") if isinstance(saved.get("remind"), dict) else {}
+        for k, v in rem.items():
+            if isinstance(v, (int, float)) and v > time.time():
+                self._schedule(str(k), float(v))
         self._tick_ts = time.time()
         self._unsub = async_track_time_interval(self.hass, self._tick, timedelta(seconds=TICK_SECONDS))
 
@@ -75,9 +89,12 @@ class GeraeteManager:
         if self._unsub:
             self._unsub()
             self._unsub = None
+        for u in self._rem_unsub.values():
+            u()
+        self._rem_unsub.clear()
 
     def _save(self) -> None:
-        self._store.async_delay_save(lambda: {"days": self.days, "last": self.last, "typ": self.typ}, 30)
+        self._store.async_delay_save(lambda: {"days": self.days, "last": self.last, "typ": self.typ, "durs": self.durs, "remind": self.remind}, 30)
 
     async def async_config_changed(self) -> None:
         ids = {d["id"] for d in self._cfg()["devices"]}
@@ -134,6 +151,9 @@ class GeraeteManager:
         if not self.active():
             self._live.clear()
             return
+        if now - self._fc_ts >= FC_REFRESH_S:
+            self._fc_ts = now
+            await self._load_forecast()
         s, b, n = self._sources()
         self._solar_now = s
         gen = self.hass.data.get(DOMAIN, {}).get("general")
@@ -189,6 +209,7 @@ class GeraeteManager:
         share = (run["e"][0] + run["e"][1]) / kwh * 100 if kwh else 0.0
         dur = max(now - run["start"] - dev["end"] * 60, 60.0)
         self.typ[did] = max(kwh * 3600 * 1000 / dur, 0.0)
+        self.durs[did] = (self.durs.get(did, []) + [round(dur)])[-RUNS_KEEP:]
         ts = dt_util.now().isoformat(timespec="seconds")
         self.last[did] = {"cost": round(run["cost"], 4), "kwh": round(kwh, 4), "share": round(share, 1), "saved": round(run["saved"], 4), "ts": ts}
         data = {"device": dev["name"], "id": did, "kwh": round(kwh, 3), "cost": round(run["cost"], 2), "saved": round(run["saved"], 2), "share": round(share)}
@@ -200,6 +221,75 @@ class GeraeteManager:
                 self.hass.async_create_task(
                     self.hass.services.async_call(domain, name, {"title": f"{dev['name']} fertig", "message": msg})
                 )
+
+    # ---- v1.2: Stundenprognose (Forecast.Solar oder Sensor aus Modul 16) für die beste Startzeit
+    async def _load_forecast(self) -> None:
+        sm = self.hass.data.get(DOMAIN, {}).get("solar")
+        if sm is None:
+            return
+        try:
+            wh, _sites = await sm._wh()  # noqa: SLF001 - gleiche Quelle wie Modul 16, auch wenn Modul 16 aus ist
+        except Exception:  # noqa: BLE001 - ohne Prognose gibt es nur die einfache Empfehlung
+            _LOGGER.debug("Gerätestrom: Solarprognose nicht verfügbar", exc_info=True)
+            return
+        out: dict[int, float] = {}
+        for k, v in (wh or {}).items():
+            try:
+                t = k if isinstance(k, datetime) else datetime.fromisoformat(str(k))
+                h = int(t.timestamp() // 3600 * 3600)
+                out[h] = out.get(h, 0.0) + float(v or 0)
+            except (TypeError, ValueError):
+                continue
+        self._fc = out
+
+    # ---- v1.2: Erinnern („jetzt starten“) über die Meldedienste von Modul 4
+    def _schedule(self, did: str, ts: float) -> None:
+        if did in self._rem_unsub:
+            self._rem_unsub.pop(did)()
+        self.remind[did] = ts
+
+        async def _fire(_now: Any) -> None:
+            self._rem_unsub.pop(did, None)
+            self.remind.pop(did, None)
+            self._save()
+            dev = next((d for d in self._cfg()["devices"] if d["id"] == did), None)
+            if dev is None:
+                return
+            b = self._best(dev)
+            msg = "Jetzt ist eine gute Zeit zum Starten" + (f" – etwa {b['pct']:.0f} % Solar erwartet." if b else ".")
+            self.hass.bus.async_fire("geraetestrom_reminder", {"device": dev["name"], "id": did})
+            for svc in self._cfg().get("notify", []):
+                domain, name = svc.split(".", 1)
+                if self.hass.services.has_service(domain, name):
+                    self.hass.async_create_task(self.hass.services.async_call(domain, name, {"title": f"{dev['name']}: jetzt starten", "message": msg}))
+
+        self._rem_unsub[did] = async_track_point_in_utc_time(self.hass, _fire, dt_util.utc_from_timestamp(ts))
+
+    def set_remind(self, did: str, on: bool) -> dict[str, Any]:
+        dev = next((d for d in self._cfg()["devices"] if d["id"] == did), None)
+        if dev is None:
+            return {"ok": False, "msg": "Gerät nicht gefunden"}
+        if not on:
+            if did in self._rem_unsub:
+                self._rem_unsub.pop(did)()
+            self.remind.pop(did, None)
+            self._save()
+            return {"ok": True}
+        if not self._cfg().get("notify"):
+            return {"ok": False, "msg": "Kein Meldedienst gewählt (Einstellungen → Modul 4 → Meldung)"}
+        b = self._best(dev)
+        if not b or b["ts"] <= time.time() + 60:
+            return {"ok": False, "msg": "Gerade ist schon eine gute Zeit zum Starten"}
+        self._schedule(did, b["ts"])
+        self._save()
+        return {"ok": True, "ts": b["ts"]}
+
+    def _best(self, dev: dict[str, Any]) -> dict[str, Any] | None:
+        did = dev["id"]
+        b = best_start(self._fc, time.time(), median(self.durs.get(did, [])) or 7200, self.typ.get(did) or DEFAULT_TYPICAL_W)
+        if b:
+            b["day"] = "today" if dt_util.as_local(dt_util.utc_from_timestamp(b["ts"])).date() == dt_util.now().date() else "tomorrow"
+        return b
 
     # ---- Abfrage
     def snapshot(self) -> dict[str, Any]:
@@ -224,6 +314,8 @@ class GeraeteManager:
                 "e": [round(x, 4) for x in (run["e"] if run else [0.0, 0.0, 0.0])],
                 "day": period_sum(days, d0), "month": period_sum(days, m0), "year": period_sum(days, y0), "total": period_sum(days, ""),
                 "last": self.last.get(did), "cover": round(cover), "advice": advice(cover),
+                "runs": len(self.durs.get(did, [])), "med": round(median(self.durs.get(did, []))),
+                "best": None if run else self._best(d), "remind": self.remind.get(did),
             })
             hist[did] = history(days)
         return {"ready": ready, "devices": devices, "hist": hist}

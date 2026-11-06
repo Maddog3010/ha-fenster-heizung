@@ -25,6 +25,15 @@
       else { const d = new Date(P.s.getFullYear(), P.s.getMonth(), P.s.getDate() + i); this._gsRg = "day"; this._gsOff = Math.round((d - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5); }
       this._gsOff = Math.min(0, this._gsOff); this._gsTipX = null; this._render();
     }
+    else if (a === "gsrem") {
+      const d = ((this._gsD && this._gsD.devices) || []).find((x) => x.id === k), on = !(d && d.remind && d.remind * 1000 > Date.now());
+      this._hass.callWS({ type: "fenster_heizung/gs_remind", id: k, on }).then((r) => {
+        if (r && r.devices) this._gsD = { ...r, ts: Date.now() };
+        this._toast(!r || !r.ok ? (r && r.msg) || "Das hat nicht geklappt" : on ? `Erinnerung um ${new Date(r.ts * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr` : "Erinnerung gelöscht");
+        this._render();
+      }).catch(() => this._toast("Das hat nicht geklappt"));
+    }
+    else if (a === "gsold") { G.cards_old = !G.cards_old; this._mdSave(); this._renderModal(); }
     else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }
     else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._mdSave(); this._renderModal(); } }
   }
@@ -61,7 +70,9 @@
       <div class="of"><div class="ol"><b>Speicherkosten</b><span>Was eine kWh aus der Batterie kostet. 0 = Batteriestrom gilt als kostenlos.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gsbat" value="${G.bat_cost}" min="0" max="100" step="0.5"><u>ct/kWh</u></span></div></div>
       <div class="lsec">${ic("sun", 15)}Startempfehlung</div>
       <div class="mut sm" style="margin:2px 0 0">Prognose-Sensor in Watt (optional). Ohne Sensor zählt die aktuelle Solarleistung.</div>${this._wzSel(pw, G.forecast, "gsfc", "", "– keiner –", /prognose|forecast|solar|pv/i)}
-      <div class="lsec">${ic("bell", 15)}Meldung am Ende eines Durchlaufs</div>
+      <div class="lsec">${ic("grid", 15)}Darstellung</div>
+      <div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Gerätekarten aus v1.1 mit Balken statt HD-Bild und Herkunfts-Ring</small></span><button class="sw ${G.cards_old ? "on" : ""}" data-act="gsold" aria-pressed="${!!G.cards_old}" aria-label="Karten wie bisher"></button></div>
+      <div class="lsec">${ic("bell", 15)}Meldung am Ende eines Durchlaufs und für „Erinnern“</div>
       ${opts.length ? `<div class="gschips">${opts.map((n) => `<button class="gsch ${G.notify.includes(n) ? "sel" : ""}" data-act="gsnot" data-k="${esc(n)}" aria-pressed="${G.notify.includes(n)}">${esc(n.replace("notify.", ""))}</button>`).join("")}</div>` : `<div class="mut sm">Keine Benachrichtigungsdienste gefunden.</div>`}
       <div class="mut sm" style="margin:6px 0 0">Zusätzlich wird das Ereignis <code>geraetestrom_run_finished</code> ausgelöst.</div>
       <div class="foot2"><button class="btn2 pri" data-act="gsdone">Fertig</button></div></div>`;
@@ -139,7 +150,7 @@
     const tl = [["saved", "total", "Gespart", eur(T.sv), "#34d399", `${eur(T.c)} Kosten`, cmp(T.sv, V && V.sv, "up")], ["cost", "bolt", "Kosten", eur(T.c), "#f87171", T.n ? `Ø ${eur(T.c / T.n)} je Durchlauf` : "kein Durchlauf", cmp(T.c, V && V.c, "down")],
       ["kwh", "energy", "Energie", `${num(T.kwh, T.kwh >= 100 ? 0 : 1)}<small>kWh</small>`, "#2dd4bf", `${num(T.n)} ${T.n === 1 ? "Durchlauf" : "Durchläufe"}`, cmp(T.kwh, V && V.kwh, "none")], ["own", "sun", "Eigener Strom", T.own != null ? `${num(T.own, 0)}<small>%</small>` : "–", "#fbbf24", T.kwh ? `${num(T.v[0], 1)} kWh Solar · ${num(T.v[1], 1)} kWh Batterie` : "Keine Daten", V && V.own != null && T.own != null ? `<div class="g"><span class="tcmp ${T.own >= V.own ? "up" : "dn"}">${T.own >= V.own ? "▲" : "▼"} ${num(Math.abs(T.own - V.own), 0)} Punkte</span> ${cl}</div>` : ""]];
     const tiles = `<div class="tiles entiles">${tl.map(([k, ico, lab, v, c, sub, cm]) => `<div class="tile" style="--a:${c}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}</div><div class="g">${sub}</div>${cm}</div>`).join("")}</div>`;
-    const cards = devs.map((d) => {
+    const cards = this._gsNewCards() ? devs.map((d) => this._gsCard2(d, this._gsAgg([d.id], P).t, per)).join("") : devs.map((d) => {
       const a = this._gsAgg([d.id], P).t, run = d.running, base = run ? d.w : a.v, tot = base[0] + base[1] + base[2], ty = GS_TYP[this._gsTyp(d)], adv = d.advice || "", ac = /^Jetzt/.test(adv) ? "green" : /^Teil/.test(adv) ? "amber" : "slate";
       const since = run && d.since ? Math.max(0, Math.round((Date.now() / 1000 - d.since) / 60)) : null;
       return `<div class="card gsdev${this._gsSel === d.id ? " sel" : ""}"><button class="gsh gshb" data-act="gsdev" data-k="${esc(d.id)}" aria-pressed="${this._gsSel === d.id}"><span class="gsi big">${ic(ty.i, 20)}</span><span class="gsn"><b>${esc(d.name)}</b><small>${ty.n}</small></span><span class="gsst ${run ? "on" : ""}">${run ? `${wfmt(d.w[0] + d.w[1] + d.w[2])}${since != null ? ` · ${since >= 60 ? Math.floor(since / 60) + " h " + (since % 60) + " min" : since + " min"}` : ""}` : "Aus"}</span></button>
@@ -151,6 +162,45 @@
         ${adv && !run ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung jetzt ${num(d.cover, 0)} %</span></div>` : ""}</div>`; }).join("");
     if (this._gsTipX != null) Promise.resolve().then(() => this._gsTipShow());
     return `${hero}${nav}${tiles}<div class="gsgrid">${cards}</div>${this._gsChart(D, devs, P)}`;
+  }
+  /* ---- Modul 4 v1.2: Gerätekarten 2.0 (HD-Bild mit Herkunfts-Ring, Prozentzeile, Restzeit ab 3 Läufen, drei Felder, Empfehlung mit „Erinnern“).
+     Schalter „Karten wie bisher“ (G.cards_old) oder Neue Optik „wie bisher“ zeigt die Karten aus v1.1. */
+  _gsNewCards() { return !this._gsState().cards_old && !this._gxCfg().classic; }
+  _gsHd(d) { return this._gxAlt(this._gsTyp(d)) || "plug"; }
+  /* Zustand der Karte: run (läuft, grün), done (heute fertig, türkis mit Uhrzeit), idle (bereit, grau) */
+  _gsMode(d) {
+    if (d.running) return "run";
+    return d.last && d.last.ts && new Date(d.last.ts).toDateString() === new Date().toDateString() ? "done" : "idle";
+  }
+  /* Restzeit aus dem Median der letzten 10 Läufe (Backend: d.med in s, d.runs = gezählte Läufe); erst ab 3 Läufen */
+  _gsRestInfo(d) {
+    if (!d.running || !d.since) return null;
+    const el = Math.max(0, Date.now() / 1000 - d.since), n = d.runs || 0;
+    if (n < 3 || !(d.med > 0)) return { learn: true, n, el };
+    const rest = Math.max(0, d.med - el), end = new Date((d.since + Math.max(d.med, el + 60)) * 1000);
+    return { learn: false, n, el, rest, end, p: Math.min(1, el / d.med) };
+  }
+  _gsCard2(d, a, per) {
+    const hm = (t) => new Date(t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), eur = (v) => num(v, 2) + " €";
+    const m = this._gsMode(d), run = m === "run", ty = GS_TYP[this._gsTyp(d)], base = run ? d.w : a.v, tot = base[0] + base[1] + base[2];
+    const mix = tot > 0 ? { pv: base[0], bat: base[1], net: base[2] } : {};
+    const R = this._gsRestInfo(d), dur = (s) => { const x = Math.round(s / 60); return x >= 60 ? `${Math.floor(x / 60)} h ${x % 60} min` : `${x} min`; };
+    const pill = run ? `<span class="g2st run">läuft</span>` : m === "done" ? `<span class="g2st done">fertig ${hm(d.last.ts)}</span>` : `<span class="g2st">bereit</span>`;
+    const sub = run ? `${wfmt(d.w[0] + d.w[1] + d.w[2])}${R ? ` · seit ${dur(R.el)}` : ""}` : `${ty.n}${tot > 0 ? ` · ${num(a.kwh != null ? a.kwh : tot, 2)} kWh ${esc(per)}` : ""}`;
+    const rest = !run || !R ? "" : R.learn ? `<div class="g2rest"><span class="gxrest learn">lernt die Laufzeit · ${R.n}/3 Läufe</span></div>`
+      : `<div class="g2rest"><span class="gxrest">${R.rest < 90 ? "gleich fertig" : `noch ~${Math.round(R.rest / 60)} Min.`} · fertig ~ ${hm(R.end)} Uhr</span><div class="g2prog"><i style="width:${Math.round(R.p * 100)}%"></i></div></div>`;
+    const f3 = [["Kosten", eur(a.c), esc(per)], ["Gespart", eur(a.sv), `${num(a.n)} ${a.n === 1 ? "Lauf" : "Läufe"}`],
+      ["Letzter Lauf", d.last ? num(d.last.kwh, 2) + " kWh" : "–", d.last ? `${num(d.last.share, 0)} % eigen` : "noch keiner"]];
+    const B = d.best, rem = d.remind && d.remind * 1000 > Date.now();
+    const adv = run || !(B || d.advice) ? "" : B && B.ts * 1000 > Date.now() + 15 * 60000
+      ? `<div class="g2adv">${this._gx("sun", 26)}<span>Am besten ${B.day === "tomorrow" ? "morgen " : ""}ab ${hm(B.ts * 1000)} starten<small>~${num(B.pct, 0)} % Solar erwartet</small></span><button class="g2rem${rem ? " on" : ""}" data-act="gsrem" data-k="${esc(d.id)}" aria-pressed="${rem}">${rem ? `${ic("check", 14)} Erinnert` : `${ic("bell", 14)} Erinnern`}</button></div>`
+      : `<div class="g2adv ${/^Jetzt/.test(d.advice || "") ? "go" : ""}">${this._gx("sun", 26)}<span>${esc(d.advice || "")}<small>Solardeckung jetzt ${num(d.cover, 0)} %</small></span></div>`;
+    return `<div class="card gsdev g2 g2-${m}${this._gsSel === d.id ? " sel" : ""}">
+      <button class="g2h" data-act="gsdev" data-k="${esc(d.id)}" aria-pressed="${this._gsSel === d.id}" aria-label="${esc(d.name)} im Diagramm hervorheben">${this._gxRing(this._gsHd(d), mix, 76, { on: run })}
+        <span class="g2n"><b>${esc(d.name)}</b><span class="g2s">${pill}<small>${sub}</small></span></span></button>
+      ${this._gxPct(mix).replace("noch keine Daten", "keine Daten")}${rest}
+      <div class="g2f">${f3.map(([l, v, s]) => `<div><span>${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>
+      ${this._gsSpark(d.id, this._gsPer())}${adv}</div>`;
   }
   _gsChart(D, devs, P) {
     const sel = devs.some((d) => d.id === this._gsSel) ? this._gsSel : "", pick = sel ? [sel] : devs.map((d) => d.id), W = 640, Hh = 210, pl = 40, pb = 24, pt = 14, ih = Hh - pb - pt;
