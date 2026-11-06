@@ -7924,7 +7924,8 @@ class FensterHeizungPanel extends HTMLElement {
     return { rooms: rooms.length, gas, F, min, sv, n, own: kwh > 0 ? own / kwh * 100 : null };
   }
   _lgNew() {
-    const cat = (this._labCat0 ? this._labCat0() : []).filter((x) => this._labIsEarly(x));
+    /* nur echte Labs: was inzwischen ein Addon oder fest eingebaut ist (LAB_GONE, z. B. Licht & Lampen), gehört nicht hierher */
+    const cat = (this._labCat0 ? this._labCat0() : []).filter((x) => this._labIsEarly(x) && !LAB_GONE.includes(x.id));
     let seen = 0; try { seen = +localStorage.getItem("fh_lg_seen") || 0; } catch (_) { /* egal */ }
     return { early: cat, fresh: seen ? cat.filter((x) => this._labEarlyTs(x) - 14 * 864e5 > seen).length : 0 };
   }

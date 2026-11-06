@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b6] - 2026-11-06
+
+### Behoben
+- **Sponsor-Lounge:** „Licht & Lampen“ stand noch als Vorabversion unter „Neu für dich“ und der Schalter tat nichts. Licht ist inzwischen ein Addon (Einstellungen → Addons) und erscheint dort nicht mehr; auch die Zahl der Vorabversionen in der Begrüßung stimmt jetzt.
+
 ## [2026.11.2b5] - 2026-11-06
 
 Testversion: Sponsor-Lounge und „Sponsor werden“ genauer nach dem Konzept Sponsor-Bereich 2.0.
