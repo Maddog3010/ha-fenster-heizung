@@ -14,8 +14,12 @@ Testversion für 2026.11.2 (Woche 1, Teil 2): die neue Optik in Modul 4 und Modu
 - Modul 4: Prozentzeile statt Balken. Unter Einstellungen → Modul 4 → Darstellung holt **Karten wie bisher** die alten Karten zurück.
 - Modul 19: ruhige Kacheln ohne farbigen Rahmen, die Farbe leuchtet nur hinter dem Bild und als feine Linie oben. Aktive Kacheln sind heller.
 
+### Behoben
+- Modul 1: Standort-Einstellungen (Home-Zone, Personen mit ihren Standortquellen) und die Temperatur bei Abwesenheit und Urlaub konnten auf die Grundwerte (16 °C, keine Home-Zone, keine Personen) zurückfallen. Das passierte, wenn „Zu Hause“, „Abwesend“ oder „Urlaub“ getippt wurde, bevor das Dashboard die Anwesenheit fertig geladen hatte. Jetzt werden nur noch die geänderten Werte gespeichert, alles andere bleibt. Solange die Anwesenheit lädt, speichert das Dashboard nichts und zeigt einen Hinweis.
+
 ### Wichtig beim Update
 - Home Assistant neu starten und die Seite neu laden.
+- Modul 1: Waren Standort oder Abwesenheits-Temperatur bei dir verstellt, unter Einstellungen → System → Sichern & Wiederherstellen eine Sicherung von vorher wählen und nur „Anwesenheit“ wiederherstellen (oder die Werte neu eintragen).
 - Modul 4: Die Laufzeiten werden ab dieser Version gemerkt. „noch ~ Min.“ erscheint je Gerät nach 3 neuen Läufen, vorher steht „lernt die Laufzeit“.
 - Modul 4: Die Startzeit der Empfehlung kommt aus Forecast.Solar (oder dem Prognose-Sensor aus Modul 16). Ohne Prognose bleibt die bisherige Empfehlung.
 - Modul 19: Kacheln mit eingebauten Symbolen bekommen einmalig die neuen HD-Bilder, das Original wird gemerkt. Wer die alten möchte: Einstellungen → Modul 19 → **Alte Symbole behalten**. Emojis, mdi-Symbole und eigene Bilder bleiben unverändert.

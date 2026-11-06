@@ -211,6 +211,11 @@ class PresenceManager:
         """
         raw = dict(raw) if isinstance(raw, dict) else {}
         cur = self.data
+        raw.pop("effective", None)
+        # Nur geänderte Werte übernehmen: was im Aufruf fehlt, bleibt wie gespeichert. Früher ersetzte ein unvollständiger
+        # Aufruf (zum Beispiel nur „Abwesend“ aus einem noch nicht geladenen Dashboard) Temperatur, Home-Zone und Personen
+        # durch die Grundwerte.
+        raw = {**{k: v for k, v in cur.items() if k not in KEEP}, **raw}
         if raw.pop("keep_mode", False):
             raw.update({k: cur.get(k) for k in KEEP})
         new = clean_presence({**raw, "origin": origin})

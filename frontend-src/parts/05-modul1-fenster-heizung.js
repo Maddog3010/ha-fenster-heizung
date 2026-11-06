@@ -344,6 +344,18 @@
   }
 
   _isoDay(add = 0) { const d = new Date(); d.setDate(d.getDate() + add); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+  /* Anwesenheit ist geladen, wenn das Backend die vollständigen Einstellungen geschickt hat (nicht nur der Startwert { mode }) */
+  _presOk() { const p = this._cfg.presence; return !!(p && "temp" in p && "people" in p); }
+  /* Nur die geänderten Werte schicken (patch). Solange die Anwesenheit nicht geladen ist, wird nichts gespeichert, damit keine Grundwerte
+     (16 °C, keine Home-Zone, keine Personen) die echten Einstellungen überschreiben. */
+  _presSend(patch) {
+    if (!this._presOk()) { this._toast("Anwesenheit wird noch geladen – bitte gleich noch einmal"); return false; }
+    this._cfg.presence = { ...this._cfg.presence, ...patch };
+    this._hass.callWS({ type: "fenster_heizung/set_presence", presence: patch })
+      .then((r) => { this._cfg.presence = r; this._render(); })
+      .catch(() => this._toast("Anwesenheit konnte nicht gespeichert werden"));
+    return true;
+  }
   _savePresence() {
     this._hass.callWS({ type: "fenster_heizung/set_presence", presence: this._cfg.presence })
       .then((r) => { this._cfg.presence = r; this._render(); })

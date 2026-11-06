@@ -204,13 +204,15 @@
     else if (a === "pm") {
       const p = this._pres();
       if (b.dataset.k === "vacation" && !(p.from && p.to)) { this._act("vac", b); return; }
-      this._cfg.presence = { ...p, mode: b.dataset.k, origin: "manual" }; this._savePresence(); this._render();
+      this._presSend({ mode: b.dataset.k }); this._render();
     }
     else if (a === "vac") {
+      if (!this._presOk()) { this._toast("Anwesenheit wird noch geladen – bitte gleich noch einmal"); return; }
       const p = this._pres(), all = Object.keys(this._hass.states).filter((e) => e.startsWith("person."));
       this._modal = { type: "vac", draft: { ...p, from: p.from || this._isoDay(0), to: p.to || this._isoDay(7), persons: p.persons.length ? [...p.persons] : all } }; this._renderModal();
     }
     else if (a === "pset") {
+      if (!this._presOk()) { this._toast("Anwesenheit wird noch geladen – bitte gleich noch einmal"); return; }
       const p = this._pres(), all = Object.keys(this._hass.states).filter((e) => e.startsWith("person."));
       this._modal = { type: "pset", draft: { ...p, persons: p.persons.length ? [...p.persons] : all } }; this._renderModal();
     }
@@ -224,11 +226,11 @@
       else if (a === "vawp") d.away_after = Math.min(120, d.away_after + 15);
       else if (a === "vper") { const e = b.dataset.e; d.persons = d.persons.includes(e) ? d.persons.filter((x) => x !== e) : [...d.persons, e]; }
       else if (a === "psetsave") {
-        this._cfg.presence = { ...this._pres(), temp: d.temp, auto: d.auto, away_after: d.away_after, persons: d.persons, keep_mode: true }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Einstellungen gespeichert"); return;
+        this._presSend({ temp: d.temp, auto: d.auto, away_after: d.away_after, persons: d.persons, keep_mode: true }); this._modal = null; this._renderModal(); this._render(); this._toast("Einstellungen gespeichert"); return;
       }
       else if (a === "vsave") {
         if (!d.from || !d.to || d.to < d.from) { this._toast("Bitte ein gültiges Datum wählen"); return; }
-        this._cfg.presence = { ...d, mode: "vacation", origin: "manual" }; this._savePresence(); this._modal = null; this._renderModal(); this._render(); this._toast("Urlaub gespeichert"); return;
+        this._presSend({ mode: "vacation", from: d.from, to: d.to, temp: d.temp, preheat: d.preheat, preheat_time: d.preheat_time, persons: d.persons }); this._modal = null; this._renderModal(); this._render(); this._toast("Urlaub gespeichert"); return;
       }
       this._renderModal();
     }
