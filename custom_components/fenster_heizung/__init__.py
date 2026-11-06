@@ -1272,6 +1272,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "sponsor" not in store:
         store["sponsor"] = SponsorManager(hass)
         await store["sponsor"].async_start()
+    if "briefing" not in store:
+        from .briefing import BriefingManager
+        store["briefing"] = BriefingManager(hass)
+        await store["briefing"].async_start()
     if "sicherheit" not in store:
         store["sicherheit"] = SicherheitManager(hass)
         await store["sicherheit"].async_start()
@@ -1343,6 +1347,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             spn = hass.data.get(DOMAIN, {}).pop("sponsor", None)
             if spn is not None:
                 spn.async_stop()
+            brf = hass.data.get(DOMAIN, {}).pop("briefing", None)
+            if brf is not None:
+                brf.async_stop()
             adm = hass.data.get(DOMAIN, {}).pop("addons", None)
             if adm is not None:
                 await adm.async_stop()

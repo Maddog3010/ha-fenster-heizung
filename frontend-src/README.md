@@ -27,6 +27,7 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 10-modul8-wallbox | Modul 8: Wallbox und Laderegelung |
 | 11-modul4-geraetestrom-elektroauto | Modul 4 und Elektroauto-Ansicht |
 | 12-beta-module | Beta-Module (Prognose, Wartung, Batterie, Tarif, Sicherheit, Pool, Wetter, Garten, Rollläden, Wärmepumpe, Lüftung) |
+| 12e-sponsor, 12f-lounge | Sponsor-Schlüssel und Verwaltung, Sponsor-Lounge mit „Sponsor werden“, Sponsor Max (Morgen-Briefing, Jahres-Poster) |
 | 12w-katalog | Einstellungs-Katalog, Suche, Änderungsverlauf, Hilfe, Prüfregeln |
 | 12x-messwerk | Messwerk: alle Sensoren, genutzt in, Prüfung |
 | 12y-sensorsuche | Sensorsuche S1 Vorschläge, S2 Nach Raum, S4 Filter, Zuordnen im Messwerk |

@@ -2022,6 +2022,42 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .g2rem{flex:none;display:inline-flex;align-items:center;gap:5px;border:0;border-radius:999px;padding:7px 13px;font-weight:700;font-size:.8rem;cursor:pointer;background:var(--teal);color:var(--on-acc)}
 .g2rem.on{background:color-mix(in srgb,var(--teal) 18%,transparent);color:var(--teal)}
 @media(max-width:520px){.g2f b{font-size:.86rem}.gsdev.g2{padding:12px 13px 14px}}
+/* Sponsor-Lounge (12f-lounge.js) und Sponsor Max */
+.lgw{max-width:1100px}
+.lgban{display:flex;align-items:center;gap:18px;border-radius:22px;padding:20px 22px;margin-bottom:14px;color:#fff;background:radial-gradient(80% 140% at 0% 100%,rgba(234,74,170,.35),transparent 60%),#1d1322;box-shadow:inset 0 0 0 1px rgba(234,74,170,.3)}
+.lgban.mx{background:radial-gradient(90% 160% at 100% 0%,rgba(251,191,36,.32),transparent 55%),radial-gradient(80% 140% at 0% 100%,rgba(234,74,170,.28),transparent 60%),#1a1220;box-shadow:inset 0 0 0 1px rgba(251,191,36,.3)}
+.lgbt{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}.lgbt small{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:#f9a8d4}.lgbt b{font-size:1.6rem;line-height:1.15}.lgbt span{font-size:.86rem;opacity:.9;line-height:1.35}
+.lgstar{flex:none;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;font-size:32px;color:#fff;background:radial-gradient(circle at 35% 30%,#fff3b0,#f59e0b 60%,#b45309);box-shadow:0 0 24px rgba(251,191,36,.45)}
+.lgstar.hz{background:radial-gradient(circle at 35% 30%,#fbcfe8,#ea4aaa 60%,#9d174d);box-shadow:0 0 24px rgba(234,74,170,.45)}.lgstar.sm{width:44px;height:44px;font-size:22px}
+.lgcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:12px}@media(max-width:760px){.lgbt b{font-size:1.25rem}.lgban{padding:16px;flex-wrap:wrap}}
+.lgt{position:relative;background:var(--card);border-radius:18px;padding:14px 16px;overflow:hidden}.lgt::before{content:"";position:absolute;top:0;left:16px;right:16px;height:2px;border-radius:0 0 3px 3px;background:var(--c,#ea4aaa);opacity:.8}
+.lgt h3{margin:0 0 6px;font-size:1rem;display:flex;align-items:center;gap:8px}.lgt.mx{--c:#fbbf24}
+.lgit{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;padding:8px 0;border-top:1px solid var(--line)}.lgit:first-of-type{border-top:0}.lgit .n{flex:1 1 170px;min-width:0;display:flex;flex-direction:column;font-size:.9rem;overflow-wrap:break-word}.lgit>.btn2,.lgit>.lgsoon{flex:none;margin-left:auto}.lgit small{font-size:.74rem;color:var(--mut)}
+.lgi{flex:none;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,transparent)}.lgi.big{width:40px;height:40px;border-radius:12px;color:#f472b6;background:color-mix(in srgb,#ea4aaa 14%,transparent)}
+.lgsoon{flex:none;font-style:normal;font-size:.7rem;font-weight:700;border-radius:99px;padding:3px 9px;color:#fbbf24;background:color-mix(in srgb,#fbbf24 14%,transparent)}.lgsoon.mx{color:#fbbf24}
+.lgsec{display:flex;align-items:center;gap:6px;font-weight:700;font-size:.9rem;margin:16px 2px 8px}.lgsec .mut{font-weight:400}
+.lgxs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.lgx{position:relative;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--card);border-radius:16px;padding:12px 14px;overflow:hidden}.lgx::before{content:"";position:absolute;top:0;left:16px;right:16px;height:2px;background:#ea4aaa;opacity:.6}.lgx.mx::before{background:#fbbf24}
+.lgx .n{flex:1;min-width:130px;display:flex;flex-direction:column}.lgx .n b{font-size:.92rem}.lgx small{font-size:.74rem;color:var(--mut)}
+.lggd{color:#fbbf24}.lggold{background:linear-gradient(180deg,#fde68a,#f59e0b)!important;color:#422006!important;border:0!important;font-weight:700}
+.lgup{display:flex;align-items:center;gap:12px;margin-top:10px;--c:#fbbf24}.lgup .n{flex:1;display:flex;flex-direction:column}.lgup small{font-size:.78rem;color:var(--mut)}
+.lgst{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}.lgst div{background:color-mix(in srgb,var(--primary-text-color) 5%,transparent);border-radius:12px;padding:10px 12px}.lgst b{display:block;font-size:1.3rem}.lgst small{font-size:.74rem;color:var(--mut)}
+.lgnote{display:flex;justify-content:space-between;gap:10px;font-size:.74rem;color:var(--mut);margin-top:8px}
+.lgnum{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.85rem;color:var(--teal);background:color-mix(in srgb,var(--teal) 16%,transparent)}
+.lgex{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.lgxt{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;background:var(--card);border:0;border-radius:16px;padding:14px 10px;color:inherit;cursor:pointer;font:inherit}.lgxt b{font-size:.88rem}.lgxt small{font-size:.72rem;color:var(--mut)}
+.lgtiers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.lgtiers .lgt{display:flex;flex-direction:column;gap:4px}.lgtiers small{font-size:.76rem;color:var(--mut)}@media(max-width:560px){.lgtiers{grid-template-columns:1fr}}
+.lgfoot{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:22px 0 8px;font-size:.74rem;color:var(--mut)}.lgfoot .lnk{font-size:.74rem;opacity:.7}
+.lgexd{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}.lgexd p{margin:0;font-size:.92rem;line-height:1.45}
+.lgposter{background:#0b0e12;border-radius:14px;padding:10px}
+.lgstep{display:inline-flex;align-items:center;gap:8px}.lgstep b{font-size:1.1rem;min-width:52px;text-align:center}
+.lgmsg{display:flex;flex-direction:column;gap:3px;background:color-mix(in srgb,var(--primary-text-color) 6%,transparent);border-radius:14px;padding:10px 12px;font-size:.84rem}
+.pillbtn.spnb.gold{color:#422006;background:linear-gradient(180deg,#fde68a,#f59e0b);border-color:transparent;box-shadow:0 0 14px rgba(251,191,36,.45)}.spnstar{font-size:15px;line-height:1}
+.gsch.spng.sel{color:#fbbf24;border-color:color-mix(in srgb,#fbbf24 60%,transparent);background:color-mix(in srgb,#fbbf24 14%,transparent)}
+.spntier{font-style:normal;font-size:.68rem;font-weight:700;color:#fbbf24;background:color-mix(in srgb,#fbbf24 15%,transparent);border-radius:99px;padding:1px 7px;margin-left:4px}
+.spna.gold{background:radial-gradient(circle at 35% 30%,#fff3b0,#f59e0b 60%,#b45309);color:#fff}.spnmini.gold{color:#fbbf24}.spnsum b.gd{color:#fbbf24}
+.lgt .vrow{flex-wrap:wrap;gap:8px 12px}.lgt .vrow>span:first-child{flex:1 1 180px;min-width:0}.lgt .vrow>.gschs,.lgt .vrow>.btn2,.lgt .vrow>.sw,.lgt .vrow>.lgsoon{flex:none;margin-left:auto}
+.lgx .gschs{flex-wrap:wrap}.lgban .btn2{flex:none}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -2030,7 +2066,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._narrow = false; this._edit = false; this._modal = null; this._dragging = false;
     this._cfg = { layout: { blocks: [], rooms: [], icons: {}, groups: [] }, plans: {}, presence: { mode: "home" } };
     this._gen = { updates: true, summer: { mode: "auto", temp: 18, days: 3 }, wxadj: { on: false, mild: 12, down: 1, frost: 0, up: 1 }, pv: { ...PVDEF } };
-    this._learn = {}; this._st = null; this._stOpen = false; this._labOpen = false; this._ortOpen = false; this._igOpen = false; this._pollN = 0;
+    this._learn = {}; this._st = null; this._stOpen = false; this._labOpen = false; this._loOpen = false; this._ortOpen = false; this._igOpen = false; this._pollN = 0;
   }
   connectedCallback() {
     this._ro = new ResizeObserver(() => { if (this._hass && !this._dragging && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render(); });
@@ -3020,6 +3056,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._ortOpen && this._admin()) { this._ortRender(); return; }
     if (this._labOpen && this._admin()) { this._labRender(); return; }
     if (this._stOpen && this._admin()) { this._stRender(); return; }
+    if (this._loOpen) { this._lgRender(); return; }
     if (this._mdActive() !== "fh") { this._mdRender(); return; }
     const rooms = this._collect(), edit = this._edit, adm = this._admin();
     const sum = (sc, k) => rooms.reduce((a, r) => a + (r.sc[sc]?.[k] || 0), 0);
@@ -3956,6 +3993,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("hz")) this._hzAct(a, b);
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
     else if (a.startsWith("spn")) this._spnAct(a, b);
+    else if (a.startsWith("lgx")) this._lgAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);
     else if (a.startsWith("wb")) this._wbAct(a, b);
@@ -4596,6 +4634,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
     if (m.type === "sfset") { box.innerHTML = this._sfxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "spset") { box.innerHTML = this._spModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -4914,7 +4953,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (r) { apply(r); return; }
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
-  _mdActiveSet(id) { const s = this._mdState(); s.active = id; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
+  _mdActiveSet(id) { const s = this._mdState(); s.active = id; this._loOpen = false; try { localStorage.setItem("fh_mod_active", id); } catch (_) { /* Speicher gesperrt */ } }
   _mdList() {
     const s = this._mdState(), home = this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : [];
     const rest = [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...this._adMods()];
@@ -7657,9 +7696,10 @@ class FensterHeizungPanel extends HTMLElement {
   _spnEarlyClock() { const s = this._spnS(); return s.active && s.prefs.clock !== "standard" ? "ck-" + s.prefs.clock : ""; }
   _spnBtn() {
     const s = this._spnS(), adm = this._admin();
-    if (s.active && s.prefs.badge) return `<button class="pillbtn spnb on" data-act="spnopen" aria-label="Sponsor-Bereich" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${ic("heart", 15)}<span class="bl">Sponsor</span></button>`;
+    if (s.active && s.prefs.badge) { const gold = s.tier === "max" && s.prefs.badge_style !== "heart", lab = s.prefs.name_head && s.name && s.state !== "dev" ? "Hallo " + s.name.split(" ")[0] : gold ? "Max" : "Sponsor";
+      return `<button class="pillbtn spnb on ${gold ? "gold" : ""}" data-act="spnopen" aria-label="Sponsor-Lounge" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${gold ? `<span class="spnstar">★</span>` : ic("heart", 15)}<span class="bl">${esc(lab)}</span></button>`; }
     if (!adm) return "";
-    return `<button class="pillbtn spnb" data-act="spnopen" aria-label="Sponsor-Bereich" title="Sponsor werden oder Schlüssel eingeben">${ic("heart", 15)}<span class="bl">Sponsor</span></button>`;
+    return `<button class="pillbtn spnb" data-act="spnopen" aria-label="Sponsor-Lounge" title="Sponsor werden oder Schlüssel eingeben">${ic("heart", 15)}<span class="bl">Sponsor</span></button>`;
   }
   /* B: Karte auf der Startseite, nur für Administratoren ohne Schlüssel, 60 Tage ausblendbar */
   _spnCard() {
@@ -7672,11 +7712,12 @@ class FensterHeizungPanel extends HTMLElement {
   /* D: Zeile in den Einstellungen */
   _spnRow() {
     const s = this._spnS(), chip = s.active ? `<em class="sxc ok">${esc(s.name || "Aktiv")}</em>` : s.state === "expired" ? `<em class="sxc wa">Abgelaufen</em>` : `<em class="sxc">Schlüssel</em>`;
-    return `<button class="sxrow" data-act="spnopen"><span class="sxi">${ic("heart", 20)}</span><span class="sxt"><b>Sponsor-Bereich</b><small>Schlüssel eingeben, Extras einstellen</small></span>${chip}</button>`;
+    return `<button class="sxrow" data-act="spnopen"><span class="sxi">${ic("heart", 20)}</span><span class="sxt"><b>Sponsor-Lounge</b><small>Schlüssel eingeben, Extras einstellen</small></span>${chip}</button>`;
   }
   _spnAct(a, b) {
     const k = b.dataset.k;
-    if (a === "spnopen") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._spnLoad().then(() => { if (this._modal && this._modal.type === "spndlg") this._renderModal(); this._render(); }); }
+    if (a === "spnopen") { this._loOpen = true; this._labOpen = false; this._igOpen = false; this._stOpen = false; this._modal = null; this._renderModal(); this._render(); this._spnLoad().then(() => this._render()); }
+    else if (a === "spnkeydlg") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); }
     else if (a === "spnhide") { try { localStorage.setItem("fh_spn_hide", String(Date.now())); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet"); }
     else if (a === "spnred") {
       const el = this.shadowRoot.querySelector('[data-f="spnkey"]'), key = el ? String(el.value || "").trim() : "";
@@ -7693,13 +7734,15 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "spngrad") this._spnPref({ grad: k });
     else if (a === "spnclk") this._spnPref({ clock: k });
     else if (a === "spnadm") { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._spnAdminLoad(); }
-    else if (a === "spnback") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); }
+    else if (a === "spnback") { this._modal = null; this._renderModal(); this._render(); }
     else if (a === "spnlist") { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); }
-    else if (a === "spnnew") { this._modal = { type: "spnadm", view: "new", err: "" }; this._renderModal(); }
+    else if (a === "spnnew") { this._modal = { type: "spnadm", view: "new", err: "", stufe: "sponsor" }; this._renderModal(); }
+    else if (a === "spnstufe") { const q = (f) => this.shadowRoot.querySelector(`[data-f="${f}"]`); this._modal.keep = { name: String((q("spnname") || {}).value || ""), note: String((q("spnnote") || {}).value || "") }; this._modal.stufe = k === "max" ? "max" : "sponsor"; this._renderModal(); }
+    else if (a === "spnsoon") { this._spnAdm({ act: "notifysoon", on: !this._spnS().notify_soon }, () => { this._spnLoad().then(() => this._renderModal()); }); }
     else if (a === "spncreate") {
       const q = (f) => this.shadowRoot.querySelector(`[data-f="${f}"]`), name = String((q("spnname") || {}).value || "").trim();
       if (!name) { this._modal.err = "Bitte einen Namen eingeben."; this._renderModal(); return; }
-      this._spnAdm({ act: "create", name, bis: String((q("spnbis") || {}).value || ""), note: String((q("spnnote") || {}).value || ""), on: !!(q("spndk") || {}).checked }, (r) => {
+      this._spnAdm({ act: "create", stufe: this._modal.stufe === "max" ? "max" : "sponsor", name, bis: String((q("spnbis") || {}).value || ""), note: String((q("spnnote") || {}).value || ""), on: !!(q("spndk") || {}).checked }, (r) => {
         if (!r.ok) { this._modal.err = r.error === "date" ? "Das Datum ist ungültig." : "Das ging nicht."; this._renderModal(); return; }
         this._modal = { type: "spnadm", view: "done", id: r.id, key: r.key }; this._renderModal();
       });
@@ -7715,7 +7758,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "spncopy") this._spnCopy(this._modal.key, "Schlüssel kopiert");
     else if (a === "spnmsg") {
       const s = ((this._spnA || {}).items || []).find((x) => x.id === this._modal.id) || {};
-      this._spnCopy(`Hallo ${s.name || ""},\n\ndanke für deine Unterstützung! Hier ist dein Sponsor-Schlüssel für Strom & Wärme (gültig bis ${this._spnDate(s.bis || "")}):\n\n${this._modal.key}\n\nEinlösen: Einstellungen > Sponsor-Bereich > Schlüssel einfügen.`, "Nachricht kopiert");
+      this._spnCopy(`Hallo ${s.name || ""},\n\ndanke für deine Unterstützung! Hier ist dein ${s.stufe === "max" ? "Sponsor-Max-" : "Sponsor-"}Schlüssel für Strom & Wärme (gültig bis ${this._spnDate(s.bis || "")}${s.stufe === "max" ? ", danach gilt er bis " + this._spnDate(s.sb || "") + " weiter als Sponsor" : ""}):\n\n${this._modal.key}\n\nEinlösen: Einstellungen > Sponsor-Bereich > Schlüssel einfügen.`, "Nachricht kopiert");
     }
     else if (a === "spnjson2") this._spnCopy(b.dataset.j || "{}", "Liste kopiert");
     else if (a === "spnjson") this._spnCopy(((this._spnA || {}).revoked_json || "{}"), "Liste kopiert");
@@ -7724,7 +7767,7 @@ class FensterHeizungPanel extends HTMLElement {
       const el = this.shadowRoot.querySelector('[data-f="spnpriv"]'), v = el ? String(el.value || "").trim() : "";
       this._hass.callWS({ type: "fenster_heizung/spn_admin_setup", priv: v }).then((r) => { if (!r.ok) { this._modal.err = "Das ist nicht der richtige private Schlüssel."; this._renderModal(); return; } this._spnA = r; this._spnLoad().then(() => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._render(); }); }).catch(() => this._toast("Das ging nicht"));
     }
-    else if (a === "spnforget") { this._spnAdm({ act: "forget" }, () => { this._spnLoad().then(() => { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._render(); }); }); }
+    else if (a === "spnforget") { this._spnAdm({ act: "forget" }, () => { this._spnLoad().then(() => { this._modal = null; this._renderModal(); this._render(); }); }); }
   }
   _spnCopy(t, ok) { this._clip(t, ok); }
   /* Kopieren: moderne Zwischenablage, sonst Ersatzweg (HTTP-Adresse, App-Ansicht, ältere Browser) */
@@ -7744,7 +7787,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/spn_redeem", key }).then((r) => {
       const st = (r.result || {}).state;
       this._spnD = r; this._spnApply(); this._render();
-      if (st === "ok") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); this._toast(mine ? "Bei dir eingelöst" : "Danke für deine Unterstützung!"); return; }
+      if (st === "ok") { this._modal = null; this._renderModal(); this._loOpen = true; this._render(); this._toast(mine ? "Bei dir eingelöst" : "Danke für deine Unterstützung!"); return; }
       if (!this._modal || this._modal.type !== "spndlg") { this._modal = { type: "spndlg", err: "" }; }
       this._modal.err = st === "expired" ? "Dieser Schlüssel ist abgelaufen." : st === "revoked" ? "Dieser Schlüssel wurde gesperrt." : "Der Schlüssel ist nicht gültig. Bitte vollständig einfügen, ohne Leerzeichen am Ende.";
       this._renderModal();
@@ -7761,36 +7804,17 @@ class FensterHeizungPanel extends HTMLElement {
     const m = this._modal, close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
     return m.type === "spnadm" ? this._spnAdmModal(close) : this._spnDlg(close);
   }
+  /* Dialog nur noch für den Schlüssel (Konzept Sponsor-Bereich 2.0, E1). Alles andere steht in der Lounge (12f-lounge.js). */
   _spnDlg(close) {
-    const s = this._spnS(), m = this._modal, adm = this._admin(), p = s.saved_prefs;
-    const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${String(cur) === String(k)}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</span>`;
-    const row = (t, sub, ctl) => `<div class="vrow"><span>${t}${sub ? `<small class="mut" style="display:block">${sub}</small>` : ""}</span>${ctl}</div>`;
-    const sw = (act, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm ? "" : "disabled"}></button>`;
-    const link = `<a class="btn2 spnb pri" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">${ic("heart", 16)} Sponsor werden</a>`;
-    const perks = `<div class="spnperks"><div>${ic("heart", 16)}<span><b>Abzeichen</b>Ein Herz im Kopf</span></div><div>${ic("palette", 16)}<span><b>Farbverläufe</b>Für den Kopf</span></div><div>${ic("moon", 16)}<span><b>Uhr-Stile</b>Für den Ruhemodus</span></div><div>${ic("flask", 16)}<span><b>Vorabversionen</b>Neue Labs zuerst</span></div></div>`;
-    let body;
-    if (s.active) {
-      body = `<div class="spnthx">${ic("heart", 15)}<span>${s.state === "dev" ? "Entwickler-Zugang: Alle Extras und Vorabversionen sind für dich immer frei, ohne Schlüssel." : `Danke${s.name ? ", " + esc(s.name) : ""}! Dein Schlüssel gilt bis ${esc(this._spnDate(s.bis))}.`}</span></div>
-        <div class="lsec" style="margin-top:12px">${ic("palette", 15)}Farben und Aussehen</div>
-        ${row("Abzeichen im Kopf", "Das Herz neben den Knöpfen", sw("spnbadge", p.badge, "Abzeichen"))}
-        ${row("Verlauf im Kopf", "Zusätzliche Farbverläufe", seg("spngrad", p.grad, [["none", "Aus"], ["meer", "Meer"], ["abend", "Abend"]]))}
-        <div class="lsec" style="margin-top:12px">${ic("moon", 15)}Tablet-Ruhemodus</div>
-        ${row("Uhr-Stil", "Wirkt im Ruhemodus des Tablet-Modus", seg("spnclk", p.clock, [["standard", "Standard"], ["duenn", "Dünn"], ["kraeftig", "Kräftig"], ["digital", "Digital"]]))}
-        <div class="lsec" style="margin-top:12px">${ic("flask", 15)}Mitmachen</div>
-        ${row("Vorabversionen zuerst", "Neue Labs ein bis zwei Wochen früher sehen", sw("spnearly", p.early, "Vorabversionen"))}
-        ${adm ? `<div class="gbtns" style="margin-top:14px">${s.state === "dev" ? "" : `<button class="btn2" data-act="spnclr">Schlüssel entfernen</button>`}${s.manage ? `<button class="btn2 pri" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button>` : ""}</div>` : ""}`;
-    } else {
-      const note = s.state === "expired" ? `<div class="gst bad">${ic("clock", 15)}<span>Dein Schlüssel ist am ${esc(this._spnDate(s.bis))} abgelaufen. Die Extras sind aus, deine Einstellungen bleiben gespeichert.</span></div>` : s.state === "revoked" ? `<div class="gst bad">${ic("lock", 15)}<span>Dieser Schlüssel wurde gesperrt.</span></div>` : "";
-      const mail = `<div class="spnmail">${ic("mail", 18)}<div><b>Nach dem Sponsoring: kurz per E-Mail melden</b><span>Schreib mir nach dem Sponsoring eine E-Mail mit deinem GitHub-Namen, dann schicke ich dir deinen Schlüssel.</span><a href="mailto:${SPN_MAIL}?subject=${encodeURIComponent("Sponsor-Schlüssel Strom & Wärme")}&body=${encodeURIComponent("Hallo, ich habe auf GitHub gesponsert.\nMein GitHub-Name: \n")}" class="spnma">${ic("mail", 14)} ${SPN_MAIL}</a></div></div>`;
-      body = `${note}<div class="mut sm" style="margin:2px 0 10px">Die Integration ist und bleibt kostenlos. Sponsoren bekommen Schönes obendrauf. Nichts, was du jetzt nutzt, wird gesperrt.</div>${perks}${mail}
-        ${adm ? `<div class="lsec" style="margin-top:14px">${ic("key", 15)}Sponsor-Schlüssel</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail. Einfach einfügen.</div>
+    const s = this._spnS(), m = this._modal, adm = this._admin();
+    const st = s.state === "dev" ? "Entwickler-Zugang – kein Schlüssel nötig" : s.active ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"}${s.name ? " · " + esc(s.name) : ""} · gültig bis ${esc(this._spnDate(s.bis))}` : s.state === "expired" ? `Abgelaufen am ${esc(this._spnDate(s.bis))}` : s.state === "revoked" ? "Gesperrt" : "Noch kein Schlüssel";
+    const body = adm ? `<div class="gst">${ic(s.active ? "check" : "key", 15)}<span>${st}</span></div>
+        <div class="lsec" style="margin-top:12px">${ic("key", 15)}${s.active ? "Neuen Schlüssel einlösen" : "Sponsor-Schlüssel"}</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail. Einfach vollständig einfügen.</div>
         <textarea class="osel spnta" data-f="spnkey" rows="3" placeholder="FH1-…" spellcheck="false" aria-label="Sponsor-Schlüssel"></textarea>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div>
-        <div class="gbtns" style="margin-top:8px"><button class="btn2 spnb" data-act="spnred">${ic("heart", 16)} Schlüssel einlösen</button>${link}</div>
-        ${s.manage ? `<div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnadm">${ic("users", 16)} Sponsoren verwalten</button></div>` : `<div style="margin-top:12px;text-align:center"><button class="lnk" data-act="spnadm" style="font-size:.7rem;opacity:.45">Entwickler-Zugang</button></div>`}`
-        : `<div class="mut sm">Den Schlüssel trägt ein Administrator ein.</div><div class="gbtns" style="margin-top:10px">${link}</div>`}`;
-    }
-    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>${ic("heart", 17)} Sponsor-Bereich</b><span>${s.active ? "Freigeschaltet" : "Noch nicht freigeschaltet"}</span></div>${close}</div>${body}</div>`;
+        <div class="gbtns" style="margin-top:8px"><button class="btn2 spnb pri" data-act="spnred">${ic("heart", 16)} Schlüssel einlösen</button>${s.active && s.state !== "dev" ? `<button class="btn2" data-act="spnclr">Schlüssel entfernen</button>` : ""}</div>`
+      : `<div class="mut sm">Den Schlüssel trägt ein Administrator ein.</div>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${ic("key", 17)} Schlüssel</b><span>Sponsor-Lounge</span></div>${close}</div>${body}</div>`;
   }
   _spnAdmModal(close) {
     const m = this._modal, A = this._spnA, head = (t, s, back) => `<div class="sh"><div><b>${t}</b><span>${s}</span></div>${back ? `<button class="ibtn" data-act="${back}" aria-label="Zurück">${ic("back", 20)}</button>` : ""}${close}</div>`;
@@ -7803,14 +7827,17 @@ class FensterHeizungPanel extends HTMLElement {
     }
     const item = (s) => {
       const st = { ok: ["g", "Aktiv"], soon: ["a", s.days === 0 ? "Heute" : `Noch ${s.days} ${s.days === 1 ? "Tag" : "Tage"}`], expired: ["x", "Abgelaufen"], revoked: ["r", "Gesperrt"] }[s.state];
-      const act = s.state === "revoked" ? `<button class="spnmini" data-act="spnunrev" data-k="${s.id}">${ic("eye", 14)}Sperre aufheben</button>` : s.state === "ok" ? `<button class="spnmini" data-act="spnkey" data-k="${s.id}">${ic("copy", 14)}Schlüssel</button>` : `<button class="spnmini" data-act="spnext" data-k="${s.id}">${ic("clock", 14)}Verlängern</button>`;
-      return `<div class="spnrow"><span class="spna ${s.state === "expired" || s.state === "revoked" ? "off" : ""}">${esc((s.name || "?")[0].toUpperCase())}</span><span class="spnn"><b>${esc(s.name)}</b><small>${s.state === "revoked" ? "gesperrt" + (s.revoked_at ? " am " + esc(this._spnDate(s.revoked_at)) : "") : (s.since ? "seit " + esc(this._spnDate(s.since)) + " · " : "") + "gültig bis " + esc(this._spnDate(s.bis))}${s.note ? " · " + esc(s.note) : ""}</small></span><em class="spns ${st[0]}">${st[1]}</em>${act}<button class="ibtn spnmore" data-act="spnrevq" data-k="${s.id}" aria-label="Sperren oder löschen">${ic("more", 18)}</button></div>`;
+      const mx = s.stufe === "max";
+      const act = s.state === "revoked" ? `<button class="spnmini" data-act="spnunrev" data-k="${s.id}">${ic("eye", 14)}Sperre aufheben</button>` : s.state === "ok" && !mx ? `<button class="spnmini" data-act="spnkey" data-k="${s.id}">${ic("copy", 14)}Schlüssel</button>` : `<button class="spnmini ${mx ? "gold" : ""}" data-act="spnext" data-k="${s.id}">${ic("clock", 14)}Verlängern</button>`;
+      return `<div class="spnrow"><span class="spna ${mx ? "gold" : ""} ${s.state === "expired" || s.state === "revoked" ? "off" : ""}">${mx ? "★" : esc((s.name || "?")[0].toUpperCase())}</span><span class="spnn"><b>${esc(s.name)}${mx ? ` <em class="spntier">★ Max</em>` : ""}</b><small>${s.state === "revoked" ? "gesperrt" + (s.revoked_at ? " am " + esc(this._spnDate(s.revoked_at)) : "") : (s.since ? "seit " + esc(this._spnDate(s.since)) + " · " : "") + "gültig bis " + esc(this._spnDate(s.bis))}${s.note ? " · " + esc(s.note) : ""}</small></span><em class="spns ${st[0]}">${st[1]}</em>${act}<button class="ibtn spnmore" data-act="spnrevq" data-k="${s.id}" aria-label="Sperren oder löschen">${ic("more", 18)}</button></div>`;
     };
     if (m.view === "new") {
-      const d = new Date(); d.setFullYear(d.getFullYear() + 1); const def = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-      return wrap(head("Neuer Sponsor", "Drei Angaben", "spnlist"), `<div class="of"><div class="ol"><b>Name</b><span>Erscheint im Abzeichen und, wenn erlaubt, in der Danke-Liste</span></div></div><input class="osel" data-f="spnname" maxlength="40" placeholder="z. B. Anna K." aria-label="Name" style="width:100%;margin:0 0 8px">
-        <div class="of"><div class="ol"><b>Gültig bis</b><span>Vorgabe: ein Jahr ab heute</span></div></div><input class="osel" type="date" data-f="spnbis" value="${def}" aria-label="Gültig bis" style="width:100%;margin:0 0 8px">
-        <div class="of"><div class="ol"><b>Notiz (nur für dich)</b></div></div><input class="osel" data-f="spnnote" maxlength="120" placeholder="z. B. GitHub: annak" aria-label="Notiz" style="width:100%;margin:0 0 8px">
+      const mx = m.stufe === "max", kp = m.keep || {}, d = new Date(); if (mx) d.setMonth(d.getMonth() + 3); else d.setFullYear(d.getFullYear() + 1); const def = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      return wrap(head("Neuer Sponsor", "Stufe und drei Angaben", "spnlist"), `<div class="of"><div class="ol"><b>Stufe</b><span>Max nur bei monatlichem Sponsoring. Läuft Max ab, gilt bis zum Ende des Sponsor-Jahres automatisch wieder „Sponsor“.</span></div></div>
+        <div class="gschs" style="margin:0 0 10px"><button class="gsch ${mx ? "" : "sel"}" data-act="spnstufe" data-k="sponsor" aria-pressed="${!mx}">${ic("heart", 13)} Sponsor · 1 Jahr</button><button class="gsch spng ${mx ? "sel" : ""}" data-act="spnstufe" data-k="max" aria-pressed="${mx}">★ Max · 3 Monate</button></div>
+        <div class="of"><div class="ol"><b>Name</b><span>Erscheint im Abzeichen und, wenn erlaubt, in der Danke-Liste</span></div></div><input class="osel" data-f="spnname" maxlength="40" placeholder="z. B. Anna K." aria-label="Name" value="${esc(kp.name || "")}" style="width:100%;margin:0 0 8px">
+        <div class="of"><div class="ol"><b>Gültig bis</b><span>Vorgabe: ${mx ? "drei Monate" : "ein Jahr"} ab heute</span></div></div><input class="osel" type="date" data-f="spnbis" value="${def}" aria-label="Gültig bis" style="width:100%;margin:0 0 8px">
+        <div class="of"><div class="ol"><b>Notiz (nur für dich)</b></div></div><input class="osel" data-f="spnnote" maxlength="120" placeholder="z. B. GitHub: annak" aria-label="Notiz" value="${esc(kp.note || "")}" style="width:100%;margin:0 0 8px">
         <label class="spnck"><input type="checkbox" data-f="spndk"> In der Danke-Liste nennen (Sponsor ist einverstanden)</label>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div><div class="gbtns" style="margin-top:8px"><button class="btn2 pri" data-act="spncreate">${ic("key", 16)} Schlüssel erzeugen</button></div>`);
     }
@@ -7832,13 +7859,190 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spndel" data-k="${s.id}">${ic("trash", 16)} Aus der Liste löschen</button></div>`);
     }
     const c = A.count || {};
-    return wrap(head("Sponsoren verwalten", "Nur für dich sichtbar", "spnback"), `<div class="spnsum"><div><small>Aktiv</small><b>${(c.ok || 0) + (c.soon || 0)}</b></div><div><small>Laufen bald ab</small><b class="${c.soon ? "wa" : ""}">${c.soon || 0}</b></div><div><small>Abgelaufen oder gesperrt</small><b>${(c.expired || 0) + (c.revoked || 0)}</b></div></div>
+    return wrap(head("Sponsoren verwalten", "Nur für dich sichtbar", "spnback"), `<div class="spnsum"><div><small>Aktiv</small><b>${(c.ok || 0) + (c.soon || 0)}</b></div><div><small>★ Max</small><b class="gd">${c.max || 0}</b></div><div><small>Laufen bald ab</small><b class="${c.soon ? "wa" : ""}">${c.soon || 0}</b></div><div><small>Abgelaufen oder gesperrt</small><b>${(c.expired || 0) + (c.revoked || 0)}</b></div></div>
       ${A.items.length ? A.items.map(item).join("") : `<div class="mut sm" style="margin:10px 0">Noch keine Sponsoren. Lege den ersten an.</div>`}
+      <div class="vrow" style="margin-top:10px"><span>Meldung, wenn ein Schlüssel bald abläuft<small class="mut" style="display:block">Einmal am Tag in Home Assistant: Max 14 Tage, Sponsor 30 Tage vorher</small></span><button class="sw ${this._spnS().notify_soon ? "on" : ""}" data-act="spnsoon" aria-pressed="${!!this._spnS().notify_soon}" aria-label="Meldung bei Ablauf"></button></div>
       <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="spnnew">${ic("heart", 16)} Neuer Sponsor</button><button class="btn2" data-act="spndanke" ${A.danke.length ? "" : "disabled"}>${ic("copy", 16)} Danke-Liste kopieren</button></div>
       <div class="mut sm" style="margin-top:10px">Namen, Daten und Notizen bleiben in deinem Home Assistant. Das Dashboard weist dich ${30} Tage vor Ablauf darauf hin.</div>
       <div class="lsec" style="margin-top:16px">${ic("flask", 15)}Zum Testen</div>
       <div class="vrow"><span>Entwickler-Zugang aktiv<small class="mut" style="display:block">Aus: Extras, Vorabversionen und Module nur für Sponsoren sind gesperrt – so wie ohne Sponsoring. Diese Verwaltung bleibt erreichbar.</small></span><button class="sw ${this._spnS().dev_off ? "" : "on"}" data-act="spndev" data-k="${this._spnS().dev_off ? "on" : "off"}" aria-pressed="${!this._spnS().dev_off}" aria-label="Entwickler-Zugang aktiv"></button></div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
+  }
+  /* ================= Sponsor-Lounge (Konzept Sponsor-Bereich 2.0, Stufen S1 + S2) und Sponsor Max 1 =================
+     Eigene Seite statt Dialog, erreichbar über das Herz/den Stern im Kopf, die Startseite und die Einstellungen.
+     Mit Schlüssel: B1 Begrüßung, B2 Neu für dich, B3 Deine Extras, B4 Mitreden & Abzeichen, ★ Max (Morgen-Briefing,
+     Jahres-Poster). Ohne Schlüssel: „Sponsor werden“ (A1–A4). Entwickler und Verwaltung unauffällig ganz unten.
+     Grundsatz: Nichts, was frei ist, wird gesperrt. Alle Zahlen kommen aus den eigenen Daten und bleiben im Browser. */
+  _lgMax() { const s = this._spnS(); return !!(s.active && s.tier === "max"); }
+  _lgBLoad(force) {
+    if (!this._hass || (this._lgB && !force) || this._lgBBusy) return;
+    this._lgBBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/brief_get" }).then((r) => { this._lgB = r; }).catch(() => { this._lgB = { cfg: null, err: true }; })
+      .finally(() => { this._lgBBusy = false; if (this._loOpen) this._render(); if (this._modal && this._modal.type === "lgbrief") this._renderModal(); });
+  }
+  /* A2 / Poster: Zahlen aus den eigenen Daten (Modul 1 Pausen und Ersparnis, Modul 4 Läufe und Ersparnis) */
+  _lgNums(sc = "total") {
+    const rooms = this._collect(), fs = new Set(rooms.map((r) => r.fuel || "erdgas")), F = fs.size === 1 ? FUELS[[...fs][0]] : MIXED;
+    const gas = rooms.reduce((a, r) => a + ((r.sc[sc] || {})[fs.size === 1 ? "gas" : "kwh"] || 0), 0), min = rooms.reduce((a, r) => a + ((r.sc[sc] || {}).min || 0), 0);
+    const H = (this._gsD && this._gsD.hist) || {}, y = String(new Date().getFullYear());
+    let sv = 0, n = 0, own = 0, kwh = 0;
+    Object.values(H).forEach((L) => (L || []).forEach((r) => { if (sc === "year" && !String(r.d).startsWith(y)) return; sv += r.saved || 0; n += r.n || 0; own += (r.s || 0) + (r.b || 0); kwh += (r.s || 0) + (r.b || 0) + (r.g || 0); }));
+    return { rooms: rooms.length, gas, F, min, sv, n, own: kwh > 0 ? own / kwh * 100 : null };
+  }
+  _lgNew() {
+    const cat = (this._labCat0 ? this._labCat0() : []).filter((x) => this._labIsEarly(x));
+    let seen = 0; try { seen = +localStorage.getItem("fh_lg_seen") || 0; } catch (_) { /* egal */ }
+    return { early: cat, fresh: seen ? cat.filter((x) => this._labEarlyTs(x) - 14 * 864e5 > seen).length : 0 };
+  }
+  _lgRender() {
+    const sr = this.shadowRoot, mainEl = sr.getElementById("main"), s = this._spnS(), adm = this._admin();
+    if (!this._gsD && this._gsLoad) this._gsLoad();
+    if (s.active && this._lgMax()) this._lgBLoad();
+    const sw = (act, on, label, k = "") => `<button class="sw ${on ? "on" : ""}" data-act="${act}" ${k ? `data-k="${k}"` : ""} aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm ? "" : "disabled"}></button>`;
+    const foot = `<div class="lgfoot">${adm ? `<button class="lnk" data-act="spnkeydlg">Schlüssel ${s.active ? "ändern" : "eingeben"}</button>` : ""}${adm && s.manage ? `<span>·</span><button class="lnk" data-act="spnadm">Sponsoren verwalten</button>` : ""}${adm && !s.manage ? `<span>·</span><button class="lnk" data-act="spnadm">Entwickler-Zugang</button>` : ""}</div>`;
+    const bar = `<div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Sponsor-Lounge</b><span><em class="tag">${s.active ? (s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor") : "Sponsor werden"}</em>${this._verTag()}</span></div></div>
+        <button class="pillbtn pri" data-act="lgxback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>`;
+    mainEl.innerHTML = `${bar}<div class="wrap"><div class="sxw stow lgw">${s.active ? this._lgIn(s, sw) : this._lgOut(s)}${foot}</div></div>`;
+    if (s.active) { try { localStorage.setItem("fh_lg_seen", String(Date.now())); } catch (_) { /* egal */ } }
+  }
+  /* ---- mit Schlüssel: B1–B4 und Max ---- */
+  _lgIn(s, sw) {
+    const P = s.saved_prefs || s.prefs, mx = s.tier === "max", dev = s.state === "dev", nw = this._lgNew(), B = this._lgB, bc = (B && B.cfg) || {};
+    const since = s.since ? new Date(s.since + "T12:00:00").toLocaleDateString("de-DE", { month: "short", year: "numeric" }) : "";
+    const b1 = `<div class="lgban ${mx ? "mx" : ""}">${mx ? `<div class="lgstar">★</div>` : `<div class="lgstar hz">${ic("heart", 30)}</div>`}<div class="lgbt"><small>Sponsor-Lounge</small><b>${dev ? "Entwickler-Zugang" : `Willkommen zurück${s.name ? ", " + esc(s.name.split(" ")[0]) : ""}!`}</b>
+      <span>${dev ? "Alle Extras und Max sind für dich frei, ohne Schlüssel." : `${mx ? "★ Sponsor Max" : "♥ Sponsor"}${since ? " seit " + esc(since) : ""} · gilt bis ${esc(this._spnDate(s.bis))}${s.max_ended ? " · Max ist am " + esc(this._spnDate(s.max_ended)) + " ausgelaufen, Sponsor gilt weiter" : ""}`}${nw.fresh ? ` · Seit deinem letzten Besuch: ${nw.fresh} neue Vorabversion${nw.fresh === 1 ? "" : "en"}` : ""}</span></div>
+      ${!dev && s.days != null && s.days <= (mx ? 14 : 30) ? `<a class="btn2 ${mx ? "lggold" : "spnb"}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">${mx ? "★ Max verlängern" : "♥ Verlängern"}</a>` : ""}</div>`;
+    const b2 = `<div class="lgt" style="--c:#34d399"><h3>${ic("flask", 17)}Neu für dich</h3>${nw.early.length ? nw.early.slice(0, 4).map((x) => `<div class="lgit"><span class="lgi">${ic("flask", 16)}</span><span class="n">${esc(x.n || x.t || x.id)}<small>Vorabversion · für alle ab ${esc(this._labEarlyDate(x))}</small></span><button class="btn2" data-act="labopen" style="flex:none">Öffnen</button></div>`).join("") : `<div class="mut sm">Gerade gibt es keine neuen Vorabversionen. Neue Labs siehst du hier 14 Tage vor allen anderen${P.early ? "" : " – schalte dafür unten „Vorabversionen zuerst“ ein"}.</div>`}
+      <div class="lgit"><span class="lgi">${ic("chart", 16)}</span><span class="n">Monatsberichte<small>kommen mit Stufe S3</small></span><em class="lgsoon">bald</em></div></div>`;
+    const b4 = `<div class="lgt" style="--c:#a78bfa"><h3>${ic("users", 17)}Mitreden &amp; Abzeichen</h3>
+      <div class="vrow"><span>Abzeichen im Kopf<small class="mut" style="display:block">${mx ? "Herz oder goldener Stern" : "Herz neben den Knöpfen"}</small></span>${mx ? `<span class="gschs"><button class="gsch ${P.badge && P.badge_style === "heart" ? "sel" : ""}" data-act="lgxbadge" data-k="heart">${ic("heart", 12)} Herz</button><button class="gsch spng ${P.badge && P.badge_style !== "heart" ? "sel" : ""}" data-act="lgxbadge" data-k="gold">★ Gold</button><button class="gsch ${P.badge ? "" : "sel"}" data-act="lgxbadge" data-k="off">Aus</button></span>` : sw("spnbadge", P.badge, "Abzeichen")}</div>
+      <div class="vrow"><span>Name im Kopf<small class="mut" style="display:block">„Hallo ${esc((s.name || "…").split(" ")[0])}“ statt „Sponsor“</small></span>${sw("lgxname", P.name_head, "Name im Kopf")}</div>
+      <div class="vrow"><span>In der Danke-Liste stehen<small class="mut" style="display:block">freiwillig, im README – einfach kurz per Mail Bescheid geben</small></span><a class="btn2" href="mailto:${SPN_MAIL}?subject=${encodeURIComponent("Danke-Liste Strom & Wärme")}" style="flex:none;text-decoration:none">${ic("mail", 14)} Mail</a></div>
+      <div class="vrow"><span>Wunsch des Monats<small class="mut" style="display:block">abstimmen über GitHub · kommt mit Stufe S3</small></span><em class="lgsoon">bald</em></div></div>`;
+    const tile = (icon, t, sub, ctl, max) => `<div class="lgx ${max ? "mx" : ""}">${icon}<span class="n"><b>${t}${max ? ` <span class="lggd">★</span>` : ""}</b><small>${sub}</small></span>${ctl}</div>`;
+    const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}">${t}</button>`).join("")}</span>`;
+    const maxT = mx ? [
+      tile(this._gx("sun", 40), "Morgen-Briefing", bc.on ? `jeden Morgen um ${esc(bc.time || "06:30")}${(bc.notify || []).length ? "" : " · noch kein Meldedienst"}` : "aus · eine Meldung am Morgen", `<button class="btn2" data-act="lgxbrief" style="flex:none">Einstellen</button>`, true),
+      tile(this._gx("house", 40), `Jahres-Poster ${new Date().getFullYear()}`, new Date().getMonth() === 11 ? "jetzt verfügbar · A3 zum Drucken oder als Bild" : "ab 1. Dezember · Vorschau schon jetzt", `<button class="btn2" data-act="lgxposter" style="flex:none">${new Date().getMonth() === 11 ? "Erstellen" : "Vorschau"}</button>`, true),
+    ] : [];
+    const b3 = `<div class="lgsec">${ic("heart", 15)}Deine Extras <span class="mut">– alle an einer Stelle, jedes abschaltbar</span></div><div class="lgxs">${[
+      ...maxT,
+      tile(`<span class="lgi big">${ic("palette", 20)}</span>`, "Farbverlauf im Kopf", "zusätzliche Verläufe", seg("spngrad", P.grad, [["none", "Aus"], ["meer", "Meer"], ["abend", "Abend"]])),
+      tile(`<span class="lgi big">${ic("moon", 20)}</span>`, "Uhr-Stil im Ruhemodus", "Tablet-Modus", seg("spnclk", P.clock, [["standard", "Std."], ["duenn", "Dünn"], ["kraeftig", "Kräftig"], ["digital", "Digital"]])),
+      tile(`<span class="lgi big">${ic("flask", 20)}</span>`, "Vorabversionen zuerst", "neue Labs 14 Tage früher", sw("spnearly", P.early, "Vorabversionen")),
+      tile(this._gx("bolt", 40), "Hausfluss (Modul 19)", this._mdState().on.ef === true ? "eingeschaltet" : "unter Labs einschalten", `<button class="btn2" data-act="labopen" style="flex:none">Labs</button>`),
+    ].join("")}</div>${mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Morgen-Briefing aufs Handy, Jahres-Poster und goldenes Abzeichen – nur monatlich, Schlüssel 3 Monate. Bald auch Wächter, Woche voraus und Was-wäre-wenn.</small></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`}`;
+    return `${b1}<div class="lgcols">${b2}${b4}</div>${b3}`;
+  }
+  /* ---- ohne Schlüssel: A1–A4 ---- */
+  _lgOut(s) {
+    const N = this._lgNums(), hide = (() => { try { return localStorage.getItem("fh_lg_a2") === "1"; } catch (_) { return false; } })();
+    const nums = [N.rooms && N.gas > 0 ? [`${num(N.gas, N.gas >= 100 ? 0 : 1)} ${esc(unitOf(N.F))}`, `${esc(N.F.short)} gespart`] : null, N.sv > 0 ? [`${num(N.sv, N.sv >= 100 ? 0 : 2)} €`, "Vorteil durch eigenen Strom"] : null, N.rooms && N.min > 0 ? [`${num(N.min / 60, 0)} h`, "Heizpausen beim Lüften"] : null].filter(Boolean);
+    const exs = [["bolt", "Hausfluss", "Modul 19 · dein Haus als Fluss-Bild", "", "ef"], ["sun", "Morgen-Briefing", "jeden Morgen dein Tag aufs Handy", "max", "brief"], ["house", "Jahres-Poster", "dein Jahr als Poster zum Drucken", "max", "poster"], ["lamp", "Uhr-Stile & Verläufe", "für Kopf und Tablet-Ruhemodus", "", "look"], ["forecast", "Vorabversionen", "neue Labs 14 Tage früher", "", "early"], ["euro", "Energie-Coach", "drei Spartipps pro Woche", "bald", "coach"]];
+    const mail = `mailto:${SPN_MAIL}?subject=${encodeURIComponent("Sponsor-Schlüssel Strom & Wärme")}&body=${encodeURIComponent("Hallo, ich habe auf GitHub gesponsert.\nMein GitHub-Name: \nStufe: Sponsor / Sponsor Max\n\nDanke!")}`;
+    return `<div class="lgban out"><div class="lgbt"><small>Sponsor-Lounge</small><b>Strom &amp; Wärme bleibt kostenlos – mit dir wird es schneller besser.</b><span>Nichts, was du jetzt nutzt, wird gesperrt. Sponsoren bekommen Schönes obendrauf.</span></div></div>
+      ${nums.length && !hide ? `<div class="lgt" style="--c:#2dd4bf"><h3>${ic("total", 17)}Das hat es dir schon gebracht</h3><div class="lgst">${nums.map(([v, l]) => `<div><b>${v}</b><small>${l}</small></div>`).join("")}</div><div class="lgnote"><span>seit der Installation · nur aus deinen Daten, nichts wird gesendet</span><button class="lnk" data-act="lgxa2">ausblenden</button></div></div>` : ""}
+      <div class="lgt"><h3>${ic("heart", 17)}In 3 Schritten</h3>${["Auf GitHub Sponsors unterstützen", "Kurz per Mail Bescheid geben – der Text ist fertig", "Den Schlüssel aus der Antwort hier einfügen"].map((t, i) => `<div class="lgit"><span class="lgnum">${i + 1}</span><span class="n">${t}</span></div>`).join("")}
+        <div class="gbtns" style="margin-top:8px"><a class="btn2 spnb pri" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">${ic("heart", 16)} Sponsor werden</a><a class="btn2" href="${mail}" style="flex:none;text-decoration:none">${ic("mail", 16)} Mail schreiben</a>${this._admin() ? `<button class="btn2" data-act="spnkeydlg">${ic("key", 16)} Schlüssel einlösen</button>` : ""}</div></div>
+      <div class="lgsec">${ic("heart", 15)}Die Extras <span class="mut">– antippen für ein Beispiel</span></div>
+      <div class="lgex">${exs.map(([k, t, sub, tag, id]) => `<button class="lgxt" data-act="lgxex" data-k="${id}">${this._gx(k, 52)}<b>${t}${tag === "max" ? ` <span class="lggd">★</span>` : ""}</b><small>${sub}</small>${tag === "bald" ? `<em class="lgsoon">bald</em>` : tag === "max" ? `<em class="lgsoon mx">Max</em>` : ""}</button>`).join("")}</div>
+      <div class="lgtiers"><div class="lgt"><b>${ic("heart", 15)} Sponsor</b><small>einmalig oder monatlich · Schlüssel 1 Jahr · alle Extras, Vorabversionen, Hausfluss</small></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max</b><small>nur monatlich · Schlüssel 3 Monate · zusätzlich Morgen-Briefing, Jahres-Poster, goldenes Abzeichen</small></div></div>`;
+  }
+  /* ---- Aktionen ---- */
+  _lgAct(a, b) {
+    const k = b.dataset.k, B = this._lgB;
+    if (a === "lgxback") { this._loOpen = false; this._render(); return; }
+    if (a === "lgxa2") { try { localStorage.setItem("fh_lg_a2", "1"); } catch (_) { /* egal */ } this._render(); return; }
+    if (a === "lgxname") { this._spnPref({ name_head: !this._spnS().saved_prefs.name_head }); return; }
+    if (a === "lgxbadge") { if (k === "off") this._spnPref({ badge: false }); else this._spnPref({ badge: true, badge_style: k }); return; }
+    if (a === "lgxex") { this._modal = { type: "lgex", k }; this._renderModal(); return; }
+    if (a === "lgxposter") { this._modal = { type: "lgposter" }; this._renderModal(); return; }
+    if (a === "lgxbrief") { this._modal = { type: "lgbrief" }; this._lgBLoad(true); this._renderModal(); return; }
+    if (a === "lgxpng") { this._lgPosterPng(); return; }
+    if (a === "lgxprint") { this._lgPosterPrint(); return; }
+    if (!B || !B.cfg) return;
+    const c = { ...B.cfg };
+    if (a === "lgxbon") c.on = !c.on;
+    else if (a === "lgxbev") c.evening = !c.evening;
+    else if (a === "lgxbt") { const [h, m] = c.time.split(":").map(Number), t = (h * 60 + m + Number(k) + 1440) % 1440; c.time = `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`; }
+    else if (a === "lgxbblk") { const s = new Set(c.blocks); if (s.has(k)) s.delete(k); else s.add(k); c.blocks = [...s]; }
+    else if (a === "lgxbnot") { const s = new Set(c.notify); if (s.has(k)) s.delete(k); else s.add(k); c.notify = [...s]; }
+    else if (a === "lgxbtest") {
+      this._hass.callWS({ type: "fenster_heizung/brief_test", kind: k === "evening" ? "evening" : "morning" }).then((r) => { this._lgB = r; this._renderModal(); this._toast(r.no_service ? "Probe erstellt – wähle noch einen Meldedienst" : r.sent ? "Probe gesendet" : "Senden hat nicht geklappt"); })
+        .catch((e) => this._toast("Briefing: " + ((e && e.message) || "das hat nicht geklappt")));
+      return;
+    } else return;
+    this._lgB = { ...B, cfg: c }; this._renderModal();
+    this._hass.callWS({ type: "fenster_heizung/brief_set", cfg: c }).then((r) => { this._lgB = r; this._renderModal(); if (this._loOpen) this._render(); }).catch(() => this._toast("Das ging nicht"));
+  }
+  /* ---- Fenster: Briefing, Poster, Beispiel ---- */
+  _lgModal() {
+    const m = this._modal, close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`, adm = this._admin();
+    const wrap = (t, sub, body, wide = true) => `<div class="ov" data-act="close"></div><div class="sheet ${wide ? "wide" : ""}" role="dialog" aria-modal="true"><div class="sh"><div><b>${t}</b><span>${sub}</span></div>${close}</div>${body}</div>`;
+    if (m.type === "lgex") {
+      const X = { ef: ["bolt", "Hausfluss", "Dein Haus in der Mitte, Solar, Netz, Akku und Geräte als Kacheln drumherum. Die Linien zeigen live, wohin der Strom fließt – mit den neuen HD-Bildern."], brief: ["sun", "Morgen-Briefing ★", "Jeden Morgen eine Meldung aufs Handy: Sonne heute, günstigste Strom-Stunde, beste Startzeit für die Waschmaschine, Auto, Heizung und Auffälligkeiten. Bausteine einzeln wählbar."], poster: ["house", "Jahres-Poster ★", "Im Dezember dein Jahr als Poster: Heizöl gespart, Heizpausen, Gerätestrom mit eigenem Anteil und Ersparnis – A3 zum Drucken oder als Bild."], look: ["lamp", "Uhr-Stile & Verläufe", "Zusätzliche Farbverläufe für den Kopf und vier Uhr-Stile für den Ruhemodus im Tablet-Modus."], early: ["forecast", "Vorabversionen", "Neue Labs siehst du 14 Tage vor allen anderen – mit Datum, ab wann sie für alle kommen."], coach: ["euro", "Energie-Coach (bald)", "Jeden Montag drei Spartipps aus deinen Daten mit Euro-Betrag. Kommt mit Stufe S3."] }[m.k] || ["plug", "Extra", ""];
+      return wrap(X[1], "Beispiel mit Musterdaten", `<div class="lgexd">${this._gx(X[0], 110, { on: true, lvl: 80 })}<p>${X[2]}</p></div><div class="gbtns" style="margin-top:12px"><a class="btn2 spnb pri" href="${esc(this._spnS().url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">${ic("heart", 16)} Sponsor werden</a></div>`, false);
+    }
+    if (m.type === "lgposter") {
+      return wrap(`Jahres-Poster ${new Date().getFullYear()}`, "★ Sponsor Max · nur aus deinen Daten", `<div class="lgposter">${this._lgPosterSvg()}</div>
+        <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="lgxpng">${ic("download", 16)} Als Bild speichern</button><button class="btn2" data-act="lgxprint">${ic("image", 16)} Drucken (A3)</button></div>
+        <div class="mut sm" style="margin-top:8px">Zahlen, die dir fehlen (zum Beispiel ohne Gerätestrom), lässt das Poster weg.${new Date().getMonth() === 11 ? "" : " Das fertige Jahres-Poster gibt es ab 1. Dezember."}</div>`);
+    }
+    if (m.type === "lgbrief") {
+      const B = this._lgB, c = (B && B.cfg) || null;
+      if (!c) return wrap("Morgen-Briefing", "★ Sponsor Max", `<div class="mut sm">${B && B.err ? "Das Briefing ist noch nicht bereit." : "Lädt …"}</div>`);
+      const svc = Object.keys((this._hass.services || {}).notify || {}).filter((n) => n !== "send_message").sort().map((n) => "notify." + n), opts = [...svc, ...c.notify.filter((n) => !svc.includes(n))];
+      const BL = { sun: "☀️ Sonne heute", price: "€ Strompreis", dev: "🧺 Bestes Geräte-Fenster", car: "🚗 Auto", heat: "🔥 Heizung & Fenster", warn: "⚠️ Auffälligkeiten", muell: "🗑️ Müll (Addon, bald)" };
+      const row = (t, sub, ctl) => `<div class="vrow"><span>${t}${sub ? `<small class="mut" style="display:block">${sub}</small>` : ""}</span>${ctl}</div>`;
+      const sw = (act, on) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" ${adm ? "" : "disabled"}></button>`;
+      const L = B.last || {};
+      return wrap("Morgen-Briefing", "★ Sponsor Max · eine Meldung am Morgen", `
+        ${row("Briefing senden", "", sw("lgxbon", c.on))}
+        ${row("Uhrzeit", "", `<span class="lgstep"><button class="ibtn" data-act="lgxbt" data-k="-15" aria-label="früher">${ic("minus", 16)}</button><b>${esc(c.time)}</b><button class="ibtn" data-act="lgxbt" data-k="15" aria-label="später">${ic("plus", 16)}</button></span>`)}
+        ${row("Abend-Rückblick", `kurz um ${esc(c.evening_time)}: was heute gespart wurde`, sw("lgxbev", c.evening))}
+        <div class="lsec">Bausteine</div><div class="gschips">${B.blocks.map((k) => `<button class="gsch ${c.blocks.includes(k) ? "sel" : ""}" data-act="lgxbblk" data-k="${k}" aria-pressed="${c.blocks.includes(k)}" ${k === "muell" ? "disabled" : ""}>${BL[k] || k}</button>`).join("")}</div>
+        <div class="mut sm" style="margin:4px 0 0">Ein Baustein ohne Daten (zum Beispiel ohne Tibber oder ohne Auto) fällt einfach weg.</div>
+        <div class="lsec">Senden an</div>${opts.length ? `<div class="gschips">${opts.map((n) => `<button class="gsch ${c.notify.includes(n) ? "sel" : ""}" data-act="lgxbnot" data-k="${esc(n)}" aria-pressed="${c.notify.includes(n)}">${esc(n.replace("notify.", ""))}</button>`).join("")}</div>` : `<div class="mut sm">Keine Benachrichtigungsdienste gefunden.</div>`}
+        ${L.lines ? `<div class="lsec">Zuletzt${L.test ? " (Probe)" : ""} · ${esc(String(L.ts || "").replace("T", " "))}</div><div class="lgmsg"><b>${esc(L.title || "")}</b>${L.lines.map((x) => `<span>${esc(x)}</span>`).join("")}</div>` : ""}
+        <div class="gbtns" style="margin-top:12px"><button class="btn2" data-act="lgxbtest" data-k="morning">${ic("bell", 16)} Probe senden</button>${c.evening ? `<button class="btn2" data-act="lgxbtest" data-k="evening">Probe Abend</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div>`);
+    }
+    return "";
+  }
+  /* ---- Jahres-Poster als SVG (zum Speichern als Bild und zum Drucken) ---- */
+  _lgPosterSvg() {
+    const y = new Date().getFullYear(), N = this._lgNums("year"), s = this._spnS(), W = 840, H = 1188;
+    const cells = [N.rooms && N.gas > 0 ? [`${num(N.gas, N.gas >= 100 ? 0 : 1)} ${unitOf(N.F)}`, `${N.F.short} gespart`] : null, N.rooms && N.min > 0 ? [`${num(N.min / 60, 0)} h`, "Heizpausen beim Lüften"] : null,
+      N.n > 0 ? [`${num(N.n)} ×`, "Geräte-Läufe"] : null, N.own != null ? [`${num(N.own, 0)} %`, "davon eigener Strom"] : null, N.sv > 0 ? [`${num(N.sv, 0)} €`, "durch eigenen Strom gespart"] : null].filter(Boolean);
+    const inner = (k, x, yy, sz) => { const sv = this._gx(k, sz, { on: true, lvl: 90 }); return `<g transform="translate(${x} ${yy})">${sv.replace(/^<svg[^>]*>/, `<svg width="${sz}" height="${sz}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">`)}</g>`; };
+    const cw = 360, chh = 112;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:420px;display:block;margin:0 auto;border-radius:10px">
+      <defs><radialGradient id="pbg" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#134e4a"/><stop offset=".7" stop-color="#0f1419"/></radialGradient><linearGradient id="pyr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#5eead4"/></linearGradient></defs>
+      <rect width="${W}" height="${H}" fill="url(#pbg)"/>
+      <text x="60" y="110" font-family="Roboto,system-ui,sans-serif" font-size="24" letter-spacing="6" font-weight="700" fill="#5eead4">STROM &amp; WÄRME · MEIN JAHR</text>
+      <text x="56" y="250" font-family="Roboto,system-ui,sans-serif" font-size="150" font-weight="900" fill="url(#pyr)">${y}</text>
+      ${inner("house", 285, 290, 270)}${["pvRoof", "battery", "washer", "car"].map((k, i) => inner(k, 180 + i * 125, 570, 100)).join("")}
+      ${cells.map(([v, l], i) => { const cx = 60 + (i % 2) * (cw + 0), cy = 700 + Math.floor(i / 2) * (chh + 16); return `<rect x="${cx}" y="${cy}" width="${cw - 16}" height="${chh}" rx="18" fill="#ffffff" fill-opacity=".07"/><text x="${cx + 22}" y="${cy + 40}" font-family="Roboto,system-ui,sans-serif" font-size="21" fill="#9aa7b4">${esc(l)}</text><text x="${cx + 22}" y="${cy + 92}" font-family="Roboto,system-ui,sans-serif" font-size="44" font-weight="800" fill="#e6edf3">${esc(v)}</text>`; }).join("")}
+      ${cells.length ? "" : `<text x="${W / 2}" y="820" text-anchor="middle" font-family="Roboto,system-ui,sans-serif" font-size="26" fill="#9aa7b4">Noch keine Jahreswerte – Modul 1 und Gerätestrom füllen das Poster.</text>`}
+      <text x="${W / 2}" y="${H - 50}" text-anchor="middle" font-family="Roboto,system-ui,sans-serif" font-size="20" fill="#9aa7b4">${esc(s.name && s.state !== "dev" ? s.name + " · " : "")}★ Sponsor Max · Strom &amp; Wärme</text></svg>`;
+  }
+  _lgPosterPng() {
+    const svg = this._lgPosterSvg().replace('width="100%" style="max-width:420px;display:block;margin:0 auto;border-radius:10px"', 'width="1680" height="2376"');
+    const img = new Image(), url = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    img.onload = () => {
+      try {
+        const c = document.createElement("canvas"); c.width = 1680; c.height = 2376; c.getContext("2d").drawImage(img, 0, 0, 1680, 2376);
+        c.toBlob((bl) => { if (!bl) { this._toast("Speichern nicht möglich"); return; } const a = document.createElement("a"); a.href = URL.createObjectURL(bl); a.download = `Jahres-Poster_${new Date().getFullYear()}.png`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); this._toast("Poster gespeichert"); }, "image/png");
+      } catch (_) { this._toast("Speichern nicht möglich"); }
+    };
+    img.onerror = () => this._toast("Speichern nicht möglich");
+    img.src = url;
+  }
+  _lgPosterPrint() {
+    const w = window.open("", "_blank");
+    if (!w) { this._toast("Bitte Pop-ups für Home Assistant erlauben"); return; }
+    w.document.write(`<!DOCTYPE html><html><head><title>Jahres-Poster</title><style>@page{size:A3 portrait;margin:0}html,body{margin:0;background:#0f1419}svg{width:100vw;height:auto;display:block;max-width:none!important;border-radius:0!important}</style></head><body>${this._lgPosterSvg()}<script>setTimeout(function(){print()},400)<\/script></body></html>`);
+    w.document.close();
   }
   /* „Tags & Karten“ (fest eingebaut, bis 2026.11.1b15 ein Lab): RFID-Karten und NFC-Sticker lösen feste Aktionen aus, auch die NFC-Tags am Stellplatz des Luftentfeuchters. Die Tags und ihre Aktionen liegen im Backend (tags.py),
      hier stehen nur Anzeige und Bedienung. Es gibt keine freien Dienstaufrufe, nur die feste Liste des Backends. */

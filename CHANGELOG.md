@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b4] - 2026-11-06
+
+Testversion: Sponsor-Lounge (Stufe S1), zwei Stufen mit Verwaltung (Stufe S2) und Sponsor Max 1. Alles, was frei ist, bleibt frei.
+
+### Neu
+- **Sponsor-Lounge:** eine eigene Seite statt des Dialogs, wie bisher über das Herz im Kopf, die Startseite und die Einstellungen. Mit Schlüssel: Begrüßung mit „seit“ und Gültigkeit, „Neu für dich“ mit den Vorabversionen und dem Datum, ab dem sie für alle kommen, alle Extras an einer Stelle zum Ein- und Ausschalten, Abzeichen und Name im Kopf. Ohne Schlüssel: „Sponsor werden“ mit dem, was die Integration dir schon gebracht hat (nur aus deinen Daten, ausblendbar), drei Schritten und den Extras als Kacheln mit Beispiel. Schlüssel, „Sponsoren verwalten“ und Entwickler-Zugang stehen unauffällig ganz unten.
+- **Zwei Stufen:** ♥ Sponsor (Schlüssel 1 Jahr) und ★ Sponsor Max (nur monatlich, Schlüssel 3 Monate). Läuft Max ab, gilt bis zum Ende des Sponsor-Jahres automatisch wieder „Sponsor“. Bisherige Schlüssel gelten weiter als „Sponsor“.
+- **Sponsor Max 1:** goldener Stern im Kopf, **Morgen-Briefing** (eine Meldung am Morgen zur gewählten Uhrzeit mit Sonne, günstigster Strom-Stunde, bester Startzeit der Geräte, Auto, Heizung und Fenster und Auffälligkeiten aus der Diagnose; Bausteine einzeln wählbar, optional Abend-Rückblick, „Probe senden“) und **Jahres-Poster** (dein Jahr aus Modul 1 und Gerätestrom, als Bild speichern oder in A3 drucken; Vorschau schon vor Dezember).
+- **Verwaltung (nur für dich):** Stufe pro Schlüssel, Max-Schlüssel 14 Tage und Sponsor-Schlüssel 30 Tage vor Ablauf markiert, „Verlängern“ erzeugt Folgeschlüssel und Mail-Text, auf Wunsch einmal am Tag eine Meldung in Home Assistant, wenn Schlüssel bald ablaufen.
+
+### Wichtig beim Update
+- Home Assistant neu starten und die Seite neu laden.
+- Das Morgen-Briefing ist ab Werk aus. Einschalten: Sponsor-Lounge → Deine Extras → Morgen-Briefing → Einstellen, dann einen Meldedienst wählen.
+
 ## [2026.11.2b3] - 2026-11-06
 
 Testversion für 2026.11.2: Fehlerkorrekturen.

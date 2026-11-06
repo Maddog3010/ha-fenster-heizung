@@ -819,6 +819,7 @@
     if (this._ortOpen && this._admin()) { this._ortRender(); return; }
     if (this._labOpen && this._admin()) { this._labRender(); return; }
     if (this._stOpen && this._admin()) { this._stRender(); return; }
+    if (this._loOpen) { this._lgRender(); return; }
     if (this._mdActive() !== "fh") { this._mdRender(); return; }
     const rooms = this._collect(), edit = this._edit, adm = this._admin();
     const sum = (sc, k) => rooms.reduce((a, r) => a + (r.sc[sc]?.[k] || 0), 0);

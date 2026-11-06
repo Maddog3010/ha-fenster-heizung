@@ -5,7 +5,8 @@ Ein Schlüssel ist ein kurzer Text mit digitaler Unterschrift (Ed25519). Die Int
 private Schlüssel gehört dem Entwickler und liegt nie im Repo. Wer ihn im Sponsor-Bereich einträgt, bekommt die Verwaltung.
 
 Schlüsselformat: "FH1-" + base64url(Daten als JSON) + "." + base64url(Unterschrift).
-Daten: n = Name, s = Stufe, b = gültig bis (JJJJ-MM-TT), i = Nummer, a = ausgestellt am.
+Daten: n = Name, s = Stufe (sponsor oder max), b = gültig bis (JJJJ-MM-TT), i = Nummer, a = ausgestellt am,
+sb = nur bei Max: bis wann danach noch „Sponsor“ gilt (das Sponsor-Jahr). Schlüssel ohne s gelten als „sponsor“.
 """
 from __future__ import annotations
 
@@ -37,6 +38,9 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 GRADS = ("none", "meer", "abend")
 CLOCKS = ("standard", "duenn", "kraeftig", "digital")
 SOON_DAYS = 30
+SOON_DAYS_MAX = 14
+TIERS = ("sponsor", "max")
+BADGES = ("heart", "gold")
 MAX_SPONSORS = 200
 
 
@@ -81,20 +85,31 @@ def verify_key(key: Any, today: date | None = None, revoked: set[str] | None = N
             return bad
         name = clean_name(d.get("n"))
         stufe = str(d.get("s") or "sponsor")[:16]
+        sb = str(d.get("sb") or "")
+        since = str(d.get("a") or "")
     except Exception:  # noqa: BLE001 - jede Abweichung heißt ungültig
         return bad
-    out = {"ok": True, "state": "ok", "name": name, "stufe": stufe, "bis": bis, "id": sid, "days": (until - today).days}
+    tier = stufe if stufe in TIERS else "sponsor"
+    out = {"ok": True, "state": "ok", "name": name, "stufe": stufe, "tier": tier, "bis": bis, "id": sid, "days": (until - today).days,
+           "since": since if DATE_RE.match(since) else ""}
     if revoked and sid in revoked:
         out.update(ok=False, state="revoked")
     elif until < today:
-        out.update(ok=False, state="expired")
+        # Max abgelaufen: bis zum Ende des Sponsor-Jahres gilt automatisch wieder „Sponsor“
+        if tier == "max" and DATE_RE.match(sb) and date.fromisoformat(sb) >= today:
+            out.update(tier="sponsor", bis=sb, days=(date.fromisoformat(sb) - today).days, max_ended=bis)
+        else:
+            out.update(ok=False, state="expired")
     return out
 
 
-def make_key(priv: str, name: str, bis: str, sid: str, stufe: str = "sponsor", issued: str = "") -> str:
+def make_key(priv: str, name: str, bis: str, sid: str, stufe: str = "sponsor", issued: str = "", sb: str = "") -> str:
     from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
     k = Ed25519PrivateKey.from_private_bytes(_b64d(priv[len(PRIV_PREFIX):]))
-    raw = json.dumps({"n": name, "s": stufe, "b": bis, "i": sid, "a": issued}, separators=(",", ":"), ensure_ascii=False).encode()
+    d = {"n": name, "s": stufe, "b": bis, "i": sid, "a": issued}
+    if sb:
+        d["sb"] = sb
+    raw = json.dumps(d, separators=(",", ":"), ensure_ascii=False).encode()
     return PREFIX + _b64e(raw) + "." + _b64e(k.sign(raw))
 
 
@@ -113,7 +128,7 @@ def priv_matches(priv: Any) -> bool:
 
 
 def default_prefs() -> dict[str, Any]:
-    return {"badge": True, "grad": "none", "clock": "standard", "early": False}
+    return {"badge": True, "grad": "none", "clock": "standard", "early": False, "badge_style": "gold", "name_head": False, "brief": True, "poster": True}
 
 
 def clean_prefs(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -127,7 +142,25 @@ def clean_prefs(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
         out["grad"] = raw["grad"]
     if raw.get("clock") in CLOCKS:
         out["clock"] = raw["clock"]
+    if raw.get("badge_style") in BADGES:
+        out["badge_style"] = raw["badge_style"]
+    for k in ("name_head", "brief", "poster"):
+        if isinstance(raw.get(k), bool):
+            out[k] = raw[k]
+    for k, v in default_prefs().items():
+        out.setdefault(k, v)
     return out
+
+
+def _plus_months(d: date, n: int) -> date:
+    m = d.month - 1 + n
+    y, m = d.year + m // 12, m % 12 + 1
+    for day in (d.day, 30, 29, 28):
+        try:
+            return d.replace(year=y, month=m, day=day)
+        except ValueError:
+            continue
+    return d
 
 
 def _plus_year(d: date) -> date:
@@ -147,6 +180,8 @@ class SponsorManager:
         self.remote_revoked: list[str] = []
         self.remote_ts = 0.0
         self.prefs = default_prefs()
+        self.notify_soon = False  # Verwaltung: Meldung, wenn ein Schlüssel bald abläuft
+        self._soon_day = ""
         self.dev_off = False  # Entwickler-Zugang zum Testen aus: alles wirkt wie ohne Sponsoring, die Verwaltung bleibt erreichbar
         self._unsubs: list[CALLBACK_TYPE] = []
 
@@ -158,6 +193,7 @@ class SponsorManager:
             self.priv = p if priv_matches(p) else ""
             self.prefs = clean_prefs(d.get("prefs"))
             self.dev_off = bool(d.get("dev_off", False))
+            self.notify_soon = bool(d.get("notify_soon", False))
             self.remote_revoked = [x for x in (d.get("remote_revoked") or []) if isinstance(x, str) and ID_RE.match(x)]
             self.remote_ts = float(d.get("remote_ts") or 0)
             for s in (d.get("sponsors") or [])[:MAX_SPONSORS]:
@@ -166,6 +202,7 @@ class SponsorManager:
                         "id": s["id"], "name": clean_name(s.get("name")), "bis": str(s.get("bis")), "since": str(s.get("since") or ""),
                         "note": str(s.get("note") or "")[:120], "danke": bool(s.get("danke")), "key": s["key"],
                         "revoked": bool(s.get("revoked")), "revoked_at": str(s.get("revoked_at") or ""),
+                        "stufe": s.get("stufe") if s.get("stufe") in TIERS else "sponsor", "sb": str(s.get("sb") or ""),
                     })
         self._unsubs.append(async_call_later(self.hass, 30, self._refresh_cb))
         self._unsubs.append(async_track_time_interval(self.hass, self._refresh_cb, timedelta(hours=24)))
@@ -178,11 +215,28 @@ class SponsorManager:
     def _save(self) -> None:
         self._store.async_delay_save(lambda: {
             "key": self.key, "priv": self.priv, "prefs": self.prefs, "sponsors": self.sponsors,
-            "remote_revoked": self.remote_revoked, "remote_ts": self.remote_ts, "dev_off": self.dev_off,
+            "remote_revoked": self.remote_revoked, "remote_ts": self.remote_ts, "dev_off": self.dev_off, "notify_soon": self.notify_soon,
         }, 2)
 
     # ------------------------------------------------------------ Sperrliste
+    async def _soon_check(self) -> None:
+        """Einmal am Tag: Meldung in Home Assistant, wenn Sponsor-Schlüssel bald ablaufen (nur mit Verwaltung)."""
+        today = dt_util.now().date().isoformat()
+        if not (self.priv and self.notify_soon) or self._soon_day == today:
+            return
+        self._soon_day = today
+        soon = [i for i in self.admin_list()["items"] if i["state"] == "soon"]
+        if soon:
+            txt = "\n".join(f"- {i['name']} ({'★ Max' if i['stufe'] == 'max' else '♥ Sponsor'}): bis {i['bis']}" for i in soon)
+            await self.hass.services.async_call("persistent_notification", "create", {
+                "notification_id": "fenster_heizung_sponsor_soon", "title": "Strom & Wärme: Sponsor-Schlüssel laufen bald ab",
+                "message": txt + "\n\nVerlängern: Sponsor-Lounge → Sponsoren verwalten."}, blocking=False)
+
     async def _refresh_cb(self, _now: Any = None) -> None:
+        try:
+            await self._soon_check()
+        except Exception:  # noqa: BLE001 - die Meldung ist nur ein Zusatz
+            _LOGGER.debug("Ablauf-Meldung fehlgeschlagen", exc_info=True)
         await self.async_refresh_revoked()
 
     async def async_refresh_revoked(self) -> bool:
@@ -214,10 +268,12 @@ class SponsorManager:
         st = self.status()
         active = bool(st.get("ok"))
         if not active and self.priv and not self.dev_off:
-            st = {"state": "dev", "ok": True, "name": "Entwickler", "bis": "", "days": None}
+            st = {"state": "dev", "ok": True, "name": "Entwickler", "bis": "", "days": None, "tier": "max"}
             active = True
+        tier = st.get("tier", "sponsor") if active else ""
         out: dict[str, Any] = {
-            "url": SPONSOR_URL, "state": st["state"], "active": active, "name": st.get("name", ""),
+            "url": SPONSOR_URL, "state": st["state"], "active": active, "name": st.get("name", ""), "tier": tier,
+            "since": st.get("since", ""), "max_ended": st.get("max_ended", ""), "notify_soon": self.notify_soon,
             "bis": st.get("bis", ""), "days": st.get("days"),
             "prefs": self.prefs if active else default_prefs(),
             "saved_prefs": self.prefs, "manage": bool(self.priv), "dev_off": bool(self.priv and self.dev_off),
@@ -232,7 +288,7 @@ class SponsorManager:
             return "revoked", days
         if days < 0:
             return "expired", days
-        if days <= SOON_DAYS:
+        if days <= (SOON_DAYS_MAX if s.get("stufe") == "max" else SOON_DAYS):
             return "soon", days
         return "ok", days
 
@@ -243,6 +299,7 @@ class SponsorManager:
             state, days = self._item_state(s, today)
             items.append({**s, "state": state, "days": days})
         count = {k: len([i for i in items if i["state"] == k]) for k in ("ok", "soon", "expired", "revoked")}
+        count["max"] = len([i for i in items if i.get("stufe") == "max" and i["state"] in ("ok", "soon")])
         revoked = sorted(self.revoked_ids())
         return {
             "setup": False, "items": items, "count": count,
@@ -277,6 +334,15 @@ class SponsorManager:
         self._save()
         return True
 
+    def set_notify_soon(self, on: bool) -> None:
+        self.notify_soon = bool(on)
+        self._soon_day = ""
+        self._save()
+
+    def is_max(self) -> bool:
+        snap = self.snapshot()
+        return bool(snap["active"] and snap["tier"] == "max")
+
     def set_dev_off(self, off: bool) -> None:
         self.dev_off = bool(off)
         self._save()
@@ -292,7 +358,8 @@ class SponsorManager:
             n += 1
         return f"{n:04d}"
 
-    def create(self, name: str, bis: str = "", note: str = "", danke: bool = False) -> dict[str, Any]:
+    def create(self, name: str, bis: str = "", note: str = "", danke: bool = False, stufe: str = "sponsor") -> dict[str, Any]:
+        stufe = stufe if stufe in TIERS else "sponsor"
         if not self.priv:
             return {"ok": False, "error": "no_priv"}
         name = clean_name(name)
@@ -309,14 +376,15 @@ class SponsorManager:
             except ValueError:
                 return {"ok": False, "error": "date"}
         else:
-            until = _plus_year(today)
+            until = _plus_months(today, 3) if stufe == "max" else _plus_year(today)
         if until < today:
             return {"ok": False, "error": "date"}
         sid = self._next_id()
-        key = make_key(self.priv, name, until.isoformat(), sid, issued=today.isoformat())
+        sb = _plus_year(today).isoformat() if stufe == "max" else ""
+        key = make_key(self.priv, name, until.isoformat(), sid, stufe=stufe, issued=today.isoformat(), sb=sb)
         self.sponsors.append({
             "id": sid, "name": name, "bis": until.isoformat(), "since": today.isoformat(), "note": str(note or "")[:120],
-            "danke": bool(danke), "key": key, "revoked": False, "revoked_at": "",
+            "danke": bool(danke), "key": key, "revoked": False, "revoked_at": "", "stufe": stufe, "sb": sb,
         })
         self._save()
         return {"ok": True, "id": sid, "key": key}
@@ -330,9 +398,12 @@ class SponsorManager:
             return {"ok": False, "error": "unknown"}
         today = dt_util.now().date()
         base = max(date.fromisoformat(s["bis"]), today)
-        until = _plus_year(base)
+        mx = s.get("stufe") == "max"
+        until = _plus_months(base, 3) if mx else _plus_year(base)
         s["bis"] = until.isoformat()
-        s["key"] = make_key(self.priv, s["name"], s["bis"], s["id"], issued=today.isoformat())
+        if mx and (not s.get("sb") or date.fromisoformat(s["sb"]) < until):
+            s["sb"] = _plus_year(today).isoformat()
+        s["key"] = make_key(self.priv, s["name"], s["bis"], s["id"], stufe=s.get("stufe", "sponsor"), issued=s.get("since") or today.isoformat(), sb=s.get("sb", "") if mx else "")
         self._save()
         return {"ok": True, "id": sid, "key": s["key"]}
 
