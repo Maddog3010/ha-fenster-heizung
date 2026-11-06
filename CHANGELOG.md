@@ -10,6 +10,9 @@ Testversion für 2026.11.2: Fehlerkorrekturen.
 - Modul 4 (v1.2 Build 2): „Erinnern“ meldete immer „Das hat nicht geklappt“. Die Erinnerung wird jetzt gesetzt und kommt zur Startzeit über die Meldedienste von Modul 4.
 - Einstellungen → Verlauf: „Rückgängig“ traf nicht den gewählten Eintrag.
 
+### Neu
+- **Sponsor-Bereich: Entwickler-Zugang zum Testen ausschalten.** Nur mit Entwickler-Schlüssel sichtbar: unter Sponsor-Bereich → Sponsoren verwalten → „Zum Testen“ der Schalter „Entwickler-Zugang aktiv“. Aus: Extras, Vorabversionen und Module nur für Sponsoren (z. B. Modul 19) sind gesperrt, so wie ohne Sponsoring. Die Verwaltung bleibt erreichbar, dort schaltest du ihn wieder ein. Der Zustand bleibt nach einem Neustart erhalten.
+
 ### Geändert
 - Modul 19 (v0.6 Build 2): Aktive Kacheln heben sich deutlicher von ruhenden ab – kräftigeres Licht hinter dem Bild, Linie oben und leichter Schein. Ruhende Kacheln sind matter.
 

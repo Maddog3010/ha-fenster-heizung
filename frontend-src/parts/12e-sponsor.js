@@ -43,6 +43,10 @@
       if (!key) { this._modal.err = "Bitte den Schlüssel einfügen."; this._renderModal(); return; }
       this._spnRedeem(key);
     }
+    else if (a === "spndev") {
+      const off = b.dataset.k === "off";
+      this._hass.callWS({ type: "fenster_heizung/spn_admin_act", act: "devoff", on: off }).then((r) => { const { ok, ...s } = r || {}; this._spnD = s; this._spnApply(); this._renderModal(); this._render(); this._toast(off ? "Entwickler-Zugang aus – du siehst alles wie ohne Sponsoring" : "Entwickler-Zugang wieder an"); }).catch((e) => this._toast("Das ging nicht: " + ((e && e.message) || "")));
+    }
     else if (a === "spnclr") { this._hass.callWS({ type: "fenster_heizung/spn_clear" }).then((r) => { this._spnD = r; this._spnApply(); this._renderModal(); this._render(); this._toast("Schlüssel entfernt"); }).catch(() => this._toast("Das ging nicht")); }
     else if (a === "spnbadge") this._spnPref({ badge: !this._spnS().saved_prefs.badge });
     else if (a === "spnearly") this._spnPref({ early: !this._spnS().saved_prefs.early });
@@ -192,5 +196,7 @@
       ${A.items.length ? A.items.map(item).join("") : `<div class="mut sm" style="margin:10px 0">Noch keine Sponsoren. Lege den ersten an.</div>`}
       <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="spnnew">${ic("heart", 16)} Neuer Sponsor</button><button class="btn2" data-act="spndanke" ${A.danke.length ? "" : "disabled"}>${ic("copy", 16)} Danke-Liste kopieren</button></div>
       <div class="mut sm" style="margin-top:10px">Namen, Daten und Notizen bleiben in deinem Home Assistant. Das Dashboard weist dich ${30} Tage vor Ablauf darauf hin.</div>
+      <div class="lsec" style="margin-top:16px">${ic("flask", 15)}Zum Testen</div>
+      <div class="vrow"><span>Entwickler-Zugang aktiv<small class="mut" style="display:block">Aus: Extras, Vorabversionen und Module nur für Sponsoren sind gesperrt – so wie ohne Sponsoring. Diese Verwaltung bleibt erreichbar.</small></span><button class="sw ${this._spnS().dev_off ? "" : "on"}" data-act="spndev" data-k="${this._spnS().dev_off ? "on" : "off"}" aria-pressed="${!this._spnS().dev_off}" aria-label="Entwickler-Zugang aktiv"></button></div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
   }

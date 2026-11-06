@@ -147,6 +147,7 @@ class SponsorManager:
         self.remote_revoked: list[str] = []
         self.remote_ts = 0.0
         self.prefs = default_prefs()
+        self.dev_off = False  # Entwickler-Zugang zum Testen aus: alles wirkt wie ohne Sponsoring, die Verwaltung bleibt erreichbar
         self._unsubs: list[CALLBACK_TYPE] = []
 
     async def async_start(self) -> None:
@@ -156,6 +157,7 @@ class SponsorManager:
             p = str(d.get("priv") or "")
             self.priv = p if priv_matches(p) else ""
             self.prefs = clean_prefs(d.get("prefs"))
+            self.dev_off = bool(d.get("dev_off", False))
             self.remote_revoked = [x for x in (d.get("remote_revoked") or []) if isinstance(x, str) and ID_RE.match(x)]
             self.remote_ts = float(d.get("remote_ts") or 0)
             for s in (d.get("sponsors") or [])[:MAX_SPONSORS]:
@@ -176,7 +178,7 @@ class SponsorManager:
     def _save(self) -> None:
         self._store.async_delay_save(lambda: {
             "key": self.key, "priv": self.priv, "prefs": self.prefs, "sponsors": self.sponsors,
-            "remote_revoked": self.remote_revoked, "remote_ts": self.remote_ts,
+            "remote_revoked": self.remote_revoked, "remote_ts": self.remote_ts, "dev_off": self.dev_off,
         }, 2)
 
     # ------------------------------------------------------------ Sperrliste
@@ -211,14 +213,14 @@ class SponsorManager:
     def snapshot(self, admin: bool = False) -> dict[str, Any]:
         st = self.status()
         active = bool(st.get("ok"))
-        if not active and self.priv:
+        if not active and self.priv and not self.dev_off:
             st = {"state": "dev", "ok": True, "name": "Entwickler", "bis": "", "days": None}
             active = True
         out: dict[str, Any] = {
             "url": SPONSOR_URL, "state": st["state"], "active": active, "name": st.get("name", ""),
             "bis": st.get("bis", ""), "days": st.get("days"),
             "prefs": self.prefs if active else default_prefs(),
-            "saved_prefs": self.prefs, "manage": bool(self.priv),
+            "saved_prefs": self.prefs, "manage": bool(self.priv), "dev_off": bool(self.priv and self.dev_off),
         }
         if admin and self.priv:
             out["soon"] = len([s for s in self.admin_list()["items"] if s["state"] == "soon"])
@@ -274,6 +276,10 @@ class SponsorManager:
         self.priv = p
         self._save()
         return True
+
+    def set_dev_off(self, off: bool) -> None:
+        self.dev_off = bool(off)
+        self._save()
 
     def forget_priv(self) -> None:
         self.priv = ""
