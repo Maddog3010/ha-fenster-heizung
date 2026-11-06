@@ -12,8 +12,15 @@
   <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor" src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?logo=github-sponsors&logoColor=white"></a>
 </p>
 
+<p align="center">
+  <a href="https://youtube.com/@strom_und_waerme"><img alt="YouTube-Kanal @strom_und_waerme" src="https://img.shields.io/badge/YouTube-Jetzt%20abonnieren-FF0000?style=for-the-badge&logo=youtube&logoColor=white"></a>
+  <a href="https://github.com/sponsors/Maddog3010"><img alt="Sponsor werden" src="https://img.shields.io/badge/Sponsor-werden-ea4aaa?style=for-the-badge&logo=githubsponsors&logoColor=white"></a>
+</p>
+
 <p align="center"><b>Heizung, Strom und Haus auf einer Seite in Home Assistant.</b><br>
 Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmwasser und im Auto,<br>und du siehst, woher der Strom deiner Geräte kommt. Du schaltest nur die Module ein, die du brauchst.</p>
+
+<p align="center"><a href="https://youtube.com/@strom_und_waerme"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/youtube_banner.png" width="66%" alt="YouTube-Kanal Strom &amp; Wärme: Erklärvideos, Neuheiten und Shorts – @strom_und_waerme"></a> <a href="https://github.com/sponsors/Maddog3010"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/sponsor_kachel.png" width="32%" alt="Sponsor werden über GitHub Sponsors – github.com/sponsors/Maddog3010"></a></p>
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_desktop.png" width="680" alt="Dashboard auf dem Desktop"></p>
 
@@ -24,9 +31,12 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
   <a href="#labs">Labs</a> ·
   <a href="#versionen-und-updates">Versionen</a> ·
   <a href="#sponsor-werden">Sponsor</a> ·
+  <a href="https://youtube.com/@strom_und_waerme"><b>▶️ YouTube</b></a> ·
   <a href="#häufige-fragen">Fragen</a> ·
   <a href="https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md">Änderungen</a>
 </p>
+
+> ▶️ **Neu: der YouTube-Kanal zu Strom & Wärme!** Erklärvideos zu den Modulen, Neuheiten jeder Version und Shorts. 👉 [**youtube.com/@strom_und_waerme**](https://youtube.com/@strom_und_waerme) – abonnieren und nichts verpassen.
 
 > 💗 **Kostenlos, offen und ohne Werbung, und das bleibt so.** Wenn dir die Integration hilft, freue ich mich über dein [Sponsoring](#sponsor-werden).
 
@@ -51,7 +61,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | ⚙️ | **Einstellungen** | Alles an einem Ort: Haus-Werte für alle Module, Messwerk mit allen Sensoren, Suche, Verlauf mit Rückgängig |
 | 💾 | **Sicherung** | Als Datei oder automatisch auf deinen Homeserver |
 
-📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf): 110 Seiten mit Bildern, alle Module, Datenstand 2026.11.1 (neu: Kapitel 29 „Neu in Version 2026.11.1“ ab Seite 98) · 📲 [**Tags & Karten mit dem iPhone anlernen**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf): 5 Seiten
+▶️ [**YouTube-Kanal @strom_und_waerme**](https://youtube.com/@strom_und_waerme): Erklärvideos zu den Modulen, Neuheiten jeder Version und Shorts · 📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf): 110 Seiten mit Bildern, alle Module, Datenstand 2026.11.1 (neu: Kapitel 29 „Neu in Version 2026.11.1“ ab Seite 98) · 📲 [**Tags & Karten mit dem iPhone anlernen**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf): 5 Seiten
 
 ---
 
