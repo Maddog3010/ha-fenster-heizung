@@ -18,6 +18,8 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 03-stile | CSS |
 | 04-kern | Grundgerüst der Komponente, Hilfsfunktionen |
 | 05-modul1-fenster-heizung | Modul 1: Räume, Kopfkarte, Heizung, PV-Heizer |
+| 05b-messraum, 05c-entfeuchter | Modul 1: Messraum, Luftentfeuchter |
+| 05d-grafik | Gemeinsame Grafik-Bibliothek: HD-Symbolsatz (38 Symbole), Herkunfts-Ring, Prozentzeile, „noch ~ Min.“, Zuordnung alter Symbole |
 | 06-ereignisse-raumoptionen | Ereignisse, Aktionen, Raumeinstellungen |
 | 07-assistent-diagnose | Einrichtungsassistent, Diagnose, Berichte |
 | 08-module-einstellungen-personen | Modul-System, Einstellungen, Personen & Standort |

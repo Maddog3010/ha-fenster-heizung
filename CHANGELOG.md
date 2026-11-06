@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b1] - 2026-11-06
+
+Testversion für 2026.11.2 (Woche 1 der Roadmap). Im Dashboard ändert sich noch nichts sichtbar.
+
+### Neu
+- **Gemeinsame Grafik-Bibliothek (intern):** Ein HD-Symbolsatz mit 38 Symbolen für Modul 1, 3, 4 und 19 (Heizen & Raum, Energie, Geräte), gleich gut lesbar in hell und dunkel. Dazu Bausteine für den Herkunfts-Ring am Gerätebild, die Prozentzeile Solar/Batterie/Netz und die Restzeit „noch ~ Min.“ (erst ab drei gelernten Läufen). Alte Bild- und Symbolnamen lassen sich automatisch den neuen Symbolen zuordnen. Die Module nutzen die Bibliothek ab den nächsten Testversionen. Schalter „Neue Optik“ („wie bisher“) und „Modul 19: Alte Symbole behalten“ sind vorbereitet.
+
 ## [2026.11.1] - 2026-11-05
 
 Erste stabile Version im neuen Versionsschema. Sie enthält alles aus den Testversionen 2026.1029.0b1 bis 2026.11.1b16. Die Bedienungsanleitung hat dazu das neue Kapitel 29 „Neu in Version 2026.11.1“.

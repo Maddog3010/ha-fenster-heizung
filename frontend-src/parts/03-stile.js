@@ -1239,4 +1239,10 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .tinp{width:3.1em;text-align:center;font:inherit;font-size:1rem;font-variant-numeric:tabular-nums;padding:8px 4px;border-radius:10px;border:1px solid var(--line);background:var(--primary-background-color);color:var(--primary-text-color);box-sizing:border-box}
 .tinp:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}.tinp:disabled{opacity:.55}
 .tinc{font-weight:700;color:var(--mut)}
+/* Grafik-Bibliothek 05d (HD-Symbolsatz): noch von keinem Modul genutzt */
+.gx{display:block;flex:none;--gx-sh:#000;--gx-rim:color-mix(in srgb,var(--primary-text-color,#e6edf3) 40%,transparent)}
+.gxpct{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 10px;font-size:.74rem}.gxpct span{display:inline-flex;align-items:center;gap:4px}
+.gxpct i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.gxrest{font-size:.76rem;font-weight:600;color:var(--teal);background:color-mix(in srgb,var(--teal) 16%,transparent);padding:3px 10px;border-radius:99px}
+.gxrest.learn{color:var(--mut);background:color-mix(in srgb,var(--mut) 12%,transparent);font-weight:500}
 `;
