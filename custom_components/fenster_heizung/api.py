@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 from typing import Any
@@ -41,6 +42,8 @@ from .general import clean_general
 from .options import clean_options
 from .presence import clean_presence
 from .wasser import clean_modules, clean_wasser
+
+_LOGGER = logging.getLogger(__name__)
 
 def clean_layout(raw: Any) -> dict[str, Any]:
     """Anordnung und Symbole prüfen, unbekannte Werte verwerfen."""
@@ -495,9 +498,14 @@ async def ws_get_state(hass: HomeAssistant, connection, msg: dict) -> None:
 )
 @websocket_api.async_response
 async def ws_set_layout(hass: HomeAssistant, connection, msg: dict) -> None:
-    await _layout(hass)
+    cur = await _layout(hass)
     store = hass.data[DOMAIN]
-    store["layout"] = clean_layout(msg["layout"])
+    # Schutz: Was im gesendeten Layout ganz fehlt (z. B. "mess", weil eine Seite vor dem Laden gespeichert hat), bleibt erhalten.
+    # Gelöscht wird nur, was ausdrücklich leer geschickt wird (z. B. "mess": [] nach dem Löschen des letzten Messraums).
+    raw = {**{k: v for k, v in (cur or {}).items() if k not in msg["layout"]}, **msg["layout"]}
+    store["layout"] = clean_layout(raw)
+    if len(store["layout"].get("mess") or []) < len((cur or {}).get("mess") or []):
+        _LOGGER.info("Layout: Messräume %s -> %s", len((cur or {}).get("mess") or []), len(store["layout"].get("mess") or []))
     await store["layout_store"].async_save(store["layout"])
     if store.get("wetter") is not None:
         store["wetter"]._fc_ts = 0.0  # neue Wetter-Entität: Vorhersage neu holen
@@ -723,6 +731,51 @@ async def ws_bak_restore(hass: HomeAssistant, connection, msg: dict) -> None:
     st = stores(hass).get(msg["key"])
     ok = bool(st is not None and await st.async_mark_restore(msg["i"]))
     connection.send_result(msg["id"], {"ok": ok})
+
+
+def _mess_rescue(hass: HomeAssistant) -> dict[str, Any] | None:
+    """Messräume, die im aktuellen Layout fehlen, aber in einer Sicherung des Layouts (SafeStore) stehen – die neueste zuerst."""
+    st = hass.data.get(DOMAIN, {}).get("layout_store")
+    cur = hass.data.get(DOMAIN, {}).get("layout") or {}
+    have = {m.get("id") for m in cur.get("mess") or []}
+    for snap in getattr(st, "_snaps", None) or []:
+        data = snap.get("data") if isinstance(snap, dict) else None
+        if not isinstance(data, dict):
+            continue
+        miss = [m for m in clean_mess(data.get("mess")) if m["id"] not in have]
+        if miss:
+            return {"ts": snap.get("ts"), "mess": miss, "look": {k: {m["id"]: (data.get(k) or {})[m["id"]] for m in miss if m["id"] in (data.get(k) or {})} for k in ("icons", "colors", "photos")}}
+    return None
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mess_rescue_get"})
+@websocket_api.async_response
+async def ws_mess_rescue_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    await _layout(hass)
+    r = _mess_rescue(hass)
+    connection.send_result(msg["id"], {"ts": r["ts"], "names": [m["name"] for m in r["mess"]]} if r else {"names": []})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mess_rescue"})
+@websocket_api.async_response
+async def ws_mess_rescue(hass: HomeAssistant, connection, msg: dict) -> None:
+    _who(connection)
+    cur = await _layout(hass)
+    r = _mess_rescue(hass)
+    if not r:
+        connection.send_error(msg["id"], "none", "In den Sicherungen sind keine fehlenden Messräume")
+        return
+    store = hass.data[DOMAIN]
+    lay = {**cur, "mess": list(cur.get("mess") or []) + r["mess"]}
+    for k, add in r["look"].items():
+        if add:
+            lay[k] = {**(cur.get(k) or {}), **add}
+    store["layout"] = clean_layout(lay)
+    await store["layout_store"].async_save(store["layout"])
+    _LOGGER.warning("Layout: %s Messräume aus der Sicherung vom %s zurückgeholt", len(r["mess"]), r["ts"])
+    connection.send_result(msg["id"], {"layout": store["layout"], "n": len(r["mess"])})
 
 
 @websocket_api.require_admin
@@ -1411,6 +1464,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
-        ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
+        ws_mess_rescue_get, ws_mess_rescue, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
     ):
         websocket_api.async_register_command(hass, command)

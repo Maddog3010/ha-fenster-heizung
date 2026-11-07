@@ -76,9 +76,19 @@
       <div class="msv${T && Hm ? "" : " one"}">${boxes}</div>${extra}${this._lfBox(m.id)}
       <div class="msn ${ntone}">${esc(note)}</div></div>`;
   }
+  /* Rettung: Messräume, die im Layout fehlen, aber in einer automatischen Sicherung stehen (fenster_heizung/mess_rescue_get) */
+  _msRescueLoad() {
+    this._hass.callWS({ type: "fenster_heizung/mess_rescue_get" }).then((r) => { this._msRes = r && r.names && r.names.length ? r : null; this._render(); }).catch(() => { this._msRes = null; });
+  }
+  _msRescueBox() {
+    const R = this._msRes; if (!R || !this._admin()) return "";
+    const d = R.ts ? new Date(R.ts).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+    return `<div class="card msres"><span class="gico">${ic("alert", 18)}</span><div><b>${R.names.length === 1 ? "Ein Messraum fehlt" : `${R.names.length} Messräume fehlen`}</b><span>${esc(R.names.join(", "))} ${R.names.length === 1 ? "steht" : "stehen"} noch in der automatischen Sicherung${d ? ` vom ${esc(d)}` : ""}. Zurückholen übernimmt auch Symbol, Farbe und Foto – alles andere bleibt, wie es ist.</span></div>
+      <div class="gbtns"><button class="btn2 pri" data-act="msxrescue">${ic("check", 16)} Zurückholen</button><button class="btn2" data-act="msxrescueno">Nicht jetzt</button></div></div>`;
+  }
   _msSection() {
-    const L = this._msList(); if (!L.length) return "";
-    return `<div class="msh"><span class="gico">${ic("thermo", 18)}</span><div><b>Messräume</b><span>${L.length} ${L.length === 1 ? "Raum" : "Räume"} · nur Temperatur und Luftfeuchte, es wird nichts gesteuert</span></div></div>
+    const L = this._msList(); if (!L.length) return this._msRescueBox();
+    return `${this._msRescueBox()}<div class="msh"><span class="gico">${ic("thermo", 18)}</span><div><b>Messräume</b><span>${L.length} ${L.length === 1 ? "Raum" : "Räume"} · nur Temperatur und Luftfeuchte, es wird nichts gesteuert</span></div></div>
       <div class="rooms msg">${L.map((m) => this._msCard(m)).join("")}</div>`;
   }
   /* Vorschläge: Bereiche in Home Assistant mit Temperatur- oder Feuchtesensor, aber ohne Thermostat und noch ohne Raum */
@@ -160,6 +170,12 @@
   _msAct(a, b) {
     const M = this._modal;
     if (a === "msxadd") { this._msOpen(null); return; }
+    if (a === "msxrescueno") { this._msRes = null; this._render(); return; }
+    if (a === "msxrescue") {
+      this._hass.callWS({ type: "fenster_heizung/mess_rescue" }).then((r) => { if (r && r.layout) this._cfg.layout = { ...this._cfg.layout, ...r.layout }; this._msRes = null; this._toast(`${(r && r.n) || 0} ${r && r.n === 1 ? "Messraum" : "Messräume"} zurückgeholt`); this._render(); })
+        .catch((e) => this._toast((e && e.message) || "Zurückholen hat nicht geklappt"));
+      return;
+    }
     if (a === "msxedit") { this._msOpen(b.dataset.id); return; }
     if (a === "msxwz") { const s = this._msSug()[+b.dataset.i]; if (s) this._msAddFromSug(s); this._renderModal(); return; }
     if (!M || M.type !== "msx") return;

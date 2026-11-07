@@ -43,8 +43,15 @@ class FensterHeizungPanel extends HTMLElement {
       this._gen.wxadj = { on: false, mild: 12, down: 1, frost: 0, up: 1, ...(this._gen.wxadj || {}) };
       this._gen.pv = { ...PVDEF, ...(this._gen.pv || {}) };
       this._mdApply(r);
-    } catch (e) { /* älteres Backend: Standardwerte */ }
+      this._cfgOk = true; this._cfgTry = 0;
+    } catch (e) {
+      /* Laden fehlgeschlagen (z. B. Home Assistant startet gerade neu): Standardwerte nur anzeigen, nie speichern – sonst würden
+         Messräume, Gruppen, Farben und Fotos mit leeren Werten überschrieben. Nach kurzer Zeit neu versuchen. */
+      this._cfgOk = false; this._cfgTry = (this._cfgTry || 0) + 1;
+      if (this._cfgTry <= 6) setTimeout(() => { if (!this._cfgOk && this._hass) this._load(); }, 5000 * this._cfgTry);
+    }
     this._cfgReady = true;
+    if (this._cfgOk && this._admin()) this._msRescueLoad();
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
@@ -52,7 +59,9 @@ class FensterHeizungPanel extends HTMLElement {
     this._render();
   }
   _admin() { return !!(this._hass && this._hass.user && this._hass.user.is_admin); }
-  _saveLayout() { this._hass.callWS({ type: "fenster_heizung/set_layout", layout: this._cfg.layout }).then(() => this._hsPoll()).catch(() => this._toast("Layout konnte nicht gespeichert werden")); }
+  _saveLayout() {
+    if (!this._cfgOk) { this._toast("Einstellungen werden noch geladen – bitte gleich noch einmal"); if (this._hass) this._load(); return; }
+    this._hass.callWS({ type: "fenster_heizung/set_layout", layout: this._cfg.layout }).then(() => this._hsPoll()).catch(() => this._toast("Layout konnte nicht gespeichert werden")); }
   _toast(msg) {
     const t = this.shadowRoot.getElementById("toast"); if (!t) return;
     t.innerHTML = `<div class="toast">${esc(msg)}</div>`; clearTimeout(this._tt);

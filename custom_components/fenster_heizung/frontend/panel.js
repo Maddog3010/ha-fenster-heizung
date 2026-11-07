@@ -2081,6 +2081,7 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .lgtag{position:absolute;top:10px;right:10px;font-style:normal;font-size:.62rem;font-weight:800;letter-spacing:.5px;border-radius:99px;padding:2px 8px;color:var(--mut);background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.lgtag.neu{color:#d97706;background:color-mix(in srgb,#fbbf24 18%,transparent)}.lgtag.mx{color:#d97706;background:color-mix(in srgb,#fbbf24 22%,transparent)}
 .spnstar.sun{color:#f59e0b}.spnstar.snow{color:#38bdf8}
 .lgn .lgtop,.lgn .lg3,.lgn .lg2{grid-template-columns:1fr}.lgn .lghero,.lgn .lghero.out{grid-template-columns:1fr;padding:16px}.lgn .lghr{order:-1;aspect-ratio:2/1}.lgn .lghl h2{font-size:1.4rem}.lgn .lgget{grid-template-columns:repeat(2,minmax(0,1fr))}.lgn .lgtiers{grid-template-columns:1fr}
+.msres{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:14px 0;padding:14px 16px;box-shadow:inset 0 0 0 1px color-mix(in srgb,#f59e0b 45%,transparent)}.msres>div:nth-child(2){flex:1 1 260px;display:flex;flex-direction:column;gap:3px}.msres>div:nth-child(2) span{font-size:.84rem;color:var(--mut)}.msres .gico{color:#f59e0b}.msres .gbtns{margin:0}.msres .gbtns .btn2{flex:none;min-width:0}
 .lgfoot{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:22px 0 8px;font-size:.74rem;color:var(--mut)}.lgfoot .lnk{font-size:.74rem;opacity:.7}
 .lgexd{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}.lgexd p{margin:0;font-size:.92rem;line-height:1.45}
 .lgposter{background:#0b0e12;border-radius:14px;padding:10px}
@@ -2138,8 +2139,15 @@ class FensterHeizungPanel extends HTMLElement {
       this._gen.wxadj = { on: false, mild: 12, down: 1, frost: 0, up: 1, ...(this._gen.wxadj || {}) };
       this._gen.pv = { ...PVDEF, ...(this._gen.pv || {}) };
       this._mdApply(r);
-    } catch (e) { /* älteres Backend: Standardwerte */ }
+      this._cfgOk = true; this._cfgTry = 0;
+    } catch (e) {
+      /* Laden fehlgeschlagen (z. B. Home Assistant startet gerade neu): Standardwerte nur anzeigen, nie speichern – sonst würden
+         Messräume, Gruppen, Farben und Fotos mit leeren Werten überschrieben. Nach kurzer Zeit neu versuchen. */
+      this._cfgOk = false; this._cfgTry = (this._cfgTry || 0) + 1;
+      if (this._cfgTry <= 6) setTimeout(() => { if (!this._cfgOk && this._hass) this._load(); }, 5000 * this._cfgTry);
+    }
     this._cfgReady = true;
+    if (this._cfgOk && this._admin()) this._msRescueLoad();
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
@@ -2147,7 +2155,9 @@ class FensterHeizungPanel extends HTMLElement {
     this._render();
   }
   _admin() { return !!(this._hass && this._hass.user && this._hass.user.is_admin); }
-  _saveLayout() { this._hass.callWS({ type: "fenster_heizung/set_layout", layout: this._cfg.layout }).then(() => this._hsPoll()).catch(() => this._toast("Layout konnte nicht gespeichert werden")); }
+  _saveLayout() {
+    if (!this._cfgOk) { this._toast("Einstellungen werden noch geladen – bitte gleich noch einmal"); if (this._hass) this._load(); return; }
+    this._hass.callWS({ type: "fenster_heizung/set_layout", layout: this._cfg.layout }).then(() => this._hsPoll()).catch(() => this._toast("Layout konnte nicht gespeichert werden")); }
   _toast(msg) {
     const t = this.shadowRoot.getElementById("toast"); if (!t) return;
     t.innerHTML = `<div class="toast">${esc(msg)}</div>`; clearTimeout(this._tt);
@@ -3208,9 +3218,19 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="msv${T && Hm ? "" : " one"}">${boxes}</div>${extra}${this._lfBox(m.id)}
       <div class="msn ${ntone}">${esc(note)}</div></div>`;
   }
+  /* Rettung: Messräume, die im Layout fehlen, aber in einer automatischen Sicherung stehen (fenster_heizung/mess_rescue_get) */
+  _msRescueLoad() {
+    this._hass.callWS({ type: "fenster_heizung/mess_rescue_get" }).then((r) => { this._msRes = r && r.names && r.names.length ? r : null; this._render(); }).catch(() => { this._msRes = null; });
+  }
+  _msRescueBox() {
+    const R = this._msRes; if (!R || !this._admin()) return "";
+    const d = R.ts ? new Date(R.ts).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+    return `<div class="card msres"><span class="gico">${ic("alert", 18)}</span><div><b>${R.names.length === 1 ? "Ein Messraum fehlt" : `${R.names.length} Messräume fehlen`}</b><span>${esc(R.names.join(", "))} ${R.names.length === 1 ? "steht" : "stehen"} noch in der automatischen Sicherung${d ? ` vom ${esc(d)}` : ""}. Zurückholen übernimmt auch Symbol, Farbe und Foto – alles andere bleibt, wie es ist.</span></div>
+      <div class="gbtns"><button class="btn2 pri" data-act="msxrescue">${ic("check", 16)} Zurückholen</button><button class="btn2" data-act="msxrescueno">Nicht jetzt</button></div></div>`;
+  }
   _msSection() {
-    const L = this._msList(); if (!L.length) return "";
-    return `<div class="msh"><span class="gico">${ic("thermo", 18)}</span><div><b>Messräume</b><span>${L.length} ${L.length === 1 ? "Raum" : "Räume"} · nur Temperatur und Luftfeuchte, es wird nichts gesteuert</span></div></div>
+    const L = this._msList(); if (!L.length) return this._msRescueBox();
+    return `${this._msRescueBox()}<div class="msh"><span class="gico">${ic("thermo", 18)}</span><div><b>Messräume</b><span>${L.length} ${L.length === 1 ? "Raum" : "Räume"} · nur Temperatur und Luftfeuchte, es wird nichts gesteuert</span></div></div>
       <div class="rooms msg">${L.map((m) => this._msCard(m)).join("")}</div>`;
   }
   /* Vorschläge: Bereiche in Home Assistant mit Temperatur- oder Feuchtesensor, aber ohne Thermostat und noch ohne Raum */
@@ -3292,6 +3312,12 @@ class FensterHeizungPanel extends HTMLElement {
   _msAct(a, b) {
     const M = this._modal;
     if (a === "msxadd") { this._msOpen(null); return; }
+    if (a === "msxrescueno") { this._msRes = null; this._render(); return; }
+    if (a === "msxrescue") {
+      this._hass.callWS({ type: "fenster_heizung/mess_rescue" }).then((r) => { if (r && r.layout) this._cfg.layout = { ...this._cfg.layout, ...r.layout }; this._msRes = null; this._toast(`${(r && r.n) || 0} ${r && r.n === 1 ? "Messraum" : "Messräume"} zurückgeholt`); this._render(); })
+        .catch((e) => this._toast((e && e.message) || "Zurückholen hat nicht geklappt"));
+      return;
+    }
     if (a === "msxedit") { this._msOpen(b.dataset.id); return; }
     if (a === "msxwz") { const s = this._msSug()[+b.dataset.i]; if (s) this._msAddFromSug(s); this._renderModal(); return; }
     if (!M || M.type !== "msx") return;

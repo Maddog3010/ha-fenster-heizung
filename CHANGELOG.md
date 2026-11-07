@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b7] - 2026-11-07
+
+### Behoben
+- **Modul 1 Messräume verschwunden:** Konnte das Dashboard beim Öffnen die Einstellungen nicht laden (zum Beispiel während Home Assistant neu startet oder die App aus dem Hintergrund kommt), lief es mit leeren Standardwerten weiter. Die nächste Änderung am Aussehen (zum Beispiel ein Lab-Schalter) speicherte dann diese leeren Werte – die Messräume waren weg. Jetzt wird erst gespeichert, wenn die Einstellungen wirklich geladen sind; das Laden wird automatisch wiederholt.
+- **Zusätzlicher Schutz im Backend:** Fehlt im gesendeten Layout ein Teil ganz (zum Beispiel die Messräume), bleibt der gespeicherte Stand erhalten.
+
+### Neu
+- **Messräume zurückholen:** Fehlen Messräume, die noch in der automatischen Sicherung stehen, zeigt Modul 1 einen Hinweis mit „Zurückholen“ – mit Symbol, Farbe und Foto, ohne Neustart. Alles andere bleibt, wie es ist.
+
 ## [2026.11.2b6] - 2026-11-06
 
 ### Behoben
