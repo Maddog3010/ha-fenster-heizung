@@ -1333,6 +1333,12 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .spnstar.sun{color:#f59e0b}.spnstar.snow{color:#38bdf8}
 .lgn .lgtop,.lgn .lg3,.lgn .lg2{grid-template-columns:1fr}.lgn .lghero,.lgn .lghero.out{grid-template-columns:1fr;padding:16px}.lgn .lghr{order:-1;aspect-ratio:2/1}.lgn .lghl h2{font-size:1.4rem}.lgn .lgget{grid-template-columns:repeat(2,minmax(0,1fr))}.lgn .lgtiers{grid-template-columns:1fr}
 .msres{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:14px 0;padding:14px 16px;box-shadow:inset 0 0 0 1px color-mix(in srgb,#f59e0b 45%,transparent)}.msres>div:nth-child(2){flex:1 1 260px;display:flex;flex-direction:column;gap:3px}.msres>div:nth-child(2) span{font-size:.84rem;color:var(--mut)}.msres .gico{color:#f59e0b}.msres .gbtns{margin:0}.msres .gbtns .btn2{flex:none;min-width:0}
+.s3row{margin-top:12px}.s3h{display:flex;align-items:center;gap:10px;margin-bottom:8px}.s3h svg{flex:none;width:34px;height:34px}.s3h>span{flex:1;min-width:0;display:flex;flex-direction:column}.s3h b{font-size:.98rem}.s3h small{font-size:.74rem;color:var(--mut)}
+.s3tip{display:flex;align-items:center;gap:10px;margin-top:6px;padding:9px 12px;border-radius:12px;font-size:.84rem;line-height:1.35;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);box-shadow:inset 3px 0 0 var(--c)}.s3tip svg{flex:none;width:26px;height:26px}
+.s3sum{margin-top:10px;font-size:.84rem;font-weight:700;color:#10b981}.s3learn{display:flex;gap:10px;align-items:center;font-size:.84rem;color:var(--mut);padding:8px 0}
+.s3rep{border-radius:14px;overflow:hidden;background:#0b1220}.s3scn{aspect-ratio:400/150}.s3n{display:grid;grid-template-columns:repeat(3,1fr);padding:10px 8px 12px;text-align:center}.s3n b{display:block;font-size:1.3rem;font-weight:800}.s3n small{font-size:.72rem;color:#9aa7b4}
+.lgbtns .lgopen{margin-left:0}.lgopen.gy{color:var(--primary-text-color);background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}
+.lgpoll span{display:flex;justify-content:space-between;gap:8px}.lgpoll span b{font-weight:700}.lgpoll i b{background:color-mix(in srgb,#ec4899 55%,transparent)}.lgpoll.top i b{background:#ec4899}
 .lgfoot{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:22px 0 8px;font-size:.74rem;color:var(--mut)}.lgfoot .lnk{font-size:.74rem;opacity:.7}
 .lgexd{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}.lgexd p{margin:0;font-size:.92rem;line-height:1.45}
 .lgposter{background:#0b0e12;border-radius:14px;padding:10px}

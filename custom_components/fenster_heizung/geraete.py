@@ -25,6 +25,8 @@ MAX_DT_S = 600.0
 FC_REFRESH_S = 600.0  # Stundenprognose für die Startempfehlung alle 10 Minuten neu holen
 
 
+RLOG_KEEP = 200  # Läufe für den Energie-Coach (etwa die letzten Wochen)
+
 class GeraeteManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
@@ -40,6 +42,7 @@ class GeraeteManager:
         self.durs: dict[str, list[float]] = {}  # v1.2: Laufzeiten (s) der letzten Läufe je Gerät
         self.remind: dict[str, float] = {}  # v1.2: Erinnerung „jetzt starten“ je Gerät (Unix-Zeit)
         self._rem_unsub: dict[str, CALLBACK_TYPE] = {}
+        self.rlog: list[dict[str, Any]] = []  # S3: die letzten Läufe mit Startzeit und Netzanteil (für den Energie-Coach)
         self._fc: dict[int, float] = {}  # Stundenbeginn → erwartete Solarerzeugung (Wh)
         self._fc_ts = 0.0
 
@@ -78,6 +81,7 @@ class GeraeteManager:
         for k, v in durs.items():
             if isinstance(v, list):
                 self.durs[str(k)] = [float(x) for x in v if isinstance(x, (int, float)) and x > 0][-RUNS_KEEP:]
+        self.rlog = [r for r in (saved.get("rlog") or []) if isinstance(r, dict) and isinstance(r.get("t"), (int, float))][-RLOG_KEEP:]
         rem = saved.get("remind") if isinstance(saved.get("remind"), dict) else {}
         for k, v in rem.items():
             if isinstance(v, (int, float)) and v > time.time():
@@ -94,7 +98,7 @@ class GeraeteManager:
         self._rem_unsub.clear()
 
     def _save(self) -> None:
-        self._store.async_delay_save(lambda: {"days": self.days, "last": self.last, "typ": self.typ, "durs": self.durs, "remind": self.remind}, 30)
+        self._store.async_delay_save(lambda: {"days": self.days, "last": self.last, "typ": self.typ, "durs": self.durs, "remind": self.remind, "rlog": self.rlog}, 30)
 
     async def async_config_changed(self) -> None:
         ids = {d["id"] for d in self._cfg()["devices"]}
@@ -211,6 +215,7 @@ class GeraeteManager:
         self.typ[did] = max(kwh * 3600 * 1000 / dur, 0.0)
         self.durs[did] = (self.durs.get(did, []) + [round(dur)])[-RUNS_KEEP:]
         ts = dt_util.now().isoformat(timespec="seconds")
+        self.rlog = (self.rlog + [{"d": did, "n": dev["name"], "t": int(run["start"]), "kwh": round(kwh, 3), "g": round(run["e"][2], 3), "c": round(run["cost"], 3)}])[-RLOG_KEEP:]
         self.last[did] = {"cost": round(run["cost"], 4), "kwh": round(kwh, 4), "share": round(share, 1), "saved": round(run["saved"], 4), "ts": ts}
         data = {"device": dev["name"], "id": did, "kwh": round(kwh, 3), "cost": round(run["cost"], 2), "saved": round(run["saved"], 2), "share": round(share)}
         self.hass.bus.async_fire("geraetestrom_run_finished", data)

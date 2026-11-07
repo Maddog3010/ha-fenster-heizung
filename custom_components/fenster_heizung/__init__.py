@@ -399,6 +399,15 @@ class WindowController:
                 total += self._kwh_history.get(day, secs / 3600 * fixed)
         return total + extra
 
+    def kwh_prefix(self, prefix: str) -> float:
+        """Eingesparte Wärme (kWh) für einen Monat „JJJJ-MM“ aus den Tageswerten (S3 Monatsbericht); laufender Tag inklusive."""
+        now = self._roll()
+        fixed = self._fixed_kw()
+        total = sum(self._kwh_history.get(d, secs / 3600 * fixed) for d, secs in self._history.items() if d.startswith(prefix))
+        if now.strftime("%Y-%m") == prefix:
+            total += self._kwh
+        return total
+
     def minutes_history(self, days: int = 13) -> dict[str, float]:
         """Pausenminuten der letzten abgeschlossenen Tage (für das Dashboard)."""
         self._roll()
@@ -1272,6 +1281,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "sponsor" not in store:
         store["sponsor"] = SponsorManager(hass)
         await store["sponsor"].async_start()
+    if "coach" not in store:
+        from .coach import CoachManager
+        store["coach"] = CoachManager(hass)
+        await store["coach"].async_start()
     if "briefing" not in store:
         from .briefing import BriefingManager
         store["briefing"] = BriefingManager(hass)
@@ -1347,6 +1360,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             spn = hass.data.get(DOMAIN, {}).pop("sponsor", None)
             if spn is not None:
                 spn.async_stop()
+            cch = hass.data.get(DOMAIN, {}).pop("coach", None)
+            if cch is not None:
+                cch.async_stop()
             brf = hass.data.get(DOMAIN, {}).pop("briefing", None)
             if brf is not None:
                 brf.async_stop()

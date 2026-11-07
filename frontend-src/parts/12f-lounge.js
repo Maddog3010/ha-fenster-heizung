@@ -29,6 +29,7 @@
     const sr = this.shadowRoot, mainEl = sr.getElementById("main"), s = this._spnS(), adm = this._admin();
     if (!this._gsD && this._gsLoad) this._gsLoad();
     if (s.active && this._lgMax()) this._lgBLoad();
+    if (s.active) this._s3Load();
     const sw = (act, on, label, k = "", dis = false) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" ${k ? `data-k="${k}"` : ""} aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm && !dis ? "" : "disabled"}></button>`;
     const foot = `<div class="lgfoot">${adm && s.active ? `<button class="lnk" data-act="spnkeydlg">Schlüssel ändern</button>` : ""}${adm && s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Sponsoren verwalten</button>` : ""}${adm && !s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Entwickler-Zugang</button>` : ""}</div>`;
     const dev = s.state === "dev", mx = s.tier === "max";
@@ -61,7 +62,7 @@
       dev ? "Entwickler-Zugang: alle Extras und Max sind frei" : s.max_ended ? `Max ist am ${esc(this._spnDate(s.max_ended))} ausgelaufen, Sponsor gilt weiter` : mx ? "Sponsor Max mit Morgen-Briefing und Jahres-Poster" : ""].filter(Boolean).join(" · ");
     const renew = !dev && s.days != null && s.days <= (mx ? 14 : 30) ? `<a class="btn2 ${mx ? "lggold" : "lgpk"}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${mx ? "★ Max verlängern" : "♥ Verlängern"}</a>` : "";
     const b1 = `<div class="lghero ${mx ? "mx" : ""}"><div class="lghl"><small class="lghi">${first ? `Hallo ${esc(first)} ` : "Hallo "}${mx ? `<span class="lggd">★</span>` : "♥"}</small><h2>Danke, dass du Strom &amp; Wärme trägst.</h2><p>${sub}</p>
-      <div class="lgbtns">${renew}<button class="btn2 ${renew ? "" : "lgpk"}" data-act="lgxgo" data-k="lgnew">Was ist neu?</button><button class="btn2" data-act="lgxgo" data-k="lgwish">Wunsch des Monats</button></div></div><div class="lghr">${this._lgScene(mx)}</div></div>`;
+      <div class="lgbtns">${renew}<button class="btn2 ${renew ? "" : "lgpk"}" data-act="lgxgo" data-k="lgnew">Was ist neu?</button><button class="btn2" data-act="lgxgo" data-k="lgwish">${this._s3W && this._s3W.url ? "Jetzt abstimmen" : "Wunsch des Monats"}</button></div></div><div class="lghr">${this._lgScene(mx)}</div></div>`;
     const row = (icon, t, subt, ctl) => `<div class="lgit">${icon}<span class="n">${t}<small>${subt}</small></span>${ctl}</div>`;
     const gi = (k) => `<span class="lgg">${this._gx(k, 30, { on: true, lvl: 80 })}</span>`;
     const opn = (act, t = "Öffnen") => `<button class="lgopen" data-act="${act}">${t}</button>`;
@@ -70,7 +71,9 @@
       ...(mx ? [row(gi("sun"), "Morgen-Briefing", bc.on ? `jeden Morgen um ${esc(bc.time || "06:30")}` : "★ Max · eine Meldung am Morgen", opn("lgxbrief", "Einstellen")), row(gi("house"), `Jahres-Poster ${yr}`, dez ? "fertig · als Bild teilen" : "ab 1. Dezember · Vorschau schon jetzt", opn("lgxposter", dez ? "Öffnen" : "Vorschau"))] : []),
     ];
     if (!nw.early.length) nItems.push(row(gi("forecast"), "Vorabversionen zuerst", P.early ? "an · neue Labs siehst du hier 14 Tage vor allen" : "neue Labs 14 Tage vor allen anderen", sw("spnearly", P.early, "Vorabversionen")));
-    nItems.push(row(gi("price"), "Monatsbericht", "„Dein Haus im Monat“ als Bild · kommt mit Stufe S3", `<em class="lgsoon">bald</em>`));
+    const RP = this._s3R && this._s3R[-1];
+    if (P.report !== false && RP && (RP.pv || RP.oil || RP.sv)) nItems.unshift(row(gi("house"), `Monatsbericht ${esc(RP.mon)}`, "fertig · als Bild teilen", opn("lgxrep\" data-k=\"-1", "Öffnen")));
+    if (P.coach !== false && this._s3C && this._s3C.tips && this._s3C.tips.length) nItems.unshift(row(gi("pvRoof"), "Energie-Coach", `${this._s3C.tips.length} ${this._s3C.tips.length === 1 ? "Tipp" : "Tipps"} für diese Woche`, opn("lgxgo\" data-k=\"lgcoach", "Ansehen")));
     const b2 = `<div class="lgt lgnew" id="lgnew" style="--c:#fbbf24"><h4>Neu für dich – vor allen anderen</h4>${nItems.slice(0, 4).join("")}</div>`;
     const seg = (act, cur, opts) => `<span class="gschs">${opts.map(([k, t]) => `<button class="gsch ${String(cur) === String(k) ? "sel" : ""}" data-act="${act}" data-k="${k}">${t}</button>`).join("")}</span>`;
     const li = (t, ctl, small = "") => `<div class="lgli"><span><span>${t}</span>${small ? `<small>${small}</small>` : ""}</span>${ctl}</div>`;
@@ -81,12 +84,8 @@
       ${li("Farbverlauf im Kopf", seg("spngrad", P.grad, [["none", "Aus"], ["meer", "Meer"], ["abend", "Abend"]]))}
       ${li("Uhr-Stil im Ruhemodus", seg("spnclk", P.clock, [["standard", "Std."], ["duenn", "Dünn"], ["kraeftig", "Kräftig"], ["digital", "Digital"]]))}
       ${mx ? li(`Morgen-Briefing <span class="lggd">★</span>`, sw("lgxbon1", !!bc.on, "Morgen-Briefing", "", !B || !B.cfg)) : ""}
-      ${soon("Energie-Coach")}${soon("Wohnklima-Zeugnis")}${soon("Heizkosten je Raum")}${soon("Wand-Tablet-Extras")}</div>`;
-    const mon = new Date().toLocaleDateString("de-DE", { month: "long" });
-    const wish = ["Gartenplan früher (Modul 10)", "Einkaufsliste im Tablet-Modus", "Pool nach Strompreis", "Saugroboter nach Abwesenheit"];
-    const b4a = `<div class="lgt" id="lgwish" style="--c:#f472b6"><h4>Wunsch des Monats · ${esc(mon)}</h4>${wish.map((w) => `<div class="lgpoll"><span>${esc(w)}</span><i><b style="width:0"></b></i></div>`).join("")}
-      <div class="lgnote2">Abstimmen kommt mit Stufe S3 – dann siehst du hier den Stand, der Gewinner kommt in die Roadmap. Bis dahin: Wunsch einfach per Mail.</div>
-      <div class="lgbtns"><em class="lgsoon">bald</em><a class="lgopen" href="mailto:${SPN_MAIL}?subject=${encodeURIComponent("Wunsch für Strom & Wärme")}" style="text-decoration:none">Wunsch per Mail</a></div></div>`;
+      ${li("Energie-Coach", sw("lgxcoach", P.coach !== false, "Energie-Coach"))}${li("Monatsbericht", sw("lgxreport", P.report !== false, "Monatsbericht"))}${soon("Wohnklima-Zeugnis")}${soon("Heizkosten je Raum")}${soon("Wand-Tablet-Extras")}</div>`;
+    const b4a = this._s3WishCard(this._s3W, mx || dev);
     const st = P.badge ? (P.badge_style === "gold" && !mx ? "heart" : P.badge_style) : "off";
     const bd = [["heart", "♥", "Herz", "#f472b6"], ["gold", "★", mx ? "Goldener Stern" : "Goldener Stern · nur Max", "#fbbf24"], ["sun", "☀", "Sonne", "#fbbf24"], ["snow", "❄", "Schneeflocke", "#38bdf8"]];
     const b4b = `<div class="lgt" style="--c:#a78bfa"><h4>Dein Abzeichen</h4><div class="lgbadges">${bd.map(([k, g, t, c]) => `<button class="lgbd ${st === k ? "sel" : ""} ${k === "gold" && !mx ? "lock" : ""}" style="--c:${c}" data-act="lgxbadge" data-k="${k}" aria-pressed="${st === k}" aria-label="${t}" title="${t}" ${this._admin() && (k !== "gold" || mx) ? "" : "disabled"}>${g}</button>`).join("")}</div>
@@ -94,7 +93,7 @@
       ${li("Name im Kopf zeigen", sw("lgxname", P.name_head, "Name im Kopf"), first ? `„Hallo ${esc(first)}“ statt „Sponsor“` : "")}
       ${li("In der Danke-Liste (README) nennen", sw("lgxthanks", P.thanks, "Danke-Liste"), P.thanks ? "freiwillig · Bescheid per Mail ist vorbereitet" : "freiwillig")}</div>`;
     const up = mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Morgen-Briefing aufs Handy, Jahres-Poster und goldener Stern – nur monatlich, Schlüssel 3 Monate.</small></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`;
-    return `<div class="lgtop">${b1}${b2}</div><div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
+    return `<div class="lgtop">${b1}${b2}</div><div class="lg2 s3row">${this._s3CoachCard(this._s3C, P.coach !== false)}${this._s3ReportCard(this._s3R && this._s3R[-1], P.report !== false)}</div><div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
   }
   /* ---- ohne Schlüssel: A1 Botschaft, A2 Ersparnis, A3 drei Schritte, A4 Extras als Kacheln ---- */
   _lgOut(s) {
@@ -112,8 +111,8 @@
       ${step(3, "Schlüssel einfügen", "Extras sofort an", adm ? ["button", `data-act="spnkeydlg"`] : null)}</div></div>`;
     const T = [["bolt", "Hausfluss (Modul 19)", "Dein Haus als Fluss-Bild mit HD-Bildern", "neu", "ef", "#2dd4bf"], ["forecast", "Vorabversionen", "Neue Funktionen 14 Tage vor allen", "", "early", "#38bdf8"],
       ["sun", "Morgen-Briefing", "Dein Tag jeden Morgen aufs Handy", "max", "brief", "#fbbf24"], ["house", "Jahres-Poster", "Dein Jahr als Poster zum Drucken", "max", "poster", "#fbbf24"],
-      ["lamp", "Uhr-Stile & Verläufe", "Für Kopf und Tablet-Ruhemodus", "", "look", "#a78bfa"], ["euro", "Energie-Coach", "Jeden Montag 3 Tipps mit Euro-Betrag", "bald", "coach", "#fbbf24"],
-      ["price", "Monatsbericht", "„Dein Haus im Monat“ als Bild", "bald", "report", "#2dd4bf"], ["person", "Wunsch des Monats", "Abstimmen, was als Nächstes kommt", "bald", "wish", "#f472b6"]];
+      ["lamp", "Uhr-Stile & Verläufe", "Für Kopf und Tablet-Ruhemodus", "", "look", "#a78bfa"], ["pvRoof", "Energie-Coach", "Jeden Montag 3 Tipps mit Euro-Betrag", "neu", "coach", "#fbbf24"],
+      ["house", "Monatsbericht", "„Dein Haus im Monat“ als Bild zum Teilen", "neu", "report", "#2dd4bf"], ["person", "Wunsch des Monats", "Abstimmen, was als Nächstes kommt", "neu", "wish", "#f472b6"]];
     const tag = (t) => t === "neu" ? `<em class="lgtag neu">NEU</em>` : t === "max" ? `<em class="lgtag mx">★ MAX</em>` : t === "bald" ? `<em class="lgtag">BALD</em>` : "";
     const a4 = `<div class="lgh4" id="lgget">Was du bekommst – Auswahl</div><div class="lgget">${T.map(([k, t, sub, tg, id, c]) => `<button class="lgxt2" style="--c:${c}" data-act="lgxex" data-k="${id}">${tag(tg)}${this._gx(k, 36, { on: true, lvl: 80 })}<b>${esc(t)}</b><small>${sub}</small></button>`).join("")}</div>`;
     const tiers = `<div class="lgtiers"><div class="lgt"><b>♥ Sponsor</b><small>einmalig oder monatlich · Schlüssel 1 Jahr · alle Extras, Vorabversionen, Hausfluss</small></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max</b><small>nur monatlich · Schlüssel 3 Monate · zusätzlich Morgen-Briefing, Jahres-Poster, goldener Stern</small></div></div>`;
@@ -122,6 +121,7 @@
   /* ---- Aktionen ---- */
   _lgAct(a, b) {
     const k = b.dataset.k, B = this._lgB;
+    if (this._s3Act(a, b)) return;
     if (a === "lgxback") { this._loOpen = false; this._render(); return; }
     if (a === "lgxa2") { try { localStorage.setItem("fh_lg_a2", "1"); } catch (_) { /* egal */ } this._render(); return; }
     if (a === "lgxname") { this._spnPref({ name_head: !this._spnS().saved_prefs.name_head }); return; }
@@ -153,7 +153,9 @@
     const m = this._modal, close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`, adm = this._admin();
     const wrap = (t, sub, body, wide = true) => `<div class="ov" data-act="close"></div><div class="sheet ${wide ? "wide" : ""}" role="dialog" aria-modal="true"><div class="sh"><div><b>${t}</b><span>${sub}</span></div>${close}</div>${body}</div>`;
     if (m.type === "lgex") {
-      const X = { ef: ["bolt", "Hausfluss", "Dein Haus in der Mitte, Solar, Netz, Akku und Geräte als Kacheln drumherum. Die Linien zeigen live, wohin der Strom fließt – mit den neuen HD-Bildern."], brief: ["sun", "Morgen-Briefing ★", "Jeden Morgen eine Meldung aufs Handy: Sonne heute, günstigste Strom-Stunde, beste Startzeit für die Waschmaschine, Auto, Heizung und Auffälligkeiten. Bausteine einzeln wählbar."], poster: ["house", "Jahres-Poster ★", "Im Dezember dein Jahr als Poster: Heizöl gespart, Heizpausen, Gerätestrom mit eigenem Anteil und Ersparnis – A3 zum Drucken oder als Bild."], look: ["lamp", "Uhr-Stile & Verläufe", "Zusätzliche Farbverläufe für den Kopf und vier Uhr-Stile für den Ruhemodus im Tablet-Modus."], early: ["forecast", "Vorabversionen", "Neue Labs siehst du 14 Tage vor allen anderen – mit Datum, ab wann sie für alle kommen."], coach: ["euro", "Energie-Coach (bald)", "Jeden Montag drei Spartipps aus deinen Daten mit Euro-Betrag. Kommt mit Stufe S3."] }[m.k] || ["plug", "Extra", ""];
+      const X = { ef: ["bolt", "Hausfluss", "Dein Haus in der Mitte, Solar, Netz, Akku und Geräte als Kacheln drumherum. Die Linien zeigen live, wohin der Strom fließt – mit den neuen HD-Bildern."], brief: ["sun", "Morgen-Briefing ★", "Jeden Morgen eine Meldung aufs Handy: Sonne heute, günstigste Strom-Stunde, beste Startzeit für die Waschmaschine, Auto, Heizung und Auffälligkeiten. Bausteine einzeln wählbar."], poster: ["house", "Jahres-Poster ★", "Im Dezember dein Jahr als Poster: Heizöl gespart, Heizpausen, Gerätestrom mit eigenem Anteil und Ersparnis – A3 zum Drucken oder als Bild."], look: ["lamp", "Uhr-Stile & Verläufe", "Zusätzliche Farbverläufe für den Kopf und vier Uhr-Stile für den Ruhemodus im Tablet-Modus."], early: ["forecast", "Vorabversionen", "Neue Labs siehst du 14 Tage vor allen anderen – mit Datum, ab wann sie für alle kommen."], coach: ["pvRoof", "Energie-Coach", "Jeden Montag drei Tipps aus deinen eigenen Daten mit Euro- oder Liter-Betrag – zum Beispiel: „Spülmaschine lief 3× nachts aus dem Netz. Mittags starten spart ca. 0,36 €.“ Feste Regeln, keine KI, nichts verlässt Home Assistant."],
+        report: ["house", "Monatsbericht", "Am Monatsende „Dein Haus im Oktober“ als Bild: Solar, Autarkie und gespartes Heizöl mit deiner Haus-Szene. Teilen nur, wenn du tippst."],
+        wish: ["person", "Wunsch des Monats", "Sponsoren stimmen jeden Monat auf GitHub ab, was als Nächstes gebaut wird – der Gewinner kommt in die Roadmap. Max-Sponsoren können selbst Wünsche vorschlagen."] }[m.k] || ["plug", "Extra", ""];
       return wrap(X[1], "Beispiel mit Musterdaten", `<div class="lgexd">${this._gx(X[0], 110, { on: true, lvl: 80 })}<p>${X[2]}</p></div><div class="gbtns" style="margin-top:12px"><a class="btn2 spnb pri" href="${esc(this._spnS().url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">${ic("heart", 16)} Sponsor werden</a></div>`, false);
     }
     if (m.type === "lgposter") {

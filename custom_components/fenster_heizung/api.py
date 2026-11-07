@@ -778,6 +778,33 @@ async def ws_mess_rescue(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], {"layout": store["layout"], "n": len(r["mess"])})
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/coach_get", vol.Optional("run"): bool})
+@websocket_api.async_response
+async def ws_coach_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Sponsor-Extra Energie-Coach: Tipps der Woche (rechnet einmal neu, wenn noch nichts da ist)."""
+    mgr = hass.data.get(DOMAIN, {}).get("coach")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Der Energie-Coach ist noch nicht bereit")
+        return
+    if msg.get("run") or not mgr.res:
+        await mgr.async_run()
+    connection.send_result(msg["id"], mgr.res or {"tips": [], "learn": True})
+
+
+_YM = re.compile(r"^20\d\d-(0[1-9]|1[0-2])$")
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/report_get", vol.Required("ym"): str})
+@websocket_api.async_response
+async def ws_report_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Sponsor-Extra Monatsbericht: Wärme gespart (Modul 1) und Gerätestrom (Modul 4) für einen Monat."""
+    mgr = hass.data.get(DOMAIN, {}).get("coach")
+    if mgr is None or not _YM.match(msg["ym"]):
+        connection.send_error(msg["id"], "invalid", "Monat nicht verfügbar")
+        return
+    connection.send_result(msg["id"], mgr.month(msg["ym"]))
+
+
 @websocket_api.require_admin
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/ebk_get"})
 @websocket_api.async_response
@@ -1464,6 +1491,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
-        ws_mess_rescue_get, ws_mess_rescue, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
+        ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
     ):
         websocket_api.async_register_command(hass, command)

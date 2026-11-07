@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b8] - 2026-11-07
+
+Testversion: Sponsor-Bereich 2.0, Stufe S3 – Energie-Coach, Monatsbericht und Wunsch des Monats.
+
+### Neu
+- **Energie-Coach (Sponsor):** jeden Montag um 6 Uhr bis zu drei Tipps aus den letzten 7 Tagen – feste Regeln, keine KI: Gerät lief mehrmals abends oder nachts aus dem Netz (mit Euro-Betrag, nur mit Solar), Fenster mehrmals länger als 20 Minuten offen (aus dem Verlauf von Home Assistant), Akku an mehreren Tagen schon vor 15 Uhr voll. Modul 4 merkt sich dafür ab jetzt die letzten Läufe mit Startzeit; in der ersten Woche zeigt der Coach „sammelt noch“.
+- **Monatsbericht (Sponsor):** „Dein Haus im Oktober“ mit Haus-Szene, kWh Solar, Autarkie, gespartem Heizöl und Ersparnis durch eigenen Strom – aus der Statistik von Modul 3, den Tageswerten von Modul 1 und Modul 4. Als Bild teilen (Teilen-Menü am iPhone/iPad) oder speichern; Vormonate abrufbar. Werte ohne Daten fallen weg.
+- **Wunsch des Monats:** Stand der Abstimmung aus `docs/wunsch.json` im Repo (nur lesend), „Auf GitHub abstimmen“ für Sponsoren, „Vorschlagen“ für Max.
+- Coach und Monatsbericht stehen in der Lounge unter „Deine Extras“ mit Schalter und unter „Neu für dich“; auf „Sponsor werden“ tragen sie jetzt „NEU“.
+
 ## [2026.11.2b7] - 2026-11-07
 
 ### Behoben

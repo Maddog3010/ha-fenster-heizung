@@ -128,7 +128,7 @@ def priv_matches(priv: Any) -> bool:
 
 
 def default_prefs() -> dict[str, Any]:
-    return {"badge": True, "grad": "none", "clock": "standard", "early": False, "badge_style": "gold", "name_head": False, "brief": True, "poster": True, "thanks": False}
+    return {"badge": True, "grad": "none", "clock": "standard", "early": False, "badge_style": "gold", "name_head": False, "brief": True, "poster": True, "thanks": False, "coach": True, "report": True}
 
 
 def clean_prefs(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -144,7 +144,7 @@ def clean_prefs(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
         out["clock"] = raw["clock"]
     if raw.get("badge_style") in BADGES:
         out["badge_style"] = raw["badge_style"]
-    for k in ("name_head", "brief", "poster", "thanks"):
+    for k in ("name_head", "brief", "poster", "thanks", "coach", "report"):
         if isinstance(raw.get(k), bool):
             out[k] = raw[k]
     for k, v in default_prefs().items():

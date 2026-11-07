@@ -1,0 +1,14 @@
+{
+  "month": "2026-11",
+  "until": "2026-11-30",
+  "url": "",
+  "idea": "",
+  "next": "Dezember",
+  "prev": "",
+  "options": [
+    { "t": "Gartenplan früher (Modul 10)", "v": 0 },
+    { "t": "Einkaufsliste im Tablet-Modus", "v": 0 },
+    { "t": "Pool nach Strompreis", "v": 0 },
+    { "t": "Saugroboter nach Abwesenheit", "v": 0 }
+  ]
+}
