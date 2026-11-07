@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b9] - 2026-11-07
+
+### Neu
+- **Wunsch des Monats live:** Die Lounge zählt die 👍 an den Kommentaren der Abstimmung direkt auf GitHub (öffentlich, ohne Konto, höchstens einmal pro Stunde). Klappt das nicht, gelten die Zahlen aus `docs/wunsch.json`. Erste Abstimmung: Issue #7 (November 2026).
+
 ## [2026.11.2b8] - 2026-11-07
 
 Testversion: Sponsor-Bereich 2.0, Stufe S3 – Energie-Coach, Monatsbericht und Wunsch des Monats.

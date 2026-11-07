@@ -8950,9 +8950,17 @@ class FensterHeizungPanel extends HTMLElement {
     if (!this._s3Wts || now - this._s3Wts > 36e5) {
       this._s3Wts = now;
       fetch(this.constructor.S3_WISH + "?t=" + Math.floor(now / 36e5), { cache: "no-store" }).then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
-        .then((j) => { this._s3W = j && typeof j === "object" ? j : null; }).catch(() => { this._s3W = { err: true }; })
+        .then((j) => { this._s3W = j && typeof j === "object" ? j : null; return this._s3Votes(); }).catch(() => { this._s3W = this._s3W || { err: true }; })
         .finally(() => { if (this._loOpen) this._render(); });
     }
+  }
+  /* Stimmen live: 👍 an den Kommentaren der Abstimmung (öffentliche GitHub-API, ohne Konto). Klappt das nicht, gelten die Zahlen aus wunsch.json. */
+  _s3Votes() {
+    const W = this._s3W; if (!W || !W.issue || !Array.isArray(W.options)) return null;
+    return fetch(`https://api.github.com/repos/Maddog3010/ha-fenster-heizung/issues/${Number(W.issue)}/comments?per_page=100`, { headers: { Accept: "application/vnd.github+json" } })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((L) => { const m = new Map((Array.isArray(L) ? L : []).map((c) => [c.id, ((c.reactions || {})["+1"]) || 0])); W.options = W.options.map((o) => (m.has(o.c) ? { ...o, v: m.get(o.c) } : o)); W.live = true; })
+      .catch(() => { /* Zahlen aus wunsch.json */ });
   }
   _s3Month(off) { const d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); d.setMonth(d.getMonth() + off); const e = new Date(d); e.setMonth(e.getMonth() + 1); return { s: d, e, ym: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`, mon: d.toLocaleDateString("de-DE", { month: "long" }), year: d.getFullYear() }; }
   /* Solar, Bezug und Einspeisung eines Monats aus der Langzeitstatistik (Zähler: Änderung je Monat; Leistung: Stundenmittel) */
@@ -9059,7 +9067,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="lgt" id="lgwish" style="--c:#f472b6"><h4>Wunsch des Monats · ${esc(mon)}</h4>${rows}
       ${ok ? `<div class="lgnote2">${tot} ${tot === 1 ? "Stimme" : "Stimmen"}${until ? ` · Abstimmung bis ${until}` : ""}. Gewinner kommt in die Roadmap${W.next ? ` (${esc(W.next)})` : ""}.${W.prev ? `<br>Letzter Gewinner: ${esc(W.prev)}` : ""}</div>` : ""}
       <div class="lgbtns">${W && W.url ? `<a class="btn2 lgpk" href="${esc(W.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Auf GitHub abstimmen</a>` : ""}${mx && W && (W.idea || W.url) ? `<a class="btn2" href="${esc(W.idea || W.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none"><span class="lggd">★</span> Vorschlagen</a>` : ""}</div>
-      <div class="lgnote2" style="margin-top:6px">Abstimmen geht mit deinem GitHub-Konto${mx ? "; als Max kannst du Wünsche vorschlagen" : ""}.</div></div>`;
+      <div class="lgnote2" style="margin-top:6px">Abstimmen mit 👍 auf GitHub (eigenes Konto)${mx ? "; als Max kannst du Wünsche vorschlagen" : ""}.</div></div>`;
   }
   /* ---- Monatsbericht als Bild (1080 × 1350, zum Teilen und Speichern) ---- */
   _s3RepSvg(R) {
