@@ -1,14 +1,15 @@
 {
   "month": "2026-11",
   "until": "2026-11-30",
-  "url": "",
-  "idea": "",
+  "url": "https://github.com/Maddog3010/ha-fenster-heizung/issues/7",
+  "idea": "https://github.com/Maddog3010/ha-fenster-heizung/discussions/new?category=ideas",
+  "issue": 7,
   "next": "Dezember",
   "prev": "",
   "options": [
-    { "t": "Gartenplan früher (Modul 10)", "v": 0 },
-    { "t": "Einkaufsliste im Tablet-Modus", "v": 0 },
-    { "t": "Pool nach Strompreis", "v": 0 },
-    { "t": "Saugroboter nach Abwesenheit", "v": 0 }
+    { "t": "Gartenplan früher (Modul 10)", "c": 6702691668, "v": 0 },
+    { "t": "Einkaufsliste im Tablet-Modus", "c": 6702691789, "v": 0 },
+    { "t": "Pool nach Strompreis", "c": 6702691931, "v": 0 },
+    { "t": "Saugroboter nach Abwesenheit", "c": 6702692050, "v": 0 }
   ]
 }
