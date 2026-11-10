@@ -26,6 +26,11 @@ FC_REFRESH_S = 600.0  # Stundenprognose für die Startempfehlung alle 10 Minuten
 
 
 RLOG_KEEP = 200  # Läufe für den Energie-Coach (etwa die letzten Wochen)
+CURVE_KEEP = 6  # v1.3: so viele Programm-Kurven je Gerät bleiben gespeichert (Speicher klein halten)
+CURVE_MAX = 180  # höchstens so viele Punkte je Kurve
+CURVE_STEP_S = 60  # ein Kurvenpunkt pro Minute: [Sekunden seit Start, Solar W, Batterie W, Netz W]
+TYP_RUNS = 10  # typischer Lauf aus den letzten 10 Läufen
+OUTLIER = 1.4  # ein Lauf mit 40 % mehr Energie als der Median gilt als Ausreißer (z. B. 90 °C)
 
 class GeraeteManager:
     def __init__(self, hass: HomeAssistant) -> None:
@@ -172,7 +177,7 @@ class GeraeteManager:
             run = self._run.get(did)
             if g >= d["thr"]:
                 if run is None:
-                    run = self._run[did] = {"start": now, "e": [0.0, 0.0, 0.0], "cost": 0.0, "saved": 0.0, "low": None, "peak": 0.0}
+                    run = self._run[did] = {"start": now, "e": [0.0, 0.0, 0.0], "cost": 0.0, "saved": 0.0, "low": None, "peak": 0.0, "cv": []}
                 run["low"] = None
             elif run is not None and run["low"] is None:
                 run["low"] = now
@@ -182,6 +187,9 @@ class GeraeteManager:
             # Quellen so aufteilen, dass andere laufende Geräte vorher abgezogen werden
             parts = split_power(g, s, b, n)
             self._live[did] = [parts["solar"], parts["battery"], parts["grid"]]
+            cv = run.setdefault("cv", [])
+            if not cv or now - run["start"] - cv[-1][0] >= CURVE_STEP_S:  # v1.3: Programm-Kurve nach Herkunft
+                cv.append([int(now - run["start"]), round(parts["solar"]), round(parts["battery"]), round(parts["grid"])])
             row = self.days.setdefault(day, {}).setdefault(did, new_day())
             for i, src in enumerate(("solar", "battery", "grid")):
                 kwh = parts[src] * dt / 3600 / 1000
@@ -215,7 +223,15 @@ class GeraeteManager:
         self.typ[did] = max(kwh * 3600 * 1000 / dur, 0.0)
         self.durs[did] = (self.durs.get(did, []) + [round(dur)])[-RUNS_KEEP:]
         ts = dt_util.now().isoformat(timespec="seconds")
-        self.rlog = (self.rlog + [{"d": did, "n": dev["name"], "t": int(run["start"]), "kwh": round(kwh, 3), "g": round(run["e"][2], 3), "c": round(run["cost"], 3)}])[-RLOG_KEEP:]
+        rec = {"d": did, "n": dev["name"], "t": int(run["start"]), "kwh": round(kwh, 3), "g": round(run["e"][2], 3), "c": round(run["cost"], 3),
+               "s": round(run["e"][0], 3), "b": round(run["e"][1], 3), "sv": round(run["saved"], 3), "dur": round(dur), "cv": thin(run.get("cv") or [], CURVE_MAX)}
+        self.rlog = (self.rlog + [rec])[-RLOG_KEEP:]
+        keep = 0
+        for r in reversed(self.rlog):  # nur die letzten Kurven je Gerät behalten
+            if r.get("d") == did and r.get("cv"):
+                keep += 1
+                if keep > CURVE_KEEP:
+                    r.pop("cv", None)
         self.last[did] = {"cost": round(run["cost"], 4), "kwh": round(kwh, 4), "share": round(share, 1), "saved": round(run["saved"], 4), "ts": ts}
         data = {"device": dev["name"], "id": did, "kwh": round(kwh, 3), "cost": round(run["cost"], 2), "saved": round(run["saved"], 2), "share": round(share)}
         self.hass.bus.async_fire("geraetestrom_run_finished", data)
@@ -324,6 +340,39 @@ class GeraeteManager:
             })
             hist[did] = history(days)
         return {"ready": ready, "devices": devices, "hist": hist}
+
+
+    def runs(self, did: str) -> dict[str, Any]:
+        """v1.3 Geräte-Seite: Durchlauf-Protokoll (neueste zuerst), typischer Lauf und die Kurve des laufenden Durchlaufs."""
+        L = [r for r in self.rlog if r.get("d") == did]
+        last = L[-TYP_RUNS:]
+        kw = sorted(r["kwh"] for r in last if r.get("kwh"))
+        med_kwh = kw[len(kw) // 2] if kw else 0.0
+        norm = [r for r in last if not med_kwh or r["kwh"] <= med_kwh * OUTLIER]
+        durs = [r["dur"] for r in norm if r.get("dur")]
+        typ = None
+        if len(norm) >= 3:
+            typ = {"n": len(norm), "dur": round(median(durs)) if durs else round(median(self.durs.get(did, []))),
+                   "kwh": round(sum(r["kwh"] for r in norm) / len(norm), 3), "c": round(sum(r["c"] for r in norm) / len(norm), 3),
+                   "sun": sum(1 for r in last if r.get("kwh") and (r.get("s", 0) + r.get("b", 0)) / r["kwh"] >= 0.7 and r.get("s", 0) / r["kwh"] >= 0.5),
+                   "of": len(last), "out": len(last) - len(norm), "has_split": any("s" in r for r in last)}
+        out = []
+        for r in reversed(L[-20:]):
+            o = {k: r.get(k) for k in ("t", "kwh", "g", "c", "s", "b", "sv", "dur")}
+            o["x"] = bool(med_kwh and len(last) >= 3 and r["kwh"] > med_kwh * OUTLIER)
+            o["cv"] = r.get("cv")
+            out.append(o)
+        run = self._run.get(did)
+        live = {"t": int(run["start"]), "cv": run.get("cv") or [], "e": [round(x, 3) for x in run["e"]]} if run else None
+        return {"runs": out, "typ": typ, "live": live}
+
+
+def thin(cv: list[list[int]], n: int) -> list[list[int]]:
+    """Kurve auf höchstens n Punkte ausdünnen (gleichmäßig, erster und letzter Punkt bleiben)."""
+    if len(cv) <= n:
+        return cv
+    step = (len(cv) - 1) / (n - 1)
+    return [cv[round(i * step)] for i in range(n)]
 
 
 def _ord(key: str) -> int:

@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b11] - 2026-11-10
+
+### Neu
+- **Modul 4 v1.3 – Stufe 2 der neuen Optik (Konzept Modul 4):**
+  - **Geräte-Seite** beim Antippen eines Geräts: großes Bild mit Herkunfts-Ring, Zustand mit „noch ~ Min.“, Anteile Solar/Batterie/Netz, Empfehlung mit „Erinnern“.
+  - **Programm-Kurve** des laufenden oder letzten Laufs: Leistung je Minute, die Fläche nach Herkunft gefärbt; Abschnitte wie „Aufheizen“, „Heizen 2“, „Schleudern“ werden aus Leistungssprüngen erkannt (nur Hinweis). Kurven speichert Modul 4 ab dieser Version mit jedem Lauf (die letzten 6 je Gerät).
+  - **Durchlauf-Protokoll** mit Anteils-Balken und Kosten, Antippen zeigt die Kurve des Laufs; Ausreißer („mehr als sonst“) sind markiert.
+  - **Typischer Lauf** aus den letzten 10 Läufen: Ø Dauer, Ø Energie, Ø Kosten und „Mit Sonne gewaschen: 7 von 10 Läufen“. Ausreißer zählen nicht zum Durchschnitt.
+  - **Handy (unter 640 px):** laufende Geräte oben als Karte mit Fortschritt, alle anderen als ruhige Zeilen (nach Kosten), Kennzahlen unter der Liste. Im Anpassen-Modus bleiben die Karten.
+
+### Geändert
+- **Modul-Versionen fortgeführt** (Einstellungen → Module, mit Änderungsliste): Modul 1 Fenster & Heizung 1.7 (Entfeuchter-Nachtmodus, Messräume), Modul 2 Warmwasser 1.1 (Anpassen), Modul 3 Energie 1.2 (Anpassen), Modul 4 Gerätestrom 1.3 (Anpassen, Läufe für den Coach, Geräte-Seite), Modul 8 Wallbox 0.5 Build 3 (Pause nach Phasenwechsel, Akku mit Nachkommastelle), Modul 19 Hausfluss 0.6 Build 3 (mdi-Symbol).
+
 ## [2026.11.2b10] - 2026-11-10
 
 ### Neu

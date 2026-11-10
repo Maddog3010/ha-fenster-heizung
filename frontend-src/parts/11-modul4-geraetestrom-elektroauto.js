@@ -34,6 +34,7 @@
       }).catch((e) => this._toast("Erinnern: " + ((e && e.message) || "das hat nicht geklappt")));
     }
     else if (a === "gsold") { G.cards_old = !G.cards_old; this._mdSave(); this._renderModal(); }
+    else if (this._gsDetAct && this._gsDetAct(a, b)) return;
     else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }
     else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._mdSave(); this._renderModal(); } }
   }
@@ -136,6 +137,7 @@
     const warn = !this._gsReady() ? `<div class="banner">${ic("alert", 18)}<div><b>Solar- und Netz-Sensor fehlen.</b> Sie werden in Modul 3 – Energie-Übersicht gewählt. Bis dahin gilt der gesamte Strom als Netzstrom.${adm ? ` <button class="lnk" data-act="mdensetup">Modul 3 öffnen</button>` : ""}</div></div>` : "";
     if (!D) return `${warn}<div class="card empty">Lade Gerätestrom …</div>`;
     this._gsTipBind();
+    if (this._gsDet) { const dd = (D.devices || []).find((x) => x.id === this._gsDet); if (dd) return `${warn}${this._gsDetPage(dd)}`; this._gsDet = null; }
     const devs = D.devices || [], ids = devs.map((d) => d.id), P = this._gsPer(), A = this._gsAgg(ids, P), T = A.t, V = this._gsPrev(ids, P), per = this._gsLabel(P);
     const cl = { day: "zum Vortag", week: "zur Vorwoche", month: "zum Vormonat", year: "zum Vorjahr" }[P.rg];
     const cmp = (cur, old, good) => { if (!V || old == null || old < 0.005) return ""; const d = Math.round((cur - old) / old * 100); if (!isFinite(d)) return ""; const c = d === 0 || good === "none" ? "" : (d > 0) === (good === "up") ? "up" : "dn"; return `<div class="g"><span class="tcmp ${c}">${d > 0 ? "▲" : d < 0 ? "▼" : "="} ${Math.abs(d)} %</span> ${cl}</div>`; };
@@ -162,6 +164,7 @@
         ${this._gsSpark(d.id, P)}
         ${adv && !run ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung jetzt ${num(d.cover, 0)} %</span></div>` : ""}</div>`; })())).join("");
     if (this._gsTipX != null) Promise.resolve().then(() => this._gsTipShow());
+    if (this._gsPhone()) return `${hero}${nav}${this._gsList(this._mpDevs(devs), P, tiles)}`;
     return `${hero}${nav}${this._mpWrap("gs", { kacheln: tiles, geraete: `<div class="gsgrid">${cards}</div>`, verlauf: this._gsChart(D, devs, P) })}`;
   }
   /* ---- Modul 4 v1.2: Gerätekarten 2.0 (HD-Bild mit Herkunfts-Ring, Prozentzeile, Restzeit ab 3 Läufen, drei Felder, Empfehlung mit „Erinnern“).
@@ -198,7 +201,7 @@
       ? `<div class="g2adv">${this._gx("sun", 26)}<span>Am besten ${B.day === "tomorrow" ? "morgen " : ""}ab ${hm(B.ts * 1000)} starten<small>~${num(B.pct, 0)} % Solar erwartet</small></span><button class="g2rem${rem ? " on" : ""}" data-act="gsrem" data-k="${esc(d.id)}" aria-pressed="${rem}">${rem ? `${ic("check", 14)} Erinnert` : `${ic("bell", 14)} Erinnern`}</button></div>`
       : `<div class="g2adv ${/^Jetzt/.test(d.advice || "") ? "go" : ""}">${this._gx("sun", 26)}<span>${esc(d.advice || "")}<small>Solardeckung jetzt ${num(d.cover, 0)} %</small></span></div>`;
     return `<div class="card gsdev g2 g2-${none ? "none" : go ? "go" : m}${this._gsSel === d.id ? " sel" : ""}">
-      <button class="g2h" data-act="gsdev" data-k="${esc(d.id)}" aria-pressed="${this._gsSel === d.id}" aria-label="${esc(d.name)} im Diagramm hervorheben"><span class="g2img">${this._gxRing(this._gsHd(d), mix, 76, { on: run })}${m === "done" ? `<i class="g2ok">${ic("check", 12)}</i>` : ""}</span>
+      <button class="g2h" data-act="gsdet" data-k="${esc(d.id)}" aria-label="${esc(d.name)}: Geräte-Seite öffnen"><span class="g2img">${this._gxRing(this._gsHd(d), mix, 76, { on: run })}${m === "done" ? `<i class="g2ok">${ic("check", 12)}</i>` : ""}</span>
         <span class="g2n"><b>${esc(d.name)}</b><span class="g2s">${pill}<small>${sub}</small></span></span></button>
       ${this._gxPct(mix).replace("noch keine Daten", "keine Daten")}${rest}
       <div class="g2f">${f3.map(([l, v, s]) => `<div><span>${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>
