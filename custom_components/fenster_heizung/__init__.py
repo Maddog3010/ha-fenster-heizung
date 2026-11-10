@@ -1281,6 +1281,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "sponsor" not in store:
         store["sponsor"] = SponsorManager(hass)
         await store["sponsor"].async_start()
+    if "autopilot" not in store:
+        from .autopilot import AutopilotManager
+        store["autopilot"] = AutopilotManager(hass)
+        await store["autopilot"].async_start()
+    if "waechter" not in store:
+        from .waechter import WaechterManager
+        store["waechter"] = WaechterManager(hass)
+        await store["waechter"].async_start()
     if "coach" not in store:
         from .coach import CoachManager
         store["coach"] = CoachManager(hass)
@@ -1360,6 +1368,12 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             spn = hass.data.get(DOMAIN, {}).pop("sponsor", None)
             if spn is not None:
                 spn.async_stop()
+            apm = hass.data.get(DOMAIN, {}).pop("autopilot", None)
+            if apm is not None:
+                apm.async_stop()
+            wam = hass.data.get(DOMAIN, {}).pop("waechter", None)
+            if wam is not None:
+                wam.async_stop()
             cch = hass.data.get(DOMAIN, {}).pop("coach", None)
             if cch is not None:
                 cch.async_stop()

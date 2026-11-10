@@ -129,7 +129,16 @@ class BriefingManager:
         best = best_window(hourly(wh, now.tzinfo, now.date()))
         if kwh <= 0:
             return None
-        return f"☀️ Sonne: {_num(kwh)} kWh erwartet" + (f", am meisten {best['from']}–{best['to']} Uhr" if best else "")
+        line = f"☀️ Sonne: {_num(kwh)} kWh erwartet" + (f", am meisten {best['from']}–{best['to']} Uhr" if best else "")
+        wa = D.get("waechter")
+        if wa is not None and wa.allowed():  # Woche voraus: bester Tag der Woche
+            try:
+                tips = (await wa.week()).get("tips") or []
+                if tips:
+                    line += f" · {tips[0]}"
+            except Exception:  # noqa: BLE001
+                pass
+        return line
 
     async def _price(self, D: dict) -> str | None:
         tm = D.get("tibber")
@@ -187,14 +196,11 @@ class BriefingManager:
         return f"🔥 Heizung {'· ' + mode + ' · ' if mode else 'normal, '}{txt}"
 
     async def _warn(self, D: dict) -> str | None:
-        dm = D.get("diag")
-        if dm is None:
+        dm, wa = D.get("diag"), D.get("waechter")
+        items = [p[2] for p in (dm.problems() if dm is not None else [])] + [f["t"] for f in (wa.findings() if wa is not None else [])]
+        if not items:
             return None
-        probs = dm.problems()
-        if not probs:
-            return None
-        first = probs[0][2]
-        return f"⚠️ {first}" + (f" (+{len(probs) - 1} weitere)" if len(probs) > 1 else "")
+        return f"⚠️ {items[0]}" + (f" (+{len(items) - 1} weitere)" if len(items) > 1 else "")
 
     async def _muell(self, D: dict) -> str | None:
         return None  # Müllabfuhr ist ein Addon; die Termine liest das Briefing erst, wenn das Addon sie anbietet

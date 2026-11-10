@@ -1,6 +1,12 @@
   /* ================= Sensorsuche ohne Aufklappmenü (Messwerk M2: S1 Vorschläge, S2 Nach Raum, S4 Filter) =================
      Ersetzt die lange Liste mit Suchfeld in jeder Sensor-Auswahl. Gewählt wird wie bisher über „pkpick“, alle Aufrufer bleiben gleich. */
-  _pkSt() { return (this._pkS = this._pkS || { tab: "s1", area: "", dev: "", u: "", a: "", i: "", more: 0 }); }
+  _pkSt() { return (this._pkS = this._pkS || { tab: "s1", area: "", dev: "", u: "", a: "", i: "", more: 0, q: "", all: {} }); }
+  /* Suchfeld: tippen filtert sofort über Name, Entitäts-ID, Raum, Gerät und Hersteller (alle Wörter müssen passen) */
+  _pkInput(t) {
+    const P = this._pkSt(), v = t.value || "", pos = t.selectionStart; P.q = v; P.more = 0;
+    if (this._modal) this._renderModal(); else this._render();
+    const i = this.shadowRoot.querySelector('[data-f="pkq"]'); if (i) { i.focus(); try { i.setSelectionRange(pos, pos); } catch (_) { /* egal */ } }
+  }
   _pkArea(e) {
     const H = this._hass, en = (H.entities || {})[e] || {}, dv = en.device_id ? (H.devices || {})[en.device_id] || {} : {};
     const id = en.area_id || dv.area_id || "", ar = id && (H.areas || {})[id];
@@ -37,10 +43,19 @@
     const P = this._pkSt(), all = [...new Set([...opts, ...(cur && !opts.includes(cur) ? [cur] : [])])], ctx = this._pkCtx();
     if (f === "enent") { const k = (/data-k="([a-z0-9]+)"/.exec(pid) || [])[1]; h = { pv: /solar|pv|fronius|wechselrichter|inverter|sma|kostal|huawei/i, pv2: /balkon|zweite|mini|hyper_solar|bkw/i, bat: /batter|akku|speicher|hyper/i, bchg: /lad|charge/i, bdis: /entlad|discharge/i, house: /haus|verbrauch|load/i, pve: /ertrag|yield|solar.*energ/i, imp: /bezug|import/i, exp: /einspeis|export/i }[k] || h; }
     const tabs = [["s1", "Vorschläge"], ["s2", "Nach Raum"], ["s4", "Filter"]];
-    const head = `<div class="seg pkseg">${tabs.map(([k, l]) => `<button class="${P.tab === k ? "sel" : ""}" data-act="pktab" data-k="${k}">${l}</button>`).join("")}</div>`;
+    const head = `<div class="pksearch">${ic("search", 16)}<input type="search" data-f="pkq" value="${esc(P.q || "")}" placeholder="Sensor suchen: Name, Raum, Gerät …" aria-label="Sensor suchen" autocomplete="off" autocapitalize="off" spellcheck="false">${P.q ? `<button class="ibtn" data-act="pkqclr" aria-label="Suche leeren">${ic("close", 14)}</button>` : ""}</div>`
+      + (P.q ? "" : `<div class="seg pkseg">${tabs.map(([k, l]) => `<button class="${P.tab === k ? "sel" : ""}" data-act="pktab" data-k="${k}">${l}</button>`).join("")}</div>`);
     const clr = /add$/.test(f) ? "" : `<button class="pkrow pkclr" data-act="pkpick" data-pid="${esc(pid)}" data-v="">${esc(none)}</button>`;
     if (!all.length) return `<div class="pkbox">${head}<div class="pkno">Keine passende Entität in Home Assistant gefunden.</div></div>`;
     let body = "";
+    if (P.q) {
+      const words = this._stNorm(P.q).split(/\s+/).filter(Boolean), lim = 30 + (P.more || 0);
+      const hit = all.map((e) => { const A = this._pkArea(e); return { e, A, t: this._stNorm(`${this._wzName(e)} ${e} ${A.name} ${A.devName} ${A.man} ${A.plat}`) }; })
+        .filter((x) => words.every((w) => x.t.includes(w))).sort((a, b) => this._wzName(a.e).localeCompare(this._wzName(b.e), "de"));
+      body = `<div class="pkcnt">${hit.length} Treffer für „${esc(P.q)}“</div><div class="pklist">${hit.slice(0, lim).map((x) => this._pkRow(x.e, pid, cur, `${esc(x.A.name || "Ohne Bereich")}${x.A.devName ? " · " + esc(x.A.devName) : ""}`)).join("")}</div>`
+        + (hit.length > lim ? `<button class="lnk pkmorebtn" data-act="pkmore">${hit.length - lim} weitere zeigen</button>` : "") + (hit.length ? "" : `<div class="pkno">Nichts gefunden. Weniger Wörter oder einen Teil des Namens probieren.</div>`) + clr;
+      return `<div class="pkbox pkf">${head}${body}</div>`;
+    }
     if (P.tab === "s1") {
       const sc = all.map((e) => this._pkScore(e, h, ctx, cur)).sort((a, b) => b.s - a.s || this._wzName(a.e).localeCompare(this._wzName(b.e), "de"));
       const top = sc.slice(0, 3), rest = sc.length - top.length;
@@ -61,7 +76,7 @@
       body += clr;
     } else {
       const meta = all.map((e) => { const A = this._pkArea(e), s = this._hass.states[e]; return { e, u: (s && s.attributes.unit_of_measurement) || "", a: A.name || "Ohne Bereich", i: (A.man || (A.plat || "").replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase())) }; });
-      const chips = (key, lab) => { const vals = [...new Set(meta.map((x) => x[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "de")); if (vals.length < 2) return ""; return `<div class="pkfl"><span>${lab}</span>${vals.slice(0, 14).map((v) => `<button class="pkchip ${P[key] === v ? "sel" : ""}" data-act="pkflt" data-k="${key}" data-v="${esc(v)}">${esc(v)}</button>`).join("")}</div>`; };
+      const chips = (key, lab) => { const vals = [...new Set(meta.map((x) => x[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "de")); if (vals.length < 2) return ""; return `<div class="pkfl"><span>${lab}</span>${(P.all[key] || vals.length <= 14 ? vals : vals.slice(0, 12).concat(P[key] && vals.indexOf(P[key]) >= 12 ? [P[key]] : [])).map((v) => `<button class="pkchip ${P[key] === v ? "sel" : ""}" data-act="pkflt" data-k="${key}" data-v="${esc(v)}">${esc(v)}</button>`).join("")}${vals.length > 14 ? `<button class="lnk pkall" data-act="pkall" data-k="${key}">${P.all[key] ? "weniger" : `alle ${vals.length} zeigen`}</button>` : ""}</div>`; };
       const hit = meta.filter((x) => (!P.u || x.u === P.u) && (!P.a || x.a === P.a) && (!P.i || x.i === P.i)), lim = 12 + (P.more || 0);
       body = chips("u", "Einheit") + chips("a", "Raum") + chips("i", "Integration") + `<div class="pkcnt">${hit.length} ${hit.length === 1 ? "Treffer" : "Treffer"}${P.u || P.a || P.i ? ` · <button class="lnk" data-act="pkflt" data-k="" data-v="">Filter löschen</button>` : ""}</div>`
         + `<div class="pklist">${hit.slice(0, lim).map((x) => this._pkRow(x.e, pid, cur, `${esc(x.a)}${x.i ? " · " + esc(x.i) : ""}`)).join("")}</div>${hit.length > lim ? `<button class="lnk pkmorebtn" data-act="pkmore">${hit.length - lim} weitere zeigen</button>` : ""}${clr}`;
@@ -74,6 +89,8 @@
     else if (a === "pkarea") P.area = k || "";
     else if (a === "pkflt") { if (!k) { P.u = P.a = P.i = ""; } else P[k] = P[k] === b.dataset.v ? "" : b.dataset.v; P.more = 0; }
     else if (a === "pkmore") P.more = (P.more || 0) + 24;
+    else if (a === "pkall") P.all = { ...(P.all || {}), [k]: !(P.all || {})[k] };
+    else if (a === "pkqclr") { P.q = ""; P.more = 0; }
     if (this._modal) this._renderModal(); else this._render();
   }
   /* ---- Messwerk: Sensor direkt zuordnen (geht über dieselben Wege wie die Fenster der Module, mit Prüfung und Verlauf) */

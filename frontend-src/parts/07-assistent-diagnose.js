@@ -385,6 +385,7 @@
     if (m.type === "sfset") { box.innerHTML = this._sfxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "spset") { box.innerHTML = this._spModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "s3rep") { box.innerHTML = this._s3RepModal(); return; }
+    if (m.type === "mxsim" || m.type === "mxwaset" || m.type === "mxapset") { const top = (box.querySelector(".sheet") || {}).scrollTop || 0; box.innerHTML = this._mxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -634,7 +635,7 @@
     d.t = best; if (!best) return;
     const r = best.getBoundingClientRect(), cols = getComputedStyle(d.container).gridTemplateColumns.split(" ").length;
     const sameRow = Math.abs(r.top + r.height / 2 - d.y) < r.height / 2;
-    d.after = (d.group === "room" || d.group === "mublk" || d.group === "hzblk") && cols > 1 && sameRow ? d.x > r.left + r.width / 2 : d.y > r.top + r.height / 2;
+    d.after = (d.group === "room" || d.group === "mublk" || d.group === "hzblk" || d.group === "mpblk" || d.group === "gsdv") && cols > 1 && sameRow ? d.x > r.left + r.width / 2 : d.y > r.top + r.height / 2;
     best.classList.add(d.after ? "drop-after" : "drop-before");
   }
   _dragEnd(commit) {
@@ -650,6 +651,8 @@
         slots.forEach((pos, k) => (all[pos] = ids[k])); this._cfg.layout.rooms = all;
       } else if (d.group === "mublk") this._cfg.layout.mu = { ...(this._cfg.layout.mu || {}), order: ids };
       else if (d.group === "hzblk") { const h = this._hzCfg(); this._cfg.layout.start = { ...(this._cfg.layout.start || {}), order: [...ids, ...h.order.filter((x) => !ids.includes(x))] }; }
+      else if (d.group === "mpblk") { const m = d.container.dataset.m, c = this._mpCfg(m); this._cfg.layout.mp = { ...(this._cfg.layout.mp || {}), [m]: { ...((this._cfg.layout.mp || {})[m] || {}), order: [...ids, ...c.order.filter((x) => !ids.includes(x))] } }; }
+      else if (d.group === "gsdv") { const c = this._mpCfg("gs"); this._cfg.layout.mp = { ...(this._cfg.layout.mp || {}), gs: { ...((this._cfg.layout.mp || {}).gs || {}), dev: [...ids, ...c.dev.filter((x) => !ids.includes(x))] } }; }
       else this._cfg.layout.blocks = ids;
       this._saveLayout();
     }

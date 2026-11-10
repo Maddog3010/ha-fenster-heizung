@@ -30,7 +30,7 @@ MIN_SCORE = 2
 REG_KEY = f"{DOMAIN}_safestores"
 
 LABELS = {
-    "layout": "Aussehen des Dashboards", "coach": "Energie-Coach", "general": "Allgemeine Einstellungen", "presence": "Anwesenheit",
+    "layout": "Aussehen des Dashboards", "coach": "Energie-Coach", "waechter": "Wächter (Sponsor Max)", "autopilot": "Autopilot (Sponsor Max)", "general": "Allgemeine Einstellungen", "presence": "Anwesenheit",
     "wasser": "Modul 2 bis 4 (Warmwasser, Energie, Gerätestrom, E-Auto)", "geraete": "Modul 4 Messwerte",
     "wallbox": "Modul 8 Wallbox", "wallbox_stats": "Modul 8 Statistik", "solar": "Modul 16 Solar-Prognose",
     "wetter": "Modul 9 Wetter", "entfeuchter": "Modul 1 Luftentfeuchter", "sicherheit": "Modul 11 Sicherheit", "muell": "Modul 17 Müllabfuhr",

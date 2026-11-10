@@ -168,7 +168,7 @@
     const q = (this._modal.q || "").toLowerCase(), hdi = EF_HD.filter((x) => !q || (x[1] + " " + x[2]).toLowerCase().includes(q)), imgs = this._efxCfg().keep_old ? EF_IMGS.filter((x) => !q || (x.n + " " + x.k).toLowerCase().includes(q)) : [], emo = EF_EMO.filter((x) => !q || (x[1] + " " + x[2]).toLowerCase().includes(q));
     const imgp = this._modal.imgOpen ? `<div class="efpick"><input type="search" data-f="efximgq" value="${esc(this._modal.q || "")}" placeholder="Suchen: Solar, Auto, Waschmaschine …" class="efli" aria-label="Bild suchen" autocomplete="off">
       <div class="efgal">${hdi.map((x) => `<button class="efpi hd ${n.image === "hd:" + x[0] ? "sel" : ""}" data-act="efximg" data-k="hd:${x[0]}" title="${esc(x[1])}">${this._gx(x[0], 40, { on: true, lvl: 80 })}</button>`).join("")}${imgs.map((x) => `<button class="efpi ${n.image === "svg:" + x.id ? "sel" : ""}" data-act="efximg" data-k="svg:${x.id}" title="${esc(x.n)}"><svg viewBox="0 0 64 64">${x.s}</svg></button>`).join("")}${emo.map((x) => `<button class="efpi ${n.image === x[0] ? "sel" : ""}" data-act="efximg" data-k="${esc(x[0])}" title="${esc(x[1])}"><span>${x[0]}</span></button>`).join("")}</div>
-      <input type="text" class="efli" data-f="efximgc" value="${/^(mdi:|\/local\/|https:)/.test(n.image) ? esc(n.image) : ""}" placeholder="Eigenes: mdi:flash oder /local/bild.png" aria-label="Eigenes Bild"></div>` : "";
+      <input type="text" class="efli" data-f="efximgc" value="${/^(mdi:|\/local\/|https:)/.test(n.image) ? esc(n.image) : ""}" placeholder="Eigenes: mdi:flash oder /local/bild.png" aria-label="Eigenes Bild" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done"></div>` : "";
     const flow = hub ? "" : `<div class="lsec">${ic("energy", 15)}Flussart</div><div class="gschips">${EF_FLOWS.map((f) => chip("efxflow", f[0], f[1], n.flow === f[0])).join("")}</div><div class="mut sm">${esc(EF_FLOWS.find((f) => f[0] === n.flow)[2])}</div>`;
     const pw = hub ? "" : n.flow === "split" ? `<div class="vrow efv"><span>Leistung zur Kachel<small class="mut" style="display:block">zum Beispiel Einspeisung</small></span>${sel("power_to_node")}</div><div class="vrow efv"><span>Leistung ins Haus<small class="mut" style="display:block">zum Beispiel Netzbezug</small></span>${sel("power_to_house")}</div>`
       : `<div class="vrow efv"><span>Leistung (W oder kW)<small class="mut" style="display:block">Steuert die Linie. Leer = „Unten“, wenn es eine Leistung ist</small></span>${sel("power")}</div>${n.flow === "both" ? `<div class="vrow"><span>Vorzeichen umkehren<small class="mut" style="display:block">Positiv = zur Kachel. Liefert dein Sensor es umgekehrt, einschalten</small></span><button class="sw ${n.invert ? "on" : ""}" data-act="efxinv" aria-pressed="${n.invert}" aria-label="Vorzeichen umkehren"></button></div>` : ""}`;
@@ -242,6 +242,13 @@
     if (f === "efxlab") { d[t.dataset.w + "_label"] = v.slice(0, 24); return true; }
     if (f === "efxchipadd") { const e = ent(v); if (e && !d.chips.includes(e) && d.chips.length < 4) d.chips.push(e); return true; }
     if (f === "efximgq") { m.q = v; this._renderModal(); const i = this.shadowRoot.querySelector('[data-f="efximgq"]'); if (i) { i.focus(); i.setSelectionRange(v.length, v.length); } return true; }
-    if (f === "efximgc") { if (/^(mdi:[a-z0-9-]{2,60}|\/local\/[A-Za-z0-9_.\/-]{1,150}|https:\/\/\S{4,200})$/.test(v)) { d.image = v; d.image_alt = ""; this._renderModal(); } return true; }
+    if (f === "efximgc") {
+      /* iPhone schreibt den Anfang groß („Mdi:…“) und Nutzer tippen gern „_“ oder Leerzeichen: mdi-Namen vereinheitlichen statt still zu ignorieren */
+      let x = v.trim(); if (/^mdi\s*:/i.test(x)) x = "mdi:" + x.replace(/^mdi\s*:\s*/i, "").toLowerCase().replace(/[_\s]+/g, "-");
+      if (!x) return true;
+      if (/^(mdi:[a-z0-9-]{2,60}|\/local\/[A-Za-z0-9_.\/-]{1,150}|https:\/\/\S{4,200})$/.test(x)) { d.image = x; d.image_alt = ""; this._renderModal(); }
+      else this._toast("Unbekanntes Format – zum Beispiel mdi:solar-panel oder /local/bild.png");
+      return true;
+    }
     return false;
   }

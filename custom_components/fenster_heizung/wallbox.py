@@ -113,7 +113,7 @@ class WallboxManager:
         self.err = ""
         self.want: dict[str, Any] = {}
         self.log: deque[dict[str, Any]] = deque(maxlen=40)
-        self._mem: dict[str, Any] = {"above_since": None, "below_since": None, "ph_change_ts": None}
+        self._mem: dict[str, Any] = {"above_since": None, "below_since": None, "ph_change_ts": None, "ph_set": None, "chg_ts": None, "done_since": None}
         self._last_set: dict[str, int] = {}
         self._hold_until = 0.0
         self._restore = False
@@ -358,6 +358,8 @@ class WallboxManager:
         if who is not None:
             self.want["who"] = who
         self.want["surplus_w"] = inp["surplus_w"]
+        if self.want.get("pause"):
+            self.info["car_text"] = "kurze Pause"  # go-e meldet „fertig“, das Auto startet aber gleich wieder
         self._guard(cfg, wb_w)
         if q:
             self.want["quick"] = q["k"]
@@ -365,6 +367,7 @@ class WallboxManager:
         if cmd:
             if "psm" in cmd:
                 self._mem["ph_change_ts"] = now_ts
+                self._mem["ph_set"] = 1 if cmd["psm"] == 1 else 3
             await self._apply(cl, cmd, self.want["reason"])
 
     def _count(self, st_car: int | None) -> None:
@@ -546,7 +549,8 @@ class WallboxManager:
             return
         if car is not None and car != CAR_IDLE:
             q["seen"] = True
-        if (car == CAR_IDLE and q["seen"]) or car == CAR_DONE or (q["until"] and now_ts > q["until"]):
+        done = car == CAR_DONE and (self.want or {}).get("state") == "fertig"  # nicht bei der kurzen Pause nach dem Umschalten
+        if (car == CAR_IDLE and q["seen"]) or done or (q["until"] and now_ts > q["until"]):
             self._quick = None
             self._add("Schnellstart beendet.")
 
@@ -594,7 +598,7 @@ class WallboxManager:
         if car == CAR_CHARGING:
             self._charged = True
         w = self.want or {}
-        if (car == CAR_DONE or w.get("state") == "limit") and not self._n["goal"]:
+        if ((car == CAR_DONE and w.get("state") == "fertig") or w.get("state") == "limit") and not self._n["goal"]:
             self._n["goal"] = True
             await self._notify("goal", "Ladeziel erreicht", f"{who} ist fertig geladen.")
         if self._plan_late and not self._n["plan"]:

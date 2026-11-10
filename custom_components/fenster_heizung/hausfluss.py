@@ -56,6 +56,8 @@ def _img(v: Any, default: str) -> str:
     if not isinstance(v, str):
         return default
     v = v.strip()
+    if re.match(r"^mdi\s*:", v, re.I):  # „Mdi:Solar_Panel“ → „mdi:solar-panel“
+        v = "mdi:" + re.sub(r"[_\s]+", "-", re.sub(r"^mdi\s*:\s*", "", v, flags=re.I).lower())
     if v in ("", "none"):
         return default if v == "" else "none"
     if _IMG.match(v) or (1 <= len(v) <= 8 and not re.search(r"[<>\"'&\x00-\x1f]", v)):

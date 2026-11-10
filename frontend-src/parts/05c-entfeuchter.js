@@ -43,7 +43,7 @@
     const tank = L.fill != null ? `Tank ${Math.min(100, Math.round(L.fill * 100))} %` : L.full ? "Tank voll" : "";
     const sub = [L.on ? this._lfSince(L.since) : "", tank, L.today_min ? `heute ${hmin(L.today_min)}` : ""].filter(Boolean).join(" · ");
     const A = S.ask || {}, conf = !A.phase || A.phase === "off" ? "" : `<div class="lfconf ${A.conf ? "ok" : "open"}">${ic(A.conf ? "check" : "pin", 13)}${esc(A.conf ? (A.how === "auto" ? "Standort heute wie gestern übernommen" : A.how === "nfc" ? "Standort heute per NFC-Tag bestätigt" : "Standort heute bestätigt") : A.phase === "wait" ? "Standort gilt wie gestern, die Abfrage kommt später" : "Standort heute noch nicht bestätigt")}<button class="lnk" data-act="lfxhist" data-d="${esc(d.id)}">Verlauf</button></div>`;
-    const boost = L.boost ? `<em class="lfboost">${ic(L.boost === "pv" ? "sun" : "bolt", 12)}${L.boost === "pv" ? "PV" : "günstig"}</em>` : "";
+    const boost = (L.boost ? `<em class="lfboost">${ic(L.boost === "pv" ? "sun" : "bolt", 12)}${L.boost === "pv" ? "PV" : "günstig"}</em>` : "") + (L.night ? `<em class="lfboost lfnight">${ic("moon", 12)}Nacht${L.quiet_on ? " · leise" : ""}</em>` : "");
     const msgs = (L.msgs || []).filter((m) => m[0] !== "noloc" || !A.conf).map((m) => `<div class="lfmsg">${ic("alert", 13)}${esc(m[1])}</div>`).join("");
     return `<div class="lfbox ${k}"><div class="lfh"><span class="lfi">${ic("fan", 18)}</span><div class="lft"><b>${esc(d.name)} <em class="lfhere">hier</em>${boost}</b><span>${esc(sub || (d.kind === "watch" ? "nur beobachten" : "Modul 1 regelt"))}</span></div><span class="lfst">${esc(t)}</span>${adm ? `<button class="ibtn" data-act="lfxset" data-d="${esc(d.id)}" aria-label="Entfeuchter einstellen">${ic("sliders", 16)}</button>` : ""}</div>
       ${L.fill != null ? `<div class="lfbar"><i style="width:${Math.min(100, Math.round(L.fill * 100))}%"></i></div>` : ""}
@@ -130,14 +130,14 @@
   _lfSetOpen(id) {
     const D = this._lf(), all = (D && D.cfg && D.cfg.devs) || [], d0 = id ? all.find((x) => x.id === id) : null;
     const nid = d0 ? d0.id : (() => { for (let n = 1; n < 50; n++) if (!all.some((x) => x.id === "d" + n)) return "d" + n; return "d9"; })();
-    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, high_h: 4, filter_h: 0 };
+    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, night: false, n_from: "22:00", n_to: "07:00", n_mode: "hi", hi_night: 70, n_quiet: true, n_msg: true, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, high_h: 4, filter_h: 0 };
     this._pkId = null;
     this._modal = { type: "lfset", isNew: !d0, back: all.length > 0, tab: d0 && d0.ent ? "ziel" : "geraet", draft: { ...DEF, ...(d0 || {}), ask: { on: true, time: "08:00", home_only: true, until: "12:00", miss: "same", rooms: [], push: [], ...((d0 && d0.ask) || {}) }, msg: { full: true, high: true, noloc: true, filter: true, ...((d0 && d0.msg) || {}) } } };
     this._renderModal();
   }
   _lfSetModal() {
     const M = this._modal, d = M.draft, st = this._hass.states, ks = Object.keys(st), D = this._lf() || {}, S = ((D.devs || {})[d.id]) || {}, L = S.live || {};
-    const tabs = [["geraet", "Gerät"], ["ziel", "Ziel"], ["ort", "Standort"], ["strom", "Strom"], ["msg", "Meldungen"]];
+    const tabs = [["geraet", "Gerät"], ["ziel", "Ziel"], ["nacht", "Nacht"], ["ort", "Standort"], ["strom", "Strom"], ["msg", "Meldungen"]];
     const step = (k, unit, s, lo, hi, dec = 0) => `<div class="lfstep"><button class="ibtn" data-act="lfxstep" data-k="${k}" data-v="${-s}" data-lo="${lo}" data-hi="${hi}" aria-label="weniger">${ic("minus", 16)}</button><b>${num(d[k], dec)}<small> ${unit}</small></b><button class="ibtn" data-act="lfxstep" data-k="${k}" data-v="${s}" data-lo="${lo}" data-hi="${hi}" aria-label="mehr">${ic("plus", 16)}</button></div>`;
     const row = (l, h, ctl) => `<div class="of"><div class="ol"><b>${l}</b>${h ? `<small>${h}</small>` : ""}</div><div class="oc">${ctl}</div></div>`;
     const seg = (k, opts) => `<div class="seg">${opts.map(([v, l]) => `<button class="${d[k] === v ? "sel" : ""}" data-act="lfxseg" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
@@ -172,6 +172,23 @@
         <div class="mut sm" style="margin:-2px 0 6px">Ist die Luft draußen trockener, bleibt der Entfeuchter aus und Modul 1 empfiehlt Lüften. Im Winter ist das oft der Fall, deshalb ab Werk aus.</div>
         ${seg("vent", [[false, "Aus"], [true, "Ein"]])}
         <div class="gst">${ic("window", 15)}<div>Bei offenem Fenster im Raum des Standorts bleibt der Entfeuchter immer aus.</div></div>`;
+    } else if (M.tab === "nacht") {
+      const tin = (k, lbl) => `<span class="tin">${this._tIn(esc(d[k]), false, lbl)}<input type="hidden" data-f="lfxnt" data-k="${k}" value="${esc(d[k])}" aria-label="${lbl}"></span>`;
+      const ent = this._hass.states[d.ent], modes = ent && d.ent.startsWith("humidifier.") ? (ent.attributes.available_modes || []) : [];
+      const qm = modes.find((m) => /sleep|night|quiet|silent|schlaf|nacht|leise|ruhe/i.test(m)) || "";
+      body = `<div class="lsec">${ic("moon", 15)}Nachtmodus</div>
+        <div class="mut sm" style="margin:-2px 0 6px">Nachts ist ein Entfeuchter laut. Im Nachtmodus läuft er nur bei hoher Feuchte oder bleibt ganz aus. Die Obergrenze für Schimmelschutz bei Abwesenheit gilt weiter.</div>
+        ${seg("night", [[false, "Aus"], [true, "Ein"]])}
+        ${d.night ? `${row("Nacht von", "", tin("n_from", "Nachtmodus ab"))}${row("bis", "", tin("n_to", "Nachtmodus bis"))}
+        <div class="lsec">${ic("drop", 15)}Nachts</div>
+        ${seg("n_mode", [["hi", "Nur bei hoher Feuchte"], ["off", "Ganz aus"]])}
+        ${d.n_mode === "hi" ? row("Einschalten über", "am Tag " + num(d.hi, 0) + " %", step("hi_night", "%", 1, Math.max(40, d.hi), 95)) : `<div class="gst on">${ic("info", 15)}<div>Der Entfeuchter bleibt nachts aus, auch bei hoher Feuchte. Läuft er gerade, schaltet er zu Beginn der Nacht ab.</div></div>`}
+        <div class="mut sm" style="margin:6px 0 0">Vorziehen bei PV-Überschuss oder günstigem Strom ist nachts aus.</div>
+        <div class="lsec">${ic("fan", 15)}Leise-Modus des Geräts</div>
+        ${qm ? `<div class="mut sm" style="margin:-2px 0 6px">Dein Gerät hat den Modus „${esc(qm)}“. Modul 1 schaltet ihn nachts ein und morgens den vorherigen Modus zurück.</div>${seg("n_quiet", [[true, "Ein"], [false, "Aus"]])}`
+          : `<div class="mut sm" style="margin:-2px 0 6px">${d.kind === "plug" ? "Bei einer Schaltsteckdose gibt es keinen Leise-Modus." : "Dein Gerät meldet keinen Schlaf- oder Leise-Modus. Wenn es einen hat, erscheint er hier, sobald Home Assistant ihn anbietet."}</div>`}
+        <div class="lsec">${ic("bell", 15)}Meldungen nachts</div>
+        ${seg("n_msg", [[true, "Bis zum Morgen zurückhalten"], [false, "Sofort senden"]])}` : ""}`;
     } else if (M.tab === "ort") {
       const a = d.ask, R = D.rooms || [], svc = Object.keys((this._hass.services || {}).notify || {}).filter((n) => !["send_message", "persistent_notification", "reload"].includes(n)).sort((x, y) => Number(y.startsWith("mobile_app")) - Number(x.startsWith("mobile_app")) || x.localeCompare(y)).map((n) => "notify." + n);
       const pushAll = [...new Set([...svc, ...a.push])];
@@ -252,6 +269,7 @@
     const M = this._modal; if (!M || M.type !== "lfset") return false;
     if (t.dataset.f === "lfxname") { M.draft.name = t.value; return true; }
     if (t.dataset.f === "lfxe") { M.draft[t.dataset.k] = t.value || ""; return true; }
+    if (t.dataset.f === "lfxnt") { if (/^\d\d:\d\d$/.test(t.value)) M.draft[t.dataset.k] = t.value; return true; }
     if (t.dataset.f === "lfxt") { if (/^\d\d:\d\d$/.test(t.value)) M.draft.ask[t.dataset.k] = t.value; return true; }
     return false;
   }

@@ -45,6 +45,14 @@ from .wasser import clean_modules, clean_wasser
 
 _LOGGER = logging.getLogger(__name__)
 
+MP_BLOCKS = {
+    "ww": ("speicher", "verlauf", "zeitplan", "zirk", "leg", "pv", "zustand"),
+    "en": ("kacheln", "fluss", "verlauf", "verteilung", "kosten", "heizung", "hinweise"),
+    "gs": ("kacheln", "geraete", "verlauf"),
+}
+_MP_DEV = re.compile(r"^[a-z0-9]{1,16}$")
+
+
 def clean_layout(raw: Any) -> dict[str, Any]:
     """Anordnung und Symbole prüfen, unbekannte Werte verwerfen."""
     raw = raw if isinstance(raw, dict) else {}
@@ -203,6 +211,27 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
                 mc[key] = [x for x in dict.fromkeys(v) if isinstance(x, str) and x in MU_BLOCKS]
         if mc:
             out["mu"] = mc
+    mp = raw.get("mp")  # „Anpassen“ in Modul 2 bis 4: Reihenfolge und ausgeblendete Karten, in Modul 4 auch die Geräte
+    if isinstance(mp, dict):
+        mpo: dict[str, Any] = {}
+        for mod, known in MP_BLOCKS.items():
+            m = mp.get(mod)
+            if not isinstance(m, dict):
+                continue
+            mc2: dict[str, Any] = {}
+            for key in ("order", "hidden"):
+                v = m.get(key)
+                if isinstance(v, list):
+                    mc2[key] = [x for x in dict.fromkeys(v) if isinstance(x, str) and x in known]
+            if mod == "gs":
+                for key in ("dev", "devhid"):
+                    v = m.get(key)
+                    if isinstance(v, list):
+                        mc2[key] = [x for x in dict.fromkeys(v) if isinstance(x, str) and _MP_DEV.match(x)][:40]
+            if mc2:
+                mpo[mod] = mc2
+        if mpo:
+            out["mp"] = mpo
     li = raw.get("li")
     if isinstance(li, dict):
         lc2: dict[str, Any] = {}
@@ -776,6 +805,78 @@ async def ws_mess_rescue(hass: HomeAssistant, connection, msg: dict) -> None:
     await store["layout_store"].async_save(store["layout"])
     _LOGGER.warning("Layout: %s Messräume aus der Sicherung vom %s zurückgeholt", len(r["mess"]), r["ts"])
     connection.send_result(msg["id"], {"layout": store["layout"], "n": len(r["mess"])})
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wa_get", vol.Optional("week"): bool})
+@websocket_api.async_response
+async def ws_wa_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Sponsor Max 2: Wächter-Funde und (optional) Woche voraus."""
+    mgr = hass.data.get(DOMAIN, {}).get("waechter")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Der Wächter ist noch nicht bereit")
+        return
+    out = await mgr.snapshot()
+    if msg.get("week") and mgr.allowed():
+        out["week"] = await mgr.week()
+    connection.send_result(msg["id"], out)
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wa_set", vol.Required("cfg"): dict})
+@websocket_api.async_response
+async def ws_wa_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("waechter")
+    if mgr is None or not mgr.allowed():
+        connection.send_error(msg["id"], "no_max", "Der Wächter gehört zu Sponsor Max")
+        return
+    connection.send_result(msg["id"], await mgr.async_set(msg["cfg"]))
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/ap_get"})
+@websocket_api.async_response
+async def ws_ap_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Sponsor Max 3: Autopilot-Vorschläge und Heizplan-Assistent."""
+    mgr = hass.data.get(DOMAIN, {}).get("autopilot")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Der Autopilot ist noch nicht bereit")
+        return
+    if mgr.allowed() and mgr.cfg["stage"] != "off" and not mgr.props:
+        await mgr.plan()
+    connection.send_result(msg["id"], mgr.snapshot())
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({
+    vol.Required("type"): "fenster_heizung/ap_act", vol.Required("act"): vol.In(["set", "yes", "no", "stop", "plan", "hp", "hpno", "hpundo"]),
+    vol.Optional("cfg"): dict, vol.Optional("ref"): str,
+})
+@websocket_api.async_response
+async def ws_ap_act(hass: HomeAssistant, connection, msg: dict) -> None:
+    _who(connection)
+    mgr = hass.data.get(DOMAIN, {}).get("autopilot")
+    if mgr is None or not mgr.allowed():
+        connection.send_error(msg["id"], "no_max", "Der Autopilot gehört zu Sponsor Max")
+        return
+    a, ref = msg["act"], str(msg.get("ref") or "")[:120]
+    if a == "set":
+        r = await mgr.async_set(msg.get("cfg") or {})
+    elif a in ("yes", "no"):
+        r = await mgr.answer(ref, a == "yes")
+    elif a == "stop":
+        r = await mgr.stop_all()
+    elif a == "plan":
+        await mgr.plan()
+        r = mgr.snapshot()
+    elif a == "hpno":
+        mgr.heat_dismiss(ref)
+        r = mgr.snapshot()
+    elif a == "hp":
+        res = await mgr.heat_apply(ref)
+        r = {**mgr.snapshot(), "res": res}
+    else:
+        res = await mgr.heat_undo(ref)
+        r = {**mgr.snapshot(), "res": res}
+    connection.send_result(msg["id"], r)
 
 
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/coach_get", vol.Optional("run"): bool})
@@ -1491,6 +1592,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
-        ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
+        ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
     ):
         websocket_api.async_register_command(hass, command)

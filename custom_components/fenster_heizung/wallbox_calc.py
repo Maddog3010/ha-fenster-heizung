@@ -15,6 +15,8 @@ PLAN_STRATS = ("mix", "sun", "price")
 PLAN_SRCS = ("auto", "tibber", "sensor")
 PV_SRCS = ("forecast", "sensor")
 PHASE_HOLD_S = 600  # so lange bleibt eine Phasenumschaltung bestehen
+PH_SETTLE_S = 300  # nach dem Umschalten der Phasen: so lange gilt „fertig“ (0 W) nur als Pause, das Auto braucht etwas bis es wieder lädt
+DONE_CONFIRM_S = 120  # „fertig“ direkt nach dem Laden erst glauben, wenn es so lange anhält
 EXTERN_HOLD_S = 1800  # Pause, wenn jemand die Wallbox von Hand umstellt
 
 # go-e API v2: car 1 = frei, 2 = lädt, 3 = wartet aufs Auto, 4 = fertig; frc 0 = neutral, 1 = aus, 2 = an; psm 1 = 1 Phase, 2 = 3 Phasen
@@ -79,7 +81,11 @@ def clean_wb(raw: Any) -> dict[str, Any]:
     out["planSoc"] = _int(raw.get("planSoc"), 20, 100, d["planSoc"])
     t = str(raw.get("planTime", d["planTime"]))
     out["planTime"] = t if re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", t) else d["planTime"]
-    out["cap"] = _int(raw.get("cap"), 10, 120, d["cap"])
+    try:  # Akkukapazität mit einer Nachkommastelle (z. B. 77,4 kWh)
+        cap = float(str(raw.get("cap")).replace(",", "."))
+        out["cap"] = round(min(max(cap, 10.0), 150.0), 1) if cap == cap else d["cap"]
+    except (TypeError, ValueError):
+        out["cap"] = d["cap"]
     out["batSoc"] = _int(raw.get("batSoc"), 0, 100, d["batSoc"])
     out["priceMax"] = _int(raw.get("priceMax"), 1, 80, d["priceMax"])
     out["lock"] = bool(raw.get("lock", False))
@@ -208,20 +214,39 @@ def decide(cfg: dict[str, Any], inp: dict[str, Any], mem: dict[str, Any], now_ts
         out["reason"] = "Modus „Aus“: Die Wallbox lädt nicht."
         mem["above_since"] = mem["below_since"] = None
         return out
+    # „fertig“ ist nach einer Phasenumschaltung oder kurz nach dem Laden oft nur eine Pause (0 W): weiterregeln statt aufhören
+    last_ph = mem.get("ph_change_ts")
+    settle = last_ph is not None and now_ts - last_ph < PH_SETTLE_S
+    pause = ""
+    if car == CAR_CHARGING:
+        mem["chg_ts"], mem["done_since"] = now_ts, None
     if car == CAR_DONE:
-        out["reason"] = "Das Auto meldet „fertig geladen“."
-        out["state"] = "fertig"
-        return out
+        mem["done_since"] = mem.get("done_since") or now_ts
+        recent = mem.get("chg_ts") is not None and mem["done_since"] - mem["chg_ts"] < 60 and now_ts - mem["done_since"] < DONE_CONFIRM_S
+        if settle or recent:
+            car = CAR_CHARGING
+            left = max(1, round(((last_ph + PH_SETTLE_S) if settle else (mem["done_since"] + DONE_CONFIRM_S)) - now_ts))
+            pause = (f"Phasen umgeschaltet: Das Auto pausiert kurz und startet gleich wieder (noch {left} s). " if settle
+                     else f"Das Auto pausiert (0 W). „Fertig“ gilt erst, wenn es so bleibt (noch {left} s). ")
+        else:
+            out["reason"] = "Das Auto meldet „fertig geladen“."
+            out["state"] = "fertig"
+            return out
+    else:
+        mem["done_since"] = None
     if soc is not None and soc >= cfg["limit"]:
         out["reason"] = f"Ladelimit von {cfg['limit']} % erreicht."
         out["state"] = "limit"
         return out
+    if pause:
+        out["reason"] = pause
+        out["pause"] = True
     due, need, _start = plan_due(cfg, soc, now)
     cheap = bool(cfg["priceOn"] and inp.get("price_ct") is not None and inp["price_ct"] <= cfg["priceMax"])
     if cfg["mode"] == "now" or (due and cfg["mode"] in ("pv", "minpv")) or (cheap and cfg["mode"] in ("pv", "minpv")):
         ph = 1 if cfg["ph"] == "1" else 3
         out.update(frc=2, amp=cfg["maxA"], psm=1 if ph == 1 else 2, ph=ph, state="voll")
-        out["reason"] = ("Schnellladen mit dem höchsten Ladestrom." if cfg["mode"] == "now" else
+        out["reason"] = out["reason"] + ("Schnellladen mit dem höchsten Ladestrom." if cfg["mode"] == "now" else
                          "Ladeplan: Ohne Netzstrom würde das Ziel nicht rechtzeitig erreicht." if due else
                          f"Strompreis unter {cfg['priceMax']} ct/kWh: Es wird mit Netzstrom geladen.")
         mem["above_since"] = mem["below_since"] = None
@@ -231,13 +256,15 @@ def decide(cfg: dict[str, Any], inp: dict[str, Any], mem: dict[str, Any], now_ts
         surplus = 0.0
     if not inp.get("bat_ok", True):
         surplus = 0.0
-        out["reason"] = f"Die Hausbatterie lädt zuerst (unter {cfg['batSoc']} %). "
+        out["reason"] += f"Die Hausbatterie lädt zuerst (unter {cfg['batSoc']} %). "
     charging = car == CAR_CHARGING
     ph = phases_for(cfg, surplus, inp.get("cur_ph") if charging else None)
     last = mem.get("ph_change_ts")
     cur_ph = inp.get("cur_ph")
     if charging and cur_ph in (1, 3) and ph != cur_ph and last is not None and now_ts - last < PHASE_HOLD_S:
         ph = cur_ph  # Phasen nicht zu oft umschalten
+    if settle and mem.get("ph_set") in (1, 3):
+        ph = mem["ph_set"]  # während das Auto nach dem Umschalten neu startet, nicht gleich wieder zurückschalten
     amp = min(cfg["maxA"], int(surplus // (VOLT * ph)))
     out.update(ph=ph, psm=1 if ph == 1 else 2)
     if cfg["mode"] == "minpv":

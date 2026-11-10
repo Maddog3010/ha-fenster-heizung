@@ -2,6 +2,25 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b10] - 2026-11-10
+
+### Neu
+- **Sponsor Max 2 – Woche voraus:** 7 Tage mit Sonne (heute und morgen aus Modul 16, danach aus der Bewölkung geschätzt), Wetter, Preisniveau (Tibber, soweit bekannt) und Heizbedarf, dazu Empfehlungen: bester Waschtag, Auto am Sonnentag laden, Akku vor trüben Tagen voll halten. Der beste Tag steht auch im Morgen-Briefing.
+- **Sponsor Max 2 – Wächter:** vergleicht jedes Gerät aus Modul 4 mit den letzten 4 gleichen Wochentagen (ab +30 %, mit Euro), die PV mit der Prognose (ab −30 %), meldet einen stillen Wechselrichter bei Sonne und nachts offene Fenster. „7 Tage ignorieren“, Meldung aufs Handy, Funde auch im Morgen-Briefing.
+- **Sponsor Max 2 – Was wäre, wenn …:** Rechner mit den Stundenwerten der letzten 12 Monate aus der Langzeitstatistik: größerer Akku und mehr PV – Ersparnis pro Jahr, Autarkie vorher/nachher, Netzbezug, Einspeisung, Monatsvergleich und „bezahlt nach ca. … Jahren“. Immer als Schätzung gekennzeichnet. Tibber, Wärmepumpe und Dämmung folgen.
+- **Sponsor Max 3 – Haus-Autopilot I:** plant alle 15 Minuten die nächsten 24 Stunden für Geräte (bestes Sonnenfenster), Auto (heute nur Sonne statt Netz) und Warmwasser (PV-Überschuss nutzen). Stufen „Aus“, „Nur Vorschläge“ und „Mit Bestätigung“ (Ja/Nein in der Lounge oder am Handy). Not-Aus nimmt alles zurück. Abwesend und Urlaub haben Vorrang. „Automatisch“ kommt mit Max 4.
+- **Sponsor Max 3 – Heizplan-Assistent:** aus der gelernten Aufheizzeit je Raum Vorschläge zum früheren Absenken (mit Ersparnis in Liter) oder früheren Aufheizen (Komfort). „Übernehmen“ ändert den Heizplan, „Rückgängig“ stellt ihn wieder her.
+- **Sponsor Max 3 – Beta-Kanal:** Vorabversionen 30 statt 14 Tage früher (Sponsoren 14 Tage), neueste Testversion mit „In HACS öffnen“ und Rückmelde-Knopf mit Diagnose-Angaben (nur Version, Module, Browser).
+- **Anpassen in Modul 2, 3 und 4:** wie in Modul 1 und auf der Startseite – Karten am Griff verschieben, mit dem Auge ausblenden, „Zurücksetzen“. In Modul 4 lassen sich zusätzlich die Geräte sortieren und ausblenden. Kopf und Zeitraum bleiben oben. Gespeichert für alle Nutzer, in Sicherungen enthalten.
+- **Modul 1 Entfeuchter – Nachtmodus:** eigene Nachtzeit (z. B. 22–7 Uhr), nachts nur bei hoher Feuchte (eigene Grenze) oder ganz aus, kein Vorziehen bei PV oder günstigem Strom, Leise-/Schlafmodus des Geräts (wenn vorhanden) und Meldungen bis zum Morgen zurückhalten.
+- **Sensorsuche:** Suchfeld über allen Reitern (Name, Entitäts-ID, Raum, Gerät, Hersteller). Im Filter werden alle Räume und Integrationen angezeigt, nicht nur die ersten 14 im Alphabet.
+- **Modul 8:** Akkukapazität mit einer Nachkommastelle (z. B. 77,4 kWh), Eingabe direkt oder in 0,1er-Schritten.
+
+### Behoben
+- **Einstellungen → Darstellung:** Die Zeile „Startseite“ verschwand, sobald „Startseite verwenden“ aus war – damit ließ sie sich nicht mehr einschalten.
+- **Modul 8 Phasenumschaltung:** Nach dem Umschalten (z. B. von 3 auf 1 Phase) meldet die Wallbox kurz „fertig“ (0 W). Das galt als „fertig geladen“, die Ladung wurde beendet. Jetzt gilt „fertig“ 5 Minuten nach dem Umschalten und 2 Minuten direkt nach dem Laden nur als Pause; die Phasen bleiben dabei, wie sie sind. Anzeige „kurze Pause“; „Ladeziel erreicht“ und das Ende des Schnellstarts erst, wenn das Auto wirklich fertig ist.
+- **Modul 19 eigenes mdi-Symbol:** „Mdi:…“ mit großem Anfangsbuchstaben (iPhone) oder mit „_“ wurde still ignoriert, das alte Symbol blieb. Jetzt wird es vereinheitlicht (mdi:solar-panel), sonst gibt es einen Hinweis.
+
 ## [2026.11.2b9] - 2026-11-07
 
 ### Neu

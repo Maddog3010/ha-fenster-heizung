@@ -25,6 +25,10 @@ Schritt 5 (nur NFC): Am Stellplatz klebt ein NFC-Tag. Die Tags gehören zu „Ta
 „Entfeuchter steht hier“ (lf_here, Gerät|Raum); dort laufen auch Personen, Zeitfenster und Protokoll. Das Feld „nfc“ je
 Gerät wird nur noch gelesen, um Tags aus 2026.11.1b14/b15 einmalig dorthin zu übernehmen.
 
+Nachtmodus: In der eingestellten Nachtzeit (z. B. 22–7 Uhr) läuft der Entfeuchter nur bei hoher Feuchte (eigene
+Nacht-Grenze, kein Vorziehen) oder bleibt ganz aus. Optional schaltet Modul 1 den Leise-/Schlafmodus des Geräts ein
+(humidifier mit passendem Modus) und hält Meldungen bis zum Morgen zurück.
+
 Oben stehen reine Rechenfunktionen ohne Home-Assistant-Importe (testbar), unten der Manager.
 """
 from __future__ import annotations
@@ -53,6 +57,8 @@ FULL_STATES = {"on", "true", "full", "voll", "problem", "1"}
 _HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 _NOTIFY = re.compile(r"^notify\.[a-z0-9_]{1,120}$")
 MISS = ("same", "pause", "hint")
+NIGHT_MODES = ("hi", "off")
+QUIET_MODES = ("sleep", "night", "quiet", "silent", "schlaf", "nacht", "leise", "ruhe", "comfort_sleep")
 ACT_PREFIX = "FHLF_"          # Aktionen der Handy-Benachrichtigung: FHLF_<Gerät>_L_<Standort> und FHLF_<Gerät>_OFF (alt: FHLF_L_…)
 PUSH_ROOMS = 3                # so viele Raum-Tasten in der Benachrichtigung (Android zeigt höchstens drei)
 
@@ -66,6 +72,8 @@ def default_dev() -> dict[str, Any]:
         # Schritt 4: Nennleistung ohne Messung, Vorziehen bei PV-Überschuss oder günstigem Strom, Meldungen
         "watt": 250.0, "boost": "off", "boost_hi": 57.0, "cheap_ct": 25.0, "pv_min": 300.0,
         "msg": {"full": True, "high": True, "noloc": True, "filter": True}, "high_h": 4.0, "filter_h": 0.0,
+        # Nachtmodus
+        "night": False, "n_from": "22:00", "n_to": "07:00", "n_mode": "hi", "hi_night": 70.0, "n_quiet": True, "n_msg": True,
     }
 
 
@@ -138,9 +146,17 @@ def clean_dev(raw: Any, did: str = "d1") -> dict[str, Any]:
         "msg": {k: m.get(k) is not False for k in ("full", "high", "noloc", "filter")},
         "high_h": _num(r.get("high_h"), 1, 48, d["high_h"]), "filter_h": _num(r.get("filter_h"), 0, 5000, 0),
         "nfc": clean_nfc(r.get("nfc")),
+        "night": r.get("night") is True,
+        "n_from": r.get("n_from") if isinstance(r.get("n_from"), str) and _HM.match(r["n_from"]) else d["n_from"],
+        "n_to": r.get("n_to") if isinstance(r.get("n_to"), str) and _HM.match(r["n_to"]) else d["n_to"],
+        "n_mode": r.get("n_mode") if r.get("n_mode") in NIGHT_MODES else "hi",
+        "hi_night": _num(r.get("hi_night"), 40, 95, d["hi_night"]),
+        "n_quiet": r.get("n_quiet") is not False, "n_msg": r.get("n_msg") is not False,
     }
     if out["lo"] >= out["hi"]:
         out["lo"] = max(25.0, out["hi"] - 5)
+    if out["hi_night"] < out["hi"]:
+        out["hi_night"] = out["hi"]
     if out["hi_away"] < out["hi"]:
         out["hi_away"] = out["hi"]
     if not out["lo"] < out["boost_hi"] <= out["hi"]:  # Vorziehen liegt zwischen Unter- und Obergrenze
@@ -212,6 +228,24 @@ def tank_fill(dev: dict[str, Any], run_h: float) -> float | None:
     return max(0.0, run_h * dev["lph"] / dev["cap_l"])
 
 
+def in_night(dev: dict[str, Any], hm: str) -> bool:
+    """Liegt die Uhrzeit „HH:MM“ in der Nachtzeit des Geräts (auch über Mitternacht)?"""
+    if not dev.get("night"):
+        return False
+    a, b = dev["n_from"], dev["n_to"]
+    if a == b:
+        return False
+    return a <= hm < b if a < b else (hm >= a or hm < b)
+
+
+def quiet_mode(modes: Any) -> str:
+    """Passender Leise-/Schlafmodus aus available_modes eines humidifier (oder "")."""
+    for m in modes if isinstance(modes, (list, tuple)) else []:
+        if isinstance(m, str) and any(q in m.lower() for q in QUIET_MODES):
+            return m
+    return ""
+
+
 def decide(dev: dict[str, Any], ctx: dict[str, Any], is_on: bool) -> tuple[bool | None, bool, str, list[str]]:
     """Soll das Gerät laufen? Ergebnis: (an?, harter Grund, Kennung, Gründe für „Warum?“).
 
@@ -234,10 +268,14 @@ def decide(dev: dict[str, Any], ctx: dict[str, Any], is_on: bool) -> tuple[bool 
         return False, True, "no_hum", [f"Luftfeuchte in {ctx.get('loc_name') or 'diesem Raum'} fehlt. Sicherheitshalber aus."]
     if ctx.get("open"):
         return False, True, "window", [f"Fenster offen ({', '.join(ctx['open'])}). Lüften hilft gerade mehr."]
-    away = bool(ctx.get("away"))
+    away, night = bool(ctx.get("away")), bool(ctx.get("night"))
+    if night and dev.get("n_mode") == "off":
+        return False, True, "night", [f"Nachtmodus bis {dev['n_to']} Uhr: Der Entfeuchter bleibt aus."]
     hi = dev["hi_away"] if away else dev["hi"]
+    if night:
+        hi = max(hi, dev.get("hi_night", hi))
     lo = hi - (dev["hi"] - dev["lo"])
-    tag = " (Abwesenheit: nur Schutz vor Schimmel)" if away else ""
+    tag = " (Abwesenheit: nur Schutz vor Schimmel)" if away else f" (Nachtmodus bis {dev['n_to']} Uhr)" if night else ""
     t, ot, orh = ctx.get("t"), ctx.get("out_t"), ctx.get("out_rh")
     if dev["vent"] and hum > lo and t is not None and ot is not None and orh is not None and abs_h(ot, orh) < abs_h(t, hum) - 0.5:
         return False, False, "vent", [f"Feuchte {hum:.0f} %. Draußen ist die Luft trockener: Lüften statt Entfeuchten."]
@@ -247,12 +285,12 @@ def decide(dev: dict[str, Any], ctx: dict[str, Any], is_on: bool) -> tuple[bool 
         return False, False, "target", [f"Ziel erreicht: Feuchte {hum:.0f} % ist bei {lo:.0f} % oder darunter{tag}."]
     if hum > hi:
         return True, False, "start", [f"Feuchte {hum:.0f} % über der Obergrenze {hi:.0f} %: einschalten bis {lo:.0f} %{tag}."]
-    b = ctx.get("boost") or ""
+    b = "" if night else (ctx.get("boost") or "")
     bhi = dev["boost_hi"] + (hi - dev["hi"])
     if b and hum > bhi:
         why = "PV-Überschuss" if b == "pv" else "Strom gerade günstig"
         return True, False, "boost", [f"{why}: Feuchte {hum:.0f} % über {bhi:.0f} %, vorgezogen bis {lo:.0f} %{tag}."]
-    return False, False, "ok", [f"Feuchte {hum:.0f} % in Ordnung. Ein ab {hi:.0f} %" + (f", bei PV-Überschuss oder günstigem Strom ab {bhi:.0f} %" if dev["boost"] != "off" else "") + f"{tag}."]
+    return False, False, "ok", [f"Feuchte {hum:.0f} % in Ordnung. Ein ab {hi:.0f} %" + (f", bei PV-Überschuss oder günstigem Strom ab {bhi:.0f} %" if dev["boost"] != "off" and not night else "") + f"{tag}."]
 
 
 # --------------------------------------------------------------------------- Manager
@@ -275,7 +313,7 @@ def _fnum(st: Any) -> float | None:
 def new_state() -> dict[str, Any]:
     """Laufzustand eines Geräts. days: je Tag min, kwh, eur, lit. locs: je Tag {"l": Standort oder "off", "h": Art}."""
     return {"loc": "", "off_day": "", "on_ts": 0.0, "off_ts": 0.0, "days": {}, "locs": {}, "tank_h": 0.0, "full_ts": 0.0,
-            "conf_day": "", "sent_day": "", "miss_day": "", "filter_h": 0.0, "high_ts": 0.0, "sent": {}}
+            "conf_day": "", "sent_day": "", "miss_day": "", "filter_h": 0.0, "high_ts": 0.0, "sent": {}, "held": [], "q_prev": ""}
 
 
 def load_state(s: Any) -> dict[str, Any]:
@@ -288,6 +326,8 @@ def load_state(s: Any) -> dict[str, Any]:
         "tank_h": float(s.get("tank_h") or 0), "full_ts": float(s.get("full_ts") or 0), "filter_h": float(s.get("filter_h") or 0),
         "conf_day": str(s.get("conf_day") or ""), "sent_day": str(s.get("sent_day") or ""), "miss_day": str(s.get("miss_day") or ""),
         "high_ts": float(s.get("high_ts") or 0), "sent": {str(k): str(v) for k, v in (s.get("sent") or {}).items()},
+        "held": [x for x in (s.get("held") or []) if isinstance(x, dict) and isinstance(x.get("t"), str)][-10:],
+        "q_prev": str(s.get("q_prev") or ""),
     })
     days = s.get("days") if isinstance(s.get("days"), dict) else {}
     st["days"] = {str(k): {f: float((v or {}).get(f) or 0) for f in ("min", "kwh", "eur", "lit")} for k, v in days.items() if isinstance(v, dict)}
@@ -483,6 +523,32 @@ class EntfeuchterManager:
         except Exception as err:  # noqa: BLE001
             _LOGGER.warning("Luftentfeuchter %s konnte nicht geschaltet werden: %s", dev["ent"], err)
 
+    def _qmode(self, dev: dict[str, Any]) -> str:
+        """Leise-/Schlafmodus, den das Gerät anbietet (nur humidifier mit available_modes)."""
+        if not dev["ent"].startswith("humidifier."):
+            return ""
+        st = self.hass.states.get(dev["ent"])
+        return quiet_mode(st.attributes.get("available_modes")) if st is not None else ""
+
+    async def _quiet(self, dev: dict[str, Any], ds: dict[str, Any], want: bool) -> None:
+        """Nachts den Leise-Modus setzen, morgens den vorherigen Modus wiederherstellen."""
+        qm = self._qmode(dev)
+        st = self.hass.states.get(dev["ent"]) if dev["ent"] else None
+        if st is None or st.state in ("unavailable", "unknown"):
+            return
+        cur = str(st.attributes.get("mode") or "")
+        try:
+            if want and qm and not ds["q_prev"]:
+                ds["q_prev"] = cur or "__none__"
+                if cur != qm:
+                    await self.hass.services.async_call("humidifier", "set_mode", {"entity_id": dev["ent"], "mode": qm}, blocking=False)
+            elif not want and ds["q_prev"]:
+                prev, ds["q_prev"] = ds["q_prev"], ""
+                if prev != "__none__" and cur == qm and prev != qm:
+                    await self.hass.services.async_call("humidifier", "set_mode", {"entity_id": dev["ent"], "mode": prev}, blocking=False)
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.warning("Luftentfeuchter %s: Leise-Modus nicht gesetzt: %s", dev["ent"], err)
+
     def _event(self, dev: dict[str, Any], typ: str, **extra: Any) -> None:
         ds = self._ds(dev["id"])
         self.hass.bus.async_fire(EVENT, {"type": typ, "device": dev["id"], "name": dev["name"], "room": self._name(ds["loc"]), "location": ds["loc"], **extra})
@@ -493,6 +559,12 @@ class EntfeuchterManager:
         if not dev["msg"].get(key) or ds["sent"].get(key) == mark:
             return
         ds["sent"][key] = mark
+        if dev.get("n_msg") and in_night(dev, dt_util.now().strftime("%H:%M")):
+            ds["held"] = [x for x in ds["held"] if x.get("k") != key] + [{"k": key, "t": text}]  # nachts zurückhalten, morgens senden
+            return
+        await self._push(dev, key, text)
+
+    async def _push(self, dev: dict[str, Any], key: str, text: str) -> None:
         for svc in dev["ask"]["push"]:
             name = svc.split(".", 1)[1]
             if self.hass.services.has_service("notify", name):
@@ -573,6 +645,14 @@ class EntfeuchterManager:
         ctx = {"loc": ds["loc"] if room else "", "loc_name": room["name"] if room else "", "hum": hum, "t": t, "open": open_w,
                "away": away, "out_t": ot, "out_rh": orh, "avail": on is not None, "full": full, "boost": boost,
                "day_off": ("pause" if (ds["locs"].get(today) or {}).get("h") == "pause" else True) if ds["off_day"] == today else False}
+        night = in_night(dev, dt_util.now().strftime("%H:%M"))
+        ctx["night"] = night
+        if dev["kind"] != "watch":
+            await self._quiet(dev, ds, night and dev["n_quiet"])
+        if not night and ds["held"]:
+            held, ds["held"] = ds["held"], []
+            for x in held:
+                await self._push(dev, x.get("k", "msg"), x["t"])
         want, hard, code, why = decide(dev, ctx, bool(on))
         hint = ""
         if on and dev["power"] and not running:
@@ -602,7 +682,7 @@ class EntfeuchterManager:
         rname = room["name"] if room else ""
         if full:
             await self._notify(dev, "full", str(int(ds["full_ts"])), f"Wassertank voll{f' ({rname})' if rname else ''}. Bitte leeren und im Dashboard „Tank geleert“ tippen.")
-        hi_now = dev["hi_away"] if away else dev["hi"]
+        hi_now = max(dev["hi_away"] if away else dev["hi"], dev["hi_night"] if night and dev["n_mode"] == "hi" else 0)
         if running and hum is not None and hum > hi_now:
             ds["high_ts"] = ds["high_ts"] or now
         else:
@@ -629,7 +709,8 @@ class EntfeuchterManager:
             "code": code, "why": why, "hint": hint, "on": on, "running": running, "want": want, "hum": hum, "t": t,
             "loc_name": rname, "open": open_w, "away": away, "full": full, "fill": fill, "boost": boost, "power": round(pw),
             "since": ds["on_ts"] if on else ds["off_ts"], "today_min": round((ds["days"].get(today) or {}).get("min", 0.0), 1),
-            "msgs": msgs, "filter_h": round(ds["filter_h"], 1), "price": price, "pv_w": round(pv_w) if pv_w is not None else None,
+            "msgs": msgs, "filter_h": round(ds["filter_h"], 1), "night": night, "held": len(ds["held"]),
+            "quiet": self._qmode(dev), "quiet_on": bool(ds["q_prev"]), "price": price, "pv_w": round(pv_w) if pv_w is not None else None,
         }
 
     # ---- Tägliche Standortabfrage (Schritt 2)

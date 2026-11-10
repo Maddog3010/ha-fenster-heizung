@@ -13,7 +13,8 @@
   /* Vorabversionen: ein Lab mit early: "JJJJ-MM-TT" sehen Sponsoren (Schalter „Vorabversionen zuerst“) vorher, alle anderen ab diesem Tag */
   _labEarlyTs(x) { if (!x.early) return 0; const t = new Date(x.early + "T00:00:00").getTime(); return isFinite(t) ? t : 0; }
   _labIsEarly(x) { return !!x.early && Date.now() < this._labEarlyTs(x); }
-  _labVisible(x) { return !this._labIsEarly(x) || this._spnEarly(); }
+  /* Vorabversionen: Sponsoren sehen ein Lab 14 Tage vor allen anderen, Sponsor Max (Beta-Kanal, Max 3) 30 Tage */
+  _labVisible(x) { if (!this._labIsEarly(x)) return true; if (!this._spnEarly()) return false; const left = (this._labEarlyTs(x) - Date.now()) / 864e5; return left <= (this._lgMax && this._lgMax() ? 30 : 14); }
   _labEarlyDate(x) { return new Date(this._labEarlyTs(x)).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }); }
   _labEarlyHidden() { return this._labCat0().filter((x) => !this._labVisible(x)); }
   _labCat0() {
