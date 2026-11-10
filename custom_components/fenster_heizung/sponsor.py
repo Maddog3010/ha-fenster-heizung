@@ -128,7 +128,7 @@ def priv_matches(priv: Any) -> bool:
 
 
 def default_prefs() -> dict[str, Any]:
-    return {"badge": True, "grad": "none", "clock": "standard", "early": False, "badge_style": "gold", "name_head": False, "brief": True, "poster": True, "thanks": False, "coach": True, "report": True}
+    return {"badge": True, "grad": "none", "clock": "standard", "early": False, "badge_style": "gold", "name_head": False, "brief": True, "poster": True, "coach": True, "report": True}
 
 
 def clean_prefs(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -144,7 +144,7 @@ def clean_prefs(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
         out["clock"] = raw["clock"]
     if raw.get("badge_style") in BADGES:
         out["badge_style"] = raw["badge_style"]
-    for k in ("name_head", "brief", "poster", "thanks", "coach", "report"):
+    for k in ("name_head", "brief", "poster", "coach", "report"):
         if isinstance(raw.get(k), bool):
             out[k] = raw[k]
     for k, v in default_prefs().items():
@@ -200,7 +200,7 @@ class SponsorManager:
                 if isinstance(s, dict) and ID_RE.match(str(s.get("id", ""))) and verify_key(s.get("key"), date(2000, 1, 1))["ok"]:
                     self.sponsors.append({
                         "id": s["id"], "name": clean_name(s.get("name")), "bis": str(s.get("bis")), "since": str(s.get("since") or ""),
-                        "note": str(s.get("note") or "")[:120], "danke": bool(s.get("danke")), "key": s["key"],
+                        "note": str(s.get("note") or "")[:120], "key": s["key"],
                         "revoked": bool(s.get("revoked")), "revoked_at": str(s.get("revoked_at") or ""),
                         "stufe": s.get("stufe") if s.get("stufe") in TIERS else "sponsor", "sb": str(s.get("sb") or ""),
                     })
@@ -304,7 +304,6 @@ class SponsorManager:
         return {
             "setup": False, "items": items, "count": count,
             "revoked_json": json.dumps({"gesperrt": revoked}, ensure_ascii=False),
-            "danke": [i["name"] for i in items if i["danke"] and i["state"] in ("ok", "soon")],
         }
 
     # ------------------------------------------------------------ Änderungen (Nutzer)
@@ -358,7 +357,7 @@ class SponsorManager:
             n += 1
         return f"{n:04d}"
 
-    def create(self, name: str, bis: str = "", note: str = "", danke: bool = False, stufe: str = "sponsor") -> dict[str, Any]:
+    def create(self, name: str, bis: str = "", note: str = "", stufe: str = "sponsor") -> dict[str, Any]:
         stufe = stufe if stufe in TIERS else "sponsor"
         if not self.priv:
             return {"ok": False, "error": "no_priv"}
@@ -384,7 +383,7 @@ class SponsorManager:
         key = make_key(self.priv, name, until.isoformat(), sid, stufe=stufe, issued=today.isoformat(), sb=sb)
         self.sponsors.append({
             "id": sid, "name": name, "bis": until.isoformat(), "since": today.isoformat(), "note": str(note or "")[:120],
-            "danke": bool(danke), "key": key, "revoked": False, "revoked_at": "", "stufe": stufe, "sb": sb,
+            "key": key, "revoked": False, "revoked_at": "", "stufe": stufe, "sb": sb,
         })
         self._save()
         return {"ok": True, "id": sid, "key": key}
@@ -413,14 +412,6 @@ class SponsorManager:
             return False
         s["revoked"] = bool(on)
         s["revoked_at"] = dt_util.now().date().isoformat() if on else ""
-        self._save()
-        return True
-
-    def set_danke(self, sid: str, on: bool) -> bool:
-        s = self._find(sid)
-        if s is None:
-            return False
-        s["danke"] = bool(on)
         self._save()
         return True
 

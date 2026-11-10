@@ -1524,7 +1524,7 @@ async def ws_spn_admin_setup(hass: HomeAssistant, connection, msg: dict) -> None
 
 @websocket_api.require_admin
 @websocket_api.websocket_command({
-    vol.Required("type"): "fenster_heizung/spn_admin_act", vol.Required("act"): vol.In(["create", "extend", "revoke", "unrevoke", "danke", "remove", "forget", "devoff", "notifysoon"]),
+    vol.Required("type"): "fenster_heizung/spn_admin_act", vol.Required("act"): vol.In(["create", "extend", "revoke", "unrevoke", "remove", "forget", "devoff", "notifysoon"]),
     vol.Optional("stufe"): vol.In(["sponsor", "max"]), vol.Optional("sid"): str, vol.Optional("name"): str, vol.Optional("bis"): str, vol.Optional("note"): str, vol.Optional("on"): bool,
 })
 @websocket_api.async_response
@@ -1545,15 +1545,13 @@ async def ws_spn_admin_act(hass: HomeAssistant, connection, msg: dict) -> None:
         connection.send_result(msg["id"], {"ok": True, **mgr.snapshot(True)})
         return
     if act == "create":
-        res = mgr.create(msg.get("name", ""), msg.get("bis", ""), msg.get("note", ""), bool(msg.get("on")), msg.get("stufe", "sponsor"))
+        res = mgr.create(msg.get("name", ""), msg.get("bis", ""), msg.get("note", ""), msg.get("stufe", "sponsor"))
     elif act == "extend":
         res = mgr.extend(sid)
     elif act == "revoke":
         res = {"ok": mgr.revoke(sid, True)}
     elif act == "unrevoke":
         res = {"ok": mgr.revoke(sid, False)}
-    elif act == "danke":
-        res = {"ok": mgr.set_danke(sid, bool(msg.get("on")))}
     elif act == "remove":
         res = {"ok": mgr.remove(sid)}
     elif act == "forget":

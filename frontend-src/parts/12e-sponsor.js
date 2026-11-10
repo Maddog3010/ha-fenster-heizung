@@ -63,7 +63,7 @@
     else if (a === "spncreate") {
       const q = (f) => this.shadowRoot.querySelector(`[data-f="${f}"]`), name = String((q("spnname") || {}).value || "").trim();
       if (!name) { this._modal.err = "Bitte einen Namen eingeben."; this._renderModal(); return; }
-      this._spnAdm({ act: "create", stufe: this._modal.stufe === "max" ? "max" : "sponsor", name, bis: String((q("spnbis") || {}).value || ""), note: String((q("spnnote") || {}).value || ""), on: !!(q("spndk") || {}).checked }, (r) => {
+      this._spnAdm({ act: "create", stufe: this._modal.stufe === "max" ? "max" : "sponsor", name, bis: String((q("spnbis") || {}).value || ""), note: String((q("spnnote") || {}).value || "") }, (r) => {
         if (!r.ok) { this._modal.err = r.error === "date" ? "Das Datum ist ungültig." : "Das ging nicht."; this._renderModal(); return; }
         this._modal = { type: "spnadm", view: "done", id: r.id, key: r.key }; this._renderModal();
       });
@@ -74,7 +74,6 @@
     else if (a === "spnrev") { this._spnAdm({ act: "revoke", sid: k }, () => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._toast("Gesperrt. Jetzt noch die Liste im Repo ändern."); }); }
     else if (a === "spnunrev") { this._spnAdm({ act: "unrevoke", sid: k }, () => { this._renderModal(); this._toast("Sperre aufgehoben. Die Liste im Repo muss auch angepasst werden."); }); }
     else if (a === "spndel") { this._spnAdm({ act: "remove", sid: k }, () => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); }); }
-    else if (a === "spndk") { const s = ((this._spnA || {}).items || []).find((x) => x.id === k); if (s) this._spnAdm({ act: "danke", sid: k, on: !s.danke }, () => this._renderModal()); }
     else if (a === "spnmine") { this._spnRedeem(this._modal.key, true); }
     else if (a === "spncopy") this._spnCopy(this._modal.key, "Schlüssel kopiert");
     else if (a === "spnmsg") {
@@ -83,7 +82,6 @@
     }
     else if (a === "spnjson2") this._spnCopy(b.dataset.j || "{}", "Liste kopiert");
     else if (a === "spnjson") this._spnCopy(((this._spnA || {}).revoked_json || "{}"), "Liste kopiert");
-    else if (a === "spndanke") this._spnCopy(((this._spnA || {}).danke || []).map((n) => `- ${n}`).join("\n"), "Danke-Liste kopiert");
     else if (a === "spnsetup") {
       const el = this.shadowRoot.querySelector('[data-f="spnpriv"]'), v = el ? String(el.value || "").trim() : "";
       this._hass.callWS({ type: "fenster_heizung/spn_admin_setup", priv: v }).then((r) => { if (!r.ok) { this._modal.err = "Das ist nicht der richtige private Schlüssel."; this._renderModal(); return; } this._spnA = r; this._spnLoad().then(() => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._render(); }); }).catch(() => this._toast("Das ging nicht"));
@@ -154,12 +152,11 @@
     };
     if (m.view === "new") {
       const mx = m.stufe === "max", kp = m.keep || {}, d = new Date(); if (mx) d.setMonth(d.getMonth() + 3); else d.setFullYear(d.getFullYear() + 1); const def = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-      return wrap(head("Neuer Sponsor", "Stufe und drei Angaben", "spnlist"), `<div class="of"><div class="ol"><b>Stufe</b><span>Max nur bei monatlichem Sponsoring. Läuft Max ab, gilt bis zum Ende des Sponsor-Jahres automatisch wieder „Sponsor“.</span></div></div>
-        <div class="gschs" style="margin:0 0 10px"><button class="gsch ${mx ? "" : "sel"}" data-act="spnstufe" data-k="sponsor" aria-pressed="${!mx}">${ic("heart", 13)} Sponsor · 1 Jahr</button><button class="gsch spng ${mx ? "sel" : ""}" data-act="spnstufe" data-k="max" aria-pressed="${mx}">★ Max · 3 Monate</button></div>
-        <div class="of"><div class="ol"><b>Name</b><span>Erscheint im Abzeichen und, wenn erlaubt, in der Danke-Liste</span></div></div><input class="osel" data-f="spnname" maxlength="40" placeholder="z. B. Anna K." aria-label="Name" value="${esc(kp.name || "")}" style="width:100%;margin:0 0 8px">
+      return wrap(head("Neuer Sponsor", "Stufe und drei Angaben", "spnlist"), `<div class="of"><div class="ol"><b>Stufe</b><span>Max kostet 9 € für 3 Monate. Läuft Max ab, gilt bis zum Ende des Sponsor-Jahres automatisch wieder „Sponsor“.</span></div></div>
+        <div class="gschs" style="margin:0 0 10px"><button class="gsch ${mx ? "" : "sel"}" data-act="spnstufe" data-k="sponsor" aria-pressed="${!mx}">${ic("heart", 13)} Sponsor · 1 Jahr</button><button class="gsch spng ${mx ? "sel" : ""}" data-act="spnstufe" data-k="max" aria-pressed="${mx}">★ Max · 3 Monate für 9 €</button></div>
+        <div class="of"><div class="ol"><b>Name</b><span>Erscheint im Abzeichen</span></div></div><input class="osel" data-f="spnname" maxlength="40" placeholder="z. B. Anna K." aria-label="Name" value="${esc(kp.name || "")}" style="width:100%;margin:0 0 8px">
         <div class="of"><div class="ol"><b>Gültig bis</b><span>Vorgabe: ${mx ? "drei Monate" : "ein Jahr"} ab heute</span></div></div><input class="osel" type="date" data-f="spnbis" value="${def}" aria-label="Gültig bis" style="width:100%;margin:0 0 8px">
         <div class="of"><div class="ol"><b>Notiz (nur für dich)</b></div></div><input class="osel" data-f="spnnote" maxlength="120" placeholder="z. B. GitHub: annak" aria-label="Notiz" value="${esc(kp.note || "")}" style="width:100%;margin:0 0 8px">
-        <label class="spnck"><input type="checkbox" data-f="spndk"> In der Danke-Liste nennen (Sponsor ist einverstanden)</label>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div><div class="gbtns" style="margin-top:8px"><button class="btn2 pri" data-act="spncreate">${ic("key", 16)} Schlüssel erzeugen</button></div>`);
     }
     if (m.view === "done") {
@@ -176,14 +173,13 @@
       return wrap(head(`${esc(s.name)}`, "Sperren oder entfernen", "spnlist"), `<div class="mut sm" style="margin:0 0 8px">Beim Sperren wird der Schlüssel hier als gesperrt markiert. Damit er auch beim Sponsor aufhört zu gelten, muss die Sperrliste im Repo aktualisiert werden. Die Datei heißt <b>sponsor_gesperrt.json</b>. Bis dahin gilt der Schlüssel, spätestens bis zum Ablaufdatum.</div>
         <div class="spnkeybox" style="color:#9be7c4">${esc(json)}</div>
         <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnjson2" data-j="${esc(json)}">${ic("copy", 16)} Liste kopieren</button><button class="btn2 pri" data-act="spnrev" data-k="${s.id}" ${s.state === "revoked" ? "disabled" : ""}>${ic("lock", 16)} Sperren</button></div>
-        <label class="spnck" style="margin-top:10px"><input type="checkbox" data-act="spndk" data-k="${s.id}" ${s.danke ? "checked" : ""}> In der Danke-Liste nennen</label>
         <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spndel" data-k="${s.id}">${ic("trash", 16)} Aus der Liste löschen</button></div>`);
     }
     const c = A.count || {};
     return wrap(head("Sponsoren verwalten", "Nur für dich sichtbar", "spnback"), `<div class="spnsum"><div><small>Aktiv</small><b>${(c.ok || 0) + (c.soon || 0)}</b></div><div><small>★ Max</small><b class="gd">${c.max || 0}</b></div><div><small>Laufen bald ab</small><b class="${c.soon ? "wa" : ""}">${c.soon || 0}</b></div><div><small>Abgelaufen oder gesperrt</small><b>${(c.expired || 0) + (c.revoked || 0)}</b></div></div>
       ${A.items.length ? A.items.map(item).join("") : `<div class="mut sm" style="margin:10px 0">Noch keine Sponsoren. Lege den ersten an.</div>`}
       <div class="vrow" style="margin-top:10px"><span>Meldung, wenn ein Schlüssel bald abläuft<small class="mut" style="display:block">Einmal am Tag in Home Assistant: Max 14 Tage, Sponsor 30 Tage vorher</small></span><button class="sw ${this._spnS().notify_soon ? "on" : ""}" data-act="spnsoon" aria-pressed="${!!this._spnS().notify_soon}" aria-label="Meldung bei Ablauf"></button></div>
-      <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="spnnew">${ic("heart", 16)} Neuer Sponsor</button><button class="btn2" data-act="spndanke" ${A.danke.length ? "" : "disabled"}>${ic("copy", 16)} Danke-Liste kopieren</button></div>
+      <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="spnnew">${ic("heart", 16)} Neuer Sponsor</button></div>
       <div class="mut sm" style="margin-top:10px">Namen, Daten und Notizen bleiben in deinem Home Assistant. Das Dashboard weist dich ${30} Tage vor Ablauf darauf hin.</div>
       <div class="lsec" style="margin-top:16px">${ic("flask", 15)}Zum Testen</div>
       <div class="vrow"><span>Entwickler-Zugang aktiv<small class="mut" style="display:block">Aus: Extras, Vorabversionen und Module nur für Sponsoren sind gesperrt – so wie ohne Sponsoring. Diese Verwaltung bleibt erreichbar.</small></span><button class="sw ${this._spnS().dev_off ? "" : "on"}" data-act="spndev" data-k="${this._spnS().dev_off ? "on" : "off"}" aria-pressed="${!this._spnS().dev_off}" aria-label="Entwickler-Zugang aktiv"></button></div>

@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b14] - 2026-11-10
+
+### Geändert
+- **Sponsor-Bereich:** Die Danke-Liste ist entfernt – in der Lounge (Schalter „In der Danke-Liste nennen“), in „Sponsoren verwalten“ (Knopf „Danke-Liste kopieren“, Häkchen beim Anlegen und Sperren) und im Backend.
+- **Sponsor Max:** Hinweis „3 Monate für 9 €“ auf „Sponsor werden“, in der Lounge, beim Anlegen eines Max-Sponsors und in der vorbereiteten Mail.
+- **Beta-Versionen ab 2026.11.2:** Hinweis im Beta-Kanal („sofort mit Sponsor Max installierbar“), auf „Sponsor werden“ (Sponsor: 3 Tage nach Erscheinen, Max: sofort) und in der Lounge für Sponsoren.
+
 ## [2026.11.2b13] - 2026-11-10
 
 ### Neu
