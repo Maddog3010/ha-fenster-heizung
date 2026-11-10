@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b13] - 2026-11-10
+
+### Neu
+- **Modul 4 v1.5 – Stufe 4 der neuen Optik:**
+  - **Geräte-Szene im Banner:** die drei wichtigsten Geräte (laufende, heute fertige, dann die mit den meisten Läufen; Kühlgeräte nicht) hängen an einer Stromleiste – gelb bei Solar, violett bei Batterie, rot bei Netz. Laufende Geräte bekommen ein leuchtendes Kabel und ihre Leistung als Plakette, fertige „fertig 12:27“, bereite „ab 11:30 ☀“. Links der Herkunfts-Ring; Antippen schaltet zwischen „heute“ und dem gewählten Zeitraum. In den Einstellungen abschaltbar (dann der bisherige Banner).
+  - **Tablet-Modus:** quer eine Geräte-Wand mit sechs großen Kacheln (laufende zuerst, mehr Geräte mit ‹ ›), hoch die Liste. Ein gerade fertiges Gerät leuchtet 15 Minuten türkis. Antippen öffnet die Geräte-Seite.
+  - **Bewegung** (nur Modul 4): Aus · Dezent · Voll – Kabel fließen, Fortschritt gleitet, bei „Voll“ leuchten Kabel und Plaketten. Im Tablet-Modus immer aus.
+  - **W2 Standby** auf der Geräte-Seite: „Standby 1,8 W · 4,73 € im Jahr“ (gleitend über etwa 7 Tage gemessen, ab einigen Stunden Daten).
+  - **W4 Monatsziel** „€ mit Sonne gespart“ als Fortschritt im Banner (Einstellungen, 0 = aus).
+  - **W7 Dein Jahr:** „Mit Sonne gewaschen: 19 von 24“ je Gerät als Karte (unter „Anpassen“ verschiebbar) und als Bild zum Teilen. Gezählt wird ab Modul 4 v1.3, das laufende Jahr wird aus den gespeicherten Läufen vorbelegt.
+
 ## [2026.11.2b12] - 2026-11-10
 
 ### Neu

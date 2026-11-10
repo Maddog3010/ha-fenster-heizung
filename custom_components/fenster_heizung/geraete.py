@@ -27,6 +27,7 @@ FC_REFRESH_S = 600.0  # Stundenprognose für die Startempfehlung alle 10 Minuten
 
 RLOG_KEEP = 200  # Läufe für den Energie-Coach (etwa die letzten Wochen)
 CURVE_KEEP = 6  # v1.3: so viele Programm-Kurven je Gerät bleiben gespeichert (Speicher klein halten)
+SB_SPAN_S = 7 * 86400  # Standby: gleitendes Mittel über etwa 7 Tage
 CURVE_MAX = 180  # höchstens so viele Punkte je Kurve
 CURVE_STEP_S = 60  # ein Kurvenpunkt pro Minute: [Sekunden seit Start, Solar W, Batterie W, Netz W]
 TYP_RUNS = 10  # typischer Lauf aus den letzten 10 Läufen
@@ -52,7 +53,9 @@ class GeraeteManager:
         self._fc_ts = 0.0
         self._fc_src = ""  # v1.4: "Modul 16" (Prognose) oder "avg7" (Mittel der letzten 7 Tage)
         self._px: dict[int, float] = {}  # v1.4: Stundenbeginn → Strompreis in ct (Tibber)
-        self.pvh: dict[str, dict[str, float]] = {}  # v1.4: je Tag und Stunde die PV-Erzeugung in Wh (für die Prognose ohne Modul 16)
+        self.pvh: dict[str, dict[str, float]] = {}
+        self.sb: dict[str, list[float]] = {}  # v1.5 W2: Standby je Gerät [Wh, Sekunden] außerhalb der Läufe (gleitend, etwa 7 Tage)
+        self.yr: dict[str, dict[str, list[float]]] = {}  # v1.5 W7: je Jahr und Gerät [Läufe, Läufe mit Sonne (über 70 % eigen, Solar über 50 %), kWh, gespart €]  # v1.4: je Tag und Stunde die PV-Erzeugung in Wh (für die Prognose ohne Modul 16)
 
     # ---- Konfiguration aus dem Modul-Manager
     def _modules(self) -> dict[str, Any]:
@@ -90,7 +93,19 @@ class GeraeteManager:
             if isinstance(v, list):
                 self.durs[str(k)] = [float(x) for x in v if isinstance(x, (int, float)) and x > 0][-RUNS_KEEP:]
         self.pvh = {str(k): {str(h): float(w) for h, w in (v or {}).items()} for k, v in (saved.get("pvh") or {}).items() if isinstance(v, dict)}
+        self.sb = {str(k): [float(v[0]), float(v[1])] for k, v in (saved.get("sb") or {}).items() if isinstance(v, list) and len(v) == 2}
+        self.yr = {str(y): {str(k): [float(x) for x in v][:4] for k, v in (d or {}).items() if isinstance(v, list) and len(v) >= 4} for y, d in (saved.get("yr") or {}).items() if isinstance(d, dict)}
         self.rlog = [r for r in (saved.get("rlog") or []) if isinstance(r, dict) and isinstance(r.get("t"), (int, float))][-RLOG_KEEP:]
+        y0 = dt_util.now().strftime("%Y")
+        if y0 not in self.yr:  # W7: das laufende Jahr aus den gespeicherten Läufen vorbelegen (Aufteilung gibt es seit v1.3)
+            for r in self.rlog:
+                if dt_util.as_local(dt_util.utc_from_timestamp(r["t"])).strftime("%Y") != y0 or r.get("s") is None or not r.get("kwh"):
+                    continue
+                y = self.yr.setdefault(y0, {}).setdefault(r["d"], [0.0, 0.0, 0.0, 0.0])
+                y[0] += 1
+                y[1] += 1 if (r["s"] + r.get("b", 0)) / r["kwh"] >= 0.7 and r["s"] / r["kwh"] >= 0.5 else 0
+                y[2] = round(y[2] + r["kwh"], 3)
+                y[3] = round(y[3] + r.get("sv", 0), 3)
         rem = saved.get("remind") if isinstance(saved.get("remind"), dict) else {}
         for k, v in rem.items():
             if isinstance(v, (int, float)) and v > time.time():
@@ -107,7 +122,7 @@ class GeraeteManager:
         self._rem_unsub.clear()
 
     def _save(self) -> None:
-        self._store.async_delay_save(lambda: {"days": self.days, "last": self.last, "typ": self.typ, "durs": self.durs, "remind": self.remind, "rlog": self.rlog, "pvh": self.pvh}, 30)
+        self._store.async_delay_save(lambda: {"days": self.days, "last": self.last, "typ": self.typ, "durs": self.durs, "remind": self.remind, "rlog": self.rlog, "pvh": self.pvh, "sb": self.sb, "yr": self.yr}, 30)
 
     async def async_config_changed(self) -> None:
         ids = {d["id"] for d in self._cfg()["devices"]}
@@ -194,6 +209,12 @@ class GeraeteManager:
                 run["low"] = now
             if run is None:
                 self._live[did] = [0.0, 0.0, 0.0]
+                w_sb = self._w(d["ent"]) if dt > 0 else None
+                if w_sb is not None:  # v1.5 W2: Standby gleitend über etwa 7 Tage (ohne Messwert: nicht zählen)
+                    acc = self.sb.setdefault(did, [0.0, 0.0])
+                    k = max(0.0, 1 - dt / SB_SPAN_S)
+                    acc[0] = acc[0] * k + max(w_sb, 0.0) * dt / 3600
+                    acc[1] = acc[1] * k + dt
                 continue
             # Quellen so aufteilen, dass andere laufende Geräte vorher abgezogen werden
             parts = split_power(g, s, b, n)
@@ -237,6 +258,11 @@ class GeraeteManager:
         rec = {"d": did, "n": dev["name"], "t": int(run["start"]), "kwh": round(kwh, 3), "g": round(run["e"][2], 3), "c": round(run["cost"], 3),
                "s": round(run["e"][0], 3), "b": round(run["e"][1], 3), "sv": round(run["saved"], 3), "dur": round(dur), "cv": thin(run.get("cv") or [], CURVE_MAX)}
         self.rlog = (self.rlog + [rec])[-RLOG_KEEP:]
+        y = self.yr.setdefault(dt_util.now().strftime("%Y"), {}).setdefault(did, [0.0, 0.0, 0.0, 0.0])  # v1.5 W7
+        y[0] += 1
+        y[1] += 1 if kwh > 0 and share >= 70 and run["e"][0] / kwh >= 0.5 else 0
+        y[2] = round(y[2] + kwh, 3)
+        y[3] = round(y[3] + run["saved"], 3)
         keep = 0
         for r in reversed(self.rlog):  # nur die letzten Kurven je Gerät behalten
             if r.get("d") == did and r.get("cv"):
@@ -384,6 +410,8 @@ class GeraeteManager:
                 "last": self.last.get(did), "cover": round(cover), "advice": advice(cover),
                 "runs": len(self.durs.get(did, [])), "med": round(median(self.durs.get(did, []))),
                 "best": None if run else self._best(d), "remind": self.remind.get(did),
+                "sbw": round(self.sb[did][0] * 3600 / self.sb[did][1], 1) if did in self.sb and self.sb[did][1] >= 6 * 3600 else None,
+                "yr": self.yr.get(now.strftime("%Y"), {}).get(did),
             })
             hist[did] = history(days)
         h0 = int((now.replace(hour=0, minute=0, second=0, microsecond=0)).timestamp())

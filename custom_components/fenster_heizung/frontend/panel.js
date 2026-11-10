@@ -730,7 +730,7 @@ const MV = {
   fh: { v: "1.7", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.2", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  gs: { v: "1.4", b: 1, d: "2026-11-10", p: "2026.11.2b12", log: [["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2121,7 +2121,7 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .gsrun{display:flex;align-items:center;gap:10px;width:100%;padding:8px 6px;border:0;border-top:1px solid var(--line);background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;border-radius:10px}.gsrun:first-of-type{border-top:0}.gsrun.sel{background:color-mix(in srgb,var(--teal) 10%,transparent)}
 .gsrimg{flex:none;display:grid;place-items:center}.gsrt{flex:1 1 auto;min-width:0;display:flex;flex-direction:column}.gsrt b{font-size:.88rem}.gsrt small{font-size:.74rem;color:var(--mut)}.gsrt small.run{color:#10b981}.gsrt small.done{color:var(--teal)}.gsrt small.ok{color:#10b981}
 .gsrbar{flex:0 1 120px;height:7px;border-radius:9px;overflow:hidden;display:flex;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.gsrc{flex:none;font-size:.9rem;min-width:52px;text-align:right}.gsx{font-style:normal;font-size:.62rem;font-weight:700;color:#f87171;background:color-mix(in srgb,#f87171 14%,transparent);border-radius:99px;padding:1px 6px;margin-left:4px}
-.gsbig{display:flex;flex-wrap:wrap;align-items:center;gap:12px;width:100%;border:0;text-align:left;color:inherit;font:inherit;cursor:pointer;margin-bottom:10px;box-shadow:inset 0 0 0 1px color-mix(in srgb,#10b981 35%,transparent)}.gsbig .g2prog{flex:1 1 100%;margin:0}
+.gsbigc{display:flex;flex-wrap:wrap;align-items:center;gap:12px;width:100%;border:0;text-align:left;color:inherit;font:inherit;cursor:pointer;margin-bottom:10px;box-shadow:inset 0 0 0 1px color-mix(in srgb,#10b981 35%,transparent)}.gsbigc .g2prog{flex:1 1 100%;margin:0}
 .gslist{display:flex;flex-direction:column;gap:8px}.gsrow2{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0;border-radius:16px;background:var(--card);color:inherit;font:inherit;text-align:left;cursor:pointer}.gschev{flex:none;color:var(--mut);transform:rotate(-90deg);display:grid}
 .g2h{cursor:pointer}
 .gssun{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;border-radius:12px;font-size:.86rem;background:color-mix(in srgb,#fbbf24 12%,transparent)}.gssun svg{flex:none;width:26px;height:26px}
@@ -2131,6 +2131,23 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .gswa .gswr{display:flex;align-items:center;gap:10px;width:100%;padding:6px 2px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}.gswn{flex:0 0 130px;font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gswt{flex:1;position:relative;height:12px;border-radius:9px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.gswt i{position:absolute;top:0;bottom:0;border-radius:9px;background:#2dd4a0}.gswr b{flex:none;font-size:.84rem;min-width:52px;text-align:right}.gswr small{flex:none;font-size:.72rem;color:var(--mut);min-width:34px;text-align:right}
 @media(max-width:640px){.gswn{flex-basis:84px}}
+.gssh{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:10px;align-items:center;padding:16px 18px;overflow:hidden;background:radial-gradient(120% 140% at 100% 100%,rgba(45,212,191,.12),transparent 60%),linear-gradient(135deg,#0f2a2a,#0b1418)!important;color:#e6edf3}
+.gssl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;min-width:0}.gsrg{border:0;background:none;padding:0;cursor:pointer;position:relative;display:grid}.gsst2{display:flex;flex-direction:column;min-width:0}.gsst2 small{font-size:.8rem;opacity:.85}.gsst2 .own{color:#fbbf24}.gssh .gsst2 .gsbig{font-size:2.3rem;font-weight:800;line-height:1.05}.gssh .gsbig small{font-size:1.1rem}
+.gssh .chip{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#e6edf3}.gssum{grid-column:1/-1;font-size:.84rem;opacity:.85}.gssl .chips{grid-column:1/-1;margin:2px 0 0}.gssr{min-width:0}.gsscene{width:100%;height:auto;display:block}
+.gsgoal{grid-column:1/-1;display:flex;flex-direction:column;gap:4px;font-size:.78rem;margin-top:4px}.gsgoal i{display:block;height:6px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden}.gsgoal i b{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#34d399)}.gsgoal svg{color:#fbbf24;vertical-align:-2px}
+@media(max-width:760px){.gssh{grid-template-columns:1fr}.gssr{order:-1;margin:-6px -6px 0}}
+.gsa-soft .gscab{animation:gsflow 2.4s linear infinite}.gsa-full .gscab{animation:gsflow 1s linear infinite}.gsa-full .gsglow{animation:gsglow 1.6s ease-in-out infinite}.gsa-full .gsplq{animation:gsglow 2.2s ease-in-out infinite}
+@keyframes gsflow{to{stroke-dashoffset:-20}}@keyframes gsglow{0%,100%{opacity:.1}50%{opacity:.35}}
+.gsa-soft .g2prog i,.gsa-full .g2prog i{transition:width 1.2s ease}.gsa-off *{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){.gscab,.gsglow,.gsplq{animation:none!important}}
+.gswh2{display:flex;align-items:baseline;gap:12px;margin:0 2px 12px;font-size:1.05rem}.gswh2 b{color:#34d399;font-size:1.4rem}.gswh2 small{color:var(--mut)}
+.gswall{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.gswt2{display:flex;flex-direction:column;gap:14px;min-height:190px;border:0;text-align:left;color:inherit;font:inherit;cursor:pointer;position:relative;overflow:hidden}
+.gswt2::before{content:"";position:absolute;top:0;left:25%;right:25%;height:3px;border-radius:0 0 3px 3px;background:#64748b;opacity:.5}.gswt2.run::before{background:#10b981;opacity:1}.gswt2.fresh{box-shadow:0 0 0 2px #2dd4bf,0 0 24px rgba(45,212,191,.45)}.gswt2.fresh::before{background:#2dd4bf;opacity:1}
+.gswth{display:flex;align-items:center;gap:12px}.gswth .gsrt b{font-size:1.05rem}.gswtv{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto}.gswtv>b{font-size:1.5rem;font-weight:800}.gswtv .gsrbar{flex:0 1 45%}.g2prog.empty{visibility:hidden}
+.gswpg{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:12px}.gswpg .nx{transform:rotate(180deg)}
+.gslist.big .gsrow2{padding:14px 16px}.gslist.big .gsrt b{font-size:1rem}
+.gsyr h2{display:flex;align-items:center;gap:8px}.gsyrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}.gsyrs>div{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:color-mix(in srgb,#fbbf24 9%,transparent)}.gsyrs svg{flex:none;width:34px;height:34px}.gsyrs span{display:flex;flex-direction:column;min-width:0}.gsyrs b{font-size:.86rem}.gsyrs small{font-size:.74rem;color:var(--mut)}
+.gssby{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;font-size:.8rem;color:var(--mut)}.gssby b{color:var(--primary-text-color)}.gssby em{font-style:normal;font-size:.72rem;color:#fbbf24}
 .lgfoot{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:22px 0 8px;font-size:.74rem;color:var(--mut)}.lgfoot .lnk{font-size:.74rem;opacity:.7}
 .lgexd{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}.lgexd p{margin:0;font-size:.92rem;line-height:1.45}
 .lgposter{background:#0b0e12;border-radius:14px;padding:10px}
@@ -6216,6 +6233,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     else if (a === "gsold") { G.cards_old = !G.cards_old; this._mdSave(); this._renderModal(); }
     else if (this._gsDetAct && this._gsDetAct(a, b)) return;
+    else if (this._gsSzAct && this._gsSzAct(a, b)) return;
     else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }
     else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._mdSave(); this._renderModal(); } }
   }
@@ -6254,6 +6272,9 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="mut sm" style="margin:2px 0 0">Prognose-Sensor in Watt (optional). Ohne Sensor zählt die aktuelle Solarleistung.</div>${this._wzSel(pw, G.forecast, "gsfc", "", "– keiner –", /prognose|forecast|solar|pv/i)}
       <div class="lsec">${ic("grid", 15)}Darstellung</div>
       <div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Gerätekarten aus v1.1 mit Balken statt HD-Bild und Herkunfts-Ring</small></span><button class="sw ${G.cards_old ? "on" : ""}" data-act="gsold" aria-pressed="${!!G.cards_old}" aria-label="Karten wie bisher"></button></div>
+      <div class="vrow"><span>Geräte-Szene im Banner<small class="mut" style="display:block">Aus: einheitlicher Banner wie in den anderen Modulen</small></span><button class="sw ${G.scene !== false ? "on" : ""}" data-act="gsscene" aria-pressed="${G.scene !== false}"></button></div>
+      <div class="vrow"><span>Bewegung<small class="mut" style="display:block">Dezent: Fortschritt und Ring gleiten, Kabel fließen langsam. Voll: Kabel leuchten, Plaketten pulsieren. Im Tablet-Modus immer aus.</small></span><span class="gschs">${[["off", "Aus"], ["soft", "Dezent"], ["full", "Voll"]].map(([k, t]) => `<button class="gsch ${(G.anim || "soft") === k ? "sel" : ""}" data-act="gsanim" data-k="${k}">${t}</button>`).join("")}</span></div>
+      <div class="vrow"><span>Monatsziel „mit Sonne gespart“<small class="mut" style="display:block">Fortschritt im Banner, 0 = aus</small></span><span class="lgstep"><button class="ibtn" data-act="gsgoal" data-k="-5" aria-label="weniger">${ic("minus", 16)}</button><b>${num(G.goal || 0, 0)} €</b><button class="ibtn" data-act="gsgoal" data-k="5" aria-label="mehr">${ic("plus", 16)}</button></span></div>
       <div class="lsec">${ic("bell", 15)}Meldung am Ende eines Durchlaufs und für „Erinnern“</div>
       ${opts.length ? `<div class="gschips">${opts.map((n) => `<button class="gsch ${G.notify.includes(n) ? "sel" : ""}" data-act="gsnot" data-k="${esc(n)}" aria-pressed="${G.notify.includes(n)}">${esc(n.replace("notify.", ""))}</button>`).join("")}</div>` : `<div class="mut sm">Keine Benachrichtigungsdienste gefunden.</div>`}
       <div class="mut sm" style="margin:6px 0 0">Zusätzlich wird das Ereignis <code>geraetestrom_run_finished</code> ausgelöst.</div>
@@ -6328,6 +6349,7 @@ class FensterHeizungPanel extends HTMLElement {
     const ring = this._modRing(T.own != null ? T.own : 0, "eigener Strom");
     const hero = `${warn}<div class="card hero mh hr a-gs gshero">${this._modLogo("gs")}${ring}<div class="mut" style="opacity:.85">${ic("laundry", 16)} ${esc(per)} gespart</div><div class="gsbig">${eur(T.sv)}</div>
       <div style="opacity:.85">${num(T.n)} ${T.n === 1 ? "Durchlauf" : "Durchläufe"} · ${num(T.kwh, 1)} kWh · Kosten ${eur(T.c)}</div>${chips ? `<div class="chips">${chips}</div>` : ""}</div>`;
+    const heroX = G.scene !== false && this._gsNewCards() ? `${warn}${this._gsHeroScene(devs, P, chips)}` : hero;
     const nav = `<div class="ennav"><div class="seg wwseg enseg" role="group" aria-label="Zeitraum">${[["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]].map(([k, l]) => `<button class="${P.rg === k ? "sel" : ""}" data-act="gsrange" data-k="${k}" aria-pressed="${P.rg === k}">${l}</button>`).join("")}</div>
       <div class="enper"><button class="ibtn" data-act="gsoff" data-k="-1" aria-label="Zurück">${ic("back", 18)}</button><b>${esc(per)}</b><button class="ibtn nx${P.cur ? " dis" : ""}" data-act="gsoff" data-k="1" aria-label="Weiter"${P.cur ? ' aria-disabled="true"' : ""}>${ic("back", 18)}</button>${P.cur ? "" : `<button class="lnk ennow" data-act="gsoff" data-k="0">Heute</button>`}</div></div>`;
     const tl = [["saved", "total", "Gespart", eur(T.sv), "#34d399", `${eur(T.c)} Kosten`, cmp(T.sv, V && V.sv, "up")], ["cost", "bolt", "Kosten", eur(T.c), "#f87171", T.n ? `Ø ${eur(T.c / T.n)} je Durchlauf` : "kein Durchlauf", cmp(T.c, V && V.c, "down")],
@@ -6345,8 +6367,9 @@ class FensterHeizungPanel extends HTMLElement {
         ${this._gsSpark(d.id, P)}
         ${adv && !run ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung jetzt ${num(d.cover, 0)} %</span></div>` : ""}</div>`; })())).join("");
     if (this._gsTipX != null) Promise.resolve().then(() => this._gsTipShow());
-    if (this._gsPhone()) return `${hero}${nav}${this._gsList(this._mpDevs(devs), P, tiles)}`;
-    return `${hero}${nav}${this._mpWrap("gs", { kacheln: tiles, fenster: this._gsWinAll(this._mpDevs(devs)), geraete: `<div class="gsgrid">${cards}</div>`, verlauf: this._gsChart(D, devs, P) })}`;
+    if (this._tmOn && this._tmOn()) return `${warn}${this._gsWall(this._mpDevs(devs), P)}`;
+    if (this._gsPhone()) return `${heroX}${nav}${this._gsList(this._mpDevs(devs), P, tiles)}`;
+    return `${heroX}${nav}${this._mpWrap("gs", { kacheln: tiles, fenster: this._gsWinAll(this._mpDevs(devs)), geraete: `<div class="gsgrid">${cards}</div>`, verlauf: this._gsChart(D, devs, P), jahr: this._gsYearCard(this._mpDevs(devs)) })}`;
   }
   /* ---- Modul 4 v1.2: Gerätekarten 2.0 (HD-Bild mit Herkunfts-Ring, Prozentzeile, Restzeit ab 3 Läufen, drei Felder, Empfehlung mit „Erinnern“).
      Schalter „Karten wie bisher“ (G.cards_old) oder Neue Optik „wie bisher“ zeigt die Karten aus v1.1. */
@@ -6613,7 +6636,7 @@ class FensterHeizungPanel extends HTMLElement {
     const sub = run && Ri ? (Ri.learn ? `seit ${this._gsHm(d.since * 1000)} · lernt die Laufzeit (${Ri.n}/3)` : `seit ${this._gsHm(d.since * 1000)} · noch ~${Math.max(1, Math.round(Ri.rest / 60))} Min. · fertig ~${this._gsHm(Ri.end)}`) : `${esc(GS_TYP[ty].n)} · ${esc(per)}: ${num(A.kwh, 2)} kWh · ${num(A.c, 2)} €`;
     const head = `<div class="gsdh"><button class="lnk gsback" data-act="gsdetx">${ic("back", 16)} Gerätestrom</button></div>
       <div class="card gsdtop"><div class="gsdimg">${this._gxRing(this._gsHd(d), mix, 168, { on: run })}</div><div class="gsdinfo"><h2>${esc(d.name)}</h2><div>${st}</div><small>${sub}</small>${run && Ri && !Ri.learn ? `<div class="g2prog"><i style="width:${Math.round(Ri.p * 100)}%"></i></div>` : ""}
-        <div class="gsdsl">${run ? "Gerade" : shown && shown.s != null ? (sel ? "Dieser Lauf" : "Letzter Lauf") : esc(per)}</div>${this._gsShareTiles(v)}</div></div>`;
+        ${this._gsStandby(d)}<div class="gsdsl">${run ? "Gerade" : shown && shown.s != null ? (sel ? "Dieser Lauf" : "Letzter Lauf") : esc(per)}</div>${this._gsShareTiles(v)}</div></div>`;
     const sumLine = shown ? `${shown.live ? `seit ${this._gsHm(shown.t * 1000)}` : `${this._gsWhen(shown.t * 1000)}${shown.dur ? ` – ${this._gsHm((shown.t + shown.dur) * 1000)}` : ""}`} · ${shown.dur ? this._gsDur(shown.dur) + " · " : ""}${num(shown.kwh || 0, 2)} kWh${shown.c != null ? ` · ${num(shown.c, 2)} € Kosten` : ""}${shown.sv != null ? ` · ${num(shown.sv, 2)} € gespart` : ""}${shown.kwh && shown.s != null ? ` · ${num(shown.s / shown.kwh * 100, 0)} % Solar` : ""}` : "";
     const curve = `<div class="card gsdc"><h2>${ic("chart", 18)}${shown ? (shown.live ? "Dieser Lauf" : sel ? "Ausgewählter Lauf" : "Letzter Lauf") : "Programm-Kurve"}<span class="legend gsleg2">${GS_SRC.map((t, i) => `<span><i style="background:${GS_COL[i]}"></i>${t}</span>`).join("")}</span></h2>
       ${shown ? `<div class="mut sm" style="margin:-4px 0 6px">${sumLine}</div>${this._gsCurve(shown.cv, shown.t, ty)}<div class="lgnote2">Die Fläche zeigt die Herkunft des Stroms. Abschnitte wie „Aufheizen“ werden aus Leistungssprüngen erkannt und sind nur ein Hinweis.</div>` : `<div class="s3learn">${ic("chart", 18)}<span>${C.busy && !C.d ? "Lädt …" : "Noch kein Lauf aufgezeichnet. Nach dem nächsten Durchlauf steht hier seine Kurve."}</span></div>`}</div>`;
@@ -6635,7 +6658,7 @@ class FensterHeizungPanel extends HTMLElement {
   _gsPhone() { return !this._mpEdit() && this.clientWidth > 0 && this.clientWidth < 640; }
   _gsList(devs, P, tiles) {
     const per = this._gsLabel(P), runs = devs.filter((d) => d.running), rest = devs.filter((d) => !d.running).map((d) => ({ d, a: this._gsAgg([d.id], P).t })).sort((x, y) => y.a.c - x.a.c);
-    const big = runs.map((d) => { const a = this._gsAgg([d.id], P).t, R = this._gsRestInfo(d); return `<button class="card gsbig" data-act="gsdet" data-k="${esc(d.id)}"><span class="gsrimg">${this._gxRing(this._gsHd(d), { pv: d.w[0], bat: d.w[1], net: d.w[2] }, 62, { on: true })}</span><span class="gsrt"><b>${esc(d.name)}</b><small class="run">${wfmt(d.w[0] + d.w[1] + d.w[2])}${R && !R.learn ? ` · noch ~${Math.max(1, Math.round(R.rest / 60))} Min.` : ""}</small></span><b class="gsrc">${num(a.c, 2)} €</b>${R && !R.learn ? `<span class="g2prog"><i style="width:${Math.round(R.p * 100)}%"></i></span>` : ""}</button>`; }).join("");
+    const big = runs.map((d) => { const a = this._gsAgg([d.id], P).t, R = this._gsRestInfo(d); return `<button class="card gsbigc" data-act="gsdet" data-k="${esc(d.id)}"><span class="gsrimg">${this._gxRing(this._gsHd(d), { pv: d.w[0], bat: d.w[1], net: d.w[2] }, 62, { on: true })}</span><span class="gsrt"><b>${esc(d.name)}</b><small class="run">${wfmt(d.w[0] + d.w[1] + d.w[2])}${R && !R.learn ? ` · noch ~${Math.max(1, Math.round(R.rest / 60))} Min.` : ""}</small></span><b class="gsrc">${num(a.c, 2)} €</b>${R && !R.learn ? `<span class="g2prog"><i style="width:${Math.round(R.p * 100)}%"></i></span>` : ""}</button>`; }).join("");
     const st = (d) => { const m = this._gsMode(d), B = d.best; return m === "done" ? `<small class="done">fertig ${this._gsHm(d.last.ts)}</small>` : this._gsTyp(d) === "kuehl" ? `<small class="ok">läuft dauernd</small>` : B && B.ts * 1000 > Date.now() ? `<small>bereit · ab ${this._gsHm(B.ts * 1000)} ☀</small>` : `<small>bereit</small>`; };
     const rows = rest.map(({ d, a }) => `<button class="gsrow2" data-act="gsdet" data-k="${esc(d.id)}"><span class="gsrimg">${this._gxRing(this._gsHd(d), a.v[0] + a.v[1] + a.v[2] > 0 ? { pv: a.v[0], bat: a.v[1], net: a.v[2] } : {}, 40)}</span><span class="gsrt"><b>${esc(d.name)}</b>${st(d)}</span><b class="gsrc">${num(a.c, 2)} €</b><span class="gschev">${ic("chev", 16)}</span></button>`).join("");
     return `${runs.length ? `<div class="lgh4">Läuft jetzt</div>${big}` : ""}<div class="lgh4">Alle Geräte · ${esc(per)}</div><div class="gslist">${rows || `<div class="mut sm">Alle Geräte laufen gerade.</div>`}</div><div class="gsltiles">${tiles}</div>`;
@@ -6688,6 +6711,118 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="card gswa"><h2>${ic("clock", 18)}Startfenster · ${rows.every((r) => r.W.tomorrow) ? "morgen" : "heute"}<span class="mut" style="font-weight:400;font-size:.78rem;margin-left:auto">6–22 Uhr</span></h2>
       ${rows.map(({ d, W }) => `<button class="gswr" data-act="gsdet" data-k="${esc(d.id)}"><span class="gsrimg">${this._gx(this._gsHd(d), 28, { on: true, lvl: 80 })}</span><span class="gswn">${esc(d.name)}</span><span class="gswt"><i style="left:${pos(W, W.s).toFixed(1)}%;width:${Math.max(2, pos(W, W.e) - pos(W, W.s)).toFixed(1)}%"></i></span><b>${W.tomorrow ? "morgen " : ""}${this._gsHm(W.s * 1000)}</b><small>${num(d.best.pct, 0)} %</small></button>`).join("")}
       <div class="lgnote2">Antippen öffnet das Gerät mit dem Bild des Fensters und „Erinnern“.</div></div>`;
+  }
+  /* ================= Modul 4 v1.5 (Konzept „Neue Optik“, Stufe 4): Szene, Tablet, Bewegung, W2 Standby, W4 Ziel, W7 Jahr =================
+     A1 Geräte-Szene im Banner: die drei wichtigsten Geräte hängen an einer Stromleiste (Solar gelb, Netz rot, Batterie violett),
+        laufende mit leuchtendem Kabel und Plakette. Ring links = Herkunft, Antippen schaltet „heute“ ↔ gewählter Zeitraum.
+     H2 Tablet-Modus: quer eine Geräte-Wand mit sechs großen Kacheln (laufende zuerst), hoch die Liste. Fertig = Kachel leuchtet türkis.
+     Bewegung (nur Modul 4): Aus · Dezent · Voll; im Tablet-Modus immer aus (Fire-Tablet schonen).
+     W2 Standby je Gerät, W4 Monatsziel „€ mit Sonne“ im Banner, W7 Jahresrückblick zum Teilen. */
+  _gsAnim() { return this._tmOn && this._tmOn() ? "off" : (this._gsState().anim || "soft"); }
+  _gsDayP() { const s = new Date(); s.setHours(0, 0, 0, 0); return { rg: "day", s, e: new Date(+s + 864e5), n: 1, u: "d", off: 0, cur: true }; }
+  _gsMonthP() { const n = new Date(), s = new Date(n.getFullYear(), n.getMonth(), 1), e = new Date(n.getFullYear(), n.getMonth() + 1, 1); return { rg: "month", s, e, n: Math.round((e - s) / 864e5), u: "d", off: 0, cur: true }; }
+  /* Die drei wichtigsten: laufende, dann heute fertige, dann die mit den meisten Läufen */
+  _gsTop3(devs) {
+    const rk = (d) => (d.running ? 0 : this._gsMode(d) === "done" ? 1 : 2);
+    return devs.filter((d) => this._gsTyp(d) !== "kuehl").map((d, i) => ({ d, i })).sort((a, b) => rk(a.d) - rk(b.d) || (b.d.runs || 0) - (a.d.runs || 0) || a.i - b.i).slice(0, 3).map((x) => x.d);
+  }
+  _gsSrcNow(devs) {
+    const w = devs.filter((d) => d.running).reduce((a, d) => [a[0] + d.w[0], a[1] + d.w[1], a[2] + d.w[2]], [0, 0, 0]);
+    if (w[0] + w[1] + w[2] > 5) { const i = w.indexOf(Math.max(...w)); return ["pv", "bat", "net"][i]; }
+    const sun = this._hass.states["sun.sun"]; return sun && sun.state === "above_horizon" ? "pv" : "net";
+  }
+  _gsScene(devs) {
+    const top = this._gsTop3(devs), src = this._gsSrcNow(devs), C = { pv: "#fbbf24", bat: "#a78bfa", net: "#f87171" }[src], an = this._gsAnim(), day = src === "pv" || (this._hass.states["sun.sun"] || {}).state === "above_horizon";
+    const W = 640, H = 230, slot = top.length ? Math.min(150, 400 / top.length) : 150, x0 = W - 20 - slot * top.length;
+    const plq = (d) => { if (d.running) return [`${wfmt(d.w[0] + d.w[1] + d.w[2])}`, C, "run"]; if (this._gsMode(d) === "done") return [`fertig ${this._gsHm(d.last.ts)}`, "#2dd4bf", "done"]; if (d.best && d.best.ts * 1000 > Date.now()) return [`ab ${this._gsHm(d.best.ts * 1000)} ☀`, "#cbd5e1", ""]; return ["bereit", "#94a3b8", ""]; };
+    const devsSvg = top.map((d, i) => {
+      const cx = x0 + slot * i + slot / 2, [t, col, k] = plq(d), run = k === "run", img = this._gx(this._gsHd(d), 92, { on: run, lvl: 80 }).replace(/^<svg[^>]*>/, `<svg x="${(cx - 46).toFixed(1)}" y="118" width="92" height="92" viewBox="0 0 64 64">`);
+      const tw = Math.max(70, t.length * 8.6 + 26);
+      return `<line x1="${cx}" y1="36" x2="${cx}" y2="${run ? 128 : 124}" stroke="${run ? C : "#64748b"}" stroke-width="${run ? 5 : 1.5}" ${run ? `stroke-dasharray="3 7" stroke-linecap="round" class="gscab"` : 'opacity=".5"'}/>
+        ${run ? `<line x1="${cx}" y1="36" x2="${cx}" y2="128" stroke="${C}" stroke-width="14" opacity=".14" class="gsglow"/>` : ""}
+        <rect x="${(cx - tw / 2).toFixed(1)}" y="62" width="${tw.toFixed(1)}" height="30" rx="15" fill="#0b1220" fill-opacity=".85" stroke="${col}" stroke-opacity="${run || k === "done" ? 0.9 : 0.35}" ${run ? 'class="gsplq"' : ""}/>
+        <text x="${cx}" y="82" text-anchor="middle" font-size="14.5" font-weight="800" fill="${col}">${esc(t)}</text>${img}`;
+    }).join("");
+    const bars = Array.from({ length: 9 }, (_, i) => `<line x1="${60 + i * 70}" y1="0" x2="${60 + i * 70}" y2="${H}" stroke="#94a3b8" stroke-opacity=".05"/>`).join("");
+    const dots = Array.from({ length: 9 }, (_, i) => `<circle cx="${92 + i * 13}" cy="36" r="3.4" fill="${C}" opacity="${0.35 + i * 0.07}"/>`).join("");
+    return `<svg class="gsscene gsa-${an}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">
+      <defs><radialGradient id="gssg" cx=".65" cy=".55" r=".7"><stop offset="0" stop-color="${C}" stop-opacity=".16"/><stop offset="1" stop-color="${C}" stop-opacity="0"/></radialGradient></defs>
+      <rect width="${W}" height="${H}" fill="url(#gssg)"/>${bars}
+      <rect x="40" y="16" width="46" height="40" rx="6" fill="${day ? "#1e3a5f" : "#0b1220"}" stroke="#94a3b8" stroke-opacity=".3"/>${day ? `<circle cx="63" cy="36" r="9" fill="#fde047"/>` : `<path d="M66 28a9 9 0 1 0 6 13a7 7 0 1 1-6-13z" fill="#e2e8f0"/>`}
+      ${dots}<rect x="${Math.min(x0 - 10, 216)}" y="29" width="${W - Math.min(x0 - 10, 216) - 16}" height="14" rx="7" fill="#05080d" stroke="${C}" stroke-opacity=".35"/>
+      <line x1="${Math.min(x0 - 4, 222)}" y1="36" x2="${W - 24}" y2="36" stroke="${C}" stroke-width="2" opacity=".55"/>
+      ${devsSvg}<rect x="0" y="${H - 14}" width="${W}" height="14" fill="#000" opacity=".18"/></svg>`;
+  }
+  _gsHeroScene(devs, P, chips) {
+    const ids = devs.map((d) => d.id), useP = this._gsRingP === "period" && P.rg !== "day", PP = useP ? P : this._gsDayP(), T = this._gsAgg(ids, PP).t, per = useP ? this._gsLabel(P) : "Heute";
+    const mix = T.v[0] + T.v[1] + T.v[2] > 0 ? { pv: T.v[0], bat: T.v[1], net: T.v[2] } : {}, G = this._gsState();
+    let goal = "";
+    if (G.goal > 0) { const M = this._gsAgg(ids, this._gsMonthP()).t, f = Math.min(1, M.sv / G.goal); goal = `<div class="gsgoal"><span>${ic("sun", 13)} Monatsziel ${num(G.goal, 0)} € mit Sonne: <b>${num(M.sv, 2)} €</b> · ${num(f * 100, 0)} %</span><i><b style="width:${(f * 100).toFixed(1)}%"></b></i></div>`; }
+    return `<div class="card hero mh a-gs gshero gssh gsa-${this._gsAnim()}"><div class="gssl"><button class="gsrg" data-act="gsringt" title="Antippen: heute ↔ Zeitraum">${this._gxRing("pvRoof", mix, 96, { on: true })}</button>
+      <div class="gsst2"><small>${esc(per)} gespart</small><div class="gsbig">${num(T.sv, 2)}<small> €</small></div><small class="own">${T.own != null ? `${num(T.own, 0)} % eigener Strom` : ""}</small></div>
+      <div class="gssum">${num(T.n)} ${T.n === 1 ? "Durchlauf" : "Durchläufe"} · ${num(T.kwh, 1)} kWh · Kosten ${num(T.c, 2)} €</div>${chips ? `<div class="chips">${chips}</div>` : ""}${goal}</div>
+      <div class="gssr">${this._gsScene(devs)}</div></div>`;
+  }
+  /* ---- H2 Tablet: Geräte-Wand quer, Liste hoch ---- */
+  _gsWall(devs, P) {
+    const port = window.innerHeight > window.innerWidth, T = this._gsAgg(devs.map((d) => d.id), this._gsDayP()).t;
+    const rk = (d) => (d.running ? 0 : this._gsMode(d) === "done" ? 1 : 2), sorted = devs.map((d, i) => ({ d, i })).sort((a, b) => rk(a.d) - rk(b.d) || a.i - b.i).map((x) => x.d);
+    const st = (d) => { const R = this._gsRestInfo(d); return d.running ? `<small class="run">läuft · ${R && !R.learn ? `noch ${Math.max(1, Math.round(R.rest / 60))} Min.` : wfmt(d.w[0] + d.w[1] + d.w[2])}</small>` : this._gsMode(d) === "done" ? `<small class="done">fertig ${this._gsHm(d.last.ts)}</small>` : this._gsTyp(d) === "kuehl" ? `<small class="ok">läuft dauernd</small>` : `<small>${d.cover >= 70 ? `${num(d.cover, 0)} % Solar` : "aus"}</small>`; };
+    const fresh = (d) => this._gsMode(d) === "done" && Date.now() - new Date(d.last.ts).getTime() < 15 * 60000;
+    const head = `<div class="gswh2"><span>Heute gespart <b>${num(T.sv, 2)} €</b></span><small>${T.own != null ? `${num(T.own, 0)} % eigener Strom` : ""}</small></div>`;
+    if (port) return `${head}<div class="gslist big">${sorted.map((d) => { const a = this._gsAgg([d.id], this._gsDayP()).t; return `<button class="gsrow2" data-act="gsdet" data-k="${esc(d.id)}"><span class="gsrimg">${this._gxRing(this._gsHd(d), d.running ? { pv: d.w[0], bat: d.w[1], net: d.w[2] } : { pv: a.v[0], bat: a.v[1], net: a.v[2] }, 52, { on: d.running })}</span><span class="gsrt"><b>${esc(d.name)}</b>${st(d)}</span><b class="gsrc">${d.running ? wfmt(d.w[0] + d.w[1] + d.w[2]) : num(a.c, 2) + " €"}</b></button>`; }).join("")}</div>`;
+    const pg = Math.max(0, Math.min(this._gsWallP || 0, Math.ceil(sorted.length / 6) - 1)), six = sorted.slice(pg * 6, pg * 6 + 6);
+    const tile = (d) => {
+      const a = this._gsAgg([d.id], this._gsDayP()).t, base = d.running ? d.w : a.v, tot = base[0] + base[1] + base[2], R = this._gsRestInfo(d);
+      return `<button class="card gswt2 ${d.running ? "run" : ""} ${fresh(d) ? "fresh" : ""}" data-act="gsdet" data-k="${esc(d.id)}"><span class="gswth">${this._gxRing(this._gsHd(d), tot > 0 ? { pv: base[0], bat: base[1], net: base[2] } : {}, 64, { on: d.running })}<span class="gsrt"><b>${esc(d.name)}</b>${st(d)}</span></span>
+        <span class="gswtv"><b>${d.running ? wfmt(tot) : num(a.c, 2) + " €"}</b><span class="gsrbar">${tot > 0 ? base.map((x, i) => (x > 0 ? `<i style="flex:${x};background:${GS_COL[i]}"></i>` : "")).join("") : ""}</span></span>
+        ${d.running && R && !R.learn ? `<span class="g2prog"><i style="width:${Math.round(R.p * 100)}%"></i></span>` : `<span class="g2prog empty"></span>`}</button>`;
+    };
+    const pages = Math.ceil(sorted.length / 6);
+    return `${head}<div class="gswall">${six.map(tile).join("")}</div>${pages > 1 ? `<div class="gswpg"><button class="ibtn" data-act="gswp" data-k="-1" ${pg === 0 ? "disabled" : ""} aria-label="Vorige Geräte">${ic("back", 18)}</button><span>${pg + 1} / ${pages}</span><button class="ibtn nx" data-act="gswp" data-k="1" ${pg >= pages - 1 ? "disabled" : ""} aria-label="Nächste Geräte">${ic("back", 18)}</button></div>` : ""}`;
+  }
+  /* ---- W7 Jahresrückblick ---- */
+  _gsYearRows(devs) { return devs.filter((d) => d.yr && d.yr[0] > 0 && this._gsTyp(d) !== "kuehl").map((d) => ({ d, n: d.yr[0], sun: d.yr[1], kwh: d.yr[2], sv: d.yr[3] })).sort((a, b) => b.n - a.n); }
+  _gsVerb(d) { return { wasch: "gewaschen", spuel: "gespült", trockner: "getrocknet" }[this._gsTyp(d)] || "gelaufen"; }
+  _gsYearCard(devs) {
+    const R = this._gsYearRows(devs), y = new Date().getFullYear(); if (!R.length) return "";
+    const sv = R.reduce((a, r) => a + r.sv, 0), n = R.reduce((a, r) => a + r.n, 0), sun = R.reduce((a, r) => a + r.sun, 0);
+    return `<div class="card gsyr"><h2>${ic("today", 18)}Dein Jahr ${y}<button class="lgopen" data-act="gsyshare" style="margin-left:auto">Als Bild teilen</button></h2>
+      <div class="gsyrs">${R.slice(0, 4).map((r) => `<div>${this._gx(this._gsHd(r.d), 34, { on: true, lvl: 80 })}<span><b>Mit Sonne ${this._gsVerb(r.d)}: ${num(r.sun)} von ${num(r.n)}</b><small>${esc(r.d.name)} · ${num(r.sv, 2)} € gespart</small></span></div>`).join("")}</div>
+      <div class="lgnote2">${num(sun)} von ${num(n)} Läufen mit Sonne (über 70 % eigener Strom) · ${num(sv, 2)} € gespart. Gezählt wird seit Modul 4 v1.3.</div></div>`;
+  }
+  _gsYearSvg(devs) {
+    const R = this._gsYearRows(devs).slice(0, 4), y = new Date().getFullYear(), W = 1080, H = 1350, f = "Roboto,system-ui,sans-serif";
+    const sv = R.reduce((a, r) => a + r.sv, 0), n = R.reduce((a, r) => a + r.n, 0), sun = R.reduce((a, r) => a + r.sun, 0);
+    const row = (r, i) => { const yy = 560 + i * 170, im = this._gx(this._gsHd(r.d), 120, { on: true, lvl: 85 }).replace(/^<svg[^>]*>/, `<svg x="90" y="${yy}" width="120" height="120" viewBox="0 0 64 64">`);
+      return `<rect x="70" y="${yy - 15}" width="940" height="150" rx="28" fill="#fff" fill-opacity=".06"/>${im}<text x="240" y="${yy + 52}" font-family="${f}" font-size="42" font-weight="800" fill="#fbbf24">Mit Sonne ${this._gsVerb(r.d)}: ${r.sun} von ${r.n}</text><text x="240" y="${yy + 100}" font-family="${f}" font-size="30" fill="#9aa7b4">${esc(r.d.name)} · ${num(r.sv, 2)} € gespart</text>`; };
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:380px;display:block;margin:0 auto;border-radius:12px"><rect width="${W}" height="${H}" fill="#0f1419"/>
+      <text x="70" y="120" font-family="${f}" font-size="30" letter-spacing="7" font-weight="700" fill="#5eead4">STROM &amp; WÄRME · GERÄTESTROM</text>
+      <text x="66" y="250" font-family="${f}" font-size="120" font-weight="900" fill="#e6edf3">${y}</text>
+      <text x="70" y="350" font-family="${f}" font-size="46" font-weight="800" fill="#e6edf3">${sun} von ${n} Läufen mit Sonne</text>
+      <text x="70" y="420" font-family="${f}" font-size="40" fill="#34d399">${num(sv, 2)} € gespart</text>${R.map(row).join("")}
+      <text x="${W / 2}" y="${H - 60}" text-anchor="middle" font-family="${f}" font-size="26" fill="#9aa7b4">aus den eigenen Daten · github.com/Maddog3010</text></svg>`;
+  }
+  _gsYearShare() {
+    const devs = ((this._gsD || {}).devices) || [], svg = this._gsYearSvg(devs).replace('width="100%" style="max-width:380px;display:block;margin:0 auto;border-radius:12px"', 'width="1080" height="1350"'), img = new Image();
+    img.onload = () => { try { const c = document.createElement("canvas"); c.width = 1080; c.height = 1350; c.getContext("2d").drawImage(img, 0, 0, 1080, 1350); c.toBlob((bl) => { if (!bl) return; const name = `Geraetestrom_${new Date().getFullYear()}.png`, f = new File([bl], name, { type: "image/png" }); if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f], title: "Mein Jahr mit der Sonne" }).catch(() => {}); else if (this._s3Save) this._s3Save(bl, name); }, "image/png"); } catch (_) { this._toast("Bild nicht möglich"); } };
+    img.onerror = () => this._toast("Bild nicht möglich"); img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+  /* W2 Standby-Zeile für die Geräte-Seite */
+  _gsStandby(d) {
+    if (d.sbw == null || d.sbw < 0.5 || this._gsTyp(d) === "kuehl") return "";
+    const eur = d.sbw * 8.76 * ((this._price ? this._price() : 30) / 100);
+    return `<div class="gssby">${ic("plug", 14)}<span>Standby <b>${num(d.sbw, d.sbw < 10 ? 1 : 0)} W</b> · ${num(eur, 2)} € im Jahr</span>${eur >= 5 ? `<em>Steckdosenleiste mit Schalter spart das</em>` : ""}</div>`;
+  }
+  _gsSzAct(a, b) {
+    const k = b.dataset.k, G = this._gsState();
+    if (a === "gsringt") { this._gsRingP = this._gsRingP === "period" ? "today" : "period"; this._render(); return true; }
+    if (a === "gswp") { this._gsWallP = Math.max(0, (this._gsWallP || 0) + Number(k)); this._render(); return true; }
+    if (a === "gsyshare") { this._gsYearShare(); return true; }
+    if (a === "gsscene") { G.scene = G.scene === false; this._mdSave(); this._renderModal(); this._render(); return true; }
+    if (a === "gsanim") { G.anim = k; this._mdSave(); this._renderModal(); this._render(); return true; }
+    if (a === "gsgoal") { G.goal = Math.max(0, Math.min(500, (+G.goal || 0) + Number(k))); this._mdSave(); this._renderModal(); this._render(); return true; }
+    return false;
   }
   _betaBox(txt) {
     const m = MODS.find((x) => x.id === (this._mdActive && this._mdActive())), st = modSt(m);
@@ -9371,9 +9506,9 @@ class FensterHeizungPanel extends HTMLElement {
   static MP_NAMES = {
     ww: { speicher: "Speicher & Kennzahlen", verlauf: "Verlauf 24 Stunden", zeitplan: "Warmwasser-Zeitplan", zirk: "Zirkulation", leg: "Legionellenschutz", pv: "PV-Überschuss", zustand: "Zustand" },
     en: { kacheln: "Kennzahlen", fluss: "Energiefluss", verlauf: "Verlauf", verteilung: "Verteilung", kosten: "Kosten und Vorteil", heizung: "Heizung", hinweise: "Hinweise" },
-    gs: { kacheln: "Kennzahlen", geraete: "Geräte", fenster: "Startfenster", verlauf: "Verlauf nach Quelle" },
+    gs: { kacheln: "Kennzahlen", geraete: "Geräte", fenster: "Startfenster", verlauf: "Verlauf nach Quelle", jahr: "Dein Jahr" },
   };
-  static MP_WIDE = { ww: ["speicher", "verlauf", "zustand"], en: ["kacheln"], gs: ["kacheln", "fenster", "geraete", "verlauf"] };
+  static MP_WIDE = { ww: ["speicher", "verlauf", "zustand"], en: ["kacheln"], gs: ["kacheln", "fenster", "geraete", "verlauf", "jahr"] };
   _mpCfg(mod) {
     const l = ((this._cfg && this._cfg.layout && this._cfg.layout.mp) || {})[mod] || {}, known = Object.keys(this.constructor.MP_NAMES[mod] || {});
     const o = (Array.isArray(l.order) ? l.order : []).filter((x) => known.includes(x));

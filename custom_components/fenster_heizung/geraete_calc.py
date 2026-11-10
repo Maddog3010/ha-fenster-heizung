@@ -220,7 +220,10 @@ def clean_gs(raw: Any) -> dict[str, Any]:
         if isinstance(n, str) and _NOTIFY.match(n) and n not in notify and len(notify) < MAX_NOTIFY:
             notify.append(n)
     return {"devices": devices, "bat_cost": round(_num(raw.get("bat_cost"), 0, 100, 0.0), 2),
-            "forecast": _entity(raw.get("forecast"), ("sensor",)), "notify": notify, "cards_old": bool(raw.get("cards_old", False))}
+            "forecast": _entity(raw.get("forecast"), ("sensor",)), "notify": notify, "cards_old": bool(raw.get("cards_old", False)),
+            # v1.5: Geräte-Szene im Banner (sonst einheitlicher Banner), Bewegung nur für Modul 4, Monatsziel „€ mit Sonne“ (0 = aus)
+            "scene": raw.get("scene") is not False, "anim": raw.get("anim") if raw.get("anim") in ("off", "soft", "full") else "soft",
+            "goal": round(_num(raw.get("goal"), 0, 500, 0.0), 0)}
 
 
 def clean_ev(raw: Any) -> dict[str, Any]:

@@ -48,7 +48,7 @@ _LOGGER = logging.getLogger(__name__)
 MP_BLOCKS = {
     "ww": ("speicher", "verlauf", "zeitplan", "zirk", "leg", "pv", "zustand"),
     "en": ("kacheln", "fluss", "verlauf", "verteilung", "kosten", "heizung", "hinweise"),
-    "gs": ("kacheln", "fenster", "geraete", "verlauf"),
+    "gs": ("kacheln", "fenster", "geraete", "verlauf", "jahr"),
 }
 _MP_DEV = re.compile(r"^[a-z0-9]{1,16}$")
 

@@ -35,6 +35,7 @@
     }
     else if (a === "gsold") { G.cards_old = !G.cards_old; this._mdSave(); this._renderModal(); }
     else if (this._gsDetAct && this._gsDetAct(a, b)) return;
+    else if (this._gsSzAct && this._gsSzAct(a, b)) return;
     else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }
     else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._mdSave(); this._renderModal(); } }
   }
@@ -73,6 +74,9 @@
       <div class="mut sm" style="margin:2px 0 0">Prognose-Sensor in Watt (optional). Ohne Sensor zählt die aktuelle Solarleistung.</div>${this._wzSel(pw, G.forecast, "gsfc", "", "– keiner –", /prognose|forecast|solar|pv/i)}
       <div class="lsec">${ic("grid", 15)}Darstellung</div>
       <div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Gerätekarten aus v1.1 mit Balken statt HD-Bild und Herkunfts-Ring</small></span><button class="sw ${G.cards_old ? "on" : ""}" data-act="gsold" aria-pressed="${!!G.cards_old}" aria-label="Karten wie bisher"></button></div>
+      <div class="vrow"><span>Geräte-Szene im Banner<small class="mut" style="display:block">Aus: einheitlicher Banner wie in den anderen Modulen</small></span><button class="sw ${G.scene !== false ? "on" : ""}" data-act="gsscene" aria-pressed="${G.scene !== false}"></button></div>
+      <div class="vrow"><span>Bewegung<small class="mut" style="display:block">Dezent: Fortschritt und Ring gleiten, Kabel fließen langsam. Voll: Kabel leuchten, Plaketten pulsieren. Im Tablet-Modus immer aus.</small></span><span class="gschs">${[["off", "Aus"], ["soft", "Dezent"], ["full", "Voll"]].map(([k, t]) => `<button class="gsch ${(G.anim || "soft") === k ? "sel" : ""}" data-act="gsanim" data-k="${k}">${t}</button>`).join("")}</span></div>
+      <div class="vrow"><span>Monatsziel „mit Sonne gespart“<small class="mut" style="display:block">Fortschritt im Banner, 0 = aus</small></span><span class="lgstep"><button class="ibtn" data-act="gsgoal" data-k="-5" aria-label="weniger">${ic("minus", 16)}</button><b>${num(G.goal || 0, 0)} €</b><button class="ibtn" data-act="gsgoal" data-k="5" aria-label="mehr">${ic("plus", 16)}</button></span></div>
       <div class="lsec">${ic("bell", 15)}Meldung am Ende eines Durchlaufs und für „Erinnern“</div>
       ${opts.length ? `<div class="gschips">${opts.map((n) => `<button class="gsch ${G.notify.includes(n) ? "sel" : ""}" data-act="gsnot" data-k="${esc(n)}" aria-pressed="${G.notify.includes(n)}">${esc(n.replace("notify.", ""))}</button>`).join("")}</div>` : `<div class="mut sm">Keine Benachrichtigungsdienste gefunden.</div>`}
       <div class="mut sm" style="margin:6px 0 0">Zusätzlich wird das Ereignis <code>geraetestrom_run_finished</code> ausgelöst.</div>
@@ -147,6 +151,7 @@
     const ring = this._modRing(T.own != null ? T.own : 0, "eigener Strom");
     const hero = `${warn}<div class="card hero mh hr a-gs gshero">${this._modLogo("gs")}${ring}<div class="mut" style="opacity:.85">${ic("laundry", 16)} ${esc(per)} gespart</div><div class="gsbig">${eur(T.sv)}</div>
       <div style="opacity:.85">${num(T.n)} ${T.n === 1 ? "Durchlauf" : "Durchläufe"} · ${num(T.kwh, 1)} kWh · Kosten ${eur(T.c)}</div>${chips ? `<div class="chips">${chips}</div>` : ""}</div>`;
+    const heroX = G.scene !== false && this._gsNewCards() ? `${warn}${this._gsHeroScene(devs, P, chips)}` : hero;
     const nav = `<div class="ennav"><div class="seg wwseg enseg" role="group" aria-label="Zeitraum">${[["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]].map(([k, l]) => `<button class="${P.rg === k ? "sel" : ""}" data-act="gsrange" data-k="${k}" aria-pressed="${P.rg === k}">${l}</button>`).join("")}</div>
       <div class="enper"><button class="ibtn" data-act="gsoff" data-k="-1" aria-label="Zurück">${ic("back", 18)}</button><b>${esc(per)}</b><button class="ibtn nx${P.cur ? " dis" : ""}" data-act="gsoff" data-k="1" aria-label="Weiter"${P.cur ? ' aria-disabled="true"' : ""}>${ic("back", 18)}</button>${P.cur ? "" : `<button class="lnk ennow" data-act="gsoff" data-k="0">Heute</button>`}</div></div>`;
     const tl = [["saved", "total", "Gespart", eur(T.sv), "#34d399", `${eur(T.c)} Kosten`, cmp(T.sv, V && V.sv, "up")], ["cost", "bolt", "Kosten", eur(T.c), "#f87171", T.n ? `Ø ${eur(T.c / T.n)} je Durchlauf` : "kein Durchlauf", cmp(T.c, V && V.c, "down")],
@@ -164,8 +169,9 @@
         ${this._gsSpark(d.id, P)}
         ${adv && !run ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung jetzt ${num(d.cover, 0)} %</span></div>` : ""}</div>`; })())).join("");
     if (this._gsTipX != null) Promise.resolve().then(() => this._gsTipShow());
-    if (this._gsPhone()) return `${hero}${nav}${this._gsList(this._mpDevs(devs), P, tiles)}`;
-    return `${hero}${nav}${this._mpWrap("gs", { kacheln: tiles, fenster: this._gsWinAll(this._mpDevs(devs)), geraete: `<div class="gsgrid">${cards}</div>`, verlauf: this._gsChart(D, devs, P) })}`;
+    if (this._tmOn && this._tmOn()) return `${warn}${this._gsWall(this._mpDevs(devs), P)}`;
+    if (this._gsPhone()) return `${heroX}${nav}${this._gsList(this._mpDevs(devs), P, tiles)}`;
+    return `${heroX}${nav}${this._mpWrap("gs", { kacheln: tiles, fenster: this._gsWinAll(this._mpDevs(devs)), geraete: `<div class="gsgrid">${cards}</div>`, verlauf: this._gsChart(D, devs, P), jahr: this._gsYearCard(this._mpDevs(devs)) })}`;
   }
   /* ---- Modul 4 v1.2: Gerätekarten 2.0 (HD-Bild mit Herkunfts-Ring, Prozentzeile, Restzeit ab 3 Läufen, drei Felder, Empfehlung mit „Erinnern“).
      Schalter „Karten wie bisher“ (G.cards_old) oder Neue Optik „wie bisher“ zeigt die Karten aus v1.1. */
