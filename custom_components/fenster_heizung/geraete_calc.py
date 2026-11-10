@@ -73,24 +73,32 @@ def median(values: list[float]) -> float:
     return v[m] if len(v) % 2 else (v[m - 1] + v[m]) / 2
 
 
-def best_start(hours: dict[int, float], now_ts: float, dur_s: float, typ_w: float) -> dict[str, float] | None:
+def best_start(hours: dict[int, float], now_ts: float, dur_s: float, typ_w: float, prices: dict[int, float] | None = None) -> dict[str, float] | None:
     """Beste Startzeit nach der Solarprognose: Fenster mit der höchsten Erzeugung über die Laufzeit des Geräts.
 
     hours: Stundenbeginn (Unix-Zeit) → erwartete Erzeugung in Wh in dieser Stunde. Betrachtet werden die nächsten 24 Stunden.
-    Rückgabe: {"ts": Startzeit, "pct": erwartete Solardeckung in %} oder None ohne Prognose.
+    prices (v1.4): Stundenbeginn → Preis in ct; bei gleichem Solar-Anteil (innerhalb von 3 %) gewinnt der günstigere Preis.
+    Rückgabe: {"ts": Startzeit, "pct": erwartete Solardeckung in %, "ct": mittlerer Preis} oder None ohne Prognose.
     """
     n = max(1, min(4, int(-(-max(dur_s, 1800) // 3600))))
     h0 = int(now_ts // 3600 * 3600)
     starts = [h for h in sorted(hours) if h0 <= h <= now_ts + 86400]
-    best, at = 0.0, None
+    cand = []
     for h in starts:
         wh = sum(hours.get(h + i * 3600, 0.0) for i in range(n))
-        if wh > best + 1e-6:
-            best, at = wh, h
-    if at is None or best <= 0:
+        if wh > 0:
+            ps = [prices[h + i * 3600] for i in range(n) if prices and h + i * 3600 in prices]
+            cand.append((wh, (sum(ps) / len(ps)) if ps else None, h))
+    if not cand:
         return None
-    pct = min(100.0, best / n / max(typ_w, 1.0) * 100)
-    return {"ts": float(max(at, now_ts)), "pct": round(pct)}
+    top = max(c[0] for c in cand)
+    near = [c for c in cand if c[0] >= top * 0.97]
+    wh, ct, at = min(near, key=lambda c: (c[1] if c[1] is not None else 1e9, -c[0], c[2]))
+    pct = min(100.0, wh / n / max(typ_w, 1.0) * 100)
+    out = {"ts": float(max(at, now_ts)), "pct": round(pct)}
+    if ct is not None:
+        out["ct"] = round(ct, 1)
+    return out
 
 
 def advice(cover: float) -> str:

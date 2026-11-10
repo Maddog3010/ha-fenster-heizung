@@ -50,6 +50,9 @@ class GeraeteManager:
         self.rlog: list[dict[str, Any]] = []  # S3: die letzten Läufe mit Startzeit und Netzanteil (für den Energie-Coach)
         self._fc: dict[int, float] = {}  # Stundenbeginn → erwartete Solarerzeugung (Wh)
         self._fc_ts = 0.0
+        self._fc_src = ""  # v1.4: "Modul 16" (Prognose) oder "avg7" (Mittel der letzten 7 Tage)
+        self._px: dict[int, float] = {}  # v1.4: Stundenbeginn → Strompreis in ct (Tibber)
+        self.pvh: dict[str, dict[str, float]] = {}  # v1.4: je Tag und Stunde die PV-Erzeugung in Wh (für die Prognose ohne Modul 16)
 
     # ---- Konfiguration aus dem Modul-Manager
     def _modules(self) -> dict[str, Any]:
@@ -86,6 +89,7 @@ class GeraeteManager:
         for k, v in durs.items():
             if isinstance(v, list):
                 self.durs[str(k)] = [float(x) for x in v if isinstance(x, (int, float)) and x > 0][-RUNS_KEEP:]
+        self.pvh = {str(k): {str(h): float(w) for h, w in (v or {}).items()} for k, v in (saved.get("pvh") or {}).items() if isinstance(v, dict)}
         self.rlog = [r for r in (saved.get("rlog") or []) if isinstance(r, dict) and isinstance(r.get("t"), (int, float))][-RLOG_KEEP:]
         rem = saved.get("remind") if isinstance(saved.get("remind"), dict) else {}
         for k, v in rem.items():
@@ -103,7 +107,7 @@ class GeraeteManager:
         self._rem_unsub.clear()
 
     def _save(self) -> None:
-        self._store.async_delay_save(lambda: {"days": self.days, "last": self.last, "typ": self.typ, "durs": self.durs, "remind": self.remind, "rlog": self.rlog}, 30)
+        self._store.async_delay_save(lambda: {"days": self.days, "last": self.last, "typ": self.typ, "durs": self.durs, "remind": self.remind, "rlog": self.rlog, "pvh": self.pvh}, 30)
 
     async def async_config_changed(self) -> None:
         ids = {d["id"] for d in self._cfg()["devices"]}
@@ -165,6 +169,13 @@ class GeraeteManager:
             await self._load_forecast()
         s, b, n = self._sources()
         self._solar_now = s
+        pv_all = self._pv_total()
+        if pv_all is not None and dt > 0:  # v1.4: PV je Stunde merken (Prognose ohne Modul 16)
+            ln = dt_util.now()
+            rec = self.pvh.setdefault(ln.strftime("%Y-%m-%d"), {})
+            rec[str(ln.hour)] = round(rec.get(str(ln.hour), 0.0) + pv_all * dt / 3600, 1)
+            for k in sorted(self.pvh)[:-8]:
+                del self.pvh[k]
         gen = self.hass.data.get(DOMAIN, {}).get("general")
         pvc = (gen.data.get("pv") if gen is not None else None) or {}
         price = self._price(pvc, "price_mode", "price_sensor", "price")
@@ -261,7 +272,43 @@ class GeraeteManager:
                 out[h] = out.get(h, 0.0) + float(v or 0)
             except (TypeError, ValueError):
                 continue
-        self._fc = out
+        if out:
+            self._fc, self._fc_src = out, "Modul 16"
+        else:
+            self._fc, self._fc_src = self._avg_fc(), "avg7" if self.pvh else ""
+        tm = self.hass.data.get(DOMAIN, {}).get("tibber")
+        self._px = {}
+        if tm is not None and getattr(tm, "connected", False):
+            try:
+                c = await tm.async_prices()
+                acc: dict[int, list[float]] = {}
+                for p in (c or {}).get("prices") or []:  # stündlich oder viertelstündlich: Mittel je Stunde
+                    acc.setdefault(int(p["start"].timestamp() // 3600 * 3600), []).append(float(p["ct"]))
+                self._px = {h: sum(v) / len(v) for h, v in acc.items()}
+            except Exception:  # noqa: BLE001 - ohne Preis fällt das Preisband weg
+                self._px = {}
+
+    def _pv_total(self) -> float | None:
+        ent = (self._modules().get("energy") or {}).get("ent") or {}
+        vals = [self._w(ent.get(k)) for k in ("pv", "pv2") if ent.get(k)]
+        vals = [v for v in vals if v is not None]
+        return max(sum(vals), 0.0) if vals else None
+
+    def _avg_fc(self) -> dict[int, float]:
+        """Ohne Modul 16: Mittel der letzten 7 vollen Tage je Stunde als Prognose für heute und morgen."""
+        now = dt_util.now()
+        days = [k for k in sorted(self.pvh) if k < now.strftime("%Y-%m-%d")][-7:]
+        if not days:
+            return {}
+        out: dict[int, float] = {}
+        base = now.replace(minute=0, second=0, microsecond=0)
+        for d in range(2):
+            day0 = (base - timedelta(hours=base.hour)) + timedelta(days=d)
+            for h in range(24):
+                v = sum(self.pvh[k].get(str(h), 0.0) for k in days) / len(days)
+                if v > 0:
+                    out[int((day0 + timedelta(hours=h)).timestamp())] = v
+        return out
 
     # ---- v1.2: Erinnern („jetzt starten“) über die Meldedienste von Modul 4
     def _schedule(self, did: str, ts: float) -> None:
@@ -307,7 +354,7 @@ class GeraeteManager:
 
     def _best(self, dev: dict[str, Any]) -> dict[str, Any] | None:
         did = dev["id"]
-        b = best_start(self._fc, time.time(), median(self.durs.get(did, [])) or 7200, self.typ.get(did) or DEFAULT_TYPICAL_W)
+        b = best_start(self._fc, time.time(), median(self.durs.get(did, [])) or 7200, self.typ.get(did) or DEFAULT_TYPICAL_W, self._px)
         if b:
             b["day"] = "today" if dt_util.as_local(dt_util.utc_from_timestamp(b["ts"])).date() == dt_util.now().date() else "tomorrow"
         return b
@@ -339,7 +386,10 @@ class GeraeteManager:
                 "best": None if run else self._best(d), "remind": self.remind.get(did),
             })
             hist[did] = history(days)
-        return {"ready": ready, "devices": devices, "hist": hist}
+        h0 = int((now.replace(hour=0, minute=0, second=0, microsecond=0)).timestamp())
+        fc = [[h, round(v)] for h, v in sorted(self._fc.items()) if h0 <= h < h0 + 48 * 3600]
+        px = [[h, round(v, 1)] for h, v in sorted(self._px.items()) if h0 <= h < h0 + 48 * 3600]
+        return {"ready": ready, "devices": devices, "hist": hist, "fc": fc, "fc_src": self._fc_src if fc else "", "px": px}
 
 
     def runs(self, did: str) -> dict[str, Any]:

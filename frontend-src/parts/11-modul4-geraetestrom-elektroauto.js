@@ -165,7 +165,7 @@
         ${adv && !run ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung jetzt ${num(d.cover, 0)} %</span></div>` : ""}</div>`; })())).join("");
     if (this._gsTipX != null) Promise.resolve().then(() => this._gsTipShow());
     if (this._gsPhone()) return `${hero}${nav}${this._gsList(this._mpDevs(devs), P, tiles)}`;
-    return `${hero}${nav}${this._mpWrap("gs", { kacheln: tiles, geraete: `<div class="gsgrid">${cards}</div>`, verlauf: this._gsChart(D, devs, P) })}`;
+    return `${hero}${nav}${this._mpWrap("gs", { kacheln: tiles, fenster: this._gsWinAll(this._mpDevs(devs)), geraete: `<div class="gsgrid">${cards}</div>`, verlauf: this._gsChart(D, devs, P) })}`;
   }
   /* ---- Modul 4 v1.2: Gerätekarten 2.0 (HD-Bild mit Herkunfts-Ring, Prozentzeile, Restzeit ab 3 Läufen, drei Felder, Empfehlung mit „Erinnern“).
      Schalter „Karten wie bisher“ (G.cards_old) oder Neue Optik „wie bisher“ zeigt die Karten aus v1.1. */
@@ -216,7 +216,7 @@
     if (P.rg === "day") {
       const rows = devs.filter((d) => !sel || d.id === sel).map((d) => ({ d, t: this._gsAgg([d.id], P).t })).sort((a, b) => b.t.kwh - a.t.kwh), mx = Math.max(0.01, ...rows.map((r) => r.t.kwh));
       return `<div class="card gsc"><h2>${ic("chart", 18)}Woher der Strom kam · ${esc(this._gsLabel(P))}</h2>${chips}
-        <div class="gshb2">${rows.map(({ d, t }) => `<div class="gshr"><span class="gshn">${ic(GS_TYP[this._gsTyp(d)].i, 15)}${esc(d.name)}</span><div class="gshbar"><div style="width:${(t.kwh / mx * 100).toFixed(1)}%">${t.v.map((v, i) => (v > 0 ? `<i style="flex:${v};background:${GS_COL[i]}"></i>` : "")).join("")}</div></div><span class="gshv">${num(t.kwh, 2)} kWh · ${num(t.c, 2)} €</span></div>`).join("")}</div>
+        <div class="gshb2">${rows.map(({ d, t }) => `<div class="gshr"><span class="gshn">${this._gxCfg().classic ? ic(GS_TYP[this._gsTyp(d)].i, 15) : `<span class="gshi">${this._gx(this._gsHd(d), 24, { on: true, lvl: 80 })}</span>`}${esc(d.name)}</span><div class="gshbar"><div style="width:${(t.kwh / mx * 100).toFixed(1)}%">${t.v.map((v, i) => (v > 0 ? `<i style="flex:${v};background:${GS_COL[i]}"></i>` : "")).join("")}</div></div><span class="gshv">${num(t.kwh, 2)} kWh · ${num(t.c, 2)} €</span></div>`).join("")}</div>
         ${leg}<div class="mut sm" style="margin:6px 0 0">Woche, Monat und Jahr zeigen den Verlauf als Balken.</div></div>`;
     }
     const A = this._gsAgg(pick, P), now = Date.now(), b = A.b.map((x) => ({ ...x, fut: +x.d - (P.u === "m" ? 15 * 864e5 : 432e5) > now }));

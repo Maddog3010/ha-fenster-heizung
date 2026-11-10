@@ -73,7 +73,8 @@
       <div class="lgnote2">Aus den letzten ${typ.n} Läufen. Daraus kommen „noch ~ Min.“ auf der Karte und das beste Startfenster.${typ.out ? ` ${typ.out} ${typ.out === 1 ? "Lauf brauchte" : "Läufe brauchten"} deutlich mehr (z. B. 90 °C) und ${typ.out === 1 ? "zählt" : "zählen"} nicht zum Durchschnitt.` : ""}</div>
       ${typ.has_split ? `<div class="gssun">${this._gx("pvRoof", 26)}<div>Mit Sonne ${verb}: <b>${typ.sun} von ${typ.of}</b> Läufen über 70 % Solar</div></div>` : ""}`
       : `<div class="s3learn">${ic("clock", 18)}<span>Lernt noch – ab 3 Läufen steht hier der typische Lauf.</span></div>`}</div>`;
-    return `${head}${adv}${curve}<div class="enc"><div class="enco">${log}</div><div class="enco">${tl}</div></div>`;
+    const win = !run && this._gsWinData(d) ? this._gsWin(d) : "";
+    return `${head}${win || adv}${curve}<div class="enc"><div class="enco">${log}</div><div class="enco">${tl}</div></div>`;
   }
   /* ---- H1 Handy-Übersicht ---- */
   _gsPhone() { return !this._mpEdit() && this.clientWidth > 0 && this.clientWidth < 640; }
@@ -90,4 +91,46 @@
     if (a === "gsdetx") { this._gsDet = null; this._gsRunSel = null; this._render(); return true; }
     if (a === "gsrunsel") { const t = Number(k); this._gsRunSel = this._gsRunSel && this._gsRunSel.t === t ? null : { dev: this._gsDet, t }; this._render(); return true; }
     return false;
+  }
+  /* ================= Modul 4 v1.4 (Stufe 3 ohne Rangliste): bestes Startfenster als Bild =================
+     Solarprognose (Modul 16, sonst Mittel der letzten 7 Tage) als Fläche, das beste Fenster so lang wie ein typischer Lauf,
+     darunter das Preisband (Tibber; ohne Preis fällt es weg). Bei gleichem Solar-Anteil gewinnt der günstigere Preis (Backend). */
+  _gsWinData(d) {
+    const D = this._gsD || {}, fc = D.fc || [], B = d.best;
+    if (!fc.length || !B) return null;
+    const dur = (d.runs >= 3 && d.med > 0 ? d.med : 7200), s = B.ts, e = B.ts + dur, day = new Date(s * 1000); day.setHours(0, 0, 0, 0);
+    const d0 = day.getTime() / 1000, x0 = d0 + 6 * 3600, x1 = d0 + 22 * 3600;
+    return { fc: fc.filter((p) => p[0] >= x0 - 3600 && p[0] <= x1), px: (D.px || []).filter((p) => p[0] >= x0 && p[0] < x1), s, e, dur, x0, x1, tomorrow: B.day === "tomorrow", src: D.fc_src };
+  }
+  _gsWin(d) {
+    const W = this._gsWinData(d); if (!W) return "";
+    const B = d.best, rem = d.remind && d.remind * 1000 > Date.now(), Wd = 980, H = 230, pl = 34, pt = 34, ph = 22, pb = 26, ih = H - pt - ph - pb - 8;
+    const X = (t) => pl + (Math.min(W.x1, Math.max(W.x0, t)) - W.x0) / (W.x1 - W.x0) * (Wd - pl - 6), mx = Math.max(300, ...W.fc.map((p) => p[1]));
+    const Y = (wh) => pt + ih - (wh / mx) * ih, pts = W.fc.map((p) => [X(p[0] + 1800), Y(p[1])]);
+    const area = pts.length ? `M${X(W.x0).toFixed(1)} ${Y(0)} ${pts.map(([x, y]) => `L${x.toFixed(1)} ${y.toFixed(1)}`).join(" ")} L${X(W.x1).toFixed(1)} ${Y(0)} Z` : "";
+    const line = pts.length ? pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ") : "";
+    const nowT = Date.now() / 1000, nowX = !W.tomorrow && nowT > W.x0 && nowT < W.x1 ? X(nowT) : null, wx0 = X(W.s), wx1 = X(W.e);
+    const pr = W.px.map((p) => p[1]), lo = Math.min(...pr), hi = Math.max(...pr), col = (v) => { const f = hi > lo ? (v - lo) / (hi - lo) : 0.5; return f < 0.2 ? "#2dd4a0" : f < 0.4 ? "#84cc16" : f < 0.6 ? "#eab308" : f < 0.8 ? "#f97316" : "#ef4444"; };
+    const band = W.px.length ? W.px.map((p) => `<rect x="${(X(p[0]) + 1).toFixed(1)}" y="${H - pb - ph}" width="${Math.max(2, X(p[0] + 3600) - X(p[0]) - 3).toFixed(1)}" height="${ph - 6}" rx="4" fill="${col(p[1])}" opacity=".85"><title>${this._gsHm(p[0] * 1000)}: ${num(p[1], 1)} ct</title></rect>`).join("") + `<text x="${pl - 6}" y="${H - pb - ph + 12}" text-anchor="end" font-size="10" fill="var(--mut)">ct</text>` : "";
+    const ticks = [6, 9, 12, 15, 18, 21].map((h) => `<text x="${X(W.x0 + (h - 6) * 3600).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--mut)">${h}:00</text>`).join("");
+    const img = this._gx(this._gsHd(d), 40, { on: true, lvl: 80 }).replace(/^<svg[^>]*>/, `<svg x="${((wx0 + wx1) / 2 - 20).toFixed(1)}" y="${(pt + ih * 0.32).toFixed(1)}" width="40" height="40" viewBox="0 0 64 64">`);
+    const lab = `${this._gsHm(W.s * 1000)} – ${this._gsHm(W.e * 1000)} · ${num(B.pct, 0)} % Solar${B.ct != null ? ` · ${num(B.ct, 1)} ct` : ""}`;
+    const svg = `<svg class="gswin" viewBox="0 0 ${Wd} ${H}" role="img" aria-label="Bestes Startfenster ${esc(lab)}"><defs><linearGradient id="gswg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbbf24" stop-opacity=".55"/><stop offset="1" stop-color="#fbbf24" stop-opacity=".04"/></linearGradient></defs>
+      <text x="${pl - 6}" y="${pt + 4}" text-anchor="end" font-size="10" fill="var(--mut)">kW</text><line x1="${pl}" x2="${Wd}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)"/>
+      ${area ? `<path d="${area}" fill="url(#gswg)"/><path d="${line}" fill="none" stroke="#fbbf24" stroke-width="2.4"/>` : ""}
+      <rect x="${wx0.toFixed(1)}" y="${pt - 18}" width="${Math.max(8, wx1 - wx0).toFixed(1)}" height="${(H - pb - (pt - 18) - 2).toFixed(1)}" rx="10" fill="#2dd4bf" fill-opacity=".12" stroke="#2dd4bf" stroke-dasharray="5 4"/>
+      <text x="${((wx0 + wx1) / 2).toFixed(1)}" y="${pt - 4}" text-anchor="middle" font-size="12" font-weight="700" fill="#2dd4bf">bestes Fenster</text>${img}
+      ${nowX != null ? `<line x1="${nowX.toFixed(1)}" x2="${nowX.toFixed(1)}" y1="${pt - 12}" y2="${Y(0)}" stroke="var(--primary-text-color)" stroke-width="1.2" opacity=".75"/><text x="${nowX.toFixed(1)}" y="${pt - 16}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--primary-text-color)">jetzt</text>` : ""}${band}${ticks}</svg>`;
+    const src = [d.runs >= 3 && d.med > 0 ? `Dauer aus dem typischen Lauf (${this._gsDur(W.dur)})` : "Dauer 2 Std. (lernt noch)", W.src === "avg7" ? "Sonne aus dem Mittel der letzten 7 Tage" : "Prognose aus Modul 16", W.px.length ? "Preis aus Tibber" : ""].filter(Boolean).join(" · ");
+    return `<div class="card gswc"><div class="gswh"><b>${esc(d.name)} · ${W.tomorrow ? "morgen" : "heute"}</b><span class="legend"><span><i style="background:#fbbf24"></i>Solar-${W.src === "avg7" ? "Mittel" : "Prognose"}</span><span><i style="background:#2dd4bf"></i>bestes Fenster ${esc(lab)}</span>${W.px.length ? `<span>Preisband: günstig → teuer</span>` : ""}</span></div>${svg}
+      <div class="lgbtns"><button class="btn2 ${rem ? "" : "lgpk gsremb"}" data-act="gsrem" data-k="${esc(d.id)}" aria-pressed="${rem}">${rem ? `${ic("check", 14)} Erinnert für ${this._gsHm(W.s * 1000)}` : `${ic("bell", 14)} Um ${this._gsHm(W.s * 1000)} erinnern`}</button><span class="lgchip">Jetzt starten wäre ${num(d.cover, 0)} % Solar</span><span class="lgnote2" style="margin:0">${src}</span></div></div>`;
+  }
+  /* Für alle Geräte auf einen Blick: Startfenster als Balken auf der Tagesleiste */
+  _gsWinAll(devs) {
+    const rows = devs.filter((d) => !d.running && d.best && this._gsTyp(d) !== "kuehl").map((d) => ({ d, W: this._gsWinData(d) })).filter((x) => x.W).sort((a, b) => a.W.s - b.W.s);
+    if (!rows.length) return "";
+    const pos = (W, t) => Math.max(0, Math.min(100, (t - W.x0) / (W.x1 - W.x0) * 100));
+    return `<div class="card gswa"><h2>${ic("clock", 18)}Startfenster · ${rows.every((r) => r.W.tomorrow) ? "morgen" : "heute"}<span class="mut" style="font-weight:400;font-size:.78rem;margin-left:auto">6–22 Uhr</span></h2>
+      ${rows.map(({ d, W }) => `<button class="gswr" data-act="gsdet" data-k="${esc(d.id)}"><span class="gsrimg">${this._gx(this._gsHd(d), 28, { on: true, lvl: 80 })}</span><span class="gswn">${esc(d.name)}</span><span class="gswt"><i style="left:${pos(W, W.s).toFixed(1)}%;width:${Math.max(2, pos(W, W.e) - pos(W, W.s)).toFixed(1)}%"></i></span><b>${W.tomorrow ? "morgen " : ""}${this._gsHm(W.s * 1000)}</b><small>${num(d.best.pct, 0)} %</small></button>`).join("")}
+      <div class="lgnote2">Antippen öffnet das Gerät mit dem Bild des Fensters und „Erinnern“.</div></div>`;
   }

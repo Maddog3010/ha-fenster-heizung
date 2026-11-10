@@ -730,7 +730,7 @@ const MV = {
   fh: { v: "1.7", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.2", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  gs: { v: "1.3", b: 2, d: "2026-11-10", p: "2026.11.2b11", log: [["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  gs: { v: "1.4", b: 1, d: "2026-11-10", p: "2026.11.2b12", log: [["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2082,7 +2082,7 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .spnstar.sun{color:#f59e0b}.spnstar.snow{color:#38bdf8}
 .lgn .lgtop,.lgn .lg3,.lgn .lg2{grid-template-columns:1fr}.lgn .lghero,.lgn .lghero.out{grid-template-columns:1fr;padding:16px}.lgn .lghr{order:-1;aspect-ratio:2/1}.lgn .lghl h2{font-size:1.4rem}.lgn .lgget{grid-template-columns:repeat(2,minmax(0,1fr))}.lgn .lgtiers{grid-template-columns:1fr}
 .msres{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:14px 0;padding:14px 16px;box-shadow:inset 0 0 0 1px color-mix(in srgb,#f59e0b 45%,transparent)}.msres>div:nth-child(2){flex:1 1 260px;display:flex;flex-direction:column;gap:3px}.msres>div:nth-child(2) span{font-size:.84rem;color:var(--mut)}.msres .gico{color:#f59e0b}.msres .gbtns{margin:0}.msres .gbtns .btn2{flex:none;min-width:0}
-.s3row{margin-top:12px}.s3h{display:flex;align-items:center;gap:10px;margin-bottom:8px}.s3h svg{flex:none;width:34px;height:34px}.s3h>span{flex:1;min-width:0;display:flex;flex-direction:column}.s3h b{font-size:.98rem}.s3h small{font-size:.74rem;color:var(--mut)}
+.s3row{margin-top:12px}.s3h{display:flex;align-items:center;gap:10px;margin-bottom:8px}.s3h>svg{flex:none;width:34px;height:34px}.s3h>.ibtn{flex:none;margin-left:auto}.s3h>.ibtn svg{width:18px;height:18px}.s3h>span{flex:1;min-width:0;display:flex;flex-direction:column}.s3h b{font-size:.98rem}.s3h small{font-size:.74rem;color:var(--mut)}
 .s3tip{display:flex;align-items:center;gap:10px;margin-top:6px;padding:9px 12px;border-radius:12px;font-size:.84rem;line-height:1.35;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);box-shadow:inset 3px 0 0 var(--c)}.s3tip svg{flex:none;width:26px;height:26px}
 .s3sum{margin-top:10px;font-size:.84rem;font-weight:700;color:#10b981}.s3learn{display:flex;gap:10px;align-items:center;font-size:.84rem;color:var(--mut);padding:8px 0}
 .s3rep{border-radius:14px;overflow:hidden;background:#0b1220}.s3scn{aspect-ratio:400/150}.s3n{display:grid;grid-template-columns:repeat(3,1fr);padding:10px 8px 12px;text-align:center}.s3n b{display:block;font-size:1.3rem;font-weight:800}.s3n small{font-size:.72rem;color:#9aa7b4}
@@ -2105,7 +2105,7 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .mxseg{margin:2px 0 8px;flex-wrap:wrap}.mxseg button{font-size:.78rem}.mxseg .lgsoon{font-size:.6rem;padding:1px 6px}
 .mxprop{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 10px;margin-top:6px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent)}.mxprop>svg{flex:none;width:28px;height:28px}.mxprop>span:nth-child(2){flex:1 1 180px;min-width:0;display:flex;flex-direction:column;font-size:.84rem}.mxprop small{font-size:.72rem;color:var(--mut)}
 .mxprop.done,.mxprop.no,.mxprop.seen{opacity:.6}.mxst{font-style:normal;font-size:.72rem;color:var(--mut);margin-left:auto}.mxyn{display:inline-flex;gap:6px;margin-left:auto}.mxyn .lgopen{margin-left:0}
-.mxk{flex:none;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#818cf8;background:color-mix(in srgb,#818cf8 15%,transparent)}.mxk.down{color:#818cf8}.mxk.big{width:32px;height:32px;border-radius:10px}.s3h>.mxk{flex:none}.mxseg button:disabled{opacity:.45;font-size:.72rem}.mxk.up{color:#fb923c;background:color-mix(in srgb,#fb923c 15%,transparent)}
+.mxk{flex:none;width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:#818cf8;background:color-mix(in srgb,#818cf8 15%,transparent)}.mxk.down{color:#818cf8}.mxk.big{width:32px;height:32px;border-radius:10px}.s3h>.mxk{flex:none}.mxseg button:disabled{opacity:.45;font-size:.7rem;white-space:nowrap}.mxk.up{color:#fb923c;background:color-mix(in srgb,#fb923c 15%,transparent)}
 .mxundo{display:flex;align-items:center;gap:6px;font-size:.76rem;color:var(--mut);margin-top:8px}.mxundo svg{color:#10b981}.mxundo .lnk{margin-left:auto;font-size:.76rem}
 .btn2.mxstop{color:#f87171!important;border-color:color-mix(in srgb,#f87171 45%,transparent)!important}
 .mxq{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 4px}.mxq span{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;padding:5px 10px 5px 6px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color) 5%,transparent)}.mxq svg{width:22px;height:22px}.mxq .soon{color:var(--mut);padding-left:10px}
@@ -2127,6 +2127,10 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .gssun{display:flex;align-items:center;gap:10px;margin-top:10px;padding:10px 12px;border-radius:12px;font-size:.86rem;background:color-mix(in srgb,#fbbf24 12%,transparent)}.gssun svg{flex:none;width:26px;height:26px}
 .gsltiles{margin-top:12px}.gsltiles .tiles{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media(max-width:640px){.gsdt3.big b{font-size:1rem}.gsrbar{flex-basis:70px}}
+.gshi{display:inline-grid;place-items:center;width:24px;height:24px;margin-right:6px;vertical-align:middle}.gshi svg{width:24px;height:24px}.gswc{margin:14px 0}.gswh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-bottom:4px}.gswh b{font-size:.78rem;letter-spacing:1px;text-transform:uppercase;color:var(--mut)}.gswh .legend{margin-left:auto;font-size:.72rem}.gswin{width:100%;height:auto;display:block}
+.gswa .gswr{display:flex;align-items:center;gap:10px;width:100%;padding:6px 2px;border:0;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}.gswn{flex:0 0 130px;font-size:.84rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gswt{flex:1;position:relative;height:12px;border-radius:9px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.gswt i{position:absolute;top:0;bottom:0;border-radius:9px;background:#2dd4a0}.gswr b{flex:none;font-size:.84rem;min-width:52px;text-align:right}.gswr small{flex:none;font-size:.72rem;color:var(--mut);min-width:34px;text-align:right}
+@media(max-width:640px){.gswn{flex-basis:84px}}
 .lgfoot{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:22px 0 8px;font-size:.74rem;color:var(--mut)}.lgfoot .lnk{font-size:.74rem;opacity:.7}
 .lgexd{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}.lgexd p{margin:0;font-size:.92rem;line-height:1.45}
 .lgposter{background:#0b0e12;border-radius:14px;padding:10px}
@@ -6342,7 +6346,7 @@ class FensterHeizungPanel extends HTMLElement {
         ${adv && !run ? `<div class="gsadv ${ac}">${ic("sun", 15)}${esc(adv)} <span class="mut">· Solardeckung jetzt ${num(d.cover, 0)} %</span></div>` : ""}</div>`; })())).join("");
     if (this._gsTipX != null) Promise.resolve().then(() => this._gsTipShow());
     if (this._gsPhone()) return `${hero}${nav}${this._gsList(this._mpDevs(devs), P, tiles)}`;
-    return `${hero}${nav}${this._mpWrap("gs", { kacheln: tiles, geraete: `<div class="gsgrid">${cards}</div>`, verlauf: this._gsChart(D, devs, P) })}`;
+    return `${hero}${nav}${this._mpWrap("gs", { kacheln: tiles, fenster: this._gsWinAll(this._mpDevs(devs)), geraete: `<div class="gsgrid">${cards}</div>`, verlauf: this._gsChart(D, devs, P) })}`;
   }
   /* ---- Modul 4 v1.2: Gerätekarten 2.0 (HD-Bild mit Herkunfts-Ring, Prozentzeile, Restzeit ab 3 Läufen, drei Felder, Empfehlung mit „Erinnern“).
      Schalter „Karten wie bisher“ (G.cards_old) oder Neue Optik „wie bisher“ zeigt die Karten aus v1.1. */
@@ -6393,7 +6397,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (P.rg === "day") {
       const rows = devs.filter((d) => !sel || d.id === sel).map((d) => ({ d, t: this._gsAgg([d.id], P).t })).sort((a, b) => b.t.kwh - a.t.kwh), mx = Math.max(0.01, ...rows.map((r) => r.t.kwh));
       return `<div class="card gsc"><h2>${ic("chart", 18)}Woher der Strom kam · ${esc(this._gsLabel(P))}</h2>${chips}
-        <div class="gshb2">${rows.map(({ d, t }) => `<div class="gshr"><span class="gshn">${ic(GS_TYP[this._gsTyp(d)].i, 15)}${esc(d.name)}</span><div class="gshbar"><div style="width:${(t.kwh / mx * 100).toFixed(1)}%">${t.v.map((v, i) => (v > 0 ? `<i style="flex:${v};background:${GS_COL[i]}"></i>` : "")).join("")}</div></div><span class="gshv">${num(t.kwh, 2)} kWh · ${num(t.c, 2)} €</span></div>`).join("")}</div>
+        <div class="gshb2">${rows.map(({ d, t }) => `<div class="gshr"><span class="gshn">${this._gxCfg().classic ? ic(GS_TYP[this._gsTyp(d)].i, 15) : `<span class="gshi">${this._gx(this._gsHd(d), 24, { on: true, lvl: 80 })}</span>`}${esc(d.name)}</span><div class="gshbar"><div style="width:${(t.kwh / mx * 100).toFixed(1)}%">${t.v.map((v, i) => (v > 0 ? `<i style="flex:${v};background:${GS_COL[i]}"></i>` : "")).join("")}</div></div><span class="gshv">${num(t.kwh, 2)} kWh · ${num(t.c, 2)} €</span></div>`).join("")}</div>
         ${leg}<div class="mut sm" style="margin:6px 0 0">Woche, Monat und Jahr zeigen den Verlauf als Balken.</div></div>`;
     }
     const A = this._gsAgg(pick, P), now = Date.now(), b = A.b.map((x) => ({ ...x, fut: +x.d - (P.u === "m" ? 15 * 864e5 : 432e5) > now }));
@@ -6624,7 +6628,8 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="lgnote2">Aus den letzten ${typ.n} Läufen. Daraus kommen „noch ~ Min.“ auf der Karte und das beste Startfenster.${typ.out ? ` ${typ.out} ${typ.out === 1 ? "Lauf brauchte" : "Läufe brauchten"} deutlich mehr (z. B. 90 °C) und ${typ.out === 1 ? "zählt" : "zählen"} nicht zum Durchschnitt.` : ""}</div>
       ${typ.has_split ? `<div class="gssun">${this._gx("pvRoof", 26)}<div>Mit Sonne ${verb}: <b>${typ.sun} von ${typ.of}</b> Läufen über 70 % Solar</div></div>` : ""}`
       : `<div class="s3learn">${ic("clock", 18)}<span>Lernt noch – ab 3 Läufen steht hier der typische Lauf.</span></div>`}</div>`;
-    return `${head}${adv}${curve}<div class="enc"><div class="enco">${log}</div><div class="enco">${tl}</div></div>`;
+    const win = !run && this._gsWinData(d) ? this._gsWin(d) : "";
+    return `${head}${win || adv}${curve}<div class="enc"><div class="enco">${log}</div><div class="enco">${tl}</div></div>`;
   }
   /* ---- H1 Handy-Übersicht ---- */
   _gsPhone() { return !this._mpEdit() && this.clientWidth > 0 && this.clientWidth < 640; }
@@ -6641,6 +6646,48 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "gsdetx") { this._gsDet = null; this._gsRunSel = null; this._render(); return true; }
     if (a === "gsrunsel") { const t = Number(k); this._gsRunSel = this._gsRunSel && this._gsRunSel.t === t ? null : { dev: this._gsDet, t }; this._render(); return true; }
     return false;
+  }
+  /* ================= Modul 4 v1.4 (Stufe 3 ohne Rangliste): bestes Startfenster als Bild =================
+     Solarprognose (Modul 16, sonst Mittel der letzten 7 Tage) als Fläche, das beste Fenster so lang wie ein typischer Lauf,
+     darunter das Preisband (Tibber; ohne Preis fällt es weg). Bei gleichem Solar-Anteil gewinnt der günstigere Preis (Backend). */
+  _gsWinData(d) {
+    const D = this._gsD || {}, fc = D.fc || [], B = d.best;
+    if (!fc.length || !B) return null;
+    const dur = (d.runs >= 3 && d.med > 0 ? d.med : 7200), s = B.ts, e = B.ts + dur, day = new Date(s * 1000); day.setHours(0, 0, 0, 0);
+    const d0 = day.getTime() / 1000, x0 = d0 + 6 * 3600, x1 = d0 + 22 * 3600;
+    return { fc: fc.filter((p) => p[0] >= x0 - 3600 && p[0] <= x1), px: (D.px || []).filter((p) => p[0] >= x0 && p[0] < x1), s, e, dur, x0, x1, tomorrow: B.day === "tomorrow", src: D.fc_src };
+  }
+  _gsWin(d) {
+    const W = this._gsWinData(d); if (!W) return "";
+    const B = d.best, rem = d.remind && d.remind * 1000 > Date.now(), Wd = 980, H = 230, pl = 34, pt = 34, ph = 22, pb = 26, ih = H - pt - ph - pb - 8;
+    const X = (t) => pl + (Math.min(W.x1, Math.max(W.x0, t)) - W.x0) / (W.x1 - W.x0) * (Wd - pl - 6), mx = Math.max(300, ...W.fc.map((p) => p[1]));
+    const Y = (wh) => pt + ih - (wh / mx) * ih, pts = W.fc.map((p) => [X(p[0] + 1800), Y(p[1])]);
+    const area = pts.length ? `M${X(W.x0).toFixed(1)} ${Y(0)} ${pts.map(([x, y]) => `L${x.toFixed(1)} ${y.toFixed(1)}`).join(" ")} L${X(W.x1).toFixed(1)} ${Y(0)} Z` : "";
+    const line = pts.length ? pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ") : "";
+    const nowT = Date.now() / 1000, nowX = !W.tomorrow && nowT > W.x0 && nowT < W.x1 ? X(nowT) : null, wx0 = X(W.s), wx1 = X(W.e);
+    const pr = W.px.map((p) => p[1]), lo = Math.min(...pr), hi = Math.max(...pr), col = (v) => { const f = hi > lo ? (v - lo) / (hi - lo) : 0.5; return f < 0.2 ? "#2dd4a0" : f < 0.4 ? "#84cc16" : f < 0.6 ? "#eab308" : f < 0.8 ? "#f97316" : "#ef4444"; };
+    const band = W.px.length ? W.px.map((p) => `<rect x="${(X(p[0]) + 1).toFixed(1)}" y="${H - pb - ph}" width="${Math.max(2, X(p[0] + 3600) - X(p[0]) - 3).toFixed(1)}" height="${ph - 6}" rx="4" fill="${col(p[1])}" opacity=".85"><title>${this._gsHm(p[0] * 1000)}: ${num(p[1], 1)} ct</title></rect>`).join("") + `<text x="${pl - 6}" y="${H - pb - ph + 12}" text-anchor="end" font-size="10" fill="var(--mut)">ct</text>` : "";
+    const ticks = [6, 9, 12, 15, 18, 21].map((h) => `<text x="${X(W.x0 + (h - 6) * 3600).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="var(--mut)">${h}:00</text>`).join("");
+    const img = this._gx(this._gsHd(d), 40, { on: true, lvl: 80 }).replace(/^<svg[^>]*>/, `<svg x="${((wx0 + wx1) / 2 - 20).toFixed(1)}" y="${(pt + ih * 0.32).toFixed(1)}" width="40" height="40" viewBox="0 0 64 64">`);
+    const lab = `${this._gsHm(W.s * 1000)} – ${this._gsHm(W.e * 1000)} · ${num(B.pct, 0)} % Solar${B.ct != null ? ` · ${num(B.ct, 1)} ct` : ""}`;
+    const svg = `<svg class="gswin" viewBox="0 0 ${Wd} ${H}" role="img" aria-label="Bestes Startfenster ${esc(lab)}"><defs><linearGradient id="gswg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbbf24" stop-opacity=".55"/><stop offset="1" stop-color="#fbbf24" stop-opacity=".04"/></linearGradient></defs>
+      <text x="${pl - 6}" y="${pt + 4}" text-anchor="end" font-size="10" fill="var(--mut)">kW</text><line x1="${pl}" x2="${Wd}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)"/>
+      ${area ? `<path d="${area}" fill="url(#gswg)"/><path d="${line}" fill="none" stroke="#fbbf24" stroke-width="2.4"/>` : ""}
+      <rect x="${wx0.toFixed(1)}" y="${pt - 18}" width="${Math.max(8, wx1 - wx0).toFixed(1)}" height="${(H - pb - (pt - 18) - 2).toFixed(1)}" rx="10" fill="#2dd4bf" fill-opacity=".12" stroke="#2dd4bf" stroke-dasharray="5 4"/>
+      <text x="${((wx0 + wx1) / 2).toFixed(1)}" y="${pt - 4}" text-anchor="middle" font-size="12" font-weight="700" fill="#2dd4bf">bestes Fenster</text>${img}
+      ${nowX != null ? `<line x1="${nowX.toFixed(1)}" x2="${nowX.toFixed(1)}" y1="${pt - 12}" y2="${Y(0)}" stroke="var(--primary-text-color)" stroke-width="1.2" opacity=".75"/><text x="${nowX.toFixed(1)}" y="${pt - 16}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--primary-text-color)">jetzt</text>` : ""}${band}${ticks}</svg>`;
+    const src = [d.runs >= 3 && d.med > 0 ? `Dauer aus dem typischen Lauf (${this._gsDur(W.dur)})` : "Dauer 2 Std. (lernt noch)", W.src === "avg7" ? "Sonne aus dem Mittel der letzten 7 Tage" : "Prognose aus Modul 16", W.px.length ? "Preis aus Tibber" : ""].filter(Boolean).join(" · ");
+    return `<div class="card gswc"><div class="gswh"><b>${esc(d.name)} · ${W.tomorrow ? "morgen" : "heute"}</b><span class="legend"><span><i style="background:#fbbf24"></i>Solar-${W.src === "avg7" ? "Mittel" : "Prognose"}</span><span><i style="background:#2dd4bf"></i>bestes Fenster ${esc(lab)}</span>${W.px.length ? `<span>Preisband: günstig → teuer</span>` : ""}</span></div>${svg}
+      <div class="lgbtns"><button class="btn2 ${rem ? "" : "lgpk gsremb"}" data-act="gsrem" data-k="${esc(d.id)}" aria-pressed="${rem}">${rem ? `${ic("check", 14)} Erinnert für ${this._gsHm(W.s * 1000)}` : `${ic("bell", 14)} Um ${this._gsHm(W.s * 1000)} erinnern`}</button><span class="lgchip">Jetzt starten wäre ${num(d.cover, 0)} % Solar</span><span class="lgnote2" style="margin:0">${src}</span></div></div>`;
+  }
+  /* Für alle Geräte auf einen Blick: Startfenster als Balken auf der Tagesleiste */
+  _gsWinAll(devs) {
+    const rows = devs.filter((d) => !d.running && d.best && this._gsTyp(d) !== "kuehl").map((d) => ({ d, W: this._gsWinData(d) })).filter((x) => x.W).sort((a, b) => a.W.s - b.W.s);
+    if (!rows.length) return "";
+    const pos = (W, t) => Math.max(0, Math.min(100, (t - W.x0) / (W.x1 - W.x0) * 100));
+    return `<div class="card gswa"><h2>${ic("clock", 18)}Startfenster · ${rows.every((r) => r.W.tomorrow) ? "morgen" : "heute"}<span class="mut" style="font-weight:400;font-size:.78rem;margin-left:auto">6–22 Uhr</span></h2>
+      ${rows.map(({ d, W }) => `<button class="gswr" data-act="gsdet" data-k="${esc(d.id)}"><span class="gsrimg">${this._gx(this._gsHd(d), 28, { on: true, lvl: 80 })}</span><span class="gswn">${esc(d.name)}</span><span class="gswt"><i style="left:${pos(W, W.s).toFixed(1)}%;width:${Math.max(2, pos(W, W.e) - pos(W, W.s)).toFixed(1)}%"></i></span><b>${W.tomorrow ? "morgen " : ""}${this._gsHm(W.s * 1000)}</b><small>${num(d.best.pct, 0)} %</small></button>`).join("")}
+      <div class="lgnote2">Antippen öffnet das Gerät mit dem Bild des Fensters und „Erinnern“.</div></div>`;
   }
   _betaBox(txt) {
     const m = MODS.find((x) => x.id === (this._mdActive && this._mdActive())), st = modSt(m);
@@ -9324,9 +9371,9 @@ class FensterHeizungPanel extends HTMLElement {
   static MP_NAMES = {
     ww: { speicher: "Speicher & Kennzahlen", verlauf: "Verlauf 24 Stunden", zeitplan: "Warmwasser-Zeitplan", zirk: "Zirkulation", leg: "Legionellenschutz", pv: "PV-Überschuss", zustand: "Zustand" },
     en: { kacheln: "Kennzahlen", fluss: "Energiefluss", verlauf: "Verlauf", verteilung: "Verteilung", kosten: "Kosten und Vorteil", heizung: "Heizung", hinweise: "Hinweise" },
-    gs: { kacheln: "Kennzahlen", geraete: "Geräte", verlauf: "Verlauf nach Quelle" },
+    gs: { kacheln: "Kennzahlen", geraete: "Geräte", fenster: "Startfenster", verlauf: "Verlauf nach Quelle" },
   };
-  static MP_WIDE = { ww: ["speicher", "verlauf", "zustand"], en: ["kacheln"], gs: ["kacheln", "geraete", "verlauf"] };
+  static MP_WIDE = { ww: ["speicher", "verlauf", "zustand"], en: ["kacheln"], gs: ["kacheln", "fenster", "geraete", "verlauf"] };
   _mpCfg(mod) {
     const l = ((this._cfg && this._cfg.layout && this._cfg.layout.mp) || {})[mod] || {}, known = Object.keys(this.constructor.MP_NAMES[mod] || {});
     const o = (Array.isArray(l.order) ? l.order : []).filter((x) => known.includes(x));
@@ -9458,7 +9505,7 @@ class FensterHeizungPanel extends HTMLElement {
     const A = this._mxA, adm = this._admin(), c = (A && A.cfg) || { stage: "suggest" };
     const head = `<div class="s3h">${this._gx("house", 30, { on: true, lvl: 80 })}<span><b>Haus-Autopilot</b><small>Geräte, Auto und Warmwasser gemeinsam für die nächsten 24 Stunden</small></span>${adm ? `<button class="ibtn" data-act="mxapset" aria-label="Autopilot einstellen">${ic("sliders", 16)}</button>` : ""}</div>`;
     if (!A) return `<div class="lgt mxap" style="--c:#2dd4bf">${head}<div class="mut sm">Lädt …</div></div>`;
-    const seg = `<div class="seg mxseg">${[["off", "Aus"], ["suggest", "Nur Vorschläge"], ["confirm", "Mit Bestätigung"]].map(([k, l]) => `<button class="${c.stage === k ? "sel" : ""}" data-act="mxstage" data-k="${k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}<button disabled title="kommt mit Max 4">Automatisch · Max 4</button></div>`;
+    const seg = `<div class="seg mxseg">${[["off", "Aus"], ["suggest", "Nur Vorschläge"], ["confirm", "Mit Bestätigung"]].map(([k, l]) => `<button class="${c.stage === k ? "sel" : ""}" data-act="mxstage" data-k="${k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}<button disabled title="kommt mit Max 4">Automatisch (Max 4)</button></div>`;
     const P = A.props || [], st = { new: "", done: "erledigt", no: "abgelehnt", seen: "gesehen", fail: "ging nicht" }, ico = { dev: "washer", car: "car", ww: "boiler" };
     const rows = c.stage === "off" ? `<div class="lgnote2">Aus. Der Autopilot plant nichts und meldet nichts.</div>` : P.length ? P.map((p) => `<div class="mxprop ${p.state}">${this._gx(ico[p.kind] || "bolt", 28, { on: true, lvl: 70 })}<span><b>${esc(p.t)}</b>${c.stage === "confirm" && p.act ? `<small>→ ${esc(p.act)}</small>` : ""}</span>
         ${p.state === "new" && adm ? (c.stage === "confirm" ? `<span class="mxyn"><button class="lgopen" data-act="mxyes" data-k="${esc(p.id)}">Ja</button><button class="lgopen gy" data-act="mxno" data-k="${esc(p.id)}">Nein</button></span>` : `<button class="lgopen gy" data-act="mxno" data-k="${esc(p.id)}">Ausblenden</button>`) : `<em class="mxst">${st[p.state] || ""}</em>`}</div>`).join("")

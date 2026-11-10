@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2b12] - 2026-11-10
+
+### Neu
+- **Modul 4 v1.4 – Stufe 3 der neuen Optik (ohne Rangliste):**
+  - **Bestes Startfenster als Bild** auf der Geräte-Seite: Solarprognose als Fläche (6–22 Uhr), das beste Fenster so lang wie ein typischer Lauf mit dem Gerätebild, „jetzt“-Linie und Preisband von günstig bis teuer. Knöpfe „Um 11:30 erinnern“ und „Jetzt starten wäre 41 % Solar“, darunter die Quellen.
+  - **Startfenster aller Geräte** auf einen Blick als eigene Karte (unter „Anpassen“ verschieb- und ausblendbar); Antippen öffnet das Gerät.
+  - Bei gleichem Solar-Anteil (innerhalb von 3 %) gewinnt jetzt das günstigere Fenster (Tibber).
+  - Ohne Modul 16 nutzt Modul 4 das Mittel der letzten 7 Tage aus deinem PV-Sensor (wird ab jetzt je Stunde gemerkt); ohne Tibber fällt das Preisband weg.
+  - „Woher der Strom kam“ (Tag) zeigt die HD-Gerätebilder.
+
+### Behoben
+- **Sponsor-Lounge:** Das Symbol in den Einstellungs-Knöpfen von Haus-Autopilot und Wächter war zu groß und ragte aus dem Knopf. „Automatisch (Max 4)“ bricht nicht mehr um.
+
 ## [2026.11.2b11] - 2026-11-10
 
 ### Neu
