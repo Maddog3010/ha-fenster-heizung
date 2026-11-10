@@ -226,6 +226,7 @@ const MODE = {
   regelung_aus: { t: "Regelung deaktiviert", c: "gray" },
 };
 const SPN_MAIL = "00.verkauf_kompass@icloud.com";
+const BL_SPONSOR_DAYS = 3;  // Testversionen: Sponsor Max sofort, Sponsoren so viele Tage nach Erscheinen
 const LOGO_URL = "/fenster_heizung_static/logo.png", PRODUCT = "Strom & Wärme";
 const FUELS = {
   erdgas: { short: "Gas", label: "m³ Gas", noun: "Gasersparnis" },
@@ -746,7 +747,7 @@ const MV = {
   ef: { v: "0.6", b: 3, d: "2026-11-10", p: "2026.11.2b10", log: [["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
 };
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
-const REL = [{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]},{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]},{"v":"3.0.7.5","d":"2026-10-29","t":["Handy-Ansicht, obere Kacheln mittig"],"c":["Modul 19 · v0.5 Build 5"]},{"v":"3.0.7.4","d":"2026-10-29","t":["Der Fluss in den Linien läuft durchgängig","Kein Punkt mehr oben links im Fluss-Bild","Handy-Ansicht wie auf Tablet und Desktop"],"c":["Modul 19 · v0.5 Build 4"]},{"v":"3.0.7.3","d":"2026-10-29","t":["Behoben: Die Jetzt-Ansicht flackerte"],"c":["Modul 19 · v0.5 Build 3"]},{"v":"3.0.7.2","d":"2026-10-29","t":["Fluss-Bild passt sich dem Bildschirm an","Umschalter „Jetzt | Strom“"],"c":["Modul 19 · v0.5 Build 2"]},{"v":"3.0.7.1","d":"2026-10-29","t":["Behoben: Tablet-Modus: Display ging bei Bewegung nicht an"],"c":[]}];
+const REL = [{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]},{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]},{"v":"3.0.7.5","d":"2026-10-29","t":["Handy-Ansicht, obere Kacheln mittig"],"c":["Modul 19 · v0.5 Build 5"]},{"v":"3.0.7.4","d":"2026-10-29","t":["Der Fluss in den Linien läuft durchgängig","Kein Punkt mehr oben links im Fluss-Bild","Handy-Ansicht wie auf Tablet und Desktop"],"c":["Modul 19 · v0.5 Build 4"]},{"v":"3.0.7.3","d":"2026-10-29","t":["Behoben: Die Jetzt-Ansicht flackerte"],"c":["Modul 19 · v0.5 Build 3"]},{"v":"3.0.7.2","d":"2026-10-29","t":["Fluss-Bild passt sich dem Bildschirm an","Umschalter „Jetzt | Strom“"],"c":["Modul 19 · v0.5 Build 2"]}];
 const CSS = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -2048,6 +2049,13 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .lgxt{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;background:var(--card);border:0;border-radius:16px;padding:14px 10px;color:inherit;cursor:pointer;font:inherit}.lgxt b{font-size:.88rem}.lgxt small{font-size:.72rem;color:var(--mut)}
 .mxbnote{display:flex;align-items:center;gap:10px;margin:10px 0 8px;padding:9px 12px;border-radius:12px;background:color-mix(in srgb,#fbbf24 13%,transparent);border:1px solid color-mix(in srgb,#fbbf24 40%,transparent)}.mxbnote>.lggd{font-size:1.1rem;flex:none}.mxbnote>span:last-child{display:flex;flex-direction:column}.mxbnote b{font-size:.86rem}.mxbnote small{font-size:.78rem;color:var(--mut)}
 .lgbeta{display:flex;align-items:center;gap:6px;margin-top:6px;font-style:normal;font-size:.76rem;font-weight:600;color:color-mix(in srgb,#818cf8 60%,var(--primary-text-color))}.lgbeta::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:#818cf8}.lgbeta.mx{color:color-mix(in srgb,#fbbf24 65%,var(--primary-text-color))}.lgbeta.mx::before{background:#fbbf24}
+.blwrap{min-height:70vh;display:flex;align-items:center;justify-content:center;padding:24px 12px}.blcard{max-width:560px;width:100%;background:var(--card);border:1px solid color-mix(in srgb,#818cf8 45%,transparent);border-radius:22px;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.blhead{display:flex;align-items:center;gap:14px}.blhead h2{margin:6px 0 0;font-size:1.3rem;line-height:1.25}.blic{flex:none;width:56px;height:56px;border-radius:16px;display:grid;place-items:center;color:#818cf8;background:color-mix(in srgb,#818cf8 16%,transparent)}
+.lgchip.bl{color:color-mix(in srgb,#818cf8 55%,var(--primary-text-color));background:color-mix(in srgb,#818cf8 22%,transparent)}.blcard p{margin:14px 0 10px;font-size:.92rem;line-height:1.45;color:var(--mut)}.blcard p b{color:var(--txt,inherit)}
+.blok{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;border-radius:12px;font-size:.82rem;background:color-mix(in srgb,var(--teal) 12%,transparent);color:var(--txt,inherit)}.blok>.ic{color:var(--teal);flex:none;margin-top:1px}.blok.wa{background:color-mix(in srgb,#fbbf24 14%,transparent)}.blok.wa>.ic{color:#fbbf24}
+.blsteps{display:flex;flex-direction:column;gap:8px;margin:14px 0}.blstp{display:flex;gap:10px;align-items:center}.blstp em{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:700;font-size:.8rem;color:color-mix(in srgb,#818cf8 55%,var(--primary-text-color));background:color-mix(in srgb,#818cf8 22%,transparent)}.blstp span{display:flex;flex-direction:column}.blstp b{font-size:.88rem}.blstp small{font-size:.76rem;color:var(--mut)}
+.blcard .lgbtns{display:flex;flex-wrap:wrap;gap:8px}.blcard .lgbtns .btn2{flex:1 1 200px;justify-content:center}.blfoot{text-align:center;margin-top:12px}
+.blcount{display:flex;align-items:center;gap:10px;margin:0 0 10px}.blcount>div{min-width:64px;text-align:center;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,#818cf8 14%,transparent)}.blcount b{display:block;font-size:1.5rem;line-height:1.1;color:color-mix(in srgb,#818cf8 55%,var(--primary-text-color))}.blcount small{font-size:.72rem;color:var(--mut)}.blcount>span{font-size:.82rem;color:var(--mut)}
 .lgprice{display:inline-flex;align-self:flex-start;align-items:center;gap:4px;margin-top:6px;padding:3px 10px;border-radius:999px;font-style:normal;font-size:.76rem;font-weight:700;color:#1a1300;background:linear-gradient(135deg,#fde68a,#fbbf24);box-shadow:0 0 0 1px rgba(251,191,36,.35);white-space:nowrap}.lgtiers b .lgprice{margin:0 0 0 6px;vertical-align:middle}
 .lgtiers{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.lgtiers .lgt{display:flex;flex-direction:column;gap:4px}.lgtiers small{font-size:.76rem;color:var(--mut)}@media(max-width:560px){.lgtiers{grid-template-columns:1fr}}
 .lgchips,.lgchipsn{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-left:auto}.lgchipsn{margin:0 0 10px}.lgchips+.pillbtn{margin-left:8px}
@@ -2220,6 +2228,7 @@ class FensterHeizungPanel extends HTMLElement {
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
+    if (vbeta(this._ver)) { try { this._blG = await this._hass.callWS({ type: "fenster_heizung/beta_gate" }); } catch (_) { this._blG = null; } }  /* Beta-Freigabe, für alle Nutzer */
     this._adLoad(true);
     this._render();
   }
@@ -3164,6 +3173,7 @@ class FensterHeizungPanel extends HTMLElement {
     const bg = getComputedStyle(this).backgroundColor.match(/\d+/g) || [15, 20, 25];
     this.style.colorScheme = (0.299 * bg[0] + 0.587 * bg[1] + 0.114 * bg[2]) < 140 ? "dark" : "light";
     this._applyLook();
+    if (this._blOn()) { this._blRender(); return; }  /* Testversion ohne Freigabe (Max sofort, Sponsor nach 3 Tagen): nur der Weg zurück zur stabilen Version */
     if (this._tmOn()) { this._tmRender(); return; }
     if (this._igOpen && this._admin()) { this._igRender(); return; }
     if (this._ortOpen && this._admin()) { this._ortRender(); return; }
@@ -9577,6 +9587,51 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "gaxtab") { this._gaT = b.dataset.k; try { localStorage.setItem("fh_ga_tab", this._gaT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "gaxpin") { this._gaP = { ...(this._gaP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
+  /* ================= Beta-Freigabe ab 2026.11.2: Testversionen für Sponsor Max sofort, für Sponsoren 3 Tage nach Erscheinen =================
+     Ist eine Testversion (z. B. 2026.12.1b1) installiert und noch nicht freigegeben, zeigt das Panel statt der Module eine Seite mit dem
+     Weg zurück zur letzten stabilen Version. Die Automatiken in Home Assistant laufen weiter, gesperrt ist nur die Oberfläche.
+     Entwickler zählen als Max. Die Erscheinungszeit kommt von GitHub, sonst aus dem Stempel im Build (_rtcache.py, mit Prüfsumme). Fehlt beides, bleibt die Testversion für Sponsoren gesperrt.
+     Gerechnet wird mit der Internetzeit (Date-Kopf von GitHub, sonst vom Versionsdienst von Home Assistant), nicht mit der Uhr von Rechner oder Home Assistant. */
+  _blFreeAt() {   // Zeitpunkt, ab dem die installierte Testversion für Sponsoren frei ist (ms) oder 0, wenn unbekannt
+    const t = Date.parse((this._blG || {}).cur_ts || ""); return Number.isFinite(t) ? t + BL_SPONSOR_DAYS * 864e5 : 0;
+  }
+  _blNow() {      // Internetzeit (vom Backend aus dem Date-Kopf von GitHub) plus monotone Browserzeit – die Uhr des Rechners zählt nicht
+    const u = this._blG || {};
+    if (u !== this._blU) { this._blU = u; this._blB = Number.isFinite(u.net_now) ? [u.net_now, performance.now()] : null; }
+    return this._blB ? this._blB[0] + (performance.now() - this._blB[1]) : Date.now();
+  }
+  _blState() {    // "" = frei · "sp" = Sponsor, noch nicht frei · "none" = ohne Sponsoring
+    if (!vbeta(this._ver) || !this._spnD || !this._blG || !this._blG.beta) return "";  // erst sperren, wenn Sponsor-Stand und Freigabe geladen sind
+    if (this._lgMax()) return "";
+    const s = this._spnS();
+    if (s.active) { const f = this._blFreeAt(); return f && this._blNow() >= f ? "" : "sp"; }  // ohne Erscheinungszeit (Stempel fehlt oder verändert) bleibt gesperrt
+    return "none";
+  }
+  _blOn() { return !!this._blState(); }
+  _blStable() { const u = { ...(this._upd || {}), ...(this._blG || {}) }; return u.stable && !vbeta(u.stable) ? u.stable : ""; }
+  _blWhen(t) { const d = new Date(t); return `${d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "numeric" })} um ${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr`; }
+  _blRender() {
+    const sr = this.shadowRoot, main = sr.getElementById("main"); if (!main) return;
+    const s = this._spnS(), v = this._ver, st = this._blStable(), adm = this._admin(), state = this._blState(), wasMax = s.tier === "max" && !s.active;
+    const hacs = "/hacs/repository?owner=Maddog3010&repository=ha-fenster-heizung", f = this._blFreeAt();
+    const left = f ? Math.max(0, f - this._blNow()) : 0, dd = Math.floor(left / 864e5), hh = Math.ceil((left % 864e5) / 36e5);
+    const step = (n, t, sub) => `<div class="blstp"><em>${n}</em><span><b>${t}</b><small>${sub}</small></span></div>`;
+    const sp = state === "sp";
+    const head = sp ? "Diese Testversion ist bald für dich frei" : "Testversionen sind für Sponsoren";
+    const txt = sp ? (f ? `Als Sponsor kannst du Testversionen 3 Tage nach Erscheinen nutzen. <b>${esc(v)}</b> ist für dich ab <b>${esc(this._blWhen(f))}</b> frei. Mit Sponsor Max sofort.`
+        : `Als Sponsor kannst du Testversionen 3 Tage nach Erscheinen nutzen. Bei <b>${esc(v)}</b> lässt sich der Erscheinungstag nicht prüfen. Installiere die Testversion bitte neu über HACS oder wechsle zur stabilen Version. Mit Sponsor Max sofort.`)
+      : `${wasMax ? "Dein Sponsor-Max-Schlüssel ist abgelaufen. " : ""}Testversionen aus dem Beta-Kanal kannst du mit <b>Sponsor Max sofort</b> und als <b>Sponsor 3 Tage nach Erscheinen</b> nutzen. Bitte wechsle bis dahin zur ${st ? `letzten stabilen Version <b>${esc(st)}</b>` : "letzten stabilen Version"}.`;
+    main.innerHTML = `<div class="blwrap"><div class="blcard">
+      <div class="blhead"><span class="blic">${ic("flask", 30)}</span><div><em class="lgchip bl">Testversion ${esc(v)}</em><h2>${head}</h2></div></div>
+      <p>${txt}</p>
+      ${sp && left ? `<div class="blcount"><div><b>${dd}</b><small>${dd === 1 ? "Tag" : "Tage"}</small></div><div><b>${hh}</b><small>${hh === 1 ? "Stunde" : "Stunden"}</small></div><span>bis zur Freigabe</span></div>` : ""}
+      <div class="blok">${ic("check", 16)}<span>Heizung, Fenster-Automatik und alle Regeln laufen im Hintergrund normal weiter. Räume, Pläne und Einstellungen bleiben erhalten.</span></div>
+      ${adm ? `<div class="blsteps">${step(1, "HACS öffnen", "Strom &amp; Wärme")}${step(2, `⋮ → Erneut herunterladen`, st ? `Version ${esc(st)} wählen` : "die oberste Version ohne „b“ wählen")}${step(3, "Home Assistant neu starten", "danach ist alles wieder frei")}</div>
+      <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="_top" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : "In HACS öffnen"}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · 3 Monate für 9 €</a></div>
+      <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
+      : `<div class="blok wa">${ic("info", 16)}<span>Bitte die Person mit Admin-Rechten in Home Assistant, zur stabilen Version zu wechseln.</span></div>`}
+    </div></div>`;
+  }
   /* ================= Sponsor Max 2 und 3 in der Lounge (Konzept Sponsor Max) =================
      Max 2: Woche voraus (M5), Wächter (M4), Was-wäre-wenn (M2). Max 3: Autopilot I (M1, Vorschläge / mit Bestätigung),
      Heizplan-Assistent (M6), Beta-Kanal 30 Tage (M11). Alles rechnet in Home Assistant bzw. im Browser; nichts wird gesendet. */
@@ -9660,8 +9715,9 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="lgt" style="--c:#818cf8"><div class="s3h"><span class="mxk big">${ic("flask", 18)}</span><span><b>Beta-Kanal</b><small>Vorabversionen 30 statt 14 Tage früher</small></span></div>
       <div class="mxbnote"><span class="lggd">★</span><span><b>Ab Version 2026.11.2</b><small>Beta-Versionen sofort mit Sponsor Max installierbar</small></span></div>
       ${pre ? `<div class="mxprop"><span class="mxk">${ic("flask", 16)}</span><span><b>Testversion ${esc(pre.tag)}</b><small>vom ${esc(this._mxD(pre.ts))}${pre.tag === v ? " · installiert" : v ? ` · du hast ${esc(v)}` : ""}</small></span><a class="lgopen" href="${esc(pre.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Was ist neu</a></div>` : `<div class="mut sm">${R.busy ? "Lädt …" : R.err ? "GitHub gerade nicht erreichbar." : "Gerade gibt es keine Testversion."}</div>`}
+      ${(() => { const st = this._blStable(); return vbeta(v) && st ? `<div class="mxprop"><span class="mxk">${ic("shield", 16)}</span><span><b>Letzte stabile Version ${esc(st)}</b><small>Du nutzt gerade die Testversion ${esc(v)}. Zurück geht jederzeit über HACS.</small></span></div>` : ""; })()}
       <div class="lgbtns"><a class="btn2" href="/hacs/repository?owner=Maddog3010&repository=ha-fenster-heizung" target="_top" style="text-decoration:none">${ic("download", 15)} In HACS öffnen</a><a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues/new?title=${encodeURIComponent("Rückmeldung " + v)}&body=${diag}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${ic("mail", 15)} Rückmeldung</a></div>
-      <div class="lgnote2">In HACS: ⋮ → Erneut herunterladen → Version wählen. Zurück zur stabilen Version genauso. Die Rückmeldung enthält nur Version, Module und Browser – keine Namen, keine Sensoren.</div></div>`;
+      <div class="lgnote2">In HACS: ⋮ → Erneut herunterladen → Version wählen. Zurück zur stabilen Version genauso. Ohne Freigabe (ohne Sponsoring, als Sponsor in den ersten 3 Tagen) zeigt eine Testversion nur den Weg zurück zur stabilen Version. Die Rückmeldung enthält nur Version, Module und Browser – keine Namen, keine Sensoren.</div></div>`;
   }
   _mxSection() {
     return `<div class="lgh4 mxh">★ Sponsor Max</div><div class="mxweek">${this._mxWeek()}</div>

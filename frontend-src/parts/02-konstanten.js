@@ -14,6 +14,7 @@ const MODE = {
   regelung_aus: { t: "Regelung deaktiviert", c: "gray" },
 };
 const SPN_MAIL = "00.verkauf_kompass@icloud.com";
+const BL_SPONSOR_DAYS = 3;  // Testversionen: Sponsor Max sofort, Sponsoren so viele Tage nach Erscheinen
 const LOGO_URL = "/fenster_heizung_static/logo.png", PRODUCT = "Strom & Wärme";
 const FUELS = {
   erdgas: { short: "Gas", label: "m³ Gas", noun: "Gasersparnis" },

@@ -185,6 +185,27 @@ def _is_beta(tag: str) -> bool:
     return bool(m and m.group(2) is not None)
 
 
+def _rt_stamp(current: str) -> str:
+    """Erscheinungszeit der installierten Testversion aus dem Build (ISO) oder "" wenn sie fehlt oder nicht passt."""
+    try:
+        import base64, zlib  # noqa: E401, PLC0415
+        from datetime import datetime, timezone  # noqa: PLC0415
+
+        from ._rtcache import RT  # noqa: PLC0415
+
+        key = zlib.crc32(b"fenster_heizung").to_bytes(4, "big") * 16
+        raw = bytes(b ^ key[i % len(key)] for i, b in enumerate(base64.b85decode(RT)))
+        body, crc = raw[:-4], raw[-4:]
+        if zlib.crc32(body + b"fh").to_bytes(4, "big") != crc:
+            return ""
+        ver, ts = body.decode().split("|")
+        if ver != current:
+            return ""
+        return datetime.fromtimestamp(int(ts), timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    except Exception:  # noqa: BLE001
+        return ""
+
+
 def _tag_ok(tag: str, beta: bool = False) -> bool:
     """Gültige Versionsnummer. Testversionen zählen nur, wenn selbst eine Testversion installiert ist."""
     return bool(_TAG_RE.match(tag)) and (beta or not _is_beta(tag))
@@ -202,6 +223,7 @@ class GeneralManager:
         self._daily: dict[str, list[float]] = {}  # Tag -> [Summe, Anzahl]
         self._unsub: CALLBACK_TYPE | None = None
         self._upd: tuple[float, dict[str, Any]] | None = None
+        self._net: tuple[float, float] | None = None  # (Internetzeit in s, monotone Zeit beim Abruf) für die Beta-Freigabe
 
     async def async_start(self) -> None:
         saved = await self._store.async_load() or {}
@@ -322,20 +344,50 @@ class GeneralManager:
 
         sess = async_get_clientsession(self.hass)
         async with sess.get(url, headers={"Accept": "application/vnd.github+json"}, timeout=10) as resp:
+            self._net_mark(resp.headers.get("Date"))
             return resp.status, (await resp.json() if resp.status == 200 else None)
+
+    def _net_mark(self, hdr: str | None) -> None:
+        """Internetzeit aus dem Date-Kopf von GitHub merken, mit dem monotonen Zeitgeber (lässt sich nicht verstellen)."""
+        if not hdr:
+            return
+        try:
+            from email.utils import parsedate_to_datetime  # noqa: PLC0415
+
+            self._net = (parsedate_to_datetime(hdr).timestamp(), time.monotonic())
+        except (TypeError, ValueError):
+            pass
+
+    def net_now_ms(self) -> int | None:
+        """Aktuelle Internetzeit in ms: letzte Zeit von GitHub plus vergangene Zeit des monotonen Zeitgebers. Unabhängig von der Uhr des Rechners."""
+        if not self._net:
+            return None
+        return int((self._net[0] + time.monotonic() - self._net[1]) * 1000)
 
     async def _fetch_latest(self, current: str) -> dict[str, Any]:
         """Neueste Version von GitHub: höchste Versionsnummer unter allen Releases und Tags (nicht das zuletzt angelegte Release)."""
         api = f"https://api.github.com/repos/{GITHUB_REPO}"
         cands: dict[str, dict[str, Any]] = {}
+        stable: dict[str, str] = {}
+        cur_ts = ""
+        pre: set[str] = set()  # als Vorabversion markierte Releases zählen nie als stabil
+        # stable: letzte stabile Version, auch wenn eine Beta installiert ist (Beta-Sperre ohne Sponsor Max)
         beta = _is_beta(current)  # wer eine Beta nutzt, bekommt auch neuere Betas angezeigt
         try:
             status, rel = await self._get_json(f"{api}/releases?per_page=50")
             if status == 200 and isinstance(rel, list):
                 for j in rel:
-                    if not isinstance(j, dict) or j.get("draft") or (j.get("prerelease") and not beta):
+                    if not isinstance(j, dict) or j.get("draft"):
                         continue
                     tag = str(j.get("tag_name") or "").lstrip("vV")
+                    if tag == current:  # Erscheinungszeit der installierten Version (Beta-Freigabe für Sponsoren nach 3 Tagen)
+                        cur_ts = str(j.get("published_at") or "")
+                    if j.get("prerelease"):
+                        pre.add(tag)
+                        if not beta:
+                            continue
+                    if _tag_ok(tag) and not j.get("prerelease"):
+                        stable[tag] = str(j.get("html_url") or "")
                     if _tag_ok(tag, beta):
                         cands[tag] = {
                             "latest": tag,
@@ -350,6 +402,8 @@ class GeneralManager:
             if status == 200 and isinstance(tags, list):
                 for t in tags:
                     name = str(t.get("name") or "").lstrip("vV") if isinstance(t, dict) else ""
+                    if _tag_ok(name) and name not in stable and name not in pre:
+                        stable[name] = f"https://github.com/{GITHUB_REPO}/releases/tag/{name}"
                     if _tag_ok(name, beta) and name not in cands:
                         cands[name] = {"latest": name, "notes": [], "url": f"https://github.com/{GITHUB_REPO}/releases/tag/{name}"}
             elif status != 404:
@@ -357,18 +411,51 @@ class GeneralManager:
         except Exception as err:  # noqa: BLE001  - Netzwerkfehler dürfen nie stören
             _LOGGER.debug("Update-Prüfung nicht möglich: %s", err)
             return {"latest": current, "error": "GitHub ist nicht erreichbar"}
-        if cands:
-            return cands[max(cands, key=_vkey)]
-        return {"latest": current}
+        out = dict(cands[max(cands, key=_vkey)]) if cands else {"latest": current}
+        if stable:
+            st = max(stable, key=_vkey)
+            out["stable"], out["stable_url"] = st, stable[st]
+        if cur_ts:
+            out["cur_ts"] = cur_ts
+        return out
 
     async def async_update_info(self, current: str, force: bool = False) -> dict[str, Any]:
         """Update-Info. `force` (Knopf „Jetzt prüfen“) umgeht den Zwischenspeicher und die Abschaltung."""
-        if not self.data["updates"] and not force:
+        if not self.data["updates"] and not force and not _is_beta(current):  # bei Beta immer prüfen: die Sperre braucht die letzte stabile Version
             return {"latest": current}
         now = time.monotonic()
         if not force and self._upd and now - self._upd[0] < UPDATE_CACHE_SECONDS:
-            return self._upd[1]
+            return self._with_net(self._upd[1])
         info = await self._fetch_latest(current)
         if "error" not in info:  # Fehler nicht zwischenspeichern, beim nächsten Mal neu versuchen
             self._upd = (now, info)
-        return info
+        return self._with_net(info)
+
+    async def async_beta_gate(self, current: str) -> dict[str, Any]:
+        """Beta-Freigabe für alle Nutzer: Erscheinungszeit, Internetzeit und letzte stabile Version.
+        Erscheinungszeit von GitHub, sonst aus dem Stempel im Build. Internetzeit von GitHub, sonst vom Versionsdienst von Home Assistant."""
+        if not _is_beta(current):
+            return {"beta": False}
+        info = await self.async_update_info(current)
+        if self.net_now_ms() is None:
+            await self._net_fallback()
+        out = {"beta": True, "stable": info.get("stable", ""), "cur_ts": info.get("cur_ts") or _rt_stamp(current)}
+        net = self.net_now_ms()
+        if net is not None:
+            out["net_now"] = net
+        return out
+
+    async def _net_fallback(self) -> None:
+        from homeassistant.helpers.aiohttp_client import async_get_clientsession  # noqa: PLC0415
+
+        try:
+            sess = async_get_clientsession(self.hass)
+            async with sess.head("https://version.home-assistant.io/stable.json", timeout=10) as resp:
+                self._net_mark(resp.headers.get("Date"))
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.debug("Internetzeit nicht verfügbar: %s", err)
+
+    def _with_net(self, info: dict[str, Any]) -> dict[str, Any]:
+        """Hängt die aktuelle Internetzeit an (für die Beta-Freigabe, nicht die Uhr des Rechners)."""
+        net = self.net_now_ms()
+        return {**info, "net_now": net} if net is not None else info

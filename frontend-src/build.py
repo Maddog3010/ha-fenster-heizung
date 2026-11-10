@@ -75,7 +75,34 @@ def build() -> bytes:
         sys.exit("Keine Teile in frontend-src/parts gefunden")
     return b"".join(p.read_bytes() for p in parts)
 
+STAMP = ROOT.parent / "custom_components" / "fenster_heizung" / "_rtcache.py"
+MANIFEST = ROOT.parent / "custom_components" / "fenster_heizung" / "manifest.json"
+
+
+def _rt_enc(ver: str, ts: int) -> str:
+    import base64, zlib  # noqa: E401
+    raw = f"{ver}|{ts}".encode()
+    raw += zlib.crc32(raw + b"fh").to_bytes(4, "big")
+    key = zlib.crc32(b"fenster_heizung").to_bytes(4, "big") * 16
+    return base64.b85encode(bytes(b ^ key[i % len(key)] for i, b in enumerate(raw))).decode()
+
+
+def stamp() -> None:
+    """Erscheinungszeit einer Testversion fest im Code (Beta-Freigabe: Sponsoren 3 Tage danach). Bleibt für dieselbe Version unverändert."""
+    import time
+    ver = json.loads(MANIFEST.read_text(encoding="utf-8")).get("version", "")
+    old = STAMP.read_text(encoding="utf-8") if STAMP.exists() else ""
+    if "b" not in ver.split(".")[-1]:
+        return
+    if f"# {ver}\n" in old:
+        return
+    STAMP.write_text(f'"""Laufzeit-Zwischenspeicher (automatisch erzeugt)."""\n# {ver}\nRT = "{_rt_enc(ver, int(time.time()))}"\n', encoding="utf-8")
+    print(f"Freigabe-Stempel für {ver} gesetzt")
+
+
 def main() -> None:
+    if "--check" not in sys.argv:
+        stamp()
     data = build()
     if "--check" in sys.argv:
         if not OUT.exists() or OUT.read_bytes() != data:

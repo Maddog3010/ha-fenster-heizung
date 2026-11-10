@@ -814,6 +814,7 @@
     const bg = getComputedStyle(this).backgroundColor.match(/\d+/g) || [15, 20, 25];
     this.style.colorScheme = (0.299 * bg[0] + 0.587 * bg[1] + 0.114 * bg[2]) < 140 ? "dark" : "light";
     this._applyLook();
+    if (this._blOn()) { this._blRender(); return; }  /* Testversion ohne Freigabe (Max sofort, Sponsor nach 3 Tagen): nur der Weg zurück zur stabilen Version */
     if (this._tmOn()) { this._tmRender(); return; }
     if (this._igOpen && this._admin()) { this._igRender(); return; }
     if (this._ortOpen && this._admin()) { this._ortRender(); return; }

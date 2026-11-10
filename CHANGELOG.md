@@ -2,6 +2,40 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.2] - 2026-11-10
+
+Zweite stabile Version im November: die neue Optik, ein komplett neues Modul 4 und die Sponsor-Lounge 2.0 mit Sponsor Max. Sie enthält alles aus den Testversionen 2026.11.2b1 bis 2026.11.2b14. Die Bedienungsanleitung ist komplett neu (Kapitel 23 „Neu in Version 2026.11.2“).
+
+### Neu
+- **Neue Optik:** HD-Bildsatz mit 38 Symbolen für Modul 1, 3, 4 und 19, gleich gut lesbar in hell und dunkel, mit Herkunfts-Ring und Prozentzeile. Alles abschaltbar mit „wie bisher“.
+- **Modul 4 Gerätestrom (v1.5):** Geräte-Szene im Banner mit leuchtenden Kabeln nach Herkunft, Gerätekarten 2.0 mit Restzeit „noch ~ Min.“ und Startempfehlung mit „Erinnern“, Geräte-Seite mit Programm-Kurve, Durchlauf-Protokoll und typischem Lauf, bestes Startfenster als Bild mit Preisband, Startfenster aller Geräte, Standby in W und € im Jahr, Monatsziel, „Dein Jahr“ als Bild zum Teilen, Tablet-Wand, Bewegung (Aus · Dezent · Voll) und eine ruhige Liste am Handy.
+- **Modul 19 Hausfluss (v0.6):** 24 HD-Bilder, die den Zustand zeigen, ruhige Kacheln, „Alte Symbole behalten“.
+- **Anpassen in Modul 2, 3 und 4:** Karten verschieben und ausblenden wie in Modul 1, in Modul 4 auch die Geräte.
+- **Modul 1 (v1.7):** Nachtmodus für den Luftentfeuchter (eigene Nachtzeit, nur bei hoher Feuchte oder ganz aus, Leise-Modus, Meldungen erst morgens) und „Zurückholen“ für fehlende Messräume.
+- **Sensorsuche:** Suchfeld über allen Reitern, im Filter alle Räume und Integrationen.
+- **Sponsor-Lounge 2.0:** eigene Seite mit Energie-Coach (jeden Montag drei Tipps mit Euro-Betrag), Monatsbericht „Dein Haus im Monat“ als Bild und Wunsch des Monats mit Live-Abstimmung auf GitHub.
+- **Sponsor Max (3 Monate für 9 €):** Morgen-Briefing, Jahres-Poster, Woche voraus, Wächter, Was wäre wenn …, Haus-Autopilot I, Heizplan-Assistent und Beta-Kanal.
+
+### Geändert
+- **Beta-Freigabe:** Testversionen nach 2026.11.2 sind mit Sponsor Max sofort und als Sponsor 3 Tage nach Erscheinen nutzbar. Ist eine Testversion noch nicht freigegeben, zeigt das Panel statt der Module den Weg zurück zur letzten stabilen Version (als Sponsor mit Countdown bis zur Freigabe). Gerechnet wird mit der Internetzeit (von GitHub, sonst vom Versionsdienst von Home Assistant), nicht mit der Uhr des Rechners. Die Erscheinungszeit steckt zusätzlich geschützt im Build, falls GitHub nicht erreichbar ist. Heizung, Fenster-Automatik und alle Regeln laufen im Hintergrund weiter. Stabile Versionen sind für alle frei.
+- **Modul 8:** Akkukapazität mit einer Nachkommastelle.
+- **Sponsor-Bereich:** Die Danke-Liste ist entfernt.
+- **Modul-Versionen** fortgeführt: Modul 1 1.7, Modul 2 1.1, Modul 3 1.2, Modul 4 1.5, Modul 8 0.5 Build 3, Modul 19 0.6 Build 3.
+
+### Behoben
+- Modul 1: Messräume verschwanden, wenn das Dashboard die Einstellungen nicht laden konnte. Das Backend behält jetzt fehlende Teile bei.
+- Modul 1: Standort und Abwesenheits-Temperatur fielen auf die Grundwerte zurück.
+- Modul 4: „Erinnern“ meldete immer „Das hat nicht geklappt“.
+- Modul 8: Nach einer Phasenumschaltung endete die Ladung, weil die Wallbox kurz „fertig“ meldete.
+- Modul 19: eigene mdi-Symbole mit „Mdi:“ (iPhone) wurden ignoriert.
+- Einstellungen → Darstellung: Die Zeile „Startseite“ verschwand, wenn „Startseite verwenden“ aus war.
+- Einstellungen → Verlauf: „Rückgängig“ traf nicht den gewählten Eintrag.
+
+### Wichtig beim Update
+- Nach dem Update Home Assistant neu starten und die Seite neu laden. Deine Einstellungen bleiben erhalten.
+- Modul 4 merkt sich ab dieser Version Laufzeiten, Kurven, Standby und Jahreszähler. „noch ~ Min.“ erscheint je Gerät nach 3 neuen Läufen, Standby nach einigen Stunden.
+- Wer die alte Optik möchte: Einstellungen → Modul 4 → Darstellung → Karten wie bisher, Einstellungen → Modul 19 → Alte Symbole behalten.
+
 ## [2026.11.2b14] - 2026-11-10
 
 ### Geändert
