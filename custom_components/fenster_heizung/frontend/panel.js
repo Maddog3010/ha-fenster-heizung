@@ -277,7 +277,7 @@ const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", ico
 const MOD_LI = { id: "li", n: 18, name: "Licht & Lampen", short: "Licht", icon: "lamp", tag: "Lampen schalten, dimmen und Szenen", lab: true };
 /* Phase 3: Labs, die jetzt Addons sind (Müllabfuhr → Addon muell, Licht → Addon licht) */
 const LAB_GONE = ["mm", "li"];
-const MOD_ST = { ef: "beta", sf: "beta", sp: "vorab", ev: "beta", wx: "beta", dt: "beta" };
+const MOD_ST = { ef: "vorab", sf: "beta", sp: "vorab", ev: "beta", wx: "beta", dt: "beta" };
 const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
 const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
@@ -388,9 +388,9 @@ const EF_IMGS = [
   { id: 'netz', n: 'Stromnetz', k: 'netz strommast netzbezug einspeisung zähler', s: '<path d="M32 6L20 58M32 6l12 52M25 24h14M22 38h20M12 17h40" stroke="#cbd5e1" stroke-width="3.5" stroke-linecap="round" fill="none"/>' },
   { id: 'lampe', n: 'Lampe', k: 'lampe licht beleuchtung glühbirne', s: '<path d="M32 7a17 17 0 0 0-9 31v7h18v-7a17 17 0 0 0-9-31z" fill="#fde047"/><rect x="25" y="48" width="14" height="5.5" rx="2.7" fill="#94a3b8"/>' },
 ];
-/* Modul 19 v0.6: 24 HD-Bilder aus der Grafik-Bibliothek (05d), gespeichert als „hd:<Name>“ */
+/* Modul 19: HD-Bilder aus der Grafik-Bibliothek (05d), gespeichert als „hd:<Name>“ – v0.6 24 Bilder, v0.7 drei weitere Haus-Bilder für die Mitte */
 const EF_HD = [["pvRoof", "Solar Dach", "solar pv dach modul photovoltaik sonne erzeugung"], ["balcony", "Balkon", "balkon balkonkraftwerk solar modul pv"], ["grid", "Stromnetz", "netz strommast bezug einspeisung"], ["battery", "Akku", "batterie speicher akku ladestand"],
-  ["wallbox", "Wallbox", "wallbox ladestation laden"], ["car", "Auto", "auto elektroauto fahrzeug"], ["house", "Haus", "haus gebäude zuhause verbrauch"], ["boiler", "Warmwasser", "warmwasser boiler speicher wasser"],
+  ["wallbox", "Wallbox", "wallbox ladestation laden"], ["car", "Auto", "auto elektroauto fahrzeug"], ["house", "Haus", "haus gebäude zuhause verbrauch"], ["houseGarage", "Haus mit Garage", "haus garage gebäude zuhause"], ["flat", "Wohnung", "wohnung mehrfamilienhaus etage miete"], ["bungalow", "Bungalow", "bungalow flachbau haus eben"], ["boiler", "Warmwasser", "warmwasser boiler speicher wasser"],
   ["radiator", "Heizkörper", "heizkörper heizung wärme"], ["heatpump", "Wärmepumpe", "wärmepumpe heizung klima"], ["heater", "Elektroheizer", "elektroheizer heizlüfter heizgerät"], ["washer", "Waschmaschine", "waschmaschine wäsche waschen"],
   ["dryer", "Trockner", "trockner wäsche trocknen"], ["dishwasher", "Spülmaschine", "spülmaschine geschirr"], ["fridge", "Kühlschrank", "kühlschrank kühlgerät gefrier"], ["oven", "Herd / Küche", "herd küche ofen thermomix kochen"],
   ["pool", "Pool / Pumpe", "pool poolpumpe pumpe schwimmbad"], ["lamp", "Licht", "licht lampe beleuchtung"], ["pc", "PC / Server", "computer pc rechner server"], ["plug", "Steckdose", "steckdose stecker gerät verbraucher"],
@@ -412,6 +412,11 @@ const EF_POS = {
 };
 const EF_SIDES = [["top", "Oben"], ["bottom", "Unten"], ["left", "Links"], ["right", "Rechts"]];
 const EF_COLORS = ["#facc15", "#f97316", "#38bdf8", "#a78bfa", "#2dd4bf", "#f472b6", "#4ade80"];
+/* Modul 19 v0.7: Herkunfts-Ring am Haus – Farben wie die Herkunft in Modul 4 (GX_SRC), dazu „Sonstige“ */
+const EF_ST_RE = /^(sensor|binary_sensor|switch|select|input_select|input_boolean|climate|vacuum|water_heater|fan|light|media_player|lawn_mower)\.[a-z0-9_]+$/;  /* Status-Punkt */
+const EF_THEMES = [["nacht", "Nachtglas", "Türkiser Schimmer hinter dem Haus"], ["plan", "Blaupause", "Raster wie ein Bauplan"], ["sterne", "Sternenhimmel", "Für die Nacht und das Ruhebild"], ["garten", "Haus im Garten", "Himmel und Wiese wie in Modul 1/3"]];
+const EF_TPL = [["efh", "house", "Einfamilienhaus mit PV und Akku", "Solar, Netz, Akku, Warmwasser, Waschmaschine"], ["flat", "flat", "Wohnung mit Balkonkraftwerk", "Balkon, Netz, Kühlschrank, PC, Steckdose"], ["ev", "car", "Mit E-Auto", "Solar, Netz, Akku, Wallbox, Auto"]];  /* W2 Vorlagen */
+const EF_MIX = [["pv", "Solar", "#fbbf24"], ["bat", "Akku", "#a78bfa"], ["net", "Netz", "#f87171"], ["oth", "Sonstige", "#94a3b8"]];
 const EF_FLOWS = [["consume", "Verbraucht", "Energie fließt vom Haus zur Kachel"], ["supply", "Liefert", "Energie fließt von der Kachel ins Haus, zum Beispiel Solar"], ["both", "Beides, ein Sensor", "Netz oder Akku mit Vorzeichen: positiv = zur Kachel"], ["split", "Beides, zwei Sensoren", "Zum Beispiel Bezug und Einspeisung getrennt"]];
 /* Logos der Modul-Banner: Linien-Symbole, class="f" füllt halbtransparent */
 const MOD_ART = {
@@ -744,7 +749,7 @@ const MV = {
   dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "0.9", b: 2, d: "2026-10-29", p: "3.0.7.0", log: [["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
-  ef: { v: "0.6", b: 3, d: "2026-11-10", p: "2026.11.2b10", log: [["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ef: { v: "0.9", b: 1, d: "2026-11-11", p: "2026.11.3b5", log: [["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
 };
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
 const REL = [{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]},{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]},{"v":"3.0.7.5","d":"2026-10-29","t":["Handy-Ansicht, obere Kacheln mittig"],"c":["Modul 19 · v0.5 Build 5"]},{"v":"3.0.7.4","d":"2026-10-29","t":["Der Fluss in den Linien läuft durchgängig","Kein Punkt mehr oben links im Fluss-Bild","Handy-Ansicht wie auf Tablet und Desktop"],"c":["Modul 19 · v0.5 Build 4"]},{"v":"3.0.7.3","d":"2026-10-29","t":["Behoben: Die Jetzt-Ansicht flackerte"],"c":["Modul 19 · v0.5 Build 3"]},{"v":"3.0.7.2","d":"2026-10-29","t":["Fluss-Bild passt sich dem Bildschirm an","Umschalter „Jetzt | Strom“"],"c":["Modul 19 · v0.5 Build 2"]}];
@@ -1573,6 +1578,123 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efsw{display:flex;gap:8px;flex-wrap:wrap}.efsw button{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;color:var(--mut);font-weight:700;font-size:.7rem}.efsw button.sel{border-color:var(--primary-text-color)}
 .efv{align-items:flex-start;flex-direction:column;gap:2px}.efv>*{width:100%}.efside{margin:2px 0}.efinfo{border:1px solid var(--line);border-radius:12px;padding:2px 12px;margin:8px 0}.efinfo summary{cursor:pointer;padding:8px 0;font-weight:650;font-size:.9rem}
 @media (prefers-reduced-motion:reduce){.efn{transition:none}}
+/* Modul 19 v0.7: Leuchtlinien, Herkunfts-Ring, Ladestand-Ring, Status-Punkt, „keine Daten“ */
+.eflines .eftr{fill:none;stroke-width:1.5;stroke-dasharray:1.5 6;stroke-linecap:round;opacity:.38}
+.eflines .efgl{fill:none;stroke-linecap:round;opacity:.2}.eflines .efln{fill:none;stroke-linecap:round;opacity:.95}
+.efboard[data-an=voll] .efgl{animation:efglp 2.8s ease-in-out infinite alternate}@keyframes efglp{to{opacity:.36}}
+.efhr{position:absolute;left:50%;top:50%;width:44%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:1;pointer-events:none}
+.efhr::before{content:"";position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 26%,transparent) 30%,transparent 68%)}
+.efhrs{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.efht{fill:none;stroke:color-mix(in srgb,var(--primary-text-color) 12%,transparent);stroke-width:7}
+.efha{fill:none;stroke-width:7;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray .9s ease,stroke-dashoffset .9s ease}
+.efhri{position:absolute;inset:17%;border-radius:50%;display:grid;place-items:center;overflow:hidden;font-size:16cqw;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent)}.efhri svg{width:84%;height:84%}.efhri img{width:100%;height:100%;object-fit:cover}.efhri ha-icon{--mdc-icon-size:16cqw}
+.efn.hub .efs.t{top:4%}.efn.hub .efs.b{bottom:4%}.efn.hub:has(.efhr) .efs{font-size:9cqw}
+.efpr{position:absolute;left:50%;top:50%;width:39%;aspect-ratio:1;transform:translate(-50%,-50%);z-index:1;overflow:visible;pointer-events:none}
+.efpr circle{fill:none;stroke-width:3.4}.efpr circle:first-child{stroke:color-mix(in srgb,var(--primary-text-color) 12%,transparent)}.efpr circle+circle{stroke:var(--c);stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray .9s ease}
+.efn:has(.efpr) .efi.hd{width:28%}
+.efdot{position:absolute;top:9%;right:9%;width:9px;height:9px;border-radius:50%;z-index:2;background:#64748b}.efdot.ok{background:#22c55e;box-shadow:0 0 8px #22c55e}.efdot.wait{background:#facc15;box-shadow:0 0 8px #facc15}.efdot.err{background:#ef4444;box-shadow:0 0 8px #ef4444}
+.efn.nd{background:color-mix(in srgb,var(--primary-text-color) 4%,var(--card))}.efn.nd .efi{filter:grayscale(1);opacity:.5}.efn.nd .efs{opacity:.6}
+.efhb{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:6px 0}.efhbb{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);font:inherit;font-size:.72rem;cursor:pointer}.efhbb.sel{border-color:var(--teal);box-shadow:0 0 0 2px color-mix(in srgb,var(--teal) 40%,transparent)}
+/* Modul 19 v0.8 · A Lichtband-Banner */
+.efband{position:relative;overflow:hidden;min-height:170px;padding:18px 22px;border-radius:20px;color:#fff;background:radial-gradient(ellipse at 72% 50%,rgba(45,212,191,.28),transparent 60%),linear-gradient(120deg,#0f4c4f 0%,#0b2f3a 55%,#0a1f2e 100%);border:0}
+.efband.nt{background:radial-gradient(ellipse at 72% 50%,rgba(45,212,191,.16),transparent 60%),linear-gradient(120deg,#0b2730 0%,#081822 55%,#060f1a 100%)}
+.efbs{position:absolute;right:0;top:0;height:100%;width:100%;pointer-events:none}
+.efband .efbg{opacity:.18}.efband .efbm{opacity:.85}.efband .efbd{stroke:#fff;stroke-dasharray:0 16;opacity:.85;animation:efbr 1.6s linear infinite}@keyframes efbr{to{stroke-dashoffset:-16}}
+.efbt{position:relative;z-index:1;max-width:46%;display:flex;flex-direction:column;gap:6px}.efbt .lbl{display:flex;align-items:center;gap:6px;font-size:.85rem;opacity:.85}
+.efbt .big{font-size:2.6rem;font-weight:800;line-height:1.05;letter-spacing:-.02em}.efbt .big small{font-size:1rem;font-weight:500;margin-left:5px;opacity:.85}
+.efbar{display:flex;gap:2px;height:9px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);max-width:300px}.efbar i{display:block;height:100%}
+.efleg{font-size:.78rem;font-weight:650}.efband .efleg span:not([style]){opacity:.8}
+.efbt .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.efbt .chip{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:99px;padding:4px 10px;font-size:.75rem}
+.efband.nar{min-height:0;padding:12px 14px}.efband.nar .efbs{width:100%;opacity:.55}.efband.nar .efbt{max-width:70%}.efband.nar .efbt .big{font-size:2rem}.efband.nar .chips{display:none}
+@media (prefers-reduced-motion:reduce){.efband .efbd{animation:none}}
+/* F · Themen fürs Brett */
+.efboard.th-nacht,.efcol.th-nacht,.efthv.th-nacht{background:radial-gradient(circle at 50% 52%,rgba(45,212,191,.16),transparent 52%),var(--card)}
+.th-plan{background-color:#0c2340!important;background-image:linear-gradient(rgba(96,165,250,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(96,165,250,.13) 1px,transparent 1px)!important;background-size:22px 22px!important;border-color:#1e3a5f!important}
+.th-sterne{background:radial-gradient(1.6px 1.6px at 4% 40%,#fff,transparent),radial-gradient(1.2px 1.2px at 30% 8%,#fff,transparent),radial-gradient(1.6px 1.6px at 60% 70%,#fff,transparent),radial-gradient(1.2px 1.2px at 96% 6%,#fff,transparent),radial-gradient(1.2px 1.2px at 72% 94%,#fff,transparent),radial-gradient(1.2px 1.2px at 8% 14%,#fff,transparent),radial-gradient(1px 1px at 23% 62%,#fff,transparent),radial-gradient(1.4px 1.4px at 37% 28%,#fff,transparent),radial-gradient(1px 1px at 52% 86%,#fff,transparent),radial-gradient(1.2px 1.2px at 66% 12%,#fff,transparent),radial-gradient(1px 1px at 78% 47%,#fff,transparent),radial-gradient(1.4px 1.4px at 91% 74%,#fff,transparent),radial-gradient(1px 1px at 14% 90%,#fff,transparent),radial-gradient(1px 1px at 86% 26%,#fff,transparent),radial-gradient(1.2px 1.2px at 45% 46%,#fff,transparent),radial-gradient(circle at 50% 52%,rgba(129,140,248,.25),transparent 55%),linear-gradient(165deg,#1e1b4b,#0b1026)!important;border-color:#312e81!important}
+.th-garten{background:radial-gradient(ellipse at 80% 8%,rgba(254,240,138,.35),transparent 30%),linear-gradient(180deg,#0e7490 0%,#155e75 58%,#166534 58.2%,#14532d 100%)!important;border-color:#155e75!important}
+.efx.lt .efboard.th-nacht,.efx.lt .efcol.th-nacht{background:radial-gradient(circle at 50% 52%,rgba(45,212,191,.12),transparent 52%),var(--card)}
+.efx.lt .th-plan{background-color:#eff6ff!important;background-image:linear-gradient(rgba(37,99,235,.1) 1px,transparent 1px),linear-gradient(90deg,rgba(37,99,235,.1) 1px,transparent 1px)!important;border-color:#bfdbfe!important}
+.efx.lt .th-garten{background:linear-gradient(180deg,#bae6fd 0%,#e0f2fe 58%,#bbf7d0 58.2%,#86efac 100%)!important;border-color:#bae6fd!important}
+.efthp{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:8px}.efth{display:flex;flex-direction:column;gap:3px;padding:6px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer}.efth.sel{border-color:var(--teal);box-shadow:0 0 0 2px color-mix(in srgb,var(--teal) 40%,transparent)}.efth b{font-size:.78rem}.efth small{font-size:.66rem;color:var(--mut);line-height:1.2}.efthv{display:block;height:46px;border-radius:8px;border:1px solid var(--line)}
+@media (max-width:560px){.efthp{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* F · Hell-Variante: weiße Kacheln mit feinem Rand und farbiger Linie oben, kein Licht hinter dem Bild, Linien kräftiger */
+.efx.lt .efn{background:#fff;border:1px solid #e5e7eb;box-shadow:0 1px 2px rgba(0,0,0,.04)}.efx.lt .efn::after{display:none}.efx.lt .efn::before{opacity:1;height:3px}
+.efx.lt .efn.on{background:#fff;box-shadow:0 8px 20px -12px var(--c)}.efx.lt .efn:not(.on){background:#f8fafc}.efx.lt .eflines .efln{opacity:1}.efx.lt .eflines .efgl{opacity:.12}.efx.lt .efhr::before{display:none}
+/* F · Kachelform „Rund“ */
+.efx.sh-rund .efn{border-radius:50%}.efx.sh-rund .efn::before{display:none}.efx.sh-rund .efs.l,.efx.sh-rund .efs.r{display:none}.efx.sh-rund .efs.t{top:13%}.efx.sh-rund .efs.b{bottom:13%}
+.efx.sh-rund:not(.nar) .efn:not(.hub){aspect-ratio:1;width:87%}.efx.sh-rund.nar .efn:not(.hub){aspect-ratio:1;width:91%}.efx.sh-rund:not(.nar) .efc.bt .efn,.efx.sh-rund:not(.nar) .efc.ct .efn{width:calc(43.5% - 3px)}.efx.sh-rund.nar .efc.bt .efn{width:clamp(84px,25%,118px)}.efx.sh-rund.nar .efc.tp .efn{width:clamp(84px,25%,118px)}
+.efx.sh-rund .efn.hub{background:transparent;box-shadow:none}.efx.sh-rund .efn.hub .efhr{width:36%}.efx.sh-rund .efn.hub::before,.efx.sh-rund .efn.hub::after{display:none}
+/* H1 · Handy A Fluss-Spalte */
+.efcol{position:relative;border:1px solid var(--line);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.efsec{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.efsrc{position:relative;z-index:1;display:grid;gap:6px}.efsq{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:var(--primary-text-color);font:inherit;padding:2px;cursor:pointer;position:relative}
+.efsq b{font-size:.9rem}.efsq small{font-size:.68rem;color:var(--mut);text-align:center;line-height:1.15}.efsq:not(.on) .efq{opacity:.55;filter:saturate(.4)}.efsq .efdot{top:2px;right:10%}
+.efq{position:relative;display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 28%,transparent),color-mix(in srgb,var(--primary-text-color) 6%,transparent) 70%);border:1px solid color-mix(in srgb,var(--primary-text-color) 10%,transparent)}
+.efq.sm{width:46px;height:46px;flex:none}.efqi{display:grid;place-items:center;width:66%;height:66%;font-size:22px}.efqi svg{width:100%;height:100%}.efqi img{width:100%;height:100%;object-fit:cover;border-radius:50%}.efq .efpr{width:100%}
+.efcl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:0}.efcl .eftr{fill:none;stroke-width:1.5;stroke-dasharray:1.5 6;stroke-linecap:round;opacity:.38}.efcl .efgl{fill:none;opacity:.2;stroke-linecap:round}.efcl .efln{fill:none;stroke-linecap:round;opacity:.95}
+.efhouse{position:relative;z-index:1;align-self:center;display:flex;flex-direction:column;align-items:center;background:none;border:0;color:var(--primary-text-color);font:inherit;cursor:pointer;margin:26px 0 4px;container-type:inline-size;width:150px}
+.efhouse .efhr{position:relative;left:auto;top:auto;transform:none;width:118px}.efhouse b{font-size:1.25rem;margin-top:4px}.efhouse small{font-size:.72rem;color:var(--mut)}.efhouse .efhri{font-size:40px}
+.efcons{display:flex;flex-direction:column;gap:6px}.efpill{position:relative;display:flex;align-items:center;gap:10px;padding:7px 10px 7px 7px;border-radius:99px;border:1px solid var(--line);background:color-mix(in srgb,var(--primary-text-color) 4%,var(--card));color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer;box-shadow:inset 3px 0 0 var(--c)}
+.efpill.on{background:color-mix(in srgb,var(--c) 10%,var(--card))}.efpt{display:flex;flex-direction:column;min-width:0;flex:1}.efpt small{font-size:.72rem;font-weight:700;color:var(--c)}.efpt b{font-size:1.05rem}.efpt span{font-size:.72rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.efpill .efdot{position:static;flex:none;margin-right:6px}
+.efpill:not(.on) .efq{opacity:.55;filter:saturate(.4)}.efpill.nd .efq,.efsq.nd .efq,.efrt.nd .efq{filter:grayscale(1);opacity:.5}
+.efmore{display:flex;justify-content:space-between;background:none;border:0;color:var(--mut);font:inherit;font-size:.8rem;padding:4px 6px;cursor:pointer}.efmore span{color:var(--teal);font-weight:650}
+/* H1 · Handy B Kachel-Raster */
+.efhc{display:flex;align-items:center;gap:14px;padding:14px;cursor:pointer;container-type:inline-size}.efhc .efhr{position:relative;left:auto;top:auto;transform:none;width:96px;flex:none}.efhc .efhri{font-size:34px}.efhc .lbl{font-size:.8rem;color:var(--mut)}.efhc .big{font-size:2rem;font-weight:800}.efhc .big small{font-size:.9rem;font-weight:500;margin-left:4px}.efhc .efleg{font-size:.74rem}
+.efras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px;border-radius:20px;border:1px solid var(--line)}
+.efrt{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;border-radius:16px;border:0;background:color-mix(in srgb,var(--primary-text-color) 5%,var(--card));color:var(--primary-text-color);font:inherit;cursor:pointer;box-shadow:inset 0 2px 0 color-mix(in srgb,var(--c) 70%,transparent)}
+.efrt.on{background:color-mix(in srgb,var(--c) 12%,var(--card))}.efrt b{font-size:1rem}.efrt small{font-size:.72rem;font-weight:700;color:var(--c)}.efra{align-self:flex-start;font-size:.66rem;color:var(--mut)}.efrt.on .efra{color:var(--c)}.efrt:not(.on) .efq{opacity:.55;filter:saturate(.4)}.efrt .efdot{top:10px;right:10px}
+.efrt.add{--c:var(--line);color:var(--mut);justify-content:center;border:1px dashed var(--line);background:transparent;min-height:120px}
+/* H2 · Tablet-Modus: Wand-Ansicht */
+.efx.wall{max-width:none}.efwall{display:grid;gap:12px}.efx.quer .efwall{grid-template-columns:minmax(0,1fr) 270px;align-items:start}
+.efx.wall .efn:not(.hub){aspect-ratio:2.3/1!important;width:100%!important;border-radius:16px}.efx.wall .efc.bt .efn:not(.hub),.efx.wall .efc.ct .efn:not(.hub){width:calc(50% - 6px)!important}
+.efx.wall .efn:not(.hub) .efi{left:21%;width:24%}.efx.wall .efn:not(.hub) .efpr{left:21%;width:31%}.efx.wall .efn:not(.hub):has(.efpr) .efi.hd{width:20%}
+.efx.wall .efn:not(.hub) .efs.l,.efx.wall .efn:not(.hub) .efs.r{display:none}
+.efx.wall .efn:not(.hub) .efs.b{left:42%;right:4%;top:52%;bottom:auto;transform:translateY(-50%);text-align:left;font-size:11cqw;color:var(--primary-text-color)}.efx.wall .efn:not(.hub) .efs.b i{font-size:.5em}
+.efx.wall .efn:not(.hub) .efs.t{left:42%;right:4%;top:auto;bottom:8%;transform:none;text-align:left;font-size:5.4cqw;font-weight:600;display:flex;gap:4px;overflow:hidden}.efx.wall .efn:not(.hub) .efs.t i{display:inline;font-size:1em}
+.efx.wall .efn:not(.hub) .efnm{left:42%;top:9%;width:auto;height:auto;clip:auto;overflow:hidden;right:12%;white-space:nowrap;text-overflow:ellipsis;font-size:5.6cqw;font-weight:700;color:var(--c)}
+.efx.wall .efn.hub{aspect-ratio:1.05/1!important;background:transparent!important;box-shadow:none!important}.efx.wall .efn.hub::before,.efx.wall .efn.hub::after{display:none}.efx.wall .efn.hub .efhr{width:48%}
+.efx.wall .efn .efdot{top:7%;right:3.5%;width:8px;height:8px}
+.efws{display:flex;flex-direction:column;gap:12px}.efws .card{padding:14px;display:flex;flex-direction:column;gap:8px}.efws .efbar{max-width:none;height:12px}.efws .efleg{font-size:.85rem}
+.efwr{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-top:1px solid var(--line);font-size:.92rem}.efwr:first-of-type{border-top:0}.efwr b{font-size:1.15rem}
+.efwf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.efwf>div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column}.efwf small{color:var(--mut);font-size:.8rem}.efwf b{font-size:1.5rem}
+.tmrest.efst{background:radial-gradient(1px 1px at 12% 20%,#fff8,transparent),radial-gradient(1px 1px at 30% 70%,#fff6,transparent),radial-gradient(1.2px 1.2px at 70% 15%,#fff8,transparent),radial-gradient(1px 1px at 85% 60%,#fff6,transparent),radial-gradient(1px 1px at 55% 88%,#fff5,transparent),linear-gradient(165deg,#0f0d2b,#04050d)}
+.tmrest .tmrc{order:0}.tmrest .tmrd{order:1}.tmef{order:2;display:flex;flex-direction:column;align-items:center;gap:2px;margin:14px 0 6px;opacity:.9}.tmef b{font-size:2rem}.tmef small{font-size:.95rem;opacity:.75}.tmrest .tmrf{order:3}.tmrest .tmrw{order:4}
+/* Modul 19 v0.9 · G Animationen „Voll“: Geräte bewegen sich, Sterne funkeln */
+.efboard[data-an=voll] .efn.on .efi[data-g=washer] svg,.efboard[data-an=voll] .efn.on .efi[data-g=dryer] svg,.efboard[data-an=voll] .efn.on .efi[data-g=dishwasher] svg{animation:efshake .9s ease-in-out infinite}
+@keyframes efshake{0%,100%{transform:translate(0,0)}20%{transform:translate(-.6px,.3px) rotate(-.6deg)}40%{transform:translate(.6px,-.3px) rotate(.6deg)}60%{transform:translate(-.4px,.2px)}80%{transform:translate(.4px,-.2px)}}
+.efboard[data-an=voll] .efn.on .efi[data-g=lamp] svg{animation:eflamp 2.4s ease-in-out infinite alternate}@keyframes eflamp{from{filter:drop-shadow(0 0 2px #fde047)}to{filter:drop-shadow(0 0 10px #fde047) brightness(1.12)}}
+.efboard[data-an=voll] .efn.on .efi[data-g=pvRoof] svg,.efboard[data-an=voll] .efn.on .efi[data-g=balcony] svg{animation:efsun 3.2s ease-in-out infinite alternate}@keyframes efsun{to{filter:drop-shadow(0 0 7px rgba(250,204,21,.7)) brightness(1.08)}}
+.efboard[data-an=voll] .efn.on .efi[data-g=heatpump] svg,.efboard[data-an=voll] .efn.on .efi[data-g=heater] svg,.efboard[data-an=voll] .efn.on .efi[data-g=boiler] svg,.efboard[data-an=voll] .efn.on .efi[data-g=radiator] svg{animation:efheat 2.6s ease-in-out infinite alternate}@keyframes efheat{to{filter:drop-shadow(0 0 8px rgba(249,115,22,.65))}}
+.efboard[data-an=voll] .efn.on .efi[data-g=car] svg,.efboard[data-an=voll] .efn.on .efi[data-g=wallbox] svg,.efboard[data-an=voll] .efn.on .efi[data-g=battery] svg{animation:efchg 1.8s ease-in-out infinite alternate}@keyframes efchg{to{filter:drop-shadow(0 0 7px var(--c))}}
+.efband[data-an=voll] .efstar{animation:eftw 3s ease-in-out infinite alternate}@keyframes eftw{from{opacity:.15}to{opacity:1}}
+.efboard[data-an=voll].th-sterne::after,.efboard[data-an=voll] .th-sterne::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(1.6px 1.6px at 18% 30%,#fff,transparent),radial-gradient(1.4px 1.4px at 62% 22%,#fff,transparent),radial-gradient(1.6px 1.6px at 82% 82%,#fff,transparent),radial-gradient(1.2px 1.2px at 33% 78%,#fff,transparent);animation:eftw 2.4s ease-in-out infinite alternate}
+@media (prefers-reduced-motion:reduce){.efboard .efi svg,.efband .efstar,.efboard::after{animation:none!important}}
+/* W1 Anordnen */
+.efab.on{color:#2dd4bf;border-color:#2dd4bf}.efboard.arr .efn *{pointer-events:none}.efboard.arr .efn:not(.hub){cursor:grab;touch-action:none;outline:2px dashed color-mix(in srgb,var(--c) 55%,transparent);outline-offset:2px}
+.efboard.arr .efn.drag{z-index:5;cursor:grabbing;opacity:.92;box-shadow:0 18px 40px -10px #000;transition:none}.efboard.arr .efn.pick{outline:3px solid #2dd4bf}
+.efslot{width:100%;aspect-ratio:1.15/1;border-radius:20px;border:2px dashed var(--line);background:transparent;color:var(--mut);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font:inherit;cursor:pointer}.efslot small{font-size:.72rem}.efslot.pk{border-color:color-mix(in srgb,#2dd4bf 60%,transparent);color:#2dd4bf}
+[data-slot].over .efslot,[data-slot].over .efn{outline:3px solid #2dd4bf;outline-offset:2px;border-radius:20px}
+/* W3 Gruppe, W4 Tageswerte, W7 Sponsor-Abzeichen, W2 Vorlagen */
+.efgb{position:absolute;right:9%;bottom:30%;z-index:3;border:0;border-radius:99px;padding:1px 6px;font:inherit;font-size:max(9px,6cqw);font-weight:800;background:var(--c);color:#0b1220;cursor:pointer}
+.efgm{width:100%;background:none;border:0;border-top:1px solid var(--line);color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer}
+.eftd{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;padding:8px 14px;border-radius:14px;border:1px solid var(--line);background:var(--card);font-size:.85rem}.eftd b{color:var(--mut);font-weight:700;text-transform:uppercase;font-size:.7rem;letter-spacing:.08em}.eftd span{display:inline-flex;align-items:center;gap:6px}.eftd i{width:8px;height:8px;border-radius:50%}
+.efspb{position:absolute;top:12px;right:14px;z-index:2;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:.7rem;font-weight:700;color:#fda4af;background:rgba(0,0,0,.3);border:1px solid rgba(251,113,133,.45)}.efband.nar .efspb{top:8px;right:8px}
+.eftpl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}.eftpb{display:flex;align-items:center;gap:10px;padding:10px;border-radius:14px;border:1px solid var(--line);background:color-mix(in srgb,var(--primary-text-color) 3%,transparent);color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer}.eftpb span{display:flex;flex-direction:column}.eftpb b{font-size:.85rem}.eftpb small{font-size:.72rem;color:var(--mut)}
+/* E Strom-Reiter */
+.efpn{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}.efpnv{display:flex;align-items:center;gap:6px}.efpnv b{min-width:120px;text-align:center}.efpnv .ibtn{font-size:1.3rem;line-height:1}
+.efsum{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.efsum>div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 14px;display:flex;flex-direction:column}.efsum small{color:var(--mut);font-size:.78rem}.efsum b{font-size:1.35rem}
+.efsgrid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:12px;align-items:start}.efsgrid.nar{grid-template-columns:1fr}
+@media (max-width:640px){.efsum{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.efh2{display:flex;align-items:center;gap:6px;font-weight:700;margin-bottom:10px}
+.efcols{display:flex;align-items:stretch;gap:3px;height:190px;padding-bottom:16px;position:relative}.efcols.nm{gap:2px}
+.efsc{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;position:relative;background:none;border:0;padding:0;cursor:pointer;font:inherit}
+.efsb{display:flex;flex-direction:column;border-radius:5px 5px 2px 2px;overflow:hidden;min-height:1px;box-shadow:0 0 12px -4px rgba(251,191,36,.45)}.efsb i{display:block;min-height:0}
+.efsc small{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:.65rem;color:var(--mut)}.efsc.sel .efsb{outline:2px solid var(--primary-text-color);outline-offset:1px}.efsc:hover .efsb{filter:brightness(1.15)}
+.efleg2{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.75rem;margin-top:8px}.efleg2 span{display:inline-flex;align-items:center;gap:5px}.efleg2 i{width:9px;height:9px;border-radius:3px}
+.efsd{margin-top:8px;font-size:.85rem;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent)}
+.efsv{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.efsv:first-of-type{border-top:0}.efsvt{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.efsvt b{font-size:.9rem;color:var(--c)}
+.efsvb{height:7px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color) 10%,transparent);overflow:hidden}.efsvb i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#facc15);border-radius:99px}
+.efsvv{display:flex;flex-direction:column;align-items:flex-end}.efsvv small{font-size:.72rem;color:#fbbf24}
+@media (prefers-reduced-motion:reduce){.efha,.efpr circle{transition:none}.efboard .efgl{animation:none}}
 .lixroom.on{border-color:color-mix(in srgb,#fbbf24 55%,transparent);background:color-mix(in srgb,#fbbf24 7%,var(--card))}
 .lixhd{display:flex;align-items:center;gap:10px}.lixico{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:var(--mut);flex:none}
 .lixroom.on .lixico{background:color-mix(in srgb,#fbbf24 22%,transparent);color:#fbbf24}
@@ -4226,6 +4348,27 @@ class FensterHeizungPanel extends HTMLElement {
         `<path d="M34 18 L28.5 27 H32 L30.5 33 L36 24.5 H32.5z" fill="url(#${q("l")})"/>` +
         `<rect x="27" y="40" width="10" height="16" rx="1.5" fill="#134e4a"/><circle cx="35" cy="48.5" r="1" fill="#fde68a"/>` +
         `<rect x="16" y="38" width="8" height="8" rx="1.5" fill="${o.on === false ? "#ccfbf1" : `url(#${q("l")})`}"/><rect x="40" y="38" width="8" height="8" rx="1.5" fill="${o.on === false ? "#ccfbf1" : `url(#${q("l")})`}"/>` },
+      /* Modul 19 v0.7 (Konzept D2): weitere Haus-Bilder für die Mitte. Fenster leuchten nur, wenn o.on nicht false ist (abends). */
+      houseGarage: { n: "Haus mit Garage", g: 2, f: (q, o) => { const win = o.on === false ? "#ccfbf1" : `url(#${q("l")})`;
+        return lg(q("w"), [[0, "#5eead4"], [1, "#0d9488"]], 0, 0, 1, 1) + lg(q("r"), [[0, "#2dd4bf"], [1, "#0f766e"]], 0, 0, 1, 1) + lg(q("l"), [[0, "#fef9c3"], [1, "#fbbf24"]]) + lg(q("g"), [[0, "#99f6e4"], [1, "#14b8a6"]], 0, 0, 1, 1) + sh(28) +
+        `<rect x="38" y="35" width="22" height="21" fill="url(#${q("g")})"/><path d="M36 36 L49 28 L62 36 L60 37.5 L49 30.8 L38 37.5z" fill="url(#${q("r")})"/>` +
+        `<rect x="41" y="40" width="16" height="16" rx="1" fill="#134e4a"/>` + [43.5, 47, 50.5].map((y) => `<rect x="42" y="${y}" width="14" height="1.6" rx=".8" fill="#5eead4" opacity=".55"/>`).join("") +
+        `<rect x="6" y="29" width="32" height="27" fill="url(#${q("w")})"/><path d="M1 32 L22 10 L43 32 L39 34 L22 16.5 L5 34z" fill="url(#${q("r")})"/>` + gl("M22 10 L1 32 L5 34 L22 16.5z") +
+        `<path d="M6 31 L22 15 L38 31 V34 L22 18 L6 34z" fill="#134e4a" opacity=".25"/><path d="M24 18.5 L19.5 26 H22.5 L21 31 L25.5 24 H22.5z" fill="url(#${q("l")})"/>` +
+        `<rect x="18" y="42" width="8" height="14" rx="1.2" fill="#134e4a"/><circle cx="24.4" cy="49.5" r=".9" fill="#fde68a"/>` +
+        `<rect x="9" y="38" width="7" height="7" rx="1.2" fill="${win}"/><rect x="28" y="38" width="7" height="7" rx="1.2" fill="${win}"/>`; } },
+      flat: { n: "Wohnung", g: 2, f: (q, o) => { const L = o.on === false ? null : [1, 4, 6, 9, 11]; let k = 0;
+        return lg(q("w"), [[0, "#5eead4"], [1, "#0d9488"]], 0, 0, 1, 1) + lg(q("r"), [[0, "#2dd4bf"], [1, "#0f766e"]], 0, 0, 1, 1) + lg(q("l"), [[0, "#fef9c3"], [1, "#fbbf24"]]) + sh(22) +
+        `<rect x="12" y="8" width="40" height="48" rx="2" fill="url(#${q("w")})"/><rect x="10" y="5" width="44" height="5" rx="1.5" fill="url(#${q("r")})"/>` + gl("M12 10 H22 L18 56 H12z") +
+        [14, 24, 34].map((y) => [17, 29, 41].map((x) => { const i = k++; return `<rect x="${x}" y="${y}" width="6" height="6.5" rx="1" fill="${L && L.includes(i) ? `url(#${q("l")})` : "#ccfbf1"}"/>`; }).join("")).join("") +
+        `<rect x="10" y="44" width="44" height="2" fill="#0f766e"/><rect x="27" y="47" width="10" height="9" rx="1" fill="#134e4a"/><circle cx="35" cy="51.5" r=".9" fill="#fde68a"/>` +
+        `<rect x="16" y="48" width="7" height="5" rx="1" fill="${L ? `url(#${q("l")})` : "#ccfbf1"}"/><rect x="41" y="48" width="7" height="5" rx="1" fill="#ccfbf1"/>`; } },
+      bungalow: { n: "Bungalow", g: 2, f: (q, o) => { const win = o.on === false ? "#ccfbf1" : `url(#${q("l")})`;
+        return lg(q("w"), [[0, "#5eead4"], [1, "#0d9488"]], 0, 0, 1, 1) + lg(q("r"), [[0, "#2dd4bf"], [1, "#0f766e"]], 0, 0, 1, 1) + lg(q("l"), [[0, "#fef9c3"], [1, "#fbbf24"]]) + sh(29) +
+        `<rect x="6" y="34" width="52" height="22" fill="url(#${q("w")})"/><path d="M1 37 L18 21 H46 L63 37 L59 38.5 L44 24.5 H20 L5 38.5z" fill="url(#${q("r")})"/>` + gl("M18 21 L1 37 L5 38.5 L20 24.5 H44 L46 21z") +
+        `<path d="M6 36 L20 24 H44 L58 36 V38.5 L44 26.5 H20 L6 38.5z" fill="#134e4a" opacity=".25"/><path d="M33 26 L28.5 33 H31.5 L30 37.5 L34.5 31 H31.5z" fill="url(#${q("l")})"/>` +
+        `<rect x="28" y="42" width="9" height="14" rx="1.2" fill="#134e4a"/><circle cx="35" cy="49.5" r=".9" fill="#fde68a"/>` +
+        `<rect x="10" y="41" width="13" height="8" rx="1.2" fill="${win}"/><rect x="41" y="41" width="13" height="8" rx="1.2" fill="${win}"/><rect x="16" y="41" width="1.2" height="8" fill="#0f766e" opacity=".5"/><rect x="47" y="41" width="1.2" height="8" fill="#0f766e" opacity=".5"/>`; } },
       meter: { n: "Zähler", g: 2, f: (q) => lg(q("b"), M.white, 0, 0, 1, 1) + lg(q("d"), [[0, "#134e4a"], [1, "#042f2e"]]) + sh(18) +
         `<rect x="12" y="5" width="40" height="51" rx="6" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
         `<rect x="17" y="12" width="30" height="14" rx="3" fill="url(#${q("d")})"/><text x="32" y="22.5" text-anchor="middle" font-size="7.5" font-weight="700" letter-spacing=".4" font-family="ui-monospace,monospace" fill="#5eead4">04217</text>` +
@@ -6535,7 +6678,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
-    if (["efxmgr", "efxedit"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["efxmgr", "efxedit", "efxgrp"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lixset", "lixdet", "lixoff"].includes(m.type) && this._lixModal) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["adinst", "addel", "adupd", "adx"].includes(m.type)) { box.innerHTML = this._adModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -9682,7 +9825,8 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _tmSleepHtml() {
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
-    return `<div class="tmrest"><div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
+    const ef = this._efxSleep ? this._efxSleep() : "";
+    return `<div class="tmrest${ef ? " efst" : ""}">${ef}<div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
   }
   _tmRender() {
     const sr = this.shadowRoot, v = this._mdList().some((m) => m.id === this._tmV()) || this._tmV() === "st" ? this._tmV() : "st", m = this._mdList().find((x) => x.id === v), c = this._tmC(), me = this._tmMe();
@@ -10424,21 +10568,23 @@ class FensterHeizungPanel extends HTMLElement {
       .finally(() => { this._efxBusy = false; if (this._mdActive() === "ef") this._render(); });
   }
   _efxPut(cfg) {
+    this._efBandV = (this._efBandV || 0) + 1;  /* Banner sofort neu zeichnen */
     return this._hass.callWS({ type: "fenster_heizung/ef_set", cfg }).then((r) => { this._efxD = r; }).catch(() => this._toast("Das hat nicht geklappt"));
   }
   _efTab() { if (!this._efT) { try { this._efT = localStorage.getItem("fh_ef_tab") === "strom" ? "strom" : "now"; } catch (e) { this._efT = "now"; } } return this._efT; }
   _efSize() { if (!this._efS) { try { this._efS = localStorage.getItem("fh_ef_size") || "auto"; } catch (e) { this._efS = "auto"; } } return this._efS; }
   _efxSp() { return !!this._spnS().active; }
-  _efxCfg() { return (this._efxD && this._efxD.cfg) || { hero: { show: true }, hub: { on: true, name: "Haus", image: "🏠", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", calc: "total", chips: [] }, nodes: {} }; }
+  _efxCfg() { return (this._efxD && this._efxD.cfg) || { hero: { show: true }, banner: "band", theme: "nacht", shape: "kachel", mobile: "fluss", hub: { on: true, name: "Haus", image: "hd:house", color: "", ring: true, top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", calc: "total", chips: [] }, nodes: {} }; }
   _efxClone() { return JSON.parse(JSON.stringify(this._efxCfg())); }
   _efxBlank(pos) {
     const p = EF_POS[pos];
-    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:pvRoof" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false };
+    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:pvRoof" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false, run_w: 10, pct: "", status: "" };
   }
   /* ---- Rechnen: Leistung einer Kachel in W, positiv = zur Kachel, negativ = ins Haus ---- */
   _efxToW(id) { const st = id && this._hass.states[id]; if (!st) return NaN; const v = parseFloat(st.state); return isNaN(v) ? NaN : /^kW$/i.test(st.attributes.unit_of_measurement || "") ? v * 1000 : v; }
   _efxPid(n) { const b = n.bottom && this._hass.states[n.bottom]; return n.power || (b && /^k?W$/i.test(b.attributes.unit_of_measurement || "") ? n.bottom : ""); }
   _efxNodeW(n) {
+    if ((n.group || []).length && n.flow !== "split") { const s = n.group.reduce((a, e) => { const v = this._efxToW(e); return a + (isNaN(v) ? 0 : Math.abs(v)); }, 0); return n.flow === "supply" ? -s : s; }  /* W3 Gruppen-Kachel: Summe */
     if (n.flow === "split") { const a = this._efxToW(n.power_to_node), b = this._efxToW(n.power_to_house); return (isNaN(a) ? 0 : Math.abs(a)) - (isNaN(b) ? 0 : Math.abs(b)); }
     const v = this._efxToW(this._efxPid(n)); if (isNaN(v)) return 0;
     return n.flow === "supply" ? -Math.abs(v) : n.flow === "consume" ? Math.abs(v) : n.invert ? -v : v;
@@ -10459,15 +10605,71 @@ class FensterHeizungPanel extends HTMLElement {
   _efxFmt(id) {
     const st = this._hass.states[id]; if (!st) return ["–", "", ""];
     const v = parseFloat(st.state), u = st.attributes.unit_of_measurement || "";
+    if (/^(unavailable|unknown)$/.test(st.state)) return ["–", "", String(st.attributes.friendly_name || id).split(" ").pop()];
     return [isNaN(v) ? st.state : v.toLocaleString("de-DE", { maximumFractionDigits: Math.abs(v) >= 100 ? 0 : 2 }), u, String(st.attributes.friendly_name || id).split(" ").pop()];
   }
   /* Bild einer Kachel: mit „Alte Symbole behalten“ das ursprüngliche Symbol (image_alt), sonst das HD-Bild */
   _efxImgN(n, o) { const c = this._efxCfg(); return this._efxImg(c.keep_old && n && n.image_alt ? n.image_alt : n && n.image, o); }
-  /* Zustand für HD-Bilder aus den Werten der Kachel: läuft (Leistung über 10 W), Füllstand aus einem %-Wert */
-  _efxState(n, w) {
-    const pct = EF_SIDES.map(([s]) => n[s] && this._hass.states[n[s]]).find((x) => x && (x.attributes.unit_of_measurement || "") === "%"), v = pct ? parseFloat(pct.state) : NaN;
-    return { on: Math.abs(w) > 10, lvl: isNaN(v) ? undefined : v };
+  /* Zustand für HD-Bilder aus den Werten der Kachel (v0.7, Konzept K3): läuft ab „run_w“ (Standard 10 W),
+     Füllstand aus dem gewählten %-Wert („pct“: leer = erster Wert in %, Seite = genau dieser, „none“ = kein Ring) */
+  _efxPctId(n) {
+    if (n.pct === "none") return "";
+    if (n.pct && n[n.pct]) return n[n.pct];
+    const s = EF_SIDES.map(([x]) => n[x]).find((e) => e && this._hass.states[e] && (this._hass.states[e].attributes.unit_of_measurement || "") === "%");
+    return s || "";
   }
+  _efxState(n, w) {
+    const id = this._efxPctId(n), st = id && this._hass.states[id], v = st ? parseFloat(st.state) : NaN, rw = Number(n.run_w) > 0 ? Number(n.run_w) : 10;
+    return { on: Math.abs(w) >= rw, lvl: isNaN(v) ? undefined : Math.max(0, Math.min(100, v)) };
+  }
+  /* Keine Daten: der Leistungssensor fehlt oder meldet „nicht verfügbar“ */
+  _efxNoData(n) {
+    const ids = n.flow === "split" ? [n.power_to_node, n.power_to_house].filter(Boolean) : (n.group || []).length ? n.group : [this._efxPid(n)].filter(Boolean);
+    return ids.length > 0 && ids.every((id) => { const st = this._hass.states[id]; return !st || /^(unavailable|unknown)$/.test(st.state); });
+  }
+  /* Status-Punkt (Konzept B1/K3): grün läuft, gelb wartet, rot Störung oder keine Daten. Aus einer frei wählbaren Entität. */
+  _efxDot(n) {
+    if (this._efxNoData(n)) return ["err", "keine Daten"];
+    const st = n.status && this._hass.states[n.status]; if (!n.status) return null;
+    if (!st || /^(unavailable|unknown)$/.test(st.state)) return ["err", "Status nicht verfügbar"];
+    const v = String(st.state).toLowerCase(), dc = st.attributes.device_class || "";
+    if (n.status.startsWith("binary_sensor.") && /^(problem|safety|smoke|moisture|tamper)$/.test(dc)) return v === "on" ? ["err", "Störung"] : ["ok", "in Ordnung"];
+    if (/(error|fault|fehler|st[öo]rung|problem|alarm|defekt|blocked|blockiert|failed)/.test(v)) return ["err", st.state];
+    if (/^(on|an|ein|true|running|run|läuft|laeuft|active|aktiv|charging|lädt|laedt|heating|heizt|cleaning|washing|drying|spülen|spuelen|betrieb|in_betrieb|working|cooling|home)$/.test(v)) return ["ok", st.state];
+    if (/^(off|aus|false|idle|standby|stand-by|ready|bereit|docked|finished|fertig|done|complete|completed|end|ende|not_home|0)$/.test(v)) return ["off", st.state];
+    if (/(paus|wait|wart|pending|delay|verz|scheduled|geplant|sleep|program)/.test(v)) return ["wait", st.state];
+    return ["ok", st.state];
+  }
+  /* Herkunft des Hausverbrauchs (Konzept D1/K4): Zufluss nach Bild-Art gruppiert. Einspeisung und Akku-Laden kommen zuerst
+     aus Solar – so zeigt der Ring, was im Haus ankommt. Unbekannte Quellen zählen als „Sonstige“. */
+  _efxKind(n) {
+    const t = (String(n.image || "") + " " + String(n.image_alt || "") + " " + String(n.name || "")).toLowerCase();
+    if (/pvroof|balcony|forecast|sonne|solar|☀|🌤|\bpv\b|balkon|photovolt/.test(t)) return "pv";
+    if (/battery|akku|🔋|batter|speicher/.test(t)) return "bat";
+    if (/grid|netz|strommast|bezug|einspeis/.test(t)) return "net";
+    return "oth";
+  }
+  _efxMix(nodes) {
+    const m = { pv: 0, bat: 0, net: 0, oth: 0 }; let out = 0;
+    nodes.forEach((n) => { if (n.flow === "consume") return; const w = this._efxNodeW(n); if (w < 0) m[this._efxKind(n)] += -w; else out += w; });
+    const take = Math.min(m.pv, out); m.pv -= take; out -= take; if (out > 0) m.oth = Math.max(0, m.oth - out);
+    const tot = m.pv + m.bat + m.net + m.oth; return { ...m, tot };
+  }
+  /* Ring um das Haus: immer vier Bögen (auch mit Länge 0), damit der Aufbau gleich bleibt und der Ring beim Neuzeichnen gleitet */
+  _efxRingHtml(mix, img, txt) {
+    const R = 44, C = 2 * Math.PI * R, S = EF_MIX; let off = 0;
+    const arcs = S.map(([k, , c]) => {
+      const f = mix.tot > 0 ? mix[k] / mix.tot : 0, len = f > 0 ? Math.max(0, f * C - (f < .999 ? 2.4 : 0)) : 0;
+      const a = `<circle class="efha" cx="50" cy="50" r="${R}" stroke="${c}" stroke-dasharray="${len.toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}"/>`; off += f * C; return a;
+    }).join("");
+    return `<div class="efhr" data-kk="efhr" data-ks="1" title="${esc(txt)}"><svg class="efhrs" viewBox="0 0 100 100" aria-hidden="true"><circle class="efht" cx="50" cy="50" r="${R}"/>${arcs}</svg><div class="efhri">${img}</div></div>`;
+  }
+  _efxMixTxt(mix) {
+    if (!mix.tot) return "Gerade fließt kein Strom ins Haus";
+    return EF_MIX.filter(([k]) => mix[k] > 0).map(([k, l]) => `${Math.round(mix[k] / mix.tot * 100)} % ${l}`).join(" · ");
+  }
+  /* Abends leuchten die Fenster der Haus-Bilder: Sonne unter dem Horizont, ohne sun.sun zwischen 18 und 7 Uhr */
+  _efxNight() { const s = this._hass.states["sun.sun"]; if (s) return s.state === "below_horizon"; const h = new Date().getHours(); return h >= 18 || h < 7; }
   _efxImg(v, o) {
     v = String(v || "");
     if (v.startsWith("hd:")) return this._gx(v.slice(3), 64, o || { on: true, lvl: 80 }).replace('class="gx"', 'class="gx efhd"');
@@ -10480,58 +10682,91 @@ class FensterHeizungPanel extends HTMLElement {
     const id = n[side], lab = String(n[side + "_label"] || "").trim(), lr = side === "left" || side === "right";
     let html = "", calc = false;
     if (id) { const [v, u, l] = this._efxFmt(id); html = lr ? `${v}<i>${esc(lab || u)}</i>` : `${v} ${esc(u)}<i>${esc(lab || l)}</i>`; }
+    else if (!hub && side === "bottom" && (n.group || []).length) { calc = true; html = `${this._efxFmtW(Math.abs(this._efxNodeW(n)))}<i>${esc(lab || n.group.length + " Geräte zusammen")}</i>`; }
     else if (hub && side === "bottom") { calc = true; html = `${this._efxFmtW(hubW)}<i>${esc(lab || (n.calc === "rest" ? "Restverbrauch" : "Hausverbrauch"))}</i>`; }
     return { id, html, calc };
   }
   _efxNodeHtml(pos, n, hubW) {
-    const hub = pos === "hub", col = n.color || (EF_POS[pos] || [])[3] || "#2dd4bf", w = hub ? 0 : this._efxNodeW(n), on = hub || Math.abs(w) > 5;
+    const hub = pos === "hub", col = n.color || (EF_POS[pos] || [])[3] || "#2dd4bf", w = hub ? 0 : this._efxNodeW(n), nd = !hub && this._efxNoData(n), on = hub || (!nd && Math.abs(w) > 5);
     const sides = EF_SIDES.map(([s]) => { const o = this._efxSide(n, s, hub, hubW), tag = o.id ? "button" : "span"; return `<${tag} class="efs ${s[0]}" ${o.id ? `data-act="efxmore" data-e="${esc(o.id)}" title="${esc((this._hass.states[o.id] || { attributes: {} }).attributes.friendly_name || o.id)}"` : ""}>${o.html}</${tag}>`; }).join("");
-    return `<div class="efn${hub ? " hub" : ""}${on ? " on" : ""}" ${hub ? 'data-act="efxtab" data-v="strom" title="Strom öffnen"' : ""} data-p="${pos}" data-w="${Math.round(w)}" data-c="${col}" style="--c:${col}" role="group" aria-label="${esc(n.name)}">${sides}<div class="efi${String(this._efxCfg().keep_old && n.image_alt ? n.image_alt : n.image || "").startsWith("hd:") ? " hd" : ""}">${this._efxImgN(n, hub ? { on: true } : this._efxState(n, w))}</div><span class="efnm">${esc(n.name)}</span></div>`;
+    const isHd = String(this._efxCfg().keep_old && n.image_alt ? n.image_alt : n.image || "").startsWith("hd:");
+    let pic;
+    if (hub) {
+      const img = this._efxImgN(n, { on: this._efxNight() }), mix = this._efMix || { tot: 0 };
+      pic = n.ring === false ? `<div class="efi${isHd ? " hd" : ""}">${img}</div>` : this._efxRingHtml(mix, img, this._efxMixTxt(mix));
+    } else {
+      const zs = nd ? { on: false } : this._efxState(n, w), pr = !nd && zs.lvl != null ? `<svg class="efpr" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" pathLength="100"/><circle cx="50" cy="50" r="46" pathLength="100" stroke-dasharray="${zs.lvl.toFixed(1)} 100"/></svg>` : "";
+      pic = `${pr}<div class="efi${isHd ? " hd" : ""}" data-g="${esc(String(n.image || "").replace(/^hd:/, ""))}">${this._efxImgN(n, zs)}</div>`;
+    }
+    if (!hub && (n.group || []).length) pic += `<button class="efgb" data-act="efxgrp" data-k="${pos}" aria-label="${(n.group || []).length} Geräte anzeigen">×${n.group.length}</button>`;
+    const dot = hub ? null : this._efxDot(n), dh = dot ? `<i class="efdot ${dot[0]}" title="${esc(dot[1])}" aria-label="Status: ${esc(dot[1])}"></i>` : "";
+    return `<div class="efn${hub ? " hub" : ""}${on ? " on" : ""}${nd ? " nd" : ""}" ${hub ? 'data-act="efxtab" data-v="strom" title="Strom öffnen"' : ""} data-p="${pos}" data-w="${Math.round(w)}" data-c="${col}" style="--c:${col}" role="group" aria-label="${esc(n.name)}${hub && n.ring !== false ? ": " + esc(this._efxMixTxt(this._efMix || { tot: 0 })) : ""}${dot ? ", " + esc(dot[1]) : ""}">${sides}${pic}${dh}<span class="efnm">${esc(n.name)}</span></div>`;
   }
   _efPage() {
     if (!this._efxD) { this._efxLoad(); return `<div class="card empty">Hausfluss wird geladen …</div>`; }
-    if (!this._efxSp()) return `<div class="card empty">${ic("heart", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Nur für Sponsoren</div>Der Hausfluss ist ein Beta-Modul und gehört zu den Extras für Sponsoren.<br><button class="btn2 pri" style="margin-top:12px" data-act="spnopen">Sponsor-Bereich öffnen</button></div>`;
+    if (!this._efxSp()) return `<div class="card empty">${ic("heart", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Nur für Sponsoren</div>Der Hausfluss ist eine Vorabversion und gehört zu den Extras für Sponsoren.<br><button class="btn2 pri" style="margin-top:12px" data-act="spnopen">Sponsor-Bereich öffnen</button></div>`;
     const c = this._efxCfg(), adm = this._admin(), list = EF_POS ? Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on) : [], nodes = list.map((p) => c.nodes[p]);
-    if (!list.length) return `<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Kacheln</div>Lege Solar, Netz, Akku und Verbraucher als Kacheln um dein Haus an.${adm ? `<br><button class="btn2 pri" style="margin-top:12px" data-act="efxstart">Mit Beispiel-Kacheln starten</button> <button class="btn2" style="margin-top:12px" data-act="efxopen">Selbst einrichten</button>` : ""}</div>`;
+    if (!list.length) return `<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Kacheln</div>Lege Solar, Netz, Akku und Verbraucher als Kacheln um dein Haus an.${adm ? `<br><div style="margin-top:12px;text-align:left">${this._efxTplHtml(adm)}</div><button class="btn2" style="margin-top:8px" data-act="efxopen">Selbst einrichten</button>` : ""}</div>`;
     const narrow = (this.clientWidth || 1000) < 640, hub = c.hub, calc = this._efxCalc(nodes), hubW = hub.calc === "rest" ? calc.rest : calc.total;
+    this._efMix = this._efxMix(nodes);
     /* Das Haus sitzt immer genau in der Mitte: Zeilen oben und unten werden paarweise gehalten oder weggelassen, leere Gegenstücke bekommen einen unsichtbaren Platzhalter */
-    const has = (r) => list.some((p) => EF_POS[p][1] === r), keep = [1, 2, 3, 4, 5].filter((r) => r === 3 || (r === 1 || r === 5 ? has(1) || has(5) : has(2) || has(4)));
+    const ar = !!this._efArr && adm && !narrow;  /* W1 Anordnen: alle neun Plätze sichtbar, freie als Ablagefläche */
+    const has = (r) => list.some((p) => EF_POS[p][1] === r), keep = ar ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5].filter((r) => r === 3 || (r === 1 || r === 5 ? has(1) || has(5) : has(2) || has(4)));
     const ri = (r) => keep.indexOf(r) + 1, COL = { top_1: 1, top_2: 3, left_1: 1, left_2: 1, left_3: 1, right_1: 3, right_2: 3, right_3: 3 };
-    const cellAt = (p, html, z) => { const e = EF_POS[p], b = p === "bottom", ct = /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : ct ? "2" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z ? " z" : ""}" style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
-    const ghost = '<div class="efg" aria-hidden="true"></div>', ghosts = [[1, "top_1"], [5, "bottom"], [2, "left_1"], [4, "left_3"]].filter(([r]) => keep.includes(r) && !has(r)).map(([r, p]) => cellAt(p, ghost, r === 2 || r === 4)).join("");
+    const cellAt = (p, html, z) => { const e = EF_POS[p], b = p === "bottom", ct = !ar && /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : ct ? "2" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z ? " z" : ""}"${ar ? ` data-slot="${p}"` : ""} style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
+    const ghost = '<div class="efg" aria-hidden="true"></div>', ghosts = [[1, "top_1"], [5, "bottom"], [2, "left_1"], [4, "left_3"]].filter(([r]) => !ar && keep.includes(r) && !has(r)).map(([r, p]) => cellAt(p, ghost, r === 2 || r === 4)).join("");
     const gUp = keep.includes(4) && !has(4), gDn = keep.includes(2) && !has(2), rows = keep.length - (gUp || gDn ? 1 : 0);
+    const slots = ar ? Object.keys(EF_POS).filter((p) => !list.includes(p)).map((p) => cellAt(p, `<button class="efslot${this._efPick ? " pk" : ""}" data-act="efxslot" data-p="${p}" aria-label="Freier Platz ${EF_POS[p][4]}">${ic("plus", 18)}<small>${EF_POS[p][4]}</small></button>`)).join("") : "";
     const pair = narrow && list.includes("top_1") && list.includes("top_2");  /* Handy: beide oberen Kacheln nebeneinander, mittig über dem Haus */
     const cells = (pair ? `<div class="efc tp" style="grid-column:1/-1;grid-row:${ri(1)}">${this._efxNodeHtml("top_1", c.nodes.top_1, hubW)}${this._efxNodeHtml("top_2", c.nodes.top_2, hubW)}</div>` : "") + list.filter((p) => !(pair && (p === "top_1" || p === "top_2"))).map((p) => cellAt(p, this._efxNodeHtml(p, c.nodes[p], hubW))).join("") + ghosts;
+    const arr = !!this._efArr && adm, L = this._efxLook(), tm = !!(this._tmOn && this._tmOn()), items = this._efxItems(list), mob = narrow ? this._efMob() : "", lt = this._efLight();
     let hero = "";
-    if (c.hero.show) {
+    if (c.hero.show && !tm) {
       const pe = hub.bottom, w = pe ? this._efxToW(pe) : hubW, chips = [];
       if (calc.src) chips.push(`Solar ${Math.round(nodes.filter((n) => n.flow === "supply").reduce((a, n) => a - this._efxNodeW(n), 0)).toLocaleString("de-DE")} W`);
       if (hub.top && this._hass.states[hub.top]) { const [v, u] = this._efxFmt(hub.top); chips.push(`Hausverbrauch heute ${v} ${u}`); }
       (hub.chips || []).forEach((id) => { if (this._hass.states[id]) { const [v, u] = this._efxFmt(id); chips.push(`${this._wzName(id)} ${v} ${u}`); } });
-      hero = this._modHero("ef", { icon: "energy", lbl: !isNaN(w) && w < 0 ? "Einspeisung jetzt" : !pe && hub.calc === "rest" ? "Restverbrauch jetzt" : "Hausverbrauch jetzt", big: isNaN(w) ? "–" : Math.abs(Math.round(w)).toLocaleString("de-DE"), unit: "W", chips });
+      const lbl = !isNaN(w) && w < 0 ? "Einspeisung jetzt" : !pe && hub.calc === "rest" ? "Restverbrauch jetzt" : "Hausverbrauch jetzt", big = isNaN(w) ? "–" : Math.abs(Math.round(w)).toLocaleString("de-DE");
+      hero = L.banner === "band" ? this._efxBand(items, { narrow, lbl, big, unit: "W", chips }) : this._modHero("ef", { icon: "energy", lbl, big, unit: "W", chips });
     }
     const hubCell = `<div class="efc hb${gUp ? " hu" : gDn ? " hd" : ""}" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
-    const tab = this._efTab(), sz = this._efSize(), SZ = { auto: "Auto", klein: "Klein", mittel: "Mittel", gross: "Groß" };
-    const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && !narrow ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : ""}</div>`;
-    if (tab === "strom") return `<div class="efx${narrow ? " nar" : ""}">${hero}${seg}<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Strom-Seiten in Arbeit</div>Energieverteilung, Verbrauch, Quellen und Messgeräte kommen in den nächsten Builds. Mit „Jetzt“ geht es zurück zum Fluss-Bild.</div></div>`;
+    const tab = this._efTab(), sz = this._efSize(), SZ = { auto: "Auto", klein: "Klein", mittel: "Mittel", gross: "Groß" }, MB = { fluss: "Fluss", raster: "Raster", brett: "Brett" };
+    const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && adm && !tm && !narrow ? `<button class="efszb efab${arr ? " on" : ""}" data-act="efxarr" aria-pressed="${arr}">${arr ? "Fertig" : "Anordnen"}</button>` : ""}${tab === "now" && !narrow && !tm ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : tab === "now" && narrow ? `<button class="efszb" data-act="efxmob" aria-label="Ansicht wechseln">Ansicht: ${MB[mob]}</button>` : ""}</div>`;
+    const cls = `efx${narrow ? " nar" : ""}${lt ? " lt" : ""}${L.shape === "rund" ? " sh-rund" : ""}${tm ? " wall" : ""}`;
+    const foot = `<div class="mut sm" style="margin:2px 4px">Vorabversion für Sponsoren · Werte live aus deinen Entitäten · Tippe auf einen Wert für den Verlauf</div>`;
+    if (tab === "strom") return `<div class="${cls}">${hero}${seg}${this._efStrom(narrow)}</div>`;
+    if (narrow && !tm && mob === "fluss" && !arr) { setTimeout(() => this._efxColLines(), 0); return `<div class="${cls}">${hero}${seg}${this._efxCol(items, hubW)}${this._efxToday()}${foot}</div>`; }
+    if (narrow && !tm && mob === "raster" && !arr) { const R = this._efxRaster(items, hubW, adm); return `<div class="${cls}">${R.card}${seg}${R.grid}${foot}</div>`; }
     setTimeout(() => this._efxLines(), 0);
-    return `<div class="efx${narrow ? " nar" : ""}">${hero}${seg}<div class="efboard" id="efboard" data-rows="${rows}"${!narrow && this._efW ? ` style="--eft:${this._efW}px"` : ""}><svg class="eflines" aria-hidden="true">${this._efSvg || ""}</svg><div class="efgrid">${cells}${hubCell}</div></div>
-      <div class="mut sm" style="margin:2px 4px">Beta für Sponsoren · Werte live aus deinen Entitäten · Tippe auf einen Wert für den Verlauf</div></div>`;
+    const board = `${arr && !narrow ? `<div class="stowarn" style="margin:0">${ic("info", 16)}<span>Anordnen: Kachel auf einen anderen Platz ziehen – oder antippen und dann den Ziel-Platz antippen. Belegte Plätze werden getauscht.</span></div>` : ""}<div class="efboard th-${L.theme}${arr && !narrow ? " arr" : ""}" id="efboard" data-rows="${rows}"${!narrow && this._efW ? ` style="--eft:${this._efW}px"` : ""}><svg class="eflines" aria-hidden="true">${this._efSvg || ""}</svg><div class="efgrid">${cells}${slots}${hubCell}</div></div>`;
+    if (tm) { const quer = (window.innerWidth || 1280) >= (window.innerHeight || 800); return `<div class="${cls} ${quer ? "quer" : "hoch"}">${seg}<div class="efwall">${board}${this._efxWallSide(items, hubW, quer)}</div></div>`; }
+    return `<div class="${cls}">${hero}${seg}${board}${arr ? "" : this._efxToday()}
+      ${foot}</div>`;
   }
   /* Kachelgröße: auf Tablet und Desktop nach der Höhe, die unter dem Banner übrig bleibt (Einstellung „Größe“ überschreibt das) */
   _efxFit(b, narrow) {
     if (narrow) { b.style.removeProperty("--eft"); return; }
     const sz = this._efSize(), vh = window.innerHeight || 800, key = (this.clientWidth || 0) + "x" + vh;
     if (this._efK !== key) { this._efK = key; this._efTop = b.getBoundingClientRect().top; }
-    const rows = Math.max(3, +b.dataset.rows || 4), avail = vh - (this._efTop || 330) - 70, th = (avail - (rows - 1) * 6) / rows;
-    const w = sz === "klein" ? 100 : sz === "mittel" ? 128 : sz === "gross" ? 160 : Math.max(96, Math.min(150, th * 1.15));
+    const wall = !!b.closest(".wall"), wq = wall && !!b.closest(".quer");
+    /* Wand-Ansicht: unten liegt das Dock des Tablet-Modus, und die Haus-Zeile ist etwa doppelt so hoch wie eine breite Kachel */
+    const rows = Math.max(3, +b.dataset.rows || 4) + (wall ? 0.5 : 0), avail = vh - (this._efTop || 330) - (wall ? 115 : 70), th = (avail - (rows - 1) * 6) / rows;
+    const w = wall ? Math.max(130, Math.min(wq ? 215 : 190, th * 2.15)) : sz === "klein" ? 100 : sz === "mittel" ? 128 : sz === "gross" ? 160 : Math.max(96, Math.min(150, th * 1.15));
     this._efW = Math.round(w); b.style.setProperty("--eft", this._efW + "px");
+    if (wall) {  /* Wand-Ansicht: nachmessen und verkleinern, bis das Brett über dem Dock Platz hat */
+      const dock = this.shadowRoot.querySelector(".tmdock"), lim = (dock ? dock.getBoundingClientRect().top : vh) - b.getBoundingClientRect().top - 12;
+      for (let i = 0; i < 3; i++) { const bh = b.getBoundingClientRect().height; if (bh <= lim || this._efW <= 110) break; this._efW = Math.max(110, Math.floor(this._efW * lim / bh)); b.style.setProperty("--eft", this._efW + "px"); }
+    }
   }
   _efxLines() {
     const r = this.shadowRoot, b = r && r.getElementById("efboard"), hub = b && b.querySelector(".efn.hub"), svg = b && b.querySelector("svg.eflines"); if (!b || !hub || !svg) return;
     const narrow = b.closest(".efx").classList.contains("nar"); this._efxFit(b, narrow);
+    if (b.classList.contains("arr")) this._efxDragBind(b);
     const g = b.getBoundingClientRect(), hb = hub.getBoundingClientRect(), hx = hb.left - g.left + hb.width / 2, hy = hb.top - g.top + hb.height / 2;
-    let off = "", act = "";
+    let off = "", act = "", defs = "";
+    const c = this._efxCfg(), grad = c.lines === "grad", hubCol = (c.hub && c.hub.color) || "#2dd4bf";
+    let an = this._rkCfg().anim; try { if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) an = "aus"; } catch (_) { /* egal */ }
+    b.dataset.an = an;
     const els = [...b.querySelectorAll(".efn:not(.hub):not(.ghost)")];
     els.forEach((el) => {
       const p = EF_POS[el.dataset.p], q = el.getBoundingClientRect(), nx = q.left - g.left + q.width / 2, ny = q.top - g.top + q.height / 2, on = el.classList.contains("on"), col = el.dataset.c, w = +el.dataset.w;
@@ -10543,22 +10778,55 @@ class FensterHeizungPanel extends HTMLElement {
         else if (nx < hx) { const k = (hl - qr) * 0.55; d = `M${hl},${hy} C${hl - k},${hy} ${qr + k},${ny} ${qr},${ny}`; }
         else { const k = (ql - hr) * 0.55; d = `M${hr},${hy} C${hr + k},${hy} ${ql - k},${ny} ${ql},${ny}`; }
       }
-      const st = `fill="none" stroke="${col}" stroke-opacity="${on ? 0.9 : 0.25}" stroke-width="${on ? 3 : 2}" stroke-linecap="round" stroke-linejoin="round"`;
-      const path = `<path id="efp_${el.dataset.p}" d="${d}" ${st}/>`;
-      if (on) {  /* Fluss nach Leistung: wenig Watt = wenige, langsame, kleine Punkte; viel Watt = viele, schnelle, größere. Phase an die Uhr gebunden, damit der Fluss beim Neuzeichnen nicht springt. */
-        const f = Math.max(0, Math.min(1, (Math.log10(Math.max(10, Math.abs(w))) - 1) / 2.5)), n = Math.round(2 + 7 * f), dur = +(4.5 - 3 * f).toFixed(2), r = (3.4 - 0.4 * f).toFixed(1), ph = (Date.now() / 1000) % dur, kp = w > 0 ? "0;1" : "1;0";
-        act += path + Array.from({ length: n }, (_, k) => `<circle r="${r}" fill="${col}" opacity="0"><set attributeName="opacity" to="1" begin="0.12s" fill="freeze"/><animateMotion dur="${dur}s" begin="${(-ph - k * dur / n).toFixed(2)}s" repeatCount="indefinite" keyPoints="${kp}" keyTimes="0;1" calcMode="linear"><mpath href="#efp_${el.dataset.p}"/></animateMotion></circle>`).join("");
+      /* v0.7 Leuchtlinien (Konzept C1): ruhende Wege als feine gestrichelte Spur, aktive mit Leuchtsaum, Stärke nach Leistung,
+         auf Wunsch Farbverlauf von der Kachelfarbe zur Hausfarbe. Punkte nur mit „Animationen“ Dezent oder Voll. */
+      const pid = `efp_${el.dataset.p}`, f = Math.max(0, Math.min(1, (Math.log10(Math.max(10, Math.abs(w))) - 1) / 2.5));
+      if (!on) { off += `<path id="${pid}" class="eftr" d="${d}" stroke="${col}"/>`; return; }
+      const sw = (1.8 + 3.4 * f).toFixed(1), stroke = grad ? `url(#efgr_${el.dataset.p})` : col;
+      if (grad) defs += `<linearGradient id="efgr_${el.dataset.p}" gradientUnits="userSpaceOnUse" x1="${nx.toFixed(1)}" y1="${ny.toFixed(1)}" x2="${hx.toFixed(1)}" y2="${hy.toFixed(1)}"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="${hubCol}"/></linearGradient>`;
+      act += `<path class="efgl" d="${d}" stroke="${stroke}" stroke-width="${(+sw + 4 + 3 * f).toFixed(1)}"${an === "voll" ? ' filter="url(#efblur)"' : ""}/><path id="${pid}" class="efln" d="${d}" stroke="${stroke}" stroke-width="${sw}"/>`;
+      if (an !== "aus") {  /* Fluss nach Leistung: wenig Watt = wenige, langsame, kleine Punkte; viel Watt = viele, schnelle, größere. Phase an die Uhr gebunden, damit der Fluss beim Neuzeichnen nicht springt. */
+        const n = Math.round(2 + 7 * f), dur = +(4.5 - 3 * f).toFixed(2), r = (1.5 + 1.1 * f).toFixed(1), ph = (Date.now() / 1000) % dur, kp = w > 0 ? "0;1" : "1;0";
+        act += Array.from({ length: n }, (_, k) => `<circle r="${r}" fill="#fff" opacity="0"><set attributeName="opacity" to=".9" begin="0.12s" fill="freeze"/><animateMotion dur="${dur}s" begin="${(-ph - k * dur / n).toFixed(2)}s" repeatCount="indefinite" keyPoints="${kp}" keyTimes="0;1" calcMode="linear"><mpath href="#${pid}"/></animateMotion></circle>`).join("");
       }
-      else off += path;
     });
-    const out = off + act; if (svg.innerHTML !== out) svg.innerHTML = out; this._efSvg = out;
+    const out = `<defs><filter id="efblur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.5"/></filter>${defs}</defs>` + off + act; if (svg.innerHTML !== out) svg.innerHTML = out; this._efSvg = out;
+  }
+  /* W1 Kacheln ziehen: Zeiger-Ereignisse (Maus, Finger, Stift). Kurzes Antippen wählt aus, ein zweites Antippen legt ab. */
+  _efxDragBind(b) {
+    if (this._efPick) { const el = b.querySelector(`[data-slot="${this._efPick}"] .efn`); if (el) el.classList.add("pick"); }
+    b.onpointerdown = (ev) => {
+      const cell = ev.target.closest("[data-slot]"), el = cell && cell.querySelector(".efn:not(.hub)"); if (!el || ev.button > 0) return;
+      ev.preventDefault(); const from = cell.dataset.slot, x0 = ev.clientX, y0 = ev.clientY; let moved = false;
+      this._dragging = true; el.setPointerCapture && el.setPointerCapture(ev.pointerId);
+      const mv = (e) => { const dx = e.clientX - x0, dy = e.clientY - y0; if (!moved && Math.hypot(dx, dy) < 8) return; moved = true; el.classList.add("drag"); el.style.transform = `translate(${dx}px,${dy}px)`;
+        b.querySelectorAll("[data-slot].over").forEach((x) => x.classList.remove("over")); const t = this._efxSlotAt(e.clientX, e.clientY, el); if (t && t.dataset.slot !== from) t.classList.add("over"); };
+      const up = (e) => { el.removeEventListener("pointermove", mv); el.removeEventListener("pointerup", up); el.removeEventListener("pointercancel", up); this._dragging = false;
+        el.style.transform = ""; el.classList.remove("drag");
+        if (!moved) { if (this._efPick && this._efPick !== from) this._efxMove(this._efPick, from); else { this._efPick = this._efPick === from ? null : from; this._render(); } return; }
+        const t = this._efxSlotAt(e.clientX, e.clientY, el); if (t && t.dataset.slot !== from) this._efxMove(from, t.dataset.slot); else this._render(); };
+      el.addEventListener("pointermove", mv); el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
+    };
+  }
+  _efxSlotAt(x, y, skip) {
+    const r = this.shadowRoot, l = (r.elementsFromPoint ? r.elementsFromPoint(x, y) : [r.elementFromPoint(x, y)]).filter(Boolean);
+    for (const e of l) { if (skip && skip.contains(e)) continue; const s = e.closest && e.closest("[data-slot]"); if (s) return s; }
+    return null;
+  }
+  _efxSlot(p) { if (this._efPick) this._efxMove(this._efPick, p); else this._toast("Erst eine Kachel antippen oder ziehen"); }
+  _efxMove(from, to) {
+    const c = this._efxClone(), a = c.nodes[from], b = c.nodes[to]; if (!a) return;
+    if (b) c.nodes[from] = b; else delete c.nodes[from]; c.nodes[to] = a; this._efPick = null;
+    this._efxPut(c).then(() => { this._render(); this._toast(b ? `${a.name} und ${b.name} getauscht` : `${a.name} verschoben`); });
   }
   /* ---------------- Einrichtung ---------------- */
   _efxIds() { return Object.keys(this._hass.states).filter((e) => /^(sensor|number|input_number|counter)\./.test(e)); }
+  _efxStIds() { return Object.keys(this._hass.states).filter((e) => EF_ST_RE.test(e)); }
   _efxModal() {
     const m = this._modal, adm = this._admin(), c = this._efxCfg();
     const hd = (t, s, back) => `<div class="sh"><div><b>${t}</b><span>${s}</span></div><button class="ibtn" data-act="${back ? "efxback" : "close"}" aria-label="${back ? "Zurück" : "Schließen"}">${ic(back ? "back" : "close", 20)}</button></div>`;
     if (m.type === "efxedit") return this._efxEditModal(hd);
+    if (m.type === "efxgrp") return this._efxGrpModal();
     const row = (pos, n) => {
       const e = EF_POS[pos], fl = n ? EF_FLOWS.find((x) => x[0] === n.flow)[1] : "";
       return `<div class="efrow"><button class="sxrow" data-act="efxedit" data-k="${pos}"><span class="sxi">${n ? `<span class="efmini" style="--c:${n.color || e[3]}">${this._efxImgN(n)}</span>` : ic("plus", 20)}</span><span class="sxt"><b>${n ? esc(n.name) : "Kachel hinzufügen"}</b><small>${e[4]}${n ? " · " + fl : ""}</small></span></button>${n ? `<button class="sw ${n.on ? "on" : ""}" data-act="efxtog" data-k="${pos}" aria-pressed="${n.on}" aria-label="${esc(n.name)} ${n.on ? "ausblenden" : "einblenden"}" ${adm ? "" : "disabled"}></button>` : ""}</div>`;
@@ -10571,6 +10839,17 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="efl">${Object.keys(EF_POS).map((p) => row(p, c.nodes[p])).join("")}</div>
       <div class="lsec">${ic("image", 15)}Bilder</div>
       <div class="vrow"><span>Alte Symbole behalten<small class="mut" style="display:block">Aus: eingebaute Symbole erscheinen als HD-Bilder. Emojis und eigene Bilder bleiben immer.</small></span><button class="sw ${c.keep_old ? "on" : ""}" data-act="efxkeep" aria-pressed="${!!c.keep_old}" aria-label="Alte Symbole behalten" ${adm ? "" : "disabled"}></button></div>
+      <div class="lsec">${ic("list", 15)}Vorlagen</div><div class="mut sm" style="margin-bottom:6px">Ein Tipp legt passende Kacheln mit HD-Bildern auf freie Plätze. Belegte Plätze bleiben, wie sie sind.</div>${this._efxTplHtml(adm)}
+      <div class="lsec">${ic("image", 15)}Aussehen</div>
+      <div class="vrow"><span>Tageswerte-Leiste<small class="mut" style="display:block">Schmale Zeile unter dem Fluss-Bild: Solar, Verbrauch, Autarkie heute</small></span><button class="sw ${c.today !== false ? "on" : ""}" data-act="efxtoday" aria-pressed="${c.today !== false}" aria-label="Tageswerte-Leiste" ${adm ? "" : "disabled"}></button></div>
+      ${(() => { const L = this._efxLook(), ch = (act, cur, opts) => `<span class="gschips" style="flex:none;justify-content:flex-end">${opts.map(([k, l]) => `<button class="gsch ${cur === k ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${cur === k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}</span>`;
+        return `<div class="vrow"><span>Banner<small class="mut" style="display:block">Lichtband: Quellen fließen ins Haus, Verbraucher gehen ab, Herkunft als Balken. Einheitlich: Banner wie in den anderen Modulen.</small></span>${ch("efxbanner", L.banner, [["band", "Lichtband"], ["classic", "Einheitlich"]])}</div>
+        <div class="mut sm" style="margin:8px 0 4px">Thema für das Fluss-Bild</div><div class="efthp">${EF_THEMES.map(([k, l, d]) => `<button class="efth ${L.theme === k ? "sel" : ""}" data-act="efxtheme" data-k="${k}" aria-pressed="${L.theme === k}" ${adm ? "" : "disabled"}><span class="efthv th-${k}"></span><b>${l}</b><small>${d}</small></button>`).join("")}</div>
+        <div class="vrow"><span>Kachelform<small class="mut" style="display:block">Rund zeigt nur Bild, oberen und unteren Wert</small></span>${ch("efxshape", L.shape, [["kachel", "Kachel"], ["rund", "Rund"]])}</div>
+        <div class="vrow"><span>Handy-Ansicht<small class="mut" style="display:block">Unter 640 px Breite. Auf dem Handy mit „Ansicht“ umschaltbar.</small></span>${ch("efxmobd", L.mobile, [["fluss", "Fluss-Spalte"], ["raster", "Kachel-Raster"], ["brett", "Brett"]])}</div>`; })()}
+      <div class="lsec">${ic("energy", 15)}Linien</div>
+      <div class="vrow"><span>Farbe der Linien<small class="mut" style="display:block">Einfarbig in der Kachelfarbe oder als Verlauf von der Kachel zum Haus. Stärke folgt immer der Leistung.</small></span><span class="gschips" style="flex:none">${[["mono", "Einfarbig"], ["grad", "Verlauf"]].map(([k, l]) => `<button class="gsch ${(c.lines || "mono") === k ? "sel" : ""}" data-act="efxlines" data-k="${k}" aria-pressed="${(c.lines || "mono") === k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}</span></div>
+      ${this._animLook()}
       <div class="lsec">${ic("sliders", 15)}Kopfbereich</div>
       <div class="vrow"><span>Hausverbrauch jetzt anzeigen<small class="mut" style="display:block">Große Zahl mit Chips oben auf der Seite</small></span><button class="sw ${c.hero.show ? "on" : ""}" data-act="efxhero" aria-pressed="${c.hero.show}" aria-label="Kopfbereich" ${adm ? "" : "disabled"}></button></div>
       <div class="stowarn" style="margin-top:12px">${ic("info", 16)}<span>Das Modul zeigt nur an und schaltet nichts. Es nutzt Sensoren aus Home Assistant (Leistung in W oder kW, Energie, Ladestand).</span></div>
@@ -10588,6 +10867,19 @@ class FensterHeizungPanel extends HTMLElement {
     const flow = hub ? "" : `<div class="lsec">${ic("energy", 15)}Flussart</div><div class="gschips">${EF_FLOWS.map((f) => chip("efxflow", f[0], f[1], n.flow === f[0])).join("")}</div><div class="mut sm">${esc(EF_FLOWS.find((f) => f[0] === n.flow)[2])}</div>`;
     const pw = hub ? "" : n.flow === "split" ? `<div class="vrow efv"><span>Leistung zur Kachel<small class="mut" style="display:block">zum Beispiel Einspeisung</small></span>${sel("power_to_node")}</div><div class="vrow efv"><span>Leistung ins Haus<small class="mut" style="display:block">zum Beispiel Netzbezug</small></span>${sel("power_to_house")}</div>`
       : `<div class="vrow efv"><span>Leistung (W oder kW)<small class="mut" style="display:block">Steuert die Linie. Leer = „Unten“, wenn es eine Leistung ist</small></span>${sel("power")}</div>${n.flow === "both" ? `<div class="vrow"><span>Vorzeichen umkehren<small class="mut" style="display:block">Positiv = zur Kachel. Liefert dein Sensor es umgekehrt, einschalten</small></span><button class="sw ${n.invert ? "on" : ""}" data-act="efxinv" aria-pressed="${n.invert}" aria-label="Vorzeichen umkehren"></button></div>` : ""}`;
+    const HB = [["hd:house", "house", "Haus"], ["hd:houseGarage", "houseGarage", "Mit Garage"], ["hd:flat", "flat", "Wohnung"], ["hd:bungalow", "bungalow", "Bungalow"]];
+    const hubImg = !hub ? "" : `<div class="lsec">${ic("home", 15)}Haus-Bild</div><div class="efhb">${HB.map(([v, g, l]) => `<button class="efhbb ${n.image === v ? "sel" : ""}" data-act="efximg" data-k="${v}" aria-pressed="${n.image === v}">${this._gx(g, 40, { on: true })}<span>${l}</span></button>`).join("")}<button class="efhbb ${/^(\/local\/|https:)/.test(n.image) ? "sel" : ""}" data-act="efximgtog">${ic("image", 22)}<span>Eigenes Foto</span></button></div>
+      <div class="mut sm">Ein eigenes Foto (/local/haus.jpg) wird rund zugeschnitten. Die Fenster der Haus-Bilder leuchten abends.</div>
+      <div class="vrow"><span>Herkunfts-Ring<small class="mut" style="display:block">Ring um das Haus: woher der Hausverbrauch gerade kommt – Solar, Akku, Netz. Berechnet aus den Kacheln mit „Liefert“ und „Beides“.</small></span><button class="sw ${n.ring !== false ? "on" : ""}" data-act="efxring" aria-pressed="${n.ring !== false}" aria-label="Herkunfts-Ring"></button></div>`;
+    const zst = hub ? "" : `<div class="lsec">${ic("image", 15)}Bild mit Zustand</div>
+      <div class="vrow"><span>Läuft ab<small class="mut" style="display:block">Ab dieser Leistung zeigt das Bild „läuft“ (Trommel dreht, Lampe leuchtet)</small></span><span style="display:flex;align-items:center;gap:6px;flex:none"><input type="number" class="efli" style="width:90px" data-f="efxrun" min="1" max="5000" step="1" value="${Number(n.run_w) > 0 ? Number(n.run_w) : 10}" aria-label="Läuft ab Watt"><span class="mut">W</span></span></div>
+      <div class="mut sm" style="margin:6px 0 2px">Ladestand-Ring um das Bild</div><div class="gschips">${[["", "Automatisch"], ...EF_SIDES.filter(([x]) => n[x]), ["none", "Aus"]].map(([k, l]) => chip("efxpct", k, l, (n.pct || "") === k)).join("")}</div>
+      <div class="mut sm">Automatisch = der erste Wert in %, zum Beispiel Ladestand von Akku oder Auto.</div>
+      <div class="lsec">${ic("list", 15)}Gruppe (mehrere Geräte als eine Kachel)</div><div class="mut sm">Zum Beispiel alle Kühlschränke: Die Kachel zeigt die Summe, „×3“ am Bild öffnet die einzelnen Geräte. Ist eine Gruppe gesetzt, ersetzt sie „Leistung“.</div>
+      <div class="gschips">${(n.group || []).map((e) => `<span class="och">${esc(this._wzName(e))}<button data-act="efxgrpdel" data-k="${esc(e)}" aria-label="Entfernen">${ic("close", 12)}</button></span>`).join("")}</div>
+      ${n.flow !== "split" && (n.group || []).length < 8 ? this._wzSel(ids, "", "efxgrpadd", "", "+ Gerät zur Gruppe") : ""}
+      <div class="efside"><div class="mut sm" style="margin:8px 0 2px">Status-Punkt · grün läuft, gelb wartet, rot Störung</div>${this._wzSel(this._efxStIds(), n.status || "", "efxst", "", "– kein Punkt –")}</div>
+      <div class="mut sm">Zum Beispiel der Status der Waschmaschine. Fehlen die Leistungswerte, zeigt die Kachel auch ohne Entität einen roten Punkt.</div>`;
     const hubx = !hub ? "" : `<div class="lsec">${ic("tools", 15)}So wird der Hausverbrauch berechnet</div>
       <div class="gschips">${chip("efxcalc", "total", "Gesamtverbrauch", n.calc === "total")}${chip("efxcalc", "rest", "Restverbrauch", n.calc === "rest")}</div>
       <div class="mut sm">Gesamt = Zufluss (Solar, Netzbezug, Akku entladen) minus Einspeisung und Akku laden. Rest zieht zusätzlich die Verbraucher-Kacheln ab. Wählst du bei „Unten“ einen eigenen Sensor, hat dieser Vorrang.</div>
@@ -10601,10 +10893,10 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow"><span>Name</span><input type="text" class="efli" style="max-width:55%" data-f="efxname" value="${esc(n.name)}" maxlength="30" aria-label="Name"></div>
       <div class="vrow"><span>Bild</span><button class="btn2" style="flex:none;display:inline-flex;align-items:center;gap:8px" data-act="efximgtog"><span class="efmini" style="--c:${n.color || (pe ? pe[3] : "#2dd4bf")}">${this._efxImg(n.image)}</span> ${this._modal.imgOpen ? "Schließen" : "Ändern"}</button></div>${imgp}
       <div class="vrow"><span>Farbe</span><span class="efsw">${EF_COLORS.map((x) => `<button class="${n.color === x ? "sel" : ""}" style="background:${x}" data-act="efxcol" data-k="${x}" aria-label="Farbe ${x}" aria-pressed="${n.color === x}"></button>`).join("")}<button class="${n.color ? "" : "sel"}" data-act="efxcol" data-k="" aria-label="Standardfarbe" style="background:var(--line)">A</button></span></div>
-      ${flow}${pw}${warn}
+      ${hubImg}${flow}${pw}${warn}
       <div class="lsec">${ic("sliders", 15)}Werte auf der Kachel</div>
       ${EF_SIDES.map(([s, t]) => `<div class="efside"><div class="mut sm" style="margin:6px 0 2px">${t}${hub && s === "top" ? " · Chip „Hausverbrauch heute“" : hub && s === "bottom" ? " · leer = berechneter Hausverbrauch" : ""}</div>${sel(s, hub && s === "bottom" ? "– berechnet –" : "– nichts –")}${n[s] || (hub && s === "bottom") ? lab(s) : ""}</div>`).join("")}
-      ${hubx}
+      ${zst}${hubx}
       <div class="foot2" style="margin-top:14px">${hub || this._modal.isNew ? "" : `<button class="btn2" data-act="efxdel" style="color:#fb7185">Entfernen</button>`}<button class="btn2" data-act="efxback">Abbrechen</button><button class="btn2 pri" data-act="efxsave" ${adm ? "" : "disabled"}>Speichern</button></div></div>`;
   }
   _efxHubInfo() {
@@ -10627,6 +10919,23 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "efxsize") { const o = ["auto", "klein", "mittel", "gross"]; this._efS = o[(o.indexOf(this._efSize()) + 1) % 4]; try { localStorage.setItem("fh_ef_size", this._efS); } catch (e) { /* egal */ } this._render(); return; }
     if (a === "efxback") { this._modal = { type: "efxmgr" }; this._renderModal(); return; }
     if (a === "efxkeep") { const c = this._efxClone(); c.keep_old = !c.keep_old; this._efxPut(c).then(() => { this._renderModal(); this._render(); this._toast(c.keep_old ? "Alte Symbole werden angezeigt" : "HD-Bilder werden angezeigt"); }); return; }
+    if (a === "efxrng") { this._efPr = { range: k, off: 0 }; this._efSel = null; try { localStorage.setItem("fh_ef_rng", k); } catch (_) { /* egal */ } this._render(); return; }
+    if (a === "efxoff") { const P = this._efP(); P.off = Math.min(0, P.off + Number(k)); this._efSel = null; this._render(); return; }
+    if (a === "efxsel") { this._efSel = this._efSel === Number(k) ? null : Number(k); this._render(); return; }
+    if (a === "efxtpl") { this._efxTpl(k); return; }
+    if (a === "efxgrp") { this._modal = { type: "efxgrp", pos: k }; this._renderModal(); return; }
+    if (a === "efxarr") { this._efArr = !this._efArr; this._efPick = null; this._render(); return; }
+    if (a === "efxslot") { this._efxSlot(b.dataset.p); return; }
+    if (a === "efxtoday") { const c = this._efxClone(); c.today = c.today === false; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
+    if (a === "efxgrpdel") { const m = this._modal; if (m && m.type === "efxedit") { m.draft.group = (m.draft.group || []).filter((x) => x !== k); this._renderModal(); } return; }
+    if (a === "efxmob") { const o = ["fluss", "raster", "brett"]; const v = o[(o.indexOf(this._efMob()) + 1) % 3]; try { localStorage.setItem("fh_ef_mob", v); } catch (_) { /* egal */ } this._render(); return; }
+    if (a === "efxall") { this._efAll = !this._efAll; this._render(); return; }
+    if (["efxbanner", "efxtheme", "efxshape", "efxmobd"].includes(a)) {
+      const c = this._efxClone(), f = { efxbanner: "banner", efxtheme: "theme", efxshape: "shape", efxmobd: "mobile" }[a]; c[f] = k;
+      if (a === "efxmobd") { try { localStorage.removeItem("fh_ef_mob"); } catch (_) { /* egal */ } }
+      this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return;
+    }
+    if (a === "efxlines") { const c = this._efxClone(); c.lines = k === "grad" ? "grad" : "mono"; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
     if (a === "efxhero") { const c = this._efxClone(); c.hero.show = !c.hero.show; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
     if (a === "efxtog") { const c = this._efxClone(); if (c.nodes[k]) c.nodes[k].on = !c.nodes[k].on; this._efxPut(c).then(() => { this._renderModal(); this._render(); }); return; }
     if (a === "efxedit") {
@@ -10641,6 +10950,8 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "efxflow") d.flow = k;
     else if (a === "efxinv") d.invert = !d.invert;
     else if (a === "efxcalc") d.calc = k;
+    else if (a === "efxring") d.ring = d.ring === false;
+    else if (a === "efxpct") d.pct = k;
     else if (a === "efxchipdel") d.chips = d.chips.filter((x) => x !== k);
     else if (a === "efxsave") {
       const c = this._efxClone(); d.name = (d.name || "").trim() || (m.pos === "hub" ? "Haus" : EF_POS[m.pos][4]);
@@ -10654,6 +10965,9 @@ class FensterHeizungPanel extends HTMLElement {
     const f = t.dataset.f, v = t.value || "", m = this._modal; if (!m || m.type !== "efxedit") return false;
     const d = m.draft, ent = (x) => (/^(sensor|number|input_number|counter)\.[a-z0-9_]+$/.test(x) ? x : "");
     if (f === "efxname") { d.name = v.slice(0, 30); return true; }
+    if (f === "efxrun") { const x = Math.round(Number(v)); if (x >= 1 && x <= 5000) d.run_w = x; return true; }
+    if (f === "efxgrpadd") { const e = ent(v); d.group = d.group || []; if (e && !d.group.includes(e) && d.group.length < 8) d.group.push(e); this._renderModal(); return true; }
+    if (f === "efxst") { d.status = EF_ST_RE.test(v) ? v : ""; return true; }
     if (f === "efxe") { d[t.dataset.w] = ent(v); return true; }
     if (f === "efxlab") { d[t.dataset.w + "_label"] = v.slice(0, 24); return true; }
     if (f === "efxchipadd") { const e = ent(v); if (e && !d.chips.includes(e) && d.chips.length < 4) d.chips.push(e); return true; }
@@ -10668,6 +10982,261 @@ class FensterHeizungPanel extends HTMLElement {
     }
     return false;
   }
+  /* ================= Modul 19 v0.8 – Banner & Themen (Konzept Neue Optik A, F, H) =================
+     A  Lichtband-Banner: Quellen fließen links ins Haus, Verbraucher gehen rechts ab, Herkunfts-Balken unter der Zahl.
+        Wird nur alle 10 s neu gezeichnet (data-kk mit Zeitfenster), damit nichts flackert und die Bänder ruhig laufen.
+     F  Themen fürs Brett (Nachtglas, Blaupause, Sternenhimmel, Haus im Garten), Kachelform Kachel oder Rund, Hell-Variante.
+     H1 Handy: A Fluss-Spalte (Standard), B Kachel-Raster, oder das Brett wie bisher.
+     H2 Tablet-Modus: Wand-Ansicht mit breiten Kacheln und Seitenspalte (quer) bzw. Feldern darunter (hoch), Ruhebild mit Haus. */
+  _efxLook() {
+    const c = this._efxCfg();
+    return { banner: c.banner === "classic" ? "classic" : "band", theme: EF_THEMES.some((t) => t[0] === c.theme) ? c.theme : "nacht", shape: c.shape === "rund" ? "rund" : "kachel", mobile: ["fluss", "raster", "brett"].includes(c.mobile) ? c.mobile : "fluss" };
+  }
+  /* Handy-Ansicht: Einstellung für alle, auf dem Gerät mit „Ansicht“ umschaltbar (gemerkt pro Gerät) */
+  _efMob() { let v = ""; try { v = localStorage.getItem("fh_ef_mob") || ""; } catch (_) { /* egal */ } return ["fluss", "raster", "brett"].includes(v) ? v : this._efxLook().mobile; }
+  _efLight() { return this.style.colorScheme === "light"; }
+  /* Alle sichtbaren Kacheln mit den Werten, die die neuen Ansichten brauchen */
+  _efxItems(list) {
+    const c = this._efxCfg();
+    return list.map((p) => {
+      const n = c.nodes[p], w = this._efxNodeW(n), nd = this._efxNoData(n), col = n.color || (EF_POS[p] || [])[3] || "#2dd4bf";
+      return { p, n, w, nd, col, on: !nd && Math.abs(w) > 5, kind: n.flow === "consume" ? "use" : this._efxKind(n), src: n.flow !== "consume" };
+    });
+  }
+  _efxSub(it) {
+    const w = it.w;
+    if (!it.src) return it.on ? (it.n.bottom_label || "läuft") : "ruht";
+    if (it.kind === "bat") return w > 5 ? "lädt" : w < -5 ? "entlädt" : "ruht";
+    if (it.kind === "net") return w > 5 ? "Einspeisung" : w < -5 ? "Bezug" : "ruht";
+    return it.on ? (it.n.bottom_label || "Erzeugung") : "ruht";
+  }
+  _efxVal(id) { if (!id) return ""; const [v, u] = this._efxFmt(id); return v === "–" ? "" : `${v}${u ? " " + u : ""}`; }
+  /* Herkunfts-Balken mit Legende (Banner, Tablet) */
+  _efxBar(mix) {
+    const seg = EF_MIX.map(([k, , col]) => (mix.tot && mix[k] > 0 ? `<i style="width:${(mix[k] / mix.tot * 100).toFixed(2)}%;background:${col}"></i>` : "")).join("");
+    const leg = mix.tot ? EF_MIX.filter(([k]) => mix[k] > 0).map(([k, l, col]) => `<span style="color:${col}">${Math.round(mix[k] / mix.tot * 100)} % ${l}</span>`).join(" · ") : `<span>Gerade fließt kein Strom ins Haus</span>`;
+    return `<div class="efbar">${seg || "<i style=\"flex:1;background:var(--line)\"></i>"}</div><div class="efleg">${leg}</div>`;
+  }
+  _efxRingSvg(mix, R, sw) {
+    const C = 2 * Math.PI * R; let off = 0;
+    return `<circle cx="0" cy="0" r="${R}" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="${sw}"/>` + EF_MIX.map(([k, , col]) => {
+      const f = mix.tot > 0 ? mix[k] / mix.tot : 0; if (f <= 0) return "";
+      const a = `<circle cx="0" cy="0" r="${R}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${Math.max(0, f * C - (f < .999 ? 3 : 0)).toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90)"/>`; off += f * C; return a;
+    }).join("");
+  }
+  /* ---------------- A · Lichtband-Banner ---------------- */
+  _efxBand(items, o) {
+    const mix = this._efMix || { tot: 0 }, night = this._efxNight(), narrow = o.narrow, key = Math.floor(Date.now() / 10000) + "|" + (this._efBandV || 0) + "|" + (narrow ? 1 : 0) + "|" + (this._efLight() ? 1 : 0);
+    if (this._efBandC && this._efBandC.k === key) return this._efBandC.h;
+    const W = narrow ? 600 : 820, H = 200, hx = W - (narrow ? 120 : 170), hy = 100, an = this._rkCfg().anim;
+    const f = (w) => Math.max(0, Math.min(1, (Math.log10(Math.max(10, Math.abs(w))) - 1) / 2.5));
+    const inn = items.filter((x) => x.on && x.w < 0), out = items.filter((x) => x.on && x.w > 0);
+    const band = (x, d) => { const k = f(x.w), sw = (2 + 6 * k).toFixed(1), dur = (3.2 - 2 * k).toFixed(2);
+      return `<path d="${d}" stroke="${x.col}" stroke-width="${(+sw + 8).toFixed(1)}" class="efbg"/><path d="${d}" stroke="${x.col}" stroke-width="${sw}" class="efbm"/>${an !== "aus" ? `<path d="${d}" class="efbd" stroke-width="${Math.max(1.6, sw * .3).toFixed(1)}" style="animation-duration:${dur}s"/>` : ""}`; };
+    const ys = (n, i) => (n <= 1 ? 100 : 40 + (120 * i) / (n - 1));
+    const lines = inn.map((x, i) => { const y = ys(inn.length, i); return band(x, `M${W * (narrow ? .3 : .08)},${y.toFixed(0)} C${hx - 220},${y.toFixed(0)} ${hx - 120},${hy} ${hx - 40},${hy}`); }).join("")
+      + out.map((x, i) => { const y = ys(out.length, i); return band(x, `M${hx + 40},${hy} C${hx + 100},${hy} ${hx + 90},${y.toFixed(0)} ${W + 30},${y.toFixed(0)}`); }).join("");
+    const stars = night ? Array.from({ length: 22 }, (_, i) => `<circle class="efstar" style="animation-delay:${(i * .37 % 3).toFixed(2)}s" cx="${(i * 97 + 31) % W}" cy="${(i * 53 + 17) % 190}" r="${i % 4 ? .8 : 1.3}" fill="#fff" opacity="${.25 + (i % 3) * .2}"/>`).join("") : "";
+    const house = this._gx("house", 46, { on: night }).replace("<svg ", `<svg x="-23" y="-25" `);
+    const h = `<div class="card efband${night ? " nt" : ""}${narrow ? " nar" : ""}" data-an="${an}" data-kk="efband|${key}">
+      <svg class="efbs" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">${stars}<g fill="none" stroke-linecap="round" mask="url(#efbmask)">${lines}</g>
+        <g transform="translate(${hx},${hy})"><circle r="56" fill="url(#efbglow)"/>${this._efxRingSvg(mix, 36, 6)}<circle r="29" fill="rgba(255,255,255,.07)"/>${house}</g>
+        <defs><linearGradient id="efbfade" x1="0" x2="1"><stop offset="${narrow ? 0 : .08}" stop-color="#fff" stop-opacity="0"/><stop offset="${narrow ? .35 : .4}" stop-color="#fff"/></linearGradient><mask id="efbmask"><rect x="0" y="0" width="${W}" height="${H}" fill="url(#efbfade)"/></mask><radialGradient id="efbglow"><stop offset="0" stop-color="#2dd4bf" stop-opacity=".35"/><stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/></radialGradient></defs></svg>
+      ${this._efxBadge()}<div class="efbt"><div class="lbl">${ic("energy", 15)}${esc(o.lbl)}</div><div class="big">${esc(o.big)}<small>${esc(o.unit || "")}</small></div>${this._efxBar(mix)}
+      ${o.chips.length ? `<div class="chips">${o.chips.map((t) => `<span class="chip">${esc(t)}</span>`).join("")}</div>` : ""}</div></div>`;
+    this._efBandC = { k: key, h }; return h;
+  }
+  /* ---------------- H1 · Handy A: Fluss-Spalte ---------------- */
+  _efxCol(items, hubW) {
+    const mix = this._efMix || { tot: 0 }, src = items.filter((x) => x.src).slice(0, 4), use = items.filter((x) => !x.src);
+    const act = use.filter((x) => x.on || x.nd), rest = use.filter((x) => !x.on && !x.nd), all = !!this._efAll;
+    const pic = (x, s) => { const zs = x.nd ? { on: false } : this._efxState(x.n, x.w), pr = !x.nd && zs.lvl != null ? `<svg class="efpr" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" pathLength="100"/><circle cx="50" cy="50" r="46" pathLength="100" stroke-dasharray="${zs.lvl.toFixed(1)} 100"/></svg>` : ""; return `<span class="efq${s ? " " + s : ""}">${pr}<span class="efqi">${this._efxImgN(x.n, zs)}</span></span>`; };
+    const dot = (x) => { const d = this._efxDot(x.n); return d ? `<i class="efdot ${d[0]}" title="${esc(d[1])}"></i>` : ""; };
+    const pe = (x) => (x.n.flow === "split" ? (x.w > 0 ? x.n.power_to_node : x.n.power_to_house) || x.n.power_to_house : this._efxPid(x.n));
+    const srcH = src.map((x) => `<button class="efsq${x.on ? " on" : ""}${x.nd ? " nd" : ""}" data-p="${x.p}" data-c="${x.col}" data-w="${Math.round(x.w)}" style="--c:${x.col}" ${pe(x) ? `data-act="efxmore" data-e="${esc(pe(x))}"` : ""}>${pic(x)}${dot(x)}<b>${x.nd ? "–" : this._efxFmtW(Math.abs(x.w))}</b><small>${esc(x.n.name)}${x.src && x.kind !== "pv" ? " " + this._efxSub(x) : ""}</small></button>`).join("");
+    const row = (x) => { const sub = ["top", "left", "right"].map((s) => this._efxVal(x.n[s])).filter(Boolean).join(" · ");
+      return `<button class="efpill${x.on ? " on" : ""}${x.nd ? " nd" : ""}" style="--c:${x.col}" data-p="${x.p}" ${pe(x) ? `data-act="efxmore" data-e="${esc(pe(x))}"` : ""}>${pic(x, "sm")}<span class="efpt"><small>${esc(x.n.name)}</small><b>${x.nd ? "–" : this._efxFmtW(Math.abs(x.w))}</b><span>${esc(x.nd ? "keine Daten" : sub || this._efxSub(x))}</span></span>${dot(x)}</button>`; };
+    const hub = this._efxCfg().hub;
+    return `<div class="efcol th-${this._efxLook().theme}" id="efcol">
+      ${src.length ? `<div class="efsec">Quellen</div><div class="efsrc" style="grid-template-columns:repeat(${src.length},minmax(0,1fr))">${srcH}</div>` : ""}
+      <svg class="efcl" aria-hidden="true">${this._efColSvg || ""}</svg>
+      <button class="efhouse" data-act="efxtab" data-v="strom" aria-label="Haus: ${esc(this._efxMixTxt(mix))}" style="--c:${hub.color || "#2dd4bf"}">${this._efxRingHtml(mix, this._efxImgN(hub, { on: this._efxNight() }), this._efxMixTxt(mix))}<b>${this._efxFmtW(hubW)}</b><small>${esc(hub.name || "Haus")}</small></button>
+      ${use.length ? `<div class="efsec">Verbraucher</div><div class="efcons">${act.map(row).join("")}${all ? rest.map(row).join("") : ""}</div>
+      ${rest.length ? `<button class="efmore" data-act="efxall">${all ? "Ruhende ausblenden" : `+ ${rest.length} weitere (ruhen)`}<span>${all ? "" : "alle zeigen ›"}</span></button>` : ""}` : ""}</div>`;
+  }
+  _efxColLines() {
+    const r = this.shadowRoot, b = r && r.getElementById("efcol"), svg = b && b.querySelector("svg.efcl"), h = b && b.querySelector(".efhouse .efhr"); if (!b || !svg || !h) return;
+    const g = b.getBoundingClientRect(), hb = h.getBoundingClientRect(), hx = hb.left - g.left + hb.width / 2, ht = hb.top - g.top + 2;
+    let an = this._rkCfg().anim; try { if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) an = "aus"; } catch (_) { /* egal */ }
+    let out = "";
+    b.querySelectorAll(".efsq").forEach((el, i) => {
+      const q = el.getBoundingClientRect(), x = q.left - g.left + q.width / 2, y = q.bottom - g.top + 2, w = +el.dataset.w, col = el.dataset.c, on = el.classList.contains("on");
+      const d = `M${x.toFixed(1)},${y.toFixed(1)} C${x.toFixed(1)},${(y + (ht - y) * .6).toFixed(1)} ${hx.toFixed(1)},${(ht - (ht - y) * .5).toFixed(1)} ${hx.toFixed(1)},${ht.toFixed(1)}`;
+      if (!on) { out += `<path class="eftr" d="${d}" stroke="${col}"/>`; return; }
+      const f = Math.max(0, Math.min(1, (Math.log10(Math.max(10, Math.abs(w))) - 1) / 2.5)), sw = (1.8 + 3 * f).toFixed(1), id = "efcp" + i;
+      out += `<path class="efgl" d="${d}" stroke="${col}" stroke-width="${(+sw + 4).toFixed(1)}"/><path id="${id}" class="efln" d="${d}" stroke="${col}" stroke-width="${sw}"/>`;
+      if (an !== "aus") { const n = Math.round(2 + 4 * f), dur = +(3.5 - 2 * f).toFixed(2), ph = (Date.now() / 1000) % dur, kp = w > 0 ? "1;0" : "0;1";
+        out += Array.from({ length: n }, (_, k) => `<circle r="${(1.4 + f).toFixed(1)}" fill="#fff" opacity=".9"><animateMotion dur="${dur}s" begin="${(-ph - k * dur / n).toFixed(2)}s" repeatCount="indefinite" keyPoints="${kp}" keyTimes="0;1" calcMode="linear"><mpath href="#${id}"/></animateMotion></circle>`).join(""); }
+    });
+    if (svg.innerHTML !== out) svg.innerHTML = out; this._efColSvg = out;
+  }
+  /* ---------------- H1 · Handy B: Kachel-Raster ---------------- */
+  _efxRaster(items, hubW, adm) {
+    const mix = this._efMix || { tot: 0 }, hub = this._efxCfg().hub, sorted = [...items.filter((x) => x.on || x.nd), ...items.filter((x) => !x.on && !x.nd)];
+    const arrow = (x) => (x.nd ? "! keine Daten" : !x.on ? "– ruht" : x.w < 0 ? "↓ ins Haus" : x.src ? "↑ " + this._efxSub(x) : "↑ " + (x.n.bottom_label || "läuft"));
+    const dot = (x) => { const d = this._efxDot(x.n); return d ? `<i class="efdot ${d[0]}" title="${esc(d[1])}"></i>` : ""; };
+    const pe = (x) => (x.n.flow === "split" ? x.n.power_to_house || x.n.power_to_node : this._efxPid(x.n));
+    const tile = (x) => { const zs = x.nd ? { on: false } : this._efxState(x.n, x.w), pr = !x.nd && zs.lvl != null ? `<svg class="efpr" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" pathLength="100"/><circle cx="50" cy="50" r="46" pathLength="100" stroke-dasharray="${zs.lvl.toFixed(1)} 100"/></svg>` : "";
+      return `<button class="efrt${x.on ? " on" : ""}${x.nd ? " nd" : ""}" style="--c:${x.col}" ${pe(x) ? `data-act="efxmore" data-e="${esc(pe(x))}"` : ""}><span class="efra">${esc(arrow(x))}</span>${dot(x)}<span class="efq">${pr}<span class="efqi">${this._efxImgN(x.n, zs)}</span></span><b>${x.nd ? "–" : this._efxFmtW(Math.abs(x.w))}</b><small>${esc(x.n.name)}</small></button>`; };
+    const today = hub.top ? this._efxVal(hub.top) : "";
+    const card = `<div class="card efhc" style="--c:${hub.color || "#2dd4bf"}" data-act="efxtab" data-v="strom">${this._efxRingHtml(mix, this._efxImgN(hub, { on: this._efxNight() }), this._efxMixTxt(mix))}<div><div class="lbl">Hausverbrauch jetzt</div><div class="big">${Math.round(hubW).toLocaleString("de-DE")}<small>W</small></div><div class="efleg">${mix.tot ? EF_MIX.filter(([k]) => mix[k] > 0).map(([k, l, col]) => `<span style="color:${col}">${Math.round(mix[k] / mix.tot * 100)} % ${l}</span>`).join(" · ") : ""}${today ? ` · heute ${esc(today)}` : ""}</div></div></div>`;
+    return { card, grid: `<div class="efras th-${this._efxLook().theme}">${sorted.map(tile).join("")}${adm ? `<button class="efrt add" data-act="efxopen">+ Kachel</button>` : ""}</div>` };
+  }
+  /* ---------------- H2 · Tablet-Modus: Wand-Ansicht ---------------- */
+  _efxFacts(items, hubW) {
+    const mix = this._efMix || { tot: 0 }, hub = this._efxCfg().hub, kwh = (id) => { const st = id && this._hass.states[id]; return st && /^kWh$/i.test(st.attributes.unit_of_measurement || "") ? parseFloat(st.state) : NaN; };
+    const pvToday = items.filter((x) => x.kind === "pv").map((x) => EF_SIDES.map(([s]) => kwh(x.n[s])).find((v) => !isNaN(v))).filter((v) => v != null && !isNaN(v));
+    const pvNow = items.filter((x) => x.kind === "pv" && x.w < 0).reduce((a, x) => a - x.w, 0), bat = items.find((x) => x.kind === "bat"), soc = bat ? this._efxState(bat.n, bat.w).lvl : undefined, use = kwh(hub.top);
+    const F = [["Solar jetzt", this._efxFmtW(pvNow), "#fbbf24"], ["Haus jetzt", this._efxFmtW(hubW), "#2dd4bf"], ["Autarkie jetzt", mix.tot ? Math.round(100 - mix.net / mix.tot * 100) + " %" : "–", "#4ade80"]];
+    if (pvToday.length) F.push(["Solar heute", pvToday.reduce((a, b) => a + b, 0).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " kWh", "#fbbf24"]);
+    if (!isNaN(use)) F.push(["Verbrauch heute", use.toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " kWh", "#e5e7eb"]);
+    if (soc != null) F.push(["Akku", Math.round(soc) + " %", "#a78bfa"]);
+    return F;
+  }
+  _efxWallSide(items, hubW, quer) {
+    const F = this._efxFacts(items, hubW);
+    if (!quer) return `<div class="efwf">${F.slice(0, 4).map(([l, v, c]) => `<div><small>${esc(l)}</small><b style="color:${c}">${esc(v)}</b></div>`).join("")}</div>`;
+    return `<div class="efws"><div class="card"><div class="efsec">Herkunft jetzt</div>${this._efxBar(this._efMix || { tot: 0 })}</div>
+      <div class="card"><div class="efsec">Überblick</div>${F.map(([l, v, c]) => `<div class="efwr"><span>${esc(l)}</span><b style="color:${c}">${esc(v)}</b></div>`).join("")}</div></div>`;
+  }
+  /* Ruhebild im Tablet-Modus: Haus mit Herkunfts-Ring und Hausverbrauch, ohne Bewegung */
+  _efxSleep() {
+    try {
+      if (this._tmV() !== "ef" || !this._efxD || !this._efxSp()) return "";
+      const c = this._efxCfg(), list = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on), nodes = list.map((p) => c.nodes[p]); if (!list.length) return "";
+      const calc = this._efxCalc(nodes), w = c.hub.calc === "rest" ? calc.rest : calc.total, mix = this._efxMix(nodes);
+      return `<div class="tmef"><svg viewBox="-60 -60 120 120" width="150" height="150" aria-hidden="true">${this._efxRingSvg(mix, 48, 7)}${this._gx("house", 56, { on: true }).replace("<svg ", '<svg x="-28" y="-30" ')}</svg><b>${this._efxFmtW(w)}</b><small>Haus jetzt · ${esc(this._efxMixTxt(mix))}</small></div>`;
+    } catch (_) { return ""; }
+  }
+  /* ================= Modul 19 v0.9 – Strom-Reiter in neuer Optik (Konzept E) und Ideen W2, W3, W4, W7 =================
+     E1 Lichtsäulen: Hausverbrauch je Stunde (Tag) bzw. je Tag/Monat, gestapelt nach Herkunft Solar, Akku, Netz, Sonstige.
+     E2 Verbraucher mit Solar-Anteil. Rechnung aus der Langzeitstatistik der Kachel-Entitäten (Stunden-Mittelwerte der
+        Leistung, im Jahr Tages-Mittelwerte), gleiche Regeln wie das Fluss-Bild: Einspeisung und Akku-Laden zuerst vom Solar.
+     Zeitraum Tag · Woche · Monat · Jahr mit ‹ › wie in Modul 3. Kein Sankey (gefiel nicht). */
+  _efP() { if (!this._efPr) { let r = "day"; try { r = localStorage.getItem("fh_ef_rng") || "day"; } catch (_) { /* egal */ } this._efPr = { range: ["day", "week", "month", "year"].includes(r) ? r : "day", off: 0 }; } return this._efPr; }
+  _efPer(P) {
+    const now = new Date(), o = P.off, y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
+    let s, e, n, u;
+    if (P.range === "week") { const wd = (now.getDay() + 6) % 7; s = new Date(y, m, d - wd + 7 * o); e = new Date(y, m, d - wd + 7 * o + 7); n = 7; u = "d"; }
+    else if (P.range === "month") { s = new Date(y, m + o, 1); e = new Date(y, m + o + 1, 1); n = new Date(y, m + o + 1, 0).getDate(); u = "d"; }
+    else if (P.range === "year") { s = new Date(y + o, 0, 1); e = new Date(y + o + 1, 0, 1); n = 12; u = "m"; }
+    else { s = new Date(y, m, d + o); e = new Date(y, m, d + o + 1); n = 24; u = "h"; }
+    return { s, e, end: new Date(Math.min(+e, +now)), n, u, cur: o === 0 };
+  }
+  _efPLbl(P, R) {
+    const f = (dt, o) => dt.toLocaleDateString("de-DE", o);
+    if (P.range === "day") return P.off === 0 ? "Heute" : P.off === -1 ? "Gestern" : f(R.s, { weekday: "short", day: "2-digit", month: "2-digit", year: "numeric" });
+    if (P.range === "week") { const l = new Date(+R.e - 864e5); return `${f(R.s, { day: "2-digit", month: "2-digit" })} – ${f(l, { day: "2-digit", month: "2-digit" })}`; }
+    if (P.range === "month") return f(R.s, { month: "long", year: "numeric" });
+    return String(R.s.getFullYear());
+  }
+  /* Alle Leistungs-Entitäten, die das Fluss-Bild nutzt (inkl. Gruppen-Kacheln) */
+  _efxPowIds(nodes) {
+    const ids = new Set();
+    nodes.forEach((n) => { if (n.flow === "split") { if (n.power_to_node) ids.add(n.power_to_node); if (n.power_to_house) ids.add(n.power_to_house); } else if ((n.group || []).length) n.group.forEach((e) => ids.add(e)); else { const p = this._efxPid(n); if (p) ids.add(p); } });
+    return [...ids];
+  }
+  _efxStatLoad(P, force) {
+    const c = this._efxCfg(), nodes = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on).map((p) => ({ p, n: c.nodes[p] })), ids = this._efxPowIds(nodes.map((x) => x.n)), R = this._efPer(P);
+    const key = P.range + ":" + P.off + ":" + ids.join(",");
+    const cache = (this._efSt = this._efSt || {});
+    if (!ids.length) return null;
+    const h = cache[key]; if (h && !force && (!R.cur || Date.now() - h.ts < 3e5)) return h;
+    if (this._efStBusy === key) return h || null;
+    this._efStBusy = key;
+    const per = P.range === "year" ? "day" : "hour";
+    this._hass.callWS({ type: "recorder/statistics_during_period", start_time: R.s.toISOString(), end_time: R.end.toISOString(), statistic_ids: ids, period: per, types: ["mean"] })
+      .then((r) => { cache[key] = { ts: Date.now(), ...this._efxStatCalc(nodes, r || {}, R, per, P) }; })
+      .catch(() => { cache[key] = { ts: Date.now(), err: true, bars: [], cons: [], tot: null }; })
+      .finally(() => { if (this._efStBusy === key) this._efStBusy = null; if (this._mdActive() === "ef") this._render(); });
+    return h || null;
+  }
+  _efxStatCalc(nodes, r, R, per, P) {
+    const step = per === "day" ? 24 : 1, ts = (x) => (typeof x.start === "number" ? x.start : Date.parse(x.start));
+    const kf = (id) => (/^kW$/i.test(((this._hass.states[id] || {}).attributes || {}).unit_of_measurement || "") ? 1000 : 1);
+    const map = {}; Object.entries(r).forEach(([id, l]) => { const k = kf(id); (l || []).forEach((x) => { if (!isFinite(x.mean)) return; (map[ts(x)] = map[ts(x)] || {})[id] = x.mean * k; }); });
+    const val = (t, id) => (map[t] && isFinite(map[t][id]) ? map[t][id] : 0);
+    const nodeW = (n, t) => {
+      if (n.flow === "split") return Math.abs(val(t, n.power_to_node)) - Math.abs(val(t, n.power_to_house));
+      if ((n.group || []).length) return n.group.reduce((a, e) => a + Math.abs(val(t, e)), 0);
+      const v = val(t, this._efxPid(n)); return n.flow === "supply" ? -Math.abs(v) : n.flow === "consume" ? Math.abs(v) : n.invert ? -v : v;
+    };
+    const bucket = (t) => { const d = new Date(t); return P.range === "day" ? d.getHours() : P.range === "year" ? d.getMonth() : Math.floor((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate())) / 864e5 + .5); };
+    const bars = Array.from({ length: R.n }, () => ({ pv: 0, bat: 0, net: 0, oth: 0, use: 0 })), cons = {}, tot = { pv: 0, bat: 0, net: 0, oth: 0, use: 0, gen: 0, exp: 0 };
+    Object.keys(map).map(Number).sort((a, b) => a - b).forEach((t) => {
+      const m = { pv: 0, bat: 0, net: 0, oth: 0 }; let out = 0, gen = 0, exp = 0;
+      nodes.forEach(({ n }) => { if (n.flow === "consume") return; const w = nodeW(n, t), k = this._efxKind(n); if (w < 0) m[k] += -w; else { out += w; if (k === "net") exp += w; } if (k === "pv") gen += Math.abs(w); });
+      const take = Math.min(m.pv, out); m.pv -= take; out -= take; if (out > 0) m.oth = Math.max(0, m.oth - out);
+      const use = m.pv + m.bat + m.net + m.oth, b = bars[bucket(t)], kwh = step / 1000; if (!b) return;
+      ["pv", "bat", "net", "oth"].forEach((k) => { b[k] += m[k] * kwh; tot[k] += m[k] * kwh; }); b.use += use * kwh; tot.use += use * kwh; tot.gen += gen * kwh; tot.exp += exp * kwh;
+      const fpv = use > 0 ? m.pv / use : 0;
+      nodes.forEach(({ p, n }) => { if (n.flow !== "consume") return; const w = Math.max(0, nodeW(n, t)) * kwh, o = (cons[p] = cons[p] || { kwh: 0, pv: 0 }); o.kwh += w; o.pv += w * fpv; });
+    });
+    return { bars, cons, tot, any: Object.keys(map).length > 0 };
+  }
+  _efStrom(narrow) {
+    const P = this._efP(), R = this._efPer(P), c = this._efxCfg(), H = this._efxStatLoad(P), RG = [["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]];
+    const nav = `<div class="efpn"><div class="seg oseg">${RG.map(([k, l]) => `<button class="${P.range === k ? "sel" : ""}" data-act="efxrng" data-k="${k}">${l}</button>`).join("")}</div><div class="efpnv"><button class="ibtn" data-act="efxoff" data-k="-1" aria-label="Zurück">‹</button><b>${esc(this._efPLbl(P, R))}</b><button class="ibtn" data-act="efxoff" data-k="1" ${P.off >= 0 ? "disabled" : ""} aria-label="Weiter">›</button></div></div>`;
+    if (!this._efxPowIds(Object.values(c.nodes).filter((n) => n.on)).length) return `${nav}<div class="card empty">${ic("energy", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Keine Leistungssensoren</div>Der Strom-Reiter rechnet mit den Leistungssensoren deiner Kacheln. Lege sie unter „Einrichten“ fest.</div>`;
+    if (!H) return `${nav}<div class="card empty">Verlauf wird geladen …</div>`;
+    if (H.err || !H.any) return `${nav}<div class="card empty">${ic("info", 30)}<div style="margin:8px 0 2px;font-weight:700;color:var(--primary-text-color)">Keine Langzeitstatistik</div>Für diesen Zeitraum liefert Home Assistant keine Werte. Die Sensoren brauchen eine „state_class“ (measurement), damit sie in der Langzeitstatistik landen.</div>`;
+    const T = H.tot, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: v >= 100 ? 0 : 1 }), pc = (a, b) => (b > 0 ? Math.round(a / b * 100) : 0);
+    const sel = this._efSel != null && this._efSel < H.bars.length ? this._efSel : null;
+    const sum = `<div class="efsum">${[["Verbrauch", f1(T.use) + " kWh", "#2dd4bf"], ["aus Solar", pc(T.pv, T.use) + " %", "#fbbf24"], ["Autarkie", (T.use > 0 ? 100 - pc(T.net, T.use) : 0) + " %", "#4ade80"], ["Solar erzeugt", f1(T.gen) + " kWh", "#fbbf24"]].map(([l, v, col]) => `<div><small>${l}</small><b style="color:${col}">${v}</b></div>`).join("")}</div>`;
+    /* E1 Lichtsäulen */
+    const mx = Math.max(.001, ...H.bars.map((b) => b.use)), lab = (i) => (P.range === "day" ? i : P.range === "year" ? ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"][i] : P.range === "week" ? ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"][i] : i + 1);
+    const tick = (i) => (P.range === "day" ? i % 6 === 0 : P.range === "month" ? i % 5 === 0 : true);
+    const cols = H.bars.map((b, i) => `<button class="efsc${sel === i ? " sel" : ""}" data-act="efxsel" data-k="${i}" aria-label="${esc(String(lab(i)))}: ${f1(b.use)} kWh"><span class="efsb" style="height:${(b.use / mx * 100).toFixed(1)}%">${EF_MIX.map(([k, , col]) => (b[k] > 0 && b.use > 0 ? `<i style="height:${(b[k] / b.use * 100).toFixed(2)}%;background:${col}"></i>` : "")).reverse().join("")}</span><small>${tick(i) ? lab(i) : ""}</small></button>`).join("");
+    const sb = sel != null ? H.bars[sel] : null;
+    const det = sb ? `<div class="efsd"><b>${esc(P.range === "day" ? `${sel}–${sel + 1} Uhr` : P.range === "year" ? new Date(R.s.getFullYear(), sel, 1).toLocaleDateString("de-DE", { month: "long" }) : new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate() + sel).toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }))}</b> · ${f1(sb.use)} kWh${EF_MIX.filter(([k]) => sb[k] > 0.0005).map(([k, l, col]) => ` · <span style="color:${col}">${pc(sb[k], sb.use)} % ${l}</span>`).join("")}</div>` : `<div class="efsd mut">Tippe auf eine Säule für die Werte</div>`;
+    const e1 = `<div class="card efsec1"><div class="efh2">${ic("chart", 16)}Herkunft ${P.range === "day" ? "pro Stunde" : P.range === "year" ? "pro Monat" : "pro Tag"}</div><div class="efcols n${H.bars.length > 24 ? "m" : ""}">${cols}</div><div class="efleg2">${EF_MIX.map(([, l, col]) => `<span><i style="background:${col}"></i>${l}</span>`).join("")}<span class="mut">Höhe = Hausverbrauch</span></div>${det}</div>`;
+    /* E2 Verbraucher mit Solar-Anteil */
+    const list = Object.entries(H.cons).map(([p, o]) => ({ p, n: c.nodes[p], ...o })).filter((x) => x.n).sort((a, b) => b.kwh - a.kwh);
+    const e2 = `<div class="card"><div class="efh2">${ic("energy", 16)}Verbraucher mit Solar-Anteil</div>${list.length ? list.map((x) => { const col = x.n.color || EF_POS[x.p][3], s = pc(x.pv, x.kwh); return `<div class="efsv" style="--c:${col}"><span class="efq sm"><span class="efqi">${this._efxImgN(x.n, { on: x.kwh > 0 })}</span></span><span class="efsvt"><b>${esc(x.n.name)}</b><span class="efsvb"><i style="width:${s}%"></i></span></span><span class="efsvv"><b>${f1(x.kwh)} kWh</b><small>${s} % Solar</small></span></div>`; }).join("") : `<div class="mut sm">Keine Verbraucher-Kacheln mit Leistungssensor.</div>`}</div>`;
+    return `${nav}${sum}<div class="efsgrid${narrow ? " nar" : ""}">${e1}${e2}</div>`;
+  }
+  /* ---------------- W4 Tageswerte-Leiste unter dem Brett ---------------- */
+  _efxToday() {
+    if (this._efxCfg().today === false) return "";
+    const H = this._efxStatLoad({ range: "day", off: 0 }); if (!H || H.err || !H.any) return "";
+    const T = H.tot, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: 1 });
+    return `<div class="eftd"><b>heute</b><span><i style="background:#fbbf24"></i>${f1(T.gen)} kWh Solar</span><span><i style="background:#2dd4bf"></i>${f1(T.use)} kWh Verbrauch</span><span><i style="background:#4ade80"></i>${T.use > 0 ? Math.round(100 - T.net / T.use * 100) : 0} % Autarkie</span>${T.exp > 0.05 ? `<span><i style="background:#a78bfa"></i>${f1(T.exp)} kWh eingespeist</span>` : ""}</div>`;
+  }
+  /* ---------------- W2 Vorlagen ---------------- */
+  _efxTpl(id) {
+    const mk = (p, o) => ({ ...this._efxBlank(p), ...o });
+    const T = {
+      efh: { top_1: { name: "Solar Dach", image: "hd:pvRoof", flow: "supply", color: "#facc15" }, left_1: { name: "Netz", image: "hd:grid", flow: "split", color: "#f87171" }, left_3: { name: "Akku", image: "hd:battery", flow: "both", color: "#a78bfa" }, right_1: { name: "Warmwasser", image: "hd:boiler", flow: "consume", color: "#38bdf8" }, bottom: { name: "Waschmaschine", image: "hd:washer", flow: "consume", color: "#f97316" } },
+      flat: { top_1: { name: "Balkon", image: "hd:balcony", flow: "supply", color: "#fbbf24" }, left_1: { name: "Netz", image: "hd:grid", flow: "split", color: "#f87171" }, right_1: { name: "Kühlschrank", image: "hd:fridge", flow: "consume", color: "#38bdf8" }, right_3: { name: "PC", image: "hd:pc", flow: "consume", color: "#2dd4bf" }, bottom: { name: "Steckdose", image: "hd:plug", flow: "consume", color: "#f97316" } },
+      ev: { top_1: { name: "Solar Dach", image: "hd:pvRoof", flow: "supply", color: "#facc15" }, left_1: { name: "Netz", image: "hd:grid", flow: "split", color: "#f87171" }, left_3: { name: "Akku", image: "hd:battery", flow: "both", color: "#a78bfa" }, right_1: { name: "Wallbox", image: "hd:wallbox", flow: "consume", color: "#22d3ee" }, right_3: { name: "Auto", image: "hd:car", flow: "consume", color: "#f472b6", run_w: 100 } },
+    }[id];
+    if (!T) return;
+    const c = this._efxClone(); let n = 0;
+    Object.entries(T).forEach(([p, o]) => { if (!c.nodes[p]) { c.nodes[p] = mk(p, o); n++; } });
+    if (!c.hub.image || c.hub.image === "🏠") c.hub.image = id === "flat" ? "hd:flat" : "hd:house";
+    this._efxPut(c).then(() => { this._toast(n ? `${n} ${n === 1 ? "Kachel" : "Kacheln"} angelegt – jetzt Sensoren zuordnen` : "Alle Plätze der Vorlage sind schon belegt"); this._modal = { type: "efxmgr" }; this._renderModal(); this._render(); });
+  }
+  _efxTplHtml(adm) {
+    return `<div class="eftpl">${EF_TPL.map(([k, g, l, d]) => `<button class="eftpb" data-act="efxtpl" data-k="${k}" ${adm ? "" : "disabled"}>${this._gx(g, 40, { on: true })}<span><b>${l}</b><small>${d}</small></span></button>`).join("")}</div>`;
+  }
+  /* ---------------- W3 Gruppen-Kachel: Mitglieder anzeigen ---------------- */
+  _efxGrpModal() {
+    const m = this._modal, n = this._efxCfg().nodes[m.pos]; if (!n) return "";
+    const rows = (n.group || []).map((e) => { const w = Math.abs(this._efxToW(e)); return `<button class="vrow efgm" data-act="efxmore" data-e="${esc(e)}"><span>${esc(this._wzName(e))}<small class="mut" style="display:block">${esc(e)}</small></span><b>${isNaN(w) ? "–" : this._efxFmtW(w)}</b></button>`; }).join("");
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${esc(n.name)}</b><span>Gruppe · ${(n.group || []).length} Geräte · zusammen ${this._efxFmtW(Math.abs(this._efxNodeW(n)))}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>${rows}</div>`;
+  }
+  /* ---------------- W7 Sponsor-Abzeichen im Banner ---------------- */
+  _efxBadge() { const s = this._spnS(); return s.active && (!s.prefs || s.prefs.badge !== false) ? `<span class="efspb" title="Modul 19 ist ein Extra für Sponsoren">${ic("heart", 12)}${s.tier === "max" ? "Sponsor Max" : "Sponsor"}</span>` : ""; }
   /* ================= Einheitliches Banner für alle Module =================
      Links Titelzeile, große Zahl, Zusatzzeile und Chips, rechts ein Logo-Feld mit dem Symbol des Moduls. */
   _modLogo(id) { return `<div class="mlogo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${MOD_ART[id] || ""}</svg>${MV[id] ? `<span class="mlv">v${esc(MV[id].v)} · Build ${MV[id].b}</span>` : ""}</div>`; }

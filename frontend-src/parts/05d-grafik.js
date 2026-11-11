@@ -145,6 +145,27 @@
         `<path d="M34 18 L28.5 27 H32 L30.5 33 L36 24.5 H32.5z" fill="url(#${q("l")})"/>` +
         `<rect x="27" y="40" width="10" height="16" rx="1.5" fill="#134e4a"/><circle cx="35" cy="48.5" r="1" fill="#fde68a"/>` +
         `<rect x="16" y="38" width="8" height="8" rx="1.5" fill="${o.on === false ? "#ccfbf1" : `url(#${q("l")})`}"/><rect x="40" y="38" width="8" height="8" rx="1.5" fill="${o.on === false ? "#ccfbf1" : `url(#${q("l")})`}"/>` },
+      /* Modul 19 v0.7 (Konzept D2): weitere Haus-Bilder für die Mitte. Fenster leuchten nur, wenn o.on nicht false ist (abends). */
+      houseGarage: { n: "Haus mit Garage", g: 2, f: (q, o) => { const win = o.on === false ? "#ccfbf1" : `url(#${q("l")})`;
+        return lg(q("w"), [[0, "#5eead4"], [1, "#0d9488"]], 0, 0, 1, 1) + lg(q("r"), [[0, "#2dd4bf"], [1, "#0f766e"]], 0, 0, 1, 1) + lg(q("l"), [[0, "#fef9c3"], [1, "#fbbf24"]]) + lg(q("g"), [[0, "#99f6e4"], [1, "#14b8a6"]], 0, 0, 1, 1) + sh(28) +
+        `<rect x="38" y="35" width="22" height="21" fill="url(#${q("g")})"/><path d="M36 36 L49 28 L62 36 L60 37.5 L49 30.8 L38 37.5z" fill="url(#${q("r")})"/>` +
+        `<rect x="41" y="40" width="16" height="16" rx="1" fill="#134e4a"/>` + [43.5, 47, 50.5].map((y) => `<rect x="42" y="${y}" width="14" height="1.6" rx=".8" fill="#5eead4" opacity=".55"/>`).join("") +
+        `<rect x="6" y="29" width="32" height="27" fill="url(#${q("w")})"/><path d="M1 32 L22 10 L43 32 L39 34 L22 16.5 L5 34z" fill="url(#${q("r")})"/>` + gl("M22 10 L1 32 L5 34 L22 16.5z") +
+        `<path d="M6 31 L22 15 L38 31 V34 L22 18 L6 34z" fill="#134e4a" opacity=".25"/><path d="M24 18.5 L19.5 26 H22.5 L21 31 L25.5 24 H22.5z" fill="url(#${q("l")})"/>` +
+        `<rect x="18" y="42" width="8" height="14" rx="1.2" fill="#134e4a"/><circle cx="24.4" cy="49.5" r=".9" fill="#fde68a"/>` +
+        `<rect x="9" y="38" width="7" height="7" rx="1.2" fill="${win}"/><rect x="28" y="38" width="7" height="7" rx="1.2" fill="${win}"/>`; } },
+      flat: { n: "Wohnung", g: 2, f: (q, o) => { const L = o.on === false ? null : [1, 4, 6, 9, 11]; let k = 0;
+        return lg(q("w"), [[0, "#5eead4"], [1, "#0d9488"]], 0, 0, 1, 1) + lg(q("r"), [[0, "#2dd4bf"], [1, "#0f766e"]], 0, 0, 1, 1) + lg(q("l"), [[0, "#fef9c3"], [1, "#fbbf24"]]) + sh(22) +
+        `<rect x="12" y="8" width="40" height="48" rx="2" fill="url(#${q("w")})"/><rect x="10" y="5" width="44" height="5" rx="1.5" fill="url(#${q("r")})"/>` + gl("M12 10 H22 L18 56 H12z") +
+        [14, 24, 34].map((y) => [17, 29, 41].map((x) => { const i = k++; return `<rect x="${x}" y="${y}" width="6" height="6.5" rx="1" fill="${L && L.includes(i) ? `url(#${q("l")})` : "#ccfbf1"}"/>`; }).join("")).join("") +
+        `<rect x="10" y="44" width="44" height="2" fill="#0f766e"/><rect x="27" y="47" width="10" height="9" rx="1" fill="#134e4a"/><circle cx="35" cy="51.5" r=".9" fill="#fde68a"/>` +
+        `<rect x="16" y="48" width="7" height="5" rx="1" fill="${L ? `url(#${q("l")})` : "#ccfbf1"}"/><rect x="41" y="48" width="7" height="5" rx="1" fill="#ccfbf1"/>`; } },
+      bungalow: { n: "Bungalow", g: 2, f: (q, o) => { const win = o.on === false ? "#ccfbf1" : `url(#${q("l")})`;
+        return lg(q("w"), [[0, "#5eead4"], [1, "#0d9488"]], 0, 0, 1, 1) + lg(q("r"), [[0, "#2dd4bf"], [1, "#0f766e"]], 0, 0, 1, 1) + lg(q("l"), [[0, "#fef9c3"], [1, "#fbbf24"]]) + sh(29) +
+        `<rect x="6" y="34" width="52" height="22" fill="url(#${q("w")})"/><path d="M1 37 L18 21 H46 L63 37 L59 38.5 L44 24.5 H20 L5 38.5z" fill="url(#${q("r")})"/>` + gl("M18 21 L1 37 L5 38.5 L20 24.5 H44 L46 21z") +
+        `<path d="M6 36 L20 24 H44 L58 36 V38.5 L44 26.5 H20 L6 38.5z" fill="#134e4a" opacity=".25"/><path d="M33 26 L28.5 33 H31.5 L30 37.5 L34.5 31 H31.5z" fill="url(#${q("l")})"/>` +
+        `<rect x="28" y="42" width="9" height="14" rx="1.2" fill="#134e4a"/><circle cx="35" cy="49.5" r=".9" fill="#fde68a"/>` +
+        `<rect x="10" y="41" width="13" height="8" rx="1.2" fill="${win}"/><rect x="41" y="41" width="13" height="8" rx="1.2" fill="${win}"/><rect x="16" y="41" width="1.2" height="8" fill="#0f766e" opacity=".5"/><rect x="47" y="41" width="1.2" height="8" fill="#0f766e" opacity=".5"/>`; } },
       meter: { n: "Zähler", g: 2, f: (q) => lg(q("b"), M.white, 0, 0, 1, 1) + lg(q("d"), [[0, "#134e4a"], [1, "#042f2e"]]) + sh(18) +
         `<rect x="12" y="5" width="40" height="51" rx="6" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
         `<rect x="17" y="12" width="30" height="14" rx="3" fill="url(#${q("d")})"/><text x="32" y="22.5" text-anchor="middle" font-size="7.5" font-weight="700" letter-spacing=".4" font-family="ui-monospace,monospace" fill="#5eead4">04217</text>` +

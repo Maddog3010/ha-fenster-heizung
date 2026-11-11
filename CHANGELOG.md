@@ -2,6 +2,31 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b5] - 2026-11-11
+
+### Neu
+- **Modul 19 · Neue Optik Stufe 2 (v0.7): Linien & Haus.**
+  - **Leuchtlinien:** Die Stärke folgt der Leistung (dünn bei wenigen Watt, kräftig bei Kilowatt), aktive Linien haben einen Leuchtsaum, helle Punkte laufen in Flussrichtung. Ruhende Wege bleiben als feine gestrichelte Spur, damit das Bild seine Form behält. Neu unter Einrichten → Linien: **Einfarbig** (Standard) oder **Verlauf** von der Kachelfarbe zur Hausfarbe. Die Bewegung folgt der Einstellung „Animationen“ (Aus: ohne Punkte, Voll: Leuchtsaum pulsiert), im Tablet-Modus wie dort eingestellt.
+  - **Haus mit Herkunfts-Ring:** Ein Ring um das Haus zeigt, woher der Hausverbrauch gerade kommt – Solar (gelb), Akku (violett), Netz (rot), Sonstige (grau). Berechnet aus den Kacheln mit „Liefert“ und „Beides“, erkannt am Bild oder Namen; Einspeisung und Akku-Laden werden zuerst vom Solarstrom abgezogen. Der Ring gleitet bei neuen Werten. Abschaltbar unter Haus bearbeiten → Herkunfts-Ring.
+  - **Haus-Bild wählbar:** Haus, Haus mit Garage, Wohnung, Bungalow oder ein eigenes Foto (rund zugeschnitten). Die Fenster leuchten abends (nach Sonnenstand). Das Haus-Emoji 🏠 wird einmalig auf das HD-Haus umgestellt, mit „Alte Symbole behalten“ bleibt es.
+  - **Bilder mit Zustand:** je Kachel „Läuft ab … W“ (Standard 10 W) für Trommel, Lampe und Co. und ein **Ladestand-Ring** um das Bild (automatisch aus dem ersten Wert in %, wählbar oder aus).
+  - **Status-Punkt:** optional aus einer frei wählbaren Entität (z. B. Status der Waschmaschine): grün läuft, gelb wartet, rot Störung.
+  - **Keine Daten:** Meldet der Leistungssensor „nicht verfügbar“, wird die Kachel grau mit rotem Punkt und „–“ statt einer leeren oder falschen Anzeige.
+- **Modul 19 · Neue Optik Stufe 3 (v0.8): Banner & Themen.**
+  - **Lichtband-Banner:** Links fließen die Quellen als Lichtbänder ins Haus, rechts gehen die Verbraucher ab – Farben aus deinen Kacheln, Breite nach Leistung. Das Haus trägt den Herkunfts-Ring, unter der großen Zahl zeigt ein Balken, wie viel gerade aus Solar, Akku und Netz kommt. Das Banner zeichnet nur alle 10 s neu (kein Flackern), abends dunkler mit Sternen. Unter Einrichten → Aussehen → Banner: **Lichtband** (Standard) oder **Einheitlich** wie in den anderen Modulen.
+  - **Themen für das Fluss-Bild:** Nachtglas (Standard, türkiser Schimmer hinter dem Haus), Blaupause (Raster wie ein Bauplan), Sternenhimmel, Haus im Garten (Himmel und Wiese).
+  - **Kachelform:** Kachel (Standard) oder **Rund** – nur Bild mit oberem und unterem Wert.
+  - **Hell:** weiße Kacheln mit feinem Rand und farbiger Linie oben, kein Licht hinter dem Bild, kräftigere Linien.
+  - **Handy neu** (unter 640 px Breite): **Fluss-Spalte** (Standard) – Quellen oben, Haus mit Ring in der Mitte, Verbraucher als Liste, ruhende hinter „+ N weitere“ – oder **Kachel-Raster** mit Haus-Karte oben und zwei Spalten ruhiger Kacheln mit Richtungspfeil. Das Brett gibt es weiter. Standard unter Einrichten → Aussehen → Handy-Ansicht, auf dem Handy pro Gerät mit „Ansicht“ umschaltbar.
+  - **Tablet-Modus:** Wand-Ansicht ohne Banner. Quer: breite Kacheln (Bild links, Wert groß rechts) und rechts eine Spalte mit Herkunft jetzt und Überblick (Solar jetzt, Haus jetzt, Autarkie jetzt, Solar heute, Verbrauch heute, Akku). Hoch: das Brett oben, vier Werte als Felder darunter. Das Brett passt sich so an, dass es über dem Dock Platz hat. **Ruhebild** bei geöffnetem Hausfluss: Sternenhimmel mit Uhrzeit, Haus mit Herkunfts-Ring und Hausverbrauch, ohne Bewegung.
+- **Modul 19 · Neue Optik Stufe 4 (v0.9): Hausfluss wird Vorabversion.** Weiterhin nur für Sponsoren.
+  - **Strom-Reiter** (bisher Platzhalter): Tag · Woche · Monat · Jahr mit ‹ › wie in Modul 3. Oben Verbrauch, Anteil aus Solar, Autarkie und erzeugter Solarstrom. **Lichtsäulen:** Hausverbrauch pro Stunde (Tag), pro Tag (Woche, Monat) bzw. pro Monat (Jahr), gestapelt nach Herkunft Solar, Akku, Netz, Sonstige – Antippen zeigt die Werte. **Verbraucher mit Solar-Anteil:** jede Verbraucher-Kachel mit kWh im Zeitraum und wie viel davon aus Solar kam. Gerechnet wird aus der Langzeitstatistik der Leistungssensoren deiner Kacheln (Stunden-Mittelwerte, im Jahr Tageswerte), nach denselben Regeln wie der Herkunfts-Ring. Bewusst kein Sankey.
+  - **Animationen „Voll“:** Waschmaschine, Trockner und Spülmaschine wackeln beim Laufen, die Lampe leuchtet, Solar strahlt, Heizgeräte glühen, Auto, Wallbox und Akku pulsieren beim Laden, Sterne funkeln im Banner und im Thema Sternenhimmel. „Dezent“ und „Aus“ wie bisher, „Bewegung reduzieren“ wird beachtet.
+  - **Kacheln ziehen (W1):** Knopf „Anordnen“ über dem Fluss-Bild (Tablet und Desktop, nur Admins): Kachel mit Maus oder Finger auf einen freien Platz ziehen oder auf eine andere Kachel (tauscht). Alternativ antippen und dann den Ziel-Platz antippen.
+  - **Vorlagen (W2):** „Einfamilienhaus mit PV und Akku“, „Wohnung mit Balkonkraftwerk“, „Mit E-Auto“ – ein Tipp legt passende Kacheln mit HD-Bildern auf freie Plätze, danach nur noch Sensoren zuordnen. Unter Einrichten → Vorlagen und beim ersten Start.
+  - **Gruppen-Kachel (W3):** mehrere Leistungssensoren (z. B. alle Kühlschränke) als eine Kachel mit Summe; „×3“ am Bild öffnet die einzelnen Geräte mit ihren Werten.
+  - **Tageswerte-Leiste (W4):** schmale Zeile unter dem Fluss-Bild – heute Solar, Verbrauch, Autarkie und Einspeisung. Abschaltbar unter Einrichten → Aussehen.
+  - **Sponsor-Abzeichen (W7):** kleines „♥ Sponsor“ bzw. „Sponsor Max“ oben rechts im Lichtband-Banner (folgt der Einstellung „Abzeichen“ im Sponsor-Bereich).
 ## [2026.11.3b4] - 2026-11-11
 
 ### Behoben

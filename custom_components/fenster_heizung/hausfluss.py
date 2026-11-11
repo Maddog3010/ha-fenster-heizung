@@ -23,13 +23,22 @@ HD_MAP = {
     "steckdose": "plug", "waschmaschine": "washer", "trockner": "dryer", "kuehlschrank": "fridge", "wasser": "boiler",
     "blitz": "bolt", "heizung": "radiator", "netz": "grid", "lampe": "lamp",
 }
-HD_MIG = 1  # Stand der einmaligen Umstellung
+HD_MIG = 2  # Stand der einmaligen Umstellung (2 = v0.7: Haus in der Mitte vom Emoji 🏠 auf das HD-Haus)
 
 POSITIONS = ("top_1", "top_2", "left_1", "left_2", "left_3", "right_1", "right_2", "right_3", "bottom")
 FLOWS = ("consume", "supply", "both", "split")
 SIDES = ("top", "bottom", "left", "right")
 MAX_CHIPS = 4
 _ENT = re.compile(r"^(sensor|number|input_number|counter)\.[a-z0-9_]+$")
+# v0.7 Status-Punkt: Entität mit Zustand (läuft, wartet, Störung), auch Schalter, Auswahl und Geräte
+_ST = re.compile(r"^(sensor|binary_sensor|switch|select|input_select|input_boolean|climate|vacuum|water_heater|fan|light|media_player|lawn_mower)\.[a-z0-9_]+$")
+PCT = ("", "none", *("top", "bottom", "left", "right"))
+LINES = ("mono", "grad")
+# v0.8 Banner & Themen
+BANNERS = ("band", "classic")
+THEMES = ("nacht", "plan", "sterne", "garten")
+SHAPES = ("kachel", "rund")
+MOBILE = ("fluss", "raster", "brett")
 _COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
 _IMG = re.compile(r"^(svg:[a-z]{2,20}|hd:[A-Za-z]{2,24}|mdi:[a-z0-9-]{2,60}|/local/[A-Za-z0-9_./-]{1,150}|https://[^\s<>\"']{4,200})$")
 
@@ -43,7 +52,11 @@ def migrate_hd(cfg: dict[str, Any]) -> int:
     if cfg.get("hd_mig", 0) >= HD_MIG:
         return 0
     n = 0
-    for node in [cfg["hub"], *cfg["nodes"].values()]:
+    hub = cfg["hub"]
+    if cfg.get("hd_mig", 0) < 2 and hub.get("image") in ("🏠", "🏡") and not hub.get("image_alt"):
+        hub["image_alt"], hub["image"] = hub["image"], "hd:house"
+        n += 1
+    for node in [hub, *cfg["nodes"].values()]:
         img = node.get("image", "")
         if img.startswith("svg:") and img[4:] in HD_MAP:
             node["image_alt"], node["image"] = img, "hd:" + HD_MAP[img[4:]]
@@ -78,7 +91,7 @@ def clean_node(raw: Any, hub: bool = False) -> dict[str, Any]:
     out: dict[str, Any] = {
         "on": bool(r.get("on", True)),
         "name": _name(r.get("name"), "Haus" if hub else "Kachel"),
-        "image": _img(r.get("image"), "🏠" if hub else "⚡"),
+        "image": _img(r.get("image"), "hd:house" if hub else "⚡"),
         "image_alt": _img(r.get("image_alt"), ""),
         "color": r.get("color") if isinstance(r.get("color"), str) and _COLOR.match(r["color"]) else "",
     }
@@ -87,6 +100,7 @@ def clean_node(raw: Any, hub: bool = False) -> dict[str, Any]:
         out[s + "_label"] = _label(r.get(s + "_label"))
     if hub:
         out["calc"] = "rest" if r.get("calc") == "rest" else "total"
+        out["ring"] = r.get("ring") is not False
         out["chips"] = list(dict.fromkeys(e for e in (_ent(x) for x in (r.get("chips") or [])[:8] if isinstance(x, str)) if e))[:MAX_CHIPS]
     else:
         out["flow"] = r.get("flow") if r.get("flow") in FLOWS else "consume"
@@ -94,6 +108,15 @@ def clean_node(raw: Any, hub: bool = False) -> dict[str, Any]:
         out["power_to_node"] = _ent(r.get("power_to_node"))
         out["power_to_house"] = _ent(r.get("power_to_house"))
         out["invert"] = bool(r.get("invert", False))
+        try:
+            rw = float(r.get("run_w", 10))
+        except (TypeError, ValueError):
+            rw = 10.0
+        out["run_w"] = round(min(5000.0, max(1.0, rw)))
+        out["pct"] = r.get("pct") if r.get("pct") in PCT else ""
+        out["status"] = r.get("status") if isinstance(r.get("status"), str) and _ST.match(r["status"]) else ""
+        # v0.9 W3 Gruppen-Kachel: mehrere Leistungssensoren als Summe
+        out["group"] = list(dict.fromkeys(e for e in (_ent(x) for x in (r.get("group") or [])[:16] if isinstance(x, str)) if e))[:8]
     return out
 
 
@@ -104,6 +127,12 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
     return {
         "hero": {"show": hero.get("show") is not False},
         "keep_old": bool(r.get("keep_old", False)),
+        "lines": r.get("lines") if r.get("lines") in LINES else "mono",
+        "banner": r.get("banner") if r.get("banner") in BANNERS else "band",
+        "theme": r.get("theme") if r.get("theme") in THEMES else "nacht",
+        "shape": r.get("shape") if r.get("shape") in SHAPES else "kachel",
+        "mobile": r.get("mobile") if r.get("mobile") in MOBILE else "fluss",
+        "today": r.get("today") is not False,
         "hd_mig": int(r.get("hd_mig") or 0) if str(r.get("hd_mig") or 0).isdigit() else 0,
         "hub": clean_node(r.get("hub"), hub=True),
         "nodes": {p: clean_node(nodes_raw[p]) for p in POSITIONS if isinstance(nodes_raw.get(p), dict)},
