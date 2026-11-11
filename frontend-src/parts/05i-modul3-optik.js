@@ -35,11 +35,11 @@
   }
   /* Doppelring: außen Autarkie (türkis), innen Eigenverbrauch (gelb) */
   _m3Ring(out, inn, ringA, lab) {
-    const R1 = 50, R2 = 38, C1 = 2 * Math.PI * R1, C2 = 2 * Math.PI * R2, a = (p, C) => `${(Math.max(0, Math.min(100, p || 0)) / 100 * C).toFixed(1)} ${C.toFixed(1)}`;
+    const R1 = 52, R2 = 42, C1 = 2 * Math.PI * R1, C2 = 2 * Math.PI * R2, a = (p, C) => `${(Math.max(0, Math.min(100, p || 0)) / 100 * C).toFixed(1)} ${C.toFixed(1)}`;
     return `<div class="mring enrg m3ring" data-act="enring" role="button" tabindex="0" title="Tippen: ${ringA ? "gedeckt jetzt" : "Autarkie im Zeitraum"}" aria-label="${lab} ${out} %, Eigenverbrauch ${inn == null ? "unbekannt" : inn + " %"}, tippen zum Umschalten">
       <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="${R1}" class="m3b"/><circle cx="60" cy="60" r="${R1}" class="m3o" stroke-dasharray="${a(out, C1)}" transform="rotate(-90 60 60)"/>
       <circle cx="60" cy="60" r="${R2}" class="m3b i"/>${inn != null ? `<circle cx="60" cy="60" r="${R2}" class="m3i" stroke-dasharray="${a(inn, C2)}" transform="rotate(-90 60 60)"/>` : ""}</svg>
-      <div class="rv"><b>${out}<small>%</small></b><span>${esc(lab)}</span>${inn != null ? `<em class="m3in">☀ ${inn} % selbst</em>` : ""}</div></div>`;
+      <div class="rv"><b>${out}<small>%</small></b><span>${esc(lab.replace(/ (heute|jetzt)$/, ""))}</span><span class="m3rs">${esc((lab.match(/ (heute|jetzt)$/) || ["", ""])[1])}</span></div>${inn != null ? `<em class="m3in" title="Eigenverbrauch: so viel vom Solarstrom wurde selbst genutzt">☀ ${inn} % selbst<span class="m3inx"> genutzt</span></em>` : ""}</div>`;
   }
   /* Preis-Skala: relativ zum Tagesdurchschnitt. Nur mit Preissensor, der Tageswerte kennt (Tibber u. a.) */
   _m3Price() {

@@ -40,6 +40,20 @@ class FensterHeizungPanel extends HTMLElement {
     const io = this._io || (this._io = new IntersectionObserver((es) => es.forEach((e) => e.target.setAttribute("data-vis", e.isIntersecting ? "1" : "0")), { rootMargin: "40px" }));
     io.disconnect(); this.shadowRoot.querySelectorAll("[data-an]").forEach((el) => io.observe(el));  /* neu beobachten: entfernte Bilder fallen so heraus */
   }
+  /* Karten lückenlos (Mauerwerk): jede Karte belegt so viele 2-px-Zeilen wie sie hoch ist und rutscht in die kürzeste Spalte.
+     Sofort nach dem Zeichnen gemessen (kein Springen), danach hält ein ResizeObserver es aktuell (Diagramme laden nach). */
+  _msn() {
+    const sr = this.shadowRoot; if (!sr) return;
+    const ro = this._ro || (typeof ResizeObserver !== "undefined" ? (this._ro = new ResizeObserver((es) => es.forEach((e) => this._msnSpan(e.target)))) : null);
+    if (ro) ro.disconnect();
+    sr.querySelectorAll(".hero.m3x > .m3ss").forEach((sc) => { this._msnSpan(sc); if (ro) ro.observe(sc); });  /* Energie-Szene: Breite für Ring und Text */
+    sr.querySelectorAll(".mublks").forEach((g) => {
+      const items = [...g.children]; if (items.length < 2) return;
+      g.classList.remove("msn"); const hs = items.map((it) => it.getBoundingClientRect().height);
+      g.classList.add("msn"); items.forEach((it, i) => { it.style.gridRowEnd = `span ${Math.max(1, Math.ceil((hs[i] + 14) / 2))}`; if (ro) ro.observe(it); });
+    });
+  }
+  _msnSpan(it) { if (it.classList.contains("m3ss")) { const w = Math.round(it.getBoundingClientRect().width); if (w && it.parentElement) it.parentElement.style.setProperty("--m3w", w + "px"); return; } if (!it.parentElement || !it.parentElement.classList.contains("msn")) return; const sp = `span ${Math.max(1, Math.ceil((it.getBoundingClientRect().height + 14) / 2))}`; if (it.style.gridRowEnd !== sp) it.style.gridRowEnd = sp; }
   set hass(h) {
     const first = !this._hass;
     this._hass = h;

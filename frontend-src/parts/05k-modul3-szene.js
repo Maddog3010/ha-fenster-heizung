@@ -74,14 +74,15 @@
     d += V.exp >= V.imp ? ln("M262 94 C284 80 304 72 320 72", V.exp, col.exp) : ln("M320 72 C304 72 284 80 262 94", V.imp, col.imp);
     if (V.hasCar) d += ln("M262 150 H266", V.car || 0, col.car) + ln("M273 128 C282 128 286 136 288 142", V.car || 0, col.car);
     /* Werte am Gerät */
-    const tag = (x, y, t1, t2, c, anchor = "start") => { const w = Math.max(t1.length * 3.6, t2.length * 4.6) + 10, x0 = anchor === "end" ? x - w : x; return `<g class="m3tg"><rect x="${x0.toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="21" rx="4.5" fill="rgba(15,23,42,.8)" stroke="${c}" stroke-width=".9"/><text x="${(x0 + 5).toFixed(1)}" y="${y + 8}" font-size="6.2" fill="#e2e8f0" font-family="system-ui,sans-serif">${esc(t1)}</text><text x="${(x0 + 5).toFixed(1)}" y="${y + 17.4}" font-size="8" font-weight="800" fill="${c}" font-family="system-ui,sans-serif">${t2}</text></g>`; };
+    /* Wert am Gerät: größere Schrift, lange Namen gekürzt, nie über den Bildrand */
+    const tag = (x, y, t1, t2, c, anchor = "start") => { t1 = t1.length > 13 ? t1.slice(0, 12).trim() + "…" : t1; const w = Math.max(t1.length * 4.4, t2.length * 6) + 12, x0 = Math.max(3, Math.min(357 - w, anchor === "end" ? x - w : x)); return `<g class="m3tg"><rect x="${x0.toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="27" rx="5" fill="rgba(15,23,42,.84)" stroke="${c}" stroke-width="1"/><text x="${(x0 + 6).toFixed(1)}" y="${y + 10}" font-size="7.6" fill="#e2e8f0" font-family="system-ui,sans-serif">${esc(t1)}</text><text x="${(x0 + 6).toFixed(1)}" y="${y + 22}" font-size="10.4" font-weight="800" fill="${c}" font-family="system-ui,sans-serif">${t2}</text></g>`; };
     const nm = this._enPvNames();
     if (o.tags !== false) {
-      d += tag(172, 24, nm[0], fmt(V.pv), col.pv);
-      const ex = V.exp >= V.imp; d += tag(314, 32, "Netz", act(ex ? V.exp : V.imp) ? (ex ? "↑ " : "↓ ") + fmt(ex ? V.exp : V.imp) : "0 W", ex ? col.exp : col.imp, "end");
-      if (V.has2) d += tag(102, 70, nm[1], fmt(V.pvb), col.pv, "end");
-      if (V.hasBat) d += tag(54, 158, "Batterie", L ? (V.bc > 20 ? "lädt " + fmt(V.bc) : V.dis > 20 ? "gibt " + fmt(V.dis) : V.soc != null && V.soc < 20 ? "leer · " + Math.round(V.soc) + " %" : "ruht") : "↑" + fmt(V.bc) + " ↓" + fmt(V.dis), V.soc != null && V.soc < 20 ? col.imp : col.bat);
-      if (V.hasCar && L) d += tag(292, 158, V.car > 20 ? "Auto lädt" : "Auto", V.car > 20 ? fmt(V.car) : "lädt nicht", col.car);
+      d += tag(168, 8, nm[0], fmt(V.pv), col.pv);
+      const ex = V.exp >= V.imp; d += tag(316, 14, "Netz", act(ex ? V.exp : V.imp) ? (ex ? "↑ " : "↓ ") + fmt(ex ? V.exp : V.imp) : "0 W", ex ? col.exp : col.imp, "end");
+      if (V.has2) d += tag(104, 62, nm[1], fmt(V.pvb), col.pv, "end");
+      if (V.hasBat) d += tag(40, 166, "Batterie", L ? (V.bc > 20 ? "lädt " + fmt(V.bc) : V.dis > 20 ? "gibt " + fmt(V.dis) : V.soc != null && V.soc < 20 ? "leer · " + Math.round(V.soc) + " %" : "ruht") : "↑" + fmt(V.bc) + " ↓" + fmt(V.dis), V.soc != null && V.soc < 20 ? col.imp : col.bat);
+      if (V.hasCar && L) d += tag(286, 166, V.car > 20 ? "Auto lädt" : "Auto", V.car > 20 ? fmt(V.car) : "lädt nicht", col.car);
     }
     if (!L) d += `<g><circle cx="20" cy="20" r="11" fill="rgba(15,23,42,.75)" stroke="#fff" stroke-width=".8"/><text x="20" y="24.5" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">Σ</text></g>`;
     const key = [o.vb || "", this._hsx().house, this._hsx().sky, sky.tod, sky.w, sky.frost ? 1 : 0, L ? 1 : 0, ...K, V.has2 ? 1 : 0, V.hasBat ? 1 : 0, V.hasCar ? 1 : 0, L && V.bc > 20 ? 1 : 0, L && V.car > 20 ? 1 : 0, surplus ? 1 : 0, V.exp >= V.imp ? 1 : 0, V.dis > V.bc ? 1 : 0, V.soc != null && V.soc < 20 ? 1 : 0, o.tags !== false ? 1 : 0, this._rkCfg().anim].join("|");

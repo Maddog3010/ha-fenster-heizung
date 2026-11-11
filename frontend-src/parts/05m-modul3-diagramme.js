@@ -82,14 +82,17 @@
   }
   /* ---- E1: Kosten-Treppe mit Symbolen ---- */
   _m3Water(buy, sell, saved, net) {
-    const W = 460, H = 214, base = 104, mx = Math.max(.01, buy, sell + saved, Math.abs(net)), k = 74 / mx, bw = 76, eur = (v) => `${v >= 0 ? "+" : "−"}${num(Math.abs(v), 2)} €`;
+    /* Höhe nach den Werten: oben Platz für den größten Plus-Wert, unten für den größten Minus-Wert, darunter die Symbolzeile */
+    const W = 460, up = Math.max(.01, sell + saved, net > 0 ? net : 0), dn = Math.max(buy, net < 0 ? -net : 0), plot = 128, k = plot / (up + dn || 1);
+    const top = 24, base = top + up * k, bot = base + dn * k, H = Math.round(bot + (dn > 0 ? 24 : 6) + 34), bw = 76, eur = (v) => `${v >= 0 ? "+" : "−"}${num(Math.abs(v), 2)} €`;
     const it = [["Netzbezug", -buy, "#f87171", 0, "grid", 0], ["Einspeisung", sell, "#34d399", 0, "grid", 1], ["Selbst genutzt", saved, "#fbbf24", sell, "pvRoof", 0], ["Bilanz", net, "#2dd4bf", 0, "euro", 0]];
-    let s = `<line x1="8" y1="${base}" x2="${W - 8}" y2="${base}" stroke="currentColor" opacity=".3" stroke-dasharray="4 4"/>`;
+    let s = `<line x1="8" y1="${base.toFixed(1)}" x2="${W - 8}" y2="${base.toFixed(1)}" stroke="currentColor" opacity=".3" stroke-dasharray="4 4"/>`;
     it.forEach(([l, v, c, from, g, ex], i) => {
-      const x = 16 + i * 112, y0 = base - from * k, h = Math.max(3, Math.abs(v) * k), y = v >= 0 ? y0 - h : y0, last = i === 3;
-      s += last ? `<rect x="${x}" y="${(v >= 0 ? base - h : base).toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="9" fill="${c}" fill-opacity="${v < 0 ? .12 : .16}" stroke="${v < 0 ? "#f87171" : c}" stroke-width="2.4"/><text x="${x + bw / 2}" y="${(v >= 0 ? base - h / 2 + 5 : base + h / 2 + 5).toFixed(1)}" text-anchor="middle" font-size="${h > 24 ? 15 : 12}" font-weight="800" fill="${v < 0 ? "#f87171" : c}">${h > 24 ? eur(v) : ""}</text>${h > 24 ? "" : `<text x="${x + bw / 2}" y="${(v >= 0 ? base - h - 6 : base + h + 15).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="800" fill="${c}">${eur(v)}</text>`}`
-        : `<rect x="${x}" y="${y.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="7" fill="${c}"/><text x="${x + bw / 2}" y="${(v >= 0 ? y - 6 : y + h + 15).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="700" fill="${c}">${eur(v)}</text>`;
-      s += this._gx(g, 26, {}).replace("<svg ", `<svg x="${x + 6}" y="${H - 32}" `) + (ex || g === "grid" ? `<circle cx="${x + 30}" cy="${H - 10}" r="5.5" fill="${ex ? "#34d399" : "#f87171"}"/><text x="${x + 30}" y="${H - 7.5}" text-anchor="middle" font-size="8" font-weight="800" fill="#fff">${ex ? "↑" : "↓"}</text>` : "") + `<text x="${x + 36}" y="${H - 15}" font-size="11.5" fill="currentColor" opacity=".75">${l}</text>`;
+      const x = 16 + i * 112, y0 = base - from * k, h = Math.max(3, Math.abs(v) * k), y = v >= 0 ? y0 - h : y0, last = i === 3, nc = last && v < 0 ? "#f87171" : c;
+      const lbl = (yy) => `<text x="${x + bw / 2}" y="${yy.toFixed(1)}" text-anchor="middle" font-size="13" font-weight="${last ? 800 : 700}" fill="${nc}">${eur(v)}</text>`;
+      s += last ? `<rect x="${x}" y="${y.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="9" fill="${nc}" fill-opacity=".14" stroke="${nc}" stroke-width="2.4"/>` + (h > 26 ? `<text x="${x + bw / 2}" y="${(y + h / 2 + 5).toFixed(1)}" text-anchor="middle" font-size="15" font-weight="800" fill="${nc}">${eur(v)}</text>` : lbl(v >= 0 ? y - 6 : y + h + 15))
+        : `<rect x="${x}" y="${y.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="7" fill="${c}"/>` + lbl(v >= 0 ? y - 6 : y + h + 15);
+      s += this._gx(g, 26, {}).replace("<svg ", `<svg x="${x + 2}" y="${H - 30}" `) + (g === "grid" ? `<circle cx="${x + 25}" cy="${H - 8}" r="5.5" fill="${ex ? "#34d399" : "#f87171"}"/><text x="${x + 25}" y="${H - 5.5}" text-anchor="middle" font-size="8" font-weight="800" fill="#fff">${ex ? "↑" : "↓"}</text>` : "") + `<text x="${x + 32}" y="${H - 13}" font-size="11.5" fill="currentColor" opacity=".75">${l}</text>`;
     });
     return `<svg class="enwf m3wf" viewBox="0 0 ${W} ${H}" role="img" aria-label="Kosten und Vorteil">${s}</svg>`;
   }

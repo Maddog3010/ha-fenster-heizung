@@ -180,13 +180,14 @@ div.rk2pl{cursor:default}
 .m3sp{position:relative;margin:8px -14px 0;height:46px}.m3sp svg{position:absolute;left:0;right:0;top:0;width:100%;height:34px;display:block}
 .m3now{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--c),0 0 8px var(--c);max-height:34px}
 .m3ax{position:absolute;left:14px;right:14px;bottom:2px;display:flex;justify-content:space-between;font-size:.62rem;color:var(--mut)}
-.m3ring .m3b{fill:none;stroke:rgba(255,255,255,.18);stroke-width:9}.m3ring .m3b.i{stroke-width:8}
-.m3ring .m3o{fill:none;stroke:#2dd4bf;stroke-width:9;stroke-linecap:round}.m3ring .m3i{fill:none;stroke:#fbbf24;stroke-width:8;stroke-linecap:round}
-.m3ring .rv b{font-size:1.45rem}.m3ring .rv span{font-size:.6rem}.m3ring .m3in{font-style:normal;font-size:.58rem;font-weight:700;color:#fde68a;margin-top:1px}
+.m3ring .m3b{fill:none;stroke:rgba(255,255,255,.18);stroke-width:7}.m3ring .m3b.i{stroke-width:6}
+.m3ring .m3o{fill:none;stroke:#2dd4bf;stroke-width:7;stroke-linecap:round}.m3ring .m3i{fill:none;stroke:#fbbf24;stroke-width:6;stroke-linecap:round}
+.m3ring .rv b{font-size:1.6rem}.m3ring .rv span{font-size:.72rem;font-weight:650;line-height:1.15}.m3ring .rv .m3rs{font-weight:500;opacity:.85}
+.m3ring .m3in{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap;font-style:normal;font-size:.72rem;font-weight:750;color:#fde68a;background:rgba(0,0,0,.28);border-radius:99px;padding:2px 9px}
 .m3rel{margin-left:6px;color:#1a1200;border-radius:99px;padding:1px 7px;font-size:.72rem}
 .m3rl{position:absolute;right:28px;bottom:14px;display:flex;flex-direction:column;gap:2px;font-size:.7rem;color:#fff;opacity:.9;z-index:1;text-align:right}.m3rl span{display:inline-flex;gap:5px;align-items:center;justify-content:flex-end}.m3rl i{width:8px;height:8px;border-radius:50%}
 .m3pr{position:relative;padding-bottom:9px}.m3sc{position:absolute;left:12px;right:12px;bottom:4px;height:3px;border-radius:2px;background:linear-gradient(90deg,#34d399,#fbbf24,#f87171)}.m3sc i{position:absolute;top:-2.5px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px #111}
-@media(max-width:600px){.m3rl{display:none}.m3h{flex-wrap:wrap;justify-content:space-between}.m3l{order:3;flex:1 1 100%;margin-top:2px}.m3ring .m3in{display:none}.m3sub{right:-4px}.m3tiles .m3t .g{font-size:.7rem}.m3h{gap:7px}.m3ic,.m3ic .gx{width:32px;height:32px}}
+@media(max-width:600px){.m3rl{display:none}.m3h{flex-wrap:wrap;justify-content:space-between}.m3l{order:3;flex:1 1 100%;margin-top:2px}.m3ring .m3in{top:auto;bottom:calc(100% + 4px);left:auto;right:-6px;transform:none;font-size:.66rem}.m3ring .m3in .m3inx{display:none}.m3sub{right:-4px}.m3tiles .m3t .g{font-size:.7rem}.m3h{gap:7px}.m3ic,.m3ic .gx{width:32px;height:32px}}
 /* Bewegung: nur transform und opacity (K5) */
 @keyframes rkRise{0%{transform:translateY(6px);opacity:0}25%{opacity:.95}100%{transform:translateY(-16px);opacity:0}}
 @keyframes rkAir{0%{transform:translateX(-8px);opacity:0}30%{opacity:.9}100%{transform:translateX(30px);opacity:0}}
@@ -222,22 +223,22 @@ div.rk2pl{cursor:default}
 @media(max-width:600px){.m3hn{grid-template-columns:32px 1fr;gap:10px}.m3hn .gx{width:32px;height:32px}.m3hb{grid-column:2;justify-self:start}.m3fd span{font-size:.82rem}}
 /* Modul 3 · Stufe 3: Energie-Szene im Banner */
 .hero.m3x{min-height:230px}
-.m3ss{position:absolute;right:16px;top:14px;bottom:14px;width:min(48%,500px);border-radius:18px;overflow:hidden;z-index:1;box-shadow:0 10px 26px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.18)}
+.m3ss{position:absolute;right:16px;top:14px;bottom:14px;aspect-ratio:360/200;width:auto;max-width:min(52%,560px);border-radius:18px;overflow:hidden;z-index:1;box-shadow:0 10px 26px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.18)}
 .m3ss svg{display:block;width:100%;height:100%;background:#9fb1c6}
-.hero.m3x .mring{right:calc(min(48%,500px) + 34px)}
-.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub,.hero.m3x .enbil,.hero.m3x .chips{max-width:calc(100% - min(48%,500px) - 170px)}
+.hero.m3x .mring{right:calc(var(--m3w,46%) + 34px)}
+.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub,.hero.m3x .enbil,.hero.m3x .chips{max-width:calc(100% - var(--m3w,46%) - 170px)}
 .m3ss .m3tap{cursor:pointer;outline:none}.m3ss .m3tap:hover,.m3ss .m3tap:focus-visible{filter:brightness(1.12) drop-shadow(0 0 4px #fff)}
 .m3ss .m3dt{fill:none;stroke:#fff;stroke-linecap:round;stroke-dasharray:0 11;opacity:0}
 .m3ss[data-an=dezent] .m3dt,.m3ss[data-an=voll] .m3dt{opacity:.9;animation:m3run 1.6s linear infinite}
 .m3ss[data-an=dezent] .m3bz,.m3ss[data-an=voll] .m3bz{animation:rkGlow 1.2s ease-in-out infinite alternate}
 .m3ss[data-an=voll] .m3gls{animation:rkGlow 3s ease-in-out infinite alternate}
 .m3ss[data-an=voll] .hscl{animation:hsDrift 14s ease-in-out infinite alternate}.m3ss[data-an=voll] .hsrn,.m3ss[data-an=voll] .hssn{animation:hsFall 2.6s linear infinite}
-.m3ss.m3mini{position:relative;right:auto;top:auto;bottom:auto;width:auto;height:auto;aspect-ratio:360/130;margin:0;border-radius:14px;box-shadow:none}
+.m3ss.m3mini{position:relative;right:auto;top:auto;bottom:auto;width:auto;max-width:none;height:auto;aspect-ratio:360/130;margin:0;border-radius:14px;box-shadow:none}
 .m3mrow{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:12px;align-items:center}.m3mrow .lugrid{margin:0;grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:700px){.m3mrow{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.m3ss *{animation:none!important}}
-@media(max-width:900px) and (min-width:601px){.hero.m3x .mring{display:none}.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub,.hero.m3x .enbil,.hero.m3x .chips{max-width:calc(100% - min(48%,500px) - 30px)}}
-@media(max-width:600px){.hero.m3x{min-height:0}.m3ss{position:relative;right:auto;top:auto;bottom:auto;width:auto;height:auto;aspect-ratio:360/128;margin:0 0 12px;border-radius:14px}.hero.m3x .mring{right:16px;top:auto;bottom:16px}.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub{max-width:calc(100% - 96px)}.hero.m3x .enbil,.hero.m3x .chips{max-width:none}}
+@media(max-width:900px) and (min-width:601px){.hero.m3x .mring{display:none}.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub,.hero.m3x .enbil,.hero.m3x .chips{max-width:calc(100% - var(--m3w,46%) - 30px)}}
+@media(max-width:600px){.hero.m3x{min-height:0}.m3ss{position:relative;right:auto;top:auto;bottom:auto;width:auto;max-width:none;height:auto;aspect-ratio:360/128;margin:0 0 12px;border-radius:14px}.hero.m3x .mring{right:16px;top:auto;bottom:16px}.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub{max-width:calc(100% - 96px)}.hero.m3x .enbil,.hero.m3x .chips{max-width:none}}
 /* Modul 3 · Stufe 4: Diagramme & Kosten */
 .m3bandl{display:flex;justify-content:space-between;align-items:center;gap:4px 12px;flex-wrap:wrap;font-size:.76rem;color:var(--mut);margin:2px 0 8px}.m3bsc{display:inline-flex;align-items:center;gap:6px;font-size:.7rem}.m3bsc i{width:64px;height:7px;border-radius:4px;background:linear-gradient(90deg,#4ade80,#a3e635,#facc15,#fb923c,#f87171)}
 .m3cseg{margin:0 0 10px;width:max-content}
@@ -245,7 +246,7 @@ div.rk2pl{cursor:default}
 .m3cal i{aspect-ratio:1;border-radius:3px;display:grid;place-items:center;font-size:.55rem;font-style:normal;color:#422006;cursor:pointer;line-height:1}.m3cal i.em{background:color-mix(in srgb,var(--mut) 12%,transparent);cursor:default}.m3cal i.nx{visibility:hidden}
 .m3cal i[data-act]:hover{outline:2px solid #fde047}
 .m3call{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--mut);margin:10px 0 0}.m3call i{flex:none;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#3a3320,#fbbf24)}
-.m3wf{max-height:240px}
+.m3wf{max-height:none}
 .m3pg{display:flex;align-items:center;gap:16px}.m3pg>div{display:flex;flex-direction:column;gap:2px}.m3pig{flex:none;width:78px;height:78px}.m3pgv{font-size:2rem;font-weight:800;line-height:1.05;letter-spacing:-.02em}
 .m3pgb{height:12px;border-radius:6px;background:color-mix(in srgb,var(--mut) 18%,transparent);margin:14px 0 6px;overflow:hidden}.m3pgb i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#f472b6,#fbbf24)}
 .m3pgl{display:flex;justify-content:space-between;font-size:.78rem;color:var(--mut)}
@@ -264,4 +265,6 @@ div.rk2pl{cursor:default}
 .hs2[data-an=voll] .hsau,.m3ss[data-an=voll] .hsau{animation:rkGlow 4s ease-in-out infinite alternate}
 /* Bewegung nur, wenn sichtbar (H2) */
 [data-vis="0"],[data-vis="0"] *{animation-play-state:paused!important}
+/* Karten lückenlos (Mauerwerk) */
+.mublks.msn{grid-auto-rows:2px;row-gap:0}.mublks.msn>*{align-self:start}
 `;

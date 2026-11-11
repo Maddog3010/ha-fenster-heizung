@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b4] - 2026-11-11
+
+### Behoben
+- **Karten ohne Lücken:** Die Karten in Modul 1 bis 4 liegen jetzt wie Mauersteine. Ist eine Karte niedriger als ihre Nachbarin (zum Beispiel „Kosten und Vorteil“ neben dem Energiefluss), rutscht die nächste Karte in die Lücke darunter. Gilt auch nach dem Verschieben unter „Anpassen“; die Reihenfolge bleibt erhalten.
+- **Modul 3 · Kosten und Vorteil:** Die Treppe passt ihre Höhe an die Werte an. Bei hohem Netzbezug (großer Minus-Balken) wurden der Betrag und die Beschriftung „Netzbezug“ verdeckt – jetzt ist unter dem tiefsten Balken immer Platz für den Betrag, die Symbolzeile steht darunter.
+- **Modul 3 · Energie-Szene im Banner:** Das Bild behält jetzt sein Seitenverhältnis und wird nicht mehr oben und unten abgeschnitten (auf dem iPad fehlten Teile der Beschriftung bei Solar, Batterie und Auto). Die Werte an den Geräten sind größer, lange Namen wie „Photovoltaikanlage“ werden gekürzt, kein Schild ragt über den Bildrand. Ring und Text richten sich nach der tatsächlichen Bildbreite.
+- **Modul 3 · Doppelring im Banner:** Innen stehen nur noch der Prozentwert und „Autarkie heute“ bzw. „gedeckt jetzt“ in größerer Schrift. Der Eigenverbrauch („☀ 46 % selbst genutzt“) steht als eigenes Schild unter dem Ring statt gequetscht im inneren Kreis; am Handy kurz „☀ 46 % selbst“ über dem Ring.
+
 ## [2026.11.3b3] - 2026-11-11
 
 ### Neu
