@@ -1,6 +1,6 @@
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS}${CSS_RK}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
@@ -203,6 +203,8 @@
     else if (a === "close") { this._modal = null; this._renderModal(); }
     else if (a === "pick") { this._cfg.layout.icons = { ...(this._cfg.layout.icons || {}), [m.id]: b.dataset.k }; this._saveLayout(); this._render(); this._renderModal(); }
     else if (a === "preset") { const ic2 = { ...(this._cfg.layout.icons || {}) }; delete ic2[m.id]; this._cfg.layout.icons = ic2; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (a === "lfrk") { this._modal = { type: "lfrk", id: b.dataset.id, d: b.dataset.d }; this._renderModal(); }
+    else if (a.startsWith("rk") && this._rkAct(a, b)) { /* Raumkarte 2.0 */ }
     else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
     else if (a === "pm") {
       const p = this._pres();

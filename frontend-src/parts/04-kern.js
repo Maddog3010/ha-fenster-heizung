@@ -15,6 +15,7 @@ class FensterHeizungPanel extends HTMLElement {
   disconnectedCallback() { this._ro && this._ro.disconnect(); clearInterval(this._ti); }
   _tick() {
     this._tmTick();
+    if (this._rkTick) this._rkTick();
     if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); this._adLoad(true); }
     this.shadowRoot.querySelectorAll("[data-since]").forEach((el) => {
       const c = cdown(+el.dataset.since, +el.dataset.need), b = el.querySelector("[data-cd]"), f = el.querySelector("[data-bar]");
@@ -26,7 +27,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass = h;
     if (first) this._load();
     this._render();
-    if (this._modal && this._modal.type === "why") this._renderModal();  // Gründe bleiben aktuell
+    if (this._modal && ["why", "rkhtr"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
   }
   set narrow(v) { this._narrow = v; this._render(); }
   set panel(_) {}

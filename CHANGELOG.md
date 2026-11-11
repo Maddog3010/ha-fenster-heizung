@@ -2,6 +2,39 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b1] - 2026-11-11
+
+Erste Testversion für 2026.11.3: Die Raumkarte 2.0 aus dem Konzept „Neue Optik für Modul 1“ (Teil B, D und G3).
+
+### Neu
+- **Modul 1 (v1.8): Raumkarte 2.0** – Bild oben, Zahl in der Mitte, Rest im Menü „⋯“.
+  - **Raumbild** für sieben Raumtypen (Wohnzimmer, Schlafzimmer, Bad, Kinderzimmer, Küche, Büro, Flur / Ankleide). Licht, Fenster und Heizkörper zeigen den Zustand: heizt (orange, Wärmewellen), Ziel erreicht (türkis), Fenster offen oder gekippt (blau, Luft zieht herein), pausiert (bernstein), Absenkung (violett), Regelung aus (entsättigt). Nachts mit Mond und Sternen im Fenster.
+  - **Raumtyp** wird aus dem Raumnamen (oder dem gewählten Symbol) vorgeschlagen und ist unter „Raumbild &amp; Farbe“ änderbar. Eigene Fotos bleiben erhalten und haben Vorrang, darüber liegt die Zustandsfarbe als Lichtschleier.
+  - **Temperatur-Ring:** Ist-Wert groß, Punkt = Ziel, Farbe nach einer Temperaturskala aus den eigenen Heizplan-Temperaturen. Mit Raumsensor stehen Raum und Thermostat im Ring, bei mehr als 1,5 K Abweichung erscheint ein Hinweis.
+  - **Heizplan-Band** mit Temperaturfarben, Strich für jetzt und den nächsten Schaltpunkten („Jetzt 18,0° · ab 06:00 22,5°“). Antippen öffnet den Heizplan.
+  - **Fenster-Uhr:** Bei offenem oder gekipptem Fenster füllt sich ein Ring bis zur empfohlenen Lüftdauer (nach Außentemperatur), danach bernstein, beim Doppelten rot. Unten läuft „Lüften empfohlen: noch … Min.“ mit.
+  - **Gekippt ≠ offen:** Meldet ein Fenstersensor „tilted“ oder „gekippt“ (z. B. Drehgriff-Sensoren), zeigt die Karte „gekippt“. Die Regelung behandelt das Fenster wie bisher.
+  - **Hinweis-Plaketten** auf dem Bild statt Textzeilen: Batterie schwach, Gerät offline, Frostgefahr, Raumsensor fehlt.
+  - **Menü „⋯“** mit Warum?, Bericht, Heizer-Bericht, Heizplan, Raumeinstellungen und Raumbild &amp; Farbe – weniger Knöpfe auf der Karte (besser auf Tablet und iPad).
+  - **Elektroheizer und Luftentfeuchter** passend zur neuen Karte: Beide stehen im Raumbild (Heizer an der Wand mit glühenden Rippen und Sonne bei PV-Überschuss, Entfeuchter in der Ecke mit Tankanzeige und Luftstrom, wenn er läuft). Statt der großen Kästen gibt es je Gerät eine Kachel mit HD-Bild, Zustand und Balken – Stufen beim Heizer, Tank beim Entfeuchter, dazu „☀ PV“, „günstig“ oder „Nacht“, offene Standort-Bestätigung und Zahl der Hinweise. Antippen öffnet das Gerät mit allen Werten und Tasten wie bisher (Warum?, Standort ändern, Heute aus, Statistik, Tank geleert, Bericht). Der Schalter des Heizers bleibt direkt auf der Kachel, „Entfeuchter hierher stellen“ bleibt auf der Karte. Beide Geräte stehen auch im Menü „⋯“.
+  - **Kompakt-Ansicht** mit Mini-Raumbild statt Raumsymbol, Messräume mit eigenem Bild (Sensor statt Heizkörper).
+  - **Messräume** als Raumkarte 2.0: Bild mit Sensor (zeigt Temperatur und Luftfeuchte), Zustand „Im Wohlfühlbereich“, „Zu feucht“, „Zu kalt“ …, Ring für die Temperatur mit Wunschbereich, Zeilen für Luftfeuchte, Taupunkt und Min/Max heute, Entfeuchter als Kachel.
+  - **Kompakt-Liste** in der neuen Optik: Fenster-Uhr bei offenem oder gekipptem Fenster, Zustandspunkt und Temperatur in der Farbe der Temperaturskala, Heizplan-Band mit Temperaturfarben.
+  - **Gruppen:** Im Kopf zeigt ein kleiner Haus-Streifen den Zustand jedes Raums, eingeklappte Gruppen zeigen Mini-Raumbilder mit Temperatur und Zustand.
+  - **Entfeuchter-Standortkarte** („Wo steht der Entfeuchter heute?“) und Standortwahl mit Mini-Raumbildern zum Antippen.
+  - **PV-Heizer-Block** mit HD-Heizer, Mini-Raumbildern und Stufen-Balken je Raum.
+  - **Leerzustand** „Noch keine Räume“ mit Raumbild.
+  - **Bewegung** Aus · Dezent · Voll (Einstellungen → Darstellung), Standard Dezent. „Bewegung reduzieren“ am Gerät wird immer beachtet.
+
+### Geändert
+- Raumbilder werden nur neu gezeichnet, wenn sich der Zustand ändert – nicht bei jeder neuen Temperatur. So flackert nichts und die Bewegung läuft ohne Sprung weiter.
+- Helle Ansicht: Raumbilder mit etwas dunkleren Wänden und Konturen an weißen Möbeln, das Licht wird nicht mehr überstrahlt.
+- Raumluft auf der Karte nur noch, wenn es etwas zu tun gibt; die Luftfeuchte steht als eigene Zeile neben dem Ring.
+
+### Wichtig beim Update
+- Wer die bisherigen Karten möchte: Einstellungen → Darstellung → **Raumkarten wie bisher**.
+- Nach dem Update Home Assistant neu starten und die Seite neu laden. Einstellungen, Räume und Fotos bleiben erhalten.
+
 ## [2026.11.2] - 2026-11-10
 
 Zweite stabile Version im November: die neue Optik, ein komplett neues Modul 4 und die Sponsor-Lounge 2.0 mit Sponsor Max. Sie enthält alles aus den Testversionen 2026.11.2b1 bis 2026.11.2b14. Die Bedienungsanleitung ist komplett neu (Kapitel 23 „Neu in Version 2026.11.2“).

@@ -150,6 +150,9 @@ _HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 _PHOTO = re.compile(r"^data:image/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$")
 
 
+RK_TYPES = ("wohnen", "schlafen", "bad", "kind", "kueche", "buero", "flur")
+
+
 def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
     """Akzentfarbe, Raumfarben, Raumfotos und Wetteranzeige prüfen."""
     out: dict[str, Any] = {}
@@ -202,6 +205,21 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
         sc = {k: store[k] for k in ("icon", "tab") if isinstance(store.get(k), bool)}
         if sc:
             out["store"] = sc
+    # Modul 1 · Raumkarte 2.0: Raumtyp je Raum und Darstellung (wie bisher, Bewegung)
+    rtype = raw.get("rtype")
+    if isinstance(rtype, dict):
+        rt = {str(k)[:64]: v for k, v in list(rtype.items())[:60] if v in RK_TYPES}
+        if rt:
+            out["rtype"] = rt
+    rk = raw.get("rk")
+    if isinstance(rk, dict):
+        rc: dict[str, Any] = {}
+        if isinstance(rk.get("old"), bool):
+            rc["old"] = rk["old"]
+        if rk.get("anim") in ("aus", "dezent", "voll"):
+            rc["anim"] = rk["anim"]
+        if rc:
+            out["rk"] = rc
     mu = raw.get("mu")
     if isinstance(mu, dict):
         mc: dict[str, Any] = {}

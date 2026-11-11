@@ -728,7 +728,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.7", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.8", b: 1, d: "2026-11-11", p: "2026.11.3b1", log: [["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.2", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2171,6 +2171,139 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .lgt .vrow{flex-wrap:wrap;gap:8px 12px}.lgt .vrow>span:first-child{flex:1 1 180px;min-width:0}.lgt .vrow>.gschs,.lgt .vrow>.btn2,.lgt .vrow>.sw,.lgt .vrow>.lgsoon{flex:none;margin-left:auto}
 .lgx .gschs{flex-wrap:wrap}.lgban .btn2{flex:none}
 `;
+/* Modul 1 · Raumkarte 2.0 */
+const CSS_RK = `
+.rk2art{--rk-w:#27303a;--rk-f:#1f262e;--rk-f2:#161c22;--rk-t:#3a4652;position:relative;display:block;width:100%;height:100%;overflow:hidden;background:var(--rk-w)}
+.rk2art.nt::after{content:"";position:absolute;inset:0;background:#0b1026;opacity:.18;pointer-events:none}
+.rk2art.ph.nt::after{display:none}
+:host([style*="color-scheme: light"]) .rk2art{--rk-w:#d4dbe4;--rk-f:#c2cbd6;--rk-f2:#aeb9c6;--rk-t:#9aa7b5}
+.rk2art svg{display:block;width:100%;height:100%}
+.rk2art.gr{filter:saturate(.25) brightness(.92)}
+.rk2art.ph{background-size:cover;background-position:center}
+.rk2art.ph .rkv{position:absolute;inset:0;background:radial-gradient(120% 90% at 80% 10%,color-mix(in srgb,var(--c) 38%,transparent),transparent 70%),linear-gradient(180deg,transparent 45%,rgba(0,0,0,.35))}
+.room.rk2{padding:0;gap:12px}
+.room.rk2::before{display:none}
+.room.rk2>*:not(.rk2top){margin-left:16px;margin-right:16px}
+.rk2top{position:relative;height:150px;flex:none;border-radius:20px 20px 0 0;overflow:hidden;background:var(--rk-w,#27303a)}
+.rk2top::after{content:"";position:absolute;inset:auto 0 0 0;height:56px;background:linear-gradient(180deg,transparent,rgba(8,12,16,.55));pointer-events:none}
+.rk2eb{all:unset;display:block;width:100%;height:100%;cursor:pointer;position:relative}
+.rk2pen{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:inline-flex;gap:6px;align-items:center;background:rgba(0,0,0,.6);color:#fff;font-size:.8rem;font-weight:600;padding:6px 12px;border-radius:99px;z-index:3}
+.rk2ov{position:absolute;left:10px;right:10px;top:10px;display:flex;align-items:center;gap:8px;z-index:2}
+.rk2ov .grip{background:rgba(0,0,0,.45);color:#fff;border-radius:10px;padding:4px}
+.rk2sp{flex:1}
+.rk2st{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:700;color:#fff;background:rgba(10,14,18,.58);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:99px;padding:5px 11px 5px 9px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 55%,transparent);white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.rk2st i{width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 8px var(--c);flex:none}
+.rk2st i.ps{width:auto;height:auto;background:none;box-shadow:none;color:var(--c);font-style:normal;font-size:.7rem;letter-spacing:-1px}
+.rk2swb{background:rgba(10,14,18,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:99px;padding:3px;display:inline-flex}
+.rk2nm{position:absolute;left:14px;bottom:10px;right:110px;z-index:2;pointer-events:none}
+.rk2nm b{display:block;color:#fff;font-size:1.15rem;font-weight:700;letter-spacing:-.2px;text-shadow:0 1px 8px rgba(0,0,0,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk2bg{position:absolute;right:10px;bottom:10px;display:flex;flex-direction:column;align-items:flex-end;gap:5px;z-index:2}
+.rk2bg .achip{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:color-mix(in srgb,var(--card) 82%,transparent)}
+.rk2mid{display:flex;align-items:center;gap:14px}
+.rk2ring{position:relative;width:88px;height:88px;flex:none}
+.rk2rv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.rk2rv b{font-size:1.32rem;font-weight:700;letter-spacing:-.4px}
+.rk2rv small{font-size:.66rem;color:var(--mut)}
+.rk2rw{position:absolute;right:2px;top:2px;width:17px;height:17px;border-radius:50%;background:#f59e0b;color:#1a1200;font-style:normal;font-weight:800;font-size:.72rem;display:grid;place-items:center}
+.rk2ls{display:flex;flex-direction:column;gap:8px;min-width:0;flex:1}
+.rk2l{display:flex;align-items:center;gap:10px;min-width:0}
+.rk2i{flex:none;width:30px;height:30px;display:grid;place-items:center;color:var(--primary-text-color)}
+.rk2t{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.2}
+.rk2t small{font-size:.68rem;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.rk2t b{font-size:.92rem;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk2t em{display:block;font-style:normal;font-size:.74rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk2l.t-bl b{color:#60a5fa}.rk2l.t-or b{color:#fb923c}.rk2l.t-am b{color:var(--amber)}.rk2l.t-rd b{color:#f87171}
+.rk2clk{color:var(--primary-text-color)}
+.rk2pl{all:unset;display:block;box-sizing:border-box;cursor:pointer;border-radius:12px}
+div.rk2pl{cursor:default}
+.rk2pl:focus-visible{outline:2px solid var(--teal);outline-offset:4px}
+.rk2pl.none{display:inline-flex;align-items:center;gap:6px;color:var(--teal);font-size:.85rem;font-weight:600;padding:4px 0}
+.rk2bd{position:relative;display:flex;height:12px;border-radius:99px;overflow:visible}
+.rk2bd i{display:block;height:100%}
+.rk2bd i:first-child{border-radius:99px 0 0 99px}.rk2bd i:last-of-type{border-radius:0 99px 99px 0}
+.rk2bd b{position:absolute;top:-4px;width:4px;height:20px;margin-left:-2px;border-radius:3px;background:var(--primary-text-color,#fff);box-shadow:0 0 0 2px var(--card)}
+.rk2bd.off{opacity:.45}
+.rk2pl .tla{margin-top:4px}
+.rk2pc{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mut);margin-top:2px}
+.rk2pc b{color:var(--primary-text-color);font-weight:650}.rk2pc .sun{color:#fbbf24}.rk2pc .nw{white-space:nowrap}
+.rk2ft{display:flex;align-items:center;gap:10px;border-top:1px solid var(--line);padding:10px 0 12px;margin-top:auto}
+.rk2fl{flex:1;display:flex;align-items:center;gap:7px;font-size:.82rem;color:var(--mut);min-width:0}
+.rk2fl b{color:var(--primary-text-color)}
+.rk2fl[data-since] b{color:#60a5fa}.rk2fl.done b{color:var(--amber)}.rk2fl .pre{font-style:normal}.rk2fl.done .pre{display:none}
+.rk2more{flex:none;width:40px;height:34px;border-radius:12px;border:1px solid var(--line);background:none;color:var(--primary-text-color);font-size:1.3rem;line-height:1;cursor:pointer;padding:0 0 6px}
+.rk2more:hover{background:color-mix(in srgb,var(--primary-text-color) 6%,transparent)}
+.room.rk2 .airmsg,.room.rk2 .pnote,.room.rk2 .htr{margin-top:0}
+.rk2mini{width:64px;height:44px;border-radius:12px;overflow:hidden;flex:none;box-shadow:inset 0 0 0 1px var(--line)}
+.room.msr .rk2mini.msm{width:64px;height:46px}
+.rk2minib{all:unset;position:relative;cursor:pointer;display:block}
+.rk2minib .pen{position:absolute;right:-4px;bottom:-4px}
+.crow.rkc{grid-template-columns:58px minmax(0,1fr) auto}.crow.rkc.ed{grid-template-columns:28px 58px minmax(0,1fr) auto}
+.crow .rk2mini,.crow .rk2minib{grid-area:i;width:58px;height:42px}.crow .rk2minib .rk2mini{width:100%;height:100%}
+@media(min-width:720px){.chead.rkc,.crow.rkc{grid-template-columns:58px minmax(0,1.5fr) minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.4fr) minmax(0,.9fr) 108px 52px}.chead.rkc.ed,.crow.rkc.ed{grid-template-columns:28px 58px minmax(0,1.5fr) minmax(0,1.1fr) minmax(0,1fr) minmax(0,1.4fr) minmax(0,.9fr) 108px 52px}.crow .rk2mini,.crow .rk2minib{grid-area:auto}}
+.rk2menu{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+.rk2mi{display:flex;align-items:center;gap:12px;text-align:left;background:var(--primary-background-color);color:var(--primary-text-color);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font:inherit;cursor:pointer;min-height:56px}
+.rk2mi span{flex:1;display:flex;flex-direction:column}.rk2mi small{color:var(--mut);font-size:.76rem}
+.rk2mi>svg:last-child{transform:rotate(-90deg);opacity:.5}
+.rk2dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.rk2tp{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px;margin:6px 0 10px}
+.rk2tp button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;background:none;border:2px solid var(--line);border-radius:14px;padding:5px 5px 7px;cursor:pointer;color:var(--primary-text-color);font:inherit;text-align:left}
+.rk2tp button.sel{border-color:var(--teal)}
+.rk2tp b{font-size:.8rem;padding:0 3px}.rk2tp small{font-size:.7rem;color:var(--mut);padding:0 3px;margin-top:-4px}
+.ltog.rkan{flex-wrap:wrap;gap:8px}.ltog.rkan>span{flex:1 1 220px}.ltog.rkan .seg{flex:none;margin-left:auto}
+.rk2art.sm{height:58px;border-radius:10px}
+.rk2dvs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px}
+.rk2dv{position:relative;display:flex;align-items:center;gap:8px;border-radius:16px;padding:6px 10px 6px 6px;background:color-mix(in srgb,var(--c) 9%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 28%,transparent);min-width:0}
+.rk2dv.run{background:linear-gradient(135deg,color-mix(in srgb,var(--c) 18%,transparent),color-mix(in srgb,var(--c) 6%,transparent))}
+.rk2dvb{all:unset;flex:1;display:flex;align-items:center;gap:8px;cursor:pointer;min-width:0;border-radius:12px;position:relative}
+.rk2dvb:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.rk2dvi{flex:none;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 14%,transparent)}
+.rk2dvt{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.2}
+.rk2dvt small{font-size:.68rem;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk2dvt small .sun{font-style:normal;color:#fbbf24}
+.rk2dvt b{font-size:.9rem;font-weight:650;color:var(--c);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk2dv:not(.run) .rk2dvt b{color:var(--primary-text-color)}
+.rk2dvt em{font-style:normal;font-size:.73rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk2dvt em.am{color:var(--amber)}
+.rk2stp{display:flex;gap:3px;margin-top:5px;max-width:120px}.rk2stp i{flex:1;height:5px;border-radius:3px;background:color-mix(in srgb,var(--primary-text-color) 15%,transparent)}.rk2stp i.on{background:var(--c)}
+.rk2dv.run .rk2stp i.on:last-of-type{animation:rkGlow 1.6s ease-in-out infinite alternate}
+.rk2tank{display:block;height:5px;border-radius:3px;margin-top:5px;max-width:120px;background:color-mix(in srgb,var(--primary-text-color) 15%,transparent);overflow:hidden}.rk2tank i{display:block;height:100%;background:#38bdf8;border-radius:3px}
+.rk2dvn{position:absolute;right:-2px;top:-2px;min-width:17px;height:17px;border-radius:99px;background:var(--amber);color:#1a1200;font-size:.68rem;font-weight:800;display:grid;place-items:center;padding:0 4px}
+.rk2dv .sw{flex:none}
+.rk2sht{display:grid;place-items:center;margin:2px 0 8px}
+.room.rk2 .lfmove{margin-top:0;width:auto;box-sizing:border-box}
+@media(prefers-reduced-motion:reduce){.rk2stp i{animation:none!important}}
+.rk2tag{font-size:.68rem;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#fff;background:rgba(10,14,18,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:99px;padding:5px 10px}
+.rk2fl.warn{color:var(--amber)}
+.lftile .rk2mini.lft{display:block;width:100%;height:54px;border-radius:10px;margin:-2px 0 8px}
+.lftile.sel .rk2mini.lft{box-shadow:0 0 0 2px var(--teal)}
+.pvr .rk2mini.pvm{width:44px;height:30px;border-radius:9px}
+.pvr b{display:flex;flex-direction:column;gap:3px}.rk2stp.pv{margin-top:0;width:60px;--c:#fb923c}
+.rk2pvb .pvh .pt{display:inline-flex;align-items:center;gap:8px}
+.cell.rkw b{color:#60a5fa;display:flex;align-items:center;gap:6px}.cell.win b .gx,.cell.win b svg{display:inline-block;vertical-align:-4px;flex:none}
+.crow .cell.w1 b{display:flex;align-items:center;gap:6px}
+.rkdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:2px;box-shadow:0 0 6px currentColor}
+.rk2bd.sm{height:8px;margin-top:5px}.rk2bd.sm b{top:-3px;height:14px;width:3px}
+.rk2gm .gm{padding:5px 12px 5px 5px;border-radius:14px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 40%,transparent)}
+.rk2gm .gm .rk2mini.gmm{width:46px;height:32px;border-radius:9px}
+.rk2gm .gm>span:last-child{display:flex;flex-direction:column;line-height:1.2}.rk2gm .gm b{font-size:.84rem}.rk2gm .gm small{font-size:.72rem}
+.rk2gs{display:flex;gap:3px;align-items:flex-end;margin:0 6px;flex-wrap:wrap;max-width:40%}.rk2gs i{display:block;line-height:0}
+@media(max-width:600px){.rk2gs{display:none}}
+.rk2empty{max-width:420px;height:150px;margin:0 auto 16px;border-radius:18px;overflow:hidden}
+.rk2empty svg{width:100%;height:100%;display:block}
+.rk2art .rkgl{mix-blend-mode:screen}
+:host([style*="color-scheme: light"]) .rk2art .rkgl{mix-blend-mode:multiply;opacity:.55}
+/* Bewegung: nur transform und opacity (K5) */
+@keyframes rkRise{0%{transform:translateY(6px);opacity:0}25%{opacity:.95}100%{transform:translateY(-16px);opacity:0}}
+@keyframes rkAir{0%{transform:translateX(-8px);opacity:0}30%{opacity:.9}100%{transform:translateX(30px);opacity:0}}
+@keyframes rkGlow{0%{opacity:.6}100%{opacity:1}}
+.rk2art .hw path,.rk2art .aw path{transform-box:fill-box}
+.rk2art[data-an=dezent] .hw path,.rk2art[data-an=voll] .hw path{animation:rkRise 4s linear infinite}
+.rk2art[data-an=dezent] .aw path,.rk2art[data-an=voll] .aw path{animation:rkAir 3.4s ease-out infinite}
+.rk2art .hw1,.rk2art .aw1{animation-delay:-1.3s!important}.rk2art .hw2,.rk2art .aw2{animation-delay:-2.6s!important}
+.rk2art[data-an=voll] .lg{animation:rkGlow 2.8s ease-in-out infinite alternate}
+.rk2art.mini .hw path,.rk2art.mini .aw path,.rk2art.sm *{animation:none!important}
+@media(prefers-reduced-motion:reduce){.rk2art *{animation:none!important}}
+@media(max-width:600px){.rk2top{height:128px}.rk2ring,.rk2ring svg{width:80px;height:80px}.rk2rv b{font-size:1.18rem}.rk2mid{gap:10px}.room.rk2>*:not(.rk2top){margin-left:14px;margin-right:14px}}
+`;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -2188,6 +2321,7 @@ class FensterHeizungPanel extends HTMLElement {
   disconnectedCallback() { this._ro && this._ro.disconnect(); clearInterval(this._ti); }
   _tick() {
     this._tmTick();
+    if (this._rkTick) this._rkTick();
     if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); this._adLoad(true); }
     this.shadowRoot.querySelectorAll("[data-since]").forEach((el) => {
       const c = cdown(+el.dataset.since, +el.dataset.need), b = el.querySelector("[data-cd]"), f = el.querySelector("[data-bar]");
@@ -2199,7 +2333,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass = h;
     if (first) this._load();
     this._render();
-    if (this._modal && this._modal.type === "why") this._renderModal();  // Gründe bleiben aktuell
+    if (this._modal && ["why", "rkhtr"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
   }
   set narrow(v) { this._narrow = v; this._render(); }
   set panel(_) {}
@@ -2369,7 +2503,7 @@ class FensterHeizungPanel extends HTMLElement {
     const v = this._view();
     return `<div class="vbar"><button class="myb ${this._my().on ? "on" : ""}" data-act="my">${ic("user", 15)}Meine Ansicht</button><div class="vseg" role="group" aria-label="Ansicht der Raumkarten">${[["compact", "list", "Kompakt"], ["detail", "grid", "Detail"]].map(([k, i, l]) => `<button class="${v === k ? "sel" : ""}" data-act="view" data-k="${k}" aria-pressed="${v === k}">${ic(i, 16)}${l}</button>`).join("")}</div></div>`;
   }
-  _rv(r) { return this._view() === "compact" ? this._row(r) : this._room(r); }
+  _rv(r) { return this._view() === "compact" ? this._row(r) : this._rkOn() ? this._room2(r) : this._room(r); }
   /* Raumtemperatur: Raumsensor (falls gesetzt, für diesen Zweck aktiv und gültig), sonst Thermostat. use: show | learn | dew | heater */
   _rt(r, use) {
     const h = this._hass, th = (r.thermos || []).map((e) => h.states[e]).filter(Boolean), t0 = th[0], tv = t0?.attributes.current_temperature, thv = tv != null && isFinite(Number(tv)) ? Number(tv) : null;
@@ -2406,8 +2540,9 @@ class FensterHeizungPanel extends HTMLElement {
     const comp = g && g.ausgleich && g.ziel != null && (g.geraete || []).some((x) => Math.abs(x.ausgleich || 0) >= 0.5) ? "wird ausgeglichen" : "";
     return base && comp ? base + ", " + comp : base;
   }
-  _head() { return this._view() === "compact" ? `<div class="chead ${this._edit ? "ed" : ""}">${this._edit ? "<span></span>" : ""}<span></span><span>Raum</span><span>Fenster</span><span>Heizung</span><span>Heizplan</span><span>Pausiert</span><span></span><span></span></div>` : ""; }
+  _head() { return this._view() === "compact" ? `<div class="chead ${this._edit ? "ed" : ""}${this._rkOn() ? " rkc" : ""}">${this._edit ? "<span></span>" : ""}<span></span><span>Raum</span><span>Fenster</span><span>Heizung</span><span>Heizplan</span><span>Pausiert</span><span></span><span></span></div>` : ""; }
   _row(r) {
+    let wcell = "", hcell = "", pcell = "";
     const h = this._hass, m = MODE[r.mode] || MODE.regelung_aus, edit = this._edit, adm = this._admin();
     const wins = (r.windows || []).map((e) => h.states[e]).filter(Boolean), open = wins.filter((w) => ["on", "open"].includes(w.state));
     const th = (r.thermos || []).map((e) => h.states[e]).filter(Boolean), t0 = th[0], rt = this._rt(r, "show"), cur = rt.t, tgt = t0?.attributes.temperature;
@@ -2418,16 +2553,26 @@ class FensterHeizungPanel extends HTMLElement {
     const plan = pts.length
       ? `<b>${num(at(pts, now), 1)} °C jetzt</b><span ${planOn ? "" : 'style="opacity:.5"'}>${barRow(pts, today, now)}</span>`
       : `<b style="color:var(--mut);font-weight:500">kein Plan</b>`;
-    const icon = edit
+    const icon = this._rkOn()
+      ? (edit ? `<button class="rk2minib" data-act="icon" data-id="${esc(r.id)}" aria-label="Raumbild ändern">${this._rkMini(r)}<span class="pen">${ic("pencil", 11)}</span></button>` : this._rkMini(r))
+      : edit
       ? `<button class="rico" style="${rcStyle(r.color)}" data-act="icon" data-id="${esc(r.id)}" aria-label="Symbol ändern">${ico(this._icon(r), 28)}<span class="pen">${ic("pencil", 11)}</span></button>`
       : `<div class="rico" style="${rcStyle(r.color)}">${ico(this._icon(r), 28)}</div>`;
-    return `<div class="card crow ${edit ? "ed" : ""}${this._ph(r).c}"${this._ph(r).s} data-sort="room" data-id="${esc(r.id)}">
+    const rk = this._rkOn(), pph = rk ? { c: "", s: "" } : this._ph(r);
+    const s2 = rk ? this._rkState(r) : null;
+    if (rk) {
+      const wk = s2.open.length ? "offen" : s2.tilt.length ? "gekippt" : "";
+      wcell = `<div class="cell w1 win ${wk ? "rkw" : ""}"><b${wk ? ' style="color:#60a5fa"' : ""}>${wk ? `${this._rkClock(s2).replace('width="30" height="30"', 'width="20" height="20"')}${wk} · ${s2.mins} Min.` : `${this._gx("window", 18)}geschlossen`}</b>${esc(wk ? [...s2.open, ...s2.tilt].map((x) => x.w.attributes.friendly_name || x.w.entity_id).join(", ") : s2.wins.length + " Fenster")}</div>`;
+      hcell = `<div class="cell w2 rkh"><b><i class="rkdot" style="background:${s2.col}"></i><span style="color:${this._rkCol(cur, s2.lo, s2.hi)}">${cur != null ? num(cur, 1) + " °C" : hv}</span></b>${esc(s2.anyOpen ? (r.mode === "heizung_pausiert" ? "pausiert" : "Fenster offen") : s2.lab)}${s2.ziel != null ? ` · Ziel ${num(s2.ziel, 1)}` : ""}</div>`;
+      pcell = s2.pts.length ? `<div class="cell plan2"><b>${num(s2.curPlan, 1)} °C jetzt</b>${this._rkBandMini(s2)}</div>` : `<div class="cell plan2"><b style="color:var(--mut);font-weight:500">kein Plan</b></div>`;
+    }
+    return `<div class="card crow ${edit ? "ed" : ""}${rk ? " rkc" : ""}${pph.c}"${pph.s} data-sort="room" data-id="${esc(r.id)}">
       ${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${icon}
       <div class="rn"><b>${esc(r.name)}</b><span class="pill ${m.c}">${m.t}</span>${this._airChip(r)}${this._htrChip(r)}${this._devChip(r)}</div>
       <div class="cells">
-        <div class="cell w1 win ${open.length ? "amber" : ""}"><b>${ic(open.length ? "windowOpen" : "window", 15)}${open.length ? `${open.length} von ${wins.length} offen` : "geschlossen"}</b>${esc(open.length ? open.map((w) => w.attributes.friendly_name || w.entity_id).join(", ") : wins.length + (wins.length === 1 ? " Fenster" : " Fenster"))}</div>
-        <div class="cell w2"><b>${cur != null ? num(cur, 1) + " °C" : hv}</b>${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} · ` : "") + hv + (rt.sensor && rt.th != null ? ` · Thermostat ${num(rt.th, 1)}` : "") : "kein Thermostat"}</div>
-        <div class="cell plan2">${plan}</div>
+        ${wcell || `<div class="cell w1 win ${open.length ? "amber" : ""}"><b>${ic(open.length ? "windowOpen" : "window", 15)}${open.length ? `${open.length} von ${wins.length} offen` : "geschlossen"}</b>${esc(open.length ? open.map((w) => w.attributes.friendly_name || w.entity_id).join(", ") : wins.length + (wins.length === 1 ? " Fenster" : " Fenster"))}</div>`}
+        ${hcell || `<div class="cell w2"><b>${cur != null ? num(cur, 1) + " °C" : hv}</b>${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} · ` : "") + hv + (rt.sensor && rt.th != null ? ` · Thermostat ${num(rt.th, 1)}` : "") : "kein Thermostat"}</div>`}
+        ${pcell || `<div class="cell plan2">${plan}</div>`}
         <div class="cell w4"><b>${num(d.min)} Min.</b>~${num(d.gas, 2)} ${unitOf(FUELS[r.fuel || "erdgas"])}</div>
       </div>
       <div class="acts">${adm ? `<button class="ibtn" data-act="opt" data-id="${esc(r.id)}" aria-label="Raumeinstellungen">${ic("sliders", 16)}</button>` : ""}<button class="ibtn" data-act="why" data-id="${esc(r.id)}" aria-label="Warum?">${ic("info", 16)}</button><button class="ibtn" data-act="rep" data-id="${esc(r.id)}" aria-label="Bericht">${ic("chart", 16)}</button>${adm ? `<button class="ibtn" data-act="plan" data-id="${esc(r.id)}" aria-label="Heizplan bearbeiten">${ic("pencil", 16)}</button>` : ""}</div>
@@ -2441,7 +2586,7 @@ class FensterHeizungPanel extends HTMLElement {
     const used = new Set(groups.flatMap((g) => g.rooms || [])), rest = rooms.filter((r) => !used.has(r.id)), col = this._collapsed();
     const list = groups.map((g) => ({ ...g, members: rooms.filter((r) => (g.rooms || []).includes(r.id)) }));
     if (rest.length) list.push({ id: "_rest", name: "Weitere Räume", icon: "home", members: rest, fixed: true });
-    const dot = { green: "#34d399", amber: "#f59e0b", slate: "#7dd3fc", gray: "#94a3b8" };
+    const dot = { green: "#34d399", amber: "#f59e0b", slate: "#7dd3fc", gray: "#94a3b8" }, rkg = this._rkOn();
     const html = list.map((g, gi) => {
       const m = g.members, paused = m.filter((r) => r.mode === "heizung_pausiert").length, min = m.reduce((a, r) => a + (r.sc.day?.min || 0), 0);
       const fs = new Set(m.map((r) => r.fuel || "erdgas")), amount = fs.size === 1 ? `${num(m.reduce((a, r) => a + (r.sc.day?.gas || 0), 0), 2)} ${FUELS[[...fs][0]].label}` : `${num(m.reduce((a, r) => a + (r.sc.day?.kwh || 0), 0), 1)} kWh Wärme`;
@@ -2449,10 +2594,10 @@ class FensterHeizungPanel extends HTMLElement {
       const stat = m.length ? `${m.length} ${m.length === 1 ? "Raum" : "Räume"} · ${paused ? paused + " pausiert" : "alle aktiv"} · ${num(min)} Min. · ${amount}` : "Noch keine Räume";
       const mv = edit && adm && !g.fixed ? `<button class="gmv up" data-act="gmv" data-g="${esc(g.id)}" data-dir="-1" ${gi === 0 ? "disabled" : ""} aria-label="Gruppe nach oben">${ic("chev", 16)}</button><button class="gmv" data-act="gmv" data-g="${esc(g.id)}" data-dir="1" ${gi >= groups.length - 1 ? "disabled" : ""} aria-label="Gruppe nach unten">${ic("chev", 16)}</button><button class="gedit" data-act="gedit" data-g="${esc(g.id)}" aria-label="Gruppe bearbeiten">${ic("pencil", 16)}</button>` : "";
       const body = !m.length ? "" : closed
-        ? `<div class="gmini">${m.map((r) => { const t = this._rt(r, "show").t; return `<span class="gm" style="--c:${dot[(MODE[r.mode] || MODE.regelung_aus).c]}"><i></i>${esc(r.name)}${t != null ? `<small>${num(t, 1)} °C</small>` : ""}</span>`; }).join("")}</div>`
+        ? `<div class="gmini${rkg ? " rk2gm" : ""}">${m.map((r) => { const t = this._rt(r, "show").t, s3 = rkg ? this._rkState(r) : null; return rkg ? `<span class="gm" style="--c:${s3.col}">${this._rkMiniById(r.id, "gmm")}<span><b>${esc(r.name)}</b><small>${t != null ? num(t, 1) + " °C · " : ""}${esc(s3.lab)}</small></span></span>` : `<span class="gm" style="--c:${dot[(MODE[r.mode] || MODE.regelung_aus).c]}"><i></i>${esc(r.name)}${t != null ? `<small>${num(t, 1)} °C</small>` : ""}</span>`; }).join("")}</div>`
         : `<div class="rooms ${this._view() === "compact" ? "list" : ""}" data-sort-container="room">${m.map((r) => this._rv(r)).join("")}</div>`;
       return `<section class="grp ${closed ? "col" : ""}" data-gid="${esc(g.id)}"><div class="gh">
-        <span class="gico">${ic(g.icon || "layers", 20)}</span><div class="gn"><b>${esc(g.name)}</b><span>${stat}</span></div>${mv}
+        <span class="gico">${ic(g.icon || "layers", 20)}</span><div class="gn"><b>${esc(g.name)}</b><span>${stat}</span></div>${rkg && m.length ? `<div class="rk2gs" aria-hidden="true">${m.map((r) => { const s3 = this._rkState(r); return `<i style="--c:${s3.col}" title="${esc(r.name)} · ${esc(s3.lab)}"><svg viewBox="0 0 20 18" width="20" height="18"><path d="M2 8 L10 2 L18 8 V17 H2Z" fill="var(--c)" opacity=".85"/><rect x="8" y="10" width="4" height="7" fill="var(--card)" opacity=".7"/></svg></i>`; }).join("")}</div>` : ""}${mv}
         ${m.some((r) => r.sw) ? `<div class="gsw"><span>Fensterregelung</span><button class="sw ${allOn ? "on" : ""}" data-act="gsw" data-g="${esc(g.id)}" aria-label="Fensterregelung der Gruppe ${esc(g.name)} umschalten" aria-pressed="${allOn}"></button></div>` : ""}
         <button class="gtog" data-act="gtog" data-g="${esc(g.id)}" aria-label="Gruppe ein- oder ausklappen" aria-expanded="${!closed}">${ic("chev", 18)}</button></div>${body}</section>`;
     }).join("");
@@ -2877,10 +3022,11 @@ class FensterHeizungPanel extends HTMLElement {
     const kwh = rs.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), pvk = rs.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
     const share = kwh > 0 ? Math.round((pvk / kwh) * 100) : 0, gain = (pvk * Math.max(0, this._price() - this._feed())) / 100, cap = Math.max(w ?? 0, tot, 1);
     const seg = rs.filter((r) => r.htr.watt_now > 0).map((r) => `<i style="width:${(r.htr.watt_now / cap) * 100}%;background:${r.color}" title="${esc(r.name)} ${wfmt(r.htr.watt_now)}"></i>`).join("");
-    return `<div class="card pvb"><div class="pvh"><span class="pt">${ic("bolt", 18)}PV-Heizer</span><button class="lnk" data-act="hrepall">${ic("chart", 15)}Bericht</button></div>
+    const rk = this._rkOn();
+    return `<div class="card pvb${rk ? " rk2pvb" : ""}"><div class="pvh"><span class="pt">${rk ? this._gx("heater", 30, { stage: rs.some((r) => r.htr.watt_now > 0) ? 2 : 0, on: rs.some((r) => r.htr.watt_now > 0) }) : ic("bolt", 18)}PV-Heizer</span><button class="lnk" data-act="hrepall">${ic("chart", 15)}Bericht</button></div>
       ${w == null ? `<div class="mut sm">Noch kein PV-Sensor gewählt. Das stellst du unter „Allgemein“ ein.</div>` : `<div class="pvbig"><b>${wfmt(w)}</b><span>PV-Überschuss${soc != null ? ` · Batterie ${num(soc)} %${p.soc_min ? ` (ab ${num(p.soc_min)} % für Heizer)` : ""}` : ""}</span></div>
       <div class="pvbar">${seg}</div><div class="pvlg"><span>${wfmt(tot)} an Heizer verteilt</span><span>${wfmt(Math.max(0, w - tot))} frei</span></div>`}
-      <div class="pvrows">${rs.map((r) => { const h = r.htr, [lab, c] = HTR[h.status] || HTR.aus; return `<div class="pvr"><i style="background:${r.color}"></i><b>${esc(r.name)}</b><span class="pill ${c}">${lab}</span><em>${h.watt_now > 0 ? (stepsOf(h).length > 1 ? `St. ${h.stufe}/${stepsOf(h).length} · ` : "") + wfmt(h.watt_now) : "bis " + wfmt(stepsOf(h).slice(-1)[0])}</em></div>`; }).join("")}</div>
+      <div class="pvrows">${rs.map((r) => { const h = r.htr, [lab, c] = HTR[h.status] || HTR.aus; return `<div class="pvr">${rk ? this._rkMiniById(r.id, "pvm") : `<i style="background:${r.color}"></i>`}<b>${esc(r.name)}${rk && stepsOf(h).length > 1 ? `<span class="rk2stp pv">${stepsOf(h).map((x, i) => `<i class="${h.status === "pv" && h.watt_now > 0 && h.stufe >= i + 1 ? "on" : ""}"></i>`).join("")}</span>` : ""}</b><span class="pill ${c}">${lab}</span><em>${h.watt_now > 0 ? (stepsOf(h).length > 1 ? `St. ${h.stufe}/${stepsOf(h).length} · ` : "") + wfmt(h.watt_now) : "bis " + wfmt(stepsOf(h).slice(-1)[0])}</em></div>`; }).join("")}</div>
       <div class="pvt"><div><b>${num(kwh, 1)} kWh</b><span>Heizer heute</span></div><div><b>${share} %</b><span>aus PV-Überschuss</span></div><div><b>≈ ${num(gain, 2)} €</b><span>Vorteil heute</span></div></div></div>`;
   }
   _airLite(r) {
@@ -3159,7 +3305,8 @@ class FensterHeizungPanel extends HTMLElement {
     }
     const bar = sr0 && sr0.querySelector(".mbar"), x = bar ? bar.scrollLeft : null, id = this._mdActive();
     const keep = {}; if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { keep[i.getAttribute("src")] = i; });  /* Bilder behalten, sonst flackern sie bei jedem Neuaufbau */
-    try { this._render0(); if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
+    const kk = {}; if (sr0) sr0.querySelectorAll("#main [data-kk]").forEach((e) => { kk[e.dataset.kk] = e; });  /* Raumbilder (Raumkarte 2.0): gleicher Zustand = altes Bild bleibt, Bewegung läuft weiter */
+    try { this._render0(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o)) n.replaceWith(o); }); } } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {
       const t = nb.querySelector(".mtab.sel"); if (t) nb.scrollLeft = Math.max(0, t.offsetLeft - (nb.clientWidth - t.offsetWidth) / 2);
@@ -3210,12 +3357,12 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="legend">${chartRooms.map((r) => `<span><i style="background:${r.color}"></i>${esc(r.name)}</span>`).join("")}</div></div>`;
     const blocks = rooms.length ? this._blockOrder().map((id) => (!content[id]() && !edit ? "" : `<section class="blk ${edit ? "editing" : ""}" data-sort="block" data-id="${id}">
         ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${BLOCKS[id]}</div>` : ""}${content[id]()}</section>`)).join("")
-      : `<div class="card empty">${this._msList().length ? "Noch keine Räume mit Heizung eingerichtet." : "Noch keine Räume eingerichtet."}<br>${adm ? `<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn2 pri" data-act="wz" style="flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button><button class="btn2" data-act="msxadd" style="flex:none;padding:12px 22px">${ic("plus", 16)} Raum hinzufügen</button></div>` : "Ein Administrator kann die Einrichtung starten."}</div>${this._lfLocCard()}${this._msSection()}`;
+      : `<div class="card empty">${this._rkOn() ? `<div class="rk2empty">${this._rkArt("wohnen", { k: "ok", col: "#2dd4bf", open: [], tilt: [], anyOpen: 0, act: null, heating: false, t0: null, night: false, lfs: [] })}</div>` : ""}${this._msList().length ? "Noch keine Räume mit Heizung eingerichtet." : "Noch keine Räume eingerichtet."}<br>${adm ? `<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px"><button class="btn2 pri" data-act="wz" style="flex:none;padding:12px 22px">${ic("tools", 16)} Einrichtungsassistent starten</button><button class="btn2" data-act="msxadd" style="flex:none;padding:12px 22px">${ic("plus", 16)} Raum hinzufügen</button></div>` : "Ein Administrator kann die Einrichtung starten."}</div>${this._lfLocCard()}${this._msSection()}`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b><i class="mn">Modul 1 – </i>Fenster &amp; Heizung</b><span>${this._mvChip("fh")}<em class="tag">Smarte Fenster- und Heizungssteuerung</em>${this._verTag()}</span></div></div>
         ${this._tmBtn()}${this._spnBtn()}${this._labBtn()}${this._stoBtn()}${adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""}${adm ? (edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`) : ""}</div>
-      ${this._mdBar()}<div class="wrap">${edit ? "" : this._mvPop("fh")}${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumsymbol, um Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
+      ${this._mdBar()}<div class="wrap">${edit ? "" : this._mvPop("fh")}${edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe Karten und Bereiche an den Griffen, um sie zu verschieben. Tippe auf ein Raumbild oder Raumsymbol, um Raumtyp, Symbol, Farbe und Foto zu ändern. Unter „Darstellung“ stellst du Akzentfarbe und Wetter ein.</div></div>` : ""}
         ${!edit ? this._updBanner() : ""}${!edit ? this._tmHint() : ""}${!edit ? this._labCards("fh") : ""}${blocks}${rooms.length ? `<div class="note">${mixed ? "Bei gemischten Brennstoffen wird die Ersparnis als Heizenergie in kWh gezeigt. Sie ist eine grobe Schätzung." : "Die " + F.noun + " ist eine grobe Schätzung. Die echte Ersparnis liegt etwas darunter."}</div>` : ""}</div>`;
   }
 
@@ -3290,7 +3437,9 @@ class FensterHeizungPanel extends HTMLElement {
       if (stale.length) note += ` · ${stale.length === 1 && vals.length > 1 ? "ein Sensor" : "Sensor"} ${this._msAgo(Math.min(...stale.map((x) => x.age)))}`;
     }
     const bs = m.bat && this._hass.states[m.bat], bv = bs ? parseFloat(bs.state) : NaN, batLow = bs && ((isFinite(bv) && bv <= 15) || bs.state === "on" || /low|niedrig/i.test(bs.state));
-    const icon = edit ? `<button class="rico" style="${rcStyle(m.color)}" data-act="icon" data-id="${esc(m.id)}" aria-label="Symbol ändern">${ico(this._icon(m), 26)}<span class="pen">${ic("pencil", 11)}</span></button>` : `<div class="rico" style="${rcStyle(m.color)}">${ico(this._icon(m), 26)}</div>`;
+    const rkPic = this._rkOn() && !(this._cfg.layout.photos || {})[m.id] ? `<div class="rk2mini msm"><div class="rk2art mini">${this._rkArt("mess", { k: "ok", col: none ? "#94a3b8" : "#2dd4bf", open: [], tilt: [], anyOpen: 0, act: null, heating: false, t0: null, night: false }, { mt: T && T.st !== "none" && T.st !== "bad" ? num(T.v, 1) + "°" : "--°", mh: Hm && Hm.st !== "none" && Hm.st !== "bad" ? num(Hm.v) + " %" : "" })}</div></div>` : "";
+    const icon = rkPic ? (edit ? `<button class="rk2minib" data-act="icon" data-id="${esc(m.id)}" aria-label="Raum anpassen">${rkPic}<span class="pen">${ic("pencil", 11)}</span></button>` : rkPic) : edit ? `<button class="rico" style="${rcStyle(m.color)}" data-act="icon" data-id="${esc(m.id)}" aria-label="Symbol ändern">${ico(this._icon(m), 26)}<span class="pen">${ic("pencil", 11)}</span></button>` : `<div class="rico" style="${rcStyle(m.color)}">${ico(this._icon(m), 26)}</div>`;
+    if (this._rkOn()) return this._msCard2(m, T, Hm, mm, none, note, ntone, batLow);
     return `<div class="card room msr${none ? " msnone" : ""}${this._ph(m).c}"${this._ph(m).s} data-id="${esc(m.id)}"><div class="rh">${icon}
         <div class="rn"><b>${esc(m.name)}</b><div class="pl"><span class="msbadge">Messraum</span>${batLow ? `<span class="pill amber">Batterie leer</span>` : ""}</div></div>
         ${adm ? `<button class="ibtn gear" data-act="msxedit" data-id="${esc(m.id)}" aria-label="Messraum einstellen">${ic("sliders", 17)}</button>` : ""}</div>
@@ -3454,13 +3603,16 @@ class FensterHeizungPanel extends HTMLElement {
   _lfEur(v) { return (Number(v) || 0).toLocaleString("de-DE", { style: "currency", currency: "EUR" }); }
   /* Auf der Raumkarte: Kasten für jedes Gerät, das hier steht, und „Hierher stellen“ für die anderen (Schritt 3) */
   _lfBox(rid) {
+    const L = this._lfDevs(); if (!L.length) return "";
+    return L.filter((d) => d.S.loc === rid).map((d) => this._lfBox1(d)).join("") + this._lfMove(rid);
+  }
+  /* „Entfeuchter hierher stellen“ für Geräte, die woanders stehen (auch in der Raumkarte 2.0) */
+  _lfMove(rid) {
     const D = this._lf(), L = this._lfDevs(); if (!D || !L.length) return "";
-    const here = L.filter((d) => d.S.loc === rid), canHere = (D.rooms || []).some((r) => r.id === rid);
-    const boxes = here.map((d) => this._lfBox1(d)).join("");
-    const away = canHere ? L.filter((d) => d.S.loc !== rid) : [], where = (d) => (d.S.loc ? `steht in ${this._lfRoomName(d.S.loc) || "einem anderen Raum"}` : "noch kein Standort");
-    if (!away.length) return boxes;
-    if (L.length === 1) { const d = away[0]; return boxes + `<button class="lfmove" data-act="lfxmove" data-d="${esc(d.id)}" data-k="${esc(rid)}">${ic("fan", 15)}<span><b>Entfeuchter hierher stellen</b><small>${esc(where(d))}</small></span></button>`; }
-    return boxes + `<div class="lfmove lfmany">${ic("fan", 15)}<span><b>Entfeuchter hierher stellen</b><span class="lfmb">${away.map((d) => `<button class="btn2" data-act="lfxmove" data-d="${esc(d.id)}" data-k="${esc(rid)}" title="${esc(where(d))}">${esc(d.name)}<small>${esc(where(d))}</small></button>`).join("")}</span></span></div>`;
+    const canHere = (D.rooms || []).some((r) => r.id === rid), away = canHere ? L.filter((d) => d.S.loc !== rid) : [], where = (d) => (d.S.loc ? `steht in ${this._lfRoomName(d.S.loc) || "einem anderen Raum"}` : "noch kein Standort");
+    if (!away.length) return "";
+    if (L.length === 1) { const d = away[0]; return `<button class="lfmove" data-act="lfxmove" data-d="${esc(d.id)}" data-k="${esc(rid)}">${ic("fan", 15)}<span><b>Entfeuchter hierher stellen</b><small>${esc(where(d))}</small></span></button>`; }
+    return `<div class="lfmove lfmany">${ic("fan", 15)}<span><b>Entfeuchter hierher stellen</b><span class="lfmb">${away.map((d) => `<button class="btn2" data-act="lfxmove" data-d="${esc(d.id)}" data-k="${esc(rid)}" title="${esc(where(d))}">${esc(d.name)}<small>${esc(where(d))}</small></button>`).join("")}</span></span></div>`;
   }
   _lfBox1(d) {
     const S = d.S, L = S.live || {}, [k, t] = this._lfState(L), adm = this._admin();
@@ -3485,7 +3637,7 @@ class FensterHeizungPanel extends HTMLElement {
     const pn = (R.find((r) => r.id === pick) || {}).name || "";
     const day = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const state = A.how === "pause" ? `<span class="lfst2 warn">Pausiert, bis du den Standort bestätigst.</span>` : A.how === "hint" ? `<span class="lfst2 warn">Noch nicht bestätigt. Er läuft wie gestern.</span>` : S.off_day ? `<span class="lfst2">Heute nicht in Betrieb.</span>` : !hasLoc ? `<span class="lfst2">Ohne Standort bleibt er aus.</span>` : "";
-    const tiles = list.length ? `<div class="lftiles">${list.map((r) => { const others = this._lfDevs().filter((o) => o.id !== dev.id && o.S.loc === r.id); return `<button class="lftile ${pick === r.id ? "sel" : ""}" data-act="lfxsel" data-d="${esc(dev.id)}" data-k="${esc(r.id)}" aria-pressed="${pick === r.id}"><b>${esc(r.name)}${pick === r.id ? `<i class="lfok">${ic("check", 13)}</i>` : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}</span>${others.length ? `<span class="lfoth">${esc(others.map((o) => o.name).join(", "))} steht hier</span>` : ""}</button>`; }).join("")}</div>`
+    const tiles = list.length ? `<div class="lftiles">${list.map((r) => { const others = this._lfDevs().filter((o) => o.id !== dev.id && o.S.loc === r.id); return `<button class="lftile ${pick === r.id ? "sel" : ""}" data-act="lfxsel" data-d="${esc(dev.id)}" data-k="${esc(r.id)}" aria-pressed="${pick === r.id}">${this._rkMiniById(r.id, "lft")}<b>${esc(r.name)}${pick === r.id ? `<i class="lfok">${ic("check", 13)}</i>` : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}</span>${others.length ? `<span class="lfoth">${esc(others.map((o) => o.name).join(", "))} steht hier</span>` : ""}</button>`; }).join("")}</div>`
       : `<div class="mut sm">Kein Raum mit Luftfeuchte-Sensor gefunden. Wähle in den Raumeinstellungen einen Luftfeuchte-Sensor oder lege einen Messraum an.</div>`;
     return `<div class="card lfloc"><div class="lfh"><span class="lfi">${ic("fan", 18)}</span><div class="lft"><b>Wo steht der ${esc(dev.name)} heute?</b><span>${esc(day)}</span></div></div>
       ${tiles}<div class="lfmeta">${A.yest_name ? `Gestern: <b>${esc(A.yest_name)}</b>` : "Gestern: noch kein Eintrag"}${state}</div>
@@ -3529,7 +3681,7 @@ class FensterHeizungPanel extends HTMLElement {
     const D = this._lf() || {}, R = D.rooms || [];
     if (!R.length) return `<div class="mut sm">Kein Raum mit Luftfeuchte-Sensor gefunden. Wähle in den Raumeinstellungen einen Luftfeuchte-Sensor oder lege einen Messraum an.</div>`;
     const S = (dev && dev.S) || {};
-    return `<div class="lftiles">${R.map((r) => `<button class="lftile ${S.loc === r.id ? "sel" : ""}" data-act="lfxpick" data-d="${esc(dev.id)}" data-k="${esc(r.id)}"><b>${esc(r.name)}${S.loc === r.id ? ic("check", 15) : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}${r.ms ? " · Messraum" : ""}</span></button>`).join("")}</div>
+    return `<div class="lftiles">${R.map((r) => `<button class="lftile ${S.loc === r.id ? "sel" : ""}" data-act="lfxpick" data-d="${esc(dev.id)}" data-k="${esc(r.id)}">${this._rkMiniById(r.id, "lft")}<b>${esc(r.name)}${S.loc === r.id ? ic("check", 15) : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}${r.ms ? " · Messraum" : ""}</span></button>`).join("")}</div>
       <div class="lfbtns"><button class="btn2" data-act="${S.off_day ? "lfxon" : "lfxoff"}" data-d="${esc(dev.id)}">${S.off_day ? "Heute wieder in Betrieb" : "Heute nicht in Betrieb"}</button></div>`;
   }
   _lfLocModal() {
@@ -4041,9 +4193,412 @@ class FensterHeizungPanel extends HTMLElement {
     if ((runs || 0) < 3) return `<span class="gxrest learn">lernt noch · ${runs || 0}/3 Läufe</span>`;
     return min > 0 ? `<span class="gxrest">noch ~${Math.round(min)} Min.</span>` : "";
   }
+  /* ================= Modul 1 · Raumkarte 2.0 (Konzept „Neue Optik“, Teil B, D und G3) =================
+     Bild oben, Zahl in der Mitte, Rest im Menü „⋯“. Raumbilder als Vektorgrafik (7 Raumtypen + Messraum),
+     der Zustand ist als Licht, Fenster und Heizkörper im Bild zu sehen. Eigene Fotos haben Vorrang.
+     Einstellungen: layout.rk = { old: Raumkarten wie bisher, anim: aus | dezent | voll }, layout.rtype = { Raum-ID: Raumtyp }.
+     Gegen Flackern (K4): Das Raumbild trägt data-kk (Raum, Typ, Zustand, Tag/Nacht). Ändert sich nur die Temperatur,
+     bleibt das alte Bild im DOM stehen (siehe _render), Bewegungen laufen ohne Sprung weiter. */
+  static RK_TYPES = [["wohnen", "Wohnzimmer"], ["schlafen", "Schlafzimmer"], ["bad", "Bad"], ["kind", "Kinderzimmer"], ["kueche", "Küche"], ["buero", "Büro"], ["flur", "Flur / Ankleide"]];
+  static RK_COL = { heizt: "#fb923c", ok: "#2dd4bf", offen: "#60a5fa", gekippt: "#60a5fa", pause: "#f59e0b", nacht: "#a78bfa", hoff: "#94a3b8", aus: "#94a3b8" };
+  _rkCfg() { const k = this._cfg.layout.rk || {}; return { old: !!k.old || this._gxCfg().classic, anim: ["aus", "dezent", "voll"].includes(k.anim) ? k.anim : "dezent" }; }
+  _rkOn() { return !this._rkCfg().old; }
+  _rkTypeAuto(r) {
+    const n = String(r.name || "").toLowerCase();
+    const R = [[/ankleid|garderob|flur|diele|eingang|trepp|keller|hwr|hauswirt|wasch|abstell|vorrat/, "flur"], [/kind|baby|spiel|jugend|'s zimmer|s zimmer$/, "kind"],
+      [/bad|dusch|\bwc\b|toilett|wanne|sauna/, "bad"], [/k[üu]e?che|kitchen|koch|esszimmer|essbereich|essecke|speise/, "kueche"], [/schlaf|g[äa]st|bedroom/, "schlafen"],
+      [/b[üu]e?ro|arbeit|office|werk|hobby|studio|bibliothek|computer/, "buero"], [/wohn|stube|living|kamin|wintergarten|tv|kino|lounge/, "wohnen"]];
+    for (const [re, k] of R) if (re.test(n)) return k;
+    const I = { bed: "schlafen", suitcase: "schlafen", baby: "kind", blocks: "kind", bath: "bad", shower: "bad", toilet: "bad", pot: "kueche", dining: "kueche", fridge: "kueche", wine: "kueche",
+      desk: "buero", tools: "buero", music: "buero", door: "flur", hanger: "flur", stairs: "flur", crate: "flur", laundry: "flur", sofa: "wohnen", fireplace: "wohnen", tv: "wohnen" };
+    return I[(this._cfg.layout.icons || {})[r.id]] || "wohnen";
+  }
+  _rkType(r) { const t = (this._cfg.layout.rtype || {})[r.id]; return this.constructor.RK_TYPES.some((x) => x[0] === t) ? t : this._rkTypeAuto(r); }
+  _rkTypeName(k) { return (this.constructor.RK_TYPES.find((x) => x[0] === k) || [k, k])[1]; }
+  /* Temperaturskala (Konzept Seite 3): kühl = blau, angenehm = türkis, warm = orange. lo/hi aus den eigenen Heizplan-Temperaturen. */
+  _rkCol(t, lo = 17, hi = 21) {
+    if (t == null || !isFinite(t)) return "#64748b";
+    if (hi - lo < 1) lo = hi - 3;
+    const S = [[lo - 3, [59, 130, 246]], [lo, [56, 189, 248]], [hi - 0.3, [45, 212, 191]], [hi + 1.5, [251, 191, 36]], [hi + 3.5, [249, 115, 22]]];
+    if (t <= S[0][0]) return `rgb(${S[0][1]})`;
+    for (let i = 0; i < S.length - 1; i++) {
+      const [a, ca] = S[i], [b, cb] = S[i + 1];
+      if (t <= b) { const k = (t - a) / (b - a); return `rgb(${ca.map((v, j) => Math.round(v + (cb[j] - v) * k)).join(",")})`; }
+    }
+    return `rgb(${S[S.length - 1][1]})`;
+  }
+  _rkWin(st) {
+    const s = String(st && st.state || "").toLowerCase();
+    return ["tilted", "tilt", "gekippt", "kipp", "vented"].includes(s) ? "tilt" : ["on", "open", "opened", "offen", "true"].includes(s) ? "open" : "closed";
+  }
+  /* Alles, was Bild, Ring und Zeilen brauchen, an einer Stelle */
+  _rkState(r) {
+    const h = this._hass, C = this.constructor.RK_COL;
+    const wins = (r.windows || []).map((e) => h.states[e]).filter(Boolean), ws = wins.map((w) => ({ w, k: this._rkWin(w) }));
+    const open = ws.filter((x) => x.k === "open"), tilt = ws.filter((x) => x.k === "tilt"), anyOpen = open.length + tilt.length;
+    const since = anyOpen ? Math.min(...[...open, ...tilt].map((x) => new Date(x.w.last_changed || Date.now()).getTime())) : 0;
+    const th = (r.thermos || []).map((e) => h.states[e]).filter(Boolean), t0 = th[0], rt = this._rt(r, "show"), cur = rt.t;
+    const g = r.reg, ziel = g && g.ziel != null ? Number(g.ziel) : t0 && t0.attributes.temperature != null ? Number(t0.attributes.temperature) : null;
+    const p0 = this._cfg.plans[r.id] || { enabled: false, entries: [] }, pts = points(p0.entries), now = nowMin(), today = Math.floor(now / 1440);
+    const away = this._away(), summer = this._sum().active, planOn = !!((r.planOn ?? p0.enabled) && !away && !summer);
+    const temps = pts.map((p) => p.t), lo = temps.length ? Math.min(...temps) : 17, hi = temps.length ? Math.max(...temps) : 21;
+    const curPlan = pts.length ? at(pts, now) : null;
+    const act = t0 ? t0.attributes.hvac_action : null, thOff = !t0 || t0.state === "off";
+    const heating = !thOff && r.mode !== "heizung_pausiert" && !anyOpen && (act ? act === "heating" : cur != null && ziel != null && cur < ziel - 0.3);
+    const lowered = away || (planOn && curPlan != null && hi - lo >= 1 && curPlan <= lo + 0.05);
+    const sun = h.states["sun.sun"], night = sun ? sun.state === "below_horizon" : (new Date().getHours() < 7 || new Date().getHours() >= 19);
+    const mins = since ? Math.max(0, Math.round((Date.now() - since) / 60000)) : 0, pv = this._pres();
+    let k, lab;
+    if (r.mode === "regelung_aus") { k = "aus"; lab = "Regelung aus"; }
+    else if (open.length) { k = "offen"; lab = `Fenster offen · ${mins} Min.`; }
+    else if (tilt.length) { k = "gekippt"; lab = `Fenster gekippt · ${mins} Min.`; }
+    else if (r.mode === "heizung_pausiert") { k = "pause"; lab = "Pausiert"; }
+    else if (r.mode === "nur_fenstermeldung") { k = "hoff"; lab = "Heizung aus"; }
+    else if (heating) { k = "heizt"; lab = "Heizt"; }
+    else if (lowered) { k = "nacht"; lab = away ? (pv.effective === "vacation" || pv.mode === "vacation" ? "Urlaub" : "Abwesend") : night ? "Nachtabsenkung" : "Absenkung"; }
+    else { k = "ok"; lab = ziel != null && cur != null && cur >= ziel - 0.3 ? "Ziel erreicht" : "Regelung aktiv"; }
+    const hum = r.humEid && h.states[r.humEid] ? parseFloat(h.states[r.humEid].state) : null;
+    const htr = r.htr || null, lfs = this._lfDevs().filter((d) => d.S.loc === r.id);
+    return { k, lab, col: C[k], htr, lfs, wins, open, tilt, anyOpen, since, mins, t0, th, thOff, rt, cur, ziel, act, heating, pts, now, today, planOn, lo, hi, curPlan, night, away, summer, hum: isFinite(hum) ? hum : null };
+  }
+
+  /* ---------- Raumbild (Vektor) ---------- */
+  _rkArt(type, s, o = {}) {
+    const u = "rk" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_", q = (n) => u + n;
+    const col = s.col, k = s.k, night = s.night, heat = k === "heizt", warm = heat || (s.t0 && s.act === "heating" && !s.anyOpen && k !== "pause");
+    const winK = s.open.length ? "open" : s.tilt.length ? "tilt" : "closed", mess = type === "mess";
+    const lg = (id, stops, x2 = 0, y2 = 1) => `<linearGradient id="${q(id)}" x1="0" y1="0" x2="${x2}" y2="${y2}">${stops.map(([of, c, a]) => `<stop offset="${of}" stop-color="${c}"${a != null ? ` stop-opacity="${a}"` : ""}/>`).join("")}</linearGradient>`;
+    const W = "var(--rk-w)", F = "var(--rk-f)", T = "var(--rk-t)";
+    /* Lampe je Raumtyp: [x, y] des Lichts */
+    const LP = { wohnen: [300, 52], schlafen: [142, 80], bad: [230, 18], kind: [258, 34], kueche: [250, 56], buero: [282, 64], flur: [165, 28], mess: [240, 30] }[type] || [260, 40];
+    const glowA = { heizt: .5, ok: .34, offen: .4, gekippt: .32, pause: .34, nacht: .42, hoff: .2, aus: 0 }[k] ?? .3;
+    let d = `<defs>${lg("sky", night ? [[0, "#0b1530"], [1, "#1e2a52"]] : [[0, "#9fd3ff"], [1, "#e6f4ff"]])}
+      <radialGradient id="${q("gl")}" cx="${(LP[0] + 60) / 440}" cy="${LP[1] / 150}" r=".5"><stop offset="0" stop-color="${col}" stop-opacity="${glowA}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient>
+      ${lg("rad", warm ? [[0, "#fed7aa"], [.5, "#fb923c"], [1, "#c2410c"]] : [[0, "#ffffff"], [1, "#cbd5e1"]], 1, 0)}
+      ${lg("wood", [[0, "#c08552"], [1, "#7c4a24"]])}${lg("fl", [[0, "var(--rk-f)"], [1, "var(--rk-f2)"]])}
+      ${lg("hw", [[0, "#f97316", .9], [1, "#f97316", 0]])}${lg("scr", [[0, "#0ea5e9"], [1, "#0369a1"]])}</defs>`;
+    /* Raum: Wand, Boden, Sockelleiste */
+    d += `<rect x="-60" width="440" height="150" style="fill:${W}"/><rect x="-60" y="112" width="440" height="38" fill="url(#${q("fl")})"/><rect x="-60" y="110" width="440" height="3" style="fill:${T}"/>`;
+    d += [-20, 40, 100, 160, 220, 280, 340].map((x) => `<path d="M${x} 113 L${x - 16 + (x - 160) * .25} 150" style="stroke:${T}" stroke-width=".8" opacity=".35"/>`).join("");
+    /* Fenster */
+    const wx = 28, wy = 20, ww = 70, wh = 64, mid = wx + ww / 2;
+    d += `<rect x="${wx - 4}" y="${wy - 4}" width="${ww + 8}" height="${wh + 8}" rx="4" fill="#e2e8f0" stroke="#64748b" stroke-opacity=".45"/><rect x="${wx}" y="${wy}" width="${ww}" height="${wh}" fill="url(#${q("sky")})"/>`;
+    d += night ? `<circle cx="${wx + 52}" cy="${wy + 16}" r="7" fill="#fef3c7"/><circle cx="${wx + 55}" cy="${wy + 13}" r="6" fill="#1a2547"/>${[[10, 10], [22, 26], [40, 8], [14, 44], [58, 40]].map(([x, y]) => `<circle cx="${wx + x}" cy="${wy + y}" r=".9" fill="#fff" opacity=".85"/>`).join("")}`
+      : `<circle cx="${wx + 52}" cy="${wy + 16}" r="7" fill="#fde68a" opacity=".9"/><path d="M${wx + 8} ${wy + 40} q6 -8 13 -2 q6 -6 12 1 q5 -1 6 5 h-31z" fill="#fff" opacity=".9"/><path d="M${wx} ${wy + wh} l18 -16 l14 10 l20 -18 l18 24z" fill="#86c5a0" opacity=".55"/>`;
+    d += `<rect x="${wx}" y="${wy}" width="${ww / 2}" height="${wh}" fill="none" stroke="#f8fafc" stroke-width="3"/><path d="M${wx + 4} ${wy + 30} L${wx + 22} ${wy + 6}" stroke="#fff" stroke-width="3" opacity=".25"/>`;
+    if (winK === "closed") d += `<rect x="${mid}" y="${wy}" width="${ww / 2}" height="${wh}" fill="none" stroke="#f8fafc" stroke-width="3"/><rect x="${mid + 4}" y="${wy + wh / 2 - 4}" width="2.2" height="8" rx="1" fill="#64748b"/>`;
+    else if (winK === "open") d += `<path d="M${mid} ${wy - 1} L${mid + 30} ${wy + 9} L${mid + 30} ${wy + wh - 3} L${mid} ${wy + wh + 1}z" fill="#e0f2fe" fill-opacity=".35" stroke="#f8fafc" stroke-width="3" stroke-linejoin="round"/><rect x="${mid + 25}" y="${wy + wh / 2}" width="2.2" height="8" rx="1" fill="#64748b"/>`;
+    else d += `<path d="M${mid + 7} ${wy + 6} L${mid + ww / 2 + 7} ${wy + 6} L${mid + ww / 2} ${wy + wh} L${mid} ${wy + wh}z" fill="#e0f2fe" fill-opacity=".3" stroke="#f8fafc" stroke-width="3" stroke-linejoin="round"/><path d="M${mid} ${wy} L${mid + 7} ${wy + 6} M${mid + ww / 2} ${wy} L${mid + ww / 2 + 7} ${wy + 6}" stroke="#94a3b8" stroke-width="1.4"/>`;
+    d += `<rect x="${wx - 7}" y="${wy + wh + 3}" width="${ww + 14}" height="4" rx="2" fill="#cbd5e1"/>`;
+    if (winK !== "closed") d += `<g class="aw">${[0, 1, 2].slice(0, winK === "open" ? 3 : 2).map((i) => `<path class="aw${i}" d="M${mid + 14} ${wy + 18 + i * 14} q10 -5 20 0 t20 0" fill="none" stroke="#7dd3fc" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`).join("")}</g>`;
+    /* Heizkörper (Messraum: Sensor statt Heizkörper) */
+    if (!mess) {
+      const rx = 32, ry = 92;
+      d += `<rect x="${rx}" y="${ry}" width="62" height="3.5" rx="1.7" fill="${warm ? "#ea580c" : "#94a3b8"}"/>` + [0, 1, 2, 3, 4, 5, 6].map((i) => `<rect x="${rx + 1 + i * 8.6}" y="${ry + 1}" width="6.4" height="17" rx="3" fill="url(#${q("rad")})"/>`).join("") +
+        `<circle cx="${rx + 66}" cy="${ry + 12}" r="3.6" fill="${k === "pause" ? "#f59e0b" : warm ? "#fbbf24" : "#64748b"}" stroke="#fff" stroke-width="1.2"/>`;
+      if (warm) d += `<g class="hw">${[0, 1, 2].map((i) => `<path class="hw${i}" d="M${rx + 12 + i * 19} ${ry - 3} q-4 -5 0 -10 q4 -5 0 -10" fill="none" stroke="url(#${q("hw")})" stroke-width="2.6" stroke-linecap="round"/>`).join("")}</g>`;
+    }
+    /* Möbel je Raumtyp */
+    const lamp = (x, y, sh = 1) => `<g class="lg"><circle cx="${x}" cy="${y}" r="${16 * sh}" fill="${col}" opacity="${k === "aus" ? 0 : .22}"/></g>`;
+    const plant = (x, y, s2 = 1) => `<path d="M${x - 6 * s2} ${y} h${12 * s2} l-2 ${12 * s2} h${-8 * s2}z" fill="#b45309"/><path d="M${x} ${y} q-12 -8 -9 -20 q7 6 9 20 q2 -16 11 -20 q2 12 -11 20 q-2 -12 -1 -24 q6 10 1 24" fill="#22c55e"/>`;
+    const frame = (x, y, w2, h2) => `<rect x="${x}" y="${y}" width="${w2}" height="${h2}" rx="2" fill="#f8fafc" opacity=".9"/><rect x="${x + 3}" y="${y + 3}" width="${w2 - 6}" height="${h2 - 6}" fill="#bfdbfe"/><path d="M${x + 3} ${y + h2 - 3} l${w2 * .3} ${-h2 * .45} l${w2 * .2} ${h2 * .25} l${w2 * .2} ${-h2 * .3} l${w2 * .3 - 6} ${h2 * .5}z" fill="#60a5fa"/><circle cx="${x + w2 * .72}" cy="${y + h2 * .32}" r="${h2 * .1}" fill="#fde68a"/>`;
+    const F1 = {
+      wohnen: () => frame(160, 24, 56, 36) + `<ellipse cx="215" cy="134" rx="92" ry="8" style="fill:${T}" opacity=".5"/>` +
+        `<rect x="140" y="76" width="148" height="28" rx="10" fill="#4f6d8a"/><rect x="148" y="80" width="64" height="22" rx="8" fill="#6b8bab"/><rect x="216" y="80" width="64" height="22" rx="8" fill="#6b8bab"/>` +
+        `<rect x="132" y="96" width="164" height="22" rx="8" fill="#5b7a99"/><rect x="128" y="88" width="16" height="32" rx="7" fill="#4a6683"/><rect x="284" y="88" width="16" height="32" rx="7" fill="#4a6683"/>` +
+        `<rect x="152" y="86" width="18" height="15" rx="5" fill="#f59e0b"/><rect x="258" y="86" width="18" height="15" rx="5" fill="#2dd4bf"/><rect x="140" y="119" width="4" height="7" fill="#334155"/><rect x="284" y="119" width="4" height="7" fill="#334155"/>` +
+        lamp(300, 52) + `<path d="M300 58 v62 M292 122 h16" stroke="#94a3b8" stroke-width="2.4"/><path d="M290 40 h20 l5 16 h-30z" fill="${k === "aus" ? "#cbd5e1" : col}" opacity=".95"/>` + plant(116, 108, .8),
+      schlafen: () => frame(214, 22, 50, 32) + `<rect x="168" y="66" width="132" height="44" rx="8" fill="url(#${q("wood")})"/><rect x="164" y="98" width="140" height="18" rx="6" fill="#f1f5f9"/>` +
+        `<path d="M206 94 h96 v26 h-96z" fill="#6366f1"/><path d="M206 94 h96 v6 h-96z" fill="#818cf8"/><rect x="172" y="88" width="30" height="12" rx="6" fill="#ffffff"/><rect x="170" y="116" width="5" height="10" fill="#5b3a1e"/><rect x="295" y="116" width="5" height="10" fill="#5b3a1e"/>` +
+        `<rect x="126" y="96" width="32" height="28" rx="3" fill="url(#${q("wood")})"/><path d="M130 110 h24" stroke="#5b3a1e" stroke-width="1.2"/>` + lamp(142, 80, .9) + `<path d="M142 84 v12" stroke="#94a3b8" stroke-width="2"/><path d="M133 72 h18 l3 12 h-24z" fill="${k === "aus" ? "#cbd5e1" : col}"/>`,
+      bad: () => `<g opacity=".5">${[64, 76, 88, 100].map((y) => `<path d="M118 ${y} H320" style="stroke:${T}" stroke-width=".9"/>`).join("")}${[130, 150, 170, 190, 210, 230, 250, 270, 290, 310].map((x) => `<path d="M${x} 58 V110" style="stroke:${T}" stroke-width=".9"/>`).join("")}</g>` +
+        `<rect x="118" y="58" width="202" height="2" style="fill:${T}"/><ellipse cx="230" cy="40" rx="20" ry="16" fill="#e2e8f0"/><ellipse cx="230" cy="40" rx="16.5" ry="12.5" fill="#bfdbfe"/><path d="M220 34 l10 -6" stroke="#fff" stroke-width="2" opacity=".6"/>` +
+        lamp(230, 18, .9) + `<rect x="218" y="14" width="24" height="5" rx="2.5" fill="${k === "aus" ? "#cbd5e1" : col}"/>` +
+        `<path d="M160 92 h140 v10 q0 22 -24 22 h-92 q-24 0 -24 -22z" fill="#f8fafc" stroke="#94a3b8" stroke-opacity=".6"/><rect x="156" y="88" width="148" height="7" rx="3.5" fill="#e2e8f0"/><path d="M164 95 h132" stroke="#7dd3fc" stroke-width="3" opacity=".8"/>` +
+        `<path d="M290 88 v-16 q0 -6 -6 -6 h-6" fill="none" stroke="#94a3b8" stroke-width="3"/><rect x="172" y="122" width="5" height="6" fill="#94a3b8"/><rect x="284" y="122" width="5" height="6" fill="#94a3b8"/>` +
+        `<path d="M128 66 h18" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/><rect x="130" y="66" width="14" height="30" rx="2" fill="#2dd4bf"/><path d="M130 88 h14" stroke="#fff" stroke-width="2" opacity=".6"/>`,
+      kind: () => `<path d="M112 12 q100 18 208 0" fill="none" stroke="#94a3b8" stroke-width="1"/>` + [0, 1, 2, 3, 4, 5, 6, 7].map((i) => { const x = 124 + i * 25, y = 14 + Math.sin((i + .5) / 8 * Math.PI) * 9; return `<path d="M${x} ${y} l7 0 l-3.5 9z" fill="${["#f472b6", "#fbbf24", "#60a5fa", "#34d399"][i % 4]}"/>`; }).join("") +
+        `<rect x="140" y="34" width="34" height="44" rx="3" fill="#1e293b" opacity=".85"/><path d="M157 42 q8 8 6 22 h-12 q-2 -14 6 -22z" fill="#f8fafc"/><circle cx="157" cy="54" r="3" fill="#60a5fa"/><path d="M151 64 l-4 6 h6z M163 64 l4 6 h-6z" fill="#f87171"/><path d="M155 70 l2 5 l2 -5z" fill="#fbbf24"/><circle cx="146" cy="40" r="1" fill="#fff"/><circle cx="168" cy="72" r="1" fill="#fff"/>` +
+        `<rect x="196" y="78" width="104" height="36" rx="6" fill="#fbcfe8"/><rect x="200" y="96" width="98" height="18" rx="5" fill="#f8fafc"/><path d="M226 92 h72 v24 h-72z" fill="#f472b6"/>${[232, 246, 260, 274, 288].map((x) => `<rect x="${x}" y="92" width="6" height="24" fill="#fbbf24" opacity=".8"/>`).join("")}<rect x="204" y="88" width="20" height="10" rx="5" fill="#fff"/><rect x="200" y="114" width="4" height="10" fill="#9d174d"/><rect x="292" y="114" width="4" height="10" fill="#9d174d"/>` +
+        `<rect x="132" y="106" width="18" height="18" rx="2" fill="#60a5fa"/><rect x="152" y="106" width="18" height="18" rx="2" fill="#fbbf24"/><rect x="142" y="88" width="18" height="18" rx="2" fill="#f87171"/><text x="141" y="119" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" font-family="system-ui,sans-serif">A</text><text x="161" y="119" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" font-family="system-ui,sans-serif">B</text><text x="151" y="101" font-size="11" font-weight="700" fill="#fff" text-anchor="middle" font-family="system-ui,sans-serif">C</text>` +
+        lamp(258, 34, .8) + `<circle cx="258" cy="40" r="8" fill="${k === "aus" ? "#cbd5e1" : col}"/><path d="M258 18 v14" stroke="#94a3b8" stroke-width="1.5"/>`,
+      kueche: () => `<g opacity=".45">${[64, 76].map((y) => `<path d="M118 ${y} H320" style="stroke:${T}" stroke-width=".9"/>`).join("")}${[140, 164, 188, 212, 236, 260, 284, 308].map((x) => `<path d="M${x} 56 V88" style="stroke:${T}" stroke-width=".9"/>`).join("")}</g>` +
+        `<rect x="196" y="14" width="124" height="38" rx="3" fill="#f1f5f9" stroke="#94a3b8" stroke-opacity=".5"/>${[196, 238, 280].map((x) => `<rect x="${x + 2}" y="16" width="38" height="34" rx="2" fill="#e2e8f0"/><rect x="${x + 18}" y="42" width="8" height="2.4" rx="1" fill="#64748b"/>`).join("")}` +
+        lamp(250, 56, 1.1) + `<rect x="200" y="52" width="116" height="3" fill="${k === "aus" ? "#cbd5e1" : col}"/>` +
+        `<path d="M140 28 h48 l-6 18 h-36z" fill="#94a3b8"/><rect x="160" y="8" width="8" height="22" fill="#94a3b8"/>` +
+        `<rect x="118" y="88" width="202" height="6" rx="2" fill="#475569"/><rect x="118" y="94" width="202" height="30" fill="#f1f5f9" stroke="#94a3b8" stroke-opacity=".5"/>${[118, 162, 206, 250].map((x) => `<rect x="${x + 2}" y="96" width="40" height="26" rx="2" fill="#e2e8f0"/><rect x="${x + 16}" y="99" width="12" height="2.4" rx="1" fill="#64748b"/>`).join("")}` +
+        `<rect x="142" y="84" width="44" height="4" rx="1" fill="#1f2937"/><path d="M150 70 h28 v12 q0 4 -4 4 h-20 q-4 0 -4 -4z" fill="#ef4444"/><rect x="146" y="68" width="36" height="4" rx="2" fill="#b91c1c"/>` +
+        plant(300, 76, .55),
+      buero: () => `<rect x="126" y="22" width="52" height="4" fill="url(#${q("wood")})"/><rect x="126" y="48" width="52" height="4" fill="url(#${q("wood")})"/>${[["#ef4444", 8, 18], ["#3b82f6", 6, 20], ["#fbbf24", 7, 16], ["#10b981", 5, 19], ["#a78bfa", 7, 17]].map(([c, w2, h2], i, a) => { const x = 130 + a.slice(0, i).reduce((s2, z) => s2 + z[1] + 1.5, 0); return `<rect x="${x}" y="${22 - h2}" width="${w2}" height="${h2}" fill="${c}"/>`; }).join("")}${[["#0ea5e9", 9, 16], ["#f97316", 6, 18], ["#64748b", 8, 14]].map(([c, w2, h2], i) => `<rect x="${132 + i * 11}" y="${48 - h2}" width="${w2}" height="${h2}" fill="${c}"/>`).join("")}` +
+        `<rect x="150" y="86" width="150" height="6" rx="2" fill="url(#${q("wood")})"/><rect x="156" y="92" width="5" height="34" fill="#5b3a1e"/><rect x="290" y="92" width="5" height="34" fill="#5b3a1e"/>` +
+        `<rect x="202" y="50" width="62" height="34" rx="3" fill="#1f2937"/><rect x="205" y="53" width="56" height="27" rx="1.5" fill="url(#${q("scr")})" opacity="${k === "aus" ? .4 : 1}"/><path d="M209 74 l9 -7 l8 4 l9 -10 l10 6 l12 -8" fill="none" stroke="#a7f3d0" stroke-width="1.6"/><rect x="230" y="84" width="6" height="3" fill="#475569"/>` +
+        `<path d="M212 104 h40" stroke="#334155" stroke-width="6" stroke-linecap="round"/><rect x="216" y="80" width="32" height="24" rx="6" fill="#334155"/><path d="M232 106 v14 M220 124 h24" stroke="#475569" stroke-width="3" stroke-linecap="round"/>` +
+        lamp(282, 64, .9) + `<path d="M276 86 l6 -16 l-8 -6" fill="none" stroke="#94a3b8" stroke-width="2.4"/><path d="M266 58 l14 -4 l2 10z" fill="${k === "aus" ? "#cbd5e1" : col}"/>` + plant(124, 112, .7),
+      flur: () => `<rect x="204" y="22" width="96" height="98" rx="3" fill="url(#${q("wood")})"/><path d="M252 24 v94" stroke="#5b3a1e" stroke-width="1.6"/><rect x="244" y="64" width="2.6" height="12" rx="1" fill="#fde68a"/><rect x="258" y="64" width="2.6" height="12" rx="1" fill="#fde68a"/><rect x="208" y="118" width="6" height="7" fill="#5b3a1e"/><rect x="290" y="118" width="6" height="7" fill="#5b3a1e"/>` +
+        `<rect x="124" y="40" width="64" height="5" rx="2" fill="url(#${q("wood")})"/>${[136, 156, 176].map((x) => `<circle cx="${x}" cy="47" r="2.2" fill="#94a3b8"/>`).join("")}` +
+        `<path d="M136 48 l-10 10 l2 36 h16 l2 -36z" fill="#0ea5e9"/><path d="M156 48 l-9 8 l1 30 h16 l1 -30z" fill="#f59e0b"/><path d="M176 48 q-6 4 -5 12 l-2 18 h14 l-1 -18 q1 -8 -6 -12z" fill="#a78bfa"/>` +
+        `<rect x="124" y="104" width="66" height="6" rx="2" fill="url(#${q("wood")})"/><rect x="128" y="110" width="4" height="14" fill="#5b3a1e"/><rect x="182" y="110" width="4" height="14" fill="#5b3a1e"/><path d="M136 124 h14 q2 -6 -4 -6 h-10z M154 124 h14 q2 -6 -4 -6 h-10z" fill="#1f2937"/>` +
+        lamp(165, 28, .9) + `<path d="M165 0 v20" stroke="#94a3b8" stroke-width="1.5"/><path d="M155 30 q10 -14 20 0z" fill="${k === "aus" ? "#cbd5e1" : col}"/>`,
+      mess: () => `<rect x="128" y="64" width="64" height="5" rx="2" fill="url(#${q("wood")})"/><rect x="134" y="44" width="18" height="20" rx="2" fill="#d6a76c"/><rect x="156" y="50" width="26" height="14" rx="2" fill="#c08552"/>` +
+        lamp(240, 30, .8) + `<rect x="206" y="30" width="68" height="54" rx="10" fill="#f8fafc"/><rect x="214" y="38" width="52" height="30" rx="5" fill="#0f2a2e"/><text x="240" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#5eead4" font-family="system-ui,sans-serif">${o.mt || "--°"}</text><text x="240" y="64" text-anchor="middle" font-size="7.5" fill="#7dd3fc" font-family="system-ui,sans-serif">${o.mh || ""}</text><circle cx="240" cy="76" r="2.5" fill="${col}"/>` +
+        `<rect x="128" y="88" width="190" height="34" rx="3" fill="#94a3b8" opacity=".55"/><path d="M128 104 h190" stroke="#64748b" stroke-width="1.2"/>` + plant(110, 108, .7),
+    };
+    d += (F1[type] || F1.wohnen)();
+    /* Geräte im Raum: Elektroheizer an der Wand neben dem Fenster, Luftentfeuchter in der Ecke links */
+    if (s.htr && !mess) {
+      const on = s.htr.status === "pv" && (Number(s.htr.watt_now) || 0) > 0, hx = 100, hy = 58;
+      d += `<rect x="${hx + 1}" y="${hy + 2}" width="36" height="24" rx="5" fill="#000" opacity=".18"/><rect x="${hx}" y="${hy}" width="36" height="24" rx="5" fill="#e2e8f0" stroke="#94a3b8" stroke-opacity=".7"/>` +
+        [0, 1, 2, 3, 4].map((i) => `<rect x="${hx + 5 + i * 5.6}" y="${hy + 5}" width="3.2" height="14" rx="1.6" fill="${on ? "#fb923c" : "#94a3b8"}"/>`).join("") +
+        `<circle cx="${hx + 32}" cy="${hy + 3.6}" r="1.8" fill="${on ? "#fbbf24" : "#64748b"}"/>` +
+        (on ? `<rect x="${hx - 6}" y="${hy - 6}" width="48" height="36" rx="12" fill="#fb923c" opacity=".18"/><g class="hw">${[0, 1].map((i) => `<path class="hw${i}" d="M${hx + 11 + i * 14} ${hy - 2} q-3 -4 0 -8 q3 -4 0 -8" fill="none" stroke="url(#${q("hw")})" stroke-width="2.2" stroke-linecap="round"/>`).join("")}</g>` +
+          `<circle cx="${hx + 38}" cy="${hy - 4}" r="6" fill="#fbbf24"/><path d="M${hx + 38} ${hy - 13}v3M${hx + 38} ${hy + 2}v3M${hx + 29} ${hy - 4}h3M${hx + 44} ${hy - 4}h3" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>` : "");
+    }
+    if ((s.lfs || []).length) {
+      const L = s.lfs[0].S.live || {}, run = !!(L.running || L.on), fill = L.fill != null ? Math.max(0, Math.min(1, L.fill)) : null, lx = -2, ly = 80, lc = L.full || L.code === "full" ? "#f59e0b" : run ? "#22d3ee" : "#64748b";
+      d += `<ellipse cx="${lx + 13}" cy="${ly + 37}" rx="15" ry="2.6" fill="#000" opacity=".25"/><rect x="${lx}" y="${ly}" width="26" height="36" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-opacity=".7"/>` +
+        [4, 7, 10].map((y) => `<rect x="${lx + 5}" y="${ly + y}" width="16" height="1.4" rx=".7" fill="#94a3b8"/>`).join("") +
+        `<rect x="${lx + 5}" y="${ly + 17}" width="16" height="15" rx="2.5" fill="#dbeafe" stroke="#93c5fd" stroke-width=".8"/>` +
+        (fill != null ? `<rect x="${lx + 5.5}" y="${ly + 31.5 - fill * 14}" width="15" height="${fill * 14}" rx="2" fill="${fill > .85 ? "#f59e0b" : "#38bdf8"}"/>` : "") +
+        `<circle cx="${lx + 21}" cy="${ly + 14}" r="1.6" fill="${lc}"/>` +
+        (run ? `<g class="aw">${[0, 1].map((i) => `<path class="aw${i}" d="M${lx + 6 + i * 8} ${ly - 3} q3 -4 0 -7 q-3 -3 0 -7" fill="none" stroke="#67e8f9" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>`).join("")}</g>` : "");
+    }
+    /* Licht in Zustandsfarbe, Nacht etwas dunkler, aus = ohne Licht */
+    d += `<rect class="rkgl" x="-60" width="440" height="150" fill="url(#${q("gl")})"/>`;
+    return `<svg class="rk2svg" viewBox="-60 0 440 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${d}</svg>`;
+  }
+  /* Bildbereich: eigenes Foto (Vorrang) oder Raumbild. Der Schlüssel entscheidet, ob neu gezeichnet wird. */
+  _rkPic(r, s, mini = false) {
+    const ph = (this._cfg.layout.photos || {})[r.id], type = this._rkType(r), an = this._rkCfg().anim;
+    const key = [mini ? "m" : "c", r.id, type, s.k, s.open.length ? "o" : s.tilt.length ? "t" : "c", s.night ? 1 : 0, s.heating || (s.act === "heating") ? 1 : 0, an, ph ? ph.length + ph.slice(-12) : "", s.htr ? s.htr.status + (s.htr.status === "pv" && s.htr.watt_now > 0 ? "1" : "0") : "", (s.lfs || []).map((d) => { const L = d.S.live || {}; return (L.running || L.on ? "r" : "s") + (L.full ? "f" : "") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
+    const cls = `rk2art${s.k === "aus" ? " gr" : ""}${mini ? " mini" : ""}${s.night ? " nt" : ""}`;
+    if (ph) return `<div class="${cls} ph" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${s.col}"><i class="rkv"></i></div>`;
+    return `<div class="${cls}" data-kk="${esc(key)}" data-an="${an}" style="--c:${s.col}">${this._rkArt(type, s)}</div>`;
+  }
+
+  /* ---------- Ring, Zeilen, Heizplan-Band ---------- */
+  _rkRing(s) {
+    const R = 36, C = 2 * Math.PI * R, A = .75, a0 = 135, fr = (t) => Math.max(0, Math.min(1, (t - 12) / 14));
+    const cur = s.cur, col = this._rkCol(cur, s.lo, s.hi), len = cur == null ? 0 : fr(cur) * A * C;
+    const zt = s.ziel != null ? fr(s.ziel) : null, ang = zt != null ? (a0 + zt * 270) * Math.PI / 180 : 0;
+    const big = cur != null ? num(cur, 1) + "°" : "–", sm = s.rt.sensor && s.rt.th != null ? `Therm. ${num(s.rt.th, 1)}°` : s.ziel != null ? `Ziel ${num(s.ziel, 1)}°` : "";
+    const warn = s.rt.sensor && s.rt.diff != null && Math.abs(s.rt.diff) > 1.5;
+    return `<div class="rk2ring${warn ? " wn" : ""}" title="${warn ? "Thermostat weicht mehr als 1,5 K vom Raum ab" : ""}"><svg viewBox="0 0 88 88" width="88" height="88" aria-hidden="true">
+      <circle cx="44" cy="44" r="${R}" fill="none" stroke="var(--line)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(A * C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(${a0} 44 44)"/>
+      ${len ? `<circle cx="44" cy="44" r="${R}" fill="none" stroke="${col}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${len.toFixed(1)} ${C.toFixed(1)}" transform="rotate(${a0} 44 44)"/>` : ""}
+      ${zt != null ? `<circle cx="${(44 + R * Math.cos(ang)).toFixed(1)}" cy="${(44 + R * Math.sin(ang)).toFixed(1)}" r="4.6" fill="var(--primary-text-color,#fff)" stroke="var(--card)" stroke-width="2"/>` : ""}</svg>
+      <div class="rk2rv"><b>${big}</b>${sm ? `<small>${sm}</small>` : ""}${s.rt.sensor && s.ziel != null ? `<small>Ziel ${num(s.ziel, 1)}°</small>` : ""}</div>${warn ? `<i class="rk2rw">!</i>` : ""}</div>`;
+  }
+  _rkClock(s) {
+    const need = ventMin(this._out().t), R = 12, C = 2 * Math.PI * R, f = Math.min(1, s.mins / need), c = s.mins > need * 2 ? "#ef4444" : s.mins >= need ? "#f59e0b" : "#60a5fa";
+    return `<svg class="rk2clk" viewBox="0 0 30 30" width="30" height="30" data-rkw="${s.since}" data-need="${need}" aria-hidden="true"><circle cx="15" cy="15" r="${R}" fill="none" stroke="var(--line)" stroke-width="3"/><circle data-arc cx="15" cy="15" r="${R}" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(f * C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 15 15)"/><text data-min x="15" y="19" text-anchor="middle" font-size="10" font-weight="700" fill="currentColor">${s.mins}′</text></svg>`;
+  }
+  /* Fenster-Uhr: läuft jede Sekunde mit (aus _tick) */
+  _rkTick() {
+    this.shadowRoot.querySelectorAll("svg[data-rkw]").forEach((el) => {
+      const since = +el.dataset.rkw, need = +el.dataset.need || 10, mins = Math.max(0, Math.floor((Date.now() - since) / 60000)), R = 12, C = 2 * Math.PI * R, f = Math.min(1, mins / need);
+      const a = el.querySelector("[data-arc]"), t = el.querySelector("[data-min]");
+      if (a) { a.setAttribute("stroke-dasharray", `${(f * C).toFixed(1)} ${C.toFixed(1)}`); a.setAttribute("stroke", mins > need * 2 ? "#ef4444" : mins >= need ? "#f59e0b" : "#60a5fa"); }
+      if (t && t.textContent !== mins + "′") t.textContent = mins + "′";
+    });
+  }
+  _rkLines(r, s) {
+    const nm = (w) => w.attributes.friendly_name || w.entity_id, tm = (ms) => new Date(ms).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    const line = (icon, lab, val, sub, cls = "") => `<div class="rk2l ${cls}"><span class="rk2i">${icon}</span><span class="rk2t"><small>${lab}</small><b>${val}</b>${sub ? `<em>${sub}</em>` : ""}</span></div>`;
+    let win;
+    if (!s.wins.length) win = line(this._gx("window", 30), "Fenster", "kein Kontakt", "");
+    else if (s.anyOpen) {
+      const list = [...s.open, ...s.tilt], what = s.open.length ? "offen" : "gekippt";
+      win = line(this._rkClock(s), "Fenster", `${what} · seit ${tm(s.since)}`, esc(list.map((x) => nm(x.w)).join(", ")), "t-bl");
+    } else win = line(this._gx("window", 30), "Fenster", "geschlossen", s.wins.length > 1 ? `${s.wins.length} Kontakte` : esc(nm(s.wins[0])));
+    let hv, hs = "";
+    const nx = s.pts.length && s.planOn ? nextPt(s.pts, s.now) : null, nxt = nx ? `ab ${nx.w % 10080 >= s.today * 1440 && nx.w < (s.today + 1) * 1440 ? "" : "morgen "}${fmtT(nx.w % 1440)} ${num(nx.t, 1)}°` : "";
+    if (!s.t0) hv = "kein Thermostat";
+    else if (s.k === "pause" || (s.anyOpen && r.mode === "heizung_pausiert")) { hv = "pausiert"; const me = r.modeEid && this._hass.states[r.modeEid]; hs = me ? `seit ${tm(new Date(me.last_changed).getTime())}` : ""; }
+    else if (s.thOff) { hv = "aus"; hs = r.mode === "nur_fenstermeldung" ? "nur Fenstermeldung" : ""; }
+    else if (s.heating) { hv = s.ziel != null ? `heizt auf ${num(s.ziel, 1)}°` : "heizt"; hs = nx ? `bis ${fmtT(nx.w % 1440)}` : ""; }
+    else if (s.ziel != null && s.cur != null && s.cur >= s.ziel - 0.3) { hv = `Ziel ${num(s.ziel, 1)}° erreicht`; hs = nxt; }
+    else { hv = s.ziel != null ? `Ziel ${num(s.ziel, 1)}°` : "regelt"; hs = nxt; }
+    if (s.th.length > 1) hs = (hs ? hs + " · " : "") + `${s.th.length} Thermostate`;
+    const heat = line(this._gx(s.heating ? "radiator" : "thermostat", 30, { on: s.heating, t: s.ziel != null ? num(s.ziel, 0) + "°" : "–" }), "Heizung", hv, hs, s.heating ? "t-or" : s.k === "pause" ? "t-am" : "");
+    let third = "";
+    if (s.hum != null) { const a = this._airData(r), [ml, mc] = a ? MOLD[a.lvl] : ["", ""]; third = line(this._gx("humidity", 30), "Luftfeuchte", `${num(s.hum)} %`, a ? `Schimmel ${ml}` : "", mc === "red" ? "t-rd" : mc === "amber" ? "t-am" : ""); }
+    return win + heat + third;
+  }
+  _rkBand(r, s) {
+    const adm = this._admin(), id = esc(r.id);
+    if (!s.pts.length) return adm ? `<button class="rk2pl none" data-act="plan" data-id="${id}">${ic("plus", 15)}Heizplan einrichten</button>` : "";
+    const segs0 = segs(s.pts, s.today), t0 = s.today * 1440, nm = s.now % 1440;
+    const cuts = s.pts.filter((p) => p.w > s.now && p.w < t0 + 1440).filter((p, i, a) => (i ? a[i - 1].t : s.curPlan) !== p.t).slice(0, 2);
+    const cap = !s.planOn ? (s.away ? "Heizplan ruht · Abwesenheit" : s.summer ? "Heizplan ruht · Sommermodus" : "Heizplan aus") : `Jetzt <b>${num(s.curPlan, 1)}°</b>${cuts.map((p) => ` · ab ${fmtT(p.w % 1440)} <b>${num(p.t, 1)}°</b>`).join("")}${r.htr ? ` · <span class="nw"><span class="sun">☀</span> PV-Heizer</span>` : ""}`;
+    const inner = `<div class="rk2bd${s.planOn ? "" : " off"}">${segs0.map((g) => `<i style="flex:${g.e - g.s};background:${this._rkCol(g.t, s.lo, s.hi)}" title="${fmtT(g.s)}–${fmtT(g.e % 1440 || 1440)} · ${num(g.t, 1)} °C"></i>`).join("")}<b style="left:${(nm / 14.4).toFixed(2)}%"></b></div>
+      <div class="tla"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><div class="rk2pc">${ic("plan", 14)}<span>${cap}</span></div>`;
+    return adm ? `<button class="rk2pl" data-act="plan" data-id="${id}" aria-label="Heizplan bearbeiten">${inner}</button>` : `<div class="rk2pl">${inner}</div>`;
+  }
+  /* Hinweis-Plaketten (W3) auf dem Bild: Gerät, Schimmel, Frost, Raumsensor */
+  _rkBadges(r, s) {
+    const out = [], a = this._airData(r);
+    if (s.cur != null && s.cur < 8) out.push(`<span class="achip red">${ic("snow", 12)}Frostgefahr</span>`);
+    if (s.rt.fail || s.rt.missing) out.push(`<span class="achip amber">${ic("thermo", 12)}Raumsensor fehlt</span>`);
+    const dv = this._devChip(r); if (dv) out.push(dv);
+    return out.length ? `<div class="rk2bg">${out.slice(0, 2).join("")}</div>` : "";
+  }
+
+  /* ---------- Karte ---------- */
+  _room2(r) {
+    const s = this._rkState(r), edit = this._edit, adm = this._admin(), m = MODE[r.mode] || MODE.regelung_aus, id = esc(r.id);
+    const d = r.sc.day || { min: 0, gas: 0, kwh: 0 }, F = FUELS[r.fuel || "erdgas"];
+    const chip = `<span class="rk2st" style="--c:${s.col}">${s.k === "pause" ? `<i class="ps">❚❚</i>` : "<i></i>"}${esc(s.lab)}</span>`;
+    const pic = this._rkPic(r, s);
+    const top = `<div class="rk2top">${edit ? `<button class="rk2eb" data-act="icon" data-id="${id}" aria-label="Raumbild, Symbol, Farbe und Foto ändern">${pic}<span class="rk2pen">${ic("pencil", 14)}Raumbild</span></button>` : pic}
+      <div class="rk2ov">${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${chip}<span class="rk2sp"></span>${r.sw ? `<span class="rk2swb"><button class="sw ${r.on ? "on" : ""}" data-act="sw" data-sw="${esc(r.sw)}" aria-label="Fensterregelung umschalten" aria-pressed="${!!r.on}"></button></span>` : ""}</div>
+      <div class="rk2nm"><b>${esc(r.name)}</b></div>${edit ? "" : this._rkBadges(r, s)}</div>`;
+    const notes = `${this._wxaNote(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : this._sum().active ? `<div class="pnote">${ic("sun", 16)}Sommermodus: Der Heizplan ruht, die Fenstermeldung bleibt aktiv.</div>` : ""}`;
+    /* Raumluft nur, wenn es etwas zu tun gibt; die Werte stehen schon in der Zeile Luftfeuchte */
+    const a = this._airData(r), al = !a && this._airLite(r);
+    const air = a ? (a.open ? "" : a.lvl >= 1 || a.rh >= 60 ? this._airMsg(a) : "") : al && al.due && !al.open ? `<div class="airmsg amber">${ic("windy", 16)}<div><b>Länger nicht gelüftet</b> (${this._ago(al.hrs)}). Jetzt ca. ${al.need} Min. stoßlüften.</div></div>` : "";
+    const need = ventMin(this._out().t);
+    const foot = s.anyOpen
+      ? (() => { const c = cdown(s.since, need); return `<div class="rk2fl${c.left <= 0 ? " done" : ""}" data-since="${s.since}" data-need="${need}">${ic("windy", 15)}<span><i class="pre">Lüften empfohlen: </i><b data-cd>${c.txt}</b></span></div>`; })()
+      : `<div class="rk2fl">${ic("clock", 15)}<span>${d.min ? `Heute <b>${num(d.min)} Min.</b> pausiert · ~${num(d.gas, 2)} ${unitOf(F)}` : "Heute nicht pausiert"}${r.pauses ? ` · ${r.pauses}×` : ""}</span></div>`;
+    return `<div class="card room rk2 rk-${s.k}${edit ? " ed" : ""}" data-m="${m.c}" data-sort="room" data-id="${id}" style="--c:${s.col}">${top}
+      <div class="rk2mid">${this._rkRing(s)}<div class="rk2ls">${this._rkLines(r, s)}</div></div>
+      ${this._rkBand(r, s)}${notes}${this._rkDevs(r, s)}${air}${this._lfMove(r.id)}
+      <div class="rk2ft">${foot}<button class="rk2more" data-act="rkmenu" data-id="${id}" aria-label="Weitere Aktionen für ${esc(r.name)}">⋯</button></div></div>`;
+  }
+  /* Kompakt-Ansicht (G3): Mini-Bild statt Raumsymbol */
+  _rkMini(r) { return `<div class="rk2mini">${this._rkPic(r, this._rkState(r), true)}</div>`; }
+  /* Menü „⋯“ */
+  _rkMenu(m) {
+    const r = this._collect().find((x) => x.id === m.id); if (!r) return "";
+    const adm = this._admin(), id = esc(r.id), s = this._rkState(r);
+    const it = (act, icon, t, sub) => `<button class="rk2mi" data-act="${act}" data-id="${id}">${ic(icon, 20)}<span><b>${t}</b><small>${sub}</small></span>${ic("chev", 16)}</button>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${esc(r.name)}</b><span><i class="rk2dot" style="background:${s.col}"></i>${esc(s.lab)} · ${esc(this._rkTypeName(this._rkType(r)))}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="rk2menu">${it("why", "info", "Warum?", "Was die Regelung gerade tut und weshalb")}${it("rep", "chart", "Bericht", "Temperatur, Fenster und Pausen eines Tages")}
+      ${r.htr ? it("rkhtr", "bolt", "Elektroheizer", "Stufen, Laufzeit, Bericht") + it("hrep", "chart", "Heizer-Bericht", "Elektroheizer mit PV-Überschuss") : ""}
+      ${s.lfs.map((d) => `<button class="rk2mi" data-act="lfrk" data-id="${id}" data-d="${esc(d.id)}">${ic("fan", 20)}<span><b>${esc(d.name)}</b><small>Luftentfeuchter · Standort, Tank, Statistik</small></span>${ic("chev", 16)}</button>`).join("")}
+      ${adm ? it("plan", "plan", "Heizplan bearbeiten", s.pts.length ? "Zeiten und Temperaturen" : "Noch kein Heizplan") : ""}
+      ${adm ? it("opt", "sliders", "Raumeinstellungen", "Fenster, Thermostate, Sensoren, Regelung") : ""}
+      ${adm ? it("icon", "palette", "Raumbild & Farbe", "Raumtyp, Symbol, Farbe, eigenes Foto") : ""}</div></div>`;
+  }
+  /* Raumtyp im Fenster „Raum anpassen“ */
+  _rkTypePick(r) {
+    if (!this._rkOn() || String(r.id || "").startsWith("ms_")) return "";
+    const cur = (this._cfg.layout.rtype || {})[r.id] || "", auto = this._rkTypeAuto(r), s = { ...this._rkState(r), k: "ok", col: "#2dd4bf", open: [], tilt: [], anyOpen: 0, heating: false, act: null, night: false };
+    return `<div class="lsec">Raumbild</div><div class="rk2tp">
+      <button class="${!cur ? "sel" : ""}" data-act="rktype" data-k=""><span class="rk2art sm">${this._rkArt(auto, s)}</span><b>Automatisch</b><small>${esc(this._rkTypeName(auto))}</small></button>
+      ${this.constructor.RK_TYPES.map(([k, n]) => `<button class="${cur === k ? "sel" : ""}" data-act="rktype" data-k="${k}"><span class="rk2art sm">${this._rkArt(k, s)}</span><b>${n}</b></button>`).join("")}</div>
+      <div class="mut sm" style="margin:0 0 8px">Der Raumtyp wird aus dem Namen vorgeschlagen. Ein eigenes Foto (unten) hat Vorrang vor dem Raumbild.</div>`;
+  }
+  /* Darstellung: Raumkarten */
+  _rkLook() {
+    const c = this._rkCfg();
+    return `<div class="lsec">${ic("grid", 15)}Raumkarten in Modul 1</div>
+      <div class="ltog"><span>Raumkarten wie bisher<small class="mut" style="display:block">An: Karten aus v1.7 mit Symbol und Kästen statt Raumbild und Ring</small></span><button class="sw ${c.old ? "on" : ""}" data-act="rkold" aria-pressed="${c.old}" aria-label="Raumkarten wie bisher"></button></div>
+      ${c.old ? "" : `<div class="ltog rkan"><span>Bewegung im Raumbild<small class="mut" style="display:block">Wärmewellen und Luft am Fenster. „Bewegung reduzieren“ am Gerät wird immer beachtet.</small></span><div class="seg oseg">${[["aus", "Aus"], ["dezent", "Dezent"], ["voll", "Voll"]].map(([k, l]) => `<button class="${c.anim === k ? "sel" : ""}" data-act="rkanim" data-k="${k}">${l}</button>`).join("")}</div></div>`}`;
+  }
+  /* ---------- Elektroheizer und Luftentfeuchter (Raumkarte 2.0) ----------
+     Auf der Karte je Gerät eine Kachel mit HD-Bild, Zustand und Balken (Stufen bzw. Tank). Antippen öffnet das Gerät
+     mit allen Werten und Tasten wie bisher (Warum?, Standort, Heute aus, Statistik, Tank geleert, Bericht). */
+  _rkDevs(r, s) {
+    const out = [];
+    if (s.htr) out.push(this._rkHtrTile(r, s.htr));
+    s.lfs.forEach((d) => out.push(this._rkLfTile(r, d)));
+    return out.length ? `<div class="rk2dvs">${out.join("")}</div>` : "";
+  }
+  _rkHtrTile(r, h) {
+    const [lab] = HTR[h.status] || HTR.aus, st = stepsOf(h), on = h.status === "pv" && (Number(h.watt_now) || 0) > 0;
+    const tone = { pv: "#fb923c", wartet: "#f59e0b", soc: "#f59e0b", fenster: "#60a5fa", warm: "#2dd4bf" }[h.status] || "#94a3b8";
+    const share = h.heute_kwh > 0 ? Math.round((h.heute_pv_kwh / h.heute_kwh) * 100) : null;
+    const val = on ? (st.length > 1 ? `Stufe ${h.stufe} · ${wfmt(h.watt_now)}` : wfmt(h.watt_now)) : lab;
+    const sub = [on ? "mit PV-Überschuss" : h.status === "wartet" && st.length ? `ab ${wfmt(st[0] + this._pv().reserve)} Überschuss` : "", h.heute_kwh > 0 ? `${num(h.heute_kwh, 1)} kWh heute${share != null ? ` · ${share} % PV` : ""}` : ""].filter(Boolean).join(" · ");
+    const bar = st.length > 1 ? `<div class="rk2stp">${st.map((w, i) => `<i class="${on && h.stufe >= i + 1 ? "on" : ""}" title="Stufe ${i + 1} · ${wfmt(w)}"></i>`).join("")}</div>` : "";
+    return `<div class="rk2dv${on ? " run" : ""}" style="--c:${tone}"><button class="rk2dvb" data-act="rkhtr" data-id="${esc(r.id)}" aria-label="Elektroheizer öffnen">
+      <span class="rk2dvi">${this._gx("heater", 38, { stage: on ? Math.min(3, h.stufe || 2) : 0, on })}</span><span class="rk2dvt"><small>Elektroheizer${on ? ` <i class="sun">☀</i>` : ""}</small><b>${esc(val)}</b>${sub ? `<em>${esc(sub)}</em>` : ""}${bar}</span></button>
+      ${r.htrSw ? `<button class="sw ${r.htrOn ? "on" : ""}" data-act="sw" data-sw="${esc(r.htrSw)}" aria-pressed="${!!r.htrOn}" aria-label="Elektroheizer ein oder aus"></button>` : ""}</div>`;
+  }
+  _rkLfTile(r, d) {
+    const S = d.S, L = S.live || {}, [k, t] = this._lfState(L), A = S.ask || {};
+    const tone = { run: "#22d3ee", warn: "#f59e0b", wait: "#60a5fa" }[k] || "#94a3b8", fill = L.fill != null ? Math.min(100, Math.round(L.fill * 100)) : null;
+    const tag = L.boost === "pv" ? " · ☀ PV" : L.boost ? " · günstig" : L.night ? ` · Nacht${L.quiet_on ? ", leise" : ""}` : "";
+    const open = A.phase && A.phase !== "off" && !A.conf, n = (L.msgs || []).filter((m) => m[0] !== "noloc" || !A.conf).length;
+    const sub = open ? "Standort heute noch nicht bestätigt" : [fill != null ? `Tank ${fill} %` : L.full ? "Tank voll" : "", L.on ? this._lfSince(L.since) : "", L.today_min ? `heute ${hmin(L.today_min)}` : ""].filter(Boolean).join(" · ") || (d.kind === "watch" ? "nur beobachten" : "Modul 1 regelt");
+    return `<div class="rk2dv${k === "run" ? " run" : ""}" style="--c:${tone}"><button class="rk2dvb" data-act="lfrk" data-id="${esc(r.id)}" data-d="${esc(d.id)}" aria-label="${esc(d.name)} öffnen">
+      <span class="rk2dvi">${this._gx("dehumid", 38, { lvl: fill != null ? fill : L.full ? 100 : 30, on: k === "run" })}</span><span class="rk2dvt"><small>${esc(d.name)}</small><b>${esc(t + tag)}</b><em class="${open ? "am" : ""}">${esc(sub)}</em>${fill != null ? `<span class="rk2tank"><i style="width:${fill}%;${fill > 85 ? "background:#f59e0b" : ""}"></i></span>` : ""}</span>
+      ${n ? `<span class="rk2dvn" title="Hinweise">${n}</span>` : ""}</button></div>`;
+  }
+  _rkDevSheet(m) {
+    const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id); if (!r) return "";
+    if (m.type === "rkhtr") return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Elektroheizer</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="rk2sht">${this._gx("heater", 64, { stage: r.htr && r.htr.status === "pv" ? Math.min(3, r.htr.stufe || 2) : 0, on: r.htr && r.htr.status === "pv" })}</div>${this._htrBox(r)}
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+    const d = this._lfDev(m.d); if (!d) return "";
+    const L = d.S.live || {};
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${esc(d.name)}</b><span>Luftentfeuchter · ${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="rk2sht">${this._gx("dehumid", 64, { lvl: L.fill != null ? Math.round(L.fill * 100) : L.full ? 100 : 30, on: !!(L.running || L.on) })}</div>${this._lfBox1(d)}
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  /* Mini-Raumbild für eine Raum-ID (Raum oder Messraum), z. B. in der Entfeuchter-Standortkarte und im PV-Heizer-Block */
+  _rkMiniById(id, cls = "") {
+    if (!this._rkOn()) return "";
+    const r = this._collect(true).find((x) => x.id === id);
+    if (r) return `<span class="rk2mini ${cls}">${this._rkPic(r, this._rkState(r), true)}</span>`;
+    const m = this._msList().find((x) => x.id === id); if (!m) return "";
+    const ph = (this._cfg.layout.photos || {})[m.id];
+    return `<span class="rk2mini ${cls}">${ph ? `<span class="rk2art ph mini" style="background-image:url('${esc(ph)}')"></span>` : `<span class="rk2art mini">${this._rkArt("mess", this._rkMsS(m))}</span>`}</span>`;
+  }
+  _rkMsS(m, col = "#2dd4bf") { return { k: "ok", col, open: [], tilt: [], anyOpen: 0, act: null, heating: false, t0: null, night: this._hass.states["sun.sun"] ? this._hass.states["sun.sun"].state === "below_horizon" : false, lfs: this._lfDevs().filter((d) => d.S.loc === m.id) }; }
+  /* Messraum als Raumkarte 2.0: Bild mit Sensor, Ring für die Temperatur, Zeilen für Luftfeuchte, Taupunkt, Min/Max */
+  _msCard2(m, T, Hm, mm, none, note, ntone, batLow) {
+    const edit = this._edit, adm = this._admin(), id = esc(m.id), okv = (x) => x && x.st !== "none" && x.st !== "bad";
+    const tv = okv(T) ? T.v : null, hv = okv(Hm) ? Hm.v : null;
+    let k = "ok", lab = "Im Wohlfühlbereich", col = "#2dd4bf";
+    if (none || (tv == null && hv == null)) { k = "aus"; lab = "Keine Daten"; col = "#94a3b8"; }
+    else if (hv != null && hv > m.h_hi) { k = "feucht"; lab = "Zu feucht"; col = "#f59e0b"; }
+    else if (tv != null && tv < m.t_lo) { k = "kalt"; lab = "Zu kalt"; col = "#60a5fa"; }
+    else if (tv != null && tv > m.t_hi) { k = "warm"; lab = "Zu warm"; col = "#fb923c"; }
+    else if (hv != null && hv < m.h_lo) { k = "trocken"; lab = "Zu trocken"; col = "#f59e0b"; }
+    const s = this._rkMsS(m, col), ph = (this._cfg.layout.photos || {})[m.id], an = this._rkCfg().anim;
+    const mt = tv != null ? num(tv, 1) + "°" : "--°", mh = hv != null ? num(hv) + " %" : "";
+    const key = ["ms", m.id, k, mt, mh, s.night ? 1 : 0, an, ph ? ph.length : "", s.lfs.map((d) => { const L = d.S.live || {}; return (L.running || L.on ? "r" : "s") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
+    const pic = ph ? `<div class="rk2art ph${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${col}"><i class="rkv"></i></div>`
+      : `<div class="rk2art${k === "aus" ? " gr" : ""}${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="--c:${col}">${this._rkArt("mess", s, { mt, mh })}</div>`;
+    const top = `<div class="rk2top">${edit ? `<button class="rk2eb" data-act="icon" data-id="${id}" aria-label="Raumbild, Farbe und Foto ändern">${pic}<span class="rk2pen">${ic("pencil", 14)}Raumbild</span></button>` : pic}
+      <div class="rk2ov"><span class="rk2st" style="--c:${col}"><i></i>${esc(lab)}</span><span class="rk2sp"></span><span class="rk2tag">Messraum</span></div>
+      <div class="rk2nm"><b>${esc(m.name)}</b></div>${batLow && !edit ? `<div class="rk2bg"><span class="achip amber">${ic("bolt", 12)}Batterie leer</span></div>` : ""}</div>`;
+    const ring = this._rkRing({ cur: tv, lo: m.t_lo, hi: m.t_hi, ziel: null, rt: { sensor: false } }).replace("</b>", `</b><small>${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C</small>`);
+    const line = (icon, l, v, sub, cls = "") => `<div class="rk2l ${cls}"><span class="rk2i">${icon}</span><span class="rk2t"><small>${l}</small><b>${v}</b>${sub ? `<em>${sub}</em>` : ""}</span></div>`;
+    let lines = "";
+    if (Hm) { const a = tv != null && hv != null ? airCalc(tv, hv, this._out().t, this._out().rh) : null, [ml, mc] = a ? MOLD[a.lvl] : ["", ""];
+      lines += line(this._gx("humidity", 30), "Luftfeuchte", hv != null ? `${num(hv)} %` : Hm.st === "bad" ? "unplausibel" : "keine Daten", [mm && mm.h ? `${num(mm.h[0])}–${num(mm.h[1])} % heute` : `${num(m.h_lo, 0)}–${num(m.h_hi, 0)} % gewünscht`, a && m.mold ? `Schimmel ${ml}` : ""].filter(Boolean).join(" · "), hv != null && hv > m.h_hi ? "t-am" : mc === "red" ? "t-rd" : "");
+      if (a && m.dew) lines += line(this._gx("thermo", 30), "Taupunkt", `${num(a.td, 1)} °C`, `Wand ca. ${num(a.ts, 1)} °C`); }
+    if (T && (mm && mm.t || !Hm)) lines += line(this._gx("thermostat", 30, { t: tv != null ? num(tv, 0) + "°" : "–" }), "Temperatur heute", mm && mm.t ? `${num(mm.t[0], 1)} – ${num(mm.t[1], 1)} °C` : tv != null ? `${num(tv, 1)} °C` : "keine Daten", mm && mm.t ? "Min – Max" : "", tv != null && tv < m.t_lo ? "t-bl" : "");
+    const tiles = s.lfs.length ? `<div class="rk2dvs">${s.lfs.map((d) => this._rkLfTile(m, d)).join("")}</div>` : "";
+    return `<div class="card room rk2 msr2" data-id="${id}" style="--c:${col}">${top}
+      <div class="rk2mid">${T ? ring : ""}<div class="rk2ls">${lines}</div></div>${tiles}${this._lfMove(m.id)}
+      <div class="rk2ft"><div class="rk2fl ${ntone === "amber" ? "warn" : ""}">${ic(ntone ? "alert" : "check", 15)}<span>${esc(note)}</span></div>${adm ? `<button class="rk2more" data-act="msxedit" data-id="${id}" aria-label="Messraum einstellen">⋯</button>` : ""}</div></div>`;
+  }
+  /* Heizplan-Band in klein (Kompakt-Liste) */
+  _rkBandMini(s) {
+    if (!s.pts.length) return "";
+    const nm = s.now % 1440;
+    return `<div class="rk2bd sm${s.planOn ? "" : " off"}">${segs(s.pts, s.today).map((g) => `<i style="flex:${g.e - g.s};background:${this._rkCol(g.t, s.lo, s.hi)}"></i>`).join("")}<b style="left:${(nm / 14.4).toFixed(2)}%"></b></div>`;
+  }
+  _rkAct(a, b) {
+    const L = this._cfg.layout;
+    if (a === "rkmenu") { this._modal = { type: "rkmenu", id: b.dataset.id }; this._renderModal(); return true; }
+    if (a === "rkhtr") { this._modal = { type: "rkhtr", id: b.dataset.id }; this._renderModal(); return true; }
+    if (a === "rktype") { const t = { ...(L.rtype || {}) }; if (b.dataset.k) t[this._modal.id] = b.dataset.k; else delete t[this._modal.id]; L.rtype = t; }
+    else if (a === "rkold") L.rk = { ...(L.rk || {}), old: !this._rkCfg().old };
+    else if (a === "rkanim") L.rk = { ...(L.rk || {}), anim: b.dataset.k };
+    else return false;
+    this._saveLayout(); this._render(); this._renderModal(); return true;
+  }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS}${CSS_RK}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
@@ -4246,6 +4801,8 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "close") { this._modal = null; this._renderModal(); }
     else if (a === "pick") { this._cfg.layout.icons = { ...(this._cfg.layout.icons || {}), [m.id]: b.dataset.k }; this._saveLayout(); this._render(); this._renderModal(); }
     else if (a === "preset") { const ic2 = { ...(this._cfg.layout.icons || {}) }; delete ic2[m.id]; this._cfg.layout.icons = ic2; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (a === "lfrk") { this._modal = { type: "lfrk", id: b.dataset.id, d: b.dataset.d }; this._renderModal(); }
+    else if (a.startsWith("rk") && this._rkAct(a, b)) { /* Raumkarte 2.0 */ }
     else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
     else if (a === "pm") {
       const p = this._pres();
@@ -4819,11 +5376,13 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "ortper" || m.type === "ortzone") { box.innerHTML = m.type === "ortper" ? this._ortPerModal() : this._ortZoneModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._ortBind(); return; }
     if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
+    if (m.type === "rkhtr" || m.type === "lfrk") { box.innerHTML = this._rkDevSheet(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; if (!box.innerHTML) this._modal = null; return; }
+    if (m.type === "rkmenu") { box.innerHTML = this._rkMenu(m); if (!box.innerHTML) this._modal = null; return; }
     if (m.type === "icon") {
       const cur = this._icon(r), L = this._cfg.layout, cc = (L.colors || {})[m.id], ph = (L.photos || {})[m.id];
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>Raum anpassen</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-        <div class="lsec">Symbol</div>
+        ${this._rkTypePick(r)}<div class="lsec">Symbol${this._rkOn() ? `<small class="mut" style="font-weight:500"> · für Kompakt-Liste, Gruppen und andere Module</small>` : ""}</div>
         ${ICON_GROUPS.map(([g, list]) => `<div class="igt">${g}</div><div class="igrid">${list.map(([k, l]) => `<button class="${k === cur ? "sel" : ""}" data-act="pick" data-k="${k}" title="${l}" aria-label="${l}">${ic2(k, 36)}</button>`).join("")}</div>`).join("")}
         <button class="lnk" data-act="preset">Symbol automatisch nach Raumname</button>
         <div class="lsec">Farbe</div>
@@ -4915,7 +5474,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sh"><div><b>Darstellung</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="lsec">${ic("palette", 15)}Akzentfarbe</div>
         <div class="swatches">${ACCENTS.map((c) => `<button class="sw2 ${a === c ? "sel" : ""}" style="background:${c}" data-act="lacc" data-k="${c}" aria-label="${c}"></button>`).join("")}<label class="cpick"><input type="color" data-f="lacc" value="${a}">Eigene</label></div>
-        ${this._heroLook()}
+        ${this._heroLook()}${this._rkLook()}
         <div class="lsec">${ic("sun", 15)}Wetter in der Kopfkarte</div>
         <div class="ltog"><span>Außentemperatur und Wetter anzeigen</span><button class="sw ${w.on ? "on" : ""}" data-act="lwx" aria-pressed="${w.on}" aria-label="Wetter anzeigen"></button></div>
         ${w.on ? `<div class="hslk">${this._hsLink("wx", `Wetter ${w.entity ? esc(this._wzName(w.entity)) : "automatisch"}${w.outdoor ? " · Außentemperatur " + esc(this._wzName(w.outdoor)) : ""}`)}</div>` : ""}
@@ -10104,6 +10663,8 @@ class FensterHeizungPanel extends HTMLElement {
       { id: "general.valve.notify", t: "Meldung bei Ventil-Problemen", p: `${M1} › Geräte`, k: "benachrichtigung ventil problem meldung", go: ["diag"], h: "Benachrichtigungsdienst für ausgefallene Ventile und schwache Batterien." },
       // Darstellung, Gerät, Erweiterungen, System
       { id: "layout.accent", t: "Akzentfarbe", p: "Darstellung", k: "farbe akzent design theme", go: ["look"], h: "Farbe für Knöpfe und Markierungen. Gilt für alle." },
+      { id: "layout.rk.old", t: "Raumkarten wie bisher", p: "Darstellung", k: "raumkarte raumbild optik alt neu modul 1 karten", go: ["look"], v: () => onoff(!!(this._cfg.layout.rk || {}).old), h: "Modul 1: Raumkarte 2.0 mit Raumbild und Ring oder die Karten aus v1.7." },
+      { id: "layout.rk.anim", t: "Bewegung im Raumbild", p: "Darstellung", k: "animation bewegung wärmewellen raumbild", go: ["look"], v: () => ({ aus: "Aus", dezent: "Dezent", voll: "Voll" })[this._rkCfg().anim], h: "Wärmewellen am Heizkörper und Luft am offenen Fenster. Aus, Dezent oder Voll." },
       { id: "layout.wx.on", t: "Wetter in der Kopfkarte", p: "Darstellung", k: "wetter anzeige kopfkarte", go: ["look"], v: () => onoff(L().on) },
       { id: "hz", t: "Startseite", p: "Darstellung", k: "startseite begrüßung karten bubbles", go: ["hzopen"] },
       { id: "tablet", t: "Tablet-Modus", p: "Dieses Gerät", k: "tablet fully kiosk pin wandtablet", lv: "dev", go: ["tmopen"], v: () => onoff(this._tmOn()), h: "Nur für diesen Browser: Vollbild für ein Wandtablet mit PIN und Ruhemodus." },

@@ -16,9 +16,11 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 01-symbole | Symbole, Raumsymbole, Farben |
 | 02-konstanten | Konstanten, Module, Vorlagen |
 | 03-stile | CSS |
+| 03b-stile-raumkarte | CSS der Raumkarte 2.0 (Modul 1) |
 | 04-kern | Grundgerüst der Komponente, Hilfsfunktionen |
 | 05-modul1-fenster-heizung | Modul 1: Räume, Kopfkarte, Heizung, PV-Heizer |
 | 05b-messraum, 05c-entfeuchter | Modul 1: Messraum, Luftentfeuchter |
+| 05e-raumkarte | Modul 1: Raumkarte 2.0 – Raumbilder (7 Typen + Messraum), Temperatur-Ring, Heizplan-Band, Fenster-Uhr, Menü „⋯“ |
 | 05d-grafik | Gemeinsame Grafik-Bibliothek: HD-Symbolsatz (38 Symbole), Herkunfts-Ring, Prozentzeile, „noch ~ Min.“, Zuordnung alter Symbole |
 | 06-ereignisse-raumoptionen | Ereignisse, Aktionen, Raumeinstellungen |
 | 07-assistent-diagnose | Einrichtungsassistent, Diagnose, Berichte |

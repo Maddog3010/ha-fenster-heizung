@@ -30,13 +30,16 @@
   _lfEur(v) { return (Number(v) || 0).toLocaleString("de-DE", { style: "currency", currency: "EUR" }); }
   /* Auf der Raumkarte: Kasten für jedes Gerät, das hier steht, und „Hierher stellen“ für die anderen (Schritt 3) */
   _lfBox(rid) {
+    const L = this._lfDevs(); if (!L.length) return "";
+    return L.filter((d) => d.S.loc === rid).map((d) => this._lfBox1(d)).join("") + this._lfMove(rid);
+  }
+  /* „Entfeuchter hierher stellen“ für Geräte, die woanders stehen (auch in der Raumkarte 2.0) */
+  _lfMove(rid) {
     const D = this._lf(), L = this._lfDevs(); if (!D || !L.length) return "";
-    const here = L.filter((d) => d.S.loc === rid), canHere = (D.rooms || []).some((r) => r.id === rid);
-    const boxes = here.map((d) => this._lfBox1(d)).join("");
-    const away = canHere ? L.filter((d) => d.S.loc !== rid) : [], where = (d) => (d.S.loc ? `steht in ${this._lfRoomName(d.S.loc) || "einem anderen Raum"}` : "noch kein Standort");
-    if (!away.length) return boxes;
-    if (L.length === 1) { const d = away[0]; return boxes + `<button class="lfmove" data-act="lfxmove" data-d="${esc(d.id)}" data-k="${esc(rid)}">${ic("fan", 15)}<span><b>Entfeuchter hierher stellen</b><small>${esc(where(d))}</small></span></button>`; }
-    return boxes + `<div class="lfmove lfmany">${ic("fan", 15)}<span><b>Entfeuchter hierher stellen</b><span class="lfmb">${away.map((d) => `<button class="btn2" data-act="lfxmove" data-d="${esc(d.id)}" data-k="${esc(rid)}" title="${esc(where(d))}">${esc(d.name)}<small>${esc(where(d))}</small></button>`).join("")}</span></span></div>`;
+    const canHere = (D.rooms || []).some((r) => r.id === rid), away = canHere ? L.filter((d) => d.S.loc !== rid) : [], where = (d) => (d.S.loc ? `steht in ${this._lfRoomName(d.S.loc) || "einem anderen Raum"}` : "noch kein Standort");
+    if (!away.length) return "";
+    if (L.length === 1) { const d = away[0]; return `<button class="lfmove" data-act="lfxmove" data-d="${esc(d.id)}" data-k="${esc(rid)}">${ic("fan", 15)}<span><b>Entfeuchter hierher stellen</b><small>${esc(where(d))}</small></span></button>`; }
+    return `<div class="lfmove lfmany">${ic("fan", 15)}<span><b>Entfeuchter hierher stellen</b><span class="lfmb">${away.map((d) => `<button class="btn2" data-act="lfxmove" data-d="${esc(d.id)}" data-k="${esc(rid)}" title="${esc(where(d))}">${esc(d.name)}<small>${esc(where(d))}</small></button>`).join("")}</span></span></div>`;
   }
   _lfBox1(d) {
     const S = d.S, L = S.live || {}, [k, t] = this._lfState(L), adm = this._admin();
@@ -61,7 +64,7 @@
     const pn = (R.find((r) => r.id === pick) || {}).name || "";
     const day = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const state = A.how === "pause" ? `<span class="lfst2 warn">Pausiert, bis du den Standort bestätigst.</span>` : A.how === "hint" ? `<span class="lfst2 warn">Noch nicht bestätigt. Er läuft wie gestern.</span>` : S.off_day ? `<span class="lfst2">Heute nicht in Betrieb.</span>` : !hasLoc ? `<span class="lfst2">Ohne Standort bleibt er aus.</span>` : "";
-    const tiles = list.length ? `<div class="lftiles">${list.map((r) => { const others = this._lfDevs().filter((o) => o.id !== dev.id && o.S.loc === r.id); return `<button class="lftile ${pick === r.id ? "sel" : ""}" data-act="lfxsel" data-d="${esc(dev.id)}" data-k="${esc(r.id)}" aria-pressed="${pick === r.id}"><b>${esc(r.name)}${pick === r.id ? `<i class="lfok">${ic("check", 13)}</i>` : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}</span>${others.length ? `<span class="lfoth">${esc(others.map((o) => o.name).join(", "))} steht hier</span>` : ""}</button>`; }).join("")}</div>`
+    const tiles = list.length ? `<div class="lftiles">${list.map((r) => { const others = this._lfDevs().filter((o) => o.id !== dev.id && o.S.loc === r.id); return `<button class="lftile ${pick === r.id ? "sel" : ""}" data-act="lfxsel" data-d="${esc(dev.id)}" data-k="${esc(r.id)}" aria-pressed="${pick === r.id}">${this._rkMiniById(r.id, "lft")}<b>${esc(r.name)}${pick === r.id ? `<i class="lfok">${ic("check", 13)}</i>` : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}</span>${others.length ? `<span class="lfoth">${esc(others.map((o) => o.name).join(", "))} steht hier</span>` : ""}</button>`; }).join("")}</div>`
       : `<div class="mut sm">Kein Raum mit Luftfeuchte-Sensor gefunden. Wähle in den Raumeinstellungen einen Luftfeuchte-Sensor oder lege einen Messraum an.</div>`;
     return `<div class="card lfloc"><div class="lfh"><span class="lfi">${ic("fan", 18)}</span><div class="lft"><b>Wo steht der ${esc(dev.name)} heute?</b><span>${esc(day)}</span></div></div>
       ${tiles}<div class="lfmeta">${A.yest_name ? `Gestern: <b>${esc(A.yest_name)}</b>` : "Gestern: noch kein Eintrag"}${state}</div>
@@ -105,7 +108,7 @@
     const D = this._lf() || {}, R = D.rooms || [];
     if (!R.length) return `<div class="mut sm">Kein Raum mit Luftfeuchte-Sensor gefunden. Wähle in den Raumeinstellungen einen Luftfeuchte-Sensor oder lege einen Messraum an.</div>`;
     const S = (dev && dev.S) || {};
-    return `<div class="lftiles">${R.map((r) => `<button class="lftile ${S.loc === r.id ? "sel" : ""}" data-act="lfxpick" data-d="${esc(dev.id)}" data-k="${esc(r.id)}"><b>${esc(r.name)}${S.loc === r.id ? ic("check", 15) : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}${r.ms ? " · Messraum" : ""}</span></button>`).join("")}</div>
+    return `<div class="lftiles">${R.map((r) => `<button class="lftile ${S.loc === r.id ? "sel" : ""}" data-act="lfxpick" data-d="${esc(dev.id)}" data-k="${esc(r.id)}">${this._rkMiniById(r.id, "lft")}<b>${esc(r.name)}${S.loc === r.id ? ic("check", 15) : ""}</b><span class="${r.hum != null && r.hum > (dev.hi || 60) ? "amber" : ""}">Luftfeuchte ${r.hum != null ? num(r.hum, 0) + " %" : "–"}${r.ms ? " · Messraum" : ""}</span></button>`).join("")}</div>
       <div class="lfbtns"><button class="btn2" data-act="${S.off_day ? "lfxon" : "lfxoff"}" data-d="${esc(dev.id)}">${S.off_day ? "Heute wieder in Betrieb" : "Heute nicht in Betrieb"}</button></div>`;
   }
   _lfLocModal() {

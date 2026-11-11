@@ -69,7 +69,9 @@
       if (stale.length) note += ` · ${stale.length === 1 && vals.length > 1 ? "ein Sensor" : "Sensor"} ${this._msAgo(Math.min(...stale.map((x) => x.age)))}`;
     }
     const bs = m.bat && this._hass.states[m.bat], bv = bs ? parseFloat(bs.state) : NaN, batLow = bs && ((isFinite(bv) && bv <= 15) || bs.state === "on" || /low|niedrig/i.test(bs.state));
-    const icon = edit ? `<button class="rico" style="${rcStyle(m.color)}" data-act="icon" data-id="${esc(m.id)}" aria-label="Symbol ändern">${ico(this._icon(m), 26)}<span class="pen">${ic("pencil", 11)}</span></button>` : `<div class="rico" style="${rcStyle(m.color)}">${ico(this._icon(m), 26)}</div>`;
+    const rkPic = this._rkOn() && !(this._cfg.layout.photos || {})[m.id] ? `<div class="rk2mini msm"><div class="rk2art mini">${this._rkArt("mess", { k: "ok", col: none ? "#94a3b8" : "#2dd4bf", open: [], tilt: [], anyOpen: 0, act: null, heating: false, t0: null, night: false }, { mt: T && T.st !== "none" && T.st !== "bad" ? num(T.v, 1) + "°" : "--°", mh: Hm && Hm.st !== "none" && Hm.st !== "bad" ? num(Hm.v) + " %" : "" })}</div></div>` : "";
+    const icon = rkPic ? (edit ? `<button class="rk2minib" data-act="icon" data-id="${esc(m.id)}" aria-label="Raum anpassen">${rkPic}<span class="pen">${ic("pencil", 11)}</span></button>` : rkPic) : edit ? `<button class="rico" style="${rcStyle(m.color)}" data-act="icon" data-id="${esc(m.id)}" aria-label="Symbol ändern">${ico(this._icon(m), 26)}<span class="pen">${ic("pencil", 11)}</span></button>` : `<div class="rico" style="${rcStyle(m.color)}">${ico(this._icon(m), 26)}</div>`;
+    if (this._rkOn()) return this._msCard2(m, T, Hm, mm, none, note, ntone, batLow);
     return `<div class="card room msr${none ? " msnone" : ""}${this._ph(m).c}"${this._ph(m).s} data-id="${esc(m.id)}"><div class="rh">${icon}
         <div class="rn"><b>${esc(m.name)}</b><div class="pl"><span class="msbadge">Messraum</span>${batLow ? `<span class="pill amber">Batterie leer</span>` : ""}</div></div>
         ${adm ? `<button class="ibtn gear" data-act="msxedit" data-id="${esc(m.id)}" aria-label="Messraum einstellen">${ic("sliders", 17)}</button>` : ""}</div>
