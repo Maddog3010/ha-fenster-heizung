@@ -32,6 +32,21 @@
     const w = c.wx ? o.w || "" : "", frost = c.wx && o.t != null && o.t <= 0;
     return { tod, w, frost, snow: /snow|hail/.test(w) || (frost && /snow/.test(w)), rain: /rain|pouring|lightning/.test(w), cloud: /cloud|partly|fog|rain|pouring|snow|lightning/.test(w), fog: w === "fog", storm: /lightning|windy|exceptional/.test(w), t: o.t };
   }
+  /* Himmel nach Tageszeit und Wetter (gemeinsam mit der Energie-Szene in Modul 3). Erwartet die Verläufe q("sk") und q("sun"). */
+  _hsSkyDraw(sky, q) {
+    const night = sky.tod === "night", grey = sky.cloud && !night;
+    let d = `<rect width="360" height="200" fill="url(#${q("sk")})"/>`;
+    d += this._hsAurora(sky);
+    if (night) d += [[24, 18], [64, 40], [108, 12], [150, 30], [232, 14], [276, 54], [204, 42], [344, 70], [20, 70], [330, 12]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? .9 : 1.4}" fill="#fff" opacity="${i % 2 ? .6 : .95}"/>`).join("") +
+      `<circle cx="320" cy="32" r="22" fill="#fef3c7" opacity=".12"/><circle cx="320" cy="32" r="11" fill="#fef3c7"/><circle cx="324" cy="28" r="10" fill="${grey ? "#93a7bf" : "#1b2750"}"/>`;
+    else if (!grey || sky.w === "partlycloudy") { const sx = sky.tod === "morning" ? 34 : sky.tod === "evening" ? 326 : 314, sy = sky.tod === "day" ? 32 : 60;
+      d += `<circle cx="${sx}" cy="${sy}" r="30" fill="url(#${q("sun")})"/><circle cx="${sx}" cy="${sy}" r="11" fill="#fde047"/>` + (sky.tod === "day" && !grey ? `<path d="M120 30 q3 -3 6 0 q3 -3 6 0 M140 22 q2.4 -2.4 4.8 0 q2.4 -2.4 4.8 0" fill="none" stroke="#334155" stroke-width="1.1" stroke-linecap="round" opacity=".6"/>` : ""); }
+    const cloud = (x, y, sc, c = "#fff", o = .92) => `<g transform="translate(${x} ${y}) scale(${sc})" opacity="${o}"><ellipse cx="18" cy="14" rx="18" ry="9" fill="${c}"/><ellipse cx="34" cy="9" rx="14" ry="10" fill="${c}"/><ellipse cx="50" cy="15" rx="13" ry="8" fill="${c}"/><rect x="6" y="14" width="52" height="9" rx="4.5" fill="${c}"/></g>`;
+    if (sky.cloud) d += `<g class="hscl">${cloud(30, 30, .9, night ? "#475569" : "#fff")}${cloud(196, 18, .7, night ? "#3f4b5e" : "#fff", .85)}${cloud(286, 50, .65, night ? "#475569" : "#f8fafc")}${grey ? cloud(110, 6, .8, "#cbd5e1", .9) : ""}</g>`;
+    if (sky.rain) d += `<g class="hsrn">${Array.from({ length: 30 }, (_, i) => `<path d="M${(i * 37) % 360} ${(i * 23) % 130} l-3 9" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>`).join("")}</g>`;
+    if (sky.snow) d += `<g class="hssn">${Array.from({ length: 34 }, (_, i) => `<circle cx="${(i * 41) % 360}" cy="${(i * 29) % 150}" r="${i % 3 ? 1.5 : 2.2}" fill="#fff" opacity=".9"/>`).join("")}</g>`;
+    return d;
+  }
   /* Kleine Möbel-Silhouette je Raumtyp (unten im Raum), Breite ca. 24, Höhe ca. 14 */
   _hsFur(type, x, y, sc) {
     const P = {
@@ -59,27 +74,18 @@
     const S = rooms.map((r) => ({ r, s: this._rkState(r) })), byId = Object.fromEntries(S.map((x) => [x.r.id, x.s]));
     const anyHeat = S.some((x) => x.s.heating), fset = new Set(rooms.map((r) => r.fuel || "erdgas")), fuel = fset.size === 1 ? [...fset][0] : "erdgas";
     const pvOn = this._pvNow() != null, pvW = pvOn ? this._pvNow() : 0, night = sky.tod === "night";
-    const SK = { night: ["#0a1430", "#26325f"], morning: ["#f7b98a", "#cfe0f7"], evening: ["#f29a6a", "#5d4b8c"], day: ["#6fbcff", "#e2f3ff"] }[sky.tod];
+    const SK = this._hsSkyCols(sky.tod), HC = this._hsHouseCols(night);
     const grey = sky.cloud && !night, wh = sky.frost || sky.snow;
     const lg = (id, st, x2 = 0, y2 = 1) => `<linearGradient id="${q(id)}" x1="0" y1="0" x2="${x2}" y2="${y2}">${st.map(([o, c, a]) => `<stop offset="${o}" stop-color="${c}"${a != null ? ` stop-opacity="${a}"` : ""}/>`).join("")}</linearGradient>`;
-    let d = `<defs>${lg("sk", [[0, grey ? "#93a7bf" : SK[0]], [1, grey ? "#dde5ee" : SK[1]]])}${lg("rf", [[0, "#c2564d"], [1, "#7a2420"]])}${lg("rf2", [[0, "#000", .0], [1, "#000", .28]])}
-      ${lg("wl", night ? [[0, "#5b5146"], [1, "#433b33"]] : [[0, "#f4ead8"], [1, "#e2d3b8"]], 1, 0)}${lg("hw", [[0, "#f97316", .9], [1, "#f97316", 0]], 0, 1)}
+    let d = `<defs>${lg("sk", [[0, grey && !this._hsx().S.c ? "#93a7bf" : SK[0]], [1, grey && !this._hsx().S.c ? "#dde5ee" : SK[1]]])}${lg("rf", [[0, HC.roof[0]], [1, HC.roof[1]]])}${lg("rf2", [[0, "#000", .0], [1, "#000", .28]])}
+      ${lg("wl", this._hsx().house === "klassisch" && night ? [[0, "#5b5146"], [1, "#433b33"]] : [[0, HC.wall[0]], [1, HC.wall[1]]], 1, 0)}${lg("hw", [[0, "#f97316", .9], [1, "#f97316", 0]], 0, 1)}
       ${lg("gr", night ? [[0, wh ? "#c7d0dc" : "#1c3a28"], [1, wh ? "#9aa6b5" : "#132a1c"]] : [[0, wh ? "#ffffff" : "#5fd27e"], [1, wh ? "#dfe7f0" : "#2f9e57"]])}
       ${lg("so", night ? [[0, "#2a211b"], [1, "#16110d"]] : [[0, "#7a5a40"], [1, "#4e3826"]])}${lg("kl", [[0, "#9ca3af"], [1, "#6b7280"]])}
       ${lg("gl", night ? [[0, "#fde68a"], [1, "#f59e0b"]] : [[0, "#e0f2fe"], [1, "#7dd3fc"]], .6, 1)}
       <radialGradient id="${q("sun")}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7c2"/><stop offset=".55" stop-color="#fde68a"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
       <pattern id="${q("tl")}" width="10" height="6" patternUnits="userSpaceOnUse"><path d="M0 5.5 h10 M5 0 v5.5" stroke="#5b1a17" stroke-width=".7" opacity=".55"/></pattern>
       <pattern id="${q("br")}" width="8" height="4" patternUnits="userSpaceOnUse"><path d="M0 3.6 h8 M4 0 v3.6" stroke="#5b1a17" stroke-width=".5" opacity=".6"/></pattern></defs>`;
-    /* Himmel */
-    d += `<rect width="360" height="200" fill="url(#${q("sk")})"/>`;
-    if (night) d += [[24, 18], [64, 40], [108, 12], [150, 30], [232, 14], [276, 54], [204, 42], [344, 70], [20, 70], [330, 12]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? .9 : 1.4}" fill="#fff" opacity="${i % 2 ? .6 : .95}"/>`).join("") +
-      `<circle cx="320" cy="32" r="22" fill="#fef3c7" opacity=".12"/><circle cx="320" cy="32" r="11" fill="#fef3c7"/><circle cx="324" cy="28" r="10" fill="${grey ? "#93a7bf" : "#1b2750"}"/>`;
-    else if (!grey || sky.w === "partlycloudy") { const sx = sky.tod === "morning" ? 34 : sky.tod === "evening" ? 326 : 314, sy = sky.tod === "day" ? 32 : 60;
-      d += `<circle cx="${sx}" cy="${sy}" r="30" fill="url(#${q("sun")})"/><circle cx="${sx}" cy="${sy}" r="11" fill="#fde047"/>` + (sky.tod === "day" && !grey ? `<path d="M120 30 q3 -3 6 0 q3 -3 6 0 M140 22 q2.4 -2.4 4.8 0 q2.4 -2.4 4.8 0" fill="none" stroke="#334155" stroke-width="1.1" stroke-linecap="round" opacity=".6"/>` : ""); }
-    const cloud = (x, y, sc, c = "#fff", o = .92) => `<g transform="translate(${x} ${y}) scale(${sc})" opacity="${o}"><ellipse cx="18" cy="14" rx="18" ry="9" fill="${c}"/><ellipse cx="34" cy="9" rx="14" ry="10" fill="${c}"/><ellipse cx="50" cy="15" rx="13" ry="8" fill="${c}"/><rect x="6" y="14" width="52" height="9" rx="4.5" fill="${c}"/></g>`;
-    if (sky.cloud) d += `<g class="hscl">${cloud(30, 30, .9, night ? "#475569" : "#fff")}${cloud(196, 18, .7, night ? "#3f4b5e" : "#fff", .85)}${cloud(286, 50, .65, night ? "#475569" : "#f8fafc")}${grey ? cloud(110, 6, .8, "#cbd5e1", .9) : ""}</g>`;
-    if (sky.rain) d += `<g class="hsrn">${Array.from({ length: 30 }, (_, i) => `<path d="M${(i * 37) % 360} ${(i * 23) % 130} l-3 9" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>`).join("")}</g>`;
-    if (sky.snow) d += `<g class="hssn">${Array.from({ length: 34 }, (_, i) => `<circle cx="${(i * 41) % 360}" cy="${(i * 29) % 150}" r="${i % 3 ? 1.5 : 2.2}" fill="#fff" opacity=".9"/>`).join("")}</g>`;
+    d += this._hsSkyDraw(sky, q);
     /* Garten: Baum, Büsche, Zaun, Laterne */
     const X0 = 76, X1 = 284, top = 72, bot = 160, n = Math.max(1, fl.length), fh = (bot - top) / n;
     d += `<rect x="-2" y="158" width="364" height="10" fill="url(#${q("gr")})"/>`;
@@ -149,7 +155,7 @@
     const pc = on ? "#fb923c" : "#94a3b8", px = X0 + 3.5;
     d += `<path d="M${kx + 72} ${ky + 4} H${X1 + 1} V${top + 4}" fill="none" stroke="${pc}" stroke-width="1.8" opacity=".9"/><path d="M${kx + 72} ${ky + 9} H${X1 + 3.5} V${top + 4}" fill="none" stroke="${on ? "#60a5fa" : "#94a3b8"}" stroke-width="1.4" opacity=".75"/>` +
       fl.map((f, fi) => `<path d="M${X1 + 1} ${top + fi * fh + fh - 8} h-5" stroke="${pc}" stroke-width="1.6"/>`).join("");
-    return { svg: `<svg viewBox="${NR ? "46 6 268 194" : "0 0 360 200"}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Haus-Szene">${d}</svg>`, key: [NR ? "n" : "w", JSON.stringify(this._cfg.layout.short || {}), sky.tod, sky.w, sky.frost ? 1 : 0, pvOn ? (pvW > 50 ? 2 : 1) : 0, fuel, anyHeat ? 1 : 0, this._rkCfg().anim, fl.map((f) => f.r.map((r) => { const s = byId[r.id]; return r.id + ":" + s.k + (s.cur != null ? num(s.cur, 1) : "") + (s.heating ? "h" : "") + (s.here ? "p" : "") + (s.open.length || s.tilt.length ? "o" : "") + this._rkType(r); }).join(",")).join("/")].join("|") };
+    return { svg: `<svg viewBox="${NR ? "46 6 268 194" : "0 0 360 200"}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Haus-Szene">${d}</svg>`, key: [NR ? "n" : "w", this._hsx().house, this._hsx().sky, JSON.stringify(this._cfg.layout.short || {}), sky.tod, sky.w, sky.frost ? 1 : 0, pvOn ? (pvW > 50 ? 2 : 1) : 0, fuel, anyHeat ? 1 : 0, this._rkCfg().anim, fl.map((f) => f.r.map((r) => { const s = byId[r.id]; return r.id + ":" + s.k + (s.cur != null ? num(s.cur, 1) : "") + (s.heating ? "h" : "") + (s.here ? "p" : "") + (s.open.length || s.tilt.length ? "o" : "") + this._rkType(r); }).join(",")).join("/")].join("|") };
   }
   /* Name in der Szene: eigener Kurzname, sonst ohne „-zimmer“/„-raum“ (Kinderzimmer → Kinder, Wohnzimmer → Wohnen) */
   _hsName(r) {
@@ -176,11 +182,12 @@
     const c = this._hsCfg(), h = this._cfg.layout.hs || {};
     return `<div class="lsec">${ic("home", 15)}Kopfkarte in Modul 1</div>
       <div class="ltog"><span>Haus-Szene<small class="mut" style="display:block">Deine Räume im Haus-Schnitt nach Etagen (Gruppen). Aus: das Modul-Logo wie bisher.</small></span><button class="sw ${!h.off ? "on" : ""}" data-act="hsoff" aria-pressed="${!h.off}" aria-label="Haus-Szene"></button></div>
-      ${!h.off ? `<div class="ltog"><span>Tageszeit und Wetter<small class="mut" style="display:block">Himmel nach Sonnenstand und Wetterquelle, Schnee bei Frost.</small></span><button class="sw ${c.wx ? "on" : ""}" data-act="hswx" aria-pressed="${c.wx}" aria-label="Tageszeit und Wetter"></button></div>` : ""}`;
+      ${!h.off ? `<div class="ltog"><span>Tageszeit und Wetter<small class="mut" style="display:block">Himmel nach Sonnenstand und Wetterquelle, Schnee bei Frost.</small></span><button class="sw ${c.wx ? "on" : ""}" data-act="hswx" aria-pressed="${c.wx}" aria-label="Tageszeit und Wetter"></button></div>${this._hsxLook()}` : ""}`;
   }
   _hsAct(a, b) {
     const L = this._cfg.layout;
     if (a === "hsgo") { this._hsGo(b.dataset.id); return true; }
+    if (this._hsxAct(a, b)) return true;
     if (a === "hsoff") L.hs = { ...(L.hs || {}), off: !(L.hs || {}).off };
     else if (a === "hswx") L.hs = { ...(L.hs || {}), wx: !this._hsCfg().wx };
     else return false;

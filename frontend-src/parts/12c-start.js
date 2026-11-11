@@ -114,8 +114,8 @@
   }
   _hzEnergie() {
     if (!this._enOn()) return ""; const N = this._enNow(); if (!N) return "";
-    const net = N.exp > 0 ? this._labTile("Netz", `${num(N.exp / 1000, 1)} kW`, "Einspeisung", "green") : this._labTile("Netz", `${num(N.imp / 1000, 1)} kW`, N.imp > 0 ? "Bezug" : "ausgeglichen", N.imp > 0 ? "amber" : "");
-    return `<div class="card hzgo" data-act="hzgo" data-k="en" role="button" tabindex="0"><h2>${ic("energy", 18)}Energie jetzt<span class="hzrt">Modul 3</span></h2><div class="lugrid">${this._labTile("Solar", `${num(N.pv / 1000, 1)} kW`, `Haus ${num(N.house / 1000, 1)} kW`)}${N.soc != null ? this._labTile("Batterie", `${num(N.soc, 0)} %`, N.bc > 0 ? `lädt mit ${num(N.bc / 1000, 1)} kW` : N.dis > 0 ? `entlädt mit ${num(N.dis / 1000, 1)} kW` : "ruht") : ""}${net}</div></div>`;
+    const mini = this._m3ScMini(N), net = N.exp > 0 ? this._labTile("Netz", `${num(N.exp / 1000, 1)} kW`, "Einspeisung", "green") : this._labTile("Netz", `${num(N.imp / 1000, 1)} kW`, N.imp > 0 ? "Bezug" : "ausgeglichen", N.imp > 0 ? "amber" : "");
+    return `<div class="card hzgo" data-act="hzgo" data-k="en" role="button" tabindex="0"><h2>${ic("energy", 18)}Energie jetzt<span class="hzrt">Modul 3</span></h2>${mini ? `<div class="m3mrow">${mini}` : ""}<div class="lugrid">${mini ? this._labTile("Haus", `${num(N.house / 1000, 1)} kW`, `${N.house > 0 ? Math.round(Math.min(100, (N.pv2h + N.b2h) / N.house * 100)) : 100} % aus Solar${N.b2h > 20 ? " und Batterie" : ""}`, "green") : ""}${this._labTile("Solar", `${num(N.pv / 1000, 1)} kW`, `Haus ${num(N.house / 1000, 1)} kW`)}${N.soc != null ? this._labTile("Batterie", `${num(N.soc, 0)} %`, N.bc > 0 ? `lädt mit ${num(N.bc / 1000, 1)} kW` : N.dis > 0 ? `entlädt mit ${num(N.dis / 1000, 1)} kW` : "ruht") : ""}${net}</div>${mini ? "</div>" : ""}</div>`;
   }
   _hzMuell() {
     if (!this._muOn()) return ""; this._muLoad(); const S = this._mu(), rows = (S.bins || []).filter((x) => x.next); if (!S.on || !rows.length) return "";

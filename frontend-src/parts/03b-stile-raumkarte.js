@@ -199,4 +199,69 @@ div.rk2pl{cursor:default}
 .rk2art.mini .hw path,.rk2art.mini .aw path,.rk2art.sm *{animation:none!important}
 @media(prefers-reduced-motion:reduce){.rk2art *{animation:none!important}}
 @media(max-width:600px){.rk2top{height:128px}.rk2ring,.rk2ring svg{width:80px;height:80px}.rk2rv b{font-size:1.18rem}.rk2mid{gap:10px}.room.rk2>*:not(.rk2top){margin-left:14px;margin-right:14px}}
+/* Modul 3 · Stufe 2: Energiefluss HD und Hinweise */
+.m3fc h2{flex-wrap:wrap}.m3big{margin-left:auto;font-size:.8rem}
+.m3fl{max-width:470px}.m3fl .m3tr{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;opacity:.9}
+.m3fl .m3gl{fill:none;stroke-linecap:round;opacity:.32}.m3fl .m3ln{fill:none;stroke-linecap:round}
+.m3fl .m3dt{fill:none;stroke:#fff;stroke-linecap:round;stroke-dasharray:0 15;opacity:0}
+.m3fl[data-an=dezent] .m3dt,.m3fl[data-an=voll] .m3dt{opacity:.85;animation:m3run 1.6s linear infinite}
+@keyframes m3run{to{stroke-dashoffset:-30}}
+.m3fl .m3pq{fill:color-mix(in srgb,var(--c) 12%,var(--card));stroke-width:2.2}
+.m3fl .m3nd{cursor:pointer;outline:none}.m3fl .m3nd:not(.on) .gx{opacity:.55;filter:saturate(.5)}
+.m3fl .m3nd.sel .m3pq{stroke-width:3.6}.m3fl .m3nd:focus-visible .m3pq{stroke-width:3.6;stroke:var(--primary-color)!important}
+.m3fl[data-an=voll] .m3nd.on .gx{animation:rkGlow 2.4s ease-in-out infinite alternate}
+.m3fn1{font-size:12px;font-weight:700;text-anchor:middle;fill:var(--primary-text-color)}.m3fn2{font-size:11.5px;font-weight:700;text-anchor:middle}
+.m3fd{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:8px 0 0;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--c) 10%,var(--card));border:1px solid color-mix(in srgb,var(--c) 40%,var(--line))}
+.m3fd>b{font-size:.95rem}.m3fd span{display:flex;flex-direction:column;font-weight:700;font-size:.88rem}.m3fd small{font-weight:500;color:var(--mut);font-size:.7rem}
+.m3fd .m3go{flex:none;padding:6px 12px;margin-left:auto}.m3fd .m3fx{flex:none}.m3fd em{flex:1 1 100%;font-style:normal}
+.m3hl{display:flex;flex-direction:column;gap:8px}
+.m3hn{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;padding:10px 12px 10px 14px;border-radius:14px;background:color-mix(in srgb,var(--c) 7%,var(--card));border:1px solid var(--line);border-left:4px solid var(--c)}
+.m3hn b{display:block;font-size:.9rem}.m3hn span{display:block;color:var(--mut);font-size:.8rem;margin-top:2px}
+.m3hb{font:inherit;font-size:.75rem;font-weight:750;padding:5px 11px;border-radius:99px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--primary-text-color);cursor:pointer;white-space:nowrap}
+@media(prefers-reduced-motion:reduce){.m3fl *{animation:none!important}}
+@media(max-width:600px){.m3hn{grid-template-columns:32px 1fr;gap:10px}.m3hn .gx{width:32px;height:32px}.m3hb{grid-column:2;justify-self:start}.m3fd span{font-size:.82rem}}
+/* Modul 3 · Stufe 3: Energie-Szene im Banner */
+.hero.m3x{min-height:230px}
+.m3ss{position:absolute;right:16px;top:14px;bottom:14px;width:min(48%,500px);border-radius:18px;overflow:hidden;z-index:1;box-shadow:0 10px 26px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.18)}
+.m3ss svg{display:block;width:100%;height:100%;background:#9fb1c6}
+.hero.m3x .mring{right:calc(min(48%,500px) + 34px)}
+.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub,.hero.m3x .enbil,.hero.m3x .chips{max-width:calc(100% - min(48%,500px) - 170px)}
+.m3ss .m3tap{cursor:pointer;outline:none}.m3ss .m3tap:hover,.m3ss .m3tap:focus-visible{filter:brightness(1.12) drop-shadow(0 0 4px #fff)}
+.m3ss .m3dt{fill:none;stroke:#fff;stroke-linecap:round;stroke-dasharray:0 11;opacity:0}
+.m3ss[data-an=dezent] .m3dt,.m3ss[data-an=voll] .m3dt{opacity:.9;animation:m3run 1.6s linear infinite}
+.m3ss[data-an=dezent] .m3bz,.m3ss[data-an=voll] .m3bz{animation:rkGlow 1.2s ease-in-out infinite alternate}
+.m3ss[data-an=voll] .m3gls{animation:rkGlow 3s ease-in-out infinite alternate}
+.m3ss[data-an=voll] .hscl{animation:hsDrift 14s ease-in-out infinite alternate}.m3ss[data-an=voll] .hsrn,.m3ss[data-an=voll] .hssn{animation:hsFall 2.6s linear infinite}
+.m3ss.m3mini{position:relative;right:auto;top:auto;bottom:auto;width:auto;height:auto;aspect-ratio:360/130;margin:0;border-radius:14px;box-shadow:none}
+.m3mrow{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:12px;align-items:center}.m3mrow .lugrid{margin:0;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:700px){.m3mrow{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.m3ss *{animation:none!important}}
+@media(max-width:900px) and (min-width:601px){.hero.m3x .mring{display:none}.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub,.hero.m3x .enbil,.hero.m3x .chips{max-width:calc(100% - min(48%,500px) - 30px)}}
+@media(max-width:600px){.hero.m3x{min-height:0}.m3ss{position:relative;right:auto;top:auto;bottom:auto;width:auto;height:auto;aspect-ratio:360/128;margin:0 0 12px;border-radius:14px}.hero.m3x .mring{right:16px;top:auto;bottom:16px}.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub{max-width:calc(100% - 96px)}.hero.m3x .enbil,.hero.m3x .chips{max-width:none}}
+/* Modul 3 · Stufe 4: Diagramme & Kosten */
+.m3bandl{display:flex;justify-content:space-between;align-items:center;gap:4px 12px;flex-wrap:wrap;font-size:.76rem;color:var(--mut);margin:2px 0 8px}.m3bsc{display:inline-flex;align-items:center;gap:6px;font-size:.7rem}.m3bsc i{width:64px;height:7px;border-radius:4px;background:linear-gradient(90deg,#4ade80,#a3e635,#facc15,#fb923c,#f87171)}
+.m3cseg{margin:0 0 10px;width:max-content}
+.m3cal{display:grid;grid-template-columns:14px repeat(31,minmax(0,1fr));gap:3px;align-items:center}.m3cal b{font-size:.62rem;color:var(--mut);font-weight:600}
+.m3cal i{aspect-ratio:1;border-radius:3px;display:grid;place-items:center;font-size:.55rem;font-style:normal;color:#422006;cursor:pointer;line-height:1}.m3cal i.em{background:color-mix(in srgb,var(--mut) 12%,transparent);cursor:default}.m3cal i.nx{visibility:hidden}
+.m3cal i[data-act]:hover{outline:2px solid #fde047}
+.m3call{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--mut);margin:10px 0 0}.m3call i{flex:none;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#3a3320,#fbbf24)}
+.m3wf{max-height:240px}
+.m3pg{display:flex;align-items:center;gap:16px}.m3pg>div{display:flex;flex-direction:column;gap:2px}.m3pig{flex:none;width:78px;height:78px}.m3pgv{font-size:2rem;font-weight:800;line-height:1.05;letter-spacing:-.02em}
+.m3pgb{height:12px;border-radius:6px;background:color-mix(in srgb,var(--mut) 18%,transparent);margin:14px 0 6px;overflow:hidden}.m3pgb i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#f472b6,#fbbf24)}
+.m3pgl{display:flex;justify-content:space-between;font-size:.78rem;color:var(--mut)}
+.m3dist{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:center}
+.m3dr{position:relative;width:130px;height:130px}.m3dr svg{width:100%;height:100%}.m3dr>div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.m3dr b{font-size:1.7rem;line-height:1}.m3dr span{font-size:.72rem;color:var(--mut)}
+.m3dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:6px}
+.m3di{display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;padding:6px 10px;border-radius:12px;background:color-mix(in srgb,var(--c) 8%,var(--card));border:1px solid var(--line);border-left:3px solid var(--c)}
+.m3di small{display:block;font-size:.7rem;color:var(--mut)}.m3di b{font-size:.86rem}.m3di em{font-style:normal;color:#fbbf24}.m3de{font-size:.78rem;color:var(--mut)}
+.m3di.rest{cursor:pointer}.m3di .m3dx{color:var(--primary-color);font-weight:650}
+.m3dsub{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px;margin:10px 0 0;padding:10px;border-radius:12px;background:color-mix(in srgb,#2dd4bf 6%,transparent)}.m3dsub>div{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;font-size:.82rem}.m3dsub span{color:var(--mut)}.m3dsub em{grid-column:1/-1;font-style:normal}
+@media(max-width:700px){.m3dist{grid-template-columns:1fr;justify-items:center}.m3dl{grid-template-columns:1fr;width:100%}.m3cal{gap:1.5px}.m3cal i{border-radius:2px;font-size:.45rem}}
+/* W7 · Haus-Stil und Himmel */
+.hsxr{margin:8px 0}.hsxr>b{display:block;font-size:.78rem;color:var(--mut);margin-bottom:6px}.hsxc{display:flex;flex-wrap:wrap;gap:6px}
+.hsxb{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:.8rem;padding:6px 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--primary-text-color);cursor:pointer}.hsxb i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.hsxb.sel{border-color:var(--primary-color);box-shadow:0 0 0 1px var(--primary-color)}.hsxb.lk{opacity:.65}
+.hs2[data-an=voll] .hsau,.m3ss[data-an=voll] .hsau{animation:rkGlow 4s ease-in-out infinite alternate}
+/* Bewegung nur, wenn sichtbar (H2) */
+[data-vis="0"],[data-vis="0"] *{animation-play-state:paused!important}
 `;

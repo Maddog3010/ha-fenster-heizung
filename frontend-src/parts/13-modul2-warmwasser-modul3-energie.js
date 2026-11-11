@@ -660,12 +660,15 @@
       let g = ""; for (let w = 0, c = 0; w <= top && c < 12; w += sk, c++) g += `<line x1="${L}" x2="${Wd - R}" y1="${Y(w)}" y2="${Y(w)}" stroke="currentColor" opacity=".13"/><text x="${L - 6}" y="${Y(w) + 4}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${w / 1000}</text>`;
       for (const h of [0, 6, 12, 18, 24]) g += `<text x="${X(h * 60)}" y="${Ht - 8}" text-anchor="${h === 0 ? "start" : h === 24 ? "end" : "middle"}" font-size="11" fill="currentColor" opacity=".6">${String(h).padStart(2, "0")}:00</text>`;
       const z = () => 0, hasB = s.some((x) => x.bd > 5), fcp = fc.length > 1 ? `<path d="${fc.map((x, i) => `${i ? "L" : "M"}${X(x[0] * 60 + 30).toFixed(1)} ${Y(x[1] * 1000).toFixed(1)}`).join("")}" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="5 4" opacity="${(.85 * op("pv")).toFixed(2)}"/>` : "";
-      this._enTipD = { k: "day", Wd, L, iw, s };
-      return `<div class="enchw"><svg class="wwchart enchart" viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="Leistung"><text x="${L - 6}" y="${T - 10}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">kW</text>${g}${area(z, (x) => x.pv, "#fbbf24", .3, "pv")}${hasB ? area(z, (x) => x.bd, "#a78bfa", .55, "bat") : ""}${area((x) => x.bd, (x) => x.bd + x.imp, "#f87171", .55, "imp")}${line("pv", "#fbbf24", 1.6)}${E.ent.pv2 && s.some((x) => x.pvb > 0) ? line("pvb", "#fb923c", 1.2) : ""}${fcp}${line("house", "#2dd4bf", 2.4)}<line class="encur" x1="0" x2="0" y1="${T}" y2="${T + ih}" stroke="currentColor" opacity="0"/></svg><div class="entt" hidden></div></div>
+      this._enTipD = { k: "day", Wd, L, iw, s, pr: this._m3On() && H.off === 0 && !!this._m3Prices() };
+      const band = this._enTipD.pr ? this._m3Band(L, iw, T + ih) : null, Hb = Ht + (band ? 24 : 0);
+      if (band) g = g.split(`y="${Ht - 8}"`).join(`y="${Hb - 8}"`);
+      return `<div class="enchw"><svg class="wwchart enchart" viewBox="0 0 ${Wd} ${Hb}" role="img" aria-label="Leistung"><text x="${L - 6}" y="${T - 10}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">kW</text>${g}${area(z, (x) => x.pv, "#fbbf24", .3, "pv")}${hasB ? area(z, (x) => x.bd, "#a78bfa", .55, "bat") : ""}${area((x) => x.bd, (x) => x.bd + x.imp, "#f87171", .55, "imp")}${line("pv", "#fbbf24", 1.6)}${E.ent.pv2 && s.some((x) => x.pvb > 0) ? line("pvb", "#fb923c", 1.2) : ""}${fcp}${line("house", "#2dd4bf", 2.4)}<line class="encur" x1="0" x2="0" y1="${T}" y2="${T + ih}" stroke="currentColor" opacity="0"/>${band ? band.g : ""}</svg><div class="entt" hidden></div></div>${band ? band.l : ""}
         <div class="legend"><span><i style="background:#fbbf24"></i>${E.ent.pv2 ? "Solar gesamt" : "Solar"}</span>${E.ent.pv2 && s.some((x) => x.pvb > 0) ? `<span><i style="background:#fb923c"></i>${esc(this._enPvNames()[1])}</span>` : ""}${hasB ? `<span><i style="background:#a78bfa"></i>aus Batterie</span>` : ""}<span><i style="background:#f87171"></i>aus dem Netz</span><span><i style="background:#2dd4bf"></i>Verbrauch</span>${fcp ? `<span><i style="background:transparent;border:1px dashed #fbbf24"></i>Prognose (Modul 16)</span>` : ""}</div>`;
     }
     const b = this._enBk(), now = Date.now(), yr = E.range === "year";
     const v = b.map((d) => { const house = Math.max(0, d.pv - d.exp + d.imp - d.bchg + d.bdis), sd = Math.min(house, Math.max(0, d.pv - d.exp - d.bchg)), bd = Math.min(Math.max(0, house - sd), d.bdis); return { ...d, house, sd, bd, g: Math.max(0, house - sd - bd), fut: +d.d - (yr ? 15 * 864e5 : 432e5) > now }; });
+    if (this._m3On()) { if (yr && this._m3CalOn) return this._m3Cal(); const pv0 = Math.max(0, ...v.filter((d) => !d.fut).map((d) => d.pv)); if (pv0 > 0) v.forEach((d) => { d.star = !d.fut && d.pv === pv0 && v.length > 7; }); return this._m3Bars(v, { Wd, Ht, L, R, T, ih }); }
     const up = Math.max(1, ...v.map((d) => d.sd + d.bd + d.g)), dn = Math.max(0, ...v.map((d) => d.exp)), stp = enStep(up + dn), topU = Math.ceil(up / stp) * stp, topD = dn > 0 ? Math.ceil(dn / stp) * stp : 0;
     const Y = (x) => T + ((topU - x) / (topU + topD)) * ih, gw = iw / v.length, bw = Math.max(3, Math.min(26, gw * .64));
     let s = ""; for (let x = -topD, c = 0; x <= topU && c < 14; x += stp, c++) s += `<line x1="${L}" x2="${Wd - R}" y1="${Y(x).toFixed(1)}" y2="${Y(x).toFixed(1)}" stroke="currentColor" opacity="${x === 0 ? .35 : .13}"/><text x="${L - 6}" y="${(Y(x) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${num(Math.abs(x), x % 1 ? 1 : 0)}</text>`;
@@ -714,6 +717,7 @@
       html = `<b>${yr ? d.d.toLocaleDateString("de-DE", { month: "long", year: "numeric" }) : d.d.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" })}</b><span style="color:#fbbf24">Solar ${kv(d.pv)}</span><span style="color:#2dd4bf">Verbrauch ${kv(d.house)}</span><span style="color:#f87171">Netz ${kv(d.imp)} · ${num(d.imp * price / 100, 2)} €</span>${d.exp > .05 ? `<span style="color:#34d399">Einspeisung ${kv(d.exp)}</span>` : ""}${aut != null ? `<span>Autarkie ${aut} %</span>` : ""}`;
       if (cur) { cur.setAttribute("x", (D.L + i * D.gw).toFixed(1)); cur.setAttribute("width", D.gw.toFixed(1)); cur.setAttribute("opacity", ".5"); }
     }
+    if (D.k === "day" && D.pr) { const pq = this._m3PriceAt((cx - D.L) / D.iw * 1440); if (pq) html += `<span style="color:${pq.rel[1]}">Strom ${num(pq.v, 1)} ct · ${pq.rel[0]}</span>`; }
     tt.innerHTML = html; tt.hidden = false;
     const W = svg.getBoundingClientRect().width, px = cx / D.Wd * W, tw = tt.offsetWidth || 180;
     tt.style.left = Math.max(0, Math.min(W - tw, px + (px + 14 + tw > W ? -tw - 14 : 14))) + "px";
@@ -750,7 +754,7 @@
     const selfNow = n.pv > 20 ? Math.round(Math.min(100, Math.max(0, (n.pv - n.exp) / n.pv * 100))) : null;
     const ring = this._m3On() ? this._m3Ring(ringA ? autarky : covered, ringA ? evq : selfNow, ringA, ringA ? `Autarkie${perW ? " " + perW : ""}` : "gedeckt jetzt") : this._modRing(ringA ? autarky : covered, ringA ? `Autarkie${perW ? " " + perW : ""}` : "gedeckt jetzt").replace('<div class="mring" aria-hidden="true"', `<div class="mring enrg" data-act="enring" role="button" tabindex="0" title="Tippen: ${ringA ? "gedeckt jetzt" : "Autarkie"}" aria-label="${ringA ? "Autarkie" : "Gedeckt jetzt"}, tippen zum Umschalten"`);
     const pv0 = this._pv(), prC = this._m3On() ? this._m3Price() : pv0.price_mode === "entity" && pv0.price_sensor ? `<span class="chip enpr">${ic("bolt", 16)}Strom jetzt ${num(price, 1)} ct</span>` : "";
-    const hero = `<div class="card hero mh hr a-en enh${this._m3On() ? " m3h0" : ""}">${this._modLogo("en")}${ring}<div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
+    const scn = this._m3Scene(n), hero = `<div class="card hero mh hr a-en enh${this._m3On() ? " m3h0" : ""}${scn ? " m3x" : ""}">${scn || this._modLogo("en")}${ring}<div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
       ${ok ? `<div class="enbil">${esc(per)}: ${kwh(sum.pv)} kWh Solar · ${kwh(sum.house)} kWh verbraucht · <b class="${net >= 0 ? "pos" : "neg"}">${net >= 0 ? "+" : "−"}${num(Math.abs(net), 2)} € Bilanz</b></div>` : ""}
       <div class="chips"><span class="chip">${ic("sun", 16)}Solar ${wfmt(n.pv)}</span>${n.pvb != null && n.pvb >= 1 ? `<span class="chip">${ic("sun", 16)}davon ${esc(this._enPvNames()[1])} ${wfmt(n.pvb)}</span>` : ""}<span class="chip st ${n.exp > 20 ? "ok" : n.imp > 20 ? "warn" : ""}">${ic("bolt", 16)}${n.exp > 20 ? "Einspeisung " + wfmt(n.exp) : n.imp > 20 ? "Netzbezug " + wfmt(n.imp) : "Netz ausgeglichen"}</span>${n.hasBat ? `<span class="chip">${ic("energy", 16)}Batterie ${n.soc != null ? Math.round(n.soc) + " %" : ""}${n.bc > 20 ? " lädt" : n.dis > 20 ? " entlädt" : ""}</span>` : ""}${prC}${!ringA && autarky != null && isToday ? `<span class="chip st ok">${ic("check", 16)}Autarkie heute ${autarky} %</span>` : ""}</div></div>`;
     const nav = `<div class="ennav"><div class="seg wwseg enseg" role="group" aria-label="Zeitraum">${[["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]].map(([k, l]) => `<button class="${range === k ? "sel" : ""}" data-act="enrange" data-k="${k}" aria-pressed="${range === k}">${l}</button>`).join("")}</div>
@@ -766,13 +770,15 @@
     const m3 = this._m3On(), cmpP = (cur, old, good) => this._m3Cmp(cur, old, good, cmpOn);
     if (m3) { tl[0][5] = [evq != null ? `${evq} % selbst genutzt` : sum && sum.nocnt ? "Sensor fehlt" : ok ? "" : "Keine Daten", ok && sum.pvb > 0.005 ? `davon ${esc(this._enPvNames()[1])} ${kwh(sum.pvb)}` : ""].filter(Boolean).join(" · "); tl[0][7] = { balk: !!(ok && sum.pvb > 0.005) }; [["pv", "up"], ["imp", "down"], ["exp", "none"], ["house", "down"]].forEach(([f, g], i) => { tl[i][6] = ok ? cmpP(sum[f], pv && pv[f], g) : ""; }); }
     const tiles = m3 ? this._m3Tiles(tl, ok, E.hl) : `<div class="tiles entiles">${tl.map(([f, ico, lab, v, c, sub, cm]) => `<button class="tile entile${E.hl === f ? " sel" : ""}" style="--a:${c}" data-act="entile" data-k="${f}" aria-pressed="${E.hl === f}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}<small>kWh</small></div><div class="g">${sub}</div>${cm ? `<div class="g">${cm}</div>` : ""}${ok ? this._enSpark(f, c) : ""}</button>`).join("")}</div>`;
-    const flow = `<div class="card"><h2>${ic("sun", 18)}Energiefluss jetzt</h2>${this._enFlow(n)}</div>`;
-    const chart = `<div class="card"><h2>${ic("chart", 18)}${range === "day" ? `Leistung · ${esc(this._enLabel(P, true))}` : `Energie pro ${range === "year" ? "Monat" : "Tag"} · ${esc(per)}`}<button class="ibtn gear" style="margin-left:auto" data-act="enreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._enChart()}${range === "day" ? "" : this._enNote()}</div>`;
+    const F = this._m3FlowOn() ? this._m3Flow(n) : null;
+    const flow = F ? `<div class="card m3fc"><h2>${ic("sun", 18)}Energiefluss jetzt${F.big}</h2>${F.svg}${F.det}</div>` : `<div class="card"><h2>${ic("sun", 18)}Energiefluss jetzt</h2>${this._enFlow(n)}</div>`;
+    const chart = `<div class="card"><h2>${ic("chart", 18)}${range === "day" ? `Leistung · ${esc(this._enLabel(P, true))}` : `${range === "year" && this._m3On() && this._m3CalOn ? "Solar-Kalender" : `Energie pro ${range === "year" ? "Monat" : "Tag"}`} · ${esc(per)}`}<button class="ibtn gear" style="margin-left:auto" data-act="enreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._enChart()}${range === "day" ? "" : this._enNote()}</div>`;
     // Verteilung (nur heute: Heizer und Heizstab liefern nur Tageswerte)
     const rooms = this._htrRooms(), heatK = rooms.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), heatPv = rooms.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
     const ws = this._mdState().ww, wwK = ws.ent.rod ? (this._wwMinutesOn(ws.ent.rod) || 0) / 60 * ws.pv.watt / 1000 : 0;
     let dist = "";
-    if (isToday && ok) {
+    if (isToday && ok && this._m3On()) dist = this._m3Dist(sum.house, heatK, heatPv, wwK, price);
+    else if (isToday && ok) {
       const restK = Math.max(0, sum.house - heatK - wwK), tot = Math.max(0.01, heatK + wwK + restK), items = [["Heizung (Raumheizer)", heatK, "#f97316", "flame"], ["Warmwasser (Heizstab)", wwK, "#38bdf8", "drop"], ["Haushalt und Rest", restK, "#2dd4bf", "home"]];
       dist = `<div class="card"><h2>${ic("layers", 18)}Wohin der Strom heute geht</h2>
         <div class="pvbar endist">${items.map(([, v, c]) => `<i style="width:${(v / tot * 100).toFixed(1)}%;background:${c}"></i>`).join("")}</div>
@@ -782,7 +788,7 @@
     // Kosten
     let cost = "";
     if (ok) {
-      cost = `<div class="card"><h2>${ic("total", 18)}Kosten und Vorteil · ${esc(per)}</h2>${this._enWater(buy, sell, saved, net)}
+      cost = `<div class="card"><h2>${ic("total", 18)}Kosten und Vorteil · ${esc(per)}</h2>${this._m3On() ? this._m3Water(buy, sell, saved, net) : this._enWater(buy, sell, saved, net)}
         <div class="enrows"><div class="sum"><span>Ohne Solar hättest du gezahlt</span><b>${num(eur(sum.house, price), 2)} €</b></div><div class="sum"><span>Vorteil durch Solar</span><b class="pos">${num(sell + saved, 2)} €</b></div></div>
         <div class="mut sm" style="margin:8px 0 0">Preise aus Modul 1 → Allgemein: ${num(price, 1)} ct/kWh Bezug, ${num(feed, 1)} ct/kWh Einspeisung${pv0.price_mode === "sensor" ? " (aktueller Wert des Preissensors)" : ""}.</div></div>`;
     }
@@ -802,14 +808,15 @@
     if (n.hasBat && n.soc != null && n.soc < 20 && n.pv < 200) tips.push(["energy", `Batterie nur noch bei ${Math.round(n.soc)} %.`, "Nachts und ohne Sonne kommt der Strom wieder aus dem Netz."]);
     this._enOut(n).forEach((nm) => tips.push(["alert!", `${esc(nm)} liefert nichts.`, "Die andere Anlage erzeugt Strom. Ist der Wechselrichter ausgesteckt, aus oder ohne Verbindung?"]));
     if (!tips.length) tips.push(["check", "Alles ruhig.", "Kein Überschuss, kein hoher Netzbezug."]);
-    const tipC = `<div class="card"><h2>${ic("info", 18)}Hinweise</h2>${tips.map(([ico, t, s]) => `<div class="dgs ${ico.endsWith("!") ? "warn" : "ok"}" style="grid-template-columns:28px 1fr">${ic(ico.replace("!", ""), 22)}<div><b>${t}</b>${s ? `<span>${s}</span>` : ""}</div></div>`).join("")}</div>`;
+    const tipC = F ? this._m3Tips(n, { heat, ww, car: this._m3Car() }) : `<div class="card"><h2>${ic("info", 18)}Hinweise</h2>${tips.map(([ico, t, s]) => `<div class="dgs ${ico.endsWith("!") ? "warn" : "ok"}" style="grid-template-columns:28px 1fr">${ic(ico.replace("!", ""), 22)}<div><b>${t}</b>${s ? `<span>${s}</span>` : ""}</div></div>`).join("")}</div>`;
     const o = (k, h) => h.replace('<div class="card', `<div style="order:${k}" class="card`);
     if (this._enTipX != null) Promise.resolve().then(() => this._enTipShow());
-    return `${hero}${nav}${this._mpWrap("en", { kacheln: tiles, fluss: flow, verlauf: chart, verteilung: dist || "", kosten: cost || "", heizung: heatC, hinweise: tipC })}`;
+    if (this._m3On()) Promise.resolve().then(() => this._m3Count());
+    return `${hero}${nav}${this._mpWrap("en", { kacheln: tiles, fluss: flow, verlauf: chart, verteilung: dist || "", kosten: cost || "", spar: this._m3On() && ok ? this._m3Pig() : "", heizung: heatC, hinweise: tipC })}`;
   }
   _enAct(a, b) {
     const E = this._enState(), k = b.dataset.k;
-    if (a === "enrange") { if (E.range !== k) { E.range = k; E.off = 0; this._enTipX = null; } this._enSave(); this._render(); }
+    if (a === "enrange") { if (E.range !== k) { E.range = k; E.off = 0; this._enTipX = null; this._m3Cnt = Date.now(); } this._enSave(); this._render(); }
     else if (a === "enoff") { const v = Number(k); E.off = v === 0 ? 0 : Math.min(0, (E.off || 0) + v); this._enTipX = null; this._render(); }
     else if (a === "enring") { E.ring = E.ring === "now" ? "aut" : "now"; this._enSave(); this._render(); }
     else if (a === "entile") { E.hl = E.hl === k ? "" : k; this._render(); }
@@ -834,6 +841,7 @@
   _enChange(t) {
     const f = t.dataset.f, E = this._enState();
     if (f === "enent") { E.ent[t.dataset.k] = t.value; if (t.dataset.k === "grid") this._gen.pv = { ...this._pv(), sensor: t.value }; this._enSave(true); if (this._stOpen) this._render(); return true; }
+    if (f === "enm3cost" || f === "enm3since") { const L = this._cfg.layout, v = String(t.value || "").trim(); L.m3 = { ...(L.m3 || {}) }; if (f === "enm3cost") { const n = parseFloat(v.replace(",", ".")); if (isFinite(n) && n > 0) L.m3.cost = Math.round(Math.min(1e6, n)); else delete L.m3.cost; } else if (/^\d{4}-\d{2}$/.test(v)) L.m3.since = v; else delete L.m3.since; this._m3PigD = null; this._saveLayout(); this._render(); return true; }
     if (f === "enname") { E[t.dataset.k] = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 20); this._enSave(true); this._render(); return true; }
     return false;
   }

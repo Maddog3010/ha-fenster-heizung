@@ -22,6 +22,24 @@ class FensterHeizungPanel extends HTMLElement {
       if (b) b.textContent = c.txt; if (f) f.style.width = c.pct + "%"; el.classList.toggle("done", c.left <= 0);
     });
   }
+  /* Gleicher Aufbau, neue Zahlen (Konzept K3): Werte, Linienstärken und Füllstände ins behaltene Element übernehmen,
+     damit laufende Animationen nicht neu starten. Nur für Elemente mit data-ks. false = Aufbau anders, dann ersetzen. */
+  _kkSync(o, n) {
+    const A = o.querySelectorAll("*"), B = n.querySelectorAll("*"); if (A.length !== B.length) return false;
+    for (let i = 0; i < A.length; i++) if (A[i].tagName !== B[i].tagName) return false;
+    for (let i = 0; i < A.length; i++) {
+      const x = A[i], y = B[i];
+      for (const at of y.attributes) { if (at.name === "id" || at.name === "href" || /url\(#/.test(at.value)) continue; if (x.getAttribute(at.name) !== at.value) x.setAttribute(at.name, at.value); }
+      if (!y.firstElementChild && x.textContent !== y.textContent) x.textContent = y.textContent;
+    }
+    return true;
+  }
+  /* Bewegung nur, wenn sichtbar (Konzept H2): Bilder außerhalb des Bildschirms halten an */
+  _visObs() {
+    if (typeof IntersectionObserver === "undefined" || !this.shadowRoot) return;
+    const io = this._io || (this._io = new IntersectionObserver((es) => es.forEach((e) => e.target.setAttribute("data-vis", e.isIntersecting ? "1" : "0")), { rootMargin: "40px" }));
+    io.disconnect(); this.shadowRoot.querySelectorAll("[data-an]").forEach((el) => io.observe(el));  /* neu beobachten: entfernte Bilder fallen so heraus */
+  }
   set hass(h) {
     const first = !this._hass;
     this._hass = h;

@@ -6,7 +6,13 @@
      bleibt das alte Bild im DOM stehen (siehe _render), Bewegungen laufen ohne Sprung weiter. */
   static RK_TYPES = [["wohnen", "Wohnzimmer"], ["schlafen", "Schlafzimmer"], ["bad", "Bad"], ["kind", "Kinderzimmer"], ["kueche", "Küche"], ["buero", "Büro"], ["flur", "Flur / Ankleide"], ["esszimmer", "Esszimmer"], ["wintergarten", "Wintergarten"], ["hwr", "Keller / Hauswirtschaft"], ["werkstatt", "Werkstatt / Hobby"], ["fitness", "Fitness"], ["dachboden", "Dachboden"], ["garage", "Garage"], ["carport", "Carport / Außen"]];
   static RK_COL = { heizt: "#fb923c", ok: "#2dd4bf", offen: "#60a5fa", gekippt: "#60a5fa", pause: "#f59e0b", nacht: "#a78bfa", hoff: "#94a3b8", aus: "#94a3b8" };
-  _rkCfg() { const k = this._cfg.layout.rk || {}; return { old: !!k.old || this._gxCfg().classic, anim: ["aus", "dezent", "voll"].includes(k.anim) ? k.anim : "dezent" }; }
+  /* Animationen: eine Einstellung für alle Module (Aus · Dezent · Voll); im Tablet-Modus eigene Stufe, Standard „Aus“ */
+  _rkCfg() { const k = this._cfg.layout.rk || {}, A = ["aus", "dezent", "voll"], norm = A.includes(k.anim) ? k.anim : "dezent", tab = A.includes(k.tanim) ? k.tanim : "aus", tm = !!(this._tmOn && this._tmOn()); return { old: !!k.old || this._gxCfg().classic, anim: tm ? tab : norm, norm, tab, tm }; }
+  _animLook() {
+    const c = this._rkCfg(), seg = (cur, act) => `<div class="seg oseg">${[["aus", "Aus"], ["dezent", "Dezent"], ["voll", "Voll"]].map(([k, l]) => `<button class="${cur === k ? "sel" : ""}" data-act="${act}" data-k="${k}">${l}</button>`).join("")}</div>`;
+    return `<div class="ltog rkan"><span>Animationen<small class="mut" style="display:block">Gilt für alle Module: Raumbilder, Szenen, Energiefluss. „Bewegung reduzieren“ am Gerät wird immer beachtet. Nicht sichtbare Bilder halten an.</small></span>${seg(c.norm, "rkanim")}</div>
+      <div class="ltog rkan"><span>Animationen im Tablet-Modus<small class="mut" style="display:block">Für Wand-Tablets. Standard: Aus.</small></span>${seg(c.tab, "rktanim")}</div>`;
+  }
   _rkOn() { return !this._rkCfg().old; }
   _rkTypeAuto(r) {
     const n = String(r.name || "").toLowerCase();
@@ -376,7 +382,7 @@
     const c = this._rkCfg();
     return `<div class="lsec">${ic("grid", 15)}Raumkarten in Modul 1</div>
       <div class="ltog"><span>Raumkarten wie bisher<small class="mut" style="display:block">An: Karten aus v1.7 mit Symbol und Kästen statt Raumbild und Ring</small></span><button class="sw ${c.old ? "on" : ""}" data-act="rkold" aria-pressed="${c.old}" aria-label="Raumkarten wie bisher"></button></div>
-      ${c.old ? "" : `<div class="ltog rkan"><span>Bewegung im Raumbild<small class="mut" style="display:block">Wärmewellen und Luft am Fenster. „Bewegung reduzieren“ am Gerät wird immer beachtet.</small></span><div class="seg oseg">${[["aus", "Aus"], ["dezent", "Dezent"], ["voll", "Voll"]].map(([k, l]) => `<button class="${c.anim === k ? "sel" : ""}" data-act="rkanim" data-k="${k}">${l}</button>`).join("")}</div></div>`}`;
+      ${c.old ? "" : this._animLook()}`;
   }
   /* ---------- Elektroheizer und Luftentfeuchter (Raumkarte 2.0) ----------
      Auf der Karte je Gerät eine Kachel mit HD-Bild, Zustand und Balken (Stufen bzw. Tank). Antippen öffnet das Gerät
@@ -401,7 +407,7 @@
   _rkLfTile(r, d) {
     const S = d.S, L = S.live || {}, [k, t] = this._lfState(L), A = S.ask || {};
     const tone = { run: "#22d3ee", warn: "#f59e0b", wait: "#60a5fa" }[k] || "#94a3b8", fill = L.fill != null ? Math.min(100, Math.round(L.fill * 100)) : null;
-    const tag = L.boost === "pv" ? " · ☀ PV" : L.boost ? " · günstig" : L.night ? ` · Nacht${L.quiet_on ? ", leise" : ""}` : "";
+    const tag = L.boost === "pv" || (L.pv_only && L.running && L.pv_ok) ? " · ☀ PV" : L.pv_only && L.code === "safe" && L.running ? " · Schimmelschutz" : L.boost ? " · günstig" : L.night ? ` · Nacht${L.quiet_on ? ", leise" : ""}` : "";
     const open = A.phase && A.phase !== "off" && !A.conf, n = (L.msgs || []).filter((m) => m[0] !== "noloc" || !A.conf).length;
     const sub = open ? "Standort heute noch nicht bestätigt" : [fill != null ? `Tank ${fill} %` : L.full ? "Tank voll" : "", L.on ? this._lfSince(L.since) : "", L.today_min ? `heute ${hmin(L.today_min)}` : ""].filter(Boolean).join(" · ") || (d.kind === "watch" ? "nur beobachten" : "Modul 1 regelt");
     return `<div class="rk2dv${k === "run" ? " run" : ""}" style="--c:${tone}"><button class="rk2dvb" data-act="lfrk" data-id="${esc(r.id)}" data-d="${esc(d.id)}" aria-label="${esc(d.name)} öffnen">
@@ -486,6 +492,7 @@
     if (a === "rktype") { const t = { ...(L.rtype || {}) }; if (b.dataset.k) t[this._modal.id] = b.dataset.k; else delete t[this._modal.id]; L.rtype = t; }
     else if (a === "rkold") L.rk = { ...(L.rk || {}), old: !this._rkCfg().old };
     else if (a === "rkanim") L.rk = { ...(L.rk || {}), anim: b.dataset.k };
+    else if (a === "rktanim") L.rk = { ...(L.rk || {}), tanim: b.dataset.k };
     else return false;
     this._saveLayout(); this._render(); this._renderModal(); return true;
   }

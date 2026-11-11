@@ -22,6 +22,9 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 05b-messraum, 05c-entfeuchter | Modul 1: Messraum, Luftentfeuchter |
 | 05e-raumkarte | Modul 1: Raumkarte 2.0 – Raumbilder (7 Typen + Messraum), Temperatur-Ring, Heizplan-Band, Fenster-Uhr, Menü „⋯“ |
 | 05d-grafik | Gemeinsame Grafik-Bibliothek: HD-Symbolsatz (38 Symbole), Herkunfts-Ring, Prozentzeile, „noch ~ Min.“, Zuordnung alter Symbole |
+| 05f-haus-szene, 05g-grundriss, 05h-zeitleiste | Modul 1: Haus-Szene, Grundriss & Bewegung, „Warum?“ als Zeitleiste |
+| 05i-modul3-optik, 05j-modul3-fluss, 05k-modul3-szene, 05m-modul3-diagramme | Modul 3 Neue Optik: Stufe 1 (Kacheln 2.0, Doppelring, Preis-Skala), Stufe 2 (Energiefluss HD, Hinweise mit Bild und Knopf), Stufe 3 (Energie-Szene im Banner, Mini-Szene Startseite), Stufe 4 (Preisband, gespiegelte Balken, Solar-Kalender, Kosten-Treppe, Sparschwein, Verteilungs-Ring) |
+| 05l-szenen-stile | Sponsor-Extra W7: Haus-Stile und Himmel-Themen für die Szenen in Modul 1 und 3 |
 | 06-ereignisse-raumoptionen | Ereignisse, Aktionen, Raumeinstellungen |
 | 07-assistent-diagnose | Einrichtungsassistent, Diagnose, Berichte |
 | 08-module-einstellungen-personen | Modul-System, Einstellungen, Personen & Standort |

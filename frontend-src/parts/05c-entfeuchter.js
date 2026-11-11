@@ -25,7 +25,7 @@
     if (L.on && L.stall) return ["warn", "läuft nicht an"];
     if (L.on && L.has_pw) return ["wait", "Standby"];  /* Schalter an, Leistung unter „läuft ab … W“ */
     if (L.on) return ["run", "an"];
-    return { full: ["warn", "Tank voll"], window: ["wait", "pausiert"], vent: ["wait", "lüften"], day_off: ["off", "heute aus"], pause: ["warn", "pausiert"], no_hum: ["warn", "aus"], no_loc: ["off", "aus"] }[L.code] || ["off", "aus"];
+    return { wait_pv: ["wait", "wartet auf Sonne"], no_pv: ["off", "aus · kein Überschuss"], full: ["warn", "Tank voll"], window: ["wait", "pausiert"], vent: ["wait", "lüften"], day_off: ["off", "heute aus"], pause: ["warn", "pausiert"], no_hum: ["warn", "aus"], no_loc: ["off", "aus"] }[L.code] || ["off", "aus"];
   }
   _lfSince(ts) { if (!ts) return ""; const m = Math.max(0, Math.round((Date.now() / 1000 - ts) / 60)); return m < 60 ? `seit ${m} Min.` : `seit ${Math.floor(m / 60)} h ${m % 60} min`; }
   _lfRoomName(id) { const r = ((this._lf() || {}).rooms || []).find((x) => x.id === id); return r ? r.name : ""; }
@@ -135,7 +135,7 @@
   _lfSetOpen(id) {
     const D = this._lf(), all = (D && D.cfg && D.cfg.devs) || [], d0 = id ? all.find((x) => x.id === id) : null;
     const nid = d0 ? d0.id : (() => { for (let n = 1; n < 50; n++) if (!all.some((x) => x.id === "d" + n)) return "d" + n; return "d9"; })();
-    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", tgt: "", tgt_mode: "min", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, night: false, n_from: "22:00", n_to: "07:00", n_mode: "hi", hi_night: 70, n_quiet: true, n_msg: true, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, high_h: 4, filter_h: 0 };
+    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", tgt: "", tgt_mode: "min", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, night: false, n_from: "22:00", n_to: "07:00", n_mode: "hi", hi_night: 70, n_quiet: true, n_msg: true, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, pv_only: false, pv_on: 2, pv_off: 5, pv_safe: 70, pv_soc: 0, high_h: 4, filter_h: 0 };
     this._pkId = null;
     this._modal = { type: "lfset", isNew: !d0, back: all.length > 0, tab: d0 && d0.ent ? "ziel" : "geraet", draft: { ...DEF, ...(d0 || {}), ask: { on: true, time: "08:00", home_only: true, until: "12:00", miss: "same", rooms: [], push: [], ...((d0 && d0.ask) || {}) }, msg: { full: true, high: true, noloc: true, filter: true, stall: true, ...((d0 && d0.msg) || {}) } } };
     this._renderModal();
@@ -219,12 +219,21 @@
         ${!M.isNew ? `<div class="lsec">${ic("pin", 15)}Standort jetzt</div>${this._lfTiles({ ...d, S })}` : ""}`;
     } else if (M.tab === "strom") {
       const now = [L.price != null ? `Strompreis jetzt ${num(L.price, 1)} ct/kWh` : "kein Strompreis", L.pv_w != null ? `Überschuss jetzt ${wfmt(Math.max(0, L.pv_w))}` : "kein Netz-Sensor"].join(" · ");
-      body = `<div class="lsec">${ic("sun", 15)}Vorziehen bei günstigem Strom</div>
+      const po = !!d.pv_only;
+      body = `<div class="lsec">${ic("sun", 15)}Betrieb</div>
+        <div class="lfkind">${[[false, "Nach Feuchte", "Läuft, wenn die Feuchte es braucht. Optional früher bei PV oder günstigem Strom."], [true, "Nur mit PV-Überschuss", "Läuft nur, wenn Solarstrom übrig ist. Bei sehr hoher Feuchte schützt der Schimmelschutz."]].map(([v, l, h]) => `<button class="${po === v ? "sel" : ""}" data-act="lfxseg" data-k="pv_only" data-v="${v}"><b>${l}</b><span>${h}</span></button>`).join("")}</div>
+        ${po ? `${row("Einschalten über", `mit Überschuss, zwischen Untergrenze ${num(d.lo, 0)} % und Obergrenze ${num(d.hi, 0)} %`, step("boost_hi", "%", 1, d.lo + 1, d.hi))}
+        ${row("Überschuss mindestens", "Einspeisung ins Netz, sein eigener Verbrauch zählt mit", step("pv_min", "W", 50, 0, 5000))}
+        ${row("Start nach", "so lange muss der Überschuss anhalten", step("pv_on", "Min.", 1, 0, 30))}
+        ${row("Aus nach", "so lange ohne Überschuss (kurze Wolken überbrücken)", step("pv_off", "Min.", 1, 0, 60))}
+        ${row("Schimmelschutz ab", "läuft auch ohne Sonne, 0 = aus", step("pv_safe", "%", 1, 0, 95))}
+        ${row("Batterie-Ladung zählt ab", "lädt die Hausbatterie und ist sie so voll, zählt die Ladeleistung als Überschuss, 0 = nie", step("pv_soc", "%", 5, 0, 100))}` : ""}
+        ${po ? "" : `<div class="lsec">${ic("sun", 15)}Vorziehen bei günstigem Strom</div>
         <div class="mut sm" style="margin:-2px 0 6px">Bei PV-Überschuss oder günstigem Strom startet der Entfeuchter schon früher und trocknet vor. Die Obergrenze gilt immer, auch ohne günstigen Strom.</div>
         ${seg("boost", [["off", "Aus"], ["pv", "PV"], ["cheap", "Günstig"], ["both", "Beides"]])}
         ${d.boost !== "off" ? `${row("Dann einschalten schon über", `zwischen Untergrenze ${num(d.lo, 0)} % und Obergrenze ${num(d.hi, 0)} %`, step("boost_hi", "%", 1, d.lo + 1, d.hi))}
         ${d.boost === "pv" || d.boost === "both" ? row("Überschuss mindestens", "Einspeisung ins Netz, sein eigener Verbrauch zählt mit", step("pv_min", "W", 50, 0, 5000)) : ""}
-        ${d.boost === "cheap" || d.boost === "both" ? row("Günstig bis", "Strompreis höchstens", step("cheap_ct", "ct/kWh", 0.5, 0, 100, 1)) : ""}` : ""}
+        ${d.boost === "cheap" || d.boost === "both" ? row("Günstig bis", "Strompreis höchstens", step("cheap_ct", "ct/kWh", 0.5, 0, 100, 1)) : ""}` : ""}`}
         <div class="gst">${ic("info", 15)}<div>${esc(now)}<br><span class="mut">Netz-Sensor und Strompreis kommen aus Einstellungen → Haus (Energiequellen, Preise &amp; Tarif). Sie zählen auch für Strom und Kosten in der Statistik.</span></div></div>`;
     } else {
       const K = [["full", "Tank voll"], ["high", "Feuchte bleibt zu hoch"], ["noloc", "Standort fehlt"], ["filter", "Filter reinigen"], ["stall", "Eingeschaltet, läuft nicht"]];

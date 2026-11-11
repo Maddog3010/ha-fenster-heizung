@@ -218,6 +218,8 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
             rc["old"] = rk["old"]
         if rk.get("anim") in ("aus", "dezent", "voll"):
             rc["anim"] = rk["anim"]
+        if rk.get("tanim") in ("aus", "dezent", "voll"):
+            rc["tanim"] = rk["tanim"]
         if rc:
             out["rk"] = rc
     gmap = raw.get("gmap")  # Modul 1: Grundriss-Raum (Modul 11) -> Raum
@@ -230,9 +232,24 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
         sc = {str(k)[:64]: v.strip()[:12] for k, v in list(short.items())[:60] if isinstance(v, str) and v.strip()}
         if sc:
             out["short"] = sc
-    m3 = raw.get("m3")  # Modul 3: neue Optik (Kacheln wie bisher)
-    if isinstance(m3, dict) and isinstance(m3.get("old"), bool):
-        out["m3"] = {"old": m3["old"]}
+    m3 = raw.get("m3")  # Modul 3: neue Optik (Kacheln/Energiefluss wie bisher, Szene, Werte, Auto)
+    if isinstance(m3, dict):
+        mc = {k: m3[k] for k in ("old", "flow", "scene", "tags", "car") if isinstance(m3.get(k), bool)}
+        if isinstance(m3.get("cost"), (int, float)) and not isinstance(m3.get("cost"), bool) and 0 < m3["cost"] <= 1_000_000:
+            mc["cost"] = round(float(m3["cost"]))
+        if isinstance(m3.get("since"), str) and re.fullmatch(r"\d{4}-\d{2}", m3["since"]):
+            mc["since"] = m3["since"]
+        if mc:
+            out["m3"] = mc
+    hsx = raw.get("hsx")  # Sponsor-Extra W7: Haus-Stil und Himmel-Thema (Modul 1 und 3)
+    if isinstance(hsx, dict):
+        xc = {}
+        if hsx.get("house") in ("klassisch", "modern", "skandi", "backstein", "mediterran"):
+            xc["house"] = hsx["house"]
+        if hsx.get("sky") in ("natur", "pastell", "nordlicht", "golden"):
+            xc["sky"] = hsx["sky"]
+        if xc:
+            out["hsx"] = xc
     hs = raw.get("hs")  # Modul 1: Haus-Szene in der Kopfkarte
     if isinstance(hs, dict):
         hc = {k: hs[k] for k in ("off", "wx") if isinstance(hs.get(k), bool)}

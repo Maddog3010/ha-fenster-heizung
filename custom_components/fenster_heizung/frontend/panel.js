@@ -728,9 +728,9 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.8", b: 2, d: "2026-11-11", p: "2026.11.3b2", log: [["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.8", b: 3, d: "2026-11-11", p: "2026.11.3b3", log: [["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  en: { v: "1.3", b: 1, d: "2026-11-11", p: "2026.11.3b2", log: [["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  en: { v: "1.6", b: 1, d: "2026-11-11", p: "2026.11.3b3", log: [["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2372,6 +2372,71 @@ div.rk2pl{cursor:default}
 .rk2art.mini .hw path,.rk2art.mini .aw path,.rk2art.sm *{animation:none!important}
 @media(prefers-reduced-motion:reduce){.rk2art *{animation:none!important}}
 @media(max-width:600px){.rk2top{height:128px}.rk2ring,.rk2ring svg{width:80px;height:80px}.rk2rv b{font-size:1.18rem}.rk2mid{gap:10px}.room.rk2>*:not(.rk2top){margin-left:14px;margin-right:14px}}
+/* Modul 3 · Stufe 2: Energiefluss HD und Hinweise */
+.m3fc h2{flex-wrap:wrap}.m3big{margin-left:auto;font-size:.8rem}
+.m3fl{max-width:470px}.m3fl .m3tr{fill:none;stroke:var(--line);stroke-width:2;stroke-linecap:round;opacity:.9}
+.m3fl .m3gl{fill:none;stroke-linecap:round;opacity:.32}.m3fl .m3ln{fill:none;stroke-linecap:round}
+.m3fl .m3dt{fill:none;stroke:#fff;stroke-linecap:round;stroke-dasharray:0 15;opacity:0}
+.m3fl[data-an=dezent] .m3dt,.m3fl[data-an=voll] .m3dt{opacity:.85;animation:m3run 1.6s linear infinite}
+@keyframes m3run{to{stroke-dashoffset:-30}}
+.m3fl .m3pq{fill:color-mix(in srgb,var(--c) 12%,var(--card));stroke-width:2.2}
+.m3fl .m3nd{cursor:pointer;outline:none}.m3fl .m3nd:not(.on) .gx{opacity:.55;filter:saturate(.5)}
+.m3fl .m3nd.sel .m3pq{stroke-width:3.6}.m3fl .m3nd:focus-visible .m3pq{stroke-width:3.6;stroke:var(--primary-color)!important}
+.m3fl[data-an=voll] .m3nd.on .gx{animation:rkGlow 2.4s ease-in-out infinite alternate}
+.m3fn1{font-size:12px;font-weight:700;text-anchor:middle;fill:var(--primary-text-color)}.m3fn2{font-size:11.5px;font-weight:700;text-anchor:middle}
+.m3fd{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:8px 0 0;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--c) 10%,var(--card));border:1px solid color-mix(in srgb,var(--c) 40%,var(--line))}
+.m3fd>b{font-size:.95rem}.m3fd span{display:flex;flex-direction:column;font-weight:700;font-size:.88rem}.m3fd small{font-weight:500;color:var(--mut);font-size:.7rem}
+.m3fd .m3go{flex:none;padding:6px 12px;margin-left:auto}.m3fd .m3fx{flex:none}.m3fd em{flex:1 1 100%;font-style:normal}
+.m3hl{display:flex;flex-direction:column;gap:8px}
+.m3hn{display:grid;grid-template-columns:38px 1fr auto;gap:12px;align-items:center;padding:10px 12px 10px 14px;border-radius:14px;background:color-mix(in srgb,var(--c) 7%,var(--card));border:1px solid var(--line);border-left:4px solid var(--c)}
+.m3hn b{display:block;font-size:.9rem}.m3hn span{display:block;color:var(--mut);font-size:.8rem;margin-top:2px}
+.m3hb{font:inherit;font-size:.75rem;font-weight:750;padding:5px 11px;border-radius:99px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--primary-text-color);cursor:pointer;white-space:nowrap}
+@media(prefers-reduced-motion:reduce){.m3fl *{animation:none!important}}
+@media(max-width:600px){.m3hn{grid-template-columns:32px 1fr;gap:10px}.m3hn .gx{width:32px;height:32px}.m3hb{grid-column:2;justify-self:start}.m3fd span{font-size:.82rem}}
+/* Modul 3 · Stufe 3: Energie-Szene im Banner */
+.hero.m3x{min-height:230px}
+.m3ss{position:absolute;right:16px;top:14px;bottom:14px;width:min(48%,500px);border-radius:18px;overflow:hidden;z-index:1;box-shadow:0 10px 26px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.18)}
+.m3ss svg{display:block;width:100%;height:100%;background:#9fb1c6}
+.hero.m3x .mring{right:calc(min(48%,500px) + 34px)}
+.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub,.hero.m3x .enbil,.hero.m3x .chips{max-width:calc(100% - min(48%,500px) - 170px)}
+.m3ss .m3tap{cursor:pointer;outline:none}.m3ss .m3tap:hover,.m3ss .m3tap:focus-visible{filter:brightness(1.12) drop-shadow(0 0 4px #fff)}
+.m3ss .m3dt{fill:none;stroke:#fff;stroke-linecap:round;stroke-dasharray:0 11;opacity:0}
+.m3ss[data-an=dezent] .m3dt,.m3ss[data-an=voll] .m3dt{opacity:.9;animation:m3run 1.6s linear infinite}
+.m3ss[data-an=dezent] .m3bz,.m3ss[data-an=voll] .m3bz{animation:rkGlow 1.2s ease-in-out infinite alternate}
+.m3ss[data-an=voll] .m3gls{animation:rkGlow 3s ease-in-out infinite alternate}
+.m3ss[data-an=voll] .hscl{animation:hsDrift 14s ease-in-out infinite alternate}.m3ss[data-an=voll] .hsrn,.m3ss[data-an=voll] .hssn{animation:hsFall 2.6s linear infinite}
+.m3ss.m3mini{position:relative;right:auto;top:auto;bottom:auto;width:auto;height:auto;aspect-ratio:360/130;margin:0;border-radius:14px;box-shadow:none}
+.m3mrow{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:12px;align-items:center}.m3mrow .lugrid{margin:0;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:700px){.m3mrow{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.m3ss *{animation:none!important}}
+@media(max-width:900px) and (min-width:601px){.hero.m3x .mring{display:none}.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub,.hero.m3x .enbil,.hero.m3x .chips{max-width:calc(100% - min(48%,500px) - 30px)}}
+@media(max-width:600px){.hero.m3x{min-height:0}.m3ss{position:relative;right:auto;top:auto;bottom:auto;width:auto;height:auto;aspect-ratio:360/128;margin:0 0 12px;border-radius:14px}.hero.m3x .mring{right:16px;top:auto;bottom:16px}.hero.m3x .lbl,.hero.m3x .big,.hero.m3x .sub{max-width:calc(100% - 96px)}.hero.m3x .enbil,.hero.m3x .chips{max-width:none}}
+/* Modul 3 · Stufe 4: Diagramme & Kosten */
+.m3bandl{display:flex;justify-content:space-between;align-items:center;gap:4px 12px;flex-wrap:wrap;font-size:.76rem;color:var(--mut);margin:2px 0 8px}.m3bsc{display:inline-flex;align-items:center;gap:6px;font-size:.7rem}.m3bsc i{width:64px;height:7px;border-radius:4px;background:linear-gradient(90deg,#4ade80,#a3e635,#facc15,#fb923c,#f87171)}
+.m3cseg{margin:0 0 10px;width:max-content}
+.m3cal{display:grid;grid-template-columns:14px repeat(31,minmax(0,1fr));gap:3px;align-items:center}.m3cal b{font-size:.62rem;color:var(--mut);font-weight:600}
+.m3cal i{aspect-ratio:1;border-radius:3px;display:grid;place-items:center;font-size:.55rem;font-style:normal;color:#422006;cursor:pointer;line-height:1}.m3cal i.em{background:color-mix(in srgb,var(--mut) 12%,transparent);cursor:default}.m3cal i.nx{visibility:hidden}
+.m3cal i[data-act]:hover{outline:2px solid #fde047}
+.m3call{display:flex;align-items:center;gap:8px;font-size:.72rem;color:var(--mut);margin:10px 0 0}.m3call i{flex:none;width:120px;height:8px;border-radius:4px;background:linear-gradient(90deg,#3a3320,#fbbf24)}
+.m3wf{max-height:240px}
+.m3pg{display:flex;align-items:center;gap:16px}.m3pg>div{display:flex;flex-direction:column;gap:2px}.m3pig{flex:none;width:78px;height:78px}.m3pgv{font-size:2rem;font-weight:800;line-height:1.05;letter-spacing:-.02em}
+.m3pgb{height:12px;border-radius:6px;background:color-mix(in srgb,var(--mut) 18%,transparent);margin:14px 0 6px;overflow:hidden}.m3pgb i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#f472b6,#fbbf24)}
+.m3pgl{display:flex;justify-content:space-between;font-size:.78rem;color:var(--mut)}
+.m3dist{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:center}
+.m3dr{position:relative;width:130px;height:130px}.m3dr svg{width:100%;height:100%}.m3dr>div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.m3dr b{font-size:1.7rem;line-height:1}.m3dr span{font-size:.72rem;color:var(--mut)}
+.m3dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:6px}
+.m3di{display:grid;grid-template-columns:32px 1fr auto;gap:10px;align-items:center;padding:6px 10px;border-radius:12px;background:color-mix(in srgb,var(--c) 8%,var(--card));border:1px solid var(--line);border-left:3px solid var(--c)}
+.m3di small{display:block;font-size:.7rem;color:var(--mut)}.m3di b{font-size:.86rem}.m3di em{font-style:normal;color:#fbbf24}.m3de{font-size:.78rem;color:var(--mut)}
+.m3di.rest{cursor:pointer}.m3di .m3dx{color:var(--primary-color);font-weight:650}
+.m3dsub{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px;margin:10px 0 0;padding:10px;border-radius:12px;background:color-mix(in srgb,#2dd4bf 6%,transparent)}.m3dsub>div{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;font-size:.82rem}.m3dsub span{color:var(--mut)}.m3dsub em{grid-column:1/-1;font-style:normal}
+@media(max-width:700px){.m3dist{grid-template-columns:1fr;justify-items:center}.m3dl{grid-template-columns:1fr;width:100%}.m3cal{gap:1.5px}.m3cal i{border-radius:2px;font-size:.45rem}}
+/* W7 · Haus-Stil und Himmel */
+.hsxr{margin:8px 0}.hsxr>b{display:block;font-size:.78rem;color:var(--mut);margin-bottom:6px}.hsxc{display:flex;flex-wrap:wrap;gap:6px}
+.hsxb{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:.8rem;padding:6px 10px;border-radius:99px;border:1px solid var(--line);background:var(--card);color:var(--primary-text-color);cursor:pointer}.hsxb i{width:16px;height:16px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+.hsxb.sel{border-color:var(--primary-color);box-shadow:0 0 0 1px var(--primary-color)}.hsxb.lk{opacity:.65}
+.hs2[data-an=voll] .hsau,.m3ss[data-an=voll] .hsau{animation:rkGlow 4s ease-in-out infinite alternate}
+/* Bewegung nur, wenn sichtbar (H2) */
+[data-vis="0"],[data-vis="0"] *{animation-play-state:paused!important}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -2396,6 +2461,24 @@ class FensterHeizungPanel extends HTMLElement {
       const c = cdown(+el.dataset.since, +el.dataset.need), b = el.querySelector("[data-cd]"), f = el.querySelector("[data-bar]");
       if (b) b.textContent = c.txt; if (f) f.style.width = c.pct + "%"; el.classList.toggle("done", c.left <= 0);
     });
+  }
+  /* Gleicher Aufbau, neue Zahlen (Konzept K3): Werte, Linienstärken und Füllstände ins behaltene Element übernehmen,
+     damit laufende Animationen nicht neu starten. Nur für Elemente mit data-ks. false = Aufbau anders, dann ersetzen. */
+  _kkSync(o, n) {
+    const A = o.querySelectorAll("*"), B = n.querySelectorAll("*"); if (A.length !== B.length) return false;
+    for (let i = 0; i < A.length; i++) if (A[i].tagName !== B[i].tagName) return false;
+    for (let i = 0; i < A.length; i++) {
+      const x = A[i], y = B[i];
+      for (const at of y.attributes) { if (at.name === "id" || at.name === "href" || /url\(#/.test(at.value)) continue; if (x.getAttribute(at.name) !== at.value) x.setAttribute(at.name, at.value); }
+      if (!y.firstElementChild && x.textContent !== y.textContent) x.textContent = y.textContent;
+    }
+    return true;
+  }
+  /* Bewegung nur, wenn sichtbar (Konzept H2): Bilder außerhalb des Bildschirms halten an */
+  _visObs() {
+    if (typeof IntersectionObserver === "undefined" || !this.shadowRoot) return;
+    const io = this._io || (this._io = new IntersectionObserver((es) => es.forEach((e) => e.target.setAttribute("data-vis", e.isIntersecting ? "1" : "0")), { rootMargin: "40px" }));
+    io.disconnect(); this.shadowRoot.querySelectorAll("[data-an]").forEach((el) => io.observe(el));  /* neu beobachten: entfernte Bilder fallen so heraus */
   }
   set hass(h) {
     const first = !this._hass;
@@ -3377,7 +3460,7 @@ class FensterHeizungPanel extends HTMLElement {
     const bar = sr0 && sr0.querySelector(".mbar"), x = bar ? bar.scrollLeft : null, id = this._mdActive();
     const keep = {}; if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { keep[i.getAttribute("src")] = i; });  /* Bilder behalten, sonst flackern sie bei jedem Neuaufbau */
     const kk = {}; if (sr0) sr0.querySelectorAll("#main [data-kk]").forEach((e) => { kk[e.dataset.kk] = e; });  /* Raumbilder (Raumkarte 2.0): gleicher Zustand = altes Bild bleibt, Bewegung läuft weiter */
-    try { this._render0(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o)) n.replaceWith(o); }); } } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
+    try { this._render0(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o) && (!n.hasAttribute("data-ks") || this._kkSync(o, n))) n.replaceWith(o); }); this._visObs(); } } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {
       const t = nb.querySelector(".mtab.sel"); if (t) nb.scrollLeft = Math.max(0, t.offsetLeft - (nb.clientWidth - t.offsetWidth) / 2);
@@ -3669,7 +3752,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (L.on && L.stall) return ["warn", "läuft nicht an"];
     if (L.on && L.has_pw) return ["wait", "Standby"];  /* Schalter an, Leistung unter „läuft ab … W“ */
     if (L.on) return ["run", "an"];
-    return { full: ["warn", "Tank voll"], window: ["wait", "pausiert"], vent: ["wait", "lüften"], day_off: ["off", "heute aus"], pause: ["warn", "pausiert"], no_hum: ["warn", "aus"], no_loc: ["off", "aus"] }[L.code] || ["off", "aus"];
+    return { wait_pv: ["wait", "wartet auf Sonne"], no_pv: ["off", "aus · kein Überschuss"], full: ["warn", "Tank voll"], window: ["wait", "pausiert"], vent: ["wait", "lüften"], day_off: ["off", "heute aus"], pause: ["warn", "pausiert"], no_hum: ["warn", "aus"], no_loc: ["off", "aus"] }[L.code] || ["off", "aus"];
   }
   _lfSince(ts) { if (!ts) return ""; const m = Math.max(0, Math.round((Date.now() / 1000 - ts) / 60)); return m < 60 ? `seit ${m} Min.` : `seit ${Math.floor(m / 60)} h ${m % 60} min`; }
   _lfRoomName(id) { const r = ((this._lf() || {}).rooms || []).find((x) => x.id === id); return r ? r.name : ""; }
@@ -3779,7 +3862,7 @@ class FensterHeizungPanel extends HTMLElement {
   _lfSetOpen(id) {
     const D = this._lf(), all = (D && D.cfg && D.cfg.devs) || [], d0 = id ? all.find((x) => x.id === id) : null;
     const nid = d0 ? d0.id : (() => { for (let n = 1; n < 50; n++) if (!all.some((x) => x.id === "d" + n)) return "d" + n; return "d9"; })();
-    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", tgt: "", tgt_mode: "min", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, night: false, n_from: "22:00", n_to: "07:00", n_mode: "hi", hi_night: 70, n_quiet: true, n_msg: true, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, high_h: 4, filter_h: 0 };
+    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", tgt: "", tgt_mode: "min", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, night: false, n_from: "22:00", n_to: "07:00", n_mode: "hi", hi_night: 70, n_quiet: true, n_msg: true, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, pv_only: false, pv_on: 2, pv_off: 5, pv_safe: 70, pv_soc: 0, high_h: 4, filter_h: 0 };
     this._pkId = null;
     this._modal = { type: "lfset", isNew: !d0, back: all.length > 0, tab: d0 && d0.ent ? "ziel" : "geraet", draft: { ...DEF, ...(d0 || {}), ask: { on: true, time: "08:00", home_only: true, until: "12:00", miss: "same", rooms: [], push: [], ...((d0 && d0.ask) || {}) }, msg: { full: true, high: true, noloc: true, filter: true, stall: true, ...((d0 && d0.msg) || {}) } } };
     this._renderModal();
@@ -3863,12 +3946,21 @@ class FensterHeizungPanel extends HTMLElement {
         ${!M.isNew ? `<div class="lsec">${ic("pin", 15)}Standort jetzt</div>${this._lfTiles({ ...d, S })}` : ""}`;
     } else if (M.tab === "strom") {
       const now = [L.price != null ? `Strompreis jetzt ${num(L.price, 1)} ct/kWh` : "kein Strompreis", L.pv_w != null ? `Überschuss jetzt ${wfmt(Math.max(0, L.pv_w))}` : "kein Netz-Sensor"].join(" · ");
-      body = `<div class="lsec">${ic("sun", 15)}Vorziehen bei günstigem Strom</div>
+      const po = !!d.pv_only;
+      body = `<div class="lsec">${ic("sun", 15)}Betrieb</div>
+        <div class="lfkind">${[[false, "Nach Feuchte", "Läuft, wenn die Feuchte es braucht. Optional früher bei PV oder günstigem Strom."], [true, "Nur mit PV-Überschuss", "Läuft nur, wenn Solarstrom übrig ist. Bei sehr hoher Feuchte schützt der Schimmelschutz."]].map(([v, l, h]) => `<button class="${po === v ? "sel" : ""}" data-act="lfxseg" data-k="pv_only" data-v="${v}"><b>${l}</b><span>${h}</span></button>`).join("")}</div>
+        ${po ? `${row("Einschalten über", `mit Überschuss, zwischen Untergrenze ${num(d.lo, 0)} % und Obergrenze ${num(d.hi, 0)} %`, step("boost_hi", "%", 1, d.lo + 1, d.hi))}
+        ${row("Überschuss mindestens", "Einspeisung ins Netz, sein eigener Verbrauch zählt mit", step("pv_min", "W", 50, 0, 5000))}
+        ${row("Start nach", "so lange muss der Überschuss anhalten", step("pv_on", "Min.", 1, 0, 30))}
+        ${row("Aus nach", "so lange ohne Überschuss (kurze Wolken überbrücken)", step("pv_off", "Min.", 1, 0, 60))}
+        ${row("Schimmelschutz ab", "läuft auch ohne Sonne, 0 = aus", step("pv_safe", "%", 1, 0, 95))}
+        ${row("Batterie-Ladung zählt ab", "lädt die Hausbatterie und ist sie so voll, zählt die Ladeleistung als Überschuss, 0 = nie", step("pv_soc", "%", 5, 0, 100))}` : ""}
+        ${po ? "" : `<div class="lsec">${ic("sun", 15)}Vorziehen bei günstigem Strom</div>
         <div class="mut sm" style="margin:-2px 0 6px">Bei PV-Überschuss oder günstigem Strom startet der Entfeuchter schon früher und trocknet vor. Die Obergrenze gilt immer, auch ohne günstigen Strom.</div>
         ${seg("boost", [["off", "Aus"], ["pv", "PV"], ["cheap", "Günstig"], ["both", "Beides"]])}
         ${d.boost !== "off" ? `${row("Dann einschalten schon über", `zwischen Untergrenze ${num(d.lo, 0)} % und Obergrenze ${num(d.hi, 0)} %`, step("boost_hi", "%", 1, d.lo + 1, d.hi))}
         ${d.boost === "pv" || d.boost === "both" ? row("Überschuss mindestens", "Einspeisung ins Netz, sein eigener Verbrauch zählt mit", step("pv_min", "W", 50, 0, 5000)) : ""}
-        ${d.boost === "cheap" || d.boost === "both" ? row("Günstig bis", "Strompreis höchstens", step("cheap_ct", "ct/kWh", 0.5, 0, 100, 1)) : ""}` : ""}
+        ${d.boost === "cheap" || d.boost === "both" ? row("Günstig bis", "Strompreis höchstens", step("cheap_ct", "ct/kWh", 0.5, 0, 100, 1)) : ""}` : ""}`}
         <div class="gst">${ic("info", 15)}<div>${esc(now)}<br><span class="mut">Netz-Sensor und Strompreis kommen aus Einstellungen → Haus (Energiequellen, Preise &amp; Tarif). Sie zählen auch für Strom und Kosten in der Statistik.</span></div></div>`;
     } else {
       const K = [["full", "Tank voll"], ["high", "Feuchte bleibt zu hoch"], ["noloc", "Standort fehlt"], ["filter", "Filter reinigen"], ["stall", "Eingeschaltet, läuft nicht"]];
@@ -4276,7 +4368,13 @@ class FensterHeizungPanel extends HTMLElement {
      bleibt das alte Bild im DOM stehen (siehe _render), Bewegungen laufen ohne Sprung weiter. */
   static RK_TYPES = [["wohnen", "Wohnzimmer"], ["schlafen", "Schlafzimmer"], ["bad", "Bad"], ["kind", "Kinderzimmer"], ["kueche", "Küche"], ["buero", "Büro"], ["flur", "Flur / Ankleide"], ["esszimmer", "Esszimmer"], ["wintergarten", "Wintergarten"], ["hwr", "Keller / Hauswirtschaft"], ["werkstatt", "Werkstatt / Hobby"], ["fitness", "Fitness"], ["dachboden", "Dachboden"], ["garage", "Garage"], ["carport", "Carport / Außen"]];
   static RK_COL = { heizt: "#fb923c", ok: "#2dd4bf", offen: "#60a5fa", gekippt: "#60a5fa", pause: "#f59e0b", nacht: "#a78bfa", hoff: "#94a3b8", aus: "#94a3b8" };
-  _rkCfg() { const k = this._cfg.layout.rk || {}; return { old: !!k.old || this._gxCfg().classic, anim: ["aus", "dezent", "voll"].includes(k.anim) ? k.anim : "dezent" }; }
+  /* Animationen: eine Einstellung für alle Module (Aus · Dezent · Voll); im Tablet-Modus eigene Stufe, Standard „Aus“ */
+  _rkCfg() { const k = this._cfg.layout.rk || {}, A = ["aus", "dezent", "voll"], norm = A.includes(k.anim) ? k.anim : "dezent", tab = A.includes(k.tanim) ? k.tanim : "aus", tm = !!(this._tmOn && this._tmOn()); return { old: !!k.old || this._gxCfg().classic, anim: tm ? tab : norm, norm, tab, tm }; }
+  _animLook() {
+    const c = this._rkCfg(), seg = (cur, act) => `<div class="seg oseg">${[["aus", "Aus"], ["dezent", "Dezent"], ["voll", "Voll"]].map(([k, l]) => `<button class="${cur === k ? "sel" : ""}" data-act="${act}" data-k="${k}">${l}</button>`).join("")}</div>`;
+    return `<div class="ltog rkan"><span>Animationen<small class="mut" style="display:block">Gilt für alle Module: Raumbilder, Szenen, Energiefluss. „Bewegung reduzieren“ am Gerät wird immer beachtet. Nicht sichtbare Bilder halten an.</small></span>${seg(c.norm, "rkanim")}</div>
+      <div class="ltog rkan"><span>Animationen im Tablet-Modus<small class="mut" style="display:block">Für Wand-Tablets. Standard: Aus.</small></span>${seg(c.tab, "rktanim")}</div>`;
+  }
   _rkOn() { return !this._rkCfg().old; }
   _rkTypeAuto(r) {
     const n = String(r.name || "").toLowerCase();
@@ -4646,7 +4744,7 @@ class FensterHeizungPanel extends HTMLElement {
     const c = this._rkCfg();
     return `<div class="lsec">${ic("grid", 15)}Raumkarten in Modul 1</div>
       <div class="ltog"><span>Raumkarten wie bisher<small class="mut" style="display:block">An: Karten aus v1.7 mit Symbol und Kästen statt Raumbild und Ring</small></span><button class="sw ${c.old ? "on" : ""}" data-act="rkold" aria-pressed="${c.old}" aria-label="Raumkarten wie bisher"></button></div>
-      ${c.old ? "" : `<div class="ltog rkan"><span>Bewegung im Raumbild<small class="mut" style="display:block">Wärmewellen und Luft am Fenster. „Bewegung reduzieren“ am Gerät wird immer beachtet.</small></span><div class="seg oseg">${[["aus", "Aus"], ["dezent", "Dezent"], ["voll", "Voll"]].map(([k, l]) => `<button class="${c.anim === k ? "sel" : ""}" data-act="rkanim" data-k="${k}">${l}</button>`).join("")}</div></div>`}`;
+      ${c.old ? "" : this._animLook()}`;
   }
   /* ---------- Elektroheizer und Luftentfeuchter (Raumkarte 2.0) ----------
      Auf der Karte je Gerät eine Kachel mit HD-Bild, Zustand und Balken (Stufen bzw. Tank). Antippen öffnet das Gerät
@@ -4671,7 +4769,7 @@ class FensterHeizungPanel extends HTMLElement {
   _rkLfTile(r, d) {
     const S = d.S, L = S.live || {}, [k, t] = this._lfState(L), A = S.ask || {};
     const tone = { run: "#22d3ee", warn: "#f59e0b", wait: "#60a5fa" }[k] || "#94a3b8", fill = L.fill != null ? Math.min(100, Math.round(L.fill * 100)) : null;
-    const tag = L.boost === "pv" ? " · ☀ PV" : L.boost ? " · günstig" : L.night ? ` · Nacht${L.quiet_on ? ", leise" : ""}` : "";
+    const tag = L.boost === "pv" || (L.pv_only && L.running && L.pv_ok) ? " · ☀ PV" : L.pv_only && L.code === "safe" && L.running ? " · Schimmelschutz" : L.boost ? " · günstig" : L.night ? ` · Nacht${L.quiet_on ? ", leise" : ""}` : "";
     const open = A.phase && A.phase !== "off" && !A.conf, n = (L.msgs || []).filter((m) => m[0] !== "noloc" || !A.conf).length;
     const sub = open ? "Standort heute noch nicht bestätigt" : [fill != null ? `Tank ${fill} %` : L.full ? "Tank voll" : "", L.on ? this._lfSince(L.since) : "", L.today_min ? `heute ${hmin(L.today_min)}` : ""].filter(Boolean).join(" · ") || (d.kind === "watch" ? "nur beobachten" : "Modul 1 regelt");
     return `<div class="rk2dv${k === "run" ? " run" : ""}" style="--c:${tone}"><button class="rk2dvb" data-act="lfrk" data-id="${esc(r.id)}" data-d="${esc(d.id)}" aria-label="${esc(d.name)} öffnen">
@@ -4756,6 +4854,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "rktype") { const t = { ...(L.rtype || {}) }; if (b.dataset.k) t[this._modal.id] = b.dataset.k; else delete t[this._modal.id]; L.rtype = t; }
     else if (a === "rkold") L.rk = { ...(L.rk || {}), old: !this._rkCfg().old };
     else if (a === "rkanim") L.rk = { ...(L.rk || {}), anim: b.dataset.k };
+    else if (a === "rktanim") L.rk = { ...(L.rk || {}), tanim: b.dataset.k };
     else return false;
     this._saveLayout(); this._render(); this._renderModal(); return true;
   }
@@ -4793,6 +4892,21 @@ class FensterHeizungPanel extends HTMLElement {
     const w = c.wx ? o.w || "" : "", frost = c.wx && o.t != null && o.t <= 0;
     return { tod, w, frost, snow: /snow|hail/.test(w) || (frost && /snow/.test(w)), rain: /rain|pouring|lightning/.test(w), cloud: /cloud|partly|fog|rain|pouring|snow|lightning/.test(w), fog: w === "fog", storm: /lightning|windy|exceptional/.test(w), t: o.t };
   }
+  /* Himmel nach Tageszeit und Wetter (gemeinsam mit der Energie-Szene in Modul 3). Erwartet die Verläufe q("sk") und q("sun"). */
+  _hsSkyDraw(sky, q) {
+    const night = sky.tod === "night", grey = sky.cloud && !night;
+    let d = `<rect width="360" height="200" fill="url(#${q("sk")})"/>`;
+    d += this._hsAurora(sky);
+    if (night) d += [[24, 18], [64, 40], [108, 12], [150, 30], [232, 14], [276, 54], [204, 42], [344, 70], [20, 70], [330, 12]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? .9 : 1.4}" fill="#fff" opacity="${i % 2 ? .6 : .95}"/>`).join("") +
+      `<circle cx="320" cy="32" r="22" fill="#fef3c7" opacity=".12"/><circle cx="320" cy="32" r="11" fill="#fef3c7"/><circle cx="324" cy="28" r="10" fill="${grey ? "#93a7bf" : "#1b2750"}"/>`;
+    else if (!grey || sky.w === "partlycloudy") { const sx = sky.tod === "morning" ? 34 : sky.tod === "evening" ? 326 : 314, sy = sky.tod === "day" ? 32 : 60;
+      d += `<circle cx="${sx}" cy="${sy}" r="30" fill="url(#${q("sun")})"/><circle cx="${sx}" cy="${sy}" r="11" fill="#fde047"/>` + (sky.tod === "day" && !grey ? `<path d="M120 30 q3 -3 6 0 q3 -3 6 0 M140 22 q2.4 -2.4 4.8 0 q2.4 -2.4 4.8 0" fill="none" stroke="#334155" stroke-width="1.1" stroke-linecap="round" opacity=".6"/>` : ""); }
+    const cloud = (x, y, sc, c = "#fff", o = .92) => `<g transform="translate(${x} ${y}) scale(${sc})" opacity="${o}"><ellipse cx="18" cy="14" rx="18" ry="9" fill="${c}"/><ellipse cx="34" cy="9" rx="14" ry="10" fill="${c}"/><ellipse cx="50" cy="15" rx="13" ry="8" fill="${c}"/><rect x="6" y="14" width="52" height="9" rx="4.5" fill="${c}"/></g>`;
+    if (sky.cloud) d += `<g class="hscl">${cloud(30, 30, .9, night ? "#475569" : "#fff")}${cloud(196, 18, .7, night ? "#3f4b5e" : "#fff", .85)}${cloud(286, 50, .65, night ? "#475569" : "#f8fafc")}${grey ? cloud(110, 6, .8, "#cbd5e1", .9) : ""}</g>`;
+    if (sky.rain) d += `<g class="hsrn">${Array.from({ length: 30 }, (_, i) => `<path d="M${(i * 37) % 360} ${(i * 23) % 130} l-3 9" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>`).join("")}</g>`;
+    if (sky.snow) d += `<g class="hssn">${Array.from({ length: 34 }, (_, i) => `<circle cx="${(i * 41) % 360}" cy="${(i * 29) % 150}" r="${i % 3 ? 1.5 : 2.2}" fill="#fff" opacity=".9"/>`).join("")}</g>`;
+    return d;
+  }
   /* Kleine Möbel-Silhouette je Raumtyp (unten im Raum), Breite ca. 24, Höhe ca. 14 */
   _hsFur(type, x, y, sc) {
     const P = {
@@ -4820,27 +4934,18 @@ class FensterHeizungPanel extends HTMLElement {
     const S = rooms.map((r) => ({ r, s: this._rkState(r) })), byId = Object.fromEntries(S.map((x) => [x.r.id, x.s]));
     const anyHeat = S.some((x) => x.s.heating), fset = new Set(rooms.map((r) => r.fuel || "erdgas")), fuel = fset.size === 1 ? [...fset][0] : "erdgas";
     const pvOn = this._pvNow() != null, pvW = pvOn ? this._pvNow() : 0, night = sky.tod === "night";
-    const SK = { night: ["#0a1430", "#26325f"], morning: ["#f7b98a", "#cfe0f7"], evening: ["#f29a6a", "#5d4b8c"], day: ["#6fbcff", "#e2f3ff"] }[sky.tod];
+    const SK = this._hsSkyCols(sky.tod), HC = this._hsHouseCols(night);
     const grey = sky.cloud && !night, wh = sky.frost || sky.snow;
     const lg = (id, st, x2 = 0, y2 = 1) => `<linearGradient id="${q(id)}" x1="0" y1="0" x2="${x2}" y2="${y2}">${st.map(([o, c, a]) => `<stop offset="${o}" stop-color="${c}"${a != null ? ` stop-opacity="${a}"` : ""}/>`).join("")}</linearGradient>`;
-    let d = `<defs>${lg("sk", [[0, grey ? "#93a7bf" : SK[0]], [1, grey ? "#dde5ee" : SK[1]]])}${lg("rf", [[0, "#c2564d"], [1, "#7a2420"]])}${lg("rf2", [[0, "#000", .0], [1, "#000", .28]])}
-      ${lg("wl", night ? [[0, "#5b5146"], [1, "#433b33"]] : [[0, "#f4ead8"], [1, "#e2d3b8"]], 1, 0)}${lg("hw", [[0, "#f97316", .9], [1, "#f97316", 0]], 0, 1)}
+    let d = `<defs>${lg("sk", [[0, grey && !this._hsx().S.c ? "#93a7bf" : SK[0]], [1, grey && !this._hsx().S.c ? "#dde5ee" : SK[1]]])}${lg("rf", [[0, HC.roof[0]], [1, HC.roof[1]]])}${lg("rf2", [[0, "#000", .0], [1, "#000", .28]])}
+      ${lg("wl", this._hsx().house === "klassisch" && night ? [[0, "#5b5146"], [1, "#433b33"]] : [[0, HC.wall[0]], [1, HC.wall[1]]], 1, 0)}${lg("hw", [[0, "#f97316", .9], [1, "#f97316", 0]], 0, 1)}
       ${lg("gr", night ? [[0, wh ? "#c7d0dc" : "#1c3a28"], [1, wh ? "#9aa6b5" : "#132a1c"]] : [[0, wh ? "#ffffff" : "#5fd27e"], [1, wh ? "#dfe7f0" : "#2f9e57"]])}
       ${lg("so", night ? [[0, "#2a211b"], [1, "#16110d"]] : [[0, "#7a5a40"], [1, "#4e3826"]])}${lg("kl", [[0, "#9ca3af"], [1, "#6b7280"]])}
       ${lg("gl", night ? [[0, "#fde68a"], [1, "#f59e0b"]] : [[0, "#e0f2fe"], [1, "#7dd3fc"]], .6, 1)}
       <radialGradient id="${q("sun")}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7c2"/><stop offset=".55" stop-color="#fde68a"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
       <pattern id="${q("tl")}" width="10" height="6" patternUnits="userSpaceOnUse"><path d="M0 5.5 h10 M5 0 v5.5" stroke="#5b1a17" stroke-width=".7" opacity=".55"/></pattern>
       <pattern id="${q("br")}" width="8" height="4" patternUnits="userSpaceOnUse"><path d="M0 3.6 h8 M4 0 v3.6" stroke="#5b1a17" stroke-width=".5" opacity=".6"/></pattern></defs>`;
-    /* Himmel */
-    d += `<rect width="360" height="200" fill="url(#${q("sk")})"/>`;
-    if (night) d += [[24, 18], [64, 40], [108, 12], [150, 30], [232, 14], [276, 54], [204, 42], [344, 70], [20, 70], [330, 12]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? .9 : 1.4}" fill="#fff" opacity="${i % 2 ? .6 : .95}"/>`).join("") +
-      `<circle cx="320" cy="32" r="22" fill="#fef3c7" opacity=".12"/><circle cx="320" cy="32" r="11" fill="#fef3c7"/><circle cx="324" cy="28" r="10" fill="${grey ? "#93a7bf" : "#1b2750"}"/>`;
-    else if (!grey || sky.w === "partlycloudy") { const sx = sky.tod === "morning" ? 34 : sky.tod === "evening" ? 326 : 314, sy = sky.tod === "day" ? 32 : 60;
-      d += `<circle cx="${sx}" cy="${sy}" r="30" fill="url(#${q("sun")})"/><circle cx="${sx}" cy="${sy}" r="11" fill="#fde047"/>` + (sky.tod === "day" && !grey ? `<path d="M120 30 q3 -3 6 0 q3 -3 6 0 M140 22 q2.4 -2.4 4.8 0 q2.4 -2.4 4.8 0" fill="none" stroke="#334155" stroke-width="1.1" stroke-linecap="round" opacity=".6"/>` : ""); }
-    const cloud = (x, y, sc, c = "#fff", o = .92) => `<g transform="translate(${x} ${y}) scale(${sc})" opacity="${o}"><ellipse cx="18" cy="14" rx="18" ry="9" fill="${c}"/><ellipse cx="34" cy="9" rx="14" ry="10" fill="${c}"/><ellipse cx="50" cy="15" rx="13" ry="8" fill="${c}"/><rect x="6" y="14" width="52" height="9" rx="4.5" fill="${c}"/></g>`;
-    if (sky.cloud) d += `<g class="hscl">${cloud(30, 30, .9, night ? "#475569" : "#fff")}${cloud(196, 18, .7, night ? "#3f4b5e" : "#fff", .85)}${cloud(286, 50, .65, night ? "#475569" : "#f8fafc")}${grey ? cloud(110, 6, .8, "#cbd5e1", .9) : ""}</g>`;
-    if (sky.rain) d += `<g class="hsrn">${Array.from({ length: 30 }, (_, i) => `<path d="M${(i * 37) % 360} ${(i * 23) % 130} l-3 9" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>`).join("")}</g>`;
-    if (sky.snow) d += `<g class="hssn">${Array.from({ length: 34 }, (_, i) => `<circle cx="${(i * 41) % 360}" cy="${(i * 29) % 150}" r="${i % 3 ? 1.5 : 2.2}" fill="#fff" opacity=".9"/>`).join("")}</g>`;
+    d += this._hsSkyDraw(sky, q);
     /* Garten: Baum, Büsche, Zaun, Laterne */
     const X0 = 76, X1 = 284, top = 72, bot = 160, n = Math.max(1, fl.length), fh = (bot - top) / n;
     d += `<rect x="-2" y="158" width="364" height="10" fill="url(#${q("gr")})"/>`;
@@ -4910,7 +5015,7 @@ class FensterHeizungPanel extends HTMLElement {
     const pc = on ? "#fb923c" : "#94a3b8", px = X0 + 3.5;
     d += `<path d="M${kx + 72} ${ky + 4} H${X1 + 1} V${top + 4}" fill="none" stroke="${pc}" stroke-width="1.8" opacity=".9"/><path d="M${kx + 72} ${ky + 9} H${X1 + 3.5} V${top + 4}" fill="none" stroke="${on ? "#60a5fa" : "#94a3b8"}" stroke-width="1.4" opacity=".75"/>` +
       fl.map((f, fi) => `<path d="M${X1 + 1} ${top + fi * fh + fh - 8} h-5" stroke="${pc}" stroke-width="1.6"/>`).join("");
-    return { svg: `<svg viewBox="${NR ? "46 6 268 194" : "0 0 360 200"}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Haus-Szene">${d}</svg>`, key: [NR ? "n" : "w", JSON.stringify(this._cfg.layout.short || {}), sky.tod, sky.w, sky.frost ? 1 : 0, pvOn ? (pvW > 50 ? 2 : 1) : 0, fuel, anyHeat ? 1 : 0, this._rkCfg().anim, fl.map((f) => f.r.map((r) => { const s = byId[r.id]; return r.id + ":" + s.k + (s.cur != null ? num(s.cur, 1) : "") + (s.heating ? "h" : "") + (s.here ? "p" : "") + (s.open.length || s.tilt.length ? "o" : "") + this._rkType(r); }).join(",")).join("/")].join("|") };
+    return { svg: `<svg viewBox="${NR ? "46 6 268 194" : "0 0 360 200"}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Haus-Szene">${d}</svg>`, key: [NR ? "n" : "w", this._hsx().house, this._hsx().sky, JSON.stringify(this._cfg.layout.short || {}), sky.tod, sky.w, sky.frost ? 1 : 0, pvOn ? (pvW > 50 ? 2 : 1) : 0, fuel, anyHeat ? 1 : 0, this._rkCfg().anim, fl.map((f) => f.r.map((r) => { const s = byId[r.id]; return r.id + ":" + s.k + (s.cur != null ? num(s.cur, 1) : "") + (s.heating ? "h" : "") + (s.here ? "p" : "") + (s.open.length || s.tilt.length ? "o" : "") + this._rkType(r); }).join(",")).join("/")].join("|") };
   }
   /* Name in der Szene: eigener Kurzname, sonst ohne „-zimmer“/„-raum“ (Kinderzimmer → Kinder, Wohnzimmer → Wohnen) */
   _hsName(r) {
@@ -4937,11 +5042,12 @@ class FensterHeizungPanel extends HTMLElement {
     const c = this._hsCfg(), h = this._cfg.layout.hs || {};
     return `<div class="lsec">${ic("home", 15)}Kopfkarte in Modul 1</div>
       <div class="ltog"><span>Haus-Szene<small class="mut" style="display:block">Deine Räume im Haus-Schnitt nach Etagen (Gruppen). Aus: das Modul-Logo wie bisher.</small></span><button class="sw ${!h.off ? "on" : ""}" data-act="hsoff" aria-pressed="${!h.off}" aria-label="Haus-Szene"></button></div>
-      ${!h.off ? `<div class="ltog"><span>Tageszeit und Wetter<small class="mut" style="display:block">Himmel nach Sonnenstand und Wetterquelle, Schnee bei Frost.</small></span><button class="sw ${c.wx ? "on" : ""}" data-act="hswx" aria-pressed="${c.wx}" aria-label="Tageszeit und Wetter"></button></div>` : ""}`;
+      ${!h.off ? `<div class="ltog"><span>Tageszeit und Wetter<small class="mut" style="display:block">Himmel nach Sonnenstand und Wetterquelle, Schnee bei Frost.</small></span><button class="sw ${c.wx ? "on" : ""}" data-act="hswx" aria-pressed="${c.wx}" aria-label="Tageszeit und Wetter"></button></div>${this._hsxLook()}` : ""}`;
   }
   _hsAct(a, b) {
     const L = this._cfg.layout;
     if (a === "hsgo") { this._hsGo(b.dataset.id); return true; }
+    if (this._hsxAct(a, b)) return true;
     if (a === "hsoff") L.hs = { ...(L.hs || {}), off: !(L.hs || {}).off };
     else if (a === "hswx") L.hs = { ...(L.hs || {}), wx: !this._hsCfg().wx };
     else return false;
@@ -5172,8 +5278,461 @@ class FensterHeizungPanel extends HTMLElement {
     return `<span class="chip enpr m3pr" title="Heute ${num(lo, 1)} bis ${num(hi, 1)} ct, Durchschnitt ${num(avg, 1)} ct">${ic("bolt", 16)}Strom jetzt ${num(cur, 1)} ct <b class="m3rel" style="background:${rel[1]}">${rel[0]}</b><span class="m3sc"><i style="left:${pos.toFixed(0)}%"></i></span></span>`;
   }
   _m3Look() {
-    const old = !!(this._cfg.layout.m3 || {}).old;
-    return `<div class="vrow"><span>Kacheln wie bisher<small class="mut" style="display:block">An: Kacheln und Ring aus v1.2 statt HD-Symbolen, Verlauf als Fläche und Doppelring</small></span><button class="sw ${old ? "on" : ""}" data-act="m3old" aria-pressed="${old}" aria-label="Kacheln wie bisher"></button></div>`;
+    const old = !!(this._cfg.layout.m3 || {}).old, fo = (this._cfg.layout.m3 || {}).flow === false;
+    return `<div class="vrow"><span>Kacheln wie bisher<small class="mut" style="display:block">An: Kacheln und Ring aus v1.2 statt HD-Symbolen, Verlauf als Fläche und Doppelring</small></span><button class="sw ${old ? "on" : ""}" data-act="m3old" aria-pressed="${old}" aria-label="Kacheln wie bisher"></button></div>
+      <div class="vrow"><span>Energiefluss wie bisher<small class="mut" style="display:block">An: Kreise mit Linien-Symbolen und Text-Hinweise statt HD-Plaketten, Auto und Hinweisen mit Knopf</small></span><button class="sw ${fo ? "on" : ""}" data-act="m3flow" aria-pressed="${fo}" aria-label="Energiefluss wie bisher"></button></div>${this._m3ScLook()}${this._m3PigLook()}${this._m3On() ? `<div class="lsec">${ic("sun", 15)}Bewegung</div>${this._animLook()}` : ""}`;
+  }
+  /* ================= Modul 3 · Neue Optik Stufe 2 (Konzept „Modul 3 – Neue Optik“): Energiefluss HD & Hinweise =================
+     C1: Geräte als HD-Plaketten (gleiche Symbole wie Modul 19), Balkon als eigener kleiner Knoten, Batterie mit Füllstand
+     (unter 20 % rot), Auto als dritter Verbraucher (nur wenn Modul 8 an ist). Linienstärke = Leistung, Leuchtsaum für aktive
+     Flüsse, inaktive Wege bleiben als feine graue Spur. Antippen eines Knotens zeigt die Werte im Zeitraum.
+     H1: Hinweise mit Symbol, Farbleiste und Knopf zum passenden Modul (nur wenn das Modul an ist), dazu der günstigste Strom.
+     Schalter „Energiefluss wie bisher“: layout.m3.flow = false */
+  _m3FlowOn() { return this._m3On() && (this._cfg.layout.m3 || {}).flow !== false; }
+  _m3Has(id) { return this._mdList().some((m) => m.id === id); }
+  /* Auto aus Modul 8: nur wenn das Modul an ist und die Wallbox erreichbar ist */
+  _m3Car() {
+    if (!this._m3Has("ev") || (this._cfg.layout.m3 || {}).car === false) return null;
+    const ev = this._mdState().ev || {}, pe = ev.ent && ev.ent.power;
+    if (pe && this._hass.states[pe]) { const w = this._enW(pe); return w == null ? null : { w: Math.max(0, w), who: ev.model || "" }; }
+    this._wbLoad(); const s = this._wbSnap();
+    if (!s.ok) return null;
+    const w = Math.max(0, Number(s.info.power) || 0); return { w, who: s.who && s.who.name ? s.who.name : "" };
+  }
+  _m3CarDay() {
+    const T = (this._wbStD && this._wbStD.data) || null, n = new Date(), td = `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`;
+    if (this._wbStatLoad) this._wbStatLoad();
+    const r = T && (T.days || []).find((x) => x.d === td); return r ? { kwh: (r.pv || 0) + (r.grid || 0), pv: r.pv || 0 } : null;
+  }
+  _m3Flow(n) {
+    const E = this._enState(), an = this._rkCfg().anim, kw = (w) => (w >= 1000 ? num(w / 1000, 2) + " kW" : Math.round(w) + " W");
+    const heat = this._htrTotal(), ws = this._mdState().ww, hasWw = !!(ws.ent.rod || this._m3Has("ww")), ww = this._wwIsOn(ws.ent.rod) ? ws.pv.watt : 0, car = this._m3Car();
+    const col = { pv: "#fbbf24", grid: "#60a5fa", exp: "#34d399", bat: n.soc != null && n.soc < 20 ? "#f87171" : "#a78bfa", house: "#2dd4bf", heat: "#f97316", ww: "#38bdf8", car: "#22d3ee" };
+    const nm = this._enPvNames(), bal = n.pvb != null, sel = this._m3Sel || "", id = "m3f" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6);
+    /* Linie: graue Spur immer, aktiv mit Leuchtsaum, Stärke nach Leistung und laufenden Punkten (Tempo nach Leistung) */
+    const K = [];  /* Aufbau-Schlüssel: welche Linien aktiv, Tempo-Stufe der Punkte; Zahlen und Stärken werden übernommen (K3) */
+    const ln = (d, w, c) => {
+      const on = w >= 20, sw = (2.4 + Math.min(7, w / 650)).toFixed(1), dur = !on ? "0" : w < 600 ? "2.40" : w < 2500 ? "1.60" : "0.90";  /* drei Tempo-Stufen, damit kleine Änderungen nichts neu starten */ K.push(on ? dur : 0);
+      return `<path class="m3tr" d="${d}"/>${on ? `<path class="m3gl" d="${d}" stroke="${c}" style="stroke-width:${(+sw + 7).toFixed(1)}px" filter="url(#${id}b)"/><path class="m3ln" d="${d}" stroke="${c}" style="stroke-width:${sw}px"/><path class="m3dt" d="${d}" style="stroke-width:${Math.max(2.4, sw * .55).toFixed(1)}px;animation-duration:${dur}s"/>` : ""}`;
+    };
+    /* Plakette: Leuchtring in Gerätefarbe, HD-Symbol, Name und Wert darunter */
+    const node = (k, x, y, r, gx, o, c, t1, t2, act, lblPos) => {
+      const s = Math.round(r * 1.32), fc = `fill:${act ? c : "var(--mut)"}`, lab = lblPos === "up" ? `<text x="${x}" y="${y - r - 20}" class="m3fn1">${t1}</text><text x="${x}" y="${y - r - 7}" class="m3fn2" style="${fc}">${t2}</text>`
+        : lblPos === "left" ? `<text x="${x - r - 8}" y="${y - 2}" class="m3fn1" style="text-anchor:end">${t1}</text><text x="${x - r - 8}" y="${y + 13}" class="m3fn2" style="text-anchor:end;${fc}">${t2}</text>`
+        : lblPos === "side" ? `<text x="${x + r + 10}" y="${y - 3}" class="m3fn1" style="text-anchor:start">${t1}</text><text x="${x + r + 10}" y="${y + 12}" class="m3fn2" style="text-anchor:start;${fc}">${t2}</text>`
+        : `<text x="${x}" y="${y + r + 15}" class="m3fn1">${t1}</text><text x="${x}" y="${y + r + 29}" class="m3fn2" style="fill:${act ? c : "var(--mut)"}">${t2}</text>`;
+      K.push(k + (act ? 1 : 0));
+      return `<g class="m3nd${act ? " on" : ""}${sel === k ? " sel" : ""}" data-act="m3fn" data-k="${k}" role="button" tabindex="0" aria-label="${esc(String(t1).replace(/<[^>]+>/g, ""))}: ${esc(String(t2).replace(/<[^>]+>/g, ""))}, antippen für Details" style="--c:${c}">
+        ${act ? `<circle cx="${x}" cy="${y}" r="${r + 5}" fill="${c}" opacity=".28" filter="url(#${id}b)"/>` : ""}<circle cx="${x}" cy="${y}" r="${r}" class="m3pq" style="stroke:${act ? c : "var(--line)"}"/>
+        ${this._gx(gx, s, o).replace("<svg ", `<svg x="${(x - s / 2).toFixed(1)}" y="${(y - s / 2 - 1).toFixed(1)}" `)}${lab}</g>`;
+    };
+    const B = [["heat", "radiator", { on: heat > 20 }, col.heat, "Heizung", heat > 20 ? kw(heat) : "aus", heat > 20], ...(hasWw ? [["ww", "boiler", { on: ww > 0 }, col.ww, "Warmwasser", ww ? kw(ww) : "aus", ww > 0]] : []), ...(car ? [["car", "car", { on: car.w > 20 }, col.car, car.w > 20 ? "Auto lädt" : "Auto", car.w > 20 ? kw(car.w) : "lädt nicht", car.w > 20]] : [])];
+    const bx = B.length === 3 ? [96, 200, 304] : B.length === 2 ? [140, 260] : [200], bw = { heat: Math.min(heat, n.house), ww: Math.min(ww, n.house), car: car ? Math.min(car.w, n.house) : 0 };
+    const exp = n.exp > 20, gridT = exp ? "Einspeisung" : "Netz", gridV = exp ? kw(n.exp) : n.imp > 20 ? "Bezug " + kw(n.imp) : "0 W";
+    const batV = n.bc > 20 ? "lädt " + kw(n.bc) : n.dis > 20 ? "entlädt " + kw(n.dis) : "ruht", batT = n.soc != null ? Math.round(n.soc) + " %" : "Batterie";
+    const lines = [
+      bal ? ln("M142 38Q164 44 175 56", n.pvb, col.pv) : "",
+      ln("M200 100V144", n.pv2h, col.pv),
+      n.hasBat ? ln("M229 72C300 74 336 100 336 144", n.pv2b, col.pv) : "",
+      ln("M171 72C100 74 64 100 64 144", n.exp, col.exp),
+      ln("M94 176H168", n.g2h, col.grid),
+      n.hasBat ? ln("M306 176H232", n.b2h, col.bat) : "",
+      ...B.map(([k], i) => ln(`M200 244C200 262 ${bx[i]} 260 ${bx[i]} 282`, bw[k], col[k])),
+    ].join("");
+    const nodes = [
+      bal ? node("pv2", 122, 34, 20, "balcony", {}, col.pv, esc(nm[1]), kw(n.pvb), n.pvb >= 5, "left") : "",
+      node("pv", 200, 70, 29, "pvRoof", {}, col.pv, esc(nm[0]), kw(n.pv), n.pv >= 20, "up"),
+      node("grid", 64, 176, 29, "grid", {}, exp ? col.exp : col.grid, gridT, gridV, n.exp > 20 || n.imp > 20),
+      node("house", 200, 176, 31, "house", {}, col.house, "Haus", kw(n.house), true),
+      n.hasBat ? node("bat", 336, 176, 29, "battery", { lvl: n.soc != null ? n.soc : 60 }, col.bat, batT, batV, n.bc > 20 || n.dis > 20) : "",
+      ...B.map(([k, g, o, c, t1, t2, act], i) => node(k, bx[i], 310, 26, g, o, c, t1, t2, act)),
+    ].join("");
+    const svg = `<svg class="enflow m3fl" viewBox="0 0 400 368" role="img" aria-label="Energiefluss" data-an="${an}"><defs><filter id="${id}b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter></defs>${lines}${nodes}</svg>`;
+    K.push(sel, an, n.soc != null ? Math.round(n.soc / 5) : "", this._m3Has("ef") ? 1 : 0);
+    const big = this._m3Has("ef") ? `<button class="lnk m3big" data-act="mdgo" data-k="ef">Großansicht ›</button>` : "";
+    return { svg: `<div class="m3flw" data-kk="${esc("m3f|" + K.join("|"))}" data-ks="1">${svg}</div>`, big, det: this._m3Det(n, { heat, ww, car }) };
+  }
+  /* Antippen eines Knotens: Werte im gewählten Zeitraum (kWh, Anteil Solar) */
+  _m3Det(n, x) {
+    const k = this._m3Sel; if (!k) return "";
+    const sum = this._enSum(), ok = sum && !sum.empty, P = this._enPer(), per = this._enLabel(P), today = this._enState().range === "day" && P.cur, kwh = (v) => (v == null ? "–" : num(v, v >= 100 ? 0 : v >= 10 ? 1 : 2) + " kWh");
+    const price = this._price(), feed = this._feed(), eur = (v, ct) => num(v * ct / 100, 2) + " €", nm = this._enPvNames();
+    let bat = null; if (ok && n.hasBat) { const s = this._enSamples(); if (s && this._enState().range === "day") bat = { c: s.reduce((a, y) => a + Math.max(0, y.bat), 0) * 5 / 6e4, d: s.reduce((a, y) => a + Math.max(0, -y.bat), 0) * 5 / 6e4 }; else if (this._enH && this._enH.res) { const t = this._enBk().reduce((a, y) => ({ c: a.c + y.bchg, d: a.d + y.bdis }), { c: 0, d: 0 }); bat = t; } }
+    const rooms = this._htrRooms(), heatK = rooms.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), heatPv = rooms.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
+    const ws = this._mdState().ww, wwK = ws.ent.rod ? (this._wwMinutesOn(ws.ent.rod) || 0) / 60 * ws.pv.watt / 1000 : 0, cd = k === "car" ? this._m3CarDay() : null;
+    const self = ok ? Math.max(0, sum.pv - sum.exp) : 0, aut = ok && sum.house > 0 ? Math.round(Math.min(100, Math.max(0, (1 - sum.imp / sum.house) * 100))) : null;
+    const D = {
+      pv: ["pvRoof", nm[0], "#fbbf24", [[per, kwh(ok ? sum.pv : null)], ["selbst genutzt", ok && sum.pv > 0 ? Math.round(self / sum.pv * 100) + " %" : "–"], ["jetzt", wfmt(n.pv)]]],
+      pv2: ["balcony", nm[1], "#fbbf24", [[per, kwh(ok ? sum.pvb : null)], ["Anteil an Solar", ok && sum.pv > 0 ? Math.round(sum.pvb / sum.pv * 100) + " %" : "–"], ["jetzt", wfmt(n.pvb || 0)]]],
+      grid: ["grid", "Netz", "#60a5fa", [["Bezug " + per, kwh(ok ? sum.imp : null) + (ok ? " · " + eur(sum.imp, price) : "")], ["Einspeisung", kwh(ok ? sum.exp : null) + (ok ? " · " + eur(sum.exp, feed) : "")], ["jetzt", n.exp > 20 ? "↑ " + wfmt(n.exp) : n.imp > 20 ? "↓ " + wfmt(n.imp) : "0 W"]]],
+      house: ["house", "Haus", "#2dd4bf", [[per, kwh(ok ? sum.house : null)], ["Autarkie", aut != null ? aut + " %" : "–"], ["jetzt", wfmt(n.house)]]],
+      bat: ["battery", "Batterie", "#a78bfa", [["geladen", bat ? kwh(bat.c) : "–"], ["entladen", bat ? kwh(bat.d) : "–"], ["Ladestand", n.soc != null ? Math.round(n.soc) + " %" : "–"]]],
+      heat: ["radiator", "Heizung", "#f97316", [["heute", kwh(heatK)], ["Anteil Solar", heatK > 0 ? Math.round(heatPv / heatK * 100) + " %" : "–"], ["jetzt", wfmt(x.heat)]]],
+      ww: ["boiler", "Warmwasser", "#38bdf8", [["heute (geschätzt)", kwh(wwK)], ["oben", this._wwTemps().top != null ? num(this._wwTemps().top, 1) + " °C" : "–"], ["jetzt", x.ww ? wfmt(x.ww) : "aus"]]],
+      car: ["car", "Auto", "#22d3ee", [["heute", cd ? kwh(cd.kwh) : "–"], ["Anteil Solar", cd && cd.kwh > 0 ? Math.round(cd.pv / cd.kwh * 100) + " %" : "–"], ["jetzt", x.car && x.car.w > 20 ? wfmt(x.car.w) : "lädt nicht"]]],
+    }[k];
+    if (!D) return "";
+    const go = { heat: "fh", ww: "ww", car: "ev", bat: "bt" }[k], btn = go && this._m3Has(go) ? `<button class="btn2 m3go" data-act="mdgo" data-k="${go}">${{ fh: "Modul 1", ww: "Modul 2", ev: "Modul 8", bt: "Modul 13" }[go]} ›</button>` : "";
+    return `<div class="m3fd" style="--c:${D[2]}">${this._gx(D[0], 34, k === "bat" ? { lvl: n.soc ?? 60 } : { on: true })}<b>${esc(D[1])}</b>${D[3].map(([l, v]) => `<span><small>${esc(l)}</small>${v}</span>`).join("")}${btn}<button class="ibtn m3fx" data-act="m3fn" data-k="${k}" aria-label="Schließen">${ic("close", 16)}</button>${!today && ["heat", "ww", "car"].includes(k) ? `<em class="mut sm">Heizung, Warmwasser und Auto nur als Tageswert von heute.</em>` : ""}</div>`;
+  }
+  /* Stundenpreise aus dem Preissensor (Tibber u. a.): Liste in ct je Abschnitt für heute */
+  _m3Prices() {
+    const p = this._pv(), e = p.price_mode === "entity" && p.price_sensor ? this._hass.states[p.price_sensor] : null; if (!e) return null;
+    const A = e.attributes || {}, u = String(A.unit_of_measurement || "").toLowerCase(), f = (v) => { const x = parseFloat(v); return !isFinite(x) ? null : /ct|cent/.test(u) ? x : /€|eur/.test(u) || x < 5 ? x * 100 : x; };
+    const raw = Array.isArray(A.today) ? A.today : Array.isArray(A.raw_today) ? A.raw_today : Array.isArray(A.prices_today) ? A.prices_today : [];
+    const v = raw.map((x) => f(typeof x === "object" && x ? x.total ?? x.value ?? x.price : x));
+    if (v.length < 12 || v.some((x) => x == null)) return null;
+    return { v, step: 1440 / v.length, avg: v.reduce((a, x) => a + x, 0) / v.length };
+  }
+  _m3CheapTip() {
+    const P = this._m3Prices(); if (!P) return null;
+    const now = new Date(), m = now.getHours() * 60 + now.getMinutes(), i0 = Math.floor(m / P.step);
+    let bi = -1; for (let i = i0; i < P.v.length; i++) if (bi < 0 || P.v[i] < P.v[bi]) bi = i;
+    if (bi < 0 || P.v[bi] > P.avg * .92) return null;
+    const t = bi * P.step, hh = `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(Math.round(t % 60)).padStart(2, "0")}`, low = Math.min(...P.v);
+    return { t: bi === i0 ? "Jetzt ist der Strom heute am günstigsten" : `Ab ${hh} ${P.v[bi] <= low + .05 ? "günstigster Strom des Tages" : "günstigster Strom für den Rest des Tages"}`, s: `${num(P.v[bi], 1)} ct statt ${num(P.avg, 1)} ct im Schnitt – gut für Waschmaschine, Trockner und Spülmaschine.` };
+  }
+  /* H1: Hinweise mit Bild, Farbleiste und Knopf */
+  _m3Tips(n, x) {
+    const out = [], rooms = this._htrRooms(), ws = this._mdState().ww, heatK = rooms.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), heatPv = rooms.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
+    const go = (id, l) => (this._m3Has(id) ? [l || "Modul " + { fh: 1, ww: 2, gs: 4, ev: 8, bt: 13 }[id] + " ›", "mdgo", id] : null);
+    if (n.exp >= 500) {
+      const rodOff = ws.ent.rod && !this._wwIsOn(ws.ent.rod), car = x.car;
+      const s = rodOff ? `Der Heizstab ist aus. Er könnte ${wfmt(Math.min(ws.pv.watt, n.exp))} davon nutzen.` : car && car.w < 20 ? "Das Auto lädt gerade nicht. Steckt es, könnte es den Überschuss laden." : rooms.length ? "Heizer könnten mehr davon nutzen, wenn sie nicht ausgelastet oder aus sind." : "Ein Elektroheizer oder Heizstab würde den Überschuss selbst nutzen.";
+      out.push({ g: "pvRoof", c: "#fbbf24", t: `${wfmt(n.exp)} Überschuss gehen ins Netz`, s, b: rodOff ? go("ww") : car && car.w < 20 ? go("ev") : go("fh") });
+    }
+    const ch = this._m3CheapTip(); if (ch) out.push({ g: "price", c: "#84cc16", t: ch.t, s: ch.s, b: go("gs") });
+    if (n.imp >= 1500) out.push({ g: "grid", c: "#f87171", t: `Hoher Netzbezug: ${wfmt(n.imp)}`, s: `Gerade laufen Heizung ${wfmt(x.heat)}${x.ww ? ` und Warmwasser ${wfmt(x.ww)}` : ""}${x.car && x.car.w > 20 ? `, das Auto lädt mit ${wfmt(x.car.w)}` : ""}. Der Rest ist Haushalt.`, b: go("fh") });
+    if (n.hasBat && n.soc != null && n.soc < 20 && n.pv < 200) out.push({ g: "battery", o: { lvl: n.soc }, c: "#f87171", t: `Batterie nur noch bei ${Math.round(n.soc)} %`, s: "Nachts und ohne Sonne kommt der Strom wieder aus dem Netz.", b: go("bt") });
+    this._enOut(n).forEach((nm, i) => out.push({ g: nm === this._enPvNames()[1] ? "balcony" : "pvRoof", c: "#f87171", t: `${esc(nm)} liefert nichts`, s: `${esc(this._enPvNames()[1 - (nm === this._enPvNames()[1] ? 1 : 0)])} erzeugt ${wfmt(nm === this._enPvNames()[1] ? n.pva : n.pvb)}. Ist der Wechselrichter ausgesteckt, aus oder ohne Verbindung?`, b: this._admin() ? ["Prüfen", "mdensetup", ""] : null, k: "o" + i }));
+    if (heatK > 0) out.push({ g: "radiator", o: { on: true }, c: "#f97316", t: `${Math.round(heatPv / heatK * 100)} % der Heizer-Energie heute kam aus Solar`, s: `${num(heatK, 1)} kWh für die Raumheizer, davon ${num(heatPv, 1)} kWh mit Sonne.`, b: go("fh") });
+    if (!out.length) out.push({ g: "house", c: "#2dd4bf", t: "Alles ruhig", s: "Kein Überschuss, kein hoher Netzbezug.", b: null });
+    return `<div class="card"><h2>${ic("info", 18)}Hinweise</h2><div class="m3hl">${out.map((h) => `<div class="m3hn" style="--c:${h.c}">${this._gx(h.g, 38, h.o || {})}<div><b>${h.t}</b>${h.s ? `<span>${h.s}</span>` : ""}</div>${h.b ? `<button class="m3hb" data-act="${h.b[1]}" data-k="${h.b[2]}">${esc(h.b[0])}</button>` : ""}</div>`).join("")}</div></div>`;
+  }
+  /* ================= Modul 3 · Neue Optik Stufe 3 (Konzept „Modul 3 – Neue Optik“): Energie-Szene =================
+     A1: Das Modul-Logo im Banner wird zur Szene: dein Haus mit Dach-PV, Balkonkraftwerk, Batterie (Füllstand, unter 20 % rot),
+     Strommast (Linie grün bei Einspeisung, rot bei Bezug) und Auto an der Wallbox (nur wenn Modul 8 an ist).
+     Werte stehen direkt am Gerät. Antippen führt hin: Batterie → Modul 13, Auto → Modul 8, Solar → Modul 16,
+     Strommast → Modul 14 – ist das Modul aus, ist das Teil nur Anzeige.
+     A2: Die Szene folgt den echten Flüssen; Himmel und Wetter wie in Modul 1 (_hsSky/_hsSkyDraw).
+     Bei vergangenen Zeiträumen oder Woche/Monat/Jahr zeigt sie die Summe (dicke Linie = viel Energie) mit „Σ“.
+     I: Am Handy ein flacher Streifen ohne Werte an den Geräten; auf der Startseite eine Mini-Szene in „Energie jetzt“.
+     Einstellungen (Anpassen → Aussehen): layout.m3 = { scene: false → Banner wie bisher, tags: false → keine Werte, car: false → Auto aus } */
+  _m3Sc() { const m = this._cfg.layout.m3 || {}; return { on: this._m3On() && m.scene !== false, tags: m.tags !== false, car: m.car !== false }; }
+  /* Werte für die Szene: live (jetzt) oder Summe im Zeitraum (Σ) */
+  _m3ScVals(n) {
+    const E = this._enState(), P = this._enPer(), live = E.range === "day" && P.cur, c = this._m3Sc(), car = c.car ? this._m3Car() : null;
+    if (live) return { live: true, pv: n.pva, pvb: n.pvb, has2: n.pvb != null, exp: n.exp, imp: n.imp, bc: n.bc, dis: n.dis, hasBat: n.hasBat, soc: n.soc, car: car ? car.w : null, hasCar: !!car };
+    const s = this._enSum(); if (!s || s.empty) return null;
+    let bc = 0, dis = 0; if (n.hasBat && this._enH && this._enH.res) { const t = this._enBk().reduce((a, y) => ({ c: a.c + y.bchg, d: a.d + y.bdis }), { c: 0, d: 0 }); bc = t.c; dis = t.d; }
+    return { live: false, pv: Math.max(0, s.pv - (s.pvb || 0)), pvb: s.pvb || 0, has2: n.pvb != null, exp: s.exp, imp: s.imp, bc, dis, hasBat: n.hasBat, soc: n.soc, car: null, hasCar: !!car };
+  }
+  _m3ScSvg(n, o = {}) {
+    const V = this._m3ScVals(n); if (!V) return null;
+    const sky = this._hsSky(), night = sky.tod === "night", grey = sky.cloud && !night, wh = sky.frost || sky.snow, u = "m3s" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_", q = (x) => u + x;
+    const L = V.live, fmt = (v) => (L ? (v >= 1000 ? num(v / 1000, 1) + " kW" : Math.round(v) + " W") : num(v, v >= 100 ? 0 : 1) + " kWh"), act = (v) => v >= (L ? 20 : .05);
+    const mx = L ? 1 : Math.max(.1, V.pv + V.pvb, V.exp, V.imp, V.bc, V.dis), sw = (v) => (L ? 1.6 + Math.min(4.2, v / 900) : 1.6 + 4.2 * Math.min(1, v / mx)).toFixed(1);
+    const SK = this._hsSkyCols(sky.tod), HC = this._hsHouseCols(night), kl = this._hsx().house === "klassisch";
+    const lg = (id, st, x2 = 0, y2 = 1) => `<linearGradient id="${q(id)}" x1="0" y1="0" x2="${x2}" y2="${y2}">${st.map(([p, c, a]) => `<stop offset="${p}" stop-color="${c}"${a != null ? ` stop-opacity="${a}"` : ""}/>`).join("")}</linearGradient>`;
+    const surplus = L ? V.exp > 50 : V.exp > .2, pvOn = act(V.pv);
+    let d = `<defs>${lg("sk", [[0, grey && !this._hsx().S.c ? "#93a7bf" : SK[0]], [1, grey && !this._hsx().S.c ? "#dde5ee" : SK[1]]])}
+      <radialGradient id="${q("sun")}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7c2"/><stop offset=".55" stop-color="#fde68a"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
+      ${lg("gr", night ? [[0, wh ? "#c7d0dc" : "#1c3a28"], [1, wh ? "#9aa6b5" : "#0f2418"]] : [[0, wh ? "#ffffff" : "#5fd27e"], [1, wh ? "#dfe7f0" : "#27864a"]])}
+      ${lg("fw", kl ? (night ? [[0, "#e5dccb"], [1, "#b9ae99"]] : [[0, "#fbfaf7"], [1, "#e7e2d8"]]) : [[0, HC.wall[0]], [1, HC.wall[1]]], 1, 0)}${lg("sw", kl ? (night ? [[0, "#a59c8c"], [1, "#857c6e"]] : [[0, "#dcd6ca"], [1, "#c2baab"]]) : [[0, HC.side[0]], [1, HC.side[1]]], 1, 0)}
+      ${lg("rf", kl ? [[0, "#b4473f"], [1, "#7a2420"]] : [[0, HC.roof[0]], [1, HC.roof[1]]])}${lg("pv", surplus && !night ? [[0, "#93c5fd"], [.5, "#3b82f6"], [1, "#1e40af"]] : [[0, "#475f8a"], [1, "#1e2c4d"]], 1, 1)}
+      ${lg("gl", night ? [[0, "#fde68a"], [1, "#f59e0b"]] : [[0, "#e0f2fe"], [1, "#7dd3fc"]], .6, 1)}${lg("bt", [[0, "#f8fafc"], [1, "#cbd5e1"]], 1, 0)}
+      ${lg("car", [[0, "#5eead4"], [1, "#0f766e"]])}<filter id="${q("b")}" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.4"/></filter></defs>`;
+    d += this._hsSkyDraw(sky, q);
+    d += `<rect x="-2" y="156" width="364" height="46" fill="url(#${q("gr")})"/>` + [[36, 156, 10], [120, 157, 7], [354, 157, 9]].map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * .6}" fill="${wh ? "#eef3f8" : night ? "#1d4a2c" : "#22a35a"}"/>`).join("");
+    /* Fluss-Linie: graue Spur, aktiv farbig mit Leuchtsaum und laufenden Punkten (Richtung = Pfad) */
+    const K = [], dsp = (v) => (!L ? "2.00" : v < 600 ? "2.40" : v < 2500 ? "1.60" : "0.90");
+    const ln = (dd, v, c) => (K.push(act(v) ? dsp(v) : 0), "") + `<path d="${dd}" fill="none" stroke="rgba(15,23,42,.35)" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="2 3"/>` + (act(v) ? `<path d="${dd}" fill="none" stroke="${c}" stroke-width="${(+sw(v) + 4).toFixed(1)}" opacity=".45" filter="url(#${q("b")})"/><path d="${dd}" fill="none" stroke="${c}" stroke-width="${sw(v)}" stroke-linecap="round"/><path class="m3dt" d="${dd}" style="stroke-width:${Math.max(2, sw(v) * .6).toFixed(1)}px;animation-duration:${dsp(v)}s"/>` : "");
+    const go = (k) => { const m = { bat: "bt", car: "ev", pv: "sp", grid: "dt" }[k]; return o.tap !== false && m && this._m3Has(m) ? ` data-act="mdgo" data-k="${m}" role="button" tabindex="0" class="m3tap"` : ""; };
+    /* Strommast rechts hinten */
+    const mc = night ? "#94a3b8" : "#475569";
+    d += `<g${go("grid")}><path d="M322 160 L334 58 L346 160 M325 136 H343 M327 112 H341 M330 88 H338 M322 160 L341 112 M346 160 L327 112 M327 112 L338 88 M341 112 L330 88" fill="none" stroke="${mc}" stroke-width="1.6" stroke-linejoin="round"/><path d="M318 72 H350 M322 84 H346" stroke="${mc}" stroke-width="1.8"/>${[318, 350, 322, 346].map((x, i) => `<circle cx="${x}" cy="${i < 2 ? 72 : 84}" r="1.5" fill="${mc}"/>`).join("")}<rect x="314" y="54" width="40" height="110" fill="transparent"/></g>`;
+    /* Haus: Giebelseite vorn, Seitenwand und Dachfläche mit PV rechts */
+    const win = (x, y, w, h) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.4" fill="url(#${q("gl")})" stroke="#64748b" stroke-width=".7"/><path d="M${x + w / 2} ${y} v${h} M${x} ${y + h / 2} h${w}" stroke="#94a3b8" stroke-width=".5" opacity=".7"/>`;
+    d += `<polygon points="206,98 262,92 262,158 206,160" fill="url(#${q("sw")})"/><polygon points="136,98 206,98 206,160 136,160" fill="url(#${q("fw")})"/><polygon points="132,100 171,58 210,100" fill="url(#${q("fw")})"/>
+      <polygon points="171,58 228,52 266,94 210,100" fill="url(#${q("rf")})"/><path d="M130 101 L171 56 L212 101" fill="none" stroke="${HC.roof[1]}" stroke-width="3" stroke-linejoin="round"/>
+      ${win(146, 112, 18, 16)}${win(178, 112, 18, 16)}<rect x="162" y="136" width="15" height="24" rx="1.5" fill="#7c3f1d"/><circle cx="174" cy="149" r=".9" fill="#fde68a"/>${win(216, 108, 14, 14)}${win(240, 106, 14, 14)}${win(216, 132, 14, 14)}${win(240, 131, 14, 14)}
+      <rect x="164" y="80" width="14" height="12" rx="1" fill="url(#${q("gl")})" stroke="#64748b" stroke-width=".6"/>`;
+    /* PV-Feld auf der Dachfläche (bilinear zwischen den vier Ecken) */
+    const P = (s, t) => { const A = [182, 58.5], B = [222, 54], C = [255, 89], D = [215, 93.5], x = A[0] + (B[0] - A[0]) * s + (D[0] - A[0]) * t + (A[0] - B[0] + C[0] - D[0]) * s * t, y = A[1] + (B[1] - A[1]) * s + (D[1] - A[1]) * t + (A[1] - B[1] + C[1] - D[1]) * s * t; return `${x.toFixed(1)},${y.toFixed(1)}`; };
+    let pv = ""; for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) { const s0 = i / 3 + .015, s1 = (i + 1) / 3 - .015, t0 = j / 3 + .02, t1 = (j + 1) / 3 - .02; pv += `<polygon points="${P(s0, t0)} ${P(s1, t0)} ${P(s1, t1)} ${P(s0, t1)}" fill="url(#${q("pv")})" stroke="#cbd5e1" stroke-width=".5"/>`; }
+    d += `<g${go("pv")}>${pv}${surplus && !night ? `<polygon class="m3gls" points="${P(.05, .1)} ${P(.3, .1)} ${P(.18, .9)} ${P(0, .9)}" fill="#fff" opacity=".28"/>` : ""}</g>`;
+    /* Balkonkraftwerk am Geländer links */
+    if (V.has2) d += `<g><rect x="106" y="118" width="32" height="3" rx="1" fill="#94a3b8"/><path d="M108 106 H136 M108 106 V118 M115 106 V118 M122 106 V118 M129 106 V118 M136 106 V118" stroke="#64748b" stroke-width="1.1"/><polygon points="107,96 135,96 137,110 105,110" fill="url(#${q("pv")})" stroke="#cbd5e1" stroke-width=".6"/><path d="M121 96 V110 M106 103 H136" stroke="#cbd5e1" stroke-width=".4"/></g>`;
+    /* Batterie-Speicher links */
+    if (V.hasBat) {
+      const lv = Math.max(0, Math.min(100, V.soc != null ? V.soc : 60)), red = V.soc != null && V.soc < 20, h = 30 * lv / 100;
+      d += `<g${go("bat")}><rect x="66" y="118" width="26" height="42" rx="5" fill="url(#${q("bt")})" stroke="#94a3b8" stroke-width=".8"/><rect x="71" y="124" width="16" height="30" rx="2.5" fill="#1e1b4b"/><rect x="71" y="${(154 - h).toFixed(1)}" width="16" height="${h.toFixed(1)}" rx="2.5" fill="${red ? "#ef4444" : "#8b5cf6"}"/>
+        ${V.soc != null ? `<text x="79" y="141" text-anchor="middle" font-size="6.6" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">${Math.round(V.soc)}%</text>` : ""}${L && V.bc > 20 ? `<path class="m3bz" d="M80 112 l-3 5 h3 l-2 5 l5 -6 h-3 l2 -4z" fill="#fde047"/>` : ""}</g>`;
+    }
+    /* Wallbox an der Seitenwand und Auto rechts */
+    if (V.hasCar) {
+      const chg = L && V.car > 20;
+      d += `<g${go("car")}><rect x="266" y="128" width="4" height="31" rx="1" fill="#94a3b8"/><rect x="263" y="120" width="10" height="15" rx="2.5" fill="#f8fafc" stroke="#94a3b8" stroke-width=".6"/><circle cx="268" cy="125" r="1.7" fill="${chg ? "#22d3ee" : "#64748b"}"/>
+        <g transform="translate(14 0)"><path d="M270 152 q2 -12 14 -13 l10 -7 h20 l10 7 q8 1 9 8 v6 h-63z" fill="url(#${q("car")})"/><path d="M286 139 l8 -6 h9 v6z M305 133 h8 l7 6 h-15z" fill="url(#${q("gl")})"/>
+        <circle cx="285" cy="153" r="6" fill="#1f2937"/><circle cx="285" cy="153" r="2.6" fill="#9ca3af"/><circle cx="315" cy="153" r="6" fill="#1f2937"/><circle cx="315" cy="153" r="2.6" fill="#9ca3af"/>
+        ${chg ? `<path class="m3bz" d="M300 120 l-3 6 h3 l-2 6 l6 -7 h-3 l2 -5z" fill="#fde047"/>` : ""}</g></g>`;
+    }
+    /* Flüsse */
+    const col = { pv: "#fbbf24", exp: "#34d399", imp: "#f87171", bat: "#a78bfa", car: "#22d3ee" };
+    d += ln("M235 90 V126", V.pv, col.pv);
+    if (V.has2) d += ln("M138 104 H146", V.pvb, col.pv);
+    if (V.hasBat) d += V.dis > V.bc ? ln("M92 138 H136", V.dis, col.bat) : ln("M136 138 H92", V.bc, col.bat);
+    d += V.exp >= V.imp ? ln("M262 94 C284 80 304 72 320 72", V.exp, col.exp) : ln("M320 72 C304 72 284 80 262 94", V.imp, col.imp);
+    if (V.hasCar) d += ln("M262 150 H266", V.car || 0, col.car) + ln("M273 128 C282 128 286 136 288 142", V.car || 0, col.car);
+    /* Werte am Gerät */
+    const tag = (x, y, t1, t2, c, anchor = "start") => { const w = Math.max(t1.length * 3.6, t2.length * 4.6) + 10, x0 = anchor === "end" ? x - w : x; return `<g class="m3tg"><rect x="${x0.toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="21" rx="4.5" fill="rgba(15,23,42,.8)" stroke="${c}" stroke-width=".9"/><text x="${(x0 + 5).toFixed(1)}" y="${y + 8}" font-size="6.2" fill="#e2e8f0" font-family="system-ui,sans-serif">${esc(t1)}</text><text x="${(x0 + 5).toFixed(1)}" y="${y + 17.4}" font-size="8" font-weight="800" fill="${c}" font-family="system-ui,sans-serif">${t2}</text></g>`; };
+    const nm = this._enPvNames();
+    if (o.tags !== false) {
+      d += tag(172, 24, nm[0], fmt(V.pv), col.pv);
+      const ex = V.exp >= V.imp; d += tag(314, 32, "Netz", act(ex ? V.exp : V.imp) ? (ex ? "↑ " : "↓ ") + fmt(ex ? V.exp : V.imp) : "0 W", ex ? col.exp : col.imp, "end");
+      if (V.has2) d += tag(102, 70, nm[1], fmt(V.pvb), col.pv, "end");
+      if (V.hasBat) d += tag(54, 158, "Batterie", L ? (V.bc > 20 ? "lädt " + fmt(V.bc) : V.dis > 20 ? "gibt " + fmt(V.dis) : V.soc != null && V.soc < 20 ? "leer · " + Math.round(V.soc) + " %" : "ruht") : "↑" + fmt(V.bc) + " ↓" + fmt(V.dis), V.soc != null && V.soc < 20 ? col.imp : col.bat);
+      if (V.hasCar && L) d += tag(292, 158, V.car > 20 ? "Auto lädt" : "Auto", V.car > 20 ? fmt(V.car) : "lädt nicht", col.car);
+    }
+    if (!L) d += `<g><circle cx="20" cy="20" r="11" fill="rgba(15,23,42,.75)" stroke="#fff" stroke-width=".8"/><text x="20" y="24.5" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" font-family="system-ui,sans-serif">Σ</text></g>`;
+    const key = [o.vb || "", this._hsx().house, this._hsx().sky, sky.tod, sky.w, sky.frost ? 1 : 0, L ? 1 : 0, ...K, V.has2 ? 1 : 0, V.hasBat ? 1 : 0, V.hasCar ? 1 : 0, L && V.bc > 20 ? 1 : 0, L && V.car > 20 ? 1 : 0, surplus ? 1 : 0, V.exp >= V.imp ? 1 : 0, V.dis > V.bc ? 1 : 0, V.soc != null && V.soc < 20 ? 1 : 0, o.tags !== false ? 1 : 0, this._rkCfg().anim].join("|");
+    return { svg: `<svg viewBox="${o.vb || "0 0 360 200"}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Energie-Szene: ${esc(this._m3ScSay(V))}">${d}</svg>`, key, V };
+  }
+  /* Ein Satz, was gerade passiert (Bedienungshilfen, Konzept W1) */
+  _m3ScSay(V) {
+    if (!V.live) return "Summe im gewählten Zeitraum";
+    const p = [];
+    if (V.pv + (V.pvb || 0) > 20) p.push("Sonne liefert " + wfmt(V.pv + (V.pvb || 0)));
+    if (V.bc > 20) p.push("Batterie lädt"); else if (V.dis > 20) p.push("Batterie versorgt das Haus");
+    if (V.car > 20) p.push("Auto lädt");
+    p.push(V.exp > 20 ? wfmt(V.exp) + " gehen ins Netz" : V.imp > 20 ? wfmt(V.imp) + " kommen aus dem Netz" : "Netz ausgeglichen");
+    return p.join(", ");
+  }
+  _m3Scene(n) {
+    const c = this._m3Sc(); if (!c.on) return "";
+    const NR = this._narrow || (this.clientWidth || 999) < 600, vb = NR ? "0 44 360 128" : "", x = this._m3ScSvg(n, { tags: c.tags && !NR, vb });
+    if (!x) return "";
+    return `<div class="m3ss" data-kk="${esc("m3s|" + x.key)}" data-ks="1" data-an="${this._rkCfg().anim}">${x.svg}</div>`;
+  }
+  /* Startseite: Mini-Szene ohne Werte in „Energie jetzt“ */
+  _m3ScMini(n) {
+    if (!this._m3Sc().on) return "";
+    const x = this._m3ScSvg(n, { tags: false, tap: false, vb: "0 40 360 130" }); if (!x || !x.V.live) return "";
+    return `<div class="m3ss m3mini" data-kk="${esc("m3m|" + x.key)}" data-ks="1" data-an="${this._rkCfg().anim}">${x.svg}</div>`;
+  }
+  _m3ScLook() {
+    if (!this._m3On()) return "";
+    const c = this._m3Sc(), sw = (on, act, t, s) => `<div class="vrow"><span>${t}<small class="mut" style="display:block">${s}</small></span><button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${on}" aria-label="${t}"></button></div>`;
+    return sw(c.on, "m3scene", "Energie-Szene im Banner", "Dein Haus mit Solar, Batterie, Netz und Auto statt Modul-Logo. Aus: Banner wie bisher.") +
+      (c.on ? this._hsxLook() + sw(c.tags, "m3tags", "Werte an den Geräten", "Leistung direkt an Solar, Netz, Balkon, Batterie und Auto (am Handy immer ohne).") + (this._m3Has("ev") ? sw(c.car, "m3car", "Auto zeigen", "Auto und Wallbox aus Modul 8 in Szene und Energiefluss.") : "") : "");
+  }
+  /* ================= W7 · Sponsor-Extra: Haus-Stile und Himmel-Themen (Konzept Modul 3, W7 / Modul 1) =================
+     Gilt für die Haus-Szene in Modul 1 und die Energie-Szene in Modul 3. Die Grund-Szene (Klassisch, Natürlich) bleibt für alle frei;
+     die weiteren Stile und Themen gibt es mit aktivem Sponsor-Schlüssel. Ohne Sponsor wird immer die Grund-Szene gezeichnet.
+     Einstellung: layout.hsx = { house: klassisch | modern | skandi | backstein | mediterran, sky: natur | pastell | nordlicht | golden } */
+  static HS_HOUSE = {
+    klassisch: { n: "Klassisch", wall: ["#f4ead8", "#e2d3b8"], side: ["#dcd6ca", "#c2baab"], roof: ["#c2564d", "#7a2420"] },
+    modern: { n: "Modern", wall: ["#ffffff", "#e5e7eb"], side: ["#d1d5db", "#9ca3af"], roof: ["#4b5563", "#1f2937"] },
+    skandi: { n: "Skandinavisch", wall: ["#c0392b", "#8e2a20"], side: ["#9b2c22", "#6d1f18"], roof: ["#374151", "#111827"] },
+    backstein: { n: "Backstein", wall: ["#c2410c", "#7c2d12"], side: ["#9a3412", "#6b2410"], roof: ["#57534e", "#292524"] },
+    mediterran: { n: "Mediterran", wall: ["#fef3c7", "#fde68a"], side: ["#f6d98b", "#e9c46a"], roof: ["#f97316", "#9a3412"] },
+  };
+  static HS_SKY = {
+    natur: { n: "Natürlich", c: null },
+    pastell: { n: "Pastell", c: { night: ["#312e81", "#6b21a8"], morning: ["#fbcfe8", "#e0e7ff"], evening: ["#f9a8d4", "#a5b4fc"], day: ["#a5b4fc", "#fbcfe8"] } },
+    nordlicht: { n: "Nordlicht", c: { night: ["#020617", "#0c3b4a"], morning: ["#7dd3fc", "#e0f2fe"], evening: ["#0e7490", "#4c1d95"], day: ["#38bdf8", "#f0f9ff"] } },
+    golden: { n: "Goldene Stunde", c: { night: ["#1e1b4b", "#7c2d12"], morning: ["#fb923c", "#fde68a"], evening: ["#ea580c", "#7e22ce"], day: ["#fdba74", "#fef3c7"] } },
+  };
+  _hsxOk() { return !!(this._spnS && this._spnS().active); }
+  _hsx() {
+    const x = this._cfg.layout.hsx || {}, K = this.constructor, ok = this._hsxOk();
+    const house = ok && K.HS_HOUSE[x.house] ? x.house : "klassisch", sky = ok && K.HS_SKY[x.sky] ? x.sky : "natur";
+    return { house, sky, H: K.HS_HOUSE[house], S: K.HS_SKY[sky] };
+  }
+  /* Farbe abdunkeln (Nacht): f = 0..1 */
+  _hsDk(hex, f) { const n = parseInt(hex.slice(1), 16), c = (s) => Math.round(((n >> s) & 255) * f); return `#${((1 << 24) + (c(16) << 16) + (c(8) << 8) + c(0)).toString(16).slice(1)}`; }
+  _hsSkyCols(tod) {
+    const S = this._hsx().S;
+    return (S.c || { night: ["#0a1430", "#26325f"], morning: ["#f7b98a", "#cfe0f7"], evening: ["#f29a6a", "#5d4b8c"], day: ["#6fbcff", "#e2f3ff"] })[tod];
+  }
+  /* Wand, Seitenwand und Dach im gewählten Stil; nachts dunkler */
+  _hsHouseCols(night) {
+    const H = this._hsx().H, d = (a) => (night ? a.map((c) => this._hsDk(c, .58)) : a);
+    return { wall: d(H.wall), side: d(H.side), roof: H.roof };
+  }
+  /* Nordlicht: grün-violette Bänder am Nachthimmel */
+  _hsAurora(sky) {
+    if (this._hsx().sky !== "nordlicht" || sky.tod !== "night") return "";
+    return `<g class="hsau" opacity=".55"><path d="M-10 60 C60 20 120 70 190 34 S310 40 370 18" fill="none" stroke="#34d399" stroke-width="14" stroke-linecap="round" opacity=".55"/><path d="M-10 74 C70 44 140 86 210 52 S320 60 370 36" fill="none" stroke="#a78bfa" stroke-width="9" stroke-linecap="round" opacity=".45"/><path d="M20 48 C90 18 150 52 230 26" fill="none" stroke="#6ee7b7" stroke-width="4" stroke-linecap="round" opacity=".7"/></g>`;
+  }
+  _hsxLook() {
+    const K = this.constructor, x = this._hsx(), ok = this._hsxOk();
+    const row = (t, set, cur, act) => `<div class="hsxr"><b>${t}</b><div class="hsxc">${Object.entries(set).map(([k, v], i) => `<button class="hsxb${cur === k ? " sel" : ""}${!ok && i ? " lk" : ""}" data-act="${ok || !i ? act : "spnopen"}" data-k="${k}" aria-pressed="${cur === k}">${act === "hsxh" ? `<i style="background:linear-gradient(${v.roof[0]} 0 40%,${v.wall[0]} 40%)"></i>` : `<i style="background:linear-gradient(${(v.c || { day: ["#6fbcff", "#e2f3ff"] }).day.join(",")})"></i>`}${esc(v.n)}${!ok && i ? " 🔒" : ""}</button>`).join("")}</div></div>`;
+    return `<div class="lsec">${ic("heart", 15)}Sponsor-Extra: Haus-Stil und Himmel</div>${row("Haus-Stil", K.HS_HOUSE, x.house, "hsxh")}${row("Himmel", K.HS_SKY, x.sky, "hsxs")}
+      <div class="mut sm" style="margin:4px 0 0">${ok ? "Gilt für die Haus-Szene in Modul 1 und die Energie-Szene in Modul 3." : "Klassisch und Natürlich sind für alle. Weitere Stile gibt es für Sponsoren – tippe auf einen Stil mit Schloss."}</div>`;
+  }
+  _hsxAct(a, b) {
+    if (a !== "hsxh" && a !== "hsxs") return false;
+    const L = this._cfg.layout; L.hsx = { ...(L.hsx || {}), [a === "hsxh" ? "house" : "sky"]: b.dataset.k };
+    this._saveLayout(); this._render(); this._renderModal(); return true;
+  }
+  /* ================= Modul 3 · Neue Optik Stufe 4 (Konzept „Modul 3 – Neue Optik“): Diagramme & Kosten =================
+     D1: Preisband unter der Tageskurve (Stundenpreise aus dem Preissensor, relativ zum Tagesdurchschnitt), Preis im Tooltip.
+         Die gestrichelte Prognose aus Modul 16 gibt es schon seit v1.1.
+     D2: Woche, Monat, Jahr gespiegelt: oben Solar (selbst genutzt + eingespeist), unten Netzbezug.
+     D3: Jahr zusätzlich als Solar-Kalender (kWh pro Tag, bester Tag mit ★), ein Abruf der Langzeitstatistik je Jahr, gemerkt bis Mitternacht.
+     E1: Kosten-Treppe mit Symbolen, Bilanz eingerahmt. E2: Sparschwein – Vorteil seit Beginn der Aufzeichnung bzw. Inbetriebnahme,
+         mit freiwilligen Anschaffungskosten (layout.m3.cost, layout.m3.since = "JJJJ-MM").
+     G1: „Wohin der Strom geht“ als Ring mit HD-Symbolen, Auto aus Modul 8, „Haushalt und Rest“ aufklappbar mit den Geräten aus Modul 4.
+     Bewegung: Werte zählen beim Zeitraumwechsel kurz hoch (nur mit Animationen Dezent/Voll, nie bei „Bewegung reduzieren“). */
+  /* ---- D1: Preisband ---- */
+  /* Preisband als Teil der Tageskurve: Zeile direkt unter dem Kurvenbereich (y0), darunter die Uhrzeiten */
+  _m3Band(L, iw, y0) {
+    const P = this._m3Prices(); if (!P) return null;
+    const n = P.v.length, lo = Math.min(...P.v), hi = Math.max(...P.v), cw = iw / n;
+    const col = (v) => { const r = v <= P.avg ? -Math.min(1, (P.avg - v) / Math.max(.1, P.avg - lo)) : Math.min(1, (v - P.avg) / Math.max(.1, hi - P.avg)); return r < -.45 ? "#4ade80" : r < -.1 ? "#a3e635" : r < .15 ? "#facc15" : r < .5 ? "#fb923c" : "#f87171"; };
+    const now = new Date(), ci = Math.floor((now.getHours() * 60 + now.getMinutes()) / P.step), cur = P.v[Math.min(n - 1, ci)], q = this._m3PriceAt(now.getHours() * 60 + now.getMinutes());
+    const g = `<g class="m3band" aria-label="Strompreis heute">${P.v.map((v, i) => `<rect x="${(L + i * cw + .7).toFixed(1)}" y="${y0 + 5}" width="${Math.max(1, cw - 1.4).toFixed(1)}" height="14" rx="3" fill="${col(v)}" opacity="${i < ci ? .5 : 1}"><title>${String(Math.floor(i * P.step / 60)).padStart(2, "0")}:${String(Math.round(i * P.step % 60)).padStart(2, "0")} Uhr · ${num(v, 1)} ct</title></rect>`).join("")}${ci < n ? `<rect x="${(L + ci * cw - .5).toFixed(1)}" y="${y0 + 3}" width="${(cw + 1).toFixed(1)}" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="1.8"/>` : ""}<text x="${L - 6}" y="${y0 + 16}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">ct</text></g>`;
+    const l = `<div class="m3bandl"><span>Strom jetzt <b style="color:${q ? q.rel[1] : "inherit"}">${num(cur, 1)} ct${q ? " · " + q.rel[0] : ""}</b> · Schnitt heute ${num(P.avg, 1)} ct · billigste Stunde ${num(lo, 1)} ct</span><span class="m3bsc">günstig<i></i>teuer</span></div>`;
+    return { g, l };
+  }
+  _m3PriceAt(min) { const P = this._m3Prices(); if (!P) return null; const v = P.v[Math.min(P.v.length - 1, Math.floor(min / P.step))]; return v == null ? null : { v, rel: v <= P.avg * .93 ? ["günstig", "#4ade80"] : v >= P.avg * 1.07 ? ["teuer", "#f87171"] : ["mittel", "#facc15"] }; }
+  /* ---- D2: Balken gespiegelt ---- */
+  _m3Bars(v, G) {
+    const E = this._enState(), yr = E.range === "year", { Wd, Ht, L, R, T, ih } = G, hl = E.hl, op = (f) => (!hl || hl === f ? 1 : .25);
+    const up = Math.max(.5, ...v.map((d) => d.pv)), dn = Math.max(0, ...v.map((d) => d.imp)), stp = enStep(up + dn), tU = Math.ceil(up / stp) * stp, tD = dn > 0 ? Math.ceil(dn / stp) * stp : 0;
+    const Y = (x) => T + ((tU - x) / (tU + tD)) * ih, gw = (Wd - L - R) / v.length, bw = Math.max(3, Math.min(24, gw * .66));
+    let s = ""; for (let x = -tD, c = 0; x <= tU && c < 14; x += stp, c++) s += `<line x1="${L}" x2="${Wd - R}" y1="${Y(x).toFixed(1)}" y2="${Y(x).toFixed(1)}" stroke="currentColor" opacity="${x === 0 ? .4 : .12}"/><text x="${L - 6}" y="${(Y(x) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${num(Math.abs(x), x % 1 ? 1 : 0)}</text>`;
+    const rr = (x, y, w, h, c, o, top) => (h < .5 ? "" : `<path d="${top ? `M${x} ${y + h}V${y + Math.min(3, h)}q0 -3 3 -3h${w - 6}q3 0 3 3V${y + h}z` : `M${x} ${y}V${y + h - Math.min(3, h)}q0 3 3 3h${w - 6}q3 0 3 -3V${y}z`}" fill="${c}" opacity="${o}"/>`);
+    v.forEach((d, i) => {
+      const x = +(L + i * gw + (gw - bw) / 2).toFixed(1);
+      if (d.fut) s += `<rect x="${x}" y="${(Y(0) - 1.5).toFixed(1)}" width="${bw.toFixed(1)}" height="3" rx="1.5" fill="currentColor" opacity=".15"/>`;
+      else {
+        const self = Math.max(0, d.pv - d.exp), y1 = Y(self), y2 = Y(self + d.exp);
+        s += `<rect x="${x}" y="${y1.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0, Y(0) - y1).toFixed(1)}" fill="#fbbf24" opacity="${op("pv")}"/>` + rr(x, +y2.toFixed(1), +bw.toFixed(1), +(y1 - y2).toFixed(1), "#34d399", op("exp"), true);
+        s += rr(x, +Y(0).toFixed(1), +bw.toFixed(1), +(Y(-d.imp) - Y(0)).toFixed(1), "#f87171", op("imp"), false);
+        if (d.star) s += `<text x="${(x + bw / 2).toFixed(1)}" y="${(y2 - 4).toFixed(1)}" text-anchor="middle" font-size="11" fill="#fde047">★</text>`;
+        s += `<rect class="enhit" x="${(L + i * gw).toFixed(1)}" y="${T}" width="${gw.toFixed(1)}" height="${ih}" fill="transparent" data-act="enpick" data-k="${i}"/>`;
+      }
+      const lab = yr ? d.d.toLocaleDateString("de-DE", { month: "short" }).replace(".", "") : E.range === "week" ? d.d.toLocaleDateString("de-DE", { weekday: "short" }).replace(".", "") : String(d.d.getDate());
+      if (yr || E.range === "week" || i % 5 === 0 || i === v.length - 1) s += `<text x="${(L + i * gw + gw / 2).toFixed(1)}" y="${Ht - 8}" text-anchor="middle" font-size="11" fill="currentColor" opacity=".6">${lab}</text>`;
+    });
+    this._enTipD = { k: "bar", Wd, L, iw: Wd - L - R, gw, v };
+    return `${yr ? this._m3CalSeg() : ""}<div class="enchw"><svg class="wwchart enchart" viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="Solar oben, Netzbezug unten"><text x="${L - 6}" y="${T - 10}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">kWh</text><text x="${Wd - R}" y="${T - 10}" text-anchor="end" font-size="11" font-weight="700" fill="#fbbf24">Solar ↑</text>${tD ? `<text x="${Wd - R}" y="${Ht - 22}" text-anchor="end" font-size="11" font-weight="700" fill="#f87171">Netzbezug ↓</text>` : ""}${s}<rect class="encur" x="0" y="${T}" width="0" height="${ih}" rx="4" fill="none" stroke="currentColor" opacity="0"/></svg><div class="entt" hidden></div></div>
+      <div class="legend"><span><i style="background:#fbbf24"></i>Solar selbst genutzt</span><span><i style="background:#34d399"></i>eingespeist</span><span><i style="background:#f87171"></i>Netzbezug (nach unten)</span></div><div class="mut sm" style="margin:4px 0 0">Ein Tipp auf einen Balken öffnet ${yr ? "den Monat" : "den Tag"}.</div>`;
+  }
+  /* ---- D3: Solar-Kalender ---- */
+  _m3CalSeg() { const c = !!this._m3CalOn; return `<div class="seg wwseg m3cseg" role="group" aria-label="Jahresansicht"><button class="${c ? "" : "sel"}" data-act="m3cal" data-k="0" aria-pressed="${!c}">Monate</button><button class="${c ? "sel" : ""}" data-act="m3cal" data-k="1" aria-pressed="${c}">Kalender</button></div>`; }
+  _m3CalLoad(y) {
+    const td = new Date().toDateString(), C = this._m3CalD;
+    if (C && C.y === y && (C.day === td || y < new Date().getFullYear())) return C;
+    if (this._m3CalBusy === y) return null; this._m3CalBusy = y;
+    const src = this._enSrc(), list = [src.pv, src.pv2].filter(Boolean), s = new Date(y, 0, 1), e = new Date(Math.min(Date.now(), +new Date(y + 1, 0, 1)));
+    const q = (t, ty) => { const ids = list.filter((x) => x.t === t).map((x) => x.id); return ids.length ? this._hass.callWS({ type: "recorder/statistics_during_period", start_time: s.toISOString(), end_time: e.toISOString(), statistic_ids: ids, period: "day", types: [ty] }) : Promise.resolve({}); };
+    Promise.all([q("e", "change"), q("p", "mean")]).then(([re, rp]) => {
+      const days = {};
+      list.forEach((x) => (((x.t === "e" ? re : rp) || {})[x.id] || []).forEach((r) => {
+        const d = new Date(typeof r.start === "number" ? r.start : Date.parse(r.start)), k = `${d.getMonth()}-${d.getDate()}`;
+        const v = x.t === "e" ? r.change * x.k : r.mean * x.k * 24 / 1000; if (isFinite(v)) days[k] = (days[k] || 0) + Math.max(0, v);
+      }));
+      this._m3CalD = { y, day: td, days };
+    }).catch(() => { this._m3CalD = { y, day: td, days: {}, err: true }; }).finally(() => { this._m3CalBusy = null; if (this._mdActive() === "en") this._render(); });
+    return null;
+  }
+  _m3Cal() {
+    const P = this._enPer(), y = P.s.getFullYear(), C = this._m3CalLoad(y), seg = this._m3CalSeg();
+    if (!C) return `${seg}<div class="mut sm" style="padding:30px 0;text-align:center">Kalender wird geladen …</div>`;
+    const vals = Object.values(C.days); if (!vals.length) return `${seg}<div class="mut sm" style="padding:30px 0;text-align:center">${C.err ? "Die Tageswerte konnten nicht geladen werden." : "Für dieses Jahr gibt es keine Tageswerte."}</div>`;
+    const mx = Math.max(...vals), best = Object.entries(C.days).sort((a, b) => b[1] - a[1])[0], MN = "JFMAMJJASOND", today = new Date();
+    const c = (v) => { const f = Math.min(1, v / mx); return `color-mix(in srgb,#fbbf24 ${Math.round(12 + f * 88)}%,#3a3320)`; };
+    let g = "";
+    for (let m = 0; m < 12; m++) {
+      g += `<b>${MN[m]}</b>`;
+      const dim = new Date(y, m + 1, 0).getDate();
+      for (let d = 1; d <= 31; d++) {
+        const k = `${m}-${d}`, v = C.days[k], fut = new Date(y, m, d) > today;
+        if (d > dim) { g += `<i class="nx"></i>`; continue; }
+        g += v == null || fut ? `<i class="em"></i>` : `<i style="background:${c(v)}" title="${d}.${m + 1}.: ${num(v, 1)} kWh" data-act="m3day" data-k="${y}-${m + 1}-${d}" role="button">${best[0] === k ? "★" : ""}</i>`;
+      }
+    }
+    const [bm, bd] = best[0].split("-").map(Number), bdt = new Date(y, bm, bd).toLocaleDateString("de-DE", { day: "numeric", month: "long" });
+    return `${seg}<div class="m3cal">${g}</div><div class="m3call"><span>wenig</span><i></i><span>viel · bester Tag ${bdt}: ${num(best[1], 1)} kWh ★</span></div><div class="mut sm" style="margin:4px 0 0">Ein Tipp auf einen Tag öffnet ihn. Summe ${num(vals.reduce((a, x) => a + x, 0), 0)} kWh Solar.</div>`;
+  }
+  /* ---- E1: Kosten-Treppe mit Symbolen ---- */
+  _m3Water(buy, sell, saved, net) {
+    const W = 460, H = 214, base = 104, mx = Math.max(.01, buy, sell + saved, Math.abs(net)), k = 74 / mx, bw = 76, eur = (v) => `${v >= 0 ? "+" : "−"}${num(Math.abs(v), 2)} €`;
+    const it = [["Netzbezug", -buy, "#f87171", 0, "grid", 0], ["Einspeisung", sell, "#34d399", 0, "grid", 1], ["Selbst genutzt", saved, "#fbbf24", sell, "pvRoof", 0], ["Bilanz", net, "#2dd4bf", 0, "euro", 0]];
+    let s = `<line x1="8" y1="${base}" x2="${W - 8}" y2="${base}" stroke="currentColor" opacity=".3" stroke-dasharray="4 4"/>`;
+    it.forEach(([l, v, c, from, g, ex], i) => {
+      const x = 16 + i * 112, y0 = base - from * k, h = Math.max(3, Math.abs(v) * k), y = v >= 0 ? y0 - h : y0, last = i === 3;
+      s += last ? `<rect x="${x}" y="${(v >= 0 ? base - h : base).toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="9" fill="${c}" fill-opacity="${v < 0 ? .12 : .16}" stroke="${v < 0 ? "#f87171" : c}" stroke-width="2.4"/><text x="${x + bw / 2}" y="${(v >= 0 ? base - h / 2 + 5 : base + h / 2 + 5).toFixed(1)}" text-anchor="middle" font-size="${h > 24 ? 15 : 12}" font-weight="800" fill="${v < 0 ? "#f87171" : c}">${h > 24 ? eur(v) : ""}</text>${h > 24 ? "" : `<text x="${x + bw / 2}" y="${(v >= 0 ? base - h - 6 : base + h + 15).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="800" fill="${c}">${eur(v)}</text>`}`
+        : `<rect x="${x}" y="${y.toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="7" fill="${c}"/><text x="${x + bw / 2}" y="${(v >= 0 ? y - 6 : y + h + 15).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="700" fill="${c}">${eur(v)}</text>`;
+      s += this._gx(g, 26, {}).replace("<svg ", `<svg x="${x + 6}" y="${H - 32}" `) + (ex || g === "grid" ? `<circle cx="${x + 30}" cy="${H - 10}" r="5.5" fill="${ex ? "#34d399" : "#f87171"}"/><text x="${x + 30}" y="${H - 7.5}" text-anchor="middle" font-size="8" font-weight="800" fill="#fff">${ex ? "↑" : "↓"}</text>` : "") + `<text x="${x + 36}" y="${H - 15}" font-size="11.5" fill="currentColor" opacity=".75">${l}</text>`;
+    });
+    return `<svg class="enwf m3wf" viewBox="0 0 ${W} ${H}" role="img" aria-label="Kosten und Vorteil">${s}</svg>`;
+  }
+  /* ---- E2: Sparschwein ---- */
+  _m3PigLoad() {
+    const C = this._m3PigD, td = new Date().toDateString(), m = this._cfg.layout.m3 || {}, key = td + "|" + (m.since || "");
+    if (C && C.key === key) return C; if (this._m3PigBusy) return null; this._m3PigBusy = true;
+    const src = this._enSrc(), need = ["pv", "exp"].every((k) => src[k] && src[k].t === "e" && !src[k].sg);
+    if (!need) { this._m3PigBusy = false; return (this._m3PigD = { key, need: true }); }
+    const list = ["pv", "pv2", "exp"].map((k) => src[k] && src[k].t === "e" && !src[k].sg ? { f: k === "pv2" ? "pv" : k, ...src[k] } : null).filter(Boolean);
+    const s0 = m.since && /^\d{4}-\d{2}$/.test(m.since) ? new Date(+m.since.slice(0, 4), +m.since.slice(5, 7) - 1, 1) : new Date(2010, 0, 1);
+    this._hass.callWS({ type: "recorder/statistics_during_period", start_time: s0.toISOString(), end_time: new Date().toISOString(), statistic_ids: [...new Set(list.map((x) => x.id))], period: "month", types: ["change"] }).then((r) => {
+      const t = { pv: 0, exp: 0 }; let first = null;
+      list.forEach((x) => ((r || {})[x.id] || []).forEach((y) => { const v = y.change * x.k; if (!isFinite(v) || v <= 0) return; t[x.f] += v; const d = typeof y.start === "number" ? y.start : Date.parse(y.start); if (x.f === "pv" && (first == null || d < first)) first = d; }));
+      this._m3PigD = { key, pv: t.pv, exp: t.exp, first };
+    }).catch(() => { this._m3PigD = { key, err: true }; }).finally(() => { this._m3PigBusy = false; if (this._mdActive() === "en") this._render(); });
+    return null;
+  }
+  _m3Pig() {
+    const D = this._m3PigLoad(), m = this._cfg.layout.m3 || {}, cost = Number(m.cost) || 0, h = `<h2>${ic("total", 18)}Sparschwein · Vorteil durch Solar</h2>`;
+    const pig = `<svg class="m3pig" viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="59" rx="20" ry="3" fill="#000" opacity=".2"/><ellipse cx="30" cy="38" rx="21" ry="16" fill="#f9a8d4"/><ellipse cx="26" cy="32" rx="12" ry="7" fill="#fff" opacity=".35"/><circle cx="50" cy="38" r="7" fill="#f472b6"/><circle cx="48.5" cy="37" r="1.3" fill="#831843"/><circle cx="52" cy="37" r="1.3" fill="#831843"/><circle cx="42" cy="31" r="1.8" fill="#1f2937"/><path d="M36 24 l4 -6 l3 7z" fill="#f472b6"/><rect x="16" y="50" width="6" height="7" rx="2" fill="#f472b6"/><rect x="34" y="50" width="6" height="7" rx="2" fill="#f472b6"/><path d="M9 36 q-5 -2 -3 -6" fill="none" stroke="#f472b6" stroke-width="2.2" stroke-linecap="round"/><rect x="24" y="21" width="10" height="2.4" rx="1.2" fill="#831843"/><circle cx="29" cy="12" r="7" fill="#fbbf24" stroke="#b45309" stroke-width="1.2"/><text x="29" y="15" text-anchor="middle" font-size="8" font-weight="800" fill="#92400e">€</text></svg>`;
+    if (!D) return `<div class="card">${h}<div class="mut sm" style="padding:18px 0">Wird berechnet …</div></div>`;
+    if (D.need) return `<div class="card">${h}<div class="m3pg">${pig}<div><b>Braucht Energiezähler</b><span class="mut sm">Für den Vorteil seit Beginn braucht es Zähler in kWh für Solar und Einspeisung (Haus → Energiequellen). Mit reinen Leistungssensoren geht es nicht über Jahre.</span></div></div></div>`;
+    if (D.err) return `<div class="card">${h}<div class="mut sm">Die Langzeitstatistik konnte nicht geladen werden.</div></div>`;
+    const price = this._price(), feed = this._feed(), adv = Math.max(0, D.pv - D.exp) * price / 100 + D.exp * feed / 100, pct = cost > 0 ? Math.min(100, adv / cost * 100) : null;
+    const since = D.first ? new Date(D.first).toLocaleDateString("de-DE", { month: "long", year: "numeric" }) : "";
+    return `<div class="card">${h}<div class="m3pg">${pig}<div><div class="m3pgv">${num(adv, 0)} €</div><span class="mut">Vorteil durch Solar ${m.since ? "seit Inbetriebnahme" : "seit Beginn der Aufzeichnung"}${since ? ` (${since})` : ""}</span></div></div>
+      ${pct != null ? `<div class="m3pgb"><i style="width:${pct.toFixed(1)}%"></i></div><div class="m3pgl"><span>${num(pct, 0)} % der Anlage bezahlt</span><span>Ziel ${num(cost, 0)} €</span></div>` : `<div class="mut sm" style="margin:8px 0 0">${this._admin() ? "Trag unter Anpassen → Aussehen die Anschaffungskosten ein, dann siehst du, wie viel der Anlage schon bezahlt ist." : ""}</div>`}
+      <div class="mut sm" style="margin:6px 0 0">${num(D.pv, 0)} kWh Solar, davon ${num(D.exp, 0)} kWh eingespeist. Gerechnet mit den heutigen Preisen (${num(price, 1)} ct Bezug, ${num(feed, 1)} ct Einspeisung).</div></div>`;
+  }
+  /* ---- G1: Ring „Wohin der Strom geht“ ---- */
+  _m3Dist(houseK, heatK, heatPv, wwK, price) {
+    const cd = this._m3Car() ? this._m3CarDay() || { kwh: 0, pv: 0 } : null, carK = cd ? cd.kwh : 0, restK = Math.max(0, houseK - heatK - wwK - carK), tot = Math.max(.01, heatK + wwK + carK + restK);
+    const it = [["heat", "Heizung (Raumheizer)", heatK, "#f97316", "radiator", heatK > 0 ? Math.round(heatPv / heatK * 100) + " % Solar" : ""], ["ww", "Warmwasser (Heizstab)", wwK, "#38bdf8", "boiler", ""], ...(cd ? [["car", "Auto (Modul 8)", carK, "#22d3ee", "car", cd.kwh > 0 ? Math.round(cd.pv / cd.kwh * 100) + " % Solar" : ""]] : []), ["rest", "Haushalt und Rest", restK, "#2dd4bf", "fridge", ""]];
+    const r = 46, C = 2 * Math.PI * r; let off = 0;
+    const arcs = it.map(([, , v, c]) => { const f = v / tot; if (f <= 0) return ""; const len = Math.max(0, f * C - (f < 1 ? 2 : 0)), a = `<circle cx="60" cy="60" r="${r}" fill="none" stroke="${c}" stroke-width="16" stroke-dasharray="${len.toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90 60 60)"/>`; off += f * C; return a; }).join("");
+    const gsOn = this._m3Has("gs"); let sub = "";
+    if (this._m3RestOpen) {
+      let devs = [];
+      if (gsOn) { this._gsLoad(); const H = (this._gsD && this._gsD.hist) || {}, n = new Date(), td = `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`; devs = (this._gsState().devices || []).map((d) => ({ n: d.name || "Gerät", g: this._gxAlt(d.img || d.icon || "") || "plug", v: (H[d.id] || []).filter((x) => x.d === td).reduce((a, x) => a + (x.s || 0) + (x.b || 0) + (x.g || 0), 0) })).filter((d) => d.v > .005).sort((a, b) => b.v - a.v); }
+      const used = devs.reduce((a, d) => a + d.v, 0);
+      sub = `<div class="m3dsub">${devs.map((d) => `<div>${this._gx(d.g, 22)}<b>${esc(d.n)}</b><span>${num(d.v, 2)} kWh</span></div>`).join("")}<div>${this._gx("plug", 22)}<b>Sonstiges</b><span>${num(Math.max(0, restK - used), 1)} kWh</span></div>${gsOn ? "" : `<em class="mut sm">Mit Modul 4 (Gerätestrom) erscheinen hier Waschmaschine, Trockner und Co. einzeln.</em>`}</div>`;
+    }
+    return `<div class="card"><h2>${ic("layers", 18)}Wohin der Strom heute geht</h2><div class="m3dist"><div class="m3dr"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="${r}" fill="none" stroke="var(--line)" stroke-width="16"/>${arcs}</svg><div><b>${num(tot, 1)}</b><span>kWh heute</span></div></div>
+      <div class="m3dl">${it.map(([k, l, v, c, g, x]) => `<div class="m3di${k === "rest" ? " rest" : ""}" style="--c:${c}"${k === "rest" ? ` data-act="m3rest" role="button" tabindex="0" aria-expanded="${!!this._m3RestOpen}"` : ""}>${this._gx(g, 32, { on: v > 0 })}<div><small>${l}</small><b>${num(v, 1)} kWh · ${Math.round(v / tot * 100)} %${x ? ` · <em>${x}</em>` : ""}</b>${k === "rest" ? `<small class="m3dx">${gsOn ? "Geräte aus Modul 4" : "Aufschlüsseln"} ${this._m3RestOpen ? "▴" : "▾"}</small>` : ""}</div><span class="m3de">${num(v * price / 100, 2)} €</span></div>`).join("")}</div></div>${sub}
+      <div class="mut sm" style="margin:8px 0 0">Warmwasser ist aus der Laufzeit des Heizstabs geschätzt. Der Rest ist Verbrauch minus Heizung, Warmwasser${cd ? " und Auto" : ""}.</div></div>`;
+  }
+  /* ---- Bewegung: Werte zählen beim Zeitraumwechsel hoch ---- */
+  _m3Count() {
+    if (!this._m3Cnt || Date.now() - this._m3Cnt > 1500 || this._rkCfg().anim === "aus") return;
+    try { if (matchMedia("(prefers-reduced-motion: reduce)").matches) return; } catch (_) { /* ohne matchMedia */ }
+    this._m3Cnt = 0;
+    requestAnimationFrame(() => this.shadowRoot.querySelectorAll(".m3tiles .v, .m3ring .rv b").forEach((el) => {
+      const t = el.firstChild; if (!t || t.nodeType !== 3) return;
+      const raw = t.textContent.trim(), dec = (raw.split(",")[1] || "").length, to = parseFloat(raw.replace(/\./g, "").replace(",", ".")); if (!isFinite(to) || to <= 0) return;
+      const t0 = performance.now(), D = 650, step = (now) => { const f = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - f, 3); t.textContent = num(to * e, dec); if (f < 1) requestAnimationFrame(step); else t.textContent = raw; };
+      requestAnimationFrame(step);
+    }));
+  }
+  _m3PigLook() {
+    if (!this._m3On()) return "";
+    const m = this._cfg.layout.m3 || {};
+    return `<div class="lsec">${ic("total", 15)}Sparschwein (freiwillig)</div>
+      <div class="vrow"><span>Anschaffungskosten der Anlage<small class="mut" style="display:block">In Euro. Leer: nur „Vorteil seit Beginn der Aufzeichnung“.</small></span><input class="inp" style="width:110px" type="number" min="0" step="100" data-f="enm3cost" value="${m.cost ? esc(String(m.cost)) : ""}" placeholder="z. B. 3400"></div>
+      <div class="vrow"><span>In Betrieb seit<small class="mut" style="display:block">Monat der Inbetriebnahme, z. B. 2024-03.</small></span><input class="inp" style="width:110px" type="month" data-f="enm3since" value="${esc(m.since || "")}"></div>`;
   }
   _build() {
     const sr = this.shadowRoot;
@@ -5382,8 +5941,14 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "preset") { const ic2 = { ...(this._cfg.layout.icons || {}) }; delete ic2[m.id]; this._cfg.layout.icons = ic2; this._saveLayout(); this._render(); this._renderModal(); }
     else if (a === "lfrk") { this._modal = { type: "lfrk", id: b.dataset.id, d: b.dataset.d }; this._renderModal(); }
     else if (a.startsWith("rk") && this._rkAct(a, b)) { /* Raumkarte 2.0 */ }
+    else if (a === "m3flow") { const L = this._cfg.layout; L.m3 = { ...(L.m3 || {}), flow: (L.m3 || {}).flow === false }; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (a === "m3scene" || a === "m3tags" || a === "m3car") { const L = this._cfg.layout, k = { m3scene: "scene", m3tags: "tags", m3car: "car" }[a]; L.m3 = { ...(L.m3 || {}), [k]: (L.m3 || {})[k] === false }; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (a === "m3cal") { this._m3CalOn = b.dataset.k === "1"; this._render(); }
+    else if (a === "m3rest") { this._m3RestOpen = !this._m3RestOpen; this._render(); }
+    else if (a === "m3day") { const [y, mo, d] = b.dataset.k.split("-").map(Number), E = this._enState(), now = new Date(); E.range = "day"; E.off = Math.min(0, Math.round((new Date(y, mo - 1, d) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5)); this._enTipX = null; this._enSave(); this._render(); }
+    else if (a === "m3fn") { this._m3Sel = this._m3Sel === b.dataset.k ? "" : b.dataset.k; this._render(); }
     else if (a === "m3old") { const L = this._cfg.layout; L.m3 = { ...(L.m3 || {}), old: !(L.m3 || {}).old }; this._saveLayout(); this._render(); this._renderModal(); }
-    else if (["hsgo", "hsoff", "hswx"].includes(a) && this._hsAct(a, b)) { /* Haus-Szene */ }
+    else if (["hsgo", "hsoff", "hswx", "hsxh", "hsxs"].includes(a) && this._hsAct(a, b)) { /* Haus-Szene, Stile (W7) */ }
     else if (["gpfl", "gpmap", "gpset", "gpedit"].includes(a) && this._gpAct(a, b)) { /* Grundriss */ }
     else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
     else if (a === "pm") {
@@ -8882,8 +9447,8 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _hzEnergie() {
     if (!this._enOn()) return ""; const N = this._enNow(); if (!N) return "";
-    const net = N.exp > 0 ? this._labTile("Netz", `${num(N.exp / 1000, 1)} kW`, "Einspeisung", "green") : this._labTile("Netz", `${num(N.imp / 1000, 1)} kW`, N.imp > 0 ? "Bezug" : "ausgeglichen", N.imp > 0 ? "amber" : "");
-    return `<div class="card hzgo" data-act="hzgo" data-k="en" role="button" tabindex="0"><h2>${ic("energy", 18)}Energie jetzt<span class="hzrt">Modul 3</span></h2><div class="lugrid">${this._labTile("Solar", `${num(N.pv / 1000, 1)} kW`, `Haus ${num(N.house / 1000, 1)} kW`)}${N.soc != null ? this._labTile("Batterie", `${num(N.soc, 0)} %`, N.bc > 0 ? `lädt mit ${num(N.bc / 1000, 1)} kW` : N.dis > 0 ? `entlädt mit ${num(N.dis / 1000, 1)} kW` : "ruht") : ""}${net}</div></div>`;
+    const mini = this._m3ScMini(N), net = N.exp > 0 ? this._labTile("Netz", `${num(N.exp / 1000, 1)} kW`, "Einspeisung", "green") : this._labTile("Netz", `${num(N.imp / 1000, 1)} kW`, N.imp > 0 ? "Bezug" : "ausgeglichen", N.imp > 0 ? "amber" : "");
+    return `<div class="card hzgo" data-act="hzgo" data-k="en" role="button" tabindex="0"><h2>${ic("energy", 18)}Energie jetzt<span class="hzrt">Modul 3</span></h2>${mini ? `<div class="m3mrow">${mini}` : ""}<div class="lugrid">${mini ? this._labTile("Haus", `${num(N.house / 1000, 1)} kW`, `${N.house > 0 ? Math.round(Math.min(100, (N.pv2h + N.b2h) / N.house * 100)) : 100} % aus Solar${N.b2h > 20 ? " und Batterie" : ""}`, "green") : ""}${this._labTile("Solar", `${num(N.pv / 1000, 1)} kW`, `Haus ${num(N.house / 1000, 1)} kW`)}${N.soc != null ? this._labTile("Batterie", `${num(N.soc, 0)} %`, N.bc > 0 ? `lädt mit ${num(N.bc / 1000, 1)} kW` : N.dis > 0 ? `entlädt mit ${num(N.dis / 1000, 1)} kW` : "ruht") : ""}${net}</div>${mini ? "</div>" : ""}</div>`;
   }
   _hzMuell() {
     if (!this._muOn()) return ""; this._muLoad(); const S = this._mu(), rows = (S.bins || []).filter((x) => x.next); if (!S.on || !rows.length) return "";
@@ -10665,7 +11230,7 @@ class FensterHeizungPanel extends HTMLElement {
      Gespeichert im Layout unter "mp" (für alle Nutzer, in Sicherungen enthalten). Kopf und Zeitraum bleiben fest oben. */
   static MP_NAMES = {
     ww: { speicher: "Speicher & Kennzahlen", verlauf: "Verlauf 24 Stunden", zeitplan: "Warmwasser-Zeitplan", zirk: "Zirkulation", leg: "Legionellenschutz", pv: "PV-Überschuss", zustand: "Zustand" },
-    en: { kacheln: "Kennzahlen", fluss: "Energiefluss", verlauf: "Verlauf", verteilung: "Verteilung", kosten: "Kosten und Vorteil", heizung: "Heizung", hinweise: "Hinweise" },
+    en: { kacheln: "Kennzahlen", fluss: "Energiefluss", verlauf: "Verlauf", verteilung: "Verteilung", kosten: "Kosten und Vorteil", spar: "Sparschwein", heizung: "Heizung", hinweise: "Hinweise" },
     gs: { kacheln: "Kennzahlen", geraete: "Geräte", fenster: "Startfenster", verlauf: "Verlauf nach Quelle", jahr: "Dein Jahr" },
   };
   static MP_WIDE = { ww: ["speicher", "verlauf", "zustand"], en: ["kacheln"], gs: ["kacheln", "fenster", "geraete", "verlauf", "jahr"] };
@@ -12445,12 +13010,15 @@ class FensterHeizungPanel extends HTMLElement {
       let g = ""; for (let w = 0, c = 0; w <= top && c < 12; w += sk, c++) g += `<line x1="${L}" x2="${Wd - R}" y1="${Y(w)}" y2="${Y(w)}" stroke="currentColor" opacity=".13"/><text x="${L - 6}" y="${Y(w) + 4}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${w / 1000}</text>`;
       for (const h of [0, 6, 12, 18, 24]) g += `<text x="${X(h * 60)}" y="${Ht - 8}" text-anchor="${h === 0 ? "start" : h === 24 ? "end" : "middle"}" font-size="11" fill="currentColor" opacity=".6">${String(h).padStart(2, "0")}:00</text>`;
       const z = () => 0, hasB = s.some((x) => x.bd > 5), fcp = fc.length > 1 ? `<path d="${fc.map((x, i) => `${i ? "L" : "M"}${X(x[0] * 60 + 30).toFixed(1)} ${Y(x[1] * 1000).toFixed(1)}`).join("")}" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="5 4" opacity="${(.85 * op("pv")).toFixed(2)}"/>` : "";
-      this._enTipD = { k: "day", Wd, L, iw, s };
-      return `<div class="enchw"><svg class="wwchart enchart" viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="Leistung"><text x="${L - 6}" y="${T - 10}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">kW</text>${g}${area(z, (x) => x.pv, "#fbbf24", .3, "pv")}${hasB ? area(z, (x) => x.bd, "#a78bfa", .55, "bat") : ""}${area((x) => x.bd, (x) => x.bd + x.imp, "#f87171", .55, "imp")}${line("pv", "#fbbf24", 1.6)}${E.ent.pv2 && s.some((x) => x.pvb > 0) ? line("pvb", "#fb923c", 1.2) : ""}${fcp}${line("house", "#2dd4bf", 2.4)}<line class="encur" x1="0" x2="0" y1="${T}" y2="${T + ih}" stroke="currentColor" opacity="0"/></svg><div class="entt" hidden></div></div>
+      this._enTipD = { k: "day", Wd, L, iw, s, pr: this._m3On() && H.off === 0 && !!this._m3Prices() };
+      const band = this._enTipD.pr ? this._m3Band(L, iw, T + ih) : null, Hb = Ht + (band ? 24 : 0);
+      if (band) g = g.split(`y="${Ht - 8}"`).join(`y="${Hb - 8}"`);
+      return `<div class="enchw"><svg class="wwchart enchart" viewBox="0 0 ${Wd} ${Hb}" role="img" aria-label="Leistung"><text x="${L - 6}" y="${T - 10}" text-anchor="end" font-size="10" fill="currentColor" opacity=".6">kW</text>${g}${area(z, (x) => x.pv, "#fbbf24", .3, "pv")}${hasB ? area(z, (x) => x.bd, "#a78bfa", .55, "bat") : ""}${area((x) => x.bd, (x) => x.bd + x.imp, "#f87171", .55, "imp")}${line("pv", "#fbbf24", 1.6)}${E.ent.pv2 && s.some((x) => x.pvb > 0) ? line("pvb", "#fb923c", 1.2) : ""}${fcp}${line("house", "#2dd4bf", 2.4)}<line class="encur" x1="0" x2="0" y1="${T}" y2="${T + ih}" stroke="currentColor" opacity="0"/>${band ? band.g : ""}</svg><div class="entt" hidden></div></div>${band ? band.l : ""}
         <div class="legend"><span><i style="background:#fbbf24"></i>${E.ent.pv2 ? "Solar gesamt" : "Solar"}</span>${E.ent.pv2 && s.some((x) => x.pvb > 0) ? `<span><i style="background:#fb923c"></i>${esc(this._enPvNames()[1])}</span>` : ""}${hasB ? `<span><i style="background:#a78bfa"></i>aus Batterie</span>` : ""}<span><i style="background:#f87171"></i>aus dem Netz</span><span><i style="background:#2dd4bf"></i>Verbrauch</span>${fcp ? `<span><i style="background:transparent;border:1px dashed #fbbf24"></i>Prognose (Modul 16)</span>` : ""}</div>`;
     }
     const b = this._enBk(), now = Date.now(), yr = E.range === "year";
     const v = b.map((d) => { const house = Math.max(0, d.pv - d.exp + d.imp - d.bchg + d.bdis), sd = Math.min(house, Math.max(0, d.pv - d.exp - d.bchg)), bd = Math.min(Math.max(0, house - sd), d.bdis); return { ...d, house, sd, bd, g: Math.max(0, house - sd - bd), fut: +d.d - (yr ? 15 * 864e5 : 432e5) > now }; });
+    if (this._m3On()) { if (yr && this._m3CalOn) return this._m3Cal(); const pv0 = Math.max(0, ...v.filter((d) => !d.fut).map((d) => d.pv)); if (pv0 > 0) v.forEach((d) => { d.star = !d.fut && d.pv === pv0 && v.length > 7; }); return this._m3Bars(v, { Wd, Ht, L, R, T, ih }); }
     const up = Math.max(1, ...v.map((d) => d.sd + d.bd + d.g)), dn = Math.max(0, ...v.map((d) => d.exp)), stp = enStep(up + dn), topU = Math.ceil(up / stp) * stp, topD = dn > 0 ? Math.ceil(dn / stp) * stp : 0;
     const Y = (x) => T + ((topU - x) / (topU + topD)) * ih, gw = iw / v.length, bw = Math.max(3, Math.min(26, gw * .64));
     let s = ""; for (let x = -topD, c = 0; x <= topU && c < 14; x += stp, c++) s += `<line x1="${L}" x2="${Wd - R}" y1="${Y(x).toFixed(1)}" y2="${Y(x).toFixed(1)}" stroke="currentColor" opacity="${x === 0 ? .35 : .13}"/><text x="${L - 6}" y="${(Y(x) + 4).toFixed(1)}" text-anchor="end" font-size="11" fill="currentColor" opacity=".6">${num(Math.abs(x), x % 1 ? 1 : 0)}</text>`;
@@ -12499,6 +13067,7 @@ class FensterHeizungPanel extends HTMLElement {
       html = `<b>${yr ? d.d.toLocaleDateString("de-DE", { month: "long", year: "numeric" }) : d.d.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" })}</b><span style="color:#fbbf24">Solar ${kv(d.pv)}</span><span style="color:#2dd4bf">Verbrauch ${kv(d.house)}</span><span style="color:#f87171">Netz ${kv(d.imp)} · ${num(d.imp * price / 100, 2)} €</span>${d.exp > .05 ? `<span style="color:#34d399">Einspeisung ${kv(d.exp)}</span>` : ""}${aut != null ? `<span>Autarkie ${aut} %</span>` : ""}`;
       if (cur) { cur.setAttribute("x", (D.L + i * D.gw).toFixed(1)); cur.setAttribute("width", D.gw.toFixed(1)); cur.setAttribute("opacity", ".5"); }
     }
+    if (D.k === "day" && D.pr) { const pq = this._m3PriceAt((cx - D.L) / D.iw * 1440); if (pq) html += `<span style="color:${pq.rel[1]}">Strom ${num(pq.v, 1)} ct · ${pq.rel[0]}</span>`; }
     tt.innerHTML = html; tt.hidden = false;
     const W = svg.getBoundingClientRect().width, px = cx / D.Wd * W, tw = tt.offsetWidth || 180;
     tt.style.left = Math.max(0, Math.min(W - tw, px + (px + 14 + tw > W ? -tw - 14 : 14))) + "px";
@@ -12535,7 +13104,7 @@ class FensterHeizungPanel extends HTMLElement {
     const selfNow = n.pv > 20 ? Math.round(Math.min(100, Math.max(0, (n.pv - n.exp) / n.pv * 100))) : null;
     const ring = this._m3On() ? this._m3Ring(ringA ? autarky : covered, ringA ? evq : selfNow, ringA, ringA ? `Autarkie${perW ? " " + perW : ""}` : "gedeckt jetzt") : this._modRing(ringA ? autarky : covered, ringA ? `Autarkie${perW ? " " + perW : ""}` : "gedeckt jetzt").replace('<div class="mring" aria-hidden="true"', `<div class="mring enrg" data-act="enring" role="button" tabindex="0" title="Tippen: ${ringA ? "gedeckt jetzt" : "Autarkie"}" aria-label="${ringA ? "Autarkie" : "Gedeckt jetzt"}, tippen zum Umschalten"`);
     const pv0 = this._pv(), prC = this._m3On() ? this._m3Price() : pv0.price_mode === "entity" && pv0.price_sensor ? `<span class="chip enpr">${ic("bolt", 16)}Strom jetzt ${num(price, 1)} ct</span>` : "";
-    const hero = `<div class="card hero mh hr a-en enh${this._m3On() ? " m3h0" : ""}">${this._modLogo("en")}${ring}<div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
+    const scn = this._m3Scene(n), hero = `<div class="card hero mh hr a-en enh${this._m3On() ? " m3h0" : ""}${scn ? " m3x" : ""}">${scn || this._modLogo("en")}${ring}<div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
       ${ok ? `<div class="enbil">${esc(per)}: ${kwh(sum.pv)} kWh Solar · ${kwh(sum.house)} kWh verbraucht · <b class="${net >= 0 ? "pos" : "neg"}">${net >= 0 ? "+" : "−"}${num(Math.abs(net), 2)} € Bilanz</b></div>` : ""}
       <div class="chips"><span class="chip">${ic("sun", 16)}Solar ${wfmt(n.pv)}</span>${n.pvb != null && n.pvb >= 1 ? `<span class="chip">${ic("sun", 16)}davon ${esc(this._enPvNames()[1])} ${wfmt(n.pvb)}</span>` : ""}<span class="chip st ${n.exp > 20 ? "ok" : n.imp > 20 ? "warn" : ""}">${ic("bolt", 16)}${n.exp > 20 ? "Einspeisung " + wfmt(n.exp) : n.imp > 20 ? "Netzbezug " + wfmt(n.imp) : "Netz ausgeglichen"}</span>${n.hasBat ? `<span class="chip">${ic("energy", 16)}Batterie ${n.soc != null ? Math.round(n.soc) + " %" : ""}${n.bc > 20 ? " lädt" : n.dis > 20 ? " entlädt" : ""}</span>` : ""}${prC}${!ringA && autarky != null && isToday ? `<span class="chip st ok">${ic("check", 16)}Autarkie heute ${autarky} %</span>` : ""}</div></div>`;
     const nav = `<div class="ennav"><div class="seg wwseg enseg" role="group" aria-label="Zeitraum">${[["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]].map(([k, l]) => `<button class="${range === k ? "sel" : ""}" data-act="enrange" data-k="${k}" aria-pressed="${range === k}">${l}</button>`).join("")}</div>
@@ -12551,13 +13120,15 @@ class FensterHeizungPanel extends HTMLElement {
     const m3 = this._m3On(), cmpP = (cur, old, good) => this._m3Cmp(cur, old, good, cmpOn);
     if (m3) { tl[0][5] = [evq != null ? `${evq} % selbst genutzt` : sum && sum.nocnt ? "Sensor fehlt" : ok ? "" : "Keine Daten", ok && sum.pvb > 0.005 ? `davon ${esc(this._enPvNames()[1])} ${kwh(sum.pvb)}` : ""].filter(Boolean).join(" · "); tl[0][7] = { balk: !!(ok && sum.pvb > 0.005) }; [["pv", "up"], ["imp", "down"], ["exp", "none"], ["house", "down"]].forEach(([f, g], i) => { tl[i][6] = ok ? cmpP(sum[f], pv && pv[f], g) : ""; }); }
     const tiles = m3 ? this._m3Tiles(tl, ok, E.hl) : `<div class="tiles entiles">${tl.map(([f, ico, lab, v, c, sub, cm]) => `<button class="tile entile${E.hl === f ? " sel" : ""}" style="--a:${c}" data-act="entile" data-k="${f}" aria-pressed="${E.hl === f}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}<small>kWh</small></div><div class="g">${sub}</div>${cm ? `<div class="g">${cm}</div>` : ""}${ok ? this._enSpark(f, c) : ""}</button>`).join("")}</div>`;
-    const flow = `<div class="card"><h2>${ic("sun", 18)}Energiefluss jetzt</h2>${this._enFlow(n)}</div>`;
-    const chart = `<div class="card"><h2>${ic("chart", 18)}${range === "day" ? `Leistung · ${esc(this._enLabel(P, true))}` : `Energie pro ${range === "year" ? "Monat" : "Tag"} · ${esc(per)}`}<button class="ibtn gear" style="margin-left:auto" data-act="enreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._enChart()}${range === "day" ? "" : this._enNote()}</div>`;
+    const F = this._m3FlowOn() ? this._m3Flow(n) : null;
+    const flow = F ? `<div class="card m3fc"><h2>${ic("sun", 18)}Energiefluss jetzt${F.big}</h2>${F.svg}${F.det}</div>` : `<div class="card"><h2>${ic("sun", 18)}Energiefluss jetzt</h2>${this._enFlow(n)}</div>`;
+    const chart = `<div class="card"><h2>${ic("chart", 18)}${range === "day" ? `Leistung · ${esc(this._enLabel(P, true))}` : `${range === "year" && this._m3On() && this._m3CalOn ? "Solar-Kalender" : `Energie pro ${range === "year" ? "Monat" : "Tag"}`} · ${esc(per)}`}<button class="ibtn gear" style="margin-left:auto" data-act="enreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._enChart()}${range === "day" ? "" : this._enNote()}</div>`;
     // Verteilung (nur heute: Heizer und Heizstab liefern nur Tageswerte)
     const rooms = this._htrRooms(), heatK = rooms.reduce((a, r) => a + (Number(r.htr.heute_kwh) || 0), 0), heatPv = rooms.reduce((a, r) => a + (Number(r.htr.heute_pv_kwh) || 0), 0);
     const ws = this._mdState().ww, wwK = ws.ent.rod ? (this._wwMinutesOn(ws.ent.rod) || 0) / 60 * ws.pv.watt / 1000 : 0;
     let dist = "";
-    if (isToday && ok) {
+    if (isToday && ok && this._m3On()) dist = this._m3Dist(sum.house, heatK, heatPv, wwK, price);
+    else if (isToday && ok) {
       const restK = Math.max(0, sum.house - heatK - wwK), tot = Math.max(0.01, heatK + wwK + restK), items = [["Heizung (Raumheizer)", heatK, "#f97316", "flame"], ["Warmwasser (Heizstab)", wwK, "#38bdf8", "drop"], ["Haushalt und Rest", restK, "#2dd4bf", "home"]];
       dist = `<div class="card"><h2>${ic("layers", 18)}Wohin der Strom heute geht</h2>
         <div class="pvbar endist">${items.map(([, v, c]) => `<i style="width:${(v / tot * 100).toFixed(1)}%;background:${c}"></i>`).join("")}</div>
@@ -12567,7 +13138,7 @@ class FensterHeizungPanel extends HTMLElement {
     // Kosten
     let cost = "";
     if (ok) {
-      cost = `<div class="card"><h2>${ic("total", 18)}Kosten und Vorteil · ${esc(per)}</h2>${this._enWater(buy, sell, saved, net)}
+      cost = `<div class="card"><h2>${ic("total", 18)}Kosten und Vorteil · ${esc(per)}</h2>${this._m3On() ? this._m3Water(buy, sell, saved, net) : this._enWater(buy, sell, saved, net)}
         <div class="enrows"><div class="sum"><span>Ohne Solar hättest du gezahlt</span><b>${num(eur(sum.house, price), 2)} €</b></div><div class="sum"><span>Vorteil durch Solar</span><b class="pos">${num(sell + saved, 2)} €</b></div></div>
         <div class="mut sm" style="margin:8px 0 0">Preise aus Modul 1 → Allgemein: ${num(price, 1)} ct/kWh Bezug, ${num(feed, 1)} ct/kWh Einspeisung${pv0.price_mode === "sensor" ? " (aktueller Wert des Preissensors)" : ""}.</div></div>`;
     }
@@ -12587,14 +13158,15 @@ class FensterHeizungPanel extends HTMLElement {
     if (n.hasBat && n.soc != null && n.soc < 20 && n.pv < 200) tips.push(["energy", `Batterie nur noch bei ${Math.round(n.soc)} %.`, "Nachts und ohne Sonne kommt der Strom wieder aus dem Netz."]);
     this._enOut(n).forEach((nm) => tips.push(["alert!", `${esc(nm)} liefert nichts.`, "Die andere Anlage erzeugt Strom. Ist der Wechselrichter ausgesteckt, aus oder ohne Verbindung?"]));
     if (!tips.length) tips.push(["check", "Alles ruhig.", "Kein Überschuss, kein hoher Netzbezug."]);
-    const tipC = `<div class="card"><h2>${ic("info", 18)}Hinweise</h2>${tips.map(([ico, t, s]) => `<div class="dgs ${ico.endsWith("!") ? "warn" : "ok"}" style="grid-template-columns:28px 1fr">${ic(ico.replace("!", ""), 22)}<div><b>${t}</b>${s ? `<span>${s}</span>` : ""}</div></div>`).join("")}</div>`;
+    const tipC = F ? this._m3Tips(n, { heat, ww, car: this._m3Car() }) : `<div class="card"><h2>${ic("info", 18)}Hinweise</h2>${tips.map(([ico, t, s]) => `<div class="dgs ${ico.endsWith("!") ? "warn" : "ok"}" style="grid-template-columns:28px 1fr">${ic(ico.replace("!", ""), 22)}<div><b>${t}</b>${s ? `<span>${s}</span>` : ""}</div></div>`).join("")}</div>`;
     const o = (k, h) => h.replace('<div class="card', `<div style="order:${k}" class="card`);
     if (this._enTipX != null) Promise.resolve().then(() => this._enTipShow());
-    return `${hero}${nav}${this._mpWrap("en", { kacheln: tiles, fluss: flow, verlauf: chart, verteilung: dist || "", kosten: cost || "", heizung: heatC, hinweise: tipC })}`;
+    if (this._m3On()) Promise.resolve().then(() => this._m3Count());
+    return `${hero}${nav}${this._mpWrap("en", { kacheln: tiles, fluss: flow, verlauf: chart, verteilung: dist || "", kosten: cost || "", spar: this._m3On() && ok ? this._m3Pig() : "", heizung: heatC, hinweise: tipC })}`;
   }
   _enAct(a, b) {
     const E = this._enState(), k = b.dataset.k;
-    if (a === "enrange") { if (E.range !== k) { E.range = k; E.off = 0; this._enTipX = null; } this._enSave(); this._render(); }
+    if (a === "enrange") { if (E.range !== k) { E.range = k; E.off = 0; this._enTipX = null; this._m3Cnt = Date.now(); } this._enSave(); this._render(); }
     else if (a === "enoff") { const v = Number(k); E.off = v === 0 ? 0 : Math.min(0, (E.off || 0) + v); this._enTipX = null; this._render(); }
     else if (a === "enring") { E.ring = E.ring === "now" ? "aut" : "now"; this._enSave(); this._render(); }
     else if (a === "entile") { E.hl = E.hl === k ? "" : k; this._render(); }
@@ -12619,6 +13191,7 @@ class FensterHeizungPanel extends HTMLElement {
   _enChange(t) {
     const f = t.dataset.f, E = this._enState();
     if (f === "enent") { E.ent[t.dataset.k] = t.value; if (t.dataset.k === "grid") this._gen.pv = { ...this._pv(), sensor: t.value }; this._enSave(true); if (this._stOpen) this._render(); return true; }
+    if (f === "enm3cost" || f === "enm3since") { const L = this._cfg.layout, v = String(t.value || "").trim(); L.m3 = { ...(L.m3 || {}) }; if (f === "enm3cost") { const n = parseFloat(v.replace(",", ".")); if (isFinite(n) && n > 0) L.m3.cost = Math.round(Math.min(1e6, n)); else delete L.m3.cost; } else if (/^\d{4}-\d{2}$/.test(v)) L.m3.since = v; else delete L.m3.since; this._m3PigD = null; this._saveLayout(); this._render(); return true; }
     if (f === "enname") { E[t.dataset.k] = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 20); this._enSave(true); this._render(); return true; }
     return false;
   }

@@ -3,7 +3,7 @@
      Gespeichert im Layout unter "mp" (für alle Nutzer, in Sicherungen enthalten). Kopf und Zeitraum bleiben fest oben. */
   static MP_NAMES = {
     ww: { speicher: "Speicher & Kennzahlen", verlauf: "Verlauf 24 Stunden", zeitplan: "Warmwasser-Zeitplan", zirk: "Zirkulation", leg: "Legionellenschutz", pv: "PV-Überschuss", zustand: "Zustand" },
-    en: { kacheln: "Kennzahlen", fluss: "Energiefluss", verlauf: "Verlauf", verteilung: "Verteilung", kosten: "Kosten und Vorteil", heizung: "Heizung", hinweise: "Hinweise" },
+    en: { kacheln: "Kennzahlen", fluss: "Energiefluss", verlauf: "Verlauf", verteilung: "Verteilung", kosten: "Kosten und Vorteil", spar: "Sparschwein", heizung: "Heizung", hinweise: "Hinweise" },
     gs: { kacheln: "Kennzahlen", geraete: "Geräte", fenster: "Startfenster", verlauf: "Verlauf nach Quelle", jahr: "Dein Jahr" },
   };
   static MP_WIDE = { ww: ["speicher", "verlauf", "zustand"], en: ["kacheln"], gs: ["kacheln", "fenster", "geraete", "verlauf", "jahr"] };

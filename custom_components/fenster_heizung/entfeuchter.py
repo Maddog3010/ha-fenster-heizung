@@ -73,6 +73,9 @@ def default_dev() -> dict[str, Any]:
         "ask": default_ask(),
         # Schritt 4: Nennleistung ohne Messung, Vorziehen bei PV-Überschuss oder günstigem Strom, Meldungen
         "watt": 250.0, "boost": "off", "boost_hi": 57.0, "cheap_ct": 25.0, "pv_min": 300.0,
+        # Nur mit PV-Überschuss: Start nach pv_on Min. Überschuss, Stopp nach pv_off Min. ohne, Schimmelschutz ab pv_safe % (0 = aus),
+        # Batterie-Ladung zählt ab pv_soc % Ladestand als Überschuss (0 = nie)
+        "pv_only": False, "pv_on": 2, "pv_off": 5, "pv_safe": 70.0, "pv_soc": 0.0,
         "msg": {"full": True, "high": True, "noloc": True, "filter": True, "stall": True}, "high_h": 4.0, "filter_h": 0.0,
         # Nachtmodus
         "night": False, "n_from": "22:00", "n_to": "07:00", "n_mode": "hi", "hi_night": 70.0, "n_quiet": True, "n_msg": True,
@@ -146,6 +149,8 @@ def clean_dev(raw: Any, did: str = "d1") -> dict[str, Any]:
         "watt": _num(r.get("watt"), 0, 3000, d["watt"]), "boost": r.get("boost") if r.get("boost") in BOOSTS else "off",
         "boost_hi": _num(r.get("boost_hi"), 26, 90, d["boost_hi"]), "cheap_ct": _num(r.get("cheap_ct"), 0, 100, d["cheap_ct"]),
         "pv_min": _num(r.get("pv_min"), 0, 5000, d["pv_min"]),
+        "pv_only": r.get("pv_only") is True, "pv_on": int(_num(r.get("pv_on"), 0, 30, d["pv_on"])), "pv_off": int(_num(r.get("pv_off"), 0, 60, d["pv_off"])),
+        "pv_safe": _num(r.get("pv_safe"), 0, 95, d["pv_safe"]), "pv_soc": _num(r.get("pv_soc"), 0, 100, d["pv_soc"]),
         "msg": {k: m.get(k) is not False for k in ("full", "high", "noloc", "filter", "stall")},
         "high_h": _num(r.get("high_h"), 1, 48, d["high_h"]), "filter_h": _num(r.get("filter_h"), 0, 5000, 0),
         "nfc": clean_nfc(r.get("nfc")),
@@ -162,6 +167,8 @@ def clean_dev(raw: Any, did: str = "d1") -> dict[str, Any]:
         out["hi_night"] = out["hi"]
     if out["hi_away"] < out["hi"]:
         out["hi_away"] = out["hi"]
+    if out["pv_safe"] and out["pv_safe"] <= out["lo"]:
+        out["pv_safe"] = min(95.0, out["hi"] + 10)
     if not out["lo"] < out["boost_hi"] <= out["hi"]:  # Vorziehen liegt zwischen Unter- und Obergrenze
         out["boost_hi"] = min(out["hi"], out["lo"] + 2)
     return out
@@ -282,6 +289,34 @@ def decide(dev: dict[str, Any], ctx: dict[str, Any], is_on: bool) -> tuple[bool 
     t, ot, orh = ctx.get("t"), ctx.get("out_t"), ctx.get("out_rh")
     if dev["vent"] and hum > lo and t is not None and ot is not None and orh is not None and abs_h(ot, orh) < abs_h(t, hum) - 0.5:
         return False, False, "vent", [f"Feuchte {hum:.0f} %. Draußen ist die Luft trockener: Lüften statt Entfeuchten."]
+    if dev.get("pv_only"):
+        safe = bool(dev.get("pv_safe")) and hum >= max(dev["pv_safe"], hi if away or night else 0)
+        pv = ctx.get("pv")  # True: Überschuss bestätigt, False: keiner, None: kein Netz-Sensor
+        start = dev["boost_hi"] + (hi - dev["hi"])
+        if is_on:
+            if hum <= lo:
+                return False, False, "target", [f"Ziel erreicht: Feuchte {hum:.0f} % ist bei {lo:.0f} % oder darunter{tag}."]
+            if pv and (ctx.get("pv_w") or 0) < dev["pv_min"]:
+                return True, False, "pv_run", [f"Gerade nur {max(0, ctx.get('pv_w') or 0):.0f} W Überschuss: läuft weiter, aus nach {dev['pv_off']} Min. ohne."]
+            if pv:
+                return True, False, "pv_run", [f"PV-Überschuss {ctx.get('pv_w', 0):.0f} W: läuft bis {lo:.0f} %{tag}."]
+            if safe:
+                return True, False, "safe", [f"Schimmelschutz: Feuchte {hum:.0f} % ab {dev['pv_safe']:.0f} %, läuft auch ohne Überschuss bis {lo:.0f} %."]
+            if pv is None:
+                return False, False, "no_pv", ["Nur mit PV-Überschuss, aber kein Netz-Sensor unter Haus → Energiequellen."]
+            return False, False, "no_pv", [f"Kein PV-Überschuss mehr (seit {dev['pv_off']} Min. unter {dev['pv_min']:.0f} W): aus."]
+        if safe:
+            return True, False, "safe", [f"Schimmelschutz: Feuchte {hum:.0f} % ab {dev['pv_safe']:.0f} %, startet auch ohne Überschuss."]
+        if hum <= start:
+            return False, False, "ok", [f"Feuchte {hum:.0f} % in Ordnung. Mit PV-Überschuss ein ab {start:.0f} %{tag}."]
+        if pv:
+            return True, False, "pv_start", [f"PV-Überschuss {ctx.get('pv_w', 0):.0f} W und Feuchte {hum:.0f} % über {start:.0f} %: einschalten bis {lo:.0f} %{tag}."]
+        if pv is None:
+            return False, False, "no_pv", ["Nur mit PV-Überschuss, aber kein Netz-Sensor unter Haus → Energiequellen."]
+        if (ctx.get("pv_w") or 0) >= dev["pv_min"]:
+            return False, False, "wait_pv", [f"PV-Überschuss {ctx.get('pv_w'):.0f} W: startet, wenn er {dev['pv_on']} Min. lang anhält."]
+        return False, False, "wait_pv", [f"Feuchte {hum:.0f} % über {start:.0f} %, wartet auf PV-Überschuss (ab {dev['pv_min']:.0f} W, gerade {max(0, ctx.get('pv_w') or 0):.0f} W)."
+                                        + (f" Schimmelschutz ab {dev['pv_safe']:.0f} %." if dev.get("pv_safe") else "")]
     if is_on:
         if hum > lo:
             return True, False, "run", [f"Feuchte {hum:.0f} % über der Untergrenze {lo:.0f} %: läuft weiter{tag}."]
@@ -351,6 +386,7 @@ class EntfeuchterManager:
         self._cmd_ts: dict[str, float] = {}
         self._was: dict[str, bool] = {}
         self._was_on: dict[str, bool] = {}
+        self._pv_st: dict[str, dict[str, Any]] = {}  # Überschuss mit Verzögerung je Gerät
         self._run_ts: dict[str, float] = {}  # zuletzt mit Strom gelaufen
         self._unsub: CALLBACK_TYPE | None = None
         self._unsub_ev: CALLBACK_TYPE | None = None
@@ -586,6 +622,31 @@ class EntfeuchterManager:
         fmt = lambda v: str(v).rstrip("%").removesuffix(".0")  # noqa: E731
         return f"Zielfeuchte am Gerät von {fmt(cur)} auf {fmt(val)} % gestellt, damit Modul 1 regelt."
 
+    def _bat_charge_w(self, dev: dict[str, Any]) -> float:
+        """Ladeleistung der Hausbatterie in W, wenn sie ab pv_soc % Ladestand als Überschuss zählt (sonst 0)."""
+        if not dev.get("pv_soc"):
+            return 0.0
+        h = self._haus()
+        soc = _fnum(self.hass.states.get(h.get("soc") or "")) if h.get("soc") else None
+        if soc is None or soc < dev["pv_soc"]:
+            return 0.0
+        e = h.get("energy") or {}
+        ent = e.get("ent") or {}
+
+        def w(eid: str) -> float | None:
+            st = self.hass.states.get(eid) if eid else None
+            v = _fnum(st)
+            if v is not None and str((st.attributes or {}).get("unit_of_measurement") or "").lower() == "kw":
+                v *= 1000
+            return v
+        if e.get("bmode") == "two":
+            c = w(ent.get("bchg") or "")
+            return max(0.0, c or 0.0)
+        b = w(ent.get("bat") or "")
+        if b is None:
+            return 0.0
+        return max(0.0, -b if e.get("bsign") == "discharge" else b)
+
     def _has_action(self, dev: dict[str, Any]) -> bool:
         st = self.hass.states.get(dev["ent"]) if dev["ent"] else None
         return st is not None and bool((st.attributes or {}).get("action"))
@@ -738,9 +799,25 @@ class EntfeuchterManager:
             ds["full_ts"] = now
             self._event(dev, "tank_full")
         pv_w = (export + (pw if running else 0)) if export is not None else None  # eigener Verbrauch zählt zum Überschuss
+        bat_w = self._bat_charge_w(dev)
+        if pv_w is not None and bat_w:
+            pv_w += bat_w  # Batterie lädt und ist voll genug: diese Leistung darf der Entfeuchter nehmen
+        pv_ok = None
+        if dev["pv_only"] and pv_w is not None:
+            raw = pv_w >= dev["pv_min"]
+            ps = self._pv_st.setdefault(did, {"raw": raw, "ts": now, "ok": raw and running})
+            if raw != ps["raw"]:
+                ps["raw"], ps["ts"] = raw, now
+            held = (now - ps["ts"]) / 60
+            if raw and not ps["ok"] and held >= dev["pv_on"]:
+                ps["ok"] = True
+            elif not raw and ps["ok"] and held >= dev["pv_off"]:
+                ps["ok"] = False
+            pv_ok = ps["ok"]
         boost = boost_reason(dev, pv_w, price)
         ctx = {"loc": ds["loc"] if room else "", "loc_name": room["name"] if room else "", "hum": hum, "t": t, "open": open_w,
-               "away": away, "out_t": ot, "out_rh": orh, "avail": on is not None, "full": full, "boost": boost,
+               "away": away, "out_t": ot, "out_rh": orh, "avail": on is not None, "full": full, "boost": "" if dev["pv_only"] else boost,
+               "pv": pv_ok, "pv_w": pv_w,
                "day_off": ("pause" if (ds["locs"].get(today) or {}).get("h") == "pause" else True) if ds["off_day"] == today else False}
         night = in_night(dev, dt_util.now().strftime("%H:%M"))
         ctx["night"] = night
@@ -823,10 +900,10 @@ class EntfeuchterManager:
             msgs.append(["filter", f"Filter reinigen ({ds['filter_h']:.0f} Betriebsstunden)"])
         self.live[did] = {
             "code": code, "why": why, "hint": hint, "on": on, "running": running, "want": want, "hum": hum, "t": t,
-            "loc_name": rname, "open": open_w, "away": away, "full": full, "fill": fill, "boost": boost, "power": round(pw),
+            "loc_name": rname, "open": open_w, "away": away, "full": full, "fill": fill, "boost": "" if dev["pv_only"] else boost, "power": round(pw),
             "since": ds["on_ts"] if on else ds["off_ts"], "today_min": round((ds["days"].get(today) or {}).get("min", 0.0), 1),
             "msgs": msgs, "filter_h": round(ds["filter_h"], 1), "night": night, "held": len(ds["held"]),
-            "has_pw": bool(dev["power"]) or self._has_action(dev), "stall": stall, "run_w": dev["run_w"], "quiet": self._qmode(dev), "quiet_on": bool(ds["q_prev"]), "price": price, "pv_w": round(pv_w) if pv_w is not None else None,
+            "has_pw": bool(dev["power"]) or self._has_action(dev), "stall": stall, "run_w": dev["run_w"], "quiet": self._qmode(dev), "quiet_on": bool(ds["q_prev"]), "price": price, "pv_w": round(pv_w) if pv_w is not None else None, "pv_only": dev["pv_only"], "pv_ok": pv_ok,
         }
 
     # ---- Tägliche Standortabfrage (Schritt 2)

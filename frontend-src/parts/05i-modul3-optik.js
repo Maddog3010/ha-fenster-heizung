@@ -55,6 +55,7 @@
     return `<span class="chip enpr m3pr" title="Heute ${num(lo, 1)} bis ${num(hi, 1)} ct, Durchschnitt ${num(avg, 1)} ct">${ic("bolt", 16)}Strom jetzt ${num(cur, 1)} ct <b class="m3rel" style="background:${rel[1]}">${rel[0]}</b><span class="m3sc"><i style="left:${pos.toFixed(0)}%"></i></span></span>`;
   }
   _m3Look() {
-    const old = !!(this._cfg.layout.m3 || {}).old;
-    return `<div class="vrow"><span>Kacheln wie bisher<small class="mut" style="display:block">An: Kacheln und Ring aus v1.2 statt HD-Symbolen, Verlauf als Fläche und Doppelring</small></span><button class="sw ${old ? "on" : ""}" data-act="m3old" aria-pressed="${old}" aria-label="Kacheln wie bisher"></button></div>`;
+    const old = !!(this._cfg.layout.m3 || {}).old, fo = (this._cfg.layout.m3 || {}).flow === false;
+    return `<div class="vrow"><span>Kacheln wie bisher<small class="mut" style="display:block">An: Kacheln und Ring aus v1.2 statt HD-Symbolen, Verlauf als Fläche und Doppelring</small></span><button class="sw ${old ? "on" : ""}" data-act="m3old" aria-pressed="${old}" aria-label="Kacheln wie bisher"></button></div>
+      <div class="vrow"><span>Energiefluss wie bisher<small class="mut" style="display:block">An: Kreise mit Linien-Symbolen und Text-Hinweise statt HD-Plaketten, Auto und Hinweisen mit Knopf</small></span><button class="sw ${fo ? "on" : ""}" data-act="m3flow" aria-pressed="${fo}" aria-label="Energiefluss wie bisher"></button></div>${this._m3ScLook()}${this._m3PigLook()}${this._m3On() ? `<div class="lsec">${ic("sun", 15)}Bewegung</div>${this._animLook()}` : ""}`;
   }

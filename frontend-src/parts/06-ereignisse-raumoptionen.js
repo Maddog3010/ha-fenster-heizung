@@ -205,8 +205,14 @@
     else if (a === "preset") { const ic2 = { ...(this._cfg.layout.icons || {}) }; delete ic2[m.id]; this._cfg.layout.icons = ic2; this._saveLayout(); this._render(); this._renderModal(); }
     else if (a === "lfrk") { this._modal = { type: "lfrk", id: b.dataset.id, d: b.dataset.d }; this._renderModal(); }
     else if (a.startsWith("rk") && this._rkAct(a, b)) { /* Raumkarte 2.0 */ }
+    else if (a === "m3flow") { const L = this._cfg.layout; L.m3 = { ...(L.m3 || {}), flow: (L.m3 || {}).flow === false }; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (a === "m3scene" || a === "m3tags" || a === "m3car") { const L = this._cfg.layout, k = { m3scene: "scene", m3tags: "tags", m3car: "car" }[a]; L.m3 = { ...(L.m3 || {}), [k]: (L.m3 || {})[k] === false }; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (a === "m3cal") { this._m3CalOn = b.dataset.k === "1"; this._render(); }
+    else if (a === "m3rest") { this._m3RestOpen = !this._m3RestOpen; this._render(); }
+    else if (a === "m3day") { const [y, mo, d] = b.dataset.k.split("-").map(Number), E = this._enState(), now = new Date(); E.range = "day"; E.off = Math.min(0, Math.round((new Date(y, mo - 1, d) - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5)); this._enTipX = null; this._enSave(); this._render(); }
+    else if (a === "m3fn") { this._m3Sel = this._m3Sel === b.dataset.k ? "" : b.dataset.k; this._render(); }
     else if (a === "m3old") { const L = this._cfg.layout; L.m3 = { ...(L.m3 || {}), old: !(L.m3 || {}).old }; this._saveLayout(); this._render(); this._renderModal(); }
-    else if (["hsgo", "hsoff", "hswx"].includes(a) && this._hsAct(a, b)) { /* Haus-Szene */ }
+    else if (["hsgo", "hsoff", "hswx", "hsxh", "hsxs"].includes(a) && this._hsAct(a, b)) { /* Haus-Szene, Stile (W7) */ }
     else if (["gpfl", "gpmap", "gpset", "gpedit"].includes(a) && this._gpAct(a, b)) { /* Grundriss */ }
     else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
     else if (a === "pm") {
