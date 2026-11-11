@@ -106,7 +106,7 @@ class ModeSensor(_Base):
     _attr_device_class = SensorDeviceClass.ENUM
     _attr_options = MODES
     _attr_icon = "mdi:thermostat-box"
-    _unrecorded_attributes = frozenset({"grund", "heizer", "regelung"})
+    _unrecorded_attributes = frozenset({"grund", "heizer", "regelung", "praesenz"})
 
     def __init__(self, entry: ConfigEntry) -> None:
         super().__init__(entry, "mode")
@@ -133,6 +133,7 @@ class ModeSensor(_Base):
             "wetter_anpassung": "aus" if self._ctrl.cfg.get(CONF_WEATHER_ADJ) == "off" else "an",
             "heizer": self._ctrl.heater.attrs(),
             "regelung": self._ctrl.rt.diag(),
+            "praesenz": self._ctrl.pr.attrs(),
         }
 
 

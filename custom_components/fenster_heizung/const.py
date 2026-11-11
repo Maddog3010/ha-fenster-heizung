@@ -121,7 +121,9 @@ HTR_KEYS = (
 )
 PV_TICK_SECONDS = 30
 HEATER_KEEP_DAYS = 14
-EXTRA_KEYS = (CONF_HUMIDITY, CONF_ROOM_TEMP, *RT_USES, *RT_CTRL, CONF_AIR_HINT, CONF_WEATHER_ADJ, CONF_AIR_EVERY) + HTR_KEYS  # gehören nicht zum HA-Optionsdialog
+# 2026.11.3: Präsenzmelder je Raum (praesenz.py)
+PR_KEYS = ("pr_on", "pr_entity", "pr_temp", "pr_mode", "pr_on_delay", "pr_off_delay", "pr_idle", "pr_idle_after", "pr_in_away", "pr_turn_on")
+EXTRA_KEYS = (CONF_HUMIDITY, CONF_ROOM_TEMP, *RT_USES, *RT_CTRL, CONF_AIR_HINT, CONF_WEATHER_ADJ, CONF_AIR_EVERY) + HTR_KEYS + PR_KEYS  # gehören nicht zum HA-Optionsdialog
 GITHUB_REPO = "Maddog3010/ha-fenster-heizung"
 UPDATE_CACHE_SECONDS = 3600
 LEARN_MIN_DELTA = 1.0  # Aufheizphase ab so viel Kelvin unter dem Ziel

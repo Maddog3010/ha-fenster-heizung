@@ -411,12 +411,13 @@
     if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
     if (m.type === "rkhtr" || m.type === "lfrk") { box.innerHTML = this._rkDevSheet(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; if (!box.innerHTML) this._modal = null; return; }
+    if (m.type === "gpmap") { box.innerHTML = this._gpMapModal(m); if (!box.innerHTML) this._modal = null; return; }
     if (m.type === "rkmenu") { box.innerHTML = this._rkMenu(m); if (!box.innerHTML) this._modal = null; return; }
     if (m.type === "icon") {
       const cur = this._icon(r), L = this._cfg.layout, cc = (L.colors || {})[m.id], ph = (L.photos || {})[m.id];
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>Raum anpassen</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-        ${this._rkTypePick(r)}<div class="lsec">Symbol${this._rkOn() ? `<small class="mut" style="font-weight:500"> · für Kompakt-Liste, Gruppen und andere Module</small>` : ""}</div>
+        ${this._rkTypePick(r)}${this._hsCfg().on && !String(m.id).startsWith("ms_") ? `<div class="lsec">Name in der Haus-Szene</div><input class="gname" data-f="hsshort" value="${esc((L.short || {})[m.id] || "")}" placeholder="automatisch: ${esc(this._hsName({ id: "", name: r.name }))}" maxlength="12"><div class="mut sm" style="margin:4px 0 8px">Kurzer Name für die Kopfkarte, höchstens 12 Zeichen. Leer = automatisch.</div>` : ""}<div class="lsec">Symbol${this._rkOn() ? `<small class="mut" style="font-weight:500"> · für Kompakt-Liste, Gruppen und andere Module</small>` : ""}</div>
         ${ICON_GROUPS.map(([g, list]) => `<div class="igt">${g}</div><div class="igrid">${list.map(([k, l]) => `<button class="${k === cur ? "sel" : ""}" data-act="pick" data-k="${k}" title="${l}" aria-label="${l}">${ic2(k, 36)}</button>`).join("")}</div>`).join("")}
         <button class="lnk" data-act="preset">Symbol automatisch nach Raumname</button>
         <div class="lsec">Farbe</div>
@@ -508,7 +509,7 @@
         <div class="sh"><div><b>Darstellung</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="lsec">${ic("palette", 15)}Akzentfarbe</div>
         <div class="swatches">${ACCENTS.map((c) => `<button class="sw2 ${a === c ? "sel" : ""}" style="background:${c}" data-act="lacc" data-k="${c}" aria-label="${c}"></button>`).join("")}<label class="cpick"><input type="color" data-f="lacc" value="${a}">Eigene</label></div>
-        ${this._heroLook()}${this._rkLook()}
+        ${this._heroLook()}${this._hsLook()}${this._rkLook()}
         <div class="lsec">${ic("sun", 15)}Wetter in der Kopfkarte</div>
         <div class="ltog"><span>Außentemperatur und Wetter anzeigen</span><button class="sw ${w.on ? "on" : ""}" data-act="lwx" aria-pressed="${w.on}" aria-label="Wetter anzeigen"></button></div>
         ${w.on ? `<div class="hslk">${this._hsLink("wx", `Wetter ${w.entity ? esc(this._wzName(w.entity)) : "automatisch"}${w.outdoor ? " · Außentemperatur " + esc(this._wzName(w.outdoor)) : ""}`)}</div>` : ""}
@@ -539,7 +540,7 @@
       const mm = MODE[r.mode] || MODE.regelung_aus;
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>${r.mode === "heizung_pausiert" ? "Warum pausiert die Heizung?" : "Warum „" + mm.t + "“?"}</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-        <div class="why-l">${(r.why || []).map((w) => `<div class="wl ${w.s}"><i></i><span>${esc(w.t)}</span></div>`).join("") || `<div class="mut">Keine Angaben vorhanden.</div>`}</div>
+        ${this._wtHtml(r)}<div class="why-l">${(r.why || []).map((w) => `<div class="wl ${w.s}"><i></i><span>${esc(w.t)}</span></div>`).join("") || `<div class="mut">Keine Angaben vorhanden.</div>`}</div>
         ${this._regDiag(r)}
         <div class="foot2"><button class="btn2" data-act="close">Schließen</button></div></div>`;
     } else if (m.type === "vac") {

@@ -728,9 +728,9 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.8", b: 1, d: "2026-11-11", p: "2026.11.3b1", log: [["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.8", b: 2, d: "2026-11-11", p: "2026.11.3b2", log: [["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  en: { v: "1.2", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  en: { v: "1.3", b: 1, d: "2026-11-11", p: "2026.11.3b2", log: [["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2212,7 +2212,7 @@ const CSS_RK = `
 .rk2t small{font-size:.68rem;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
 .rk2t b{font-size:.92rem;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rk2t em{display:block;font-style:normal;font-size:.74rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rk2l.t-bl b{color:#60a5fa}.rk2l.t-or b{color:#fb923c}.rk2l.t-am b{color:var(--amber)}.rk2l.t-rd b{color:#f87171}
+.achip.prc{color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,transparent)}.rk2l.t-pr b{color:var(--teal)}.rk2pc .pr{color:var(--teal);font-weight:650}.rk2l.t-bl b{color:#60a5fa}.rk2l.t-or b{color:#fb923c}.rk2l.t-am b{color:var(--amber)}.rk2l.t-rd b{color:#f87171}
 .rk2clk{color:var(--primary-text-color)}
 .rk2pl{all:unset;display:block;box-sizing:border-box;cursor:pointer;border-radius:12px}
 div.rk2pl{cursor:default}
@@ -2291,6 +2291,75 @@ div.rk2pl{cursor:default}
 .rk2empty svg{width:100%;height:100%;display:block}
 .rk2art .rkgl{mix-blend-mode:screen}
 :host([style*="color-scheme: light"]) .rk2art .rkgl{mix-blend-mode:multiply;opacity:.55}
+.hero.hsx{min-height:210px}
+.hs2{position:absolute;right:16px;top:14px;bottom:14px;width:min(46%,420px);border-radius:18px;overflow:hidden;z-index:1;box-shadow:0 10px 26px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.18)}
+.hs2 svg{display:block;width:100%;height:100%;background:#9fb1c6}
+.hero.hsx .chips,.hero.hsx .wx{max-width:calc(100% - min(46%,420px) - 24px)}
+.hero.hsx .chips{padding-right:0}
+.hsr:hover rect:first-of-type{opacity:.6}
+.room.hsflash,.crow.hsflash{animation:hsFlash 1.4s ease-out}
+@keyframes hsFlash{0%{box-shadow:0 0 0 0 var(--teal)}25%{box-shadow:0 0 0 4px var(--teal)}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes hsSm{0%{transform:translateY(4px);opacity:0}40%{opacity:.7}100%{transform:translateY(-10px);opacity:0}}
+@keyframes hsDrift{0%{transform:translateX(-10px)}100%{transform:translateX(10px)}}
+@keyframes hsFall{0%{transform:translateY(-20px)}100%{transform:translateY(40px)}}
+.hs2 .hssm circle,.hs2 .hshw path,.hs2 .hsaw,.hs2 .hsfl{transform-box:fill-box}
+.hs2[data-an=dezent] .hssm circle,.hs2[data-an=voll] .hssm circle{animation:hsSm 3.6s linear infinite}.hs2 .hssm1{animation-delay:-1.8s!important}
+.hs2[data-an=dezent] .hshw path,.hs2[data-an=voll] .hshw path{animation:rkRise 3.4s linear infinite}.hs2 .hshw1{animation-delay:-1.7s!important}
+.hs2[data-an=dezent] .hsaw,.hs2[data-an=voll] .hsaw{animation:rkAir 3s ease-out infinite}
+.hs2[data-an=voll] .hscl{animation:hsDrift 14s ease-in-out infinite alternate}
+.hs2[data-an=voll] .hsrn,.hs2[data-an=voll] .hssn{animation:hsFall 2.6s linear infinite}
+.hs2[data-an=voll] .hspv{animation:rkGlow 2.4s ease-in-out infinite alternate}
+@media(prefers-reduced-motion:reduce){.hs2 *{animation:none!important}}
+@media(max-width:600px){.hero.hsx{min-height:0}.hs2{position:relative;right:auto;top:auto;bottom:auto;width:auto;height:auto;aspect-ratio:268/194;margin:0 0 12px}.hero.hsx .chips,.hero.hsx .wx{max-width:none}}
+.gpc h2{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gpv{border-radius:16px;overflow:hidden;background:color-mix(in srgb,var(--primary-text-color) 3%,transparent);margin-top:6px}
+.gpv svg{display:block;width:100%;height:auto;max-height:560px}
+.gpw{stroke:var(--primary-text-color);stroke-width:6;stroke-linecap:round;fill:none;opacity:.75}
+.gpr.on,.gpr[data-act]{cursor:pointer}.gpr[data-act]:hover rect:first-of-type{filter:brightness(1.12)}
+.gpn{font-weight:700;fill:var(--primary-text-color);opacity:.85;font-family:system-ui,sans-serif}
+.gpt{font-weight:800;fill:var(--primary-text-color);font-family:system-ui,sans-serif;letter-spacing:-.5px}
+.gps{font-weight:700;fill:var(--mut);font-family:system-ui,sans-serif}
+.gptx{font-size:14px;font-weight:700;fill:var(--mut)}
+.gplg{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:.78rem;color:var(--mut);margin-top:10px}
+.gplg span{display:inline-flex;align-items:center;gap:6px}.gpk{width:16px;height:6px;border-radius:3px;display:inline-block}.gpk.un{background:repeating-linear-gradient(45deg,var(--line) 0 3px,transparent 3px 6px);height:12px;width:16px}
+.gpsc{position:relative;padding-bottom:14px}.gpsc i{display:block;width:150px;height:8px;border-radius:4px}.gpsc small{position:absolute;bottom:-1px;font-size:.66rem}.gpsc small:first-of-type{left:0}.gpsc small:last-of-type{right:0}
+.gpnote{margin-top:6px}
+@media(max-width:600px){.vbar{flex-wrap:wrap;gap:8px}.vbar .vseg{flex:1 1 100%;display:flex}.vbar .vseg button{flex:1;justify-content:center;padding-left:6px;padding-right:6px}}
+.gpempty{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:24px}.gpempty span{max-width:460px}.gpempty .btn2{flex:none;padding:10px 20px}
+.gpv .gphw path{transform-box:fill-box}
+.gpv[data-an=dezent] .gphw path,.gpv[data-an=voll] .gphw path{animation:rkRise 3.4s linear infinite}.gpv .gphw1{animation-delay:-1.1s!important}.gpv .gphw2{animation-delay:-2.2s!important}
+.gpv[data-an=dezent] .gpaw,.gpv[data-an=voll] .gpaw{animation:rkGlow 1.4s ease-in-out infinite alternate}
+@media(prefers-reduced-motion:reduce){.gpv *{animation:none!important}}
+.wtl{position:relative;display:flex;flex-direction:column;gap:2px;margin:4px 0 12px;padding-left:4px}
+.wti{position:relative;display:grid;grid-template-columns:52px 14px 1fr;gap:8px;align-items:start;font-size:.86rem;padding:5px 0;--c:var(--mut)}
+.wti time{color:var(--mut);font-size:.76rem;font-variant-numeric:tabular-nums;padding-top:1px;text-align:right}
+.wti i{width:11px;height:11px;border-radius:50%;background:var(--c);margin-top:3px;box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 22%,transparent);position:relative;z-index:1}
+.wti:not(:last-child)::after{content:"";position:absolute;left:69px;top:16px;bottom:-8px;width:2px;background:var(--line)}
+.wti small{display:block;color:var(--mut);font-size:.74rem}
+.wti.ok{--c:#34d399}.wti.am{--c:#f59e0b}.wti.bl{--c:#60a5fa}.wti.pl{--c:#a78bfa}.wti.pr{--c:var(--teal)}.wti.in{--c:#94a3b8}
+.wti.now{background:color-mix(in srgb,var(--c) 10%,transparent);border-radius:10px;padding:7px 0}.wti.now time{color:var(--primary-text-color);font-weight:700}
+.wti.fut i{background:transparent;border:2px dashed var(--c);box-shadow:none;width:7px;height:7px}.wti.fut span{color:var(--mut)}.wti.fut:not(:last-child)::after{background:repeating-linear-gradient(var(--line) 0 4px,transparent 4px 7px)}
+.wt0{padding:4px 0 4px 66px}
+/* Modul 3 · Stufe 1 */
+.m3tiles .m3t{display:flex;flex-direction:column;text-align:left;background:linear-gradient(160deg,color-mix(in srgb,var(--a) 13%,var(--card)),var(--card) 70%);border:1px solid color-mix(in srgb,var(--a) 22%,var(--line));padding:12px 14px 0;cursor:pointer;font:inherit;color:inherit}
+.m3tiles .m3t.sel{border:2px solid var(--a);padding:11px 13px 0}
+.m3h{display:flex;align-items:center;gap:10px;min-width:0}.m3l{flex:1;font-size:.8rem;font-weight:650;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m3ic{position:relative;flex:none;width:40px;height:40px}.m3ic .gx{width:40px;height:40px}
+.m3sub{position:absolute;right:-6px;bottom:-4px;width:20px;height:20px;border-radius:6px;background:var(--card);box-shadow:0 0 0 1.5px var(--card)}.m3ic .m3sub .gx{width:20px;height:20px}
+.m3ar{position:absolute;right:-4px;bottom:-3px;width:17px;height:17px;border-radius:50%;color:#fff;font-style:normal;font-weight:800;font-size:.72rem;display:grid;place-items:center;box-shadow:0 0 0 2px var(--card)}
+.m3pl{flex:none;font-size:.7rem;font-weight:750;border-radius:99px;padding:3px 8px;background:color-mix(in srgb,var(--mut) 18%,transparent);color:var(--mut)}
+.m3pl.up{background:color-mix(in srgb,#34d399 18%,transparent);color:#34d399}.m3pl.dn{background:color-mix(in srgb,#f87171 18%,transparent);color:#f87171}
+.m3t .v{margin-top:10px}.m3t .g{min-height:1.2em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.m3sp{position:relative;margin:8px -14px 0;height:46px}.m3sp svg{position:absolute;left:0;right:0;top:0;width:100%;height:34px;display:block}
+.m3now{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px var(--c),0 0 8px var(--c);max-height:34px}
+.m3ax{position:absolute;left:14px;right:14px;bottom:2px;display:flex;justify-content:space-between;font-size:.62rem;color:var(--mut)}
+.m3ring .m3b{fill:none;stroke:rgba(255,255,255,.18);stroke-width:9}.m3ring .m3b.i{stroke-width:8}
+.m3ring .m3o{fill:none;stroke:#2dd4bf;stroke-width:9;stroke-linecap:round}.m3ring .m3i{fill:none;stroke:#fbbf24;stroke-width:8;stroke-linecap:round}
+.m3ring .rv b{font-size:1.45rem}.m3ring .rv span{font-size:.6rem}.m3ring .m3in{font-style:normal;font-size:.58rem;font-weight:700;color:#fde68a;margin-top:1px}
+.m3rel{margin-left:6px;color:#1a1200;border-radius:99px;padding:1px 7px;font-size:.72rem}
+.m3rl{position:absolute;right:28px;bottom:14px;display:flex;flex-direction:column;gap:2px;font-size:.7rem;color:#fff;opacity:.9;z-index:1;text-align:right}.m3rl span{display:inline-flex;gap:5px;align-items:center;justify-content:flex-end}.m3rl i{width:8px;height:8px;border-radius:50%}
+.m3pr{position:relative;padding-bottom:9px}.m3sc{position:absolute;left:12px;right:12px;bottom:4px;height:3px;border-radius:2px;background:linear-gradient(90deg,#34d399,#fbbf24,#f87171)}.m3sc i{position:absolute;top:-2.5px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px #111}
+@media(max-width:600px){.m3rl{display:none}.m3h{flex-wrap:wrap;justify-content:space-between}.m3l{order:3;flex:1 1 100%;margin-top:2px}.m3ring .m3in{display:none}.m3sub{right:-4px}.m3tiles .m3t .g{font-size:.7rem}.m3h{gap:7px}.m3ic,.m3ic .gx{width:32px;height:32px}}
 /* Bewegung: nur transform und opacity (K5) */
 @keyframes rkRise{0%{transform:translateY(6px);opacity:0}25%{opacity:.95}100%{transform:translateY(-16px);opacity:0}}
 @keyframes rkAir{0%{transform:translateX(-8px);opacity:0}30%{opacity:.9}100%{transform:translateX(30px);opacity:0}}
@@ -2405,7 +2474,7 @@ class FensterHeizungPanel extends HTMLElement {
         r.apk = Number(a.menge_pro_kwh) || r.apk || 0.1;
         if (a.zeitraum === "day") { r.pauses = a.pausen_heute || 0; r.kw = a.aktuelle_leistung_kw || 0; r.hist = a.verlauf || {}; }
       } else if ("thermostate" in a) {
-        r.modeEid = eid; r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id; r.humEid = a.luftfeuchte_sensor || ""; r.rtEid = a.raumtemperatur_sensor || ""; r.rtUse = a.raumtemperatur_nutzung || {}; r.rtVal = typeof a.raumtemperatur_wert === "number" ? a.raumtemperatur_wert : null; r.wxOff = a.wetter_anpassung === "aus"; r.htr = a.heizer || null; r.reg = a.regelung || null; r.airOff = a.lueftungshinweise === "aus"; r.airEvery = a.lueften_nach_h != null ? Number(a.lueften_nach_h) : 8; r.lastAir = a.zuletzt_gelueftet ? new Date(a.zuletzt_gelueftet).getTime() : 0;
+        r.modeEid = eid; r.mode = st.state; r.why = a.grund || []; r.windows = a.fenster || []; r.thermos = Object.keys(a.thermostate || {}); if (a.entry_id) r.id = a.entry_id; r.humEid = a.luftfeuchte_sensor || ""; r.rtEid = a.raumtemperatur_sensor || ""; r.rtUse = a.raumtemperatur_nutzung || {}; r.rtVal = typeof a.raumtemperatur_wert === "number" ? a.raumtemperatur_wert : null; r.wxOff = a.wetter_anpassung === "aus"; r.htr = a.heizer || null; r.reg = a.regelung || null; r.pres = a.praesenz || null; r.airOff = a.lueftungshinweise === "aus"; r.airEvery = a.lueften_nach_h != null ? Number(a.lueften_nach_h) : 8; r.lastAir = a.zuletzt_gelueftet ? new Date(a.zuletzt_gelueftet).getTime() : 0;
       }
     }
     const list = [...rooms.values()];
@@ -2498,10 +2567,10 @@ class FensterHeizungPanel extends HTMLElement {
     try { if (localStorage.getItem("fh_upd_skip") === u.latest) return ""; } catch (_) { /* egal */ }
     return `<div class="upd">${ic("bell", 22)}<div><b>Neue Version ${esc(u.latest)} verfügbar</b><span>Installiert ist ${esc(this._ver)}${u.date ? " · veröffentlicht am " + esc(new Date(u.date + "T12:00:00").toLocaleDateString("de-DE")) : ""}</span>${this._spnLine()}</div><button class="lnk" data-act="news">Das ist neu</button><button class="ibtn" data-act="updx" aria-label="Ausblenden">${ic("close", 18)}</button></div>`;
   }
-  _view() { try { return localStorage.getItem("fh_view") === "compact" ? "compact" : "detail"; } catch (_) { return "detail"; } }
+  _view() { try { const v = localStorage.getItem("fh_view"); return v === "compact" ? "compact" : v === "plan" && this._rkOn() ? "plan" : "detail"; } catch (_) { return "detail"; } }
   _viewBar() {
     const v = this._view();
-    return `<div class="vbar"><button class="myb ${this._my().on ? "on" : ""}" data-act="my">${ic("user", 15)}Meine Ansicht</button><div class="vseg" role="group" aria-label="Ansicht der Raumkarten">${[["compact", "list", "Kompakt"], ["detail", "grid", "Detail"]].map(([k, i, l]) => `<button class="${v === k ? "sel" : ""}" data-act="view" data-k="${k}" aria-pressed="${v === k}">${ic(i, 16)}${l}</button>`).join("")}</div></div>`;
+    return `<div class="vbar"><button class="myb ${this._my().on ? "on" : ""}" data-act="my">${ic("user", 15)}Meine Ansicht</button><div class="vseg" role="group" aria-label="Ansicht der Raumkarten">${[["compact", "list", "Kompakt"], ["detail", "grid", "Detail"], ...(this._rkOn() ? [["plan", "home", "Grundriss"]] : [])].map(([k, i, l]) => `<button class="${v === k ? "sel" : ""}" data-act="view" data-k="${k}" aria-pressed="${v === k}">${ic(i, 16)}${l}</button>`).join("")}</div></div>`;
   }
   _rv(r) { return this._view() === "compact" ? this._row(r) : this._rkOn() ? this._room2(r) : this._room(r); }
   /* Raumtemperatur: Raumsensor (falls gesetzt, für diesen Zweck aktiv und gültig), sonst Thermostat. use: show | learn | dew | heater */
@@ -2568,7 +2637,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     return `<div class="card crow ${edit ? "ed" : ""}${rk ? " rkc" : ""}${pph.c}"${pph.s} data-sort="room" data-id="${esc(r.id)}">
       ${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${icon}
-      <div class="rn"><b>${esc(r.name)}</b><span class="pill ${m.c}">${m.t}</span>${this._airChip(r)}${this._htrChip(r)}${this._devChip(r)}</div>
+      <div class="rn"><b>${esc(r.name)}</b><span class="pill ${m.c}">${m.t}</span>${this._rkPrChip(r)}${this._airChip(r)}${this._htrChip(r)}${this._devChip(r)}</div>
       <div class="cells">
         ${wcell || `<div class="cell w1 win ${open.length ? "amber" : ""}"><b>${ic(open.length ? "windowOpen" : "window", 15)}${open.length ? `${open.length} von ${wins.length} offen` : "geschlossen"}</b>${esc(open.length ? open.map((w) => w.attributes.friendly_name || w.entity_id).join(", ") : wins.length + (wins.length === 1 ? " Fenster" : " Fenster"))}</div>`}
         ${hcell || `<div class="cell w2"><b>${cur != null ? num(cur, 1) + " °C" : hv}</b>${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} · ` : "") + hv + (rt.sensor && rt.th != null ? ` · Thermostat ${num(rt.th, 1)}` : "") : "kein Thermostat"}</div>`}
@@ -2582,6 +2651,7 @@ class FensterHeizungPanel extends HTMLElement {
     const groups = (this._cfg.layout.groups || []).filter((g) => g && g.name), edit = this._edit, adm = this._admin();
     const roomBtn = adm ? `<button class="gadd" data-act="msxadd">${ic("plus", 18)}Raum hinzufügen</button>` : "";
     const addBtn = (edit && adm ? `<button class="gadd" data-act="gadd">${ic("plus", 18)}Gruppe hinzufügen</button>` : "") + roomBtn;
+    if (this._view() === "plan" && !edit) return this._viewBar() + this._gpView(rooms) + this._msSection() + roomBtn;
     if (!groups.length) return this._viewBar() + this._head() + `<div class="rooms ${this._view() === "compact" ? "list" : ""}" data-sort-container="room">${rooms.map((r) => this._rv(r)).join("")}</div>${this._msSection()}${addBtn}`;
     const used = new Set(groups.flatMap((g) => g.rooms || [])), rest = rooms.filter((r) => !used.has(r.id)), col = this._collapsed();
     const list = groups.map((g) => ({ ...g, members: rooms.filter((r) => (g.rooms || []).includes(r.id)) }));
@@ -3240,6 +3310,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (f === "hfile") { this._heroPick(t); t.value = ""; return true; }
     if (f === "lacc" && HEX.test(t.value)) L.accent = t.value;
     else if (f === "rcolc" && m && HEX.test(t.value)) L.colors = { ...(L.colors || {}), [m.id]: t.value };
+    else if (f === "hsshort" && m) { const v = String(t.value || "").trim().slice(0, 12), sh = { ...(L.short || {}) }; if (v) sh[m.id] = v; else delete sh[m.id]; L.short = sh; }
     else if (f === "lwxe") L.wx = { ...(L.wx || {}), entity: t.value };
     else if (f === "lwxo") L.wx = { ...(L.wx || {}), outdoor: t.value };
     else return false;
@@ -3336,7 +3407,7 @@ class FensterHeizungPanel extends HTMLElement {
     const dateStr = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const tiles = [["day", "today", "Heute", "var(--teal)"], ["month", "month", "Monat", "#60a5fa"], ["year", "year", "Jahr", "#a78bfa"], ["total", "total", "Gesamt", "#f472b6"]];
     const content = {
-      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}">${this._heroBg()}${this._modLogo("fh")}
+      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}${this._hsCfg().on ? " hsx" : ""}">${this._heroBg()}${this._hsCfg().on ? this._hsScene(rooms) : this._modLogo("fh")}
         <div class="lbl">${ic("flame", 16)}Heute ${F.short} gespart (geschätzt)</div>
         <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>${this._wx()}
         <div class="chips">${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
@@ -3595,6 +3666,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (!L || !L.code) return ["off", "–"];
     if (L.on == null) return ["off", "nicht erreichbar"];
     if (L.running) return ["run", "läuft"];
+    if (L.on && L.stall) return ["warn", "läuft nicht an"];
+    if (L.on && L.has_pw) return ["wait", "Standby"];  /* Schalter an, Leistung unter „läuft ab … W“ */
     if (L.on) return ["run", "an"];
     return { full: ["warn", "Tank voll"], window: ["wait", "pausiert"], vent: ["wait", "lüften"], day_off: ["off", "heute aus"], pause: ["warn", "pausiert"], no_hum: ["warn", "aus"], no_loc: ["off", "aus"] }[L.code] || ["off", "aus"];
   }
@@ -3706,9 +3779,9 @@ class FensterHeizungPanel extends HTMLElement {
   _lfSetOpen(id) {
     const D = this._lf(), all = (D && D.cfg && D.cfg.devs) || [], d0 = id ? all.find((x) => x.id === id) : null;
     const nid = d0 ? d0.id : (() => { for (let n = 1; n < 50; n++) if (!all.some((x) => x.id === "d" + n)) return "d" + n; return "d9"; })();
-    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, night: false, n_from: "22:00", n_to: "07:00", n_mode: "hi", hi_night: 70, n_quiet: true, n_msg: true, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, high_h: 4, filter_h: 0 };
+    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", tgt: "", tgt_mode: "min", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, night: false, n_from: "22:00", n_to: "07:00", n_mode: "hi", hi_night: 70, n_quiet: true, n_msg: true, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, high_h: 4, filter_h: 0 };
     this._pkId = null;
-    this._modal = { type: "lfset", isNew: !d0, back: all.length > 0, tab: d0 && d0.ent ? "ziel" : "geraet", draft: { ...DEF, ...(d0 || {}), ask: { on: true, time: "08:00", home_only: true, until: "12:00", miss: "same", rooms: [], push: [], ...((d0 && d0.ask) || {}) }, msg: { full: true, high: true, noloc: true, filter: true, ...((d0 && d0.msg) || {}) } } };
+    this._modal = { type: "lfset", isNew: !d0, back: all.length > 0, tab: d0 && d0.ent ? "ziel" : "geraet", draft: { ...DEF, ...(d0 || {}), ask: { on: true, time: "08:00", home_only: true, until: "12:00", miss: "same", rooms: [], push: [], ...((d0 && d0.ask) || {}) }, msg: { full: true, high: true, noloc: true, filter: true, stall: true, ...((d0 && d0.msg) || {}) } } };
     this._renderModal();
   }
   _lfSetModal() {
@@ -3732,6 +3805,8 @@ class FensterHeizungPanel extends HTMLElement {
         ${row(d.kind === "plug" ? "Schaltsteckdose" : "Entfeuchter", d.kind === "plug" ? "switch.*" : "humidifier.*, Schalter oder Lüfter", this._wzSel(devs, d.ent, "lfxe", `data-k="ent"`, "– Gerät wählen –", /entfeucht|dehumid|humid|trockn/i))}
         ${row("Leistung", "optional, zeigt ob er wirklich läuft, misst den Strom", this._wzSel(pw, d.power, "lfxe", `data-k="power"`, "– keine –", /entfeucht|dehumid|steckdose|plug/i))}
         ${d.power ? row("Läuft ab", "darunter gilt er als aus", step("run_w", "W", 5, 1, 500)) : row("Nennleistung", "für Strom und Kosten ohne Messung", step("watt", "W", 10, 0, 3000))}
+        ${d.kind !== "watch" ? row("Zielfeuchte am Gerät", "optional: number, input_number, select oder humidifier. Modul 1 stellt sie beim Betrieb herunter, damit das Gerät nicht vorher aufhört", this._wzSel(ks.filter((e) => /^(number|input_number|select|humidifier)\./.test(e) && (e.startsWith("humidifier.") || /feucht|humid|ziel|target|hygro/i.test(e + " " + (st[e].attributes.friendly_name || "")))), d.tgt, "lfxe", `data-k="tgt"`, "– keine –", /feucht|humid|ziel|target/i)) : ""}
+        ${d.tgt ? row("Am Gerät einstellen auf", "Minimum: das Gerät läuft, solange Modul 1 es will. Untergrenze: zusätzlich Schutz, falls Modul 1 ausfällt", `<div class="seg oseg">${[["min", "Minimum"], ["lo", "Untergrenze"]].map(([v, l]) => `<button class="${d.tgt_mode === v ? "sel" : ""}" data-act="lfxseg" data-k="tgt_mode" data-v="${v}">${l}</button>`).join("")}</div>`) : ""}
         ${row("Wassertank-Sensor", "optional, meldet „voll“", this._wzSel(tk, d.tank, "lfxe", `data-k="tank"`, "– keiner –", /tank|voll|full/i))}
         ${row("Entfeuchtung", "Liter pro Stunde Betrieb, für Menge und Tankschätzung", step("lph", "l/h", 0.05, 0, 10, 2))}
         ${!d.tank ? row("Tankinhalt", "Schätzung ohne Tank-Sensor, 0 = aus", step("cap_l", "l", 0.5, 0, 50, 1)) : ""}
@@ -3796,7 +3871,7 @@ class FensterHeizungPanel extends HTMLElement {
         ${d.boost === "cheap" || d.boost === "both" ? row("Günstig bis", "Strompreis höchstens", step("cheap_ct", "ct/kWh", 0.5, 0, 100, 1)) : ""}` : ""}
         <div class="gst">${ic("info", 15)}<div>${esc(now)}<br><span class="mut">Netz-Sensor und Strompreis kommen aus Einstellungen → Haus (Energiequellen, Preise &amp; Tarif). Sie zählen auch für Strom und Kosten in der Statistik.</span></div></div>`;
     } else {
-      const K = [["full", "Tank voll"], ["high", "Feuchte bleibt zu hoch"], ["noloc", "Standort fehlt"], ["filter", "Filter reinigen"]];
+      const K = [["full", "Tank voll"], ["high", "Feuchte bleibt zu hoch"], ["noloc", "Standort fehlt"], ["filter", "Filter reinigen"], ["stall", "Eingeschaltet, läuft nicht"]];
       body = `<div class="lsec">${ic("bell", 15)}Meldungen</div>
         <div class="mut sm" style="margin:-2px 0 6px">Erscheinen auf der Raumkarte und gehen an die Handys aus dem Reiter „Standort“${d.ask.push.length ? ` (${d.ask.push.length})` : ", dort ist noch keins gewählt"}. Jede Meldung kommt einmal je Anlass.</div>
         ${chips(K.map((k) => k[0]), K.filter((k) => d.msg[k[0]]).map((k) => k[0]), "lfxmsg", (v) => K.find((k) => k[0] === v)[1])}
@@ -4199,18 +4274,23 @@ class FensterHeizungPanel extends HTMLElement {
      Einstellungen: layout.rk = { old: Raumkarten wie bisher, anim: aus | dezent | voll }, layout.rtype = { Raum-ID: Raumtyp }.
      Gegen Flackern (K4): Das Raumbild trägt data-kk (Raum, Typ, Zustand, Tag/Nacht). Ändert sich nur die Temperatur,
      bleibt das alte Bild im DOM stehen (siehe _render), Bewegungen laufen ohne Sprung weiter. */
-  static RK_TYPES = [["wohnen", "Wohnzimmer"], ["schlafen", "Schlafzimmer"], ["bad", "Bad"], ["kind", "Kinderzimmer"], ["kueche", "Küche"], ["buero", "Büro"], ["flur", "Flur / Ankleide"]];
+  static RK_TYPES = [["wohnen", "Wohnzimmer"], ["schlafen", "Schlafzimmer"], ["bad", "Bad"], ["kind", "Kinderzimmer"], ["kueche", "Küche"], ["buero", "Büro"], ["flur", "Flur / Ankleide"], ["esszimmer", "Esszimmer"], ["wintergarten", "Wintergarten"], ["hwr", "Keller / Hauswirtschaft"], ["werkstatt", "Werkstatt / Hobby"], ["fitness", "Fitness"], ["dachboden", "Dachboden"], ["garage", "Garage"], ["carport", "Carport / Außen"]];
   static RK_COL = { heizt: "#fb923c", ok: "#2dd4bf", offen: "#60a5fa", gekippt: "#60a5fa", pause: "#f59e0b", nacht: "#a78bfa", hoff: "#94a3b8", aus: "#94a3b8" };
   _rkCfg() { const k = this._cfg.layout.rk || {}; return { old: !!k.old || this._gxCfg().classic, anim: ["aus", "dezent", "voll"].includes(k.anim) ? k.anim : "dezent" }; }
   _rkOn() { return !this._rkCfg().old; }
   _rkTypeAuto(r) {
     const n = String(r.name || "").toLowerCase();
-    const R = [[/ankleid|garderob|flur|diele|eingang|trepp|keller|hwr|hauswirt|wasch|abstell|vorrat/, "flur"], [/kind|baby|spiel|jugend|'s zimmer|s zimmer$/, "kind"],
-      [/bad|dusch|\bwc\b|toilett|wanne|sauna/, "bad"], [/k[üu]e?che|kitchen|koch|esszimmer|essbereich|essecke|speise/, "kueche"], [/schlaf|g[äa]st|bedroom/, "schlafen"],
-      [/b[üu]e?ro|arbeit|office|werk|hobby|studio|bibliothek|computer/, "buero"], [/wohn|stube|living|kamin|wintergarten|tv|kino|lounge/, "wohnen"]];
+    const R = [[/carport|unterstand|terrass|au(ß|ss)en|garten|balkon|vordach/, "carport"], [/garage/, "garage"], [/dachboden|spitzboden|speicher|dachgeschoss/, "dachboden"],
+      [/keller|hwr|hauswirt|wasch|abstell|vorrat|heizungsraum|technik/, "hwr"], [/werkstatt|werkraum|hobby|bastel/, "werkstatt"], [/fitness|sport|gym|trainings/, "fitness"],
+      [/wintergarten/, "wintergarten"], [/esszimmer|essbereich|essecke|speisezimmer/, "esszimmer"],
+      [/ankleid|garderob|flur|diele|eingang|trepp/, "flur"], [/kind|baby|spiel|jugend|'s zimmer|s zimmer$/, "kind"],
+      [/bad|dusch|\bwc\b|toilett|wanne|sauna/, "bad"], [/k[üu]e?che|kitchen|koch/, "kueche"], [/schlaf|g[äa]st|bedroom/, "schlafen"],
+      [/b[üu]e?ro|arbeit|office|studio|bibliothek|computer/, "buero"], [/wohn|stube|living|kamin|tv|kino|lounge/, "wohnen"]];
     for (const [re, k] of R) if (re.test(n)) return k;
-    const I = { bed: "schlafen", suitcase: "schlafen", baby: "kind", blocks: "kind", bath: "bad", shower: "bad", toilet: "bad", pot: "kueche", dining: "kueche", fridge: "kueche", wine: "kueche",
-      desk: "buero", tools: "buero", music: "buero", door: "flur", hanger: "flur", stairs: "flur", crate: "flur", laundry: "flur", sofa: "wohnen", fireplace: "wohnen", tv: "wohnen" };
+    if (r.nameOnly) return null;
+    const I = { bed: "schlafen", suitcase: "schlafen", baby: "kind", blocks: "kind", bath: "bad", shower: "bad", toilet: "bad", pot: "kueche", dining: "esszimmer", fridge: "kueche", wine: "kueche",
+      desk: "buero", tools: "werkstatt", music: "buero", door: "flur", hanger: "flur", stairs: "flur", crate: "hwr", laundry: "hwr", sofa: "wohnen", fireplace: "wohnen", tv: "wohnen",
+      dumbbell: "fitness", roof: "dachboden", car: "garage", tree: "carport", balcony: "carport", sun: "wintergarten", radiator: "hwr", wave: "bad" };
     return I[(this._cfg.layout.icons || {})[r.id]] || "wohnen";
   }
   _rkType(r) { const t = (this._cfg.layout.rtype || {})[r.id]; return this.constructor.RK_TYPES.some((x) => x[0] === t) ? t : this._rkTypeAuto(r); }
@@ -4245,7 +4325,8 @@ class FensterHeizungPanel extends HTMLElement {
     const curPlan = pts.length ? at(pts, now) : null;
     const act = t0 ? t0.attributes.hvac_action : null, thOff = !t0 || t0.state === "off";
     const heating = !thOff && r.mode !== "heizung_pausiert" && !anyOpen && (act ? act === "heating" : cur != null && ziel != null && cur < ziel - 0.3);
-    const lowered = away || (planOn && curPlan != null && hi - lo >= 1 && curPlan <= lo + 0.05);
+    const prOn = !!(r.pres && r.pres.anwesend && !r.pres.gesperrt);
+    const lowered = !prOn && (away || (planOn && curPlan != null && hi - lo >= 1 && curPlan <= lo + 0.05));
     const sun = h.states["sun.sun"], night = sun ? sun.state === "below_horizon" : (new Date().getHours() < 7 || new Date().getHours() >= 19);
     const mins = since ? Math.max(0, Math.round((Date.now() - since) / 60000)) : 0, pv = this._pres();
     let k, lab;
@@ -4258,19 +4339,21 @@ class FensterHeizungPanel extends HTMLElement {
     else if (lowered) { k = "nacht"; lab = away ? (pv.effective === "vacation" || pv.mode === "vacation" ? "Urlaub" : "Abwesend") : night ? "Nachtabsenkung" : "Absenkung"; }
     else { k = "ok"; lab = ziel != null && cur != null && cur >= ziel - 0.3 ? "Ziel erreicht" : "Regelung aktiv"; }
     const hum = r.humEid && h.states[r.humEid] ? parseFloat(h.states[r.humEid].state) : null;
-    const htr = r.htr || null, lfs = this._lfDevs().filter((d) => d.S.loc === r.id);
-    return { k, lab, col: C[k], htr, lfs, wins, open, tilt, anyOpen, since, mins, t0, th, thOff, rt, cur, ziel, act, heating, pts, now, today, planOn, lo, hi, curPlan, night, away, summer, hum: isFinite(hum) ? hum : null };
+    const htr = r.htr || null, lfs = this._lfDevs().filter((d) => d.S.loc === r.id), pres = r.pres || null, here = !!(pres && pres.anwesend);
+    if (here && k === "heizt") lab = "Heizt · jemand da";
+    else if (here && k === "ok") lab = "Jemand da";
+    return { k, lab, col: C[k], htr, lfs, pres, here, wins, open, tilt, anyOpen, since, mins, t0, th, thOff, rt, cur, ziel, act, heating, pts, now, today, planOn, lo, hi, curPlan, night, away, summer, hum: isFinite(hum) ? hum : null };
   }
 
   /* ---------- Raumbild (Vektor) ---------- */
   _rkArt(type, s, o = {}) {
     const u = "rk" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_", q = (n) => u + n;
     const col = s.col, k = s.k, night = s.night, heat = k === "heizt", warm = heat || (s.t0 && s.act === "heating" && !s.anyOpen && k !== "pause");
-    const winK = s.open.length ? "open" : s.tilt.length ? "tilt" : "closed", mess = type === "mess";
+    const winK = s.open.length ? "open" : s.tilt.length ? "tilt" : "closed", mess = type === "mess" || !!o.ms, outd = type === "carport", norad = type === "garage" || outd;
     const lg = (id, stops, x2 = 0, y2 = 1) => `<linearGradient id="${q(id)}" x1="0" y1="0" x2="${x2}" y2="${y2}">${stops.map(([of, c, a]) => `<stop offset="${of}" stop-color="${c}"${a != null ? ` stop-opacity="${a}"` : ""}/>`).join("")}</linearGradient>`;
     const W = "var(--rk-w)", F = "var(--rk-f)", T = "var(--rk-t)";
     /* Lampe je Raumtyp: [x, y] des Lichts */
-    const LP = { wohnen: [300, 52], schlafen: [142, 80], bad: [230, 18], kind: [258, 34], kueche: [250, 56], buero: [282, 64], flur: [165, 28], mess: [240, 30] }[type] || [260, 40];
+    const LP = { wohnen: [300, 52], schlafen: [142, 80], bad: [230, 18], kind: [258, 34], kueche: [250, 56], buero: [282, 64], flur: [165, 28], mess: [240, 30], esszimmer: [220, 40], wintergarten: [250, 30], hwr: [180, 22], werkstatt: [230, 30], fitness: [260, 26], dachboden: [200, 40], garage: [170, 18], carport: [36, 56] }[type] || [260, 40];
     const glowA = { heizt: .5, ok: .34, offen: .4, gekippt: .32, pause: .34, nacht: .42, hoff: .2, aus: 0 }[k] ?? .3;
     let d = `<defs>${lg("sky", night ? [[0, "#0b1530"], [1, "#1e2a52"]] : [[0, "#9fd3ff"], [1, "#e6f4ff"]])}
       <radialGradient id="${q("gl")}" cx="${(LP[0] + 60) / 440}" cy="${LP[1] / 150}" r=".5"><stop offset="0" stop-color="${col}" stop-opacity="${glowA}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient>
@@ -4280,7 +4363,17 @@ class FensterHeizungPanel extends HTMLElement {
     /* Raum: Wand, Boden, Sockelleiste */
     d += `<rect x="-60" width="440" height="150" style="fill:${W}"/><rect x="-60" y="112" width="440" height="38" fill="url(#${q("fl")})"/><rect x="-60" y="110" width="440" height="3" style="fill:${T}"/>`;
     d += [-20, 40, 100, 160, 220, 280, 340].map((x) => `<path d="M${x} 113 L${x - 16 + (x - 160) * .25} 150" style="stroke:${T}" stroke-width=".8" opacity=".35"/>`).join("");
+    if (outd) {
+      const frost = this._out().t != null && this._out().t <= 0;
+      d += `<rect x="-60" width="440" height="112" fill="url(#${q("sky")})"/>` + (night ? `<circle cx="300" cy="22" r="8" fill="#fef3c7"/><circle cx="303" cy="19" r="7" fill="#1a2547"/>${[[120, 14], [180, 30], [250, 10], [330, 40], [200, 8]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1" fill="#fff" opacity=".8"/>`).join("")}` : `<circle cx="300" cy="22" r="9" fill="#fde68a"/><path d="M150 26 q8 -10 17 -3 q8 -8 16 1 q7 -1 8 6 h-41z" fill="#fff" opacity=".85"/>`) +
+        `<path d="M-60 96 q60 -12 120 -2 q70 -12 140 0 q80 -12 180 0 V112 H-60z" fill="${night ? "#1f3b2c" : "#4ade80"}" opacity=".7"/><rect x="-60" y="104" width="440" height="8" fill="${night ? "#1d3328" : "#22c55e"}" opacity=".6"/>` +
+        `<rect x="-60" y="112" width="440" height="38" fill="${night ? "#2b3138" : "#9ca3af"}"/>${[118, 126, 134, 142].map((y) => `<path d="M-60 ${y} H380" stroke="#6b7280" stroke-width=".7" opacity=".6"/>`).join("")}` +
+        `<rect x="-60" y="10" width="110" height="102" fill="${night ? "#4b4038" : "#e7d8c3"}"/><rect x="-60" y="4" width="116" height="8" fill="#7f1d1d"/><rect x="6" y="52" width="26" height="60" rx="2" fill="#7c4a24"/><circle cx="27" cy="83" r="1.6" fill="#fde68a"/>` +
+        `<rect x="66" y="16" width="270" height="7" fill="#8a5a2b"/><rect x="66" y="12" width="270" height="4" fill="#5b3a1e"/>${frost ? `<rect x="64" y="8" width="274" height="5" rx="2.5" fill="#f8fafc"/>` : ""}` +
+        [76, 200, 324].map((x) => `<rect x="${x}" y="23" width="6" height="94" fill="url(#${q("wood")})"/>`).join("") + `<ellipse cx="200" cy="128" rx="96" ry="6" fill="#000" opacity=".2"/>`;
+    }
     /* Fenster */
+    if (!outd) {
     const wx = 28, wy = 20, ww = 70, wh = 64, mid = wx + ww / 2;
     d += `<rect x="${wx - 4}" y="${wy - 4}" width="${ww + 8}" height="${wh + 8}" rx="4" fill="#e2e8f0" stroke="#64748b" stroke-opacity=".45"/><rect x="${wx}" y="${wy}" width="${ww}" height="${wh}" fill="url(#${q("sky")})"/>`;
     d += night ? `<circle cx="${wx + 52}" cy="${wy + 16}" r="7" fill="#fef3c7"/><circle cx="${wx + 55}" cy="${wy + 13}" r="6" fill="#1a2547"/>${[[10, 10], [22, 26], [40, 8], [14, 44], [58, 40]].map(([x, y]) => `<circle cx="${wx + x}" cy="${wy + y}" r=".9" fill="#fff" opacity=".85"/>`).join("")}`
@@ -4291,8 +4384,9 @@ class FensterHeizungPanel extends HTMLElement {
     else d += `<path d="M${mid + 7} ${wy + 6} L${mid + ww / 2 + 7} ${wy + 6} L${mid + ww / 2} ${wy + wh} L${mid} ${wy + wh}z" fill="#e0f2fe" fill-opacity=".3" stroke="#f8fafc" stroke-width="3" stroke-linejoin="round"/><path d="M${mid} ${wy} L${mid + 7} ${wy + 6} M${mid + ww / 2} ${wy} L${mid + ww / 2 + 7} ${wy + 6}" stroke="#94a3b8" stroke-width="1.4"/>`;
     d += `<rect x="${wx - 7}" y="${wy + wh + 3}" width="${ww + 14}" height="4" rx="2" fill="#cbd5e1"/>`;
     if (winK !== "closed") d += `<g class="aw">${[0, 1, 2].slice(0, winK === "open" ? 3 : 2).map((i) => `<path class="aw${i}" d="M${mid + 14} ${wy + 18 + i * 14} q10 -5 20 0 t20 0" fill="none" stroke="#7dd3fc" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`).join("")}</g>`;
-    /* Heizkörper (Messraum: Sensor statt Heizkörper) */
-    if (!mess) {
+    }
+    /* Heizkörper (Messraum: Sensor statt Heizkörper; Garage und Carport ohne) */
+    if (!mess && !norad) {
       const rx = 32, ry = 92;
       d += `<rect x="${rx}" y="${ry}" width="62" height="3.5" rx="1.7" fill="${warm ? "#ea580c" : "#94a3b8"}"/>` + [0, 1, 2, 3, 4, 5, 6].map((i) => `<rect x="${rx + 1 + i * 8.6}" y="${ry + 1}" width="6.4" height="17" rx="3" fill="url(#${q("rad")})"/>`).join("") +
         `<circle cx="${rx + 66}" cy="${ry + 12}" r="3.6" fill="${k === "pause" ? "#f59e0b" : warm ? "#fbbf24" : "#64748b"}" stroke="#fff" stroke-width="1.2"/>`;
@@ -4302,6 +4396,9 @@ class FensterHeizungPanel extends HTMLElement {
     const lamp = (x, y, sh = 1) => `<g class="lg"><circle cx="${x}" cy="${y}" r="${16 * sh}" fill="${col}" opacity="${k === "aus" ? 0 : .22}"/></g>`;
     const plant = (x, y, s2 = 1) => `<path d="M${x - 6 * s2} ${y} h${12 * s2} l-2 ${12 * s2} h${-8 * s2}z" fill="#b45309"/><path d="M${x} ${y} q-12 -8 -9 -20 q7 6 9 20 q2 -16 11 -20 q2 12 -11 20 q-2 -12 -1 -24 q6 10 1 24" fill="#22c55e"/>`;
     const frame = (x, y, w2, h2) => `<rect x="${x}" y="${y}" width="${w2}" height="${h2}" rx="2" fill="#f8fafc" opacity=".9"/><rect x="${x + 3}" y="${y + 3}" width="${w2 - 6}" height="${h2 - 6}" fill="#bfdbfe"/><path d="M${x + 3} ${y + h2 - 3} l${w2 * .3} ${-h2 * .45} l${w2 * .2} ${h2 * .25} l${w2 * .2} ${-h2 * .3} l${w2 * .3 - 6} ${h2 * .5}z" fill="#60a5fa"/><circle cx="${x + w2 * .72}" cy="${y + h2 * .32}" r="${h2 * .1}" fill="#fde68a"/>`;
+    const car = (x, y, c = "#2563eb") => `<ellipse cx="${x + 80}" cy="${y + 36}" rx="84" ry="4" fill="#000" opacity=".25"/><path d="M${x} ${y + 26} q0 -12 12 -14 l20 -3 q14 -14 34 -16 h34 q18 1 30 14 l18 4 q12 3 12 15 v8 h-160z" fill="${c}"/>` +
+      `<path d="M${x + 38} ${y + 8} q12 -11 28 -12 h12 v13z M${x + 84} ${y - 4} h8 q14 1 24 13 h-32z" fill="#bfdbfe" opacity=".9"/><rect x="${x}" y="${y + 24}" width="160" height="3" fill="#000" opacity=".15"/>` +
+      [x + 34, x + 128].map((cx) => `<circle cx="${cx}" cy="${y + 34}" r="11" fill="#1f2937"/><circle cx="${cx}" cy="${y + 34}" r="5" fill="#cbd5e1"/>`).join("") + `<rect x="${x + 152}" y="${y + 18}" width="7" height="4" rx="2" fill="#fde68a"/><rect x="${x + 1}" y="${y + 18}" width="5" height="4" rx="2" fill="#f87171"/>`;
     const F1 = {
       wohnen: () => frame(160, 24, 56, 36) + `<ellipse cx="215" cy="134" rx="92" ry="8" style="fill:${T}" opacity=".5"/>` +
         `<rect x="140" y="76" width="148" height="28" rx="10" fill="#4f6d8a"/><rect x="148" y="80" width="64" height="22" rx="8" fill="#6b8bab"/><rect x="216" y="80" width="64" height="22" rx="8" fill="#6b8bab"/>` +
@@ -4339,6 +4436,35 @@ class FensterHeizungPanel extends HTMLElement {
         `<path d="M136 48 l-10 10 l2 36 h16 l2 -36z" fill="#0ea5e9"/><path d="M156 48 l-9 8 l1 30 h16 l1 -30z" fill="#f59e0b"/><path d="M176 48 q-6 4 -5 12 l-2 18 h14 l-1 -18 q1 -8 -6 -12z" fill="#a78bfa"/>` +
         `<rect x="124" y="104" width="66" height="6" rx="2" fill="url(#${q("wood")})"/><rect x="128" y="110" width="4" height="14" fill="#5b3a1e"/><rect x="182" y="110" width="4" height="14" fill="#5b3a1e"/><path d="M136 124 h14 q2 -6 -4 -6 h-10z M154 124 h14 q2 -6 -4 -6 h-10z" fill="#1f2937"/>` +
         lamp(165, 28, .9) + `<path d="M165 0 v20" stroke="#94a3b8" stroke-width="1.5"/><path d="M155 30 q10 -14 20 0z" fill="${k === "aus" ? "#cbd5e1" : col}"/>`,
+      esszimmer: () => frame(250, 26, 46, 30) + lamp(220, 40, 1.1) + `<path d="M220 0 v30" stroke="#94a3b8" stroke-width="1.5"/><path d="M204 40 q16 -16 32 0z" fill="${k === "aus" ? "#cbd5e1" : col}"/>` +
+        [150, 196, 242].map((x) => `<path d="M${x} 66 h20 v30" fill="none" stroke="#7c4a24" stroke-width="4" stroke-linecap="round"/>`).join("") +
+        `<rect x="140" y="90" width="150" height="6" rx="2" fill="url(#${q("wood")})"/><rect x="148" y="96" width="5" height="28" fill="#5b3a1e"/><rect x="278" y="96" width="5" height="28" fill="#5b3a1e"/>` +
+        `<ellipse cx="180" cy="89" rx="10" ry="2.5" fill="#f8fafc"/><ellipse cx="236" cy="89" rx="10" ry="2.5" fill="#f8fafc"/><rect x="204" y="78" width="6" height="11" rx="2" fill="#e2e8f0"/><path d="M216 84 q4 -8 8 0z" fill="#22c55e"/>` + plant(304, 112, .7),
+      wintergarten: () => `<rect x="112" y="6" width="214" height="104" fill="url(#${q("sky")})" opacity=".85"/>${[112, 166, 220, 274, 326].map((x) => `<rect x="${x - 2}" y="6" width="4" height="104" fill="#f8fafc"/>`).join("")}<rect x="110" y="56" width="218" height="3" fill="#f8fafc"/><rect x="110" y="4" width="218" height="4" fill="#f8fafc"/>` +
+        `<path d="M118 104 q30 -14 60 -6 q30 -12 60 -2" fill="#4ade80" opacity=".5"/>` + plant(140, 104, 1.4) + plant(300, 106, 1.2) +
+        `<path d="M200 90 q0 -24 22 -24 q22 0 22 24 v14 h-44z" fill="#d6a76c"/><path d="M204 92 q18 -8 36 0 v10 h-36z" fill="#f1f5f9"/><rect x="204" y="104" width="4" height="18" fill="#a16207"/><rect x="236" y="104" width="4" height="18" fill="#a16207"/>` +
+        `<ellipse cx="270" cy="112" rx="14" ry="3" fill="#a16207"/><rect x="268" y="112" width="4" height="12" fill="#a16207"/>` + lamp(250, 30, .8),
+      hwr: () => `<rect x="130" y="32" width="130" height="4" fill="url(#${q("wood")})"/>${[[136, "#60a5fa"], [168, "#f59e0b"], [200, "#a3e635"], [232, "#f472b6"]].map(([x, c]) => `<rect x="${x}" y="16" width="24" height="16" rx="2" fill="${c}" opacity=".85"/>`).join("")}` +
+        lamp(180, 22, .9) + `<rect x="170" y="0" width="20" height="5" fill="${k === "aus" ? "#cbd5e1" : col}"/>` +
+        [[150, "#f1f5f9"], [204, "#e2e8f0"]].map(([x, c]) => `<rect x="${x}" y="70" width="48" height="52" rx="5" fill="${c}" stroke="#94a3b8" stroke-opacity=".6"/><rect x="${x}" y="70" width="48" height="9" rx="4" fill="#cbd5e1"/><circle cx="${x + 24}" cy="${100}" r="14" fill="#94a3b8"/><circle cx="${x + 24}" cy="100" r="10" fill="#bae6fd"/><circle cx="${x + 40}" cy="74.5" r="1.8" fill="#22c55e"/>`).join("") +
+        `<path d="M266 102 h36 l-4 20 h-28z" fill="#d6a76c"/><path d="M270 100 q14 -10 28 0" fill="#f472b6"/>`,
+      werkstatt: () => `<rect x="134" y="20" width="150" height="58" rx="3" fill="#a16207" opacity=".55"/>${Array.from({ length: 6 }, (_, i) => Array.from({ length: 14 }, (_, j) => `<circle cx="${142 + j * 10.5}" cy="${27 + i * 9}" r=".9" fill="#422006" opacity=".6"/>`).join("")).join("")}` +
+        `<path d="M150 30 v28" stroke="#64748b" stroke-width="3"/><rect x="144" y="27" width="12" height="7" rx="1.5" fill="#475569"/><path d="M178 30 l10 26" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/><circle cx="177" cy="29" r="4" fill="none" stroke="#94a3b8" stroke-width="2.5"/>` +
+        `<path d="M206 32 v24" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/><path d="M230 32 v22" stroke="#f59e0b" stroke-width="3"/><rect x="226" y="52" width="8" height="12" rx="2" fill="#1f2937"/><path d="M256 30 h18 v8 h-18z" fill="#64748b"/>` +
+        `<rect x="134" y="84" width="170" height="8" rx="2" fill="url(#${q("wood")})"/><rect x="140" y="92" width="6" height="32" fill="#5b3a1e"/><rect x="292" y="92" width="6" height="32" fill="#5b3a1e"/><rect x="146" y="108" width="146" height="4" fill="#7c4a24"/>` +
+        `<rect x="250" y="68" width="34" height="16" rx="3" fill="#dc2626"/><rect x="262" y="64" width="10" height="5" rx="2" fill="none" stroke="#7f1d1d" stroke-width="2"/><rect x="160" y="74" width="20" height="10" fill="#475569"/>` + lamp(230, 30, .7),
+      fitness: () => `<rect x="230" y="20" width="72" height="62" rx="3" fill="#bfdbfe" opacity=".45" stroke="#f8fafc" stroke-width="3"/>` + lamp(260, 26, .8) +
+        `<rect x="128" y="96" width="50" height="4" rx="2" fill="#475569"/>${[134, 150, 166].map((x, i) => `<rect x="${x}" y="${88 - i * 2}" width="12" height="${8 + i * 2}" rx="2" fill="#334155"/><circle cx="${x + 6}" cy="${86 - i * 2}" r="${4 + i}" fill="#1f2937"/>`).join("")}<rect x="132" y="100" width="4" height="22" fill="#475569"/><rect x="170" y="100" width="4" height="22" fill="#475569"/>` +
+        `<path d="M190 126 l90 -4 l6 6 l-92 4z" fill="#a855f7" opacity=".85"/><rect x="208" y="92" width="62" height="7" rx="3" fill="#1f2937"/><rect x="214" y="99" width="4" height="22" fill="#475569"/><rect x="260" y="99" width="4" height="22" fill="#475569"/>` +
+        `<circle cx="300" cy="114" r="9" fill="#1f2937"/><path d="M294 106 q6 -9 12 0" fill="none" stroke="#1f2937" stroke-width="3.5"/>`,
+      dachboden: () => `<path d="M140 0 L340 0 L340 110 Z" style="fill:${T}" opacity=".55"/>${[180, 230, 280].map((x) => `<path d="M${x} 0 L340 ${(340 - x) * .55}" stroke="url(#${q("wood")})" stroke-width="7"/>`).join("")}<path d="M140 0 L340 110" stroke="#7c4a24" stroke-width="8"/>` +
+        `<rect x="146" y="92" width="34" height="28" rx="2" fill="#d6a76c"/><path d="M146 100 h34" stroke="#a16207" stroke-width="1.5"/><rect x="178" y="102" width="26" height="18" rx="2" fill="#c08552"/>` +
+        `<path d="M222 98 h56 q4 0 4 4 v20 h-64 v-20 q0 -4 4 -4z" fill="#7c4a24"/><path d="M220 98 q30 -16 64 0" fill="#92400e"/><rect x="246" y="102" width="12" height="6" rx="1" fill="#fbbf24"/>` +
+        lamp(200, 40, .8) + `<path d="M200 0 v34" stroke="#94a3b8" stroke-width="1.2"/><circle cx="200" cy="38" r="4.5" fill="${k === "aus" ? "#cbd5e1" : col}"/>`,
+      garage: () => `<rect x="166" y="14" width="146" height="98" rx="2" fill="#cbd5e1"/>${[0, 1, 2, 3, 4, 5].map((i) => `<rect x="170" y="${18 + i * 15.5}" width="138" height="13" rx="1.5" fill="#e2e8f0"/>`).join("")}<rect x="166" y="10" width="146" height="5" fill="#94a3b8"/>` +
+        lamp(170, 18, .9) + `<rect x="160" y="2" width="20" height="5" fill="${k === "aus" ? "#cbd5e1" : col}"/>` +
+        `<rect x="112" y="40" width="4" height="70" fill="#64748b"/><rect x="112" y="60" width="40" height="3" fill="#94a3b8"/><rect x="116" y="50" width="12" height="10" fill="#f59e0b"/><rect x="132" y="52" width="16" height="8" fill="#60a5fa"/>` + car(150, 84, "#2563eb"),
+      carport: () => car(118, 84, "#dc2626") + lamp(36, 56, .9) + `<rect x="30" y="52" width="12" height="8" rx="2" fill="${k === "aus" ? "#cbd5e1" : col}"/>`,
       mess: () => `<rect x="128" y="64" width="64" height="5" rx="2" fill="url(#${q("wood")})"/><rect x="134" y="44" width="18" height="20" rx="2" fill="#d6a76c"/><rect x="156" y="50" width="26" height="14" rx="2" fill="#c08552"/>` +
         lamp(240, 30, .8) + `<rect x="206" y="30" width="68" height="54" rx="10" fill="#f8fafc"/><rect x="214" y="38" width="52" height="30" rx="5" fill="#0f2a2e"/><text x="240" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#5eead4" font-family="system-ui,sans-serif">${o.mt || "--°"}</text><text x="240" y="64" text-anchor="middle" font-size="7.5" fill="#7dd3fc" font-family="system-ui,sans-serif">${o.mh || ""}</text><circle cx="240" cy="76" r="2.5" fill="${col}"/>` +
         `<rect x="128" y="88" width="190" height="34" rx="3" fill="#94a3b8" opacity=".55"/><path d="M128 104 h190" stroke="#64748b" stroke-width="1.2"/>` + plant(110, 108, .7),
@@ -4354,7 +4480,7 @@ class FensterHeizungPanel extends HTMLElement {
           `<circle cx="${hx + 38}" cy="${hy - 4}" r="6" fill="#fbbf24"/><path d="M${hx + 38} ${hy - 13}v3M${hx + 38} ${hy + 2}v3M${hx + 29} ${hy - 4}h3M${hx + 44} ${hy - 4}h3" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>` : "");
     }
     if ((s.lfs || []).length) {
-      const L = s.lfs[0].S.live || {}, run = !!(L.running || L.on), fill = L.fill != null ? Math.max(0, Math.min(1, L.fill)) : null, lx = -2, ly = 80, lc = L.full || L.code === "full" ? "#f59e0b" : run ? "#22d3ee" : "#64748b";
+      const L = s.lfs[0].S.live || {}, run = !!(L.running || (L.on && !L.has_pw)), fill = L.fill != null ? Math.max(0, Math.min(1, L.fill)) : null, lx = -2, ly = 80, lc = L.full || L.code === "full" ? "#f59e0b" : run ? "#22d3ee" : "#64748b";
       d += `<ellipse cx="${lx + 13}" cy="${ly + 37}" rx="15" ry="2.6" fill="#000" opacity=".25"/><rect x="${lx}" y="${ly}" width="26" height="36" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-opacity=".7"/>` +
         [4, 7, 10].map((y) => `<rect x="${lx + 5}" y="${ly + y}" width="16" height="1.4" rx=".7" fill="#94a3b8"/>`).join("") +
         `<rect x="${lx + 5}" y="${ly + 17}" width="16" height="15" rx="2.5" fill="#dbeafe" stroke="#93c5fd" stroke-width=".8"/>` +
@@ -4362,6 +4488,9 @@ class FensterHeizungPanel extends HTMLElement {
         `<circle cx="${lx + 21}" cy="${ly + 14}" r="1.6" fill="${lc}"/>` +
         (run ? `<g class="aw">${[0, 1].map((i) => `<path class="aw${i}" d="M${lx + 6 + i * 8} ${ly - 3} q3 -4 0 -7 q-3 -3 0 -7" fill="none" stroke="#67e8f9" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>`).join("")}</g>` : "");
     }
+    if (o.ms && type !== "mess") d += `<g transform="translate(${outd ? 88 : 0} ${outd ? 16 : 0})"><rect x="100" y="24" width="30" height="24" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-opacity=".6"/><rect x="103" y="27" width="24" height="14" rx="2.5" fill="#0f2a2e"/><text x="115" y="36.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#5eead4" font-family="system-ui,sans-serif">${o.mt || "--°"}</text><circle cx="115" cy="44.5" r="1.6" fill="${col}"/></g>`;
+    /* Präsenz: Person im Raum */
+    if (s.here && !outd) d += `<g transform="translate(${type === "flur" || type === "garage" ? 140 : 106} 74)"><ellipse cx="9" cy="46" rx="11" ry="2.6" fill="#000" opacity=".25"/><circle cx="9" cy="6" r="6" fill="#fcd9b6"/><path d="M3 4 q6 -8 12 0 q-2 -3 -6 -3 q-4 0 -6 3z" fill="#7c4a24"/><path d="M0 26 q0 -12 9 -12 q9 0 9 12 v6 h-18z" fill="${col}"/><rect x="2" y="31" width="6" height="14" rx="2.5" fill="#334155"/><rect x="10" y="31" width="6" height="14" rx="2.5" fill="#334155"/></g>`;
     /* Licht in Zustandsfarbe, Nacht etwas dunkler, aus = ohne Licht */
     d += `<rect class="rkgl" x="-60" width="440" height="150" fill="url(#${q("gl")})"/>`;
     return `<svg class="rk2svg" viewBox="-60 0 440 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${d}</svg>`;
@@ -4369,7 +4498,7 @@ class FensterHeizungPanel extends HTMLElement {
   /* Bildbereich: eigenes Foto (Vorrang) oder Raumbild. Der Schlüssel entscheidet, ob neu gezeichnet wird. */
   _rkPic(r, s, mini = false) {
     const ph = (this._cfg.layout.photos || {})[r.id], type = this._rkType(r), an = this._rkCfg().anim;
-    const key = [mini ? "m" : "c", r.id, type, s.k, s.open.length ? "o" : s.tilt.length ? "t" : "c", s.night ? 1 : 0, s.heating || (s.act === "heating") ? 1 : 0, an, ph ? ph.length + ph.slice(-12) : "", s.htr ? s.htr.status + (s.htr.status === "pv" && s.htr.watt_now > 0 ? "1" : "0") : "", (s.lfs || []).map((d) => { const L = d.S.live || {}; return (L.running || L.on ? "r" : "s") + (L.full ? "f" : "") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
+    const key = [mini ? "m" : "c", r.id, type, s.k, s.open.length ? "o" : s.tilt.length ? "t" : "c", s.night ? 1 : 0, s.heating || (s.act === "heating") ? 1 : 0, an, ph ? ph.length + ph.slice(-12) : "", type === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", s.htr ? s.htr.status + (s.htr.status === "pv" && s.htr.watt_now > 0 ? "1" : "0") : "", (s.lfs || []).map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.full ? "f" : "") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(","), s.here ? "p" : ""].join("|");
     const cls = `rk2art${s.k === "aus" ? " gr" : ""}${mini ? " mini" : ""}${s.night ? " nt" : ""}`;
     if (ph) return `<div class="${cls} ph" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${s.col}"><i class="rkv"></i></div>`;
     return `<div class="${cls}" data-kk="${esc(key)}" data-an="${an}" style="--c:${s.col}">${this._rkArt(type, s)}</div>`;
@@ -4421,6 +4550,12 @@ class FensterHeizungPanel extends HTMLElement {
     if (s.th.length > 1) hs = (hs ? hs + " · " : "") + `${s.th.length} Thermostate`;
     const heat = line(this._gx(s.heating ? "radiator" : "thermostat", 30, { on: s.heating, t: s.ziel != null ? num(s.ziel, 0) + "°" : "–" }), "Heizung", hv, hs, s.heating ? "t-or" : s.k === "pause" ? "t-am" : "");
     let third = "";
+    if (s.pres) {
+      const P = s.pres, ago = (iso) => { const m = iso ? Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)) : null; return m == null ? "" : m < 60 ? `${m} Min.` : `${Math.floor(m / 60)} Std. ${m % 60} Min.`; };
+      const val = P.anwesend ? "jemand da" : P.roh ? "Bewegung erkannt" : "niemand", blk = P.gesperrt === "abwesend" ? "ruht bei Abwesenheit" : P.gesperrt === "sommer" ? "ruht im Sommermodus" : "";
+      const sub = blk || (P.anwesend ? `${P.modus === "exact" ? "genau" : "mind."} ${num(P.temp, 1)}° · seit ${ago(P.seit)}` : P.roh ? `belegt nach ${P.verz_an} Min.` : P.leerlauf ? `leer seit ${ago(P.zuletzt)} · −${num(P.leerlauf_k, 1)} K` : P.zuletzt ? `zuletzt vor ${ago(P.zuletzt)}` : "");
+      third += line(this._gx("presence", 30, { on: !!P.anwesend }), "Präsenz", val, sub, P.anwesend && !blk ? "t-pr" : "");
+    }
     if (s.hum != null) { const a = this._airData(r), [ml, mc] = a ? MOLD[a.lvl] : ["", ""]; third = line(this._gx("humidity", 30), "Luftfeuchte", `${num(s.hum)} %`, a ? `Schimmel ${ml}` : "", mc === "red" ? "t-rd" : mc === "amber" ? "t-am" : ""); }
     return win + heat + third;
   }
@@ -4429,7 +4564,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!s.pts.length) return adm ? `<button class="rk2pl none" data-act="plan" data-id="${id}">${ic("plus", 15)}Heizplan einrichten</button>` : "";
     const segs0 = segs(s.pts, s.today), t0 = s.today * 1440, nm = s.now % 1440;
     const cuts = s.pts.filter((p) => p.w > s.now && p.w < t0 + 1440).filter((p, i, a) => (i ? a[i - 1].t : s.curPlan) !== p.t).slice(0, 2);
-    const cap = !s.planOn ? (s.away ? "Heizplan ruht · Abwesenheit" : s.summer ? "Heizplan ruht · Sommermodus" : "Heizplan aus") : `Jetzt <b>${num(s.curPlan, 1)}°</b>${cuts.map((p) => ` · ab ${fmtT(p.w % 1440)} <b>${num(p.t, 1)}°</b>`).join("")}${r.htr ? ` · <span class="nw"><span class="sun">☀</span> PV-Heizer</span>` : ""}`;
+    const cap = !s.planOn ? (s.away ? "Heizplan ruht · Abwesenheit" : s.summer ? "Heizplan ruht · Sommermodus" : "Heizplan aus") : `Jetzt <b>${num(s.curPlan, 1)}°</b>${cuts.map((p) => ` · ab ${fmtT(p.w % 1440)} <b>${num(p.t, 1)}°</b>`).join("")}${r.htr ? ` · <span class="nw"><span class="sun">☀</span> PV-Heizer</span>` : ""}${s.pres && s.pres.anwesend && !s.pres.gesperrt ? ` · <span class="nw pr">● ${s.pres.modus === "exact" ? "genau" : "mind."} ${num(s.pres.temp, 1)}°</span>` : ""}`;
     const inner = `<div class="rk2bd${s.planOn ? "" : " off"}">${segs0.map((g) => `<i style="flex:${g.e - g.s};background:${this._rkCol(g.t, s.lo, s.hi)}" title="${fmtT(g.s)}–${fmtT(g.e % 1440 || 1440)} · ${num(g.t, 1)} °C"></i>`).join("")}<b style="left:${(nm / 14.4).toFixed(2)}%"></b></div>
       <div class="tla"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><div class="rk2pc">${ic("plan", 14)}<span>${cap}</span></div>`;
     return adm ? `<button class="rk2pl" data-act="plan" data-id="${id}" aria-label="Heizplan bearbeiten">${inner}</button>` : `<div class="rk2pl">${inner}</div>`;
@@ -4469,6 +4604,13 @@ class FensterHeizungPanel extends HTMLElement {
   _rkMini(r) { return `<div class="rk2mini">${this._rkPic(r, this._rkState(r), true)}</div>`; }
   /* Menü „⋯“ */
   _rkMenu(m) {
+    const ms = this._msList().find((x) => x.id === m.id);
+    if (ms) {
+      const id = esc(ms.id), it = (act, icon, t, sub) => `<button class="rk2mi" data-act="${act}" data-id="${id}">${ic(icon, 20)}<span><b>${t}</b><small>${sub}</small></span>${ic("chev", 16)}</button>`;
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+        <div class="sh"><div><b>${esc(ms.name)}</b><span>Messraum · ${esc(this._rkMsType(ms) === "mess" ? "Raumbild Messraum" : this._rkTypeName(this._rkMsType(ms)))}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="rk2menu">${it("msxedit", "sliders", "Messraum einstellen", "Sensoren, Wunschbereich, Taupunkt, Schimmel")}${it("icon", "palette", "Raumbild & Farbe", "Raumbild, Symbol, Farbe, eigenes Foto")}</div></div>`;
+    }
     const r = this._collect().find((x) => x.id === m.id); if (!r) return "";
     const adm = this._admin(), id = esc(r.id), s = this._rkState(r);
     const it = (act, icon, t, sub) => `<button class="rk2mi" data-act="${act}" data-id="${id}">${ic(icon, 20)}<span><b>${t}</b><small>${sub}</small></span>${ic("chev", 16)}</button>`;
@@ -4483,7 +4625,16 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Raumtyp im Fenster „Raum anpassen“ */
   _rkTypePick(r) {
-    if (!this._rkOn() || String(r.id || "").startsWith("ms_")) return "";
+    if (!this._rkOn()) return "";
+    const ms = this._msList().find((x) => x.id === r.id);
+    if (ms) {
+      const cur = (this._cfg.layout.rtype || {})[ms.id] || "", s = this._rkMsS(ms), o = { ms: true, mt: "20,5°", mh: "55 %" };
+      return `<div class="lsec">Raumbild</div><div class="rk2tp">
+        <button class="${!cur ? "sel" : ""}" data-act="rktype" data-k=""><span class="rk2art sm">${this._rkArt(this._rkMsAuto(ms), s, o)}</span><b>Automatisch</b><small>${esc(this._rkMsAuto(ms) === "mess" ? "Messraum" : this._rkTypeName(this._rkMsAuto(ms)))}</small></button>
+        <button class="${cur === "mess" ? "sel" : ""}" data-act="rktype" data-k="mess"><span class="rk2art sm">${this._rkArt("mess", s, o)}</span><b>Messraum</b></button>
+        ${this.constructor.RK_TYPES.map(([k, n]) => `<button class="${cur === k ? "sel" : ""}" data-act="rktype" data-k="${k}"><span class="rk2art sm">${this._rkArt(k, s, o)}</span><b>${n}</b></button>`).join("")}</div>
+        <div class="mut sm" style="margin:0 0 8px">Messräume zeigen statt des Heizkörpers den Sensor an der Wand (beim Carport an der Stütze). Der Raumtyp wird aus dem Namen vorgeschlagen. Ein eigenes Foto (unten) hat Vorrang vor dem Raumbild.</div>`;
+    }
     const cur = (this._cfg.layout.rtype || {})[r.id] || "", auto = this._rkTypeAuto(r), s = { ...this._rkState(r), k: "ok", col: "#2dd4bf", open: [], tilt: [], anyOpen: 0, heating: false, act: null, night: false };
     return `<div class="lsec">Raumbild</div><div class="rk2tp">
       <button class="${!cur ? "sel" : ""}" data-act="rktype" data-k=""><span class="rk2art sm">${this._rkArt(auto, s)}</span><b>Automatisch</b><small>${esc(this._rkTypeName(auto))}</small></button>
@@ -4537,7 +4688,7 @@ class FensterHeizungPanel extends HTMLElement {
     const L = d.S.live || {};
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${esc(d.name)}</b><span>Luftentfeuchter · ${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="rk2sht">${this._gx("dehumid", 64, { lvl: L.fill != null ? Math.round(L.fill * 100) : L.full ? 100 : 30, on: !!(L.running || L.on) })}</div>${this._lfBox1(d)}
+      <div class="rk2sht">${this._gx("dehumid", 64, { lvl: L.fill != null ? Math.round(L.fill * 100) : L.full ? 100 : 30, on: !!(L.running || (L.on && !L.has_pw)) })}</div>${this._lfBox1(d)}
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   /* Mini-Raumbild für eine Raum-ID (Raum oder Messraum), z. B. in der Entfeuchter-Standortkarte und im PV-Heizer-Block */
@@ -4547,8 +4698,11 @@ class FensterHeizungPanel extends HTMLElement {
     if (r) return `<span class="rk2mini ${cls}">${this._rkPic(r, this._rkState(r), true)}</span>`;
     const m = this._msList().find((x) => x.id === id); if (!m) return "";
     const ph = (this._cfg.layout.photos || {})[m.id];
-    return `<span class="rk2mini ${cls}">${ph ? `<span class="rk2art ph mini" style="background-image:url('${esc(ph)}')"></span>` : `<span class="rk2art mini">${this._rkArt("mess", this._rkMsS(m))}</span>`}</span>`;
+    return `<span class="rk2mini ${cls}">${ph ? `<span class="rk2art ph mini" style="background-image:url('${esc(ph)}')"></span>` : `<span class="rk2art mini">${this._rkArt(this._rkMsType(m), this._rkMsS(m), { ms: true })}</span>`}</span>`;
   }
+  _rkMsType(m) { const t = (this._cfg.layout.rtype || {})[m.id]; return t === "mess" ? "mess" : this.constructor.RK_TYPES.some((x) => x[0] === t) ? t : this._rkMsAuto(m); }
+  /* Messraum ohne eigene Wahl: Raumtyp aus dem Namen (z. B. „Carport“, „Keller“, „Garage“), sonst das Messraum-Bild */
+  _rkMsAuto(m) { return this._rkTypeAuto({ id: m.id, name: m.name, nameOnly: true }) || "mess"; }
   _rkMsS(m, col = "#2dd4bf") { return { k: "ok", col, open: [], tilt: [], anyOpen: 0, act: null, heating: false, t0: null, night: this._hass.states["sun.sun"] ? this._hass.states["sun.sun"].state === "below_horizon" : false, lfs: this._lfDevs().filter((d) => d.S.loc === m.id) }; }
   /* Messraum als Raumkarte 2.0: Bild mit Sensor, Ring für die Temperatur, Zeilen für Luftfeuchte, Taupunkt, Min/Max */
   _msCard2(m, T, Hm, mm, none, note, ntone, batLow) {
@@ -4561,10 +4715,10 @@ class FensterHeizungPanel extends HTMLElement {
     else if (tv != null && tv > m.t_hi) { k = "warm"; lab = "Zu warm"; col = "#fb923c"; }
     else if (hv != null && hv < m.h_lo) { k = "trocken"; lab = "Zu trocken"; col = "#f59e0b"; }
     const s = this._rkMsS(m, col), ph = (this._cfg.layout.photos || {})[m.id], an = this._rkCfg().anim;
-    const mt = tv != null ? num(tv, 1) + "°" : "--°", mh = hv != null ? num(hv) + " %" : "";
-    const key = ["ms", m.id, k, mt, mh, s.night ? 1 : 0, an, ph ? ph.length : "", s.lfs.map((d) => { const L = d.S.live || {}; return (L.running || L.on ? "r" : "s") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
+    const mt = tv != null ? num(tv, 1) + "°" : "--°", mh = hv != null ? num(hv) + " %" : "", mty = this._rkMsType(m);
+    const key = ["ms", m.id, mty, mty === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", k, mt, mh, s.night ? 1 : 0, an, ph ? ph.length : "", s.lfs.map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
     const pic = ph ? `<div class="rk2art ph${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${col}"><i class="rkv"></i></div>`
-      : `<div class="rk2art${k === "aus" ? " gr" : ""}${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="--c:${col}">${this._rkArt("mess", s, { mt, mh })}</div>`;
+      : `<div class="rk2art${k === "aus" ? " gr" : ""}${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="--c:${col}">${this._rkArt(mty, s, { mt, mh, ms: true })}</div>`;
     const top = `<div class="rk2top">${edit ? `<button class="rk2eb" data-act="icon" data-id="${id}" aria-label="Raumbild, Farbe und Foto ändern">${pic}<span class="rk2pen">${ic("pencil", 14)}Raumbild</span></button>` : pic}
       <div class="rk2ov"><span class="rk2st" style="--c:${col}"><i></i>${esc(lab)}</span><span class="rk2sp"></span><span class="rk2tag">Messraum</span></div>
       <div class="rk2nm"><b>${esc(m.name)}</b></div>${batLow && !edit ? `<div class="rk2bg"><span class="achip amber">${ic("bolt", 12)}Batterie leer</span></div>` : ""}</div>`;
@@ -4578,13 +4732,22 @@ class FensterHeizungPanel extends HTMLElement {
     const tiles = s.lfs.length ? `<div class="rk2dvs">${s.lfs.map((d) => this._rkLfTile(m, d)).join("")}</div>` : "";
     return `<div class="card room rk2 msr2" data-id="${id}" style="--c:${col}">${top}
       <div class="rk2mid">${T ? ring : ""}<div class="rk2ls">${lines}</div></div>${tiles}${this._lfMove(m.id)}
-      <div class="rk2ft"><div class="rk2fl ${ntone === "amber" ? "warn" : ""}">${ic(ntone ? "alert" : "check", 15)}<span>${esc(note)}</span></div>${adm ? `<button class="rk2more" data-act="msxedit" data-id="${id}" aria-label="Messraum einstellen">⋯</button>` : ""}</div></div>`;
+      <div class="rk2ft"><div class="rk2fl ${ntone === "amber" ? "warn" : ""}">${ic(ntone ? "alert" : "check", 15)}<span>${esc(note)}</span></div>${adm ? `<button class="rk2more" data-act="rkmenu" data-id="${id}" aria-label="Weitere Aktionen für ${esc(m.name)}">⋯</button>` : ""}</div></div>`;
   }
   /* Heizplan-Band in klein (Kompakt-Liste) */
   _rkBandMini(s) {
     if (!s.pts.length) return "";
     const nm = s.now % 1440;
     return `<div class="rk2bd sm${s.planOn ? "" : " off"}">${segs(s.pts, s.today).map((g) => `<i style="flex:${g.e - g.s};background:${this._rkCol(g.t, s.lo, s.hi)}"></i>`).join("")}<b style="left:${(nm / 14.4).toFixed(2)}%"></b></div>`;
+  }
+  /* Präsenz als Chip (Kompakt-Liste) */
+  _rkPrChip(r) {
+    const P = r.pres; if (!P) return "";
+    const m = (iso) => (iso ? Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)) : null), f = (n) => (n == null ? "" : n < 60 ? `${n} Min.` : `${Math.floor(n / 60)} Std.`);
+    if (P.gesperrt === "abwesend" || P.gesperrt === "sommer") return `<span class="achip slate">${ic("user", 12)}Präsenz ruht</span>`;
+    if (P.anwesend) return `<span class="achip prc">${ic("user", 12)}jemand da · ${P.modus === "exact" ? "" : "mind. "}${num(P.temp, 1)}°</span>`;
+    if (P.roh) return `<span class="achip slate">${ic("user", 12)}Bewegung erkannt</span>`;
+    return `<span class="achip ${P.leerlauf ? "amber" : "slate"}">${ic("user", 12)}leer${P.zuletzt ? " seit " + f(m(P.zuletzt)) : ""}${P.leerlauf ? ` · −${num(P.leerlauf_k, 1)} K` : ""}</span>`;
   }
   _rkAct(a, b) {
     const L = this._cfg.layout;
@@ -4595,6 +4758,422 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "rkanim") L.rk = { ...(L.rk || {}), anim: b.dataset.k };
     else return false;
     this._saveLayout(); this._render(); this._renderModal(); return true;
+  }
+  /* ================= Modul 1 · Haus-Szene in der Kopfkarte (Konzept „Neue Optik“, Teil A1/A2) =================
+     Das Haus zeigt die eigenen Räume im Schnitt, nach Etagen (Gruppen). Farbe = Zustand, Zahl = Ist-Temperatur.
+     Offenes Fenster klappt auf, heizende Räume zeigen Wärmewellen. Im Keller die Wärmequelle nach Brennstoff
+     (Öltank, Gastherme, Pellets, Wärmepumpe), auf dem Dach PV, wenn ein PV-Sensor gewählt ist.
+     Himmel nach Tageszeit (sun.sun) und Wetter (Wetterquelle aus Haus-Werte / Darstellung).
+     Antippen eines Raums springt zur Raumkarte. Einstellungen: layout.hs = { off, wx } (Darstellung). */
+  _hsCfg() { const h = this._cfg.layout.hs || {}; return { on: this._rkOn() && !h.off, wx: h.wx !== false }; }
+  /* Etagen aus den Gruppen: Namen mit Dach/OG oben, EG Mitte, Keller/UG unten; ohne Gruppen höchstens 4 Räume je Etage */
+  _hsFloors(rooms) {
+    const groups = (this._cfg.layout.groups || []).filter((g) => g && g.name), rank = (n, i) => {
+      n = n.toLowerCase();
+      return /dach|spitz/.test(n) ? 40 : /\bog\b|ober|1\. ?og|obergeschoss/.test(n) ? 30 : /\beg\b|erd|parterre/.test(n) ? 20 : /keller|\bug\b|\bkg\b|souterrain/.test(n) ? 10 : 25 - i * .01;
+    };
+    let floors;
+    if (groups.length) {
+      const used = new Set(groups.flatMap((g) => g.rooms || []));
+      floors = groups.map((g, i) => ({ n: g.name, r: rooms.filter((x) => (g.rooms || []).includes(x.id)), k: rank(g.name, i) })).filter((f) => f.r.length);
+      const rest = rooms.filter((x) => !used.has(x.id)); if (rest.length) floors.push({ n: "Weitere", r: rest, k: 15 });
+      floors.sort((a, b) => b.k - a.k);
+    } else {
+      const per = rooms.length <= 4 ? 4 : rooms.length <= 6 ? 3 : 4; floors = [];
+      for (let i = 0; i < rooms.length; i += per) floors.push({ n: "", r: rooms.slice(i, i + per) });
+      floors.reverse();
+    }
+    return floors.slice(0, 3);
+  }
+  _hsSky() {
+    const st = this._hass.states, sun = st["sun.sun"], o = this._out(), c = this._hsCfg();
+    const elev = sun && sun.attributes.elevation != null ? Number(sun.attributes.elevation) : null, h = new Date().getHours();
+    const night = sun ? sun.state === "below_horizon" : h < 7 || h >= 19, rising = sun ? !!sun.attributes.rising : h < 12;
+    const tod = !c.wx ? "day" : night ? "night" : elev != null && elev < 8 ? (rising ? "morning" : "evening") : "day";
+    const w = c.wx ? o.w || "" : "", frost = c.wx && o.t != null && o.t <= 0;
+    return { tod, w, frost, snow: /snow|hail/.test(w) || (frost && /snow/.test(w)), rain: /rain|pouring|lightning/.test(w), cloud: /cloud|partly|fog|rain|pouring|snow|lightning/.test(w), fog: w === "fog", storm: /lightning|windy|exceptional/.test(w), t: o.t };
+  }
+  /* Kleine Möbel-Silhouette je Raumtyp (unten im Raum), Breite ca. 24, Höhe ca. 14 */
+  _hsFur(type, x, y, sc) {
+    const P = {
+      wohnen: `<rect x="0" y="-9" width="24" height="9" rx="3"/><rect x="2" y="-14" width="20" height="6" rx="3"/><rect x="-1" y="-11" width="4" height="11" rx="2"/><rect x="21" y="-11" width="4" height="11" rx="2"/>`,
+      schlafen: `<rect x="0" y="-14" width="4" height="14" rx="1"/><rect x="0" y="-7" width="26" height="5" rx="2"/><rect x="5" y="-10" width="7" height="3" rx="1.5"/><rect x="24" y="-9" width="2" height="9"/>`,
+      bad: `<path d="M0 -8 h26 v2 q0 6 -6 6 h-14 q-6 0 -6 -6z"/><path d="M22 -8 v-5 h-3" fill="none" stroke="currentColor" stroke-width="1.5"/>`,
+      kind: `<rect x="8" y="-9" width="18" height="6" rx="2"/><rect x="8" y="-3" width="2" height="3"/><rect x="24" y="-3" width="2" height="3"/><rect x="0" y="-6" width="5" height="6"/><rect x="1" y="-11" width="4" height="5"/>`,
+      kueche: `<rect x="0" y="-10" width="26" height="10"/><rect x="-1" y="-11" width="28" height="2"/><path d="M8 -20 h10 l-2 5 h-6z"/>`,
+      buero: `<rect x="0" y="-10" width="24" height="2"/><rect x="1" y="-8" width="2" height="8"/><rect x="21" y="-8" width="2" height="8"/><rect x="8" y="-18" width="11" height="7" rx="1"/><rect x="12" y="-11" width="3" height="1.5"/>`,
+      flur: `<rect x="6" y="-20" width="18" height="20" rx="1"/><path d="M15 -20 v20" stroke="currentColor" stroke-width=".8" opacity=".5"/><circle cx="2" cy="-16" r="1.2"/><path d="M2 -15 l-2 8 h4z"/>`,
+      esszimmer: `<rect x="2" y="-9" width="22" height="2"/><rect x="4" y="-7" width="2" height="7"/><rect x="20" y="-7" width="2" height="7"/><path d="M-2 -12 v12 M28 -12 v12" stroke="currentColor" stroke-width="1.6"/>`,
+      wintergarten: `<path d="M8 0 h8 l-1 -6 h-6z"/><path d="M12 -6 q-8 -4 -7 -12 q5 4 7 12 q1 -10 7 -12 q1 8 -7 12"/>`,
+      hwr: `<rect x="0" y="-14" width="12" height="14" rx="1.5"/><rect x="14" y="-14" width="12" height="14" rx="1.5"/><circle cx="6" cy="-6" r="3.5" fill="#fff" opacity=".35"/><circle cx="20" cy="-6" r="3.5" fill="#fff" opacity=".35"/>`,
+      werkstatt: `<rect x="0" y="-10" width="26" height="2.5"/><rect x="1" y="-8" width="2" height="8"/><rect x="23" y="-8" width="2" height="8"/><rect x="16" y="-15" width="8" height="5" rx="1"/>`,
+      fitness: `<rect x="4" y="-8" width="18" height="2.5"/><rect x="6" y="-6" width="2" height="6"/><rect x="18" y="-6" width="2" height="6"/><rect x="0" y="-13" width="26" height="1.6"/><rect x="0" y="-15" width="3" height="6"/><rect x="23" y="-15" width="3" height="6"/>`,
+      dachboden: `<rect x="0" y="-8" width="10" height="8"/><rect x="11" y="-6" width="8" height="6"/><rect x="4" y="-14" width="8" height="6"/>`,
+      garage: `<path d="M0 -4 q0 -4 4 -5 l4 -1 q3 -5 9 -5 h4 q4 0 7 5 l2 1 q2 1 2 4 v2 h-32z"/><circle cx="7" cy="-1" r="2.6"/><circle cx="24" cy="-1" r="2.6"/>`,
+    };
+    const p = P[type] || P[type === "carport" ? "garage" : "wohnen"];
+    return `<g transform="translate(${x} ${y}) scale(${sc})" fill="currentColor">${p}</g>`;
+  }
+  _hsSvg(rooms) {
+    const NR = this._narrow || (this.clientWidth || 999) < 600;
+    const fl = this._hsFloors(rooms), sky = this._hsSky(), u = "hs" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_", q = (n) => u + n;
+    const S = rooms.map((r) => ({ r, s: this._rkState(r) })), byId = Object.fromEntries(S.map((x) => [x.r.id, x.s]));
+    const anyHeat = S.some((x) => x.s.heating), fset = new Set(rooms.map((r) => r.fuel || "erdgas")), fuel = fset.size === 1 ? [...fset][0] : "erdgas";
+    const pvOn = this._pvNow() != null, pvW = pvOn ? this._pvNow() : 0, night = sky.tod === "night";
+    const SK = { night: ["#0a1430", "#26325f"], morning: ["#f7b98a", "#cfe0f7"], evening: ["#f29a6a", "#5d4b8c"], day: ["#6fbcff", "#e2f3ff"] }[sky.tod];
+    const grey = sky.cloud && !night, wh = sky.frost || sky.snow;
+    const lg = (id, st, x2 = 0, y2 = 1) => `<linearGradient id="${q(id)}" x1="0" y1="0" x2="${x2}" y2="${y2}">${st.map(([o, c, a]) => `<stop offset="${o}" stop-color="${c}"${a != null ? ` stop-opacity="${a}"` : ""}/>`).join("")}</linearGradient>`;
+    let d = `<defs>${lg("sk", [[0, grey ? "#93a7bf" : SK[0]], [1, grey ? "#dde5ee" : SK[1]]])}${lg("rf", [[0, "#c2564d"], [1, "#7a2420"]])}${lg("rf2", [[0, "#000", .0], [1, "#000", .28]])}
+      ${lg("wl", night ? [[0, "#5b5146"], [1, "#433b33"]] : [[0, "#f4ead8"], [1, "#e2d3b8"]], 1, 0)}${lg("hw", [[0, "#f97316", .9], [1, "#f97316", 0]], 0, 1)}
+      ${lg("gr", night ? [[0, wh ? "#c7d0dc" : "#1c3a28"], [1, wh ? "#9aa6b5" : "#132a1c"]] : [[0, wh ? "#ffffff" : "#5fd27e"], [1, wh ? "#dfe7f0" : "#2f9e57"]])}
+      ${lg("so", night ? [[0, "#2a211b"], [1, "#16110d"]] : [[0, "#7a5a40"], [1, "#4e3826"]])}${lg("kl", [[0, "#9ca3af"], [1, "#6b7280"]])}
+      ${lg("gl", night ? [[0, "#fde68a"], [1, "#f59e0b"]] : [[0, "#e0f2fe"], [1, "#7dd3fc"]], .6, 1)}
+      <radialGradient id="${q("sun")}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7c2"/><stop offset=".55" stop-color="#fde68a"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
+      <pattern id="${q("tl")}" width="10" height="6" patternUnits="userSpaceOnUse"><path d="M0 5.5 h10 M5 0 v5.5" stroke="#5b1a17" stroke-width=".7" opacity=".55"/></pattern>
+      <pattern id="${q("br")}" width="8" height="4" patternUnits="userSpaceOnUse"><path d="M0 3.6 h8 M4 0 v3.6" stroke="#5b1a17" stroke-width=".5" opacity=".6"/></pattern></defs>`;
+    /* Himmel */
+    d += `<rect width="360" height="200" fill="url(#${q("sk")})"/>`;
+    if (night) d += [[24, 18], [64, 40], [108, 12], [150, 30], [232, 14], [276, 54], [204, 42], [344, 70], [20, 70], [330, 12]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? .9 : 1.4}" fill="#fff" opacity="${i % 2 ? .6 : .95}"/>`).join("") +
+      `<circle cx="320" cy="32" r="22" fill="#fef3c7" opacity=".12"/><circle cx="320" cy="32" r="11" fill="#fef3c7"/><circle cx="324" cy="28" r="10" fill="${grey ? "#93a7bf" : "#1b2750"}"/>`;
+    else if (!grey || sky.w === "partlycloudy") { const sx = sky.tod === "morning" ? 34 : sky.tod === "evening" ? 326 : 314, sy = sky.tod === "day" ? 32 : 60;
+      d += `<circle cx="${sx}" cy="${sy}" r="30" fill="url(#${q("sun")})"/><circle cx="${sx}" cy="${sy}" r="11" fill="#fde047"/>` + (sky.tod === "day" && !grey ? `<path d="M120 30 q3 -3 6 0 q3 -3 6 0 M140 22 q2.4 -2.4 4.8 0 q2.4 -2.4 4.8 0" fill="none" stroke="#334155" stroke-width="1.1" stroke-linecap="round" opacity=".6"/>` : ""); }
+    const cloud = (x, y, sc, c = "#fff", o = .92) => `<g transform="translate(${x} ${y}) scale(${sc})" opacity="${o}"><ellipse cx="18" cy="14" rx="18" ry="9" fill="${c}"/><ellipse cx="34" cy="9" rx="14" ry="10" fill="${c}"/><ellipse cx="50" cy="15" rx="13" ry="8" fill="${c}"/><rect x="6" y="14" width="52" height="9" rx="4.5" fill="${c}"/></g>`;
+    if (sky.cloud) d += `<g class="hscl">${cloud(30, 30, .9, night ? "#475569" : "#fff")}${cloud(196, 18, .7, night ? "#3f4b5e" : "#fff", .85)}${cloud(286, 50, .65, night ? "#475569" : "#f8fafc")}${grey ? cloud(110, 6, .8, "#cbd5e1", .9) : ""}</g>`;
+    if (sky.rain) d += `<g class="hsrn">${Array.from({ length: 30 }, (_, i) => `<path d="M${(i * 37) % 360} ${(i * 23) % 130} l-3 9" stroke="#93c5fd" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>`).join("")}</g>`;
+    if (sky.snow) d += `<g class="hssn">${Array.from({ length: 34 }, (_, i) => `<circle cx="${(i * 41) % 360}" cy="${(i * 29) % 150}" r="${i % 3 ? 1.5 : 2.2}" fill="#fff" opacity=".9"/>`).join("")}</g>`;
+    /* Garten: Baum, Büsche, Zaun, Laterne */
+    const X0 = 76, X1 = 284, top = 72, bot = 160, n = Math.max(1, fl.length), fh = (bot - top) / n;
+    d += `<rect x="-2" y="158" width="364" height="10" fill="url(#${q("gr")})"/>`;
+    d += `<rect x="30" y="118" width="6" height="42" rx="2" fill="${night ? "#3b2a1c" : "#7c4a24"}"/>` + [[33, 104, 20], [22, 116, 14], [46, 114, 14], [33, 92, 13]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${wh ? (night ? "#9fb0c2" : "#e9eef5") : night ? "#1d4a2c" : "#2f9e57"}"/>`).join("") +
+      (wh ? "" : `<circle cx="27" cy="100" r="6" fill="${night ? "#255a36" : "#4ade80"}" opacity=".7"/>`);
+    d += [[60, 156, 9], [298, 156, 8], [312, 157, 6]].map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * .7}" fill="${wh ? "#eef3f8" : night ? "#1d4a2c" : "#22a35a"}"/>`).join("");
+    d += `<g opacity=".9">${[318, 330, 342, 354].map((x) => `<rect x="${x}" y="142" width="3" height="18" fill="${night ? "#64748b" : "#f8fafc"}"/>`).join("")}<rect x="314" y="146" width="46" height="2.4" fill="${night ? "#64748b" : "#f8fafc"}"/><rect x="314" y="153" width="46" height="2.4" fill="${night ? "#64748b" : "#f8fafc"}"/></g>`;
+    d += `<rect x="302" y="122" width="2.4" height="38" fill="#334155"/><rect x="298" y="116" width="10" height="7" rx="2" fill="#334155"/><rect x="300" y="118" width="6" height="4" rx="1" fill="${night ? "#fde68a" : "#cbd5e1"}"/>${night ? `<circle cx="303" cy="120" r="12" fill="#fde68a" opacity=".22"/>` : ""}`;
+    /* Erdreich mit Keller */
+    d += `<rect y="166" width="360" height="34" fill="url(#${q("so")})"/>` + Array.from({ length: 16 }, (_, i) => `<ellipse cx="${(i * 53 + 11) % 360}" cy="${172 + (i * 7) % 24}" rx="${1.6 + (i % 3)}" ry="1.2" fill="#000" opacity=".18"/>`).join("");
+    d += `<rect x="${X0 + 6}" y="166" width="${X1 - X0 - 12}" height="30" fill="url(#${q("kl")})"/><rect x="${X0 + 10}" y="168" width="${X1 - X0 - 20}" height="26" fill="${night ? "#2b3038" : "#d6d3cd"}"/><rect x="${X0 + 10}" y="190" width="${X1 - X0 - 20}" height="4" fill="#8b8680"/>`;
+    /* Hauswand (Schnitt): außen Putz, Dämmung, Geschossdecken */
+    d += `<rect x="${X0 - 6}" y="${top}" width="${X1 - X0 + 12}" height="${bot - top}" fill="url(#${q("wl")})"/><rect x="${X0 - 3}" y="${top}" width="3" height="${bot - top}" fill="#fde68a" opacity=".55"/><rect x="${X1}" y="${top}" width="3" height="${bot - top}" fill="#fde68a" opacity=".55"/>`;
+    d += `<rect x="${X0 - 8}" y="${bot - 2}" width="${X1 - X0 + 16}" height="8" fill="#9ca3af"/>`;
+    /* Dach: Ziegel, Traufe, Dachrinne, First, Dachfenster, Schornstein, PV */
+    const RL = X0 - 22, RR = X1 + 22, RT = 16;
+    d += `<path d="M${RL} ${top + 2} L180 ${RT} L${RR} ${top + 2} Z" fill="url(#${q("rf")})"/><path d="M${RL} ${top + 2} L180 ${RT} L${RR} ${top + 2} Z" fill="url(#${q("tl")})"/><path d="M180 ${RT} L${RR} ${top + 2} L180 ${top + 2}Z" fill="url(#${q("rf2")})"/>`;
+    d += `<path d="M${RL - 2} ${top + 3} L180 ${RT - 2} L${RR + 2} ${top + 3}" fill="none" stroke="#4a1210" stroke-width="3" stroke-linejoin="round"/><rect x="${RL}" y="${top + 2}" width="${RR - RL}" height="4" fill="#3f3f46"/><rect x="${RL - 2}" y="${top + 5}" width="${RR - RL + 4}" height="2.4" rx="1.2" fill="#a1a1aa"/>`;
+    if (wh) d += `<path d="M${RL + 2} ${top} L180 ${RT + 1} L${RR - 2} ${top} L${RR - 12} ${top - 3} L180 ${RT + 6} L${RL + 12} ${top - 3}Z" fill="#f8fafc"/>`;
+    d += `<g transform="translate(128 46) rotate(${(-Math.atan2(top - RT, 180 - RL) * 180 / Math.PI).toFixed(1)})"><rect x="0" y="0" width="16" height="11" rx="1" fill="#475569"/><rect x="1.5" y="1.5" width="13" height="8" fill="url(#${q("gl")})"/></g>`;
+    d += `<rect x="240" y="24" width="14" height="30" fill="#8b2b22"/><rect x="240" y="24" width="14" height="30" fill="url(#${q("br")})"/><rect x="238" y="21" width="18" height="4" rx="1" fill="#57534e"/>` +
+      (anyHeat ? `<g class="hssm">${[0, 1, 2].map((i) => `<circle class="hssm${i}" cx="${247 + i * 3}" cy="${15 - i * 6}" r="${3.5 + i * 2}" fill="#e2e8f0" opacity=".55"/>`).join("")}</g>` : "");
+    if (pvOn) {
+      const glow = pvW > 50 && !night, ang = (Math.atan2(top - RT, RR - 180) * 180 / Math.PI).toFixed(1);
+      d += `<g transform="translate(190 ${RT + 6}) rotate(${ang})">${[0, 1, 2, 3].map((i) => `<rect x="${6 + i * 19}" y="2" width="18" height="12" rx="1" fill="${glow ? "#1d4ed8" : "#1e3a8a"}" stroke="#cbd5e1" stroke-width=".8"/><path d="M${6 + i * 19} 8 h18 M${15 + i * 19} 2 v12" stroke="#93c5fd" stroke-width=".5" opacity=".7"/>`).join("")}${glow ? `<rect x="5" y="1" width="78" height="14" rx="2" fill="none" stroke="#fde68a" stroke-width="1.4" class="hspv"/>` : ""}</g>`;
+    }
+    /* Räume je Etage */
+    fl.forEach((f, fi) => {
+      const y = top + fi * fh, many = f.r.length > 6, cw = (X1 - X0) / f.r.length;
+      f.r.forEach((r, i) => {
+        const s = byId[r.id], x = X0 + i * cw, c = s.col, t = s.cur, fs = Math.min(NR ? 11.5 : 9.5, fh * .24, cw * .19), nm = this._hsName(r), avail = cw - 9;
+        let fs2 = Math.min(NR ? 10 : 8.5, fh * .2, cw * .17); if (nm.length * fs2 * .57 > avail) fs2 = Math.max(NR ? 7 : 6.2, avail / (nm.length * .57));
+        const mx = Math.max(3, Math.floor(avail / (fs2 * .57))), label = many ? "" : esc(nm.length > mx ? nm.slice(0, mx - 1) + "…" : nm), ty = r.id.startsWith("ms_") ? "mess" : this._rkType(r);
+        d += `<g class="hsr" data-act="hsgo" data-id="${esc(r.id)}" style="cursor:pointer"><title>${esc(r.name)} · ${esc(s.lab)}${t != null ? " · " + num(t, 1) + " °C" : ""}</title>
+          <rect x="${x + 1}" y="${y + 1}" width="${cw - 2}" height="${fh - 2}" fill="${night ? "#3a3f4a" : "#f6efe2"}"/><rect x="${x + 1}" y="${y + 1}" width="${cw - 2}" height="${fh - 2}" fill="${c}" opacity="${s.k === "aus" ? .14 : night ? .34 : .3}"/>
+          <rect x="${x + 1}" y="${y + fh - 5}" width="${cw - 2}" height="3" fill="${night ? "#5b4636" : "#c8a27a"}"/>`;
+        if (!many) {
+          d += `<circle cx="${x + cw / 2}" cy="${y + 6}" r="${Math.min(9, cw * .2)}" fill="${c}" opacity="${s.k === "aus" ? 0 : .2}"/><path d="M${x + cw / 2} ${y + 1} v3" stroke="#64748b" stroke-width=".8"/><path d="M${x + cw / 2 - 3} ${y + 6} h6 l-1 -2 h-4z" fill="${s.k === "aus" ? "#94a3b8" : c}"/>`;
+          d += `<g style="color:${night ? "#0f172a" : "#334155"}" opacity=".42">${this._hsFur(ty, x + cw - 6 - 26 * Math.min(1, fh / 34, cw / 46), y + fh - 5, Math.min(1, fh / 34, cw / 46))}</g>`;
+          const wx = x + cw - 14, wy = y + fs2 + 8, op = s.open.length || s.tilt.length;
+          d += `<rect x="${wx - 1}" y="${wy - 1}" width="12" height="15" rx="1" fill="#f8fafc"/><rect x="${wx}" y="${wy}" width="10" height="13" fill="url(#${q("gl")})"/><path d="M${wx + 5} ${wy} v13 M${wx} ${wy + 6.5} h10" stroke="#f8fafc" stroke-width=".9"/><rect x="${wx - 2}" y="${wy + 13}" width="14" height="2" rx="1" fill="#cbd5e1"/>` +
+            (op ? `<path d="M${wx + 10} ${wy} l5 2 v11 l-5 1z" fill="#e0f2fe" stroke="#f8fafc" stroke-width="1"/><path class="hsaw" d="M${wx - 2} ${wy + 7} q-4 -3 -8 0 t-8 0" fill="none" stroke="#60a5fa" stroke-width="1.6" stroke-linecap="round"/>` : "");
+          if (s.here) { const px = x + cw * .64, py = y + fh - 5, ps = Math.min(1.25, fh / 32); d += `<g transform="translate(${px} ${py}) scale(${ps})"><circle cx="0" cy="-17" r="3.8" fill="#fcd9b6" stroke="#fff" stroke-width=".8"/><path d="M-5.5 -2 q0 -10.5 5.5 -10.5 q5.5 0 5.5 10.5z" fill="${c}" stroke="#fff" stroke-width=".8"/><rect x="-4" y="-2" width="3" height="2" fill="#334155"/><rect x="1" y="-2" width="3" height="2" fill="#334155"/></g>`; }
+          if (s.heating) d += `<g class="hshw">${[0, 1].map((k) => `<path class="hshw${k}" d="M${x + 6 + k * 6} ${y + fh - 7} q-2 -3 0 -6 q2 -3 0 -6" fill="none" stroke="url(#${q("hw")})" stroke-width="1.8" stroke-linecap="round"/>`).join("")}</g>`;
+          const tt = t != null ? num(t, 1) + "°" : "–", pw = tt.length * fs * .58 + 7;
+          d += `<text x="${x + 5}" y="${y + 6 + fs2 + 3}" font-size="${fs2}" font-weight="650" fill="${night ? "#e2e8f0" : "#1f2933"}" font-family="system-ui,sans-serif">${label}</text>` +
+            `<rect x="${x + 4}" y="${y + fh - 9 - fs - 2}" width="${pw}" height="${fs + 5}" rx="${(fs + 5) / 2}" fill="#fff" opacity=".85"/><circle cx="${x + 4 + pw}" cy="${y + fh - 9 - fs / 2 + .5}" r="2.6" fill="${c}"/>` +
+            `<text x="${x + 8}" y="${y + fh - 9.5}" font-size="${fs}" font-weight="750" fill="#0f172a" font-family="system-ui,sans-serif">${tt}</text>`;
+        }
+        d += `</g>`;
+        if (i) d += `<rect x="${x - 1}" y="${y}" width="2" height="${fh}" fill="${night ? "#6b6258" : "#d8c9ae"}"/>`;
+      });
+      d += `<rect x="${X0 - 3}" y="${y + fh - 1.5}" width="${X1 - X0 + 6}" height="3" fill="#9ca3af"/>`;
+    });
+    if (!fl.length) d += `<text x="180" y="${(top + bot) / 2 + 4}" text-anchor="middle" font-size="11" fill="#64748b" font-family="system-ui,sans-serif">noch keine Räume</text>`;
+    /* Keller: Wärmequelle und Leitungen */
+    const kx = X0 + 18, ky = 172, on = anyHeat;
+    const src = {
+      heizoel: () => `<rect x="${kx}" y="${ky + 2}" width="40" height="18" rx="8" fill="#94a3b8"/><rect x="${kx + 4}" y="${ky + 5}" width="32" height="3" rx="1.5" fill="#cbd5e1"/><rect x="${kx + 6}" y="${ky + 11}" width="${28 * .6}" height="5" rx="2" fill="#a16207" opacity=".75"/><text x="${kx + 20}" y="${ky + 25}" text-anchor="middle" font-size="5.5" fill="#e5e7eb" font-family="system-ui,sans-serif">Öltank</text>`,
+      pellets: () => `<path d="M${kx} ${ky + 1} h38 l-8 19 h-22z" fill="#a16207"/><text x="${kx + 19}" y="${ky + 12}" text-anchor="middle" font-size="5.5" fill="#fff" font-family="system-ui,sans-serif">Pellets</text>`,
+      fluessiggas: () => `<rect x="${kx}" y="${ky + 4}" width="40" height="15" rx="7.5" fill="#e2e8f0"/><text x="${kx + 20}" y="${ky + 14}" text-anchor="middle" font-size="5.5" fill="#334155" font-family="system-ui,sans-serif">Gas</text>`,
+      strom: () => `<rect x="${kx}" y="${ky + 1}" width="34" height="20" rx="3" fill="#e2e8f0"/><circle cx="${kx + 13}" cy="${ky + 11}" r="7" fill="#94a3b8"/><circle cx="${kx + 13}" cy="${ky + 11}" r="2.5" fill="#475569"/>`,
+      erdgas: () => `<path d="M${kx + 4} ${ky + 20} v-8 h10" fill="none" stroke="#facc15" stroke-width="2"/><rect x="${kx}" y="${ky + 14}" width="10" height="7" rx="1" fill="#facc15"/>`,
+    }[fuel] || (() => "");
+    d += src() + `<rect x="${kx + 50}" y="${ky - 2}" width="22" height="24" rx="3" fill="#f1f5f9" stroke="#94a3b8" stroke-width=".6"/><rect x="${kx + 54}" y="${ky + 2}" width="14" height="5" rx="1" fill="#0f2a2e"/><circle cx="${kx + 57}" cy="${ky + 4.5}" r="1" fill="${on ? "#fb923c" : "#5eead4"}"/><circle cx="${kx + 61}" cy="${ky + 15}" r="4.5" fill="${on ? "#fb923c" : "#64748b"}"/>` +
+      (on ? `<path class="hsfl" d="M${kx + 61} ${ky + 18} q-3 -4 0 -8 q3 4 0 8z" fill="#fde047"/>` : "");
+    const pc = on ? "#fb923c" : "#94a3b8", px = X0 + 3.5;
+    d += `<path d="M${kx + 72} ${ky + 4} H${X1 + 1} V${top + 4}" fill="none" stroke="${pc}" stroke-width="1.8" opacity=".9"/><path d="M${kx + 72} ${ky + 9} H${X1 + 3.5} V${top + 4}" fill="none" stroke="${on ? "#60a5fa" : "#94a3b8"}" stroke-width="1.4" opacity=".75"/>` +
+      fl.map((f, fi) => `<path d="M${X1 + 1} ${top + fi * fh + fh - 8} h-5" stroke="${pc}" stroke-width="1.6"/>`).join("");
+    return { svg: `<svg viewBox="${NR ? "46 6 268 194" : "0 0 360 200"}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Haus-Szene">${d}</svg>`, key: [NR ? "n" : "w", JSON.stringify(this._cfg.layout.short || {}), sky.tod, sky.w, sky.frost ? 1 : 0, pvOn ? (pvW > 50 ? 2 : 1) : 0, fuel, anyHeat ? 1 : 0, this._rkCfg().anim, fl.map((f) => f.r.map((r) => { const s = byId[r.id]; return r.id + ":" + s.k + (s.cur != null ? num(s.cur, 1) : "") + (s.heating ? "h" : "") + (s.here ? "p" : "") + (s.open.length || s.tilt.length ? "o" : "") + this._rkType(r); }).join(",")).join("/")].join("|") };
+  }
+  /* Name in der Szene: eigener Kurzname, sonst ohne „-zimmer“/„-raum“ (Kinderzimmer → Kinder, Wohnzimmer → Wohnen) */
+  _hsName(r) {
+    const own = ((this._cfg.layout.short || {})[r.id] || "").trim(); if (own) return own;
+    const n = String(r.name || "").trim(), lc = n.toLowerCase();
+    const M = { wohnzimmer: "Wohnen", schlafzimmer: "Schlafen", kinderzimmer: "Kinder", badezimmer: "Bad", arbeitszimmer: "Arbeiten", esszimmer: "Essen", gästezimmer: "Gäste", ankleidezimmer: "Ankleide", hauswirtschaftsraum: "HWR", wohnküche: "Küche", spielzimmer: "Spielen", jugendzimmer: "Jugend" };
+    if (M[lc]) return M[lc];
+    if (n.length > 8) { const m = n.match(/^(.{3,}?)(zimmer|raum)$/i); if (m) return m[1].replace(/[-\s]$/, ""); }
+    return n;
+  }
+  _hsScene(rooms) {
+    if (!this._hsCfg().on) return "";
+    const x = this._hsSvg(rooms);
+    return `<div class="hs2" data-kk="${esc("hs|" + x.key)}" data-an="${this._rkCfg().anim}">${x.svg}</div>`;
+  }
+  _hsGo(id) {
+    const sr = this.shadowRoot, el = sr.querySelector(`.room[data-id="${CSS.escape(id)}"], .crow[data-id="${CSS.escape(id)}"]`);
+    if (!el) { const g = (this._cfg.layout.groups || []).find((x) => (x.rooms || []).includes(id)), c = this._collapsed(); if (g && c.has(g.id)) { c.delete(g.id); this._setCollapsed(c); this._render(); setTimeout(() => this._hsGo(id), 60); } return; }
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    el.classList.remove("hsflash"); void el.offsetWidth; el.classList.add("hsflash");
+  }
+  _hsLook() {
+    if (!this._rkOn()) return "";
+    const c = this._hsCfg(), h = this._cfg.layout.hs || {};
+    return `<div class="lsec">${ic("home", 15)}Kopfkarte in Modul 1</div>
+      <div class="ltog"><span>Haus-Szene<small class="mut" style="display:block">Deine Räume im Haus-Schnitt nach Etagen (Gruppen). Aus: das Modul-Logo wie bisher.</small></span><button class="sw ${!h.off ? "on" : ""}" data-act="hsoff" aria-pressed="${!h.off}" aria-label="Haus-Szene"></button></div>
+      ${!h.off ? `<div class="ltog"><span>Tageszeit und Wetter<small class="mut" style="display:block">Himmel nach Sonnenstand und Wetterquelle, Schnee bei Frost.</small></span><button class="sw ${c.wx ? "on" : ""}" data-act="hswx" aria-pressed="${c.wx}" aria-label="Tageszeit und Wetter"></button></div>` : ""}`;
+  }
+  _hsAct(a, b) {
+    const L = this._cfg.layout;
+    if (a === "hsgo") { this._hsGo(b.dataset.id); return true; }
+    if (a === "hsoff") L.hs = { ...(L.hs || {}), off: !(L.hs || {}).off };
+    else if (a === "hswx") L.hs = { ...(L.hs || {}), wx: !this._hsCfg().wx };
+    else return false;
+    this._saveLayout(); this._render(); this._renderModal(); return true;
+  }
+  /* ================= Modul 1 · Grundriss als Wärmekarte (Konzept „Neue Optik“, Teil E1 mit W3) =================
+     Dritte Ansicht neben Kompakt und Detail. Der Grundriss kommt aus dem Baukasten von Modul 11 (einmal gezeichnet,
+     in Modul 1 und 11 genutzt). Räume als Fläche nach Temperaturskala, Fenster als hellblaue Striche (offen = aufgeklappt),
+     Heizkörper als Balken (orange = heizt), Hinweis-Plaketten (W3) für Batterie, offline, Frost, Schimmel, Raumsensor.
+     Zuordnung Grundriss-Raum → Modul-1-Raum automatisch über den Namen, sonst von Hand (layout.gmap = { Plan-ID: Raum-ID }). */
+  _gpPlan() {
+    if (!this._sfxD && !this._gpBusy && this._hass) {
+      this._gpBusy = true;
+      this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { error: true }, ts: Date.now() }; }).finally(() => { this._gpBusy = false; this._render(); });
+    }
+    return this._sfxD ? this._sfx().cfg.plan : null;
+  }
+  _gpNorm(s) { return String(s || "").toLowerCase().replace(/zimmer|raum|[^a-zäöüß0-9]/g, ""); }
+  /* Plan-Raum → Modul-1-Raum */
+  _gpMatch(item, rooms) {
+    const gm = this._cfg.layout.gmap || {};
+    if (gm[item.id] === "-") return null;
+    if (gm[item.id]) return rooms.find((r) => r.id === gm[item.id]) || null;
+    const n = this._gpNorm(item.n); if (!n) return null;
+    return rooms.find((r) => this._gpNorm(r.name) === n) || rooms.find((r) => { const m = this._gpNorm(r.name); return m.length > 2 && (m.includes(n) || n.includes(m)); }) || null;
+  }
+  _gpView(rooms) {
+    const P = this._gpPlan(), adm = this._admin();
+    if (!P) return `<div class="card gpc"><div class="mut sm">Grundriss wird geladen …</div></div>`;
+    const any = (P.items || []).some((i) => i.t === "r");
+    if (!any) {
+      const sf = this._mdList().some((m) => m.id === "sf");
+      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Noch kein Grundriss</b><span>Den Grundriss zeichnest du einmal mit dem Baukasten aus Modul 11 (Rauch- &amp; Sicherheitsmelder): Räume, Wände, Türen und Fenster. Modul 1 färbt die Räume dann nach Temperatur.</span>
+        ${adm ? (sf ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : `<span class="mut sm">Schalte dafür unter Einstellungen → Module das Modul 11 ein.</span>`) : ""}</div>`;
+    }
+    const fls = P.floors || [], fl = fls.some((f) => f.id === this._gpFl) ? this._gpFl : (fls.find((f) => (P.items || []).some((i) => i.fl === f.id && i.t === "r")) || fls[0]).id;
+    const items = P.items.filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r" || i.t === "s");
+    const S = Object.fromEntries(rooms.map((r) => [r.id, this._rkState(r)])), temps = rooms.flatMap((r) => S[r.id].pts.map((p) => p.t)), lo = temps.length ? Math.min(...temps) : 17, hi = temps.length ? Math.max(...temps) : 21;
+    const inside = (r, x, y, tol = 8) => x >= r.x - tol && x <= r.x + r.w + tol && y >= r.y - tol && y <= r.y + r.h + tol;
+    const an = this._rkCfg().anim, u = "gp" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_";
+    let d = `<defs><pattern id="${u}un" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v10" stroke="var(--line)" stroke-width="3"/></pattern>
+      <linearGradient id="${u}hw" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f97316" stop-opacity=".9"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient></defs>`;
+    if (P.bg && P.bg[fl]) d += `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".25"></image>`;
+    /* Räume: Fläche, Heizkörper, Text */
+    const label = [];
+    rs.forEach((i) => {
+      const r = i.t === "r" ? this._gpMatch(i, rooms) : null, s = r ? S[r.id] : null, col = s ? this._rkCol(s.cur, lo, hi) : null;
+      const fill = s ? (s.k === "aus" ? "color-mix(in srgb,var(--primary-text-color) 8%,transparent)" : col) : `url(#${u}un)`;
+      d += `<g class="gpr${r ? " on" : ""}" ${r ? `data-act="rkmenu" data-id="${esc(r.id)}"` : adm && i.t === "r" ? `data-act="gpmap" data-k="${esc(i.id)}"` : ""}><title>${esc(i.n || "Raum")}${s ? " · " + esc(s.lab) : r ? "" : " · nicht zugeordnet"}</title>
+        <rect x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" rx="3" style="fill:${fill}" opacity="${s ? (s.k === "aus" ? 1 : .72) : 1}"/>
+        ${s && s.k !== "aus" ? `<rect x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" rx="3" fill="none" stroke="${s.col}" stroke-width="3" opacity=".9"/>` : ""}`;
+      if (s && s.t0 && i.t === "r") {
+        const bw = Math.min(70, i.w * .45), bx = i.x + i.w - bw - 14, by = i.y + i.h - 14, heat = s.heating;
+        d += `<rect x="${bx}" y="${by}" width="${bw}" height="6" rx="3" fill="${heat ? "#fb923c" : s.k === "pause" ? "#f59e0b" : "#94a3b8"}"/>` +
+          (heat ? `<g class="gphw">${[0, 1, 2].map((k) => `<path class="gphw${k}" d="M${bx + bw * (.2 + k * .3)} ${by - 2} q-3 -4 0 -8 q3 -4 0 -8" fill="none" stroke="url(#${u}hw)" stroke-width="2.4" stroke-linecap="round"/>`).join("")}</g>` : "");
+      }
+      d += `</g>`;
+      label.push({ i, r, s });
+    });
+    /* Wände, Türen, Fenster (so viele Fenster eines Raums offen gezeichnet, wie Kontakte offen melden) */
+    const used = new Map();
+    items.forEach((i) => {
+      const a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
+      if (i.t === "w") d += `<path d="M${i.x} ${i.y}L${i.x2} ${i.y2}" class="gpw"/>`;
+      else if (i.t === "d") d += `<g${a}><rect x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7" style="fill:var(--card)"/><path d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15" fill="none" style="stroke:var(--mut)" stroke-width="1.5"/></g>`;
+      else if (i.t === "f") {
+        const lr = label.find((x) => x.s && x.i.t === "r" && inside(x.i, i.x, i.y)), k0 = lr ? used.get(lr.i.id) || 0 : 0;
+        if (lr) used.set(lr.i.id, k0 + 1);
+        const op = lr && k0 < lr.s.open.length + lr.s.tilt.length;
+        d += `<g${a}><rect x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7" fill="${op ? "#3b82f6" : "#93c5fd"}"/>${op ? `<path d="M${i.x - 17} ${i.y - 3.5} l${lr.s.open.length ? 26 : 8} -${lr.s.open.length ? 14 : 8}" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/><g class="gpaw"><path d="M${i.x - 8} ${i.y + 10} q6 4 12 0 t12 0" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/></g>` : ""}</g>`;
+      } else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" class="gptx">${esc(i.n || "")}</text>`;
+    });
+    /* Beschriftung und Plaketten (W3) */
+    label.forEach(({ i, r, s }) => {
+      const NF = this._narrow || (this.clientWidth || 999) < 600 ? 1.7 : 1, big = Math.min(26 * NF, i.h * .3, i.w * .22), small = Math.min(13 * NF, Math.max(10, big * .5), i.w * .09);
+      d += `<g class="gplb" pointer-events="none"><text x="${i.x + 10}" y="${i.y + 10 + small}" font-size="${small}" class="gpn">${esc(i.n || (r ? r.name : ""))}</text>`;
+      if (s) {
+        d += `<text x="${i.x + 10}" y="${i.y + 14 + small + big}" font-size="${big}" class="gpt">${s.cur != null ? num(s.cur, 1) + "°" : "–"}</text>` +
+          `<text x="${i.x + 10}" y="${i.y + 20 + small + big + small}" font-size="${small * .92}" class="gps" style="fill:${s.col}">${esc(s.lab)}</text>`;
+        if (s.here) { const px = i.x + i.w - 34, py = i.y + i.h - 40; d += `<g transform="translate(${px} ${py})"><circle cx="0" cy="0" r="14" fill="${s.col}" opacity=".9"/><circle cx="0" cy="-4" r="4" fill="#fff"/><path d="M-7 8 q0 -8 7 -8 q7 0 7 8z" fill="#fff"/></g>`; }
+        const b = this._gpBadges(r, s);
+        b.forEach((x, k) => { const fz = 11 * NF, w = x.t.length * fz * .56 + fz * 2, bx = i.x + i.w - w - 6, by = i.y + 6 + k * (fz * 2); d += `<g><rect x="${bx}" y="${by}" width="${w}" height="${fz * 1.65}" rx="${fz * .82}" fill="${x.c}"/><text x="${bx + fz * .8}" y="${by + fz * 1.2}" font-size="${fz}" font-weight="700" fill="#fff">${esc(x.t)}</text></g>`; });
+      } else if (i.t === "r") d += `<text x="${i.x + 10}" y="${i.y + 16 + small * 2}" font-size="${small * .9}" class="gps">${adm ? "Antippen zum Zuordnen" : "nicht zugeordnet"}</text>`;
+      d += `</g>`;
+    });
+    const sc = [lo - 3, lo, (lo + hi) / 2, hi, hi + 2];
+    const legend = `<div class="gplg"><span class="gpsc"><i style="background:linear-gradient(90deg,${sc.map((t) => this._rkCol(t, lo, hi)).join(",")})"></i><small>${num(lo - 3, 0)} °C</small><small>${num(hi + 2, 0)} °C</small></span>
+      <span><i class="gpk" style="background:#93c5fd"></i>Fenster</span><span><i class="gpk" style="background:#3b82f6"></i>offen</span><span><i class="gpk" style="background:#fb923c"></i>Heizkörper heizt</span><span><i class="gpk un"></i>nicht zugeordnet</span>${rooms.some((r) => r.pres) ? `<span><i class="gpk" style="width:10px;height:10px;border-radius:50%;background:var(--teal)"></i>jemand da</span>` : ""}</div>`;
+    const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="gpfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
+    const B = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
+    const vb = `${B.x0 - 20} ${B.y0 - 20} ${B.x1 - B.x0 + 40} ${B.y1 - B.y0 + 40}`;
+    return `<div class="card gpc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${adm && this._mdList().some((m) => m.id === "sf") ? `<button class="sfed" data-act="gpedit">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>
+      <div class="gpv" data-an="${an}"><svg viewBox="${vb}" role="img" aria-label="Grundriss mit Raumtemperaturen">${d}</svg></div>${legend}
+      <div class="mut sm gpnote">Antippen eines Raums öffnet seine Aktionen. Gezeichnet wird der Grundriss in Modul 11 und dort auch für die Melder genutzt.</div></div>`;
+  }
+  /* W3: Plaketten je Raum (höchstens zwei) */
+  _gpBadges(r, s) {
+    const out = [], a = this._airData(r);
+    if (s.cur != null && s.cur < 8) out.push({ t: "Frost", c: "#dc2626" });
+    if (a && a.lvl === 2) out.push({ t: "Schimmel", c: "#dc2626" });
+    for (const e of r.thermos || []) { const i = this._vInfo(e); if (i.lvl === "ok") continue; const l = ((i.lines[0] || [])[1]) || ""; out.push({ t: /Batterie/.test(l) ? "Batterie" : /Nicht erreichbar/.test(l) ? "offline" : "Ventil", c: i.lvl === "bad" ? "#dc2626" : "#d97706" }); break; }
+    for (const e of r.windows || []) { const i = this._wInfo(e); if (i.lvl === "ok") continue; const l = ((i.lines[0] || [])[1]) || ""; out.push({ t: /Batterie/.test(l) ? "Kontakt-Batterie" : "Kontakt", c: i.lvl === "bad" ? "#dc2626" : "#d97706" }); break; }
+    if (s.rt.fail || s.rt.missing) out.push({ t: "Raumsensor", c: "#d97706" });
+    return out.slice(0, 2);
+  }
+  _gpEmptyArt() {
+    return `<svg viewBox="0 0 220 120" width="220" height="120" aria-hidden="true"><rect x="10" y="10" width="200" height="100" rx="6" fill="none" stroke="var(--line)" stroke-width="4"/><path d="M110 10v60M10 70h140" stroke="var(--line)" stroke-width="4"/>
+      <rect x="16" y="16" width="90" height="50" rx="3" fill="#2dd4bf" opacity=".35"/><rect x="114" y="16" width="90" height="88" rx="3" fill="#fb923c" opacity=".35"/><rect x="16" y="74" width="90" height="30" rx="3" fill="#60a5fa" opacity=".35"/>
+      <rect x="40" y="6" width="34" height="7" fill="#93c5fd"/><rect x="150" y="6" width="34" height="7" fill="#93c5fd"/><rect x="140" y="92" width="40" height="6" rx="3" fill="#fb923c"/></svg>`;
+  }
+  _gpMapModal(m) {
+    const P = this._gpPlan(), it = P && P.items.find((i) => i.id === m.k); if (!it) return "";
+    const rooms = this._collect(true), cur = (this._cfg.layout.gmap || {})[it.id] || "";
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Raum zuordnen</b><span>Grundriss: ${esc(it.n || "ohne Namen")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:0 0 10px">Welcher Raum aus Modul 1 liegt hier? Danach färbt sich die Fläche nach seiner Temperatur.</div>
+      <div class="lftiles">${rooms.map((r) => `<button class="lftile ${cur === r.id ? "sel" : ""}" data-act="gpset" data-k="${esc(it.id)}" data-id="${esc(r.id)}">${this._rkMiniById(r.id, "lft")}<b>${esc(r.name)}</b></button>`).join("")}</div>
+      <div class="foot2"><button class="btn2" data-act="gpset" data-k="${esc(it.id)}" data-id="-">Kein Raum aus Modul 1</button>${cur ? `<button class="btn2" data-act="gpset" data-k="${esc(it.id)}" data-id="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _gpAct(a, b) {
+    if (a === "gpfl") { this._gpFl = b.dataset.k; this._render(); return true; }
+    if (a === "gpmap") { this._modal = { type: "gpmap", k: b.dataset.k }; this._renderModal(); return true; }
+    if (a === "gpset") { const g = { ...(this._cfg.layout.gmap || {}) }; if (b.dataset.id) g[b.dataset.k] = b.dataset.id; else delete g[b.dataset.k]; this._cfg.layout.gmap = g; this._saveLayout(); this._modal = null; this._renderModal(); this._render(); return true; }
+    if (a === "gpedit") { this._modal = null; this._renderModal(); this._sfT = "pl"; this._mdActiveSet("sf"); this._sfxLoad(true); setTimeout(() => { if (this._sfxD && this._sfxD.d && this._sfxD.d.cfg) this._act("sfxedit", b); }, 400); this._render(); return true; }
+    return false;
+  }
+  /* ================= Modul 1 · „Warum?“ als Zeitleiste (D3) ================= */
+
+  /* ---- D3: Zeitleiste. Verlauf der letzten 12 Std. aus Home Assistant (Fenster, Modus, Präsenz) plus geplante Punkte */
+  _wtLoad(r) {
+    const c = (this._wtC = this._wtC || {}), k = r.id, now = Date.now();
+    if (c[k] && (c[k].busy || now - c[k].ts < 60000)) return c[k];
+    const ids = [...(r.windows || []), r.modeEid, r.pres && r.pres.melder].filter(Boolean);
+    c[k] = { busy: true, ts: now, ev: (c[k] && c[k].ev) || null };
+    this._hass.callWS({ type: "history/history_during_period", start_time: new Date(now - 12 * 3600e3).toISOString(), end_time: new Date(now).toISOString(), entity_ids: ids, include_start_time_state: false, significant_changes_only: false, minimal_response: true, no_attributes: true })
+      .then((res) => { c[k] = { busy: false, ts: Date.now(), ev: this._wtEvents(r, res || {}) }; if (this._modal && this._modal.type === "why" && this._modal.id === k) this._renderModal(); })
+      .catch(() => { c[k] = { busy: false, ts: Date.now(), ev: [] }; if (this._modal && this._modal.type === "why") this._renderModal(); });
+    return c[k];
+  }
+  _wtEvents(r, res) {
+    const st = this._hass.states, nm = (e) => (st[e] && st[e].attributes.friendly_name) || e, ev = [], t = (x) => (x.lu ?? x.lc ?? 0) * 1000;
+    const MT = { heizung_pausiert: ["Heizung pausiert", "am"], regelung_aktiv: ["Heizung läuft wieder", "ok"], nur_fenstermeldung: ["Heizung aus, nur Fenstermeldung", "in"], regelung_aus: ["Regelung ausgeschaltet", "in"] };
+    for (const w of r.windows || []) {
+      let prev = null;
+      for (const x of res[w] || []) { const k = this._rkWin({ state: x.s }); if (prev !== null && k !== prev) ev.push({ t: t(x), c: k === "closed" ? "ok" : "bl", x: `${nm(w)} ${k === "open" ? "geöffnet" : k === "tilt" ? "gekippt" : "geschlossen"}` }); prev = k; }
+    }
+    let pm = null;
+    for (const x of res[r.modeEid] || []) { if (pm !== null && x.s !== pm && MT[x.s]) ev.push({ t: t(x), c: MT[x.s][1], x: MT[x.s][0] }); pm = x.s; }
+    const pe = r.pres && r.pres.melder; let pp = null;
+    for (const x of res[pe] || []) { const on = ["on", "home", "detected", "occupied"].includes(x.s) || Number(x.s) > 0; if (pp !== null && on !== pp) ev.push({ t: t(x), c: "pr", x: on ? "Bewegung im Raum erkannt" : "Präsenzmelder: niemand mehr da" }); pp = on; }
+    /* heutige Schaltpunkte des Heizplans, die schon vorbei sind */
+    const s = this._rkState(r), d0 = new Date(); d0.setHours(0, 0, 0, 0);
+    if (s.planOn) s.pts.filter((p) => p.w >= s.today * 1440 && p.w <= s.now && p.w >= s.now - 720).forEach((p) => ev.push({ t: d0.getTime() + (p.w % 1440) * 60000, c: "pl", x: `Heizplan: ${num(p.t, 1)} °C` }));
+    return ev.filter((e) => e.t > Date.now() - 12 * 3600e3).sort((a, b) => a.t - b.t).slice(-12);
+  }
+  _wtFuture(r) {
+    const s = this._rkState(r), out = [], need = ventMin(this._out().t);
+    if (s.anyOpen && Date.now() >= s.since + need * 60000) out.push({ c: "am", x: "Genug gelüftet: Fenster schließen", s: `${need} Min. reichen bei ${this._out().t != null ? num(this._out().t, 0) + " °C draußen" : "dieser Außentemperatur"}` });
+    else if (s.anyOpen) out.push({ c: "bl", x: `Lüften empfohlen bis ${new Date(s.since + need * 60000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`, s: `${need} Min. bei ${this._out().t != null ? num(this._out().t, 0) + " °C draußen" : "dieser Außentemperatur"}` });
+    if (r.mode === "heizung_pausiert") out.push({ c: "ok", x: s.anyOpen ? "Fortsetzen nach dem Schließen" : "Fortsetzen gleich (Verzögerung nach dem Schließen)", s: s.ziel != null ? `auf ${num(s.ziel, 1)} °C` : "" });
+    if (s.planOn) { const nx = nextPt(s.pts, s.now); if (nx) out.push({ c: "pl", x: `Heizplan ab ${(nx.w % 10080) >= s.today * 1440 && nx.w < (s.today + 1) * 1440 ? "" : "morgen "}${fmtT(nx.w % 1440)}: ${num(nx.t, 1)} °C`, s: "" }); }
+    if (s.pres && s.pres.anwesend && !s.pres.gesperrt) out.push({ c: "pr", x: `Bei Leerstand zurück auf den Heizplan`, s: `nach ${s.pres.verz_aus} Min. ohne Bewegung` });
+    return out.slice(0, 3);
+  }
+  _wtHtml(r) {
+    if (!this._rkOn()) return "";
+    const L = this._wtLoad(r), tm = (ms) => new Date(ms).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), s = this._rkState(r);
+    const past = L.ev == null ? `<div class="wt0 mut sm">Verlauf wird geladen …</div>` : L.ev.length ? L.ev.map((e) => `<div class="wti ${e.c}"><time>${tm(e.t)}</time><i></i><span>${esc(e.x)}</span></div>`).join("") : `<div class="wt0 mut sm">In den letzten 12 Stunden ist nichts passiert.</div>`;
+    const now = `<div class="wti now" style="--c:${s.col}"><time>jetzt</time><i></i><span><b>${esc(s.lab)}</b>${s.cur != null ? ` · ${num(s.cur, 1)} °C` : ""}${s.ziel != null ? ` → ${num(s.ziel, 1)} °C` : ""}</span></div>`;
+    const fut = this._wtFuture(r).map((e) => `<div class="wti fut ${e.c}"><time>geplant</time><i></i><span>${esc(e.x)}${e.s ? `<small>${esc(e.s)}</small>` : ""}</span></div>`).join("");
+    return `<div class="lsec">${ic("clock", 15)}Verlauf und was als Nächstes passiert</div><div class="wtl">${past}${now}${fut}</div><div class="lsec">${ic("info", 15)}Gründe im Moment</div>`;
+  }
+
+  /* ================= Modul 3 · Neue Optik Stufe 1 (Konzept „Modul 3 – Neue Optik“): Symbole & Kacheln =================
+     HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche
+     und Punkt „jetzt“, Vergleich als Plakette, Doppelring im Banner (außen Autarkie, innen Eigenverbrauch) und
+     Preis-Skala relativ zum Tagesdurchschnitt. Schalter „Kacheln wie bisher“: layout.m3.old */
+  _m3On() { return !((this._cfg.layout.m3 || {}).old) && !this._gxCfg().classic; }
+  /* HD-Symbol mit kleiner Richtungs-Plakette (Netzbezug ↓ rot, Einspeisung ↑ grün) */
+  _m3Ic(f, o = {}) {
+    const k = { pv: "pvRoof", imp: "grid", exp: "grid", house: "house" }[f] || "house", tag = f === "imp" ? ["↓", "#f87171"] : f === "exp" ? ["↑", "#34d399"] : null;
+    return `<span class="m3ic">${this._gx(k, 40, o)}${f === "pv" && o.balk ? `<span class="m3sub">${this._gx("balcony", 20)}</span>` : ""}${tag ? `<i class="m3ar" style="background:${tag[1]}">${tag[0]}</i>` : ""}</span>`;
+  }
+  /* Verlauf als Fläche mit Farbverlauf, weißer Punkt = jetzt */
+  _m3Spark(f, c) {
+    const E = this._enState(); let v = [];
+    if (E.range === "day") { const s = this._enSamples() || [], h = Array(24).fill(0), k = Array(24).fill(0); s.forEach((x) => { const i = Math.min(23, Math.floor(x.t / 60)); h[i] += x[f]; k[i]++; }); v = h.map((x, i) => (k[i] ? x / k[i] : null)); }
+    else if (this._enH && this._enH.res) { const now = Date.now(); v = this._enBk().map((d) => (+d.d - (E.range === "year" ? 15 * 864e5 : 432e5) > now ? null : f === "house" ? Math.max(0, d.pv - d.exp + d.imp - d.bchg + d.bdis) : d[f])); }
+    const pts = v.map((x, i) => [i, x]).filter((p) => p[1] != null); if (pts.length < 2) return "";
+    const mx = Math.max(...pts.map((p) => p[1]), 1e-6), X = (i) => (i / Math.max(1, v.length - 1)) * 100, Y = (y) => 30 - (y / mx) * 26, id = "m3g" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6);
+    const d = pts.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join(""), last = pts[pts.length - 1], P = this._enPer();
+    const dot = P.cur ? `<circle cx="${X(last[0]).toFixed(1)}" cy="${Y(last[1]).toFixed(1)}" r="2.6" fill="#fff" stroke="${c}" stroke-width="1.4" vector-effect="non-scaling-stroke"/>` : "";
+    return `<div class="m3sp"><svg viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs>
+      <path d="${d}L${X(last[0]).toFixed(1)} 32L${X(pts[0][0]).toFixed(1)} 32Z" fill="url(#${id})"/><path d="${d}" fill="none" stroke="${c}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>${dot ? `<i class="m3now" style="left:${Math.min(97, X(last[0])).toFixed(1)}%;top:${Math.min(30, Y(last[1]) / 32 * 34).toFixed(1)}px;--c:${c}"></i>` : ""}
+      ${E.range === "day" ? `<div class="m3ax"><span>0</span><span>12</span><span>24 Uhr</span></div>` : ""}</div>`;
+  }
+  /* Vergleich als Plakette: grün = besser, rot = schlechter, grau = neutral */
+  _m3Cmp(cur, old, good, on) {
+    if (!on || old == null || old < 0.05) return "";
+    const d = Math.round((cur - old) / old * 100); if (!isFinite(d)) return "";
+    const c = d === 0 || good === "none" ? "nt" : (d > 0) === (good === "up") ? "up" : "dn";
+    return `<span class="m3pl ${c}" title="${esc(this._enCmpLbl())}">${d > 0 ? "▲" : d < 0 ? "▼" : "="} ${Math.abs(d)} %</span>`;
+  }
+  _m3Tiles(tl, ok, hl) {
+    return `<div class="tiles entiles m3tiles">${tl.map(([f, , lab, v, c, sub, cm, o]) => `<button class="tile entile m3t${hl === f ? " sel" : ""}" style="--a:${c}" data-act="entile" data-k="${f}" aria-pressed="${hl === f}">
+      <div class="m3h">${this._m3Ic(f, o || {})}<span class="m3l">${lab}</span>${cm}</div>
+      <div class="v">${v}<small>kWh</small></div><div class="g">${sub || "&nbsp;"}</div>${ok ? this._m3Spark(f, c) : ""}</button>`).join("")}</div>`;
+  }
+  /* Doppelring: außen Autarkie (türkis), innen Eigenverbrauch (gelb) */
+  _m3Ring(out, inn, ringA, lab) {
+    const R1 = 50, R2 = 38, C1 = 2 * Math.PI * R1, C2 = 2 * Math.PI * R2, a = (p, C) => `${(Math.max(0, Math.min(100, p || 0)) / 100 * C).toFixed(1)} ${C.toFixed(1)}`;
+    return `<div class="mring enrg m3ring" data-act="enring" role="button" tabindex="0" title="Tippen: ${ringA ? "gedeckt jetzt" : "Autarkie im Zeitraum"}" aria-label="${lab} ${out} %, Eigenverbrauch ${inn == null ? "unbekannt" : inn + " %"}, tippen zum Umschalten">
+      <svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="${R1}" class="m3b"/><circle cx="60" cy="60" r="${R1}" class="m3o" stroke-dasharray="${a(out, C1)}" transform="rotate(-90 60 60)"/>
+      <circle cx="60" cy="60" r="${R2}" class="m3b i"/>${inn != null ? `<circle cx="60" cy="60" r="${R2}" class="m3i" stroke-dasharray="${a(inn, C2)}" transform="rotate(-90 60 60)"/>` : ""}</svg>
+      <div class="rv"><b>${out}<small>%</small></b><span>${esc(lab)}</span>${inn != null ? `<em class="m3in">☀ ${inn} % selbst</em>` : ""}</div></div>`;
+  }
+  /* Preis-Skala: relativ zum Tagesdurchschnitt. Nur mit Preissensor, der Tageswerte kennt (Tibber u. a.) */
+  _m3Price() {
+    const p = this._pv(), e = p.price_mode === "entity" && p.price_sensor ? this._hass.states[p.price_sensor] : null;
+    if (!e) return "";
+    const A = e.attributes || {}, cur = this._price(), f = (v) => { const x = parseFloat(v); if (!isFinite(x)) return null; const u = String(A.unit_of_measurement || "").toLowerCase(); return /ct|cent/.test(u) ? x : /€|eur/.test(u) || x < 5 ? x * 100 : x; };
+    let lo = f(A.min_price ?? A.min), hi = f(A.max_price ?? A.max), avg = f(A.avg_price ?? A.average ?? A.mean);
+    const today = Array.isArray(A.today) ? A.today.map((x) => f(typeof x === "object" ? x.total ?? x.value ?? x.price : x)).filter((x) => x != null) : [];
+    if (today.length) { lo = Math.min(...today); hi = Math.max(...today); avg = today.reduce((s, x) => s + x, 0) / today.length; }
+    if (lo == null || hi == null || hi - lo < 0.5) return `<span class="chip enpr">${ic("bolt", 16)}Strom jetzt ${num(cur, 1)} ct</span>`;
+    avg = avg ?? (lo + hi) / 2;
+    const pos = Math.max(0, Math.min(100, (cur - lo) / (hi - lo) * 100)), rel = cur <= avg - (avg - lo) * .35 ? ["günstig", "#34d399"] : cur >= avg + (hi - avg) * .35 ? ["teuer", "#f87171"] : ["mittel", "#fbbf24"];
+    return `<span class="chip enpr m3pr" title="Heute ${num(lo, 1)} bis ${num(hi, 1)} ct, Durchschnitt ${num(avg, 1)} ct">${ic("bolt", 16)}Strom jetzt ${num(cur, 1)} ct <b class="m3rel" style="background:${rel[1]}">${rel[0]}</b><span class="m3sc"><i style="left:${pos.toFixed(0)}%"></i></span></span>`;
+  }
+  _m3Look() {
+    const old = !!(this._cfg.layout.m3 || {}).old;
+    return `<div class="vrow"><span>Kacheln wie bisher<small class="mut" style="display:block">An: Kacheln und Ring aus v1.2 statt HD-Symbolen, Verlauf als Fläche und Doppelring</small></span><button class="sw ${old ? "on" : ""}" data-act="m3old" aria-pressed="${old}" aria-label="Kacheln wie bisher"></button></div>`;
   }
   _build() {
     const sr = this.shadowRoot;
@@ -4803,6 +5382,9 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "preset") { const ic2 = { ...(this._cfg.layout.icons || {}) }; delete ic2[m.id]; this._cfg.layout.icons = ic2; this._saveLayout(); this._render(); this._renderModal(); }
     else if (a === "lfrk") { this._modal = { type: "lfrk", id: b.dataset.id, d: b.dataset.d }; this._renderModal(); }
     else if (a.startsWith("rk") && this._rkAct(a, b)) { /* Raumkarte 2.0 */ }
+    else if (a === "m3old") { const L = this._cfg.layout; L.m3 = { ...(L.m3 || {}), old: !(L.m3 || {}).old }; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (["hsgo", "hsoff", "hswx"].includes(a) && this._hsAct(a, b)) { /* Haus-Szene */ }
+    else if (["gpfl", "gpmap", "gpset", "gpedit"].includes(a) && this._gpAct(a, b)) { /* Grundriss */ }
     else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
     else if (a === "pm") {
       const p = this._pres();
@@ -4862,7 +5444,7 @@ class FensterHeizungPanel extends HTMLElement {
     let res;
     try { res = await this._hass.callWS({ type: "fenster_heizung/get_options", entry_id: id }); } catch (_) { this._toast("Einstellungen konnten nicht geladen werden"); return; }
     const o = (res && res.options) || {};
-    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1, humidity_sensor: "", room_temp_sensor: "", rt_show: "on", rt_learn: "on", rt_dew: "on", rt_heater: "on", rt_comp: "off", rt_off: "off", air_hint: "on", weather_adj: "on", air_every: 8, htr_on: "off", htr_entity: "", htr_watt: 1500, htr_target: 22, htr_prio: 5, htr_steps: "", htr_thermo: "off", htr_auto: "on", htr_presets: [], htr_devtemp: "max", htr_from: "", htr_to: "" };
+    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1, humidity_sensor: "", room_temp_sensor: "", rt_show: "on", rt_learn: "on", rt_dew: "on", rt_heater: "on", rt_comp: "off", rt_off: "off", air_hint: "on", weather_adj: "on", air_every: 8, htr_on: "off", htr_entity: "", htr_watt: 1500, htr_target: 22, htr_prio: 5, htr_steps: "", htr_thermo: "off", htr_auto: "on", htr_presets: [], htr_devtemp: "max", htr_from: "", htr_to: "", pr_on: "off", pr_entity: "", pr_temp: 21, pr_mode: "min", pr_on_delay: 2, pr_off_delay: 15, pr_idle: 0, pr_idle_after: 60, pr_in_away: "off", pr_turn_on: "off" };
     for (const k of Object.keys(d)) if (o[k] !== undefined && o[k] !== null) d[k] = Array.isArray(o[k]) ? [...o[k]] : o[k];
     if (Array.isArray(d.htr_steps)) d.htr_steps = d.htr_steps.join(", ");
     this._modal = { type: "opt", id, name: (res && res.name) || "", draft: d, open: new Set(["dev", "ctl"]), busy: false };
@@ -4935,6 +5517,17 @@ class FensterHeizungPanel extends HTMLElement {
         one("humidity_sensor", ent("sensor", "humidity"), "Luftfeuchte-Sensor", "Mit Sensor zeigt die Karte Luftfeuchte, Taupunkt und Schimmelrisiko. Ohne Sensor gibt es Lüftungs-Erinnerung, Wandtemperatur und kritische Feuchte.") +
         num("air_every", "Std.", { l: "Erinnern, wenn länger nicht gelüftet", h: "0 = aus. Gemessen am letzten Schließen des Fensters.", min: 0, max: 48, step: 1 }) +
         row("Lüftungshinweise und Schimmelwarnung", "Auf der Karte und als Erinnerung nach dem Lüften.", seg("air_hint", [["on", "An"], ["off", "Aus"]]))),
+      sec("pres", "user", "Präsenzmelder", d.pr_on === "on" && d.pr_entity ? `${d.pr_mode === "exact" ? "genau" : "mindestens"} ${num0(d.pr_temp)} °C bei Anwesenheit · ${fn(d.pr_entity)}` : "nicht aktiviert",
+        row("Präsenzmelder in diesem Raum", "Ist jemand im Raum, wird auf die Wohlfühltemperatur geheizt. Gilt mit und ohne Heizplan.", seg("pr_on", [["off", "Aus"], ["on", "An"]])) +
+        (d.pr_on === "on" ? one("pr_entity", ent("binary_sensor").filter((e) => ["occupancy", "presence", "motion"].includes(st[e].attributes.device_class) || /pr[äa]sen|bewegung|motion|occup|mmwave|fp2|anwesen/i.test(e + " " + (st[e].attributes.friendly_name || ""))).concat(ent("sensor").filter((e) => /pr[äa]sen|occup|personen|people|target/i.test(e + " " + (st[e].attributes.friendly_name || ""))), ent("input_boolean")), "Präsenz- oder Bewegungsmelder", "z. B. Aqara FP2, Hue Motion, mmWave. Bewegungsmelder gehen auch, Präsenzmelder erkennen aber auch stilles Sitzen.") +
+        num("pr_temp", "°C", { l: "Temperatur bei Anwesenheit", min: 5, max: 30, step: 0.5 }) +
+        row("Wie gilt sie?", "Mindestens: Der Heizplan darf mehr vorsehen. Genau: Diese Temperatur gilt, solange jemand da ist.", seg("pr_mode", [["min", "Mindestens"], ["exact", "Genau"]])) +
+        num("pr_on_delay", "Min.", { l: "Belegt nach", h: "So lange muss der Melder anschlagen. Kurzes Durchlaufen schaltet nichts um.", min: 0, max: 60, step: 1 }) +
+        num("pr_off_delay", "Min.", { l: "Leer nach", h: "So lange meldet der Melder niemanden, bevor der Heizplan wieder gilt.", min: 0, max: 240, step: 1 }) +
+        num("pr_idle", "K", { l: "Absenken, wenn länger leer", h: "0 = aus. Senkt das Heizplan-Ziel, wenn niemand im Raum war.", min: 0, max: 5, step: 0.5 }) +
+        (Number(d.pr_idle) > 0 ? num("pr_idle_after", "Min.", { l: "… ab so lange leer", min: 5, max: 480, step: 5 }) : "") +
+        row("Auch bei Abwesenheit und Urlaub", "Aus: Abwesenheit hat Vorrang (z. B. die Katze löst den Melder aus).", seg("pr_in_away", [["off", "Aus"], ["on", "An"]])) +
+        row("Ausgeschaltetes Thermostat einschalten", "Aus: Ist das Thermostat aus, bleibt es aus.", seg("pr_turn_on", [["off", "Aus"], ["on", "An"]])) : "")),
       sec("wxa", "partly", "Wetter-Anpassung", d.weather_adj === "off" ? "ausgenommen" : "folgt der allgemeinen Einstellung",
         row("Zieltemperatur nach Wetter anpassen", "Die Grenzwerte stellst du unter „Allgemein“ ein.", seg("weather_adj", [["on", "Ja"], ["off", "Ausnehmen"]]))),
       sec("htr", "bolt", "Elektroheizer", d.htr_on === "on" ? `${parseSteps(d.htr_steps).length > 1 ? parseSteps(d.htr_steps).length + " Stufen bis " + wfmt(parseSteps(d.htr_steps).slice(-1)[0]) : wfmt(parseSteps(d.htr_steps)[0] || d.htr_watt)} · bis ${d.htr_target} °C` : "nicht aktiviert",
@@ -5377,12 +5970,13 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
     if (m.type === "rkhtr" || m.type === "lfrk") { box.innerHTML = this._rkDevSheet(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; if (!box.innerHTML) this._modal = null; return; }
+    if (m.type === "gpmap") { box.innerHTML = this._gpMapModal(m); if (!box.innerHTML) this._modal = null; return; }
     if (m.type === "rkmenu") { box.innerHTML = this._rkMenu(m); if (!box.innerHTML) this._modal = null; return; }
     if (m.type === "icon") {
       const cur = this._icon(r), L = this._cfg.layout, cc = (L.colors || {})[m.id], ph = (L.photos || {})[m.id];
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>Raum anpassen</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-        ${this._rkTypePick(r)}<div class="lsec">Symbol${this._rkOn() ? `<small class="mut" style="font-weight:500"> · für Kompakt-Liste, Gruppen und andere Module</small>` : ""}</div>
+        ${this._rkTypePick(r)}${this._hsCfg().on && !String(m.id).startsWith("ms_") ? `<div class="lsec">Name in der Haus-Szene</div><input class="gname" data-f="hsshort" value="${esc((L.short || {})[m.id] || "")}" placeholder="automatisch: ${esc(this._hsName({ id: "", name: r.name }))}" maxlength="12"><div class="mut sm" style="margin:4px 0 8px">Kurzer Name für die Kopfkarte, höchstens 12 Zeichen. Leer = automatisch.</div>` : ""}<div class="lsec">Symbol${this._rkOn() ? `<small class="mut" style="font-weight:500"> · für Kompakt-Liste, Gruppen und andere Module</small>` : ""}</div>
         ${ICON_GROUPS.map(([g, list]) => `<div class="igt">${g}</div><div class="igrid">${list.map(([k, l]) => `<button class="${k === cur ? "sel" : ""}" data-act="pick" data-k="${k}" title="${l}" aria-label="${l}">${ic2(k, 36)}</button>`).join("")}</div>`).join("")}
         <button class="lnk" data-act="preset">Symbol automatisch nach Raumname</button>
         <div class="lsec">Farbe</div>
@@ -5474,7 +6068,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sh"><div><b>Darstellung</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="lsec">${ic("palette", 15)}Akzentfarbe</div>
         <div class="swatches">${ACCENTS.map((c) => `<button class="sw2 ${a === c ? "sel" : ""}" style="background:${c}" data-act="lacc" data-k="${c}" aria-label="${c}"></button>`).join("")}<label class="cpick"><input type="color" data-f="lacc" value="${a}">Eigene</label></div>
-        ${this._heroLook()}${this._rkLook()}
+        ${this._heroLook()}${this._hsLook()}${this._rkLook()}
         <div class="lsec">${ic("sun", 15)}Wetter in der Kopfkarte</div>
         <div class="ltog"><span>Außentemperatur und Wetter anzeigen</span><button class="sw ${w.on ? "on" : ""}" data-act="lwx" aria-pressed="${w.on}" aria-label="Wetter anzeigen"></button></div>
         ${w.on ? `<div class="hslk">${this._hsLink("wx", `Wetter ${w.entity ? esc(this._wzName(w.entity)) : "automatisch"}${w.outdoor ? " · Außentemperatur " + esc(this._wzName(w.outdoor)) : ""}`)}</div>` : ""}
@@ -5505,7 +6099,7 @@ class FensterHeizungPanel extends HTMLElement {
       const mm = MODE[r.mode] || MODE.regelung_aus;
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>${r.mode === "heizung_pausiert" ? "Warum pausiert die Heizung?" : "Warum „" + mm.t + "“?"}</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-        <div class="why-l">${(r.why || []).map((w) => `<div class="wl ${w.s}"><i></i><span>${esc(w.t)}</span></div>`).join("") || `<div class="mut">Keine Angaben vorhanden.</div>`}</div>
+        ${this._wtHtml(r)}<div class="why-l">${(r.why || []).map((w) => `<div class="wl ${w.s}"><i></i><span>${esc(w.t)}</span></div>`).join("") || `<div class="mut">Keine Angaben vorhanden.</div>`}</div>
         ${this._regDiag(r)}
         <div class="foot2"><button class="btn2" data-act="close">Schließen</button></div></div>`;
     } else if (m.type === "vac") {
@@ -11938,9 +12532,10 @@ class FensterHeizungPanel extends HTMLElement {
     const eur = (kwhv, ct) => (kwhv == null ? null : (kwhv * ct) / 100);
     const buy = ok ? eur(sum.imp, price) : 0, sell = ok ? eur(sum.exp, feed) : 0, saved = ok ? eur(self, price) : 0, net = sell + saved - buy, per = this._enLabel(P);
     const ringA = E.ring !== "now" && autarky != null, perW = isToday ? "heute" : "";
-    const ring = this._modRing(ringA ? autarky : covered, ringA ? `Autarkie${perW ? " " + perW : ""}` : "gedeckt jetzt").replace('<div class="mring" aria-hidden="true"', `<div class="mring enrg" data-act="enring" role="button" tabindex="0" title="Tippen: ${ringA ? "gedeckt jetzt" : "Autarkie"}" aria-label="${ringA ? "Autarkie" : "Gedeckt jetzt"}, tippen zum Umschalten"`);
-    const pv0 = this._pv(), prC = pv0.price_mode === "entity" && pv0.price_sensor ? `<span class="chip enpr">${ic("bolt", 16)}Strom jetzt ${num(price, 1)} ct</span>` : "";
-    const hero = `<div class="card hero mh hr a-en enh">${this._modLogo("en")}${ring}<div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
+    const selfNow = n.pv > 20 ? Math.round(Math.min(100, Math.max(0, (n.pv - n.exp) / n.pv * 100))) : null;
+    const ring = this._m3On() ? this._m3Ring(ringA ? autarky : covered, ringA ? evq : selfNow, ringA, ringA ? `Autarkie${perW ? " " + perW : ""}` : "gedeckt jetzt") : this._modRing(ringA ? autarky : covered, ringA ? `Autarkie${perW ? " " + perW : ""}` : "gedeckt jetzt").replace('<div class="mring" aria-hidden="true"', `<div class="mring enrg" data-act="enring" role="button" tabindex="0" title="Tippen: ${ringA ? "gedeckt jetzt" : "Autarkie"}" aria-label="${ringA ? "Autarkie" : "Gedeckt jetzt"}, tippen zum Umschalten"`);
+    const pv0 = this._pv(), prC = this._m3On() ? this._m3Price() : pv0.price_mode === "entity" && pv0.price_sensor ? `<span class="chip enpr">${ic("bolt", 16)}Strom jetzt ${num(price, 1)} ct</span>` : "";
+    const hero = `<div class="card hero mh hr a-en enh${this._m3On() ? " m3h0" : ""}">${this._modLogo("en")}${ring}<div class="lbl">${ic("home", 16)}Hausverbrauch jetzt</div><div class="big">${n.house >= 1000 ? num(n.house / 1000, 2) : Math.round(n.house)}<small>${n.house >= 1000 ? "kW" : "W"}</small></div><div class="sub">${covered} % aus Solar${n.b2h > 20 ? " und Batterie" : ""} gedeckt</div>
       ${ok ? `<div class="enbil">${esc(per)}: ${kwh(sum.pv)} kWh Solar · ${kwh(sum.house)} kWh verbraucht · <b class="${net >= 0 ? "pos" : "neg"}">${net >= 0 ? "+" : "−"}${num(Math.abs(net), 2)} € Bilanz</b></div>` : ""}
       <div class="chips"><span class="chip">${ic("sun", 16)}Solar ${wfmt(n.pv)}</span>${n.pvb != null && n.pvb >= 1 ? `<span class="chip">${ic("sun", 16)}davon ${esc(this._enPvNames()[1])} ${wfmt(n.pvb)}</span>` : ""}<span class="chip st ${n.exp > 20 ? "ok" : n.imp > 20 ? "warn" : ""}">${ic("bolt", 16)}${n.exp > 20 ? "Einspeisung " + wfmt(n.exp) : n.imp > 20 ? "Netzbezug " + wfmt(n.imp) : "Netz ausgeglichen"}</span>${n.hasBat ? `<span class="chip">${ic("energy", 16)}Batterie ${n.soc != null ? Math.round(n.soc) + " %" : ""}${n.bc > 20 ? " lädt" : n.dis > 20 ? " entlädt" : ""}</span>` : ""}${prC}${!ringA && autarky != null && isToday ? `<span class="chip st ok">${ic("check", 16)}Autarkie heute ${autarky} %</span>` : ""}</div></div>`;
     const nav = `<div class="ennav"><div class="seg wwseg enseg" role="group" aria-label="Zeitraum">${[["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]].map(([k, l]) => `<button class="${range === k ? "sel" : ""}" data-act="enrange" data-k="${k}" aria-pressed="${range === k}">${l}</button>`).join("")}</div>
@@ -11953,7 +12548,9 @@ class FensterHeizungPanel extends HTMLElement {
       ["exp", "upload", "Einspeisung", kwh(ok ? sum.exp : null), "#34d399", ok ? `${num(sell, 2)} € Vergütung` : "Keine Daten", ok ? cmp(sum.exp, pv && pv.exp, "none") : ""],
       ["house", "home", "Verbrauch", kwh(ok ? sum.house : null), "#2dd4bf", autarky != null ? `${autarky} % Autarkie` : "Keine Daten", ok ? cmp(sum.house, pv && pv.house, "down") : ""],
     ];
-    const tiles = `<div class="tiles entiles">${tl.map(([f, ico, lab, v, c, sub, cm]) => `<button class="tile entile${E.hl === f ? " sel" : ""}" style="--a:${c}" data-act="entile" data-k="${f}" aria-pressed="${E.hl === f}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}<small>kWh</small></div><div class="g">${sub}</div>${cm ? `<div class="g">${cm}</div>` : ""}${ok ? this._enSpark(f, c) : ""}</button>`).join("")}</div>`;
+    const m3 = this._m3On(), cmpP = (cur, old, good) => this._m3Cmp(cur, old, good, cmpOn);
+    if (m3) { tl[0][5] = [evq != null ? `${evq} % selbst genutzt` : sum && sum.nocnt ? "Sensor fehlt" : ok ? "" : "Keine Daten", ok && sum.pvb > 0.005 ? `davon ${esc(this._enPvNames()[1])} ${kwh(sum.pvb)}` : ""].filter(Boolean).join(" · "); tl[0][7] = { balk: !!(ok && sum.pvb > 0.005) }; [["pv", "up"], ["imp", "down"], ["exp", "none"], ["house", "down"]].forEach(([f, g], i) => { tl[i][6] = ok ? cmpP(sum[f], pv && pv[f], g) : ""; }); }
+    const tiles = m3 ? this._m3Tiles(tl, ok, E.hl) : `<div class="tiles entiles">${tl.map(([f, ico, lab, v, c, sub, cm]) => `<button class="tile entile${E.hl === f ? " sel" : ""}" style="--a:${c}" data-act="entile" data-k="${f}" aria-pressed="${E.hl === f}"><div class="t"><span class="ti">${ic(ico, 16)}</span>${lab}</div><div class="v">${v}<small>kWh</small></div><div class="g">${sub}</div>${cm ? `<div class="g">${cm}</div>` : ""}${ok ? this._enSpark(f, c) : ""}</button>`).join("")}</div>`;
     const flow = `<div class="card"><h2>${ic("sun", 18)}Energiefluss jetzt</h2>${this._enFlow(n)}</div>`;
     const chart = `<div class="card"><h2>${ic("chart", 18)}${range === "day" ? `Leistung · ${esc(this._enLabel(P, true))}` : `Energie pro ${range === "year" ? "Monat" : "Tag"} · ${esc(per)}`}<button class="ibtn gear" style="margin-left:auto" data-act="enreload" aria-label="Aktualisieren">${ic("clock", 16)}</button></h2>${this._enChart()}${range === "day" ? "" : this._enNote()}</div>`;
     // Verteilung (nur heute: Heizer und Heizstab liefern nur Tageswerte)
@@ -12073,7 +12670,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="gst">${ic("info", 15)}<span>Zähler müssen als Langzeitstatistik in Home Assistant geführt werden. Bezugspreis und Einspeisevergütung stehen unter Haus → Preise &amp; Tarif.</span></div>
       ${this._modal && this._modal.haus ? "" : `<div class="lsec">${ic("eye", 15)}Anzeige in Modul 3 (gilt für dieses Gerät)</div>`}
       ${this._modal && this._modal.haus ? "" : `<div class="mut sm" style="margin:2px 0 0">Ring im Banner</div><div class="seg">${[["aut", "Autarkie im Zeitraum"], ["now", "Gedeckt jetzt"]].map(([k, l]) => `<button class="${(E.ring || "aut") === k ? "sel" : ""}" data-act="ensring" data-k="${k}">${l}</button>`).join("")}</div>
-      <div class="mut sm" style="margin:0">Vergleich in den Kacheln</div><div class="seg">${[["prev", "Zur Vorperiode"], ["off", "Aus"]].map(([k, l]) => `<button class="${(E.cmp || "prev") === k ? "sel" : ""}" data-act="enscmp" data-k="${k}">${l}</button>`).join("")}</div>
+      ${this._m3Look()}<div class="mut sm" style="margin:0">Vergleich in den Kacheln</div><div class="seg">${[["prev", "Zur Vorperiode"], ["off", "Aus"]].map(([k, l]) => `<button class="${(E.cmp || "prev") === k ? "sel" : ""}" data-act="enscmp" data-k="${k}">${l}</button>`).join("")}</div>
       ${this._labFields("en")}`}
       <div class="foot2"><button class="btn2 pri" data-act="ensdone">Fertig</button></div></div>`;
   }

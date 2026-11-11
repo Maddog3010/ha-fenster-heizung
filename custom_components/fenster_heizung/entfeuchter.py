@@ -44,6 +44,7 @@ _LOGGER = logging.getLogger(__name__)
 
 TICK_SECONDS = 30
 HIST_DAYS = 60
+STALL_MIN = 15          # so lange an, gewollt und kein Strom: „läuft nicht an“
 CMD_GAP_S = 60          # höchstens ein Schaltbefehl pro Minute, falls das Gerät nicht reagiert
 KINDS = ("entity", "plug", "watch")
 MAX_DEVS = 4
@@ -66,12 +67,13 @@ PUSH_ROOMS = 3                # so viele Raum-Tasten in der Benachrichtigung (An
 def default_dev() -> dict[str, Any]:
     return {
         "id": "d1", "name": "Luftentfeuchter", "kind": "entity", "ent": "", "power": "", "run_w": 20.0, "tank": "",
+        "tgt": "", "tgt_mode": "min",  # Zielfeuchte am Gerät (number/input_number/humidifier): beim Betrieb auf Minimum oder Untergrenze
         "cap_l": 0.0, "lph": 0.0,  # Tankschätzung ohne Sensor: Tankinhalt und Entfeuchtung pro Stunde (0 = aus)
         "hi": 60.0, "lo": 55.0, "hi_away": 65.0, "minrun": 15, "lock": 10, "vent": False,
         "ask": default_ask(),
         # Schritt 4: Nennleistung ohne Messung, Vorziehen bei PV-Überschuss oder günstigem Strom, Meldungen
         "watt": 250.0, "boost": "off", "boost_hi": 57.0, "cheap_ct": 25.0, "pv_min": 300.0,
-        "msg": {"full": True, "high": True, "noloc": True, "filter": True}, "high_h": 4.0, "filter_h": 0.0,
+        "msg": {"full": True, "high": True, "noloc": True, "filter": True, "stall": True}, "high_h": 4.0, "filter_h": 0.0,
         # Nachtmodus
         "night": False, "n_from": "22:00", "n_to": "07:00", "n_mode": "hi", "hi_night": 70.0, "n_quiet": True, "n_msg": True,
     }
@@ -135,6 +137,7 @@ def clean_dev(raw: Any, did: str = "d1") -> dict[str, Any]:
         "ent": _ent(r.get("ent"), ("switch",) if kind == "plug" else ("humidifier", "switch", "fan", "input_boolean")),
         "power": _ent(r.get("power"), ("sensor",)), "run_w": _num(r.get("run_w"), 1, 2000, d["run_w"]),
         "tank": _ent(r.get("tank"), ("binary_sensor", "sensor")),
+        "tgt": _ent(r.get("tgt"), ("number", "input_number", "humidifier", "select")), "tgt_mode": "lo" if r.get("tgt_mode") == "lo" else "min",
         "cap_l": _num(r.get("cap_l"), 0, 50, 0), "lph": _num(r.get("lph"), 0, 10, 0),
         "hi": _num(r.get("hi"), 30, 90, d["hi"]), "lo": _num(r.get("lo"), 25, 85, d["lo"]),
         "hi_away": _num(r.get("hi_away"), 30, 95, d["hi_away"]),
@@ -143,7 +146,7 @@ def clean_dev(raw: Any, did: str = "d1") -> dict[str, Any]:
         "watt": _num(r.get("watt"), 0, 3000, d["watt"]), "boost": r.get("boost") if r.get("boost") in BOOSTS else "off",
         "boost_hi": _num(r.get("boost_hi"), 26, 90, d["boost_hi"]), "cheap_ct": _num(r.get("cheap_ct"), 0, 100, d["cheap_ct"]),
         "pv_min": _num(r.get("pv_min"), 0, 5000, d["pv_min"]),
-        "msg": {k: m.get(k) is not False for k in ("full", "high", "noloc", "filter")},
+        "msg": {k: m.get(k) is not False for k in ("full", "high", "noloc", "filter", "stall")},
         "high_h": _num(r.get("high_h"), 1, 48, d["high_h"]), "filter_h": _num(r.get("filter_h"), 0, 5000, 0),
         "nfc": clean_nfc(r.get("nfc")),
         "night": r.get("night") is True,
@@ -347,6 +350,8 @@ class EntfeuchterManager:
         self._last_tick = 0.0
         self._cmd_ts: dict[str, float] = {}
         self._was: dict[str, bool] = {}
+        self._was_on: dict[str, bool] = {}
+        self._run_ts: dict[str, float] = {}  # zuletzt mit Strom gelaufen
         self._unsub: CALLBACK_TYPE | None = None
         self._unsub_ev: CALLBACK_TYPE | None = None
 
@@ -488,9 +493,17 @@ class EntfeuchterManager:
             return None
         return s.state == "on"
 
+    def _pw(self, dev: dict[str, Any]) -> float | None:
+        """Leistung in Watt (Sensor in W oder kW)."""
+        st = self.hass.states.get(dev["power"]) if dev["power"] else None
+        p = _fnum(st)
+        if p is not None and str((st.attributes or {}).get("unit_of_measurement") or "").strip().lower() == "kw":
+            p *= 1000
+        return p
+
     def _power(self, dev: dict[str, Any], running: bool) -> float:
         if dev["power"]:
-            p = _fnum(self.hass.states.get(dev["power"]))
+            p = self._pw(dev)
             if p is not None:
                 return max(0.0, p)
         return dev["watt"] if running else 0.0
@@ -499,10 +512,83 @@ class EntfeuchterManager:
         if not on:
             return False
         if dev["power"]:
-            p = _fnum(self.hass.states.get(dev["power"]))
+            p = self._pw(dev)
             if p is not None:
-                return p >= dev["run_w"]
+                return p >= dev["run_w"]  # Schalter an, aber unter der Schwelle: Standby, läuft nicht
+        st = self.hass.states.get(dev["ent"])  # humidifier meldet (seit HA 2023.7) action: drying, idle, off …
+        act = str((st.attributes or {}).get("action") or "") if st is not None else ""
+        if act:
+            return act in ("drying", "humidifying")
         return True
+
+    def _tgt_want(self, dev: dict[str, Any]) -> tuple[str, Any, Any] | None:
+        """Gewünschte Zielfeuchte am Gerät: (Domäne, Wert, aktueller Wert). Minimum des Geräts oder Untergrenze von Modul 1."""
+        eid = dev.get("tgt") or (dev["ent"] if dev["ent"].startswith("humidifier.") and dev.get("tgt_mode") else "")
+        st = self.hass.states.get(eid) if eid else None
+        if st is None or st.state in ("unavailable", "unknown"):
+            return None
+        dom, a = eid.split(".")[0], st.attributes or {}
+        if dom == "humidifier":
+            lo_dev, cur = a.get("min_humidity", 30), a.get("humidity")
+        elif dom == "select":
+            opts = [o for o in a.get("options") or [] if re.match(r"^\d+", str(o))]
+            if not opts:
+                return None
+            nums = sorted(opts, key=lambda o: float(re.match(r"^\d+", str(o)).group()))
+            if dev["tgt_mode"] == "lo":
+                pick = next((o for o in reversed(nums) if float(re.match(r"^\d+", str(o)).group()) <= dev["lo"]), nums[0])
+            else:
+                pick = nums[0]
+            return (dom, pick, st.state)
+        else:
+            lo_dev, cur = a.get("min", 30), _fnum(st)
+        try:
+            lo_dev = float(lo_dev)
+        except (TypeError, ValueError):
+            lo_dev = 30.0
+        want = lo_dev if dev["tgt_mode"] == "min" else max(lo_dev, float(dev["lo"]))
+        step = a.get("step") or 1
+        try:
+            want = round(want / float(step)) * float(step)
+        except (TypeError, ValueError, ZeroDivisionError):
+            pass
+        return (dom, want, cur)
+
+    async def _tgt_step(self, dev: dict[str, Any], on: bool | None, want: bool | None) -> str:
+        """Steht das Gerät an und soll laufen, die Zielfeuchte am Gerät tiefer stellen als die Grenze von Modul 1."""
+        if dev["kind"] == "watch" or not on or want is False or not dev.get("tgt"):
+            return ""
+        w = self._tgt_want(dev)
+        if w is None:
+            return ""
+        dom, val, cur = w
+        try:
+            same = float(cur) == float(val) if dom != "select" else str(cur) == str(val)
+        except (TypeError, ValueError):
+            same = False
+        if same:
+            return ""
+        now, key = time.time(), dev["id"] + "_tgt"
+        if now - self._cmd_ts.get(key, 0) < CMD_GAP_S * 5:
+            return ""
+        self._cmd_ts[key] = now
+        eid = dev["tgt"]
+        try:
+            if dom == "humidifier":
+                await self.hass.services.async_call("humidifier", "set_humidity", {"entity_id": eid, "humidity": int(val)}, blocking=False)
+            elif dom == "select":
+                await self.hass.services.async_call("select", "select_option", {"entity_id": eid, "option": val}, blocking=False)
+            else:
+                await self.hass.services.async_call(dom, "set_value", {"entity_id": eid, "value": val}, blocking=False)
+        except Exception as err:  # noqa: BLE001
+            _LOGGER.warning("Luftentfeuchter %s: Zielfeuchte nicht gesetzt: %s", eid, err)
+            return ""
+        fmt = lambda v: str(v).rstrip("%").removesuffix(".0")  # noqa: E731
+        return f"Zielfeuchte am Gerät von {fmt(cur)} auf {fmt(val)} % gestellt, damit Modul 1 regelt."
+
+    def _has_action(self, dev: dict[str, Any]) -> bool:
+        st = self.hass.states.get(dev["ent"]) if dev["ent"] else None
+        return st is not None and bool((st.attributes or {}).get("action"))
 
     def _tank_full(self, dev: dict[str, Any], ds: dict[str, Any]) -> tuple[bool, float | None]:
         if dev["tank"]:
@@ -595,6 +681,14 @@ class EntfeuchterManager:
             return
         today = dt_util.now().date().isoformat()
         on = self._is_on(dev)
+        prev_on = self._was_on.get(did)
+        if on is not None and prev_on is not None and on != prev_on:  # auch von Hand oder durch das Gerät geschaltet
+            if on:
+                ds["on_ts"] = now
+            else:
+                ds["off_ts"] = now
+        if on is not None:
+            self._was_on[did] = on
         running = self._running(dev, on)
         pw = self._power(dev, running)
         # Laufzeit, Strom, Kosten und Liter je Tag
@@ -637,6 +731,9 @@ class EntfeuchterManager:
             if s is not None and s.state in ("on", "open"):
                 open_w.append(s.attributes.get("friendly_name") or w)
         full, fill = self._tank_full(dev, ds)
+        if not full and ds["full_ts"] and dev["tank"]:  # Tank-Sensor meldet wieder leer: nächste volle Meldung zählt neu
+            ds["full_ts"] = 0.0
+            ds["sent"].pop("full", None)
         if full and not ds["full_ts"]:
             ds["full_ts"] = now
             self._event(dev, "tank_full")
@@ -655,8 +752,22 @@ class EntfeuchterManager:
                 await self._push(dev, x.get("k", "msg"), x["t"])
         want, hard, code, why = decide(dev, ctx, bool(on))
         hint = ""
-        if on and dev["power"] and not running:
-            hint = "Eingeschaltet, zieht aber keinen Strom. Ist der Tank voll?"
+        if on and dev["power"] and not running and code == "run":
+            why = [f"Steckdose an, das Gerät läuft aber nicht: {pw:.1f} W, gezählt wird erst ab {dev['run_w']:g} W.".replace(".", ",", 1)] + why
+        if running:
+            self._run_ts[did] = now
+        stall_m = (now - max(ds["on_ts"], self._run_ts.get(did, 0.0))) / 60 if on and ds["on_ts"] and not running and (dev["power"] or self._has_action(dev)) and want else 0.0
+        stall = dev["kind"] != "watch" and stall_m >= STALL_MIN and not full
+        if stall:
+            was = self._run_ts.get(did, 0.0) > ds["on_ts"]
+            tw = self._tgt_want(dev) if dev.get("tgt") else None
+            hint = (f"Seit {stall_m:.0f} Min. eingeschaltet, aber das Gerät läuft nicht. "
+                    + ("Es lief schon und hat aufgehört: Tank voll, Schwimmer ausgelöst oder eigene Zielfeuchte erreicht?" if was
+                       else ("Startet es nach dem Einschalten nicht von selbst (Auto-Neustart aus)?" + (f" Zielfeuchte am Gerät steht auf {tw[2]} %." if tw else " Oder ist am Gerät eine höhere Zielfeuchte eingestellt? Unter Gerät lässt sich die Zielfeuchte-Entität wählen."))))
+            where = f" ({room['name']})" if room else ""
+            await self._notify(dev, "stall", today, f"{dev['name']}{where}: eingeschaltet, läuft aber nicht. Tank voll oder Gerät aus?")
+        elif on and dev["power"] and not running:
+            hint = f"Eingeschaltet, zieht aber nur {pw:.1f} W (läuft erst ab {dev['run_w']:g} W). Standby, Tank voll oder Zielfeuchte am Gerät erreicht?".replace(".", ",", 1)
         if want is not None and on is not None and want != on and not hard:
             if on and now - ds["on_ts"] < dev["minrun"] * 60:
                 left = math.ceil((dev["minrun"] * 60 - (now - ds["on_ts"])) / 60)
@@ -664,6 +775,9 @@ class EntfeuchterManager:
             elif not on and now - ds["off_ts"] < dev["lock"] * 60:
                 left = math.ceil((dev["lock"] * 60 - (now - ds["off_ts"])) / 60)
                 want, why = False, why + [f"Sperrzeit nach dem Ausschalten: noch {left} Min."]
+        tmsg = await self._tgt_step(dev, on, want)
+        if tmsg:
+            why = why + [tmsg]
         if dev["kind"] == "watch":
             why = ["Nur beobachten: Das Gerät regelt selbst, Modul 1 schaltet nichts."] + why
         elif want is not None and on is not None and want != on and now - self._cmd_ts.get(did, 0) >= CMD_GAP_S:
@@ -703,6 +817,8 @@ class EntfeuchterManager:
             msgs.append(["high", f"Feuchte bleibt trotz {dev['high_h']:.0f} Std. Betrieb zu hoch"])
         if noloc:
             msgs.append(["noloc", "Standort heute nicht bestätigt"])
+        if stall:
+            msgs.append(["stall", "Eingeschaltet, läuft aber nicht"])
         if filt:
             msgs.append(["filter", f"Filter reinigen ({ds['filter_h']:.0f} Betriebsstunden)"])
         self.live[did] = {
@@ -710,7 +826,7 @@ class EntfeuchterManager:
             "loc_name": rname, "open": open_w, "away": away, "full": full, "fill": fill, "boost": boost, "power": round(pw),
             "since": ds["on_ts"] if on else ds["off_ts"], "today_min": round((ds["days"].get(today) or {}).get("min", 0.0), 1),
             "msgs": msgs, "filter_h": round(ds["filter_h"], 1), "night": night, "held": len(ds["held"]),
-            "quiet": self._qmode(dev), "quiet_on": bool(ds["q_prev"]), "price": price, "pv_w": round(pv_w) if pv_w is not None else None,
+            "has_pw": bool(dev["power"]) or self._has_action(dev), "stall": stall, "run_w": dev["run_w"], "quiet": self._qmode(dev), "quiet_on": bool(ds["q_prev"]), "price": price, "pv_w": round(pv_w) if pv_w is not None else None,
         }
 
     # ---- Tägliche Standortabfrage (Schritt 2)

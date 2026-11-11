@@ -150,7 +150,7 @@ _HEX = re.compile(r"^#[0-9a-fA-F]{6}$")
 _PHOTO = re.compile(r"^data:image/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$")
 
 
-RK_TYPES = ("wohnen", "schlafen", "bad", "kind", "kueche", "buero", "flur")
+RK_TYPES = ("wohnen", "schlafen", "bad", "kind", "kueche", "buero", "flur", "esszimmer", "wintergarten", "hwr", "werkstatt", "fitness", "dachboden", "garage", "carport", "mess")
 
 
 def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
@@ -220,6 +220,24 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
             rc["anim"] = rk["anim"]
         if rc:
             out["rk"] = rc
+    gmap = raw.get("gmap")  # Modul 1: Grundriss-Raum (Modul 11) -> Raum
+    if isinstance(gmap, dict):
+        gc = {str(k)[:32]: v[:64] for k, v in list(gmap.items())[:120] if isinstance(v, str) and v}
+        if gc:
+            out["gmap"] = gc
+    short = raw.get("short")  # Modul 1: Kurznamen der Räume in der Haus-Szene
+    if isinstance(short, dict):
+        sc = {str(k)[:64]: v.strip()[:12] for k, v in list(short.items())[:60] if isinstance(v, str) and v.strip()}
+        if sc:
+            out["short"] = sc
+    m3 = raw.get("m3")  # Modul 3: neue Optik (Kacheln wie bisher)
+    if isinstance(m3, dict) and isinstance(m3.get("old"), bool):
+        out["m3"] = {"old": m3["old"]}
+    hs = raw.get("hs")  # Modul 1: Haus-Szene in der Kopfkarte
+    if isinstance(hs, dict):
+        hc = {k: hs[k] for k in ("off", "wx") if isinstance(hs.get(k), bool)}
+        if hc:
+            out["hs"] = hc
     mu = raw.get("mu")
     if isinstance(mu, dict):
         mc: dict[str, Any] = {}

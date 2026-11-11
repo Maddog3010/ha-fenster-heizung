@@ -32,6 +32,7 @@ from .messwerk import Messwerk
 from .geraete import GeraeteManager
 from .hersteller import logic as hs_logic, lookup as hs_lookup
 from .raumregelung import RoomRegulator
+from .praesenz import RoomPresence
 from .sicherheit import SicherheitManager
 from .labs import LabsManager
 from .entfeuchter import EntfeuchterManager
@@ -195,6 +196,7 @@ class WindowController:
         self._was_open = False
         self.heater = HeaterRoom(self)
         self.rt = RoomRegulator(self)  # Regelung mit Raumsensor (Offset-Ausgleich, Abschalten bei Ziel)
+        self.pr = RoomPresence(self)  # Präsenzmelder: Mensch im Raum = heizen auf … °C
 
     @property
     def cfg(self) -> dict[str, Any]:
@@ -228,6 +230,7 @@ class WindowController:
             self._last_aired = la if isinstance(la, str) and dt_util.parse_datetime(la) else None
             self.heater.load(data.get("heater"))
             self.rt.load(data.get("rt"))
+            self.pr.load(data.get("pr"))
             self._learn = [x for x in (data.get("learn") or []) if isinstance(x, dict)][-LEARN_MAX_SAMPLES:]
             at = data.get("away_temp")
             self._away_temp = float(at) if isinstance(at, (int, float)) else None
@@ -261,9 +264,11 @@ class WindowController:
             self.hass, self._energy_tick, timedelta(seconds=60)
         )
         self._was_open = self._any_open()
+        self.pr.start()
         self._evaluate()
 
     async def async_stop(self) -> None:
+        self.pr.stop()
         self._cancel_timer()
         self._cancel_notify()
         for attr in ("_unsub", "_unsub_t", "_unsub_h", "_unsub_e", "_unsub_p"):
@@ -580,6 +585,10 @@ class WindowController:
         return self._away_temp
 
     def _current_target(self):
+        """Ziel mit Präsenzmelder: Mensch im Raum hebt an, langer Leerstand senkt ab."""
+        return self.pr.adjust(self._current_target_base())
+
+    def _current_target_base(self):
         """Was soll gerade gelten? Absenkung bei Abwesenheit hat Vorrang vor dem Heizplan."""
         if self._away_temp is not None:
             return "away", self._away_temp, False
@@ -872,6 +881,7 @@ class WindowController:
             add("warn", "Raumsensor liefert keinen Wert: Die Thermostate regeln wieder allein")
         if self._away_temp is not None:
             add("warn", f"Abwesenheit oder Urlaub: Absenkung auf {deg(self._away_temp)}")
+        self.pr.reasons(add)
         if self._plan["entries"]:
             if self._plan["enabled"]:
                 cur, nxt = self.plan_current(), self.plan_next()
@@ -889,6 +899,7 @@ class WindowController:
 
     async def _plan_tick(self, _now) -> None:
         self._learn_step()
+        await self.pr.step()
         await self._plan_apply_if_due()
         await self.rt.tick()
 
@@ -956,6 +967,7 @@ class WindowController:
             "last_aired": self._last_aired,
             "heater": self.heater.data(),
             "rt": self.rt.data(),
+            "pr": self.pr.data(),
         }
 
     async def _save(self) -> None:

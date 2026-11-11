@@ -205,6 +205,9 @@
     else if (a === "preset") { const ic2 = { ...(this._cfg.layout.icons || {}) }; delete ic2[m.id]; this._cfg.layout.icons = ic2; this._saveLayout(); this._render(); this._renderModal(); }
     else if (a === "lfrk") { this._modal = { type: "lfrk", id: b.dataset.id, d: b.dataset.d }; this._renderModal(); }
     else if (a.startsWith("rk") && this._rkAct(a, b)) { /* Raumkarte 2.0 */ }
+    else if (a === "m3old") { const L = this._cfg.layout; L.m3 = { ...(L.m3 || {}), old: !(L.m3 || {}).old }; this._saveLayout(); this._render(); this._renderModal(); }
+    else if (["hsgo", "hsoff", "hswx"].includes(a) && this._hsAct(a, b)) { /* Haus-Szene */ }
+    else if (["gpfl", "gpmap", "gpset", "gpedit"].includes(a) && this._gpAct(a, b)) { /* Grundriss */ }
     else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
     else if (a === "pm") {
       const p = this._pres();
@@ -264,7 +267,7 @@
     let res;
     try { res = await this._hass.callWS({ type: "fenster_heizung/get_options", entry_id: id }); } catch (_) { this._toast("Einstellungen konnten nicht geladen werden"); return; }
     const o = (res && res.options) || {};
-    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1, humidity_sensor: "", room_temp_sensor: "", rt_show: "on", rt_learn: "on", rt_dew: "on", rt_heater: "on", rt_comp: "off", rt_off: "off", air_hint: "on", weather_adj: "on", air_every: 8, htr_on: "off", htr_entity: "", htr_watt: 1500, htr_target: 22, htr_prio: 5, htr_steps: "", htr_thermo: "off", htr_auto: "on", htr_presets: [], htr_devtemp: "max", htr_from: "", htr_to: "" };
+    const d = { window_sensors: [], thermostats: [], open_delay: 60, close_delay: 30, action: "off", setback_temp: 12, heating_entity: "", heating_off_states: "off", outdoor_sensor: "", outdoor_max_temp: 15, block_from: "", block_to: "", notify_service: [], notify_after: 0, notify_title: "", notify_message: "", fuel: "erdgas", energy_per_unit: "", cop: 3.5, room_area: 0, heat_load_w_m2: 60, design_temp: -12, heat_power_kw: 1, humidity_sensor: "", room_temp_sensor: "", rt_show: "on", rt_learn: "on", rt_dew: "on", rt_heater: "on", rt_comp: "off", rt_off: "off", air_hint: "on", weather_adj: "on", air_every: 8, htr_on: "off", htr_entity: "", htr_watt: 1500, htr_target: 22, htr_prio: 5, htr_steps: "", htr_thermo: "off", htr_auto: "on", htr_presets: [], htr_devtemp: "max", htr_from: "", htr_to: "", pr_on: "off", pr_entity: "", pr_temp: 21, pr_mode: "min", pr_on_delay: 2, pr_off_delay: 15, pr_idle: 0, pr_idle_after: 60, pr_in_away: "off", pr_turn_on: "off" };
     for (const k of Object.keys(d)) if (o[k] !== undefined && o[k] !== null) d[k] = Array.isArray(o[k]) ? [...o[k]] : o[k];
     if (Array.isArray(d.htr_steps)) d.htr_steps = d.htr_steps.join(", ");
     this._modal = { type: "opt", id, name: (res && res.name) || "", draft: d, open: new Set(["dev", "ctl"]), busy: false };
@@ -337,6 +340,17 @@
         one("humidity_sensor", ent("sensor", "humidity"), "Luftfeuchte-Sensor", "Mit Sensor zeigt die Karte Luftfeuchte, Taupunkt und Schimmelrisiko. Ohne Sensor gibt es Lüftungs-Erinnerung, Wandtemperatur und kritische Feuchte.") +
         num("air_every", "Std.", { l: "Erinnern, wenn länger nicht gelüftet", h: "0 = aus. Gemessen am letzten Schließen des Fensters.", min: 0, max: 48, step: 1 }) +
         row("Lüftungshinweise und Schimmelwarnung", "Auf der Karte und als Erinnerung nach dem Lüften.", seg("air_hint", [["on", "An"], ["off", "Aus"]]))),
+      sec("pres", "user", "Präsenzmelder", d.pr_on === "on" && d.pr_entity ? `${d.pr_mode === "exact" ? "genau" : "mindestens"} ${num0(d.pr_temp)} °C bei Anwesenheit · ${fn(d.pr_entity)}` : "nicht aktiviert",
+        row("Präsenzmelder in diesem Raum", "Ist jemand im Raum, wird auf die Wohlfühltemperatur geheizt. Gilt mit und ohne Heizplan.", seg("pr_on", [["off", "Aus"], ["on", "An"]])) +
+        (d.pr_on === "on" ? one("pr_entity", ent("binary_sensor").filter((e) => ["occupancy", "presence", "motion"].includes(st[e].attributes.device_class) || /pr[äa]sen|bewegung|motion|occup|mmwave|fp2|anwesen/i.test(e + " " + (st[e].attributes.friendly_name || ""))).concat(ent("sensor").filter((e) => /pr[äa]sen|occup|personen|people|target/i.test(e + " " + (st[e].attributes.friendly_name || ""))), ent("input_boolean")), "Präsenz- oder Bewegungsmelder", "z. B. Aqara FP2, Hue Motion, mmWave. Bewegungsmelder gehen auch, Präsenzmelder erkennen aber auch stilles Sitzen.") +
+        num("pr_temp", "°C", { l: "Temperatur bei Anwesenheit", min: 5, max: 30, step: 0.5 }) +
+        row("Wie gilt sie?", "Mindestens: Der Heizplan darf mehr vorsehen. Genau: Diese Temperatur gilt, solange jemand da ist.", seg("pr_mode", [["min", "Mindestens"], ["exact", "Genau"]])) +
+        num("pr_on_delay", "Min.", { l: "Belegt nach", h: "So lange muss der Melder anschlagen. Kurzes Durchlaufen schaltet nichts um.", min: 0, max: 60, step: 1 }) +
+        num("pr_off_delay", "Min.", { l: "Leer nach", h: "So lange meldet der Melder niemanden, bevor der Heizplan wieder gilt.", min: 0, max: 240, step: 1 }) +
+        num("pr_idle", "K", { l: "Absenken, wenn länger leer", h: "0 = aus. Senkt das Heizplan-Ziel, wenn niemand im Raum war.", min: 0, max: 5, step: 0.5 }) +
+        (Number(d.pr_idle) > 0 ? num("pr_idle_after", "Min.", { l: "… ab so lange leer", min: 5, max: 480, step: 5 }) : "") +
+        row("Auch bei Abwesenheit und Urlaub", "Aus: Abwesenheit hat Vorrang (z. B. die Katze löst den Melder aus).", seg("pr_in_away", [["off", "Aus"], ["on", "An"]])) +
+        row("Ausgeschaltetes Thermostat einschalten", "Aus: Ist das Thermostat aus, bleibt es aus.", seg("pr_turn_on", [["off", "Aus"], ["on", "An"]])) : "")),
       sec("wxa", "partly", "Wetter-Anpassung", d.weather_adj === "off" ? "ausgenommen" : "folgt der allgemeinen Einstellung",
         row("Zieltemperatur nach Wetter anpassen", "Die Grenzwerte stellst du unter „Allgemein“ ein.", seg("weather_adj", [["on", "Ja"], ["off", "Ausnehmen"]]))),
       sec("htr", "bolt", "Elektroheizer", d.htr_on === "on" ? `${parseSteps(d.htr_steps).length > 1 ? parseSteps(d.htr_steps).length + " Stufen bis " + wfmt(parseSteps(d.htr_steps).slice(-1)[0]) : wfmt(parseSteps(d.htr_steps)[0] || d.htr_watt)} · bis ${d.htr_target} °C` : "nicht aktiviert",

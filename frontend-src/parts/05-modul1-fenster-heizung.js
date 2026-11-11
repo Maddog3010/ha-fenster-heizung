@@ -5,10 +5,10 @@
     try { if (localStorage.getItem("fh_upd_skip") === u.latest) return ""; } catch (_) { /* egal */ }
     return `<div class="upd">${ic("bell", 22)}<div><b>Neue Version ${esc(u.latest)} verfügbar</b><span>Installiert ist ${esc(this._ver)}${u.date ? " · veröffentlicht am " + esc(new Date(u.date + "T12:00:00").toLocaleDateString("de-DE")) : ""}</span>${this._spnLine()}</div><button class="lnk" data-act="news">Das ist neu</button><button class="ibtn" data-act="updx" aria-label="Ausblenden">${ic("close", 18)}</button></div>`;
   }
-  _view() { try { return localStorage.getItem("fh_view") === "compact" ? "compact" : "detail"; } catch (_) { return "detail"; } }
+  _view() { try { const v = localStorage.getItem("fh_view"); return v === "compact" ? "compact" : v === "plan" && this._rkOn() ? "plan" : "detail"; } catch (_) { return "detail"; } }
   _viewBar() {
     const v = this._view();
-    return `<div class="vbar"><button class="myb ${this._my().on ? "on" : ""}" data-act="my">${ic("user", 15)}Meine Ansicht</button><div class="vseg" role="group" aria-label="Ansicht der Raumkarten">${[["compact", "list", "Kompakt"], ["detail", "grid", "Detail"]].map(([k, i, l]) => `<button class="${v === k ? "sel" : ""}" data-act="view" data-k="${k}" aria-pressed="${v === k}">${ic(i, 16)}${l}</button>`).join("")}</div></div>`;
+    return `<div class="vbar"><button class="myb ${this._my().on ? "on" : ""}" data-act="my">${ic("user", 15)}Meine Ansicht</button><div class="vseg" role="group" aria-label="Ansicht der Raumkarten">${[["compact", "list", "Kompakt"], ["detail", "grid", "Detail"], ...(this._rkOn() ? [["plan", "home", "Grundriss"]] : [])].map(([k, i, l]) => `<button class="${v === k ? "sel" : ""}" data-act="view" data-k="${k}" aria-pressed="${v === k}">${ic(i, 16)}${l}</button>`).join("")}</div></div>`;
   }
   _rv(r) { return this._view() === "compact" ? this._row(r) : this._rkOn() ? this._room2(r) : this._room(r); }
   /* Raumtemperatur: Raumsensor (falls gesetzt, für diesen Zweck aktiv und gültig), sonst Thermostat. use: show | learn | dew | heater */
@@ -75,7 +75,7 @@
     }
     return `<div class="card crow ${edit ? "ed" : ""}${rk ? " rkc" : ""}${pph.c}"${pph.s} data-sort="room" data-id="${esc(r.id)}">
       ${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${icon}
-      <div class="rn"><b>${esc(r.name)}</b><span class="pill ${m.c}">${m.t}</span>${this._airChip(r)}${this._htrChip(r)}${this._devChip(r)}</div>
+      <div class="rn"><b>${esc(r.name)}</b><span class="pill ${m.c}">${m.t}</span>${this._rkPrChip(r)}${this._airChip(r)}${this._htrChip(r)}${this._devChip(r)}</div>
       <div class="cells">
         ${wcell || `<div class="cell w1 win ${open.length ? "amber" : ""}"><b>${ic(open.length ? "windowOpen" : "window", 15)}${open.length ? `${open.length} von ${wins.length} offen` : "geschlossen"}</b>${esc(open.length ? open.map((w) => w.attributes.friendly_name || w.entity_id).join(", ") : wins.length + (wins.length === 1 ? " Fenster" : " Fenster"))}</div>`}
         ${hcell || `<div class="cell w2"><b>${cur != null ? num(cur, 1) + " °C" : hv}</b>${t0 ? (cur != null && tgt != null ? `Ziel ${num(tgt, 1)} · ` : "") + hv + (rt.sensor && rt.th != null ? ` · Thermostat ${num(rt.th, 1)}` : "") : "kein Thermostat"}</div>`}
@@ -89,6 +89,7 @@
     const groups = (this._cfg.layout.groups || []).filter((g) => g && g.name), edit = this._edit, adm = this._admin();
     const roomBtn = adm ? `<button class="gadd" data-act="msxadd">${ic("plus", 18)}Raum hinzufügen</button>` : "";
     const addBtn = (edit && adm ? `<button class="gadd" data-act="gadd">${ic("plus", 18)}Gruppe hinzufügen</button>` : "") + roomBtn;
+    if (this._view() === "plan" && !edit) return this._viewBar() + this._gpView(rooms) + this._msSection() + roomBtn;
     if (!groups.length) return this._viewBar() + this._head() + `<div class="rooms ${this._view() === "compact" ? "list" : ""}" data-sort-container="room">${rooms.map((r) => this._rv(r)).join("")}</div>${this._msSection()}${addBtn}`;
     const used = new Set(groups.flatMap((g) => g.rooms || [])), rest = rooms.filter((r) => !used.has(r.id)), col = this._collapsed();
     const list = groups.map((g) => ({ ...g, members: rooms.filter((r) => (g.rooms || []).includes(r.id)) }));
@@ -747,6 +748,7 @@
     if (f === "hfile") { this._heroPick(t); t.value = ""; return true; }
     if (f === "lacc" && HEX.test(t.value)) L.accent = t.value;
     else if (f === "rcolc" && m && HEX.test(t.value)) L.colors = { ...(L.colors || {}), [m.id]: t.value };
+    else if (f === "hsshort" && m) { const v = String(t.value || "").trim().slice(0, 12), sh = { ...(L.short || {}) }; if (v) sh[m.id] = v; else delete sh[m.id]; L.short = sh; }
     else if (f === "lwxe") L.wx = { ...(L.wx || {}), entity: t.value };
     else if (f === "lwxo") L.wx = { ...(L.wx || {}), outdoor: t.value };
     else return false;
@@ -843,7 +845,7 @@
     const dateStr = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const tiles = [["day", "today", "Heute", "var(--teal)"], ["month", "month", "Monat", "#60a5fa"], ["year", "year", "Jahr", "#a78bfa"], ["total", "total", "Gesamt", "#f472b6"]];
     const content = {
-      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}">${this._heroBg()}${this._modLogo("fh")}
+      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}${this._hsCfg().on ? " hsx" : ""}">${this._heroBg()}${this._hsCfg().on ? this._hsScene(rooms) : this._modLogo("fh")}
         <div class="lbl">${ic("flame", 16)}Heute ${F.short} gespart (geschätzt)</div>
         <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>${this._wx()}
         <div class="chips">${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>

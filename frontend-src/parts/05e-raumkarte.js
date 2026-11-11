@@ -4,18 +4,23 @@
      Einstellungen: layout.rk = { old: Raumkarten wie bisher, anim: aus | dezent | voll }, layout.rtype = { Raum-ID: Raumtyp }.
      Gegen Flackern (K4): Das Raumbild trägt data-kk (Raum, Typ, Zustand, Tag/Nacht). Ändert sich nur die Temperatur,
      bleibt das alte Bild im DOM stehen (siehe _render), Bewegungen laufen ohne Sprung weiter. */
-  static RK_TYPES = [["wohnen", "Wohnzimmer"], ["schlafen", "Schlafzimmer"], ["bad", "Bad"], ["kind", "Kinderzimmer"], ["kueche", "Küche"], ["buero", "Büro"], ["flur", "Flur / Ankleide"]];
+  static RK_TYPES = [["wohnen", "Wohnzimmer"], ["schlafen", "Schlafzimmer"], ["bad", "Bad"], ["kind", "Kinderzimmer"], ["kueche", "Küche"], ["buero", "Büro"], ["flur", "Flur / Ankleide"], ["esszimmer", "Esszimmer"], ["wintergarten", "Wintergarten"], ["hwr", "Keller / Hauswirtschaft"], ["werkstatt", "Werkstatt / Hobby"], ["fitness", "Fitness"], ["dachboden", "Dachboden"], ["garage", "Garage"], ["carport", "Carport / Außen"]];
   static RK_COL = { heizt: "#fb923c", ok: "#2dd4bf", offen: "#60a5fa", gekippt: "#60a5fa", pause: "#f59e0b", nacht: "#a78bfa", hoff: "#94a3b8", aus: "#94a3b8" };
   _rkCfg() { const k = this._cfg.layout.rk || {}; return { old: !!k.old || this._gxCfg().classic, anim: ["aus", "dezent", "voll"].includes(k.anim) ? k.anim : "dezent" }; }
   _rkOn() { return !this._rkCfg().old; }
   _rkTypeAuto(r) {
     const n = String(r.name || "").toLowerCase();
-    const R = [[/ankleid|garderob|flur|diele|eingang|trepp|keller|hwr|hauswirt|wasch|abstell|vorrat/, "flur"], [/kind|baby|spiel|jugend|'s zimmer|s zimmer$/, "kind"],
-      [/bad|dusch|\bwc\b|toilett|wanne|sauna/, "bad"], [/k[üu]e?che|kitchen|koch|esszimmer|essbereich|essecke|speise/, "kueche"], [/schlaf|g[äa]st|bedroom/, "schlafen"],
-      [/b[üu]e?ro|arbeit|office|werk|hobby|studio|bibliothek|computer/, "buero"], [/wohn|stube|living|kamin|wintergarten|tv|kino|lounge/, "wohnen"]];
+    const R = [[/carport|unterstand|terrass|au(ß|ss)en|garten|balkon|vordach/, "carport"], [/garage/, "garage"], [/dachboden|spitzboden|speicher|dachgeschoss/, "dachboden"],
+      [/keller|hwr|hauswirt|wasch|abstell|vorrat|heizungsraum|technik/, "hwr"], [/werkstatt|werkraum|hobby|bastel/, "werkstatt"], [/fitness|sport|gym|trainings/, "fitness"],
+      [/wintergarten/, "wintergarten"], [/esszimmer|essbereich|essecke|speisezimmer/, "esszimmer"],
+      [/ankleid|garderob|flur|diele|eingang|trepp/, "flur"], [/kind|baby|spiel|jugend|'s zimmer|s zimmer$/, "kind"],
+      [/bad|dusch|\bwc\b|toilett|wanne|sauna/, "bad"], [/k[üu]e?che|kitchen|koch/, "kueche"], [/schlaf|g[äa]st|bedroom/, "schlafen"],
+      [/b[üu]e?ro|arbeit|office|studio|bibliothek|computer/, "buero"], [/wohn|stube|living|kamin|tv|kino|lounge/, "wohnen"]];
     for (const [re, k] of R) if (re.test(n)) return k;
-    const I = { bed: "schlafen", suitcase: "schlafen", baby: "kind", blocks: "kind", bath: "bad", shower: "bad", toilet: "bad", pot: "kueche", dining: "kueche", fridge: "kueche", wine: "kueche",
-      desk: "buero", tools: "buero", music: "buero", door: "flur", hanger: "flur", stairs: "flur", crate: "flur", laundry: "flur", sofa: "wohnen", fireplace: "wohnen", tv: "wohnen" };
+    if (r.nameOnly) return null;
+    const I = { bed: "schlafen", suitcase: "schlafen", baby: "kind", blocks: "kind", bath: "bad", shower: "bad", toilet: "bad", pot: "kueche", dining: "esszimmer", fridge: "kueche", wine: "kueche",
+      desk: "buero", tools: "werkstatt", music: "buero", door: "flur", hanger: "flur", stairs: "flur", crate: "hwr", laundry: "hwr", sofa: "wohnen", fireplace: "wohnen", tv: "wohnen",
+      dumbbell: "fitness", roof: "dachboden", car: "garage", tree: "carport", balcony: "carport", sun: "wintergarten", radiator: "hwr", wave: "bad" };
     return I[(this._cfg.layout.icons || {})[r.id]] || "wohnen";
   }
   _rkType(r) { const t = (this._cfg.layout.rtype || {})[r.id]; return this.constructor.RK_TYPES.some((x) => x[0] === t) ? t : this._rkTypeAuto(r); }
@@ -50,7 +55,8 @@
     const curPlan = pts.length ? at(pts, now) : null;
     const act = t0 ? t0.attributes.hvac_action : null, thOff = !t0 || t0.state === "off";
     const heating = !thOff && r.mode !== "heizung_pausiert" && !anyOpen && (act ? act === "heating" : cur != null && ziel != null && cur < ziel - 0.3);
-    const lowered = away || (planOn && curPlan != null && hi - lo >= 1 && curPlan <= lo + 0.05);
+    const prOn = !!(r.pres && r.pres.anwesend && !r.pres.gesperrt);
+    const lowered = !prOn && (away || (planOn && curPlan != null && hi - lo >= 1 && curPlan <= lo + 0.05));
     const sun = h.states["sun.sun"], night = sun ? sun.state === "below_horizon" : (new Date().getHours() < 7 || new Date().getHours() >= 19);
     const mins = since ? Math.max(0, Math.round((Date.now() - since) / 60000)) : 0, pv = this._pres();
     let k, lab;
@@ -63,19 +69,21 @@
     else if (lowered) { k = "nacht"; lab = away ? (pv.effective === "vacation" || pv.mode === "vacation" ? "Urlaub" : "Abwesend") : night ? "Nachtabsenkung" : "Absenkung"; }
     else { k = "ok"; lab = ziel != null && cur != null && cur >= ziel - 0.3 ? "Ziel erreicht" : "Regelung aktiv"; }
     const hum = r.humEid && h.states[r.humEid] ? parseFloat(h.states[r.humEid].state) : null;
-    const htr = r.htr || null, lfs = this._lfDevs().filter((d) => d.S.loc === r.id);
-    return { k, lab, col: C[k], htr, lfs, wins, open, tilt, anyOpen, since, mins, t0, th, thOff, rt, cur, ziel, act, heating, pts, now, today, planOn, lo, hi, curPlan, night, away, summer, hum: isFinite(hum) ? hum : null };
+    const htr = r.htr || null, lfs = this._lfDevs().filter((d) => d.S.loc === r.id), pres = r.pres || null, here = !!(pres && pres.anwesend);
+    if (here && k === "heizt") lab = "Heizt · jemand da";
+    else if (here && k === "ok") lab = "Jemand da";
+    return { k, lab, col: C[k], htr, lfs, pres, here, wins, open, tilt, anyOpen, since, mins, t0, th, thOff, rt, cur, ziel, act, heating, pts, now, today, planOn, lo, hi, curPlan, night, away, summer, hum: isFinite(hum) ? hum : null };
   }
 
   /* ---------- Raumbild (Vektor) ---------- */
   _rkArt(type, s, o = {}) {
     const u = "rk" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_", q = (n) => u + n;
     const col = s.col, k = s.k, night = s.night, heat = k === "heizt", warm = heat || (s.t0 && s.act === "heating" && !s.anyOpen && k !== "pause");
-    const winK = s.open.length ? "open" : s.tilt.length ? "tilt" : "closed", mess = type === "mess";
+    const winK = s.open.length ? "open" : s.tilt.length ? "tilt" : "closed", mess = type === "mess" || !!o.ms, outd = type === "carport", norad = type === "garage" || outd;
     const lg = (id, stops, x2 = 0, y2 = 1) => `<linearGradient id="${q(id)}" x1="0" y1="0" x2="${x2}" y2="${y2}">${stops.map(([of, c, a]) => `<stop offset="${of}" stop-color="${c}"${a != null ? ` stop-opacity="${a}"` : ""}/>`).join("")}</linearGradient>`;
     const W = "var(--rk-w)", F = "var(--rk-f)", T = "var(--rk-t)";
     /* Lampe je Raumtyp: [x, y] des Lichts */
-    const LP = { wohnen: [300, 52], schlafen: [142, 80], bad: [230, 18], kind: [258, 34], kueche: [250, 56], buero: [282, 64], flur: [165, 28], mess: [240, 30] }[type] || [260, 40];
+    const LP = { wohnen: [300, 52], schlafen: [142, 80], bad: [230, 18], kind: [258, 34], kueche: [250, 56], buero: [282, 64], flur: [165, 28], mess: [240, 30], esszimmer: [220, 40], wintergarten: [250, 30], hwr: [180, 22], werkstatt: [230, 30], fitness: [260, 26], dachboden: [200, 40], garage: [170, 18], carport: [36, 56] }[type] || [260, 40];
     const glowA = { heizt: .5, ok: .34, offen: .4, gekippt: .32, pause: .34, nacht: .42, hoff: .2, aus: 0 }[k] ?? .3;
     let d = `<defs>${lg("sky", night ? [[0, "#0b1530"], [1, "#1e2a52"]] : [[0, "#9fd3ff"], [1, "#e6f4ff"]])}
       <radialGradient id="${q("gl")}" cx="${(LP[0] + 60) / 440}" cy="${LP[1] / 150}" r=".5"><stop offset="0" stop-color="${col}" stop-opacity="${glowA}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></radialGradient>
@@ -85,7 +93,17 @@
     /* Raum: Wand, Boden, Sockelleiste */
     d += `<rect x="-60" width="440" height="150" style="fill:${W}"/><rect x="-60" y="112" width="440" height="38" fill="url(#${q("fl")})"/><rect x="-60" y="110" width="440" height="3" style="fill:${T}"/>`;
     d += [-20, 40, 100, 160, 220, 280, 340].map((x) => `<path d="M${x} 113 L${x - 16 + (x - 160) * .25} 150" style="stroke:${T}" stroke-width=".8" opacity=".35"/>`).join("");
+    if (outd) {
+      const frost = this._out().t != null && this._out().t <= 0;
+      d += `<rect x="-60" width="440" height="112" fill="url(#${q("sky")})"/>` + (night ? `<circle cx="300" cy="22" r="8" fill="#fef3c7"/><circle cx="303" cy="19" r="7" fill="#1a2547"/>${[[120, 14], [180, 30], [250, 10], [330, 40], [200, 8]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1" fill="#fff" opacity=".8"/>`).join("")}` : `<circle cx="300" cy="22" r="9" fill="#fde68a"/><path d="M150 26 q8 -10 17 -3 q8 -8 16 1 q7 -1 8 6 h-41z" fill="#fff" opacity=".85"/>`) +
+        `<path d="M-60 96 q60 -12 120 -2 q70 -12 140 0 q80 -12 180 0 V112 H-60z" fill="${night ? "#1f3b2c" : "#4ade80"}" opacity=".7"/><rect x="-60" y="104" width="440" height="8" fill="${night ? "#1d3328" : "#22c55e"}" opacity=".6"/>` +
+        `<rect x="-60" y="112" width="440" height="38" fill="${night ? "#2b3138" : "#9ca3af"}"/>${[118, 126, 134, 142].map((y) => `<path d="M-60 ${y} H380" stroke="#6b7280" stroke-width=".7" opacity=".6"/>`).join("")}` +
+        `<rect x="-60" y="10" width="110" height="102" fill="${night ? "#4b4038" : "#e7d8c3"}"/><rect x="-60" y="4" width="116" height="8" fill="#7f1d1d"/><rect x="6" y="52" width="26" height="60" rx="2" fill="#7c4a24"/><circle cx="27" cy="83" r="1.6" fill="#fde68a"/>` +
+        `<rect x="66" y="16" width="270" height="7" fill="#8a5a2b"/><rect x="66" y="12" width="270" height="4" fill="#5b3a1e"/>${frost ? `<rect x="64" y="8" width="274" height="5" rx="2.5" fill="#f8fafc"/>` : ""}` +
+        [76, 200, 324].map((x) => `<rect x="${x}" y="23" width="6" height="94" fill="url(#${q("wood")})"/>`).join("") + `<ellipse cx="200" cy="128" rx="96" ry="6" fill="#000" opacity=".2"/>`;
+    }
     /* Fenster */
+    if (!outd) {
     const wx = 28, wy = 20, ww = 70, wh = 64, mid = wx + ww / 2;
     d += `<rect x="${wx - 4}" y="${wy - 4}" width="${ww + 8}" height="${wh + 8}" rx="4" fill="#e2e8f0" stroke="#64748b" stroke-opacity=".45"/><rect x="${wx}" y="${wy}" width="${ww}" height="${wh}" fill="url(#${q("sky")})"/>`;
     d += night ? `<circle cx="${wx + 52}" cy="${wy + 16}" r="7" fill="#fef3c7"/><circle cx="${wx + 55}" cy="${wy + 13}" r="6" fill="#1a2547"/>${[[10, 10], [22, 26], [40, 8], [14, 44], [58, 40]].map(([x, y]) => `<circle cx="${wx + x}" cy="${wy + y}" r=".9" fill="#fff" opacity=".85"/>`).join("")}`
@@ -96,8 +114,9 @@
     else d += `<path d="M${mid + 7} ${wy + 6} L${mid + ww / 2 + 7} ${wy + 6} L${mid + ww / 2} ${wy + wh} L${mid} ${wy + wh}z" fill="#e0f2fe" fill-opacity=".3" stroke="#f8fafc" stroke-width="3" stroke-linejoin="round"/><path d="M${mid} ${wy} L${mid + 7} ${wy + 6} M${mid + ww / 2} ${wy} L${mid + ww / 2 + 7} ${wy + 6}" stroke="#94a3b8" stroke-width="1.4"/>`;
     d += `<rect x="${wx - 7}" y="${wy + wh + 3}" width="${ww + 14}" height="4" rx="2" fill="#cbd5e1"/>`;
     if (winK !== "closed") d += `<g class="aw">${[0, 1, 2].slice(0, winK === "open" ? 3 : 2).map((i) => `<path class="aw${i}" d="M${mid + 14} ${wy + 18 + i * 14} q10 -5 20 0 t20 0" fill="none" stroke="#7dd3fc" stroke-width="2.4" stroke-linecap="round" opacity=".85"/>`).join("")}</g>`;
-    /* Heizkörper (Messraum: Sensor statt Heizkörper) */
-    if (!mess) {
+    }
+    /* Heizkörper (Messraum: Sensor statt Heizkörper; Garage und Carport ohne) */
+    if (!mess && !norad) {
       const rx = 32, ry = 92;
       d += `<rect x="${rx}" y="${ry}" width="62" height="3.5" rx="1.7" fill="${warm ? "#ea580c" : "#94a3b8"}"/>` + [0, 1, 2, 3, 4, 5, 6].map((i) => `<rect x="${rx + 1 + i * 8.6}" y="${ry + 1}" width="6.4" height="17" rx="3" fill="url(#${q("rad")})"/>`).join("") +
         `<circle cx="${rx + 66}" cy="${ry + 12}" r="3.6" fill="${k === "pause" ? "#f59e0b" : warm ? "#fbbf24" : "#64748b"}" stroke="#fff" stroke-width="1.2"/>`;
@@ -107,6 +126,9 @@
     const lamp = (x, y, sh = 1) => `<g class="lg"><circle cx="${x}" cy="${y}" r="${16 * sh}" fill="${col}" opacity="${k === "aus" ? 0 : .22}"/></g>`;
     const plant = (x, y, s2 = 1) => `<path d="M${x - 6 * s2} ${y} h${12 * s2} l-2 ${12 * s2} h${-8 * s2}z" fill="#b45309"/><path d="M${x} ${y} q-12 -8 -9 -20 q7 6 9 20 q2 -16 11 -20 q2 12 -11 20 q-2 -12 -1 -24 q6 10 1 24" fill="#22c55e"/>`;
     const frame = (x, y, w2, h2) => `<rect x="${x}" y="${y}" width="${w2}" height="${h2}" rx="2" fill="#f8fafc" opacity=".9"/><rect x="${x + 3}" y="${y + 3}" width="${w2 - 6}" height="${h2 - 6}" fill="#bfdbfe"/><path d="M${x + 3} ${y + h2 - 3} l${w2 * .3} ${-h2 * .45} l${w2 * .2} ${h2 * .25} l${w2 * .2} ${-h2 * .3} l${w2 * .3 - 6} ${h2 * .5}z" fill="#60a5fa"/><circle cx="${x + w2 * .72}" cy="${y + h2 * .32}" r="${h2 * .1}" fill="#fde68a"/>`;
+    const car = (x, y, c = "#2563eb") => `<ellipse cx="${x + 80}" cy="${y + 36}" rx="84" ry="4" fill="#000" opacity=".25"/><path d="M${x} ${y + 26} q0 -12 12 -14 l20 -3 q14 -14 34 -16 h34 q18 1 30 14 l18 4 q12 3 12 15 v8 h-160z" fill="${c}"/>` +
+      `<path d="M${x + 38} ${y + 8} q12 -11 28 -12 h12 v13z M${x + 84} ${y - 4} h8 q14 1 24 13 h-32z" fill="#bfdbfe" opacity=".9"/><rect x="${x}" y="${y + 24}" width="160" height="3" fill="#000" opacity=".15"/>` +
+      [x + 34, x + 128].map((cx) => `<circle cx="${cx}" cy="${y + 34}" r="11" fill="#1f2937"/><circle cx="${cx}" cy="${y + 34}" r="5" fill="#cbd5e1"/>`).join("") + `<rect x="${x + 152}" y="${y + 18}" width="7" height="4" rx="2" fill="#fde68a"/><rect x="${x + 1}" y="${y + 18}" width="5" height="4" rx="2" fill="#f87171"/>`;
     const F1 = {
       wohnen: () => frame(160, 24, 56, 36) + `<ellipse cx="215" cy="134" rx="92" ry="8" style="fill:${T}" opacity=".5"/>` +
         `<rect x="140" y="76" width="148" height="28" rx="10" fill="#4f6d8a"/><rect x="148" y="80" width="64" height="22" rx="8" fill="#6b8bab"/><rect x="216" y="80" width="64" height="22" rx="8" fill="#6b8bab"/>` +
@@ -144,6 +166,35 @@
         `<path d="M136 48 l-10 10 l2 36 h16 l2 -36z" fill="#0ea5e9"/><path d="M156 48 l-9 8 l1 30 h16 l1 -30z" fill="#f59e0b"/><path d="M176 48 q-6 4 -5 12 l-2 18 h14 l-1 -18 q1 -8 -6 -12z" fill="#a78bfa"/>` +
         `<rect x="124" y="104" width="66" height="6" rx="2" fill="url(#${q("wood")})"/><rect x="128" y="110" width="4" height="14" fill="#5b3a1e"/><rect x="182" y="110" width="4" height="14" fill="#5b3a1e"/><path d="M136 124 h14 q2 -6 -4 -6 h-10z M154 124 h14 q2 -6 -4 -6 h-10z" fill="#1f2937"/>` +
         lamp(165, 28, .9) + `<path d="M165 0 v20" stroke="#94a3b8" stroke-width="1.5"/><path d="M155 30 q10 -14 20 0z" fill="${k === "aus" ? "#cbd5e1" : col}"/>`,
+      esszimmer: () => frame(250, 26, 46, 30) + lamp(220, 40, 1.1) + `<path d="M220 0 v30" stroke="#94a3b8" stroke-width="1.5"/><path d="M204 40 q16 -16 32 0z" fill="${k === "aus" ? "#cbd5e1" : col}"/>` +
+        [150, 196, 242].map((x) => `<path d="M${x} 66 h20 v30" fill="none" stroke="#7c4a24" stroke-width="4" stroke-linecap="round"/>`).join("") +
+        `<rect x="140" y="90" width="150" height="6" rx="2" fill="url(#${q("wood")})"/><rect x="148" y="96" width="5" height="28" fill="#5b3a1e"/><rect x="278" y="96" width="5" height="28" fill="#5b3a1e"/>` +
+        `<ellipse cx="180" cy="89" rx="10" ry="2.5" fill="#f8fafc"/><ellipse cx="236" cy="89" rx="10" ry="2.5" fill="#f8fafc"/><rect x="204" y="78" width="6" height="11" rx="2" fill="#e2e8f0"/><path d="M216 84 q4 -8 8 0z" fill="#22c55e"/>` + plant(304, 112, .7),
+      wintergarten: () => `<rect x="112" y="6" width="214" height="104" fill="url(#${q("sky")})" opacity=".85"/>${[112, 166, 220, 274, 326].map((x) => `<rect x="${x - 2}" y="6" width="4" height="104" fill="#f8fafc"/>`).join("")}<rect x="110" y="56" width="218" height="3" fill="#f8fafc"/><rect x="110" y="4" width="218" height="4" fill="#f8fafc"/>` +
+        `<path d="M118 104 q30 -14 60 -6 q30 -12 60 -2" fill="#4ade80" opacity=".5"/>` + plant(140, 104, 1.4) + plant(300, 106, 1.2) +
+        `<path d="M200 90 q0 -24 22 -24 q22 0 22 24 v14 h-44z" fill="#d6a76c"/><path d="M204 92 q18 -8 36 0 v10 h-36z" fill="#f1f5f9"/><rect x="204" y="104" width="4" height="18" fill="#a16207"/><rect x="236" y="104" width="4" height="18" fill="#a16207"/>` +
+        `<ellipse cx="270" cy="112" rx="14" ry="3" fill="#a16207"/><rect x="268" y="112" width="4" height="12" fill="#a16207"/>` + lamp(250, 30, .8),
+      hwr: () => `<rect x="130" y="32" width="130" height="4" fill="url(#${q("wood")})"/>${[[136, "#60a5fa"], [168, "#f59e0b"], [200, "#a3e635"], [232, "#f472b6"]].map(([x, c]) => `<rect x="${x}" y="16" width="24" height="16" rx="2" fill="${c}" opacity=".85"/>`).join("")}` +
+        lamp(180, 22, .9) + `<rect x="170" y="0" width="20" height="5" fill="${k === "aus" ? "#cbd5e1" : col}"/>` +
+        [[150, "#f1f5f9"], [204, "#e2e8f0"]].map(([x, c]) => `<rect x="${x}" y="70" width="48" height="52" rx="5" fill="${c}" stroke="#94a3b8" stroke-opacity=".6"/><rect x="${x}" y="70" width="48" height="9" rx="4" fill="#cbd5e1"/><circle cx="${x + 24}" cy="${100}" r="14" fill="#94a3b8"/><circle cx="${x + 24}" cy="100" r="10" fill="#bae6fd"/><circle cx="${x + 40}" cy="74.5" r="1.8" fill="#22c55e"/>`).join("") +
+        `<path d="M266 102 h36 l-4 20 h-28z" fill="#d6a76c"/><path d="M270 100 q14 -10 28 0" fill="#f472b6"/>`,
+      werkstatt: () => `<rect x="134" y="20" width="150" height="58" rx="3" fill="#a16207" opacity=".55"/>${Array.from({ length: 6 }, (_, i) => Array.from({ length: 14 }, (_, j) => `<circle cx="${142 + j * 10.5}" cy="${27 + i * 9}" r=".9" fill="#422006" opacity=".6"/>`).join("")).join("")}` +
+        `<path d="M150 30 v28" stroke="#64748b" stroke-width="3"/><rect x="144" y="27" width="12" height="7" rx="1.5" fill="#475569"/><path d="M178 30 l10 26" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/><circle cx="177" cy="29" r="4" fill="none" stroke="#94a3b8" stroke-width="2.5"/>` +
+        `<path d="M206 32 v24" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/><path d="M230 32 v22" stroke="#f59e0b" stroke-width="3"/><rect x="226" y="52" width="8" height="12" rx="2" fill="#1f2937"/><path d="M256 30 h18 v8 h-18z" fill="#64748b"/>` +
+        `<rect x="134" y="84" width="170" height="8" rx="2" fill="url(#${q("wood")})"/><rect x="140" y="92" width="6" height="32" fill="#5b3a1e"/><rect x="292" y="92" width="6" height="32" fill="#5b3a1e"/><rect x="146" y="108" width="146" height="4" fill="#7c4a24"/>` +
+        `<rect x="250" y="68" width="34" height="16" rx="3" fill="#dc2626"/><rect x="262" y="64" width="10" height="5" rx="2" fill="none" stroke="#7f1d1d" stroke-width="2"/><rect x="160" y="74" width="20" height="10" fill="#475569"/>` + lamp(230, 30, .7),
+      fitness: () => `<rect x="230" y="20" width="72" height="62" rx="3" fill="#bfdbfe" opacity=".45" stroke="#f8fafc" stroke-width="3"/>` + lamp(260, 26, .8) +
+        `<rect x="128" y="96" width="50" height="4" rx="2" fill="#475569"/>${[134, 150, 166].map((x, i) => `<rect x="${x}" y="${88 - i * 2}" width="12" height="${8 + i * 2}" rx="2" fill="#334155"/><circle cx="${x + 6}" cy="${86 - i * 2}" r="${4 + i}" fill="#1f2937"/>`).join("")}<rect x="132" y="100" width="4" height="22" fill="#475569"/><rect x="170" y="100" width="4" height="22" fill="#475569"/>` +
+        `<path d="M190 126 l90 -4 l6 6 l-92 4z" fill="#a855f7" opacity=".85"/><rect x="208" y="92" width="62" height="7" rx="3" fill="#1f2937"/><rect x="214" y="99" width="4" height="22" fill="#475569"/><rect x="260" y="99" width="4" height="22" fill="#475569"/>` +
+        `<circle cx="300" cy="114" r="9" fill="#1f2937"/><path d="M294 106 q6 -9 12 0" fill="none" stroke="#1f2937" stroke-width="3.5"/>`,
+      dachboden: () => `<path d="M140 0 L340 0 L340 110 Z" style="fill:${T}" opacity=".55"/>${[180, 230, 280].map((x) => `<path d="M${x} 0 L340 ${(340 - x) * .55}" stroke="url(#${q("wood")})" stroke-width="7"/>`).join("")}<path d="M140 0 L340 110" stroke="#7c4a24" stroke-width="8"/>` +
+        `<rect x="146" y="92" width="34" height="28" rx="2" fill="#d6a76c"/><path d="M146 100 h34" stroke="#a16207" stroke-width="1.5"/><rect x="178" y="102" width="26" height="18" rx="2" fill="#c08552"/>` +
+        `<path d="M222 98 h56 q4 0 4 4 v20 h-64 v-20 q0 -4 4 -4z" fill="#7c4a24"/><path d="M220 98 q30 -16 64 0" fill="#92400e"/><rect x="246" y="102" width="12" height="6" rx="1" fill="#fbbf24"/>` +
+        lamp(200, 40, .8) + `<path d="M200 0 v34" stroke="#94a3b8" stroke-width="1.2"/><circle cx="200" cy="38" r="4.5" fill="${k === "aus" ? "#cbd5e1" : col}"/>`,
+      garage: () => `<rect x="166" y="14" width="146" height="98" rx="2" fill="#cbd5e1"/>${[0, 1, 2, 3, 4, 5].map((i) => `<rect x="170" y="${18 + i * 15.5}" width="138" height="13" rx="1.5" fill="#e2e8f0"/>`).join("")}<rect x="166" y="10" width="146" height="5" fill="#94a3b8"/>` +
+        lamp(170, 18, .9) + `<rect x="160" y="2" width="20" height="5" fill="${k === "aus" ? "#cbd5e1" : col}"/>` +
+        `<rect x="112" y="40" width="4" height="70" fill="#64748b"/><rect x="112" y="60" width="40" height="3" fill="#94a3b8"/><rect x="116" y="50" width="12" height="10" fill="#f59e0b"/><rect x="132" y="52" width="16" height="8" fill="#60a5fa"/>` + car(150, 84, "#2563eb"),
+      carport: () => car(118, 84, "#dc2626") + lamp(36, 56, .9) + `<rect x="30" y="52" width="12" height="8" rx="2" fill="${k === "aus" ? "#cbd5e1" : col}"/>`,
       mess: () => `<rect x="128" y="64" width="64" height="5" rx="2" fill="url(#${q("wood")})"/><rect x="134" y="44" width="18" height="20" rx="2" fill="#d6a76c"/><rect x="156" y="50" width="26" height="14" rx="2" fill="#c08552"/>` +
         lamp(240, 30, .8) + `<rect x="206" y="30" width="68" height="54" rx="10" fill="#f8fafc"/><rect x="214" y="38" width="52" height="30" rx="5" fill="#0f2a2e"/><text x="240" y="54" text-anchor="middle" font-size="12" font-weight="700" fill="#5eead4" font-family="system-ui,sans-serif">${o.mt || "--°"}</text><text x="240" y="64" text-anchor="middle" font-size="7.5" fill="#7dd3fc" font-family="system-ui,sans-serif">${o.mh || ""}</text><circle cx="240" cy="76" r="2.5" fill="${col}"/>` +
         `<rect x="128" y="88" width="190" height="34" rx="3" fill="#94a3b8" opacity=".55"/><path d="M128 104 h190" stroke="#64748b" stroke-width="1.2"/>` + plant(110, 108, .7),
@@ -159,7 +210,7 @@
           `<circle cx="${hx + 38}" cy="${hy - 4}" r="6" fill="#fbbf24"/><path d="M${hx + 38} ${hy - 13}v3M${hx + 38} ${hy + 2}v3M${hx + 29} ${hy - 4}h3M${hx + 44} ${hy - 4}h3" stroke="#fbbf24" stroke-width="1.6" stroke-linecap="round"/>` : "");
     }
     if ((s.lfs || []).length) {
-      const L = s.lfs[0].S.live || {}, run = !!(L.running || L.on), fill = L.fill != null ? Math.max(0, Math.min(1, L.fill)) : null, lx = -2, ly = 80, lc = L.full || L.code === "full" ? "#f59e0b" : run ? "#22d3ee" : "#64748b";
+      const L = s.lfs[0].S.live || {}, run = !!(L.running || (L.on && !L.has_pw)), fill = L.fill != null ? Math.max(0, Math.min(1, L.fill)) : null, lx = -2, ly = 80, lc = L.full || L.code === "full" ? "#f59e0b" : run ? "#22d3ee" : "#64748b";
       d += `<ellipse cx="${lx + 13}" cy="${ly + 37}" rx="15" ry="2.6" fill="#000" opacity=".25"/><rect x="${lx}" y="${ly}" width="26" height="36" rx="5" fill="#f1f5f9" stroke="#94a3b8" stroke-opacity=".7"/>` +
         [4, 7, 10].map((y) => `<rect x="${lx + 5}" y="${ly + y}" width="16" height="1.4" rx=".7" fill="#94a3b8"/>`).join("") +
         `<rect x="${lx + 5}" y="${ly + 17}" width="16" height="15" rx="2.5" fill="#dbeafe" stroke="#93c5fd" stroke-width=".8"/>` +
@@ -167,6 +218,9 @@
         `<circle cx="${lx + 21}" cy="${ly + 14}" r="1.6" fill="${lc}"/>` +
         (run ? `<g class="aw">${[0, 1].map((i) => `<path class="aw${i}" d="M${lx + 6 + i * 8} ${ly - 3} q3 -4 0 -7 q-3 -3 0 -7" fill="none" stroke="#67e8f9" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>`).join("")}</g>` : "");
     }
+    if (o.ms && type !== "mess") d += `<g transform="translate(${outd ? 88 : 0} ${outd ? 16 : 0})"><rect x="100" y="24" width="30" height="24" rx="5" fill="#f8fafc" stroke="#94a3b8" stroke-opacity=".6"/><rect x="103" y="27" width="24" height="14" rx="2.5" fill="#0f2a2e"/><text x="115" y="36.5" text-anchor="middle" font-size="7.5" font-weight="700" fill="#5eead4" font-family="system-ui,sans-serif">${o.mt || "--°"}</text><circle cx="115" cy="44.5" r="1.6" fill="${col}"/></g>`;
+    /* Präsenz: Person im Raum */
+    if (s.here && !outd) d += `<g transform="translate(${type === "flur" || type === "garage" ? 140 : 106} 74)"><ellipse cx="9" cy="46" rx="11" ry="2.6" fill="#000" opacity=".25"/><circle cx="9" cy="6" r="6" fill="#fcd9b6"/><path d="M3 4 q6 -8 12 0 q-2 -3 -6 -3 q-4 0 -6 3z" fill="#7c4a24"/><path d="M0 26 q0 -12 9 -12 q9 0 9 12 v6 h-18z" fill="${col}"/><rect x="2" y="31" width="6" height="14" rx="2.5" fill="#334155"/><rect x="10" y="31" width="6" height="14" rx="2.5" fill="#334155"/></g>`;
     /* Licht in Zustandsfarbe, Nacht etwas dunkler, aus = ohne Licht */
     d += `<rect class="rkgl" x="-60" width="440" height="150" fill="url(#${q("gl")})"/>`;
     return `<svg class="rk2svg" viewBox="-60 0 440 150" preserveAspectRatio="xMidYMax slice" aria-hidden="true">${d}</svg>`;
@@ -174,7 +228,7 @@
   /* Bildbereich: eigenes Foto (Vorrang) oder Raumbild. Der Schlüssel entscheidet, ob neu gezeichnet wird. */
   _rkPic(r, s, mini = false) {
     const ph = (this._cfg.layout.photos || {})[r.id], type = this._rkType(r), an = this._rkCfg().anim;
-    const key = [mini ? "m" : "c", r.id, type, s.k, s.open.length ? "o" : s.tilt.length ? "t" : "c", s.night ? 1 : 0, s.heating || (s.act === "heating") ? 1 : 0, an, ph ? ph.length + ph.slice(-12) : "", s.htr ? s.htr.status + (s.htr.status === "pv" && s.htr.watt_now > 0 ? "1" : "0") : "", (s.lfs || []).map((d) => { const L = d.S.live || {}; return (L.running || L.on ? "r" : "s") + (L.full ? "f" : "") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
+    const key = [mini ? "m" : "c", r.id, type, s.k, s.open.length ? "o" : s.tilt.length ? "t" : "c", s.night ? 1 : 0, s.heating || (s.act === "heating") ? 1 : 0, an, ph ? ph.length + ph.slice(-12) : "", type === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", s.htr ? s.htr.status + (s.htr.status === "pv" && s.htr.watt_now > 0 ? "1" : "0") : "", (s.lfs || []).map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.full ? "f" : "") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(","), s.here ? "p" : ""].join("|");
     const cls = `rk2art${s.k === "aus" ? " gr" : ""}${mini ? " mini" : ""}${s.night ? " nt" : ""}`;
     if (ph) return `<div class="${cls} ph" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${s.col}"><i class="rkv"></i></div>`;
     return `<div class="${cls}" data-kk="${esc(key)}" data-an="${an}" style="--c:${s.col}">${this._rkArt(type, s)}</div>`;
@@ -226,6 +280,12 @@
     if (s.th.length > 1) hs = (hs ? hs + " · " : "") + `${s.th.length} Thermostate`;
     const heat = line(this._gx(s.heating ? "radiator" : "thermostat", 30, { on: s.heating, t: s.ziel != null ? num(s.ziel, 0) + "°" : "–" }), "Heizung", hv, hs, s.heating ? "t-or" : s.k === "pause" ? "t-am" : "");
     let third = "";
+    if (s.pres) {
+      const P = s.pres, ago = (iso) => { const m = iso ? Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)) : null; return m == null ? "" : m < 60 ? `${m} Min.` : `${Math.floor(m / 60)} Std. ${m % 60} Min.`; };
+      const val = P.anwesend ? "jemand da" : P.roh ? "Bewegung erkannt" : "niemand", blk = P.gesperrt === "abwesend" ? "ruht bei Abwesenheit" : P.gesperrt === "sommer" ? "ruht im Sommermodus" : "";
+      const sub = blk || (P.anwesend ? `${P.modus === "exact" ? "genau" : "mind."} ${num(P.temp, 1)}° · seit ${ago(P.seit)}` : P.roh ? `belegt nach ${P.verz_an} Min.` : P.leerlauf ? `leer seit ${ago(P.zuletzt)} · −${num(P.leerlauf_k, 1)} K` : P.zuletzt ? `zuletzt vor ${ago(P.zuletzt)}` : "");
+      third += line(this._gx("presence", 30, { on: !!P.anwesend }), "Präsenz", val, sub, P.anwesend && !blk ? "t-pr" : "");
+    }
     if (s.hum != null) { const a = this._airData(r), [ml, mc] = a ? MOLD[a.lvl] : ["", ""]; third = line(this._gx("humidity", 30), "Luftfeuchte", `${num(s.hum)} %`, a ? `Schimmel ${ml}` : "", mc === "red" ? "t-rd" : mc === "amber" ? "t-am" : ""); }
     return win + heat + third;
   }
@@ -234,7 +294,7 @@
     if (!s.pts.length) return adm ? `<button class="rk2pl none" data-act="plan" data-id="${id}">${ic("plus", 15)}Heizplan einrichten</button>` : "";
     const segs0 = segs(s.pts, s.today), t0 = s.today * 1440, nm = s.now % 1440;
     const cuts = s.pts.filter((p) => p.w > s.now && p.w < t0 + 1440).filter((p, i, a) => (i ? a[i - 1].t : s.curPlan) !== p.t).slice(0, 2);
-    const cap = !s.planOn ? (s.away ? "Heizplan ruht · Abwesenheit" : s.summer ? "Heizplan ruht · Sommermodus" : "Heizplan aus") : `Jetzt <b>${num(s.curPlan, 1)}°</b>${cuts.map((p) => ` · ab ${fmtT(p.w % 1440)} <b>${num(p.t, 1)}°</b>`).join("")}${r.htr ? ` · <span class="nw"><span class="sun">☀</span> PV-Heizer</span>` : ""}`;
+    const cap = !s.planOn ? (s.away ? "Heizplan ruht · Abwesenheit" : s.summer ? "Heizplan ruht · Sommermodus" : "Heizplan aus") : `Jetzt <b>${num(s.curPlan, 1)}°</b>${cuts.map((p) => ` · ab ${fmtT(p.w % 1440)} <b>${num(p.t, 1)}°</b>`).join("")}${r.htr ? ` · <span class="nw"><span class="sun">☀</span> PV-Heizer</span>` : ""}${s.pres && s.pres.anwesend && !s.pres.gesperrt ? ` · <span class="nw pr">● ${s.pres.modus === "exact" ? "genau" : "mind."} ${num(s.pres.temp, 1)}°</span>` : ""}`;
     const inner = `<div class="rk2bd${s.planOn ? "" : " off"}">${segs0.map((g) => `<i style="flex:${g.e - g.s};background:${this._rkCol(g.t, s.lo, s.hi)}" title="${fmtT(g.s)}–${fmtT(g.e % 1440 || 1440)} · ${num(g.t, 1)} °C"></i>`).join("")}<b style="left:${(nm / 14.4).toFixed(2)}%"></b></div>
       <div class="tla"><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div><div class="rk2pc">${ic("plan", 14)}<span>${cap}</span></div>`;
     return adm ? `<button class="rk2pl" data-act="plan" data-id="${id}" aria-label="Heizplan bearbeiten">${inner}</button>` : `<div class="rk2pl">${inner}</div>`;
@@ -274,6 +334,13 @@
   _rkMini(r) { return `<div class="rk2mini">${this._rkPic(r, this._rkState(r), true)}</div>`; }
   /* Menü „⋯“ */
   _rkMenu(m) {
+    const ms = this._msList().find((x) => x.id === m.id);
+    if (ms) {
+      const id = esc(ms.id), it = (act, icon, t, sub) => `<button class="rk2mi" data-act="${act}" data-id="${id}">${ic(icon, 20)}<span><b>${t}</b><small>${sub}</small></span>${ic("chev", 16)}</button>`;
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+        <div class="sh"><div><b>${esc(ms.name)}</b><span>Messraum · ${esc(this._rkMsType(ms) === "mess" ? "Raumbild Messraum" : this._rkTypeName(this._rkMsType(ms)))}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="rk2menu">${it("msxedit", "sliders", "Messraum einstellen", "Sensoren, Wunschbereich, Taupunkt, Schimmel")}${it("icon", "palette", "Raumbild & Farbe", "Raumbild, Symbol, Farbe, eigenes Foto")}</div></div>`;
+    }
     const r = this._collect().find((x) => x.id === m.id); if (!r) return "";
     const adm = this._admin(), id = esc(r.id), s = this._rkState(r);
     const it = (act, icon, t, sub) => `<button class="rk2mi" data-act="${act}" data-id="${id}">${ic(icon, 20)}<span><b>${t}</b><small>${sub}</small></span>${ic("chev", 16)}</button>`;
@@ -288,7 +355,16 @@
   }
   /* Raumtyp im Fenster „Raum anpassen“ */
   _rkTypePick(r) {
-    if (!this._rkOn() || String(r.id || "").startsWith("ms_")) return "";
+    if (!this._rkOn()) return "";
+    const ms = this._msList().find((x) => x.id === r.id);
+    if (ms) {
+      const cur = (this._cfg.layout.rtype || {})[ms.id] || "", s = this._rkMsS(ms), o = { ms: true, mt: "20,5°", mh: "55 %" };
+      return `<div class="lsec">Raumbild</div><div class="rk2tp">
+        <button class="${!cur ? "sel" : ""}" data-act="rktype" data-k=""><span class="rk2art sm">${this._rkArt(this._rkMsAuto(ms), s, o)}</span><b>Automatisch</b><small>${esc(this._rkMsAuto(ms) === "mess" ? "Messraum" : this._rkTypeName(this._rkMsAuto(ms)))}</small></button>
+        <button class="${cur === "mess" ? "sel" : ""}" data-act="rktype" data-k="mess"><span class="rk2art sm">${this._rkArt("mess", s, o)}</span><b>Messraum</b></button>
+        ${this.constructor.RK_TYPES.map(([k, n]) => `<button class="${cur === k ? "sel" : ""}" data-act="rktype" data-k="${k}"><span class="rk2art sm">${this._rkArt(k, s, o)}</span><b>${n}</b></button>`).join("")}</div>
+        <div class="mut sm" style="margin:0 0 8px">Messräume zeigen statt des Heizkörpers den Sensor an der Wand (beim Carport an der Stütze). Der Raumtyp wird aus dem Namen vorgeschlagen. Ein eigenes Foto (unten) hat Vorrang vor dem Raumbild.</div>`;
+    }
     const cur = (this._cfg.layout.rtype || {})[r.id] || "", auto = this._rkTypeAuto(r), s = { ...this._rkState(r), k: "ok", col: "#2dd4bf", open: [], tilt: [], anyOpen: 0, heating: false, act: null, night: false };
     return `<div class="lsec">Raumbild</div><div class="rk2tp">
       <button class="${!cur ? "sel" : ""}" data-act="rktype" data-k=""><span class="rk2art sm">${this._rkArt(auto, s)}</span><b>Automatisch</b><small>${esc(this._rkTypeName(auto))}</small></button>
@@ -342,7 +418,7 @@
     const L = d.S.live || {};
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${esc(d.name)}</b><span>Luftentfeuchter · ${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="rk2sht">${this._gx("dehumid", 64, { lvl: L.fill != null ? Math.round(L.fill * 100) : L.full ? 100 : 30, on: !!(L.running || L.on) })}</div>${this._lfBox1(d)}
+      <div class="rk2sht">${this._gx("dehumid", 64, { lvl: L.fill != null ? Math.round(L.fill * 100) : L.full ? 100 : 30, on: !!(L.running || (L.on && !L.has_pw)) })}</div>${this._lfBox1(d)}
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   /* Mini-Raumbild für eine Raum-ID (Raum oder Messraum), z. B. in der Entfeuchter-Standortkarte und im PV-Heizer-Block */
@@ -352,8 +428,11 @@
     if (r) return `<span class="rk2mini ${cls}">${this._rkPic(r, this._rkState(r), true)}</span>`;
     const m = this._msList().find((x) => x.id === id); if (!m) return "";
     const ph = (this._cfg.layout.photos || {})[m.id];
-    return `<span class="rk2mini ${cls}">${ph ? `<span class="rk2art ph mini" style="background-image:url('${esc(ph)}')"></span>` : `<span class="rk2art mini">${this._rkArt("mess", this._rkMsS(m))}</span>`}</span>`;
+    return `<span class="rk2mini ${cls}">${ph ? `<span class="rk2art ph mini" style="background-image:url('${esc(ph)}')"></span>` : `<span class="rk2art mini">${this._rkArt(this._rkMsType(m), this._rkMsS(m), { ms: true })}</span>`}</span>`;
   }
+  _rkMsType(m) { const t = (this._cfg.layout.rtype || {})[m.id]; return t === "mess" ? "mess" : this.constructor.RK_TYPES.some((x) => x[0] === t) ? t : this._rkMsAuto(m); }
+  /* Messraum ohne eigene Wahl: Raumtyp aus dem Namen (z. B. „Carport“, „Keller“, „Garage“), sonst das Messraum-Bild */
+  _rkMsAuto(m) { return this._rkTypeAuto({ id: m.id, name: m.name, nameOnly: true }) || "mess"; }
   _rkMsS(m, col = "#2dd4bf") { return { k: "ok", col, open: [], tilt: [], anyOpen: 0, act: null, heating: false, t0: null, night: this._hass.states["sun.sun"] ? this._hass.states["sun.sun"].state === "below_horizon" : false, lfs: this._lfDevs().filter((d) => d.S.loc === m.id) }; }
   /* Messraum als Raumkarte 2.0: Bild mit Sensor, Ring für die Temperatur, Zeilen für Luftfeuchte, Taupunkt, Min/Max */
   _msCard2(m, T, Hm, mm, none, note, ntone, batLow) {
@@ -366,10 +445,10 @@
     else if (tv != null && tv > m.t_hi) { k = "warm"; lab = "Zu warm"; col = "#fb923c"; }
     else if (hv != null && hv < m.h_lo) { k = "trocken"; lab = "Zu trocken"; col = "#f59e0b"; }
     const s = this._rkMsS(m, col), ph = (this._cfg.layout.photos || {})[m.id], an = this._rkCfg().anim;
-    const mt = tv != null ? num(tv, 1) + "°" : "--°", mh = hv != null ? num(hv) + " %" : "";
-    const key = ["ms", m.id, k, mt, mh, s.night ? 1 : 0, an, ph ? ph.length : "", s.lfs.map((d) => { const L = d.S.live || {}; return (L.running || L.on ? "r" : "s") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
+    const mt = tv != null ? num(tv, 1) + "°" : "--°", mh = hv != null ? num(hv) + " %" : "", mty = this._rkMsType(m);
+    const key = ["ms", m.id, mty, mty === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", k, mt, mh, s.night ? 1 : 0, an, ph ? ph.length : "", s.lfs.map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
     const pic = ph ? `<div class="rk2art ph${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${col}"><i class="rkv"></i></div>`
-      : `<div class="rk2art${k === "aus" ? " gr" : ""}${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="--c:${col}">${this._rkArt("mess", s, { mt, mh })}</div>`;
+      : `<div class="rk2art${k === "aus" ? " gr" : ""}${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="--c:${col}">${this._rkArt(mty, s, { mt, mh, ms: true })}</div>`;
     const top = `<div class="rk2top">${edit ? `<button class="rk2eb" data-act="icon" data-id="${id}" aria-label="Raumbild, Farbe und Foto ändern">${pic}<span class="rk2pen">${ic("pencil", 14)}Raumbild</span></button>` : pic}
       <div class="rk2ov"><span class="rk2st" style="--c:${col}"><i></i>${esc(lab)}</span><span class="rk2sp"></span><span class="rk2tag">Messraum</span></div>
       <div class="rk2nm"><b>${esc(m.name)}</b></div>${batLow && !edit ? `<div class="rk2bg"><span class="achip amber">${ic("bolt", 12)}Batterie leer</span></div>` : ""}</div>`;
@@ -383,13 +462,22 @@
     const tiles = s.lfs.length ? `<div class="rk2dvs">${s.lfs.map((d) => this._rkLfTile(m, d)).join("")}</div>` : "";
     return `<div class="card room rk2 msr2" data-id="${id}" style="--c:${col}">${top}
       <div class="rk2mid">${T ? ring : ""}<div class="rk2ls">${lines}</div></div>${tiles}${this._lfMove(m.id)}
-      <div class="rk2ft"><div class="rk2fl ${ntone === "amber" ? "warn" : ""}">${ic(ntone ? "alert" : "check", 15)}<span>${esc(note)}</span></div>${adm ? `<button class="rk2more" data-act="msxedit" data-id="${id}" aria-label="Messraum einstellen">⋯</button>` : ""}</div></div>`;
+      <div class="rk2ft"><div class="rk2fl ${ntone === "amber" ? "warn" : ""}">${ic(ntone ? "alert" : "check", 15)}<span>${esc(note)}</span></div>${adm ? `<button class="rk2more" data-act="rkmenu" data-id="${id}" aria-label="Weitere Aktionen für ${esc(m.name)}">⋯</button>` : ""}</div></div>`;
   }
   /* Heizplan-Band in klein (Kompakt-Liste) */
   _rkBandMini(s) {
     if (!s.pts.length) return "";
     const nm = s.now % 1440;
     return `<div class="rk2bd sm${s.planOn ? "" : " off"}">${segs(s.pts, s.today).map((g) => `<i style="flex:${g.e - g.s};background:${this._rkCol(g.t, s.lo, s.hi)}"></i>`).join("")}<b style="left:${(nm / 14.4).toFixed(2)}%"></b></div>`;
+  }
+  /* Präsenz als Chip (Kompakt-Liste) */
+  _rkPrChip(r) {
+    const P = r.pres; if (!P) return "";
+    const m = (iso) => (iso ? Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)) : null), f = (n) => (n == null ? "" : n < 60 ? `${n} Min.` : `${Math.floor(n / 60)} Std.`);
+    if (P.gesperrt === "abwesend" || P.gesperrt === "sommer") return `<span class="achip slate">${ic("user", 12)}Präsenz ruht</span>`;
+    if (P.anwesend) return `<span class="achip prc">${ic("user", 12)}jemand da · ${P.modus === "exact" ? "" : "mind. "}${num(P.temp, 1)}°</span>`;
+    if (P.roh) return `<span class="achip slate">${ic("user", 12)}Bewegung erkannt</span>`;
+    return `<span class="achip ${P.leerlauf ? "amber" : "slate"}">${ic("user", 12)}leer${P.zuletzt ? " seit " + f(m(P.zuletzt)) : ""}${P.leerlauf ? ` · −${num(P.leerlauf_k, 1)} K` : ""}</span>`;
   }
   _rkAct(a, b) {
     const L = this._cfg.layout;

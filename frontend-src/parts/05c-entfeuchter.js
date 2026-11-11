@@ -22,6 +22,8 @@
     if (!L || !L.code) return ["off", "–"];
     if (L.on == null) return ["off", "nicht erreichbar"];
     if (L.running) return ["run", "läuft"];
+    if (L.on && L.stall) return ["warn", "läuft nicht an"];
+    if (L.on && L.has_pw) return ["wait", "Standby"];  /* Schalter an, Leistung unter „läuft ab … W“ */
     if (L.on) return ["run", "an"];
     return { full: ["warn", "Tank voll"], window: ["wait", "pausiert"], vent: ["wait", "lüften"], day_off: ["off", "heute aus"], pause: ["warn", "pausiert"], no_hum: ["warn", "aus"], no_loc: ["off", "aus"] }[L.code] || ["off", "aus"];
   }
@@ -133,9 +135,9 @@
   _lfSetOpen(id) {
     const D = this._lf(), all = (D && D.cfg && D.cfg.devs) || [], d0 = id ? all.find((x) => x.id === id) : null;
     const nid = d0 ? d0.id : (() => { for (let n = 1; n < 50; n++) if (!all.some((x) => x.id === "d" + n)) return "d" + n; return "d9"; })();
-    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, night: false, n_from: "22:00", n_to: "07:00", n_mode: "hi", hi_night: 70, n_quiet: true, n_msg: true, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, high_h: 4, filter_h: 0 };
+    const DEF = { id: nid, name: all.length && !d0 ? `Luftentfeuchter ${all.length + 1}` : "Luftentfeuchter", kind: "entity", ent: "", power: "", run_w: 20, tank: "", tgt: "", tgt_mode: "min", cap_l: 0, lph: 0, hi: 60, lo: 55, hi_away: 65, night: false, n_from: "22:00", n_to: "07:00", n_mode: "hi", hi_night: 70, n_quiet: true, n_msg: true, minrun: 15, lock: 10, vent: false, watt: 250, boost: "off", boost_hi: 57, cheap_ct: 25, pv_min: 300, high_h: 4, filter_h: 0 };
     this._pkId = null;
-    this._modal = { type: "lfset", isNew: !d0, back: all.length > 0, tab: d0 && d0.ent ? "ziel" : "geraet", draft: { ...DEF, ...(d0 || {}), ask: { on: true, time: "08:00", home_only: true, until: "12:00", miss: "same", rooms: [], push: [], ...((d0 && d0.ask) || {}) }, msg: { full: true, high: true, noloc: true, filter: true, ...((d0 && d0.msg) || {}) } } };
+    this._modal = { type: "lfset", isNew: !d0, back: all.length > 0, tab: d0 && d0.ent ? "ziel" : "geraet", draft: { ...DEF, ...(d0 || {}), ask: { on: true, time: "08:00", home_only: true, until: "12:00", miss: "same", rooms: [], push: [], ...((d0 && d0.ask) || {}) }, msg: { full: true, high: true, noloc: true, filter: true, stall: true, ...((d0 && d0.msg) || {}) } } };
     this._renderModal();
   }
   _lfSetModal() {
@@ -159,6 +161,8 @@
         ${row(d.kind === "plug" ? "Schaltsteckdose" : "Entfeuchter", d.kind === "plug" ? "switch.*" : "humidifier.*, Schalter oder Lüfter", this._wzSel(devs, d.ent, "lfxe", `data-k="ent"`, "– Gerät wählen –", /entfeucht|dehumid|humid|trockn/i))}
         ${row("Leistung", "optional, zeigt ob er wirklich läuft, misst den Strom", this._wzSel(pw, d.power, "lfxe", `data-k="power"`, "– keine –", /entfeucht|dehumid|steckdose|plug/i))}
         ${d.power ? row("Läuft ab", "darunter gilt er als aus", step("run_w", "W", 5, 1, 500)) : row("Nennleistung", "für Strom und Kosten ohne Messung", step("watt", "W", 10, 0, 3000))}
+        ${d.kind !== "watch" ? row("Zielfeuchte am Gerät", "optional: number, input_number, select oder humidifier. Modul 1 stellt sie beim Betrieb herunter, damit das Gerät nicht vorher aufhört", this._wzSel(ks.filter((e) => /^(number|input_number|select|humidifier)\./.test(e) && (e.startsWith("humidifier.") || /feucht|humid|ziel|target|hygro/i.test(e + " " + (st[e].attributes.friendly_name || "")))), d.tgt, "lfxe", `data-k="tgt"`, "– keine –", /feucht|humid|ziel|target/i)) : ""}
+        ${d.tgt ? row("Am Gerät einstellen auf", "Minimum: das Gerät läuft, solange Modul 1 es will. Untergrenze: zusätzlich Schutz, falls Modul 1 ausfällt", `<div class="seg oseg">${[["min", "Minimum"], ["lo", "Untergrenze"]].map(([v, l]) => `<button class="${d.tgt_mode === v ? "sel" : ""}" data-act="lfxseg" data-k="tgt_mode" data-v="${v}">${l}</button>`).join("")}</div>`) : ""}
         ${row("Wassertank-Sensor", "optional, meldet „voll“", this._wzSel(tk, d.tank, "lfxe", `data-k="tank"`, "– keiner –", /tank|voll|full/i))}
         ${row("Entfeuchtung", "Liter pro Stunde Betrieb, für Menge und Tankschätzung", step("lph", "l/h", 0.05, 0, 10, 2))}
         ${!d.tank ? row("Tankinhalt", "Schätzung ohne Tank-Sensor, 0 = aus", step("cap_l", "l", 0.5, 0, 50, 1)) : ""}
@@ -223,7 +227,7 @@
         ${d.boost === "cheap" || d.boost === "both" ? row("Günstig bis", "Strompreis höchstens", step("cheap_ct", "ct/kWh", 0.5, 0, 100, 1)) : ""}` : ""}
         <div class="gst">${ic("info", 15)}<div>${esc(now)}<br><span class="mut">Netz-Sensor und Strompreis kommen aus Einstellungen → Haus (Energiequellen, Preise &amp; Tarif). Sie zählen auch für Strom und Kosten in der Statistik.</span></div></div>`;
     } else {
-      const K = [["full", "Tank voll"], ["high", "Feuchte bleibt zu hoch"], ["noloc", "Standort fehlt"], ["filter", "Filter reinigen"]];
+      const K = [["full", "Tank voll"], ["high", "Feuchte bleibt zu hoch"], ["noloc", "Standort fehlt"], ["filter", "Filter reinigen"], ["stall", "Eingeschaltet, läuft nicht"]];
       body = `<div class="lsec">${ic("bell", 15)}Meldungen</div>
         <div class="mut sm" style="margin:-2px 0 6px">Erscheinen auf der Raumkarte und gehen an die Handys aus dem Reiter „Standort“${d.ask.push.length ? ` (${d.ask.push.length})` : ", dort ist noch keins gewählt"}. Jede Meldung kommt einmal je Anlass.</div>
         ${chips(K.map((k) => k[0]), K.filter((k) => d.msg[k[0]]).map((k) => k[0]), "lfxmsg", (v) => K.find((k) => k[0] === v)[1])}

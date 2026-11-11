@@ -195,6 +195,8 @@ def clean_options(raw: Any) -> dict[str, Any]:
     for key in RT_CTRL:
         out[key] = "on" if raw.get(key) == "on" and out[CONF_ROOM_TEMP] else "off"
     _heater(raw, out)
+    from .praesenz import clean_presence  # noqa: PLC0415
+    clean_presence(raw, out, _opt_entity, _num)
     out[CONF_BLOCK_FROM] = _time(raw, CONF_BLOCK_FROM)
     out[CONF_BLOCK_TO] = _time(raw, CONF_BLOCK_TO)
     if bool(out[CONF_BLOCK_FROM]) != bool(out[CONF_BLOCK_TO]):
