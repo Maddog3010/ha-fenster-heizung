@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b6] - 2026-11-12
+
+### Neu
+- **Modul 19 Hausfluss ist stabil (v1.0).** Weiterhin ein Extra nur für Sponsoren. Einstellungen und Kacheln bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.
+  - **Schnellstart aus den Haus-Werten:** Ein Tipp legt Solar, zweite Anlage (z. B. Balkonkraftwerk), Netz und Akku mit den Sensoren aus Einstellungen → Haus → Energiequellen an – samt Vorzeichen, Tageswerten und Ladestand-Ring. Belegte Plätze bleiben unverändert. Im Leerzustand und unter Einrichten.
+  - **Einrichtungs-Prüfung** oben unter Einrichten: fehlende, umbenannte oder „nicht verfügbare“ Leistungssensoren, Einheit nicht W/kW, Sensor ohne state_class (dann bleibt der Strom-Reiter leer), Solar mit negativen Werten, Verbraucher mit negativer Leistung, fehlende Quelle sowie ein rechnerisch negativer Hausverbrauch (verdrehtes Vorzeichen bei Netz oder Akku). Antippen öffnet die betroffene Kachel.
+  - **Kosten im Strom-Reiter:** Netzbezug, Einspeisevergütung, Ersparnis durch eigenen Solarstrom und der Vorteil durch Solar und Akku im gewählten Zeitraum – mit den Preisen aus Einstellungen → Haus → Preise (bei einem Preis-Sensor mit dem aktuellen Preis). Im Tablet-Modus zusätzlich **Vorteil heute** in der Seitenspalte.
+  - **Bild teilen:** Knopf „Bild“ über dem Fluss-Bild speichert es als PNG mit Hausverbrauch, Herkunft, Datum und dem Hinweis „gemacht mit Strom & Wärme“ – auf iPhone und iPad direkt über das Teilen-Menü.
+  - **Fire-Tablet schonen:** Im Tablet-Modus zeichnet der Hausfluss nur noch alle 5 Sekunden neu.
+  - **Feinschliff der Optik:** Das Haus steht ohne Kasten als freier Herkunfts-Ring in der Mitte, der Hausverbrauch steht im Ring, der Tageswert als kleine Plakette schräg darüber; alle Linien enden genau am Ring (auch im Tablet-Modus). Kacheln ruhiger: Farbe nur als zarter Verlauf von oben und Licht hinter dem Bild statt kräftiger Tönung, ruhende Kacheln deutlich gedämpft. Der Hauptwert jeder Kachel ist größer und fetter, Nebenwerte zurückhaltender. Handy: Verbraucher-Liste als ruhige Karten statt Pillen mit Farbkante, Lichtbänder im Banner laufen nicht mehr hinter der großen Zahl, Knöpfe brechen nicht mehr um. Laufende Punkte mit leichtem Schein.
+
 ## [2026.11.3b5] - 2026-11-11
 
 ### Neu

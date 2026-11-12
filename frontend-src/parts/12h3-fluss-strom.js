@@ -83,7 +83,7 @@
     /* E2 Verbraucher mit Solar-Anteil */
     const list = Object.entries(H.cons).map(([p, o]) => ({ p, n: c.nodes[p], ...o })).filter((x) => x.n).sort((a, b) => b.kwh - a.kwh);
     const e2 = `<div class="card"><div class="efh2">${ic("energy", 16)}Verbraucher mit Solar-Anteil</div>${list.length ? list.map((x) => { const col = x.n.color || EF_POS[x.p][3], s = pc(x.pv, x.kwh); return `<div class="efsv" style="--c:${col}"><span class="efq sm"><span class="efqi">${this._efxImgN(x.n, { on: x.kwh > 0 })}</span></span><span class="efsvt"><b>${esc(x.n.name)}</b><span class="efsvb"><i style="width:${s}%"></i></span></span><span class="efsvv"><b>${f1(x.kwh)} kWh</b><small>${s} % Solar</small></span></div>`; }).join("") : `<div class="mut sm">Keine Verbraucher-Kacheln mit Leistungssensor.</div>`}</div>`;
-    return `${nav}${sum}<div class="efsgrid${narrow ? " nar" : ""}">${e1}${e2}</div>`;
+    return `${nav}${sum}<div class="efsgrid${narrow ? " nar" : ""}">${e1}<div class="efsside">${e2}${this._efxCost(T)}</div></div>`;
   }
   /* ---------------- W4 Tageswerte-Leiste unter dem Brett ---------------- */
   _efxToday() {

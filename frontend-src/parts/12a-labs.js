@@ -94,7 +94,7 @@
         needs: () => [["Lampen in Home Assistant (light.*)", Object.keys(this._hass.states).some((k) => k.startsWith("light."))], ["Räume (Bereiche) für die Lampen (optional)", Object.values(this._hass.entities || {}).some((e) => e && e.entity_id && e.entity_id.startsWith("light.") && (e.area_id || e.device_id))]],
         after: "Ausgeschaltet verschwindet Modul 18. Es wird nichts mehr geschaltet, die Einstellungen (verknüpfte Szenen, Räume) bleiben gespeichert. Eingeschaltete Lampen bleiben, wie sie sind.",
         f: [] },
-      { id: "ef", k: "s", modul: true, sponsor: true, mid: "ef", mod: "Modul 19", mn: "Hausfluss", n: "Hausfluss", st: "Beta", i: "energy",
+      { id: "ef", k: "s", modul: true, sponsor: true, mid: "ef", mod: "Modul 19", mn: "Hausfluss", n: "Hausfluss", st: "Stabil", i: "energy",
         d: "Neues Modul 19: dein Haus als Fluss-Bild mit Solar, Netz, Akku und Verbrauchern. Dauerhaft nur für Sponsoren.",
         feats: ["Das Haus in der Mitte, bis zu 8 Kacheln drumherum (Solar, Netz, Akku, Auto, Verbraucher)", "Animierte Flusslinien zeigen Richtung und Stärke der Leistung", "Pro Kachel Bild, Farbe, Name und Werte frei wählbar", "Am Desktop und auf dem Handy, das Haus immer in der Mitte"],
         how: ["Die Seite liest nur Leistungssensoren aus Home Assistant und zeigt sie an. Es wird nichts geschaltet.", "Hausverbrauch = Zufluss (Solar, Netzbezug, Akku-Entladung) minus Abfluss (Einspeisung, Akku-Ladung).", "Eingerichtet wird unter Einrichten auf der Seite des Moduls."],

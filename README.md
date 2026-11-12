@@ -131,7 +131,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 16 | **Solar-Prognose** | Vorabversion 0.9 | Heute und morgen, Stundenverlauf, Prognose gegen Ertrag |
 | 17 | Müllabfuhr | Addon | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend |
 | 18 | Licht & Lampen | Addon | Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe |
-| 19 | **Hausfluss** | Beta 0.6 · Sponsoren | Dein Haus als Fluss-Bild mit 24 HD-Bildern, Punkte laufen je nach Leistung |
+| 19 | **Hausfluss** | Stabil 1.0 · Sponsoren | Dein Haus als Fluss-Bild: Leuchtlinien, Herkunfts-Ring, Lichtband-Banner, Themen, Strom-Reiter mit Kosten, Wand-Ansicht fürs Tablet |
 | 21 | Saugroboter | Addon | Roboter-Karte, Raum-Kacheln mit Ampel, Karte, Woche, Wartung |
 
 Die Module 5, 6, 7, 10, 12, 13 und 15 zeigen **Konzeptseiten** zum Durchklicken. Alle Zahlen dort sind Beispiele, diese Module schalten nichts.
@@ -231,10 +231,10 @@ Eigene Schwellen für Sturm, Gewitter, Frost, Hitze und Starkregen mit Vorwarnun
 </details>
 
 <details>
-<summary><b>19 · Hausfluss</b> (Beta, nur für Sponsoren)</summary>
+<summary><b>19 · Hausfluss</b> (Stabil 1.0, nur für Sponsoren)</summary>
 <br>
 
-Das Haus in der Mitte, ringsum bis zu acht Kacheln für Solar, Netz, Akku, Auto und Verbraucher. Die Punkte in den Linien zeigen Richtung und Stärke. **24 HD-Bilder** zeigen den Zustand aus den Werten der Kachel: Waschmaschine mit Wasser in der Trommel, Lampe leuchtet, Akku mit Füllstand. Ruhige Kacheln ohne kräftigen Rahmen, aktive heller. „Alte Symbole behalten“ holt die bisherigen zurück. Eigene mdi-Symbole gehen auch als „Mdi:…“ vom iPhone.
+Das Haus in der Mitte, ringsum bis zu acht Kacheln für Solar, Netz, Akku, Auto und Verbraucher. **Leuchtlinien** zeigen Richtung und Stärke, der **Herkunfts-Ring** am Haus, woher der Strom gerade kommt (Solar, Akku, Netz). Oben das **Lichtband-Banner**, dazu Themen (Nachtglas, Blaupause, Sternenhimmel, Haus im Garten), Kachelform Rund und eine helle Variante. HD-Bilder mit Zustand, Status-Punkt, Gruppen-Kacheln (z. B. alle Kühlschränke) und Anordnen per Ziehen. Der **Strom-Reiter** zeigt Tag, Woche, Monat und Jahr als Lichtsäulen nach Herkunft, Verbraucher mit Solar-Anteil und die Kosten. Auf dem Handy als Fluss-Spalte oder Kachel-Raster, im Tablet-Modus als Wand-Ansicht mit Ruhebild. **Schnellstart** aus den Haus-Werten, Einrichtungs-Prüfung und „Bild teilen“ als PNG.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_hausfluss_hd.png" width="420" alt="Hausfluss mit HD-Bildern"></p>
 </details>

@@ -849,7 +849,7 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efbar{display:flex;gap:2px;height:9px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);max-width:300px}.efbar i{display:block;height:100%}
 .efleg{font-size:.78rem;font-weight:650}.efband .efleg span:not([style]){opacity:.8}
 .efbt .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.efbt .chip{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:99px;padding:4px 10px;font-size:.75rem}
-.efband.nar{min-height:0;padding:12px 14px}.efband.nar .efbs{width:100%;opacity:.55}.efband.nar .efbt{max-width:70%}.efband.nar .efbt .big{font-size:2rem}.efband.nar .chips{display:none}
+.efband.nar{min-height:0;padding:12px 14px}.efband.nar .efbs{width:100%;opacity:.8}.efband.nar .efbt{max-width:70%}.efband.nar .efbt .big{font-size:2rem}.efband.nar .chips{display:none}
 @media (prefers-reduced-motion:reduce){.efband .efbd{animation:none}}
 /* F · Themen fürs Brett */
 .efboard.th-nacht,.efcol.th-nacht,.efthv.th-nacht{background:radial-gradient(circle at 50% 52%,rgba(45,212,191,.16),transparent 52%),var(--card)}
@@ -867,7 +867,7 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 /* F · Kachelform „Rund“ */
 .efx.sh-rund .efn{border-radius:50%}.efx.sh-rund .efn::before{display:none}.efx.sh-rund .efs.l,.efx.sh-rund .efs.r{display:none}.efx.sh-rund .efs.t{top:13%}.efx.sh-rund .efs.b{bottom:13%}
 .efx.sh-rund:not(.nar) .efn:not(.hub){aspect-ratio:1;width:87%}.efx.sh-rund.nar .efn:not(.hub){aspect-ratio:1;width:91%}.efx.sh-rund:not(.nar) .efc.bt .efn,.efx.sh-rund:not(.nar) .efc.ct .efn{width:calc(43.5% - 3px)}.efx.sh-rund.nar .efc.bt .efn{width:clamp(84px,25%,118px)}.efx.sh-rund.nar .efc.tp .efn{width:clamp(84px,25%,118px)}
-.efx.sh-rund .efn.hub{background:transparent;box-shadow:none}.efx.sh-rund .efn.hub .efhr{width:36%}.efx.sh-rund .efn.hub::before,.efx.sh-rund .efn.hub::after{display:none}
+.efx.sh-rund .efn.hub{background:transparent;box-shadow:none}.efx.sh-rund .efn.hub::before,.efx.sh-rund .efn.hub::after{display:none}
 /* H1 · Handy A Fluss-Spalte */
 .efcol{position:relative;border:1px solid var(--line);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:8px}
 .efsec{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
@@ -896,7 +896,8 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efx.wall .efn:not(.hub) .efs.b{left:42%;right:4%;top:52%;bottom:auto;transform:translateY(-50%);text-align:left;font-size:11cqw;color:var(--primary-text-color)}.efx.wall .efn:not(.hub) .efs.b i{font-size:.5em}
 .efx.wall .efn:not(.hub) .efs.t{left:42%;right:4%;top:auto;bottom:8%;transform:none;text-align:left;font-size:5.4cqw;font-weight:600;display:flex;gap:4px;overflow:hidden}.efx.wall .efn:not(.hub) .efs.t i{display:inline;font-size:1em}
 .efx.wall .efn:not(.hub) .efnm{left:42%;top:9%;width:auto;height:auto;clip:auto;overflow:hidden;right:12%;white-space:nowrap;text-overflow:ellipsis;font-size:5.6cqw;font-weight:700;color:var(--c)}
-.efx.wall .efn.hub{aspect-ratio:1.05/1!important;background:transparent!important;box-shadow:none!important}.efx.wall .efn.hub::before,.efx.wall .efn.hub::after{display:none}.efx.wall .efn.hub .efhr{width:48%}
+.efx.wall .efn.hub{aspect-ratio:1.05/1!important;background:transparent!important;box-shadow:none!important}.efx.wall .efn.hub::before,.efx.wall .efn.hub::after{display:none}.efx.wall .efn.hub .efhr{width:66%}
+.efx.wall .efn:not(.hub) .efgb{left:12%;right:auto;bottom:9%;font-size:4.6cqw}.efcr.sub{font-weight:600}
 .efx.wall .efn .efdot{top:7%;right:3.5%;width:8px;height:8px}
 .efws{display:flex;flex-direction:column;gap:12px}.efws .card{padding:14px;display:flex;flex-direction:column;gap:8px}.efws .efbar{max-width:none;height:12px}.efws .efleg{font-size:.85rem}
 .efwr{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-top:1px solid var(--line);font-size:.92rem}.efwr:first-of-type{border-top:0}.efwr b{font-size:1.15rem}
@@ -939,6 +940,37 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efsv{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.efsv:first-of-type{border-top:0}.efsvt{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.efsvt b{font-size:.9rem;color:var(--c)}
 .efsvb{height:7px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color) 10%,transparent);overflow:hidden}.efsvb i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#facc15);border-radius:99px}
 .efsvv{display:flex;flex-direction:column;align-items:flex-end}.efsvv small{font-size:.72rem;color:#fbbf24}
+/* Modul 19 v1.0: Prüfung, Schnellstart, Kosten */
+.efckl{display:flex;flex-direction:column;gap:6px}.efck{display:flex;align-items:flex-start;gap:8px;width:100%;padding:9px 11px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);font:inherit;font-size:.84rem;text-align:left;cursor:pointer}.efck span{flex:1}.efck>svg:last-child{transform:rotate(-90deg);opacity:.5;flex:none;align-self:center}.efck b{display:block;font-size:.85rem}
+.efck.ok{cursor:default;color:#4ade80;border-color:color-mix(in srgb,#4ade80 40%,transparent);background:color-mix(in srgb,#4ade80 8%,transparent)}.efck.ok span{color:var(--primary-text-color)}.efck.bad{border-color:color-mix(in srgb,#f87171 55%,transparent);background:color-mix(in srgb,#f87171 8%,transparent)}.efck.bad>svg:first-child{color:#f87171}
+.efck.warn{border-color:color-mix(in srgb,#fbbf24 50%,transparent);background:color-mix(in srgb,#fbbf24 7%,transparent)}.efck.warn>svg:first-child{color:#fbbf24}.efck.info>svg:first-child{color:#60a5fa}
+.efhs .btn2{flex:none}.efhs{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}.efhsi{display:flex;flex-wrap:wrap;gap:6px}.efhsi span{display:inline-flex;align-items:center;gap:4px;padding:3px 9px 3px 4px;border-radius:99px;border:1px solid var(--line);font-size:.78rem}.efhsi span.used{opacity:.45;text-decoration:line-through}
+.efsside{display:flex;flex-direction:column;gap:12px}.efcost .efh2{flex-wrap:wrap}.efcost .efh2 small{flex-basis:100%;font-weight:500;font-size:.72rem}
+.efcr{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-top:1px solid var(--line);font-size:.88rem}.efcr b{font-size:1rem}.efcr .pos{color:#4ade80}.efcr .neg{color:#f87171}.efcr.sum{border-top:2px solid var(--line);font-weight:700}.efcr.sum b{font-size:1.2rem}
+.efseg .efsh{margin-left:auto;display:inline-flex;align-items:center;gap:5px}.efseg .efszb+.efszb{margin-left:0}
+/* Modul 19 v1.0 Build 2 · Feinschliff: ruhige Kacheln, klare Schrift-Rangfolge, Haus als freier Ring */
+.efx:not(.lt) .efn.on{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,var(--card)) 0%,color-mix(in srgb,var(--primary-text-color) 5%,var(--card)) 78%);box-shadow:inset 0 1px 0 color-mix(in srgb,var(--primary-text-color) 9%,transparent),0 8px 22px -18px var(--c)}
+.efn.on::after{background:radial-gradient(circle,color-mix(in srgb,var(--c) 34%,transparent),transparent 66%)}
+.efx:not(.lt) .efn:not(.on):not(.hub){background:color-mix(in srgb,var(--primary-text-color) 3%,var(--card))}.efn:not(.on):not(.hub) .efi{filter:saturate(.25) brightness(.85);opacity:.6}.efn:not(.on):not(.hub) .efs.b{color:var(--mut)}
+.efs.b{font-size:10.5cqw;font-weight:800;letter-spacing:-.01em}.efs.b i{font-size:.6em;font-weight:600;letter-spacing:0}.efs.t{font-size:8cqw}.efs.l,.efs.r{font-size:7.5cqw}.efs i{opacity:.85}
+.efn.on .efs.t,.efn.on .efs.l,.efn.on .efs.r{color:color-mix(in srgb,var(--primary-text-color) 82%,var(--mut))}
+.efx.nar .efs.b{font-size:max(12px,12.5cqw)}.efx.nar .efs.b i{font-size:max(9px,.62em)}
+/* Haus: kein Kasten mehr, der Ring ist das Herzstück; Wert im Ring, Tageswert schräg oben rechts (dort kommt keine Linie an) */
+.efx .efn.hub{background:transparent!important;box-shadow:none!important;border:0!important;overflow:visible}
+.efx .efn.hub::before{display:none}.efx .efn.hub::after{width:96%;opacity:.85;background:radial-gradient(circle,color-mix(in srgb,var(--c) 26%,transparent),transparent 62%)}
+.efx .efn.hub .efhr{width:68%}.efx .efn.hub .efhr::before{display:none}
+.efx .efn.hub .efhri{inset:13%;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--c) 16%,var(--card)),var(--card) 75%);box-shadow:inset 0 1px 0 color-mix(in srgb,var(--primary-text-color) 10%,transparent)}
+.efx .efn.hub .efhri svg{width:46%;height:46%;transform:translateY(-34%)}.efx .efn.hub .efhri img{transform:none}
+.efx .efn.hub .efs{z-index:3}.efx .efn.hub .efs.b{bottom:auto;top:52%;font-size:8.6cqw;line-height:1.05}.efx .efn.hub .efs.b i{font-size:.62em;color:var(--mut)}
+.efx .efn.hub .efs.t{top:1%;left:auto;right:-6%;transform:none;font-size:6.6cqw;text-align:left;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color) 7%,var(--card));border:1px solid var(--line)}.efx .efn.hub .efs.t i{display:inline;margin-left:3px}
+.efx.nar .efn.hub .efs.t{font-size:max(9px,7cqw);right:-14%;top:-4%}.efx.nar .efn.hub .efs.b{font-size:max(11px,10cqw)}
+.efx.lt .efn.hub .efhri{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+/* Punkte mit leichtem Schein, Raster und Pillen ruhiger */
+.eflines circle{filter:drop-shadow(0 0 2px rgba(255,255,255,.7))}
+.efpill{box-shadow:none!important;border-radius:18px;border-color:color-mix(in srgb,var(--c) 24%,var(--line))}.efpill.on{background:linear-gradient(90deg,color-mix(in srgb,var(--c) 11%,var(--card)),color-mix(in srgb,var(--primary-text-color) 4%,var(--card)) 70%)}.efpill:not(.on){border-color:var(--line)}
+.efseg button{white-space:nowrap}.efx.nar .efseg{gap:6px}.efx.nar .efseg button{padding:7px 14px}.efx.nar .efseg .efszb{padding:5px 10px;font-size:.78rem}
+.efx.nar .efn.hub .efhr{width:92%}.efx.nar .efn.hub .efs.b{top:50%;font-size:max(10px,9.5cqw)}.efx.nar .efn.hub .efs.t{top:-14%;right:-30%}
+.efrt.on{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,var(--card)),color-mix(in srgb,var(--primary-text-color) 5%,var(--card)) 80%)}.efpill.on{background:color-mix(in srgb,var(--c) 6%,var(--card))}
 @media (prefers-reduced-motion:reduce){.efha,.efpr circle{transition:none}.efboard .efgl{animation:none}}
 .lixroom.on{border-color:color-mix(in srgb,#fbbf24 55%,transparent);background:color-mix(in srgb,#fbbf24 7%,var(--card))}
 .lixhd{display:flex;align-items:center;gap:10px}.lixico{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:var(--mut);flex:none}

@@ -57,7 +57,7 @@
     const h = `<div class="card efband${night ? " nt" : ""}${narrow ? " nar" : ""}" data-an="${an}" data-kk="efband|${key}">
       <svg class="efbs" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">${stars}<g fill="none" stroke-linecap="round" mask="url(#efbmask)">${lines}</g>
         <g transform="translate(${hx},${hy})"><circle r="56" fill="url(#efbglow)"/>${this._efxRingSvg(mix, 36, 6)}<circle r="29" fill="rgba(255,255,255,.07)"/>${house}</g>
-        <defs><linearGradient id="efbfade" x1="0" x2="1"><stop offset="${narrow ? 0 : .08}" stop-color="#fff" stop-opacity="0"/><stop offset="${narrow ? .35 : .4}" stop-color="#fff"/></linearGradient><mask id="efbmask"><rect x="0" y="0" width="${W}" height="${H}" fill="url(#efbfade)"/></mask><radialGradient id="efbglow"><stop offset="0" stop-color="#2dd4bf" stop-opacity=".35"/><stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/></radialGradient></defs></svg>
+        <defs><linearGradient id="efbfade" x1="0" x2="1"><stop offset="${narrow ? .38 : .08}" stop-color="#fff" stop-opacity="0"/><stop offset="${narrow ? .62 : .4}" stop-color="#fff"/></linearGradient><mask id="efbmask"><rect x="0" y="0" width="${W}" height="${H}" fill="url(#efbfade)"/></mask><radialGradient id="efbglow"><stop offset="0" stop-color="#2dd4bf" stop-opacity=".35"/><stop offset="1" stop-color="#2dd4bf" stop-opacity="0"/></radialGradient></defs></svg>
       ${this._efxBadge()}<div class="efbt"><div class="lbl">${ic("energy", 15)}${esc(o.lbl)}</div><div class="big">${esc(o.big)}<small>${esc(o.unit || "")}</small></div>${this._efxBar(mix)}
       ${o.chips.length ? `<div class="chips">${o.chips.map((t) => `<span class="chip">${esc(t)}</span>`).join("")}</div>` : ""}</div></div>`;
     this._efBandC = { k: key, h }; return h;
@@ -117,6 +117,8 @@
     if (pvToday.length) F.push(["Solar heute", pvToday.reduce((a, b) => a + b, 0).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " kWh", "#fbbf24"]);
     if (!isNaN(use)) F.push(["Verbrauch heute", use.toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " kWh", "#e5e7eb"]);
     if (soc != null) F.push(["Akku", Math.round(soc) + " %", "#a78bfa"]);
+    const D = this._efxStatLoad && this._efxStatLoad({ range: "day", off: 0 }), pr = Number(this._price()) || 0;  /* v1.0: Vorteil heute mit den Haus-Preisen */
+    if (D && D.any && pr) { const T = D.tot, v = (T.exp * (Number(this._feed()) || 0) + Math.max(0, T.use - T.net) * pr) / 100; F.push(["Vorteil heute", (v >= 0 ? "+" : "−") + Math.abs(v).toLocaleString("de-DE", { style: "currency", currency: "EUR" }), v >= 0 ? "#4ade80" : "#f87171"]); }
     return F;
   }
   _efxWallSide(items, hubW, quer) {

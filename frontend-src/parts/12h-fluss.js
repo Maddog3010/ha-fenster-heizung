@@ -144,9 +144,9 @@
   }
   _efPage() {
     if (!this._efxD) { this._efxLoad(); return `<div class="card empty">Hausfluss wird geladen …</div>`; }
-    if (!this._efxSp()) return `<div class="card empty">${ic("heart", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Nur für Sponsoren</div>Der Hausfluss ist eine Vorabversion und gehört zu den Extras für Sponsoren.<br><button class="btn2 pri" style="margin-top:12px" data-act="spnopen">Sponsor-Bereich öffnen</button></div>`;
+    if (!this._efxSp()) return `<div class="card empty">${ic("heart", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Nur für Sponsoren</div>Der Hausfluss gehört zu den Extras für Sponsoren.<br><button class="btn2 pri" style="margin-top:12px" data-act="spnopen">Sponsor-Bereich öffnen</button></div>`;
     const c = this._efxCfg(), adm = this._admin(), list = EF_POS ? Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on) : [], nodes = list.map((p) => c.nodes[p]);
-    if (!list.length) return `<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Kacheln</div>Lege Solar, Netz, Akku und Verbraucher als Kacheln um dein Haus an.${adm ? `<br><div style="margin-top:12px;text-align:left">${this._efxTplHtml(adm)}</div><button class="btn2" style="margin-top:8px" data-act="efxopen">Selbst einrichten</button>` : ""}</div>`;
+    if (!list.length) return `<div class="card empty">${ic("energy", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Kacheln</div>Lege Solar, Netz, Akku und Verbraucher als Kacheln um dein Haus an.${adm ? `<br><div style="margin-top:12px;text-align:left"><div class="efsec" style="margin-bottom:6px">Schnellstart mit deinen Sensoren</div>${this._efxHausHtml(adm)}<div class="efsec" style="margin:12px 0 6px">Oder eine Vorlage</div>${this._efxTplHtml(adm)}</div><button class="btn2" style="margin-top:8px" data-act="efxopen">Selbst einrichten</button>` : ""}</div>`;
     const narrow = (this.clientWidth || 1000) < 640, hub = c.hub, calc = this._efxCalc(nodes), hubW = hub.calc === "rest" ? calc.rest : calc.total;
     this._efMix = this._efxMix(nodes);
     /* Das Haus sitzt immer genau in der Mitte: Zeilen oben und unten werden paarweise gehalten oder weggelassen, leere Gegenstücke bekommen einen unsichtbaren Platzhalter */
@@ -171,15 +171,16 @@
     }
     const hubCell = `<div class="efc hb${gUp ? " hu" : gDn ? " hd" : ""}" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
     const tab = this._efTab(), sz = this._efSize(), SZ = { auto: "Auto", klein: "Klein", mittel: "Mittel", gross: "Groß" }, MB = { fluss: "Fluss", raster: "Raster", brett: "Brett" };
-    const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && adm && !tm && !narrow ? `<button class="efszb efab${arr ? " on" : ""}" data-act="efxarr" aria-pressed="${arr}">${arr ? "Fertig" : "Anordnen"}</button>` : ""}${tab === "now" && !narrow && !tm ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : tab === "now" && narrow ? `<button class="efszb" data-act="efxmob" aria-label="Ansicht wechseln">Ansicht: ${MB[mob]}</button>` : ""}</div>`;
+    const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && !tm && (!narrow || mob === "brett") && !arr ? `<button class="efszb efsh" data-act="efxshare" aria-label="Fluss-Bild als Bild teilen">${ic("download", 14)} Bild</button>` : ""}${tab === "now" && adm && !tm && !narrow ? `<button class="efszb efab${arr ? " on" : ""}" data-act="efxarr" aria-pressed="${arr}">${arr ? "Fertig" : "Anordnen"}</button>` : ""}${tab === "now" && !narrow && !tm ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : tab === "now" && narrow ? `<button class="efszb" data-act="efxmob" aria-label="Ansicht wechseln">Ansicht: ${MB[mob]}</button>` : ""}</div>`;
     const cls = `efx${narrow ? " nar" : ""}${lt ? " lt" : ""}${L.shape === "rund" ? " sh-rund" : ""}${tm ? " wall" : ""}`;
-    const foot = `<div class="mut sm" style="margin:2px 4px">Vorabversion für Sponsoren · Werte live aus deinen Entitäten · Tippe auf einen Wert für den Verlauf</div>`;
+    const foot = `<div class="mut sm" style="margin:2px 4px">Modul 19 · für Sponsoren · Werte live aus deinen Entitäten · Tippe auf einen Wert für den Verlauf</div>`;
     if (tab === "strom") return `<div class="${cls}">${hero}${seg}${this._efStrom(narrow)}</div>`;
     if (narrow && !tm && mob === "fluss" && !arr) { setTimeout(() => this._efxColLines(), 0); return `<div class="${cls}">${hero}${seg}${this._efxCol(items, hubW)}${this._efxToday()}${foot}</div>`; }
     if (narrow && !tm && mob === "raster" && !arr) { const R = this._efxRaster(items, hubW, adm); return `<div class="${cls}">${R.card}${seg}${R.grid}${foot}</div>`; }
     setTimeout(() => this._efxLines(), 0);
     const board = `${arr && !narrow ? `<div class="stowarn" style="margin:0">${ic("info", 16)}<span>Anordnen: Kachel auf einen anderen Platz ziehen – oder antippen und dann den Ziel-Platz antippen. Belegte Plätze werden getauscht.</span></div>` : ""}<div class="efboard th-${L.theme}${arr && !narrow ? " arr" : ""}" id="efboard" data-rows="${rows}"${!narrow && this._efW ? ` style="--eft:${this._efW}px"` : ""}><svg class="eflines" aria-hidden="true">${this._efSvg || ""}</svg><div class="efgrid">${cells}${slots}${hubCell}</div></div>`;
-    if (tm) { const quer = (window.innerWidth || 1280) >= (window.innerHeight || 800); return `<div class="${cls} ${quer ? "quer" : "hoch"}">${seg}<div class="efwall">${board}${this._efxWallSide(items, hubW, quer)}</div></div>`; }
+    if (tm) { const ck = Math.floor(Date.now() / 5000) + "|" + (this._efBandV || 0) + "|" + (window.innerWidth >= window.innerHeight); if (this._efTmC && this._efTmC.k === ck) return this._efTmC.h; }
+    if (tm) { const quer = (window.innerWidth || 1280) >= (window.innerHeight || 800); const h = `<div class="${cls} ${quer ? "quer" : "hoch"}">${seg}<div class="efwall">${board}${this._efxWallSide(items, hubW, quer)}</div></div>`; this._efTmC = { k: Math.floor(Date.now() / 5000) + "|" + (this._efBandV || 0) + "|" + (window.innerWidth >= window.innerHeight), h }; return h; }
     return `<div class="${cls}">${hero}${seg}${board}${arr ? "" : this._efxToday()}
       ${foot}</div>`;
   }
@@ -202,7 +203,8 @@
     const r = this.shadowRoot, b = r && r.getElementById("efboard"), hub = b && b.querySelector(".efn.hub"), svg = b && b.querySelector("svg.eflines"); if (!b || !hub || !svg) return;
     const narrow = b.closest(".efx").classList.contains("nar"); this._efxFit(b, narrow);
     if (b.classList.contains("arr")) this._efxDragBind(b);
-    const g = b.getBoundingClientRect(), hb = hub.getBoundingClientRect(), hx = hb.left - g.left + hb.width / 2, hy = hb.top - g.top + hb.height / 2;
+    /* Linien enden am Herkunfts-Ring (Feinschliff), ohne Ring wie bisher am Haus */
+    const ringEl = hub.querySelector(".efhr"), g = b.getBoundingClientRect(), hb = (ringEl || hub).getBoundingClientRect(), hx = hb.left - g.left + hb.width / 2, hy = hb.top - g.top + hb.height / 2;
     let off = "", act = "", defs = "";
     const c = this._efxCfg(), grad = c.lines === "grad", hubCol = (c.hub && c.hub.color) || "#2dd4bf";
     let an = this._rkCfg().anim; try { if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) an = "aus"; } catch (_) { /* egal */ }
@@ -272,13 +274,15 @@
       return `<div class="efrow"><button class="sxrow" data-act="efxedit" data-k="${pos}"><span class="sxi">${n ? `<span class="efmini" style="--c:${n.color || e[3]}">${this._efxImgN(n)}</span>` : ic("plus", 20)}</span><span class="sxt"><b>${n ? esc(n.name) : "Kachel hinzufügen"}</b><small>${e[4]}${n ? " · " + fl : ""}</small></span></button>${n ? `<button class="sw ${n.on ? "on" : ""}" data-act="efxtog" data-k="${pos}" aria-pressed="${n.on}" aria-label="${esc(n.name)} ${n.on ? "ausblenden" : "einblenden"}" ${adm ? "" : "disabled"}></button>` : ""}</div>`;
     };
     const h = c.hub;
-    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Hausfluss einrichten", "Modul 19 · Beta · gilt für alle Nutzer")}
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">${hd("Hausfluss einrichten", "Modul 19 · Stabil · gilt für alle Nutzer")}
+      <div class="lsec">${ic("check", 15)}Prüfung</div>${this._efxCheckHtml()}
       <div class="lsec">${ic("home", 15)}Haus (Mitte)</div>
       <div class="efrow"><button class="sxrow" data-act="efxedit" data-k="hub"><span class="sxi"><span class="efmini" style="--c:${h.color || "#2dd4bf"}">${this._efxImgN(h)}</span></span><span class="sxt"><b>${esc(h.name)}</b><small>${h.bottom ? "Eigener Sensor für den Hausverbrauch" : "Hausverbrauch wird berechnet: " + (h.calc === "rest" ? "Restverbrauch" : "Gesamtverbrauch")}</small></span></button></div>
       <div class="lsec">${ic("energy", 15)}Kacheln</div>
       <div class="efl">${Object.keys(EF_POS).map((p) => row(p, c.nodes[p])).join("")}</div>
       <div class="lsec">${ic("image", 15)}Bilder</div>
       <div class="vrow"><span>Alte Symbole behalten<small class="mut" style="display:block">Aus: eingebaute Symbole erscheinen als HD-Bilder. Emojis und eigene Bilder bleiben immer.</small></span><button class="sw ${c.keep_old ? "on" : ""}" data-act="efxkeep" aria-pressed="${!!c.keep_old}" aria-label="Alte Symbole behalten" ${adm ? "" : "disabled"}></button></div>
+      <div class="lsec">${ic("energy", 15)}Schnellstart aus den Haus-Werten</div><div class="mut sm" style="margin-bottom:6px">Solar, zweite Anlage, Netz und Akku mit den Sensoren aus Einstellungen → Haus → Energiequellen, auf freie Plätze.</div>${this._efxHausHtml(adm)}
       <div class="lsec">${ic("list", 15)}Vorlagen</div><div class="mut sm" style="margin-bottom:6px">Ein Tipp legt passende Kacheln mit HD-Bildern auf freie Plätze. Belegte Plätze bleiben, wie sie sind.</div>${this._efxTplHtml(adm)}
       <div class="lsec">${ic("image", 15)}Aussehen</div>
       <div class="vrow"><span>Tageswerte-Leiste<small class="mut" style="display:block">Schmale Zeile unter dem Fluss-Bild: Solar, Verbrauch, Autarkie heute</small></span><button class="sw ${c.today !== false ? "on" : ""}" data-act="efxtoday" aria-pressed="${c.today !== false}" aria-label="Tageswerte-Leiste" ${adm ? "" : "disabled"}></button></div>
@@ -359,6 +363,8 @@
     if (a === "efxsize") { const o = ["auto", "klein", "mittel", "gross"]; this._efS = o[(o.indexOf(this._efSize()) + 1) % 4]; try { localStorage.setItem("fh_ef_size", this._efS); } catch (e) { /* egal */ } this._render(); return; }
     if (a === "efxback") { this._modal = { type: "efxmgr" }; this._renderModal(); return; }
     if (a === "efxkeep") { const c = this._efxClone(); c.keep_old = !c.keep_old; this._efxPut(c).then(() => { this._renderModal(); this._render(); this._toast(c.keep_old ? "Alte Symbole werden angezeigt" : "HD-Bilder werden angezeigt"); }); return; }
+    if (a === "efxshare") { this._efxShare(); return; }
+    if (a === "efxhaus") { this._efxHausApply(); return; }
     if (a === "efxrng") { this._efPr = { range: k, off: 0 }; this._efSel = null; try { localStorage.setItem("fh_ef_rng", k); } catch (_) { /* egal */ } this._render(); return; }
     if (a === "efxoff") { const P = this._efP(); P.off = Math.min(0, P.off + Number(k)); this._efSel = null; this._render(); return; }
     if (a === "efxsel") { this._efSel = this._efSel === Number(k) ? null : Number(k); this._render(); return; }
