@@ -8,6 +8,11 @@ Stufe 2 (v0.9 Build 4, Konzept F1–F4, F6):
 - F3 Schnappschuss: ab 4 Uhr wird die ganze Stundenkurve des Tages festgehalten (Messlatte), nicht nur die Tagessumme.
 - F4 Speicher mit Schema-Version: 400 Tage Tageswerte, 30 Tage Stundenkurven; alte Stände werden umgewandelt.
 - F6 Abruf nur im Hintergrund alle 30 Minuten; die Ansicht liest den Zwischenspeicher.
+
+Stufe 4 (v1.0, Konzept E2, E6/F7):
+- E2 Anlagen einzeln: Tagessummen je Anlage (Forecast.Solar-Dächer, Solcast-Standorte …).
+- E6/F7 Werte für Home Assistant: values() liefert Prognose heute, morgen, Rest heute, korrigiert und Beginn der besten Zeit;
+  sensor.py stellt sie als eigenes Gerät „Strom & Wärme · Solar-Prognose“ bereit (Signal SIGNAL_SOLAR).
 """
 from __future__ import annotations
 
@@ -19,6 +24,7 @@ from typing import Any
 
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
@@ -35,10 +41,11 @@ KEEP_HOURLY = 30      # F4: Stundenkurven
 SCHEMA = 2
 UNIT_KWH = {"Wh": 0.001, "kWh": 1.0, "MWh": 1000.0}
 EID = re.compile(r"^[a-z_]+\.[a-z0-9_]+$")
+SIGNAL_SOLAR = f"{DOMAIN}_solar_update"
 
 
 def default_cfg() -> dict[str, Any]:
-    return {"src": "forecast", "fc_sensor": "", "act": "", "mode": "day", "look": "new"}
+    return {"src": "forecast", "fc_sensor": "", "act": "", "mode": "day", "look": "new", "corr": True}
 
 
 def clean_cfg(raw: Any) -> dict[str, Any]:
@@ -53,7 +60,47 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
             d["mode"] = raw["mode"]
         if raw.get("look") in ("new", "classic"):  # v0.9 Build 3: neue Optik oder „wie bisher“
             d["look"] = raw["look"]
+        if "corr" in raw:  # v0.9 Build 5: korrigierte Prognose an/aus
+            d["corr"] = raw.get("corr") is not False
     return d
+
+
+CORR_DAYS = 14   # F5: so viele gültige Tage fließen in die Korrektur ein
+CORR_MIN = 7     # erst ab so vielen Tagen
+CORR_LIM = (0.6, 1.4)
+
+
+def correction(hist: dict[str, dict[str, Any]], today: date) -> tuple[float | None, int]:
+    """F5/E1: Median von Ertrag/Prognose der letzten gültigen Tage (ohne heute). Median, damit ein Schneetag den Faktor nicht verzieht."""
+    q = []
+    for k in sorted(hist, reverse=True):
+        if k >= today.isoformat():
+            continue
+        r = hist[k]
+        f, a = r.get("f"), r.get("a")
+        if f is None or a is None or f < 0.5:
+            continue
+        q.append(float(a) / float(f))
+        if len(q) >= CORR_DAYS:
+            break
+    if len(q) < CORR_MIN:
+        return None, len(q)
+    q.sort()
+    m = q[len(q) // 2] if len(q) % 2 else (q[len(q) // 2 - 1] + q[len(q) // 2]) / 2
+    return round(min(max(m, CORR_LIM[0]), CORR_LIM[1]), 3), len(q)
+
+
+def low_yield(act: dict[int, float] | None, fc: list[list[Any]] | None, now_h: int) -> dict[str, Any] | None:
+    """E5: Ertrag in den letzten beiden vollen Stunden unter 30 % der Prognose, obwohl mindestens 0,4 kWh erwartet waren."""
+    if not act or not fc:
+        return None
+    byh = {int(h): float(v) for h, v in fc}
+    hrs = [now_h - 2, now_h - 1]
+    f = sum(byh.get(h, 0.0) for h in hrs)
+    a = sum(float(act.get(h, 0.0)) for h in hrs)
+    if f < 0.4 or a >= 0.3 * f:
+        return None
+    return {"from": hrs[0], "to": now_h, "f": round(f, 2), "a": round(a, 2), "pct": round(a / f * 100)}
 
 
 def day_sums(wh: dict[Any, float], tz: Any, day: date) -> float:
@@ -101,6 +148,27 @@ def best_window(rows: list[list[Any]], hours: int = 3) -> dict[str, Any] | None:
         if s > best:
             best, at = s, h
     return {"from": at, "to": at + hours, "kwh": round(best, 1)} if best > 0 else None
+
+
+def rest_today(rows: list[list[Any]], now: datetime) -> float:
+    """Noch zu erwartender Ertrag heute (kWh): kommende Stunden plus der Rest der laufenden Stunde."""
+    tot = 0.0
+    for h, v in rows:
+        if h > now.hour:
+            tot += float(v)
+        elif h == now.hour:
+            tot += float(v) * max(0.0, 1 - now.minute / 60)
+    return round(tot, 1)
+
+
+def site_name(title: Any, fallback: str, used: list[str]) -> str:
+    n = re.sub(r"[<>\"'&]", "", str(title or fallback))[:30] or fallback
+    if n not in used:
+        return n
+    i = 2
+    while f"{n} {i}" in used:
+        i += 1
+    return f"{n} {i}"
 
 
 def parse_detailed(items: Any) -> dict[str, float]:
@@ -184,6 +252,8 @@ class SolarManager:
         self._cache: tuple[float, dict[str, Any]] | None = None
         self._wh: dict[Any, float] = {}            # F6: zuletzt abgerufene Prognose (Wh je Stunde)
         self._sites: list[str] = []
+        self._per: list[tuple[str, dict[Any, float]]] = []      # E2: Prognose je Anlage
+        self._per_new: list[tuple[str, dict[Any, float]]] = []
         self._via = ""                             # „energy“, „service“, „sensor“ oder ""
         self._fetched = 0.0
         self._fetch_err = ""
@@ -220,6 +290,7 @@ class SolarManager:
         """Alle Integrationen mit Energie-Plattform „Solar-Prognose“ (Forecast.Solar, Solcast, Open-Meteo …), je geladenem Eintrag."""
         wh: dict[Any, float] = {}
         sites: list[str] = []
+        self._per_new = []
         try:
             from homeassistant.components.energy.websocket_api import async_get_energy_platforms
             platforms = await async_get_energy_platforms(self.hass)
@@ -238,18 +309,23 @@ class SolarManager:
                 part = (r or {}).get("wh_hours") if isinstance(r, dict) else None
                 if not isinstance(part, dict) or not part:
                     continue
+                one: dict[Any, float] = {}
                 for k, v in part.items():
                     try:
-                        wh[k] = wh.get(k, 0.0) + float(v or 0)
+                        one[k] = float(v or 0)
+                        wh[k] = wh.get(k, 0.0) + one[k]
                     except (TypeError, ValueError):
                         continue
-                sites.append(re.sub(r"[<>\"'&]", "", str(e.title or domain))[:30])
+                n = site_name(e.title, domain, sites)
+                sites.append(n)
+                self._per_new.append((n, one))
         return wh, sites
 
     async def _via_service(self) -> tuple[dict[Any, float], list[str]]:
         """Bisheriger Weg (bis Build 3): Dienst forecast_solar.get_forecast je Anlage."""
         wh: dict[Any, float] = {}
         sites: list[str] = []
+        self._per_new = []
         if not self.hass.services.has_service("forecast_solar", "get_forecast"):
             return wh, sites
         for e in self.hass.config_entries.async_entries("forecast_solar"):
@@ -264,9 +340,16 @@ class SolarManager:
             part = (resp or {}).get("wh_period") if isinstance(resp, dict) else None
             if not isinstance(part, dict):
                 continue
+            one: dict[Any, float] = {}
             for k, v in part.items():
-                wh[k] = wh.get(k, 0.0) + float(v or 0)
-            sites.append(re.sub(r"[<>\"'&]", "", str(e.title or "Anlage"))[:30])
+                try:
+                    one[k] = float(v or 0)
+                    wh[k] = wh.get(k, 0.0) + one[k]
+                except (TypeError, ValueError):
+                    continue
+            n = site_name(e.title, "Anlage", sites)
+            sites.append(n)
+            self._per_new.append((n, one))
         return wh, sites
 
     async def _fetch(self, force: bool = False) -> None:
@@ -276,6 +359,7 @@ class SolarManager:
         wh: dict[Any, float] = {}
         sites: list[str] = []
         via = ""
+        self._per_new = []
         if self.cfg["src"] == "sensor":
             st = self.hass.states.get(self.cfg["fc_sensor"]) if self.cfg["fc_sensor"] else None
             if st is not None:
@@ -289,6 +373,7 @@ class SolarManager:
         self._fetched = time.time()
         if wh:
             self._wh, self._sites, self._via, self._fetch_err = wh, sites, via, ""
+            self._per = self._per_new if len(self._per_new) > 1 else []
             self._cache = None
         else:
             self._fetch_err = "Keine Prognose gefunden" if not self._wh else "Letzter Abruf ohne Daten – zeige den vorherigen Stand"
@@ -365,6 +450,32 @@ class SolarManager:
             yr["ah"] = [[h, v] for h, v in sorted((ah or {}).items())]
         prune(self.hist, now.date())
         self._save()
+        async_dispatcher_send(self.hass, SIGNAL_SOLAR)
+
+    # ---- E6/F7 Werte für die Sensoren (ohne Abruf, nur aus dem Zwischenspeicher)
+    def values(self) -> dict[str, Any]:
+        if not self.active() or not self._wh:
+            return {"ok": False}
+        now = dt_util.now()
+        tz, d0 = now.tzinfo, now.date()
+        rows0 = hourly(self._wh, tz, d0)
+        today = day_sums(self._wh, tz, d0)
+        corr, n = correction(self.hist, d0)
+        use = corr if (corr is not None and self.cfg.get("corr", True)) else None
+        rest = rest_today(rows0, now)
+        bd = d0 if now.hour < 16 else d0 + timedelta(days=1)
+        bw = best_window(rows0 if now.hour < 16 else hourly(self._wh, tz, bd))
+        best_at = None
+        if bw:
+            t = datetime.combine(bd, datetime.min.time(), tzinfo=tz) + timedelta(hours=bw["from"])
+            best_at = t if t + timedelta(hours=3) > now else None
+        return {
+            "ok": True, "today": today, "tomorrow": day_sums(self._wh, tz, d0 + timedelta(days=1)),
+            "rest": rest, "corr_today": round(today * use, 1) if use is not None else today,
+            "corr": use, "corr_n": n, "best_at": best_at, "best": bw, "src": self._via,
+            "sites": [n for n, _ in self._per] or self._sites, "fetched": self._fetched,
+            "got": (self.hist.get(d0.isoformat()) or {}).get("a"),
+        }
 
     # ---- Ansicht
     async def snapshot(self, force: bool = False) -> dict[str, Any]:
@@ -380,11 +491,20 @@ class SolarManager:
         rec = self.hist.get(d0.isoformat()) or {}
         hrs0 = hourly(wh, tz, d0)
         hist = []
-        for i in range(7, 0, -1):
+        hist30 = []
+        for i in range(30, 0, -1):  # D1/D2: bis zu 30 Tage, mit Stundenkurven für „Tag als Kurve“
             k = (d0 - timedelta(days=i)).isoformat()
             r = self.hist.get(k)
             if r and r.get("f") is not None:
-                hist.append({"d": k, "f": r["f"], "a": r.get("a")})
+                x = {"d": k, "f": r["f"], "a": r.get("a")}
+                if r.get("fh"):
+                    x["fh"] = r["fh"]
+                if r.get("ah"):
+                    x["ah"] = r["ah"]
+                hist30.append(x)
+                if i <= 7:
+                    hist.append({"d": k, "f": r["f"], "a": r.get("a")})
+        corr, corr_n = correction(self.hist, d0)
         act_h = None
         if self.active() and self.cfg["act"]:
             if self._act_h and ts - self._act_h[0] < 300:
@@ -402,7 +522,11 @@ class SolarManager:
             "act_h": [[h, v] for h, v in sorted(act_h.items())] if act_h else None,
             "best": best_window(hrs0 if now.hour < 16 else hourly(wh, tz, d1)),
             "best_day": "today" if now.hour < 16 else "tomorrow",
-            "hist": hist, "dev": deviation(hist), "now_h": now.hour, "days": len(self.hist), "schema": SCHEMA,
+            "hist": hist, "hist30": hist30, "dev": deviation(hist), "now_h": now.hour, "days": len(self.hist), "schema": SCHEMA,
+            "corr": corr if self.cfg.get("corr", True) else None, "corr_raw": corr, "corr_n": corr_n,
+            "low": low_yield(act_h, rec.get("fh") or hrs0, now.hour) if now.hour >= 9 else None,
+            "rest": rest_today(hrs0, now),
+            "site_sums": [{"n": n, "t": day_sums(w, tz, d0), "m": day_sums(w, tz, d1), "h": hourly(w, tz, d0)} for n, w in self._per] if self.active() else [],
         }
         self._cache = (ts, out)
         return {**out, "cfg": self.cfg}
@@ -415,4 +539,6 @@ class SolarManager:
             self._wh = {}  # neue Quelle: sofort neu abrufen
         if old["act"] != self.cfg["act"]:
             self._act_h = None
-        return await self.snapshot(force=True)
+        out = await self.snapshot(force=True)
+        async_dispatcher_send(self.hass, SIGNAL_SOLAR)
+        return out

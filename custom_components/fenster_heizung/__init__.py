@@ -1329,6 +1329,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if ok:
         await entry.runtime_data.async_stop()
+        if hass.data.get(DOMAIN, {}).get("sp_sensor_owner") == entry.entry_id:  # Solar-Sensoren gehen beim nächsten Laden an diesen oder den nächsten Raum
+            hass.data[DOMAIN].pop("sp_sensor_owner", None)
         others = [
             e
             for e in hass.config_entries.async_entries(DOMAIN)

@@ -144,6 +144,21 @@
       },
       "plan_target": {
         "name": "Heating plan target temperature"
+      },
+      "sp_today": {
+        "name": "Solar forecast today"
+      },
+      "sp_tomorrow": {
+        "name": "Solar forecast tomorrow"
+      },
+      "sp_rest": {
+        "name": "Solar forecast remaining today"
+      },
+      "sp_corr": {
+        "name": "Solar forecast today corrected"
+      },
+      "sp_best": {
+        "name": "Solar best time start"
       }
     }
   }

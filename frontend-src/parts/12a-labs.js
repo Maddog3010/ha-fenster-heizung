@@ -2,7 +2,7 @@
      Eingeschaltet erscheinen sie als Karte mit Labs-Zeichen im passenden Modul, ausgeschaltet sind sie dort komplett weg. */
   _labCfg() { const l = (this._cfg && this._cfg.layout && this._cfg.layout.labs) || {}; return { on: Array.isArray(l.on) ? l.on : [], icon: l.icon !== false, tab: l.tab !== false, cfg: l.cfg && typeof l.cfg === "object" ? l.cfg : {} }; }
   _labOn(id) { if (id === "ef") return this._mdState().on.ef === true && !!this._spnS().active; return this._labCfg().on.includes(id); }
-  _labV(k) { const d = { lx_diff: 0.5, ae_cons: 12, ae_share: 60, wl_wind: 6, lf_days: 14, vh_dk: 3, vh_max: 90, dz_days: 14, dz_lead: 45, ld_wait: 3, ld_min: 8, lk_hi: 90, lk_dur: 2 }, v = this._labCfg().cfg[k]; return typeof v === "number" && isFinite(v) ? v : d[k]; }
+  _labV(k) { const d = { lx_diff: 0.5, ae_cons: 12, ae_share: 60, wl_wind: 6, vh_dk: 3, vh_max: 90, dz_days: 14, dz_lead: 45, ld_wait: 3, ld_min: 8, lk_hi: 90, lk_dur: 2 }, v = this._labCfg().cfg[k]; return typeof v === "number" && isFinite(v) ? v : d[k]; }
   _labStr(k) { const v = this._labCfg().cfg[k]; return typeof v === "string" ? v : ""; }
   _labSet(patch) { const c = this._labCfg(); this._cfg.layout.labs = { on: c.on, icon: c.icon, tab: c.tab, cfg: c.cfg, ...patch }; this._saveLayout(); setTimeout(() => this._labLoad(true), 900); this._render(); if (this._modal) this._renderModal(); }
   _labPill(t = "Labs") { return `<em class="labp">${ic("flask", 11)}${t}</em>`; }
@@ -37,12 +37,6 @@
         how: ["Regen, Schnee, Hagel und Gewitter in der Wetter-Entität bedeuten „eher nicht“.", "Bis 75 % Luftfeuchte und ab der Mindest-Windstärke ist es „gut“, bis 85 % „geht so“.", "Die Werte kommen aus deiner Wetter-Entität (Modul 9 → Datenquellen)."],
         needs: () => [["Eine Wetter-Entität", Object.keys(this._hass.states).some((k) => k.startsWith("weather."))]],
         f: [["wl_wind", "Mindest-Wind", "Ab dieser Windstärke trocknet Wäsche gut", "km/h", 0, 25, 1]] },
-      { id: "lf", mid: "sp", mod: "Modul 16", mn: "Solar-Prognose", n: "Lernfaktor für die Prognose", st: "Früh", i: "chart", soon: false,
-        d: "Korrigiert die Prognose um die gelernte Abweichung deiner Anlage, zum Beispiel durch Verschattung.",
-        feats: ["Gelernter Faktor aus Prognose gegen tatsächlichen Ertrag", "Korrigierte Prognose für heute", "Zeigt, wie viele Tage in den Faktor eingeflossen sind"],
-        how: ["Aus den letzten Tagen: Summe des Ertrags geteilt durch Summe der Prognose.", "Der Faktor wird auf 0,5 bis 1,5 begrenzt. Er braucht mindestens 3 Tage Verlauf.", "Die korrigierte Prognose ist nur eine Anzeige. Andere Module nutzen weiter die Originalprognose."],
-        needs: () => [["Modul 16 ist an und liefert eine Prognose", !!(this._mdState().on.sp && this._sp().found)], ["Ertragssensor in Modul 16 gewählt", !!this._sp().has_act]],
-        f: [["lf_days", "Tage für den Faktor", "So viele Tage fließen in die Berechnung ein", "Tage", 3, 30, 1]] },
       { id: "vh", k: "g", mid: "fh", mod: "Modul 1", mn: "Fenster & Heizung", n: "Smart Vorheizen", st: "Test", i: "flame",
         d: "Der Heizplan startet früher, wenn die gelernte Aufheizzeit es nötig macht. Ziel: Der Raum ist pünktlich warm.",
         feats: ["Pro Raum: so viel früher würde der Heizplan starten", "Nutzt die gelernte Aufheizzeit aus dem Raumbericht", "Greift nur ein, wenn der Raum zum Schaltpunkt kälter ist als das Ziel"],
@@ -102,6 +96,7 @@
         after: "Ausgeschaltet verschwindet Modul 19. Deine Kacheln bleiben gespeichert.",
         f: [] },
       /* „Tags & Karten“ (tg) ist seit 2026.11.1b16 fest eingebaut: Einstellungen → Haus → Tags & Karten */
+      /* „Lernfaktor für die Prognose“ (lf) ist seit Modul 16 v1.0 (2026.11.3b8) fest eingebaut: Korrigierte Prognose in den Einstellungen von Modul 16 */
     ];
   }
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
@@ -218,14 +213,6 @@
     if (!a.message || !t0 || isNaN(t0)) return `<div class="mut sm">Im Kalender steht kein kommender Termin.</div>`;
     const h = t1 && !isNaN(t1) ? (t1 - t0) / 36e5 : 0, long = h >= this._labV("lk_dur"), base = (this._wb() || {}).planSoc || 80, goal = long ? Math.max(base, this._labV("lk_hi")) : base;
     return `<div class="lugrid">${this._labTile("Nächster Termin", esc(String(a.message).slice(0, 28)), t0.toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" }))}${this._labTile("Dauer", num(h, 1) + " Std.", long ? "gilt als lang" : "gilt als kurz")}${this._labTile("Ziel-Ladestand", goal + " %", long ? `statt ${base} % im Ladeplan` : "wie im Ladeplan", long ? "amber" : "green")}</div>`;
-  }
-  _lab_lf() {
-    this._spLoad(); const S = this._sp();
-    if (!S.found) return `<div class="mut sm">Braucht Modul 16 mit einer Prognose.</div>`;
-    const days = (S.hist || []).filter((x) => x.f > 0 && x.a != null).slice(-this._labV("lf_days"));
-    if (days.length < 3) return `<div class="mut sm">Noch zu wenig Verlauf: ${days.length} von mindestens 3 Tagen mit Prognose und Ertrag. Wähle in Modul 16 einen Ertragssensor, dann lernt die Funktion mit.</div>`;
-    const f = Math.min(1.5, Math.max(0.5, days.reduce((s, x) => s + x.a, 0) / days.reduce((s, x) => s + x.f, 0)));
-    return `<div class="lugrid">${this._labTile("Gelernter Faktor", num(f, 2), `aus ${days.length} Tagen`)}${this._labTile("Prognose heute", num(S.today, 1) + " kWh", "Original")}${this._labTile("Korrigiert", num(S.today * f, 1) + " kWh", f < 1 ? "Anlage liefert weniger als die Prognose" : f > 1 ? "Anlage liefert mehr als die Prognose" : "Prognose passt", f < 1 ? "amber" : "green")}</div>`;
   }
   /* Seite „Labs“ (Karten wie im Store) */
   _lab0() { if (!this._labS) this._labS = { c: "all" }; return this._labS; }

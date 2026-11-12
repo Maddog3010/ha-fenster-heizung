@@ -346,8 +346,8 @@ def _clean_look(raw: dict[str, Any]) -> dict[str, Any]:
 MU_BLOCKS = {"tonnen", "next", "cal", "rem", "hint", "cost"}
 ST_BLOCKS = {"zuhause", "wetter", "personen", "hinweise", "alarm", "energie", "muell"}
 ST_BUBBLES = {"wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell", "warmwasser", "preis", "hinweise"}
-LAB_IDS = {"lx", "ae", "wl", "lf", "st", "vh", "dz", "ld", "lk", "mm", "sb", "li"}  # tg (Tags & Karten) ist seit 2026.11.1b16 fest eingebaut
-LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "lf_days", "vh_dk", "vh_max", "dz_days", "dz_lead", "ld_wait", "ld_min", "lk_hi", "lk_dur"}
+LAB_IDS = {"lx", "ae", "wl", "st", "vh", "dz", "ld", "lk", "mm", "sb", "li"}  # tg (Tags & Karten) seit 2026.11.1b16 und lf (Lernfaktor, jetzt Modul 16) seit 2026.11.3b8 fest eingebaut
+LAB_NUM = {"lx_diff", "ae_cons", "ae_share", "wl_wind", "vh_dk", "vh_max", "dz_days", "dz_lead", "ld_wait", "ld_min", "lk_hi", "lk_dur"}
 
 
 def _read_version() -> str:

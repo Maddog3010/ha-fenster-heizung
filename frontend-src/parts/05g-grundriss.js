@@ -44,59 +44,85 @@
     const S = Object.fromEntries(rooms.map((r) => [r.id, this._rkState(r)])), temps = rooms.flatMap((r) => S[r.id].pts.map((p) => p.t)), lo = temps.length ? Math.min(...temps) : 17, hi = temps.length ? Math.max(...temps) : 21;
     const inside = (r, x, y, tol = 8) => x >= r.x - tol && x <= r.x + r.w + tol && y >= r.y - tol && y <= r.y + r.h + tol;
     const an = this._rkCfg().anim, u = "gp" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_";
+    /* Neue Optik (2026.11.3b8): Räume als dunkle Kacheln mit Licht in der Temperaturfarbe, Status-Plakette wie in der Detail-Ansicht,
+       HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster als Bauplan-Hintergrund. */
+    const NF = this._narrow || (this.clientWidth || 999) < 600 ? 1.7 : 1, gap = 3;
     let d = `<defs><pattern id="${u}un" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v10" stroke="var(--line)" stroke-width="3"/></pattern>
-      <linearGradient id="${u}hw" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f97316" stop-opacity=".9"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient></defs>`;
+      <pattern id="${u}dot" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.1" fill="var(--primary-text-color)" opacity=".13"/></pattern>
+      <linearGradient id="${u}hw" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f97316" stop-opacity=".9"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient>
+      <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity=".35"/></filter></defs>
+      <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#${u}dot)"/>`;
     if (P.bg && P.bg[fl]) d += `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".25"></image>`;
-    /* Räume: Fläche, Heizkörper, Text */
+    /* Räume: Kachel, Licht, Rand, Heizkörper */
     const label = [];
-    rs.forEach((i) => {
-      const r = i.t === "r" ? this._gpMatch(i, rooms) : null, s = r ? S[r.id] : null, col = s ? this._rkCol(s.cur, lo, hi) : null;
-      const fill = s ? (s.k === "aus" ? "color-mix(in srgb,var(--primary-text-color) 8%,transparent)" : col) : `url(#${u}un)`;
-      d += `<g class="gpr${r ? " on" : ""}" ${r ? `data-act="rkmenu" data-id="${esc(r.id)}"` : adm && i.t === "r" ? `data-act="gpmap" data-k="${esc(i.id)}"` : ""}><title>${esc(i.n || "Raum")}${s ? " · " + esc(s.lab) : r ? "" : " · nicht zugeordnet"}</title>
-        <rect x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" rx="3" style="fill:${fill}" opacity="${s ? (s.k === "aus" ? 1 : .72) : 1}"/>
-        ${s && s.k !== "aus" ? `<rect x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}" rx="3" fill="none" stroke="${s.col}" stroke-width="3" opacity=".9"/>` : ""}`;
-      if (s && s.t0 && i.t === "r") {
-        const bw = Math.min(70, i.w * .45), bx = i.x + i.w - bw - 14, by = i.y + i.h - 14, heat = s.heating;
-        d += `<rect x="${bx}" y="${by}" width="${bw}" height="6" rx="3" fill="${heat ? "#fb923c" : s.k === "pause" ? "#f59e0b" : "#94a3b8"}"/>` +
-          (heat ? `<g class="gphw">${[0, 1, 2].map((k) => `<path class="gphw${k}" d="M${bx + bw * (.2 + k * .3)} ${by - 2} q-3 -4 0 -8 q3 -4 0 -8" fill="none" stroke="url(#${u}hw)" stroke-width="2.4" stroke-linecap="round"/>`).join("")}</g>` : "");
-      }
+    rs.forEach((i, ix) => {
+      const r = i.t === "r" ? this._gpMatch(i, rooms) : null, s = r ? S[r.id] : null, col = s ? (s.k === "aus" ? "#64748b" : this._rkCol(s.cur, lo, hi)) : null;
+      const x = i.x + gap, y = i.y + gap, w = Math.max(4, i.w - 2 * gap), h = Math.max(4, i.h - 2 * gap), rx = Math.min(14, w / 6, h / 6), gid = `${u}r${ix}`;
+      d += `<g class="gpr${r ? " on" : ""}${s ? " k-" + s.k : ""}" ${r ? `data-act="rkmenu" data-id="${esc(r.id)}"` : adm && i.t === "r" ? `data-act="gpmap" data-k="${esc(i.id)}"` : ""}><title>${esc(i.n || "Raum")}${s ? " · " + esc(s.lab) : r ? "" : " · nicht zugeordnet"}</title>`;
+      if (s) {
+        d += `<radialGradient id="${gid}" cx="0" cy="0" r="1.25" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="${col}" stop-opacity="${s.k === "aus" ? .18 : .62}"/><stop offset=".65" stop-color="${col}" stop-opacity="${s.k === "aus" ? .06 : .2}"/><stop offset="1" stop-color="${col}" stop-opacity=".08"/></radialGradient>
+          <rect class="gpbase" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" filter="url(#${u}sh)"/>
+          <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#${gid})"/>
+          <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="${col}" stroke-width="2" stroke-opacity=".85"/>`;
+        if (s.heating) d += `<rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="#fb923c" stroke-width="5" stroke-opacity=".28" class="gpglow"/>`;
+        if (s.t0 && i.t === "r" && w > 70 && h > 60) {
+          const rs2 = Math.min(40 * NF, w * .26, h * .34), gx2 = x + w - rs2 - 8, gy2 = y + h - rs2 - 6;
+          d += this._gx("radiator", rs2, { on: s.heating }).replace('<svg class="gx" ', `<svg class="gx gprad${s.heating ? " hot" : ""}" x="${gx2.toFixed(1)}" y="${gy2.toFixed(1)}" `);
+          if (s.heating) d += `<g class="gphw">${[0, 1, 2].map((k) => `<path class="gphw${k}" d="M${(gx2 + rs2 * (.25 + k * .25)).toFixed(1)} ${(gy2 + rs2 * .2).toFixed(1)} q-3 -5 0 -10 q3 -5 0 -10" fill="none" stroke="url(#${u}hw)" stroke-width="2.6" stroke-linecap="round"/>`).join("")}</g>`;
+        }
+      } else d += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" class="gpbase un"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#${u}un)" opacity=".7"/>
+          <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 5"/>`;
       d += `</g>`;
-      label.push({ i, r, s });
+      label.push({ i, r, s, x, y, w, h });
     });
     /* Wände, Türen, Fenster (so viele Fenster eines Raums offen gezeichnet, wie Kontakte offen melden) */
     const used = new Map();
     items.forEach((i) => {
       const a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
       if (i.t === "w") d += `<path d="M${i.x} ${i.y}L${i.x2} ${i.y2}" class="gpw"/>`;
-      else if (i.t === "d") d += `<g${a}><rect x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7" style="fill:var(--card)"/><path d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15" fill="none" style="stroke:var(--mut)" stroke-width="1.5"/></g>`;
+      else if (i.t === "d") d += `<g${a} class="gpdo"><rect x="${i.x - 15}" y="${i.y - 4}" width="30" height="8" rx="2" class="gpgapr"/><path d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15" fill="none" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M${i.x - 15} ${i.y}v-15" stroke-width="2" stroke-linecap="round"/></g>`;
       else if (i.t === "f") {
         const lr = label.find((x) => x.s && x.i.t === "r" && inside(x.i, i.x, i.y)), k0 = lr ? used.get(lr.i.id) || 0 : 0;
         if (lr) used.set(lr.i.id, k0 + 1);
-        const op = lr && k0 < lr.s.open.length + lr.s.tilt.length;
-        d += `<g${a}><rect x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7" fill="${op ? "#3b82f6" : "#93c5fd"}"/>${op ? `<path d="M${i.x - 17} ${i.y - 3.5} l${lr.s.open.length ? 26 : 8} -${lr.s.open.length ? 14 : 8}" stroke="#3b82f6" stroke-width="3" stroke-linecap="round"/><g class="gpaw"><path d="M${i.x - 8} ${i.y + 10} q6 4 12 0 t12 0" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/></g>` : ""}</g>`;
+        const op = lr && k0 < lr.s.open.length + lr.s.tilt.length, full = op && lr.s.open.length;
+        d += `<g${a} class="gpfe${op ? " op" : ""}">${op ? `<rect x="${i.x - 22}" y="${i.y - 9}" width="44" height="18" rx="9" fill="#3b82f6" opacity=".25" class="gpaw"/>` : ""}
+          <rect x="${i.x - 17}" y="${i.y - 4}" width="34" height="8" rx="2.5" fill="${op ? "#3b82f6" : "#bfdbfe"}" stroke="${op ? "#1d4ed8" : "#60a5fa"}" stroke-width="1.2"/><path d="M${i.x} ${i.y - 3}v6" stroke="${op ? "#dbeafe" : "#60a5fa"}" stroke-width="1.2"/>
+          ${op ? `<path d="M${i.x - 17} ${i.y - 4} l${full ? 24 : 9} -${full ? 13 : 8}" stroke="#60a5fa" stroke-width="3.2" stroke-linecap="round"/>` : ""}</g>`;
       } else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" class="gptx">${esc(i.n || "")}</text>`;
     });
-    /* Beschriftung und Plaketten (W3) */
-    label.forEach(({ i, r, s }) => {
-      const NF = this._narrow || (this.clientWidth || 999) < 600 ? 1.7 : 1, big = Math.min(26 * NF, i.h * .3, i.w * .22), small = Math.min(13 * NF, Math.max(10, big * .5), i.w * .09);
-      d += `<g class="gplb" pointer-events="none"><text x="${i.x + 10}" y="${i.y + 10 + small}" font-size="${small}" class="gpn">${esc(i.n || (r ? r.name : ""))}</text>`;
+    /* Beschriftung, Status-Plakette und Hinweis-Plaketten (W3) */
+    label.forEach(({ i, r, s, x, y, w, h }) => {
+      const big = Math.min(30 * NF, h * .3, w * .24), small = Math.min(13.5 * NF, Math.max(10, big * .48), w * .095), pad = Math.max(8, Math.min(14, w * .05));
+      d += `<g class="gplb" pointer-events="none"><text x="${x + pad}" y="${y + pad + small}" font-size="${small}" class="gpn">${esc(i.n || (r ? r.name : ""))}</text>`;
       if (s) {
-        d += `<text x="${i.x + 10}" y="${i.y + 14 + small + big}" font-size="${big}" class="gpt">${s.cur != null ? num(s.cur, 1) + "°" : "–"}</text>` +
-          `<text x="${i.x + 10}" y="${i.y + 20 + small + big + small}" font-size="${small * .92}" class="gps" style="fill:${s.col}">${esc(s.lab)}</text>`;
-        if (s.here) { const px = i.x + i.w - 34, py = i.y + i.h - 40; d += `<g transform="translate(${px} ${py})"><circle cx="0" cy="0" r="14" fill="${s.col}" opacity=".9"/><circle cx="0" cy="-4" r="4" fill="#fff"/><path d="M-7 8 q0 -8 7 -8 q7 0 7 8z" fill="#fff"/></g>`; }
+        const ty = y + pad + small + 6 + big;
+        d += `<text x="${x + pad}" y="${ty}" font-size="${big}" class="gpt">${s.cur != null ? num(s.cur, 1) + "°" : "–"}</text>`;
+        if (s.ziel != null && h > big + small * 3.2) d += `<text x="${x + pad}" y="${ty + small * 1.35}" font-size="${small * .9}" class="gpz">Ziel ${num(s.ziel, 1)}°${s.hum != null && w > 150 ? ` · ${num(s.hum, 0)} %` : ""}</text>`;
+        /* Status-Plakette unten links (wie die Plakette der Raumkarte), in schmalen Räumen nur der Punkt */
+        const fz = small * .86, pw = s.lab.length * fz * .54 + fz * 2.2, ph = fz * 1.9, room = w - pad * 2 - (s.t0 && w > 70 && h > 60 ? Math.min(40 * NF, w * .26, h * .34) + 6 : 0);
+        const zb = ty + (s.ziel != null && h > big + small * 3.2 ? small * 1.35 : 0) + 6, py = y + h - ph - pad * .8, px = x + pad, nb = this._gpBadges(r, s).length;
+        if (py >= zb && pw <= room) d += `<g class="gppl"><rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="${ph / 2}"/><circle cx="${px + fz * .95}" cy="${py + ph / 2}" r="${fz * .34}" fill="${s.col}"/><text x="${px + fz * 1.6}" y="${py + ph / 2 + fz * .36}" font-size="${fz}">${esc(s.lab)}</text></g>`;
+        else if (py >= zb) d += `<circle cx="${px + fz * .5}" cy="${py + ph / 2}" r="${fz * .42}" fill="${s.col}" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>`;
+        else if (!nb) d += `<circle cx="${x + w - pad - fz * .4}" cy="${y + pad + small * .62}" r="${fz * .42}" fill="${s.col}" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>`;   /* zu flach: Punkt oben rechts */
+        if (s.here) { const ps = Math.min(30 * NF, w * .2), px = x + w - ps - 8; d += `<g transform="translate(${(px + ps / 2).toFixed(1)} ${(y + h / 2).toFixed(1)})"><circle r="${(ps / 2).toFixed(1)}" fill="${s.col}" opacity=".95"/><circle cy="${(-ps * .13).toFixed(1)}" r="${(ps * .15).toFixed(1)}" fill="#fff"/><path d="M${(-ps * .24).toFixed(1)} ${(ps * .27).toFixed(1)} q0 -${(ps * .27).toFixed(1)} ${(ps * .24).toFixed(1)} -${(ps * .27).toFixed(1)} q${(ps * .24).toFixed(1)} 0 ${(ps * .24).toFixed(1)} ${(ps * .27).toFixed(1)}z" fill="#fff"/></g>`; }
         const b = this._gpBadges(r, s);
-        b.forEach((x, k) => { const fz = 11 * NF, w = x.t.length * fz * .56 + fz * 2, bx = i.x + i.w - w - 6, by = i.y + 6 + k * (fz * 2); d += `<g><rect x="${bx}" y="${by}" width="${w}" height="${fz * 1.65}" rx="${fz * .82}" fill="${x.c}"/><text x="${bx + fz * .8}" y="${by + fz * 1.2}" font-size="${fz}" font-weight="700" fill="#fff">${esc(x.t)}</text></g>`; });
-      } else if (i.t === "r") d += `<text x="${i.x + 10}" y="${i.y + 16 + small * 2}" font-size="${small * .9}" class="gps">${adm ? "Antippen zum Zuordnen" : "nicht zugeordnet"}</text>`;
+        b.forEach((q, k) => { const fz2 = 11 * NF, bw = q.t.length * fz2 * .56 + fz2 * 1.8, bx = x + w - bw - 8, by = y + 8 + k * (fz2 * 2); d += `<g><rect x="${bx}" y="${by}" width="${bw}" height="${fz2 * 1.65}" rx="${fz2 * .82}" fill="${q.c}"/><text x="${bx + fz2 * .9}" y="${by + fz2 * 1.18}" font-size="${fz2}" font-weight="700" fill="#fff">${esc(q.t)}</text></g>`; });
+      } else if (i.t === "r") d += `<text x="${x + pad}" y="${y + pad + small * 2.4}" font-size="${small * .9}" class="gps">${adm ? "Antippen zum Zuordnen" : "nicht zugeordnet"}</text>`;
       d += `</g>`;
     });
+    /* Kopfzeile: kurze Zusammenfassung des Stockwerks */
+    const mine = label.filter((x) => x.s), tv = mine.map((x) => x.s.cur).filter((t) => t != null), nOpen = mine.filter((x) => x.s.anyOpen).length, nHeat = mine.filter((x) => x.s.heating).length, nHere = mine.filter((x) => x.s.here).length;
+    const sum = `<div class="gpsum"><span>${ic("thermo", 14)}Ø <b>${tv.length ? num(tv.reduce((a, t) => a + t, 0) / tv.length, 1) + " °C" : "–"}</b></span>
+      <span class="${nHeat ? "h" : ""}">${ic("flame", 14)}<b>${nHeat}</b> ${nHeat === 1 ? "heizt" : "heizen"}</span><span class="${nOpen ? "o" : ""}">${ic("windowOpen", 14)}<b>${nOpen}</b> Fenster offen</span>${rooms.some((r) => r.pres) ? `<span>${ic("user", 14)}<b>${nHere}</b> mit jemandem</span>` : ""}
+      ${label.some((x) => x.i.t === "r" && !x.r) ? `<span class="u">${label.filter((x) => x.i.t === "r" && !x.r).length} nicht zugeordnet</span>` : ""}</div>`;
     const sc = [lo - 3, lo, (lo + hi) / 2, hi, hi + 2];
     const legend = `<div class="gplg"><span class="gpsc"><i style="background:linear-gradient(90deg,${sc.map((t) => this._rkCol(t, lo, hi)).join(",")})"></i><small>${num(lo - 3, 0)} °C</small><small>${num(hi + 2, 0)} °C</small></span>
-      <span><i class="gpk" style="background:#93c5fd"></i>Fenster</span><span><i class="gpk" style="background:#3b82f6"></i>offen</span><span><i class="gpk" style="background:#fb923c"></i>Heizkörper heizt</span><span><i class="gpk un"></i>nicht zugeordnet</span>${rooms.some((r) => r.pres) ? `<span><i class="gpk" style="width:10px;height:10px;border-radius:50%;background:var(--teal)"></i>jemand da</span>` : ""}</div>`;
+      <span><i class="gpk" style="background:#bfdbfe;border:1px solid #60a5fa"></i>Fenster</span><span><i class="gpk" style="background:#3b82f6"></i>offen</span><span><i class="gpk" style="background:#fb923c"></i>heizt</span><span><i class="gpk un"></i>nicht zugeordnet</span>${rooms.some((r) => r.pres) ? `<span><i class="gpk" style="width:10px;height:10px;border-radius:50%;background:var(--teal)"></i>jemand da</span>` : ""}</div>`;
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="gpfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
     const B = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
     const vb = `${B.x0 - 20} ${B.y0 - 20} ${B.x1 - B.x0 + 40} ${B.y1 - B.y0 + 40}`;
     return `<div class="card gpc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${adm && this._mdList().some((m) => m.id === "sf") ? `<button class="sfed" data-act="gpedit">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>
-      <div class="gpv" data-an="${an}"><svg viewBox="${vb}" role="img" aria-label="Grundriss mit Raumtemperaturen">${d}</svg></div>${legend}
+      ${sum}<div class="gpv" data-an="${an}"><svg viewBox="${vb}" role="img" aria-label="Grundriss mit Raumtemperaturen">${d}</svg></div>${legend}
       <div class="mut sm gpnote">Antippen eines Raums öffnet seine Aktionen. Gezeichnet wird der Grundriss in Modul 11 und dort auch für die Melder genutzt.</div></div>`;
   }
   /* W3: Plaketten je Raum (höchstens zwei) */

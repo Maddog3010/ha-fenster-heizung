@@ -5,17 +5,17 @@
     return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
   _betaSoon(ico, t, d) { return `<div class="card lusoon">${ic(ico, 26)}<div><b>${t}</b><span class="mut">${d}</span></div><em class="beta">In Entwicklung</em></div>`; }
   _betaPage(id) { return this._modHeroFor(id) + (id === "ef" ? this._efPage() : id === "sp" ? this._spPage() : id === "wa" ? this._waPage() : id === "bt" ? this._btPage() : id === "dt" ? this._dtPage() : id === "sf" ? this._sfPage() : id === "pl" ? this._plPage() : id === "wx" ? this._wxPage() : id === "ga" ? this._gaPage() : id === "ev" ? this._evPage() : id === "rb" ? this._rbPage() : id === "wp" ? this._wpPage() : this._luPage()); }
-  /* Modul 16: Solar-Prognose (Vorabversion) – Daten und Tagesvergleich laufen im Backend (solar.py) */
+  /* Modul 16: Solar-Prognose (Stabil seit v1.0) – Daten und Tagesvergleich laufen im Backend (solar.py) */
   _vorabBox(txt) { return `<div class="vabox">${ic("sun", 20)}<div><b>Vorabversion – funktioniert, ist aber noch nicht endgültig</b>Aussehen und Einstellungen können sich noch ändern. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
   _spLoad(force) {
     if (!this._hass || this._spBusy) return;
     if (!force && this._spD && Date.now() - this._spD.ts < 60000) return;
     this._spBusy = true;
     this._hass.callWS({ type: "fenster_heizung/sp_get" }).then((r) => { this._spD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._spD = { d: { error: true }, ts: Date.now() }; })
-      .finally(() => { this._spBusy = false; if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } });
+      .finally(() => { this._spBusy = false; if (this._spWantR) { this._spWantR = false; if (!this._spVisible() && !this._modal) this._render(); } if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } });
   }
   _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen); }
-  _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", look: "new", ...(d.cfg || {}) } }; }
+  _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", look: "new", corr: true, ...(d.cfg || {}) } }; }
   _spSave(cfg) {
     if (!(this._spD && this._spD.d && this._spD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._sp(); this._spD = { d: { ...s, cfg }, ts: Date.now() };
@@ -27,8 +27,12 @@
     const k = b.dataset.k, c = { ...this._sp().cfg };
     if (a === "spxopen") { this._spLoad(true); this._modal = { type: "spset" }; this._renderModal(); return; }
     if (a === "spxday") { this._spDay = k; this._spH = null; this._render(); return; }
+    if (a === "spxhn") { this._spHn = Number(k); this._render(); return; }
+    if (a === "spxhm") { this._spHm = k; this._render(); return; }
+    if (a === "spxds") { this._spDs = this._spDs === k ? null : k; this._render(); return; }
+    if (a === "spxmore") { this.dispatchEvent(new CustomEvent("hass-more-info", { detail: { entityId: k }, bubbles: true, composed: true })); return; }
     if (a === "spxh") { this._spH = this._spH === Number(k) ? null : Number(k); this._render(); return; }
-    if (a === "spxsrc") c.src = k; else if (a === "spxlook") c.look = k === "classic" ? "classic" : "new"; else if (a === "spxmode") c.mode = k; else if (a === "spxm3") c.act = k || ""; else if (a === "spxgoig") { this._modal = null; this._renderModal(); this._sto = { q: "forecast", c: "" }; this._igOpen = true; this._render(); return; } else return;
+    if (a === "spxsrc") c.src = k; else if (a === "spxlook") c.look = k === "classic" ? "classic" : "new"; else if (a === "spxcorr") c.corr = !(c.corr !== false); else if (a === "spxmode") c.mode = k; else if (a === "spxm3") c.act = k || ""; else if (a === "spxep") { c.act = k || ""; c.mode = "total"; } else if (a === "spxgoig") { this._modal = null; this._renderModal(); this._sto = { q: "forecast", c: "" }; this._igOpen = true; this._render(); return; } else return;
     this._spSave(c);
   }
   _spChange(t) {
@@ -49,20 +53,25 @@
     const fsN = this._sp().sites || [];
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Solar-Prognose</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="lsec">${ic("sun", 15)}Prognose-Quelle</div>
+      ${this._spCheckHtml()}
+      <div class="lsec" style="margin-top:12px">${ic("sun", 15)}Prognose-Quelle</div>
       <div class="gschips">${chip("spxsrc", "forecast", "Automatisch", C.src === "forecast")}${chip("spxsrc", "sensor", "Eigener Sensor", C.src === "sensor")}</div>
       ${C.src === "forecast" ? `<div class="gst">${ic("info", 15)}<span>${fsN.length ? `Gefunden: ${fsN.map(esc).join(", ")}. Mehrere Anlagen werden addiert.` : `Keine Solar-Prognose gefunden. Unterstützt werden Forecast.Solar, Solcast und Open-Meteo Solar Forecast – Forecast.Solar lässt sich im <button class="lnk" data-act="spxgoig">Store</button> finden.`}</span></div>
       ${this._spSrcInfo()}`
       : sel("chart", "Prognose-Sensor", "spxfc", opt(fc, C.fc_sensor, fc.length ? "Bitte wählen" : "Keiner gefunden"), !fc.length) + `<div class="mut sm">Der Sensor braucht das Attribut <code>wh_period</code> (Wh je Stunde, wie Forecast.Solar) oder <code>detailedForecast</code> / <code>detailedHourly</code> (kW je Zeitraum, wie Solcast).</div>${this._spSrcInfo()}`}
       <div class="lsec" style="margin-top:12px">${ic("energy", 15)}Tatsächlicher Ertrag</div>
+      ${this._spSuggest()}
       ${sel("zap", "Ertragssensor", "spxact", opt(eng, C.act, eng.length ? "Ohne Vergleich" : "Keine Energie-Sensoren"), !eng.length)}
       ${m3 && m3 !== C.act && S[m3] ? `<div class="gst">${ic("info", 15)}<span>Modul 3 nutzt <b>${nm(m3)}</b>. <button class="lnk" data-act="spxm3" data-k="${esc(m3)}">Denselben Sensor verwenden</button></span></div>` : ""}
       <div class="mut sm" style="margin:8px 0 4px">Was zählt der Sensor?</div>
       <div class="gschips">${chip("spxmode", "day", "Nur den heutigen Tag", C.mode === "day")}${chip("spxmode", "total", "Gesamtzähler (steigt immer)", C.mode === "total")}</div>
       <div class="mut sm" style="margin-top:6px">Die Prognose des Tages wird morgens festgehalten. So bleibt der Vergleich über die Tage ehrlich, auch wenn sich die Vorhersage tagsüber ändert.</div>
+      <div class="lsec" style="margin-top:12px">${ic("chart", 15)}Korrigierte Prognose</div>
+      <div class="vrow"><span>Prognose an meine Anlage anpassen<small class="mut" style="display:block">${(() => { const S2 = this._sp(); return S2.corr_raw != null ? `Gelernt: Ertrag im Median ×${num(S2.corr_raw, 2)} der Prognose (${S2.corr_n} Tage). Gilt für Banner, Kacheln und Kurve; die Treffsicherheit misst weiter die gelieferte Prognose.` : `Lernt aus den letzten 14 Tagen mit Ertrag – ab 7 Tagen aktiv (bisher ${S2.corr_n || 0}). Braucht einen Ertragssensor.`; })()}</small></span><button class="sw ${C.corr !== false ? "on" : ""}" data-act="spxcorr" aria-pressed="${C.corr !== false}" aria-label="Korrigierte Prognose" ${adm ? "" : "disabled"}></button></div>
       <div class="lsec" style="margin-top:12px">${ic("image", 15)}Ansicht</div>
       <div class="gschips">${chip("spxlook", "new", "Neue Optik", C.look !== "classic")}${chip("spxlook", "classic", "Wie bisher", C.look === "classic")}</div>
       <div class="mut sm" style="margin-top:6px">Neue Optik: Sonnenbogen im Banner, Kacheln mit Bildern, Prognose und Ertrag in einer Kurve. „Wie bisher“ zeigt die alte Seite.</div>
+      ${this._spSensHtml()}
       ${this._labFields("sp")}
     </div>`;
   }
@@ -70,7 +79,7 @@
     this._spLoad();
     if (this._spNew()) return this._spPage2();  /* Neue Optik (v0.9 Build 3); „Ansicht wie bisher“ zeigt die Seite unten */
     const S = this._sp(), adm = this._admin(), DAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], f1 = (v) => num(v, 1);
-    const head = this._vorabBox("Die Prognose kommt aus Forecast.Solar oder einem eigenen Sensor, der Ertrag aus einem Energie-Sensor deiner Anlage.");
+    const head = "";   /* v1.0: stabil */
     if (!this._spD) return head + `<div class="card empty">${ic("sun", 36)}<div style="margin-top:8px">Lade Prognose …</div></div>`;
     if (S.error) return head + `<div class="card empty">${ic("alert", 36)}<div style="margin-top:8px">Die Prognose konnte nicht geladen werden.</div></div>`;
     if (!S.found) return head + `<div class="card empty">${ic("sun", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Prognose da</div>Wähle in den Einstellungen die Quelle. Am einfachsten geht es mit der Integration Forecast.Solar.${adm ? `<div style="margin-top:12px"><button class="btn2" data-act="spxopen">${ic("sliders", 16)}Einstellungen öffnen</button></div>` : ""}</div>`;

@@ -144,6 +144,21 @@
       },
       "plan_target": {
         "name": "Heizplan Solltemperatur"
+      },
+      "sp_today": {
+        "name": "Solar-Prognose heute"
+      },
+      "sp_tomorrow": {
+        "name": "Solar-Prognose morgen"
+      },
+      "sp_rest": {
+        "name": "Solar-Prognose Rest heute"
+      },
+      "sp_corr": {
+        "name": "Solar-Prognose heute korrigiert"
+      },
+      "sp_best": {
+        "name": "Solar beste Zeit Beginn"
       }
     }
   }

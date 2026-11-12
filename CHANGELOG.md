@@ -2,6 +2,30 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b8] - 2026-11-12
+
+### Neu
+- **Modul 16 Solar-Prognose ist stabil (v1.0 Build 1)** – Stufe 4 aus Konzept_Modul16_Neue-Optik:
+  - **Anlagen einzeln:** Bei zwei oder mehr Anlagen (zum Beispiel zwei Dächer bei Forecast.Solar oder Dach und Balkon) zeigt eine Karte jede Anlage mit Tageswert, Anteil, kleiner Tageskurve und dem Wert für morgen. Gleiche Namen werden durchnummeriert.
+  - **Sensoren für Automationen:** neues Gerät „Strom & Wärme · Solar-Prognose“ mit fünf Sensoren – Prognose heute, morgen, Rest heute, heute korrigiert (in kWh) und **Beginn der besten Zeit** (Zeitstempel). Die Werte kommen aus dem Zwischenspeicher, es gibt keine zusätzlichen Abrufe. Die Sensoren erscheinen nach einem Neustart von Home Assistant.
+  - **Startseite:** Die Kachel „Prognose“ zeigt einen kleinen Sonnenbogen mit der Sonne an der aktuellen Stelle (nachts den Mond) und „11,2 von 17,8 kWh“, abends den Wert für morgen. Bei Schnee oder Störung färbt sie sich gelb.
+  - **Tablet:** eigene Wandansicht mit vier großen Zahlen (heute erwartet, bisher, noch zu erwarten, morgen) und der Tageskurve, ohne Verlauf und Kalender.
+  - **Ertragssensor vorschlagen:** Ist im Energie-Dashboard ein Solarertrag eingetragen und in Modul 16 noch keiner gewählt, schlagen die Einstellungen ihn mit einem Knopf vor (als Gesamtzähler).
+  - **Einrichtungs-Check** oben in den Einstellungen: Prognose kommt an, Abruf aktuell, Ertragssensor und Einheit, Ertrag je Stunde, Korrektur gelernt, Sensoren vorhanden – jeweils mit Hinweis, was fehlt. Darunter die fünf Sensoren mit Wert, Antippen öffnet die Details.
+  - Der Hinweis „Vorabversion“ entfällt.
+
+### Geändert
+- **Modul 1 · Grundriss in der neuen Optik (v1.8 Build 6):** Die Räume sind jetzt dunkle Kacheln mit Licht in der Temperaturfarbe statt voller Farbflächen, mit Abstand zueinander und runden Ecken – wie die Raumkarten der Detail-Ansicht. Unter der Temperatur steht das Ziel (und die Luftfeuchte, wenn Platz ist), unten die **Status-Plakette** mit Punkt („Ziel erreicht“, „Heizt“, „Fenster offen · 7 Min.“). Der Statustext war vorher in der Raumfarbe kaum lesbar. Heizkörper als HD-Bild, beim Heizen orange mit aufsteigender Wärme und leicht pulsierendem Rand. Fenster mit Glas und Sprosse, offen kräftig blau mit aufgeklapptem Flügel. Hintergrund als Punktraster wie ein Bauplan, darüber eine Zusammenfassung: Durchschnitt, wie viele Räume heizen, offene Fenster, nicht zugeordnete Räume. In kleinen Räumen (Handy) bleibt nur der farbige Punkt.
+- **Lab „Lernfaktor für die Prognose“** ist entfallen: Die korrigierte Prognose ist seit dieser Version fest in Modul 16 eingebaut (Einstellungen → Modul 16 → Korrigierte Prognose) und rechnet robuster (Median statt Summe, ab 7 Tagen).
+
+### Technik
+- Tests für die Rechenfunktionen von Modul 16 unter `tests/test_solar.py` (laufen ohne Home Assistant: `python3 -m pytest tests`).
+- **Modul 16 · Stufe 3 Treffsicherheit & Tipps (v0.9 Build 5):**
+  - **Korrigierte Prognose:** Modul 16 lernt aus den letzten 14 Tagen mit Ertrag, wie stark deine Anlage von der gelieferten Prognose abweicht (Median Ertrag/Prognose, ab 7 Tagen, begrenzt auf ×0,6 bis ×1,4 – ein einzelner Schneetag verzieht den Faktor nicht). Banner, Kacheln und Kurve zeigen dann die korrigierte Prognose, „Heute erwartet“ trägt die Plakette „korrigiert“ und nennt den gelieferten Wert und den Faktor. Die Treffsicherheit misst weiter die Prognose, wie die Quelle sie liefert. Abschaltbar unter Einstellungen → Modul 16 → Korrigierte Prognose.
+  - **Wie gut war die Prognose?** 7, 14 oder 30 Tage als Säulen mit Abweichung je Tag oder als **Treffer-Kalender** (grün ±10 %, gelb ±20 %, rot darüber). Antippen eines Tages zeigt ihn als **Kurve**: Prognose vom Morgen gegen den Ertrag je Stunde (für die Tage, an denen Stundenwerte gespeichert sind).
+  - **Empfehlungen mit Startzeit:** In der besten Zeit stehen die Geräte mit „Start 11:00“; läuft das Fenster gerade, heißt es „Jetzt bis 14 Uhr“ und „jetzt starten“. Ist die beste Zeit für heute vorbei, verschwindet der Hinweis.
+  - **Schnee und Störung:** Liefert die Anlage in den letzten beiden vollen Stunden weniger als 30 % der Prognose, obwohl mindestens 0,4 kWh erwartet waren, erscheint oben ein Hinweis – bei Außentemperatur bis 2 °C (aus Einstellungen → Haus → Wetter) als „Schnee auf den Modulen?“, sonst „Anlage liefert deutlich weniger als erwartet“, mit Knöpfen „Ertrag prüfen“ und „Modul 3“.
+
 ## [2026.11.3b7] - 2026-11-12
 
 ### Neu
