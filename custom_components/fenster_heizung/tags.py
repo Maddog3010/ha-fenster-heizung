@@ -79,7 +79,30 @@ def catalog() -> list[dict[str, Any]]:
 
 
 def default_cfg() -> dict[str, Any]:
-    return {"tags": {}, "fb": {"notify": [], "tts": {"ent": "", "player": ""}, "light": ""}}
+    return {"tags": {}, "fb": {"notify": [], "tts": {"ent": "", "player": ""}, "light": ""}, "quick": []}
+
+
+MAX_QUICK = 8
+# Schnellaktionen, die auf der Startseite immer erst bestätigt werden (wirken auf das ganze Haus oder auf Sicherheit)
+QUICK_CONFIRM = {"pres_home", "pres_away", "pres_vac", "fh_on", "fh_off", "plan_on", "plan_off", "sf_tested", "ww_away_on", "ev_h1", "ev_goal"}
+
+
+def clean_quick(raw: Any) -> list[dict[str, Any]]:
+    """Schnellaktionen der Startseite: nur Aktionen aus ACTIONS, höchstens acht, keine doppelten."""
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for q in raw if isinstance(raw, list) else []:
+        c = clean_tag({"name": (q or {}).get("name") if isinstance(q, dict) else "", "act": q.get("act") if isinstance(q, dict) else None})
+        if not c:
+            continue
+        key = f"{c['act']['k']}|{c['act']['arg']}"
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append({"name": c["name"] if c["name"] != "Tag" else "", "act": c["act"]})
+        if len(out) >= MAX_QUICK:
+            break
+    return out
 
 
 def _hm(v: Any) -> str:
@@ -146,6 +169,7 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
     t = f.get("tts") if isinstance(f.get("tts"), dict) else {}
     ent = lambda v, dom: v if isinstance(v, str) and _ENT.match(v) and v.split(".")[0] == dom else ""  # noqa: E731
     d["fb"] = {"notify": to, "tts": {"ent": ent(t.get("ent"), "tts"), "player": ent(t.get("player"), "media_player")}, "light": ent(f.get("light"), "light")}
+    d["quick"] = clean_quick(r.get("quick"))
     return d
 
 
@@ -454,7 +478,10 @@ class TagManager:
 
     # ---- Schnittstelle zur Oberfläche
     async def async_set(self, raw: Any) -> dict[str, Any]:
+        keep = self.cfg.get("quick", [])
         self.cfg = clean_cfg(raw)
+        if not (isinstance(raw, dict) and "quick" in raw):
+            self.cfg["quick"] = keep  # die Tag-Verwaltung schickt die Schnellaktionen nicht mit
         for tid in self.cfg["tags"]:
             self.unknown.pop(tid, None)
         self._save()
@@ -466,6 +493,20 @@ class TagManager:
         p = preset if isinstance(preset, dict) else None
         self.preset = {"name": str(p.get("name") or "Tag")[:40], "act": p.get("act")} if on and p and clean_tag({"act": p.get("act")}) else None
         return self.snapshot()
+
+    def async_quick_set(self, raw: Any) -> dict[str, Any]:
+        self.cfg["quick"] = clean_quick(raw)
+        self._save()
+        return self.snapshot()
+
+    async def async_quick(self, idx: int, user: str = "") -> dict[str, Any]:
+        """Schnellaktion von der Startseite: nur Einträge der vom Admin gewählten Liste."""
+        q = self.cfg.get("quick", [])
+        if not 0 <= idx < len(q):
+            return {**self.snapshot(), "quick_res": {"ok": False, "msg": "Diese Schnellaktion gibt es nicht mehr"}}
+        ok, msg = await self.run(q[idx]["act"])
+        self._add(f"quick{idx}", q[idx].get("name") or describe(q[idx]["act"], self._names()), "Startseite" + (f" · {user}" if user else ""), "ok" if ok else "fail", msg)
+        return {**self.snapshot(), "quick_res": {"ok": ok, "msg": msg}}
 
     async def async_test(self, tid: str) -> dict[str, Any]:
         t = self.cfg["tags"].get(tid)
@@ -487,7 +528,7 @@ class TagManager:
         for x in self.log:
             last[x["id"]] = x
         return {
-            "on": self.active(), "cfg": self.cfg, "actions": catalog(), "groups": GROUPS, "bins": BIN_NAMES,
+            "on": self.active(), "cfg": self.cfg, "actions": catalog(), "groups": GROUPS, "bins": BIN_NAMES, "confirm": sorted(QUICK_CONFIRM),
             "last": last, "log": list(reversed(self.log)),
             "unknown": [{"id": k, **v} for k, v in sorted(self.unknown.items(), key=lambda i: -i[1]["ts"])],
             "learn": {"active": now < self.learn_until, "left": max(0, int(self.learn_until - now)), "found": self.learned},

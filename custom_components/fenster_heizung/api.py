@@ -1329,6 +1329,29 @@ async def ws_tg_act(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 @websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tg_quick_set", vol.Required("quick"): list})
+@websocket_api.async_response
+async def ws_tg_quick_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = hass.data.get(DOMAIN, {}).get("tags")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Tags & Karten ist noch nicht bereit")
+        return
+    connection.send_result(msg["id"], mgr.async_quick_set(msg["quick"]))
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tg_quick", vol.Required("idx"): int})
+@websocket_api.async_response
+async def ws_tg_quick(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Schnellaktion der Startseite. Für alle angemeldeten Benutzer, aber nur aus der vom Admin gewählten Liste."""
+    mgr = hass.data.get(DOMAIN, {}).get("tags")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Tags & Karten ist noch nicht bereit")
+        return
+    user = connection.user.name if getattr(connection, "user", None) else ""
+    connection.send_result(msg["id"], await mgr.async_quick(int(msg["idx"]), user or ""))
+
+
+@websocket_api.require_admin
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wx_test"})
 @websocket_api.async_response
 async def ws_wx_test(hass: HomeAssistant, connection, msg: dict) -> None:
@@ -1664,7 +1687,7 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_get_general, ws_set_general, ws_get_update, ws_beta_gate, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_gs_runs, ws_gs_remind, ws_brief_get, ws_brief_set, ws_brief_test, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test,
-        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_ef_get, ws_ef_set,
+        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_tg_quick_set, ws_tg_quick, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
         ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
     ):

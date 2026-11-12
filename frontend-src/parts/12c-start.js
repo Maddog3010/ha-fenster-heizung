@@ -4,7 +4,7 @@
   _hzCfg() {
     const l = (this._cfg && this._cfg.layout && this._cfg.layout.start) || {}, b = l.bub || {}, known = Object.keys(HZ_NAMES), o = (Array.isArray(l.order) ? l.order : []).filter((x) => known.includes(x));
     return {
-      on: l.on !== false, open: l.open === "last" ? "last" : "start", greet: l.greet !== false, alarm: typeof l.alarm === "string" ? l.alarm : "", ctl: l.ctl === true,
+      look: l.look === "classic" ? "classic" : "new", amp: l.amp !== false, on: l.on !== false, open: l.open === "last" ? "last" : "start", greet: l.greet !== false, alarm: typeof l.alarm === "string" ? l.alarm : "", ctl: l.ctl === true,
       order: [...o, ...known.filter((x) => !o.includes(x))], hidden: (Array.isArray(l.hidden) ? l.hidden : []).filter((x) => known.includes(x)),
       bub: { ids: (Array.isArray(b.ids) ? b.ids : HZ_BUB_DEF).filter((x) => HZ_BUBS.includes(x)).slice(0, 8), warn: b.warn !== false, tap: b.tap === "module" ? "module" : "block" },
     };
@@ -33,23 +33,25 @@
   _hzMu() { return this._muOn() ? (this._mu().bins || []) : []; }
   _hzHints() {
     const H = this._hass, st = H.states, out = [], o = this._out();
-    this._hzWin().forEach((w) => { const m = Math.round((Date.now() - w.since) / 60000); if (m >= 15) out.push({ i: "windowOpen", t: `${esc(w.name)}: Fenster seit ${this._hzSince(new Date(w.since).toISOString())} offen`, s: o.t != null ? `Außen ${num(o.t, 0)} °C` : "", r: "jetzt", c: "wa", mod: "fh" }); });
-    if (this._mdState().on.ww && this._wwConfigured()) this._wwProblems().filter((p) => p[0] === "bad" || p[0] === "warn").slice(0, 2).forEach((p) => out.push({ i: "drop", t: esc(p[2]), s: esc(p[3]), r: "", c: p[0] === "bad" ? "bad" : "wa", mod: "ww" }));
+    this._hzWin().forEach((w) => { const m = Math.round((Date.now() - w.since) / 60000); if (m >= 15) out.push({ k: `win:${w.name}`, since: w.since, i: "windowOpen", t: `${esc(w.name)}: Fenster seit ${this._hzSince(new Date(w.since).toISOString())} offen`, s: o.t != null ? `Außen ${num(o.t, 0)} °C` : "", r: "jetzt", c: "wa", mod: "fh" }); });
+    if (this._mdState().on.ww && this._wwConfigured()) this._wwProblems().filter((p) => p[0] === "bad" || p[0] === "warn").slice(0, 2).forEach((p) => out.push({ k: `ww:${String(p[2]).replace(/[\d.,()°C ]+/g, "")}`, i: "drop", t: esc(p[2]), s: esc(p[3]), r: "", c: p[0] === "bad" ? "bad" : "wa", mod: "ww" }));
     const due = this._hzMu().filter((x) => ["out", "today", "soon"].includes(x.state));
-    if (due.length) out.push({ i: "trash", t: `${due.some((x) => x.state === "today") ? "Heute" : "Morgen"}: ${due.map((x) => esc(x.name)).join(", ")}`, s: "Abholung, Tonne rausstellen", r: due.some((x) => x.state === "today") ? "heute" : "morgen", c: "wa", mod: "mu" });
-    const al = this._hzAlarmEnt(); if (al && st[al] && st[al].state === "triggered") out.push({ i: "shield", t: "Alarm ausgelöst", s: esc(this._wzName(al)), r: "jetzt", c: "bad", blk: "alarm" });
+    if (due.length) out.push({ k: "mu", i: "trash", t: `${due.some((x) => x.state === "today") ? "Heute" : "Morgen"}: ${due.map((x) => esc(x.name)).join(", ")}`, s: "Abholung, Tonne rausstellen", r: due.some((x) => x.state === "today") ? "heute" : "morgen", c: this._hzNew() && !due.some((x) => x.state === "out") ? "in" : "wa", mod: "mu" });
+    const al = this._hzAlarmEnt(); if (al && st[al] && st[al].state === "triggered") out.push({ k: "alarm", nosn: true, since: new Date(st[al].last_changed || Date.now()).getTime(), i: "shield", t: "Alarm ausgelöst", s: esc(this._wzName(al)), r: "jetzt", c: "bad", blk: "alarm" });
     let nb = 0;
     Object.keys(st).forEach((e) => {
       if (nb >= 3) return; const s = st[e], a = s.attributes || {};
-      if (e.startsWith("binary_sensor.") && a.device_class === "battery" && s.state === "on") { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: "Batterie wechseln", r: "", c: "wa" }); }
-      else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
+      if (e.startsWith("binary_sensor.") && a.device_class === "battery" && s.state === "on") { nb++; out.push({ k: `bat:${e}`, src: "Batterien", since: new Date(s.last_changed || Date.now()).getTime(), i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: "Batterie wechseln", r: "", c: "wa" }); }
+      else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ k: `bat:${e}`, src: "Batterien", since: new Date(s.last_changed || Date.now()).getTime(), i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
     });
-    try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: "wa" }); } catch (_) { /* egal */ }
+    try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ k: "spn", src: "Sponsor", i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: this._hzNew() ? "in" : "wa" }); } catch (_) { /* egal */ }
     this._adHints().forEach((h) => out.push(h));
+    if (this._hzNew()) { this._hzWarnX().forEach((h) => out.push(h)); const ff = this._hzFrostFc(); if (ff) out.push({ k: "frostfc", i: "snow", t: "Frost heute Nacht", s: `ab ${ff.at.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} · bis ${num(ff.min, 0)} °C`, r: "heute", c: "wa", blk: "wetter", src: "Wetter", hd: "weather", frost: true }); }
     const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
   }
   /* Kachel je aktives Modul */
   _hzTile(m) {
+    if (this._hzNew()) return this._hzTile2(m);
     const st = this._hass.states; let sub = "", c = "";
     if (m.id === "fh") { const n = this._hzWin().reduce((s, w) => s + w.n, 0); sub = n ? `${n} ${n === 1 ? "Fenster" : "Fenster"} offen` : "Alle Fenster zu"; c = n ? "wa" : ""; }
     else if (m.id === "ww") { const E = this._mdState().ww.ent || {}, t = E.top && st[E.top], v = t ? parseFloat(t.state) : NaN, bad = this._wwConfigured() && this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn"); sub = isFinite(v) ? `${num(v, 0)} °C` : "Nicht eingerichtet"; c = bad ? "wa" : isFinite(v) ? "" : "mut"; }
@@ -66,7 +68,11 @@
   _hzZuhause(hints) {
     const mods = this._mdList().filter((m) => m.id !== "st"), n = hints.length, bad = hints.some((h) => h.c === "bad");
     const head = n ? (bad ? "Es gibt etwas zu tun" : "Fast alles in Ordnung") : "Alles in Ordnung", hc = bad ? "bad" : n ? "" : "ok";
-    return `<div class="card"><h2>${ic("home", 18)}Zuhause</h2><div class="hzhead ${hc}">${head}</div><div class="hzsub">${n ? `${n} ${n === 1 ? "Hinweis braucht" : "Hinweise brauchen"} Aufmerksamkeit. ` : ""}Tippe auf eine Kachel, um das Modul zu öffnen.</div><div class="hzgrid">${mods.map((m) => this._hzTile(m)).join("")}</div></div>`;
+    if (this._hzNew()) { const M = this._hzMods(), lp = this._hzQaOn() ? " Lange drücken zeigt Schnellaktionen." : "";
+      const body = M.length ? `<div class="hzkgrid sz-${this._hzKs()}">${M.map((m) => this._hzTile(m)).join("")}</div>` : this._hzEmpty();
+      if (this._hzAmpOn()) return `<div class="card"><h2>${ic("home", 18)}Zuhause<span class="hzrt">${M.length} ${M.length === 1 ? "Modul" : "Module"}</span></h2><div class="hzsub">Tippe auf eine Kachel, um das Modul zu öffnen.${lp}</div>${body}</div>`;
+      return `<div class="card"><h2>${ic("home", 18)}Zuhause</h2><div class="hzhead ${hc}">${head}</div><div class="hzsub">${n ? `${n} ${n === 1 ? "Hinweis braucht" : "Hinweise brauchen"} Aufmerksamkeit. ` : ""}Tippe auf eine Kachel, um das Modul zu öffnen.${lp}</div>${body}</div>`; }
+    return `<div class="card"><h2>${ic("home", 18)}Zuhause</h2><div class="hzhead ${hc}">${head}</div><div class="hzsub">${n ? `${n} ${n === 1 ? "Hinweis braucht" : "Hinweise brauchen"} Aufmerksamkeit. ` : ""}Tippe auf eine Kachel, um das Modul zu öffnen.</div><div class="${this._hzNew() ? `hzkgrid sz-${this._hzKs()}` : "hzgrid"}">${mods.map((m) => this._hzTile(m)).join("")}</div></div>`;
   }
   /* Wetter */
   _hzWxId() { const c = this._wxCfg(), st = this._hass.states; return c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather.")); }
@@ -111,7 +117,8 @@
       ${ctl ? `<div class="hzgrid">${btn("disarm", "Unscharf", "shield", s.state === "disarmed")}${btn("away", "Abwesend", "door", s.state === "armed_away")}${btn("home", "Zu Hause", "home", s.state === "armed_home")}</div><div class="hzsub" style="margin:8px 0 0">Schalten nur mit Bestätigung${(s.attributes || {}).code_format ? " und Code" : ""}.</div>` : ""}</div>`;
   }
   _hzHinweise(hints) {
-    return `<div class="card"><h2>${ic("info", 18)}Hinweise<span class="hzrt">alle Module</span></h2>${hints.length ? `<div class="hzl">${hints.slice(0, 6).map((h) => `<${h.mod || h.blk ? `button data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}"` : "div"} class="hzr ${h.c || ""}"><span class="hzri">${ic(h.i, 22)}</span><span class="hzrx"><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span>${h.r ? `<span class="hzrr ${h.c || ""}">${h.r}</span>` : ""}</${h.mod || h.blk ? "button" : "div"}>`).join("")}</div>` : `<div class="mut sm">Keine Hinweise. Fenster, Batterien, Warmwasser und Termine sind in Ordnung.</div>`}</div>`;
+    if (this._hzNew()) return this._hzZentrale(hints);
+    return `<div class="card"><h2>${ic("info", 18)}Hinweise<span class="hzrt">alle Module</span></h2>${hints.length ? `<div class="hzl">${hints.slice(0, 6).map((h) => `<${h.mod || h.blk ? `button data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}"` : "div"} class="hzr ${h.c || ""}${this._hzNew() ? ` n z-${this._hzZ(h.c || "in")}` : ""}"><span class="hzri">${ic(h.i, 22)}</span><span class="hzrx"><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span>${h.r ? `<span class="hzrr ${h.c || ""}">${h.r}</span>` : ""}</${h.mod || h.blk ? "button" : "div"}>`).join("")}</div>` : `<div class="mut sm">Keine Hinweise. Fenster, Batterien, Warmwasser und Termine sind in Ordnung.</div>`}</div>`;
   }
   _hzEnergie() {
     if (!this._enOn()) return ""; const N = this._enNow(); if (!N) return "";
@@ -135,17 +142,19 @@
     if (id === "muell") { if (!this._muOn()) return null; this._muLoad(); const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; return x ? { i: "trash", b: x.days === 0 ? "Heute" : x.days === 1 ? "Morgen" : `in ${x.days} Tg.`, s: x.name, c: x.days <= 1 ? "wa" : "", mod: "mu", blk: "muell" } : null; }
     if (id === "warmwasser") { if (!this._mdState().on.ww) return null; const E = this._mdState().ww.ent || {}, v = E.top && st[E.top] ? parseFloat(st[E.top].state) : NaN; return isFinite(v) ? { i: "drop", b: `${num(v, 0)} °C`, s: "Warmwasser", mod: "ww" } : null; }
     if (id === "preis") { if (!this._enOn()) return null; const p = this._price(); return p ? { i: "chart", b: `${num(p, 1)} ct`, s: "Strompreis", mod: "en" } : null; }
-    if (id === "hinweise") { const n = this._hzHints().length; return { i: "info", b: n ? `${n} ${n === 1 ? "Hinweis" : "Hinweise"}` : "keine", s: "Hinweise", c: n ? "wa" : "ok", blk: "hinweise" }; }
+    if (id === "hinweise") { const n = (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length; return { i: "info", b: n ? `${n} ${n === 1 ? "Hinweis" : "Hinweise"}` : "keine", s: "Hinweise", c: n ? "wa" : "ok", blk: "hinweise" }; }
     return null;
   }
   _hzBubs() {
     const c = this._hzCfg().bub, items = c.ids.map((id) => ({ id, ...(this._hzBubDef(id) || {}) })).filter((x) => x.i);
+    if (items.length && this._hzNew()) return `<div class="hzbubs n" role="list">${items.map((x) => this._hzBubN(this._hzBubX(x))).join("")}</div>`;
     return items.length ? `<div class="hzbubs" role="list">${items.map((x) => `<button class="hzb ${c.warn ? x.c || "" : ""}" role="listitem" data-act="hzbub" data-k="${x.id}"><i>${ic(x.i, 16)}</i><span><b>${esc(x.b)}</b><small>${esc(x.s)}</small></span></button>`).join("")}</div>` : `<div class="mut sm">Keine Bubble hat gerade Daten. Wähle andere unter „Inhalt wählen“.</div>`;
   }
   /* Seite */
   _hzPage() {
     const adm = this._admin(), edit = this._edit && adm, c = this._hzCfg(), hints = this._hzHints();
-    const B = { zuhause: this._hzZuhause(hints), wetter: this._hzWetter(), personen: this._hzPersonen(), hinweise: this._hzHinweise(hints), alarm: this._hzAlarm(), energie: this._hzEnergie(), muell: this._hzMuell() };
+    const nw = this._hzNew(); if (nw) { this._hzHoldBind(); this._hzLpBind(); }
+    const B = { zuhause: this._hzZuhause(hints), wetter: nw ? this._hzWetterN() : this._hzWetter(), personen: nw ? this._hzPersonenN() : this._hzPersonen(), hinweise: this._hzHinweise(hints), alarm: nw ? this._hzAlarmN() : this._hzAlarm(), energie: this._hzEnergie(), muell: this._hzMuell() };
     const eb = edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe die Karten an den Griffen, um sie zu verschieben. Mit dem Auge blendest du eine Karte aus. <button class="lnk" data-act="hzreset">Zurücksetzen</button></div></div>` : "";
     const bub = this._labOn("sb") ? (edit ? `<div class="hzbe"><div class="etag">${ic("layers", 16)}Bubbles (Lab)<button class="eyeb" data-act="hzbubopen">${ic("sliders", 16)}<span>Inhalt wählen</span></button></div>${this._hzBubs()}</div>` : this._hzBubs()) : "";
     const blocks = c.order.filter((id) => B[id] && (edit || !c.hidden.includes(id))).map((id) => {
@@ -153,9 +162,12 @@
       return `<section class="blk mub ${HZ_WIDE.includes(id) ? "wide" : ""} ${edit ? "editing" : ""} ${hid ? "hid" : ""}" data-sort="hzblk" data-id="${id}">
       ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${HZ_NAMES[id]}<button class="eyeb" data-act="hzhide" data-k="${id}" aria-pressed="${!hid}" aria-label="${HZ_NAMES[id]} ${hid ? "einblenden" : "ausblenden"}" title="${hid ? "Einblenden" : "Ausblenden"}">${ic(hid ? "eyeOff" : "eye", 18)}<span>${hid ? "Ausgeblendet" : "Sichtbar"}</span></button></div>` : ""}${B[id]}</section>`;
     }).join("");
-    return `${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
+    const out = `${this._hzHead() === "scene" ? this._hzHeadHtml(this._hzVis(hints)) : this._hzHead() === "text" ? this._hzAmpel(this._hzVis(hints)) : ""}${nw ? this._hzQaRow() : ""}${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
+    return nw ? this._hzWrap(out) : out;
   }
   _hzAct(a, b) {
+    if (this._hzNew() && (this._hzAct2(a, b) || this._hzAct4(a, b))) return;
+    if (a === "hzgo" && Date.now() - (this._hzLP || 0) < 900) return;  /* nach langem Drücken kein Öffnen */
     const k = b.dataset.k;
     if (a === "hzgo") {
       if (k && this._mdList().some((m) => m.id === k)) { this._stOpen = false; this._edit = false; this._mdActiveSet(k); this._render(); }
@@ -174,7 +186,8 @@
     if (a === "hzback") { this._modal = { type: "hzset" }; this._renderModal(); return; }
     if (a === "hzhide") { const h = this._hzCfg().hidden; this._hzSave({ hidden: h.includes(k) ? h.filter((x) => x !== k) : [...h, k] }); return; }
     if (a === "hzreset") { this._hzSave({ order: Object.keys(HZ_NAMES), hidden: [] }); this._toast("Anordnung zurückgesetzt"); return; }
-    if (a === "hzsw") { const c = this._hzCfg(); if (k === "on") this._hzSave({ on: !c.on }); else if (k === "greet") this._hzSave({ greet: !c.greet }); else if (k === "ctl") this._hzSave({ ctl: !c.ctl }); else if (k === "warn") this._hzSave({ bub: { ...c.bub, warn: !c.bub.warn } }); return; }
+    if (a === "hzlook") { this._hzSave({ look: k === "classic" ? "classic" : "new" }); return; }
+    if (a === "hzsw") { const c = this._hzCfg(); if (k === "amp") this._hzSave({ amp: !c.amp }); else if (k === "on") this._hzSave({ on: !c.on }); else if (k === "greet") this._hzSave({ greet: !c.greet }); else if (k === "ctl") this._hzSave({ ctl: !c.ctl }); else if (k === "warn") this._hzSave({ bub: { ...c.bub, warn: !c.bub.warn } }); return; }
     if (a === "hzopenm") { this._hzSave({ open: k === "last" ? "last" : "start" }); return; }
     if (a === "hztap") { const c = this._hzCfg(); this._hzSave({ bub: { ...c.bub, tap: k === "module" ? "module" : "block" } }); return; }
     if (a === "hzbt") { const c = this._hzCfg(), ids = c.bub.ids.slice(); if (ids.includes(k)) ids.splice(ids.indexOf(k), 1); else if (ids.length < 8) ids.push(k); else { this._toast("Mehr als 8 Bubbles sind nicht möglich"); return; } this._hzSave({ bub: { ...c.bub, ids } }); return; }
@@ -200,6 +213,9 @@
     const m = this._modal, c = this._hzCfg(), adm = this._admin(), st = this._hass.states;
     const sw = (k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="hzsw" data-k="${k}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm ? "" : "disabled"}></button>`;
     const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" ${adm ? "" : "disabled"}>${t}</button>`;
+    if (m.type === "hzlater") return this._hzLaterModal();
+    if (m.type === "hztiles") return this._hzTilesModal();
+    if (["hzqaok", "hzqm", "hzqaset"].includes(m.type)) return this._hzQaModal();
     if (m.type === "hzpin") {
       const e = this._hzAlarmEnt(), need = e && (st[e].attributes || {}).code_format, T = { disarm: "unscharf schalten", away: "auf „Abwesend“ schalten", home: "auf „Zu Hause“ schalten" }[m.mode] || "schalten";
       return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Alarm ${T}?</b><span>${esc(e ? this._wzName(e) : "")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -222,6 +238,7 @@
       <div class="vrow"><span>Startseite verwenden<small class="mut" style="display:block">Aus: das Dashboard öffnet wie bisher das zuletzt benutzte Modul.</small></span>${sw("on", c.on, "Startseite verwenden")}</div>
       <div class="vrow"><span>Beim Öffnen zeigen<small class="mut" style="display:block">Gilt, wenn du das Dashboard in Home Assistant neu öffnest. Ein Direktlink mit <code>?modul=</code> öffnet sein Modul.</small></span><span class="gschs">${chip("hzopenm", "start", "Start", c.open === "start")}${chip("hzopenm", "last", "Letztes Modul", c.open === "last")}</span></div>
       <div class="vrow"><span>Begrüßung mit Namen<small class="mut" style="display:block">Vorname des angemeldeten Benutzers.</small></span>${sw("greet", c.greet, "Begrüßung mit Namen")}</div>
+      ${this._hzLookRows(c, sw, chip)}
       <div class="lsec" style="margin-top:12px">${ic("shield", 15)}Alarm</div>
       ${alarms.length ? this._wzSel(alarms, c.alarm, "hzsel", "", "– automatisch –") : `<div class="mut sm">Keine Alarmanlage in Home Assistant gefunden. Der Block bleibt dann weg.</div>`}
       <div class="vrow"><span>Alarm schalten erlauben<small class="mut" style="display:block">Zeigt Knöpfe für Unscharf, Abwesend und Zu Hause. Jedes Schalten wird bestätigt. Das schaltet echte Geräte.</small></span>${sw("ctl", c.ctl, "Alarm schalten erlauben")}</div>

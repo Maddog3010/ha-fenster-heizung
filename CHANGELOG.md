@@ -2,6 +2,42 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b10] - 2026-11-12
+
+### Neu
+- **Startseite · Neue Optik Stufe 1** nach Konzept_Startseite_Neue-Optik:
+  - **Gesamt-Ampel oben:** sagt zuerst, ob alles in Ordnung ist – drei Stufen „Alles in Ordnung“ (türkis), „2 Hinweise“ (bernstein) und „Warnung: …“ (rot) mit den ersten Hinweisen darunter. Antippen springt zu den Hinweisen. Als Warnung zählen jetzt auch Frost, Sturm, Gewitter, Hitze, Starkregen und amtliche Warnungen aus Modul 9 sowie ausgelöste oder nicht erreichbare Melder aus Modul 11. Infos wie die Müllabfuhr lassen die Ampel grün.
+  - **Zustandsfarben wie in Modul 1:** Türkis gut, Blau Info, Orange aktiv (heizt, lädt, Licht an), Bernstein Hinweis, Rot Warnung, Grau aus – an Kacheln, Hinweisen und Bubbles, hell und dunkel.
+  - **Kacheln mit HD-Symbolen** aus der gemeinsamen Grafik-Bibliothek, Zustand als Punkt oben rechts und ruhiger Rand. Fenster & Heizung zeigt, wie viele Räume heizen, das E-Auto „lädt“, Wetter die aktive Warnung.
+  - **Zehn neue HD-Symbole** (Wetter, Lüftung, Rollläden, Garten, Rauchmelder, Wartung, Mülltonne, Saugroboter, Alarm, Personen), damit alle Module auf der Startseite dieselbe Bildsprache haben.
+  - **Bubbles neu (Lab):** rund mit Ring in Zustandsfarbe; bei Batterie, E-Auto und Personen zeigt der Ring den Anteil.
+- **Startseite · Neue Optik Stufe 2:**
+  - **Kacheln 2.0:** Jede Kachel zeigt die wichtigste Zahl groß – Fenster & Heizung „2 heizen“ (sonst Ø Raumtemperatur), Warmwasser °C, Energie Anteil aus Sonne, Gerätestrom das laufende Gerät mit „noch ~ Min.“, E-Auto Ladestand, Wetter Temperatur, Melder, Müllabfuhr „Morgen“, Licht „3 an“, Akku, Strompreis. Rechts ein **Ring** (Anteile) oder ein **Mini-Verlauf** der letzten 24 Stunden aus der Home-Assistant-Historie (einmal je 10 Minuten abgerufen). Darunter der Zustand in Worten.
+  - **Fünf Zustände** je Kachel: gut, aktiv, Hinweis, Warnung (z. B. Fühler oder Thermostat offline, Auto nicht erreichbar) und aus (entsättigt). Die Farbe blendet bei einem Wechsel weich über.
+  - **Kachelgröße S, M, L** (Einstellungen → Startseite → Darstellung): S nur die Zahl, M Zahl mit Ring oder Verlauf, L mit großem Verlauf. Im Tablet-Modus größer.
+  - **Hinweise-Zentrale:** sortiert nach Warnung, Hinweis, Info; an jedem Hinweis Bild, Quelle und Zeit („Modul 1 · seit 24 Min.“), Knöpfe **Ansehen** und **Später** (in 1 Stunde, heute Abend, morgen früh – gilt für das jeweilige Gerät, Alarme lassen sich nicht verschieben). Müllabfuhr mit **Erledigt**. Ab vier Hinweisen „+N weitere“. Ein Hinweis verschwindet von selbst, sobald die Ursache weg ist. Verschobene Hinweise zählen nicht in der Gesamt-Ampel; „Wieder zeigen“ holt sie zurück.
+- **Startseite · Neue Optik Stufe 3:**
+  - **Haus-Kopf:** das ganze Haus als Szene mit Himmel nach Tageszeit (sun.sun) und Wetter (Haus-Werte), derselbe Himmel wie in Modul 1 und 3. PV-Module glänzen bei Überschuss, bei Frost oder Schnee liegt Schnee auf dem Dach, der Schornstein raucht, wenn geheizt wird, ein offenes Fenster klappt auf, bei Abwesenheit sind die Rollläden unten, das Auto aus Modul 8 steht daneben (mit Blitz beim Laden). Darüber Begrüßung, Gesamt-Ampel, Chips (Draußen, PV, wer zu Hause ist, Alarm) und eine Tageszeile (gespartes Heizöl/Gas heute, Anteil aus Sonne). Haus-Stile und Himmel-Themen für Sponsoren wie in Modul 1. Am Handy steht die Szene oben, der Text darunter.
+  - **Wetter als Szene:** Himmel mit Temperatur, Warnungen aus Modul 9 färben die Karte, vier Tage Vorhersage, **Frost heute Nacht** aus der Stundenvorhersage (auch als Hinweis), mit Lab „Wäsche-Wetter“ eine Zeile dazu.
+  - **Personen mit Zustandsring** (türkis zu Hause, blau unterwegs), Entfernung und **„kommt in ~ Min.“**, geschätzt aus der kleiner werdenden Entfernung; ab 20 Minuten oben „… kommt gleich“ (mit Lab „Smart Vorheizen“: „Heizung wird vorbereitet“).
+  - **Alarm:** großes Schild mit Zustand; ist Schalten erlaubt, **gedrückt halten** (1,2 Sekunden) und danach wie bisher bestätigen. Ab Werk weiter aus.
+  - **Tablet-Wandansicht:** Gesamt-Ampel groß oben, aus drei Metern lesbar; das Ruhebild zeigt die Haus-Szene unter Uhr und Ampel.
+  - Einstellungen → Startseite → Darstellung → **Kopfbereich**: Szene, Ampel (nur die Zeile) oder Einfach (wie bisher).
+- **Startseite · Neue Optik Stufe 4:**
+  - **Bewegung Aus / Dezent / Voll** (Einstellungen → Startseite → Darstellung). Dezent (Standard): Warnpunkt pulsiert, die große Zahl einer Kachel zählt bei Änderung weich nach, Ringe füllen sich neu, Zustandswechsel blendet über. Voll: zusätzlich ziehende Wolken, Regen, Schnee, Rauch und Glanz der PV-Module in der Haus-Szene. Im Tablet-Modus eigene Stufe, ab Werk aus. „Bewegung reduzieren“ des Geräts gilt immer.
+  - **Vorlagen** Familie, Technik und Minimal stellen Kopfbereich, Kachelgröße, Karten und Bubbles in einem Schritt um, mit **Rückgängig**.
+  - **Kacheln wählen:** Kacheln der Startseite (und des Tablets) ein- und ausblenden und sortieren, das Modul bleibt dabei eingeschaltet.
+  - **Schnellaktionen:** dieselben festen Aktionen wie bei Tags & Karten als Knöpfe unter dem Kopf (z. B. Alle Räume auf „Abwesend“, Warmwasser einmal aufheizen, Schnellstart Wallbox, Melder geprüft, Tonne ist draußen, Entfeuchter heute aus). Ab Werk aus; der Admin wählt bis zu acht. Aktionen, die das ganze Haus oder die Sicherheit betreffen, werden immer bestätigt. Auch Nutzer ohne Admin-Rechte können sie auslösen, aber nur aus dieser Liste (prüft das Backend); jede Auslösung steht im Protokoll von Tags & Karten. **Langes Drücken auf eine Kachel** zeigt die Schnellaktionen dieses Moduls.
+  - **Leerzustand:** Ist kein Modul aktiv oder sind alle Kacheln ausgeblendet, zeigt „Zuhause“ ein Bild mit Knopf „Modul hinzufügen“ bzw. „Kacheln wählen“.
+  - Einstellungen → Startseite → **Darstellung**: „Neue Optik“ oder „Wie bisher“. Reihenfolge, ausgeblendete Karten und Direktlinks bleiben unverändert.
+
+### Technik
+- Neue Schnittstellen `fenster_heizung/tg_quick_set` (Admin) und `fenster_heizung/tg_quick` für die Schnellaktionen; die Liste liegt bei Tags & Karten (`quick`, höchstens 8, nur feste Aktionen).
+
+### Geändert
+- **Modul 1 · Haus-Szene (v1.8 Build 8):** Die Solarmodule liegen jetzt gerade auf der Dachfläche (unten vier, darüber drei, links vom Schornstein) statt als schräge Leiste über der Dachkante – wie im Haus-Kopf der Startseite und in der Energie-Szene von Modul 3. Bei Überschuss hellblau mit sanftem Glanz, bei Frost mit Schneerand.
+- Tablet-Modus: Wetterwarnungen und Melder offline wecken das Display nicht, ein Rauchalarm weiterhin.
+
 ## [2026.11.3b9] - 2026-11-12
 
 ### Neu

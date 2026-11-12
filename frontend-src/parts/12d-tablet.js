@@ -40,7 +40,7 @@
     this.addEventListener("click", (e) => { if (this._tmSleep || Date.now() < (this._tmGuard || 0)) { e.stopPropagation(); e.preventDefault(); } }, true);
   }
   _tmWake() { this._tmSleep = false; this._tmLast = Date.now(); this._tmHomed = false; this._render(); }
-  _tmWarnKey() { try { return this._hzHints().filter((h) => h.c === "bad").map((h) => h.t).join("|"); } catch (_) { return ""; } }
+  _tmWarnKey() { try { return this._hzHints().filter((h) => h.c === "bad" && !h.soft).map((h) => h.t).join("|"); } catch (_) { return ""; } }
   _tmTick() {
     if (!this._hass || !this._tmOn()) return;
     const sr = this.shadowRoot, c = this._tmC(), d = new Date(), idle = Date.now() - (this._tmLast || Date.now());
@@ -82,6 +82,7 @@
   _tmStart() {
     const hints = this._hzHints(), mods = this._mdList().filter((x) => x.id !== "st"), bubs = this._labOn("sb") ? this._hzBubs().replace(/data-act="hzbub"/g, 'data-act="tmbub"') : "";
     const rows = hints.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join("");
+    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._hzTmAmp(vis)}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
     return `${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
   }
   _tmRoom(r) {
@@ -100,13 +101,14 @@
   _tmSleepHtml() {
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
     const ef = this._efxSleep ? this._efxSleep() : "";
-    return `<div class="tmrest${ef ? " efst" : ""}">${ef}<div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
+    const sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
+    return `<div class="tmrest${ef ? " efst" : ""}${sc ? " hzst" : ""}">${ef}${sc}<div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
   }
   _tmRender() {
     const sr = this.shadowRoot, v = this._mdList().some((m) => m.id === this._tmV()) || this._tmV() === "st" ? this._tmV() : "st", m = this._mdList().find((x) => x.id === v), c = this._tmC(), me = this._tmMe();
     this._w = this.clientWidth; this._tmView = v;
     if (this._tmSleep) { sr.getElementById("main").innerHTML = this._tmSleepHtml(); return; }
-    const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? this._hzHints().length : 0;
+    const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length : 0;
     const sub = v === "st" ? (hints ? `${hints} ${hints === 1 ? "Hinweis" : "Hinweise"}` : "Alles in Ordnung") : esc(m ? m.tag || "" : "");
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
     sr.getElementById("main").innerHTML = `<div class="tmw"><header class="tmh"><img class="blogo" src="${LOGO_URL}" alt="" draggable="false"><div class="tmht"><b>${title}</b><span>${sub}</span></div>

@@ -268,9 +268,62 @@
         `<circle cx="32" cy="30" r="15" fill="url(#${q("i")})"/><circle cx="25.5" cy="30" r="2.8" fill="#334155"/><circle cx="38.5" cy="30" r="2.8" fill="#334155"/>` +
         `<rect x="30.6" y="15" width="2.8" height="4" rx="1" fill="#cbd5e1"/><rect x="30.6" y="41" width="2.8" height="4" rx="1" fill="#cbd5e1"/>` +
         `<circle cx="50" cy="12" r="4" fill="${o.on ? "#22c55e" : "#475569"}" stroke="#fff" stroke-width="1.2"/>` + gl("M13 14 a6 6 0 0 1 5 -4 h8 l-13 16z") },
+      /* ---------- Startseite & Module (Konzept Startseite, Stufe 1) ---------- */
+      weather: { n: "Wetter", g: 4, f: (q, o) => rg(q("s"), M.gold, .4, .35, .8) + lg(q("c"), [[0, "#ffffff"], [.6, "#e8eef5"], [1, "#a9b6c6"]]) + sh(20, 59) +
+        `<g>${[0, 45, 90, 135, 180, 225, 270, 315].map((a) => `<rect x="39" y="3" width="3" height="6" rx="1.5" fill="#fbbf24" transform="rotate(${a} 40.5 19)"/>`).join("")}</g>` +
+        `<circle cx="40.5" cy="19" r="10" fill="url(#${q("s")})"/>` +
+        `<g fill="url(#${q("c")})"><circle cx="22" cy="40" r="10"/><circle cx="34" cy="33" r="13"/><circle cx="46" cy="41" r="9"/><rect x="12" y="40" width="43" height="13" rx="6.5"/></g>` +
+        (o.frost ? `<g stroke="#38bdf8" stroke-width="2" stroke-linecap="round">${[[20, 46], [33, 47], [45, 46]].map(([x, y]) => `<path d="M${x} ${y - 4} v8 M${x - 3.5} ${y - 2} l7 4 M${x - 3.5} ${y + 2} l7 -4"/>`).join("")}</g>` : "") +
+        gl("M14 40 a8 8 0 0 1 9 -8 a11 11 0 0 1 5 -6 a12 12 0 0 0 -8 12 a7 7 0 0 0 -6 2z") },
+      fan: { n: "Lüftung", g: 4, f: (q, o) => lg(q("b"), M.white, 0, 0, 1, 1) + lg(q("v"), M.teal, 0, 0, 1, 1) + sh(20) +
+        `<circle cx="32" cy="30" r="25" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/><circle cx="32" cy="30" r="19.5" fill="#0f2a2e" opacity=".14"/>` +
+        [20, 140, 260].map((a) => `<ellipse cx="32" cy="19.5" rx="5.8" ry="10.5" fill="url(#${q("v")})" transform="rotate(${a} 32 30)"/>`).join("") +
+        `<circle cx="32" cy="30" r="4.6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.2"/>` + gl("M11 24 a22 22 0 0 1 13 -16 a20 20 0 0 0 -10 18z") },
+      shutter: { n: "Rollläden", g: 4, f: (q) => lg(q("f"), M.white, 0, 0, 1, 1) + lg(q("g"), [[0, "#e0f2fe"], [.5, "#7dd3fc"], [1, "#0ea5e9"]], 0, 0, .6, 1) + lg(q("s"), [[0, "#e2e8f0"], [1, "#94a3b8"]]) + sh(22) +
+        `<rect x="10" y="7" width="44" height="47" rx="4" fill="url(#${q("f")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/><rect x="14" y="13" width="36" height="37" rx="2" fill="url(#${q("g")})"/>` +
+        [0, 1, 2, 3, 4].map((i) => `<rect x="14" y="${13 + i * 4.8}" width="36" height="4.4" rx="1" fill="url(#${q("s")})"/><rect x="14" y="${16.6 + i * 4.8}" width="36" height=".8" fill="#64748b" opacity=".45"/>`).join("") +
+        `<rect x="9" y="4" width="46" height="9" rx="3" fill="#cbd5e1"/><rect x="9" y="11.5" width="46" height="1.5" fill="#94a3b8"/><rect x="7" y="54" width="50" height="4" rx="2" fill="#cbd5e1"/>` +
+        gl("M16 39 h6 l-8 9z") },
+      garden: { n: "Garten", g: 4, f: (q) => lg(q("l"), M.green, 0, 0, 1, 1) + lg(q("e"), M.wood) + lg(q("w"), M.water) + sh(23, 58) +
+        `<path d="M7 56 Q32 40 57 56z" fill="url(#${q("e")})"/><path d="M32 51 V24" stroke="#15803d" stroke-width="3.2" stroke-linecap="round"/>` +
+        `<path d="M32 40 C19 40 12 32 12 22 C24 22 32 29 32 40z" fill="url(#${q("l")})"/><path d="M32 31 C43 31 51 23 51 11 C40 11 32 18 32 31z" fill="url(#${q("l")})"/>` +
+        `<path d="M15 24 C20 25 26 29 30 36" fill="none" stroke="#166534" stroke-width="1.2" opacity=".6"/><path d="M49 13 C44 15 38 21 34 28" fill="none" stroke="#166534" stroke-width="1.2" opacity=".6"/>` +
+        `<path d="M51 33 c-3.4 4.4 -4.6 6.6 -4.6 8.6 a4.6 4.6 0 0 0 9.2 0 c0 -2 -1.2 -4.2 -4.6 -8.6z" fill="url(#${q("w")})"/>` + gl("M14 23 C20 24 25 27 28 32 C22 31 16 28 14 23z") },
+      smoke: { n: "Rauchmelder", g: 4, f: (q, o) => rg(q("b"), [[0, "#ffffff"], [.7, "#e7edf3"], [1, "#a3b1c2"]], .4, .3, .85) + sh(22) +
+        (o.alarm ? `<circle cx="32" cy="30" r="29" fill="#ef4444" opacity=".2"/>` : "") +
+        `<circle cx="32" cy="30" r="25" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/><circle cx="32" cy="30" r="17" fill="none" stroke="#cbd5e1" stroke-width="1.6"/>` +
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => `<rect x="31" y="17.5" width="2" height="5" rx="1" fill="#94a3b8" transform="rotate(${i * 30} 32 30)"/>`).join("") +
+        `<circle cx="32" cy="30" r="5.5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/><circle cx="46" cy="17" r="2.8" fill="${o.alarm ? "#ef4444" : o.off ? "#64748b" : "#22c55e"}" stroke="#fff" stroke-width="1"/>` +
+        gl("M11 24 a22 22 0 0 1 13 -16 a20 20 0 0 0 -10 18z") },
+      wrench: { n: "Wartung", g: 4, f: (q) => lg(q("s"), M.steel, 0, 0, 1, 1) + sh(18) +
+        `<mask id="${q("m")}"><rect width="64" height="64" fill="#fff"/><rect x="28.5" y="0" width="7" height="13" rx="1.5" fill="#000" transform="rotate(45 32 32)"/></mask>` +
+        `<g transform="rotate(45 32 32)" mask="url(#${q("m")})"><circle cx="32" cy="12" r="11" fill="url(#${q("s")})" stroke="#64748b" stroke-opacity=".6"/><rect x="28" y="18" width="8" height="38" rx="4" fill="url(#${q("s")})" stroke="#64748b" stroke-opacity=".6"/><circle cx="32" cy="50" r="2" fill="#64748b"/></g>` +
+        gl("M19 30 l12 -12 l2 2 l-12 12z") },
+      bin: { n: "Mülltonne", g: 4, f: (q, o) => { const c = o.col || "#475569";
+        return lg(q("b"), [[0, c], [.5, c], [1, "#0f172a"]], 0, 0, 1, 0) + sh(19) +
+        `<path d="M17 16 h30 l-3 37 a3 3 0 0 1 -3 3 h-18 a3 3 0 0 1 -3 -3z" fill="url(#${q("b")})"/>` +
+        [25, 32, 39].map((x) => `<rect x="${x - 1}" y="22" width="2" height="28" rx="1" fill="#000" opacity=".18"/>`).join("") +
+        `<rect x="13" y="10" width="38" height="7" rx="3" fill="${c}"/><rect x="13" y="10" width="38" height="7" rx="3" fill="#000" opacity=".25"/><rect x="26" y="6" width="12" height="5" rx="2" fill="#1f2937"/>` +
+        `<circle cx="20" cy="55" r="4.2" fill="#111827" stroke="#64748b" stroke-width="1.2"/>` + gl("M20 19 h4 l-2 32 h-2z"); } },
+      robot: { n: "Saugroboter", g: 4, f: (q, o) => rg(q("b"), [[0, "#ffffff"], [.7, "#e7edf3"], [1, "#a3b1c2"]], .4, .3, .9) + sh(26, 58) +
+        `<ellipse cx="32" cy="40" rx="27" ry="16" fill="#1f2937"/><ellipse cx="32" cy="35" rx="27" ry="16" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
+        `<path d="M8 38 a24 13 0 0 0 48 0" fill="none" stroke="#94a3b8" stroke-width="1.4" opacity=".7"/>` +
+        `<rect x="24" y="25" width="16" height="6" fill="#94a3b8"/><ellipse cx="32" cy="31" rx="8" ry="3.4" fill="#94a3b8"/><ellipse cx="32" cy="25" rx="8" ry="3.6" fill="#e2e8f0" stroke="#94a3b8" stroke-width=".8"/>` +
+        `<circle cx="32" cy="42" r="1.9" fill="${o.on ? "#22c55e" : "#64748b"}"/>` + gl("M10 30 a24 14 0 0 1 14 -9 a22 12 0 0 0 -10 11z") },
+      shield: { n: "Alarm", g: 4, f: (q, o) => { const k = o.k || "ok", c = k === "bad" ? M.red : k === "off" ? M.steel : M.teal;
+        return lg(q("s"), c, 0, 0, 1, 1) + sh(17) +
+        `<path d="M32 5 L52 13 V30 C52 44 43 53 32 58 C21 53 12 44 12 30 V13z" fill="url(#${q("s")})"/>` +
+        `<path d="M32 10 L47 16 V30 C47 41 40 48 32 52.5 C24 48 17 41 17 30 V16z" fill="#fff" opacity=".14"/>` +
+        (k === "bad" ? `<path d="M32 21 v14" stroke="#fff" stroke-width="4.4" stroke-linecap="round"/><circle cx="32" cy="43" r="2.6" fill="#fff"/>`
+          : `<path d="M23.5 31 l6 6 l11.5 -13" stroke="#fff" stroke-width="4.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`) +
+        gl("M15 15 L30 9 V12 L18 17 V30 C18 37 21 42 25 46 C18 42 15 36 15 30z"); } },
+      people: { n: "Personen", g: 4, f: (q) => lg(q("a"), M.teal, 0, 0, 1, 1) + lg(q("b"), [[0, "#a5b4fc"], [1, "#4f46e5"]], 0, 0, 1, 1) + lg(q("s"), [[0, "#fde7cf"], [1, "#e6b18a"]]) + sh(25) +
+        `<path d="M29 57 C30 45 35 39 44 39 S58 45 59 57z" fill="url(#${q("b")})"/><circle cx="44" cy="28" r="8" fill="url(#${q("s")})"/><path d="M36 27 C36 20 40 18.5 44 18.5 S52 20 52 27 C50 23.5 47 23 44 24.5 C41 23 38 23.5 36 27z" fill="#3f2a17"/>` +
+        `<path d="M5 58 C6 45 13 38.5 23 38.5 S40 45 41 58z" fill="url(#${q("a")})"/><circle cx="23" cy="25.5" r="9.5" fill="url(#${q("s")})"/><path d="M13.5 25 C13 16.5 18.5 14 23 14 S33 16.5 32.5 25 C30 20.5 26 20 23 21.6 C20 20 16 20.5 13.5 25z" fill="#5b3a1f"/>` +
+        gl("M8 52 C9 46 13 42 18 41 C14 44 11 48 10 54z") },
     };
     /* Gruppen für Übersicht und Auswahl */
-    const G = [[1, "Heizen & Raum", "Modul 1"], [2, "Energie", "Modul 3 · Modul 19"], [3, "Geräte", "Modul 4"]];
+    const G = [[1, "Heizen & Raum", "Modul 1"], [2, "Energie", "Modul 3 · Modul 19"], [3, "Geräte", "Modul 4"], [4, "Startseite & Module", "Startseite"]];
     /* Alte Namen → neue Symbole. Modul 19 (EF_IMGS), Modul 4 (GS_TYP), Raumsymbole (COLOR_ICONS) */
     const A = {
       sonne: "pvRoof", solar: "pvRoof", haus: "house", akku: "battery", auto: "car", wallbox: "wallbox", steckdose: "plug", waschmaschine: "washer",

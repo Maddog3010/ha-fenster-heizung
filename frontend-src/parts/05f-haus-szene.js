@@ -109,9 +109,15 @@
     d += `<rect x="240" y="24" width="14" height="30" fill="#8b2b22"/><rect x="240" y="24" width="14" height="30" fill="url(#${q("br")})"/><rect x="238" y="21" width="18" height="4" rx="1" fill="#57534e"/>` +
       (anyHeat ? `<g class="hssm">${[0, 1, 2].map((i) => `<circle class="hssm${i}" cx="${247 + i * 3}" cy="${15 - i * 6}" r="${3.5 + i * 2}" fill="#e2e8f0" opacity=".55"/>`).join("")}</g>` : "");
     if (pvOn) {
-      const glow = pvW > 50 && !night, ang = (Math.atan2(top - RT, RR - 180) * 180 / Math.PI).toFixed(1);
-      d += `<g transform="translate(190 ${RT + 6}) rotate(${ang})">${[0, 1, 2, 3].map((i) => `<rect x="${6 + i * 19}" y="2" width="18" height="12" rx="1" fill="${glow ? "#1d4ed8" : "#1e3a8a"}" stroke="#cbd5e1" stroke-width=".8"/><path d="M${6 + i * 19} 8 h18 M${15 + i * 19} 2 v12" stroke="#93c5fd" stroke-width=".5" opacity=".7"/>`).join("")}${glow ? `<rect x="5" y="1" width="78" height="14" rx="2" fill="none" stroke="#fde68a" stroke-width="1.4" class="hspv"/>` : ""}</g>`;
+      /* Solarfeld frontal auf der rechten Dachfläche (wie Startseite und Modul 3): unten 4, darüber 3 Module, links vom Schornstein */
+      const glow = pvW > 50 && !night, w = 15.5, h = 9.5;
+      const cells = [[186, 58.5], [203, 58.5], [220, 58.5], [237, 58.5], [177, 47.5], [194, 47.5], [211, 47.5]];
+      const pan = (x, y) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx=".9" fill="${glow ? "#2563eb" : "#1e3a8a"}" stroke="${night ? "#64748b" : "#e2e8f0"}" stroke-width=".8"/><path d="M${x + w / 2} ${y} v${h} M${x} ${y + h / 2} h${w}" stroke="#93c5fd" stroke-width=".45" opacity=".7"/>` +
+        (glow ? `<path d="M${x + 1.8} ${y + 1.8} h3.5" stroke="#fff" stroke-width="1.1" stroke-linecap="round" opacity=".7"/>` : "") + (wh ? `<rect x="${x - .4}" y="${y - .9}" width="${w + .8}" height="2.8" rx="1.3" fill="#f8fafc"/>` : "");
+      d += `<g><rect x="184.6" y="57" width="69.4" height="12.5" rx="1.3" fill="#0f172a" opacity=".3"/><rect x="175.6" y="46" width="52.4" height="12.5" rx="1.3" fill="#0f172a" opacity=".3"/>${cells.map(([x, y]) => pan(x, y)).join("")}` +
+        `${glow ? `<g class="hzpvg" opacity="0">${cells.map(([x, y]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx=".9" fill="#fff"/>`).join("")}</g>` : ""}</g>`;
     }
+
     /* Räume je Etage */
     fl.forEach((f, fi) => {
       const y = top + fi * fh, many = f.r.length > 6, cw = (X1 - X0) / f.r.length;

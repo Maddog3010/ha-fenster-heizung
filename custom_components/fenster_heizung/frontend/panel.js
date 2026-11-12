@@ -733,7 +733,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.8", b: 7, d: "2026-11-12", p: "2026.11.3b9", log: [["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.8", b: 8, d: "2026-11-12", p: "2026.11.3b10", log: [["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 2, d: "2026-11-11", p: "2026.11.3b4", log: [["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -1838,6 +1838,157 @@ button.hzr{cursor:pointer}
 .hzot{flex:1;min-width:0}.hzot b{display:block;font-size:.92rem}.hzot small{display:block;font-size:.76rem;color:var(--mut)}
 .hzo .ibtn.dn svg{transform:rotate(180deg)}.gschs{display:inline-flex;gap:6px;flex-wrap:wrap}
 @media(max-width:520px){.hzgrid{grid-template-columns:repeat(2,1fr)}.hzrt{max-width:42%}}
+/* Startseite · Neue Optik Stufe 1: Zustandsfarben wie Modul 1 */
+:host{--z-ok:#2dd4bf;--z-info:#60a5fa;--z-act:#fb923c;--z-hint:#f59e0b;--z-warn:#f87171;--z-night:#a78bfa;--z-off:#94a3b8}
+:host([style*="color-scheme: light"]){--z-ok:#0d9488;--z-info:#2563eb;--z-act:#ea580c;--z-hint:#b45309;--z-warn:#dc2626;--z-night:#7c3aed;--z-off:#64748b}
+.z-ok{--zc:var(--z-ok)}.z-info{--zc:var(--z-info)}.z-act{--zc:var(--z-act)}.z-hint{--zc:var(--z-hint)}.z-warn{--zc:var(--z-warn)}.z-night{--zc:var(--z-night)}.z-off{--zc:var(--z-off)}
+/* Gesamt-Ampel */
+.hzamp{display:flex;align-items:center;gap:14px;padding:14px 18px;margin-bottom:14px;position:relative;overflow:hidden;background:linear-gradient(100deg,color-mix(in srgb,var(--zc) 13%,var(--card)) 0%,var(--card) 62%)}
+.hzamp[role=button]{cursor:pointer}.hzamp:focus-visible{outline:2px solid var(--zc);outline-offset:2px}
+.hzamp::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--zc);opacity:.85}
+.hzal{display:flex;flex-direction:column;gap:4px;padding:6px 5px;border-radius:12px;background:#11161c;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.hzal i{width:10px;height:10px;border-radius:50%;background:#2a323b;display:block}
+.hzamp.z-warn .hzal .r{background:var(--z-warn);box-shadow:0 0 10px var(--z-warn)}.hzamp.z-hint .hzal .y{background:var(--z-hint);box-shadow:0 0 10px var(--z-hint)}.hzamp.z-ok .hzal .g{background:var(--z-ok);box-shadow:0 0 10px var(--z-ok)}
+.hzab{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;flex:none;color:#fff;background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--zc) 70%,#fff),var(--zc) 60%,color-mix(in srgb,var(--zc) 70%,#000));box-shadow:0 0 0 5px color-mix(in srgb,var(--zc) 18%,transparent),0 6px 16px -6px var(--zc)}
+.hzab b{font-size:1.5rem;font-weight:800;line-height:1}
+.hzax{flex:1;min-width:0}.hzax b{display:block;font-size:1.3rem;line-height:1.2;color:var(--zc)}.hzax small{display:block;color:var(--mut);font-size:.88rem;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hzago{display:inline-flex;align-items:center;gap:2px;font-size:.84rem;font-weight:600;color:var(--zc);flex:none}.hzago svg{transform:rotate(-90deg)}
+.hzamp.z-warn .hzab{animation:hzpl 2.4s ease-in-out infinite}@keyframes hzpl{50%{box-shadow:0 0 0 9px color-mix(in srgb,var(--zc) 10%,transparent),0 6px 16px -6px var(--zc)}}
+:host([style*="color-scheme: light"]) .hzal{background:#1f2937}
+/* Kacheln mit HD-Symbol und Zustandspunkt */
+.hzt.n{position:relative;background:color-mix(in srgb,var(--zc) 5%,rgba(127,127,127,.06));border-color:color-mix(in srgb,var(--zc) 22%,var(--line))}
+.hzt.n:hover{border-color:color-mix(in srgb,var(--zc) 55%,var(--line))}.hzt.n:focus-visible{outline-color:var(--zc)}
+.hzt.n .hti{width:60px;height:60px;border-radius:18px;background:radial-gradient(circle at 50% 42%,color-mix(in srgb,var(--zc) 22%,transparent),transparent 70%);color:var(--zc)}
+.hzt.n .hti.hd{background:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--zc) 20%,transparent),transparent 68%)}
+.hzt.n small{color:var(--zc)}.hzt.n.z-ok small{color:var(--mut);font-weight:600}
+.hzt.n .hzdot{position:absolute;top:10px;right:10px;width:9px;height:9px;border-radius:50%;background:var(--zc);box-shadow:0 0 0 3px color-mix(in srgb,var(--zc) 20%,transparent)}
+.hzt.n.z-warn .hzdot{animation:hzdp 2s ease-in-out infinite}@keyframes hzdp{50%{box-shadow:0 0 0 6px color-mix(in srgb,var(--zc) 8%,transparent)}}
+.hzt.n.z-off .hti{filter:grayscale(1);opacity:.55}.hzt.n.z-off .hzdot{opacity:.6}
+.hzt.n .hti.hsp{width:56px;height:56px}
+:host([style*="color-scheme: light"]) .hzt.n{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+@media (prefers-reduced-motion:reduce){.hzamp.z-warn .hzab,.hzt.n.z-warn .hzdot{animation:none}}
+/* Hinweise in Zustandsfarbe */
+.hzr.n .hzri{background:color-mix(in srgb,var(--zc) 15%,transparent);color:var(--zc)}.hzr.n .hzrr{color:var(--zc);font-weight:700}
+.hzr.n{position:relative}.hzr.n::before{content:"";position:absolute;left:-18px;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--zc);opacity:.8}.hzl>.hzr.n:first-child::before{top:6px}
+/* Runde Bubbles mit Ring */
+.hzbubs.n{gap:14px;padding:4px 2px 2px}
+.hzbn{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;border:0;background:none;padding:0;cursor:pointer;color:var(--primary-text-color);width:80px}
+.hzbn:focus-visible{outline:none}.hzbn:focus-visible .hzbr{outline:2px solid var(--zc);outline-offset:2px}
+.hzbr{position:relative;width:76px;height:76px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,color-mix(in srgb,var(--zc) 12%,var(--card)),var(--card) 70%)}
+.hzbr svg{position:absolute;inset:0;width:100%;height:100%}.hzbr .bg{fill:none;stroke:var(--line);stroke-width:4}.hzbr .fg{fill:none;stroke:var(--zc);stroke-width:4;stroke-linecap:round}
+.hzbp{position:relative;line-height:0;margin-top:-2px}.hzbp svg.gx{position:static;width:26px;height:26px}
+.hzbr b{position:relative;font-size:.92rem;line-height:1.1;white-space:nowrap;margin-top:1px}.hzbr b.lg{font-size:.74rem}
+.hzbn small{font-size:.72rem;color:var(--mut);white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis}
+.hzbn:hover .hzbr .bg{stroke:color-mix(in srgb,var(--zc) 35%,var(--line))}
+:host([style*="color-scheme: light"]) .hzbr{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.tmbody .hzbubs.n{gap:18px}
+/* Startseite · Stufe 2: Kacheln 2.0 */
+.z-info{--zc:var(--z-info)}
+.hzkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}.hzkgrid.sz-s{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.hzkgrid.sz-l{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.hzk{position:relative;display:flex;flex-direction:column;gap:8px;padding:14px 14px 12px;border-radius:18px;border:1px solid color-mix(in srgb,var(--zc) 20%,var(--line));background:color-mix(in srgb,var(--zc) 5%,rgba(127,127,127,.06));color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer;min-width:0;transition:border-color .6s,background-color .6s}
+.hzk:hover{border-color:color-mix(in srgb,var(--zc) 55%,var(--line))}.hzk:focus-visible{outline:2px solid var(--zc);outline-offset:2px}
+.hzk .hzdot{position:absolute;top:12px;right:12px;width:9px;height:9px;border-radius:50%;background:var(--zc);box-shadow:0 0 0 3px color-mix(in srgb,var(--zc) 20%,transparent)}
+.hzk.z-warn .hzdot{animation:hzdp 2s ease-in-out infinite}
+.hzkh{display:flex;align-items:center;gap:9px;min-width:0;padding-right:14px}
+.hzki{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;flex:none;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--zc) 22%,transparent),transparent 72%);color:var(--zc)}
+.hzkn{min-width:0}.hzkn b{font-size:.92rem;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}.hzkn small{display:flex;gap:6px;align-items:center;font-size:.72rem;color:var(--mut);white-space:nowrap}
+.hzkst{font-style:normal;font-size:.6rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:6px;background:color-mix(in srgb,var(--amber) 18%,transparent);color:var(--amber)}
+.hzkm{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;min-height:46px}
+.hzkv{font-size:2.1rem;font-weight:800;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--primary-text-color);white-space:nowrap}
+.hzkv small{font-size:.9rem;font-weight:600;color:var(--mut);margin-left:4px;letter-spacing:0}
+.hzkv.tx{font-size:1.55rem}.hzkv.tx.sm{font-size:1.02rem;font-weight:700;white-space:normal;line-height:1.25}
+.hzks{font-size:.82rem;color:var(--mut);line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.hzk:not(.z-ok):not(.z-off) .hzks{color:var(--zc);font-weight:600}
+.hzkg{flex:none;line-height:0}.hzkg.l{width:100%}.hzkg.l svg{width:100%;height:44px}
+.hzkr .bg{fill:none;stroke:var(--line);stroke-width:5}.hzkr .fg{fill:none;stroke:var(--zc);stroke-width:5;stroke-linecap:round;transition:stroke-dasharray .8s}
+.hzksp{width:78px;height:32px;overflow:visible}.hzksp .l{fill:none;stroke:var(--zc);stroke-width:1.8;stroke-linejoin:round;vector-effect:non-scaling-stroke}.hzksp .a{fill:color-mix(in srgb,var(--zc) 14%,transparent)}.hzksp .d{fill:var(--zc)}
+.hzk.z-off{background:rgba(127,127,127,.05);border-color:var(--line)}.hzk.z-off .hzki{filter:grayscale(1);opacity:.5}.hzk.z-off .hzkv{color:var(--mut);font-size:1.4rem}.hzk.z-off .hzdot{opacity:.5}
+.hzk.sz-s{gap:6px;padding:12px}.hzk.sz-s .hzki{width:32px;height:32px}.hzk.sz-s .hzkm{min-height:0}.hzk.sz-s .hzkv{font-size:1.6rem}.hzk.sz-s .hzks{-webkit-line-clamp:1}
+:host([style*="color-scheme: light"]) .hzk{background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05)}:host([style*="color-scheme: light"]) .hzk.z-off{background:#f8fafc}
+.tmgrid .hzk{min-height:170px;padding:18px;border-radius:24px}.tmgrid .hzk .hzkv{font-size:2.8rem}.tmgrid .hzk .hzkv.tx{font-size:1.9rem}.hzkv{min-width:0;overflow:hidden;text-overflow:ellipsis}.tmgrid .hzk .hzki{width:52px;height:52px}.tmgrid .hzk .hzkn b{font-size:1.1rem}.tmgrid .hzk .hzks{font-size:.98rem}
+/* Startseite · Stufe 3: Haus-Kopf */
+.hzhd{position:relative;padding:0;overflow:hidden;min-height:230px;margin-bottom:14px;border:1px solid color-mix(in srgb,var(--zc) 30%,var(--line))}
+.hzhs{position:absolute;inset:0;display:flex;justify-content:flex-end}.hzhs svg{height:100%;width:auto;aspect-ratio:260/160;display:block;-webkit-mask-image:linear-gradient(90deg,transparent,#000 22%);mask-image:linear-gradient(90deg,transparent,#000 22%)}
+.hzho{position:relative;z-index:1;display:flex;flex-direction:column;gap:10px;padding:18px 20px;max-width:min(560px,62%);min-height:230px;justify-content:center;background:linear-gradient(90deg,rgba(8,12,18,.78) 0%,rgba(8,12,18,.55) 70%,transparent);color:#f8fafc}
+.hzhg b{display:block;font-size:1.45rem;line-height:1.15}.hzhg small{display:block;font-size:.84rem;opacity:.8}
+.hzha{display:flex;align-items:center;gap:12px;padding:8px 12px 8px 8px;border-radius:16px;background:rgba(255,255,255,.08);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid color-mix(in srgb,var(--zc) 45%,rgba(255,255,255,.12));align-self:flex-start;max-width:100%}
+.hzha[role=button]{cursor:pointer}.hzha .hzab{width:40px;height:40px}.hzha .hzab b{font-size:1.3rem}.hzha .hzax b{font-size:1.15rem;color:color-mix(in srgb,var(--zc) 70%,#fff)}.hzha .hzax small{color:rgba(248,250,252,.78)}.hzha .hzago{color:#fff}
+.hzhd.z-warn .hzab{animation:hzpl 2.4s ease-in-out infinite}
+.hzhc{display:flex;flex-wrap:wrap;gap:6px}.hzhc span{display:inline-flex;align-items:center;gap:5px;padding:3px 10px 3px 4px;border-radius:999px;background:rgba(255,255,255,.1);font-size:.8rem;white-space:nowrap}
+.hzhw{font-size:.82rem;opacity:.85}
+.hzsc .hzpvg,.hs2:not([data-an="aus"]) .hzpvg{animation:hzpv 3.2s ease-in-out infinite}@keyframes hzpv{0%,100%{opacity:0}50%{opacity:.35}}
+@media (prefers-reduced-motion:reduce){.hs2 .hzpvg,.hzsc .hzpvg,.hzhd.z-warn .hzab{animation:none}}
+@media(max-width:520px){.hzhd{min-height:0;display:flex;flex-direction:column}.hzhs{position:relative;height:150px;justify-content:center}.hzhs svg{width:100%;height:100%;aspect-ratio:auto;-webkit-mask-image:none;mask-image:none}.hzho{max-width:none;min-height:0;background:var(--card);color:var(--primary-text-color);padding:12px 14px 14px;gap:8px}
+  .hzhg b{font-size:1.2rem}.hzhg small{opacity:1;color:var(--mut)}
+  .hzha{background:color-mix(in srgb,var(--zc) 10%,transparent);border-color:color-mix(in srgb,var(--zc) 35%,var(--line));align-self:stretch}.hzha .hzax b{color:var(--zc)}.hzha .hzax small{color:var(--mut)}.hzha .hzago{color:var(--zc)}
+  .hzhc span{background:rgba(127,127,127,.12)}.hzhw{color:var(--mut)}}
+/* D1 Wetter */
+.hzwx2{border-color:color-mix(in srgb,var(--zc) 25%,var(--line))}.hzwx2.z-ok{border-color:var(--line)}
+.hzwb{position:relative;border-radius:16px;overflow:hidden;height:118px}.hzws{position:absolute;inset:0}.hzws svg{width:100%;height:100%;display:block}
+.hzwv{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:12px 14px;background:linear-gradient(90deg,rgba(8,12,18,.7),rgba(8,12,18,.15) 70%,transparent);color:#fff}
+.hzwv b{font-size:2.3rem;line-height:1;font-weight:800}.hzwv b small{font-size:1rem;font-weight:600;opacity:.8}.hzwv span{font-size:.84rem;opacity:.88;margin-top:4px}
+.hzwn{display:flex;align-items:center;gap:10px;margin-top:10px;padding:9px 12px;border-radius:14px;background:color-mix(in srgb,var(--zc) 12%,transparent);border-left:3px solid var(--zc)}.hzwn b{display:block;color:var(--zc);font-size:.95rem}.hzwn small{display:block;color:var(--mut);font-size:.8rem}
+.hzwd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.hzwd div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:12px;background:rgba(127,127,127,.08);color:var(--mut)}
+.hzwd small{font-size:.74rem}.hzwd svg{color:var(--amber)}.hzwd b{color:var(--primary-text-color);font-size:1rem}.hzwd em{font-style:normal;font-size:.76rem}
+.hzwl{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.86rem}
+/* D2 Personen */
+.hzps{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:14px;margin-bottom:8px;background:color-mix(in srgb,var(--z-info) 12%,transparent);border-left:3px solid var(--z-info)}.hzps b{display:block;color:var(--z-info)}.hzps small{display:block;color:var(--mut);font-size:.8rem}
+.hzpl{display:flex;flex-direction:column}.hzpr{display:flex;align-items:center;gap:14px;padding:9px 0;border-top:1px solid var(--line)}.hzpl>.hzpr:first-child{border-top:0}
+.hzpa{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:700;color:#fff;background:var(--c,#14b8a6) center/cover;box-shadow:0 0 0 3px var(--card),0 0 0 6px var(--zc)}
+.hzpr.z-off .hzpa{filter:grayscale(1);opacity:.6}.hzpr .hzrx{flex:1;min-width:0}.hzpr .hzrx b{display:block;font-size:1rem}.hzpr .hzrx small{display:block;color:var(--mut);font-size:.84rem}
+.hzpp{font-style:normal;font-size:.8rem;font-weight:700;color:var(--zc)}
+.hzpk{display:flex;gap:14px;margin-top:8px;font-size:.74rem;color:var(--mut)}.hzpk i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--zc);margin-right:5px}
+/* D3 Alarm */
+.hzal2{border-color:color-mix(in srgb,var(--zc) 25%,var(--line))}.hzal2.z-off,.hzal2.z-ok{border-color:var(--line)}
+.hzam2{display:flex;align-items:center;gap:14px}.hzam2 b{display:block;font-size:1.25rem;color:var(--zc)}.hzal2.z-off .hzam2 b{color:var(--primary-text-color)}.hzam2 small{display:block;color:var(--mut);font-size:.86rem}
+.hzhl{margin-top:14px;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}.hzhl small{display:block;text-transform:none;letter-spacing:0;font-weight:500}
+.hzhb{display:flex;gap:8px;margin-top:8px}
+.hzhold{position:relative;overflow:hidden;flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(127,127,127,.08);cursor:pointer;font-weight:700;touch-action:none;-webkit-user-select:none;user-select:none}
+.hzhold i{position:absolute;left:0;top:0;bottom:0;width:0;background:color-mix(in srgb,var(--z-warn) 28%,transparent)}.hzhold span,.hzhold svg{position:relative}
+.hzhold.on i{width:100%;transition:width 1.2s linear}
+/* F Tablet */
+.tmamp{display:flex;align-items:center;gap:18px;padding:16px 22px;border-radius:24px;margin-bottom:16px;background:linear-gradient(100deg,color-mix(in srgb,var(--zc) 16%,var(--card)),var(--card) 70%);border:1px solid color-mix(in srgb,var(--zc) 30%,var(--line))}
+.tmamp .hzab{width:64px;height:64px}.tmamp .hzab b{font-size:2rem}.tmamp b{display:block;font-size:2rem;color:var(--zc);line-height:1.1}.tmamp small{display:block;font-size:1.05rem;color:var(--mut)}
+.tmrest.hzst{position:fixed;inset:0;overflow:hidden;justify-content:flex-start;padding-top:9vh}.tmrest.hzst>*:not(.tmrw):not(.tmsc){position:relative;z-index:1}.tmrest.hzst>.tmrw{z-index:1}.tmrest.hzst>.tmsc{position:absolute;left:0;right:0;bottom:0;height:52%;z-index:0;opacity:.6;-webkit-mask-image:linear-gradient(180deg,transparent,#000 35%);mask-image:linear-gradient(180deg,transparent,#000 35%)}.tmsc svg{width:100%;height:100%}.tmrest.hzst .tmsa{order:2}
+.tmsa{display:inline-flex;align-items:center;gap:10px;font-size:1.4rem;font-weight:700;color:var(--zc);margin-bottom:8px}.tmsa i{width:16px;height:16px;border-radius:50%;background:var(--zc);box-shadow:0 0 14px var(--zc)}
+/* Startseite · Stufe 4: Bewegung, Schnellaktionen, Vorlagen, Leerzustand */
+[data-hzan=aus] *,[data-hzan=aus] *::before,[data-hzan=aus] *::after{animation:none!important;transition:none!important}
+[data-hzan=dezent] .hzsc *{animation:none!important}
+[data-hzan=voll] .hzsc .hscl{animation:hsDrift 14s ease-in-out infinite alternate}[data-hzan=voll] .hzsc .hsrn,[data-hzan=voll] .hzsc .hssn{animation:hsFall 2.6s linear infinite}
+[data-hzan=voll] .hzsc .hssm circle{transform-box:fill-box;animation:hsSm 3.6s linear infinite}[data-hzan=voll] .hzsc .hssm1{animation-delay:-1.8s}
+[data-hzan=voll] .hzsc .hsaw{transform-box:fill-box;animation:rkAir 3s ease-out infinite}
+.hzfill{animation:hzfl .9s cubic-bezier(.2,.7,.2,1)}@keyframes hzfl{from{stroke-dasharray:0 999}}
+@media (prefers-reduced-motion:reduce){.hzpg *,.tmsc *{animation:none!important;transition:none!important}}
+.hzpg{min-width:0;max-width:100%}.hzpg>*{min-width:0}
+.hzqa{max-width:100%;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 0 12px;padding:2px}.hzqa::-webkit-scrollbar{display:none}
+.hzqb{flex:none;display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--primary-text-color);font-weight:600;font-size:.86rem;cursor:pointer}
+.hzqb svg{color:var(--teal)}.hzqb:hover{border-color:color-mix(in srgb,var(--teal) 55%,var(--line))}.hzqb.add{border-style:dashed;color:var(--mut)}
+.hzqa.tm{gap:12px;margin-bottom:16px}.hzqa.tm .hzqb{padding:14px 22px;font-size:1.05rem}
+.hzemp{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px;border:1px dashed var(--line);border-radius:18px}.hzemp>div{flex:1;min-width:180px}.hzemp b{display:block;font-size:1.05rem}.hzemp small{display:block;color:var(--mut);font-size:.86rem}
+.hzpre{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0}
+.hzpc{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(127,127,127,.05);text-align:left;cursor:pointer;color:var(--primary-text-color)}
+.hzpc b{font-size:.95rem}.hzpc small{font-size:.74rem;color:var(--mut);line-height:1.3}.hzpc.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent)}
+@media(max-width:520px){.hzpre{grid-template-columns:1fr}}
+/* Hinweise-Zentrale */
+.hzzc{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:rgba(127,127,127,.18);font-size:.76rem;font-weight:700;margin-left:2px}
+.hzzw{font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:10px;background:color-mix(in srgb,var(--zc) 16%,transparent);color:var(--zc)}
+.hzzl{display:flex;flex-direction:column;gap:8px}
+.hzz{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--zc) 6%,rgba(127,127,127,.05));border-left:3px solid var(--zc)}
+.hzzi{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--zc) 14%,transparent);color:var(--zc)}
+.hzzx{flex:1;min-width:0}.hzzx b{display:block;font-size:.95rem;line-height:1.25}.hzzx small{display:block;font-size:.78rem;color:var(--mut);margin-top:1px}
+.hzzp{display:inline-block;font-style:normal;font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--zc);margin-top:3px}
+.hzzbs{display:flex;gap:6px;flex:none}
+.hzzb{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 11px;font-size:.8rem;font-weight:600;cursor:pointer;color:var(--primary-text-color)}.hzzb:hover{border-color:var(--zc)}.hzzb.q{color:var(--mut)}
+.hzzmore{margin-top:8px;width:100%;border:1px dashed var(--line);background:none;border-radius:12px;padding:8px;font-size:.85rem;font-weight:600;color:var(--mut);cursor:pointer}.hzzmore:hover{color:var(--primary-text-color)}
+.hzzok{display:flex;align-items:center;gap:12px;padding:6px 2px}.hzzok b{display:block;color:var(--z-ok)}.hzzok small{display:block;color:var(--mut);font-size:.84rem}
+.hzzf{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:.8rem;color:var(--mut)}.hzzf .lnk{margin-left:auto}
+.hzlo{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;margin-bottom:8px;border:1px solid var(--line);border-radius:14px;background:rgba(127,127,127,.05);text-align:left;cursor:pointer;color:var(--primary-text-color)}
+.hzlo b{flex:1}.hzlo small{color:var(--mut)}.hzlo svg{transform:rotate(-90deg);color:var(--mut)}
+:host([style*="color-scheme: light"]) .hzz{background:color-mix(in srgb,var(--zc) 6%,#fff)}
+@media(max-width:520px){.hzkgrid,.hzkgrid.sz-l{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hzkgrid.sz-l .hzk{grid-column:span 2}.hzk{padding:12px 11px 10px;gap:6px}.hzki{width:30px;height:30px}.hzki svg.gx{width:28px;height:28px}.hzkh{gap:7px;padding-right:10px;align-items:flex-start}.hzkn b{white-space:normal;font-size:.84rem;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.hzkst{font-size:.54rem;padding:0 4px}.hzkv{font-size:1.7rem}.hzkv.tx{font-size:1.2rem}.hzkm{min-height:38px}.hzkr{width:36px;height:36px}.hzksp{width:52px}
+  .hzz{flex-wrap:wrap;gap:10px}.hzzbs{width:100%;padding-left:52px}.hzzb{flex:1}}
+.tmgrid .hzt.n{align-items:flex-start}.tmgrid .hzt.n .hti{width:72px;height:72px}.tmgrid .hzt.n .hti svg.gx{width:56px;height:56px}.tmgrid .hzt.n .hzdot{top:16px;right:16px;width:12px;height:12px}
+@media(max-width:520px){.hzamp{padding:12px 14px;gap:11px}.hzal{display:none}.hzab{width:40px;height:40px}.hzax b{font-size:1.12rem}.hzago{display:none}.hzbubs.n{gap:10px}.hzbn{width:72px}.hzbr{width:68px;height:68px}.hzbr b.lg{font-size:.64rem}.hzr.n::before{left:-11px}}
 /* Tablet-Modus */
 .tmw{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;background:var(--primary-background-color,#0f1419);color:var(--primary-text-color,#e6edf3)}
 .tmh{display:flex;align-items:center;gap:16px;padding:calc(12px + env(safe-area-inset-top,0px)) 20px 6px}
@@ -3707,7 +3858,7 @@ class FensterHeizungPanel extends HTMLElement {
     const bar = sr0 && sr0.querySelector(".mbar"), x = bar ? bar.scrollLeft : null, id = this._mdActive();
     const keep = {}; if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { keep[i.getAttribute("src")] = i; });  /* Bilder behalten, sonst flackern sie bei jedem Neuaufbau */
     const kk = {}; if (sr0) sr0.querySelectorAll("#main [data-kk]").forEach((e) => { kk[e.dataset.kk] = e; });  /* Raumbilder (Raumkarte 2.0): gleicher Zustand = altes Bild bleibt, Bewegung läuft weiter */
-    try { this._render0(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o) && (!n.hasAttribute("data-ks") || this._kkSync(o, n))) n.replaceWith(o); }); this._visObs(); this._msn(); } } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
+    try { this._render0(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o) && (!n.hasAttribute("data-ks") || this._kkSync(o, n))) n.replaceWith(o); }); this._visObs(); this._msn(); if (this._hzAnimRun) this._hzAnimRun(); } } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {
       const t = nb.querySelector(".mtab.sel"); if (t) nb.scrollLeft = Math.max(0, t.offsetLeft - (nb.clientWidth - t.offsetWidth) / 2);
@@ -4624,9 +4775,62 @@ class FensterHeizungPanel extends HTMLElement {
         `<circle cx="32" cy="30" r="15" fill="url(#${q("i")})"/><circle cx="25.5" cy="30" r="2.8" fill="#334155"/><circle cx="38.5" cy="30" r="2.8" fill="#334155"/>` +
         `<rect x="30.6" y="15" width="2.8" height="4" rx="1" fill="#cbd5e1"/><rect x="30.6" y="41" width="2.8" height="4" rx="1" fill="#cbd5e1"/>` +
         `<circle cx="50" cy="12" r="4" fill="${o.on ? "#22c55e" : "#475569"}" stroke="#fff" stroke-width="1.2"/>` + gl("M13 14 a6 6 0 0 1 5 -4 h8 l-13 16z") },
+      /* ---------- Startseite & Module (Konzept Startseite, Stufe 1) ---------- */
+      weather: { n: "Wetter", g: 4, f: (q, o) => rg(q("s"), M.gold, .4, .35, .8) + lg(q("c"), [[0, "#ffffff"], [.6, "#e8eef5"], [1, "#a9b6c6"]]) + sh(20, 59) +
+        `<g>${[0, 45, 90, 135, 180, 225, 270, 315].map((a) => `<rect x="39" y="3" width="3" height="6" rx="1.5" fill="#fbbf24" transform="rotate(${a} 40.5 19)"/>`).join("")}</g>` +
+        `<circle cx="40.5" cy="19" r="10" fill="url(#${q("s")})"/>` +
+        `<g fill="url(#${q("c")})"><circle cx="22" cy="40" r="10"/><circle cx="34" cy="33" r="13"/><circle cx="46" cy="41" r="9"/><rect x="12" y="40" width="43" height="13" rx="6.5"/></g>` +
+        (o.frost ? `<g stroke="#38bdf8" stroke-width="2" stroke-linecap="round">${[[20, 46], [33, 47], [45, 46]].map(([x, y]) => `<path d="M${x} ${y - 4} v8 M${x - 3.5} ${y - 2} l7 4 M${x - 3.5} ${y + 2} l7 -4"/>`).join("")}</g>` : "") +
+        gl("M14 40 a8 8 0 0 1 9 -8 a11 11 0 0 1 5 -6 a12 12 0 0 0 -8 12 a7 7 0 0 0 -6 2z") },
+      fan: { n: "Lüftung", g: 4, f: (q, o) => lg(q("b"), M.white, 0, 0, 1, 1) + lg(q("v"), M.teal, 0, 0, 1, 1) + sh(20) +
+        `<circle cx="32" cy="30" r="25" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/><circle cx="32" cy="30" r="19.5" fill="#0f2a2e" opacity=".14"/>` +
+        [20, 140, 260].map((a) => `<ellipse cx="32" cy="19.5" rx="5.8" ry="10.5" fill="url(#${q("v")})" transform="rotate(${a} 32 30)"/>`).join("") +
+        `<circle cx="32" cy="30" r="4.6" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.2"/>` + gl("M11 24 a22 22 0 0 1 13 -16 a20 20 0 0 0 -10 18z") },
+      shutter: { n: "Rollläden", g: 4, f: (q) => lg(q("f"), M.white, 0, 0, 1, 1) + lg(q("g"), [[0, "#e0f2fe"], [.5, "#7dd3fc"], [1, "#0ea5e9"]], 0, 0, .6, 1) + lg(q("s"), [[0, "#e2e8f0"], [1, "#94a3b8"]]) + sh(22) +
+        `<rect x="10" y="7" width="44" height="47" rx="4" fill="url(#${q("f")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/><rect x="14" y="13" width="36" height="37" rx="2" fill="url(#${q("g")})"/>` +
+        [0, 1, 2, 3, 4].map((i) => `<rect x="14" y="${13 + i * 4.8}" width="36" height="4.4" rx="1" fill="url(#${q("s")})"/><rect x="14" y="${16.6 + i * 4.8}" width="36" height=".8" fill="#64748b" opacity=".45"/>`).join("") +
+        `<rect x="9" y="4" width="46" height="9" rx="3" fill="#cbd5e1"/><rect x="9" y="11.5" width="46" height="1.5" fill="#94a3b8"/><rect x="7" y="54" width="50" height="4" rx="2" fill="#cbd5e1"/>` +
+        gl("M16 39 h6 l-8 9z") },
+      garden: { n: "Garten", g: 4, f: (q) => lg(q("l"), M.green, 0, 0, 1, 1) + lg(q("e"), M.wood) + lg(q("w"), M.water) + sh(23, 58) +
+        `<path d="M7 56 Q32 40 57 56z" fill="url(#${q("e")})"/><path d="M32 51 V24" stroke="#15803d" stroke-width="3.2" stroke-linecap="round"/>` +
+        `<path d="M32 40 C19 40 12 32 12 22 C24 22 32 29 32 40z" fill="url(#${q("l")})"/><path d="M32 31 C43 31 51 23 51 11 C40 11 32 18 32 31z" fill="url(#${q("l")})"/>` +
+        `<path d="M15 24 C20 25 26 29 30 36" fill="none" stroke="#166534" stroke-width="1.2" opacity=".6"/><path d="M49 13 C44 15 38 21 34 28" fill="none" stroke="#166534" stroke-width="1.2" opacity=".6"/>` +
+        `<path d="M51 33 c-3.4 4.4 -4.6 6.6 -4.6 8.6 a4.6 4.6 0 0 0 9.2 0 c0 -2 -1.2 -4.2 -4.6 -8.6z" fill="url(#${q("w")})"/>` + gl("M14 23 C20 24 25 27 28 32 C22 31 16 28 14 23z") },
+      smoke: { n: "Rauchmelder", g: 4, f: (q, o) => rg(q("b"), [[0, "#ffffff"], [.7, "#e7edf3"], [1, "#a3b1c2"]], .4, .3, .85) + sh(22) +
+        (o.alarm ? `<circle cx="32" cy="30" r="29" fill="#ef4444" opacity=".2"/>` : "") +
+        `<circle cx="32" cy="30" r="25" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/><circle cx="32" cy="30" r="17" fill="none" stroke="#cbd5e1" stroke-width="1.6"/>` +
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => `<rect x="31" y="17.5" width="2" height="5" rx="1" fill="#94a3b8" transform="rotate(${i * 30} 32 30)"/>`).join("") +
+        `<circle cx="32" cy="30" r="5.5" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.2"/><circle cx="46" cy="17" r="2.8" fill="${o.alarm ? "#ef4444" : o.off ? "#64748b" : "#22c55e"}" stroke="#fff" stroke-width="1"/>` +
+        gl("M11 24 a22 22 0 0 1 13 -16 a20 20 0 0 0 -10 18z") },
+      wrench: { n: "Wartung", g: 4, f: (q) => lg(q("s"), M.steel, 0, 0, 1, 1) + sh(18) +
+        `<mask id="${q("m")}"><rect width="64" height="64" fill="#fff"/><rect x="28.5" y="0" width="7" height="13" rx="1.5" fill="#000" transform="rotate(45 32 32)"/></mask>` +
+        `<g transform="rotate(45 32 32)" mask="url(#${q("m")})"><circle cx="32" cy="12" r="11" fill="url(#${q("s")})" stroke="#64748b" stroke-opacity=".6"/><rect x="28" y="18" width="8" height="38" rx="4" fill="url(#${q("s")})" stroke="#64748b" stroke-opacity=".6"/><circle cx="32" cy="50" r="2" fill="#64748b"/></g>` +
+        gl("M19 30 l12 -12 l2 2 l-12 12z") },
+      bin: { n: "Mülltonne", g: 4, f: (q, o) => { const c = o.col || "#475569";
+        return lg(q("b"), [[0, c], [.5, c], [1, "#0f172a"]], 0, 0, 1, 0) + sh(19) +
+        `<path d="M17 16 h30 l-3 37 a3 3 0 0 1 -3 3 h-18 a3 3 0 0 1 -3 -3z" fill="url(#${q("b")})"/>` +
+        [25, 32, 39].map((x) => `<rect x="${x - 1}" y="22" width="2" height="28" rx="1" fill="#000" opacity=".18"/>`).join("") +
+        `<rect x="13" y="10" width="38" height="7" rx="3" fill="${c}"/><rect x="13" y="10" width="38" height="7" rx="3" fill="#000" opacity=".25"/><rect x="26" y="6" width="12" height="5" rx="2" fill="#1f2937"/>` +
+        `<circle cx="20" cy="55" r="4.2" fill="#111827" stroke="#64748b" stroke-width="1.2"/>` + gl("M20 19 h4 l-2 32 h-2z"); } },
+      robot: { n: "Saugroboter", g: 4, f: (q, o) => rg(q("b"), [[0, "#ffffff"], [.7, "#e7edf3"], [1, "#a3b1c2"]], .4, .3, .9) + sh(26, 58) +
+        `<ellipse cx="32" cy="40" rx="27" ry="16" fill="#1f2937"/><ellipse cx="32" cy="35" rx="27" ry="16" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
+        `<path d="M8 38 a24 13 0 0 0 48 0" fill="none" stroke="#94a3b8" stroke-width="1.4" opacity=".7"/>` +
+        `<rect x="24" y="25" width="16" height="6" fill="#94a3b8"/><ellipse cx="32" cy="31" rx="8" ry="3.4" fill="#94a3b8"/><ellipse cx="32" cy="25" rx="8" ry="3.6" fill="#e2e8f0" stroke="#94a3b8" stroke-width=".8"/>` +
+        `<circle cx="32" cy="42" r="1.9" fill="${o.on ? "#22c55e" : "#64748b"}"/>` + gl("M10 30 a24 14 0 0 1 14 -9 a22 12 0 0 0 -10 11z") },
+      shield: { n: "Alarm", g: 4, f: (q, o) => { const k = o.k || "ok", c = k === "bad" ? M.red : k === "off" ? M.steel : M.teal;
+        return lg(q("s"), c, 0, 0, 1, 1) + sh(17) +
+        `<path d="M32 5 L52 13 V30 C52 44 43 53 32 58 C21 53 12 44 12 30 V13z" fill="url(#${q("s")})"/>` +
+        `<path d="M32 10 L47 16 V30 C47 41 40 48 32 52.5 C24 48 17 41 17 30 V16z" fill="#fff" opacity=".14"/>` +
+        (k === "bad" ? `<path d="M32 21 v14" stroke="#fff" stroke-width="4.4" stroke-linecap="round"/><circle cx="32" cy="43" r="2.6" fill="#fff"/>`
+          : `<path d="M23.5 31 l6 6 l11.5 -13" stroke="#fff" stroke-width="4.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`) +
+        gl("M15 15 L30 9 V12 L18 17 V30 C18 37 21 42 25 46 C18 42 15 36 15 30z"); } },
+      people: { n: "Personen", g: 4, f: (q) => lg(q("a"), M.teal, 0, 0, 1, 1) + lg(q("b"), [[0, "#a5b4fc"], [1, "#4f46e5"]], 0, 0, 1, 1) + lg(q("s"), [[0, "#fde7cf"], [1, "#e6b18a"]]) + sh(25) +
+        `<path d="M29 57 C30 45 35 39 44 39 S58 45 59 57z" fill="url(#${q("b")})"/><circle cx="44" cy="28" r="8" fill="url(#${q("s")})"/><path d="M36 27 C36 20 40 18.5 44 18.5 S52 20 52 27 C50 23.5 47 23 44 24.5 C41 23 38 23.5 36 27z" fill="#3f2a17"/>` +
+        `<path d="M5 58 C6 45 13 38.5 23 38.5 S40 45 41 58z" fill="url(#${q("a")})"/><circle cx="23" cy="25.5" r="9.5" fill="url(#${q("s")})"/><path d="M13.5 25 C13 16.5 18.5 14 23 14 S33 16.5 32.5 25 C30 20.5 26 20 23 21.6 C20 20 16 20.5 13.5 25z" fill="#5b3a1f"/>` +
+        gl("M8 52 C9 46 13 42 18 41 C14 44 11 48 10 54z") },
     };
     /* Gruppen für Übersicht und Auswahl */
-    const G = [[1, "Heizen & Raum", "Modul 1"], [2, "Energie", "Modul 3 · Modul 19"], [3, "Geräte", "Modul 4"]];
+    const G = [[1, "Heizen & Raum", "Modul 1"], [2, "Energie", "Modul 3 · Modul 19"], [3, "Geräte", "Modul 4"], [4, "Startseite & Module", "Startseite"]];
     /* Alte Namen → neue Symbole. Modul 19 (EF_IMGS), Modul 4 (GS_TYP), Raumsymbole (COLOR_ICONS) */
     const A = {
       sonne: "pvRoof", solar: "pvRoof", haus: "house", akku: "battery", auto: "car", wallbox: "wallbox", steckdose: "plug", waschmaschine: "washer",
@@ -5279,9 +5483,15 @@ class FensterHeizungPanel extends HTMLElement {
     d += `<rect x="240" y="24" width="14" height="30" fill="#8b2b22"/><rect x="240" y="24" width="14" height="30" fill="url(#${q("br")})"/><rect x="238" y="21" width="18" height="4" rx="1" fill="#57534e"/>` +
       (anyHeat ? `<g class="hssm">${[0, 1, 2].map((i) => `<circle class="hssm${i}" cx="${247 + i * 3}" cy="${15 - i * 6}" r="${3.5 + i * 2}" fill="#e2e8f0" opacity=".55"/>`).join("")}</g>` : "");
     if (pvOn) {
-      const glow = pvW > 50 && !night, ang = (Math.atan2(top - RT, RR - 180) * 180 / Math.PI).toFixed(1);
-      d += `<g transform="translate(190 ${RT + 6}) rotate(${ang})">${[0, 1, 2, 3].map((i) => `<rect x="${6 + i * 19}" y="2" width="18" height="12" rx="1" fill="${glow ? "#1d4ed8" : "#1e3a8a"}" stroke="#cbd5e1" stroke-width=".8"/><path d="M${6 + i * 19} 8 h18 M${15 + i * 19} 2 v12" stroke="#93c5fd" stroke-width=".5" opacity=".7"/>`).join("")}${glow ? `<rect x="5" y="1" width="78" height="14" rx="2" fill="none" stroke="#fde68a" stroke-width="1.4" class="hspv"/>` : ""}</g>`;
+      /* Solarfeld frontal auf der rechten Dachfläche (wie Startseite und Modul 3): unten 4, darüber 3 Module, links vom Schornstein */
+      const glow = pvW > 50 && !night, w = 15.5, h = 9.5;
+      const cells = [[186, 58.5], [203, 58.5], [220, 58.5], [237, 58.5], [177, 47.5], [194, 47.5], [211, 47.5]];
+      const pan = (x, y) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx=".9" fill="${glow ? "#2563eb" : "#1e3a8a"}" stroke="${night ? "#64748b" : "#e2e8f0"}" stroke-width=".8"/><path d="M${x + w / 2} ${y} v${h} M${x} ${y + h / 2} h${w}" stroke="#93c5fd" stroke-width=".45" opacity=".7"/>` +
+        (glow ? `<path d="M${x + 1.8} ${y + 1.8} h3.5" stroke="#fff" stroke-width="1.1" stroke-linecap="round" opacity=".7"/>` : "") + (wh ? `<rect x="${x - .4}" y="${y - .9}" width="${w + .8}" height="2.8" rx="1.3" fill="#f8fafc"/>` : "");
+      d += `<g><rect x="184.6" y="57" width="69.4" height="12.5" rx="1.3" fill="#0f172a" opacity=".3"/><rect x="175.6" y="46" width="52.4" height="12.5" rx="1.3" fill="#0f172a" opacity=".3"/>${cells.map(([x, y]) => pan(x, y)).join("")}` +
+        `${glow ? `<g class="hzpvg" opacity="0">${cells.map(([x, y]) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx=".9" fill="#fff"/>`).join("")}</g>` : ""}</g>`;
     }
+
     /* Räume je Etage */
     fl.forEach((f, fi) => {
       const y = top + fi * fh, many = f.r.length > 6, cw = (X1 - X0) / f.r.length;
@@ -6901,7 +7111,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
-    if (["hzset", "hzbub", "hzpin"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["hzset", "hzbub", "hzpin", "hzlater", "hztiles", "hzqaok", "hzqm", "hzqaset"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["efxmgr", "efxedit", "efxgrp"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lixset", "lixdet", "lixoff"].includes(m.type) && this._lixModal) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -9727,7 +9937,7 @@ class FensterHeizungPanel extends HTMLElement {
   _hzCfg() {
     const l = (this._cfg && this._cfg.layout && this._cfg.layout.start) || {}, b = l.bub || {}, known = Object.keys(HZ_NAMES), o = (Array.isArray(l.order) ? l.order : []).filter((x) => known.includes(x));
     return {
-      on: l.on !== false, open: l.open === "last" ? "last" : "start", greet: l.greet !== false, alarm: typeof l.alarm === "string" ? l.alarm : "", ctl: l.ctl === true,
+      look: l.look === "classic" ? "classic" : "new", amp: l.amp !== false, on: l.on !== false, open: l.open === "last" ? "last" : "start", greet: l.greet !== false, alarm: typeof l.alarm === "string" ? l.alarm : "", ctl: l.ctl === true,
       order: [...o, ...known.filter((x) => !o.includes(x))], hidden: (Array.isArray(l.hidden) ? l.hidden : []).filter((x) => known.includes(x)),
       bub: { ids: (Array.isArray(b.ids) ? b.ids : HZ_BUB_DEF).filter((x) => HZ_BUBS.includes(x)).slice(0, 8), warn: b.warn !== false, tap: b.tap === "module" ? "module" : "block" },
     };
@@ -9756,23 +9966,25 @@ class FensterHeizungPanel extends HTMLElement {
   _hzMu() { return this._muOn() ? (this._mu().bins || []) : []; }
   _hzHints() {
     const H = this._hass, st = H.states, out = [], o = this._out();
-    this._hzWin().forEach((w) => { const m = Math.round((Date.now() - w.since) / 60000); if (m >= 15) out.push({ i: "windowOpen", t: `${esc(w.name)}: Fenster seit ${this._hzSince(new Date(w.since).toISOString())} offen`, s: o.t != null ? `Außen ${num(o.t, 0)} °C` : "", r: "jetzt", c: "wa", mod: "fh" }); });
-    if (this._mdState().on.ww && this._wwConfigured()) this._wwProblems().filter((p) => p[0] === "bad" || p[0] === "warn").slice(0, 2).forEach((p) => out.push({ i: "drop", t: esc(p[2]), s: esc(p[3]), r: "", c: p[0] === "bad" ? "bad" : "wa", mod: "ww" }));
+    this._hzWin().forEach((w) => { const m = Math.round((Date.now() - w.since) / 60000); if (m >= 15) out.push({ k: `win:${w.name}`, since: w.since, i: "windowOpen", t: `${esc(w.name)}: Fenster seit ${this._hzSince(new Date(w.since).toISOString())} offen`, s: o.t != null ? `Außen ${num(o.t, 0)} °C` : "", r: "jetzt", c: "wa", mod: "fh" }); });
+    if (this._mdState().on.ww && this._wwConfigured()) this._wwProblems().filter((p) => p[0] === "bad" || p[0] === "warn").slice(0, 2).forEach((p) => out.push({ k: `ww:${String(p[2]).replace(/[\d.,()°C ]+/g, "")}`, i: "drop", t: esc(p[2]), s: esc(p[3]), r: "", c: p[0] === "bad" ? "bad" : "wa", mod: "ww" }));
     const due = this._hzMu().filter((x) => ["out", "today", "soon"].includes(x.state));
-    if (due.length) out.push({ i: "trash", t: `${due.some((x) => x.state === "today") ? "Heute" : "Morgen"}: ${due.map((x) => esc(x.name)).join(", ")}`, s: "Abholung, Tonne rausstellen", r: due.some((x) => x.state === "today") ? "heute" : "morgen", c: "wa", mod: "mu" });
-    const al = this._hzAlarmEnt(); if (al && st[al] && st[al].state === "triggered") out.push({ i: "shield", t: "Alarm ausgelöst", s: esc(this._wzName(al)), r: "jetzt", c: "bad", blk: "alarm" });
+    if (due.length) out.push({ k: "mu", i: "trash", t: `${due.some((x) => x.state === "today") ? "Heute" : "Morgen"}: ${due.map((x) => esc(x.name)).join(", ")}`, s: "Abholung, Tonne rausstellen", r: due.some((x) => x.state === "today") ? "heute" : "morgen", c: this._hzNew() && !due.some((x) => x.state === "out") ? "in" : "wa", mod: "mu" });
+    const al = this._hzAlarmEnt(); if (al && st[al] && st[al].state === "triggered") out.push({ k: "alarm", nosn: true, since: new Date(st[al].last_changed || Date.now()).getTime(), i: "shield", t: "Alarm ausgelöst", s: esc(this._wzName(al)), r: "jetzt", c: "bad", blk: "alarm" });
     let nb = 0;
     Object.keys(st).forEach((e) => {
       if (nb >= 3) return; const s = st[e], a = s.attributes || {};
-      if (e.startsWith("binary_sensor.") && a.device_class === "battery" && s.state === "on") { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: "Batterie wechseln", r: "", c: "wa" }); }
-      else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
+      if (e.startsWith("binary_sensor.") && a.device_class === "battery" && s.state === "on") { nb++; out.push({ k: `bat:${e}`, src: "Batterien", since: new Date(s.last_changed || Date.now()).getTime(), i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: "Batterie wechseln", r: "", c: "wa" }); }
+      else if (e.startsWith("sensor.") && a.device_class === "battery" && isFinite(parseFloat(s.state)) && parseFloat(s.state) <= 15) { nb++; out.push({ k: `bat:${e}`, src: "Batterien", since: new Date(s.last_changed || Date.now()).getTime(), i: "alert", t: `Batterie schwach: ${esc(a.friendly_name || e)}`, s: `${num(parseFloat(s.state), 0)} %`, r: "", c: "wa" }); }
     });
-    try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: "wa" }); } catch (_) { /* egal */ }
+    try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ k: "spn", src: "Sponsor", i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: this._hzNew() ? "in" : "wa" }); } catch (_) { /* egal */ }
     this._adHints().forEach((h) => out.push(h));
+    if (this._hzNew()) { this._hzWarnX().forEach((h) => out.push(h)); const ff = this._hzFrostFc(); if (ff) out.push({ k: "frostfc", i: "snow", t: "Frost heute Nacht", s: `ab ${ff.at.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} · bis ${num(ff.min, 0)} °C`, r: "heute", c: "wa", blk: "wetter", src: "Wetter", hd: "weather", frost: true }); }
     const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
   }
   /* Kachel je aktives Modul */
   _hzTile(m) {
+    if (this._hzNew()) return this._hzTile2(m);
     const st = this._hass.states; let sub = "", c = "";
     if (m.id === "fh") { const n = this._hzWin().reduce((s, w) => s + w.n, 0); sub = n ? `${n} ${n === 1 ? "Fenster" : "Fenster"} offen` : "Alle Fenster zu"; c = n ? "wa" : ""; }
     else if (m.id === "ww") { const E = this._mdState().ww.ent || {}, t = E.top && st[E.top], v = t ? parseFloat(t.state) : NaN, bad = this._wwConfigured() && this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn"); sub = isFinite(v) ? `${num(v, 0)} °C` : "Nicht eingerichtet"; c = bad ? "wa" : isFinite(v) ? "" : "mut"; }
@@ -9789,7 +10001,11 @@ class FensterHeizungPanel extends HTMLElement {
   _hzZuhause(hints) {
     const mods = this._mdList().filter((m) => m.id !== "st"), n = hints.length, bad = hints.some((h) => h.c === "bad");
     const head = n ? (bad ? "Es gibt etwas zu tun" : "Fast alles in Ordnung") : "Alles in Ordnung", hc = bad ? "bad" : n ? "" : "ok";
-    return `<div class="card"><h2>${ic("home", 18)}Zuhause</h2><div class="hzhead ${hc}">${head}</div><div class="hzsub">${n ? `${n} ${n === 1 ? "Hinweis braucht" : "Hinweise brauchen"} Aufmerksamkeit. ` : ""}Tippe auf eine Kachel, um das Modul zu öffnen.</div><div class="hzgrid">${mods.map((m) => this._hzTile(m)).join("")}</div></div>`;
+    if (this._hzNew()) { const M = this._hzMods(), lp = this._hzQaOn() ? " Lange drücken zeigt Schnellaktionen." : "";
+      const body = M.length ? `<div class="hzkgrid sz-${this._hzKs()}">${M.map((m) => this._hzTile(m)).join("")}</div>` : this._hzEmpty();
+      if (this._hzAmpOn()) return `<div class="card"><h2>${ic("home", 18)}Zuhause<span class="hzrt">${M.length} ${M.length === 1 ? "Modul" : "Module"}</span></h2><div class="hzsub">Tippe auf eine Kachel, um das Modul zu öffnen.${lp}</div>${body}</div>`;
+      return `<div class="card"><h2>${ic("home", 18)}Zuhause</h2><div class="hzhead ${hc}">${head}</div><div class="hzsub">${n ? `${n} ${n === 1 ? "Hinweis braucht" : "Hinweise brauchen"} Aufmerksamkeit. ` : ""}Tippe auf eine Kachel, um das Modul zu öffnen.${lp}</div>${body}</div>`; }
+    return `<div class="card"><h2>${ic("home", 18)}Zuhause</h2><div class="hzhead ${hc}">${head}</div><div class="hzsub">${n ? `${n} ${n === 1 ? "Hinweis braucht" : "Hinweise brauchen"} Aufmerksamkeit. ` : ""}Tippe auf eine Kachel, um das Modul zu öffnen.</div><div class="${this._hzNew() ? `hzkgrid sz-${this._hzKs()}` : "hzgrid"}">${mods.map((m) => this._hzTile(m)).join("")}</div></div>`;
   }
   /* Wetter */
   _hzWxId() { const c = this._wxCfg(), st = this._hass.states; return c.entity && st[c.entity] ? c.entity : Object.keys(st).find((k) => k.startsWith("weather.")); }
@@ -9834,7 +10050,8 @@ class FensterHeizungPanel extends HTMLElement {
       ${ctl ? `<div class="hzgrid">${btn("disarm", "Unscharf", "shield", s.state === "disarmed")}${btn("away", "Abwesend", "door", s.state === "armed_away")}${btn("home", "Zu Hause", "home", s.state === "armed_home")}</div><div class="hzsub" style="margin:8px 0 0">Schalten nur mit Bestätigung${(s.attributes || {}).code_format ? " und Code" : ""}.</div>` : ""}</div>`;
   }
   _hzHinweise(hints) {
-    return `<div class="card"><h2>${ic("info", 18)}Hinweise<span class="hzrt">alle Module</span></h2>${hints.length ? `<div class="hzl">${hints.slice(0, 6).map((h) => `<${h.mod || h.blk ? `button data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}"` : "div"} class="hzr ${h.c || ""}"><span class="hzri">${ic(h.i, 22)}</span><span class="hzrx"><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span>${h.r ? `<span class="hzrr ${h.c || ""}">${h.r}</span>` : ""}</${h.mod || h.blk ? "button" : "div"}>`).join("")}</div>` : `<div class="mut sm">Keine Hinweise. Fenster, Batterien, Warmwasser und Termine sind in Ordnung.</div>`}</div>`;
+    if (this._hzNew()) return this._hzZentrale(hints);
+    return `<div class="card"><h2>${ic("info", 18)}Hinweise<span class="hzrt">alle Module</span></h2>${hints.length ? `<div class="hzl">${hints.slice(0, 6).map((h) => `<${h.mod || h.blk ? `button data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}"` : "div"} class="hzr ${h.c || ""}${this._hzNew() ? ` n z-${this._hzZ(h.c || "in")}` : ""}"><span class="hzri">${ic(h.i, 22)}</span><span class="hzrx"><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span>${h.r ? `<span class="hzrr ${h.c || ""}">${h.r}</span>` : ""}</${h.mod || h.blk ? "button" : "div"}>`).join("")}</div>` : `<div class="mut sm">Keine Hinweise. Fenster, Batterien, Warmwasser und Termine sind in Ordnung.</div>`}</div>`;
   }
   _hzEnergie() {
     if (!this._enOn()) return ""; const N = this._enNow(); if (!N) return "";
@@ -9858,17 +10075,19 @@ class FensterHeizungPanel extends HTMLElement {
     if (id === "muell") { if (!this._muOn()) return null; this._muLoad(); const x = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days)[0]; return x ? { i: "trash", b: x.days === 0 ? "Heute" : x.days === 1 ? "Morgen" : `in ${x.days} Tg.`, s: x.name, c: x.days <= 1 ? "wa" : "", mod: "mu", blk: "muell" } : null; }
     if (id === "warmwasser") { if (!this._mdState().on.ww) return null; const E = this._mdState().ww.ent || {}, v = E.top && st[E.top] ? parseFloat(st[E.top].state) : NaN; return isFinite(v) ? { i: "drop", b: `${num(v, 0)} °C`, s: "Warmwasser", mod: "ww" } : null; }
     if (id === "preis") { if (!this._enOn()) return null; const p = this._price(); return p ? { i: "chart", b: `${num(p, 1)} ct`, s: "Strompreis", mod: "en" } : null; }
-    if (id === "hinweise") { const n = this._hzHints().length; return { i: "info", b: n ? `${n} ${n === 1 ? "Hinweis" : "Hinweise"}` : "keine", s: "Hinweise", c: n ? "wa" : "ok", blk: "hinweise" }; }
+    if (id === "hinweise") { const n = (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length; return { i: "info", b: n ? `${n} ${n === 1 ? "Hinweis" : "Hinweise"}` : "keine", s: "Hinweise", c: n ? "wa" : "ok", blk: "hinweise" }; }
     return null;
   }
   _hzBubs() {
     const c = this._hzCfg().bub, items = c.ids.map((id) => ({ id, ...(this._hzBubDef(id) || {}) })).filter((x) => x.i);
+    if (items.length && this._hzNew()) return `<div class="hzbubs n" role="list">${items.map((x) => this._hzBubN(this._hzBubX(x))).join("")}</div>`;
     return items.length ? `<div class="hzbubs" role="list">${items.map((x) => `<button class="hzb ${c.warn ? x.c || "" : ""}" role="listitem" data-act="hzbub" data-k="${x.id}"><i>${ic(x.i, 16)}</i><span><b>${esc(x.b)}</b><small>${esc(x.s)}</small></span></button>`).join("")}</div>` : `<div class="mut sm">Keine Bubble hat gerade Daten. Wähle andere unter „Inhalt wählen“.</div>`;
   }
   /* Seite */
   _hzPage() {
     const adm = this._admin(), edit = this._edit && adm, c = this._hzCfg(), hints = this._hzHints();
-    const B = { zuhause: this._hzZuhause(hints), wetter: this._hzWetter(), personen: this._hzPersonen(), hinweise: this._hzHinweise(hints), alarm: this._hzAlarm(), energie: this._hzEnergie(), muell: this._hzMuell() };
+    const nw = this._hzNew(); if (nw) { this._hzHoldBind(); this._hzLpBind(); }
+    const B = { zuhause: this._hzZuhause(hints), wetter: nw ? this._hzWetterN() : this._hzWetter(), personen: nw ? this._hzPersonenN() : this._hzPersonen(), hinweise: this._hzHinweise(hints), alarm: nw ? this._hzAlarmN() : this._hzAlarm(), energie: this._hzEnergie(), muell: this._hzMuell() };
     const eb = edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe die Karten an den Griffen, um sie zu verschieben. Mit dem Auge blendest du eine Karte aus. <button class="lnk" data-act="hzreset">Zurücksetzen</button></div></div>` : "";
     const bub = this._labOn("sb") ? (edit ? `<div class="hzbe"><div class="etag">${ic("layers", 16)}Bubbles (Lab)<button class="eyeb" data-act="hzbubopen">${ic("sliders", 16)}<span>Inhalt wählen</span></button></div>${this._hzBubs()}</div>` : this._hzBubs()) : "";
     const blocks = c.order.filter((id) => B[id] && (edit || !c.hidden.includes(id))).map((id) => {
@@ -9876,9 +10095,12 @@ class FensterHeizungPanel extends HTMLElement {
       return `<section class="blk mub ${HZ_WIDE.includes(id) ? "wide" : ""} ${edit ? "editing" : ""} ${hid ? "hid" : ""}" data-sort="hzblk" data-id="${id}">
       ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${HZ_NAMES[id]}<button class="eyeb" data-act="hzhide" data-k="${id}" aria-pressed="${!hid}" aria-label="${HZ_NAMES[id]} ${hid ? "einblenden" : "ausblenden"}" title="${hid ? "Einblenden" : "Ausblenden"}">${ic(hid ? "eyeOff" : "eye", 18)}<span>${hid ? "Ausgeblendet" : "Sichtbar"}</span></button></div>` : ""}${B[id]}</section>`;
     }).join("");
-    return `${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
+    const out = `${this._hzHead() === "scene" ? this._hzHeadHtml(this._hzVis(hints)) : this._hzHead() === "text" ? this._hzAmpel(this._hzVis(hints)) : ""}${nw ? this._hzQaRow() : ""}${bub}${eb}${this._spnCard()}<div class="mublks">${blocks || `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch nichts zu zeigen</div>Richte ein Modul ein oder blende Karten über „Anpassen“ wieder ein.</div>`}</div>`;
+    return nw ? this._hzWrap(out) : out;
   }
   _hzAct(a, b) {
+    if (this._hzNew() && (this._hzAct2(a, b) || this._hzAct4(a, b))) return;
+    if (a === "hzgo" && Date.now() - (this._hzLP || 0) < 900) return;  /* nach langem Drücken kein Öffnen */
     const k = b.dataset.k;
     if (a === "hzgo") {
       if (k && this._mdList().some((m) => m.id === k)) { this._stOpen = false; this._edit = false; this._mdActiveSet(k); this._render(); }
@@ -9897,7 +10119,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "hzback") { this._modal = { type: "hzset" }; this._renderModal(); return; }
     if (a === "hzhide") { const h = this._hzCfg().hidden; this._hzSave({ hidden: h.includes(k) ? h.filter((x) => x !== k) : [...h, k] }); return; }
     if (a === "hzreset") { this._hzSave({ order: Object.keys(HZ_NAMES), hidden: [] }); this._toast("Anordnung zurückgesetzt"); return; }
-    if (a === "hzsw") { const c = this._hzCfg(); if (k === "on") this._hzSave({ on: !c.on }); else if (k === "greet") this._hzSave({ greet: !c.greet }); else if (k === "ctl") this._hzSave({ ctl: !c.ctl }); else if (k === "warn") this._hzSave({ bub: { ...c.bub, warn: !c.bub.warn } }); return; }
+    if (a === "hzlook") { this._hzSave({ look: k === "classic" ? "classic" : "new" }); return; }
+    if (a === "hzsw") { const c = this._hzCfg(); if (k === "amp") this._hzSave({ amp: !c.amp }); else if (k === "on") this._hzSave({ on: !c.on }); else if (k === "greet") this._hzSave({ greet: !c.greet }); else if (k === "ctl") this._hzSave({ ctl: !c.ctl }); else if (k === "warn") this._hzSave({ bub: { ...c.bub, warn: !c.bub.warn } }); return; }
     if (a === "hzopenm") { this._hzSave({ open: k === "last" ? "last" : "start" }); return; }
     if (a === "hztap") { const c = this._hzCfg(); this._hzSave({ bub: { ...c.bub, tap: k === "module" ? "module" : "block" } }); return; }
     if (a === "hzbt") { const c = this._hzCfg(), ids = c.bub.ids.slice(); if (ids.includes(k)) ids.splice(ids.indexOf(k), 1); else if (ids.length < 8) ids.push(k); else { this._toast("Mehr als 8 Bubbles sind nicht möglich"); return; } this._hzSave({ bub: { ...c.bub, ids } }); return; }
@@ -9923,6 +10146,9 @@ class FensterHeizungPanel extends HTMLElement {
     const m = this._modal, c = this._hzCfg(), adm = this._admin(), st = this._hass.states;
     const sw = (k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="hzsw" data-k="${k}" aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm ? "" : "disabled"}></button>`;
     const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" ${adm ? "" : "disabled"}>${t}</button>`;
+    if (m.type === "hzlater") return this._hzLaterModal();
+    if (m.type === "hztiles") return this._hzTilesModal();
+    if (["hzqaok", "hzqm", "hzqaset"].includes(m.type)) return this._hzQaModal();
     if (m.type === "hzpin") {
       const e = this._hzAlarmEnt(), need = e && (st[e].attributes || {}).code_format, T = { disarm: "unscharf schalten", away: "auf „Abwesend“ schalten", home: "auf „Zu Hause“ schalten" }[m.mode] || "schalten";
       return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Alarm ${T}?</b><span>${esc(e ? this._wzName(e) : "")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -9945,11 +10171,610 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow"><span>Startseite verwenden<small class="mut" style="display:block">Aus: das Dashboard öffnet wie bisher das zuletzt benutzte Modul.</small></span>${sw("on", c.on, "Startseite verwenden")}</div>
       <div class="vrow"><span>Beim Öffnen zeigen<small class="mut" style="display:block">Gilt, wenn du das Dashboard in Home Assistant neu öffnest. Ein Direktlink mit <code>?modul=</code> öffnet sein Modul.</small></span><span class="gschs">${chip("hzopenm", "start", "Start", c.open === "start")}${chip("hzopenm", "last", "Letztes Modul", c.open === "last")}</span></div>
       <div class="vrow"><span>Begrüßung mit Namen<small class="mut" style="display:block">Vorname des angemeldeten Benutzers.</small></span>${sw("greet", c.greet, "Begrüßung mit Namen")}</div>
+      ${this._hzLookRows(c, sw, chip)}
       <div class="lsec" style="margin-top:12px">${ic("shield", 15)}Alarm</div>
       ${alarms.length ? this._wzSel(alarms, c.alarm, "hzsel", "", "– automatisch –") : `<div class="mut sm">Keine Alarmanlage in Home Assistant gefunden. Der Block bleibt dann weg.</div>`}
       <div class="vrow"><span>Alarm schalten erlauben<small class="mut" style="display:block">Zeigt Knöpfe für Unscharf, Abwesend und Zu Hause. Jedes Schalten wird bestätigt. Das schaltet echte Geräte.</small></span>${sw("ctl", c.ctl, "Alarm schalten erlauben")}</div>
       ${this._labOn("sb") ? `<div class="gbtns" style="margin-top:12px"><button class="btn2" data-act="hzbubopen">${ic("layers", 16)} Bubbles wählen</button></div>` : `<div class="gst">${ic("info", 15)}<span>Runde Kurzinfos oben gibt es im Lab „Start-Bubbles“ unter Labs.</span></div>`}
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="hzreset">Anordnung zurücksetzen</button></div></div>`;
+  }
+  /* ================= Startseite · Neue Optik Stufe 1 (Konzept_Startseite_Neue-Optik) =================
+     Zustandsfarben wie Modul 1 (Türkis gut, Blau Info, Orange aktiv, Bernstein Hinweis, Rot Warnung, Violett Nacht, Grau aus),
+     HD-Symbole an den Kacheln, Gesamt-Ampel als Text oben, runde Bubbles mit Ring in Zustandsfarbe.
+     Einstellungen in layout.start: look = "new" | "classic" (Wie bisher), amp = false → einfache Kopfzeile wie bisher.
+     Der globale Schalter „wie bisher“ der Grafik-Bibliothek (_gxCfg().classic) gilt auch hier. */
+  _hzNew() { const l = (this._cfg && this._cfg.layout && this._cfg.layout.start) || {}; return l.look !== "classic" && !this._gxCfg().classic; }
+  _hzAmpOn() { return this._hzHead() !== "simple"; }
+  /* Zustand aus den bisherigen Klassen: bad → Warnung, wa → Hinweis, in → Info, mut → aus */
+  _hzZ(c) { return { bad: "warn", wa: "hint", in: "info", mut: "off", act: "act", ok: "ok", night: "night" }[c] || "ok"; }
+  static HZ_HD = { fh: "radiator", ww: "boiler", en: "pvRoof", gs: "plug", lu: "fan", rb: "shutter", wp: "heatpump", ev: "car", wx: "weather", ga: "garden", sf: "smoke", pl: "pool", bt: "battery", dt: "price", wa: "wrench", sp: "forecast", ef: "house", mu: "bin", li: "lamp" };
+  _hzHdFor(m) {
+    const K = this.constructor.HZ_HD, L = this._gxLib().L;
+    if (K[m.id]) return K[m.id];
+    if (m.icon === "robot") return "robot";
+    const a = this._gxAlt(m.icon || ""); return a && L[a] ? a : "";
+  }
+  /* Räume, die gerade heizen (Thermostat meldet hvac_action heating) */
+  _hzHeatN() {
+    const st = this._hass.states; let n = 0;
+    try { this._collect().forEach((r) => { if ((r.thermos || []).some((e) => st[e] && (st[e].attributes || {}).hvac_action === "heating")) n++; }); } catch (_) { /* egal */ }
+    return n;
+  }
+  /* Zusätzliche Warnungen für die Gesamt-Ampel: Modul 9 (Frost, Sturm, Gewitter …) und Modul 11 (Alarm, offline) */
+  _hzWarnX() {
+    const out = [], on = this._mdState().on;
+    if (on.wx) {
+      try {
+        const S = this._wxs(), W = (!S.error && S.state && S.state.warn) || this._wxsLocal(), NM = this._wxsNames(), o = this._out();
+        Object.keys(NM).forEach((k) => { const w = W[k]; if (w && w.a) out.push({ k: `wx:${k}`, i: k === "frost" ? "snow" : k === "heat" ? "sun" : "alert", t: `Warnung: ${NM[k]}`, s: k === "frost" && o.t != null ? `Draußen ${num(o.t, 1)} °C` : w.v != null && k === "storm" ? `Böen ${num(w.v, 0)} km/h` : "Modul 9", r: "jetzt", c: "bad", soft: true, mod: "wx", hd: "weather", frost: k === "frost" }); });
+        const O = S.state && S.state.official; if (O && O.level > 0 && O.title) out.push({ k: "wx:dwd", i: "alert", t: `Amtliche Warnung: ${esc(O.title)}`, s: "DWD / NINA", r: "jetzt", c: "bad", soft: true, mod: "wx", hd: "weather" });
+      } catch (_) { /* Modul 9 noch nicht geladen */ }
+    }
+    if (on.sf) {
+      try {
+        const T = this._sfStat();
+        T.al.forEach((x) => out.push({ k: `sf:al:${x.id}`, nosn: true, i: "alert", t: `Rauchmelder ${esc(x.name || "")}: Alarm`, s: esc(x.room || x.area || "Modul 11"), r: "jetzt", c: "bad", mod: "sf", hd: "smoke", alarm: true }));
+        if (T.off.length) out.push({ k: "sf:off", i: "alert", t: T.off.length === 1 ? `Melder offline: ${esc(T.off[0].name || "")}` : `${T.off.length} Melder offline`, s: "Modul 11 · nicht erreichbar", r: "", c: "bad", soft: true, mod: "sf", hd: "smoke" });
+      } catch (_) { /* Modul 11 noch nicht geladen */ }
+    }
+    return out;
+  }
+  /* Gesamt-Ampel: drei Stufen. Info-Einträge (z. B. Müllabfuhr) lassen die Ampel grün. */
+  _hzLevel(hints) {
+    const warn = hints.filter((h) => h.c === "bad"), hint = hints.filter((h) => h.c === "wa"), info = hints.filter((h) => h.c !== "bad" && h.c !== "wa");
+    const strip = (t) => String(t || "").replace(/<[^>]*>/g, "");
+    if (warn.length) return { z: "warn", t: strip(warn[0].t).replace(/^Warnung: /, "Warnung: "), s: [...warn.slice(1), ...hint].slice(0, 2).map((h) => strip(h.t)).join(" · ") || strip(warn[0].s), n: warn.length + hint.length, info: info.length };
+    if (hint.length) return { z: "hint", t: hint.length === 1 ? "1 Hinweis" : `${hint.length} Hinweise`, s: hint.slice(0, 2).map((h) => strip(h.t)).join(" · "), n: hint.length, info: info.length };
+    return { z: "ok", t: "Alles in Ordnung", s: info.length ? info.slice(0, 2).map((h) => strip(h.t)).join(" · ") : "Keine offenen Hinweise.", n: 0, info: info.length };
+  }
+  _hzAmpel(hints) {
+    const L = this._hzLevel(hints), sym = L.z === "ok" ? ic("check", 26) : `<b>!</b>`;
+    return `<div class="card hzamp z-${L.z}"${L.n || L.info ? ` data-act="hzgo" data-k="" data-b="hinweise" role="button" tabindex="0"` : ""}>
+      <span class="hzal" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="g"></i></span>
+      <span class="hzab" aria-hidden="true">${sym}</span>
+      <div class="hzax"><b>${esc(L.t)}</b><small>${esc(L.s)}${L.info && L.z !== "ok" ? ` · ${L.info} Info` : ""}</small></div>
+      ${L.n || L.info ? `<span class="hzago">${L.n ? "Ansehen" : "Info"}${ic("chev", 16)}</span>` : ""}</div>`;
+  }
+  /* Runde Bubbles mit Ring in Zustandsfarbe (Konzept E1). p = Füllung des Rings 0–1, sonst voller Ring. */
+  _hzBubN(x) {
+    const r = 34, C = 2 * Math.PI * r, p = x.p == null ? 1 : Math.max(0.02, Math.min(1, x.p)), z = this._hzZ(this._hzCfg().bub.warn ? x.c || "" : "");
+    const hd = { wetter: "weather", personen: "people", alarm: "shield", solar: "pvRoof", batterie: "battery", auto: "car", fenster: "windowOpen", muell: "bin", warmwasser: "boiler", preis: "price", hinweise: "" }[x.id];
+    const pic = hd ? this._gx(hd, 26, x.o || {}) : ic(x.i, 20), long = String(x.b).length > 7;
+    return `<button class="hzbn z-${z}" role="listitem" data-act="hzbub" data-k="${x.id}" aria-label="${esc(x.s)}: ${esc(x.b)}"><span class="hzbr"><svg viewBox="0 0 76 76" aria-hidden="true"><circle cx="38" cy="38" r="${r}" class="bg"/><circle cx="38" cy="38" r="${r}" class="fg" data-hzr="b${x.id}" stroke-dasharray="${(p * C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 38 38)"/></svg><span class="hzbp">${pic}</span><b class="${long ? "lg" : ""}">${esc(x.b)}</b></span><small>${esc(x.s)}</small></button>`;
+  }
+  /* Werte für Ring und Bild der runden Bubbles */
+  _hzBubX(x) {
+    const st = this._hass.states;
+    if (x.id === "batterie" || x.id === "auto") { const v = parseFloat(String(x.b).replace(",", ".")); if (isFinite(v)) { x.p = v / 100; x.o = { lvl: v }; } }
+    if (x.id === "personen") { const P = this._ortPersons().filter((p) => p.count), n = P.filter((p) => p.home).length; if (P.length) { x.p = n / P.length; x.b = `${n} / ${P.length}`; x.s = "zu Hause"; } }
+    if (x.id === "alarm") { const e = this._hzAlarmEnt(), s = e && st[e] ? st[e].state : ""; x.o = { k: s === "triggered" ? "bad" : s === "disarmed" ? "off" : "ok" }; if (!x.c && s && s !== "disarmed") x.c = "ok"; }
+    if (x.id === "wetter") { const t = this._out().t; if (t != null && t <= 0) x.o = { frost: true }; if (this._hzWarnX().some((h) => h.mod === "wx")) x.c = "bad"; }
+    if (x.id === "solar" && this._enOn()) { const N = this._enNow(); if (N) { x.c = x.c || (N.pv > 50 ? "act" : "off"); x.o = { on: N.pv > 50 }; } }
+    if (x.id === "fenster") x.o = {};
+    if (x.id === "warmwasser") x.o = { t: String(x.b).replace(/\s*°C/, "°") };
+    if (x.id === "auto" && x.s === "lädt") x.c = "act";
+    if (x.id === "hinweise" && x.c === "wa" && this._hzHints().some((h) => h.c === "bad")) x.c = "bad";
+    return x;
+  }
+  _hzLookRows(c, sw, chip) {
+    return `<div class="lsec" style="margin-top:12px">${ic("palette", 15)}Darstellung</div>
+      <div class="vrow"><span>Optik<small class="mut" style="display:block">Neu: HD-Symbole, Zustandsfarben und runde Bubbles. Wie bisher: Kacheln mit einfachen Symbolen.</small></span><span class="gschs">${chip("hzlook", "new", "Neue Optik", c.look !== "classic")}${chip("hzlook", "classic", "Wie bisher", c.look === "classic")}</span></div>
+      ${c.look !== "classic" ? `<div class="vrow"><span>Kachelgröße<small class="mut" style="display:block">S: nur die Zahl. M: Zahl mit Ring oder Mini-Verlauf. L: mit großem Verlauf der letzten 24 Stunden.</small></span><span class="gschs">${chip("hzksize", "s", "S", this._hzKs() === "s")}${chip("hzksize", "m", "M", this._hzKs() === "m")}${chip("hzksize", "l", "L", this._hzKs() === "l")}</span></div>` : ""}
+      ${c.look !== "classic" ? this._hzLook4(chip) : ""}
+      ${c.look !== "classic" ? `<div class="vrow"><span>Kopfbereich<small class="mut" style="display:block">Szene: Haus mit Tageszeit und Wetter, Gesamt-Ampel und Werten. Ampel: nur die Gesamt-Ampel als Zeile. Einfach: Kopfzeile in der Karte „Zuhause“ wie bisher.</small></span><span class="gschs">${chip("hzhead", "scene", "Szene", this._hzHead() === "scene")}${chip("hzhead", "text", "Ampel", this._hzHead() === "text")}${chip("hzhead", "simple", "Einfach", this._hzHead() === "simple")}</span></div>` : ""}`;
+  }
+  /* ================= Startseite · Neue Optik Stufe 2 (Konzept_Startseite_Neue-Optik, Teil B und C) =================
+     B · Kacheln 2.0: die wichtigste Zahl je Modul groß, rechts Ring (Anteile) oder Mini-Verlauf (24 Std. aus der HA-Historie),
+         fünf Zustände (gut, aktiv, Hinweis, Warnung, aus), Größe S (nur Zahl), M (Standard), L (mit großem Verlauf).
+     C · Hinweise-Zentrale: sortiert nach Warnung, Hinweis, Info; Quelle und Zeit an jedem Hinweis; „Später“ (1 Std., heute Abend,
+         morgen früh) je Gerät im Browser gespeichert; ab vier Hinweisen „+N weitere“; Erledigt = Ursache weg, dann verschwindet er.
+     Einstellung layout.start.ksize = "s" | "m" | "l". Gilt nur in der neuen Optik (_hzNew). */
+  _hzKs() { const k = ((this._cfg.layout.start || {}).ksize) || "m"; return ["s", "m", "l"].includes(k) ? k : "m"; }
+  _hzBadE(e) { const s = e && this._hass.states[e]; return !s || ["unavailable", "unknown"].includes(s.state); }
+  _hzNumE(e) { const s = e && this._hass.states[e]; const v = s ? parseFloat(String(s.state).replace(",", ".")) : NaN; return isFinite(v) ? v : null; }
+  /* Kernzahl je Modul: v (Zahl oder kurzer Text), u (Einheit), l1/l2 (Zeile darunter), z (Zustand), p (Ring 0–1), ent (Verlauf), o (Bild-Optionen) */
+  _hzK(m) {
+    const st = this._hass.states, K = { v: null, u: "", l1: "", l2: "", z: "ok", p: null, ent: "", o: {} };
+    const off = (t) => ({ ...K, v: "–", l1: t, z: "off" });
+    if (m.id === "fh") {
+      const R = this._collect(); if (!R.length) return off("Nicht eingerichtet");
+      const th = R.flatMap((r) => r.thermos || []), dead = th.filter((e) => this._hzBadE(e));
+      const n = this._hzHeatN(), W = this._hzWin(), nw = W.reduce((s, w) => s + w.n, 0), cur = th.map((e) => st[e] && Number((st[e].attributes || {}).current_temperature)).filter((x) => isFinite(x) && x > 0);
+      if (n) { K.v = String(n); K.u = n === 1 ? "heizt" : "heizen"; K.o.on = true; K.z = "act"; }
+      else if (cur.length) { K.v = num(cur.reduce((a, b) => a + b, 0) / cur.length, 1); K.u = "°C"; K.l2 = "Ø Räume"; }
+      else { K.v = String(R.length); K.u = R.length === 1 ? "Raum" : "Räume"; }
+      if (nw) { const w = W.slice().sort((a, b) => a.since - b.since)[0], min = Math.round((Date.now() - w.since) / 60000); K.l1 = `${esc(w.name)}: Fenster offen · ${this._hzSince(new Date(w.since).toISOString())}${W.length > 1 ? ` · +${W.length - 1}` : ""}`; if (min >= 15) K.z = "hint"; else if (K.z === "ok") K.z = "info"; }
+      else K.l1 = "Alle Fenster zu";
+      if (dead.length) { K.z = "warn"; K.l1 = `Thermostat offline: ${esc(this._wzName(dead[0]))}`; }
+      return K;
+    }
+    if (m.id === "ww") {
+      if (!this._wwConfigured()) return off("Nicht eingerichtet");
+      const E = this._mdState().ww.ent || {}; K.ent = E.top || ""; if (this._hzBadE(E.top)) return { ...K, v: "–", u: "", l1: "Fühler offline", z: "warn" };
+      const t = this._hzNumE(E.top), P = this._wwProblems(), b = P.find((p) => p[0] === "bad"), w = P.find((p) => p[0] === "warn"), heat = [E.rod, E.src].some((e) => e && this._wwIsOn(e));
+      K.v = num(t, 0); K.u = "°C"; K.o.t = `${num(t, 0)}°`;
+      if (b) { K.z = "warn"; K.l1 = esc(b[2]); } else if (w) { K.z = "hint"; K.l1 = esc(w[2]); }
+      else if (heat) { K.z = "act"; K.l1 = E.rod && this._wwIsOn(E.rod) ? "Heizstab läuft" : "Wird geheizt"; }
+      else K.l1 = t >= 50 ? "Speicher gut gefüllt" : t >= 42 ? "Speicher gefüllt" : "Speicher kühlt aus";
+      return K;
+    }
+    if (m.id === "en") {
+      const N = this._enOn() ? this._enNow() : null; if (!N) return off("Nicht eingerichtet");
+      const sh = N.house > 0 ? Math.min(100, (N.pv2h + N.b2h) / N.house * 100) : 100;
+      K.v = num(sh, 0); K.u = "%"; K.p = sh / 100; K.l1 = `aus Sonne${N.b2h > 20 ? " & Akku" : ""}`; K.l2 = `PV ${num(N.pv / 1000, 1)} kW`; K.ent = this._enState().ent.pv || "";
+      K.o.on = N.pv > 50; return K;
+    }
+    if (m.id === "gs") {
+      this._gsLoad(); const D = (this._gsD && this._gsD.devices) || (this._gsState().devices || []); if (!D.length) return off("Keine Geräte");
+      const run = D.filter((d) => d.running), today = new Date().toDateString();
+      if (run.length) {
+        const d = run[0], nm = String(d.name || "Gerät"), ri = this._gsRestInfo ? this._gsRestInfo(d) : null;
+        K.v = nm.length > 9 ? nm.slice(0, 6) + "." : nm; K.tx = true; K.z = "act"; K.o.on = true; K.hd = this._gsHd ? this._gsHd(d) : "";
+        K.l1 = `läuft${ri && !ri.learn ? ` · noch ${Math.round(ri.rest / 60)} Min.` : ""}${run.length > 1 ? ` · +${run.length - 1}` : ""}`; if (ri && !ri.learn) K.p = ri.p; return K;
+      }
+      const done = D.filter((d) => d.last && d.last.ts && new Date(d.last.ts).toDateString() === today);
+      K.v = String(D.length); K.u = D.length === 1 ? "Gerät" : "Geräte"; K.l1 = done.length ? `${esc(done[0].name)} fertig ${new Date(done[0].last.ts).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}` : "alle bereit"; return K;
+    }
+    if (m.id === "ev") {
+      const E = this._evState().ent || {}; if (!E.soc) return off("Nicht eingerichtet"); K.ent = E.soc;
+      if (this._hzBadE(E.soc)) return { ...K, v: "–", l1: "Auto nicht erreichbar", z: "warn" };
+      const v = this._hzNumE(E.soc), ch = E.charging && st[E.charging] && ["on", "charging"].includes(st[E.charging].state), pl = E.plug && st[E.plug] && ["on", "plugged", "connected"].includes(st[E.plug].state);
+      K.v = num(v, 0); K.u = "%"; K.p = v / 100; K.o.lvl = v; K.l1 = ch ? "lädt" : pl ? "eingesteckt" : "Ladestand"; if (ch) K.z = "act";
+      const r = E.range ? this._hzNumE(E.range) : null; if (r != null) K.l2 = `${num(r, 0)} km`; return K;
+    }
+    if (m.id === "wx") {
+      const t = this._out().t, Wn = this._hzWarnX().filter((h) => h.mod === "wx"); if (t == null && !Wn.length) return off("Keine Wetterquelle");
+      K.v = t != null ? num(t, 1) : "–"; K.u = t != null ? "°C" : ""; const o = this._out(); K.l1 = Wn.length ? esc(String(Wn[0].t).replace(/^(Warnung|Amtliche Warnung): /, "")) : esc((WX[o.w] || ["", "Keine Warnung"])[1]);
+      if (Wn.length) { K.z = "warn"; K.l2 = Wn[0].s && !/^Draußen/.test(Wn[0].s) ? String(Wn[0].s) : ""; } if (t != null && t <= 0) K.o.frost = true; return K;
+    }
+    if (m.id === "sf") {
+      let T = null; try { T = this._sfStat(); } catch (_) { /* noch nicht geladen */ }
+      if (!T || !T.l.length) return off("Keine Melder");
+      K.v = String(T.l.length); K.u = "Melder";
+      if (T.al.length) { K.z = "warn"; K.o.alarm = true; K.l1 = `Alarm: ${esc(T.al[0].name || "")}`; }
+      else if (T.off.length) { K.z = "warn"; K.l1 = `${T.off.length} offline`; }
+      else if (T.low.length) { K.z = "hint"; K.v = String(T.low.length); K.u = T.low.length === 1 ? "Batterie" : "Batterien"; K.l1 = `${esc(T.low[0].name || "")} schwach${T.low[0].bat != null ? ` · ${num(T.low[0].bat, 0)} %` : ""}`; }
+      else K.l1 = "alle in Ordnung";
+      return K;
+    }
+    if (m.id === "mu") {
+      if (!this._muOn()) return off("Aus"); this._muLoad(); const B = this._hzMu().filter((b) => b.next).sort((a, b) => a.days - b.days); if (!B.length) return off("Keine Termine");
+      const x = B[0], same = B.filter((b) => b.days === x.days); K.v = x.days === 0 ? "Heute" : x.days === 1 ? "Morgen" : `${x.days}`; K.u = x.days > 1 ? "Tage" : ""; K.tx = x.days <= 1;
+      K.l1 = same.map((b) => esc(b.name)).join(", "); K.l2 = x.days <= 1 ? "Tonne rausstellen" : ""; K.z = x.state === "out" ? "hint" : x.days <= 1 ? "info" : "ok"; K.o.col = x.color; return K;
+    }
+    if (m.id === "li") {
+      if (!this._liOn()) return off("Aus"); const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; if (!L.length) return off("Keine Lampen");
+      K.v = String(n); K.u = "an"; K.p = n / L.length; K.l1 = n ? `von ${L.length} Lampen` : "alles aus"; K.z = n ? "act" : "ok"; K.o.on = n > 0; return K;
+    }
+    if (m.id === "sp") { const t = this._spStart(); return { ...K, v: null, l1: esc(t.sub), z: this._hzZ(t.c), pic: t.icon }; }
+    if (m.id === "bt") { const s = this._enOn() ? this._soc() : null; if (s == null) return off("Kein Ladestand"); return { ...K, v: num(s, 0), u: "%", p: s / 100, o: { lvl: s }, l1: "Ladestand Akku" }; }
+    if (m.id === "dt") { const p = this._price(); if (!p) return off("Kein Preis"); return { ...K, v: num(p, 1), u: "ct", l1: "pro kWh jetzt" }; }
+    if (m.id === "ef") { const N = this._enOn() ? this._enNow() : null; if (!N) return off("Keine Energiedaten"); return { ...K, v: num(N.house / 1000, 1), u: "kW", l1: "Haus jetzt", l2: `PV ${num(N.pv / 1000, 1)} kW`, o: { on: N.pv > 50 } }; }
+    if (m.addon) { const t = this._adTile(m); return { ...K, v: null, l1: t.sub, z: this._hzZ(t.c) }; }
+    return off(modSt(m) && STG[modSt(m)] ? STG[modSt(m)].t : "");
+  }
+  /* Verlauf der letzten 24 Stunden aus der HA-Historie (ein Abruf je Sensor, 10 Minuten zwischengespeichert) */
+  _hzHist(e) {
+    if (!e || !this._hass) return null;
+    const H = this._hzH || (this._hzH = {}), h = H[e];
+    if (h && !h.busy && Date.now() - h.ts < 600000) return h.v;
+    if (!h || !h.busy) {
+      H[e] = { v: h ? h.v : null, ts: h ? h.ts : 0, busy: true };
+      this._hass.callWS({ type: "history/history_during_period", start_time: new Date(Date.now() - 864e5).toISOString(), entity_ids: [e], minimal_response: true, no_attributes: true, significant_changes_only: false })
+        .then((r) => { const a = (r && r[e]) || [], v = a.map((x) => parseFloat(String(x.s ?? x.state).replace(",", "."))).filter((x) => isFinite(x)); H[e] = { v: v.length > 1 ? v : [], ts: Date.now() }; })
+        .catch(() => { H[e] = { v: [], ts: Date.now() }; })
+        .finally(() => { if (this._mdActive() === "st" && !this._modal && !this._dragging) this._render(); });
+    }
+    return h ? h.v : null;
+  }
+  _hzSpark(v, w = 78, h = 32) {
+    if (!v || v.length < 2) return "";
+    const n = 40, s = v.length > n ? Array.from({ length: n }, (_, i) => v[Math.floor(i * (v.length - 1) / (n - 1))]) : v, lo = Math.min(...s), hi = Math.max(...s), d = hi - lo || 1;
+    const pts = s.map((x, i) => [(i / (s.length - 1)) * (w - 4) + 2, h - 3 - ((x - lo) / d) * (h - 8)]), line = pts.map((p) => p.map((q) => q.toFixed(1)).join(",")).join(" "), last = pts[pts.length - 1];
+    return `<svg class="hzksp" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><polygon points="2,${h} ${line} ${w - 2},${h}" class="a"/><polyline points="${line}" class="l"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.6" class="d"/></svg>`;
+  }
+  _hzRing(p, s = 46, id = "") { const r = 19, C = 2 * Math.PI * r; return `<svg class="hzkr" viewBox="0 0 46 46" width="${s}" height="${s}" aria-hidden="true"><circle cx="23" cy="23" r="${r}" class="bg"/><circle cx="23" cy="23" r="${r}" class="fg"${id ? ` data-hzr="${id}"` : ""} stroke-dasharray="${(Math.max(0.02, Math.min(1, p)) * C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 23 23)"/></svg>`; }
+  static HZ_ZT = { ok: "Alles gut", act: "Aktiv", hint: "Hinweis", warn: "Warnung", off: "Aus", info: "Info" };
+  /* Kachel 2.0 */
+  _hzTile2(m) {
+    const K = this._hzK(m), sz = this._hzKs(), hd = K.hd || this._hzHdFor(m), z = K.z;
+    const pic = K.pic || (hd ? this._gx(hd, sz === "s" ? 26 : 32, { ...(this._hzTileO ? {} : {}), ...K.o }) : ic(m.icon, 20));
+    const sub = m.addon ? "Addon" : m.n ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst">${STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
+    let gr = "";
+    if (sz !== "s" && z !== "off") {
+      const hv = K.ent && (sz === "l" || K.p == null) ? this._hzHist(K.ent) : null;
+      if (sz === "l" && hv && hv.length > 1) gr = `<div class="hzkg l">${this._hzSpark(hv, 160, 40)}</div>`;
+      else if (K.p != null) gr = `<div class="hzkg">${this._hzRing(K.p, 46, "k" + m.id)}</div>`;
+      else if (hv && hv.length > 1) gr = `<div class="hzkg">${this._hzSpark(hv)}</div>`;
+    }
+    const val = K.v == null ? `<span class="hzkv tx sm">${K.l1}</span>` : `<span class="hzkv${K.tx ? " tx" : ""}"${!K.tx && /^-?[\d.,]+$/.test(String(K.v)) ? ` data-hzn="k${m.id}"` : ""}>${esc(String(K.v))}${K.u ? `<small>${esc(K.u)}</small>` : ""}</span>`;
+    const line = K.v == null ? K.l2 : [K.l1, sz === "s" ? "" : K.l2].filter(Boolean).join(" · ");
+    return `<button class="hzk z-${z} sz-${sz}" data-act="hzgo" data-k="${m.id}" aria-label="${esc(m.short)}: ${esc(this.constructor.HZ_ZT[z] || "")}"><i class="hzdot" aria-hidden="true"></i>
+      <div class="hzkh"><span class="hzki">${pic}</span><span class="hzkn"><b>${esc(m.short)}</b><small>${sub}${stg}</small></span></div>
+      <div class="hzkm">${val}${sz === "l" ? "" : gr}</div>${sz === "l" ? gr : ""}${line ? `<div class="hzks">${line}</div>` : ""}</button>`;
+  }
+  /* ---------- Hinweise-Zentrale ---------- */
+  _hzLaterMap() { if (!this._hzLM) { try { this._hzLM = JSON.parse(localStorage.getItem("fh_hz_later") || "{}") || {}; } catch (_) { this._hzLM = {}; } } return this._hzLM; }
+  _hzLaterSet(k, until) {
+    const M = this._hzLaterMap(); if (until) M[k] = until; else delete M[k];
+    Object.keys(M).forEach((x) => { if (M[x] < Date.now()) delete M[x]; });
+    try { localStorage.setItem("fh_hz_later", JSON.stringify(M)); } catch (_) { /* Speicher gesperrt */ }
+  }
+  _hzKey(h) { return h.k || `${h.mod || h.blk || "x"}:${String(h.t || "").replace(/<[^>]*>/g, "").replace(/[\d.,]+/g, "#").slice(0, 60)}`; }
+  /* Sichtbare Hinweise: ohne die auf „Später“ gestellten. Ein Alarm lässt sich nicht verschieben. */
+  _hzVis(hints) { const M = this._hzLaterMap(), now = Date.now(); return hints.filter((h) => h.nosn || !(M[this._hzKey(h)] > now)); }
+  _hzSrc(h) {
+    const L = [...this._mdList(), MOD_MU, MOD_LI], m = h.mod && L.find((x) => x.id === h.mod);
+    const src = m ? (m.n ? `Modul ${m.n}` : m.short) : h.blk === "alarm" ? "Alarm" : h.src || (h.i === "alert" && /Batterie/.test(h.t) ? "Batterien" : h.i === "heart" ? "Sponsor" : "Start");
+    return `${src}${h.since ? ` · seit ${this._hzSince(new Date(h.since).toISOString())}` : ""}`;
+  }
+  _hzZentrale(all) {
+    const vis = this._hzVis(all), hid = all.length - vis.length, nw = vis.filter((h) => h.c === "bad").length, nh = vis.filter((h) => h.c === "wa").length;
+    const ZN = { warn: "Warnung", hint: "Hinweis", info: "Info" }, many = vis.length >= 4 && !this._hzAll, show = many ? vis.slice(0, 3) : vis;
+    const HD = { fh: "windowOpen", ww: "boiler", mu: "bin", wx: "weather", sf: "smoke", ev: "car", gs: "plug", en: "pvRoof" };
+    const row = (h) => {
+      const z = this._hzZ(h.c || "in"), k = this._hzKey(h), hd = h.hd || (h.i === "alert" && /Batterie/.test(h.t) ? "smoke" : HD[h.mod] || (h.blk === "alarm" ? "shield" : "")), pic = hd ? this._gx(hd, 30, { alarm: !!h.alarm, frost: !!h.frost, k: h.c === "bad" ? "bad" : "ok" }) : ic(h.i, 20);
+      const go = h.mod || h.blk ? `<button class="hzzb" data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}">Ansehen</button>` : "";
+      const done = h.mod === "mu" && this._muxAct ? `<button class="hzzb" data-act="hzmudone">Erledigt</button>` : "";
+      const later = h.nosn ? "" : `<button class="hzzb q" data-act="hzlater" data-k="${esc(k)}" aria-label="Später erinnern">Später</button>`;
+      return `<div class="hzz z-${z}"><span class="hzzi">${pic}</span><div class="hzzx"><b>${h.t}</b><small>${esc(this._hzSrc(h))}${h.s ? ` · ${h.s}` : ""}</small><em class="hzzp">${ZN[z] || "Info"}</em></div><div class="hzzbs">${done || go}${later}</div></div>`;
+    };
+    const head = `<h2>${ic("info", 18)}Hinweise${vis.length ? `<span class="hzzc">${vis.length}</span>` : ""}${nw ? `<span class="hzzw z-warn">${nw} ${nw === 1 ? "Warnung" : "Warnungen"}</span>` : ""}<span class="hzrt">nach Dringlichkeit</span></h2>`;
+    const body = vis.length ? `<div class="hzzl">${show.map(row).join("")}</div>${many ? `<button class="hzzmore" data-act="hzall">+${vis.length - 3} weitere</button>` : vis.length >= 4 ? `<button class="hzzmore" data-act="hzall">Weniger zeigen</button>` : ""}`
+      : `<div class="hzzok">${this._gx("shield", 34, { k: "ok" })}<div><b>Keine offenen Hinweise</b><small>Fenster, Batterien, Warmwasser und Termine sind in Ordnung.</small></div></div>`;
+    const foot = hid ? `<div class="hzzf">${ic("clock", 14)}${hid} ${hid === 1 ? "Hinweis" : "Hinweise"} auf später gestellt<button class="lnk" data-act="hzlaterclr">Wieder zeigen</button></div>` : "";
+    return `<div class="card hzzc0">${head}${body}${foot}</div>`;
+  }
+  _hzLaterModal() {
+    const m = this._modal, d = new Date(), h = d.getHours(), eve = new Date(d); eve.setHours(19, 0, 0, 0); const mor = new Date(d); mor.setDate(d.getDate() + 1); mor.setHours(7, 0, 0, 0);
+    const opt = (t, ts, s) => `<button class="hzlo" data-act="hzlaterset" data-k="${esc(m.k)}" data-t="${ts}"><b>${t}</b><small>${s}</small>${ic("chev", 16)}</button>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Später erinnern</b><span>Der Hinweis kommt dann wieder, wenn die Ursache noch da ist.</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${opt("In 1 Stunde", Date.now() + 3600000, new Date(Date.now() + 3600000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) + " Uhr")}
+      ${h < 18 ? opt("Heute Abend", eve.getTime(), "19:00 Uhr") : ""}${opt("Morgen früh", mor.getTime(), "07:00 Uhr")}
+      <div class="mut sm" style="margin-top:8px">Gilt für dieses Gerät. Alarme lassen sich nicht verschieben.</div></div>`;
+  }
+  _hzAct2(a, b) {
+    const k = b.dataset.k;
+    if (a === "hzlater") { this._modal = { type: "hzlater", k }; this._renderModal(); return true; }
+    if (a === "hzlaterset") { this._hzLaterSet(k, Number(b.dataset.t) || 0); this._modal = null; this._renderModal(); this._render(); this._toast("Hinweis kommt später wieder"); return true; }
+    if (a === "hzlaterclr") { this._hzLM = {}; try { localStorage.removeItem("fh_hz_later"); } catch (_) { /* egal */ } this._render(); return true; }
+    if (a === "hzall") { this._hzAll = !this._hzAll; this._render(); return true; }
+    if (a === "hzmudone") { this._hzMu().filter((x) => ["out", "today", "soon"].includes(x.state)).forEach((x) => this._muxAct("muxdone", { dataset: { k: x.k } })); return true; }
+    if (a === "hzhead") { this._hzSave({ head: ["scene", "text", "simple"].includes(k) ? k : "scene" }); return true; }
+    if (a === "hzksize") { this._hzSave({ ksize: ["s", "m", "l"].includes(k) ? k : "m" }); return true; }
+    return false;
+  }
+  /* ================= Startseite · Neue Optik Stufe 3 (Konzept_Startseite_Neue-Optik, Teil A, D und F) =================
+     A · Haus-Kopf: das ganze Haus als Szene (Himmel wie Modul 1 und 3: Tageszeit aus sun.sun, Wetter aus den Haus-Werten),
+         PV glänzt bei Überschuss, Schnee auf dem Dach bei Frost, Rauch bei Heizung, Fenster offen, Auto aus Modul 8.
+         Darüber Begrüßung, Gesamt-Ampel, Chips und eine Tageszeile. Haus-Stile und Himmel-Themen (Sponsor-Extra) wie in Modul 1.
+     D · Wetter als Szene mit Tagen und Frost-Vorhersage, Personen mit Zustandsring und Ankunft, Alarm mit Halten + Bestätigen.
+     F · Tablet: Ampel groß, Ruhebild mit Szene.
+     Einstellung layout.start.head = "scene" | "text" | "simple" (bisher amp: false → simple). */
+  _hzHead() { const l = (this._cfg && this._cfg.layout && this._cfg.layout.start) || {}; if (!this._hzNew()) return "simple"; return ["scene", "text", "simple"].includes(l.head) ? l.head : l.amp === false ? "simple" : "scene"; }
+  /* ---------- A · Szene ---------- */
+  _hzScSvg(o = {}) {
+    const st = this._hass.states, sky = this._hsSky(), u = "hz" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_", q = (n) => u + n;
+    const night = sky.tod === "night", wh = sky.frost || sky.snow, grey = sky.cloud && !night, SK = this._hsSkyCols(sky.tod), HC = this._hsHouseCols(night), X = this._hsx();
+    const N = this._enOn() ? this._enNow() : null, pv = N ? N.pv : this._pvNow(), pvOn = pv != null, glow = pvOn && pv > 300 && !night;
+    const heat = this._hzHeatN() > 0, open = this._hzWin().length > 0, away = this._away && this._away();
+    const E = (this._mdState().on.ev && this._evState().ent) || {}, car = !!(E.soc && st[E.soc]), chg = car && E.charging && st[E.charging] && ["on", "charging"].includes(st[E.charging].state);
+    const lg = (id, s, x2 = 0, y2 = 1) => `<linearGradient id="${q(id)}" x1="0" y1="0" x2="${x2}" y2="${y2}">${s.map(([f, c, a]) => `<stop offset="${f}" stop-color="${c}"${a != null ? ` stop-opacity="${a}"` : ""}/>`).join("")}</linearGradient>`;
+    let d = `<defs>${lg("sk", [[0, grey && !X.S.c ? "#93a7bf" : SK[0]], [1, grey && !X.S.c ? "#dde5ee" : SK[1]]])}${lg("rf", [[0, HC.roof[0]], [1, HC.roof[1]]])}${lg("wl", [[0, HC.wall[0]], [1, HC.wall[1]]], 1, 0)}
+      ${lg("gr", night ? [[0, wh ? "#c7d0dc" : "#1c3a28"], [1, wh ? "#9aa6b5" : "#132a1c"]] : [[0, wh ? "#ffffff" : "#5fd27e"], [1, wh ? "#dfe7f0" : "#2f9e57"]])}
+      ${lg("gl", away ? [[0, "#64748b"], [1, "#475569"]] : night ? [[0, "#fde68a"], [1, "#f59e0b"]] : [[0, "#e0f2fe"], [1, "#7dd3fc"]], .6, 1)}${lg("hw", [[0, "#fb923c", .55], [1, "#fb923c", 0]])}
+      <radialGradient id="${q("sun")}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff7c2"/><stop offset=".55" stop-color="#fde68a"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
+      <pattern id="${q("tl")}" width="10" height="6" patternUnits="userSpaceOnUse"><path d="M0 5.5 h10 M5 0 v5.5" stroke="#000" stroke-width=".7" opacity=".22"/></pattern></defs>`;
+    d += this._hsSkyDraw(sky, q);
+    const s0 = grey && !X.S.c ? "#93a7bf" : SK[0], s1 = grey && !X.S.c ? "#dde5ee" : SK[1], g0 = night ? (wh ? "#c7d0dc" : "#1c3a28") : wh ? "#ffffff" : "#5fd27e", g1 = night ? (wh ? "#9aa6b5" : "#132a1c") : wh ? "#dfe7f0" : "#2f9e57";
+    this._hzScBg = `linear-gradient(180deg,${s0} 0%,${s1} 81%,${g0} 81%,${g1} 100%)`;
+    if (o.sky) return `<svg viewBox="${o.vb || "0 0 360 120"}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Himmel" class="hzsc">${d}<path d="M-2 112 Q90 100 180 108 T362 104 V122 H-2Z" fill="url(#${q("gr")})" opacity=".9"/></svg>`;
+    /* Boden, Baum, Hecke */
+    d += `<rect x="-2" y="150" width="364" height="52" fill="url(#${q("gr")})"/><path d="M-2 150 h364" stroke="#000" opacity=".08"/>`;
+    d += `<rect x="146" y="114" width="5" height="38" rx="2" fill="${night ? "#3b2a1c" : "#7c4a24"}"/>` + [[148, 100, 17], [138, 112, 12], [159, 110, 12], [148, 88, 11]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${wh ? (night ? "#9fb0c2" : "#eef3f8") : night ? "#1f4d30" : "#2fa35c"}"/>`).join("");
+    d += [[176, 149, 8], [316, 149, 9], [334, 150, 6]].map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * .65}" fill="${wh ? "#eef3f8" : night ? "#1d4a2c" : "#22a35a"}"/>`).join("");
+    /* Haus */
+    const L = 196, R = 304, T = 98, B = 150, P = 250, PT = 50;
+    d += `<rect x="${L}" y="${T}" width="${R - L}" height="${B - T}" fill="url(#${q("wl")})"/><rect x="${L}" y="${T}" width="${R - L}" height="${B - T}" fill="#000" opacity="${night ? .12 : 0}"/>`;
+    if (heat) d += `<rect x="${L}" y="${T}" width="${R - L}" height="${B - T}" fill="url(#${q("hw")})" opacity=".55"/>`;
+    /* Schornstein mit Rauch */
+    d += `<rect x="276" y="56" width="11" height="26" fill="#8b2b22"/><rect x="274" y="53" width="15" height="4" rx="1" fill="#57534e"/>` + (heat ? `<g class="hssm">${[0, 1, 2].map((i) => `<circle class="hssm${i}" cx="${282 + i * 3}" cy="${46 - i * 7}" r="${3.5 + i * 2}" fill="#e2e8f0" opacity=".55"/>`).join("")}</g>` : "");
+    d += `<path d="M${L - 14} ${T + 1} L${P} ${PT} L${R + 14} ${T + 1}Z" fill="url(#${q("rf")})"/><path d="M${L - 14} ${T + 1} L${P} ${PT} L${R + 14} ${T + 1}Z" fill="url(#${q("tl")})"/><path d="M${P} ${PT} L${R + 14} ${T + 1} L${P} ${T + 1}Z" fill="#000" opacity=".16"/>`;
+    d += `<path d="M${L - 16} ${T + 2} L${P} ${PT - 2} L${R + 16} ${T + 2}" fill="none" stroke="#3f1510" stroke-width="3" stroke-linejoin="round"/>`;
+    if (wh) d += `<path d="M${L - 12} ${T - 1} L${P} ${PT + 1} L${R + 12} ${T - 1} L${R} ${T - 4} L${P} ${PT + 6} L${L} ${T - 4}Z" fill="#f8fafc"/>`;
+    if (pvOn) {
+      /* Solarfeld frontal auf der linken Dachfläche (wie die Energie-Szene in Modul 3): unten 3, darüber 2 Module, innerhalb der Dachschräge */
+      const pan = (x, y) => `<rect x="${x}" y="${y}" width="13" height="8.6" rx=".8" fill="${glow ? "#2563eb" : "#1e3a8a"}" stroke="${night ? "#64748b" : "#e2e8f0"}" stroke-width=".8"/><path d="M${x + 6.5} ${y} v8.6 M${x} ${y + 4.3} h13" stroke="#93c5fd" stroke-width=".4" opacity=".7"/>` +
+        (glow ? `<path d="M${x + 1.5} ${y + 1.6} l3 -0" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity=".7"/>` : "") + (wh ? `<rect x="${x - .4}" y="${y - .8}" width="13.8" height="2.6" rx="1.2" fill="#f8fafc"/>` : "");
+      const cells = [[205, 86.4], [219.5, 86.4], [234, 86.4], [219.5, 76.6], [234, 76.6]];
+      d += `<g><rect x="203.6" y="85" width="44.8" height="11.4" rx="1.2" fill="#0f172a" opacity=".3"/><rect x="218.1" y="75.2" width="30.3" height="11" rx="1.2" fill="#0f172a" opacity=".3"/>${cells.map(([x, y]) => pan(x, y)).join("")}${glow ? `<g class="hzpvg" opacity="0">${cells.map(([x, y]) => `<rect x="${x}" y="${y}" width="13" height="8.6" rx=".8" fill="#fff"/>`).join("")}</g>` : ""}</g>`;
+    }
+
+    /* Fenster und Tür */
+    const win = (x, y, op) => `<rect x="${x - 1.5}" y="${y - 1.5}" width="21" height="17" rx="1.5" fill="#f8fafc"/><rect x="${x}" y="${y}" width="18" height="14" fill="url(#${q("gl")})"/>` + (away ? `${[0, 1, 2, 3].map((i) => `<path d="M${x} ${y + 2 + i * 3.4} h18" stroke="#334155" stroke-width=".8"/>`).join("")}` : `<path d="M${x + 9} ${y} v14 M${x} ${y + 7} h18" stroke="#f8fafc" stroke-width="1"/>`) +
+      (op ? `<path d="M${x + 18} ${y} l7 3 v10 l-7 1z" fill="#e0f2fe" stroke="#f8fafc" stroke-width="1"/><path class="hsaw" d="M${x + 29} ${y + 7} q4 -3 8 0 t8 0" fill="none" stroke="#60a5fa" stroke-width="1.6" stroke-linecap="round"/>` : "");
+    d += win(206, 106, false) + win(276, 106, open) + win(206, 128, false);
+    d += `<rect x="241" y="122" width="18" height="28" rx="1.5" fill="${night ? "#5b3a1f" : "#7c4a24"}"/><circle cx="255" cy="137" r="1.3" fill="#fde68a"/>${night && !away ? `<circle cx="250" cy="118" r="7" fill="#fde68a" opacity=".35"/><rect x="247" y="115" width="6" height="5" rx="1" fill="#fde68a"/>` : ""}`;
+    d += `<rect x="270" y="128" width="24" height="16" rx="1.5" fill="#f8fafc"/><rect x="271.5" y="129.5" width="21" height="13" fill="url(#${q("gl")})"/>`;
+    d += `<rect x="${L - 4}" y="${B - 2}" width="${R - L + 8}" height="5" fill="#9ca3af"/>`;
+    /* Auto aus Modul 8 */
+    if (car) d += `<svg x="314" y="118" width="40" height="40" viewBox="0 0 64 64">${this._gxLib().L.car.f((n) => q("c" + n), {})}</svg>${chg ? `<path d="M322 131 l-4 6 h3 l-2 6 l6 -8 h-3 l2 -4z" fill="#fde047" stroke="#a16207" stroke-width=".5"/>` : ""}`;
+    return `<svg viewBox="${o.vb || "0 0 360 200"}" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Haus-Szene" class="hzsc">${d}</svg>`;
+  }
+  /* Tageszeile (W3): gespartes Heizöl/Gas heute und Anteil aus Sonne */
+  _hzDayLine() {
+    const R = this._collect(), bits = [];
+    try {
+      const g = R.reduce((s, r) => s + ((r.sc && r.sc.day && r.sc.day.gas) || 0), 0), fs = new Set(R.map((r) => r.fuel || "erdgas")), f = fs.size === 1 ? [...fs][0] : "erdgas", F = FUELS[f] || FUELS.erdgas;
+      if (g > 0.005) bits.push(`${F.short} gespart heute: ${num(g, 2)} ${F.label.split(" ")[0]}`);
+    } catch (_) { /* egal */ }
+    const N = this._enOn() ? this._enNow() : null; if (N && N.house > 0) bits.push(`${num(Math.min(100, (N.pv2h + N.b2h) / N.house * 100), 0)} % aus Sonne jetzt`);
+    return bits.join(" · ");
+  }
+  _hzHeadHtml(hints) {
+    const L = this._hzLevel(hints), g = this._hzGreet().split(" · "), o = this._out(), st = this._hass.states;
+    const N = this._enOn() ? this._enNow() : null, P = this._ortPersons().filter((p) => p.count), H = P.filter((p) => p.home), al = this._hzAlarmEnt();
+    const chips = [o.t != null ? [this._gx("weather", 18, { frost: o.t <= 0 }), `Draußen ${num(o.t, 1)} °C`] : null, N ? [this._gx("pvRoof", 18), `PV ${num(N.pv / 1000, 2)} kW`] : null,
+      P.length ? [this._gx("people", 18), H.length === 0 ? "niemand zu Hause" : H.length === 1 ? `${esc(H[0].name)} zu Hause` : `${H.length} zu Hause`] : null,
+      al ? [this._gx("shield", 18, { k: st[al].state === "triggered" ? "bad" : st[al].state === "disarmed" ? "off" : "ok" }), `Alarm ${st[al].state === "disarmed" ? "aus" : st[al].state === "triggered" ? "AUSGELÖST" : "scharf"}`] : null].filter(Boolean);
+    const day = this._hzDayLine(), tap = L.n || L.info;
+    const sv = this._hzScSvg({ vb: "100 20 260 160" });
+    return `<div class="card hzhd z-${L.z}"><div class="hzhs" aria-hidden="true" style="background:${this._hzScBg}">${sv}</div><div class="hzho">
+      <div class="hzhg"><b>${g[0]}</b><small>${g[1] || ""}</small></div>
+      <div class="hzha"${tap ? ` data-act="hzgo" data-k="" data-b="hinweise" role="button" tabindex="0"` : ""}><span class="hzab" aria-hidden="true">${L.z === "ok" ? ic("check", 22) : "<b>!</b>"}</span><span class="hzax"><b>${esc(L.t)}</b><small>${esc(L.s)}</small></span>${tap ? `<span class="hzago">${ic("chev", 16)}</span>` : ""}</div>
+      ${chips.length ? `<div class="hzhc">${chips.map(([i, t]) => `<span>${i}${t}</span>`).join("")}</div>` : ""}${day ? `<div class="hzhw">${day}</div>` : ""}</div></div>`;
+  }
+  /* ---------- D1 · Wetter ---------- */
+  _hzFcDay(wid) {
+    const d = this._hzFcDD; if (d && d.id === wid && Date.now() - d.ts < 1800000) return d.list;
+    if (this._hzFcDBusy || !this._hass) return d && d.id === wid ? d.list : [];
+    this._hzFcDBusy = true;
+    this._hass.callWS({ type: "call_service", domain: "weather", service: "get_forecasts", service_data: { type: "daily" }, target: { entity_id: wid }, return_response: true })
+      .then((r) => { const f = r && r.response && r.response[wid] && r.response[wid].forecast; this._hzFcDD = { id: wid, ts: Date.now(), list: Array.isArray(f) ? f : [] }; })
+      .catch(() => { this._hzFcDD = { id: wid, ts: Date.now(), list: [] }; })
+      .finally(() => { this._hzFcDBusy = false; if (this._mdActive() === "st" && !this._dragging && !this._modal) this._render(); });
+    return d && d.id === wid ? d.list : [];
+  }
+  /* Frost in den nächsten 14 Stunden laut Stundenvorhersage (nur wenn es jetzt noch nicht friert) */
+  _hzFrostFc() {
+    const wid = this._hzWxId(), o = this._out(); if (!wid || o.t == null || o.t <= 0) return null;
+    const f = this._hzFc(wid).filter((x) => { const t = new Date(x.datetime).getTime(); return t > Date.now() && t < Date.now() + 14 * 3600000; }), c = f.find((x) => x.temperature != null && Number(x.temperature) <= 0);
+    if (!c) return null; const mn = Math.min(...f.map((x) => Number(x.temperature)).filter(isFinite));
+    return { at: new Date(c.datetime), min: mn };
+  }
+  _hzWetterN() {
+    const wid = this._hzWxId(); if (!wid) return "";
+    const w = this._hass.states[wid], a = w.attributes || {}, o = this._out(), k = WX[w.state] || ["cloud", w.state || ""], Wn = this._hzWarnX().filter((h) => h.mod === "wx"), ff = this._hzFrostFc();
+    const days = this._hzFcDay(wid).slice(0, 4), wd = (s) => new Date(s).toLocaleDateString("de-DE", { weekday: "short" }).replace(".", "");
+    const bits = [a.humidity != null ? `${num(a.humidity, 0)} % Luftfeuchte` : "", a.wind_speed != null ? `Wind ${num(a.wind_speed, 0)} ${a.wind_speed_unit || "km/h"}` : ""].filter(Boolean).join(" · ");
+    const warn = Wn.length ? `<div class="hzwn z-warn">${this._gx("weather", 30, { frost: !!Wn[0].frost })}<div><b>${Wn[0].t}</b><small>${Wn[0].s || ""}</small></div></div>`
+      : ff ? `<div class="hzwn z-hint">${this._gx("weather", 30, { frost: true })}<div><b>Frost heute Nacht</b><small>ab ${ff.at.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} · bis ${num(ff.min, 0)} °C · Vorhersage</small></div></div>` : "";
+    let wl = "";
+    if (this._labOn("wl")) { const rh = a.humidity != null ? Number(a.humidity) : null, wind = a.wind_speed != null ? Number(a.wind_speed) : null, wet = ["rainy", "pouring", "lightning-rainy", "lightning", "snowy", "snowy-rainy", "hail"].includes(w.state); const lvl = wet || (rh != null && rh > 85) || (o.t != null && o.t < 3) ? 2 : (rh != null && rh > 75) || (wind != null && wind < this._labV("wl_wind")) ? 1 : 0; wl = `<div class="hzwl">${this._labPill("Wäsche-Wetter")}<span>${["heute draußen trocknen", "draußen geht, aber langsam", "heute drinnen trocknen"][lvl]}</span></div>`; }
+    return `<div class="card hzwx2 ${Wn.length ? "z-warn" : ff ? "z-hint" : "z-ok"}"><h2>${ic("cloud", 18)}Wetter<span class="hzrt">${esc(a.friendly_name || wid)}</span></h2>
+      <div class="hzwb"><div class="hzws" aria-hidden="true">${this._hzScSvg({ vb: "0 0 360 120", sky: true })}</div><div class="hzwv"><b>${o.t != null ? num(o.t, 1) : "–"}<small> °C</small></b><span>${esc(k[1])}${bits ? ` · ${bits}` : ""}</span></div></div>
+      ${warn}${days.length ? `<div class="hzwd">${days.map((x, i) => `<div><small>${i === 0 ? "Heute" : wd(x.datetime)}</small>${ic((WX[x.condition] || ["cloud"])[0], 22)}<b>${x.temperature != null ? num(x.temperature, 0) + "°" : "–"}</b><em>${x.templow != null ? num(x.templow, 0) + "°" : ""}</em></div>`).join("")}</div>` : ""}${wl}</div>`;
+  }
+  /* ---------- D2 · Personen ---------- */
+  /* Ankunft schätzen: Entfernung über die Zeit, nur wenn sie kleiner wird */
+  _hzEta(p) {
+    const M = this._hzPD || (this._hzPD = {}), now = Date.now(), a = (M[p.id] = (M[p.id] || []).filter((x) => now - x.t < 900000));
+    if (p.dist == null || p.home) { M[p.id] = []; return null; }
+    if (!a.length || Math.abs(a[a.length - 1].d - p.dist) > 5) a.push({ t: now, d: p.dist });
+    if (a.length < 2) return null; const f = a[0], l = a[a.length - 1], dt = (l.t - f.t) / 60000, dd = f.d - l.d;
+    if (dt < 1 || dd < 150) return null; const v = dd / dt, m = Math.round(l.d / v);
+    return m > 0 && m < 90 ? m : null;
+  }
+  _hzPersonenN() {
+    const P = this._ortPersons().filter((p) => p.count); if (!P.length) return "";
+    const st = this._hass.states, nh = P.filter((p) => p.home).length, dist = (d) => (d >= 1000 ? `${num(d / 1000, d < 10000 ? 1 : 0)} km` : `${num(d, 0)} m`);
+    let soon = null;
+    const rows = P.map((p) => {
+      const s = st[p.id] || {}, pic = (s.attributes || {}).entity_picture, eta = this._hzEta(p), z = p.unavailable ? "off" : p.home ? "ok" : "info";
+      if (eta != null && eta <= 20 && (!soon || eta < soon.eta)) soon = { n: p.name, eta };
+      const since = s.last_changed ? new Date(s.last_changed).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "";
+      const sub = p.unavailable ? "Kein Standort" : p.home ? `zu Hause${since ? ` seit ${since}` : ""}` : `${p.dist != null ? dist(p.dist) : p.state && p.state !== "not_home" ? esc(p.state) : "unterwegs"}${eta != null ? ` · kommt in ~${eta} Min.` : ""}`;
+      return `<div class="hzpr z-${z}"><span class="hzpa" style="--c:${p.col};${pic ? `background-image:url('${esc(pic)}');` : ""}">${pic ? "" : esc(p.name.slice(0, 1).toUpperCase())}</span><div class="hzrx"><b>${esc(p.name)}</b><small>${sub}</small></div><em class="hzpp">${p.unavailable ? "?" : p.home ? "zu Hause" : "unterwegs"}</em></div>`;
+    }).join("");
+    const pre = soon ? `<div class="hzps">${this._gx("person", 28)}<div><b>${esc(soon.n)} kommt gleich</b><small>in etwa ${soon.eta} Minuten${this._labOn("vh") ? " · Heizung wird vorbereitet (Smart Vorheizen)" : ""}</small></div></div>` : "";
+    return `<div class="card"><h2>${ic("users", 18)}Personen<span class="hzrt">${nh} von ${P.length} zu Hause</span></h2>${pre}<div class="hzpl">${rows}</div><div class="hzpk"><span class="z-ok"><i></i>zu Hause</span><span class="z-info"><i></i>unterwegs</span></div></div>`;
+  }
+  /* ---------- D3 · Alarm: Halten, dann Bestätigen ---------- */
+  _hzAlarmN() {
+    const e = this._hzAlarmEnt(); if (!e) return ""; const s = this._hass.states[e], c = this._hzCfg(), ctl = c.ctl && this._admin(), [txt, cl] = this._hzAlarmTxt(s.state);
+    const z = cl === "bad" ? "warn" : cl === "wa" ? "hint" : s.state === "disarmed" ? "off" : "ok", since = s.last_changed ? new Date(s.last_changed).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "";
+    const head = s.state === "disarmed" ? "Alarm ist aus" : s.state === "triggered" ? "Alarm ausgelöst" : `Alarm: ${txt}`;
+    const hold = (k, t, ico) => `<button class="hzhold" data-hold="${k}" aria-label="${t} – gedrückt halten">${ic(ico, 18)}<span>${t}</span><i aria-hidden="true"></i></button>`;
+    const btns = !ctl ? "" : s.state === "disarmed" ? `${hold("away", "Abwesend", "door")}${hold("home", "Zu Hause", "home")}` : hold("disarm", "Unscharf schalten", "shield");
+    return `<div class="card hzal2 z-${z}"><h2>${ic("shield", 18)}Alarm<span class="hzrt">${esc(this._wzName(e))}</span></h2>
+      <div class="hzam2">${this._gx("shield", 52, { k: z === "warn" ? "bad" : z === "off" ? "off" : "ok" })}<div><b>${esc(head)}</b><small>${ctl ? `Seit ${since} Uhr` : "Schalten ist ab Werk aus"}</small></div></div>
+      ${btns ? `<div class="hzhl">${s.state === "disarmed" ? "Scharfschalten" : "Unscharf schalten"}<small>Gedrückt halten, dann bestätigen</small></div><div class="hzhb">${btns}</div>` : ""}</div>`;
+  }
+  _hzHoldBind() {
+    if (this._hzHoldOn || !this.shadowRoot) return; this._hzHoldOn = true;
+    const sr = this.shadowRoot, stop = () => { if (this._hzHoldT) { clearTimeout(this._hzHoldT); this._hzHoldT = null; } sr.querySelectorAll(".hzhold.on").forEach((b) => b.classList.remove("on")); };
+    sr.addEventListener("pointerdown", (ev) => {
+      const b = ev.target.closest && ev.target.closest(".hzhold"); if (!b) return; stop(); b.classList.add("on");
+      this._hzHoldT = setTimeout(() => { this._hzHoldT = null; b.classList.remove("on"); this._hzAct("hzalarm", { dataset: { k: b.dataset.hold } }); }, 1200);
+    });
+    ["pointerup", "pointercancel", "pointerleave"].forEach((t) => sr.addEventListener(t, stop, true));
+    sr.addEventListener("keydown", (ev) => { const b = ev.target.closest && ev.target.closest(".hzhold"); if (b && (ev.key === "Enter" || ev.key === " ")) { ev.preventDefault(); this._hzAct("hzalarm", { dataset: { k: b.dataset.hold } }); } });
+  }
+  /* ---------- F · Tablet ---------- */
+  _hzTmAmp(hints) {
+    const L = this._hzLevel(hints);
+    return `<div class="tmamp z-${L.z}"><span class="hzab" aria-hidden="true">${L.z === "ok" ? ic("check", 34) : "<b>!</b>"}</span><div><b>${esc(L.t)}</b><small>${esc(L.s)}</small></div></div>`;
+  }
+  _hzTmSleep() {
+    const L = this._hzLevel(this._hzVis(this._hzHints()));
+    return `<div class="tmsc" aria-hidden="true" data-hzan="${this._hzAnim()}">${this._hzScSvg()}</div><div class="tmsa z-${L.z}"><i></i>${esc(L.t)}</div>`;
+  }
+  /* ================= Startseite · Neue Optik Stufe 4 (Konzept_Startseite_Neue-Optik, Teil E, G und W) =================
+     G · Bewegung Aus / Dezent / Voll (Standard Dezent, im Tablet-Modus eigene Stufe, Standard Aus). „Bewegung reduzieren“ des Systems gilt immer.
+         Dezent: Warnpunkt pulsiert, Kernzahl zählt weich nach, Ring der Bubbles füllt sich, Zustandswechsel blendet über.
+         Voll: zusätzlich Wolken, Regen, Schnee, Rauch und Glanz der PV-Module in der Haus-Szene.
+     W4 · Vorlagen Familie, Technik, Minimal (mit Rückgängig). E2 · Kacheln wählen und sortieren.
+     E3 · Schnellaktionen: feste Aktionen wie bei Tags & Karten als Knöpfe; ab Werk aus; die Liste wählt der Admin (Backend prüft sie),
+         Aktionen, die das ganze Haus oder die Sicherheit betreffen, werden immer bestätigt. Langes Drücken auf eine Kachel zeigt die Aktionen des Moduls.
+     W1 · Leerzustand mit „Modul hinzufügen“.
+     Einstellungen in layout.start: anim, tanim, tiles = { order, hidden }, qa (Schnellaktionen an). */
+  _hzAnim() { const l = (this._cfg.layout.start || {}), A = ["aus", "dezent", "voll"], tm = !!(this._tmOn && this._tmOn()); return tm ? (A.includes(l.tanim) ? l.tanim : "aus") : A.includes(l.anim) ? l.anim : "dezent"; }
+  _hzAnimCfg() { const l = (this._cfg.layout.start || {}), A = ["aus", "dezent", "voll"]; return { anim: A.includes(l.anim) ? l.anim : "dezent", tanim: A.includes(l.tanim) ? l.tanim : "aus" }; }
+  _hzWrap(html) { return `<div class="hzpg" data-hzan="${this._hzAnim()}">${html}</div>`; }
+  /* Nach dem Zeichnen: geänderte Zahlen weich nachzählen, geänderte Ringe neu füllen. Beim ersten Öffnen einmal alles. */
+  _hzAnimRun() {
+    const sr = this.shadowRoot, pg = sr && sr.querySelector(".hzpg"); if (!pg) { this._hzAV = null; return; }
+    const an = pg.dataset.hzan, red = typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches, first = !this._hzAV, M = this._hzAV || (this._hzAV = {});
+    pg.querySelectorAll("[data-hzn]").forEach((el) => {
+      const k = el.dataset.hzn, txt = el.firstChild && el.firstChild.nodeType === 3 ? el.firstChild.nodeValue : "", v = parseFloat(String(txt).replace(/\./g, "").replace(",", ".")), old = M[k];
+      M[k] = v; if (an === "aus" || red || !isFinite(v) || first || old == null || old === v || !isFinite(old)) return;
+      const dec = (String(txt).split(",")[1] || "").length, t0 = performance.now(), node = el.firstChild;
+      const step = (t) => { const f = Math.min(1, (t - t0) / 700), e = 1 - Math.pow(1 - f, 3); node.nodeValue = num(old + (v - old) * e, dec); if (f < 1 && node.isConnected) requestAnimationFrame(step); else node.nodeValue = txt; };
+      requestAnimationFrame(step);
+    });
+    pg.querySelectorAll("[data-hzr]").forEach((el) => {
+      const k = "r:" + el.dataset.hzr, v = el.getAttribute("stroke-dasharray"), old = M[k]; M[k] = v;
+      if (an === "aus" || red || (!first && old === v)) return;
+      el.classList.remove("hzfill"); void el.getBoundingClientRect(); el.classList.add("hzfill");
+    });
+  }
+  /* ---------- E2 · Kacheln wählen ---------- */
+  _hzTiles() { const t = (this._cfg.layout.start || {}).tiles || {}; return { order: Array.isArray(t.order) ? t.order : [], hidden: Array.isArray(t.hidden) ? t.hidden : [] }; }
+  _hzMods(all) {
+    const T = this._hzTiles(), L = this._mdList().filter((m) => m.id !== "st"), o = T.order;
+    const s = L.slice().sort((a, b) => { const i = o.indexOf(a.id), j = o.indexOf(b.id); return (i < 0 ? 999 + L.indexOf(a) : i) - (j < 0 ? 999 + L.indexOf(b) : j); });
+    return all ? s : s.filter((m) => !T.hidden.includes(m.id));
+  }
+  _hzEmpty() {
+    const adm = this._admin();
+    return `<div class="hzemp">${this._gx("house", 64)}<div><b>Noch kein Modul aktiv</b><small>${this._mdList().some((m) => m.id !== "st") ? "Alle Kacheln sind ausgeblendet. Unter Startseite → Kacheln wählen holst du sie zurück." : "Schalte in den Einstellungen ein Modul ein, dann erscheint hier seine Kachel."}</small></div>${adm ? `<button class="btn2 pri" data-act="${this._mdList().some((m) => m.id !== "st") ? "hztiles" : "mdsta"}" data-k="md">${ic("plus", 16)} ${this._mdList().some((m) => m.id !== "st") ? "Kacheln wählen" : "Modul hinzufügen"}</button>` : ""}</div>`;
+  }
+  /* ---------- W4 · Vorlagen ---------- */
+  static HZ_PRESETS = {
+    familie: { n: "Familie", d: "Haus-Szene, Personen, Wetter und Müll oben, Energie ausgeblendet", i: "people", p: { head: "scene", ksize: "m", order: ["zuhause", "hinweise", "personen", "wetter", "muell", "alarm", "energie"], hidden: ["energie"], bub: ["wetter", "personen", "fenster", "muell", "hinweise"] } },
+    technik: { n: "Technik", d: "Ampel-Zeile, große Kacheln mit Verlauf, Energie gleich nach den Kacheln", i: "meter", p: { head: "text", ksize: "l", order: ["zuhause", "energie", "hinweise", "wetter", "alarm", "personen", "muell"], hidden: [], bub: ["solar", "batterie", "preis", "auto", "warmwasser", "fenster"] } },
+    minimal: { n: "Minimal", d: "Nur Ampel, kleine Kacheln und Hinweise", i: "shield", p: { head: "text", ksize: "s", order: ["zuhause", "hinweise", "wetter", "personen", "alarm", "energie", "muell"], hidden: ["wetter", "personen", "alarm", "energie", "muell"], bub: ["wetter", "hinweise"] } },
+  };
+  _hzPreset(k) {
+    const P = this.constructor.HZ_PRESETS[k]; if (!P) return;
+    const raw = this._cfg.layout.start || {}; this._hzUndo = JSON.parse(JSON.stringify(raw)); this._hzUndoN = P.n;
+    const c = this._hzCfg();
+    this._hzSave({ head: P.p.head, ksize: P.p.ksize, order: P.p.order, hidden: P.p.hidden, bub: { ...c.bub, ids: P.p.bub }, preset: k });
+    this._toast(`Vorlage „${P.n}“ übernommen`);
+  }
+  /* ---------- E3 · Schnellaktionen ---------- */
+  _hzQaOn() { return this._hzNew() && (this._cfg.layout.start || {}).qa === true; }
+  _hzQa() { this._tgxLoad(); const D = this._tgxD; return D && D.cfg && Array.isArray(D.cfg.quick) ? D.cfg.quick : []; }
+  _hzQaName(q) { return q.name || (this._tgxD ? this._tgxDesc(q.act) : q.act.k); }
+  _hzQaGroup(q) { const D = this._tgxD, a = D && D.actions.find((x) => x.k === q.act.k); return a ? a.g : ""; }
+  _hzQaRow(tm) {
+    if (!this._hzQaOn()) return ""; const Q = this._hzQa(); if (!Q.length) return this._admin() ? `<div class="hzqa"><button class="hzqb add" data-act="hzqaset">${ic("plus", 16)}<span>Schnellaktionen wählen</span></button></div>` : "";
+    return `<div class="hzqa${tm ? " tm" : ""}" role="toolbar" aria-label="Schnellaktionen">${Q.map((q, i) => `<button class="hzqb" data-act="hzqa" data-k="${i}">${ic(this._tgxIcon(q.act), tm ? 22 : 16)}<span>${esc(this._hzQaName(q))}</span></button>`).join("")}</div>`;
+  }
+  _hzQaRun(i) {
+    const Q = this._hzQa(), q = Q[i]; if (!q) return;
+    const need = (this._tgxD.confirm || []).includes(q.act.k);
+    if (need) { this._modal = { type: "hzqaok", i }; this._renderModal(); return; }
+    this._hzQaDo(i);
+  }
+  _hzQaDo(i) {
+    this._hass.callWS({ type: "fenster_heizung/tg_quick", idx: Number(i) }).then((r) => { this._tgxD = r; this._tgxTs = Date.now(); const x = r.quick_res || {}; this._toast(x.msg || (x.ok ? "Ausgeführt" : "Das hat nicht geklappt")); this._render(); })
+      .catch(() => this._toast("Das hat nicht geklappt"));
+  }
+  /* Auswahl für die Schnellaktionen: feste Aktionen ohne Zusatz, Urlaub 7 Tage, Melder alle, je Tonne und je Entfeuchter */
+  _hzQaOptions() {
+    const D = this._tgxD; if (!D) return [];
+    const out = [];
+    D.actions.forEach((a) => {
+      if (this._tgxNeed(a.k)) return;
+      if (!a.arg) out.push({ act: { k: a.k, arg: null }, g: a.g, gn: a.gn });
+      else if (a.arg === "days") out.push({ act: { k: a.k, arg: 7 }, g: a.g, gn: a.gn });
+      else if (a.arg === "det") out.push({ act: { k: a.k, arg: "" }, g: a.g, gn: a.gn });
+      else if (a.arg === "bin") Object.keys(D.bins || {}).forEach((b) => out.push({ act: { k: a.k, arg: b }, g: a.g, gn: a.gn }));
+      else if (a.arg === "lfdev") this._lfDevs().forEach((d) => out.push({ act: { k: a.k, arg: d.id }, g: a.g, gn: a.gn }));
+    });
+    return out;
+  }
+  _hzQaKey(act) { return `${act.k}|${act.arg == null ? "" : act.arg}`; }
+  _hzQaModal() {
+    const m = this._modal, adm = this._admin();
+    if (m.type === "hzqaok") {
+      const q = this._hzQa()[m.i]; if (!q) return "";
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${esc(this._hzQaName(q))}?</b><span>Schnellaktion · wirkt sofort</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="gst on">${ic("alert", 15)}<span>Das schaltet echte Geräte oder ändert die Regelung im ganzen Haus.</span></div>
+        <div class="gbtns" style="margin-top:12px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="hzqago" data-k="${m.i}">${ic("check", 16)} Ausführen</button></div></div>`;
+    }
+    if (m.type === "hzqm") {
+      const mod = this._mdList().find((x) => x.id === m.k) || {}, G = { fh: ["fh", "lf", "pe"], ww: ["ww"], ev: ["ev"], sf: ["sf"], mu: ["mu"], li: ["li"] }[m.k] || [];
+      const Q = this._hzQa().map((q, i) => ({ q, i })).filter((x) => G.includes(this._hzQaGroup(x.q)));
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${esc(mod.name || "")}</b><span>Schnellaktionen</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        ${Q.map(({ q, i }) => `<button class="hzlo" data-act="hzqa" data-k="${i}">${ic(this._tgxIcon(q.act), 18)}<b>${esc(this._hzQaName(q))}</b>${(this._tgxD.confirm || []).includes(q.act.k) ? "<small>mit Bestätigung</small>" : ""}</button>`).join("")}
+        <button class="hzlo" data-act="hzgo" data-k="${esc(m.k)}">${ic("chev", 16)}<b>Modul öffnen</b></button></div>`;
+    }
+    /* hzqaset: Auswahl (Admin) */
+    const D = this._tgxD; if (!D) { this._tgxLoad(true); return `<div class="ov" data-act="close"></div><div class="sheet"><div class="mut sm">Lade Aktionen …</div></div>`; }
+    const sel = this._hzQa(), keys = sel.map((q) => this._hzQaKey(q.act)), opts = this._hzQaOptions(), groups = [...new Set(opts.map((o) => o.gn))];
+    const row = (o) => { const on = keys.includes(this._hzQaKey(o.act)); return `<div class="hzo ${on ? "on" : ""}"><button class="hzck ${on ? "on" : ""}" data-act="hzqat" data-k="${esc(JSON.stringify(o.act))}" aria-pressed="${on}" ${adm ? "" : "disabled"}>${on ? ic("check", 14) : ""}</button><span class="hzoi">${ic(this._tgxIcon(o.act), 18)}</span><span class="hzot"><b>${esc(this._tgxDesc(o.act))}</b>${(D.confirm || []).includes(o.act.k) ? "<small>wird immer bestätigt</small>" : ""}</span></div>`; };
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Schnellaktionen wählen</b><span>Bis zu 8 · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:0 0 8px">Dieselben festen Aktionen wie bei Tags & Karten. ${sel.length} gewählt. Nur diese Liste kann auf der Startseite ausgelöst werden, auch von Nutzern ohne Admin-Rechte.</div>
+      ${groups.map((g) => `<div class="lsec">${esc(g)}</div>${opts.filter((o) => o.gn === g).map(row).join("")}`).join("")}
+      <div class="gbtns" style="margin-top:10px"><button class="btn2 pri" data-act="hzback">${ic("check", 16)} Fertig</button></div></div>`;
+  }
+  _hzQaToggle(actJson) {
+    let act; try { act = JSON.parse(actJson); } catch (_) { return; }
+    const cur = this._hzQa().map((q) => ({ name: q.name || "", act: q.act })), k = this._hzQaKey(act), i = cur.findIndex((q) => this._hzQaKey(q.act) === k);
+    if (i >= 0) cur.splice(i, 1); else if (cur.length >= 8) { this._toast("Mehr als 8 Schnellaktionen sind nicht möglich"); return; } else cur.push({ name: "", act });
+    this._hass.callWS({ type: "fenster_heizung/tg_quick_set", quick: cur }).then((r) => { this._tgxD = r; this._tgxTs = Date.now(); this._renderModal(); this._render(); }).catch(() => this._toast("Das hat nicht geklappt"));
+  }
+  /* ---------- Einstellungen ---------- */
+  _hzTilesModal() {
+    const adm = this._admin(), T = this._hzTiles(), all = this._hzMods(true), vis = all.filter((m) => !T.hidden.includes(m.id));
+    const row = (m) => { const on = !T.hidden.includes(m.id), i = vis.indexOf(m); return `<div class="hzo ${on ? "on" : ""}"><button class="hzck ${on ? "on" : ""}" data-act="hztt" data-k="${m.id}" aria-pressed="${on}" aria-label="${esc(m.short)}" ${adm ? "" : "disabled"}>${on ? ic("check", 14) : ""}</button><span class="hzoi">${this._hzHdFor(m) ? this._gx(this._hzHdFor(m), 24) : ic(m.icon, 18)}</span><span class="hzot"><b>${esc(m.short)}</b><small>${m.n ? `Modul ${m.n}` : m.addon ? "Addon" : ""}</small></span>${on && adm ? `<button class="ibtn" data-act="hztm" data-d="up" data-k="${m.id}" aria-label="Nach vorn" ${i === 0 ? "disabled" : ""}>${ic("up", 16)}</button><button class="ibtn dn" data-act="hztm" data-d="down" data-k="${m.id}" aria-label="Nach hinten" ${i === vis.length - 1 ? "disabled" : ""}>${ic("up", 16)}</button>` : ""}</div>`; };
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Kacheln wählen</b><span>Startseite und Tablet · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:0 0 8px">Haken blendet die Kachel ein oder aus, die Pfeile ändern die Reihenfolge. Das Modul selbst bleibt eingeschaltet.</div>
+      ${vis.map(row).join("")}${all.filter((m) => T.hidden.includes(m.id)).map(row).join("")}
+      <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="hztreset">Reihenfolge zurücksetzen</button><button class="btn2 pri" data-act="hzback">${ic("check", 16)} Fertig</button></div></div>`;
+  }
+  _hzLook4(chip) {
+    const A = this._hzAnimCfg(), P = this.constructor.HZ_PRESETS, cur = (this._cfg.layout.start || {}).preset || "", qa = (this._cfg.layout.start || {}).qa === true, adm = this._admin();
+    const lv = [["aus", "Aus"], ["dezent", "Dezent"], ["voll", "Voll"]];
+    return `<div class="vrow"><span>Bewegung<small class="mut" style="display:block">Dezent: Warnpunkt pulsiert, Zahlen zählen weich nach, Ringe füllen sich. Voll: dazu Wolken, Regen, Schnee und Glanz in der Haus-Szene. „Bewegung reduzieren“ des Geräts gilt immer.</small></span><span class="gschs" style="flex-wrap:nowrap;flex:none">${lv.map(([k, t]) => chip("hzanim", k, t, A.anim === k)).join("")}</span></div>
+      <div class="vrow"><span>Bewegung im Tablet-Modus<small class="mut" style="display:block">Ab Werk aus, schont das Fire-Tablet.</small></span><span class="gschs" style="flex-wrap:nowrap;flex:none">${lv.map(([k, t]) => chip("hztanim", k, t, A.tanim === k)).join("")}</span></div>
+      <div class="gbtns" style="margin-top:6px"><button class="btn2" data-act="hztiles" ${adm ? "" : "disabled"}>${ic("layers", 16)} Kacheln wählen</button></div>
+      <div class="lsec" style="margin-top:12px">${ic("layers", 15)}Vorlagen</div>
+      <div class="hzpre">${Object.entries(P).map(([k, x]) => `<button class="hzpc ${cur === k ? "sel" : ""}" data-act="hzpreset" data-k="${k}" ${adm ? "" : "disabled"}>${this._gx(x.i, 34)}<b>${x.n}</b><small>${x.d}</small></button>`).join("")}</div>
+      ${this._hzUndo ? `<div class="gst">${ic("info", 15)}<span>Vorlage „${esc(this._hzUndoN || "")}“ übernommen.</span><button class="lnk" data-act="hzundo">Rückgängig</button></div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("bolt", 15)}Schnellaktionen</div>
+      <div class="vrow"><span>Schnellaktionen zeigen<small class="mut" style="display:block">Knöpfe mit festen Aktionen wie bei Tags & Karten (Abwesend, Warmwasser aufheizen, Wallbox, Melder geprüft …). Ab Werk aus. Langes Drücken auf eine Kachel zeigt die Aktionen des Moduls.</small></span><button class="sw ${qa ? "on" : ""}" data-act="hzqasw" aria-pressed="${qa}" aria-label="Schnellaktionen zeigen" ${adm ? "" : "disabled"}></button></div>
+      ${qa ? `<div class="gbtns"><button class="btn2" data-act="hzqaset" ${adm ? "" : "disabled"}>${ic("sliders", 16)} Aktionen wählen (${this._hzQa().length})</button></div>` : ""}`;
+  }
+  _hzAct4(a, b) {
+    const k = b.dataset.k;
+    if (a === "hzanim" || a === "hztanim") { this._hzSave({ [a === "hzanim" ? "anim" : "tanim"]: ["aus", "dezent", "voll"].includes(k) ? k : "dezent" }); return true; }
+    if (a === "hzpreset") { this._hzPreset(k); return true; }
+    if (a === "hzundo") { if (this._hzUndo) { this._cfg.layout.start = this._hzUndo; this._hzUndo = null; this._saveLayout(); this._render(); this._renderModal(); this._toast("Vorlage zurückgenommen"); } return true; }
+    if (a === "hztiles") { this._modal = { type: "hztiles" }; this._renderModal(); return true; }
+    if (a === "hztt") { const T = this._hzTiles(), h = T.hidden.includes(k) ? T.hidden.filter((x) => x !== k) : [...T.hidden, k]; this._hzSave({ tiles: { ...T, hidden: h } }); return true; }
+    if (a === "hztm") { const T = this._hzTiles(), ids = this._hzMods(true).map((m) => m.id).filter((x) => !T.hidden.includes(x)), i = ids.indexOf(k), j = i + (b.dataset.d === "up" ? -1 : 1); if (i < 0 || j < 0 || j >= ids.length) return true; [ids[i], ids[j]] = [ids[j], ids[i]]; this._hzSave({ tiles: { ...T, order: [...ids, ...T.hidden] } }); return true; }
+    if (a === "hztreset") { this._hzSave({ tiles: { order: [], hidden: this._hzTiles().hidden } }); return true; }
+    if (a === "hzqasw") { this._hzSave({ qa: !((this._cfg.layout.start || {}).qa === true) }); this._tgxLoad(true); return true; }
+    if (a === "hzqaset") { this._tgxLoad(true); this._modal = { type: "hzqaset" }; this._renderModal(); return true; }
+    if (a === "hzqat") { this._hzQaToggle(k); return true; }
+    if (a === "hzqa") { if (this._modal && this._modal.type === "hzqm") { this._modal = null; this._renderModal(); } this._hzQaRun(Number(k)); return true; }
+    if (a === "hzqago") { this._modal = null; this._renderModal(); this._hzQaDo(Number(k)); return true; }
+    return false;
+  }
+  /* Langes Drücken auf eine Kachel: Schnellaktionen des Moduls (nur wenn es welche gibt) */
+  _hzLpBind() {
+    if (this._hzLpOn || !this.shadowRoot) return; this._hzLpOn = true;
+    const sr = this.shadowRoot, stop = () => { if (this._hzLpT) { clearTimeout(this._hzLpT); this._hzLpT = null; } };
+    sr.addEventListener("pointerdown", (ev) => {
+      const t = ev.target.closest && ev.target.closest(".hzk[data-k]"); if (!t || !this._hzQaOn()) return; stop();
+      const k = t.dataset.k, G = { fh: ["fh", "lf", "pe"], ww: ["ww"], ev: ["ev"], sf: ["sf"], mu: ["mu"], li: ["li"] }[k] || [];
+      if (!this._hzQa().some((q) => G.includes(this._hzQaGroup(q)))) return;
+      this._hzLpT = setTimeout(() => { this._hzLpT = null; this._hzLP = Date.now(); this._modal = { type: "hzqm", k }; this._renderModal(); }, 600);
+    });
+    ["pointerup", "pointercancel", "pointerleave", "pointermove"].forEach((t) => sr.addEventListener(t, (ev) => { if (t !== "pointermove" || (ev.movementX * ev.movementX + ev.movementY * ev.movementY) > 16) stop(); }, true));
   }
   /* ================= Tablet-Modus (3.0.2.12) =================
      Eine eigene Oberfläche für Wandtablets: große Bedienflächen, untere Knopfleiste, Ruhemodus, PIN für die Einstellungen.
@@ -9993,7 +10818,7 @@ class FensterHeizungPanel extends HTMLElement {
     this.addEventListener("click", (e) => { if (this._tmSleep || Date.now() < (this._tmGuard || 0)) { e.stopPropagation(); e.preventDefault(); } }, true);
   }
   _tmWake() { this._tmSleep = false; this._tmLast = Date.now(); this._tmHomed = false; this._render(); }
-  _tmWarnKey() { try { return this._hzHints().filter((h) => h.c === "bad").map((h) => h.t).join("|"); } catch (_) { return ""; } }
+  _tmWarnKey() { try { return this._hzHints().filter((h) => h.c === "bad" && !h.soft).map((h) => h.t).join("|"); } catch (_) { return ""; } }
   _tmTick() {
     if (!this._hass || !this._tmOn()) return;
     const sr = this.shadowRoot, c = this._tmC(), d = new Date(), idle = Date.now() - (this._tmLast || Date.now());
@@ -10035,6 +10860,7 @@ class FensterHeizungPanel extends HTMLElement {
   _tmStart() {
     const hints = this._hzHints(), mods = this._mdList().filter((x) => x.id !== "st"), bubs = this._labOn("sb") ? this._hzBubs().replace(/data-act="hzbub"/g, 'data-act="tmbub"') : "";
     const rows = hints.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join("");
+    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._hzTmAmp(vis)}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
     return `${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
   }
   _tmRoom(r) {
@@ -10053,13 +10879,14 @@ class FensterHeizungPanel extends HTMLElement {
   _tmSleepHtml() {
     const facts = ["wetter", "alarm", "personen", "muell"].map((id) => this._hzBubDef(id)).filter((x) => x && x.i).map((x) => `<div>${ic(x.i, 26)}<span>${esc(x.b)}${x.s ? ` · ${esc(x.s)}` : ""}</span></div>`).join("");
     const ef = this._efxSleep ? this._efxSleep() : "";
-    return `<div class="tmrest${ef ? " efst" : ""}">${ef}<div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
+    const sc = !ef && this._hzNew() ? this._hzTmSleep() : "";
+    return `<div class="tmrest${ef ? " efst" : ""}${sc ? " hzst" : ""}">${ef}${sc}<div class="tmrc ${this._spnEarlyClock()}" data-tmclk>${new Date().toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</div><div class="tmrd" data-tmdate>${new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}</div><div class="tmrf">${facts}</div><div class="tmrw">Antippen zum Aufwecken</div></div>`;
   }
   _tmRender() {
     const sr = this.shadowRoot, v = this._mdList().some((m) => m.id === this._tmV()) || this._tmV() === "st" ? this._tmV() : "st", m = this._mdList().find((x) => x.id === v), c = this._tmC(), me = this._tmMe();
     this._w = this.clientWidth; this._tmView = v;
     if (this._tmSleep) { sr.getElementById("main").innerHTML = this._tmSleepHtml(); return; }
-    const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? this._hzHints().length : 0;
+    const sc = { auto: 1, large: 1.15, xl: 1.3 }[c.size] || 1, title = v === "st" ? this._hzGreet().split(" · ")[0] : esc(m ? m.name : ""), hints = v === "st" ? (this._hzNew() ? this._hzVis(this._hzHints()) : this._hzHints()).length : 0;
     const sub = v === "st" ? (hints ? `${hints} ${hints === 1 ? "Hinweis" : "Hinweise"}` : "Alles in Ordnung") : esc(m ? m.tag || "" : "");
     const x = sr.querySelector(".tmbody"), keep = x && this._tmVOld === v ? x.scrollTop : 0; this._tmVOld = v;
     sr.getElementById("main").innerHTML = `<div class="tmw"><header class="tmh"><img class="blogo" src="${LOGO_URL}" alt="" draggable="false"><div class="tmht"><b>${title}</b><span>${sub}</span></div>
