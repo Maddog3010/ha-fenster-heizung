@@ -15,7 +15,7 @@
       .finally(() => { this._spBusy = false; if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } });
   }
   _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen); }
-  _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", ...(d.cfg || {}) } }; }
+  _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", look: "new", ...(d.cfg || {}) } }; }
   _spSave(cfg) {
     if (!(this._spD && this._spD.d && this._spD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._sp(); this._spD = { d: { ...s, cfg }, ts: Date.now() };
@@ -26,8 +26,9 @@
   _spAct(a, b) {
     const k = b.dataset.k, c = { ...this._sp().cfg };
     if (a === "spxopen") { this._spLoad(true); this._modal = { type: "spset" }; this._renderModal(); return; }
-    if (a === "spxday") { this._spDay = k; this._render(); return; }
-    if (a === "spxsrc") c.src = k; else if (a === "spxmode") c.mode = k; else if (a === "spxm3") c.act = k || ""; else if (a === "spxgoig") { this._modal = null; this._renderModal(); this._sto = { q: "forecast", c: "" }; this._igOpen = true; this._render(); return; } else return;
+    if (a === "spxday") { this._spDay = k; this._spH = null; this._render(); return; }
+    if (a === "spxh") { this._spH = this._spH === Number(k) ? null : Number(k); this._render(); return; }
+    if (a === "spxsrc") c.src = k; else if (a === "spxlook") c.look = k === "classic" ? "classic" : "new"; else if (a === "spxmode") c.mode = k; else if (a === "spxm3") c.act = k || ""; else if (a === "spxgoig") { this._modal = null; this._renderModal(); this._sto = { q: "forecast", c: "" }; this._igOpen = true; this._render(); return; } else return;
     this._spSave(c);
   }
   _spChange(t) {
@@ -40,7 +41,7 @@
     const H = this._hass, S = H.states, adm = this._admin(), C = this._sp().cfg, ids = Object.keys(S);
     const nm = (id) => esc((S[id].attributes || {}).friendly_name || id), un = (id) => (S[id].attributes || {}).unit_of_measurement || "";
     const eng = ids.filter((k) => k.startsWith("sensor.") && /^(Wh|kWh|MWh)$/.test(un(k)) && !/prognose|forecast|estimated|energy_production_(today|tomorrow)/i.test(k));
-    const fc = ids.filter((k) => k.startsWith("sensor.") && S[k].attributes && S[k].attributes.wh_period);
+    const fc = ids.filter((k) => k.startsWith("sensor.") && S[k].attributes && (S[k].attributes.wh_period || S[k].attributes.detailedForecast || S[k].attributes.detailedHourly));
     const m3 = (() => { try { const e = this._enState().ent; return e.pve || ""; } catch (x) { return ""; } })();
     const opt = (list, cur, auto) => `<option value="" ${cur ? "" : "selected"}>${esc(auto)}</option>${list.map((id) => `<option value="${esc(id)}" ${cur === id ? "selected" : ""}>${nm(id)} · ${esc(S[id].state)} ${esc(un(id))}</option>`).join("")}`;
     const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" ${adm ? "" : "disabled"}>${t}</button>`;
@@ -49,20 +50,25 @@
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Solar-Prognose</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("sun", 15)}Prognose-Quelle</div>
-      <div class="gschips">${chip("spxsrc", "forecast", "Forecast.Solar", C.src === "forecast")}${chip("spxsrc", "sensor", "Eigener Sensor", C.src === "sensor")}</div>
-      ${C.src === "forecast" ? `<div class="gst">${ic("info", 15)}<span>${fsN.length ? `Gefunden: ${fsN.map(esc).join(", ")}. Mehrere Anlagen werden addiert.` : `Die Integration Forecast.Solar ist nicht eingerichtet oder liefert gerade nichts. Sie lässt sich im <button class="lnk" data-act="spxgoig">Store</button> finden.`}</span></div>`
-      : sel("chart", "Prognose-Sensor", "spxfc", opt(fc, C.fc_sensor, fc.length ? "Bitte wählen" : "Keiner gefunden"), !fc.length) + `<div class="mut sm">Der Sensor braucht das Attribut <code>wh_period</code> (Wh je Stunde), wie es Forecast.Solar liefert.</div>`}
+      <div class="gschips">${chip("spxsrc", "forecast", "Automatisch", C.src === "forecast")}${chip("spxsrc", "sensor", "Eigener Sensor", C.src === "sensor")}</div>
+      ${C.src === "forecast" ? `<div class="gst">${ic("info", 15)}<span>${fsN.length ? `Gefunden: ${fsN.map(esc).join(", ")}. Mehrere Anlagen werden addiert.` : `Keine Solar-Prognose gefunden. Unterstützt werden Forecast.Solar, Solcast und Open-Meteo Solar Forecast – Forecast.Solar lässt sich im <button class="lnk" data-act="spxgoig">Store</button> finden.`}</span></div>
+      ${this._spSrcInfo()}`
+      : sel("chart", "Prognose-Sensor", "spxfc", opt(fc, C.fc_sensor, fc.length ? "Bitte wählen" : "Keiner gefunden"), !fc.length) + `<div class="mut sm">Der Sensor braucht das Attribut <code>wh_period</code> (Wh je Stunde, wie Forecast.Solar) oder <code>detailedForecast</code> / <code>detailedHourly</code> (kW je Zeitraum, wie Solcast).</div>${this._spSrcInfo()}`}
       <div class="lsec" style="margin-top:12px">${ic("energy", 15)}Tatsächlicher Ertrag</div>
       ${sel("zap", "Ertragssensor", "spxact", opt(eng, C.act, eng.length ? "Ohne Vergleich" : "Keine Energie-Sensoren"), !eng.length)}
       ${m3 && m3 !== C.act && S[m3] ? `<div class="gst">${ic("info", 15)}<span>Modul 3 nutzt <b>${nm(m3)}</b>. <button class="lnk" data-act="spxm3" data-k="${esc(m3)}">Denselben Sensor verwenden</button></span></div>` : ""}
       <div class="mut sm" style="margin:8px 0 4px">Was zählt der Sensor?</div>
       <div class="gschips">${chip("spxmode", "day", "Nur den heutigen Tag", C.mode === "day")}${chip("spxmode", "total", "Gesamtzähler (steigt immer)", C.mode === "total")}</div>
       <div class="mut sm" style="margin-top:6px">Die Prognose des Tages wird morgens festgehalten. So bleibt der Vergleich über die Tage ehrlich, auch wenn sich die Vorhersage tagsüber ändert.</div>
+      <div class="lsec" style="margin-top:12px">${ic("image", 15)}Ansicht</div>
+      <div class="gschips">${chip("spxlook", "new", "Neue Optik", C.look !== "classic")}${chip("spxlook", "classic", "Wie bisher", C.look === "classic")}</div>
+      <div class="mut sm" style="margin-top:6px">Neue Optik: Sonnenbogen im Banner, Kacheln mit Bildern, Prognose und Ertrag in einer Kurve. „Wie bisher“ zeigt die alte Seite.</div>
       ${this._labFields("sp")}
     </div>`;
   }
   _spPage() {
     this._spLoad();
+    if (this._spNew()) return this._spPage2();  /* Neue Optik (v0.9 Build 3); „Ansicht wie bisher“ zeigt die Seite unten */
     const S = this._sp(), adm = this._admin(), DAYS = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], f1 = (v) => num(v, 1);
     const head = this._vorabBox("Die Prognose kommt aus Forecast.Solar oder einem eigenen Sensor, der Ertrag aus einem Energie-Sensor deiner Anlage.");
     if (!this._spD) return head + `<div class="card empty">${ic("sun", 36)}<div style="margin-top:8px">Lade Prognose …</div></div>`;

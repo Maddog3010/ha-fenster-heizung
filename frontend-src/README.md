@@ -37,5 +37,6 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 12x-messwerk | Messwerk: alle Sensoren, genutzt in, Prüfung |
 | 12y-sensorsuche | Sensorsuche S1 Vorschläge, S2 Nach Raum, S4 Filter, Zuordnen im Messwerk |
 | 12h-fluss, 12h2-fluss-optik, 12h3-fluss-strom | Modul 19 Hausfluss: Brett, Leuchtlinien, Herkunfts-Ring, Anordnen (v0.7) · Lichtband-Banner, Themen, Handy-Ansichten, Tablet-Wand (v0.8) · Strom-Reiter, Vorlagen, Gruppen-Kachel, Tageswerte (v0.9) |
+| 12s-solar | Modul 16 Neue Optik: Sonnenbogen-Banner, Kacheln 2.0, Prognose und Ertrag je Stunde, beste Zeit mit Geräten, Verlauf |
 | 13-modul2-warmwasser-modul3-energie | Modul-Seiten, Modul 2 und Modul 3 |
 | 14-registrierung | Registrierung der Komponente |

@@ -2,6 +2,29 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b7] - 2026-11-12
+
+### Neu
+- **Modul 16 · Neue Optik Stufe 1 (v0.9 Build 3)** nach Konzept_Modul16_Neue-Optik:
+  - **Sonnenbogen-Banner:** Der Bogen spannt sich über die Sonnenstunden, die Sonne steht an der aktuellen Stelle. Darunter die Prognose als Fläche (gestrichelt), gefüllt der heute schon erzeugte Teil. Unter der großen Zahl „bisher … kWh“ mit **„vor Plan“ / „hinter Plan“** – verglichen mit dem, was bis jetzt laut Prognose zu erwarten war, nicht mit dem ganzen Tag. Chips: noch zu erwarten, morgen, Treffsicherheit. Nach Sonnenuntergang: Mond und Sterne, die Kurve und der Wert für morgen.
+  - **Kacheln 2.0** mit HD-Bildern: Heute erwartet (Prognose von heute früh), Heute bisher (Ring, vor/hinter Plan), Morgen (sonniger/ähnlich/trüber), **Treffsicherheit** (100 % minus mittlere Abweichung je Tag, mit Ring), Noch zu erwarten, Beste Zeit.
+  - **Prognose und Ertrag in einer Kurve:** Prognose je Stunde gestrichelt, der tatsächliche Ertrag je Stunde gefüllt (aus der Langzeitstatistik des Ertragssensors), Markierung „jetzt“. Die **beste Zeit** grün hinterlegt mit den Geräten, die sich lohnen (Waschmaschine, Trockner, Spülmaschine aus Modul 4, das Auto aus Modul 8, der Heizstab aus Modul 2) und Knöpfen ins jeweilige Modul. Mit Stundenpreis-Sensor zusätzlich das **Preisband**. Antippen einer Stunde zeigt Prognose, Ertrag, Abweichung und Strompreis.
+  - **Prognose gegen tatsächlich:** jeder Tag mit Ertrag in kWh und Abweichung in Prozent (grün ±10 %, gelb ±20 %, sonst rot).
+  - Farben wie in Modul 3 und 19: Prognose Bernstein, Ertrag Solar-Gelb. Handy: flaches Banner, Kacheln 2 × 2, eigene Kurve. Hell: weiße Kacheln ohne Licht hinter dem Bild.
+  - Einstellungen → Modul 16 → **Ansicht: „Wie bisher“** zeigt die alte Seite.
+- **Modul 16 · Stufe 2 Technik (v0.9 Build 4):**
+  - **Prognose-Quelle „Automatisch“:** über die Energie-Schnittstelle von Home Assistant – dieselbe, die das Energie-Dashboard nutzt. Damit funktionieren neben **Forecast.Solar** auch **Solcast** und **Open-Meteo Solar Forecast** (HACS) und jede andere Integration mit Solar-Prognose; mehrere Anlagen werden addiert. Klappt das nicht, greift wie bisher der Dienst von Forecast.Solar.
+  - **Eigener Sensor** versteht jetzt auch das Solcast-Format (`detailedForecast` / `detailedHourly`, kW je Zeitraum) zusätzlich zu `wh_period`.
+  - **Ertrag je Stunde** liest das Backend aus der Langzeitstatistik des Ertragssensors (heute live, abgeschlossene Tage werden gespeichert) – die Kurve braucht dafür keinen Browser-Abruf mehr.
+  - **Messlatte:** Ab 4 Uhr wird die ganze Stundenkurve der Prognose festgehalten; „vor / hinter Plan“ rechnet gegen diese Kurve.
+  - **Speicher mit Schema-Version:** 400 Tage Tageswerte, 30 Tage Stundenkurven; der bisherige Verlauf wird beim ersten Start übernommen.
+  - **Abruf nur im Hintergrund**, höchstens alle 30 Minuten (ohne Daten alle 5 Minuten ein neuer Versuch) – Forecast.Solar erlaubt kostenlos nur wenige Abrufe pro Stunde. Die Seite liest den Zwischenspeicher.
+  - In den Einstellungen sichtbar: woher die Prognose kommt, wann sie zuletzt abgerufen wurde, ob der Ertrag je Stunde aus der Statistik kommt und wie viele Tage gespeichert sind.
+
+### Behoben
+- **Modul 1 · Grundriss erschien nicht, obwohl er in Modul 11 gezeichnet ist.** Modul 1 hat den Grundriss nur ein einziges Mal geladen. War Home Assistant dabei noch nicht ganz gestartet (Modul 11 startet spät) – typisch auf dem Wand-Tablet oder in der App, die nach einem Neustart offen bleibt –, blieb die Ansicht bei „Noch kein Grundriss“, bis der Browser neu geladen wurde. Ebenso, wenn der Grundriss erst danach (auch auf einem anderen Gerät) gezeichnet wurde. Jetzt wird nach einem Fehler nach 10 Sekunden erneut geladen und sonst jede Minute im Hintergrund aktualisiert. Solange Modul 11 nicht antwortet, steht „Grundriss gerade nicht erreichbar“ statt „Noch kein Grundriss“.
+- Besteht der Grundriss in Modul 11 nur aus **Wänden ohne Räume**, erklärt Modul 1 jetzt, dass Räume mit dem Werkzeug „Raum“ eingezeichnet werden müssen (mit Knopf zum Baukasten) – vorher hieß es auch hier „Noch kein Grundriss“.
+
 ## [2026.11.3b6] - 2026-11-12
 
 ### Neu

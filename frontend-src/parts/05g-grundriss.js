@@ -3,12 +3,18 @@
      in Modul 1 und 11 genutzt). Räume als Fläche nach Temperaturskala, Fenster als hellblaue Striche (offen = aufgeklappt),
      Heizkörper als Balken (orange = heizt), Hinweis-Plaketten (W3) für Batterie, offline, Frost, Schimmel, Raumsensor.
      Zuordnung Grundriss-Raum → Modul-1-Raum automatisch über den Namen, sonst von Hand (layout.gmap = { Plan-ID: Raum-ID }). */
+  /* Grundriss aus Modul 11 laden. Bisher nur ein einziges Mal: War Home Assistant beim ersten Abruf noch nicht fertig gestartet
+     (Modul 11 startet spät) oder wurde der Grundriss danach – auch auf einem anderen Gerät – gezeichnet, blieb Modul 1 bei
+     „Noch kein Grundriss“, bis der Browser neu geladen wurde. Jetzt: nach einem Fehler nach 10 s erneut, sonst jede Minute im Hintergrund. */
   _gpPlan() {
-    if (!this._sfxD && !this._gpBusy && this._hass) {
+    const D = this._sfxD, err = !!(D && D.d && D.d.error), age = D ? Date.now() - D.ts : Infinity;
+    if (this._hass && !this._gpBusy && !this._sfxBusy && (!D || (err && age > 10000) || age > 60000)) {
       this._gpBusy = true;
-      this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { error: true }, ts: Date.now() }; }).finally(() => { this._gpBusy = false; this._render(); });
+      this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { ...((this._sfxD && !this._sfxD.d.error && this._sfxD.d) || {}), error: true }, ts: Date.now() }; })
+        .finally(() => { this._gpBusy = false; if (this._mdActive() === "fh" && this._view && this._view() === "plan") this._render(); });
     }
-    return this._sfxD ? this._sfx().cfg.plan : null;
+    if (!D) return null;
+    return D.d && D.d.cfg ? this._sfx().cfg.plan : err ? { error: true } : this._sfx().cfg.plan;
   }
   _gpNorm(s) { return String(s || "").toLowerCase().replace(/zimmer|raum|[^a-zäöüß0-9]/g, ""); }
   /* Plan-Raum → Modul-1-Raum */
@@ -22,7 +28,12 @@
   _gpView(rooms) {
     const P = this._gpPlan(), adm = this._admin();
     if (!P) return `<div class="card gpc"><div class="mut sm">Grundriss wird geladen …</div></div>`;
+    if (P.error) return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Grundriss gerade nicht erreichbar</b><span>Modul 11 antwortet noch nicht – meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.</span></div>`;
     const any = (P.items || []).some((i) => i.t === "r");
+    if (!any && (P.items || []).some((i) => i.t === "w")) {
+      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Im Grundriss sind noch keine Räume</b><span>Der Grundriss aus Modul 11 besteht bisher nur aus Wänden. Modul 1 färbt <b>Räume</b>: Zeichne sie im Baukasten mit dem Werkzeug „Raum“ über die Wände und gib ihnen einen Namen – dann erscheinen sie hier mit Temperatur.</span>
+        ${adm && this._mdList().some((m) => m.id === "sf") ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Räume einzeichnen</button>` : ""}</div>`;
+    }
     if (!any) {
       const sf = this._mdList().some((m) => m.id === "sf");
       return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Noch kein Grundriss</b><span>Den Grundriss zeichnest du einmal mit dem Baukasten aus Modul 11 (Rauch- &amp; Sicherheitsmelder): Räume, Wände, Türen und Fenster. Modul 1 färbt die Räume dann nach Temperatur.</span>
