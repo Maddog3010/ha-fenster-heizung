@@ -18,6 +18,7 @@ from homeassistant.helpers.event import async_track_time_interval
 from .const import CONF_AIR_EVERY, CONF_AIR_HINT, CONF_HUMIDITY, CONF_ROOM_TEMP, CONF_WEATHER_ADJ, RT_USES, CONF_WINDOWS, DEFAULT_AIR_EVERY, DOMAIN, MODES, SIGNAL_UPDATE
 
 from .solar import SIGNAL_SOLAR
+from .wetter import KEYS as WX_KEYS, NAMES as WX_NAMES, SIGNAL_WX
 
 SP_OWNER = "sp_sensor_owner"
 SP_KEYS = ("sp_today", "sp_tomorrow", "sp_rest", "sp_corr", "sp_best")
@@ -37,12 +38,72 @@ async def async_setup_entry(
     extra: list[SensorEntity] = []
     if store.get(SP_OWNER) in (None, entry.entry_id):  # E6/F7: Solar-Werte nur einmal, am ersten Raum
         store[SP_OWNER] = entry.entry_id
-        extra = [SolarSensor(k) for k in SP_KEYS]
+        extra = [SolarSensor(k) for k in SP_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS]
     async_add_entities(
         [PausedMinutesSensor(entry, key, scope) for key, scope in SCOPES.items()]
         + [PlanTargetSensor(entry), ModeSensor(entry)]
         + extra
     )
+
+
+class WetterSensor(SensorEntity):
+    """Modul 9 (E2): Warnstufe 0–4 gesamt und je Warnart, für eigene Automationen. Eigenes Gerät „Wetter & Warnungen“."""
+
+    _attr_has_entity_name = True
+    _attr_should_poll = False
+    _attr_icon = "mdi:weather-lightning-rainy"
+
+    def __init__(self, key: str) -> None:
+        self._key = key
+        self._attr_translation_key = key
+        self._attr_unique_id = f"{DOMAIN}_wetter_{key[3:]}"
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, "wetter_warnungen")},
+            "name": "Strom & Wärme · Wetter & Warnungen",
+            "manufacturer": "Strom & Wärme",
+            "model": "Modul 9",
+            "entry_type": "service",
+        }
+
+    def _m(self):
+        m = self.hass.data.get(DOMAIN, {}).get("wetter") if self.hass else None
+        return m if m is not None and m.active() else None
+
+    @property
+    def available(self) -> bool:
+        return self._m() is not None
+
+    @property
+    def native_value(self):
+        m = self._m()
+        if m is None:
+            return None
+        if self._key == "wx_level":
+            return m.level()
+        s = m.st.get(self._key[3:]) or {}
+        return s.get("lv", 0) if s.get("a") else 0
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        m = self._m()
+        if m is None:
+            return {}
+        try:
+            if self._key == "wx_level":
+                return {"warnungen": [{"art": x["art"], "titel": x["titel"], "stufe": x["stufe"], "quelle": x["quelle"], "von": x.get("von") or None, "bis": x.get("bis") or None, "vorab": x["vorab"]} for x in m.warnings()][:12],
+                        "quittiert": bool(m.ack) or bool(m.ack_off), "aktionen_ausgesetzt": m.pause_until > 0}
+            k = self._key[3:]
+            s = m.st.get(k) or {}
+            return {"name": WX_NAMES.get(k), "seit": s.get("since") or None, "wert": s.get("v"), "vorwarnung_ab": s.get("ahead") or None, "vorwarnung_stufe": s.get("ahead_lv") or 0, **({"art": "Glätte" if s.get("kind") == "ice" else "Frost"} if k == "frost" and s.get("a") else {})}
+        except Exception:  # noqa: BLE001 - Attribute dürfen den Sensor nicht abstürzen lassen
+            return {}
+
+    async def async_added_to_hass(self) -> None:
+        self.async_on_remove(async_dispatcher_connect(self.hass, SIGNAL_WX, self._refresh))
+
+    @callback
+    def _refresh(self, *_a) -> None:
+        self.async_write_ha_state()
 
 
 class SolarSensor(SensorEntity):

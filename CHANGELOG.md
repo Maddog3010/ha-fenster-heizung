@@ -2,6 +2,53 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b11] - 2026-11-12
+
+### Neu
+- **Modul 9 · Wetter & Warnungen v0.6 (Stufe 1 der Fertigstellung)** nach Konzept_Modul9_Wetter-Warnungen:
+  - **Alle amtlichen Warnungen:** Beim Deutschen Wetterdienst werden jetzt alle gleichzeitigen Warnungen gelesen (bisher nur die erste), jeweils mit Stufe, Beginn, Ende, Beschreibung, Hinweis und Gebiet. NINA und MeteoAlarm mit Gültigkeit, Absender und Gebiet; Hochwasser- und Bevölkerungsschutz-Meldungen werden erkannt. Abgelaufene Warnungen fallen weg, doppelte (z. B. DWD und NINA mit derselben Warnung) werden zusammengefasst. Eigene Karte „Amtliche Warnungen“ im Modul.
+  - **Vorabinformationen des DWD** werden nicht mehr ausgefiltert, sondern als „Vorab“ gezeigt und wie eine Vorwarnung gemeldet (abschaltbar). Die DWD-Vorabwarnstufe wird jetzt auch mit deutschen Entitätsnamen („…_vorwarnstufe“) sicher erkannt. Ist eine Warn-Entität gewählt, kommen die anderen Entitäten derselben Integration automatisch dazu.
+  - **Stufen 1–4 wie beim DWD** für eigene Warnungen: Sturm mit zwei Grenzen (Stufe 1 ab 60, Stufe 3 ab 90 km/h, dazwischen Stufe 2, darüber + 30 km/h Stufe 4), Gewitter Stufe 2, Hagel Stufe 3, Starkregen Stufe 1–3, Hitze Stufe 1–2. Eine Stufe steigt sofort (Sturm nach zwei Messungen) und sinkt erst nach zehn Minuten unter der Grenze. Meldung, wenn eine Warnung eine Stufe höher geht.
+  - **Hagel ist eine eigene Warnung** (bisher zusammen mit Gewitter), damit Aktionen anders sein können.
+  - **Starkregen in mm pro Stunde** (Stufe 1 ab 10, Stufe 3 ab 25 mm/h, einstellbar) aus einem optionalen Regenmesser oder der Niederschlagsmenge der Vorhersage. Ohne Menge zählt „Starkregen“ der Wetter-Entität wie bisher.
+  - **Frost & Glätte:** Glätte bis 1 °C (einstellbar) bei Nässe – Regen, Schnee, Nebel oder ab 90 % Luftfeuchte.
+  - **Wetterquelle wird geprüft:** Ist die Wetter-Entität nicht verfügbar oder seit 90 Minuten ohne neuen Wert, zeigt das Modul einen Hinweis mit Weg zur Wetterquelle und meldet es einmal (abschaltbar).
+  - **Vorhersage 48 Stunden** statt 24 im Zwischenspeicher, mit Niederschlag und Luftfeuchte. Die Karte „Nächste Stunden“ bleibt bei 12 Stunden.
+  - **Einheitliches Warnmodell** (Art, Quelle, Stufe, von, bis, Titel, Text, Vorab) im Backend, `wx_get` liefert zusätzlich `warnings`, `state.officials` und `state.stale`. Grundlage für die neue Optik in v0.7.
+  - Bis zu 16 Aktionen (bisher 12), Verlauf mit 60 Einträgen (bisher 40).
+- **Modul 9 · Neue Optik Stufe 1 (v0.7):**
+  - **Wetter-Szene als Banner:** dasselbe Haus wie auf der Startseite und in Modul 1, Himmel nach Tageszeit und Wetter. Die Warnung ist im Bild zu sehen: Baum neigt sich und Windstreifen bei Sturm, Blitz bei Gewitter, Hagelkörner, Schnee und Eiszapfen bei Frost und Glätte, große Sonne und Flimmern bei Hitze, dunkler Himmel ab Stufe 3. Rollläden sind unten und die Markise eingefahren, wenn eine Aktion das getan hat. Bewegung folgt der Einstellung „Animationen“ (Aus · Dezent · Voll).
+  - **Stufenfarben wie beim DWD** (1 gelb, 2 orange, 3 rot, 4 violett) als Streifen und Stufen-Pille im Banner. Die höchste Warnung bestimmt Farbe und Text; ist eine amtliche Warnung höher als die eigene Messung, steht sie vorne.
+  - **Warnkacheln 2.0** statt der Liste „Warnstufen“: eine ruhige Kachel je Warnung mit Symbol, Zustandspunkt, Wert groß, Bogen gegen die Grenze, Stufe und Grenzen.
+  - **Aufteilung:** Banner, Eigene Warnungen, daneben Amtliche Warnungen und Nächste Stunden, darunter Aktionen und Protokoll. Am Handy steht die Szene oben, der Text darunter, Kacheln im 2er-Raster.
+- **Modul 9 · Zeitleiste und Aktionen 2.0 (v0.8):**
+  - **48-Stunden-Zeitleiste:** eine Zeile je Warnart, Bänder in Stufenfarbe, amtliche Warnungen oben (Vorabinformationen gestreift), „Jetzt“-Linie, der nächste Tag hinterlegt. Umschalter „Zeitleiste | Wind“, die bisherige Windkurve mit Sturmgrenze bleibt unter „Wind“.
+  - **Aktionen als Ablaufkarten** („Was passiert“): Auslöser → Gerät → Zustand (erledigt, zurück um …, wartet mit Grund, ausgesetzt, nicht gefahren), darunter die Bedingungen.
+  - **Aktions-Planer:** je Aktion **ab Stufe** (1–4), **nur wenn** (immer, abwesend, jemand zu Hause, tagsüber, nachts) und **Verzögerung** (0–60 Min.). Aktionen laufen in der Reihenfolge der Liste (nach oben schieben) und warten, bis Stufe, Verzögerung und Bedingung passen. Steigt eine Warnung, laufen Aktionen der neuen Stufe nach.
+  - **Aussperrschutz:** Für Rollläden kann ein Tür- oder Fensterkontakt gewählt werden. Ist er offen, fährt der Rollladen nicht zu, es kommt eine Meldung, und er fährt, sobald zu ist.
+  - **Verstanden, Alles schließen, Aussetzen** als Knöpfe unter dem Banner: Quittieren stoppt Wiederholungen bis zur nächsten Stufe; „Alles schließen“ schließt alle Rollläden und Markisen aus den Aktionen sofort (mit Aussperrschutz); Aktionen lassen sich für 2 Stunden aussetzen.
+  - **Knöpfe in der Handy-Meldung** (Home-Assistant-App): „Verstanden“, „Alles schließen“, „Aktionen 2 Std. aussetzen“. Optional **kritische Mitteilung ab Stufe 3** (kommt auch bei „Nicht stören“).
+  - **Fenster-Erinnerung 2.0:** wiederholt sich alle 15 Minuten, bis das Fenster zu ist oder quittiert wurde (abschaltbar).
+  - **Einstellungen → Modul 9 mit Reitern** Warnungen · Aktionen · Meldungen.
+  - Neue WebSocket-Befehle `wx_ack`, `wx_pause` und `wx_close`; `wx_get` liefert zusätzlich `tl` (Zeitleiste) sowie `state.pause`, `state.acked` und den Zustand jeder Aktion.
+- **Modul 9 · Erweiterungen (v0.9, jetzt Vorabversion):**
+  - **Vorsorge** als eigene Karte mit Knopf („was du jetzt tun kannst“), blickt 3–24 Stunden voraus:
+    - **Hausakku voll halten** ab Unwetter Stufe 3, solange der Akku unter 95 % ist (Ladestand aus Haus › Energiequellen); optional ein Skript, Schalter oder Knopf, der Netzladen startet, auf Wunsch automatisch einmal je Unwetter.
+    - **Auto vorladen** (Modul 8): ist das Auto unter dem eingestellten Ladestand (Standard 50 %), startet „Jetzt laden“ den Schnellstart bis zum Ziel; auf Wunsch automatisch, wenn angesteckt.
+    - **Auto unterstellen** bei Hagel, **Hitzeschutz** (tagsüber gewählte Rollläden schließen, abends lüften, sobald es draußen unter 24 °C ist) und **Frost-Hinweis** (Außenwasserhahn, Leitungen, Pflanzen, Scheibe).
+  - **Alarm auf dem Wandtablet:** ab der eingestellten Stufe (Standard 3) weckt eine Warnung das Tablet mit „Warnungen wecken auf“ (auch über Fully/Bildschirm-Schalter) und zeigt eine Vollbild-Karte mit Szene, Stufe, erledigten und offenen Punkten sowie „Verstanden“ und „Alles schließen“.
+  - **Startseite:** Hinweise zeigen eigene Warnungen mit Stufe, jede amtliche Warnung einzeln (aktuell als Warnung, „Bald“ und „Vorab“ als Hinweis) und offene Vorsorge-Punkte; die Wetter-Kachel nennt die Stufe. Doppeltes „Amtliche Warnung: Amtliche Warnung …“ behoben.
+  - **Sensoren für Automationen:** neues Gerät „Strom & Wärme · Wetter & Warnungen“ mit **Warnstufe** (0–4, alle Warnungen als Attribut) und je einer Stufe für Sturm, Gewitter, Hagel, Starkregen, Frost & Glätte und Hitze.
+  - **Ereignis `fenster_heizung_wetter_warnung`** bei Beginn, Stufenwechsel, Ende, amtlicher Warnung, Quittung und Vorsorge (Felder `typ`, `art`, `name`, `stufe`, `quelle` …).
+  - **Verlauf statt Protokoll:** 90 Tage mit Filter (Alle, Warnungen, Aktionen, Fenster & Meldungen) und „Mehr anzeigen“.
+  - Neuer WebSocket-Befehl `wx_vor`; `wx_get` liefert zusätzlich `vor` und `level`.
+
+### Geändert
+- **Einmalige Übernahme alter Einstellungen** von Modul 9: Hagel wird so eingeschaltet wie bisher Gewitter, Aktionen und Fenster-Erinnerung für Gewitter gelten auch für Hagel, Sturm Stufe 3 = bisherige Grenze + 30 km/h. Der Stand davor wird vorher automatisch gesichert (Einstellungen → System → Sichern & Wiederherstellen).
+
+### Technik
+- 29 neue Tests für Modul 9 (`tests/test_wetter.py`): Stufen, Hysterese, Glätte, Starkregen, DWD mit mehreren Warnungen und Vorabinformation, NINA, MeteoAlarm, Zusammenfassen, Übernahme alter Einstellungen, veraltete Quelle und der Ablauf im Manager.
+
 ## [2026.11.3b10] - 2026-11-12
 
 ### Neu

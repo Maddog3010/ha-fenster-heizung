@@ -48,6 +48,7 @@
     sr.querySelectorAll("[data-tmdate]").forEach((e) => { e.textContent = d.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }); });
     const mo = c.motion && this._hass.states[c.motion] ? this._hass.states[c.motion].state : "";
     const moved = mo === "on" && this._tmMo !== "on"; this._tmMo = mo;
+    if (c.wake_warn && this._wxAlarmTick && this._pollN % 5 === 0) this._wxAlarmTick();  /* Modul 9: Unwetter-Alarm ab eingestellter Stufe */
     const wk = c.wake_warn ? this._tmWarnKey() : "", newWarn = wk && wk !== this._tmWk; this._tmWk = wk;
     if (this._tmSleep) { if (moved || newWarn) this._tmWake(); return; }
     if (newWarn && !this._modal) { this._tmView = "st"; this._tmLast = Date.now(); this._render(); return; }

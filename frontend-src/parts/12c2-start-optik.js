@@ -26,8 +26,11 @@
     if (on.wx) {
       try {
         const S = this._wxs(), W = (!S.error && S.state && S.state.warn) || this._wxsLocal(), NM = this._wxsNames(), o = this._out();
-        Object.keys(NM).forEach((k) => { const w = W[k]; if (w && w.a) out.push({ k: `wx:${k}`, i: k === "frost" ? "snow" : k === "heat" ? "sun" : "alert", t: `Warnung: ${NM[k]}`, s: k === "frost" && o.t != null ? `Draußen ${num(o.t, 1)} °C` : w.v != null && k === "storm" ? `Böen ${num(w.v, 0)} km/h` : "Modul 9", r: "jetzt", c: "bad", soft: true, mod: "wx", hd: "weather", frost: k === "frost" }); });
-        const O = S.state && S.state.official; if (O && O.level > 0 && O.title) out.push({ k: "wx:dwd", i: "alert", t: `Amtliche Warnung: ${esc(O.title)}`, s: "DWD / NINA", r: "jetzt", c: "bad", soft: true, mod: "wx", hd: "weather" });
+        Object.keys(NM).forEach((k) => { const w = W[k]; if (w && w.a) out.push({ k: `wx:${k}`, i: k === "frost" ? "snow" : k === "heat" ? "sun" : "alert", t: `Warnung: ${k === "frost" && w.kind === "ice" ? "Glätte" : NM[k]}${w.lv ? ` · Stufe ${w.lv}` : ""}`, s: k === "frost" && o.t != null ? `Draußen ${num(o.t, 1)} °C` : w.v != null && k === "storm" ? `Böen ${num(w.v, 0)} km/h` : "Modul 9", r: "jetzt", c: "bad", soft: true, mod: "wx", hd: "weather", frost: k === "frost" }); });
+        const OL = (S.state && S.state.officials) || [], hmx = (iso) => { const t = new Date(iso); return String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0"); };
+        if (OL.length) OL.forEach((x, j) => out.push({ k: `wx:off:${j}:${x.titel}`, i: "alert", t: `${x.vorab ? "Vorab" : x.kommt ? "Bald" : "Amtliche Warnung"}: ${esc(x.titel)} · Stufe ${x.stufe}`, s: `${esc(String(x.quelle).split(" · ")[0])}${x.vorab || x.kommt ? (x.von ? " · ab " + hmx(x.von) : "") : x.bis ? " · bis " + hmx(x.bis) : ""}`, r: "jetzt", c: x.vorab || x.kommt ? "warn" : "bad", soft: true, mod: "wx", hd: "weather" }));
+        else { const O = S.state && S.state.official; if (O && O.level > 0 && O.title) out.push({ k: "wx:dwd", i: "alert", t: `${esc(O.title)}`, s: "DWD / NINA", r: "jetzt", c: "bad", soft: true, mod: "wx", hd: "weather" }); }
+        ((S.vor || []).filter((x) => !x.done)).forEach((x) => out.push({ k: `wx:vor:${x.id}`, i: x.icon === "battery" ? "energy" : x.icon, t: `Vorsorge: ${esc(x.title)}`, s: esc(x.text), r: "jetzt", c: "info", soft: true, mod: "wx", hd: "weather" }));
       } catch (_) { /* Modul 9 noch nicht geladen */ }
     }
     if (on.sf) {

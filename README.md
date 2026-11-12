@@ -121,7 +121,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 6 | Rollläden & Beschattung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 7 | Wärmepumpe | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Außenwerten |
 | 8 | **Elektroauto & Wallbox** | Beta 0.5 | go-e Charger (Sonne, Sonne + Netz, Voll, Ladeplan), Planung nach Preis und Prognose, Ladestatistik |
-| 9 | **Wetter & Warnungen** | Beta 0.5 | Sturm, Gewitter, Frost, Hitze und Starkregen mit Vorwarnung, DWD, NINA, MeteoAlarm, Aktionen |
+| 9 | **Wetter & Warnungen** | Vorabversion 0.9 | Wetter-Szene, Stufen 1–4 wie beim DWD, alle amtlichen Warnungen, 48-Stunden-Zeitleiste, Aktionen mit Aussperrschutz, Vorsorge, Tablet-Alarm |
 | 10 | Garten & Bewässerung | In Entwicklung 0.1 | Konzept mit Gartenplan |
 | 11 | **Rauch- & Sicherheitsmelder** | Beta 0.5 | Melder, Batterie, Grundriss-Baukasten, Wartung, Abfahrt-Prüfung |
 | 12 | Pool & Sauna | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ |
@@ -201,10 +201,15 @@ go-e Charger lokal im Netzwerk. Betriebsarten Aus, Sonne, Sonne + Netz, Voll und
 </details>
 
 <details>
-<summary><b>9 · Wetter & Warnungen</b> (Beta)</summary>
+<summary><b>9 · Wetter & Warnungen</b> (Vorabversion)</summary>
 <br>
 
-Eigene Schwellen für Sturm, Gewitter, Frost, Hitze und Starkregen mit Vorwarnung, dazu amtliche Warnungen von DWD, NINA und MeteoAlarm. Aktionen und Meldungen aufs Handy sind einstellbar.
+- **Wetter-Szene als Banner:** dasselbe Haus wie auf der Startseite. Sturm, Gewitter, Hagel, Frost und Hitze sind im Bild zu sehen, Rollläden und Markise zeigen, was die Aktionen getan haben.
+- **Stufen 1–4 wie beim DWD** für eigene Warnungen: Sturm, Gewitter, Hagel, Starkregen (mm/h), Frost & Glätte, Hitze. Dazu **alle amtlichen Warnungen** von DWD (mit Vorabinformation), NINA und MeteoAlarm.
+- **48-Stunden-Zeitleiste**, Warnkacheln mit Bogen gegen die Grenze, Verlauf über 90 Tage.
+- **Aktionen** ab Stufe, mit Bedingung (abwesend, tagsüber …), Verzögerung und **Aussperrschutz** für Rollläden an Türen. „Verstanden“, „Alles schließen“ und „Aussetzen“ im Modul und als Knöpfe in der Handy-Meldung.
+- **Vorsorge:** Hausakku voll halten, Auto vorladen, Hitzeschutz, Frost-Hinweis. **Alarm auf dem Wandtablet** ab Stufe 3.
+- **Für Automationen:** Sensoren „Warnstufe“ (gesamt und je Warnart) und das Ereignis `fenster_heizung_wetter_warnung`.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_wetter.png" width="560" alt="Modul 9"></p>
 </details>

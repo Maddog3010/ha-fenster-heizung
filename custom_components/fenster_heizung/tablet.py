@@ -274,6 +274,16 @@ class TabletManager:
             if t["cfg"]["wake_warn"]:
                 self.hass.async_create_task(self._screen(t, True))
 
+    async def async_wake_warn(self) -> int:
+        """Modul 9: Unwetter weckt alle Tablets mit „Warnungen wecken auf“."""
+        n = 0
+        for t in self.tablets.values():
+            if t["cfg"]["wake_warn"] and (t["cfg"]["screen"] or t["cfg"]["notify"]):
+                self._cancel_off(next((k for k, v in self.tablets.items() if v is t), ""))
+                await self._screen(t, True)
+                n += 1
+        return n
+
     async def _screen(self, t: dict[str, Any], on: bool) -> None:
         c = t["cfg"]
         try:

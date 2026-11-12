@@ -159,6 +159,27 @@
       },
       "sp_best": {
         "name": "Solar beste Zeit Beginn"
+      },
+      "wx_level": {
+        "name": "Warnstufe"
+      },
+      "wx_storm": {
+        "name": "Sturm"
+      },
+      "wx_thunder": {
+        "name": "Gewitter"
+      },
+      "wx_hail": {
+        "name": "Hagel"
+      },
+      "wx_rain": {
+        "name": "Starkregen"
+      },
+      "wx_frost": {
+        "name": "Frost & Glätte"
+      },
+      "wx_heat": {
+        "name": "Hitze"
       }
     }
   }

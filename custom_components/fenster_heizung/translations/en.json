@@ -159,6 +159,27 @@
       },
       "sp_best": {
         "name": "Solar best time start"
+      },
+      "wx_level": {
+        "name": "Warning level"
+      },
+      "wx_storm": {
+        "name": "Storm"
+      },
+      "wx_thunder": {
+        "name": "Thunderstorm"
+      },
+      "wx_hail": {
+        "name": "Hail"
+      },
+      "wx_rain": {
+        "name": "Heavy rain"
+      },
+      "wx_frost": {
+        "name": "Frost & ice"
+      },
+      "wx_heat": {
+        "name": "Heat"
       }
     }
   }

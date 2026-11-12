@@ -294,15 +294,15 @@
     return { w, o, wind, mx, storm, gale, frost };
   }
   /* Modul 9: Wetter & Warnungen (Regeln, Vorwarnung, Aktionen, Fenster-Erinnerung und Benachrichtigung laufen im Backend) */
-  _wxsDef() { return { warn: { storm: { on: true, kmh: 60 }, thunder: { on: true }, frost: { on: true, temp: 0 }, heat: { on: false, temp: 30 }, rain: { on: false } }, wind: "", ahead: { on: true, hours: 3 }, official: { on: true, ent: "" }, acts: [], win: { on: false, warn: ["storm", "thunder", "rain"] }, notify: { start: true, end: false, ahead: true, to: [] } }; }
+  _wxsDef() { return { warn: { storm: { on: true, kmh: 60, kmh3: 90 }, thunder: { on: true }, hail: { on: true }, rain: { on: false, mm: 10, mm3: 25 }, frost: { on: true, temp: 0, ice: true, ice_temp: 1 }, heat: { on: false, temp: 30, temp2: 35 } }, wind: "", rainrate: "", ahead: { on: true, hours: 3 }, official: { on: true, ent: "", vorab: true }, acts: [], win: { on: false, warn: ["storm", "thunder", "hail", "rain"], repeat: true }, notify: { start: true, end: false, ahead: true, to: [], stale: true, buttons: true, critical: false }, vor: { on: true, hours: 12, akku: true, akku_ent: "", akku_auto: false, car: true, car_min: 50, car_auto: false, heat: true, heat_covers: [], heat_auto: false, frost: true }, tab_lv: 3 }; }
   _wxsLoad(force) {
     if (!this._hass || this._wxsBusy) return;
     if (!force && this._wxsD && Date.now() - this._wxsD.ts < 20000) return;
     this._wxsBusy = true;
     this._hass.callWS({ type: "fenster_heizung/wx_get" }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._wxsD = { d: { error: true }, ts: Date.now() }; })
-      .finally(() => { this._wxsBusy = false; if (this._wxsVisible()) { this._render(); if (this._modal && ["wxset", "hswx"].includes(this._modal.type)) this._renderModal(); } });
+      .finally(() => { this._wxsBusy = false; if (this._wxsVisible()) { this._render(); if (this._modal && ["wxset", "hswx", "wxalarm"].includes(this._modal.type)) this._renderModal(); } });
   }
-  _wxsVisible() { return !!(this._modal && ["wxset", "hswx"].includes(this._modal.type)) || (this._stOpen && this._stA === "hs" && this._stS === "wx") || (!!this._mdActive && this._mdActive() === "wx" && !this._stOpen); }
+  _wxsVisible() { return !!(this._modal && ["wxset", "hswx", "wxalarm"].includes(this._modal.type)) || (this._stOpen && this._stA === "hs" && this._stS === "wx") || (!!this._mdActive && this._mdActive() === "wx" && !this._stOpen); }
   _wxs() { const d = (this._wxsD && this._wxsD.d) || {}, df = this._wxsDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, warn: Object.fromEntries(Object.keys(df.warn).map((k) => [k, { ...df.warn[k], ...((c.warn || {})[k] || {}) }])), ahead: { ...df.ahead, ...(c.ahead || {}) }, official: { ...df.official, ...(c.official || {}) }, win: { ...df.win, ...(c.win || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, acts: c.acts || [] } }; }
   _wxsSave(cfg) {
     if (!(this._wxsD && this._wxsD.d && this._wxsD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
@@ -319,6 +319,17 @@
   _wxsAct(a, b) {
     const k = b.dataset.k, i = Number(b.dataset.i), s = Number(b.dataset.s);
     if (a === "wxsopen") { this._wxsLoad(true); this._modal = { type: "wxset" }; this._renderModal(); return; }
+    if (a === "wxstab") { this._wxTab = k; this._renderModal(); const sh = this.shadowRoot.querySelector(".sheet"); if (sh) sh.scrollTop = 0; return; }
+    if (a === "wxstl") { this._wxTlView = k; this._render(); return; }
+    if (a === "wxslog") { this._wxLogF = k; this._wxLogN = 12; this._render(); return; }
+    if (a === "wxslogmore") { this._wxLogN = (this._wxLogN || 12) + 30; this._render(); return; }
+    if (a === "wxsvor") { this._hass.callWS({ type: "fenster_heizung/wx_vor", id: k }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(r && r.ok ? "Erledigt" : "Das hat nicht geklappt"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
+    if (a === "wxsack" && this._modal && this._modal.type === "wxalarm") { this._modal = null; this._renderModal(); }
+    if (a === "wxsack" || a === "wxspause" || a === "wxsclose") {
+      const m = a === "wxsack" ? { type: "fenster_heizung/wx_ack" } : a === "wxspause" ? { type: "fenster_heizung/wx_pause", minutes: Number(k) || 0 } : { type: "fenster_heizung/wx_close" };
+      this._hass.callWS(m).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(a === "wxsack" ? "Quittiert – keine Wiederholungen mehr" : a === "wxspause" ? (Number(k) ? "Aktionen für 2 Stunden ausgesetzt" : "Aktionen laufen wieder") : r && r.blocked && r.blocked.length ? `${r.closed} geschlossen, offen gelassen: ${r.blocked.join(", ")}` : `${(r && r.closed) || 0} geschlossen`); })
+        .catch(() => this._toast("Das hat nicht geklappt")); return;
+    }
     if (a === "wxstest") { this._hass.callWS({ type: "fenster_heizung/wx_test" }).then((r) => this._toast(r && r.sent ? `Test an ${r.sent} ${r.sent === 1 ? "Dienst" : "Diensten"} gesendet` : "Kein Benachrichtigungsdienst gewählt")).catch(() => this._toast("Test fehlgeschlagen")); return; }
     if (a === "wxsgoig") { this._modal = null; this._renderModal(); this._sto = { q: "", c: "wetter" }; this._igOpen = true; this._render(); return; }
     if (a === "wxsweather") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), entity: k || "" }; this._saveLayout(); this._render(); return; }
@@ -327,7 +338,24 @@
       if (a === "wxswindset") c.wind = k || "";
       else if (a === "wxsoff") c.official = k ? { on: true, ent: k } : { on: false, ent: "" };
       else if (a === "wxsw") c.warn[k].on = !c.warn[k].on;
-      else if (a === "wxstep") { const w = c.warn[k], f = b.dataset.f, lim = { kmh: [30, 120, 5], temp: k === "heat" ? [20, 45, 1] : [-10, 5, 1] }[f]; w[f] = Math.min(lim[1], Math.max(lim[0], (Number(w[f]) || 0) + s)); }
+      else if (a === "wxstep") {
+        const w = c.warn[k], f = b.dataset.f, lim = { kmh: [30, 120], kmh3: [w.kmh + 10, 200], temp: k === "heat" ? [20, 45] : [-10, 5], temp2: [w.temp + 1, 50], mm: [2, 50], mm3: [w.mm + 2, 100], ice_temp: [-2, 3] }[f];
+        w[f] = Math.min(lim[1], Math.max(lim[0], (Number(w[f]) || 0) + s));
+        if (f === "kmh" && w.kmh3 < w.kmh + 10) w.kmh3 = w.kmh + 10; if (f === "temp" && k === "heat" && w.temp2 <= w.temp) w.temp2 = w.temp + 1; if (f === "mm" && w.mm3 < w.mm + 2) w.mm3 = w.mm + 2;
+      }
+      else if (a === "wxsice") c.warn.frost.ice = !c.warn.frost.ice;
+      else if (a === "wxsamin") c.acts[i].min = Number(k) || 1;
+      else if (a === "wxswhen") c.acts[i].when = k;
+      else if (a === "wxsdelay") c.acts[i].delay = Math.min(60, Math.max(0, (Number(c.acts[i].delay) || 0) + s));
+      else if (a === "wxsup" && i > 0) { const t = c.acts[i]; c.acts[i] = c.acts[i - 1]; c.acts[i - 1] = t; }
+      else if (a === "wxswinrep") c.win.repeat = c.win.repeat === false;
+      else if (a === "wxsvoron") c.vor = { ...(c.vor || {}), on: !!(c.vor && c.vor.on === false) };
+      else if (a === "wxsvorx") { c.vor = c.vor || {}; const def = ["akku", "car", "heat", "frost"].includes(k); c.vor[k] = def ? c.vor[k] === false : !c.vor[k]; }
+      else if (a === "wxsvorh") { c.vor = c.vor || {}; c.vor.hours = Math.min(24, Math.max(3, (Number(c.vor.hours) || 12) + s)); }
+      else if (a === "wxsvorcar") { c.vor = c.vor || {}; c.vor.car_min = Math.min(100, Math.max(10, (Number(c.vor.car_min) || 50) + s)); }
+      else if (a === "wxsvorcov") { c.vor = c.vor || {}; const L = c.vor.heat_covers || []; c.vor.heat_covers = L.includes(k) ? L.filter((x) => x !== k) : [...L, k]; }
+      else if (a === "wxstablv") c.tab_lv = Number(k) || 0;
+      else if (a === "wxsvorab") c.official.vorab = !c.official.vorab;
       else if (a === "wxsahead") c.ahead.on = !c.ahead.on;
       else if (a === "wxsaheadh") c.ahead.hours = Math.min(12, Math.max(1, (Number(c.ahead.hours) || 3) + s));
       else if (a === "wxsn") c.notify[k] = !c.notify[k];
@@ -344,10 +372,13 @@
     const f = t.dataset.f, v = t.value || "";
     if (f.startsWith("wxssel") && t.blur) t.blur(); /* Auswahl schließen, damit die Seite neu gezeichnet wird */
     if (f === "wxswind") { this._wxsPatch((c) => { c.wind = v; }); return true; }
-    if (f === "wxsadd") { if (v) this._wxsPatch((c) => { if (c.acts.length < 12) c.acts.push({ id: "a" + Date.now().toString(36), warn: "storm", ent: v, do: this._wxsDo(v)[0][0], undo: true }); }); return true; }
+    if (f === "wxsadd") { if (v) this._wxsPatch((c) => { if (c.acts.length < 16) c.acts.push({ id: "a" + Date.now().toString(36), warn: "storm", ent: v, do: this._wxsDo(v)[0][0], undo: true }); }); return true; }
     if (f === "wxsselw") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), entity: v }; this._saveLayout(); this._render(); this._renderModal(); return true; }
     if (f === "wxsselout") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), outdoor: v }; this._saveLayout(); this._render(); this._renderModal(); return true; }
     if (f === "wxsselwind") { this._wxsPatch((c) => { c.wind = v; }); return true; }
+    if (f === "wxsrain") { this._wxsPatch((c) => { c.rainrate = v; }); return true; }
+    if (f === "wxsvorakku") { this._wxsPatch((c) => { c.vor = { ...(c.vor || {}), akku_ent: v }; }); return true; }
+    if (f === "wxsguard") { this._wxsPatch((c) => { const x = c.acts[Number(t.dataset.i)]; if (x) x.guard = v; }); return true; }
     if (f === "wxsseloff") { this._wxsPatch((c) => { c.official = v === "__off" ? { on: false, ent: "" } : { on: true, ent: v }; }); return true; }
     if (f === "wxsent") { this._wxsPatch((c) => { const x = c.acts[Number(t.dataset.i)]; if (x && v) { x.ent = v; if (!this._wxsDo(v).some((d) => d[0] === x.do)) x.do = this._wxsDo(v)[0][0]; } }); return true; }
     return false;
@@ -356,22 +387,26 @@
     const d = String(ent).split(".")[0];
     return d === "cover" ? [["close", "Schließen"], ["open", "Öffnen"]] : d === "script" || d === "scene" ? [["run", "Ausführen"]] : [["on", "Einschalten"], ["off", "Ausschalten"]];
   }
-  _wxsNames() { return { storm: "Sturm", thunder: "Gewitter & Hagel", frost: "Frost", heat: "Hitze", rain: "Starkregen" }; }
+  _wxsNames() { return { storm: "Sturm", thunder: "Gewitter", hail: "Hagel", rain: "Starkregen", frost: "Frost & Glätte", heat: "Hitze" }; }
   _wxsLocal() {
     const d = this._wxWarn(), c = this._wxs().cfg.warn, st = d.w ? d.w.state : "";
-    return { storm: { a: !!c.storm.on && d.mx >= c.storm.kmh, v: d.mx }, thunder: { a: !!c.thunder.on && ["lightning", "lightning-rainy", "hail"].includes(st), v: null }, frost: { a: !!c.frost.on && d.o.t != null && d.o.t <= c.frost.temp, v: d.o.t },
+    return { storm: { a: !!c.storm.on && d.mx >= c.storm.kmh, v: d.mx }, thunder: { a: !!c.thunder.on && ["lightning", "lightning-rainy"].includes(st), v: null }, hail: { a: !!(c.hail && c.hail.on) && st === "hail", v: null }, frost: { a: !!c.frost.on && d.o.t != null && d.o.t <= c.frost.temp, v: d.o.t },
       heat: { a: !!c.heat.on && d.o.t != null && d.o.t >= c.heat.temp, v: d.o.t }, rain: { a: !!c.rain.on && st === "pouring", v: null } };
   }
   _wxPage() {
     this._wxsLoad(); const S = this._wxs(), C = S.cfg, adm = this._admin(), d = this._wxWarn(), NM = this._wxsNames(), live = !S.error && S.state, W = (live ? S.state.warn : this._wxsLocal()) || {};
     const hm = (iso) => { const t = new Date(iso); return String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0"); };
-    const ICO = { storm: "fan", thunder: "flame", frost: "thermo", heat: "sun", rain: "drop" }, KEYS = Object.keys(NM), on = (k) => !!C.warn[k].on;
+    const ICO = { storm: "fan", thunder: "bolt", hail: "snow", frost: "thermo", heat: "sun", rain: "drop" }, KEYS = Object.keys(NM), on = (k) => !!(C.warn[k] && C.warn[k].on);
+    const lvOf = (k) => Math.max(1, Math.min(4, Number((W[k] || {}).lv) || 1)), nmOf = (k) => (k === "frost" && (W.frost || {}).kind === "ice" ? "Glätte" : NM[k]);
+    const pips = (lv) => `<div class="wxp" role="img" aria-label="Stufe ${lv} von 4">${[1, 2, 3, 4].map((i) => `<i class="${i <= lv ? "on l" + lv : ""}"></i>`).join("")}</div>`;
+    const stale = live && S.state.stale && S.state.stale.on ? S.state.stale : null;
     const act = KEYS.filter((k) => on(k) && (W[k] || {}).a), soon = KEYS.filter((k) => on(k) && !(W[k] || {}).a && (W[k] || {}).ahead);
-    const O = (live && S.state.official) || {}, offOn = C.official.on && this._wxOffAny(), offHot = offOn && O.level > 0;
+    const O = (live && S.state.official) || {}, offOn = C.official.on && (this._wxOffAny() || !!((live && S.state.officials) || []).length), offHot = offOn && O.level > 0;
     const wx = d.w ? (WX[d.w.state] || ["cloud", d.w.state])[1] : "", wnd = isFinite(d.wind) ? d.wind : null;
     /* Kopf: ein Satz zur Lage, darunter die Werte von jetzt */
     const tone = act.length || offHot ? "hot" : soon.length ? "soon" : "ok";
-    const head = act.length ? `${NM[act[0]]}${act.length > 1 ? ` und ${act.length - 1} weitere` : ""}` : offHot ? O.title : soon.length ? `${NM[soon[0]]} wird erwartet` : "Keine Warnung";
+    act.sort((a, b) => lvOf(b) - lvOf(a));
+    const head = act.length ? `${nmOf(act[0])} · Stufe ${lvOf(act[0])}${act.length > 1 ? ` und ${act.length - 1} weitere` : ""}` : offHot ? O.title : soon.length ? `${nmOf(soon[0])} wird erwartet` : "Keine Warnung";
     const sub = act.length ? ((W[act[0]] || {}).since ? `Seit ${hm(W[act[0]].since)} Uhr${offHot ? " · " + O.title : ""}` : "Gerade aktiv") : offHot ? `${O.text || "Amtliche Warnung"}` : soon.length ? `Ab etwa ${hm(W[soon[0]].ahead)} Uhr, ${C.ahead.hours} ${C.ahead.hours === 1 ? "Stunde" : "Stunden"} Vorlauf` : "Alle Werte liegen unter den Grenzen.";
     const now = [wx && `<span>${ic((WX[d.w.state] || ["cloud"])[0], 16)}${wx}</span>`, d.o.t != null && `<span>${ic("thermo", 16)}${num(d.o.t, 1)} °C</span>`, wnd != null && `<span>${ic("fan", 16)}${num(wnd, 0)} km/h${d.mx > wnd ? `, Böen ${num(d.mx, 0)}` : ""}</span>`].filter(Boolean).join("");
     /* Kurve: Wind der nächsten Stunden gegen die Sturmgrenze, Warnstunden getönt */
@@ -385,71 +420,104 @@
           <path d="${line}L${X(n - 1).toFixed(1)} ${VH - bot}L${X(0).toFixed(1)} ${VH - bot}Z" class="wxar"/>
           ${lim ? `<line x1="${px}" x2="${VW - px}" y1="${Y(lim).toFixed(1)}" y2="${Y(lim).toFixed(1)}" class="wxlim"/><text x="${VW - px - 2}" y="${(Y(lim) - 6).toFixed(1)}" text-anchor="end" class="wxlt">Sturmgrenze ${lim} km/h</text>` : ""}
           <path d="${line}" class="wxln"/>${vals.map((v, i) => `<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${(fc[i].w || []).length ? 3.6 : 2.4}" class="${(fc[i].w || []).length ? "wxdb" : "wxd"}"/>`).join("")}</svg>
-        <div class="wxh" style="grid-template-columns:repeat(${n},1fr)">${fc.map((x) => `<div class="${(x.w || []).length ? "bad" : ""}" title="${(x.w || []).length ? x.w.map((k) => NM[k]).join(", ") : "Keine Warnung"}"><small>${hm(x.t).slice(0, 2)}</small>${ic((WX[x.cond] || ["cloud"])[0], 18)}<b>${isFinite(x.temp) ? num(x.temp, 0) + "°" : "–"}</b></div>`).join("")}</div></div>`;
+        <div class="wxh" style="grid-template-columns:repeat(${n},1fr)">${fc.map((x) => `<div class="${(x.w || []).length ? "bad" : ""}" title="${(x.w || []).length ? x.w.map((k) => NM[k]).join(", ") : "Keine Warnung"}"><small>${hm(x.t).slice(0, 2)}</small>${ic((WX[x.cond] || ["cloud"])[0], 18)}<b>${isFinite(x.temp) ? num(Math.round(x.temp) || 0, 0) + "°" : "–"}</b></div>`).join("")}</div></div>`;
     } else if (C.ahead.on) chart = `<div class="wxnote">${ic("info", 15)}Keine Stundenvorhersage von der Wetter-Entität. Die Vorwarnung braucht sie.</div>`;
-    const hero = `${this._modHero("wx", { icon: "partly", lbl: "Wetter & Warnungen", big: head, small: true, sub, cls: "wx" + tone })}<div class="card wxhero ${tone}">${now ? `<div class="wxnow">${now}</div>` : ""}${chart}</div>`;
+    const ownLv = Math.max(0, ...act.map(lvOf)), offCur = ((live && S.state.officials) || []).filter((x) => !x.vorab && !x.kommt).sort((a, b) => b.stufe - a.stufe), offLv = offCur.length ? offCur[0].stufe : 0, bLv = Math.max(ownLv, offLv), offTop = offLv > ownLv;
+    const bHead = offTop ? offCur[0].titel : head, bSub = offTop ? `Amtlich · ${offCur[0].quelle.split(" · ")[0]}${offCur[0].bis ? " bis " + hm(offCur[0].bis) + " Uhr" : ""}${act.length ? " · eigene Messung: " + nmOf(act[0]) : ""}` : act.length && offCur.length ? `${sub.split(" · ")[0]} · amtlich: ${offCur[0].titel}` : sub;
+    const hero = this._wxBanner({ S, W, head: bHead, sub: bSub, lv: bLv, tone });
+    const tlv = this._wxTlView === "wind" ? "wind" : "tl";
+    const nextCard = `<div class="card wxhero ${tone}"><div class="wxtlh"><h2>${ic("clock", 18)}${tlv === "wind" ? "Wind & Böen" : "Nächste 48 Stunden"}</h2><div class="seg wxseg"><button class="${tlv === "tl" ? "sel" : ""}" data-act="wxstl" data-k="tl">Zeitleiste</button><button class="${tlv === "wind" ? "sel" : ""}" data-act="wxstl" data-k="wind">Wind</button></div></div>${tlv === "wind" ? `${now ? `<div class="wxnow">${now}</div>` : ""}${chart}` : this._wxTimeline(S, NM, hm)}</div>`;
     /* Warnstufen: je ein Pegel gegen die eingestellte Grenze */
     const gauge = (k) => {
       const c = C.warn[k]; let v = null, fill = 0, mark = 0, val = "";
-      if (k === "storm") { v = d.mx > 0 ? d.mx : wnd != null ? wnd : (S.fc || []).length && isFinite(S.fc[0].wind) ? S.fc[0].wind : null; if (v != null) { const m = c.kmh * 1.25; fill = v / m; mark = c.kmh / m; val = `${num(v, 0)} von ${c.kmh} km/h`; } }
-      else if (k === "frost") { v = d.o.t; if (v != null) { fill = (c.temp + 10 - v) / 15; mark = 10 / 15; val = `${num(v, 1)} °C, Grenze ${c.temp} °C`; } }
-      else if (k === "heat") { v = d.o.t; if (v != null) { fill = (v - (c.temp - 15)) / 20; mark = 15 / 20; val = `${num(v, 1)} °C, Grenze ${c.temp} °C`; } }
+      if (k === "storm") { v = d.mx > 0 ? d.mx : wnd != null ? wnd : (S.fc || []).length && isFinite(S.fc[0].wind) ? S.fc[0].wind : null; if (v != null) { const m = (c.kmh3 || c.kmh * 1.5) * 1.15; fill = v / m; mark = c.kmh / m; val = `${num(v, 0)} km/h, Stufe 1 ab ${c.kmh}, Stufe 3 ab ${c.kmh3 || "–"} km/h`; } }
+      else if (k === "frost") { v = d.o.t; if (v != null) { fill = (c.temp + 10 - v) / 15; mark = 10 / 15; val = `${num(v, 1)} °C, Frost ab ${c.temp} °C${c.ice ? `, Glätte bis ${c.ice_temp} °C bei Nässe` : ""}`; } }
+      else if (k === "heat") { v = d.o.t; if (v != null) { fill = (v - (c.temp - 15)) / 20; mark = 15 / 20; val = `${num(v, 1)} °C, Stufe 1 ab ${c.temp} °C, Stufe 2 ab ${c.temp2} °C`; } }
+      else if (k === "rain") { v = (W.rain || {}).v; if (v != null && isFinite(v)) { const m = (c.mm3 || 25) * 1.2; fill = v / m; mark = (c.mm || 10) / m; val = `${num(v, 1)} mm/h, Stufe 1 ab ${c.mm} mm/h, Stufe 3 ab ${c.mm3} mm/h${live && S.state.now && S.state.now.rain_src === "forecast" ? " (aus der Vorhersage)" : ""}`; } else v = null; }
       return { has: v != null, fill: Math.max(0.02, Math.min(1, fill)), mark, val };
     };
     const row = (k) => {
-      const w = W[k] || {}, o = on(k), a = o && w.a, ah = o && !a && w.ahead, g = gauge(k), st = !o ? "Aus" : a ? `Aktiv${w.since ? " seit " + hm(w.since) : ""}` : ah ? `Erwartet ab ${hm(w.ahead)}` : "Keine Warnung";
-      const tx = k === "thunder" ? (a ? "Gewitter oder Hagel gemeldet" : "") : k === "rain" ? (a ? "Starkregen gemeldet" : "") : (g.has ? g.val : "Kein Messwert");
-      return `<div class="wxr ${!o ? "off" : a ? "hot" : ah ? "soon" : ""}"><span class="wxi">${ic(ICO[k], 18)}</span><div class="wxm"><div class="wxt"><b>${NM[k]}</b><em>${st}</em></div>${g.has && o ? `<div class="wxg" role="img" aria-label="${esc(g.val)}"><i style="width:${(g.fill * 100).toFixed(0)}%"></i><u style="left:${(g.mark * 100).toFixed(0)}%"></u></div>` : ""}${o && tx ? `<small>${esc(tx)}</small>` : ""}</div></div>`;
+      const w = W[k] || {}, o = on(k), a = o && w.a, ah = o && !a && w.ahead, g = gauge(k), st = !o ? "Aus" : a ? `Stufe ${lvOf(k)} · seit ${w.since ? hm(w.since) : "jetzt"}` : ah ? `Erwartet ab ${hm(w.ahead)}${w.ahead_lv ? ` · Stufe ${w.ahead_lv}` : ""}` : "Keine Warnung";
+      const tx = k === "thunder" ? (a ? "Gewitter gemeldet" : "Wenn die Wetter-Entität Gewitter meldet") : k === "hail" ? (a ? "Hagel gemeldet" : "Wenn die Wetter-Entität Hagel meldet") : k === "rain" && !g.has ? (a ? "Starkregen gemeldet" : "Kein Regenmesser, keine Regenmenge in der Vorhersage") : (g.has ? g.val : "Kein Messwert");
+      return `<div class="wxr ${!o ? "off" : a ? "hot" + (lvOf(k) >= 3 ? " l3" : "") : ah ? "soon" : ""}"><span class="wxi">${ic(ICO[k], 18)}</span><div class="wxm"><div class="wxt"><b>${a ? nmOf(k) : NM[k]}</b><em>${st}</em></div>${a ? pips(lvOf(k)) : g.has && o ? `<div class="wxg" role="img" aria-label="${esc(g.val)}"><i style="width:${(Math.max(0.02, Math.min(1, g.fill)) * 100).toFixed(0)}%"></i><u style="left:${(g.mark * 100).toFixed(0)}%"></u></div>` : ""}${o && tx ? `<small>${esc(tx)}</small>` : ""}</div></div>`;
     };
     const lv = Math.max(0, Math.min(4, O.level || 0));
-    const offRow = offOn ? `<div class="wxr ${offHot ? "hot" : ""}"><span class="wxi">${ic("shield", 18)}</span><div class="wxm"><div class="wxt"><b>Amtliche Warnung</b><em>${offHot ? esc(String(O.title).replace(/^Amtliche Warnung:\s*/, "")) : "Keine Warnung"}</em></div><div class="wxp" role="img" aria-label="Stufe ${lv} von 4">${[1, 2, 3, 4].map((i) => `<i class="${i <= lv ? "on l" + lv : ""}"></i>`).join("")}</div><small>${offHot ? esc(O.text || "") : "Deutscher Wetterdienst, NINA oder MeteoAlarm"}</small></div></div>` : "";
+    const OL = (live && S.state.officials) || [], dt = (iso) => { if (!iso) return ""; const t = new Date(iso), td = new Date(), tm = new Date(td.getTime() + 864e5); return (t.toDateString() === td.toDateString() ? "" : t.toDateString() === tm.toDateString() ? "morgen " : t.toLocaleDateString("de-DE", { weekday: "short" }) + " ") + hm(iso); };
+    const offOne = (x) => { const span = x.von || x.bis ? `${x.von ? (x.kommt || x.vorab ? "ab " : "seit ") + dt(x.von) : ""}${x.von && x.bis ? " " : ""}${x.bis ? "bis " + dt(x.bis) : ""} Uhr` : ""; const tag = x.vorab ? "Vorab" : x.kommt ? "Kommt" : `Stufe ${x.stufe}`;
+      return `<div class="wxr ${x.vorab || x.kommt ? "soon" : "hot" + (x.stufe >= 3 ? " l3" : "")}"><span class="wxi">${ic("shield", 18)}</span><div class="wxm"><div class="wxt"><b>${esc(x.titel)}</b><em>${tag}</em></div>${pips(x.stufe)}<small>${esc(x.quelle)}${span ? " · " + esc(span) : ""}${x.gebiet ? " · " + esc(x.gebiet) : ""}</small>${x.text ? `<small class="wxtx">${esc(x.text)}</small>` : ""}${x.hinweis && !x.vorab ? `<small class="wxtx"><b>Hinweis:</b> ${esc(x.hinweis)}</small>` : ""}</div></div>`; };
+    const offRow = !offOn ? "" : OL.length ? OL.map(offOne).join("") : `<div class="wxr"><span class="wxi">${ic("shield", 18)}</span><div class="wxm"><div class="wxt"><b>Amtliche Warnung</b><em>${offHot ? esc(String(O.title).replace(/^Amtliche Warnung:\s*/, "")) : "Keine Warnung"}</em></div>${pips(lv)}<small>${offHot ? esc(O.text || "") : "Deutscher Wetterdienst, NINA oder MeteoAlarm"}</small></div></div>`;
+    const offCard = offOn ? `<div class="card"><h2>${ic("shield", 18)}Amtliche Warnungen${OL.length ? ` <span class="wxcnt">${OL.length}</span>` : ""}</h2><div class="wxl">${offRow}</div></div>` : "";
     const lamp = KEYS.some(on) ? "" : `<div class="wxnote">${ic("info", 15)}Alle eigenen Warnungen sind aus. Einschalten unter Einstellungen → Modul 9.</div>`;
-    const warn = `<div class="card"><h2>${ic("alert", 18)}Warnstufen</h2><div class="wxl">${KEYS.map(row).join("")}${offRow}</div>${lamp}</div>`;
+    const tiles = `<div class="wxsec"><h3>${ic("alert", 16)}Eigene Warnungen <small>aus deinen Messwerten</small></h3>${this._wxTiles({ S, W, C, NM, ICO, d, hm, live })}${lamp}</div>`;
     /* Aktionen und Erinnerungen */
     const A = C.acts, ST = (live && S.state.acts) || {}, wo = S.open || [];
     const arow = (x) => { const on2 = (W[x.warn] || {}).a, s = ST[x.id] || {}, dn = (this._wxsDo(x.ent).find((y) => y[0] === x.do) || [0, x.do])[1], run = s.state === "run"; return `<div class="wxr ${run ? "hot" : ""}"><span class="wxi">${ic(String(x.ent).startsWith("cover.") ? "blinds" : "bolt", 18)}</span><div class="wxm"><div class="wxt"><b>${esc(this._wzName(x.ent))}</b><em>${run ? "Ausgelöst" + (s.at ? " " + hm(s.at) : "") : on2 ? "Wartet" : "Bereit"}</em></div><small>Bei ${NM[x.warn]}: ${dn}${x.undo ? ", danach zurück" : ""}</small></div></div>`; };
     const info = (ico, t, txt, onn) => `<div class="wxr ${onn ? "" : "off"}"><span class="wxi">${ic(ico, 18)}</span><div class="wxm"><div class="wxt"><b>${t}</b><em>${onn ? "An" : "Aus"}</em></div><small>${txt}</small></div></div>`;
     const nTo = C.notify.to.length, nWhat = [C.notify.start && "Beginn", C.notify.end && "Ende", C.notify.ahead && C.ahead.on && "Vorwarnung"].filter(Boolean).join(", ");
-    const acts = `<div class="card"><h2>${ic("blinds", 18)}Aktionen und Erinnerungen</h2><div class="wxl">
-        ${A.map(arow).join("")}
+    const acts = `<div class="card"><h2>${ic("blinds", 18)}Was passiert</h2><div class="wxl">
+        ${A.length ? `<div class="wxflows">${A.map((x) => this._wxFlow(x, ST[x.id], W, NM, hm)).join("")}</div>` : ""}
         ${info("window", "Fenster-Erinnerung", C.win.on ? `Bei ${C.win.warn.map((k) => NM[k]).join(", ")}. ${wo.length ? "Jetzt offen: " + wo.map(esc).join(", ") + "." : "Zurzeit ist kein Fenster offen."}` : "Meldet offene Fenster bei Sturm, Gewitter oder Starkregen.", C.win.on)}
         ${info("bell", "Benachrichtigung", nTo ? `An ${nTo} ${nTo === 1 ? "Dienst" : "Dienste"}: ${nWhat || "nichts ausgewählt"}.` : "Noch kein Dienst gewählt (Einstellungen → Integrationen).", nTo > 0)}</div>
         ${A.length ? "" : `<div class="wxnote">${ic("info", 15)}Noch keine Aktion. Unter Einstellungen → Modul 9 legst du fest, was bei einer Warnung passiert, etwa Markise einfahren.</div>`}</div>`;
-    const lg = (S.log || []).slice(0, 8), dd = (iso) => { const t = new Date(iso), td = new Date(); return t.toDateString() === td.toDateString() ? hm(iso) : t.toLocaleDateString("de-DE", { weekday: "short" }) + " " + hm(iso); };
-    const log = lg.length ? `<div class="card"><h2>${ic("clock", 18)}Protokoll</h2><div class="wxlog">${lg.map((x) => `<div><time>${dd(x.t)}</time><span>${esc(x.x)}</span></div>`).join("")}</div></div>` : "";
-    return `${this._betaBox("Die Warnungen werden im Hintergrund aus deiner Wetter-Entität oder Wetterstation berechnet, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, diese kommen vom Deutschen Wetterdienst oder NINA, wenn eingerichtet.")}${hero}<div class="wxcols">${warn}${acts}</div>${log}`;
+    const lg = (S.log || []).slice(0, 12), dd = (iso) => { const t = new Date(iso), td = new Date(); return t.toDateString() === td.toDateString() ? hm(iso) : t.toLocaleDateString("de-DE", { weekday: "short" }) + " " + hm(iso); };
+    const log = this._wxLog(S, hm);
+    const staleBox = stale ? `<div class="card wxstale">${ic("alert", 20)}<div><b>Wetterquelle prüfen</b><small>${esc(stale.ent || "Wetter-Entität")} ${esc(stale.why || "")}. Eigene Warnungen sind gerade unsicher, amtliche Warnungen laufen weiter.</small></div><button class="lnk" data-act="mdhsgo" data-k="wx">Zur Wetterquelle</button></div>` : "";
+    return `${this._betaBox("Die Warnungen werden im Hintergrund aus deiner Wetter-Entität oder Wetterstation berechnet, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, diese kommen vom Deutschen Wetterdienst, NINA oder MeteoAlarm, wenn eingerichtet.")}${staleBox}${hero}${this._wxBar(S, hm)}${this._wxVor(S, hm)}${tiles}${offCard ? `<div class="wxcols">${offCard}${nextCard}</div>` : nextCard}<div class="wxcols">${acts}${log}</div>`;
   }
   _wxsModal() {
     const S = this._wxs(), C = S.cfg, NM = this._wxsNames(), st = this._hass.states, H = this._hass;
     const step = (act, k, f, val, unit, min) => `<div class="step" style="flex:none"><button data-act="${act}" data-k="${k}" data-f="${f}" data-s="-${min}" aria-label="weniger">${ic("minus", 18)}</button><b>${val} ${unit}</b><button data-act="${act}" data-k="${k}" data-f="${f}" data-s="${min}" aria-label="mehr">${ic("plus", 18)}</button></div>`;
     const sw = (act, k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" aria-label="${label}"></button>`;
-    const WR = [["storm", "Sturm", "Ab dieser Windstärke oder Böe (km/h).", step("wxstep", "storm", "kmh", C.warn.storm.kmh, "km/h", 5)], ["thunder", "Gewitter und Hagel", "Wenn die Wetter-Entität Gewitter oder Hagel meldet.", ""], ["frost", "Frost", "Bei dieser Außentemperatur oder darunter.", step("wxstep", "frost", "temp", C.warn.frost.temp, "°C", 1)], ["heat", "Hitze", "Ab dieser Außentemperatur, zum Beispiel für Beschattung.", step("wxstep", "heat", "temp", C.warn.heat.temp, "°C", 1)], ["rain", "Starkregen", "Wenn die Wetter-Entität Starkregen meldet.", ""]];
+    const lvl = (t, ctl) => `<div class="wxlv"><small>${t}</small>${ctl}</div>`, W9 = C.warn;
+    const rainOpts = Object.keys(st).filter((e) => e.startsWith("sensor.") && (/(mm\/h|in\/h)$/i.test(st[e].attributes.unit_of_measurement || "") || /rain_rate|regenrate|niederschlagsintensit|precipitation_intensity/i.test(e)));
+    const WR = [
+      ["storm", "Sturm", "Wind oder Böe. Dazwischen liegt Stufe 2, ab Stufe 3 + 30 km/h Stufe 4.", lvl("Stufe 1 ab", step("wxstep", "storm", "kmh", W9.storm.kmh, "km/h", 5)) + lvl("Stufe 3 ab", step("wxstep", "storm", "kmh3", W9.storm.kmh3, "km/h", 5))],
+      ["thunder", "Gewitter", "Wenn die Wetter-Entität Gewitter meldet (Stufe 2).", ""],
+      ["hail", "Hagel", "Wenn die Wetter-Entität Hagel meldet (Stufe 3). Eigene Warnung, damit Aktionen anders sein können als bei Gewitter.", ""],
+      ["rain", "Starkregen", "Regenmenge in mm pro Stunde, aus einem Regenmesser oder der Vorhersage. Ohne Menge zählt „Starkregen“ der Wetter-Entität als Stufe 1.", lvl("Stufe 1 ab", step("wxstep", "rain", "mm", W9.rain.mm, "mm/h", 1)) + lvl("Stufe 3 ab", step("wxstep", "rain", "mm3", W9.rain.mm3, "mm/h", 1))],
+      ["frost", "Frost &amp; Glätte", "Frost bei dieser Außentemperatur oder darunter (Stufe 1).", lvl("Frost ab", step("wxstep", "frost", "temp", W9.frost.temp, "°C", 1))],
+      ["heat", "Hitze", "Zum Beispiel für Beschattung.", lvl("Stufe 1 ab", step("wxstep", "heat", "temp", W9.heat.temp, "°C", 1)) + lvl("Stufe 2 ab", step("wxstep", "heat", "temp2", W9.heat.temp2, "°C", 1))]];
     const windOpts = Object.keys(st).filter((e) => e.startsWith("sensor.") && (/(km\/h|m\/s|mph|kn)$/i.test(st[e].attributes.unit_of_measurement || "") || /wind/i.test(e)));
     const actOpts = Object.keys(st).filter((e) => /^(cover|switch|input_boolean|script|scene)\./.test(e));
+    const guardOpts = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && (["door", "window", "opening", "garage_door"].includes(st[e].attributes.device_class) || /tuer|tür|door|fenster|window|kontakt/i.test(e)));
+    const tab = ["w", "a", "m"].includes(this._wxTab) ? this._wxTab : "w";
     const svc = [...new Set([...Object.keys(((H.services || {}).notify) || {}).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).sort().map((n) => "notify." + n), ...C.notify.to])];
     const chip = (act, k, t, on, extra = "") => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${k}" ${extra} aria-pressed="${!!on}">${t}</button>`;
-    const acts = C.acts.map((x, i) => `<div class="rfv"><div class="vrow" style="margin:0"><span><b>${esc(this._wzName(x.ent))}</b><small class="mut" style="display:block">${esc(x.ent)}</small></span><button class="ibtn" data-act="wxsrm" data-i="${i}" aria-label="Aktion entfernen">${ic("trash", 18)}</button></div>
+    const acts = C.acts.map((x, i) => `<div class="rfv"><div class="vrow" style="margin:0"><span><b>${esc(this._wzName(x.ent))}</b><small class="mut" style="display:block">${esc(x.ent)}</small></span><span class="wxord">${i > 0 ? `<button class="ibtn" data-act="wxsup" data-i="${i}" aria-label="Nach oben">${ic("up", 16)}</button>` : ""}<button class="ibtn" data-act="wxsrm" data-i="${i}" aria-label="Aktion entfernen">${ic("trash", 18)}</button></span></div>
       <div class="mut sm" style="margin:6px 0 4px">Bei</div><div class="gschips">${Object.keys(NM).map((k) => chip("wxsaw", k, NM[k], x.warn === k, `data-i="${i}"`)).join("")}</div>
       <div class="mut sm" style="margin:6px 0 4px">Dann</div><div class="gschips">${this._wxsDo(x.ent).map(([k, t]) => chip("wxsad", k, t, x.do === k, `data-i="${i}"`)).join("")}</div>
-      ${["cover", "switch", "input_boolean"].includes(String(x.ent).split(".")[0]) ? `<div class="vrow"><span>Danach zurück<small class="mut" style="display:block">Eine Viertelstunde nach Ende der Warnung wird der vorige Zustand wiederhergestellt.</small></span>${sw("wxsau", "", x.undo, "Danach zurück").replace('data-k=""', `data-i="${i}"`)}</div>` : ""}</div>`).join("");
+      ${["cover", "switch", "input_boolean"].includes(String(x.ent).split(".")[0]) ? `<div class="vrow"><span>Danach zurück<small class="mut" style="display:block">Eine Viertelstunde nach Ende der Warnung wird der vorige Zustand wiederhergestellt.</small></span>${sw("wxsau", "", x.undo, "Danach zurück").replace('data-k=""', `data-i="${i}"`)}</div>` : ""}
+      <div class="mut sm" style="margin:8px 0 4px">Ab Stufe</div><div class="gschips">${[1, 2, 3, 4].map((n) => chip("wxsamin", n, `${n} · ${this._wxLvName(n)}`, (x.min || 1) === n, `data-i="${i}"`)).join("")}</div>
+      <div class="mut sm" style="margin:8px 0 4px">Nur wenn</div><div class="gschips">${[["always", "Immer"], ["away", "Abwesend"], ["home", "Jemand zu Hause"], ["day", "Tagsüber"], ["night", "Nachts"]].map(([k, t]) => chip("wxswhen", k, t, (x.when || "always") === k, `data-i="${i}"`)).join("")}</div>
+      <div class="vrow"><span>Verzögerung<small class="mut" style="display:block">Wartet so lange nach Beginn, z. B. damit eine kurze Böe die Markise nicht gleich einfährt.</small></span>${step("wxsdelay", "", "", x.delay || 0, "Min.", 5).replace(/data-k=""/g, `data-i="${i}"`)}</div>
+      ${String(x.ent).startsWith("cover.") && x.do === "close" ? `<div class="mut sm" style="margin:8px 0 4px">Aussperrschutz: nicht schließen, solange dieser Kontakt offen ist (Terrassentür, Fenster)</div>${this._wzSel(guardOpts, x.guard || "", "wxsguard", `data-i="${i}"`, "– kein Kontakt –", /tuer|tür|door|terrasse|balkon|fenster|window/i)}` : ""}</div>`).join("");
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Wetter &amp; Warnungen</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="lsec">${ic("alert", 15)}Warnstufen</div>
-      ${WR.map(([k, t, h, ctl]) => `<div class="vrow"><span>${t}<small class="mut" style="display:block">${h}</small></span>${C.warn[k].on && ctl ? ctl : ""}${sw("wxsw", k, C.warn[k].on, t)}</div>`).join("")}
+      <div class="seg wxtabs">${[["w", "Warnungen"], ["a", `Aktionen${C.acts.length ? " · " + C.acts.length : ""}`], ["m", "Meldungen"]].map(([k, t]) => `<button class="${tab === k ? "sel" : ""}" data-act="wxstab" data-k="${k}">${t}</button>`).join("")}</div>
+      ${tab === "w" ? `<div class="lsec">${ic("alert", 15)}Warnstufen</div>
+      <div class="mut sm" style="margin:0 0 6px">Stufen wie beim Deutschen Wetterdienst: 1 Wetterwarnung, 2 markant, 3 Unwetter, 4 extrem. Eine Stufe steigt sofort (Sturm nach zwei Messungen) und sinkt erst nach zehn Minuten unter der Grenze.</div>
+      ${WR.map(([k, t, h, ctl]) => `<div class="vrow wxvr"><span>${t}<small class="mut" style="display:block">${h}</small></span>${sw("wxsw", k, W9[k].on, t)}</div>${W9[k].on && ctl ? `<div class="wxlvs">${ctl}</div>` : ""}${k === "frost" && W9.frost.on ? `<div class="vrow wxsub"><span>Glätte<small class="mut" style="display:block">Bis zu dieser Temperatur und bei Nässe (Regen, Schnee, Nebel oder ab 90 % Luftfeuchte).</small></span>${W9.frost.ice ? step("wxstep", "frost", "ice_temp", W9.frost.ice_temp, "°C", 1) : ""}${sw("wxsice", "", W9.frost.ice, "Glätte")}</div>` : ""}${k === "rain" && W9.rain.on ? `<div class="wxsub"><div class="mut sm" style="margin:4px 0">Regenmesser (optional, mm/h)</div>${this._wzSel(rainOpts, C.rainrate, "wxsrain", "", "– Regenmenge aus der Vorhersage –", /rain|regen|niederschlag|precip/i)}</div>` : ""}`).join("")}
+      <div class="lsec" style="margin-top:12px">${ic("shield", 15)}Amtliche Warnungen</div>
+      <div class="vrow"><span>Vorabinformationen zeigen<small class="mut" style="display:block">Der DWD kündigt Unwetter oft schon Stunden oder einen Tag vorher an. Sie erscheinen als „Vorab“ und werden wie eine Vorwarnung gemeldet.</small></span>${sw("wxsvorab", "", C.official.vorab !== false, "Vorabinformationen")}</div>
       <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Datenquellen</div>
       ${this._hsLink("wx", "Wetter, Wind, Außentemperatur und amtliche Warnungen")}
       <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Vorwarnung</div>
-      <div class="vrow"><span>Warnung vorab melden<small class="mut" style="display:block">Aus der Stundenprognose der Wetter-Entität. Gilt für Sturm, Gewitter, Frost, Hitze und Starkregen.</small></span>${C.ahead.on ? step("wxsaheadh", "", "", C.ahead.hours, C.ahead.hours === 1 ? "Std." : "Std.", 1) : ""}${sw("wxsahead", "", C.ahead.on, "Vorwarnung")}</div>
-      <div class="lsec" style="margin-top:12px">${ic("blinds", 15)}Aktionen bei einer Warnung</div>
-      <div class="mut sm" style="margin:0 0 6px">Das Modul schaltet nur, was du hier auswählst: Rollläden, Markisen, Schalter, Skripte und Szenen. Eine Aktion läuft einmal, wenn die Warnung beginnt.</div>
-      ${acts}${C.acts.length < 12 ? this._wzSel(actOpts, "", "wxsadd", "", "+ Aktion hinzufügen", /cover|markise|rollo|rolllad/i) : ""}
-      <div class="lsec" style="margin-top:12px">${ic("window", 15)}Fenster-Erinnerung</div>
-      <div class="vrow"><span>Offene Fenster melden<small class="mut" style="display:block">Nutzt die Fenster-Kontakte deiner Räume aus Modul 1. Die Meldung kommt einmal pro Warnung.</small></span>${sw("wxswin", "", C.win.on, "Fenster-Erinnerung")}</div>
-      ${C.win.on ? `<div class="gschips">${["storm", "thunder", "rain"].map((k) => chip("wxswinw", k, NM[k], C.win.warn.includes(k))).join("")}</div>` : ""}
+      <div class="vrow"><span>Warnung vorab melden<small class="mut" style="display:block">Aus der Stundenprognose der Wetter-Entität. Gilt für alle eigenen Warnungen, mit der erwarteten Stufe.</small></span>${C.ahead.on ? step("wxsaheadh", "", "", C.ahead.hours, C.ahead.hours === 1 ? "Std." : "Std.", 1) : ""}${sw("wxsahead", "", C.ahead.on, "Vorwarnung")}</div>
+` : ""}${tab === "a" ? `<div class="lsec">${ic("blinds", 15)}Aktionen bei einer Warnung</div>
+      <div class="mut sm" style="margin:0 0 6px">Das Modul schaltet nur, was du hier auswählst: Rollläden, Markisen, Schalter, Skripte und Szenen. Eine Aktion läuft einmal je Warnung, sobald Stufe, Verzögerung und Bedingung passen – in der Reihenfolge der Liste. Ist der Kontakt beim Aussperrschutz offen, wartet der Rollladen, bis er zu ist.</div>
+      ${acts}${C.acts.length < 16 ? this._wzSel(actOpts, "", "wxsadd", "", "+ Aktion hinzufügen", /cover|markise|rollo|rolllad/i) : ""}
+      ${this._wxsVorSet(C, step, sw)}
+` : ""}${tab === "m" ? `<div class="lsec">${ic("window", 15)}Fenster-Erinnerung</div>
+      <div class="vrow"><span>Offene Fenster melden<small class="mut" style="display:block">Nutzt die Fenster-Kontakte deiner Räume aus Modul 1.</small></span>${sw("wxswin", "", C.win.on, "Fenster-Erinnerung")}</div>
+      ${C.win.on ? `<div class="vrow"><span>Alle 15 Minuten wiederholen<small class="mut" style="display:block">Bis das Fenster zu ist oder du „Verstanden“ tippst.</small></span>${sw("wxswinrep", "", C.win.repeat !== false, "Wiederholen")}</div>` : ""}
+      ${C.win.on ? `<div class="gschips">${["storm", "thunder", "hail", "rain"].map((k) => chip("wxswinw", k, NM[k], C.win.warn.includes(k))).join("")}</div>` : ""}
       <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Benachrichtigung</div>
-      ${[["start", "Warnung beginnt"], ["ahead", "Vorwarnung"], ["end", "Warnung endet"]].map(([k, t]) => `<div class="vrow"><span>${t}</span>${sw("wxsn", k, C.notify[k], t)}</div>`).join("")}
+      ${[["start", "Warnung beginnt oder steigt"], ["ahead", "Vorwarnung und Vorabinformation"], ["end", "Warnung endet"], ["stale", "Wetterquelle liefert keine Werte"]].map(([k, t]) => `<div class="vrow"><span>${t}</span>${sw("wxsn", k, C.notify[k], t)}</div>`).join("")}
       ${svc.length ? `<div class="gschips">${svc.map((n) => chip("wxsns", esc(n), esc(n), C.notify.to.includes(n))).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
       <div class="mut sm" style="margin:2px 0 6px">${C.notify.to.length ? `Gesendet wird an: ${C.notify.to.map(esc).join(", ")}.` : "Es ist noch kein Benachrichtigungsdienst gewählt."}</div>
+      <div class="vrow"><span>Knöpfe in der Meldung<small class="mut" style="display:block">„Verstanden“, „Alles schließen“ und „Aktionen 2 Std. aussetzen“ direkt in der Handy-Meldung. Nur mit der Home-Assistant-App (notify.mobile_app_…).</small></span>${sw("wxsn", "buttons", C.notify.buttons !== false, "Knöpfe")}</div>
+      <div class="vrow"><span>Kritische Mitteilung ab Stufe 3<small class="mut" style="display:block">Kommt auch bei „Nicht stören“ und lautlos. Am iPhone muss „Kritische Hinweise“ für die Home-Assistant-App erlaubt sein.</small></span>${sw("wxsn", "critical", !!C.notify.critical, "Kritische Mitteilung")}</div>
+      ${this._wxsTabSet(C, chip)}` : ""}
       ${this._labFields("wx")}
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wxstest" ${C.notify.to.length ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }

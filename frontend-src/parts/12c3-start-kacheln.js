@@ -59,7 +59,7 @@
     }
     if (m.id === "wx") {
       const t = this._out().t, Wn = this._hzWarnX().filter((h) => h.mod === "wx"); if (t == null && !Wn.length) return off("Keine Wetterquelle");
-      K.v = t != null ? num(t, 1) : "–"; K.u = t != null ? "°C" : ""; const o = this._out(); K.l1 = Wn.length ? esc(String(Wn[0].t).replace(/^(Warnung|Amtliche Warnung): /, "")) : esc((WX[o.w] || ["", "Keine Warnung"])[1]);
+      K.v = t != null ? num(t, 1) : "–"; K.u = t != null ? "°C" : ""; const o = this._out(); K.l1 = Wn.length ? esc(String(Wn.find((h) => h.c === "bad") ? Wn.find((h) => h.c === "bad").t : Wn[0].t).replace(/^(Warnung|Amtliche Warnung|Vorab|Bald|Vorsorge): /, "")) : esc((WX[o.w] || ["", "Keine Warnung"])[1]);
       if (Wn.length) { K.z = "warn"; K.l2 = Wn[0].s && !/^Draußen/.test(Wn[0].s) ? String(Wn[0].s) : ""; } if (t != null && t <= 0) K.o.frost = true; return K;
     }
     if (m.id === "sf") {

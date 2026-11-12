@@ -399,6 +399,7 @@
     if (m.type === "mwpick") { box.innerHTML = this._mwPickModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sthelp" || m.type === "stlog") { box.innerHTML = m.type === "sthelp" ? this._stHelpModal() : this._stLogModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "hspr" || m.type === "hswx" || m.type === "hsmig") { box.innerHTML = m.type === "hspr" ? this._hsPrModal() : m.type === "hswx" ? this._hsWxModal() : this._hsMigModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; if (this._stOpen) this._render(); return; }
+    if (m.type === "wxalarm") { box.innerHTML = this._wxAlarmModal(); return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "stodet") { box.innerHTML = this._stoModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
