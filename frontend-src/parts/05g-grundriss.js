@@ -16,6 +16,15 @@
     if (!D) return null;
     return D.d && D.d.cfg ? this._sfx().cfg.plan : err ? { error: true } : this._sfx().cfg.plan;
   }
+  /* Alle Räume, die eine Grundriss-Fläche bekommen können: Heizungsräume und Messräume (innen und außen) */
+  _gpAll(rooms) { return [...(rooms || this._collect(true)), ...this._msList().map((m) => ({ id: m.id, name: m.name, ms: m }))]; }
+  /* Messraum als Zustand wie _rkState, damit der Grundriss ihn wie einen Raum zeichnen kann */
+  _gpMsS(m) {
+    const Q = this._msStat(m), bs = m.bat && this._hass.states[m.bat], bv = bs ? parseFloat(bs.state) : NaN;
+    const lab = Q.k === "ok" ? (Q.out ? "Außen" : "Messraum") : Q.lab;
+    return { ms: true, out: Q.out, qk: Q.k, k: Q.k === "aus" ? "aus" : "ms", lab, col: Q.col, cur: Q.tv, hum: Q.hv, ziel: null, open: [], tilt: [], anyOpen: 0, heating: false, here: false, t0: null, rt: {},
+      bat: !!(bs && ((isFinite(bv) && bv <= 15) || bs.state === "on" || /low|niedrig/i.test(bs.state))) };
+  }
   _gpNorm(s) { return String(s || "").toLowerCase().replace(/zimmer|raum|[^a-zäöüß0-9]/g, ""); }
   /* Plan-Raum → Modul-1-Raum */
   _gpMatch(item, rooms) {
@@ -41,6 +50,7 @@
     }
     const fls = P.floors || [], fl = fls.some((f) => f.id === this._gpFl) ? this._gpFl : (fls.find((f) => (P.items || []).some((i) => i.fl === f.id && i.t === "r")) || fls[0]).id;
     const items = P.items.filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r" || i.t === "s");
+    const all = this._gpAll(rooms);
     const S = Object.fromEntries(rooms.map((r) => [r.id, this._rkState(r)])), temps = rooms.flatMap((r) => S[r.id].pts.map((p) => p.t)), lo = temps.length ? Math.min(...temps) : 17, hi = temps.length ? Math.max(...temps) : 21;
     const inside = (r, x, y, tol = 8) => x >= r.x - tol && x <= r.x + r.w + tol && y >= r.y - tol && y <= r.y + r.h + tol;
     const an = this._rkCfg().anim, u = "gp" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_";
@@ -56,14 +66,19 @@
     /* Räume: Kachel, Licht, Rand, Heizkörper */
     const label = [];
     rs.forEach((i, ix) => {
-      const r = i.t === "r" ? this._gpMatch(i, rooms) : null, s = r ? S[r.id] : null, col = s ? (s.k === "aus" ? "#64748b" : this._rkCol(s.cur, lo, hi)) : null;
+      const r = i.t === "r" ? this._gpMatch(i, all) : null, s = r ? (r.ms ? this._gpMsS(r.ms) : S[r.id]) : null, col = s ? (s.k === "aus" ? "#64748b" : this._rkCol(s.cur, lo, hi)) : null;
       const x = i.x + gap, y = i.y + gap, w = Math.max(4, i.w - 2 * gap), h = Math.max(4, i.h - 2 * gap), rx = Math.min(14, w / 6, h / 6), gid = `${u}r${ix}`;
-      d += `<g class="gpr${r ? " on" : ""}${s ? " k-" + s.k : ""}" ${r ? `data-act="rkmenu" data-id="${esc(r.id)}"` : adm && i.t === "r" ? `data-act="gpmap" data-k="${esc(i.id)}"` : ""}><title>${esc(i.n || "Raum")}${s ? " · " + esc(s.lab) : r ? "" : " · nicht zugeordnet"}</title>`;
+      const act = r ? (r.ms ? (adm ? `data-act="msxedit" data-id="${esc(r.id)}"` : "") : `data-act="rkmenu" data-id="${esc(r.id)}"`) : adm && i.t === "r" ? `data-act="gpmap" data-k="${esc(i.id)}"` : "";
+      d += `<g class="gpr${r ? " on" : ""}${s ? " k-" + s.k : ""}${s && s.out ? " out" : ""}" ${act}><title>${esc(i.n || "Raum")}${s ? " · " + esc(s.lab) : r ? "" : " · nicht zugeordnet"}</title>`;
       if (s) {
         d += `<radialGradient id="${gid}" cx="0" cy="0" r="1.25" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="${col}" stop-opacity="${s.k === "aus" ? .18 : .62}"/><stop offset=".65" stop-color="${col}" stop-opacity="${s.k === "aus" ? .06 : .2}"/><stop offset="1" stop-color="${col}" stop-opacity=".08"/></radialGradient>
           <rect class="gpbase" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" filter="url(#${u}sh)"/>
           <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#${gid})"/>
-          <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="${col}" stroke-width="2" stroke-opacity=".85"/>`;
+          <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="${col}" stroke-width="2" stroke-opacity=".85"${s.out ? ` stroke-dasharray="9 6"` : ""}/>`;
+        if (s.ms && w > 70 && h > 60) {   /* Messraum: Bild statt Heizkörper (außen Wetter, innen Thermometer) */
+          const rs2 = Math.min(40 * NF, w * .26, h * .34), gx2 = x + w - rs2 - 8, gy2 = y + h - rs2 - 6, g = s.out ? (s.qk === "frost" || s.qk === "glatt" ? "frost" : "forecast") : "thermostat";
+          d += (this._gx(g, rs2, { on: true, t: s.cur != null ? num(s.cur, 0) + "°" : "" }) || this._gx("thermostat", rs2, { on: true })).replace('<svg class="gx" ', `<svg class="gx gprad" x="${gx2.toFixed(1)}" y="${gy2.toFixed(1)}" `);
+        }
         if (s.heating) d += `<rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="#fb923c" stroke-width="5" stroke-opacity=".28" class="gpglow"/>`;
         if (s.t0 && i.t === "r" && w > 70 && h > 60) {
           const rs2 = Math.min(40 * NF, w * .26, h * .34), gx2 = x + w - rs2 - 8, gy2 = y + h - rs2 - 6;
@@ -93,28 +108,41 @@
     /* Beschriftung, Status-Plakette und Hinweis-Plaketten (W3) */
     label.forEach(({ i, r, s, x, y, w, h }) => {
       const big = Math.min(30 * NF, h * .3, w * .24), small = Math.min(13.5 * NF, Math.max(10, big * .48), w * .095), pad = Math.max(8, Math.min(14, w * .05));
-      d += `<g class="gplb" pointer-events="none"><text x="${x + pad}" y="${y + pad + small}" font-size="${small}" class="gpn">${esc(i.n || (r ? r.name : ""))}</text>`;
+      /* Name kürzen, wenn rechts oben eine Hinweis-Plakette steht */
+      const bq = s && r ? this._gpBadges(r, s) : [], bwq = bq.length ? Math.max(...bq.map((q) => { const v = q.t.length * 11 * NF * .56 + 11 * NF * 1.8; return v > w * .55 ? 11 * NF * 1.6 * bq.length : v; })) + 12 : 0;
+      let nmq = String(i.n || (r ? r.name : "")); const mxc = Math.max(3, Math.floor((w - pad * 2 - bwq) / (small * .58)));
+      if (nmq.length > mxc) nmq = nmq.slice(0, mxc - 1) + "…";
+      d += `<g class="gplb" pointer-events="none"><text x="${x + pad}" y="${y + pad + small}" font-size="${small}" class="gpn">${esc(nmq)}</text>`;
       if (s) {
         const ty = y + pad + small + 6 + big;
         d += `<text x="${x + pad}" y="${ty}" font-size="${big}" class="gpt">${s.cur != null ? num(s.cur, 1) + "°" : "–"}</text>`;
-        if (s.ziel != null && h > big + small * 3.2) d += `<text x="${x + pad}" y="${ty + small * 1.35}" font-size="${small * .9}" class="gpz">Ziel ${num(s.ziel, 1)}°${s.hum != null && w > 150 ? ` · ${num(s.hum, 0)} %` : ""}</text>`;
+        const sub2 = s.ms ? (s.hum != null ? `${num(s.hum, 0)} % Luftfeuchte` : "") : s.ziel != null ? `Ziel ${num(s.ziel, 1)}°${s.hum != null && w > 150 ? ` · ${num(s.hum, 0)} %` : ""}` : "";
+        if (sub2 && h > big + small * 3.2) d += `<text x="${x + pad}" y="${ty + small * 1.35}" font-size="${small * .9}" class="gpz">${sub2}</text>`;
         /* Status-Plakette unten links (wie die Plakette der Raumkarte), in schmalen Räumen nur der Punkt */
-        const fz = small * .86, pw = s.lab.length * fz * .54 + fz * 2.2, ph = fz * 1.9, room = w - pad * 2 - (s.t0 && w > 70 && h > 60 ? Math.min(40 * NF, w * .26, h * .34) + 6 : 0);
-        const zb = ty + (s.ziel != null && h > big + small * 3.2 ? small * 1.35 : 0) + 6, py = y + h - ph - pad * .8, px = x + pad, nb = this._gpBadges(r, s).length;
+        const fz = small * .86, pw = s.lab.length * fz * .56 + fz * 2.2, ph = fz * 1.9, room = w - pad * 2 - ((s.t0 || s.ms) && w > 70 && h > 60 ? Math.min(40 * NF, w * .26, h * .34) + 6 : 0);
+        const zb = ty + (sub2 && h > big + small * 3.2 ? small * 1.35 : 0) + 6, py = y + h - ph - pad * .8, px = x + pad, nb = this._gpBadges(r, s).length;
         if (py >= zb && pw <= room) d += `<g class="gppl"><rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="${ph / 2}"/><circle cx="${px + fz * .95}" cy="${py + ph / 2}" r="${fz * .34}" fill="${s.col}"/><text x="${px + fz * 1.6}" y="${py + ph / 2 + fz * .36}" font-size="${fz}">${esc(s.lab)}</text></g>`;
         else if (py >= zb) d += `<circle cx="${px + fz * .5}" cy="${py + ph / 2}" r="${fz * .42}" fill="${s.col}" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>`;
         else if (!nb) d += `<circle cx="${x + w - pad - fz * .4}" cy="${y + pad + small * .62}" r="${fz * .42}" fill="${s.col}" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>`;   /* zu flach: Punkt oben rechts */
         if (s.here) { const ps = Math.min(30 * NF, w * .2), px = x + w - ps - 8; d += `<g transform="translate(${(px + ps / 2).toFixed(1)} ${(y + h / 2).toFixed(1)})"><circle r="${(ps / 2).toFixed(1)}" fill="${s.col}" opacity=".95"/><circle cy="${(-ps * .13).toFixed(1)}" r="${(ps * .15).toFixed(1)}" fill="#fff"/><path d="M${(-ps * .24).toFixed(1)} ${(ps * .27).toFixed(1)} q0 -${(ps * .27).toFixed(1)} ${(ps * .24).toFixed(1)} -${(ps * .27).toFixed(1)} q${(ps * .24).toFixed(1)} 0 ${(ps * .24).toFixed(1)} ${(ps * .27).toFixed(1)}z" fill="#fff"/></g>`; }
         const b = this._gpBadges(r, s);
-        b.forEach((q, k) => { const fz2 = 11 * NF, bw = q.t.length * fz2 * .56 + fz2 * 1.8, bx = x + w - bw - 8, by = y + 8 + k * (fz2 * 2); d += `<g><rect x="${bx}" y="${by}" width="${bw}" height="${fz2 * 1.65}" rx="${fz2 * .82}" fill="${q.c}"/><text x="${bx + fz2 * .9}" y="${by + fz2 * 1.18}" font-size="${fz2}" font-weight="700" fill="#fff">${esc(q.t)}</text></g>`; });
+        b.forEach((q, k) => { const fz2 = 11 * NF, bw = q.t.length * fz2 * .56 + fz2 * 1.8, bx = x + w - bw - 8, by = y + 8 + k * (fz2 * 2);
+          if (bw > w * .55) { const cr = fz2 * .75, cx = x + w - cr - 8 - k * (cr * 2.3); d += `<g><title>${esc(q.t)}</title><circle cx="${cx}" cy="${y + 8 + cr}" r="${cr}" fill="${q.c}"/><text x="${cx}" y="${y + 8 + cr + fz2 * .36}" font-size="${fz2}" font-weight="800" fill="#fff" text-anchor="middle">!</text></g>`; return; }   /* schmaler Raum: nur ein Punkt mit „!“ */
+          d += `<g><rect x="${bx}" y="${by}" width="${bw}" height="${fz2 * 1.65}" rx="${fz2 * .82}" fill="${q.c}"/><text x="${bx + fz2 * .9}" y="${by + fz2 * 1.18}" font-size="${fz2}" font-weight="700" fill="#fff">${esc(q.t)}</text></g>`; });
       } else if (i.t === "r") d += `<text x="${x + pad}" y="${y + pad + small * 2.4}" font-size="${small * .9}" class="gps">${adm ? "Antippen zum Zuordnen" : "nicht zugeordnet"}</text>`;
       d += `</g>`;
     });
     /* Kopfzeile: kurze Zusammenfassung des Stockwerks */
-    const mine = label.filter((x) => x.s), tv = mine.map((x) => x.s.cur).filter((t) => t != null), nOpen = mine.filter((x) => x.s.anyOpen).length, nHeat = mine.filter((x) => x.s.heating).length, nHere = mine.filter((x) => x.s.here).length;
-    const sum = `<div class="gpsum"><span>${ic("thermo", 14)}Ø <b>${tv.length ? num(tv.reduce((a, t) => a + t, 0) / tv.length, 1) + " °C" : "–"}</b></span>
+    const mine = label.filter((x) => x.s && !x.s.out), tv = mine.map((x) => x.s.cur).filter((t) => t != null), nOpen = mine.filter((x) => x.s.anyOpen).length, nHeat = mine.filter((x) => x.s.heating).length, nHere = mine.filter((x) => x.s.here).length;
+    const om = this._msList().filter((m) => m.loc === "out").map((m) => ({ m, Q: this._msStat(m) })).find((x) => x.Q.tv != null), ot = om ? null : this._out().t;
+    const outc = om ? `<span class="${om.Q.k === "frost" || om.Q.k === "glatt" ? "o" : ""}">${ic("partly", 14)}Außen <b>${num(om.Q.tv, 1)} °C</b>${om.Q.hv != null ? ` · ${num(om.Q.hv, 0)} %` : ""}${om.Q.k === "frost" || om.Q.k === "glatt" ? ` · ${esc(om.Q.lab)}` : ""}</span>` : ot != null ? `<span>${ic("partly", 14)}Außen <b>${num(ot, 1)} °C</b></span>` : "";
+    const sum = `<div class="gpsum">${outc}<span>${ic("thermo", 14)}Ø innen <b>${tv.length ? num(tv.reduce((a, t) => a + t, 0) / tv.length, 1) + " °C" : "–"}</b></span>
       <span class="${nHeat ? "h" : ""}">${ic("flame", 14)}<b>${nHeat}</b> ${nHeat === 1 ? "heizt" : "heizen"}</span><span class="${nOpen ? "o" : ""}">${ic("windowOpen", 14)}<b>${nOpen}</b> Fenster offen</span>${rooms.some((r) => r.pres) ? `<span>${ic("user", 14)}<b>${nHere}</b> mit jemandem</span>` : ""}
-      ${label.some((x) => x.i.t === "r" && !x.r) ? `<span class="u">${label.filter((x) => x.i.t === "r" && !x.r).length} nicht zugeordnet</span>` : ""}</div>`;
+      ${(() => { /* über alle Geschosse; „Kein Raum aus Modul 1“ (gmap „-“) zählt als bewusst leer */
+        const gm = this._cfg.layout.gmap || {}, un = P.items.filter((i) => i.t === "r" && gm[i.id] !== "-" && !this._gpMatch(i, all)); if (!un.length) return "";
+        const fn = Object.fromEntries(fls.map((f) => [f.id, f.n])), by = {}; un.forEach((i) => { by[i.fl] = (by[i.fl] || 0) + 1; });
+        const where = fls.length > 1 ? " · " + fls.filter((f) => by[f.id]).map((f) => `${esc(f.n)} ${by[f.id]}`).join(", ") : "";
+        return adm ? `<button class="u" data-act="gpun" title="Nächste freie Fläche zuordnen">${un.length} nicht zugeordnet${where}${ic("chev", 13)}</button>` : `<span class="u">${un.length} nicht zugeordnet${where}</span>`; })()}</div>`;
     const sc = [lo - 3, lo, (lo + hi) / 2, hi, hi + 2];
     const legend = `<div class="gplg"><span class="gpsc"><i style="background:linear-gradient(90deg,${sc.map((t) => this._rkCol(t, lo, hi)).join(",")})"></i><small>${num(lo - 3, 0)} °C</small><small>${num(hi + 2, 0)} °C</small></span>
       <span><i class="gpk" style="background:#bfdbfe;border:1px solid #60a5fa"></i>Fenster</span><span><i class="gpk" style="background:#3b82f6"></i>offen</span><span><i class="gpk" style="background:#fb923c"></i>heizt</span><span><i class="gpk un"></i>nicht zugeordnet</span>${rooms.some((r) => r.pres) ? `<span><i class="gpk" style="width:10px;height:10px;border-radius:50%;background:var(--teal)"></i>jemand da</span>` : ""}</div>`;
@@ -127,6 +155,7 @@
   }
   /* W3: Plaketten je Raum (höchstens zwei) */
   _gpBadges(r, s) {
+    if (r && r.ms) return s.bat ? [{ t: "Batterie", c: "#d97706" }] : [];
     const out = [], a = this._airData(r);
     if (s.cur != null && s.cur < 8) out.push({ t: "Frost", c: "#dc2626" });
     if (a && a.lvl === 2) out.push({ t: "Schimmel", c: "#dc2626" });
@@ -142,17 +171,25 @@
   }
   _gpMapModal(m) {
     const P = this._gpPlan(), it = P && P.items.find((i) => i.id === m.k); if (!it) return "";
-    const rooms = this._collect(true), cur = (this._cfg.layout.gmap || {})[it.id] || "";
+    const rooms = this._collect(true), ms = this._msList(), cur = (this._cfg.layout.gmap || {})[it.id] || "";
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Raum zuordnen</b><span>Grundriss: ${esc(it.n || "ohne Namen")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="mut sm" style="margin:0 0 10px">Welcher Raum aus Modul 1 liegt hier? Danach färbt sich die Fläche nach seiner Temperatur.</div>
+      <div class="mut sm" style="margin:0 0 10px">Welcher Raum aus Modul 1 liegt hier? Danach färbt sich die Fläche nach seiner Temperatur. Auch Messräume lassen sich zuordnen – ein Außen-Messraum wird als Außenfläche gezeichnet (z. B. Terrasse oder Carport).</div>
       <div class="lftiles">${rooms.map((r) => `<button class="lftile ${cur === r.id ? "sel" : ""}" data-act="gpset" data-k="${esc(it.id)}" data-id="${esc(r.id)}">${this._rkMiniById(r.id, "lft")}<b>${esc(r.name)}</b></button>`).join("")}</div>
+      ${ms.length ? `<div class="lsec" style="margin-top:12px">${ic("thermo", 15)}Messräume</div><div class="lftiles">${ms.map((m) => { const Q = this._msStat(m); return `<button class="lftile gpmsb ${cur === m.id ? "sel" : ""}" data-act="gpset" data-k="${esc(it.id)}" data-id="${esc(m.id)}"><span class="gpmsi" style="--c:${Q.col}">${this._gx(m.loc === "out" ? "forecast" : "thermostat", 40, { on: true }) || ic("thermo", 26)}</span><b>${esc(m.name)}</b><small>${m.loc === "out" ? "Außen" : "Innen"}${Q.tv != null ? " · " + num(Q.tv, 1) + " °C" : ""}</small></button>`; }).join("")}</div>` : ""}
       <div class="foot2"><button class="btn2" data-act="gpset" data-k="${esc(it.id)}" data-id="-">Kein Raum aus Modul 1</button>${cur ? `<button class="btn2" data-act="gpset" data-k="${esc(it.id)}" data-id="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _gpAct(a, b) {
     if (a === "gpfl") { this._gpFl = b.dataset.k; this._render(); return true; }
+    if (a === "gpun") {   /* nächste nicht zugeordnete Fläche: Geschoss wechseln und „Raum zuordnen“ öffnen */
+      const P = this._gpPlan(), gm = this._cfg.layout.gmap || {}, all = this._gpAll(), fo = ((P && P.floors) || []).map((f) => f.id);
+      const un = ((P && P.items) || []).filter((i) => i.t === "r" && gm[i.id] !== "-" && !this._gpMatch(i, all)).sort((x, y) => (x.fl === this._gpFl ? -1 : 0) - (y.fl === this._gpFl ? -1 : 0) || fo.indexOf(x.fl) - fo.indexOf(y.fl));
+      if (!un.length) return true;
+      this._gpFl = un[0].fl; this._render(); this._modal = { type: "gpmap", k: un[0].id }; this._renderModal(); return true;
+    }
     if (a === "gpmap") { this._modal = { type: "gpmap", k: b.dataset.k }; this._renderModal(); return true; }
-    if (a === "gpset") { const g = { ...(this._cfg.layout.gmap || {}) }; if (b.dataset.id) g[b.dataset.k] = b.dataset.id; else delete g[b.dataset.k]; this._cfg.layout.gmap = g; this._saveLayout(); this._modal = null; this._renderModal(); this._render(); return true; }
+    if (a === "gpset") { const g = { ...(this._cfg.layout.gmap || {}) }, v = b.dataset.id; if (v && v.startsWith("ms_")) for (const k of Object.keys(g)) if (g[k] === v) delete g[k];   /* ein Messraum hat genau eine Fläche */
+      if (v) g[b.dataset.k] = v; else delete g[b.dataset.k]; this._cfg.layout.gmap = g; this._saveLayout(); this._modal = null; this._renderModal(); this._render(); return true; }
     if (a === "gpedit") { this._modal = null; this._renderModal(); this._sfT = "pl"; this._mdActiveSet("sf"); this._sfxLoad(true); setTimeout(() => { if (this._sfxD && this._sfxD.d && this._sfxD.d.cfg) this._act("sfxedit", b); }, 400); this._render(); return true; }
     return false;
   }

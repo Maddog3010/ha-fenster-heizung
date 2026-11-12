@@ -149,7 +149,7 @@ div.rk2pl{cursor:default}
 .gpdo path{stroke:var(--mut)}.gpgapr{fill:var(--card-background-color,#1c1f26)}
 .gpv[data-an=dezent] .gpglow,.gpv[data-an=voll] .gpglow{animation:gpGlow 2.6s ease-in-out infinite alternate}@keyframes gpGlow{from{stroke-opacity:.12}to{stroke-opacity:.4}}
 .gpsum{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}.gpsum span{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--line);background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);font-size:.82rem;color:var(--mut)}
-.gpsum b{color:var(--primary-text-color)}.gpsum .h{border-color:color-mix(in srgb,#fb923c 50%,var(--line));color:#fb923c}.gpsum .o{border-color:color-mix(in srgb,#3b82f6 55%,var(--line));color:#60a5fa}.gpsum .u{border-style:dashed}
+.gpsum b{color:var(--primary-text-color)}.gpsum .h{border-color:color-mix(in srgb,#fb923c 50%,var(--line));color:#fb923c}.gpsum .o{border-color:color-mix(in srgb,#3b82f6 55%,var(--line));color:#60a5fa}.gpsum .u{border-style:dashed}.gpsum button.u{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px dashed var(--line);background:transparent;font:inherit;font-size:.82rem;color:var(--mut);cursor:pointer}.gpsum button.u:hover{color:var(--primary-text-color);border-color:var(--teal)}
 .gpn{font-weight:700;fill:var(--primary-text-color);opacity:.9;font-family:inherit}
 .gpt{font-weight:800;fill:var(--primary-text-color);font-family:inherit;letter-spacing:-.5px}
 .gps{font-weight:700;fill:var(--mut);font-family:system-ui,sans-serif}
@@ -158,6 +158,10 @@ div.rk2pl{cursor:default}
 .gplg span{display:inline-flex;align-items:center;gap:6px}.gpk{width:16px;height:6px;border-radius:3px;display:inline-block}.gpk.un{background:repeating-linear-gradient(45deg,var(--line) 0 3px,transparent 3px 6px);height:12px;width:16px}
 .gpsc{position:relative;padding-bottom:14px}.gpsc i{display:block;width:150px;height:8px;border-radius:4px}.gpsc small{position:absolute;bottom:-1px;font-size:.66rem}.gpsc small:first-of-type{left:0}.gpsc small:last-of-type{right:0}
 .gpnote{margin-top:6px}
+.msloc{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:2px 0 8px}.msloc button{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:2px 10px;align-items:center;text-align:left;font:inherit;color:inherit;padding:10px 12px;border-radius:14px;border:1.5px solid var(--line);background:transparent;cursor:pointer}
+.msloc button .gx{grid-row:1/3}.msloc button b{font-size:.95rem}.msloc button span{font-size:.76rem;color:var(--mut);line-height:1.3}.msloc button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent)}
+@media (max-width:520px){.msloc{grid-template-columns:1fr}}
+.gpmsb small{font-size:.72rem;color:var(--mut)}.gpmsi{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 18%,transparent);margin:0 auto 4px}
 @media(max-width:600px){.vbar{flex-wrap:wrap;gap:8px}.vbar .vseg{flex:1 1 100%;display:flex}.vbar .vseg button{flex:1;justify-content:center;padding-left:6px;padding-right:6px}}
 .gpempty{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:24px}.gpempty span{max-width:460px}.gpempty .btn2{flex:none;padding:10px 20px}
 .gpv .gphw path{transform-box:fill-box}

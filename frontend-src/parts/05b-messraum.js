@@ -6,6 +6,19 @@
     const L = this._cfg.layout || {}, cc = L.colors || {}, n0 = this._collect0 ? this._collect0().length : 0;
     return (Array.isArray(L.mess) ? L.mess : []).map((m, i) => ({ ...MS_DEF, ...m, color: HEX.test(cc[m.id] || "") ? cc[m.id] : COLORS[(n0 + i) % COLORS.length], ms: true }));
   }
+  /* Zustand eines Messraums für Raumkarte und Grundriss. Außen (loc "out"): kein Wohlfühlbereich, dafür Frost und Glätte. */
+  _msStat(m) {
+    const T = m.temp ? this._msVal(m.temp, "t", m.stale) : null, Hm = m.hum ? this._msVal(m.hum, "h", m.stale) : null, okv = (x) => x && x.st !== "none" && x.st !== "bad";
+    const vals = [T, Hm].filter(Boolean), none = !vals.length || vals.every((x) => x.st === "none" || x.st === "bad"), tv = okv(T) ? T.v : null, hv = okv(Hm) ? Hm.v : null, out = m.loc === "out";
+    let k = "ok", lab = out ? "Draußen" : "Im Wohlfühlbereich", col = out ? "#38bdf8" : "#2dd4bf";
+    if (none || (tv == null && hv == null)) { k = "aus"; lab = "Keine Daten"; col = "#94a3b8"; }
+    else if (out) { if (tv != null && tv <= 0) { k = "frost"; lab = "Frost"; col = "#60a5fa"; } else if (tv != null && tv <= 3 && hv != null && hv >= 85) { k = "glatt"; lab = "Glätte möglich"; col = "#93c5fd"; } else if (tv != null && tv >= 30) { k = "warm"; lab = "Heiß"; col = "#fb923c"; } }
+    else if (hv != null && hv > m.h_hi) { k = "feucht"; lab = "Zu feucht"; col = "#f59e0b"; }
+    else if (tv != null && tv < m.t_lo) { k = "kalt"; lab = "Zu kalt"; col = "#60a5fa"; }
+    else if (tv != null && tv > m.t_hi) { k = "warm"; lab = "Zu warm"; col = "#fb923c"; }
+    else if (hv != null && hv < m.h_lo) { k = "trocken"; lab = "Zu trocken"; col = "#f59e0b"; }
+    return { T, Hm, tv, hv, none, k, lab, col, out };
+  }
   _msSave(list) { this._cfg.layout.mess = list.map(({ color, ms, ...x }) => x); this._saveLayout(); this._render(); }
   /* Ein Messwert: Zahl (Temperatur in °C), Zustand ok | none | stale | bad und Alter in Stunden */
   _msVal(eid, kind, stale) {
@@ -40,7 +53,7 @@
     const T = m.temp ? this._msVal(m.temp, "t", m.stale) : null, Hm = m.hum ? this._msVal(m.hum, "h", m.stale) : null, edit = this._edit, adm = this._admin();
     const vals = [T, Hm].filter(Boolean), none = vals.length && vals.every((x) => x.st === "none" || x.st === "bad");
     const mm = !none ? this._msMM(m) : null, fmtR = (r, d) => (r ? `Min ${num(r[0], d)} · Max ${num(r[1], d)} heute` : "");
-    const tone = (x, lo, hi, cold) => (x.st !== "ok" ? "gray" : x.v < lo ? cold : x.v > hi ? "amber" : "green");
+    const tone = (x, lo, hi, cold) => (x.st !== "ok" ? "gray" : m.loc === "out" ? (cold === "blue" && x.v <= 0 ? "blue" : "green") : x.v < lo ? cold : x.v > hi ? "amber" : "green");
     const tT = T ? tone(T, m.t_lo, m.t_hi, "blue") : "", tH = Hm ? tone(Hm, m.h_lo, m.h_hi, "amber") : "";
     const box = (x, ttl, icon, unit, d, tn, rng, gauge) => {
       if (x.st === "none") return `<div class="msb none"><div class="t">${ic(icon, 15)}${ttl}</div><div class="v">keine Daten</div></div>`;
@@ -50,9 +63,9 @@
     const boxes = [T ? box(T, "Temperatur", "thermo", " °C", 1, tT, fmtR(mm && mm.t, 1)) : "", Hm ? box(Hm, "Luftfeuchte", "drop", " %", 0, tH, fmtR(mm && mm.h, 0), true) : ""].join("");
     /* Zuschaltbar: Taupunkt und Schimmelhinweis */
     let extra = "";
-    if (T && Hm && T.st !== "none" && T.st !== "bad" && Hm.st !== "none" && Hm.st !== "bad" && (m.dew || m.mold)) {
+    if (T && Hm && T.st !== "none" && T.st !== "bad" && Hm.st !== "none" && Hm.st !== "bad" && (m.dew || (m.mold && m.loc !== "out"))) {
       const o = this._out(), a = airCalc(T.v, Hm.v, o.t, o.rh), [ml, mc] = MOLD[a.lvl];
-      extra = `<div class="msx">${m.dew ? `<span>${ic("thermo", 13)}Taupunkt <b>${num(a.td, 1)} °C</b></span>` : ""}${m.mold ? `<span class="${mc}">${ic("alert", 13)}Schimmel <b>${ml}</b></span>` : ""}</div>`;
+      extra = `<div class="msx">${m.dew ? `<span>${ic("thermo", 13)}Taupunkt <b>${num(a.td, 1)} °C</b></span>` : ""}${m.mold && m.loc !== "out" ? `<span class="${mc}">${ic("alert", 13)}Schimmel <b>${ml}</b></span>` : ""}</div>`;
     }
     /* Hinweiszeile */
     const ok = vals.filter((x) => x.st === "ok"), stale = vals.filter((x) => x.st === "stale");
@@ -62,10 +75,11 @@
     else if (stale.length && !ok.length) note = `Letzter Wert ${this._msAgo(Math.min(...stale.map((x) => x.age)))}, Sensor meldet sich nicht`;
     else {
       const out = [];
-      if (T && T.st === "ok") { if (T.v < m.t_lo) out.push(`Zu kalt (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); else if (T.v > m.t_hi) out.push(`Zu warm (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); }
-      if (Hm && Hm.st === "ok") { if (Hm.v > m.h_hi) out.push(`Zu feucht (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); else if (Hm.v < m.h_lo) out.push(`Zu trocken (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); }
+      if (m.loc === "out") { if (T && T.st === "ok" && T.v <= 0) out.push("Frost"); else if (T && T.st === "ok" && Hm && Hm.st === "ok" && T.v <= 3 && Hm.v >= 85) out.push("Glätte möglich"); }
+      else if (T && T.st === "ok") { if (T.v < m.t_lo) out.push(`Zu kalt (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); else if (T.v > m.t_hi) out.push(`Zu warm (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); }
+      if (Hm && Hm.st === "ok" && m.loc !== "out") { if (Hm.v > m.h_hi) out.push(`Zu feucht (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); else if (Hm.v < m.h_lo) out.push(`Zu trocken (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); }
       const age = Math.min(...vals.filter((x) => x.age != null).map((x) => x.age));
-      note = out.length ? out.join(" · ") : `Aktualisiert ${this._msAgo(age)} · im Wohlfühlbereich`; ntone = out.length ? "amber" : "";
+      note = out.length ? out.join(" · ") : `Aktualisiert ${this._msAgo(age)} · ${m.loc === "out" ? "draußen" : "im Wohlfühlbereich"}`; ntone = out.length ? "amber" : "";
       if (stale.length) note += ` · ${stale.length === 1 && vals.length > 1 ? "ein Sensor" : "Sensor"} ${this._msAgo(Math.min(...stale.map((x) => x.age)))}`;
     }
     const bs = m.bat && this._hass.states[m.bat], bv = bs ? parseFloat(bs.state) : NaN, batLow = bs && ((isFinite(bv) && bv <= 15) || bs.state === "on" || /low|niedrig/i.test(bs.state));
@@ -73,7 +87,7 @@
     const icon = rkPic ? (edit ? `<button class="rk2minib" data-act="icon" data-id="${esc(m.id)}" aria-label="Raum anpassen">${rkPic}<span class="pen">${ic("pencil", 11)}</span></button>` : rkPic) : edit ? `<button class="rico" style="${rcStyle(m.color)}" data-act="icon" data-id="${esc(m.id)}" aria-label="Symbol ändern">${ico(this._icon(m), 26)}<span class="pen">${ic("pencil", 11)}</span></button>` : `<div class="rico" style="${rcStyle(m.color)}">${ico(this._icon(m), 26)}</div>`;
     if (this._rkOn()) return this._msCard2(m, T, Hm, mm, none, note, ntone, batLow);
     return `<div class="card room msr${none ? " msnone" : ""}${this._ph(m).c}"${this._ph(m).s} data-id="${esc(m.id)}"><div class="rh">${icon}
-        <div class="rn"><b>${esc(m.name)}</b><div class="pl"><span class="msbadge">Messraum</span>${batLow ? `<span class="pill amber">Batterie leer</span>` : ""}</div></div>
+        <div class="rn"><b>${esc(m.name)}</b><div class="pl"><span class="msbadge">${m.loc === "out" ? "Außen" : "Messraum"}</span>${batLow ? `<span class="pill amber">Batterie leer</span>` : ""}</div></div>
         ${adm ? `<button class="ibtn gear" data-act="msxedit" data-id="${esc(m.id)}" aria-label="Messraum einstellen">${ic("sliders", 17)}</button>` : ""}</div>
       <div class="msv${T && Hm ? "" : " one"}">${boxes}</div>${extra}${this._lfBox(m.id)}
       <div class="msn ${ntone}">${esc(note)}</div></div>`;
@@ -119,6 +133,27 @@
     this._modal = { type: "msx", id: id || null, kind: cur ? "mess" : null, err: "", del: false, draft: cur ? { ...cur } : { ...MS_DEF, id: "", name: "" } };
     this._renderModal();
   }
+  /* Grundriss-Raum dieses Messraums: von Hand (layout.gmap) oder automatisch über den Namen */
+  _msGpPlanRooms() { const P = this._gpPlan && this._gpPlan(); if (!P || P.error || !Array.isArray(P.items)) return []; const fl = Object.fromEntries((P.floors || []).map((f) => [f.id, f.n])), many = (P.floors || []).length > 1; return P.items.filter((i) => i.t === "r").map((i) => ({ id: i.id, n: (many && fl[i.fl] ? fl[i.fl] + " · " : "") + (i.n || "ohne Namen"), item: i })); }
+  _msGpCur(id, name) {
+    const gm = this._cfg.layout.gmap || {}, L = this._msGpPlanRooms(), hand = Object.keys(gm).find((k) => gm[k] === id);
+    if (hand) return { id: hand, auto: false };
+    const all = this._gpAll(), me = { id, name: name || (all.find((x) => x.id === id) || {}).name || "" }, a = L.find((p) => { const r = this._gpMatch(p.item, all.some((x) => x.id === id) ? all : [...all, me]); return r && r.id === id; });
+    return a ? { id: a.id, auto: true } : { id: "", auto: false };
+  }
+  _msGpRow(M) {
+    const L = this._msGpPlanRooms(); if (!L.length) return "";
+    const cur = M.gp !== undefined ? { id: M.gp, auto: false } : this._msGpCur(M.id || "", M.draft.name), gm = this._cfg.layout.gmap || {}, all = this._gpAll();
+    const who = (pid) => { const v = gm[pid]; const r = v && v !== "-" ? all.find((x) => x.id === v) : null; return r && r.id !== M.id ? ` (jetzt: ${r.name})` : ""; };
+    return `<div class="of"><div class="ol"><b>Im Grundriss</b><small>${cur.auto ? "automatisch über den Namen" : "Fläche aus dem Grundriss von Modul 11"}</small></div><div class="oc"><select class="osel" data-f="msxgp" aria-label="Fläche im Grundriss">
+      <option value="" ${cur.id ? "" : "selected"}>– nicht im Grundriss –</option>${L.map((p) => `<option value="${esc(p.id)}" ${cur.id === p.id ? "selected" : ""}>${esc(p.n + who(p.id))}</option>`).join("")}</select></div></div>`;
+  }
+  _msGpApply(rec, pid) {
+    const g = { ...(this._cfg.layout.gmap || {}) }, auto = this._msGpCur(rec.id, rec.name);
+    for (const k of Object.keys(g)) if (g[k] === rec.id) delete g[k];
+    if (pid) g[pid] = rec.id; else if (auto.id && auto.auto) g[auto.id] = "-";   /* „nicht im Grundriss“ schlägt die Zuordnung über den Namen */
+    this._cfg.layout.gmap = g;
+  }
   _msModal() {
     const M = this._modal, d = M.draft, st = this._hass.states, isNew = !M.id;
     const ks = Object.keys(st), dc = (e) => (st[e].attributes || {}).device_class || "";
@@ -146,16 +181,22 @@
       <div class="lsec">${ic("pencil", 15)}Name</div>
       <input class="otxt" type="text" maxlength="30" data-f="msxname" value="${esc(d.name)}" placeholder="z. B. Keller" aria-label="Name des Messraums">
       ${!isNew ? `<button class="lnk" data-act="icon" data-id="${esc(d.id)}" style="margin:6px 0 0">${ic("image", 14)} Symbol, Farbe und Foto ändern</button>` : `<div class="mut sm" style="margin:6px 0 0">Das Symbol wird nach dem Namen gewählt. Symbol, Farbe und Foto änderst du später unter „Anpassen“.</div>`}
+      <div class="lsec">${ic("home", 15)}Wo misst der Sensor?</div>
+      <div class="msloc"><button class="${d.loc !== "out" ? "sel" : ""}" data-act="msxloc" data-k="in">${this._gx("house", 34, { on: true })}<b>Innen</b><span>Im Haus, z. B. Keller, Flur, Abstellraum. Mit Wohlfühlbereich und Schimmelhinweis.</span></button>
+        <button class="${d.loc === "out" ? "sel" : ""}" data-act="msxloc" data-k="out">${this._gx("forecast", 34, { on: true })}<b>Außen</b><span>Draußen, z. B. Terrasse, Garten, Carport. Mit Frost- und Glättehinweis.</span></button></div>
+      ${d.loc === "out" && d.temp ? (() => { const c = this._wxCfg(); return c.outdoor === d.temp ? `<div class="gst">${ic("check", 15)}<span>Dieser Sensor ist schon die Außentemperatur des Hauses (Einstellungen → Haus → Wetter).</span></div>`
+        : `<div class="gst">${ic("info", 15)}<span>${c.outdoor ? "Das Haus nutzt einen anderen Außenfühler." : "Das Haus nimmt die Außentemperatur bisher aus der Wetter-Entität."} <button class="lnk" data-act="msxout">Diesen Sensor als Außentemperatur des Hauses verwenden</button> – gilt dann auch für Sommerbetrieb, Schimmelhinweise und Lüften.</span></div>`; })() : ""}
+      ${this._msGpRow(M)}
       <div class="lsec">${ic("thermo", 15)}Sensoren</div>
       <div class="mut sm" style="margin:-2px 0 6px">Mindestens einer von beiden. Es werden nur passende Sensoren vorgeschlagen.</div>
       ${row("Temperatur", "Geräteklasse Temperatur", this._wzSel(tmp, d.temp, "msxe", `data-k="temp"`, "– kein Sensor –", /temp/i))}${dT ? `<div class="mut sm msdup">${esc(dT)}</div>` : ""}
       ${row("Luftfeuchte", "Hygrometer, Geräteklasse Luftfeuchte", this._wzSel(hum, d.hum, "msxe", `data-k="hum"`, "– kein Sensor –", /feucht|humid/i))}${dH ? `<div class="mut sm msdup">${esc(dH)}</div>` : ""}
       ${row("Batterie", "optional, Hinweis „Batterie leer“ ab 15 %", this._wzSel(bat, d.bat, "msxe", `data-k="bat"`, "– keine –", /bat/i))}
       <div class="lsec">${ic("eye", 15)}Anzeige</div>
-      ${sw("mm", "Min und Max heute", "Aus dem Verlauf von Home Assistant")}${sw("dew", "Taupunkt zeigen", "Braucht beide Sensoren")}${sw("mold", "Schimmelhinweis zeigen", "Geschätzt, braucht beide Sensoren")}
-      <div class="lsec">${ic("check", 15)}Wohlfühlbereich und Sensor-Alter</div>
-      ${row("Temperatur", "Darunter blau, darüber gelb", `<div class="msrg">${nm("t_lo", "°C", -20, 40, 0.5)}<span class="mut">bis</span>${nm("t_hi", "°C", -20, 40, 0.5)}</div>`)}
-      ${row("Luftfeuchte", "Außerhalb gelb", `<div class="msrg">${nm("h_lo", "%", 0, 100, 1)}<span class="mut">bis</span>${nm("h_hi", "%", 0, 100, 1)}</div>`)}
+      ${sw("mm", "Min und Max heute", "Aus dem Verlauf von Home Assistant")}${sw("dew", "Taupunkt zeigen", "Braucht beide Sensoren")}${d.loc === "out" ? "" : sw("mold", "Schimmelhinweis zeigen", "Geschätzt, braucht beide Sensoren")}
+      <div class="lsec">${ic("check", 15)}${d.loc === "out" ? "Sensor-Alter" : "Wohlfühlbereich und Sensor-Alter"}</div>
+      ${d.loc === "out" ? `<div class="mut sm" style="margin:-2px 0 6px">Draußen gibt es keinen Wohlfühlbereich. Hinweis bei Frost (ab 0 °C) und Glätte (bis 3 °C und ab 85 % Luftfeuchte).</div>` : `${row("Temperatur", "Darunter blau, darüber gelb", `<div class="msrg">${nm("t_lo", "°C", -20, 40, 0.5)}<span class="mut">bis</span>${nm("t_hi", "°C", -20, 40, 0.5)}</div>`)}
+      ${row("Luftfeuchte", "Außerhalb gelb", `<div class="msrg">${nm("h_lo", "%", 0, 100, 1)}<span class="mut">bis</span>${nm("h_hi", "%", 0, 100, 1)}</div>`)}`}
       ${row("Gilt als veraltet nach", "Danach wird die Zahl grau", nm("stale", "Min.", 10, 1440, 5))}
       ${M.err ? `<div class="gst on">${ic("alert", 15)}<div>${esc(M.err)}</div></div>` : ""}
       ${!isNew ? (M.del ? `<div class="gbox"><b>Messraum „${esc(d.name)}“ löschen?</b>Sensoren in Home Assistant bleiben unverändert.</div><div class="foot2"><button class="btn2" data-act="msxdelno">Abbrechen</button><button class="btn2" style="color:#f87171;border-color:color-mix(in srgb,#f87171 45%,transparent)" data-act="msxdelok">Löschen</button></div>` : `<button class="lnk dng" data-act="msxdel" style="margin:10px 0 0">${ic("trash", 14)} Messraum löschen</button>`) : ""}
@@ -165,6 +206,7 @@
     const M = this._modal; if (!M || M.type !== "msx") return false;
     const f = t.dataset.f, d = M.draft;
     if (f === "msxname") { d.name = t.value; return true; }
+    if (f === "msxgp") { M.gp = t.value; return true; }
     if (f === "msxe") { d[t.dataset.k] = t.value || ""; M.err = ""; return true; }
     if (f === "msxn") { const v = parseFloat(String(t.value).replace(",", ".")); if (isFinite(v)) d[t.dataset.k] = v; return true; }
     return false;
@@ -186,6 +228,8 @@
     else if (a === "msxha") { this._modal = null; this._renderModal(); this._nav(HA_PAGE); }
     else if (a === "msxsug") { const s = this._msSug()[+b.dataset.i]; if (s) { M.kind = "mess"; Object.assign(d, { name: s.name, temp: s.temp, hum: s.hum }); this._renderModal(); } }
     else if (a === "msxsw") { d[b.dataset.k] = !d[b.dataset.k]; this._renderModal(); }
+    else if (a === "msxloc") { d.loc = b.dataset.k === "out" ? "out" : "in"; if (d.loc === "out") d.mold = false; this._renderModal(); }
+    else if (a === "msxout") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), outdoor: d.temp }; this._saveLayout(); this._toast("Außentemperatur des Hauses kommt jetzt von diesem Sensor"); this._renderModal(); }
     else if (a === "msxdel") { M.del = true; this._renderModal(); }
     else if (a === "msxdelno") { M.del = false; this._renderModal(); }
     else if (a === "msxdelok") {
@@ -198,6 +242,7 @@
       M.err = !name ? "Bitte einen Namen eingeben." : taken ? `Es gibt schon einen Raum „${name}“.` : !d.temp && !d.hum ? "Bitte mindestens einen Sensor wählen: Temperatur oder Luftfeuchte." : d.t_lo >= d.t_hi || d.h_lo >= d.h_hi ? "Beim Wohlfühlbereich muss der erste Wert kleiner sein als der zweite." : "";
       if (M.err) { this._renderModal(); return; }
       const rec = { ...MS_DEF, ...d, name, id: M.id || "ms_" + Date.now().toString(36), parts: ["mess"] };
+      if (M.gp !== undefined) this._msGpApply(rec, M.gp);
       const L = this._msList(), i = L.findIndex((x) => x.id === rec.id);
       if (i >= 0) L[i] = rec; else L.push(rec);
       this._msSave(L); this._modal = null; this._renderModal(); this._toast(i >= 0 ? "Messraum gespeichert" : `Messraum „${name}“ angelegt`);

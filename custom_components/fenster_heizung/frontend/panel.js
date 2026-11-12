@@ -259,7 +259,7 @@ const WW_ON = ["on", "heat", "heating", "performance", "eco", "electric", "gas",
 const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000, MW: 1e6 };
 /* Modul 4: Gerätetypen (Symbol, Startschwelle W, Ende nach min) und Farben wie in Modul 3 */
 /* Modul 1: Standardwerte eines Messraums (Raum nur mit Temperatur und Luftfeuchte) */
-const MS_DEF = { parts: ["mess"], temp: "", hum: "", bat: "", mm: true, dew: false, mold: false, t_lo: 18, t_hi: 24, h_lo: 40, h_hi: 60, stale: 60 };
+const MS_DEF = { parts: ["mess"], loc: "in", temp: "", hum: "", bat: "", mm: true, dew: false, mold: false, t_lo: 18, t_hi: 24, h_lo: 40, h_hi: 60, stale: 60 };
 const GS_MAX = 15; /* Modul 4: höchstens so viele Geräte (Backend: MAX_DEVICES) */
 const GS_TYP = { wasch: { n: "Waschmaschine", i: "laundry", thr: 5, end: 15 }, trockner: { n: "Trockner", i: "windy", thr: 50, end: 5 }, spuel: { n: "Spülmaschine", i: "dining", thr: 5, end: 30 }, kuehl: { n: "Kühlgerät", i: "fridge", thr: 20, end: 5 }, ofen: { n: "Küche", i: "pot", thr: 100, end: 10 }, pool: { n: "Pool", i: "wave", thr: 50, end: 5 }, pc: { n: "Computer", i: "gamepad", thr: 30, end: 5 }, tv: { n: "Fernseher", i: "tv", thr: 20, end: 5 }, werk: { n: "Werkstatt", i: "tools", thr: 50, end: 5 }, sonst: { n: "Gerät", i: "bolt", thr: 20, end: 5 } };
 const GS_COL = ["#fbbf24", "#a78bfa", "#f87171"], GS_SRC = ["Solar", "Batterie", "Netz"], GS_RANGES = ["day", "week", "month", "year"];
@@ -733,7 +733,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  fh: { v: "1.8", b: 6, d: "2026-11-12", p: "2026.11.3b8", log: [["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.8", b: 7, d: "2026-11-12", p: "2026.11.3b9", log: [["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 2, d: "2026-11-11", p: "2026.11.3b4", log: [["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2540,7 +2540,7 @@ div.rk2pl{cursor:default}
 .gpdo path{stroke:var(--mut)}.gpgapr{fill:var(--card-background-color,#1c1f26)}
 .gpv[data-an=dezent] .gpglow,.gpv[data-an=voll] .gpglow{animation:gpGlow 2.6s ease-in-out infinite alternate}@keyframes gpGlow{from{stroke-opacity:.12}to{stroke-opacity:.4}}
 .gpsum{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}.gpsum span{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--line);background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);font-size:.82rem;color:var(--mut)}
-.gpsum b{color:var(--primary-text-color)}.gpsum .h{border-color:color-mix(in srgb,#fb923c 50%,var(--line));color:#fb923c}.gpsum .o{border-color:color-mix(in srgb,#3b82f6 55%,var(--line));color:#60a5fa}.gpsum .u{border-style:dashed}
+.gpsum b{color:var(--primary-text-color)}.gpsum .h{border-color:color-mix(in srgb,#fb923c 50%,var(--line));color:#fb923c}.gpsum .o{border-color:color-mix(in srgb,#3b82f6 55%,var(--line));color:#60a5fa}.gpsum .u{border-style:dashed}.gpsum button.u{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px dashed var(--line);background:transparent;font:inherit;font-size:.82rem;color:var(--mut);cursor:pointer}.gpsum button.u:hover{color:var(--primary-text-color);border-color:var(--teal)}
 .gpn{font-weight:700;fill:var(--primary-text-color);opacity:.9;font-family:inherit}
 .gpt{font-weight:800;fill:var(--primary-text-color);font-family:inherit;letter-spacing:-.5px}
 .gps{font-weight:700;fill:var(--mut);font-family:system-ui,sans-serif}
@@ -2549,6 +2549,10 @@ div.rk2pl{cursor:default}
 .gplg span{display:inline-flex;align-items:center;gap:6px}.gpk{width:16px;height:6px;border-radius:3px;display:inline-block}.gpk.un{background:repeating-linear-gradient(45deg,var(--line) 0 3px,transparent 3px 6px);height:12px;width:16px}
 .gpsc{position:relative;padding-bottom:14px}.gpsc i{display:block;width:150px;height:8px;border-radius:4px}.gpsc small{position:absolute;bottom:-1px;font-size:.66rem}.gpsc small:first-of-type{left:0}.gpsc small:last-of-type{right:0}
 .gpnote{margin-top:6px}
+.msloc{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:2px 0 8px}.msloc button{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:2px 10px;align-items:center;text-align:left;font:inherit;color:inherit;padding:10px 12px;border-radius:14px;border:1.5px solid var(--line);background:transparent;cursor:pointer}
+.msloc button .gx{grid-row:1/3}.msloc button b{font-size:.95rem}.msloc button span{font-size:.76rem;color:var(--mut);line-height:1.3}.msloc button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent)}
+@media (max-width:520px){.msloc{grid-template-columns:1fr}}
+.gpmsb small{font-size:.72rem;color:var(--mut)}.gpmsi{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 18%,transparent);margin:0 auto 4px}
 @media(max-width:600px){.vbar{flex-wrap:wrap;gap:8px}.vbar .vseg{flex:1 1 100%;display:flex}.vbar .vseg button{flex:1;justify-content:center;padding-left:6px;padding-right:6px}}
 .gpempty{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:24px}.gpempty span{max-width:460px}.gpempty .btn2{flex:none;padding:10px 20px}
 .gpv .gphw path{transform-box:fill-box}
@@ -3771,6 +3775,19 @@ class FensterHeizungPanel extends HTMLElement {
     const L = this._cfg.layout || {}, cc = L.colors || {}, n0 = this._collect0 ? this._collect0().length : 0;
     return (Array.isArray(L.mess) ? L.mess : []).map((m, i) => ({ ...MS_DEF, ...m, color: HEX.test(cc[m.id] || "") ? cc[m.id] : COLORS[(n0 + i) % COLORS.length], ms: true }));
   }
+  /* Zustand eines Messraums für Raumkarte und Grundriss. Außen (loc "out"): kein Wohlfühlbereich, dafür Frost und Glätte. */
+  _msStat(m) {
+    const T = m.temp ? this._msVal(m.temp, "t", m.stale) : null, Hm = m.hum ? this._msVal(m.hum, "h", m.stale) : null, okv = (x) => x && x.st !== "none" && x.st !== "bad";
+    const vals = [T, Hm].filter(Boolean), none = !vals.length || vals.every((x) => x.st === "none" || x.st === "bad"), tv = okv(T) ? T.v : null, hv = okv(Hm) ? Hm.v : null, out = m.loc === "out";
+    let k = "ok", lab = out ? "Draußen" : "Im Wohlfühlbereich", col = out ? "#38bdf8" : "#2dd4bf";
+    if (none || (tv == null && hv == null)) { k = "aus"; lab = "Keine Daten"; col = "#94a3b8"; }
+    else if (out) { if (tv != null && tv <= 0) { k = "frost"; lab = "Frost"; col = "#60a5fa"; } else if (tv != null && tv <= 3 && hv != null && hv >= 85) { k = "glatt"; lab = "Glätte möglich"; col = "#93c5fd"; } else if (tv != null && tv >= 30) { k = "warm"; lab = "Heiß"; col = "#fb923c"; } }
+    else if (hv != null && hv > m.h_hi) { k = "feucht"; lab = "Zu feucht"; col = "#f59e0b"; }
+    else if (tv != null && tv < m.t_lo) { k = "kalt"; lab = "Zu kalt"; col = "#60a5fa"; }
+    else if (tv != null && tv > m.t_hi) { k = "warm"; lab = "Zu warm"; col = "#fb923c"; }
+    else if (hv != null && hv < m.h_lo) { k = "trocken"; lab = "Zu trocken"; col = "#f59e0b"; }
+    return { T, Hm, tv, hv, none, k, lab, col, out };
+  }
   _msSave(list) { this._cfg.layout.mess = list.map(({ color, ms, ...x }) => x); this._saveLayout(); this._render(); }
   /* Ein Messwert: Zahl (Temperatur in °C), Zustand ok | none | stale | bad und Alter in Stunden */
   _msVal(eid, kind, stale) {
@@ -3805,7 +3822,7 @@ class FensterHeizungPanel extends HTMLElement {
     const T = m.temp ? this._msVal(m.temp, "t", m.stale) : null, Hm = m.hum ? this._msVal(m.hum, "h", m.stale) : null, edit = this._edit, adm = this._admin();
     const vals = [T, Hm].filter(Boolean), none = vals.length && vals.every((x) => x.st === "none" || x.st === "bad");
     const mm = !none ? this._msMM(m) : null, fmtR = (r, d) => (r ? `Min ${num(r[0], d)} · Max ${num(r[1], d)} heute` : "");
-    const tone = (x, lo, hi, cold) => (x.st !== "ok" ? "gray" : x.v < lo ? cold : x.v > hi ? "amber" : "green");
+    const tone = (x, lo, hi, cold) => (x.st !== "ok" ? "gray" : m.loc === "out" ? (cold === "blue" && x.v <= 0 ? "blue" : "green") : x.v < lo ? cold : x.v > hi ? "amber" : "green");
     const tT = T ? tone(T, m.t_lo, m.t_hi, "blue") : "", tH = Hm ? tone(Hm, m.h_lo, m.h_hi, "amber") : "";
     const box = (x, ttl, icon, unit, d, tn, rng, gauge) => {
       if (x.st === "none") return `<div class="msb none"><div class="t">${ic(icon, 15)}${ttl}</div><div class="v">keine Daten</div></div>`;
@@ -3815,9 +3832,9 @@ class FensterHeizungPanel extends HTMLElement {
     const boxes = [T ? box(T, "Temperatur", "thermo", " °C", 1, tT, fmtR(mm && mm.t, 1)) : "", Hm ? box(Hm, "Luftfeuchte", "drop", " %", 0, tH, fmtR(mm && mm.h, 0), true) : ""].join("");
     /* Zuschaltbar: Taupunkt und Schimmelhinweis */
     let extra = "";
-    if (T && Hm && T.st !== "none" && T.st !== "bad" && Hm.st !== "none" && Hm.st !== "bad" && (m.dew || m.mold)) {
+    if (T && Hm && T.st !== "none" && T.st !== "bad" && Hm.st !== "none" && Hm.st !== "bad" && (m.dew || (m.mold && m.loc !== "out"))) {
       const o = this._out(), a = airCalc(T.v, Hm.v, o.t, o.rh), [ml, mc] = MOLD[a.lvl];
-      extra = `<div class="msx">${m.dew ? `<span>${ic("thermo", 13)}Taupunkt <b>${num(a.td, 1)} °C</b></span>` : ""}${m.mold ? `<span class="${mc}">${ic("alert", 13)}Schimmel <b>${ml}</b></span>` : ""}</div>`;
+      extra = `<div class="msx">${m.dew ? `<span>${ic("thermo", 13)}Taupunkt <b>${num(a.td, 1)} °C</b></span>` : ""}${m.mold && m.loc !== "out" ? `<span class="${mc}">${ic("alert", 13)}Schimmel <b>${ml}</b></span>` : ""}</div>`;
     }
     /* Hinweiszeile */
     const ok = vals.filter((x) => x.st === "ok"), stale = vals.filter((x) => x.st === "stale");
@@ -3827,10 +3844,11 @@ class FensterHeizungPanel extends HTMLElement {
     else if (stale.length && !ok.length) note = `Letzter Wert ${this._msAgo(Math.min(...stale.map((x) => x.age)))}, Sensor meldet sich nicht`;
     else {
       const out = [];
-      if (T && T.st === "ok") { if (T.v < m.t_lo) out.push(`Zu kalt (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); else if (T.v > m.t_hi) out.push(`Zu warm (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); }
-      if (Hm && Hm.st === "ok") { if (Hm.v > m.h_hi) out.push(`Zu feucht (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); else if (Hm.v < m.h_lo) out.push(`Zu trocken (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); }
+      if (m.loc === "out") { if (T && T.st === "ok" && T.v <= 0) out.push("Frost"); else if (T && T.st === "ok" && Hm && Hm.st === "ok" && T.v <= 3 && Hm.v >= 85) out.push("Glätte möglich"); }
+      else if (T && T.st === "ok") { if (T.v < m.t_lo) out.push(`Zu kalt (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); else if (T.v > m.t_hi) out.push(`Zu warm (${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C)`); }
+      if (Hm && Hm.st === "ok" && m.loc !== "out") { if (Hm.v > m.h_hi) out.push(`Zu feucht (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); else if (Hm.v < m.h_lo) out.push(`Zu trocken (${num(m.h_lo, 0)}–${num(m.h_hi, 0)} %)`); }
       const age = Math.min(...vals.filter((x) => x.age != null).map((x) => x.age));
-      note = out.length ? out.join(" · ") : `Aktualisiert ${this._msAgo(age)} · im Wohlfühlbereich`; ntone = out.length ? "amber" : "";
+      note = out.length ? out.join(" · ") : `Aktualisiert ${this._msAgo(age)} · ${m.loc === "out" ? "draußen" : "im Wohlfühlbereich"}`; ntone = out.length ? "amber" : "";
       if (stale.length) note += ` · ${stale.length === 1 && vals.length > 1 ? "ein Sensor" : "Sensor"} ${this._msAgo(Math.min(...stale.map((x) => x.age)))}`;
     }
     const bs = m.bat && this._hass.states[m.bat], bv = bs ? parseFloat(bs.state) : NaN, batLow = bs && ((isFinite(bv) && bv <= 15) || bs.state === "on" || /low|niedrig/i.test(bs.state));
@@ -3838,7 +3856,7 @@ class FensterHeizungPanel extends HTMLElement {
     const icon = rkPic ? (edit ? `<button class="rk2minib" data-act="icon" data-id="${esc(m.id)}" aria-label="Raum anpassen">${rkPic}<span class="pen">${ic("pencil", 11)}</span></button>` : rkPic) : edit ? `<button class="rico" style="${rcStyle(m.color)}" data-act="icon" data-id="${esc(m.id)}" aria-label="Symbol ändern">${ico(this._icon(m), 26)}<span class="pen">${ic("pencil", 11)}</span></button>` : `<div class="rico" style="${rcStyle(m.color)}">${ico(this._icon(m), 26)}</div>`;
     if (this._rkOn()) return this._msCard2(m, T, Hm, mm, none, note, ntone, batLow);
     return `<div class="card room msr${none ? " msnone" : ""}${this._ph(m).c}"${this._ph(m).s} data-id="${esc(m.id)}"><div class="rh">${icon}
-        <div class="rn"><b>${esc(m.name)}</b><div class="pl"><span class="msbadge">Messraum</span>${batLow ? `<span class="pill amber">Batterie leer</span>` : ""}</div></div>
+        <div class="rn"><b>${esc(m.name)}</b><div class="pl"><span class="msbadge">${m.loc === "out" ? "Außen" : "Messraum"}</span>${batLow ? `<span class="pill amber">Batterie leer</span>` : ""}</div></div>
         ${adm ? `<button class="ibtn gear" data-act="msxedit" data-id="${esc(m.id)}" aria-label="Messraum einstellen">${ic("sliders", 17)}</button>` : ""}</div>
       <div class="msv${T && Hm ? "" : " one"}">${boxes}</div>${extra}${this._lfBox(m.id)}
       <div class="msn ${ntone}">${esc(note)}</div></div>`;
@@ -3884,6 +3902,27 @@ class FensterHeizungPanel extends HTMLElement {
     this._modal = { type: "msx", id: id || null, kind: cur ? "mess" : null, err: "", del: false, draft: cur ? { ...cur } : { ...MS_DEF, id: "", name: "" } };
     this._renderModal();
   }
+  /* Grundriss-Raum dieses Messraums: von Hand (layout.gmap) oder automatisch über den Namen */
+  _msGpPlanRooms() { const P = this._gpPlan && this._gpPlan(); if (!P || P.error || !Array.isArray(P.items)) return []; const fl = Object.fromEntries((P.floors || []).map((f) => [f.id, f.n])), many = (P.floors || []).length > 1; return P.items.filter((i) => i.t === "r").map((i) => ({ id: i.id, n: (many && fl[i.fl] ? fl[i.fl] + " · " : "") + (i.n || "ohne Namen"), item: i })); }
+  _msGpCur(id, name) {
+    const gm = this._cfg.layout.gmap || {}, L = this._msGpPlanRooms(), hand = Object.keys(gm).find((k) => gm[k] === id);
+    if (hand) return { id: hand, auto: false };
+    const all = this._gpAll(), me = { id, name: name || (all.find((x) => x.id === id) || {}).name || "" }, a = L.find((p) => { const r = this._gpMatch(p.item, all.some((x) => x.id === id) ? all : [...all, me]); return r && r.id === id; });
+    return a ? { id: a.id, auto: true } : { id: "", auto: false };
+  }
+  _msGpRow(M) {
+    const L = this._msGpPlanRooms(); if (!L.length) return "";
+    const cur = M.gp !== undefined ? { id: M.gp, auto: false } : this._msGpCur(M.id || "", M.draft.name), gm = this._cfg.layout.gmap || {}, all = this._gpAll();
+    const who = (pid) => { const v = gm[pid]; const r = v && v !== "-" ? all.find((x) => x.id === v) : null; return r && r.id !== M.id ? ` (jetzt: ${r.name})` : ""; };
+    return `<div class="of"><div class="ol"><b>Im Grundriss</b><small>${cur.auto ? "automatisch über den Namen" : "Fläche aus dem Grundriss von Modul 11"}</small></div><div class="oc"><select class="osel" data-f="msxgp" aria-label="Fläche im Grundriss">
+      <option value="" ${cur.id ? "" : "selected"}>– nicht im Grundriss –</option>${L.map((p) => `<option value="${esc(p.id)}" ${cur.id === p.id ? "selected" : ""}>${esc(p.n + who(p.id))}</option>`).join("")}</select></div></div>`;
+  }
+  _msGpApply(rec, pid) {
+    const g = { ...(this._cfg.layout.gmap || {}) }, auto = this._msGpCur(rec.id, rec.name);
+    for (const k of Object.keys(g)) if (g[k] === rec.id) delete g[k];
+    if (pid) g[pid] = rec.id; else if (auto.id && auto.auto) g[auto.id] = "-";   /* „nicht im Grundriss“ schlägt die Zuordnung über den Namen */
+    this._cfg.layout.gmap = g;
+  }
   _msModal() {
     const M = this._modal, d = M.draft, st = this._hass.states, isNew = !M.id;
     const ks = Object.keys(st), dc = (e) => (st[e].attributes || {}).device_class || "";
@@ -3911,16 +3950,22 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="lsec">${ic("pencil", 15)}Name</div>
       <input class="otxt" type="text" maxlength="30" data-f="msxname" value="${esc(d.name)}" placeholder="z. B. Keller" aria-label="Name des Messraums">
       ${!isNew ? `<button class="lnk" data-act="icon" data-id="${esc(d.id)}" style="margin:6px 0 0">${ic("image", 14)} Symbol, Farbe und Foto ändern</button>` : `<div class="mut sm" style="margin:6px 0 0">Das Symbol wird nach dem Namen gewählt. Symbol, Farbe und Foto änderst du später unter „Anpassen“.</div>`}
+      <div class="lsec">${ic("home", 15)}Wo misst der Sensor?</div>
+      <div class="msloc"><button class="${d.loc !== "out" ? "sel" : ""}" data-act="msxloc" data-k="in">${this._gx("house", 34, { on: true })}<b>Innen</b><span>Im Haus, z. B. Keller, Flur, Abstellraum. Mit Wohlfühlbereich und Schimmelhinweis.</span></button>
+        <button class="${d.loc === "out" ? "sel" : ""}" data-act="msxloc" data-k="out">${this._gx("forecast", 34, { on: true })}<b>Außen</b><span>Draußen, z. B. Terrasse, Garten, Carport. Mit Frost- und Glättehinweis.</span></button></div>
+      ${d.loc === "out" && d.temp ? (() => { const c = this._wxCfg(); return c.outdoor === d.temp ? `<div class="gst">${ic("check", 15)}<span>Dieser Sensor ist schon die Außentemperatur des Hauses (Einstellungen → Haus → Wetter).</span></div>`
+        : `<div class="gst">${ic("info", 15)}<span>${c.outdoor ? "Das Haus nutzt einen anderen Außenfühler." : "Das Haus nimmt die Außentemperatur bisher aus der Wetter-Entität."} <button class="lnk" data-act="msxout">Diesen Sensor als Außentemperatur des Hauses verwenden</button> – gilt dann auch für Sommerbetrieb, Schimmelhinweise und Lüften.</span></div>`; })() : ""}
+      ${this._msGpRow(M)}
       <div class="lsec">${ic("thermo", 15)}Sensoren</div>
       <div class="mut sm" style="margin:-2px 0 6px">Mindestens einer von beiden. Es werden nur passende Sensoren vorgeschlagen.</div>
       ${row("Temperatur", "Geräteklasse Temperatur", this._wzSel(tmp, d.temp, "msxe", `data-k="temp"`, "– kein Sensor –", /temp/i))}${dT ? `<div class="mut sm msdup">${esc(dT)}</div>` : ""}
       ${row("Luftfeuchte", "Hygrometer, Geräteklasse Luftfeuchte", this._wzSel(hum, d.hum, "msxe", `data-k="hum"`, "– kein Sensor –", /feucht|humid/i))}${dH ? `<div class="mut sm msdup">${esc(dH)}</div>` : ""}
       ${row("Batterie", "optional, Hinweis „Batterie leer“ ab 15 %", this._wzSel(bat, d.bat, "msxe", `data-k="bat"`, "– keine –", /bat/i))}
       <div class="lsec">${ic("eye", 15)}Anzeige</div>
-      ${sw("mm", "Min und Max heute", "Aus dem Verlauf von Home Assistant")}${sw("dew", "Taupunkt zeigen", "Braucht beide Sensoren")}${sw("mold", "Schimmelhinweis zeigen", "Geschätzt, braucht beide Sensoren")}
-      <div class="lsec">${ic("check", 15)}Wohlfühlbereich und Sensor-Alter</div>
-      ${row("Temperatur", "Darunter blau, darüber gelb", `<div class="msrg">${nm("t_lo", "°C", -20, 40, 0.5)}<span class="mut">bis</span>${nm("t_hi", "°C", -20, 40, 0.5)}</div>`)}
-      ${row("Luftfeuchte", "Außerhalb gelb", `<div class="msrg">${nm("h_lo", "%", 0, 100, 1)}<span class="mut">bis</span>${nm("h_hi", "%", 0, 100, 1)}</div>`)}
+      ${sw("mm", "Min und Max heute", "Aus dem Verlauf von Home Assistant")}${sw("dew", "Taupunkt zeigen", "Braucht beide Sensoren")}${d.loc === "out" ? "" : sw("mold", "Schimmelhinweis zeigen", "Geschätzt, braucht beide Sensoren")}
+      <div class="lsec">${ic("check", 15)}${d.loc === "out" ? "Sensor-Alter" : "Wohlfühlbereich und Sensor-Alter"}</div>
+      ${d.loc === "out" ? `<div class="mut sm" style="margin:-2px 0 6px">Draußen gibt es keinen Wohlfühlbereich. Hinweis bei Frost (ab 0 °C) und Glätte (bis 3 °C und ab 85 % Luftfeuchte).</div>` : `${row("Temperatur", "Darunter blau, darüber gelb", `<div class="msrg">${nm("t_lo", "°C", -20, 40, 0.5)}<span class="mut">bis</span>${nm("t_hi", "°C", -20, 40, 0.5)}</div>`)}
+      ${row("Luftfeuchte", "Außerhalb gelb", `<div class="msrg">${nm("h_lo", "%", 0, 100, 1)}<span class="mut">bis</span>${nm("h_hi", "%", 0, 100, 1)}</div>`)}`}
       ${row("Gilt als veraltet nach", "Danach wird die Zahl grau", nm("stale", "Min.", 10, 1440, 5))}
       ${M.err ? `<div class="gst on">${ic("alert", 15)}<div>${esc(M.err)}</div></div>` : ""}
       ${!isNew ? (M.del ? `<div class="gbox"><b>Messraum „${esc(d.name)}“ löschen?</b>Sensoren in Home Assistant bleiben unverändert.</div><div class="foot2"><button class="btn2" data-act="msxdelno">Abbrechen</button><button class="btn2" style="color:#f87171;border-color:color-mix(in srgb,#f87171 45%,transparent)" data-act="msxdelok">Löschen</button></div>` : `<button class="lnk dng" data-act="msxdel" style="margin:10px 0 0">${ic("trash", 14)} Messraum löschen</button>`) : ""}
@@ -3930,6 +3975,7 @@ class FensterHeizungPanel extends HTMLElement {
     const M = this._modal; if (!M || M.type !== "msx") return false;
     const f = t.dataset.f, d = M.draft;
     if (f === "msxname") { d.name = t.value; return true; }
+    if (f === "msxgp") { M.gp = t.value; return true; }
     if (f === "msxe") { d[t.dataset.k] = t.value || ""; M.err = ""; return true; }
     if (f === "msxn") { const v = parseFloat(String(t.value).replace(",", ".")); if (isFinite(v)) d[t.dataset.k] = v; return true; }
     return false;
@@ -3951,6 +3997,8 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "msxha") { this._modal = null; this._renderModal(); this._nav(HA_PAGE); }
     else if (a === "msxsug") { const s = this._msSug()[+b.dataset.i]; if (s) { M.kind = "mess"; Object.assign(d, { name: s.name, temp: s.temp, hum: s.hum }); this._renderModal(); } }
     else if (a === "msxsw") { d[b.dataset.k] = !d[b.dataset.k]; this._renderModal(); }
+    else if (a === "msxloc") { d.loc = b.dataset.k === "out" ? "out" : "in"; if (d.loc === "out") d.mold = false; this._renderModal(); }
+    else if (a === "msxout") { this._cfg.layout.wx = { ...(this._cfg.layout.wx || {}), outdoor: d.temp }; this._saveLayout(); this._toast("Außentemperatur des Hauses kommt jetzt von diesem Sensor"); this._renderModal(); }
     else if (a === "msxdel") { M.del = true; this._renderModal(); }
     else if (a === "msxdelno") { M.del = false; this._renderModal(); }
     else if (a === "msxdelok") {
@@ -3963,6 +4011,7 @@ class FensterHeizungPanel extends HTMLElement {
       M.err = !name ? "Bitte einen Namen eingeben." : taken ? `Es gibt schon einen Raum „${name}“.` : !d.temp && !d.hum ? "Bitte mindestens einen Sensor wählen: Temperatur oder Luftfeuchte." : d.t_lo >= d.t_hi || d.h_lo >= d.h_hi ? "Beim Wohlfühlbereich muss der erste Wert kleiner sein als der zweite." : "";
       if (M.err) { this._renderModal(); return; }
       const rec = { ...MS_DEF, ...d, name, id: M.id || "ms_" + Date.now().toString(36), parts: ["mess"] };
+      if (M.gp !== undefined) this._msGpApply(rec, M.gp);
       const L = this._msList(), i = L.findIndex((x) => x.id === rec.id);
       if (i >= 0) L[i] = rec; else L.push(rec);
       this._msSave(L); this._modal = null; this._renderModal(); this._toast(i >= 0 ? "Messraum gespeichert" : `Messraum „${name}“ angelegt`);
@@ -5070,25 +5119,22 @@ class FensterHeizungPanel extends HTMLElement {
   _msCard2(m, T, Hm, mm, none, note, ntone, batLow) {
     const edit = this._edit, adm = this._admin(), id = esc(m.id), okv = (x) => x && x.st !== "none" && x.st !== "bad";
     const tv = okv(T) ? T.v : null, hv = okv(Hm) ? Hm.v : null;
-    let k = "ok", lab = "Im Wohlfühlbereich", col = "#2dd4bf";
-    if (none || (tv == null && hv == null)) { k = "aus"; lab = "Keine Daten"; col = "#94a3b8"; }
-    else if (hv != null && hv > m.h_hi) { k = "feucht"; lab = "Zu feucht"; col = "#f59e0b"; }
-    else if (tv != null && tv < m.t_lo) { k = "kalt"; lab = "Zu kalt"; col = "#60a5fa"; }
-    else if (tv != null && tv > m.t_hi) { k = "warm"; lab = "Zu warm"; col = "#fb923c"; }
-    else if (hv != null && hv < m.h_lo) { k = "trocken"; lab = "Zu trocken"; col = "#f59e0b"; }
+    const Q = this._msStat(m), out = Q.out; let { k, lab, col } = Q;   /* gemeinsam mit dem Grundriss */
+    if (none) { k = "aus"; lab = "Keine Daten"; col = "#94a3b8"; }
     const s = this._rkMsS(m, col), ph = (this._cfg.layout.photos || {})[m.id], an = this._rkCfg().anim;
     const mt = tv != null ? num(tv, 1) + "°" : "--°", mh = hv != null ? num(hv) + " %" : "", mty = this._rkMsType(m);
     const key = ["ms", m.id, mty, mty === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", k, mt, mh, s.night ? 1 : 0, an, ph ? ph.length : "", s.lfs.map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
     const pic = ph ? `<div class="rk2art ph${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${col}"><i class="rkv"></i></div>`
       : `<div class="rk2art${k === "aus" ? " gr" : ""}${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="--c:${col}">${this._rkArt(mty, s, { mt, mh, ms: true })}</div>`;
     const top = `<div class="rk2top">${edit ? `<button class="rk2eb" data-act="icon" data-id="${id}" aria-label="Raumbild, Farbe und Foto ändern">${pic}<span class="rk2pen">${ic("pencil", 14)}Raumbild</span></button>` : pic}
-      <div class="rk2ov"><span class="rk2st" style="--c:${col}"><i></i>${esc(lab)}</span><span class="rk2sp"></span><span class="rk2tag">Messraum</span></div>
+      <div class="rk2ov"><span class="rk2st" style="--c:${col}"><i></i>${esc(lab)}</span><span class="rk2sp"></span><span class="rk2tag">${out ? "Außen" : "Messraum"}</span></div>
       <div class="rk2nm"><b>${esc(m.name)}</b></div>${batLow && !edit ? `<div class="rk2bg"><span class="achip amber">${ic("bolt", 12)}Batterie leer</span></div>` : ""}</div>`;
-    const ring = this._rkRing({ cur: tv, lo: m.t_lo, hi: m.t_hi, ziel: null, rt: { sensor: false } }).replace("</b>", `</b><small>${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C</small>`);
+    const ring = out ? this._rkRing({ cur: tv, lo: -10, hi: 30, ziel: null, rt: { sensor: false } }).replace("</b>", `</b><small>draußen</small>`)
+      : this._rkRing({ cur: tv, lo: m.t_lo, hi: m.t_hi, ziel: null, rt: { sensor: false } }).replace("</b>", `</b><small>${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C</small>`);
     const line = (icon, l, v, sub, cls = "") => `<div class="rk2l ${cls}"><span class="rk2i">${icon}</span><span class="rk2t"><small>${l}</small><b>${v}</b>${sub ? `<em>${sub}</em>` : ""}</span></div>`;
     let lines = "";
     if (Hm) { const a = tv != null && hv != null ? airCalc(tv, hv, this._out().t, this._out().rh) : null, [ml, mc] = a ? MOLD[a.lvl] : ["", ""];
-      lines += line(this._gx("humidity", 30), "Luftfeuchte", hv != null ? `${num(hv)} %` : Hm.st === "bad" ? "unplausibel" : "keine Daten", [mm && mm.h ? `${num(mm.h[0])}–${num(mm.h[1])} % heute` : `${num(m.h_lo, 0)}–${num(m.h_hi, 0)} % gewünscht`, a && m.mold ? `Schimmel ${ml}` : ""].filter(Boolean).join(" · "), hv != null && hv > m.h_hi ? "t-am" : mc === "red" ? "t-rd" : "");
+      lines += line(this._gx("humidity", 30), "Luftfeuchte", hv != null ? `${num(hv)} %` : Hm.st === "bad" ? "unplausibel" : "keine Daten", [mm && mm.h ? `${num(mm.h[0])}–${num(mm.h[1])} % heute` : out ? "" : `${num(m.h_lo, 0)}–${num(m.h_hi, 0)} % gewünscht`, a && m.mold && !out ? `Schimmel ${ml}` : ""].filter(Boolean).join(" · "), !out && hv != null && hv > m.h_hi ? "t-am" : !out && mc === "red" ? "t-rd" : "");
       if (a && m.dew) lines += line(this._gx("thermo", 30), "Taupunkt", `${num(a.td, 1)} °C`, `Wand ca. ${num(a.ts, 1)} °C`); }
     if (T && (mm && mm.t || !Hm)) lines += line(this._gx("thermostat", 30, { t: tv != null ? num(tv, 0) + "°" : "–" }), "Temperatur heute", mm && mm.t ? `${num(mm.t[0], 1)} – ${num(mm.t[1], 1)} °C` : tv != null ? `${num(tv, 1)} °C` : "keine Daten", mm && mm.t ? "Min – Max" : "", tv != null && tv < m.t_lo ? "t-bl" : "");
     const tiles = s.lfs.length ? `<div class="rk2dvs">${s.lfs.map((d) => this._rkLfTile(m, d)).join("")}</div>` : "";
@@ -5335,6 +5381,15 @@ class FensterHeizungPanel extends HTMLElement {
     if (!D) return null;
     return D.d && D.d.cfg ? this._sfx().cfg.plan : err ? { error: true } : this._sfx().cfg.plan;
   }
+  /* Alle Räume, die eine Grundriss-Fläche bekommen können: Heizungsräume und Messräume (innen und außen) */
+  _gpAll(rooms) { return [...(rooms || this._collect(true)), ...this._msList().map((m) => ({ id: m.id, name: m.name, ms: m }))]; }
+  /* Messraum als Zustand wie _rkState, damit der Grundriss ihn wie einen Raum zeichnen kann */
+  _gpMsS(m) {
+    const Q = this._msStat(m), bs = m.bat && this._hass.states[m.bat], bv = bs ? parseFloat(bs.state) : NaN;
+    const lab = Q.k === "ok" ? (Q.out ? "Außen" : "Messraum") : Q.lab;
+    return { ms: true, out: Q.out, qk: Q.k, k: Q.k === "aus" ? "aus" : "ms", lab, col: Q.col, cur: Q.tv, hum: Q.hv, ziel: null, open: [], tilt: [], anyOpen: 0, heating: false, here: false, t0: null, rt: {},
+      bat: !!(bs && ((isFinite(bv) && bv <= 15) || bs.state === "on" || /low|niedrig/i.test(bs.state))) };
+  }
   _gpNorm(s) { return String(s || "").toLowerCase().replace(/zimmer|raum|[^a-zäöüß0-9]/g, ""); }
   /* Plan-Raum → Modul-1-Raum */
   _gpMatch(item, rooms) {
@@ -5360,6 +5415,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     const fls = P.floors || [], fl = fls.some((f) => f.id === this._gpFl) ? this._gpFl : (fls.find((f) => (P.items || []).some((i) => i.fl === f.id && i.t === "r")) || fls[0]).id;
     const items = P.items.filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r" || i.t === "s");
+    const all = this._gpAll(rooms);
     const S = Object.fromEntries(rooms.map((r) => [r.id, this._rkState(r)])), temps = rooms.flatMap((r) => S[r.id].pts.map((p) => p.t)), lo = temps.length ? Math.min(...temps) : 17, hi = temps.length ? Math.max(...temps) : 21;
     const inside = (r, x, y, tol = 8) => x >= r.x - tol && x <= r.x + r.w + tol && y >= r.y - tol && y <= r.y + r.h + tol;
     const an = this._rkCfg().anim, u = "gp" + (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6) + "_";
@@ -5375,14 +5431,19 @@ class FensterHeizungPanel extends HTMLElement {
     /* Räume: Kachel, Licht, Rand, Heizkörper */
     const label = [];
     rs.forEach((i, ix) => {
-      const r = i.t === "r" ? this._gpMatch(i, rooms) : null, s = r ? S[r.id] : null, col = s ? (s.k === "aus" ? "#64748b" : this._rkCol(s.cur, lo, hi)) : null;
+      const r = i.t === "r" ? this._gpMatch(i, all) : null, s = r ? (r.ms ? this._gpMsS(r.ms) : S[r.id]) : null, col = s ? (s.k === "aus" ? "#64748b" : this._rkCol(s.cur, lo, hi)) : null;
       const x = i.x + gap, y = i.y + gap, w = Math.max(4, i.w - 2 * gap), h = Math.max(4, i.h - 2 * gap), rx = Math.min(14, w / 6, h / 6), gid = `${u}r${ix}`;
-      d += `<g class="gpr${r ? " on" : ""}${s ? " k-" + s.k : ""}" ${r ? `data-act="rkmenu" data-id="${esc(r.id)}"` : adm && i.t === "r" ? `data-act="gpmap" data-k="${esc(i.id)}"` : ""}><title>${esc(i.n || "Raum")}${s ? " · " + esc(s.lab) : r ? "" : " · nicht zugeordnet"}</title>`;
+      const act = r ? (r.ms ? (adm ? `data-act="msxedit" data-id="${esc(r.id)}"` : "") : `data-act="rkmenu" data-id="${esc(r.id)}"`) : adm && i.t === "r" ? `data-act="gpmap" data-k="${esc(i.id)}"` : "";
+      d += `<g class="gpr${r ? " on" : ""}${s ? " k-" + s.k : ""}${s && s.out ? " out" : ""}" ${act}><title>${esc(i.n || "Raum")}${s ? " · " + esc(s.lab) : r ? "" : " · nicht zugeordnet"}</title>`;
       if (s) {
         d += `<radialGradient id="${gid}" cx="0" cy="0" r="1.25" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="${col}" stop-opacity="${s.k === "aus" ? .18 : .62}"/><stop offset=".65" stop-color="${col}" stop-opacity="${s.k === "aus" ? .06 : .2}"/><stop offset="1" stop-color="${col}" stop-opacity=".08"/></radialGradient>
           <rect class="gpbase" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" filter="url(#${u}sh)"/>
           <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#${gid})"/>
-          <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="${col}" stroke-width="2" stroke-opacity=".85"/>`;
+          <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="${col}" stroke-width="2" stroke-opacity=".85"${s.out ? ` stroke-dasharray="9 6"` : ""}/>`;
+        if (s.ms && w > 70 && h > 60) {   /* Messraum: Bild statt Heizkörper (außen Wetter, innen Thermometer) */
+          const rs2 = Math.min(40 * NF, w * .26, h * .34), gx2 = x + w - rs2 - 8, gy2 = y + h - rs2 - 6, g = s.out ? (s.qk === "frost" || s.qk === "glatt" ? "frost" : "forecast") : "thermostat";
+          d += (this._gx(g, rs2, { on: true, t: s.cur != null ? num(s.cur, 0) + "°" : "" }) || this._gx("thermostat", rs2, { on: true })).replace('<svg class="gx" ', `<svg class="gx gprad" x="${gx2.toFixed(1)}" y="${gy2.toFixed(1)}" `);
+        }
         if (s.heating) d += `<rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="#fb923c" stroke-width="5" stroke-opacity=".28" class="gpglow"/>`;
         if (s.t0 && i.t === "r" && w > 70 && h > 60) {
           const rs2 = Math.min(40 * NF, w * .26, h * .34), gx2 = x + w - rs2 - 8, gy2 = y + h - rs2 - 6;
@@ -5412,28 +5473,41 @@ class FensterHeizungPanel extends HTMLElement {
     /* Beschriftung, Status-Plakette und Hinweis-Plaketten (W3) */
     label.forEach(({ i, r, s, x, y, w, h }) => {
       const big = Math.min(30 * NF, h * .3, w * .24), small = Math.min(13.5 * NF, Math.max(10, big * .48), w * .095), pad = Math.max(8, Math.min(14, w * .05));
-      d += `<g class="gplb" pointer-events="none"><text x="${x + pad}" y="${y + pad + small}" font-size="${small}" class="gpn">${esc(i.n || (r ? r.name : ""))}</text>`;
+      /* Name kürzen, wenn rechts oben eine Hinweis-Plakette steht */
+      const bq = s && r ? this._gpBadges(r, s) : [], bwq = bq.length ? Math.max(...bq.map((q) => { const v = q.t.length * 11 * NF * .56 + 11 * NF * 1.8; return v > w * .55 ? 11 * NF * 1.6 * bq.length : v; })) + 12 : 0;
+      let nmq = String(i.n || (r ? r.name : "")); const mxc = Math.max(3, Math.floor((w - pad * 2 - bwq) / (small * .58)));
+      if (nmq.length > mxc) nmq = nmq.slice(0, mxc - 1) + "…";
+      d += `<g class="gplb" pointer-events="none"><text x="${x + pad}" y="${y + pad + small}" font-size="${small}" class="gpn">${esc(nmq)}</text>`;
       if (s) {
         const ty = y + pad + small + 6 + big;
         d += `<text x="${x + pad}" y="${ty}" font-size="${big}" class="gpt">${s.cur != null ? num(s.cur, 1) + "°" : "–"}</text>`;
-        if (s.ziel != null && h > big + small * 3.2) d += `<text x="${x + pad}" y="${ty + small * 1.35}" font-size="${small * .9}" class="gpz">Ziel ${num(s.ziel, 1)}°${s.hum != null && w > 150 ? ` · ${num(s.hum, 0)} %` : ""}</text>`;
+        const sub2 = s.ms ? (s.hum != null ? `${num(s.hum, 0)} % Luftfeuchte` : "") : s.ziel != null ? `Ziel ${num(s.ziel, 1)}°${s.hum != null && w > 150 ? ` · ${num(s.hum, 0)} %` : ""}` : "";
+        if (sub2 && h > big + small * 3.2) d += `<text x="${x + pad}" y="${ty + small * 1.35}" font-size="${small * .9}" class="gpz">${sub2}</text>`;
         /* Status-Plakette unten links (wie die Plakette der Raumkarte), in schmalen Räumen nur der Punkt */
-        const fz = small * .86, pw = s.lab.length * fz * .54 + fz * 2.2, ph = fz * 1.9, room = w - pad * 2 - (s.t0 && w > 70 && h > 60 ? Math.min(40 * NF, w * .26, h * .34) + 6 : 0);
-        const zb = ty + (s.ziel != null && h > big + small * 3.2 ? small * 1.35 : 0) + 6, py = y + h - ph - pad * .8, px = x + pad, nb = this._gpBadges(r, s).length;
+        const fz = small * .86, pw = s.lab.length * fz * .56 + fz * 2.2, ph = fz * 1.9, room = w - pad * 2 - ((s.t0 || s.ms) && w > 70 && h > 60 ? Math.min(40 * NF, w * .26, h * .34) + 6 : 0);
+        const zb = ty + (sub2 && h > big + small * 3.2 ? small * 1.35 : 0) + 6, py = y + h - ph - pad * .8, px = x + pad, nb = this._gpBadges(r, s).length;
         if (py >= zb && pw <= room) d += `<g class="gppl"><rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="${ph / 2}"/><circle cx="${px + fz * .95}" cy="${py + ph / 2}" r="${fz * .34}" fill="${s.col}"/><text x="${px + fz * 1.6}" y="${py + ph / 2 + fz * .36}" font-size="${fz}">${esc(s.lab)}</text></g>`;
         else if (py >= zb) d += `<circle cx="${px + fz * .5}" cy="${py + ph / 2}" r="${fz * .42}" fill="${s.col}" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>`;
         else if (!nb) d += `<circle cx="${x + w - pad - fz * .4}" cy="${y + pad + small * .62}" r="${fz * .42}" fill="${s.col}" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>`;   /* zu flach: Punkt oben rechts */
         if (s.here) { const ps = Math.min(30 * NF, w * .2), px = x + w - ps - 8; d += `<g transform="translate(${(px + ps / 2).toFixed(1)} ${(y + h / 2).toFixed(1)})"><circle r="${(ps / 2).toFixed(1)}" fill="${s.col}" opacity=".95"/><circle cy="${(-ps * .13).toFixed(1)}" r="${(ps * .15).toFixed(1)}" fill="#fff"/><path d="M${(-ps * .24).toFixed(1)} ${(ps * .27).toFixed(1)} q0 -${(ps * .27).toFixed(1)} ${(ps * .24).toFixed(1)} -${(ps * .27).toFixed(1)} q${(ps * .24).toFixed(1)} 0 ${(ps * .24).toFixed(1)} ${(ps * .27).toFixed(1)}z" fill="#fff"/></g>`; }
         const b = this._gpBadges(r, s);
-        b.forEach((q, k) => { const fz2 = 11 * NF, bw = q.t.length * fz2 * .56 + fz2 * 1.8, bx = x + w - bw - 8, by = y + 8 + k * (fz2 * 2); d += `<g><rect x="${bx}" y="${by}" width="${bw}" height="${fz2 * 1.65}" rx="${fz2 * .82}" fill="${q.c}"/><text x="${bx + fz2 * .9}" y="${by + fz2 * 1.18}" font-size="${fz2}" font-weight="700" fill="#fff">${esc(q.t)}</text></g>`; });
+        b.forEach((q, k) => { const fz2 = 11 * NF, bw = q.t.length * fz2 * .56 + fz2 * 1.8, bx = x + w - bw - 8, by = y + 8 + k * (fz2 * 2);
+          if (bw > w * .55) { const cr = fz2 * .75, cx = x + w - cr - 8 - k * (cr * 2.3); d += `<g><title>${esc(q.t)}</title><circle cx="${cx}" cy="${y + 8 + cr}" r="${cr}" fill="${q.c}"/><text x="${cx}" y="${y + 8 + cr + fz2 * .36}" font-size="${fz2}" font-weight="800" fill="#fff" text-anchor="middle">!</text></g>`; return; }   /* schmaler Raum: nur ein Punkt mit „!“ */
+          d += `<g><rect x="${bx}" y="${by}" width="${bw}" height="${fz2 * 1.65}" rx="${fz2 * .82}" fill="${q.c}"/><text x="${bx + fz2 * .9}" y="${by + fz2 * 1.18}" font-size="${fz2}" font-weight="700" fill="#fff">${esc(q.t)}</text></g>`; });
       } else if (i.t === "r") d += `<text x="${x + pad}" y="${y + pad + small * 2.4}" font-size="${small * .9}" class="gps">${adm ? "Antippen zum Zuordnen" : "nicht zugeordnet"}</text>`;
       d += `</g>`;
     });
     /* Kopfzeile: kurze Zusammenfassung des Stockwerks */
-    const mine = label.filter((x) => x.s), tv = mine.map((x) => x.s.cur).filter((t) => t != null), nOpen = mine.filter((x) => x.s.anyOpen).length, nHeat = mine.filter((x) => x.s.heating).length, nHere = mine.filter((x) => x.s.here).length;
-    const sum = `<div class="gpsum"><span>${ic("thermo", 14)}Ø <b>${tv.length ? num(tv.reduce((a, t) => a + t, 0) / tv.length, 1) + " °C" : "–"}</b></span>
+    const mine = label.filter((x) => x.s && !x.s.out), tv = mine.map((x) => x.s.cur).filter((t) => t != null), nOpen = mine.filter((x) => x.s.anyOpen).length, nHeat = mine.filter((x) => x.s.heating).length, nHere = mine.filter((x) => x.s.here).length;
+    const om = this._msList().filter((m) => m.loc === "out").map((m) => ({ m, Q: this._msStat(m) })).find((x) => x.Q.tv != null), ot = om ? null : this._out().t;
+    const outc = om ? `<span class="${om.Q.k === "frost" || om.Q.k === "glatt" ? "o" : ""}">${ic("partly", 14)}Außen <b>${num(om.Q.tv, 1)} °C</b>${om.Q.hv != null ? ` · ${num(om.Q.hv, 0)} %` : ""}${om.Q.k === "frost" || om.Q.k === "glatt" ? ` · ${esc(om.Q.lab)}` : ""}</span>` : ot != null ? `<span>${ic("partly", 14)}Außen <b>${num(ot, 1)} °C</b></span>` : "";
+    const sum = `<div class="gpsum">${outc}<span>${ic("thermo", 14)}Ø innen <b>${tv.length ? num(tv.reduce((a, t) => a + t, 0) / tv.length, 1) + " °C" : "–"}</b></span>
       <span class="${nHeat ? "h" : ""}">${ic("flame", 14)}<b>${nHeat}</b> ${nHeat === 1 ? "heizt" : "heizen"}</span><span class="${nOpen ? "o" : ""}">${ic("windowOpen", 14)}<b>${nOpen}</b> Fenster offen</span>${rooms.some((r) => r.pres) ? `<span>${ic("user", 14)}<b>${nHere}</b> mit jemandem</span>` : ""}
-      ${label.some((x) => x.i.t === "r" && !x.r) ? `<span class="u">${label.filter((x) => x.i.t === "r" && !x.r).length} nicht zugeordnet</span>` : ""}</div>`;
+      ${(() => { /* über alle Geschosse; „Kein Raum aus Modul 1“ (gmap „-“) zählt als bewusst leer */
+        const gm = this._cfg.layout.gmap || {}, un = P.items.filter((i) => i.t === "r" && gm[i.id] !== "-" && !this._gpMatch(i, all)); if (!un.length) return "";
+        const fn = Object.fromEntries(fls.map((f) => [f.id, f.n])), by = {}; un.forEach((i) => { by[i.fl] = (by[i.fl] || 0) + 1; });
+        const where = fls.length > 1 ? " · " + fls.filter((f) => by[f.id]).map((f) => `${esc(f.n)} ${by[f.id]}`).join(", ") : "";
+        return adm ? `<button class="u" data-act="gpun" title="Nächste freie Fläche zuordnen">${un.length} nicht zugeordnet${where}${ic("chev", 13)}</button>` : `<span class="u">${un.length} nicht zugeordnet${where}</span>`; })()}</div>`;
     const sc = [lo - 3, lo, (lo + hi) / 2, hi, hi + 2];
     const legend = `<div class="gplg"><span class="gpsc"><i style="background:linear-gradient(90deg,${sc.map((t) => this._rkCol(t, lo, hi)).join(",")})"></i><small>${num(lo - 3, 0)} °C</small><small>${num(hi + 2, 0)} °C</small></span>
       <span><i class="gpk" style="background:#bfdbfe;border:1px solid #60a5fa"></i>Fenster</span><span><i class="gpk" style="background:#3b82f6"></i>offen</span><span><i class="gpk" style="background:#fb923c"></i>heizt</span><span><i class="gpk un"></i>nicht zugeordnet</span>${rooms.some((r) => r.pres) ? `<span><i class="gpk" style="width:10px;height:10px;border-radius:50%;background:var(--teal)"></i>jemand da</span>` : ""}</div>`;
@@ -5446,6 +5520,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* W3: Plaketten je Raum (höchstens zwei) */
   _gpBadges(r, s) {
+    if (r && r.ms) return s.bat ? [{ t: "Batterie", c: "#d97706" }] : [];
     const out = [], a = this._airData(r);
     if (s.cur != null && s.cur < 8) out.push({ t: "Frost", c: "#dc2626" });
     if (a && a.lvl === 2) out.push({ t: "Schimmel", c: "#dc2626" });
@@ -5461,17 +5536,25 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _gpMapModal(m) {
     const P = this._gpPlan(), it = P && P.items.find((i) => i.id === m.k); if (!it) return "";
-    const rooms = this._collect(true), cur = (this._cfg.layout.gmap || {})[it.id] || "";
+    const rooms = this._collect(true), ms = this._msList(), cur = (this._cfg.layout.gmap || {})[it.id] || "";
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Raum zuordnen</b><span>Grundriss: ${esc(it.n || "ohne Namen")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="mut sm" style="margin:0 0 10px">Welcher Raum aus Modul 1 liegt hier? Danach färbt sich die Fläche nach seiner Temperatur.</div>
+      <div class="mut sm" style="margin:0 0 10px">Welcher Raum aus Modul 1 liegt hier? Danach färbt sich die Fläche nach seiner Temperatur. Auch Messräume lassen sich zuordnen – ein Außen-Messraum wird als Außenfläche gezeichnet (z. B. Terrasse oder Carport).</div>
       <div class="lftiles">${rooms.map((r) => `<button class="lftile ${cur === r.id ? "sel" : ""}" data-act="gpset" data-k="${esc(it.id)}" data-id="${esc(r.id)}">${this._rkMiniById(r.id, "lft")}<b>${esc(r.name)}</b></button>`).join("")}</div>
+      ${ms.length ? `<div class="lsec" style="margin-top:12px">${ic("thermo", 15)}Messräume</div><div class="lftiles">${ms.map((m) => { const Q = this._msStat(m); return `<button class="lftile gpmsb ${cur === m.id ? "sel" : ""}" data-act="gpset" data-k="${esc(it.id)}" data-id="${esc(m.id)}"><span class="gpmsi" style="--c:${Q.col}">${this._gx(m.loc === "out" ? "forecast" : "thermostat", 40, { on: true }) || ic("thermo", 26)}</span><b>${esc(m.name)}</b><small>${m.loc === "out" ? "Außen" : "Innen"}${Q.tv != null ? " · " + num(Q.tv, 1) + " °C" : ""}</small></button>`; }).join("")}</div>` : ""}
       <div class="foot2"><button class="btn2" data-act="gpset" data-k="${esc(it.id)}" data-id="-">Kein Raum aus Modul 1</button>${cur ? `<button class="btn2" data-act="gpset" data-k="${esc(it.id)}" data-id="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _gpAct(a, b) {
     if (a === "gpfl") { this._gpFl = b.dataset.k; this._render(); return true; }
+    if (a === "gpun") {   /* nächste nicht zugeordnete Fläche: Geschoss wechseln und „Raum zuordnen“ öffnen */
+      const P = this._gpPlan(), gm = this._cfg.layout.gmap || {}, all = this._gpAll(), fo = ((P && P.floors) || []).map((f) => f.id);
+      const un = ((P && P.items) || []).filter((i) => i.t === "r" && gm[i.id] !== "-" && !this._gpMatch(i, all)).sort((x, y) => (x.fl === this._gpFl ? -1 : 0) - (y.fl === this._gpFl ? -1 : 0) || fo.indexOf(x.fl) - fo.indexOf(y.fl));
+      if (!un.length) return true;
+      this._gpFl = un[0].fl; this._render(); this._modal = { type: "gpmap", k: un[0].id }; this._renderModal(); return true;
+    }
     if (a === "gpmap") { this._modal = { type: "gpmap", k: b.dataset.k }; this._renderModal(); return true; }
-    if (a === "gpset") { const g = { ...(this._cfg.layout.gmap || {}) }; if (b.dataset.id) g[b.dataset.k] = b.dataset.id; else delete g[b.dataset.k]; this._cfg.layout.gmap = g; this._saveLayout(); this._modal = null; this._renderModal(); this._render(); return true; }
+    if (a === "gpset") { const g = { ...(this._cfg.layout.gmap || {}) }, v = b.dataset.id; if (v && v.startsWith("ms_")) for (const k of Object.keys(g)) if (g[k] === v) delete g[k];   /* ein Messraum hat genau eine Fläche */
+      if (v) g[b.dataset.k] = v; else delete g[b.dataset.k]; this._cfg.layout.gmap = g; this._saveLayout(); this._modal = null; this._renderModal(); this._render(); return true; }
     if (a === "gpedit") { this._modal = null; this._renderModal(); this._sfT = "pl"; this._mdActiveSet("sf"); this._sfxLoad(true); setTimeout(() => { if (this._sfxD && this._sfxD.d && this._sfxD.d.cfg) this._act("sfxedit", b); }, 400); this._render(); return true; }
     return false;
   }

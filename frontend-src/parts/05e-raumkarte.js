@@ -444,25 +444,22 @@
   _msCard2(m, T, Hm, mm, none, note, ntone, batLow) {
     const edit = this._edit, adm = this._admin(), id = esc(m.id), okv = (x) => x && x.st !== "none" && x.st !== "bad";
     const tv = okv(T) ? T.v : null, hv = okv(Hm) ? Hm.v : null;
-    let k = "ok", lab = "Im Wohlfühlbereich", col = "#2dd4bf";
-    if (none || (tv == null && hv == null)) { k = "aus"; lab = "Keine Daten"; col = "#94a3b8"; }
-    else if (hv != null && hv > m.h_hi) { k = "feucht"; lab = "Zu feucht"; col = "#f59e0b"; }
-    else if (tv != null && tv < m.t_lo) { k = "kalt"; lab = "Zu kalt"; col = "#60a5fa"; }
-    else if (tv != null && tv > m.t_hi) { k = "warm"; lab = "Zu warm"; col = "#fb923c"; }
-    else if (hv != null && hv < m.h_lo) { k = "trocken"; lab = "Zu trocken"; col = "#f59e0b"; }
+    const Q = this._msStat(m), out = Q.out; let { k, lab, col } = Q;   /* gemeinsam mit dem Grundriss */
+    if (none) { k = "aus"; lab = "Keine Daten"; col = "#94a3b8"; }
     const s = this._rkMsS(m, col), ph = (this._cfg.layout.photos || {})[m.id], an = this._rkCfg().anim;
     const mt = tv != null ? num(tv, 1) + "°" : "--°", mh = hv != null ? num(hv) + " %" : "", mty = this._rkMsType(m);
     const key = ["ms", m.id, mty, mty === "carport" && this._out().t != null && this._out().t <= 0 ? "fr" : "", k, mt, mh, s.night ? 1 : 0, an, ph ? ph.length : "", s.lfs.map((d) => { const L = d.S.live || {}; return (L.running || (L.on && !L.has_pw) ? "r" : "s") + (L.fill != null ? Math.round(L.fill * 10) : ""); }).join(",")].join("|");
     const pic = ph ? `<div class="rk2art ph${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="background-image:url('${esc(ph)}');--c:${col}"><i class="rkv"></i></div>`
       : `<div class="rk2art${k === "aus" ? " gr" : ""}${s.night ? " nt" : ""}" data-kk="${esc(key)}" data-an="${an}" style="--c:${col}">${this._rkArt(mty, s, { mt, mh, ms: true })}</div>`;
     const top = `<div class="rk2top">${edit ? `<button class="rk2eb" data-act="icon" data-id="${id}" aria-label="Raumbild, Farbe und Foto ändern">${pic}<span class="rk2pen">${ic("pencil", 14)}Raumbild</span></button>` : pic}
-      <div class="rk2ov"><span class="rk2st" style="--c:${col}"><i></i>${esc(lab)}</span><span class="rk2sp"></span><span class="rk2tag">Messraum</span></div>
+      <div class="rk2ov"><span class="rk2st" style="--c:${col}"><i></i>${esc(lab)}</span><span class="rk2sp"></span><span class="rk2tag">${out ? "Außen" : "Messraum"}</span></div>
       <div class="rk2nm"><b>${esc(m.name)}</b></div>${batLow && !edit ? `<div class="rk2bg"><span class="achip amber">${ic("bolt", 12)}Batterie leer</span></div>` : ""}</div>`;
-    const ring = this._rkRing({ cur: tv, lo: m.t_lo, hi: m.t_hi, ziel: null, rt: { sensor: false } }).replace("</b>", `</b><small>${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C</small>`);
+    const ring = out ? this._rkRing({ cur: tv, lo: -10, hi: 30, ziel: null, rt: { sensor: false } }).replace("</b>", `</b><small>draußen</small>`)
+      : this._rkRing({ cur: tv, lo: m.t_lo, hi: m.t_hi, ziel: null, rt: { sensor: false } }).replace("</b>", `</b><small>${num(m.t_lo, 0)}–${num(m.t_hi, 0)} °C</small>`);
     const line = (icon, l, v, sub, cls = "") => `<div class="rk2l ${cls}"><span class="rk2i">${icon}</span><span class="rk2t"><small>${l}</small><b>${v}</b>${sub ? `<em>${sub}</em>` : ""}</span></div>`;
     let lines = "";
     if (Hm) { const a = tv != null && hv != null ? airCalc(tv, hv, this._out().t, this._out().rh) : null, [ml, mc] = a ? MOLD[a.lvl] : ["", ""];
-      lines += line(this._gx("humidity", 30), "Luftfeuchte", hv != null ? `${num(hv)} %` : Hm.st === "bad" ? "unplausibel" : "keine Daten", [mm && mm.h ? `${num(mm.h[0])}–${num(mm.h[1])} % heute` : `${num(m.h_lo, 0)}–${num(m.h_hi, 0)} % gewünscht`, a && m.mold ? `Schimmel ${ml}` : ""].filter(Boolean).join(" · "), hv != null && hv > m.h_hi ? "t-am" : mc === "red" ? "t-rd" : "");
+      lines += line(this._gx("humidity", 30), "Luftfeuchte", hv != null ? `${num(hv)} %` : Hm.st === "bad" ? "unplausibel" : "keine Daten", [mm && mm.h ? `${num(mm.h[0])}–${num(mm.h[1])} % heute` : out ? "" : `${num(m.h_lo, 0)}–${num(m.h_hi, 0)} % gewünscht`, a && m.mold && !out ? `Schimmel ${ml}` : ""].filter(Boolean).join(" · "), !out && hv != null && hv > m.h_hi ? "t-am" : !out && mc === "red" ? "t-rd" : "");
       if (a && m.dew) lines += line(this._gx("thermo", 30), "Taupunkt", `${num(a.td, 1)} °C`, `Wand ca. ${num(a.ts, 1)} °C`); }
     if (T && (mm && mm.t || !Hm)) lines += line(this._gx("thermostat", 30, { t: tv != null ? num(tv, 0) + "°" : "–" }), "Temperatur heute", mm && mm.t ? `${num(mm.t[0], 1)} – ${num(mm.t[1], 1)} °C` : tv != null ? `${num(tv, 1)} °C` : "keine Daten", mm && mm.t ? "Min – Max" : "", tv != null && tv < m.t_lo ? "t-bl" : "");
     const tiles = s.lfs.length ? `<div class="rk2dvs">${s.lfs.map((d) => this._rkLfTile(m, d)).join("")}</div>` : "";

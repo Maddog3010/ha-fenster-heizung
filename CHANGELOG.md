@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b9] - 2026-11-12
+
+### Neu
+- **Modul 1 · Messräume im Grundriss (v1.8 Build 7):** Messräume lassen sich jetzt einer Fläche im Grundriss zuordnen – automatisch über den Namen, beim Antippen einer freien Fläche („Raum zuordnen“ zeigt jetzt auch die Messräume) oder in den Raumeinstellungen des Messraums unter **„Im Grundriss“**. Ein Messraum hat genau eine Fläche; „nicht im Grundriss“ hebt auch die Zuordnung über den Namen auf. Im Grundriss zeigt die Fläche Temperatur, Luftfeuchte und den Zustand („Zu feucht“, „Batterie“), statt des Heizkörpers ein Thermometer. Antippen öffnet die Einstellungen des Messraums.
+- **Messräume innen oder außen:** In den Raumeinstellungen „Wo misst der Sensor?“ – **Innen** wie bisher mit Wohlfühlbereich und Schimmelhinweis, **Außen** (Terrasse, Garten, Carport) ohne Wohlfühlbereich und Schimmel, dafür mit Hinweis **Frost** (ab 0 °C) und **Glätte möglich** (bis 3 °C bei mindestens 85 % Luftfeuchte). Die Raumkarte trägt „Außen“, der Ring zeigt −10 bis 30 °C. Im Grundriss wird ein Außen-Messraum als Außenfläche mit gestricheltem Rand und Wetterbild gezeichnet (bei Frost eine Schneeflocke). Ein Knopf übernimmt den Sensor als **Außentemperatur des Hauses** (Einstellungen → Haus → Wetter), die auch Sommerbetrieb, Schimmelhinweise und Lüften nutzen.
+- Grundriss-Kopfzeile: **„Außen“** mit Temperatur, Luftfeuchte und Frost-Hinweis (vom Außen-Messraum, sonst von der Außentemperatur des Hauses); der Durchschnitt heißt jetzt „Ø innen“ und lässt Außenflächen weg.
+
+### Geändert
+- Grundriss: **„nicht zugeordnet“ zählt jetzt über alle Geschosse** und nennt sie („3 nicht zugeordnet · EG 1, OG 2“). Flächen, bei denen bewusst „Kein Raum aus Modul 1“ gewählt ist, zählen nicht mit. Antippen (Admin) wechselt zum passenden Geschoss und öffnet „Raum zuordnen“ für die nächste freie Fläche.
+- Grundriss: In schmalen Räumen wird der Name gekürzt, wenn rechts oben eine Hinweis-Plakette steht, und eine zu breite Plakette wird zum Punkt mit „!“.
+
 ## [2026.11.3b8] - 2026-11-12
 
 ### Neu

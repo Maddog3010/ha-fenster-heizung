@@ -108,6 +108,8 @@ def clean_mess(raw: Any) -> list[dict[str, Any]]:
     """Messräume in Modul 1: Raum nur mit Temperatur und Luftfeuchte, steuert nichts.
 
     "parts" hält die Bausteine des Raums (heute nur "mess"), damit später Räume aus Bausteinen möglich sind.
+    "loc": "in" (im Haus) oder "out" (draußen, z. B. Terrasse oder Carport): außen gibt es keinen Wohlfühlbereich und
+    keinen Schimmelhinweis, dafür Frost; im Grundriss wird ein Außen-Messraum als Außenfläche gezeichnet.
     """
     out: list[dict[str, Any]] = []
     seen: set[str] = set()
@@ -142,6 +144,7 @@ def clean_mess(raw: Any) -> list[dict[str, Any]]:
             "id": mid, "name": name, "parts": ["mess"], "temp": temp, "hum": hum, "bat": ent(m.get("bat"), False),
             "mm": m.get("mm") is not False, "dew": m.get("dew") is True, "mold": m.get("mold") is True,
             "t_lo": t_lo, "t_hi": t_hi, "h_lo": h_lo, "h_hi": h_hi, "stale": int(num(m.get("stale"), 60, 10, 1440)),
+            "loc": "out" if m.get("loc") == "out" else "in",  # innen oder außen (2026.11.3b9)
         })
     return out
 
