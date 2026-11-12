@@ -209,7 +209,7 @@
     const C = this._spCalc(), day = this._spDay === "tomorrow" || (this._spDay == null && C.night) ? "tomorrow" : "today";
     if (this._tmOn && this._tmOn()) return this._spWall(C);   /* E7: Tablet-Wand */
     const seg = `<div class="spseg"><button class="${day === "today" ? "on" : ""}" data-act="spxday" data-k="today">Heute</button><button class="${day === "tomorrow" ? "on" : ""}" data-act="spxday" data-k="tomorrow">Morgen</button><span class="mut sm">kWh je Stunde</span></div>`;
-    return `<div class="spx${this.style.colorScheme === "light" ? " lt" : ""}">${this._spLow(C)}${this._spTiles(C)}
+    return `<div class="spx${this.style.colorScheme === "light" ? " lt" : ""}">${this._spDupBox()}${this._spLow(C)}${this._spTiles(C)}
       <div class="card spcard"><h2>${ic("chart", 18)}Prognose und Ertrag über den Tag</h2>${seg}${this._spChart(C, day)}</div>
       ${this._spSites(C)}
       <div class="card spcard"><h2>${ic("chart", 18)}Wie gut war die Prognose?</h2>${this._spHist(C)}<div class="mut sm" style="margin-top:6px">Quelle: ${esc(S.src || "–")}${(S.sites || []).length ? " · " + S.sites.map(esc).join(", ") : ""}</div></div></div>`;

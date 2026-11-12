@@ -15,7 +15,7 @@
       .finally(() => { this._spBusy = false; if (this._spWantR) { this._spWantR = false; if (!this._spVisible() && !this._modal) this._render(); } if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } });
   }
   _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen); }
-  _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", look: "new", corr: true, ...(d.cfg || {}) } }; }
+  _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", look: "new", corr: true, sites: [], since: "", ...(d.cfg || {}) } }; }
   _spSave(cfg) {
     if (!(this._spD && this._spD.d && this._spD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._sp(); this._spD = { d: { ...s, cfg }, ts: Date.now() };
@@ -32,6 +32,14 @@
     if (a === "spxds") { this._spDs = this._spDs === k ? null : k; this._render(); return; }
     if (a === "spxmore") { this.dispatchEvent(new CustomEvent("hass-more-info", { detail: { entityId: k }, bubbles: true, composed: true })); return; }
     if (a === "spxh") { this._spH = this._spH === Number(k) ? null : Number(k); this._render(); return; }
+    if (a === "spxsite" || a === "spxsvc" || a === "spxsauto" || a === "spxsall") {   /* v1.0 Build 2: Anlagen wählen */
+      const L = this._sp().cands || [], on = new Set(L.filter((x) => x.on).map((x) => x.id));
+      if (a === "spxsite") { if (on.has(k)) { if (on.size === 1) { this._toast("Mindestens eine Anlage muss gewählt bleiben"); return; } on.delete(k); } else on.add(k); c.sites = [...on]; }
+      else if (a === "spxsvc") c.sites = L.filter((x) => x.dom === k).map((x) => x.id);
+      else if (a === "spxsall") c.sites = L.map((x) => x.id);
+      else c.sites = [];
+      this._spSave(c); return;
+    }
     if (a === "spxsrc") c.src = k; else if (a === "spxlook") c.look = k === "classic" ? "classic" : "new"; else if (a === "spxcorr") c.corr = !(c.corr !== false); else if (a === "spxmode") c.mode = k; else if (a === "spxm3") c.act = k || ""; else if (a === "spxep") { c.act = k || ""; c.mode = "total"; } else if (a === "spxgoig") { this._modal = null; this._renderModal(); this._sto = { q: "forecast", c: "" }; this._igOpen = true; this._render(); return; } else return;
     this._spSave(c);
   }
@@ -56,7 +64,7 @@
       ${this._spCheckHtml()}
       <div class="lsec" style="margin-top:12px">${ic("sun", 15)}Prognose-Quelle</div>
       <div class="gschips">${chip("spxsrc", "forecast", "Automatisch", C.src === "forecast")}${chip("spxsrc", "sensor", "Eigener Sensor", C.src === "sensor")}</div>
-      ${C.src === "forecast" ? `<div class="gst">${ic("info", 15)}<span>${fsN.length ? `Gefunden: ${fsN.map(esc).join(", ")}. Mehrere Anlagen werden addiert.` : `Keine Solar-Prognose gefunden. Unterstützt werden Forecast.Solar, Solcast und Open-Meteo Solar Forecast – Forecast.Solar lässt sich im <button class="lnk" data-act="spxgoig">Store</button> finden.`}</span></div>
+      ${C.src === "forecast" && (this._sp().cands || []).length ? this._spSiteSel() : C.src === "forecast" ? `<div class="gst">${ic("info", 15)}<span>${fsN.length ? `Gefunden: ${fsN.map(esc).join(", ")}. Mehrere Anlagen werden addiert.` : `Keine Solar-Prognose gefunden. Unterstützt werden Forecast.Solar, Solcast und Open-Meteo Solar Forecast – Forecast.Solar lässt sich im <button class="lnk" data-act="spxgoig">Store</button> finden.`}</span></div>
       ${this._spSrcInfo()}`
       : sel("chart", "Prognose-Sensor", "spxfc", opt(fc, C.fc_sensor, fc.length ? "Bitte wählen" : "Keiner gefunden"), !fc.length) + `<div class="mut sm">Der Sensor braucht das Attribut <code>wh_period</code> (Wh je Stunde, wie Forecast.Solar) oder <code>detailedForecast</code> / <code>detailedHourly</code> (kW je Zeitraum, wie Solcast).</div>${this._spSrcInfo()}`}
       <div class="lsec" style="margin-top:12px">${ic("energy", 15)}Tatsächlicher Ertrag</div>

@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b12] - 2026-11-12
+
+### Behoben
+- **Modul 16 · Prognose zu hoch bei mehreren Diensten (v1.0 Build 2):** Bisher wurden alle gefundenen Solar-Prognosen addiert. Stehen für dieselben Module mehrere Dienste in Home Assistant – zum Beispiel Forecast.Solar, Solcast und Open-Meteo – war die Summe zwei- bis dreimal so hoch (Beispiel: Anlagen einzeln morgen 21,9 + 17,1 + 8,5 = 47,5 kWh statt rund 20 kWh).
+  - **Anlagen wählen:** Einstellungen → Modul 16 → Prognose-Quelle listet jetzt alle gefundenen Anlagen nach Dienst mit heute und morgen. Jede lässt sich einzeln an- und abwählen, dazu Knöpfe „Nur Forecast.Solar“, „Nur Solcast“ usw.
+  - **Ohne eigene Wahl** gilt, was im **Energie-Dashboard** von Home Assistant als Solar-Prognose eingetragen ist. Ist dort nichts eingetragen, werden wie bisher alle addiert – bei mehreren Diensten mit **Warnung** oben auf der Seite („Prognose vermutlich doppelt gezählt“, mit Knöpfen) und im Einrichtungs-Check.
+  - Eine neue Auswahl wird aus den schon abgerufenen Werten berechnet, ohne neuen Abruf. Die Prognose von heute wird neu festgehalten, und die **Korrektur lernt ab diesem Tag neu** – die alten Tage wurden mit der zu hohen Summe verglichen (daher der gelernte Faktor ×0,83).
+  - „Anlagen einzeln“ zeigt bei mehreren Diensten den Dienst je Anlage und im Kopf heute und morgen.
+- Modul 16: Fehler in „Anlagen einzeln“ behoben, der die Seite mit mehreren Diensten nicht laden ließ.
+- **Startseite · Schrift über den Kachelrand:** Die Stufen-Plakette („In Entwicklung“, „Vorab“, „Beta“) neben „Modul 10“ lief bei schmalen Kacheln über den Rand und unter den Statuspunkt. Sie bricht jetzt in die nächste Zeile um und heißt auf der Kachel kurz „Entwicklung“ bzw. „Vorab“ (der volle Name steht im Tooltip). Lange Modulnamen werden mit Silbentrennung umbrochen („Wärme-pumpe“), und der Name hält mehr Abstand zum Statuspunkt.
+- **Startseite · Kachel Prognose:** zeigt eine Zahl wie die anderen Kacheln („44,7 kWh · morgen erwartet“, tagsüber „11,2 kWh · von 17,8 kWh heute“ mit Ring) statt eines Satzes in großer Schrift, der über die Kachel lief.
+
 ## [2026.11.3b11] - 2026-11-12
 
 ### Neu

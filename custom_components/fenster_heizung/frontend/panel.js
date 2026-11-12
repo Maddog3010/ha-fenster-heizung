@@ -748,7 +748,7 @@ const MV = {
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  sp: { v: "1.0", b: 1, d: "2026-11-12", p: "2026.11.3b8", log: [["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
+  sp: { v: "1.0", b: 2, d: "2026-11-12", p: "2026.11.3b12", log: [["1.0", 2, "2026.11.3b12", "Anlagen wählen: mehrere Prognose-Dienste (Forecast.Solar, Solcast, Open-Meteo) für dasselbe Dach werden nicht mehr ungefragt addiert – Auswahl je Anlage, „Nur …“-Knöpfe, Vorgabe aus dem Energie-Dashboard, Warnung auf der Seite; Korrektur lernt nach einer Änderung neu"], ["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "1.0", b: 1, d: "2026-11-12", p: "2026.11.3b6", log: [["1.0", 1, "2026.11.3b6", "Stabil: Schnellstart aus den Haus-Werten, Einrichtungs-Prüfung, Kosten im Strom-Reiter und Vorteil heute auf dem Tablet, Fluss-Bild als Bild teilen, Tablet-Modus zeichnet nur alle 5 s neu, Feinschliff der Optik (Haus als freier Ring, ruhigere Kacheln, klarere Schrift)"], ["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
 };
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
@@ -1850,6 +1850,15 @@ button.sphc{background:none;border:0;padding:4px 0;font:inherit;color:inherit;cu
 @media (max-width:520px){.spck>div{grid-template-columns:24px 1fr}.spck small{grid-column:2;text-align:left}}
 .spsens{display:grid;gap:6px}.spsens button{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;font:inherit;color:inherit;padding:8px 12px;border-radius:11px;border:1px solid var(--line);background:transparent;cursor:pointer}
 .spsens button:hover{background:color-mix(in srgb,var(--primary-text-color) 5%,transparent)}.spsens span{display:flex;flex-direction:column;min-width:0}.spsens small{font-size:.72rem;opacity:.6;overflow:hidden;text-overflow:ellipsis}.spsens b{white-space:nowrap;color:#f59e0b}
+/* Modul 16 v1.0 Build 2: Anlagen wählen, doppelt gezählt */
+.spdup{border-color:color-mix(in srgb,#f59e0b 55%,var(--line));background:color-mix(in srgb,#f59e0b 8%,var(--card))}.spdup b{color:#fbbf24!important}.spdup>svg{color:#f59e0b;flex:none}
+.spdupw{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;border:1px solid color-mix(in srgb,#f59e0b 50%,var(--line));background:color-mix(in srgb,#f59e0b 9%,transparent);font-size:.84rem;margin:4px 0 6px}.spdupw svg{color:#f59e0b;flex:none;margin-top:2px}.spdupw b{display:block;color:#fbbf24}
+.spsvc{margin-top:8px}.spsvh{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-weight:700;font-size:.86rem;margin:0 2px 4px}
+.spsel{display:grid;grid-template-columns:22px 1fr auto;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:inherit;padding:8px 10px;margin-top:4px;border-radius:11px;border:1px solid var(--line);background:transparent;cursor:pointer}
+.spsel i{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line);display:grid;place-items:center}.spsel.on{border-color:color-mix(in srgb,var(--teal) 55%,var(--line));background:color-mix(in srgb,var(--teal) 8%,transparent)}.spsel.on i{background:var(--teal);border-color:var(--teal);color:#06201c}
+.spsel span{font-size:.78rem;color:var(--mut);white-space:nowrap}.spsel:disabled{cursor:default;opacity:.8}
+.spsvcl{font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:99px;border:1px solid var(--line);color:var(--mut);margin-top:3px}
+@media (max-width:520px){.spsel{grid-template-columns:22px 1fr}.spsel span{grid-column:2}}
 @media (prefers-reduced-motion:reduce){.efha,.efpr circle{transition:none}.efboard .efgl{animation:none}}
 .lixroom.on{border-color:color-mix(in srgb,#fbbf24 55%,transparent);background:color-mix(in srgb,#fbbf24 7%,var(--card))}
 .lixhd{display:flex;align-items:center;gap:10px}.lixico{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent);color:var(--mut);flex:none}
@@ -1949,10 +1958,10 @@ button.hzr{cursor:pointer}
 .hzk:hover{border-color:color-mix(in srgb,var(--zc) 55%,var(--line))}.hzk:focus-visible{outline:2px solid var(--zc);outline-offset:2px}
 .hzk .hzdot{position:absolute;top:12px;right:12px;width:9px;height:9px;border-radius:50%;background:var(--zc);box-shadow:0 0 0 3px color-mix(in srgb,var(--zc) 20%,transparent)}
 .hzk.z-warn .hzdot{animation:hzdp 2s ease-in-out infinite}
-.hzkh{display:flex;align-items:center;gap:9px;min-width:0;padding-right:14px}
+.hzkh{display:flex;align-items:center;gap:9px;min-width:0;padding-right:20px}
 .hzki{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;flex:none;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--zc) 22%,transparent),transparent 72%);color:var(--zc)}
-.hzkn{min-width:0}.hzkn b{font-size:.92rem;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}.hzkn small{display:flex;gap:6px;align-items:center;font-size:.72rem;color:var(--mut);white-space:nowrap}
-.hzkst{font-style:normal;font-size:.6rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:6px;background:color-mix(in srgb,var(--amber) 18%,transparent);color:var(--amber)}
+.hzkn{min-width:0}.hzkn b{font-size:.92rem;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto}.hzkn small{display:flex;flex-wrap:wrap;gap:2px 6px;align-items:center;font-size:.72rem;color:var(--mut);white-space:nowrap}
+.hzkst{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;font-style:normal;font-size:.6rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:1px 6px;border-radius:6px;background:color-mix(in srgb,var(--amber) 18%,transparent);color:var(--amber)}
 .hzkm{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;min-height:46px}
 .hzkv{font-size:2.1rem;font-weight:800;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--primary-text-color);white-space:nowrap}
 .hzkv small{font-size:.9rem;font-weight:600;color:var(--mut);margin-left:4px;letter-spacing:0}
@@ -2045,7 +2054,7 @@ button.hzr{cursor:pointer}
 .hzlo{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;margin-bottom:8px;border:1px solid var(--line);border-radius:14px;background:rgba(127,127,127,.05);text-align:left;cursor:pointer;color:var(--primary-text-color)}
 .hzlo b{flex:1}.hzlo small{color:var(--mut)}.hzlo svg{transform:rotate(-90deg);color:var(--mut)}
 :host([style*="color-scheme: light"]) .hzz{background:color-mix(in srgb,var(--zc) 6%,#fff)}
-@media(max-width:520px){.hzkgrid,.hzkgrid.sz-l{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hzkgrid.sz-l .hzk{grid-column:span 2}.hzk{padding:12px 11px 10px;gap:6px}.hzki{width:30px;height:30px}.hzki svg.gx{width:28px;height:28px}.hzkh{gap:7px;padding-right:10px;align-items:flex-start}.hzkn b{white-space:normal;font-size:.84rem;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.hzkst{font-size:.54rem;padding:0 4px}.hzkv{font-size:1.7rem}.hzkv.tx{font-size:1.2rem}.hzkm{min-height:38px}.hzkr{width:36px;height:36px}.hzksp{width:52px}
+@media(max-width:520px){.hzkgrid,.hzkgrid.sz-l{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hzkgrid.sz-l .hzk{grid-column:span 2}.hzk{padding:12px 11px 10px;gap:6px}.hzki{width:30px;height:30px}.hzki svg.gx{width:28px;height:28px}.hzkh{gap:7px;padding-right:16px;align-items:flex-start}.hzkn b{white-space:normal;font-size:.84rem;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}.hzkst{font-size:.54rem;padding:0 4px}.hzkv{font-size:1.7rem}.hzkv.tx{font-size:1.2rem}.hzkm{min-height:38px}.hzkr{width:36px;height:36px}.hzksp{width:52px}
   .hzz{flex-wrap:wrap;gap:10px}.hzzbs{width:100%;padding-left:52px}.hzzb{flex:1}}
 .tmgrid .hzt.n{align-items:flex-start}.tmgrid .hzt.n .hti{width:72px;height:72px}.tmgrid .hzt.n .hti svg.gx{width:56px;height:56px}.tmgrid .hzt.n .hzdot{top:16px;right:16px;width:12px;height:12px}
 @media(max-width:520px){.hzamp{padding:12px 14px;gap:11px}.hzal{display:none}.hzab{width:40px;height:40px}.hzax b{font-size:1.12rem}.hzago{display:none}.hzbubs.n{gap:10px}.hzbn{width:72px}.hzbr{width:68px;height:68px}.hzbr b.lg{font-size:.64rem}.hzr.n::before{left:-11px}}
@@ -9231,7 +9240,7 @@ class FensterHeizungPanel extends HTMLElement {
       .finally(() => { this._spBusy = false; if (this._spWantR) { this._spWantR = false; if (!this._spVisible() && !this._modal) this._render(); } if (this._spVisible()) { this._render(); if (this._modal && this._modal.type === "spset") this._renderModal(); } });
   }
   _spVisible() { return !!(this._modal && this._modal.type === "spset") || (!!this._mdActive && this._mdActive() === "sp" && !this._stOpen); }
-  _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", look: "new", corr: true, ...(d.cfg || {}) } }; }
+  _sp() { const d = (this._spD && this._spD.d) || {}; return { ...d, cfg: { src: "forecast", fc_sensor: "", act: "", mode: "day", look: "new", corr: true, sites: [], since: "", ...(d.cfg || {}) } }; }
   _spSave(cfg) {
     if (!(this._spD && this._spD.d && this._spD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._sp(); this._spD = { d: { ...s, cfg }, ts: Date.now() };
@@ -9248,6 +9257,14 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "spxds") { this._spDs = this._spDs === k ? null : k; this._render(); return; }
     if (a === "spxmore") { this.dispatchEvent(new CustomEvent("hass-more-info", { detail: { entityId: k }, bubbles: true, composed: true })); return; }
     if (a === "spxh") { this._spH = this._spH === Number(k) ? null : Number(k); this._render(); return; }
+    if (a === "spxsite" || a === "spxsvc" || a === "spxsauto" || a === "spxsall") {   /* v1.0 Build 2: Anlagen wählen */
+      const L = this._sp().cands || [], on = new Set(L.filter((x) => x.on).map((x) => x.id));
+      if (a === "spxsite") { if (on.has(k)) { if (on.size === 1) { this._toast("Mindestens eine Anlage muss gewählt bleiben"); return; } on.delete(k); } else on.add(k); c.sites = [...on]; }
+      else if (a === "spxsvc") c.sites = L.filter((x) => x.dom === k).map((x) => x.id);
+      else if (a === "spxsall") c.sites = L.map((x) => x.id);
+      else c.sites = [];
+      this._spSave(c); return;
+    }
     if (a === "spxsrc") c.src = k; else if (a === "spxlook") c.look = k === "classic" ? "classic" : "new"; else if (a === "spxcorr") c.corr = !(c.corr !== false); else if (a === "spxmode") c.mode = k; else if (a === "spxm3") c.act = k || ""; else if (a === "spxep") { c.act = k || ""; c.mode = "total"; } else if (a === "spxgoig") { this._modal = null; this._renderModal(); this._sto = { q: "forecast", c: "" }; this._igOpen = true; this._render(); return; } else return;
     this._spSave(c);
   }
@@ -9272,7 +9289,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._spCheckHtml()}
       <div class="lsec" style="margin-top:12px">${ic("sun", 15)}Prognose-Quelle</div>
       <div class="gschips">${chip("spxsrc", "forecast", "Automatisch", C.src === "forecast")}${chip("spxsrc", "sensor", "Eigener Sensor", C.src === "sensor")}</div>
-      ${C.src === "forecast" ? `<div class="gst">${ic("info", 15)}<span>${fsN.length ? `Gefunden: ${fsN.map(esc).join(", ")}. Mehrere Anlagen werden addiert.` : `Keine Solar-Prognose gefunden. Unterstützt werden Forecast.Solar, Solcast und Open-Meteo Solar Forecast – Forecast.Solar lässt sich im <button class="lnk" data-act="spxgoig">Store</button> finden.`}</span></div>
+      ${C.src === "forecast" && (this._sp().cands || []).length ? this._spSiteSel() : C.src === "forecast" ? `<div class="gst">${ic("info", 15)}<span>${fsN.length ? `Gefunden: ${fsN.map(esc).join(", ")}. Mehrere Anlagen werden addiert.` : `Keine Solar-Prognose gefunden. Unterstützt werden Forecast.Solar, Solcast und Open-Meteo Solar Forecast – Forecast.Solar lässt sich im <button class="lnk" data-act="spxgoig">Store</button> finden.`}</span></div>
       ${this._spSrcInfo()}`
       : sel("chart", "Prognose-Sensor", "spxfc", opt(fc, C.fc_sensor, fc.length ? "Bitte wählen" : "Keiner gefunden"), !fc.length) + `<div class="mut sm">Der Sensor braucht das Attribut <code>wh_period</code> (Wh je Stunde, wie Forecast.Solar) oder <code>detailedForecast</code> / <code>detailedHourly</code> (kW je Zeitraum, wie Solcast).</div>${this._spSrcInfo()}`}
       <div class="lsec" style="margin-top:12px">${ic("energy", 15)}Tatsächlicher Ertrag</div>
@@ -10478,7 +10495,10 @@ class FensterHeizungPanel extends HTMLElement {
       if (!this._liOn()) return off("Aus"); const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; if (!L.length) return off("Keine Lampen");
       K.v = String(n); K.u = "an"; K.p = n / L.length; K.l1 = n ? `von ${L.length} Lampen` : "alles aus"; K.z = n ? "act" : "ok"; K.o.on = n > 0; return K;
     }
-    if (m.id === "sp") { const t = this._spStart(); return { ...K, v: null, l1: esc(t.sub), z: this._hzZ(t.c), pic: t.icon }; }
+    if (m.id === "sp") {   /* Zahl statt Satz: sonst lief „Morgen 47,4 kWh“ in großer Schrift über die Kachel */
+      const t = this._spStart(); if (t.v == null) return { ...K, v: null, l1: esc(t.sub), z: this._hzZ(t.c) };
+      return { ...K, v: t.v, u: "kWh", l1: esc(t.l1), p: t.p, z: this._hzZ(t.c), hd: "forecast", o: { on: !t.night } };
+    }
     if (m.id === "bt") { const s = this._enOn() ? this._soc() : null; if (s == null) return off("Kein Ladestand"); return { ...K, v: num(s, 0), u: "%", p: s / 100, o: { lvl: s }, l1: "Ladestand Akku" }; }
     if (m.id === "dt") { const p = this._price(); if (!p) return off("Kein Preis"); return { ...K, v: num(p, 1), u: "ct", l1: "pro kWh jetzt" }; }
     if (m.id === "ef") { const N = this._enOn() ? this._enNow() : null; if (!N) return off("Keine Energiedaten"); return { ...K, v: num(N.house / 1000, 1), u: "kW", l1: "Haus jetzt", l2: `PV ${num(N.pv / 1000, 1)} kW`, o: { on: N.pv > 50 } }; }
@@ -10511,7 +10531,7 @@ class FensterHeizungPanel extends HTMLElement {
   _hzTile2(m) {
     const K = this._hzK(m), sz = this._hzKs(), hd = K.hd || this._hzHdFor(m), z = K.z;
     const pic = K.pic || (hd ? this._gx(hd, sz === "s" ? 26 : 32, { ...(this._hzTileO ? {} : {}), ...K.o }) : ic(m.icon, 20));
-    const sub = m.addon ? "Addon" : m.n ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst">${STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
+    const sub = m.addon ? "Addon" : m.n ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst" title="${STG[modSt(m)].t}">${({ dev: "Entwicklung", vorab: "Vorab" })[modSt(m)] || STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
     let gr = "";
     if (sz !== "s" && z !== "off") {
       const hv = K.ent && (sz === "l" || K.p == null) ? this._hzHist(K.ent) : null;
@@ -10521,7 +10541,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     const val = K.v == null ? `<span class="hzkv tx sm">${K.l1}</span>` : `<span class="hzkv${K.tx ? " tx" : ""}"${!K.tx && /^-?[\d.,]+$/.test(String(K.v)) ? ` data-hzn="k${m.id}"` : ""}>${esc(String(K.v))}${K.u ? `<small>${esc(K.u)}</small>` : ""}</span>`;
     const line = K.v == null ? K.l2 : [K.l1, sz === "s" ? "" : K.l2].filter(Boolean).join(" · ");
-    return `<button class="hzk z-${z} sz-${sz}" data-act="hzgo" data-k="${m.id}" aria-label="${esc(m.short)}: ${esc(this.constructor.HZ_ZT[z] || "")}"><i class="hzdot" aria-hidden="true"></i>
+    return `<button class="hzk z-${z} sz-${sz}" lang="de" data-act="hzgo" data-k="${m.id}" aria-label="${esc(m.short)}: ${esc(this.constructor.HZ_ZT[z] || "")}"><i class="hzdot" aria-hidden="true"></i>
       <div class="hzkh"><span class="hzki">${pic}</span><span class="hzkn"><b>${esc(m.short)}</b><small>${sub}${stg}</small></span></div>
       <div class="hzkm">${val}${sz === "l" ? "" : gr}</div>${sz === "l" ? gr : ""}${line ? `<div class="hzks">${line}</div>` : ""}</button>`;
   }
@@ -13806,7 +13826,7 @@ class FensterHeizungPanel extends HTMLElement {
     const C = this._spCalc(), day = this._spDay === "tomorrow" || (this._spDay == null && C.night) ? "tomorrow" : "today";
     if (this._tmOn && this._tmOn()) return this._spWall(C);   /* E7: Tablet-Wand */
     const seg = `<div class="spseg"><button class="${day === "today" ? "on" : ""}" data-act="spxday" data-k="today">Heute</button><button class="${day === "tomorrow" ? "on" : ""}" data-act="spxday" data-k="tomorrow">Morgen</button><span class="mut sm">kWh je Stunde</span></div>`;
-    return `<div class="spx${this.style.colorScheme === "light" ? " lt" : ""}">${this._spLow(C)}${this._spTiles(C)}
+    return `<div class="spx${this.style.colorScheme === "light" ? " lt" : ""}">${this._spDupBox()}${this._spLow(C)}${this._spTiles(C)}
       <div class="card spcard"><h2>${ic("chart", 18)}Prognose und Ertrag über den Tag</h2>${seg}${this._spChart(C, day)}</div>
       ${this._spSites(C)}
       <div class="card spcard"><h2>${ic("chart", 18)}Wie gut war die Prognose?</h2>${this._spHist(C)}<div class="mut sm" style="margin-top:6px">Quelle: ${esc(S.src || "–")}${(S.sites || []).length ? " · " + S.sites.map(esc).join(", ") : ""}</div></div></div>`;
@@ -13850,10 +13870,11 @@ class FensterHeizungPanel extends HTMLElement {
     const spark = (h, c) => { if (!h || !h.length) return ""; const mx = Math.max(.1, ...h.map((x) => x[1])), h0 = h[0][0], h1 = h[h.length - 1][0], sp = Math.max(1, h1 - h0);
       const p = h.map(([t, v]) => `${((t - h0) / sp * 96 + 2).toFixed(1)},${(26 - v / mx * 22).toFixed(1)}`).join(" ");
       return `<svg viewBox="0 0 100 28" class="spsl" aria-hidden="true"><polyline points="2,26 ${p} 98,26" fill="${c}" fill-opacity=".18" stroke="none"/><polyline points="${p}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linejoin="round"/></svg>`; };
+    const svcs = [...new Set(L.map((x) => x.svc).filter(Boolean))];
     const rows = L.map((x, i) => { const c = cols[i % cols.length], pc = Math.round((x.t || 0) / tot * 100);
-      return `<div class="spsite" style="--c:${c}"><div class="spsn"><i></i><b title="${esc(x.n)}">${esc(x.n)}</b><em>${pc} %</em></div>${spark(x.h, c)}
-        <div class="spsv"><b>${f1((x.t || 0) * C.cf)}<small> kWh</small></b><span class="mut sm">morgen ${f1((x.m || 0) * C.cf)}</span></div><div class="spsb"><i style="width:${pc}%"></i></div></div>`; }).join("");
-    return `<div class="card spcard"><h2>${ic("roof", 18)}Anlagen einzeln<span class="hzrt">${L.length} Anlagen · ${f1(tot * C.cf)} kWh</span></h2><div class="spsites">${rows}</div>
+      return `<div class="spsite" style="--c:${c}"><div class="spsn"><i></i><b title="${esc(x.n)}${x.svc ? " · " + esc(x.svc) : ""}">${esc(x.n)}</b><em>${pc} %</em></div>${spark(x.h, c)}
+        <div class="spsv"><b>${f1((x.t || 0) * C.cf)}<small> kWh</small></b><span class="mut sm">morgen ${f1((x.m || 0) * C.cf)}</span>${svcs.length > 1 ? `<span class="spsvcl">${esc(x.svc)}</span>` : ""}</div><div class="spsb"><i style="width:${pc}%"></i></div></div>`; }).join("");
+    return `<div class="card spcard"><h2>${ic("roof", 18)}Anlagen einzeln<span class="hzrt">${L.length} Anlagen · heute ${f1(tot * C.cf)} · morgen ${f1(L.reduce((a, x) => a + (x.m || 0), 0) * C.cf)} kWh</span></h2><div class="spsites">${rows}</div>
       <div class="mut sm" style="margin-top:6px">Jede Anlage so, wie die Quelle sie liefert${C.cf !== 1 ? `, mit der gelernten Korrektur ×${num(C.cf, 2)}` : ""}. Banner und Kacheln zeigen die Summe.</div></div>`;
   }
   /* Kleiner Sonnenbogen für die Startseite (Kachel) */
@@ -13869,7 +13890,9 @@ class FensterHeizungPanel extends HTMLElement {
     const S = this._sp(); if (S.error || !S.found) return { sub: S.error ? "Nicht geladen" : "Keine Prognose", c: "mut", icon: "" };
     const C = this._spCalc(), f1 = (v) => this._spF(v);
     const sub = C.night ? `Morgen ${f1(C.tmr)} kWh` : S.got != null ? `${f1(S.got)} von ${f1(C.base)} kWh` : `Heute ${f1(C.base)} kWh`;
-    return { sub, c: S.low ? "wa" : "", icon: this._spMini(26) };
+    /* Für die Startkachel: Zahl, Einheit und Zeile getrennt, Ring = Anteil des Tages */
+    const o = C.night ? { v: f1(C.tmr), l1: "morgen erwartet", p: null } : S.got != null ? { v: f1(S.got), l1: `von ${f1(C.base)} kWh heute`, p: C.base > 0 ? Math.min(1, S.got / C.base) : null } : { v: f1(C.base), l1: "heute erwartet", p: null };
+    return { sub, c: S.low ? "wa" : "", icon: this._spMini(26), night: C.night, ...o };
   }
   /* Tablet: Wand mit großen Zahlen, Kurve und bester Zeit – ohne Verlauf und Kalender */
   _spWall(C) {
@@ -13879,7 +13902,7 @@ class FensterHeizungPanel extends HTMLElement {
       ? [big("Morgen erwartet", f1(C.tmr), "kWh", S.best && S.best_day === "tomorrow" ? `beste Zeit ${S.best.from}–${S.best.to} Uhr` : "", "#38bdf8"), big("Heute erzeugt", f1(S.got != null ? S.got : C.base), "kWh", C.base > 0 && S.got != null ? `${Math.round(S.got / C.base * 100)} % der Prognose` : "", "#facc15")]
       : [big("Heute erwartet", f1(C.base), "kWh", C.cf !== 1 ? `korrigiert ×${num(C.cf, 2)}` : "Prognose von heute früh", "#f59e0b"), big("Bisher", f1(S.got), S.got != null ? "kWh" : "", C.vor == null ? "kein Ertragssensor" : C.vor >= -.1 ? `<span class="g">${Math.abs(C.vor) < .1 ? "genau im Plan" : "+" + f1(C.vor) + " kWh vor Plan"}</span>` : `<span class="w">${f1(-C.vor)} kWh hinter Plan</span>`, "#facc15"),
         big("Noch zu erwarten", f1(C.rest), "kWh", `bis etwa ${C.H1} Uhr`, "#fde047"), big("Morgen", f1(C.tmr), "kWh", S.best && S.best_day === "today" ? `beste Zeit heute ${S.best.from}–${S.best.to} Uhr` : "", "#38bdf8")];
-    return `<div class="spx sptm${this.style.colorScheme === "light" ? " lt" : ""}">${this._spLow(C)}<div class="spwall"><div class="spwn">${nums.join("")}</div>
+    return `<div class="spx sptm${this.style.colorScheme === "light" ? " lt" : ""}">${this._spDupBox()}${this._spLow(C)}<div class="spwall"><div class="spwn">${nums.join("")}</div>
       <div class="card spcard"><h2>${ic("chart", 18)}${day === "today" ? "Heute" : "Morgen"} · kWh je Stunde</h2>${this._spChart(C, day)}</div></div></div>`;
   }
   /* F9: Ertragssensor aus dem Energie-Dashboard (einmal je Sitzung gelesen) */
@@ -13912,6 +13935,7 @@ class FensterHeizungPanel extends HTMLElement {
       !C.act ? wa("Kein Ertragssensor", "Ohne ihn fehlen „vor / hinter Plan“, Treffsicherheit und Korrektur") : !a ? no("Ertragssensor fehlt", `${C.act} gibt es nicht mehr`) : !/^(Wh|kWh|MWh)$/.test(un) ? wa("Einheit prüfen", `${C.act} meldet „${un || "ohne Einheit"}“, erwartet Wh oder kWh`) : ok("Ertragssensor", `${(a.attributes || {}).friendly_name || C.act} · ${a.state} ${un}`),
       !C.act ? null : S.act_h ? ok("Ertrag je Stunde", "aus der Langzeitstatistik") : wa("Kein Stundenverlauf", "Sensor ohne state_class – die Kurve zeigt dann die Prognose-Form"),
       !C.act ? null : S.corr_raw != null ? ok("Korrektur gelernt", `×${num(S.corr_raw, 2)} aus ${S.corr_n} Tagen${C.corr === false ? " · ausgeschaltet" : ""}`) : wa("Korrektur lernt noch", `${S.corr_n || 0} von 7 Tagen`),
+      (S.cands || []).length > 1 ? (S.dup && S.sel_mode !== "manual" ? wa("Mehrere Dienste addiert", "Forecast.Solar, Solcast & Co. für dasselbe Dach zählen doppelt – unten Anlagen wählen") : ok("Anlagen", `${(S.cands || []).filter((x) => x.on).length} von ${(S.cands || []).length} addiert`)) : null,
       this._spSensors().length ? ok("Sensoren in Home Assistant", `${this._spSensors().length} Werte für Automationen`) : wa("Sensoren noch nicht da", "erscheinen nach einem Neustart von Home Assistant"),
     ].filter(Boolean);
     return L;
@@ -13927,6 +13951,29 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="lsec" style="margin-top:12px">${ic("chart", 15)}Sensoren in Home Assistant</div>
       <div class="spsens">${L.map((k) => `<button data-act="spxmore" data-k="${esc(k)}"><span>${esc((st[k].attributes || {}).friendly_name || k)}<small>${esc(k)}</small></span><b>${esc(v(k))}</b></button>`).join("")}</div>
       <div class="mut sm" style="margin-top:6px">Für Automationen, zum Beispiel: Waschmaschine starten, wenn „Beste Zeit Beginn“ erreicht ist und „Rest heute“ über 5 kWh liegt.</div>`;
+  }
+  /* ================= v1.0 Build 2: Anlagen wählen – mehrere Dienste für dasselbe Dach nicht doppelt zählen =================
+     Bisher wurden alle gefundenen Prognosen addiert. Stehen Forecast.Solar und Solcast (oder Open-Meteo) für dieselben Module
+     in Home Assistant, war die Summe doppelt so hoch. Jetzt: von Hand gewählt, sonst wie im Energie-Dashboard, sonst alle mit Warnung. */
+  _spSvcs() { const L = this._sp().cands || [], o = {}; L.forEach((x) => { (o[x.dom] = o[x.dom] || { dom: x.dom, svc: x.svc || x.dom, L: [] }).L.push(x); }); return Object.values(o); }
+  _spSiteSel() {
+    const S = this._sp(), L = S.cands || [], G = this._spSvcs(), adm = this._admin(), f1 = (v) => this._spF(v), on = L.filter((x) => x.on);
+    const sumT = on.reduce((a, x) => a + (x.t || 0), 0), sumM = on.reduce((a, x) => a + (x.m || 0), 0);
+    const mode = { manual: "von dir gewählt", energy: "wie im Energie-Dashboard eingetragen", all: "alle gefundenen werden addiert" }[S.sel_mode] || "";
+    const warn = S.dup ? `<div class="spdupw">${ic("alert", 16)}<div><b>Mehrere Dienste werden addiert</b>${G.filter((g) => g.L.some((x) => x.on)).map((g) => esc(g.svc)).join(" + ")} – beschreiben sie dieselben Module, ist die Prognose zu hoch. Wähle je Dach nur einen Dienst.</div></div>` : "";
+    const quick = G.length > 1 ? `<div class="gschips" style="margin:6px 0 2px">${G.map((g) => `<button class="gsch ${g.L.every((x) => x.on) && on.length === g.L.length ? "sel" : ""}" data-act="spxsvc" data-k="${esc(g.dom)}" ${adm ? "" : "disabled"}>Nur ${esc(g.svc)}</button>`).join("")}${(S.energy_ids || []).length ? `<button class="gsch ${S.sel_mode === "energy" ? "sel" : ""}" data-act="spxsauto" ${adm ? "" : "disabled"}>Wie im Energie-Dashboard</button>` : `<button class="gsch ${S.sel_mode === "all" ? "sel" : ""}" data-act="spxsauto" ${adm ? "" : "disabled"}>Automatisch</button>`}</div>` : "";
+    const rows = G.map((g) => `<div class="spsvc"><div class="spsvh">${esc(g.svc)}<span class="mut sm">${g.L.length} ${g.L.length === 1 ? "Anlage" : "Anlagen"} · morgen ${f1(g.L.reduce((a, x) => a + (x.m || 0), 0))} kWh</span></div>
+      ${g.L.map((x) => `<button class="spsel${x.on ? " on" : ""}" data-act="spxsite" data-k="${esc(x.id)}" aria-pressed="${!!x.on}" ${adm ? "" : "disabled"}><i>${x.on ? ic("check", 13) : ""}</i><b>${esc(x.n)}</b><span>heute ${f1(x.t)} · morgen ${f1(x.m)} kWh</span></button>`).join("")}</div>`).join("");
+    return `<div class="spsites2"><div class="mut sm" style="margin:2px 0 6px">${L.length} ${L.length === 1 ? "Anlage" : "Anlagen"} gefunden · ${esc(mode)}. Addiert: heute <b>${f1(sumT)}</b> · morgen <b>${f1(sumM)} kWh</b>.</div>${warn}${quick}${rows}
+      ${S.since ? `<div class="mut sm" style="margin-top:6px">Auswahl geändert am ${new Date(S.since + "T12:00:00").toLocaleDateString("de-DE")}: Die Korrektur lernt ab diesem Tag neu, frühere Tage passen nicht zur neuen Summe.</div>` : ""}</div>`;
+  }
+  /* Hinweis oben auf der Seite, solange mehrere Dienste ungefragt addiert werden */
+  _spDupBox() {
+    const S = this._sp(); if (!S.dup || S.sel_mode === "manual") return "";
+    const G = this._spSvcs().filter((g) => g.L.some((x) => x.on)), on = (S.cands || []).filter((x) => x.on), f1 = (v) => this._spF(v);
+    const per = G.map((g) => `${esc(g.svc)} ${f1(g.L.filter((x) => x.on).reduce((a, x) => a + (x.m || 0), 0))}`).join(" · ");
+    return `<div class="card splow spdup">${ic("alert", 20)}<div><b>Prognose vermutlich doppelt gezählt</b><span>${on.length} Anlagen aus ${G.length} Diensten werden addiert (morgen: ${per} kWh). Stehen sie für dieselben Module, ist die Summe zu hoch.</span>
+      ${this._admin() ? `<div class="splowb">${G.map((g) => `<button class="btn2" data-act="spxsvc" data-k="${esc(g.dom)}">Nur ${esc(g.svc)}</button>`).join("")}<button class="btn2" data-act="spxopen">Anlagen wählen</button></div>` : ""}</div></div>`;
   }
   /* ================= Modul 12: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
   _plTab() {

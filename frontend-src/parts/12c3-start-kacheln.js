@@ -81,7 +81,10 @@
       if (!this._liOn()) return off("Aus"); const L = this._liLamps().filter((x) => !x.un), n = L.filter((x) => x.on).length; if (!L.length) return off("Keine Lampen");
       K.v = String(n); K.u = "an"; K.p = n / L.length; K.l1 = n ? `von ${L.length} Lampen` : "alles aus"; K.z = n ? "act" : "ok"; K.o.on = n > 0; return K;
     }
-    if (m.id === "sp") { const t = this._spStart(); return { ...K, v: null, l1: esc(t.sub), z: this._hzZ(t.c), pic: t.icon }; }
+    if (m.id === "sp") {   /* Zahl statt Satz: sonst lief „Morgen 47,4 kWh“ in großer Schrift über die Kachel */
+      const t = this._spStart(); if (t.v == null) return { ...K, v: null, l1: esc(t.sub), z: this._hzZ(t.c) };
+      return { ...K, v: t.v, u: "kWh", l1: esc(t.l1), p: t.p, z: this._hzZ(t.c), hd: "forecast", o: { on: !t.night } };
+    }
     if (m.id === "bt") { const s = this._enOn() ? this._soc() : null; if (s == null) return off("Kein Ladestand"); return { ...K, v: num(s, 0), u: "%", p: s / 100, o: { lvl: s }, l1: "Ladestand Akku" }; }
     if (m.id === "dt") { const p = this._price(); if (!p) return off("Kein Preis"); return { ...K, v: num(p, 1), u: "ct", l1: "pro kWh jetzt" }; }
     if (m.id === "ef") { const N = this._enOn() ? this._enNow() : null; if (!N) return off("Keine Energiedaten"); return { ...K, v: num(N.house / 1000, 1), u: "kW", l1: "Haus jetzt", l2: `PV ${num(N.pv / 1000, 1)} kW`, o: { on: N.pv > 50 } }; }
@@ -114,7 +117,7 @@
   _hzTile2(m) {
     const K = this._hzK(m), sz = this._hzKs(), hd = K.hd || this._hzHdFor(m), z = K.z;
     const pic = K.pic || (hd ? this._gx(hd, sz === "s" ? 26 : 32, { ...(this._hzTileO ? {} : {}), ...K.o }) : ic(m.icon, 20));
-    const sub = m.addon ? "Addon" : m.n ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst">${STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
+    const sub = m.addon ? "Addon" : m.n ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst" title="${STG[modSt(m)].t}">${({ dev: "Entwicklung", vorab: "Vorab" })[modSt(m)] || STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
     let gr = "";
     if (sz !== "s" && z !== "off") {
       const hv = K.ent && (sz === "l" || K.p == null) ? this._hzHist(K.ent) : null;
@@ -124,7 +127,7 @@
     }
     const val = K.v == null ? `<span class="hzkv tx sm">${K.l1}</span>` : `<span class="hzkv${K.tx ? " tx" : ""}"${!K.tx && /^-?[\d.,]+$/.test(String(K.v)) ? ` data-hzn="k${m.id}"` : ""}>${esc(String(K.v))}${K.u ? `<small>${esc(K.u)}</small>` : ""}</span>`;
     const line = K.v == null ? K.l2 : [K.l1, sz === "s" ? "" : K.l2].filter(Boolean).join(" · ");
-    return `<button class="hzk z-${z} sz-${sz}" data-act="hzgo" data-k="${m.id}" aria-label="${esc(m.short)}: ${esc(this.constructor.HZ_ZT[z] || "")}"><i class="hzdot" aria-hidden="true"></i>
+    return `<button class="hzk z-${z} sz-${sz}" lang="de" data-act="hzgo" data-k="${m.id}" aria-label="${esc(m.short)}: ${esc(this.constructor.HZ_ZT[z] || "")}"><i class="hzdot" aria-hidden="true"></i>
       <div class="hzkh"><span class="hzki">${pic}</span><span class="hzkn"><b>${esc(m.short)}</b><small>${sub}${stg}</small></span></div>
       <div class="hzkm">${val}${sz === "l" ? "" : gr}</div>${sz === "l" ? gr : ""}${line ? `<div class="hzks">${line}</div>` : ""}</button>`;
   }

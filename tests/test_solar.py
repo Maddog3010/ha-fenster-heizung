@@ -111,6 +111,26 @@ def test_upgrade_and_prune():
     assert "fh" in h[D0.isoformat()]
 
 
+def test_pick_sites():
+    c = [{"id": "fs1"}, {"id": "fs2"}, {"id": "sc1"}]
+    assert S.pick_sites(c, [], []) == ({"fs1", "fs2", "sc1"}, "all")
+    assert S.pick_sites(c, [], ["sc1", "weg"]) == ({"sc1"}, "energy")
+    assert S.pick_sites(c, ["fs1", "fs2"], ["sc1"]) == ({"fs1", "fs2"}, "manual")
+    assert S.pick_sites(c, ["weg"], []) == ({"fs1", "fs2", "sc1"}, "all")
+
+
+def test_correction_since():
+    h = _hist([(10, 9)] * 10)
+    since = (D0 - timedelta(days=3)).isoformat()
+    assert S.correction(h, D0, since) == (None, 3)
+
+
+def test_clean_cfg_sites():
+    c = S.clean_cfg({"sites": ["abc123", "x y", 5], "since": "2026-11-12"})
+    assert c["sites"] == ["abc123"] and c["since"] == "2026-11-12"
+    assert S.clean_cfg({"since": "gestern"})["since"] == ""
+
+
 if __name__ == "__main__":
     n = 0
     for k, f in list(globals().items()):
