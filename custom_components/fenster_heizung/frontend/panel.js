@@ -2922,6 +2922,9 @@ const CSS_GH = `
 .bar.nar .brand div span{font-size:.68rem;margin-top:1px}
 .bar.nar .mvb{padding:0 6px;margin-right:4px;font-size:.66rem}.bar.nar .mvb .mvbb{display:none}
 @media(max-width:360px){.bar.nar .brand .pn{display:none}}
+/* Weg zurück, wenn der Entwickler-Zugang zum Testen aus ist (Beta-Sperre, Schlüssel-Fenster) */
+.bldev{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,#a78bfa 14%,transparent);border:1px solid color-mix(in srgb,#a78bfa 40%,transparent);font-size:.84rem;line-height:1.4}
+.bldev>svg{color:#c4b5fd;flex:none}.bldev>span{flex:1;min-width:180px}.bldev .btn2{flex:none}.bldev .lnk{font-size:.8rem}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -11272,7 +11275,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     else if (a === "spndev") {
       const off = b.dataset.k === "off";
-      this._hass.callWS({ type: "fenster_heizung/spn_admin_act", act: "devoff", on: off }).then((r) => { const { ok, ...s } = r || {}; this._spnD = s; this._spnApply(); this._renderModal(); this._render(); this._toast(off ? "Entwickler-Zugang aus – du siehst alles wie ohne Sponsoring" : "Entwickler-Zugang wieder an"); }).catch((e) => this._toast("Das ging nicht: " + ((e && e.message) || "")));
+      this._hass.callWS({ type: "fenster_heizung/spn_admin_act", act: "devoff", on: off }).then((r) => { const { ok, ...s } = r || {}; this._spnD = s; this._spnApply(); if (!off && this._modal && this._modal.type === "spndlg") this._modal = null; this._renderModal(); this._render(); this._toast(off ? "Entwickler-Zugang aus – du siehst alles wie ohne Sponsoring" : "Entwickler-Zugang wieder an"); }).catch((e) => this._toast("Das ging nicht: " + ((e && e.message) || "")));
     }
     else if (a === "spnclr") { this._hass.callWS({ type: "fenster_heizung/spn_clear" }).then((r) => { this._spnD = r; this._spnApply(); this._renderModal(); this._render(); this._toast("Schlüssel entfernt"); }).catch(() => this._toast("Das ging nicht")); }
     else if (a === "spnbadge") this._spnPref({ badge: !this._spnS().saved_prefs.badge });
@@ -11352,7 +11355,8 @@ class FensterHeizungPanel extends HTMLElement {
   _spnDlg(close) {
     const s = this._spnS(), m = this._modal, adm = this._admin();
     const st = s.state === "dev" ? "Entwickler-Zugang – kein Schlüssel nötig" : s.active && s.source === "github" ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"} über GitHub · ${this._ghValid(this._ghS().eval)}` : s.active ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"}${s.name ? " · " + esc(s.name) : ""} · gültig bis ${esc(this._spnDate(s.bis))}` : s.state === "expired" ? `Abgelaufen am ${esc(this._spnDate(s.bis))}` : s.state === "revoked" ? "Gesperrt" : "Noch kein Schlüssel";
-    const body = adm ? `<div class="gst">${ic(s.active ? "check" : "key", 15)}<span>${st}</span></div>
+    const back = adm && s.manage && s.dev_off ? `<div class="bldev">${ic("flask", 18)}<span><b>Entwickler-Zugang ist zum Testen aus.</b></span><button class="btn2 pri" data-act="spndev" data-k="on">Wieder einschalten</button><button class="lnk" data-act="spnadm">Sponsoren verwalten</button></div>` : "";
+    const body = adm ? `${back}<div class="gst">${ic(s.active ? "check" : "key", 15)}<span>${st}</span></div>
         <div class="lsec" style="margin-top:12px">${ic("key", 15)}${s.active ? "Neuen Schlüssel einlösen" : "Sponsor-Schlüssel"}</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail an ${esc(SPN_MAIL)}. Einfach vollständig einfügen.${this._ghS().ready ? ` Schneller geht es mit <button class="lnk" data-act="spngh">GitHub-Anmeldung</button>.` : ""}</div>
         <textarea class="osel spnta" data-f="spnkey" rows="3" placeholder="FH1-…" spellcheck="false" aria-label="Sponsor-Schlüssel"></textarea>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div>
@@ -13391,7 +13395,8 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="blok">${ic("check", 16)}<span>Heizung, Fenster-Automatik und alle Regeln laufen im Hintergrund normal weiter. Räume, Pläne und Einstellungen bleiben erhalten.</span></div>
       ${adm ? `<div class="blsteps">${step(1, "HACS öffnen", "Strom &amp; Wärme")}${step(2, `⋮ → Erneut herunterladen`, st ? `Version ${esc(st)} wählen` : "die oberste Version ohne „b“ wählen")}${step(3, "Home Assistant neu starten", "danach ist alles wieder frei")}</div>
       <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="_top" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : "In HACS öffnen"}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · ab $3 im Monat</a></div>
-      <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
+      ${s.manage && s.dev_off ? `<div class="bldev">${ic("flask", 18)}<span><b>Entwickler-Zugang ist zum Testen aus.</b> Deshalb siehst du diese Sperre wie ein Nutzer ohne Sponsoring.</span><button class="btn2 pri" data-act="spndev" data-k="on">Entwickler-Zugang wieder einschalten</button><button class="lnk" data-act="spnadm">Sponsoren verwalten</button></div>` : ""}
+      <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}${this._ghS().ready && !sp ? `<button class="lnk" data-act="spngh">Schon Sponsor? Freischalten</button> · ` : ""}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
       : `<div class="blok wa">${ic("info", 16)}<span>Bitte die Person mit Admin-Rechten in Home Assistant, zur stabilen Version zu wechseln.</span></div>`}
     </div></div>`;
   }

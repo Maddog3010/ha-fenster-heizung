@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b15] - 2026-11-13
+
+### Behoben
+- **Entwickler-Zugang zum Testen aus – kein Weg zurück:** War der Entwickler-Zugang ausgeschaltet und eine Testversion installiert, zeigte das Panel nur die Beta-Sperre ohne Zugang zu „Sponsoren verwalten“. Die Sperre und das Schlüssel-Fenster zeigen jetzt für den Entwickler „Entwickler-Zugang wieder einschalten“ und „Sponsoren verwalten“. Die Beta-Sperre bietet außerdem „Schon Sponsor? Freischalten“ (Anmeldung mit GitHub).
+
 ## [2026.11.3b14] - 2026-11-13
 
 ### Neu

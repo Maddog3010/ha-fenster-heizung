@@ -30,4 +30,7 @@ const CSS_GH = `
 .bar.nar .brand div span{font-size:.68rem;margin-top:1px}
 .bar.nar .mvb{padding:0 6px;margin-right:4px;font-size:.66rem}.bar.nar .mvb .mvbb{display:none}
 @media(max-width:360px){.bar.nar .brand .pn{display:none}}
+/* Weg zurück, wenn der Entwickler-Zugang zum Testen aus ist (Beta-Sperre, Schlüssel-Fenster) */
+.bldev{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,#a78bfa 14%,transparent);border:1px solid color-mix(in srgb,#a78bfa 40%,transparent);font-size:.84rem;line-height:1.4}
+.bldev>svg{color:#c4b5fd;flex:none}.bldev>span{flex:1;min-width:180px}.bldev .btn2{flex:none}.bldev .lnk{font-size:.8rem}
 `;

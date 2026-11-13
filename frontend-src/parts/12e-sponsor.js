@@ -48,7 +48,7 @@
     }
     else if (a === "spndev") {
       const off = b.dataset.k === "off";
-      this._hass.callWS({ type: "fenster_heizung/spn_admin_act", act: "devoff", on: off }).then((r) => { const { ok, ...s } = r || {}; this._spnD = s; this._spnApply(); this._renderModal(); this._render(); this._toast(off ? "Entwickler-Zugang aus – du siehst alles wie ohne Sponsoring" : "Entwickler-Zugang wieder an"); }).catch((e) => this._toast("Das ging nicht: " + ((e && e.message) || "")));
+      this._hass.callWS({ type: "fenster_heizung/spn_admin_act", act: "devoff", on: off }).then((r) => { const { ok, ...s } = r || {}; this._spnD = s; this._spnApply(); if (!off && this._modal && this._modal.type === "spndlg") this._modal = null; this._renderModal(); this._render(); this._toast(off ? "Entwickler-Zugang aus – du siehst alles wie ohne Sponsoring" : "Entwickler-Zugang wieder an"); }).catch((e) => this._toast("Das ging nicht: " + ((e && e.message) || "")));
     }
     else if (a === "spnclr") { this._hass.callWS({ type: "fenster_heizung/spn_clear" }).then((r) => { this._spnD = r; this._spnApply(); this._renderModal(); this._render(); this._toast("Schlüssel entfernt"); }).catch(() => this._toast("Das ging nicht")); }
     else if (a === "spnbadge") this._spnPref({ badge: !this._spnS().saved_prefs.badge });
@@ -128,7 +128,8 @@
   _spnDlg(close) {
     const s = this._spnS(), m = this._modal, adm = this._admin();
     const st = s.state === "dev" ? "Entwickler-Zugang – kein Schlüssel nötig" : s.active && s.source === "github" ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"} über GitHub · ${this._ghValid(this._ghS().eval)}` : s.active ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"}${s.name ? " · " + esc(s.name) : ""} · gültig bis ${esc(this._spnDate(s.bis))}` : s.state === "expired" ? `Abgelaufen am ${esc(this._spnDate(s.bis))}` : s.state === "revoked" ? "Gesperrt" : "Noch kein Schlüssel";
-    const body = adm ? `<div class="gst">${ic(s.active ? "check" : "key", 15)}<span>${st}</span></div>
+    const back = adm && s.manage && s.dev_off ? `<div class="bldev">${ic("flask", 18)}<span><b>Entwickler-Zugang ist zum Testen aus.</b></span><button class="btn2 pri" data-act="spndev" data-k="on">Wieder einschalten</button><button class="lnk" data-act="spnadm">Sponsoren verwalten</button></div>` : "";
+    const body = adm ? `${back}<div class="gst">${ic(s.active ? "check" : "key", 15)}<span>${st}</span></div>
         <div class="lsec" style="margin-top:12px">${ic("key", 15)}${s.active ? "Neuen Schlüssel einlösen" : "Sponsor-Schlüssel"}</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail an ${esc(SPN_MAIL)}. Einfach vollständig einfügen.${this._ghS().ready ? ` Schneller geht es mit <button class="lnk" data-act="spngh">GitHub-Anmeldung</button>.` : ""}</div>
         <textarea class="osel spnta" data-f="spnkey" rows="3" placeholder="FH1-…" spellcheck="false" aria-label="Sponsor-Schlüssel"></textarea>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div>
