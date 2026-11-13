@@ -73,7 +73,6 @@ ROOM = {
 # Weitere Speicher: Schlüssel in hass.data → (Modul, Bereich der Oberfläche, Gruppe, {Pfadteil: Zweck})
 SOURCES = {
     "wasser.cfg": (2, "Modul 2 · Einstellungen", "wasser", {"top": "Speicher oben", "mid": "Speicher Mitte", "bot": "Speicher unten", "src": "Wärmeerzeuger", "rod": "Heizstab", "pump": "Zirkulationspumpe", "ret": "Rücklauf Zirkulation", "trig": "Auslöser Zirkulation"}),
-    "wallbox.cfg": (8, "Modul 8 · Einstellungen", "auto", {}),
     "wetter.cfg": (9, "Modul 9 · Einstellungen", "wetter", {"acts": "Aktion bei einer Warnung"}),
     "sicherheit.cfg": (11, "Modul 11 · Einstellungen", "sicher", {"bat": "Batterie des Melders", "depart": "Abfahrt-Prüfung", "acts": "Aktion bei Alarm", "frost": "Frost bei Abfahrt"}),
     "muell.cfg": (17, "Modul 17 · Einstellungen", "alltag", {"cal": "Abfallkalender", "tts": "Ansage", "player": "Lautsprecher", "light": "Licht als Erinnerung"}),
@@ -231,9 +230,28 @@ class Messwerk:
             fc = (wm.modules.get("gs") or {}).get("forecast")
             if fc:
                 add("gs.forecast", "Prognose für Startfenster", "strom", "", fc, [(4, "bestes Startfenster")], "Modul 4 · Einstellungen", "mod:gs")
+            wbm = store.get("wallbox")
+            vehs = (wbm.cfg.get("vehicles") if wbm is not None else None) or []
             for k, eid in ((wm.modules.get("ev") or {}).get("ent") or {}).items():
-                if eid:
+                if eid and (k in ("plug", "power", "charging") or not vehs):  # Fahrzeug-Sensoren stehen ab v0.6 am Fahrzeug
                     add(f"ev.{k}", {"soc": "Ladestand Auto", "odo": "Kilometerstand", "range": "Reichweite", "plug": "Ladekabel", "power": "Ladeleistung", "charging": "Lädt gerade"}.get(k, k), "auto", "pct" if k == "soc" else "power" if k == "power" else "", eid, [(8, "Fahrzeug-Anzeige")], "Modul 8 › Fahrzeug", "mod:ev")
+        # Modul 8: Sensoren je Fahrzeug und Entitäten einer Wallbox über Home Assistant
+        wbm = store.get("wallbox")
+        if wbm is not None:
+            for v in wbm.cfg.get("vehicles") or []:
+                for k, eid in (v.get("ent") or {}).items():
+                    if isinstance(eid, str) and EID.match(eid):
+                        nm = {"soc": "Ladestand", "odo": "Kilometerstand", "range": "Reichweite"}.get(k, k)
+                        why = {"soc": "Anzeige, Ladelimit und Ladeplan", "odo": "Kilometer und Kosten pro 100 km", "range": "Anzeige"}.get(k, "Anzeige")
+                        add(f"ev.{v['id']}.{k}", f"{nm} · {v.get('name') or 'Fahrzeug'}", "auto", "pct" if k == "soc" else "", eid, [(8, why)], f"Modul 8 › Fahrzeug {v.get('name') or ''}".strip(), "mod:ev")
+            wx = wbm.cfg.get("wbx") or {}
+            if wx.get("kind") == "ha":
+                lab = {"switch": ("Laden an/aus", "Ladung starten und stoppen", ""), "current": ("Ladestrom", "Ladestrom einstellen", ""), "power": ("Ladeleistung", "Leistung und Überschuss", "power"),
+                       "status": ("Status", "Zustand der Wallbox", ""), "plug": ("Stecker", "Auto angesteckt?", ""), "phase": ("Phasen", "1 oder 3 Phasen", ""),
+                       "energy": ("Energie dieser Ladung", "Anzeige", "energy"), "total": ("Zählerstand", "Anzeige", "energy")}
+                for k, eid in (wx.get("ent") or {}).items():
+                    if isinstance(eid, str) and EID.match(eid) and k in lab:
+                        add(f"wbx.{k}", f"Wallbox · {lab[k][0]}", "auto", lab[k][2], eid, [(8, lab[k][1])], "Einstellungen › Store › Andere Wallbox", "ig")
         # Weitere Speicher
         for src, (mod, where, g, table) in SOURCES.items():
             key, attr = src.split(".")

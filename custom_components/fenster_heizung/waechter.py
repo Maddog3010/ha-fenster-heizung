@@ -385,7 +385,7 @@ class WaechterManager:
                          "wd": DAYN[d.weekday()], "cond": r.get("condition"), "hi": hi, "lo": lo, "kwh": kwh, "est": est and kwh is not None,
                          "price": lvl.get(k), "heat": None if hdd is None else "hoch" if hdd >= 12 else "mittel" if hdd >= 6 else "gering"})
         wb = D.get("wallbox")
-        has_car = bool(wb is not None and (wb.cfg or {}).get("ip"))
+        has_car = bool(wb is not None and wb.configured())
         wm = D.get("wasser")
         on = ((wm.modules if wm is not None else {}) or {}).get("on") or {}
         has_bat = bool(on.get("bt"))

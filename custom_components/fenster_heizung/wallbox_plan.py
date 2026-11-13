@@ -94,7 +94,8 @@ def plan_calc(slots: list[dict[str, Any]], now: datetime, o: dict[str, Any]) -> 
         return min(pmax, slots[i]["pv"]) if sun else pmax
 
     def share(i: int) -> float:
-        p = pw(i)
+        # Sonnenanteil der Leistung, die hier wirklich gebraucht wird: Braucht das Auto weniger als eine volle Stunde, zählt nur dieser Teil
+        p = min(pw(i), need / slots[i]["h"]) if need > 0 else pw(i)
         return min(slots[i]["pv"], p) / p if p > 0 else 0.0
 
     def key(i: int) -> float:

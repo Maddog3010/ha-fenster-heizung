@@ -1,4 +1,4 @@
-"""Modul 8: go-e Charger direkt über die lokale HTTP-API v2 lesen und regeln."""
+"""Modul 8: Wallbox lesen und regeln – go-e Charger direkt (lokale HTTP-API v2) oder jede Wallbox über Home Assistant."""
 from __future__ import annotations
 
 import asyncio
@@ -20,8 +20,10 @@ from homeassistant.util import dt as dt_util
 from .backup import SafeStore
 from .const import DOMAIN
 from .geraete_calc import grid_import_w, rate_eur, watts
+from .wallbox_adapter import KNOWN, WALLBOXISH, GoeAdapter, HaAdapter, WallboxError, guess_roles, manual_change
 from .wallbox_calc import (
-    CAR_CHARGING, CAR_DONE, CAR_IDLE, EXTERN_HOLD_S, VOLT, clean_wb, commands, decide, guard_limit, parse_nrg, plan_due, resolve_who, valid_host,
+    CAR_CHARGING, CAR_DONE, CAR_IDLE, EXTERN_HOLD_S, SCHEMA, VOLT, clean_wb, clean_wbx, commands, decide, guard_limit, migrate_v2, parse_nrg,
+    plan_due, resolve_who, valid_host, wbx_ready,
 )
 from .wallbox_plan import (
     add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_tick, stats_view,
@@ -35,8 +37,8 @@ KEYS = ("car", "amp", "psm", "frc", "nrg", "wh", "eto", "fwv", "sse", "typ", "fn
 CAR_TEXT = {0: "Unbekannt", 1: "Nicht angesteckt", 2: "Lädt", 3: "Wartet aufs Auto", 4: "Fertig geladen", 5: "Fehler"}
 
 
-class GoeError(Exception):
-    """Wallbox nicht erreichbar oder Antwort unbrauchbar."""
+class GoeError(WallboxError):
+    """go-e nicht erreichbar oder Antwort unbrauchbar."""
 
 
 class GoeClient:
@@ -137,6 +139,8 @@ class WallboxManager:
         self._n = {"start": False, "goal": False, "plan": False, "off": False, "long": False}
         self._plug_ts: float | None = None
         self._charged = False
+        self._set_ts = 0.0  # Zeit des letzten eigenen Befehls (für Wallboxen über Home Assistant)
+        self._last_veh = ""  # zuletzt erkanntes Fahrzeug (für die Anzeige nach dem Abstecken)
 
     async def async_start(self) -> None:
         self.cfg = clean_wb(await self._store.async_load())
@@ -153,6 +157,9 @@ class WallboxManager:
     async def async_set(self, raw: Any) -> dict[str, Any]:
         old = self.cfg
         self.cfg = clean_wb({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
+        self.cfg["vs"] = max(old.get("vs", 1), self.cfg["vs"])  # die Übernahme läuft nur einmal
+        if (old.get("wbx") or {}).get("kind") != self.cfg["wbx"]["kind"] or old.get("ip") != self.cfg["ip"]:
+            self._last_set, self._hold_until = {}, 0.0
         if not self.cfg["enabled"]:
             self._quick = None
         if old["enabled"] and not self.cfg["enabled"]:
@@ -164,6 +171,57 @@ class WallboxManager:
         self._fc = None
         await self._tick(None)
         return self.snapshot()
+
+    def configured(self) -> bool:
+        return wbx_ready(self.cfg)
+
+    def _adapter(self) -> GoeAdapter | HaAdapter:
+        w = self.cfg["wbx"]
+        if w["kind"] == "ha":
+            return HaAdapter(self.hass, w)
+        return GoeAdapter(GoeClient(self.hass, self.cfg["ip"]), summarize)
+
+    async def async_ha_test(self, raw: Any) -> dict[str, Any]:
+        """Andere Wallbox: gewählte Entitäten einmal lesen (ohne zu speichern)."""
+        w = clean_wbx({**(raw if isinstance(raw, dict) else {}), "kind": "ha"})
+        try:
+            r = await HaAdapter(self.hass, w).read()
+        except WallboxError as err:
+            return {"ok": False, "error": str(err)}
+        return {"ok": True, **r["info"], "on": r["cur"]["frc"] == 2, "set_a": r["cur"]["amp"]}
+
+    def scan(self) -> list[dict[str, Any]]:
+        """Wallbox-Integrationen in Home Assistant finden und Entitäten je Rolle vorschlagen."""
+        from homeassistant.helpers import device_registry as dr, entity_registry as er
+        reg, dreg = er.async_get(self.hass), dr.async_get(self.hass)
+        by: dict[str, list[Any]] = {}
+        for e in reg.entities.values():
+            if e.disabled_by is None and e.platform and e.platform != DOMAIN:
+                by.setdefault(e.platform, []).append(e)
+        out: list[dict[str, Any]] = []
+        for plat, items in by.items():
+            doms = {x.entity_id.split(".")[0] for x in items}
+            txt = " ".join(f"{x.entity_id} {x.original_name or ''}" for x in items)
+            if plat not in KNOWN and not (doms & {"switch", "number"} and WALLBOXISH.search(plat + " " + txt)):
+                continue
+            ents = []
+            for x in items[:200]:
+                st = self.hass.states.get(x.entity_id)
+                a = st.attributes if st is not None else {}
+                try:
+                    float(str(st.state)) if st is not None else None
+                    num = st is not None
+                except ValueError:
+                    num = False
+                ents.append({"eid": x.entity_id, "name": str(a.get("friendly_name") or x.original_name or x.entity_id), "unit": a.get("unit_of_measurement") or "",
+                             "dc": a.get("device_class") or x.original_device_class or "", "num": num, "opts": list(a.get("options") or [])[:12]})
+            dev = dreg.async_get(items[0].device_id) if items[0].device_id else None
+            g = guess_roles(ents)
+            out.append({"plat": plat, "name": KNOWN.get(plat) or plat.replace("_", " ").title(), "known": plat in KNOWN,
+                        "dev": re.sub(r"[<>\"'&]", "", str((dev.name_by_user or dev.name) if dev else ""))[:40],
+                        "guess": g, "ctrl": bool(g.get("switch")), "ents": [{k: e[k] for k in ("eid", "name", "unit")} for e in ents]})
+        out.sort(key=lambda x: (not x["known"], not x["ctrl"], x["name"]))
+        return out[:12]
 
     async def async_test(self, host: str) -> dict[str, Any]:
         if not valid_host(host):
@@ -194,23 +252,36 @@ class WallboxManager:
         gen = self.hass.data.get(DOMAIN, {}).get("general")
         return (gen.data.get("pv") if gen is not None else None) or {}
 
-    def surplus(self, wb_power: float) -> float | None:
-        """Überschuss in Watt: Einspeisung ins Netz plus die Leistung, die die Wallbox gerade selbst zieht."""
-        m = self._modules()
-        en = m.get("energy") or {}
+    def _haus(self) -> dict[str, Any]:
+        """Haus-Werte (zentral unter Einstellungen → Haus). Leer, solange sie nicht bereit sind – dann gelten die alten Orte."""
+        h = self.hass.data.get(DOMAIN, {}).get("haus")
+        return h.data if h is not None and getattr(h, "ready", False) and isinstance(getattr(h, "data", None), dict) else {}
+
+    def _grid_src(self) -> tuple[str, str]:
+        """Netz-Sensor und Vorzeichen: Haus-Werte, sonst Modul 3, sonst Photovoltaik in Modul 1."""
+        he = (self._haus().get("energy") or {})
+        if (he.get("ent") or {}).get("grid"):
+            return he["ent"]["grid"], he.get("sign") or "export"
+        en = self._modules().get("energy") or {}
         pvc = self._pv_cfg()
-        ent = (en.get("ent") or {}).get("grid") or pvc.get("sensor")
+        return (en.get("ent") or {}).get("grid") or pvc.get("sensor") or "", en.get("sign") or pvc.get("sign") or "export"
+
+    def _grid_import(self) -> float | None:
+        """Netzbezug in Watt (negativ = Einspeisung)."""
+        ent, sign = self._grid_src()
         st = self.hass.states.get(ent) if ent else None
         if st is None:
             return None
         w = watts(st.state, st.attributes.get("unit_of_measurement"))
-        if w is None:
-            return None
-        sign = en.get("sign") or pvc.get("sign") or "export"
-        return max(-grid_import_w(w, sign) + wb_power, 0.0)
+        return None if w is None else grid_import_w(w, sign)
+
+    def surplus(self, wb_power: float) -> float | None:
+        """Überschuss in Watt: Einspeisung ins Netz plus die Leistung, die die Wallbox gerade selbst zieht."""
+        imp = self._grid_import()
+        return None if imp is None else max(-imp + wb_power, 0.0)
 
     def _price_ct(self) -> float | None:
-        pvc = self._pv_cfg()
+        pvc = {**self._pv_cfg(), **(self._haus().get("price") or {})}
         if pvc.get("price_mode") == "entity" and pvc.get("price_sensor"):
             st = self.hass.states.get(pvc["price_sensor"])
             if st is not None:
@@ -235,37 +306,94 @@ class WallboxManager:
                 return v
         return self._price_ct()
 
+    # ---- Fahrzeuge
+    def _vehicle(self, vid: str | None) -> dict[str, Any] | None:
+        return next((v for v in self.cfg["vehicles"] if v["id"] == vid), None) if vid else None
+
+    def cur_vehicle(self) -> dict[str, Any] | None:
+        """Das Fahrzeug, das gerade gilt: an der Karte erkannt, sonst das Fahrzeug ohne Karte, sonst das einzige
+        bzw. das zuletzt erkannte, sonst das erste mit Ladestand-Sensor (so wie bisher, als es nur einen Sensor gab)."""
+        vs = self.cfg["vehicles"]
+        w = self.who
+        if w and w.get("kind") == "vehicle":
+            v = self._vehicle(w.get("id")) or next((x for x in vs if x["name"] == w.get("name")), None)
+            if v:
+                return v
+        if w and w.get("kind") == "guest":
+            return None
+        v = self._vehicle(self.cfg.get("defVeh")) or (vs[0] if len(vs) == 1 else None) or self._vehicle(self._last_veh)
+        return v or next((x for x in vs if x["ent"].get("soc")), None)
+
+    def _legacy_ent(self, k: str) -> str:
+        return ((self._modules().get("ev") or {}).get("ent") or {}).get(k) or ""
+
+    def veh_soc(self, v: dict[str, Any] | None) -> float | None:
+        eid = (v or {}).get("ent", {}).get("soc") if v else (self._legacy_ent("soc") if not self.cfg["vehicles"] else "")
+        x = self._num(eid)
+        return x if x is not None and 0 <= x <= 100 else None
+
     def _soc(self) -> float | None:
-        ev = self._modules().get("ev") or {}
-        v = self._num((ev.get("ent") or {}).get("soc"))
-        return v if v is not None and 0 <= v <= 100 else None
+        return self.veh_soc(self.cur_vehicle())
+
+    def _cap(self) -> float:
+        v = self.cur_vehicle()
+        return float(v["cap"]) if v and v.get("cap") else float(self.cfg["cap"])
 
     def _bat_ok(self) -> bool:
         if not self.cfg["batOn"]:
             return True
-        pvc = self._pv_cfg()
-        v = self._num(pvc.get("soc_sensor"))
+        soc_ent = self._haus().get("soc") or self._pv_cfg().get("soc_sensor")
+        v = self._num(soc_ent)
         return v is None or v >= self.cfg["batSoc"]
 
+    def _eff_cfg(self, who: dict[str, Any] | None) -> dict[str, Any]:
+        """Einstellungen, die gerade gelten: Modus/Limit/Abfahrt des Fahrzeugs, Lab „Ladeziel nach Kalender“, feste Phasen."""
+        cfg = {**self.cfg, "cap": self._cap()}
+        if who is not None:
+            cfg = {**cfg, "mode": who["mode"], "limit": who["limit"]}
+            dp = who.get("dep") or {}
+            if who["kind"] == "vehicle" and dp.get("on"):  # eigene Abfahrt dieses Fahrzeugs
+                cfg = {**cfg, "planSoc": dp["soc"], "planTime": dp["time"], "planDays": dp["days"]}
+        lab = self.hass.data.get(DOMAIN, {}).get("labs")
+        if lab is not None:
+            cfg = lab.wb_cfg(cfg)  # Lab „Ladeziel nach Kalender“
+        w = cfg["wbx"]
+        if w["kind"] == "ha" and not w["ent"].get("phase"):
+            cfg = {**cfg, "ph": "1" if w["ph"] == 1 else "3"}  # diese Wallbox kann die Phasen nicht umschalten
+        return cfg
+
     # ---- Takt
+    async def _migrate(self) -> None:
+        """Schema 2: Sensoren und Aussehen je Fahrzeug. Läuft einmal, sobald die Moduleinstellungen geladen sind."""
+        wm = self.hass.data.get(DOMAIN, {}).get("wasser")
+        if self.cfg.get("vs", 1) >= SCHEMA or wm is None or not getattr(wm, "modules", None):
+            return
+        self.cfg, txt = migrate_v2(self.cfg, wm.modules.get("ev"))
+        await self._store.async_save(self.cfg)
+        if txt:
+            self._add(txt + ".")
+            _LOGGER.info("Modul 8: %s", txt)
+
     async def _tick(self, _now: Any) -> None:
         if self._busy:
             return
         self._busy = True
         try:
+            if self.cfg.get("vs", 1) < SCHEMA:
+                await self._migrate()
             await self._run()
         finally:
             self._busy = False
 
     async def _run(self) -> None:
         cfg = self.cfg
-        if not cfg["ip"]:
+        if not wbx_ready(cfg):
             self.ok, self.info = False, {}
             return
-        cl = GoeClient(self.hass, cfg["ip"])
+        cl = self._adapter()
         try:
-            st = await cl.status()
-        except GoeError as err:
+            rd = await cl.read()
+        except WallboxError as err:
             if self.ok or not self.err:
                 self._add(f"Wallbox nicht erreichbar: {err}")
             self.ok, self.err = False, str(err)
@@ -278,7 +406,7 @@ class WallboxManager:
         self._n["off"] = False
         self.ok, self.err = True, ""
         self.guard = None
-        self.info = summarize(st)
+        self.info = rd["info"]
         self._count(st_car=self.info["car"])
         await self._events(time.time())
         self._quick_check(self.info["car"], time.time())
@@ -288,9 +416,13 @@ class WallboxManager:
             return
         if not cfg["enabled"]:
             self.want = {}
+            self.who = resolve_who(cfg, self._card)
+            return
+        if not self.info.get("ctrl", True):
+            self.want = {"state": "anzeige", "reason": "Diese Wallbox hat keine Schalter-Entität. Strom & Wärme zeigt nur an und regelt nicht."}
             return
         now_ts = time.time()
-        cur = {"frc": st.get("frc"), "amp": st.get("amp"), "psm": st.get("psm")}
+        cur = dict(rd["cur"])
         # Fahrzeug an der Karte erkennen (trx = Kartennummer, 0 = ohne Karte, leer = keine Ladung)
         trx, car = self.info.get("trx"), self.info["car"]
         if trx is not None and trx >= 1:
@@ -306,24 +438,17 @@ class WallboxManager:
             return
         who = resolve_who(cfg, self._card)
         self.who = who
-        if cfg["lock"] and who is None:
+        if who and who.get("kind") == "vehicle":
+            self._last_veh = who.get("id") or ""
+        if cfg["lock"] and who is None and cl.rfid:
             self.want = {"state": "gesperrt", "reason": "Wartet auf eine Karte. Strom & Wärme verändert nichts, bis ein Fahrzeug erkannt ist."}
             return
-        if who is not None:
-            cfg = {**cfg, "mode": who["mode"], "limit": who["limit"]}
-            dp = who.get("dep") or {}
-            if who["kind"] == "vehicle" and dp.get("on"):  # eigene Abfahrt dieses Fahrzeugs
-                cfg = {**cfg, "planSoc": dp["soc"], "planTime": dp["time"], "planDays": dp["days"]}
-        lab = self.hass.data.get(DOMAIN, {}).get("labs")
-        if lab is not None:
-            cfg = lab.wb_cfg(cfg)  # Lab „Ladeziel nach Kalender“
+        cfg = self._eff_cfg(who)
         # Jemand hat von Hand umgestellt: nicht dagegen regeln
-        for k, v in self._last_set.items():
-            if cur.get(k) is not None and cur[k] != v and (k == "frc" or cur.get("frc") == 2):
-                self._hold_until = now_ts + EXTERN_HOLD_S
-                self._last_set = {}
-                self._add("Wallbox von Hand umgestellt: Die Regelung pausiert 30 Minuten.")
-                break
+        if manual_change(self._last_set, cur, cl.kind, self._set_ts, now_ts):
+            self._hold_until = now_ts + EXTERN_HOLD_S
+            self._last_set = {}
+            self._add("Wallbox von Hand umgestellt: Die Regelung pausiert 30 Minuten.")
         if now_ts < self._hold_until:
             self.want = {"state": "pausiert", "reason": "Von Hand umgestellt. Die Regelung pausiert kurz."}
             return
@@ -399,7 +524,19 @@ class WallboxManager:
         base_kw = self.cfg["baseW"] / 1000
         info: dict[str, Any] = {"found": False}
         wh: dict[Any, float] = {}
-        if self.cfg["pvSrc"] == "forecast":
+        src = self.cfg["pvSrc"]
+        if src in ("auto", "m16"):
+            sm = self.hass.data.get(DOMAIN, {}).get("solar")
+            m16 = dict(getattr(sm, "_wh", {}) or {}) if sm is not None and sm.active() else {}
+            if m16:
+                v = sm.values()
+                info = {"found": True, "m16": True, "sites": [{"name": re.sub(r"[<>\"'&]", "", str(n))[:30], "kwp": 0.0} for n in (v.get("sites") or [])],
+                        "today": v.get("today"), "tomorrow": v.get("tomorrow"), "corr": v.get("corr")}
+                return pv_from_wh(m16, base_kw, now.tzinfo), info, "Modul 16 · Solar-Prognose"
+            if src == "m16":
+                return {}, {"found": False, "m16": True}, "Modul 16 · Solar-Prognose (keine Daten)"
+            src = "forecast"  # Rückfall: Forecast.Solar direkt
+        if src == "forecast":
             entries = self.hass.config_entries.async_entries("forecast_solar")
             sites = []
             for e in entries:
@@ -464,7 +601,7 @@ class WallboxManager:
         """Vorhersage und Plan für die Oberfläche und die Steuerung (Zwischenspeicher: 2 Minuten)."""
         ts = time.time()
         if self._fc and not force and ts - self._fc[0] < 120:
-            return self._fc[1]
+            return {**self._fc[1], "plan": self.plan_view()}
         cfg = self.cfg
         now = dt_util.now()
         pv, fs, pv_label = await self._pv_forecast(now)
@@ -480,7 +617,43 @@ class WallboxManager:
         self._fc = (ts, out)
         self._slots = slots
         self._slot_res = res
-        return out
+        return {**out, "plan": self.plan_view()}
+
+    def plan_view(self) -> dict[str, Any]:
+        """B1: Der Plan, den die Regelung wirklich nutzt – für die Oberfläche (keine zweite Rechnung im Browser)."""
+        now = dt_util.now()
+        who = self.who if self.who is not None else resolve_who(self.cfg, self._card)
+        cfg = self._eff_cfg(who)
+        v = self.cur_vehicle()
+        own = bool(who and who.get("kind") == "vehicle" and (who.get("dep") or {}).get("on"))
+        base = {"veh": v["name"] if v else "", "vid": v["id"] if v else "", "own": own, "target": cfg["planSoc"], "until": cfg["planTime"],
+                "days": cfg["planDays"], "strat": cfg["planStrat"], "cap": cfg["cap"]}
+        soc = self._soc()
+        if soc is None:
+            return {"ok": False, "why": "soc", **base}
+        if not self._slots:
+            return {"ok": False, "why": "fc", **base, "soc": soc}
+        o = self._plan_opts(cfg, soc, self._slot_res)
+        R = plan_calc(self._slots, now, o)
+        pm = plan_mode(self._slots, R, now, o)
+        wins: list[dict[str, Any]] = []
+        for i in sorted(R["sel"]):
+            e, sl = R["sel"][i], self._slots[i]
+            kw = e / sl["h"]
+            share = min(1.0, sl["pv"] / kw) if kw > 0 else 0.0
+            if wins and wins[-1]["e"] == i:
+                w = wins[-1]
+                w["e"], w["kwh"], w["pv"], w["cost"] = i + 1, w["kwh"] + e, w["pv"] + e * share, w["cost"] + e * (1 - share) * (sl["price"] or 0) / 100
+            else:
+                wins.append({"s": i, "e": i + 1, "kwh": e, "pv": e * share, "cost": e * (1 - share) * (sl["price"] or 0) / 100})
+        r2 = lambda x: round(x, 3)  # noqa: E731
+        return {
+            "ok": True, **base, "soc": soc, "pmax": o["pmax"], "need": r2(R["need"]), "left": r2(R["left"]),
+            "deadline": R["deadline"].isoformat(timespec="minutes"), "day_ok": day_ok(cfg["planDays"], R["deadline"]),
+            "sel": {str(i): r2(e) for i, e in R["sel"].items()}, "plan": {k: r2(x) for k, x in R["plan"].items()}, "imm": {k: r2(x) for k, x in R["imm"].items()},
+            "wins": [{"s": w["s"], "e": w["e"], "kwh": r2(w["kwh"]), "share": round(w["pv"] / w["kwh"] * 100) if w["kwh"] > 0 else 0, "cost": r2(w["cost"])} for w in wins],
+            "now": {"mode": pm["mode"], "state": pm["state"], "reason": pm["reason"]},
+        }
 
     def _plan_opts(self, cfg: dict[str, Any], soc: float, res: str) -> dict[str, Any]:
         ph = 1 if cfg["ph"] == "1" else 3
@@ -503,23 +676,10 @@ class WallboxManager:
         return plan_mode(slots, R, now, o)
 
     def _odo(self) -> float | None:
-        ev = self._modules().get("ev") or {}
-        v = self._num((ev.get("ent") or {}).get("odo"))
-        return v if v is not None and v >= 0 else None
-
-    def _grid_import(self) -> float | None:
-        """Netzbezug in Watt (negativ = Einspeisung) vom Zähler aus Modul 3."""
-        m = self._modules()
-        en = m.get("energy") or {}
-        pvc = self._pv_cfg()
-        ent = (en.get("ent") or {}).get("grid") or pvc.get("sensor")
-        st = self.hass.states.get(ent) if ent else None
-        if st is None:
-            return None
-        w = watts(st.state, st.attributes.get("unit_of_measurement"))
-        if w is None:
-            return None
-        return grid_import_w(w, en.get("sign") or pvc.get("sign") or "export")
+        v = self.cur_vehicle()
+        eid = v["ent"].get("odo") if v else (self._legacy_ent("odo") if not self.cfg["vehicles"] else "")
+        x = self._num(eid)
+        return x if x is not None and x >= 0 else None
 
     def _guard(self, cfg: dict[str, Any], wb_w: float) -> None:
         """Hausanschluss-Schutz: Die Wallbox drosseln, wenn Haus und Wallbox zusammen die Grenze überschreiten würden."""
@@ -608,22 +768,25 @@ class WallboxManager:
             self._n["long"] = True
             await self._notify("long", "Auto steckt ohne Ladung", f"{who} steckt seit über 12 Stunden an der Wallbox und hat nicht geladen.")
 
-    async def _apply(self, cl: GoeClient, cmd: dict[str, int], why: str) -> None:
+    async def _apply(self, cl: GoeAdapter | HaAdapter, cmd: dict[str, int], why: str) -> None:
         try:
-            await cl.set(cmd)
-        except GoeError as err:
+            await cl.set(cmd, self.cfg["maxA"])
+        except WallboxError as err:
             self._add(f"Befehl fehlgeschlagen: {err}")
             return
+        self._set_ts = time.time()
         self._last_set.update({k: v for k, v in cmd.items() if k in ("frc", "amp")})
         names = {"frc": {0: "neutral", 1: "aus", 2: "an"}, "amp": None, "psm": {1: "1 Phase", 2: "3 Phasen"}}
         txt = ", ".join(f"{k}={names[k][v] if names[k] else str(v) + ' A'}" for k, v in cmd.items())
         self._add(f"{txt}. {why}".strip())
 
     def snapshot(self) -> dict[str, Any]:
-        due = plan_due(self.cfg, self._soc(), dt_util.now())
+        due = plan_due({**self.cfg, "cap": self._cap()}, self._soc(), dt_util.now())
         return {
             "cfg": self.cfg, "ok": self.ok, "error": self.err, "info": self.info, "want": self.want, "log": list(self.log),
             "who": self.who, "soc": self._soc(), "plan": {"due": due[0], "need_kwh": round(due[1], 1), "start": due[2].isoformat(timespec="minutes") if due[2] else None},
             "hold": max(0, int(self._hold_until - time.time())),
             "quick": {"k": self._quick["k"], "until": self._quick["until"]} if self._quick else None, "guard": self.guard,
+            "veh": (self.cur_vehicle() or {}).get("id") or "", "socs": {v["id"]: self.veh_soc(v) for v in self.cfg["vehicles"]},
+            "ready": self.configured(), "kind": self.cfg["wbx"]["kind"],
         }

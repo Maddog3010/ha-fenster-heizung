@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b16] - 2026-11-13
+
+### Neu
+- **Modul 8 · Elektroauto & Wallbox (v0.6 Build 1):** erste Stufe aus dem Konzept „Modul 8 – Neue Optik“ (Technik). Optisch ändert sich noch wenig, die Grundlage für die neue Optik steht.
+  - **Andere Wallboxen über Home Assistant (Beta):** Neuer Eintrag „Andere Wallbox“ im Store. Die Integration sucht Wallbox-Integrationen in Home Assistant (z. B. Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP) und schlägt die Entitäten vor: Laden an/aus, Ladestrom, Leistung, Status, Stecker, Phasen, Energie. „Werte lesen“ prüft die Auswahl vor dem Speichern. Danach regelt Modul 8 diese Wallbox genauso wie die go-e (Sonne, Sonne + Netz, Voll, Ladeplan, Hausanschluss-Schutz). Ohne Schalter-Entität wird nur angezeigt. Die go-e bleibt direkt im Heimnetz angebunden.
+  - **Sensoren und Aussehen je Fahrzeug:** Jedes Fahrzeug hat jetzt eigenen Ladestand-, Kilometer- und Reichweiten-Sensor, eigene Akkugröße, Marke, Modell, Form und Farbe („Aussehen & Sensoren“ am Fahrzeug). Lädt das zweite Auto, zeigt und plant Modul 8 mit dessen Ladestand.
+  - **Fahrzeug ohne Karte:** Für Wallboxen ohne Kartenleser (und optional bei der go-e) gilt ein fest gewähltes Fahrzeug.
+  - **Übernahme:** Beim ersten Start werden die bisherigen Fahrzeug-Sensoren und das Aussehen einmalig zum ersten Fahrzeug übernommen – gibt es noch keins, wird es mit dem bisherigen Modus und Limit angelegt. An der Regelung ändert sich dadurch nichts.
+  - **Ein Ladeplan:** Die Planung zeigt jetzt genau den Plan, nach dem das Backend die Wallbox regelt. Die zweite Rechnung im Browser ist weg (sie konnte abweichen, z. B. rechnete sie bei fest 1 Phase trotzdem mit 3 Phasen).
+  - **Quellen zentral:** Netz-Sensor, Hausakku und Preis-Sensor kommen aus den Haus-Werten (Einstellungen → Haus). PV-Prognose „Automatisch“: aus Modul 16 (mit dessen Anlagen-Auswahl und Korrektur), sonst Forecast.Solar direkt.
+  - **Ladeplan „Sonne zuerst, dann günstig“ genauer:** Braucht das Auto weniger als eine volle Stunde Ladung, zählt der Sonnenanteil jetzt für die wirklich benötigte Leistung. Vorher wurde z. B. nachts zum günstigsten Preis geplant, obwohl Laden jetzt mit halber Sonne billiger war.
+  - Ladestrom jetzt bis 32 A (22-kW-Wallboxen).
+  - Messwerk zeigt die Sensoren je Fahrzeug und die Entitäten der Wallbox mit „genutzt in“.
+
+### Technik
+- Modul 8 im Dashboard-Quelltext in eigene Teile aufgeteilt (`10a-laden`, `10b-planung`, `10c-statistik`, `10d-fahrzeuge`, `10e-wallbox`).
+- Neuer `wallbox_adapter.py` (go-e und Home-Assistant-Wallboxen) und 29 Tests für Regelung, Phasen, Hausanschluss-Schutz, Ladeplan, Statistik, Übernahme und Adapter (`tests/test_wallbox.py`).
+
 ## [2026.11.3b15] - 2026-11-13
 
 ### Behoben

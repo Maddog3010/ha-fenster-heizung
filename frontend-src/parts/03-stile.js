@@ -1853,4 +1853,11 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .spna.gold{background:radial-gradient(circle at 35% 30%,#fff3b0,#f59e0b 60%,#b45309);color:#fff}.spnmini.gold{color:#fbbf24}.spnsum b.gd{color:#fbbf24}
 .lgt .vrow{flex-wrap:wrap;gap:8px 12px}.lgt .vrow>span:first-child{flex:1 1 180px;min-width:0}.lgt .vrow>.gschs,.lgt .vrow>.btn2,.lgt .vrow>.sw,.lgt .vrow>.lgsoon{flex:none;margin-left:auto}
 .lgx .gschs{flex-wrap:wrap}.lgban .btn2{flex:none}
+/* Modul 8 v0.6: Fahrzeuge mit eigenem Bild, andere Wallbox über Home Assistant */
+.rfpic{flex:none;width:96px;height:38px;display:grid;place-items:center;border-radius:10px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent)}
+.rfv .oper .btn2{padding:8px 12px;font-size:.84rem}.evprev{border-radius:16px;overflow:hidden;margin:4px 0 6px}.evprev svg{display:block;width:100%;height:auto}
+.igwbl{display:grid;gap:8px;margin:4px 0 6px}.igwb{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:transparent;color:inherit;cursor:pointer;font:inherit}
+.igwb.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent)}.igwbi{flex:none;display:grid;place-items:center}.igwbt{flex:1;min-width:0;display:grid;gap:2px}.igwbt small{color:var(--mut)}.igwb .sxc{flex:none}
+.igwr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:4px 14px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}.igwr>div:first-child{display:grid;gap:2px}.igwr small{font-size:.78rem}
+@media (max-width:620px){.igwr{grid-template-columns:1fr}.rfv .oper{flex-wrap:wrap}.rfv .oper .btn2{width:100%}}
 `;

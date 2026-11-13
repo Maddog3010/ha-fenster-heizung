@@ -1,6 +1,10 @@
-  _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "forecast", baseW: 400, vehicles: [], guest: { mode: "off", limit: 80 }, guard: { on: false, maxA: 35 }, notify: { start: true, goal: true, plan: true, off: true, long: false, to: [] } }; }
+  _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "auto", baseW: 400, vs: 2, defVeh: "", wbx: { kind: "goe", plat: "", name: "", ent: {}, ph: 3 }, vehicles: [], guest: { mode: "off", limit: 80 }, guard: { on: false, maxA: 35 }, notify: { start: true, goal: true, plan: true, off: true, long: false, to: [] } }; }
   _wbSnap() { const s = (this._wbD && this._wbD.snap) || {}; return { ...s, cfg: { ...this._wbDef(), ...(s.cfg || {}) }, info: s.info || {}, want: s.want || {}, log: s.log || [], plan: s.plan || {} }; }
   _wb() { return this._wbSnap().cfg; }
+  /* Ist eine Wallbox eingerichtet? go-e: IP-Adresse · andere Wallbox über Home Assistant: Schalter oder Ladestrom */
+  _wbOn(c) { c = c || this._wb(); const w = c.wbx || {}; return w.kind === "ha" ? !!((w.ent || {}).switch || (w.ent || {}).current) : !!c.ip; }
+  _wbHa(c) { c = c || this._wb(); return (c.wbx || {}).kind === "ha"; }
+  _wbName() { const s = this._wbSnap(), c = s.cfg, i = s.info || {}; return this._wbHa(c) ? (c.wbx.name || i.type || "Wallbox") : (i.name || i.type || "go-e Charger"); }
   _wbVisible() { return !this._modal && ((this._igOpen && this._admin()) || (!this._stOpen && !this._ortOpen && this._mdActive() === "ev")); }
   _wbLoad(force) {
     if (!this._hass || this._wbBusy) return;
@@ -15,11 +19,11 @@
     clearTimeout(this._wbSaveT);
     this._wbSaveT = setTimeout(() => {
       this._wbSaveT = null; const cfg = this._wbSnap().cfg;
-      this._hass.callWS({ type: "fenster_heizung/wb_set", cfg }).then((r) => { this._wbD = { snap: r, ts: Date.now() }; if (this._wbVisible()) this._render(); })
+      this._hass.callWS({ type: "fenster_heizung/wb_set", cfg }).then((r) => { this._wbD = { snap: r, ts: Date.now() }; if (this._wbFcD) this._wbFcLoad(true); if (this._wbVisible()) this._render(); })
         .catch(() => this._toast("Wallbox-Einstellung konnte nicht gespeichert werden"));
     }, now ? 0 : 500);
   }
-  _igChip() { const s = this._wbSnap(); this._wbLoad(); return s.cfg.ip ? (s.ok ? `<em class="sxc ok">go-e verbunden</em>` : `<em class="sxc">Nicht erreichbar</em>`) : `<em class="sxc">Nicht verbunden</em>`; }
+  _igChip() { const s = this._wbSnap(); this._wbLoad(); return this._wbOn() ? (s.ok ? `<em class="sxc ok">${esc(this._wbHa() ? this._wbName() : "go-e")} verbunden</em>` : `<em class="sxc">Nicht erreichbar</em>`) : `<em class="sxc">Nicht verbunden</em>`; }
   /* ===== Store: Katalog aller Dienste, Startseite (A) und Detailseite (C) ===== */
   _sto0() { return this._sto || (this._sto = { q: "", c: "all" }); }
   _stoCfg() { const t = (this._cfg && this._cfg.layout && this._cfg.layout.store) || {}; return { icon: t.icon !== false, tab: t.tab !== false }; }
@@ -71,10 +75,15 @@
     const H = this._hass, E = H.entities || {}, S = H.states, ids = Object.keys(S), byDom = (d) => ids.filter((k) => (E[k] || {}).platform === d);
     const wb = this._wbSnap(), c = wb.cfg, T = this._tb(), det = this._sfList(), out = [];
     const X = { xsense: ["Cloud", "Community"], zha: ["Lokal", "Offiziell"], mqtt: ["Lokal", "Offiziell"], homematicip_cloud: ["Cloud", "Offiziell"], fritzbox: ["Lokal", "Offiziell"], zwave_js: ["Lokal", "Offiziell"], matter: ["Lokal", "Offiziell"], tuya: ["Cloud", "Offiziell"], ecowitt: ["Lokal", "Offiziell"], tempest: ["Lokal", "Offiziell"], met: ["Cloud", "Offiziell"], dwd_weather_warnings: ["Cloud", "Offiziell"], nina: ["Cloud", "Offiziell"], meteoalarm: ["Cloud", "Offiziell"] };
-    out.push({ id: "goe", n: "go-e Charger", sub: "Wallbox", cat: "auto", c: "#0ea5e9", i: "energy", mid: "ev", mods: ["Modul 8"], on: !!c.ip, bad: !!c.ip && !wb.ok, top: 1, act: "iggoe", conn: "Lokal", src: "Direkt",
-      st: c.ip ? (wb.ok ? `${(wb.info && wb.info.type) || "go-e Charger"} · ${c.ip}` : `${c.ip} · ${wb.error || "keine Antwort"}`) : "", desc: "Wallbox direkt im Heimnetz lesen und steuern, ohne Cloud.",
+    const goeOn = !!c.ip && !this._wbHa(c), haOn = this._wbHa(c) && this._wbOn(c);
+    out.push({ id: "goe", n: "go-e Charger", sub: "Wallbox", cat: "auto", c: "#0ea5e9", i: "energy", mid: "ev", mods: ["Modul 8"], on: goeOn, bad: goeOn && !wb.ok, top: 1, act: "iggoe", conn: "Lokal", src: "Direkt",
+      st: goeOn ? (wb.ok ? `${(wb.info && wb.info.type) || "go-e Charger"} · ${c.ip}` : `${c.ip} · ${wb.error || "keine Antwort"}`) : "", desc: "Wallbox direkt im Heimnetz lesen und steuern, ohne Cloud.",
       feats: ["Laden nach Sonne, Strompreis und Abfahrtszeit planen", "Status, Leistung und Ladestand direkt sehen", "Läuft lokal im Heimnetz, ohne Cloud"],
       steps: ["In der go-e-App: Einstellungen → Verbindung → API-Einstellungen → „Zugriff auf lokale HTTP API“ einschalten", "Dem go-e im Router eine feste IP-Adresse geben", "Hier „Einrichten“ tippen, IP-Adresse eintragen und die Verbindung testen"], note: "Die lokale API v2 gibt es nur bei neueren Geräten. Der go-e Charger Gemini unterstützt sie." });
+    out.push({ id: "wbha", n: "Andere Wallbox", sub: "Wallbox über Home Assistant", cat: "auto", c: "#14b8a6", i: "energy", mid: "ev", mods: ["Modul 8"], on: haOn, bad: haOn && !wb.ok, top: 1, act: "igwbha", conn: "Lokal", src: "Beta",
+      st: haOn ? `${c.wbx.name || (wb.info && wb.info.type) || "Wallbox"}${wb.ok ? "" : " · " + (wb.error || "keine Antwort")}` : "", desc: "Jede Wallbox mit Home-Assistant-Integration regeln: Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP und weitere.",
+      feats: ["Laden mit Sonne, nach Preis und Abfahrtszeit wie bei der go-e", "Integration wird gesucht, Entitäten werden vorgeschlagen", "Ohne Kartenleser: Fahrzeug fest zuordnen"],
+      steps: ["Die Integration deiner Wallbox in Home Assistant einrichten (Geräte & Dienste)", "Hier „Einrichten“ tippen und die gefundene Wallbox wählen", "Vorschläge prüfen: Schalter „Laden an/aus“ und Ladestrom sind wichtig", "Testen und speichern, dann in Modul 8 die Laderegelung einschalten"], note: "Beta: Wie schnell eine Wallbox reagiert, hängt von ihrer Integration ab. Nach jedem Befehl wartet die Regelung bis zu 90 Sekunden auf die Rückmeldung." });
     out.push({ id: "tibber", n: "Tibber", sub: "Stromtarif", cat: "tarif", c: "#6366f1", i: "energy", mid: "ev", mods: ["Modul 8"], on: !!T.connected, top: 1, act: "igtb", conn: "Cloud", src: "Offiziell",
       st: T.connected ? `${T.home || "Zuhause"}${T.price_now != null ? " · jetzt " + num(T.price_now, 1) + " ct/kWh" : ""}` : "", desc: "Stundenpreise direkt von Tibber, ohne zusätzliche Integration.",
       feats: ["Strompreise von heute und morgen (ab etwa 13 Uhr)", "Ladeplanung in Modul 8 zur günstigsten Zeit", "Preise als Stunde, Viertelstunde oder Preisstufe"],
@@ -275,6 +284,41 @@
       <div class="gst">${ic("info", 15)}Es werden nur Status und Ladeeinstellungen der Wallbox gelesen und gesetzt. Es werden keine Daten an Dritte gesendet.</div>
       <div class="foot2" style="margin-top:14px">${c.ip ? `<button class="btn2 dng" data-act="igrm">${ic("trash", 16)} Entfernen</button>` : `<button class="btn2" data-act="close">Abbrechen</button>`}<button class="btn2 pri" data-act="igsave" ${t && t.ok ? "" : "disabled"}>Speichern</button></div></div>`;
   }
+  /* Andere Wallbox über Home Assistant (B5): Integration suchen, Entitäten je Rolle vorschlagen, testen, speichern */
+  _igWbRoles() {
+    return [["switch", "Laden an/aus", "Schalter, der die Ladung erlaubt oder pausiert. Ohne ihn wird nur angezeigt.", ["switch.", "input_boolean."], true],
+      ["current", "Ladestrom (A)", "Zahl-Entität für den Ladestrom. Ohne sie lädt die Wallbox mit ihrem eigenen Strom.", ["number.", "input_number."], true],
+      ["power", "Ladeleistung", "Sensor in W oder kW.", ["sensor."], true], ["status", "Status", "Zustand der Wallbox, z. B. „charging“ oder „completed“.", ["sensor."], false],
+      ["plug", "Auto angesteckt", "Optional, wenn der Status das nicht zeigt.", ["binary_sensor.", "sensor."], false], ["phase", "Phasen", "Auswahlfeld für 1 oder 3 Phasen (optional).", ["select."], false],
+      ["energy", "Energie dieser Ladung", "Optional, in kWh.", ["sensor."], false], ["total", "Zählerstand", "Optional, in kWh.", ["sensor."], false]];
+  }
+  _igWbhaModal() {
+    const W = this._igS.wbha, d = W.draft, t = W.test, c = this._wb(), st = this._hass.states, ids = Object.keys(st), it = (W.items || []).find((x) => x.plat === d.plat);
+    const roles = this._igWbRoles(), mine = it ? it.ents.map((e) => e.eid) : [];
+    const card = (x) => `<button class="igwb ${d.plat === x.plat ? "sel" : ""}" data-act="igwbplat" data-k="${esc(x.plat)}" aria-pressed="${d.plat === x.plat}"><span class="igwbi">${this._gx("wallbox", 34)}</span><span class="igwbt"><b>${esc(x.name)}</b><small>${esc(x.dev || x.plat)} · ${x.ents.length} Entitäten${x.ctrl ? "" : " · kein Schalter gefunden"}</small></span>${x.known ? `<em class="sxc ok">bekannt</em>` : ""}</button>`;
+    const sel = (r) => { const o = ids.filter((e) => r[3].some((p) => e.startsWith(p))); o.sort((a, b) => (mine.includes(b) ? 1 : 0) - (mine.includes(a) ? 1 : 0)); return `<div class="igwr"><div><b>${r[1]}${r[4] ? "" : ` <span class="mut sm">optional</span>`}</b><small class="mut">${r[2]}</small></div>${this._wzSel(o, d.ent[r[0]] || "", "igwe", `data-k="${r[0]}"`, "– keine –", new RegExp((it ? it.plat : "wallbox") + "|charg|lade", "i"))}</div>`; };
+    const ok = !!(d.ent.switch || d.ent.current);
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Andere Wallbox</b><span>Über ihre Home-Assistant-Integration · Beta</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("search", 15)}1 · Wallbox wählen</div>
+      ${W.busy && !W.items ? `<div class="mut sm">Suche Wallboxen in Home Assistant …</div>` : (W.items || []).length ? `<div class="igwbl">${W.items.map(card).join("")}</div>` : `<div class="gst on">${ic("info", 15)}<span>Keine Wallbox-Integration gefunden. Richte zuerst die Integration deiner Wallbox in Home Assistant ein. Du kannst die Entitäten unten auch von Hand wählen.</span></div>`}
+      <div class="lsec">${ic("sliders", 15)}2 · Entitäten prüfen</div>
+      <div class="mut sm" style="margin:0 0 6px">${it ? `Vorschläge für ${esc(it.name)} sind eingetragen – bitte kurz prüfen.` : "Wähle die Entitäten deiner Wallbox."}</div>
+      ${roles.map(sel).join("")}
+      ${!d.ent.phase ? `<div class="vrow"><span>Die Wallbox lädt mit<small class="mut" style="display:block">Ohne Phasen-Entität rechnet die Regelung fest mit dieser Anzahl.</small></span><div class="gschips" style="flex:none">${[1, 3].map((p) => `<button class="gsch ${d.ph === p ? "sel" : ""}" data-act="igwbph" data-k="${p}" aria-pressed="${d.ph === p}">${p} ${p === 1 ? "Phase" : "Phasen"}</button>`).join("")}</div></div>` : ""}
+      <div class="mut sm" style="margin:8px 0 4px">Name in Modul 8</div><input class="otxt" type="text" maxlength="40" data-f="igwbn" value="${esc(d.name)}" placeholder="${esc(it ? it.name : "Wallbox")}" aria-label="Name der Wallbox">
+      <div class="lsec">${ic("check", 15)}3 · Testen</div>
+      <div class="foot2" style="margin:4px 0 8px"><button class="btn2" data-act="igwbtest" ${ok && !W.busy ? "" : "disabled"}>${ic("check", 16)} ${W.busy && W.items ? "Lese …" : "Werte lesen"}</button></div>
+      ${t ? `<div class="otr"><span class="oav" style="width:36px;height:36px;background:${t.ok ? "#22c55e" : "#f87171"}">${ic(t.ok ? "check" : "alert", 18)}</span><div class="opi"><b>${t.ok ? `${esc(t.car_text || "–")} · ${t.power != null ? num(t.power / 1000, 1) + " kW" : "keine Leistung"}` : "Nicht lesbar"}</b><small>${t.ok ? `Laden ${t.on ? "an" : "aus"}${t.set_a != null ? " · " + t.set_a + " A eingestellt" : ""}${t.ctrl ? "" : " · nur Anzeige (kein Schalter)"}` : esc(t.error || "")}</small></div></div>` : ""}
+      <div class="gst">${ic("info", 15)}<span>Gesteuert wird über die Aktionen der Integration (Schalter, Zahl, Auswahl). Es werden keine Daten an Dritte gesendet. Eine go-e, die hier schon direkt verbunden ist, wird dabei ersetzt.</span></div>
+      <div class="foot2" style="margin-top:14px">${this._wbHa(c) && this._wbOn(c) ? `<button class="btn2 dng" data-act="igwbrm">${ic("trash", 16)} Entfernen</button>` : `<button class="btn2" data-act="close">Abbrechen</button>`}<button class="btn2 pri" data-act="igwbsave" ${ok ? "" : "disabled"}>Speichern</button></div></div>`;
+  }
+  _igWbScan() {
+    const W = this._igS.wbha; W.busy = true;
+    this._hass.callWS({ type: "fenster_heizung/wb_scan" }).then((r) => { W.items = (r && r.items) || []; if (!W.draft.plat && W.items.length && !Object.values(W.draft.ent).some(Boolean)) this._igWbPick(W.items[0].plat); })
+      .catch(() => { W.items = []; }).finally(() => { W.busy = false; if (this._modal && this._modal.type === "igwbha") this._renderModal(); });
+  }
+  _igWbPick(plat) { const W = this._igS.wbha, it = (W.items || []).find((x) => x.plat === plat); if (!it) return; W.draft = { ...W.draft, plat, name: W.draft.name || it.dev || it.name, ent: { ...it.guess } }; W.test = null; }
   _igAct(a, b) {
     const I = this._igS || (this._igS = { draft: { ip: "" }, test: null, busy: false, tb: { token: "", home: "", res: "h" }, tbTest: null });
     if (!I.tb) I.tb = { token: "", home: "" };
@@ -296,9 +340,15 @@
     else if (a === "igtbhome") { I.tb.home = b.dataset.k; this._renderModal(); }
     else if (a === "igtbsave") { this._hass.callWS({ type: "fenster_heizung/tb_set", ...(I.tb.token.trim() ? { token: I.tb.token.trim() } : {}), home: I.tb.home, res: I.tb.res || "h" }).then(() => this._tbLoad(true)).catch(() => {}); this._modal = null; this._renderModal(); this._toast("Tibber gespeichert"); }
     else if (a === "igtbrm") { this._hass.callWS({ type: "fenster_heizung/tb_set", token: "", home: "" }).then(() => this._tbLoad(true)).catch(() => {}); this._modal = null; this._renderModal(); this._toast("Tibber entfernt"); }
-    else if (a === "igsave") { this._wbSave({ ip: I.draft.ip.trim() }, true); this._modal = null; this._renderModal(); this._render(); this._toast("go-e Charger gespeichert"); }
+    else if (a === "igsave") { this._wbSave({ ip: I.draft.ip.trim(), ...(this._wbHa() ? { wbx: { kind: "goe", plat: "", name: "", ent: {}, ph: 3 }, enabled: false } : {}) }, true); this._modal = null; this._renderModal(); this._render(); this._toast("go-e Charger gespeichert"); }
     else if (a === "igrm") { this._wbSave({ ip: "", enabled: false, mode: "off" }, true); this._modal = null; this._renderModal(); this._render(); this._toast("go-e Charger entfernt"); }
+    else if (a === "igwbha") { const w = this._wb().wbx || {}; I.wbha = { draft: { plat: w.kind === "ha" ? w.plat : "", name: w.kind === "ha" ? w.name : "", ent: { ...(w.kind === "ha" ? w.ent : {}) }, ph: w.ph === 1 ? 1 : 3 }, test: null, items: null, busy: false }; this._modal = { type: "igwbha" }; this._renderModal(); this._igWbScan(); }
+    else if (a === "igwbplat") { this._igWbPick(b.dataset.k); this._renderModal(); }
+    else if (a === "igwbph") { I.wbha.draft.ph = Number(b.dataset.k); this._renderModal(); }
+    else if (a === "igwbtest") { const W = I.wbha; W.busy = true; this._renderModal(); this._hass.callWS({ type: "fenster_heizung/wb_ha_test", wbx: { ...W.draft, kind: "ha" } }).then((r) => { W.test = r; }).catch(() => { W.test = { ok: false, error: "Keine Antwort von Home Assistant" }; }).finally(() => { W.busy = false; if (this._modal && this._modal.type === "igwbha") this._renderModal(); }); }
+    else if (a === "igwbsave") { const d = I.wbha.draft; this._wbSave({ wbx: { kind: "ha", plat: d.plat, name: (d.name || "").trim(), ent: d.ent, ph: d.ph }, ...(this._wb().ip ? { ip: "", enabled: false } : {}) }, true); this._modal = null; this._renderModal(); this._render(); this._toast("Wallbox gespeichert"); }
+    else if (a === "igwbrm") { this._wbSave({ wbx: { kind: "goe", plat: "", name: "", ent: {}, ph: 3 }, enabled: false, mode: "off" }, true); this._modal = null; this._renderModal(); this._render(); this._toast("Wallbox entfernt"); }
   }
-  _igChange(t) { const I = this._igS; if (I && t.dataset.f === "igip") { I.draft.ip = t.value; I.test = null; return true; } if (I && t.dataset.f === "igtbtok") { I.tb.token = t.value; I.tbTest = null; if (this._modal && this._modal.type === "igtb") this._renderModal(); return true; } return false; }
+  _igChange(t) { const I = this._igS; if (I && I.wbha && t.dataset.f === "igwe") { I.wbha.draft.ent = { ...I.wbha.draft.ent, [t.dataset.k]: t.value }; I.wbha.test = null; return true; } if (I && I.wbha && t.dataset.f === "igwbn") { I.wbha.draft.name = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 40); return true; } if (I && t.dataset.f === "igip") { I.draft.ip = t.value; I.test = null; return true; } if (I && t.dataset.f === "igtbtok") { I.tb.token = t.value; I.tbTest = null; if (this._modal && this._modal.type === "igtb") this._renderModal(); return true; } return false; }
 
   /* Modul 8: Heute, Schnellstart, Hausanschluss-Schutz, Benachrichtigungen */

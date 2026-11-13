@@ -250,7 +250,7 @@ const WW_DEF = { size: 300, target: 55, day: null, boost: false, circ5: false, a
   circ: { mode: "plan", ret_max: 45, run: 3, on: 3, every: 30, wd: [{ from: "05:30", to: "08:00" }, { from: "17:00", to: "21:30" }], we: [{ from: "07:00", to: "10:30" }, { from: "17:00", to: "21:30" }] },
   leg: { on: true, day: 5, time: "03:00", temp: 60, hold: 20, last: null },
   pv: { on: true, min: 1800, max: 62, watt: 2000 } };
-const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }, { id: "en", n: 3, name: "Energie-Übersicht", short: "Energie", icon: "energy", tag: "Heizung, Strom und PV im Überblick" }, { id: "gs", n: 4, name: "Gerätestrom", short: "Gerätestrom", icon: "laundry", tag: "Woher der Strom kommt und was er kostet" }, { id: "lu", n: 5, name: "Lüftung & Raumluft", short: "Lüftung", icon: "fan", tag: "KWL, CO₂ und Feuchte", beta: true }, { id: "rb", n: 6, name: "Rollläden & Beschattung", short: "Rollläden", icon: "blinds", tag: "Sonnenstand, Hitzeschutz und Heizbedarf", beta: true }, { id: "wp", n: 7, name: "Wärmepumpe", short: "Wärmepumpe", icon: "heatpump", tag: "Laufzeit, Takten und Abtauen", beta: true }, { id: "ev", n: 8, name: "Elektroauto & Wallbox", short: "E-Auto", icon: "car", tag: "Ladestand, Ladekabel, Wallbox und Kilometerstand", beta: true }, { id: "wx", n: 9, name: "Wetter & Warnungen", short: "Wetter", icon: "alert", tag: "Unwetter-, Sturm- und Frostwarnungen mit Aktionen", beta: true }, { id: "ga", n: 10, name: "Garten & Bewässerung", short: "Garten", icon: "plant", tag: "Regenprognose, Zisterne und Bewässerung bei PV-Überschuss", beta: true }, { id: "sf", n: 11, name: "Rauch- & Sicherheitsmelder", short: "Sicherheit", icon: "shield", tag: "Melder, Batteriestände und Alarme im Überblick", beta: true }, { id: "pl", n: 12, name: "Pool & Sauna", short: "Pool & Sauna", icon: "wave", tag: "Pumpe und Heizung nach PV-Überschuss und Strompreis", beta: true }, { id: "bt", n: 13, name: "Batteriespeicher-Planung", short: "Batterie", icon: "energy", tag: "Modi, Zeitplan und Ladestand-Grenzen", beta: true }, { id: "dt", n: 14, name: "Dynamischer Stromtarif", short: "Stromtarif", icon: "chart", tag: "Börsenpreis pro Stunde und günstigste Zeiten", beta: true }, { id: "wa", n: 15, name: "Wartung & Erinnerungen", short: "Wartung", icon: "tools", tag: "Schornsteinfeger, Filter, Termine und Betriebsstunden", beta: true }, { id: "sp", n: 16, name: "Solar-Prognose", short: "Prognose", icon: "sun", tag: "Ertrag heute und morgen, Prognose gegen tatsächlich", beta: true }, { id: "ef", n: 19, name: "Hausfluss", short: "Hausfluss", icon: "energy", tag: "Dein Haus als Fluss-Bild: Solar, Netz, Akku und Verbraucher", beta: true, sponsor: true }];
+const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }, { id: "en", n: 3, name: "Energie-Übersicht", short: "Energie", icon: "energy", tag: "Heizung, Strom und PV im Überblick" }, { id: "gs", n: 4, name: "Gerätestrom", short: "Gerätestrom", icon: "laundry", tag: "Woher der Strom kommt und was er kostet" }, { id: "lu", n: 5, name: "Lüftung & Raumluft", short: "Lüftung", icon: "fan", tag: "KWL, CO₂ und Feuchte", beta: true }, { id: "rb", n: 6, name: "Rollläden & Beschattung", short: "Rollläden", icon: "blinds", tag: "Sonnenstand, Hitzeschutz und Heizbedarf", beta: true }, { id: "wp", n: 7, name: "Wärmepumpe", short: "Wärmepumpe", icon: "heatpump", tag: "Laufzeit, Takten und Abtauen", beta: true }, { id: "ev", n: 8, name: "Elektroauto & Wallbox", short: "E-Auto", icon: "car", tag: "Laden mit Sonne und nach Preis – go-e und andere Wallboxen", beta: true }, { id: "wx", n: 9, name: "Wetter & Warnungen", short: "Wetter", icon: "alert", tag: "Unwetter-, Sturm- und Frostwarnungen mit Aktionen", beta: true }, { id: "ga", n: 10, name: "Garten & Bewässerung", short: "Garten", icon: "plant", tag: "Regenprognose, Zisterne und Bewässerung bei PV-Überschuss", beta: true }, { id: "sf", n: 11, name: "Rauch- & Sicherheitsmelder", short: "Sicherheit", icon: "shield", tag: "Melder, Batteriestände und Alarme im Überblick", beta: true }, { id: "pl", n: 12, name: "Pool & Sauna", short: "Pool & Sauna", icon: "wave", tag: "Pumpe und Heizung nach PV-Überschuss und Strompreis", beta: true }, { id: "bt", n: 13, name: "Batteriespeicher-Planung", short: "Batterie", icon: "energy", tag: "Modi, Zeitplan und Ladestand-Grenzen", beta: true }, { id: "dt", n: 14, name: "Dynamischer Stromtarif", short: "Stromtarif", icon: "chart", tag: "Börsenpreis pro Stunde und günstigste Zeiten", beta: true }, { id: "wa", n: 15, name: "Wartung & Erinnerungen", short: "Wartung", icon: "tools", tag: "Schornsteinfeger, Filter, Termine und Betriebsstunden", beta: true }, { id: "sp", n: 16, name: "Solar-Prognose", short: "Prognose", icon: "sun", tag: "Ertrag heute und morgen, Prognose gegen tatsächlich", beta: true }, { id: "ef", n: 19, name: "Hausfluss", short: "Hausfluss", icon: "energy", tag: "Dein Haus als Fluss-Bild: Solar, Netz, Akku und Verbraucher", beta: true, sponsor: true }];
 const PK_HINT = { pv: /solar|pv|photovolt|erzeug|wechselrichter|inverter/i, grid: /netz|grid|einspeis|bezug|zähler|meter/i, bchg: /lad|charge|zufuhr|input/i, bdis: /entlad|discharge|abgabe|output/i, house: /haus|house|verbrauch|load|consum/i, bat: /batter|speicher|akku/i, pve: /solar|pv|ertrag|yield|produc|erzeug/i, pv2: /balkon|plug|mikro|solar|pv|erzeug/i, pve2: /balkon|plug|mikro|ertrag|yield|produc|solar|pv/i, imp: /bezug|import|from.?grid|consum|netz/i, exp: /einspeis|export|feed|to.?grid/i,
   top: /oben|top|warmwasser|speicher|boiler/i, mid: /mitte|mid|warmwasser|speicher|boiler/i, bot: /unten|bot|warmwasser|speicher|boiler/i, ret: /rücklauf|ruecklauf|return|zirkul/i, pump: /zirkul|pumpe|pump/i, src: /heiz|kessel|wärmepumpe|puffer|ventil/i, rod: /heizstab|stab|rod|boiler/i, trig: /taster|bewegung|button|trigger|motion/i, outdoor: /außen|aussen|outdoor|outside/i, hum: /feucht|humid/i, heater: /heiz|elektro|heater/i };
 /* Schrittweite der Achse: 1, 2, 5 × 10^n, höchstens 5 Linien (auch bei sehr großen Werten) */
@@ -280,7 +280,7 @@ const LAB_GONE = ["mm", "li"];
 const MOD_ST = { ef: "stabil", sf: "beta", sp: "stabil", ev: "beta", wx: "vorab", dt: "beta" };
 const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
-const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeug- und Wallbox-Sensoren (in Entwicklung)" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
+const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeuge mit eigenen Sensoren, Wallbox-Sensoren" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
 const EV_BRANDS = ["Mercedes-Benz", "Audi", "VW", "BYD", "BMW", "Andere"];
 const EV_BODIES = { limousine: "Limousine", suv: "SUV", kombi: "Kombi", kompakt: "Kompakt" };
@@ -740,7 +740,7 @@ const MV = {
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  ev: { v: "0.5", b: 3, d: "2026-11-10", p: "2026.11.2b10", log: [["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ev: { v: "0.6", b: 1, d: "2026-11-13", p: "2026.11.3b16", log: [["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "0.9", b: 1, d: "2026-11-12", p: "2026.11.3b11", log: [["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sf: { v: "0.5", b: 4, d: "2026-11-04", p: "2026.11.1", log: [["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2608,6 +2608,13 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .spna.gold{background:radial-gradient(circle at 35% 30%,#fff3b0,#f59e0b 60%,#b45309);color:#fff}.spnmini.gold{color:#fbbf24}.spnsum b.gd{color:#fbbf24}
 .lgt .vrow{flex-wrap:wrap;gap:8px 12px}.lgt .vrow>span:first-child{flex:1 1 180px;min-width:0}.lgt .vrow>.gschs,.lgt .vrow>.btn2,.lgt .vrow>.sw,.lgt .vrow>.lgsoon{flex:none;margin-left:auto}
 .lgx .gschs{flex-wrap:wrap}.lgban .btn2{flex:none}
+/* Modul 8 v0.6: Fahrzeuge mit eigenem Bild, andere Wallbox über Home Assistant */
+.rfpic{flex:none;width:96px;height:38px;display:grid;place-items:center;border-radius:10px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent)}
+.rfv .oper .btn2{padding:8px 12px;font-size:.84rem}.evprev{border-radius:16px;overflow:hidden;margin:4px 0 6px}.evprev svg{display:block;width:100%;height:auto}
+.igwbl{display:grid;gap:8px;margin:4px 0 6px}.igwb{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:transparent;color:inherit;cursor:pointer;font:inherit}
+.igwb.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent)}.igwbi{flex:none;display:grid;place-items:center}.igwbt{flex:1;min-width:0;display:grid;gap:2px}.igwbt small{color:var(--mut)}.igwb .sxc{flex:none}
+.igwr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:4px 14px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}.igwr>div:first-child{display:grid;gap:2px}.igwr small{font-size:.78rem}
+@media (max-width:620px){.igwr{grid-template-columns:1fr}.rfv .oper{flex-wrap:wrap}.rfv .oper .btn2{width:100%}}
 `;
 /* Modul 1 · Raumkarte 2.0 */
 const CSS_RK = `
@@ -7242,6 +7249,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "labok") { box.innerHTML = this._labOkModal(m.id); return; }
     if (m.type === "labset") { box.innerHTML = this._labSetModal(); return; }
     if (m.type === "stoset") { box.innerHTML = this._stoSetModal(); return; }
+    if (m.type === "igwbha") { box.innerHTML = this._igWbhaModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "wbveh") { box.innerHTML = this._wbVehModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "iggoe") { box.innerHTML = this._igGoeModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "ortper" || m.type === "ortzone") { box.innerHTML = m.type === "ortper" ? this._ortPerModal() : this._ortZoneModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._ortBind(); return; }
     if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -7955,9 +7964,13 @@ class FensterHeizungPanel extends HTMLElement {
     return false;
   }
   /* Integrationen: Wallbox (go-e Charger) direkt über die lokale HTTP-API verbinden. Die Daten liegen im Backend (wb_get, wb_set, wb_test). */
-  _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "forecast", baseW: 400, vehicles: [], guest: { mode: "off", limit: 80 }, guard: { on: false, maxA: 35 }, notify: { start: true, goal: true, plan: true, off: true, long: false, to: [] } }; }
+  _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "auto", baseW: 400, vs: 2, defVeh: "", wbx: { kind: "goe", plat: "", name: "", ent: {}, ph: 3 }, vehicles: [], guest: { mode: "off", limit: 80 }, guard: { on: false, maxA: 35 }, notify: { start: true, goal: true, plan: true, off: true, long: false, to: [] } }; }
   _wbSnap() { const s = (this._wbD && this._wbD.snap) || {}; return { ...s, cfg: { ...this._wbDef(), ...(s.cfg || {}) }, info: s.info || {}, want: s.want || {}, log: s.log || [], plan: s.plan || {} }; }
   _wb() { return this._wbSnap().cfg; }
+  /* Ist eine Wallbox eingerichtet? go-e: IP-Adresse · andere Wallbox über Home Assistant: Schalter oder Ladestrom */
+  _wbOn(c) { c = c || this._wb(); const w = c.wbx || {}; return w.kind === "ha" ? !!((w.ent || {}).switch || (w.ent || {}).current) : !!c.ip; }
+  _wbHa(c) { c = c || this._wb(); return (c.wbx || {}).kind === "ha"; }
+  _wbName() { const s = this._wbSnap(), c = s.cfg, i = s.info || {}; return this._wbHa(c) ? (c.wbx.name || i.type || "Wallbox") : (i.name || i.type || "go-e Charger"); }
   _wbVisible() { return !this._modal && ((this._igOpen && this._admin()) || (!this._stOpen && !this._ortOpen && this._mdActive() === "ev")); }
   _wbLoad(force) {
     if (!this._hass || this._wbBusy) return;
@@ -7972,11 +7985,11 @@ class FensterHeizungPanel extends HTMLElement {
     clearTimeout(this._wbSaveT);
     this._wbSaveT = setTimeout(() => {
       this._wbSaveT = null; const cfg = this._wbSnap().cfg;
-      this._hass.callWS({ type: "fenster_heizung/wb_set", cfg }).then((r) => { this._wbD = { snap: r, ts: Date.now() }; if (this._wbVisible()) this._render(); })
+      this._hass.callWS({ type: "fenster_heizung/wb_set", cfg }).then((r) => { this._wbD = { snap: r, ts: Date.now() }; if (this._wbFcD) this._wbFcLoad(true); if (this._wbVisible()) this._render(); })
         .catch(() => this._toast("Wallbox-Einstellung konnte nicht gespeichert werden"));
     }, now ? 0 : 500);
   }
-  _igChip() { const s = this._wbSnap(); this._wbLoad(); return s.cfg.ip ? (s.ok ? `<em class="sxc ok">go-e verbunden</em>` : `<em class="sxc">Nicht erreichbar</em>`) : `<em class="sxc">Nicht verbunden</em>`; }
+  _igChip() { const s = this._wbSnap(); this._wbLoad(); return this._wbOn() ? (s.ok ? `<em class="sxc ok">${esc(this._wbHa() ? this._wbName() : "go-e")} verbunden</em>` : `<em class="sxc">Nicht erreichbar</em>`) : `<em class="sxc">Nicht verbunden</em>`; }
   /* ===== Store: Katalog aller Dienste, Startseite (A) und Detailseite (C) ===== */
   _sto0() { return this._sto || (this._sto = { q: "", c: "all" }); }
   _stoCfg() { const t = (this._cfg && this._cfg.layout && this._cfg.layout.store) || {}; return { icon: t.icon !== false, tab: t.tab !== false }; }
@@ -8028,10 +8041,15 @@ class FensterHeizungPanel extends HTMLElement {
     const H = this._hass, E = H.entities || {}, S = H.states, ids = Object.keys(S), byDom = (d) => ids.filter((k) => (E[k] || {}).platform === d);
     const wb = this._wbSnap(), c = wb.cfg, T = this._tb(), det = this._sfList(), out = [];
     const X = { xsense: ["Cloud", "Community"], zha: ["Lokal", "Offiziell"], mqtt: ["Lokal", "Offiziell"], homematicip_cloud: ["Cloud", "Offiziell"], fritzbox: ["Lokal", "Offiziell"], zwave_js: ["Lokal", "Offiziell"], matter: ["Lokal", "Offiziell"], tuya: ["Cloud", "Offiziell"], ecowitt: ["Lokal", "Offiziell"], tempest: ["Lokal", "Offiziell"], met: ["Cloud", "Offiziell"], dwd_weather_warnings: ["Cloud", "Offiziell"], nina: ["Cloud", "Offiziell"], meteoalarm: ["Cloud", "Offiziell"] };
-    out.push({ id: "goe", n: "go-e Charger", sub: "Wallbox", cat: "auto", c: "#0ea5e9", i: "energy", mid: "ev", mods: ["Modul 8"], on: !!c.ip, bad: !!c.ip && !wb.ok, top: 1, act: "iggoe", conn: "Lokal", src: "Direkt",
-      st: c.ip ? (wb.ok ? `${(wb.info && wb.info.type) || "go-e Charger"} · ${c.ip}` : `${c.ip} · ${wb.error || "keine Antwort"}`) : "", desc: "Wallbox direkt im Heimnetz lesen und steuern, ohne Cloud.",
+    const goeOn = !!c.ip && !this._wbHa(c), haOn = this._wbHa(c) && this._wbOn(c);
+    out.push({ id: "goe", n: "go-e Charger", sub: "Wallbox", cat: "auto", c: "#0ea5e9", i: "energy", mid: "ev", mods: ["Modul 8"], on: goeOn, bad: goeOn && !wb.ok, top: 1, act: "iggoe", conn: "Lokal", src: "Direkt",
+      st: goeOn ? (wb.ok ? `${(wb.info && wb.info.type) || "go-e Charger"} · ${c.ip}` : `${c.ip} · ${wb.error || "keine Antwort"}`) : "", desc: "Wallbox direkt im Heimnetz lesen und steuern, ohne Cloud.",
       feats: ["Laden nach Sonne, Strompreis und Abfahrtszeit planen", "Status, Leistung und Ladestand direkt sehen", "Läuft lokal im Heimnetz, ohne Cloud"],
       steps: ["In der go-e-App: Einstellungen → Verbindung → API-Einstellungen → „Zugriff auf lokale HTTP API“ einschalten", "Dem go-e im Router eine feste IP-Adresse geben", "Hier „Einrichten“ tippen, IP-Adresse eintragen und die Verbindung testen"], note: "Die lokale API v2 gibt es nur bei neueren Geräten. Der go-e Charger Gemini unterstützt sie." });
+    out.push({ id: "wbha", n: "Andere Wallbox", sub: "Wallbox über Home Assistant", cat: "auto", c: "#14b8a6", i: "energy", mid: "ev", mods: ["Modul 8"], on: haOn, bad: haOn && !wb.ok, top: 1, act: "igwbha", conn: "Lokal", src: "Beta",
+      st: haOn ? `${c.wbx.name || (wb.info && wb.info.type) || "Wallbox"}${wb.ok ? "" : " · " + (wb.error || "keine Antwort")}` : "", desc: "Jede Wallbox mit Home-Assistant-Integration regeln: Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP und weitere.",
+      feats: ["Laden mit Sonne, nach Preis und Abfahrtszeit wie bei der go-e", "Integration wird gesucht, Entitäten werden vorgeschlagen", "Ohne Kartenleser: Fahrzeug fest zuordnen"],
+      steps: ["Die Integration deiner Wallbox in Home Assistant einrichten (Geräte & Dienste)", "Hier „Einrichten“ tippen und die gefundene Wallbox wählen", "Vorschläge prüfen: Schalter „Laden an/aus“ und Ladestrom sind wichtig", "Testen und speichern, dann in Modul 8 die Laderegelung einschalten"], note: "Beta: Wie schnell eine Wallbox reagiert, hängt von ihrer Integration ab. Nach jedem Befehl wartet die Regelung bis zu 90 Sekunden auf die Rückmeldung." });
     out.push({ id: "tibber", n: "Tibber", sub: "Stromtarif", cat: "tarif", c: "#6366f1", i: "energy", mid: "ev", mods: ["Modul 8"], on: !!T.connected, top: 1, act: "igtb", conn: "Cloud", src: "Offiziell",
       st: T.connected ? `${T.home || "Zuhause"}${T.price_now != null ? " · jetzt " + num(T.price_now, 1) + " ct/kWh" : ""}` : "", desc: "Stundenpreise direkt von Tibber, ohne zusätzliche Integration.",
       feats: ["Strompreise von heute und morgen (ab etwa 13 Uhr)", "Ladeplanung in Modul 8 zur günstigsten Zeit", "Preise als Stunde, Viertelstunde oder Preisstufe"],
@@ -8232,6 +8250,41 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="gst">${ic("info", 15)}Es werden nur Status und Ladeeinstellungen der Wallbox gelesen und gesetzt. Es werden keine Daten an Dritte gesendet.</div>
       <div class="foot2" style="margin-top:14px">${c.ip ? `<button class="btn2 dng" data-act="igrm">${ic("trash", 16)} Entfernen</button>` : `<button class="btn2" data-act="close">Abbrechen</button>`}<button class="btn2 pri" data-act="igsave" ${t && t.ok ? "" : "disabled"}>Speichern</button></div></div>`;
   }
+  /* Andere Wallbox über Home Assistant (B5): Integration suchen, Entitäten je Rolle vorschlagen, testen, speichern */
+  _igWbRoles() {
+    return [["switch", "Laden an/aus", "Schalter, der die Ladung erlaubt oder pausiert. Ohne ihn wird nur angezeigt.", ["switch.", "input_boolean."], true],
+      ["current", "Ladestrom (A)", "Zahl-Entität für den Ladestrom. Ohne sie lädt die Wallbox mit ihrem eigenen Strom.", ["number.", "input_number."], true],
+      ["power", "Ladeleistung", "Sensor in W oder kW.", ["sensor."], true], ["status", "Status", "Zustand der Wallbox, z. B. „charging“ oder „completed“.", ["sensor."], false],
+      ["plug", "Auto angesteckt", "Optional, wenn der Status das nicht zeigt.", ["binary_sensor.", "sensor."], false], ["phase", "Phasen", "Auswahlfeld für 1 oder 3 Phasen (optional).", ["select."], false],
+      ["energy", "Energie dieser Ladung", "Optional, in kWh.", ["sensor."], false], ["total", "Zählerstand", "Optional, in kWh.", ["sensor."], false]];
+  }
+  _igWbhaModal() {
+    const W = this._igS.wbha, d = W.draft, t = W.test, c = this._wb(), st = this._hass.states, ids = Object.keys(st), it = (W.items || []).find((x) => x.plat === d.plat);
+    const roles = this._igWbRoles(), mine = it ? it.ents.map((e) => e.eid) : [];
+    const card = (x) => `<button class="igwb ${d.plat === x.plat ? "sel" : ""}" data-act="igwbplat" data-k="${esc(x.plat)}" aria-pressed="${d.plat === x.plat}"><span class="igwbi">${this._gx("wallbox", 34)}</span><span class="igwbt"><b>${esc(x.name)}</b><small>${esc(x.dev || x.plat)} · ${x.ents.length} Entitäten${x.ctrl ? "" : " · kein Schalter gefunden"}</small></span>${x.known ? `<em class="sxc ok">bekannt</em>` : ""}</button>`;
+    const sel = (r) => { const o = ids.filter((e) => r[3].some((p) => e.startsWith(p))); o.sort((a, b) => (mine.includes(b) ? 1 : 0) - (mine.includes(a) ? 1 : 0)); return `<div class="igwr"><div><b>${r[1]}${r[4] ? "" : ` <span class="mut sm">optional</span>`}</b><small class="mut">${r[2]}</small></div>${this._wzSel(o, d.ent[r[0]] || "", "igwe", `data-k="${r[0]}"`, "– keine –", new RegExp((it ? it.plat : "wallbox") + "|charg|lade", "i"))}</div>`; };
+    const ok = !!(d.ent.switch || d.ent.current);
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Andere Wallbox</b><span>Über ihre Home-Assistant-Integration · Beta</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("search", 15)}1 · Wallbox wählen</div>
+      ${W.busy && !W.items ? `<div class="mut sm">Suche Wallboxen in Home Assistant …</div>` : (W.items || []).length ? `<div class="igwbl">${W.items.map(card).join("")}</div>` : `<div class="gst on">${ic("info", 15)}<span>Keine Wallbox-Integration gefunden. Richte zuerst die Integration deiner Wallbox in Home Assistant ein. Du kannst die Entitäten unten auch von Hand wählen.</span></div>`}
+      <div class="lsec">${ic("sliders", 15)}2 · Entitäten prüfen</div>
+      <div class="mut sm" style="margin:0 0 6px">${it ? `Vorschläge für ${esc(it.name)} sind eingetragen – bitte kurz prüfen.` : "Wähle die Entitäten deiner Wallbox."}</div>
+      ${roles.map(sel).join("")}
+      ${!d.ent.phase ? `<div class="vrow"><span>Die Wallbox lädt mit<small class="mut" style="display:block">Ohne Phasen-Entität rechnet die Regelung fest mit dieser Anzahl.</small></span><div class="gschips" style="flex:none">${[1, 3].map((p) => `<button class="gsch ${d.ph === p ? "sel" : ""}" data-act="igwbph" data-k="${p}" aria-pressed="${d.ph === p}">${p} ${p === 1 ? "Phase" : "Phasen"}</button>`).join("")}</div></div>` : ""}
+      <div class="mut sm" style="margin:8px 0 4px">Name in Modul 8</div><input class="otxt" type="text" maxlength="40" data-f="igwbn" value="${esc(d.name)}" placeholder="${esc(it ? it.name : "Wallbox")}" aria-label="Name der Wallbox">
+      <div class="lsec">${ic("check", 15)}3 · Testen</div>
+      <div class="foot2" style="margin:4px 0 8px"><button class="btn2" data-act="igwbtest" ${ok && !W.busy ? "" : "disabled"}>${ic("check", 16)} ${W.busy && W.items ? "Lese …" : "Werte lesen"}</button></div>
+      ${t ? `<div class="otr"><span class="oav" style="width:36px;height:36px;background:${t.ok ? "#22c55e" : "#f87171"}">${ic(t.ok ? "check" : "alert", 18)}</span><div class="opi"><b>${t.ok ? `${esc(t.car_text || "–")} · ${t.power != null ? num(t.power / 1000, 1) + " kW" : "keine Leistung"}` : "Nicht lesbar"}</b><small>${t.ok ? `Laden ${t.on ? "an" : "aus"}${t.set_a != null ? " · " + t.set_a + " A eingestellt" : ""}${t.ctrl ? "" : " · nur Anzeige (kein Schalter)"}` : esc(t.error || "")}</small></div></div>` : ""}
+      <div class="gst">${ic("info", 15)}<span>Gesteuert wird über die Aktionen der Integration (Schalter, Zahl, Auswahl). Es werden keine Daten an Dritte gesendet. Eine go-e, die hier schon direkt verbunden ist, wird dabei ersetzt.</span></div>
+      <div class="foot2" style="margin-top:14px">${this._wbHa(c) && this._wbOn(c) ? `<button class="btn2 dng" data-act="igwbrm">${ic("trash", 16)} Entfernen</button>` : `<button class="btn2" data-act="close">Abbrechen</button>`}<button class="btn2 pri" data-act="igwbsave" ${ok ? "" : "disabled"}>Speichern</button></div></div>`;
+  }
+  _igWbScan() {
+    const W = this._igS.wbha; W.busy = true;
+    this._hass.callWS({ type: "fenster_heizung/wb_scan" }).then((r) => { W.items = (r && r.items) || []; if (!W.draft.plat && W.items.length && !Object.values(W.draft.ent).some(Boolean)) this._igWbPick(W.items[0].plat); })
+      .catch(() => { W.items = []; }).finally(() => { W.busy = false; if (this._modal && this._modal.type === "igwbha") this._renderModal(); });
+  }
+  _igWbPick(plat) { const W = this._igS.wbha, it = (W.items || []).find((x) => x.plat === plat); if (!it) return; W.draft = { ...W.draft, plat, name: W.draft.name || it.dev || it.name, ent: { ...it.guess } }; W.test = null; }
   _igAct(a, b) {
     const I = this._igS || (this._igS = { draft: { ip: "" }, test: null, busy: false, tb: { token: "", home: "", res: "h" }, tbTest: null });
     if (!I.tb) I.tb = { token: "", home: "" };
@@ -8253,10 +8306,16 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "igtbhome") { I.tb.home = b.dataset.k; this._renderModal(); }
     else if (a === "igtbsave") { this._hass.callWS({ type: "fenster_heizung/tb_set", ...(I.tb.token.trim() ? { token: I.tb.token.trim() } : {}), home: I.tb.home, res: I.tb.res || "h" }).then(() => this._tbLoad(true)).catch(() => {}); this._modal = null; this._renderModal(); this._toast("Tibber gespeichert"); }
     else if (a === "igtbrm") { this._hass.callWS({ type: "fenster_heizung/tb_set", token: "", home: "" }).then(() => this._tbLoad(true)).catch(() => {}); this._modal = null; this._renderModal(); this._toast("Tibber entfernt"); }
-    else if (a === "igsave") { this._wbSave({ ip: I.draft.ip.trim() }, true); this._modal = null; this._renderModal(); this._render(); this._toast("go-e Charger gespeichert"); }
+    else if (a === "igsave") { this._wbSave({ ip: I.draft.ip.trim(), ...(this._wbHa() ? { wbx: { kind: "goe", plat: "", name: "", ent: {}, ph: 3 }, enabled: false } : {}) }, true); this._modal = null; this._renderModal(); this._render(); this._toast("go-e Charger gespeichert"); }
     else if (a === "igrm") { this._wbSave({ ip: "", enabled: false, mode: "off" }, true); this._modal = null; this._renderModal(); this._render(); this._toast("go-e Charger entfernt"); }
+    else if (a === "igwbha") { const w = this._wb().wbx || {}; I.wbha = { draft: { plat: w.kind === "ha" ? w.plat : "", name: w.kind === "ha" ? w.name : "", ent: { ...(w.kind === "ha" ? w.ent : {}) }, ph: w.ph === 1 ? 1 : 3 }, test: null, items: null, busy: false }; this._modal = { type: "igwbha" }; this._renderModal(); this._igWbScan(); }
+    else if (a === "igwbplat") { this._igWbPick(b.dataset.k); this._renderModal(); }
+    else if (a === "igwbph") { I.wbha.draft.ph = Number(b.dataset.k); this._renderModal(); }
+    else if (a === "igwbtest") { const W = I.wbha; W.busy = true; this._renderModal(); this._hass.callWS({ type: "fenster_heizung/wb_ha_test", wbx: { ...W.draft, kind: "ha" } }).then((r) => { W.test = r; }).catch(() => { W.test = { ok: false, error: "Keine Antwort von Home Assistant" }; }).finally(() => { W.busy = false; if (this._modal && this._modal.type === "igwbha") this._renderModal(); }); }
+    else if (a === "igwbsave") { const d = I.wbha.draft; this._wbSave({ wbx: { kind: "ha", plat: d.plat, name: (d.name || "").trim(), ent: d.ent, ph: d.ph }, ...(this._wb().ip ? { ip: "", enabled: false } : {}) }, true); this._modal = null; this._renderModal(); this._render(); this._toast("Wallbox gespeichert"); }
+    else if (a === "igwbrm") { this._wbSave({ wbx: { kind: "goe", plat: "", name: "", ent: {}, ph: 3 }, enabled: false, mode: "off" }, true); this._modal = null; this._renderModal(); this._render(); this._toast("Wallbox entfernt"); }
   }
-  _igChange(t) { const I = this._igS; if (I && t.dataset.f === "igip") { I.draft.ip = t.value; I.test = null; return true; } if (I && t.dataset.f === "igtbtok") { I.tb.token = t.value; I.tbTest = null; if (this._modal && this._modal.type === "igtb") this._renderModal(); return true; } return false; }
+  _igChange(t) { const I = this._igS; if (I && I.wbha && t.dataset.f === "igwe") { I.wbha.draft.ent = { ...I.wbha.draft.ent, [t.dataset.k]: t.value }; I.wbha.test = null; return true; } if (I && I.wbha && t.dataset.f === "igwbn") { I.wbha.draft.name = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 40); return true; } if (I && t.dataset.f === "igip") { I.draft.ip = t.value; I.test = null; return true; } if (I && t.dataset.f === "igtbtok") { I.tb.token = t.value; I.tbTest = null; if (this._modal && this._modal.type === "igtb") this._renderModal(); return true; } return false; }
 
   /* Modul 8: Heute, Schnellstart, Hausanschluss-Schutz, Benachrichtigungen */
   _wbxToday(d) {
@@ -8307,7 +8366,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!s.ok) N.push([`Keine Verbindung zur Wallbox${s.error ? " (" + esc(s.error) + ")" : ""}. Prüfe Strom und WLAN der Wallbox.`, "wb", "Verbindung prüfen"]);
     else if (c.enabled && s.hold > 0) N.push([`Du hast die Wallbox von Hand umgestellt. Die Regelung pausiert noch ${Math.ceil(s.hold / 60)} Min. und regelt dann wieder.`]);
     if (s.ok && c.enabled && !s.hold && w.state === "gesperrt") N.push(["Die Regelung wartet auf eine Karte. Lege die Karte an der Wallbox an.", "veh", "Karten ansehen"]);
-    if (s.ok && c.enabled && !s.hold && w.state && w.state !== "gesperrt" && w.surplus_w == null && (em === "pv" || em === "minpv" || c.planOn)) N.push(["Es fehlt ein Netz-Sensor für den Überschuss (Modul 3 oder Photovoltaik in Modul 1). Ohne ihn wird nicht mit Sonne geladen."]);
+    if (s.ok && c.enabled && !s.hold && w.state && w.state !== "gesperrt" && w.surplus_w == null && (em === "pv" || em === "minpv" || c.planOn)) N.push(["Es fehlt ein Netz-Sensor für den Überschuss (Einstellungen → Haus → Energiequellen). Ohne ihn wird nicht mit Sonne geladen."]);
     return `<div class="wbbar">${chips}</div>${N.map((n) => `<div class="gst on" style="margin:0 0 10px">${ic("info", 15)}<span>${n[0]}${n[1] ? ` <button class="lnk" data-act="wbgo" data-k="${n[1]}">${n[2]}</button>` : ""}</span></div>`).join("")}`;
   }
   /* Einrichtungs-Check im Register Einstellungen */
@@ -8316,13 +8375,13 @@ class FensterHeizungPanel extends HTMLElement {
     const s = this._wbSnap(), c = s.cfg, i = s.info, w = s.want || {}, F = this._wbFcD && this._wbFcD.data, TB = this._tb(), cards = (i && i.cards) || [];
     const noCard = c.vehicles.filter((x) => !x.ids.length);
     const R = [
-      [s.ok ? "ok" : "bad", "Wallbox verbunden", s.ok ? `${esc(i.name || "go-e Charger")} antwortet.` : "Keine Antwort von der Wallbox.", "wb", "Prüfen"],
+      [s.ok ? "ok" : "bad", "Wallbox verbunden", s.ok ? `${esc(this._wbName())} antwortet${i.ctrl === false ? ", aber ohne Schalter: nur Anzeige" : ""}.` : "Keine Antwort von der Wallbox.", "wb", "Prüfen"],
       [s.soc != null ? "ok" : "warn", "Ladestand-Sensor des Fahrzeugs", s.soc != null ? `Ladestand ${num(s.soc, 0)} %.` : "Ohne ihn gibt es keine Planung und kein Ladelimit.", null, null, "mdevset"],
-      [!c.enabled || !w.state ? "opt" : w.surplus_w != null ? "ok" : "warn", "Netz-Sensor für den Überschuss", !c.enabled || !w.state ? "Wird geprüft, sobald die Regelung läuft." : w.surplus_w != null ? `Überschuss ${wfmt(w.surplus_w)}.` : "Fehlt in Modul 3 und in der Photovoltaik-Einstellung von Modul 1."],
+      [!c.enabled || !w.state ? "opt" : w.surplus_w != null ? "ok" : "warn", "Netz-Sensor für den Überschuss", !c.enabled || !w.state ? "Wird geprüft, sobald die Regelung läuft." : w.surplus_w != null ? `Überschuss ${wfmt(w.surplus_w)}.` : "Fehlt unter Einstellungen → Haus → Energiequellen."],
       [c.vehicles.length ? "ok" : "warn", "Fahrzeug angelegt", c.vehicles.length ? c.vehicles.map((x) => esc(x.name)).join(", ") : "Lege ein Fahrzeug an, damit Modus und Limit pro Fahrzeug gelten.", "veh", "Anlegen"],
-      [!c.vehicles.length ? "opt" : !cards.length ? "warn" : noCard.length ? "warn" : "ok", "Karten zugeordnet", !c.vehicles.length ? "Zuerst ein Fahrzeug anlegen." : !cards.length ? "In der go-e-App sind noch keine RFID-Karten angelegt." : noCard.length ? `${noCard.map((x) => esc(x.name)).join(", ")} ${noCard.length === 1 ? "hat" : "haben"} noch keine Karte.` : "Jedes Fahrzeug hat mindestens eine Karte.", "veh", "Zuordnen"],
+      this._wbHa(c) ? [c.defVeh ? "ok" : c.vehicles.length ? "warn" : "opt", "Fahrzeug an dieser Wallbox", c.defVeh ? `${esc((c.vehicles.find((x) => x.id === c.defVeh) || {}).name || "")} ist fest zugeordnet.` : c.vehicles.length ? "Die Wallbox meldet keine Karten. Wähle das Fahrzeug, das hier lädt." : "Zuerst ein Fahrzeug anlegen.", "veh", "Wählen"] : [!c.vehicles.length ? "opt" : !cards.length ? "warn" : noCard.length ? "warn" : "ok", "Karten zugeordnet", !c.vehicles.length ? "Zuerst ein Fahrzeug anlegen." : !cards.length ? "In der go-e-App sind noch keine RFID-Karten angelegt." : noCard.length ? `${noCard.map((x) => esc(x.name)).join(", ")} ${noCard.length === 1 ? "hat" : "haben"} noch keine Karte.` : "Jedes Fahrzeug hat mindestens eine Karte.", "veh", "Zuordnen"],
       [TB.connected ? "ok" : "opt", "Strompreis (optional)", TB.connected ? "Tibber ist verbunden." : "Für die Planung nach Preis: Tibber unter Einstellungen → Integrationen verbinden oder einen Preis-Sensor in Modul 1 wählen."],
-      [F && F.fs && F.fs.found ? "ok" : "opt", "PV-Prognose (optional)", F && F.fs && F.fs.found ? "Forecast.Solar wurde erkannt." : "Für die Planung nach Sonne: die Integration Forecast.Solar in Home Assistant einrichten."],
+      [F && F.fs && F.fs.found ? "ok" : "opt", "PV-Prognose (optional)", F && F.fs && F.fs.found ? (F.fs.m16 ? "Kommt aus Modul 16 (Solar-Prognose)." : "Forecast.Solar wurde erkannt.") : "Für die Planung nach Sonne: Modul 16 einschalten oder Forecast.Solar in Home Assistant einrichten."],
     ];
     const need = R.filter((r) => r[0] !== "opt"), done = need.filter((r) => r[0] === "ok").length, all = need.length && done === need.length;
     const ico = { ok: ["check", "#2dd4bf"], warn: ["info", "#f59e0b"], bad: ["info", "#f87171"], opt: ["minus", "#64748b"] };
@@ -8368,28 +8427,18 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/wb_forecast" }).then((r) => { this._wbFcD = { data: r || {}, ts: Date.now() }; }).catch(() => { this._wbFcD = { data: { error: true }, ts: Date.now() }; })
       .finally(() => { this._wbFcBusy = false; if (this._wbStT() === "plan" && this._wbVisible()) this._render(); });
   }
-  _wbPlanCalc(hours, o) {
-    const SL = o.sh || 1, now = new Date(), [hh, mm] = String(o.until || "07:00").split(":").map(Number), dl = new Date(now); dl.setHours(hh || 0, mm || 0, 0, 0); if (dl <= now) dl.setDate(dl.getDate() + 1);
-    const P = o.pmax, need = Math.max(0, (o.target - o.soc) / 100 * o.cap), sun = o.strat === "sun", price = o.strat === "price", lv = o.rank === "level", LR = { VERY_CHEAP: 0, CHEAP: 1, NORMAL: 2, EXPENSIVE: 3, VERY_EXPENSIVE: 4 };
-    const cand = hours.map((h, i) => ({ i, h, t: new Date(h.t) })).filter((c) => c.t.getTime() + SL * 36e5 > now.getTime() && c.t.getTime() + SL * 36e5 <= dl.getTime());
-    const pw = (c) => sun ? Math.min(P, c.h.pv) : P, share = (c) => { const e = pw(c); return e > 0 ? Math.min(c.h.pv, e) / e : 0; }, rk = (c) => lv ? (LR[c.h.level || "NORMAL"] ?? 2) * 100 : 0;
-    const pool = cand.filter((c) => !sun || c.h.pv >= o.minkw);
-    pool.sort((a, b) => sun ? b.h.pv - a.h.pv : price ? rk(a) + a.h.price - (rk(b) + b.h.price) : rk(a) + a.h.price * (1 - share(a)) - (rk(b) + b.h.price * (1 - share(b))));
-    const sel = {}; let left = need;
-    for (const c of pool) { if (left <= 0.01) break; const e = Math.min(pw(c) * SL, left); if (e <= 0) continue; sel[c.i] = e; left -= e; }
-    const calc = (m) => { let kwh = 0, pv = 0, cost = 0; Object.keys(m).forEach((i) => { const h = hours[i], e = m[i], kw = e / SL, s = kw > 0 ? Math.min(1, h.pv / kw) : 0; kwh += e; pv += e * s; cost += e * (1 - s) * h.price / 100; }); return { kwh, pv, cost }; };
-    const imm = {}; let l2 = need; cand.forEach((c) => { if (l2 <= 0.01) return; const e = Math.min(P * SL, l2); imm[c.i] = e; l2 -= e; });
-    return { sel, left: Math.max(0, left), need, dl, plan: calc(sel), imm: calc(imm), cand };
-  }
   _wbPlan(d) {
     this._wbFcLoad(); this._tbLoad();
     const F = this._wbFcD && this._wbFcD.data, c = this._wbSnap().cfg, adm = this._admin();
     if (!F) return `<div class="card empty">${ic("sun", 30)}<div class="sm" style="margin-top:8px">Vorhersage wird geladen …</div></div>`;
     if (F.error || !(F.hours || []).length) return `<div class="card empty">${ic("sun", 30)}<div style="margin:8px 0 4px;font-weight:700;color:var(--primary-text-color)">Keine Vorhersage verfügbar</div><div class="sm" style="max-width:480px;margin:0 auto">Wähle in den Einstellungen von Modul 3 einen Preis-Sensor mit Stundenpreisen (zum Beispiel Tibber oder aWATTar) und eine PV-Prognose (zum Beispiel Forecast.Solar oder Solcast).</div></div>`;
-    const who = this._wbSnap().who, veh = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.name === who.name) : null, vd = veh ? this._wbDep(veh) : null, eff = vd && vd.on ? { soc: vd.soc, time: vd.time, days: vd.days, name: veh.name } : { soc: c.planSoc, time: c.planTime, days: c.planDays, name: "" };
+    /* B1: Der Plan kommt fertig aus dem Backend (derselbe, nach dem die Wallbox geregelt wird). Hier wird nur noch gezeichnet. */
+    const who = this._wbSnap().who, veh = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.id === who.id || x.name === who.name) : null, PL = F.plan || { ok: false, why: "fc" };
+    const eff = { soc: PL.target != null ? PL.target : c.planSoc, time: PL.until || c.planTime, days: PL.days || c.planDays, name: PL.own ? PL.veh : "" };
     const P = { strat: c.planStrat || "mix" }, pad = (v) => String(v).padStart(2, "0"), hrs = F.hours, SL = (F.slot_min || 60) / 60, tm = (t) => pad(t.getHours()) + ":" + pad(t.getMinutes());
-    const soc = d.soc != null ? d.soc : this._wbSnap().soc != null ? this._wbSnap().soc : 40, ph = c.ph === 1 ? 1 : 3, pmax = Math.round(c.maxA * 0.23 * ph * 10) / 10;
-    const R = this._wbPlanCalc(hrs, { strat: P.strat, target: eff.soc, soc, cap: c.cap, until: eff.time, pmax, minkw: Math.max(1.4, c.startW / 1000), sh: SL, rank: this._tb().connected && c.planSrc !== "sensor" && this._tb().res === "lvl" ? "level" : "price" });
+    const soc = PL.soc != null ? PL.soc : null, pmax = PL.pmax != null ? PL.pmax : Math.round(c.maxA * 0.23 * (c.ph === "1" ? 1 : 3) * 10) / 10;
+    const dl0 = (() => { const [hh, mm] = String(eff.time).split(":").map(Number), t = new Date(); t.setHours(hh || 0, mm || 0, 0, 0); if (t <= new Date()) t.setDate(t.getDate() + 1); return t; })();
+    const R = PL.ok ? { sel: Object.fromEntries(Object.entries(PL.sel || {}).map(([k, v]) => [Number(k), v])), left: PL.left, need: PL.need, dl: new Date(PL.deadline), plan: PL.plan, imm: PL.imm } : { sel: {}, left: 0, need: 0, dl: dl0, plan: { kwh: 0, pv: 0, cost: 0 }, imm: { kwh: 0, pv: 0, cost: 0 } };
     const shown = hrs.map((h, i) => ({ h, i, t: new Date(h.t) })).filter((x) => x.t.getTime() + SL * 36e5 > Date.now()).slice(0, Math.round(30 / SL)), n = shown.length;
     const W = 640, Hh = 240, pl = 36, pr = 40, pb = 24, pt = 8, bw = (W - pl - pr) / n, bar = Math.min(bw * (SL < 1 ? 0.8 : 0.7), 18);
     const mxP = Math.max(pmax, ...shown.map((x) => x.h.pv)), stepP = enStep(mxP), topP = Math.ceil(mxP / stepP) * stepP, mxC = Math.max(...shown.map((x) => x.h.price), 1), topC = Math.ceil(mxC / 10) * 10, minC = Math.min(0, ...shown.map((x) => x.h.price));
@@ -8409,14 +8458,15 @@ class FensterHeizungPanel extends HTMLElement {
     const chip = (k, t) => `<button class="gsch ${P.strat === k ? "sel" : ""}" data-act="wbplan" data-k="${k}" aria-pressed="${P.strat === k}">${t}</button>`;
     const tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
     const sh = R.plan.kwh > 0 ? R.plan.pv / R.plan.kwh * 100 : 0, sav = Math.max(0, R.imm.cost - R.plan.cost), STR = { mix: "Sonne zuerst, dann günstig: wählt die Stunden mit den niedrigsten effektiven Kosten aus PV-Anteil und Preis.", sun: "Nur Sonne: lädt nur in Stunden mit genug PV-Überschuss. Reicht das nicht, fehlt am Ende Energie.", price: "Günstigster Preis: wählt die Stunden mit dem niedrigsten Strompreis, egal ob die Sonne scheint." };
-    const FS = F.fs || {}, pvs = c.pvSrc === "sensor" ? "sensor" : "forecast", pvChip = (k, t) => `<button class="gsch ${pvs === k ? "sel" : ""}" data-act="wbpv" data-k="${k}" aria-pressed="${pvs === k}" ${adm ? "" : "disabled"}>${t}</button>`;
+    const FS = F.fs || {}, pvs = ["auto", "m16", "forecast", "sensor"].includes(c.pvSrc) ? c.pvSrc : "auto", pvChip = (k, t) => `<button class="gsch ${pvs === k ? "sel" : ""}" data-act="wbpv" data-k="${k}" aria-pressed="${pvs === k}" ${adm ? "" : "disabled"}>${t}</button>`;
     const TB = this._tb(), tbOn = !!TB.connected, src = c.planSrc === "sensor" || !tbOn ? "sensor" : "tibber", srcChip = (k, t) => `<button class="gsch ${src === k ? "sel" : ""}" data-act="wbsrc" data-k="${k}" aria-pressed="${src === k}" ${adm && (k === "sensor" || tbOn) ? "" : "disabled"}>${t}</button>`;
     return `<div class="card"><h2>${ic("sun", 18)}Ladeplanung nach Preis und Sonne</h2>
       <div class="vrow"><span>Planung aktiv<small class="mut" style="display:block">${c.planOn ? "Echte Steuerung: Die Wallbox lädt nur in den geplanten Fenstern und wird dazwischen pausiert." : "Aus: Der Plan wird nur angezeigt, die Wallbox lädt nicht danach."}</small></span><button class="sw ${c.planOn ? "on" : ""}" data-act="wbsw" data-k="planOn" aria-pressed="${!!c.planOn}" aria-label="Planung aktiv" ${adm ? "" : "disabled"}></button></div>
       ${c.planOn ? (() => { const nowI = hrs.findIndex((h) => { const t = new Date(h.t); return t <= new Date() && t.getTime() + SL * 36e5 > Date.now(); }), run = nowI >= 0 && R.sel[nowI] != null, nxt = Object.keys(R.sel).map(Number).filter((i) => i > nowI).sort((a, b) => a - b)[0], fin = R.need <= 0.05;
         return `<div class="otr"><span class="oav" style="width:36px;height:36px;background:${run ? "#2dd4bf" : "#64748b"}">${ic(run ? "energy" : "clock", 18)}</span><div class="opi"><b>${fin ? "Ziel erreicht, es wird nicht geladen" : run ? "Lädt jetzt nach Plan" : nxt != null ? "Wartet auf das nächste Ladefenster" : "Kein Ladefenster geplant"}</b><small>${fin ? "Der Ladestand liegt schon über dem Ziel." : run ? `Bis ${hend(nowI)} Uhr, ${num(R.sel[nowI], 1)} kWh geplant.` : nxt != null ? `Nächster Start um ${hm(nxt)} Uhr.` : "Das Ziel wird mit dem Ladeplan erreicht."}</small></div></div>`; })() : ""}
       ${c.planOn && !c.enabled ? `<div class="gst on">${ic("info", 15)}Die Laderegelung ist aus. Schalte sie im Register „Laden“ ein, sonst wird nichts nach Plan geladen.</div>` : ""}
-      <div class="mut sm" style="margin:6px 0 8px">Ziel: <b>${eff.soc} %</b> bis <b>${esc(eff.time)} Uhr</b>${soc != null ? ` · jetzt ${num(soc, 0)} %` : ""} · Ladeleistung bis ${num(pmax, 1)} kW. ${eff.name ? `Abfahrt von <b>${esc(eff.name)}</b>, siehe unten.` : "Ziel und Uhrzeit stellst du unten unter „Standard-Abfahrt“ ein, pro Fahrzeug unten."}</div>
+      ${PL.ok ? "" : `<div class="gst on" style="margin:6px 0">${ic("info", 15)}<span>${PL.why === "soc" ? `Für einen Plan fehlt der Ladestand${PL.veh ? ` von <b>${esc(PL.veh)}</b>` : ""}. Wähle unter Fahrzeuge den Ladestand-Sensor. Bis dahin zeigt die Grafik nur Sonne und Preis.` : "Der Plan wird berechnet …"}</span>${PL.why === "soc" && PL.vid && adm ? ` <button class="lnk" data-act="wbrvedit" data-v="${esc(PL.vid)}">Fahrzeug einrichten</button>` : ""}</div>`}
+      <div class="mut sm" style="margin:6px 0 8px">${PL.veh ? `Fahrzeug: <b>${esc(PL.veh)}</b>${PL.cap ? ` (${num(PL.cap, 1)} kWh)` : ""} · ` : ""}Ziel: <b>${eff.soc} %</b> bis <b>${esc(eff.time)} Uhr</b>${soc != null ? ` · jetzt ${num(soc, 0)} %` : ""} · Ladeleistung bis ${num(pmax, 1)} kW. ${eff.name ? `Abfahrt von <b>${esc(eff.name)}</b>, siehe unten.` : "Ziel und Uhrzeit stellst du unten unter „Standard-Abfahrt“ ein, pro Fahrzeug unten."}</div>
       ${(() => { const wd = R.dl.getDay(), bad = (eff.days === "wk" && (wd === 0 || wd === 6)) || (eff.days === "we" && wd > 0 && wd < 6); return bad ? `<div class="gst on" style="margin:0 0 10px">${ic("info", 15)}<span>Das Ziel liegt auf ${["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"][wd]}, dafür gilt keine Abfahrt (${eff.days === "wk" ? "Mo–Fr" : "Wochenende"}). Es wird nicht nach Plan geladen, es gilt der normale Modus.</span></div>` : ""; })()}
       <div class="gschips">${chip("mix", "Sonne zuerst, dann günstig")}${chip("sun", "Nur Sonne")}${chip("price", "Günstigster Preis")}</div>
       <div class="mut sm" style="margin:2px 0 10px">${STR[P.strat]}</div>
@@ -8432,12 +8482,13 @@ class FensterHeizungPanel extends HTMLElement {
           <div class="vrow"><span>Abfahrt</span><span class="tin">${this._tIn(esc(dd.time), !adm, `Abfahrtszeit ${esc(x.name)}`)}<input type="hidden" data-f="wbdt" data-v="${x.id}" value="${esc(dd.time)}" aria-label="Abfahrtszeit ${esc(x.name)}" ></span></div>
           <div class="gschips">${[["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]].map(([k, t]) => `<button class="gsch ${dd.days === k ? "sel" : ""}" data-act="wbddays" data-v="${x.id}" data-k="${k}" aria-pressed="${dd.days === k}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</div>` : ""}</div>`; }).join("") : `<div class="mut sm">Lege unter „Laden“ → Fahrzeuge &amp; Karten ein Fahrzeug an, dann kannst du hier seine Abfahrtszeit einstellen.</div>`}</div>
       <div class="card"><h2>${ic("clock", 18)}Geplante Ladefenster</h2>${win.length ? `<div class="wbses">${win.map((w) => { const x = wsum(w), d0 = new Date(hrs[w.start].t), tom = d0.toDateString() !== new Date().toDateString(); return `<div class="wbse"><div><b>${hm(w.start)} – ${hend(w.end - 1)}</b><span class="mut sm">${tom ? "morgen" : "heute"} · ${SL < 1 ? num((w.end - w.start) * SL * 60, 0) + " Min." : (w.end - w.start) + " " + (w.end - w.start === 1 ? "Stunde" : "Stunden")}</span></div><div class="wbsb"><i style="width:${x.s}%"></i></div><div class="wbsv"><b>${num(w.kwh, 1)} kWh</b><span class="mut sm">${num(x.s, 0)} % Sonne · ${num(x.c, 2)} €</span></div></div>`; }).join("")}</div>` : `<div class="mut sm">Es ist keine Ladung nötig, das Ziel ist schon erreicht.</div>`}
-      <div class="mut sm" style="margin:10px 0 0">Quellen: Preis ${src === "tibber" ? "Tibber" + (TB.home ? " · " + esc(TB.home) : "") : esc(F.price_src || "–")} · PV-Prognose ${pvs === "forecast" ? "Forecast.Solar" : esc(F.pv_src || "–")}. Die Vorhersage ändert sich im Laufe des Tages, der Plan wird alle paar Minuten neu berechnet.</div></div>
+      <div class="mut sm" style="margin:10px 0 0">Quellen: Preis ${src === "tibber" ? "Tibber" + (TB.home ? " · " + esc(TB.home) : "") : esc(F.price_src || "–")} · PV-Prognose ${esc(F.pv_src || "–")}. Die Vorhersage ändert sich im Laufe des Tages, der Plan wird alle paar Minuten neu berechnet.</div></div>
       <div class="card"><h2>${ic("tools", 18)}Quellen der Vorhersage</h2>
         <div class="lsec">${ic("energy", 15)}Strompreis</div><div class="gschips">${srcChip("tibber", "Tibber")}${srcChip("sensor", "Preis-Sensor (Modul 1)")}</div>
         ${tbOn ? `<div class="mut sm" style="margin:0 0 10px">Tibber · ${esc(TB.home || "Zuhause")} · ${({ h: "Stundenmittel", q: "Viertelstunden", lvl: "Preisstufen" })[TB.res || "h"]}. Die Auflösung stellst du unter Einstellungen → Integrationen → Tibber ein.</div>` : `<div class="mut sm" style="margin:0 0 10px">Tibber ist nicht verbunden. Du richtest es unter Einstellungen → Integrationen ein.</div>`}
-        <div class="lsec">${ic("sun", 15)}PV-Prognose</div><div class="gschips">${pvChip("forecast", "Forecast.Solar")}${pvChip("sensor", "Eigener Sensor")}</div>
-        ${pvs === "forecast" ? (FS.found ? `<div class="otr"><span class="oav" style="width:36px;height:36px;background:#f59e0b">${ic("sun", 18)}</span><div class="opi"><b>Forecast.Solar erkannt</b><small>${(FS.sites || []).map((x) => esc(x.name) + " " + num(x.kwp, 1) + " kWp").join(" · ")} · heute ${num(FS.today, 1)} kWh · morgen ${num(FS.tomorrow, 1)} kWh</small></div></div>` : `<div class="gst on">${ic("info", 15)}Forecast.Solar wurde in Home Assistant nicht gefunden. Richte es unter Einstellungen → Geräte &amp; Dienste → Integration hinzufügen ein. Mehrere Dachflächen werden addiert.</div>`) : `<div class="mut sm" style="margin:0 0 6px">Der eigene Prognose-Sensor wird in den Einstellungen von Modul 3 gewählt.</div>`}
+        <div class="lsec">${ic("sun", 15)}PV-Prognose</div><div class="gschips">${pvChip("auto", "Automatisch")}${pvChip("m16", "Modul 16")}${pvChip("forecast", "Forecast.Solar")}${pvChip("sensor", "Eigener Sensor")}</div>
+        <div class="mut sm" style="margin:0 0 6px">${({ auto: "Nimmt die Prognose aus Modul 16 (Solar-Prognose), wenn das Modul an ist – sonst Forecast.Solar direkt.", m16: "Nur die Prognose aus Modul 16 – gleiche Zahlen wie dort, mit deren Korrektur.", forecast: "Fragt Forecast.Solar direkt ab.", sensor: "Ein eigener Prognose-Sensor (Attribut wh_period)." })[pvs]}</div>
+        ${FS.m16 ? (FS.found ? `<div class="otr"><span class="oav" style="width:36px;height:36px;background:#f59e0b">${ic("sun", 18)}</span><div class="opi"><b>Modul 16 · Solar-Prognose</b><small>${(FS.sites || []).map((x) => esc(x.name)).join(" · ")}${(FS.sites || []).length ? " · " : ""}heute ${num(FS.today, 1)} kWh · morgen ${num(FS.tomorrow, 1)} kWh${FS.corr ? ` · Korrektur ×${num(FS.corr, 2)}` : ""}</small></div></div>` : `<div class="gst on">${ic("info", 15)}Modul 16 liefert gerade keine Prognose. Schalte Modul 16 ein oder wähle „Automatisch“.</div>`) : pvs !== "sensor" ? (FS.found ? `<div class="otr"><span class="oav" style="width:36px;height:36px;background:#f59e0b">${ic("sun", 18)}</span><div class="opi"><b>Forecast.Solar erkannt</b><small>${(FS.sites || []).map((x) => esc(x.name) + " " + num(x.kwp, 1) + " kWp").join(" · ")} · heute ${num(FS.today, 1)} kWh · morgen ${num(FS.tomorrow, 1)} kWh</small></div></div>` : `<div class="gst on">${ic("info", 15)}Forecast.Solar wurde in Home Assistant nicht gefunden. Richte es unter Einstellungen → Geräte &amp; Dienste → Integration hinzufügen ein. Mehrere Dachflächen werden addiert.</div>`) : `<div class="mut sm" style="margin:0 0 6px">Der eigene Prognose-Sensor wird in den Einstellungen von Modul 3 gewählt.</div>`}
         <div class="vrow"><span>Grundverbrauch des Hauses<small class="mut" style="display:block">Wird von der Prognose abgezogen: Überschuss = Erzeugung minus Hausverbrauch.</small></span><div class="step" style="flex:none"><button data-act="wbstep" data-k="baseW" data-s="-100" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${num(c.baseW / 1000, 1)} kW</b><button data-act="wbstep" data-k="baseW" data-s="100" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>
         <div class="mut sm">Forecast.Solar liefert die Werte in Home Assistant, ein Abruf pro Stunde genügt. Die kostenlose Stufe hat ein Limit von 12 Abrufen pro Stunde, das reicht für diese Planung.</div></div>`;
   }
@@ -8512,11 +8563,231 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "wbnav") { const d = Number(k); if (S.per === "m") { let m = S.m + d, y = S.y; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } S.m = m; S.y = y; } else S.y += d; }
     this._render();
   }
+  /* Fahrzeuge und Karten (nach dem Vorbild von evcc): Das Fahrzeug wird an der Karte erkannt, die an der Wallbox angelegt wird. */
+  _rfCard(bare) {
+    const sn = this._wbSnap(), c = sn.cfg, adm = this._admin(), cards = (sn.info && sn.info.cards) || [], who = sn.who || null;
+    const nm = (i) => (cards.find((x) => x.i === i) || {}).n || `Karte ${i}`;
+    const MODES = [["off", "Aus"], ["pv", "Sonne"], ["minpv", "Sonne + Netz"], ["now", "Voll"]], ML = Object.fromEntries(MODES);
+    const mode = (id, cur) => `<div class="gschips" style="margin:6px 0">${MODES.map(([k, l]) => `<button class="gsch ${cur === k ? "sel" : ""}" data-act="wbrmode" data-v="${id}" data-k="${k}" aria-pressed="${cur === k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}</div>`;
+    const lim = (id, val) => `<div class="vrow"><span>Ladelimit</span><div class="step" style="flex:none"><button data-act="wbrlim" data-v="${id}" data-s="-5" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${val} %</b><button data-act="wbrlim" data-v="${id}" data-s="5" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>`;
+    const used = new Set(c.vehicles.flatMap((x) => x.ids));
+    const owner = (i) => c.vehicles.find((x) => x.ids.includes(i)), rfid = !this._wbHa(c), socs = sn.socs || {};
+    const assign = `<div class="rfa"><div class="lsec">${ic("shield", 15)}Karten zuordnen</div><div class="mut sm" style="margin:2px 0 6px">Pro Fahrzeug sind beliebig viele Karten möglich. Jede Karte gehört aber nur zu einem Fahrzeug.</div>
+
+      ${cards.length ? cards.map((k) => { const o = owner(k.i), act = who && who.card === k.i; return `<div class="rfc"><div class="rfn"><b>${esc(k.n)}</b>${act ? `<span class="ost home">Aktiv</span>` : ""}<small class="mut">Karte ${k.i} · ${num(k.kwh, 0)} kWh geladen · ${o ? "gehört zu " + esc(o.name) : "keinem Fahrzeug zugeordnet (Gast)"}</small></div>
+        ${c.vehicles.length ? `<div class="gschips" style="margin:4px 0 0">${c.vehicles.map((x) => `<button class="gsch ${o && o.id === x.id ? "sel" : ""}" data-act="wbrassign" data-v="${x.id}" data-k="${k.i}" aria-pressed="${!!(o && o.id === x.id)}" ${adm ? "" : "disabled"}>${esc(x.name)}</button>`).join("")}</div>` : `<div class="mut sm">Lege zuerst ein Fahrzeug an.</div>`}</div>`; }).join("") : `<div class="mut sm">Es wurden noch keine Karten von der Wallbox gelesen. Lege sie in der go-e-App an (Einstellungen → Zugang → RFID-Karten).</div>`}</div>`;
+    const veh = c.vehicles.map((x) => `<div class="rfv"><div class="oper" style="padding:0"><span class="rfpic">${this._evThumb(x)}</span><div class="opi"><b>${esc(x.name)}</b><small>${this._evVehLine(x, socs[x.id])}</small></div>${adm ? `<button class="btn2" data-act="wbrvedit" data-v="${x.id}" style="flex:none">${ic("pencil", 15)} Aussehen &amp; Sensoren</button>` : ""}</div>
+      ${rfid ? `<div class="mut sm" style="margin-top:8px">${x.ids.length ? "Erkannt an: " + x.ids.map((i) => esc(nm(i))).join(", ") : "Noch keine Karte zugeordnet"}</div>
+      <div class="mut sm" style="margin-top:8px">Kennungen (Karten aus der Wallbox)</div>
+      <div class="gschips" style="margin:6px 0">${x.ids.map((i) => `<button class="gsch sel" data-act="wbrrm" data-v="${x.id}" data-k="${i}" aria-label="${esc(nm(i))} entfernen" ${adm ? "" : "disabled"}>${esc(nm(i))} ${ic("close", 12)}</button>`).join("")}</div>
+      ${cards.some((k) => !used.has(k.i)) ? `<div class="mut sm" style="margin-top:4px">Freie Karten antippen, um sie diesem Fahrzeug zuzuordnen</div><div class="gschips" style="margin:6px 0">${cards.filter((k) => !used.has(k.i)).map((k) => `<button class="gsch" data-act="wbrcadd" data-v="${x.id}" data-k="${k.i}" aria-label="${esc(k.n)} zuordnen" ${adm ? "" : "disabled"}>${ic("plus", 12)} ${esc(k.n)}</button>`).join("")}</div>` : (cards.length ? `<div class="mut sm" style="margin-top:4px">Alle Karten der Wallbox sind zugeordnet.</div>` : `<div class="mut sm" style="margin-top:4px">Es sind noch keine Karten in der go-e-App angelegt.</div>`)}` : ""}
+      <div class="mut sm" style="margin-top:8px">${rfid ? "Modus, sobald das Fahrzeug erkannt wird" : "Modus für dieses Fahrzeug"}</div>${mode(x.id, x.mode)}${lim(x.id, x.limit)}</div>`).join("");
+    const dv = `<div class="rfa"><div class="lsec">${ic("car", 15)}${rfid ? "Ohne Karte gilt" : "Fahrzeug an dieser Wallbox"}</div><div class="mut sm" style="margin:2px 0 6px">${rfid ? "Wird keine Karte angelegt, gilt dieses Fahrzeug (Ladestand, Modus, Abfahrt). „Keines“: Es gilt der Modus oben." : "Diese Wallbox meldet keine Karten. Wähle, welches Fahrzeug hier lädt – sein Ladestand, Modus und seine Abfahrt gelten."}</div>
+      <div class="gschips">${[["", rfid ? "Keines" : "Keines (Modus oben)"], ...c.vehicles.map((x) => [x.id, x.name])].map(([k, t]) => `<button class="gsch ${(c.defVeh || "") === k ? "sel" : ""}" data-act="wbrvdef" data-v="${k}" aria-pressed="${(c.defVeh || "") === k}" ${adm ? "" : "disabled"}>${esc(t)}</button>`).join("")}</div></div>`;
+    const st = !sn.ok ? ["Wallbox nicht erreichbar", sn.error || "keine Antwort"]
+      : who && who.kind === "vehicle" && who.auto ? [`Es gilt: ${who.name}`, `${rfid ? "Keine Karte angelegt, es gilt das Fahrzeug ohne Karte" : "Fest zugeordnet"}. Modus „${ML[who.mode]}“, Ladelimit ${who.limit} %.`]
+      : !who ? [rfid ? "Keine Kennung erkannt" : "Kein Fahrzeug zugeordnet", c.lock ? "Strom & Wärme verändert nichts, bis eine Karte angelegt wird." : "Es gilt der Modus der Laderegelung oben."]
+      : who.kind === "vehicle" ? [`Erkannt: ${who.name} (Karte „${nm(who.card)}“)`, `Die Regelung arbeitet im Modus „${ML[who.mode]}“ mit Ladelimit ${who.limit} %.`]
+      : [`Erkannt: Gastfahrzeug (Karte „${nm(who.card)}“)`, `Die Karte ist keinem Fahrzeug zugeordnet. Es gilt der Modus „${ML[who.mode]}“.`];
+    return `${bare ? "<div>" : `<div class="card ocard"><h2>${ic("car", 18)}Fahrzeuge &amp; Karten</h2>`}
+      <div class="mut sm" style="margin-bottom:8px">${rfid ? `Jedes Fahrzeug hat eigene Sensoren und ein eigenes Aussehen. Wie bei evcc wird das Fahrzeug an der Karte erkannt, die an der Wallbox angelegt wird. Als Kennung dient der Kartenname aus der go-e-App. Eine Karte gehört zu genau einem Fahrzeug, ein Fahrzeug kann mehrere Karten haben.` : "Jedes Fahrzeug hat eigene Sensoren, eine eigene Akkugröße und ein eigenes Aussehen. Diese Wallbox meldet keine Karten: Unten wählst du, welches Fahrzeug hier lädt."}</div>
+      <div class="gst" style="margin:0 0 10px">${ic(who ? "check" : "info", 15)}<span><b>${esc(st[0])}</b><br>${esc(st[1])}</span></div>
+      ${rfid ? assign : ""}
+      ${veh}
+      ${c.vehicles.length ? dv : ""}
+      ${adm && c.vehicles.length < 6 ? `<button class="lnk" data-act="wbrvnew">${ic("plus", 16)}Fahrzeug hinzufügen</button>` : ""}
+      ${rfid ? `<div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#64748b">${ic("user", 20)}</span><div class="opi"><b>Gastfahrzeug</b><small>Unbekannte Karte</small></div></div>${mode("guest", c.guest.mode)}${lim("guest", c.guest.limit)}</div>` : ""}
+      ${rfid ? `<div class="vrow"><span>Nur mit erkannter Karte regeln<small class="mut" style="display:block">Ohne angelegte Karte verändert Strom &amp; Wärme nichts an der Wallbox. Die eigentliche Sperre kommt von der Kartenpflicht in der go-e-App.</small></span><button class="sw ${c.lock ? "on" : ""}" data-act="wbrlock" aria-pressed="${c.lock}" aria-label="Nur mit erkannter Karte regeln" ${adm ? "" : "disabled"}></button></div>` : ""}
+      <div class="vrow"><span>Nach dem Abstecken zurücksetzen<small class="mut" style="display:block">Die Wallbox wird auf „neutral“ gestellt und die Erkennung vergessen. Sie gilt nur für eine Ladung.</small></span><button class="sw ${c.reset ? "on" : ""}" data-act="wbrreset" aria-pressed="${c.reset}" aria-label="Nach dem Abstecken zurücksetzen" ${adm ? "" : "disabled"}></button></div></div>`;
+  }
+  _rfAct(a, b) {
+    const c = this._wb(), k = b.dataset.k, id = b.dataset.v;
+    const upd = (fn) => { if (id === "guest") this._wbSave({ guest: fn({ ...c.guest }) }); else this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? fn({ ...x }) : x)) }); };
+    if (a === "wbrlock") this._wbSave({ lock: !c.lock });
+    else if (a === "wbrreset") this._wbSave({ reset: !c.reset });
+    else if (a === "wbrmode") upd((x) => ({ ...x, mode: k }));
+    else if (a === "wbrlim") upd((x) => ({ ...x, limit: Math.max(50, Math.min(100, x.limit + Number(b.dataset.s))) }));
+    else if (a === "wbrrm") upd((x) => ({ ...x, ids: x.ids.filter((i) => i !== Number(k)) }));
+    else if (a === "wbrcadd" || a === "wbrassign") { const n = Number(k), has = (c.vehicles.find((x) => x.id === id) || { ids: [] }).ids.includes(n); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? { ...x, ids: has ? x.ids.filter((i) => i !== n) : [...x.ids, n] } : { ...x, ids: x.ids.filter((i) => i !== n) })) }, true); }
+
+    else if (a === "wbrvedit") { this._modal = { type: "wbveh", id, back: this._modal && this._modal.type === "evset" ? "evset" : "" }; this._renderModal(); return; }
+    else if (a === "wbrvdone") { const bk = (this._modal || {}).back; this._pkId = null; this._modal = bk ? { type: bk } : null; this._renderModal(); }
+    else if (a === "wbrvdef") this._wbSave({ defVeh: id || "" }, true);
+    else if (a === "wbrvbrand") upd((x) => ({ ...x, brand: x.brand === k ? "" : k }));
+    else if (a === "wbrvbody") upd((x) => ({ ...x, body: k }));
+    else if (a === "wbrvcol") upd((x) => ({ ...x, color: k }));
+    else if (a === "wbrvdel2") { this._wbSave({ vehicles: c.vehicles.filter((x) => x.id !== id), ...(c.defVeh === id ? { defVeh: "" } : {}) }, true); const bk = (this._modal || {}).back; this._modal = bk ? { type: bk } : null; this._renderModal(); }
+    else if (a === "wbrvnew") { const nid = "v" + Date.now().toString(36), n = c.vehicles.length + 1; this._wbSave({ vehicles: [...c.vehicles, { id: nid, name: "Fahrzeug " + n, ids: [], mode: "pv", limit: 80, body: "limousine", color: "blue", cap: 0, ent: { soc: "", odo: "", range: "" } }], ...(!c.vehicles.length ? { defVeh: nid } : {}) }, true); this._modal = { type: "wbveh", id: nid, back: this._modal && this._modal.type === "evset" ? "evset" : "" }; this._renderModal(); return; }
+    else if (a === "wbrvadd") { const n = c.vehicles.length + 1; this._wbSave({ vehicles: [...c.vehicles, { id: "v" + Date.now().toString(36), name: "Fahrzeug " + n, ids: [], mode: "pv", limit: 80 }] }, true); }
+    else if (a === "wbrvdel") this._wbSave({ vehicles: c.vehicles.filter((x) => x.id !== id) }, true);
+    if (this._modal && this._modal.type === "wbveh") this._renderModal();
+    this._render();
+  }
+  /* Elektroauto & Wallbox (Beta) */
+  _evState() { const s = this._mdState(); return s.ev || (s.ev = { brand: "", model: "", body: "limousine", color: "blue", ent: { soc: "", odo: "", range: "", plug: "", power: "", charging: "" } }); }
+  _evNum(eid) { const st = eid && this._hass.states[eid]; if (!st) return null; const v = parseFloat(String(st.state).replace(",", ".")); return isFinite(v) ? (st.attributes.unit_of_measurement === "kW" ? v * 1000 : v) : null; }
+  /* v0.6: jedes Fahrzeug hat eigene Sensoren und ein eigenes Aussehen. Es gilt das an der Karte erkannte Fahrzeug,
+     sonst das Fahrzeug ohne Karte, sonst das einzige. Stecker und Ladeleistung kommen von der Wallbox. */
+  _evVeh() { const sn = this._wbSnap(), vs = sn.cfg.vehicles || []; return vs.find((x) => x.id === sn.veh) || vs.find((x) => x.id === sn.cfg.defVeh) || (vs.length === 1 ? vs[0] : null) || vs[0] || null; }
+  _evLook(v) { v = v === undefined ? this._evVeh() : v; const L = this._evState(); return v ? { brand: v.brand || "", model: v.model || "", body: v.body || "limousine", color: v.color || "blue", name: v.name } : { brand: L.brand, model: L.model, body: L.body, color: L.color, name: "" }; }
+  _evTitle(v) { const L = this._evLook(v); return v || (v === undefined && this._evVeh()) ? (L.name || "Fahrzeug") : ([L.brand === "Andere" ? "" : L.brand, L.model].filter(Boolean).join(" ") || "Fahrzeug & Wallbox"); }
+  _evVehLine(x, soc) { const st = this._hass.states, E = x.ent || {}, ok = (e) => e && st[e]; return [soc != null ? `${num(soc, 0)} %` : E.soc ? (ok(E.soc) ? "Ladestand ohne Wert" : "Ladestand-Sensor fehlt") : "kein Ladestand-Sensor", x.cap ? `Akku ${num(x.cap, 1)} kWh` : "", E.odo && ok(E.odo) ? `${num(this._evNum(E.odo), 0)} km` : ""].filter(Boolean).map(esc).join(" · "); }
+  _evThumb(x, w = 96) { return `<svg viewBox="270 92 430 170" width="${w}" height="${Math.round(w * 0.4)}" aria-hidden="true">${this._evCar(this._evLook(x), "t" + x.id)}</svg>`; }
+  /* Auto allein (für Fahrzeugliste und Bearbeiten): gleiche Formen und Farben wie die Szene */
+  _evCar(L, sfx) {
+    const H = EV_SHAPES[L.body] || EV_SHAPES.limousine, C = EV_COLORS[L.color] || EV_COLORS.blue, [w1, w2] = H.wh, u = "evc" + String(sfx).replace(/[^a-z0-9]/gi, "");
+    const wh = (cx) => `<circle cx="${cx}" cy="217" r="41" fill="#07090d"/><circle cx="${cx}" cy="217" r="33" fill="#0b0d11"/><circle cx="${cx}" cy="217" r="23" fill="url(#${u}r)"/><circle cx="${cx}" cy="217" r="17" fill="#161a21"/><circle cx="${cx}" cy="217" r="6" fill="#2b313b"/>`;
+    return `<defs><linearGradient id="${u}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C[1]}"/><stop offset=".45" stop-color="${C[2]}"/><stop offset="1" stop-color="${C[3]}"/></linearGradient><linearGradient id="${u}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e5e9ef"/><stop offset="1" stop-color="#9aa3b1"/></linearGradient></defs>
+      <ellipse cx="${(H.rear + H.front) / 2}" cy="252" rx="${(H.front - H.rear) / 1.9}" ry="7" fill="#000" opacity=".35"/><path d="${H.body}" fill="url(#${u}p)" stroke="${C[4]}" stroke-width="1.6"/><path d="${H.glass}" fill="#14202c" stroke="#05070a" stroke-width="2"/>
+      <path d="M${H.front - 34} ${H.ly - 2} C${H.front - 18} ${H.ly - 2} ${H.front - 6} ${H.ly + 2} ${H.front} ${H.ly + 8} L${H.front} ${H.ly + 13} C${H.front - 10} ${H.ly + 8} ${H.front - 22} ${H.ly + 6} ${H.front - 34} ${H.ly + 6} Z" fill="#f8fbff"/>${wh(w1)}${wh(w2)}`;
+  }
+  _evData() {
+    const v = this._evVeh(), L = this._evState().ent, E = { ...L, ...(v ? { soc: (v.ent || {}).soc, odo: (v.ent || {}).odo, range: (v.ent || {}).range } : {}) }, st = this._hass.states, S = (e) => (e && st[e] ? String(st[e].state).toLowerCase() : "");
+    const sn = this._wbSnap(), wb = this._wbOn() && sn.ok ? sn.info : null;
+    const power = E.power ? this._evNum(E.power) : wb && wb.power != null ? wb.power : null, soc = this._evNum(E.soc), odo = this._evNum(E.odo), range = this._evNum(E.range);
+    if (wb && !E.plug && !E.charging && wb.car != null) return { soc, odo, range, power, charging: wb.car === 2, plugged: [2, 3, 4].includes(wb.car), any: true, veh: v };
+    const ON = /^(on|true|yes|connected|plugged|plugged_in|ev_connected|vehicle_connected|charging|ready|waiting|complete|finished|preparing|suspended)/, OFF = /^(off|false|no|disconnected|unplugged|not_connected|available|unavailable|unknown|none)/;
+    const chg = E.charging ? ON.test(S(E.charging)) && !OFF.test(S(E.charging)) : power != null && power >= 100;
+    const plug = E.plug ? ON.test(S(E.plug)) && !OFF.test(S(E.plug)) : chg;
+    return { soc, odo, range, power, charging: plug && chg, plugged: plug || chg, any: Object.values(E).some(Boolean) || !!v || this._wbOn(), veh: v };
+  }
+  _evScene(d) {
+    const V = this._evLook(d.veh), H = EV_SHAPES[V.body] || EV_SHAPES.limousine, C = EV_COLORS[V.color] || EV_COLORS.blue, [px, py] = H.port, [w1, w2] = H.wh;
+    const led = d.charging ? "#22e06b" : d.plugged ? "#ffa51f" : "#9aa5b1", cab = `M112 207 C108 272 196 270 236 248 C${px - 38} ${py + 49} ${px - 14} ${py + 19} ${px} ${py}`;
+    const wheel = (cx) => `<g><ellipse cx="${cx}" cy="250" rx="30" ry="3" fill="#000" opacity=".5"/><circle cx="${cx}" cy="217" r="33" fill="#0b0d11"/><circle cx="${cx}" cy="217" r="33" fill="none" stroke="#1d222b" stroke-width="3"/><circle cx="${cx}" cy="217" r="27" fill="none" stroke="#252b36" stroke-width="1.5"/>
+        <circle cx="${cx}" cy="217" r="23" fill="url(#evrim)"/><circle cx="${cx}" cy="217" r="23" fill="none" stroke="#4b5563" stroke-width="1.2"/><circle cx="${cx}" cy="217" r="19" fill="#161a21"/>
+        <circle cx="${cx}" cy="217" r="17" fill="none" stroke="#9aa3b1" stroke-width="1" opacity=".5"/><path d="M${cx - 15} 212 A16 16 0 0 1 ${cx - 4} 202" stroke="#d7141f" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"/>
+        <g stroke="url(#evrim)" stroke-width="3" stroke-linecap="round">${Array.from({ length: 10 }, (_, k) => k * 36).map((ang) => `<line x1="${cx + 6 * Math.sin(ang * Math.PI / 180)}" y1="${217 - 6 * Math.cos(ang * Math.PI / 180)}" x2="${cx + 20 * Math.sin((ang + 8) * Math.PI / 180)}" y2="${217 - 20 * Math.cos((ang + 8) * Math.PI / 180)}"/>`).join("")}</g>
+        <circle cx="${cx}" cy="217" r="7" fill="#2b313b"/><circle cx="${cx}" cy="217" r="3.2" fill="#b4bcc8"/><path d="M${cx - 24} 205 A26 26 0 0 1 ${cx + 6} 192" stroke="#fff" stroke-width="1.5" fill="none" opacity=".25"/></g>`;
+    return `<svg class="evsvg" viewBox="0 0 760 290" role="img" aria-label="${d.charging ? "Fahrzeug lädt" : d.plugged ? "Ladekabel angesteckt" : "Ladekabel nicht angesteckt"}">
+      <defs>
+        <linearGradient id="evsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa7e6"/><stop offset=".62" stop-color="#bfe0f7"/><stop offset="1" stop-color="#eaf5fb"/></linearGradient>
+        <radialGradient id="evsun" cx=".86" cy=".16" r=".45"><stop offset="0" stop-color="#fff7d1" stop-opacity=".95"/><stop offset=".35" stop-color="#fff2b0" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <linearGradient id="evpaint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C[1]}"/><stop offset=".45" stop-color="${C[2]}"/><stop offset="1" stop-color="${C[3]}"/></linearGradient>
+        <linearGradient id="evglass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b3e52"/><stop offset=".5" stop-color="#16222f"/><stop offset="1" stop-color="#0a1018"/></linearGradient>
+        <linearGradient id="evrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e5e9ef"/><stop offset=".5" stop-color="#9aa3b1"/><stop offset="1" stop-color="#d7dce4"/></linearGradient>
+        <linearGradient id="evwall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ece7df"/><stop offset="1" stop-color="#d6cfc4"/></linearGradient>
+        <linearGradient id="evbox" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9dde3"/></linearGradient>
+        <linearGradient id="evroad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b7280"/><stop offset="1" stop-color="#4b5563"/></linearGradient>
+        <clipPath id="evbody"><path d="${H.body}"/></clipPath><clipPath id="evgl"><path d="${H.glass}"/></clipPath><linearGradient id="evrefl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></linearGradient>
+        <filter id="evblur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
+        <filter id="evglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
+      <rect width="760" height="290" rx="16" fill="url(#evsky)"/><rect width="760" height="290" rx="16" fill="url(#evsun)"/>
+      <g opacity=".9" fill="#fff"><ellipse cx="260" cy="58" rx="46" ry="12" opacity=".85"/><ellipse cx="292" cy="50" rx="30" ry="11" opacity=".9"/><ellipse cx="520" cy="46" rx="38" ry="9" opacity=".75"/></g>
+      <g filter="url(#evblur)" opacity=".55"><ellipse cx="300" cy="244" rx="120" ry="16" fill="#6f9a74"/><ellipse cx="480" cy="246" rx="150" ry="13" fill="#5d8a66"/><ellipse cx="680" cy="244" rx="110" ry="15" fill="#7aa57f"/></g>
+      <rect y="248" width="760" height="42" fill="url(#evroad)"/><rect y="248" width="760" height="3" fill="#8b93a0"/><g stroke="#e5e7eb" stroke-width="3" opacity=".75"><path d="M250 276H330M440 276H520M630 276H710" stroke-linecap="round"/></g>
+      <rect x="20" y="30" width="170" height="218" fill="url(#evwall)"/><rect x="20" y="30" width="170" height="10" fill="#bdb5a8"/><rect x="190" y="30" width="6" height="218" fill="#a69d8f" opacity=".6"/>
+      <g stroke="#c8c0b3" stroke-width="1" opacity=".7">${[70, 110, 150, 190, 230].map((y) => `<line x1="20" y1="${y}" x2="190" y2="${y}"/>`).join("")}</g>
+      <rect x="96" y="102" width="86" height="118" rx="18" fill="#000" opacity=".22" filter="url(#evblur)"/>
+      <g><rect x="86" y="92" width="76" height="116" rx="16" fill="url(#evbox)" stroke="#aeb5bf" stroke-width="1.5"/>
+        <rect x="86" y="92" width="76" height="116" rx="16" fill="none" stroke="#fff" stroke-width="1" opacity=".9"/>
+        <rect x="96" y="102" width="56" height="26" rx="8" fill="#0d141c"/><text x="124" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="${d.charging ? "#4ade80" : "#8da0b3"}">${d.charging && d.power != null ? num(d.power / 1000, 1) + " kW" : d.plugged ? "bereit" : "frei"}</text>
+        <circle cx="124" cy="152" r="14" fill="#eef0f3" stroke="#c4cad2"/><circle cx="124" cy="152" r="11" fill="none" stroke="${led}" stroke-width="3.5"/><circle cx="124" cy="152" r="11" fill="none" stroke="${led}" stroke-width="3.5" filter="url(#evglow)" class="${d.charging ? "evpulse" : ""}" opacity=".8"/>
+        <path d="M121 146 L126 146 L123 152 L127 152 L121 160 L123 154 L119 154 Z" fill="${led}"/>
+        <rect x="108" y="190" width="32" height="14" rx="6" fill="#1a1f26"/><circle cx="124" cy="197" r="4" fill="#050709"/></g>
+      <ellipse cx="490" cy="251" rx="215" ry="9" fill="#000" opacity=".45" filter="url(#evblur)"/>
+      <g class="evcable ${d.plugged ? "on" : ""}">
+        ${d.charging ? `<path d="${cab}" fill="none" stroke="#22e06b" stroke-width="12" stroke-linecap="round" opacity=".45" filter="url(#evglow)" class="evpulse"/>` : ""}
+        <path d="${cab}" fill="none" stroke="#0b0e12" stroke-width="9" stroke-linecap="round"/><path d="${cab}" fill="none" stroke="#3a424d" stroke-width="2" stroke-linecap="round" transform="translate(-1.5 -2)"/>
+        <path d="${cab}" fill="none" stroke="${d.charging ? "#a7f3c0" : "none"}" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="5 13" class="${d.charging ? "evflow" : ""}"/>
+        <g transform="rotate(-52 ${px} ${py})"><rect x="${px - 10}" y="${py - 8}" width="24" height="16" rx="6" fill="#14181e" stroke="#2c333c"/><rect x="${px + 10}" y="${py - 5}" width="6" height="10" rx="2" fill="#0b0e12"/><rect x="${px - 8}" y="${py - 6}" width="10" height="3" rx="1.5" fill="${led}" opacity=".9"/></g></g>
+      <g>
+        <path d="${H.body}" fill="url(#evpaint)"/>
+        <g clip-path="url(#evbody)">
+          <rect x="${H.rear - 4}" y="${H.gb}" width="420" height="40" fill="url(#evrefl)"/>
+          <path d="M${H.rear} ${H.gt + 36} C420 ${H.gt + 28} 560 ${H.gt + 36} ${H.front} ${H.gt + 62}" stroke="#fff" stroke-width="3" fill="none" opacity=".38"/>
+          <path d="M${H.rear} ${H.gb + 12} C420 ${H.gb + 8} 560 ${H.gb + 10} ${H.front} ${H.gb + 24}" stroke="${C[4]}" stroke-width="2.2" fill="none" opacity=".4"/>
+          <path d="M${H.rear} ${H.gb + 14} C420 ${H.gb + 10} 560 ${H.gb + 12} ${H.front} ${H.gb + 26}" stroke="#fff" stroke-width="1" fill="none" opacity=".3"/>
+          <path d="M${H.rear - 2} 224 L700 224 L700 240 L${H.rear - 2} 240 Z" fill="#10141b"/><path d="M${H.rear - 2} 224 L700 224" stroke="#fff" stroke-width="1" opacity=".18"/>
+          <g stroke="${C[4]}" stroke-width="1.3" opacity=".65" fill="none">${H.seams.map((x, k) => `<path d="M${x} ${H.gb} C${x - 2} 190 ${x - 4} 210 ${x - 5} 224"/>`).join("")}</g>
+          ${H.handles.map(([x, y]) => `<rect x="${x}" y="${y}" width="22" height="3.4" rx="1.7" fill="#0b0e12" opacity=".55"/><rect x="${x}" y="${y - 1}" width="22" height="1.6" rx=".8" fill="#fff" opacity=".4"/>`).join("")}
+          <ellipse cx="${(H.rear + H.front) / 2}" cy="${H.gt - 6}" rx="${(H.front - H.rear) / 3.2}" ry="10" fill="#fff" opacity=".2"/></g>
+        <path d="${H.glass}" fill="url(#evglass)"/>
+        <g clip-path="url(#evgl)"><path d="M${H.gx[0] + 10} ${H.gb} L${H.gx[0] + 58} ${H.gt - 2} L${H.gx[0] + 84} ${H.gt - 2} L${H.gx[0] + 38} ${H.gb} Z" fill="#fff" opacity=".24"/><path d="M${H.pil + 24} ${H.gb} L${H.pil + 62} ${H.gt - 2} L${H.pil + 78} ${H.gt - 2} L${H.pil + 40} ${H.gb} Z" fill="#fff" opacity=".15"/><rect x="${H.gx[0]}" y="${H.gb - 12}" width="${H.gx[1] - H.gx[0]}" height="12" fill="#000" opacity=".25"/></g>
+        <path d="M${H.pil - 3} ${H.gt - 2} L${H.pil + 1} ${H.gb + 1} L${H.pil + 5} ${H.gb + 1} L${H.pil + 3} ${H.gt - 2} Z" fill="${C[3]}" stroke="#05070a" stroke-width="1"/>
+        <path d="${H.glass}" fill="none" stroke="#05070a" stroke-width="2.2" stroke-linejoin="round"/><path d="${H.glass.replace(/ Z$/, "")}" fill="none" stroke="#c9d3e3" stroke-width="1" opacity=".55" transform="translate(0 -2.6)"/>
+        <path d="M${H.mir[0]} ${H.mir[1]} L${H.mir[0] + 14} ${H.mir[1]} C${H.mir[0] + 20} ${H.mir[1]} ${H.mir[0] + 22} ${H.mir[1] + 6} ${H.mir[0] + 16} ${H.mir[1] + 9} L${H.mir[0] - 2} ${H.mir[1] + 10} Z" fill="${C[2]}" stroke="${C[4]}"/>
+        <path d="M${H.tl[0]} ${H.tl[1] - 9} L${H.tl[0] + 8} ${H.tl[1] - 11} L${H.tl[0] + 8} ${H.tl[1] + 9} L${H.tl[0]} ${H.tl[1] + 11} Z" fill="#d6192a"/><path d="M${H.tl[0]} ${H.tl[1] - 9} L${H.tl[0] + 8} ${H.tl[1] - 11} L${H.tl[0] + 8} ${H.tl[1] + 9} L${H.tl[0]} ${H.tl[1] + 11} Z" fill="#ff5a66" opacity=".55" filter="url(#evglow)"/>
+        <path d="M${H.front - 34} ${H.ly - 2} C${H.front - 18} ${H.ly - 2} ${H.front - 6} ${H.ly + 2} ${H.front} ${H.ly + 8} L${H.front} ${H.ly + 13} C${H.front - 10} ${H.ly + 8} ${H.front - 22} ${H.ly + 6} ${H.front - 34} ${H.ly + 6} Z" fill="#f8fbff"/><path d="M${H.front - 34} ${H.ly - 2} L${H.front} ${H.ly + 10} L${H.front} ${H.ly + 14} Z" fill="#fff6c8" opacity=".6" filter="url(#evglow)"/>
+        <path d="M${H.front - 6} ${H.ly + 22} L${H.front - 2} ${H.ly + 22} L${H.front - 2} ${H.ly + 40} L${H.front - 8} ${H.ly + 42} Z" fill="#0b0f16" opacity=".8"/>
+        <path d="${H.body}" fill="none" stroke="${C[4]}" stroke-width="1.6"/>
+        <circle cx="${px}" cy="${py}" r="7" fill="#0d1426" stroke="#8aa0c8" stroke-width="1.5"/><circle cx="${px}" cy="${py}" r="3.2" fill="${led}" class="${d.charging ? "evpulse" : ""}"/>
+        <circle cx="${w1}" cy="217" r="41" fill="#07090d"/><circle cx="${w1}" cy="217" r="41" fill="none" stroke="${C[4]}" stroke-width="2"/><circle cx="${w2}" cy="217" r="41" fill="#07090d"/><circle cx="${w2}" cy="217" r="41" fill="none" stroke="${C[4]}" stroke-width="2"/>
+        ${wheel(w1)}${wheel(w2)}</g>
+      <g><rect x="562" y="30" width="162" height="40" rx="20" fill="#0f172a" opacity=".82"/>
+        ${d.charging ? `<path d="M590 40 L580 52 H588 L585 62 L598 49 H590 Z" fill="#facc15"/>` : `<circle cx="588" cy="50" r="6" fill="${led}"/>`}
+        <text x="642" y="57" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">${d.soc != null ? num(d.soc, 0) + " %" : "–"}</text></g></svg>`;
+  }
+  /* Fahrzeug bearbeiten: Name, Aussehen, Akku, eigene Sensoren, „ohne Karte“ */
+  _wbVehModal() {
+    const m = this._modal, c = this._wb(), x = (c.vehicles || []).find((v) => v.id === m.id);
+    if (!x) return `<div class="ov" data-act="wbrvdone"></div><div class="sheet"><div class="mut">Fahrzeug nicht gefunden.</div><div class="foot2"><button class="btn2 pri" data-act="wbrvdone">Schließen</button></div></div>`;
+    const st = this._hass.states, ks = Object.keys(st), soc = (this._wbSnap().socs || {})[x.id], L = this._evLook(x), rfid = !this._wbHa(c);
+    const numS = ks.filter((e) => e.startsWith("sensor.") && !isNaN(parseFloat(st[e].state)));
+    const sel = (k, h) => this._wzSel(numS, (x.ent || {})[k] || "", "wbve", `data-k="${k}" data-v="${x.id}"`, "– keiner –", h);
+    const d = { soc, charging: false, plugged: false, power: null, veh: x };
+    return `<div class="ov" data-act="wbrvdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${esc(x.name)}</b><span>Fahrzeug · Modul 8</span></div><button class="ibtn" data-act="wbrvdone" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="evprev">${this._evScene(d).replace(/(id="|url\(#)ev/g, "$1evm")}</div>
+      <div class="mut sm" style="margin:8px 0 4px">Name</div><input class="otxt" type="text" maxlength="30" data-f="wbvn" data-v="${x.id}" value="${esc(x.name)}" aria-label="Name des Fahrzeugs">
+      <div class="mut sm" style="margin:8px 0 4px">Marke (nur Beschriftung)</div><div class="gschips">${EV_BRANDS.map((b) => `<button class="gsch ${L.brand === b ? "sel" : ""}" data-act="wbrvbrand" data-v="${x.id}" data-k="${esc(b)}" aria-pressed="${L.brand === b}">${esc(b)}</button>`).join("")}</div>
+      <div class="mut sm" style="margin:6px 0 4px">Modell (optional)</div><input class="otxt" type="text" maxlength="30" data-f="wbvm" data-v="${x.id}" value="${esc(x.model || "")}" placeholder="z. B. Modellname" aria-label="Modell">
+      <div class="mut sm" style="margin:8px 0 4px">Form der Zeichnung</div><div class="gschips">${Object.entries(EV_BODIES).map(([k, t]) => `<button class="gsch ${L.body === k ? "sel" : ""}" data-act="wbrvbody" data-v="${x.id}" data-k="${k}" aria-pressed="${L.body === k}">${t}</button>`).join("")}</div>
+      <div class="mut sm" style="margin:6px 0 4px">Farbe</div><div class="gschips">${Object.entries(EV_COLORS).map(([k, col]) => `<button class="evsw ${L.color === k ? "sel" : ""}" data-act="wbrvcol" data-v="${x.id}" data-k="${k}" style="--c:${col[2]};--c2:${col[1]}" aria-label="${col[0]}" aria-pressed="${L.color === k}" title="${col[0]}"></button>`).join("")}</div>
+      <div class="vrow"><span>Akkugröße<small class="mut" style="display:block">Für Ladeplan und „noch … kWh“. Leer: ${num(c.cap, 1)} kWh aus der Laderegelung.</small></span><span style="flex:none;display:flex;align-items:center;gap:6px"><input class="otxt" style="width:84px;text-align:right" type="text" inputmode="decimal" data-f="wbvc" data-v="${x.id}" value="${x.cap ? num(x.cap, 1) : ""}" placeholder="${num(c.cap, 1)}" aria-label="Akkugröße in kWh"> kWh</span></div>
+      <div class="lsec">${ic("energy", 15)}Sensoren dieses Fahrzeugs</div>
+      <div class="mut sm" style="margin:2px 0 0">Ladestand (Prozent) – für Ladelimit und Ladeplan</div>${sel("soc", /soc|batter|ladestand|akku/i)}
+      <div class="mut sm" style="margin:0">Kilometerstand (optional)</div>${sel("odo", /odo|kilometer|km|mileage|stand/i)}
+      <div class="mut sm" style="margin:0">Reichweite (optional)</div>${sel("range", /reichweite|range/i)}
+      <div class="lsec">${ic("car", 15)}${rfid ? "Erkennung" : "An dieser Wallbox"}</div>
+      <div class="vrow"><span>${rfid ? "Gilt, wenn keine Karte angelegt wird" : "Dieses Fahrzeug lädt hier"}<small class="mut" style="display:block">${rfid ? "Sonst wird das Fahrzeug an seiner Karte erkannt." : "Die Wallbox meldet keine Karten, deshalb wird das Fahrzeug fest zugeordnet."}</small></span><button class="sw ${c.defVeh === x.id ? "on" : ""}" data-act="wbrvdef" data-v="${c.defVeh === x.id ? "" : x.id}" aria-pressed="${c.defVeh === x.id}" aria-label="Fahrzeug ohne Karte"></button></div>
+      <div class="gst">${ic("info", 15)}Die Zeichnung ist allgemein gehalten, ohne Logos und nicht dem Modell nachgebaut. Marke und Modell erscheinen nur als Text.</div>
+      <div class="foot2" style="margin-top:12px"><button class="btn2 dng" data-act="wbrvdel2" data-v="${x.id}">${ic("trash", 16)} Entfernen</button><button class="btn2 pri" data-act="wbrvdone">Fertig</button></div></div>`;
+  }
+  _evPage() {
+    const adm = this._admin(), d = this._evData();
+    if (!d.any) return `${this._betaBox("Wähle in den Einstellungen die Sensoren deines Fahrzeugs und der Wallbox.")}
+      <div class="card empty">${ic("car", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Fahrzeug eingerichtet</div>
+      <div class="sm" style="max-width:460px;margin:0 auto 14px">Zeigt Ladestand, Reichweite und Kilometerstand. Die Wallbox ist abgebildet, das Ladekabel erscheint beim Anstecken und leuchtet beim Laden.</div>
+      ${adm ? `<button class="btn2 pri" data-act="mdevset" style="flex:none;padding:12px 22px">${ic("tools", 16)} Fahrzeug einrichten</button>` : "Ein Administrator kann das Modul einrichten."}</div>`;
+    const stT = d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt";
+    const tile = (ico, t, v, sub) => `<div class="luroom"><span class="mut lt"><span class="ti">${ic(ico, 15)}</span>${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
+    const bar = d.soc != null ? `<div class="gsbar" style="margin-top:6px" role="progressbar" aria-valuenow="${num(d.soc, 0)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(0, Math.min(100, d.soc))}%;background:${d.soc < 20 ? "#f87171" : "#34d399"}"></i></div>` : "";
+    const wbOn = this._wbOn(), wbTabs = wbOn ? this._wbTabs() + this._wbBar() : "";
+    if (wbOn && this._wbStT() === "plan") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbPlan(d)}`;
+    if (wbOn && this._wbStT() === "set") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbCard(d, "set")}`;
+    if (wbOn && this._wbStT() === "stat") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbStat()}`;
+    return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}
+      <div class="evtop"><div class="card evcard ${d.charging ? "chg" : d.plugged ? "plg" : ""}"><div class="evhead"><b>${ic("car", 18)}${esc(this._evTitle(d.veh))}</b><span class="gsst ${d.charging ? "on" : ""}">${stT}</span></div>${this._evScene(d)}</div>
+      <div class="lugrid">${tile("energy", "Ladestand", d.soc != null ? num(d.soc, 0) + " %" : "–", bar || "kein Sensor")}${tile("car", "Reichweite", d.range != null ? num(d.range, 0) + " km" : "–", d.range != null ? "laut Fahrzeug" : "kein Sensor")}${tile("total", "Kilometerstand", d.odo != null ? num(d.odo, 0) + " km" : "–", d.odo != null ? "gesamt" : "kein Sensor")}${tile("bolt", "Ladeleistung", d.power != null ? num(d.power / 1000, 1) + " kW" : "–", stT)}</div></div>
+      <div class="mcols">${wbOn ? this._wbxToday(d) : ""}${this._wbCard(d)}</div>`;
+  }
+  _evSetModal() {
+    const V = this._evState(), E = V.ent, st = this._hass.states, ks = Object.keys(st), vs = this._wb().vehicles || [], socs = this._wbSnap().socs || {}, wbOn = this._wbOn();
+    this._wbLoad();
+    const num_ = ks.filter((e) => e.startsWith("sensor.") && !isNaN(parseFloat(st[e].state)));
+    const pw = ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "power" || /^k?W$/.test(st[e].attributes.unit_of_measurement || "")));
+    const bin = ks.filter((e) => e.startsWith("binary_sensor.") || e.startsWith("sensor.") || e.startsWith("switch."));
+    const sel = (k, o, none, h) => this._wzSel(o, E[k], "event", `data-k="${k}"`, none || "– keiner –", h);
+    return `<div class="ov" data-act="evdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Elektroauto &amp; Wallbox</b><span>Einstellungen · Beta</span></div><button class="ibtn" data-act="evdone" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("car", 15)}Fahrzeuge</div>
+      <div class="mut sm" style="margin:2px 0 6px">Jedes Fahrzeug hat eigene Sensoren (Ladestand, Kilometer, Reichweite), eine eigene Akkugröße und ein eigenes Aussehen.</div>
+      ${vs.length ? vs.map((x) => `<div class="rfv"><div class="oper" style="padding:0"><span class="rfpic">${this._evThumb(x)}</span><div class="opi"><b>${esc(x.name)}</b><small>${this._evVehLine(x, socs[x.id])}</small></div><button class="btn2" data-act="wbrvedit" data-v="${x.id}" style="flex:none">${ic("pencil", 15)} Bearbeiten</button></div></div>`).join("") : `<div class="mut sm">Noch kein Fahrzeug angelegt.</div>`}
+      ${vs.length < 6 ? `<button class="lnk" data-act="wbrvnew">${ic("plus", 16)}Fahrzeug hinzufügen</button>` : ""}
+      <div class="lsec">${ic("bolt", 15)}Wallbox</div>
+      ${wbOn ? `<div class="gst">${ic("check", 15)}<span>${esc(this._wbName())} ist verbunden: Stecker, Ladestatus und Leistung kommen direkt von der Wallbox. Die Sensoren hier brauchst du nur, wenn du andere Werte zeigen willst.</span></div>` : ""}
+      <div class="mut sm" style="margin:2px 0 0">Ladekabel angesteckt (Sensor oder Status der Wallbox)</div>${sel("plug", bin, "", /plug|kabel|cable|connect|angesteckt|status/i)}
+      <div class="mut sm" style="margin:0">Lädt gerade (optional, sonst aus der Ladeleistung)</div>${sel("charging", bin, "", /charging|l(ä|a)dt|lade/i)}
+      <div class="mut sm" style="margin:0">Ladeleistung (Watt)</div>${sel("power", pw, "", /lade|charg|wallbox|power|leistung/i)}
+      <div class="gst">${ic("info", 15)}Das Ladekabel erscheint, sobald „angesteckt“ meldet, und verschwindet beim Abstecken. Beim Laden leuchtet es und die Ladung läuft sichtbar.</div>
+      <div class="foot2"><button class="btn2 pri" data-act="evdone">Fertig</button></div></div>`;
+  }
   /* Laderegelung der Wallbox in Modul 8 (Modus, Ladeplan, Schwellen; angelehnt an das Prinzip von evcc) */
   _wbCard(d, part) {
     this._wbLoad();
     const s = this._wbSnap(), c = s.cfg, i = s.info, w = s.want, adm = this._admin(), soc = d.soc != null ? d.soc : s.soc;
-    if (!c.ip) return `<div class="card lusoon">${ic("energy", 26)}<div><b>Laderegelung</b><span class="mut">Verbinde zuerst deine Wallbox unter Einstellungen → Integrationen.</span></div>${adm ? `<button class="btn2 pri" data-act="igopen" style="flex:none">Integrationen</button>` : ""}</div>`;
+    if (!this._wbOn()) return `<div class="card lusoon">${ic("energy", 26)}<div><b>Laderegelung</b><span class="mut">Verbinde zuerst deine Wallbox im Store: go-e direkt oder jede andere Wallbox über Home Assistant.</span></div>${adm ? `<button class="btn2 pri" data-act="igopen" style="flex:none">Integrationen</button>` : ""}</div>`;
     const modes = [["off", "Aus", "close"], ["pv", "Sonne", "sun"], ["minpv", "Sonne + Netz", "bolt"], ["now", "Voll", "energy"]];
     const wsn = s.who, wveh = wsn && wsn.kind === "vehicle" ? c.vehicles.find((x) => x.name === wsn.name) : null, em = wsn ? (wveh ? wveh.mode : wsn.kind === "guest" ? c.guest.mode : c.mode) : c.mode;
     const info = { off: "Es wird nicht geladen.", pv: "Lädt nur mit Überschuss aus der Solaranlage. Ohne Überschuss pausiert die Ladung.", minpv: "Lädt immer mit dem Mindeststrom und nutzt zusätzlich den PV-Überschuss.", now: "Lädt sofort mit dem eingestellten Höchststrom, unabhängig von der Sonne." }[em];
@@ -8527,19 +8798,20 @@ class FensterHeizungPanel extends HTMLElement {
     const hhmm = (iso) => { const t = iso ? new Date(iso) : null; return t && isFinite(t) ? t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : ""; };
     const pw = i.power != null ? wfmt(i.power) : "–", pl = s.plan || {};
     const status = !s.ok ? ["Nicht erreichbar", s.error || "keine Antwort"] : c.enabled ? [i.car_text || "–", (w.state === "pausiert" ? "Regelung pausiert" : w.state === "pv" ? "Lädt mit PV-Überschuss" : w.state === "voll" ? "Lädt mit voller Leistung" : w.state === "minpv" ? "Mindeststrom plus PV" : w.state === "wartet" ? "Wartet auf Überschuss" : w.state === "plan_wartet" ? "Wartet auf das Ladefenster" : w.state === "gesperrt" ? "Wartet auf eine Karte" : w.state === "limit" ? "Ladelimit erreicht" : w.state === "fertig" ? "Fertig geladen" : "Wallbox ist aus")] : [i.car_text || "–", "Regelung ist aus"];
-    const sec = (k, ico, t, sm, b, wn) => this._wbSec(k, ico, t, sm, b, wn), X = this._wbxParts(), nv = c.vehicles.length, nc = ((i && i.cards) || []).length, nt = Object.values(c.notify || {}).filter((v) => v === true).length;
-    const mainCard = `<div class="card ocard"><h2>${ic("energy", 18)}Wallbox · ${esc(i.name || i.type || "go-e Charger")}</h2>
+    const ha = this._wbHa(c), sec = (k, ico, t, sm, b, wn) => this._wbSec(k, ico, t, sm, b, wn), X = this._wbxParts(), nv = c.vehicles.length, nc = ((i && i.cards) || []).length, nt = Object.values(c.notify || {}).filter((v) => v === true).length;
+    const mainCard = `<div class="card ocard"><h2>${ic("energy", 18)}Wallbox · ${esc(this._wbName())}</h2>
+        ${s.ok && i.ctrl === false ? `<div class="gst on" style="margin:0 0 8px">${ic("info", 15)}<span>Für diese Wallbox ist keine Schalter-Entität gewählt. Strom &amp; Wärme zeigt nur an und regelt nicht. <button class="lnk" data-act="igwbha">Entitäten wählen</button></span></div>` : ""}
         ${sw("Laderegelung aktiv", "wbon", c.enabled, c.enabled ? "Strom &amp; Wärme steuert Start, Ladestrom und Phasen." : "Aus: Es wird nichts an der Wallbox verändert.")}
         <div class="seg3 wbm" style="grid-template-columns:repeat(4,1fr)">${modes.map(([k, l, ic_]) => `<button class="${em === k ? "sel" : ""}" data-act="wbmode" data-k="${k}" aria-pressed="${em === k}" ${adm && !c.planOn ? "" : "disabled"}>${ic(ic_, 22)}${l}</button>`).join("")}</div>
-        <div class="mut sm" style="margin:-2px 0 10px">${c.planOn ? "Die <b>Planung</b> steuert die Wallbox. Der Modus gilt wieder, wenn du sie im Register „Planung“ ausschaltest." : info + " " + (wsn ? (wveh ? `Gilt für <b>${esc(wveh.name)}</b> (Karte ${esc(String(wsn.card))}).` : "Gilt für das Gastfahrzeug.") : "Gilt, solange kein Fahrzeug an einer Karte erkannt wird.")}</div>
-        <div class="lugrid">${tile("Status", esc(status[0]), esc(status[1]))}${tile("Ladeleistung", pw, i.cur != null ? `${num(i.cur, 0)} A · ${i.phases || "–"} ${i.phases === 1 ? "Phase" : "Phasen"}` : "–")}${tile("PV-Überschuss", w.surplus_w != null ? wfmt(w.surplus_w) : "–", c.enabled ? "aus dem Netz-Sensor (Modul 3 oder 1)" : "bei aktiver Regelung")}${tile("Ladestand", soc != null ? num(soc, 0) + " %" : "–", soc != null ? `Limit ${c.limit} %` : "kein Sensor gewählt")}</div>
+        <div class="mut sm" style="margin:-2px 0 10px">${c.planOn ? "Die <b>Planung</b> steuert die Wallbox. Der Modus gilt wieder, wenn du sie im Register „Planung“ ausschaltest." : info + " " + (wsn ? (wveh ? `Gilt für <b>${esc(wveh.name)}</b> (${!wsn.auto ? "Karte " + esc(String(wsn.card)) : this._wbHa() ? "fest zugeordnet" : "ohne Karte"}).` : "Gilt für das Gastfahrzeug.") : "Gilt, solange kein Fahrzeug an einer Karte erkannt wird.")}</div>
+        <div class="lugrid">${tile("Status", esc(status[0]), esc(status[1]))}${tile("Ladeleistung", pw, i.cur != null ? `${num(i.cur, 0)} A · ${i.phases || "–"} ${i.phases === 1 ? "Phase" : "Phasen"}` : "–")}${tile("PV-Überschuss", w.surplus_w != null ? wfmt(w.surplus_w) : "–", c.enabled ? "aus dem Netz-Sensor (Haus-Werte)" : "bei aktiver Regelung")}${tile("Ladestand", soc != null ? num(soc, 0) + " %" : "–", soc != null ? `Limit ${c.limit} %` : "kein Sensor gewählt")}</div>
         ${c.enabled && w.reason ? `<div class="gst">${ic("info", 15)}${esc(w.reason)}</div>` : ""}
-        ${i.session_wh != null ? `<div class="mut sm" style="margin-top:6px">Diese Ladung: ${num(i.session_wh / 1000, 1)} kWh · gesamt ${i.total_wh != null ? num(i.total_wh / 1000, 0) + " kWh" : "–"} · Firmware ${esc(i.fw || "–")}</div>` : ""}</div>`;
+        ${i.session_wh != null ? `<div class="mut sm" style="margin-top:6px">Diese Ladung: ${num(i.session_wh / 1000, 1)} kWh · gesamt ${i.total_wh != null ? num(i.total_wh / 1000, 0) + " kWh" : "–"}${i.fw ? " · Firmware " + esc(i.fw) : ""}</div>` : ""}</div>`;
     const logCard = `<div class="card ocard"><h2>${ic("list", 18)}Letzte Entscheidungen</h2>${s.log.length ? `<div class="rev">${s.log.slice(0, this._wbLogAll ? 12 : 4).map((e) => `<div style="--c:var(--teal)"><time>${hhmm(e.t)}</time><i></i><span>${esc(e.x)}</span></div>`).join("")}${s.log.length > 4 ? `<button class="lnk" data-act="wblog" style="margin-top:6px">${this._wbLogAll ? "Weniger anzeigen" : `Alle ${Math.min(12, s.log.length)} anzeigen`}</button>` : ""}</div>` : `<div class="mut sm">Noch nichts. Hier steht, wann die Regelung die Wallbox umgestellt hat und warum.</div>`}</div>`;
     const regBody = `<div class="lsec">${ic("energy", 15)}Ladestrom</div>
-        ${stp("Mindest-Ladestrom", "minA", c.minA, "A", 1, "Darunter lädt das Auto nicht (6 bis 16 A)")}${stp("Höchster Ladestrom", "maxA", c.maxA, "A", 1)}
-        <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Phasenumschaltung</div>${chips("ph", [["auto", "Automatisch"], ["1", "1 Phase"], ["3", "3 Phasen"]], c.ph)}
-        <div class="mut sm">Automatisch: Bei wenig Sonne 1 Phase (ab ${wfmt(230 * c.minA)}), bei viel Sonne 3 Phasen (ab ${wfmt(230 * 3 * c.minA)}). Die Umschaltung erfolgt höchstens alle 10 Minuten.</div>
+        ${stp("Mindest-Ladestrom", "minA", c.minA, "A", 1, "Darunter lädt das Auto nicht (6 bis 32 A, je nach Wallbox)")}${stp("Höchster Ladestrom", "maxA", c.maxA, "A", 1)}
+        <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Phasenumschaltung</div>${this._wbHa(c) && !(c.wbx.ent || {}).phase ? `<div class="mut sm">Diese Wallbox hat keine Phasen-Entität. Gerechnet wird fest mit ${c.wbx.ph === 1 ? "1 Phase" : "3 Phasen"} (einstellbar im Store unter „Andere Wallbox“).</div>` : `${chips("ph", [["auto", "Automatisch"], ["1", "1 Phase"], ["3", "3 Phasen"]], c.ph)}
+        <div class="mut sm">Automatisch: Bei wenig Sonne 1 Phase (ab ${wfmt(230 * c.minA)}), bei viel Sonne 3 Phasen (ab ${wfmt(230 * 3 * c.minA)}). Die Umschaltung erfolgt höchstens alle 10 Minuten.</div>`}
         <div class="lsec" style="margin-top:12px">${ic("sun", 15)}Start und Stopp bei Sonne</div>
         ${stp("Starten ab Überschuss", "startW", wfmt(c.startW), "", 100)}${stp("Start nach", "onMin", c.onMin, "Min.", 1, "Der Überschuss muss so lange da sein")}${stp("Stopp nach", "offMin", c.offMin, "Min.", 1, "Verhindert ständiges Ein- und Ausschalten bei Wolken")}
         <div class="lsec" style="margin-top:12px">${ic("car", 15)}Fahrzeug</div>
@@ -8556,62 +8828,16 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="gst">${ic("clock", 15)}<span>${soc == null ? "Ohne Ladestand-Sensor ist keine Planung möglich (Fahrzeug einrichten)." : pl.need_kwh > 0 && pl.start ? `Es fehlen etwa <b>${num(pl.need_kwh, 0)} kWh</b>. Reicht die Sonne bis ${esc(c.planTime)} nicht, startet die Wallbox spätestens um <b>${hhmm(pl.start)} Uhr</b> mit Netzstrom.` : pl.need_kwh > 0 ? "Für diesen Tag ist keine Ladung geplant." : "Das Ziel ist schon erreicht."}</span></div></div>`;
     if (part === "dep") return depCard;
     if (part === "set") return `${this._wbCheck()}<div class="wsall"><span class="mut sm">Tippe auf einen Bereich, um ihn zu öffnen.</span><span><button class="lnk" data-act="wbsecall" data-k="1">Alle öffnen</button><button class="lnk" data-act="wbsecall" data-k="0">Alle schließen</button></span></div>
-      ${sec("wb", "energy", "Wallbox und Verbindung", `${esc(i.name || i.type || "go-e Charger")} · ${esc(c.ip)}${s.ok ? "" : " · nicht erreichbar"}`, `<div class="lugrid">${tile("Gerät", esc(i.type || "go-e Charger"), esc(i.name || "–"))}${tile("Adresse", esc(c.ip), s.ok ? "erreichbar" : "nicht erreichbar")}${tile("Firmware", esc(i.fw || "–"), i.serial ? "Seriennr. " + esc(i.serial) : "–")}${tile("Gesamt geladen", i.total_wh != null ? num(i.total_wh / 1000, 0) + " kWh" : "–", "seit Inbetriebnahme")}</div>
-        <div class="mut sm" style="margin:8px 0">Die Verbindung zur Wallbox richtest du unter Einstellungen → Integrationen ein, dort auch Tibber.</div><div style="display:flex;gap:8px;flex-wrap:wrap">${adm ? `<button class="btn2" data-act="wbtest" ${this._wbTest && this._wbTest.busy ? "disabled" : ""}>${ic("check", 16)} Verbindung testen</button><button class="btn2" data-act="igopen">${ic("tools", 16)} Verbindung ändern</button>` : ""}</div>${this._wbTest && !this._wbTest.busy ? `<div class="gst ${this._wbTest.ok ? "" : "on"}" style="margin-top:8px">${ic(this._wbTest.ok ? "check" : "info", 15)}<span>${this._wbTest.ok ? `Verbindung steht: ${esc(this._wbTest.type || "go-e Charger")}, Firmware ${esc(this._wbTest.fw || "–")}.` : esc(this._wbTest.error || "Keine Antwort")}</span></div>` : ""}`, !s.ok)}
+      ${sec("wb", "energy", "Wallbox und Verbindung", `${esc(this._wbName())} · ${ha ? "über Home Assistant" : esc(c.ip)}${s.ok ? "" : " · nicht erreichbar"}`, `<div class="lugrid">${tile("Gerät", esc(i.type || (ha ? "Wallbox" : "go-e Charger")), esc(this._wbName()))}${ha ? tile("Anbindung", "Home Assistant", esc(c.wbx.plat || "eigene Auswahl")) : tile("Adresse", esc(c.ip), s.ok ? "erreichbar" : "nicht erreichbar")}${ha ? tile("Steuerung", i.ctrl === false ? "nur Anzeige" : "Schalter" + ((c.wbx.ent || {}).current ? " + Strom" : "") + ((c.wbx.ent || {}).phase ? " + Phasen" : ""), i.ctrl === false ? "keine Schalter-Entität" : "über die Integration") : tile("Firmware", esc(i.fw || "–"), i.serial ? "Seriennr. " + esc(i.serial) : "–")}${tile("Gesamt geladen", i.total_wh != null ? num(i.total_wh / 1000, 0) + " kWh" : "–", "seit Inbetriebnahme")}</div>
+        <div class="mut sm" style="margin:8px 0">Die Verbindung zur Wallbox richtest du im Store ein (go-e direkt oder „Andere Wallbox“ über Home Assistant), dort auch Tibber.</div><div style="display:flex;gap:8px;flex-wrap:wrap">${adm ? `${ha ? "" : `<button class="btn2" data-act="wbtest" ${this._wbTest && this._wbTest.busy ? "disabled" : ""}>${ic("check", 16)} Verbindung testen</button>`}<button class="btn2" data-act="${ha ? "igwbha" : "igopen"}">${ic("tools", 16)} ${ha ? "Entitäten ändern" : "Verbindung ändern"}</button>` : ""}</div>${this._wbTest && !this._wbTest.busy ? `<div class="gst ${this._wbTest.ok ? "" : "on"}" style="margin-top:8px">${ic(this._wbTest.ok ? "check" : "info", 15)}<span>${this._wbTest.ok ? `Verbindung steht: ${esc(this._wbTest.type || "go-e Charger")}, Firmware ${esc(this._wbTest.fw || "–")}.` : esc(this._wbTest.error || "Keine Antwort")}</span></div>` : ""}`, !s.ok)}
       ${sec("reg", "sliders", "Laderegelung", `${c.minA} bis ${c.maxA} A · Phasen ${c.ph === "auto" ? "automatisch" : c.ph} · Limit ${c.limit} %`, regBody)}
-      ${sec("veh", "car", "Fahrzeuge und Karten", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"} · ${nc} ${nc === 1 ? "Karte" : "Karten"}${c.lock ? " · nur mit Karte" : ""}`, this._rfCard(true), !nv || c.vehicles.some((x) => !x.ids.length))}
+      ${ha ? sec("veh", "car", "Fahrzeuge", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"}${c.defVeh ? " · hier lädt " + esc((c.vehicles.find((x) => x.id === c.defVeh) || {}).name || "") : ""}`, this._rfCard(true), !nv || !c.defVeh) : sec("veh", "car", "Fahrzeuge und Karten", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"} · ${nc} ${nc === 1 ? "Karte" : "Karten"}${c.lock ? " · nur mit Karte" : ""}`, this._rfCard(true), !nv || c.vehicles.some((x) => !x.ids.length))}
       ${sec("bat", "home", "Hausbatterie und Strompreis", `Batterie ${c.batOn ? "zuerst bis " + c.batSoc + " %" : "egal"} · Preisgrenze ${c.priceOn ? c.priceMax + " ct" : "aus"}`, batBody)}
       ${sec("grd", "shield", "Hausanschluss-Schutz", c.guard.on ? `An · höchstens ${c.guard.maxA} A pro Phase` : "Aus", X.guard)}
       ${sec("ntf", "bell", "Benachrichtigungen", nt ? `${nt} von 5 Meldungen · ${c.notify.to.length ? c.notify.to.map((x) => esc(x.replace("notify.", ""))).join(", ") : "kein Empfänger"}` : "Aus", X.notify)}`;
     return `${mainCard}
       <div class="card ocard"><h2>${ic("energy", 18)}Schnellstart</h2>${X.quick}</div>
       ${logCard}`;
-  }
-  /* Fahrzeuge und Karten (nach dem Vorbild von evcc): Das Fahrzeug wird an der Karte erkannt, die an der Wallbox angelegt wird. */
-  _rfCard(bare) {
-    const sn = this._wbSnap(), c = sn.cfg, adm = this._admin(), cards = (sn.info && sn.info.cards) || [], who = sn.who || null;
-    const nm = (i) => (cards.find((x) => x.i === i) || {}).n || `Karte ${i}`;
-    const MODES = [["off", "Aus"], ["pv", "Sonne"], ["minpv", "Sonne + Netz"], ["now", "Voll"]], ML = Object.fromEntries(MODES);
-    const mode = (id, cur) => `<div class="gschips" style="margin:6px 0">${MODES.map(([k, l]) => `<button class="gsch ${cur === k ? "sel" : ""}" data-act="wbrmode" data-v="${id}" data-k="${k}" aria-pressed="${cur === k}" ${adm ? "" : "disabled"}>${l}</button>`).join("")}</div>`;
-    const lim = (id, val) => `<div class="vrow"><span>Ladelimit</span><div class="step" style="flex:none"><button data-act="wbrlim" data-v="${id}" data-s="-5" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${val} %</b><button data-act="wbrlim" data-v="${id}" data-s="5" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>`;
-    const used = new Set(c.vehicles.flatMap((x) => x.ids));
-    const owner = (i) => c.vehicles.find((x) => x.ids.includes(i)), E = this._evState(), evName = [E.brand === "Andere" ? "" : E.brand, E.model].filter(Boolean).join(" ").trim(), canTake = adm && evName && c.vehicles.length < 6 && !c.vehicles.some((x) => x.name === evName);
-    const assign = `<div class="rfa"><div class="lsec">${ic("shield", 15)}Karten zuordnen</div><div class="mut sm" style="margin:2px 0 6px">Pro Fahrzeug sind beliebig viele Karten möglich. Jede Karte gehört aber nur zu einem Fahrzeug.</div>
-      ${canTake ? `<button class="btn2" data-act="wbrfromev" style="margin:4px 0 8px">${ic("car", 16)} Fahrzeug aus den Einstellungen übernehmen: ${esc(evName)}</button>` : ""}
-      ${cards.length ? cards.map((k) => { const o = owner(k.i), act = who && who.card === k.i; return `<div class="rfc"><div class="rfn"><b>${esc(k.n)}</b>${act ? `<span class="ost home">Aktiv</span>` : ""}<small class="mut">Karte ${k.i} · ${num(k.kwh, 0)} kWh geladen · ${o ? "gehört zu " + esc(o.name) : "keinem Fahrzeug zugeordnet (Gast)"}</small></div>
-        ${c.vehicles.length ? `<div class="gschips" style="margin:4px 0 0">${c.vehicles.map((x) => `<button class="gsch ${o && o.id === x.id ? "sel" : ""}" data-act="wbrassign" data-v="${x.id}" data-k="${k.i}" aria-pressed="${!!(o && o.id === x.id)}" ${adm ? "" : "disabled"}>${esc(x.name)}</button>`).join("")}</div>` : `<div class="mut sm">Lege zuerst ein Fahrzeug an.</div>`}</div>`; }).join("") : `<div class="mut sm">Es wurden noch keine Karten von der Wallbox gelesen. Lege sie in der go-e-App an (Einstellungen → Zugang → RFID-Karten).</div>`}</div>`;
-    const veh = c.vehicles.map((x) => `<div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#14b8a6">${ic("car", 20)}</span><div class="opi"><b>${esc(x.name)}</b><small>${x.ids.length ? "Erkannt an: " + x.ids.map((i) => esc(nm(i))).join(", ") : "Noch keine Kennung zugeordnet"}</small></div>${adm ? `<button class="ibtn" data-act="wbrvdel" data-v="${x.id}" aria-label="Fahrzeug entfernen">${ic("trash", 16)}</button>` : ""}</div>
-      <div class="mut sm" style="margin-top:8px">Kennungen (Karten aus der Wallbox)</div>
-      <div class="gschips" style="margin:6px 0">${x.ids.map((i) => `<button class="gsch sel" data-act="wbrrm" data-v="${x.id}" data-k="${i}" aria-label="${esc(nm(i))} entfernen" ${adm ? "" : "disabled"}>${esc(nm(i))} ${ic("close", 12)}</button>`).join("")}</div>
-      ${cards.some((k) => !used.has(k.i)) ? `<div class="mut sm" style="margin-top:4px">Freie Karten antippen, um sie diesem Fahrzeug zuzuordnen</div><div class="gschips" style="margin:6px 0">${cards.filter((k) => !used.has(k.i)).map((k) => `<button class="gsch" data-act="wbrcadd" data-v="${x.id}" data-k="${k.i}" aria-label="${esc(k.n)} zuordnen" ${adm ? "" : "disabled"}>${ic("plus", 12)} ${esc(k.n)}</button>`).join("")}</div>` : (cards.length ? `<div class="mut sm" style="margin-top:4px">Alle Karten der Wallbox sind zugeordnet.</div>` : `<div class="mut sm" style="margin-top:4px">Es sind noch keine Karten in der go-e-App angelegt.</div>`)}
-      <div class="mut sm" style="margin-top:8px">Modus, sobald das Fahrzeug erkannt wird</div>${mode(x.id, x.mode)}${lim(x.id, x.limit)}</div>`).join("");
-    const st = !sn.ok ? ["Wallbox nicht erreichbar", sn.error || "keine Antwort"]
-      : !who ? ["Keine Kennung erkannt", c.lock ? "Strom & Wärme verändert nichts, bis eine Karte angelegt wird." : "Es gilt der Modus der Laderegelung oben."]
-      : who.kind === "vehicle" ? [`Erkannt: ${who.name} (Karte „${nm(who.card)}“)`, `Die Regelung arbeitet im Modus „${ML[who.mode]}“ mit Ladelimit ${who.limit} %.`]
-      : [`Erkannt: Gastfahrzeug (Karte „${nm(who.card)}“)`, `Die Karte ist keinem Fahrzeug zugeordnet. Es gilt der Modus „${ML[who.mode]}“.`];
-    return `${bare ? "<div>" : `<div class="card ocard"><h2>${ic("car", 18)}Fahrzeuge &amp; Karten</h2>`}
-      <div class="mut sm" style="margin-bottom:8px">Wie bei evcc wird das Fahrzeug an der Karte erkannt, die an der Wallbox angelegt wird. Als Kennung dient der Kartenname aus der go-e-App. Eine Karte gehört zu genau einem Fahrzeug, ein Fahrzeug kann mehrere Karten haben.</div>
-      <div class="gst" style="margin:0 0 10px">${ic(who ? "check" : "info", 15)}<span><b>${esc(st[0])}</b><br>${esc(st[1])}</span></div>
-      ${assign}
-      ${veh}
-      ${adm && c.vehicles.length < 6 ? `<button class="lnk" data-act="wbrvadd">${ic("plus", 16)}Fahrzeug hinzufügen</button>` : ""}
-      <div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#64748b">${ic("user", 20)}</span><div class="opi"><b>Gastfahrzeug</b><small>Unbekannte Karte</small></div></div>${mode("guest", c.guest.mode)}${lim("guest", c.guest.limit)}</div>
-      <div class="vrow"><span>Nur mit erkannter Karte regeln<small class="mut" style="display:block">Ohne angelegte Karte verändert Strom &amp; Wärme nichts an der Wallbox. Die eigentliche Sperre kommt von der Kartenpflicht in der go-e-App.</small></span><button class="sw ${c.lock ? "on" : ""}" data-act="wbrlock" aria-pressed="${c.lock}" aria-label="Nur mit erkannter Karte regeln" ${adm ? "" : "disabled"}></button></div>
-      <div class="vrow"><span>Nach dem Abstecken zurücksetzen<small class="mut" style="display:block">Die Wallbox wird auf „neutral“ gestellt und die Erkennung vergessen. Sie gilt nur für eine Ladung.</small></span><button class="sw ${c.reset ? "on" : ""}" data-act="wbrreset" aria-pressed="${c.reset}" aria-label="Nach dem Abstecken zurücksetzen" ${adm ? "" : "disabled"}></button></div></div>`;
-  }
-  _rfAct(a, b) {
-    const c = this._wb(), k = b.dataset.k, id = b.dataset.v;
-    const upd = (fn) => { if (id === "guest") this._wbSave({ guest: fn({ ...c.guest }) }); else this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? fn({ ...x }) : x)) }); };
-    if (a === "wbrlock") this._wbSave({ lock: !c.lock });
-    else if (a === "wbrreset") this._wbSave({ reset: !c.reset });
-    else if (a === "wbrmode") upd((x) => ({ ...x, mode: k }));
-    else if (a === "wbrlim") upd((x) => ({ ...x, limit: Math.max(50, Math.min(100, x.limit + Number(b.dataset.s))) }));
-    else if (a === "wbrrm") upd((x) => ({ ...x, ids: x.ids.filter((i) => i !== Number(k)) }));
-    else if (a === "wbrcadd" || a === "wbrassign") { const n = Number(k), has = (c.vehicles.find((x) => x.id === id) || { ids: [] }).ids.includes(n); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? { ...x, ids: has ? x.ids.filter((i) => i !== n) : [...x.ids, n] } : { ...x, ids: x.ids.filter((i) => i !== n) })) }, true); }
-    else if (a === "wbrfromev") { const E = this._evState(), nm2 = [E.brand === "Andere" ? "" : E.brand, E.model].filter(Boolean).join(" ").trim().slice(0, 30); if (nm2) this._wbSave({ vehicles: [...c.vehicles, { id: "v" + Date.now().toString(36), name: nm2, ids: [], mode: "pv", limit: 80 }] }, true); }
-    else if (a === "wbrvadd") { const n = c.vehicles.length + 1; this._wbSave({ vehicles: [...c.vehicles, { id: "v" + Date.now().toString(36), name: "Fahrzeug " + n, ids: [], mode: "pv", limit: 80 }] }, true); }
-    else if (a === "wbrvdel") this._wbSave({ vehicles: c.vehicles.filter((x) => x.id !== id) }, true);
-    this._render();
   }
   _wbAct(a, b) {
     if (a.startsWith("wbr")) return this._rfAct(a, b);
@@ -8620,7 +8846,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "wbtab" || a === "wbsec" || a === "wbsecall" || a === "wbgo" || a === "wbplan" || a === "wbsrc" || a === "wbpv" || a === "wbsper" || a === "wbswhat" || a === "wbsby" || a === "wbnav") return this._wbStAct(a, b);
     if (a === "wbtest") { this._wbTest = { busy: true }; this._render(); this._hass.callWS({ type: "fenster_heizung/wb_test", ip: this._wb().ip }).then((r) => { this._wbTest = r || { ok: false, error: "Keine Antwort" }; }).catch(() => { this._wbTest = { ok: false, error: "Keine Antwort von Home Assistant" }; }).finally(() => this._render()); return; }
     if (a === "wblog") { this._wbLogAll = !this._wbLogAll; this._render(); return; }
-    const c = this._wb(), k = b.dataset.k, R = { minA: [6, 16], maxA: [6, 16], startW: [500, 8000], onMin: [0, 15], offMin: [0, 30], limit: [50, 100], planSoc: [20, 100], cap: [10, 150], batSoc: [0, 100], priceMax: [1, 80], baseW: [0, 3000] };
+    const c = this._wb(), k = b.dataset.k, R = { minA: [6, 32], maxA: [6, 32], startW: [500, 8000], onMin: [0, 15], offMin: [0, 30], limit: [50, 100], planSoc: [20, 100], cap: [10, 150], batSoc: [0, 100], priceMax: [1, 80], baseW: [0, 3000] };
     if (a === "wbmode") { const who = this._wbSnap().who, v = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.name === who.name) : null; if (v) this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === v.id ? { ...x, mode: k } : x)) }); else if (who && who.kind === "guest") this._wbSave({ guest: { ...c.guest, mode: k } }); else this._wbSave({ mode: k }); }
     else if (a === "wbset") this._wbSave({ [b.dataset.key]: k });
     else if (a === "wbsw" && k === "wbon") { if (c.enabled) this._wbSave({ enabled: false }, true); else { this._modal = { type: "wbon" }; this._renderModal(); return; } }
@@ -8631,13 +8857,22 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _wbOnModal() {
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Laderegelung einschalten?</b><span>Wallbox · go-e Charger</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="mut" style="margin:6px 0 10px">Strom &amp; Wärme startet und stoppt dann die Ladung und stellt Ladestrom und Phasen ein. Wenn du die Wallbox in der go-e-App von Hand umstellst, pausiert die Regelung 30 Minuten.</div>
-      <div class="gst">${ic("info", 15)}Tipp für den ersten Test: Modus „Aus“ lassen, dann „Voll“ mit niedrigem Höchststrom (zum Beispiel 6 A) und die Wirkung in der go-e-App beobachten.</div>
+      <div class="sh"><div><b>Laderegelung einschalten?</b><span>Wallbox · ${esc(this._wbName())}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut" style="margin:6px 0 10px">Strom &amp; Wärme startet und stoppt dann die Ladung und stellt Ladestrom und Phasen ein. Wenn du die Wallbox in ihrer App von Hand umstellst, pausiert die Regelung 30 Minuten.</div>
+      <div class="gst">${ic("info", 15)}Tipp für den ersten Test: Modus „Aus“ lassen, dann „Voll“ mit niedrigem Höchststrom (zum Beispiel 6 A) und die Wirkung in der App der Wallbox beobachten.</div>
       <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="wbyes">Einschalten</button></div></div>`;
   }
   _wbLater(t) { /* Zeitfeld nicht mitten in der Eingabe neu aufbauen (Safari meldet jede Ziffer einzeln) */ clearTimeout(this._wbLT); this._wbLT = setTimeout(() => { const ae = this.shadowRoot.activeElement; if (ae && (ae.type === "time" || (ae.dataset && ae.dataset.tin))) { ae.addEventListener("blur", () => this._render(), { once: true }); } else this._render(); }, 700); }
-  _wbChange(t) { const f = t.dataset.f; if (f === "wbcap") { const v = parseFloat(String(t.value).replace(",", ".")); if (isFinite(v)) this._wbSave({ cap: Math.round(Math.max(10, Math.min(150, v)) * 10) / 10 }); else this._render(); return true; } if (f === "wbdt") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), time: t.value } } : x)) }); this._wbLater(t); } return true; } if (f === "wbradd") { const c = this._wb(); if (t.value) { this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, ids: [...x.ids, Number(t.value)] } : x)) }, true); this._render(); } return true; } if (f === "wbtime") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { this._wbSave({ planTime: t.value }); this._wbLater(t); } return true; } return false; }
+  _wbChange(t) { const f = t.dataset.f;
+    if (f === "wbvn" || f === "wbvm" || f === "wbvc" || f === "wbve") {
+      const c = this._wb(), id = t.dataset.v, clean = (v, n) => String(v || "").replace(/[<>"'&]/g, "").slice(0, n);
+      const fn = f === "wbvn" ? (x) => ({ ...x, name: clean(t.value, 30).trim() || x.name }) : f === "wbvm" ? (x) => ({ ...x, model: clean(t.value, 30) })
+        : f === "wbvc" ? (x) => { const v = parseFloat(String(t.value).replace(",", ".")); return { ...x, cap: isFinite(v) && v > 0 ? Math.round(Math.max(10, Math.min(150, v)) * 10) / 10 : 0 }; }
+        : (x) => ({ ...x, ent: { ...(x.ent || {}), [t.dataset.k]: t.value || "" } });
+      this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? fn(x) : x)) }, f === "wbve");
+      if (f === "wbve" || f === "wbvc") this._renderModal();
+      return true;
+    } if (f === "wbcap") { const v = parseFloat(String(t.value).replace(",", ".")); if (isFinite(v)) this._wbSave({ cap: Math.round(Math.max(10, Math.min(150, v)) * 10) / 10 }); else this._render(); return true; } if (f === "wbdt") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), time: t.value } } : x)) }); this._wbLater(t); } return true; } if (f === "wbradd") { const c = this._wb(); if (t.value) { this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, ids: [...x.ids, Number(t.value)] } : x)) }, true); this._render(); } return true; } if (f === "wbtime") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { this._wbSave({ planTime: t.value }); this._wbLater(t); } return true; } return false; }
   /* Gerätestrom: eigene Berechnung im Backend (fenster_heizung/gs_get). Solar, Netz, Batterie kommen aus Modul 3, Preise aus Modul 1. */
   _gsState() {
     const s = this._mdState();
@@ -8897,127 +9132,6 @@ class FensterHeizungPanel extends HTMLElement {
     tt.hidden = false; cur.setAttribute("x", (D.pl + i * D.gw).toFixed(1)); cur.setAttribute("width", D.gw.toFixed(1)); cur.setAttribute("opacity", ".5");
     const Wp = svg.getBoundingClientRect().width, px = (D.pl + i * D.gw + D.gw / 2) / D.W * Wp, tw = tt.offsetWidth || 180;
     tt.style.left = Math.max(0, Math.min(Wp - tw, px + (px + 14 + tw > Wp ? -tw - 14 : 14))) + "px";
-  }
-  /* Elektroauto & Wallbox (Beta) */
-  _evState() { const s = this._mdState(); return s.ev || (s.ev = { brand: "", model: "", body: "limousine", color: "blue", ent: { soc: "", odo: "", range: "", plug: "", power: "", charging: "" } }); }
-  _evNum(eid) { const st = eid && this._hass.states[eid]; if (!st) return null; const v = parseFloat(String(st.state).replace(",", ".")); return isFinite(v) ? (st.attributes.unit_of_measurement === "kW" ? v * 1000 : v) : null; }
-  _evData() {
-    const E = this._evState().ent, st = this._hass.states, S = (e) => (e && st[e] ? String(st[e].state).toLowerCase() : "");
-    const power = this._evNum(E.power), soc = this._evNum(E.soc), odo = this._evNum(E.odo), range = this._evNum(E.range);
-    const ON = /^(on|true|yes|connected|plugged|plugged_in|ev_connected|vehicle_connected|charging|ready|waiting|complete|finished|preparing|suspended)/, OFF = /^(off|false|no|disconnected|unplugged|not_connected|available|unavailable|unknown|none)/;
-    const chg = E.charging ? ON.test(S(E.charging)) && !OFF.test(S(E.charging)) : power != null && power >= 100;
-    const plug = E.plug ? ON.test(S(E.plug)) && !OFF.test(S(E.plug)) : chg;
-    return { soc, odo, range, power, charging: plug && chg, plugged: plug || chg, any: Object.values(E).some(Boolean) };
-  }
-  _evScene(d) {
-    const V = this._evState(), H = EV_SHAPES[V.body] || EV_SHAPES.limousine, C = EV_COLORS[V.color] || EV_COLORS.blue, [px, py] = H.port, [w1, w2] = H.wh;
-    const led = d.charging ? "#22e06b" : d.plugged ? "#ffa51f" : "#9aa5b1", cab = `M112 207 C108 272 196 270 236 248 C${px - 38} ${py + 49} ${px - 14} ${py + 19} ${px} ${py}`;
-    const wheel = (cx) => `<g><ellipse cx="${cx}" cy="250" rx="30" ry="3" fill="#000" opacity=".5"/><circle cx="${cx}" cy="217" r="33" fill="#0b0d11"/><circle cx="${cx}" cy="217" r="33" fill="none" stroke="#1d222b" stroke-width="3"/><circle cx="${cx}" cy="217" r="27" fill="none" stroke="#252b36" stroke-width="1.5"/>
-        <circle cx="${cx}" cy="217" r="23" fill="url(#evrim)"/><circle cx="${cx}" cy="217" r="23" fill="none" stroke="#4b5563" stroke-width="1.2"/><circle cx="${cx}" cy="217" r="19" fill="#161a21"/>
-        <circle cx="${cx}" cy="217" r="17" fill="none" stroke="#9aa3b1" stroke-width="1" opacity=".5"/><path d="M${cx - 15} 212 A16 16 0 0 1 ${cx - 4} 202" stroke="#d7141f" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"/>
-        <g stroke="url(#evrim)" stroke-width="3" stroke-linecap="round">${Array.from({ length: 10 }, (_, k) => k * 36).map((ang) => `<line x1="${cx + 6 * Math.sin(ang * Math.PI / 180)}" y1="${217 - 6 * Math.cos(ang * Math.PI / 180)}" x2="${cx + 20 * Math.sin((ang + 8) * Math.PI / 180)}" y2="${217 - 20 * Math.cos((ang + 8) * Math.PI / 180)}"/>`).join("")}</g>
-        <circle cx="${cx}" cy="217" r="7" fill="#2b313b"/><circle cx="${cx}" cy="217" r="3.2" fill="#b4bcc8"/><path d="M${cx - 24} 205 A26 26 0 0 1 ${cx + 6} 192" stroke="#fff" stroke-width="1.5" fill="none" opacity=".25"/></g>`;
-    return `<svg class="evsvg" viewBox="0 0 760 290" role="img" aria-label="${d.charging ? "Fahrzeug lädt" : d.plugged ? "Ladekabel angesteckt" : "Ladekabel nicht angesteckt"}">
-      <defs>
-        <linearGradient id="evsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5aa7e6"/><stop offset=".62" stop-color="#bfe0f7"/><stop offset="1" stop-color="#eaf5fb"/></linearGradient>
-        <radialGradient id="evsun" cx=".86" cy=".16" r=".45"><stop offset="0" stop-color="#fff7d1" stop-opacity=".95"/><stop offset=".35" stop-color="#fff2b0" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
-        <linearGradient id="evpaint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C[1]}"/><stop offset=".45" stop-color="${C[2]}"/><stop offset="1" stop-color="${C[3]}"/></linearGradient>
-        <linearGradient id="evglass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b3e52"/><stop offset=".5" stop-color="#16222f"/><stop offset="1" stop-color="#0a1018"/></linearGradient>
-        <linearGradient id="evrim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e5e9ef"/><stop offset=".5" stop-color="#9aa3b1"/><stop offset="1" stop-color="#d7dce4"/></linearGradient>
-        <linearGradient id="evwall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ece7df"/><stop offset="1" stop-color="#d6cfc4"/></linearGradient>
-        <linearGradient id="evbox" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d9dde3"/></linearGradient>
-        <linearGradient id="evroad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b7280"/><stop offset="1" stop-color="#4b5563"/></linearGradient>
-        <clipPath id="evbody"><path d="${H.body}"/></clipPath><clipPath id="evgl"><path d="${H.glass}"/></clipPath><linearGradient id="evrefl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset=".35" stop-color="#000" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".38"/></linearGradient>
-        <filter id="evblur" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="5"/></filter>
-        <filter id="evglow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.5"/></filter></defs>
-      <rect width="760" height="290" rx="16" fill="url(#evsky)"/><rect width="760" height="290" rx="16" fill="url(#evsun)"/>
-      <g opacity=".9" fill="#fff"><ellipse cx="260" cy="58" rx="46" ry="12" opacity=".85"/><ellipse cx="292" cy="50" rx="30" ry="11" opacity=".9"/><ellipse cx="520" cy="46" rx="38" ry="9" opacity=".75"/></g>
-      <g filter="url(#evblur)" opacity=".55"><ellipse cx="300" cy="244" rx="120" ry="16" fill="#6f9a74"/><ellipse cx="480" cy="246" rx="150" ry="13" fill="#5d8a66"/><ellipse cx="680" cy="244" rx="110" ry="15" fill="#7aa57f"/></g>
-      <rect y="248" width="760" height="42" fill="url(#evroad)"/><rect y="248" width="760" height="3" fill="#8b93a0"/><g stroke="#e5e7eb" stroke-width="3" opacity=".75"><path d="M250 276H330M440 276H520M630 276H710" stroke-linecap="round"/></g>
-      <rect x="20" y="30" width="170" height="218" fill="url(#evwall)"/><rect x="20" y="30" width="170" height="10" fill="#bdb5a8"/><rect x="190" y="30" width="6" height="218" fill="#a69d8f" opacity=".6"/>
-      <g stroke="#c8c0b3" stroke-width="1" opacity=".7">${[70, 110, 150, 190, 230].map((y) => `<line x1="20" y1="${y}" x2="190" y2="${y}"/>`).join("")}</g>
-      <rect x="96" y="102" width="86" height="118" rx="18" fill="#000" opacity=".22" filter="url(#evblur)"/>
-      <g><rect x="86" y="92" width="76" height="116" rx="16" fill="url(#evbox)" stroke="#aeb5bf" stroke-width="1.5"/>
-        <rect x="86" y="92" width="76" height="116" rx="16" fill="none" stroke="#fff" stroke-width="1" opacity=".9"/>
-        <rect x="96" y="102" width="56" height="26" rx="8" fill="#0d141c"/><text x="124" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="${d.charging ? "#4ade80" : "#8da0b3"}">${d.charging && d.power != null ? num(d.power / 1000, 1) + " kW" : d.plugged ? "bereit" : "frei"}</text>
-        <circle cx="124" cy="152" r="14" fill="#eef0f3" stroke="#c4cad2"/><circle cx="124" cy="152" r="11" fill="none" stroke="${led}" stroke-width="3.5"/><circle cx="124" cy="152" r="11" fill="none" stroke="${led}" stroke-width="3.5" filter="url(#evglow)" class="${d.charging ? "evpulse" : ""}" opacity=".8"/>
-        <path d="M121 146 L126 146 L123 152 L127 152 L121 160 L123 154 L119 154 Z" fill="${led}"/>
-        <rect x="108" y="190" width="32" height="14" rx="6" fill="#1a1f26"/><circle cx="124" cy="197" r="4" fill="#050709"/></g>
-      <ellipse cx="490" cy="251" rx="215" ry="9" fill="#000" opacity=".45" filter="url(#evblur)"/>
-      <g class="evcable ${d.plugged ? "on" : ""}">
-        ${d.charging ? `<path d="${cab}" fill="none" stroke="#22e06b" stroke-width="12" stroke-linecap="round" opacity=".45" filter="url(#evglow)" class="evpulse"/>` : ""}
-        <path d="${cab}" fill="none" stroke="#0b0e12" stroke-width="9" stroke-linecap="round"/><path d="${cab}" fill="none" stroke="#3a424d" stroke-width="2" stroke-linecap="round" transform="translate(-1.5 -2)"/>
-        <path d="${cab}" fill="none" stroke="${d.charging ? "#a7f3c0" : "none"}" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="5 13" class="${d.charging ? "evflow" : ""}"/>
-        <g transform="rotate(-52 ${px} ${py})"><rect x="${px - 10}" y="${py - 8}" width="24" height="16" rx="6" fill="#14181e" stroke="#2c333c"/><rect x="${px + 10}" y="${py - 5}" width="6" height="10" rx="2" fill="#0b0e12"/><rect x="${px - 8}" y="${py - 6}" width="10" height="3" rx="1.5" fill="${led}" opacity=".9"/></g></g>
-      <g>
-        <path d="${H.body}" fill="url(#evpaint)"/>
-        <g clip-path="url(#evbody)">
-          <rect x="${H.rear - 4}" y="${H.gb}" width="420" height="40" fill="url(#evrefl)"/>
-          <path d="M${H.rear} ${H.gt + 36} C420 ${H.gt + 28} 560 ${H.gt + 36} ${H.front} ${H.gt + 62}" stroke="#fff" stroke-width="3" fill="none" opacity=".38"/>
-          <path d="M${H.rear} ${H.gb + 12} C420 ${H.gb + 8} 560 ${H.gb + 10} ${H.front} ${H.gb + 24}" stroke="${C[4]}" stroke-width="2.2" fill="none" opacity=".4"/>
-          <path d="M${H.rear} ${H.gb + 14} C420 ${H.gb + 10} 560 ${H.gb + 12} ${H.front} ${H.gb + 26}" stroke="#fff" stroke-width="1" fill="none" opacity=".3"/>
-          <path d="M${H.rear - 2} 224 L700 224 L700 240 L${H.rear - 2} 240 Z" fill="#10141b"/><path d="M${H.rear - 2} 224 L700 224" stroke="#fff" stroke-width="1" opacity=".18"/>
-          <g stroke="${C[4]}" stroke-width="1.3" opacity=".65" fill="none">${H.seams.map((x, k) => `<path d="M${x} ${H.gb} C${x - 2} 190 ${x - 4} 210 ${x - 5} 224"/>`).join("")}</g>
-          ${H.handles.map(([x, y]) => `<rect x="${x}" y="${y}" width="22" height="3.4" rx="1.7" fill="#0b0e12" opacity=".55"/><rect x="${x}" y="${y - 1}" width="22" height="1.6" rx=".8" fill="#fff" opacity=".4"/>`).join("")}
-          <ellipse cx="${(H.rear + H.front) / 2}" cy="${H.gt - 6}" rx="${(H.front - H.rear) / 3.2}" ry="10" fill="#fff" opacity=".2"/></g>
-        <path d="${H.glass}" fill="url(#evglass)"/>
-        <g clip-path="url(#evgl)"><path d="M${H.gx[0] + 10} ${H.gb} L${H.gx[0] + 58} ${H.gt - 2} L${H.gx[0] + 84} ${H.gt - 2} L${H.gx[0] + 38} ${H.gb} Z" fill="#fff" opacity=".24"/><path d="M${H.pil + 24} ${H.gb} L${H.pil + 62} ${H.gt - 2} L${H.pil + 78} ${H.gt - 2} L${H.pil + 40} ${H.gb} Z" fill="#fff" opacity=".15"/><rect x="${H.gx[0]}" y="${H.gb - 12}" width="${H.gx[1] - H.gx[0]}" height="12" fill="#000" opacity=".25"/></g>
-        <path d="M${H.pil - 3} ${H.gt - 2} L${H.pil + 1} ${H.gb + 1} L${H.pil + 5} ${H.gb + 1} L${H.pil + 3} ${H.gt - 2} Z" fill="${C[3]}" stroke="#05070a" stroke-width="1"/>
-        <path d="${H.glass}" fill="none" stroke="#05070a" stroke-width="2.2" stroke-linejoin="round"/><path d="${H.glass.replace(/ Z$/, "")}" fill="none" stroke="#c9d3e3" stroke-width="1" opacity=".55" transform="translate(0 -2.6)"/>
-        <path d="M${H.mir[0]} ${H.mir[1]} L${H.mir[0] + 14} ${H.mir[1]} C${H.mir[0] + 20} ${H.mir[1]} ${H.mir[0] + 22} ${H.mir[1] + 6} ${H.mir[0] + 16} ${H.mir[1] + 9} L${H.mir[0] - 2} ${H.mir[1] + 10} Z" fill="${C[2]}" stroke="${C[4]}"/>
-        <path d="M${H.tl[0]} ${H.tl[1] - 9} L${H.tl[0] + 8} ${H.tl[1] - 11} L${H.tl[0] + 8} ${H.tl[1] + 9} L${H.tl[0]} ${H.tl[1] + 11} Z" fill="#d6192a"/><path d="M${H.tl[0]} ${H.tl[1] - 9} L${H.tl[0] + 8} ${H.tl[1] - 11} L${H.tl[0] + 8} ${H.tl[1] + 9} L${H.tl[0]} ${H.tl[1] + 11} Z" fill="#ff5a66" opacity=".55" filter="url(#evglow)"/>
-        <path d="M${H.front - 34} ${H.ly - 2} C${H.front - 18} ${H.ly - 2} ${H.front - 6} ${H.ly + 2} ${H.front} ${H.ly + 8} L${H.front} ${H.ly + 13} C${H.front - 10} ${H.ly + 8} ${H.front - 22} ${H.ly + 6} ${H.front - 34} ${H.ly + 6} Z" fill="#f8fbff"/><path d="M${H.front - 34} ${H.ly - 2} L${H.front} ${H.ly + 10} L${H.front} ${H.ly + 14} Z" fill="#fff6c8" opacity=".6" filter="url(#evglow)"/>
-        <path d="M${H.front - 6} ${H.ly + 22} L${H.front - 2} ${H.ly + 22} L${H.front - 2} ${H.ly + 40} L${H.front - 8} ${H.ly + 42} Z" fill="#0b0f16" opacity=".8"/>
-        <path d="${H.body}" fill="none" stroke="${C[4]}" stroke-width="1.6"/>
-        <circle cx="${px}" cy="${py}" r="7" fill="#0d1426" stroke="#8aa0c8" stroke-width="1.5"/><circle cx="${px}" cy="${py}" r="3.2" fill="${led}" class="${d.charging ? "evpulse" : ""}"/>
-        <circle cx="${w1}" cy="217" r="41" fill="#07090d"/><circle cx="${w1}" cy="217" r="41" fill="none" stroke="${C[4]}" stroke-width="2"/><circle cx="${w2}" cy="217" r="41" fill="#07090d"/><circle cx="${w2}" cy="217" r="41" fill="none" stroke="${C[4]}" stroke-width="2"/>
-        ${wheel(w1)}${wheel(w2)}</g>
-      <g><rect x="562" y="30" width="162" height="40" rx="20" fill="#0f172a" opacity=".82"/>
-        ${d.charging ? `<path d="M590 40 L580 52 H588 L585 62 L598 49 H590 Z" fill="#facc15"/>` : `<circle cx="588" cy="50" r="6" fill="${led}"/>`}
-        <text x="642" y="57" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">${d.soc != null ? num(d.soc, 0) + " %" : "–"}</text></g></svg>`;
-  }
-  _evPage() {
-    const adm = this._admin(), d = this._evData();
-    if (!d.any) return `${this._betaBox("Wähle in den Einstellungen die Sensoren deines Fahrzeugs und der Wallbox.")}
-      <div class="card empty">${ic("car", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Fahrzeug eingerichtet</div>
-      <div class="sm" style="max-width:460px;margin:0 auto 14px">Zeigt Ladestand, Reichweite und Kilometerstand. Die Wallbox ist abgebildet, das Ladekabel erscheint beim Anstecken und leuchtet beim Laden.</div>
-      ${adm ? `<button class="btn2 pri" data-act="mdevset" style="flex:none;padding:12px 22px">${ic("tools", 16)} Fahrzeug einrichten</button>` : "Ein Administrator kann das Modul einrichten."}</div>`;
-    const stT = d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt";
-    const tile = (ico, t, v, sub) => `<div class="luroom"><span class="mut lt"><span class="ti">${ic(ico, 15)}</span>${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    const bar = d.soc != null ? `<div class="gsbar" style="margin-top:6px" role="progressbar" aria-valuenow="${num(d.soc, 0)}" aria-valuemin="0" aria-valuemax="100"><i style="width:${Math.max(0, Math.min(100, d.soc))}%;background:${d.soc < 20 ? "#f87171" : "#34d399"}"></i></div>` : "";
-    const wbOn = !!this._wbSnap().cfg.ip, wbTabs = wbOn ? this._wbTabs() + this._wbBar() : "";
-    if (wbOn && this._wbStT() === "plan") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbPlan(d)}`;
-    if (wbOn && this._wbStT() === "set") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbCard(d, "set")}`;
-    if (wbOn && this._wbStT() === "stat") return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}${this._wbStat()}`;
-    return `${this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.")}${wbTabs}
-      <div class="evtop"><div class="card evcard ${d.charging ? "chg" : d.plugged ? "plg" : ""}"><div class="evhead"><b>${ic("car", 18)}${esc([this._evState().brand === "Andere" ? "" : this._evState().brand, this._evState().model].filter(Boolean).join(" ") || "Fahrzeug & Wallbox")}</b><span class="gsst ${d.charging ? "on" : ""}">${stT}</span></div>${this._evScene(d)}</div>
-      <div class="lugrid">${tile("energy", "Ladestand", d.soc != null ? num(d.soc, 0) + " %" : "–", bar || "kein Sensor")}${tile("car", "Reichweite", d.range != null ? num(d.range, 0) + " km" : "–", d.range != null ? "laut Fahrzeug" : "kein Sensor")}${tile("total", "Kilometerstand", d.odo != null ? num(d.odo, 0) + " km" : "–", d.odo != null ? "gesamt" : "kein Sensor")}${tile("bolt", "Ladeleistung", d.power != null ? num(d.power / 1000, 1) + " kW" : "–", stT)}</div></div>
-      <div class="mcols">${wbOn ? this._wbxToday(d) : ""}${this._wbCard(d)}</div>`;
-  }
-  _evSetModal() {
-    const V = this._evState(), E = V.ent, st = this._hass.states, ks = Object.keys(st);
-    const num_ = ks.filter((e) => e.startsWith("sensor.") && !isNaN(parseFloat(st[e].state)));
-    const pw = ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "power" || /^k?W$/.test(st[e].attributes.unit_of_measurement || "")));
-    const bin = ks.filter((e) => e.startsWith("binary_sensor.") || e.startsWith("sensor.") || e.startsWith("switch."));
-    const sel = (k, o, none, h) => this._wzSel(o, E[k], "event", `data-k="${k}"`, none || "– keiner –", h);
-    return `<div class="ov" data-act="evdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Elektroauto &amp; Wallbox</b><span>Einstellungen · Beta</span></div><button class="ibtn" data-act="evdone" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="lsec">${ic("car", 15)}Dein Auto</div>
-      <div class="mut sm" style="margin:2px 0 4px">Marke</div><div class="gschips">${EV_BRANDS.map((b) => `<button class="gsch ${V.brand === b ? "sel" : ""}" data-act="evbrand" data-k="${esc(b)}" aria-pressed="${V.brand === b}">${esc(b)}</button>`).join("")}</div>
-      <div class="mut sm" style="margin:6px 0 4px">Modell (optional)</div><input class="otxt" type="text" maxlength="30" placeholder="z. B. Modellname" value="${esc(V.model)}" data-f="evmodel" aria-label="Modell">
-      <div class="mut sm" style="margin:8px 0 4px">Form der Zeichnung</div><div class="gschips">${Object.entries(EV_BODIES).map(([k, t]) => `<button class="gsch ${V.body === k ? "sel" : ""}" data-act="evbody" data-k="${k}" aria-pressed="${V.body === k}">${t}</button>`).join("")}</div>
-      <div class="mut sm" style="margin:6px 0 4px">Farbe</div><div class="gschips">${Object.entries(EV_COLORS).map(([k, c]) => `<button class="evsw ${V.color === k ? "sel" : ""}" data-act="evcol" data-k="${k}" style="--c:${c[2]};--c2:${c[1]}" aria-label="${c[0]}" aria-pressed="${V.color === k}" title="${c[0]}"></button>`).join("")}</div>
-      <div class="gst">${ic("info", 15)}Marke und Modell erscheinen als Beschriftung. Die Zeichnung ist allgemein gehalten, ohne Logos und nicht dem Modell nachgebaut.</div>
-      <div class="lsec">${ic("energy", 15)}Fahrzeug-Sensoren</div>
-      <div class="mut sm" style="margin:2px 0 0">Ladestand (Prozent)</div>${sel("soc", num_, "", /soc|batter|ladestand|akku/i)}
-      <div class="mut sm" style="margin:0">Kilometerstand</div>${sel("odo", num_, "", /odo|kilometer|km|mileage|stand/i)}
-      <div class="mut sm" style="margin:0">Reichweite (optional)</div>${sel("range", num_, "", /reichweite|range/i)}
-      <div class="lsec">${ic("bolt", 15)}Wallbox</div>
-      <div class="mut sm" style="margin:2px 0 0">Ladekabel angesteckt (Sensor oder Status der Wallbox)</div>${sel("plug", bin, "", /plug|kabel|cable|connect|angesteckt|status/i)}
-      <div class="mut sm" style="margin:0">Lädt gerade (optional, sonst aus der Ladeleistung)</div>${sel("charging", bin, "", /charging|l(ä|a)dt|lade/i)}
-      <div class="mut sm" style="margin:0">Ladeleistung (Watt)</div>${sel("power", pw, "", /lade|charg|wallbox|power|leistung/i)}
-      <div class="gst">${ic("info", 15)}Das Ladekabel erscheint, sobald „angesteckt“ meldet, und verschwindet beim Abstecken. Beim Laden leuchtet es und die Ladung läuft sichtbar.</div>
-      <div class="foot2"><button class="btn2 pri" data-act="evdone">Fertig</button></div></div>`;
   }
   /* ================= Modul 4 v1.3 (Konzept „Neue Optik“, Stufe 2): Geräte-Seite und Handy-Übersicht =================
      C  Programm-Kurve: Leistung eines Laufs nach Herkunft (Solar, Batterie, Netz), Abschnitte nur als Hinweis
@@ -14637,7 +14751,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (k === "mess") { this._msOpen(v); return; }
     if (k === "ad") { const t = String(go).split(":")[2] || ""; b.dataset.k = v; b.dataset.t = t; this._act("adxset", b); return; }
     if (k === "mod") { const m = { mu: "muxopen", li: "lixopen" }[v] || (MOD_SET[v] || {}).act; if (m) this._act(m, b); return; }
-    const a = { diag: "diag", lfx: "lfxset", tgx: "tgxopen", tm: "tmopen", ort: "ortopen", hz: "hzopen" }[k]; if (a) this._act(a, b);
+    const a = { ig: "igwbha", diag: "diag", lfx: "lfxset", tgx: "tgxopen", tm: "tmopen", ort: "ortopen", hz: "hzopen" }[k]; if (a) this._act(a, b);
   }
   /* Suche: Sensoren nach Name oder ID */
   _mwFind(q) {

@@ -13,7 +13,7 @@ PHASE_MODES = ("auto", "1", "3")
 PLAN_DAYS = ("all", "wk", "we")
 PLAN_STRATS = ("mix", "sun", "price")
 PLAN_SRCS = ("auto", "tibber", "sensor")
-PV_SRCS = ("forecast", "sensor")
+PV_SRCS = ("auto", "m16", "forecast", "sensor")  # auto: Modul 16, sonst Forecast.Solar
 PHASE_HOLD_S = 600  # so lange bleibt eine Phasenumschaltung bestehen
 PH_SETTLE_S = 300  # nach dem Umschalten der Phasen: so lange gilt „fertig“ (0 W) nur als Pause, das Auto braucht etwas bis es wieder lädt
 DONE_CONFIRM_S = 120  # „fertig“ direkt nach dem Laden erst glauben, wenn es so lange anhält
@@ -28,10 +28,19 @@ DEFAULT: dict[str, Any] = {
     "cap": 60, "batOn": True, "batSoc": 30, "priceOn": False, "priceMax": 18,
     "lock": False, "reset": True, "vehicles": [], "guest": {"mode": "off", "limit": 80},
     "guard": {"on": False, "maxA": 35}, "notify": {"start": True, "goal": True, "plan": True, "off": True, "long": False, "to": []},
-    "planOn": False, "planStrat": "mix", "planSrc": "auto", "pvSrc": "forecast", "baseW": 400,
+    "planOn": False, "planStrat": "mix", "planSrc": "auto", "pvSrc": "auto", "baseW": 400,
+    "vs": 2, "defVeh": "", "wbx": {"kind": "goe", "plat": "", "name": "", "ent": {}, "ph": 3},
 }
 MAX_VEHICLES = 6
 MAX_CARDS = 10
+MAX_A = 32  # 22-kW-Wallboxen laden mit bis zu 32 A
+SCHEMA = 2  # 2: Sensoren und Aussehen je Fahrzeug, Wallbox-Adapter
+EV_BODIES = ("limousine", "suv", "kombi", "kompakt")
+EV_COLORS = ("blue", "red", "white", "black", "silver", "green")
+VEH_ENT = ("soc", "odo", "range")
+WBX_KINDS = ("goe", "ha")
+WBX_ENT = ("switch", "current", "power", "status", "plug", "phase", "energy", "total")
+_EID = re.compile(r"[a-z_]+\.[a-z0-9_]{1,120}")
 
 
 def _int(v: Any, lo: int, hi: int, d: int) -> int:
@@ -69,11 +78,11 @@ def clean_wb(raw: Any) -> dict[str, Any]:
         "planOn": bool(raw.get("planOn", False)),
         "planStrat": raw.get("planStrat") if raw.get("planStrat") in PLAN_STRATS else "mix",
         "planSrc": raw.get("planSrc") if raw.get("planSrc") in PLAN_SRCS else "auto",
-        "pvSrc": raw.get("pvSrc") if raw.get("pvSrc") in PV_SRCS else "forecast",
+        "pvSrc": raw.get("pvSrc") if raw.get("pvSrc") in PV_SRCS else "auto",
     }
     out["baseW"] = _int(raw.get("baseW"), 0, 3000, d["baseW"])
-    out["minA"] = _int(raw.get("minA"), 6, 16, d["minA"])
-    out["maxA"] = max(_int(raw.get("maxA"), 6, 16, d["maxA"]), out["minA"])
+    out["minA"] = _int(raw.get("minA"), 6, MAX_A, d["minA"])
+    out["maxA"] = max(_int(raw.get("maxA"), 6, MAX_A, d["maxA"]), out["minA"])
     out["startW"] = _int(raw.get("startW"), 500, 8000, d["startW"])
     out["onMin"] = _int(raw.get("onMin"), 0, 15, d["onMin"])
     out["offMin"] = _int(raw.get("offMin"), 0, 30, d["offMin"])
@@ -98,7 +107,70 @@ def clean_wb(raw: Any) -> dict[str, Any]:
     out["notify"]["to"] = [x for x in dict.fromkeys(nt.get("to") if isinstance(nt.get("to"), list) else []) if isinstance(x, str) and re.fullmatch(r"notify\.[a-z0-9_]{1,60}", x)][:6]
     g = raw.get("guest") if isinstance(raw.get("guest"), dict) else {}
     out["guest"] = {"mode": g.get("mode") if g.get("mode") in MODES else "off", "limit": _int(g.get("limit"), 50, 100, 80)}
+    out["vs"] = _int(raw.get("vs"), 1, SCHEMA, 1)
+    dv = str(raw.get("defVeh") or "")
+    out["defVeh"] = dv if any(v["id"] == dv for v in out["vehicles"]) else ""
+    out["wbx"] = clean_wbx(raw.get("wbx"))
     return out
+
+
+def _eid(v: Any) -> str:
+    v = str(v or "").strip()
+    return v if _EID.fullmatch(v) else ""
+
+
+def clean_wbx(raw: Any) -> dict[str, Any]:
+    """Wallbox-Adapter: go-e direkt (IP) oder eine beliebige Wallbox über ihre Home-Assistant-Entitäten."""
+    raw = raw if isinstance(raw, dict) else {}
+    ent = raw.get("ent") if isinstance(raw.get("ent"), dict) else {}
+    return {
+        "kind": raw.get("kind") if raw.get("kind") in WBX_KINDS else "goe",
+        "plat": re.sub(r"[^a-z0-9_]", "", str(raw.get("plat") or ""))[:40],
+        "name": re.sub(r"[<>\"'&]", "", str(raw.get("name") or "")).strip()[:40],
+        "ent": {k: _eid(ent.get(k)) for k in WBX_ENT},
+        "ph": 1 if raw.get("ph") in (1, "1") else 3,
+    }
+
+
+def wbx_ready(cfg: dict[str, Any]) -> bool:
+    """Ist eine Wallbox eingerichtet? go-e: IP-Adresse. Andere: Schalter oder Ladestrom-Entität."""
+    w = cfg.get("wbx") or {}
+    if w.get("kind") == "ha":
+        e = w.get("ent") or {}
+        return bool(e.get("switch") or e.get("current"))
+    return bool(cfg.get("ip"))
+
+
+def migrate_v2(cfg: dict[str, Any], legacy: dict[str, Any] | None) -> tuple[dict[str, Any], str]:
+    """Einmalig: Aussehen und Sensoren aus der alten Einstellung (Modul 8, einmal für alle) zum Fahrzeug.
+
+    Gibt es Fahrzeuge, bekommt das erste die alten Sensoren (wenn es noch keine hat); die Regelung ohne Karte bleibt wie sie war.
+    Gibt es keine, wird aus Marke/Modell oder vorhandenen Sensoren ein Fahrzeug angelegt. Rückgabe: (cfg, Text fürs Protokoll).
+    """
+    out = {**cfg, "vehicles": [dict(v) for v in cfg.get("vehicles") or []], "vs": SCHEMA}
+    if out.get("pvSrc") == "forecast":
+        out["pvSrc"] = "auto"  # Forecast.Solar bleibt Rückfall, wenn Modul 16 aus ist
+    lg = legacy if isinstance(legacy, dict) else {}
+    le = lg.get("ent") if isinstance(lg.get("ent"), dict) else {}
+    ents = {k: _eid(le.get(k)) for k in VEH_ENT}
+    look = {"brand": str(lg.get("brand") or ""), "model": str(lg.get("model") or ""), "body": lg.get("body") or "limousine", "color": lg.get("color") or "blue"}
+    has = any(ents.values()) or look["brand"] or look["model"]
+    if not has:
+        return clean_wb(out), ""
+    vs = out["vehicles"]
+    if vs:
+        v0 = vs[0]
+        if not any((v0.get("ent") or {}).values()):
+            v0["ent"] = ents
+        for k in ("brand", "model", "body", "color"):
+            if not v0.get(k) or (k in ("body", "color") and v0.get(k) in (None, "")):
+                v0[k] = look[k]
+        return clean_wb(out), f"Sensoren und Aussehen übernommen: {v0.get('name') or 'Fahrzeug'}"
+    name = " ".join(x for x in (look["brand"] if look["brand"] != "Andere" else "", look["model"]) if x).strip() or "Mein Auto"
+    # gleicher Modus und gleiches Limit wie bisher, damit sich an der Regelung nichts ändert
+    vs.append({"id": "v1", "name": name, "ids": [], "mode": out.get("mode") or "pv", "limit": out.get("limit") or 80, **look, "ent": ents})
+    out["defVeh"] = "v1"
+    return clean_wb(out), f"Fahrzeug „{name}“ aus den bisherigen Einstellungen angelegt"
 
 
 def clean_vehicles(raw: Any) -> list[dict[str, Any]]:
@@ -127,17 +199,33 @@ def clean_vehicles(raw: Any) -> list[dict[str, Any]]:
         t = str(dp.get("time", "07:00"))
         dep = {"on": bool(dp.get("on", False)), "soc": _int(dp.get("soc"), 20, 100, 80), "time": t if re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", t) else "07:00",
                "days": dp.get("days") if dp.get("days") in PLAN_DAYS else "all"}
-        out.append({"id": vid, "name": name, "ids": ids, "mode": v.get("mode") if v.get("mode") in MODES else "pv", "limit": _int(v.get("limit"), 50, 100, 80), "dep": dep})
+        ent = v.get("ent") if isinstance(v.get("ent"), dict) else {}
+        try:
+            cap = float(str(v.get("cap")).replace(",", "."))
+            cap = round(min(max(cap, 10.0), 150.0), 1) if cap == cap and cap > 0 else 0.0
+        except (TypeError, ValueError):
+            cap = 0.0
+        out.append({"id": vid, "name": name, "ids": ids, "mode": v.get("mode") if v.get("mode") in MODES else "pv", "limit": _int(v.get("limit"), 50, 100, 80), "dep": dep,
+                    "brand": re.sub(r"[<>\"'&]", "", str(v.get("brand") or "")).strip()[:20], "model": re.sub(r"[<>\"'&]", "", str(v.get("model") or "")).strip()[:30],
+                    "body": v.get("body") if v.get("body") in EV_BODIES else "limousine", "color": v.get("color") if v.get("color") in EV_COLORS else "blue",
+                    "cap": cap, "ent": {k: _eid(ent.get(k)) for k in VEH_ENT}})
     return out
 
 
 def resolve_who(cfg: dict[str, Any], card: int | None) -> dict[str, Any] | None:
-    """Wer lädt? card = Kartennummer (1 bis 10) oder None. Rückgabe: kind (vehicle/guest), name, mode, limit."""
+    """Wer lädt? card = Kartennummer (1 bis 10) oder None. Rückgabe: kind (vehicle/guest), id, name, mode, limit.
+
+    Ohne Karte gilt das Fahrzeug „ohne Karte“ (defVeh), z. B. an Wallboxen ohne Kartenleser – außer bei „nur mit Karte“.
+    """
     if card is None:
-        return None
+        dv = cfg.get("defVeh")
+        v = next((x for x in cfg["vehicles"] if x["id"] == dv), None) if dv and not cfg.get("lock") else None
+        if v is None:
+            return None
+        return {"kind": "vehicle", "id": v["id"], "name": v["name"], "card": None, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep"), "auto": True}
     for v in cfg["vehicles"]:
         if card in v["ids"]:
-            return {"kind": "vehicle", "name": v["name"], "card": card, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep")}
+            return {"kind": "vehicle", "id": v["id"], "name": v["name"], "card": card, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep")}
     g = cfg["guest"]
     return {"kind": "guest", "name": "Gastfahrzeug", "card": card, "mode": g["mode"], "limit": g["limit"]}
 
