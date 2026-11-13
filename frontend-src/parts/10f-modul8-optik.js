@@ -3,6 +3,75 @@
      A6 Heute als Zeitleiste · A7 „Warum gerade so?“ · A8 Handy · A9 Hell · A10 Register „Fahrzeuge“.
      Schalter: Einstellungen → Darstellung „Wie bisher“ (cfg.look) und der globale Schalter der Grafik-Bibliothek. */
   _evNew() { return this._wb().look !== "classic" && !this._gxCfg().classic; }
+  /* Elektroauto in HD: Proportionen wie echte Autos, Radläufe, Felgen, Licht und Spiegelungen. Rückgabe: { svg, port } – port = Ladeklappe für das Kabel */
+  _evCarHD(body, color, o = {}) {
+    const S = EV_HD[body] || EV_HD.limousine, C = EV_COLORS[color] || EV_COLORS.blue, u = "hd" + String(o.uid || "x").replace(/[^a-z0-9]/gi, "");
+    const { x0, x1, wr, wf, R, BOT, belt, roof, peak, cx, cowl, nose } = S, G = 253, WY = G - R, AR = R + 5, f = (n) => n.toFixed(1);
+    const dx = Math.sqrt(AR * AR - (BOT - WY) * (BOT - WY)), light = color === "white" || color === "silver";
+    const aTop = cx - 56; // oberes Ende der Frontscheibe
+    const bodyP = `M${x0 + 14} ${BOT} C${x0 + 4} ${BOT} ${x0} ${BOT - 6} ${x0} ${BOT - 18} L${x0} ${S.tail + 18} ${S.rear(S)}
+      C${peak + 40} ${roof} ${aTop - 20} ${roof + 2} ${aTop} ${roof + 6} C${aTop + 26} ${roof + 12} ${cx - 22} ${cowl - 10} ${cx} ${cowl}
+      C${cx + 40} ${cowl + 3} ${x1 - 46} ${nose - 4} ${x1 - 14} ${nose} C${x1 - 4} ${nose + 2} ${x1} ${nose + 10} ${x1} ${nose + 20}
+      L${x1} ${BOT - 16} C${x1} ${BOT - 5} ${x1 - 5} ${BOT} ${x1 - 16} ${BOT}
+      L${f(wf + dx)} ${BOT} A${AR} ${AR} 0 1 0 ${f(wf - dx)} ${BOT} L${f(wr + dx)} ${BOT} A${AR} ${AR} 0 1 0 ${f(wr - dx)} ${BOT} Z`;
+    // Fenster: von der Fensterlinie bis knapp unters Dach
+    const sedan = body === "limousine", gx0 = sedan ? x0 + 74 : x0 + 20, rb = belt - 4;
+    const glass = (sedan
+      ? `M${gx0} ${rb} C${gx0 + 30} ${rb - 16} ${peak - 70} ${roof + 7} ${peak} ${roof + 6}`
+      : `M${gx0} ${rb} C${gx0 + 6} ${rb - 20} ${x0 + S.hd - 6} ${roof + S.drop + 12} ${x0 + S.hd + 6} ${roof + S.drop + 7} C${x0 + S.hd + 50} ${roof + S.drop + 2} ${peak - 50} ${roof + 6} ${peak} ${roof + 6}`)
+      + ` C${peak + 40} ${roof + 6} ${aTop - 22} ${roof + 8} ${aTop - 4} ${roof + 12} C${aTop + 20} ${roof + 18} ${cx - 28} ${belt - 8} ${cx - 12} ${belt} Z`;
+    const pB = Math.round((wr + wf) / 2 + 14), pC = sedan ? null : Math.round(x0 + S.hd + (body === "kompakt" ? 22 : 44));
+    const doorF = Math.round(wf - AR - 8), doorR = Math.round(wr + AR + 4), port = [Math.round(wr + 2), belt + 18];
+    const yb = (belt - roof) / (BOT - roof); // Anteil der Fensterlinie an der Höhe (für die Lackverläufe)
+    const wheel = (cx0) => {
+      const rr = R * 0.7, sp = Array.from({ length: 10 }, (_, k) => { const a = (k * 36) * Math.PI / 180, a2 = a + 0.2;
+        return `<path d="M${f(cx0 + Math.cos(a) * 7)} ${f(WY + Math.sin(a) * 7)} L${f(cx0 + Math.cos(a) * (rr - 2))} ${f(WY + Math.sin(a) * (rr - 2))} L${f(cx0 + Math.cos(a2) * (rr - 2))} ${f(WY + Math.sin(a2) * (rr - 2))} Z" fill="${k % 2 ? "#aab3bf" : "url(#" + u + "rim)"}"/>`; }).join("");
+      return `<g><circle cx="${cx0}" cy="${WY}" r="${R}" fill="#121418"/><circle cx="${cx0}" cy="${WY}" r="${R - 2.5}" fill="none" stroke="#23272e" stroke-width="2.4"/>
+        <circle cx="${cx0}" cy="${WY}" r="${f(rr + 1.5)}" fill="#2b3038"/><circle cx="${cx0}" cy="${WY}" r="${f(rr - 1)}" fill="#171a20"/>
+        <circle cx="${cx0 + 6}" cy="${WY + 3}" r="${f(rr * 0.62)}" fill="#3a3f47"/><path d="M${cx0 + 2} ${f(WY - rr * 0.55)} a${f(rr * 0.4)} ${f(rr * 0.4)} 0 0 1 ${f(rr * 0.5)} ${f(rr * 0.3)}" fill="none" stroke="#c62828" stroke-width="4" opacity=".8"/>${sp}
+        <circle cx="${cx0}" cy="${WY}" r="${f(rr)}" fill="none" stroke="url(#${u}rim)" stroke-width="2"/><circle cx="${cx0}" cy="${WY}" r="7" fill="url(#${u}rim)"/><circle cx="${cx0}" cy="${WY}" r="3.2" fill="#2b313b"/>
+        <path d="M${f(cx0 - R + 4)} ${WY - 6} A${R - 3} ${R - 3} 0 0 1 ${cx0 - 4} ${f(WY - R + 4)}" fill="none" stroke="#fff" stroke-width="1.4" opacity=".12"/></g>`;
+    };
+    const shoulder = `M${x0 + 8} ${belt + 12} C${x0 + 120} ${belt + 9} ${x1 - 160} ${belt + 8} ${x1 - 16} ${nose + 8}`;
+    const lowCrease = `M${wr + AR + 10} ${BOT - 26} C${wr + 120} ${BOT - 30} ${wf - 120} ${BOT - 30} ${wf - AR - 10} ${BOT - 27}`;
+    return { port, svg: `<defs>
+      <linearGradient id="${u}p" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="${C[1]}"/><stop offset="${f(yb * 0.9)}" stop-color="${C[2]}"/><stop offset="${f(yb + 0.08)}" stop-color="${C[1]}"/><stop offset="${f(yb + 0.16)}" stop-color="${C[2]}"/>
+        <stop offset=".72" stop-color="${C[3]}"/><stop offset=".86" stop-color="${C[2]}"/><stop offset="1" stop-color="${C[4]}"/></linearGradient>
+      <linearGradient id="${u}g" x1="0" y1="0" x2=".3" y2="1"><stop offset="0" stop-color="#4b6075"/><stop offset=".4" stop-color="#1c2836"/><stop offset="1" stop-color="#090e15"/></linearGradient>
+      <linearGradient id="${u}rim" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3f5f8"/><stop offset=".55" stop-color="#9ca5b2"/><stop offset="1" stop-color="#d9dee5"/></linearGradient>
+      <linearGradient id="${u}x" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".28"/><stop offset=".12" stop-color="#000" stop-opacity="0"/><stop offset=".85" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>
+      <clipPath id="${u}b"><path d="${bodyP}"/></clipPath><clipPath id="${u}gc"><path d="${glass}"/></clipPath>
+      <filter id="${u}bl" x="-10%" y="-80%" width="120%" height="260%"><feGaussianBlur stdDeviation="4"/></filter><filter id="${u}gw" x="-50%" y="-300%" width="200%" height="700%"><feGaussianBlur stdDeviation="2.4"/></filter></defs>
+      <ellipse cx="${(x0 + x1) / 2}" cy="${G}" rx="${(x1 - x0) / 1.9}" ry="7" fill="#000" opacity=".45" filter="url(#${u}bl)"/>
+      <ellipse cx="${wr}" cy="${G - 0.5}" rx="${R * 0.85}" ry="3" fill="#000" opacity=".6"/><ellipse cx="${wf}" cy="${G - 0.5}" rx="${R * 0.85}" ry="3" fill="#000" opacity=".6"/>
+      <circle cx="${wr}" cy="${WY}" r="${AR - 0.5}" fill="#07080b"/><circle cx="${wf}" cy="${WY}" r="${AR - 0.5}" fill="#07080b"/>
+      <path d="${bodyP}" fill="url(#${u}p)"/>
+      <g clip-path="url(#${u}b)">
+        <rect x="${x0}" y="${roof - 6}" width="${x1 - x0}" height="${BOT - roof + 8}" fill="url(#${u}x)"/>
+        <path d="${shoulder}" fill="none" stroke="#fff" stroke-width="1.8" opacity="${light ? .75 : .45}"/><path d="${shoulder}" fill="none" stroke="#000" stroke-width="1.6" opacity=".18" transform="translate(0 2)"/>
+        <path d="${lowCrease}" fill="none" stroke="#fff" stroke-width="1.4" opacity="${light ? .5 : .22}"/>
+        <path d="M${x0} ${BOT - 11} L${x1} ${BOT - 11} L${x1} ${BOT + 2} L${x0} ${BOT + 2} Z" fill="#14171c"/><path d="M${x0} ${BOT - 11.5} L${x1} ${BOT - 11.5}" stroke="#fff" stroke-width="1" opacity=".14"/>
+        ${S.clad ? `<circle cx="${wr}" cy="${WY}" r="${AR + 4}" fill="none" stroke="#1a1d22" stroke-width="9"/><circle cx="${wf}" cy="${WY}" r="${AR + 4}" fill="none" stroke="#1a1d22" stroke-width="9"/><path d="M${x0} ${BOT - 18} L${x1} ${BOT - 18}" stroke="#1a1d22" stroke-width="14"/>` : ""}
+        <circle cx="${wr}" cy="${WY}" r="${AR + 3}" fill="none" stroke="#000" stroke-width="4" opacity=".22"/><circle cx="${wf}" cy="${WY}" r="${AR + 3}" fill="none" stroke="#000" stroke-width="4" opacity=".22"/>
+        <g stroke="${C[4]}" stroke-width="1.2" fill="none" opacity="${light ? .5 : .75}"><path d="M${doorF} ${belt - 1} C${doorF + 3} ${belt + 30} ${doorF + 1} ${BOT - 26} ${doorF - 4} ${BOT - 11}"/><path d="M${pB} ${belt - 2} L${pB - 2} ${BOT - 11}"/><path d="M${doorR} ${belt - 1} C${doorR - 2} ${belt + 30} ${doorR} ${BOT - 26} ${doorR + 3} ${BOT - 11}"/></g>
+        <rect x="${pB - 50}" y="${belt + 14}" width="20" height="3.2" rx="1.6" fill="#000" opacity=".35"/><rect x="${pB + 30}" y="${belt + 14}" width="20" height="3.2" rx="1.6" fill="#000" opacity=".35"/>
+        <rect x="${port[0] - 9}" y="${port[1] - 6}" width="18" height="12" rx="3.5" fill="none" stroke="${C[4]}" stroke-width="1" opacity=".75"/>
+      </g>
+      <path d="${glass}" fill="url(#${u}g)"/>
+      <g clip-path="url(#${u}gc)"><path d="M${peak - 30} ${belt} L${peak + 10} ${roof} L${peak + 42} ${roof} L${peak + 2} ${belt} Z" fill="#fff" opacity=".12"/><path d="M${aTop + 6} ${belt} L${aTop + 30} ${roof} L${aTop + 40} ${roof} L${aTop + 16} ${belt} Z" fill="#fff" opacity=".08"/>
+        <rect x="${pB - 3}" y="${roof}" width="6" height="${belt - roof + 4}" fill="#05070a"/>${pC ? `<rect x="${pC - 3}" y="${roof}" width="${body === "kompakt" ? 12 : 8}" height="${belt - roof + 4}" fill="#05070a"/>` : ""}
+        <rect x="${x0}" y="${belt - 8}" width="${x1 - x0}" height="8" fill="#000" opacity=".25"/></g>
+      <path d="${glass}" fill="none" stroke="#05070a" stroke-width="2.2"/><path d="${glass}" fill="none" stroke="#cbd5e1" stroke-width=".8" opacity=".35" transform="translate(0 -2)"/>
+      <path d="M${cx - 8} ${belt} C${cx - 7} ${belt - 6} ${cx + 4} ${belt - 8} ${cx + 10} ${belt - 4} L${cx + 8} ${belt + 2} L${cx - 5} ${belt + 2} Z" fill="${C[3]}" stroke="#05070a" stroke-width=".9"/>
+      <path d="M${x1 - 42} ${nose + 4} C${x1 - 24} ${nose + 4} ${x1 - 8} ${nose + 7} ${x1 - 2} ${nose + 12}" fill="none" stroke="#eef7ff" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M${x1 - 42} ${nose + 4} C${x1 - 24} ${nose + 4} ${x1 - 8} ${nose + 7} ${x1 - 2} ${nose + 12}" fill="none" stroke="#bfe3ff" stroke-width="6" stroke-linecap="round" opacity="${o.night ? .85 : .3}" filter="url(#${u}gw)"/>
+      <path d="M${x1 - 30} ${BOT - 18} L${x1 - 4} ${BOT - 18}" stroke="#05070a" stroke-width="4" stroke-linecap="round" opacity=".7"/>
+      <path d="M${x0 + 1} ${S.tail + 6} L${x0 + 34} ${S.tail + 3}" stroke="#c81e2c" stroke-width="3.4" stroke-linecap="round"/><path d="M${x0 + 1} ${S.tail + 6} L${x0 + 34} ${S.tail + 3}" stroke="#ff4d5e" stroke-width="7" stroke-linecap="round" opacity="${o.night ? .75 : .22}" filter="url(#${u}gw)"/>
+      <path d="${bodyP}" fill="none" stroke="${C[4]}" stroke-width="1.2" opacity=".7"/>
+      ${o.port !== false ? `<circle cx="${port[0]}" cy="${port[1]}" r="3" fill="${o.chg ? "#22e06b" : "#9aa5b1"}"/>` : ""}
+      ${wheel(wr)}${wheel(wf)}` };
+  }
   /* Zustand für Banner, Satz-Zeile, Band und Kacheln an einer Stelle */
   _evNow(d) {
     const sn = this._wbSnap(), c = sn.cfg, i = sn.info || {}, w = sn.want || {}, who = sn.who, v = d.veh, wbOn = this._wbOn(c);
@@ -24,7 +93,8 @@
     const L = this._evLook(d.veh), u = "evb" + (o.sfx || ""), sx = o.sx != null ? o.sx : W - 690, s = o.s || 1, gy = H - 30, night = N.night;
     const line = d.charging ? (N.sun != null && N.sun < 50 ? "#fb923c" : "#fde047") : "", glow = d.charging ? "#22e06b" : d.plugged ? "#ffa51f" : "#9aa5b1";
     const pv = Array.from({ length: 12 }, (_, k) => `<rect x="${k * 46 + 4}" y="0" width="42" height="11" rx="1.5" fill="url(#${u}pv)" stroke="#9fb6d6" stroke-width=".6" opacity="${night ? .55 : 1}"/>`).join("");
-    const cab = "M104 206 C100 262 200 262 238 233 C262 216 274 206 286 196";
+    const car = this._evCarHD(L.body, L.color, { uid: u + "c", chg: d.charging, night }), ex = car.port[0] - 66, ey = car.port[1] + 22;
+    const cab = `M104 206 C100 262 ${ex - 110} 262 ${ex - 52} ${ey + 34} C${ex - 28} ${ey + 22} ${ex - 10} ${ey + 8} ${ex - 2} ${ey + 1}`;
     return `<svg class="evsc" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><defs>
       <linearGradient id="${u}sky" x1="0" y1="0" x2="0" y2="1">${night ? `<stop offset="0" stop-color="#0b1530"/><stop offset=".7" stop-color="#1d2b4f"/><stop offset="1" stop-color="#2c3a5e"/>` : `<stop offset="0" stop-color="#3f86d6"/><stop offset=".65" stop-color="#a9d3f3"/><stop offset="1" stop-color="#e6f3fb"/>`}</linearGradient>
       <radialGradient id="${u}sun"><stop offset="0" stop-color="${night ? "#e0e7ff" : "#fff7c2"}"/><stop offset=".35" stop-color="${night ? "#c7d2fe" : "#fde68a"}" stop-opacity=".7"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
@@ -45,7 +115,7 @@
         <g transform="translate(150 54)"><rect x="0" y="0" width="560" height="10" fill="#4b5563"/><g transform="translate(6 -11)">${pv}</g><rect x="540" y="10" width="10" height="206" fill="#6b7280"/></g>
         ${line ? `<path d="M300 50 C300 18 140 28 110 120" fill="none" stroke="${line}" stroke-width="10" opacity=".3" filter="url(#${u}gl)"/><path d="M300 50 C300 18 140 28 110 120" fill="none" stroke="${line}" stroke-width="4" stroke-dasharray="7 9" stroke-linecap="round" class="evflow"/>` : ""}
         ${d.plugged ? `<path d="${cab}" fill="none" stroke="#0b0e12" stroke-width="8" stroke-linecap="round"/>${d.charging ? `<path d="${cab}" fill="none" stroke="#22e06b" stroke-width="12" opacity=".35" filter="url(#${u}gl)"/><path d="${cab}" fill="none" stroke="#86efac" stroke-width="2.4" stroke-dasharray="5 11" stroke-linecap="round" class="evflow"/>` : ""}` : ""}
-        <g transform="translate(-30 22)">${this._evCar(L, u + "c", d.charging, night)}</g>
+        <g transform="translate(-66 22)">${car.svg}</g>${d.plugged ? `<g transform="rotate(-40 ${ex} ${ey})"><rect x="${ex - 15}" y="${ey - 6}" width="18" height="12" rx="4" fill="#14181e" stroke="#2c333c"/></g>` : ""}
       </g></svg>`;
   }
   _evBanner() {

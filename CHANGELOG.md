@@ -5,8 +5,9 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 ## [2026.11.3b16] - 2026-11-13
 
 ### Neu
-- **Modul 8 · Elektroauto & Wallbox (v0.7 Build 1): Neue Optik** – zweite Stufe aus dem Konzept „Modul 8 – Neue Optik“ (Teil A). Abschaltbar unter Modul 8 → Einstellungen → Darstellung „Wie bisher“.
+- **Modul 8 · Elektroauto & Wallbox (v0.7 Build 2): Neue Optik** – zweite Stufe aus dem Konzept „Modul 8 – Neue Optik“ (Teil A). Abschaltbar unter Modul 8 → Einstellungen → Darstellung „Wie bisher“.
   - **Carport-Szene als Banner:** Hauswand mit Wallbox, Carport mit flach aufliegenden Modulen und das Auto in Form und Farbe des Fahrzeugs. Beim Laden leuchtet die Linie Sonne → Wallbox → Auto (gelb mit Sonne, orange mit Netz) und das Kabel. Nachts dunkler Himmel mit Mond. Groß: Ladestand → Ziel, darunter „fertig ca. …“.
+  - **Autos realistischer (Build 2):** Alle vier Formen (Limousine, Kompakt, Kombi, SUV) neu gezeichnet – Proportionen wie echte Autos, Radläufe mit Spalt, Aero-Felgen, LED-Tagfahrlicht und Rücklicht, Schulterlinie und Lackspiegelung, Ladeklappe am hinteren Kotflügel, an der das Kabel steckt; SUV mit dunkler Radlauf-Verkleidung. Weiterhin allgemein gehalten, ohne Logos und keinem echten Modell nachgebaut. Gilt für Banner, Fahrzeugliste und „Aussehen & Sensoren“.
   - **Satz-Zeile** statt Chip-Leiste: „Alles läuft. Dolphin Surf lädt mit Sonne …“ – Hinweise mit Sprung zur Lösung bleiben.
   - **Ladeband jetzt → Ziel** mit Abfahrtszeit, „noch … kWh“, „fertig ca.“ und Limit.
   - **Kacheln 2.0** mit HD-Symbolen: Ladestand, Ladeleistung mit Herkunfts-Ring (Sonne/Netz), diese Ladung mit heute, Reichweite. Kein Wert steht mehr doppelt.

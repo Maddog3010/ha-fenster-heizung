@@ -67,7 +67,7 @@
   _evLook(v) { v = v === undefined ? this._evVeh() : v; const L = this._evState(); return v ? { brand: v.brand || "", model: v.model || "", body: v.body || "limousine", color: v.color || "blue", name: v.name } : { brand: L.brand, model: L.model, body: L.body, color: L.color, name: "" }; }
   _evTitle(v) { const L = this._evLook(v); return v || (v === undefined && this._evVeh()) ? (L.name || "Fahrzeug") : ([L.brand === "Andere" ? "" : L.brand, L.model].filter(Boolean).join(" ") || "Fahrzeug & Wallbox"); }
   _evVehLine(x, soc) { const st = this._hass.states, E = x.ent || {}, ok = (e) => e && st[e]; return [soc != null ? `${num(soc, 0)} %` : E.soc ? (ok(E.soc) ? "Ladestand ohne Wert" : "Ladestand-Sensor fehlt") : "kein Ladestand-Sensor", x.cap ? `Akku ${num(x.cap, 1)} kWh` : "", E.odo && ok(E.odo) ? `${num(this._evNum(E.odo), 0)} km` : ""].filter(Boolean).map(esc).join(" · "); }
-  _evThumb(x, w = 96) { return `<svg viewBox="270 92 430 170" width="${w}" height="${Math.round(w * 0.4)}" aria-hidden="true">${this._evCar(this._evLook(x), "t" + x.id)}</svg>`; }
+  _evThumb(x, w = 96) { const L = this._evLook(x); return `<svg viewBox="282 96 428 164" width="${w}" height="${Math.round(w * 0.383)}" aria-hidden="true">${this._evCarHD(L.body, L.color, { uid: "t" + x.id, port: false }).svg}</svg>`; }
   /* Auto allein (für Fahrzeugliste und Bearbeiten): gleiche Formen und Farben wie die Szene */
   _evCar(L, sfx, chg = false, night = false) {
     const H = EV_SHAPES[L.body] || EV_SHAPES.limousine, C = EV_COLORS[L.color] || EV_COLORS.blue, [w1, w2] = H.wh, [px, py] = H.port, u = "evc" + String(sfx).replace(/[^a-z0-9]/gi, "");
@@ -168,7 +168,7 @@
     const d = { soc, charging: false, plugged: false, power: null, veh: x };
     return `<div class="ov" data-act="wbrvdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${esc(x.name)}</b><span>Fahrzeug · Modul 8</span></div><button class="ibtn" data-act="wbrvdone" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="evprev">${this._evScene(d).replace(/(id="|url\(#)ev/g, "$1evm")}</div>
+      <div class="evprev">${this._evNew() ? this._evCarport(d, this._evNow(d), 760, 250, { sfx: "sh", sx: 760 - 610, s: 0.86 }) : this._evScene(d).replace(/(id="|url\(#)ev/g, "$1evm")}</div>
       <div class="mut sm" style="margin:8px 0 4px">Name</div><input class="otxt" type="text" maxlength="30" data-f="wbvn" data-v="${x.id}" value="${esc(x.name)}" aria-label="Name des Fahrzeugs">
       <div class="mut sm" style="margin:8px 0 4px">Marke (nur Beschriftung)</div><div class="gschips">${EV_BRANDS.map((b) => `<button class="gsch ${L.brand === b ? "sel" : ""}" data-act="wbrvbrand" data-v="${x.id}" data-k="${esc(b)}" aria-pressed="${L.brand === b}">${esc(b)}</button>`).join("")}</div>
       <div class="mut sm" style="margin:6px 0 4px">Modell (optional)</div><input class="otxt" type="text" maxlength="30" data-f="wbvm" data-v="${x.id}" value="${esc(x.model || "")}" placeholder="z. B. Modellname" aria-label="Modell">
