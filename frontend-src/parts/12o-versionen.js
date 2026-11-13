@@ -2,7 +2,7 @@
   _mvChip(id) {
     const m = MV[id]; if (!m) return "";
     const o = this._mvO === id;
-    return `<button class="mvb${o ? " on" : ""}" data-act="mvx" data-k="${id}" aria-expanded="${o}" aria-label="Versionen und Änderungen des Moduls">v${esc(m.v)} · Build ${m.b} ${o ? "▴" : "▾"}</button>`;
+    return `<button class="mvb${o ? " on" : ""}" data-act="mvx" data-k="${id}" aria-expanded="${o}" aria-label="Versionen und Änderungen des Moduls">v${esc(m.v)}<span class="mvbb"> · Build ${m.b}</span> ${o ? "▴" : "▾"}</button>`;
   }
   _mvVer(id) { const m = MV[id]; return m ? `${this._mvChip(id)}${this._verTag()}` : this._verTag(); }
   _mvStg(id) { const mm = this._mvAll().find((x) => x.id === id), s = mm && modSt(mm); return MV_STG.find((x) => x[0] === s) || null; }

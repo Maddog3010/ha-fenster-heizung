@@ -14,6 +14,9 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
   - Lounge, Einstellungen und Beta-Sperre zeigen die Dollar-Stufen statt „3 Monate für 9 €“. In „Sponsoren verwalten“ neuer Abschnitt „Freischaltung über GitHub“.
   - Das Token liegt nur im Sponsor-Speicher von Home Assistant (nicht in den Server-Sicherungen) und kann unter GitHub → Settings → Applications widerrufen werden.
 
+### Behoben
+- **Kopf am Handy:** „Strom & Wärme“ bricht nicht mehr in zwei Zeilen um, der Modulname ist wieder lesbar (statt „Fenster …“) und die Modulversion zeigt am Handy nur „v1.8“ statt abgeschnitten „v1.8 · Build“. Knöpfe und Logo im Kopf sind dafür etwas kompakter.
+
 ## [2026.11.3b12] - 2026-11-12
 
 ### Behoben

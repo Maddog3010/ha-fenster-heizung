@@ -2911,6 +2911,17 @@ const CSS_GH = `
 .ghfine{margin-top:10px;font-size:.72rem;line-height:1.4;text-align:center;opacity:.8}
 .ghinfo{display:flex;gap:10px;align-items:flex-start;font-size:.86rem;line-height:1.45;background:color-mix(in srgb,#38bdf8 10%,transparent);border-radius:14px;padding:12px}
 .lgchip.gh{display:inline-flex;align-items:center;gap:5px}.ghtiers{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+/* Kopf am Handy (schmale Ansicht): Name, Titel und Version lesbar, Knöpfe kompakter */
+.bar.nar{gap:4px;padding:8px 8px}
+.bar.nar .ib0{padding:4px}
+.bar.nar .pillbtn{padding:6px;gap:0}.bar.nar .pillbtn svg{width:16px;height:16px}
+.bar.nar .pillbtn.spnb.gold{box-shadow:0 0 8px rgba(251,191,36,.35)}
+.bar.nar .brand{gap:7px}.bar.nar .blogo{width:34px;height:34px}
+.bar.nar .brand .pn{font-size:.56rem;letter-spacing:.07em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px}
+.bar.nar .brand b{font-size:.86rem;line-height:1.2;letter-spacing:-.01em}
+.bar.nar .brand div span{font-size:.68rem;margin-top:1px}
+.bar.nar .mvb{padding:0 6px;margin-right:4px;font-size:.66rem}.bar.nar .mvb .mvbb{display:none}
+@media(max-width:360px){.bar.nar .brand .pn{display:none}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -13588,7 +13599,7 @@ class FensterHeizungPanel extends HTMLElement {
   _mvChip(id) {
     const m = MV[id]; if (!m) return "";
     const o = this._mvO === id;
-    return `<button class="mvb${o ? " on" : ""}" data-act="mvx" data-k="${id}" aria-expanded="${o}" aria-label="Versionen und Änderungen des Moduls">v${esc(m.v)} · Build ${m.b} ${o ? "▴" : "▾"}</button>`;
+    return `<button class="mvb${o ? " on" : ""}" data-act="mvx" data-k="${id}" aria-expanded="${o}" aria-label="Versionen und Änderungen des Moduls">v${esc(m.v)}<span class="mvbb"> · Build ${m.b}</span> ${o ? "▴" : "▾"}</button>`;
   }
   _mvVer(id) { const m = MV[id]; return m ? `${this._mvChip(id)}${this._verTag()}` : this._verTag(); }
   _mvStg(id) { const mm = this._mvAll().find((x) => x.id === id), s = mm && modSt(mm); return MV_STG.find((x) => x[0] === s) || null; }
