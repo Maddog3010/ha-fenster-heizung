@@ -807,13 +807,14 @@ async def ws_get_modules(hass: HomeAssistant, connection, msg: dict) -> None:
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/bak_list"})
 @websocket_api.async_response
 async def ws_bak_list(hass: HomeAssistant, connection, msg: dict) -> None:
-    from .backup import label, stores
+    from .backup import describe, stores
     out = []
     for key, st in stores(hass).items():
         inf = st.info()
         if inf["snaps"]:
-            out.append({"key": key, "name": label(key), "snaps": inf["snaps"]})
-    out.sort(key=lambda x: x["name"])
+            name, grp = describe(hass, key)
+            out.append({"key": key, "name": name, "grp": grp, "snaps": inf["snaps"]})
+    out.sort(key=lambda x: x["name"].lower())
     connection.send_result(msg["id"], {"stores": out})
 
 

@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b19] - 2026-11-13
+
+### Geändert
+- **Updates gehören jetzt zu „Versionen & Updates“** (Einstellungen → System): Stand der Installation, „Jetzt prüfen“, „Was ist neu?“ und der Schalter „Auf neue Versionen hinweisen“ stehen ganz oben. Liegt ein Update bereit, zeigt die Zeile in den Einstellungen „Update“. Unter „Sichern & Wiederherstellen“ steht nur noch das Sichern.
+- **Automatische Sicherungen kompakt:** zugeklappt nur eine Zeile („20 Bereiche gesichert · neueste Kopie …“). Aufgeklappt gruppiert nach Räumen, Modulen, Addons und System, je Bereich eine Zeile; die Stände zum Wiederherstellen erscheinen erst nach Antippen.
+- Räume heißen in der Liste wie der Raum (statt „Raum“), Addons mit ihrem Namen (statt „addons“). Gelöschte Räume stehen als „Raum (gelöscht)“.
+
+### Neu
+- **Addons in den Modulversionen:** „Modul- und Addon-Versionen“ zeigt installierte Addons mit Stufe, Version, Build, Status (pausiert, Fehler) und einem Link zum verfügbaren Update.
+
 ## [2026.11.3b18] - 2026-11-13
 
 ### Behoben

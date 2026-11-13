@@ -6,7 +6,15 @@
     if (q) return h + `<div class="gbox"><b>${esc(q.n)}</b>Stand vom ${esc(q.t)} wiederherstellen?<br><span class="mut">Das ersetzt den aktuellen Stand, sobald du die Integration neu lädst oder Home Assistant neu startest.</span></div><div class="foot2"><button class="btn2" data-act="bakno">Abbrechen</button><button class="btn2 pri" data-act="bakyes">Wiederherstellen</button></div>`;
     if (!L) return h + `<div class="mut sm">Wird geladen …</div>`;
     if (!L.length) return h + `<div class="mut sm">Noch keine Sicherungen vorhanden. Sie entstehen automatisch bei Änderungen.</div>`;
-    return h + L.map((x) => `<div class="gst" style="flex-wrap:wrap;gap:6px">${esc(x.name)}<span style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">${x.snaps.map((s) => `<button class="btn2" data-act="bakgo" data-k="${esc(x.key)}" data-i="${s.i}" data-n="${esc(x.name)}" data-t="${esc(fd(s.ts))}">${esc(fd(s.ts))}</button>`).join("")}</span></div>`).join("");
+    /* Kompakt: zugeklappt nur eine Zeile; aufgeklappt je Gruppe eine Zeile pro Bereich, die Stände erst nach Antippen */
+    const last = L.reduce((t, x) => { const v = (x.snaps[0] || {}).ts || ""; return v > t ? v : t; }, "");
+    const head = `<button class="sxrow bakhd" data-act="bakopen" aria-expanded="${!!m.bakOpen}"><span class="sxi">${ic("shield", 20)}</span><span class="sxt"><b>${L.length} ${L.length === 1 ? "Bereich" : "Bereiche"} gesichert</b><small>Neueste Kopie ${esc(fd(last))} · je Bereich bis zu 4 Stände</small></span><span class="sxg" style="${m.bakOpen ? "transform:rotate(0)" : ""}">${ic("chev", 16)}</span></button>`;
+    if (!m.bakOpen) return h + head;
+    const G = [["rooms", "Räume"], ["mods", "Module"], ["addons", "Addons"], ["sys", "System"]];
+    const row = (x) => { const o = m.bakSel === x.key;
+      return `<div class="bakr ${o ? "o" : ""}"><button class="bakrh" data-act="bakrow" data-k="${esc(x.key)}" aria-expanded="${o}"><b>${esc(x.name)}</b><small>${esc(fd((x.snaps[0] || {}).ts))}${x.snaps.length > 1 ? ` · ${x.snaps.length} Stände` : ""}</small><span class="sxg">${ic("chev", 14)}</span></button>
+        ${o ? `<div class="bakts"><span class="mut sm">Stand wiederherstellen:</span>${x.snaps.map((s, i) => `<button class="btn2" data-act="bakgo" data-k="${esc(x.key)}" data-i="${s.i}" data-n="${esc(x.name)}" data-t="${esc(fd(s.ts))}">${esc(fd(s.ts))}${i === 0 ? " · neueste" : ""}</button>`).join("")}</div>` : ""}</div>`; };
+    return h + head + `<div class="bakl">${G.map(([g, t]) => { const xs = L.filter((x) => (x.grp || "mods") === g); return xs.length ? `<div class="bakg">${t}</div>${xs.map(row).join("")}` : ""; }).join("")}</div>`;
   }
   async _savePlan() {
     const m = this._modal, entries = m.draft.entries.filter((e) => e.days.length);
@@ -475,9 +483,6 @@
         : `<div class="gbtns"><button class="btn2" data-act="bk">${ic("download", 16)}Sicherung speichern</button><button class="btn2" data-act="rs">${ic("upload", 16)}Sicherung einlesen</button></div><input type="file" accept="application/json,.json" data-f="rsfile" hidden>`}
         ${rs ? "" : this._ebkHtml(m)}
         ${rs ? "" : this._bakHtml(m)}
-        <div class="lsec">${ic("bell", 15)}Updates</div>
-        <div class="ltog"><span>Auf neue Versionen hinweisen</span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Update-Hinweise"></button></div>
-        <div class="gst">${ic("info", 15)}Installiert ${esc(this._ver || "–")}${u ? ` · neueste ${esc(u.latest)}` : ""}<button class="lnk" data-act="chk" style="margin-left:auto">Jetzt prüfen</button></div>
         <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     } else if (m.type === "news") {
       const u = this._upd || { latest: "", notes: [] };

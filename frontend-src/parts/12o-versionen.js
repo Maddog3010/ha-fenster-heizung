@@ -34,11 +34,12 @@
         <ul class="rlt">${r.t.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>${r.c.length ? `<div class="rlc">${r.c.map((c) => `<em>${esc(c)}</em>`).join("")}</div>` : ""}</div>`).join("");
     const n = this._mvAll().length;
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Versionen</b><span>${beta ? "Beta" : "Version"} ${esc(cur || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="sh"><div><b>Versionen &amp; Updates</b><span>${beta ? "Beta" : "Version"} ${esc(cur || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       ${beta ? `<div class="rlbeta">${ic("flask", 18)}<div><b>Beta installiert: ${esc(cur)}</b><span>Testversion, die Änderungen folgen mit dem nächsten stabilen Update.</span></div></div>` : ""}
+      ${this._updBox()}
       <div class="lsec">${ic("puzzle", 15)}Integration · letzte ${list.length} Versionen</div>
       <div class="rll">${rels || `<div class="mut sm">Keine Einträge gefunden.</div>`}</div>
-      <div class="rlrows"><button class="sxrow" data-act="mvsub" data-k="mod"><span class="sxi">${ic("layers", 20)}</span><span class="sxt"><b>Modulversionen</b><small>${n} Module: Version, Build und Reifegrad, so läuft der Aufstieg</small></span><span class="sxg">${ic("chev", 16)}</span></button>
+      <div class="rlrows"><button class="sxrow" data-act="mvsub" data-k="mod"><span class="sxi">${ic("layers", 20)}</span><span class="sxt"><b>Modul- und Addon-Versionen</b><small>${n} Module${(() => { const k = this._adState().addons.filter((x) => x.installed).length; return k ? ` und ${k} ${k === 1 ? "Addon" : "Addons"}` : ""; })()}: Version, Build und Reifegrad</small></span><span class="sxg">${ic("chev", 16)}</span></button>
       <a class="sxrow" href="https://github.com/Maddog3010/ha-fenster-heizung/releases" target="_blank" rel="noopener"><span class="sxi">${ic("link", 20)}</span><span class="sxt"><b>Alle Versionen auf GitHub</b><small>Vollständige Änderungen jeder Version</small></span><span class="sxg">${ic("chev", 16)}</span></a></div>
       <div class="lsec">${ic("info", 15)}So liest du die Hauptversion</div>
       <div class="rlx"><div class="rlxn"><i>2026</i>.<i>11</i>.<i>1</i></div>
@@ -47,15 +48,35 @@
         <p>Was sich in einem Modul geändert hat, zeigen die Modulversionen.</p></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
+  /* Updates der Integration: Stand, Suche und Hinweis – gehört zu den Versionen (vorher unter „Sichern & Wiederherstellen“) */
+  _updBox() {
+    const u = this._upd, g = this._gen || {}, cur = this._ver || "", nw = u && u.latest && vgt(u.latest, cur);
+    return `<div class="updbox ${nw ? "nw" : ""}"><span class="sxi">${ic(nw ? "download" : "check", 20)}</span><div class="updt"><b>${nw ? `Update verfügbar: ${esc(u.latest)}` : "Du hast die neueste Version"}</b><small>Installiert ${esc(cur || "–")}${u && u.latest && !nw ? ` · neueste ${esc(u.latest)}` : ""}${u && u.error ? ` · Prüfung zuletzt nicht möglich` : ""}</small></div>
+      <div class="updb">${nw ? `<button class="btn2 pri" data-act="news">Was ist neu?</button>` : ""}<button class="btn2" data-act="chk">${ic("refresh", 16)} Jetzt prüfen</button></div></div>
+      <div class="ltog"><span>Auf neue Versionen hinweisen<small class="mut" style="display:block">Zeigt ein neues Update oben im Dashboard an. Aktualisiert wird in HACS.</small></span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Auf neue Versionen hinweisen"></button></div>`;
+  }
+  /* Addons in den Modulversionen: installierte Addons mit Version, Build, Stufe und verfügbarem Update */
+  _mvAddons() {
+    this._adLoad();
+    const A = this._adState().addons.filter((x) => x.installed);
+    if (!A.length) return "";
+    const rows = A.map((x) => { const g = STG[x.stage] || STG.dev, m = /^(\S+) Build (\d+)/.exec(x.cur || "") || [, x.version, x.build];
+      const st = x.status === "paused" ? `<span class="mut">pausiert</span>` : x.status === "error" ? `<span style="color:var(--red)">Fehler</span>` : "";
+      return `<tr><td>${ic(x.icon || "puzzle", 15)} ${esc(x.short || x.name)} ${st}</td><td>${g ? `<em class="sxc ${g.c}">${g.t}</em>` : ""}</td><td><b>v${esc(m[1])}</b></td><td>${esc(m[2])}</td><td>${x.update ? `<button class="lnk" data-act="adxupd" data-k="${esc(x.id)}">Update${x.remote ? " " + esc(x.remote.version) : ""}</button>` : ""}</td></tr>`; }).join("");
+    return `<div class="lsec">${ic("puzzle", 15)}Addons</div>
+      <div class="mvt"><table><thead><tr><th>Addon</th><th>Stufe</th><th>Version</th><th>Build</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="mut sm" style="margin:6px 0 4px">Addons haben eigene Versionen und werden in der Addon-Verwaltung aktualisiert.</div>`;
+  }
   _mvModModal() {
     const rows = this._mvAll().map((x) => { const m = MV[x.id], g = STG[modSt(x)];
       return `<tr><td><span class="mut">Modul ${x.n}</span> ${esc(x.short)}</td><td>${g ? `<em class="sxc ${g.c}">${g.t}</em>` : `<em class="sxc lab">Lab</em>`}</td><td><b>v${esc(m.v)}</b></td><td>${m.b}</td><td>${this._mvNew(x.id) ? `<span class="mvn">NEU</span>` : ""}</td></tr>`; }).join("");
     const leg = MV_STG.slice().reverse().map((s) => `<div class="mvl"><em class="sxc ${STG[s[0]].c}">${STG[s[0]].t}</em><div><b>Version ${s[1]}</b><br>${s[2]} ${s[3]}<br><span class="mut">${s[4]}</span></div></div>`).join("");
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><button class="ibtn" data-act="mvsub" data-k="" aria-label="Zurück zu Versionen">${ic("back", 20)}</button><div style="flex:1"><b>Modulversionen</b><span>Version ${esc(this._ver || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="sh"><button class="ibtn" data-act="mvsub" data-k="" aria-label="Zurück zu Versionen">${ic("back", 20)}</button><div style="flex:1"><b>Modul- und Addon-Versionen</b><span>Version ${esc(this._ver || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("layers", 15)}Module</div>
       <div class="mvt"><table><thead><tr><th>Modul</th><th>Stufe</th><th>Version</th><th>Build</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="mut sm" style="margin:6px 0 4px">Die Version zeigt den Reifegrad, der Build zählt Änderungen innerhalb der Version. Module ohne Änderung behalten ihre Nummer.</div>
+      ${this._mvAddons()}
       <div class="lsec">${ic("chart", 15)}So läuft der Aufstieg</div>
       ${this._mvTrack("")}
       <div class="mvrule"><div><b>Neue Funktion</b> Version +0.1, Build wieder 1</div><div><b>Fehlerbehebung</b> gleiche Version, Build +1</div><div><b>Aufstieg</b> Version springt auf den Start der nächsten Stufe, Build wieder 1</div></div>

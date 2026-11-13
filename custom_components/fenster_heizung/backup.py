@@ -31,11 +31,11 @@ REG_KEY = f"{DOMAIN}_safestores"
 
 LABELS = {
     "layout": "Aussehen des Dashboards", "coach": "Energie-Coach", "waechter": "Wächter (Sponsor Max)", "autopilot": "Autopilot (Sponsor Max)", "general": "Allgemeine Einstellungen", "presence": "Anwesenheit",
-    "wasser": "Modul 2 bis 4 (Warmwasser, Energie, Gerätestrom, E-Auto)", "geraete": "Modul 4 Messwerte",
+    "wasser": "Modul 2 bis 4 (Warmwasser, Energie, Gerätestrom)", "geraete": "Modul 4 Messwerte",
     "wallbox": "Modul 8 Wallbox", "wallbox_stats": "Modul 8 Statistik", "solar": "Modul 16 Solar-Prognose",
     "wetter": "Modul 9 Wetter", "entfeuchter": "Modul 1 Luftentfeuchter", "sicherheit": "Modul 11 Sicherheit", "muell": "Modul 17 Müllabfuhr",
     "hausfluss": "Modul 19 Hausfluss", "tags": "Lab Tags & Karten", "tablets": "Tablet-Modus", "labs": "Labs",
-    "tibber": "Tibber", "diag": "Diagnose", "haus": "Haus (Energiequellen, Preise, Wetterquelle)", "messwerk": "Messwerk", "briefing": "Sponsor Max: Morgen-Briefing",
+    "tibber": "Tibber", "diag": "Diagnose", "haus": "Haus (Energiequellen, Preise, Wetterquelle)", "messwerk": "Messwerk", "briefing": "Sponsor Max: Morgen-Briefing", "addons": "Addon-Verwaltung",
 }
 
 
@@ -202,3 +202,34 @@ def label(key: str) -> str:
     if k in LABELS:
         return LABELS[k]
     return "Raum" if len(k) > 20 else k
+
+
+GROUPS = (("Räume", "rooms"), ("Module", "mods"), ("Addons", "addons"), ("System", "sys"))
+SYS = {"layout", "general", "presence", "haus", "messwerk", "diag", "tablets", "labs", "tags", "tibber"}
+
+
+def describe(hass: HomeAssistant, key: str) -> tuple[str, str]:
+    """Name und Gruppe einer Sicherung für die Liste: Räume mit ihrem Namen, Addons mit ihrem Namen."""
+    k = key[len(DOMAIN) + 1:] if key.startswith(DOMAIN + "_") else key
+    ent = hass.config_entries.async_get_entry(k) if len(k) > 20 else None
+    if ent is not None:
+        return (ent.title or "Raum"), "rooms"
+    if k.startswith("addon_") or k == "addons":
+        if k == "addons":
+            return LABELS["addons"], "addons"
+        aid = k[6:].split("_")[0]
+        mgr = hass.data.get(DOMAIN, {}).get("addons")
+        nm = ""
+        for src in ("avail", "remote"):
+            m = (getattr(mgr, src, None) or {}).get(aid) if mgr is not None else None
+            if m and m.get("name"):
+                nm = m["name"]
+                break
+        return f"Addon {nm or aid}", "addons"
+    if k == "muell":
+        return LABELS["muell"], "addons"
+    if k in SYS:
+        return label(key), "sys"
+    if len(k) > 20:
+        return "Raum (gelöscht)", "rooms"
+    return label(key), "mods"

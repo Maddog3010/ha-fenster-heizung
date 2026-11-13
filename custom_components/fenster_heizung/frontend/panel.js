@@ -2703,6 +2703,14 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
   .evban .mlogo{width:52px;height:52px;border-radius:15px;top:12px;right:12px}.evban .mlogo .mlv{display:none}
   .evbl{flex-wrap:wrap}.evbr{display:none}.evk{min-height:112px;padding:12px}.evkv{font-size:1.5rem}.evks4{gap:10px}
   .evmode{padding:9px}.evtabs button{padding:7px 12px 7px 8px;font-size:.84rem}}
+.bakhd{margin-top:2px}.bakl{margin-top:6px;display:flex;flex-direction:column;gap:2px;max-height:420px;overflow:auto;border-radius:12px;box-shadow:0 0 0 1px var(--line,#2a3440);padding:4px 10px 8px}
+.bakg{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin:10px 0 2px}
+.bakr{border-top:1px solid var(--line,#2a3440)}.bakg+.bakr{border-top:0}
+.bakrh{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto 16px;gap:10px;align-items:center;padding:9px 2px;cursor:pointer}.bakrh:focus-visible{outline:2px solid var(--teal);border-radius:8px}
+.bakrh b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bakrh small{color:var(--mut);font-size:.78rem}.bakrh .sxg{color:var(--mut);display:flex;transition:transform .15s;transform:rotate(-90deg)}.bakr.o .bakrh .sxg{transform:rotate(0)}
+.bakts{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:0 0 10px}.bakts .btn2{padding:6px 10px;font-size:.8rem;flex:none}.bakts .mut{flex-basis:100%}
+.updbox{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:14px;background:var(--soft,rgba(127,127,127,.08));margin:4px 0 6px}.updbox .sxi{color:var(--teal)}.updbox.nw{box-shadow:0 0 0 1px var(--amber)}.updbox.nw .sxi{color:var(--amber)}
+.updt{flex:1;min-width:180px}.updt b{display:block}.updt small{color:var(--mut);font-size:.8rem}.updb{display:flex;gap:8px;flex-wrap:wrap}.updb .btn2{flex:none;padding:8px 12px}
 `;
 /* Modul 1 · Raumkarte 2.0 */
 const CSS_RK = `
@@ -6700,6 +6708,8 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("btx")) this._btAct(a, b);
     else if (a.startsWith("mvx")) this._mvAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
+    else if (a === "bakopen") { this._modal.bakOpen = !this._modal.bakOpen; this._modal.bakSel = null; this._renderModal(); }
+    else if (a === "bakrow") { this._modal.bakSel = this._modal.bakSel === b.dataset.k ? null : b.dataset.k; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }
     else if (a === "bakyes") {
       const q = this._modal.bakAsk; this._modal.bakAsk = null; this._renderModal(); if (!q) return;
@@ -6937,7 +6947,15 @@ class FensterHeizungPanel extends HTMLElement {
     if (q) return h + `<div class="gbox"><b>${esc(q.n)}</b>Stand vom ${esc(q.t)} wiederherstellen?<br><span class="mut">Das ersetzt den aktuellen Stand, sobald du die Integration neu lädst oder Home Assistant neu startest.</span></div><div class="foot2"><button class="btn2" data-act="bakno">Abbrechen</button><button class="btn2 pri" data-act="bakyes">Wiederherstellen</button></div>`;
     if (!L) return h + `<div class="mut sm">Wird geladen …</div>`;
     if (!L.length) return h + `<div class="mut sm">Noch keine Sicherungen vorhanden. Sie entstehen automatisch bei Änderungen.</div>`;
-    return h + L.map((x) => `<div class="gst" style="flex-wrap:wrap;gap:6px">${esc(x.name)}<span style="margin-left:auto;display:flex;gap:6px;flex-wrap:wrap">${x.snaps.map((s) => `<button class="btn2" data-act="bakgo" data-k="${esc(x.key)}" data-i="${s.i}" data-n="${esc(x.name)}" data-t="${esc(fd(s.ts))}">${esc(fd(s.ts))}</button>`).join("")}</span></div>`).join("");
+    /* Kompakt: zugeklappt nur eine Zeile; aufgeklappt je Gruppe eine Zeile pro Bereich, die Stände erst nach Antippen */
+    const last = L.reduce((t, x) => { const v = (x.snaps[0] || {}).ts || ""; return v > t ? v : t; }, "");
+    const head = `<button class="sxrow bakhd" data-act="bakopen" aria-expanded="${!!m.bakOpen}"><span class="sxi">${ic("shield", 20)}</span><span class="sxt"><b>${L.length} ${L.length === 1 ? "Bereich" : "Bereiche"} gesichert</b><small>Neueste Kopie ${esc(fd(last))} · je Bereich bis zu 4 Stände</small></span><span class="sxg" style="${m.bakOpen ? "transform:rotate(0)" : ""}">${ic("chev", 16)}</span></button>`;
+    if (!m.bakOpen) return h + head;
+    const G = [["rooms", "Räume"], ["mods", "Module"], ["addons", "Addons"], ["sys", "System"]];
+    const row = (x) => { const o = m.bakSel === x.key;
+      return `<div class="bakr ${o ? "o" : ""}"><button class="bakrh" data-act="bakrow" data-k="${esc(x.key)}" aria-expanded="${o}"><b>${esc(x.name)}</b><small>${esc(fd((x.snaps[0] || {}).ts))}${x.snaps.length > 1 ? ` · ${x.snaps.length} Stände` : ""}</small><span class="sxg">${ic("chev", 14)}</span></button>
+        ${o ? `<div class="bakts"><span class="mut sm">Stand wiederherstellen:</span>${x.snaps.map((s, i) => `<button class="btn2" data-act="bakgo" data-k="${esc(x.key)}" data-i="${s.i}" data-n="${esc(x.name)}" data-t="${esc(fd(s.ts))}">${esc(fd(s.ts))}${i === 0 ? " · neueste" : ""}</button>`).join("")}</div>` : ""}</div>`; };
+    return h + head + `<div class="bakl">${G.map(([g, t]) => { const xs = L.filter((x) => (x.grp || "mods") === g); return xs.length ? `<div class="bakg">${t}</div>${xs.map(row).join("")}` : ""; }).join("")}</div>`;
   }
   async _savePlan() {
     const m = this._modal, entries = m.draft.entries.filter((e) => e.days.length);
@@ -7406,9 +7424,6 @@ class FensterHeizungPanel extends HTMLElement {
         : `<div class="gbtns"><button class="btn2" data-act="bk">${ic("download", 16)}Sicherung speichern</button><button class="btn2" data-act="rs">${ic("upload", 16)}Sicherung einlesen</button></div><input type="file" accept="application/json,.json" data-f="rsfile" hidden>`}
         ${rs ? "" : this._ebkHtml(m)}
         ${rs ? "" : this._bakHtml(m)}
-        <div class="lsec">${ic("bell", 15)}Updates</div>
-        <div class="ltog"><span>Auf neue Versionen hinweisen</span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Update-Hinweise"></button></div>
-        <div class="gst">${ic("info", 15)}Installiert ${esc(this._ver || "–")}${u ? ` · neueste ${esc(u.latest)}` : ""}<button class="lnk" data-act="chk" style="margin-left:auto">Jetzt prüfen</button></div>
         <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     } else if (m.type === "news") {
       const u = this._upd || { latest: "", notes: [] };
@@ -7752,7 +7767,7 @@ class FensterHeizungPanel extends HTMLElement {
       sy: () => card(`${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern, Homeserver, interne Kopien", "gen", "", `<em class="sxc ${lt ? "ok" : ""}">${esc(ltTxt)}</em>`)}
           ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
-          ${row("layers", "Versionen", "Letzte Updates mit Änderungen, Modulversionen und Versionsschema", "mver")}`),
+          ${row("layers", "Versionen &amp; Updates", "Nach Updates suchen, letzte Änderungen, Module und Addons", "mver", "", this._upd && vgt(this._upd.latest, this._ver) ? `<em class="sxc warn">Update</em>` : "")}`),
       sp: () => card(this._spnRow()),
       ad: () => this._adSetPage(card),
     };
@@ -14372,11 +14387,12 @@ class FensterHeizungPanel extends HTMLElement {
         <ul class="rlt">${r.t.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>${r.c.length ? `<div class="rlc">${r.c.map((c) => `<em>${esc(c)}</em>`).join("")}</div>` : ""}</div>`).join("");
     const n = this._mvAll().length;
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Versionen</b><span>${beta ? "Beta" : "Version"} ${esc(cur || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="sh"><div><b>Versionen &amp; Updates</b><span>${beta ? "Beta" : "Version"} ${esc(cur || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       ${beta ? `<div class="rlbeta">${ic("flask", 18)}<div><b>Beta installiert: ${esc(cur)}</b><span>Testversion, die Änderungen folgen mit dem nächsten stabilen Update.</span></div></div>` : ""}
+      ${this._updBox()}
       <div class="lsec">${ic("puzzle", 15)}Integration · letzte ${list.length} Versionen</div>
       <div class="rll">${rels || `<div class="mut sm">Keine Einträge gefunden.</div>`}</div>
-      <div class="rlrows"><button class="sxrow" data-act="mvsub" data-k="mod"><span class="sxi">${ic("layers", 20)}</span><span class="sxt"><b>Modulversionen</b><small>${n} Module: Version, Build und Reifegrad, so läuft der Aufstieg</small></span><span class="sxg">${ic("chev", 16)}</span></button>
+      <div class="rlrows"><button class="sxrow" data-act="mvsub" data-k="mod"><span class="sxi">${ic("layers", 20)}</span><span class="sxt"><b>Modul- und Addon-Versionen</b><small>${n} Module${(() => { const k = this._adState().addons.filter((x) => x.installed).length; return k ? ` und ${k} ${k === 1 ? "Addon" : "Addons"}` : ""; })()}: Version, Build und Reifegrad</small></span><span class="sxg">${ic("chev", 16)}</span></button>
       <a class="sxrow" href="https://github.com/Maddog3010/ha-fenster-heizung/releases" target="_blank" rel="noopener"><span class="sxi">${ic("link", 20)}</span><span class="sxt"><b>Alle Versionen auf GitHub</b><small>Vollständige Änderungen jeder Version</small></span><span class="sxg">${ic("chev", 16)}</span></a></div>
       <div class="lsec">${ic("info", 15)}So liest du die Hauptversion</div>
       <div class="rlx"><div class="rlxn"><i>2026</i>.<i>11</i>.<i>1</i></div>
@@ -14385,15 +14401,35 @@ class FensterHeizungPanel extends HTMLElement {
         <p>Was sich in einem Modul geändert hat, zeigen die Modulversionen.</p></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
+  /* Updates der Integration: Stand, Suche und Hinweis – gehört zu den Versionen (vorher unter „Sichern & Wiederherstellen“) */
+  _updBox() {
+    const u = this._upd, g = this._gen || {}, cur = this._ver || "", nw = u && u.latest && vgt(u.latest, cur);
+    return `<div class="updbox ${nw ? "nw" : ""}"><span class="sxi">${ic(nw ? "download" : "check", 20)}</span><div class="updt"><b>${nw ? `Update verfügbar: ${esc(u.latest)}` : "Du hast die neueste Version"}</b><small>Installiert ${esc(cur || "–")}${u && u.latest && !nw ? ` · neueste ${esc(u.latest)}` : ""}${u && u.error ? ` · Prüfung zuletzt nicht möglich` : ""}</small></div>
+      <div class="updb">${nw ? `<button class="btn2 pri" data-act="news">Was ist neu?</button>` : ""}<button class="btn2" data-act="chk">${ic("refresh", 16)} Jetzt prüfen</button></div></div>
+      <div class="ltog"><span>Auf neue Versionen hinweisen<small class="mut" style="display:block">Zeigt ein neues Update oben im Dashboard an. Aktualisiert wird in HACS.</small></span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Auf neue Versionen hinweisen"></button></div>`;
+  }
+  /* Addons in den Modulversionen: installierte Addons mit Version, Build, Stufe und verfügbarem Update */
+  _mvAddons() {
+    this._adLoad();
+    const A = this._adState().addons.filter((x) => x.installed);
+    if (!A.length) return "";
+    const rows = A.map((x) => { const g = STG[x.stage] || STG.dev, m = /^(\S+) Build (\d+)/.exec(x.cur || "") || [, x.version, x.build];
+      const st = x.status === "paused" ? `<span class="mut">pausiert</span>` : x.status === "error" ? `<span style="color:var(--red)">Fehler</span>` : "";
+      return `<tr><td>${ic(x.icon || "puzzle", 15)} ${esc(x.short || x.name)} ${st}</td><td>${g ? `<em class="sxc ${g.c}">${g.t}</em>` : ""}</td><td><b>v${esc(m[1])}</b></td><td>${esc(m[2])}</td><td>${x.update ? `<button class="lnk" data-act="adxupd" data-k="${esc(x.id)}">Update${x.remote ? " " + esc(x.remote.version) : ""}</button>` : ""}</td></tr>`; }).join("");
+    return `<div class="lsec">${ic("puzzle", 15)}Addons</div>
+      <div class="mvt"><table><thead><tr><th>Addon</th><th>Stufe</th><th>Version</th><th>Build</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="mut sm" style="margin:6px 0 4px">Addons haben eigene Versionen und werden in der Addon-Verwaltung aktualisiert.</div>`;
+  }
   _mvModModal() {
     const rows = this._mvAll().map((x) => { const m = MV[x.id], g = STG[modSt(x)];
       return `<tr><td><span class="mut">Modul ${x.n}</span> ${esc(x.short)}</td><td>${g ? `<em class="sxc ${g.c}">${g.t}</em>` : `<em class="sxc lab">Lab</em>`}</td><td><b>v${esc(m.v)}</b></td><td>${m.b}</td><td>${this._mvNew(x.id) ? `<span class="mvn">NEU</span>` : ""}</td></tr>`; }).join("");
     const leg = MV_STG.slice().reverse().map((s) => `<div class="mvl"><em class="sxc ${STG[s[0]].c}">${STG[s[0]].t}</em><div><b>Version ${s[1]}</b><br>${s[2]} ${s[3]}<br><span class="mut">${s[4]}</span></div></div>`).join("");
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><button class="ibtn" data-act="mvsub" data-k="" aria-label="Zurück zu Versionen">${ic("back", 20)}</button><div style="flex:1"><b>Modulversionen</b><span>Version ${esc(this._ver || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="sh"><button class="ibtn" data-act="mvsub" data-k="" aria-label="Zurück zu Versionen">${ic("back", 20)}</button><div style="flex:1"><b>Modul- und Addon-Versionen</b><span>Version ${esc(this._ver || "–")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("layers", 15)}Module</div>
       <div class="mvt"><table><thead><tr><th>Modul</th><th>Stufe</th><th>Version</th><th>Build</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="mut sm" style="margin:6px 0 4px">Die Version zeigt den Reifegrad, der Build zählt Änderungen innerhalb der Version. Module ohne Änderung behalten ihre Nummer.</div>
+      ${this._mvAddons()}
       <div class="lsec">${ic("chart", 15)}So läuft der Aufstieg</div>
       ${this._mvTrack("")}
       <div class="mvrule"><div><b>Neue Funktion</b> Version +0.1, Build wieder 1</div><div><b>Fehlerbehebung</b> gleiche Version, Build +1</div><div><b>Aufstieg</b> Version springt auf den Start der nächsten Stufe, Build wieder 1</div></div>
