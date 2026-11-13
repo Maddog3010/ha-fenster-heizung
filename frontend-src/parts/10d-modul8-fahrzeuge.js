@@ -66,7 +66,7 @@
   _evVeh() { const sn = this._wbSnap(), vs = sn.cfg.vehicles || []; return vs.find((x) => x.id === sn.veh) || vs.find((x) => x.id === sn.cfg.defVeh) || (vs.length === 1 ? vs[0] : null) || vs[0] || null; }
   _evLook(v) { v = v === undefined ? this._evVeh() : v; const L = this._evState(); return v ? { brand: v.brand || "", model: v.model || "", body: v.body || "limousine", color: v.color || "blue", name: v.name } : { brand: L.brand, model: L.model, body: L.body, color: L.color, name: "" }; }
   _evTitle(v) { const L = this._evLook(v); return v || (v === undefined && this._evVeh()) ? (L.name || "Fahrzeug") : ([L.brand === "Andere" ? "" : L.brand, L.model].filter(Boolean).join(" ") || "Fahrzeug & Wallbox"); }
-  _evVehLine(x, soc) { const st = this._hass.states, E = x.ent || {}, ok = (e) => e && st[e]; return [soc != null ? `${num(soc, 0)} %` : E.soc ? (ok(E.soc) ? "Ladestand ohne Wert" : "Ladestand-Sensor fehlt") : "kein Ladestand-Sensor", x.cap ? `Akku ${num(x.cap, 1)} kWh` : "", E.odo && ok(E.odo) ? `${num(this._evNum(E.odo), 0)} km` : ""].filter(Boolean).map(esc).join(" · "); }
+  _evVehLine(x, soc) { const st = this._hass.states, E = x.ent || {}, ok = (e) => e && st[e]; return [soc != null ? `${E.soc ? "" : "≈ "}${num(soc, 0)} %${E.soc ? "" : " geschätzt"}` : E.soc ? (ok(E.soc) ? "Ladestand ohne Wert" : "Ladestand-Sensor fehlt") : "kein Ladestand-Sensor", x.cap ? `Akku ${num(x.cap, 1)} kWh` : "", E.odo && ok(E.odo) ? `${num(this._evNum(E.odo), 0)} km` : ""].filter(Boolean).map(esc).join(" · "); }
   _evThumb(x, w = 96) { const L = this._evLook(x); return `<svg viewBox="282 96 428 164" width="${w}" height="${Math.round(w * 0.383)}" aria-hidden="true">${this._evCarHD(L.body, L.color, { uid: "t" + x.id, port: false }).svg}</svg>`; }
   /* Auto allein (für Fahrzeugliste und Bearbeiten): gleiche Formen und Farben wie die Szene */
   _evCar(L, sfx, chg = false, night = false) {
@@ -84,12 +84,13 @@
   _evData() {
     const v = this._evVeh(), L = this._evState().ent, E = { ...L, ...(v ? { soc: (v.ent || {}).soc, odo: (v.ent || {}).odo, range: (v.ent || {}).range } : {}) }, st = this._hass.states, S = (e) => (e && st[e] ? String(st[e].state).toLowerCase() : "");
     const sn = this._wbSnap(), wb = this._wbOn() && sn.ok ? sn.info : null;
-    const power = E.power ? this._evNum(E.power) : wb && wb.power != null ? wb.power : null, soc = this._evNum(E.soc), odo = this._evNum(E.odo), range = this._evNum(E.range);
-    if (wb && !E.plug && !E.charging && wb.car != null) return { soc, odo, range, power, charging: wb.car === 2, plugged: [2, 3, 4].includes(wb.car), any: true, veh: v };
+    const est = v && !E.soc && (sn.est || {})[v.id] ? sn.est[v.id] : null;
+    const power = E.power ? this._evNum(E.power) : wb && wb.power != null ? wb.power : null, soc = est ? est.soc : this._evNum(E.soc), odo = this._evNum(E.odo), range = this._evNum(E.range);
+    if (wb && !E.plug && !E.charging && wb.car != null) return { soc, est, odo, range, power, charging: wb.car === 2, plugged: [2, 3, 4].includes(wb.car), any: true, veh: v };
     const ON = /^(on|true|yes|connected|plugged|plugged_in|ev_connected|vehicle_connected|charging|ready|waiting|complete|finished|preparing|suspended)/, OFF = /^(off|false|no|disconnected|unplugged|not_connected|available|unavailable|unknown|none)/;
     const chg = E.charging ? ON.test(S(E.charging)) && !OFF.test(S(E.charging)) : power != null && power >= 100;
     const plug = E.plug ? ON.test(S(E.plug)) && !OFF.test(S(E.plug)) : chg;
-    return { soc, odo, range, power, charging: plug && chg, plugged: plug || chg, any: Object.values(E).some(Boolean) || !!v || this._wbOn(), veh: v };
+    return { soc, est, odo, range, power, charging: plug && chg, plugged: plug || chg, any: Object.values(E).some(Boolean) || !!v || this._wbOn(), veh: v };
   }
   _evScene(d) {
     const V = this._evLook(d.veh), H = EV_SHAPES[V.body] || EV_SHAPES.limousine, C = EV_COLORS[V.color] || EV_COLORS.blue, [px, py] = H.port, [w1, w2] = H.wh;
@@ -179,6 +180,8 @@
       <div class="mut sm" style="margin:2px 0 0">Ladestand (Prozent) – für Ladelimit und Ladeplan</div>${sel("soc", /soc|batter|ladestand|akku/i)}
       <div class="mut sm" style="margin:0">Kilometerstand (optional)</div>${sel("odo", /odo|kilometer|km|mileage|stand/i)}
       <div class="mut sm" style="margin:0">Reichweite (optional)</div>${sel("range", /reichweite|range/i)}
+      ${!(x.ent || {}).soc ? (() => { const e = (this._wbSnap().est || {})[x.id]; return `<div class="evest"><div><b>Ohne Ladestand-Sensor: Ladestand schätzen</b><small class="mut">${e ? `Geschätzt <b>${num(e.soc, 0)} %</b> · eingegeben ${esc(new Date(e.set).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }))} mit ${num(e.at, 0)} %${e.stale ? " · seit dem Abstecken unsicher – bitte neu eingeben" : ""}` : "Gib einmal ein, wie voll der Akku gerade ist (Anzeige im Auto). Beim Laden rechnet Strom &amp; Wärme weiter: geladene kWh × 90 % ÷ Akkugröße."}</small></div>
+        <span class="evesti"><input class="otxt" type="text" inputmode="decimal" data-f="wbvest" placeholder="${e ? num(e.soc, 0) : "z. B. 40"}" aria-label="Ladestand in Prozent"> %<button class="btn2 pri" data-act="wbvestok" data-v="${x.id}">Übernehmen</button></span></div>`; })() : ""}
       <div class="lsec">${ic("car", 15)}${rfid ? "Erkennung" : "An dieser Wallbox"}</div>
       <div class="vrow"><span>${rfid ? "Gilt, wenn keine Karte angelegt wird" : "Dieses Fahrzeug lädt hier"}<small class="mut" style="display:block">${rfid ? "Sonst wird das Fahrzeug an seiner Karte erkannt." : "Die Wallbox meldet keine Karten, deshalb wird das Fahrzeug fest zugeordnet."}</small></span><button class="sw ${c.defVeh === x.id ? "on" : ""}" data-act="wbrvdef" data-v="${c.defVeh === x.id ? "" : x.id}" aria-pressed="${c.defVeh === x.id}" aria-label="Fahrzeug ohne Karte"></button></div>
       <div class="gst">${ic("info", 15)}Die Zeichnung ist allgemein gehalten, ohne Logos und nicht dem Modell nachgebaut. Marke und Modell erscheinen nur als Text.</div>

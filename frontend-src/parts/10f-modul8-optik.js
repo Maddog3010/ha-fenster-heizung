@@ -130,7 +130,7 @@
       N.sn.guard && N.sn.guard.limited ? `<span class="chip">Hausanschluss ${num(N.sn.guard.total_a, 0)} von ${N.sn.guard.max_a} A</span>` : ""].filter(Boolean);
     return `<div class="card hero mh a-ev evban${N.night ? " nt" : ""}">${this._evCarport(d, N, 1180, 290, { sfx: "d", sx: 1180 - 640, s: 0.9 }).replace('class="evsc"', 'class="evsc evd"')}${this._evCarport(d, N, 420, 170, { sfx: "m", sx: 40, s: 0.52 }).replace('class="evsc"', 'class="evsc evm"')}${this._modLogo("ev")}
       <div class="evbt"><div class="lbl">${this._gx("car", 18)}${esc(name)}${N.card ? " · " + esc(N.card) : ""}</div>
-        <div class="big">${N.soc != null ? num(N.soc, 0) + "<small>%</small>" : "–"}${N.soc != null && N.goal > N.soc + 0.5 ? `<span class="evto">→ ${N.goal} %</span>` : ""}</div>
+        <div class="big">${N.soc != null ? (d.est ? "≈" : "") + num(N.soc, 0) + "<small>%</small>" : "–"}${N.soc != null && N.goal > N.soc + 0.5 ? `<span class="evto">→ ${N.goal} %</span>` : ""}</div>
         <div class="sub">${esc(line)}</div>${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}</div></div>`;
   }
   /* A2: ein Satz, was gerade passiert – mit den Hinweisen der bisherigen Statusleiste */
@@ -148,11 +148,12 @@
   /* A3: Ladeband jetzt → Ziel */
   _evBand(d) {
     const N = this._evNow(d);
-    if (N.soc == null) return d.veh && this._admin() ? `<div class="card evband"><div class="mut sm">Ohne Ladestand-Sensor gibt es kein Ladeband, kein Ladelimit und keinen Ladeplan. <button class="lnk" data-act="wbrvedit" data-v="${esc(d.veh.id)}">Sensor wählen</button></div></div>` : "";
+    if (N.soc == null) return d.veh && this._admin() ? `<div class="card evband"><div class="mut sm">Ohne Ladestand gibt es kein Ladeband, kein Ladelimit und keinen Ladeplan. <button class="lnk" data-act="wbrvedit" data-v="${esc(d.veh.id)}">Sensor wählen oder Ladestand eingeben</button></div></div>` : "";
     const s = Math.max(0, Math.min(100, N.soc)), g = Math.max(s, Math.min(100, N.goal)), lim = Math.min(100, N.limit);
     return `<div class="card evband"><div class="evbb" role="img" aria-label="Ladestand ${num(s, 0)} %, Ziel ${N.goal} %"><i class="f" style="width:${s}%"></i>${g > s ? `<i class="g${d.charging ? " run" : ""}" style="left:${s}%;width:${g - s}%"></i>` : ""}
       <span class="mk" style="left:${g}%"><b>Ziel ${N.goal} %${N.dep ? " · " + esc(N.dep.time) : ""}</b></span>${lim > g + 2 ? `<span class="mk lm" style="left:${lim}%"></span>` : ""}</div>
-      <div class="evbl"><span><b>${num(s, 0)} %</b> jetzt${d.range != null ? " · " + num(d.range, 0) + " km" : ""}</span><span>${N.need > 0.05 ? `noch <b>${num(N.need, 1)} kWh</b>${N.doneT ? " · fertig ca. " + N.doneT : ""}` : "Ziel erreicht"}</span><span class="evbr">Limit ${N.limit} %</span></div></div>`;
+      ${d.est ? `<div class="mut sm" style="margin:6px 0 -2px">Geschätzt${d.est.stale ? " – seit dem Abstecken unsicher" : ""}. <button class="lnk" data-act="wbrvedit" data-v="${esc(d.veh.id)}">Ladestand eingeben</button></div>` : ""}
+      <div class="evbl"><span><b>${d.est ? "≈ " : ""}${num(s, 0)} %</b> jetzt${d.range != null ? " · " + num(d.range, 0) + " km" : ""}</span><span>${N.need > 0.05 ? `noch <b>${num(N.need, 1)} kWh</b>${N.doneT ? " · fertig ca. " + N.doneT : ""}` : "Ziel erreicht"}</span><span class="evbr">Limit ${N.limit} %</span></div></div>`;
   }
   /* A4: Kacheln 2.0 – kein Wert doppelt, HD-Symbole, Herkunfts-Ring an der Ladeleistung */
   _evTiles(d) {
@@ -162,7 +163,7 @@
     const ses = N.i.session_wh != null ? N.i.session_wh / 1000 : null, kwh = r ? r.pv + r.grid : 0, sh = kwh > 0 ? r.pv / kwh * 100 : 0;
     const mix = d.charging && N.sun != null ? { pv: N.sun / 100, net: 1 - N.sun / 100 } : { pv: 0, net: 0 };
     return `<div class="evks4">
-      ${k(this._gx("battery", 38, { lvl: N.soc != null ? Math.round(N.soc) : 0 }), "Ladestand", N.soc != null ? num(N.soc, 0) : "–", N.soc != null ? "%" : "", N.soc == null ? "kein Sensor" : N.dep ? `Ziel ${N.goal} % bis ${esc(N.dep.time)}` : `Limit ${N.limit} %`, N.soc != null && N.soc < 20 ? "warn" : d.charging ? "on" : "")}
+      ${k(this._gx("battery", 38, { lvl: N.soc != null ? Math.round(N.soc) : 0 }), "Ladestand", N.soc != null ? num(N.soc, 0) : "–", N.soc != null ? "%" : "", N.soc == null ? (d.veh && this._admin() ? `<button class="lnk" data-act="wbrvedit" data-v="${esc(d.veh.id)}">Ladestand eingeben</button>` : "kein Sensor") : d.est ? "geschätzt" + (N.dep ? ` · Ziel ${N.goal} %` : "") : N.dep ? `Ziel ${N.goal} % bis ${esc(N.dep.time)}` : `Limit ${N.limit} %`, N.soc != null && N.soc < 20 ? "warn" : d.charging ? "on" : "")}
       ${k(d.charging ? this._gxRing("wallbox", mix, 44) : this._gx("wallbox", 38), "Ladeleistung", d.charging && d.power != null ? num(d.power / 1000, 1) : "0", "kW", d.charging ? [N.i.phases ? `${N.i.phases} ${N.i.phases === 1 ? "Phase" : "Phasen"}` : "", N.i.cur != null ? num(N.i.cur, 0) + " A" : "", N.sun != null ? num(N.sun, 0) + " % Sonne" : ""].filter(Boolean).join(" · ") : N.w.surplus_w != null ? `Überschuss ${wfmt(N.w.surplus_w)}` : d.plugged ? "angesteckt" : "nicht angesteckt", d.charging ? "on" : "")}
       ${k(this._gx("bolt", 38), N.wbOn ? "Diese Ladung" : "Ladung", ses != null ? num(ses, 1) : "–", ses != null ? "kWh" : "", N.wbOn && r ? `heute ${num(kwh, 1)} kWh · ${num(sh, 0)} % Sonne · ${num(r.cost, 2)} €` : N.wbOn ? "heute noch nichts geladen" : "braucht eine Wallbox", d.charging ? "on" : "")}
       ${k(this._gx("car", 38), "Reichweite", d.range != null ? num(d.range, 0) : "–", d.range != null ? "km" : "", d.odo != null ? `${num(d.odo, 0)} km gesamt` : "kein Sensor", "")}</div>`;
@@ -209,8 +210,8 @@
     const wbOn = this._wbOn(), t = this._wbStT(), box = this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.");
     if (!wbOn) return `${box}${this._evSay(d)}${this._evBand(d)}${this._evTiles(d)}${this._wbCard(d)}`;
     const head = `${box}${this._evTabsNew()}${this._evSay(d)}`;
-    if (t === "plan") return `${head}${this._wbPlan(d)}`;
-    if (t === "stat") return `${head}${this._wbStat()}`;
+    if (t === "plan") return `${head}${this._evPlanNew(d)}`;
+    if (t === "stat") return `${head}${this._evStatNew()}`;
     if (t === "veh") return `${head}${this._rfCard(false)}`;
     if (t === "set") return `${head}${this._wbCard(d, "set")}`;
     return `${head}${this._evBand(d)}${this._evTiles(d)}<div class="evcols"><div>${this._evModes(d)}${this._evToday()}</div><div>${this._evWhy()}</div></div>`;

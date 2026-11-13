@@ -57,6 +57,7 @@
   }
   _wbAct(a, b) {
     if (a.startsWith("wbr")) return this._rfAct(a, b);
+    if (a.startsWith("wbv")) return this._evStAct(a, b);
     if (a.startsWith("wbx") || a === "wbcsv") return this._wbxAct(a, b);
     if (a.startsWith("wbd")) return this._wbdAct(a, b);
     if (a === "wbtab" || a === "wbsec" || a === "wbsecall" || a === "wbgo" || a === "wbplan" || a === "wbsrc" || a === "wbpv" || a === "wbsper" || a === "wbswhat" || a === "wbsby" || a === "wbnav") return this._wbStAct(a, b);

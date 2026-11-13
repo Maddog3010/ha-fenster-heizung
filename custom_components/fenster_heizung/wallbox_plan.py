@@ -215,7 +215,7 @@ def prices_from_attr(attrs: dict[str, Any]) -> list[dict[str, Any]]:
 
 # ---- Ladestatistik
 def empty_stats() -> dict[str, Any]:
-    return {"days": {}, "sessions": [], "open": None, "odo": None}
+    return {"days": {}, "sessions": [], "open": None, "odo": None, "odos": {}, "est": {}}
 
 
 def clean_stats(raw: Any) -> dict[str, Any]:
@@ -228,14 +228,14 @@ def clean_stats(raw: Any) -> dict[str, Any]:
             continue
         try:
             st["days"][k] = {"pv": float(v.get("pv", 0)), "grid": float(v.get("grid", 0)), "cost": float(v.get("cost", 0)), "full": float(v.get("full", 0)), "km": max(0.0, float(v.get("km", 0))),
-                             "veh": {str(n)[:30]: {"kwh": float(x.get("kwh", 0)), "cost": float(x.get("cost", 0))} for n, x in (v.get("veh") or {}).items() if isinstance(x, dict)}}
+                             "veh": {str(n)[:30]: {"kwh": float(x.get("kwh", 0)), "cost": float(x.get("cost", 0)), **({"km": max(0.0, float(x["km"]))} if x.get("km") else {})} for n, x in (v.get("veh") or {}).items() if isinstance(x, dict)}}
         except (TypeError, ValueError):
             continue
     for s in raw.get("sessions") if isinstance(raw.get("sessions"), list) else []:
         if isinstance(s, dict) and s.get("start"):
             try:
                 st["sessions"].append({"start": str(s["start"]), "min": float(s.get("min", 0)), "veh": str(s.get("veh") or "Unbekannt")[:30], "kwh": float(s.get("kwh", 0)),
-                                       "pv": float(s.get("pv", 0)), "cost": float(s.get("cost", 0))})
+                                       "pv": float(s.get("pv", 0)), "cost": float(s.get("cost", 0)), **({"card": str(s["card"])[:30]} if s.get("card") else {})})
             except (TypeError, ValueError):
                 continue
     st["sessions"] = st["sessions"][:KEEP_SESSIONS]
@@ -244,6 +244,18 @@ def clean_stats(raw: Any) -> dict[str, Any]:
         st["odo"] = o if o is not None and 0 <= o < 5e6 else None
     except (TypeError, ValueError):
         st["odo"] = None
+    for k, v in (raw.get("odos") or {}).items() if isinstance(raw.get("odos"), dict) else []:
+        try:
+            if re.fullmatch(r"[a-z0-9]{1,12}", str(k)) and 0 <= float(v) < 5e6:
+                st["odos"][str(k)] = float(v)
+        except (TypeError, ValueError):
+            continue
+    for k, v in (raw.get("est") or {}).items() if isinstance(raw.get("est"), dict) else []:
+        try:
+            if re.fullmatch(r"[a-z0-9]{1,12}", str(k)) and isinstance(v, dict) and 0 <= float(v.get("soc")) <= 100:
+                st["est"][str(k)] = {"soc": float(v["soc"]), "set": str(v.get("set") or ""), "at": float(v.get("at", v["soc"])), "stale": bool(v.get("stale"))}
+        except (TypeError, ValueError):
+            continue
     return st
 
 
@@ -253,18 +265,43 @@ def day_ok(days: str, when: datetime) -> bool:
     return not ((days == "wk" and wd > 4) or (days == "we" and wd < 5))
 
 
-def add_km(st: dict[str, Any], now: datetime, odo: float | None) -> None:
-    """Gefahrene Kilometer aus dem Kilometerstand-Sensor fortschreiben (für Ø Verbrauch)."""
+def add_km(st: dict[str, Any], now: datetime, odo: float | None, vid: str = "", veh: str = "") -> None:
+    """Gefahrene Kilometer aus dem Kilometerstand-Sensor fortschreiben – je Fahrzeug (v0.8), damit ein Wechsel keinen Sprung ergibt."""
     if odo is None or odo < 0:
         return
-    last = st.get("odo")
+    if vid:
+        last = st["odos"].get(vid)
+        if last is None and st.get("odo") is not None and not st["odos"]:
+            last = st["odo"]  # Übernahme: bisher gab es nur einen Kilometerstand
+        st["odos"][vid] = float(odo)
+    else:
+        last = st.get("odo")
     st["odo"] = float(odo)
     if last is not None and 0 < odo - last < 2000:
         d = st["days"].setdefault(now.date().isoformat(), {"pv": 0.0, "grid": 0.0, "cost": 0.0, "full": 0.0, "km": 0.0, "veh": {}})
         d["km"] = d.get("km", 0.0) + (odo - last)
+        if veh:
+            v = d["veh"].setdefault(veh, {"kwh": 0.0, "cost": 0.0})
+            v["km"] = v.get("km", 0.0) + (odo - last)
 
 
-def add_energy(st: dict[str, Any], now: datetime, dt_s: float, power_w: float, surplus_w: float | None, price_ct: float | None, veh: str) -> None:
+EST_EFF = 0.9  # Ladeverluste: so viel der geladenen Energie kommt im Akku an
+
+
+def est_set(st: dict[str, Any], vid: str, soc: float, now: datetime) -> None:
+    """B4: Ladestand von Hand angeben („Auto hat jetzt 40 %“) – Ausgangspunkt für die Schätzung."""
+    st["est"][vid] = {"soc": min(100.0, max(0.0, float(soc))), "at": min(100.0, max(0.0, float(soc))), "set": now.isoformat(timespec="minutes"), "stale": False}
+
+
+def est_add(st: dict[str, Any], vid: str, kwh: float, cap: float) -> None:
+    """B4: geladene Energie auf den geschätzten Ladestand rechnen (mit Ladeverlusten)."""
+    e = st["est"].get(vid)
+    if e is None or cap <= 0 or kwh <= 0:
+        return
+    e["soc"] = min(100.0, e["soc"] + kwh * EST_EFF / cap * 100)
+
+
+def add_energy(st: dict[str, Any], now: datetime, dt_s: float, power_w: float, surplus_w: float | None, price_ct: float | None, veh: str, card: str = "") -> None:
     """Energie eines Taktes auf Sonne und Netz aufteilen und mit dem Preis zum Zeitpunkt bewerten."""
     if power_w <= 0 or dt_s <= 0:
         return
@@ -287,10 +324,12 @@ def add_energy(st: dict[str, Any], now: datetime, dt_s: float, power_w: float, s
         o["pv"] += pv
         o["cost"] += cost
         o["veh"] = veh
+        if card:
+            o["card"] = card
         o["last"] = now.isoformat(timespec="seconds")
 
 
-def session_tick(st: dict[str, Any], now: datetime, charging: bool, power_w: float) -> None:
+def session_tick(st: dict[str, Any], now: datetime, charging: bool, power_w: float) -> dict[str, Any] | None:
     """Ladevorgang starten, solange geladen wird, und nach 3 Minuten ohne Ladung abschließen."""
     o = st.get("open")
     if charging and power_w > 200:
@@ -298,27 +337,30 @@ def session_tick(st: dict[str, Any], now: datetime, charging: bool, power_w: flo
             st["open"] = {"start": now.isoformat(timespec="seconds"), "last": now.isoformat(timespec="seconds"), "kwh": 0.0, "pv": 0.0, "cost": 0.0, "veh": "Unbekannt"}
         else:
             o["last"] = now.isoformat(timespec="seconds")
-        return
+        return None
     if o:
         try:
             idle = (now - datetime.fromisoformat(o["last"])).total_seconds()
         except (ValueError, TypeError):
             idle = 1e9
         if idle >= 180:
-            close_session(st)
+            return close_session(st)
+    return None
 
 
-def close_session(st: dict[str, Any]) -> None:
+def close_session(st: dict[str, Any]) -> dict[str, Any] | None:
+    """Laufende Ladung abschließen. Rückgabe: die abgeschlossene Ladung (für das Ereignis „Ladung beendet“) oder None."""
     o = st.get("open")
     st["open"] = None
     if not o or o["kwh"] < 0.05:
-        return
+        return None
     try:
         mins = (datetime.fromisoformat(o["last"]) - datetime.fromisoformat(o["start"])).total_seconds() / 60
     except (ValueError, TypeError):
         mins = 0.0
-    st["sessions"].insert(0, {"start": o["start"], "min": round(mins, 1), "veh": o["veh"], "kwh": round(o["kwh"], 3), "pv": round(o["pv"], 3), "cost": round(o["cost"], 4)})
+    st["sessions"].insert(0, {"start": o["start"], "min": round(mins, 1), "veh": o["veh"], "kwh": round(o["kwh"], 3), "pv": round(o["pv"], 3), "cost": round(o["cost"], 4), **({"card": o["card"]} if o.get("card") else {})})
     del st["sessions"][KEEP_SESSIONS:]
+    return st["sessions"][0]
 
 
 def prune(st: dict[str, Any], today: date) -> None:
@@ -329,9 +371,9 @@ def prune(st: dict[str, Any], today: date) -> None:
 
 def stats_view(st: dict[str, Any]) -> dict[str, Any]:
     days = [{"d": k, "pv": round(v["pv"], 3), "grid": round(v["grid"], 3), "cost": round(v["cost"], 4), "full": round(v["full"], 4), "km": round(v.get("km", 0.0), 1),
-             "veh": {n: {"kwh": round(x["kwh"], 3), "cost": round(x["cost"], 4)} for n, x in v["veh"].items()}} for k, v in sorted(st["days"].items())]
+             "veh": {n: {"kwh": round(x["kwh"], 3), "cost": round(x["cost"], 4), "km": round(x.get("km", 0.0), 1)} for n, x in v["veh"].items()}} for k, v in sorted(st["days"].items())]
     ses = list(st["sessions"])
     o = st.get("open")
     if o and o["kwh"] >= 0.05:
-        ses.insert(0, {"start": o["start"], "min": 0.0, "veh": o["veh"], "kwh": round(o["kwh"], 3), "pv": round(o["pv"], 3), "cost": round(o["cost"], 4), "running": True})
+        ses.insert(0, {**({"card": o["card"]} if o.get("card") else {}), "start": o["start"], "min": 0.0, "veh": o["veh"], "kwh": round(o["kwh"], 3), "pv": round(o["pv"], 3), "cost": round(o["cost"], 4), "running": True})
     return {"days": days, "sessions": ses[:30]}

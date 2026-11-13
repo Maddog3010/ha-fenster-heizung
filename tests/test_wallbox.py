@@ -152,6 +152,34 @@ def test_add_energy_splits_sun_and_grid():
     assert abs(d["pv"] - 4.0) < 1e-6 and abs(d["grid"] - 2.0) < 1e-6 and abs(d["cost"] - 0.6) < 1e-6
 
 
+def test_estimate_soc_with_losses():
+    st = P.clean_stats(None)
+    P.est_set(st, "v1", 40, NOW)
+    P.est_add(st, "v1", 10.0, 50.0)  # 10 kWh × 90 % / 50 kWh = 18 %
+    assert abs(st["est"]["v1"]["soc"] - 58.0) < 1e-6
+    P.est_add(st, "v1", 100.0, 50.0)
+    assert st["est"]["v1"]["soc"] == 100.0
+    assert P.clean_stats(st)["est"]["v1"]["soc"] == 100.0
+
+
+def test_km_per_vehicle_without_jump():
+    st = P.clean_stats({"odo": 18000})
+    P.add_km(st, NOW, 18010, "v1", "Dolphin")       # Übernahme des alten Kilometerstands
+    P.add_km(st, NOW, 52000, "v2", "Golf")          # anderes Auto: kein Sprung
+    P.add_km(st, NOW, 52025, "v2", "Golf")
+    d = st["days"][NOW.date().isoformat()]
+    assert d["km"] == 35 and d["veh"]["Dolphin"]["km"] == 10 and d["veh"]["Golf"]["km"] == 25
+
+
+def test_session_close_returns_session_with_card():
+    st = P.clean_stats(None)
+    P.session_tick(st, NOW, True, 7000)
+    P.add_energy(st, NOW, 3600, 7000, 7000, 30.0, "Dolphin", "Karte Tobias")
+    assert P.session_tick(st, NOW + timedelta(minutes=1), False, 0) is None
+    done = P.session_tick(st, NOW + timedelta(minutes=5), False, 0)
+    assert done["card"] == "Karte Tobias" and abs(done["kwh"] - 7.0) < 1e-6 and st["sessions"][0] is done
+
+
 # ---- Fahrzeuge (Schema 2)
 LEGACY = {"brand": "BYD", "model": "Dolphin Surf", "body": "kompakt", "color": "white", "ent": {"soc": "sensor.dolphin_soc", "odo": "sensor.dolphin_km", "range": "", "plug": "binary_sensor.plug"}}
 

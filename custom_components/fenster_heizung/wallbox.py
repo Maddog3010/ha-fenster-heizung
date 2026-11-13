@@ -26,8 +26,12 @@ from .wallbox_calc import (
     plan_due, resolve_who, valid_host, wbx_ready,
 )
 from .wallbox_plan import (
-    add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_tick, stats_view,
+    add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_tick,
+    stats_view,
 )
+
+EVENT_DONE = "fenster_heizung_ladung_beendet"
+SIGNAL_EV = f"{DOMAIN}_wallbox_update"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -329,9 +333,28 @@ class WallboxManager:
         return ((self._modules().get("ev") or {}).get("ent") or {}).get(k) or ""
 
     def veh_soc(self, v: dict[str, Any] | None) -> float | None:
+        """Ladestand vom Sensor des Fahrzeugs, sonst (B4) der geschätzte Ladestand."""
         eid = (v or {}).get("ent", {}).get("soc") if v else (self._legacy_ent("soc") if not self.cfg["vehicles"] else "")
         x = self._num(eid)
-        return x if x is not None and 0 <= x <= 100 else None
+        if x is not None and 0 <= x <= 100:
+            return x
+        e = self._st["est"].get(v["id"]) if v and not eid else None
+        return round(e["soc"], 1) if e else None
+
+    def veh_est(self, v: dict[str, Any] | None) -> dict[str, Any] | None:
+        """B4: Schätzung für ein Fahrzeug ohne Ladestand-Sensor (soc, set, stale) oder None."""
+        if not v or v["ent"].get("soc"):
+            return None
+        return self._st["est"].get(v["id"])
+
+    async def async_est(self, vid: str, soc: float) -> dict[str, Any]:
+        """B4: „Auto hat jetzt … %“ – Startwert der Schätzung (nur für Fahrzeuge ohne Ladestand-Sensor)."""
+        v = self._vehicle(vid)
+        if v is not None:
+            est_set(self._st, vid, soc, dt_util.now())
+            self._st_store.async_delay_save(lambda: self._st, 2)
+            self._add(f"Ladestand von {v['name']} eingegeben: {round(soc)} %. Ab jetzt wird beim Laden geschätzt.")
+        return self.snapshot()
 
     def _soc(self) -> float | None:
         return self.veh_soc(self.cur_vehicle())
@@ -506,15 +529,48 @@ class WallboxManager:
         trx = self.info.get("trx")
         w = resolve_who(self.cfg, trx if isinstance(trx, int) and trx >= 1 else self._card)
         veh = w["name"] if w else "Unbekannt"
-        session_tick(self._st, now, charging, power)
-        add_km(self._st, now, self._odo())
+        card = next((c["n"] for c in self.info.get("cards") or [] if w and c["i"] == w.get("card")), "") if w and w.get("card") else ""
+        cv = self.cur_vehicle()
+        done = session_tick(self._st, now, charging, power)
+        if done:
+            self._fire_done(done)
+        add_km(self._st, now, self._odo(), cv["id"] if cv else "", cv["name"] if cv else "")
         if charging and power > 0 and dt > 0:
-            add_energy(self._st, now, dt, power, self.surplus(power), self._price_now(now), veh)
+            add_energy(self._st, now, dt, power, self.surplus(power), self._price_now(now), veh, card)
+            if cv and not cv["ent"].get("soc"):
+                est_add(self._st, cv["id"], power * dt / 3.6e6, self._cap())
         day = now.date().isoformat()
         if day != self._st_day:
             self._st_day = day
             prune(self._st, now.date())
         self._st_store.async_delay_save(lambda: self._st, 60)
+
+    def _fire_done(self, ses: dict[str, Any]) -> None:
+        """B9: Ereignis „Ladung beendet“ für eigene Automationen (kWh, Sonne, Kosten, Fahrzeug, Karte)."""
+        kwh = ses.get("kwh") or 0.0
+        self.hass.bus.async_fire(EVENT_DONE, {"fahrzeug": ses.get("veh"), "karte": ses.get("card") or None, "kwh": round(kwh, 2), "sonne_kwh": round(ses.get("pv") or 0.0, 2),
+                                              "sonnenanteil": round((ses.get("pv") or 0.0) / kwh * 100) if kwh > 0 else 0, "kosten_eur": round(ses.get("cost") or 0.0, 2),
+                                              "minuten": round(ses.get("min") or 0.0), "start": ses.get("start")})
+
+    def ev_values(self) -> dict[str, Any]:
+        """B9: Werte für die Sensoren von Modul 8 (Ladestand, fertig um, nächster Ladestart, Sonne jetzt)."""
+        v = self.cur_vehicle()
+        soc = self._soc()
+        i, w = self.info or {}, self.want or {}
+        pw = (i.get("power") or 0.0) if i.get("car") == CAR_CHARGING else 0.0
+        cfg = self._eff_cfg(self.who)
+        goal = cfg["planSoc"] if (self.who or {}).get("dep", {}) and (self.who.get("dep") or {}).get("on") else cfg["limit"]
+        goal = min(goal, cfg["limit"])
+        need = max(0.0, (goal - soc) / 100 * self._cap()) if soc is not None else None
+        done = dt_util.now() + timedelta(hours=need / (pw / 1000)) if need and pw > 500 else None
+        nxt = None
+        if self.cfg["planOn"] and self._slots:
+            pv = self.plan_view()
+            st = [self._slots[x["s"]]["t"] for x in pv.get("wins") or [] if x["s"] < len(self._slots)]
+            nxt = next((t for t in st if t > dt_util.now()), None)
+        sun = round(min(100.0, max(0.0, (w.get("surplus_w") or 0.0) / pw * 100))) if pw > 0 and w.get("surplus_w") is not None else None
+        return {"ok": self.configured() or bool(v), "soc": soc, "est": self.veh_est(v) is not None, "veh": v["name"] if v else None, "goal": goal, "need": round(need, 1) if need is not None else None,
+                "done": done, "next": nxt, "sun": sun, "power": round(pw / 1000, 2), "state": w.get("state")}
 
     def stats(self) -> dict[str, Any]:
         return stats_view(self._st)
@@ -627,7 +683,7 @@ class WallboxManager:
         cfg = self._eff_cfg(who)
         v = self.cur_vehicle()
         own = bool(who and who.get("kind") == "vehicle" and (who.get("dep") or {}).get("on"))
-        base = {"veh": v["name"] if v else "", "vid": v["id"] if v else "", "own": own, "target": cfg["planSoc"], "until": cfg["planTime"],
+        base = {"veh": v["name"] if v else "", "vid": v["id"] if v else "", "own": own, "est": self.veh_est(v) is not None, "target": cfg["planSoc"], "until": cfg["planTime"],
                 "days": cfg["planDays"], "strat": cfg["planStrat"], "cap": cfg["cap"]}
         soc = self._soc()
         if soc is None:
@@ -751,6 +807,9 @@ class WallboxManager:
             self._n["start"] = True
             await self._notify("start", "Ladung gestartet", f"{who} lädt mit {round((self.info.get('power') or 0) / 1000, 1)} kW.")
         if car == CAR_IDLE:
+            if prev is not None and prev != CAR_IDLE:  # abgesteckt: das Auto fährt, die Schätzung stimmt nicht mehr sicher
+                for e in self._st["est"].values():
+                    e["stale"] = True
             self._plug_ts, self._charged = None, False
             self._n.update(start=False, goal=False, plan=False, long=False)
             return
@@ -789,5 +848,6 @@ class WallboxManager:
             "hold": max(0, int(self._hold_until - time.time())),
             "quick": {"k": self._quick["k"], "until": self._quick["until"]} if self._quick else None, "guard": self.guard,
             "veh": (self.cur_vehicle() or {}).get("id") or "", "socs": {v["id"]: self.veh_soc(v) for v in self.cfg["vehicles"]},
+            "est": {v["id"]: self.veh_est(v) for v in self.cfg["vehicles"] if self.veh_est(v)},
             "ready": self.configured(), "kind": self.cfg["wbx"]["kind"],
         }

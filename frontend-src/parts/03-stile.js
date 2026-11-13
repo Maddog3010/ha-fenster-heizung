@@ -1898,6 +1898,25 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .evtabs{display:flex;gap:8px;margin:0 0 12px;overflow-x:auto;scrollbar-width:none}.evtabs::-webkit-scrollbar{display:none}
 .evtabs button{flex:none;display:flex;align-items:center;gap:7px;padding:8px 15px 8px 10px;border-radius:999px;border:0;background:var(--card);color:var(--mut);font:inherit;font-weight:600;font-size:.88rem;cursor:pointer;box-shadow:0 0 0 1px color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent)}
 .evtabs button.sel{background:var(--teal);color:#042f2e;box-shadow:none}
+/* Modul 8 v0.8: Planungsband, Statistik, geschätzter Ladestand */
+.evseg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:999px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 7%,transparent);margin:8px 0 2px}
+.evseg button{border:0;background:transparent;color:var(--mut);font:inherit;font-weight:600;font-size:.84rem;padding:7px 13px;border-radius:999px;cursor:pointer}.evseg button.sel{background:var(--teal);color:#042f2e}.evseg button:disabled{cursor:default}
+.evplan{margin-bottom:12px}.evpwrap{margin-top:6px}.evpsvg{display:block;width:100%;height:230px}
+.evpx{font-size:11px;fill:var(--mut)}.evpx.b{fill:var(--primary-text-color,#e6edf3);font-weight:700}.evpd{stroke:var(--line,#2a3440);stroke-width:1}.evpn{stroke:var(--primary-text-color,#e6edf3);stroke-width:2}
+.evpw{fill:color-mix(in srgb,var(--teal) 13%,transparent);stroke:var(--teal);stroke-width:1.4}.evpw.g{fill:rgba(96,165,250,.13);stroke:#60a5fa}.evpwl{font-size:12px;font-weight:700;fill:var(--teal)}.evpwl.g{fill:#60a5fa}
+.evpa{fill:var(--card-background-color,#1a2129);opacity:.62}.evpdl{stroke:#f87171;stroke-width:1.6;stroke-dasharray:5 4}.evpdt{font-size:12px;font-weight:700;fill:#f87171}
+.evsthd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 12px}.evsthd .evseg{margin:0}.evnav{display:flex;align-items:center;gap:8px}.evnav b{min-width:150px;text-align:center}
+.evnav button{width:34px;height:34px;border-radius:50%;border:0;background:var(--card);color:var(--primary-text-color,#e6edf3);font-size:1.2rem;cursor:pointer;box-shadow:0 0 0 1px color-mix(in srgb,var(--primary-text-color,#e6edf3) 8%,transparent)}.evnav button:disabled{opacity:.35;cursor:default}
+.evks5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:12px}.evd{font-style:normal;font-weight:700;margin-left:4px}.evd.g{color:var(--teal)}.evd.b{color:#f87171}.evd.n{color:var(--mut)}
+.evstsvg{display:block;width:100%;height:190px}.evsb{cursor:pointer}.evsb:hover rect[rx]{opacity:.85}
+.evses>div{display:grid;grid-template-columns:78px minmax(0,1.2fr) minmax(40px,.7fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line,#2a3440)}.evses>div:first-child{border-top:0}
+.evses small{display:block;color:var(--mut);font-size:.74rem}.evsk{text-align:right}.evsbar{height:6px;border-radius:9px;background:var(--amber);overflow:hidden}.evsbar i{display:block;height:100%;background:var(--teal)}
+.evvr{display:flex;align-items:center;gap:12px;padding:8px 0}.evvt{flex:1;min-width:0}.evvt small{color:var(--mut);font-size:.76rem}.evbb.sm{height:7px;margin:5px 0 4px}
+.evcr{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line,#2a3440)}.evcr small{display:block;color:var(--mut);font-size:.74rem}.evcr>span:last-child{text-align:right}
+.evest{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px;margin:10px 0;border-radius:14px;background:color-mix(in srgb,var(--teal) 8%,transparent)}.evest>div{flex:1 1 240px;display:grid;gap:3px}
+.evesti{display:flex;align-items:center;gap:6px}.evesti input{width:72px;text-align:right}
+@media (max-width:900px){.evks5{grid-template-columns:repeat(2,minmax(0,1fr))}.evks5>.evk:last-child{grid-column:1/-1}}
+@media (max-width:620px){.evpsvg{height:200px}.evses>div{grid-template-columns:64px minmax(0,1fr) auto}.evsbar{display:none}.evnav b{min-width:0}}
 @media (max-width:900px){.evks4{grid-template-columns:repeat(2,minmax(0,1fr))}.evcols{grid-template-columns:1fr}.evmodes{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:620px){
   .evban{min-height:0}.evban .evbt{width:100%;min-height:0;padding:16px 16px 158px;background:linear-gradient(180deg,rgba(9,14,22,.9) 0%,rgba(9,14,22,.82) 52%,rgba(9,14,22,0) 72%)}

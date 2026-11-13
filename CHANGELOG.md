@@ -5,6 +5,13 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 ## [2026.11.3b16] - 2026-11-13
 
 ### Neu
+- **Modul 8 · Elektroauto & Wallbox (v0.8 Build 1): Planung & Statistik** – dritte Stufe aus dem Konzept „Modul 8 – Neue Optik“.
+  - **Ladeplan als ein Band:** Sonne als Fläche (aus Modul 16), Strompreis als farbiger Streifen (grün günstig → rot teuer), geplante Ladefenster als Rahmen mit kWh, Abfahrt als rote Linie, die Zeit danach ausgegraut, „jetzt“ und „morgen“ markiert. Darunter ein Satz („So wird geladen: morgen 05:00–06:00 zum günstigen Preis …“) und Kacheln für Geplant, Sonne, Kosten und Ersparnis.
+  - **Statistik wie Modul 3 und 4:** Tag, Woche, Monat und Jahr mit Blättern; Kacheln Geladen, Sonnenanteil, Kosten, **Pro 100 km** und Gespart, jeweils mit ▲▼ gegenüber dem gleichen Zeitraum davor. Balken antippen öffnet den Tag bzw. Monat. Dazu Ladungen mit Fahrzeug und Karte, Fahrzeuge im Vergleich (mit €/100 km) und Summen je Karte.
+  - **Geschätzter Ladestand (Beta):** Für Autos ohne Ladestand-Sensor gibst du unter „Aussehen & Sensoren“ einmal den Ladestand ein, danach rechnet Modul 8 beim Laden weiter (geladene kWh × 90 % ÷ Akkugröße). Angezeigt mit „≈“ und „geschätzt“; nach dem Abstecken als unsicher markiert. Damit funktionieren Ladelimit, Ladeband und Ladeplan auch ohne Sensor im Auto.
+  - **Kilometer je Fahrzeug:** Der Kilometerstand wird je Fahrzeug fortgeschrieben – ein Wechsel zwischen zwei Autos ergibt keinen Sprung mehr.
+  - **Sensoren für eigene Automationen** (Gerät „Strom & Wärme · Elektroauto & Wallbox“): Ladestand Elektroauto, Elektroauto fertig um, Nächster Ladestart, Sonnenanteil der Ladung.
+  - **Ereignis `fenster_heizung_ladung_beendet`** mit Fahrzeug, Karte, kWh, Sonnenanteil, Kosten und Dauer – zum Beispiel für eine eigene Meldung aufs Handy.
 - **Modul 8 · Elektroauto & Wallbox (v0.7 Build 2): Neue Optik** – zweite Stufe aus dem Konzept „Modul 8 – Neue Optik“ (Teil A). Abschaltbar unter Modul 8 → Einstellungen → Darstellung „Wie bisher“.
   - **Carport-Szene als Banner:** Hauswand mit Wallbox, Carport mit flach aufliegenden Modulen und das Auto in Form und Farbe des Fahrzeugs. Beim Laden leuchtet die Linie Sonne → Wallbox → Auto (gelb mit Sonne, orange mit Netz) und das Kabel. Nachts dunkler Himmel mit Mond. Groß: Ladestand → Ziel, darunter „fertig ca. …“.
   - **Autos realistischer (Build 2):** Alle vier Formen (Limousine, Kompakt, Kombi, SUV) neu gezeichnet – Proportionen wie echte Autos, Radläufe mit Spalt, Aero-Felgen, LED-Tagfahrlicht und Rücklicht, Schulterlinie und Lackspiegelung, Ladeklappe am hinteren Kotflügel, an der das Kabel steckt; SUV mit dunkler Radlauf-Verkleidung. Weiterhin allgemein gehalten, ohne Logos und keinem echten Modell nachgebaut. Gilt für Banner, Fahrzeugliste und „Aussehen & Sensoren“.
@@ -29,7 +36,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 
 ### Technik
 - Modul 8 im Dashboard-Quelltext in eigene Teile aufgeteilt (`10a-laden`, `10b-planung`, `10c-statistik`, `10d-fahrzeuge`, `10e-wallbox`).
-- Neuer `wallbox_adapter.py` (go-e und Home-Assistant-Wallboxen) und 29 Tests für Regelung, Phasen, Hausanschluss-Schutz, Ladeplan, Statistik, Übernahme und Adapter (`tests/test_wallbox.py`).
+- Neuer `wallbox_adapter.py` (go-e und Home-Assistant-Wallboxen) und 32 Tests für Regelung, Phasen, Hausanschluss-Schutz, Ladeplan, Statistik, Übernahme und Adapter (`tests/test_wallbox.py`).
 
 ## [2026.11.3b15] - 2026-11-13
 

@@ -180,6 +180,18 @@
       },
       "wx_heat": {
         "name": "Heat"
+      },
+      "ev_soc": {
+        "name": "Electric car state of charge"
+      },
+      "ev_done": {
+        "name": "Electric car done at"
+      },
+      "ev_next": {
+        "name": "Next charging start"
+      },
+      "ev_sun": {
+        "name": "Solar share of charging"
       }
     }
   }

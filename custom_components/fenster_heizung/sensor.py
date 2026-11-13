@@ -22,6 +22,7 @@ from .wetter import KEYS as WX_KEYS, NAMES as WX_NAMES, SIGNAL_WX
 
 SP_OWNER = "sp_sensor_owner"
 SP_KEYS = ("sp_today", "sp_tomorrow", "sp_rest", "sp_corr", "sp_best")
+EV_KEYS = ("ev_soc", "ev_done", "ev_next", "ev_sun")
 
 SCOPES = {
     "minutes_today": "day",
@@ -38,7 +39,7 @@ async def async_setup_entry(
     extra: list[SensorEntity] = []
     if store.get(SP_OWNER) in (None, entry.entry_id):  # E6/F7: Solar-Werte nur einmal, am ersten Raum
         store[SP_OWNER] = entry.entry_id
-        extra = [SolarSensor(k) for k in SP_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS]
+        extra = [SolarSensor(k) for k in SP_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS]
     async_add_entities(
         [PausedMinutesSensor(entry, key, scope) for key, scope in SCOPES.items()]
         + [PlanTargetSensor(entry), ModeSensor(entry)]
@@ -100,6 +101,70 @@ class WetterSensor(SensorEntity):
 
     async def async_added_to_hass(self) -> None:
         self.async_on_remove(async_dispatcher_connect(self.hass, SIGNAL_WX, self._refresh))
+
+    @callback
+    def _refresh(self, *_a) -> None:
+        self.async_write_ha_state()
+
+
+class EvSensor(SensorEntity):
+    """Modul 8 (B9): Ladestand, fertig um, nächster Ladestart und Sonnenanteil jetzt – für eigene Automationen. Eigenes Gerät."""
+
+    _attr_has_entity_name = True
+    _attr_should_poll = False
+
+    def __init__(self, key: str) -> None:
+        self._key = key
+        self._attr_translation_key = key
+        self._attr_unique_id = f"{DOMAIN}_wallbox_{key[3:]}"
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, "elektroauto_wallbox")},
+            "name": "Strom & Wärme · Elektroauto & Wallbox",
+            "manufacturer": "Strom & Wärme",
+            "model": "Modul 8",
+            "entry_type": "service",
+        }
+        if key in ("ev_done", "ev_next"):
+            self._attr_device_class = SensorDeviceClass.TIMESTAMP
+            self._attr_icon = "mdi:clock-check-outline" if key == "ev_done" else "mdi:clock-start"
+        else:
+            self._attr_native_unit_of_measurement = "%"
+            self._attr_icon = "mdi:battery-charging-80" if key == "ev_soc" else "mdi:solar-power"
+            if key == "ev_soc":
+                self._attr_device_class = SensorDeviceClass.BATTERY
+                self._attr_state_class = SensorStateClass.MEASUREMENT
+
+    def _v(self) -> dict:
+        m = self.hass.data.get(DOMAIN, {}).get("wallbox") if self.hass else None
+        try:
+            return m.ev_values() if m is not None else {"ok": False}
+        except Exception:  # noqa: BLE001 - ein Fehler in der Berechnung darf den Sensor nicht abstürzen lassen
+            return {"ok": False}
+
+    @property
+    def available(self) -> bool:
+        return bool(self._v().get("ok"))
+
+    @property
+    def native_value(self):
+        v = self._v()
+        return {"ev_soc": v.get("soc"), "ev_done": v.get("done"), "ev_next": v.get("next"), "ev_sun": v.get("sun")}.get(self._key) if v.get("ok") else None
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        v = self._v()
+        if not v.get("ok"):
+            return {}
+        if self._key == "ev_soc":
+            return {"fahrzeug": v.get("veh"), "geschaetzt": v.get("est"), "ziel": v.get("goal"), "fehlt_kwh": v.get("need")}
+        if self._key == "ev_done":
+            return {"leistung_kw": v.get("power"), "fehlt_kwh": v.get("need")}
+        if self._key == "ev_sun":
+            return {"leistung_kw": v.get("power"), "zustand": v.get("state")}
+        return {}
+
+    async def async_added_to_hass(self) -> None:
+        self.async_on_remove(async_track_time_interval(self.hass, self._refresh, timedelta(seconds=30)))
 
     @callback
     def _refresh(self, *_a) -> None:

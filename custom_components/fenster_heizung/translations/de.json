@@ -180,6 +180,18 @@
       },
       "wx_heat": {
         "name": "Hitze"
+      },
+      "ev_soc": {
+        "name": "Ladestand Elektroauto"
+      },
+      "ev_done": {
+        "name": "Elektroauto fertig um"
+      },
+      "ev_next": {
+        "name": "Nächster Ladestart"
+      },
+      "ev_sun": {
+        "name": "Sonnenanteil der Ladung"
       }
     }
   }
