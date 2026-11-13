@@ -35,12 +35,13 @@
     main.innerHTML = `<div class="blwrap"><div class="blcard">
       <div class="blhead"><span class="blic">${ic("flask", 30)}</span><div><em class="lgchip bl">Testversion ${esc(v)}</em><h2>${head}</h2></div></div>
       <p>${txt}</p>
+      ${adm && !sp && this._ghS().ready && !(s.manage && s.dev_off) ? `<div class="blgh"><span class="blghi">${ic("heart", 22)}</span><span class="blght"><b>Schon Sponsor?</b><small>Mit GitHub anmelden – deine Stufe wird erkannt und die Testversion ist sofort frei, wenn sie für dich gilt.</small></span><button class="btn2 spnb pri" data-act="spngh">${ic("key", 16)} Mit GitHub freischalten</button></div>` : ""}
       ${sp && left ? `<div class="blcount"><div><b>${dd}</b><small>${dd === 1 ? "Tag" : "Tage"}</small></div><div><b>${hh}</b><small>${hh === 1 ? "Stunde" : "Stunden"}</small></div><span>bis zur Freigabe</span></div>` : ""}
       <div class="blok">${ic("check", 16)}<span>Heizung, Fenster-Automatik und alle Regeln laufen im Hintergrund normal weiter. Räume, Pläne und Einstellungen bleiben erhalten.</span></div>
       ${adm ? `<div class="blsteps">${step(1, "HACS öffnen", "Strom &amp; Wärme")}${step(2, `⋮ → Erneut herunterladen`, st ? `Version ${esc(st)} wählen` : "die oberste Version ohne „b“ wählen")}${step(3, "Home Assistant neu starten", "danach ist alles wieder frei")}</div>
       <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="_top" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : "In HACS öffnen"}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · ab $3 im Monat</a></div>
       ${s.manage && s.dev_off ? `<div class="bldev">${ic("flask", 18)}<span><b>Entwickler-Zugang ist zum Testen aus.</b> Deshalb siehst du diese Sperre wie ein Nutzer ohne Sponsoring.</span><button class="btn2 pri" data-act="spndev" data-k="on">Entwickler-Zugang wieder einschalten</button><button class="lnk" data-act="spnadm">Sponsoren verwalten</button></div>` : ""}
-      <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}${this._ghS().ready && !sp ? `<button class="lnk" data-act="spngh">Schon Sponsor? Freischalten</button> · ` : ""}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
+      <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
       : `<div class="blok wa">${ic("info", 16)}<span>Bitte die Person mit Admin-Rechten in Home Assistant, zur stabilen Version zu wechseln.</span></div>`}
     </div></div>`;
   }

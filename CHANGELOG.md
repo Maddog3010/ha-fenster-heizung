@@ -6,6 +6,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 
 ### Behoben
 - **Entwickler-Zugang zum Testen aus – kein Weg zurück:** War der Entwickler-Zugang ausgeschaltet und eine Testversion installiert, zeigte das Panel nur die Beta-Sperre ohne Zugang zu „Sponsoren verwalten“. Die Sperre und das Schlüssel-Fenster zeigen jetzt für den Entwickler „Entwickler-Zugang wieder einschalten“ und „Sponsoren verwalten“. Die Beta-Sperre bietet außerdem „Schon Sponsor? Freischalten“ (Anmeldung mit GitHub).
+- **GitHub-Anmeldung besser platziert:** eigene, gut sichtbare Karte „Du sponserst schon? – Mit GitHub freischalten“ direkt unter dem Kopf des Sponsor-Bereichs und „Schon Sponsor?“ direkt unter dem Text der Beta-Sperre. Die doppelten kleinen Knöpfe (oben rechts, im Kopf, in der Fußzeile) sind weg.
 
 ## [2026.11.3b14] - 2026-11-13
 

@@ -33,4 +33,12 @@ const CSS_GH = `
 /* Weg zurück, wenn der Entwickler-Zugang zum Testen aus ist (Beta-Sperre, Schlüssel-Fenster) */
 .bldev{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,#a78bfa 14%,transparent);border:1px solid color-mix(in srgb,#a78bfa 40%,transparent);font-size:.84rem;line-height:1.4}
 .bldev>svg{color:#c4b5fd;flex:none}.bldev>span{flex:1;min-width:180px}.bldev .btn2{flex:none}.bldev .lnk{font-size:.8rem}
+/* GitHub-Anmeldung gut sichtbar: Karte in Beta-Sperre und Sponsor-Bereich */
+.blgh,.lgghc{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:12px 0;padding:14px 16px;border-radius:16px;background:linear-gradient(120deg,color-mix(in srgb,#ec4899 16%,transparent),color-mix(in srgb,#2dd4bf 12%,transparent));border:1px solid color-mix(in srgb,#ec4899 40%,transparent)}
+.lgghc{margin:14px 0}.lgghc::before{display:none}
+.blghi{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#ec4899,#2dd4bf)}
+.blght{flex:1;min-width:190px;display:flex;flex-direction:column;gap:2px}.blght b{font-size:.98rem}.blght small{font-size:.8rem;color:var(--mut);line-height:1.4}
+.blgh .btn2,.lgghc .btn2{flex:none}
+@media(max-width:520px){.blgh .btn2,.lgghc .btn2{flex:1 1 100%}}
+.btn2.lgghb{border-color:color-mix(in srgb,#ec4899 55%,transparent)}
 `;

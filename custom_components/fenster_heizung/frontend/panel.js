@@ -2925,6 +2925,14 @@ const CSS_GH = `
 /* Weg zurück, wenn der Entwickler-Zugang zum Testen aus ist (Beta-Sperre, Schlüssel-Fenster) */
 .bldev{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin:12px 0;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,#a78bfa 14%,transparent);border:1px solid color-mix(in srgb,#a78bfa 40%,transparent);font-size:.84rem;line-height:1.4}
 .bldev>svg{color:#c4b5fd;flex:none}.bldev>span{flex:1;min-width:180px}.bldev .btn2{flex:none}.bldev .lnk{font-size:.8rem}
+/* GitHub-Anmeldung gut sichtbar: Karte in Beta-Sperre und Sponsor-Bereich */
+.blgh,.lgghc{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:12px 0;padding:14px 16px;border-radius:16px;background:linear-gradient(120deg,color-mix(in srgb,#ec4899 16%,transparent),color-mix(in srgb,#2dd4bf 12%,transparent));border:1px solid color-mix(in srgb,#ec4899 40%,transparent)}
+.lgghc{margin:14px 0}.lgghc::before{display:none}
+.blghi{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#ec4899,#2dd4bf)}
+.blght{flex:1;min-width:190px;display:flex;flex-direction:column;gap:2px}.blght b{font-size:.98rem}.blght small{font-size:.8rem;color:var(--mut);line-height:1.4}
+.blgh .btn2,.lgghc .btn2{flex:none}
+@media(max-width:520px){.blgh .btn2,.lgghc .btn2{flex:1 1 100%}}
+.btn2.lgghb{border-color:color-mix(in srgb,#ec4899 55%,transparent)}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -11542,7 +11550,7 @@ class FensterHeizungPanel extends HTMLElement {
     const foot = `<div class="lgfoot">${adm && s.active && s.source === "github" ? `<button class="lnk" data-act="spngh">GitHub-Anmeldung</button><span>·</span>` : ""}${adm && s.active ? `<button class="lnk" data-act="spnkeydlg">${s.source === "github" ? "Schlüssel" : "Schlüssel ändern"}</button>` : ""}${adm && s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Sponsoren verwalten</button>` : ""}${adm && !s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Entwickler-Zugang</button>` : ""}</div>`;
     const dev = s.state === "dev", mx = s.tier === "max";
     const chips = s.active ? `<span class="lgchips">${dev ? `<em class="lgchip pk">Entwickler-Zugang</em>` : `<em class="lgchip ${mx ? "gd" : "pk"}">${mx ? "★ Sponsor Max" : "♥ Sponsor"}${s.since ? " seit " + esc(this._spnDate(s.since)) : ""}</em>${s.source === "github" ? `<em class="lgchip gh">${ic("link", 12)} GitHub @${esc((s.gh || {}).login || "")} · ${this._ghValid((s.gh || {}).eval)}</em>` : `<em class="lgchip">Schlüssel gültig bis ${esc(this._spnDate(s.bis))}</em>`}`}</span>`
-      : adm ? `<button class="lgchip btn" data-act="spngh">Schon Sponsor? Freischalten</button>` : "";
+      : adm && !this._ghS().ready ? `<button class="lgchip btn" data-act="spnkeydlg">Ich habe schon einen Schlüssel</button>` : "";
     const bar = `<div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${s.active ? "Sponsor-Lounge" : "Sponsor-Bereich"}</b><span>${this._verTag()}</span></div></div>
         ${this._narrow ? "" : chips}<button class="pillbtn pri" data-act="lgxback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>`;
@@ -11608,7 +11616,7 @@ class FensterHeizungPanel extends HTMLElement {
     const nums = [N.rooms && N.gas > 0 ? ["eco", `${num(N.gas, N.gas >= 100 ? 0 : 1)} ${esc(unitOf(N.F))}`, `${esc(N.F.short)} gespart`] : null, N.sv > 0 ? ["euro", `${num(N.sv, N.sv >= 100 ? 0 : 2)} €`, "Vorteil durch Solar"] : null, N.rooms && N.min > 0 ? ["windowOpen", `${num(N.min / 60, 0)} h`, "Pausen beim Lüften"] : null].filter(Boolean);
     const mail = `mailto:${SPN_MAIL}?subject=${encodeURIComponent("Sponsor-Schlüssel Strom & Wärme")}&body=${encodeURIComponent("Hallo, ich habe auf GitHub gesponsert.\nMein GitHub-Name: \nStufe: Sponsor / Sponsor Max\n\nDanke!")}`;
     const hero = `<div class="lghero out"><div class="lghl"><em class="lgchip pk">♥ Strom &amp; Wärme bleibt kostenlos</em><h2>Mit dir wird es schneller besser.</h2><p>Alles, was heute frei ist, bleibt frei. Sponsoren bekommen Extras obendrauf – und bestimmen mit, was als Nächstes kommt.</p>
-      <div class="lgbtns"><a class="btn2 lgpk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a>${adm ? `<button class="btn2" data-act="spngh">${ic("key", 15)} Schon Sponsor? Freischalten</button>` : `<button class="btn2" data-act="lgxgo" data-k="lgget">Extras ansehen</button>`}</div></div><div class="lghr">${this._lgScene(false)}</div></div>`;
+      <div class="lgbtns"><a class="btn2 lgpk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a><button class="btn2" data-act="lgxgo" data-k="lgget">Extras ansehen</button></div></div><div class="lghr">${this._lgScene(false)}</div></div>`;
     const a2 = nums.length && !hide ? `<div class="lgt" style="--c:#fbbf24"><h4>Das hat Strom &amp; Wärme bei dir schon geschafft</h4><div class="lgnums">${nums.map(([k, v, l]) => `<div>${this._gx(k, 34, { on: true, lvl: 80 })}<span><b>${v}</b><small>${l}</small></span></div>`).join("")}</div>
       <div class="lgnote2">Aus deinen eigenen Daten seit der Installation. Wird nur hier angezeigt, nichts verlässt dein Home Assistant. <button class="lnk" data-act="lgxa2">ausblenden</button></div></div>` : "";
     const gh = !!this._ghS().ready;
@@ -11625,7 +11633,8 @@ class FensterHeizungPanel extends HTMLElement {
     const tag = (t) => t === "neu" ? `<em class="lgtag neu">NEU</em>` : t === "max" ? `<em class="lgtag mx">★ MAX</em>` : t === "bald" ? `<em class="lgtag">BALD</em>` : "";
     const a4 = `<div class="lgh4" id="lgget">Was du bekommst – Auswahl</div><div class="lgget">${T.map(([k, t, sub, tg, id, c]) => `<button class="lgxt2" style="--c:${c}" data-act="lgxex" data-k="${id}">${tag(tg)}${this._gx(k, 36, { on: true, lvl: 80 })}<b>${esc(t)}</b><small>${sub}</small></button>`).join("")}</div>`;
     const tiers = `<div class="lgtiers"><div class="lgt"><b>♥ Sponsor <em class="lgprice">$1 im Monat · $5 einmalig</em></b><small>monatlich oder einmalig (1 Jahr) · alle Extras, Vorabversionen, Hausfluss</small><em class="lgbeta">Ab 2026.11.2: Beta-Versionen 3 Tage nach Erscheinen installierbar</em></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max <em class="lgprice">$3 im Monat · $10 einmalig</em></b><small>monatlich oder einmalig 3 Monate (danach bis 1 Jahr Sponsor) · zusätzlich Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Beta-Kanal 30 Tage</small><em class="lgbeta mx">Ab 2026.11.2: Beta-Versionen sofort installierbar</em></div></div>`;
-    return `${hero}<div class="lg2">${a2}${a3}</div>${a4}${tiers}`;
+    const ghc = adm && this._ghS().ready ? `<div class="lgt lgghc"><span class="blghi">${ic("heart", 22)}</span><span class="blght"><b>Du sponserst schon?</b><small>Einmal mit GitHub anmelden – Stufe und Laufzeit werden automatisch erkannt. Ohne Mail, ohne Schlüssel.</small></span><button class="btn2 spnb pri" data-act="spngh">${ic("key", 16)} Mit GitHub freischalten</button></div>` : "";
+    return `${hero}${ghc}<div class="lg2">${a2}${a3}</div>${a4}${tiers}`;
   }
   /* ---- Aktionen ---- */
   _lgAct(a, b) {
@@ -13391,12 +13400,13 @@ class FensterHeizungPanel extends HTMLElement {
     main.innerHTML = `<div class="blwrap"><div class="blcard">
       <div class="blhead"><span class="blic">${ic("flask", 30)}</span><div><em class="lgchip bl">Testversion ${esc(v)}</em><h2>${head}</h2></div></div>
       <p>${txt}</p>
+      ${adm && !sp && this._ghS().ready && !(s.manage && s.dev_off) ? `<div class="blgh"><span class="blghi">${ic("heart", 22)}</span><span class="blght"><b>Schon Sponsor?</b><small>Mit GitHub anmelden – deine Stufe wird erkannt und die Testversion ist sofort frei, wenn sie für dich gilt.</small></span><button class="btn2 spnb pri" data-act="spngh">${ic("key", 16)} Mit GitHub freischalten</button></div>` : ""}
       ${sp && left ? `<div class="blcount"><div><b>${dd}</b><small>${dd === 1 ? "Tag" : "Tage"}</small></div><div><b>${hh}</b><small>${hh === 1 ? "Stunde" : "Stunden"}</small></div><span>bis zur Freigabe</span></div>` : ""}
       <div class="blok">${ic("check", 16)}<span>Heizung, Fenster-Automatik und alle Regeln laufen im Hintergrund normal weiter. Räume, Pläne und Einstellungen bleiben erhalten.</span></div>
       ${adm ? `<div class="blsteps">${step(1, "HACS öffnen", "Strom &amp; Wärme")}${step(2, `⋮ → Erneut herunterladen`, st ? `Version ${esc(st)} wählen` : "die oberste Version ohne „b“ wählen")}${step(3, "Home Assistant neu starten", "danach ist alles wieder frei")}</div>
       <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="_top" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : "In HACS öffnen"}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · ab $3 im Monat</a></div>
       ${s.manage && s.dev_off ? `<div class="bldev">${ic("flask", 18)}<span><b>Entwickler-Zugang ist zum Testen aus.</b> Deshalb siehst du diese Sperre wie ein Nutzer ohne Sponsoring.</span><button class="btn2 pri" data-act="spndev" data-k="on">Entwickler-Zugang wieder einschalten</button><button class="lnk" data-act="spnadm">Sponsoren verwalten</button></div>` : ""}
-      <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}${this._ghS().ready && !sp ? `<button class="lnk" data-act="spngh">Schon Sponsor? Freischalten</button> · ` : ""}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
+      <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
       : `<div class="blok wa">${ic("info", 16)}<span>Bitte die Person mit Admin-Rechten in Home Assistant, zur stabilen Version zu wechseln.</span></div>`}
     </div></div>`;
   }
