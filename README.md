@@ -71,7 +71,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | 🪟 | **Fenster & Heizung** | Pause bei offenem Fenster, Heizpläne, Anwesenheit und Urlaub, Raumsensor, Messräume, Luftentfeuchter mit Nachtmodus, Berichte, Elektroheizer mit PV-Überschuss |
 | 🚿 | **Warmwasser** | Speicher, Zeitplan, Zirkulation, Legionellenschutz, Heizstab bei Überschuss |
 | ⚡ | **Energie und Gerätestrom** | Solar, Netz, Batterie, Kosten und Autarkie. Pro Gerät: woher kam der Strom, was hat der Lauf gekostet, wann startest du am besten |
-| 🚗 | **Elektroauto** | go-e Charger lokal regeln, nach Sonne, Strompreis und Abfahrtszeit laden, Ladestatistik |
+| 🚗 | **Elektroauto** | go-e Charger lokal oder jede Wallbox über Home Assistant regeln, nach Sonne, Strompreis und Abfahrtszeit laden, Ladestatistik |
 | 🌦️ | **Wetter und Sicherheit** | Eigene und amtliche Warnungen, Rauch-, Gas- und Wassermelder mit Grundriss und Wartung |
 | 🏠 | **Startseite** | Ampel, Wetter, Personen, Alarm und Hinweise auf einen Blick |
 | 📱 | **Tablet-Modus** | Große Knöpfe, Ruhemodus, PIN und Display per Bewegungsmelder, Geräte-Wand |
@@ -120,7 +120,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 5 | Lüftung & Raumluft | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 6 | Rollläden & Beschattung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 7 | Wärmepumpe | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Außenwerten |
-| 8 | **Elektroauto & Wallbox** | Beta 0.5 | go-e Charger (Sonne, Sonne + Netz, Voll, Ladeplan), Planung nach Preis und Prognose, Ladestatistik |
+| 8 | **Elektroauto & Wallbox** | Beta 0.8 | go-e direkt oder andere Wallboxen über Home Assistant (Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP …), Carport-Szene, Ladeplan als Band, Statistik Tag/Woche/Monat/Jahr, Sensoren je Fahrzeug |
 | 9 | **Wetter & Warnungen** | Vorabversion 0.9 | Wetter-Szene, Stufen 1–4 wie beim DWD, alle amtlichen Warnungen, 48-Stunden-Zeitleiste, Aktionen mit Aussperrschutz, Vorsorge, Tablet-Alarm |
 | 10 | Garten & Bewässerung | In Entwicklung 0.1 | Konzept mit Gartenplan |
 | 11 | **Rauch- & Sicherheitsmelder** | Beta 0.5 | Melder, Batterie, Grundriss-Baukasten, Wartung, Abfahrt-Prüfung |
@@ -195,7 +195,9 @@ Die Aufteilung ist eine Näherung aus Messwerten im 20-Sekunden-Takt. Die Startz
 <summary><b>8 · Elektroauto & Wallbox</b> (Beta)</summary>
 <br>
 
-go-e Charger lokal im Netzwerk. Betriebsarten Aus, Sonne, Sonne + Netz, Voll und Ladeplan mit Abfahrtszeit, Ziel-Ladestand, Strompreis und PV-Prognose. Dazu RFID-Karten je Fahrzeug, Ladestatistik und Hausanschluss-Schutz. **Neu:** Nach einer Phasenumschaltung gilt „fertig“ kurz als Pause, die Ladung läuft weiter. Akkukapazität mit einer Nachkommastelle.
+go-e Charger lokal im Netzwerk **oder (neu, Beta) jede Wallbox mit Home-Assistant-Integration** – „Andere Wallbox“ im Store sucht die Integration und schlägt die Entitäten vor. Betriebsarten Aus, Sonne, Sonne + Netz, Voll und Ladeplan mit Abfahrtszeit, Ziel-Ladestand, Strompreis und PV-Prognose (Modul 16). Dazu RFID-Karten je Fahrzeug, Hausanschluss-Schutz und Ladestatistik.
+
+**Neu in 2026.11.3b16 (Modul 8 v0.6–v0.8):** neue Optik mit Carport-Szene, Ladeband bis zum Ziel, Kacheln mit HD-Symbolen, Modus-Karten, „Heute“ und „Warum gerade so?“ als Zeitleisten · realistischere Autos · eigene Sensoren und eigenes Aussehen je Fahrzeug · Register „Fahrzeuge“ · Ladeplan als ein Band (derselbe Plan, nach dem geregelt wird) · Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte · geschätzter Ladestand für Autos ohne Sensor · Sensoren und Ereignis `fenster_heizung_ladung_beendet` für eigene Automationen. „Wie bisher“ holt die alte Ansicht zurück.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_elektroauto.png" width="560" alt="Modul 8"></p>
 </details>
