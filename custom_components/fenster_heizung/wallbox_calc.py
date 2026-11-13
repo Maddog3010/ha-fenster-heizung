@@ -29,7 +29,7 @@ DEFAULT: dict[str, Any] = {
     "lock": False, "reset": True, "vehicles": [], "guest": {"mode": "off", "limit": 80},
     "guard": {"on": False, "maxA": 35}, "notify": {"start": True, "goal": True, "plan": True, "off": True, "long": False, "to": []},
     "planOn": False, "planStrat": "mix", "planSrc": "auto", "pvSrc": "auto", "baseW": 400,
-    "vs": 2, "defVeh": "", "look": "new", "wbx": {"kind": "goe", "plat": "", "name": "", "ent": {}, "ph": 3},
+    "vs": 2, "defVeh": "", "look": "new", "batProtect": True, "carFirst": False, "dim": {"on": False, "ent": "", "kw": 4.2}, "pdf": {"ct": 30.0, "name": ""}, "wbx": {"kind": "goe", "plat": "", "name": "", "ent": {}, "ph": 3},
 }
 MAX_VEHICLES = 6
 MAX_CARDS = 10
@@ -108,6 +108,21 @@ def clean_wb(raw: Any) -> dict[str, Any]:
     g = raw.get("guest") if isinstance(raw.get("guest"), dict) else {}
     out["guest"] = {"mode": g.get("mode") if g.get("mode") in MODES else "off", "limit": _int(g.get("limit"), 50, 100, 80)}
     out["look"] = "classic" if raw.get("look") == "classic" else "new"  # v0.7: neue Optik oder „wie bisher“
+    # v0.9: Hausakku schützen (nicht ins Auto entladen), Auto vor dem Hausakku, § 14a EnWG Dimmen, Ladenachweis
+    out["batProtect"] = bool(raw.get("batProtect", True))
+    out["carFirst"] = bool(raw.get("carFirst", False))
+    dm = raw.get("dim") if isinstance(raw.get("dim"), dict) else {}
+    try:
+        kw = round(min(max(float(str(dm.get("kw", 4.2)).replace(",", ".")), 1.4), 22.0), 1)
+    except (TypeError, ValueError):
+        kw = 4.2
+    out["dim"] = {"on": bool(dm.get("on", False)), "ent": _eid(dm.get("ent")), "kw": kw}
+    pd = raw.get("pdf") if isinstance(raw.get("pdf"), dict) else {}
+    try:
+        ct = round(min(max(float(str(pd.get("ct", 30)).replace(",", ".")), 0.0), 200.0), 2)
+    except (TypeError, ValueError):
+        ct = 30.0
+    out["pdf"] = {"ct": ct, "name": re.sub(r"[<>\"'&]", "", str(pd.get("name") or "")).strip()[:60]}
     out["vs"] = _int(raw.get("vs"), 1, SCHEMA, 1)
     dv = str(raw.get("defVeh") or "")
     out["defVeh"] = dv if any(v["id"] == dv for v in out["vehicles"]) else ""
@@ -206,7 +221,8 @@ def clean_vehicles(raw: Any) -> list[dict[str, Any]]:
             cap = round(min(max(cap, 10.0), 150.0), 1) if cap == cap and cap > 0 else 0.0
         except (TypeError, ValueError):
             cap = 0.0
-        out.append({"id": vid, "name": name, "ids": ids, "mode": v.get("mode") if v.get("mode") in MODES else "pv", "limit": _int(v.get("limit"), 50, 100, 80), "dep": dep,
+        person = str(v.get("person") or "")
+        out.append({"person": person if re.fullmatch(r"person\.[a-z0-9_]{1,80}", person) else "", "id": vid, "name": name, "ids": ids, "mode": v.get("mode") if v.get("mode") in MODES else "pv", "limit": _int(v.get("limit"), 50, 100, 80), "dep": dep,
                     "brand": re.sub(r"[<>\"'&]", "", str(v.get("brand") or "")).strip()[:20], "model": re.sub(r"[<>\"'&]", "", str(v.get("model") or "")).strip()[:30],
                     "body": v.get("body") if v.get("body") in EV_BODIES else "limousine", "color": v.get("color") if v.get("color") in EV_COLORS else "blue",
                     "cap": cap, "ent": {k: _eid(ent.get(k)) for k in VEH_ENT}})
@@ -404,3 +420,28 @@ def guard_limit(guard: dict[str, Any], grid_import_w: float, wb_w: float, phases
     wb_a = wb_w / (VOLT * ph) if wb_w > 0 else 0.0
     mx = float(guard["maxA"])
     return {"house_a": round(other_a, 1), "wb_a": round(wb_a, 1), "total_a": round(other_a + wb_a, 1), "max_a": int(mx), "allowed_a": int(max(mx - other_a, 0.0))}
+
+
+def bat_split(mode: str, sign: str, one_w: float | None, chg_w: float | None, dis_w: float | None) -> tuple[float, float]:
+    """Hausakku: (Laden W, Entladen W) aus einem Sensor mit Vorzeichen oder aus zwei Sensoren."""
+    if mode == "two":
+        return max(chg_w or 0.0, 0.0), max(dis_w or 0.0, 0.0)
+    b = one_w or 0.0
+    b = b if sign != "discharge" else -b
+    return max(b, 0.0), max(-b, 0.0)
+
+
+def surplus_adj(surplus_w: float | None, bat_chg_w: float, bat_dis_w: float, protect: bool, car_first: bool) -> float | None:
+    """Überschuss fürs Auto: Was der Hausakku gerade abgibt, ist kein Überschuss (nicht ins Auto entladen).
+    „Auto zuerst“: Was der Hausakku gerade lädt, darf das Auto bekommen."""
+    if surplus_w is None:
+        return None
+    s = surplus_w - (bat_dis_w if protect else 0.0) + (bat_chg_w if car_first else 0.0)
+    return max(s, 0.0)
+
+
+def dim_amp(kw: float, phases: int) -> int:
+    """§ 14a EnWG: höchster Ladestrom, wenn der Netzbetreiber dimmt (mindestens 4,2 kW)."""
+    ph = 1 if phases == 1 else 3
+    return max(6, int(kw * 1000 // (VOLT * ph)))
+

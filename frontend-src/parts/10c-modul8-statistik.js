@@ -58,7 +58,7 @@
     const S = this._wbStS(), k = b.dataset.k;
     if (a === "wbtab") this._wbTab = k;
     else if (a === "wbsec") { this._wbSecO = { ...this._wbSecS(), [k]: !this._wbSecS()[k] }; this._wbSecSave(); }
-    else if (a === "wbsecall") { this._wbSecO = Object.fromEntries(["wb", "reg", "veh", "bat", "grd", "ntf", "look"].map((x) => [x, k === "1"])); this._wbSecSave(); }
+    else if (a === "wbsecall") { this._wbSecO = Object.fromEntries(["wb", "reg", "veh", "bat", "dim", "grd", "ntf", "look"].map((x) => [x, k === "1"])); this._wbSecSave(); }
     else if (a === "wbgo" && k === "veh" && this._evNew()) this._wbTab = "veh";
     else if (a === "wbgo") { this._wbTab = "set"; this._wbSecO = { ...this._wbSecS(), [k]: true }; this._wbSecSave(); }
     else if (a === "wbplan") this._wbSave({ planStrat: k });

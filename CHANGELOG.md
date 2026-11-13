@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b17] - 2026-11-13
+
+### Neu
+- **Modul 8 · Elektroauto & Wallbox (v0.9 Build 1): Vorabversion** – vierte Stufe aus dem Konzept „Modul 8 – Neue Optik“. Das Modul trägt jetzt die Stufe „Vorabversion“.
+  - **Hausakku nicht ins Auto entladen** (Standard an): Was der Hausakku gerade abgibt, zählt nicht mehr als Überschuss. Vorher konnte das Auto im Modus „Sonne“ den Hausakku leer laden, weil dabei keine Einspeisung gemessen wurde. Braucht den Akku-Sensor unter Einstellungen → Haus.
+  - **Auto vor dem Hausakku** (wahlweise): Was der Hausakku gerade aus Sonne lädt, darf zuerst ins Auto. Schließt „Hausbatterie zuerst laden“ aus.
+  - **§ 14a EnWG – Dimmen durch den Netzbetreiber:** Signal (Steuerbox, Binärsensor oder Schalter) wählen; ist es an, lädt die Wallbox höchstens mit der eingestellten Leistung (Standard 4,2 kW). Steht in der Satz-Zeile und in „Warum gerade so?“.
+  - **Anwesenheit:** Je Fahrzeug lässt sich wählen, wer es meistens fährt. Ist die Person weg, zeigen Banner und Satz-Zeile „unterwegs mit …“ statt „nicht angesteckt“.
+  - **Ladenachweis:** Im Register Statistik „Ladenachweis“ – Ladungen eines Monats je Fahrzeug oder Karte mit Erstattungssatz (ct/kWh), als CSV oder zum Drucken bzw. als PDF sichern. Dafür liefert die Statistik jetzt alle gespeicherten Ladungen (bis 100) statt 30.
+  - **Startseite:** Kachel und Bubble „E-Auto“ nutzen jetzt die Werte aus Modul 8 – auch den geschätzten Ladestand und die Ladeleistung der Wallbox – und zeigen „lädt … · → 80 % ca. 17:40“.
+  - **Robuster:** Meldet der Netz-Sensor drei Minuten lang keinen neuen Wert, wird mit Sonne nicht mehr erhöht (Hinweis in der Satz-Zeile). Antwortet die Wallbox fünf Minuten nicht, fragt Modul 8 nur noch alle 30 Sekunden statt alle 10.
+  - Hinweis auf NFC-Tags für den Schnellstart (Einstellungen → Haus → Tags & Karten); Vorsorge bei Unwetter für das Auto gibt es bereits in Modul 9.
+
 ## [2026.11.3b16] - 2026-11-13
 
 ### Neu

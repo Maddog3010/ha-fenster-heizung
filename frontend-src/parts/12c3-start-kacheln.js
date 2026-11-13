@@ -51,11 +51,8 @@
       K.v = String(D.length); K.u = D.length === 1 ? "Gerät" : "Geräte"; K.l1 = done.length ? `${esc(done[0].name)} fertig ${new Date(done[0].last.ts).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}` : "alle bereit"; return K;
     }
     if (m.id === "ev") {
-      const E = this._evState().ent || {}; if (!E.soc) return off("Nicht eingerichtet"); K.ent = E.soc;
-      if (this._hzBadE(E.soc)) return { ...K, v: "–", l1: "Auto nicht erreichbar", z: "warn" };
-      const v = this._hzNumE(E.soc), ch = E.charging && st[E.charging] && ["on", "charging"].includes(st[E.charging].state), pl = E.plug && st[E.plug] && ["on", "plugged", "connected"].includes(st[E.plug].state);
-      K.v = num(v, 0); K.u = "%"; K.p = v / 100; K.o.lvl = v; K.l1 = ch ? "lädt" : pl ? "eingesteckt" : "Ladestand"; if (ch) K.z = "act";
-      const r = E.range ? this._hzNumE(E.range) : null; if (r != null) K.l2 = `${num(r, 0)} km`; return K;
+      const E = this._evStartK(); if (!E) return off("Nicht eingerichtet");
+      K.v = (E.est ? "≈" : "") + num(E.soc, 0); K.u = "%"; K.p = E.soc / 100; K.o.lvl = E.soc; K.l1 = esc(E.l1); if (E.l2) K.l2 = esc(E.l2); if (E.chg) K.z = "act"; return K;
     }
     if (m.id === "wx") {
       const t = this._out().t, Wn = this._hzWarnX().filter((h) => h.mod === "wx"); if (t == null && !Wn.length) return off("Keine Wetterquelle");

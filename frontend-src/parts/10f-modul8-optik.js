@@ -121,10 +121,10 @@
   _evBanner() {
     const d = this._evData(), N = this._evNow(d), tab = this._tmOn && this._tmOn();
     if (!d.any) return this._modHero("ev", { icon: "car", lbl: "Elektroauto & Wallbox", big: "–", sub: "Noch kein Fahrzeug eingerichtet" });
-    const name = d.veh ? d.veh.name : this._evTitle(d.veh);
+    const name = d.veh ? d.veh.name : this._evTitle(d.veh), away = this._evAway(d.veh);
     const line = !N.wbOn && !d.plugged ? (d.range != null ? `Reichweite ${num(d.range, 0)} km` : "Fahrzeug")
       : d.charging ? `Lädt${N.sun != null ? (N.sun >= 50 ? " mit Sonne" : " mit Netzstrom") : ""}${d.power != null ? " · " + num(d.power / 1000, 1) + " kW" : ""}${N.doneT ? " · fertig ca. " + N.doneT + " Uhr" : ""}`
-      : d.plugged ? (N.soc != null && N.soc >= N.goal ? "Angesteckt · Ziel erreicht" : `Angesteckt · ${N.w.state === "wartet" ? "wartet auf Sonne" : N.w.state === "plan_wartet" ? "wartet auf das Ladefenster" : "lädt gerade nicht"}`) : "Nicht angesteckt";
+      : d.plugged ? (N.soc != null && N.soc >= N.goal ? "Angesteckt · Ziel erreicht" : `Angesteckt · ${N.w.state === "wartet" ? "wartet auf Sonne" : N.w.state === "plan_wartet" ? "wartet auf das Ladefenster" : "lädt gerade nicht"}`) : away && !away.home ? `Unterwegs mit ${away.name}${away.zone ? " · " + away.zone : ""}` : away ? "Zu Hause · nicht angesteckt" : "Nicht angesteckt";
     const chips = tab ? [] : [N.wbOn && N.c.enabled ? `<span class="chip"><i class="evdot"></i>Modus ${esc(N.modeN)}</span>` : N.wbOn ? `<span class="chip">Regelung aus</span>` : "",
       N.sun != null ? `<span class="chip">${this._gx("sun", 16, { on: 1 })}${num(N.sun, 0)} % Sonne</span>` : "", d.range != null ? `<span class="chip">Reichweite ${num(d.range, 0)} km</span>` : "",
       N.sn.guard && N.sn.guard.limited ? `<span class="chip">Hausanschluss ${num(N.sn.guard.total_a, 0)} von ${N.sn.guard.max_a} A</span>` : ""].filter(Boolean);
@@ -142,7 +142,9 @@
     else if (!N.c.enabled) { ico = "wallbox"; cls = "off"; t = "<b>Regelung aus.</b> Die Wallbox lädt nach ihren eigenen Einstellungen."; }
     else if (d.charging) { const sun = N.sun != null && N.sun >= 50; ico = sun ? "sun" : "grid"; t = `<b>Alles läuft.</b> ${esc(d.veh ? d.veh.name : "Das Auto")} lädt ${sun ? "mit Sonne" : "mit Netzstrom"}.${N.doneT ? ` Bei gleicher Leistung ist das Ziel um ca. ${N.doneT} Uhr erreicht.` : ""}`; }
     else if (d.plugged) { ico = "schedule"; cls = "info"; t = `<b>${N.soc != null && N.soc >= N.goal ? "Ziel erreicht." : "Angesteckt."}</b> ${esc(N.w.reason || "")}`; }
-    else { ico = "car"; cls = "off"; t = `<b>Kein Auto angesteckt.</b>${N.dep ? ` Nächste Abfahrt ${esc(N.dep.time)} Uhr, Ziel ${N.dep.soc} %.` : ""}`; }
+    else { const aw = this._evAway(d.veh); ico = "car"; cls = "off"; t = aw && !aw.home ? `<b>${esc(d.veh.name)} ist unterwegs</b> mit ${esc(aw.name)}${aw.zone ? " (" + esc(aw.zone) + ")" : ""}. Beim Ankommen gilt der Ladeplan.` : `<b>Kein Auto angesteckt.</b>${N.dep ? ` Nächste Abfahrt ${esc(N.dep.time)} Uhr, Ziel ${N.dep.soc} %.` : ""}`; }
+    if (N.wbOn && s.dimmed) H.unshift([`§ 14a: Der Netzbetreiber dimmt gerade – die Wallbox lädt höchstens mit ${num((N.c.dim || {}).kw || 4.2, 1)} kW.`]);
+    if (N.wbOn && s.stale) H.unshift(["Der Netz-Sensor meldet seit Minuten keinen neuen Wert. Bis dahin wird mit Sonne nicht mehr erhöht.", "", ""]);
     return `<div class="evsay ${cls}">${this._gx(ico, 30, { on: cls === "ok" ? 1 : 0 })}<span>${t}</span></div>${H.map((n) => `<div class="gst on" style="margin:0 0 10px">${ic("info", 15)}<span>${n[0]}${n[1] ? ` <button class="lnk" data-act="wbgo" data-k="${n[1]}">${n[2]}</button>` : ""}</span></div>`).join("")}`;
   }
   /* A3: Ladeband jetzt → Ziel */
@@ -177,7 +179,7 @@
       <div class="vrow"><span>Laderegelung<small class="mut" style="display:block">${c.enabled ? "Strom &amp; Wärme steuert Start, Ladestrom und Phasen." : "Aus: Es wird nichts an der Wallbox verändert."}</small></span><button class="sw ${c.enabled ? "on" : ""}" data-act="wbsw" data-k="wbon" aria-pressed="${c.enabled}" aria-label="Laderegelung" ${adm ? "" : "disabled"}></button></div>
       <div class="evmodes">${M.map(([k, t, g, s]) => `<button class="evmode ${N.mode === k ? "sel" : ""}" data-act="wbmode" data-k="${k}" aria-pressed="${N.mode === k}" ${adm && !c.planOn && c.enabled ? "" : "disabled"}>${this._gx(g, 34, { on: N.mode === k ? 1 : 0 })}<span><b>${t}</b><small>${s}</small></span></button>`).join("")}</div>
       <div class="mut sm" style="margin:8px 0 0">${c.planOn ? "Die <b>Planung</b> steuert gerade die Wallbox (Register „Planung“)." : wv ? `Gilt für <b>${esc(wv)}</b>${N.card ? " (" + N.card + ")" : ""}.` : "Gilt, solange kein Fahrzeug erkannt ist."}${c.enabled && N.w.reason ? ` ${esc(N.w.reason)}` : ""}</div>
-      ${c.enabled ? `<div class="lsec" style="margin-top:12px">${ic("energy", 15)}Schnellstart</div>${X.quick}` : ""}</div>`;
+      ${c.enabled ? `<div class="lsec" style="margin-top:12px">${ic("energy", 15)}Schnellstart</div>${X.quick}<div class="mut sm" style="margin-top:6px">Auch ohne App: NFC-Tag an der Wallbox mit „1 Stunde voll“, „Heute nur Sonne“ oder „Stopp“ – Einstellungen → Haus → Tags &amp; Karten.</div>` : ""}</div>`;
   }
   /* A6: Heute als Zeitleiste – wann mit Sonne, wann mit Netz geladen wurde, was noch geplant ist */
   _evToday() {

@@ -91,7 +91,7 @@
     const cards = {}; ses.forEach((x) => { if (!x.card) return; const c = cards[x.card] || (cards[x.card] = { kwh: 0, cost: 0, n: 0, veh: x.veh }); c.kwh += x.kwh; c.cost += x.cost; c.n++; });
     const seg = (p, t) => `<button class="${S.per === p ? "sel" : ""}" data-act="wbvper" data-k="${p}" aria-pressed="${S.per === p}">${t}</button>`;
     const isNow = run;
-    return `<div class="evsthd"><div class="evseg">${seg("d", "Tag")}${seg("w", "Woche")}${seg("m", "Monat")}${seg("y", "Jahr")}</div><div class="evnav"><button data-act="wbvnav" data-k="-1" aria-label="Zurück">‹</button><b>${esc(title)}</b><button data-act="wbvnav" data-k="1" aria-label="Weiter" ${isNow ? "disabled" : ""}>›</button></div></div>
+    return `<div class="evsthd"><div class="evseg">${seg("d", "Tag")}${seg("w", "Woche")}${seg("m", "Monat")}${seg("y", "Jahr")}</div><div class="evnav"><button data-act="wbvnav" data-k="-1" aria-label="Zurück">‹</button><b>${esc(title)}</b><button data-act="wbvnav" data-k="1" aria-label="Weiter" ${isNow ? "disabled" : ""}>›</button></div><button class="btn2 evpdfb" data-act="wbvpdf">${ic("list", 16)} Ladenachweis</button></div>
       <div class="evks5">${k(this._gx("bolt", 34), "Geladen", num(T.kwh, 1), "kWh", `${ses.length} ${ses.length === 1 ? "Ladung" : "Ladungen"} ${delta(T.kwh, Pv.kwh, "kWh", "")}`)}
         ${k(this._gx("sun", 34, { on: 1 }), "Sonnenanteil", num(sh, 0), "%", `${num(T.pv, 1)} kWh Sonne ${shP != null ? delta(sh, shP, "%", "up") : ""}`)}
         ${k(this._gx("euro", 34), "Kosten", num(T.cost, 2), "€", `nur Netzstrom ${delta(T.cost, Pv.cost, "€", "down")}`)}
@@ -107,6 +107,7 @@
         ${Object.keys(cards).length ? `<div class="lsec" style="margin-top:10px">${ic("shield", 15)}Je Karte</div>${Object.entries(cards).map(([n, c]) => `<div class="evcr"><span><b>${esc(n)}</b><small>${esc(c.veh)} · ${c.n} ${c.n === 1 ? "Ladung" : "Ladungen"}</small></span><span><b>${num(c.kwh, 1)} kWh</b><small>${num(c.cost, 2)} €</small></span></div>`).join("")}` : ""}</div></div></div>`;
   }
   _evStAct(a, b) {
+    if (a.startsWith("wbvpdf")) return this._wbPdfAct(a, b);
     const S = this._evSt(), k = b.dataset.k;
     if (a === "wbvper") S.per = k;
     else if (a === "wbvnav") { const d = Number(k), t = new Date(S.at); if (S.per === "d") t.setDate(t.getDate() + d); else if (S.per === "w") t.setDate(t.getDate() + 7 * d); else if (S.per === "m") t.setMonth(t.getMonth() + d, 1); else t.setFullYear(t.getFullYear() + d, 0, 1); S.at = t; }

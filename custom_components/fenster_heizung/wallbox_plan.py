@@ -376,4 +376,4 @@ def stats_view(st: dict[str, Any]) -> dict[str, Any]:
     o = st.get("open")
     if o and o["kwh"] >= 0.05:
         ses.insert(0, {**({"card": o["card"]} if o.get("card") else {}), "start": o["start"], "min": 0.0, "veh": o["veh"], "kwh": round(o["kwh"], 3), "pv": round(o["pv"], 3), "cost": round(o["cost"], 4), "running": True})
-    return {"days": days, "sessions": ses[:30]}
+    return {"days": days, "sessions": ses[:KEEP_SESSIONS]}  # v0.9: alle gespeicherten Ladungen (Ladenachweis je Monat)

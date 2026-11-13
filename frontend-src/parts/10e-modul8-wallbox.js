@@ -31,7 +31,10 @@
         ${stp("Starten ab Überschuss", "startW", wfmt(c.startW), "", 100)}${stp("Start nach", "onMin", c.onMin, "Min.", 1, "Der Überschuss muss so lange da sein")}${stp("Stopp nach", "offMin", c.offMin, "Min.", 1, "Verhindert ständiges Ein- und Ausschalten bei Wolken")}
         <div class="lsec" style="margin-top:12px">${ic("car", 15)}Fahrzeug</div>
         ${stp("Laden bis Ladestand", "limit", c.limit, "%", 5, "Braucht den Ladestand-Sensor des Fahrzeugs")}<div class="vrow"><span>Akkukapazität<small class="mut" style="display:block">Für die Berechnung des Ladeplans, mit einer Nachkommastelle (z. B. 77,4)</small></span><div class="step" style="flex:none"><button data-act="wbstep" data-k="cap" data-s="-0.1" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><span class="onum"><input type="text" inputmode="decimal" data-f="wbcap" value="${num(c.cap, 1)}" aria-label="Akkukapazität in kWh" style="width:64px;text-align:center" ${adm ? "" : "disabled"}><i>kWh</i></span><button data-act="wbstep" data-k="cap" data-s="0.1" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>`;
-    const batBody = `${sw("Hausbatterie zuerst laden", "batOn", c.batOn, "Das Auto bekommt erst Überschuss, wenn die Batterie voll genug ist (Ladestand-Sensor in Modul 1)")}
+    const B = s.bat || {}, batBody = `${sw("Hausakku nicht ins Auto entladen", "batProtect", c.batProtect !== false, "Was der Hausakku gerade abgibt, zählt nicht als Überschuss. So lädt das Auto mit Sonne – nicht aus dem Akku. Braucht den Akku-Sensor unter Einstellungen → Haus.")}
+        ${sw("Auto vor dem Hausakku", "carFirst", !!c.carFirst, "Was der Hausakku gerade aus Sonne lädt, darf zuerst ins Auto. Schließt „Hausbatterie zuerst laden“ aus.")}
+        ${B.chg || B.dis ? `<div class="mut sm" style="margin:-2px 0 8px">Hausakku jetzt: ${B.chg ? "lädt mit " + wfmt(B.chg) : "gibt " + wfmt(B.dis) + " ab"}.</div>` : ""}
+        ${sw("Hausbatterie zuerst laden", "batOn", c.batOn, "Das Auto bekommt erst Überschuss, wenn die Batterie voll genug ist (Ladestand-Sensor in Modul 1)")}
         ${c.batOn ? stp("Batterie mindestens", "batSoc", c.batSoc, "%", 5) : ""}
         ${sw("Netzstrom nur bei günstigem Preis", "priceOn", c.priceOn, "Braucht einen Preis-Sensor (dynamischer Tarif) in Modul 1")}
         ${c.priceOn ? stp("Höchster Preis", "priceMax", c.priceMax, "ct/kWh", 1) : ""}`;
@@ -47,7 +50,8 @@
         <div class="mut sm" style="margin:8px 0">Die Verbindung zur Wallbox richtest du im Store ein (go-e direkt oder „Andere Wallbox“ über Home Assistant), dort auch Tibber.</div><div style="display:flex;gap:8px;flex-wrap:wrap">${adm ? `${ha ? "" : `<button class="btn2" data-act="wbtest" ${this._wbTest && this._wbTest.busy ? "disabled" : ""}>${ic("check", 16)} Verbindung testen</button>`}<button class="btn2" data-act="${ha ? "igwbha" : "igopen"}">${ic("tools", 16)} ${ha ? "Entitäten ändern" : "Verbindung ändern"}</button>` : ""}</div>${this._wbTest && !this._wbTest.busy ? `<div class="gst ${this._wbTest.ok ? "" : "on"}" style="margin-top:8px">${ic(this._wbTest.ok ? "check" : "info", 15)}<span>${this._wbTest.ok ? `Verbindung steht: ${esc(this._wbTest.type || "go-e Charger")}, Firmware ${esc(this._wbTest.fw || "–")}.` : esc(this._wbTest.error || "Keine Antwort")}</span></div>` : ""}`, !s.ok)}
       ${sec("reg", "sliders", "Laderegelung", `${c.minA} bis ${c.maxA} A · Phasen ${c.ph === "auto" ? "automatisch" : c.ph} · Limit ${c.limit} %`, regBody)}
       ${this._evNew() ? `<div class="card ocard wsec"><button data-act="wbtab" data-k="veh">${ic("car", 20)}<span class="wst"><b>Fahrzeuge${ha ? "" : " und Karten"}</b><span>${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"} · eigenes Register „Fahrzeuge“</span></span><span class="wch" style="transform:rotate(-90deg)">${ic("chev", 18)}</span></button></div>` : ha ? sec("veh", "car", "Fahrzeuge", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"}${c.defVeh ? " · hier lädt " + esc((c.vehicles.find((x) => x.id === c.defVeh) || {}).name || "") : ""}`, this._rfCard(true), !nv || !c.defVeh) : sec("veh", "car", "Fahrzeuge und Karten", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"} · ${nc} ${nc === 1 ? "Karte" : "Karten"}${c.lock ? " · nur mit Karte" : ""}`, this._rfCard(true), !nv || c.vehicles.some((x) => !x.ids.length))}
-      ${sec("bat", "home", "Hausbatterie und Strompreis", `Batterie ${c.batOn ? "zuerst bis " + c.batSoc + " %" : "egal"} · Preisgrenze ${c.priceOn ? c.priceMax + " ct" : "aus"}`, batBody)}
+      ${sec("bat", "home", "Hausbatterie und Strompreis", `${c.batProtect !== false ? "Akku geschützt" : "Akku nicht geschützt"}${c.carFirst ? " · Auto zuerst" : ""} · Batterie ${c.batOn ? "zuerst bis " + c.batSoc + " %" : "egal"} · Preisgrenze ${c.priceOn ? c.priceMax + " ct" : "aus"}`, batBody)}
+      ${sec("dim", "bolt", "§ 14a – Dimmen durch den Netzbetreiber", c.dim && c.dim.on ? `An · ${num(c.dim.kw, 1)} kW${s.dimmed ? " · dimmt gerade" : ""}` : "Aus", this._wbDimBody(c, s))}
       ${sec("grd", "shield", "Hausanschluss-Schutz", c.guard.on ? `An · höchstens ${c.guard.maxA} A pro Phase` : "Aus", X.guard)}
       ${sec("ntf", "bell", "Benachrichtigungen", nt ? `${nt} von 5 Meldungen · ${c.notify.to.length ? c.notify.to.map((x) => esc(x.replace("notify.", ""))).join(", ") : "kein Empfänger"}` : "Aus", X.notify)}
       ${sec("look", "eye", "Darstellung", c.look === "classic" ? "Wie bisher" : "Neue Optik", `<div class="mut sm" style="margin:0 0 6px">Neue Optik: Carport-Szene als Banner, Ladeband bis zum Ziel, Kacheln mit HD-Symbolen, Modus-Karten, Heute-Zeitleiste und „Warum gerade so?“. Wie bisher: die Ansicht bis v0.6.</div>${chips("look", [["new", "Neue Optik"], ["classic", "Wie bisher"]], c.look === "classic" ? "classic" : "new")}${this._gxCfg().classic ? `<div class="mut sm">Unter Einstellungen → Darstellung ist „wie bisher“ für alle Module eingeschaltet – das gilt auch hier.</div>` : ""}`)}`;
@@ -67,10 +71,24 @@
     if (a === "wbmode") { const who = this._wbSnap().who, v = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.name === who.name) : null; if (v) this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === v.id ? { ...x, mode: k } : x)) }); else if (who && who.kind === "guest") this._wbSave({ guest: { ...c.guest, mode: k } }); else this._wbSave({ mode: k }); }
     else if (a === "wbset") this._wbSave({ [b.dataset.key]: k });
     else if (a === "wbsw" && k === "wbon") { if (c.enabled) this._wbSave({ enabled: false }, true); else { this._modal = { type: "wbon" }; this._renderModal(); return; } }
+    else if (a === "wbsw" && k === "carFirst") this._wbSave({ carFirst: !c.carFirst, ...(!c.carFirst ? { batOn: false } : {}) });
+    else if (a === "wbsw" && k === "batOn") this._wbSave({ batOn: !c.batOn, ...(!c.batOn ? { carFirst: false } : {}) });
+    else if (a === "wbsw" && k === "batProtect") this._wbSave({ batProtect: c.batProtect === false });
+    else if (a === "wbdimsw") this._wbSave({ dim: { ...(c.dim || { kw: 4.2, ent: "" }), on: !(c.dim && c.dim.on) } });
+    else if (a === "wbdimkw") { const d = c.dim || { on: false, ent: "", kw: 4.2 }; this._wbSave({ dim: { ...d, kw: Math.round(Math.max(1.4, Math.min(22, d.kw + Number(b.dataset.s))) * 10) / 10 } }); }
     else if (a === "wbsw") this._wbSave({ [k]: !c[k] });
     else if (a === "wbstep") { const r = R[k], v = Math.round(Math.max(r[0], Math.min(r[1], c[k] + Number(b.dataset.s))) * 10) / 10, p = { [k]: v }; if (k === "minA" && c.maxA < v) p.maxA = v; if (k === "maxA" && c.minA > v) p.minA = v; this._wbSave(p); }
     else if (a === "wbyes") { this._wbSave({ enabled: true }, true); this._modal = null; this._renderModal(); this._toast("Laderegelung ist an"); }
     this._render();
+  }
+  /* B7 § 14a EnWG: Signal des Netzbetreibers (Steuerbox, Binärsensor oder Schalter) begrenzt die Ladeleistung */
+  _wbDimBody(c, s) {
+    const d = c.dim || { on: false, ent: "", kw: 4.2 }, adm = this._admin(), st = this._hass.states, o = Object.keys(st).filter((e) => /^(binary_sensor|input_boolean|switch|sensor)\./.test(e));
+    return `<div class="mut sm" style="margin:0 0 8px">Für steuerbare Verbrauchseinrichtungen nach § 14a EnWG: Ist das Signal an, lädt die Wallbox höchstens mit der vorgegebenen Leistung (mindestens 4,2 kW). Ohne Anmeldung beim Netzbetreiber brauchst du das nicht.</div>
+      <div class="vrow"><span>Dimmen beachten</span><button class="sw ${d.on ? "on" : ""}" data-act="wbdimsw" aria-pressed="${d.on}" aria-label="Dimmen beachten" ${adm ? "" : "disabled"}></button></div>
+      ${d.on ? `<div class="mut sm" style="margin:6px 0 2px">Signal „gedimmt“ (an = dimmen)</div>${this._wzSel(o, d.ent, "wbdim", 'data-k="ent"', "– kein Signal –", /14a|steuer|dimm|netzbetreiber|limit|eeb|rundsteuer/i)}
+        <div class="vrow"><span>Höchstens</span><div class="step" style="flex:none"><button data-act="wbdimkw" data-s="-0.1" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${num(d.kw, 1)} kW</b><button data-act="wbdimkw" data-s="0.1" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>
+        ${s.dimmed ? `<div class="gst on">${ic("info", 15)}Der Netzbetreiber dimmt gerade.</div>` : ""}` : ""}`;
   }
   _wbOnModal() {
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
@@ -81,6 +99,9 @@
   }
   _wbLater(t) { /* Zeitfeld nicht mitten in der Eingabe neu aufbauen (Safari meldet jede Ziffer einzeln) */ clearTimeout(this._wbLT); this._wbLT = setTimeout(() => { const ae = this.shadowRoot.activeElement; if (ae && (ae.type === "time" || (ae.dataset && ae.dataset.tin))) { ae.addEventListener("blur", () => this._render(), { once: true }); } else this._render(); }, 700); }
   _wbChange(t) { const f = t.dataset.f;
+    if (f === "wbdim") { const c = this._wb(); this._wbSave({ dim: { ...(c.dim || { on: true, kw: 4.2 }), ent: t.value || "" } }, true); this._render(); return true; }
+    if (f === "wbvp") { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, person: t.value || "" } : x)) }, true); this._renderModal(); return true; }
+    if (f === "wbpdfct" || f === "wbpdfname") { const c = this._wb(), p = { ...(c.pdf || { ct: 30, name: "" }) }; if (f === "wbpdfct") { const v = parseFloat(String(t.value).replace(",", ".")); if (isFinite(v)) p.ct = Math.max(0, Math.min(200, v)); } else p.name = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 60); this._wbSave({ pdf: p }); this._renderModal(); return true; }
     if (f === "wbvn" || f === "wbvm" || f === "wbvc" || f === "wbve") {
       const c = this._wb(), id = t.dataset.v, clean = (v, n) => String(v || "").replace(/[<>"'&]/g, "").slice(0, n);
       const fn = f === "wbvn" ? (x) => ({ ...x, name: clean(t.value, 30).trim() || x.name }) : f === "wbvm" ? (x) => ({ ...x, model: clean(t.value, 30) })

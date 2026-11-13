@@ -23,8 +23,9 @@ from .geraete_calc import grid_import_w, rate_eur, watts
 from .wallbox_adapter import KNOWN, WALLBOXISH, GoeAdapter, HaAdapter, WallboxError, guess_roles, manual_change
 from .wallbox_calc import (
     CAR_CHARGING, CAR_DONE, CAR_IDLE, EXTERN_HOLD_S, SCHEMA, VOLT, clean_wb, clean_wbx, commands, decide, guard_limit, migrate_v2, parse_nrg,
-    plan_due, resolve_who, valid_host, wbx_ready,
+    plan_due, resolve_who, valid_host, wbx_ready, bat_split, dim_amp, surplus_adj,
 )
+STALE_S = 180  # B6: so alt darf der Netz-Sensor sein, sonst wird nicht mehr erhöht
 from .wallbox_plan import (
     add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_tick,
     stats_view,
@@ -144,6 +145,10 @@ class WallboxManager:
         self._plug_ts: float | None = None
         self._charged = False
         self._set_ts = 0.0  # Zeit des letzten eigenen Befehls (für Wallboxen über Home Assistant)
+        self._grid_last: Any = None
+        self._grid_stale = False
+        self.dimmed = False
+        self._skip = 0  # B6: bei Funkstille seltener fragen
         self._last_veh = ""  # zuletzt erkanntes Fahrzeug (für die Anzeige nach dem Abstecken)
 
     async def async_start(self) -> None:
@@ -272,18 +277,37 @@ class WallboxManager:
         return (en.get("ent") or {}).get("grid") or pvc.get("sensor") or "", en.get("sign") or pvc.get("sign") or "export"
 
     def _grid_import(self) -> float | None:
-        """Netzbezug in Watt (negativ = Einspeisung)."""
+        """Netzbezug in Watt (negativ = Einspeisung). B6: Ein Sensor, der seit Minuten nichts meldet, zählt als unbekannt."""
         ent, sign = self._grid_src()
         st = self.hass.states.get(ent) if ent else None
         if st is None:
             return None
+        lu = getattr(st, "last_reported", None) or getattr(st, "last_updated", None)
+        try:
+            if lu is not None and (dt_util.utcnow() - lu).total_seconds() > STALE_S and str(st.state) == str(getattr(self, "_grid_last", None)):
+                self._grid_stale = True
+                return None
+        except TypeError:
+            pass
+        self._grid_last, self._grid_stale = st.state, False
         w = watts(st.state, st.attributes.get("unit_of_measurement"))
         return None if w is None else grid_import_w(w, sign)
 
-    def surplus(self, wb_power: float) -> float | None:
-        """Überschuss in Watt: Einspeisung ins Netz plus die Leistung, die die Wallbox gerade selbst zieht."""
+    def _bat(self) -> tuple[float, float]:
+        """Hausakku (Laden W, Entladen W) aus den Haus-Werten bzw. Modul 3."""
+        en = self._haus().get("energy") or self._modules().get("energy") or {}
+        e = en.get("ent") or {}
+        w = lambda k: (lambda st: watts(st.state, st.attributes.get("unit_of_measurement")) if st is not None else None)(self.hass.states.get(e[k]) if e.get(k) else None)  # noqa: E731
+        return bat_split(en.get("bmode") or "one", en.get("bsign") or "charge", w("bat"), w("bchg"), w("bdis"))
+
+    def surplus_raw(self, wb_power: float) -> float | None:
         imp = self._grid_import()
         return None if imp is None else max(-imp + wb_power, 0.0)
+
+    def surplus(self, wb_power: float) -> float | None:
+        """Überschuss in Watt: Einspeisung ins Netz plus die Leistung der Wallbox – ohne das, was der Hausakku gerade abgibt (v0.9)."""
+        chg, dis = self._bat()
+        return surplus_adj(self.surplus_raw(wb_power), chg, dis, self.cfg["batProtect"], self.cfg["carFirst"])
 
     def _price_ct(self) -> float | None:
         pvc = {**self._pv_cfg(), **(self._haus().get("price") or {})}
@@ -414,6 +438,9 @@ class WallboxManager:
         if not wbx_ready(cfg):
             self.ok, self.info = False, {}
             return
+        if self._skip > 0:
+            self._skip -= 1
+            return
         cl = self._adapter()
         try:
             rd = await cl.read()
@@ -422,11 +449,12 @@ class WallboxManager:
                 self._add(f"Wallbox nicht erreichbar: {err}")
             self.ok, self.err = False, str(err)
             self._fail += 1
+            self._skip = 2 if self._fail >= 30 else 0  # nach 5 Minuten Funkstille nur noch alle 30 Sekunden fragen
             if self._fail >= 6 and not self._n["off"]:
                 self._n["off"] = True
                 await self._notify("off", "Wallbox nicht erreichbar", f"Die Wallbox antwortet seit einer Minute nicht: {err}")
             return
-        self._fail = 0
+        self._fail, self._skip = 0, 0
         self._n["off"] = False
         self.ok, self.err = True, ""
         self.guard = None
@@ -510,6 +538,7 @@ class WallboxManager:
         if self.want.get("pause"):
             self.info["car_text"] = "kurze Pause"  # go-e meldet „fertig“, das Auto startet aber gleich wieder
         self._guard(cfg, wb_w)
+        self._dim()
         if q:
             self.want["quick"] = q["k"]
         cmd = commands(self.want, cur)
@@ -536,7 +565,7 @@ class WallboxManager:
             self._fire_done(done)
         add_km(self._st, now, self._odo(), cv["id"] if cv else "", cv["name"] if cv else "")
         if charging and power > 0 and dt > 0:
-            add_energy(self._st, now, dt, power, self.surplus(power), self._price_now(now), veh, card)
+            add_energy(self._st, now, dt, power, self.surplus_raw(power), self._price_now(now), veh, card)  # Sonne = Überschuss und Hausakku (wie bisher)
             if cv and not cv["ent"].get("soc"):
                 est_add(self._st, cv["id"], power * dt / 3.6e6, self._cap())
         day = now.date().isoformat()
@@ -760,6 +789,21 @@ class WallboxManager:
                 w.update(frc=1, state="gedrosselt", reason=f"Hausanschluss-Schutz: Das Haus braucht gerade {r['house_a']} A von {r['max_a']} A. Die Wallbox pausiert.")
         self.guard = r
 
+    def _dim(self) -> None:
+        """B7 § 14a EnWG: Ist das Signal des Netzbetreibers an, höchstens die vorgegebene Leistung."""
+        d = self.cfg["dim"]
+        st = self.hass.states.get(d["ent"]) if d["on"] and d["ent"] else None
+        self.dimmed = bool(st is not None and str(st.state).lower() in ("on", "true", "1", "aktiv", "active"))
+        w = self.want
+        if not self.dimmed or w.get("frc") != 2:
+            return
+        ph = 1 if w.get("psm") == 1 else 3
+        mx = dim_amp(d["kw"], ph)
+        if w.get("amp", 0) > mx:
+            w["amp"] = mx
+            w["state"] = "gedimmt"
+            w["reason"] = f"§ 14a: Der Netzbetreiber dimmt auf {str(d['kw']).replace('.', ',')} kW – höchstens {mx} A. " + w.get("reason", "")
+
     def _quick_check(self, car: int | None, now_ts: float) -> None:
         q = self._quick
         if not q:
@@ -849,5 +893,6 @@ class WallboxManager:
             "quick": {"k": self._quick["k"], "until": self._quick["until"]} if self._quick else None, "guard": self.guard,
             "veh": (self.cur_vehicle() or {}).get("id") or "", "socs": {v["id"]: self.veh_soc(v) for v in self.cfg["vehicles"]},
             "est": {v["id"]: self.veh_est(v) for v in self.cfg["vehicles"] if self.veh_est(v)},
-            "ready": self.configured(), "kind": self.cfg["wbx"]["kind"],
+            "ready": self.configured(), "kind": self.cfg["wbx"]["kind"], "dimmed": self.dimmed, "stale": self._grid_stale,
+            "bat": dict(zip(("chg", "dis"), self._bat())),
         }

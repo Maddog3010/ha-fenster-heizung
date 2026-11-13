@@ -180,6 +180,20 @@ def test_session_close_returns_session_with_card():
     assert done["card"] == "Karte Tobias" and abs(done["kwh"] - 7.0) < 1e-6 and st["sessions"][0] is done
 
 
+def test_home_battery_is_not_surplus_for_the_car():
+    assert C.surplus_adj(5000, 0, 3000, True, False) == 2000       # Akku gibt 3 kW ab: nur 2 kW echter Überschuss
+    assert C.surplus_adj(5000, 0, 3000, False, False) == 5000
+    assert C.surplus_adj(1000, 2500, 0, True, True) == 3500        # Auto zuerst: was der Akku lädt, darf ins Auto
+    assert C.surplus_adj(None, 0, 0, True, False) is None
+    assert C.bat_split("one", "charge", -1200, None, None) == (0, 1200)
+    assert C.bat_split("one", "discharge", -1200, None, None) == (1200, 0)
+    assert C.bat_split("two", "charge", None, 800, 0) == (800, 0)
+
+
+def test_dimming_14a():
+    assert C.dim_amp(4.2, 3) == 6 and C.dim_amp(4.2, 1) == 18 and C.dim_amp(11, 3) == 15
+
+
 # ---- Fahrzeuge (Schema 2)
 LEGACY = {"brand": "BYD", "model": "Dolphin Surf", "body": "kompakt", "color": "white", "ent": {"soc": "sensor.dolphin_soc", "odo": "sensor.dolphin_km", "range": "", "plug": "binary_sensor.plug"}}
 
