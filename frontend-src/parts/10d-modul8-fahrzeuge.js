@@ -24,7 +24,7 @@
       : !who ? [rfid ? "Keine Kennung erkannt" : "Kein Fahrzeug zugeordnet", c.lock ? "Strom & Wärme verändert nichts, bis eine Karte angelegt wird." : "Es gilt der Modus der Laderegelung oben."]
       : who.kind === "vehicle" ? [`Erkannt: ${who.name} (Karte „${nm(who.card)}“)`, `Die Regelung arbeitet im Modus „${ML[who.mode]}“ mit Ladelimit ${who.limit} %.`]
       : [`Erkannt: Gastfahrzeug (Karte „${nm(who.card)}“)`, `Die Karte ist keinem Fahrzeug zugeordnet. Es gilt der Modus „${ML[who.mode]}“.`];
-    return `${bare ? "<div>" : `<div class="card ocard"><h2>${ic("car", 18)}Fahrzeuge &amp; Karten</h2>`}
+    return `${bare ? "<div>" : `<div class="card ocard"><h2>${ic("car", 18)}Fahrzeuge${rfid ? " &amp; Karten" : ""}</h2>`}
       <div class="mut sm" style="margin-bottom:8px">${rfid ? `Jedes Fahrzeug hat eigene Sensoren und ein eigenes Aussehen. Wie bei evcc wird das Fahrzeug an der Karte erkannt, die an der Wallbox angelegt wird. Als Kennung dient der Kartenname aus der go-e-App. Eine Karte gehört zu genau einem Fahrzeug, ein Fahrzeug kann mehrere Karten haben.` : "Jedes Fahrzeug hat eigene Sensoren, eine eigene Akkugröße und ein eigenes Aussehen. Diese Wallbox meldet keine Karten: Unten wählst du, welches Fahrzeug hier lädt."}</div>
       <div class="gst" style="margin:0 0 10px">${ic(who ? "check" : "info", 15)}<span><b>${esc(st[0])}</b><br>${esc(st[1])}</span></div>
       ${rfid ? assign : ""}
@@ -69,12 +69,17 @@
   _evVehLine(x, soc) { const st = this._hass.states, E = x.ent || {}, ok = (e) => e && st[e]; return [soc != null ? `${num(soc, 0)} %` : E.soc ? (ok(E.soc) ? "Ladestand ohne Wert" : "Ladestand-Sensor fehlt") : "kein Ladestand-Sensor", x.cap ? `Akku ${num(x.cap, 1)} kWh` : "", E.odo && ok(E.odo) ? `${num(this._evNum(E.odo), 0)} km` : ""].filter(Boolean).map(esc).join(" · "); }
   _evThumb(x, w = 96) { return `<svg viewBox="270 92 430 170" width="${w}" height="${Math.round(w * 0.4)}" aria-hidden="true">${this._evCar(this._evLook(x), "t" + x.id)}</svg>`; }
   /* Auto allein (für Fahrzeugliste und Bearbeiten): gleiche Formen und Farben wie die Szene */
-  _evCar(L, sfx) {
-    const H = EV_SHAPES[L.body] || EV_SHAPES.limousine, C = EV_COLORS[L.color] || EV_COLORS.blue, [w1, w2] = H.wh, u = "evc" + String(sfx).replace(/[^a-z0-9]/gi, "");
-    const wh = (cx) => `<circle cx="${cx}" cy="217" r="41" fill="#07090d"/><circle cx="${cx}" cy="217" r="33" fill="#0b0d11"/><circle cx="${cx}" cy="217" r="23" fill="url(#${u}r)"/><circle cx="${cx}" cy="217" r="17" fill="#161a21"/><circle cx="${cx}" cy="217" r="6" fill="#2b313b"/>`;
-    return `<defs><linearGradient id="${u}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C[1]}"/><stop offset=".45" stop-color="${C[2]}"/><stop offset="1" stop-color="${C[3]}"/></linearGradient><linearGradient id="${u}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e5e9ef"/><stop offset="1" stop-color="#9aa3b1"/></linearGradient></defs>
-      <ellipse cx="${(H.rear + H.front) / 2}" cy="252" rx="${(H.front - H.rear) / 1.9}" ry="7" fill="#000" opacity=".35"/><path d="${H.body}" fill="url(#${u}p)" stroke="${C[4]}" stroke-width="1.6"/><path d="${H.glass}" fill="#14202c" stroke="#05070a" stroke-width="2"/>
-      <path d="M${H.front - 34} ${H.ly - 2} C${H.front - 18} ${H.ly - 2} ${H.front - 6} ${H.ly + 2} ${H.front} ${H.ly + 8} L${H.front} ${H.ly + 13} C${H.front - 10} ${H.ly + 8} ${H.front - 22} ${H.ly + 6} ${H.front - 34} ${H.ly + 6} Z" fill="#f8fbff"/>${wh(w1)}${wh(w2)}`;
+  _evCar(L, sfx, chg = false, night = false) {
+    const H = EV_SHAPES[L.body] || EV_SHAPES.limousine, C = EV_COLORS[L.color] || EV_COLORS.blue, [w1, w2] = H.wh, [px, py] = H.port, u = "evc" + String(sfx).replace(/[^a-z0-9]/gi, "");
+    const wh = (cx) => `<circle cx="${cx}" cy="217" r="41" fill="#07090d"/><circle cx="${cx}" cy="217" r="33" fill="#0b0d11"/><circle cx="${cx}" cy="217" r="23" fill="url(#${u}r)"/><circle cx="${cx}" cy="217" r="18" fill="#161a21"/>${Array.from({ length: 10 }, (_, k) => k * 36).map((a) => `<line x1="${(cx + 5 * Math.sin(a * Math.PI / 180)).toFixed(1)}" y1="${(217 - 5 * Math.cos(a * Math.PI / 180)).toFixed(1)}" x2="${(cx + 19 * Math.sin((a + 8) * Math.PI / 180)).toFixed(1)}" y2="${(217 - 19 * Math.cos((a + 8) * Math.PI / 180)).toFixed(1)}" stroke="url(#${u}r)" stroke-width="3" stroke-linecap="round"/>`).join("")}<circle cx="${cx}" cy="217" r="6" fill="#2b313b"/>`;
+    return `<defs><linearGradient id="${u}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C[1]}"/><stop offset=".45" stop-color="${C[2]}"/><stop offset="1" stop-color="${C[3]}"/></linearGradient>
+      <linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b3e52"/><stop offset="1" stop-color="#0a1018"/></linearGradient><linearGradient id="${u}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e5e9ef"/><stop offset=".5" stop-color="#9aa3b1"/><stop offset="1" stop-color="#d7dce4"/></linearGradient><clipPath id="${u}b"><path d="${H.body}"/></clipPath></defs>
+      <ellipse cx="${(H.rear + H.front) / 2}" cy="251" rx="${(H.front - H.rear) / 1.9}" ry="8" fill="#000" opacity=".4"/><path d="${H.body}" fill="url(#${u}p)"/>
+      <g clip-path="url(#${u}b)"><rect x="${H.rear}" y="${H.gb + 14}" width="420" height="50" fill="#000" opacity=".18"/><path d="M${H.rear} ${H.gt + 36} C420 ${H.gt + 28} 560 ${H.gt + 36} ${H.front} ${H.gt + 62}" stroke="#fff" stroke-width="3" fill="none" opacity=".35"/><rect x="${H.rear}" y="224" width="420" height="16" fill="#10141b"/></g>
+      <path d="${H.glass}" fill="url(#${u}g)" stroke="#05070a" stroke-width="2"/><path d="M${H.pil - 3} ${H.gt - 2} L${H.pil + 1} ${H.gb + 1} L${H.pil + 5} ${H.gb + 1} L${H.pil + 3} ${H.gt - 2} Z" fill="${C[3]}"/>
+      <path d="M${H.front - 34} ${H.ly - 2} C${H.front - 18} ${H.ly - 2} ${H.front - 6} ${H.ly + 2} ${H.front} ${H.ly + 8} L${H.front} ${H.ly + 13} C${H.front - 10} ${H.ly + 8} ${H.front - 22} ${H.ly + 6} ${H.front - 34} ${H.ly + 6} Z" fill="${night ? "#fffbe6" : "#f8fbff"}"/>
+      <path d="M${H.tl[0]} ${H.tl[1] - 9} L${H.tl[0] + 8} ${H.tl[1] - 11} L${H.tl[0] + 8} ${H.tl[1] + 9} L${H.tl[0]} ${H.tl[1] + 11} Z" fill="#d6192a"/><path d="${H.body}" fill="none" stroke="${C[4]}" stroke-width="1.6"/>
+      <circle cx="${px}" cy="${py}" r="6" fill="#0d1426" stroke="#8aa0c8" stroke-width="1.5"/><circle cx="${px}" cy="${py}" r="3" fill="${chg ? "#22e06b" : "#9aa5b1"}"/>${wh(w1)}${wh(w2)}`;
   }
   _evData() {
     const v = this._evVeh(), L = this._evState().ent, E = { ...L, ...(v ? { soc: (v.ent || {}).soc, odo: (v.ent || {}).odo, range: (v.ent || {}).range } : {}) }, st = this._hass.states, S = (e) => (e && st[e] ? String(st[e].state).toLowerCase() : "");
@@ -181,6 +186,7 @@
   }
   _evPage() {
     const adm = this._admin(), d = this._evData();
+    if (d.any && this._evNew()) return this._evPageNew(d);
     if (!d.any) return `${this._betaBox("Wähle in den Einstellungen die Sensoren deines Fahrzeugs und der Wallbox.")}
       <div class="card empty">${ic("car", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Fahrzeug eingerichtet</div>
       <div class="sm" style="max-width:460px;margin:0 auto 14px">Zeigt Ladestand, Reichweite und Kilometerstand. Die Wallbox ist abgebildet, das Ladekabel erscheint beim Anstecken und leuchtet beim Laden.</div>

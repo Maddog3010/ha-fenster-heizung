@@ -166,7 +166,8 @@ class WallboxManager:
             self._restore = True  # Wallbox wieder auf „neutral“ stellen
         if self.cfg["enabled"] != old["enabled"] or self.cfg["mode"] != old["mode"]:
             self._hold_until = 0.0
-            self._add(f"Regelung {'ein' if self.cfg['enabled'] else 'aus'}, Modus „{self.cfg['mode']}“")
+            mn = {"off": "Aus", "pv": "Sonne", "minpv": "Sonne + Netz", "now": "Voll"}.get(self.cfg["mode"], self.cfg["mode"])
+            self._add(f"Regelung {'ein' if self.cfg['enabled'] else 'aus'}. Modus „{mn}“.")
         await self._store.async_save(self.cfg)
         self._fc = None
         await self._tick(None)
@@ -776,8 +777,8 @@ class WallboxManager:
             return
         self._set_ts = time.time()
         self._last_set.update({k: v for k, v in cmd.items() if k in ("frc", "amp")})
-        names = {"frc": {0: "neutral", 1: "aus", 2: "an"}, "amp": None, "psm": {1: "1 Phase", 2: "3 Phasen"}}
-        txt = ", ".join(f"{k}={names[k][v] if names[k] else str(v) + ' A'}" for k, v in cmd.items())
+        names = {"frc": {0: "Wallbox frei", 1: "Laden aus", 2: "Laden an"}, "amp": None, "psm": {1: "1 Phase", 2: "3 Phasen"}}
+        txt = ", ".join(names[k][v] if names[k] else f"{v} A" for k, v in cmd.items())
         self._add(f"{txt}. {why}".strip())
 
     def snapshot(self) -> dict[str, Any]:

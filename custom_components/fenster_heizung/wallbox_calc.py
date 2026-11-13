@@ -29,7 +29,7 @@ DEFAULT: dict[str, Any] = {
     "lock": False, "reset": True, "vehicles": [], "guest": {"mode": "off", "limit": 80},
     "guard": {"on": False, "maxA": 35}, "notify": {"start": True, "goal": True, "plan": True, "off": True, "long": False, "to": []},
     "planOn": False, "planStrat": "mix", "planSrc": "auto", "pvSrc": "auto", "baseW": 400,
-    "vs": 2, "defVeh": "", "wbx": {"kind": "goe", "plat": "", "name": "", "ent": {}, "ph": 3},
+    "vs": 2, "defVeh": "", "look": "new", "wbx": {"kind": "goe", "plat": "", "name": "", "ent": {}, "ph": 3},
 }
 MAX_VEHICLES = 6
 MAX_CARDS = 10
@@ -107,6 +107,7 @@ def clean_wb(raw: Any) -> dict[str, Any]:
     out["notify"]["to"] = [x for x in dict.fromkeys(nt.get("to") if isinstance(nt.get("to"), list) else []) if isinstance(x, str) and re.fullmatch(r"notify\.[a-z0-9_]{1,60}", x)][:6]
     g = raw.get("guest") if isinstance(raw.get("guest"), dict) else {}
     out["guest"] = {"mode": g.get("mode") if g.get("mode") in MODES else "off", "limit": _int(g.get("limit"), 50, 100, 80)}
+    out["look"] = "classic" if raw.get("look") == "classic" else "new"  # v0.7: neue Optik oder „wie bisher“
     out["vs"] = _int(raw.get("vs"), 1, SCHEMA, 1)
     dv = str(raw.get("defVeh") or "")
     out["defVeh"] = dv if any(v["id"] == dv for v in out["vehicles"]) else ""

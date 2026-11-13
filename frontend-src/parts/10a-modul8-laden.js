@@ -34,6 +34,18 @@
     const o = !!this._wbSecS()[key];
     return `<div class="card ocard wsec ${o ? "open" : ""}"><button data-act="wbsec" data-k="${key}" aria-expanded="${o}">${ic(ico, 20)}<span class="wst"><b>${title}${warn ? `<em class="wdot" title="Braucht Aufmerksamkeit">!</em>` : ""}</b><span>${sum}</span></span><span class="wch">${ic("chev", 18)}</span></button>${o ? `<div class="wbody">${body}</div>` : ""}</div>`;
   }
+  /* Hinweise mit Sprung zur Lösung (Statusleiste und Satz-Zeile der neuen Optik) */
+  _wbHints() {
+    const s = this._wbSnap(), c = s.cfg, w = s.want || {}, who = s.who;
+    const veh = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.name === who.name) : null;
+    const em = who ? (veh ? veh.mode : who.kind === "guest" ? c.guest.mode : c.mode) : c.mode;
+    const N = [];
+    if (!s.ok) N.push([`Keine Verbindung zur Wallbox${s.error ? " (" + esc(s.error) + ")" : ""}. Prüfe Strom und WLAN der Wallbox.`, "wb", "Verbindung prüfen"]);
+    else if (c.enabled && s.hold > 0) N.push([`Du hast die Wallbox von Hand umgestellt. Die Regelung pausiert noch ${Math.ceil(s.hold / 60)} Min. und regelt dann wieder.`]);
+    if (s.ok && c.enabled && !s.hold && w.state === "gesperrt") N.push(["Die Regelung wartet auf eine Karte. Lege die Karte an der Wallbox an.", "veh", "Karten ansehen"]);
+    if (s.ok && c.enabled && !s.hold && w.state && w.state !== "gesperrt" && w.surplus_w == null && (em === "pv" || em === "minpv" || c.planOn)) N.push(["Es fehlt ein Netz-Sensor für den Überschuss (Einstellungen → Haus → Energiequellen). Ohne ihn wird nicht mit Sonne geladen."]);
+    return N;
+  }
   /* Statusleiste über allen Registern: Zustand, Modus, Fahrzeug, Leistung und Hinweise mit Sprung zur Lösung */
   _wbBar() {
     const s = this._wbSnap(), c = s.cfg, i = s.info, w = s.want || {}, who = s.who;
@@ -42,11 +54,7 @@
     const st = !s.ok ? ["bad", "Nicht erreichbar"] : !c.enabled ? ["off", "Regelung aus"] : s.hold > 0 ? ["warn", "Pausiert"] : c.planOn ? ["ok", "Planung aktiv"] : ["ok", "Regelung aktiv"];
     const chip = (cls, t) => `<span class="wbchip ${cls}">${cls ? "<i></i>" : ""}${t}</span>`;
     const chips = chip(st[0], st[1]) + (s.ok && c.enabled && !c.planOn ? chip("", `Modus ${MN[em] || "–"}`) : "") + (s.ok && who ? chip("", `${ic("car", 13)} ${esc(who.name)}`) : "") + (s.ok && i.power > 0 ? chip("", `${ic("energy", 13)} ${wfmt(i.power)}`) : "") + (s.quick ? chip("warn", "Schnellstart") : "");
-    const N = [];
-    if (!s.ok) N.push([`Keine Verbindung zur Wallbox${s.error ? " (" + esc(s.error) + ")" : ""}. Prüfe Strom und WLAN der Wallbox.`, "wb", "Verbindung prüfen"]);
-    else if (c.enabled && s.hold > 0) N.push([`Du hast die Wallbox von Hand umgestellt. Die Regelung pausiert noch ${Math.ceil(s.hold / 60)} Min. und regelt dann wieder.`]);
-    if (s.ok && c.enabled && !s.hold && w.state === "gesperrt") N.push(["Die Regelung wartet auf eine Karte. Lege die Karte an der Wallbox an.", "veh", "Karten ansehen"]);
-    if (s.ok && c.enabled && !s.hold && w.state && w.state !== "gesperrt" && w.surplus_w == null && (em === "pv" || em === "minpv" || c.planOn)) N.push(["Es fehlt ein Netz-Sensor für den Überschuss (Einstellungen → Haus → Energiequellen). Ohne ihn wird nicht mit Sonne geladen."]);
+    const N = this._wbHints();
     return `<div class="wbbar">${chips}</div>${N.map((n) => `<div class="gst on" style="margin:0 0 10px">${ic("info", 15)}<span>${n[0]}${n[1] ? ` <button class="lnk" data-act="wbgo" data-k="${n[1]}">${n[2]}</button>` : ""}</span></div>`).join("")}`;
   }
   /* Einrichtungs-Check im Register Einstellungen */

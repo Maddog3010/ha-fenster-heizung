@@ -1,5 +1,5 @@
   /* Ladestatistik: Balkendiagramm pro Tag, Anteil Sonne/Netz, Kosten */
-  _wbStT() { return this._wbTab === "stat" ? "stat" : this._wbTab === "plan" ? "plan" : this._wbTab === "set" ? "set" : "laden"; }
+  _wbStT() { return this._wbTab === "veh" && this._evNew() ? "veh" : this._wbTab === "stat" ? "stat" : this._wbTab === "plan" ? "plan" : this._wbTab === "set" ? "set" : "laden"; }
   _wbTabs() {
     const t = this._wbStT(), b = (k, l, i) => `<button class="${t === k ? "sel" : ""}" data-act="wbtab" data-k="${k}" aria-pressed="${t === k}">${ic(i, 16)}${l}</button>`;
     return `<div class="wbtabs" role="tablist">${b("laden", "Laden", "energy")}${b("plan", "Planung", "sun")}${b("stat", "Ladestatistik", "chart")}${b("set", "Einstellungen", "sliders")}</div>`;
@@ -58,7 +58,8 @@
     const S = this._wbStS(), k = b.dataset.k;
     if (a === "wbtab") this._wbTab = k;
     else if (a === "wbsec") { this._wbSecO = { ...this._wbSecS(), [k]: !this._wbSecS()[k] }; this._wbSecSave(); }
-    else if (a === "wbsecall") { this._wbSecO = Object.fromEntries(["wb", "reg", "veh", "bat", "grd", "ntf"].map((x) => [x, k === "1"])); this._wbSecSave(); }
+    else if (a === "wbsecall") { this._wbSecO = Object.fromEntries(["wb", "reg", "veh", "bat", "grd", "ntf", "look"].map((x) => [x, k === "1"])); this._wbSecSave(); }
+    else if (a === "wbgo" && k === "veh" && this._evNew()) this._wbTab = "veh";
     else if (a === "wbgo") { this._wbTab = "set"; this._wbSecO = { ...this._wbSecS(), [k]: true }; this._wbSecSave(); }
     else if (a === "wbplan") this._wbSave({ planStrat: k });
     else if (a === "wbsrc") { this._wbSave({ planSrc: k }); }

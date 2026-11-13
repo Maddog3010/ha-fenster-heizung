@@ -1859,5 +1859,50 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .igwbl{display:grid;gap:8px;margin:4px 0 6px}.igwb{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:transparent;color:inherit;cursor:pointer;font:inherit}
 .igwb.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent)}.igwbi{flex:none;display:grid;place-items:center}.igwbt{flex:1;min-width:0;display:grid;gap:2px}.igwbt small{color:var(--mut)}.igwb .sxc{flex:none}
 .igwr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:4px 14px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}.igwr>div:first-child{display:grid;gap:2px}.igwr small{font-size:.78rem}
-@media (max-width:620px){.igwr{grid-template-columns:1fr}.rfv .oper{flex-wrap:wrap}.rfv .oper .btn2{width:100%}}
+@media (max-width:620px){.igwr{grid-template-columns:1fr}.rfv .oper{flex-wrap:wrap}.rfv .oper .btn2{width:100%}}/* Modul 8 v0.7 · Neue Optik: Carport-Szene, Satz-Zeile, Ladeband, Kacheln 2.0, Modus-Karten, Zeitleisten, Register */
+.evban{position:relative;overflow:hidden;min-height:250px;padding:0!important;border:0;color:#fff;background:#3f86d6!important}
+.evban .evsc{position:absolute;inset:0;width:100%;height:100%;display:block}.evban .evsc.evm{display:none}
+.evban .evbt{position:relative;z-index:1;width:52%;min-height:250px;padding:22px 26px;box-sizing:border-box;background:linear-gradient(90deg,rgba(9,14,22,.88) 0%,rgba(9,14,22,.7) 60%,rgba(9,14,22,0) 100%)}
+.evban .lbl{max-width:none;opacity:1;font-weight:700;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:#99f6e4}.evban .lbl svg{flex:none}
+.evban .big{font-size:3.6rem;max-width:none;display:flex;align-items:baseline;gap:10px;margin-top:8px}.evban .big small{font-size:1.3rem;opacity:.75}
+.evban .evto{font-size:1.5rem;font-weight:700;color:#99f6e4}.evban .sub{max-width:none;font-size:.92rem;opacity:.92}
+.evban .chips{padding-right:0;margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}.evban .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);backdrop-filter:blur(6px);color:#fff;border:0}
+.evban .evdot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal)}
+.evban .mlogo{top:16px;right:16px;transform:none;width:76px;height:76px;border-radius:22px;background:rgba(15,23,42,.45);backdrop-filter:blur(8px);color:#fff;border-color:rgba(255,255,255,.25)}.evban .mlogo .mlv{font-size:9px}
+.evsay{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:11px 14px;margin:0 0 12px;box-shadow:0 0 0 1px color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent);font-size:.92rem;line-height:1.4}
+.evsay>svg{flex:none}.evsay b{color:var(--teal)}.evsay.info b{color:#60a5fa}.evsay.off b{color:var(--mut)}.evsay.bad b{color:#f87171}
+.evband{padding:14px 18px 12px!important;margin-bottom:12px}.evbb{position:relative;height:16px;border-radius:999px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 9%,transparent);margin-top:18px}
+.evbb .f{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#14b8a6,#2dd4bf)}
+.evbb .g{position:absolute;top:0;bottom:0;border-radius:0 999px 999px 0;background:repeating-linear-gradient(135deg,rgba(45,212,191,.38) 0 6px,rgba(45,212,191,.12) 6px 12px)}.evbb .g.run{animation:evband 1.2s linear infinite;background-size:17px 17px}
+@keyframes evband{to{background-position:17px 0}}
+.evbb .mk{position:absolute;top:-6px;bottom:-6px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--primary-text-color,#e6edf3)}.evbb .mk.lm{opacity:.35}
+.evbb .mk b{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);font-size:.72rem;white-space:nowrap}.evbb .mk b:not(:only-child){display:none}
+.evbl{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;color:var(--mut);margin-top:9px}.evbl b{color:var(--primary-text-color,#e6edf3)}
+.evks4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}
+.evk{position:relative;background:var(--card);border-radius:18px;padding:13px 15px;min-height:124px;box-shadow:0 0 0 1px color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent)}
+.evkd{position:absolute;right:13px;top:13px;width:9px;height:9px;border-radius:50%;background:var(--mut);opacity:.5}.evk.on .evkd{background:var(--teal);opacity:1;box-shadow:0 0 10px var(--teal)}.evk.warn .evkd{background:#f87171;opacity:1}
+.evkh{display:flex;align-items:center;gap:10px;font-size:.84rem;font-weight:600;color:var(--mut)}.evkh>svg,.evkh>div{flex:none}
+.evkv{font-size:1.9rem;font-weight:800;margin-top:8px;line-height:1.1}.evkv small{font-size:.95rem;font-weight:600;color:var(--mut);margin-left:4px}.evks{font-size:.78rem;color:var(--mut);margin-top:3px}
+.evcols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:12px;align-items:start}.evcols>div{display:grid;gap:12px}.evcols .card{margin:0}
+.evmc h2,.evday h2,.evwhy h2{display:flex;align-items:center;gap:10px;font-size:1rem;margin:0 0 10px}.evmr{margin-left:auto;font-size:.78rem;font-weight:500;color:var(--mut)}
+.evmodes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}
+.evmode{display:flex;align-items:center;gap:9px;text-align:left;padding:10px;border-radius:14px;border:0;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent);color:inherit;font:inherit;cursor:pointer}
+.evmode>svg{flex:none}.evmode span{display:grid;gap:2px;min-width:0}.evmode b{font-size:.88rem}.evmode small{font-size:.72rem;color:var(--mut);line-height:1.25}
+.evmode.sel{background:linear-gradient(135deg,color-mix(in srgb,var(--teal) 24%,transparent),color-mix(in srgb,var(--teal) 6%,transparent));box-shadow:0 0 0 1.5px var(--teal)}.evmode:disabled{cursor:default;opacity:.6}.evmode.sel:disabled{opacity:.85}
+.evtl{position:relative;height:44px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent);overflow:hidden}
+.evtl .s{position:absolute;top:8px;bottom:8px;border-radius:6px}.evtl .p{position:absolute;top:6px;bottom:6px;border-radius:7px;border:1.5px dashed var(--teal);background:color-mix(in srgb,var(--teal) 8%,transparent)}
+.evtl .n{position:absolute;top:0;bottom:0;width:2px;background:var(--primary-text-color,#e6edf3)}
+.evtx{display:flex;justify-content:space-between;font-size:.7rem;color:var(--mut);margin-top:5px}
+.evwl>div{display:grid;grid-template-columns:44px 14px 1fr;gap:8px;align-items:start;padding:7px 0;font-size:.86rem}.evwl time{color:var(--mut);font-variant-numeric:tabular-nums}
+.evwl i{width:10px;height:10px;border-radius:50%;margin-top:4px;background:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}.evwl small{display:block;color:var(--mut);font-size:.76rem;margin-top:1px}
+.evtabs{display:flex;gap:8px;margin:0 0 12px;overflow-x:auto;scrollbar-width:none}.evtabs::-webkit-scrollbar{display:none}
+.evtabs button{flex:none;display:flex;align-items:center;gap:7px;padding:8px 15px 8px 10px;border-radius:999px;border:0;background:var(--card);color:var(--mut);font:inherit;font-weight:600;font-size:.88rem;cursor:pointer;box-shadow:0 0 0 1px color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent)}
+.evtabs button.sel{background:var(--teal);color:#042f2e;box-shadow:none}
+@media (max-width:900px){.evks4{grid-template-columns:repeat(2,minmax(0,1fr))}.evcols{grid-template-columns:1fr}.evmodes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){
+  .evban{min-height:0}.evban .evbt{width:100%;min-height:0;padding:16px 16px 158px;background:linear-gradient(180deg,rgba(9,14,22,.9) 0%,rgba(9,14,22,.82) 52%,rgba(9,14,22,0) 72%)}
+  .evban .evsc.evd{display:none}.evban .evsc.evm{display:block;top:auto;bottom:0;height:170px}.evban .chip:nth-child(n+3){display:none}.evban .big{font-size:2.8rem}.evban .evto{font-size:1.2rem}.evban .sub{font-size:.84rem}.evban .lbl{padding-right:64px}
+  .evban .mlogo{width:52px;height:52px;border-radius:15px;top:12px;right:12px}.evban .mlogo .mlv{display:none}
+  .evbl{flex-wrap:wrap}.evbr{display:none}.evk{min-height:112px;padding:12px}.evkv{font-size:1.5rem}.evks4{gap:10px}
+  .evmode{padding:9px}.evtabs button{padding:7px 12px 7px 8px;font-size:.84rem}}
 `;

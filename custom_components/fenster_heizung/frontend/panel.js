@@ -740,7 +740,7 @@ const MV = {
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  ev: { v: "0.6", b: 1, d: "2026-11-13", p: "2026.11.3b16", log: [["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ev: { v: "0.7", b: 1, d: "2026-11-13", p: "2026.11.3b16", log: [["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "0.9", b: 1, d: "2026-11-12", p: "2026.11.3b11", log: [["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sf: { v: "0.5", b: 4, d: "2026-11-04", p: "2026.11.1", log: [["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2614,7 +2614,52 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .igwbl{display:grid;gap:8px;margin:4px 0 6px}.igwb{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid var(--line);border-radius:14px;padding:10px 12px;background:transparent;color:inherit;cursor:pointer;font:inherit}
 .igwb.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 10%,transparent)}.igwbi{flex:none;display:grid;place-items:center}.igwbt{flex:1;min-width:0;display:grid;gap:2px}.igwbt small{color:var(--mut)}.igwb .sxc{flex:none}
 .igwr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:4px 14px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}.igwr>div:first-child{display:grid;gap:2px}.igwr small{font-size:.78rem}
-@media (max-width:620px){.igwr{grid-template-columns:1fr}.rfv .oper{flex-wrap:wrap}.rfv .oper .btn2{width:100%}}
+@media (max-width:620px){.igwr{grid-template-columns:1fr}.rfv .oper{flex-wrap:wrap}.rfv .oper .btn2{width:100%}}/* Modul 8 v0.7 · Neue Optik: Carport-Szene, Satz-Zeile, Ladeband, Kacheln 2.0, Modus-Karten, Zeitleisten, Register */
+.evban{position:relative;overflow:hidden;min-height:250px;padding:0!important;border:0;color:#fff;background:#3f86d6!important}
+.evban .evsc{position:absolute;inset:0;width:100%;height:100%;display:block}.evban .evsc.evm{display:none}
+.evban .evbt{position:relative;z-index:1;width:52%;min-height:250px;padding:22px 26px;box-sizing:border-box;background:linear-gradient(90deg,rgba(9,14,22,.88) 0%,rgba(9,14,22,.7) 60%,rgba(9,14,22,0) 100%)}
+.evban .lbl{max-width:none;opacity:1;font-weight:700;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:#99f6e4}.evban .lbl svg{flex:none}
+.evban .big{font-size:3.6rem;max-width:none;display:flex;align-items:baseline;gap:10px;margin-top:8px}.evban .big small{font-size:1.3rem;opacity:.75}
+.evban .evto{font-size:1.5rem;font-weight:700;color:#99f6e4}.evban .sub{max-width:none;font-size:.92rem;opacity:.92}
+.evban .chips{padding-right:0;margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}.evban .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14);backdrop-filter:blur(6px);color:#fff;border:0}
+.evban .evdot{width:8px;height:8px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal)}
+.evban .mlogo{top:16px;right:16px;transform:none;width:76px;height:76px;border-radius:22px;background:rgba(15,23,42,.45);backdrop-filter:blur(8px);color:#fff;border-color:rgba(255,255,255,.25)}.evban .mlogo .mlv{font-size:9px}
+.evsay{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;padding:11px 14px;margin:0 0 12px;box-shadow:0 0 0 1px color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent);font-size:.92rem;line-height:1.4}
+.evsay>svg{flex:none}.evsay b{color:var(--teal)}.evsay.info b{color:#60a5fa}.evsay.off b{color:var(--mut)}.evsay.bad b{color:#f87171}
+.evband{padding:14px 18px 12px!important;margin-bottom:12px}.evbb{position:relative;height:16px;border-radius:999px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 9%,transparent);margin-top:18px}
+.evbb .f{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#14b8a6,#2dd4bf)}
+.evbb .g{position:absolute;top:0;bottom:0;border-radius:0 999px 999px 0;background:repeating-linear-gradient(135deg,rgba(45,212,191,.38) 0 6px,rgba(45,212,191,.12) 6px 12px)}.evbb .g.run{animation:evband 1.2s linear infinite;background-size:17px 17px}
+@keyframes evband{to{background-position:17px 0}}
+.evbb .mk{position:absolute;top:-6px;bottom:-6px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--primary-text-color,#e6edf3)}.evbb .mk.lm{opacity:.35}
+.evbb .mk b{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);font-size:.72rem;white-space:nowrap}.evbb .mk b:not(:only-child){display:none}
+.evbl{display:flex;justify-content:space-between;gap:10px;font-size:.8rem;color:var(--mut);margin-top:9px}.evbl b{color:var(--primary-text-color,#e6edf3)}
+.evks4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}
+.evk{position:relative;background:var(--card);border-radius:18px;padding:13px 15px;min-height:124px;box-shadow:0 0 0 1px color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent)}
+.evkd{position:absolute;right:13px;top:13px;width:9px;height:9px;border-radius:50%;background:var(--mut);opacity:.5}.evk.on .evkd{background:var(--teal);opacity:1;box-shadow:0 0 10px var(--teal)}.evk.warn .evkd{background:#f87171;opacity:1}
+.evkh{display:flex;align-items:center;gap:10px;font-size:.84rem;font-weight:600;color:var(--mut)}.evkh>svg,.evkh>div{flex:none}
+.evkv{font-size:1.9rem;font-weight:800;margin-top:8px;line-height:1.1}.evkv small{font-size:.95rem;font-weight:600;color:var(--mut);margin-left:4px}.evks{font-size:.78rem;color:var(--mut);margin-top:3px}
+.evcols{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:12px;align-items:start}.evcols>div{display:grid;gap:12px}.evcols .card{margin:0}
+.evmc h2,.evday h2,.evwhy h2{display:flex;align-items:center;gap:10px;font-size:1rem;margin:0 0 10px}.evmr{margin-left:auto;font-size:.78rem;font-weight:500;color:var(--mut)}
+.evmodes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}
+.evmode{display:flex;align-items:center;gap:9px;text-align:left;padding:10px;border-radius:14px;border:0;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent);color:inherit;font:inherit;cursor:pointer}
+.evmode>svg{flex:none}.evmode span{display:grid;gap:2px;min-width:0}.evmode b{font-size:.88rem}.evmode small{font-size:.72rem;color:var(--mut);line-height:1.25}
+.evmode.sel{background:linear-gradient(135deg,color-mix(in srgb,var(--teal) 24%,transparent),color-mix(in srgb,var(--teal) 6%,transparent));box-shadow:0 0 0 1.5px var(--teal)}.evmode:disabled{cursor:default;opacity:.6}.evmode.sel:disabled{opacity:.85}
+.evtl{position:relative;height:44px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent);overflow:hidden}
+.evtl .s{position:absolute;top:8px;bottom:8px;border-radius:6px}.evtl .p{position:absolute;top:6px;bottom:6px;border-radius:7px;border:1.5px dashed var(--teal);background:color-mix(in srgb,var(--teal) 8%,transparent)}
+.evtl .n{position:absolute;top:0;bottom:0;width:2px;background:var(--primary-text-color,#e6edf3)}
+.evtx{display:flex;justify-content:space-between;font-size:.7rem;color:var(--mut);margin-top:5px}
+.evwl>div{display:grid;grid-template-columns:44px 14px 1fr;gap:8px;align-items:start;padding:7px 0;font-size:.86rem}.evwl time{color:var(--mut);font-variant-numeric:tabular-nums}
+.evwl i{width:10px;height:10px;border-radius:50%;margin-top:4px;background:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 22%,transparent)}.evwl small{display:block;color:var(--mut);font-size:.76rem;margin-top:1px}
+.evtabs{display:flex;gap:8px;margin:0 0 12px;overflow-x:auto;scrollbar-width:none}.evtabs::-webkit-scrollbar{display:none}
+.evtabs button{flex:none;display:flex;align-items:center;gap:7px;padding:8px 15px 8px 10px;border-radius:999px;border:0;background:var(--card);color:var(--mut);font:inherit;font-weight:600;font-size:.88rem;cursor:pointer;box-shadow:0 0 0 1px color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent)}
+.evtabs button.sel{background:var(--teal);color:#042f2e;box-shadow:none}
+@media (max-width:900px){.evks4{grid-template-columns:repeat(2,minmax(0,1fr))}.evcols{grid-template-columns:1fr}.evmodes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){
+  .evban{min-height:0}.evban .evbt{width:100%;min-height:0;padding:16px 16px 158px;background:linear-gradient(180deg,rgba(9,14,22,.9) 0%,rgba(9,14,22,.82) 52%,rgba(9,14,22,0) 72%)}
+  .evban .evsc.evd{display:none}.evban .evsc.evm{display:block;top:auto;bottom:0;height:170px}.evban .chip:nth-child(n+3){display:none}.evban .big{font-size:2.8rem}.evban .evto{font-size:1.2rem}.evban .sub{font-size:.84rem}.evban .lbl{padding-right:64px}
+  .evban .mlogo{width:52px;height:52px;border-radius:15px;top:12px;right:12px}.evban .mlogo .mlv{display:none}
+  .evbl{flex-wrap:wrap}.evbr{display:none}.evk{min-height:112px;padding:12px}.evkv{font-size:1.5rem}.evks4{gap:10px}
+  .evmode{padding:9px}.evtabs button{padding:7px 12px 7px 8px;font-size:.84rem}}
 `;
 /* Modul 1 · Raumkarte 2.0 */
 const CSS_RK = `
@@ -7964,7 +8009,7 @@ class FensterHeizungPanel extends HTMLElement {
     return false;
   }
   /* Integrationen: Wallbox (go-e Charger) direkt über die lokale HTTP-API verbinden. Die Daten liegen im Backend (wb_get, wb_set, wb_test). */
-  _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "auto", baseW: 400, vs: 2, defVeh: "", wbx: { kind: "goe", plat: "", name: "", ent: {}, ph: 3 }, vehicles: [], guest: { mode: "off", limit: 80 }, guard: { on: false, maxA: 35 }, notify: { start: true, goal: true, plan: true, off: true, long: false, to: [] } }; }
+  _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "auto", baseW: 400, vs: 2, defVeh: "", look: "new", wbx: { kind: "goe", plat: "", name: "", ent: {}, ph: 3 }, vehicles: [], guest: { mode: "off", limit: 80 }, guard: { on: false, maxA: 35 }, notify: { start: true, goal: true, plan: true, off: true, long: false, to: [] } }; }
   _wbSnap() { const s = (this._wbD && this._wbD.snap) || {}; return { ...s, cfg: { ...this._wbDef(), ...(s.cfg || {}) }, info: s.info || {}, want: s.want || {}, log: s.log || [], plan: s.plan || {} }; }
   _wb() { return this._wbSnap().cfg; }
   /* Ist eine Wallbox eingerichtet? go-e: IP-Adresse · andere Wallbox über Home Assistant: Schalter oder Ladestrom */
@@ -8354,6 +8399,18 @@ class FensterHeizungPanel extends HTMLElement {
     const o = !!this._wbSecS()[key];
     return `<div class="card ocard wsec ${o ? "open" : ""}"><button data-act="wbsec" data-k="${key}" aria-expanded="${o}">${ic(ico, 20)}<span class="wst"><b>${title}${warn ? `<em class="wdot" title="Braucht Aufmerksamkeit">!</em>` : ""}</b><span>${sum}</span></span><span class="wch">${ic("chev", 18)}</span></button>${o ? `<div class="wbody">${body}</div>` : ""}</div>`;
   }
+  /* Hinweise mit Sprung zur Lösung (Statusleiste und Satz-Zeile der neuen Optik) */
+  _wbHints() {
+    const s = this._wbSnap(), c = s.cfg, w = s.want || {}, who = s.who;
+    const veh = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.name === who.name) : null;
+    const em = who ? (veh ? veh.mode : who.kind === "guest" ? c.guest.mode : c.mode) : c.mode;
+    const N = [];
+    if (!s.ok) N.push([`Keine Verbindung zur Wallbox${s.error ? " (" + esc(s.error) + ")" : ""}. Prüfe Strom und WLAN der Wallbox.`, "wb", "Verbindung prüfen"]);
+    else if (c.enabled && s.hold > 0) N.push([`Du hast die Wallbox von Hand umgestellt. Die Regelung pausiert noch ${Math.ceil(s.hold / 60)} Min. und regelt dann wieder.`]);
+    if (s.ok && c.enabled && !s.hold && w.state === "gesperrt") N.push(["Die Regelung wartet auf eine Karte. Lege die Karte an der Wallbox an.", "veh", "Karten ansehen"]);
+    if (s.ok && c.enabled && !s.hold && w.state && w.state !== "gesperrt" && w.surplus_w == null && (em === "pv" || em === "minpv" || c.planOn)) N.push(["Es fehlt ein Netz-Sensor für den Überschuss (Einstellungen → Haus → Energiequellen). Ohne ihn wird nicht mit Sonne geladen."]);
+    return N;
+  }
   /* Statusleiste über allen Registern: Zustand, Modus, Fahrzeug, Leistung und Hinweise mit Sprung zur Lösung */
   _wbBar() {
     const s = this._wbSnap(), c = s.cfg, i = s.info, w = s.want || {}, who = s.who;
@@ -8362,11 +8419,7 @@ class FensterHeizungPanel extends HTMLElement {
     const st = !s.ok ? ["bad", "Nicht erreichbar"] : !c.enabled ? ["off", "Regelung aus"] : s.hold > 0 ? ["warn", "Pausiert"] : c.planOn ? ["ok", "Planung aktiv"] : ["ok", "Regelung aktiv"];
     const chip = (cls, t) => `<span class="wbchip ${cls}">${cls ? "<i></i>" : ""}${t}</span>`;
     const chips = chip(st[0], st[1]) + (s.ok && c.enabled && !c.planOn ? chip("", `Modus ${MN[em] || "–"}`) : "") + (s.ok && who ? chip("", `${ic("car", 13)} ${esc(who.name)}`) : "") + (s.ok && i.power > 0 ? chip("", `${ic("energy", 13)} ${wfmt(i.power)}`) : "") + (s.quick ? chip("warn", "Schnellstart") : "");
-    const N = [];
-    if (!s.ok) N.push([`Keine Verbindung zur Wallbox${s.error ? " (" + esc(s.error) + ")" : ""}. Prüfe Strom und WLAN der Wallbox.`, "wb", "Verbindung prüfen"]);
-    else if (c.enabled && s.hold > 0) N.push([`Du hast die Wallbox von Hand umgestellt. Die Regelung pausiert noch ${Math.ceil(s.hold / 60)} Min. und regelt dann wieder.`]);
-    if (s.ok && c.enabled && !s.hold && w.state === "gesperrt") N.push(["Die Regelung wartet auf eine Karte. Lege die Karte an der Wallbox an.", "veh", "Karten ansehen"]);
-    if (s.ok && c.enabled && !s.hold && w.state && w.state !== "gesperrt" && w.surplus_w == null && (em === "pv" || em === "minpv" || c.planOn)) N.push(["Es fehlt ein Netz-Sensor für den Überschuss (Einstellungen → Haus → Energiequellen). Ohne ihn wird nicht mit Sonne geladen."]);
+    const N = this._wbHints();
     return `<div class="wbbar">${chips}</div>${N.map((n) => `<div class="gst on" style="margin:0 0 10px">${ic("info", 15)}<span>${n[0]}${n[1] ? ` <button class="lnk" data-act="wbgo" data-k="${n[1]}">${n[2]}</button>` : ""}</span></div>`).join("")}`;
   }
   /* Einrichtungs-Check im Register Einstellungen */
@@ -8493,7 +8546,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="mut sm">Forecast.Solar liefert die Werte in Home Assistant, ein Abruf pro Stunde genügt. Die kostenlose Stufe hat ein Limit von 12 Abrufen pro Stunde, das reicht für diese Planung.</div></div>`;
   }
   /* Ladestatistik: Balkendiagramm pro Tag, Anteil Sonne/Netz, Kosten */
-  _wbStT() { return this._wbTab === "stat" ? "stat" : this._wbTab === "plan" ? "plan" : this._wbTab === "set" ? "set" : "laden"; }
+  _wbStT() { return this._wbTab === "veh" && this._evNew() ? "veh" : this._wbTab === "stat" ? "stat" : this._wbTab === "plan" ? "plan" : this._wbTab === "set" ? "set" : "laden"; }
   _wbTabs() {
     const t = this._wbStT(), b = (k, l, i) => `<button class="${t === k ? "sel" : ""}" data-act="wbtab" data-k="${k}" aria-pressed="${t === k}">${ic(i, 16)}${l}</button>`;
     return `<div class="wbtabs" role="tablist">${b("laden", "Laden", "energy")}${b("plan", "Planung", "sun")}${b("stat", "Ladestatistik", "chart")}${b("set", "Einstellungen", "sliders")}</div>`;
@@ -8552,7 +8605,8 @@ class FensterHeizungPanel extends HTMLElement {
     const S = this._wbStS(), k = b.dataset.k;
     if (a === "wbtab") this._wbTab = k;
     else if (a === "wbsec") { this._wbSecO = { ...this._wbSecS(), [k]: !this._wbSecS()[k] }; this._wbSecSave(); }
-    else if (a === "wbsecall") { this._wbSecO = Object.fromEntries(["wb", "reg", "veh", "bat", "grd", "ntf"].map((x) => [x, k === "1"])); this._wbSecSave(); }
+    else if (a === "wbsecall") { this._wbSecO = Object.fromEntries(["wb", "reg", "veh", "bat", "grd", "ntf", "look"].map((x) => [x, k === "1"])); this._wbSecSave(); }
+    else if (a === "wbgo" && k === "veh" && this._evNew()) this._wbTab = "veh";
     else if (a === "wbgo") { this._wbTab = "set"; this._wbSecO = { ...this._wbSecS(), [k]: true }; this._wbSecSave(); }
     else if (a === "wbplan") this._wbSave({ planStrat: k });
     else if (a === "wbsrc") { this._wbSave({ planSrc: k }); }
@@ -8589,7 +8643,7 @@ class FensterHeizungPanel extends HTMLElement {
       : !who ? [rfid ? "Keine Kennung erkannt" : "Kein Fahrzeug zugeordnet", c.lock ? "Strom & Wärme verändert nichts, bis eine Karte angelegt wird." : "Es gilt der Modus der Laderegelung oben."]
       : who.kind === "vehicle" ? [`Erkannt: ${who.name} (Karte „${nm(who.card)}“)`, `Die Regelung arbeitet im Modus „${ML[who.mode]}“ mit Ladelimit ${who.limit} %.`]
       : [`Erkannt: Gastfahrzeug (Karte „${nm(who.card)}“)`, `Die Karte ist keinem Fahrzeug zugeordnet. Es gilt der Modus „${ML[who.mode]}“.`];
-    return `${bare ? "<div>" : `<div class="card ocard"><h2>${ic("car", 18)}Fahrzeuge &amp; Karten</h2>`}
+    return `${bare ? "<div>" : `<div class="card ocard"><h2>${ic("car", 18)}Fahrzeuge${rfid ? " &amp; Karten" : ""}</h2>`}
       <div class="mut sm" style="margin-bottom:8px">${rfid ? `Jedes Fahrzeug hat eigene Sensoren und ein eigenes Aussehen. Wie bei evcc wird das Fahrzeug an der Karte erkannt, die an der Wallbox angelegt wird. Als Kennung dient der Kartenname aus der go-e-App. Eine Karte gehört zu genau einem Fahrzeug, ein Fahrzeug kann mehrere Karten haben.` : "Jedes Fahrzeug hat eigene Sensoren, eine eigene Akkugröße und ein eigenes Aussehen. Diese Wallbox meldet keine Karten: Unten wählst du, welches Fahrzeug hier lädt."}</div>
       <div class="gst" style="margin:0 0 10px">${ic(who ? "check" : "info", 15)}<span><b>${esc(st[0])}</b><br>${esc(st[1])}</span></div>
       ${rfid ? assign : ""}
@@ -8634,12 +8688,17 @@ class FensterHeizungPanel extends HTMLElement {
   _evVehLine(x, soc) { const st = this._hass.states, E = x.ent || {}, ok = (e) => e && st[e]; return [soc != null ? `${num(soc, 0)} %` : E.soc ? (ok(E.soc) ? "Ladestand ohne Wert" : "Ladestand-Sensor fehlt") : "kein Ladestand-Sensor", x.cap ? `Akku ${num(x.cap, 1)} kWh` : "", E.odo && ok(E.odo) ? `${num(this._evNum(E.odo), 0)} km` : ""].filter(Boolean).map(esc).join(" · "); }
   _evThumb(x, w = 96) { return `<svg viewBox="270 92 430 170" width="${w}" height="${Math.round(w * 0.4)}" aria-hidden="true">${this._evCar(this._evLook(x), "t" + x.id)}</svg>`; }
   /* Auto allein (für Fahrzeugliste und Bearbeiten): gleiche Formen und Farben wie die Szene */
-  _evCar(L, sfx) {
-    const H = EV_SHAPES[L.body] || EV_SHAPES.limousine, C = EV_COLORS[L.color] || EV_COLORS.blue, [w1, w2] = H.wh, u = "evc" + String(sfx).replace(/[^a-z0-9]/gi, "");
-    const wh = (cx) => `<circle cx="${cx}" cy="217" r="41" fill="#07090d"/><circle cx="${cx}" cy="217" r="33" fill="#0b0d11"/><circle cx="${cx}" cy="217" r="23" fill="url(#${u}r)"/><circle cx="${cx}" cy="217" r="17" fill="#161a21"/><circle cx="${cx}" cy="217" r="6" fill="#2b313b"/>`;
-    return `<defs><linearGradient id="${u}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C[1]}"/><stop offset=".45" stop-color="${C[2]}"/><stop offset="1" stop-color="${C[3]}"/></linearGradient><linearGradient id="${u}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e5e9ef"/><stop offset="1" stop-color="#9aa3b1"/></linearGradient></defs>
-      <ellipse cx="${(H.rear + H.front) / 2}" cy="252" rx="${(H.front - H.rear) / 1.9}" ry="7" fill="#000" opacity=".35"/><path d="${H.body}" fill="url(#${u}p)" stroke="${C[4]}" stroke-width="1.6"/><path d="${H.glass}" fill="#14202c" stroke="#05070a" stroke-width="2"/>
-      <path d="M${H.front - 34} ${H.ly - 2} C${H.front - 18} ${H.ly - 2} ${H.front - 6} ${H.ly + 2} ${H.front} ${H.ly + 8} L${H.front} ${H.ly + 13} C${H.front - 10} ${H.ly + 8} ${H.front - 22} ${H.ly + 6} ${H.front - 34} ${H.ly + 6} Z" fill="#f8fbff"/>${wh(w1)}${wh(w2)}`;
+  _evCar(L, sfx, chg = false, night = false) {
+    const H = EV_SHAPES[L.body] || EV_SHAPES.limousine, C = EV_COLORS[L.color] || EV_COLORS.blue, [w1, w2] = H.wh, [px, py] = H.port, u = "evc" + String(sfx).replace(/[^a-z0-9]/gi, "");
+    const wh = (cx) => `<circle cx="${cx}" cy="217" r="41" fill="#07090d"/><circle cx="${cx}" cy="217" r="33" fill="#0b0d11"/><circle cx="${cx}" cy="217" r="23" fill="url(#${u}r)"/><circle cx="${cx}" cy="217" r="18" fill="#161a21"/>${Array.from({ length: 10 }, (_, k) => k * 36).map((a) => `<line x1="${(cx + 5 * Math.sin(a * Math.PI / 180)).toFixed(1)}" y1="${(217 - 5 * Math.cos(a * Math.PI / 180)).toFixed(1)}" x2="${(cx + 19 * Math.sin((a + 8) * Math.PI / 180)).toFixed(1)}" y2="${(217 - 19 * Math.cos((a + 8) * Math.PI / 180)).toFixed(1)}" stroke="url(#${u}r)" stroke-width="3" stroke-linecap="round"/>`).join("")}<circle cx="${cx}" cy="217" r="6" fill="#2b313b"/>`;
+    return `<defs><linearGradient id="${u}p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${C[1]}"/><stop offset=".45" stop-color="${C[2]}"/><stop offset="1" stop-color="${C[3]}"/></linearGradient>
+      <linearGradient id="${u}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2b3e52"/><stop offset="1" stop-color="#0a1018"/></linearGradient><linearGradient id="${u}r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e5e9ef"/><stop offset=".5" stop-color="#9aa3b1"/><stop offset="1" stop-color="#d7dce4"/></linearGradient><clipPath id="${u}b"><path d="${H.body}"/></clipPath></defs>
+      <ellipse cx="${(H.rear + H.front) / 2}" cy="251" rx="${(H.front - H.rear) / 1.9}" ry="8" fill="#000" opacity=".4"/><path d="${H.body}" fill="url(#${u}p)"/>
+      <g clip-path="url(#${u}b)"><rect x="${H.rear}" y="${H.gb + 14}" width="420" height="50" fill="#000" opacity=".18"/><path d="M${H.rear} ${H.gt + 36} C420 ${H.gt + 28} 560 ${H.gt + 36} ${H.front} ${H.gt + 62}" stroke="#fff" stroke-width="3" fill="none" opacity=".35"/><rect x="${H.rear}" y="224" width="420" height="16" fill="#10141b"/></g>
+      <path d="${H.glass}" fill="url(#${u}g)" stroke="#05070a" stroke-width="2"/><path d="M${H.pil - 3} ${H.gt - 2} L${H.pil + 1} ${H.gb + 1} L${H.pil + 5} ${H.gb + 1} L${H.pil + 3} ${H.gt - 2} Z" fill="${C[3]}"/>
+      <path d="M${H.front - 34} ${H.ly - 2} C${H.front - 18} ${H.ly - 2} ${H.front - 6} ${H.ly + 2} ${H.front} ${H.ly + 8} L${H.front} ${H.ly + 13} C${H.front - 10} ${H.ly + 8} ${H.front - 22} ${H.ly + 6} ${H.front - 34} ${H.ly + 6} Z" fill="${night ? "#fffbe6" : "#f8fbff"}"/>
+      <path d="M${H.tl[0]} ${H.tl[1] - 9} L${H.tl[0] + 8} ${H.tl[1] - 11} L${H.tl[0] + 8} ${H.tl[1] + 9} L${H.tl[0]} ${H.tl[1] + 11} Z" fill="#d6192a"/><path d="${H.body}" fill="none" stroke="${C[4]}" stroke-width="1.6"/>
+      <circle cx="${px}" cy="${py}" r="6" fill="#0d1426" stroke="#8aa0c8" stroke-width="1.5"/><circle cx="${px}" cy="${py}" r="3" fill="${chg ? "#22e06b" : "#9aa5b1"}"/>${wh(w1)}${wh(w2)}`;
   }
   _evData() {
     const v = this._evVeh(), L = this._evState().ent, E = { ...L, ...(v ? { soc: (v.ent || {}).soc, odo: (v.ent || {}).odo, range: (v.ent || {}).range } : {}) }, st = this._hass.states, S = (e) => (e && st[e] ? String(st[e].state).toLowerCase() : "");
@@ -8746,6 +8805,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _evPage() {
     const adm = this._admin(), d = this._evData();
+    if (d.any && this._evNew()) return this._evPageNew(d);
     if (!d.any) return `${this._betaBox("Wähle in den Einstellungen die Sensoren deines Fahrzeugs und der Wallbox.")}
       <div class="card empty">${ic("car", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Fahrzeug eingerichtet</div>
       <div class="sm" style="max-width:460px;margin:0 auto 14px">Zeigt Ladestand, Reichweite und Kilometerstand. Die Wallbox ist abgebildet, das Ladekabel erscheint beim Anstecken und leuchtet beim Laden.</div>
@@ -8831,10 +8891,11 @@ class FensterHeizungPanel extends HTMLElement {
       ${sec("wb", "energy", "Wallbox und Verbindung", `${esc(this._wbName())} · ${ha ? "über Home Assistant" : esc(c.ip)}${s.ok ? "" : " · nicht erreichbar"}`, `<div class="lugrid">${tile("Gerät", esc(i.type || (ha ? "Wallbox" : "go-e Charger")), esc(this._wbName()))}${ha ? tile("Anbindung", "Home Assistant", esc(c.wbx.plat || "eigene Auswahl")) : tile("Adresse", esc(c.ip), s.ok ? "erreichbar" : "nicht erreichbar")}${ha ? tile("Steuerung", i.ctrl === false ? "nur Anzeige" : "Schalter" + ((c.wbx.ent || {}).current ? " + Strom" : "") + ((c.wbx.ent || {}).phase ? " + Phasen" : ""), i.ctrl === false ? "keine Schalter-Entität" : "über die Integration") : tile("Firmware", esc(i.fw || "–"), i.serial ? "Seriennr. " + esc(i.serial) : "–")}${tile("Gesamt geladen", i.total_wh != null ? num(i.total_wh / 1000, 0) + " kWh" : "–", "seit Inbetriebnahme")}</div>
         <div class="mut sm" style="margin:8px 0">Die Verbindung zur Wallbox richtest du im Store ein (go-e direkt oder „Andere Wallbox“ über Home Assistant), dort auch Tibber.</div><div style="display:flex;gap:8px;flex-wrap:wrap">${adm ? `${ha ? "" : `<button class="btn2" data-act="wbtest" ${this._wbTest && this._wbTest.busy ? "disabled" : ""}>${ic("check", 16)} Verbindung testen</button>`}<button class="btn2" data-act="${ha ? "igwbha" : "igopen"}">${ic("tools", 16)} ${ha ? "Entitäten ändern" : "Verbindung ändern"}</button>` : ""}</div>${this._wbTest && !this._wbTest.busy ? `<div class="gst ${this._wbTest.ok ? "" : "on"}" style="margin-top:8px">${ic(this._wbTest.ok ? "check" : "info", 15)}<span>${this._wbTest.ok ? `Verbindung steht: ${esc(this._wbTest.type || "go-e Charger")}, Firmware ${esc(this._wbTest.fw || "–")}.` : esc(this._wbTest.error || "Keine Antwort")}</span></div>` : ""}`, !s.ok)}
       ${sec("reg", "sliders", "Laderegelung", `${c.minA} bis ${c.maxA} A · Phasen ${c.ph === "auto" ? "automatisch" : c.ph} · Limit ${c.limit} %`, regBody)}
-      ${ha ? sec("veh", "car", "Fahrzeuge", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"}${c.defVeh ? " · hier lädt " + esc((c.vehicles.find((x) => x.id === c.defVeh) || {}).name || "") : ""}`, this._rfCard(true), !nv || !c.defVeh) : sec("veh", "car", "Fahrzeuge und Karten", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"} · ${nc} ${nc === 1 ? "Karte" : "Karten"}${c.lock ? " · nur mit Karte" : ""}`, this._rfCard(true), !nv || c.vehicles.some((x) => !x.ids.length))}
+      ${this._evNew() ? `<div class="card ocard wsec"><button data-act="wbtab" data-k="veh">${ic("car", 20)}<span class="wst"><b>Fahrzeuge${ha ? "" : " und Karten"}</b><span>${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"} · eigenes Register „Fahrzeuge“</span></span><span class="wch" style="transform:rotate(-90deg)">${ic("chev", 18)}</span></button></div>` : ha ? sec("veh", "car", "Fahrzeuge", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"}${c.defVeh ? " · hier lädt " + esc((c.vehicles.find((x) => x.id === c.defVeh) || {}).name || "") : ""}`, this._rfCard(true), !nv || !c.defVeh) : sec("veh", "car", "Fahrzeuge und Karten", `${nv} ${nv === 1 ? "Fahrzeug" : "Fahrzeuge"} · ${nc} ${nc === 1 ? "Karte" : "Karten"}${c.lock ? " · nur mit Karte" : ""}`, this._rfCard(true), !nv || c.vehicles.some((x) => !x.ids.length))}
       ${sec("bat", "home", "Hausbatterie und Strompreis", `Batterie ${c.batOn ? "zuerst bis " + c.batSoc + " %" : "egal"} · Preisgrenze ${c.priceOn ? c.priceMax + " ct" : "aus"}`, batBody)}
       ${sec("grd", "shield", "Hausanschluss-Schutz", c.guard.on ? `An · höchstens ${c.guard.maxA} A pro Phase` : "Aus", X.guard)}
-      ${sec("ntf", "bell", "Benachrichtigungen", nt ? `${nt} von 5 Meldungen · ${c.notify.to.length ? c.notify.to.map((x) => esc(x.replace("notify.", ""))).join(", ") : "kein Empfänger"}` : "Aus", X.notify)}`;
+      ${sec("ntf", "bell", "Benachrichtigungen", nt ? `${nt} von 5 Meldungen · ${c.notify.to.length ? c.notify.to.map((x) => esc(x.replace("notify.", ""))).join(", ") : "kein Empfänger"}` : "Aus", X.notify)}
+      ${sec("look", "eye", "Darstellung", c.look === "classic" ? "Wie bisher" : "Neue Optik", `<div class="mut sm" style="margin:0 0 6px">Neue Optik: Carport-Szene als Banner, Ladeband bis zum Ziel, Kacheln mit HD-Symbolen, Modus-Karten, Heute-Zeitleiste und „Warum gerade so?“. Wie bisher: die Ansicht bis v0.6.</div>${chips("look", [["new", "Neue Optik"], ["classic", "Wie bisher"]], c.look === "classic" ? "classic" : "new")}${this._gxCfg().classic ? `<div class="mut sm">Unter Einstellungen → Darstellung ist „wie bisher“ für alle Module eingeschaltet – das gilt auch hier.</div>` : ""}`)}`;
     return `${mainCard}
       <div class="card ocard"><h2>${ic("energy", 18)}Schnellstart</h2>${X.quick}</div>
       ${logCard}`;
@@ -8873,6 +8934,153 @@ class FensterHeizungPanel extends HTMLElement {
       if (f === "wbve" || f === "wbvc") this._renderModal();
       return true;
     } if (f === "wbcap") { const v = parseFloat(String(t.value).replace(",", ".")); if (isFinite(v)) this._wbSave({ cap: Math.round(Math.max(10, Math.min(150, v)) * 10) / 10 }); else this._render(); return true; } if (f === "wbdt") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), time: t.value } } : x)) }); this._wbLater(t); } return true; } if (f === "wbradd") { const c = this._wb(); if (t.value) { this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, ids: [...x.ids, Number(t.value)] } : x)) }, true); this._render(); } return true; } if (f === "wbtime") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(t.value)) { this._wbSave({ planTime: t.value }); this._wbLater(t); } return true; } return false; }
+  /* ================= Modul 8 · Neue Optik (v0.7, Konzept „Modul 8 – Neue Optik“, Teil A) =================
+     A1 Carport-Szene als Banner · A2 Satz-Zeile · A3 Ladeband jetzt → Ziel · A4 Kacheln 2.0 · A5 Modus-Karten
+     A6 Heute als Zeitleiste · A7 „Warum gerade so?“ · A8 Handy · A9 Hell · A10 Register „Fahrzeuge“.
+     Schalter: Einstellungen → Darstellung „Wie bisher“ (cfg.look) und der globale Schalter der Grafik-Bibliothek. */
+  _evNew() { return this._wb().look !== "classic" && !this._gxCfg().classic; }
+  /* Zustand für Banner, Satz-Zeile, Band und Kacheln an einer Stelle */
+  _evNow(d) {
+    const sn = this._wbSnap(), c = sn.cfg, i = sn.info || {}, w = sn.want || {}, who = sn.who, v = d.veh, wbOn = this._wbOn(c);
+    const dep = v && v.dep && v.dep.on ? v.dep : null, limit = who ? who.limit : v ? v.limit : c.limit;
+    const goal = dep ? Math.min(dep.soc, limit) : limit, cap = (v && v.cap) || c.cap, soc = d.soc;
+    const need = soc != null ? Math.max(0, (goal - soc) / 100 * cap) : null, pw = d.power != null ? d.power : 0;
+    const sun = d.charging && pw > 0 && w.surplus_w != null ? Math.max(0, Math.min(100, w.surplus_w / pw * 100)) : null;
+    let done = null;
+    if (d.charging && pw > 500 && need != null && need > 0.05) { const t = new Date(Date.now() + need / (pw / 1000) * 36e5); if (t - Date.now() < 36 * 36e5) done = t; }
+    const MN = { off: "Aus", pv: "Sonne", minpv: "Sonne + Netz", now: "Voll" }, wv = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.id === who.id || x.name === who.name) : null;
+    const mode = who ? (wv ? wv.mode : who.kind === "guest" ? c.guest.mode : c.mode) : c.mode;
+    const tm = (t) => t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+    const card = !who ? "" : who.kind === "guest" ? `Gast · Karte ${who.card}` : who.auto ? (this._wbHa(c) ? "fest zugeordnet" : "ohne Karte") : who.card == null ? "" : `Karte ${esc(((i.cards || []).find((x) => x.i === who.card) || {}).n || String(who.card))}`;
+    return { sn, c, i, w, who, v, wbOn, dep, limit, goal, cap, soc, need, pw, sun, done, doneT: done ? tm(done) : "", mode, modeN: MN[mode] || "–", MN, card, tm,
+      night: ((this._hass.states["sun.sun"] || {}).state || "") === "below_horizon" };
+  }
+  /* A1: Carport mit Hauswand, Wallbox, flach aufliegenden Modulen und dem Auto in Form und Farbe des Fahrzeugs */
+  _evCarport(d, N, W, H, o = {}) {
+    const L = this._evLook(d.veh), u = "evb" + (o.sfx || ""), sx = o.sx != null ? o.sx : W - 690, s = o.s || 1, gy = H - 30, night = N.night;
+    const line = d.charging ? (N.sun != null && N.sun < 50 ? "#fb923c" : "#fde047") : "", glow = d.charging ? "#22e06b" : d.plugged ? "#ffa51f" : "#9aa5b1";
+    const pv = Array.from({ length: 12 }, (_, k) => `<rect x="${k * 46 + 4}" y="0" width="42" height="11" rx="1.5" fill="url(#${u}pv)" stroke="#9fb6d6" stroke-width=".6" opacity="${night ? .55 : 1}"/>`).join("");
+    const cab = "M104 206 C100 262 200 262 238 233 C262 216 274 206 286 196";
+    return `<svg class="evsc" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"><defs>
+      <linearGradient id="${u}sky" x1="0" y1="0" x2="0" y2="1">${night ? `<stop offset="0" stop-color="#0b1530"/><stop offset=".7" stop-color="#1d2b4f"/><stop offset="1" stop-color="#2c3a5e"/>` : `<stop offset="0" stop-color="#3f86d6"/><stop offset=".65" stop-color="#a9d3f3"/><stop offset="1" stop-color="#e6f3fb"/>`}</linearGradient>
+      <radialGradient id="${u}sun"><stop offset="0" stop-color="${night ? "#e0e7ff" : "#fff7c2"}"/><stop offset=".35" stop-color="${night ? "#c7d2fe" : "#fde68a"}" stop-opacity=".7"/><stop offset="1" stop-color="#fde68a" stop-opacity="0"/></radialGradient>
+      <linearGradient id="${u}pv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2d4a7a"/><stop offset=".5" stop-color="#1b3058"/><stop offset="1" stop-color="#365c94"/></linearGradient>
+      <linearGradient id="${u}wall" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${night ? "#8d8679" : "#efe9df"}"/><stop offset="1" stop-color="${night ? "#7a7366" : "#d9d1c4"}"/></linearGradient>
+      <linearGradient id="${u}road" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a919c"/><stop offset="1" stop-color="#5b626d"/></linearGradient>
+      <filter id="${u}gl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter></defs>
+      <rect width="${W}" height="${H}" fill="url(#${u}sky)"/>
+      ${night ? `<g fill="#fff">${[[.55, .18], [.62, .3], [.7, .12], [.8, .24], [.9, .1], [.95, .32]].map(([a, b]) => `<circle cx="${W * a}" cy="${H * b}" r="1.3" opacity=".8"/>`).join("")}</g><circle cx="${W - 150}" cy="56" r="56" fill="url(#${u}sun)"/><circle cx="${W - 150}" cy="56" r="15" fill="#e0e7ff"/>`
+        : `<circle cx="${W - 150}" cy="60" r="78" fill="url(#${u}sun)"/><circle cx="${W - 150}" cy="60" r="23" fill="#fde047"/><g fill="#fff" opacity=".85"><ellipse cx="${W - 420}" cy="54" rx="44" ry="11"/><ellipse cx="${W - 390}" cy="46" rx="28" ry="10"/></g>`}
+      <ellipse cx="${W / 2}" cy="${gy + 4}" rx="${W}" ry="20" fill="${night ? "#2f4a3a" : "#6fae73"}" opacity=".6"/><rect y="${gy}" width="${W}" height="30" fill="url(#${u}road)" opacity="${night ? .7 : 1}"/>
+      <g transform="translate(${sx} ${gy - 270 * s}) scale(${s})">
+        <rect x="0" y="0" width="150" height="270" fill="url(#${u}wall)"/><rect x="0" y="0" width="150" height="10" fill="#b9b0a2"/>
+        <rect x="22" y="40" width="58" height="70" rx="4" fill="${night ? "#fcd34d" : "#9cc7ea"}" stroke="#fff" stroke-width="4" opacity="${night ? .85 : 1}"/>
+        <g transform="translate(76 120)"><rect width="56" height="86" rx="12" fill="#f8fafc" stroke="#b6bdc7"/><rect x="8" y="9" width="40" height="20" rx="6" fill="#0d141c"/>
+          <text x="28" y="23" text-anchor="middle" font-size="10" font-weight="700" fill="${d.charging ? "#4ade80" : "#8da0b3"}">${d.charging && d.power != null ? num(d.power / 1000, 1) + " kW" : d.plugged ? "bereit" : "frei"}</text>
+          <circle cx="28" cy="48" r="11" fill="none" stroke="${glow}" stroke-width="3.5"/>${d.charging ? `<circle cx="28" cy="48" r="11" fill="none" stroke="${glow}" stroke-width="5" opacity=".6" filter="url(#${u}gl)" class="evpulse"/>` : ""}</g>
+        <g transform="translate(150 54)"><rect x="0" y="0" width="560" height="10" fill="#4b5563"/><g transform="translate(6 -11)">${pv}</g><rect x="540" y="10" width="10" height="206" fill="#6b7280"/></g>
+        ${line ? `<path d="M300 50 C300 18 140 28 110 120" fill="none" stroke="${line}" stroke-width="10" opacity=".3" filter="url(#${u}gl)"/><path d="M300 50 C300 18 140 28 110 120" fill="none" stroke="${line}" stroke-width="4" stroke-dasharray="7 9" stroke-linecap="round" class="evflow"/>` : ""}
+        ${d.plugged ? `<path d="${cab}" fill="none" stroke="#0b0e12" stroke-width="8" stroke-linecap="round"/>${d.charging ? `<path d="${cab}" fill="none" stroke="#22e06b" stroke-width="12" opacity=".35" filter="url(#${u}gl)"/><path d="${cab}" fill="none" stroke="#86efac" stroke-width="2.4" stroke-dasharray="5 11" stroke-linecap="round" class="evflow"/>` : ""}` : ""}
+        <g transform="translate(-30 22)">${this._evCar(L, u + "c", d.charging, night)}</g>
+      </g></svg>`;
+  }
+  _evBanner() {
+    const d = this._evData(), N = this._evNow(d), tab = this._tmOn && this._tmOn();
+    if (!d.any) return this._modHero("ev", { icon: "car", lbl: "Elektroauto & Wallbox", big: "–", sub: "Noch kein Fahrzeug eingerichtet" });
+    const name = d.veh ? d.veh.name : this._evTitle(d.veh);
+    const line = !N.wbOn && !d.plugged ? (d.range != null ? `Reichweite ${num(d.range, 0)} km` : "Fahrzeug")
+      : d.charging ? `Lädt${N.sun != null ? (N.sun >= 50 ? " mit Sonne" : " mit Netzstrom") : ""}${d.power != null ? " · " + num(d.power / 1000, 1) + " kW" : ""}${N.doneT ? " · fertig ca. " + N.doneT + " Uhr" : ""}`
+      : d.plugged ? (N.soc != null && N.soc >= N.goal ? "Angesteckt · Ziel erreicht" : `Angesteckt · ${N.w.state === "wartet" ? "wartet auf Sonne" : N.w.state === "plan_wartet" ? "wartet auf das Ladefenster" : "lädt gerade nicht"}`) : "Nicht angesteckt";
+    const chips = tab ? [] : [N.wbOn && N.c.enabled ? `<span class="chip"><i class="evdot"></i>Modus ${esc(N.modeN)}</span>` : N.wbOn ? `<span class="chip">Regelung aus</span>` : "",
+      N.sun != null ? `<span class="chip">${this._gx("sun", 16, { on: 1 })}${num(N.sun, 0)} % Sonne</span>` : "", d.range != null ? `<span class="chip">Reichweite ${num(d.range, 0)} km</span>` : "",
+      N.sn.guard && N.sn.guard.limited ? `<span class="chip">Hausanschluss ${num(N.sn.guard.total_a, 0)} von ${N.sn.guard.max_a} A</span>` : ""].filter(Boolean);
+    return `<div class="card hero mh a-ev evban${N.night ? " nt" : ""}">${this._evCarport(d, N, 1180, 290, { sfx: "d", sx: 1180 - 640, s: 0.9 }).replace('class="evsc"', 'class="evsc evd"')}${this._evCarport(d, N, 420, 170, { sfx: "m", sx: 40, s: 0.52 }).replace('class="evsc"', 'class="evsc evm"')}${this._modLogo("ev")}
+      <div class="evbt"><div class="lbl">${this._gx("car", 18)}${esc(name)}${N.card ? " · " + esc(N.card) : ""}</div>
+        <div class="big">${N.soc != null ? num(N.soc, 0) + "<small>%</small>" : "–"}${N.soc != null && N.goal > N.soc + 0.5 ? `<span class="evto">→ ${N.goal} %</span>` : ""}</div>
+        <div class="sub">${esc(line)}</div>${chips.length ? `<div class="chips">${chips.join("")}</div>` : ""}</div></div>`;
+  }
+  /* A2: ein Satz, was gerade passiert – mit den Hinweisen der bisherigen Statusleiste */
+  _evSay(d) {
+    const N = this._evNow(d), s = N.sn, H = (this._wbHints ? this._wbHints() : []).filter((n) => n[1] !== "wb");
+    let ico = "sun", cls = "ok", t = "";
+    if (!N.wbOn) { ico = "wallbox"; cls = "off"; t = "<b>Keine Wallbox verbunden.</b> Verbinde sie im Store – go-e direkt oder jede andere Wallbox über Home Assistant."; }
+    else if (!s.ok) { ico = "wallbox"; cls = "bad"; t = "<b>Wallbox nicht erreichbar.</b> Prüfe Strom und WLAN der Wallbox."; }
+    else if (!N.c.enabled) { ico = "wallbox"; cls = "off"; t = "<b>Regelung aus.</b> Die Wallbox lädt nach ihren eigenen Einstellungen."; }
+    else if (d.charging) { const sun = N.sun != null && N.sun >= 50; ico = sun ? "sun" : "grid"; t = `<b>Alles läuft.</b> ${esc(d.veh ? d.veh.name : "Das Auto")} lädt ${sun ? "mit Sonne" : "mit Netzstrom"}.${N.doneT ? ` Bei gleicher Leistung ist das Ziel um ca. ${N.doneT} Uhr erreicht.` : ""}`; }
+    else if (d.plugged) { ico = "schedule"; cls = "info"; t = `<b>${N.soc != null && N.soc >= N.goal ? "Ziel erreicht." : "Angesteckt."}</b> ${esc(N.w.reason || "")}`; }
+    else { ico = "car"; cls = "off"; t = `<b>Kein Auto angesteckt.</b>${N.dep ? ` Nächste Abfahrt ${esc(N.dep.time)} Uhr, Ziel ${N.dep.soc} %.` : ""}`; }
+    return `<div class="evsay ${cls}">${this._gx(ico, 30, { on: cls === "ok" ? 1 : 0 })}<span>${t}</span></div>${H.map((n) => `<div class="gst on" style="margin:0 0 10px">${ic("info", 15)}<span>${n[0]}${n[1] ? ` <button class="lnk" data-act="wbgo" data-k="${n[1]}">${n[2]}</button>` : ""}</span></div>`).join("")}`;
+  }
+  /* A3: Ladeband jetzt → Ziel */
+  _evBand(d) {
+    const N = this._evNow(d);
+    if (N.soc == null) return d.veh && this._admin() ? `<div class="card evband"><div class="mut sm">Ohne Ladestand-Sensor gibt es kein Ladeband, kein Ladelimit und keinen Ladeplan. <button class="lnk" data-act="wbrvedit" data-v="${esc(d.veh.id)}">Sensor wählen</button></div></div>` : "";
+    const s = Math.max(0, Math.min(100, N.soc)), g = Math.max(s, Math.min(100, N.goal)), lim = Math.min(100, N.limit);
+    return `<div class="card evband"><div class="evbb" role="img" aria-label="Ladestand ${num(s, 0)} %, Ziel ${N.goal} %"><i class="f" style="width:${s}%"></i>${g > s ? `<i class="g${d.charging ? " run" : ""}" style="left:${s}%;width:${g - s}%"></i>` : ""}
+      <span class="mk" style="left:${g}%"><b>Ziel ${N.goal} %${N.dep ? " · " + esc(N.dep.time) : ""}</b></span>${lim > g + 2 ? `<span class="mk lm" style="left:${lim}%"></span>` : ""}</div>
+      <div class="evbl"><span><b>${num(s, 0)} %</b> jetzt${d.range != null ? " · " + num(d.range, 0) + " km" : ""}</span><span>${N.need > 0.05 ? `noch <b>${num(N.need, 1)} kWh</b>${N.doneT ? " · fertig ca. " + N.doneT : ""}` : "Ziel erreicht"}</span><span class="evbr">Limit ${N.limit} %</span></div></div>`;
+  }
+  /* A4: Kacheln 2.0 – kein Wert doppelt, HD-Symbole, Herkunfts-Ring an der Ladeleistung */
+  _evTiles(d) {
+    const N = this._evNow(d), T = (this._wbStD && this._wbStD.data) || null, td = ((n) => `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`)(new Date()), r = T && (T.days || []).find((x) => x.d === td);
+    if (N.wbOn) this._wbStatLoad();
+    const k = (img, l, v, u, sub, st) => `<div class="evk ${st || ""}"><span class="evkd"></span><div class="evkh">${img}<span>${l}</span></div><div class="evkv">${v}${u ? `<small>${u}</small>` : ""}</div><div class="evks">${sub}</div></div>`;
+    const ses = N.i.session_wh != null ? N.i.session_wh / 1000 : null, kwh = r ? r.pv + r.grid : 0, sh = kwh > 0 ? r.pv / kwh * 100 : 0;
+    const mix = d.charging && N.sun != null ? { pv: N.sun / 100, net: 1 - N.sun / 100 } : { pv: 0, net: 0 };
+    return `<div class="evks4">
+      ${k(this._gx("battery", 38, { lvl: N.soc != null ? Math.round(N.soc) : 0 }), "Ladestand", N.soc != null ? num(N.soc, 0) : "–", N.soc != null ? "%" : "", N.soc == null ? "kein Sensor" : N.dep ? `Ziel ${N.goal} % bis ${esc(N.dep.time)}` : `Limit ${N.limit} %`, N.soc != null && N.soc < 20 ? "warn" : d.charging ? "on" : "")}
+      ${k(d.charging ? this._gxRing("wallbox", mix, 44) : this._gx("wallbox", 38), "Ladeleistung", d.charging && d.power != null ? num(d.power / 1000, 1) : "0", "kW", d.charging ? [N.i.phases ? `${N.i.phases} ${N.i.phases === 1 ? "Phase" : "Phasen"}` : "", N.i.cur != null ? num(N.i.cur, 0) + " A" : "", N.sun != null ? num(N.sun, 0) + " % Sonne" : ""].filter(Boolean).join(" · ") : N.w.surplus_w != null ? `Überschuss ${wfmt(N.w.surplus_w)}` : d.plugged ? "angesteckt" : "nicht angesteckt", d.charging ? "on" : "")}
+      ${k(this._gx("bolt", 38), N.wbOn ? "Diese Ladung" : "Ladung", ses != null ? num(ses, 1) : "–", ses != null ? "kWh" : "", N.wbOn && r ? `heute ${num(kwh, 1)} kWh · ${num(sh, 0)} % Sonne · ${num(r.cost, 2)} €` : N.wbOn ? "heute noch nichts geladen" : "braucht eine Wallbox", d.charging ? "on" : "")}
+      ${k(this._gx("car", 38), "Reichweite", d.range != null ? num(d.range, 0) : "–", d.range != null ? "km" : "", d.odo != null ? `${num(d.odo, 0)} km gesamt` : "kein Sensor", "")}</div>`;
+  }
+  /* A5: Modus-Karten mit Wirkung in einem Satz, dazu Regelung an/aus und Schnellstart */
+  _evModes(d) {
+    const N = this._evNow(d), c = N.c, adm = this._admin(), X = this._wbxParts();
+    const M = [["off", "Aus", "plug", "Wallbox lädt nicht"], ["pv", "Sonne", "sun", "Nur mit Überschuss"], ["minpv", "Sonne + Netz", "grid", "Mindeststrom, mehr bei Sonne"], ["now", "Voll", "bolt", "Sofort mit voller Leistung"]];
+    const who = N.who, wv = who && who.kind === "vehicle" ? who.name : who && who.kind === "guest" ? "das Gastfahrzeug" : "";
+    return `<div class="card evmc"><h2>${this._gx("wallbox", 24)}Wie soll geladen werden?<span class="evmr">${esc(this._wbName())}</span></h2>
+      <div class="vrow"><span>Laderegelung<small class="mut" style="display:block">${c.enabled ? "Strom &amp; Wärme steuert Start, Ladestrom und Phasen." : "Aus: Es wird nichts an der Wallbox verändert."}</small></span><button class="sw ${c.enabled ? "on" : ""}" data-act="wbsw" data-k="wbon" aria-pressed="${c.enabled}" aria-label="Laderegelung" ${adm ? "" : "disabled"}></button></div>
+      <div class="evmodes">${M.map(([k, t, g, s]) => `<button class="evmode ${N.mode === k ? "sel" : ""}" data-act="wbmode" data-k="${k}" aria-pressed="${N.mode === k}" ${adm && !c.planOn && c.enabled ? "" : "disabled"}>${this._gx(g, 34, { on: N.mode === k ? 1 : 0 })}<span><b>${t}</b><small>${s}</small></span></button>`).join("")}</div>
+      <div class="mut sm" style="margin:8px 0 0">${c.planOn ? "Die <b>Planung</b> steuert gerade die Wallbox (Register „Planung“)." : wv ? `Gilt für <b>${esc(wv)}</b>${N.card ? " (" + N.card + ")" : ""}.` : "Gilt, solange kein Fahrzeug erkannt ist."}${c.enabled && N.w.reason ? ` ${esc(N.w.reason)}` : ""}</div>
+      ${c.enabled ? `<div class="lsec" style="margin-top:12px">${ic("energy", 15)}Schnellstart</div>${X.quick}` : ""}</div>`;
+  }
+  /* A6: Heute als Zeitleiste – wann mit Sonne, wann mit Netz geladen wurde, was noch geplant ist */
+  _evToday() {
+    this._wbStatLoad(); this._wbFcLoad();
+    const T = (this._wbStD && this._wbStD.data) || {}, F = (this._wbFcD && this._wbFcD.data) || {}, now = new Date(), d0 = new Date(now); d0.setHours(0, 0, 0, 0);
+    const pos = (t) => Math.max(0, Math.min(100, (t - d0) / 864e5 * 100)), today = (iso) => new Date(iso).toDateString() === now.toDateString();
+    const seg = (T.sessions || []).filter((x) => today(x.start)).map((x) => { const a = new Date(x.start), b = x.running ? now : new Date(a.getTime() + (x.min || 1) * 6e4), sh = x.kwh > 0 ? x.pv / x.kwh : 0; return `<i class="s" style="left:${pos(a)}%;width:${Math.max(.6, pos(b) - pos(a))}%;background:linear-gradient(90deg,var(--teal) ${sh * 100}%,var(--amber) ${sh * 100}%)" title="${num(x.kwh, 1)} kWh · ${num(sh * 100, 0)} % Sonne"></i>`; }).join("");
+    const P = F.plan || {}, H = F.hours || [], SL = (F.slot_min || 60) / 60;
+    const plan = (P.wins || []).map((w) => { const a = H[w.s] && new Date(H[w.s].t), b = a && new Date(a.getTime() + (w.e - w.s) * SL * 36e5); return a && a.toDateString() === now.toDateString() && b > now ? `<i class="p" style="left:${pos(Math.max(a, now))}%;width:${pos(b) - pos(Math.max(a, now))}%"></i>` : ""; }).join("");
+    const td = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`, r = (T.days || []).find((x) => x.d === td), kwh = r ? r.pv + r.grid : 0;
+    return `<div class="card evday"><h2>${this._gx("schedule", 24)}Heute<span class="evmr">${num(kwh, 1)} kWh${kwh > 0 ? ` · ${num(r.pv / kwh * 100, 0)} % Sonne · ${num(r.cost, 2)} €` : ""}</span></h2>
+      <div class="evtl">${seg}${plan}<i class="n" style="left:${pos(now)}%"></i></div>
+      <div class="evtx">${[0, 3, 6, 9, 12, 15, 18, 21, 24].map((h) => `<span>${h}</span>`).join("")}</div>
+      <div class="gsleg" style="margin-top:6px"><span><i style="background:var(--teal)"></i>Sonne</span><span><i style="background:var(--amber)"></i>Netz</span><span><i style="background:transparent;outline:1.5px dashed var(--teal)"></i>geplant</span></div></div>`;
+  }
+  /* A7: „Warum gerade so?“ – Entscheidungen mit Grund, wie die Zeitleiste in Modul 1 */
+  _evWhy() {
+    const L = (this._wbSnap().log || []).slice(0, this._wbLogAll ? 12 : 5);
+    const col = (x) => /nicht erreichbar|fehlgeschlagen|abgelehnt/i.test(x) ? "var(--red,#f87171)" : /Hausanschluss|gedrosselt|von Hand/i.test(x) ? "var(--amber)" : /Karte|erkannt|Fahrzeug/i.test(x) ? "#60a5fa" : /Schnellstart/i.test(x) ? "#a78bfa" : "var(--teal)";
+    const tm = (iso) => { const t = new Date(iso); return isFinite(t) ? t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : ""; };
+    const split = (x) => { const m = String(x || "").match(/^(.+?[.:])\s+(.+)$/); return m ? [m[1].replace(/[.:]$/, ""), m[2]] : [String(x || ""), ""]; };
+    return `<div class="card evwhy"><h2>${this._gx("meter", 24)}Warum gerade so?</h2>${L.length ? `<div class="evwl">${L.map((e) => { const [a, b] = split(e.x); return `<div style="--c:${col(e.x)}"><time>${tm(e.t)}</time><i></i><span><b>${esc(a)}</b>${b ? `<small>${esc(b)}</small>` : ""}</span></div>`; }).join("")}</div>${(this._wbSnap().log || []).length > 5 ? `<button class="lnk" data-act="wblog">${this._wbLogAll ? "Weniger" : "Mehr anzeigen"}</button>` : ""}` : `<div class="mut sm">Noch keine Entscheidungen. Sobald die Regelung läuft, steht hier, was sie tut und warum.</div>`}</div>`;
+  }
+  /* Register (A10) und Seite in der neuen Optik */
+  _evTabsNew() {
+    const t = this._wbStT(), b = (k, l, g) => `<button class="${t === k ? "sel" : ""}" data-act="wbtab" data-k="${k}" aria-pressed="${t === k}">${this._gx(g, 20, { on: t === k ? 1 : 0 })}<span>${l}</span></button>`;
+    return `<div class="evtabs" role="tablist">${b("laden", "Laden", "bolt")}${b("plan", "Planung", "schedule")}${b("stat", "Statistik", "meter")}${b("veh", "Fahrzeuge", "car")}${b("set", "Einstellungen", "wrench")}</div>`;
+  }
+  _evPageNew(d) {
+    const wbOn = this._wbOn(), t = this._wbStT(), box = this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.");
+    if (!wbOn) return `${box}${this._evSay(d)}${this._evBand(d)}${this._evTiles(d)}${this._wbCard(d)}`;
+    const head = `${box}${this._evTabsNew()}${this._evSay(d)}`;
+    if (t === "plan") return `${head}${this._wbPlan(d)}`;
+    if (t === "stat") return `${head}${this._wbStat()}`;
+    if (t === "veh") return `${head}${this._rfCard(false)}`;
+    if (t === "set") return `${head}${this._wbCard(d, "set")}`;
+    return `${head}${this._evBand(d)}${this._evTiles(d)}<div class="evcols"><div>${this._evModes(d)}${this._evToday()}</div><div>${this._evWhy()}</div></div>`;
+  }
   /* Gerätestrom: eigene Berechnung im Backend (fenster_heizung/gs_get). Solar, Netz, Batterie kommen aus Modul 3, Preise aus Modul 1. */
   _gsState() {
     const s = this._mdState();
@@ -12837,6 +13045,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (id === "wp") return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", big: "Wärmepumpe", small: true, sub: "Außenbedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "li" && this._liOn()) { const rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on); return this._modHero("li", { icon: "lamp", lbl: "Licht & Lampen", big: String(on.length), unit: on.length === 1 ? "Lampe an" : "Lampen an", sub: lamps.length ? `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}` : "Keine Lampen gefunden" }); }
       if (id === "mu" && this._muOn()) { const S = this._mu(); const rows = (S && S.bins) || []; if (!S || !S.on || !S.cal) return this._modHero("mu", { icon: "trash", lbl: "Müllabfuhr", big: "–", small: true, sub: "Noch kein Abfallkalender gewählt" }); const due = rows.filter((x) => ["out", "today"].includes(x.state)), soon = rows.filter((x) => x.state === "soon"), up = rows.filter((x) => x.next).sort((a, b) => a.days - b.days)[0]; const big = due.length ? (due.some((x) => x.state === "today") ? "Heute" : "Jetzt raus") : soon.length ? "Morgen" : up ? (up.days === 0 ? "Heute" : `in ${up.days} Tagen`) : "–"; const names = (due.length ? due : soon.length ? soon : up ? [up] : []).map((x) => x.name); return this._modHero("mu", { icon: "trash", lbl: "Nächste Abholung", big, small: true, sub: names.join(", ") || "Keine Termine gefunden" }); }
+      if (id === "ev" && this._evNew()) return this._evBanner();
       if (id === "ev") { const d = this._evData(); return this._modHero("ev", { icon: "car", lbl: "Elektroauto & Wallbox", big: d.soc != null ? num(d.soc, 0) : "–", unit: d.soc != null ? "%" : "", sub: !d.any ? "Noch kein Fahrzeug eingerichtet" : d.charging ? `Lädt${d.power != null ? " mit " + num(d.power / 1000, 1) + " kW" : ""}` : d.plugged ? "Angesteckt, lädt nicht" : "Nicht angesteckt", chips: [d.range != null ? `Reichweite ${num(d.range, 0)} km` : "", d.odo != null ? `${num(d.odo, 0)} km gefahren` : ""] }); }
       if (id === "ga") return this._modHero("ga", { icon: "plant", lbl: "Garten & Bewässerung", big: "Gartenplan", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "pl") return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: "Pool & Sauna", small: true, sub: "Bedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });

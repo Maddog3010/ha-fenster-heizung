@@ -5,7 +5,17 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 ## [2026.11.3b16] - 2026-11-13
 
 ### Neu
-- **Modul 8 · Elektroauto & Wallbox (v0.6 Build 1):** erste Stufe aus dem Konzept „Modul 8 – Neue Optik“ (Technik). Optisch ändert sich noch wenig, die Grundlage für die neue Optik steht.
+- **Modul 8 · Elektroauto & Wallbox (v0.7 Build 1): Neue Optik** – zweite Stufe aus dem Konzept „Modul 8 – Neue Optik“ (Teil A). Abschaltbar unter Modul 8 → Einstellungen → Darstellung „Wie bisher“.
+  - **Carport-Szene als Banner:** Hauswand mit Wallbox, Carport mit flach aufliegenden Modulen und das Auto in Form und Farbe des Fahrzeugs. Beim Laden leuchtet die Linie Sonne → Wallbox → Auto (gelb mit Sonne, orange mit Netz) und das Kabel. Nachts dunkler Himmel mit Mond. Groß: Ladestand → Ziel, darunter „fertig ca. …“.
+  - **Satz-Zeile** statt Chip-Leiste: „Alles läuft. Dolphin Surf lädt mit Sonne …“ – Hinweise mit Sprung zur Lösung bleiben.
+  - **Ladeband jetzt → Ziel** mit Abfahrtszeit, „noch … kWh“, „fertig ca.“ und Limit.
+  - **Kacheln 2.0** mit HD-Symbolen: Ladestand, Ladeleistung mit Herkunfts-Ring (Sonne/Netz), diese Ladung mit heute, Reichweite. Kein Wert steht mehr doppelt.
+  - **Modus-Karten** mit Symbol und Wirkung in einem Satz, Regelung an/aus und Schnellstart im selben Block.
+  - **Heute als Zeitleiste** (wann mit Sonne, wann mit Netz geladen wurde, was noch geplant ist) und **„Warum gerade so?“** mit Uhrzeit, Entscheidung und Grund.
+  - **Register neu:** Laden · Planung · Statistik · **Fahrzeuge** · Einstellungen, mit HD-Symbolen.
+  - Handy: Text oben, Szene unten im Banner, Kacheln und Modus-Karten 2 × 2. Helle Ansicht und Tablet-Modus (ohne Chips im Banner) angepasst.
+  - Das Protokoll der Regelung ist lesbarer („Laden an, 6 A“ statt „frc=an, amp=6 A“).
+- **Modul 8 · Elektroauto & Wallbox (v0.6 Build 1): Technik –** erste Stufe aus dem Konzept „Modul 8 – Neue Optik“ (Technik). Optisch ändert sich noch wenig, die Grundlage für die neue Optik steht.
   - **Andere Wallboxen über Home Assistant (Beta):** Neuer Eintrag „Andere Wallbox“ im Store. Die Integration sucht Wallbox-Integrationen in Home Assistant (z. B. Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP) und schlägt die Entitäten vor: Laden an/aus, Ladestrom, Leistung, Status, Stecker, Phasen, Energie. „Werte lesen“ prüft die Auswahl vor dem Speichern. Danach regelt Modul 8 diese Wallbox genauso wie die go-e (Sonne, Sonne + Netz, Voll, Ladeplan, Hausanschluss-Schutz). Ohne Schalter-Entität wird nur angezeigt. Die go-e bleibt direkt im Heimnetz angebunden.
   - **Sensoren und Aussehen je Fahrzeug:** Jedes Fahrzeug hat jetzt eigenen Ladestand-, Kilometer- und Reichweiten-Sensor, eigene Akkugröße, Marke, Modell, Form und Farbe („Aussehen & Sensoren“ am Fahrzeug). Lädt das zweite Auto, zeigt und plant Modul 8 mit dessen Ladestand.
   - **Fahrzeug ohne Karte:** Für Wallboxen ohne Kartenleser (und optional bei der go-e) gilt ein fest gewähltes Fahrzeug.
