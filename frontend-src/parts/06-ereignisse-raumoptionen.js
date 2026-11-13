@@ -1,6 +1,6 @@
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS}${CSS_RK}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS}${CSS_RK}${CSS_GH}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;

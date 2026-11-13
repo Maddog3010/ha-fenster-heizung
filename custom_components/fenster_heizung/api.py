@@ -1696,6 +1696,26 @@ async def ws_spn_admin_act(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], {**res, **mgr.admin_list()})
 
 
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/spn_gh", vol.Required("act"): vol.In(["start", "cancel", "check", "logout"])})
+@websocket_api.async_response
+async def ws_spn_gh(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Freischaltung über GitHub: Anmeldung per Gerätecode starten/abbrechen, jetzt prüfen, abmelden."""
+    mgr = _spn(hass, connection, msg)
+    if mgr is None:
+        return
+    act, res = msg["act"], {"ok": True}
+    if act == "start":
+        res = await mgr.gh.async_start()
+    elif act == "cancel":
+        mgr.gh.cancel()
+    elif act == "check":
+        res = await mgr.gh.async_check()
+    elif act == "logout":
+        mgr.gh.logout()
+    connection.send_result(msg["id"], {"result": res, **mgr.snapshot(True)})
+
+
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/lf_get"})
 @websocket_api.async_response
 async def ws_lf_get(hass: HomeAssistant, connection, msg: dict) -> None:
@@ -1736,6 +1756,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test, ws_wx_ack, ws_wx_pause, ws_wx_close, ws_wx_vor,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_tg_quick_set, ws_tg_quick, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
-        ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act,
+        ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act, ws_spn_gh,
     ):
         websocket_api.async_register_command(hass, command)

@@ -33,10 +33,11 @@
   /* D: Zeile in den Einstellungen */
   _spnRow() {
     const s = this._spnS(), chip = s.active ? `<em class="sxc ok">${esc(s.name || "Aktiv")}</em>` : s.state === "expired" ? `<em class="sxc wa">Abgelaufen</em>` : `<em class="sxc">Schlüssel</em>`;
-    return `<button class="sxrow" data-act="spnopen"><span class="sxi">${ic("heart", 20)}</span><span class="sxt"><b>Sponsor-Lounge</b><small>Schlüssel eingeben, Extras einstellen</small></span>${chip}</button>`;
+    return `<button class="sxrow" data-act="spnopen"><span class="sxi">${ic("heart", 20)}</span><span class="sxt"><b>Sponsor-Lounge</b><small>${s.source === "github" ? "über GitHub freigeschaltet" : "Freischalten, Extras einstellen"}</small></span>${chip}</button>`;
   }
   _spnAct(a, b) {
     const k = b.dataset.k;
+    if (a.startsWith("spngh")) { this._ghAct(a, b); return; }
     if (a === "spnopen") { this._loOpen = true; this._labOpen = false; this._igOpen = false; this._stOpen = false; this._modal = null; this._renderModal(); this._render(); this._spnLoad().then(() => this._render()); }
     else if (a === "spnkeydlg") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); }
     else if (a === "spnhide") { try { localStorage.setItem("fh_spn_hide", String(Date.now())); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet"); }
@@ -121,14 +122,14 @@
   _spnAdm(msg, then) { this._hass.callWS({ type: "fenster_heizung/spn_admin_act", ...msg }).then((r) => { this._spnA = { ...this._spnA, ...r }; this._spnLoad().then(() => { then(r); this._render(); }); }).catch(() => this._toast("Das ging nicht")); }
   _spnModal() {
     const m = this._modal, close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
-    return m.type === "spnadm" ? this._spnAdmModal(close) : this._spnDlg(close);
+    return m.type === "spnadm" ? this._spnAdmModal(close) : m.type === "spngh" ? this._ghModal(close) : this._spnDlg(close);
   }
   /* Dialog nur noch für den Schlüssel (Konzept Sponsor-Bereich 2.0, E1). Alles andere steht in der Lounge (12f-lounge.js). */
   _spnDlg(close) {
     const s = this._spnS(), m = this._modal, adm = this._admin();
-    const st = s.state === "dev" ? "Entwickler-Zugang – kein Schlüssel nötig" : s.active ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"}${s.name ? " · " + esc(s.name) : ""} · gültig bis ${esc(this._spnDate(s.bis))}` : s.state === "expired" ? `Abgelaufen am ${esc(this._spnDate(s.bis))}` : s.state === "revoked" ? "Gesperrt" : "Noch kein Schlüssel";
+    const st = s.state === "dev" ? "Entwickler-Zugang – kein Schlüssel nötig" : s.active && s.source === "github" ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"} über GitHub · ${this._ghValid(this._ghS().eval)}` : s.active ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"}${s.name ? " · " + esc(s.name) : ""} · gültig bis ${esc(this._spnDate(s.bis))}` : s.state === "expired" ? `Abgelaufen am ${esc(this._spnDate(s.bis))}` : s.state === "revoked" ? "Gesperrt" : "Noch kein Schlüssel";
     const body = adm ? `<div class="gst">${ic(s.active ? "check" : "key", 15)}<span>${st}</span></div>
-        <div class="lsec" style="margin-top:12px">${ic("key", 15)}${s.active ? "Neuen Schlüssel einlösen" : "Sponsor-Schlüssel"}</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail. Einfach vollständig einfügen.</div>
+        <div class="lsec" style="margin-top:12px">${ic("key", 15)}${s.active ? "Neuen Schlüssel einlösen" : "Sponsor-Schlüssel"}</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail an ${esc(SPN_MAIL)}. Einfach vollständig einfügen.${this._ghS().ready ? ` Schneller geht es mit <button class="lnk" data-act="spngh">GitHub-Anmeldung</button>.` : ""}</div>
         <textarea class="osel spnta" data-f="spnkey" rows="3" placeholder="FH1-…" spellcheck="false" aria-label="Sponsor-Schlüssel"></textarea>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div>
         <div class="gbtns" style="margin-top:8px"><button class="btn2 spnb pri" data-act="spnred">${ic("heart", 16)} Schlüssel einlösen</button>${s.active && s.state !== "dev" ? `<button class="btn2" data-act="spnclr">Schlüssel entfernen</button>` : ""}</div>`
@@ -152,8 +153,8 @@
     };
     if (m.view === "new") {
       const mx = m.stufe === "max", kp = m.keep || {}, d = new Date(); if (mx) d.setMonth(d.getMonth() + 3); else d.setFullYear(d.getFullYear() + 1); const def = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-      return wrap(head("Neuer Sponsor", "Stufe und drei Angaben", "spnlist"), `<div class="of"><div class="ol"><b>Stufe</b><span>Max kostet 9 € für 3 Monate. Läuft Max ab, gilt bis zum Ende des Sponsor-Jahres automatisch wieder „Sponsor“.</span></div></div>
-        <div class="gschs" style="margin:0 0 10px"><button class="gsch ${mx ? "" : "sel"}" data-act="spnstufe" data-k="sponsor" aria-pressed="${!mx}">${ic("heart", 13)} Sponsor · 1 Jahr</button><button class="gsch spng ${mx ? "sel" : ""}" data-act="spnstufe" data-k="max" aria-pressed="${mx}">★ Max · 3 Monate für 9 €</button></div>
+      return wrap(head("Neuer Sponsor", "Stufe und drei Angaben", "spnlist"), `<div class="of"><div class="ol"><b>Stufe</b><span>Max-Schlüssel gelten 3 Monate (wie einmalig $10 auf GitHub). Läuft Max ab, gilt bis zum Ende des Sponsor-Jahres automatisch wieder „Sponsor“.</span></div></div>
+        <div class="gschs" style="margin:0 0 10px"><button class="gsch ${mx ? "" : "sel"}" data-act="spnstufe" data-k="sponsor" aria-pressed="${!mx}">${ic("heart", 13)} Sponsor · 1 Jahr</button><button class="gsch spng ${mx ? "sel" : ""}" data-act="spnstufe" data-k="max" aria-pressed="${mx}">★ Max · 3 Monate</button></div>
         <div class="of"><div class="ol"><b>Name</b><span>Erscheint im Abzeichen</span></div></div><input class="osel" data-f="spnname" maxlength="40" placeholder="z. B. Anna K." aria-label="Name" value="${esc(kp.name || "")}" style="width:100%;margin:0 0 8px">
         <div class="of"><div class="ol"><b>Gültig bis</b><span>Vorgabe: ${mx ? "drei Monate" : "ein Jahr"} ab heute</span></div></div><input class="osel" type="date" data-f="spnbis" value="${def}" aria-label="Gültig bis" style="width:100%;margin:0 0 8px">
         <div class="of"><div class="ol"><b>Notiz (nur für dich)</b></div></div><input class="osel" data-f="spnnote" maxlength="120" placeholder="z. B. GitHub: annak" aria-label="Notiz" value="${esc(kp.note || "")}" style="width:100%;margin:0 0 8px">
@@ -181,6 +182,7 @@
       <div class="vrow" style="margin-top:10px"><span>Meldung, wenn ein Schlüssel bald abläuft<small class="mut" style="display:block">Einmal am Tag in Home Assistant: Max 14 Tage, Sponsor 30 Tage vorher</small></span><button class="sw ${this._spnS().notify_soon ? "on" : ""}" data-act="spnsoon" aria-pressed="${!!this._spnS().notify_soon}" aria-label="Meldung bei Ablauf"></button></div>
       <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="spnnew">${ic("heart", 16)} Neuer Sponsor</button></div>
       <div class="mut sm" style="margin-top:10px">Namen, Daten und Notizen bleiben in deinem Home Assistant. Das Dashboard weist dich ${30} Tage vor Ablauf darauf hin.</div>
+      ${this._ghAdm()}
       <div class="lsec" style="margin-top:16px">${ic("flask", 15)}Zum Testen</div>
       <div class="vrow"><span>Entwickler-Zugang aktiv<small class="mut" style="display:block">Aus: Extras, Vorabversionen und Module nur für Sponsoren sind gesperrt – so wie ohne Sponsoring. Diese Verwaltung bleibt erreichbar.</small></span><button class="sw ${this._spnS().dev_off ? "" : "on"}" data-act="spndev" data-k="${this._spnS().dev_off ? "on" : "off"}" aria-pressed="${!this._spnS().dev_off}" aria-label="Entwickler-Zugang aktiv"></button></div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);

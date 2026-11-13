@@ -2890,6 +2890,28 @@ div.rk2pl{cursor:default}
 /* Karten lückenlos (Mauerwerk) */
 .mublks.msn{grid-auto-rows:2px;row-gap:0}.mublks.msn>*{align-self:start}
 `;
+/* Sponsor-Lounge · Mit GitHub freischalten (Konzept Sponsor-Freischaltung, Stufe 2) */
+const CSS_GH = `
+.ghhero{display:flex;gap:14px;align-items:center;margin:2px 0 12px}.ghhero b{display:block;font-size:1rem;margin-bottom:3px}.ghhero span{font-size:.84rem;color:var(--mut);line-height:1.4}
+.ghlogo{flex:none;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#ec4899,#2dd4bf)}
+.ghsteps{display:flex;gap:6px;margin:4px 0 12px}.ghsteps span{flex:1;text-align:center;font-size:.72rem;font-weight:600;padding:6px 4px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color) 6%,transparent);color:var(--mut)}
+.ghsteps .cur{background:color-mix(in srgb,#2dd4bf 22%,transparent);color:var(--primary-text-color)}.ghsteps .dn{color:#2dd4bf}
+.ghlist{display:flex;flex-direction:column;gap:8px;margin:0 0 6px}.ghlist div{display:flex;gap:9px;align-items:flex-start;font-size:.84rem;line-height:1.4}.ghlist svg{flex:none;margin-top:2px;color:#2dd4bf}
+.ghcodebox{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:color-mix(in srgb,var(--primary-text-color) 5%,transparent);border-radius:18px;padding:16px 12px 14px}
+.ghcodebox small{font-size:.76rem;color:var(--mut)}.ghuri{font-weight:700;color:#5eead4;text-decoration:none;font-size:.95rem}
+.ghcode{font:800 2rem/1.1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:var(--primary-text-color);padding:6px 0 4px;user-select:all}
+.ghc{justify-content:center;margin-top:4px}.ghc .btn2{flex:none;white-space:nowrap}.ghwait{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--mut);margin-top:8px}
+.ghspin{width:14px;height:14px;border-radius:50%;border:2px solid color-mix(in srgb,#2dd4bf 30%,transparent);border-top-color:#2dd4bf;animation:ghsp 1s linear infinite}@keyframes ghsp{to{transform:rotate(360deg)}}
+.ghres{display:flex;gap:12px;align-items:center;border-radius:16px;padding:12px 14px;margin:0 0 10px}.ghres div>b{display:block;font-size:.98rem}.ghres span{font-size:.82rem;color:var(--mut);line-height:1.4}
+.ghres.ok{background:color-mix(in srgb,#22c55e 12%,transparent)}.ghres.ok>svg{color:#4ade80}.ghres.wa{background:color-mix(in srgb,#f59e0b 12%,transparent)}.ghres.wa>svg{color:#fbbf24}
+.ghrows{border-radius:14px;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);padding:2px 12px}
+.ghrow{display:flex;justify-content:space-between;gap:10px;padding:8px 0;font-size:.84rem;border-bottom:1px solid var(--line)}.ghrow:last-child{border-bottom:0}.ghrow span{color:var(--mut)}.ghrow b{text-align:right;font-weight:600}
+.ghrow b.gd{color:#fbbf24}.ghrow b.pk{color:#f472b6}.ghrow b.okc{color:#4ade80}.ghrow b.wa{color:#fbbf24}
+.ghalt{display:flex;justify-content:center;gap:8px;margin-top:10px;font-size:.78rem;color:var(--mut)}.ghalt .lnk{font-size:.78rem}
+.ghfine{margin-top:10px;font-size:.72rem;line-height:1.4;text-align:center;opacity:.8}
+.ghinfo{display:flex;gap:10px;align-items:flex-start;font-size:.86rem;line-height:1.45;background:color-mix(in srgb,#38bdf8 10%,transparent);border-radius:14px;padding:12px}
+.lgchip.gh{display:inline-flex;align-items:center;gap:5px}.ghtiers{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+`;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -6403,7 +6425,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS}${CSS_RK}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS}${CSS_RK}${CSS_GH}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
@@ -7178,7 +7200,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "s3rep") { box.innerHTML = this._s3RepModal(); return; }
     if (m.type === "mxsim" || m.type === "mxwaset" || m.type === "mxapset") { const top = (box.querySelector(".sheet") || {}).scrollTop || 0; box.innerHTML = this._mxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
-    if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["spndlg", "spnadm", "spngh"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["hzset", "hzbub", "hzpin", "hzlater", "hztiles", "hzqaok", "hzqm", "hzqaset"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["efxmgr", "efxedit", "efxgrp"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -11224,10 +11246,11 @@ class FensterHeizungPanel extends HTMLElement {
   /* D: Zeile in den Einstellungen */
   _spnRow() {
     const s = this._spnS(), chip = s.active ? `<em class="sxc ok">${esc(s.name || "Aktiv")}</em>` : s.state === "expired" ? `<em class="sxc wa">Abgelaufen</em>` : `<em class="sxc">Schlüssel</em>`;
-    return `<button class="sxrow" data-act="spnopen"><span class="sxi">${ic("heart", 20)}</span><span class="sxt"><b>Sponsor-Lounge</b><small>Schlüssel eingeben, Extras einstellen</small></span>${chip}</button>`;
+    return `<button class="sxrow" data-act="spnopen"><span class="sxi">${ic("heart", 20)}</span><span class="sxt"><b>Sponsor-Lounge</b><small>${s.source === "github" ? "über GitHub freigeschaltet" : "Freischalten, Extras einstellen"}</small></span>${chip}</button>`;
   }
   _spnAct(a, b) {
     const k = b.dataset.k;
+    if (a.startsWith("spngh")) { this._ghAct(a, b); return; }
     if (a === "spnopen") { this._loOpen = true; this._labOpen = false; this._igOpen = false; this._stOpen = false; this._modal = null; this._renderModal(); this._render(); this._spnLoad().then(() => this._render()); }
     else if (a === "spnkeydlg") { this._modal = { type: "spndlg", err: "" }; this._renderModal(); }
     else if (a === "spnhide") { try { localStorage.setItem("fh_spn_hide", String(Date.now())); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet"); }
@@ -11312,14 +11335,14 @@ class FensterHeizungPanel extends HTMLElement {
   _spnAdm(msg, then) { this._hass.callWS({ type: "fenster_heizung/spn_admin_act", ...msg }).then((r) => { this._spnA = { ...this._spnA, ...r }; this._spnLoad().then(() => { then(r); this._render(); }); }).catch(() => this._toast("Das ging nicht")); }
   _spnModal() {
     const m = this._modal, close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
-    return m.type === "spnadm" ? this._spnAdmModal(close) : this._spnDlg(close);
+    return m.type === "spnadm" ? this._spnAdmModal(close) : m.type === "spngh" ? this._ghModal(close) : this._spnDlg(close);
   }
   /* Dialog nur noch für den Schlüssel (Konzept Sponsor-Bereich 2.0, E1). Alles andere steht in der Lounge (12f-lounge.js). */
   _spnDlg(close) {
     const s = this._spnS(), m = this._modal, adm = this._admin();
-    const st = s.state === "dev" ? "Entwickler-Zugang – kein Schlüssel nötig" : s.active ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"}${s.name ? " · " + esc(s.name) : ""} · gültig bis ${esc(this._spnDate(s.bis))}` : s.state === "expired" ? `Abgelaufen am ${esc(this._spnDate(s.bis))}` : s.state === "revoked" ? "Gesperrt" : "Noch kein Schlüssel";
+    const st = s.state === "dev" ? "Entwickler-Zugang – kein Schlüssel nötig" : s.active && s.source === "github" ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"} über GitHub · ${this._ghValid(this._ghS().eval)}` : s.active ? `${s.tier === "max" ? "★ Sponsor Max" : "♥ Sponsor"}${s.name ? " · " + esc(s.name) : ""} · gültig bis ${esc(this._spnDate(s.bis))}` : s.state === "expired" ? `Abgelaufen am ${esc(this._spnDate(s.bis))}` : s.state === "revoked" ? "Gesperrt" : "Noch kein Schlüssel";
     const body = adm ? `<div class="gst">${ic(s.active ? "check" : "key", 15)}<span>${st}</span></div>
-        <div class="lsec" style="margin-top:12px">${ic("key", 15)}${s.active ? "Neuen Schlüssel einlösen" : "Sponsor-Schlüssel"}</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail. Einfach vollständig einfügen.</div>
+        <div class="lsec" style="margin-top:12px">${ic("key", 15)}${s.active ? "Neuen Schlüssel einlösen" : "Sponsor-Schlüssel"}</div><div class="mut sm" style="margin:0 0 6px">Du bekommst ihn nach dem Sponsoring per E-Mail an ${esc(SPN_MAIL)}. Einfach vollständig einfügen.${this._ghS().ready ? ` Schneller geht es mit <button class="lnk" data-act="spngh">GitHub-Anmeldung</button>.` : ""}</div>
         <textarea class="osel spnta" data-f="spnkey" rows="3" placeholder="FH1-…" spellcheck="false" aria-label="Sponsor-Schlüssel"></textarea>
         <div class="tmerr" role="alert">${esc(m.err || "")}</div>
         <div class="gbtns" style="margin-top:8px"><button class="btn2 spnb pri" data-act="spnred">${ic("heart", 16)} Schlüssel einlösen</button>${s.active && s.state !== "dev" ? `<button class="btn2" data-act="spnclr">Schlüssel entfernen</button>` : ""}</div>`
@@ -11343,8 +11366,8 @@ class FensterHeizungPanel extends HTMLElement {
     };
     if (m.view === "new") {
       const mx = m.stufe === "max", kp = m.keep || {}, d = new Date(); if (mx) d.setMonth(d.getMonth() + 3); else d.setFullYear(d.getFullYear() + 1); const def = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-      return wrap(head("Neuer Sponsor", "Stufe und drei Angaben", "spnlist"), `<div class="of"><div class="ol"><b>Stufe</b><span>Max kostet 9 € für 3 Monate. Läuft Max ab, gilt bis zum Ende des Sponsor-Jahres automatisch wieder „Sponsor“.</span></div></div>
-        <div class="gschs" style="margin:0 0 10px"><button class="gsch ${mx ? "" : "sel"}" data-act="spnstufe" data-k="sponsor" aria-pressed="${!mx}">${ic("heart", 13)} Sponsor · 1 Jahr</button><button class="gsch spng ${mx ? "sel" : ""}" data-act="spnstufe" data-k="max" aria-pressed="${mx}">★ Max · 3 Monate für 9 €</button></div>
+      return wrap(head("Neuer Sponsor", "Stufe und drei Angaben", "spnlist"), `<div class="of"><div class="ol"><b>Stufe</b><span>Max-Schlüssel gelten 3 Monate (wie einmalig $10 auf GitHub). Läuft Max ab, gilt bis zum Ende des Sponsor-Jahres automatisch wieder „Sponsor“.</span></div></div>
+        <div class="gschs" style="margin:0 0 10px"><button class="gsch ${mx ? "" : "sel"}" data-act="spnstufe" data-k="sponsor" aria-pressed="${!mx}">${ic("heart", 13)} Sponsor · 1 Jahr</button><button class="gsch spng ${mx ? "sel" : ""}" data-act="spnstufe" data-k="max" aria-pressed="${mx}">★ Max · 3 Monate</button></div>
         <div class="of"><div class="ol"><b>Name</b><span>Erscheint im Abzeichen</span></div></div><input class="osel" data-f="spnname" maxlength="40" placeholder="z. B. Anna K." aria-label="Name" value="${esc(kp.name || "")}" style="width:100%;margin:0 0 8px">
         <div class="of"><div class="ol"><b>Gültig bis</b><span>Vorgabe: ${mx ? "drei Monate" : "ein Jahr"} ab heute</span></div></div><input class="osel" type="date" data-f="spnbis" value="${def}" aria-label="Gültig bis" style="width:100%;margin:0 0 8px">
         <div class="of"><div class="ol"><b>Notiz (nur für dich)</b></div></div><input class="osel" data-f="spnnote" maxlength="120" placeholder="z. B. GitHub: annak" aria-label="Notiz" value="${esc(kp.note || "")}" style="width:100%;margin:0 0 8px">
@@ -11372,9 +11395,100 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow" style="margin-top:10px"><span>Meldung, wenn ein Schlüssel bald abläuft<small class="mut" style="display:block">Einmal am Tag in Home Assistant: Max 14 Tage, Sponsor 30 Tage vorher</small></span><button class="sw ${this._spnS().notify_soon ? "on" : ""}" data-act="spnsoon" aria-pressed="${!!this._spnS().notify_soon}" aria-label="Meldung bei Ablauf"></button></div>
       <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="spnnew">${ic("heart", 16)} Neuer Sponsor</button></div>
       <div class="mut sm" style="margin-top:10px">Namen, Daten und Notizen bleiben in deinem Home Assistant. Das Dashboard weist dich ${30} Tage vor Ablauf darauf hin.</div>
+      ${this._ghAdm()}
       <div class="lsec" style="margin-top:16px">${ic("flask", 15)}Zum Testen</div>
       <div class="vrow"><span>Entwickler-Zugang aktiv<small class="mut" style="display:block">Aus: Extras, Vorabversionen und Module nur für Sponsoren sind gesperrt – so wie ohne Sponsoring. Diese Verwaltung bleibt erreichbar.</small></span><button class="sw ${this._spnS().dev_off ? "" : "on"}" data-act="spndev" data-k="${this._spnS().dev_off ? "on" : "off"}" aria-pressed="${!this._spnS().dev_off}" aria-label="Entwickler-Zugang aktiv"></button></div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
+  }
+  /* ================= Mit GitHub freischalten (Konzept Sponsor-Freischaltung, Stufe 2) =================
+     Der Sponsor meldet sich per GitHub-Gerätecode an, die Integration erkennt Stufe und Laufzeit selbst (sponsor_github.py).
+     Der Schlüssel bleibt als zweiter Weg (Geschenke, Tester, ohne GitHub-Anmeldung). */
+  _ghS() { return (this._spnS().gh) || { ready: false, linked: false, flow: null, eval: { ok: false } }; }
+  _ghOpen() { this._modal = { type: "spngh" }; this._renderModal(); this._ghWatch(); }
+  /* Während der Anmeldung alle 3 s den Stand holen, bis bestätigt, abgelehnt oder abgelaufen */
+  _ghWatch() {
+    clearInterval(this._ghT);
+    this._ghT = setInterval(() => {
+      const f = this._ghS().flow, open = this._modal && this._modal.type === "spngh";
+      if (!open || !f || !["wait", "check"].includes(f.state)) { clearInterval(this._ghT); this._ghT = null; if (!open) return; }
+      this._spnLoad().then(() => { this._spnApply(); if (this._modal && this._modal.type === "spngh") this._renderModal(); if (this._loOpen) this._render(); });
+    }, 3000);
+  }
+  _ghCall(act, then) {
+    this._ghBusy = act; if (this._modal) this._renderModal();
+    this._hass.callWS({ type: "fenster_heizung/spn_gh", act }).then((r) => { const { result, ...s } = r || {}; this._spnD = s; this._spnApply(); this._ghBusy = ""; if (then) then(result || {}); this._renderModal(); this._render(); })
+      .catch((e) => { this._ghBusy = ""; this._renderModal(); this._toast("Das ging nicht: " + ((e && e.message) || "")); });
+  }
+  _ghAct(a, b) {
+    if (a === "spngh") { this._ghOpen(); return; }
+    if (a === "spnghgo") { this._ghCall("start", (r) => { if (!r.ok) this._ghErr = r.error === "net" ? "GitHub ist gerade nicht erreichbar. Bitte später noch einmal." : r.error === "not_ready" ? "Die Anmeldung mit GitHub ist noch nicht eingerichtet." : "GitHub hat keinen Code geliefert."; else { this._ghErr = ""; this._ghWatch(); } }); return; }
+    if (a === "spnghcancel") { this._ghCall("cancel"); return; }
+    if (a === "spnghcheck") { this._ghCall("check", (r) => this._toast(r.ok ? (r.found ? "Geprüft – alles aktuell" : "Kein aktives Sponsoring gefunden") : r.error === "token" ? "Anmeldung abgelaufen – bitte neu anmelden" : "GitHub nicht erreichbar – der letzte Stand gilt weiter")); return; }
+    if (a === "spnghout") { this._ghCall("logout", () => this._toast("Von GitHub abgemeldet")); return; }
+    if (a === "spnghcode") { this._clip(String((this._ghS().flow || {}).user_code || ""), "Code kopiert"); return; }
+    if (a === "spnghkey") { clearInterval(this._ghT); this._modal = { type: "spndlg", err: "" }; this._renderModal(); }
+  }
+  _ghTierTxt(t) { return t === "max" ? "★ Sponsor Max" : "♥ Sponsor"; }
+  _ghAgo(ts) { if (!ts) return "noch nie"; const m = Math.round((Date.now() / 1000 - ts) / 60); return m < 2 ? "gerade eben" : m < 60 ? `vor ${m} Min.` : m < 1440 ? `vor ${Math.round(m / 60)} Std.` : `vor ${Math.round(m / 1440)} ${Math.round(m / 1440) === 1 ? "Tag" : "Tagen"}`; }
+  /* „gültig“-Text für GitHub-Freischaltungen: monatlich ohne Datum, einmalig mit Datum */
+  _ghValid(E) {
+    if (!E || !E.ok) return "";
+    if (E.state === "ending") return `Sponsoring beendet · Extras noch bis ${esc(this._spnDate(E.bis))}`;
+    if (E.monthly) return "aktiv, solange dein Sponsoring läuft";
+    return `gültig bis ${esc(this._spnDate(E.bis))}${E.max_ended ? " (Max endete am " + esc(this._spnDate(E.max_ended)) + ")" : ""}`;
+  }
+  _ghModal(close) {
+    const G = this._ghS(), f = G.flow, E = G.eval || {}, busy = this._ghBusy, url = this._spnS().url;
+    const wrap = (sub, body) => `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${ic("heart", 17)} Mit GitHub freischalten</b><span>${sub}</span></div>${close}</div>${body}</div>`;
+    const keyLink = `<div class="ghalt"><button class="lnk" data-act="spnghkey">Ich habe einen Schlüssel</button></div>`;
+    if (!G.ready) return wrap("Sponsor-Lounge", `<div class="ghinfo">${ic("info", 18)}<span>Die Anmeldung mit GitHub wird gerade eingerichtet. Bis dahin klappt die Freischaltung mit einem Schlüssel.</span></div>
+      <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="spnghkey">${ic("key", 16)} Schlüssel eingeben</button></div>`);
+    /* Anmeldung läuft */
+    if (f && ["wait", "check"].includes(f.state)) {
+      const left = Math.max(0, Math.round(f.until - Date.now() / 1000)), mm = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, "0")}`;
+      return wrap("Schritt 2 von 3 · Code bestätigen", `<div class="ghcodebox"><small>Öffne auf einem beliebigen Gerät</small>
+        <a class="ghuri" href="${esc(f.uri)}" target="_blank" rel="noopener noreferrer">${esc(f.uri.replace(/^https?:\/\//, ""))}</a>
+        <small>und gib diesen Code ein:</small><div class="ghcode" aria-label="Code">${esc(f.user_code)}</div>
+        <div class="gbtns ghc"><button class="btn2" data-act="spnghcode">${ic("copy", 16)} Code kopieren</button><a class="btn2 pri" href="${esc(f.uri)}" target="_blank" rel="noopener noreferrer" data-act="spnghcode" style="text-decoration:none">${ic("link", 16)} GitHub öffnen</a></div>
+        <div class="ghwait">${f.state === "check" ? `<span class="ghspin"></span>Bestätigt – prüfe dein Sponsoring …` : `<span class="ghspin"></span>Warte auf Bestätigung … noch ${mm}`}</div></div>
+        <div class="ghsteps"><span class="dn">1 Code holen</span><span class="cur">2 Auf GitHub bestätigen</span><span>3 Fertig</span></div>
+        <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnghcancel">Abbrechen</button></div>`);
+    }
+    /* Ergebnis der Anmeldung oder bestehende Verbindung */
+    if (G.linked) {
+      const ok = !!E.ok, nf = !G.found || E.state === "notfound";
+      const head = ok ? `<div class="ghres ok">${ic("check", 26)}<div><b>Freigeschaltet</b><span>Danke für deine Unterstützung!</span></div></div>`
+        : nf ? `<div class="ghres wa">${ic("info", 26)}<div><b>Kein Sponsoring gefunden</b><span>Für <b>@${esc(G.login)}</b> gibt es auf GitHub kein Sponsoring für Maddog3010.</span></div></div>`
+        : `<div class="ghres wa">${ic("clock", 26)}<div><b>${E.state === "stale" ? "Prüfung ausstehend" : E.state === "ended" ? "Sponsoring beendet" : "Abgelaufen"}</b><span>${E.state === "stale" ? "GitHub war länger nicht erreichbar. Tippe auf „Jetzt prüfen“." : "Die Extras sind wieder gesperrt. Mit einem neuen Sponsoring sind sie sofort zurück – Einstellungen bleiben erhalten."}</span></div></div>`;
+      const row = (k, v, cls = "") => `<div class="ghrow"><span>${k}</span><b class="${cls}">${v}</b></div>`;
+      const rows = `<div class="ghrows">${row("GitHub", "@" + esc(G.login))}${G.found ? row("Stufe auf GitHub", esc(G.tier_name || "–")) : ""}${ok ? row("Freigeschaltet als", this._ghTierTxt(E.tier), E.tier === "max" ? "gd" : "pk") : ""}
+        ${G.found ? row("Art", G.one_time ? "einmalig" + (E.since ? " · am " + esc(this._spnDate(E.since)) : "") : "monatlich" + (E.since ? " · seit " + esc(this._spnDate(E.since)) : "")) : ""}${ok ? row("Gültig", E.state === "ending" ? "noch bis " + esc(this._spnDate(E.bis)) : E.monthly ? "solange dein Sponsoring läuft" : "bis " + esc(this._spnDate(E.bis))) : ""}
+        ${row("Zuletzt geprüft", this._ghAgo(G.last_try) + (G.err === "net" ? " · offline" : G.err === "token" ? " · Anmeldung abgelaufen" : ""), G.err ? "wa" : "")}${E.tier === "max" && ok ? row("Beta-Versionen", "sofort", "okc") : ok ? row("Beta-Versionen", "3 Tage nach Erscheinen") : ""}</div>`;
+      const btns = ok ? `<button class="btn2 pri" data-act="close">${ic("heart", 16)} Zur Lounge</button><button class="btn2" data-act="spnghcheck" ${busy ? "disabled" : ""}>${ic("refresh", 16)} ${busy === "check" ? "Prüfe …" : "Jetzt prüfen"}</button>`
+        : `<a class="btn2 spnb pri" href="${esc(url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${ic("heart", 16)} Sponsor werden</a><button class="btn2" data-act="spnghcheck" ${busy ? "disabled" : ""}>${ic("refresh", 16)} ${busy === "check" ? "Prüfe …" : "Nochmal prüfen"}</button>`;
+      return wrap(ok ? "Schritt 3 von 3 · Fertig" : "Sponsor-Lounge", `${head}${rows}<div class="gbtns" style="margin-top:12px">${btns}</div>
+        <div class="ghalt"><button class="lnk" data-act="spnghout">${nf ? "Anderes GitHub-Konto" : "Von GitHub abmelden"}</button><span>·</span><button class="lnk" data-act="spnghkey">Ich habe einen Schlüssel</button></div>
+        <div class="mut sm ghfine">Geprüft wird einmal am Tag. Das Token liegt nur in deinem Home Assistant und kann nur lesen, ob du sponserst – nicht in Sicherungen, widerrufbar unter GitHub → Settings → Applications.</div>`);
+    }
+    /* Start */
+    const why = f && ["denied", "expired", "error"].includes(f.state) ? (f.state === "denied" ? "Die Anmeldung wurde auf GitHub abgelehnt." : f.state === "expired" ? "Der Code ist abgelaufen. Hol dir einfach einen neuen." : "Das hat nicht geklappt. Bitte noch einmal.") : this._ghErr || "";
+    return wrap("Schritt 1 von 3", `<div class="ghhero"><div class="ghlogo">${ic("heart", 26)}</div><div><b>Du sponserst Strom &amp; Wärme?</b><span>Melde dich einmal mit GitHub an – deine Stufe wird automatisch erkannt. Ohne Mail, ohne Warten.</span></div></div>
+      <div class="ghsteps"><span class="cur">1 Code holen</span><span>2 Auf GitHub bestätigen</span><span>3 Fertig</span></div>
+      <div class="ghlist"><div>${ic("check", 15)}<span><b>Sofort</b> – Extras sind nach der Bestätigung frei</span></div><div>${ic("check", 15)}<span><b>Automatisch</b> – Wechsel zu Max, Verlängerung und Ende erkennt die Integration selbst</span></div><div>${ic("lock", 15)}<span><b>Nur lesen</b> – GitHub zeigt nur, ob du sponserst. Kein Zugriff auf Repos oder Mails</span></div></div>
+      <div class="tmerr" role="alert">${esc(why)}</div>
+      <div class="gbtns" style="margin-top:6px"><button class="btn2 spnb pri" data-act="spnghgo" ${busy ? "disabled" : ""}>${ic("key", 16)} ${busy === "start" ? "Hole Code …" : "Code anfordern"}</button></div>${keyLink}`);
+  }
+  /* Verwaltung: Stand der GitHub-Freischaltung und Zuordnung der Stufen (Datei sponsor_gesperrt.json im Repo) */
+  _ghAdm() {
+    const G = this._ghS(), A = this._spnA || {};
+    let rev = []; try { rev = JSON.parse(A.revoked_json || "{}").gesperrt || []; } catch (_) { /* leer */ }
+    const json = JSON.stringify({ gesperrt: rev, github_stufen: { max: G.stufen && G.stufen.length ? G.stufen : ["$3 a month", "$10 one time"] } });
+    return `<div class="lsec" style="margin-top:16px">${ic("link", 15)}Freischaltung über GitHub</div>
+      <div class="vrow"><span>Anmeldung mit GitHub<small class="mut" style="display:block">${G.ready ? "eingerichtet – Sponsoren schalten sich selbst frei" : "noch keine Client-ID der OAuth-App im Code (sponsor_github.py)"}</small></span><em class="sxc ${G.ready ? "ok" : "wa"}">${G.ready ? "Aktiv" : "Fehlt"}</em></div>
+      <div class="vrow"><span>Stufen für ★ Max<small class="mut" style="display:block">Name der GitHub-Stufe, alle anderen als ♥ Sponsor. Freie Beträge: monatlich ab $3, einmalig ab $10 = Max</small></span><span class="ghtiers">${(G.stufen || []).map((n) => `<em class="lgchip gd">${esc(n)}</em>`).join("")}</span></div>
+      <div class="mut sm" style="margin:6px 0">Ändern ohne neue Version: diese Zeile als <b>sponsor_gesperrt.json</b> ins Repo legen (Namen anpassen). Die Integration lädt sie einmal am Tag.</div>
+      <div class="spnkeybox" style="color:#9be7c4">${esc(json)}</div>
+      <div class="gbtns" style="margin-top:8px"><button class="btn2" data-act="spnjson2" data-j="${esc(json)}">${ic("copy", 16)} Zeile kopieren</button></div>`;
   }
   /* ================= Sponsor-Lounge (Konzept Sponsor-Bereich 2.0, Stufen S1 + S2) und Sponsor Max 1 =================
      Eigene Seite statt Dialog, erreichbar über das Herz/den Stern im Kopf, die Startseite und die Einstellungen.
@@ -11410,10 +11524,10 @@ class FensterHeizungPanel extends HTMLElement {
     if (s.active) this._s3Load();
     if (s.active && this._lgMax()) this._mxLoad();
     const sw = (act, on, label, k = "", dis = false) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" ${k ? `data-k="${k}"` : ""} aria-pressed="${!!on}" aria-label="${esc(label)}" ${adm && !dis ? "" : "disabled"}></button>`;
-    const foot = `<div class="lgfoot">${adm && s.active ? `<button class="lnk" data-act="spnkeydlg">Schlüssel ändern</button>` : ""}${adm && s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Sponsoren verwalten</button>` : ""}${adm && !s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Entwickler-Zugang</button>` : ""}</div>`;
+    const foot = `<div class="lgfoot">${adm && s.active && s.source === "github" ? `<button class="lnk" data-act="spngh">GitHub-Anmeldung</button><span>·</span>` : ""}${adm && s.active ? `<button class="lnk" data-act="spnkeydlg">${s.source === "github" ? "Schlüssel" : "Schlüssel ändern"}</button>` : ""}${adm && s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Sponsoren verwalten</button>` : ""}${adm && !s.manage ? `${s.active ? "<span>·</span>" : ""}<button class="lnk" data-act="spnadm">Entwickler-Zugang</button>` : ""}</div>`;
     const dev = s.state === "dev", mx = s.tier === "max";
-    const chips = s.active ? `<span class="lgchips">${dev ? `<em class="lgchip pk">Entwickler-Zugang</em>` : `<em class="lgchip ${mx ? "gd" : "pk"}">${mx ? "★ Sponsor Max" : "♥ Sponsor"}${s.since ? " seit " + esc(this._spnDate(s.since)) : ""}</em><em class="lgchip">Schlüssel gültig bis ${esc(this._spnDate(s.bis))}</em>`}</span>`
-      : adm ? `<button class="lgchip btn" data-act="spnkeydlg">Ich habe schon einen Schlüssel</button>` : "";
+    const chips = s.active ? `<span class="lgchips">${dev ? `<em class="lgchip pk">Entwickler-Zugang</em>` : `<em class="lgchip ${mx ? "gd" : "pk"}">${mx ? "★ Sponsor Max" : "♥ Sponsor"}${s.since ? " seit " + esc(this._spnDate(s.since)) : ""}</em>${s.source === "github" ? `<em class="lgchip gh">${ic("link", 12)} GitHub @${esc((s.gh || {}).login || "")} · ${this._ghValid((s.gh || {}).eval)}</em>` : `<em class="lgchip">Schlüssel gültig bis ${esc(this._spnDate(s.bis))}</em>`}`}</span>`
+      : adm ? `<button class="lgchip btn" data-act="spngh">Schon Sponsor? Freischalten</button>` : "";
     const bar = `<div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${s.active ? "Sponsor-Lounge" : "Sponsor-Bereich"}</b><span>${this._verTag()}</span></div></div>
         ${this._narrow ? "" : chips}<button class="pillbtn pri" data-act="lgxback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>`;
@@ -11470,30 +11584,32 @@ class FensterHeizungPanel extends HTMLElement {
     const b4b = `<div class="lgt" style="--c:#a78bfa"><h4>Dein Abzeichen</h4><div class="lgbadges">${bd.map(([k, g, t, c]) => `<button class="lgbd ${st === k ? "sel" : ""} ${k === "gold" && !mx ? "lock" : ""}" style="--c:${c}" data-act="lgxbadge" data-k="${k}" aria-pressed="${st === k}" aria-label="${t}" title="${t}" ${this._admin() && (k !== "gold" || mx) ? "" : "disabled"}>${g}</button>`).join("")}</div>
       <div class="lgbdoff">${P.badge ? `<button class="lnk" data-act="lgxbadge" data-k="off">Abzeichen im Kopf ausblenden</button>` : `<span class="mut">Abzeichen ist ausgeblendet – tippe eins an</span>`}</div>
       ${li("Name im Kopf zeigen", sw("lgxname", P.name_head, "Name im Kopf"), first ? `„Hallo ${esc(first)}“ statt „Sponsor“` : "")}</div>`;
-    const up = mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn-Rechner, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster und goldener Stern.</small><em class="lgbeta">Beta-Versionen ab 2026.11.2: als Sponsor 3 Tage nach Erscheinen, mit Max sofort</em><em class="lgprice">3 Monate für 9 €</em></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`;
+    const up = mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn-Rechner, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster und goldener Stern.</small><em class="lgbeta">Beta-Versionen ab 2026.11.2: als Sponsor 3 Tage nach Erscheinen, mit Max sofort</em><em class="lgprice">$3 im Monat · $10 einmalig</em></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`;
     return `<div class="lgtop">${b1}${b2}</div><div class="lg2 s3row">${this._s3CoachCard(this._s3C, P.coach !== false)}${this._s3ReportCard(this._s3R && this._s3R[-1], P.report !== false)}</div>${mx || dev ? this._mxSection() : ""}<div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
   }
   /* ---- ohne Schlüssel: A1 Botschaft, A2 Ersparnis, A3 drei Schritte, A4 Extras als Kacheln ---- */
   _lgOut(s) {
     const N = this._lgNums(), hide = (() => { try { return localStorage.getItem("fh_lg_a2") === "1"; } catch (_) { return false; } })(), adm = this._admin();
     const nums = [N.rooms && N.gas > 0 ? ["eco", `${num(N.gas, N.gas >= 100 ? 0 : 1)} ${esc(unitOf(N.F))}`, `${esc(N.F.short)} gespart`] : null, N.sv > 0 ? ["euro", `${num(N.sv, N.sv >= 100 ? 0 : 2)} €`, "Vorteil durch Solar"] : null, N.rooms && N.min > 0 ? ["windowOpen", `${num(N.min / 60, 0)} h`, "Pausen beim Lüften"] : null].filter(Boolean);
-    const mail = `mailto:${SPN_MAIL}?subject=${encodeURIComponent("Sponsor-Schlüssel Strom & Wärme")}&body=${encodeURIComponent("Hallo, ich habe auf GitHub gesponsert.\nMein GitHub-Name: \nStufe: Sponsor / Sponsor Max (3 Monate für 9 €)\n\nDanke!")}`;
+    const mail = `mailto:${SPN_MAIL}?subject=${encodeURIComponent("Sponsor-Schlüssel Strom & Wärme")}&body=${encodeURIComponent("Hallo, ich habe auf GitHub gesponsert.\nMein GitHub-Name: \nStufe: Sponsor / Sponsor Max\n\nDanke!")}`;
     const hero = `<div class="lghero out"><div class="lghl"><em class="lgchip pk">♥ Strom &amp; Wärme bleibt kostenlos</em><h2>Mit dir wird es schneller besser.</h2><p>Alles, was heute frei ist, bleibt frei. Sponsoren bekommen Extras obendrauf – und bestimmen mit, was als Nächstes kommt.</p>
-      <div class="lgbtns"><a class="btn2 lgpk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a><button class="btn2" data-act="lgxgo" data-k="lgget">Extras ansehen</button></div></div><div class="lghr">${this._lgScene(false)}</div></div>`;
+      <div class="lgbtns"><a class="btn2 lgpk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a>${adm ? `<button class="btn2" data-act="spngh">${ic("key", 15)} Schon Sponsor? Freischalten</button>` : `<button class="btn2" data-act="lgxgo" data-k="lgget">Extras ansehen</button>`}</div></div><div class="lghr">${this._lgScene(false)}</div></div>`;
     const a2 = nums.length && !hide ? `<div class="lgt" style="--c:#fbbf24"><h4>Das hat Strom &amp; Wärme bei dir schon geschafft</h4><div class="lgnums">${nums.map(([k, v, l]) => `<div>${this._gx(k, 34, { on: true, lvl: 80 })}<span><b>${v}</b><small>${l}</small></span></div>`).join("")}</div>
       <div class="lgnote2">Aus deinen eigenen Daten seit der Installation. Wird nur hier angezeigt, nichts verlässt dein Home Assistant. <button class="lnk" data-act="lgxa2">ausblenden</button></div></div>` : "";
+    const gh = !!this._ghS().ready;
     const step = (n, t, sub, attr) => `<${attr ? attr[0] : "div"} class="lgstp" ${attr ? attr[1] : ""}><em>${n}</em><b>${t}</b><small>${sub}</small></${attr ? attr[0] : "div"}>`;
     const a3 = `<div class="lgt" style="--c:#f472b6"><h4>So wirst du Sponsor</h4><div class="lgsteps">
       ${step(1, "Auf GitHub sponsern", "einmalig oder monatlich", ["a", `href="${esc(s.url)}" target="_blank" rel="noopener noreferrer"`])}
-      ${step(2, "Kurze Mail", "Text ist schon fertig", ["a", `href="${mail}"`])}
-      ${step(3, "Schlüssel einfügen", "Extras sofort an", adm ? ["button", `data-act="spnkeydlg"`] : null)}</div></div>`;
+      ${gh ? step(2, "Mit GitHub anmelden", "Code bestätigen, fertig", adm ? ["button", `data-act="spngh"`] : null) : step(2, "Kurze Mail", "Text ist schon fertig", ["a", `href="${mail}"`])}
+      ${gh ? step(3, "Extras sofort an", "Stufe wird automatisch erkannt", null) : step(3, "Schlüssel einfügen", "Extras sofort an", adm ? ["button", `data-act="spnkeydlg"`] : null)}</div>
+      ${gh ? `<div class="lgnote2">Lieber mit Schlüssel? <a href="${mail}">Kurze Mail</a> genügt${adm ? `, dann <button class="lnk" data-act="spnkeydlg">Schlüssel einfügen</button>` : ""}.</div>` : ""}</div>`;
     const T = [["bolt", "Hausfluss (Modul 19)", "Dein Haus als Fluss-Bild mit HD-Bildern", "neu", "ef", "#2dd4bf"], ["forecast", "Vorabversionen", "Neue Funktionen 14 Tage vor allen", "", "early", "#38bdf8"],
       ["sun", "Morgen-Briefing", "Dein Tag jeden Morgen aufs Handy", "max", "brief", "#fbbf24"], ["house", "Jahres-Poster", "Dein Jahr als Poster zum Drucken", "max", "poster", "#fbbf24"],
       ["lamp", "Uhr-Stile & Verläufe", "Für Kopf und Tablet-Ruhemodus", "", "look", "#a78bfa"], ["pvRoof", "Energie-Coach", "Jeden Montag 3 Tipps mit Euro-Betrag", "neu", "coach", "#fbbf24"],
       ["house", "Monatsbericht", "„Dein Haus im Monat“ als Bild zum Teilen", "neu", "report", "#2dd4bf"], ["person", "Wunsch des Monats", "Abstimmen, was als Nächstes kommt", "neu", "wish", "#f472b6"]];
     const tag = (t) => t === "neu" ? `<em class="lgtag neu">NEU</em>` : t === "max" ? `<em class="lgtag mx">★ MAX</em>` : t === "bald" ? `<em class="lgtag">BALD</em>` : "";
     const a4 = `<div class="lgh4" id="lgget">Was du bekommst – Auswahl</div><div class="lgget">${T.map(([k, t, sub, tg, id, c]) => `<button class="lgxt2" style="--c:${c}" data-act="lgxex" data-k="${id}">${tag(tg)}${this._gx(k, 36, { on: true, lvl: 80 })}<b>${esc(t)}</b><small>${sub}</small></button>`).join("")}</div>`;
-    const tiers = `<div class="lgtiers"><div class="lgt"><b>♥ Sponsor</b><small>einmalig oder monatlich · Schlüssel 1 Jahr · alle Extras, Vorabversionen, Hausfluss</small><em class="lgbeta">Ab 2026.11.2: Beta-Versionen 3 Tage nach Erscheinen installierbar</em></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max <em class="lgprice">3 Monate für 9 €</em></b><small>Schlüssel 3 Monate · zusätzlich Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Beta-Kanal 30 Tage</small><em class="lgbeta mx">Ab 2026.11.2: Beta-Versionen sofort installierbar</em></div></div>`;
+    const tiers = `<div class="lgtiers"><div class="lgt"><b>♥ Sponsor <em class="lgprice">$1 im Monat · $5 einmalig</em></b><small>monatlich oder einmalig (1 Jahr) · alle Extras, Vorabversionen, Hausfluss</small><em class="lgbeta">Ab 2026.11.2: Beta-Versionen 3 Tage nach Erscheinen installierbar</em></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max <em class="lgprice">$3 im Monat · $10 einmalig</em></b><small>monatlich oder einmalig 3 Monate (danach bis 1 Jahr Sponsor) · zusätzlich Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Beta-Kanal 30 Tage</small><em class="lgbeta mx">Ab 2026.11.2: Beta-Versionen sofort installierbar</em></div></div>`;
     return `${hero}<div class="lg2">${a2}${a3}</div>${a4}${tiers}`;
   }
   /* ---- Aktionen ---- */
@@ -13263,7 +13379,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${sp && left ? `<div class="blcount"><div><b>${dd}</b><small>${dd === 1 ? "Tag" : "Tage"}</small></div><div><b>${hh}</b><small>${hh === 1 ? "Stunde" : "Stunden"}</small></div><span>bis zur Freigabe</span></div>` : ""}
       <div class="blok">${ic("check", 16)}<span>Heizung, Fenster-Automatik und alle Regeln laufen im Hintergrund normal weiter. Räume, Pläne und Einstellungen bleiben erhalten.</span></div>
       ${adm ? `<div class="blsteps">${step(1, "HACS öffnen", "Strom &amp; Wärme")}${step(2, `⋮ → Erneut herunterladen`, st ? `Version ${esc(st)} wählen` : "die oberste Version ohne „b“ wählen")}${step(3, "Home Assistant neu starten", "danach ist alles wieder frei")}</div>
-      <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="_top" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : "In HACS öffnen"}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · 3 Monate für 9 €</a></div>
+      <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="_top" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : "In HACS öffnen"}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · ab $3 im Monat</a></div>
       <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
       : `<div class="blok wa">${ic("info", 16)}<span>Bitte die Person mit Admin-Rechten in Home Assistant, zur stabilen Version zu wechseln.</span></div>`}
     </div></div>`;

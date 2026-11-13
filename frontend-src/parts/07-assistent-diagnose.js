@@ -387,7 +387,7 @@
     if (m.type === "s3rep") { box.innerHTML = this._s3RepModal(); return; }
     if (m.type === "mxsim" || m.type === "mxwaset" || m.type === "mxapset") { const top = (box.querySelector(".sheet") || {}).scrollTop || 0; box.innerHTML = this._mxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
-    if (["spndlg", "spnadm"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (["spndlg", "spnadm", "spngh"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["hzset", "hzbub", "hzpin", "hzlater", "hztiles", "hzqaok", "hzqm", "hzqaset"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["efxmgr", "efxedit", "efxgrp"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

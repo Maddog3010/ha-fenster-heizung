@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b14] - 2026-11-13
+
+### Neu
+- **Sponsor · Mit GitHub freischalten** (Konzept Sponsor-Freischaltung, Stufe 2): Sponsoren schalten sich direkt im Panel frei – „Schon Sponsor? Freischalten“ in der Lounge, Code auf github.com/login/device bestätigen, fertig. Kein Schlüssel per Mail mehr nötig.
+  - Die Integration fragt GitHub mit dem Token des Sponsors (nur `read:user`), ob und mit welcher Stufe er Maddog3010 sponsert. Kein eigener Server, kein Client-Secret (OAuth-App „Strom & Wärme“ mit Device Flow).
+  - **Stufen:** $1 im Monat und $5 einmalig = ♥ Sponsor, $3 im Monat und $10 einmalig = ★ Sponsor Max. Freie Beträge nach Höhe (monatlich ab $3, einmalig ab $10 = Max). Die Zuordnung steht zusätzlich in `sponsor_gesperrt.json` (`github_stufen`) und lässt sich ohne neue Version ändern.
+  - **Laufzeit:** monatlich, solange das Sponsoring läuft (danach 7 Tage Kulanz); einmalig Sponsor 1 Jahr, einmalig Max 3 Monate und danach bis 1 Jahr wieder Sponsor. Das Datum der Zahlung wird beim ersten Abruf gespeichert, weil GitHub Einmal-Zahlungen nur etwa 30 Tage meldet.
+  - Prüfung einmal am Tag und mit „Jetzt prüfen“; ohne Internet gilt der letzte Stand 14 Tage. Wechsel zu Max, Verlängerung und Ende werden automatisch erkannt.
+  - Schlüssel bleiben als zweiter Weg (Geschenke, Tester). Hat jemand beides, gilt die höhere Stufe.
+  - Lounge, Einstellungen und Beta-Sperre zeigen die Dollar-Stufen statt „3 Monate für 9 €“. In „Sponsoren verwalten“ neuer Abschnitt „Freischaltung über GitHub“.
+  - Das Token liegt nur im Sponsor-Speicher von Home Assistant (nicht in den Server-Sicherungen) und kann unter GitHub → Settings → Applications widerrufen werden.
+
 ## [2026.11.3b12] - 2026-11-12
 
 ### Behoben

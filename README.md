@@ -55,7 +55,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | 🔐 **Beta-Freigabe** | Testversionen mit Sponsor Max sofort, als Sponsor 3 Tage nach Erscheinen. Stabile Versionen bleiben für alle frei |
 | 🛠️ **Behoben** | Messräume verschwinden nicht mehr (mit „Zurückholen“ aus der Sicherung) · Wallbox lädt nach einem Phasenwechsel weiter · Akkukapazität mit Nachkommastelle · Standort und Abwesenheits-Temperatur fallen nicht mehr zurück · eigenes mdi-Symbol in Modul 19 · Zeile „Startseite“ in der Darstellung |
 | 💗 **Sponsor-Lounge 2.0** | Energie-Coach (jeden Montag drei Tipps mit Euro-Betrag), Monatsbericht „Dein Haus im Monat“ als Bild, Wunsch des Monats mit Abstimmung auf GitHub |
-| ⭐ **Sponsor Max** (3 Monate für 9 €) | Haus-Autopilot, Wächter, Woche voraus, Was wäre wenn …, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Beta-Kanal |
+| ⭐ **Sponsor Max** ($3 im Monat oder $10 einmalig) | Haus-Autopilot, Wächter, Woche voraus, Was wäre wenn …, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Beta-Kanal |
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_geraetestrom_szene.png" width="760" alt="Modul 4: Geräte-Szene"></p>
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_geraet_startfenster.png" width="420" alt="Bestes Startfenster"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_geraet_kurve.png" width="420" alt="Programm-Kurve"></p>
@@ -381,14 +381,14 @@ Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.2b1` 
 
 ## Sponsor werden
 
-„Strom & Wärme“ entsteht in meiner Freizeit und bleibt **kostenlos und offen**. Als Dank für ein Sponsoring gibt es einen **Sponsor-Schlüssel** mit Extras. **Es wird nichts gesperrt, was ohne Schlüssel schon da war.**
+„Strom & Wärme“ entsteht in meiner Freizeit und bleibt **kostenlos und offen**. Als Dank für ein Sponsoring gibt es Extras – freigeschaltet direkt im Panel mit deinem GitHub-Konto. **Es wird nichts gesperrt, was ohne Sponsoring schon da war.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_sponsor_stufen.png" width="760" alt="Sponsor und Sponsor Max"></p>
 
 | | ♥ **Sponsor** | ★ **Sponsor Max** |
 |---|---|---|
-| Preis | einmalig oder monatlich, frei wählbar | **3 Monate für 9 €** |
-| Schlüssel | 1 Jahr | 3 Monate, danach gilt bis zum Ende des Sponsor-Jahres wieder „Sponsor“ |
+| Preis | **$1 im Monat** oder **$5 einmalig** | **$3 im Monat** oder **$10 einmalig** |
+| Laufzeit | monatlich: solange es läuft · einmalig: 1 Jahr | monatlich: solange es läuft · einmalig: 3 Monate, danach bis 1 Jahr wieder „Sponsor“ |
 | Sponsor-Lounge, Abzeichen, Farbverläufe, Uhr-Stile | ✓ | ✓ und goldener Stern |
 | Modul 19 Hausfluss | ✓ | ✓ |
 | Vorabversionen (Labs) früher | 14 Tage | 30 Tage |
@@ -432,11 +432,13 @@ Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.2b1` 
 
 **So wirst du Sponsor:**
 
-1. Auf [GitHub Sponsors](https://github.com/sponsors/Maddog3010) Sponsor werden (für Sponsor Max monatlich).
-2. Eine kurze E-Mail mit deinem GitHub-Namen und der Stufe an [00.verkauf_kompass@icloud.com](mailto:00.verkauf_kompass@icloud.com) schicken. Den Text dafür bereitet der Sponsor-Bereich vor.
-3. Im **Sponsor-Bereich** (Herz im Kopf oder **Einstellungen → Sponsor**) den Schlüssel einfügen. Er gilt dann für alle Geräte und Benutzer.
+1. Auf [GitHub Sponsors](https://github.com/sponsors/Maddog3010) eine Stufe wählen.
+2. Im **Sponsor-Bereich** (Herz im Kopf oder **Einstellungen → Sponsor-Lounge**) auf **„Schon Sponsor? Freischalten“** tippen.
+3. Den angezeigten Code auf [github.com/login/device](https://github.com/login/device) eingeben und bestätigen. Fertig – die Stufe wird automatisch erkannt und gilt für alle Geräte und Benutzer.
 
-Der Schlüssel wird lokal geprüft (Ed25519). Es gibt keinen Server und kein Konto, und es werden keine Daten von dir gesendet. Läuft er ab, gehen nur die Extras aus.
+Die Integration fragt GitHub nur, ob und mit welcher Stufe du sponserst (Recht `read:user`, kein Zugriff auf Repos oder Mails). Es gibt keinen eigenen Server. Das Token bleibt in deinem Home Assistant und lässt sich unter GitHub → Settings → Applications jederzeit widerrufen. Geprüft wird einmal am Tag; endet das Sponsoring, gehen nur die Extras aus.
+
+Lieber ohne GitHub-Anmeldung? Dann gibt es weiter einen **Sponsor-Schlüssel**: kurze E-Mail mit GitHub-Namen und Stufe an [00.verkauf_kompass@icloud.com](mailto:00.verkauf_kompass@icloud.com), den Schlüssel im Sponsor-Bereich unter „Ich habe einen Schlüssel“ einfügen. Er wird lokal geprüft (Ed25519).
 
 ---
 
