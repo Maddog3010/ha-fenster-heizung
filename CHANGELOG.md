@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b18] - 2026-11-13
+
+### Behoben
+- **Modul 8 · Ladestatistik (v0.9 Build 2):** Wird einer Ladung ein anderes Fahrzeug zugeordnet, wandern kWh und Kosten jetzt auch unter „Fahrzeuge & Karten“ mit. Vorher blieb dort „Unbekannt“ stehen.
+- Wird das Fahrzeug erst während einer Ladung erkannt, zählt der Anfang dieser Ladung nicht mehr als „Unbekannt“.
+- „geändert“ erschien schon, wenn die Menge nur gerundet gespeichert wurde (z. B. 0,194 → 0,19 kWh). Die Menge zählt jetzt nur als geändert, wenn du sie wirklich änderst; solche falschen Markierungen werden beim Start bereinigt.
+
+### Neu
+- **Änderungen je Ladung:** Im Fenster „Ladung bearbeiten“ steht jetzt, was wann geändert wurde (Fahrzeug, Menge, Karte, Notiz, dienstlich). In der Liste: „bearbeitet“ bei jeder Änderung, „Menge geändert“ nur bei geänderter Menge.
+- **„Unbekannt“ zuordnen:** Unter „Fahrzeuge & Karten“ ordnet „Zuordnen“ alle Energie ohne erkanntes Fahrzeug im angezeigten Zeitraum einem Fahrzeug zu – mit Eintrag bei jeder betroffenen Ladung.
+
 ## [2026.11.3b17] - 2026-11-13
 
 ### Neu

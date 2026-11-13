@@ -27,7 +27,7 @@ from .wallbox_calc import (
 )
 STALE_S = 180  # B6: so alt darf der Netz-Sensor sein, sonst wird nicht mehr erhöht
 from .wallbox_plan import (
-    add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick,
+    add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick, assign_unknown,
     stats_view,
 )
 
@@ -379,6 +379,14 @@ class WallboxManager:
             self._st_store.async_delay_save(lambda: self._st, 2)
             self._add(f"Ladestand von {v['name']} eingegeben: {round(soc)} %. Ab jetzt wird beim Laden geschätzt.")
         return self.snapshot()
+
+    async def async_assign(self, d0: str, d1: str, to: str) -> dict[str, Any]:
+        """Ladestatistik: „Unbekannt“ im Zeitraum einem Fahrzeug zuordnen."""
+        r = assign_unknown(self._st, d0, d1, to, dt_util.now())
+        self._st_store.async_delay_save(lambda: self._st, 2)
+        if r["kwh"] > 0 or r["n"]:
+            self._add(f"{str(round(r['kwh'], 1)).replace('.', ',')} kWh „Unbekannt“ an {to} zugeordnet ({r['n']} Ladungen).")
+        return self.stats()
 
     async def async_session(self, start: str, ch: dict[str, Any]) -> dict[str, Any]:
         """Ladestatistik: eine abgeschlossene Ladung bearbeiten oder löschen."""

@@ -10,6 +10,8 @@ LEVEL_RANK = {"VERY_CHEAP": 0, "CHEAP": 1, "NORMAL": 2, "EXPENSIVE": 3, "VERY_EX
 HORIZON_H = 36
 KEEP_DAYS = 800
 KEEP_SESSIONS = 100
+UNKNOWN = "Unbekannt"
+KEEP_CHG = 8
 
 
 # ---- Zeitraster
@@ -237,7 +239,9 @@ def clean_stats(raw: Any) -> dict[str, Any]:
                 st["sessions"].append({"start": str(s["start"]), "min": float(s.get("min", 0)), "veh": str(s.get("veh") or "Unbekannt")[:30], "kwh": float(s.get("kwh", 0)),
                                        "pv": float(s.get("pv", 0)), "cost": float(s.get("cost", 0)), **({"card": str(s["card"])[:30]} if s.get("card") else {}),
                                        **({"note": str(s["note"])[:80]} if s.get("note") else {}), **({"biz": True} if s.get("biz") else {}),
-                                       **({"edit": str(s["edit"])[:25]} if s.get("edit") else {}), **({"orig": float(s["orig"])} if s.get("orig") is not None else {})})
+                                       **({"edit": str(s["edit"])[:25]} if s.get("edit") else {}),
+                                       **({"orig": float(s["orig"])} if s.get("orig") is not None and abs(float(s["orig"]) - float(s.get("kwh", 0))) >= 0.01 else {}),
+                                       **({"chg": [{"t": str(c.get("t", ""))[:25], "x": [str(y)[:80] for y in c.get("x", [])][:6]} for c in s["chg"] if isinstance(c, dict)][-KEEP_CHG:]} if isinstance(s.get("chg"), list) and s["chg"] else {})})
             except (TypeError, ValueError):
                 continue
     st["sessions"] = st["sessions"][:KEEP_SESSIONS]
@@ -325,6 +329,16 @@ def add_energy(st: dict[str, Any], now: datetime, dt_s: float, power_w: float, s
         o["kwh"] += kwh
         o["pv"] += pv
         o["cost"] += cost
+        if veh == UNKNOWN:
+            u = o.setdefault("unk", {}).setdefault(now.date().isoformat(), [0.0, 0.0])
+            u[0] += kwh
+            u[1] += cost
+        elif o.get("unk"):
+            # Fahrzeug erst während der Ladung erkannt: bisher „Unbekannt“ gebuchte Energie dieser Ladung nachträglich zuordnen
+            for day, (k, c) in o.pop("unk").items():
+                dd = st["days"].get(day)
+                if dd and UNKNOWN in dd["veh"]:
+                    _veh_move(dd, UNKNOWN, veh, k, c)
         o["veh"] = veh
         if card:
             o["card"] = card
@@ -365,68 +379,125 @@ def close_session(st: dict[str, Any]) -> dict[str, Any] | None:
     return st["sessions"][0]
 
 
-def _day_move(st: dict[str, Any], day: str, veh: str, kwh: float, pv: float, cost: float, full: float, sign: float) -> None:
-    """Anteil einer Ladung zum Tag hinzufügen (sign=1) oder abziehen (sign=-1); nie unter 0."""
-    d = st["days"].get(day)
-    if d is None:
-        if sign < 0:
-            return
-        d = st["days"].setdefault(day, {"pv": 0.0, "grid": 0.0, "cost": 0.0, "full": 0.0, "km": 0.0, "veh": {}})
-    d["pv"] = max(0.0, d["pv"] + sign * pv)
-    d["grid"] = max(0.0, d["grid"] + sign * (kwh - pv))
-    d["cost"] = max(0.0, d["cost"] + sign * cost)
-    d["full"] = max(0.0, d["full"] + sign * full)
-    v = d["veh"].setdefault(veh, {"kwh": 0.0, "cost": 0.0})
-    v["kwh"] = max(0.0, v["kwh"] + sign * kwh)
-    v["cost"] = max(0.0, v["cost"] + sign * cost)
-    if v["kwh"] < 1e-6 and not v.get("km"):
-        del d["veh"][veh]
+def _veh_move(d: dict[str, Any], a: str, b: str, kwh: float, cost: float) -> None:
+    """Energie eines Tages von Fahrzeug a nach b umbuchen (höchstens so viel, wie a hat)."""
+    va = d["veh"].get(a)
+    if not va or a == b:
+        return
+    k = min(kwh, va["kwh"])
+    c = min(cost, va["cost"]) if va["kwh"] > 0 else 0.0
+    va["kwh"] -= k
+    va["cost"] -= c
+    vb = d["veh"].setdefault(b, {"kwh": 0.0, "cost": 0.0})
+    vb["kwh"] += k
+    vb["cost"] += c
+    if va["kwh"] < 1e-6 and not va.get("km"):
+        del d["veh"][a]
+
+
+def _fmt(v: float) -> str:
+    return f"{v:.2f}".replace(".", ",")
 
 
 def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: datetime) -> dict[str, Any] | None:
-    """Abgeschlossene Ladung bearbeiten oder löschen (Statistik). Tageswerte werden mitgeführt.
-    ch: veh, kwh, card, note, biz, delete. Gemessene Menge bleibt als „orig“ erhalten, damit der Nachweis die Änderung zeigt."""
+    """Abgeschlossene Ladung bearbeiten oder löschen (Statistik). Tages- und Fahrzeugwerte werden mitgeführt.
+    ch: veh, kwh, card, note, biz, delete. Die gemessene Menge bleibt als „orig“ erhalten, jede Änderung steht in „chg“."""
     s = next((x for x in st["sessions"] if x["start"] == start), None)
     if s is None:
         return None
-    day = start[:10]
-    old_k = s["kwh"]
-    f = s["pv"] / old_k if old_k > 0 else 0.0
-    c = s["cost"] / old_k if old_k > 0 else 0.0
-    full = (st["days"].get(day) or {}).get("full", 0.0)
-    tot = sum(x["kwh"] for x in (st["days"].get(day) or {}).get("veh", {}).values()) or 0.0
-    fr = full / tot if tot > 0 else 0.0  # Vollpreis je kWh an dem Tag
-    _day_move(st, day, s["veh"], old_k, s["pv"], s["cost"], old_k * fr, -1)
+    d = st["days"].get(start[:10])
     if ch.get("delete"):
+        if d is not None:
+            fr = d["full"] / (d["pv"] + d["grid"]) if d["pv"] + d["grid"] > 0 else 0.0
+            d["pv"] = max(0.0, d["pv"] - s["pv"])
+            d["grid"] = max(0.0, d["grid"] - (s["kwh"] - s["pv"]))
+            d["cost"] = max(0.0, d["cost"] - s["cost"])
+            d["full"] = max(0.0, d["full"] - s["kwh"] * fr)
+            v = d["veh"].get(s["veh"])
+            if v:
+                v["kwh"] = max(0.0, v["kwh"] - s["kwh"])
+                v["cost"] = max(0.0, v["cost"] - s["cost"])
+                if v["kwh"] < 1e-6 and not v.get("km"):
+                    del d["veh"][s["veh"]]
         st["sessions"].remove(s)
         return {"deleted": start}
-    if ch.get("veh"):
-        s["veh"] = str(ch["veh"])[:30]
-    if "kwh" in ch and ch["kwh"] is not None:
-        k = max(0.0, min(300.0, float(ch["kwh"])))
-        if abs(k - old_k) > 1e-6:
-            s.setdefault("orig", old_k)
-            if abs(k - s["orig"]) < 1e-6:
+    log: list[str] = []
+    nv = str(ch.get("veh") or "")[:30]
+    if nv and nv != s["veh"]:
+        if d is not None:
+            _veh_move(d, s["veh"], nv, s["kwh"], s["cost"])
+        log.append(f"Fahrzeug: {s['veh']} → {nv}")
+        s["veh"] = nv
+    if ch.get("kwh") is not None:
+        k = round(max(0.0, min(300.0, float(ch["kwh"]))), 3)
+        old = s["kwh"]
+        if abs(k - old) >= 0.01:
+            f = s["pv"] / old if old > 0 else 0.0
+            c = s["cost"] / old if old > 0 else 0.0
+            dk, dpv, dc = k - old, k * f - s["pv"], k * c - s["cost"]
+            if d is not None:
+                fr = d["full"] / (d["pv"] + d["grid"]) if d["pv"] + d["grid"] > 0 else 0.0
+                d["pv"] = max(0.0, d["pv"] + dpv)
+                d["grid"] = max(0.0, d["grid"] + dk - dpv)
+                d["cost"] = max(0.0, d["cost"] + dc)
+                d["full"] = max(0.0, d["full"] + dk * fr)
+                v = d["veh"].setdefault(s["veh"], {"kwh": 0.0, "cost": 0.0})
+                v["kwh"] = max(0.0, v["kwh"] + dk)
+                v["cost"] = max(0.0, v["cost"] + dc)
+            s.setdefault("orig", old)
+            if abs(k - s["orig"]) < 0.01:
                 s.pop("orig")
-            s["kwh"], s["pv"], s["cost"] = round(k, 3), round(k * f, 3), round(k * c, 4)
+            log.append(f"Menge: {_fmt(old)} → {_fmt(k)} kWh")
+            s["kwh"], s["pv"], s["cost"] = k, round(k * f, 3), round(k * c, 4)
     if "card" in ch:
-        if ch["card"]:
-            s["card"] = str(ch["card"])[:30]
-        else:
-            s.pop("card", None)
+        nc = str(ch["card"] or "").strip()[:30]
+        if nc != s.get("card", ""):
+            log.append(f"Karte: {s.get('card') or 'ohne'} → {nc or 'ohne'}")
+            if nc:
+                s["card"] = nc
+            else:
+                s.pop("card", None)
     if "note" in ch:
-        if ch["note"]:
-            s["note"] = str(ch["note"]).strip()[:80]
-        else:
-            s.pop("note", None)
-    if "biz" in ch:
+        nn = str(ch["note"] or "").strip()[:80]
+        if nn != s.get("note", ""):
+            log.append(f"Notiz: „{nn}“" if nn else "Notiz entfernt")
+            if nn:
+                s["note"] = nn
+            else:
+                s.pop("note", None)
+    if "biz" in ch and bool(ch["biz"]) != bool(s.get("biz")):
+        log.append("als dienstlich markiert" if ch["biz"] else "nicht mehr dienstlich")
         if ch["biz"]:
             s["biz"] = True
         else:
             s.pop("biz", None)
-    s["edit"] = now.isoformat(timespec="seconds")
-    _day_move(st, day, s["veh"], s["kwh"], s["pv"], s["cost"], s["kwh"] * fr, 1)
+    if log:
+        s["edit"] = now.isoformat(timespec="seconds")
+        s.setdefault("chg", []).append({"t": s["edit"], "x": log})
+        del s["chg"][:-KEEP_CHG]
     return s
+
+
+def assign_unknown(st: dict[str, Any], d0: str, d1: str, to: str, now: datetime) -> dict[str, float]:
+    """Alle „Unbekannt“-Energie im Zeitraum [d0, d1] (Tage, ISO) einem Fahrzeug zuordnen – Tageswerte und Ladungen."""
+    to = str(to)[:30]
+    kwh = 0.0
+    n = 0
+    if not to or to == UNKNOWN:
+        return {"kwh": 0.0, "n": 0}
+    for day, d in st["days"].items():
+        if d0 <= day <= d1 and UNKNOWN in d["veh"]:
+            kwh += d["veh"][UNKNOWN]["kwh"]
+            _veh_move(d, UNKNOWN, to, d["veh"][UNKNOWN]["kwh"], d["veh"][UNKNOWN]["cost"])
+    t = now.isoformat(timespec="seconds")
+    for s in st["sessions"]:
+        if s["veh"] == UNKNOWN and d0 <= s["start"][:10] <= d1:
+            s["veh"] = to
+            s["edit"] = t
+            s.setdefault("chg", []).append({"t": t, "x": [f"Fahrzeug: {UNKNOWN} → {to}"]})
+            del s["chg"][:-KEEP_CHG]
+            n += 1
+    return {"kwh": round(kwh, 3), "n": n}
 
 
 def prune(st: dict[str, Any], today: date) -> None:

@@ -364,3 +364,37 @@ def test_session_edit_moves_day_values_and_keeps_orig():
     assert session_edit(st, "2026-11-02T11:10:00", {"delete": True}, now) == {"deleted": "2026-11-02T11:10:00"}
     assert st["sessions"] == [] and st["days"]["2026-11-02"]["pv"] < 1e-6
     assert session_edit(st, "x", {"kwh": 1}, now) is None
+
+
+def test_session_edit_logs_changes_and_ignores_rounding():
+    st = P.empty_stats()
+    st["days"]["2026-11-11"] = {"pv": 0.03, "grid": 0.164, "cost": 0.11, "full": 0.06, "km": 0.0, "veh": {"Unbekannt": {"kwh": 0.194, "cost": 0.11}}}
+    st["sessions"] = [{"start": "2026-11-11T18:25:00", "min": 3, "veh": "Unbekannt", "kwh": 0.194, "pv": 0.03, "cost": 0.11}]
+    s = P.session_edit(st, "2026-11-11T18:25:00", {"veh": "BYD", "kwh": 0.19, "card": "", "note": "", "biz": False}, NOW)
+    assert "orig" not in s  # 0,194 → 0,19 ist nur Rundung
+    assert s["chg"][-1]["x"] == ["Fahrzeug: Unbekannt → BYD"]
+    assert "Unbekannt" not in st["days"]["2026-11-11"]["veh"] and st["days"]["2026-11-11"]["veh"]["BYD"]["kwh"] > 0.19
+    s = P.session_edit(st, "2026-11-11T18:25:00", {"veh": "BYD", "note": "Gast", "biz": True}, NOW)
+    assert s["chg"][-1]["x"] == ["Notiz: „Gast“", "als dienstlich markiert"] and len(s["chg"]) == 2
+    n = len(s["chg"]); P.session_edit(st, "2026-11-11T18:25:00", {"veh": "BYD", "note": "Gast", "biz": True}, NOW)
+    assert len(s["chg"]) == n  # nichts geändert, kein Eintrag
+    # alte Daten mit falschem „orig“ werden beim Laden bereinigt
+    raw = {"sessions": [{"start": "2026-11-11T18:25:00", "veh": "BYD", "kwh": 0.19, "orig": 0.194}]}
+    assert "orig" not in P.clean_stats(raw)["sessions"][0]
+
+
+def test_assign_unknown_and_running_session_retro():
+    st = P.empty_stats()
+    st["days"]["2026-11-09"] = {"pv": 0, "grid": 9.2, "cost": 3.89, "full": 3.89, "km": 0.0, "veh": {"Unbekannt": {"kwh": 9.2, "cost": 3.89}, "BYD": {"kwh": 1.0, "cost": 0.3}}}
+    st["sessions"] = [{"start": "2026-11-09T21:30:00", "min": 7, "veh": "Unbekannt", "kwh": 0.6, "pv": 0, "cost": 0.29}]
+    r = P.assign_unknown(st, "2026-11-01", "2026-11-30", "BYD", NOW)
+    assert r["n"] == 1 and abs(r["kwh"] - 9.2) < 1e-6
+    v = st["days"]["2026-11-09"]["veh"]
+    assert "Unbekannt" not in v and abs(v["BYD"]["kwh"] - 10.2) < 1e-6 and st["sessions"][0]["veh"] == "BYD"
+    # Fahrzeug wird erst während der Ladung erkannt → Anfang der Ladung wird nachträglich zugeordnet
+    st = P.empty_stats(); t = NOW
+    P.session_tick(st, t, True, 7000)
+    P.add_energy(st, t, 600, 7000, 0, 30, "Unbekannt")
+    P.add_energy(st, t + timedelta(minutes=10), 600, 7000, 0, 30, "BYD")
+    v = st["days"][t.date().isoformat()]["veh"]
+    assert "Unbekannt" not in v and abs(v["BYD"]["kwh"] - 2 * 7000 * 600 / 3.6e6) < 1e-6

@@ -83,14 +83,14 @@
       <div class="vrow"><span>Karte<small class="mut" style="display:block">Leer lassen für „ohne Karte“.</small></span><input class="otxt" style="max-width:200px" type="text" maxlength="30" data-f="wbsescard" value="${esc(m.card)}" placeholder="ohne Karte" aria-label="Karte"></div>
       <div class="vrow"><span>Dienstlich<small class="mut" style="display:block">Für den Ladenachweis an den Arbeitgeber.</small></span><button class="sw ${m.biz ? "on" : ""}" data-act="wbvsesbiz" aria-pressed="${!!m.biz}" aria-label="Dienstlich"></button></div>
       <div class="vrow" style="display:block"><span>Notiz</span><input class="otxt" style="width:100%;margin-top:6px" type="text" maxlength="80" data-f="wbsesnote" value="${esc(m.note)}" placeholder="z. B. Gast geladen, Fahrt nach Hamburg" aria-label="Notiz"></div>
-      ${x.edit ? `<div class="mut sm" style="margin-top:6px">${ic("info", 14)} Zuletzt bearbeitet am ${new Date(x.edit).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}.</div>` : ""}
+      ${(x.chg && x.chg.length) || x.edit ? `<div class="lsec" style="margin-top:12px">${ic("schedule", 15)}Änderungen</div><div class="evchg">${(x.chg || []).slice().reverse().map((c) => `<div><small>${new Date(c.t).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })}</small><ul>${c.x.map((y) => `<li>${esc(y)}</li>`).join("")}</ul></div>`).join("") || `<div><small>${new Date(x.edit).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</small><ul><li>bearbeitet (vor diesem Update, Einzelheiten nicht gespeichert)</li></ul></div>`}${x.orig != null ? `<div class="mut sm">Gemessen an der Wallbox: ${num(x.orig, 2)} kWh</div>` : ""}</div>` : ""}
       <div class="foot2" style="margin-top:12px">${m.del ? `<button class="btn2 dng" data-act="wbvsesdel2">${ic("trash", 16)} Wirklich löschen</button>` : `<button class="btn2" data-act="wbvsesdel">${ic("trash", 16)} Löschen</button>`}<button class="btn2 pri" data-act="wbvsesok" ${m.busy ? "disabled" : ""}>${ic("check", 16)} Speichern</button></div></div>`;
   }
   _sesAct(a, b) {
     if (a === "wbvses") {
       const x = this._sesFind(b.dataset.k); if (!x) return;
       if (!this._admin()) { this._toast("Nur Administratoren können Ladungen bearbeiten"); return; }
-      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
+      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), kwh0: num(x.kwh, 2), card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
     }
     const m = this._modal; if (!m || m.type !== "wbses") return;
     this._sesGrab();
@@ -105,8 +105,31 @@
       const x = this._sesFind(m.start), k = parseFloat(String(m.kwh).replace(",", "."));
       if (!isFinite(k) || k < 0 || k > 300) { this._toast("Bitte eine Menge von 0 bis 300 kWh eingeben"); return; }
       const body = { veh: m.veh, card: String(m.card || "").trim(), note: String(m.note || "").trim(), biz: !!m.biz };
-      if (!x || Math.abs(k - x.kwh) > 0.004) body.kwh = k;
+      if (String(m.kwh).trim() !== m.kwh0) body.kwh = k; // nur senden, wenn wirklich geändert (sonst würde die Rundung als Änderung zählen)
       send(body, "Ladung gespeichert");
+    }
+  }
+  /* „Unbekannt“ im angezeigten Zeitraum einem Fahrzeug zuordnen */
+  _asgModal() {
+    const m = this._modal, cv = this._wb().vehicles || [], a = new Date(m.d0), b = new Date(m.d1 - 864e5), D = (this._wbStD && this._wbStD.data) || {};
+    const iso = (t) => `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`, k0 = iso(a), k1 = iso(b);
+    const kwh = (D.days || []).filter((d) => d.d >= k0 && d.d <= k1).reduce((s, d) => s + ((d.veh || {}).Unbekannt ? d.veh.Unbekannt.kwh : 0), 0), n = (D.sessions || []).filter((x) => !x.running && x.veh === "Unbekannt" && x.start.slice(0, 10) >= k0 && x.start.slice(0, 10) <= k1).length;
+    const fd = (t) => t.toLocaleDateString("de-DE", { day: "numeric", month: "short" });
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Unbekannt zuordnen">
+      <div class="sh"><div><b>„Unbekannt“ zuordnen</b><span>${k0 === k1 ? fd(a) : `${fd(a)} – ${fd(b)}`} · ${num(kwh, 1)} kWh${n ? ` · ${n} ${n === 1 ? "Ladung" : "Ladungen"}` : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin-bottom:10px">Ladungen, bei denen die Wallbox kein Fahrzeug erkannt hat, werden dem gewählten Fahrzeug zugeschrieben – in der Statistik, bei den Kosten je Fahrzeug und im Ladenachweis. Jede Ladung bekommt einen Eintrag unter „Änderungen“.</div>
+      <div class="gschips">${cv.map((v) => `<button class="gsch ${m.to === v.name ? "sel" : ""}" data-act="wbvasgto" data-k="${esc(v.name)}" aria-pressed="${m.to === v.name}">${esc(v.name)}</button>`).join("")}</div>
+      <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="wbvasgok" ${m.to && !m.busy ? "" : "disabled"}>${ic("check", 16)} ${m.to ? `${esc(m.to)} zuordnen` : "Fahrzeug wählen"}</button></div></div>`;
+  }
+  _asgAct(a, b) {
+    if (a === "wbvasg") { const cv = this._wb().vehicles || []; this._modal = { type: "wbasg", d0: Number(b.dataset.k), d1: Number(b.dataset.e), to: cv.length === 1 ? cv[0].name : "" }; this._renderModal(); return; }
+    const m = this._modal; if (!m || m.type !== "wbasg") return;
+    if (a === "wbvasgto") { m.to = b.dataset.k; this._renderModal(); return; }
+    if (a === "wbvasgok" && m.to) {
+      const iso = (t) => `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+      m.busy = true; this._renderModal();
+      this._hass.callWS({ type: "fenster_heizung/wb_assign", d0: iso(new Date(m.d0)), d1: iso(new Date(m.d1 - 864e5)), to: m.to }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; this._modal = null; this._renderModal(); this._render(); this._toast("Zugeordnet"); })
+        .catch(() => { m.busy = false; this._renderModal(); this._toast("Zuordnen nicht möglich"); });
     }
   }
 

@@ -753,7 +753,7 @@ const MV = {
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  ev: { v: "0.9", b: 1, d: "2026-11-13", p: "2026.11.3b17", log: [["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ev: { v: "0.9", b: 2, d: "2026-11-13", p: "2026.11.3b18", log: [["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "0.9", b: 1, d: "2026-11-12", p: "2026.11.3b11", log: [["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sf: { v: "0.5", b: 4, d: "2026-11-04", p: "2026.11.1", log: [["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2681,6 +2681,9 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .evses>div.evsed{grid-template-columns:78px minmax(0,1.2fr) minmax(40px,.7fr) auto 18px;cursor:pointer;border-radius:10px;margin:0 -8px;padding:8px}.evses>div.evsed:hover,.evses>div.evsed:focus-visible{background:var(--soft,rgba(127,127,127,.08));outline:0}
 .evsedi{color:var(--mut);display:flex;opacity:.55}.evses>div.evsed:hover .evsedi{opacity:1}
 .evtag{font-style:normal;font-size:.66rem;font-weight:700;letter-spacing:.02em;margin-left:6px;padding:1px 6px;border-radius:6px;background:color-mix(in srgb,var(--teal) 18%,transparent);color:var(--teal);vertical-align:1px}.evtag.amb{background:color-mix(in srgb,var(--amber) 20%,transparent);color:var(--amber)}
+.evtag.neu{background:color-mix(in srgb,var(--mut) 22%,transparent);color:var(--mut)}
+.evasg{margin-left:10px;padding:3px 10px;font-size:.76rem;vertical-align:2px}
+.evchg{display:flex;flex-direction:column;gap:8px;background:var(--soft,rgba(127,127,127,.08));border-radius:12px;padding:10px 12px;max-height:180px;overflow:auto}.evchg small{color:var(--mut);font-size:.72rem}.evchg ul{margin:2px 0 0;padding-left:18px}.evchg li{font-size:.84rem}
 .evsft{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:8px}.evsft .lnk{margin-left:auto}
 .evsesh{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 12px}.evsesh span{background:var(--soft,rgba(127,127,127,.08));border-radius:12px;padding:8px 10px}.evsesh small{display:block;color:var(--mut);font-size:.72rem}.evsesh b{font-size:1.02rem}
 .evses small{display:block;color:var(--mut);font-size:.74rem}.evsk{text-align:right}.evsbar{height:6px;border-radius:9px;background:var(--amber);overflow:hidden}.evsbar i{display:block;height:100%;background:var(--teal)}
@@ -7337,6 +7340,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "stoset") { box.innerHTML = this._stoSetModal(); return; }
     if (m.type === "igwbha") { box.innerHTML = this._igWbhaModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbses") { box.innerHTML = this._sesModal(); return; }
+    if (m.type === "wbasg") { box.innerHTML = this._asgModal(); return; }
     if (m.type === "wbpdf") { box.innerHTML = this._wbPdfModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbveh") { box.innerHTML = this._wbVehModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "iggoe") { box.innerHTML = this._igGoeModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -9327,16 +9331,18 @@ class FensterHeizungPanel extends HTMLElement {
         ${slots.length && T.kwh > 0 ? `<svg class="evstsvg" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" role="img" aria-label="Geladene Energie, Sonne und Netz">${bars}<line x1="10" x2="${W - 10}" y1="${base}" y2="${base}" class="evpd"/></svg>
         <div class="gsleg"><span><i style="background:var(--teal)"></i>Sonne ${num(T.pv, 1)} kWh</span><span><i style="background:var(--amber)"></i>Netz ${num(T.grid, 1)} kWh</span><span class="mut">▲▼ gegenüber ${run && S.per !== "d" ? "dem gleichen Zeitraum im " + prevN : "dem " + prevN}</span></div>` : `<div class="mut sm">In diesem Zeitraum wurde nicht geladen.</div>`}</div>
         <div class="card"><h2>${this._gx("schedule", 24)}Ladungen<span class="evmr"><button class="lnk" data-act="wbcsv">Als CSV exportieren</button></span></h2>${ses.length ? `<div class="evses">${ses.slice(0, S.all ? 100 : 12).map((x) => { const t = new Date(x.start), s2 = x.kwh > 0 ? x.pv / x.kwh * 100 : 0, ed = !x.running && this._admin();
-          const tags = `${x.biz ? `<em class="evtag">dienstlich</em>` : ""}${x.orig != null ? `<em class="evtag amb" title="Gemessen: ${num(x.orig, 2)} kWh">geändert</em>` : ""}`;
+          const tags = `${x.biz ? `<em class="evtag">dienstlich</em>` : ""}${x.orig != null ? `<em class="evtag amb" title="Gemessen: ${num(x.orig, 2)} kWh">Menge geändert</em>` : x.edit ? `<em class="evtag neu">bearbeitet</em>` : ""}`;
           return `<div ${ed ? `class="evsed" role="button" tabindex="0" data-act="wbvses" data-k="${esc(x.start)}" aria-label="Ladung vom ${t.toLocaleDateString("de-DE")} bearbeiten"` : ""}><span class="evsd"><b>${t.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })}</b><small>${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}${x.running ? " · läuft" : x.min ? " · " + (x.min >= 60 ? num(x.min / 60, 1) + " h" : num(x.min, 0) + " Min.") : ""}</small></span><span class="evsv"><b>${esc(x.veh || "Unbekannt")}${tags}</b><small>${[x.card ? esc(x.card) : this._wbHa() ? "" : "ohne Karte", x.note ? esc(x.note) : ""].filter(Boolean).join(" · ")}</small></span><span class="evsbar"><i style="width:${s2}%"></i></span><span class="evsk"><b>${num(x.kwh, 1)} kWh</b><small>${num(s2, 0)} % Sonne · ${num(x.cost, 2)} €</small></span>${ed ? `<span class="evsedi" aria-hidden="true">${ic("pencil", 15)}</span>` : ""}</div>`; }).join("")}</div>
           <div class="evsft">${this._admin() ? `<span class="mut sm">Antippen, um eine Ladung zu bearbeiten.</span>` : ""}${ses.length > 12 ? `<button class="lnk" data-act="wbvall">${S.all ? "Weniger anzeigen" : `Alle ${ses.length} anzeigen`}</button>` : ""}</div>` : `<div class="mut sm">Keine Ladungen in diesem Zeitraum.</div>`}</div></div>
       <div><div class="card"><h2>${this._gx("people", 24)}Fahrzeuge &amp; Karten</h2>${vehs.length ? vehs.map(([n, v]) => { const x = cv.find((y) => y.name === n), p100 = v.km > 0 ? v.cost / v.km * 100 : null;
-          return `<div class="evvr">${x ? `<span class="rfpic">${this._evThumb(x, 84)}</span>` : `<span class="rfpic">${this._gx("car", 30)}</span>`}<div class="evvt"><b>${esc(n)}</b><div class="evbb sm"><i class="f" style="width:${v.kwh / vmx * 100}%"></i></div><small>${num(v.kwh, 1)} kWh · ${num(v.cost, 2)} €${p100 != null ? ` · ${num(p100, 2)} €/100 km` : ""}</small></div></div>`; }).join("") : `<div class="mut sm">Noch keine Ladungen mit erkanntem Fahrzeug.</div>`}
+          const unk = n === "Unbekannt" && this._admin() && cv.length;
+          return `<div class="evvr">${x ? `<span class="rfpic">${this._evThumb(x, 84)}</span>` : `<span class="rfpic">${this._gx("car", 30)}</span>`}<div class="evvt"><b>${esc(n)}${unk ? `<button class="btn2 sm evasg" data-act="wbvasg" data-k="${R.d0.getTime()}" data-e="${R.d1.getTime()}">${ic("car", 15)} Zuordnen</button>` : ""}</b><div class="evbb sm"><i class="f" style="width:${v.kwh / vmx * 100}%"></i></div><small>${num(v.kwh, 1)} kWh · ${num(v.cost, 2)} €${p100 != null ? ` · ${num(p100, 2)} €/100 km` : ""}</small></div></div>`; }).join("") : `<div class="mut sm">Noch keine Ladungen mit erkanntem Fahrzeug.</div>`}
         ${Object.keys(cards).length ? `<div class="lsec" style="margin-top:10px">${ic("shield", 15)}Je Karte</div>${Object.entries(cards).map(([n, c]) => `<div class="evcr"><span><b>${esc(n)}</b><small>${esc(c.veh)} · ${c.n} ${c.n === 1 ? "Ladung" : "Ladungen"}</small></span><span><b>${num(c.kwh, 1)} kWh</b><small>${num(c.cost, 2)} €</small></span></div>`).join("")}` : ""}</div></div></div>`;
   }
   _evStAct(a, b) {
     if (a.startsWith("wbvpdf")) return this._wbPdfAct(a, b);
     if (a.startsWith("wbvses")) return this._sesAct(a, b);
+    if (a.startsWith("wbvasg")) return this._asgAct(a, b);
     if (a === "wbvall") { const S = this._evSt(); S.all = !S.all; this._render(); return; }
     const S = this._evSt(), k = b.dataset.k;
     if (a === "wbvper") S.per = k;
@@ -9431,14 +9437,14 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow"><span>Karte<small class="mut" style="display:block">Leer lassen für „ohne Karte“.</small></span><input class="otxt" style="max-width:200px" type="text" maxlength="30" data-f="wbsescard" value="${esc(m.card)}" placeholder="ohne Karte" aria-label="Karte"></div>
       <div class="vrow"><span>Dienstlich<small class="mut" style="display:block">Für den Ladenachweis an den Arbeitgeber.</small></span><button class="sw ${m.biz ? "on" : ""}" data-act="wbvsesbiz" aria-pressed="${!!m.biz}" aria-label="Dienstlich"></button></div>
       <div class="vrow" style="display:block"><span>Notiz</span><input class="otxt" style="width:100%;margin-top:6px" type="text" maxlength="80" data-f="wbsesnote" value="${esc(m.note)}" placeholder="z. B. Gast geladen, Fahrt nach Hamburg" aria-label="Notiz"></div>
-      ${x.edit ? `<div class="mut sm" style="margin-top:6px">${ic("info", 14)} Zuletzt bearbeitet am ${new Date(x.edit).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}.</div>` : ""}
+      ${(x.chg && x.chg.length) || x.edit ? `<div class="lsec" style="margin-top:12px">${ic("schedule", 15)}Änderungen</div><div class="evchg">${(x.chg || []).slice().reverse().map((c) => `<div><small>${new Date(c.t).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })}</small><ul>${c.x.map((y) => `<li>${esc(y)}</li>`).join("")}</ul></div>`).join("") || `<div><small>${new Date(x.edit).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</small><ul><li>bearbeitet (vor diesem Update, Einzelheiten nicht gespeichert)</li></ul></div>`}${x.orig != null ? `<div class="mut sm">Gemessen an der Wallbox: ${num(x.orig, 2)} kWh</div>` : ""}</div>` : ""}
       <div class="foot2" style="margin-top:12px">${m.del ? `<button class="btn2 dng" data-act="wbvsesdel2">${ic("trash", 16)} Wirklich löschen</button>` : `<button class="btn2" data-act="wbvsesdel">${ic("trash", 16)} Löschen</button>`}<button class="btn2 pri" data-act="wbvsesok" ${m.busy ? "disabled" : ""}>${ic("check", 16)} Speichern</button></div></div>`;
   }
   _sesAct(a, b) {
     if (a === "wbvses") {
       const x = this._sesFind(b.dataset.k); if (!x) return;
       if (!this._admin()) { this._toast("Nur Administratoren können Ladungen bearbeiten"); return; }
-      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
+      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), kwh0: num(x.kwh, 2), card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
     }
     const m = this._modal; if (!m || m.type !== "wbses") return;
     this._sesGrab();
@@ -9453,8 +9459,31 @@ class FensterHeizungPanel extends HTMLElement {
       const x = this._sesFind(m.start), k = parseFloat(String(m.kwh).replace(",", "."));
       if (!isFinite(k) || k < 0 || k > 300) { this._toast("Bitte eine Menge von 0 bis 300 kWh eingeben"); return; }
       const body = { veh: m.veh, card: String(m.card || "").trim(), note: String(m.note || "").trim(), biz: !!m.biz };
-      if (!x || Math.abs(k - x.kwh) > 0.004) body.kwh = k;
+      if (String(m.kwh).trim() !== m.kwh0) body.kwh = k; // nur senden, wenn wirklich geändert (sonst würde die Rundung als Änderung zählen)
       send(body, "Ladung gespeichert");
+    }
+  }
+  /* „Unbekannt“ im angezeigten Zeitraum einem Fahrzeug zuordnen */
+  _asgModal() {
+    const m = this._modal, cv = this._wb().vehicles || [], a = new Date(m.d0), b = new Date(m.d1 - 864e5), D = (this._wbStD && this._wbStD.data) || {};
+    const iso = (t) => `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`, k0 = iso(a), k1 = iso(b);
+    const kwh = (D.days || []).filter((d) => d.d >= k0 && d.d <= k1).reduce((s, d) => s + ((d.veh || {}).Unbekannt ? d.veh.Unbekannt.kwh : 0), 0), n = (D.sessions || []).filter((x) => !x.running && x.veh === "Unbekannt" && x.start.slice(0, 10) >= k0 && x.start.slice(0, 10) <= k1).length;
+    const fd = (t) => t.toLocaleDateString("de-DE", { day: "numeric", month: "short" });
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Unbekannt zuordnen">
+      <div class="sh"><div><b>„Unbekannt“ zuordnen</b><span>${k0 === k1 ? fd(a) : `${fd(a)} – ${fd(b)}`} · ${num(kwh, 1)} kWh${n ? ` · ${n} ${n === 1 ? "Ladung" : "Ladungen"}` : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin-bottom:10px">Ladungen, bei denen die Wallbox kein Fahrzeug erkannt hat, werden dem gewählten Fahrzeug zugeschrieben – in der Statistik, bei den Kosten je Fahrzeug und im Ladenachweis. Jede Ladung bekommt einen Eintrag unter „Änderungen“.</div>
+      <div class="gschips">${cv.map((v) => `<button class="gsch ${m.to === v.name ? "sel" : ""}" data-act="wbvasgto" data-k="${esc(v.name)}" aria-pressed="${m.to === v.name}">${esc(v.name)}</button>`).join("")}</div>
+      <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="wbvasgok" ${m.to && !m.busy ? "" : "disabled"}>${ic("check", 16)} ${m.to ? `${esc(m.to)} zuordnen` : "Fahrzeug wählen"}</button></div></div>`;
+  }
+  _asgAct(a, b) {
+    if (a === "wbvasg") { const cv = this._wb().vehicles || []; this._modal = { type: "wbasg", d0: Number(b.dataset.k), d1: Number(b.dataset.e), to: cv.length === 1 ? cv[0].name : "" }; this._renderModal(); return; }
+    const m = this._modal; if (!m || m.type !== "wbasg") return;
+    if (a === "wbvasgto") { m.to = b.dataset.k; this._renderModal(); return; }
+    if (a === "wbvasgok" && m.to) {
+      const iso = (t) => `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+      m.busy = true; this._renderModal();
+      this._hass.callWS({ type: "fenster_heizung/wb_assign", d0: iso(new Date(m.d0)), d1: iso(new Date(m.d1 - 864e5)), to: m.to }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; this._modal = null; this._renderModal(); this._render(); this._toast("Zugeordnet"); })
+        .catch(() => { m.busy = false; this._renderModal(); this._toast("Zuordnen nicht möglich"); });
     }
   }
 
