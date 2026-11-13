@@ -31,7 +31,8 @@
     /* Uhrzeit aus zwei Feldern (Stunde, Minute) statt <input type="time">: Das Auswahlrad der Mac-App von Home Assistant
        (iPad-App auf dem Mac) bringt die App zum Absturz. Das unsichtbare Feld dahinter trägt Wert und data-Angaben wie bisher. */
     sr.addEventListener("change", (e) => { const t = e.target; if (t && t.dataset && t.dataset.tin) { e.stopImmediatePropagation(); this._tInDone(t); } }, true);
-    sr.addEventListener("keydown", (e) => { const t = e.target; if (t && t.dataset && t.dataset.tin && e.key === "Enter") { e.preventDefault(); t.blur(); } });
+    sr.addEventListener("keydown", (e) => { const t = e.target; if (t && t.dataset && t.dataset.tin && e.key === "Enter") { e.preventDefault(); t.blur(); }
+      else if (t && t.getAttribute && t.getAttribute("role") === "button" && t.dataset && t.dataset.act && t.tagName !== "BUTTON" && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); t.click(); } });
     sr.addEventListener("change", (e) => this._onChange(e.target));
     this._sfxBind(sr);
   }

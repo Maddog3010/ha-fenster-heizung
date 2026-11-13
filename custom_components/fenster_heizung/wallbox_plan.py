@@ -235,7 +235,9 @@ def clean_stats(raw: Any) -> dict[str, Any]:
         if isinstance(s, dict) and s.get("start"):
             try:
                 st["sessions"].append({"start": str(s["start"]), "min": float(s.get("min", 0)), "veh": str(s.get("veh") or "Unbekannt")[:30], "kwh": float(s.get("kwh", 0)),
-                                       "pv": float(s.get("pv", 0)), "cost": float(s.get("cost", 0)), **({"card": str(s["card"])[:30]} if s.get("card") else {})})
+                                       "pv": float(s.get("pv", 0)), "cost": float(s.get("cost", 0)), **({"card": str(s["card"])[:30]} if s.get("card") else {}),
+                                       **({"note": str(s["note"])[:80]} if s.get("note") else {}), **({"biz": True} if s.get("biz") else {}),
+                                       **({"edit": str(s["edit"])[:25]} if s.get("edit") else {}), **({"orig": float(s["orig"])} if s.get("orig") is not None else {})})
             except (TypeError, ValueError):
                 continue
     st["sessions"] = st["sessions"][:KEEP_SESSIONS]
@@ -361,6 +363,70 @@ def close_session(st: dict[str, Any]) -> dict[str, Any] | None:
     st["sessions"].insert(0, {"start": o["start"], "min": round(mins, 1), "veh": o["veh"], "kwh": round(o["kwh"], 3), "pv": round(o["pv"], 3), "cost": round(o["cost"], 4), **({"card": o["card"]} if o.get("card") else {})})
     del st["sessions"][KEEP_SESSIONS:]
     return st["sessions"][0]
+
+
+def _day_move(st: dict[str, Any], day: str, veh: str, kwh: float, pv: float, cost: float, full: float, sign: float) -> None:
+    """Anteil einer Ladung zum Tag hinzufügen (sign=1) oder abziehen (sign=-1); nie unter 0."""
+    d = st["days"].get(day)
+    if d is None:
+        if sign < 0:
+            return
+        d = st["days"].setdefault(day, {"pv": 0.0, "grid": 0.0, "cost": 0.0, "full": 0.0, "km": 0.0, "veh": {}})
+    d["pv"] = max(0.0, d["pv"] + sign * pv)
+    d["grid"] = max(0.0, d["grid"] + sign * (kwh - pv))
+    d["cost"] = max(0.0, d["cost"] + sign * cost)
+    d["full"] = max(0.0, d["full"] + sign * full)
+    v = d["veh"].setdefault(veh, {"kwh": 0.0, "cost": 0.0})
+    v["kwh"] = max(0.0, v["kwh"] + sign * kwh)
+    v["cost"] = max(0.0, v["cost"] + sign * cost)
+    if v["kwh"] < 1e-6 and not v.get("km"):
+        del d["veh"][veh]
+
+
+def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: datetime) -> dict[str, Any] | None:
+    """Abgeschlossene Ladung bearbeiten oder löschen (Statistik). Tageswerte werden mitgeführt.
+    ch: veh, kwh, card, note, biz, delete. Gemessene Menge bleibt als „orig“ erhalten, damit der Nachweis die Änderung zeigt."""
+    s = next((x for x in st["sessions"] if x["start"] == start), None)
+    if s is None:
+        return None
+    day = start[:10]
+    old_k = s["kwh"]
+    f = s["pv"] / old_k if old_k > 0 else 0.0
+    c = s["cost"] / old_k if old_k > 0 else 0.0
+    full = (st["days"].get(day) or {}).get("full", 0.0)
+    tot = sum(x["kwh"] for x in (st["days"].get(day) or {}).get("veh", {}).values()) or 0.0
+    fr = full / tot if tot > 0 else 0.0  # Vollpreis je kWh an dem Tag
+    _day_move(st, day, s["veh"], old_k, s["pv"], s["cost"], old_k * fr, -1)
+    if ch.get("delete"):
+        st["sessions"].remove(s)
+        return {"deleted": start}
+    if ch.get("veh"):
+        s["veh"] = str(ch["veh"])[:30]
+    if "kwh" in ch and ch["kwh"] is not None:
+        k = max(0.0, min(300.0, float(ch["kwh"])))
+        if abs(k - old_k) > 1e-6:
+            s.setdefault("orig", old_k)
+            if abs(k - s["orig"]) < 1e-6:
+                s.pop("orig")
+            s["kwh"], s["pv"], s["cost"] = round(k, 3), round(k * f, 3), round(k * c, 4)
+    if "card" in ch:
+        if ch["card"]:
+            s["card"] = str(ch["card"])[:30]
+        else:
+            s.pop("card", None)
+    if "note" in ch:
+        if ch["note"]:
+            s["note"] = str(ch["note"]).strip()[:80]
+        else:
+            s.pop("note", None)
+    if "biz" in ch:
+        if ch["biz"]:
+            s["biz"] = True
+        else:
+            s.pop("biz", None)
+    s["edit"] = now.isoformat(timespec="seconds")
+    _day_move(st, day, s["veh"], s["kwh"], s["pv"], s["cost"], s["kwh"] * fr, 1)
+    return s
 
 
 def prune(st: dict[str, Any], today: date) -> None:

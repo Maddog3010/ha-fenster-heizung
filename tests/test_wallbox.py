@@ -344,3 +344,23 @@ if __name__ == "__main__":
             f()
             n += 1
     print(f"{n} Tests bestanden")
+
+
+def test_session_edit_moves_day_values_and_keeps_orig():
+    empty_stats, session_edit, clean_stats = P.empty_stats, P.session_edit, P.clean_stats
+    st = empty_stats()
+    st["days"]["2026-11-02"] = {"pv": 6.0, "grid": 4.0, "cost": 1.2, "full": 3.0, "km": 0.0, "veh": {"Auto A": {"kwh": 10.0, "cost": 1.2}}}
+    st["sessions"] = [{"start": "2026-11-02T11:10:00", "min": 60, "veh": "Auto A", "kwh": 10.0, "pv": 6.0, "cost": 1.2}]
+    now = datetime(2026, 11, 13, 18, 0)
+    s = session_edit(st, "2026-11-02T11:10:00", {"veh": "Auto B", "kwh": 5.0, "note": "Dienstfahrt", "biz": True}, now)
+    assert s["veh"] == "Auto B" and s["kwh"] == 5.0 and s["orig"] == 10.0 and s["biz"] and s["note"] == "Dienstfahrt"
+    d = st["days"]["2026-11-02"]
+    assert "Auto A" not in d["veh"] and abs(d["veh"]["Auto B"]["kwh"] - 5.0) < 1e-6
+    assert abs(d["pv"] - 3.0) < 1e-6 and abs(d["grid"] - 2.0) < 1e-6 and abs(d["cost"] - 0.6) < 1e-6
+    # zurück auf die gemessene Menge: Kennzeichen „orig“ verschwindet
+    s = session_edit(st, "2026-11-02T11:10:00", {"kwh": 10.0}, now)
+    assert "orig" not in s and s["edit"]
+    assert clean_stats(st)["sessions"][0]["note"] == "Dienstfahrt"
+    assert session_edit(st, "2026-11-02T11:10:00", {"delete": True}, now) == {"deleted": "2026-11-02T11:10:00"}
+    assert st["sessions"] == [] and st["days"]["2026-11-02"]["pv"] < 1e-6
+    assert session_edit(st, "x", {"kwh": 1}, now) is None

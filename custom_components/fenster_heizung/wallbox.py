@@ -27,7 +27,7 @@ from .wallbox_calc import (
 )
 STALE_S = 180  # B6: so alt darf der Netz-Sensor sein, sonst wird nicht mehr erhöht
 from .wallbox_plan import (
-    add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_tick,
+    add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick,
     stats_view,
 )
 
@@ -379,6 +379,16 @@ class WallboxManager:
             self._st_store.async_delay_save(lambda: self._st, 2)
             self._add(f"Ladestand von {v['name']} eingegeben: {round(soc)} %. Ab jetzt wird beim Laden geschätzt.")
         return self.snapshot()
+
+    async def async_session(self, start: str, ch: dict[str, Any]) -> dict[str, Any]:
+        """Ladestatistik: eine abgeschlossene Ladung bearbeiten oder löschen."""
+        r = session_edit(self._st, start, ch, dt_util.now())
+        if r is None:
+            raise ValueError("Ladung nicht gefunden")
+        self._st_store.async_delay_save(lambda: self._st, 2)
+        t = start[:16].replace("T", " ")
+        self._add(f"Ladung vom {t} gelöscht." if r.get("deleted") else f"Ladung vom {t} bearbeitet.")
+        return self.stats()
 
     def _soc(self) -> float | None:
         return self.veh_soc(self.cur_vehicle())
