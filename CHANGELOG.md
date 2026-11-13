@@ -4,6 +4,10 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 
 ## [2026.11.3b19] - 2026-11-13
 
+### Behoben
+- **Modul 1 · Haus-Szene:** Antippen eines Raums brachte auf dem iPhone und in der App den Fehler „hsgo: CSS.escape is not a function“. Der Raum wird jetzt wieder angesprungen und kurz hervorgehoben.
+- **Modul 1:** Die Geräte „Strom & Wärme · Wetter & Warnungen“ und „Strom & Wärme · Elektroauto & Wallbox“ wurden als Räume gezählt (zwei leere Räume „Strom & W…“ in der Haus-Szene, „0 von 8 Räumen“). Geräte der Module zählen nicht mehr als Raum.
+
 ### Geändert
 - **Updates gehören jetzt zu „Versionen & Updates“** (Einstellungen → System): Stand der Installation, „Jetzt prüfen“, „Was ist neu?“ und der Schalter „Auf neue Versionen hinweisen“ stehen ganz oben. Liegt ein Update bereit, zeigt die Zeile in den Einstellungen „Update“. Unter „Sichern & Wiederherstellen“ steht nur noch das Sichern.
 - **Automatische Sicherungen kompakt:** zugeklappt nur eine Zeile („20 Bereiche gesichert · neueste Kopie …“). Aufgeklappt gruppiert nach Räumen, Modulen, Addons und System, je Bereich eine Zeile; die Stände zum Wiederherstellen erscheinen erst nach Antippen.

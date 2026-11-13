@@ -117,7 +117,7 @@ class FensterHeizungPanel extends HTMLElement {
       const st = h.states[eid];
       if (!st) continue;
       const key = ent.device_id || eid, dv = (h.devices || {})[key];
-      if (dv && (dv.model === "Modul 16" || dv.name === "Strom & Wärme · Solar-Prognose")) continue;   /* Solar-Sensoren (Modul 16) sind kein Raum */
+      if (dv && (/^Modul \d+$/.test(dv.model || "") || String(dv.name || "").startsWith("Strom & Wärme ·"))) continue;   /* Geräte der Module (Wetter, E-Auto, Solar-Prognose …) sind kein Raum */
       let r = rooms.get(key);
       if (!r) {
         const dev = (h.devices || {})[key] || {};

@@ -3156,7 +3156,7 @@ class FensterHeizungPanel extends HTMLElement {
       const st = h.states[eid];
       if (!st) continue;
       const key = ent.device_id || eid, dv = (h.devices || {})[key];
-      if (dv && (dv.model === "Modul 16" || dv.name === "Strom & Wärme · Solar-Prognose")) continue;   /* Solar-Sensoren (Modul 16) sind kein Raum */
+      if (dv && (/^Modul \d+$/.test(dv.model || "") || String(dv.name || "").startsWith("Strom & Wärme ·"))) continue;   /* Geräte der Module (Wetter, E-Auto, Solar-Prognose …) sind kein Raum */
       let r = rooms.get(key);
       if (!r) {
         const dev = (h.devices || {})[key] || {};
@@ -5768,7 +5768,9 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="hs2" data-kk="${esc("hs|" + x.key)}" data-an="${this._rkCfg().anim}">${x.svg}</div>`;
   }
   _hsGo(id) {
-    const sr = this.shadowRoot, el = sr.querySelector(`.room[data-id="${CSS.escape(id)}"], .crow[data-id="${CSS.escape(id)}"]`);
+    /* Achtung: „CSS“ ist hier unser Stylesheet (const CSS), nicht das CSS-Objekt des Browsers – daher window.CSS, mit Ersatz für ältere WebViews */
+    const q = (window.CSS && typeof window.CSS.escape === "function") ? window.CSS.escape(id) : String(id).replace(/["\\]/g, "\\$&");
+    const sr = this.shadowRoot, el = sr.querySelector(`.room[data-id="${q}"], .crow[data-id="${q}"]`);
     if (!el) { const g = (this._cfg.layout.groups || []).find((x) => (x.rooms || []).includes(id)), c = this._collapsed(); if (g && c.has(g.id)) { c.delete(g.id); this._setCollapsed(c); this._render(); setTimeout(() => this._hsGo(id), 60); } return; }
     el.scrollIntoView({ behavior: "smooth", block: "center" });
     el.classList.remove("hsflash"); void el.offsetWidth; el.classList.add("hsflash");
