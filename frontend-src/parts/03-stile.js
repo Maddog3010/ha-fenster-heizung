@@ -1005,7 +1005,17 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efck.ok{cursor:default;color:#4ade80;border-color:color-mix(in srgb,#4ade80 40%,transparent);background:color-mix(in srgb,#4ade80 8%,transparent)}.efck.ok span{color:var(--primary-text-color)}.efck.bad{border-color:color-mix(in srgb,#f87171 55%,transparent);background:color-mix(in srgb,#f87171 8%,transparent)}.efck.bad>svg:first-child{color:#f87171}
 .efck.warn{border-color:color-mix(in srgb,#fbbf24 50%,transparent);background:color-mix(in srgb,#fbbf24 7%,transparent)}.efck.warn>svg:first-child{color:#fbbf24}.efck.info>svg:first-child{color:#60a5fa}
 .efhs .btn2{flex:none}.efhs{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}.efhsi{display:flex;flex-wrap:wrap;gap:6px}.efhsi span{display:inline-flex;align-items:center;gap:4px;padding:3px 9px 3px 4px;border-radius:99px;border:1px solid var(--line);font-size:.78rem}.efhsi span.used{opacity:.45;text-decoration:line-through}
-.efsside{display:flex;flex-direction:column;gap:12px}.efcost .efh2{flex-wrap:wrap}.efcost .efh2 small{flex-basis:100%;font-weight:500;font-size:.72rem}
+.efsside{display:flex;flex-direction:column;gap:12px}.efsmain{display:flex;flex-direction:column;gap:12px;min-width:0}
+.efmix .efh2{flex-wrap:wrap}.efmix .efh2 small{margin-left:auto;font-weight:500;font-size:.78rem}
+.efmx{display:flex;height:14px;border-radius:8px;overflow:hidden;background:var(--line);margin:10px 0 6px}.efmx i{display:block;height:100%}.efmx i+i{box-shadow:-1px 0 0 var(--card)}
+.efmxrs{display:flex;flex-direction:column}.efmxr{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:10px;align-items:start;padding:9px 0;border-top:1px solid var(--line)}.efmxr:first-child{border-top:0}
+.efmxd{width:12px;height:12px;border-radius:4px;background:var(--c);margin-top:4px;box-shadow:0 0 10px color-mix(in srgb,var(--c) 55%,transparent)}
+.efmxt b{color:var(--c)}.efmxt small,.efmxv small{display:block;color:var(--mut);font-size:.76rem;margin-top:1px}.efmxv{text-align:right;white-space:nowrap}.efmxv b{font-size:1.02rem}
+.efmxs{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:3px;font-size:.76rem;color:var(--mut)}.efmxs b{color:var(--primary-text-color);font-weight:600}
+.efmxk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:8px 0 4px}.efmxk>div{background:color-mix(in srgb,var(--line) 45%,transparent);border-radius:12px;padding:8px 10px}.efmxk small{display:block;color:var(--mut);font-size:.72rem}.efmxk b{font-size:1.15rem}
+.efmxh{margin-top:12px;font-size:.86rem;color:var(--mut)}.efmxh b{color:var(--primary-text-color)}
+.efmxl{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:.76rem;color:var(--mut)}.efmxl i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:0}
+@media (max-width:640px){.efmxk{grid-template-columns:1fr 1fr}.efmxk>div:last-child{grid-column:1/-1}}.efcost .efh2{flex-wrap:wrap}.efcost .efh2 small{flex-basis:100%;font-weight:500;font-size:.72rem}
 .efcr{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-top:1px solid var(--line);font-size:.88rem}.efcr b{font-size:1rem}.efcr .pos{color:#4ade80}.efcr .neg{color:#f87171}.efcr.sum{border-top:2px solid var(--line);font-weight:700}.efcr.sum b{font-size:1.2rem}
 .efseg .efsh{margin-left:auto;display:inline-flex;align-items:center;gap:5px}.efseg .efszb+.efszb{margin-left:0}
 /* Modul 19 v1.0 Build 2 · Feinschliff: ruhige Kacheln, klare Schrift-Rangfolge, Haus als freier Ring */

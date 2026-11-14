@@ -16,6 +16,11 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 - Räume heißen in der Liste wie der Raum (statt „Raum“), Addons mit ihrem Namen (statt „addons“). Gelöschte Räume stehen als „Raum (gelöscht)“.
 
 ### Neu
+- **Modul 19 · Hausfluss (v1.1 Build 1): „Woher kam der Strom?“** im Strom-Reiter, für Tag, Woche, Monat und Jahr.
+  - Anteile am Hausverbrauch als Balken: Solar direkt, Akku, Netz und Sonstige, je mit kWh und Prozent; mehrere Solaranlagen oder Akkus einzeln.
+  - Akku: entladen und geladen, mit Anteil aus Solar. Netz: Bezug (auch was davon in den Akku ging), Einspeisung und Saldo.
+  - Kennzahlen „Unabhängig vom Netz“ und „Eigenverbrauch Solar“.
+  - „Wohin ging der Solarstrom?“: ins Haus, in den Akku, eingespeist.
 - **Addons in den Modulversionen:** „Modul- und Addon-Versionen“ zeigt installierte Addons mit Stufe, Version, Build, Status (pausiert, Fehler) und einem Link zum verfügbaren Update.
 
 ## [2026.11.3b18] - 2026-11-13

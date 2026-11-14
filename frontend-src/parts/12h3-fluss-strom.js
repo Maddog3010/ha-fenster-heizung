@@ -52,17 +52,23 @@
       const v = val(t, this._efxPid(n)); return n.flow === "supply" ? -Math.abs(v) : n.flow === "consume" ? Math.abs(v) : n.invert ? -v : v;
     };
     const bucket = (t) => { const d = new Date(t); return P.range === "day" ? d.getHours() : P.range === "year" ? d.getMonth() : Math.floor((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate())) / 864e5 + .5); };
-    const bars = Array.from({ length: R.n }, () => ({ pv: 0, bat: 0, net: 0, oth: 0, use: 0 })), cons = {}, tot = { pv: 0, bat: 0, net: 0, oth: 0, use: 0, gen: 0, exp: 0 };
+    const bars = Array.from({ length: R.n }, () => ({ pv: 0, bat: 0, net: 0, oth: 0, use: 0 })), cons = {}, src = {};
+    /* tot: Herkunft im Haus (pv, bat, net, oth), dazu Netzbezug gesamt (imp), Einspeisung (exp), Akku geladen (chg) und wohin der Solarstrom ging (pvBat, pvExp) */
+    const tot = { pv: 0, bat: 0, net: 0, oth: 0, use: 0, gen: 0, exp: 0, imp: 0, chg: 0, pvBat: 0, pvExp: 0, netBat: 0 };
     Object.keys(map).map(Number).sort((a, b) => a - b).forEach((t) => {
-      const m = { pv: 0, bat: 0, net: 0, oth: 0 }; let out = 0, gen = 0, exp = 0;
-      nodes.forEach(({ n }) => { if (n.flow === "consume") return; const w = nodeW(n, t), k = this._efxKind(n); if (w < 0) m[k] += -w; else { out += w; if (k === "net") exp += w; } if (k === "pv") gen += Math.abs(w); });
-      const take = Math.min(m.pv, out); m.pv -= take; out -= take; if (out > 0) m.oth = Math.max(0, m.oth - out);
-      const use = m.pv + m.bat + m.net + m.oth, b = bars[bucket(t)], kwh = step / 1000; if (!b) return;
+      const m = { pv: 0, bat: 0, net: 0, oth: 0 }, kwh = step / 1000; let out = 0, gen = 0, exp = 0, chg = 0;
+      nodes.forEach(({ p, n }) => { if (n.flow === "consume") return; const w = nodeW(n, t), k = this._efxKind(n); if (w < 0) { m[k] += -w; (src[p] = src[p] || { kwh: 0, k }).kwh += -w * kwh; } else { out += w; if (k === "net") exp += w; if (k === "bat") chg += w; } if (k === "pv") gen += Math.abs(w); });
+      const imp = m.net, take = Math.min(m.pv, out); m.pv -= take; out -= take; if (out > 0) m.oth = Math.max(0, m.oth - out);
+      /* Solar-Überschuss geht zuerst in den Akku, der Rest ins Netz; was der Akku darüber hinaus lädt, kam aus dem Netz */
+      const pvBat = Math.min(take, chg), pvExp = Math.min(Math.max(0, take - pvBat), exp), netBat = Math.max(0, Math.min(chg - pvBat, imp));
+      m.net = Math.max(0, m.net - netBat);
+      const use = m.pv + m.bat + m.net + m.oth, b = bars[bucket(t)]; if (!b) return;
       ["pv", "bat", "net", "oth"].forEach((k) => { b[k] += m[k] * kwh; tot[k] += m[k] * kwh; }); b.use += use * kwh; tot.use += use * kwh; tot.gen += gen * kwh; tot.exp += exp * kwh;
+      tot.imp += imp * kwh; tot.chg += chg * kwh; tot.pvBat += pvBat * kwh; tot.pvExp += pvExp * kwh; tot.netBat += netBat * kwh;
       const fpv = use > 0 ? m.pv / use : 0;
       nodes.forEach(({ p, n }) => { if (n.flow !== "consume") return; const w = Math.max(0, nodeW(n, t)) * kwh, o = (cons[p] = cons[p] || { kwh: 0, pv: 0 }); o.kwh += w; o.pv += w * fpv; });
     });
-    return { bars, cons, tot, any: Object.keys(map).length > 0 };
+    return { bars, cons, tot, src, any: Object.keys(map).length > 0 };
   }
   _efStrom(narrow) {
     const P = this._efP(), R = this._efPer(P), c = this._efxCfg(), H = this._efxStatLoad(P), RG = [["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]];
@@ -83,7 +89,31 @@
     /* E2 Verbraucher mit Solar-Anteil */
     const list = Object.entries(H.cons).map(([p, o]) => ({ p, n: c.nodes[p], ...o })).filter((x) => x.n).sort((a, b) => b.kwh - a.kwh);
     const e2 = `<div class="card"><div class="efh2">${ic("energy", 16)}Verbraucher mit Solar-Anteil</div>${list.length ? list.map((x) => { const col = x.n.color || EF_POS[x.p][3], s = pc(x.pv, x.kwh); return `<div class="efsv" style="--c:${col}"><span class="efq sm"><span class="efqi">${this._efxImgN(x.n, { on: x.kwh > 0 })}</span></span><span class="efsvt"><b>${esc(x.n.name)}</b><span class="efsvb"><i style="width:${s}%"></i></span></span><span class="efsvv"><b>${f1(x.kwh)} kWh</b><small>${s} % Solar</small></span></div>`; }).join("") : `<div class="mut sm">Keine Verbraucher-Kacheln mit Leistungssensor.</div>`}</div>`;
-    return `${nav}${sum}<div class="efsgrid${narrow ? " nar" : ""}">${e1}<div class="efsside">${e2}${this._efxCost(T)}</div></div>`;
+    return `${nav}${sum}<div class="efsgrid${narrow ? " nar" : ""}"><div class="efsmain">${e1}${this._efxSrcCard(H, c)}</div><div class="efsside">${e2}${this._efxCost(T)}</div></div>`;
+  }
+  /* ---------------- Woher kam der Strom? Anteile je Quelle, Netz- und Akku-Bilanz, wohin der Solarstrom ging ---------------- */
+  _efxSrcCard(H, c) {
+    const T = H.tot, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: v >= 100 ? 0 : v >= 10 ? 1 : 2 }), pc = (a, b) => (b > 0 ? a / b * 100 : 0), pcs = (a, b) => `${Math.round(pc(a, b))} %`;
+    if (!(T.use > 0)) return "";
+    const COL = Object.fromEntries(EF_MIX.map(([k, , col]) => [k, col])), has = (k) => Object.values(H.src || {}).some((x) => x.k === k) || T[k] > 0.005;
+    const bar = (parts, tot) => `<div class="efmx">${parts.filter(([v]) => v > 0.0005).map(([v, col, l]) => `<i style="width:${pc(v, tot).toFixed(2)}%;background:${col}" title="${esc(l)}: ${f1(v)} kWh"></i>`).join("")}</div>`;
+    /* einzelne Erzeuger/Speicher, wenn es mehrere einer Art gibt (zwei Solaranlagen, zwei Akkus) */
+    const sub = (k) => { const L = Object.entries(H.src || {}).filter(([, x]) => x.k === k && x.kwh > 0.005).map(([p, x]) => ({ n: (c.nodes[p] || {}).name || p, kwh: x.kwh })); return L.length > 1 ? `<div class="efmxs">${L.sort((a, b) => b.kwh - a.kwh).map((x) => `<span>${esc(x.n)} <b>${f1(x.kwh)} kWh</b></span>`).join("")}</div>` : ""; };
+    const row = (k, l, v, note) => `<div class="efmxr" style="--c:${COL[k]}"><span class="efmxd"></span><span class="efmxt"><b>${l}</b>${note ? `<small>${note}</small>` : ""}${sub(k)}</span><span class="efmxv"><b>${f1(v)} kWh</b><small>${pcs(v, T.use)}</small></span></div>`;
+    const rows = [
+      has("pv") ? row("pv", "Solar direkt", T.pv, `${f1(T.gen)} kWh erzeugt`) : "",
+      has("bat") ? row("bat", "Akku", T.bat, `entladen ${f1(T.bat)} kWh · geladen ${f1(T.chg)} kWh${T.chg > 0.005 ? ` (${pcs(T.pvBat, T.chg)} aus Solar)` : ""}`) : "",
+      row("net", "Netz", T.net, `Bezug ${f1(T.imp)} kWh${T.netBat > 0.005 ? ` (davon ${f1(T.netBat)} kWh in den Akku)` : ""} · Einspeisung ${f1(T.exp)} kWh`),
+      T.oth > 0.005 ? row("oth", "Sonstige", T.oth, "Kacheln ohne Art Solar, Akku oder Netz") : ""].join("");
+    const pvHome = Math.max(0, T.gen - T.pvBat - T.pvExp);
+    const solar = T.gen > 0.005 ? `<div class="efmxh">Wohin ging der Solarstrom? <b>${f1(T.gen)} kWh</b></div>${bar([[pvHome, COL.pv, "ins Haus"], [T.pvBat, COL.bat, "in den Akku"], [T.pvExp, "#4ade80", "ins Netz"]], T.gen)}
+      <div class="efmxl"><span><i style="background:${COL.pv}"></i>ins Haus ${f1(pvHome)} kWh · ${pcs(pvHome, T.gen)}</span>${T.pvBat > 0.005 ? `<span><i style="background:${COL.bat}"></i>in den Akku ${f1(T.pvBat)} kWh · ${pcs(T.pvBat, T.gen)}</span>` : ""}<span><i style="background:#4ade80"></i>eingespeist ${f1(T.pvExp)} kWh · ${pcs(T.pvExp, T.gen)}</span></div>` : "";
+    const saldo = T.imp - T.exp;
+    return `<div class="card efmix"><div class="efh2">${ic("energy", 16)}Woher kam der Strom?<small class="mut">Hausverbrauch ${f1(T.use)} kWh</small></div>
+      ${bar(EF_MIX.map(([k, l, col]) => [T[k], col, l]), T.use)}
+      <div class="efmxrs">${rows}</div>
+      <div class="efmxk"><div><small>Unabhängig vom Netz</small><b style="color:#4ade80">${pcs(T.use - T.net, T.use)}</b></div><div><small>Eigenverbrauch Solar</small><b style="color:${COL.pv}">${T.gen > 0.005 ? pcs(T.gen - T.pvExp, T.gen) : "–"}</b></div><div><small>Netz-Saldo</small><b style="color:${saldo > 0 ? COL.net : "#4ade80"}">${saldo > 0 ? "" : "+"}${f1(Math.abs(saldo))} kWh</b><small>${saldo > 0 ? "mehr bezogen als eingespeist" : "mehr eingespeist als bezogen"}</small></div></div>
+      ${solar}</div>`;
   }
   /* ---------------- W4 Tageswerte-Leiste unter dem Brett ---------------- */
   _efxToday() {
