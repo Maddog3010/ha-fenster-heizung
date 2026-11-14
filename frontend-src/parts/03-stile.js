@@ -2040,3 +2040,17 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 @media (max-width:700px){.evub .zl.hm{display:none}.evul .big{font-size:1.3rem;width:100%}}
 .hsm20{all:unset;box-sizing:border-box;display:flex;gap:8px;align-items:flex-start;width:100%;cursor:pointer;padding:9px 12px;border-radius:12px;margin:6px 0;background:color-mix(in srgb,#f5c451 14%,transparent);color:var(--primary-text-color);font-size:.84rem}.hsm20 .ic{color:#f5c451;flex:none;margin-top:2px}
 `;
+
+/* Modul 8 · Import aus go-e */
+const CSS_GOE = `
+.goesteps{margin:4px 0 6px;padding-left:20px;font-size:.88rem;line-height:1.5}.goesteps li{margin:3px 0}
+.goesum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:2px 0 10px}.goesum div{background:color-mix(in srgb,var(--primary-text-color) 5%,transparent);border-radius:12px;padding:8px 10px}.goesum small{display:block;font-size:.72rem;color:var(--mut)}.goesum b{font-size:1.3rem}.goesum b.gn{color:#4ade80}.goesum b.wa{color:#fbbf24}
+.goel{max-height:46vh;overflow:auto;border-top:1px solid var(--line)}
+.goer{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--line)}.goer.dup,.goer.open{opacity:.55}
+.goet{flex:1;min-width:0;display:flex;flex-direction:column}.goet b{font-size:.88rem}.goet small{font-size:.74rem;color:var(--mut)}
+.goev{display:flex;flex-direction:column;align-items:flex-end;text-align:right}.goev b{font-size:.88rem}.goev small{font-size:.72rem;color:#fbbf24}
+.goes{font-style:normal;font-size:.68rem;font-weight:700;border-radius:99px;padding:2px 8px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}.goes.g{color:#4ade80;border-color:color-mix(in srgb,#4ade80 45%,transparent)}.goes.a{color:#fbbf24;border-color:color-mix(in srgb,#fbbf24 45%,transparent)}.goes.x{color:#f87171}
+.goew{font-style:normal;color:#fbbf24;font-size:.68rem}
+.goev small.goep{color:var(--mut)}
+.goeok{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:18px 10px}.goeok .ic{color:#4ade80}.goeok span{font-size:.86rem;color:var(--mut);max-width:380px}
+`;

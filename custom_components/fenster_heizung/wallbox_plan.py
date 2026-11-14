@@ -245,6 +245,8 @@ def clean_stats(raw: Any) -> dict[str, Any]:
                                        "pv": float(s.get("pv", 0)), "cost": float(s.get("cost", 0)), **({"card": str(s["card"])[:30]} if s.get("card") else {}),
                                        **({"note": str(s["note"])[:80]} if s.get("note") else {}), **({"biz": True} if s.get("biz") else {}),
                                        **({"edit": str(s["edit"])[:25]} if s.get("edit") else {}),
+                                       **({"gid": str(s["gid"])[:20]} if s.get("gid") else {}), **({"src": "goe"} if s.get("src") == "goe" else {}),
+                                       **({"pvest": True} if s.get("pvest") else {}),
                                        **({"orig": float(s["orig"])} if s.get("orig") is not None and abs(float(s["orig"]) - float(s.get("kwh", 0))) >= 0.01 else {}),
                                        **({"chg": [{"t": str(c.get("t", ""))[:25], "x": [str(y)[:80] for y in c.get("x", [])][:6]} for c in s["chg"] if isinstance(c, dict)][-KEEP_CHG:]} if isinstance(s.get("chg"), list) and s["chg"] else {})})
             except (TypeError, ValueError):
@@ -547,6 +549,85 @@ def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: dateti
 
 
 MERGE_GAP_H = 12  # so weit dürfen zwei Teile einer Ladung auseinanderliegen
+
+
+# ---------------------------------------------------------------- Import aus dem go-e-Ladelog (CSV aus der App)
+IMPORT_NEAR_S = 20 * 60  # so nah müssen Starts liegen, damit es dieselbe Ladung ist
+
+
+def _ts(s: str) -> float | None:
+    try:
+        return datetime.fromisoformat(s).timestamp()
+    except (TypeError, ValueError):
+        return None
+
+
+def import_plan(st: dict[str, Any], rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Jede Zeile einordnen: new (fehlt), dup (schon da, gleiche Menge), diff (schon da, Menge weicht ab), open (läuft gerade), bad."""
+    ses = st.get("sessions") or []
+    o = st.get("open")
+    o_ts = _ts(o["start"]) if o else None
+    out = []
+    for r in rows:
+        a, b = _ts(r.get("start", "")), _ts(r.get("end", ""))
+        if a is None or b is None or b < a or not 0 < float(r.get("kwh") or 0) < 300:
+            out.append({**r, "st": "bad"})
+            continue
+        if o_ts is not None and b >= o_ts - 60:
+            out.append({**r, "st": "open"})
+            continue
+        hit = None
+        for s in ses:
+            if r.get("gid") and s.get("gid") == r["gid"]:
+                hit = s
+                break
+            t = _ts(s["start"])
+            if t is not None and (abs(t - a) <= IMPORT_NEAR_S or a - 60 <= t <= b):
+                hit = s
+                break
+        if hit is None:
+            out.append({**r, "st": "new"})
+        else:
+            d = float(r["kwh"]) - float(hit.get("kwh", 0))
+            out.append({**r, "st": "diff" if abs(d) >= 0.05 else "dup", "have": hit["start"], "have_kwh": round(float(hit.get("kwh", 0)), 3)})
+    return out
+
+
+def import_apply(st: dict[str, Any], plan: list[dict[str, Any]], take_kwh: bool, now: datetime) -> dict[str, int]:
+    """Neue Ladungen eintragen (Tageswerte am Starttag), auf Wunsch Mengen vorhandener Ladungen an go-e angleichen."""
+    n_new = n_fix = 0
+    for r in plan:
+        if r["st"] == "new":
+            kwh, pv = round(float(r["kwh"]), 3), round(min(float(r["kwh"]), max(0.0, float(r.get("pv") or 0))), 3)
+            grid, price = kwh - pv, float(r.get("ct") or 0)
+            cost = round(float(r["cost"]), 4) if r.get("cost") is not None else round(grid * price / 100, 4)
+            full = float(r["full"]) if r.get("full") is not None else kwh * price / 100
+            mins = max(0.0, (_ts(r["end"]) - _ts(r["start"])) / 60)
+            st["sessions"].append({"start": r["start"], "min": round(mins, 1), "veh": str(r.get("veh") or UNKNOWN)[:30], "kwh": kwh, "pv": pv, "cost": cost,
+                                   **({"card": str(r["card"])[:30]} if r.get("card") else {}), "gid": str(r.get("gid") or "")[:20], "src": "goe",
+                                   **({"pvest": True} if r.get("pvest") else {}),
+                                   "chg": [{"t": now.isoformat(timespec="minutes"), "x": ["aus go-e importiert", f"Preis: {r.get('psrc') or 'heute'}"]}]})
+            d = _day(st, r["start"][:10])
+            d["pv"] += pv
+            d["grid"] += grid
+            d["cost"] += cost
+            d["full"] += full
+            v = d["veh"].setdefault(str(r.get("veh") or UNKNOWN)[:30], {"kwh": 0.0, "cost": 0.0})
+            v["kwh"] += kwh
+            v["cost"] += cost
+            n_new += 1
+        elif r["st"] == "diff" and take_kwh:
+            res = session_edit(st, r["have"], {"kwh": float(r["kwh"])}, now)
+            s = next((x for x in st["sessions"] if x["start"] == r["have"]), None)
+            if s is not None:
+                s["gid"] = str(r.get("gid") or "")[:20]
+                if s.get("chg"):
+                    s["chg"][-1]["x"] = [*s["chg"][-1]["x"], "Menge aus go-e übernommen"][:6]
+            if res is not None:
+                n_fix += 1
+    st["sessions"].sort(key=lambda x: _ts(x["start"]) or 0, reverse=True)
+    del st["sessions"][KEEP_SESSIONS:]
+    return {"new": n_new, "fixed": n_fix}
 
 
 def merge_prev(st: dict[str, Any], s: dict[str, Any]) -> dict[str, Any] | None:

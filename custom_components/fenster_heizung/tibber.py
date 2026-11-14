@@ -138,6 +138,47 @@ class TibberManager:
                 self._cache_ts = time.time() - CACHE_S + 60  # in einer Minute erneut versuchen
         return self._cache
 
+    async def async_history(self, start: datetime, end: datetime) -> dict[int, float]:
+        """Vergangene Stundenpreise (ct/kWh, brutto) von start bis end – für nachgetragene Ladungen (Import aus go-e).
+        Tibber liefert sie über priceInfo.range; der Cursor „before“ ist der base64-kodierte Zeitpunkt."""
+        import base64
+        if not self.token:
+            return {}
+        out: dict[int, float] = {}
+        cur = end
+        for _ in range(6):  # höchstens 6 × 31 Tage
+            n = min(744, int((cur - start).total_seconds() // 3600) + 2)
+            if n <= 0:
+                break
+            cursor = base64.b64encode(cur.isoformat().encode()).decode()
+            q = ('{viewer{homes{id currentSubscription{priceInfo{range(resolution: HOURLY, last: %d, before: "%s")'
+                 '{nodes{startsAt total}}}}}}}' % (n, cursor))
+            s = async_get_clientsession(self.hass)
+            try:
+                async with asyncio.timeout(TIMEOUT_S):
+                    async with s.post(URL, json={"query": q}, headers={"Authorization": f"Bearer {self.token}"}) as r:
+                        data = await r.json(content_type=None) if r.status == 200 else None
+            except Exception as err:  # noqa: BLE001 - ohne Verlauf rechnet der Import anders weiter
+                _LOGGER.debug("Tibber-Verlauf: %s", err)
+                break
+            homes = (((data or {}).get("data") or {}).get("viewer") or {}).get("homes") or []
+            h = next((x for x in homes if x.get("id") == self.home), homes[0] if homes else None)
+            nodes = ((((h or {}).get("currentSubscription") or {}).get("priceInfo") or {}).get("range") or {}).get("nodes") or []
+            if not nodes:
+                break
+            first = None
+            for nd in nodes:
+                try:
+                    t = datetime.fromisoformat(str(nd["startsAt"]))
+                    out[int(t.timestamp()) // 3600 * 3600] = float(nd["total"]) * 100
+                    first = t if first is None or t < first else first
+                except (KeyError, TypeError, ValueError):
+                    continue
+            if first is None or first <= start:
+                break
+            cur = first
+        return out
+
     def current_ct(self, now: datetime) -> float | None:
         c = self._cache
         if not c:

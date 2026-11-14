@@ -27,7 +27,7 @@ from .wallbox_calc import (
 STALE_S = 180  # B6: so alt darf der Netz-Sensor sein, sonst wird nicht mehr erhöht
 from .wallbox_plan import (
     add_energy, add_km, add_temp, build_slots, odo_manual, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick, assign_unknown,
-    stats_view,
+    stats_view, import_plan, import_apply, UNKNOWN,
 )
 
 EVENT_DONE = "fenster_heizung_ladung_beendet"
@@ -444,6 +444,125 @@ class WallboxManager:
         t = start[:16].replace("T", " ")
         self._add(f"Ladung vom {t} gelöscht." if r.get("deleted") else f"Ladung vom {t} mit dem Teil davor zusammengeführt." if ch.get("merge") else f"Ladung vom {t} bearbeitet.")
         return self.stats()
+
+    # ---- Import aus dem go-e-Ladelog (CSV aus der go-e-App, im Panel gelesen)
+    def _import_rows(self, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Fahrzeug je Zeile über den Namen der Karte (wie in der go-e-App), sonst das Fahrzeug „ohne Karte“."""
+        cards = {str(c.get("n", "")).strip().lower(): c.get("i") for c in self.info.get("cards") or []}
+        cfg_cards = {str(n).strip().lower(): i for i, n in enumerate(self.cfg.get("cardNames") or [], 1) if n}
+        out = []
+        for r in rows[:500]:
+            card = str(r.get("card") or "").strip()[:30]
+            idx = cards.get(card.lower()) or cfg_cards.get(card.lower()) if card else None
+            w = resolve_who(self.cfg, idx) if (idx or not card) else None
+            out.append({"gid": re.sub(r"[^0-9A-Za-z_-]", "", str(r.get("gid") or ""))[:20], "start": str(r.get("start") or "")[:32], "end": str(r.get("end") or "")[:32],
+                        "kwh": float(r.get("kwh") or 0), "pv": float(r.get("pv") or 0), "pvest": bool(r.get("pvest")), "card": card,
+                        "veh": w["name"] if w else UNKNOWN, "known_card": bool(idx) or not card})
+        return out
+
+    async def _hist_prices(self, hours: list[int]) -> dict[int, tuple[float, str]]:
+        """Damalige Strompreise je Stunde (ct/kWh): Vertrag aus Modul 20, Tibber, Verlauf des Preis-Sensors, Festpreis."""
+        out: dict[int, tuple[float, str]] = {}
+        if not hours:
+            return out
+        tz = dt_util.now().tzinfo
+        store = self.hass.data.get(DOMAIN, {})
+        anb = store.get("preis_anbieter")
+        if anb is not None:
+            for h in hours:
+                try:
+                    r = anb.preis("strom", datetime.fromtimestamp(h, tz), False)
+                    if r and r.get("ct") is not None:
+                        out[h] = (float(r["ct"]), "Vertrag")
+                except Exception:  # noqa: BLE001
+                    break
+        start, end = datetime.fromtimestamp(min(hours), tz), datetime.fromtimestamp(max(hours) + 3600, tz)
+        tb = self._tibber()
+        if tb is not None and tb.connected and any(h not in out for h in hours):
+            try:
+                hist = await tb.async_history(start, end)
+            except Exception:  # noqa: BLE001
+                hist = {}
+            for h in hours:
+                if h not in out and h in hist:
+                    out[h] = (hist[h], "Tibber")
+        pvc = {**self._pv_cfg(), **(self._haus().get("price") or {})}
+        eid = pvc.get("price_sensor") if pvc.get("price_mode") == "entity" else ""
+        if eid and any(h not in out for h in hours):
+            try:
+                from homeassistant.components.recorder import get_instance
+                from homeassistant.components.recorder.statistics import statistics_during_period
+                res = await get_instance(self.hass).async_add_executor_job(statistics_during_period, self.hass, start, end, {eid}, "hour", None, {"mean"})
+                unit = (self.hass.states.get(eid).attributes.get("unit_of_measurement") if self.hass.states.get(eid) else None)
+                for x in res.get(eid) or []:
+                    t = x.get("start")
+                    ts = int(t.timestamp() if hasattr(t, "timestamp") else float(t)) // 3600 * 3600
+                    if ts in hours and ts not in out and x.get("mean") is not None:
+                        out[ts] = (rate_eur(float(x["mean"]), unit) * 100, "Preis-Sensor")
+            except Exception as err:  # noqa: BLE001 - ohne Statistik bleibt es beim Festpreis bzw. heutigen Preis
+                _LOGGER.debug("Preis-Verlauf: %s", err)
+        if pvc.get("price_mode") != "entity" and pvc.get("price") is not None:
+            try:
+                fix = float(pvc["price"])
+                fix = fix * 100 if fix < 5 else fix
+                for h in hours:
+                    out.setdefault(h, (fix, "Festpreis"))
+            except (TypeError, ValueError):
+                pass
+        return out
+
+    async def _price_rows(self, plan: list[dict[str, Any]], rows: list[dict[str, Any]]) -> None:
+        """Kosten neuer Ladungen mit den damaligen Preisen je Stunde (Netzanteil der Stunde × Preis)."""
+        by_gid = {str(r.get("gid") or "") + str(r.get("start") or ""): r for r in rows}
+        need = sorted({int(h[0]) // 3600 * 3600 for p in plan if p["st"] == "new" for h in (by_gid.get(p["gid"] + p["start"], {}).get("hours") or []) if isinstance(h, list) and len(h) == 3})
+        hp = await self._hist_prices(need[:2000])
+        now_ct = self._price_now(dt_util.now())
+        for p in plan:
+            if p["st"] != "new":
+                continue
+            hrs = [h for h in (by_gid.get(p["gid"] + p["start"], {}).get("hours") or []) if isinstance(h, list) and len(h) == 3]
+            cost = full = kwh_g = kwh_all = 0.0
+            srcs: dict[str, float] = {}
+            miss = 0.0
+            for ts, kwh, pv in hrs:
+                ts = int(ts) // 3600 * 3600
+                kwh, pv = max(0.0, float(kwh)), max(0.0, float(pv))
+                grid = max(0.0, kwh - pv)
+                if ts in hp:
+                    ct, src = hp[ts]
+                    srcs[src] = srcs.get(src, 0.0) + kwh
+                elif now_ct is not None:
+                    ct, src = now_ct, "heute"
+                    miss += kwh
+                else:
+                    ct, src = 0.0, "keiner"
+                    miss += kwh
+                cost += grid * ct / 100
+                full += kwh * ct / 100
+                kwh_g += grid
+                kwh_all += kwh
+            p["cost"], p["full"] = round(cost, 4), round(full, 4)
+            p["ct"] = round(full / kwh_all * 100, 2) if kwh_all > 0 else (now_ct or 0.0)
+            p["psrc"] = max(srcs, key=srcs.get) if srcs and miss < kwh_all / 2 else ("Preis von heute" if now_ct is not None else "kein Preis")
+
+    def import_preview(self, rows: list[dict[str, Any]]) -> dict[str, Any]:
+        plan = import_plan(self._st, self._import_rows(rows))
+        return {"rows": plan, "ct": self._price_now(dt_util.now())}
+
+    async def async_import_preview(self, rows: list[dict[str, Any]]) -> dict[str, Any]:
+        plan = import_plan(self._st, self._import_rows(rows))
+        await self._price_rows(plan, rows)
+        return {"rows": plan, "ct": self._price_now(dt_util.now())}
+
+    async def async_import(self, rows: list[dict[str, Any]], take_kwh: bool) -> dict[str, Any]:
+        now = dt_util.now()
+        ct = self._price_now(now) or 0.0
+        plan = [{**r, "ct": ct} for r in import_plan(self._st, self._import_rows(rows))]
+        await self._price_rows(plan, rows)
+        res = import_apply(self._st, plan, take_kwh, now)
+        self._st_store.async_delay_save(lambda: self._st, 2)
+        self._add(f"Aus go-e importiert: {res['new']} neue Ladungen" + (f", {res['fixed']} Mengen angeglichen" if res["fixed"] else "") + ".")
+        return {**res, **self.stats()}
 
     def _soc(self) -> float | None:
         return self.veh_soc(self.cur_vehicle())

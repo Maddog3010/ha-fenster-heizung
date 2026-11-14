@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b31] - 2026-11-14
+
+### Neu
+- **Modul 8: Ladungen aus go-e importieren.** In der Ladestatistik unter „Ladungen“ → „Aus go-e importieren“ die CSV aus der go-e-App wählen (Laden → Einzelheiten → Energie pro Benutzer → Download CSV).
+  - **Vorschau vor dem Übernehmen:** je Ladung „Neu“, „schon da“ oder „Menge anders“, mit Karte → Fahrzeug (Zuordnung wie in Modul 8 eingestellt).
+  - **Keine doppelten Ladungen:** Ladungen, die Modul 8 schon kennt (gleicher Start ±20 Minuten oder innerhalb der Ladung), werden erkannt. Weicht die Menge ab, kann sie auf Wunsch an den Zähler von go-e angeglichen werden – steht im Änderungsverlauf der Ladung.
+  - **Sonne geschätzt:** Die CSV kennt den Sonnenanteil nicht. Er wird aus der Herkunft des Hausstroms in den Stunden der Ladung geschätzt (Haus-Energiebuch, sonst Statistik der Energiequellen), Ladung ab Start über die „Ladezeit“. In der Liste steht „≈ … % Sonne“ und das Schild „go-e“.
+  - **Kosten mit den damaligen Preisen:** je Stunde der Ladung nur für den Netzanteil – aus dem Vertrag (Modul 20), von Tibber (vergangene Stundenpreise über die Tibber-Schnittstelle), aus der Langzeitstatistik des Preis-Sensors oder der Festpreis. Fehlt alles, der heutige Preis. Die Vorschau zeigt je Ladung Kosten, mittleren Preis und Quelle; die Quelle steht auch im Änderungsverlauf. Neue Ladungen zählen am Starttag.
+  - Die Datei wird nur im Browser gelesen; die Spalte „Link“ (enthält einen Zugang zu go-e) wird verworfen.
+
 ## [2026.11.3b30] - 2026-11-14
 
 ### Neu
