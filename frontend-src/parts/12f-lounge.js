@@ -63,7 +63,7 @@
       dev ? "Entwickler-Zugang: alle Extras und Max sind frei" : s.max_ended ? `Max ist am ${esc(this._spnDate(s.max_ended))} ausgelaufen, Sponsor gilt weiter` : mx ? "Sponsor Max mit Morgen-Briefing und Jahres-Poster" : ""].filter(Boolean).join(" · ");
     const renew = !dev && s.days != null && s.days <= (mx ? 14 : 30) ? `<a class="btn2 ${mx ? "lggold" : "lgpk"}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${mx ? "★ Max verlängern" : "♥ Verlängern"}</a>` : "";
     const b1 = `<div class="lghero ${mx ? "mx" : ""}"><div class="lghl"><small class="lghi">${first ? `Hallo ${esc(first)} ` : "Hallo "}${mx ? `<span class="lggd">★</span>` : "♥"}</small><h2>Danke, dass du Strom &amp; Wärme trägst.</h2><p>${sub}</p>
-      <div class="lgbtns">${renew}<button class="btn2 ${renew ? "" : "lgpk"}" data-act="lgxgo" data-k="lgnew">Was ist neu?</button><button class="btn2" data-act="lgxgo" data-k="lgwish">${this._s3W && this._s3W.url ? "Jetzt abstimmen" : "Wunsch des Monats"}</button></div></div><div class="lghr">${this._lgScene(mx)}</div></div>`;
+      <div class="lgbtns">${renew}<button class="btn2 lgsupb" data-act="supopen">${ic("chat", 16)} Support${this._supS().unread ? ` <i class="supdot in">${this._supS().unread}</i>` : ""}</button><button class="btn2 ${renew ? "" : "lgpk"}" data-act="lgxgo" data-k="lgnew">Was ist neu?</button><button class="btn2" data-act="lgxgo" data-k="lgwish">${this._s3W && this._s3W.url ? "Jetzt abstimmen" : "Wunsch des Monats"}</button></div></div><div class="lghr">${this._lgScene(mx)}</div></div>`;
     const row = (icon, t, subt, ctl) => `<div class="lgit">${icon}<span class="n">${t}<small>${subt}</small></span>${ctl}</div>`;
     const gi = (k) => `<span class="lgg">${this._gx(k, 30, { on: true, lvl: 80 })}</span>`;
     const opn = (act, t = "Öffnen") => `<button class="lgopen" data-act="${act}">${t}</button>`;
@@ -93,7 +93,7 @@
       <div class="lgbdoff">${P.badge ? `<button class="lnk" data-act="lgxbadge" data-k="off">Abzeichen im Kopf ausblenden</button>` : `<span class="mut">Abzeichen ist ausgeblendet – tippe eins an</span>`}</div>
       ${li("Name im Kopf zeigen", sw("lgxname", P.name_head, "Name im Kopf"), first ? `„Hallo ${esc(first)}“ statt „Sponsor“` : "")}</div>`;
     const up = mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn-Rechner, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster und goldener Stern.</small><em class="lgbeta">Beta-Versionen ab 2026.11.2: als Sponsor 3 Tage nach Erscheinen, mit Max sofort</em><em class="lgprice">$3 im Monat · $10 einmalig</em></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`;
-    return `<div class="lgtop">${b1}${b2}</div><div class="lg2 s3row">${this._s3CoachCard(this._s3C, P.coach !== false)}${this._s3ReportCard(this._s3R && this._s3R[-1], P.report !== false)}</div>${mx || dev ? this._mxSection() : ""}<div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
+    return `<div class="lgtop">${b1}${b2}</div>${this._supCard(mx || dev)}<div class="lg2 s3row">${this._s3CoachCard(this._s3C, P.coach !== false)}${this._s3ReportCard(this._s3R && this._s3R[-1], P.report !== false)}</div>${mx || dev ? this._mxSection() : ""}<div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
   }
   /* ---- ohne Schlüssel: A1 Botschaft, A2 Ersparnis, A3 drei Schritte, A4 Extras als Kacheln ---- */
   _lgOut(s) {
@@ -119,7 +119,7 @@
     const a4 = `<div class="lgh4" id="lgget">Was du bekommst – Auswahl</div><div class="lgget">${T.map(([k, t, sub, tg, id, c]) => `<button class="lgxt2" style="--c:${c}" data-act="lgxex" data-k="${id}">${tag(tg)}${this._gx(k, 36, { on: true, lvl: 80 })}<b>${esc(t)}</b><small>${sub}</small></button>`).join("")}</div>`;
     const tiers = `<div class="lgtiers"><div class="lgt"><b>♥ Sponsor <em class="lgprice">$1 im Monat · $5 einmalig</em></b><small>monatlich oder einmalig (1 Jahr) · alle Extras, Vorabversionen, Hausfluss</small><em class="lgbeta">Ab 2026.11.2: Beta-Versionen 3 Tage nach Erscheinen installierbar</em></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max <em class="lgprice">$3 im Monat · $10 einmalig</em></b><small>monatlich oder einmalig 3 Monate (danach bis 1 Jahr Sponsor) · zusätzlich Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Beta-Kanal 30 Tage</small><em class="lgbeta mx">Ab 2026.11.2: Beta-Versionen sofort installierbar</em></div></div>`;
     const ghc = adm && this._ghS().ready ? `<div class="lgt lgghc"><span class="blghi">${ic("heart", 22)}</span><span class="blght"><b>Du sponserst schon?</b><small>Einmal mit GitHub anmelden – Stufe und Laufzeit werden automatisch erkannt. Ohne Mail, ohne Schlüssel.</small></span><button class="btn2 spnb pri" data-act="spngh">${ic("key", 16)} Mit GitHub freischalten</button></div>` : "";
-    return `${hero}${ghc}<div class="lg2">${a2}${a3}</div>${a4}${tiers}`;
+    return `${hero}${adm ? this._supCard(false) : ""}${ghc}<div class="lg2">${a2}${a3}</div>${a4}${tiers}`;
   }
   /* ---- Aktionen ---- */
   _lgAct(a, b) {

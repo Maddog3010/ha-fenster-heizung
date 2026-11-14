@@ -15,7 +15,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._vis = () => { if (document.visibilityState !== "visible" || !this._hass) return; setTimeout(() => { if (this._mdActive && this._mdActive() === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); } }, 400); };
     document.addEventListener("visibilitychange", this._vis);
   }
-  disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); if (this._vis) document.removeEventListener("visibilitychange", this._vis); }
+  disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); clearInterval(this._supW); clearInterval(this._supTimer); if (this._vis) document.removeEventListener("visibilitychange", this._vis); }
   _tick() {
     this._tmTick();
     this._visFix();
@@ -119,6 +119,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._cfgOk && this._admin()) this._msRescueLoad();
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
+    if (this._admin()) this._supWatch();
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     if (vbeta(this._ver)) { try { this._blG = await this._hass.callWS({ type: "fenster_heizung/beta_gate" }); } catch (_) { this._blG = null; } }  /* Beta-Freigabe, für alle Nutzer */
     this._adLoad(true);

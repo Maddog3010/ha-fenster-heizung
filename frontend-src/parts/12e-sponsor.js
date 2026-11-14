@@ -18,7 +18,7 @@
   _spnBtn() {
     const s = this._spnS(), adm = this._admin();
     if (s.active && s.prefs.badge) { const gold = s.tier === "max" && s.prefs.badge_style !== "heart", lab = s.prefs.name_head && s.name && s.state !== "dev" ? "Hallo " + s.name.split(" ")[0] : gold ? "Max" : "Sponsor";
-      return `<button class="pillbtn spnb on ${gold ? "gold" : ""}" data-act="spnopen" aria-label="Sponsor-Lounge" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${gold ? `<span class="spnstar">★</span>` : s.prefs.badge_style === "sun" ? `<span class="spnstar sun">☀</span>` : s.prefs.badge_style === "snow" ? `<span class="spnstar snow">❄</span>` : ic("heart", 15)}<span class="bl">${esc(lab)}</span></button>`; }
+      return `<button class="pillbtn spnb on ${gold ? "gold" : ""}" data-act="spnopen" aria-label="Sponsor-Lounge" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${gold ? `<span class="spnstar">★</span>` : s.prefs.badge_style === "sun" ? `<span class="spnstar sun">☀</span>` : s.prefs.badge_style === "snow" ? `<span class="spnstar snow">❄</span>` : ic("heart", 15)}<span class="bl">${esc(lab)}</span>${this._supS().unread ? `<i class="supdot hd" aria-label="Neue Antwort im Support-Chat"></i>` : ""}</button>`; }
     if (!adm) return "";
     return `<button class="pillbtn spnb" data-act="spnopen" aria-label="Sponsor-Lounge" title="Sponsor werden oder Schlüssel eingeben">${ic("heart", 15)}<span class="bl">Sponsor</span></button>`;
   }
@@ -202,5 +202,8 @@
       ${this._ghAdm()}
       <div class="lsec" style="margin-top:16px">${ic("flask", 15)}Zum Testen</div>
       <div class="vrow"><span>Entwickler-Zugang aktiv<small class="mut" style="display:block">Aus: Extras, Vorabversionen und Module nur für Sponsoren sind gesperrt – so wie ohne Sponsoring. Diese Verwaltung bleibt erreichbar.</small></span><button class="sw ${this._spnS().dev_off ? "" : "on"}" data-act="spndev" data-k="${this._spnS().dev_off ? "on" : "off"}" aria-pressed="${!this._spnS().dev_off}" aria-label="Entwickler-Zugang aktiv"></button></div>
+      <div class="lsec" style="margin-top:16px">${ic("chat", 15)}Support-Chat</div>
+      <div class="mut sm" style="margin:0 0 6px">${this._supS().ready && !this._supS().url_dev ? "Eingerichtet – Nachrichten kommen in deinem Telegram an." : "Test-Adresse deines Vermittlers (nur bei dir). Anleitung: Ordner support-worker im Repo."}</div>
+      <div class="gbtns"><input class="osel" data-f="supurl" placeholder="https://….workers.dev" value="${esc(this._supS().url_dev || "")}" aria-label="Test-Adresse Support-Vermittler" style="flex:1;min-width:0"><button class="btn2" data-act="supurl">Speichern</button></div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
   }

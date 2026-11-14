@@ -1,0 +1,126 @@
+  /* ================= Support-Chat für alle (wie WhatsApp), Sponsor Max bevorzugt =================
+     Nachrichten gehen über einen kleinen Vermittler an den Telegram-Bot des Entwicklers (support.py, support-worker/).
+     Max-Sponsoren sind dort als „bevorzugt“ markiert, Sponsoren mit ♥. Vor der ersten Nachricht: Datenschutz-Hinweis. */
+  _supS() { return this._supD || { ready: false, msgs: [], privacy: false, unread: 0, access: { active: false, tier: "" }, notify: true }; }
+  _supWS(act, extra = {}) {
+    return this._hass.callWS({ type: "fenster_heizung/support", act, ...extra }).then((r) => { this._supD = r; return r; });
+  }
+  _supLoad() { return this._supWS("get").catch(() => null); }
+  /* ungelesene Antworten für Kopf und Lounge: beim Start und alle 5 Minuten (lokal, der Abruf beim Vermittler läuft im Hintergrund der Integration) */
+  _supWatch() {
+    const chk = () => { const u = this._supS().unread; this._supLoad().then((r) => { if (r && r.unread !== u && !(this._modal && this._modal.type === "sup")) this._render(); }); };
+    chk(); clearInterval(this._supW); this._supW = setInterval(() => { if (document.visibilityState === "visible") chk(); }, 300000);
+  }
+  _supOpen() {
+    this._modal = { type: "sup", diag: false, showDiag: false, confirm: false };
+    this._renderModal();
+    this._supWS("poll").then(() => this._supRefresh()).catch(() => this._supRefresh());
+    clearInterval(this._supTimer);
+    this._supTimer = setInterval(() => {
+      if (!this._modal || this._modal.type !== "sup") { clearInterval(this._supTimer); this._supTimer = null; this._render(); return; }
+      if (document.visibilityState === "visible") this._supWS("poll").then(() => this._supRefresh()).catch(() => { /* nächster Versuch */ });
+    }, 20000);
+  }
+  /* nur die Nachrichtenliste neu zeichnen – das Eingabefeld behält Text und Fokus */
+  _supRefresh() {
+    const box = this.shadowRoot.querySelector(".supmsgs");
+    if (!box || !this._modal || this._modal.type !== "sup" || this._modal.privacy || !this._supS().privacy) { if (this._modal && this._modal.type === "sup") this._renderModal(); return; }
+    const atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+    box.innerHTML = this._supList();
+    if (atEnd) box.scrollTop = box.scrollHeight;
+  }
+  _supDay(ts) {
+    const d = new Date(ts * 1000), t = new Date(), y = new Date(); y.setDate(t.getDate() - 1);
+    const same = (a, b) => a.toDateString() === b.toDateString();
+    return same(d, t) ? "Heute" : same(d, y) ? "Gestern" : d.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long" });
+  }
+  _supList() {
+    const S = this._supS(), mx = S.access.tier === "max";
+    if (!S.msgs.length) {
+      return `<div class="supempty"><span class="supwave">👋</span><b>Schreib mir direkt</b><span>Frag, was dir unklar ist, melde einen Fehler oder schick einen Wunsch. Ich antworte hier im Chat${mx ? " – als Sponsor Max kommst du zuerst dran" : ""}.</span>${S.access.active ? "" : `<span class="supup">★ Mit <button class="lnk" data-act="spnopen">Sponsor Max</button> kommen deine Nachrichten zuerst dran.</span>`}
+        <div class="supsugg">${["Ich habe eine Frage zu …", "Mir ist ein Fehler aufgefallen", "Ich wünsche mir …"].map((t) => `<button class="supchip" data-act="supsugg" data-k="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>`;
+    }
+    let last = "", out = "";
+    for (const m of S.msgs) {
+      const day = this._supDay(m.ts);
+      if (day !== last) { out += `<div class="supday"><span>${esc(day)}</span></div>`; last = day; }
+      const me = m.from === "me", time = new Date(m.ts * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+      const tick = !me ? "" : m.state === "sending" ? `<span class="suptk" title="Wird gesendet">${ic("clock", 12)}</span>` : m.state === "failed" ? `<span class="suptk err" title="Nicht gesendet">!</span>` : m.state === "read" ? `<span class="suptk rd" title="Gelesen">✓✓</span>` : `<span class="suptk" title="Gesendet">✓</span>`;
+      const txt = esc(m.text).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>').replace(/\n/g, "<br>");
+      out += `<div class="supb ${me ? "me" : "dev"}${m.state === "failed" ? " fail" : ""}"><div class="supbt">${txt}${m.diag ? `<span class="supatt">${ic("clip", 12)} Diagnose angehängt</span>` : ""}<span class="supmeta">${time}${tick}</span></div>
+        ${m.state === "failed" ? `<div class="supfail">${esc(this._supErr(m.err))} <button class="lnk" data-act="supretry" data-k="${m.id}">Erneut senden</button> · <button class="lnk" data-act="supdrop" data-k="${m.id}">Löschen</button></div>` : ""}</div>`;
+    }
+    return out;
+  }
+  _supErr(e) {
+    return { no_sponsor: "Kein aktives Sponsoring gefunden.", offline: "Keine Verbindung.", too_many: "Zu viele Nachrichten in kurzer Zeit.", telegram: "Der Support ist gerade nicht erreichbar.", not_ready: "Chat ist noch nicht eingerichtet.", privacy: "Bitte erst den Hinweis bestätigen." }[e] || "Nicht gesendet.";
+  }
+  _supModal() {
+    const S = this._supS(), m = this._modal, A = S.access, mx = A.tier === "max", close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
+    const head = `<div class="suph"><img class="supav" src="${LOGO_URL}" alt=""><div class="suphn"><b>Support · Maddog3010</b><span>${mx ? `<em class="supmx">★ Bevorzugt</em> Max-Nachrichten kommen zuerst dran` : A.active ? `<em class="supsp">♥ Sponsor</em> Antwort direkt hier im Chat` : "Antwort direkt hier im Chat"}</span></div>${S.msgs.length && A.active && S.privacy ? `<button class="ibtn" data-act="supclear" aria-label="Verlauf löschen" title="Verlauf löschen">${ic("trash", 18)}</button>` : ""}${close}</div>`;
+    const wrap = (b) => `<div class="ov" data-act="close"></div><div class="sheet wide supsh" role="dialog" aria-modal="true" aria-label="Support-Chat">${head}${b}</div>`;
+    if (!S.ready) return wrap(`<div class="supgate"><span class="supgi">${ic("tools", 34)}</span><b>Der Support-Chat wird gerade eingerichtet</b><span>Er ist mit einem der nächsten Updates da. Bis dahin erreichst du mich per E-Mail an ${esc(SPN_MAIL)}.</span></div>`);
+    if (!S.privacy) {
+      return wrap(`<div class="supprv"><b>${ic("lock", 16)} Bevor du schreibst</b>
+        <ul><li>Deine Nachrichten gehen über einen kleinen Vermittler (Cloudflare, EU/USA) an <b>Telegram</b> und landen dort beim Entwickler.</li>
+        <li>Mitgeschickt werden nur: deine Nachricht, eine zufällige Nummer dieser Installation und – falls du Sponsor bist – dein Sponsor-Name und deine Stufe. ${ic("clip", 13)} Diagnosedaten nur, wenn du sie selbst anhängst – du siehst vorher, was drinsteht.</li>
+        <li>Telegram ist ein Dienst der Telegram Group (Sitz in Dubai). Dort gelten deren Datenschutzregeln.</li>
+        <li>Der Verlauf liegt in deinem Home Assistant und beim Vermittler höchstens 180 Tage. Mit ${ic("trash", 13)} löschst du ihn jederzeit an beiden Stellen.</li>
+        <li>Bitte keine Passwörter, Schlüssel oder Zugangsdaten schreiben.</li></ul>
+        <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="supok">${ic("check", 16)} Verstanden, Chat starten</button></div></div>`);
+    }
+    if (m.confirm) {
+      return wrap(`<div class="supgate"><span class="supgi">${ic("trash", 30)}</span><b>Ganzen Verlauf löschen?</b><span>Die Nachrichten werden hier und beim Vermittler gelöscht. In Telegram beim Entwickler bleiben sie, bis er sie dort löscht.</span>
+        <div class="gbtns" style="justify-content:center;margin-top:12px"><button class="btn2" data-act="supnoclear">Abbrechen</button><button class="btn2 pri" data-act="supdoclear">${ic("trash", 16)} Löschen</button></div></div>`);
+    }
+    const D = m.diagData;
+    const diagBox = m.diag ? `<div class="supdiag"><span>${ic("clip", 14)} <b>Diagnose wird angehängt:</b> Version, Home-Assistant-Version, eingeschaltete Module, letzte Fehlermeldungen von Strom &amp; Wärme. <button class="lnk" data-act="supdiagshow">${m.showDiag ? "Ausblenden" : "Ansehen"}</button></span>
+      ${m.showDiag ? `<pre class="supjson">${D ? esc(JSON.stringify(D, null, 2)) : "Lädt …"}</pre>` : ""}</div>` : "";
+    return wrap(`<div class="supmsgs" aria-live="polite">${this._supList()}</div>${S.err === "offline" ? `<div class="supnet">${ic("alert", 14)} Keine Verbindung zum Support – neue Antworten kommen, sobald sie wieder steht.</div>` : ""}${diagBox}
+      <div class="supin"><button class="supic ${m.diag ? "on" : ""}" data-act="supdiag" aria-pressed="${!!m.diag}" aria-label="Diagnose anhängen" title="Diagnose anhängen">${ic("clip", 20)}</button>
+        <textarea class="supta" rows="1" maxlength="2000" placeholder="Nachricht" aria-label="Nachricht">${esc(this._supDraft || "")}</textarea>
+        <button class="supsend" data-act="supsend" aria-label="Senden">${ic("send", 20)}</button></div>`);
+  }
+  _supBind(box) {
+    const ta = box.querySelector(".supta"), list = box.querySelector(".supmsgs");
+    if (list) list.scrollTop = list.scrollHeight;
+    if (!ta) return;
+    const fit = () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 140) + "px"; };
+    fit();
+    ta.addEventListener("input", () => { this._supDraft = ta.value; fit(); });
+    ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !this._narrow) { e.preventDefault(); this._supSend(); } });
+  }
+  _supSend() {
+    const ta = this.shadowRoot.querySelector(".supta"), text = String((ta && ta.value) || this._supDraft || "").trim();
+    if (!text || this._supBusy) return;
+    const m = this._modal, S = this._supS();
+    this._supBusy = true;
+    S.msgs = [...S.msgs, { id: "tmp", from: "me", text, ts: Date.now() / 1000, state: "sending", diag: !!m.diag }];
+    this._supDraft = ""; if (ta) { ta.value = ""; ta.style.height = "auto"; }
+    this._supRefresh(); const list = this.shadowRoot.querySelector(".supmsgs"); if (list) list.scrollTop = list.scrollHeight;
+    this._supWS("send", { text, diag: !!m.diag }).then((r) => { if (r.ok) { m.diag = false; m.showDiag = false; this._renderModal(); } else this._supRefresh(); })
+      .catch(() => { this._toast("Das ging nicht"); this._supLoad().then(() => this._supRefresh()); })
+      .finally(() => { this._supBusy = false; });
+  }
+  _supAct(a, b) {
+    const k = b.dataset.k, m = this._modal;
+    if (a === "supopen") { this._supOpen(); return; }
+    if (a === "supurl") { const el = this.shadowRoot.querySelector('[data-f="supurl"]'); this._supWS("opts", { url_dev: String((el && el.value) || "").trim() }).then(() => { this._renderModal(); this._toast("Gespeichert"); }).catch(() => this._toast("Das ging nicht")); return; }
+    if (!m || m.type !== "sup") return;
+    if (a === "supok") { this._supWS("privacy").then(() => this._renderModal()); }
+    else if (a === "supsend") this._supSend();
+    else if (a === "supsugg") { this._supDraft = k + " "; this._renderModal(); const ta = this.shadowRoot.querySelector(".supta"); if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } }
+    else if (a === "supdiag") { m.diag = !m.diag; if (!m.diag) m.showDiag = false; this._renderModal(); }
+    else if (a === "supdiagshow") { m.showDiag = !m.showDiag; this._renderModal(); if (m.showDiag && !m.diagData) this._supWS("diag").then((r) => { m.diagData = r.diag; this._renderModal(); }); }
+    else if (a === "supretry") this._supWS("retry", { mid: k }).then(() => this._supRefresh());
+    else if (a === "supdrop") this._supWS("drop", { mid: k }).then(() => this._supRefresh());
+    else if (a === "supclear") { m.confirm = true; this._renderModal(); }
+    else if (a === "supnoclear") { m.confirm = false; this._renderModal(); }
+    else if (a === "supdoclear") this._supWS("clear").then(() => { m.confirm = false; this._renderModal(); this._toast("Verlauf gelöscht"); });
+  }
+  /* Karte in der Sponsor-Lounge bzw. im Sponsor-Bereich (für alle) */
+  _supCard(mx) {
+    const S = this._supS(), last = [...S.msgs].reverse().find((x) => x.from === "dev");
+    const sub = S.unread ? `<b class="supnew">${S.unread} ${S.unread === 1 ? "neue Antwort" : "neue Antworten"}</b>` : last ? `Letzte Antwort: „${esc(last.text.slice(0, 60))}${last.text.length > 60 ? "…" : ""}“` : "Frag, melde Fehler oder schick Wünsche – ich antworte hier im Chat.";
+    return `<div class="lgt lgsup" style="--c:#25d366"><span class="lgsupi">${ic("chat", 26)}${S.unread ? `<i class="supdot">${S.unread}</i>` : ""}</span><span class="n"><b>Support-Chat${mx ? ` <em class="supmx">★ Bevorzugt</em>` : ""}</b><small>${sub}</small></span><button class="btn2 lgsupb" data-act="supopen">${ic("chat", 16)} Chat öffnen</button></div>`;
+  }

@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b26] - 2026-11-14
+
+### Neu
+- **Support-Chat – wie WhatsApp, direkt im Dashboard, für alle.** Im Sponsor-Bereich bzw. in der Sponsor-Lounge gibt es die Karte „Support-Chat“, in der Lounge zusätzlich oben den Knopf „Support“.
+  - Chatfenster mit Sprechblasen, Uhrzeit, Tagestrennern und Haken (✓ gesendet, ✓✓ gelesen), Vorschlägen für die erste Nachricht und „Erneut senden“, falls eine Nachricht nicht rausging. Enter sendet am Rechner, Umschalt+Enter macht eine neue Zeile.
+  - **Sponsor Max ist „★ Bevorzugt“:** Max-Nachrichten kommen beim Entwickler mit eigener Kennzeichnung an und zuerst dran. Sponsoren sind mit ♥ markiert, alle anderen als „Nutzer“.
+  - **Diagnose anhängen (📎):** Version, Home-Assistant-Version, eingeschaltete Module und die letzten Fehlermeldungen von Strom & Wärme. Vor dem Senden lässt sich genau ansehen, was mitgeht.
+  - **Datenschutz-Hinweis** vor der ersten Nachricht: Die Nachrichten laufen über einen kleinen Vermittler (Cloudflare) an Telegram. Mit dem Papierkorb wird der Verlauf hier und beim Vermittler gelöscht.
+  - Neue Antworten: Zähler an der Karte, Punkt am Sponsor-Knopf im Kopf und eine Meldung in Home Assistant. Bei offenem Chat kommen Antworten nach etwa 20 Sekunden, sonst prüft die Integration alle 15 Minuten.
+- **Support-Vermittler** im Ordner `support-worker/` (Cloudflare Worker mit Anleitung, bebildert in `docs/Anleitung_Support-Chat.pdf`): erkennt bei jeder Nachricht Sponsor und Sponsor Max (Schlüssel inkl. Sperrliste oder GitHub), begrenzt die Menge (Sponsoren 30 pro Stunde, ohne Sponsoring 10 pro Stunde und 30 pro Tag) und gibt Antworten aus Telegram weiter. Unter „Sponsoren verwalten“ lässt sich eine Test-Adresse eintragen, die nur beim Entwickler gilt. Bis die feste Adresse in der Integration steht, zeigt der Chat „wird gerade eingerichtet“.
+
 ## [2026.11.3b25] - 2026-11-14
 
 ### Neu

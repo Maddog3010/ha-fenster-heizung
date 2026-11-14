@@ -4,6 +4,9 @@ const ICONS = {
   grid: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
   layers: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12.5l9 5 9-5M3 17l9 5 9-5"/>',
   chev: '<path d="M6 9l6 6 6-6"/>',
+  chat: '<path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5z"/>',
+  send: '<path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/><path d="M11.5 13.5L20 4"/>',
+  clip: '<path d="M20 11.5l-8.2 8.2a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.4 8.4a1.7 1.7 0 0 1-2.4-2.4l7.7-7.7"/>',
   moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
   cloud: '<path d="M7 18a4.5 4.5 0 0 1-.6-9A6 6 0 0 1 18 9.5 4.3 4.3 0 0 1 17.5 18z"/>',
   partly: '<circle cx="8.5" cy="8.5" r="3"/><path d="M8.5 2.5V4M2.5 8.5H4M4.3 4.3l1 1M12.7 4.3l-1 1"/><path d="M9 20a4 4 0 0 1-.4-8 5 5 0 0 1 9.6 1.5A3.4 3.4 0 0 1 17.5 20z"/>',
@@ -3133,6 +3136,51 @@ const CSS_GH = `
 @media(max-width:520px){.blgh .btn2,.lgghc .btn2{flex:1 1 100%}}
 .btn2.lgghb{border-color:color-mix(in srgb,#ec4899 55%,transparent)}
 `;
+/* Support-Chat für Sponsoren (wie WhatsApp) */
+const CSS_SUP = `
+.sheet.supsh{display:flex;flex-direction:column;padding:0;overflow:hidden;height:88vh;max-height:88vh}
+@media(min-width:720px){.sheet.wide.supsh{width:min(560px,94vw);height:min(760px,88vh)}}
+.suph{display:flex;align-items:center;gap:10px;padding:12px 12px 12px 14px;background:color-mix(in srgb,var(--card) 80%,#000);border-bottom:1px solid var(--line);flex:none}
+.supav{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:none;background:#111}
+.suphn{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.suphn b{font-size:.98rem}.suphn span{font-size:.76rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.supmx{font-style:normal;font-weight:700;font-size:.7rem;color:#fbbf24;background:color-mix(in srgb,#fbbf24 16%,transparent);border-radius:99px;padding:1px 7px;margin-right:4px}
+.supmsgs{flex:1;overflow-y:auto;padding:12px 10px 8px;display:flex;flex-direction:column;gap:3px;background-color:#0b141a;background-image:radial-gradient(rgba(255,255,255,.035) 1px,transparent 1.4px);background-size:18px 18px;overscroll-behavior:contain}
+.supday{display:flex;justify-content:center;margin:8px 0 6px}.supday span{font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:8px;background:#182229;color:#8696a0}
+.supb{display:flex;flex-direction:column;max-width:82%}.supb.me{align-self:flex-end;align-items:flex-end}.supb.dev{align-self:flex-start}
+.supbt{position:relative;padding:6px 9px 7px;border-radius:10px;font-size:.9rem;line-height:1.38;word-wrap:break-word;overflow-wrap:anywhere;box-shadow:0 1px .5px rgba(0,0,0,.25)}
+.supb.me .supbt{background:#005c4b;color:#e9edef;border-top-right-radius:3px}.supb.dev .supbt{background:#202c33;color:#e9edef;border-top-left-radius:3px}
+.supb.fail .supbt{opacity:.75}.supbt a{color:#53bdeb}
+.supmeta{float:right;display:inline-flex;align-items:center;gap:3px;margin:6px 0 -3px 10px;font-size:.66rem;color:rgba(233,237,239,.6);white-space:nowrap}
+.suptk{display:inline-flex;font-size:.72rem;letter-spacing:-2px}.suptk.rd{color:#53bdeb}.suptk.err{letter-spacing:0;color:#fff;background:#ef4444;border-radius:50%;width:13px;height:13px;justify-content:center;font-weight:800;font-size:.62rem}
+.supatt{display:flex;align-items:center;gap:4px;margin-top:4px;font-size:.72rem;color:rgba(233,237,239,.7)}
+.supfail{font-size:.72rem;color:#fca5a5;margin:3px 2px 4px}.supfail .lnk{font-size:.72rem}
+.supempty{margin:auto;max-width:330px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;padding:20px 12px;color:#e9edef}.supempty>span{font-size:.84rem;color:#8696a0;line-height:1.45}
+.supwave{font-size:2rem}.supsugg{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px}
+.supchip{border:1px solid rgba(255,255,255,.14);background:#202c33;color:#e9edef;border-radius:99px;padding:6px 11px;font:inherit;font-size:.78rem;cursor:pointer}
+.supin{display:flex;align-items:flex-end;gap:8px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--card) 80%,#000);border-top:1px solid var(--line);flex:none}
+.supta{flex:1;resize:none;border:0;outline:0;border-radius:20px;padding:10px 14px;font:inherit;font-size:.92rem;line-height:1.3;background:var(--bg2,#2a3942);color:inherit;max-height:140px;min-height:40px;box-sizing:border-box}
+.supic{flex:none;width:40px;height:40px;border-radius:50%;border:0;background:transparent;color:var(--mut);display:grid;place-items:center;cursor:pointer}.supic.on{color:#25d366;background:color-mix(in srgb,#25d366 15%,transparent)}
+.supsend{flex:none;width:44px;height:44px;border-radius:50%;border:0;background:#00a884;color:#fff;display:grid;place-items:center;cursor:pointer}.supsend:active{transform:scale(.94)}
+.supdiag{padding:8px 12px;font-size:.78rem;line-height:1.4;background:color-mix(in srgb,#25d366 9%,var(--card));border-top:1px solid var(--line);flex:none;max-height:40vh;overflow:auto}.supdiag .lnk{font-size:.78rem}
+.supjson{margin:6px 0 0;padding:8px;border-radius:8px;background:#0b141a;color:#9be7c4;font-size:.7rem;white-space:pre-wrap;word-break:break-word}
+.supnet{display:flex;gap:6px;align-items:center;padding:6px 12px;font-size:.76rem;color:#fcd34d;background:color-mix(in srgb,#f59e0b 12%,var(--card));flex:none}
+.supgate{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:24px 22px}.supgate>b{font-size:1.02rem}.supgate>span{font-size:.86rem;color:var(--mut);line-height:1.45;max-width:380px}
+.supgi{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,#25d366 16%,transparent);color:#25d366;margin-bottom:6px}
+.supprv{flex:1;overflow:auto;padding:16px 18px}.supprv>b{display:flex;align-items:center;gap:6px;font-size:1rem}.supprv ul{margin:10px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:8px;font-size:.86rem;line-height:1.45}.supprv .ic{vertical-align:-2px}
+.supdot{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:#25d366;color:#052e16;font-style:normal;font-weight:800;font-size:.66rem;box-sizing:border-box}
+.supdot.hd{position:absolute;top:-2px;right:-2px;min-width:10px;width:10px;height:10px;padding:0;border:2px solid var(--card)}.pillbtn.spnb{position:relative}
+.supdot.in{margin-left:4px}
+.supup{font-size:.78rem;color:#fbbf24;margin-top:6px}.supup .lnk{font-size:.78rem;color:#fbbf24;text-decoration:underline}.supsp{font-style:normal;font-weight:700;font-size:.7rem;color:#f9a8d4;background:color-mix(in srgb,#ec4899 16%,transparent);border-radius:99px;padding:1px 7px;margin-right:4px}
+.lgsup{display:flex;align-items:center;gap:12px;margin-top:10px}.lgsup .n{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.lgsup small{font-size:.8rem;color:var(--mut);line-height:1.4}.supnew{color:#25d366}
+.lgsupi{position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,#25d366 16%,transparent);color:#25d366;flex:none}.lgsupi .supdot{position:absolute;top:-3px;right:-3px}
+.btn2.lgsupb{border-color:color-mix(in srgb,#25d366 50%,transparent)}
+@media(max-width:520px){.lgsup{flex-wrap:wrap}.lgsup .btn2{flex:1 1 100%}}
+:host([style*="color-scheme: light"]) .supmsgs{background-color:#efeae2;background-image:radial-gradient(rgba(0,0,0,.05) 1px,transparent 1.4px)}
+:host([style*="color-scheme: light"]) .supb.me .supbt{background:#d9fdd3;color:#111b21}:host([style*="color-scheme: light"]) .supb.dev .supbt{background:#fff;color:#111b21}
+:host([style*="color-scheme: light"]) .supmeta,:host([style*="color-scheme: light"]) .supatt{color:#667781}:host([style*="color-scheme: light"]) .supday span{background:#fff;color:#54656f}
+:host([style*="color-scheme: light"]) .supempty{color:#111b21}:host([style*="color-scheme: light"]) .supchip{background:#fff;color:#111b21;border-color:#d1d7db}
+:host([style*="color-scheme: light"]) .supta{background:#fff}:host([style*="color-scheme: light"]) .supjson{background:#f0f2f5;color:#065f46}
+`;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -3150,7 +3198,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._vis = () => { if (document.visibilityState !== "visible" || !this._hass) return; setTimeout(() => { if (this._mdActive && this._mdActive() === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); } }, 400); };
     document.addEventListener("visibilitychange", this._vis);
   }
-  disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); if (this._vis) document.removeEventListener("visibilitychange", this._vis); }
+  disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); clearInterval(this._supW); clearInterval(this._supTimer); if (this._vis) document.removeEventListener("visibilitychange", this._vis); }
   _tick() {
     this._tmTick();
     this._visFix();
@@ -3254,6 +3302,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._cfgOk && this._admin()) this._msRescueLoad();
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
+    if (this._admin()) this._supWatch();
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     if (vbeta(this._ver)) { try { this._blG = await this._hass.callWS({ type: "fenster_heizung/beta_gate" }); } catch (_) { this._blG = null; } }  /* Beta-Freigabe, für alle Nutzer */
     this._adLoad(true);
@@ -6681,7 +6730,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
@@ -6790,6 +6839,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "mphide" || a === "mpdhide" || a === "mpreset") this._mpAct(a, b);
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
     else if (a.startsWith("spn")) this._spnAct(a, b);
+    else if (a.startsWith("sup")) this._supAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
     else if (a.startsWith("mx") && this._mxAct) this._mxAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
@@ -7467,6 +7517,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "spset") { box.innerHTML = this._spModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "s3rep") { box.innerHTML = this._s3RepModal(); return; }
     if (m.type === "mxsim" || m.type === "mxwaset" || m.type === "mxapset") { const top = (box.querySelector(".sheet") || {}).scrollTop || 0; box.innerHTML = this._mxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "sup") { box.innerHTML = this._supModal(); this._supBind(box); return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm", "spngh"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -12416,7 +12467,7 @@ class FensterHeizungPanel extends HTMLElement {
   _spnBtn() {
     const s = this._spnS(), adm = this._admin();
     if (s.active && s.prefs.badge) { const gold = s.tier === "max" && s.prefs.badge_style !== "heart", lab = s.prefs.name_head && s.name && s.state !== "dev" ? "Hallo " + s.name.split(" ")[0] : gold ? "Max" : "Sponsor";
-      return `<button class="pillbtn spnb on ${gold ? "gold" : ""}" data-act="spnopen" aria-label="Sponsor-Lounge" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${gold ? `<span class="spnstar">★</span>` : s.prefs.badge_style === "sun" ? `<span class="spnstar sun">☀</span>` : s.prefs.badge_style === "snow" ? `<span class="spnstar snow">❄</span>` : ic("heart", 15)}<span class="bl">${esc(lab)}</span></button>`; }
+      return `<button class="pillbtn spnb on ${gold ? "gold" : ""}" data-act="spnopen" aria-label="Sponsor-Lounge" title="${esc(s.name ? "Danke, " + s.name : "Sponsor")}">${gold ? `<span class="spnstar">★</span>` : s.prefs.badge_style === "sun" ? `<span class="spnstar sun">☀</span>` : s.prefs.badge_style === "snow" ? `<span class="spnstar snow">❄</span>` : ic("heart", 15)}<span class="bl">${esc(lab)}</span>${this._supS().unread ? `<i class="supdot hd" aria-label="Neue Antwort im Support-Chat"></i>` : ""}</button>`; }
     if (!adm) return "";
     return `<button class="pillbtn spnb" data-act="spnopen" aria-label="Sponsor-Lounge" title="Sponsor werden oder Schlüssel eingeben">${ic("heart", 15)}<span class="bl">Sponsor</span></button>`;
   }
@@ -12600,6 +12651,9 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._ghAdm()}
       <div class="lsec" style="margin-top:16px">${ic("flask", 15)}Zum Testen</div>
       <div class="vrow"><span>Entwickler-Zugang aktiv<small class="mut" style="display:block">Aus: Extras, Vorabversionen und Module nur für Sponsoren sind gesperrt – so wie ohne Sponsoring. Diese Verwaltung bleibt erreichbar.</small></span><button class="sw ${this._spnS().dev_off ? "" : "on"}" data-act="spndev" data-k="${this._spnS().dev_off ? "on" : "off"}" aria-pressed="${!this._spnS().dev_off}" aria-label="Entwickler-Zugang aktiv"></button></div>
+      <div class="lsec" style="margin-top:16px">${ic("chat", 15)}Support-Chat</div>
+      <div class="mut sm" style="margin:0 0 6px">${this._supS().ready && !this._supS().url_dev ? "Eingerichtet – Nachrichten kommen in deinem Telegram an." : "Test-Adresse deines Vermittlers (nur bei dir). Anleitung: Ordner support-worker im Repo."}</div>
+      <div class="gbtns"><input class="osel" data-f="supurl" placeholder="https://….workers.dev" value="${esc(this._supS().url_dev || "")}" aria-label="Test-Adresse Support-Vermittler" style="flex:1;min-width:0"><button class="btn2" data-act="supurl">Speichern</button></div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
   }
   /* ================= Mit GitHub freischalten (Konzept Sponsor-Freischaltung, Stufe 2) =================
@@ -12692,6 +12746,132 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="spnkeybox" style="color:#9be7c4">${esc(json)}</div>
       <div class="gbtns" style="margin-top:8px"><button class="btn2" data-act="spnjson2" data-j="${esc(json)}">${ic("copy", 16)} Zeile kopieren</button></div>`;
   }
+  /* ================= Support-Chat für alle (wie WhatsApp), Sponsor Max bevorzugt =================
+     Nachrichten gehen über einen kleinen Vermittler an den Telegram-Bot des Entwicklers (support.py, support-worker/).
+     Max-Sponsoren sind dort als „bevorzugt“ markiert, Sponsoren mit ♥. Vor der ersten Nachricht: Datenschutz-Hinweis. */
+  _supS() { return this._supD || { ready: false, msgs: [], privacy: false, unread: 0, access: { active: false, tier: "" }, notify: true }; }
+  _supWS(act, extra = {}) {
+    return this._hass.callWS({ type: "fenster_heizung/support", act, ...extra }).then((r) => { this._supD = r; return r; });
+  }
+  _supLoad() { return this._supWS("get").catch(() => null); }
+  /* ungelesene Antworten für Kopf und Lounge: beim Start und alle 5 Minuten (lokal, der Abruf beim Vermittler läuft im Hintergrund der Integration) */
+  _supWatch() {
+    const chk = () => { const u = this._supS().unread; this._supLoad().then((r) => { if (r && r.unread !== u && !(this._modal && this._modal.type === "sup")) this._render(); }); };
+    chk(); clearInterval(this._supW); this._supW = setInterval(() => { if (document.visibilityState === "visible") chk(); }, 300000);
+  }
+  _supOpen() {
+    this._modal = { type: "sup", diag: false, showDiag: false, confirm: false };
+    this._renderModal();
+    this._supWS("poll").then(() => this._supRefresh()).catch(() => this._supRefresh());
+    clearInterval(this._supTimer);
+    this._supTimer = setInterval(() => {
+      if (!this._modal || this._modal.type !== "sup") { clearInterval(this._supTimer); this._supTimer = null; this._render(); return; }
+      if (document.visibilityState === "visible") this._supWS("poll").then(() => this._supRefresh()).catch(() => { /* nächster Versuch */ });
+    }, 20000);
+  }
+  /* nur die Nachrichtenliste neu zeichnen – das Eingabefeld behält Text und Fokus */
+  _supRefresh() {
+    const box = this.shadowRoot.querySelector(".supmsgs");
+    if (!box || !this._modal || this._modal.type !== "sup" || this._modal.privacy || !this._supS().privacy) { if (this._modal && this._modal.type === "sup") this._renderModal(); return; }
+    const atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+    box.innerHTML = this._supList();
+    if (atEnd) box.scrollTop = box.scrollHeight;
+  }
+  _supDay(ts) {
+    const d = new Date(ts * 1000), t = new Date(), y = new Date(); y.setDate(t.getDate() - 1);
+    const same = (a, b) => a.toDateString() === b.toDateString();
+    return same(d, t) ? "Heute" : same(d, y) ? "Gestern" : d.toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "long" });
+  }
+  _supList() {
+    const S = this._supS(), mx = S.access.tier === "max";
+    if (!S.msgs.length) {
+      return `<div class="supempty"><span class="supwave">👋</span><b>Schreib mir direkt</b><span>Frag, was dir unklar ist, melde einen Fehler oder schick einen Wunsch. Ich antworte hier im Chat${mx ? " – als Sponsor Max kommst du zuerst dran" : ""}.</span>${S.access.active ? "" : `<span class="supup">★ Mit <button class="lnk" data-act="spnopen">Sponsor Max</button> kommen deine Nachrichten zuerst dran.</span>`}
+        <div class="supsugg">${["Ich habe eine Frage zu …", "Mir ist ein Fehler aufgefallen", "Ich wünsche mir …"].map((t) => `<button class="supchip" data-act="supsugg" data-k="${esc(t)}">${esc(t)}</button>`).join("")}</div></div>`;
+    }
+    let last = "", out = "";
+    for (const m of S.msgs) {
+      const day = this._supDay(m.ts);
+      if (day !== last) { out += `<div class="supday"><span>${esc(day)}</span></div>`; last = day; }
+      const me = m.from === "me", time = new Date(m.ts * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
+      const tick = !me ? "" : m.state === "sending" ? `<span class="suptk" title="Wird gesendet">${ic("clock", 12)}</span>` : m.state === "failed" ? `<span class="suptk err" title="Nicht gesendet">!</span>` : m.state === "read" ? `<span class="suptk rd" title="Gelesen">✓✓</span>` : `<span class="suptk" title="Gesendet">✓</span>`;
+      const txt = esc(m.text).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>').replace(/\n/g, "<br>");
+      out += `<div class="supb ${me ? "me" : "dev"}${m.state === "failed" ? " fail" : ""}"><div class="supbt">${txt}${m.diag ? `<span class="supatt">${ic("clip", 12)} Diagnose angehängt</span>` : ""}<span class="supmeta">${time}${tick}</span></div>
+        ${m.state === "failed" ? `<div class="supfail">${esc(this._supErr(m.err))} <button class="lnk" data-act="supretry" data-k="${m.id}">Erneut senden</button> · <button class="lnk" data-act="supdrop" data-k="${m.id}">Löschen</button></div>` : ""}</div>`;
+    }
+    return out;
+  }
+  _supErr(e) {
+    return { no_sponsor: "Kein aktives Sponsoring gefunden.", offline: "Keine Verbindung.", too_many: "Zu viele Nachrichten in kurzer Zeit.", telegram: "Der Support ist gerade nicht erreichbar.", not_ready: "Chat ist noch nicht eingerichtet.", privacy: "Bitte erst den Hinweis bestätigen." }[e] || "Nicht gesendet.";
+  }
+  _supModal() {
+    const S = this._supS(), m = this._modal, A = S.access, mx = A.tier === "max", close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
+    const head = `<div class="suph"><img class="supav" src="${LOGO_URL}" alt=""><div class="suphn"><b>Support · Maddog3010</b><span>${mx ? `<em class="supmx">★ Bevorzugt</em> Max-Nachrichten kommen zuerst dran` : A.active ? `<em class="supsp">♥ Sponsor</em> Antwort direkt hier im Chat` : "Antwort direkt hier im Chat"}</span></div>${S.msgs.length && A.active && S.privacy ? `<button class="ibtn" data-act="supclear" aria-label="Verlauf löschen" title="Verlauf löschen">${ic("trash", 18)}</button>` : ""}${close}</div>`;
+    const wrap = (b) => `<div class="ov" data-act="close"></div><div class="sheet wide supsh" role="dialog" aria-modal="true" aria-label="Support-Chat">${head}${b}</div>`;
+    if (!S.ready) return wrap(`<div class="supgate"><span class="supgi">${ic("tools", 34)}</span><b>Der Support-Chat wird gerade eingerichtet</b><span>Er ist mit einem der nächsten Updates da. Bis dahin erreichst du mich per E-Mail an ${esc(SPN_MAIL)}.</span></div>`);
+    if (!S.privacy) {
+      return wrap(`<div class="supprv"><b>${ic("lock", 16)} Bevor du schreibst</b>
+        <ul><li>Deine Nachrichten gehen über einen kleinen Vermittler (Cloudflare, EU/USA) an <b>Telegram</b> und landen dort beim Entwickler.</li>
+        <li>Mitgeschickt werden nur: deine Nachricht, eine zufällige Nummer dieser Installation und – falls du Sponsor bist – dein Sponsor-Name und deine Stufe. ${ic("clip", 13)} Diagnosedaten nur, wenn du sie selbst anhängst – du siehst vorher, was drinsteht.</li>
+        <li>Telegram ist ein Dienst der Telegram Group (Sitz in Dubai). Dort gelten deren Datenschutzregeln.</li>
+        <li>Der Verlauf liegt in deinem Home Assistant und beim Vermittler höchstens 180 Tage. Mit ${ic("trash", 13)} löschst du ihn jederzeit an beiden Stellen.</li>
+        <li>Bitte keine Passwörter, Schlüssel oder Zugangsdaten schreiben.</li></ul>
+        <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="supok">${ic("check", 16)} Verstanden, Chat starten</button></div></div>`);
+    }
+    if (m.confirm) {
+      return wrap(`<div class="supgate"><span class="supgi">${ic("trash", 30)}</span><b>Ganzen Verlauf löschen?</b><span>Die Nachrichten werden hier und beim Vermittler gelöscht. In Telegram beim Entwickler bleiben sie, bis er sie dort löscht.</span>
+        <div class="gbtns" style="justify-content:center;margin-top:12px"><button class="btn2" data-act="supnoclear">Abbrechen</button><button class="btn2 pri" data-act="supdoclear">${ic("trash", 16)} Löschen</button></div></div>`);
+    }
+    const D = m.diagData;
+    const diagBox = m.diag ? `<div class="supdiag"><span>${ic("clip", 14)} <b>Diagnose wird angehängt:</b> Version, Home-Assistant-Version, eingeschaltete Module, letzte Fehlermeldungen von Strom &amp; Wärme. <button class="lnk" data-act="supdiagshow">${m.showDiag ? "Ausblenden" : "Ansehen"}</button></span>
+      ${m.showDiag ? `<pre class="supjson">${D ? esc(JSON.stringify(D, null, 2)) : "Lädt …"}</pre>` : ""}</div>` : "";
+    return wrap(`<div class="supmsgs" aria-live="polite">${this._supList()}</div>${S.err === "offline" ? `<div class="supnet">${ic("alert", 14)} Keine Verbindung zum Support – neue Antworten kommen, sobald sie wieder steht.</div>` : ""}${diagBox}
+      <div class="supin"><button class="supic ${m.diag ? "on" : ""}" data-act="supdiag" aria-pressed="${!!m.diag}" aria-label="Diagnose anhängen" title="Diagnose anhängen">${ic("clip", 20)}</button>
+        <textarea class="supta" rows="1" maxlength="2000" placeholder="Nachricht" aria-label="Nachricht">${esc(this._supDraft || "")}</textarea>
+        <button class="supsend" data-act="supsend" aria-label="Senden">${ic("send", 20)}</button></div>`);
+  }
+  _supBind(box) {
+    const ta = box.querySelector(".supta"), list = box.querySelector(".supmsgs");
+    if (list) list.scrollTop = list.scrollHeight;
+    if (!ta) return;
+    const fit = () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 140) + "px"; };
+    fit();
+    ta.addEventListener("input", () => { this._supDraft = ta.value; fit(); });
+    ta.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !this._narrow) { e.preventDefault(); this._supSend(); } });
+  }
+  _supSend() {
+    const ta = this.shadowRoot.querySelector(".supta"), text = String((ta && ta.value) || this._supDraft || "").trim();
+    if (!text || this._supBusy) return;
+    const m = this._modal, S = this._supS();
+    this._supBusy = true;
+    S.msgs = [...S.msgs, { id: "tmp", from: "me", text, ts: Date.now() / 1000, state: "sending", diag: !!m.diag }];
+    this._supDraft = ""; if (ta) { ta.value = ""; ta.style.height = "auto"; }
+    this._supRefresh(); const list = this.shadowRoot.querySelector(".supmsgs"); if (list) list.scrollTop = list.scrollHeight;
+    this._supWS("send", { text, diag: !!m.diag }).then((r) => { if (r.ok) { m.diag = false; m.showDiag = false; this._renderModal(); } else this._supRefresh(); })
+      .catch(() => { this._toast("Das ging nicht"); this._supLoad().then(() => this._supRefresh()); })
+      .finally(() => { this._supBusy = false; });
+  }
+  _supAct(a, b) {
+    const k = b.dataset.k, m = this._modal;
+    if (a === "supopen") { this._supOpen(); return; }
+    if (a === "supurl") { const el = this.shadowRoot.querySelector('[data-f="supurl"]'); this._supWS("opts", { url_dev: String((el && el.value) || "").trim() }).then(() => { this._renderModal(); this._toast("Gespeichert"); }).catch(() => this._toast("Das ging nicht")); return; }
+    if (!m || m.type !== "sup") return;
+    if (a === "supok") { this._supWS("privacy").then(() => this._renderModal()); }
+    else if (a === "supsend") this._supSend();
+    else if (a === "supsugg") { this._supDraft = k + " "; this._renderModal(); const ta = this.shadowRoot.querySelector(".supta"); if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } }
+    else if (a === "supdiag") { m.diag = !m.diag; if (!m.diag) m.showDiag = false; this._renderModal(); }
+    else if (a === "supdiagshow") { m.showDiag = !m.showDiag; this._renderModal(); if (m.showDiag && !m.diagData) this._supWS("diag").then((r) => { m.diagData = r.diag; this._renderModal(); }); }
+    else if (a === "supretry") this._supWS("retry", { mid: k }).then(() => this._supRefresh());
+    else if (a === "supdrop") this._supWS("drop", { mid: k }).then(() => this._supRefresh());
+    else if (a === "supclear") { m.confirm = true; this._renderModal(); }
+    else if (a === "supnoclear") { m.confirm = false; this._renderModal(); }
+    else if (a === "supdoclear") this._supWS("clear").then(() => { m.confirm = false; this._renderModal(); this._toast("Verlauf gelöscht"); });
+  }
+  /* Karte in der Sponsor-Lounge bzw. im Sponsor-Bereich (für alle) */
+  _supCard(mx) {
+    const S = this._supS(), last = [...S.msgs].reverse().find((x) => x.from === "dev");
+    const sub = S.unread ? `<b class="supnew">${S.unread} ${S.unread === 1 ? "neue Antwort" : "neue Antworten"}</b>` : last ? `Letzte Antwort: „${esc(last.text.slice(0, 60))}${last.text.length > 60 ? "…" : ""}“` : "Frag, melde Fehler oder schick Wünsche – ich antworte hier im Chat.";
+    return `<div class="lgt lgsup" style="--c:#25d366"><span class="lgsupi">${ic("chat", 26)}${S.unread ? `<i class="supdot">${S.unread}</i>` : ""}</span><span class="n"><b>Support-Chat${mx ? ` <em class="supmx">★ Bevorzugt</em>` : ""}</b><small>${sub}</small></span><button class="btn2 lgsupb" data-act="supopen">${ic("chat", 16)} Chat öffnen</button></div>`;
+  }
   /* ================= Sponsor-Lounge (Konzept Sponsor-Bereich 2.0, Stufen S1 + S2) und Sponsor Max 1 =================
      Eigene Seite statt Dialog, erreichbar über das Herz/den Stern im Kopf, die Startseite und die Einstellungen.
      Mit Schlüssel: B1 Begrüßung, B2 Neu für dich, B3 Deine Extras, B4 Mitreden & Abzeichen, ★ Max (Morgen-Briefing,
@@ -12757,7 +12937,7 @@ class FensterHeizungPanel extends HTMLElement {
       dev ? "Entwickler-Zugang: alle Extras und Max sind frei" : s.max_ended ? `Max ist am ${esc(this._spnDate(s.max_ended))} ausgelaufen, Sponsor gilt weiter` : mx ? "Sponsor Max mit Morgen-Briefing und Jahres-Poster" : ""].filter(Boolean).join(" · ");
     const renew = !dev && s.days != null && s.days <= (mx ? 14 : 30) ? `<a class="btn2 ${mx ? "lggold" : "lgpk"}" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${mx ? "★ Max verlängern" : "♥ Verlängern"}</a>` : "";
     const b1 = `<div class="lghero ${mx ? "mx" : ""}"><div class="lghl"><small class="lghi">${first ? `Hallo ${esc(first)} ` : "Hallo "}${mx ? `<span class="lggd">★</span>` : "♥"}</small><h2>Danke, dass du Strom &amp; Wärme trägst.</h2><p>${sub}</p>
-      <div class="lgbtns">${renew}<button class="btn2 ${renew ? "" : "lgpk"}" data-act="lgxgo" data-k="lgnew">Was ist neu?</button><button class="btn2" data-act="lgxgo" data-k="lgwish">${this._s3W && this._s3W.url ? "Jetzt abstimmen" : "Wunsch des Monats"}</button></div></div><div class="lghr">${this._lgScene(mx)}</div></div>`;
+      <div class="lgbtns">${renew}<button class="btn2 lgsupb" data-act="supopen">${ic("chat", 16)} Support${this._supS().unread ? ` <i class="supdot in">${this._supS().unread}</i>` : ""}</button><button class="btn2 ${renew ? "" : "lgpk"}" data-act="lgxgo" data-k="lgnew">Was ist neu?</button><button class="btn2" data-act="lgxgo" data-k="lgwish">${this._s3W && this._s3W.url ? "Jetzt abstimmen" : "Wunsch des Monats"}</button></div></div><div class="lghr">${this._lgScene(mx)}</div></div>`;
     const row = (icon, t, subt, ctl) => `<div class="lgit">${icon}<span class="n">${t}<small>${subt}</small></span>${ctl}</div>`;
     const gi = (k) => `<span class="lgg">${this._gx(k, 30, { on: true, lvl: 80 })}</span>`;
     const opn = (act, t = "Öffnen") => `<button class="lgopen" data-act="${act}">${t}</button>`;
@@ -12787,7 +12967,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="lgbdoff">${P.badge ? `<button class="lnk" data-act="lgxbadge" data-k="off">Abzeichen im Kopf ausblenden</button>` : `<span class="mut">Abzeichen ist ausgeblendet – tippe eins an</span>`}</div>
       ${li("Name im Kopf zeigen", sw("lgxname", P.name_head, "Name im Kopf"), first ? `„Hallo ${esc(first)}“ statt „Sponsor“` : "")}</div>`;
     const up = mx ? "" : `<div class="lgt lgup"><span class="lgstar sm">★</span><span class="n"><b>Sponsor Max</b><small>Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn-Rechner, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster und goldener Stern.</small><em class="lgbeta">Beta-Versionen ab 2026.11.2: als Sponsor 3 Tage nach Erscheinen, mit Max sofort</em><em class="lgprice">$3 im Monat · $10 einmalig</em></span><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="flex:none;text-decoration:none">Mehr</a></div>`;
-    return `<div class="lgtop">${b1}${b2}</div><div class="lg2 s3row">${this._s3CoachCard(this._s3C, P.coach !== false)}${this._s3ReportCard(this._s3R && this._s3R[-1], P.report !== false)}</div>${mx || dev ? this._mxSection() : ""}<div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
+    return `<div class="lgtop">${b1}${b2}</div>${this._supCard(mx || dev)}<div class="lg2 s3row">${this._s3CoachCard(this._s3C, P.coach !== false)}${this._s3ReportCard(this._s3R && this._s3R[-1], P.report !== false)}</div>${mx || dev ? this._mxSection() : ""}<div class="lg3">${b3}${b4a}${b4b}</div>${up}`;
   }
   /* ---- ohne Schlüssel: A1 Botschaft, A2 Ersparnis, A3 drei Schritte, A4 Extras als Kacheln ---- */
   _lgOut(s) {
@@ -12813,7 +12993,7 @@ class FensterHeizungPanel extends HTMLElement {
     const a4 = `<div class="lgh4" id="lgget">Was du bekommst – Auswahl</div><div class="lgget">${T.map(([k, t, sub, tg, id, c]) => `<button class="lgxt2" style="--c:${c}" data-act="lgxex" data-k="${id}">${tag(tg)}${this._gx(k, 36, { on: true, lvl: 80 })}<b>${esc(t)}</b><small>${sub}</small></button>`).join("")}</div>`;
     const tiers = `<div class="lgtiers"><div class="lgt"><b>♥ Sponsor <em class="lgprice">$1 im Monat · $5 einmalig</em></b><small>monatlich oder einmalig (1 Jahr) · alle Extras, Vorabversionen, Hausfluss</small><em class="lgbeta">Ab 2026.11.2: Beta-Versionen 3 Tage nach Erscheinen installierbar</em></div><div class="lgt mx"><b><span class="lggd">★</span> Sponsor Max <em class="lgprice">$3 im Monat · $10 einmalig</em></b><small>monatlich oder einmalig 3 Monate (danach bis 1 Jahr Sponsor) · zusätzlich Haus-Autopilot, Wächter, Woche voraus, Was-wäre-wenn, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Beta-Kanal 30 Tage</small><em class="lgbeta mx">Ab 2026.11.2: Beta-Versionen sofort installierbar</em></div></div>`;
     const ghc = adm && this._ghS().ready ? `<div class="lgt lgghc"><span class="blghi">${ic("heart", 22)}</span><span class="blght"><b>Du sponserst schon?</b><small>Einmal mit GitHub anmelden – Stufe und Laufzeit werden automatisch erkannt. Ohne Mail, ohne Schlüssel.</small></span><button class="btn2 spnb pri" data-act="spngh">${ic("key", 16)} Mit GitHub freischalten</button></div>` : "";
-    return `${hero}${ghc}<div class="lg2">${a2}${a3}</div>${a4}${tiers}`;
+    return `${hero}${adm ? this._supCard(false) : ""}${ghc}<div class="lg2">${a2}${a3}</div>${a4}${tiers}`;
   }
   /* ---- Aktionen ---- */
   _lgAct(a, b) {
