@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b33] - 2026-11-14
+
+### Behoben
+- **Modul 8: „Gastfahrzeug“ unter „Fahrzeuge & Karten“, obwohl alle Ladungen beim richtigen Fahrzeug stehen.** Beim erneuten go-e-Import kamen fehlende Ladungen mit dem jetzt gewählten Fahrzeug zurück in die Liste, ihre Energie stand in den Tageswerten aber noch beim Fahrzeug vom ersten Import (meist „Gastfahrzeug“). Jetzt gleicht Modul 8 die Fahrzeug-Werte jedes Tages an die Ladungen dieses Tages an – einmal beim Start (repariert vorhandene Daten) und nach jedem Import. Umgebucht wird nur, wenn die Ladungen eines Fahrzeugs mehr Energie zeigen, als der Tag ihm zuschreibt; Tage ohne Ladungen in der Liste bleiben unverändert.
+
 ## [2026.11.3b32] - 2026-11-14
 
 ### Behoben

@@ -27,7 +27,7 @@ from .wallbox_calc import (
 STALE_S = 180  # B6: so alt darf der Netz-Sensor sein, sonst wird nicht mehr erhöht
 from .wallbox_plan import (
     add_energy, add_km, add_temp, build_slots, odo_manual, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick, assign_unknown,
-    stats_view, import_plan, import_apply, UNKNOWN, sessions_bulk, sessions_clear,
+    stats_view, import_plan, import_apply, UNKNOWN, sessions_bulk, sessions_clear, reconcile_days,
 )
 
 EVENT_DONE = "fenster_heizung_ladung_beendet"
@@ -155,6 +155,13 @@ class WallboxManager:
     async def async_start(self) -> None:
         self.cfg = clean_wb(await self._store.async_load())
         self._st = clean_stats(await self._st_store.async_load())
+        try:
+            fixed = reconcile_days(self._st)  # b33: Fahrzeug-Werte der Tage an die Ladungen angleichen
+            if fixed:
+                _LOGGER.info("Ladestatistik: %d Fahrzeug-Werte an die Ladungen angeglichen", fixed)
+                self._st_store.async_delay_save(lambda: self._st, 5)
+        except Exception:  # noqa: BLE001 - der Abgleich darf den Start nie verhindern
+            _LOGGER.exception("Ladestatistik-Abgleich fehlgeschlagen")
         self._unsub = async_track_time_interval(self.hass, self._tick, timedelta(seconds=TICK_SECONDS))
 
     def async_stop(self) -> None:

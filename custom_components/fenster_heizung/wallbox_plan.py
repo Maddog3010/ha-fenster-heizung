@@ -589,6 +589,46 @@ def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: dateti
     return s
 
 
+def reconcile_days(st: dict[str, Any]) -> int:
+    """Fahrzeug-Werte der Tage an die Ladungen angleichen (b32-Fehler beim „Zurück in die Liste“).
+
+    Hat ein Fahrzeug an einem Tag laut Ladungen mehr Energie, als der Tag ihm zuschreibt, und ein anderes Fahrzeug
+    (meist „Gastfahrzeug“ oder „Unbekannt“) mehr, als seine Ladungen erklären, wird der Unterschied umgebucht.
+    Tage ohne Ladungen in der Liste bleiben unangetastet. Rückgabe: Anzahl der Umbuchungen."""
+    by: dict[str, dict[str, list[float]]] = {}
+    for s in st.get("sessions") or []:
+        d = str(s.get("start", ""))[:10]
+        x = by.setdefault(d, {}).setdefault(str(s.get("veh") or UNKNOWN), [0.0, 0.0])
+        x[0] += float(s.get("kwh") or 0)
+        x[1] += float(s.get("cost") or 0)
+    n = 0
+    for d, sv in by.items():
+        day = (st.get("days") or {}).get(d)
+        if not day:
+            continue
+        vehs = day.get("veh") or {}
+        need = {v: k - vehs.get(v, {}).get("kwh", 0.0) for v, (k, _c) in sv.items() if k - vehs.get(v, {}).get("kwh", 0.0) > 0.01}
+        if not need:
+            continue
+        # Überschuss: Tageswert größer als die Ladungen dieses Fahrzeugs – zuerst Gast/Unbekannt
+        surplus = {v: x.get("kwh", 0.0) - sv.get(v, [0.0, 0.0])[0] for v, x in vehs.items() if x.get("kwh", 0.0) - sv.get(v, [0.0, 0.0])[0] > 0.01}
+        order = sorted(surplus, key=lambda v: (v not in ("Gastfahrzeug", UNKNOWN), v))
+        for tgt, k_need in sorted(need.items()):
+            for src in order:
+                if k_need <= 0.01:
+                    break
+                k = min(k_need, surplus[src])
+                if k <= 0.01:
+                    continue
+                va = vehs[src]
+                c = va.get("cost", 0.0) * k / va["kwh"] if va.get("kwh") else 0.0
+                _veh_move(day, src, tgt, k, c)
+                surplus[src] -= k
+                k_need -= k
+                n += 1
+    return n
+
+
 def sessions_bulk(st: dict[str, Any], act: str, starts: list[str], now: datetime, veh: str = "") -> int:
     """Mehrere Ladungen auf einmal löschen (act „delete“) oder einem Fahrzeug zuordnen (act „veh“). Rückgabe: Anzahl."""
     n = 0
@@ -723,6 +763,7 @@ def import_apply(st: dict[str, Any], plan: list[dict[str, Any]], take_kwh: bool,
                 n_fix += 1
     st["sessions"].sort(key=lambda x: _ts(x["start"]) or 0, reverse=True)
     del st["sessions"][KEEP_SESSIONS:]
+    reconcile_days(st)
     return {"new": n_new, "fixed": n_fix, "restored": n_res}
 
 
