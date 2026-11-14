@@ -75,6 +75,7 @@
     if (id === "gs") return this._gsPage();
     if (id === "mu" && this._muOn()) return this._muPage();
     if (id === "li" && this._liOn()) return this._liPage();
+    if (id === "ev" && this._evWallOn()) return this._evWall();
     if (m.addon) return this._adPage(m);
     if (m.beta) return this._betaPage(id);
     if (id === "en") return this._enPage();

@@ -125,8 +125,8 @@
     const line = !N.wbOn && !d.plugged ? (d.range != null ? `Reichweite ${num(d.range, 0)} km` : "Fahrzeug")
       : d.charging ? `Lädt${N.sun != null ? (N.sun >= 50 ? " mit Sonne" : " mit Netzstrom") : ""}${d.power != null ? " · " + num(d.power / 1000, 1) + " kW" : ""}${N.doneT ? " · fertig ca. " + N.doneT + " Uhr" : ""}`
       : d.plugged ? (N.soc != null && N.soc >= N.goal ? "Angesteckt · Ziel erreicht" : `Angesteckt · ${N.w.state === "wartet" ? "wartet auf Sonne" : N.w.state === "plan_wartet" ? "wartet auf das Ladefenster" : "lädt gerade nicht"}`) : away && !away.home ? `Unterwegs mit ${away.name}${away.zone ? " · " + away.zone : ""}` : away ? "Zu Hause · nicht angesteckt" : "Nicht angesteckt";
-    const chips = tab ? [] : [N.wbOn && N.c.enabled ? `<span class="chip"><i class="evdot"></i>Modus ${esc(N.modeN)}</span>` : N.wbOn ? `<span class="chip">Regelung aus</span>` : "",
-      N.sun != null ? `<span class="chip">${this._gx("sun", 16, { on: 1 })}${num(N.sun, 0)} % Sonne</span>` : "", d.range != null ? `<span class="chip">Reichweite ${num(d.range, 0)} km</span>` : "",
+    const chips = tab ? [this._evPriceChip()].filter(Boolean) : [N.wbOn && N.c.enabled ? `<span class="chip"><i class="evdot"></i>Modus ${esc(N.modeN)}</span>` : N.wbOn ? `<span class="chip">Regelung aus</span>` : "",
+      N.sun != null ? `<span class="chip">${this._gx("sun", 16, { on: 1 })}${num(N.sun, 0)} % Sonne</span>` : "", this._evPriceChip(), d.range != null ? `<span class="chip">Reichweite ${num(d.range, 0)} km</span>` : "",
       N.sn.guard && N.sn.guard.limited ? `<span class="chip">Hausanschluss ${num(N.sn.guard.total_a, 0)} von ${N.sn.guard.max_a} A</span>` : ""].filter(Boolean);
     return `<div class="card hero mh a-ev evban${N.night ? " nt" : ""}">${this._evCarport(d, N, 1180, 290, { sfx: "d", sx: 1180 - 640, s: 0.9 }).replace('class="evsc"', 'class="evsc evd"')}${this._evCarport(d, N, 420, 170, { sfx: "m", sx: 40, s: 0.52 }).replace('class="evsc"', 'class="evsc evm"')}${this._modLogo("ev")}
       <div class="evbt"><div class="lbl">${this._gx("car", 18)}${esc(name)}${N.card ? " · " + esc(N.card) : ""}</div>
@@ -211,10 +211,11 @@
   _evPageNew(d) {
     const wbOn = this._wbOn(), t = this._wbStT(), box = this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.");
     if (!wbOn) return `${box}${this._evSay(d)}${this._evBand(d)}${this._evTiles(d)}${this._wbCard(d)}`;
-    const head = `${box}${this._evTabsNew()}${this._evSay(d)}`;
+    const back = this._tmOn && this._tmOn() && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("home", 18)}Zur Wandansicht</button>` : "";
+    const head = `${back}${box}${this._evTabsNew()}${this._evSay(d)}`;
     if (t === "plan") return `${head}${this._evPlanNew(d)}`;
     if (t === "stat") return `${head}${this._evStatNew()}`;
     if (t === "veh") return `${head}${this._rfCard(false)}`;
     if (t === "set") return `${head}${this._wbCard(d, "set")}`;
-    return `${head}${this._evBand(d)}${this._evTiles(d)}<div class="evcols"><div>${this._evModes(d)}${this._evToday()}</div><div>${this._evWhy()}</div></div>`;
+    return `${head}${this._evBand(d)}${this._evSurplus(d)}${this._evTiles(d)}<div class="evcols"><div>${this._evModes(d)}${this._evToday()}</div><div>${this._evWhy()}</div></div>`;
   }

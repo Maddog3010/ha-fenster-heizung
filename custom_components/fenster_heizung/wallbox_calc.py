@@ -34,13 +34,21 @@ DEFAULT: dict[str, Any] = {
 MAX_VEHICLES = 6
 MAX_CARDS = 10
 MAX_A = 32  # 22-kW-Wallboxen laden mit bis zu 32 A
-SCHEMA = 2  # 2: Sensoren und Aussehen je Fahrzeug, Wallbox-Adapter
+SCHEMA = 3  # 2: Sensoren und Aussehen je Fahrzeug, Wallbox-Adapter · 3: Abfahrt aus dem Kalender je Fahrzeug (Lab „Ladeziel nach Kalender“ übernommen)
 EV_BODIES = ("limousine", "suv", "kombi", "kompakt")
 EV_COLORS = ("blue", "red", "white", "black", "silver", "green")
 VEH_ENT = ("soc", "odo", "range")
 WBX_KINDS = ("goe", "ha")
 WBX_ENT = ("switch", "current", "power", "status", "plug", "phase", "energy", "total")
 _EID = re.compile(r"[a-z_]+\.[a-z0-9_]{1,120}")
+
+
+def _num(v: Any, lo: float, hi: float, d: float) -> float:
+    try:
+        x = float(str(v).replace(",", "."))
+    except (TypeError, ValueError):
+        return d
+    return round(min(max(x, lo), hi), 1) if x == x else d
 
 
 def _int(v: Any, lo: int, hi: int, d: int) -> int:
@@ -163,7 +171,7 @@ def migrate_v2(cfg: dict[str, Any], legacy: dict[str, Any] | None) -> tuple[dict
     Gibt es Fahrzeuge, bekommt das erste die alten Sensoren (wenn es noch keine hat); die Regelung ohne Karte bleibt wie sie war.
     Gibt es keine, wird aus Marke/Modell oder vorhandenen Sensoren ein Fahrzeug angelegt. Rückgabe: (cfg, Text fürs Protokoll).
     """
-    out = {**cfg, "vehicles": [dict(v) for v in cfg.get("vehicles") or []], "vs": SCHEMA}
+    out = {**cfg, "vehicles": [dict(v) for v in cfg.get("vehicles") or []], "vs": max(2, int(cfg.get("vs") or 1))}
     if out.get("pvSrc") == "forecast":
         out["pvSrc"] = "auto"  # Forecast.Solar bleibt Rückfall, wenn Modul 16 aus ist
     lg = legacy if isinstance(legacy, dict) else {}
@@ -213,8 +221,12 @@ def clean_vehicles(raw: Any) -> list[dict[str, Any]]:
         name = re.sub(r"[<>\"'&]", "", str(v.get("name") or "")).strip()[:30] or "Fahrzeug"
         dp = v.get("dep") if isinstance(v.get("dep"), dict) else {}
         t = str(dp.get("time", "07:00"))
+        cal = _eid(dp.get("cal"))
         dep = {"on": bool(dp.get("on", False)), "soc": _int(dp.get("soc"), 20, 100, 80), "time": t if re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", t) else "07:00",
-               "days": dp.get("days") if dp.get("days") in PLAN_DAYS else "all"}
+               "days": dp.get("days") if dp.get("days") in PLAN_DAYS else "all",
+               # Abfahrt aus dem Kalender (v0.9 Build 4): Kalender, Stichwort, so viele Minuten vor Terminbeginn losfahren, Ziel, nur Termine ab … Std.
+               "cal": cal if cal.startswith("calendar.") else "", "calKw": re.sub(r"[<>\"&]", "", str(dp.get("calKw") or "")).strip()[:30],
+               "calLead": _int(dp.get("calLead"), 0, 240, 30), "calSoc": _int(dp.get("calSoc"), 20, 100, 90), "calDur": _num(dp.get("calDur"), 0, 24, 0)}
         ent = v.get("ent") if isinstance(v.get("ent"), dict) else {}
         try:
             cap = float(str(v.get("cap")).replace(",", "."))
@@ -225,8 +237,36 @@ def clean_vehicles(raw: Any) -> list[dict[str, Any]]:
         out.append({"person": person if re.fullmatch(r"person\.[a-z0-9_]{1,80}", person) else "", "id": vid, "name": name, "ids": ids, "mode": v.get("mode") if v.get("mode") in MODES else "pv", "limit": _int(v.get("limit"), 50, 100, 80), "dep": dep,
                     "brand": re.sub(r"[<>\"'&]", "", str(v.get("brand") or "")).strip()[:20], "model": re.sub(r"[<>\"'&]", "", str(v.get("model") or "")).strip()[:30],
                     "body": v.get("body") if v.get("body") in EV_BODIES else "limousine", "color": v.get("color") if v.get("color") in EV_COLORS else "blue",
-                    "cap": cap, "ent": {k: _eid(ent.get(k)) for k in VEH_ENT}})
+                    "cap": cap, "ent": {k: _eid(ent.get(k)) for k in VEH_ENT},
+                    # Jahreskilometer (v0.9 Build 4): Grenze z. B. aus dem Leasing (0 = keine) und Monat, in dem das Jahr beginnt
+                    "kmYear": _int(v.get("kmYear"), 0, 200000, 0), "kmFrom": _int(v.get("kmFrom"), 1, 12, 1)})
     return out
+
+
+def cal_pick(events: list[dict[str, Any]], dep: dict[str, Any], now: datetime, horizon_h: float = 36.0) -> dict[str, Any] | None:
+    """Nächster passender Termin für die Abfahrt aus dem Kalender.
+
+    events: [{"summary", "start", "end"}] mit datetime (ganztägige Termine haben date statt datetime und zählen nicht).
+    Passend: Stichwort im Titel (leer = jeder Termin), Dauer mindestens calDur Std., Abfahrt (Beginn − calLead Min.) liegt in der Zukunft
+    und höchstens horizon_h Stunden entfernt. Rückgabe: {"msg", "start", "at" (Abfahrt), "soc"} oder None.
+    """
+    kw = (dep.get("calKw") or "").lower()
+    best = None
+    for e in events or []:
+        st, en = e.get("start"), e.get("end")
+        if not isinstance(st, datetime):
+            continue
+        msg = str(e.get("summary") or "")
+        if kw and kw not in msg.lower():
+            continue
+        if dep.get("calDur") and isinstance(en, datetime) and (en - st).total_seconds() / 3600 < float(dep["calDur"]):
+            continue
+        at = st - timedelta(minutes=int(dep.get("calLead") or 0))
+        if at <= now or at - now > timedelta(hours=horizon_h):
+            continue
+        if best is None or at < best["at"]:
+            best = {"msg": msg[:60], "start": st, "at": at, "soc": int(dep.get("calSoc") or 90)}
+    return best
 
 
 def resolve_who(cfg: dict[str, Any], card: int | None) -> dict[str, Any] | None:
@@ -292,12 +332,15 @@ def plan_due(cfg: dict[str, Any], soc: float | None, now: datetime) -> tuple[boo
     need = max(0.0, (cfg["planSoc"] - soc) / 100 * cfg["cap"])
     if need <= 0.2:
         return False, 0.0, None
-    h, m = (int(x) for x in cfg["planTime"].split(":"))
-    target = now.replace(hour=h, minute=m, second=0, microsecond=0)
-    if target <= now:
-        target += timedelta(days=1)
+    if cfg.get("planAt"):  # Abfahrt aus dem Kalender: fester Zeitpunkt
+        target = datetime.fromisoformat(cfg["planAt"])
+    else:
+        h, m = (int(x) for x in cfg["planTime"].split(":"))
+        target = now.replace(hour=h, minute=m, second=0, microsecond=0)
+        if target <= now:
+            target += timedelta(days=1)
     wd = target.weekday()
-    if (cfg["planDays"] == "wk" and wd > 4) or (cfg["planDays"] == "we" and wd < 5):
+    if not cfg.get("planAt") and ((cfg["planDays"] == "wk" and wd > 4) or (cfg["planDays"] == "we" and wd < 5)):
         return False, need, None
     ph = 1 if cfg["ph"] == "1" else 3
     kw = ph * VOLT * cfg["maxA"] / 1000
@@ -406,6 +449,7 @@ def _decide(cfg: dict[str, Any], inp: dict[str, Any], mem: dict[str, Any], now_t
         if not charging:
             mem["above_since"] = mem.get("above_since") or now_ts
             if now_ts - mem["above_since"] < cfg["onMin"] * 60:
+                out["timer"] = {"k": "start", "left": round(mem["above_since"] + cfg["onMin"] * 60 - now_ts), "tot": cfg["onMin"] * 60}
                 out.update(frc=1, state="wartet", reason=out["reason"] + f"Der Überschuss muss {cfg['onMin']} Min. durchgehend da sein.")
                 return out
         out.update(frc=2, amp=max(cfg["minA"], amp), state="pv", reason=out["reason"] + f"{max(cfg['minA'], amp)} A auf {ph} {'Phase' if ph == 1 else 'Phasen'}, nach dem Überschuss geregelt.")
@@ -414,6 +458,7 @@ def _decide(cfg: dict[str, Any], inp: dict[str, Any], mem: dict[str, Any], now_t
     if charging:
         mem["below_since"] = mem.get("below_since") or now_ts
         if now_ts - mem["below_since"] < cfg["offMin"] * 60:
+            out["timer"] = {"k": "stop", "left": round(mem["below_since"] + cfg["offMin"] * 60 - now_ts), "tot": cfg["offMin"] * 60}
             out.update(frc=2, amp=cfg["minA"], state="pv", reason=out["reason"] + f"Zu wenig Überschuss. Mindeststrom, Stopp nach {cfg['offMin']} Min.")
             return out
     out.update(frc=1, state="wartet", reason=out["reason"] + f"Wartet auf mindestens {max(cfg['startW'], round(VOLT * ph * cfg['minA']))} W Überschuss.")

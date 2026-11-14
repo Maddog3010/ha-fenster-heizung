@@ -30,6 +30,7 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 08-module-einstellungen-personen | Modul-System, Einstellungen, Personen & Standort |
 | 09-store-integrationen | Store, Herstellerprofile, Integrationen |
 | 10a-modul8-laden, 10b-modul8-planung, 10c-modul8-statistik | Modul 8: Heute, Schnellstart, Statusleiste, Einrichtungs-Check · Ladeplan (zeichnet den Plan aus dem Backend) · Ladestatistik |
+| 10i-modul8-ueberschuss, 10j-modul8-tablet, 10k-modul8-kilometer | Modul 8 v0.9 Build 4: Überschuss-Balken mit eingestellter Leistung, Start/Stopp-Restzeit, Überschuss-Vorschau, Strompreis-Chip · Tablet-Wandansicht „Laden“ · Kilometer &amp; Verbrauch in der Statistik |
 | 10d-modul8-fahrzeuge, 10e-modul8-wallbox | Modul 8: Fahrzeuge mit eigenen Sensoren und Aussehen, Karten, Fahrzeug ohne Karte, Auto-Szene · Wallbox-Karte, Laderegelung, Einstellungen |
 | 11-modul4-geraetestrom | Modul 4 (Gerätestrom) |
 | 12-beta-module | Beta-Module (Prognose, Wartung, Batterie, Tarif, Sicherheit, Pool, Wetter, Garten, Rollläden, Wärmepumpe, Lüftung) |

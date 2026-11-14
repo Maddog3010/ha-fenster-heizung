@@ -2,6 +2,27 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b22] - 2026-11-14
+
+### Neu
+- **Modul 8 · Elektroauto & Wallbox (v0.9 Build 4): Überschuss-Balken** im Register „Laden“ unter dem Ladeband.
+  - Der Balken reicht von 0 bis zur eingestellten Höchstleistung (z. B. 16 A × 3 Phasen = 11,0 kW) und zeigt die Bereiche „zu wenig“, „1 Phase · 6–16 A“ und „3 Phasen · 6–16 A“ – passend zu Ladestrom, Phasen und Startschwelle, die gerade gelten (auch je Fahrzeug und bei Wallboxen ohne Phasenumschaltung).
+  - Türkis ist der genaue Überschuss, ein Strich die Ladeleistung jetzt. Lädt das Auto mit mehr, als die Sonne liefert, ist der Netz-Anteil orange gestreift, mit Kosten pro Stunde.
+  - Darunter: wofür der Überschuss reicht („14 A · 1 Phase“) und was bis zur nächsten Stufe fehlt („noch 0,90 kW bis 3 Phasen“, „fehlt 0,55 kW bis zum Start“).
+- **Start und Stopp sichtbar:** Wartet die Regelung, ob der Überschuss bleibt, steht im Balken „Startet in ca. 40 s“; reicht er nicht mehr, „Stoppt in ca. 2:10 Min.“ – jeweils mit Fortschrittsanzeige. Ohne genug Überschuss: „Wartet auf Sonne. Start ab 1,4 kW“.
+- **Überschuss-Vorschau** unter dem Balken: erwarteter Überschuss für den Rest des Tages aus der PV-Prognose (Modul 16 oder Forecast.Solar, minus Grundverbrauch), je Stunde eingefärbt nach „zu wenig“, „1 Phase“, „3 Phasen“ – mit Satz wie „Ab ca. 13:00 für 3 Phasen. Bis ca. 18:00 reicht es.“
+- **Abfahrt aus dem Kalender je Fahrzeug** (Planung → Abfahrtszeit pro Fahrzeug): Kalender wählen, optional ein Stichwort im Titel (z. B. „Auto“), wie lange vor Terminbeginn losgefahren wird, Ziel-Ladestand und Mindestdauer des Termins. Steht in den nächsten 36 Stunden ein passender Termin an, plant Modul 8 die Ladung bis zur Abfahrt – auch ohne eigene Abfahrt und auch, wenn die Planung sonst aus ist. Kommt die normale Abfahrt früher, gilt sie zuerst. Im Ladeplan steht, welcher Termin gerade zählt; „Warum gerade so?“ nennt ihn. Ganztägige Termine zählen nicht.
+  - Das Lab **„Ladeziel nach Kalender“ ist damit fest eingebaut** und aus den Labs verschwunden. War es an, werden Kalender, Ziel bei langem Termin und Mindestdauer einmalig an alle Fahrzeuge übernommen.
+- **Tablet-Wandansicht „Laden“:** Im Tablet-Modus zeigt Modul 8 Carport-Banner mit Strompreis, Ladeband, Überschuss-Balken mit Vorschau und große Knöpfe für Modus (Aus, Sonne, Sonne + Netz, Voll) und Schnellstart (1 Stunde voll, Bis zum Ziel, Heute nur Sonne, Stopp). „Alle Details“ öffnet die normale Seite, „Zur Wandansicht“ führt zurück. Hochkant untereinander, quer nebeneinander.
+- **Kilometer & Verbrauch in der Statistik** (Tag/Woche/Monat/Jahr wie bisher):
+  - Kacheln: gefahrene km mit Vergleich, echter Verbrauch in kWh/100 km (geladen, mit Ladeverlusten), **Sonnen-Kilometer** (Strecke mit eigener Sonne), Ø km pro Tag mit dem stärksten Tag.
+  - Kilometer je Tag bzw. je Monat als Balken, gefärbt nach Sonne und Netz der Ladungen in diesem Abschnitt; Antippen öffnet den Tag oder Monat.
+  - **Verbrauch nach Außentemperatur** (letzte 12 Monate, vier Bereiche) mit „1 kWh ≈ … km“, „1 % Akku ≈ … km“ und dem Mehrverbrauch bei Kälte. Die Außentemperatur wird ab jetzt je Tag mitgeschrieben.
+  - **Jahreskilometer** mit Hochrechnung und Vorjahr; je Fahrzeug optional eine Grenze (z. B. Leasing) und der Monat, in dem das Jahr beginnt – mit „auf Kurs“, „knapp“ oder „zu viel“ und den km pro Woche, die noch bleiben.
+  - **Kilometerstand von Hand** für Fahrzeuge ohne Sensor: Die Strecke seit dem letzten Eintrag wird gleichmäßig auf die Tage dazwischen verteilt.
+  - „Fahrzeuge & Karten“ zeigt zusätzlich km und kWh/100 km je Fahrzeug.
+- **Strompreis als Chip im Banner von Modul 8**, z. B. „27,4 ct/kWh · normal“. Farbe nach Stufe (Tibber: im Vergleich zum Tagesdurchschnitt; „günstig laden“, wenn die eigene Preisgrenze greift). Ohne dynamischen Preis der Festpreis aus Vertrag oder Haus-Werten.
+
 ## [2026.11.3b21] - 2026-11-14
 
 ### Behoben

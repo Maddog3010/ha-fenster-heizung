@@ -756,7 +756,7 @@ const MV = {
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  ev: { v: "0.9", b: 3, d: "2026-11-14", p: "2026.11.3b20", log: [["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ev: { v: "0.9", b: 4, d: "2026-11-14", p: "2026.11.3b22", log: [["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "0.9", b: 1, d: "2026-11-12", p: "2026.11.3b11", log: [["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sf: { v: "0.5", b: 4, d: "2026-11-04", p: "2026.11.1", log: [["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2725,6 +2725,61 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .updbox{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:14px;background:var(--soft,rgba(127,127,127,.08));margin:4px 0 6px}.updbox .sxi{color:var(--teal)}.updbox.nw{box-shadow:0 0 0 1px var(--amber)}.updbox.nw .sxi{color:var(--amber)}
 .updt{flex:1;min-width:180px}.updt b{display:block}.updt small{color:var(--mut);font-size:.8rem}.updb{display:flex;gap:8px;flex-wrap:wrap}.updb .btn2{flex:none;padding:8px 12px}
 .evbb .mk.r b{left:auto;right:-2px;transform:none}.evbb .mk.l b{left:-2px;transform:none}
+.evban .chip.evpc{border-color:color-mix(in srgb,var(--c) 60%,transparent)}.evban .chip.evpc i{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 6px var(--c)}
+.evup0{margin-bottom:12px}.evup0 h2{display:flex;align-items:center;gap:10px;font-size:1rem;margin:0 0 6px}
+.evub{position:relative;height:42px;margin:26px 0 0;border-radius:14px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 6%,transparent);box-shadow:inset 0 0 0 1px var(--line)}
+.evub .z{position:absolute;top:0;bottom:0}.evub .z.no{border-radius:14px 0 0 14px;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--primary-text-color,#e6edf3) 5%,transparent) 0 6px,transparent 6px 12px)}
+.evub .z.p1{background:color-mix(in srgb,#60a5fa 9%,transparent)}.evub .z.p3{border-radius:0 14px 14px 0;background:color-mix(in srgb,#a78bfa 9%,transparent)}
+.evub .zl{position:absolute;top:-20px;transform:translateX(-50%);font-size:.72rem;color:var(--mut);white-space:nowrap}
+.evub .s{position:absolute;left:0;top:6px;bottom:6px;border-radius:9px;background:linear-gradient(90deg,#14b8a6,var(--teal));box-shadow:0 0 16px color-mix(in srgb,var(--teal) 40%,transparent);transition:width .6s ease}
+.evub .g{position:absolute;top:6px;bottom:6px;border-radius:0 9px 9px 0;background:repeating-linear-gradient(135deg,var(--amber) 0 5px,#b45309 5px 10px);opacity:.9;transition:left .6s ease,width .6s ease}
+.evub .t{position:absolute;top:-4px;bottom:-4px;border-left:1.5px dashed color-mix(in srgb,var(--primary-text-color,#e6edf3) 35%,transparent)}
+.evub .w{position:absolute;top:-7px;bottom:-7px;width:3px;margin-left:-1.5px;border-radius:3px;background:var(--primary-text-color,#e6edf3);box-shadow:0 0 0 3px var(--card);transition:left .6s ease}
+.evux{position:relative;height:16px;margin-top:8px;font-size:.72rem;color:var(--mut)}.evux span{position:absolute;transform:translateX(-50%);white-space:nowrap}.evux span.a{transform:none}.evux span.e{transform:translateX(-100%)}
+.evul{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-top:12px}.evul .big{font-size:1.5rem;font-weight:800;margin-right:8px}.evul .big small{font-size:.85rem;font-weight:600;color:var(--mut);margin-left:4px}
+.evul .evpill{font-size:.83rem;padding:6px 11px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 5%,transparent);box-shadow:inset 0 0 0 1px var(--line)}.evul .evpill.nt{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--amber) 55%,transparent)}
+.evup{position:relative;display:flex;align-items:center;gap:10px;margin-top:12px;padding:9px 12px;border-radius:12px;font-size:.84rem;overflow:hidden;background:color-mix(in srgb,#60a5fa 9%,transparent)}.evup>svg{flex:none}
+.evup.go{background:linear-gradient(90deg,color-mix(in srgb,var(--teal) 20%,transparent) var(--p),color-mix(in srgb,var(--teal) 8%,transparent) var(--p))}.evup.go b{color:var(--teal)}
+.evup.st{background:linear-gradient(90deg,color-mix(in srgb,var(--amber) 20%,transparent) var(--p),color-mix(in srgb,var(--amber) 8%,transparent) var(--p))}.evup.st b{color:var(--amber)}
+.evuleg{margin-top:10px}.evuleg i.nt{background:repeating-linear-gradient(135deg,var(--amber) 0 3px,#b45309 3px 6px)}
+.evcal{margin:10px 0 2px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,#60a5fa 7%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,#60a5fa 25%,var(--line))}.evcal.off{display:flex;gap:8px;align-items:center;background:none;box-shadow:none;padding:4px 0}
+.evcalh{display:flex;align-items:center;gap:8px;margin:0 0 4px}.evcalh .lnk{margin-left:auto}.evcalh .ic{color:#60a5fa}
+.evkw{flex:0 1 160px;min-width:0;font:inherit;padding:7px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--primary-text-color)}
+.evcaln{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:8px 10px;border-radius:10px;font-size:.84rem;background:color-mix(in srgb,#60a5fa 12%,transparent)}.evcaln .ic{color:#60a5fa;flex:none;margin-top:2px}
+.evfc{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}.evfch{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:0 0 8px}.evfch .mut{margin-left:auto}.evfcl{display:inline-flex;align-items:center;gap:5px;font-size:.74rem;color:var(--mut);margin-left:8px}.evfcl i{width:10px;height:10px;border-radius:3px;margin-left:6px}.evfcl i.no{background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 16%,transparent)}.evfcl i.p1{background:color-mix(in srgb,var(--teal) 70%,#60a5fa)}.evfcl i.p3{background:var(--teal)}
+.evfcb{display:flex;align-items:flex-end;gap:2px;height:44px}.evfcb i{flex:1;min-width:2px;border-radius:3px 3px 1px 1px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 16%,transparent)}
+.evfcb i.p1{background:color-mix(in srgb,var(--teal) 70%,#60a5fa)}.evfcb i.p3{background:var(--teal);box-shadow:0 0 8px color-mix(in srgb,var(--teal) 45%,transparent)}.evfcb i:first-child{outline:2px solid var(--primary-text-color,#e6edf3);outline-offset:1px}
+.evfcx{position:relative;height:15px;margin-top:4px;font-size:.7rem;color:var(--mut)}.evfcx span{position:absolute;transform:translateX(-50%);white-space:nowrap}.evfcx span:first-child{transform:none;left:0!important}.evfcx span:last-child{transform:translateX(-100%)}
+.evwall .evwg{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:14px;align-items:start}.evwall .evwg>div>.card{margin-bottom:12px}
+.evwc h2{display:flex;align-items:center;gap:10px;font-size:1.1rem;margin:0 0 12px}
+.evwm{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.evwm.q{grid-template-columns:repeat(3,1fr)}
+.evwb{all:unset;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:96px;padding:12px 8px;border-radius:18px;cursor:pointer;text-align:center;font-size:1rem;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 5%,transparent);box-shadow:inset 0 0 0 1px var(--line);-webkit-tap-highlight-color:transparent}
+.evwm.q .evwb{min-height:78px;font-size:.88rem}.evwb:active{transform:scale(.97)}.evwb[disabled]{opacity:.45;cursor:default}
+.evwb.sel{background:color-mix(in srgb,var(--teal) 16%,transparent);box-shadow:inset 0 0 0 2px var(--teal)}.evwb.sel b{color:var(--teal)}
+.evwq{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:color-mix(in srgb,var(--teal) 12%,transparent)}.evwq span{flex:1}.evwq small{display:block;color:var(--mut)}
+.evwb.stop{flex:none;min-height:56px;padding:8px 22px;flex-direction:row;font-weight:700;background:color-mix(in srgb,#f87171 18%,transparent);box-shadow:inset 0 0 0 1px #f8717188}
+.evwfull{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;min-height:52px}.evwback{display:flex;align-items:center;gap:8px;margin:0 0 12px;min-height:46px}
+@media (max-width:900px) and (orientation:portrait){.evwall .evwg{grid-template-columns:1fr}}
+.evkm{margin-bottom:14px}.evkm4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.evkmk{border-radius:16px;padding:12px 14px;background:linear-gradient(160deg,color-mix(in srgb,var(--a) 11%,var(--card)),var(--card) 70%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--a) 20%,var(--line))}
+.evkmk .evkh{display:flex;align-items:center;gap:8px;font-size:.84rem;color:var(--mut)}.evkmk .evkv{font-size:1.5rem;font-weight:800;margin-top:4px}.evkmk .evkv small{font-size:.82rem;font-weight:600;color:var(--mut);margin-left:3px}.evkmk .evks{font-size:.77rem;color:var(--mut)}
+.evkmc{display:flex;align-items:flex-end;gap:3px;height:140px;margin-top:6px;border-bottom:1px solid var(--line);padding-bottom:16px;position:relative}
+.evkmc button{all:unset;flex:1;min-width:3px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer;position:relative}
+.evkmc button i{display:block;width:100%;height:var(--h);border-radius:4px 4px 1px 1px;background:linear-gradient(0deg,var(--amber) var(--g),var(--teal) var(--g))}
+.evkmc button.nl i{background:#60a5fa}.evkmc button.z i{background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 10%,transparent)}.evkmc button:hover i{filter:brightness(1.2)}
+.evkmc button span{position:absolute;bottom:-16px;font-size:.68rem;color:var(--mut);white-space:nowrap}
+.evkmm{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,#60a5fa 8%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,#60a5fa 28%,var(--line))}.evkmm>.ic{color:#60a5fa;flex:none;margin-top:2px}.evkmm>div{flex:1;min-width:0}.evkmm small{display:block;color:var(--mut);font-size:.8rem}
+.evkmr{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}.evkmr>span{flex:1 1 160px;font-weight:650}.evkmr input{width:120px;text-align:right;flex:none}.evkmr .btn2{flex:none;width:auto;padding:8px 16px}
+.evkm2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}.evkm2>.card{margin:0}
+.evkmtb{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;height:160px;align-items:end}.evkmtb>div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px}
+.evkmtb span{width:68%;border-radius:8px 8px 3px 3px;background:var(--c);opacity:.85}.evkmtb span.nd{opacity:.25}.evkmtb b{font-size:1rem}.evkmtb small{font-size:.72rem;color:var(--mut)}
+.evkmf{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.evkmf>div{padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 4%,transparent);box-shadow:inset 0 0 0 1px var(--line)}.evkmf b{display:block;color:var(--teal)}.evkmf small{color:var(--mut);font-size:.76rem}
+.evkmh{display:flex;gap:10px;align-items:center;margin-top:10px;padding:9px 12px;border-radius:12px;background:color-mix(in srgb,#60a5fa 9%,transparent);font-size:.85rem}.evkmh>svg{flex:none}
+.evkmyb{position:relative;height:16px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color,#e6edf3) 9%,transparent);margin:14px 0 8px}.evkmyb .f{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:linear-gradient(90deg,#14b8a6,var(--teal))}
+.evkmyb .p{position:absolute;top:0;bottom:0;border-radius:0 99px 99px 0;background:repeating-linear-gradient(135deg,rgba(45,212,191,.38) 0 6px,rgba(45,212,191,.12) 6px 12px)}.evkmyb .m{position:absolute;top:-6px;bottom:-6px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--primary-text-color,#e6edf3)}
+.evkmst{display:inline-flex;align-items:center;gap:5px;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:99px}.evkmst.ok{background:color-mix(in srgb,#34d399 15%,transparent);color:#34d399}.evkmst.warn{background:color-mix(in srgb,#f59e0b 16%,transparent);color:#f59e0b}.evkmst.bad{background:color-mix(in srgb,#f87171 16%,transparent);color:#f87171}
+@media (max-width:760px){.evkm4{grid-template-columns:1fr 1fr}.evkm2{grid-template-columns:1fr}.evkmk .evkv{font-size:1.25rem}}
+@media (max-width:700px){.evub .zl.hm{display:none}.evul .big{font-size:1.3rem;width:100%}}
 .hsm20{all:unset;box-sizing:border-box;display:flex;gap:8px;align-items:flex-start;width:100%;cursor:pointer;padding:9px 12px;border-radius:12px;margin:6px 0;background:color-mix(in srgb,#f5c451 14%,transparent);color:var(--primary-text-color);font-size:.84rem}.hsm20 .ic{color:#f5c451;flex:none;margin-top:2px}
 `;
 /* Modul 1 · Raumkarte 2.0 */
@@ -8573,14 +8628,33 @@ class FensterHeizungPanel extends HTMLElement {
     catch (e) { this._toast("Export nicht möglich"); }
   }
   /* Abfahrtszeit pro Fahrzeug (in der Planung): eigenes Ziel, eigene Uhrzeit, eigene Tage */
-  _wbDep(v) { const c = this._wb(), d = (v && v.dep) || {}; return { on: !!d.on, soc: d.soc || c.planSoc, time: d.time || c.planTime, days: d.days || c.planDays }; }
+  _wbDep(v) { const c = this._wb(), d = (v && v.dep) || {}; return { cal: "", calKw: "", calLead: 30, calSoc: 90, calDur: 0, ...d, on: !!d.on, soc: d.soc || c.planSoc, time: d.time || c.planTime, days: d.days || c.planDays }; }
   _wbdAct(a, b) {
     const c = this._wb(), id = b.dataset.v, k = b.dataset.k;
     const upd = (fn) => this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? { ...x, dep: fn(this._wbDep(x)) } : x)) });
     if (a === "wbdsw") upd((d) => ({ ...d, on: !d.on }));
     else if (a === "wbdsoc") upd((d) => ({ ...d, soc: Math.max(20, Math.min(100, d.soc + Number(b.dataset.s))) }));
     else if (a === "wbddays") upd((d) => ({ ...d, days: k }));
+    else if (a === "wbdclead") upd((d) => ({ ...d, calLead: Math.max(0, Math.min(240, d.calLead + Number(b.dataset.s))) }));
+    else if (a === "wbdcsoc") upd((d) => ({ ...d, calSoc: Math.max(20, Math.min(100, d.calSoc + Number(b.dataset.s))) }));
+    else if (a === "wbdcdur") upd((d) => ({ ...d, calDur: Number(k) }));
+    else if (a === "wbdcoff") upd((d) => ({ ...d, cal: "" }));
     this._render();
+  }
+  /* Abfahrt aus dem Kalender je Fahrzeug (v0.9 Build 4, vorher Lab „Ladeziel nach Kalender“) */
+  _wbCalUI(x, dd, nx, adm) {
+    const cals = Object.keys(this._hass.states).filter((e) => e.startsWith("calendar.")), dis = adm ? "" : "disabled";
+    const step = (a, v, u, s) => `<div class="step" style="flex:none"><button data-act="${a}" data-v="${x.id}" data-s="-${s}" aria-label="weniger" ${dis}>${ic("minus", 18)}</button><b>${v}${u}</b><button data-act="${a}" data-v="${x.id}" data-s="${s}" aria-label="mehr" ${dis}>${ic("plus", 18)}</button></div>`;
+    const when = (iso) => { const t = new Date(iso), td = new Date(); const day = t.toDateString() === td.toDateString() ? "heute" : t.toDateString() === new Date(td.getTime() + 864e5).toDateString() ? "morgen" : t.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }); return `${day} ${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`; };
+    if (!cals.length) return `<div class="evcal off">${ic("clock", 16)}<span class="mut sm">Abfahrt aus dem Kalender: In Home Assistant ist noch kein Kalender eingerichtet.</span></div>`;
+    return `<div class="evcal"><div class="evcalh">${ic("clock", 16)}<b>Abfahrt aus dem Kalender</b>${dd.cal ? `<button class="lnk" data-act="wbdcoff" data-v="${x.id}" ${dis}>Aus</button>` : ""}</div>
+      <div class="mut sm" style="margin:0 0 6px">Steht ein passender Termin an, plant Modul 8 die Ladung bis kurz davor – auch ohne eigene Abfahrt und auch, wenn die Planung aus ist. Kommt die normale Abfahrt früher, gilt sie zuerst.</div>
+      ${this._wzSel(cals, dd.cal || "", "wbdcal", `data-v="${x.id}"`, "– kein Kalender –", /calendar/i)}
+      ${dd.cal ? `<div class="vrow"><span>Nur Termine mit<small class="mut" style="display:block">Wort im Titel, leer = jeder Termin</small></span><input class="evkw" type="text" data-f="wbdkw" data-v="${x.id}" value="${esc(dd.calKw || "")}" placeholder="z. B. Auto" maxlength="30" ${dis} aria-label="Stichwort für ${esc(x.name)}"></div>
+        <div class="vrow"><span>Losfahren<small class="mut" style="display:block">vor Terminbeginn</small></span>${step("wbdclead", dd.calLead, " Min.", 15)}</div>
+        <div class="vrow"><span>Ziel-Ladestand</span>${step("wbdcsoc", dd.calSoc, " %", 5)}</div>
+        <div class="mut sm" style="margin:4px 0 4px">Nur Termine ab</div><div class="gschips">${[[0, "jeder"], [1, "1 Std."], [2, "2 Std."], [4, "4 Std."], [8, "8 Std."]].map(([k, t]) => `<button class="gsch ${Number(dd.calDur || 0) === k ? "sel" : ""}" data-act="wbdcdur" data-v="${x.id}" data-k="${k}" aria-pressed="${Number(dd.calDur || 0) === k}" ${dis}>${t}</button>`).join("")}</div>
+        ${nx ? `<div class="evcaln">${ic("schedule", 15)}<span><b>„${esc(nx.msg || "Termin")}“</b> · losfahren ${when(nx.at)} · Ziel ${dd.calSoc} %</span></div>` : `<div class="mut sm" style="margin-top:6px">In den nächsten 36 Stunden ist kein passender Termin${dd.calKw ? ` mit „${esc(dd.calKw)}“` : ""}.</div>`}` : ""}</div>`;
   }
   /* Planung: Strompreis- und PV-Vorhersage, günstigste Ladefenster */
   _wbFcLoad(force) {
@@ -8643,7 +8717,7 @@ class FensterHeizungPanel extends HTMLElement {
         ${c.vehicles.length ? c.vehicles.map((x) => { const dd = this._wbDep(x), act = veh && veh.id === x.id; return `<div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#2dd4bf">${ic("car", 20)}</span><div class="opi"><b>${esc(x.name)}</b><small>${dd.on ? `${dd.soc} % bis ${esc(dd.time)} Uhr · ${({ all: "täglich", wk: "Mo–Fr", we: "Wochenende" })[dd.days]}` : "Nutzt den Ladeplan"}</small></div>${act ? `<span class="ost home">Aktiv</span>` : ""}<button class="sw ${dd.on ? "on" : ""}" data-act="wbdsw" data-v="${x.id}" aria-pressed="${dd.on}" aria-label="Eigene Abfahrt für ${esc(x.name)}" ${adm ? "" : "disabled"}></button></div>
           ${dd.on ? `<div class="vrow"><span>Ziel-Ladestand</span><div class="step" style="flex:none"><button data-act="wbdsoc" data-v="${x.id}" data-s="-5" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${dd.soc} %</b><button data-act="wbdsoc" data-v="${x.id}" data-s="5" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>
           <div class="vrow"><span>Abfahrt</span><span class="tin">${this._tIn(esc(dd.time), !adm, `Abfahrtszeit ${esc(x.name)}`)}<input type="hidden" data-f="wbdt" data-v="${x.id}" value="${esc(dd.time)}" aria-label="Abfahrtszeit ${esc(x.name)}" ></span></div>
-          <div class="gschips">${[["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]].map(([k, t]) => `<button class="gsch ${dd.days === k ? "sel" : ""}" data-act="wbddays" data-v="${x.id}" data-k="${k}" aria-pressed="${dd.days === k}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</div>` : ""}</div>`; }).join("") : `<div class="mut sm">Lege unter „Laden“ → Fahrzeuge &amp; Karten ein Fahrzeug an, dann kannst du hier seine Abfahrtszeit einstellen.</div>`}</div>
+          <div class="gschips">${[["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]].map(([k, t]) => `<button class="gsch ${dd.days === k ? "sel" : ""}" data-act="wbddays" data-v="${x.id}" data-k="${k}" aria-pressed="${dd.days === k}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</div>` : ""}${this._wbCalUI(x, dd, act ? PL.cal : null, adm)}</div>`; }).join("") : `<div class="mut sm">Lege unter „Laden“ → Fahrzeuge &amp; Karten ein Fahrzeug an, dann kannst du hier seine Abfahrtszeit einstellen.</div>`}</div>
       <div class="card"><h2>${ic("clock", 18)}Geplante Ladefenster</h2>${win.length ? `<div class="wbses">${win.map((w) => { const x = wsum(w), d0 = new Date(hrs[w.start].t), tom = d0.toDateString() !== new Date().toDateString(); return `<div class="wbse"><div><b>${hm(w.start)} – ${hend(w.end - 1)}</b><span class="mut sm">${tom ? "morgen" : "heute"} · ${SL < 1 ? num((w.end - w.start) * SL * 60, 0) + " Min." : (w.end - w.start) + " " + (w.end - w.start === 1 ? "Stunde" : "Stunden")}</span></div><div class="wbsb"><i style="width:${x.s}%"></i></div><div class="wbsv"><b>${num(w.kwh, 1)} kWh</b><span class="mut sm">${num(x.s, 0)} % Sonne · ${num(x.c, 2)} €</span></div></div>`; }).join("")}</div>` : `<div class="mut sm">Es ist keine Ladung nötig, das Ziel ist schon erreicht.</div>`}
       <div class="mut sm" style="margin:10px 0 0">Quellen: Preis ${src === "tibber" ? "Tibber" + (TB.home ? " · " + esc(TB.home) : "") : esc(F.price_src || "–")} · PV-Prognose ${esc(F.pv_src || "–")}. Die Vorhersage ändert sich im Laufe des Tages, der Plan wird alle paar Minuten neu berechnet.</div></div>
       <div class="card"><h2>${ic("tools", 18)}Quellen der Vorhersage</h2>
@@ -8909,6 +8983,8 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="lsec">${ic("energy", 15)}Sensoren dieses Fahrzeugs</div>
       <div class="mut sm" style="margin:2px 0 0">Ladestand (Prozent) – für Ladelimit und Ladeplan</div>${sel("soc", /soc|batter|ladestand|akku/i)}
       <div class="mut sm" style="margin:0">Kilometerstand (optional)</div>${sel("odo", /odo|kilometer|km|mileage|stand/i)}
+      <div class="vrow"><span>Jahreskilometer-Grenze<small class="mut" style="display:block">z. B. aus dem Leasing – die Statistik zeigt, ob du auf Kurs bist. Leer: keine Grenze.</small></span><span style="flex:none;display:flex;align-items:center;gap:6px"><input class="otxt" style="width:96px;text-align:right" type="text" inputmode="numeric" data-f="wbvky" data-v="${x.id}" value="${x.kmYear ? num(x.kmYear, 0) : ""}" placeholder="–" aria-label="Jahreskilometer-Grenze"> km</span></div>
+      ${x.kmYear ? `<div class="vrow"><span>Das Jahr beginnt im<small class="mut" style="display:block">Beim Leasing der Monat, in dem der Vertrag begann</small></span><div class="step" style="flex:none"><button data-act="wbkmfrom" data-v="${x.id}" data-s="-1" aria-label="früher">${ic("minus", 18)}</button><b style="min-width:92px;text-align:center">${["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"][(x.kmFrom || 1) - 1]}</b><button data-act="wbkmfrom" data-v="${x.id}" data-s="1" aria-label="später">${ic("plus", 18)}</button></div></div>` : ""}
       <div class="mut sm" style="margin:0">Reichweite (optional)</div>${sel("range", /reichweite|range/i)}
       <div class="mut sm" style="margin:0">Wer fährt das Auto meistens? (optional – dann zeigt Modul 8 „unterwegs“)</div>${this._wzSel(ks.filter((e) => e.startsWith("person.")), x.person || "", "wbvp", `data-k="person" data-v="${x.id}"`, "– niemand –", /person/i)}
       ${!(x.ent || {}).soc ? (() => { const e = (this._wbSnap().est || {})[x.id]; return `<div class="evest"><div><b>Ohne Ladestand-Sensor: Ladestand schätzen</b><small class="mut">${e ? `Geschätzt <b>${num(e.soc, 0)} %</b> · eingegeben ${esc(new Date(e.set).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }))} mit ${num(e.at, 0)} %${e.stale ? " · seit dem Abstecken unsicher – bitte neu eingeben" : ""}` : "Gib einmal ein, wie voll der Akku gerade ist (Anzeige im Auto). Beim Laden rechnet Strom &amp; Wärme weiter: geladene kWh × 90 % ÷ Akkugröße."}</small></div>
@@ -9020,6 +9096,9 @@ class FensterHeizungPanel extends HTMLElement {
       ${logCard}`;
   }
   _wbAct(a, b) {
+    if (a === "wbkmfrom") { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === b.dataset.v ? { ...x, kmFrom: (((x.kmFrom || 1) - 1 + Number(b.dataset.s) + 12) % 12) + 1 } : x)) }, true); this._renderModal(); return; }
+    if (a === "wbkmok") return this._evKmOdo(b);
+    if (a === "wbwall") { this._evWallFull = b.dataset.k === "full"; this._render(); return; }
     if (a.startsWith("wbr")) return this._rfAct(a, b);
     if (a.startsWith("wbv")) return this._evStAct(a, b);
     if (a.startsWith("wbx") || a === "wbcsv") return this._wbxAct(a, b);
@@ -9060,8 +9139,11 @@ class FensterHeizungPanel extends HTMLElement {
   _wbLater(t) { /* Zeitfeld nicht mitten in der Eingabe neu aufbauen (Safari meldet jede Ziffer einzeln) */ clearTimeout(this._wbLT); this._wbLT = setTimeout(() => { const ae = this.shadowRoot.activeElement; if (ae && (ae.type === "time" || (ae.dataset && ae.dataset.tin))) { ae.addEventListener("blur", () => this._render(), { once: true }); } else this._render(); }, 700); }
   _wbChange(t) { const f = t.dataset.f;
     if (f === "wbdim") { const c = this._wb(); this._wbSave({ dim: { ...(c.dim || { on: true, kw: 4.2 }), ent: t.value || "" } }, true); this._render(); return true; }
+    if (f === "wbdcal" || f === "wbdkw") { const c = this._wb(), v = f === "wbdkw" ? String(t.value || "").replace(/[<>"&]/g, "").trim().slice(0, 30) : t.value || "";
+      this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), [f === "wbdcal" ? "cal" : "calKw"]: v } } : x)) }, true); this._render(); return true; }
     if (f === "wbvp") { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, person: t.value || "" } : x)) }, true); this._renderModal(); return true; }
     if (f === "wbpdfct" || f === "wbpdfname") { const c = this._wb(), p = { ...(c.pdf || { ct: 30, name: "" }) }; if (f === "wbpdfct") { const v = parseFloat(String(t.value).replace(",", ".")); if (isFinite(v)) p.ct = Math.max(0, Math.min(200, v)); } else p.name = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 60); this._wbSave({ pdf: p }); this._renderModal(); return true; }
+    if (f === "wbvky") { const c = this._wb(), v = parseInt(String(t.value).replace(/\D/g, ""), 10); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, kmYear: isFinite(v) ? Math.max(0, Math.min(200000, v)) : 0 } : x)) }, true); this._renderModal(); return true; }
     if (f === "wbvn" || f === "wbvm" || f === "wbvc" || f === "wbve") {
       const c = this._wb(), id = t.dataset.v, clean = (v, n) => String(v || "").replace(/[<>"'&]/g, "").slice(0, n);
       const fn = f === "wbvn" ? (x) => ({ ...x, name: clean(t.value, 30).trim() || x.name }) : f === "wbvm" ? (x) => ({ ...x, model: clean(t.value, 30) })
@@ -9198,8 +9280,8 @@ class FensterHeizungPanel extends HTMLElement {
     const line = !N.wbOn && !d.plugged ? (d.range != null ? `Reichweite ${num(d.range, 0)} km` : "Fahrzeug")
       : d.charging ? `Lädt${N.sun != null ? (N.sun >= 50 ? " mit Sonne" : " mit Netzstrom") : ""}${d.power != null ? " · " + num(d.power / 1000, 1) + " kW" : ""}${N.doneT ? " · fertig ca. " + N.doneT + " Uhr" : ""}`
       : d.plugged ? (N.soc != null && N.soc >= N.goal ? "Angesteckt · Ziel erreicht" : `Angesteckt · ${N.w.state === "wartet" ? "wartet auf Sonne" : N.w.state === "plan_wartet" ? "wartet auf das Ladefenster" : "lädt gerade nicht"}`) : away && !away.home ? `Unterwegs mit ${away.name}${away.zone ? " · " + away.zone : ""}` : away ? "Zu Hause · nicht angesteckt" : "Nicht angesteckt";
-    const chips = tab ? [] : [N.wbOn && N.c.enabled ? `<span class="chip"><i class="evdot"></i>Modus ${esc(N.modeN)}</span>` : N.wbOn ? `<span class="chip">Regelung aus</span>` : "",
-      N.sun != null ? `<span class="chip">${this._gx("sun", 16, { on: 1 })}${num(N.sun, 0)} % Sonne</span>` : "", d.range != null ? `<span class="chip">Reichweite ${num(d.range, 0)} km</span>` : "",
+    const chips = tab ? [this._evPriceChip()].filter(Boolean) : [N.wbOn && N.c.enabled ? `<span class="chip"><i class="evdot"></i>Modus ${esc(N.modeN)}</span>` : N.wbOn ? `<span class="chip">Regelung aus</span>` : "",
+      N.sun != null ? `<span class="chip">${this._gx("sun", 16, { on: 1 })}${num(N.sun, 0)} % Sonne</span>` : "", this._evPriceChip(), d.range != null ? `<span class="chip">Reichweite ${num(d.range, 0)} km</span>` : "",
       N.sn.guard && N.sn.guard.limited ? `<span class="chip">Hausanschluss ${num(N.sn.guard.total_a, 0)} von ${N.sn.guard.max_a} A</span>` : ""].filter(Boolean);
     return `<div class="card hero mh a-ev evban${N.night ? " nt" : ""}">${this._evCarport(d, N, 1180, 290, { sfx: "d", sx: 1180 - 640, s: 0.9 }).replace('class="evsc"', 'class="evsc evd"')}${this._evCarport(d, N, 420, 170, { sfx: "m", sx: 40, s: 0.52 }).replace('class="evsc"', 'class="evsc evm"')}${this._modLogo("ev")}
       <div class="evbt"><div class="lbl">${this._gx("car", 18)}${esc(name)}${N.card ? " · " + esc(N.card) : ""}</div>
@@ -9284,12 +9366,13 @@ class FensterHeizungPanel extends HTMLElement {
   _evPageNew(d) {
     const wbOn = this._wbOn(), t = this._wbStT(), box = this._betaBox("Die Darstellung nutzt die Sensoren, die du in den Einstellungen wählst.");
     if (!wbOn) return `${box}${this._evSay(d)}${this._evBand(d)}${this._evTiles(d)}${this._wbCard(d)}`;
-    const head = `${box}${this._evTabsNew()}${this._evSay(d)}`;
+    const back = this._tmOn && this._tmOn() && this._evWallFull ? `<button class="btn2 evwback" data-act="wbwall" data-k="">${ic("home", 18)}Zur Wandansicht</button>` : "";
+    const head = `${back}${box}${this._evTabsNew()}${this._evSay(d)}`;
     if (t === "plan") return `${head}${this._evPlanNew(d)}`;
     if (t === "stat") return `${head}${this._evStatNew()}`;
     if (t === "veh") return `${head}${this._rfCard(false)}`;
     if (t === "set") return `${head}${this._wbCard(d, "set")}`;
-    return `${head}${this._evBand(d)}${this._evTiles(d)}<div class="evcols"><div>${this._evModes(d)}${this._evToday()}</div><div>${this._evWhy()}</div></div>`;
+    return `${head}${this._evBand(d)}${this._evSurplus(d)}${this._evTiles(d)}<div class="evcols"><div>${this._evModes(d)}${this._evToday()}</div><div>${this._evWhy()}</div></div>`;
   }
   /* ================= Modul 8 · v0.8 Planung & Statistik in der neuen Optik =================
      A12 Ladeplan als ein Band (Sonne als Fläche, Preis als Streifen, Ladefenster, Abfahrt) · A13 Statistik mit Tag/Woche/Monat/Jahr wie Modul 3/4
@@ -9335,7 +9418,8 @@ class FensterHeizungPanel extends HTMLElement {
       ${c.planOn && !c.enabled ? `<div class="gst on">${ic("info", 15)}Die Laderegelung ist aus. Schalte sie im Register „Laden“ ein, sonst wird nichts nach Plan geladen.</div>` : ""}
       ${PL.ok && PL.day_ok === false ? `<div class="gst on">${ic("info", 15)}<span>An diesem Tag gilt keine Abfahrt (${PL.days === "wk" ? "nur Mo–Fr" : "nur am Wochenende"}). Es gilt der normale Modus.</span></div>` : ""}
       <div class="evseg">${chip("mix", "Sonne zuerst, dann günstig")}${chip("sun", "Nur Sonne")}${chip("price", "Günstigster Preis")}</div>
-      <div class="mut sm" style="margin:4px 0 6px">Ziel <b>${PL.target != null ? PL.target : c.planSoc} %</b> bis <b>${esc(PL.until || c.planTime)} Uhr</b>${PL.soc != null ? ` · jetzt ${num(PL.soc, 0)} %${PL.est ? " (geschätzt)" : ""}` : ""}${PL.pmax ? ` · bis ${num(PL.pmax, 1)} kW` : ""}${PL.own ? " · eigene Abfahrt des Fahrzeugs" : ""}</div>
+      <div class="mut sm" style="margin:4px 0 6px">Ziel <b>${PL.target != null ? PL.target : c.planSoc} %</b> bis <b>${esc(PL.until || c.planTime)} Uhr</b>${PL.soc != null ? ` · jetzt ${num(PL.soc, 0)} %${PL.est ? " (geschätzt)" : ""}` : ""}${PL.pmax ? ` · bis ${num(PL.pmax, 1)} kW` : ""}${PL.cal ? "" : PL.own ? " · eigene Abfahrt des Fahrzeugs" : ""}</div>
+      ${PL.cal ? `<div class="evcaln" style="margin:0 0 8px">${ic("clock", 15)}<span>Abfahrt aus dem Kalender: <b>„${esc(PL.cal.msg || "Termin")}“</b> um ${esc(new Date(PL.cal.start).toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" }))} Uhr – losfahren ${esc(new Date(PL.cal.at).toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" }))} Uhr${c.planOn ? "" : ". Die Planung steuert dafür, auch wenn sie sonst aus ist"}.</span></div>` : ""}
       <div class="evpwrap">${svg}</div>
       <div class="gsleg" style="margin-top:4px"><span><i style="background:#facc15"></i>Sonne (${esc(F.pv_src || "Prognose")})</span><span><i style="background:linear-gradient(90deg,#34d399,#fbbf24,#f87171)"></i>Preis günstig → teuer</span><span><i style="background:transparent;outline:1.5px solid var(--teal)"></i>Ladefenster</span></div>
       <div class="evsay ${PL.ok ? "ok" : "info"}" style="margin:12px 0 0">${this._gx(PL.ok && sh >= 50 ? "sun" : "price", 28, { on: 1 })}<span>${say}</span></div></div>
@@ -9390,6 +9474,7 @@ class FensterHeizungPanel extends HTMLElement {
         ${k(this._gx("euro", 34), "Kosten", num(T.cost, 2), "€", `nur Netzstrom ${delta(T.cost, Pv.cost, "€", "down")}`)}
         ${k(this._gx("car", 34), "Pro 100 km", d100 != null ? num(d100, 2) : "–", d100 != null ? "€" : "", k100 != null ? `${num(k100, 1)} kWh/100 km · ${num(T.km, 0)} km` : "braucht den Kilometerstand")}
         ${k(this._gx("price", 34), "Gespart", num(Math.max(0, T.full - T.cost), 2), "€", "gegenüber nur Netzstrom")}</div>
+      ${this._evKmCards(D, S, R, T, Pv, run)}
       <div class="evcols"><div><div class="card"><h2>${this._gx("meter", 24)}${S.per === "d" ? "Ladungen an diesem Tag" : S.per === "y" ? "Geladen je Monat" : "Geladen je Tag"}<span class="evmr">${S.per === "y" || S.per === "m" || S.per === "w" ? "Antippen öffnet den Zeitraum" : ""}</span></h2>
         ${slots.length && T.kwh > 0 ? `<svg class="evstsvg" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" role="img" aria-label="Geladene Energie, Sonne und Netz">${bars}<line x1="10" x2="${W - 10}" y1="${base}" y2="${base}" class="evpd"/></svg>
         <div class="gsleg"><span><i style="background:var(--teal)"></i>Sonne ${num(T.pv, 1)} kWh</span><span><i style="background:var(--amber)"></i>Netz ${num(T.grid, 1)} kWh</span><span class="mut">▲▼ gegenüber ${run && S.per !== "d" ? "dem gleichen Zeitraum im " + prevN : "dem " + prevN}</span></div>` : `<div class="mut sm">In diesem Zeitraum wurde nicht geladen.</div>`}</div>
@@ -9399,7 +9484,7 @@ class FensterHeizungPanel extends HTMLElement {
           <div class="evsft">${this._admin() ? `<span class="mut sm">Antippen, um eine Ladung zu bearbeiten.</span>` : ""}${ses.length > 12 ? `<button class="lnk" data-act="wbvall">${S.all ? "Weniger anzeigen" : `Alle ${ses.length} anzeigen`}</button>` : ""}</div>` : `<div class="mut sm">Keine Ladungen in diesem Zeitraum.</div>`}</div></div>
       <div><div class="card"><h2>${this._gx("people", 24)}Fahrzeuge &amp; Karten</h2>${vehs.length ? vehs.map(([n, v]) => { const x = cv.find((y) => y.name === n), p100 = v.km > 0 ? v.cost / v.km * 100 : null;
           const unk = n === "Unbekannt" && this._admin() && cv.length;
-          return `<div class="evvr">${x ? `<span class="rfpic">${this._evThumb(x, 84)}</span>` : `<span class="rfpic">${this._gx("car", 30)}</span>`}<div class="evvt"><b>${esc(n)}${unk ? `<button class="btn2 sm evasg" data-act="wbvasg" data-k="${R.d0.getTime()}" data-e="${R.d1.getTime()}">${ic("car", 15)} Zuordnen</button>` : ""}</b><div class="evbb sm"><i class="f" style="width:${v.kwh / vmx * 100}%"></i></div><small>${num(v.kwh, 1)} kWh · ${num(v.cost, 2)} €${p100 != null ? ` · ${num(p100, 2)} €/100 km` : ""}</small></div></div>`; }).join("") : `<div class="mut sm">Noch keine Ladungen mit erkanntem Fahrzeug.</div>`}
+          return `<div class="evvr">${x ? `<span class="rfpic">${this._evThumb(x, 84)}</span>` : `<span class="rfpic">${this._gx("car", 30)}</span>`}<div class="evvt"><b>${esc(n)}${unk ? `<button class="btn2 sm evasg" data-act="wbvasg" data-k="${R.d0.getTime()}" data-e="${R.d1.getTime()}">${ic("car", 15)} Zuordnen</button>` : ""}</b><div class="evbb sm"><i class="f" style="width:${v.kwh / vmx * 100}%"></i></div><small>${num(v.kwh, 1)} kWh · ${num(v.cost, 2)} €${v.km > 0 ? ` · <b>${num(v.km, 0)} km</b>${v.kwh > 0 ? ` · ${num(v.kwh / v.km * 100, 1)} kWh/100 km` : ""}` : ""}${p100 != null ? ` · ${num(p100, 2)} €/100 km` : ""}${v.kwh > 0 && v.pv != null ? ` · ${num(v.pv / v.kwh * 100, 0)} % Sonne` : ""}</small></div></div>`; }).join("") : `<div class="mut sm">Noch keine Ladungen mit erkanntem Fahrzeug.</div>`}
         ${Object.keys(cards).length ? `<div class="lsec" style="margin-top:10px">${ic("shield", 15)}Je Karte</div>${Object.entries(cards).map(([n, c]) => `<div class="evcr"><span><b>${esc(n)}</b><small>${esc(c.veh)} · ${c.n} ${c.n === 1 ? "Ladung" : "Ladungen"}</small></span><span><b>${num(c.kwh, 1)} kWh</b><small>${num(c.cost, 2)} €</small></span></div>`).join("")}` : ""}</div></div></div>`;
   }
   _evStAct(a, b) {
@@ -9550,6 +9635,171 @@ class FensterHeizungPanel extends HTMLElement {
     }
   }
 
+  /* ================= Modul 8 · v0.9 Build 4: Überschuss-Balken und Strompreis =================
+     Balken 0 … eingestellte Höchstleistung mit den Bereichen „zu wenig“, „1 Phase“ und „3 Phasen“, dem genauen Überschuss,
+     der Ladeleistung jetzt und dem Netz-Anteil. Dazu Start/Stopp sichtbar (Restzeit aus der Regelung) und der Strompreis als Chip. */
+  _evPriceChip() {
+    const p = this._wbSnap().price;
+    if (!p || p.ct == null) return "";
+    const L = { billig: ["#34d399", "günstig laden"], guenstig: ["#86efac", "günstig"], normal: ["#fbbf24", "normal"], teuer: ["#fb923c", "teuer"], fix: ["#94a3b8", "Festpreis"] }[p.lvl] || ["#94a3b8", p.src || ""];
+    return `<span class="chip evpc" style="--c:${L[0]}" title="Strompreis jetzt${p.src ? " · " + esc(p.src) : ""}"><i></i>${num(p.ct, 1)} ct/kWh${L[1] ? " · " + esc(L[1]) : ""}</span>`;
+  }
+  _evSurplus(d) {
+    const sn = this._wbSnap(), w = sn.want || {}, e = sn.eff || sn.cfg || {}, V = 230;
+    if (!this._wbOn() || !sn.cfg || !sn.cfg.enabled || w.surplus_w == null) return "";
+    const minA = e.minA || 6, maxA = e.maxA || 16, ph = String(e.ph || "auto"), startW = e.startW || 1400;
+    const has1 = ph !== "3", has3 = ph !== "1", top = maxA * V * (has3 ? 3 : 1);
+    const st1 = Math.max(startW, minA * V), p3 = minA * V * 3, start = has1 ? st1 : Math.max(startW, p3);
+    const sp = Math.max(0, w.surplus_w), ch = d.charging && d.power != null ? Math.max(0, d.power) : 0, grid = Math.max(0, ch - sp);
+    const pc = (x) => Math.max(0, Math.min(100, x / top * 100)), kw = (x, n = 2) => num(x / 1000, n);
+    let fit;
+    const keep = (has1 ? 1 : 3) * minA * V; // so viel braucht eine laufende Ladung mit Mindeststrom
+    if (sp < start && ch > 0) fit = sp < keep ? `<b>zu wenig für ${minA} A</b> – fehlen ${kw(keep - sp)} kW` : `reicht für <b>${minA} A · ${has1 ? "1 Phase" : "3 Phasen"}</b>`;
+    else if (sp < start) fit = `<b>reicht noch nicht</b> – fehlt ${kw(start - sp)} kW bis zum Start`;
+    else if (has1 && (!has3 || sp < p3)) { const a = Math.min(maxA, Math.floor(sp / V)); fit = `reicht für <b>${a} A · 1 Phase</b> (${kw(a * V)} kW)`; }
+    else { const a = Math.min(maxA, Math.floor(sp / V / 3)); fit = `reicht für <b>${a} A · 3 Phasen</b> (${kw(a * V * 3)} kW)`; }
+    const next = sp < start ? "" : has1 && has3 && sp < p3 ? `noch <b>${kw(p3 - sp)} kW</b> bis 3 Phasen` : sp < top ? `noch <b>${kw(top - sp)} kW</b> bis volle Leistung` : "volle Leistung";
+    const t = w.timer, mm = (s) => s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")} Min.` : `${s} s`;
+    const tm = t && t.left > 0 ? `<div class="evup ${t.k === "start" ? "go" : "st"}" style="--p:${Math.round((1 - t.left / (t.tot || 1)) * 100)}%">${this._gx(t.k === "start" ? "sun" : "plug", 22, { on: t.k === "start" ? 1 : 0 })}<span>${t.k === "start" ? `<b>Startet in ca. ${mm(t.left)}</b>, wenn der Überschuss bleibt.` : `<b>Stoppt in ca. ${mm(t.left)}</b> – der Überschuss ist zu gering. Bis dahin lädt das Auto mit ${minA} A weiter.`}</span></div>`
+      : w.state === "wartet" && sp < start && sn.cfg.mode !== "off" ? `<div class="evup">${this._gx("schedule", 22)}<span><b>Wartet auf Sonne.</b> Start ab ${kw(start, 1)} kW Überschuss${sn.eff && sn.eff.onMin ? `, wenn er ${sn.eff.onMin} Min. bleibt` : ""}.</span></div>` : "";
+    const z = (cls, a, b) => b > a ? `<span class="z ${cls}" style="left:${pc(a)}%;width:${pc(b) - pc(a)}%"></span>` : "";
+    const lab = (txt, a, b, hm) => b > a ? `<span class="zl${hm ? " hm" : ""}" style="left:${(pc(a) + pc(b)) / 2}%">${txt}</span>` : "";
+    const ticks = [[0, "0"], [start, `Start ${kw(start, 1)}`]].concat(has1 && has3 ? [[p3, kw(p3, 1)]] : []).concat([[top, `max ${kw(top, 1)} kW`]]);
+    return `<div class="card evup0"><h2>${this._gx("sun", 24, { on: sp >= start ? 1 : 0 })}Überschuss für die Wallbox</h2>
+      <div class="evub" role="img" aria-label="Überschuss ${kw(sp)} kW${ch ? ", Ladeleistung " + kw(ch) + " kW" : ""}, eingestellt bis ${kw(top, 1)} kW">
+        ${z("no", 0, start)}${has1 ? z("p1", start, Math.min(top, maxA * V)) : ""}${has3 ? z("p3", has1 ? p3 : start, top) : ""}
+        ${lab("zu wenig", 0, start, 1)}${has1 ? lab(`1 Phase · ${minA}–${maxA} A`, start, Math.min(top, maxA * V)) : ""}${has3 ? lab(`3 Phasen · ${minA}–${maxA} A`, has1 ? p3 : start, top) : ""}
+        <span class="s" style="width:${pc(sp)}%"></span>${grid > 0 ? `<span class="g" style="left:${pc(sp)}%;width:${pc(ch) - pc(sp)}%"></span>` : ""}
+        <span class="t" style="left:${pc(start)}%"></span>${has1 && has3 ? `<span class="t" style="left:${pc(p3)}%"></span>` : ""}
+        ${ch > 0 ? `<span class="w" style="left:${pc(ch)}%"></span>` : ""}</div>
+      <div class="evux">${ticks.map(([x, l], i) => `<span style="left:${pc(x)}%"${i === 0 ? ' class="a"' : i === ticks.length - 1 ? ' class="e"' : ""}>${l}</span>`).join("")}</div>
+      <div class="evul"><div class="big">${kw(sp)}<small>kW Überschuss</small></div>${ch > 0 ? `<div class="evpill">lädt jetzt <b>${kw(ch)} kW</b></div>` : ""}<div class="evpill">${fit}</div>${next ? `<div class="evpill">${next}</div>` : ""}
+        ${grid > 0 ? `<div class="evpill nt">davon aus dem Netz <b>${kw(grid)} kW</b>${sn.price && sn.price.ct != null ? ` · ca. ${num(grid / 1000 * sn.price.ct / 100, 2)} €/h` : ""}</div>` : ""}</div>
+      ${tm}${this._evSurFc(start, has1 && has3 ? p3 : null, top)}
+      <div class="gsleg evuleg"><span><i style="background:var(--teal)"></i>Überschuss</span><span><i class="nt"></i>Netz</span>${ch > 0 ? `<span><i style="background:var(--primary-text-color,#e6edf3)"></i>Ladeleistung jetzt</span>` : ""}<span class="mut">Eingestellt: ${minA}–${maxA} A · ${ph === "auto" ? "Phasen automatisch" : ph === "1" ? "1 Phase" : "3 Phasen"} · Start ab ${kw(start, 1)} kW</span></div></div>`;
+  }
+  /* Überschuss-Vorschau: aus der PV-Prognose (minus Grundverbrauch) – ab wann reicht es für den Start, für 3 Phasen, bis wann */
+  _evSurFc(start, p3, top) {
+    this._wbFcLoad();
+    const F = (this._wbFcD && this._wbFcD.data) || {}, H = F.hours || [], SL = (F.slot_min || 60) / 60, now = Date.now(), end = new Date(); end.setHours(23, 59, 0, 0);
+    const S = H.map((h) => ({ t: new Date(h.t), w: (h.pv || 0) * 1000 })).filter((x) => x.t.getTime() + SL * 36e5 > now && x.t <= end);
+    if (!F.has_pv || !S.length || !S.some((x) => x.w > 0)) return "";
+    const hm = (t) => t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), cur = S[0], z = (w) => w >= (p3 || Infinity) ? "p3" : w >= start ? "p1" : "no";
+    const a = S.findIndex((x) => x.w >= start), b = p3 ? S.findIndex((x) => x.w >= p3) : -1;
+    let last = -1; S.forEach((x, i) => { if (x.w >= start) last = i; });
+    const peak = S.reduce((m, x) => (x.w > m.w ? x : m), S[0]), endT = last >= 0 ? new Date(S[last].t.getTime() + SL * 36e5) : null;
+    const T = [];
+    if (a < 0) T.push(`Heute reicht die Sonne laut Prognose nicht mehr für den Start (höchstens ${num(peak.w / 1000, 1)} kW um ${hm(peak.t)}).`);
+    else {
+      if (a > 0) T.push(`Ab ca. <b>${hm(S[a].t)}</b> reicht es für den Start.`);
+      if (b > 0) T.push(`Ab ca. <b>${hm(S[b].t)}</b> für 3 Phasen.`); else if (b === 0 && a === 0) T.push("Jetzt reicht es laut Prognose für 3 Phasen.");
+      if (endT) T.push(`Bis ca. <b>${hm(endT)}</b> reicht es.`);
+      if (b < 0 && p3) T.push(`Für 3 Phasen reicht es heute nicht (höchstens ${num(peak.w / 1000, 1)} kW).`);
+    }
+    const sc = Math.max(peak.w * 1.1, p3 || start * 2), n = S.length, lb = [0, Math.floor(n / 2), n - 1].filter((v, i, x) => x.indexOf(v) === i);
+    return `<div class="evfc"><div class="evfch">${this._gx("forecast", 20)}<b>Vorschau heute</b><span class="evfcl"><i class="no"></i>zu wenig<i class="p1"></i>1 Phase${p3 ? `<i class="p3"></i>3 Phasen` : ""}</span><span class="mut sm">${esc(F.pv_src || "Prognose")} · minus Grundverbrauch</span></div>
+      <div class="evfcb" role="img" aria-label="Erwarteter Überschuss heute je ${SL < 1 ? "Viertelstunde" : "Stunde"}">${S.map((x) => `<i class="${z(x.w)}" style="height:${Math.max(6, Math.min(100, x.w / sc * 100))}%" title="${hm(x.t)} · ${num(x.w / 1000, 1)} kW"></i>`).join("")}</div>
+      <div class="evfcx">${lb.map((i) => `<span style="left:${(i + .5) / n * 100}%">${i === 0 ? "jetzt" : hm(S[i].t)}</span>`).join("")}</div>
+      <div class="sm" style="margin-top:6px">${T.join(" ")}</div></div>`;
+  }
+  /* ================= Modul 8 · v0.9 Build 4: Tablet-Wandansicht „Laden“ =================
+     Im Tablet-Modus: Carport-Banner, Ladeband, Überschuss-Balken mit Vorschau und große Knöpfe für Modus und Schnellstart.
+     „Alle Details“ öffnet die normale Seite von Modul 8, „Wandansicht“ führt zurück. */
+  _evWall() {
+    const d = this._evData(), sn = this._wbSnap(), c = sn.cfg || {}, N = this._evNow(d), adm = this._admin(), q = sn.quick && sn.quick.k;
+    const M = [["off", "Aus", "plug"], ["pv", "Sonne", "sun"], ["minpv", "Sonne + Netz", "grid"], ["now", "Voll", "bolt"]];
+    const Q = [["h1", "1 Stunde voll", "bolt"], ["goal", "Bis zum Ziel", "battery"], ["sun", "Heute nur Sonne", "sun"]];
+    const can = adm && c.enabled && !c.planOn;
+    const modes = `<div class="evwm">${M.map(([k, t, g]) => `<button class="evwb ${N.mode === k ? "sel" : ""}" data-act="wbmode" data-k="${k}" aria-pressed="${N.mode === k}" ${can ? "" : "disabled"}>${this._gx(g, 44, { on: N.mode === k ? 1 : 0 })}<b>${t}</b></button>`).join("")}</div>`;
+    const quick = q ? `<div class="evwq on">${this._gx("bolt", 34, { on: 1 })}<span><b>Schnellstart: ${esc((Q.find((x) => x[0] === q) || ["", ""])[1])}</b><small>${q === "h1" ? "endet nach einer Stunde" : q === "goal" ? "bis zum Ladelimit" : "bis Mitternacht"}</small></span><button class="evwb stop" data-act="wbxq" data-k="">Stopp</button></div>`
+      : `<div class="evwm q">${Q.map(([k, t, g]) => `<button class="evwb" data-act="wbxq" data-k="${k}" ${adm && c.enabled ? "" : "disabled"}>${this._gx(g, 34)}<b>${t}</b></button>`).join("")}</div>`;
+    const why = !c.enabled ? "Die Laderegelung ist aus. Einschalten unter „Alle Details“." : c.planOn ? "Die Planung steuert gerade die Wallbox." : N.w.reason || "";
+    return `<div class="evwall">${this._evBanner()}${this._evSay(d)}
+      <div class="evwg"><div>${this._evBand(d)}${this._evSurplus(d) || `<div class="card evup0"><div class="mut">Kein Überschuss-Wert – dafür braucht Modul 8 die Laderegelung und einen Netz-Sensor.</div></div>`}</div>
+        <div class="card evwc"><h2>${this._gx("wallbox", 26)}Wie soll geladen werden?</h2>${modes}${why ? `<div class="mut sm" style="margin:10px 2px 0">${esc(why)}</div>` : ""}
+          <div class="lsec" style="margin-top:16px">${ic("energy", 15)}Schnellstart</div>${quick}
+          <button class="btn2 evwfull" data-act="wbwall" data-k="full">${ic("sliders", 18)}Alle Details</button></div></div></div>`;
+  }
+  _evWallOn() { return !!(this._tmOn && this._tmOn() && this._wbOn() && !this._evWallFull); }
+  /* ================= Modul 8 · v0.9 Build 4: Kilometer & Verbrauch in der Statistik =================
+     Gefahrene km mit Vergleich, Verbrauch kWh/100 km, Sonnen-Kilometer, km je Tag/Monat, Verbrauch nach Außentemperatur
+     (letzte 12 Monate), Jahreskilometer mit Hochrechnung und optionaler Grenze (Leasing), Kilometerstand von Hand. */
+  _evKmCards(D, S, R, T, Pv, run) {
+    const days = D.days || [], cv = this._wb().vehicles || [], v0 = this._evVeh(), ev = this._evData(), adm = this._admin();
+    const key = (t) => `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+    const noSensor = cv.filter((x) => !(x.ent || {}).odo), anyKm = days.some((r) => r.km > 0);
+    const odoNow = v0 ? ((v0.ent || {}).odo ? ev.odo : (D.odos || {})[v0.id]) : ev.odo;
+    const manual = adm && noSensor.length ? `<div class="evkmm">${ic("pencil", 16)}<div><b>Ohne Kilometer-Sensor?</b><small>Kilometerstand ab und zu eintragen – die Strecke seit dem letzten Eintrag wird auf die Tage dazwischen verteilt.</small>
+        ${noSensor.map((x) => { const o = (D.odoset || {})[x.id]; return `<div class="evkmr"><span>${esc(x.name)}<small>${o ? `zuletzt ${num(o.km, 0)} km am ${new Date(o.d + "T12:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })}` : "noch kein Eintrag – der erste Stand ist der Startwert"}</small></span><input class="otxt" type="text" inputmode="numeric" data-km="${esc(x.id)}" placeholder="${o ? num(o.km, 0) : "z. B. 24.318"}" aria-label="Kilometerstand ${esc(x.name)}"><button class="btn2 pri" data-act="wbkmok" data-v="${esc(x.id)}">Eintragen</button></div>`; }).join("")}</div></div>` : "";
+    if (!anyKm) return `<div class="card evkm"><h2>${this._gx("car", 24)}Kilometer &amp; Verbrauch</h2><div class="mut sm">Noch keine Kilometer. Wähle beim Fahrzeug einen Kilometerstand-Sensor${adm && noSensor.length ? " oder trage den Stand unten von Hand ein" : ""} – ab dann zählt Modul 8 die gefahrenen Kilometer je Tag.</div>${manual}</div>`;
+    // Kacheln
+    const sh = T.kwh > 0 ? T.pv / T.kwh : 0, k100 = T.km > 0 && T.kwh > 0 ? T.kwh / T.km * 100 : null, k100p = Pv.km > 0 && Pv.kwh > 0 ? Pv.kwh / Pv.km * 100 : null;
+    const elapsed = Math.max(1, Math.ceil(((run ? new Date() : R.d1) - R.d0) / 864e5)), per = days.filter((r) => r.d >= key(R.d0) && r.d < key(R.d1));
+    const top = per.reduce((m, r) => (r.km > (m ? m.km : 0) ? r : m), null);
+    const pc = Pv.km > 0 ? (T.km - Pv.km) / Pv.km * 100 : null, pN = { d: "Vortag", w: "Vorwoche", m: "Vormonat", y: "Vorjahr" }[S.per];
+    const k = (img, l, v, u, sub, a) => `<div class="evkmk" style="--a:${a}"><div class="evkh">${img}<span>${l}</span></div><div class="evkv">${v}${u ? `<small>${u}</small>` : ""}</div><div class="evks">${sub}</div></div>`;
+    const tiles = `<div class="evkm4">${k(this._gx("car", 30), "Gefahren", num(T.km, 0), "km", pc != null && Math.abs(pc) >= 1 ? `<em class="evd n">${pc > 0 ? "▲" : "▼"} ${num(Math.abs(pc), 0)} %</em> zum ${pN}` : `im ${pN} ${num(Pv.km, 0)} km`, "#60a5fa")}
+      ${k(this._gx("bolt", 30), "Verbrauch", k100 != null ? num(k100, 1) : "–", k100 != null ? "kWh/100 km" : "", k100 != null ? `geladen, mit Ladeverlusten${k100p != null ? ` · ${pN} ${num(k100p, 1)}` : ""}` : "in diesem Zeitraum nicht geladen", "#2dd4bf")}
+      ${k(this._gx("sun", 30, { on: 1 }), "Sonnen-Kilometer", num(T.km * sh, 0), "km", T.kwh > 0 ? `${num(sh * 100, 0)} % der Strecke mit eigener Sonne` : "kein Laden in diesem Zeitraum", "#facc15")}
+      ${k(this._gx("schedule", 30), S.per === "d" ? "Am Tag" : "Ø pro Tag", num(S.per === "d" ? T.km : T.km / elapsed, 0), "km", top && S.per !== "d" ? `am meisten ${num(top.km, 0)} km am ${new Date(top.d + "T12:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })}` : "", "#a78bfa")}</div>`;
+    // Balken: km je Tag (Woche/Monat) oder je Monat (Jahr); Farbe nach Sonnenanteil der Ladungen in diesem Abschnitt
+    const MON = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"], sl = [];
+    if (S.per === "y") for (let m = 0; m < 12; m++) { const a = new Date(R.d0.getFullYear(), m, 1), x = this._evAgg(days, a, new Date(R.d0.getFullYear(), m + 1, 1)); sl.push({ l: MON[m], x, go: a, p: "m" }); }
+    else if (S.per !== "d") for (let t = new Date(R.d0); t < R.d1; t = new Date(t.getFullYear(), t.getMonth(), t.getDate() + 1)) sl.push({ l: S.per === "w" ? ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"][t.getDay()] : String(t.getDate()), x: this._evAgg(days, t, new Date(t.getFullYear(), t.getMonth(), t.getDate() + 1)), go: new Date(t), p: "d" });
+    const mx = Math.max(1, ...sl.map((s) => s.x.km)), lab = (i) => sl.length <= 16 || i % 5 === 0 || i === sl.length - 1;
+    const chart = sl.length ? `<div class="mut sm" style="margin:14px 0 0">${S.per === "y" ? "Kilometer je Monat" : "Kilometer je Tag"} – Farbe: woher der Strom kam, der in diesem Abschnitt geladen wurde</div>
+      <div class="evkmc">${sl.map((s, i) => { const kw = s.x.kwh, g = kw > 0 ? (1 - s.x.pv / kw) * 100 : 0, cls = s.x.km <= 0 ? "z" : kw > 0 ? "" : "nl";
+        return `<button class="${cls}" data-act="wbvgo" data-k="${s.go.getTime()}" data-p="${s.p}" style="--h:${s.x.km > 0 ? Math.max(4, s.x.km / mx * 100) : 3}%;--g:${g}%" title="${esc(s.l)}: ${num(s.x.km, 0)} km${kw > 0 ? ` · ${num(kw, 1)} kWh geladen · ${num(s.x.pv / kw * 100, 0)} % Sonne` : ""}" aria-label="${esc(s.l)}: ${num(s.x.km, 0)} km"><i></i><span>${lab(i) ? esc(s.l) : ""}</span></button>`; }).join("")}</div>
+      <div class="gsleg" style="margin-top:6px"><span><i style="background:var(--teal)"></i>mit Sonne</span><span><i style="background:var(--amber)"></i>mit Netzstrom</span><span><i style="background:#60a5fa"></i>an dem Tag nicht geladen</span></div>` : "";
+    const head = `<div class="card evkm"><h2>${this._gx("car", 24)}Kilometer &amp; Verbrauch<span class="evmr">${odoNow != null ? `Kilometerstand ${num(odoNow, 0)} km${v0 ? " · " + esc(v0.name) : ""}` : ""}</span></h2>${tiles}${chart}${manual}</div>`;
+    return `${head}<div class="evkm2">${this._evKmTemp(days)}${this._evKmYear(days, v0, cv)}</div>`;
+  }
+  /* Verbrauch nach Außentemperatur: letzte 12 Monate, Tage mit Kilometern und Temperatur, je Bereich geladene kWh ÷ gefahrene km */
+  _evKmTemp(days) {
+    const lim = new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 10), B = [["unter 0 °C", -99, 0, "#60a5fa"], ["0–10 °C", 0, 10, "#7dd3fc"], ["10–20 °C", 10, 20, "#2dd4bf"], ["über 20 °C", 20, 99, "#facc15"]];
+    const sum = B.map(() => ({ km: 0, kwh: 0 })), use = days.filter((r) => r.d >= lim && r.t != null && r.km > 0);
+    use.forEach((r) => { const i = B.findIndex((b) => r.t >= b[1] && r.t < b[2]); if (i >= 0) { sum[i].km += r.km; sum[i].kwh += r.pv + r.grid; } });
+    const val = sum.map((x) => (x.km >= 50 && x.kwh > 0 ? x.kwh / x.km * 100 : null)), ok = val.filter((x) => x != null);
+    const lim90 = new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10), r90 = days.filter((r) => r.d >= lim90), km90 = r90.reduce((a, r) => a + (r.km || 0), 0), kwh90 = r90.reduce((a, r) => a + r.pv + r.grid, 0);
+    const perKwh = km90 >= 50 && kwh90 > 0 ? km90 / kwh90 : null, cap = (this._evVeh() || {}).cap || this._wb().cap || 0, perPct = perKwh && cap ? perKwh * cap * 0.9 / 100 : null;
+    const cold = [val[0], val[1]].filter((x) => x != null), warm = [val[2], val[3]].filter((x) => x != null), more = cold.length && warm.length ? (Math.max(...cold) / Math.min(...warm) - 1) * 100 : null;
+    const hi = Math.max(1, ...ok), lo = ok.length ? Math.min(...ok) * 0.7 : 0;
+    return `<div class="card evkmt"><h2>${this._gx("thermo", 24)}Verbrauch nach Außentemperatur<span class="evmr">letzte 12 Monate</span></h2>
+      ${ok.length ? `<div class="evkmtb">${B.map((b, i) => `<div><span style="--c:${b[3]};height:${val[i] != null ? 25 + (val[i] - lo) / Math.max(0.1, hi - lo) * 75 : 6}%" class="${val[i] == null ? "nd" : ""}"></span><b>${val[i] != null ? num(val[i], 1) : "–"}</b><small>${b[0]}</small></div>`).join("")}</div>
+        <div class="mut sm" style="text-align:center;margin-top:2px">kWh/100 km · Bereiche mit weniger als 50 km zeigen „–“</div>` : `<div class="mut sm">Noch zu wenig Daten. Gezählt werden Tage mit Kilometern und Außentemperatur (aus den Haus-Werten oder dem Wetter).</div>`}
+      ${perKwh ? `<div class="evkmf"><div><b>1 kWh ≈ ${num(perKwh, 1)} km</b><small>so weit kommst du mit einer Kilowattstunde (90 Tage)</small></div>${perPct ? `<div><b>1 % Akku ≈ ${num(perPct, 1)} km</b><small>bei ${num(cap, 0)} kWh Akku</small></div>` : ""}</div>` : ""}
+      ${more != null && more > 3 ? `<div class="evkmh">${this._gx("frost", 22)}<span>Bei Kälte brauchst du rund <b>${num(more, 0)} % mehr</b> als bei Wärme.</span></div>` : ""}</div>`;
+  }
+  /* Jahreskilometer: seit Beginn des (Leasing-)Jahres, Hochrechnung, Vorjahr und optionale Grenze */
+  _evKmYear(days, v0, cv) {
+    const veh = (cv.find((x) => x.kmYear > 0) || v0 || null), from = veh ? (veh.kmFrom || 1) : 1, lim = veh ? veh.kmYear || 0 : 0, today = new Date();
+    let y0 = new Date(today.getFullYear(), from - 1, 1); if (y0 > today) y0 = new Date(today.getFullYear() - 1, from - 1, 1);
+    const y1 = new Date(y0.getFullYear() + 1, y0.getMonth(), 1), p0 = new Date(y0.getFullYear() - 1, y0.getMonth(), 1);
+    const key = (t) => `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+    const kmOf = (r) => (veh && cv.length > 1 ? ((r.veh || {})[veh.name] || {}).km || 0 : r.km || 0);
+    const cur = days.filter((r) => r.d >= key(y0) && r.d < key(y1)), prev = days.filter((r) => r.d >= key(p0) && r.d < key(y0));
+    const km = cur.reduce((a, r) => a + kmOf(r), 0), kmP = prev.reduce((a, r) => a + kmOf(r), 0), first = cur.find((r) => kmOf(r) > 0);
+    const startT = first ? new Date(Math.max(y0.getTime(), new Date(first.d + "T00:00:00").getTime())) : y0, el = Math.max(1, (today - startT) / 864e5), len = (y1 - y0) / 864e5;
+    const proj = el >= 14 ? km / el * len : null, late = first && new Date(first.d + "T00:00:00") - y0 > 7 * 864e5;
+    const fd = (t) => t.toLocaleDateString("de-DE", { day: "numeric", month: "numeric", year: "numeric" }), sc = Math.max(lim || 0, proj || 0, km) * 1.05 || 1;
+    const st = lim && proj != null ? (proj <= lim ? ["ok", "auf Kurs"] : proj <= lim * 1.05 ? ["warn", "knapp"] : ["bad", "zu viel"]) : null;
+    const left = lim ? lim - km : null, wk = Math.max(1, (y1 - today) / (7 * 864e5));
+    return `<div class="card evkmy"><h2>${this._gx("schedule", 24)}Jahreskilometer<span class="evmr">${lim ? `Grenze ${num(lim, 0)} km/Jahr` : "ohne Grenze"}${veh && cv.length > 1 ? " · " + esc(veh.name) : ""}</span></h2>
+      <div class="evkmyb"><i class="f" style="width:${km / sc * 100}%"></i>${proj != null && proj > km ? `<i class="p" style="left:${km / sc * 100}%;width:${(Math.min(proj, sc) - km) / sc * 100}%"></i>` : ""}${lim ? `<span class="m" style="left:${lim / sc * 100}%"></span>` : ""}</div>
+      <div class="evbl"><span><b>${num(km, 0)} km</b> seit ${from === 1 ? "1. Januar" : fd(y0)}</span><span>${proj != null ? `Hochrechnung <b>${num(proj, 0)} km</b>` : "Hochrechnung ab 14 Tagen"}</span></div>
+      ${st ? `<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center"><span class="evkmst ${st[0]}">${st[0] === "ok" ? "✓" : "!"} ${st[1]}</span><span class="mut sm">${left > 0 ? `noch ${num(left, 0)} km bis zur Grenze · ca. ${num(left / wk, 0)} km/Woche übrig` : `Grenze um ${num(-left, 0)} km überschritten`}</span></div>` : ""}
+      <div class="mut sm" style="margin-top:8px">${kmP > 0 ? `Vorjahr: ${num(kmP, 0)} km. ` : ""}${late ? `Gezählt seit ${fd(new Date(first.d + "T12:00:00"))}, die Hochrechnung nutzt diesen Zeitraum. ` : ""}${lim ? "" : "Eine Grenze (z. B. Leasing) stellst du beim Fahrzeug unter „Aussehen &amp; Sensoren“ ein."}</div></div>`;
+  }
+  _evKmOdo(b) {
+    const vid = b.dataset.v, inp = this.shadowRoot.querySelector(`[data-km="${CSS.escape(vid)}"]`), v = parseFloat(String((inp && inp.value) || "").replace(/\./g, "").replace(",", "."));
+    if (!isFinite(v) || v < 0) { this._toast("Bitte den Kilometerstand eingeben"); return; }
+    this._hass.callWS({ type: "fenster_heizung/wb_odo", vid, km: v }).then((r) => {
+      if (!r || !r.ok) { this._toast((r && r.err) || "Kilometerstand konnte nicht gespeichert werden"); return; }
+      if (r.snap) this._wbD = { snap: r.snap, ts: Date.now() };
+      this._toast(r.base ? "Startwert gespeichert – ab dem nächsten Eintrag wird gezählt" : `${num(r.km, 0)} km auf ${r.days} ${r.days === 1 ? "Tag" : "Tage"} verteilt`);
+      this._wbStatLoad(true);
+    }).catch(() => this._toast("Kilometerstand konnte nicht gespeichert werden"));
+  }
   /* Gerätestrom: eigene Berechnung im Backend (fenster_heizung/gs_get). Solar, Netz, Batterie kommen aus Modul 3, Preise aus Modul 1. */
   _gsState() {
     const s = this._mdState();
@@ -10652,12 +10902,6 @@ class FensterHeizungPanel extends HTMLElement {
         how: ["Der Lauf bleibt am geplanten Tag, wenn die Prognose dort mindestens die Mindestmenge erreicht.", "Sonst wandert er auf den nächsten Tag mit besserer Prognose, höchstens um die eingestellten Tage.", "Ist der Schutz überfällig (mehr als 9 Tage), läuft er trotzdem sofort."],
         needs: () => [["Legionellenschutz in Modul 2 an", !!this._mdState().ww.leg.on], ["Modul 16 liefert eine Prognose", !!(this._mdState().on.sp && this._sp().found)]],
         f: [["ld_wait", "Höchstens verschieben", "Um so viele Tage darf der Lauf wandern", "Tage", 1, 5, 1], ["ld_min", "Mindestprognose", "Ab dieser Tagesprognose gilt ein Tag als sonnig", "kWh", 3, 30, 1]] },
-      { id: "lk", k: "g", mid: "ev", mod: "Modul 8", mn: "Elektroauto & Wallbox", n: "Ladeziel nach Kalender", st: "Früh", i: "clock",
-        d: "Setzt den Ziel-Ladestand nach Terminen im Home-Assistant-Kalender: längerer Termin, höheres Ziel.",
-        feats: ["Nächster Termin aus deinem Kalender", "Vorschlag für den Ziel-Ladestand", "Der normale Ladeplan bleibt der Rückfall"],
-        how: ["Das Lab liest den nächsten Termin der gewählten Kalender-Entität.", "Dauert er mindestens so lange wie eingestellt, gilt das höhere Ziel, sonst das Ziel aus dem Ladeplan.", "Geschaltet wird nur das Ziel, nicht der Ladevorgang selbst. Die Regelung von Modul 8 bleibt maßgeblich."],
-        needs: () => [["Kalender in Home Assistant", Object.keys(this._hass.states).some((k) => k.startsWith("calendar."))], ["Wallbox-Regelung in Modul 8", !!(this._mdState().on.ev !== false)]],
-        f: [["lk_cal", "Kalender", "Aus diesem Kalender wird der nächste Termin gelesen", "sel"], ["lk_hi", "Ziel bei langem Termin", "Ziel-Ladestand für lange Termine", "%", 60, 100, 10], ["lk_dur", "Als lang gilt ab", "Dauer des Termins", "Std.", 1, 6, 1]] },
       { id: "mm", k: "g", mid: "mu", mod: "Modul 17", mn: "Müllabfuhr", n: "Müllabfuhr", st: "Früh", i: "trash",
         d: "Neues Modul 17: Abholtermine aus deinem Abfallkalender, Tonnen-Ampel, Erinnerung am Vorabend, Ansage und Licht.",
         feats: ["Nächste Abholungen und Monatskalender für Rest, Bio, Papier und Gelben Sack", "Tonnen-Ampel: am Vorabend orange, nach dem Abhaken grün", "Nachricht aufs Handy zu einer Uhrzeit, die du einstellst", "Ansage über einen Lautsprecher und Licht in der Farbe der Tonne", "Hinweise bei verschobenen Terminen, Sturm und Frost", "Leerungen und Kosten im Jahr"],
@@ -11820,6 +12064,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (id === "gs") return this._gsPage();
     if (id === "mu" && this._muOn()) return this._muPage();
     if (id === "li" && this._liOn()) return this._liPage();
+    if (id === "ev" && this._evWallOn()) return this._evWall();
     if (m.addon) return this._adPage(m);
     if (m.beta) return this._betaPage(id);
     if (id === "en") return this._enPage();

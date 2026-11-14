@@ -62,6 +62,10 @@ def pv_from_wh(wh_period: dict[Any, Any], base_kw: float, tz: Any) -> dict[datet
 
 # ---- Plan
 def deadline(now: datetime, until: str) -> datetime:
+    """Nächstes Vorkommen von „HH:MM“ – oder ein fester Zeitpunkt (ISO, Abfahrt aus dem Kalender)."""
+    if len(until) > 5:
+        dl = datetime.fromisoformat(until)
+        return dl.astimezone(now.tzinfo) if dl.tzinfo and now.tzinfo else dl
     h, m = (int(x) for x in until.split(":"))
     dl = now.replace(hour=h, minute=m, second=0, microsecond=0)
     if dl <= now:
@@ -217,7 +221,7 @@ def prices_from_attr(attrs: dict[str, Any]) -> list[dict[str, Any]]:
 
 # ---- Ladestatistik
 def empty_stats() -> dict[str, Any]:
-    return {"days": {}, "sessions": [], "open": None, "odo": None, "odos": {}, "est": {}}
+    return {"days": {}, "sessions": [], "open": None, "odo": None, "odos": {}, "est": {}, "odoset": {}}
 
 
 def clean_stats(raw: Any) -> dict[str, Any]:
@@ -230,6 +234,7 @@ def clean_stats(raw: Any) -> dict[str, Any]:
             continue
         try:
             st["days"][k] = {"pv": float(v.get("pv", 0)), "grid": float(v.get("grid", 0)), "cost": float(v.get("cost", 0)), "full": float(v.get("full", 0)), "km": max(0.0, float(v.get("km", 0))),
+                             **({"tsum": float(v["tsum"]), "tw": float(v["tw"])} if v.get("tw") else {}),
                              "veh": {str(n)[:30]: {"kwh": float(x.get("kwh", 0)), "cost": float(x.get("cost", 0)), **({"km": max(0.0, float(x["km"]))} if x.get("km") else {})} for n, x in (v.get("veh") or {}).items() if isinstance(x, dict)}}
         except (TypeError, ValueError):
             continue
@@ -254,6 +259,12 @@ def clean_stats(raw: Any) -> dict[str, Any]:
         try:
             if re.fullmatch(r"[a-z0-9]{1,12}", str(k)) and 0 <= float(v) < 5e6:
                 st["odos"][str(k)] = float(v)
+        except (TypeError, ValueError):
+            continue
+    for k, v in (raw.get("odoset") or {}).items() if isinstance(raw.get("odoset"), dict) else []:
+        try:
+            if re.fullmatch(r"[a-z0-9]{1,12}", str(k)) and isinstance(v, dict) and 0 <= float(v.get("km")) < 5e6 and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(v.get("d"))):
+                st["odoset"][str(k)] = {"km": float(v["km"]), "d": str(v["d"])}
         except (TypeError, ValueError):
             continue
     for k, v in (raw.get("est") or {}).items() if isinstance(raw.get("est"), dict) else []:
@@ -289,6 +300,52 @@ def add_km(st: dict[str, Any], now: datetime, odo: float | None, vid: str = "", 
         if veh:
             v = d["veh"].setdefault(veh, {"kwh": 0.0, "cost": 0.0})
             v["km"] = v.get("km", 0.0) + (odo - last)
+
+
+def _day(st: dict[str, Any], d: str) -> dict[str, Any]:
+    return st["days"].setdefault(d, {"pv": 0.0, "grid": 0.0, "cost": 0.0, "full": 0.0, "km": 0.0, "veh": {}})
+
+
+def add_temp(st: dict[str, Any], now: datetime, temp: float | None, dt_s: float) -> None:
+    """Außentemperatur des Tages (zeitgewichtet) – für „Verbrauch nach Außentemperatur“."""
+    if temp is None or dt_s <= 0 or not -50 < temp < 60:
+        return
+    d = _day(st, now.date().isoformat())
+    d["tsum"] = d.get("tsum", 0.0) + temp * dt_s
+    d["tw"] = d.get("tw", 0.0) + dt_s
+
+
+def odo_manual(st: dict[str, Any], vid: str, veh: str, odo: float, today: date) -> dict[str, Any]:
+    """Kilometerstand von Hand (Fahrzeug ohne Sensor): Die Strecke seit dem letzten Eintrag wird gleichmäßig auf die Tage dazwischen verteilt.
+    Rückgabe: {"ok", "km" (verteilt), "days", "base" (erster Eintrag), "err"}."""
+    last = st["odoset"].get(vid)
+    d0 = today.isoformat()
+    if last is None:
+        st["odoset"][vid] = {"km": float(odo), "d": d0}
+        st["odos"][vid] = float(odo)
+        return {"ok": True, "km": 0.0, "days": 0, "base": True}
+    diff = float(odo) - last["km"]
+    if diff < 0:
+        return {"ok": False, "err": f"Der Stand ist kleiner als der letzte Eintrag ({round(last['km'])} km)."}
+    if diff > 50000:
+        return {"ok": False, "err": "Mehr als 50.000 km seit dem letzten Eintrag – bitte den Stand prüfen."}
+    start = date.fromisoformat(last["d"])
+    n = max(1, (today - start).days)
+    days = [start + timedelta(days=i + 1) for i in range(n)] if today > start else [today]
+    per = diff / len(days)
+    lim = (today - timedelta(days=KEEP_DAYS)).isoformat()
+    for t in days:
+        k = t.isoformat()
+        if k < lim:
+            continue
+        d = _day(st, k)
+        d["km"] = d.get("km", 0.0) + per
+        if veh:
+            v = d["veh"].setdefault(veh, {"kwh": 0.0, "cost": 0.0})
+            v["km"] = v.get("km", 0.0) + per
+    st["odoset"][vid] = {"km": float(odo), "d": d0}
+    st["odos"][vid] = float(odo)
+    return {"ok": True, "km": round(diff, 1), "days": len(days), "base": False}
 
 
 EST_EFF = 0.9  # Ladeverluste: so viel der geladenen Energie kommt im Akku an
@@ -508,6 +565,7 @@ def prune(st: dict[str, Any], today: date) -> None:
 
 def stats_view(st: dict[str, Any]) -> dict[str, Any]:
     days = [{"d": k, "pv": round(v["pv"], 3), "grid": round(v["grid"], 3), "cost": round(v["cost"], 4), "full": round(v["full"], 4), "km": round(v.get("km", 0.0), 1),
+             **({"t": round(v["tsum"] / v["tw"], 1)} if v.get("tw") else {}),
              "veh": {n: {"kwh": round(x["kwh"], 3), "cost": round(x["cost"], 4), "km": round(x.get("km", 0.0), 1)} for n, x in v["veh"].items()}} for k, v in sorted(st["days"].items())]
     ses = list(st["sessions"])
     o = st.get("open")

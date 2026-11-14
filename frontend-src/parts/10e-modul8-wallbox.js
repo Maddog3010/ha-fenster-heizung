@@ -60,6 +60,9 @@
       ${logCard}`;
   }
   _wbAct(a, b) {
+    if (a === "wbkmfrom") { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === b.dataset.v ? { ...x, kmFrom: (((x.kmFrom || 1) - 1 + Number(b.dataset.s) + 12) % 12) + 1 } : x)) }, true); this._renderModal(); return; }
+    if (a === "wbkmok") return this._evKmOdo(b);
+    if (a === "wbwall") { this._evWallFull = b.dataset.k === "full"; this._render(); return; }
     if (a.startsWith("wbr")) return this._rfAct(a, b);
     if (a.startsWith("wbv")) return this._evStAct(a, b);
     if (a.startsWith("wbx") || a === "wbcsv") return this._wbxAct(a, b);
@@ -100,8 +103,11 @@
   _wbLater(t) { /* Zeitfeld nicht mitten in der Eingabe neu aufbauen (Safari meldet jede Ziffer einzeln) */ clearTimeout(this._wbLT); this._wbLT = setTimeout(() => { const ae = this.shadowRoot.activeElement; if (ae && (ae.type === "time" || (ae.dataset && ae.dataset.tin))) { ae.addEventListener("blur", () => this._render(), { once: true }); } else this._render(); }, 700); }
   _wbChange(t) { const f = t.dataset.f;
     if (f === "wbdim") { const c = this._wb(); this._wbSave({ dim: { ...(c.dim || { on: true, kw: 4.2 }), ent: t.value || "" } }, true); this._render(); return true; }
+    if (f === "wbdcal" || f === "wbdkw") { const c = this._wb(), v = f === "wbdkw" ? String(t.value || "").replace(/[<>"&]/g, "").trim().slice(0, 30) : t.value || "";
+      this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), [f === "wbdcal" ? "cal" : "calKw"]: v } } : x)) }, true); this._render(); return true; }
     if (f === "wbvp") { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, person: t.value || "" } : x)) }, true); this._renderModal(); return true; }
     if (f === "wbpdfct" || f === "wbpdfname") { const c = this._wb(), p = { ...(c.pdf || { ct: 30, name: "" }) }; if (f === "wbpdfct") { const v = parseFloat(String(t.value).replace(",", ".")); if (isFinite(v)) p.ct = Math.max(0, Math.min(200, v)); } else p.name = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 60); this._wbSave({ pdf: p }); this._renderModal(); return true; }
+    if (f === "wbvky") { const c = this._wb(), v = parseInt(String(t.value).replace(/\D/g, ""), 10); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, kmYear: isFinite(v) ? Math.max(0, Math.min(200000, v)) : 0 } : x)) }, true); this._renderModal(); return true; }
     if (f === "wbvn" || f === "wbvm" || f === "wbvc" || f === "wbve") {
       const c = this._wb(), id = t.dataset.v, clean = (v, n) => String(v || "").replace(/[<>"'&]/g, "").slice(0, n);
       const fn = f === "wbvn" ? (x) => ({ ...x, name: clean(t.value, 30).trim() || x.name }) : f === "wbvm" ? (x) => ({ ...x, model: clean(t.value, 30) })

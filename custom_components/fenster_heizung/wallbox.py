@@ -21,12 +21,12 @@ from .const import DOMAIN
 from .geraete_calc import grid_import_w, rate_eur, watts
 from .wallbox_adapter import KNOWN, WALLBOXISH, GoeAdapter, HaAdapter, WallboxError, guess_roles, manual_change
 from .wallbox_calc import (
-    CAR_CHARGING, CAR_DONE, CAR_IDLE, EXTERN_HOLD_S, SCHEMA, VOLT, clean_wb, clean_wbx, commands, decide, guard_limit, migrate_v2, parse_nrg,
+    CAR_CHARGING, CAR_DONE, CAR_IDLE, EXTERN_HOLD_S, SCHEMA, VOLT, cal_pick, clean_wb, clean_wbx, commands, decide, guard_limit, migrate_v2, parse_nrg,
     plan_due, resolve_who, valid_host, wbx_ready, bat_split, dim_amp, surplus_adj,
 )
 STALE_S = 180  # B6: so alt darf der Netz-Sensor sein, sonst wird nicht mehr erhöht
 from .wallbox_plan import (
-    add_energy, add_km, build_slots, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick, assign_unknown,
+    add_energy, add_km, add_temp, build_slots, odo_manual, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick, assign_unknown,
     stats_view,
 )
 
@@ -149,6 +149,8 @@ class WallboxManager:
         self.dimmed = False
         self._skip = 0  # B6: bei Funkstille seltener fragen
         self._last_veh = ""  # zuletzt erkanntes Fahrzeug (für die Anzeige nach dem Abstecken)
+        self._cal: dict[str, tuple[float, list[dict[str, Any]]]] = {}  # Kalender-Termine je Kalender (5 Minuten zwischengespeichert)
+        self._cal_said = ""
 
     async def async_start(self) -> None:
         self.cfg = clean_wb(await self._store.async_load())
@@ -334,6 +336,39 @@ class WallboxManager:
                 return v
         return self._price_ct()
 
+    def _price_view(self) -> dict[str, Any] | None:
+        """Strompreis für den Chip im Banner (v0.9 Build 4): ct/kWh, Stufe und Quelle.
+        Zuerst der Preis, mit dem die Regelung rechnet; sonst der Preisdienst (Modul 20, Haus-Werte, auch Festpreis)."""
+        now = dt_util.now()
+        ct, src, lvl = self._price_now(now), "", ""
+        if ct is not None:
+            src = "Tibber" if self._use_tibber() and self._tibber().current_ct(now) is not None else "Preis-Sensor"
+        else:
+            try:
+                from .preisdienst import preis
+                p = preis(self.hass, "strom", now)
+            except Exception:  # noqa: BLE001 - die Anzeige darf die Regelung nie stören
+                p = None
+            if not p or p.get("ct") is None:
+                return None
+            ct, src = float(p["ct"]), {"modul20": "Vertrag", "tibber": "Tibber", "haus": "Haus-Werte"}.get(p.get("src"), "")
+            if not p.get("dyn"):
+                return {"ct": round(ct, 1), "lvl": "fix", "src": "Festpreis" if src == "Haus-Werte" else src}
+        if self.cfg["priceOn"] and ct <= self.cfg["priceMax"]:
+            lvl = "billig"
+        elif src == "Tibber":
+            c = self._tibber()._cache or {}
+            day = [p["ct"] for p in c.get("prices") or [] if p["start"].astimezone(now.tzinfo).date() == now.date()]
+            if len(day) >= 4:
+                avg = sum(day) / len(day)
+                lvl = "guenstig" if ct <= avg * 0.9 else "teuer" if ct >= avg * 1.1 else "normal"
+        return {"ct": round(ct, 1), "lvl": lvl, "src": src}
+
+    def _eff_view(self) -> dict[str, Any]:
+        """Eingestellte Leistung, die gerade gilt (für den Überschuss-Balken): Ladestrom, Phasen, Startschwelle, Verzögerungen."""
+        c = self._eff_cfg(self.who)
+        return {k: c[k] for k in ("minA", "maxA", "ph", "startW", "onMin", "offMin", "mode")}
+
     # ---- Fahrzeuge
     def _vehicle(self, vid: str | None) -> dict[str, Any] | None:
         return next((v for v in self.cfg["vehicles"] if v["id"] == vid), None) if vid else None
@@ -379,6 +414,19 @@ class WallboxManager:
             self._add(f"Ladestand von {v['name']} eingegeben: {round(soc)} %. Ab jetzt wird beim Laden geschätzt.")
         return self.snapshot()
 
+    async def async_odo(self, vid: str, km: float) -> dict[str, Any]:
+        """Kilometerstand von Hand für ein Fahrzeug ohne Kilometer-Sensor (Statistik)."""
+        v = self._vehicle(vid)
+        if v is None:
+            return {"ok": False, "err": "Fahrzeug nicht gefunden."}
+        if v["ent"].get("odo"):
+            return {"ok": False, "err": "Dieses Fahrzeug hat einen Kilometer-Sensor."}
+        r = odo_manual(self._st, vid, v["name"], km, dt_util.now().date())
+        if r["ok"]:
+            self._st_store.async_delay_save(lambda: self._st, 2)
+            self._add(f"Kilometerstand von {v['name']}: {round(km)} km" + ("" if r["base"] else f", {round(r['km'])} km auf {r['days']} Tage verteilt") + ".")
+        return {**r, "snap": self.snapshot()}
+
     async def async_assign(self, d0: str, d1: str, to: str) -> dict[str, Any]:
         """Ladestatistik: „Unbekannt“ im Zeitraum einem Fahrzeug zuordnen."""
         r = assign_unknown(self._st, d0, d1, to, dt_util.now())
@@ -411,6 +459,39 @@ class WallboxManager:
         v = self._num(soc_ent)
         return v is None or v >= self.cfg["batSoc"]
 
+    # ---- Abfahrt aus dem Kalender (v0.9 Build 4, vorher Lab „Ladeziel nach Kalender“)
+    async def _cal_refresh(self) -> None:
+        """Termine der nächsten 36 Stunden je Kalender holen (calendar.get_events, höchstens alle 5 Minuten)."""
+        now, ts = dt_util.now(), time.time()
+        for cal in {(v.get("dep") or {}).get("cal") for v in self.cfg["vehicles"]} - {"", None}:
+            got = self._cal.get(cal)
+            if got and ts - got[0] < 300:
+                continue
+            evs: list[dict[str, Any]] = []
+            try:
+                res = await self.hass.services.async_call("calendar", "get_events", {"entity_id": cal, "start_date_time": now.isoformat(),
+                                                          "end_date_time": (now + timedelta(hours=36)).isoformat()}, blocking=True, return_response=True)
+                for e in ((res or {}).get(cal) or {}).get("events") or []:
+                    st, en = dt_util.parse_datetime(str(e.get("start") or "")), dt_util.parse_datetime(str(e.get("end") or ""))
+                    if st is None or "T" not in str(e.get("start") or ""):
+                        continue  # ganztägig: keine Uhrzeit, keine Abfahrt
+                    evs.append({"summary": e.get("summary") or "", "start": dt_util.as_local(st), "end": dt_util.as_local(en) if en else None})
+            except Exception as err:  # noqa: BLE001 - ohne Kalender gilt einfach der normale Plan
+                st = self.hass.states.get(cal)  # Rückfall: nächster Termin aus den Attributen
+                a = st.attributes if st is not None else {}
+                s0, e0 = dt_util.parse_datetime(str(a.get("start_time") or "")), dt_util.parse_datetime(str(a.get("end_time") or ""))
+                if s0 is not None and not a.get("all_day"):
+                    tz = now.tzinfo
+                    evs.append({"summary": a.get("message") or "", "start": s0.replace(tzinfo=s0.tzinfo or tz), "end": e0.replace(tzinfo=e0.tzinfo or tz) if e0 else None})
+                _LOGGER.debug("Modul 8: Kalender %s: %s", cal, err)
+            self._cal[cal] = (ts, evs)
+
+    def _cal_trip(self, v: dict[str, Any] | None) -> dict[str, Any] | None:
+        dp = (v or {}).get("dep") or {}
+        if not dp.get("cal"):
+            return None
+        return cal_pick((self._cal.get(dp["cal"]) or (0, []))[1], dp, dt_util.now())
+
     def _eff_cfg(self, who: dict[str, Any] | None) -> dict[str, Any]:
         """Einstellungen, die gerade gelten: Modus/Limit/Abfahrt des Fahrzeugs, Lab „Ladeziel nach Kalender“, feste Phasen."""
         cfg = {**self.cfg, "cap": self._cap()}
@@ -419,9 +500,21 @@ class WallboxManager:
             dp = who.get("dep") or {}
             if who["kind"] == "vehicle" and dp.get("on"):  # eigene Abfahrt dieses Fahrzeugs
                 cfg = {**cfg, "planSoc": dp["soc"], "planTime": dp["time"], "planDays": dp["days"]}
-        lab = self.hass.data.get(DOMAIN, {}).get("labs")
-        if lab is not None:
-            cfg = lab.wb_cfg(cfg)  # Lab „Ladeziel nach Kalender“
+        v = self._vehicle(who.get("id")) if who is not None and who.get("kind") == "vehicle" else (self.cur_vehicle() if who is None else None)
+        trip = self._cal_trip(v)
+        if trip is not None:  # Abfahrt aus dem Kalender: gilt, wenn keine normale Abfahrt früher kommt
+            now = dt_util.now()
+            reg = deadline(now, cfg["planTime"]) if cfg["planOn"] or cfg["plan"] else None
+            if reg is not None and not day_ok(cfg["planDays"], reg):
+                reg = None
+            if reg is None or trip["at"] <= reg:
+                at = trip["at"].isoformat(timespec="minutes")
+                cfg = {**cfg, "planOn": True, "planSoc": trip["soc"], "planTime": trip["at"].strftime("%H:%M"), "planAt": at, "planDays": "all",
+                       "planCal": {"msg": trip["msg"], "start": trip["start"].isoformat(timespec="minutes"), "at": at}}
+                key = f"{trip['msg']}|{at}"
+                if key != self._cal_said:
+                    self._cal_said = key
+                    self._add(f"Abfahrt aus dem Kalender: „{trip['msg'] or 'Termin'}“, losfahren {trip['at'].strftime('%d.%m. %H:%M')} Uhr, Ziel {trip['soc']} %.")
         w = cfg["wbx"]
         if w["kind"] == "ha" and not w["ent"].get("phase"):
             cfg = {**cfg, "ph": "1" if w["ph"] == 1 else "3"}  # diese Wallbox kann die Phasen nicht umschalten
@@ -429,15 +522,33 @@ class WallboxManager:
 
     # ---- Takt
     async def _migrate(self) -> None:
-        """Schema 2: Sensoren und Aussehen je Fahrzeug. Läuft einmal, sobald die Moduleinstellungen geladen sind."""
-        wm = self.hass.data.get(DOMAIN, {}).get("wasser")
-        if self.cfg.get("vs", 1) >= SCHEMA or wm is None or not getattr(wm, "modules", None):
-            return
-        self.cfg, txt = migrate_v2(self.cfg, wm.modules.get("ev"))
-        await self._store.async_save(self.cfg)
-        if txt:
-            self._add(txt + ".")
-            _LOGGER.info("Modul 8: %s", txt)
+        """Schema 2: Sensoren und Aussehen je Fahrzeug. Läuft einmal, sobald die Moduleinstellungen geladen sind.
+        Schema 3: Lab „Ladeziel nach Kalender“ wird zur Abfahrt aus dem Kalender an den Fahrzeugen."""
+        if self.cfg.get("vs", 1) < 2:
+            wm = self.hass.data.get(DOMAIN, {}).get("wasser")
+            if wm is None or not getattr(wm, "modules", None):
+                return
+            self.cfg, txt = migrate_v2(self.cfg, wm.modules.get("ev"))
+            await self._store.async_save(self.cfg)
+            if txt:
+                self._add(txt + ".")
+                _LOGGER.info("Modul 8: %s", txt)
+        if self.cfg.get("vs", 1) < 3:
+            if self.hass.data.get(DOMAIN, {}).get("layout") is None:
+                return  # Einstellungen noch nicht geladen
+            from .labs import labs_cfg  # noqa: PLC0415
+            lc = labs_cfg(self.hass)
+            on, lv = "lk" in (lc.get("on") or []), lc.get("cfg") or {}
+            cal = lv.get("lk_cal") if isinstance(lv.get("lk_cal"), str) else ""
+            vs = [dict(v) for v in self.cfg["vehicles"]]
+            moved = on and cal.startswith("calendar.") and vs and not any((v.get("dep") or {}).get("cal") for v in vs)
+            if moved:
+                for v in vs:
+                    v["dep"] = {**(v.get("dep") or {}), "cal": cal, "calSoc": lv.get("lk_hi", 90), "calDur": lv.get("lk_dur", 2), "calLead": 30}
+            self.cfg = clean_wb({**self.cfg, "vehicles": vs, "vs": 3})
+            await self._store.async_save(self.cfg)
+            if moved:
+                self._add("Lab „Ladeziel nach Kalender“ übernommen: Abfahrt aus dem Kalender an den Fahrzeugen.")
 
     async def _tick(self, _now: Any) -> None:
         if self._busy:
@@ -452,6 +563,8 @@ class WallboxManager:
 
     async def _run(self) -> None:
         cfg = self.cfg
+        if any((v.get("dep") or {}).get("cal") for v in cfg["vehicles"]):
+            await self._cal_refresh()
         if not wbx_ready(cfg):
             self.ok, self.info = False, {}
             return
@@ -581,6 +694,12 @@ class WallboxManager:
         if done:
             self._fire_done(done)
         add_km(self._st, now, self._odo(), cv["id"] if cv else "", cv["name"] if cv else "")
+        gm = self.hass.data.get(DOMAIN, {}).get("general")
+        if gm is not None and dt > 0:
+            try:
+                add_temp(self._st, now, gm.outdoor()[0], dt)
+            except Exception:  # noqa: BLE001 - die Temperatur ist nur für die Statistik
+                pass
         if charging and power > 0 and dt > 0:
             add_energy(self._st, now, dt, power, self.surplus_raw(power), self._price_now(now), veh, card)  # Sonne = Überschuss und Hausakku (wie bisher)
             if cv and not cv["ent"].get("soc"):
@@ -619,7 +738,7 @@ class WallboxManager:
                 "done": done, "next": nxt, "sun": sun, "power": round(pw / 1000, 2), "state": w.get("state")}
 
     def stats(self) -> dict[str, Any]:
-        return stats_view(self._st)
+        return {**stats_view(self._st), "odoset": dict(self._st.get("odoset") or {}), "odos": {k: round(v, 1) for k, v in (self._st.get("odos") or {}).items()}}
 
     # ---- Planung nach Preis und PV-Prognose
     async def _pv_forecast(self, now: Any) -> tuple[dict[Any, float], dict[str, Any], str]:
@@ -729,7 +848,7 @@ class WallboxManager:
         v = self.cur_vehicle()
         own = bool(who and who.get("kind") == "vehicle" and (who.get("dep") or {}).get("on"))
         base = {"veh": v["name"] if v else "", "vid": v["id"] if v else "", "own": own, "est": self.veh_est(v) is not None, "target": cfg["planSoc"], "until": cfg["planTime"],
-                "days": cfg["planDays"], "strat": cfg["planStrat"], "cap": cfg["cap"]}
+                "days": cfg["planDays"], "strat": cfg["planStrat"], "cap": cfg["cap"], "cal": cfg.get("planCal")}
         soc = self._soc()
         if soc is None:
             return {"ok": False, "why": "soc", **base}
@@ -759,7 +878,7 @@ class WallboxManager:
 
     def _plan_opts(self, cfg: dict[str, Any], soc: float, res: str) -> dict[str, Any]:
         ph = 1 if cfg["ph"] == "1" else 3
-        return {"strat": cfg["planStrat"], "target": cfg["planSoc"], "soc": soc, "cap": cfg["cap"], "until": cfg["planTime"],
+        return {"strat": cfg["planStrat"], "target": cfg["planSoc"], "soc": soc, "cap": cfg["cap"], "until": cfg.get("planAt") or cfg["planTime"],
                 "pmax": round(cfg["maxA"] * VOLT * ph / 1000, 2), "minkw": max(1.4, cfg["startW"] / 1000), "rank": "level" if res == "lvl" else "price"}
 
     async def _plan_now(self, cfg: dict[str, Any], now: Any) -> dict[str, Any] | None:
@@ -767,7 +886,7 @@ class WallboxManager:
         soc = self._soc()
         if soc is None:
             return None
-        if not day_ok(cfg["planDays"], deadline(now, cfg["planTime"])):
+        if not day_ok(cfg["planDays"], deadline(now, cfg.get("planAt") or cfg["planTime"])):
             return None  # an diesem Tag ist keine Abfahrt geplant
         await self.forecast()
         slots = self._slots
@@ -909,6 +1028,7 @@ class WallboxManager:
             "quick": {"k": self._quick["k"], "until": self._quick["until"]} if self._quick else None, "guard": self.guard,
             "veh": (self.cur_vehicle() or {}).get("id") or "", "socs": {v["id"]: self.veh_soc(v) for v in self.cfg["vehicles"]},
             "est": {v["id"]: self.veh_est(v) for v in self.cfg["vehicles"] if self.veh_est(v)},
+            "price": self._price_view(), "eff": self._eff_view(),
             "ready": self.configured(), "kind": self.cfg["wbx"]["kind"], "dimmed": self.dimmed, "stale": self._grid_stale,
             "bat": dict(zip(("chg", "dis"), self._bat())),
         }

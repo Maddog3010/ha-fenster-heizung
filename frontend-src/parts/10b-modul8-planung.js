@@ -1,12 +1,31 @@
   /* Abfahrtszeit pro Fahrzeug (in der Planung): eigenes Ziel, eigene Uhrzeit, eigene Tage */
-  _wbDep(v) { const c = this._wb(), d = (v && v.dep) || {}; return { on: !!d.on, soc: d.soc || c.planSoc, time: d.time || c.planTime, days: d.days || c.planDays }; }
+  _wbDep(v) { const c = this._wb(), d = (v && v.dep) || {}; return { cal: "", calKw: "", calLead: 30, calSoc: 90, calDur: 0, ...d, on: !!d.on, soc: d.soc || c.planSoc, time: d.time || c.planTime, days: d.days || c.planDays }; }
   _wbdAct(a, b) {
     const c = this._wb(), id = b.dataset.v, k = b.dataset.k;
     const upd = (fn) => this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === id ? { ...x, dep: fn(this._wbDep(x)) } : x)) });
     if (a === "wbdsw") upd((d) => ({ ...d, on: !d.on }));
     else if (a === "wbdsoc") upd((d) => ({ ...d, soc: Math.max(20, Math.min(100, d.soc + Number(b.dataset.s))) }));
     else if (a === "wbddays") upd((d) => ({ ...d, days: k }));
+    else if (a === "wbdclead") upd((d) => ({ ...d, calLead: Math.max(0, Math.min(240, d.calLead + Number(b.dataset.s))) }));
+    else if (a === "wbdcsoc") upd((d) => ({ ...d, calSoc: Math.max(20, Math.min(100, d.calSoc + Number(b.dataset.s))) }));
+    else if (a === "wbdcdur") upd((d) => ({ ...d, calDur: Number(k) }));
+    else if (a === "wbdcoff") upd((d) => ({ ...d, cal: "" }));
     this._render();
+  }
+  /* Abfahrt aus dem Kalender je Fahrzeug (v0.9 Build 4, vorher Lab „Ladeziel nach Kalender“) */
+  _wbCalUI(x, dd, nx, adm) {
+    const cals = Object.keys(this._hass.states).filter((e) => e.startsWith("calendar.")), dis = adm ? "" : "disabled";
+    const step = (a, v, u, s) => `<div class="step" style="flex:none"><button data-act="${a}" data-v="${x.id}" data-s="-${s}" aria-label="weniger" ${dis}>${ic("minus", 18)}</button><b>${v}${u}</b><button data-act="${a}" data-v="${x.id}" data-s="${s}" aria-label="mehr" ${dis}>${ic("plus", 18)}</button></div>`;
+    const when = (iso) => { const t = new Date(iso), td = new Date(); const day = t.toDateString() === td.toDateString() ? "heute" : t.toDateString() === new Date(td.getTime() + 864e5).toDateString() ? "morgen" : t.toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }); return `${day} ${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`; };
+    if (!cals.length) return `<div class="evcal off">${ic("clock", 16)}<span class="mut sm">Abfahrt aus dem Kalender: In Home Assistant ist noch kein Kalender eingerichtet.</span></div>`;
+    return `<div class="evcal"><div class="evcalh">${ic("clock", 16)}<b>Abfahrt aus dem Kalender</b>${dd.cal ? `<button class="lnk" data-act="wbdcoff" data-v="${x.id}" ${dis}>Aus</button>` : ""}</div>
+      <div class="mut sm" style="margin:0 0 6px">Steht ein passender Termin an, plant Modul 8 die Ladung bis kurz davor – auch ohne eigene Abfahrt und auch, wenn die Planung aus ist. Kommt die normale Abfahrt früher, gilt sie zuerst.</div>
+      ${this._wzSel(cals, dd.cal || "", "wbdcal", `data-v="${x.id}"`, "– kein Kalender –", /calendar/i)}
+      ${dd.cal ? `<div class="vrow"><span>Nur Termine mit<small class="mut" style="display:block">Wort im Titel, leer = jeder Termin</small></span><input class="evkw" type="text" data-f="wbdkw" data-v="${x.id}" value="${esc(dd.calKw || "")}" placeholder="z. B. Auto" maxlength="30" ${dis} aria-label="Stichwort für ${esc(x.name)}"></div>
+        <div class="vrow"><span>Losfahren<small class="mut" style="display:block">vor Terminbeginn</small></span>${step("wbdclead", dd.calLead, " Min.", 15)}</div>
+        <div class="vrow"><span>Ziel-Ladestand</span>${step("wbdcsoc", dd.calSoc, " %", 5)}</div>
+        <div class="mut sm" style="margin:4px 0 4px">Nur Termine ab</div><div class="gschips">${[[0, "jeder"], [1, "1 Std."], [2, "2 Std."], [4, "4 Std."], [8, "8 Std."]].map(([k, t]) => `<button class="gsch ${Number(dd.calDur || 0) === k ? "sel" : ""}" data-act="wbdcdur" data-v="${x.id}" data-k="${k}" aria-pressed="${Number(dd.calDur || 0) === k}" ${dis}>${t}</button>`).join("")}</div>
+        ${nx ? `<div class="evcaln">${ic("schedule", 15)}<span><b>„${esc(nx.msg || "Termin")}“</b> · losfahren ${when(nx.at)} · Ziel ${dd.calSoc} %</span></div>` : `<div class="mut sm" style="margin-top:6px">In den nächsten 36 Stunden ist kein passender Termin${dd.calKw ? ` mit „${esc(dd.calKw)}“` : ""}.</div>`}` : ""}</div>`;
   }
   /* Planung: Strompreis- und PV-Vorhersage, günstigste Ladefenster */
   _wbFcLoad(force) {
@@ -69,7 +88,7 @@
         ${c.vehicles.length ? c.vehicles.map((x) => { const dd = this._wbDep(x), act = veh && veh.id === x.id; return `<div class="rfv"><div class="oper" style="padding:0"><span class="oav" style="background:#2dd4bf">${ic("car", 20)}</span><div class="opi"><b>${esc(x.name)}</b><small>${dd.on ? `${dd.soc} % bis ${esc(dd.time)} Uhr · ${({ all: "täglich", wk: "Mo–Fr", we: "Wochenende" })[dd.days]}` : "Nutzt den Ladeplan"}</small></div>${act ? `<span class="ost home">Aktiv</span>` : ""}<button class="sw ${dd.on ? "on" : ""}" data-act="wbdsw" data-v="${x.id}" aria-pressed="${dd.on}" aria-label="Eigene Abfahrt für ${esc(x.name)}" ${adm ? "" : "disabled"}></button></div>
           ${dd.on ? `<div class="vrow"><span>Ziel-Ladestand</span><div class="step" style="flex:none"><button data-act="wbdsoc" data-v="${x.id}" data-s="-5" aria-label="weniger" ${adm ? "" : "disabled"}>${ic("minus", 18)}</button><b>${dd.soc} %</b><button data-act="wbdsoc" data-v="${x.id}" data-s="5" aria-label="mehr" ${adm ? "" : "disabled"}>${ic("plus", 18)}</button></div></div>
           <div class="vrow"><span>Abfahrt</span><span class="tin">${this._tIn(esc(dd.time), !adm, `Abfahrtszeit ${esc(x.name)}`)}<input type="hidden" data-f="wbdt" data-v="${x.id}" value="${esc(dd.time)}" aria-label="Abfahrtszeit ${esc(x.name)}" ></span></div>
-          <div class="gschips">${[["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]].map(([k, t]) => `<button class="gsch ${dd.days === k ? "sel" : ""}" data-act="wbddays" data-v="${x.id}" data-k="${k}" aria-pressed="${dd.days === k}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</div>` : ""}</div>`; }).join("") : `<div class="mut sm">Lege unter „Laden“ → Fahrzeuge &amp; Karten ein Fahrzeug an, dann kannst du hier seine Abfahrtszeit einstellen.</div>`}</div>
+          <div class="gschips">${[["all", "Täglich"], ["wk", "Mo–Fr"], ["we", "Wochenende"]].map(([k, t]) => `<button class="gsch ${dd.days === k ? "sel" : ""}" data-act="wbddays" data-v="${x.id}" data-k="${k}" aria-pressed="${dd.days === k}" ${adm ? "" : "disabled"}>${t}</button>`).join("")}</div>` : ""}${this._wbCalUI(x, dd, act ? PL.cal : null, adm)}</div>`; }).join("") : `<div class="mut sm">Lege unter „Laden“ → Fahrzeuge &amp; Karten ein Fahrzeug an, dann kannst du hier seine Abfahrtszeit einstellen.</div>`}</div>
       <div class="card"><h2>${ic("clock", 18)}Geplante Ladefenster</h2>${win.length ? `<div class="wbses">${win.map((w) => { const x = wsum(w), d0 = new Date(hrs[w.start].t), tom = d0.toDateString() !== new Date().toDateString(); return `<div class="wbse"><div><b>${hm(w.start)} – ${hend(w.end - 1)}</b><span class="mut sm">${tom ? "morgen" : "heute"} · ${SL < 1 ? num((w.end - w.start) * SL * 60, 0) + " Min." : (w.end - w.start) + " " + (w.end - w.start === 1 ? "Stunde" : "Stunden")}</span></div><div class="wbsb"><i style="width:${x.s}%"></i></div><div class="wbsv"><b>${num(w.kwh, 1)} kWh</b><span class="mut sm">${num(x.s, 0)} % Sonne · ${num(x.c, 2)} €</span></div></div>`; }).join("")}</div>` : `<div class="mut sm">Es ist keine Ladung nötig, das Ziel ist schon erreicht.</div>`}
       <div class="mut sm" style="margin:10px 0 0">Quellen: Preis ${src === "tibber" ? "Tibber" + (TB.home ? " · " + esc(TB.home) : "") : esc(F.price_src || "–")} · PV-Prognose ${esc(F.pv_src || "–")}. Die Vorhersage ändert sich im Laufe des Tages, der Plan wird alle paar Minuten neu berechnet.</div></div>
       <div class="card"><h2>${ic("tools", 18)}Quellen der Vorhersage</h2>

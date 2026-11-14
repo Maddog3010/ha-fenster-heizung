@@ -120,7 +120,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 5 | Lüftung & Raumluft | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 6 | Rollläden & Beschattung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 7 | Wärmepumpe | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Außenwerten |
-| 8 | **Elektroauto & Wallbox** | Vorabversion 0.9 | go-e direkt oder andere Wallboxen über Home Assistant (Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP …), Carport-Szene, Ladeplan als Band, Statistik Tag/Woche/Monat/Jahr, Sensoren je Fahrzeug |
+| 8 | **Elektroauto & Wallbox** | Vorabversion 0.9 | go-e direkt oder andere Wallboxen über Home Assistant (Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP …), Carport-Szene, Überschuss-Balken mit Vorschau, Abfahrt aus dem Kalender, Tablet-Wandansicht, Ladeplan als Band, Statistik Tag/Woche/Monat/Jahr, Sensoren je Fahrzeug |
 | 9 | **Wetter & Warnungen** | Vorabversion 0.9 | Wetter-Szene, Stufen 1–4 wie beim DWD, alle amtlichen Warnungen, 48-Stunden-Zeitleiste, Aktionen mit Aussperrschutz, Vorsorge, Tablet-Alarm |
 | 10 | Garten & Bewässerung | In Entwicklung 0.1 | Konzept mit Gartenplan |
 | 11 | **Rauch- & Sicherheitsmelder** | Beta 0.5 | Melder, Batterie, Grundriss-Baukasten, Wartung, Abfahrt-Prüfung |
@@ -197,6 +197,8 @@ Die Aufteilung ist eine Näherung aus Messwerten im 20-Sekunden-Takt. Die Startz
 <br>
 
 go-e Charger lokal im Netzwerk **oder (neu, Beta) jede Wallbox mit Home-Assistant-Integration** – „Andere Wallbox“ im Store sucht die Integration und schlägt die Entitäten vor. Betriebsarten Aus, Sonne, Sonne + Netz, Voll und Ladeplan mit Abfahrtszeit, Ziel-Ladestand, Strompreis und PV-Prognose (Modul 16). Dazu RFID-Karten je Fahrzeug, Hausanschluss-Schutz und Ladestatistik.
+
+**Neu in 2026.11.3b22 (Modul 8 v0.9 Build 4):** Überschuss-Balken mit der eingestellten Leistung (1 Phase / 3 Phasen) und Restzeit bis Start oder Stopp · Überschuss-Vorschau für den Rest des Tages · Abfahrt aus dem Kalender je Fahrzeug (ersetzt das Lab „Ladeziel nach Kalender“) · Tablet-Wandansicht „Laden“ mit großen Knöpfen · Strompreis als Chip im Banner · Kilometer & Verbrauch in der Statistik (Sonnen-Kilometer, Verbrauch nach Außentemperatur, Jahreskilometer mit Leasing-Grenze, Kilometerstand von Hand).
 
 **Neu in 2026.11.3b16 (Modul 8 v0.6–v0.8):** neue Optik mit Carport-Szene, Ladeband bis zum Ziel, Kacheln mit HD-Symbolen, Modus-Karten, „Heute“ und „Warum gerade so?“ als Zeitleisten · realistischere Autos · eigene Sensoren und eigenes Aussehen je Fahrzeug · Register „Fahrzeuge“ · Ladeplan als ein Band (derselbe Plan, nach dem geregelt wird) · Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte · geschätzter Ladestand für Autos ohne Sensor · Sensoren und Ereignis `fenster_heizung_ladung_beendet` für eigene Automationen. „Wie bisher“ holt die alte Ansicht zurück.
 
@@ -352,7 +354,6 @@ Labs sind neue Funktionen, die schon arbeiten, aber noch nicht überall erprobt 
 | Smart Vorheizen | 1 | Schaltet | Startet den Heizplan früher, wenn der Raum zu kalt ist |
 | Duschzeiten lernen | 2 | Schaltet | Heizt vor den typischen Duschzeiten vor |
 | Legionellenschutz nach Sonne | 2 | Schaltet | Legt den Schutz auf sonnige Tage |
-| Ladeziel nach Kalender | 8 | Schaltet | Hebt das Ladeziel vor langen Terminen an |
 
 ---
 

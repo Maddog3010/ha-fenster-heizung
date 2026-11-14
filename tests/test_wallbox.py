@@ -63,6 +63,20 @@ def test_pv_stops_after_off_delay():
     assert w["frc"] == 1
 
 
+def test_timer_for_start_and_stop_countdown():
+    """v0.9 Build 4: Restzeit bis Start bzw. Stopp für den Überschuss-Balken."""
+    c, m = cfg(mode="pv", onMin=1, offMin=3, ph="3"), mem()
+    w = C.decide(c, {"car": 3, "surplus_w": 6000, "cur_ph": None}, m, 1000, NOW)
+    w = C.decide(c, {"car": 3, "surplus_w": 6000, "cur_ph": None}, m, 1020, NOW)
+    assert w["timer"] == {"k": "start", "left": 40, "tot": 60}
+    m = mem()
+    C.decide(c, {"car": 2, "surplus_w": 300, "cur_ph": 1}, m, 1000, NOW)
+    w = C.decide(c, {"car": 2, "surplus_w": 300, "cur_ph": 1}, m, 1100, NOW)
+    assert w["timer"]["k"] == "stop" and w["timer"]["left"] == 80
+    w = C.decide(c, {"car": 2, "surplus_w": 6000, "cur_ph": 3}, m, 1110, NOW)
+    assert "timer" not in w
+
+
 def test_limit_reached_stops():
     w = C.decide(cfg(mode="now", limit=80), {"car": 2, "soc": 81}, mem(), 0, NOW)
     assert w["state"] == "limit" and w["frc"] == 1
@@ -438,3 +452,69 @@ def test_fertig_gilt_nur_am_ziel_oder_ohne_ladestand():
     # nach einem Neustart von Home Assistant (kein Gedächtnis): nicht „fertig“, sondern laden
     o = C.decide(c, {"car": C.CAR_DONE, "surplus_w": 4000, "soc": None, "bat_ok": True}, mem(), 99.0, NOW)
     assert o["frc"] == 2
+
+
+# ---- Abfahrt aus dem Kalender (v0.9 Build 4)
+def test_vehicle_dep_calendar_fields_are_cleaned():
+    c = C.clean_wb({"vehicles": [{"id": "v1", "name": "BYD", "dep": {"cal": "calendar.familie", "calKw": "Auto<b>", "calLead": 999, "calSoc": 5, "calDur": "1,5"}}]})
+    d = c["vehicles"][0]["dep"]
+    assert d["cal"] == "calendar.familie" and d["calKw"] == "Autob" and d["calLead"] == 240 and d["calSoc"] == 20 and d["calDur"] == 1.5
+    d = C.clean_wb({"vehicles": [{"id": "v1", "name": "BYD", "dep": {"cal": "sensor.x"}}]})["vehicles"][0]["dep"]
+    assert d["cal"] == "" and d["calLead"] == 30 and d["calSoc"] == 90 and d["calDur"] == 0
+
+
+def test_cal_pick_next_matching_event():
+    ev = [
+        {"summary": "Zahnarzt", "start": NOW + timedelta(hours=3), "end": NOW + timedelta(hours=4)},
+        {"summary": "Mit dem Auto nach Hamburg", "start": NOW + timedelta(hours=20), "end": NOW + timedelta(hours=30)},
+        {"summary": "Auto Werkstatt", "start": NOW + timedelta(minutes=20), "end": NOW + timedelta(hours=1)},  # Abfahrt schon vorbei
+        {"summary": "Auto Urlaub", "start": NOW + timedelta(hours=40), "end": NOW + timedelta(hours=50)},     # zu weit weg
+    ]
+    dep = {"calKw": "auto", "calLead": 30, "calSoc": 95, "calDur": 0}
+    t = C.cal_pick(ev, dep, NOW)
+    assert t["msg"] == "Mit dem Auto nach Hamburg" and t["at"] == NOW + timedelta(hours=19, minutes=30) and t["soc"] == 95
+    t = C.cal_pick(ev, {**dep, "calKw": ""}, NOW)
+    assert t["msg"] == "Zahnarzt"
+    assert C.cal_pick(ev, {**dep, "calKw": "", "calDur": 2}, NOW)["msg"] == "Mit dem Auto nach Hamburg"
+    assert C.cal_pick([], dep, NOW) is None
+
+
+def test_deadline_and_plan_due_with_fixed_time():
+    at = (NOW + timedelta(hours=30)).isoformat()
+    assert P.deadline(NOW, at) == NOW + timedelta(hours=30)
+    assert P.deadline(NOW, "07:00") == NOW.replace(hour=7, minute=0) + timedelta(days=1)
+    c = cfg(plan=True, planSoc=80, cap=60, maxA=16, ph="3", planTime="13:00", planDays="we")
+    due, need, start = C.plan_due({**c, "planAt": at}, 50, NOW)
+    assert not due and need == 18.0 and start is not None and start < NOW + timedelta(hours=30)
+    due, _n, start = C.plan_due({**c, "planAt": (NOW + timedelta(minutes=30)).isoformat()}, 50, NOW)
+    assert due
+
+
+# ---- Kilometer & Verbrauch (v0.9 Build 4)
+def test_odo_manual_spreads_distance_over_days():
+    st = P.empty_stats()
+    d0 = NOW.date()
+    r = P.odo_manual(st, "v1", "BYD", 24000, d0)
+    assert r["ok"] and r["base"] and st["odoset"]["v1"]["km"] == 24000
+    r = P.odo_manual(st, "v1", "BYD", 24300, d0 + timedelta(days=3))
+    assert r["ok"] and r["km"] == 300 and r["days"] == 3
+    for i in (1, 2, 3):
+        d = st["days"][(d0 + timedelta(days=i)).isoformat()]
+        assert abs(d["km"] - 100) < 1e-6 and abs(d["veh"]["BYD"]["km"] - 100) < 1e-6
+    assert not P.odo_manual(st, "v1", "BYD", 24100, d0 + timedelta(days=4))["ok"]
+    c = P.clean_stats(st)
+    assert c["odoset"]["v1"] == {"km": 24300.0, "d": (d0 + timedelta(days=3)).isoformat()}
+
+
+def test_temperature_per_day_in_view():
+    st = P.empty_stats()
+    P.add_temp(st, NOW, 4.0, 60)
+    P.add_temp(st, NOW, 8.0, 60)
+    P.add_temp(st, NOW, None, 60)
+    v = P.stats_view(P.clean_stats(st))
+    assert v["days"][0]["t"] == 6.0
+
+
+def test_vehicle_km_year_fields():
+    v = C.clean_wb({"vehicles": [{"id": "v1", "name": "A", "kmYear": 15000, "kmFrom": 13}]})["vehicles"][0]
+    assert v["kmYear"] == 15000 and v["kmFrom"] == 12
