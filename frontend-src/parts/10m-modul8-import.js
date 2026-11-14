@@ -90,17 +90,21 @@
     const m = this._modal, close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
     const wrap = (sub, body) => `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>${this._gx("meter", 22)} Aus go-e importieren</b><span>${sub}</span></div>${close}</div>${body}</div>`;
     if (m.step === "busy") return wrap(esc(m.file || ""), `<div class="card empty">Ladungen werden gelesen und mit Modul 8 abgeglichen …</div>`);
-    if (m.step === "done") return wrap("Fertig", `<div class="goeok">${ic("check", 26)}<b>${m.done.new} ${m.done.new === 1 ? "Ladung" : "Ladungen"} übernommen${m.done.fixed ? ` · ${m.done.fixed} ${m.done.fixed === 1 ? "Menge" : "Mengen"} angeglichen` : ""}</b><span>Sie stehen jetzt in der Ladestatistik, markiert mit „go-e“. Jede Ladung lässt sich wie gewohnt bearbeiten.</span></div><div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="close">Schließen</button></div>`);
+    if (m.step === "done") return wrap("Fertig", `<div class="goeok">${ic("check", 26)}<b>${m.done.new + (m.done.restored || 0)} ${m.done.new + (m.done.restored || 0) === 1 ? "Ladung" : "Ladungen"} übernommen${m.done.fixed ? ` · ${m.done.fixed} ${m.done.fixed === 1 ? "Menge" : "Mengen"} angeglichen` : ""}</b><span>Sie stehen jetzt in der Ladestatistik, markiert mit „go-e“. Jede Ladung lässt sich wie gewohnt bearbeiten.</span></div><div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="close">Schließen</button></div>`);
     if (m.step === "preview") {
-      const R = m.res.rows || [], cnt = (k) => R.filter((x) => x.st === k).length, nNew = cnt("new"), nDiff = cnt("diff");
-      const tag = { new: ["g", "Neu"], dup: ["", "schon da"], diff: ["a", "Menge anders"], open: ["", "läuft gerade"], bad: ["x", "unlesbar"] };
+      const R = m.res.rows || [], cnt = (k) => R.filter((x) => x.st === k).length, nNew = cnt("new") + cnt("restore"), nDiff = cnt("diff");
+      const tag = { new: ["g", "Neu"], restore: ["g", "zurück in die Liste"], dup: ["", "schon da"], diff: ["a", "Menge anders"], open: ["", "läuft gerade"], bad: ["x", "unlesbar"] };
       const f2 = (v) => num(v, 2), dt = (s) => new Date(s).toLocaleString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
       const list = R.map((x) => { const [c, l] = tag[x.st] || ["", x.st];
-        return `<div class="goer ${x.st}"><div class="goet"><b>${esc(dt(x.start))}</b><small>${esc(x.card || "ohne Karte")} → ${esc(x.veh)}${x.known_card ? "" : ` <em class="goew">Karte unbekannt</em>`}</small></div>
-          <div class="goev"><b>${f2(x.kwh)} kWh</b><small>${x.st === "diff" ? `Modul 8: ${f2(x.have_kwh)} kWh` : x.st === "new" ? (x.pv > 0 ? `≈ ${f2(x.pv)} kWh Sonne` : "Sonne unbekannt") : ""}</small>${x.st === "new" && x.cost != null ? `<small class="goep">${f2(x.cost)} € · ${num(x.ct, 1)} ct (${esc(x.psrc || "")})</small>` : ""}</div><em class="goes ${c}">${l}</em></div>`; }).join("");
+        return `<div class="goer ${x.st}"><div class="goet"><b>${esc(dt(x.start))}</b><small>${esc(x.card || "ohne Karte")} → ${esc(x.veh)}${!x.assigned && (x.st === "new" || x.st === "restore") ? ` <em class="goew">kein Fahrzeug</em>` : ""}</small></div>
+          <div class="goev"><b>${f2(x.kwh)} kWh</b><small>${x.st === "diff" ? `Modul 8: ${f2(x.have_kwh)} kWh` : x.st === "new" || x.st === "restore" ? (x.pv > 0 ? `≈ ${f2(x.pv)} kWh Sonne` : "Sonne unbekannt") : ""}</small>${(x.st === "new" || x.st === "restore") && x.cost != null ? `<small class="goep">${f2(x.cost)} € · ${num(x.ct, 1)} ct (${esc(x.psrc || "")})</small>` : ""}</div><em class="goes ${c}">${l}</em></div>`; }).join("");
       return wrap(`${esc(m.file || "")} · ${R.length} Ladungen`, `<div class="goesum"><div><small>Neu</small><b class="gn">${nNew}</b></div><div><small>Schon in Modul 8</small><b>${cnt("dup") + nDiff}</b></div><div><small>Menge anders</small><b class="${nDiff ? "wa" : ""}">${nDiff}</b></div></div>
+        ${(() => { const un = [...new Set(R.filter((x) => (x.st === "new" || x.st === "restore") && !x.assigned).map((x) => x.card || ""))]; if (!un.length) return "";
+          const names = (this._wb().vehicles || []).map((v) => v.name); if (!names.length) return "";
+          return `<div class="goeun"><b>${ic("alert", 15)} ${un.length === 1 ? "Eine Karte ist" : un.length + " Karten sind"} keinem Fahrzeug zugeordnet</b><span>Ohne Auswahl zählen diese Ladungen als „Gastfahrzeug“ bzw. „Unbekannt“.</span>${un.map((c) => `<div class="goeunr"><em>${esc(c || "ohne Karte")}</em><div class="gschips">${names.map((nm) => `<button class="gsch ${(m.vmap || {})[c] === nm ? "sel" : ""}" data-act="wbgoemap" data-k="${esc(c)}" data-v="${esc(nm)}">${esc(nm)}</button>`).join("")}</div></div>`).join("")}</div>`; })()}
         <div class="goel">${list}</div>
         ${nDiff ? `<div class="vrow" style="margin-top:8px"><span>Mengen an go-e angleichen<small class="mut" style="display:block">go-e misst mit dem eigenen Zähler – bei abweichenden Ladungen die Menge aus go-e übernehmen (steht im Änderungsverlauf)</small></span><button class="sw ${m.take ? "on" : ""}" data-act="wbgoetake" aria-pressed="${!!m.take}" aria-label="Mengen angleichen"></button></div>` : ""}
+        ${cnt("restore") ? `<div class="gst" style="margin-top:8px">${ic("info", 15)}<span>${cnt("restore")} ${cnt("restore") === 1 ? "Ladung wurde" : "Ladungen wurden"} schon einmal importiert, fielen aber aus der Liste (bis 2026.11.3b31 hielt Modul 8 nur 100 Ladungen). Sie kommen zurück in die Liste, ohne die Tageswerte doppelt zu zählen.</span></div>` : ""}
         <div class="mut sm" style="margin-top:8px">Sonne ist geschätzt: aus der Herkunft des Hausstroms in den Stunden der Ladung (Haus-Energiebuch oder Statistik), Ladung ab Start mit gleichmäßiger Leistung. Kosten mit dem damaligen Preis je Stunde, nur für den Netzanteil – aus dem Vertrag (Modul 20), von Tibber, aus dem Verlauf des Preis-Sensors oder der Festpreis; fehlt das, der heutige Preis. In Klammern steht, woher er kommt. Neue Ladungen zählen am Starttag.</div>
         <div class="gbtns" style="margin-top:12px"><button class="btn2" data-act="wbgoepick">${ic("upload", 16)} Andere Datei</button><button class="btn2 pri" data-act="wbgoego" ${nNew || (nDiff && m.take) ? "" : "disabled"}>${ic("check", 16)} ${nNew} ${nNew === 1 ? "Ladung" : "Ladungen"} übernehmen${nDiff && m.take ? ` · ${nDiff} angleichen` : ""}</button></div>`);
     }
@@ -115,6 +119,12 @@
     if (!m || m.type !== "wbgoe") return false;
     if (a === "wbgoepick") { this._goePick(); return true; }
     if (a === "wbgoetake") { m.take = !m.take; this._renderModal(); return true; }
+    if (a === "wbgoemap") {
+      const c = b.dataset.k || "", v = b.dataset.v || ""; m.vmap = m.vmap || {}; if (m.vmap[c] === v) delete m.vmap[c]; else m.vmap[c] = v;
+      m.send = m.send.map((r) => ({ ...r, veh_set: m.vmap[r.card || ""] || "" }));
+      this._hass.callWS({ type: "fenster_heizung/wb_import", rows: m.send }).then((res) => { m.res = res; this._renderModal(); }).catch(() => this._toast("Das ging nicht"));
+      return true;
+    }
     if (a === "wbgoego") {
       m.step = "busy"; this._renderModal();
       this._hass.callWS({ type: "fenster_heizung/wb_import", rows: m.send, apply: true, take_kwh: !!m.take }).then((r) => { m.step = "done"; m.done = r; this._wbStatLoad && this._wbStatLoad(true); this._renderModal(); })

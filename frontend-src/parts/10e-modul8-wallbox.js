@@ -104,6 +104,7 @@
   }
   _wbLater(t) { /* Zeitfeld nicht mitten in der Eingabe neu aufbauen (Safari meldet jede Ziffer einzeln) */ clearTimeout(this._wbLT); this._wbLT = setTimeout(() => { const ae = this.shadowRoot.activeElement; if (ae && (ae.type === "time" || (ae.dataset && ae.dataset.tin))) { ae.addEventListener("blur", () => this._render(), { once: true }); } else this._render(); }, 700); }
   _wbChange(t) { const f = t.dataset.f;
+    if (f === "wbsescost") { this._sesGrab(); return true; }
     if (f === "wbdim") { const c = this._wb(); this._wbSave({ dim: { ...(c.dim || { on: true, kw: 4.2 }), ent: t.value || "" } }, true); this._render(); return true; }
     if (f === "wbdcal" || f === "wbdkw") { const c = this._wb(), v = f === "wbdkw" ? String(t.value || "").replace(/[<>"&]/g, "").trim().slice(0, 30) : t.value || "";
       this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), [f === "wbdcal" ? "cal" : "calKw"]: v } } : x)) }, true); this._render(); return true; }

@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b32] - 2026-11-14
+
+### Behoben
+- **Modul 8: Nach dem go-e-Import fehlten ältere Ladungen (z. B. März bis Juli) unter „Ladungen“.** Modul 8 hielt nur die letzten 100 Ladungen – beim Import vieler älterer Ladungen fielen die ältesten wieder aus der Liste, ihre Energie stand aber schon in den Tageswerten. Jetzt bleiben bis zu 2000 Ladungen, „Alle anzeigen“ zeigt wirklich alle des Zeitraums.
+- **Fehlende Ladungen zurückholen:** Die CSV einfach noch einmal importieren. Ladungen, die schon einmal übernommen wurden, aber aus der Liste gefallen sind, erscheinen als „zurück in die Liste“ und werden eingetragen, **ohne** die Tageswerte doppelt zu zählen. Ab jetzt merkt sich Modul 8 jede importierte go-e-Ladung, damit nichts doppelt zählt.
+
+### Neu
+- **Modul 8: Kosten einer Ladung ändern.** Beim Bearbeiten einer Ladung die Kachel „Kosten“ antippen und den Betrag in € eintragen – z. B. was wirklich bezahlt wurde, 0 € für kostenloses Laden beim Arbeitgeber oder ein Betrag auch bei 100 % Sonne. Tages- und Fahrzeugkosten werden mitgeführt, die Änderung steht im Änderungsverlauf, in der Liste erscheint „Kosten geändert“. Ändert man danach die Menge, bleiben die gesetzten Kosten.
+- **Modul 8: Mehrere Ladungen auf einmal.** Unter „Ladungen“ → „Auswählen“: Ladungen antippen (oder „Alle im Zeitraum“) und dann **löschen** oder **einem Fahrzeug zuordnen**. Tageswerte und „Fahrzeuge & Karten“ werden mitgeführt.
+- **Modul 8: Alle gespeicherten Ladungen löschen** (unten in „Ladungen“): entweder nur die Liste leeren (Tageswerte, Summen und km bleiben) oder alles zur geladenen Energie löschen – für einen sauberen Neustart vor einem neuen go-e-Import (km und Temperaturen bleiben). Mit Rückfrage.
+- **Modul 8: „Fahrzeug ändern“ je Karte** unter „Fahrzeuge & Karten“ → „Je Karte“: alle Ladungen der Karte im Zeitraum auf einmal umbuchen – z. B. „Sandra“ von „Gastfahrzeug“ auf „BYD“.
+- **go-e-Import: Karten ohne Fahrzeug.** Sind Karten keinem Fahrzeug zugeordnet (sonst landen ihre Ladungen beim „Gastfahrzeug“), zeigt die Vorschau sie oben an – Fahrzeug je Karte direkt wählen.
+- Gelöschte importierte Ladungen werden aus dem Import-Gedächtnis entfernt und lassen sich später wieder importieren.
+
 ## [2026.11.3b31] - 2026-11-14
 
 ### Neu

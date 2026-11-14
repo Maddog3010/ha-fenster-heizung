@@ -67,8 +67,8 @@
   _sesGrab() {
     const m = this._modal, q = (f) => this.shadowRoot.querySelector(`[data-f="${f}"]`);
     if (!m || m.type !== "wbses") return;
-    const k = q("wbseskwh"), c = q("wbsescard"), n = q("wbsesnote");
-    if (k) m.kwh = k.value; if (c) m.card = c.value; if (n) m.note = n.value;
+    const k = q("wbseskwh"), c = q("wbsescard"), n = q("wbsesnote"), p = q("wbsescost");
+    if (k) m.kwh = k.value; if (c) m.card = c.value; if (n) m.note = n.value; if (p) m.cost = p.value;
   }
   _sesModal() {
     const m = this._modal, x = this._sesFind(m.start);
@@ -78,7 +78,8 @@
     const chip = (n) => `<button class="gsch ${m.veh === n ? "sel" : ""}" data-act="wbvsesveh" data-k="${esc(n)}" aria-pressed="${m.veh === n}">${esc(n)}</button>`;
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Ladung bearbeiten">
       <div class="sh"><div><b>Ladung bearbeiten</b><span>${t.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}, ${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr${dur ? " · " + dur : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="evsesh"><span><small>Gemessen</small><b>${num(x.orig != null ? x.orig : x.kwh, 2)} kWh</b></span><span><small>Sonne</small><b>${num(s2, 0)} %</b></span><span><small>Kosten</small><b>${num(x.cost, 2)} €</b></span></div>
+      <div class="evsesh"><span><small>Gemessen</small><b>${num(x.orig != null ? x.orig : x.kwh, 2)} kWh</b></span><span><small>Sonne</small><b>${num(s2, 0)} %</b></span>${m.costEdit ? `<span class="evcost on"><small>Kosten</small><div class="evcosti"><input class="otxt" type="text" inputmode="decimal" data-f="wbsescost" value="${esc(m.cost)}" aria-label="Kosten in Euro" autofocus> €</div></span>` : `<button class="evcost" data-act="wbvsescost" aria-label="Kosten ändern"><small>Kosten ${ic("pencil", 11)}</small><b>${num(m.cost !== m.cost0 && isFinite(parseFloat(String(m.cost).replace(",", "."))) ? parseFloat(String(m.cost).replace(",", ".")) : x.cost, 2)} €</b></button>`}</div>
+      ${x.pcost || m.costEdit ? `<div class="mut sm" style="margin:-4px 0 8px">${m.costEdit ? "Gesamtkosten dieser Ladung, z. B. was du wirklich bezahlt hast. Gilt auch bei 100 % Sonne." : "Kosten von Hand gesetzt."}</div>` : ""}
       <div class="lsec">${ic("car", 15)}Fahrzeug</div>
       <div class="gschips">${names.map(chip).join("")}</div>
       <div class="vrow"><span>Geladene Menge<small class="mut" style="display:block">${x.orig != null ? `Von Hand geändert. Gemessen wurden ${num(x.orig, 2)} kWh.` : "Nur ändern, wenn die Wallbox falsch gemessen hat."}</small></span><span style="flex:none;display:flex;align-items:center;gap:6px"><input class="otxt" style="width:96px;text-align:right" type="text" inputmode="decimal" data-f="wbseskwh" value="${esc(m.kwh)}" aria-label="Geladene Menge in kWh"> kWh</span></div>
@@ -100,12 +101,13 @@
     if (a === "wbvses") {
       const x = this._sesFind(b.dataset.k); if (!x) return;
       if (!this._admin()) { this._toast("Nur Administratoren können Ladungen bearbeiten"); return; }
-      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), kwh0: num(x.kwh, 2), card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
+      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), kwh0: num(x.kwh, 2), cost: num(x.cost, 2), cost0: num(x.cost, 2), costEdit: false, card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
     }
     const m = this._modal; if (!m || m.type !== "wbses") return;
     this._sesGrab();
     if (a === "wbvsesveh") { m.veh = b.dataset.k; this._renderModal(); return; }
     if (a === "wbvsesbiz") { m.biz = !m.biz; this._renderModal(); return; }
+    if (a === "wbvsescost") { m.costEdit = true; this._renderModal(); const i = this.shadowRoot.querySelector('[data-f="wbsescost"]'); if (i) { i.focus(); i.select(); } return; }
     if (a === "wbvsesdel") { m.del = true; this._renderModal(); return; }
     const send = (body, msg) => { m.busy = true; this._renderModal();
       this._hass.callWS({ type: "fenster_heizung/wb_session", start: m.start, ...body }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; this._modal = null; this._renderModal(); this._render(); this._toast(msg); })
@@ -117,6 +119,8 @@
       if (!isFinite(k) || k < 0 || k > 300) { this._toast("Bitte eine Menge von 0 bis 300 kWh eingeben"); return; }
       const body = { veh: m.veh, card: String(m.card || "").trim(), note: String(m.note || "").trim(), biz: !!m.biz };
       if (String(m.kwh).trim() !== m.kwh0) body.kwh = k; // nur senden, wenn wirklich geändert (sonst würde die Rundung als Änderung zählen)
+      const co = parseFloat(String(m.cost || "").replace(",", "."));
+      if (String(m.cost || "").trim() !== m.cost0) { if (!isFinite(co) || co < 0 || co > 1000) { this._toast("Bitte Kosten von 0 bis 1000 € eingeben"); return; } body.cost = co; }
       send(body, "Ladung gespeichert");
     }
   }

@@ -419,6 +419,7 @@
     if (m.type === "igwbha") { box.innerHTML = this._igWbhaModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbses") { box.innerHTML = this._sesModal(); return; }
     if (m.type === "wbgoe") { box.innerHTML = this._goeModal(); return; }
+    if (m.type === "wbbulk") { box.innerHTML = this._bulkModal(); return; }
     if (m.type === "wbasg") { box.innerHTML = this._asgModal(); return; }
     if (m.type === "wbpdf") { box.innerHTML = this._wbPdfModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbveh") { box.innerHTML = this._wbVehModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

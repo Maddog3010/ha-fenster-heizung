@@ -27,7 +27,7 @@ from .wallbox_calc import (
 STALE_S = 180  # B6: so alt darf der Netz-Sensor sein, sonst wird nicht mehr erhöht
 from .wallbox_plan import (
     add_energy, add_km, add_temp, build_slots, odo_manual, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick, assign_unknown,
-    stats_view, import_plan, import_apply, UNKNOWN,
+    stats_view, import_plan, import_apply, UNKNOWN, sessions_bulk, sessions_clear,
 )
 
 EVENT_DONE = "fenster_heizung_ladung_beendet"
@@ -455,9 +455,13 @@ class WallboxManager:
             card = str(r.get("card") or "").strip()[:30]
             idx = cards.get(card.lower()) or cfg_cards.get(card.lower()) if card else None
             w = resolve_who(self.cfg, idx) if (idx or not card) else None
+            assigned = bool(w and w.get("kind") == "vehicle")
+            ov = str(r.get("veh_set") or "")[:30]
+            if ov and ov in {v["name"] for v in self.cfg.get("vehicles") or []}:
+                w, assigned = {"name": ov}, True
             out.append({"gid": re.sub(r"[^0-9A-Za-z_-]", "", str(r.get("gid") or ""))[:20], "start": str(r.get("start") or "")[:32], "end": str(r.get("end") or "")[:32],
                         "kwh": float(r.get("kwh") or 0), "pv": float(r.get("pv") or 0), "pvest": bool(r.get("pvest")), "card": card,
-                        "veh": w["name"] if w else UNKNOWN, "known_card": bool(idx) or not card})
+                        "veh": w["name"] if w else UNKNOWN, "known_card": bool(idx) or not card, "assigned": assigned})
         return out
 
     async def _hist_prices(self, hours: list[int]) -> dict[int, tuple[float, str]]:
@@ -514,11 +518,11 @@ class WallboxManager:
     async def _price_rows(self, plan: list[dict[str, Any]], rows: list[dict[str, Any]]) -> None:
         """Kosten neuer Ladungen mit den damaligen Preisen je Stunde (Netzanteil der Stunde × Preis)."""
         by_gid = {str(r.get("gid") or "") + str(r.get("start") or ""): r for r in rows}
-        need = sorted({int(h[0]) // 3600 * 3600 for p in plan if p["st"] == "new" for h in (by_gid.get(p["gid"] + p["start"], {}).get("hours") or []) if isinstance(h, list) and len(h) == 3})
+        need = sorted({int(h[0]) // 3600 * 3600 for p in plan if p["st"] in ("new", "restore") for h in (by_gid.get(p["gid"] + p["start"], {}).get("hours") or []) if isinstance(h, list) and len(h) == 3})
         hp = await self._hist_prices(need[:2000])
         now_ct = self._price_now(dt_util.now())
         for p in plan:
-            if p["st"] != "new":
+            if p["st"] not in ("new", "restore"):
                 continue
             hrs = [h for h in (by_gid.get(p["gid"] + p["start"], {}).get("hours") or []) if isinstance(h, list) and len(h) == 3]
             cost = full = kwh_g = kwh_all = 0.0
@@ -561,8 +565,19 @@ class WallboxManager:
         await self._price_rows(plan, rows)
         res = import_apply(self._st, plan, take_kwh, now)
         self._st_store.async_delay_save(lambda: self._st, 2)
-        self._add(f"Aus go-e importiert: {res['new']} neue Ladungen" + (f", {res['fixed']} Mengen angeglichen" if res["fixed"] else "") + ".")
+        self._add(f"Aus go-e importiert: {res['new']} neue Ladungen" + (f", {res['restored']} wiederhergestellt" if res.get("restored") else "") + (f", {res['fixed']} Mengen angeglichen" if res["fixed"] else "") + ".")
         return {**res, **self.stats()}
+
+    async def async_sessions(self, act: str, starts: list[str], veh: str = "", mode: str = "list") -> dict[str, Any]:
+        """Ladestatistik: mehrere Ladungen löschen oder umbuchen, alle Ladungen löschen."""
+        if act == "clear":
+            n = sessions_clear(self._st, "all" if mode == "all" else "list")
+            self._add(f"Alle {n} Ladungen gelöscht" + (" (mit Tageswerten)." if mode == "all" else " (Tageswerte bleiben)."))
+        else:
+            n = sessions_bulk(self._st, act, starts, dt_util.now(), str(veh or "")[:30])
+            self._add(f"{n} Ladungen gelöscht." if act == "delete" else f"{n} Ladungen dem Fahrzeug {veh} zugeordnet.")
+        self._st_store.async_delay_save(lambda: self._st, 2)
+        return {"n": n, **self.stats()}
 
     def _soc(self) -> float | None:
         return self.veh_soc(self.cur_vehicle())

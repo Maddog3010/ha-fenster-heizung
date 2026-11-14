@@ -2829,6 +2829,15 @@ const CSS_GOE = `
 .goes{font-style:normal;font-size:.68rem;font-weight:700;border-radius:99px;padding:2px 8px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}.goes.g{color:#4ade80;border-color:color-mix(in srgb,#4ade80 45%,transparent)}.goes.a{color:#fbbf24;border-color:color-mix(in srgb,#fbbf24 45%,transparent)}.goes.x{color:#f87171}
 .goew{font-style:normal;color:#fbbf24;font-size:.68rem}
 .goev small.goep{color:var(--mut)}
+.goeun{display:flex;flex-direction:column;gap:6px;border:1px solid color-mix(in srgb,#fbbf24 40%,transparent);background:color-mix(in srgb,#fbbf24 8%,transparent);border-radius:12px;padding:10px 12px;margin:0 0 10px}.goeun>b{display:flex;gap:6px;align-items:center;font-size:.86rem;color:#fbbf24}.goeun>span{font-size:.78rem;color:var(--mut)}
+.goeunr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.goeunr em{font-style:normal;font-weight:700;min-width:80px}.goeunr .gschips{margin:0}
+.evselbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,#2dd4bf 10%,transparent)}.evselbar b{flex:1;font-size:.86rem}.evselbar .btn2{flex:none;width:auto;min-width:0;padding:6px 10px;font-size:.8rem}
+.evses>div.evsed.evpick{grid-template-columns:24px 78px minmax(0,1.2fr) minmax(40px,.7fr) auto}@media (max-width:620px){.evses>div.evsed.evpick{grid-template-columns:24px 64px minmax(0,1fr) auto}}.evck{flex:none;width:22px;height:22px;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;margin-right:2px}.evpick.on{background:color-mix(in srgb,#2dd4bf 12%,transparent)}.evpick.on .evck{background:#2dd4bf;border-color:#2dd4bf;color:#062a26}
+.evclrl{margin-top:10px;text-align:right}.lnk.dngl{color:#f87171;font-size:.8rem}.lnk.dngl .ic{vertical-align:-2px}
+.evclr{display:flex;flex-direction:column;gap:3px;width:100%;text-align:left;font:inherit;color:inherit;border:1px solid var(--line);background:transparent;border-radius:12px;padding:10px 12px;margin:0 0 8px;cursor:pointer}.evclr small{font-size:.78rem;color:var(--mut);line-height:1.4}.evclr.sel{border-color:#f87171;background:color-mix(in srgb,#f87171 8%,transparent)}
+.evcr .lnk.sm{font-size:.74rem;display:inline-flex;gap:4px;align-items:center;margin-top:2px}
+.evsesh .evcost{font:inherit;color:inherit;text-align:left;background:var(--soft,rgba(127,127,127,.08));border-radius:12px;padding:8px 10px;border:1px dashed color-mix(in srgb,#2dd4bf 55%,transparent);cursor:pointer}.evsesh .evcost small .ic{vertical-align:-1px;opacity:.7}
+.evsesh .evcost.on{border-style:solid;border-color:#2dd4bf}.evcosti{display:flex;align-items:center;gap:4px}.evsesh .evcost.on input{width:80px;text-align:right;font-size:1.05rem;font-weight:700;padding:4px 6px}
 .goeok{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:18px 10px}.goeok .ic{color:#4ade80}.goeok span{font-size:.86rem;color:var(--mut);max-width:380px}
 `;
 /* Modul 1 · Raumkarte 2.0 */
@@ -7569,6 +7578,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "igwbha") { box.innerHTML = this._igWbhaModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbses") { box.innerHTML = this._sesModal(); return; }
     if (m.type === "wbgoe") { box.innerHTML = this._goeModal(); return; }
+    if (m.type === "wbbulk") { box.innerHTML = this._bulkModal(); return; }
     if (m.type === "wbasg") { box.innerHTML = this._asgModal(); return; }
     if (m.type === "wbpdf") { box.innerHTML = this._wbPdfModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbveh") { box.innerHTML = this._wbVehModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -9265,6 +9275,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _wbLater(t) { /* Zeitfeld nicht mitten in der Eingabe neu aufbauen (Safari meldet jede Ziffer einzeln) */ clearTimeout(this._wbLT); this._wbLT = setTimeout(() => { const ae = this.shadowRoot.activeElement; if (ae && (ae.type === "time" || (ae.dataset && ae.dataset.tin))) { ae.addEventListener("blur", () => this._render(), { once: true }); } else this._render(); }, 700); }
   _wbChange(t) { const f = t.dataset.f;
+    if (f === "wbsescost") { this._sesGrab(); return true; }
     if (f === "wbdim") { const c = this._wb(); this._wbSave({ dim: { ...(c.dim || { on: true, kw: 4.2 }), ent: t.value || "" } }, true); this._render(); return true; }
     if (f === "wbdcal" || f === "wbdkw") { const c = this._wb(), v = f === "wbdkw" ? String(t.value || "").replace(/[<>"&]/g, "").trim().slice(0, 30) : t.value || "";
       this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === t.dataset.v ? { ...x, dep: { ...this._wbDep(x), [f === "wbdcal" ? "cal" : "calKw"]: v } } : x)) }, true); this._render(); return true; }
@@ -9605,7 +9616,7 @@ class FensterHeizungPanel extends HTMLElement {
     const D = (this._wbStD && this._wbStD.data) || null;
     if (!D) return `<div class="card empty">${this._gx("meter", 40)}<div class="sm" style="margin-top:8px">Statistik wird geladen …</div></div>`;
     if (D.error) return `<div class="card empty">${this._gx("meter", 40)}<div class="sm" style="margin-top:8px">Die Statistik konnte gerade nicht geladen werden. <button class="lnk" data-act="wbstretry">Nochmal versuchen</button></div></div>`;
-    const S = this._evSt(), R = this._evRange(S.per, S.at), days = D.days || [], T = this._evAgg(days, R.d0, R.d1), run = R.d1 > new Date();
+    const SL = this._evSel(), S = this._evSt(), R = this._evRange(S.per, S.at), days = D.days || [], T = this._evAgg(days, R.d0, R.d1), run = R.d1 > new Date();
     /* Vergleich fair: Läuft der Zeitraum noch, zählt beim Vorzeitraum nur derselbe Anteil (z. B. 1.–13. Oktober gegen 1.–13. November) */
     const pEnd = run && S.per !== "d" ? (() => { const t = new Date(R.prev); t.setDate(t.getDate() + Math.ceil((new Date() - R.d0) / 864e5)); return t < R.d0 ? t : R.d0; })() : R.d0, Pv = this._evAgg(days, R.prev, pEnd);
     const MON = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"], MONL = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
@@ -9638,16 +9649,20 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="evcols"><div><div class="card"><h2>${this._gx("meter", 24)}${S.per === "d" ? "Ladungen an diesem Tag" : S.per === "y" ? "Geladen je Monat" : "Geladen je Tag"}<span class="evmr">${S.per === "y" || S.per === "m" || S.per === "w" ? "Antippen öffnet den Zeitraum" : ""}</span></h2>
         ${slots.length && T.kwh > 0 ? `<svg class="evstsvg" viewBox="0 0 ${W} ${Hh}" preserveAspectRatio="none" role="img" aria-label="Geladene Energie, Sonne und Netz">${bars}<line x1="10" x2="${W - 10}" y1="${base}" y2="${base}" class="evpd"/></svg>
         <div class="gsleg"><span><i style="background:var(--teal)"></i>Sonne ${num(T.pv, 1)} kWh</span><span><i style="background:var(--amber)"></i>Netz ${num(T.grid, 1)} kWh</span><span class="mut">▲▼ gegenüber ${run && S.per !== "d" ? "dem gleichen Zeitraum im " + prevN : "dem " + prevN}</span></div>` : `<div class="mut sm">In diesem Zeitraum wurde nicht geladen.</div>`}</div>
-        <div class="card"><h2>${this._gx("schedule", 24)}Ladungen<span class="evmr">${this._admin() && !this._wbHa() ? `<button class="lnk" data-act="wbgoe">Aus go-e importieren</button><span class="mut"> · </span>` : ""}<button class="lnk" data-act="wbcsv">Als CSV exportieren</button></span></h2>${ses.length ? `<div class="evses">${ses.slice(0, S.all ? 100 : 12).map((x) => { const t = new Date(x.start), s2 = x.kwh > 0 ? x.pv / x.kwh * 100 : 0, ed = !x.running && this._admin();
-          const tags = `${x.src === "goe" ? `<em class="evtag" title="Aus dem go-e-Ladelog importiert${x.pvest ? ", Sonne geschätzt" : ""}">go-e</em>` : ""}${x.biz ? `<em class="evtag">dienstlich</em>` : ""}${x.orig != null ? `<em class="evtag amb" title="Gemessen: ${num(x.orig, 2)} kWh">Menge geändert</em>` : x.edit ? `<em class="evtag neu">bearbeitet</em>` : ""}`;
-          return `<div ${ed ? `class="evsed" role="button" tabindex="0" data-act="wbvses" data-k="${esc(x.start)}" aria-label="Ladung vom ${t.toLocaleDateString("de-DE")} bearbeiten"` : ""}><span class="evsd"><b>${t.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })}</b><small>${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}${x.running ? " · läuft" : x.min ? " · " + (x.min >= 60 ? num(x.min / 60, 1) + " h" : num(x.min, 0) + " Min.") : ""}</small></span><span class="evsv"><b>${esc(x.veh || "Unbekannt")}${tags}</b><small>${[x.card ? esc(x.card) : this._wbHa() ? "" : "ohne Karte", x.note ? esc(x.note) : ""].filter(Boolean).join(" · ")}</small></span><span class="evsbar"><i style="width:${s2}%"></i></span><span class="evsk"><b>${num(x.kwh, 1)} kWh</b><small>${x.pvest ? "≈ " : ""}${num(s2, 0)} % Sonne · ${num(x.cost, 2)} €</small></span>${ed ? `<span class="evsedi" aria-hidden="true">${ic("pencil", 15)}</span>` : ""}</div>`; }).join("")}</div>
-          <div class="evsft">${this._admin() ? `<span class="mut sm">Antippen, um eine Ladung zu bearbeiten.</span>` : ""}${ses.length > 12 ? `<button class="lnk" data-act="wbvall">${S.all ? "Weniger anzeigen" : `Alle ${ses.length} anzeigen`}</button>` : ""}</div>` : `<div class="mut sm">Keine Ladungen in diesem Zeitraum.</div>`}</div></div>
+        <div class="card"><h2>${this._gx("schedule", 24)}Ladungen<span class="evmr">${this._admin() && ses.length ? `<button class="lnk" data-act="wbvselon">${SL.on ? "Fertig" : "Auswählen"}</button><span class="mut"> · </span>` : ""}${this._admin() && !this._wbHa() ? `<button class="lnk" data-act="wbgoe">Aus go-e importieren</button><span class="mut"> · </span>` : ""}<button class="lnk" data-act="wbcsv">Als CSV exportieren</button></span></h2>
+          ${SL.on ? (() => { const ids = ses.filter((x) => !x.running).map((x) => x.start), sel = ids.filter((x) => SL.set.has(x)).length; return `<div class="evselbar"><button class="lnk" data-act="wbvselall" data-all="${esc(ids.join("|"))}">${sel === ids.length && ids.length ? "Keine" : `Alle ${ids.length} im Zeitraum`}</button><b>${SL.set.size} ausgewählt</b><button class="btn2 sm" data-act="wbvselveh" ${SL.set.size ? "" : "disabled"}>${ic("car", 15)} Fahrzeug</button><button class="btn2 sm dng" data-act="wbvseldel" ${SL.set.size ? "" : "disabled"}>${ic("trash", 15)} Löschen</button></div>`; })() : ""}
+          ${ses.length ? `<div class="evses">${ses.slice(0, S.all || SL.on ? ses.length : 12).map((x) => { const t = new Date(x.start), s2 = x.kwh > 0 ? x.pv / x.kwh * 100 : 0, ed = !x.running && this._admin(), pick = SL.on && !x.running, on = pick && SL.set.has(x.start);
+          const tags = `${x.src === "goe" ? `<em class="evtag" title="Aus dem go-e-Ladelog importiert${x.pvest ? ", Sonne geschätzt" : ""}">go-e</em>` : ""}${x.biz ? `<em class="evtag">dienstlich</em>` : ""}${x.pcost || x.pct != null ? `<em class="evtag amb" title="Kosten von Hand gesetzt">Kosten geändert</em>` : ""}${x.orig != null ? `<em class="evtag amb" title="Gemessen: ${num(x.orig, 2)} kWh">Menge geändert</em>` : x.edit ? `<em class="evtag neu">bearbeitet</em>` : ""}`;
+          return `<div ${pick ? `class="evsed evpick${on ? " on" : ""}" role="checkbox" aria-checked="${on}" tabindex="0" data-act="wbvsel" data-k="${esc(x.start)}"` : ed ? `class="evsed" role="button" tabindex="0" data-act="wbvses" data-k="${esc(x.start)}" aria-label="Ladung vom ${t.toLocaleDateString("de-DE")} bearbeiten"` : ""}>${pick ? `<span class="evck" aria-hidden="true">${on ? ic("check", 14) : ""}</span>` : ""}<span class="evsd"><b>${t.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })}</b><small>${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}${x.running ? " · läuft" : x.min ? " · " + (x.min >= 60 ? num(x.min / 60, 1) + " h" : num(x.min, 0) + " Min.") : ""}</small></span><span class="evsv"><b>${esc(x.veh || "Unbekannt")}${tags}</b><small>${[x.card ? esc(x.card) : this._wbHa() ? "" : "ohne Karte", x.note ? esc(x.note) : ""].filter(Boolean).join(" · ")}</small></span><span class="evsbar"><i style="width:${s2}%"></i></span><span class="evsk"><b>${num(x.kwh, 1)} kWh</b><small>${x.pvest ? "≈ " : ""}${num(s2, 0)} % Sonne · ${num(x.cost, 2)} €</small></span>${ed && !pick ? `<span class="evsedi" aria-hidden="true">${ic("pencil", 15)}</span>` : ""}</div>`; }).join("")}</div>
+          <div class="evsft">${this._admin() ? `<span class="mut sm">${SL.on ? "Antippen zum Auswählen." : "Antippen, um eine Ladung zu bearbeiten."}</span>` : ""}${ses.length > 12 && !SL.on ? `<button class="lnk" data-act="wbvall">${S.all ? "Weniger anzeigen" : `Alle ${ses.length} anzeigen`}</button>` : ""}</div>` : `<div class="mut sm">Keine Ladungen in diesem Zeitraum.</div>`}
+          ${this._admin() && ((D.sessions || []).length) ? `<div class="evclrl"><button class="lnk dngl" data-act="wbvclear">${ic("trash", 13)} Alle gespeicherten Ladungen löschen …</button></div>` : ""}</div></div>
       <div><div class="card"><h2>${this._gx("people", 24)}Fahrzeuge &amp; Karten</h2>${vehs.length ? vehs.map(([n, v]) => { const x = cv.find((y) => y.name === n), p100 = v.km > 0 ? v.cost / v.km * 100 : null;
           const unk = n === "Unbekannt" && this._admin() && cv.length;
           return `<div class="evvr">${x ? `<span class="rfpic">${this._evThumb(x, 84)}</span>` : `<span class="rfpic">${this._gx("car", 30)}</span>`}<div class="evvt"><b>${esc(n)}${unk ? `<button class="btn2 sm evasg" data-act="wbvasg" data-k="${R.d0.getTime()}" data-e="${R.d1.getTime()}">${ic("car", 15)} Zuordnen</button>` : ""}</b><div class="evbb sm"><i class="f" style="width:${v.kwh / vmx * 100}%"></i></div><small>${num(v.kwh, 1)} kWh · ${num(v.cost, 2)} €${v.km > 0 ? ` · <b>${num(v.km, 0)} km</b>${v.kwh > 0 ? ` · ${num(v.kwh / v.km * 100, 1)} kWh/100 km` : ""}` : ""}${p100 != null ? ` · ${num(p100, 2)} €/100 km` : ""}${v.kwh > 0 && v.pv != null ? ` · ${num(v.pv / v.kwh * 100, 0)} % Sonne` : ""}</small></div></div>`; }).join("") : `<div class="mut sm">Noch keine Ladungen mit erkanntem Fahrzeug.</div>`}
-        ${Object.keys(cards).length ? `<div class="lsec" style="margin-top:10px">${ic("shield", 15)}Je Karte</div>${Object.entries(cards).map(([n, c]) => `<div class="evcr"><span><b>${esc(n)}</b><small>${esc(c.veh)} · ${c.n} ${c.n === 1 ? "Ladung" : "Ladungen"}</small></span><span><b>${num(c.kwh, 1)} kWh</b><small>${num(c.cost, 2)} €</small></span></div>`).join("")}` : ""}</div></div></div>`;
+        ${Object.keys(cards).length ? `<div class="lsec" style="margin-top:10px">${ic("shield", 15)}Je Karte</div>${Object.entries(cards).map(([n, c]) => { const L = ses.filter((x) => !x.running && (x.card || "") === (n === "ohne Karte" ? "" : n)).map((x) => x.start); return `<div class="evcr"><span><b>${esc(n)}</b><small>${esc(c.veh)} · ${c.n} ${c.n === 1 ? "Ladung" : "Ladungen"}</small>${this._admin() && L.length ? `<button class="lnk sm" data-act="wbvcardveh" data-k="${esc(n)}" data-all="${esc(L.join("|"))}">${ic("car", 13)} Fahrzeug ändern</button>` : ""}</span><span><b>${num(c.kwh, 1)} kWh</b><small>${num(c.cost, 2)} €</small></span></div>`; }).join("")}` : ""}</div></div></div>`;
   }
   _evStAct(a, b) {
+    if ((a.startsWith("wbvsel") || a.startsWith("wbvbulk") || a === "wbvcardveh" || a === "wbvclear") && this._bulkAct(a, b)) return;
     if (a.startsWith("wbvpdf")) return this._wbPdfAct(a, b);
     if (a.startsWith("wbvses")) return this._sesAct(a, b);
     if (a.startsWith("wbvasg")) return this._asgAct(a, b);
@@ -9729,8 +9744,8 @@ class FensterHeizungPanel extends HTMLElement {
   _sesGrab() {
     const m = this._modal, q = (f) => this.shadowRoot.querySelector(`[data-f="${f}"]`);
     if (!m || m.type !== "wbses") return;
-    const k = q("wbseskwh"), c = q("wbsescard"), n = q("wbsesnote");
-    if (k) m.kwh = k.value; if (c) m.card = c.value; if (n) m.note = n.value;
+    const k = q("wbseskwh"), c = q("wbsescard"), n = q("wbsesnote"), p = q("wbsescost");
+    if (k) m.kwh = k.value; if (c) m.card = c.value; if (n) m.note = n.value; if (p) m.cost = p.value;
   }
   _sesModal() {
     const m = this._modal, x = this._sesFind(m.start);
@@ -9740,7 +9755,8 @@ class FensterHeizungPanel extends HTMLElement {
     const chip = (n) => `<button class="gsch ${m.veh === n ? "sel" : ""}" data-act="wbvsesveh" data-k="${esc(n)}" aria-pressed="${m.veh === n}">${esc(n)}</button>`;
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Ladung bearbeiten">
       <div class="sh"><div><b>Ladung bearbeiten</b><span>${t.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" })}, ${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr${dur ? " · " + dur : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="evsesh"><span><small>Gemessen</small><b>${num(x.orig != null ? x.orig : x.kwh, 2)} kWh</b></span><span><small>Sonne</small><b>${num(s2, 0)} %</b></span><span><small>Kosten</small><b>${num(x.cost, 2)} €</b></span></div>
+      <div class="evsesh"><span><small>Gemessen</small><b>${num(x.orig != null ? x.orig : x.kwh, 2)} kWh</b></span><span><small>Sonne</small><b>${num(s2, 0)} %</b></span>${m.costEdit ? `<span class="evcost on"><small>Kosten</small><div class="evcosti"><input class="otxt" type="text" inputmode="decimal" data-f="wbsescost" value="${esc(m.cost)}" aria-label="Kosten in Euro" autofocus> €</div></span>` : `<button class="evcost" data-act="wbvsescost" aria-label="Kosten ändern"><small>Kosten ${ic("pencil", 11)}</small><b>${num(m.cost !== m.cost0 && isFinite(parseFloat(String(m.cost).replace(",", "."))) ? parseFloat(String(m.cost).replace(",", ".")) : x.cost, 2)} €</b></button>`}</div>
+      ${x.pcost || m.costEdit ? `<div class="mut sm" style="margin:-4px 0 8px">${m.costEdit ? "Gesamtkosten dieser Ladung, z. B. was du wirklich bezahlt hast. Gilt auch bei 100 % Sonne." : "Kosten von Hand gesetzt."}</div>` : ""}
       <div class="lsec">${ic("car", 15)}Fahrzeug</div>
       <div class="gschips">${names.map(chip).join("")}</div>
       <div class="vrow"><span>Geladene Menge<small class="mut" style="display:block">${x.orig != null ? `Von Hand geändert. Gemessen wurden ${num(x.orig, 2)} kWh.` : "Nur ändern, wenn die Wallbox falsch gemessen hat."}</small></span><span style="flex:none;display:flex;align-items:center;gap:6px"><input class="otxt" style="width:96px;text-align:right" type="text" inputmode="decimal" data-f="wbseskwh" value="${esc(m.kwh)}" aria-label="Geladene Menge in kWh"> kWh</span></div>
@@ -9762,12 +9778,13 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "wbvses") {
       const x = this._sesFind(b.dataset.k); if (!x) return;
       if (!this._admin()) { this._toast("Nur Administratoren können Ladungen bearbeiten"); return; }
-      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), kwh0: num(x.kwh, 2), card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
+      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), kwh0: num(x.kwh, 2), cost: num(x.cost, 2), cost0: num(x.cost, 2), costEdit: false, card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
     }
     const m = this._modal; if (!m || m.type !== "wbses") return;
     this._sesGrab();
     if (a === "wbvsesveh") { m.veh = b.dataset.k; this._renderModal(); return; }
     if (a === "wbvsesbiz") { m.biz = !m.biz; this._renderModal(); return; }
+    if (a === "wbvsescost") { m.costEdit = true; this._renderModal(); const i = this.shadowRoot.querySelector('[data-f="wbsescost"]'); if (i) { i.focus(); i.select(); } return; }
     if (a === "wbvsesdel") { m.del = true; this._renderModal(); return; }
     const send = (body, msg) => { m.busy = true; this._renderModal();
       this._hass.callWS({ type: "fenster_heizung/wb_session", start: m.start, ...body }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; this._modal = null; this._renderModal(); this._render(); this._toast(msg); })
@@ -9779,6 +9796,8 @@ class FensterHeizungPanel extends HTMLElement {
       if (!isFinite(k) || k < 0 || k > 300) { this._toast("Bitte eine Menge von 0 bis 300 kWh eingeben"); return; }
       const body = { veh: m.veh, card: String(m.card || "").trim(), note: String(m.note || "").trim(), biz: !!m.biz };
       if (String(m.kwh).trim() !== m.kwh0) body.kwh = k; // nur senden, wenn wirklich geändert (sonst würde die Rundung als Änderung zählen)
+      const co = parseFloat(String(m.cost || "").replace(",", "."));
+      if (String(m.cost || "").trim() !== m.cost0) { if (!isFinite(co) || co < 0 || co > 1000) { this._toast("Bitte Kosten von 0 bis 1000 € eingeben"); return; } body.cost = co; }
       send(body, "Ladung gespeichert");
     }
   }
@@ -10119,17 +10138,21 @@ class FensterHeizungPanel extends HTMLElement {
     const m = this._modal, close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
     const wrap = (sub, body) => `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>${this._gx("meter", 22)} Aus go-e importieren</b><span>${sub}</span></div>${close}</div>${body}</div>`;
     if (m.step === "busy") return wrap(esc(m.file || ""), `<div class="card empty">Ladungen werden gelesen und mit Modul 8 abgeglichen …</div>`);
-    if (m.step === "done") return wrap("Fertig", `<div class="goeok">${ic("check", 26)}<b>${m.done.new} ${m.done.new === 1 ? "Ladung" : "Ladungen"} übernommen${m.done.fixed ? ` · ${m.done.fixed} ${m.done.fixed === 1 ? "Menge" : "Mengen"} angeglichen` : ""}</b><span>Sie stehen jetzt in der Ladestatistik, markiert mit „go-e“. Jede Ladung lässt sich wie gewohnt bearbeiten.</span></div><div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="close">Schließen</button></div>`);
+    if (m.step === "done") return wrap("Fertig", `<div class="goeok">${ic("check", 26)}<b>${m.done.new + (m.done.restored || 0)} ${m.done.new + (m.done.restored || 0) === 1 ? "Ladung" : "Ladungen"} übernommen${m.done.fixed ? ` · ${m.done.fixed} ${m.done.fixed === 1 ? "Menge" : "Mengen"} angeglichen` : ""}</b><span>Sie stehen jetzt in der Ladestatistik, markiert mit „go-e“. Jede Ladung lässt sich wie gewohnt bearbeiten.</span></div><div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="close">Schließen</button></div>`);
     if (m.step === "preview") {
-      const R = m.res.rows || [], cnt = (k) => R.filter((x) => x.st === k).length, nNew = cnt("new"), nDiff = cnt("diff");
-      const tag = { new: ["g", "Neu"], dup: ["", "schon da"], diff: ["a", "Menge anders"], open: ["", "läuft gerade"], bad: ["x", "unlesbar"] };
+      const R = m.res.rows || [], cnt = (k) => R.filter((x) => x.st === k).length, nNew = cnt("new") + cnt("restore"), nDiff = cnt("diff");
+      const tag = { new: ["g", "Neu"], restore: ["g", "zurück in die Liste"], dup: ["", "schon da"], diff: ["a", "Menge anders"], open: ["", "läuft gerade"], bad: ["x", "unlesbar"] };
       const f2 = (v) => num(v, 2), dt = (s) => new Date(s).toLocaleString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
       const list = R.map((x) => { const [c, l] = tag[x.st] || ["", x.st];
-        return `<div class="goer ${x.st}"><div class="goet"><b>${esc(dt(x.start))}</b><small>${esc(x.card || "ohne Karte")} → ${esc(x.veh)}${x.known_card ? "" : ` <em class="goew">Karte unbekannt</em>`}</small></div>
-          <div class="goev"><b>${f2(x.kwh)} kWh</b><small>${x.st === "diff" ? `Modul 8: ${f2(x.have_kwh)} kWh` : x.st === "new" ? (x.pv > 0 ? `≈ ${f2(x.pv)} kWh Sonne` : "Sonne unbekannt") : ""}</small>${x.st === "new" && x.cost != null ? `<small class="goep">${f2(x.cost)} € · ${num(x.ct, 1)} ct (${esc(x.psrc || "")})</small>` : ""}</div><em class="goes ${c}">${l}</em></div>`; }).join("");
+        return `<div class="goer ${x.st}"><div class="goet"><b>${esc(dt(x.start))}</b><small>${esc(x.card || "ohne Karte")} → ${esc(x.veh)}${!x.assigned && (x.st === "new" || x.st === "restore") ? ` <em class="goew">kein Fahrzeug</em>` : ""}</small></div>
+          <div class="goev"><b>${f2(x.kwh)} kWh</b><small>${x.st === "diff" ? `Modul 8: ${f2(x.have_kwh)} kWh` : x.st === "new" || x.st === "restore" ? (x.pv > 0 ? `≈ ${f2(x.pv)} kWh Sonne` : "Sonne unbekannt") : ""}</small>${(x.st === "new" || x.st === "restore") && x.cost != null ? `<small class="goep">${f2(x.cost)} € · ${num(x.ct, 1)} ct (${esc(x.psrc || "")})</small>` : ""}</div><em class="goes ${c}">${l}</em></div>`; }).join("");
       return wrap(`${esc(m.file || "")} · ${R.length} Ladungen`, `<div class="goesum"><div><small>Neu</small><b class="gn">${nNew}</b></div><div><small>Schon in Modul 8</small><b>${cnt("dup") + nDiff}</b></div><div><small>Menge anders</small><b class="${nDiff ? "wa" : ""}">${nDiff}</b></div></div>
+        ${(() => { const un = [...new Set(R.filter((x) => (x.st === "new" || x.st === "restore") && !x.assigned).map((x) => x.card || ""))]; if (!un.length) return "";
+          const names = (this._wb().vehicles || []).map((v) => v.name); if (!names.length) return "";
+          return `<div class="goeun"><b>${ic("alert", 15)} ${un.length === 1 ? "Eine Karte ist" : un.length + " Karten sind"} keinem Fahrzeug zugeordnet</b><span>Ohne Auswahl zählen diese Ladungen als „Gastfahrzeug“ bzw. „Unbekannt“.</span>${un.map((c) => `<div class="goeunr"><em>${esc(c || "ohne Karte")}</em><div class="gschips">${names.map((nm) => `<button class="gsch ${(m.vmap || {})[c] === nm ? "sel" : ""}" data-act="wbgoemap" data-k="${esc(c)}" data-v="${esc(nm)}">${esc(nm)}</button>`).join("")}</div></div>`).join("")}</div>`; })()}
         <div class="goel">${list}</div>
         ${nDiff ? `<div class="vrow" style="margin-top:8px"><span>Mengen an go-e angleichen<small class="mut" style="display:block">go-e misst mit dem eigenen Zähler – bei abweichenden Ladungen die Menge aus go-e übernehmen (steht im Änderungsverlauf)</small></span><button class="sw ${m.take ? "on" : ""}" data-act="wbgoetake" aria-pressed="${!!m.take}" aria-label="Mengen angleichen"></button></div>` : ""}
+        ${cnt("restore") ? `<div class="gst" style="margin-top:8px">${ic("info", 15)}<span>${cnt("restore")} ${cnt("restore") === 1 ? "Ladung wurde" : "Ladungen wurden"} schon einmal importiert, fielen aber aus der Liste (bis 2026.11.3b31 hielt Modul 8 nur 100 Ladungen). Sie kommen zurück in die Liste, ohne die Tageswerte doppelt zu zählen.</span></div>` : ""}
         <div class="mut sm" style="margin-top:8px">Sonne ist geschätzt: aus der Herkunft des Hausstroms in den Stunden der Ladung (Haus-Energiebuch oder Statistik), Ladung ab Start mit gleichmäßiger Leistung. Kosten mit dem damaligen Preis je Stunde, nur für den Netzanteil – aus dem Vertrag (Modul 20), von Tibber, aus dem Verlauf des Preis-Sensors oder der Festpreis; fehlt das, der heutige Preis. In Klammern steht, woher er kommt. Neue Ladungen zählen am Starttag.</div>
         <div class="gbtns" style="margin-top:12px"><button class="btn2" data-act="wbgoepick">${ic("upload", 16)} Andere Datei</button><button class="btn2 pri" data-act="wbgoego" ${nNew || (nDiff && m.take) ? "" : "disabled"}>${ic("check", 16)} ${nNew} ${nNew === 1 ? "Ladung" : "Ladungen"} übernehmen${nDiff && m.take ? ` · ${nDiff} angleichen` : ""}</button></div>`);
     }
@@ -10144,10 +10167,61 @@ class FensterHeizungPanel extends HTMLElement {
     if (!m || m.type !== "wbgoe") return false;
     if (a === "wbgoepick") { this._goePick(); return true; }
     if (a === "wbgoetake") { m.take = !m.take; this._renderModal(); return true; }
+    if (a === "wbgoemap") {
+      const c = b.dataset.k || "", v = b.dataset.v || ""; m.vmap = m.vmap || {}; if (m.vmap[c] === v) delete m.vmap[c]; else m.vmap[c] = v;
+      m.send = m.send.map((r) => ({ ...r, veh_set: m.vmap[r.card || ""] || "" }));
+      this._hass.callWS({ type: "fenster_heizung/wb_import", rows: m.send }).then((res) => { m.res = res; this._renderModal(); }).catch(() => this._toast("Das ging nicht"));
+      return true;
+    }
     if (a === "wbgoego") {
       m.step = "busy"; this._renderModal();
       this._hass.callWS({ type: "fenster_heizung/wb_import", rows: m.send, apply: true, take_kwh: !!m.take }).then((r) => { m.step = "done"; m.done = r; this._wbStatLoad && this._wbStatLoad(true); this._renderModal(); })
         .catch(() => { m.step = "preview"; this._toast("Das ging nicht"); this._renderModal(); });
+      return true;
+    }
+    return false;
+  }
+  /* ================= Modul 8 · Mehrere Ladungen auf einmal (2026.11.3b32) =================
+     Auswählen → löschen oder einem Fahrzeug zuordnen; „Fahrzeug ändern“ für alle Ladungen einer Karte im Zeitraum;
+     alle gespeicherten Ladungen löschen (nur die Liste oder mit Tageswerten). */
+  _evSel() { return (this._evSelS = this._evSelS || { on: false, set: new Set() }); }
+  _bulkModal() {
+    const m = this._modal, close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`, n = (m.starts || []).length;
+    const wrap = (t, sub, body) => `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${t}</b><span>${sub}</span></div>${close}</div>${body}</div>`;
+    const lad = (k) => `${k} ${k === 1 ? "Ladung" : "Ladungen"}`, busy = m.busy ? "disabled" : "";
+    if (m.act === "delete") return wrap(`${lad(n)} löschen?`, "Mehrere auf einmal", `<div class="mut sm" style="margin:0 0 10px">Die Ladungen verschwinden aus der Liste, ihre Energie und Kosten werden aus den Tageswerten abgezogen. Aus go-e importierte Ladungen lassen sich später wieder importieren.</div>
+      <div class="gbtns"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 dng" data-act="wbvbulkgo" ${busy}>${ic("trash", 16)} ${lad(n)} löschen</button></div>`);
+    if (m.act === "veh") {
+      const names = [...new Set([...(this._wb().vehicles || []).map((v) => v.name), "Unbekannt"])];
+      return wrap("Fahrzeug ändern", `${lad(n)}${m.card ? ` · Karte ${esc(m.card)}` : ""}`, `<div class="gschips" style="margin:0 0 10px">${names.map((x) => `<button class="gsch ${m.veh === x ? "sel" : ""}" data-act="wbvbulkveh" data-k="${esc(x)}" aria-pressed="${m.veh === x}">${esc(x)}</button>`).join("")}</div>
+        <div class="mut sm" style="margin:0 0 10px">Energie und Kosten werden in den Tageswerten mit umgebucht – „Fahrzeuge &amp; Karten“ stimmt danach mit der Liste überein.${m.card ? ` Damit künftige Ladungen mit dieser Karte gleich richtig zählen: Karte unter Einstellungen → Modul 8 → Fahrzeuge dem Fahrzeug zuordnen.` : ""}</div>
+        <div class="gbtns"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="wbvbulkgo" ${m.veh && !m.busy ? "" : "disabled"}>${ic("car", 16)} ${lad(n)} zuordnen</button></div>`);
+    }
+    /* alle gespeicherten Ladungen */
+    const tot = (((this._wbStD && this._wbStD.data) || {}).sessions || []).filter((x) => !x.running).length;
+    return wrap("Alle Ladungen löschen", `${lad(tot)} gespeichert`, `
+      <button class="evclr ${m.mode === "list" ? "sel" : ""}" data-act="wbvbulkmode" data-k="list"><b>Nur die Liste leeren</b><small>Die einzelnen Ladungen verschwinden. Tageswerte, Summen, Balken und km bleiben.</small></button>
+      <button class="evclr ${m.mode === "all" ? "sel" : ""}" data-act="wbvbulkmode" data-k="all"><b>Alles zur geladenen Energie löschen</b><small>Auch kWh und Kosten aller Tage und Fahrzeuge – für einen sauberen Neustart, z. B. vor einem neuen Import aus go-e. km und Temperaturen bleiben.</small></button>
+      <div class="gbtns" style="margin-top:12px"><button class="btn2" data-act="close">Abbrechen</button>${m.sure ? `<button class="btn2 dng" data-act="wbvbulkgo" ${busy}>${ic("trash", 16)} Wirklich löschen</button>` : `<button class="btn2 dng" data-act="wbvbulksure" ${m.mode ? "" : "disabled"}>${ic("trash", 16)} Löschen</button>`}</div>`);
+  }
+  _bulkAct(a, b) {
+    const k = b.dataset.k, S = this._evSel();
+    if (a === "wbvselon") { S.on = !S.on; S.set.clear(); this._render(); return true; }
+    if (a === "wbvsel") { if (S.set.has(k)) S.set.delete(k); else S.set.add(k); this._render(); return true; }
+    if (a === "wbvselall") { const L = String(b.dataset.all || "").split("|").filter(Boolean); const all = L.every((x) => S.set.has(x)); L.forEach((x) => (all ? S.set.delete(x) : S.set.add(x))); this._render(); return true; }
+    if (a === "wbvseldel" || a === "wbvselveh") { if (!S.set.size) return true; this._modal = { type: "wbbulk", act: a === "wbvseldel" ? "delete" : "veh", starts: [...S.set], veh: "" }; this._renderModal(); return true; }
+    if (a === "wbvcardveh") { const L = String(b.dataset.all || "").split("|").filter(Boolean); this._modal = { type: "wbbulk", act: "veh", starts: L, veh: "", card: k }; this._renderModal(); return true; }
+    if (a === "wbvclear") { this._modal = { type: "wbbulk", act: "clear", mode: "", sure: false }; this._renderModal(); return true; }
+    const m = this._modal; if (!m || m.type !== "wbbulk") return false;
+    if (a === "wbvbulkveh") { m.veh = k; this._renderModal(); return true; }
+    if (a === "wbvbulkmode") { m.mode = k; m.sure = false; this._renderModal(); return true; }
+    if (a === "wbvbulksure") { m.sure = true; this._renderModal(); return true; }
+    if (a === "wbvbulkgo") {
+      m.busy = true; this._renderModal();
+      this._hass.callWS({ type: "fenster_heizung/wb_sessions", act: m.act, starts: m.starts || [], veh: m.veh || "", mode: m.mode || "list" }).then((r) => {
+        this._wbStD = { data: r || {}, ts: Date.now() }; S.on = false; S.set.clear(); this._modal = null; this._renderModal(); this._render();
+        this._toast(m.act === "veh" ? `${r.n} ${r.n === 1 ? "Ladung" : "Ladungen"} zugeordnet` : `${r.n} ${r.n === 1 ? "Ladung" : "Ladungen"} gelöscht`);
+      }).catch(() => { m.busy = false; this._renderModal(); this._toast("Das ging nicht"); });
       return true;
     }
     return false;

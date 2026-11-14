@@ -9,7 +9,7 @@ STRATS = ("mix", "sun", "price")
 LEVEL_RANK = {"VERY_CHEAP": 0, "CHEAP": 1, "NORMAL": 2, "EXPENSIVE": 3, "VERY_EXPENSIVE": 4}
 HORIZON_H = 36
 KEEP_DAYS = 800
-KEEP_SESSIONS = 100
+KEEP_SESSIONS = 2000  # b32: vorher 100 – beim Import älterer Ladungen fielen die ältesten aus der Liste
 UNKNOWN = "Unbekannt"
 KEEP_CHG = 8
 
@@ -221,7 +221,7 @@ def prices_from_attr(attrs: dict[str, Any]) -> list[dict[str, Any]]:
 
 # ---- Ladestatistik
 def empty_stats() -> dict[str, Any]:
-    return {"days": {}, "sessions": [], "open": None, "odo": None, "odos": {}, "est": {}, "odoset": {}}
+    return {"days": {}, "sessions": [], "open": None, "odo": None, "odos": {}, "est": {}, "odoset": {}, "goe": {}}
 
 
 def clean_stats(raw: Any) -> dict[str, Any]:
@@ -247,11 +247,15 @@ def clean_stats(raw: Any) -> dict[str, Any]:
                                        **({"edit": str(s["edit"])[:25]} if s.get("edit") else {}),
                                        **({"gid": str(s["gid"])[:20]} if s.get("gid") else {}), **({"src": "goe"} if s.get("src") == "goe" else {}),
                                        **({"pvest": True} if s.get("pvest") else {}),
+                                       **({"pct": float(s["pct"])} if s.get("pct") is not None else {}), **({"pcost": True} if s.get("pcost") else {}),
                                        **({"orig": float(s["orig"])} if s.get("orig") is not None and abs(float(s["orig"]) - float(s.get("kwh", 0))) >= 0.01 else {}),
                                        **({"chg": [{"t": str(c.get("t", ""))[:25], "x": [str(y)[:80] for y in c.get("x", [])][:6]} for c in s["chg"] if isinstance(c, dict)][-KEEP_CHG:]} if isinstance(s.get("chg"), list) and s["chg"] else {})})
             except (TypeError, ValueError):
                 continue
     st["sessions"] = st["sessions"][:KEEP_SESSIONS]
+    # Aus go-e übernommene Ladungen (Session-ID → Tag): zählen nie doppelt in den Tageswerten, auch wenn die Ladung gelöscht wurde
+    g = raw.get("goe") if isinstance(raw.get("goe"), dict) else {}
+    st["goe"] = {str(k)[:20]: str(v)[:10] for k, v in g.items() if re.fullmatch(r"[0-9A-Za-z_-]{1,20}", str(k)) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(v))}
     try:
         o = float(raw.get("odo")) if raw.get("odo") is not None else None
         st["odo"] = o if o is not None and 0 <= o < 5e6 else None
@@ -488,6 +492,8 @@ def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: dateti
                 if v["kwh"] < 1e-6 and not v.get("km"):
                     del d["veh"][s["veh"]]
         st["sessions"].remove(s)
+        if s.get("gid"):  # Tageswerte sind wieder abgezogen – ein späterer Import darf die Ladung neu zählen
+            (st.get("goe") or {}).pop(str(s["gid"]), None)
         return {"deleted": start}
     if ch.get("merge"):
         return session_merge(st, s, now)
@@ -518,7 +524,42 @@ def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: dateti
             if abs(k - s["orig"]) < 0.01:
                 s.pop("orig")
             log.append(f"Menge: {_fmt(old)} → {_fmt(k)} kWh")
+            keep = s.get("cost") if s.get("pcost") else None  # von Hand gesetzte Kosten bleiben
             s["kwh"], s["pv"], s["cost"] = k, round(k * f, 3), round(k * c, 4)
+            target = keep if keep is not None else (round(max(0.0, k - s["pv"]) * s["pct"] / 100, 4) if s.get("pct") is not None else None)
+            if target is not None:
+                if d is not None:
+                    d["cost"] = max(0.0, d["cost"] + target - s["cost"])
+                    vv = d["veh"].get(s["veh"])
+                    if vv:
+                        vv["cost"] = max(0.0, vv["cost"] + target - s["cost"])
+                s["cost"] = target
+    if ch.get("cost") is not None:  # Kosten der Ladung direkt (€), z. B. auch bei 100 % Sonne
+        nc = round(max(0.0, min(1000.0, float(ch["cost"]))), 4)
+        if abs(nc - s["cost"]) >= 0.005:
+            dc = nc - s["cost"]
+            if d is not None:
+                d["cost"] = max(0.0, d["cost"] + dc)
+                v = d["veh"].setdefault(s["veh"], {"kwh": 0.0, "cost": 0.0})
+                v["cost"] = max(0.0, v["cost"] + dc)
+            log.append(f"Kosten: {_fmt(s['cost'])} → {_fmt(nc)} €")
+            s["cost"], s["pcost"] = nc, True
+            s.pop("pct", None)
+    if ch.get("ct") is not None:
+        ct = round(max(0.0, min(500.0, float(ch["ct"]))), 2)
+        grid = max(0.0, s["kwh"] - s["pv"])
+        old_ct = s["cost"] / grid * 100 if grid > 0 else s.get("pct")
+        nc = round(grid * ct / 100, 4)
+        if abs(nc - s["cost"]) >= 0.005 or s.get("pct") != ct:
+            dc = nc - s["cost"]
+            if d is not None:
+                d["cost"] = max(0.0, d["cost"] + dc)
+                if old_ct is not None:
+                    d["full"] = max(0.0, d["full"] + s["kwh"] * (ct - old_ct) / 100)
+                v = d["veh"].setdefault(s["veh"], {"kwh": 0.0, "cost": 0.0})
+                v["cost"] = max(0.0, v["cost"] + dc)
+            log.append(f"Preis: {_fmt(old_ct) if old_ct is not None else '–'} → {_fmt(ct)} ct/kWh (Netzanteil {_fmt(grid)} kWh) · Kosten {_fmt(s['cost'])} → {_fmt(nc)} €")
+            s["cost"], s["pct"] = nc, ct
     if "card" in ch:
         nc = str(ch["card"] or "").strip()[:30]
         if nc != s.get("card", ""):
@@ -548,6 +589,29 @@ def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: dateti
     return s
 
 
+def sessions_bulk(st: dict[str, Any], act: str, starts: list[str], now: datetime, veh: str = "") -> int:
+    """Mehrere Ladungen auf einmal löschen (act „delete“) oder einem Fahrzeug zuordnen (act „veh“). Rückgabe: Anzahl."""
+    n = 0
+    for s0 in list(dict.fromkeys(str(x) for x in starts))[:KEEP_SESSIONS]:
+        r = session_edit(st, s0, {"delete": True} if act == "delete" else {"veh": veh}, now)
+        if r is not None:
+            n += 1
+    return n
+
+
+def sessions_clear(st: dict[str, Any], mode: str) -> int:
+    """Alle gespeicherten Ladungen löschen. mode „list“: nur die Liste (Tageswerte, Summen und km bleiben).
+    mode „all“: auch die geladene Energie und Kosten aller Tage (km und Temperaturen bleiben), Import-Gedächtnis leer."""
+    n = len(st.get("sessions") or [])
+    st["sessions"] = []
+    if mode == "all":
+        for d in (st.get("days") or {}).values():
+            d["pv"] = d["grid"] = d["cost"] = d["full"] = 0.0
+            d["veh"] = {k: {"kwh": 0.0, "cost": 0.0, "km": v["km"]} for k, v in (d.get("veh") or {}).items() if v.get("km")}
+        st["goe"] = {}
+    return n
+
+
 MERGE_GAP_H = 12  # so weit dürfen zwei Teile einer Ladung auseinanderliegen
 
 
@@ -560,6 +624,18 @@ def _ts(s: str) -> float | None:
         return datetime.fromisoformat(s).timestamp()
     except (TypeError, ValueError):
         return None
+
+
+def _legacy_counted(st: dict[str, Any], r: dict[str, Any], a: float) -> bool:
+    """b31 hat importierte Ladungen in die Tageswerte gebucht, die Liste aber nach 100 Ladungen abgeschnitten.
+    Fehlt eine Ladung, die älter als die älteste gespeicherte ist, und hat ihr Tag schon so viel Energie: nur wiederherstellen."""
+    if st.get("goe"):
+        return False  # ab b32 wird jede importierte Ladung gemerkt
+    ts = [t for t in (_ts(s["start"]) for s in st.get("sessions") or []) if t is not None]
+    if len(ts) < 100 or a >= min(ts):
+        return False
+    d = (st.get("days") or {}).get(str(r.get("start", ""))[:10])
+    return bool(d) and d.get("pv", 0) + d.get("grid", 0) >= float(r.get("kwh") or 0) - 0.01
 
 
 def import_plan(st: dict[str, Any], rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -586,7 +662,13 @@ def import_plan(st: dict[str, Any], rows: list[dict[str, Any]]) -> list[dict[str
                 hit = s
                 break
         if hit is None:
-            out.append({**r, "st": "new"})
+            gd = (st.get("goe") or {}).get(str(r.get("gid") or ""))
+            if gd:
+                out.append({**r, "st": "restore"})  # schon einmal importiert (Tageswerte gezählt), Ladung fehlt aber in der Liste
+            elif _legacy_counted(st, r, a):
+                out.append({**r, "st": "restore"})
+            else:
+                out.append({**r, "st": "new"})
         else:
             d = float(r["kwh"]) - float(hit.get("kwh", 0))
             out.append({**r, "st": "diff" if abs(d) >= 0.05 else "dup", "have": hit["start"], "have_kwh": round(float(hit.get("kwh", 0)), 3)})
@@ -595,8 +677,20 @@ def import_plan(st: dict[str, Any], rows: list[dict[str, Any]]) -> list[dict[str
 
 def import_apply(st: dict[str, Any], plan: list[dict[str, Any]], take_kwh: bool, now: datetime) -> dict[str, int]:
     """Neue Ladungen eintragen (Tageswerte am Starttag), auf Wunsch Mengen vorhandener Ladungen an go-e angleichen."""
-    n_new = n_fix = 0
+    n_new = n_fix = n_res = 0
+    goe = st.setdefault("goe", {})
     for r in plan:
+        if r["st"] == "restore":  # nur die Ladung zurück in die Liste, Tageswerte sind schon gezählt
+            kwh, pv = round(float(r["kwh"]), 3), round(min(float(r["kwh"]), max(0.0, float(r.get("pv") or 0))), 3)
+            mins = max(0.0, (_ts(r["end"]) - _ts(r["start"])) / 60)
+            cost = round(float(r["cost"]), 4) if r.get("cost") is not None else round((kwh - pv) * float(r.get("ct") or 0) / 100, 4)
+            st["sessions"].append({"start": r["start"], "min": round(mins, 1), "veh": str(r.get("veh") or UNKNOWN)[:30], "kwh": kwh, "pv": pv, "cost": cost,
+                                   **({"card": str(r["card"])[:30]} if r.get("card") else {}), "gid": str(r.get("gid") or "")[:20], "src": "goe", "pvest": True,
+                                   "chg": [{"t": now.isoformat(timespec="minutes"), "x": ["aus go-e wiederhergestellt (Tageswerte waren schon gezählt)"]}]})
+            if r.get("gid"):
+                goe[str(r["gid"])[:20]] = r["start"][:10]
+            n_res += 1
+            continue
         if r["st"] == "new":
             kwh, pv = round(float(r["kwh"]), 3), round(min(float(r["kwh"]), max(0.0, float(r.get("pv") or 0))), 3)
             grid, price = kwh - pv, float(r.get("ct") or 0)
@@ -615,6 +709,8 @@ def import_apply(st: dict[str, Any], plan: list[dict[str, Any]], take_kwh: bool,
             v = d["veh"].setdefault(str(r.get("veh") or UNKNOWN)[:30], {"kwh": 0.0, "cost": 0.0})
             v["kwh"] += kwh
             v["cost"] += cost
+            if r.get("gid"):
+                goe[str(r["gid"])[:20]] = r["start"][:10]
             n_new += 1
         elif r["st"] == "diff" and take_kwh:
             res = session_edit(st, r["have"], {"kwh": float(r["kwh"])}, now)
@@ -627,7 +723,7 @@ def import_apply(st: dict[str, Any], plan: list[dict[str, Any]], take_kwh: bool,
                 n_fix += 1
     st["sessions"].sort(key=lambda x: _ts(x["start"]) or 0, reverse=True)
     del st["sessions"][KEEP_SESSIONS:]
-    return {"new": n_new, "fixed": n_fix}
+    return {"new": n_new, "fixed": n_fix, "restored": n_res}
 
 
 def merge_prev(st: dict[str, Any], s: dict[str, Any]) -> dict[str, Any] | None:
