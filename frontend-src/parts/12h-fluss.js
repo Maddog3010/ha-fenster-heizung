@@ -18,7 +18,7 @@
   _efxClone() { return JSON.parse(JSON.stringify(this._efxCfg())); }
   _efxBlank(pos) {
     const p = EF_POS[pos];
-    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:pvRoof" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false, run_w: 10, pct: "", status: "" };
+    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:pvRoof" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false, run_w: 10, pct: "", status: "", src: "" };
   }
   /* ---- Rechnen: Leistung einer Kachel in W, positiv = zur Kachel, negativ = ins Haus ---- */
   _efxToW(id) { const st = id && this._hass.states[id]; if (!st) return NaN; const v = parseFloat(st.state); return isNaN(v) ? NaN : /^kW$/i.test(st.attributes.unit_of_measurement || "") ? v * 1000 : v; }
@@ -315,7 +315,12 @@
     const hubImg = !hub ? "" : `<div class="lsec">${ic("home", 15)}Haus-Bild</div><div class="efhb">${HB.map(([v, g, l]) => `<button class="efhbb ${n.image === v ? "sel" : ""}" data-act="efximg" data-k="${v}" aria-pressed="${n.image === v}">${this._gx(g, 40, { on: true })}<span>${l}</span></button>`).join("")}<button class="efhbb ${/^(\/local\/|https:)/.test(n.image) ? "sel" : ""}" data-act="efximgtog">${ic("image", 22)}<span>Eigenes Foto</span></button></div>
       <div class="mut sm">Ein eigenes Foto (/local/haus.jpg) wird rund zugeschnitten. Die Fenster der Haus-Bilder leuchten abends.</div>
       <div class="vrow"><span>Herkunfts-Ring<small class="mut" style="display:block">Ring um das Haus: woher der Hausverbrauch gerade kommt – Solar, Akku, Netz. Berechnet aus den Kacheln mit „Liefert“ und „Beides“.</small></span><button class="sw ${n.ring !== false ? "on" : ""}" data-act="efxring" aria-pressed="${n.ring !== false}" aria-label="Herkunfts-Ring"></button></div>`;
-    const zst = hub ? "" : `<div class="lsec">${ic("image", 15)}Bild mit Zustand</div>
+    if (!hub && n.flow === "consume" && !this._efLk) this._efLkLoad();
+    const LK = this._efLk || {}, srcOpts = [["", "Automatisch"], ["own", "Eigene Rechnung"], ...(LK.wb ? [["wb", "Modul 8 · Wallbox"]] : []), ...(LK.gs || []).map((g) => ["gs:" + g.id, "Modul 4 · " + g.name])];
+    const srcSec = hub || n.flow !== "consume" ? "" : `<div class="lsec">${ic("link", 15)}Werte im Strom-Reiter</div>
+      <div class="mut sm" style="margin:0 0 6px">Woher „Verbraucher mit Solar-Anteil“ die kWh nimmt. Automatisch = Modul 4 oder Modul 8, wenn dort derselbe Sensor eingerichtet ist (Wallbox auch am Namen oder Auto-Bild erkannt), sonst eigene Rechnung.</div>
+      <div class="gschips">${srcOpts.map(([k, l]) => chip("efxsrc", k, l, (n.src || "") === k)).join("")}</div>${this._efLk ? "" : `<div class="mut sm">Module 4 und 8 werden geladen …</div>`}`;
+    const zst = hub ? "" : `${srcSec}<div class="lsec">${ic("image", 15)}Bild mit Zustand</div>
       <div class="vrow"><span>Läuft ab<small class="mut" style="display:block">Ab dieser Leistung zeigt das Bild „läuft“ (Trommel dreht, Lampe leuchtet)</small></span><span style="display:flex;align-items:center;gap:6px;flex:none"><input type="number" class="efli" style="width:90px" data-f="efxrun" min="1" max="5000" step="1" value="${Number(n.run_w) > 0 ? Number(n.run_w) : 10}" aria-label="Läuft ab Watt"><span class="mut">W</span></span></div>
       <div class="mut sm" style="margin:6px 0 2px">Ladestand-Ring um das Bild</div><div class="gschips">${[["", "Automatisch"], ...EF_SIDES.filter(([x]) => n[x]), ["none", "Aus"]].map(([k, l]) => chip("efxpct", k, l, (n.pct || "") === k)).join("")}</div>
       <div class="mut sm">Automatisch = der erste Wert in %, zum Beispiel Ladestand von Akku oder Auto.</div>
@@ -398,6 +403,7 @@
     else if (a === "efxcalc") d.calc = k;
     else if (a === "efxring") d.ring = d.ring === false;
     else if (a === "efxpct") d.pct = k;
+    else if (a === "efxsrc") d.src = k;
     else if (a === "efxchipdel") d.chips = d.chips.filter((x) => x !== k);
     else if (a === "efxsave") {
       const c = this._efxClone(); d.name = (d.name || "").trim() || (m.pos === "hub" ? "Haus" : EF_POS[m.pos][4]);

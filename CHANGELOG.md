@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b28] - 2026-11-14
+
+### Neu
+- **Support-Chat: Bilder.** Mit dem Bild-Knopf ein Foto oder Bildschirmfoto anhängen (wird im Browser auf höchstens 1280 px verkleinert, Vorschau vor dem Senden). In Telegram kommt es als Foto an; antwortet der Entwickler mit einem Bild, erscheint es im Chat. Antippen vergrößert. Gespeichert werden die letzten 40 Bilder.
+- **Support-Chat: Mitteilung aufs Handy.** Über die Glocke im Chat: „Meldung in Home Assistant“ ein/aus und „Mitteilung aufs Handy“ über die Home-Assistant-App (Gerät wählen, Test-Mitteilung). Antippen der Mitteilung öffnet direkt den Chat.
+- **Support-Chat: Abwesenheit.** Schreibt der Entwickler in Telegram `/weg bis Montag`, steht oben im Chat „Gerade abwesend: bis Montag – deine Nachricht kommt trotzdem an“. `/da` schaltet es aus.
+- **Telegram: `/offen`.** Listet alle noch nicht beantworteten Unterhaltungen – Sponsor Max zuerst, dann Sponsoren, dann Nutzer, jeweils mit Wartezeit. Auf jede dieser Nachrichten kann direkt geantwortet werden. `/hilfe` zeigt alle Befehle; nach erneutem Aufruf von `/setup` erscheinen sie auch im Befehls-Menü des Bots.
+- Neue `support-worker/worker.js` – muss bei Cloudflare unter „Edit code“ ersetzt werden.
+
+### Geändert
+- **Modul 19, Strom-Reiter: „Verbraucher mit Solar-Anteil“ genauer und klarer.**
+  - Jede Zeile zeigt jetzt „13 kWh verbraucht · davon 13 kWh Solar · 100 %“ – vorher war nicht zu erkennen, dass die Zahl der ganze Verbrauch des Geräts ist und nicht nur der Solaranteil.
+  - **kWh-Zähler bevorzugt:** Hängt an der Kachel ein Energiezähler (Wh/kWh, state_class total/total_increasing) als Wert-Entität, rechnet Modul 19 mit dessen Zuwachs je Stunde statt mit dem Leistungssensor. Ein Schildchen zeigt „Zähler“ oder „aus Leistung“.
+  - **Verbunden mit Modul 4 und Modul 8:** Ist ein Verbraucher in Modul 4 (Gerätestrom) oder die Wallbox in Modul 8 eingerichtet, kommen die Werte direkt von dort – Modul 4 rechnet alle 20 Sekunden und teilt in Solar, Akku und Netz, Modul 8 nimmt die Ladestatistik inkl. Korrekturen. Der Balken zeigt dann drei Farben, rechts „Solar · Akku · Netz“ in kWh. Zuordnung automatisch über denselben Sensor (Wallbox auch am Namen oder Auto-Bild), von Hand unter Kachel bearbeiten → „Werte im Strom-Reiter“. Das Schildchen „Modul 4 ›“ bzw. „Modul 8 ›“ öffnet das Modul. Für Zeiträume vor der Einrichtung dort rechnet Modul 19 selbst.
+  - **Laufende Stunde:** Bisher fehlte bei „Heute“ immer die aktuelle Stunde (Home Assistant legt die Langzeitstatistik erst nach Stundenende an). Jetzt wird sie aus der 5-Minuten-Statistik dazugerechnet – auch bei Säulen, Summen und Kosten. Aktualisiert wird alle 2 Minuten.
+
 ## [2026.11.3b27] - 2026-11-14
 
 ### Neu

@@ -32,6 +32,12 @@ const CSS_SUP = `
 .supdot{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:#25d366;color:#052e16;font-style:normal;font-weight:800;font-size:.66rem;box-sizing:border-box}
 .supdot.hd{position:absolute;top:-2px;right:-2px;min-width:10px;width:10px;height:10px;padding:0;border:2px solid var(--card)}.pillbtn.spnb{position:relative}
 .supdot.in{margin-left:4px}
+.supimg{display:block;max-width:100%;width:240px;max-height:300px;object-fit:cover;border-radius:8px;margin:-2px -4px 6px;cursor:zoom-in}.supimg.big{width:min(560px,70vw);max-height:none;object-fit:contain;cursor:zoom-out}
+.supimg.ph{height:150px;display:grid;place-items:center;background:rgba(255,255,255,.06);color:rgba(233,237,239,.5);cursor:default}
+.supb.onlyimg .supbt{padding:4px 4px 6px}.supb.onlyimg .supimg{margin:0 0 4px}
+.supimgx{display:flex;gap:5px;align-items:center;font-size:.76rem;opacity:.7;margin-bottom:4px}
+.supimgprev{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--card) 90%,#000);flex:none}.supimgprev img{width:52px;height:52px;object-fit:cover;border-radius:8px}.supimgprev span{flex:1;font-size:.8rem;color:var(--mut)}
+.supaway{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;font-size:.8rem;line-height:1.4;background:color-mix(in srgb,#6366f1 16%,var(--card));border-bottom:1px solid var(--line);flex:none}.supaway b{display:block}
 .supup{font-size:.78rem;color:#fbbf24;margin-top:6px}.supup .lnk{font-size:.78rem;color:#fbbf24;text-decoration:underline}.supsp{font-style:normal;font-weight:700;font-size:.7rem;color:#f9a8d4;background:color-mix(in srgb,#ec4899 16%,transparent);border-radius:99px;padding:1px 7px;margin-right:4px}
 .lgsup{display:flex;align-items:center;gap:12px;margin-top:10px}.lgsup .n{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.lgsup small{font-size:.8rem;color:var(--mut);line-height:1.4}.supnew{color:#25d366}
 .lgsupi{position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,#25d366 16%,transparent);color:#25d366;flex:none}.lgsupi .supdot{position:absolute;top:-3px;right:-3px}

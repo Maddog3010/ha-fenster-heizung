@@ -13,9 +13,13 @@ Gespeichert wird hier: eine zufällige Installations-Nummer mit Geheimnis, der V
 """
 from __future__ import annotations
 
+import base64
+import binascii
 import json
 import logging
+import os
 import platform
+import re
 import secrets
 import time
 from datetime import timedelta
@@ -37,6 +41,10 @@ MAX_MSGS = 200
 MAX_TEXT = 2000
 POLL_BG_MIN = 15  # Hintergrund-Abfrage nach Antworten, in Minuten
 PRIVACY_VERSION = 1
+MAX_IMG_B64 = 1_500_000  # Bild vom Nutzer (verkleinert im Panel, JPEG)
+MAX_IMGS = 40            # so viele Bilder bleiben hier gespeichert, ältere werden gelöscht
+IMG_DIR = "fenster_heizung_support_img"
+_ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,40}$")
 
 
 class SupportChat:
@@ -52,6 +60,8 @@ class SupportChat:
         self.url_dev = ""  # nur Entwickler: anderer Vermittler zum Testen
         self.err = ""
         self.notify = True
+        self.push = ""     # notify-Dienst der Home-Assistant-App, z. B. mobile_app_iphone_tobias
+        self.away = ""     # Abwesenheits-Hinweis des Entwicklers (/weg in Telegram)
         self._unsubs: list[CALLBACK_TYPE] = []
 
     # ------------------------------------------------------------ Start, Speichern
@@ -65,6 +75,8 @@ class SupportChat:
             self.unread = int(d.get("unread") or 0)
             self.url_dev = str(d.get("url_dev") or "")[:200]
             self.notify = bool(d.get("notify", True))
+            self.push = str(d.get("push") or "")[:80]
+            self.away = str(d.get("away") or "")[:200]
         if not self.inst:
             self.inst = secrets.token_hex(8)
             self.secret = secrets.token_urlsafe(24)
@@ -80,8 +92,67 @@ class SupportChat:
     def _save(self) -> None:
         self._store.async_delay_save(lambda: {
             "inst": self.inst, "secret": self.secret, "msgs": self.msgs[-MAX_MSGS:], "privacy": self.privacy,
-            "unread": self.unread, "url_dev": self.url_dev, "notify": self.notify,
+            "unread": self.unread, "url_dev": self.url_dev, "notify": self.notify, "push": self.push, "away": self.away,
         }, 2)
+
+    # ------------------------------------------------------------ Bilder (als Dateien neben dem Speicher)
+    def _img_path(self, mid: str) -> str:
+        return self.hass.config.path(".storage", IMG_DIR, f"{mid}.jpg")
+
+    def _img_write(self, mid: str, raw: bytes) -> None:
+        os.makedirs(self.hass.config.path(".storage", IMG_DIR), exist_ok=True)
+        with open(self._img_path(mid), "wb") as f:
+            f.write(raw)
+
+    def _img_read(self, mid: str) -> str:
+        try:
+            with open(self._img_path(mid), "rb") as f:
+                return base64.b64encode(f.read()).decode()
+        except OSError:
+            return ""
+
+    def _img_delete(self, mids: list[str]) -> None:
+        for mid in mids:
+            try:
+                os.remove(self._img_path(mid))
+            except OSError:
+                pass
+
+    async def async_img(self, mid: str) -> str:
+        if not _ID_RE.match(mid or "") or not any(m.get("id") == mid and m.get("img") for m in self.msgs):
+            return ""
+        return await self.hass.async_add_executor_job(self._img_read, mid)
+
+    async def _img_trim(self) -> None:
+        withimg = [m for m in self.msgs if m.get("img")]
+        old = withimg[:-MAX_IMGS] if len(withimg) > MAX_IMGS else []
+        for m in old:
+            m["img"] = False
+            m["img_gone"] = True
+        if old:
+            await self.hass.async_add_executor_job(self._img_delete, [m["id"] for m in old])
+
+    # ------------------------------------------------------------ Mitteilung aufs Handy
+    def push_targets(self) -> list[str]:
+        try:
+            return sorted(k for k in (self.hass.services.async_services().get("notify") or {}) if k.startswith("mobile_app_"))
+        except Exception:  # noqa: BLE001
+            return []
+
+    async def async_push(self, title: str, message: str) -> bool:
+        if not self.push or self.push not in self.push_targets():
+            return False
+        from .const import PANEL_URL
+        url = f"/{PANEL_URL}?support=1"
+        try:
+            await self.hass.services.async_call("notify", self.push, {
+                "title": title, "message": message[:180],
+                "data": {"url": url, "clickAction": url, "tag": "fenster_heizung_support", "group": "fenster_heizung_support"},
+            })
+            return True
+        except Exception as e:  # noqa: BLE001
+            _LOGGER.debug("Support-Chat Push: %s", e)
+            return False
 
     @property
     def url(self) -> str:
@@ -123,6 +194,7 @@ class SupportChat:
             "ready": bool(self.url), "inst": self.inst[:4], "msgs": self.msgs[-MAX_MSGS:], "privacy": self.privacy >= PRIVACY_VERSION,
             "privacy_version": PRIVACY_VERSION, "unread": self.unread, "err": self.err, "last_poll": self.last_poll,
             "access": self.access(), "notify": self.notify, "url_dev": self.url_dev if self.access()["dev"] else "",
+            "push": self.push, "push_targets": self.push_targets(), "away": self.away,
         }
 
     def accept_privacy(self) -> None:
@@ -136,9 +208,12 @@ class SupportChat:
             self.hass.async_create_task(self.hass.services.async_call(
                 "persistent_notification", "dismiss", {"notification_id": "fenster_heizung_support"}))
 
-    def set_opts(self, notify: bool | None = None, url_dev: str | None = None) -> None:
+    def set_opts(self, notify: bool | None = None, url_dev: str | None = None, push: str | None = None) -> None:
         if notify is not None:
             self.notify = bool(notify)
+        if push is not None:
+            p = str(push)[:80]
+            self.push = p if (not p or p in self.push_targets()) else self.push
         if url_dev is not None and self.access()["dev"]:
             u = str(url_dev).strip()[:200]
             self.url_dev = u if (not u or u.startswith("https://")) else self.url_dev
@@ -194,25 +269,42 @@ class SupportChat:
             _LOGGER.debug("Support-Chat: %s", e)
             return {"ok": False, "error": "offline"}
 
-    async def async_send(self, text: str, diag: bool = False) -> dict[str, Any]:
+    async def async_send(self, text: str, diag: bool = False, image: str = "") -> dict[str, Any]:
         text = str(text or "").strip()[:MAX_TEXT]
-        if not text:
+        raw = b""
+        if image:
+            image = image.split(",", 1)[1] if image.startswith("data:") else image
+            if len(image) > MAX_IMG_B64:
+                return {"ok": False, "error": "too_big"}
+            try:
+                raw = base64.b64decode(image, validate=True)
+            except (binascii.Error, ValueError):
+                return {"ok": False, "error": "bad_image"}
+            if raw[:3] != b"\xff\xd8\xff":
+                return {"ok": False, "error": "bad_image"}
+        if not text and not raw:
             return {"ok": False, "error": "empty"}
         proof = self._proof()
         if self.privacy < PRIVACY_VERSION:
             return {"ok": False, "error": "privacy"}
         now = time.time()
         mid = secrets.token_hex(6)
-        m = {"id": mid, "from": "me", "text": text, "ts": now, "state": "sending", "diag": bool(diag)}
+        m = {"id": mid, "from": "me", "text": text, "ts": now, "state": "sending", "diag": bool(diag), "img": bool(raw)}
         self.msgs.append(m)
         body = {"inst": self.inst, "secret": self.secret, "id": mid, "text": text, "proof": proof}
         if diag:
             body["diag"] = self.diagnose()
+        if raw:
+            await self.hass.async_add_executor_job(self._img_write, mid, raw)
+            body["image"] = base64.b64encode(raw).decode()
         res = await self._call("/send", body)
+        if res.get("ok") and "away" in res:
+            self.away = str(res.get("away") or "")[:200]
         m["state"] = "sent" if res.get("ok") else "failed"
         m["err"] = "" if res.get("ok") else str(res.get("error") or "")[:40]
         self.err = m["err"]
         self.msgs = self.msgs[-MAX_MSGS:]
+        await self._img_trim()
         self._save()
         return {"ok": bool(res.get("ok")), "error": m["err"]}
 
@@ -221,14 +313,25 @@ class SupportChat:
         if m is None:
             return {"ok": False, "error": "unknown"}
         self.msgs.remove(m)
-        return await self.async_send(m["text"], bool(m.get("diag")))
+        img = await self.hass.async_add_executor_job(self._img_read, mid) if m.get("img") else ""
+        return await self.async_send(m["text"], bool(m.get("diag")), img)
 
     def delete_failed(self, mid: str) -> None:
-        self.msgs = [x for x in self.msgs if not (x.get("id") == mid and x.get("state") == "failed")]
+        gone = [x for x in self.msgs if x.get("id") == mid and x.get("state") == "failed"]
+        self.msgs = [x for x in self.msgs if x not in gone]
+        if any(x.get("img") for x in gone):
+            self.hass.async_add_executor_job(self._img_delete, [mid])
         self._save()
 
     async def async_poll(self, opened: bool = False) -> dict[str, Any]:
-        if not self.url or not any(x.get("from") == "me" and x.get("state") == "sent" for x in self.msgs):
+        if not self.url:
+            return {"ok": True, "new": 0}
+        if not any(x.get("from") == "me" and x.get("state") in ("sent", "read") for x in self.msgs):
+            if opened:  # noch nichts geschrieben: nur den Abwesenheits-Hinweis holen
+                st = await self._call("/status", {})
+                if st.get("ok"):
+                    self.away = str(st.get("away") or "")[:200]
+                    self._save()
             return {"ok": True, "new": 0}
         since = max([float(x.get("ts") or 0) for x in self.msgs if x.get("from") == "dev"] or [0])
         res = await self._call("/poll", {"inst": self.inst, "secret": self.secret, "since": since})
@@ -237,12 +340,25 @@ class SupportChat:
             self.err = str(res.get("error") or "")[:40]
             return {"ok": False, "error": self.err}
         self.err = ""
+        self.away = str(res.get("away") or "")[:200]
         known = {x.get("id") for x in self.msgs}
-        new = 0
+        new, last_text = 0, ""
         for r in res.get("msgs") or []:
             if not isinstance(r, dict) or r.get("id") in known:
                 continue
-            self.msgs.append({"id": str(r.get("id"))[:40], "from": "dev", "text": str(r.get("text") or "")[:4000], "ts": float(r.get("ts") or time.time())})
+            rid = str(r.get("id"))[:40]
+            if not _ID_RE.match(rid):
+                continue
+            has_img = False
+            if isinstance(r.get("img"), str) and r["img"]:
+                try:
+                    await self.hass.async_add_executor_job(self._img_write, rid, base64.b64decode(r["img"], validate=True))
+                    has_img = True
+                except (binascii.Error, ValueError, OSError):
+                    pass
+            txt = str(r.get("text") or "")[:4000]
+            self.msgs.append({"id": rid, "from": "dev", "text": txt, "ts": float(r.get("ts") or time.time()), "img": has_img})
+            last_text = txt or ("🖼 Bild" if has_img else "")
             new += 1
         seen = float(res.get("seen") or 0)  # bis wann der Entwickler gelesen hat (in Telegram geantwortet)
         for x in self.msgs:
@@ -251,8 +367,10 @@ class SupportChat:
         if new:
             self.msgs.sort(key=lambda x: float(x.get("ts") or 0))
             self.msgs = self.msgs[-MAX_MSGS:]
+            await self._img_trim()
             if not opened:
                 self.unread += new
+                await self.async_push("Strom & Wärme · Support", last_text or "Neue Antwort im Support-Chat")
                 if self.notify:
                     await self.hass.services.async_call("persistent_notification", "create", {
                         "notification_id": "fenster_heizung_support", "title": "Strom & Wärme: Antwort vom Support",
@@ -263,6 +381,7 @@ class SupportChat:
     async def async_clear(self) -> dict[str, Any]:
         """Verlauf hier und beim Vermittler löschen."""
         res = await self._call("/delete", {"inst": self.inst, "secret": self.secret}) if self.url else {"ok": True}
+        await self.hass.async_add_executor_job(self._img_delete, [m["id"] for m in self.msgs if m.get("img")])
         self.msgs = []
         self.unread = 0
         self._save()

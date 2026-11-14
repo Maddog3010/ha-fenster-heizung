@@ -1776,7 +1776,12 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efsd{margin-top:8px;font-size:.85rem;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent)}
 .efsv{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.efsv:first-of-type{border-top:0}.efsvt{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.efsvt b{font-size:.9rem;color:var(--c)}
 .efsvb{height:7px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color) 10%,transparent);overflow:hidden}.efsvb i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#facc15);border-radius:99px}
-.efsvv{display:flex;flex-direction:column;align-items:flex-end}.efsvv small{font-size:.72rem;color:#fbbf24}
+.efsvv{display:flex;flex-direction:column;align-items:flex-end;text-align:right}.efsvv small{font-size:.72rem;color:#fbbf24}.efsvv small.efsvu{color:var(--mut)}
+.efsvt b .efsrc{display:inline-block;width:auto;height:auto;font-style:normal;font-weight:600;font-size:.64rem;line-height:1.5;color:var(--mut);background:none;border:1px solid var(--line);border-radius:99px;padding:0 6px;margin:0 0 0 6px;vertical-align:1px;white-space:nowrap;flex:none}
+.efsvf{font-size:.74rem;color:var(--mut);line-height:1.4;margin-top:8px}
+.efsvt b button.efsrc{cursor:pointer;color:#5eead4;border-color:color-mix(in srgb,#2dd4bf 45%,transparent);font-family:inherit}
+.efsvb.m3{display:flex;gap:2px}.efsvb.m3 i.m{flex:none;border-radius:99px}.efsvb.m3 i.pv{background:#fbbf24}.efsvb.m3 i.bat{background:#a78bfa}.efsvb.m3 i.net{background:#f87171}
+.efsvp{font-size:.66rem;color:var(--mut)}.efsvv .c-pv{color:#fbbf24}.efsvv .c-bat{color:#a78bfa}.efsvv .c-net{color:#f87171}.efsvl{margin-top:10px}
 /* Modul 19 v1.0: Prüfung, Schnellstart, Kosten */
 .efckl{display:flex;flex-direction:column;gap:6px}.efck{display:flex;align-items:flex-start;gap:8px;width:100%;padding:9px 11px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);font:inherit;font-size:.84rem;text-align:left;cursor:pointer}.efck span{flex:1}.efck>svg:last-child{transform:rotate(-90deg);opacity:.5;flex:none;align-self:center}.efck b{display:block;font-size:.85rem}
 .efck.ok{cursor:default;color:#4ade80;border-color:color-mix(in srgb,#4ade80 40%,transparent);background:color-mix(in srgb,#4ade80 8%,transparent)}.efck.ok span{color:var(--primary-text-color)}.efck.bad{border-color:color-mix(in srgb,#f87171 55%,transparent);background:color-mix(in srgb,#f87171 8%,transparent)}.efck.bad>svg:first-child{color:#f87171}
@@ -3170,6 +3175,12 @@ const CSS_SUP = `
 .supdot{display:inline-grid;place-items:center;min-width:17px;height:17px;padding:0 4px;border-radius:99px;background:#25d366;color:#052e16;font-style:normal;font-weight:800;font-size:.66rem;box-sizing:border-box}
 .supdot.hd{position:absolute;top:-2px;right:-2px;min-width:10px;width:10px;height:10px;padding:0;border:2px solid var(--card)}.pillbtn.spnb{position:relative}
 .supdot.in{margin-left:4px}
+.supimg{display:block;max-width:100%;width:240px;max-height:300px;object-fit:cover;border-radius:8px;margin:-2px -4px 6px;cursor:zoom-in}.supimg.big{width:min(560px,70vw);max-height:none;object-fit:contain;cursor:zoom-out}
+.supimg.ph{height:150px;display:grid;place-items:center;background:rgba(255,255,255,.06);color:rgba(233,237,239,.5);cursor:default}
+.supb.onlyimg .supbt{padding:4px 4px 6px}.supb.onlyimg .supimg{margin:0 0 4px}
+.supimgx{display:flex;gap:5px;align-items:center;font-size:.76rem;opacity:.7;margin-bottom:4px}
+.supimgprev{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--card) 90%,#000);flex:none}.supimgprev img{width:52px;height:52px;object-fit:cover;border-radius:8px}.supimgprev span{flex:1;font-size:.8rem;color:var(--mut)}
+.supaway{display:flex;gap:8px;align-items:flex-start;padding:8px 12px;font-size:.8rem;line-height:1.4;background:color-mix(in srgb,#6366f1 16%,var(--card));border-bottom:1px solid var(--line);flex:none}.supaway b{display:block}
 .supup{font-size:.78rem;color:#fbbf24;margin-top:6px}.supup .lnk{font-size:.78rem;color:#fbbf24;text-decoration:underline}.supsp{font-style:normal;font-weight:700;font-size:.7rem;color:#f9a8d4;background:color-mix(in srgb,#ec4899 16%,transparent);border-radius:99px;padding:1px 7px;margin-right:4px}
 .lgsup{display:flex;align-items:center;gap:12px;margin-top:10px}.lgsup .n{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.lgsup small{font-size:.8rem;color:var(--mut);line-height:1.4}.supnew{color:#25d366}
 .lgsupi{position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,#25d366 16%,transparent);color:#25d366;flex:none}.lgsupi .supdot{position:absolute;top:-3px;right:-3px}
@@ -3303,6 +3314,7 @@ class FensterHeizungPanel extends HTMLElement {
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     if (this._admin()) this._supWatch();
+    try { if (this._admin() && new URLSearchParams(location.search).get("support") === "1") { history.replaceState(null, "", location.pathname); this._supOpen(); } } catch (_) { /* Link aus der Handy-Mitteilung */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     if (vbeta(this._ver)) { try { this._blG = await this._hass.callWS({ type: "fenster_heizung/beta_gate" }); } catch (_) { this._blG = null; } }  /* Beta-Freigabe, für alle Nutzer */
     this._adLoad(true);
@@ -12795,27 +12807,64 @@ class FensterHeizungPanel extends HTMLElement {
       const me = m.from === "me", time = new Date(m.ts * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
       const tick = !me ? "" : m.state === "sending" ? `<span class="suptk" title="Wird gesendet">${ic("clock", 12)}</span>` : m.state === "failed" ? `<span class="suptk err" title="Nicht gesendet">!</span>` : m.state === "read" ? `<span class="suptk rd" title="Gelesen">✓✓</span>` : `<span class="suptk" title="Gesendet">✓</span>`;
       const txt = esc(m.text).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>').replace(/\n/g, "<br>");
-      out += `<div class="supb ${me ? "me" : "dev"}${m.state === "failed" ? " fail" : ""}"><div class="supbt">${txt}${m.diag ? `<span class="supatt">${ic("clip", 12)} Diagnose angehängt</span>` : ""}<span class="supmeta">${time}${tick}</span></div>
+      const im = m.img ? this._supImgTag(m.id) : m.img_gone ? `<span class="supimgx">${ic("image", 14)} Bild nicht mehr gespeichert</span>` : "";
+      out += `<div class="supb ${me ? "me" : "dev"}${m.state === "failed" ? " fail" : ""}${m.img && !m.text ? " onlyimg" : ""}"><div class="supbt">${im}${txt}${m.diag ? `<span class="supatt">${ic("clip", 12)} Diagnose angehängt</span>` : ""}<span class="supmeta">${time}${tick}</span></div>
         ${m.state === "failed" ? `<div class="supfail">${esc(this._supErr(m.err))} <button class="lnk" data-act="supretry" data-k="${m.id}">Erneut senden</button> · <button class="lnk" data-act="supdrop" data-k="${m.id}">Löschen</button></div>` : ""}</div>`;
     }
     return out;
   }
+  /* Bilder werden einzeln nachgeladen und im Speicher gehalten */
+  _supImgTag(id) {
+    const c = (this._supImgs = this._supImgs || {});
+    if (c[id]) return `<img class="supimg" src="data:image/jpeg;base64,${c[id]}" alt="Bild" data-act="supimgbig" data-k="${esc(id)}">`;
+    if (!c["_req" + id]) { c["_req" + id] = 1; this._supWS0("img", { mid: id }).then((r) => { if (r && r.img) { c[id] = r.img; this._supRefresh(); } }); }
+    return `<span class="supimg ph">${ic("image", 22)}</span>`;
+  }
+  _supWS0(act, extra = {}) { return this._hass.callWS({ type: "fenster_heizung/support", act, ...extra }).catch(() => null); }
+  /* Foto wählen → im Browser auf max. 1280 px verkleinern → JPEG */
+  _supPick() {
+    const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*";
+    inp.onchange = () => {
+      const f = inp.files && inp.files[0]; if (!f) return;
+      const url = URL.createObjectURL(f), img = new Image();
+      img.onload = () => {
+        const k = Math.min(1, 1280 / Math.max(img.width, img.height)), cv = document.createElement("canvas");
+        cv.width = Math.round(img.width * k); cv.height = Math.round(img.height * k);
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height); URL.revokeObjectURL(url);
+        let q = 0.82, d = cv.toDataURL("image/jpeg", q); while (d.length > 1400000 && q > 0.4) { q -= 0.12; d = cv.toDataURL("image/jpeg", q); }
+        if (this._modal && this._modal.type === "sup") { this._modal.img = d; this._renderModal(); }
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); this._toast("Das Bild ließ sich nicht öffnen"); };
+      img.src = url;
+    };
+    inp.click();
+  }
   _supErr(e) {
-    return { no_sponsor: "Kein aktives Sponsoring gefunden.", offline: "Keine Verbindung.", too_many: "Zu viele Nachrichten in kurzer Zeit.", telegram: "Der Support ist gerade nicht erreichbar.", not_ready: "Chat ist noch nicht eingerichtet.", privacy: "Bitte erst den Hinweis bestätigen." }[e] || "Nicht gesendet.";
+    return { too_big: "Das Bild ist zu groß.", bad_image: "Das Bild ließ sich nicht lesen.", no_sponsor: "Kein aktives Sponsoring gefunden.", offline: "Keine Verbindung.", too_many: "Zu viele Nachrichten in kurzer Zeit.", telegram: "Der Support ist gerade nicht erreichbar.", not_ready: "Chat ist noch nicht eingerichtet.", privacy: "Bitte erst den Hinweis bestätigen." }[e] || "Nicht gesendet.";
   }
   _supModal() {
     const S = this._supS(), m = this._modal, A = S.access, mx = A.tier === "max", close = `<button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button>`;
-    const head = `<div class="suph"><img class="supav" src="${LOGO_URL}" alt=""><div class="suphn"><b>Support · Maddog3010</b><span>${mx ? `<em class="supmx">★ Bevorzugt</em> Max-Nachrichten kommen zuerst dran` : A.active ? `<em class="supsp">♥ Sponsor</em> Antwort direkt hier im Chat` : "Antwort direkt hier im Chat"}</span></div>${S.msgs.length && A.active && S.privacy ? `<button class="ibtn" data-act="supclear" aria-label="Verlauf löschen" title="Verlauf löschen">${ic("trash", 18)}</button>` : ""}${close}</div>`;
+    const head = `<div class="suph"><img class="supav" src="${LOGO_URL}" alt=""><div class="suphn"><b>Support · Maddog3010</b><span>${mx ? `<em class="supmx">★ Bevorzugt</em> Max-Nachrichten kommen zuerst dran` : A.active ? `<em class="supsp">♥ Sponsor</em> Antwort direkt hier im Chat` : "Antwort direkt hier im Chat"}</span></div>${S.privacy && S.ready ? `<button class="ibtn" data-act="supset" aria-label="Mitteilungen" title="Mitteilungen">${ic("bell", 18)}</button>` : ""}${S.msgs.length && S.privacy ? `<button class="ibtn" data-act="supclear" aria-label="Verlauf löschen" title="Verlauf löschen">${ic("trash", 18)}</button>` : ""}${close}</div>`;
     const wrap = (b) => `<div class="ov" data-act="close"></div><div class="sheet wide supsh" role="dialog" aria-modal="true" aria-label="Support-Chat">${head}${b}</div>`;
     if (!S.ready) return wrap(`<div class="supgate"><span class="supgi">${ic("tools", 34)}</span><b>Der Support-Chat wird gerade eingerichtet</b><span>Er ist mit einem der nächsten Updates da. Bis dahin erreichst du mich per E-Mail an ${esc(SPN_MAIL)}.</span></div>`);
     if (!S.privacy) {
       return wrap(`<div class="supprv"><b>${ic("lock", 16)} Bevor du schreibst</b>
         <ul><li>Deine Nachrichten gehen über einen kleinen Vermittler (Cloudflare, EU/USA) an <b>Telegram</b> und landen dort beim Entwickler.</li>
-        <li>Mitgeschickt werden nur: deine Nachricht, eine zufällige Nummer dieser Installation und – falls du Sponsor bist – dein Sponsor-Name und deine Stufe. ${ic("clip", 13)} Diagnosedaten nur, wenn du sie selbst anhängst – du siehst vorher, was drinsteht.</li>
+        <li>Mitgeschickt werden nur: deine Nachricht (und ein Bild, wenn du eins anhängst), eine zufällige Nummer dieser Installation und – falls du Sponsor bist – dein Sponsor-Name und deine Stufe. ${ic("clip", 13)} Diagnosedaten nur, wenn du sie selbst anhängst – du siehst vorher, was drinsteht.</li>
         <li>Telegram ist ein Dienst der Telegram Group (Sitz in Dubai). Dort gelten deren Datenschutzregeln.</li>
         <li>Der Verlauf liegt in deinem Home Assistant und beim Vermittler höchstens 180 Tage. Mit ${ic("trash", 13)} löschst du ihn jederzeit an beiden Stellen.</li>
         <li>Bitte keine Passwörter, Schlüssel oder Zugangsdaten schreiben.</li></ul>
         <div class="gbtns" style="margin-top:12px"><button class="btn2 pri" data-act="supok">${ic("check", 16)} Verstanden, Chat starten</button></div></div>`);
+    }
+    if (m.set) {
+      const T = S.push_targets || [], nm = (t) => t.replace(/^mobile_app_/, "").replace(/_/g, " ");
+      return wrap(`<div class="supprv"><b>${ic("bell", 16)} Wenn eine Antwort kommt</b>
+        <div class="vrow" style="margin-top:12px"><span>Meldung in Home Assistant<small class="mut" style="display:block">Glocke unten links in der Seitenleiste</small></span><button class="sw ${S.notify ? "on" : ""}" data-act="supnotify" aria-pressed="${!!S.notify}" aria-label="Meldung in Home Assistant"></button></div>
+        <div class="vrow"><span>Mitteilung aufs Handy<small class="mut" style="display:block">über die Home-Assistant-App · Antippen öffnet den Chat</small></span></div>
+        <div class="gschs" style="flex-wrap:wrap;margin:4px 0 0"><button class="gsch ${S.push ? "" : "sel"}" data-act="suppush" data-k="">Aus</button>${T.map((t) => `<button class="gsch ${S.push === t ? "sel" : ""}" data-act="suppush" data-k="${esc(t)}">${ic("tablet", 13)} ${esc(nm(t))}</button>`).join("")}</div>
+        ${T.length ? "" : `<div class="mut sm" style="margin-top:6px">Kein Handy gefunden. Installiere die Home-Assistant-App und melde dich dort an – dann erscheint es hier.</div>`}
+        ${S.push ? `<div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="suppushtest">${ic("send", 15)} Test-Mitteilung senden</button></div>` : ""}
+        <div class="gbtns" style="margin-top:16px"><button class="btn2 pri" data-act="supsetok">${ic("check", 16)} Fertig</button></div></div>`);
     }
     if (m.confirm) {
       return wrap(`<div class="supgate"><span class="supgi">${ic("trash", 30)}</span><b>Ganzen Verlauf löschen?</b><span>Die Nachrichten werden hier und beim Vermittler gelöscht. In Telegram beim Entwickler bleiben sie, bis er sie dort löscht.</span>
@@ -12824,8 +12873,10 @@ class FensterHeizungPanel extends HTMLElement {
     const D = m.diagData;
     const diagBox = m.diag ? `<div class="supdiag"><span>${ic("clip", 14)} <b>Diagnose wird angehängt:</b> Version, Home-Assistant-Version, eingeschaltete Module, letzte Fehlermeldungen von Strom &amp; Wärme. <button class="lnk" data-act="supdiagshow">${m.showDiag ? "Ausblenden" : "Ansehen"}</button></span>
       ${m.showDiag ? `<pre class="supjson">${D ? esc(JSON.stringify(D, null, 2)) : "Lädt …"}</pre>` : ""}</div>` : "";
-    return wrap(`<div class="supmsgs" aria-live="polite">${this._supList()}</div>${S.err === "offline" ? `<div class="supnet">${ic("alert", 14)} Keine Verbindung zum Support – neue Antworten kommen, sobald sie wieder steht.</div>` : ""}${diagBox}
-      <div class="supin"><button class="supic ${m.diag ? "on" : ""}" data-act="supdiag" aria-pressed="${!!m.diag}" aria-label="Diagnose anhängen" title="Diagnose anhängen">${ic("clip", 20)}</button>
+    const away = S.away ? `<div class="supaway">🌙 <span><b>Gerade abwesend: ${esc(S.away)}</b> Deine Nachricht kommt trotzdem an – die Antwort kann etwas dauern.</span></div>` : "";
+    const imgPrev = m.img ? `<div class="supimgprev"><img src="${m.img}" alt="Ausgewähltes Bild"><span>Bild wird mitgeschickt</span><button class="ibtn" data-act="supimgx" aria-label="Bild entfernen">${ic("close", 16)}</button></div>` : "";
+    return wrap(`${away}<div class="supmsgs" aria-live="polite">${this._supList()}</div>${S.err === "offline" ? `<div class="supnet">${ic("alert", 14)} Keine Verbindung zum Support – neue Antworten kommen, sobald sie wieder steht.</div>` : ""}${diagBox}${imgPrev}
+      <div class="supin"><button class="supic ${m.diag ? "on" : ""}" data-act="supdiag" aria-pressed="${!!m.diag}" aria-label="Diagnose anhängen" title="Diagnose anhängen">${ic("clip", 20)}</button><button class="supic ${m.img ? "on" : ""}" data-act="supimg" aria-label="Bild anhängen" title="Bild anhängen">${ic("image", 20)}</button>
         <textarea class="supta" rows="1" maxlength="2000" placeholder="Nachricht" aria-label="Nachricht">${esc(this._supDraft || "")}</textarea>
         <button class="supsend" data-act="supsend" aria-label="Senden">${ic("send", 20)}</button></div>`);
   }
@@ -12840,13 +12891,15 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _supSend() {
     const ta = this.shadowRoot.querySelector(".supta"), text = String((ta && ta.value) || this._supDraft || "").trim();
-    if (!text || this._supBusy) return;
-    const m = this._modal, S = this._supS();
+    const m = this._modal, S = this._supS(), img = m.img || "";
+    if ((!text && !img) || this._supBusy) return;
     this._supBusy = true;
-    S.msgs = [...S.msgs, { id: "tmp", from: "me", text, ts: Date.now() / 1000, state: "sending", diag: !!m.diag }];
+    if (img) { (this._supImgs = this._supImgs || {}).tmp = img.split(",")[1]; m.img = ""; const p = this.shadowRoot.querySelector(".supimgprev"); if (p) p.remove(); }
+    S.msgs = [...S.msgs, { id: "tmp", from: "me", text, ts: Date.now() / 1000, state: "sending", diag: !!m.diag, img: !!img }];
     this._supDraft = ""; if (ta) { ta.value = ""; ta.style.height = "auto"; }
     this._supRefresh(); const list = this.shadowRoot.querySelector(".supmsgs"); if (list) list.scrollTop = list.scrollHeight;
-    this._supWS("send", { text, diag: !!m.diag }).then((r) => { if (r.ok) { m.diag = false; m.showDiag = false; this._renderModal(); } else this._supRefresh(); })
+    this._supWS("send", { text, diag: !!m.diag, ...(img ? { image: img } : {}) }).then((r) => {
+      if (img) { const mine = [...this._supS().msgs].reverse().find((x) => x.from === "me" && x.img); if (mine) this._supImgs[mine.id] = img.split(",")[1]; } if (r.ok) { m.diag = false; m.showDiag = false; this._renderModal(); } else this._supRefresh(); })
       .catch(() => { this._toast("Das ging nicht"); this._supLoad().then(() => this._supRefresh()); })
       .finally(() => { this._supBusy = false; });
   }
@@ -12862,6 +12915,14 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "supdiagshow") { m.showDiag = !m.showDiag; this._renderModal(); if (m.showDiag && !m.diagData) this._supWS("diag").then((r) => { m.diagData = r.diag; this._renderModal(); }); }
     else if (a === "supretry") this._supWS("retry", { mid: k }).then(() => this._supRefresh());
     else if (a === "supdrop") this._supWS("drop", { mid: k }).then(() => this._supRefresh());
+    else if (a === "supimg") this._supPick();
+    else if (a === "supimgx") { m.img = ""; this._renderModal(); }
+    else if (a === "supimgbig") { const el = b; el.classList.toggle("big"); }
+    else if (a === "supset") { m.set = true; this._renderModal(); }
+    else if (a === "supsetok") { m.set = false; this._renderModal(); }
+    else if (a === "supnotify") this._supWS("opts", { notify: !this._supS().notify }).then(() => this._renderModal());
+    else if (a === "suppush") this._supWS("opts", { push: k || "" }).then(() => this._renderModal());
+    else if (a === "suppushtest") this._supWS("pushtest").then((r) => this._toast(r.ok ? "Test-Mitteilung gesendet" : "Das ging nicht – ist die App angemeldet?"));
     else if (a === "supclear") { m.confirm = true; this._renderModal(); }
     else if (a === "supnoclear") { m.confirm = false; this._renderModal(); }
     else if (a === "supdoclear") this._supWS("clear").then(() => { m.confirm = false; this._renderModal(); this._toast("Verlauf gelöscht"); });
@@ -13284,7 +13345,7 @@ class FensterHeizungPanel extends HTMLElement {
   _efxClone() { return JSON.parse(JSON.stringify(this._efxCfg())); }
   _efxBlank(pos) {
     const p = EF_POS[pos];
-    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:pvRoof" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false, run_w: 10, pct: "", status: "" };
+    return { on: true, name: p[4], image: p[2] === "supply" ? "hd:pvRoof" : "⚡", color: "", top: "", bottom: "", left: "", right: "", top_label: "", bottom_label: "", left_label: "", right_label: "", flow: p[2], power: "", power_to_node: "", power_to_house: "", invert: false, run_w: 10, pct: "", status: "", src: "" };
   }
   /* ---- Rechnen: Leistung einer Kachel in W, positiv = zur Kachel, negativ = ins Haus ---- */
   _efxToW(id) { const st = id && this._hass.states[id]; if (!st) return NaN; const v = parseFloat(st.state); return isNaN(v) ? NaN : /^kW$/i.test(st.attributes.unit_of_measurement || "") ? v * 1000 : v; }
@@ -13581,7 +13642,12 @@ class FensterHeizungPanel extends HTMLElement {
     const hubImg = !hub ? "" : `<div class="lsec">${ic("home", 15)}Haus-Bild</div><div class="efhb">${HB.map(([v, g, l]) => `<button class="efhbb ${n.image === v ? "sel" : ""}" data-act="efximg" data-k="${v}" aria-pressed="${n.image === v}">${this._gx(g, 40, { on: true })}<span>${l}</span></button>`).join("")}<button class="efhbb ${/^(\/local\/|https:)/.test(n.image) ? "sel" : ""}" data-act="efximgtog">${ic("image", 22)}<span>Eigenes Foto</span></button></div>
       <div class="mut sm">Ein eigenes Foto (/local/haus.jpg) wird rund zugeschnitten. Die Fenster der Haus-Bilder leuchten abends.</div>
       <div class="vrow"><span>Herkunfts-Ring<small class="mut" style="display:block">Ring um das Haus: woher der Hausverbrauch gerade kommt – Solar, Akku, Netz. Berechnet aus den Kacheln mit „Liefert“ und „Beides“.</small></span><button class="sw ${n.ring !== false ? "on" : ""}" data-act="efxring" aria-pressed="${n.ring !== false}" aria-label="Herkunfts-Ring"></button></div>`;
-    const zst = hub ? "" : `<div class="lsec">${ic("image", 15)}Bild mit Zustand</div>
+    if (!hub && n.flow === "consume" && !this._efLk) this._efLkLoad();
+    const LK = this._efLk || {}, srcOpts = [["", "Automatisch"], ["own", "Eigene Rechnung"], ...(LK.wb ? [["wb", "Modul 8 · Wallbox"]] : []), ...(LK.gs || []).map((g) => ["gs:" + g.id, "Modul 4 · " + g.name])];
+    const srcSec = hub || n.flow !== "consume" ? "" : `<div class="lsec">${ic("link", 15)}Werte im Strom-Reiter</div>
+      <div class="mut sm" style="margin:0 0 6px">Woher „Verbraucher mit Solar-Anteil“ die kWh nimmt. Automatisch = Modul 4 oder Modul 8, wenn dort derselbe Sensor eingerichtet ist (Wallbox auch am Namen oder Auto-Bild erkannt), sonst eigene Rechnung.</div>
+      <div class="gschips">${srcOpts.map(([k, l]) => chip("efxsrc", k, l, (n.src || "") === k)).join("")}</div>${this._efLk ? "" : `<div class="mut sm">Module 4 und 8 werden geladen …</div>`}`;
+    const zst = hub ? "" : `${srcSec}<div class="lsec">${ic("image", 15)}Bild mit Zustand</div>
       <div class="vrow"><span>Läuft ab<small class="mut" style="display:block">Ab dieser Leistung zeigt das Bild „läuft“ (Trommel dreht, Lampe leuchtet)</small></span><span style="display:flex;align-items:center;gap:6px;flex:none"><input type="number" class="efli" style="width:90px" data-f="efxrun" min="1" max="5000" step="1" value="${Number(n.run_w) > 0 ? Number(n.run_w) : 10}" aria-label="Läuft ab Watt"><span class="mut">W</span></span></div>
       <div class="mut sm" style="margin:6px 0 2px">Ladestand-Ring um das Bild</div><div class="gschips">${[["", "Automatisch"], ...EF_SIDES.filter(([x]) => n[x]), ["none", "Aus"]].map(([k, l]) => chip("efxpct", k, l, (n.pct || "") === k)).join("")}</div>
       <div class="mut sm">Automatisch = der erste Wert in %, zum Beispiel Ladestand von Akku oder Auto.</div>
@@ -13664,6 +13730,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "efxcalc") d.calc = k;
     else if (a === "efxring") d.ring = d.ring === false;
     else if (a === "efxpct") d.pct = k;
+    else if (a === "efxsrc") d.src = k;
     else if (a === "efxchipdel") d.chips = d.chips.filter((x) => x !== k);
     else if (a === "efxsave") {
       const c = this._efxClone(); d.name = (d.name || "").trim() || (m.pos === "hub" ? "Haus" : EF_POS[m.pos][4]);
@@ -13854,6 +13921,38 @@ class FensterHeizungPanel extends HTMLElement {
     if (P.range === "month") return f(R.s, { month: "long", year: "numeric" });
     return String(R.s.getFullYear());
   }
+  /* Verbindung zu Modul 4 (Gerätestrom) und Modul 8 (Wallbox): Tageswerte je Gerät für den Zeitraum */
+  _efLkLoad(P, R) {
+    const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const key = P ? P.range + ":" + P.off : "now", c = (this._efLkC = this._efLkC || {}), h = c[key];
+    if (h && Date.now() - h.ts < 12e4) { this._efLk = h.d; return h.d; }
+    if (this._efLkBusy === key) return h ? h.d : null;
+    this._efLkBusy = key;
+    const s = R ? R.s : new Date(), e = R ? R.e : new Date(Date.now() + 864e5);
+    this._hass.callWS({ type: "fenster_heizung/ef_link", start: iso(s), end: iso(e) }).then((d) => { c[key] = { ts: Date.now(), d }; this._efLk = d; })
+      .catch(() => { c[key] = { ts: Date.now(), d: { gs: [], wb: null } }; })
+      .finally(() => { this._efLkBusy = null; if (this._mdActive() === "ef") this._render(); if (this._modal && this._modal.type === "efxedit") this._renderModal(); });
+    return h ? h.d : null;
+  }
+  /* Quelle einer Verbraucher-Kachel: { k: "gs"|"wb"|"own", g } */
+  _efLkFor(n, L) {
+    if (!L || n.flow !== "consume" || n.src === "own") return { k: "own" };
+    const ids = [n.power, n.bottom, n.top, n.left, n.right, ...(n.group || [])].filter(Boolean);
+    if (n.src === "wb") return L.wb ? { k: "wb", g: L.wb } : { k: "own" };
+    if (/^gs:/.test(n.src || "")) { const g = (L.gs || []).find((x) => "gs:" + x.id === n.src); return g ? { k: "gs", g } : { k: "own" }; }
+    const g = (L.gs || []).find((x) => x.ent && ids.includes(x.ent)); if (g) return { k: "gs", g };
+    if (L.wb && ((L.wb.ents || []).some((x) => ids.includes(x)) || /car|wallbox/i.test(n.image || "") || /\b(auto|e-?auto|wallbox|laden|ladestation|elektroauto)\b/i.test(n.name || ""))) return { k: "wb", g: L.wb };
+    return { k: "own" };
+  }
+  /* kWh-Zähler einer Verbraucher-Kachel: eine der Wert-Entitäten (oben/unten/links/rechts) mit Einheit Wh/kWh/MWh und state_class total(_increasing) */
+  _efxEid(n) {
+    if (!n || n.flow !== "consume" || (n.group || []).length) return "";
+    for (const k of [n.energy, n.bottom, n.top, n.left, n.right]) {
+      const st = k && this._hass.states[k], a = (st && st.attributes) || {};
+      if (st && /^[kM]?Wh$/i.test(a.unit_of_measurement || "") && /^total/.test(a.state_class || "")) return k;
+    }
+    return "";
+  }
   /* Alle Leistungs-Entitäten, die das Fluss-Bild nutzt (inkl. Gruppen-Kacheln) */
   _efxPowIds(nodes) {
     const ids = new Set();
@@ -13862,23 +13961,34 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _efxStatLoad(P, force) {
     const c = this._efxCfg(), nodes = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on).map((p) => ({ p, n: c.nodes[p] })), ids = this._efxPowIds(nodes.map((x) => x.n)), R = this._efPer(P);
-    const key = P.range + ":" + P.off + ":" + ids.join(",");
+    const eids = [...new Set(nodes.map((x) => this._efxEid(x.n)).filter(Boolean))], all = [...new Set([...ids, ...eids])];
+    const key = P.range + ":" + P.off + ":" + all.join(",");
     const cache = (this._efSt = this._efSt || {});
     if (!ids.length) return null;
-    const h = cache[key]; if (h && !force && (!R.cur || Date.now() - h.ts < 3e5)) return h;
+    const h = cache[key]; if (h && !force && (!R.cur || Date.now() - h.ts < 12e4)) return h;
     if (this._efStBusy === key) return h || null;
     this._efStBusy = key;
     const per = P.range === "year" ? "day" : "hour";
-    this._hass.callWS({ type: "recorder/statistics_during_period", start_time: R.s.toISOString(), end_time: R.end.toISOString(), statistic_ids: ids, period: per, types: ["mean"] })
-      .then((r) => { cache[key] = { ts: Date.now(), ...this._efxStatCalc(nodes, r || {}, R, per, P) }; })
+    /* abgeschlossene Stunden aus der Langzeitstatistik, die laufende Stunde aus der 5-Minuten-Statistik (sonst fehlt sie bei „Heute“) */
+    const hs = new Date(); hs.setMinutes(0, 0, 0);
+    const q = (s, e, period) => this._hass.callWS({ type: "recorder/statistics_during_period", start_time: s.toISOString(), end_time: e.toISOString(), statistic_ids: all, period, types: ["mean", "change"] });
+    const live = R.cur && +hs < +R.end && +hs >= +R.s;
+    Promise.all([q(R.s, live ? hs : R.end, per), live ? q(hs, R.end, "5minute").catch(() => ({})) : Promise.resolve({})])
+      .then(([r, r5]) => { cache[key] = { ts: Date.now(), live, ...this._efxStatCalc(nodes, r || {}, R, per, P, r5 || {}) }; })
       .catch(() => { cache[key] = { ts: Date.now(), err: true, bars: [], cons: [], tot: null }; })
       .finally(() => { if (this._efStBusy === key) this._efStBusy = null; if (this._mdActive() === "ef") this._render(); });
     return h || null;
   }
-  _efxStatCalc(nodes, r, R, per, P) {
-    const step = per === "day" ? 24 : 1, ts = (x) => (typeof x.start === "number" ? x.start : Date.parse(x.start));
-    const kf = (id) => (/^kW$/i.test(((this._hass.states[id] || {}).attributes || {}).unit_of_measurement || "") ? 1000 : 1);
-    const map = {}; Object.entries(r).forEach(([id, l]) => { const k = kf(id); (l || []).forEach((x) => { if (!isFinite(x.mean)) return; (map[ts(x)] = map[ts(x)] || {})[id] = x.mean * k; }); });
+  _efxStatCalc(nodes, r, R, per, P, r5 = {}) {
+    const ts = (x) => (typeof x.start === "number" ? x.start : Date.parse(x.start)), unit = (id) => ((this._hass.states[id] || {}).attributes || {}).unit_of_measurement || "";
+    const kf = (id) => (/^kW$/i.test(unit(id)) ? 1000 : 1), ef = (id) => (/^Wh$/i.test(unit(id)) ? 0.001 : /^MWh$/i.test(unit(id)) ? 1000 : 1);
+    /* map: Zeitpunkt → Leistung je Entität (W), emap: Zeitpunkt → Zähler-Zuwachs (kWh), stp: Länge des Abschnitts in Stunden */
+    const map = {}, emap = {}, stp = {};
+    const add = (res, step) => Object.entries(res).forEach(([id, l]) => { const k = kf(id), e = ef(id); (l || []).forEach((x) => { const t = ts(x); stp[t] = step;
+      if (isFinite(x.mean)) (map[t] = map[t] || {})[id] = x.mean * k;
+      if (isFinite(x.change)) (emap[t] = emap[t] || {})[id] = x.change * e; }); });
+    add(r, per === "day" ? 24 : 1); add(r5, 1 / 12);
+    Object.keys(emap).forEach((t) => { map[t] = map[t] || {}; });
     const val = (t, id) => (map[t] && isFinite(map[t][id]) ? map[t][id] : 0);
     const nodeW = (n, t) => {
       if (n.flow === "split") return Math.abs(val(t, n.power_to_node)) - Math.abs(val(t, n.power_to_house));
@@ -13890,7 +14000,7 @@ class FensterHeizungPanel extends HTMLElement {
     /* tot: Herkunft im Haus (pv, bat, net, oth), dazu Netzbezug gesamt (imp), Einspeisung (exp), Akku geladen (chg) und wohin der Solarstrom ging (pvBat, pvExp) */
     const tot = { pv: 0, bat: 0, net: 0, oth: 0, use: 0, gen: 0, exp: 0, imp: 0, chg: 0, pvBat: 0, pvExp: 0, netBat: 0 };
     Object.keys(map).map(Number).sort((a, b) => a - b).forEach((t) => {
-      const m = { pv: 0, bat: 0, net: 0, oth: 0 }, kwh = step / 1000; let out = 0, gen = 0, exp = 0, chg = 0;
+      const m = { pv: 0, bat: 0, net: 0, oth: 0 }, kwh = (stp[t] || 1) / 1000; let out = 0, gen = 0, exp = 0, chg = 0;
       nodes.forEach(({ p, n }) => { if (n.flow === "consume") return; const w = nodeW(n, t), k = this._efxKind(n); if (w < 0) { m[k] += -w; (src[p] = src[p] || { kwh: 0, k }).kwh += -w * kwh; } else { out += w; if (k === "net") exp += w; if (k === "bat") chg += w; } if (k === "pv") gen += Math.abs(w); });
       const imp = m.net, take = Math.min(m.pv, out); m.pv -= take; out -= take; if (out > 0) m.oth = Math.max(0, m.oth - out);
       /* Solar-Überschuss geht zuerst in den Akku, der Rest ins Netz; was der Akku darüber hinaus lädt, kam aus dem Netz */
@@ -13900,7 +14010,12 @@ class FensterHeizungPanel extends HTMLElement {
       ["pv", "bat", "net", "oth"].forEach((k) => { b[k] += m[k] * kwh; tot[k] += m[k] * kwh; }); b.use += use * kwh; tot.use += use * kwh; tot.gen += gen * kwh; tot.exp += exp * kwh;
       tot.imp += imp * kwh; tot.chg += chg * kwh; tot.pvBat += pvBat * kwh; tot.pvExp += pvExp * kwh; tot.netBat += netBat * kwh;
       const fpv = use > 0 ? m.pv / use : 0;
-      nodes.forEach(({ p, n }) => { if (n.flow !== "consume") return; const w = Math.max(0, nodeW(n, t)) * kwh, o = (cons[p] = cons[p] || { kwh: 0, pv: 0 }); o.kwh += w; o.pv += w * fpv; });
+      nodes.forEach(({ p, n }) => {
+        if (n.flow !== "consume") return;
+        const eid = this._efxEid(n), ez = eid && emap[t] && isFinite(emap[t][eid]) ? Math.max(0, emap[t][eid]) : null;  // Zähler bevorzugt, sonst aus der Leistung
+        const w = ez != null ? ez : Math.max(0, nodeW(n, t)) * kwh, o = (cons[p] = cons[p] || { kwh: 0, pv: 0, meter: 0, pow: 0 });
+        o.kwh += w; o.pv += w * fpv; if (ez != null) o.meter++; else o.pow++;
+      });
     });
     return { bars, cons, tot, src, any: Object.keys(map).length > 0 };
   }
@@ -13910,7 +14025,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!this._efxPowIds(Object.values(c.nodes).filter((n) => n.on)).length) return `${nav}<div class="card empty">${ic("energy", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Keine Leistungssensoren</div>Der Strom-Reiter rechnet mit den Leistungssensoren deiner Kacheln. Lege sie unter „Einrichten“ fest.</div>`;
     if (!H) return `${nav}<div class="card empty">Verlauf wird geladen …</div>`;
     if (H.err || !H.any) return `${nav}<div class="card empty">${ic("info", 30)}<div style="margin:8px 0 2px;font-weight:700;color:var(--primary-text-color)">Keine Langzeitstatistik</div>Für diesen Zeitraum liefert Home Assistant keine Werte. Die Sensoren brauchen eine „state_class“ (measurement), damit sie in der Langzeitstatistik landen.</div>`;
-    const T = H.tot, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: v >= 100 ? 0 : 1 }), pc = (a, b) => (b > 0 ? Math.round(a / b * 100) : 0);
+    const T = H.tot, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: v >= 100 ? 0 : 1 }), f2 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: v >= 100 ? 0 : v >= 10 ? 1 : 2 }), pc = (a, b) => (b > 0 ? Math.round(a / b * 100) : 0);
     const sel = this._efSel != null && this._efSel < H.bars.length ? this._efSel : null;
     const sum = `<div class="efsum">${[["Verbrauch", f1(T.use) + " kWh", "#2dd4bf"], ["aus Solar", pc(T.pv, T.use) + " %", "#fbbf24"], ["Autarkie", (T.use > 0 ? 100 - pc(T.net, T.use) : 0) + " %", "#4ade80"], ["Solar erzeugt", f1(T.gen) + " kWh", "#fbbf24"]].map(([l, v, col]) => `<div><small>${l}</small><b style="color:${col}">${v}</b></div>`).join("")}</div>`;
     /* E1 Lichtsäulen */
@@ -13921,8 +14036,23 @@ class FensterHeizungPanel extends HTMLElement {
     const det = sb ? `<div class="efsd"><b>${esc(P.range === "day" ? `${sel}–${sel + 1} Uhr` : P.range === "year" ? new Date(R.s.getFullYear(), sel, 1).toLocaleDateString("de-DE", { month: "long" }) : new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate() + sel).toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }))}</b> · ${f1(sb.use)} kWh${EF_MIX.filter(([k]) => sb[k] > 0.0005).map(([k, l, col]) => ` · <span style="color:${col}">${pc(sb[k], sb.use)} % ${l}</span>`).join("")}</div>` : `<div class="efsd mut">Tippe auf eine Säule für die Werte</div>`;
     const e1 = `<div class="card efsec1"><div class="efh2">${ic("chart", 16)}Herkunft ${P.range === "day" ? "pro Stunde" : P.range === "year" ? "pro Monat" : "pro Tag"}</div><div class="efcols n${H.bars.length > 24 ? "m" : ""}">${cols}</div><div class="efleg2">${EF_MIX.map(([, l, col]) => `<span><i style="background:${col}"></i>${l}</span>`).join("")}<span class="mut">Höhe = Hausverbrauch</span></div>${det}</div>`;
     /* E2 Verbraucher mit Solar-Anteil */
-    const list = Object.entries(H.cons).map(([p, o]) => ({ p, n: c.nodes[p], ...o })).filter((x) => x.n).sort((a, b) => b.kwh - a.kwh);
-    const e2 = `<div class="card"><div class="efh2">${ic("energy", 16)}Verbraucher mit Solar-Anteil</div>${list.length ? list.map((x) => { const col = x.n.color || EF_POS[x.p][3], s = pc(x.pv, x.kwh); return `<div class="efsv" style="--c:${col}"><span class="efq sm"><span class="efqi">${this._efxImgN(x.n, { on: x.kwh > 0 })}</span></span><span class="efsvt"><b>${esc(x.n.name)}</b><span class="efsvb"><i style="width:${s}%"></i></span></span><span class="efsvv"><b>${f1(x.kwh)} kWh</b><small>${s} % Solar</small></span></div>`; }).join("") : `<div class="mut sm">Keine Verbraucher-Kacheln mit Leistungssensor.</div>`}</div>`;
+    const L = this._efLkLoad(P, R), ln = (o) => o.pv + o.bat + o.net;
+    const list = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on && c.nodes[p].flow === "consume").map((p) => {
+      const n = c.nodes[p], own = H.cons[p] || { kwh: 0, pv: 0, meter: 0 }, lk = this._efLkFor(n, L);
+      /* Modul 4/8 erst ab dem Tag, an dem das Gerät dort eingerichtet ist – liegt der Zeitraum davor, eigene Rechnung */
+      const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      if (lk.k !== "own" && lk.g.first && lk.g.first < iso(R.e)) { const g = lk.g; return { p, n, src: lk.k, kwh: ln({ pv: g.pv, bat: g.bat || 0, net: g.net }), pv: g.pv, bat: g.bat || 0, net: g.net, part: g.first > iso(R.s) }; }
+      return { p, n, src: own.meter ? "meter" : "pow", kwh: own.kwh, pv: own.pv, bat: null, net: null };
+    }).filter((x) => x.kwh > 0.0005 || x.src === "gs" || x.src === "wb").sort((a, b) => b.kwh - a.kwh);
+    const SRC = { gs: ["Modul 4", "Werte aus Modul 4 · Gerätestrom (alle 20 s gerechnet)", "gs"], wb: ["Modul 8", "Werte aus Modul 8 · Ladestatistik", "ev"], meter: ["Zähler", "aus dem kWh-Zähler des Geräts", ""], pow: ["aus Leistung", "aus dem Leistungssensor hochgerechnet", ""] };
+    const e2 = `<div class="card"><div class="efh2">${ic("energy", 16)}Verbraucher mit Solar-Anteil</div>${list.length ? list.map((x) => {
+      const col = x.n.color || EF_POS[x.p][3], s = pc(x.pv, x.kwh), S3 = SRC[x.src], three = x.bat != null;
+      const tag = S3[2] ? `<button class="efsrc lnk" data-act="mdgo" data-k="${S3[2]}" title="${S3[1]}">${S3[0]} ›</button>` : `<em class="efsrc" title="${S3[1]}">${S3[0]}</em>`;
+      const bar = three ? [["pv", x.pv], ["bat", x.bat], ["net", x.net]].map(([k, v]) => (v > 0 && x.kwh > 0 ? `<i class="m ${k}" style="width:${(v / x.kwh * 100).toFixed(1)}%"></i>` : "")).join("") : `<i style="width:${s}%"></i>`;
+      const det = three ? `<small><span class="c-pv">Solar ${f2(x.pv)}</span>${x.bat > 0.0005 ? ` · <span class="c-bat">Akku ${f2(x.bat)}</span>` : ""}${x.net > 0.0005 ? ` · <span class="c-net">Netz ${f2(x.net)}</span>` : ""}</small>` : `<small>davon ${f2(x.pv)} kWh Solar · ${s} %</small>`;
+      return `<div class="efsv" style="--c:${col}"><span class="efq sm"><span class="efqi">${this._efxImgN(x.n, { on: x.kwh > 0 })}</span></span><span class="efsvt"><b>${esc(x.n.name)}${tag}</b><span class="efsvb${three ? " m3" : ""}">${bar}</span>${x.part ? `<small class="efsvp">erst ab Einrichtung in ${S3[0]}</small>` : ""}</span><span class="efsvv"><b>${f2(x.kwh)} kWh</b><small class="efsvu">verbraucht${three ? ` · ${s} % Solar` : ""}</small>${det}</span></div>`; }).join("") : `<div class="mut sm">Keine Verbraucher-Kacheln mit Leistungssensor.</div>`}
+      ${list.length ? `<div class="efleg2 efsvl"><span><i style="background:#fbbf24"></i>Solar</span>${list.some((x) => x.bat != null) ? `<span><i style="background:#a78bfa"></i>Akku</span><span><i style="background:#f87171"></i>Netz</span>` : ""}</div>` : ""}
+      <div class="efsvf">Ganzer Verbrauch des Geräts. Mit „Modul 4“ oder „Modul 8“ kommen die Werte direkt aus diesen Modulen (Solar, Akku, Netz), sonst rechnet Modul 19 selbst nach der Herkunft des Hausstroms in derselben Stunde.${H.live ? ` Stand ${new Date(H.ts).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}, inkl. laufender Stunde.` : ""}${list.some((x) => x.src === "pow") ? " Mit kWh-Zähler an der Kachel wird die eigene Rechnung genauer." : ""} Quelle ändern: Kachel bearbeiten → „Werte im Strom-Reiter“.</div></div>`;
     return `${nav}${sum}<div class="efsgrid${narrow ? " nar" : ""}"><div class="efsmain">${e1}${this._efxSrcCard(H, c)}</div><div class="efsside">${e2}${this._efxCost(T)}</div></div>`;
   }
   /* ---------------- Woher kam der Strom? Anteile je Quelle, Netz- und Akku-Bilanz, wohin der Solarstrom ging ---------------- */

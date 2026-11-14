@@ -1835,6 +1835,46 @@ async def ws_lf_cmd(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], await mgr.async_cmd(msg["cmd"], msg.get("arg") or "", msg.get("dev") or ""))
 
 
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/ef_link", vol.Required("start"): str, vol.Required("end"): str})
+@websocket_api.async_response
+async def ws_ef_link(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Modul 19 ↔ Modul 4 und Modul 8: Tageswerte je Gerät bzw. der Wallbox für einen Zeitraum (start inkl., end exkl., JJJJ-MM-TT).
+
+    Modul 4 liefert je Gerät Solar, Akku und Netz (kWh), Modul 8 Sonne und Netz der Ladungen. Der laufende Tag ist jeweils enthalten.
+    """
+    s, e = msg["start"][:10], msg["end"][:10]
+    if not (re.match(r"^\d{4}-\d{2}-\d{2}$", s) and re.match(r"^\d{4}-\d{2}-\d{2}$", e)):
+        connection.send_error(msg["id"], "bad_date", "Datum ungültig")
+        return
+    store = hass.data.get(DOMAIN, {})
+    out: dict[str, Any] = {"gs": [], "wb": None}
+    gs = store.get("geraete")
+    if gs is not None and gs.active():
+        for d in gs._cfg().get("devices") or []:
+            did = d.get("id")
+            sol = bat = grid = 0.0
+            first = ""
+            for day, row in gs.days.items():
+                v = row.get(did) if isinstance(row, dict) else None
+                if v is None:
+                    continue
+                if not first or day < first:
+                    first = day
+                if s <= day < e:
+                    sol, bat, grid = sol + v[0], bat + v[1], grid + v[2]
+            out["gs"].append({"id": did, "name": d.get("name", ""), "ent": d.get("ent", ""), "pv": round(sol, 4), "bat": round(bat, 4), "net": round(grid, 4), "first": first})
+    wb = store.get("wallbox")
+    if wb is not None and wb.configured():
+        days = wb._st.get("days") or {}
+        pv = sum(v.get("pv", 0.0) for k, v in days.items() if s <= k < e)
+        grid = sum(v.get("grid", 0.0) for k, v in days.items() if s <= k < e)
+        o = wb._st.get("open")  # laufende Ladung ist schon in den Tageswerten, nicht doppelt zählen
+        w = wb.cfg.get("wbx") or {}
+        ents = [x for x in ((w.get("ent") or {}).get(r) for r in ("power", "energy", "total")) if x] if w.get("kind") == "ha" else []
+        out["wb"] = {"pv": round(pv, 4), "net": round(grid, 4), "ents": ents, "first": min(days) if days else "", "live": bool(o)}
+    connection.send_result(msg["id"], out)
+
+
 def _sup(hass: HomeAssistant, connection, msg: dict):
     sup = hass.data.get(DOMAIN, {}).get("support")
     if sup is None:
@@ -1845,8 +1885,9 @@ def _sup(hass: HomeAssistant, connection, msg: dict):
 @websocket_api.require_admin
 @websocket_api.websocket_command({
     vol.Required("type"): "fenster_heizung/support",
-    vol.Required("act"): vol.In(["get", "send", "poll", "read", "retry", "drop", "clear", "privacy", "diag", "opts"]),
+    vol.Required("act"): vol.In(["get", "send", "poll", "read", "retry", "drop", "clear", "privacy", "diag", "opts", "img", "pushtest"]),
     vol.Optional("text"): str, vol.Optional("diag"): bool, vol.Optional("mid"): str, vol.Optional("notify"): bool, vol.Optional("url_dev"): str,
+    vol.Optional("image"): str, vol.Optional("push"): str,
 })
 @websocket_api.async_response
 async def ws_support(hass: HomeAssistant, connection, msg: dict) -> None:
@@ -1856,7 +1897,7 @@ async def ws_support(hass: HomeAssistant, connection, msg: dict) -> None:
         return
     act, res = msg["act"], {"ok": True}
     if act == "send":
-        res = await sup.async_send(msg.get("text", ""), bool(msg.get("diag")))
+        res = await sup.async_send(msg.get("text", ""), bool(msg.get("diag")), msg.get("image", ""))
     elif act == "poll":
         res = await sup.async_poll(opened=True)
         sup.mark_read()
@@ -1873,7 +1914,12 @@ async def ws_support(hass: HomeAssistant, connection, msg: dict) -> None:
     elif act == "diag":
         res = {"ok": True, "diag": sup.diagnose()}
     elif act == "opts":
-        sup.set_opts(msg.get("notify"), msg.get("url_dev"))
+        sup.set_opts(msg.get("notify"), msg.get("url_dev"), msg.get("push"))
+    elif act == "img":  # einzelnes Bild nachladen (nicht im Verlauf, damit der klein bleibt)
+        connection.send_result(msg["id"], {"ok": True, "mid": msg.get("mid", ""), "img": await sup.async_img(msg.get("mid", ""))})
+        return
+    elif act == "pushtest":
+        res = {"ok": await sup.async_push("Strom & Wärme · Support", "So sieht eine neue Antwort im Support-Chat aus.")}
     connection.send_result(msg["id"], {**sup.snapshot(), **res})
 
 
@@ -1885,6 +1931,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_scan, ws_wb_ha_test, ws_wb_est, ws_wb_odo, ws_wb_session, ws_wb_assign, ws_preise, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test, ws_wx_ack, ws_wx_pause, ws_wx_close, ws_wx_vor,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_tg_quick_set, ws_tg_quick, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
-        ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act, ws_spn_gh, ws_support,
+        ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act, ws_spn_gh, ws_support, ws_ef_link,
     ):
         websocket_api.async_register_command(hass, command)

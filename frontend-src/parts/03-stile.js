@@ -999,7 +999,12 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efsd{margin-top:8px;font-size:.85rem;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent)}
 .efsv{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.efsv:first-of-type{border-top:0}.efsvt{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.efsvt b{font-size:.9rem;color:var(--c)}
 .efsvb{height:7px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color) 10%,transparent);overflow:hidden}.efsvb i{display:block;height:100%;background:linear-gradient(90deg,#fbbf24,#facc15);border-radius:99px}
-.efsvv{display:flex;flex-direction:column;align-items:flex-end}.efsvv small{font-size:.72rem;color:#fbbf24}
+.efsvv{display:flex;flex-direction:column;align-items:flex-end;text-align:right}.efsvv small{font-size:.72rem;color:#fbbf24}.efsvv small.efsvu{color:var(--mut)}
+.efsvt b .efsrc{display:inline-block;width:auto;height:auto;font-style:normal;font-weight:600;font-size:.64rem;line-height:1.5;color:var(--mut);background:none;border:1px solid var(--line);border-radius:99px;padding:0 6px;margin:0 0 0 6px;vertical-align:1px;white-space:nowrap;flex:none}
+.efsvf{font-size:.74rem;color:var(--mut);line-height:1.4;margin-top:8px}
+.efsvt b button.efsrc{cursor:pointer;color:#5eead4;border-color:color-mix(in srgb,#2dd4bf 45%,transparent);font-family:inherit}
+.efsvb.m3{display:flex;gap:2px}.efsvb.m3 i.m{flex:none;border-radius:99px}.efsvb.m3 i.pv{background:#fbbf24}.efsvb.m3 i.bat{background:#a78bfa}.efsvb.m3 i.net{background:#f87171}
+.efsvp{font-size:.66rem;color:var(--mut)}.efsvv .c-pv{color:#fbbf24}.efsvv .c-bat{color:#a78bfa}.efsvv .c-net{color:#f87171}.efsvl{margin-top:10px}
 /* Modul 19 v1.0: Prüfung, Schnellstart, Kosten */
 .efckl{display:flex;flex-direction:column;gap:6px}.efck{display:flex;align-items:flex-start;gap:8px;width:100%;padding:9px 11px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--primary-text-color);font:inherit;font-size:.84rem;text-align:left;cursor:pointer}.efck span{flex:1}.efck>svg:last-child{transform:rotate(-90deg);opacity:.5;flex:none;align-self:center}.efck b{display:block;font-size:.85rem}
 .efck.ok{cursor:default;color:#4ade80;border-color:color-mix(in srgb,#4ade80 40%,transparent);background:color-mix(in srgb,#4ade80 8%,transparent)}.efck.ok span{color:var(--primary-text-color)}.efck.bad{border-color:color-mix(in srgb,#f87171 55%,transparent);background:color-mix(in srgb,#f87171 8%,transparent)}.efck.bad>svg:first-child{color:#f87171}

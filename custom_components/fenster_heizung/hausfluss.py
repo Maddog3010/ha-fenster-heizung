@@ -116,6 +116,9 @@ def clean_node(raw: Any, hub: bool = False) -> dict[str, Any]:
         out["status"] = r.get("status") if isinstance(r.get("status"), str) and _ST.match(r["status"]) else ""
         # v0.9 W3 Gruppen-Kachel: mehrere Leistungssensoren als Summe
         out["group"] = list(dict.fromkeys(e for e in (_ent(x) for x in (r.get("group") or [])[:16] if isinstance(x, str)) if e))[:8]
+        # Strom-Reiter: Werte von Modul 4/8 übernehmen ("" = automatisch, "own" = eigene Rechnung, "wb" = Modul 8, "gs:<id>" = Gerät in Modul 4)
+        src = str(r.get("src") or "")
+        out["src"] = src if (src in ("", "own", "wb") or re.match(r"^gs:[A-Za-z0-9_-]{1,40}$", src)) else ""
     return out
 
 

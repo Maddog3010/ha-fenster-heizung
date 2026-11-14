@@ -20,6 +20,38 @@
     if (P.range === "month") return f(R.s, { month: "long", year: "numeric" });
     return String(R.s.getFullYear());
   }
+  /* Verbindung zu Modul 4 (Gerätestrom) und Modul 8 (Wallbox): Tageswerte je Gerät für den Zeitraum */
+  _efLkLoad(P, R) {
+    const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const key = P ? P.range + ":" + P.off : "now", c = (this._efLkC = this._efLkC || {}), h = c[key];
+    if (h && Date.now() - h.ts < 12e4) { this._efLk = h.d; return h.d; }
+    if (this._efLkBusy === key) return h ? h.d : null;
+    this._efLkBusy = key;
+    const s = R ? R.s : new Date(), e = R ? R.e : new Date(Date.now() + 864e5);
+    this._hass.callWS({ type: "fenster_heizung/ef_link", start: iso(s), end: iso(e) }).then((d) => { c[key] = { ts: Date.now(), d }; this._efLk = d; })
+      .catch(() => { c[key] = { ts: Date.now(), d: { gs: [], wb: null } }; })
+      .finally(() => { this._efLkBusy = null; if (this._mdActive() === "ef") this._render(); if (this._modal && this._modal.type === "efxedit") this._renderModal(); });
+    return h ? h.d : null;
+  }
+  /* Quelle einer Verbraucher-Kachel: { k: "gs"|"wb"|"own", g } */
+  _efLkFor(n, L) {
+    if (!L || n.flow !== "consume" || n.src === "own") return { k: "own" };
+    const ids = [n.power, n.bottom, n.top, n.left, n.right, ...(n.group || [])].filter(Boolean);
+    if (n.src === "wb") return L.wb ? { k: "wb", g: L.wb } : { k: "own" };
+    if (/^gs:/.test(n.src || "")) { const g = (L.gs || []).find((x) => "gs:" + x.id === n.src); return g ? { k: "gs", g } : { k: "own" }; }
+    const g = (L.gs || []).find((x) => x.ent && ids.includes(x.ent)); if (g) return { k: "gs", g };
+    if (L.wb && ((L.wb.ents || []).some((x) => ids.includes(x)) || /car|wallbox/i.test(n.image || "") || /\b(auto|e-?auto|wallbox|laden|ladestation|elektroauto)\b/i.test(n.name || ""))) return { k: "wb", g: L.wb };
+    return { k: "own" };
+  }
+  /* kWh-Zähler einer Verbraucher-Kachel: eine der Wert-Entitäten (oben/unten/links/rechts) mit Einheit Wh/kWh/MWh und state_class total(_increasing) */
+  _efxEid(n) {
+    if (!n || n.flow !== "consume" || (n.group || []).length) return "";
+    for (const k of [n.energy, n.bottom, n.top, n.left, n.right]) {
+      const st = k && this._hass.states[k], a = (st && st.attributes) || {};
+      if (st && /^[kM]?Wh$/i.test(a.unit_of_measurement || "") && /^total/.test(a.state_class || "")) return k;
+    }
+    return "";
+  }
   /* Alle Leistungs-Entitäten, die das Fluss-Bild nutzt (inkl. Gruppen-Kacheln) */
   _efxPowIds(nodes) {
     const ids = new Set();
@@ -28,23 +60,34 @@
   }
   _efxStatLoad(P, force) {
     const c = this._efxCfg(), nodes = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on).map((p) => ({ p, n: c.nodes[p] })), ids = this._efxPowIds(nodes.map((x) => x.n)), R = this._efPer(P);
-    const key = P.range + ":" + P.off + ":" + ids.join(",");
+    const eids = [...new Set(nodes.map((x) => this._efxEid(x.n)).filter(Boolean))], all = [...new Set([...ids, ...eids])];
+    const key = P.range + ":" + P.off + ":" + all.join(",");
     const cache = (this._efSt = this._efSt || {});
     if (!ids.length) return null;
-    const h = cache[key]; if (h && !force && (!R.cur || Date.now() - h.ts < 3e5)) return h;
+    const h = cache[key]; if (h && !force && (!R.cur || Date.now() - h.ts < 12e4)) return h;
     if (this._efStBusy === key) return h || null;
     this._efStBusy = key;
     const per = P.range === "year" ? "day" : "hour";
-    this._hass.callWS({ type: "recorder/statistics_during_period", start_time: R.s.toISOString(), end_time: R.end.toISOString(), statistic_ids: ids, period: per, types: ["mean"] })
-      .then((r) => { cache[key] = { ts: Date.now(), ...this._efxStatCalc(nodes, r || {}, R, per, P) }; })
+    /* abgeschlossene Stunden aus der Langzeitstatistik, die laufende Stunde aus der 5-Minuten-Statistik (sonst fehlt sie bei „Heute“) */
+    const hs = new Date(); hs.setMinutes(0, 0, 0);
+    const q = (s, e, period) => this._hass.callWS({ type: "recorder/statistics_during_period", start_time: s.toISOString(), end_time: e.toISOString(), statistic_ids: all, period, types: ["mean", "change"] });
+    const live = R.cur && +hs < +R.end && +hs >= +R.s;
+    Promise.all([q(R.s, live ? hs : R.end, per), live ? q(hs, R.end, "5minute").catch(() => ({})) : Promise.resolve({})])
+      .then(([r, r5]) => { cache[key] = { ts: Date.now(), live, ...this._efxStatCalc(nodes, r || {}, R, per, P, r5 || {}) }; })
       .catch(() => { cache[key] = { ts: Date.now(), err: true, bars: [], cons: [], tot: null }; })
       .finally(() => { if (this._efStBusy === key) this._efStBusy = null; if (this._mdActive() === "ef") this._render(); });
     return h || null;
   }
-  _efxStatCalc(nodes, r, R, per, P) {
-    const step = per === "day" ? 24 : 1, ts = (x) => (typeof x.start === "number" ? x.start : Date.parse(x.start));
-    const kf = (id) => (/^kW$/i.test(((this._hass.states[id] || {}).attributes || {}).unit_of_measurement || "") ? 1000 : 1);
-    const map = {}; Object.entries(r).forEach(([id, l]) => { const k = kf(id); (l || []).forEach((x) => { if (!isFinite(x.mean)) return; (map[ts(x)] = map[ts(x)] || {})[id] = x.mean * k; }); });
+  _efxStatCalc(nodes, r, R, per, P, r5 = {}) {
+    const ts = (x) => (typeof x.start === "number" ? x.start : Date.parse(x.start)), unit = (id) => ((this._hass.states[id] || {}).attributes || {}).unit_of_measurement || "";
+    const kf = (id) => (/^kW$/i.test(unit(id)) ? 1000 : 1), ef = (id) => (/^Wh$/i.test(unit(id)) ? 0.001 : /^MWh$/i.test(unit(id)) ? 1000 : 1);
+    /* map: Zeitpunkt → Leistung je Entität (W), emap: Zeitpunkt → Zähler-Zuwachs (kWh), stp: Länge des Abschnitts in Stunden */
+    const map = {}, emap = {}, stp = {};
+    const add = (res, step) => Object.entries(res).forEach(([id, l]) => { const k = kf(id), e = ef(id); (l || []).forEach((x) => { const t = ts(x); stp[t] = step;
+      if (isFinite(x.mean)) (map[t] = map[t] || {})[id] = x.mean * k;
+      if (isFinite(x.change)) (emap[t] = emap[t] || {})[id] = x.change * e; }); });
+    add(r, per === "day" ? 24 : 1); add(r5, 1 / 12);
+    Object.keys(emap).forEach((t) => { map[t] = map[t] || {}; });
     const val = (t, id) => (map[t] && isFinite(map[t][id]) ? map[t][id] : 0);
     const nodeW = (n, t) => {
       if (n.flow === "split") return Math.abs(val(t, n.power_to_node)) - Math.abs(val(t, n.power_to_house));
@@ -56,7 +99,7 @@
     /* tot: Herkunft im Haus (pv, bat, net, oth), dazu Netzbezug gesamt (imp), Einspeisung (exp), Akku geladen (chg) und wohin der Solarstrom ging (pvBat, pvExp) */
     const tot = { pv: 0, bat: 0, net: 0, oth: 0, use: 0, gen: 0, exp: 0, imp: 0, chg: 0, pvBat: 0, pvExp: 0, netBat: 0 };
     Object.keys(map).map(Number).sort((a, b) => a - b).forEach((t) => {
-      const m = { pv: 0, bat: 0, net: 0, oth: 0 }, kwh = step / 1000; let out = 0, gen = 0, exp = 0, chg = 0;
+      const m = { pv: 0, bat: 0, net: 0, oth: 0 }, kwh = (stp[t] || 1) / 1000; let out = 0, gen = 0, exp = 0, chg = 0;
       nodes.forEach(({ p, n }) => { if (n.flow === "consume") return; const w = nodeW(n, t), k = this._efxKind(n); if (w < 0) { m[k] += -w; (src[p] = src[p] || { kwh: 0, k }).kwh += -w * kwh; } else { out += w; if (k === "net") exp += w; if (k === "bat") chg += w; } if (k === "pv") gen += Math.abs(w); });
       const imp = m.net, take = Math.min(m.pv, out); m.pv -= take; out -= take; if (out > 0) m.oth = Math.max(0, m.oth - out);
       /* Solar-Überschuss geht zuerst in den Akku, der Rest ins Netz; was der Akku darüber hinaus lädt, kam aus dem Netz */
@@ -66,7 +109,12 @@
       ["pv", "bat", "net", "oth"].forEach((k) => { b[k] += m[k] * kwh; tot[k] += m[k] * kwh; }); b.use += use * kwh; tot.use += use * kwh; tot.gen += gen * kwh; tot.exp += exp * kwh;
       tot.imp += imp * kwh; tot.chg += chg * kwh; tot.pvBat += pvBat * kwh; tot.pvExp += pvExp * kwh; tot.netBat += netBat * kwh;
       const fpv = use > 0 ? m.pv / use : 0;
-      nodes.forEach(({ p, n }) => { if (n.flow !== "consume") return; const w = Math.max(0, nodeW(n, t)) * kwh, o = (cons[p] = cons[p] || { kwh: 0, pv: 0 }); o.kwh += w; o.pv += w * fpv; });
+      nodes.forEach(({ p, n }) => {
+        if (n.flow !== "consume") return;
+        const eid = this._efxEid(n), ez = eid && emap[t] && isFinite(emap[t][eid]) ? Math.max(0, emap[t][eid]) : null;  // Zähler bevorzugt, sonst aus der Leistung
+        const w = ez != null ? ez : Math.max(0, nodeW(n, t)) * kwh, o = (cons[p] = cons[p] || { kwh: 0, pv: 0, meter: 0, pow: 0 });
+        o.kwh += w; o.pv += w * fpv; if (ez != null) o.meter++; else o.pow++;
+      });
     });
     return { bars, cons, tot, src, any: Object.keys(map).length > 0 };
   }
@@ -76,7 +124,7 @@
     if (!this._efxPowIds(Object.values(c.nodes).filter((n) => n.on)).length) return `${nav}<div class="card empty">${ic("energy", 34)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Keine Leistungssensoren</div>Der Strom-Reiter rechnet mit den Leistungssensoren deiner Kacheln. Lege sie unter „Einrichten“ fest.</div>`;
     if (!H) return `${nav}<div class="card empty">Verlauf wird geladen …</div>`;
     if (H.err || !H.any) return `${nav}<div class="card empty">${ic("info", 30)}<div style="margin:8px 0 2px;font-weight:700;color:var(--primary-text-color)">Keine Langzeitstatistik</div>Für diesen Zeitraum liefert Home Assistant keine Werte. Die Sensoren brauchen eine „state_class“ (measurement), damit sie in der Langzeitstatistik landen.</div>`;
-    const T = H.tot, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: v >= 100 ? 0 : 1 }), pc = (a, b) => (b > 0 ? Math.round(a / b * 100) : 0);
+    const T = H.tot, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: v >= 100 ? 0 : 1 }), f2 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: v >= 100 ? 0 : v >= 10 ? 1 : 2 }), pc = (a, b) => (b > 0 ? Math.round(a / b * 100) : 0);
     const sel = this._efSel != null && this._efSel < H.bars.length ? this._efSel : null;
     const sum = `<div class="efsum">${[["Verbrauch", f1(T.use) + " kWh", "#2dd4bf"], ["aus Solar", pc(T.pv, T.use) + " %", "#fbbf24"], ["Autarkie", (T.use > 0 ? 100 - pc(T.net, T.use) : 0) + " %", "#4ade80"], ["Solar erzeugt", f1(T.gen) + " kWh", "#fbbf24"]].map(([l, v, col]) => `<div><small>${l}</small><b style="color:${col}">${v}</b></div>`).join("")}</div>`;
     /* E1 Lichtsäulen */
@@ -87,8 +135,23 @@
     const det = sb ? `<div class="efsd"><b>${esc(P.range === "day" ? `${sel}–${sel + 1} Uhr` : P.range === "year" ? new Date(R.s.getFullYear(), sel, 1).toLocaleDateString("de-DE", { month: "long" }) : new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate() + sel).toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }))}</b> · ${f1(sb.use)} kWh${EF_MIX.filter(([k]) => sb[k] > 0.0005).map(([k, l, col]) => ` · <span style="color:${col}">${pc(sb[k], sb.use)} % ${l}</span>`).join("")}</div>` : `<div class="efsd mut">Tippe auf eine Säule für die Werte</div>`;
     const e1 = `<div class="card efsec1"><div class="efh2">${ic("chart", 16)}Herkunft ${P.range === "day" ? "pro Stunde" : P.range === "year" ? "pro Monat" : "pro Tag"}</div><div class="efcols n${H.bars.length > 24 ? "m" : ""}">${cols}</div><div class="efleg2">${EF_MIX.map(([, l, col]) => `<span><i style="background:${col}"></i>${l}</span>`).join("")}<span class="mut">Höhe = Hausverbrauch</span></div>${det}</div>`;
     /* E2 Verbraucher mit Solar-Anteil */
-    const list = Object.entries(H.cons).map(([p, o]) => ({ p, n: c.nodes[p], ...o })).filter((x) => x.n).sort((a, b) => b.kwh - a.kwh);
-    const e2 = `<div class="card"><div class="efh2">${ic("energy", 16)}Verbraucher mit Solar-Anteil</div>${list.length ? list.map((x) => { const col = x.n.color || EF_POS[x.p][3], s = pc(x.pv, x.kwh); return `<div class="efsv" style="--c:${col}"><span class="efq sm"><span class="efqi">${this._efxImgN(x.n, { on: x.kwh > 0 })}</span></span><span class="efsvt"><b>${esc(x.n.name)}</b><span class="efsvb"><i style="width:${s}%"></i></span></span><span class="efsvv"><b>${f1(x.kwh)} kWh</b><small>${s} % Solar</small></span></div>`; }).join("") : `<div class="mut sm">Keine Verbraucher-Kacheln mit Leistungssensor.</div>`}</div>`;
+    const L = this._efLkLoad(P, R), ln = (o) => o.pv + o.bat + o.net;
+    const list = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on && c.nodes[p].flow === "consume").map((p) => {
+      const n = c.nodes[p], own = H.cons[p] || { kwh: 0, pv: 0, meter: 0 }, lk = this._efLkFor(n, L);
+      /* Modul 4/8 erst ab dem Tag, an dem das Gerät dort eingerichtet ist – liegt der Zeitraum davor, eigene Rechnung */
+      const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      if (lk.k !== "own" && lk.g.first && lk.g.first < iso(R.e)) { const g = lk.g; return { p, n, src: lk.k, kwh: ln({ pv: g.pv, bat: g.bat || 0, net: g.net }), pv: g.pv, bat: g.bat || 0, net: g.net, part: g.first > iso(R.s) }; }
+      return { p, n, src: own.meter ? "meter" : "pow", kwh: own.kwh, pv: own.pv, bat: null, net: null };
+    }).filter((x) => x.kwh > 0.0005 || x.src === "gs" || x.src === "wb").sort((a, b) => b.kwh - a.kwh);
+    const SRC = { gs: ["Modul 4", "Werte aus Modul 4 · Gerätestrom (alle 20 s gerechnet)", "gs"], wb: ["Modul 8", "Werte aus Modul 8 · Ladestatistik", "ev"], meter: ["Zähler", "aus dem kWh-Zähler des Geräts", ""], pow: ["aus Leistung", "aus dem Leistungssensor hochgerechnet", ""] };
+    const e2 = `<div class="card"><div class="efh2">${ic("energy", 16)}Verbraucher mit Solar-Anteil</div>${list.length ? list.map((x) => {
+      const col = x.n.color || EF_POS[x.p][3], s = pc(x.pv, x.kwh), S3 = SRC[x.src], three = x.bat != null;
+      const tag = S3[2] ? `<button class="efsrc lnk" data-act="mdgo" data-k="${S3[2]}" title="${S3[1]}">${S3[0]} ›</button>` : `<em class="efsrc" title="${S3[1]}">${S3[0]}</em>`;
+      const bar = three ? [["pv", x.pv], ["bat", x.bat], ["net", x.net]].map(([k, v]) => (v > 0 && x.kwh > 0 ? `<i class="m ${k}" style="width:${(v / x.kwh * 100).toFixed(1)}%"></i>` : "")).join("") : `<i style="width:${s}%"></i>`;
+      const det = three ? `<small><span class="c-pv">Solar ${f2(x.pv)}</span>${x.bat > 0.0005 ? ` · <span class="c-bat">Akku ${f2(x.bat)}</span>` : ""}${x.net > 0.0005 ? ` · <span class="c-net">Netz ${f2(x.net)}</span>` : ""}</small>` : `<small>davon ${f2(x.pv)} kWh Solar · ${s} %</small>`;
+      return `<div class="efsv" style="--c:${col}"><span class="efq sm"><span class="efqi">${this._efxImgN(x.n, { on: x.kwh > 0 })}</span></span><span class="efsvt"><b>${esc(x.n.name)}${tag}</b><span class="efsvb${three ? " m3" : ""}">${bar}</span>${x.part ? `<small class="efsvp">erst ab Einrichtung in ${S3[0]}</small>` : ""}</span><span class="efsvv"><b>${f2(x.kwh)} kWh</b><small class="efsvu">verbraucht${three ? ` · ${s} % Solar` : ""}</small>${det}</span></div>`; }).join("") : `<div class="mut sm">Keine Verbraucher-Kacheln mit Leistungssensor.</div>`}
+      ${list.length ? `<div class="efleg2 efsvl"><span><i style="background:#fbbf24"></i>Solar</span>${list.some((x) => x.bat != null) ? `<span><i style="background:#a78bfa"></i>Akku</span><span><i style="background:#f87171"></i>Netz</span>` : ""}</div>` : ""}
+      <div class="efsvf">Ganzer Verbrauch des Geräts. Mit „Modul 4“ oder „Modul 8“ kommen die Werte direkt aus diesen Modulen (Solar, Akku, Netz), sonst rechnet Modul 19 selbst nach der Herkunft des Hausstroms in derselben Stunde.${H.live ? ` Stand ${new Date(H.ts).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}, inkl. laufender Stunde.` : ""}${list.some((x) => x.src === "pow") ? " Mit kWh-Zähler an der Kachel wird die eigene Rechnung genauer." : ""} Quelle ändern: Kachel bearbeiten → „Werte im Strom-Reiter“.</div></div>`;
     return `${nav}${sum}<div class="efsgrid${narrow ? " nar" : ""}"><div class="efsmain">${e1}${this._efxSrcCard(H, c)}</div><div class="efsside">${e2}${this._efxCost(T)}</div></div>`;
   }
   /* ---------------- Woher kam der Strom? Anteile je Quelle, Netz- und Akku-Bilanz, wohin der Solarstrom ging ---------------- */
