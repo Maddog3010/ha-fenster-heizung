@@ -190,7 +190,8 @@ def test_session_close_returns_session_with_card():
     P.session_tick(st, NOW, True, 7000)
     P.add_energy(st, NOW, 3600, 7000, 7000, 30.0, "Dolphin", "Karte Tobias")
     assert P.session_tick(st, NOW + timedelta(minutes=1), False, 0) is None
-    done = P.session_tick(st, NOW + timedelta(minutes=5), False, 0)
+    assert P.session_tick(st, NOW + timedelta(minutes=5), False, 0) is None  # ohne Stecker-Info: 10 Minuten Pause gehören dazu
+    done = P.session_tick(st, NOW + timedelta(minutes=11), False, 0)
     assert done["card"] == "Karte Tobias" and abs(done["kwh"] - 7.0) < 1e-6 and st["sessions"][0] is done
 
 
@@ -518,3 +519,32 @@ def test_temperature_per_day_in_view():
 def test_vehicle_km_year_fields():
     v = C.clean_wb({"vehicles": [{"id": "v1", "name": "A", "kmYear": 15000, "kmFrom": 13}]})["vehicles"][0]
     assert v["kmYear"] == 15000 and v["kmFrom"] == 12
+
+
+def test_session_stays_one_while_plugged_in():
+    """Phasenwechsel oder Wolken: Pausen bis zum Abstecken bleiben eine Ladung."""
+    st = P.clean_stats(None)
+    P.session_tick(st, NOW, True, 4000, True)
+    P.add_energy(st, NOW, 1800, 4000, 4000, 30.0, "BYD", "")
+    assert P.session_tick(st, NOW + timedelta(minutes=6), False, 0, True) is None   # Phasenwechsel, Auto pausiert
+    P.session_tick(st, NOW + timedelta(minutes=7), True, 11000, True)
+    assert P.session_tick(st, NOW + timedelta(hours=2), False, 0, True) is None      # Wolken, angesteckt
+    P.session_tick(st, NOW + timedelta(hours=3), True, 4000, True)
+    assert len(st["sessions"]) == 0 and st["open"]["start"] == NOW.isoformat(timespec="seconds")
+    done = P.session_tick(st, NOW + timedelta(hours=4), False, 0, False)            # abgesteckt
+    assert done is not None and len(st["sessions"]) == 1 and done["min"] == 180.0
+
+
+def test_merge_split_session():
+    st = P.clean_stats(None)
+    st["sessions"] = [
+        {"start": "2026-11-13T12:20:00", "min": 60.0, "veh": "BYD", "kwh": 8.0, "pv": 6.0, "cost": 0.6},
+        {"start": "2026-11-13T11:00:00", "min": 75.0, "veh": "BYD", "kwh": 5.0, "pv": 5.0, "cost": 0.0, "card": "Tobias"},
+        {"start": "2026-11-12T08:00:00", "min": 30.0, "veh": "Golf", "kwh": 3.0, "pv": 0.0, "cost": 0.9},
+    ]
+    s = st["sessions"][0]
+    assert P.merge_prev(st, s) is st["sessions"][1]
+    r = P.session_edit(st, s["start"], {"merge": True}, NOW)
+    assert r["start"] == "2026-11-13T11:00:00" and r["kwh"] == 13.0 and r["pv"] == 11.0 and r["min"] == 140.0 and r["card"] == "Tobias"
+    assert len(st["sessions"]) == 2 and "Zusammengeführt" in r["chg"][-1]["x"][0]
+    assert P.merge_prev(st, st["sessions"][0]) is None  # anderes Fahrzeug davor

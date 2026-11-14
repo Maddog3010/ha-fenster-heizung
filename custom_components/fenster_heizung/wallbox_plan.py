@@ -402,8 +402,17 @@ def add_energy(st: dict[str, Any], now: datetime, dt_s: float, power_w: float, s
         o["last"] = now.isoformat(timespec="seconds")
 
 
-def session_tick(st: dict[str, Any], now: datetime, charging: bool, power_w: float) -> dict[str, Any] | None:
-    """Ladevorgang starten, solange geladen wird, und nach 3 Minuten ohne Ladung abschließen."""
+SES_IDLE_S = 600        # ohne Stecker-Info: so lange Pause gehört noch zur selben Ladung
+SES_PLUGGED_MAX_S = 12 * 3600  # angesteckt, aber so lange nicht geladen: Ladung trotzdem abschließen
+
+
+def session_tick(st: dict[str, Any], now: datetime, charging: bool, power_w: float, plugged: bool | None = None) -> dict[str, Any] | None:
+    """Ladevorgang starten, solange geladen wird, und abschließen, wenn das Auto abgesteckt wird.
+
+    Eine Ladung reicht vom ersten Strom bis zum Abstecken – Pausen dazwischen (Phasenwechsel, zu wenig Sonne, Ladeplan wartet)
+    bleiben in derselben Ladung (vorher wurde nach 3 Minuten ohne Strom eine neue begonnen).
+    plugged: True/False, wenn die Wallbox den Stecker meldet; None = unbekannt, dann gilt eine Pause von 10 Minuten.
+    """
     o = st.get("open")
     if charging and power_w > 200:
         if not o:
@@ -416,7 +425,7 @@ def session_tick(st: dict[str, Any], now: datetime, charging: bool, power_w: flo
             idle = (now - datetime.fromisoformat(o["last"])).total_seconds()
         except (ValueError, TypeError):
             idle = 1e9
-        if idle >= 180:
+        if plugged is False or idle >= (SES_PLUGGED_MAX_S if plugged else SES_IDLE_S):
             return close_session(st)
     return None
 
@@ -478,6 +487,8 @@ def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: dateti
                     del d["veh"][s["veh"]]
         st["sessions"].remove(s)
         return {"deleted": start}
+    if ch.get("merge"):
+        return session_merge(st, s, now)
     log: list[str] = []
     nv = str(ch.get("veh") or "")[:30]
     if nv and nv != s["veh"]:
@@ -533,6 +544,53 @@ def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: dateti
         s.setdefault("chg", []).append({"t": s["edit"], "x": log})
         del s["chg"][:-KEEP_CHG]
     return s
+
+
+MERGE_GAP_H = 12  # so weit dürfen zwei Teile einer Ladung auseinanderliegen
+
+
+def merge_prev(st: dict[str, Any], s: dict[str, Any]) -> dict[str, Any] | None:
+    """Die Ladung davor (älter), wenn sie zum selben Fahrzeug gehört und höchstens 12 Stunden davor endete."""
+    i = st["sessions"].index(s)
+    p = st["sessions"][i + 1] if i + 1 < len(st["sessions"]) else None
+    if p is None or p["veh"] != s["veh"]:
+        return None
+    try:
+        end = datetime.fromisoformat(p["start"]) + timedelta(minutes=p.get("min") or 0)
+        gap = (datetime.fromisoformat(s["start"]) - end).total_seconds() / 3600
+    except (ValueError, TypeError):
+        return None
+    return p if -0.1 <= gap <= MERGE_GAP_H else None
+
+
+def session_merge(st: dict[str, Any], s: dict[str, Any], now: datetime) -> dict[str, Any] | None:
+    """Zwei Teile einer Ladung zusammenführen (z. B. nach einem Phasenwechsel vor 2026.11.3b23 getrennt gezählt).
+    Die Tageswerte bleiben unverändert – die Energie war schon gezählt, nur die Ladungsliste ändert sich."""
+    p = merge_prev(st, s)
+    if p is None:
+        return None
+    try:
+        mins = (datetime.fromisoformat(s["start"]) + timedelta(minutes=s.get("min") or 0) - datetime.fromisoformat(p["start"])).total_seconds() / 60
+    except (ValueError, TypeError):
+        mins = (p.get("min") or 0) + (s.get("min") or 0)
+    t = s["start"][11:16]
+    p["min"] = round(max(mins, 0.0), 1)
+    for k, r in (("kwh", 3), ("pv", 3), ("cost", 4)):
+        p[k] = round(p[k] + s[k], r)
+    if "orig" in p or "orig" in s:
+        p["orig"] = round(p.get("orig", p["kwh"] - s["kwh"]) + s.get("orig", s["kwh"]), 3)
+    if not p.get("card") and s.get("card"):
+        p["card"] = s["card"]
+    nn = " · ".join(x for x in (p.get("note"), s.get("note")) if x)[:80]
+    if nn:
+        p["note"] = nn
+    if s.get("biz"):
+        p["biz"] = True
+    p["edit"] = now.isoformat(timespec="seconds")
+    p["chg"] = (p.get("chg") or []) + (s.get("chg") or []) + [{"t": p["edit"], "x": [f"Zusammengeführt mit dem Teil ab {t} Uhr (+{_fmt(s['kwh'])} kWh)"]}]
+    del p["chg"][:-KEEP_CHG]
+    st["sessions"].remove(s)
+    return p
 
 
 def assign_unknown(st: dict[str, Any], d0: str, d1: str, to: str, now: datetime) -> dict[str, float]:

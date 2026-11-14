@@ -442,7 +442,7 @@ class WallboxManager:
             raise ValueError("Ladung nicht gefunden")
         self._st_store.async_delay_save(lambda: self._st, 2)
         t = start[:16].replace("T", " ")
-        self._add(f"Ladung vom {t} gelöscht." if r.get("deleted") else f"Ladung vom {t} bearbeitet.")
+        self._add(f"Ladung vom {t} gelöscht." if r.get("deleted") else f"Ladung vom {t} mit dem Teil davor zusammengeführt." if ch.get("merge") else f"Ladung vom {t} bearbeitet.")
         return self.stats()
 
     def _soc(self) -> float | None:
@@ -690,7 +690,9 @@ class WallboxManager:
         veh = w["name"] if w else "Unbekannt"
         card = next((c["n"] for c in self.info.get("cards") or [] if w and c["i"] == w.get("card")), "") if w and w.get("card") else ""
         cv = self.cur_vehicle()
-        done = session_tick(self._st, now, charging, power)
+        w = self.cfg["wbx"]  # Stecker nur verlässlich, wenn die Wallbox ihn meldet (go-e immer, andere mit Status- oder Stecker-Entität)
+        sure = self.ok and st_car is not None and (w["kind"] != "ha" or bool(w["ent"].get("plug") or w["ent"].get("status")))
+        done = session_tick(self._st, now, charging, power, (st_car != CAR_IDLE) if sure else None)
         if done:
             self._fire_done(done)
         add_km(self._st, now, self._odo(), cv["id"] if cv else "", cv["name"] if cv else "")

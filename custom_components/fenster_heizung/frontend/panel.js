@@ -756,7 +756,7 @@ const MV = {
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  ev: { v: "0.9", b: 4, d: "2026-11-14", p: "2026.11.3b22", log: [["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  ev: { v: "0.9", b: 5, d: "2026-11-14", p: "2026.11.3b23", log: [["0.9", 5, "2026.11.3b23", "Eine Ladung reicht bis zum Abstecken (kein neuer Eintrag nach Phasenwechsel), getrennte Teile zusammenführen, Ladenachweis als echte PDF-Datei"], ["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "0.9", b: 1, d: "2026-11-12", p: "2026.11.3b11", log: [["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sf: { v: "0.5", b: 4, d: "2026-11-04", p: "2026.11.1", log: [["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -2779,6 +2779,7 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .evkmyb .p{position:absolute;top:0;bottom:0;border-radius:0 99px 99px 0;background:repeating-linear-gradient(135deg,rgba(45,212,191,.38) 0 6px,rgba(45,212,191,.12) 6px 12px)}.evkmyb .m{position:absolute;top:-6px;bottom:-6px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--primary-text-color,#e6edf3)}
 .evkmst{display:inline-flex;align-items:center;gap:5px;font-size:.8rem;font-weight:700;padding:4px 10px;border-radius:99px}.evkmst.ok{background:color-mix(in srgb,#34d399 15%,transparent);color:#34d399}.evkmst.warn{background:color-mix(in srgb,#f59e0b 16%,transparent);color:#f59e0b}.evkmst.bad{background:color-mix(in srgb,#f87171 16%,transparent);color:#f87171}
 @media (max-width:760px){.evkm4{grid-template-columns:1fr 1fr}.evkm2{grid-template-columns:1fr}.evkmk .evkv{font-size:1.25rem}}
+.evmrg{display:flex;gap:10px;align-items:center;margin-top:12px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,#60a5fa 9%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,#60a5fa 28%,var(--line))}.evmrg>.ic{color:#60a5fa;flex:none}.evmrg>span{flex:1;min-width:0}.evmrg small{display:block;color:var(--mut);font-size:.8rem}.evmrg .btn2{flex:none}
 @media (max-width:700px){.evub .zl.hm{display:none}.evul .big{font-size:1.3rem;width:100%}}
 .hsm20{all:unset;box-sizing:border-box;display:flex;gap:8px;align-items:flex-start;width:100%;cursor:pointer;padding:9px 12px;border-radius:12px;margin:6px 0;background:color-mix(in srgb,#f5c451 14%,transparent);color:var(--primary-text-color);font-size:.84rem}.hsm20 .ic{color:#f5c451;flex:none;margin-top:2px}
 `;
@@ -9530,7 +9531,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="evpdft">${R.length ? `<table><thead><tr><th>Datum</th><th>Fahrzeug</th><th>Karte</th><th>kWh</th><th>€</th></tr></thead><tbody>${R.map((x) => `<tr><td>${fd(x.start)}</td><td>${esc(x.veh || "")}${x.biz ? `<em class="evtag">dienstlich</em>` : ""}${x.note ? `<small class="mut" style="display:block">${esc(x.note)}</small>` : ""}</td><td>${esc(x.card || "–")}</td><td>${num(x.kwh, 2)}${x.orig != null ? `<sup title="Gemessen: ${num(x.orig, 2)} kWh">*</sup>` : ""}</td><td>${num(x.kwh * P.ct / 100, 2)}</td></tr>`).join("")}</tbody>
         <tfoot><tr><td colspan="3"><b>Summe · ${R.length} ${R.length === 1 ? "Ladung" : "Ladungen"}</b></td><td><b>${num(kwh, 2)}</b></td><td><b>${num(eur, 2)}</b></td></tr></tfoot></table>` : `<div class="mut sm">In diesem Monat gibt es keine passenden Ladungen.</div>`}</div>
       <div class="mut sm" style="margin-top:6px">Gemessen an der Wallbox. Gespeichert werden die letzten 100 Ladungen.${R.some((x) => x.orig != null) ? " * Von Hand geändert – der gemessene Wert steht im Nachweis." : ""}</div>
-      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wbvpdfcsv" ${R.length ? "" : "disabled"}>${ic("check", 16)} CSV</button><button class="btn2 pri" data-act="wbvpdfprint" ${R.length ? "" : "disabled"}>${ic("check", 16)} Drucken / als PDF sichern</button></div></div>`;
+      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wbvpdfcsv" ${R.length ? "" : "disabled"}>${ic("check", 16)} CSV</button><button class="btn2 pri" data-act="wbvpdfprint" ${R.length ? "" : "disabled"}>${ic("check", 16)} Als PDF speichern</button></div></div>`;
   }
   _wbPdfAct(a, b) {
     const m = this._modal, c = this._wb(), P = c.pdf || { ct: 30, name: "" }, k = b.dataset.k;
@@ -9545,14 +9546,16 @@ class FensterHeizungPanel extends HTMLElement {
       save(new Blob(["﻿" + rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(";")).join("\r\n")], { type: "text/csv;charset=utf-8" }), fn + ".csv"); this._toast("Ladenachweis als CSV gespeichert"); return;
     }
     if (a === "wbvpdfprint") {
-      const kwh = R.reduce((s, x) => s + x.kwh, 0), e = (x) => String(x).replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
-      const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Ladenachweis ${MON[m.m]} ${m.y}</title><style>body{font:13px/1.45 system-ui,Segoe UI,Roboto,Arial,sans-serif;color:#111;margin:32px}h1{font-size:20px;margin:0 0 4px}p{margin:0 0 14px;color:#444}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid #ddd}th:nth-child(n+4),td:nth-child(n+4){text-align:right}tfoot td{text-align:right}tfoot td:first-child{text-align:left}tfoot td{font-weight:700;border-top:2px solid #111}small{color:#666}</style></head><body>
-        <h1>Ladenachweis ${MON[m.m]} ${m.y}</h1><p>${P.name ? e(P.name) + " · " : ""}${e(who)} · Erstattung ${f2(P.ct)} ct/kWh</p>
-        <table><thead><tr><th>Datum</th><th>Fahrzeug</th><th>Karte</th><th>kWh</th><th>Betrag €</th></tr></thead><tbody>${R.map((x) => { const t = new Date(x.start); return `<tr><td>${t.toLocaleDateString("de-DE")} ${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</td><td>${e(x.veh || "")}${x.biz ? " · dienstlich" : ""}${x.note ? `<br><small>${e(x.note)}</small>` : ""}</td><td>${e(x.card || "–")}</td><td>${f2(x.kwh)}${x.orig != null ? `*` : ""}</td><td>${f2(x.kwh * P.ct / 100)}</td></tr>`; }).join("")}</tbody>
-        <tfoot><tr><td colspan="3">Summe · ${R.length} Ladungen</td><td>${f2(kwh)}</td><td>${f2(kwh * P.ct / 100)}</td></tr></tfoot></table>${R.some((x) => x.orig != null) ? `<p style="margin-top:12px"><small>* Von Hand geändert. Gemessen: ${R.filter((x) => x.orig != null).map((x) => `${new Date(x.start).toLocaleDateString("de-DE")} ${f2(x.orig)} kWh`).join(", ")}.</small></p>` : ""}<p style="margin-top:18px"><small>Gemessen an der Wallbox, erstellt mit Strom &amp; Wärme am ${new Date().toLocaleDateString("de-DE")}.</small></p></body></html>`;
-      let w = null; try { w = window.open("", "_blank"); } catch (err) { w = null; }
-      if (w && w.document) { w.document.write(html); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch (err) { /* Druckdialog nicht möglich */ } }, 300); }
-      else { save(new Blob([html], { type: "text/html;charset=utf-8" }), fn + ".html"); this._toast("Als Datei gespeichert – öffnen und drucken"); }
+      const kwh = R.reduce((s, x) => s + x.kwh, 0), ch = R.filter((x) => x.orig != null);
+      const rows = R.map((x) => { const t = new Date(x.start); return { date: `${t.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })} ${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`,
+        veh: `${x.veh || ""}${x.biz ? " · dienstlich" : ""}`, card: x.card || "–", kwh: f2(x.kwh) + (x.orig != null ? "*" : ""), eur: f2(x.kwh * P.ct / 100), note: x.note || "" }; });
+      try {
+        const bytes = this._wbPdfDoc({ title: `Ladenachweis ${MON[m.m]} ${m.y}`, sub: `${P.name ? P.name + " · " : ""}${who} · Erstattung ${f2(P.ct)} ct/kWh`, rows,
+          sum: { label: `Summe · ${R.length} ${R.length === 1 ? "Ladung" : "Ladungen"}`, kwh: f2(kwh), eur: f2(kwh * P.ct / 100) + " €" },
+          notes: [...(ch.length ? [`* Von Hand geändert. Gemessen: ${ch.map((x) => `${new Date(x.start).toLocaleDateString("de-DE")} ${f2(x.orig)} kWh`).join(", ")}.`] : []), `Gemessen an der Wallbox, erstellt mit Strom & Wärme am ${new Date().toLocaleDateString("de-DE")}.`],
+          foot: `Ladenachweis ${MON[m.m]} ${m.y}${P.name ? " · " + P.name : ""}` });
+        save(new Blob([bytes], { type: "application/pdf" }), fn + ".pdf"); this._toast("Ladenachweis als PDF gespeichert");
+      } catch (err) { this._toast("PDF konnte nicht erstellt werden"); }
     }
   }
   /* A11: Startseite – Kachel und Bubble aus denselben Werten wie Modul 8 (Fahrzeug, Schätzung, Wallbox) */
@@ -9586,7 +9589,15 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow"><span>Dienstlich<small class="mut" style="display:block">Für den Ladenachweis an den Arbeitgeber.</small></span><button class="sw ${m.biz ? "on" : ""}" data-act="wbvsesbiz" aria-pressed="${!!m.biz}" aria-label="Dienstlich"></button></div>
       <div class="vrow" style="display:block"><span>Notiz</span><input class="otxt" style="width:100%;margin-top:6px" type="text" maxlength="80" data-f="wbsesnote" value="${esc(m.note)}" placeholder="z. B. Gast geladen, Fahrt nach Hamburg" aria-label="Notiz"></div>
       ${(x.chg && x.chg.length) || x.edit ? `<div class="lsec" style="margin-top:12px">${ic("schedule", 15)}Änderungen</div><div class="evchg">${(x.chg || []).slice().reverse().map((c) => `<div><small>${new Date(c.t).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })}</small><ul>${c.x.map((y) => `<li>${esc(y)}</li>`).join("")}</ul></div>`).join("") || `<div><small>${new Date(x.edit).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</small><ul><li>bearbeitet (vor diesem Update, Einzelheiten nicht gespeichert)</li></ul></div>`}${x.orig != null ? `<div class="mut sm">Gemessen an der Wallbox: ${num(x.orig, 2)} kWh</div>` : ""}</div>` : ""}
+      ${(() => { const P = this._sesPrev(x); if (!P) return ""; const tp = new Date(P.start); return `<div class="evmrg">${ic("link", 16)}<span><b>Gehört zur Ladung davor?</b><small>Ladung ab ${tp.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr${tp.toDateString() !== t.toDateString() ? " (" + tp.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }) + ")" : ""} · ${num(P.kwh, 1)} kWh · ${esc(P.veh)}. Zum Beispiel nach einem Phasenwechsel getrennt gezählt.</small></span><button class="btn2" data-act="wbvsesmrg" ${m.busy ? "disabled" : ""}>Zusammenführen</button></div>`; })()}
       <div class="foot2" style="margin-top:12px">${m.del ? `<button class="btn2 dng" data-act="wbvsesdel2">${ic("trash", 16)} Wirklich löschen</button>` : `<button class="btn2" data-act="wbvsesdel">${ic("trash", 16)} Löschen</button>`}<button class="btn2 pri" data-act="wbvsesok" ${m.busy ? "disabled" : ""}>${ic("check", 16)} Speichern</button></div></div>`;
+  }
+  /* Teil davor (älter, gleiches Fahrzeug, höchstens 12 Stunden dazwischen) – wie merge_prev im Backend */
+  _sesPrev(x) {
+    const L = ((this._wbStD && this._wbStD.data) || {}).sessions || [], i = L.findIndex((y) => y.start === x.start), p = i >= 0 ? L[i + 1] : null;
+    if (!p || p.running || x.running || p.veh !== x.veh) return null;
+    const gap = (new Date(x.start) - (new Date(p.start).getTime() + (p.min || 0) * 6e4)) / 36e5;
+    return gap >= -0.1 && gap <= 12 ? p : null;
   }
   _sesAct(a, b) {
     if (a === "wbvses") {
@@ -9603,6 +9614,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._hass.callWS({ type: "fenster_heizung/wb_session", start: m.start, ...body }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; this._modal = null; this._renderModal(); this._render(); this._toast(msg); })
         .catch(() => { m.busy = false; this._renderModal(); this._toast("Ladung konnte nicht gespeichert werden"); }); };
     if (a === "wbvsesdel2") { send({ delete: true }, "Ladung gelöscht"); return; }
+    if (a === "wbvsesmrg") { send({ merge: true }, "Ladungen zusammengeführt"); return; }
     if (a === "wbvsesok") {
       const x = this._sesFind(m.start), k = parseFloat(String(m.kwh).replace(",", "."));
       if (!isFinite(k) || k < 0 || k > 300) { this._toast("Bitte eine Menge von 0 bis 300 kWh eingeben"); return; }
@@ -9799,6 +9811,62 @@ class FensterHeizungPanel extends HTMLElement {
       this._toast(r.base ? "Startwert gespeichert – ab dem nächsten Eintrag wird gezählt" : `${num(r.km, 0)} km auf ${r.days} ${r.days === 1 ? "Tag" : "Tage"} verteilt`);
       this._wbStatLoad(true);
     }).catch(() => this._toast("Kilometerstand konnte nicht gespeichert werden"));
+  }
+  /* ================= Modul 8 · Ladenachweis als echte PDF-Datei (2026.11.3b23) =================
+     Kleiner PDF-Schreiber ohne Bibliothek: A4 hochkant, Helvetica (WinAnsi, Umlaute und €), Tabelle mit Kopf auf jeder Seite,
+     Summe, Fußnote und Seitenzahl. Vorher wurde ein HTML-Fenster zum Drucken geöffnet – in den Apps von Home Assistant
+     ging das nicht, dann kam eine .html-Datei. */
+  _pdfBytes(pages) {
+    const enc = (s) => String(s).replace(/[^\x20-\x7e\xa0-\xff€–—„“”‚‘’…•]/g, "?").replace(/€/g, "\x80").replace(/–/g, "\x96").replace(/—/g, "\x97").replace(/„/g, "\x84").replace(/“/g, "\x93").replace(/”/g, "\x94").replace(/‚/g, "\x82").replace(/‘/g, "\x91").replace(/’/g, "\x92").replace(/…/g, "\x85").replace(/•/g, "\x95").replace(/[\\()]/g, (c) => "\\" + c);
+    const objs = [], add = (s) => { objs.push(s); return objs.length; };
+    const cat = add(""), pg = add(""), f1 = add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>"), f2 = add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
+    const kids = pages.map((ops) => {
+      const body = ops.map((o) => o.t === "text" ? `BT /${o.b ? "F2" : "F1"} ${o.s} Tf ${o.c || "0 0 0"} rg ${o.x.toFixed(1)} ${o.y.toFixed(1)} Td (${enc(o.v)}) Tj ET`
+        : o.t === "line" ? `${o.c || "0.8 0.8 0.8"} RG ${o.w || 0.5} w ${o.x1.toFixed(1)} ${o.y.toFixed(1)} m ${o.x2.toFixed(1)} ${o.y.toFixed(1)} l S`
+        : `${o.c} rg ${o.x.toFixed(1)} ${o.y.toFixed(1)} ${o.w.toFixed(1)} ${o.h.toFixed(1)} re f`).join("\n");
+      const st = add(`<< /Length ${body.length} >>\nstream\n${body}\nendstream`);
+      return add(`<< /Type /Page /Parent ${pg} 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R >> >> /Contents ${st} 0 R >>`);
+    });
+    objs[cat - 1] = `<< /Type /Catalog /Pages ${pg} 0 R >>`;
+    objs[pg - 1] = `<< /Type /Pages /Kids [${kids.map((k) => k + " 0 R").join(" ")}] /Count ${kids.length} >>`;
+    let out = "%PDF-1.4\n%\xe2\xe3\xcf\xd3\n"; const off = [];
+    objs.forEach((o, i) => { off.push(out.length); out += `${i + 1} 0 obj\n${o}\nendobj\n`; });
+    const x = out.length;
+    out += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n${off.map((o) => String(o).padStart(10, "0") + " 00000 n \n").join("")}trailer\n<< /Size ${objs.length + 1} /Root ${cat} 0 R >>\nstartxref\n${x}\n%%EOF`;
+    const b = new Uint8Array(out.length); for (let i = 0; i < out.length; i++) b[i] = out.charCodeAt(i) & 255; return b;
+  }
+  /* Breite eines Textes in Helvetica (genähert, reicht für rechtsbündige Zahlen und zum Kürzen) */
+  _pdfW(s, size, bold) {
+    let w = 0; for (const ch of String(s)) w += /[0-9€]/.test(ch) ? 556 : /[ ,.:;!|il]/.test(ch) ? 278 : /[fjrt()\-–*]/.test(ch) ? 333 : /[mwMW]/.test(ch) ? 833 : /[A-ZÄÖÜ]/.test(ch) ? 667 : 520;
+    return w * size / 1000 * (bold ? 1.06 : 1);
+  }
+  _pdfFit(s, size, max, bold) { s = String(s); if (this._pdfW(s, size, bold) <= max) return s; while (s.length > 1 && this._pdfW(s + "…", size, bold) > max) s = s.slice(0, -1); return s + "…"; }
+  /* Ladenachweis: Seiten bauen */
+  _wbPdfDoc(o) {
+    const { title, sub, rows, sum, foot, notes } = o, X = [40, 132, 320, 470, 555], pages = []; let ops = [], y = 0, pno = 0;
+    const T = (x, yy, v, s, b, c) => ops.push({ t: "text", x, y: yy, v, s, b, c }), Tr = (xr, yy, v, s, b, c) => T(xr - this._pdfW(v, s, b), yy, v, s, b, c), L = (yy, c, w) => ops.push({ t: "line", x1: 40, x2: 555, y: yy, c, w });
+    const head = () => {
+      ops = []; pno++; y = 800;
+      if (pno === 1) { T(40, y, title, 18, true); y -= 18; T(40, y, sub, 10, false, "0.33 0.33 0.33"); y -= 26; } else { T(40, y, title + " (Fortsetzung)", 11, true); y -= 22; }
+      ops.push({ t: "rect", x: 40, y: y - 5, w: 515, h: 18, c: "0.94 0.95 0.96" });
+      [["Datum", 0], ["Fahrzeug", 1], ["Karte", 2]].forEach(([t, i]) => T(X[i] + (i ? 0 : 4), y, t, 9, true)); Tr(X[3], y, "kWh", 9, true); Tr(X[4] - 4, y, "Betrag €", 9, true); y -= 20;
+    };
+    const end = () => { T(40, 30, foot, 8, false, "0.45 0.45 0.45"); pages.push(ops); };
+    head();
+    rows.forEach((r) => {
+      const h = r.note ? 26 : 16;
+      if (y - h < 90) { end(); head(); }
+      T(X[0] + 4, y, r.date, 9); T(X[1], y, this._pdfFit(r.veh, 9, X[2] - X[1] - 8), 9); T(X[2], y, this._pdfFit(r.card, 9, 100), 9); Tr(X[3], y, r.kwh, 9); Tr(X[4] - 4, y, r.eur, 9);
+      if (r.note) T(X[1], y - 10, this._pdfFit(r.note, 7.5, X[3] - X[1] - 60), 7.5, false, "0.4 0.4 0.4");
+      L(y - h + 11); y -= h;
+    });
+    if (y < 120) { end(); head(); }
+    L(y + 6, "0 0 0", 1.2); y -= 10;
+    T(X[0] + 4, y, sum.label, 10, true); Tr(X[3], y, sum.kwh, 10, true); Tr(X[4] - 4, y, sum.eur, 10, true); y -= 26;
+    notes.forEach((n) => { if (y < 60) { end(); head(); } T(40, y, this._pdfFit(n, 8.5, 515), 8.5, false, "0.33 0.33 0.33"); y -= 13; });
+    end();
+    pages.forEach((p, i) => p.push({ t: "text", x: 555 - this._pdfW(`Seite ${i + 1} von ${pages.length}`, 8), y: 30, v: `Seite ${i + 1} von ${pages.length}`, s: 8, c: "0.45 0.45 0.45" }));
+    return this._pdfBytes(pages);
   }
   /* Gerätestrom: eigene Berechnung im Backend (fenster_heizung/gs_get). Solar, Netz, Batterie kommen aus Modul 3, Preise aus Modul 1. */
   _gsState() {

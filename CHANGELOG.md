@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b23] - 2026-11-14
+
+### Behoben
+- **Modul 8 (v0.9 Build 5): Nach einem Phasenwechsel stand in der Ladestatistik eine neue Ladung.** Eine Ladung wurde nach 3 Minuten ohne Strom abgeschlossen – nach dem Umschalten der Phasen pausiert das Auto aber oft länger, ebenso bei Wolken im Modus „Sonne“ oder wenn der Ladeplan wartet. Jetzt reicht eine Ladung vom ersten Strom **bis zum Abstecken**; Pausen dazwischen gehören dazu. Meldet eine Wallbox über Home Assistant keinen Stecker oder Status, gilt eine Pause bis 10 Minuten als dieselbe Ladung. Auch das Ereignis „Ladung beendet“ kommt jetzt erst beim Abstecken.
+- **Modul 8: Der Ladenachweis wurde als .html gespeichert statt als PDF.** Bisher öffnete „Drucken / als PDF sichern“ ein Fenster zum Drucken; in den Apps von Home Assistant (iPhone, iPad, Mac) geht das nicht, dann kam eine HTML-Datei. Jetzt erstellt Modul 8 selbst eine echte **PDF-Datei** (A4, Tabelle mit Kopf auf jeder Seite, Summe, Hinweis auf geänderte Mengen, Seitenzahlen) und speichert sie direkt – Knopf „Als PDF speichern“.
+
+### Neu
+- **Getrennte Ladungen zusammenführen:** Beim Bearbeiten einer Ladung erscheint „Gehört zur Ladung davor?“, wenn direkt davor (höchstens 12 Stunden) eine Ladung desselben Fahrzeugs liegt. „Zusammenführen“ vereint beide zu einer Ladung – kWh, Sonne, Kosten, Dauer, Karte und Notiz; die Tageswerte bleiben unverändert. Steht im Änderungsverlauf der Ladung.
+
 ## [2026.11.3b22] - 2026-11-14
 
 ### Neu

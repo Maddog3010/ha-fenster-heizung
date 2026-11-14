@@ -28,7 +28,7 @@
       <div class="evpdft">${R.length ? `<table><thead><tr><th>Datum</th><th>Fahrzeug</th><th>Karte</th><th>kWh</th><th>€</th></tr></thead><tbody>${R.map((x) => `<tr><td>${fd(x.start)}</td><td>${esc(x.veh || "")}${x.biz ? `<em class="evtag">dienstlich</em>` : ""}${x.note ? `<small class="mut" style="display:block">${esc(x.note)}</small>` : ""}</td><td>${esc(x.card || "–")}</td><td>${num(x.kwh, 2)}${x.orig != null ? `<sup title="Gemessen: ${num(x.orig, 2)} kWh">*</sup>` : ""}</td><td>${num(x.kwh * P.ct / 100, 2)}</td></tr>`).join("")}</tbody>
         <tfoot><tr><td colspan="3"><b>Summe · ${R.length} ${R.length === 1 ? "Ladung" : "Ladungen"}</b></td><td><b>${num(kwh, 2)}</b></td><td><b>${num(eur, 2)}</b></td></tr></tfoot></table>` : `<div class="mut sm">In diesem Monat gibt es keine passenden Ladungen.</div>`}</div>
       <div class="mut sm" style="margin-top:6px">Gemessen an der Wallbox. Gespeichert werden die letzten 100 Ladungen.${R.some((x) => x.orig != null) ? " * Von Hand geändert – der gemessene Wert steht im Nachweis." : ""}</div>
-      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wbvpdfcsv" ${R.length ? "" : "disabled"}>${ic("check", 16)} CSV</button><button class="btn2 pri" data-act="wbvpdfprint" ${R.length ? "" : "disabled"}>${ic("check", 16)} Drucken / als PDF sichern</button></div></div>`;
+      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="wbvpdfcsv" ${R.length ? "" : "disabled"}>${ic("check", 16)} CSV</button><button class="btn2 pri" data-act="wbvpdfprint" ${R.length ? "" : "disabled"}>${ic("check", 16)} Als PDF speichern</button></div></div>`;
   }
   _wbPdfAct(a, b) {
     const m = this._modal, c = this._wb(), P = c.pdf || { ct: 30, name: "" }, k = b.dataset.k;
@@ -43,14 +43,16 @@
       save(new Blob(["﻿" + rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(";")).join("\r\n")], { type: "text/csv;charset=utf-8" }), fn + ".csv"); this._toast("Ladenachweis als CSV gespeichert"); return;
     }
     if (a === "wbvpdfprint") {
-      const kwh = R.reduce((s, x) => s + x.kwh, 0), e = (x) => String(x).replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
-      const html = `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Ladenachweis ${MON[m.m]} ${m.y}</title><style>body{font:13px/1.45 system-ui,Segoe UI,Roboto,Arial,sans-serif;color:#111;margin:32px}h1{font-size:20px;margin:0 0 4px}p{margin:0 0 14px;color:#444}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid #ddd}th:nth-child(n+4),td:nth-child(n+4){text-align:right}tfoot td{text-align:right}tfoot td:first-child{text-align:left}tfoot td{font-weight:700;border-top:2px solid #111}small{color:#666}</style></head><body>
-        <h1>Ladenachweis ${MON[m.m]} ${m.y}</h1><p>${P.name ? e(P.name) + " · " : ""}${e(who)} · Erstattung ${f2(P.ct)} ct/kWh</p>
-        <table><thead><tr><th>Datum</th><th>Fahrzeug</th><th>Karte</th><th>kWh</th><th>Betrag €</th></tr></thead><tbody>${R.map((x) => { const t = new Date(x.start); return `<tr><td>${t.toLocaleDateString("de-DE")} ${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}</td><td>${e(x.veh || "")}${x.biz ? " · dienstlich" : ""}${x.note ? `<br><small>${e(x.note)}</small>` : ""}</td><td>${e(x.card || "–")}</td><td>${f2(x.kwh)}${x.orig != null ? `*` : ""}</td><td>${f2(x.kwh * P.ct / 100)}</td></tr>`; }).join("")}</tbody>
-        <tfoot><tr><td colspan="3">Summe · ${R.length} Ladungen</td><td>${f2(kwh)}</td><td>${f2(kwh * P.ct / 100)}</td></tr></tfoot></table>${R.some((x) => x.orig != null) ? `<p style="margin-top:12px"><small>* Von Hand geändert. Gemessen: ${R.filter((x) => x.orig != null).map((x) => `${new Date(x.start).toLocaleDateString("de-DE")} ${f2(x.orig)} kWh`).join(", ")}.</small></p>` : ""}<p style="margin-top:18px"><small>Gemessen an der Wallbox, erstellt mit Strom &amp; Wärme am ${new Date().toLocaleDateString("de-DE")}.</small></p></body></html>`;
-      let w = null; try { w = window.open("", "_blank"); } catch (err) { w = null; }
-      if (w && w.document) { w.document.write(html); w.document.close(); setTimeout(() => { try { w.focus(); w.print(); } catch (err) { /* Druckdialog nicht möglich */ } }, 300); }
-      else { save(new Blob([html], { type: "text/html;charset=utf-8" }), fn + ".html"); this._toast("Als Datei gespeichert – öffnen und drucken"); }
+      const kwh = R.reduce((s, x) => s + x.kwh, 0), ch = R.filter((x) => x.orig != null);
+      const rows = R.map((x) => { const t = new Date(x.start); return { date: `${t.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" })} ${t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`,
+        veh: `${x.veh || ""}${x.biz ? " · dienstlich" : ""}`, card: x.card || "–", kwh: f2(x.kwh) + (x.orig != null ? "*" : ""), eur: f2(x.kwh * P.ct / 100), note: x.note || "" }; });
+      try {
+        const bytes = this._wbPdfDoc({ title: `Ladenachweis ${MON[m.m]} ${m.y}`, sub: `${P.name ? P.name + " · " : ""}${who} · Erstattung ${f2(P.ct)} ct/kWh`, rows,
+          sum: { label: `Summe · ${R.length} ${R.length === 1 ? "Ladung" : "Ladungen"}`, kwh: f2(kwh), eur: f2(kwh * P.ct / 100) + " €" },
+          notes: [...(ch.length ? [`* Von Hand geändert. Gemessen: ${ch.map((x) => `${new Date(x.start).toLocaleDateString("de-DE")} ${f2(x.orig)} kWh`).join(", ")}.`] : []), `Gemessen an der Wallbox, erstellt mit Strom & Wärme am ${new Date().toLocaleDateString("de-DE")}.`],
+          foot: `Ladenachweis ${MON[m.m]} ${m.y}${P.name ? " · " + P.name : ""}` });
+        save(new Blob([bytes], { type: "application/pdf" }), fn + ".pdf"); this._toast("Ladenachweis als PDF gespeichert");
+      } catch (err) { this._toast("PDF konnte nicht erstellt werden"); }
     }
   }
   /* A11: Startseite – Kachel und Bubble aus denselben Werten wie Modul 8 (Fahrzeug, Schätzung, Wallbox) */
@@ -84,7 +86,15 @@
       <div class="vrow"><span>Dienstlich<small class="mut" style="display:block">Für den Ladenachweis an den Arbeitgeber.</small></span><button class="sw ${m.biz ? "on" : ""}" data-act="wbvsesbiz" aria-pressed="${!!m.biz}" aria-label="Dienstlich"></button></div>
       <div class="vrow" style="display:block"><span>Notiz</span><input class="otxt" style="width:100%;margin-top:6px" type="text" maxlength="80" data-f="wbsesnote" value="${esc(m.note)}" placeholder="z. B. Gast geladen, Fahrt nach Hamburg" aria-label="Notiz"></div>
       ${(x.chg && x.chg.length) || x.edit ? `<div class="lsec" style="margin-top:12px">${ic("schedule", 15)}Änderungen</div><div class="evchg">${(x.chg || []).slice().reverse().map((c) => `<div><small>${new Date(c.t).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit", hour: "2-digit", minute: "2-digit" })}</small><ul>${c.x.map((y) => `<li>${esc(y)}</li>`).join("")}</ul></div>`).join("") || `<div><small>${new Date(x.edit).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</small><ul><li>bearbeitet (vor diesem Update, Einzelheiten nicht gespeichert)</li></ul></div>`}${x.orig != null ? `<div class="mut sm">Gemessen an der Wallbox: ${num(x.orig, 2)} kWh</div>` : ""}</div>` : ""}
+      ${(() => { const P = this._sesPrev(x); if (!P) return ""; const tp = new Date(P.start); return `<div class="evmrg">${ic("link", 16)}<span><b>Gehört zur Ladung davor?</b><small>Ladung ab ${tp.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr${tp.toDateString() !== t.toDateString() ? " (" + tp.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }) + ")" : ""} · ${num(P.kwh, 1)} kWh · ${esc(P.veh)}. Zum Beispiel nach einem Phasenwechsel getrennt gezählt.</small></span><button class="btn2" data-act="wbvsesmrg" ${m.busy ? "disabled" : ""}>Zusammenführen</button></div>`; })()}
       <div class="foot2" style="margin-top:12px">${m.del ? `<button class="btn2 dng" data-act="wbvsesdel2">${ic("trash", 16)} Wirklich löschen</button>` : `<button class="btn2" data-act="wbvsesdel">${ic("trash", 16)} Löschen</button>`}<button class="btn2 pri" data-act="wbvsesok" ${m.busy ? "disabled" : ""}>${ic("check", 16)} Speichern</button></div></div>`;
+  }
+  /* Teil davor (älter, gleiches Fahrzeug, höchstens 12 Stunden dazwischen) – wie merge_prev im Backend */
+  _sesPrev(x) {
+    const L = ((this._wbStD && this._wbStD.data) || {}).sessions || [], i = L.findIndex((y) => y.start === x.start), p = i >= 0 ? L[i + 1] : null;
+    if (!p || p.running || x.running || p.veh !== x.veh) return null;
+    const gap = (new Date(x.start) - (new Date(p.start).getTime() + (p.min || 0) * 6e4)) / 36e5;
+    return gap >= -0.1 && gap <= 12 ? p : null;
   }
   _sesAct(a, b) {
     if (a === "wbvses") {
@@ -101,6 +111,7 @@
       this._hass.callWS({ type: "fenster_heizung/wb_session", start: m.start, ...body }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; this._modal = null; this._renderModal(); this._render(); this._toast(msg); })
         .catch(() => { m.busy = false; this._renderModal(); this._toast("Ladung konnte nicht gespeichert werden"); }); };
     if (a === "wbvsesdel2") { send({ delete: true }, "Ladung gelöscht"); return; }
+    if (a === "wbvsesmrg") { send({ merge: true }, "Ladungen zusammengeführt"); return; }
     if (a === "wbvsesok") {
       const x = this._sesFind(m.start), k = parseFloat(String(m.kwh).replace(",", "."));
       if (!isFinite(k) || k < 0 || k > 300) { this._toast("Bitte eine Menge von 0 bis 300 kWh eingeben"); return; }
