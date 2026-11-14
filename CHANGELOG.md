@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b21] - 2026-11-14
+
+### Behoben
+- **Modul 3 (v1.6 Build 4): Der Autarkie-Ring im Banner flackerte von links nach rechts** (seit b20, vor allem auf dem iPad quer). Die Breite der Haus-Szene wurde laufend nachgemessen; der Ring rückte dadurch, der Text brach anders um, das Banner wurde höher, die Szene breiter – und der Ring sprang zurück. Gemessen wird jetzt wieder nur beim Neuaufbau, das Drehen des iPads baut das Layout trotzdem neu auf.
+
 ## [2026.11.3b20] - 2026-11-14
 
 ### Neu

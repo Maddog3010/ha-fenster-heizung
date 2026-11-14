@@ -75,7 +75,7 @@ class FensterHeizungPanel extends HTMLElement {
     const sr = this.shadowRoot; if (!sr) return;
     const ro = this._msnRo || (typeof ResizeObserver !== "undefined" ? (this._msnRo = new ResizeObserver((es) => es.forEach((e) => this._msnSpan(e.target)))) : null);  /* eigener Beobachter: this._ro beobachtet die Breite des Panels */
     if (ro) ro.disconnect();
-    sr.querySelectorAll(".hero.m3x > .m3ss").forEach((sc) => { this._msnSpan(sc); if (ro) ro.observe(sc); });  /* Energie-Szene: Breite für Ring und Text */
+    sr.querySelectorAll(".hero.m3x > .m3ss").forEach((sc) => this._msnSpan(sc));  /* nur beim Neuaufbau messen: beobachtet würde Ring → Textumbruch → Höhe → Szenenbreite → Ring endlos hin und her springen */  /* Energie-Szene: Breite für Ring und Text */
     sr.querySelectorAll(".mublks").forEach((g) => {
       const items = [...g.children]; if (items.length < 2) return;
       g.classList.remove("msn"); const hs = items.map((it) => it.getBoundingClientRect().height);
