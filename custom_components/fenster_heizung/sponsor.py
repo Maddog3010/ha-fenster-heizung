@@ -206,6 +206,7 @@ class SponsorManager:
                         "note": str(s.get("note") or "")[:120], "key": s["key"],
                         "revoked": bool(s.get("revoked")), "revoked_at": str(s.get("revoked_at") or ""),
                         "stufe": s.get("stufe") if s.get("stufe") in TIERS else "sponsor", "sb": str(s.get("sb") or ""),
+                        "up": str(s.get("up") or "")[:10],
                     })
         self._unsubs.append(async_call_later(self.hass, 30, self._refresh_cb))
         self._unsubs.append(async_track_time_interval(self.hass, self._refresh_cb, timedelta(hours=24)))
@@ -232,7 +233,7 @@ class SponsorManager:
         self._soon_day = today
         soon = [i for i in self.admin_list()["items"] if i["state"] == "soon"]
         if soon:
-            txt = "\n".join(f"- {i['name']} ({'★ Max' if i['stufe'] == 'max' else '♥ Sponsor'}): bis {i['bis']}" for i in soon)
+            txt = "\n".join(f"- {i['name']} ({'★ Max' if i['stufe'] == 'max' and not i['max_over'] else '♥ Sponsor'}): bis {i['sb'] if i['max_over'] else i['bis']}" for i in soon)
             await self.hass.services.async_call("persistent_notification", "create", {
                 "notification_id": "fenster_heizung_sponsor_soon", "title": "Strom & Wärme: Sponsor-Schlüssel laufen bald ab",
                 "message": txt + "\n\nVerlängern: Sponsor-Lounge → Sponsoren verwalten."}, blocking=False)
@@ -315,6 +316,10 @@ class SponsorManager:
         days = (date.fromisoformat(s["bis"]) - today).days
         if s["revoked"] or s["id"] in self.remote_revoked:
             return "revoked", days
+        if days < 0 and s.get("stufe") == "max" and DATE_RE.match(s.get("sb") or "") and date.fromisoformat(s["sb"]) >= today:
+            # Max vorbei, das Sponsor-Jahr läuft noch
+            days = (date.fromisoformat(s["sb"]) - today).days
+            return ("soon" if days <= SOON_DAYS else "ok"), days
         if days < 0:
             return "expired", days
         if days <= (SOON_DAYS_MAX if s.get("stufe") == "max" else SOON_DAYS):
@@ -326,9 +331,10 @@ class SponsorManager:
         items = []
         for s in sorted(self.sponsors, key=lambda x: x["name"].lower()):
             state, days = self._item_state(s, today)
-            items.append({**s, "state": state, "days": days})
+            max_over = s.get("stufe") == "max" and s["bis"] < today.isoformat()
+            items.append({**s, "state": state, "days": days, "max_over": max_over})
         count = {k: len([i for i in items if i["state"] == k]) for k in ("ok", "soon", "expired", "revoked")}
-        count["max"] = len([i for i in items if i.get("stufe") == "max" and i["state"] in ("ok", "soon")])
+        count["max"] = len([i for i in items if i.get("stufe") == "max" and not i["max_over"] and i["state"] in ("ok", "soon")])
         revoked = sorted(self.revoked_ids())
         return {
             "setup": False, "items": items, "count": count,
@@ -427,11 +433,42 @@ class SponsorManager:
         today = dt_util.now().date()
         base = max(date.fromisoformat(s["bis"]), today)
         mx = s.get("stufe") == "max"
+        if mx and date.fromisoformat(s["bis"]) < today and DATE_RE.match(s.get("sb") or ""):
+            # Max ist vorbei, es läuft das Sponsor-Jahr: das Sponsor-Jahr verlängern, nicht Max
+            s["sb"] = _plus_year(max(date.fromisoformat(s["sb"]), today)).isoformat()
+            s["key"] = make_key(self.priv, s["name"], s["bis"], s["id"], stufe="max", issued=s.get("since") or today.isoformat(), sb=s["sb"])
+            self._save()
+            return {"ok": True, "id": sid, "key": s["key"]}
         until = _plus_months(base, 3) if mx else _plus_year(base)
         s["bis"] = until.isoformat()
         if mx and (not s.get("sb") or date.fromisoformat(s["sb"]) < until):
             s["sb"] = _plus_year(today).isoformat()
         s["key"] = make_key(self.priv, s["name"], s["bis"], s["id"], stufe=s.get("stufe", "sponsor"), issued=s.get("since") or today.isoformat(), sb=s.get("sb", "") if mx else "")
+        self._save()
+        return {"ok": True, "id": sid, "key": s["key"]}
+
+    def upgrade(self, sid: str) -> dict[str, Any]:
+        """Bestehenden Sponsor für 3 Monate auf Max hochstufen (gleicher Eintrag, neuer Schlüssel).
+
+        Max gilt ab heute 3 Monate. Danach gilt wieder „Sponsor“ – bis zum bisherigen Ende,
+        mindestens aber bis zum Ende von Max. Das Sponsor-Jahr wird also nie kürzer.
+        """
+        s = self._find(sid)
+        if s is None or not self.priv:
+            return {"ok": False, "error": "unknown"}
+        if s.get("revoked") or s["id"] in self.remote_revoked:
+            return {"ok": False, "error": "revoked"}
+        today = dt_util.now().date()
+        was_max = s.get("stufe") == "max"
+        if was_max and s["bis"] >= today.isoformat():
+            return {"ok": False, "error": "already"}
+        max_end = _plus_months(today, 3)
+        try:  # bisheriges Ende als Sponsor (bei abgelaufenem Max: Ende des Sponsor-Jahres)
+            old = date.fromisoformat(s.get("sb") if was_max and DATE_RE.match(s.get("sb") or "") else s["bis"])
+        except ValueError:
+            old = today
+        s.update(stufe="max", bis=max_end.isoformat(), sb=max(old, max_end).isoformat(), up=today.isoformat())
+        s["key"] = make_key(self.priv, s["name"], s["bis"], s["id"], stufe="max", issued=s.get("since") or today.isoformat(), sb=s["sb"])
         self._save()
         return {"ok": True, "id": sid, "key": s["key"]}
 

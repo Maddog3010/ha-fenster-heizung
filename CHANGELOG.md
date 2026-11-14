@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b25] - 2026-11-14
+
+### Neu
+- **Sponsoren verwalten: „Auf Max hochstufen“.** Bestehende Sponsoren lassen sich jetzt direkt am Eintrag für 3 Monate auf Sponsor Max hochstufen – über „⋯“ am Sponsor → „Auf Max hochstufen“.
+  - Vorher zeigt eine Zeitleiste, was passiert: ★ Max ab heute für 3 Monate, danach automatisch wieder ♥ Sponsor bis zum bisherigen Ende. Das Sponsor-Jahr wird nie kürzer; läuft es vor dem Ende von Max ab, rückt es auf das Ende von Max.
+  - Der Eintrag bleibt derselbe (keine doppelten Sponsoren in der Liste) und bekommt einen neuen Schlüssel. „Nachricht kopieren“ legt einen passenden Text zur Hochstufung in die Zwischenablage. Bis der neue Schlüssel eingelöst ist, gilt der alte weiter als Sponsor.
+  - In der Liste steht bei Max-Sponsoren jetzt auch „danach Sponsor bis …“ und „hochgestuft am …“.
+
+### Geändert
+- **Sponsoren verwalten: Max vorbei, Sponsor-Jahr läuft noch.** Solche Einträge erschienen bisher als „Abgelaufen“, obwohl der Schlüssel noch als Sponsor gilt. Jetzt zeigen sie „Aktiv“ mit „gültig bis“ zum Ende des Sponsor-Jahres und „Max endete am …“; sie zählen nicht mehr bei „★ Max“. „Verlängern“ verlängert dann das Sponsor-Jahr (nicht Max), und sie lassen sich erneut auf Max hochstufen. Auch die Meldung „Sponsor-Schlüssel laufen bald ab“ nennt hier die richtige Stufe und das richtige Datum.
+
 ## [2026.11.3b24] - 2026-11-14
 
 ### Behoben

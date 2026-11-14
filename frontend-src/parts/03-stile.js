@@ -1861,6 +1861,13 @@ a.btn2{text-decoration:none;color:inherit;display:inline-flex;align-items:center
 .gsch.spng.sel{color:#fbbf24;border-color:color-mix(in srgb,#fbbf24 60%,transparent);background:color-mix(in srgb,#fbbf24 14%,transparent)}
 .spntier{font-style:normal;font-size:.68rem;font-weight:700;color:#fbbf24;background:color-mix(in srgb,#fbbf24 15%,transparent);border-radius:99px;padding:1px 7px;margin-left:4px}
 .spna.gold{background:radial-gradient(circle at 35% 30%,#fff3b0,#f59e0b 60%,#b45309);color:#fff}.spnmini.gold{color:#fbbf24}.spnsum b.gd{color:#fbbf24}
+.spnupc{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid color-mix(in srgb,#fbbf24 35%,transparent);background:color-mix(in srgb,#fbbf24 9%,transparent);color:inherit;border-radius:14px;padding:10px 12px;cursor:pointer;font:inherit}
+.spnupc>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:2px}.spnupc small{opacity:.75;font-size:.78rem}.spnupc b{color:#fbbf24}.spnupr{display:inline-flex;transform:rotate(-90deg);opacity:.7}
+.spnupbar{display:flex;gap:4px;border-radius:12px;overflow:hidden}.spnupt{padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}.spnupt small{font-size:.72rem;opacity:.8;font-weight:700}.spnupt b{font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spnupt.mx{background:color-mix(in srgb,#fbbf24 22%,transparent);color:#fde68a}.spnupt.sp{background:color-mix(in srgb,#e07aa6 20%,transparent);color:#f9c6dc}
+.btn2.spngold{background:linear-gradient(135deg,#fde68a,#f59e0b);color:#3b2500;border-color:transparent}
+.spnup{display:flex;flex-direction:column;gap:4px;border-radius:12px;padding:10px 12px;margin:0 0 10px;background:color-mix(in srgb,#fbbf24 12%,transparent)}.spnup b{color:#fbbf24}.spnup span{font-size:.82rem;opacity:.9}
+:host([style*="color-scheme: light"]) .spnupt.mx,:host([style*="color-scheme: light"]) .spnupc b,:host([style*="color-scheme: light"]) .spnup b{color:#92400e}:host([style*="color-scheme: light"]) .spnupt.sp{color:#9d174d}
 .lgt .vrow{flex-wrap:wrap;gap:8px 12px}.lgt .vrow>span:first-child{flex:1 1 180px;min-width:0}.lgt .vrow>.gschs,.lgt .vrow>.btn2,.lgt .vrow>.sw,.lgt .vrow>.lgsoon{flex:none;margin-left:auto}
 .lgx .gschs{flex-wrap:wrap}.lgban .btn2{flex:none}
 /* Modul 8 v0.6: Fahrzeuge mit eigenem Bild, andere Wallbox über Home Assistant */

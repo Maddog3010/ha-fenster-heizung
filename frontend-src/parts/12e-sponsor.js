@@ -70,6 +70,8 @@
       });
     }
     else if (a === "spnext") { this._spnAdm({ act: "extend", sid: k }, (r) => { if (!r.ok) { this._toast("Das ging nicht"); return; } this._modal = { type: "spnadm", view: "done", id: r.id, key: r.key }; this._renderModal(); }); }
+    else if (a === "spnupq") { this._modal = { type: "spnadm", view: "upgrade", id: k }; this._renderModal(); }
+    else if (a === "spnup") { this._spnAdm({ act: "upgrade", sid: k }, (r) => { if (!r.ok) { this._toast(r.error === "revoked" ? "Gesperrte Sponsoren lassen sich nicht hochstufen" : r.error === "already" ? "Ist schon Sponsor Max" : "Das ging nicht"); return; } this._modal = { type: "spnadm", view: "done", id: r.id, key: r.key, up: true }; this._renderModal(); this._toast("★ Auf Sponsor Max hochgestuft"); }); }
     else if (a === "spnkey") { const s = ((this._spnA || {}).items || []).find((x) => x.id === k); if (s) { this._modal = { type: "spnadm", view: "done", id: s.id, key: s.key }; this._renderModal(); } }
     else if (a === "spnrevq") { this._modal = { type: "spnadm", view: "revoke", id: k }; this._renderModal(); }
     else if (a === "spnrev") { this._spnAdm({ act: "revoke", sid: k }, () => { this._modal = { type: "spnadm", view: "list" }; this._renderModal(); this._toast("Gesperrt. Jetzt noch die Liste im Repo ändern."); }); }
@@ -79,6 +81,7 @@
     else if (a === "spncopy") this._spnCopy(this._modal.key, "Schlüssel kopiert");
     else if (a === "spnmsg") {
       const s = ((this._spnA || {}).items || []).find((x) => x.id === this._modal.id) || {};
+      if (this._modal.up) { this._spnCopy(`Hallo ${s.name || ""},\n\nals Dankeschön für deine Unterstützung bekommst du ab heute 3 Monate Sponsor Max für Strom & Wärme – bis ${this._spnDate(s.bis || "")}. Danach gilt dein Schlüssel automatisch weiter als Sponsor, bis ${this._spnDate(s.sb || "")}.\n\nDein neuer Schlüssel:\n\n${this._modal.key}\n\nEinlösen: Einstellungen > Sponsor-Bereich > Schlüssel einfügen. Er ersetzt deinen bisherigen Schlüssel.`, "Nachricht kopiert"); return; }
       this._spnCopy(`Hallo ${s.name || ""},\n\ndanke für deine Unterstützung! Hier ist dein ${s.stufe === "max" ? "Sponsor-Max-" : "Sponsor-"}Schlüssel für Strom & Wärme (gültig bis ${this._spnDate(s.bis || "")}${s.stufe === "max" ? ", danach gilt er bis " + this._spnDate(s.sb || "") + " weiter als Sponsor" : ""}):\n\n${this._modal.key}\n\nEinlösen: Einstellungen > Sponsor-Bereich > Schlüssel einfügen.`, "Nachricht kopiert");
     }
     else if (a === "spnjson2") this._spnCopy(b.dataset.j || "{}", "Liste kopiert");
@@ -148,9 +151,9 @@
     }
     const item = (s) => {
       const st = { ok: ["g", "Aktiv"], soon: ["a", s.days === 0 ? "Heute" : `Noch ${s.days} ${s.days === 1 ? "Tag" : "Tage"}`], expired: ["x", "Abgelaufen"], revoked: ["r", "Gesperrt"] }[s.state];
-      const mx = s.stufe === "max";
+      const mo = s.stufe === "max" && s.max_over, mx = s.stufe === "max" && !mo;
       const act = s.state === "revoked" ? `<button class="spnmini" data-act="spnunrev" data-k="${s.id}">${ic("eye", 14)}Sperre aufheben</button>` : s.state === "ok" && !mx ? `<button class="spnmini" data-act="spnkey" data-k="${s.id}">${ic("copy", 14)}Schlüssel</button>` : `<button class="spnmini ${mx ? "gold" : ""}" data-act="spnext" data-k="${s.id}">${ic("clock", 14)}Verlängern</button>`;
-      return `<div class="spnrow"><span class="spna ${mx ? "gold" : ""} ${s.state === "expired" || s.state === "revoked" ? "off" : ""}">${mx ? "★" : esc((s.name || "?")[0].toUpperCase())}</span><span class="spnn"><b>${esc(s.name)}${mx ? ` <em class="spntier">★ Max</em>` : ""}</b><small>${s.state === "revoked" ? "gesperrt" + (s.revoked_at ? " am " + esc(this._spnDate(s.revoked_at)) : "") : (s.since ? "seit " + esc(this._spnDate(s.since)) + " · " : "") + "gültig bis " + esc(this._spnDate(s.bis))}${s.note ? " · " + esc(s.note) : ""}</small></span><em class="spns ${st[0]}">${st[1]}</em>${act}<button class="ibtn spnmore" data-act="spnrevq" data-k="${s.id}" aria-label="Sperren oder löschen">${ic("more", 18)}</button></div>`;
+      return `<div class="spnrow"><span class="spna ${mx ? "gold" : ""} ${s.state === "expired" || s.state === "revoked" ? "off" : ""}">${mx ? "★" : esc((s.name || "?")[0].toUpperCase())}</span><span class="spnn"><b>${esc(s.name)}${mx ? ` <em class="spntier">★ Max</em>` : ""}</b><small>${s.state === "revoked" ? "gesperrt" + (s.revoked_at ? " am " + esc(this._spnDate(s.revoked_at)) : "") : (s.since ? "seit " + esc(this._spnDate(s.since)) + " · " : "") + "gültig bis " + esc(this._spnDate(mo ? s.sb : s.bis)) + (mo ? " · Max endete am " + esc(this._spnDate(s.bis)) : "") + (mx && s.sb && s.sb > s.bis ? ", danach Sponsor bis " + esc(this._spnDate(s.sb)) : "") + (mx && s.up ? " · hochgestuft am " + esc(this._spnDate(s.up)) : "")}${s.note ? " · " + esc(s.note) : ""}</small></span><em class="spns ${st[0]}">${st[1]}</em>${act}<button class="ibtn spnmore" data-act="spnrevq" data-k="${s.id}" aria-label="${mx || s.state === "revoked" ? "Sperren oder löschen" : "Hochstufen, sperren oder löschen"}">${ic("more", 18)}</button></div>`;
     };
     if (m.view === "new") {
       const mx = m.stufe === "max", kp = m.keep || {}, d = new Date(); if (mx) d.setMonth(d.getMonth() + 3); else d.setFullYear(d.getFullYear() + 1); const def = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
@@ -163,16 +166,29 @@
     }
     if (m.view === "done") {
       const s = A.items.find((x) => x.id === m.id) || {};
-      return wrap(head("Schlüssel", `${esc(s.name || "")}, gültig bis ${esc(this._spnDate(s.bis || ""))}`, "spnlist"), `<div class="spnkeybox">${esc(m.key)}</div>
+      const upHint = m.up ? `<div class="spnup"><b>★ ${esc(s.name || "")} ist jetzt Sponsor Max</b><span>Max bis ${esc(this._spnDate(s.bis || ""))}, danach automatisch Sponsor bis ${esc(this._spnDate(s.sb || ""))}. Schick den neuen Schlüssel – er ersetzt den bisherigen. Bis er eingelöst ist, gilt der alte weiter als Sponsor.</span></div>` : "";
+      return wrap(head(m.up ? "Neuer Max-Schlüssel" : "Schlüssel", `${esc(s.name || "")}, gültig bis ${esc(this._spnDate(s.bis || ""))}`, "spnlist"), `${upHint}<div class="spnkeybox">${esc(m.key)}</div>
         <div class="gbtns" style="margin-top:10px"><button class="btn2 pri" data-act="spncopy">${ic("copy", 16)} Kopieren</button><button class="btn2" data-act="spnmsg">${ic("link", 16)} Nachricht kopieren</button></div>
         <div class="gbtns" style="margin-top:8px"><button class="btn2" data-act="spnmine">${ic("heart", 16)} Bei mir einlösen</button></div>
         <div class="mut sm" style="margin-top:8px">„Nachricht kopieren“ legt einen Text mit dem Schlüssel und einer kurzen Anleitung in die Zwischenablage.</div>`);
+    }
+    if (m.view === "upgrade") {
+      const s = A.items.find((x) => x.id === m.id); if (!s) return wrap(head("Sponsor", "", "spnlist"), "");
+      const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      const d = new Date(), t0 = iso(d); d.setMonth(d.getMonth() + 3); const old = s.max_over && s.sb ? s.sb : s.bis, me = iso(d), sb = old > me ? old : me;
+      const tl = (c, l, v, w) => `<div class="spnupt ${c}" style="flex:${w}"><small>${l}</small><b>${v}</b></div>`;
+      return wrap(head(`★ ${esc(s.name)} hochstufen`, "3 Monate Sponsor Max", "spnlist"), `<div class="mut sm" style="margin:0 0 10px">Der Eintrag bleibt derselbe und bekommt einen neuen Schlüssel. Danach fällt er automatisch auf „Sponsor“ zurück – das bisherige Sponsor-Jahr wird nicht kürzer.</div>
+        <div class="spnupbar">${tl("mx", "★ Max", `${esc(this._spnDate(t0))} – ${esc(this._spnDate(me))}`, 3)}${sb > me ? tl("sp", "♥ Sponsor", `bis ${esc(this._spnDate(sb))}`, 4) : ""}</div>
+        <div class="mut sm" style="margin:8px 0 0">${s.state === "expired" ? "Das Sponsoring war abgelaufen: Nach den 3 Monaten Max endet es wieder." : sb > me ? `Bisher: Sponsor bis ${esc(this._spnDate(old))}. Das bleibt so.` : `Bisher: Sponsor bis ${esc(this._spnDate(old))}. Das Ende rückt auf das Ende von Max.`}</div>
+        <div class="gbtns" style="margin-top:12px"><button class="btn2 pri spngold" data-act="spnup" data-k="${s.id}">★ Auf Max hochstufen</button><button class="btn2" data-act="spnlist">Abbrechen</button></div>`);
     }
     if (m.view === "revoke") {
       const s = A.items.find((x) => x.id === m.id); if (!s) return wrap(head("Sponsor", "", "spnlist"), "");
       let ids = []; try { ids = JSON.parse(A.revoked_json).gesperrt || []; } catch (_) { /* leer */ } if (!ids.includes(s.id)) ids = [...ids, s.id].sort();
       const json = JSON.stringify({ gesperrt: ids });
-      return wrap(head(`${esc(s.name)}`, "Sperren oder entfernen", "spnlist"), `<div class="mut sm" style="margin:0 0 8px">Beim Sperren wird der Schlüssel hier als gesperrt markiert. Damit er auch beim Sponsor aufhört zu gelten, muss die Sperrliste im Repo aktualisiert werden. Die Datei heißt <b>sponsor_gesperrt.json</b>. Bis dahin gilt der Schlüssel, spätestens bis zum Ablaufdatum.</div>
+      const canUp = (s.stufe !== "max" || s.max_over) && s.state !== "revoked";
+      const upCard = canUp ? `<button class="spnupc" data-act="spnupq" data-k="${s.id}"><span class="spna gold">★</span><span><b>${s.max_over ? "Erneut auf Max hochstufen" : "Auf Max hochstufen"}</b><small>3 Monate Sponsor Max, danach automatisch wieder Sponsor</small></span><span class="spnupr">${ic("chev", 18)}</span></button><div class="lsec" style="margin-top:14px">${ic("lock", 15)}Sperren oder entfernen</div>` : "";
+      return wrap(head(`${esc(s.name)}`, canUp ? "Hochstufen, sperren oder entfernen" : "Sperren oder entfernen", "spnlist"), `${upCard}<div class="mut sm" style="margin:0 0 8px">Beim Sperren wird der Schlüssel hier als gesperrt markiert. Damit er auch beim Sponsor aufhört zu gelten, muss die Sperrliste im Repo aktualisiert werden. Die Datei heißt <b>sponsor_gesperrt.json</b>. Bis dahin gilt der Schlüssel, spätestens bis zum Ablaufdatum.</div>
         <div class="spnkeybox" style="color:#9be7c4">${esc(json)}</div>
         <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnjson2" data-j="${esc(json)}">${ic("copy", 16)} Liste kopieren</button><button class="btn2 pri" data-act="spnrev" data-k="${s.id}" ${s.state === "revoked" ? "disabled" : ""}>${ic("lock", 16)} Sperren</button></div>
         <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spndel" data-k="${s.id}">${ic("trash", 16)} Aus der Liste löschen</button></div>`);
