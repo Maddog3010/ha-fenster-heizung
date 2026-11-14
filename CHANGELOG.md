@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b30] - 2026-11-14
+
+### Neu
+- **Haus-Energiebuch für weitere Module.** Was das Energiebuch vollständig gezählt hat (alle 20 Sekunden), nutzen jetzt auch:
+  - **Modul 3 (Energie-Übersicht):** Tag, Woche, Monat und Jahr – Solar, zweite Anlage, Bezug, Einspeisung und Akku je Stunde/Tag/Monat aus dem Energiebuch, davor wie bisher aus der Langzeitstatistik. Ein Hinweis zeigt, woher die Zahlen kommen. Auch der Vergleich mit der Vorperiode nutzt es.
+  - **Morgen-Briefing (Sponsor Max):** neuer Baustein „🏠 Gestern im Haus“ – Verbrauch, Solaranteil, Autarkie und Einspeisung von gestern. Der Abend-Rückblick nennt dasselbe für heute, zusammen mit dem Gesparten aus Modul 4. Bestehende Briefings: Baustein einmal einschalten.
+  - **Monatsbericht:** Solar und Autarkie aus dem Energiebuch, wenn es den ganzen Monat gezählt hat.
+  - **Jahres-Poster:** neue Felder „Solar erzeugt“ und „Autarkie“ (mit „seit …“, solange das Energiebuch noch nicht das ganze Jahr kennt).
+- Energiebuch zählt jetzt auch die zweite Anlage (z. B. Balkonkraftwerk) getrennt mit.
+
 ## [2026.11.3b29] - 2026-11-14
 
 ### Neu

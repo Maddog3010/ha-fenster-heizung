@@ -13105,14 +13105,14 @@ class FensterHeizungPanel extends HTMLElement {
       const B = this._lgB, c = (B && B.cfg) || null;
       if (!c) return wrap("Morgen-Briefing", "★ Sponsor Max", `<div class="mut sm">${B && B.err ? "Das Briefing ist noch nicht bereit." : "Lädt …"}</div>`);
       const svc = Object.keys((this._hass.services || {}).notify || {}).filter((n) => n !== "send_message").sort().map((n) => "notify." + n), opts = [...svc, ...c.notify.filter((n) => !svc.includes(n))];
-      const BL = { sun: "☀️ Sonne heute", price: "€ Strompreis", dev: "🧺 Bestes Geräte-Fenster", car: "🚗 Auto", heat: "🔥 Heizung & Fenster", warn: "⚠️ Auffälligkeiten", muell: "🗑️ Müll (Addon, bald)" };
+      const BL = { haus: "🏠 Gestern im Haus", sun: "☀️ Sonne heute", price: "€ Strompreis", dev: "🧺 Bestes Geräte-Fenster", car: "🚗 Auto", heat: "🔥 Heizung & Fenster", warn: "⚠️ Auffälligkeiten", muell: "🗑️ Müll (Addon, bald)" };
       const row = (t, sub, ctl) => `<div class="vrow"><span>${t}${sub ? `<small class="mut" style="display:block">${sub}</small>` : ""}</span>${ctl}</div>`;
       const sw = (act, on) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" ${adm ? "" : "disabled"}></button>`;
       const L = B.last || {};
       return wrap("Morgen-Briefing", "★ Sponsor Max · eine Meldung am Morgen", `
         ${row("Briefing senden", "", sw("lgxbon", c.on))}
         ${row("Uhrzeit", "", `<span class="lgstep"><button class="ibtn" data-act="lgxbt" data-k="-15" aria-label="früher">${ic("minus", 16)}</button><b>${esc(c.time)}</b><button class="ibtn" data-act="lgxbt" data-k="15" aria-label="später">${ic("plus", 16)}</button></span>`)}
-        ${row("Abend-Rückblick", `kurz um ${esc(c.evening_time)}: was heute gespart wurde`, sw("lgxbev", c.evening))}
+        ${row("Abend-Rückblick", `kurz um ${esc(c.evening_time)}: der Tag im Haus und was gespart wurde`, sw("lgxbev", c.evening))}
         <div class="lsec">Bausteine</div><div class="gschips">${B.blocks.map((k) => `<button class="gsch ${c.blocks.includes(k) ? "sel" : ""}" data-act="lgxbblk" data-k="${k}" aria-pressed="${c.blocks.includes(k)}" ${k === "muell" ? "disabled" : ""}>${BL[k] || k}</button>`).join("")}</div>
         <div class="mut sm" style="margin:4px 0 0">Ein Baustein ohne Daten (zum Beispiel ohne Tibber oder ohne Auto) fällt einfach weg.</div>
         <div class="lsec">Senden an</div>${opts.length ? `<div class="gschips">${opts.map((n) => `<button class="gsch ${c.notify.includes(n) ? "sel" : ""}" data-act="lgxbnot" data-k="${esc(n)}" aria-pressed="${c.notify.includes(n)}">${esc(n.replace("notify.", ""))}</button>`).join("")}</div>` : `<div class="mut sm">Keine Benachrichtigungsdienste gefunden.</div>`}
@@ -13124,8 +13124,12 @@ class FensterHeizungPanel extends HTMLElement {
   /* ---- Jahres-Poster als SVG (zum Speichern als Bild und zum Drucken) ---- */
   _lgPosterSvg() {
     const y = new Date().getFullYear(), N = this._lgNums("year"), s = this._spnS(), W = 840, H = 1188;
-    const cells = [N.rooms && N.gas > 0 ? [`${num(N.gas, N.gas >= 100 ? 0 : 1)} ${unitOf(N.F)}`, `${N.F.short} gespart`] : null, N.rooms && N.min > 0 ? [`${num(N.min / 60, 0)} h`, "Heizpausen beim Lüften"] : null,
-      N.n > 0 ? [`${num(N.n)} ×`, "Geräte-Läufe"] : null, N.own != null ? [`${num(N.own, 0)} %`, "davon eigener Strom"] : null, N.sv > 0 ? [`${num(N.sv, 0)} €`, "durch eigenen Strom gespart"] : null].filter(Boolean);
+    /* Haus-Energiebuch: Solar erzeugt und Autarkie im Jahr (nachgeladen, „seit …“, wenn es erst später angefangen hat) */
+    const Y = this._lgEbY; if (!Y || Y.y !== y || Date.now() - Y.ts > 12e4) { this._lgEbY = { y, ts: Date.now(), t: Y && Y.y === y ? Y.t : null }; this._ebQ(new Date(y, 0, 1), new Date(y + 1, 0, 1), "day").then((E) => { if (E && (E.rows || []).length) { this._lgEbY = { y, ts: Date.now(), t: this._ebSum(E, E.rows), from: E.first }; if (this._modal && this._modal.type === "lgposter") this._renderModal(); } }); }
+    const T = this._lgEbY && this._lgEbY.t, since = T && this._lgEbY.from && new Date(this._lgEbY.from * 1000) > new Date(y, 0, 1, 1) ? ` seit ${new Date(this._lgEbY.from * 1000).toLocaleDateString("de-DE", { day: "numeric", month: "short" })}` : "";
+    const ebc = T && T.use > 1 ? [[`${num(T.gen, 0)} kWh`, `Solar erzeugt${since}`], [`${num((1 - T.net / T.use) * 100, 0)} %`, `Autarkie${since}`]] : [];
+    const cells = [...ebc, N.rooms && N.gas > 0 ? [`${num(N.gas, N.gas >= 100 ? 0 : 1)} ${unitOf(N.F)}`, `${N.F.short} gespart`] : null, N.rooms && N.min > 0 ? [`${num(N.min / 60, 0)} h`, "Heizpausen beim Lüften"] : null,
+      N.n > 0 ? [`${num(N.n)} ×`, "Geräte-Läufe"] : null, N.own != null && !ebc.length ? [`${num(N.own, 0)} %`, "davon eigener Strom"] : null, N.sv > 0 ? [`${num(N.sv, 0)} €`, "durch eigenen Strom gespart"] : null].filter(Boolean).slice(0, 6);
     const inner = (k, x, yy, sz) => { const sv = this._gx(k, sz, { on: true, lvl: 90 }); return `<g transform="translate(${x} ${yy})">${sv.replace(/^<svg[^>]*>/, `<svg width="${sz}" height="${sz}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">`)}</g>`; };
     const cw = 360, chh = 112;
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:420px;display:block;margin:0 auto;border-radius:10px">
@@ -14033,6 +14037,18 @@ class FensterHeizungPanel extends HTMLElement {
     });
     return { bars, cons, tot, src, any: Object.keys(map).length > 0 };
   }
+  /* Haus-Energiebuch für alle Module: Abfrage (2 Minuten im Speicher) und Hilfen */
+  _ebIso(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+  _ebQ(s, e, res) {
+    const k = this._ebIso(s) + ":" + this._ebIso(e) + ":" + res, c = (this._ebC = this._ebC || {});
+    if (c[k] && Date.now() - c[k].ts < 12e4) return c[k].p;
+    const p = this._hass.callWS({ type: "fenster_heizung/ebuch", start: this._ebIso(s), end: this._ebIso(e), res }).catch(() => null);
+    c[k] = { ts: Date.now(), p }; return p;
+  }
+  /* Summe der Zeilen als Name → kWh (fields aus der Antwort) */
+  _ebSum(E, rows) { const F = (E && E.fields) || [], t = {}; F.forEach((f) => { t[f] = 0; }); (rows || []).forEach((r) => r.v.forEach((x, j) => { t[F[j]] += x; })); t.use = (t.pv || 0) + (t.bat || 0) + (t.net || 0); return t; }
+  /* Ab wann ist ein Abschnitt vollständig gezählt? (erste volle Stunde bzw. erster voller Tag nach dem Start) */
+  _ebFrom(E, unit) { if (!E || !E.first) return null; const f = new Date(E.first * 1000), part = f.getMinutes() || f.getSeconds(); return unit === "h" ? new Date(f.getFullYear(), f.getMonth(), f.getDate(), f.getHours() + (part ? 1 : 0)) : new Date(f.getFullYear(), f.getMonth(), f.getDate() + (f.getHours() || part ? 1 : 0)); }
   /* Haus-Energiebuch (energiebuch.py, alle 20 s): ersetzt je Säule die Rechnung aus der Statistik, sobald es für den ganzen Abschnitt Werte hat */
   _efxEbMerge(H, E, R, P) {
     H.eb = { n: 0, first: (E && E.first) || 0, ok: !!(E && E.ok) };
@@ -14664,6 +14680,9 @@ class FensterHeizungPanel extends HTMLElement {
   _s3Month(off) { const d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); d.setMonth(d.getMonth() + off); const e = new Date(d); e.setMonth(e.getMonth() + 1); return { s: d, e, ym: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`, mon: d.toLocaleDateString("de-DE", { month: "long" }), year: d.getFullYear() }; }
   /* Solar, Bezug und Einspeisung eines Monats aus der Langzeitstatistik (Zähler: Änderung je Monat; Leistung: Stundenmittel) */
   async _s3Stats(s, e) {
+    /* ganzer Monat im Haus-Energiebuch (alle 20 s gezählt)? Dann diese Zahlen */
+    const EB = await this._ebQ(s, e, "day"), from = this._ebFrom(EB, "d");
+    if (EB && from && +from <= +s && (EB.rows || []).length) { const t = this._ebSum(EB, EB.rows); return { pv: t.gen, imp: t.imp, exp: t.exp, eb: true }; }
     if (!this._enSrc || !this._enConfigured || !this._enConfigured()) return null;
     const src = this._enSrc(), pick = ["pv", "pv2", "imp", "exp"].map((k) => [k, src[k]]).filter((x) => x[1]);
     if (!pick.length) return null;
@@ -17075,7 +17094,10 @@ class FensterHeizungPanel extends HTMLElement {
       const V = this._enPer(-1), ve = new Date(Math.min(+V.e, +V.s + (+P.end - +P.s))), per = E.range === "day" ? "hour" : E.range === "year" ? "month" : "day", pw = "hour";
       q = Promise.all([this._enStatQ("e", V.s, ve, per, "change"), this._enStatQ("p", V.s, ve, pw, "mean")]).then(([e, w]) => ({ e, w, pw, start: +V.s, n: E.range === "day" ? 24 : V.n, u: E.range === "day" ? "h" : V.u })).catch(() => null);
     }
-    Promise.all([p, q]).then(([r, v]) => { this._enH = done(r, v); }).catch(() => { this._enH = done({}, null, true); })
+    /* Haus-Energiebuch: ganze Abschnitte (Stunde, Tag, Monat) ersetzen die Statistik, sobald es sie vollständig gezählt hat */
+    const ebRes = E.range === "day" ? "hour" : "day", eb = this._ebQ(P.s, P.e, ebRes);
+    const ebV = E.cmp !== "off" ? (() => { const V = this._enPer(-1); return this._ebQ(V.s, V.e, ebRes); })() : Promise.resolve(null);
+    Promise.all([p, q, eb, ebV]).then(([r, v, e1, e2]) => { this._enH = done(r, v); this._enH.eb = e1; if (this._enH.prev) this._enH.prev.eb = e2; }).catch(() => { this._enH = done({}, null, true); })
       .finally(() => { if (this._enBusy === key) this._enBusy = null; if (this._mdActive() === "en" && !this._dragging) this._render(); });
   }
   _enSer(eid, zero) {
@@ -17106,6 +17128,12 @@ class FensterHeizungPanel extends HTMLElement {
   _enSum() {
     const E = this._enState(), H = this._enH; if (!H || H.key !== E.range + ":" + (E.off || 0)) return null;
     if (E.range === "day") {
+      const EB = H.eb, from = this._ebFrom(EB, "h");
+      if (EB && from && +from <= H.start && (EB.rows || []).length) {  // ganzer Tag im Energiebuch
+        const t = this._ebSum(EB, EB.rows); this._enEbUsed = "all";
+        return { pv: t.gen, pvb: t.gen2 || 0, exp: t.exp, imp: t.imp, house: t.use, eb: true };
+      }
+      this._enEbUsed = "";
       const s = this._enSamples(); if (!s || !s.length) return { empty: true };
       const k = (f) => s.reduce((a, x) => a + x[f], 0) * 5 / 60 / 1000;
       return { pv: k("pv"), pvb: k("pvb"), exp: k("exp"), imp: k("imp"), house: k("house") };
@@ -17141,6 +17169,9 @@ class FensterHeizungPanel extends HTMLElement {
     if (miss) return `<div class="gst on">${ic("info", 15)}Für Woche, Monat und Jahr fehlt ein Sensor. Wähle in den Einstellungen Energiezähler (Wh, kWh) oder lass sie leer, dann wird aus den Leistungssensoren gerechnet.</div>`;
     if (this._enH && this._enH.err) return `<div class="gst on">${ic("alert", 15)}Der Verlauf konnte nicht geladen werden. Ist der Recorder in Home Assistant aktiv?</div>`;
     const sm = this._enSum(); if (sm && sm.empty) return `<div class="gst on">${ic("info", 15)}Für diesen Zeitraum gibt es keine Langzeitstatistik. Zähler brauchen <code>state_class: total_increasing</code>, Leistungssensoren <code>state_class: measurement</code>.</div>`;
+    const E = this._enState(), EB = this._enH && this._enH.eb;
+    if (E.range === "day" ? this._enEbUsed === "all" : this._enEbN && this._enH && this._enEbN >= this._enH.n) return `<div class="gst">${ic("check", 15)}Aus dem Haus-Energiebuch – alle 20 Sekunden gezählt.</div>`;
+    if (EB && EB.first && (E.range !== "day" && this._enEbN)) return `<div class="gst">${ic("info", 15)}Ab ${new Date(EB.first * 1000).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} aus dem Haus-Energiebuch (alle 20 Sekunden gezählt), davor aus der Langzeitstatistik.</div>`;
     return der ? `<div class="gst">${ic("info", 15)}Teilweise aus Leistungs-Mittelwerten berechnet. Mit Energiezählern (Wh, kWh) wird es genauer.</div>` : "";
   }
   /* Summen je Abschnitt (Stunde, Tag oder Monat) aus der Langzeitstatistik */
@@ -17148,6 +17179,7 @@ class FensterHeizungPanel extends HTMLElement {
     const H = this._enH, R = R0 || H.res || {}, n = R0 ? R0.n : H.n, u = R0 ? R0.u : H.u, st = R0 ? R0.start : H.start, src = this._enSrc(), E = this._enState();
     const hp = (R.pw === "day" ? 24 : 1), d0 = new Date(st), out = [];
     const ix = (ts) => { const d = new Date(typeof ts === "number" ? ts : Date.parse(ts)); return u === "m" ? (d.getFullYear() - d0.getFullYear()) * 12 + d.getMonth() - d0.getMonth() : u === "h" ? Math.floor((d - d0) / 36e5) : Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(d0.getFullYear(), d0.getMonth(), d0.getDate())) / 864e5); };
+    this._enEbN = 0;
     for (let i = 0; i < n; i++) out.push({ d: u === "m" ? new Date(d0.getFullYear(), d0.getMonth() + i, 15) : u === "h" ? new Date(+d0 + i * 36e5) : new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() + i, 12), pv: 0, pvb: 0, imp: 0, exp: 0, bchg: 0, bdis: 0 });
     Object.entries(src).forEach(([f0, s]) => {
       if (!s) return; const f = s.f || f0;
@@ -17164,6 +17196,14 @@ class FensterHeizungPanel extends HTMLElement {
         out[i][f] += Math.max(0, w) * hp / 1000; if (f0 === "pv2") out[i].pvb += Math.max(0, w) * hp / 1000;
       });
     });
+    /* Haus-Energiebuch: vollständig gezählte Abschnitte übernehmen */
+    const EB = R0 ? R0.eb : H.eb, from = this._ebFrom(EB, u === "h" ? "h" : "d");
+    if (EB && from && (EB.rows || []).length) {
+      const F = EB.fields || [], g = (v, k) => v[F.indexOf(k)] || 0, acc = {};
+      const bs = (i) => (u === "m" ? new Date(d0.getFullYear(), d0.getMonth() + i, 1) : u === "h" ? new Date(+d0 + i * 36e5) : new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() + i));
+      EB.rows.forEach((r) => { const [yy, mm, dd] = r.d.split("-").map(Number), t = new Date(yy, mm - 1, dd, r.h || 0); const i = ix(+t); if (out[i] && bs(i) >= from) { const a = (acc[i] = acc[i] || { pv: 0, pvb: 0, imp: 0, exp: 0, bchg: 0, bdis: 0 }); a.pv += g(r.v, "gen"); a.pvb += g(r.v, "gen2"); a.imp += g(r.v, "imp"); a.exp += g(r.v, "exp"); a.bchg += g(r.v, "chg"); a.bdis += g(r.v, "bat"); } });
+      Object.entries(acc).forEach(([i, a]) => { Object.assign(out[i], a, { eb: true }); if (!R0) this._enEbN++; });
+    }
     return out;
   }
   /* ---- Darstellung ---- */

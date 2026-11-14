@@ -169,14 +169,14 @@
       const B = this._lgB, c = (B && B.cfg) || null;
       if (!c) return wrap("Morgen-Briefing", "★ Sponsor Max", `<div class="mut sm">${B && B.err ? "Das Briefing ist noch nicht bereit." : "Lädt …"}</div>`);
       const svc = Object.keys((this._hass.services || {}).notify || {}).filter((n) => n !== "send_message").sort().map((n) => "notify." + n), opts = [...svc, ...c.notify.filter((n) => !svc.includes(n))];
-      const BL = { sun: "☀️ Sonne heute", price: "€ Strompreis", dev: "🧺 Bestes Geräte-Fenster", car: "🚗 Auto", heat: "🔥 Heizung & Fenster", warn: "⚠️ Auffälligkeiten", muell: "🗑️ Müll (Addon, bald)" };
+      const BL = { haus: "🏠 Gestern im Haus", sun: "☀️ Sonne heute", price: "€ Strompreis", dev: "🧺 Bestes Geräte-Fenster", car: "🚗 Auto", heat: "🔥 Heizung & Fenster", warn: "⚠️ Auffälligkeiten", muell: "🗑️ Müll (Addon, bald)" };
       const row = (t, sub, ctl) => `<div class="vrow"><span>${t}${sub ? `<small class="mut" style="display:block">${sub}</small>` : ""}</span>${ctl}</div>`;
       const sw = (act, on) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" ${adm ? "" : "disabled"}></button>`;
       const L = B.last || {};
       return wrap("Morgen-Briefing", "★ Sponsor Max · eine Meldung am Morgen", `
         ${row("Briefing senden", "", sw("lgxbon", c.on))}
         ${row("Uhrzeit", "", `<span class="lgstep"><button class="ibtn" data-act="lgxbt" data-k="-15" aria-label="früher">${ic("minus", 16)}</button><b>${esc(c.time)}</b><button class="ibtn" data-act="lgxbt" data-k="15" aria-label="später">${ic("plus", 16)}</button></span>`)}
-        ${row("Abend-Rückblick", `kurz um ${esc(c.evening_time)}: was heute gespart wurde`, sw("lgxbev", c.evening))}
+        ${row("Abend-Rückblick", `kurz um ${esc(c.evening_time)}: der Tag im Haus und was gespart wurde`, sw("lgxbev", c.evening))}
         <div class="lsec">Bausteine</div><div class="gschips">${B.blocks.map((k) => `<button class="gsch ${c.blocks.includes(k) ? "sel" : ""}" data-act="lgxbblk" data-k="${k}" aria-pressed="${c.blocks.includes(k)}" ${k === "muell" ? "disabled" : ""}>${BL[k] || k}</button>`).join("")}</div>
         <div class="mut sm" style="margin:4px 0 0">Ein Baustein ohne Daten (zum Beispiel ohne Tibber oder ohne Auto) fällt einfach weg.</div>
         <div class="lsec">Senden an</div>${opts.length ? `<div class="gschips">${opts.map((n) => `<button class="gsch ${c.notify.includes(n) ? "sel" : ""}" data-act="lgxbnot" data-k="${esc(n)}" aria-pressed="${c.notify.includes(n)}">${esc(n.replace("notify.", ""))}</button>`).join("")}</div>` : `<div class="mut sm">Keine Benachrichtigungsdienste gefunden.</div>`}
@@ -188,8 +188,12 @@
   /* ---- Jahres-Poster als SVG (zum Speichern als Bild und zum Drucken) ---- */
   _lgPosterSvg() {
     const y = new Date().getFullYear(), N = this._lgNums("year"), s = this._spnS(), W = 840, H = 1188;
-    const cells = [N.rooms && N.gas > 0 ? [`${num(N.gas, N.gas >= 100 ? 0 : 1)} ${unitOf(N.F)}`, `${N.F.short} gespart`] : null, N.rooms && N.min > 0 ? [`${num(N.min / 60, 0)} h`, "Heizpausen beim Lüften"] : null,
-      N.n > 0 ? [`${num(N.n)} ×`, "Geräte-Läufe"] : null, N.own != null ? [`${num(N.own, 0)} %`, "davon eigener Strom"] : null, N.sv > 0 ? [`${num(N.sv, 0)} €`, "durch eigenen Strom gespart"] : null].filter(Boolean);
+    /* Haus-Energiebuch: Solar erzeugt und Autarkie im Jahr (nachgeladen, „seit …“, wenn es erst später angefangen hat) */
+    const Y = this._lgEbY; if (!Y || Y.y !== y || Date.now() - Y.ts > 12e4) { this._lgEbY = { y, ts: Date.now(), t: Y && Y.y === y ? Y.t : null }; this._ebQ(new Date(y, 0, 1), new Date(y + 1, 0, 1), "day").then((E) => { if (E && (E.rows || []).length) { this._lgEbY = { y, ts: Date.now(), t: this._ebSum(E, E.rows), from: E.first }; if (this._modal && this._modal.type === "lgposter") this._renderModal(); } }); }
+    const T = this._lgEbY && this._lgEbY.t, since = T && this._lgEbY.from && new Date(this._lgEbY.from * 1000) > new Date(y, 0, 1, 1) ? ` seit ${new Date(this._lgEbY.from * 1000).toLocaleDateString("de-DE", { day: "numeric", month: "short" })}` : "";
+    const ebc = T && T.use > 1 ? [[`${num(T.gen, 0)} kWh`, `Solar erzeugt${since}`], [`${num((1 - T.net / T.use) * 100, 0)} %`, `Autarkie${since}`]] : [];
+    const cells = [...ebc, N.rooms && N.gas > 0 ? [`${num(N.gas, N.gas >= 100 ? 0 : 1)} ${unitOf(N.F)}`, `${N.F.short} gespart`] : null, N.rooms && N.min > 0 ? [`${num(N.min / 60, 0)} h`, "Heizpausen beim Lüften"] : null,
+      N.n > 0 ? [`${num(N.n)} ×`, "Geräte-Läufe"] : null, N.own != null && !ebc.length ? [`${num(N.own, 0)} %`, "davon eigener Strom"] : null, N.sv > 0 ? [`${num(N.sv, 0)} €`, "durch eigenen Strom gespart"] : null].filter(Boolean).slice(0, 6);
     const inner = (k, x, yy, sz) => { const sv = this._gx(k, sz, { on: true, lvl: 90 }); return `<g transform="translate(${x} ${yy})">${sv.replace(/^<svg[^>]*>/, `<svg width="${sz}" height="${sz}" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">`)}</g>`; };
     const cw = 360, chh = 112;
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="100%" style="max-width:420px;display:block;margin:0 auto;border-radius:10px">

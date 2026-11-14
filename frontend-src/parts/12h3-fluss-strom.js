@@ -131,6 +131,18 @@
     });
     return { bars, cons, tot, src, any: Object.keys(map).length > 0 };
   }
+  /* Haus-Energiebuch für alle Module: Abfrage (2 Minuten im Speicher) und Hilfen */
+  _ebIso(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+  _ebQ(s, e, res) {
+    const k = this._ebIso(s) + ":" + this._ebIso(e) + ":" + res, c = (this._ebC = this._ebC || {});
+    if (c[k] && Date.now() - c[k].ts < 12e4) return c[k].p;
+    const p = this._hass.callWS({ type: "fenster_heizung/ebuch", start: this._ebIso(s), end: this._ebIso(e), res }).catch(() => null);
+    c[k] = { ts: Date.now(), p }; return p;
+  }
+  /* Summe der Zeilen als Name → kWh (fields aus der Antwort) */
+  _ebSum(E, rows) { const F = (E && E.fields) || [], t = {}; F.forEach((f) => { t[f] = 0; }); (rows || []).forEach((r) => r.v.forEach((x, j) => { t[F[j]] += x; })); t.use = (t.pv || 0) + (t.bat || 0) + (t.net || 0); return t; }
+  /* Ab wann ist ein Abschnitt vollständig gezählt? (erste volle Stunde bzw. erster voller Tag nach dem Start) */
+  _ebFrom(E, unit) { if (!E || !E.first) return null; const f = new Date(E.first * 1000), part = f.getMinutes() || f.getSeconds(); return unit === "h" ? new Date(f.getFullYear(), f.getMonth(), f.getDate(), f.getHours() + (part ? 1 : 0)) : new Date(f.getFullYear(), f.getMonth(), f.getDate() + (f.getHours() || part ? 1 : 0)); }
   /* Haus-Energiebuch (energiebuch.py, alle 20 s): ersetzt je Säule die Rechnung aus der Statistik, sobald es für den ganzen Abschnitt Werte hat */
   _efxEbMerge(H, E, R, P) {
     H.eb = { n: 0, first: (E && E.first) || 0, ok: !!(E && E.ok) };

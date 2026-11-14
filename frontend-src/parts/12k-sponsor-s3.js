@@ -33,6 +33,9 @@
   _s3Month(off) { const d = new Date(); d.setDate(1); d.setHours(0, 0, 0, 0); d.setMonth(d.getMonth() + off); const e = new Date(d); e.setMonth(e.getMonth() + 1); return { s: d, e, ym: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`, mon: d.toLocaleDateString("de-DE", { month: "long" }), year: d.getFullYear() }; }
   /* Solar, Bezug und Einspeisung eines Monats aus der Langzeitstatistik (Zähler: Änderung je Monat; Leistung: Stundenmittel) */
   async _s3Stats(s, e) {
+    /* ganzer Monat im Haus-Energiebuch (alle 20 s gezählt)? Dann diese Zahlen */
+    const EB = await this._ebQ(s, e, "day"), from = this._ebFrom(EB, "d");
+    if (EB && from && +from <= +s && (EB.rows || []).length) { const t = this._ebSum(EB, EB.rows); return { pv: t.gen, imp: t.imp, exp: t.exp, eb: true }; }
     if (!this._enSrc || !this._enConfigured || !this._enConfigured()) return null;
     const src = this._enSrc(), pick = ["pv", "pv2", "imp", "exp"].map((k) => [k, src[k]]).filter((x) => x[1]);
     if (!pick.length) return null;

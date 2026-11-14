@@ -527,7 +527,10 @@
       const V = this._enPer(-1), ve = new Date(Math.min(+V.e, +V.s + (+P.end - +P.s))), per = E.range === "day" ? "hour" : E.range === "year" ? "month" : "day", pw = "hour";
       q = Promise.all([this._enStatQ("e", V.s, ve, per, "change"), this._enStatQ("p", V.s, ve, pw, "mean")]).then(([e, w]) => ({ e, w, pw, start: +V.s, n: E.range === "day" ? 24 : V.n, u: E.range === "day" ? "h" : V.u })).catch(() => null);
     }
-    Promise.all([p, q]).then(([r, v]) => { this._enH = done(r, v); }).catch(() => { this._enH = done({}, null, true); })
+    /* Haus-Energiebuch: ganze Abschnitte (Stunde, Tag, Monat) ersetzen die Statistik, sobald es sie vollständig gezählt hat */
+    const ebRes = E.range === "day" ? "hour" : "day", eb = this._ebQ(P.s, P.e, ebRes);
+    const ebV = E.cmp !== "off" ? (() => { const V = this._enPer(-1); return this._ebQ(V.s, V.e, ebRes); })() : Promise.resolve(null);
+    Promise.all([p, q, eb, ebV]).then(([r, v, e1, e2]) => { this._enH = done(r, v); this._enH.eb = e1; if (this._enH.prev) this._enH.prev.eb = e2; }).catch(() => { this._enH = done({}, null, true); })
       .finally(() => { if (this._enBusy === key) this._enBusy = null; if (this._mdActive() === "en" && !this._dragging) this._render(); });
   }
   _enSer(eid, zero) {
@@ -558,6 +561,12 @@
   _enSum() {
     const E = this._enState(), H = this._enH; if (!H || H.key !== E.range + ":" + (E.off || 0)) return null;
     if (E.range === "day") {
+      const EB = H.eb, from = this._ebFrom(EB, "h");
+      if (EB && from && +from <= H.start && (EB.rows || []).length) {  // ganzer Tag im Energiebuch
+        const t = this._ebSum(EB, EB.rows); this._enEbUsed = "all";
+        return { pv: t.gen, pvb: t.gen2 || 0, exp: t.exp, imp: t.imp, house: t.use, eb: true };
+      }
+      this._enEbUsed = "";
       const s = this._enSamples(); if (!s || !s.length) return { empty: true };
       const k = (f) => s.reduce((a, x) => a + x[f], 0) * 5 / 60 / 1000;
       return { pv: k("pv"), pvb: k("pvb"), exp: k("exp"), imp: k("imp"), house: k("house") };
@@ -593,6 +602,9 @@
     if (miss) return `<div class="gst on">${ic("info", 15)}Für Woche, Monat und Jahr fehlt ein Sensor. Wähle in den Einstellungen Energiezähler (Wh, kWh) oder lass sie leer, dann wird aus den Leistungssensoren gerechnet.</div>`;
     if (this._enH && this._enH.err) return `<div class="gst on">${ic("alert", 15)}Der Verlauf konnte nicht geladen werden. Ist der Recorder in Home Assistant aktiv?</div>`;
     const sm = this._enSum(); if (sm && sm.empty) return `<div class="gst on">${ic("info", 15)}Für diesen Zeitraum gibt es keine Langzeitstatistik. Zähler brauchen <code>state_class: total_increasing</code>, Leistungssensoren <code>state_class: measurement</code>.</div>`;
+    const E = this._enState(), EB = this._enH && this._enH.eb;
+    if (E.range === "day" ? this._enEbUsed === "all" : this._enEbN && this._enH && this._enEbN >= this._enH.n) return `<div class="gst">${ic("check", 15)}Aus dem Haus-Energiebuch – alle 20 Sekunden gezählt.</div>`;
+    if (EB && EB.first && (E.range !== "day" && this._enEbN)) return `<div class="gst">${ic("info", 15)}Ab ${new Date(EB.first * 1000).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} aus dem Haus-Energiebuch (alle 20 Sekunden gezählt), davor aus der Langzeitstatistik.</div>`;
     return der ? `<div class="gst">${ic("info", 15)}Teilweise aus Leistungs-Mittelwerten berechnet. Mit Energiezählern (Wh, kWh) wird es genauer.</div>` : "";
   }
   /* Summen je Abschnitt (Stunde, Tag oder Monat) aus der Langzeitstatistik */
@@ -600,6 +612,7 @@
     const H = this._enH, R = R0 || H.res || {}, n = R0 ? R0.n : H.n, u = R0 ? R0.u : H.u, st = R0 ? R0.start : H.start, src = this._enSrc(), E = this._enState();
     const hp = (R.pw === "day" ? 24 : 1), d0 = new Date(st), out = [];
     const ix = (ts) => { const d = new Date(typeof ts === "number" ? ts : Date.parse(ts)); return u === "m" ? (d.getFullYear() - d0.getFullYear()) * 12 + d.getMonth() - d0.getMonth() : u === "h" ? Math.floor((d - d0) / 36e5) : Math.round((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(d0.getFullYear(), d0.getMonth(), d0.getDate())) / 864e5); };
+    this._enEbN = 0;
     for (let i = 0; i < n; i++) out.push({ d: u === "m" ? new Date(d0.getFullYear(), d0.getMonth() + i, 15) : u === "h" ? new Date(+d0 + i * 36e5) : new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() + i, 12), pv: 0, pvb: 0, imp: 0, exp: 0, bchg: 0, bdis: 0 });
     Object.entries(src).forEach(([f0, s]) => {
       if (!s) return; const f = s.f || f0;
@@ -616,6 +629,14 @@
         out[i][f] += Math.max(0, w) * hp / 1000; if (f0 === "pv2") out[i].pvb += Math.max(0, w) * hp / 1000;
       });
     });
+    /* Haus-Energiebuch: vollständig gezählte Abschnitte übernehmen */
+    const EB = R0 ? R0.eb : H.eb, from = this._ebFrom(EB, u === "h" ? "h" : "d");
+    if (EB && from && (EB.rows || []).length) {
+      const F = EB.fields || [], g = (v, k) => v[F.indexOf(k)] || 0, acc = {};
+      const bs = (i) => (u === "m" ? new Date(d0.getFullYear(), d0.getMonth() + i, 1) : u === "h" ? new Date(+d0 + i * 36e5) : new Date(d0.getFullYear(), d0.getMonth(), d0.getDate() + i));
+      EB.rows.forEach((r) => { const [yy, mm, dd] = r.d.split("-").map(Number), t = new Date(yy, mm - 1, dd, r.h || 0); const i = ix(+t); if (out[i] && bs(i) >= from) { const a = (acc[i] = acc[i] || { pv: 0, pvb: 0, imp: 0, exp: 0, bchg: 0, bdis: 0 }); a.pv += g(r.v, "gen"); a.pvb += g(r.v, "gen2"); a.imp += g(r.v, "imp"); a.exp += g(r.v, "exp"); a.bchg += g(r.v, "chg"); a.bdis += g(r.v, "bat"); } });
+      Object.entries(acc).forEach(([i, a]) => { Object.assign(out[i], a, { eb: true }); if (!R0) this._enEbN++; });
+    }
     return out;
   }
   /* ---- Darstellung ---- */

@@ -23,14 +23,14 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-BLOCKS = ("sun", "price", "dev", "car", "heat", "warn", "muell")
+BLOCKS = ("haus", "sun", "price", "dev", "car", "heat", "warn", "muell")
 _TIME = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 _NOTIFY = re.compile(r"^notify\.[a-z0-9_]+$")
 
 
 def default_cfg() -> dict[str, Any]:
     return {"on": False, "time": "06:30", "evening": False, "evening_time": "21:00",
-            "blocks": ["sun", "price", "dev", "car", "heat", "warn"], "notify": [], "tablet": True}
+            "blocks": ["haus", "sun", "price", "dev", "car", "heat", "warn"], "notify": [], "tablet": True}
 
 
 def clean_cfg(raw: Any) -> dict[str, Any]:
@@ -107,7 +107,7 @@ class BriefingManager:
             return {"title": "🌙 Abend-Rückblick", "lines": lines or ["Heute gab es nichts Besonderes."]}
         for b in self.cfg["blocks"]:
             try:
-                fn = {"sun": self._sun, "price": self._price, "dev": self._dev, "car": self._car, "heat": self._heat, "warn": self._warn, "muell": self._muell}[b]
+                fn = {"haus": self._haus, "sun": self._sun, "price": self._price, "dev": self._dev, "car": self._car, "heat": self._heat, "warn": self._warn, "muell": self._muell}[b]
                 r = await fn(D)
             except Exception:  # noqa: BLE001 - ein fehlender Baustein darf das Briefing nicht verhindern
                 _LOGGER.debug("Briefing-Baustein %s fehlgeschlagen", b, exc_info=True)
@@ -205,7 +205,35 @@ class BriefingManager:
     async def _muell(self, D: dict) -> str | None:
         return None  # Müllabfuhr ist ein Addon; die Termine liest das Briefing erst, wenn das Addon sie anbietet
 
+    def _haus_line(self, D: dict, day: str, label: str) -> str | None:
+        """Haus-Energiebuch: Verbrauch, Solaranteil, Autarkie und Einspeisung eines Tages."""
+        eb = D.get("ebuch")
+        if eb is None:
+            return None
+        d = datetime.fromisoformat(day).date()
+        if not eb.covers(dt_util.start_of_local_day(d).timestamp()):
+            return None  # Tag nicht vollständig gezählt
+        end = (d + timedelta(days=1)).isoformat()
+        t = eb.totals(day, end)
+        if t["use"] < 0.05:
+            return None
+        sol = round(t["pv"] / t["use"] * 100)
+        aut = round((1 - t["net"] / t["use"]) * 100)
+        exp = f" · {_num(t['exp'])} kWh eingespeist" if t["exp"] >= 0.1 else ""
+        return f"🏠 {label}: {_num(t['use'])} kWh verbraucht · {sol} % Solar · Autarkie {aut} %{exp}"
+
+    async def _haus(self, D: dict) -> str | None:
+        y = (dt_util.now() - timedelta(days=1)).strftime("%Y-%m-%d")
+        return self._haus_line(D, y, "Gestern")
+
     def _evening(self, D: dict) -> str | None:
+        h = self._haus_line(D, dt_util.now().strftime("%Y-%m-%d"), "Heute")
+        sv = self._evening_dev(D)
+        if h and sv:
+            sv = sv.replace("Heute ", "", 1)
+        return " · ".join(x for x in (h, sv) if x) or None
+
+    def _evening_dev(self, D: dict) -> str | None:
         gm = D.get("geraete")
         if gm is None or not gm.active():
             return None
