@@ -12,9 +12,10 @@ class FensterHeizungPanel extends HTMLElement {
     this._ro.observe(this);
     this._ti = setInterval(() => this._tick(), 1000);
   }
-  disconnectedCallback() { this._ro && this._ro.disconnect(); clearInterval(this._ti); }
+  disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); }
   _tick() {
     this._tmTick();
+    this._visFix();
     if (this._rkTick) this._rkTick();
     if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); this._adLoad(true); }
     this.shadowRoot.querySelectorAll("[data-since]").forEach((el) => {
@@ -34,17 +35,45 @@ class FensterHeizungPanel extends HTMLElement {
     }
     return true;
   }
-  /* Bewegung nur, wenn sichtbar (Konzept H2): Bilder außerhalb des Bildschirms halten an */
+  /* Bewegung nur, wenn sichtbar (Konzept H2): Bilder außerhalb des Bildschirms halten an.
+     Ein behaltenes Bild wird beim Neuaufbau kurz aus der Seite genommen; eine veraltete Meldung „nicht sichtbar“ darf es nicht anhalten,
+     deshalb wird „0“ nur gesetzt, wenn das Bild wirklich außerhalb liegt (und der Takt prüft angehaltene Bilder jede Sekunde nach). */
+  _visNow(el) {
+    if (!el.isConnected) return false;
+    const r = el.getBoundingClientRect(), H = window.innerHeight || 0, W = window.innerWidth || 0;
+    return r.width > 0 && r.height > 0 && r.bottom > -40 && r.top < H + 40 && r.right > -40 && r.left < W + 40;
+  }
   _visObs() {
     if (typeof IntersectionObserver === "undefined" || !this.shadowRoot) return;
-    const io = this._io || (this._io = new IntersectionObserver((es) => es.forEach((e) => e.target.setAttribute("data-vis", e.isIntersecting ? "1" : "0")), { rootMargin: "40px" }));
+    const io = this._io || (this._io = new IntersectionObserver((es) => es.forEach((e) => { if (e.target.isConnected) e.target.setAttribute("data-vis", e.isIntersecting || this._visNow(e.target) ? "1" : "0"); }), { rootMargin: "40px" }));
     io.disconnect(); this.shadowRoot.querySelectorAll("[data-an]").forEach((el) => io.observe(el));  /* neu beobachten: entfernte Bilder fallen so heraus */
+  }
+  _visFix() { if (!this.shadowRoot || document.hidden) return; this.shadowRoot.querySelectorAll('[data-vis="0"]').forEach((el) => { if (this._visNow(el)) el.setAttribute("data-vis", "1"); }); }
+  /* Laufende CSS-Bewegung über den Neuaufbau retten: Wird ein Element aus der Seite genommen und wieder eingesetzt, beginnt seine
+     Animation von vorn (Safari: hält sogar an, bis gescrollt wird). Stand je Element und Animation merken und danach wieder setzen. */
+  _animSave(kk) {
+    const out = new Map();
+    try {
+      Object.values(kk).forEach((o) => { if (!o.getAnimations) return; const els = [o, ...o.querySelectorAll("*")];
+        const m = new Map();
+        o.getAnimations({ subtree: true }).forEach((a) => { const t = a.effect && a.effect.target, i = els.indexOf(t); if (i >= 0 && a.currentTime != null) m.set(`${i}|${a.animationName || ""}`, a.currentTime); });
+        if (m.size) out.set(o, m);
+      });
+    } catch (_) { /* ältere Browser: dann eben von vorn */ }
+    return out;
+  }
+  _animLoad(at) {
+    try {
+      at.forEach((m, o) => { if (!(o instanceof Element) || !o.isConnected || !o.getAnimations) return; const els = [o, ...o.querySelectorAll("*")];
+        o.getAnimations({ subtree: true }).forEach((a) => { const t = a.effect && a.effect.target, v = m.get(`${els.indexOf(t)}|${a.animationName || ""}`); if (v != null) a.currentTime = v; });
+      });
+    } catch (_) { /* egal */ }
   }
   /* Karten lückenlos (Mauerwerk): jede Karte belegt so viele 2-px-Zeilen wie sie hoch ist und rutscht in die kürzeste Spalte.
      Sofort nach dem Zeichnen gemessen (kein Springen), danach hält ein ResizeObserver es aktuell (Diagramme laden nach). */
   _msn() {
     const sr = this.shadowRoot; if (!sr) return;
-    const ro = this._ro || (typeof ResizeObserver !== "undefined" ? (this._ro = new ResizeObserver((es) => es.forEach((e) => this._msnSpan(e.target)))) : null);
+    const ro = this._msnRo || (typeof ResizeObserver !== "undefined" ? (this._msnRo = new ResizeObserver((es) => es.forEach((e) => this._msnSpan(e.target)))) : null);  /* eigener Beobachter: this._ro beobachtet die Breite des Panels */
     if (ro) ro.disconnect();
     sr.querySelectorAll(".hero.m3x > .m3ss").forEach((sc) => { this._msnSpan(sc); if (ro) ro.observe(sc); });  /* Energie-Szene: Breite für Ring und Text */
     sr.querySelectorAll(".mublks").forEach((g) => {

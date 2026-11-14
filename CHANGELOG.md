@@ -18,6 +18,8 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 ### Behoben
 - **Modul 8 (v0.9 Build 3): Laden startete nach einem Stopp nicht wieder.** Die go-e meldet „fertig“ auch dann, wenn die Regelung selbst gestoppt hat (zu wenig Sonne, „Hausbatterie zuerst“). Das wurde als „Auto ist voll“ gewertet – danach blieb es bei „Das Auto meldet fertig geladen“, trotz Überschuss. Jetzt gilt „fertig“ nur, wenn das Auto bei freigegebenem Laden von selbst aufgehört hat **und** der Ladestand am Ziel ist (oder unbekannt). Sonst wird weiter geregelt, bis das eingestellte Limit erreicht ist. Hört das Auto unter dem Ziel von selbst auf, bleibt das Laden freigegeben und der Grund steht in „Warum gerade so?“.
 - **Modul 8:** Das Etikett „Ziel 100 %“ über dem Ladeband ragte rechts aus der Karte.
+- **Modul 3 (v1.6 Build 3) und alle Szenen: Flüsse blieben stehen und liefen nur beim Scrollen weiter.** Bei jedem neuen Wert aus Home Assistant wird die Seite neu aufgebaut; dabei begann die Bewegung jedes Mal von vorn (auf dem iPad hielt sie sogar an). Bei häufigen Werten sah das wie Stillstand aus – beim Scrollen pausiert der Neuaufbau, deshalb liefen sie dann. Jetzt wird der Stand jeder Bewegung über den Neuaufbau gerettet; Flüsse, Wolken und Lichter laufen gleichmäßig durch. Zusätzlich prüft das Dashboard jede Sekunde, ob ein angehaltenes Bild eigentlich sichtbar ist.
+- **Drehen des iPads oder Ändern der Fensterbreite** baute das Layout nicht mehr neu auf (zwei Teile teilten sich denselben Größen-Beobachter).
 
 ## [2026.11.3b19] - 2026-11-13
 
