@@ -1,5 +1,6 @@
   /* Ladestatistik: Balkendiagramm pro Tag, Anteil Sonne/Netz, Kosten */
-  _wbStT() { return this._wbTab === "veh" && this._evNew() ? "veh" : this._wbTab === "stat" ? "stat" : this._wbTab === "plan" ? "plan" : this._wbTab === "set" ? "set" : "laden"; }
+  _wbStT() { if (this._wbTab === undefined && FH_CACHE.tab) this._wbTab = FH_CACHE.tab; /* Register bleibt nach dem Neuaufbau der Seite erhalten */
+    return this._wbTab === "veh" && this._evNew() ? "veh" : this._wbTab === "stat" ? "stat" : this._wbTab === "plan" ? "plan" : this._wbTab === "set" ? "set" : "laden"; }
   _wbTabs() {
     const t = this._wbStT(), b = (k, l, i) => `<button class="${t === k ? "sel" : ""}" data-act="wbtab" data-k="${k}" aria-pressed="${t === k}">${ic(i, 16)}${l}</button>`;
     return `<div class="wbtabs" role="tablist">${b("laden", "Laden", "energy")}${b("plan", "Planung", "sun")}${b("stat", "Ladestatistik", "chart")}${b("set", "Einstellungen", "sliders")}</div>`;
@@ -8,8 +9,13 @@
     if (!this._hass || this._wbStBusy) return;
     if (!force && this._wbStD && Date.now() - this._wbStD.ts < 30000) return;
     this._wbStBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/wb_stats" }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; }).catch(() => { this._wbStD = { data: { error: true }, ts: Date.now() }; })
-      .finally(() => { this._wbStBusy = false; if (this._wbStT() === "stat" && this._wbVisible()) this._render(); });
+    if (!this._wbStD && FH_CACHE.st) this._wbStD = { ...FH_CACHE.st, ts: 0 };
+    let fail = false;
+    this._hass.callWS({ type: "fenster_heizung/wb_stats" }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; FH_CACHE.st = this._wbStD; this._wbStFail = 0; })
+      .catch(() => { fail = true; this._wbStFail = (this._wbStFail || 0) + 1; const had = this._wbStD && this._wbStD.data && !this._wbStD.data.error;
+        if (had) this._wbStD = { ...this._wbStD, ts: Date.now() - 27000 }; /* letzten Stand behalten, in 3 s neu versuchen */
+        else if (this._wbStFail >= 3) this._wbStD = { data: { error: true }, ts: Date.now() - 20000 }; })
+      .finally(() => { this._wbStBusy = false; if (fail && this._wbStFail < 3) setTimeout(() => this._wbStatLoad(true), 1500); if (["stat", "laden"].includes(this._wbStT()) && this._wbVisible()) this._render(); });
   }
   _wbStS() { const n = new Date(); return this._wbStV || (this._wbStV = { per: "m", y: n.getFullYear(), m: n.getMonth(), what: "e", by: "src" }); }
   _wbStat() {
@@ -56,7 +62,7 @@
   }
   _wbStAct(a, b) {
     const S = this._wbStS(), k = b.dataset.k;
-    if (a === "wbtab") this._wbTab = k;
+    if (a === "wbtab") { this._wbTab = k; FH_CACHE.tab = k; }
     else if (a === "wbsec") { this._wbSecO = { ...this._wbSecS(), [k]: !this._wbSecS()[k] }; this._wbSecSave(); }
     else if (a === "wbsecall") { this._wbSecO = Object.fromEntries(["wb", "reg", "veh", "bat", "dim", "grd", "ntf", "look"].map((x) => [x, k === "1"])); this._wbSecSave(); }
     else if (a === "wbgo" && k === "veh" && this._evNew()) this._wbTab = "veh";

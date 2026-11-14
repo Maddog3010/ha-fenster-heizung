@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b24] - 2026-11-14
+
+### Behoben
+- **Modul 8: Nach dem Zurückwechseln in die Home-Assistant-App waren „Laden“ und „Statistik“ eine Weile leer (0 kWh, keine Werte).** Beim Zurückkommen verbindet sich die App neu; die erste Abfrage scheiterte und ersetzte die Werte durch einen leeren Stand – die Statistik fragte erst nach 30 Sekunden wieder. Jetzt bleibt der letzte Stand stehen, Modul 8 fragt sofort beim Zurückkommen und bei einem Fehlschlag nach 1,5 Sekunden erneut; „keine Antwort“ erscheint erst nach drei Fehlversuchen. Baut die App die Seite ganz neu auf, zeigt Modul 8 sofort den letzten Stand und bleibt im zuletzt gewählten Register.
+
+### Geändert
+- **Modul 8 (v0.9 Build 6): Carport-Szene näher an der Wirklichkeit.**
+  - Der Sonnenstrom fliegt nicht mehr als Bogen durch die Luft: Er läuft im **Kabelkanal am Carport-Träger** zu einem **Wechselrichter an der Hauswand** und von dort in die Wallbox. Der Wechselrichter zeigt mit grüner Lampe, wenn Sonne fließt.
+  - Lädt das Auto (auch) mit Netzstrom, kommt der Strom sichtbar **aus dem Haus** in die Wallbox (orange). Bei gemischtem Laden laufen beide Wege.
+  - **Ladekabel und Stecker:** Das Kabel liegt jetzt **vor** dem Auto, führt hinter dem Hinterrad vom Boden nach oben und endet in einem **Typ-2-Stecker** in der geöffneten Ladeklappe (Griff leuchtet beim Laden). Vorher verschwand es hinter der Karosserie, der Stecker saß als Klotz auf dem Radlauf.
+- **Modul 8: „Heute“ übersichtlicher.** Statt eines ganzen Tages (0–24 Uhr) mit vielen schmalen Streifen:
+  - Kennzahlen oben: geladen, Sonnenanteil, Kosten und – falls vorhanden – geplante kWh.
+  - Die Zeitleiste zeigt nur den Ausschnitt um die Ladungen und jetzt (mindestens 6 Stunden), mit Stundenlinien und „jetzt“-Marke.
+  - Ladungen als beschriftete Balken (kWh und Sonnenanteil, Sonne/Netz als Anteil im Balken), geplante Fenster in einer eigenen Zeile.
+  - Darunter eine kurze Liste der Ladungen mit Uhrzeit, Dauer, kWh, Sonne und Kosten. Teile einer Ladung, die vor b23 getrennt gezählt wurden, erscheinen hier als eine.
+
 ## [2026.11.3b23] - 2026-11-14
 
 ### Behoben

@@ -32,8 +32,12 @@
     if (!this._hass || this._wbFcBusy) return;
     if (!force && this._wbFcD && Date.now() - this._wbFcD.ts < 60000) return;
     this._wbFcBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/wb_forecast" }).then((r) => { this._wbFcD = { data: r || {}, ts: Date.now() }; }).catch(() => { this._wbFcD = { data: { error: true }, ts: Date.now() }; })
-      .finally(() => { this._wbFcBusy = false; if (this._wbStT() === "plan" && this._wbVisible()) this._render(); });
+    if (!this._wbFcD && FH_CACHE.fc) this._wbFcD = { ...FH_CACHE.fc, ts: 0 };
+    let fail = false;
+    this._hass.callWS({ type: "fenster_heizung/wb_forecast" }).then((r) => { this._wbFcD = { data: r || {}, ts: Date.now() }; FH_CACHE.fc = this._wbFcD; this._wbFcFail = 0; })
+      .catch(() => { fail = true; this._wbFcFail = (this._wbFcFail || 0) + 1; const had = this._wbFcD && this._wbFcD.data && !this._wbFcD.data.error;
+        if (had) this._wbFcD = { ...this._wbFcD, ts: Date.now() - 57000 }; else if (this._wbFcFail >= 3) this._wbFcD = { data: { error: true }, ts: Date.now() - 50000 }; })
+      .finally(() => { this._wbFcBusy = false; if (fail && this._wbFcFail < 3) setTimeout(() => this._wbFcLoad(true), 1500); if (["plan", "laden"].includes(this._wbStT()) && this._wbVisible()) this._render(); });
   }
   _wbPlan(d, onlyRest) {
     this._wbFcLoad(); this._tbLoad();

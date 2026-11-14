@@ -11,8 +11,11 @@ class FensterHeizungPanel extends HTMLElement {
     this._ro = new ResizeObserver(() => { if (this._hass && !this._dragging && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render(); });
     this._ro.observe(this);
     this._ti = setInterval(() => this._tick(), 1000);
+    /* Zurück aus einer anderen App: Modul 8 sofort neu laden (der letzte Stand bleibt bis dahin stehen) */
+    this._vis = () => { if (document.visibilityState !== "visible" || !this._hass) return; setTimeout(() => { if (this._mdActive && this._mdActive() === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); } }, 400); };
+    document.addEventListener("visibilitychange", this._vis);
   }
-  disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); }
+  disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); if (this._vis) document.removeEventListener("visibilitychange", this._vis); }
   _tick() {
     this._tmTick();
     this._visFix();

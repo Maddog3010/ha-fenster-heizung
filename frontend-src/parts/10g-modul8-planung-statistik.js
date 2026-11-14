@@ -69,6 +69,7 @@
     this._wbStatLoad();
     const D = (this._wbStD && this._wbStD.data) || null;
     if (!D) return `<div class="card empty">${this._gx("meter", 40)}<div class="sm" style="margin-top:8px">Statistik wird geladen …</div></div>`;
+    if (D.error) return `<div class="card empty">${this._gx("meter", 40)}<div class="sm" style="margin-top:8px">Die Statistik konnte gerade nicht geladen werden. <button class="lnk" data-act="wbstretry">Nochmal versuchen</button></div></div>`;
     const S = this._evSt(), R = this._evRange(S.per, S.at), days = D.days || [], T = this._evAgg(days, R.d0, R.d1), run = R.d1 > new Date();
     /* Vergleich fair: Läuft der Zeitraum noch, zählt beim Vorzeitraum nur derselbe Anteil (z. B. 1.–13. Oktober gegen 1.–13. November) */
     const pEnd = run && S.per !== "d" ? (() => { const t = new Date(R.prev); t.setDate(t.getDate() + Math.ceil((new Date() - R.d0) / 864e5)); return t < R.d0 ? t : R.d0; })() : R.d0, Pv = this._evAgg(days, R.prev, pEnd);

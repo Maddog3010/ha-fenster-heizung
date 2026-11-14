@@ -1,5 +1,6 @@
   _wbDef() { return { ip: "", enabled: false, mode: "off", minA: 6, maxA: 16, ph: "auto", startW: 1400, onMin: 1, offMin: 3, limit: 80, plan: false, planSoc: 80, planTime: "07:00", planDays: "all", cap: 60, batOn: true, batSoc: 30, priceOn: false, priceMax: 18, lock: false, reset: true, planOn: false, planStrat: "mix", planSrc: "auto", pvSrc: "auto", baseW: 400, vs: 2, defVeh: "", look: "new", batProtect: true, carFirst: false, dim: { on: false, ent: "", kw: 4.2 }, pdf: { ct: 30, name: "" }, wbx: { kind: "goe", plat: "", name: "", ent: {}, ph: 3 }, vehicles: [], guest: { mode: "off", limit: 80 }, guard: { on: false, maxA: 35 }, notify: { start: true, goal: true, plan: true, off: true, long: false, to: [] } }; }
-  _wbSnap() { const s = (this._wbD && this._wbD.snap) || {}; return { ...s, cfg: { ...this._wbDef(), ...(s.cfg || {}) }, info: s.info || {}, want: s.want || {}, log: s.log || [], plan: s.plan || {} }; }
+  _wbSnap() { if (!this._wbD && FH_CACHE.wb) this._wbD = { ...FH_CACHE.wb, ts: 0 }; /* neu erzeugte Seite: sofort den letzten Stand zeigen, dann neu laden */
+    const s = (this._wbD && this._wbD.snap) || {}; return { ...s, cfg: { ...this._wbDef(), ...(s.cfg || {}) }, info: s.info || {}, want: s.want || {}, log: s.log || [], plan: s.plan || {} }; }
   _wb() { return this._wbSnap().cfg; }
   /* Ist eine Wallbox eingerichtet? go-e: IP-Adresse · andere Wallbox über Home Assistant: Schalter oder Ladestrom */
   _wbOn(c) { c = c || this._wb(); const w = c.wbx || {}; return w.kind === "ha" ? !!((w.ent || {}).switch || (w.ent || {}).current) : !!c.ip; }
@@ -10,8 +11,14 @@
     if (!this._hass || this._wbBusy) return;
     if (!force && this._wbD && Date.now() - this._wbD.ts < 4000) return;
     this._wbBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/wb_get" }).then((r) => { if (!this._wbSaveT) this._wbD = { snap: r || {}, ts: Date.now() }; }).catch(() => { this._wbD = { snap: { ok: false, error: "Keine Antwort von Home Assistant" }, ts: Date.now() }; })
-      .finally(() => { this._wbBusy = false; if (this._wbVisible()) this._render(); clearTimeout(this._wbT); this._wbT = setTimeout(() => { this._wbT = null; if (this._wbVisible()) this._wbLoad(true); }, 5000); });
+    let fail = false;
+    this._hass.callWS({ type: "fenster_heizung/wb_get" }).then((r) => { this._wbFail = 0; if (!this._wbSaveT) { this._wbD = { snap: r || {}, ts: Date.now() }; FH_CACHE.wb = this._wbD; } })
+      .catch(() => { fail = true; this._wbFail = (this._wbFail || 0) + 1;
+        /* Nach dem Zurückwechseln in die App verbindet sich Home Assistant neu – die erste Abfrage scheitert dann oft.
+           Den letzten Stand behalten (statt leerer Werte) und gleich noch einmal fragen; „keine Antwort“ erst nach mehreren Fehlversuchen. */
+        const had = this._wbD && this._wbD.snap && this._wbD.snap.cfg && !this._wbD.snap.error;
+        if (!had && this._wbFail >= 3) this._wbD = { snap: { ok: false, error: "Keine Antwort von Home Assistant" }, ts: Date.now() }; })
+      .finally(() => { this._wbBusy = false; if (this._wbVisible()) this._render(); clearTimeout(this._wbT); this._wbT = setTimeout(() => { this._wbT = null; if (this._wbVisible()) this._wbLoad(true); }, fail ? 1500 : 5000); });
   }
   _wbSave(patch, now) {
     if (!(this._wbD && this._wbD.snap && this._wbD.snap.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; } /* ohne geladenen Stand nicht speichern (sonst würden Standardwerte die Einstellungen überschreiben) */
