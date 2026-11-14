@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b27] - 2026-11-14
+
+### Neu
+- **Support-Chat ist eingerichtet.** Die Adresse des Support-Vermittlers steht jetzt fest in der Integration – der Chat funktioniert damit bei allen (Sponsor Max bevorzugt). Der Hinweis „wird gerade eingerichtet“ entfällt.
+
 ## [2026.11.3b26] - 2026-11-14
 
 ### Neu

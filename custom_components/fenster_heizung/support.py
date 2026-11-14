@@ -32,7 +32,7 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 # Adresse des Support-Vermittlers (Cloudflare Worker). Leer = Chat ist noch nicht eingerichtet.
-SUPPORT_URL = ""
+SUPPORT_URL = "https://strom-waerme-support.tobias-goebel.workers.dev"
 MAX_MSGS = 200
 MAX_TEXT = 2000
 POLL_BG_MIN = 15  # Hintergrund-Abfrage nach Antworten, in Minuten
