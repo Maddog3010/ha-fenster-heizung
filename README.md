@@ -77,7 +77,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | 📱 | **Tablet-Modus** | Große Knöpfe, Ruhemodus, PIN und Display per Bewegungsmelder, Geräte-Wand |
 | 🏷️ | **Tags & Karten** | RFID-Karten und NFC-Sticker lösen feste Aktionen aus |
 | 🧪 | **Labs** | Neue Funktionen zum Ausprobieren, ab Werk aus |
-| 🧩 | **Addons** | Module zum Installieren: Müllabfuhr, Licht & Lampen, Saugroboter |
+| 🧩 | **Addons** | Module zum Installieren: Müllabfuhr, Licht & Lampen, Abrechnungen, Saugroboter |
 | ⚙️ | **Einstellungen** | Alles an einem Ort: Haus-Werte, Messwerk, Suche, Verlauf mit Rückgängig |
 | 💾 | **Sicherung** | Als Datei oder automatisch auf deinen Homeserver |
 | 💗 | **Sponsor-Lounge** | Extras für Sponsoren, Sponsor Max mit Haus-Autopilot |
@@ -132,6 +132,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 17 | Müllabfuhr | Addon | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend |
 | 18 | Licht & Lampen | Addon | Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe |
 | 19 | **Hausfluss** | Stabil 1.0 · Sponsoren | Dein Haus als Fluss-Bild: Leuchtlinien, Herkunfts-Ring, Lichtband-Banner, Themen, Strom-Reiter mit Kosten, Wand-Ansicht fürs Tablet |
+| 20 | Abrechnungen | Addon · In Entwicklung | Verträge mit Preisperioden, Wasser-Gebühren, Zähler mit geprüften Ablesungen, Fristen, Preisdienst für alle Module |
 | 21 | Saugroboter | Addon | Roboter-Karte, Raum-Kacheln mit Ampel, Karte, Woche, Wartung |
 
 Die Module 5, 6, 7, 10, 12, 13 und 15 zeigen **Konzeptseiten** zum Durchklicken. Alle Zahlen dort sind Beispiele, diese Module schalten nichts.
@@ -248,13 +249,14 @@ Das Haus in der Mitte, ringsum bis zu acht Kacheln für Solar, Netz, Akku, Auto 
 
 <a id="addons"></a>
 <details>
-<summary><b>Addons: 17 Müllabfuhr, 18 Licht & Lampen, 21 Saugroboter</b></summary>
+<summary><b>Addons: 17 Müllabfuhr, 18 Licht & Lampen, 20 Abrechnungen, 21 Saugroboter</b></summary>
 <br>
 
 Addons installierst du unter **Einstellungen → Addons** und kannst sie dort jederzeit pausieren oder wieder deinstallieren, auf Wunsch mit oder ohne deine Daten. Neue Versionen kommen aus dem Addon-Katalog und erscheinen im Reiter **Updates**.
 
 - **Müllabfuhr:** Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend.
 - **Licht & Lampen:** Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe.
+- **Abrechnungen (v0.1, In Entwicklung):** Verträge für Strom, Gas, Wasser und Einspeisung mit Preiswechseln, Zähler mit Ablesungen und Prüfung, Fristen; der Vertragspreis geht an die anderen Module. Hochrechnung, Abschläge und Rechnungen folgen.
 - **Saugroboter:** Roboter-Karte, Raum-Kacheln mit Ampel, Karte des Roboters (Roborock), Woche und Wartung.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_saugroboter.png" width="640" alt="Modul 21 Saugroboter"></p>

@@ -1,0 +1,21 @@
+{
+  "id": "abrechnung",
+  "n": 20,
+  "name": "Abrechnungen",
+  "short": "Abrechnung",
+  "icon": "euro",
+  "tag": "Verträge, Preise, Zähler und Ablesungen für Strom, Gas und Wasser",
+  "desc": "Ein Ort für alles Vertragliche: Verträge mit allen Preis-Bestandteilen und Preiswechseln, Wasser-Gebühren, Zähler mit geprüften Ablesungen, Fristen. Der Vertragspreis geht über den Preisdienst an die anderen Module. Erste Stufe (Grundgerüst): Hochrechnung, Abschläge und Rechnungen folgen.",
+  "version": "0.1",
+  "build": 1,
+  "stage": "dev",
+  "api": 1,
+  "core_min": "2026.11.3b20",
+  "needs": {
+    "domains": [],
+    "text": ""
+  },
+  "optional": [],
+  "sponsor": false,
+  "network": []
+}

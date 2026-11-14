@@ -158,6 +158,7 @@
     else if (a.startsWith("btx")) this._btAct(a, b);
     else if (a.startsWith("mvx")) this._mvAct(a, b);
     else if (a === "bakgo") { this._modal.bakAsk = { key: b.dataset.k, i: +b.dataset.i, n: b.dataset.n, t: b.dataset.t }; this._renderModal(); }
+    else if (a === "hsm20") { this._modal = null; this._renderModal(); this._stOpen = false; this._mdActiveSet("abrechnung"); this._render(); }
     else if (a === "bakopen") { this._modal.bakOpen = !this._modal.bakOpen; this._modal.bakSel = null; this._renderModal(); }
     else if (a === "bakrow") { this._modal.bakSel = this._modal.bakSel === b.dataset.k ? null : b.dataset.k; this._renderModal(); }
     else if (a === "bakno") { this._modal.bakAsk = null; this._renderModal(); }

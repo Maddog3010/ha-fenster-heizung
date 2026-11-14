@@ -305,7 +305,22 @@ def plan_due(cfg: dict[str, Any], soc: float | None, now: datetime) -> tuple[boo
     return now >= start, need, start
 
 
+DONE_SOC_GAP = 3  # „fertig“ glauben wir nur, wenn der Ladestand höchstens so viele Prozentpunkte unter dem Limit liegt
+
+
 def decide(cfg: dict[str, Any], inp: dict[str, Any], mem: dict[str, Any], now_ts: float, now: datetime) -> dict[str, Any]:
+    """Wunschzustand der Wallbox. Merkt sich, ob zuletzt geladen werden durfte – nur dann kann „fertig“ vom Auto kommen."""
+    if inp.get("car") == CAR_DONE:
+        if mem.get("done_since") is None:
+            mem["done_on"] = mem.get("frc_prev") == 2  # hat das Auto selbst aufgehört (Laden war frei) oder haben wir gestoppt?
+    else:
+        mem["done_on"] = None
+    out = _decide(cfg, inp, mem, now_ts, now)
+    mem["frc_prev"] = out["frc"]
+    return out
+
+
+def _decide(cfg: dict[str, Any], inp: dict[str, Any], mem: dict[str, Any], now_ts: float, now: datetime) -> dict[str, Any]:
     """Wunschzustand der Wallbox.
 
     inp: car, surplus_w (None = unbekannt), soc, bat_ok, price_ct, cur_ph (Phasen, die gerade geladen werden)
@@ -322,7 +337,7 @@ def decide(cfg: dict[str, Any], inp: dict[str, Any], mem: dict[str, Any], now_ts
     # „fertig“ ist nach einer Phasenumschaltung oder kurz nach dem Laden oft nur eine Pause (0 W): weiterregeln statt aufhören
     last_ph = mem.get("ph_change_ts")
     settle = last_ph is not None and now_ts - last_ph < PH_SETTLE_S
-    pause = ""
+    pause = note = ""
     if car == CAR_CHARGING:
         mem["chg_ts"], mem["done_since"] = now_ts, None
     if car == CAR_DONE:
@@ -333,10 +348,17 @@ def decide(cfg: dict[str, Any], inp: dict[str, Any], mem: dict[str, Any], now_ts
             left = max(1, round(((last_ph + PH_SETTLE_S) if settle else (mem["done_since"] + DONE_CONFIRM_S)) - now_ts))
             pause = (f"Phasen umgeschaltet: Das Auto pausiert kurz und startet gleich wieder (noch {left} s). " if settle
                      else f"Das Auto pausiert (0 W). „Fertig“ gilt erst, wenn es so bleibt (noch {left} s). ")
-        else:
+        elif mem.get("done_on") and (soc is None or soc >= cfg["limit"] - DONE_SOC_GAP):
+            # Das Auto hat aufgehört, obwohl Laden frei war, und ist (soweit bekannt) am Ziel: wirklich fertig.
             out["reason"] = "Das Auto meldet „fertig geladen“."
             out["state"] = "fertig"
             return out
+        else:
+            # Die Wallbox meldet „fertig“ auch, wenn wir selbst gestoppt haben (zu wenig Sonne, Hausakku zuerst) oder das Auto
+            # eine Pause macht. Solange das Ziel nicht erreicht ist, wird weiter geregelt – sonst startet es nie wieder.
+            car = CAR_WAIT
+            if mem.get("done_on") and soc is not None:
+                note = f"Das Auto hat bei {round(soc)} % von selbst aufgehört, das Ziel sind {cfg['limit']} %: Laden bleibt freigegeben. "
     else:
         mem["done_since"] = None
     if soc is not None and soc >= cfg["limit"]:
@@ -346,6 +368,8 @@ def decide(cfg: dict[str, Any], inp: dict[str, Any], mem: dict[str, Any], now_ts
     if pause:
         out["reason"] = pause
         out["pause"] = True
+    elif note:
+        out["reason"] = note
     due, need, _start = plan_due(cfg, soc, now)
     cheap = bool(cfg["priceOn"] and inp.get("price_ct") is not None and inp["price_ct"] <= cfg["priceMax"])
     if cfg["mode"] == "now" or (due and cfg["mode"] in ("pv", "minpv")) or (cheap and cfg["mode"] in ("pv", "minpv")):

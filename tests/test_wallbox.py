@@ -398,3 +398,43 @@ def test_assign_unknown_and_running_session_retro():
     P.add_energy(st, t + timedelta(minutes=10), 600, 7000, 0, 30, "BYD")
     v = st["days"][t.date().isoformat()]["veh"]
     assert "Unbekannt" not in v and abs(v["BYD"]["kwh"] - 2 * 7000 * 600 / 3.6e6) < 1e-6
+
+
+def test_fertig_nach_eigenem_stopp_startet_wieder():
+    """go-e meldet car=4 auch, wenn die Regelung selbst gestoppt hat. Das darf das Laden nicht für immer beenden."""
+    c = cfg(mode="pv", limit=100, onMin=0)
+    m = mem()
+    t = 10_000.0
+    # lädt mit Überschuss
+    o = C.decide(c, {"car": C.CAR_CHARGING, "surplus_w": 4000, "soc": 40, "bat_ok": True, "cur_ph": 1}, m, t, NOW)
+    assert o["frc"] == 2
+    # Hausakku zuerst: Regelung stoppt
+    o = C.decide(c, {"car": C.CAR_CHARGING, "surplus_w": 4000, "soc": 41, "bat_ok": False, "cur_ph": 1}, m, t + 10, NOW)
+    for i in range(2, 80):
+        o = C.decide(c, {"car": C.CAR_CHARGING if o["frc"] == 2 else C.CAR_DONE, "surplus_w": 4000, "soc": 42, "bat_ok": False, "cur_ph": 1}, m, t + 10 * i, NOW)
+    assert o["frc"] == 1 and o["state"] != "fertig"
+    # Akku ist voll genug, Überschuss da, Wallbox meldet weiter „fertig“ (weil wir gestoppt haben): es muss wieder starten
+    o = C.decide(c, {"car": C.CAR_DONE, "surplus_w": 3390, "soc": 42, "bat_ok": True}, m, t + 2000, NOW)
+    assert o["frc"] == 2 and o["state"] == "pv", o
+
+
+def test_fertig_gilt_nur_am_ziel_oder_ohne_ladestand():
+    c = cfg(mode="pv", limit=80, onMin=0)
+    # Auto hört von selbst auf, Ladestand am Ziel -> fertig
+    m = mem()
+    C.decide(c, {"car": C.CAR_CHARGING, "surplus_w": 4000, "soc": 78, "bat_ok": True, "cur_ph": 1}, m, 1000.0, NOW)
+    o = C.decide(c, {"car": C.CAR_DONE, "surplus_w": 4000, "soc": 78, "bat_ok": True}, m, 1500.0, NOW)
+    assert o["state"] == "fertig" and o["frc"] == 1
+    # ohne Ladestand-Sensor: dem Auto glauben, wenn es von selbst aufgehört hat
+    m = mem()
+    C.decide(c, {"car": C.CAR_CHARGING, "surplus_w": 4000, "soc": None, "bat_ok": True, "cur_ph": 1}, m, 1000.0, NOW)
+    o = C.decide(c, {"car": C.CAR_DONE, "surplus_w": 4000, "soc": None, "bat_ok": True}, m, 1500.0, NOW)
+    assert o["state"] == "fertig"
+    # Auto hört bei 42 % von selbst auf, Ziel 80 %: Laden bleibt freigegeben, mit Hinweis
+    m = mem()
+    C.decide(c, {"car": C.CAR_CHARGING, "surplus_w": 4000, "soc": 42, "bat_ok": True, "cur_ph": 1}, m, 1000.0, NOW)
+    o = C.decide(c, {"car": C.CAR_DONE, "surplus_w": 4000, "soc": 42, "bat_ok": True}, m, 1500.0, NOW)
+    assert o["frc"] == 2 and "von selbst aufgehört" in o["reason"] and not o.get("pause")
+    # nach einem Neustart von Home Assistant (kein Gedächtnis): nicht „fertig“, sondern laden
+    o = C.decide(c, {"car": C.CAR_DONE, "surplus_w": 4000, "soc": None, "bat_ok": True}, mem(), 99.0, NOW)
+    assert o["frc"] == 2

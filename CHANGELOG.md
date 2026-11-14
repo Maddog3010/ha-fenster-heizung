@@ -2,6 +2,23 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b20] - 2026-11-14
+
+### Neu
+- **Modul 20 · Abrechnungen (Addon, v0.1 Build 1, In Entwicklung):** erste Stufe „Grundgerüst“ aus dem Konzept. Installieren unter Entdecken → Store → Addons.
+  - **Verträge** für Strom, Gas, Wasser & Abwasser und Einspeisung: Anbieter, Laufzeit, Kündigungsfrist, Preisgarantie, Bonus, Abschlag. Vorlagen (Fixpreis, Tibber dynamisch, Grundversorgung, Gas, Gemeinde Wasser, EEG) füllen nur die Felder vor.
+  - **Preisperioden** mit „gültig ab“: Arbeitspreis, Grundpreis, Messstelle, CO₂-Anteil, Umsatzsteuer, Eingabe brutto oder netto. Preisverlauf mit Änderung in Prozent; angekündigte Erhöhungen mit Hinweis auf das Sonderkündigungsrecht.
+  - **Wasser-Gebühren:** Frischwasser, Abwasser, Niederschlagswasser nach Fläche, Zählergebühr; ein Gartenzähler zählt ohne Abwasser.
+  - **Gas:** Umrechnung m³ → kWh mit Brennwert und Zustandszahl. **Effektiver Preis** inklusive Grundpreis beim eigenen Jahresverbrauch.
+  - **Zähler & Ablesungen:** Rollenzählwerk, Stand von Hand erfassen mit Prüfung gegen den Verlauf (kleiner als der letzte Stand, Ziffern vertauscht, ungewöhnlich hoher Verbrauch, Zählerüberlauf), Zähler tauschen. Zähler mit Sensor speichern täglich um 0 Uhr einen Stand. Ablesen dürfen alle Nutzer, ändern nur Administratoren.
+  - **Übersicht:** je Sparte Preis, Verbrauch und Kosten im laufenden Abrechnungsjahr (tagesgenau über Preiswechsel), „Als Nächstes“ mit Kündigungsfristen, Preisgarantie-Ende, Preisänderungen und Eichfristen.
+  - **Preisdienst im Kern:** eine Stelle für den Preis je Sparte – erst Modul 20, dann Tibber, dann Haus-Werte. Der feste Strompreis und die Einspeisevergütung aus dem Vertrag werden in die Haus-Werte gespiegelt (abschaltbar, der Stand davor kommt zurück); dort steht „Verwaltet in Modul 20“.
+  - Zähler-Sensoren erscheinen im Messwerk; eigener Speicher mit automatischer Sicherung. Noch nicht enthalten: Hochrechnung und Abschlagsplan (v0.3), Rechnungen, Fahrtkosten, Vorräte (v0.5).
+
+### Behoben
+- **Modul 8 (v0.9 Build 3): Laden startete nach einem Stopp nicht wieder.** Die go-e meldet „fertig“ auch dann, wenn die Regelung selbst gestoppt hat (zu wenig Sonne, „Hausbatterie zuerst“). Das wurde als „Auto ist voll“ gewertet – danach blieb es bei „Das Auto meldet fertig geladen“, trotz Überschuss. Jetzt gilt „fertig“ nur, wenn das Auto bei freigegebenem Laden von selbst aufgehört hat **und** der Ladestand am Ziel ist (oder unbekannt). Sonst wird weiter geregelt, bis das eingestellte Limit erreicht ist. Hört das Auto unter dem Ziel von selbst auf, bleibt das Laden freigegeben und der Grund steht in „Warum gerade so?“.
+- **Modul 8:** Das Etikett „Ziel 100 %“ über dem Ladeband ragte rechts aus der Karte.
+
 ## [2026.11.3b19] - 2026-11-13
 
 ### Behoben
