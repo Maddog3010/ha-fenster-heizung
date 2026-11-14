@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b29] - 2026-11-14
+
+### Neu
+- **Haus-Energiebuch.** Die Integration zählt jetzt selbst alle 20 Sekunden mit, woher der Strom im ganzen Haus kommt und wohin er geht: Solar direkt, Akku entladen, Netzbezug, Einspeisung, Akku geladen, PV-Erzeugung sowie Solar → Akku, Solar → Netz und Netz → Akku. Grundlage sind die Sensoren unter Einstellungen → Haus → Energiequellen (Solar, zweite Anlage, Netz mit Vorzeichen, Akku). Gespeichert werden Stundenwerte für 62 Tage und Tageswerte für 800 Tage, mit automatischer Sicherung wie alle Speicher.
+- **Modul 19, Strom-Reiter nutzt das Energiebuch:** Säulen, Summen, „Woher kam der Strom?“ und Kosten kommen für jede Stunde bzw. jeden Tag aus dem Energiebuch, sobald es für den ganzen Abschnitt Werte hat. Davor wird wie unten beschrieben aus der Statistik gerechnet. Unter den Säulen steht, woher die Zahlen kommen.
+
+### Behoben
+- **Modul 19, Strom-Reiter: Tagsüber stand fast nur „Solar“, obwohl auch Akku und Netz gebraucht wurden.** Gerechnet wurde mit Stundenmitteln – innerhalb einer Stunde glichen sich kurze Spitzen (Auto lädt über der PV-Leistung → Akku/Netz) und Überschuss (danach Einspeisung) gegenseitig aus. Jetzt:
+  - **Tag und Woche in 5-Minuten-Schritten**, solange Home Assistant die 5-Minuten-Statistik noch hat (etwa die letzten 10 Tage). Ältere Zeiträume, Monat und Jahr weiter mit Stundenmitteln; unter den Säulen steht, wie gerechnet wurde.
+  - **Getrennte Sensoren für Bezug und Einspeisung** (Netz-Kachel mit zwei Leistungen) werden nicht mehr miteinander verrechnet, sondern beide Richtungen einzeln gezählt.
+  - Gilt für Säulen, Summen, „Woher kam der Strom?“, Kosten und die eigene Rechnung der Verbraucher.
+
 ## [2026.11.3b28] - 2026-11-14
 
 ### Neu

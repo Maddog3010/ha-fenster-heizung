@@ -1293,6 +1293,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "sponsor" not in store:
         store["sponsor"] = SponsorManager(hass)
         await store["sponsor"].async_start()
+    if "ebuch" not in store:  # Haus-Energiebuch (alle 20 s), braucht die Haus-Werte
+        from .energiebuch import EnergiebuchManager
+        store["ebuch"] = EnergiebuchManager(hass)
+        await store["ebuch"].async_start()
     if "support" not in store:
         from .support import SupportChat
         store["support"] = SupportChat(hass)
@@ -1383,6 +1387,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             tbm = hass.data.get(DOMAIN, {}).pop("tablet", None)
             if tbm is not None:
                 tbm.async_stop()
+            ebm = hass.data.get(DOMAIN, {}).pop("ebuch", None)
+            if ebm is not None:
+                ebm.async_stop()
             sup = hass.data.get(DOMAIN, {}).pop("support", None)
             if sup is not None:
                 sup.async_stop()

@@ -1779,6 +1779,7 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efsvv{display:flex;flex-direction:column;align-items:flex-end;text-align:right}.efsvv small{font-size:.72rem;color:#fbbf24}.efsvv small.efsvu{color:var(--mut)}
 .efsvt b .efsrc{display:inline-block;width:auto;height:auto;font-style:normal;font-weight:600;font-size:.64rem;line-height:1.5;color:var(--mut);background:none;border:1px solid var(--line);border-radius:99px;padding:0 6px;margin:0 0 0 6px;vertical-align:1px;white-space:nowrap;flex:none}
 .efsvf{font-size:.74rem;color:var(--mut);line-height:1.4;margin-top:8px}
+.efsres{display:flex;gap:6px;align-items:flex-start;font-size:.72rem;color:var(--mut);line-height:1.4;margin:8px 0 2px}.efsres .ic{flex:none;margin-top:1px}
 .efsvt b button.efsrc{cursor:pointer;color:#5eead4;border-color:color-mix(in srgb,#2dd4bf 45%,transparent);font-family:inherit}
 .efsvb.m3{display:flex;gap:2px}.efsvb.m3 i.m{flex:none;border-radius:99px}.efsvb.m3 i.pv{background:#fbbf24}.efsvb.m3 i.bat{background:#a78bfa}.efsvb.m3 i.net{background:#f87171}
 .efsvp{font-size:.66rem;color:var(--mut)}.efsvv .c-pv{color:#fbbf24}.efsvv .c-bat{color:#a78bfa}.efsvv .c-net{color:#f87171}.efsvl{margin-top:10px}
@@ -13968,13 +13969,19 @@ class FensterHeizungPanel extends HTMLElement {
     const h = cache[key]; if (h && !force && (!R.cur || Date.now() - h.ts < 12e4)) return h;
     if (this._efStBusy === key) return h || null;
     this._efStBusy = key;
+    /* Feiner rechnen, wo es geht: Stunden-Mittel verrechnen Bezug und Einspeisung bzw. Laden und Entladen innerhalb derselben Stunde
+       (Auto lädt kurz über der PV-Leistung → Akku/Netz, danach Überschuss → im Stundenmittel „alles Solar“). Die 5-Minuten-Statistik
+       hält Home Assistant etwa 10 Tage (recorder purge_keep_days) – für Tag und Woche in dieser Zeit wird mit 5 Minuten gerechnet. */
+    const fine = (P.range === "day" || P.range === "week") && Date.now() - +R.s < 9 * 864e5;
     const per = P.range === "year" ? "day" : "hour";
-    /* abgeschlossene Stunden aus der Langzeitstatistik, die laufende Stunde aus der 5-Minuten-Statistik (sonst fehlt sie bei „Heute“) */
     const hs = new Date(); hs.setMinutes(0, 0, 0);
     const q = (s, e, period) => this._hass.callWS({ type: "recorder/statistics_during_period", start_time: s.toISOString(), end_time: e.toISOString(), statistic_ids: all, period, types: ["mean", "change"] });
     const live = R.cur && +hs < +R.end && +hs >= +R.s;
-    Promise.all([q(R.s, live ? hs : R.end, per), live ? q(hs, R.end, "5minute").catch(() => ({})) : Promise.resolve({})])
-      .then(([r, r5]) => { cache[key] = { ts: Date.now(), live, ...this._efxStatCalc(nodes, r || {}, R, per, P, r5 || {}) }; })
+    const coarse = () => Promise.all([q(R.s, live ? hs : R.end, per), live ? q(hs, R.end, "5minute").catch(() => ({})) : Promise.resolve({})]).then(([r, r5]) => ({ r, r5, per, res: "h" }));
+    const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const eb = this._hass.callWS({ type: "fenster_heizung/ebuch", start: iso(R.s), end: iso(R.e), res: P.range === "day" ? "hour" : "day" }).catch(() => null);
+    Promise.all([(fine ? q(R.s, R.end, "5minute").then((r5) => (Object.values(r5 || {}).some((l) => (l || []).length) ? { r: {}, r5, per, res: "5" } : coarse())).catch(coarse) : coarse()), eb])
+      .then(([{ r, r5, per: pp, res }, E]) => { cache[key] = this._efxEbMerge({ ts: Date.now(), live: R.cur, res, ...this._efxStatCalc(nodes, r || {}, R, pp, P, r5 || {}) }, E, R, P); })
       .catch(() => { cache[key] = { ts: Date.now(), err: true, bars: [], cons: [], tot: null }; })
       .finally(() => { if (this._efStBusy === key) this._efStBusy = null; if (this._mdActive() === "ef") this._render(); });
     return h || null;
@@ -13996,12 +14003,18 @@ class FensterHeizungPanel extends HTMLElement {
       const v = val(t, this._efxPid(n)); return n.flow === "supply" ? -Math.abs(v) : n.flow === "consume" ? Math.abs(v) : n.invert ? -v : v;
     };
     const bucket = (t) => { const d = new Date(t); return P.range === "day" ? d.getHours() : P.range === "year" ? d.getMonth() : Math.floor((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate())) / 864e5 + .5); };
-    const bars = Array.from({ length: R.n }, () => ({ pv: 0, bat: 0, net: 0, oth: 0, use: 0 })), cons = {}, src = {};
+    const bars = Array.from({ length: R.n }, () => ({ pv: 0, bat: 0, net: 0, oth: 0, use: 0, gen: 0, exp: 0, imp: 0, chg: 0, pvBat: 0, pvExp: 0, netBat: 0 })), cons = {}, src = {};
     /* tot: Herkunft im Haus (pv, bat, net, oth), dazu Netzbezug gesamt (imp), Einspeisung (exp), Akku geladen (chg) und wohin der Solarstrom ging (pvBat, pvExp) */
     const tot = { pv: 0, bat: 0, net: 0, oth: 0, use: 0, gen: 0, exp: 0, imp: 0, chg: 0, pvBat: 0, pvExp: 0, netBat: 0 };
     Object.keys(map).map(Number).sort((a, b) => a - b).forEach((t) => {
       const m = { pv: 0, bat: 0, net: 0, oth: 0 }, kwh = (stp[t] || 1) / 1000; let out = 0, gen = 0, exp = 0, chg = 0;
-      nodes.forEach(({ p, n }) => { if (n.flow === "consume") return; const w = nodeW(n, t), k = this._efxKind(n); if (w < 0) { m[k] += -w; (src[p] = src[p] || { kwh: 0, k }).kwh += -w * kwh; } else { out += w; if (k === "net") exp += w; if (k === "bat") chg += w; } if (k === "pv") gen += Math.abs(w); });
+      nodes.forEach(({ p, n }) => {
+        if (n.flow === "consume") return;
+        const k = this._efxKind(n);
+        /* getrennte Sensoren (Bezug/Einspeisung, Entladen/Laden): beide Richtungen einzeln zählen statt sie zu verrechnen */
+        const parts = n.flow === "split" ? [-Math.abs(val(t, n.power_to_house)), Math.abs(val(t, n.power_to_node))] : [nodeW(n, t)];
+        parts.forEach((w) => { if (w < 0) { m[k] += -w; (src[p] = src[p] || { kwh: 0, k }).kwh += -w * kwh; } else if (w > 0) { out += w; if (k === "net") exp += w; if (k === "bat") chg += w; } if (k === "pv") gen += Math.abs(w); });
+      });
       const imp = m.net, take = Math.min(m.pv, out); m.pv -= take; out -= take; if (out > 0) m.oth = Math.max(0, m.oth - out);
       /* Solar-Überschuss geht zuerst in den Akku, der Rest ins Netz; was der Akku darüber hinaus lädt, kam aus dem Netz */
       const pvBat = Math.min(take, chg), pvExp = Math.min(Math.max(0, take - pvBat), exp), netBat = Math.max(0, Math.min(chg - pvBat, imp));
@@ -14009,6 +14022,7 @@ class FensterHeizungPanel extends HTMLElement {
       const use = m.pv + m.bat + m.net + m.oth, b = bars[bucket(t)]; if (!b) return;
       ["pv", "bat", "net", "oth"].forEach((k) => { b[k] += m[k] * kwh; tot[k] += m[k] * kwh; }); b.use += use * kwh; tot.use += use * kwh; tot.gen += gen * kwh; tot.exp += exp * kwh;
       tot.imp += imp * kwh; tot.chg += chg * kwh; tot.pvBat += pvBat * kwh; tot.pvExp += pvExp * kwh; tot.netBat += netBat * kwh;
+      b.gen += gen * kwh; b.exp += exp * kwh; b.imp += imp * kwh; b.chg += chg * kwh; b.pvBat += pvBat * kwh; b.pvExp += pvExp * kwh; b.netBat += netBat * kwh;
       const fpv = use > 0 ? m.pv / use : 0;
       nodes.forEach(({ p, n }) => {
         if (n.flow !== "consume") return;
@@ -14018,6 +14032,38 @@ class FensterHeizungPanel extends HTMLElement {
       });
     });
     return { bars, cons, tot, src, any: Object.keys(map).length > 0 };
+  }
+  /* Haus-Energiebuch (energiebuch.py, alle 20 s): ersetzt je Säule die Rechnung aus der Statistik, sobald es für den ganzen Abschnitt Werte hat */
+  _efxEbMerge(H, E, R, P) {
+    H.eb = { n: 0, first: (E && E.first) || 0, ok: !!(E && E.ok) };
+    if (!E || !E.first || !(E.rows || []).length || !H.bars) return H;
+    const F = E.fields || ["pv", "bat", "net", "exp", "chg", "gen", "imp", "pvb", "pvx", "nb"], ix = (k) => F.indexOf(k);
+    const d0 = (s) => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+    const bStart = (i) => (P.range === "day" ? new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate(), i) : P.range === "year" ? new Date(R.s.getFullYear(), i, 1) : new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate() + i));
+    const bOf = (row) => { const t = d0(row.d); return P.range === "day" ? row.h : P.range === "year" ? t.getMonth() : Math.round((t - new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate())) / 864e5); };
+    /* nur ganze Abschnitte nach dem Start des Energiebuchs (sonst fehlte der Teil davor) */
+    const f = new Date(E.first * 1000), firstOk = P.range === "day" ? new Date(f.getFullYear(), f.getMonth(), f.getDate(), f.getHours() + (f.getMinutes() || f.getSeconds() ? 1 : 0)) : new Date(f.getFullYear(), f.getMonth(), f.getDate() + (f.getHours() || f.getMinutes() ? 1 : 0));
+    const acc = {};
+    E.rows.forEach((row) => { const i = bOf(row); if (i == null || i < 0 || i >= H.bars.length || bStart(i) < firstOk) return; const a = (acc[i] = acc[i] || new Array(F.length).fill(0)); row.v.forEach((x, j) => { a[j] += x; }); });
+    Object.entries(acc).forEach(([i, v]) => {
+      const g = (k) => v[ix(k)] || 0;
+      H.bars[i] = { pv: g("pv"), bat: g("bat"), net: g("net"), oth: 0, use: g("pv") + g("bat") + g("net"), gen: g("gen"), exp: g("exp"), imp: g("imp"), chg: g("chg"), pvBat: g("pvb"), pvExp: g("pvx"), netBat: g("nb"), eb: true };
+      H.eb.n++;
+    });
+    if (H.eb.n) {
+      const T = { pv: 0, bat: 0, net: 0, oth: 0, use: 0, gen: 0, exp: 0, imp: 0, chg: 0, pvBat: 0, pvExp: 0, netBat: 0 };
+      H.bars.forEach((b) => Object.keys(T).forEach((k) => { T[k] += b[k] || 0; }));
+      H.tot = T; H.any = true;
+    }
+    return H;
+  }
+  _efxResTxt(H) {
+    const E = H.eb || {}, all = E.n && E.n === H.bars.length, old = H.res === "5" ? "5-Minuten-Statistik" : "Stundenmitteln der Statistik (Bezug und Einspeisung derselben Stunde gleichen sich dort teils aus)";
+    if (all) return "Gerechnet mit dem Haus-Energiebuch (alle 20 Sekunden gezählt).";
+    if (E.n) return `Haus-Energiebuch seit ${new Date(E.first * 1000).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })} Uhr (alle 20 Sekunden), davor aus ${old}.`;
+    if (E.first) return `Das Haus-Energiebuch zählt seit ${new Date(E.first * 1000).toLocaleString("de-DE", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })} Uhr und übernimmt ${this._efP().range === "day" ? "ab der nächsten vollen Stunde" : "ab dem nächsten ganzen Tag"}. Bis dahin aus ${old}.`;
+    if (E.ok === false) return `Gerechnet aus ${old}. Genauer wird es mit dem Haus-Energiebuch: dafür Solar- und Netzleistung unter Einstellungen → Haus → Energiequellen eintragen.`;
+    return `Gerechnet aus ${old}.`;
   }
   _efStrom(narrow) {
     const P = this._efP(), R = this._efPer(P), c = this._efxCfg(), H = this._efxStatLoad(P), RG = [["day", "Tag"], ["week", "Woche"], ["month", "Monat"], ["year", "Jahr"]];
@@ -14034,7 +14080,7 @@ class FensterHeizungPanel extends HTMLElement {
     const cols = H.bars.map((b, i) => `<button class="efsc${sel === i ? " sel" : ""}" data-act="efxsel" data-k="${i}" aria-label="${esc(String(lab(i)))}: ${f1(b.use)} kWh"><span class="efsb" style="height:${(b.use / mx * 100).toFixed(1)}%">${EF_MIX.map(([k, , col]) => (b[k] > 0 && b.use > 0 ? `<i style="height:${(b[k] / b.use * 100).toFixed(2)}%;background:${col}"></i>` : "")).reverse().join("")}</span><small>${tick(i) ? lab(i) : ""}</small></button>`).join("");
     const sb = sel != null ? H.bars[sel] : null;
     const det = sb ? `<div class="efsd"><b>${esc(P.range === "day" ? `${sel}–${sel + 1} Uhr` : P.range === "year" ? new Date(R.s.getFullYear(), sel, 1).toLocaleDateString("de-DE", { month: "long" }) : new Date(R.s.getFullYear(), R.s.getMonth(), R.s.getDate() + sel).toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }))}</b> · ${f1(sb.use)} kWh${EF_MIX.filter(([k]) => sb[k] > 0.0005).map(([k, l, col]) => ` · <span style="color:${col}">${pc(sb[k], sb.use)} % ${l}</span>`).join("")}</div>` : `<div class="efsd mut">Tippe auf eine Säule für die Werte</div>`;
-    const e1 = `<div class="card efsec1"><div class="efh2">${ic("chart", 16)}Herkunft ${P.range === "day" ? "pro Stunde" : P.range === "year" ? "pro Monat" : "pro Tag"}</div><div class="efcols n${H.bars.length > 24 ? "m" : ""}">${cols}</div><div class="efleg2">${EF_MIX.map(([, l, col]) => `<span><i style="background:${col}"></i>${l}</span>`).join("")}<span class="mut">Höhe = Hausverbrauch</span></div>${det}</div>`;
+    const e1 = `<div class="card efsec1"><div class="efh2">${ic("chart", 16)}Herkunft ${P.range === "day" ? "pro Stunde" : P.range === "year" ? "pro Monat" : "pro Tag"}</div><div class="efcols n${H.bars.length > 24 ? "m" : ""}">${cols}</div><div class="efleg2">${EF_MIX.map(([, l, col]) => `<span><i style="background:${col}"></i>${l}</span>`).join("")}<span class="mut">Höhe = Hausverbrauch</span></div><div class="efsres">${ic("info", 13)}<span>${this._efxResTxt(H)}</span></div>${det}</div>`;
     /* E2 Verbraucher mit Solar-Anteil */
     const L = this._efLkLoad(P, R), ln = (o) => o.pv + o.bat + o.net;
     const list = Object.keys(EF_POS).filter((p) => c.nodes[p] && c.nodes[p].on && c.nodes[p].flow === "consume").map((p) => {
@@ -14052,7 +14098,7 @@ class FensterHeizungPanel extends HTMLElement {
       const det = three ? `<small><span class="c-pv">Solar ${f2(x.pv)}</span>${x.bat > 0.0005 ? ` · <span class="c-bat">Akku ${f2(x.bat)}</span>` : ""}${x.net > 0.0005 ? ` · <span class="c-net">Netz ${f2(x.net)}</span>` : ""}</small>` : `<small>davon ${f2(x.pv)} kWh Solar · ${s} %</small>`;
       return `<div class="efsv" style="--c:${col}"><span class="efq sm"><span class="efqi">${this._efxImgN(x.n, { on: x.kwh > 0 })}</span></span><span class="efsvt"><b>${esc(x.n.name)}${tag}</b><span class="efsvb${three ? " m3" : ""}">${bar}</span>${x.part ? `<small class="efsvp">erst ab Einrichtung in ${S3[0]}</small>` : ""}</span><span class="efsvv"><b>${f2(x.kwh)} kWh</b><small class="efsvu">verbraucht${three ? ` · ${s} % Solar` : ""}</small>${det}</span></div>`; }).join("") : `<div class="mut sm">Keine Verbraucher-Kacheln mit Leistungssensor.</div>`}
       ${list.length ? `<div class="efleg2 efsvl"><span><i style="background:#fbbf24"></i>Solar</span>${list.some((x) => x.bat != null) ? `<span><i style="background:#a78bfa"></i>Akku</span><span><i style="background:#f87171"></i>Netz</span>` : ""}</div>` : ""}
-      <div class="efsvf">Ganzer Verbrauch des Geräts. Mit „Modul 4“ oder „Modul 8“ kommen die Werte direkt aus diesen Modulen (Solar, Akku, Netz), sonst rechnet Modul 19 selbst nach der Herkunft des Hausstroms in derselben Stunde.${H.live ? ` Stand ${new Date(H.ts).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}, inkl. laufender Stunde.` : ""}${list.some((x) => x.src === "pow") ? " Mit kWh-Zähler an der Kachel wird die eigene Rechnung genauer." : ""} Quelle ändern: Kachel bearbeiten → „Werte im Strom-Reiter“.</div></div>`;
+      <div class="efsvf">Ganzer Verbrauch des Geräts. Mit „Modul 4“ oder „Modul 8“ kommen die Werte direkt aus diesen Modulen (Solar, Akku, Netz), sonst rechnet Modul 19 selbst nach der Herkunft des Hausstroms in derselben Stunde.${H.live ? ` Stand ${new Date(H.ts).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}.` : ""}${list.some((x) => x.src === "pow") ? " Mit kWh-Zähler an der Kachel wird die eigene Rechnung genauer." : ""} Quelle ändern: Kachel bearbeiten → „Werte im Strom-Reiter“.</div></div>`;
     return `${nav}${sum}<div class="efsgrid${narrow ? " nar" : ""}"><div class="efsmain">${e1}${this._efxSrcCard(H, c)}</div><div class="efsside">${e2}${this._efxCost(T)}</div></div>`;
   }
   /* ---------------- Woher kam der Strom? Anteile je Quelle, Netz- und Akku-Bilanz, wohin der Solarstrom ging ---------------- */

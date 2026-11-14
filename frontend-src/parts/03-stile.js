@@ -1002,6 +1002,7 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efsvv{display:flex;flex-direction:column;align-items:flex-end;text-align:right}.efsvv small{font-size:.72rem;color:#fbbf24}.efsvv small.efsvu{color:var(--mut)}
 .efsvt b .efsrc{display:inline-block;width:auto;height:auto;font-style:normal;font-weight:600;font-size:.64rem;line-height:1.5;color:var(--mut);background:none;border:1px solid var(--line);border-radius:99px;padding:0 6px;margin:0 0 0 6px;vertical-align:1px;white-space:nowrap;flex:none}
 .efsvf{font-size:.74rem;color:var(--mut);line-height:1.4;margin-top:8px}
+.efsres{display:flex;gap:6px;align-items:flex-start;font-size:.72rem;color:var(--mut);line-height:1.4;margin:8px 0 2px}.efsres .ic{flex:none;margin-top:1px}
 .efsvt b button.efsrc{cursor:pointer;color:#5eead4;border-color:color-mix(in srgb,#2dd4bf 45%,transparent);font-family:inherit}
 .efsvb.m3{display:flex;gap:2px}.efsvb.m3 i.m{flex:none;border-radius:99px}.efsvb.m3 i.pv{background:#fbbf24}.efsvb.m3 i.bat{background:#a78bfa}.efsvb.m3 i.net{background:#f87171}
 .efsvp{font-size:.66rem;color:var(--mut)}.efsvv .c-pv{color:#fbbf24}.efsvv .c-bat{color:#a78bfa}.efsvv .c-net{color:#f87171}.efsvl{margin-top:10px}
