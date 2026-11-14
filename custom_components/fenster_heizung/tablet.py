@@ -16,7 +16,6 @@ from typing import Any
 
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.helpers.event import async_call_later, async_track_state_change_event
-from homeassistant.helpers.storage import Store
 
 from .backup import SafeStore
 from .const import DOMAIN

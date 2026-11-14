@@ -11,12 +11,11 @@ from __future__ import annotations
 import logging
 import re
 import time
-from datetime import date, timedelta
+from datetime import timedelta
 from typing import Any
 
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant
 from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore

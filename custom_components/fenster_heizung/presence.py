@@ -9,7 +9,6 @@ from typing import Any
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 from homeassistant.helpers.event import async_track_time_change
-from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore

@@ -10,7 +10,6 @@ import re
 from typing import Any
 
 from homeassistant.core import HomeAssistant
-from homeassistant.helpers.storage import Store
 
 from .backup import SafeStore
 from .const import DOMAIN

@@ -98,6 +98,9 @@ const _S = (d) => `<path d="${d}"/>`;
 const _C = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="currentColor" fill-opacity=".2"/>`;
 const _P = (d) => _F(d) + _S(d);
 Object.assign(ICONS, {
+  plug: '<path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/>',
+  forecast: '<path d="M4 18h16M6 15l4-5 3 3 5-6"/><path d="M15 7h3v3"/>',
+  schedule: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
   nfc: _S("M6 8a8 8 0 0 1 0 8M10 6a11 11 0 0 1 0 12M14 4a14 14 0 0 1 0 16") + _C(18, 12, 3),
   sofa: _F("M3 13.5A2.5 2.5 0 0 1 5.5 11h13a2.5 2.5 0 0 1 2.5 2.5V17H3z") + _S("M5 11V8.5A3 3 0 0 1 8 5.5h8a3 3 0 0 1 3 3V11M3 13.5A2.5 2.5 0 0 1 5.5 11h13a2.5 2.5 0 0 1 2.5 2.5V17H3zM6 17v2M18 17v2"),
   tv: _P("M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z") + _S("M8 21h8M12 17v4"),

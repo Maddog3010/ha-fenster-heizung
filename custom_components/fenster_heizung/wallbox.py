@@ -14,7 +14,6 @@ from urllib.parse import quote
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_time_interval
-from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore
@@ -706,7 +705,6 @@ class WallboxManager:
         ts = time.time()
         if self._fc and not force and ts - self._fc[0] < 120:
             return {**self._fc[1], "plan": self.plan_view()}
-        cfg = self.cfg
         now = dt_util.now()
         pv, fs, pv_label = await self._pv_forecast(now)
         prices, price_src, res = await self._price_list(now)

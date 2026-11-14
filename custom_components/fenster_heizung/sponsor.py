@@ -14,7 +14,7 @@ import base64
 import json
 import logging
 import re
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from typing import Any
 
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
@@ -23,7 +23,6 @@ from homeassistant.helpers.event import async_call_later, async_track_time_inter
 from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
-from .const import DOMAIN
 from .sponsor_github import GithubLink, clean_stufen
 
 _LOGGER = logging.getLogger(__name__)

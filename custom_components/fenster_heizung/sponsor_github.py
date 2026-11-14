@@ -251,7 +251,7 @@ class GithubLink:
             d = await self._query(tok, Q_FULL)
             if d and d.get("errors") and not d.get("data"):
                 d = await self._query(tok, Q_MIN)   # ältere/andere Felder: mit der kleinen Abfrage noch einmal
-        except Exception as err:  # noqa: BLE001 - ohne Internet bleibt der alte Stand (Kulanz)
+        except Exception:  # noqa: BLE001 - ohne Internet bleibt der alte Stand (Kulanz)
             self.data["err"] = "net"
             self._save()
             return {"ok": False, "error": "net"}

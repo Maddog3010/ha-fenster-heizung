@@ -363,10 +363,12 @@ class ExtBackup:
 
     async def async_start(self) -> None:
         self.cfg = clean_cfg(await self._store.async_load(), None)
-        try:
-            self._version = json.loads((Path(__file__).parent / "manifest.json").read_text()).get("version", "")
-        except (OSError, ValueError):
-            self._version = ""
+        def _ver() -> str:  # Dateizugriff nicht im Event-Loop (HA meldet sonst „blocking call“)
+            try:
+                return str(json.loads((Path(__file__).parent / "manifest.json").read_text(encoding="utf-8")).get("version", ""))
+            except (OSError, ValueError):
+                return ""
+        self._version = await self.hass.async_add_executor_job(_ver)
         self._arm()
         last = (self.cfg.get("last") or {}).get("t", 0)
         if self.cfg["on"] and self.cfg["when"] != "change" and time.time() - last > 26 * 3600 * (7 if self.cfg["when"] == "weekly" else 1):

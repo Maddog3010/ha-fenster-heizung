@@ -178,7 +178,7 @@
     return `<div class="hs2" data-kk="${esc("hs|" + x.key)}" data-an="${this._rkCfg().anim}">${x.svg}</div>`;
   }
   _hsGo(id) {
-    /* Achtung: „CSS“ ist hier unser Stylesheet (const CSS), nicht das CSS-Objekt des Browsers – daher window.CSS, mit Ersatz für ältere WebViews */
+    /* window.CSS.escape mit Ersatz für ältere WebViews */
     const q = (window.CSS && typeof window.CSS.escape === "function") ? window.CSS.escape(id) : String(id).replace(/["\\]/g, "\\$&");
     const sr = this.shadowRoot, el = sr.querySelector(`.room[data-id="${q}"], .crow[data-id="${q}"]`);
     if (!el) { const g = (this._cfg.layout.groups || []).find((x) => (x.rooms || []).includes(id)), c = this._collapsed(); if (g && c.has(g.id)) { c.delete(g.id); this._setCollapsed(c); this._render(); setTimeout(() => this._hsGo(id), 60); } return; }
