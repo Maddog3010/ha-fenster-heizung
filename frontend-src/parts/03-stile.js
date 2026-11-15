@@ -1071,6 +1071,9 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .gasyrf{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.gasyrh{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:0;color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer}.gasyrh>svg{color:var(--mut);flex:none}.gasyr:not(.open){padding:9px 12px}.gasyrh em{font-style:normal;font-size:.7rem;font-weight:700;color:#fb923c;border:1px solid color-mix(in srgb,#fb923c 45%,transparent);border-radius:99px;padding:0 7px}.gasyrh span{margin-left:auto;font-size:.74rem;color:var(--mut)}
 .entabs button em{font-style:normal;font-size:.66rem;font-weight:700;margin-left:4px;padding:0 6px;border-radius:99px;background:color-mix(in srgb,currentColor 18%,transparent)}
 .gasmon{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px}.gasmon .otxt{margin:0;width:100%}.gasyr .lnk{align-self:flex-start;font-size:.8rem}
+.gaspl{display:flex;flex-direction:column;gap:8px;margin:4px 0 6px}.gaspl>.btn2{align-self:flex-start;flex:none}
+.gasplr{display:grid;grid-template-columns:minmax(130px,1fr) minmax(130px,1fr) minmax(130px,1fr) auto;gap:8px;align-items:end;padding:8px 10px;border-radius:12px;border:1px solid var(--line)}.gasplr input[type=date]{margin:0;width:100%;color-scheme:dark}
+@media (max-width:560px){.gasplr{grid-template-columns:1fr 1fr}.gasplr .gasin:first-child{grid-column:1/-1}}
 .gasin.inl{display:inline-flex;vertical-align:middle;width:170px;margin-left:4px}
 .gasyr.std{background:color-mix(in srgb,var(--primary-text-color) 4%,transparent)}.gasin select.otxt{margin:0;width:100%}
 @media (max-width:520px){.gask{grid-template-columns:1fr 1fr}.gask .gasv:last-child{grid-column:1/-1}}

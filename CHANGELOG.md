@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b39] - 2026-11-15
+
+### Neu
+- **Modul 3 · Gas: Preise mit „gültig ab“.** Arbeits- und Grundpreis stehen jetzt in einer Preisliste mit Datum (z. B. ab 01.07.2025 und ab 01.01.2026) – unabhängig vom Abrechnungsjahr. Jede Stunde bzw. jeder Tag kostet den Preis, der an diesem Tag galt; der Grundpreis wird tageweise am Datum geteilt. Ein leerer Grundpreis bleibt wie zuvor. Vor dem ersten Datum gilt der Standardpreis.
+- Die Abrechnungsjahre enthalten nur noch Brennwert, Zustandszahl, MwSt und Abschläge. Bereits eingetragene Jahrespreise gelten weiter und werden als „alt“ angezeigt.
+- Jahresansicht und „Seit Abrechnungsbeginn“ rechnen jetzt tageweise, damit ein Preiswechsel mitten im Monat genau getroffen wird. Die Hochrechnung nutzt für künftige Tage den dann gültigen Preis – auch bereits angekündigte.
+
 ## [2026.11.3b38] - 2026-11-15
 
 ### Behoben

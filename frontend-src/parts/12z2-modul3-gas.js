@@ -5,7 +5,7 @@
      Arbeitspreis, Grundpreis, Brennwert, Zustandszahl, MwSt, Abschlag und einzelne Monate (absm, 0 = erster Monat). Leer = Standard.
      Preise wahlweise netto (zzgl. MwSt), Abschläge immer so, wie sie abgebucht werden. Kosten werden stunden- bzw. tagegenau
      mit den Werten des Abrechnungsjahrs gerechnet, in das sie fallen. */
-  _gasCfg() { const g = { ent: "", brw: 10.5, hw: 0, zz: 0, price: 12, grund: 0, netto: false, mwst: 19, start: 1, abschlag: 0, absday: 1, ...(((this._haus || {}).gas) || {}) }; g.years = g.years || {}; return g; }
+  _gasCfg() { const g = { ent: "", brw: 10.5, hw: 0, zz: 0, price: 12, grund: 0, netto: false, mwst: 19, start: 1, abschlag: 0, absday: 1, ...(((this._haus || {}).gas) || {}) }; g.years = g.years || {}; g.prices = g.prices || []; return g; }
   _gasOn() { return !!this._gasCfg().ent; }
   _gasUnit() { const c = this._gasCfg(), s = this._hass.states[c.ent], u = ((s && s.attributes.unit_of_measurement) || "").replace("m3", "m³"); return /Wh$/i.test(u) ? "kwh" : "m3"; }
   /* Abrechnungsjahr eines Zeitpunkts: Jahr, in dem es begonnen hat */
@@ -18,16 +18,24 @@
     const hw = v("hw"), zz = v("zz"), mw = c.netto ? 1 + v("mwst") / 100 : 1;
     return { price: v("price") * mw, grund: v("grund") * mw, net: v("price"), hw, zz, fac: hw > 0 && zz > 0 ? hw * zz : c.brw, mwst: v("mwst"), abs: o.abs != null ? o.abs : c.abschlag, absm: o.absm || {} };
   }
+  /* Preis zu einem Zeitpunkt: letzter Eintrag der Preisliste mit „gültig ab“ ≤ t, sonst Abrechnungsjahr bzw. Standard. Brutto. */
+  _gasPl() { return this._gasCfg().prices.map((p) => { const [y, m, d] = p.ab.split("-").map(Number); return { ...p, ts: +new Date(y, m - 1, d) }; }); }
+  _gasAt(t) {
+    const Y = this._gasY(this._gasBy(t)), c = this._gasCfg(), mw = c.netto ? 1 + Y.mwst / 100 : 1, L = this._gasPl();
+    let pr = null, gr = null; for (const p of L) { if (p.ts > t) break; if (p.price != null) pr = p.price; if (p.grund != null) gr = p.grund; }
+    return { price: pr != null ? pr * mw : Y.price, grund: gr != null ? gr * mw : Y.grund };
+  }
   _gasAbs(y, m) { const Y = this._gasY(y); return Y.absm[String(m)] != null ? Y.absm[String(m)] : Y.abs; }
   _gasKwh(v, t) { return this._gasUnit() === "m3" ? v * this._gasY(this._gasBy(t == null ? Date.now() : t)).fac : v; }
   _gasSumK(l) { return (l || []).reduce((a, x) => a + this._gasKwh(x.v, x.t), 0); }
   /* Grundpreis für [s, e) – tageweise, je Abrechnungsjahr mit dessen Preis */
   _gasGrund(s, e) {
     let t = +s, sum = 0;
-    while (t < +e) { const y = this._gasBy(t), ys = +this._gasByS(y), ye = +this._gasByS(y + 1), nx = Math.min(+e, ye); sum += this._gasY(y).grund * (nx - t) / (ye - ys); t = nx; }
+    const L = this._gasPl().map((p) => p.ts);
+    while (t < +e) { const y = this._gasBy(t), ys = +this._gasByS(y), ye = +this._gasByS(y + 1), nx = Math.min(+e, ye, ...L.filter((x) => x > t)); sum += this._gasAt(t).grund * (nx - t) / (ye - ys); t = nx; }
     return sum;
   }
-  _gasCost(list) { return (list || []).reduce((a, x) => a + this._gasKwh(x.v, x.t) * this._gasY(this._gasBy(x.t)).price / 100, 0); }
+  _gasCost(list) { return (list || []).reduce((a, x) => a + this._gasKwh(x.v, x.t) * this._gasAt(x.t).price / 100, 0); }
   /* Zeitraum: wie Modul 3, nur „Jahr“ ist das Abrechnungsjahr */
   _gasPer(shift = 0) {
     const E = this._enState(), P = this._enPer(shift);
@@ -57,7 +65,7 @@
     const P = this._gasPer(), key = this._gasKey();
     if (!(this._gasH && this._gasH.key === key && (!P.cur || Date.now() - this._gasH.ts < 3e5)) && this._gasBusy !== key) {
       this._gasBusy = key;
-      const per = E.range === "day" ? "hour" : E.range === "year" ? "month" : "day", V = this._gasPer(-1), ve = new Date(Math.min(+V.e, +V.s + (+P.end - +P.s)));
+      const per = E.range === "day" ? "hour" : "day", V = this._gasPer(-1), ve = new Date(Math.min(+V.e, +V.s + (+P.end - +P.s)));
       Promise.all([this._gasQ(P.s, P.end, per), this._gasQ(V.s, ve, per).catch(() => null)]).then(([cur, prev]) => { this._gasH = { key, ts: Date.now(), per, cur, prev }; })
         .catch(() => { this._gasH = { key, ts: Date.now() - 27e4, per, cur: null, prev: null, err: true }; })  /* in 30 s neu versuchen */
         .finally(() => { if (this._gasBusy === key) this._gasBusy = null; if (this._mdActive() === "en" && !this._dragging) this._render(); });
@@ -66,7 +74,7 @@
     const by = this._gasBy(Date.now()), bk = `${c.ent}:${c.start}:${by}`;
     if (!(this._gasB && this._gasB.key === bk && Date.now() - this._gasB.ts < 6e5) && this._gasBBusy !== bk) {
       this._gasBBusy = bk;
-      this._gasQ(this._gasByS(by - 1), new Date(), "month").then((l) => { this._gasB = { key: bk, ts: Date.now(), by, list: l }; })
+      this._gasQ(this._gasByS(by - 1), new Date(), "day").then((l) => { this._gasB = { key: bk, ts: Date.now(), by, list: l }; })
         .catch(() => { this._gasB = { key: bk, ts: Date.now() - 57e4, by, list: null }; })
         .finally(() => { if (this._gasBBusy === bk) this._gasBBusy = null; if (this._mdActive() === "en" && !this._dragging) this._render(); });
     }
@@ -84,11 +92,11 @@
     const absAll = Array.from({ length: nPaid }, (_, m) => this._gasAbs(y, m)), same = absAll.every((v) => v === absAll[0]);
     /* Rest des Jahres: gleiche Monate des Vorjahrs, mit Faktor und Preis des laufenden Abrechnungsjahrs (laufender Monat anteilig) */
     let est = null;
-    if (old.length >= 6) {
-      const mi = (t) => { const d = new Date(t); return (d.getFullYear() - s.getFullYear() + 1) * 12 + d.getMonth() - s.getMonth(); };  /* Monat 0–11 im Vorjahr */
-      const ld = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(), part = 1 - (now.getDate() - 1 + now.getHours() / 24) / ld, k = this._gasUnit() === "m3" ? Y.fac : 1;
-      let rest = 0; old.forEach((x) => { const i = mi(x.t); if (i > mon - 1) rest += x.v * k; else if (i === mon - 1) rest += x.v * k * part; });
-      est = { kwh: kwh + rest, cost: cost + rest * Y.price / 100 + this._gasGrund(now, e) };
+    if (old.length >= 180) {
+      /* jeder Tag des Vorjahrs, der – ein Jahr später – noch kommt; Preis des Tages, an dem er dann liegt (auch angekündigte Preise) */
+      const sh = (t) => { const d = new Date(t); return +new Date(d.getFullYear() + 1, d.getMonth(), d.getDate(), d.getHours()); }, k = this._gasUnit() === "m3" ? Y.fac : 1;
+      let rest = 0, rc = 0; old.forEach((x) => { const t2 = sh(x.t); if (t2 + 864e5 <= +now || t2 >= +e) return; const fr = t2 < +now ? (t2 + 864e5 - +now) / 864e5 : 1, w = x.v * k * fr; rest += w; rc += w * this._gasAt(t2).price / 100; });
+      est = { kwh: kwh + rest, cost: cost + rc + this._gasGrund(now, e) };
     }
     const diff = est && absOn ? tot - est.cost : null, bal = paid - cost;
     return `<div class="gasbill"><div class="gasbh">${ic("clock", 15)}<b>Seit Abrechnungsbeginn</b><span>${esc(this._gasByLbl(y))}</span></div>
@@ -96,7 +104,7 @@
       ${absOn ? `<div><span>Abschläge abgebucht (${nPaid ? (same ? `${nPaid} × ${num(absAll[0], 2)} €` : `${nPaid} Monate`) : "noch keiner"})</span><b>${num(paid, 2)} €</b></div><div><span>Stand heute</span><b class="${bal >= 0 ? "pos" : "neg"}">${bal >= 0 ? "+" : "−"}${num(Math.abs(bal), 2)} €</b></div>` : ""}
       ${est ? `<div><span>Hochrechnung ganzes Jahr</span><b>${f(est.kwh)} kWh · ${num(est.cost, 2)} €</b></div>` : ""}
       ${diff != null ? `<div><span>Abschläge im ganzen Jahr</span><b>${num(tot, 2)} €</b></div><div><span>Voraussichtlich bei der Abrechnung</span><b class="${diff >= 0 ? "pos" : "neg"}">${diff >= 0 ? "Guthaben" : "Nachzahlung"} ${num(Math.abs(diff), 2)} €</b></div>` : ""}</div>
-      ${est ? `<div class="mut sm" style="margin:4px 0 0">Hochrechnung: restliche Monate wie im Vorjahr, mit Preis und Brennwert des laufenden Abrechnungsjahrs${c.netto ? ", inkl. MwSt" : ""}.</div>` : ""}</div>`;
+      ${est ? `<div class="mut sm" style="margin:4px 0 0">Hochrechnung: restliche Tage wie im Vorjahr, mit Brennwert des laufenden Abrechnungsjahrs und dem dann gültigen Preis${c.netto ? ", inkl. MwSt" : ""}.</div>` : ""}</div>`;
   }
   _gasCard() {
     if (!this._gasOn()) return "";
@@ -119,8 +127,8 @@
     const mx = Math.max(...b, 0.1), lbl = (i) => E.range === "day" ? (i % 6 === 0 ? `${i} Uhr` : "") : E.range === "year" ? MN[(P.s.getMonth() + i) % 12] : (n <= 7 ? ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"][i] : (i === 0 || (i + 1) % 5 === 0 ? String(i + 1) : ""));
     const bars = `<div class="gasbars" style="--n:${n}" role="img" aria-label="Gasverbrauch ${esc(per)}">${b.map((v, i) => `<div class="gasb" title="${f(v)} kWh"><i style="height:${Math.max(v > 0 ? 3 : 0, v / mx * 100).toFixed(1)}%"></i><span>${lbl(i)}</span></div>`).join("")}</div>`;
     const avg = E.range !== "day" && days >= 1 ? `<div><span>Ø pro Tag</span><b>${f(kwh / days)} kWh</b></div>` : "";
-    const ys = [...new Set([this._gasBy(P.s), this._gasBy(Math.max(+P.s, +P.end - 1))])], Ys = ys.map((y) => this._gasY(y)), Yl = Ys[Ys.length - 1];
-    const prTxt = Ys.length > 1 && Ys[0].price !== Yl.price ? `${num(Ys[0].price, 2)} → ${num(Yl.price, 2)} ct/kWh` : `${num(Yl.price, 2)} ct/kWh`;
+    const Yl = this._gasY(this._gasBy(Math.max(+P.s, +P.end - 1))), p0 = this._gasAt(+P.s).price, p1 = this._gasAt(Math.max(+P.s, +P.end - 1)).price;
+    const prTxt = Math.abs(p0 - p1) > 1e-6 ? `${num(p0, 2)} → ${num(p1, 2)} ct/kWh` : `${num(p1, 2)} ct/kWh`;
     return `<div class="card gasc">${head}
       <div class="gask"><div class="gasv"><small>Verbrauch</small><b>${f(kwh)}<em>kWh</em></b><span>${m3 ? `${num(raw, raw >= 100 ? 0 : 2)} m³` : "&nbsp;"}</span></div>
         <div class="gasv"><small>Kosten</small><b>${num(cost, 2)}<em>€</em></b><span>${grund > 0 ? `inkl. ${num(grund, 2)} € Grundpreis` : "&nbsp;"}</span></div>
@@ -138,18 +146,18 @@
     const pl = c.netto ? "netto" : "brutto", net = c.netto ? "ct/kWh" : "ct/kWh";
     const fields = (o, y) => {  /* o = eigene Werte des Jahres (oder Standard), y = Jahr oder null */
       const ph = (k) => (y == null ? null : k === "abs" ? c.abschlag : c[k]), val = (k) => (y == null ? (k === "abs" ? c.abschlag || "" : c[k] || (k === "price" || k === "grund" ? c[k] : "")) : o[k]);
-      return `${inp("price", val("price"), `Arbeitspreis ${pl}`, net, "0.0001", y, ph("price"))}${inp("grund", val("grund"), `Grundpreis ${pl}`, "€/Jahr", "0.01", y, ph("grund"))}
+      return `${y == null || o.price != null ? inp("price", val("price"), `Arbeitspreis ${pl}${y == null ? "" : " (alt)"}`, net, "0.0001", y, ph("price")) : ""}${y == null || o.grund != null ? inp("grund", val("grund"), `Grundpreis ${pl}${y == null ? "" : " (alt)"}`, "€/Jahr", "0.01", y, ph("grund")) : ""}
         ${m3 ? `${inp("hw", val("hw"), "Brennwert", "kWh/m³", "0.001", y, ph("hw") || "")}${inp("zz", val("zz"), "Zustandszahl", "", "0.00001", y, ph("zz") || "")}` : ""}
         ${c.netto ? inp("mwst", val("mwst"), "MwSt", "%", "0.1", y, ph("mwst")) : ""}${inp("abs", val("abs"), "Abschlag", "€/Monat", "0.01", y, ph("abs") || "")}`;
     };
     const yearCard = (y) => {
       const o = c.years[String(y)] || {}, Y = this._gasY(y), am = o.absm || {}, open = O[y], nm = Object.keys(am).length, sm = c.start - 1;
       const YO = (this._gasYo = this._gasYo || {}), yo = YO[y] != null ? YO[y] : y === cy;
-      const NM = { price: "Arbeitspreis", grund: "Grundpreis", hw: "Brennwert", zz: "Zustandszahl", mwst: "MwSt", abs: "Abschlag" }, own = Object.keys(NM).filter((k) => o[k] != null).map((k) => NM[k]).concat(nm ? ["einzelne Monate"] : []);
-      const sum = `${num(Y.price, 2)} ct/kWh · ${num(Y.grund, 0)} €/Jahr${c.netto ? " (inkl. MwSt)" : ""}${Y.abs ? ` · Abschlag ${num(Y.abs, 0)} €` : ""}`;
+      const NM = { price: "alter Arbeitspreis", grund: "alter Grundpreis", hw: "Brennwert", zz: "Zustandszahl", mwst: "MwSt", abs: "Abschlag" }, own = Object.keys(NM).filter((k) => o[k] != null).map((k) => NM[k]).concat(nm ? ["einzelne Monate"] : []);
+      const sum = `${m3 ? `${num(Y.fac, 3)} kWh/m³` : ""}${Y.abs ? `${m3 ? " · " : ""}Abschlag ${num(Y.abs, 0)} €` : ""}${c.netto ? ` · MwSt ${num(Y.mwst, 0)} %` : ""}`;
       return `<div class="gasyr${yo ? " open" : ""}"><button class="gasyrh" data-act="engasy" data-k="${y}" aria-expanded="${yo}"><b>${esc(this._gasByLbl(y))}</b>${y === cy ? `<em>läuft</em>` : ""}<span>${own.length ? "eigene Werte" : "wie Standard"}</span>${ic(yo ? "close" : "pencil", 15)}</button>
         ${yo ? "" : `<div class="mut sm">${sum}${own.length ? ` · ${esc(own.join(", "))}` : ""}</div>`}
-        ${yo ? `<div class="gasyrf">${fields(o, y)}</div>${m3 ? `<div class="mut sm">${num(Y.fac, 3)} kWh/m³${c.netto ? ` · brutto ${num(Y.price, 2)} ct/kWh` : ""}</div>` : ""}` : ""}
+        ${yo ? `<div class="gasyrf">${fields(o, y)}</div>${m3 ? `<div class="mut sm">${num(Y.fac, 3)} kWh/m³</div>` : ""}` : ""}
         ${yo ? `<button class="lnk" data-act="engasm" data-k="${y}" aria-expanded="${!!open}">${open ? "Monate zuklappen" : `Abschlag einzelner Monate anpassen${nm ? ` (${nm} abweichend)` : ""}`}</button>` : ""}
         ${yo && open ? `<div class="gasmon">${Array.from({ length: 12 }, (_, m) => `<label class="gasin"><span>${MON[(sm + m) % 12].slice(0, 3)} ${String((y + Math.floor((sm + m) / 12)) % 100).padStart(2, "0")}</span><input class="otxt" type="number" inputmode="decimal" step="0.01" min="0" value="${am[m] != null ? esc(String(am[m])) : ""}" placeholder="${esc(String(Y.abs || ""))}" data-f="engas" data-k="absm" data-y="${y}" data-m="${m}" aria-label="Abschlag ${MON[(sm + m) % 12]}"></label>`).join("")}</div>` : ""}</div>`;
     };
@@ -159,15 +167,24 @@
         <label class="gasin"><span>Abrechnungsjahr beginnt im</span><select class="otxt" data-f="engas" data-k="start" aria-label="Abrechnungsjahr beginnt im">${MON.map((m, i) => `<option value="${i + 1}"${c.start === i + 1 ? " selected" : ""}>${m}</option>`).join("")}</select></label>
         ${inp("absday", c.absday, "Abschlag abgebucht am", ". des Monats", "1")}</div>
       <div class="vrow"><span>Preise ohne MwSt eingeben<small class="mut" style="display:block">Wie auf vielen Gasrechnungen: netto, zzgl. MwSt. Angezeigt wird immer mit MwSt.</small></span><button class="sw ${c.netto ? "on" : ""}" data-act="engasnet" aria-pressed="${c.netto}" aria-label="Preise ohne MwSt eingeben"></button></div>
-      <div class="lsec">${ic("sliders", 15)}Standardwerte</div><div class="mut sm" style="margin:0 0 4px">Gelten für jedes Abrechnungsjahr ohne eigene Werte.</div>
+      <div class="lsec">${ic("total", 15)}Arbeits- und Grundpreis</div><div class="mut sm" style="margin:0 0 4px">Jeder Preis gilt ab seinem Datum bis zum nächsten. Leerer Grundpreis = bleibt wie zuvor. Vor dem ersten Datum gilt der Standardpreis unten.</div>
+      <div class="gaspl">${this._gasPl().map((p, i) => `<div class="gasplr"><label class="gasin"><span>Gültig ab</span><input class="otxt" type="date" value="${esc(p.ab)}" data-f="engas" data-k="pab" data-i="${i}" aria-label="Gültig ab"></label>${inp("pprice", p.price, `Arbeitspreis ${pl}`, "ct/kWh", "0.0001").replace('data-k="pprice"', `data-k="pprice" data-i="${i}"`)}${inp("pgrund", p.grund, `Grundpreis ${pl}`, "€/Jahr", "0.01").replace('data-k="pgrund"', `data-k="pgrund" data-i="${i}"`)}<button class="ibtn" data-act="engaspdel" data-k="${i}" aria-label="Preis ab ${esc(p.ab)} löschen">${ic("trash", 16)}</button></div>`).join("")}
+        <button class="btn2" data-act="engaspadd">${ic("plus", 15)} Preis mit Datum hinzufügen</button></div>
+      <div class="lsec">${ic("sliders", 15)}Standardwerte</div><div class="mut sm" style="margin:0 0 4px">Gelten für jedes Abrechnungsjahr ohne eigene Werte${c.prices.length ? "; Preise nur vor dem ersten Datum der Preisliste" : ""}.</div>
       <div class="gasyr std"><div class="gasyrf">${fields(c, null)}</div>${m3 ? `<div class="mut sm">${c.hw > 0 && c.zz > 0 ? `${num(c.hw, 3)} × ${num(c.zz, 5)} = <b>${num(c.hw * c.zz, 3)} kWh/m³</b>` : `Ohne Brennwert und Zustandszahl gilt ${inp("brw", c.brw, "", "kWh/m³", "0.001").replace('<label class="gasin"><span></span>', '<label class="gasin inl">')}`}</div>` : ""}</div>
-      <div class="lsec">${ic("chart", 15)}Je Abrechnungsjahr</div><div class="mut sm" style="margin:0 0 4px">Antippen zum Bearbeiten. Leere Felder nutzen die Standardwerte.</div>
+      <div class="lsec">${ic("chart", 15)}Je Abrechnungsjahr</div><div class="mut sm" style="margin:0 0 4px">Brennwert, Zustandszahl${c.netto ? ", MwSt" : ""} und Abschläge. Antippen zum Bearbeiten, leere Felder nutzen die Standardwerte.</div>
       <div class="gasyrs">${yrs.map(yearCard).join("")}</div>
       <div class="gst">${ic("info", 15)}<span>${m3 ? "Brennwert und Zustandszahl stehen auf deiner Gasrechnung (Erdgas zusammen meist etwa 10–11 kWh je m³, Flüssiggas etwa 25–28). " : ""}Jede Stunde und jeder Tag wird mit den Werten des Abrechnungsjahrs gerechnet, in das er fällt. Abschläge so eintragen, wie sie abgebucht werden. Der Zähler muss als Langzeitstatistik geführt werden (Zustandsklasse „total_increasing“).</span></div>` : ""}`;
   }
   _gasAct(a, b) {
     if (a === "engasnet") { this._gasSave({ netto: !this._gasCfg().netto }); return true; }
     if (a === "engasy") { const YO = (this._gasYo = this._gasYo || {}), y = b.dataset.k, cy = this._gasBy(Date.now()); YO[y] = !(YO[y] != null ? YO[y] : +y === cy); this._renderModal(); return true; }
+    if (a === "engaspadd") {
+      const c = this._gasCfg(), L = c.prices.slice(), n = new Date(), last = L[L.length - 1];
+      let ab = `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-01`; while (L.some((p) => p.ab === ab)) { const [y, m] = ab.split("-").map(Number); ab = `${m === 12 ? y + 1 : y}-${String(m === 12 ? 1 : m + 1).padStart(2, "0")}-01`; }
+      L.push({ ab, price: last && last.price != null ? last.price : c.price }); L.sort((x, y) => (x.ab < y.ab ? -1 : 1)); this._gasSave({ prices: L }); return true;
+    }
+    if (a === "engaspdel") { const L = this._gasCfg().prices.slice(); L.splice(+b.dataset.k, 1); this._gasSave({ prices: L }); return true; }
     if (a === "engasm") { const O = (this._gasOpen = this._gasOpen || {}), y = b.dataset.k; O[y] = !O[y]; this._renderModal(); return true; }
     return false;
   }
@@ -177,6 +194,12 @@
     if (k === "start") { this._gasSave({ start: Math.min(12, Math.max(1, parseInt(t.value, 10) || 1)) }); return true; }
     const s = String(t.value || "").trim().replace(",", "."), v = parseFloat(s), lim = { brw: 40, hw: 40, zz: 1.5, price: 100, grund: 2000, abs: 2000, absm: 2000, abschlag: 2000, mwst: 30, absday: 28 }[k] || 100;
     const ok = s !== "" && isFinite(v) && v >= 0;
+    if (k === "pab" || k === "pprice" || k === "pgrund") {  /* Preisliste */
+      const L = c.prices.map((p) => ({ ...p })), p = L[+t.dataset.i]; if (!p) return true;
+      if (k === "pab") { if (!/^20\d\d-\d\d-\d\d$/.test(t.value) || L.some((x, i) => i !== +t.dataset.i && x.ab === t.value)) { this._toast("Für dieses Datum gibt es schon einen Preis"); this._renderModal(); return true; } p.ab = t.value; }
+      else { const f = k === "pprice" ? "price" : "grund"; if (s !== "" && isFinite(v) && v >= 0) p[f] = Math.min(f === "price" ? 100 : 2000, v); else if (f === "grund") delete p.grund; else return true; }
+      L.sort((x, y) => (x.ab < y.ab ? -1 : 1)); this._gasSave({ prices: L }); return true;
+    }
     if (t.dataset.y) {  /* Wert eines Abrechnungsjahrs; leer = Standard */
       const y = t.dataset.y, yrs = JSON.parse(JSON.stringify(c.years)), o = { ...(yrs[y] || {}) };
       if (k === "absm") { const am = { ...(o.absm || {}) }; if (ok) am[t.dataset.m] = Math.min(lim, v); else delete am[t.dataset.m]; if (Object.keys(am).length) o.absm = am; else delete o.absm; }
