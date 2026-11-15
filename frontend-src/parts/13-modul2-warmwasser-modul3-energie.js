@@ -833,7 +833,7 @@
     const o = (k, h) => h.replace('<div class="card', `<div style="order:${k}" class="card`);
     if (this._enTipX != null) Promise.resolve().then(() => this._enTipShow());
     if (this._m3On()) Promise.resolve().then(() => this._m3Count());
-    return `${hero}${nav}${this._mpWrap("en", { kacheln: tiles, fluss: flow, verlauf: chart, verteilung: dist || "", kosten: cost || "", spar: this._m3On() && ok ? this._m3Pig() : "", heizung: heatC, hinweise: tipC })}`;
+    return `${hero}${nav}${this._mpWrap("en", { kacheln: tiles, fluss: flow, verlauf: chart, verteilung: dist || "", kosten: cost || "", spar: this._m3On() && ok ? this._m3Pig() : "", heizung: heatC, hinweise: tipC, gas: this._gasCard() })}`;
   }
   _enAct(a, b) {
     const E = this._enState(), k = b.dataset.k;
@@ -861,6 +861,7 @@
   }
   _enChange(t) {
     const f = t.dataset.f, E = this._enState();
+    if (f === "engas") return this._gasChange(t);
     if (f === "enent") { E.ent[t.dataset.k] = t.value; if (t.dataset.k === "grid") this._gen.pv = { ...this._pv(), sensor: t.value }; this._enSave(true); if (this._stOpen) this._render(); return true; }
     if (f === "enm3cost" || f === "enm3since") { const L = this._cfg.layout, v = String(t.value || "").trim(); L.m3 = { ...(L.m3 || {}) }; if (f === "enm3cost") { const n = parseFloat(v.replace(",", ".")); if (isFinite(n) && n > 0) L.m3.cost = Math.round(Math.min(1e6, n)); else delete L.m3.cost; } else if (/^\d{4}-\d{2}$/.test(v)) L.m3.since = v; else delete L.m3.since; this._m3PigD = null; this._saveLayout(); this._render(); return true; }
     if (f === "enname") { E[t.dataset.k] = String(t.value || "").replace(/[<>"'&]/g, "").slice(0, 20); this._enSave(true); this._render(); return true; }
@@ -912,6 +913,7 @@
       <div class="mut sm" style="margin:0">Netzbezug gesamt</div>${sel("imp", en)}
       <div class="mut sm" style="margin:0">Einspeisung gesamt</div>${sel("exp", en)}
       <div class="gst">${ic("info", 15)}<span>Zähler müssen als Langzeitstatistik in Home Assistant geführt werden. Bezugspreis und Einspeisevergütung stehen unter Haus → Preise &amp; Tarif.</span></div>
+      ${this._gasSetHtml()}
       ${this._modal && this._modal.haus ? "" : `<div class="lsec">${ic("eye", 15)}Anzeige in Modul 3 (gilt für dieses Gerät)</div>`}
       ${this._modal && this._modal.haus ? "" : `<div class="mut sm" style="margin:2px 0 0">Ring im Banner</div><div class="seg">${[["aut", "Autarkie im Zeitraum"], ["now", "Gedeckt jetzt"]].map(([k, l]) => `<button class="${(E.ring || "aut") === k ? "sel" : ""}" data-act="ensring" data-k="${k}">${l}</button>`).join("")}</div>
       ${this._m3Look()}<div class="mut sm" style="margin:0">Vergleich in den Kacheln</div><div class="seg">${[["prev", "Zur Vorperiode"], ["off", "Aus"]].map(([k, l]) => `<button class="${(E.cmp || "prev") === k ? "sel" : ""}" data-act="enscmp" data-k="${k}">${l}</button>`).join("")}</div>

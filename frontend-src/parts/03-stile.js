@@ -1047,6 +1047,25 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .efseg button{white-space:nowrap}.efx.nar .efseg{gap:6px}.efx.nar .efseg button{padding:7px 14px}.efx.nar .efseg .efszb{padding:5px 10px;font-size:.78rem}
 .efx.nar .efn.hub .efhr{width:92%}.efx.nar .efn.hub .efs.b{top:50%;font-size:max(10px,9.5cqw)}.efx.nar .efn.hub .efs.t{top:-14%;right:-30%}
 .efrt.on{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 10%,var(--card)),color-mix(in srgb,var(--primary-text-color) 5%,var(--card)) 80%)}.efpill.on{background:color-mix(in srgb,var(--c) 6%,var(--card))}
+/* Modul 19 · hellere Kacheln (b35): Glas statt fast schwarzer Fläche, aus wie an gut lesbar, an mit Farbe des Geräts */
+.efx:not(.lt) .efn:not(.hub){box-sizing:border-box;background:linear-gradient(180deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.05) 100%);border:1px solid rgba(255,255,255,.09);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 8px 20px -14px rgba(0,0,0,.6)}
+.efx:not(.lt) .efn.on:not(.hub){background:linear-gradient(180deg,color-mix(in srgb,var(--c) 20%,rgba(255,255,255,.10)) 0%,color-mix(in srgb,var(--c) 8%,rgba(255,255,255,.06)) 100%);border-color:color-mix(in srgb,var(--c) 32%,rgba(255,255,255,.10));box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 24px -16px var(--c)}
+.efx:not(.lt) .efn.nd:not(.hub){background:rgba(255,255,255,.05)}
+.efx:not(.lt) .efn:not(.on):not(.hub) .efi{filter:saturate(.45) brightness(.95);opacity:.78}.efx:not(.lt) .efn:not(.on):not(.hub) .efs{opacity:.9}.efx:not(.lt) .efn:not(.on):not(.hub)::after{opacity:.3}
+.efx:not(.lt) .efn .efs i{color:rgba(255,255,255,.62)}.efx:not(.lt) .efn:not(.hub) .efs{color:rgba(255,255,255,.78)}.efx:not(.lt) .efn.on:not(.hub) .efs.b{color:#fff}
+/* Modul 3 · Gas (b35) */
+.gasc h2>svg:first-child{color:#fb923c}
+.gasc h2{flex-wrap:wrap}.gasmr{margin-left:auto;font-size:.74rem;font-weight:600;color:var(--mut);padding:3px 9px;border-radius:99px;border:1px solid var(--line);font-variant-numeric:tabular-nums}
+.gask{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:2px 0 12px}
+.gasv{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,#fb923c 7%,transparent);border:1px solid color-mix(in srgb,#fb923c 18%,var(--line));min-width:0}
+.gasv small{font-size:.72rem;color:var(--mut);font-weight:600}.gasv b{font-size:1.35rem;line-height:1.15;font-variant-numeric:tabular-nums;white-space:nowrap}.gasv b em{font-style:normal;font-size:.62em;font-weight:600;color:var(--mut);margin-left:3px}
+.gasv span{font-size:.72rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gasv b.gascmp{font-size:.8rem;font-weight:500;white-space:normal;line-height:1.35;color:var(--mut)}
+.gasbars{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:3px;align-items:end;height:120px;padding:0 2px 18px;position:relative}
+.gasb{position:relative;height:100%;display:flex;align-items:flex-end}.gasb i{display:block;width:100%;border-radius:4px 4px 1px 1px;background:linear-gradient(180deg,#fb923c,#ea580c);opacity:.9}
+.gasb span{position:absolute;left:50%;bottom:-17px;transform:translateX(-50%);font-size:.62rem;color:var(--mut);white-space:nowrap}
+.gasins{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:6px 0}.gasin{display:flex;flex-direction:column;gap:3px;font-size:.78rem;color:var(--mut)}
+.gasinw{display:flex;align-items:center;gap:6px}.gasinw input{flex:1;min-width:0;margin:0}.gasinw em{font-style:normal;font-size:.76rem;white-space:nowrap}
+@media (max-width:520px){.gask{grid-template-columns:1fr 1fr}.gask .gasv:last-child{grid-column:1/-1}}
 /* Modul 16 · Neue Optik Stufe 1 (v0.9 Build 3) */
 .spban{position:relative;overflow:hidden;min-height:190px;color:#fff;background:radial-gradient(ellipse at 74% 62%,rgba(245,158,11,.32),transparent 58%),linear-gradient(120deg,#3a2a07 0%,#221b0b 45%,#121820 100%)!important;border:0}
 .spban.nt{background:radial-gradient(ellipse at 74% 62%,rgba(129,140,248,.18),transparent 58%),linear-gradient(120deg,#131a33 0%,#0c1222 55%,#080d18 100%)!important}

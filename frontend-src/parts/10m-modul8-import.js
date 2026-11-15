@@ -65,7 +65,9 @@
       return { ...r, pv: ok ? r.kwh * f : 0, pvest: true, pvok: ok, hours: hours.map(([ts, k, p]) => [ts, +k.toFixed(4), +(p != null ? p : k * f).toFixed(4)]) };
     });
   }
-  _goeOpen() { this._modal = { type: "wbgoe", step: "pick" }; this._renderModal(); }
+  /* Import nur anbieten, wenn im Store ein go-e Charger verbunden ist (gleiche Regel wie die Store-Kachel „go-e Charger“) */
+  _goeOn() { const c = this._wb(); return !!(c && c.ip) && !this._wbHa(c); }
+  _goeOpen() { if (!this._goeOn()) { this._toast("Zuerst im Store einen go-e Charger verbinden"); return; } this._modal = { type: "wbgoe", step: "pick" }; this._renderModal(); }
   _goePick() {
     const inp = document.createElement("input"); inp.type = "file"; inp.accept = ".csv,text/csv";
     inp.onchange = () => {

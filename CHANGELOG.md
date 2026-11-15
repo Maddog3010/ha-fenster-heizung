@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b35] - 2026-11-15
+
+### Neu
+- **Modul 3: Gaszähler.** Unter Energiequellen → „Gas (optional)“ wählst du den Zählerstand-Sensor (m³ oder kWh). Modul 3 zeigt dann eine eigene Karte „Gas“ für Tag, Woche, Monat und Jahr:
+  - Verbrauch in kWh (bei m³-Zählern zusätzlich in m³), umgerechnet mit Brennwert × Zustandszahl von der Gasrechnung.
+  - Kosten aus Arbeitspreis (ct/kWh) und anteiligem Grundpreis (€/Jahr).
+  - Vergleich zur Vorperiode, Balken je Stunde, Tag oder Monat, Ø pro Tag und aktueller Zählerstand.
+  - Die Karte lässt sich über „Anpassen“ verschieben oder ausblenden. Die Einstellung gilt für alle Nutzer und ist in der Sicherung enthalten.
+
+### Geändert
+- **Modul 19: Kacheln heller.** Statt fast schwarzer Flächen haben die Kacheln jetzt einen hellen Glas-Hintergrund mit feinem Rand, durch den das Thema (Sternenhimmel, Nachtglas …) leicht durchscheint. Ausgeschaltete Kacheln sind gut lesbar und die Bilder kräftiger, eingeschaltete leuchten in der Farbe des Geräts. Das helle Design bleibt unverändert.
+- **Modul 8: „Aus go-e importieren“ erscheint nur noch, wenn im Store ein go-e Charger verbunden ist.** Ohne Wallbox oder mit einer Wallbox über Home Assistant ist der Link ausgeblendet. Bereits importierte Ladungen bleiben unverändert.
+
 ## [2026.11.3b34] - 2026-11-15
 
 ### Geändert

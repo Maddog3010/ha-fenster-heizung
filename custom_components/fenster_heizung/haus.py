@@ -44,6 +44,7 @@ USED_BY = {
     "soc": [1, 3, 8, 13],
     "price": [1, 3, 4, 8, "Labs"],
     "wx": [1, 9, "Start", "Labs"],
+    "gas": [3],
 }
 
 
@@ -75,6 +76,7 @@ def default() -> dict[str, Any]:
         "soc": "",
         "price": {"price": 32.0, "feed": 8.0, "price_mode": "fix", "price_sensor": "", "feed_mode": "fix", "feed_sensor": ""},
         "wx": {"entity": "", "outdoor": "", "wind": "", "official": ""},
+        "gas": {"ent": "", "brw": 10.5, "price": 12.0, "grund": 0.0},
         "mig": None,
     }
 
@@ -106,6 +108,14 @@ def clean(raw: Any) -> dict[str, Any]:
     }
     w = r.get("wx") if isinstance(r.get("wx"), dict) else {}
     d["wx"] = {"entity": _s(w.get("entity"), _WEATHER), "outdoor": _s(w.get("outdoor")), "wind": _s(w.get("wind")), "official": _s(w.get("official"), _WARN)}
+    g = r.get("gas") if isinstance(r.get("gas"), dict) else {}
+    dg = d["gas"]
+    d["gas"] = {  # Gaszähler für Modul 3: Zählerstand (m³ oder kWh), Umrechnung, Arbeits- und Grundpreis
+        "ent": _s(g.get("ent")),
+        "brw": _n(g.get("brw"), 1, 20, dg["brw"]),
+        "price": _n(g.get("price"), 0, 100, dg["price"]),
+        "grund": _n(g.get("grund"), 0, 2000, dg["grund"]),
+    }
     mig = r.get("mig")
     if isinstance(mig, dict):
         d["mig"] = {
@@ -395,7 +405,7 @@ class HausManager:
         """Haus-Werte aus der Oberfläche. Fehlende Bereiche behalten ihren Stand."""
         raw = raw if isinstance(raw, dict) else {}
         cur = copy.deepcopy(self.data)
-        for k in ("energy", "price", "wx"):
+        for k in ("energy", "price", "wx", "gas"):
             if isinstance(raw.get(k), dict):
                 cur[k] = {**cur[k], **raw[k]}
                 if k == "energy" and isinstance(raw[k].get("ent"), dict):

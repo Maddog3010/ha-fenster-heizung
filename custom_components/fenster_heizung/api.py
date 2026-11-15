@@ -516,7 +516,7 @@ async def ws_restore(hass: HomeAssistant, connection, msg: dict) -> None:
             await wmgr.async_set_cfg(data["wasser"])
     hmgr = hass.data[DOMAIN].get("haus")
     if hmgr is not None and isinstance(data.get("haus"), dict):  # neuere Sicherung: Haus-Werte haben Vorrang
-        await hmgr.async_set({k: data["haus"][k] for k in ("energy", "soc", "price", "wx") if k in data["haus"]})
+        await hmgr.async_set({k: data["haus"][k] for k in ("energy", "soc", "price", "wx", "gas") if k in data["haus"]})
     plans = data.get("plans") if isinstance(data.get("plans"), dict) else {}
     done = skipped_opts = 0
     for old, new in mapping.items():
