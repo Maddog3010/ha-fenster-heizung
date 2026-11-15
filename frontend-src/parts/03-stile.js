@@ -1065,6 +1065,10 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .gasb span{position:absolute;left:50%;bottom:-17px;transform:translateX(-50%);font-size:.62rem;color:var(--mut);white-space:nowrap}
 .gasins{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:6px 0}.gasin{display:flex;flex-direction:column;gap:3px;font-size:.78rem;color:var(--mut)}
 .gasinw{display:flex;align-items:center;gap:6px}.gasinw input{flex:1;min-width:0;margin:0}.gasinw em{font-style:normal;font-size:.76rem;white-space:nowrap}
+.gasbill{margin-top:12px;padding:10px 12px;border-radius:14px;border:1px solid color-mix(in srgb,#fb923c 22%,var(--line));background:color-mix(in srgb,#fb923c 5%,transparent)}
+.gasbh{display:flex;align-items:center;gap:6px;margin-bottom:4px}.gasbh svg{color:#fb923c}.gasbh span{margin-left:auto;font-size:.74rem;color:var(--mut)}
+.gasyrs{display:flex;flex-direction:column;gap:6px;margin:4px 0 8px}.gasyr{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px 10px;border-radius:12px;border:1px solid var(--line)}
+.gasyr.std{background:color-mix(in srgb,var(--primary-text-color) 4%,transparent)}.gasin select.otxt{margin:0;width:100%}
 @media (max-width:520px){.gask{grid-template-columns:1fr 1fr}.gask .gasv:last-child{grid-column:1/-1}}
 /* Modul 16 · Neue Optik Stufe 1 (v0.9 Build 3) */
 .spban{position:relative;overflow:hidden;min-height:190px;color:#fff;background:radial-gradient(ellipse at 74% 62%,rgba(245,158,11,.32),transparent 58%),linear-gradient(120deg,#3a2a07 0%,#221b0b 45%,#121820 100%)!important;border:0}

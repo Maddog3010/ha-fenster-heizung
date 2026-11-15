@@ -76,7 +76,7 @@ def default() -> dict[str, Any]:
         "soc": "",
         "price": {"price": 32.0, "feed": 8.0, "price_mode": "fix", "price_sensor": "", "feed_mode": "fix", "feed_sensor": ""},
         "wx": {"entity": "", "outdoor": "", "wind": "", "official": ""},
-        "gas": {"ent": "", "brw": 10.5, "price": 12.0, "grund": 0.0},
+        "gas": {"ent": "", "brw": 10.5, "price": 12.0, "grund": 0.0, "start": 1, "abschlag": 0.0, "years": {}},
         "mig": None,
     }
 
@@ -112,10 +112,20 @@ def clean(raw: Any) -> dict[str, Any]:
     dg = d["gas"]
     d["gas"] = {  # Gaszähler für Modul 3: Zählerstand (m³ oder kWh), Umrechnung, Arbeits- und Grundpreis
         "ent": _s(g.get("ent")),
-        "brw": _n(g.get("brw"), 1, 20, dg["brw"]),
+        "brw": _n(g.get("brw"), 1, 40, dg["brw"]),  # Erdgas ≈ 10–11, Flüssiggas (gasförmig) ≈ 25–28 kWh/m³
         "price": _n(g.get("price"), 0, 100, dg["price"]),
         "grund": _n(g.get("grund"), 0, 2000, dg["grund"]),
+        "start": int(_n(g.get("start"), 1, 12, 1)),  # Monat, in dem das Abrechnungsjahr beginnt
+        "abschlag": _n(g.get("abschlag"), 0, 2000, 0.0),  # monatlicher Abschlag in €
+        "years": {},  # Preise je Abrechnungsjahr: "2025" = ab Startmonat 2025
     }
+    yrs = g.get("years") if isinstance(g.get("years"), dict) else {}
+    for y in sorted((k for k in yrs if re.fullmatch(r"20\d\d", str(k)) and isinstance(yrs[k], dict)), reverse=True)[:15]:
+        v = yrs[y]
+        e = {k: _n(v.get(k), 0, lim, -1) for k, lim in (("price", 100), ("grund", 2000))}
+        e = {k: x for k, x in e.items() if x >= 0}
+        if e:
+            d["gas"]["years"][str(y)] = e
     mig = r.get("mig")
     if isinstance(mig, dict):
         d["mig"] = {

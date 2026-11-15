@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b36] - 2026-11-15
+
+### Neu
+- **Modul 3 · Gas: Abrechnungsjahr.** Einstellbar, in welchem Monat dein Abrechnungsjahr beginnt (z. B. April). Die Ansicht „Jahr“ der Gas-Karte zeigt dann April bis März.
+- **Modul 3 · Gas: Preise je Abrechnungsjahr.** Arbeits- und Grundpreis lassen sich für jedes Abrechnungsjahr eintragen; leere Felder nutzen den Standardpreis. Jede Stunde und jeder Tag wird mit dem Preis des Abrechnungsjahrs gerechnet, in das er fällt – auch wenn ein Zeitraum über den Wechsel geht.
+- **Modul 3 · Gas: „Seit Abrechnungsbeginn“.** Verbrauch und Kosten im laufenden Abrechnungsjahr, mit optionalem monatlichem Abschlag: bezahlte Abschläge, Stand heute und – sobald ein Vorjahr da ist – eine Hochrechnung fürs ganze Jahr mit voraussichtlichem Guthaben oder Nachzahlung.
+
+### Behoben
+- **Modul 3 · Gas: „Brennwert × Zustandszahl“ war auf 20 kWh/m³ begrenzt.** Für Flüssiggas (gasförmig etwa 25–28 kWh/m³) reichte das nicht. Jetzt sind Werte bis 40 möglich, der Hinweis nennt beide Gasarten.
+
 ## [2026.11.3b35] - 2026-11-15
 
 ### Neu
@@ -1250,12 +1260,14 @@ Brücken-Version zum neuen Versionsschema (Zweig release-3.0.7.7). Gleicher Stan
 - **Labs:** Modul 19 „Hausfluss“ steht jetzt auch in den Labs, in einem eigenen Abschnitt „Nur für Sponsoren“ mit rosa Abzeichen. Auch in Einstellungen und Modulverwaltung steht ein Abzeichen „Nur Sponsoren“. Der Schalter öffnet ohne Schlüssel den Sponsor-Dialog.
 ### Verbessert
 - **Scrollen auf iPad und Handy:** Beim Wischen und Ausrollen wird die Seite nicht mehr neu aufgebaut (das hielt das Ausrollen an). Die Modulleiste rastet nicht mehr ein, das ruckelte.
+
 ### Behoben
 - Die Einstellungen ließen sich nicht öffnen, wenn das Lab „Tags & Karten“ an war (Fehler „Can't find variable adm“, seit 3.0.4).
 - Knöpfe verlieren Tipps nicht mehr, wenn Home Assistant gerade einen Wert meldet (3.0.5.1).
 - Fehlermeldung statt stiller Knöpfe, wenn eine Aktion oder das Zeichnen der Seite fehlschlägt (3.0.5.2).
 
 ## [3.0.5.3] - 2026-10-28
+
 ### Behoben
 - **Einstellungen ließen sich nicht öffnen**, sobald das Lab „Tags & Karten“ eingeschaltet war (Fehler „Can't find variable adm“, seit 3.0.4). Ohne dieses Lab trat der Fehler nicht auf.
 
@@ -1264,6 +1276,7 @@ Brücken-Version zum neuen Versionsschema (Zweig release-3.0.7.7). Gleicher Stan
 - **Fehlersuche für Knöpfe, die nicht reagieren:** Wirft eine Aktion oder das Zeichnen der Seite einen Fehler, erscheint jetzt eine Meldung mit dem Fehlertext (und einer Zeile in der Konsole), statt dass nichts passiert.
 
 ## [3.0.5.1] - 2026-10-28
+
 ### Behoben
 - **Knöpfe reagierten nicht (Einstellungen, Anpassen und weitere):** Meldet Home Assistant laufend neue Werte, wurde die Seite mitten im Tippen neu aufgebaut, und der Tipp ging verloren. Solange ein Finger oder die Maus auf einem Knopf liegt, wird die Seite jetzt nicht neu gezeichnet und erst danach aktualisiert.
 
@@ -1286,6 +1299,7 @@ Brücken-Version zum neuen Versionsschema (Zweig release-3.0.7.7). Gleicher Stan
   - Neue Befehle `tg_get`, `tg_set`, `tg_act`, neuer Speicher `fenster_heizung_tags`. Zugang über Labs → Tags verwalten und Einstellungen → Allgemein.
 
 ## [3.0.3.1] - 2026-10-28
+
 ### Behoben
 - **„Sponsor anlegen“ ging nie** (Meldung „Das ging nicht“, auch Verlängern, Sperren und Entfernen): Das Feld für die Sponsor-Nummer hieß `id` und kollidierte mit der Nachrichten-Kennung von Home Assistant, die Anfrage wurde abgelehnt. Es heißt jetzt `sid`.
 - **Entwickler-Zugang:** Wer den privaten Schlüssel in Home Assistant hinterlegt hat, hat jetzt automatisch alle Sponsor-Extras und sieht die Vorabversionen, ohne einen eigenen Schlüssel. Der Dialog zeigt „Entwickler-Zugang“.
@@ -1295,6 +1309,7 @@ Brücken-Version zum neuen Versionsschema (Zweig release-3.0.7.7). Gleicher Stan
 - **Vorabversionen:** Neue Labs können ein Datum „für alle ab“ tragen. Bis dahin sehen sie nur Sponsoren mit eingeschaltetem Schalter „Vorabversionen zuerst“ (ab Werk aus), mit rosa Marke „Vorab bis TT.MM.“ und einem eigenen Abschnitt auf der Labs-Seite. Alle anderen sehen einen Hinweis mit der Zahl der Vorabversionen und „Sponsor werden“. Standard-Vorlauf: 14 Tage.
 - **Modul 18 „Licht & Lampen“ (Lab, Vorabversion bis 11.11.):** Alle Lampen nach Räumen aus den Bereichen von Home Assistant, schalten, Helligkeit, Weißton und Lichtfarbe, Szenenknöpfe Gute Nacht, Ankommen und Gemütlich (mit eigenen Szenen oder Skripten verknüpfbar), „Alle aus“ mit Rückfrage, Hinweis „Licht lange an“ (1, 2 oder 4 Stunden, nicht bei aktivem Bewegungs- oder Anwesenheitssensor im Raum), Räume ausblendbar. Auch im Tablet-Modus und als Kachel auf der Startseite. Keine Automatik, geschaltet wird nur auf Fingertipp. Neuer Layout-Schlüssel `li`, Lab-Kennung `li`.
 - **Lab „Spartipp der Woche“ (Vorabversion bis 11.11.):** Gerät mit dem größten Netzbezug der letzten 7 Tage (Modul 4), beste Sonnenzeit aus Modul 16 und mögliche Ersparnis pro Woche als Obergrenze. Nur Anzeige.
+
 ### Behoben
 - **Solar-Prognose (Modul 16) und die Labs „Autarkie-Prognose“ und „Lernfaktor“ gingen kaputt**, sobald der Sponsor-Bereich geladen war: Der Sponsor-Code überschrieb intern die Funktion `_sp`. Seit 3.0.2.13 betroffen. Neuer Test prüft, dass kein Teil des Dashboards eine Methode überschreibt.
 
@@ -1369,6 +1384,7 @@ Brücken-Version zum neuen Versionsschema (Zweig release-3.0.7.7). Gleicher Stan
 - README neu geschrieben, mit Abschnitt zu Labs.
 
 ## [3.0.2.6] - 2026-10-28
+
 ### Behoben
 - **Zeitfelder verschwanden beim Eingeben** (zum Beispiel „Bis“ und „Abfahrt“ in Modul 8, Register „Planung“): Home Assistant meldet laufend neue Werte, und das Dashboard baute die Seite dabei mitten im Tippen neu auf. Solange ein Zeit-, Zahlen- oder Textfeld im Fokus ist, wird die Seite jetzt nicht neu gezeichnet, nach dem Verlassen des Feldes zieht sie nach. Das gilt im ganzen Dashboard, die Suche im Store ist ausgenommen.
 ### Geändert
@@ -1431,6 +1447,7 @@ Brücken-Version zum neuen Versionsschema (Zweig release-3.0.7.7). Gleicher Stan
   - Die **Modus-Tasten** gelten für das erkannte Fahrzeug (vorher änderten sie immer den Standardmodus, obwohl der Modus des Fahrzeugs galt). Darunter steht, für wen sie gelten.
   - „Letzte Entscheidungen“ zeigt zuerst 4 Einträge.
 - Neuer WebSocket-Befehl `wb_quick`, `wb_get` und `wb_set` kennen `quick`, `guard`, `notify` und `dep`.
+
 ### Behoben
 - **Modul 8, Ladeplanung:** Beim Ändern der Uhrzeit (z. B. von 7 auf 5 Uhr) am Mac/Safari wurde das Zeitfeld nach jeder einzelnen Ziffer neu aufgebaut und eine unvollständige Zeit gespeichert. Jetzt wird nur eine vollständige, gültige Uhrzeit gespeichert und das Feld erst nach der Eingabe aktualisiert.
 - **Sommermodus:** Die Tasten „Aus“, „Automatisch“ und „Immer an“ reagierten nicht (der Name der Aktion wurde fälschlich dem Modul Gerätestrom zugeordnet).
@@ -1463,6 +1480,7 @@ Brücken-Version zum neuen Versionsschema (Zweig release-3.0.7.7). Gleicher Stan
   - **PV-Prognose mit Forecast.Solar:** Die Integration wird erkannt (mehrere Dachflächen werden addiert) und über `forecast_solar.get_forecast` gelesen. Ein einstellbarer Grundverbrauch wird vom Überschuss abgezogen.
   - **Ladestatistik** (neues Register in Modul 8): Balkendiagramm pro Tag, Monat oder Jahr für Energie und Kosten, aufgeteilt nach Sonne / Netz oder nach Fahrzeug, mit Kacheln und den letzten Ladevorgängen. Gerechnet wird alle 10 Sekunden aus Ladeleistung, Netzanschluss und Preis, gespeichert bis zu 800 Tage.
   - Die Modi der Laderegelung heißen jetzt **Aus, Sonne, Sonne + Netz und Voll**.
+
 ### Behoben
 - **Handy-Ansicht:** Einstellungen oder Seitenleiste öffneten sich teils von selbst, zum Beispiel direkt nach dem Öffnen der Integration oder beim Wischen. Schaltflächen reagieren jetzt nur noch, wenn der Finger auch auf ihnen aufgesetzt wurde (Geisterklicks werden ignoriert), und Wischen auf der Modulleiste öffnet nicht mehr die Seitenleiste von Home Assistant.
 - **Modulleiste:** Sie springt beim Aktualisieren nicht mehr an den Anfang zurück, rastet beim Wischen sauber ein und zeigt das gewählte Modul in der Mitte.
@@ -1490,6 +1508,7 @@ Große Version: Gerätestrom als eigenes Modul, zwölf Beta-Module und eine neue
   - Was noch nicht geht, steht auf der jeweiligen Seite als „In Entwicklung“. Diese Module schalten nichts.
 - **Elektroauto & Wallbox:** farbige Grafik mit Wallbox; das Ladekabel erscheint nur bei angestecktem Stecker und ist beim Laden animiert. Ladestand, Reichweite, Kilometerstand und Ladeleistung. Auswahl von Marke (Mercedes-Benz, Audi, VW, BYD, BMW, Andere), Modell, Karosserie und Farbe. Keine Markenlogos, keine Nachbildung echter Modelle.
 - **README komplett neu**, neuer Werbebanner.
+
 ### Behoben
 - **Einstellungsseite öffnete sich von selbst:** Beim Öffnen der Integration und beim Wechsel zwischen Modulen erschien ungewollt die Einstellungsseite. Ursache war eine gemeinsam genutzte Variable für Betriebsstatus und Seitenanzeige. Die Seite öffnet sich jetzt nur noch über den Knopf „Einstellungen“ und schließt mit „Fertig“.
 ### Noch nicht übernommen aus der alten Integration „geraetestrom“
@@ -1509,6 +1528,7 @@ Die Integration heißt jetzt „Strom & Wärme“. Dazu eine zentrale Einstellun
 
 ## [2.9.2.4] - 2026-10-27
 Modul 2: Darstellung ohne Geräte, glattere Speicher-Linien und ein Fehler beim Legionellenschutz.
+
 ### Behoben
 - **Legionellenschutz ohne Erzeuger:** Er startete trotzdem jede Woche einen Lauf und meldete danach „abgebrochen“. Jetzt läuft er nur, wenn ein Wärmeerzeuger oder Heizstab gewählt ist.
 - **Speicher-Diagramm:** Messwerte im Sekundentakt ließen die Linien fransig aussehen. Sie werden jetzt zu 12-Minuten-Mittelwerten zusammengefasst und weich gezeichnet, etwas dünner. Das Hover-Fenster zeigt weiter die echten Werte.
@@ -1522,6 +1542,7 @@ Modul 2: Darstellung ohne Geräte, glattere Speicher-Linien und ein Fehler beim 
 
 ## [2.9.2.3] - 2026-10-27
 Fehlerbehebungen (Modul 1 und 2), eine neue Verlaufsgrafik in Modul 2 und die zweite Solaranlage in Modul 3.
+
 ### Behoben
 - **Modul 1, Elektroheizer:** Wird er in den Einstellungen abgeschaltet, schaltet Modul 1 das Gerät aus und stellt die Thermostate des Raums wieder her. Vorher blieben sie aus. Auch beim Abschalten der Option „Thermostate abstellen“ kommen sie sofort zurück.
 - **Modul 1, Update-Hinweis:** Maßgeblich ist jetzt die höchste Version unter allen Releases und Tags. Ein Tag wie `v2.9.2.3` wurde vorher übersehen, wenn schon ein älteres Release existierte.
@@ -1542,6 +1563,7 @@ Fehlerbehebungen (Modul 1 und 2), eine neue Verlaufsgrafik in Modul 2 und die zw
 
 ## [2.9.2.2] - 2026-10-27
 Nur Fehlerbehebungen in Modul 3.
+
 ### Behoben
 - **Nachts „Keine Messwerte“:** Meldet der Solar-Sensor „nicht verfügbar“ oder „unbekannt“ (Wechselrichter nachts), gilt das jetzt als 0 W. Im Tagesverlauf blieb sonst der letzte Abendwert stehen und täuschte Solarstrom über die Nacht vor.
 - **Negative Solarwerte** (zum Beispiel −3 W) werden auf 0 gesetzt.
@@ -1558,6 +1580,7 @@ Nur Fehlerbehebungen in Modul 3.
 - `energy` im Backend kennt `ent.bchg`, `ent.bdis` und `bmode`. Versionsnummern mit vier Teilen (2.9.2.1) werden bei der Update-Prüfung richtig verglichen.
 
 ## [2.9.2] - 2026-10-27
+
 ### Behoben
 - **Modul 3, 7 und 30 Tage:** Energiezähler in Wh (oder MWh) wurden wie kWh gerechnet, die Summen waren dadurch um den Faktor 1000 falsch. Einheiten (Wh, kWh, MWh) werden jetzt umgerechnet.
 - **Diagramm „Energie pro Tag“:** Bei sehr großen Werten zeichnete die Achse tausende Linien. Die Achse hat jetzt höchstens fünf runde Schritte (1, 2, 5 × 10ⁿ) und eine feste Obergrenze.
@@ -1578,6 +1601,7 @@ Nur Fehlerbehebungen in Modul 3.
 - **Modul 2: Warmwasser und Zirkulation:** Speicher-Ansicht mit Verlauf, Zeitplan für Erzeuger und Pumpe (Mo–Fr / Wochenende), Zirkulation nach Zeitplan, Bei Bedarf, Intervall oder aus, Rücklauf-Grenze, Legionellenschutz mit Nachweis, Heizstab bei PV-Überschuss (Vorrang vor den Raumheizern), „Einmal aufheizen“, „Zirkulation 5 Min.“, „Abwesend“, Zustandsblock mit Hinweisen und Duschen-Schätzung. Verbrühschutz ab 65 °C.
 - **Kopfkarten-Hintergründe** nach Tageszeit, Jahreszeit oder Wetter, auf Wunsch mit eigenen Fotos (höchstens 12).
 - Die Sicherung enthält jetzt Kopfkarten-Hintergründe, Module und die Einstellungen von Modul 2.
+
 ### Behoben
 - **Ansichts-Umschalter:** „Meine Ansicht“ und „Kompakt / Detail“ wurden seit 2.8.0 auf einen schmalen Streifen gestaucht, weil der Batterie-Balken der Ventil-Diagnose denselben Klassennamen hatte. Beide haben jetzt eigene Namen.
 ### Technik
@@ -1611,6 +1635,7 @@ Nur Fehlerbehebungen in Modul 3.
 - **Heizer-Bericht** pro Raum (Tagesauswahl, Laufzeit, Energie, PV-Anteil, Vorteil in Euro, Diagramm, Ereignisse) und ein Gesamtbericht über 7 Tage.
 - Neuer Block **PV-Heizer** im Dashboard (nur sichtbar, wenn ein Heizer eingeschaltet ist) und ein Chip „PV-Überschuss“ in der Kopfkarte.
 - Neue Einstellungen unter **Allgemein → PV-Überschuss für Elektroheizer**.
+
 ### Behoben
 - **„Jetzt prüfen“** fragt jetzt wirklich bei GitHub nach (vorher zeigte der Knopf nur den zwischengespeicherten Stand vom Start). Gibt es noch kein veröffentlichtes Release, wird der höchste Versions-Tag verwendet. Schlägt die Abfrage fehl, steht der Grund im Hinweis. Der Zwischenspeicher gilt nur noch eine Stunde.
 - Raumluft-Karten ohne Sensor: Texte wie „Außenwand ca.“, „Kritisch ab“ und „über 90 %“ wurden auf schmalen Karten abgeschnitten. Die Felder brechen jetzt um, „Außenwand ca.“ heißt nur noch „Außenwand“. Geprüft bei Breiten von 320 bis 1400 Pixel mit und ohne Sensor.
@@ -1624,6 +1649,7 @@ Nur Fehlerbehebungen in Modul 3.
 ### Neu
 - **Raumluft ohne Luftfeuchte-Sensor:** „Gelüftet vor X Std.“ mit Erinnerung (einstellbar, Standard 8 Std.), geschätzte Wandtemperatur, „kritische Feuchte“ ab der Schimmelgefahr an der Wand droht, Lüftungsempfehlung mit Countdown und ein Link zur Sensor-Auswahl.
 - Der **Zeitpunkt des letzten Lüftens** wird pro Raum gespeichert und übersteht Neustarts. Fehlt er (erster Start), liest das Dashboard ihn aus dem Verlauf.
+
 ### Behoben
 - Raumeinstellungen: Luftfeuchte-Sensor, Lüftungshinweise und Wetter-Anpassung wurden beim Öffnen des Dialogs nicht eingelesen. Beim Speichern ging ein gewählter Luftfeuchte-Sensor deshalb wieder verloren.
 ### Technik
@@ -1722,6 +1748,7 @@ Nur Fehlerbehebungen in Modul 3.
 - Standard für bestehende und neue Pläne ist „Heizen“. Wer das nicht möchte, stellt im Editor „Nein“ ein.
 
 ## [2.0.1] - 2026-10-25
+
 ### Behoben
 - Der Schalter „Heizplan aktiv“ sprang beim Einschalten ohne Meldung wieder aus, wenn noch kein Schaltpunkt eingerichtet war. Jetzt erscheint der Hinweis „Noch kein Heizplan eingerichtet“.
 
@@ -1741,6 +1768,7 @@ Nur Fehlerbehebungen in Modul 3.
 - Der Schalter „Fensterregelung aktiv“ hat jetzt das Attribut `funktion`, damit das Dashboard ihn vom Heizplan-Schalter unterscheiden kann.
 
 ## [1.5.2] - 2026-10-24
+
 ### Behoben
 - Dashboard auf dem iPhone: Über der Titelzeile stand ein großer leerer Streifen, weil der Abstand zur Statusleiste doppelt gerechnet wurde.
 - Dashboard auf dem Handy: Die Illustration überdeckte die Chips in der Kopfkarte. Sie ist jetzt kleiner und bleibt oben rechts.
@@ -1748,6 +1776,7 @@ Nur Fehlerbehebungen in Modul 3.
 - Ohne Pausen zeigt das Diagramm den Hinweis „Noch keine Pausen in den letzten 14 Tagen“.
 
 ## [1.5.1] - 2026-10-24
+
 ### Behoben
 - Dashboard: Die Illustration in der Kopfkarte wurde auf dem Desktop unten abgeschnitten und bleibt jetzt immer vollständig sichtbar.
 - Dashboard: Das Diagramm „Pausenzeit pro Tag“ wird in seiner echten Breite gezeichnet. Auf dem Desktop war die Schrift zu groß, auf dem Handy zu klein. Auf schmalen Bildschirmen steht die Beschriftung der Tage seltener, damit nichts überlappt.
