@@ -548,3 +548,41 @@ def test_merge_split_session():
     assert r["start"] == "2026-11-13T11:00:00" and r["kwh"] == 13.0 and r["pv"] == 11.0 and r["min"] == 140.0 and r["card"] == "Tobias"
     assert len(st["sessions"]) == 2 and "Zusammengeführt" in r["chg"][-1]["x"][0]
     assert P.merge_prev(st, st["sessions"][0]) is None  # anderes Fahrzeug davor
+
+
+# ---- b43: Neustart während einer Ladung
+def test_open_session_survives_restart():
+    st = P.clean_stats(None)
+    st["open"] = {"start": "2026-11-15T13:20:00", "last": "2026-11-15T13:40:00", "kwh": 6.3, "pv": 2.0, "cost": 1.2, "veh": "BYD", "card": "Tobias"}
+    st2 = P.clean_stats(__import__("json").loads(__import__("json").dumps(st)))
+    assert st2["open"]["kwh"] == 6.3 and st2["open"]["veh"] == "BYD" and st2["open"]["card"] == "Tobias"
+    assert P.clean_stats({"open": {"start": "kaputt", "last": "x"}})["open"] is None
+    assert P.clean_stats({"open": "nein"})["open"] is None
+
+
+def test_edit_takes_uncovered_energy_first():
+    """Tag zählt 6,9 kWh, die Ladung nur 0,6: Mehr eintragen ändert den Tag nicht, solange Energie in keiner Ladung steht."""
+    st = P.clean_stats(None)
+    st["days"]["2026-11-15"] = {"pv": 2.4, "grid": 4.5, "cost": 1.31, "full": 2.0, "km": 0.0, "veh": {"BYD": {"kwh": 6.9, "cost": 1.31}}}
+    st["sessions"].append({"start": "2026-11-15T13:52:00", "min": 26.0, "veh": "BYD", "kwh": 0.6, "pv": 0.34, "cost": 0.08})
+    unc = P.uncovered(st, "2026-11-15")
+    assert abs(unc[0] - 6.3) < 1e-6
+    now = datetime(2026, 11, 15, 18, 0, tzinfo=TZ)
+    assert P.session_edit(st, "2026-11-15T13:52:00", {"kwh": 6.9}, now) is not None
+    d = st["days"]["2026-11-15"]
+    assert abs(d["pv"] + d["grid"] - 6.9) < 1e-6 and abs(d["veh"]["BYD"]["kwh"] - 6.9) < 1e-6   # Tag unverändert
+    s = st["sessions"][0]
+    assert abs(s["kwh"] - 6.9) < 1e-6 and abs(s["pv"] - 2.4) < 1e-3 and abs(s["cost"] - 1.31) < 1e-3
+    assert P.uncovered(st, "2026-11-15")[0] < 0.01
+    # darüber hinaus ändert sich der Tag wieder mit
+    P.session_edit(st, "2026-11-15T13:52:00", {"kwh": 7.9}, now)
+    assert abs(st["days"]["2026-11-15"]["pv"] + st["days"]["2026-11-15"]["grid"] - 7.9) < 1e-6
+
+
+def test_edit_normal_when_everything_is_covered():
+    st = P.clean_stats(None)
+    st["days"]["2026-11-15"] = {"pv": 1.0, "grid": 1.0, "cost": 0.5, "full": 0.5, "km": 0.0, "veh": {"BYD": {"kwh": 2.0, "cost": 0.5}}}
+    st["sessions"].append({"start": "2026-11-15T10:00:00", "min": 30.0, "veh": "BYD", "kwh": 2.0, "pv": 1.0, "cost": 0.5})
+    P.session_edit(st, "2026-11-15T10:00:00", {"kwh": 3.0}, datetime(2026, 11, 15, 18, 0, tzinfo=TZ))
+    d = st["days"]["2026-11-15"]
+    assert abs(d["pv"] + d["grid"] - 3.0) < 1e-6

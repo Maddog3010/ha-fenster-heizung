@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b42] - 2026-11-15
+
+### Behoben
+- **Modul 8 · Statistik: Ladung zeigte nach einem Neustart zu wenig.** Eine laufende Ladung geht beim Neustart von Home Assistant nicht mehr verloren. Vorher blieben die Tageswerte richtig, die Ladung in der Liste zeigte aber nur den Rest nach dem Neustart.
+- **Menge einer Ladung ändern:** Energie, die der Tag schon zählt, aber in keiner Ladung steht, wird zuerst dieser Ladung zugerechnet. Die Tageswerte oben bleiben dabei gleich. Erst darüber hinaus ändert sich auch der Tag.
+- In der Tagesansicht weist ein Hinweis auf kWh hin, die in keiner Ladung stehen.
+
 ## [2026.11.3b41] - 2026-11-15
 
 ### Neu

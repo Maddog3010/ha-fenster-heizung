@@ -253,6 +253,19 @@ def clean_stats(raw: Any) -> dict[str, Any]:
             except (TypeError, ValueError):
                 continue
     st["sessions"] = st["sessions"][:KEEP_SESSIONS]
+    # b42: Die laufende Ladung überlebt einen Neustart von Home Assistant (vorher ging sie verloren, die Tageswerte blieben, die Ladung zeigte nur den Rest)
+    o = raw.get("open")
+    if isinstance(o, dict) and o.get("start") and o.get("last"):
+        try:
+            datetime.fromisoformat(str(o["start"]))
+            datetime.fromisoformat(str(o["last"]))
+            st["open"] = {"start": str(o["start"])[:25], "last": str(o["last"])[:25], "kwh": max(0.0, float(o.get("kwh", 0))), "pv": max(0.0, float(o.get("pv", 0))),
+                          "cost": max(0.0, float(o.get("cost", 0))), "veh": str(o.get("veh") or "Unbekannt")[:30],
+                          **({"card": str(o["card"])[:30]} if o.get("card") else {})}
+            if isinstance(o.get("unk"), dict):
+                st["open"]["unk"] = {str(k)[:10]: [max(0.0, float(v[0])), max(0.0, float(v[1]))] for k, v in o["unk"].items() if isinstance(v, (list, tuple)) and len(v) == 2}
+        except (TypeError, ValueError):
+            st["open"] = None
     # Aus go-e übernommene Ladungen (Session-ID → Tag): zählen nie doppelt in den Tageswerten, auch wenn die Ladung gelöscht wurde
     g = raw.get("goe") if isinstance(raw.get("goe"), dict) else {}
     st["goe"] = {str(k)[:20]: str(v)[:10] for k, v in g.items() if re.fullmatch(r"[0-9A-Za-z_-]{1,20}", str(k)) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(v))}
@@ -471,6 +484,20 @@ def _fmt(v: float) -> str:
     return f"{v:.2f}".replace(".", ",")
 
 
+def uncovered(st: dict[str, Any], day: str) -> tuple[float, float, float]:
+    """Energie (kWh, davon Sonne, Kosten) eines Tages, die in keiner Ladung steht – z. B. wenn Home Assistant während einer Ladung neu gestartet wurde."""
+    d = st["days"].get(day)
+    if d is None:
+        return 0.0, 0.0, 0.0
+    k, p, c = d["pv"] + d["grid"], d["pv"], d["cost"]
+    for x in [*st["sessions"], *([st["open"]] if st.get("open") else [])]:
+        if x["start"][:10] == day:
+            k -= x["kwh"]
+            p -= x["pv"]
+            c -= x["cost"]
+    return max(0.0, k), max(0.0, p), max(0.0, c)
+
+
 def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: datetime) -> dict[str, Any] | None:
     """Abgeschlossene Ladung bearbeiten oder löschen (Statistik). Tages- und Fahrzeugwerte werden mitgeführt.
     ch: veh, kwh, card, note, biz, delete. Die gemessene Menge bleibt als „orig“ erhalten, jede Änderung steht in „chg“."""
@@ -510,22 +537,32 @@ def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: dateti
         if abs(k - old) >= 0.01:
             f = s["pv"] / old if old > 0 else 0.0
             c = s["cost"] / old if old > 0 else 0.0
-            dk, dpv, dc = k - old, k * f - s["pv"], k * c - s["cost"]
-            if d is not None:
+            dk = k - old
+            # b42: Energie, die der Tag schon zählt, aber keine Ladung enthält (z. B. nach einem Neustart während der Ladung), wird zuerst
+            # dieser Ladung zugerechnet. Die Tageswerte bleiben dafür gleich; nur der Rest ändert auch den Tag.
+            take = apv = ac = 0.0
+            if dk > 0 and d is not None:
+                ukwh, upv, ucost = uncovered(st, start[:10])
+                if ukwh > 0.05:
+                    take = min(dk, ukwh)
+                    apv, ac = upv * take / ukwh, ucost * take / ukwh
+            rest = dk - take
+            dpv, dc = rest * f, rest * c
+            if d is not None and abs(rest) > 1e-9:
                 fr = d["full"] / (d["pv"] + d["grid"]) if d["pv"] + d["grid"] > 0 else 0.0
                 d["pv"] = max(0.0, d["pv"] + dpv)
-                d["grid"] = max(0.0, d["grid"] + dk - dpv)
+                d["grid"] = max(0.0, d["grid"] + rest - dpv)
                 d["cost"] = max(0.0, d["cost"] + dc)
-                d["full"] = max(0.0, d["full"] + dk * fr)
+                d["full"] = max(0.0, d["full"] + rest * fr)
                 v = d["veh"].setdefault(s["veh"], {"kwh": 0.0, "cost": 0.0})
-                v["kwh"] = max(0.0, v["kwh"] + dk)
+                v["kwh"] = max(0.0, v["kwh"] + rest)
                 v["cost"] = max(0.0, v["cost"] + dc)
             s.setdefault("orig", old)
             if abs(k - s["orig"]) < 0.01:
                 s.pop("orig")
-            log.append(f"Menge: {_fmt(old)} → {_fmt(k)} kWh")
+            log.append(f"Menge: {_fmt(old)} → {_fmt(k)} kWh" + (f" (davon {_fmt(take)} kWh bisher in keiner Ladung, Tageswerte unverändert)" if take > 0.005 else ""))
             keep = s.get("cost") if s.get("pcost") else None  # von Hand gesetzte Kosten bleiben
-            s["kwh"], s["pv"], s["cost"] = k, round(k * f, 3), round(k * c, 4)
+            s["kwh"], s["pv"], s["cost"] = k, round(s["pv"] + apv + dpv, 3), round(s["cost"] + ac + dc, 4)
             target = keep if keep is not None else (round(max(0.0, k - s["pv"]) * s["pct"] / 100, 4) if s.get("pct") is not None else None)
             if target is not None:
                 if d is not None:
