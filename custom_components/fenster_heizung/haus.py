@@ -53,7 +53,7 @@ def _s(v: Any, rx: re.Pattern = _SENSOR) -> str:
     return v if rx.match(v) else ""
 
 
-def _n(v: Any, lo: float, hi: float, d: float) -> float:
+def _n(v: Any, lo: float, hi: float, d: float, nd: int = 2) -> float:
     if isinstance(v, str):
         v = v.strip().replace(",", ".")
     try:
@@ -62,7 +62,7 @@ def _n(v: Any, lo: float, hi: float, d: float) -> float:
         return d
     if x != x or x in (float("inf"), float("-inf")):
         return d
-    return round(min(max(x, lo), hi), 2)
+    return round(min(max(x, lo), hi), nd)
 
 
 def _name(v: Any) -> str:
@@ -76,7 +76,7 @@ def default() -> dict[str, Any]:
         "soc": "",
         "price": {"price": 32.0, "feed": 8.0, "price_mode": "fix", "price_sensor": "", "feed_mode": "fix", "feed_sensor": ""},
         "wx": {"entity": "", "outdoor": "", "wind": "", "official": ""},
-        "gas": {"ent": "", "brw": 10.5, "price": 12.0, "grund": 0.0, "start": 1, "abschlag": 0.0, "years": {}},
+        "gas": {"ent": "", "brw": 10.5, "hw": 0.0, "zz": 0.0, "price": 12.0, "grund": 0.0, "netto": False, "mwst": 19.0, "start": 1, "abschlag": 0.0, "absday": 1, "years": {}},
         "mig": None,
     }
 
@@ -112,18 +112,29 @@ def clean(raw: Any) -> dict[str, Any]:
     dg = d["gas"]
     d["gas"] = {  # Gaszähler für Modul 3: Zählerstand (m³ oder kWh), Umrechnung, Arbeits- und Grundpreis
         "ent": _s(g.get("ent")),
-        "brw": _n(g.get("brw"), 1, 40, dg["brw"]),  # Erdgas ≈ 10–11, Flüssiggas (gasförmig) ≈ 25–28 kWh/m³
-        "price": _n(g.get("price"), 0, 100, dg["price"]),
+        "brw": _n(g.get("brw"), 1, 40, dg["brw"], 4),  # Erdgas ≈ 10–11, Flüssiggas (gasförmig) ≈ 25–28 kWh/m³
+        "price": _n(g.get("price"), 0, 100, dg["price"], 4),
         "grund": _n(g.get("grund"), 0, 2000, dg["grund"]),
         "start": int(_n(g.get("start"), 1, 12, 1)),  # Monat, in dem das Abrechnungsjahr beginnt
-        "abschlag": _n(g.get("abschlag"), 0, 2000, 0.0),  # monatlicher Abschlag in €
-        "years": {},  # Preise je Abrechnungsjahr: "2025" = ab Startmonat 2025
+        "abschlag": _n(g.get("abschlag"), 0, 2000, 0.0),  # monatlicher Abschlag in € (brutto, wie bezahlt)
+        "absday": int(_n(g.get("absday"), 1, 28, 1)),  # Tag der Abbuchung
+        "hw": _n(g.get("hw"), 0, 40, 0.0, 4),  # Brennwert kWh/m³ (0 = nicht getrennt, dann gilt brw)
+        "zz": _n(g.get("zz"), 0, 1.5, 0.0, 5),  # Zustandszahl
+        "netto": bool(g.get("netto")),  # Arbeits- und Grundpreis ohne MwSt eingegeben
+        "mwst": _n(g.get("mwst"), 0, 30, 19.0),
+        "years": {},  # je Abrechnungsjahr: "2025" = ab Startmonat 2025
     }
     yrs = g.get("years") if isinstance(g.get("years"), dict) else {}
+    lims = (("price", 100, 4), ("grund", 2000, 2), ("hw", 40, 4), ("zz", 1.5, 5), ("abs", 2000, 2), ("mwst", 30, 2))
     for y in sorted((k for k in yrs if re.fullmatch(r"20\d\d", str(k)) and isinstance(yrs[k], dict)), reverse=True)[:15]:
         v = yrs[y]
-        e = {k: _n(v.get(k), 0, lim, -1) for k, lim in (("price", 100), ("grund", 2000))}
+        e = {k: _n(v.get(k), 0, lim, -1, nd) for k, lim, nd in lims}
         e = {k: x for k, x in e.items() if x >= 0}
+        am = v.get("absm") if isinstance(v.get("absm"), dict) else {}
+        am = {str(int(k)): _n(x, 0, 2000, -1) for k, x in am.items() if re.fullmatch(r"\d{1,2}", str(k)) and 0 <= int(k) <= 11}
+        am = {k: x for k, x in am.items() if x >= 0}
+        if am:
+            e["absm"] = am  # einzelne Monate abweichend (0 = erster Monat des Abrechnungsjahrs)
         if e:
             d["gas"]["years"][str(y)] = e
     mig = r.get("mig")

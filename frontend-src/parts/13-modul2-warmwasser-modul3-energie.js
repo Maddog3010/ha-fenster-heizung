@@ -61,7 +61,7 @@
     else if (a === "mdevset") { this._modal = { type: "evset" }; this._renderModal(); }
     else if (a === "mdgs") { this._modal = { type: "gsset" }; this._renderModal(); }
     else if (a === "mdbeta") { this._toast("Für dieses Modul gibt es in der Beta noch keine Einstellungen"); }
-    else if (a === "mdensetup") { this._modal = { type: "enset" }; this._renderModal(); }
+    else if (a === "mdensetup") { this._modal = { type: "enset", tab: k || "" }; this._renderModal(); }
     else if (a === "mdtog") {
       if (MODS.some((x) => x.id === k && x.sponsor) && !this._spnS().active) { this._modal = { type: "spndlg", err: "" }; this._renderModal(); return; }
       if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else if (k === "gs") s.on.gs = s.on.gs === false; else if (MODS.some((m) => m.beta && m.id === k)) s.on[k] = s.on[k] !== true; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
@@ -837,6 +837,7 @@
   }
   _enAct(a, b) {
     const E = this._enState(), k = b.dataset.k;
+    if (a.startsWith("engas") && this._gasAct(a, b)) return;
     if (a === "enrange") { if (E.range !== k) { E.range = k; E.off = 0; this._enTipX = null; this._m3Cnt = Date.now(); } this._enSave(); this._render(); }
     else if (a === "enoff") { const v = Number(k); E.off = v === 0 ? 0 : Math.min(0, (E.off || 0) + v); this._enTipX = null; this._render(); }
     else if (a === "enring") { E.ring = E.ring === "now" ? "aut" : "now"; this._enSave(); this._render(); }
@@ -892,8 +893,13 @@
     const pw = ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "power" || /^k?W$/.test(st[e].attributes.unit_of_measurement || "")));
     const en = ks.filter((e) => e.startsWith("sensor.") && (["energy", "power"].includes(st[e].attributes.device_class) || /^[kM]?Wh?$/.test(st[e].attributes.unit_of_measurement || "")));
     const sel = (k, o, none) => this._wzSel(o, E.ent[k], "enent", `data-k="${k}"`, none || "– keiner –"), chk = this._enCheck();
+    const haus = !!(this._modal && this._modal.haus), g = this._gasCfg(), cnt = (l) => l.filter((k) => E.ent[k]).length;
+    const TABS = [["strom", "Strom", "sun", `${cnt(["pv", "pv2", "grid", "house", "bat", "bchg", "bdis"])}`], ["zaehler", "Zähler", "chart", `${cnt(["pve", "pve2", "imp", "exp"])}`], ["gas", "Gas", "flame", g.ent ? "an" : ""], ...(haus ? [] : [["anzeige", "Anzeige", "eye", ""]])];
+    const tab = TABS.some((x) => x[0] === (this._modal || {}).tab) ? this._modal.tab : "strom";
     return `<div class="ov" data-act="ensdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Haus › Energiequellen</b><span>Gilt für ${this._hsUsed("energy")} · für alle</span></div><button class="ibtn" data-act="ensdone" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="seg mdtabs entabs" role="tablist">${TABS.map(([k, l, i, n]) => `<button class="${tab === k ? "sel" : ""}" data-act="enstab" data-k="${k}" role="tab" aria-selected="${tab === k}">${ic(i, 15)}<span>${l}</span>${n && n !== "0" ? `<em>${n}</em>` : ""}</button>`).join("")}</div>
+      ${tab === "strom" ? `
       ${chk}${chk ? `<div class="gbtns" style="margin:6px 0 0"><button class="btn2" data-act="enschk">${ic("clock", 15)} Neu messen</button></div>` : ""}
       <div class="lsec">${ic("sun", 15)}Leistung (Watt)</div>
       <div class="mut sm" style="margin:2px 0 0">Solar-Leistung</div>${sel("pv", pw)}
@@ -906,6 +912,8 @@
       <div class="seg">${[["one", "Ein Sensor"], ["two", "Zwei Sensoren (Laden / Entladen)"]].map(([k, l]) => `<button class="${E.bmode === k ? "sel" : ""}" data-act="ensbm" data-k="${k}">${l}</button>`).join("")}</div>
       ${E.bmode === "two" ? `<div class="mut sm" style="margin:0">Batterie lädt (Watt, positiver Wert)</div>${sel("bchg", pw)}<div class="mut sm" style="margin:0">Batterie entlädt (Watt, positiver Wert)</div>${sel("bdis", pw)}` : `${sel("bat", pw)}${E.ent.bat ? `<div class="seg">${[["charge", "Laden positiv"], ["discharge", "Entladen positiv"]].map(([k, l]) => `<button class="${E.bsign === k ? "sel" : ""}" data-act="ensbs" data-k="${k}">${l}</button>`).join("")}</div>` : ""}`}
       <div class="mut sm" style="margin:0">Batterie-Ladestand in % (optional)</div>${this._wzSel(ks.filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "battery" || st[e].attributes.unit_of_measurement === "%")), p.soc_sensor, "gpvb", "", "– keiner –", PK_HINT.bat)}
+      ` : ""}
+      ${tab === "zaehler" ? `
       <div class="lsec">${ic("chart", 15)}Tagessummen für Woche, Monat und Jahr</div>
       <div class="mut sm" style="margin:2px 0 6px">Energiezähler (Wh, kWh, MWh) sind am genauesten. Leistungssensoren (W, kW) gehen auch. Leer lassen: es wird aus Solar und Netz oben berechnet.</div>
       <div class="mut sm" style="margin:2px 0 0">Solar-Ertrag gesamt</div>${sel("pve", en)}
@@ -913,11 +921,14 @@
       <div class="mut sm" style="margin:0">Netzbezug gesamt</div>${sel("imp", en)}
       <div class="mut sm" style="margin:0">Einspeisung gesamt</div>${sel("exp", en)}
       <div class="gst">${ic("info", 15)}<span>Zähler müssen als Langzeitstatistik in Home Assistant geführt werden. Bezugspreis und Einspeisevergütung stehen unter Haus → Preise &amp; Tarif.</span></div>
-      ${this._gasSetHtml()}
-      ${this._modal && this._modal.haus ? "" : `<div class="lsec">${ic("eye", 15)}Anzeige in Modul 3 (gilt für dieses Gerät)</div>`}
-      ${this._modal && this._modal.haus ? "" : `<div class="mut sm" style="margin:2px 0 0">Ring im Banner</div><div class="seg">${[["aut", "Autarkie im Zeitraum"], ["now", "Gedeckt jetzt"]].map(([k, l]) => `<button class="${(E.ring || "aut") === k ? "sel" : ""}" data-act="ensring" data-k="${k}">${l}</button>`).join("")}</div>
+      ` : ""}
+      ${tab === "gas" ? this._gasSetHtml() : ""}
+      ${tab === "anzeige" ? `
+      <div class="mut sm" style="margin:6px 0 2px">Gilt nur für dieses Gerät.</div>
+      <div class="mut sm" style="margin:2px 0 0">Ring im Banner</div><div class="seg">${[["aut", "Autarkie im Zeitraum"], ["now", "Gedeckt jetzt"]].map(([k, l]) => `<button class="${(E.ring || "aut") === k ? "sel" : ""}" data-act="ensring" data-k="${k}">${l}</button>`).join("")}</div>
       ${this._m3Look()}<div class="mut sm" style="margin:0">Vergleich in den Kacheln</div><div class="seg">${[["prev", "Zur Vorperiode"], ["off", "Aus"]].map(([k, l]) => `<button class="${(E.cmp || "prev") === k ? "sel" : ""}" data-act="enscmp" data-k="${k}">${l}</button>`).join("")}</div>
-      ${this._labFields("en")}`}
+      ${this._labFields("en")}
+      ` : ""}
       <div class="foot2"><button class="btn2 pri" data-act="ensdone">Fertig</button></div></div>`;
   }
 }

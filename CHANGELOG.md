@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b37] - 2026-11-15
+
+### Neu
+- **Modul 3 · Gas: wie auf der Gasrechnung.**
+  - **Brennwert und Zustandszahl** getrennt eintragen (z. B. 28,106 × 0,95090), auch je Abrechnungsjahr. Der Faktor wird daraus berechnet; ohne beide Werte gilt wie bisher ein direkt eingetragener Faktor.
+  - **Preise ohne MwSt:** Arbeits- und Grundpreis lassen sich netto eingeben, mit MwSt-Satz (auch je Abrechnungsjahr). Angezeigt wird immer mit MwSt.
+  - **Abschläge je Abrechnungsjahr** und für **einzelne Monate abweichend** (z. B. 95 € im April, danach 105 €), dazu der **Tag der Abbuchung**. „Seit Abrechnungsbeginn“ zählt nur Abschläge, die schon abgebucht sind, und zeigt die Summe fürs ganze Jahr.
+- **Modul 3: Einstellungen in Reitern.** „Energiequellen“ ist jetzt aufgeteilt in **Strom** (Leistung, Batterie, Vorzeichen), **Zähler** (Tagessummen), **Gas** und **Anzeige**; im Reiter steht, wie viele Sensoren gewählt sind. Im Reiter Gas sind die Abrechnungsjahre eingeklappt (das laufende offen) und zeigen zugeklappt ihre Preise. Der Link in der Gas-Karte öffnet direkt den Reiter Gas.
+
 ## [2026.11.3b36] - 2026-11-15
 
 ### Neu
