@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b40] - 2026-11-15
+
+### Geändert
+- **Modul 3 · Gas: Preise nur noch an einer Stelle.** Arbeits- und Grundpreis stehen ausschließlich in der Preisliste: erste Zeile „Von Anfang an“, danach jede Preisänderung mit „Gültig ab“. Standardwerte und Abrechnungsjahre enthalten nur noch Brennwert, Zustandszahl, MwSt und Abschläge.
+- Bisherige Preise je Abrechnungsjahr werden automatisch in die Preisliste übernommen (gültig ab Beginn des jeweiligen Abrechnungsjahrs).
+- **Grundpreis pro Monat oder pro Jahr** eingeben – umschaltbar über der Preisliste.
+
 ## [2026.11.3b39] - 2026-11-15
 
 ### Neu

@@ -76,7 +76,7 @@ def default() -> dict[str, Any]:
         "soc": "",
         "price": {"price": 32.0, "feed": 8.0, "price_mode": "fix", "price_sensor": "", "feed_mode": "fix", "feed_sensor": ""},
         "wx": {"entity": "", "outdoor": "", "wind": "", "official": ""},
-        "gas": {"ent": "", "brw": 10.5, "hw": 0.0, "zz": 0.0, "price": 12.0, "grund": 0.0, "netto": False, "mwst": 19.0, "start": 1, "abschlag": 0.0, "absday": 1, "years": {}, "prices": []},
+        "gas": {"ent": "", "brw": 10.5, "hw": 0.0, "zz": 0.0, "price": 12.0, "grund": 0.0, "netto": False, "mwst": 19.0, "start": 1, "abschlag": 0.0, "absday": 1, "gunit": "y", "years": {}, "prices": []},
         "mig": None,
     }
 
@@ -123,22 +123,9 @@ def clean(raw: Any) -> dict[str, Any]:
         "netto": bool(g.get("netto")),  # Arbeits- und Grundpreis ohne MwSt eingegeben
         "mwst": _n(g.get("mwst"), 0, 30, 19.0),
         "years": {},  # je Abrechnungsjahr: "2025" = ab Startmonat 2025
+        "gunit": "m" if g.get("gunit") == "m" else "y",  # Grundpreis pro Monat oder pro Jahr eingegeben
         "prices": [],  # Preise mit Gültigkeit: [{"ab": "2025-07-01", "price": ct/kWh, "grund": €/Jahr}]
     }
-    seen = set()
-    for p in (g.get("prices") if isinstance(g.get("prices"), list) else [])[:60]:
-        if not isinstance(p, dict) or not re.fullmatch(r"20\d\d-[01]\d-[0-3]\d", str(p.get("ab") or "")) or p["ab"] in seen:
-            continue
-        e = {"ab": p["ab"]}
-        for k, lim, nd in (("price", 100, 4), ("grund", 2000, 2)):
-            x = _n(p.get(k), 0, lim, -1, nd)
-            if x >= 0:
-                e[k] = x
-        if len(e) > 1:
-            seen.add(p["ab"])
-            d["gas"]["prices"].append(e)
-    d["gas"]["prices"].sort(key=lambda x: x["ab"])
-    d["gas"]["prices"] = d["gas"]["prices"][-40:]
     yrs = g.get("years") if isinstance(g.get("years"), dict) else {}
     lims = (("price", 100, 4), ("grund", 2000, 2), ("hw", 40, 4), ("zz", 1.5, 5), ("abs", 2000, 2), ("mwst", 30, 2))
     for y in sorted((k for k in yrs if re.fullmatch(r"20\d\d", str(k)) and isinstance(yrs[k], dict)), reverse=True)[:15]:
@@ -152,6 +139,33 @@ def clean(raw: Any) -> dict[str, Any]:
             e["absm"] = am  # einzelne Monate abweichend (0 = erster Monat des Abrechnungsjahrs)
         if e:
             d["gas"]["years"][str(y)] = e
+    seen = set()
+    for p in (g.get("prices") if isinstance(g.get("prices"), list) else [])[:60]:
+        if not isinstance(p, dict) or not re.fullmatch(r"20\d\d-[01]\d-[0-3]\d", str(p.get("ab") or "")) or p["ab"] in seen:
+            continue
+        e = {"ab": p["ab"]}
+        for k, lim, nd in (("price", 100, 4), ("grund", 2000, 2)):
+            x = _n(p.get(k), 0, lim, -1, nd)
+            if x >= 0:
+                e[k] = x
+        if len(e) > 1:
+            seen.add(p["ab"])
+            d["gas"]["prices"].append(e)
+    # b40: Preise je Abrechnungsjahr (alt) in die Preisliste übernehmen – ab Beginn des Abrechnungsjahrs
+    for y, e in list(d["gas"]["years"].items()):
+        old = {k: e.pop(k) for k in ("price", "grund") if k in e}
+        if not e:
+            del d["gas"]["years"][y]
+        if old:
+            ab = f"{y}-{d['gas']['start']:02d}-01"
+            hit = next((p for p in d["gas"]["prices"] if p["ab"] == ab), None)
+            if hit is None:
+                d["gas"]["prices"].append({"ab": ab, **old})
+            else:
+                for k, v in old.items():
+                    hit.setdefault(k, v)
+    d["gas"]["prices"].sort(key=lambda x: x["ab"])
+    d["gas"]["prices"] = d["gas"]["prices"][-40:]
     mig = r.get("mig")
     if isinstance(mig, dict):
         d["mig"] = {

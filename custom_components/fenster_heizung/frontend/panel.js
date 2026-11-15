@@ -1869,6 +1869,7 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 .gasyrf{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.gasyrh{display:flex;align-items:center;gap:8px;width:100%;background:none;border:0;padding:0;color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer}.gasyrh>svg{color:var(--mut);flex:none}.gasyr:not(.open){padding:9px 12px}.gasyrh em{font-style:normal;font-size:.7rem;font-weight:700;color:#fb923c;border:1px solid color-mix(in srgb,#fb923c 45%,transparent);border-radius:99px;padding:0 7px}.gasyrh span{margin-left:auto;font-size:.74rem;color:var(--mut)}
 .entabs button em{font-style:normal;font-size:.66rem;font-weight:700;margin-left:4px;padding:0 6px;border-radius:99px;background:color-mix(in srgb,currentColor 18%,transparent)}
 .gasmon{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px}.gasmon .otxt{margin:0;width:100%}.gasyr .lnk{align-self:flex-start;font-size:.8rem}
+.gasgu{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 6px}.gasgu .seg{flex:none;margin:0}.gasgu .seg button{white-space:nowrap;padding:6px 16px}.gasab0{display:flex;align-items:center;min-height:42px;font-weight:600}.gasplr.first{background:color-mix(in srgb,var(--primary-text-color) 4%,transparent)}
 .gaspl{display:flex;flex-direction:column;gap:8px;margin:4px 0 6px}.gaspl>.btn2{align-self:flex-start;flex:none}
 .gasplr{display:grid;grid-template-columns:minmax(130px,1fr) minmax(130px,1fr) minmax(130px,1fr) auto;gap:8px;align-items:end;padding:8px 10px;border-radius:12px;border:1px solid var(--line)}.gasplr input[type=date]{margin:0;width:100%;color-scheme:dark}
 @media (max-width:560px){.gasplr{grid-template-columns:1fr 1fr}.gasplr .gasin:first-child{grid-column:1/-1}}
@@ -16979,7 +16980,7 @@ class FensterHeizungPanel extends HTMLElement {
      Arbeitspreis, Grundpreis, Brennwert, Zustandszahl, MwSt, Abschlag und einzelne Monate (absm, 0 = erster Monat). Leer = Standard.
      Preise wahlweise netto (zzgl. MwSt), Abschläge immer so, wie sie abgebucht werden. Kosten werden stunden- bzw. tagegenau
      mit den Werten des Abrechnungsjahrs gerechnet, in das sie fallen. */
-  _gasCfg() { const g = { ent: "", brw: 10.5, hw: 0, zz: 0, price: 12, grund: 0, netto: false, mwst: 19, start: 1, abschlag: 0, absday: 1, ...(((this._haus || {}).gas) || {}) }; g.years = g.years || {}; g.prices = g.prices || []; return g; }
+  _gasCfg() { const g = { ent: "", brw: 10.5, hw: 0, zz: 0, price: 12, grund: 0, netto: false, mwst: 19, start: 1, abschlag: 0, absday: 1, gunit: "y", ...(((this._haus || {}).gas) || {}) }; g.years = g.years || {}; g.prices = g.prices || []; return g; }
   _gasOn() { return !!this._gasCfg().ent; }
   _gasUnit() { const c = this._gasCfg(), s = this._hass.states[c.ent], u = ((s && s.attributes.unit_of_measurement) || "").replace("m3", "m³"); return /Wh$/i.test(u) ? "kwh" : "m3"; }
   /* Abrechnungsjahr eines Zeitpunkts: Jahr, in dem es begonnen hat */
@@ -16989,15 +16990,15 @@ class FensterHeizungPanel extends HTMLElement {
   /* Werte eines Abrechnungsjahrs (eigene oder Standard). price/grund brutto, fac = kWh je m³ */
   _gasY(y) {
     const c = this._gasCfg(), o = c.years[String(y)] || {}, v = (k) => (o[k] != null ? o[k] : c[k]);
-    const hw = v("hw"), zz = v("zz"), mw = c.netto ? 1 + v("mwst") / 100 : 1;
-    return { price: v("price") * mw, grund: v("grund") * mw, net: v("price"), hw, zz, fac: hw > 0 && zz > 0 ? hw * zz : c.brw, mwst: v("mwst"), abs: o.abs != null ? o.abs : c.abschlag, absm: o.absm || {} };
+    const hw = v("hw"), zz = v("zz"), mw = c.netto ? 1 + v("mwst") / 100 : 1, gj = c.gunit === "m" ? 12 : 1;
+    return { price: v("price") * mw, grund: v("grund") * gj * mw, net: v("price"), hw, zz, fac: hw > 0 && zz > 0 ? hw * zz : c.brw, mwst: v("mwst"), abs: o.abs != null ? o.abs : c.abschlag, absm: o.absm || {} };
   }
   /* Preis zu einem Zeitpunkt: letzter Eintrag der Preisliste mit „gültig ab“ ≤ t, sonst Abrechnungsjahr bzw. Standard. Brutto. */
   _gasPl() { return this._gasCfg().prices.map((p) => { const [y, m, d] = p.ab.split("-").map(Number); return { ...p, ts: +new Date(y, m - 1, d) }; }); }
   _gasAt(t) {
     const Y = this._gasY(this._gasBy(t)), c = this._gasCfg(), mw = c.netto ? 1 + Y.mwst / 100 : 1, L = this._gasPl();
     let pr = null, gr = null; for (const p of L) { if (p.ts > t) break; if (p.price != null) pr = p.price; if (p.grund != null) gr = p.grund; }
-    return { price: pr != null ? pr * mw : Y.price, grund: gr != null ? gr * mw : Y.grund };
+    return { price: pr != null ? pr * mw : Y.price, grund: gr != null ? gr * (c.gunit === "m" ? 12 : 1) * mw : Y.grund };
   }
   _gasAbs(y, m) { const Y = this._gasY(y); return Y.absm[String(m)] != null ? Y.absm[String(m)] : Y.abs; }
   _gasKwh(v, t) { return this._gasUnit() === "m3" ? v * this._gasY(this._gasBy(t == null ? Date.now() : t)).fac : v; }
@@ -17120,14 +17121,13 @@ class FensterHeizungPanel extends HTMLElement {
     const pl = c.netto ? "netto" : "brutto", net = c.netto ? "ct/kWh" : "ct/kWh";
     const fields = (o, y) => {  /* o = eigene Werte des Jahres (oder Standard), y = Jahr oder null */
       const ph = (k) => (y == null ? null : k === "abs" ? c.abschlag : c[k]), val = (k) => (y == null ? (k === "abs" ? c.abschlag || "" : c[k] || (k === "price" || k === "grund" ? c[k] : "")) : o[k]);
-      return `${y == null || o.price != null ? inp("price", val("price"), `Arbeitspreis ${pl}${y == null ? "" : " (alt)"}`, net, "0.0001", y, ph("price")) : ""}${y == null || o.grund != null ? inp("grund", val("grund"), `Grundpreis ${pl}${y == null ? "" : " (alt)"}`, "€/Jahr", "0.01", y, ph("grund")) : ""}
-        ${m3 ? `${inp("hw", val("hw"), "Brennwert", "kWh/m³", "0.001", y, ph("hw") || "")}${inp("zz", val("zz"), "Zustandszahl", "", "0.00001", y, ph("zz") || "")}` : ""}
+      return `${m3 ? `${inp("hw", val("hw"), "Brennwert", "kWh/m³", "0.001", y, ph("hw") || "")}${inp("zz", val("zz"), "Zustandszahl", "", "0.00001", y, ph("zz") || "")}` : ""}
         ${c.netto ? inp("mwst", val("mwst"), "MwSt", "%", "0.1", y, ph("mwst")) : ""}${inp("abs", val("abs"), "Abschlag", "€/Monat", "0.01", y, ph("abs") || "")}`;
     };
     const yearCard = (y) => {
       const o = c.years[String(y)] || {}, Y = this._gasY(y), am = o.absm || {}, open = O[y], nm = Object.keys(am).length, sm = c.start - 1;
       const YO = (this._gasYo = this._gasYo || {}), yo = YO[y] != null ? YO[y] : y === cy;
-      const NM = { price: "alter Arbeitspreis", grund: "alter Grundpreis", hw: "Brennwert", zz: "Zustandszahl", mwst: "MwSt", abs: "Abschlag" }, own = Object.keys(NM).filter((k) => o[k] != null).map((k) => NM[k]).concat(nm ? ["einzelne Monate"] : []);
+      const NM = { hw: "Brennwert", zz: "Zustandszahl", mwst: "MwSt", abs: "Abschlag" }, own = Object.keys(NM).filter((k) => o[k] != null).map((k) => NM[k]).concat(nm ? ["einzelne Monate"] : []);
       const sum = `${m3 ? `${num(Y.fac, 3)} kWh/m³` : ""}${Y.abs ? `${m3 ? " · " : ""}Abschlag ${num(Y.abs, 0)} €` : ""}${c.netto ? ` · MwSt ${num(Y.mwst, 0)} %` : ""}`;
       return `<div class="gasyr${yo ? " open" : ""}"><button class="gasyrh" data-act="engasy" data-k="${y}" aria-expanded="${yo}"><b>${esc(this._gasByLbl(y))}</b>${y === cy ? `<em>läuft</em>` : ""}<span>${own.length ? "eigene Werte" : "wie Standard"}</span>${ic(yo ? "close" : "pencil", 15)}</button>
         ${yo ? "" : `<div class="mut sm">${sum}${own.length ? ` · ${esc(own.join(", "))}` : ""}</div>`}
@@ -17141,10 +17141,13 @@ class FensterHeizungPanel extends HTMLElement {
         <label class="gasin"><span>Abrechnungsjahr beginnt im</span><select class="otxt" data-f="engas" data-k="start" aria-label="Abrechnungsjahr beginnt im">${MON.map((m, i) => `<option value="${i + 1}"${c.start === i + 1 ? " selected" : ""}>${m}</option>`).join("")}</select></label>
         ${inp("absday", c.absday, "Abschlag abgebucht am", ". des Monats", "1")}</div>
       <div class="vrow"><span>Preise ohne MwSt eingeben<small class="mut" style="display:block">Wie auf vielen Gasrechnungen: netto, zzgl. MwSt. Angezeigt wird immer mit MwSt.</small></span><button class="sw ${c.netto ? "on" : ""}" data-act="engasnet" aria-pressed="${c.netto}" aria-label="Preise ohne MwSt eingeben"></button></div>
-      <div class="lsec">${ic("total", 15)}Arbeits- und Grundpreis</div><div class="mut sm" style="margin:0 0 4px">Jeder Preis gilt ab seinem Datum bis zum nächsten. Leerer Grundpreis = bleibt wie zuvor. Vor dem ersten Datum gilt der Standardpreis unten.</div>
-      <div class="gaspl">${this._gasPl().map((p, i) => `<div class="gasplr"><label class="gasin"><span>Gültig ab</span><input class="otxt" type="date" value="${esc(p.ab)}" data-f="engas" data-k="pab" data-i="${i}" aria-label="Gültig ab"></label>${inp("pprice", p.price, `Arbeitspreis ${pl}`, "ct/kWh", "0.0001").replace('data-k="pprice"', `data-k="pprice" data-i="${i}"`)}${inp("pgrund", p.grund, `Grundpreis ${pl}`, "€/Jahr", "0.01").replace('data-k="pgrund"', `data-k="pgrund" data-i="${i}"`)}<button class="ibtn" data-act="engaspdel" data-k="${i}" aria-label="Preis ab ${esc(p.ab)} löschen">${ic("trash", 16)}</button></div>`).join("")}
-        <button class="btn2" data-act="engaspadd">${ic("plus", 15)} Preis mit Datum hinzufügen</button></div>
-      <div class="lsec">${ic("sliders", 15)}Standardwerte</div><div class="mut sm" style="margin:0 0 4px">Gelten für jedes Abrechnungsjahr ohne eigene Werte${c.prices.length ? "; Preise nur vor dem ersten Datum der Preisliste" : ""}.</div>
+      <div class="lsec">${ic("total", 15)}Arbeits- und Grundpreis</div>
+      <div class="mut sm" style="margin:0 0 4px">Jeder Preis gilt ab seinem Datum bis zum nächsten. Leerer Grundpreis = wie in der Zeile davor.</div>
+      <div class="gasgu"><span class="mut sm">Grundpreis eingeben</span><div class="seg">${[["m", "pro Monat"], ["y", "pro Jahr"]].map(([k, l]) => `<button class="${(c.gunit === "m" ? "m" : "y") === k ? "sel" : ""}" data-act="engasgu" data-k="${k}">${l}</button>`).join("")}</div></div>
+      <div class="gaspl"><div class="gasplr first"><div class="gasin"><span>Gültig ab</span><b class="gasab0">Von Anfang an</b></div>${inp("price", c.price, `Arbeitspreis ${pl}`, "ct/kWh", "0.0001")}${inp("grund", c.grund, `Grundpreis ${pl}`, c.gunit === "m" ? "€/Monat" : "€/Jahr", "0.01")}<span></span></div>
+        ${this._gasPl().map((p, i) => `<div class="gasplr"><label class="gasin"><span>Gültig ab</span><input class="otxt" type="date" value="${esc(p.ab)}" data-f="engas" data-k="pab" data-i="${i}" aria-label="Gültig ab"></label>${inp("pprice", p.price, `Arbeitspreis ${pl}`, "ct/kWh", "0.0001").replace('data-k="pprice"', `data-k="pprice" data-i="${i}"`)}${inp("pgrund", p.grund, `Grundpreis ${pl}`, c.gunit === "m" ? "€/Monat" : "€/Jahr", "0.01", null, "wie davor").replace('data-k="pgrund"', `data-k="pgrund" data-i="${i}"`)}<button class="ibtn" data-act="engaspdel" data-k="${i}" aria-label="Preis ab ${esc(p.ab)} löschen">${ic("trash", 16)}</button></div>`).join("")}
+        <button class="btn2" data-act="engaspadd">${ic("plus", 15)} Preisänderung hinzufügen</button></div>
+      <div class="lsec">${ic("sliders", 15)}Brennwert, MwSt und Abschlag</div><div class="mut sm" style="margin:0 0 4px">Gelten für jedes Abrechnungsjahr ohne eigene Werte.</div>
       <div class="gasyr std"><div class="gasyrf">${fields(c, null)}</div>${m3 ? `<div class="mut sm">${c.hw > 0 && c.zz > 0 ? `${num(c.hw, 3)} × ${num(c.zz, 5)} = <b>${num(c.hw * c.zz, 3)} kWh/m³</b>` : `Ohne Brennwert und Zustandszahl gilt ${inp("brw", c.brw, "", "kWh/m³", "0.001").replace('<label class="gasin"><span></span>', '<label class="gasin inl">')}`}</div>` : ""}</div>
       <div class="lsec">${ic("chart", 15)}Je Abrechnungsjahr</div><div class="mut sm" style="margin:0 0 4px">Brennwert, Zustandszahl${c.netto ? ", MwSt" : ""} und Abschläge. Antippen zum Bearbeiten, leere Felder nutzen die Standardwerte.</div>
       <div class="gasyrs">${yrs.map(yearCard).join("")}</div>
@@ -17153,6 +17156,7 @@ class FensterHeizungPanel extends HTMLElement {
   _gasAct(a, b) {
     if (a === "engasnet") { this._gasSave({ netto: !this._gasCfg().netto }); return true; }
     if (a === "engasy") { const YO = (this._gasYo = this._gasYo || {}), y = b.dataset.k, cy = this._gasBy(Date.now()); YO[y] = !(YO[y] != null ? YO[y] : +y === cy); this._renderModal(); return true; }
+    if (a === "engasgu") { this._gasSave({ gunit: b.dataset.k === "m" ? "m" : "y" }); return true; }
     if (a === "engaspadd") {
       const c = this._gasCfg(), L = c.prices.slice(), n = new Date(), last = L[L.length - 1];
       let ab = `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-01`; while (L.some((p) => p.ab === ab)) { const [y, m] = ab.split("-").map(Number); ab = `${m === 12 ? y + 1 : y}-${String(m === 12 ? 1 : m + 1).padStart(2, "0")}-01`; }
