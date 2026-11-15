@@ -215,9 +215,9 @@ const EF_EMO = [
 ];
 const EF_POS = {
   top_1: [2, 1, "supply", "#facc15", "Oben 1"], top_2: [3, 1, "supply", "#fbbf24", "Oben 2"],
-  left_1: [1, 2, "consume", "#f97316", "Links 1"], left_2: [1, 3, "consume", "#38bdf8", "Links 2"], left_3: [1, 4, "consume", "#a78bfa", "Links 3"],
-  right_1: [4, 2, "consume", "#38bdf8", "Rechts 1"], right_2: [4, 3, "consume", "#2dd4bf", "Rechts 2"], right_3: [4, 4, "consume", "#f472b6", "Rechts 3"],
-  bottom: [2, 5, "consume", "#4ade80", "Unten"],
+  left_1: [1, 2, "consume", "#f97316", "Links 1"], left_2: [1, 3, "consume", "#38bdf8", "Links 2"], left_3: [1, 4, "consume", "#a78bfa", "Links 3"], left_4: [1, 5, "consume", "#fb7185", "Links 4"],
+  right_1: [4, 2, "consume", "#38bdf8", "Rechts 1"], right_2: [4, 3, "consume", "#2dd4bf", "Rechts 2"], right_3: [4, 4, "consume", "#f472b6", "Rechts 3"], right_4: [4, 5, "consume", "#facc15", "Rechts 4"],
+  bottom: [2, 6, "consume", "#4ade80", "Unten 1"], bottom_2: [3, 6, "consume", "#22d3ee", "Unten 2"],
 };
 const EF_SIDES = [["top", "Oben"], ["bottom", "Unten"], ["left", "Links"], ["right", "Rechts"]];
 const EF_COLORS = ["#facc15", "#f97316", "#38bdf8", "#a78bfa", "#2dd4bf", "#f472b6", "#4ade80"];

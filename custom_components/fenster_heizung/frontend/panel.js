@@ -446,9 +446,9 @@ const EF_EMO = [
 ];
 const EF_POS = {
   top_1: [2, 1, "supply", "#facc15", "Oben 1"], top_2: [3, 1, "supply", "#fbbf24", "Oben 2"],
-  left_1: [1, 2, "consume", "#f97316", "Links 1"], left_2: [1, 3, "consume", "#38bdf8", "Links 2"], left_3: [1, 4, "consume", "#a78bfa", "Links 3"],
-  right_1: [4, 2, "consume", "#38bdf8", "Rechts 1"], right_2: [4, 3, "consume", "#2dd4bf", "Rechts 2"], right_3: [4, 4, "consume", "#f472b6", "Rechts 3"],
-  bottom: [2, 5, "consume", "#4ade80", "Unten"],
+  left_1: [1, 2, "consume", "#f97316", "Links 1"], left_2: [1, 3, "consume", "#38bdf8", "Links 2"], left_3: [1, 4, "consume", "#a78bfa", "Links 3"], left_4: [1, 5, "consume", "#fb7185", "Links 4"],
+  right_1: [4, 2, "consume", "#38bdf8", "Rechts 1"], right_2: [4, 3, "consume", "#2dd4bf", "Rechts 2"], right_3: [4, 4, "consume", "#f472b6", "Rechts 3"], right_4: [4, 5, "consume", "#facc15", "Rechts 4"],
+  bottom: [2, 6, "consume", "#4ade80", "Unten 1"], bottom_2: [3, 6, "consume", "#22d3ee", "Unten 2"],
 };
 const EF_SIDES = [["top", "Oben"], ["bottom", "Unten"], ["left", "Links"], ["right", "Rechts"]];
 const EF_COLORS = ["#facc15", "#f97316", "#38bdf8", "#a78bfa", "#2dd4bf", "#f472b6", "#4ade80"];
@@ -1729,8 +1729,8 @@ button.mubin{cursor:pointer}button.mubin:hover{border-color:color-mix(in srgb,va
 /* H1 · Handy A Fluss-Spalte */
 .efcol{position:relative;border:1px solid var(--line);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:8px}
 .efsec{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
-.efsrc{position:relative;z-index:1;display:grid;gap:6px}.efsq{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:var(--primary-text-color);font:inherit;padding:2px;cursor:pointer;position:relative}
-.efsq b{font-size:.9rem}.efsq small{font-size:.68rem;color:var(--mut);text-align:center;line-height:1.15}.efsq:not(.on) .efq{opacity:.55;filter:saturate(.4)}.efsq .efdot{top:2px;right:10%}
+.efsrc{position:relative;z-index:1;display:grid;gap:6px}.efsrc.s5{gap:2px}.efsrc.s5 .efq{width:48px;height:48px}.efsrc.s5 .efsq b{font-size:.8rem}.efsrc.s5 .efsq small{font-size:.62rem}.efsq{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:var(--primary-text-color);font:inherit;padding:2px;cursor:pointer;position:relative}
+.efsq b{font-size:.9rem}.efsq small{font-size:.68rem;color:var(--mut);text-align:center;line-height:1.15;max-width:100%;overflow-wrap:break-word;hyphens:auto}.efsq:not(.on) .efq{opacity:.55;filter:saturate(.4)}.efsq .efdot{top:2px;right:10%}
 .efq{position:relative;display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 28%,transparent),color-mix(in srgb,var(--primary-text-color) 6%,transparent) 70%);border:1px solid color-mix(in srgb,var(--primary-text-color) 10%,transparent)}
 .efq.sm{width:46px;height:46px;flex:none}.efqi{display:grid;place-items:center;width:66%;height:66%;font-size:22px}.efqi svg{width:100%;height:100%}.efqi img{width:100%;height:100%;object-fit:cover;border-radius:50%}.efq .efpr{width:100%}
 .efcl{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:0}.efcl .eftr{fill:none;stroke-width:1.5;stroke-dasharray:1.5 6;stroke-linecap:round;opacity:.38}.efcl .efgl{fill:none;opacity:.2;stroke-linecap:round}.efcl .efln{fill:none;stroke-linecap:round;opacity:.95}
@@ -13891,11 +13891,15 @@ class FensterHeizungPanel extends HTMLElement {
     this._efMix = this._efxMix(nodes);
     /* Das Haus sitzt immer genau in der Mitte: Zeilen oben und unten werden paarweise gehalten oder weggelassen, leere Gegenstücke bekommen einen unsichtbaren Platzhalter */
     const ar = !!this._efArr && adm && !narrow;  /* W1 Anordnen: alle neun Plätze sichtbar, freie als Ablagefläche */
-    const has = (r) => list.some((p) => EF_POS[p][1] === r), keep = ar ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5].filter((r) => r === 3 || (r === 1 || r === 5 ? has(1) || has(5) : has(2) || has(4)));
-    const ri = (r) => keep.indexOf(r) + 1, COL = { top_1: 1, top_2: 3, left_1: 1, left_2: 1, left_3: 1, right_1: 3, right_2: 3, right_3: 3 };
-    const cellAt = (p, html, z) => { const e = EF_POS[p], b = p === "bottom", ct = !ar && /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : ct ? "2" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z ? " z" : ""}"${ar ? ` data-slot="${p}"` : ""} style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
-    const ghost = '<div class="efg" aria-hidden="true"></div>', ghosts = [[1, "top_1"], [5, "bottom"], [2, "left_1"], [4, "left_3"]].filter(([r]) => !ar && keep.includes(r) && !has(r)).map(([r, p]) => cellAt(p, ghost, r === 2 || r === 4)).join("");
-    const gUp = keep.includes(4) && !has(4), gDn = keep.includes(2) && !has(2), rows = keep.length - (gUp || gDn ? 1 : 0);
+    /* Fünf Reihen wie bisher (oben, drei Seitenreihen, unten); mit einer vierten Seitenreihe (links 4 / rechts 4) sitzt das Haus über zwei Reihen mittig. Unten sind bis zu zwei Kacheln möglich. */
+    const has = (r) => list.some((p) => EF_POS[p][1] === r), four = ar || has(5), ALL = [1, 2, 3, 4, 5, 6];
+    const keep = ar ? ALL : ALL.filter((r) => r === 3 || (r === 1 || r === 6 ? has(1) || has(6) : r === 5 ? four : four || has(2) || has(4)));
+    const ri = (r) => keep.indexOf(r) + 1, COL = { top_1: 1, top_2: 3, left_1: 1, left_2: 1, left_3: 1, left_4: 1, right_1: 3, right_2: 3, right_3: 3, right_4: 3, bottom: 1, bottom_2: 3 };
+    const nBt = list.filter((x) => /^bottom/.test(x)).length;
+    const cellAt = (p, html, z) => { const e = EF_POS[p], b = !ar && /^bottom/.test(p) && nBt <= 1, ct = !ar && /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : ct ? "2" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z ? " z" : ""}"${ar ? ` data-slot="${p}"` : ""} style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
+    const ghost = '<div class="efg" aria-hidden="true"></div>', gpos = { 1: "top_1", 6: "bottom", 2: "left_1", 3: "left_2", 4: "left_3", 5: "left_4" };
+    const ghosts = (four ? [1, 6, 2, 3, 4, 5] : [1, 6, 2, 4]).filter((r) => !ar && keep.includes(r) && !has(r) && (r !== 3 || four)).map((r) => cellAt(gpos[r], ghost, !four && (r === 2 || r === 4))).join("");
+    const gUp = !four && keep.includes(4) && !has(4), gDn = !four && keep.includes(2) && !has(2), rows = keep.length - (gUp || gDn ? 1 : 0);
     const slots = ar ? Object.keys(EF_POS).filter((p) => !list.includes(p)).map((p) => cellAt(p, `<button class="efslot${this._efPick ? " pk" : ""}" data-act="efxslot" data-p="${p}" aria-label="Freier Platz ${EF_POS[p][4]}">${ic("plus", 18)}<small>${EF_POS[p][4]}</small></button>`)).join("") : "";
     const pair = narrow && list.includes("top_1") && list.includes("top_2");  /* Handy: beide oberen Kacheln nebeneinander, mittig über dem Haus */
     const cells = (pair ? `<div class="efc tp" style="grid-column:1/-1;grid-row:${ri(1)}">${this._efxNodeHtml("top_1", c.nodes.top_1, hubW)}${this._efxNodeHtml("top_2", c.nodes.top_2, hubW)}</div>` : "") + list.filter((p) => !(pair && (p === "top_1" || p === "top_2"))).map((p) => cellAt(p, this._efxNodeHtml(p, c.nodes[p], hubW))).join("") + ghosts;
@@ -13909,7 +13913,7 @@ class FensterHeizungPanel extends HTMLElement {
       const lbl = !isNaN(w) && w < 0 ? "Einspeisung jetzt" : !pe && hub.calc === "rest" ? "Restverbrauch jetzt" : "Hausverbrauch jetzt", big = isNaN(w) ? "–" : Math.abs(Math.round(w)).toLocaleString("de-DE");
       hero = L.banner === "band" ? this._efxBand(items, { narrow, lbl, big, unit: "W", chips }) : this._modHero("ef", { icon: "energy", lbl, big, unit: "W", chips });
     }
-    const hubCell = `<div class="efc hb${gUp ? " hu" : gDn ? " hd" : ""}" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
+    const hubCell = `<div class="efc hb${gUp ? " hu" : gDn ? " hd" : ""}" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${four ? ri(3) + "/" + (ri(4) + 1) : ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
     const tab = this._efTab(), sz = this._efSize(), SZ = { auto: "Auto", klein: "Klein", mittel: "Mittel", gross: "Groß" }, MB = { fluss: "Fluss", raster: "Raster", brett: "Brett" };
     const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && !tm && (!narrow || mob === "brett") && !arr ? `<button class="efszb efsh" data-act="efxshare" aria-label="Fluss-Bild als Bild teilen">${ic("download", 14)} Bild</button>` : ""}${tab === "now" && adm && !tm && !narrow ? `<button class="efszb efab${arr ? " on" : ""}" data-act="efxarr" aria-pressed="${arr}">${arr ? "Fertig" : "Anordnen"}</button>` : ""}${tab === "now" && !narrow && !tm ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : tab === "now" && narrow ? `<button class="efszb" data-act="efxmob" aria-label="Ansicht wechseln">Ansicht: ${MB[mob]}</button>` : ""}</div>`;
     const cls = `efx${narrow ? " nar" : ""}${lt ? " lt" : ""}${L.shape === "rund" ? " sh-rund" : ""}${tm ? " wall" : ""}`;
@@ -13952,7 +13956,7 @@ class FensterHeizungPanel extends HTMLElement {
     const els = [...b.querySelectorAll(".efn:not(.hub):not(.ghost)")];
     els.forEach((el) => {
       const p = EF_POS[el.dataset.p], q = el.getBoundingClientRect(), nx = q.left - g.left + q.width / 2, ny = q.top - g.top + q.height / 2, on = el.classList.contains("on"), col = el.dataset.c, w = +el.dataset.w;
-      const vert = p[1] === 1 || p[1] === 5, mx = (hx + nx) / 2, my = (hy + ny) / 2;
+      const vert = p[1] === 1 || p[1] === 6, mx = (hx + nx) / 2, my = (hy + ny) / 2;
       let d = vert ? `M${hx},${hy} C${hx},${my} ${nx},${my} ${nx},${ny}` : `M${hx},${hy} C${mx},${hy} ${mx},${ny} ${nx},${ny}`;
       {  /* Linien beginnen am Rand des Hauses und enden an der Kachelkante: gerade nach oben oder unten, zur Seite als lange S-Kurve */
         const hl = hb.left - g.left, hr = hb.right - g.left, ht = hb.top - g.top, hbt = hb.bottom - g.top, ql = q.left - g.left, qr = q.right - g.left, qt = q.top - g.top, qb = q.bottom - g.top;
@@ -14240,17 +14244,17 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* ---------------- H1 · Handy A: Fluss-Spalte ---------------- */
   _efxCol(items, hubW) {
-    const mix = this._efMix || { tot: 0 }, src = items.filter((x) => x.src).slice(0, 4), use = items.filter((x) => !x.src);
+    const mix = this._efMix || { tot: 0 }, src = items.filter((x) => x.src).slice(0, 5), use = items.filter((x) => !x.src);
     const act = use.filter((x) => x.on || x.nd), rest = use.filter((x) => !x.on && !x.nd), all = !!this._efAll;
     const pic = (x, s) => { const zs = x.nd ? { on: false } : this._efxState(x.n, x.w), pr = !x.nd && zs.lvl != null ? `<svg class="efpr" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" pathLength="100"/><circle cx="50" cy="50" r="46" pathLength="100" stroke-dasharray="${zs.lvl.toFixed(1)} 100"/></svg>` : ""; return `<span class="efq${s ? " " + s : ""}">${pr}<span class="efqi">${this._efxImgN(x.n, zs)}</span></span>`; };
     const dot = (x) => { const d = this._efxDot(x.n); return d ? `<i class="efdot ${d[0]}" title="${esc(d[1])}"></i>` : ""; };
     const pe = (x) => (x.n.flow === "split" ? (x.w > 0 ? x.n.power_to_node : x.n.power_to_house) || x.n.power_to_house : this._efxPid(x.n));
-    const srcH = src.map((x) => `<button class="efsq${x.on ? " on" : ""}${x.nd ? " nd" : ""}" data-p="${x.p}" data-c="${x.col}" data-w="${Math.round(x.w)}" style="--c:${x.col}" ${pe(x) ? `data-act="efxmore" data-e="${esc(pe(x))}"` : ""}>${pic(x)}${dot(x)}<b>${x.nd ? "–" : this._efxFmtW(Math.abs(x.w))}</b><small>${esc(x.n.name)}${x.src && x.kind !== "pv" ? " " + this._efxSub(x) : ""}</small></button>`).join("");
+    const srcH = src.map((x) => `<button class="efsq${x.on ? " on" : ""}${x.nd ? " nd" : ""}" data-p="${x.p}" data-c="${x.col}" data-w="${Math.round(x.w)}" style="--c:${x.col}" ${pe(x) ? `data-act="efxmore" data-e="${esc(pe(x))}"` : ""}>${pic(x)}${dot(x)}<b>${x.nd ? "–" : this._efxFmtW(Math.abs(x.w))}</b><small lang="de">${esc(x.n.name)}${x.src && x.kind !== "pv" ? " " + this._efxSub(x) : ""}</small></button>`).join("");
     const row = (x) => { const sub = ["top", "left", "right"].map((s) => this._efxVal(x.n[s])).filter(Boolean).join(" · ");
       return `<button class="efpill${x.on ? " on" : ""}${x.nd ? " nd" : ""}" style="--c:${x.col}" data-p="${x.p}" ${pe(x) ? `data-act="efxmore" data-e="${esc(pe(x))}"` : ""}>${pic(x, "sm")}<span class="efpt"><small>${esc(x.n.name)}</small><b>${x.nd ? "–" : this._efxFmtW(Math.abs(x.w))}</b><span>${esc(x.nd ? "keine Daten" : sub || this._efxSub(x))}</span></span>${dot(x)}</button>`; };
     const hub = this._efxCfg().hub;
     return `<div class="efcol th-${this._efxLook().theme}" id="efcol">
-      ${src.length ? `<div class="efsec">Quellen</div><div class="efsrc" style="grid-template-columns:repeat(${src.length},minmax(0,1fr))">${srcH}</div>` : ""}
+      ${src.length ? `<div class="efsec">Quellen</div><div class="efsrc${src.length >= 5 ? " s5" : ""}" style="grid-template-columns:repeat(${src.length},minmax(0,1fr))">${srcH}</div>` : ""}
       <svg class="efcl" aria-hidden="true">${this._efColSvg || ""}</svg>
       <button class="efhouse" data-act="efxtab" data-v="strom" aria-label="Haus: ${esc(this._efxMixTxt(mix))}" style="--c:${hub.color || "#2dd4bf"}">${this._efxRingHtml(mix, this._efxImgN(hub, { on: this._efxNight() }), this._efxMixTxt(mix))}<b>${this._efxFmtW(hubW)}</b><small>${esc(hub.name || "Haus")}</small></button>
       ${use.length ? `<div class="efsec">Verbraucher</div><div class="efcons">${act.map(row).join("")}${all ? rest.map(row).join("") : ""}</div>

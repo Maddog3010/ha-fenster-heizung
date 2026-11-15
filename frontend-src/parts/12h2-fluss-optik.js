@@ -64,17 +64,17 @@
   }
   /* ---------------- H1 · Handy A: Fluss-Spalte ---------------- */
   _efxCol(items, hubW) {
-    const mix = this._efMix || { tot: 0 }, src = items.filter((x) => x.src).slice(0, 4), use = items.filter((x) => !x.src);
+    const mix = this._efMix || { tot: 0 }, src = items.filter((x) => x.src).slice(0, 5), use = items.filter((x) => !x.src);
     const act = use.filter((x) => x.on || x.nd), rest = use.filter((x) => !x.on && !x.nd), all = !!this._efAll;
     const pic = (x, s) => { const zs = x.nd ? { on: false } : this._efxState(x.n, x.w), pr = !x.nd && zs.lvl != null ? `<svg class="efpr" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" pathLength="100"/><circle cx="50" cy="50" r="46" pathLength="100" stroke-dasharray="${zs.lvl.toFixed(1)} 100"/></svg>` : ""; return `<span class="efq${s ? " " + s : ""}">${pr}<span class="efqi">${this._efxImgN(x.n, zs)}</span></span>`; };
     const dot = (x) => { const d = this._efxDot(x.n); return d ? `<i class="efdot ${d[0]}" title="${esc(d[1])}"></i>` : ""; };
     const pe = (x) => (x.n.flow === "split" ? (x.w > 0 ? x.n.power_to_node : x.n.power_to_house) || x.n.power_to_house : this._efxPid(x.n));
-    const srcH = src.map((x) => `<button class="efsq${x.on ? " on" : ""}${x.nd ? " nd" : ""}" data-p="${x.p}" data-c="${x.col}" data-w="${Math.round(x.w)}" style="--c:${x.col}" ${pe(x) ? `data-act="efxmore" data-e="${esc(pe(x))}"` : ""}>${pic(x)}${dot(x)}<b>${x.nd ? "–" : this._efxFmtW(Math.abs(x.w))}</b><small>${esc(x.n.name)}${x.src && x.kind !== "pv" ? " " + this._efxSub(x) : ""}</small></button>`).join("");
+    const srcH = src.map((x) => `<button class="efsq${x.on ? " on" : ""}${x.nd ? " nd" : ""}" data-p="${x.p}" data-c="${x.col}" data-w="${Math.round(x.w)}" style="--c:${x.col}" ${pe(x) ? `data-act="efxmore" data-e="${esc(pe(x))}"` : ""}>${pic(x)}${dot(x)}<b>${x.nd ? "–" : this._efxFmtW(Math.abs(x.w))}</b><small lang="de">${esc(x.n.name)}${x.src && x.kind !== "pv" ? " " + this._efxSub(x) : ""}</small></button>`).join("");
     const row = (x) => { const sub = ["top", "left", "right"].map((s) => this._efxVal(x.n[s])).filter(Boolean).join(" · ");
       return `<button class="efpill${x.on ? " on" : ""}${x.nd ? " nd" : ""}" style="--c:${x.col}" data-p="${x.p}" ${pe(x) ? `data-act="efxmore" data-e="${esc(pe(x))}"` : ""}>${pic(x, "sm")}<span class="efpt"><small>${esc(x.n.name)}</small><b>${x.nd ? "–" : this._efxFmtW(Math.abs(x.w))}</b><span>${esc(x.nd ? "keine Daten" : sub || this._efxSub(x))}</span></span>${dot(x)}</button>`; };
     const hub = this._efxCfg().hub;
     return `<div class="efcol th-${this._efxLook().theme}" id="efcol">
-      ${src.length ? `<div class="efsec">Quellen</div><div class="efsrc" style="grid-template-columns:repeat(${src.length},minmax(0,1fr))">${srcH}</div>` : ""}
+      ${src.length ? `<div class="efsec">Quellen</div><div class="efsrc${src.length >= 5 ? " s5" : ""}" style="grid-template-columns:repeat(${src.length},minmax(0,1fr))">${srcH}</div>` : ""}
       <svg class="efcl" aria-hidden="true">${this._efColSvg || ""}</svg>
       <button class="efhouse" data-act="efxtab" data-v="strom" aria-label="Haus: ${esc(this._efxMixTxt(mix))}" style="--c:${hub.color || "#2dd4bf"}">${this._efxRingHtml(mix, this._efxImgN(hub, { on: this._efxNight() }), this._efxMixTxt(mix))}<b>${this._efxFmtW(hubW)}</b><small>${esc(hub.name || "Haus")}</small></button>
       ${use.length ? `<div class="efsec">Verbraucher</div><div class="efcons">${act.map(row).join("")}${all ? rest.map(row).join("") : ""}</div>

@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b41] - 2026-11-15
+
+### Neu
+- **Modul 19 · Hausfluss: mehr Plätze.** Links und rechts sind jetzt je **vier** Kacheln möglich (neu: „Links 4“ und „Rechts 4“), unten **zwei** („Unten 1“ und „Unten 2“). Bei vier Seitenreihen sitzt das Haus mittig zwischen der zweiten und dritten Reihe.
+- Wer die neuen Plätze nicht nutzt, sieht das Bild wie bisher. Unter „Anordnen“ erscheinen alle zwölf Plätze zum Verschieben.
+- **Handy-Ansicht „Fluss“:** bis zu **5 Quellen** nebeneinander (vorher 4), mit etwas kleineren Kreisen. Lange Namen werden mit Trennstrich am Zeilenende umgebrochen. Verbraucher bleiben darunter.
+
 ## [2026.11.3b40] - 2026-11-15
 
 ### Geändert

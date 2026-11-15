@@ -24,7 +24,7 @@ HD_MAP = {
 }
 HD_MIG = 2  # Stand der einmaligen Umstellung (2 = v0.7: Haus in der Mitte vom Emoji 🏠 auf das HD-Haus)
 
-POSITIONS = ("top_1", "top_2", "left_1", "left_2", "left_3", "right_1", "right_2", "right_3", "bottom")
+POSITIONS = ("top_1", "top_2", "left_1", "left_2", "left_3", "left_4", "right_1", "right_2", "right_3", "right_4", "bottom", "bottom_2")
 FLOWS = ("consume", "supply", "both", "split")
 SIDES = ("top", "bottom", "left", "right")
 MAX_CHIPS = 4

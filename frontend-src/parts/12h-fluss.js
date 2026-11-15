@@ -151,11 +151,15 @@
     this._efMix = this._efxMix(nodes);
     /* Das Haus sitzt immer genau in der Mitte: Zeilen oben und unten werden paarweise gehalten oder weggelassen, leere Gegenstücke bekommen einen unsichtbaren Platzhalter */
     const ar = !!this._efArr && adm && !narrow;  /* W1 Anordnen: alle neun Plätze sichtbar, freie als Ablagefläche */
-    const has = (r) => list.some((p) => EF_POS[p][1] === r), keep = ar ? [1, 2, 3, 4, 5] : [1, 2, 3, 4, 5].filter((r) => r === 3 || (r === 1 || r === 5 ? has(1) || has(5) : has(2) || has(4)));
-    const ri = (r) => keep.indexOf(r) + 1, COL = { top_1: 1, top_2: 3, left_1: 1, left_2: 1, left_3: 1, right_1: 3, right_2: 3, right_3: 3 };
-    const cellAt = (p, html, z) => { const e = EF_POS[p], b = p === "bottom", ct = !ar && /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : ct ? "2" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z ? " z" : ""}"${ar ? ` data-slot="${p}"` : ""} style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
-    const ghost = '<div class="efg" aria-hidden="true"></div>', ghosts = [[1, "top_1"], [5, "bottom"], [2, "left_1"], [4, "left_3"]].filter(([r]) => !ar && keep.includes(r) && !has(r)).map(([r, p]) => cellAt(p, ghost, r === 2 || r === 4)).join("");
-    const gUp = keep.includes(4) && !has(4), gDn = keep.includes(2) && !has(2), rows = keep.length - (gUp || gDn ? 1 : 0);
+    /* Fünf Reihen wie bisher (oben, drei Seitenreihen, unten); mit einer vierten Seitenreihe (links 4 / rechts 4) sitzt das Haus über zwei Reihen mittig. Unten sind bis zu zwei Kacheln möglich. */
+    const has = (r) => list.some((p) => EF_POS[p][1] === r), four = ar || has(5), ALL = [1, 2, 3, 4, 5, 6];
+    const keep = ar ? ALL : ALL.filter((r) => r === 3 || (r === 1 || r === 6 ? has(1) || has(6) : r === 5 ? four : four || has(2) || has(4)));
+    const ri = (r) => keep.indexOf(r) + 1, COL = { top_1: 1, top_2: 3, left_1: 1, left_2: 1, left_3: 1, left_4: 1, right_1: 3, right_2: 3, right_3: 3, right_4: 3, bottom: 1, bottom_2: 3 };
+    const nBt = list.filter((x) => /^bottom/.test(x)).length;
+    const cellAt = (p, html, z) => { const e = EF_POS[p], b = !ar && /^bottom/.test(p) && nBt <= 1, ct = !ar && /^top_/.test(p) && list.filter((x) => /^top_/.test(x)).length === 1, col = narrow ? (b ? "1/-1" : ct ? "2" : COL[p]) : (b || ct ? "2/4" : e[0]); return `<div class="efc${b ? " bt" : ""}${ct ? " ct" : ""}${z ? " z" : ""}"${ar ? ` data-slot="${p}"` : ""} style="grid-column:${col};grid-row:${ri(e[1])}">${html}</div>`; };
+    const ghost = '<div class="efg" aria-hidden="true"></div>', gpos = { 1: "top_1", 6: "bottom", 2: "left_1", 3: "left_2", 4: "left_3", 5: "left_4" };
+    const ghosts = (four ? [1, 6, 2, 3, 4, 5] : [1, 6, 2, 4]).filter((r) => !ar && keep.includes(r) && !has(r) && (r !== 3 || four)).map((r) => cellAt(gpos[r], ghost, !four && (r === 2 || r === 4))).join("");
+    const gUp = !four && keep.includes(4) && !has(4), gDn = !four && keep.includes(2) && !has(2), rows = keep.length - (gUp || gDn ? 1 : 0);
     const slots = ar ? Object.keys(EF_POS).filter((p) => !list.includes(p)).map((p) => cellAt(p, `<button class="efslot${this._efPick ? " pk" : ""}" data-act="efxslot" data-p="${p}" aria-label="Freier Platz ${EF_POS[p][4]}">${ic("plus", 18)}<small>${EF_POS[p][4]}</small></button>`)).join("") : "";
     const pair = narrow && list.includes("top_1") && list.includes("top_2");  /* Handy: beide oberen Kacheln nebeneinander, mittig über dem Haus */
     const cells = (pair ? `<div class="efc tp" style="grid-column:1/-1;grid-row:${ri(1)}">${this._efxNodeHtml("top_1", c.nodes.top_1, hubW)}${this._efxNodeHtml("top_2", c.nodes.top_2, hubW)}</div>` : "") + list.filter((p) => !(pair && (p === "top_1" || p === "top_2"))).map((p) => cellAt(p, this._efxNodeHtml(p, c.nodes[p], hubW))).join("") + ghosts;
@@ -169,7 +173,7 @@
       const lbl = !isNaN(w) && w < 0 ? "Einspeisung jetzt" : !pe && hub.calc === "rest" ? "Restverbrauch jetzt" : "Hausverbrauch jetzt", big = isNaN(w) ? "–" : Math.abs(Math.round(w)).toLocaleString("de-DE");
       hero = L.banner === "band" ? this._efxBand(items, { narrow, lbl, big, unit: "W", chips }) : this._modHero("ef", { icon: "energy", lbl, big, unit: "W", chips });
     }
-    const hubCell = `<div class="efc hb${gUp ? " hu" : gDn ? " hd" : ""}" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
+    const hubCell = `<div class="efc hb${gUp ? " hu" : gDn ? " hd" : ""}" style="grid-column:${narrow ? 2 : "2/4"};grid-row:${four ? ri(3) + "/" + (ri(4) + 1) : ri(3)}">${this._efxNodeHtml("hub", hub, hubW)}</div>`;
     const tab = this._efTab(), sz = this._efSize(), SZ = { auto: "Auto", klein: "Klein", mittel: "Mittel", gross: "Groß" }, MB = { fluss: "Fluss", raster: "Raster", brett: "Brett" };
     const seg = `<div class="efseg" role="tablist"><button class="${tab === "now" ? "on" : ""}" role="tab" aria-selected="${tab === "now"}" data-act="efxtab" data-v="now">Jetzt</button><button class="${tab === "strom" ? "on" : ""}" role="tab" aria-selected="${tab === "strom"}" data-act="efxtab" data-v="strom">Strom</button>${tab === "now" && !tm && (!narrow || mob === "brett") && !arr ? `<button class="efszb efsh" data-act="efxshare" aria-label="Fluss-Bild als Bild teilen">${ic("download", 14)} Bild</button>` : ""}${tab === "now" && adm && !tm && !narrow ? `<button class="efszb efab${arr ? " on" : ""}" data-act="efxarr" aria-pressed="${arr}">${arr ? "Fertig" : "Anordnen"}</button>` : ""}${tab === "now" && !narrow && !tm ? `<button class="efszb" data-act="efxsize" aria-label="Größe der Kacheln">Größe: ${SZ[sz] || "Auto"}</button>` : tab === "now" && narrow ? `<button class="efszb" data-act="efxmob" aria-label="Ansicht wechseln">Ansicht: ${MB[mob]}</button>` : ""}</div>`;
     const cls = `efx${narrow ? " nar" : ""}${lt ? " lt" : ""}${L.shape === "rund" ? " sh-rund" : ""}${tm ? " wall" : ""}`;
@@ -212,7 +216,7 @@
     const els = [...b.querySelectorAll(".efn:not(.hub):not(.ghost)")];
     els.forEach((el) => {
       const p = EF_POS[el.dataset.p], q = el.getBoundingClientRect(), nx = q.left - g.left + q.width / 2, ny = q.top - g.top + q.height / 2, on = el.classList.contains("on"), col = el.dataset.c, w = +el.dataset.w;
-      const vert = p[1] === 1 || p[1] === 5, mx = (hx + nx) / 2, my = (hy + ny) / 2;
+      const vert = p[1] === 1 || p[1] === 6, mx = (hx + nx) / 2, my = (hy + ny) / 2;
       let d = vert ? `M${hx},${hy} C${hx},${my} ${nx},${my} ${nx},${ny}` : `M${hx},${hy} C${mx},${hy} ${mx},${ny} ${nx},${ny}`;
       {  /* Linien beginnen am Rand des Hauses und enden an der Kachelkante: gerade nach oben oder unten, zur Seite als lange S-Kurve */
         const hl = hb.left - g.left, hr = hb.right - g.left, ht = hb.top - g.top, hbt = hb.bottom - g.top, ql = q.left - g.left, qr = q.right - g.left, qt = q.top - g.top, qb = q.bottom - g.top;
