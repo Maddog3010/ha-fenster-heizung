@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b38] - 2026-11-15
+
+### Behoben
+- **Modul 3: Die Reiter Zähler, Gas und Anzeige in „Energiequellen“ ließen sich nicht antippen.** Die Aktion für den Reiterwechsel fehlte.
+
 ## [2026.11.3b37] - 2026-11-15
 
 ### Neu

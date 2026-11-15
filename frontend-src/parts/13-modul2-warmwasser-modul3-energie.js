@@ -838,6 +838,7 @@
   _enAct(a, b) {
     const E = this._enState(), k = b.dataset.k;
     if (a.startsWith("engas") && this._gasAct(a, b)) return;
+    if (a === "enstab") { if (this._modal) { this._modal.tab = k; this._pkId = null; this._renderModal(); const sh = this.shadowRoot.querySelector(".sheet"); if (sh) sh.scrollTop = 0; } return; }
     if (a === "enrange") { if (E.range !== k) { E.range = k; E.off = 0; this._enTipX = null; this._m3Cnt = Date.now(); } this._enSave(); this._render(); }
     else if (a === "enoff") { const v = Number(k); E.off = v === 0 ? 0 : Math.min(0, (E.off || 0) + v); this._enTipX = null; this._render(); }
     else if (a === "enring") { E.ring = E.ring === "now" ? "aut" : "now"; this._enSave(); this._render(); }
