@@ -11,8 +11,8 @@ class FensterHeizungPanel extends HTMLElement {
     this._ro = new ResizeObserver(() => { if (this._hass && !this._dragging && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render(); });
     this._ro.observe(this);
     this._ti = setInterval(() => this._tick(), 1000);
-    /* Zurück aus einer anderen App: Modul 8 sofort neu laden (der letzte Stand bleibt bis dahin stehen) */
-    this._vis = () => { if (document.visibilityState !== "visible" || !this._hass) return; setTimeout(() => { if (this._mdActive && this._mdActive() === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); } }, 400); };
+    /* Zurück aus einer anderen App: offenes Modul neu laden (der letzte Stand bleibt bis dahin stehen) */
+    this._vis = () => { if (document.visibilityState !== "visible" || !this._hass) return; setTimeout(() => this._resume(), 400); };
     document.addEventListener("visibilitychange", this._vis);
   }
   disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); clearInterval(this._supW); clearInterval(this._supTimer); if (this._vis) document.removeEventListener("visibilitychange", this._vis); }
@@ -86,8 +86,21 @@ class FensterHeizungPanel extends HTMLElement {
     });
   }
   _msnSpan(it) { if (it.classList.contains("m3ss")) { const w = Math.round(it.getBoundingClientRect().width); if (w && it.parentElement) it.parentElement.style.setProperty("--m3w", w + "px"); return; } if (!it.parentElement || !it.parentElement.classList.contains("msn")) return; const sp = `span ${Math.max(1, Math.ceil((it.getBoundingClientRect().height + 14) / 2))}`; if (it.style.gridRowEnd !== sp) it.style.gridRowEnd = sp; }
+  /* Nach Rückkehr in die App oder neuer Verbindung zu Home Assistant: Daten des offenen Moduls frisch holen.
+     Die angezeigten Werte bleiben stehen, bis die neuen da sind – nichts springt auf 0. */
+  _resume() {
+    if (!this._hass || !this.isConnected) return;
+    const m = this._mdActive && this._mdActive();
+    if (m === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); }
+    if (m === "gs") this._gsLoad(true);
+    if (m === "ef" && this._efxD && this._efxD.err) this._efxLoad(true);
+  }
   set hass(h) {
     const first = !this._hass;
+    if (h && h.connection && h.connection !== this._hcon) {  /* Verbindung neu aufgebaut → sobald bereit, nachladen */
+      this._hcon = h.connection;
+      try { h.connection.addEventListener("ready", () => { if (this._hass && this._hass.connection === h.connection) setTimeout(() => this._resume(), 300); }); } catch (_) { /* ältere Home-Assistant-Version */ }
+    }
     this._hass = h;
     if (first) this._load();
     this._render();

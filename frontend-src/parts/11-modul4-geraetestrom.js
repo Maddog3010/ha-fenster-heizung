@@ -8,15 +8,21 @@
     if (!this._hass || this._gsBusy) return;
     if (!force && this._gsD && Date.now() - this._gsD.ts < 15000) return;
     this._gsBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/gs_get" }).then((r) => { this._gsD = { ...(r || {}), ts: Date.now() }; }).catch(() => { this._gsD = { devices: [], hist: {}, err: true, ts: Date.now() }; })
+    /* Fehlgeschlagen (z. B. Verbindung nach dem Wechsel aus einer anderen App noch nicht wieder da): den letzten Stand behalten,
+       nie durch eine leere Liste ersetzen, und nach 3 s neu versuchen statt erst nach 15 s. */
+    this._hass.callWS({ type: "fenster_heizung/gs_get" }).then((r) => { this._gsD = { ...(r || {}), ts: Date.now() }; this._gsErrN = 0; }).catch(() => {
+      const n = this._gsErrN = (this._gsErrN || 0) + 1, wait = Math.min(15000, 3000 * n);
+      this._gsD = this._gsD && !this._gsD.err ? { ...this._gsD, stale: true, ts: Date.now() - 15000 + wait } : { devices: [], hist: {}, err: true, ts: Date.now() - 15000 + wait };
+      clearTimeout(this._gsRt); this._gsRt = setTimeout(() => { if (this._mdActive() === "gs") this._gsLoad(); }, wait + 50);
+    })
       .finally(() => { this._gsBusy = false; if (this._mdActive() === "gs" && !this._modal && !this._stOpen) this._render(); });
   }
   _gsAct(a, b) {
     const G = this._gsState(), k = b.dataset.k, i = +b.dataset.i;
     if (a === "gsset") { this._modal = { type: "gsset" }; this._renderModal(); }
     else if (a === "gsdone") { this._pkId = null; this._modal = null; this._renderModal(); this._gsLoad(true); this._render(); }
-    else if (a === "gsadd") { if (G.devices.length < GS_MAX) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5, typ: "" }); this._mdSave(); this._renderModal(); } }
-    else if (a === "gsdel") { G.devices.splice(i, 1); this._pkId = null; this._mdSave(); this._renderModal(); }
+    else if (a === "gsadd") { if (G.devices.length < GS_MAX) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5, typ: "" }); (this._gsOpen = this._gsOpen || new Set()).add(G.devices.length - 1); this._gsTp = G.devices.length - 1; this._mdSave(); this._renderModal(); } }
+    else if (a === "gsdel") { G.devices.splice(i, 1); this._pkId = null; this._gsTp = -1; this._gsOpen = new Set([...(this._gsOpen || [])].filter((x) => x !== i).map((x) => (x > i ? x - 1 : x))); this._mdSave(); this._renderModal(); }
     else if (a === "gsnot") { const n = new Set(G.notify); if (n.has(k)) n.delete(k); else n.add(k); G.notify = [...n]; this._mdSave(); this._renderModal(); }
     else if (a === "gsrange") { if (this._gsRg !== k) { this._gsRg = k; this._gsOff = 0; this._gsTipX = null; try { localStorage.setItem("fh_gs_range", k); } catch (_) { /* Speicher gesperrt */ } } this._render(); }
     else if (a === "gsoff") { const v = Number(k); this._gsOff = v === 0 ? 0 : Math.min(0, (this._gsOff || 0) + v); this._gsTipX = null; this._render(); }
@@ -38,7 +44,10 @@
     else if (this._gsDetAct && this._gsDetAct(a, b)) return;
     else if (this._gsSzAct && this._gsSzAct(a, b)) return;
     else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }
-    else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._mdSave(); this._renderModal(); } }
+    else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._gsTp = -1; this._mdSave(); this._renderModal(); } }
+    else if (a === "gsdopen") { const o = (this._gsOpen = this._gsOpen || new Set()); if (o.has(i)) o.delete(i); else o.add(i); this._gsTp = -1; this._renderModal(); }
+    else if (a === "gstp") { this._gsTp = this._gsTp === i ? -1 : i; this._renderModal(); }
+    else if (a === "gsrec") { const d = G.devices[i], T = d && GS_TYP[this._gsTyp(d)]; if (T) { d.thr = T.thr; d.end = T.end; this._mdSave(); this._renderModal(); } }
   }
   _gsChange(t) {
     const f = t.dataset.f, G = this._gsState(), d = G.devices[+t.dataset.i];
@@ -59,11 +68,8 @@
     return `<div class="ov" data-act="gsdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Gerätestrom</b><span>Einstellungen</span></div><button class="ibtn" data-act="gsdone" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("laundry", 15)}Geräte</div>
-      <div class="mut sm" style="margin:2px 0 6px">Je Gerät ein Leistungssensor (Steckdose oder Zähler, in Watt). Ein Durchlauf beginnt über der Startschwelle und endet, wenn die Leistung die eingestellte Zeit darunter bleibt. Der Gerätetyp setzt Symbol und passende Startwerte.</div>
-      ${G.devices.map((d, i) => `<div class="gsdc"><div class="gsdh"><input class="otxt" type="text" maxlength="30" placeholder="Name, z. B. Waschmaschine" value="${esc(d.name)}" data-f="gsname" data-i="${i}" aria-label="Gerätename"><button class="ibtn" data-act="gsdel" data-i="${i}" aria-label="Gerät entfernen">${ic("trash", 17)}</button></div>
-        <div class="gstyp" role="group" aria-label="Gerätetyp">${Object.entries(GS_TYP).map(([k, t]) => `<button class="gsch ${this._gsTyp(d) === k ? "sel" : ""}" data-act="gstyp" data-i="${i}" data-k="${k}" aria-pressed="${this._gsTyp(d) === k}">${ic(t.i, 14)}${t.n}</button>`).join("")}</div>
-        ${this._wzSel(pw, d.ent, "gsent", `data-i="${i}" data-k="ent"`, "– Leistungssensor wählen –", /wasch|trockn|sp(ü|u)l|geschirr|power|leistung/i)}
-        <div class="gsnums"><label>Startschwelle<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="thr" value="${d.thr}" min="1" max="500"><u>W</u></span></label><label>Ende nach<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="end" value="${d.end}" min="1" max="120"><u>min</u></span></label></div></div>`).join("")}
+      <div class="mut sm" style="margin:2px 0 8px">Je Gerät ein Leistungssensor (Steckdose oder Zähler, in Watt). Ein Durchlauf beginnt über der Startschwelle und endet, wenn die Leistung die eingestellte Zeit darunter bleibt. Antippen klappt ein Gerät auf.</div>
+      ${this._gsDevList(G, pw)}
       ${G.devices.length < GS_MAX ? `<button class="btn2" data-act="gsadd" style="width:100%;flex:none">${ic("plus", 16)} Gerät hinzufügen <span class="mut">(${G.devices.length} von ${GS_MAX})</span></button>` : `<div class="mut sm" style="text-align:center;margin:4px 0 8px">Höchstzahl erreicht: ${GS_MAX} von ${GS_MAX} Geräten.</div>`}
       <div class="lsec">${ic("sun", 15)}Quellen und Preise</div>
       <div class="gst ${this._gsReady() ? "" : "on"}">${ic(this._gsReady() ? "check" : "alert", 15)}<div>${this._gsReady() ? `Solar: <b>${nm(E.ent.pv)}</b>${E.ent.pv2 ? " + " + nm(E.ent.pv2) : ""} · Netz: <b>${nm(g.ent)}</b>${E.ent.bat || E.ent.bdis ? ` · Batterie: <b>${nm(E.ent.bat || E.ent.bdis)}</b>` : ""}<br><span class="mut">kommen aus Modul 3 – Energie-Übersicht.</span>` : "Solar- und Netz-Sensor fehlen. Sie werden einmal in Modul 3 – Energie-Übersicht gewählt und hier mitgenutzt."}</div></div>
@@ -84,10 +90,34 @@
       <div class="foot2"><button class="btn2 pri" data-act="gsdone">Fertig</button></div></div>`;
   }
   /* ---- Modul 4 v1.1: Zeitraum, Gerätetypen, einheitliche Farben ---- */
+  /* Geräte-Liste in den Einstellungen (2026.11.3b34): aufklappbare Karten mit HD-Bild, Typ-Wähler in Gruppen, Live-Wert und Empfehlung */
+  _gsDevList(G, pw) {
+    const st = this._hass.states, O = (this._gsOpen = this._gsOpen || new Set()), W = (e) => { const x = e && st[e]; if (!x) return null; const v = parseFloat(x.state); return isFinite(v) ? v * (/^kW$/i.test(x.attributes.unit_of_measurement || "") ? 1000 : 1) : null; };
+    const wf = (w) => (w >= 1000 ? num(w / 1000, 2) + " kW" : num(w, w < 10 ? 1 : 0) + " W");
+    return G.devices.map((d, i) => {
+      const typ = this._gsTyp(d), T = GS_TYP[typ], hd = this._gxAlt(typ) || "plug", w = W(d.ent), run = w != null && w > d.thr, open = O.has(i);
+      const sub = [T.n, d.ent ? esc(this._wzName(d.ent)) : `<span class="gsdw">kein Sensor</span>`, w != null ? `${run ? "läuft" : "jetzt"} ${wf(w)}` : ""].filter(Boolean).join(" · ");
+      const head = `<button class="gsdhd" data-act="gsdopen" data-i="${i}" aria-expanded="${open}"><span class="gsdimg${run ? " on" : ""}">${this._gx(hd, 46, { on: run })}</span><span class="gsdtt"><b>${esc(d.name || "Neues Gerät")}</b><small>${sub}</small></span><span class="gsdch${open ? " up" : ""}">${ic("chev", 18)}</span></button>`;
+      if (!open) return `<div class="gsdc2">${head}</div>`;
+      const pick = this._gsTp === i ? `<div class="gstpk">${GS_GRP.map(([g, ks]) => `<div class="gstpg"><small>${g}</small><div class="gstpr">${ks.map((k) => { const t = GS_TYP[k]; return `<button class="gstpt${typ === k ? " sel" : ""}" data-act="gstyp" data-i="${i}" data-k="${k}" aria-pressed="${typ === k}">${this._gx(this._gxAlt(k) || "plug", 40)}<span>${t.n}</span>${t.d ? `<em>${t.d}</em>` : ""}</button>`; }).join("")}</div></div>`).join("")}</div>` : "";
+      const rec = d.thr !== T.thr || d.end !== T.end ? `<div class="gsrec">${ic("info", 14)}<span>Empfohlen für ${T.n}: <b>${T.thr} W</b> · <b>${T.end} min</b></span><button class="lnk" data-act="gsrec" data-i="${i}">Übernehmen</button></div>` : `<div class="gsrec ok">${ic("check", 14)}<span>Passende Werte für ${T.n}</span></div>`;
+      const live = w != null ? `<div class="gslive ${run ? "on" : ""}"><i></i>Jetzt ${wf(w)} – ${run ? "über der Startschwelle, zählt als Durchlauf" : "unter der Startschwelle"}</div>` : "";
+      return `<div class="gsdc2 open">${head}<div class="gsdb">
+        <label class="gsdl">Name</label><input class="otxt" type="text" maxlength="30" placeholder="z. B. ${esc(T.n)}" value="${esc(d.name)}" data-f="gsname" data-i="${i}" aria-label="Gerätename">
+        <label class="gsdl">Gerätetyp</label><button class="gstyb" data-act="gstp" data-i="${i}" aria-expanded="${this._gsTp === i}">${this._gx(hd, 34)}<span><b>${T.n}</b>${T.d ? `<small>${T.d}</small>` : ""}</span><u>${this._gsTp === i ? "Schließen" : "Ändern"}</u></button>${pick}
+        <label class="gsdl">Leistungssensor</label>${this._wzSel(pw, d.ent, "gsent", `data-i="${i}" data-k="ent"`, "– Leistungssensor wählen –", /wasch|trockn|sp(ü|u)l|geschirr|thermomix|cookit|kaffee|power|leistung|verbrauch/i)}${live}
+        <div class="gsnums"><label>Startschwelle<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="thr" value="${d.thr}" min="1" max="500"><u>W</u></span></label><label>Ende nach<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="end" value="${d.end}" min="1" max="120"><u>min</u></span></label></div>${rec}
+        <div class="gsdft"><button class="btn2 sm" data-act="gsdel" data-i="${i}">${ic("trash", 15)} Gerät entfernen</button></div></div></div>`;
+    }).join("");
+  }
   _gsTyp(d) {
     if (d && GS_TYP[d.typ]) return d.typ;
     const n = String((d && d.name) || "").toLowerCase();
-    return /wasch/.test(n) ? "wasch" : /trock/.test(n) ? "trockner" : /sp(ü|u)l|geschirr/.test(n) ? "spuel" : /k(ü|u)hl|gefrier/.test(n) ? "kuehl" : /ofen|herd|thermomix|koch|mikro/.test(n) ? "ofen" : /pool|pumpe/.test(n) ? "pool" : /pc|computer|rechner|server/.test(n) ? "pc" : /tv|fernseh/.test(n) ? "tv" : /werk|s(ä|a)ge|kompressor/.test(n) ? "werk" : "sonst";
+    return /thermomix|k(ü|u)chenmaschine|monsieur|tm[5-7]\b/.test(n) ? "kmasch" : /cookit|kochstation|kochmaschine/.test(n) ? "kochst" : /mikro|microwave/.test(n) ? "mikro"
+      : /kaffee|espresso|siebtr|coffee/.test(n) ? "kaffee" : /wasserkocher|kettle/.test(n) ? "kocher" : /fritteuse|airfryer|heißluft|heissluft/.test(n) ? "airfryer"
+      : /gefrier|truhe|freezer/.test(n) ? "gefrier" : /sauger|roborock|roomba|saugrob|staub/.test(n) ? "sauger" : /b(ü|u)gel/.test(n) ? "buegel" : /klima/.test(n) ? "klima"
+      : /heizl(ü|u)ft|radiator|heizger/.test(n) ? "heiz" : /e-?bike|fahrrad|pedelec/.test(n) ? "ebike" : /aquarium|terrarium/.test(n) ? "aqua"
+      : /wasch/.test(n) ? "wasch" : /trock/.test(n) ? "trockner" : /sp(ü|u)l|geschirr/.test(n) ? "spuel" : /k(ü|u)hl/.test(n) ? "kuehl" : /ofen|herd|koch|backofen/.test(n) ? "ofen" : /pool|pumpe/.test(n) ? "pool" : /pc|computer|rechner|server|nas\b|konsole/.test(n) ? "pc" : /tv|fernseh/.test(n) ? "tv" : /werk|s(ä|a)ge|kompressor/.test(n) ? "werk" : "sonst";
   }
   _gsPer(shift = 0) {
     if (this._gsRg === undefined) { try { this._gsRg = localStorage.getItem("fh_gs_range") || "day"; } catch (_) { this._gsRg = "day"; } }
@@ -140,7 +170,7 @@
       <ul class="wwl"><li>${ic("sun", 16)}Anteile Solar, Batterie, Netz pro Gerät</li><li>${ic("chart", 16)}Kosten und Ersparnis: Tag, Woche, Monat, Jahr</li><li>${ic("bell", 16)}Meldung am Ende eines Durchlaufs</li></ul>
       ${adm ? `<button class="btn2 pri" data-act="gsset" style="margin-top:16px;flex:none;padding:12px 22px">${ic("tools", 16)} Gerät hinzufügen</button>` : "Ein Administrator kann das Modul einrichten."}</div>`;
     const warn = !this._gsReady() ? `<div class="banner">${ic("alert", 18)}<div><b>Solar- und Netz-Sensor fehlen.</b> Sie werden in Modul 3 – Energie-Übersicht gewählt. Bis dahin gilt der gesamte Strom als Netzstrom.${adm ? ` <button class="lnk" data-act="mdensetup">Modul 3 öffnen</button>` : ""}</div></div>` : "";
-    if (!D) return `${warn}<div class="card empty">Lade Gerätestrom …</div>`;
+    if (!D || D.err) return `${warn}<div class="card empty">${D && D.err ? "Verbindung zu Home Assistant wird wiederhergestellt …" : "Lade Gerätestrom …"}</div>`;
     this._gsTipBind();
     if (this._gsDet) { const dd = (D.devices || []).find((x) => x.id === this._gsDet); if (dd) return `${warn}${this._gsDetPage(dd)}`; this._gsDet = null; }
     const devs = D.devices || [], ids = devs.map((d) => d.id), P = this._gsPer(), A = this._gsAgg(ids, P), T = A.t, V = this._gsPrev(ids, P), per = this._gsLabel(P);

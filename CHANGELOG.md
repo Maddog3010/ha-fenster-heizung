@@ -2,6 +2,21 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3b34] - 2026-11-15
+
+### Geändert
+- **Modul 4: Geräte-Menü in den Einstellungen neu.** Jedes Gerät ist eine aufklappbare Karte mit HD-Bild (grün hinterlegt, wenn es gerade läuft), Name, Typ, Sensor und aktueller Leistung. Aufgeklappt:
+  - **Typ-Wähler mit HD-Bildern** in Gruppen: Waschen & Pflege, Küche, Kühlen, Haus & Klima, Technik & Freizeit, Sonstiges.
+  - **Live-Wert** des Sensors mit Hinweis, ob er über der Startschwelle liegt.
+  - **Empfohlene Werte** für Startschwelle und Ende je Gerätetyp, mit „Übernehmen“.
+  - Neue Geräte öffnen sich gleich mit dem Typ-Wähler.
+
+### Neu
+- **13 neue Gerätetypen mit eigenen HD-Bildern:** Küchenmaschine (z. B. Thermomix), Kochstation mit Rührarm (z. B. Cookit), Mikrowelle, Kaffeemaschine, Wasserkocher, Heißluftfritteuse, Gefriergerät, Saugroboter & Sauger, Bügeleisen, Klimagerät, Heizlüfter, E-Bike-Akku, Aquarium. Die Bilder sind eigene, neutrale Zeichnungen ohne Markenzeichen. Am Namen erkennt Modul 4 den Typ automatisch (z. B. „Thermomix TM7“ → Küchenmaschine, „Bosch Cookit“ → Kochstation).
+
+### Behoben
+- **Modul 4: Nach dem Wechsel aus einer anderen App standen kurz alle Werte auf 0.** Die Verbindung zu Home Assistant ist in diesem Moment noch nicht wieder da; die fehlgeschlagene Abfrage hat die Geräte durch eine leere Liste ersetzt, und erst 15 s später kam der nächste Versuch. Jetzt bleibt der letzte Stand stehen, Modul 4 lädt sofort nach der Rückkehr bzw. sobald die Verbindung wieder steht neu und versucht es bei einem Fehler nach 3 s erneut. Dasselbe gilt für Modul 19 und das Morgen-Briefing.
+
 ## [2026.11.3b33] - 2026-11-14
 
 ### Behoben

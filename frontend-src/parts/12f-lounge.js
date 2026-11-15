@@ -7,7 +7,7 @@
   _lgBLoad(force) {
     if (!this._hass || (this._lgB && !force) || this._lgBBusy) return;
     this._lgBBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/brief_get" }).then((r) => { this._lgB = r; }).catch(() => { this._lgB = { cfg: null, err: true }; })
+    this._hass.callWS({ type: "fenster_heizung/brief_get" }).then((r) => { this._lgB = r; }).catch(() => { if (!this._lgB || this._lgB.err) this._lgB = { cfg: null, err: true }; })
       .finally(() => { this._lgBBusy = false; if (this._loOpen) this._render(); if (this._modal && this._modal.type === "lgbrief") this._renderModal(); });
   }
   /* A2 / Poster: Zahlen aus den eigenen Daten (Modul 1 Pausen und Ersparnis, Modul 4 Läufe und Ersparnis) */

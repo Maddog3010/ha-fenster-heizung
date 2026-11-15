@@ -2052,6 +2052,20 @@ const CSS_GOE = `
 .goes{font-style:normal;font-size:.68rem;font-weight:700;border-radius:99px;padding:2px 8px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}.goes.g{color:#4ade80;border-color:color-mix(in srgb,#4ade80 45%,transparent)}.goes.a{color:#fbbf24;border-color:color-mix(in srgb,#fbbf24 45%,transparent)}.goes.x{color:#f87171}
 .goew{font-style:normal;color:#fbbf24;font-size:.68rem}
 .goev small.goep{color:var(--mut)}
+/* Modul 4 · Geräte-Liste in den Einstellungen (b34) */
+.gsdc2{border:1px solid var(--line);border-radius:16px;margin:0 0 8px;background:var(--card);overflow:hidden}.gsdc2.open{border-color:color-mix(in srgb,#2dd4bf 45%,var(--line))}
+.gsdhd{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px;background:transparent;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.gsdimg{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--primary-text-color) 5%,transparent);flex:none}.gsdimg.on{background:color-mix(in srgb,#22c55e 14%,transparent)}
+.gsdtt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.gsdtt b{font-size:.98rem}.gsdtt small{font-size:.78rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gsdw{color:#fbbf24}
+.gsdch{display:inline-flex;color:var(--mut);transition:transform .2s}.gsdch.up{transform:rotate(180deg)}
+.gsdb{padding:2px 14px 12px;display:flex;flex-direction:column;gap:6px}.gsdl{font-size:.74rem;font-weight:700;color:var(--mut);margin-top:6px}
+.gstyb{display:flex;align-items:center;gap:10px;padding:6px 10px;border:1px solid var(--line);border-radius:12px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}.gstyb>span{flex:1;display:flex;flex-direction:column}.gstyb small{font-size:.74rem;color:var(--mut)}.gstyb u{text-decoration:none;color:#2dd4bf;font-weight:700;font-size:.82rem}
+.gstpk{border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:8px;background:color-mix(in srgb,var(--primary-text-color) 3%,transparent)}
+.gstpg>small{display:block;font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);margin:0 0 4px 2px}.gstpr{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+.gstpt{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px 7px;border:1px solid transparent;border-radius:12px;background:var(--card);color:inherit;font:inherit;cursor:pointer;text-align:center}.gstpt span{font-size:.74rem;font-weight:600;line-height:1.2}.gstpt em{font-style:normal;font-size:.64rem;color:var(--mut);line-height:1.2}.gstpt.sel{border-color:#2dd4bf;background:color-mix(in srgb,#2dd4bf 12%,var(--card))}
+.gslive{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--mut)}.gslive i{width:8px;height:8px;border-radius:50%;background:#64748b}.gslive.on i{background:#22c55e;box-shadow:0 0 0 3px color-mix(in srgb,#22c55e 25%,transparent)}.gslive.on{color:#86efac}
+.gsrec{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mut)}.gsrec span{flex:1}.gsrec.ok{color:#5eead4}.gsrec .lnk{font-size:.8rem}
+.gsdft{display:flex;justify-content:flex-end;margin-top:4px}
 .goeun{display:flex;flex-direction:column;gap:6px;border:1px solid color-mix(in srgb,#fbbf24 40%,transparent);background:color-mix(in srgb,#fbbf24 8%,transparent);border-radius:12px;padding:10px 12px;margin:0 0 10px}.goeun>b{display:flex;gap:6px;align-items:center;font-size:.86rem;color:#fbbf24}.goeun>span{font-size:.78rem;color:var(--mut)}
 .goeunr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.goeunr em{font-style:normal;font-weight:700;min-width:80px}.goeunr .gschips{margin:0}
 .evselbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,#2dd4bf 10%,transparent)}.evselbar b{flex:1;font-size:.86rem}.evselbar .btn2{flex:none;width:auto;min-width:0;padding:6px 10px;font-size:.8rem}

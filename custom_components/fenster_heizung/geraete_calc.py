@@ -11,7 +11,9 @@ MAX_NOTIFY = 8
 KEEP_DAYS = 800
 DEFAULT_TYPICAL_W = 1500.0
 # Gerätetypen (Symbol und Startwerte im Dashboard), "" = aus dem Namen erraten
-GS_TYPES = ("", "wasch", "trockner", "spuel", "kuehl", "ofen", "pool", "pc", "tv", "werk", "sonst")
+GS_TYPES = ("", "wasch", "trockner", "spuel", "kuehl", "ofen", "pool", "pc", "tv", "werk", "sonst",
+            # 2026.11.3b34: Küchen- und Hausgeräte
+            "kmasch", "kochst", "mikro", "kaffee", "kocher", "airfryer", "gefrier", "sauger", "buegel", "klima", "heiz", "ebike", "aqua")
 
 _ENTITY = re.compile(r"^[a-z_]+\.[a-z0-9_]+$")
 _NOTIFY = re.compile(r"^notify\.[a-z0-9_]+$")

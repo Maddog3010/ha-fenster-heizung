@@ -4,6 +4,19 @@ const ICONS = {
   grid: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
   layers: '<path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 12.5l9 5 9-5M3 17l9 5 9-5"/>',
   chev: '<path d="M6 9l6 6 6-6"/>',
+  kbot: '<path d="M7 21h10l1-7H6l1 7z"/><path d="M8 14V9a4 4 0 0 1 8 0v5"/><path d="M9 5h6"/><circle cx="12" cy="17.5" r="1.6"/>',
+  kstation: '<path d="M3 20h18"/><rect x="5" y="15" width="14" height="5" rx="1.5"/><path d="M8 15v-4h8v4"/><path d="M18 15V5h-6v4"/><path d="M12 9v3"/>',
+  microwave: '<rect x="3" y="5" width="18" height="13" rx="2"/><rect x="5.5" y="7.5" width="9" height="8" rx="1"/><path d="M17.5 8v.01M17.5 11v.01M17.5 14v.01"/>',
+  coffee: '<path d="M5 9h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5V9z"/><path d="M16 11h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c0 1.5 1.5 1.5 1.5 3M11.5 3c0 1.5 1.5 1.5 1.5 3"/><path d="M4 21h14"/>',
+  kettle: '<path d="M6 20h11l-1-10H7L6 20z"/><path d="M8 10V8a4 4 0 0 1 8 0"/><path d="M16 12l3-2v4"/><path d="M4 20h15"/>',
+  airfryer: '<rect x="5" y="3" width="14" height="18" rx="5"/><path d="M5 12h14"/><rect x="9" y="6" width="6" height="3" rx="1"/><path d="M10 15.5h4"/>',
+  freezer: '<rect x="3" y="9" width="18" height="11" rx="2"/><path d="M3 12h18"/><path d="M9 15.5h6"/><path d="M12 2v5M10 3.5l4 2M14 3.5l-4 2"/>',
+  vacuum: '<circle cx="12" cy="13" r="8"/><circle cx="12" cy="13" r="3"/><path d="M12 5v2"/>',
+  iron: '<path d="M3 17h17a1 1 0 0 0 1-1c0-4-3-7-8-7H8"/><path d="M8 9V6h7"/><path d="M3 17l2-5h8"/><path d="M7 20h.01M11 20h.01M15 20h.01"/>',
+  aircon: '<rect x="3" y="4" width="18" height="8" rx="2"/><path d="M6 9h12"/><path d="M8 15c0 2-1 3-2 4M12 15v5M16 15c0 2 1 3 2 4"/>',
+  heaterI: '<rect x="5" y="5" width="14" height="13" rx="3"/><path d="M8 9h8M8 12h8M8 15h8"/><path d="M8 18v2M16 18v2"/>',
+  bike: '<circle cx="6" cy="16" r="3.5"/><circle cx="18" cy="16" r="3.5"/><path d="M6 16l4-7h5l3 7M10 9l3 7h-7M14 6h3"/><rect x="9.5" y="10.5" width="4" height="2.5" rx=".5"/>',
+  fish: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M8 12c2-2.5 5-2.5 7 0-2 2.5-5 2.5-7 0zM15 12l2.5-2v4z"/><path d="M6 16.5c1-.8 2-.8 3 0"/>',
   chat: '<path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5z"/>',
   send: '<path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/><path d="M11.5 13.5L20 4"/>',
   clip: '<path d="M20 11.5l-8.2 8.2a5 5 0 0 1-7.1-7.1l8.5-8.5a3.3 3.3 0 0 1 4.7 4.7l-8.4 8.4a1.7 1.7 0 0 1-2.4-2.4l7.7-7.7"/>',
@@ -267,7 +280,15 @@ const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000
 /* Modul 1: Standardwerte eines Messraums (Raum nur mit Temperatur und Luftfeuchte) */
 const MS_DEF = { parts: ["mess"], loc: "in", temp: "", hum: "", bat: "", mm: true, dew: false, mold: false, t_lo: 18, t_hi: 24, h_lo: 40, h_hi: 60, stale: 60 };
 const GS_MAX = 15; /* Modul 4: höchstens so viele Geräte (Backend: MAX_DEVICES) */
-const GS_TYP = { wasch: { n: "Waschmaschine", i: "laundry", thr: 5, end: 15 }, trockner: { n: "Trockner", i: "windy", thr: 50, end: 5 }, spuel: { n: "Spülmaschine", i: "dining", thr: 5, end: 30 }, kuehl: { n: "Kühlgerät", i: "fridge", thr: 20, end: 5 }, ofen: { n: "Küche", i: "pot", thr: 100, end: 10 }, pool: { n: "Pool", i: "wave", thr: 50, end: 5 }, pc: { n: "Computer", i: "gamepad", thr: 30, end: 5 }, tv: { n: "Fernseher", i: "tv", thr: 20, end: 5 }, werk: { n: "Werkstatt", i: "tools", thr: 50, end: 5 }, sonst: { n: "Gerät", i: "bolt", thr: 20, end: 5 } };
+const GS_TYP = { wasch: { n: "Waschmaschine", i: "laundry", thr: 5, end: 15 }, trockner: { n: "Trockner", i: "windy", thr: 50, end: 5 }, spuel: { n: "Spülmaschine", i: "dining", thr: 5, end: 30 }, kuehl: { n: "Kühlschrank", i: "fridge", thr: 20, end: 5 }, ofen: { n: "Herd & Backofen", i: "pot", thr: 100, end: 10 }, pool: { n: "Pool & Pumpe", i: "wave", thr: 50, end: 5 }, pc: { n: "Computer", i: "gamepad", thr: 30, end: 5 }, tv: { n: "Fernseher", i: "tv", thr: 20, end: 5 }, werk: { n: "Werkstatt", i: "tools", thr: 50, end: 5 }, sonst: { n: "Gerät", i: "bolt", thr: 20, end: 5 },
+  /* 2026.11.3b34: Küchen- und Hausgeräte */
+  kmasch: { n: "Küchenmaschine", d: "z. B. Thermomix", i: "kbot", thr: 10, end: 3 }, kochst: { n: "Kochstation", d: "mit Rührarm, z. B. Cookit", i: "kstation", thr: 10, end: 3 },
+  mikro: { n: "Mikrowelle", i: "microwave", thr: 50, end: 1 }, kaffee: { n: "Kaffeemaschine", i: "coffee", thr: 30, end: 2 }, kocher: { n: "Wasserkocher", i: "kettle", thr: 200, end: 1 },
+  airfryer: { n: "Heißluftfritteuse", i: "airfryer", thr: 100, end: 2 }, gefrier: { n: "Gefriergerät", i: "freezer", thr: 20, end: 5 }, sauger: { n: "Saugroboter & Sauger", i: "vacuum", thr: 15, end: 3 },
+  buegel: { n: "Bügeleisen", i: "iron", thr: 100, end: 3 }, klima: { n: "Klimagerät", i: "aircon", thr: 50, end: 5 }, heiz: { n: "Heizlüfter", i: "heaterI", thr: 100, end: 3 },
+  ebike: { n: "E-Bike-Akku", i: "bike", thr: 10, end: 5 }, aqua: { n: "Aquarium", i: "fish", thr: 5, end: 30 } };
+/* Gruppen im Typ-Wähler (Modul 4 → Geräte) */
+const GS_GRP = [["Waschen & Pflege", ["wasch", "trockner", "buegel", "sauger"]], ["Küche", ["kmasch", "kochst", "ofen", "mikro", "airfryer", "kaffee", "kocher", "spuel"]], ["Kühlen", ["kuehl", "gefrier"]], ["Haus & Klima", ["klima", "heiz", "pool", "aqua"]], ["Technik & Freizeit", ["pc", "tv", "ebike", "werk"]], ["Sonstiges", ["sonst"]]];
 const GS_COL = ["#fbbf24", "#a78bfa", "#f87171"], GS_SRC = ["Solar", "Batterie", "Netz"], GS_RANGES = ["day", "week", "month", "year"];
 const EN_RANGES = ["day", "week", "month", "year"];
 const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", bmode: "one", pvn: "", pv2n: "", ent: { pv: "", grid: "", house: "", bat: "", bchg: "", bdis: "", pve: "", pv2: "", pve2: "", imp: "", exp: "" } };
@@ -2829,6 +2850,20 @@ const CSS_GOE = `
 .goes{font-style:normal;font-size:.68rem;font-weight:700;border-radius:99px;padding:2px 8px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}.goes.g{color:#4ade80;border-color:color-mix(in srgb,#4ade80 45%,transparent)}.goes.a{color:#fbbf24;border-color:color-mix(in srgb,#fbbf24 45%,transparent)}.goes.x{color:#f87171}
 .goew{font-style:normal;color:#fbbf24;font-size:.68rem}
 .goev small.goep{color:var(--mut)}
+/* Modul 4 · Geräte-Liste in den Einstellungen (b34) */
+.gsdc2{border:1px solid var(--line);border-radius:16px;margin:0 0 8px;background:var(--card);overflow:hidden}.gsdc2.open{border-color:color-mix(in srgb,#2dd4bf 45%,var(--line))}
+.gsdhd{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px;background:transparent;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.gsdimg{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--primary-text-color) 5%,transparent);flex:none}.gsdimg.on{background:color-mix(in srgb,#22c55e 14%,transparent)}
+.gsdtt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.gsdtt b{font-size:.98rem}.gsdtt small{font-size:.78rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.gsdw{color:#fbbf24}
+.gsdch{display:inline-flex;color:var(--mut);transition:transform .2s}.gsdch.up{transform:rotate(180deg)}
+.gsdb{padding:2px 14px 12px;display:flex;flex-direction:column;gap:6px}.gsdl{font-size:.74rem;font-weight:700;color:var(--mut);margin-top:6px}
+.gstyb{display:flex;align-items:center;gap:10px;padding:6px 10px;border:1px solid var(--line);border-radius:12px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer}.gstyb>span{flex:1;display:flex;flex-direction:column}.gstyb small{font-size:.74rem;color:var(--mut)}.gstyb u{text-decoration:none;color:#2dd4bf;font-weight:700;font-size:.82rem}
+.gstpk{border:1px solid var(--line);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:8px;background:color-mix(in srgb,var(--primary-text-color) 3%,transparent)}
+.gstpg>small{display:block;font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);margin:0 0 4px 2px}.gstpr{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px}
+.gstpt{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px 7px;border:1px solid transparent;border-radius:12px;background:var(--card);color:inherit;font:inherit;cursor:pointer;text-align:center}.gstpt span{font-size:.74rem;font-weight:600;line-height:1.2}.gstpt em{font-style:normal;font-size:.64rem;color:var(--mut);line-height:1.2}.gstpt.sel{border-color:#2dd4bf;background:color-mix(in srgb,#2dd4bf 12%,var(--card))}
+.gslive{display:flex;align-items:center;gap:7px;font-size:.78rem;color:var(--mut)}.gslive i{width:8px;height:8px;border-radius:50%;background:#64748b}.gslive.on i{background:#22c55e;box-shadow:0 0 0 3px color-mix(in srgb,#22c55e 25%,transparent)}.gslive.on{color:#86efac}
+.gsrec{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--mut)}.gsrec span{flex:1}.gsrec.ok{color:#5eead4}.gsrec .lnk{font-size:.8rem}
+.gsdft{display:flex;justify-content:flex-end;margin-top:4px}
 .goeun{display:flex;flex-direction:column;gap:6px;border:1px solid color-mix(in srgb,#fbbf24 40%,transparent);background:color-mix(in srgb,#fbbf24 8%,transparent);border-radius:12px;padding:10px 12px;margin:0 0 10px}.goeun>b{display:flex;gap:6px;align-items:center;font-size:.86rem;color:#fbbf24}.goeun>span{font-size:.78rem;color:var(--mut)}
 .goeunr{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.goeunr em{font-style:normal;font-weight:700;min-width:80px}.goeunr .gschips{margin:0}
 .evselbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,#2dd4bf 10%,transparent)}.evselbar b{flex:1;font-size:.86rem}.evselbar .btn2{flex:none;width:auto;min-width:0;padding:6px 10px;font-size:.8rem}
@@ -3229,8 +3264,8 @@ class FensterHeizungPanel extends HTMLElement {
     this._ro = new ResizeObserver(() => { if (this._hass && !this._dragging && Math.abs(this.clientWidth - (this._w || 0)) > 24) this._render(); });
     this._ro.observe(this);
     this._ti = setInterval(() => this._tick(), 1000);
-    /* Zurück aus einer anderen App: Modul 8 sofort neu laden (der letzte Stand bleibt bis dahin stehen) */
-    this._vis = () => { if (document.visibilityState !== "visible" || !this._hass) return; setTimeout(() => { if (this._mdActive && this._mdActive() === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); } }, 400); };
+    /* Zurück aus einer anderen App: offenes Modul neu laden (der letzte Stand bleibt bis dahin stehen) */
+    this._vis = () => { if (document.visibilityState !== "visible" || !this._hass) return; setTimeout(() => this._resume(), 400); };
     document.addEventListener("visibilitychange", this._vis);
   }
   disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); clearInterval(this._supW); clearInterval(this._supTimer); if (this._vis) document.removeEventListener("visibilitychange", this._vis); }
@@ -3304,8 +3339,21 @@ class FensterHeizungPanel extends HTMLElement {
     });
   }
   _msnSpan(it) { if (it.classList.contains("m3ss")) { const w = Math.round(it.getBoundingClientRect().width); if (w && it.parentElement) it.parentElement.style.setProperty("--m3w", w + "px"); return; } if (!it.parentElement || !it.parentElement.classList.contains("msn")) return; const sp = `span ${Math.max(1, Math.ceil((it.getBoundingClientRect().height + 14) / 2))}`; if (it.style.gridRowEnd !== sp) it.style.gridRowEnd = sp; }
+  /* Nach Rückkehr in die App oder neuer Verbindung zu Home Assistant: Daten des offenen Moduls frisch holen.
+     Die angezeigten Werte bleiben stehen, bis die neuen da sind – nichts springt auf 0. */
+  _resume() {
+    if (!this._hass || !this.isConnected) return;
+    const m = this._mdActive && this._mdActive();
+    if (m === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); }
+    if (m === "gs") this._gsLoad(true);
+    if (m === "ef" && this._efxD && this._efxD.err) this._efxLoad(true);
+  }
   set hass(h) {
     const first = !this._hass;
+    if (h && h.connection && h.connection !== this._hcon) {  /* Verbindung neu aufgebaut → sobald bereit, nachladen */
+      this._hcon = h.connection;
+      try { h.connection.addEventListener("ready", () => { if (this._hass && this._hass.connection === h.connection) setTimeout(() => this._resume(), 300); }); } catch (_) { /* ältere Home-Assistant-Version */ }
+    }
     this._hass = h;
     if (first) this._load();
     this._render();
@@ -5205,6 +5253,86 @@ class FensterHeizungPanel extends HTMLElement {
         `<circle cx="32" cy="30" r="15" fill="url(#${q("i")})"/><circle cx="25.5" cy="30" r="2.8" fill="#334155"/><circle cx="38.5" cy="30" r="2.8" fill="#334155"/>` +
         `<rect x="30.6" y="15" width="2.8" height="4" rx="1" fill="#cbd5e1"/><rect x="30.6" y="41" width="2.8" height="4" rx="1" fill="#cbd5e1"/>` +
         `<circle cx="50" cy="12" r="4" fill="${o.on ? "#22c55e" : "#475569"}" stroke="#fff" stroke-width="1.2"/>` + gl("M13 14 a6 6 0 0 1 5 -4 h8 l-13 16z") },
+      /* ---------- Küchen- und Hausgeräte (Modul 4, 2026.11.3b34) – eigene, neutrale Zeichnungen ohne Marken ---------- */
+      kitchenBot: { n: "Küchenmaschine", g: 3, f: (q, o) => lg(q("b"), M.white, 0, 0, 1, 1) + lg(q("s"), M.steel, 0, 0, 1, 0) + rg(q("d"), o.on ? [[0, "#99f6e4"], [.6, "#14b8a6"], [1, "#0f766e"]] : [[0, "#475569"], [1, "#0f172a"]], .4, .35, .8) + sh(19) +
+        (o.on ? [26, 33, 40].map((x) => `<path d="M${x} 9 q-2.4 -2.4 0 -4.6 q2.4 -2.3 0 -4.4" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" opacity=".8"/>`).join("") : "") +
+        `<path d="M19 30 L21.5 14 H42.5 L45 30z" fill="url(#${q("s")})" stroke="#64748b" stroke-opacity=".5"/><path d="M45 17 C52 17 53 27 46 28" fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>` +
+        `<rect x="20" y="10" width="24" height="5" rx="2.5" fill="#e2e8f0" stroke="#94a3b8" stroke-opacity=".6"/><rect x="29" y="7" width="6" height="3.5" rx="1.5" fill="#94a3b8"/>` +
+        `<path d="M13 57 L16 31 H48 L51 57z" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
+        `<circle cx="32" cy="43" r="7.5" fill="url(#${q("d")})" stroke="#cbd5e1" stroke-width="1.4"/>` +
+        (o.on ? `<path d="M32 37.5 a5.5 5.5 0 1 1 -5.2 3.8" fill="none" stroke="#ccfbf1" stroke-width="1.6" stroke-linecap="round"/>` : "") +
+        `<circle cx="44" cy="51" r="2.2" fill="#cbd5e1" stroke="#94a3b8"/>` + gl("M17 33 h4 l-2.4 21 h-3z") + gl("M23 15.5 h5 l-2 13 h-4.4z") },
+      cookStation: { n: "Kochstation", g: 3, f: (q, o) => lg(q("b"), M.white, 0, 0, 1, 1) + lg(q("p"), M.steel, 0, 0, 1, 0) + lg(q("g"), [[0, "#fde047"], [.5, "#fb923c"], [1, "#dc2626"]], 0, 0, 1, 0) + sh(25) +
+        `<rect x="43" y="8" width="11" height="36" rx="4" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
+        `<rect x="25" y="8" width="29" height="7.5" rx="3.75" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
+        `<rect x="30.4" y="15" width="2.6" height="${o.on ? 19 : 16}" rx="1.3" fill="#64748b"/>` +
+        (o.on ? `<path d="M26 34 h11" stroke="#475569" stroke-width="2.4" stroke-linecap="round"/>` + [22, 31, 40].map((x) => `<path d="M${x} 22 q-2 -2 0 -4 q2 -2 0 -4" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round" opacity=".8"/>`).join("") : "") +
+        `<path d="M13 25 H45 V40 a4 4 0 0 1 -4 4 H17 a4 4 0 0 1 -4 -4z" fill="url(#${q("p")})" stroke="#64748b" stroke-opacity=".6"/><rect x="11" y="23.5" width="36" height="3" rx="1.5" fill="#cbd5e1"/>` +
+        `<rect x="8" y="28" width="5" height="2.6" rx="1.3" fill="#64748b"/><rect x="45" y="28" width="5" height="2.6" rx="1.3" fill="#64748b"/>` +
+        `<rect x="5" y="44" width="54" height="12" rx="5" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
+        (o.on ? `<rect x="14" y="44.2" width="30" height="1.6" rx=".8" fill="url(#${q("g")})"/>` : "") +
+        `<circle cx="51" cy="50" r="3" fill="#e2e8f0" stroke="#94a3b8"/><rect x="9" y="48" width="10" height="4" rx="1.2" fill="#0f172a"/><rect x="10" y="49" width="${o.on ? 6 : 2}" height="2" rx=".6" fill="#2dd4bf"/>` + gl("M46 11 h3 v30 h-3z") },
+      microwave: { n: "Mikrowelle", g: 3, f: (q, o) => lg(q("b"), M.white, 0, 0, 1, 1) + rg(q("i"), o.on ? [[0, "#fef9c3"], [.55, "#fcd34d"], [1, "#b45309"]] : [[0, "#334155"], [1, "#0b1220"]], .45, .45, .75) + sh(26) +
+        `<rect x="4" y="13" width="56" height="38" rx="5" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
+        `<rect x="8" y="17" width="37" height="30" rx="3" fill="url(#${q("i")})"/>` + (o.on ? `<ellipse cx="26.5" cy="40" rx="11" ry="2.6" fill="#fff" opacity=".55"/><rect x="21" y="32" width="11" height="7" rx="2" fill="#f97316"/>` : "") +
+        `<rect x="49" y="18" width="8" height="5" rx="1.2" fill="#0f172a"/><text x="53" y="22" text-anchor="middle" font-size="3.6" font-weight="800" font-family="system-ui,sans-serif" fill="#2dd4bf">${o.on ? "1:30" : "0:00"}</text>` +
+        [28, 33, 38].map((y) => `<rect x="49" y="${y}" width="8" height="2.6" rx="1.3" fill="#cbd5e1"/>`).join("") + `<circle cx="53" cy="44" r="2.4" fill="#94a3b8"/>` +
+        gl("M8 17 h12 l-12 13z") + `<rect x="10" y="51" width="5" height="2.4" rx="1" fill="#64748b"/><rect x="49" y="51" width="5" height="2.4" rx="1" fill="#64748b"/>` },
+      coffee: { n: "Kaffeemaschine", g: 3, f: (q, o) => lg(q("b"), M.steel, 0, 0, 1, 1) + lg(q("d"), M.dark, 0, 0, 0, 1) + lg(q("c"), M.white, 0, 0, 1, 0) + sh(20) +
+        `<rect x="12" y="6" width="40" height="49" rx="5" fill="url(#${q("b")})" stroke="#64748b" stroke-opacity=".5"/><rect x="12" y="6" width="40" height="11" rx="5" fill="url(#${q("d")})"/>` +
+        `<rect x="18" y="9.5" width="12" height="4" rx="1" fill="#0f172a"/><circle cx="40" cy="11.5" r="2.2" fill="${o.on ? "#22c55e" : "#94a3b8"}"/><circle cx="46" cy="11.5" r="2.2" fill="#cbd5e1"/>` +
+        `<rect x="22" y="20" width="20" height="5" rx="2" fill="#475569"/><rect x="29" y="25" width="6" height="3" fill="#334155"/>` +
+        (o.on ? `<rect x="31.2" y="28" width="1.6" height="10" fill="#7c2d12"/>` + [28, 36].map((x) => `<path d="M${x} 36 q-1.8 -1.8 0 -3.6 q1.8 -1.8 0 -3.6" fill="none" stroke="#e2e8f0" stroke-width="1.3" stroke-linecap="round" opacity=".85"/>`).join("") : "") +
+        `<path d="M24 38 H40 L38.5 47 a3 3 0 0 1 -3 2.4 h-7 a3 3 0 0 1 -3 -2.4z" fill="url(#${q("c")})" stroke="#94a3b8" stroke-opacity=".6"/><path d="M40 40 a3.6 3.6 0 0 1 0 6" fill="none" stroke="#cbd5e1" stroke-width="1.8"/>` +
+        (o.on ? `<ellipse cx="32" cy="39.2" rx="7" ry="1.2" fill="#78350f"/>` : "") +
+        `<rect x="16" y="50" width="32" height="3" rx="1.5" fill="#475569"/>` + gl("M15 18 h4 v34 a3 3 0 0 1 -4 -3z") },
+      kettle: { n: "Wasserkocher", g: 3, f: (q, o) => lg(q("b"), M.steel, 0, 0, 1, 0) + lg(q("f"), M.dark, 0, 0, 0, 1) + sh(19) +
+        (o.on ? [24, 31, 38].map((x) => `<path d="M${x} 13 q-2.4 -2.4 0 -4.8 q2.4 -2.4 0 -4.8" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" opacity=".85"/>`).join("") : "") +
+        `<path d="M44 22 C54 22 55 42 44 44" fill="none" stroke="#334155" stroke-width="4.5" stroke-linecap="round"/>` +
+        `<path d="M18 19 H42 L45 52 H15z" fill="url(#${q("b")})" stroke="#64748b" stroke-opacity=".5"/><path d="M18 19 L11 15 L13 21 L18.5 23z" fill="#94a3b8"/>` +
+        `<rect x="19" y="15" width="22" height="5" rx="2.5" fill="url(#${q("f")})"/>` +
+        `<rect x="23" y="27" width="4" height="18" rx="2" fill="${o.on ? "#38bdf8" : "#cbd5e1"}" opacity="${o.on ? 1 : .8}"/>` +
+        `<rect x="12" y="51" width="36" height="5" rx="2.5" fill="url(#${q("f")})"/><circle cx="43" cy="53.5" r="1.3" fill="${o.on ? "#38bdf8" : "#64748b"}"/>` + gl("M20 22 h4 l-1.5 27 h-4z") },
+      airfryer: { n: "Heißluftfritteuse", g: 3, f: (q, o) => lg(q("b"), M.dark, 0, 0, 1, 1) + lg(q("w"), [[0, "#334155"], [1, "#111827"]], 0, 0, 0, 1) + sh(19) +
+        `<rect x="14" y="5" width="36" height="51" rx="13" fill="url(#${q("b")})"/><rect x="21" y="10" width="22" height="9" rx="3" fill="#0b1220" stroke="#475569"/>` +
+        `<text x="32" y="17" text-anchor="middle" font-size="6" font-weight="800" font-family="system-ui,sans-serif" fill="${o.on ? "#fb923c" : "#64748b"}">${o.t || (o.on ? "180°" : "– –")}</text>` +
+        `<path d="M14 31 H50" stroke="#0b1220" stroke-width="1.6"/><path d="M15 32 H49 V43 a13 13 0 0 1 -13 13 H28 a13 13 0 0 1 -13 -13z" fill="url(#${q("w")})"/>` +
+        `<rect x="24" y="38" width="16" height="5" rx="2.5" fill="#94a3b8"/>` + (o.on ? `<rect x="19" y="28" width="26" height="1.4" rx=".7" fill="#f97316" opacity=".9"/>` : "") +
+        gl("M18 10 a8 8 0 0 1 6 -4 h3 l-9 18z") },
+      freezer: { n: "Gefriertruhe", g: 3, f: (q, o) => lg(q("b"), M.white, 0, 0, 1, 1) + lg(q("l"), [[0, "#e2e8f0"], [1, "#94a3b8"]], 0, 0, 0, 1) + sh(27) +
+        `<rect x="5" y="25" width="54" height="31" rx="4" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/><rect x="4" y="20" width="56" height="8" rx="3" fill="url(#${q("l")})"/>` +
+        `<rect x="26" y="29" width="12" height="3" rx="1.5" fill="#64748b"/>` +
+        `<path d="M18 37 V51 M12 40.5 L24 47.5 M12 47.5 L24 40.5" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round"/>` +
+        `<rect x="36" y="40" width="16" height="9" rx="2" fill="#0f172a"/><text x="44" y="46.8" text-anchor="middle" font-size="6" font-weight="800" font-family="system-ui,sans-serif" fill="#7dd3fc">${o.t || "-18°"}</text>` +
+        `<circle cx="54" cy="24" r="1.6" fill="${o.on ? "#22c55e" : "#94a3b8"}"/>` + gl("M8 29 h4 v24 a3 3 0 0 1 -4 -3z") },
+      iron: { n: "Bügeleisen", g: 3, f: (q, o) => lg(q("b"), [[0, "#a5f3fc"], [.5, "#06b6d4"], [1, "#0e7490"]], 0, 0, 1, 1) + lg(q("p"), M.steel, 0, 0, 1, 0) + sh(25, 57) +
+        (o.on ? [16, 24, 32].map((x) => `<path d="M${x} 52 q-2 -2 0 -4" fill="none" stroke="#e2e8f0" stroke-width="1.6" stroke-linecap="round" opacity=".9"/>`).join("") : "") +
+        `<path d="M6 44 C6 30 20 22 38 22 H56 V44z" fill="url(#${q("b")})"/><path d="M5 44 H57 V48 H9 a4 4 0 0 1 -4 -4z" fill="url(#${q("p")})" stroke="#64748b" stroke-opacity=".5"/>` +
+        `<path d="M30 22 C30 12 36 10 44 10 H54 a3 3 0 0 1 3 3 V22" fill="none" stroke="#334155" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>` +
+        `<circle cx="44" cy="33" r="4" fill="#e2e8f0" stroke="#0e7490"/><path d="M44 30 v3" stroke="#0e7490" stroke-width="1.4" stroke-linecap="round"/>` +
+        `<circle cx="20" cy="36" r="1.8" fill="${o.on ? "#f97316" : "#cffafe"}"/>` + gl("M12 38 C15 30 22 26 30 25 C23 28 18 32 16 38z") },
+      aircon: { n: "Klimagerät", g: 3, f: (q, o) => lg(q("b"), M.white, 0, 0, 1, 1) + sh(18) +
+        `<path d="M46 40 C56 40 58 48 58 56" fill="none" stroke="#cbd5e1" stroke-width="6" stroke-linecap="round"/><path d="M46 40 C56 40 58 48 58 56" fill="none" stroke="#94a3b8" stroke-width="6" stroke-dasharray="1.4 2.2"/>` +
+        `<rect x="17" y="5" width="30" height="51" rx="6" fill="url(#${q("b")})" stroke="var(--gx-rim,#94a3b8)" stroke-opacity=".55"/>` +
+        [10, 13.5, 17].map((y) => `<rect x="21" y="${y}" width="22" height="1.8" rx=".9" fill="#94a3b8"/>`).join("") +
+        `<rect x="24" y="24" width="16" height="7" rx="1.5" fill="#0f172a"/><text x="32" y="29.5" text-anchor="middle" font-size="5" font-weight="800" font-family="system-ui,sans-serif" fill="#7dd3fc">${o.t || "22°"}</text>` +
+        (o.on ? [[10, 12], [8, 18], [10, 24]].map(([x, y]) => `<path d="M${x + 6} ${y} q-4 -1.5 -8 0" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round"/>`).join("") : "") +
+        `<circle cx="32" cy="40" r="2.4" fill="${o.on ? "#22c55e" : "#cbd5e1"}"/><rect x="20" y="56" width="5" height="2.4" rx="1.2" fill="#475569"/><rect x="39" y="56" width="5" height="2.4" rx="1.2" fill="#475569"/>` + gl("M20 8 h3 v44 a3 3 0 0 1 -3 -3z") },
+      ebike: { n: "E-Bike", g: 3, f: (q, o) => lg(q("f"), M.teal, 0, 0, 1, 1) + lg(q("a"), o.on ? M.green : M.dark, 0, 0, 1, 0) + sh(27, 58) +
+        [14, 50].map((x) => `<circle cx="${x}" cy="44" r="10" fill="none" stroke="#1f2937" stroke-width="3.6"/><circle cx="${x}" cy="44" r="2.2" fill="#64748b"/>`).join("") +
+        `<path d="M14 44 L25 26 H42 L50 44 M25 26 L33 44 H14 M40 20 L43 30" fill="none" stroke="url(#${q("f")})" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>` +
+        `<path d="M22 22 h7" stroke="#334155" stroke-width="3" stroke-linecap="round"/><path d="M38 19 h6" stroke="#334155" stroke-width="3" stroke-linecap="round"/>` +
+        `<g transform="rotate(-58 29 35)"><rect x="21" y="31.5" width="16" height="7" rx="2" fill="url(#${q("a")})" stroke="#0f172a" stroke-opacity=".5"/></g>` +
+        (o.on ? `<path d="M29 12 l-3 6 h3 l-2 5 5 -7 h-3 l2 -4z" fill="#facc15" stroke="#a16207" stroke-width=".6"/>` : "") },
+      aquarium: { n: "Aquarium", g: 3, f: (q, o) => lg(q("w"), [[0, "#a5f3fc"], [.6, "#22d3ee"], [1, "#0e7490"]]) + lg(q("l"), M.dark, 0, 0, 0, 1) + sh(27) +
+        (o.on ? `<path d="M8 15 H56 L60 52 H4z" fill="#fef9c3" opacity=".16"/>` : "") +
+        `<rect x="4" y="11" width="56" height="5" rx="2" fill="url(#${q("l")})"/>` +
+        `<rect x="6" y="16" width="52" height="33" rx="2" fill="url(#${q("w")})" stroke="#cffafe" stroke-width="1.4" stroke-opacity=".8"/>` +
+        `<path d="M12 49 C11 41 14 36 13 30 M16 49 C17 42 15 38 17 33 M50 49 C51 42 48 38 50 32" fill="none" stroke="#16a34a" stroke-width="2.4" stroke-linecap="round"/>` +
+        `<path d="M27 30 c4 -4 10 -4 14 0 c-4 4 -10 4 -14 0z M41 30 l5 -3.5 v7z" fill="#fb923c"/><circle cx="31" cy="29.2" r=".9" fill="#0f172a"/>` +
+        `<path d="M22 40 c2.5 -2.4 6 -2.4 8.5 0 c-2.5 2.4 -6 2.4 -8.5 0z M30.5 40 l3 -2 v4z" fill="#facc15"/>` +
+        `<circle cx="38" cy="22" r="1.2" fill="#ecfeff" opacity=".8"/><circle cx="36" cy="25.5" r=".9" fill="#ecfeff" opacity=".8"/>` +
+        `<rect x="6" y="45" width="52" height="4" fill="#d6b98c"/><rect x="3" y="49" width="58" height="6" rx="2" fill="url(#${q("l")})"/>` + gl("M8 18 h10 l-10 12z") },
       /* ---------- Startseite & Module (Konzept Startseite, Stufe 1) ---------- */
       weather: { n: "Wetter", g: 4, f: (q, o) => rg(q("s"), M.gold, .4, .35, .8) + lg(q("c"), [[0, "#ffffff"], [.6, "#e8eef5"], [1, "#a9b6c6"]]) + sh(20, 59) +
         `<g>${[0, 45, 90, 135, 180, 225, 270, 315].map((a) => `<rect x="39" y="3" width="3" height="6" rx="1.5" fill="#fbbf24" transform="rotate(${a} 40.5 19)"/>`).join("")}</g>` +
@@ -5267,6 +5395,8 @@ class FensterHeizungPanel extends HTMLElement {
       trockner: "dryer", kuehlschrank: "fridge", wasser: "boiler", blitz: "bolt", heizung: "radiator", netz: "grid", lampe: "lamp",
       wasch: "washer", spuel: "dishwasher", kuehl: "fridge", ofen: "oven", pool: "pool", pc: "pc", tv: "tvset", werk: "workshop", sonst: "plug",
       radiator: "radiator", window: "window", windowOpen: "windowOpen", sun: "sun", car: "car", fridge: "fridge", laundry: "washer", pot: "oven",
+      kmasch: "kitchenBot", kochst: "cookStation", mikro: "microwave", kaffee: "coffee", kocher: "kettle", gefrier: "freezer", sauger: "robot",
+      buegel: "iron", klima: "aircon", heiz: "heater", ebike: "ebike", aqua: "aquarium", thermomix: "kitchenBot", cookit: "cookStation",
       lamp: "lamp", drop: "humidity", suitcase: "vacation", tools: "workshop", wave: "pool", gamepad: "pc", roof: "house" };
     return (K._GX = { L, G, A });
   }
@@ -10236,15 +10366,21 @@ class FensterHeizungPanel extends HTMLElement {
     if (!this._hass || this._gsBusy) return;
     if (!force && this._gsD && Date.now() - this._gsD.ts < 15000) return;
     this._gsBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/gs_get" }).then((r) => { this._gsD = { ...(r || {}), ts: Date.now() }; }).catch(() => { this._gsD = { devices: [], hist: {}, err: true, ts: Date.now() }; })
+    /* Fehlgeschlagen (z. B. Verbindung nach dem Wechsel aus einer anderen App noch nicht wieder da): den letzten Stand behalten,
+       nie durch eine leere Liste ersetzen, und nach 3 s neu versuchen statt erst nach 15 s. */
+    this._hass.callWS({ type: "fenster_heizung/gs_get" }).then((r) => { this._gsD = { ...(r || {}), ts: Date.now() }; this._gsErrN = 0; }).catch(() => {
+      const n = this._gsErrN = (this._gsErrN || 0) + 1, wait = Math.min(15000, 3000 * n);
+      this._gsD = this._gsD && !this._gsD.err ? { ...this._gsD, stale: true, ts: Date.now() - 15000 + wait } : { devices: [], hist: {}, err: true, ts: Date.now() - 15000 + wait };
+      clearTimeout(this._gsRt); this._gsRt = setTimeout(() => { if (this._mdActive() === "gs") this._gsLoad(); }, wait + 50);
+    })
       .finally(() => { this._gsBusy = false; if (this._mdActive() === "gs" && !this._modal && !this._stOpen) this._render(); });
   }
   _gsAct(a, b) {
     const G = this._gsState(), k = b.dataset.k, i = +b.dataset.i;
     if (a === "gsset") { this._modal = { type: "gsset" }; this._renderModal(); }
     else if (a === "gsdone") { this._pkId = null; this._modal = null; this._renderModal(); this._gsLoad(true); this._render(); }
-    else if (a === "gsadd") { if (G.devices.length < GS_MAX) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5, typ: "" }); this._mdSave(); this._renderModal(); } }
-    else if (a === "gsdel") { G.devices.splice(i, 1); this._pkId = null; this._mdSave(); this._renderModal(); }
+    else if (a === "gsadd") { if (G.devices.length < GS_MAX) { G.devices.push({ id: "g" + Date.now().toString(36), name: "", ent: "", thr: 20, end: 5, typ: "" }); (this._gsOpen = this._gsOpen || new Set()).add(G.devices.length - 1); this._gsTp = G.devices.length - 1; this._mdSave(); this._renderModal(); } }
+    else if (a === "gsdel") { G.devices.splice(i, 1); this._pkId = null; this._gsTp = -1; this._gsOpen = new Set([...(this._gsOpen || [])].filter((x) => x !== i).map((x) => (x > i ? x - 1 : x))); this._mdSave(); this._renderModal(); }
     else if (a === "gsnot") { const n = new Set(G.notify); if (n.has(k)) n.delete(k); else n.add(k); G.notify = [...n]; this._mdSave(); this._renderModal(); }
     else if (a === "gsrange") { if (this._gsRg !== k) { this._gsRg = k; this._gsOff = 0; this._gsTipX = null; try { localStorage.setItem("fh_gs_range", k); } catch (_) { /* Speicher gesperrt */ } } this._render(); }
     else if (a === "gsoff") { const v = Number(k); this._gsOff = v === 0 ? 0 : Math.min(0, (this._gsOff || 0) + v); this._gsTipX = null; this._render(); }
@@ -10266,7 +10402,10 @@ class FensterHeizungPanel extends HTMLElement {
     else if (this._gsDetAct && this._gsDetAct(a, b)) return;
     else if (this._gsSzAct && this._gsSzAct(a, b)) return;
     else if (a === "gsdev") { this._gsSel = this._gsSel === k ? "" : k; this._render(); }
-    else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._mdSave(); this._renderModal(); } }
+    else if (a === "gstyp") { const d = G.devices[i]; if (d) { const old = GS_TYP[d.typ || this._gsTyp(d)], nw = GS_TYP[k]; if (old && d.thr === old.thr && d.end === old.end || d.thr === 20 && d.end === 5) { d.thr = nw.thr; d.end = nw.end; } d.typ = k; this._gsTp = -1; this._mdSave(); this._renderModal(); } }
+    else if (a === "gsdopen") { const o = (this._gsOpen = this._gsOpen || new Set()); if (o.has(i)) o.delete(i); else o.add(i); this._gsTp = -1; this._renderModal(); }
+    else if (a === "gstp") { this._gsTp = this._gsTp === i ? -1 : i; this._renderModal(); }
+    else if (a === "gsrec") { const d = G.devices[i], T = d && GS_TYP[this._gsTyp(d)]; if (T) { d.thr = T.thr; d.end = T.end; this._mdSave(); this._renderModal(); } }
   }
   _gsChange(t) {
     const f = t.dataset.f, G = this._gsState(), d = G.devices[+t.dataset.i];
@@ -10287,11 +10426,8 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="ov" data-act="gsdone"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Gerätestrom</b><span>Einstellungen</span></div><button class="ibtn" data-act="gsdone" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("laundry", 15)}Geräte</div>
-      <div class="mut sm" style="margin:2px 0 6px">Je Gerät ein Leistungssensor (Steckdose oder Zähler, in Watt). Ein Durchlauf beginnt über der Startschwelle und endet, wenn die Leistung die eingestellte Zeit darunter bleibt. Der Gerätetyp setzt Symbol und passende Startwerte.</div>
-      ${G.devices.map((d, i) => `<div class="gsdc"><div class="gsdh"><input class="otxt" type="text" maxlength="30" placeholder="Name, z. B. Waschmaschine" value="${esc(d.name)}" data-f="gsname" data-i="${i}" aria-label="Gerätename"><button class="ibtn" data-act="gsdel" data-i="${i}" aria-label="Gerät entfernen">${ic("trash", 17)}</button></div>
-        <div class="gstyp" role="group" aria-label="Gerätetyp">${Object.entries(GS_TYP).map(([k, t]) => `<button class="gsch ${this._gsTyp(d) === k ? "sel" : ""}" data-act="gstyp" data-i="${i}" data-k="${k}" aria-pressed="${this._gsTyp(d) === k}">${ic(t.i, 14)}${t.n}</button>`).join("")}</div>
-        ${this._wzSel(pw, d.ent, "gsent", `data-i="${i}" data-k="ent"`, "– Leistungssensor wählen –", /wasch|trockn|sp(ü|u)l|geschirr|power|leistung/i)}
-        <div class="gsnums"><label>Startschwelle<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="thr" value="${d.thr}" min="1" max="500"><u>W</u></span></label><label>Ende nach<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="end" value="${d.end}" min="1" max="120"><u>min</u></span></label></div></div>`).join("")}
+      <div class="mut sm" style="margin:2px 0 8px">Je Gerät ein Leistungssensor (Steckdose oder Zähler, in Watt). Ein Durchlauf beginnt über der Startschwelle und endet, wenn die Leistung die eingestellte Zeit darunter bleibt. Antippen klappt ein Gerät auf.</div>
+      ${this._gsDevList(G, pw)}
       ${G.devices.length < GS_MAX ? `<button class="btn2" data-act="gsadd" style="width:100%;flex:none">${ic("plus", 16)} Gerät hinzufügen <span class="mut">(${G.devices.length} von ${GS_MAX})</span></button>` : `<div class="mut sm" style="text-align:center;margin:4px 0 8px">Höchstzahl erreicht: ${GS_MAX} von ${GS_MAX} Geräten.</div>`}
       <div class="lsec">${ic("sun", 15)}Quellen und Preise</div>
       <div class="gst ${this._gsReady() ? "" : "on"}">${ic(this._gsReady() ? "check" : "alert", 15)}<div>${this._gsReady() ? `Solar: <b>${nm(E.ent.pv)}</b>${E.ent.pv2 ? " + " + nm(E.ent.pv2) : ""} · Netz: <b>${nm(g.ent)}</b>${E.ent.bat || E.ent.bdis ? ` · Batterie: <b>${nm(E.ent.bat || E.ent.bdis)}</b>` : ""}<br><span class="mut">kommen aus Modul 3 – Energie-Übersicht.</span>` : "Solar- und Netz-Sensor fehlen. Sie werden einmal in Modul 3 – Energie-Übersicht gewählt und hier mitgenutzt."}</div></div>
@@ -10312,10 +10448,34 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="foot2"><button class="btn2 pri" data-act="gsdone">Fertig</button></div></div>`;
   }
   /* ---- Modul 4 v1.1: Zeitraum, Gerätetypen, einheitliche Farben ---- */
+  /* Geräte-Liste in den Einstellungen (2026.11.3b34): aufklappbare Karten mit HD-Bild, Typ-Wähler in Gruppen, Live-Wert und Empfehlung */
+  _gsDevList(G, pw) {
+    const st = this._hass.states, O = (this._gsOpen = this._gsOpen || new Set()), W = (e) => { const x = e && st[e]; if (!x) return null; const v = parseFloat(x.state); return isFinite(v) ? v * (/^kW$/i.test(x.attributes.unit_of_measurement || "") ? 1000 : 1) : null; };
+    const wf = (w) => (w >= 1000 ? num(w / 1000, 2) + " kW" : num(w, w < 10 ? 1 : 0) + " W");
+    return G.devices.map((d, i) => {
+      const typ = this._gsTyp(d), T = GS_TYP[typ], hd = this._gxAlt(typ) || "plug", w = W(d.ent), run = w != null && w > d.thr, open = O.has(i);
+      const sub = [T.n, d.ent ? esc(this._wzName(d.ent)) : `<span class="gsdw">kein Sensor</span>`, w != null ? `${run ? "läuft" : "jetzt"} ${wf(w)}` : ""].filter(Boolean).join(" · ");
+      const head = `<button class="gsdhd" data-act="gsdopen" data-i="${i}" aria-expanded="${open}"><span class="gsdimg${run ? " on" : ""}">${this._gx(hd, 46, { on: run })}</span><span class="gsdtt"><b>${esc(d.name || "Neues Gerät")}</b><small>${sub}</small></span><span class="gsdch${open ? " up" : ""}">${ic("chev", 18)}</span></button>`;
+      if (!open) return `<div class="gsdc2">${head}</div>`;
+      const pick = this._gsTp === i ? `<div class="gstpk">${GS_GRP.map(([g, ks]) => `<div class="gstpg"><small>${g}</small><div class="gstpr">${ks.map((k) => { const t = GS_TYP[k]; return `<button class="gstpt${typ === k ? " sel" : ""}" data-act="gstyp" data-i="${i}" data-k="${k}" aria-pressed="${typ === k}">${this._gx(this._gxAlt(k) || "plug", 40)}<span>${t.n}</span>${t.d ? `<em>${t.d}</em>` : ""}</button>`; }).join("")}</div></div>`).join("")}</div>` : "";
+      const rec = d.thr !== T.thr || d.end !== T.end ? `<div class="gsrec">${ic("info", 14)}<span>Empfohlen für ${T.n}: <b>${T.thr} W</b> · <b>${T.end} min</b></span><button class="lnk" data-act="gsrec" data-i="${i}">Übernehmen</button></div>` : `<div class="gsrec ok">${ic("check", 14)}<span>Passende Werte für ${T.n}</span></div>`;
+      const live = w != null ? `<div class="gslive ${run ? "on" : ""}"><i></i>Jetzt ${wf(w)} – ${run ? "über der Startschwelle, zählt als Durchlauf" : "unter der Startschwelle"}</div>` : "";
+      return `<div class="gsdc2 open">${head}<div class="gsdb">
+        <label class="gsdl">Name</label><input class="otxt" type="text" maxlength="30" placeholder="z. B. ${esc(T.n)}" value="${esc(d.name)}" data-f="gsname" data-i="${i}" aria-label="Gerätename">
+        <label class="gsdl">Gerätetyp</label><button class="gstyb" data-act="gstp" data-i="${i}" aria-expanded="${this._gsTp === i}">${this._gx(hd, 34)}<span><b>${T.n}</b>${T.d ? `<small>${T.d}</small>` : ""}</span><u>${this._gsTp === i ? "Schließen" : "Ändern"}</u></button>${pick}
+        <label class="gsdl">Leistungssensor</label>${this._wzSel(pw, d.ent, "gsent", `data-i="${i}" data-k="ent"`, "– Leistungssensor wählen –", /wasch|trockn|sp(ü|u)l|geschirr|thermomix|cookit|kaffee|power|leistung|verbrauch/i)}${live}
+        <div class="gsnums"><label>Startschwelle<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="thr" value="${d.thr}" min="1" max="500"><u>W</u></span></label><label>Ende nach<span class="onum"><input type="number" inputmode="numeric" data-f="gsnum" data-i="${i}" data-k="end" value="${d.end}" min="1" max="120"><u>min</u></span></label></div>${rec}
+        <div class="gsdft"><button class="btn2 sm" data-act="gsdel" data-i="${i}">${ic("trash", 15)} Gerät entfernen</button></div></div></div>`;
+    }).join("");
+  }
   _gsTyp(d) {
     if (d && GS_TYP[d.typ]) return d.typ;
     const n = String((d && d.name) || "").toLowerCase();
-    return /wasch/.test(n) ? "wasch" : /trock/.test(n) ? "trockner" : /sp(ü|u)l|geschirr/.test(n) ? "spuel" : /k(ü|u)hl|gefrier/.test(n) ? "kuehl" : /ofen|herd|thermomix|koch|mikro/.test(n) ? "ofen" : /pool|pumpe/.test(n) ? "pool" : /pc|computer|rechner|server/.test(n) ? "pc" : /tv|fernseh/.test(n) ? "tv" : /werk|s(ä|a)ge|kompressor/.test(n) ? "werk" : "sonst";
+    return /thermomix|k(ü|u)chenmaschine|monsieur|tm[5-7]\b/.test(n) ? "kmasch" : /cookit|kochstation|kochmaschine/.test(n) ? "kochst" : /mikro|microwave/.test(n) ? "mikro"
+      : /kaffee|espresso|siebtr|coffee/.test(n) ? "kaffee" : /wasserkocher|kettle/.test(n) ? "kocher" : /fritteuse|airfryer|heißluft|heissluft/.test(n) ? "airfryer"
+      : /gefrier|truhe|freezer/.test(n) ? "gefrier" : /sauger|roborock|roomba|saugrob|staub/.test(n) ? "sauger" : /b(ü|u)gel/.test(n) ? "buegel" : /klima/.test(n) ? "klima"
+      : /heizl(ü|u)ft|radiator|heizger/.test(n) ? "heiz" : /e-?bike|fahrrad|pedelec/.test(n) ? "ebike" : /aquarium|terrarium/.test(n) ? "aqua"
+      : /wasch/.test(n) ? "wasch" : /trock/.test(n) ? "trockner" : /sp(ü|u)l|geschirr/.test(n) ? "spuel" : /k(ü|u)hl/.test(n) ? "kuehl" : /ofen|herd|koch|backofen/.test(n) ? "ofen" : /pool|pumpe/.test(n) ? "pool" : /pc|computer|rechner|server|nas\b|konsole/.test(n) ? "pc" : /tv|fernseh/.test(n) ? "tv" : /werk|s(ä|a)ge|kompressor/.test(n) ? "werk" : "sonst";
   }
   _gsPer(shift = 0) {
     if (this._gsRg === undefined) { try { this._gsRg = localStorage.getItem("fh_gs_range") || "day"; } catch (_) { this._gsRg = "day"; } }
@@ -10368,7 +10528,7 @@ class FensterHeizungPanel extends HTMLElement {
       <ul class="wwl"><li>${ic("sun", 16)}Anteile Solar, Batterie, Netz pro Gerät</li><li>${ic("chart", 16)}Kosten und Ersparnis: Tag, Woche, Monat, Jahr</li><li>${ic("bell", 16)}Meldung am Ende eines Durchlaufs</li></ul>
       ${adm ? `<button class="btn2 pri" data-act="gsset" style="margin-top:16px;flex:none;padding:12px 22px">${ic("tools", 16)} Gerät hinzufügen</button>` : "Ein Administrator kann das Modul einrichten."}</div>`;
     const warn = !this._gsReady() ? `<div class="banner">${ic("alert", 18)}<div><b>Solar- und Netz-Sensor fehlen.</b> Sie werden in Modul 3 – Energie-Übersicht gewählt. Bis dahin gilt der gesamte Strom als Netzstrom.${adm ? ` <button class="lnk" data-act="mdensetup">Modul 3 öffnen</button>` : ""}</div></div>` : "";
-    if (!D) return `${warn}<div class="card empty">Lade Gerätestrom …</div>`;
+    if (!D || D.err) return `${warn}<div class="card empty">${D && D.err ? "Verbindung zu Home Assistant wird wiederhergestellt …" : "Lade Gerätestrom …"}</div>`;
     this._gsTipBind();
     if (this._gsDet) { const dd = (D.devices || []).find((x) => x.id === this._gsDet); if (dd) return `${warn}${this._gsDetPage(dd)}`; this._gsDet = null; }
     const devs = D.devices || [], ids = devs.map((d) => d.id), P = this._gsPer(), A = this._gsAgg(ids, P), T = A.t, V = this._gsPrev(ids, P), per = this._gsLabel(P);
@@ -13158,7 +13318,7 @@ class FensterHeizungPanel extends HTMLElement {
   _lgBLoad(force) {
     if (!this._hass || (this._lgB && !force) || this._lgBBusy) return;
     this._lgBBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/brief_get" }).then((r) => { this._lgB = r; }).catch(() => { this._lgB = { cfg: null, err: true }; })
+    this._hass.callWS({ type: "fenster_heizung/brief_get" }).then((r) => { this._lgB = r; }).catch(() => { if (!this._lgB || this._lgB.err) this._lgB = { cfg: null, err: true }; })
       .finally(() => { this._lgBBusy = false; if (this._loOpen) this._render(); if (this._modal && this._modal.type === "lgbrief") this._renderModal(); });
   }
   /* A2 / Poster: Zahlen aus den eigenen Daten (Modul 1 Pausen und Ersparnis, Modul 4 Läufe und Ersparnis) */
@@ -13551,7 +13711,7 @@ class FensterHeizungPanel extends HTMLElement {
   _efxLoad(force) {
     if (!this._hass || this._efxBusy || (this._efxD && !force)) return;
     this._efxBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/ef_get" }).then((r) => { this._efxD = r; }).catch(() => { this._efxD = { locked: true, cfg: null, err: true }; })
+    this._hass.callWS({ type: "fenster_heizung/ef_get" }).then((r) => { this._efxD = r; }).catch(() => { if (!this._efxD || this._efxD.err) { this._efxD = { locked: true, cfg: null, err: true }; setTimeout(() => { if (this._efxD && this._efxD.err) this._efxLoad(true); }, 3000); } })  /* letzten Stand behalten, sonst gleich neu versuchen */
       .finally(() => { this._efxBusy = false; if (this._mdActive() === "ef") this._render(); });
   }
   _efxPut(cfg) {

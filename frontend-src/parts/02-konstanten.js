@@ -49,7 +49,15 @@ const EN_UNIT_E = { Wh: 0.001, kWh: 1, MWh: 1000 }, EN_UNIT_P = { W: 1, kW: 1000
 /* Modul 1: Standardwerte eines Messraums (Raum nur mit Temperatur und Luftfeuchte) */
 const MS_DEF = { parts: ["mess"], loc: "in", temp: "", hum: "", bat: "", mm: true, dew: false, mold: false, t_lo: 18, t_hi: 24, h_lo: 40, h_hi: 60, stale: 60 };
 const GS_MAX = 15; /* Modul 4: höchstens so viele Geräte (Backend: MAX_DEVICES) */
-const GS_TYP = { wasch: { n: "Waschmaschine", i: "laundry", thr: 5, end: 15 }, trockner: { n: "Trockner", i: "windy", thr: 50, end: 5 }, spuel: { n: "Spülmaschine", i: "dining", thr: 5, end: 30 }, kuehl: { n: "Kühlgerät", i: "fridge", thr: 20, end: 5 }, ofen: { n: "Küche", i: "pot", thr: 100, end: 10 }, pool: { n: "Pool", i: "wave", thr: 50, end: 5 }, pc: { n: "Computer", i: "gamepad", thr: 30, end: 5 }, tv: { n: "Fernseher", i: "tv", thr: 20, end: 5 }, werk: { n: "Werkstatt", i: "tools", thr: 50, end: 5 }, sonst: { n: "Gerät", i: "bolt", thr: 20, end: 5 } };
+const GS_TYP = { wasch: { n: "Waschmaschine", i: "laundry", thr: 5, end: 15 }, trockner: { n: "Trockner", i: "windy", thr: 50, end: 5 }, spuel: { n: "Spülmaschine", i: "dining", thr: 5, end: 30 }, kuehl: { n: "Kühlschrank", i: "fridge", thr: 20, end: 5 }, ofen: { n: "Herd & Backofen", i: "pot", thr: 100, end: 10 }, pool: { n: "Pool & Pumpe", i: "wave", thr: 50, end: 5 }, pc: { n: "Computer", i: "gamepad", thr: 30, end: 5 }, tv: { n: "Fernseher", i: "tv", thr: 20, end: 5 }, werk: { n: "Werkstatt", i: "tools", thr: 50, end: 5 }, sonst: { n: "Gerät", i: "bolt", thr: 20, end: 5 },
+  /* 2026.11.3b34: Küchen- und Hausgeräte */
+  kmasch: { n: "Küchenmaschine", d: "z. B. Thermomix", i: "kbot", thr: 10, end: 3 }, kochst: { n: "Kochstation", d: "mit Rührarm, z. B. Cookit", i: "kstation", thr: 10, end: 3 },
+  mikro: { n: "Mikrowelle", i: "microwave", thr: 50, end: 1 }, kaffee: { n: "Kaffeemaschine", i: "coffee", thr: 30, end: 2 }, kocher: { n: "Wasserkocher", i: "kettle", thr: 200, end: 1 },
+  airfryer: { n: "Heißluftfritteuse", i: "airfryer", thr: 100, end: 2 }, gefrier: { n: "Gefriergerät", i: "freezer", thr: 20, end: 5 }, sauger: { n: "Saugroboter & Sauger", i: "vacuum", thr: 15, end: 3 },
+  buegel: { n: "Bügeleisen", i: "iron", thr: 100, end: 3 }, klima: { n: "Klimagerät", i: "aircon", thr: 50, end: 5 }, heiz: { n: "Heizlüfter", i: "heaterI", thr: 100, end: 3 },
+  ebike: { n: "E-Bike-Akku", i: "bike", thr: 10, end: 5 }, aqua: { n: "Aquarium", i: "fish", thr: 5, end: 30 } };
+/* Gruppen im Typ-Wähler (Modul 4 → Geräte) */
+const GS_GRP = [["Waschen & Pflege", ["wasch", "trockner", "buegel", "sauger"]], ["Küche", ["kmasch", "kochst", "ofen", "mikro", "airfryer", "kaffee", "kocher", "spuel"]], ["Kühlen", ["kuehl", "gefrier"]], ["Haus & Klima", ["klima", "heiz", "pool", "aqua"]], ["Technik & Freizeit", ["pc", "tv", "ebike", "werk"]], ["Sonstiges", ["sonst"]]];
 const GS_COL = ["#fbbf24", "#a78bfa", "#f87171"], GS_SRC = ["Solar", "Batterie", "Netz"], GS_RANGES = ["day", "week", "month", "year"];
 const EN_RANGES = ["day", "week", "month", "year"];
 const EN_DEF = { on: true, range: "day", sign: "", bsign: "charge", bmode: "one", pvn: "", pv2n: "", ent: { pv: "", grid: "", house: "", bat: "", bchg: "", bdis: "", pve: "", pv2: "", pve2: "", imp: "", exp: "" } };

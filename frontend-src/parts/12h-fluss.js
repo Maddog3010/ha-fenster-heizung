@@ -4,7 +4,7 @@
   _efxLoad(force) {
     if (!this._hass || this._efxBusy || (this._efxD && !force)) return;
     this._efxBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/ef_get" }).then((r) => { this._efxD = r; }).catch(() => { this._efxD = { locked: true, cfg: null, err: true }; })
+    this._hass.callWS({ type: "fenster_heizung/ef_get" }).then((r) => { this._efxD = r; }).catch(() => { if (!this._efxD || this._efxD.err) { this._efxD = { locked: true, cfg: null, err: true }; setTimeout(() => { if (this._efxD && this._efxD.err) this._efxLoad(true); }, 3000); } })  /* letzten Stand behalten, sonst gleich neu versuchen */
       .finally(() => { this._efxBusy = false; if (this._mdActive() === "ef") this._render(); });
   }
   _efxPut(cfg) {
