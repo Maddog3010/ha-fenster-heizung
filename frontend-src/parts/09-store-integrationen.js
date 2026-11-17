@@ -124,10 +124,10 @@
     let n = 0; try { const ml = this._mdList().map((m) => m.id); n = this._stoCat().filter((x) => !x.on && x.top && !x.nodot && ml.includes(x.mid)).length; } catch (_) { /* egal */ }
     this._stoT = { ts: Date.now(), n }; return n;
   }
+  /* Kopf: kleine Knöpfe Chat und E-Mail (ersetzt die runden Store-/Labs-Symbole; Store und Labs liegen in der Modul-Leiste) */
   _stoBtn() {
-    if (!this._admin() || !this._stoCfg().icon) return "";
-    const n = this._stoTodo();
-    return `<button class="pillbtn sto" data-act="igopen" aria-label="Store: Integrationen und Dienste" title="Store">${ic("puzzle", 17)}${n ? `<i class="sdot">${n}</i>` : ""}</button>`;
+    const n = this._supS().unread || 0;
+    return `<span class="kcbar"><button class="pillbtn kc" data-act="supopen" aria-label="Chat mit dem Entwickler" title="Chat"><span aria-hidden="true">💬</span>${n ? `<i class="sdot">${n}</i>` : ""}</button><button class="pillbtn kc" data-act="supmail" aria-label="E-Mail an support@stromwaerme.dev" title="E-Mail"><span aria-hidden="true">✉️</span></button></span>`;
   }
   _stoCard(x) {
     return `<button class="stoc" data-act="stodet" data-k="${esc(x.id)}"><span class="stot"><span class="stoi" style="background:${x.c}">${ic(x.i, 24)}</span><span class="ston"><b>${esc(x.n)}</b><small>${esc(x.sub)} · ${esc(x.mods.join(", "))}</small></span></span><span class="stod">${esc(x.on ? x.st : x.desc)}</span><span class="stof">${x.on ? `<span class="stos ${x.bad ? "bad" : "ok"}">● ${x.bad ? "Nicht erreichbar" : "Verbunden"}</span><em>Ansehen</em>` : `<span class="stos wn">${esc(x.tag)}</span><em class="pri">Einrichten</em>`}</span></button>`;

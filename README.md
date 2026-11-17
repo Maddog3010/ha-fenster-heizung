@@ -43,7 +43,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/banner_2026.11.3.png" width="760" alt="Neu in Version 2026.11.3"></p>
 
-**Dein Haus als Szene, und das Elektroauto dazu.** Haus-Szenen in Modul 1, 3 und auf der Startseite, ein komplett neues Modul 8, der Gaszähler in Modul 3, Modul 19 und Modul 16 stabil, und unter jedem Modul ein Knopf für **Chat und E-Mail**. Alles Neue lässt sich mit „wie bisher“ abschalten.
+**Dein Haus als Szene, und das Elektroauto dazu.** Haus-Szenen in Modul 1, 3 und auf der Startseite, ein komplett neues Modul 8, der Gaszähler in Modul 3, Modul 19 und Modul 16 stabil, und oben im Kopf Knöpfe für **Chat und E-Mail**. Alles Neue lässt sich mit „wie bisher“ abschalten.
 
 | | Was ist neu |
 |---|---|
@@ -53,12 +53,12 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 | 🌦️ **Modul 9 (v0.9) und Modul 16 (stabil 1.0)** | Alle DWD-Warnungen mit Stufen, Wetter-Szene, Vorsorge für Akku, Auto, Hitze und Frost. Solar-Prognose mit Sonnenbogen, korrigierter Prognose, Treffsicherheit und Tipps |
 | 🌐 **Modul 19 Hausfluss (stabil 1.1)** | **Strom-Reiter** mit „Woher kam der Strom?“, bis zu **vier Kacheln links und rechts und zwei unten**, bis zu 5 Quellen am Handy, hellere Kacheln |
 | 📒 **Haus-Energiebuch** | Zählt alle 20 Sekunden, woher der Strom im ganzen Haus kommt und wohin er geht. Modul 19 und weitere Module nutzen es |
-| 💬 **Support-Chat und E-Mail** | Chat wie bei WhatsApp direkt im Dashboard (mit Bildern und Mitteilung aufs Handy), dazu unter **jedem Modul und auf der Startseite** die Knöpfe „💬 Chat“ und „✉️ E-Mail“: [support@stromwaerme.dev](mailto:support@stromwaerme.dev) |
+| 💬 **Support-Chat und E-Mail** | Chat wie bei WhatsApp direkt im Dashboard (mit Bildern und Mitteilung aufs Handy), dazu oben im Kopf **jeder Seite** die kleinen Knöpfe 💬 und ✉️: [support@stromwaerme.dev](mailto:support@stromwaerme.dev) |
 | 💗 **Sponsor** | **Freischalten mit GitHub** direkt im Panel, „Auf Max hochstufen“, Sponsor-Schlüssel per Mail an die Support-Adresse |
 | 🛠️ **Behoben** | Laufende Ladung geht beim Neustart nicht mehr verloren · Flüsse laufen auch ohne Scrollen · Grundriss aus Modul 11 erscheint zuverlässig · Prognose bei mehreren Diensten nicht mehr doppelt gezählt · Werte nach dem App-Wechsel springen nicht mehr auf 0 |
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul19_4x4.png" width="520" alt="Modul 19: vier Kacheln links und rechts, zwei unten"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul3_gas.png" width="520" alt="Modul 3: Gaszähler"></p>
-<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_kontakt_leiste.png" width="760" alt="Kontakt-Leiste mit Chat und E-Mail unter jedem Modul"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_kontakt_leiste.png" width="760" alt="Chat und E-Mail oben im Kopf"></p>
 
 ▶️ [**Video zu 2026.11.3 auf YouTube**](https://youtube.com/@strom_und_waerme) · 📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf), angepasst an 2026.11.3 · 📲 [**Tags & Karten mit dem iPhone anlernen**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf) · [Alle Änderungen](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md)
 
@@ -368,10 +368,11 @@ Die Integration folgt dem Schema **Jahr.Monat.Release**:
 | `2026.11.1` | Erstes Update im November 2026 |
 | `2026.11.2` | Zweites Update im November 2026 |
 | `2026.11.3` | Drittes Update im November 2026 |
+| `2026.11.3.1` | Kleine Korrektur zu `2026.11.3` (eine vierte Stelle bedeutet: Korrektur ohne neue Funktionen) |
 | `2026.12.1` | Erstes Update im Dezember, mit jedem Monat beginnt der Zähler wieder bei 1 |
 | `2026.12.1b1` | **Testversion** (Beta) für das kommende Update `2026.12.1` |
 
-Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.3b1` < `2026.11.3b42` < `2026.11.3`.
+Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.3b1` < `2026.11.3b42` < `2026.11.3` < `2026.11.3.1`.
 
 ### Stabil oder Beta
 
@@ -463,7 +464,7 @@ Lieber ohne GitHub-Anmeldung? Dann gibt es weiter einen **Sponsor-Schlüssel**: 
 ## Häufige Fragen
 
 **Wie erreiche ich Hilfe?**
-Unter jedem Modul und auf der Startseite stehen die Knöpfe **💬 Chat** und **✉️ E-Mail**. Der Chat läuft direkt im Dashboard, Sponsor Max wird bevorzugt beantwortet. Die E-Mail-Adresse ist [support@stromwaerme.dev](mailto:support@stromwaerme.dev). Für Fehler hilft auch ein Issue auf GitHub.
+Oben im Kopf jeder Seite stehen die kleinen Knöpfe **💬 Chat** und **✉️ E-Mail**. Der Chat läuft direkt im Dashboard, Sponsor Max wird bevorzugt beantwortet. Die E-Mail-Adresse ist [support@stromwaerme.dev](mailto:support@stromwaerme.dev). Für Fehler hilft auch ein Issue auf GitHub.
 
 **Kostet „Strom & Wärme“ etwas?**
 Nein. Ein Sponsoring ist freiwillig. Was frei ist, bleibt frei.

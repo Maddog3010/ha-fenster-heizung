@@ -41,7 +41,6 @@ const CSS_SUP = `
 .supup{font-size:.78rem;color:#fbbf24;margin-top:6px}.supup .lnk{font-size:.78rem;color:#fbbf24;text-decoration:underline}.supsp{font-style:normal;font-weight:700;font-size:.7rem;color:#f9a8d4;background:color-mix(in srgb,#ec4899 16%,transparent);border-radius:99px;padding:1px 7px;margin-right:4px}
 .lgsup{display:flex;align-items:center;gap:12px;margin-top:10px}.lgsup .n{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.lgsup small{font-size:.8rem;color:var(--mut);line-height:1.4}.supnew{color:#25d366}
 .lgsupi{position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,#25d366 16%,transparent);color:#25d366;flex:none}.lgsupi .supdot{position:absolute;top:-3px;right:-3px}
-.kontakt{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:color-mix(in srgb,var(--card) 70%,transparent)}.kontakt .kt{color:var(--mut);font-size:.84rem}.kontakt .kb{display:flex;gap:8px;flex-wrap:wrap}.kontakt .btn2{text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}.kontakt .ke{font-size:1.05em;line-height:1}.kontakt .kchat{border-color:color-mix(in srgb,#25d366 50%,transparent)}.kontakt .kchat .supdot{position:static;margin-left:2px}
 .btn2.lgsupb{border-color:color-mix(in srgb,#25d366 50%,transparent)}
 @media(max-width:520px){.lgsup{flex-wrap:wrap}.lgsup .btn2{flex:1 1 100%}}
 :host([style*="color-scheme: light"]) .supmsgs{background-color:#efeae2;background-image:radial-gradient(rgba(0,0,0,.05) 1px,transparent 1.4px)}
@@ -49,4 +48,5 @@ const CSS_SUP = `
 :host([style*="color-scheme: light"]) .supmeta,:host([style*="color-scheme: light"]) .supatt{color:#667781}:host([style*="color-scheme: light"]) .supday span{background:#fff;color:#54656f}
 :host([style*="color-scheme: light"]) .supempty{color:#111b21}:host([style*="color-scheme: light"]) .supchip{background:#fff;color:#111b21;border-color:#d1d7db}
 :host([style*="color-scheme: light"]) .supta{background:#fff}:host([style*="color-scheme: light"]) .supjson{background:#f0f2f5;color:#065f46}
+.kcbar{display:inline-flex;gap:4px;align-items:center}.pillbtn.kc{position:relative;padding:5px 8px;min-width:0;line-height:1;font-size:.95rem}.pillbtn.kc .sdot{top:-6px;right:-6px}
 `;

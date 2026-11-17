@@ -146,6 +146,7 @@
   _supAct(a, b) {
     const k = b.dataset.k, m = this._modal;
     if (a === "supopen") { this._supOpen(); return; }
+    if (a === "supmail") { this._kontaktMail(); return; }
     if (a === "supurl") { const el = this.shadowRoot.querySelector('[data-f="supurl"]'); this._supWS("opts", { url_dev: String((el && el.value) || "").trim() }).then(() => { this._renderModal(); this._toast("Gespeichert"); }).catch(() => this._toast("Das ging nicht")); return; }
     if (!m || m.type !== "sup") return;
     if (a === "supok") { this._supWS("privacy").then(() => this._renderModal()); }

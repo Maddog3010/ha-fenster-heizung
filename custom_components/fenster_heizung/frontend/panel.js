@@ -796,7 +796,7 @@ const MV = {
    Seite nach dem Zurückwechseln teils neu auf – dann wird sofort der letzte Stand gezeigt und im Hintergrund aktualisiert. */
 const FH_CACHE = (window.__fhCache = window.__fhCache || {});
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
-const REL = [{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]},{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]},{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]},{"v":"3.0.7.5","d":"2026-10-29","t":["Handy-Ansicht, obere Kacheln mittig"],"c":["Modul 19 · v0.5 Build 5"]},{"v":"3.0.7.4","d":"2026-10-29","t":["Der Fluss in den Linien läuft durchgängig","Kein Punkt mehr oben links im Fluss-Bild","Handy-Ansicht wie auf Tablet und Desktop"],"c":["Modul 19 · v0.5 Build 4"]},{"v":"3.0.7.3","d":"2026-10-29","t":["Behoben: Die Jetzt-Ansicht flackerte"],"c":["Modul 19 · v0.5 Build 3"]}];
+const REL = [{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]},{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]},{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]},{"v":"3.0.7.5","d":"2026-10-29","t":["Handy-Ansicht, obere Kacheln mittig"],"c":["Modul 19 · v0.5 Build 5"]},{"v":"3.0.7.4","d":"2026-10-29","t":["Der Fluss in den Linien läuft durchgängig","Kein Punkt mehr oben links im Fluss-Bild","Handy-Ansicht wie auf Tablet und Desktop"],"c":["Modul 19 · v0.5 Build 4"]}];
 const CSS_MAIN = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -3276,7 +3276,6 @@ const CSS_SUP = `
 .supup{font-size:.78rem;color:#fbbf24;margin-top:6px}.supup .lnk{font-size:.78rem;color:#fbbf24;text-decoration:underline}.supsp{font-style:normal;font-weight:700;font-size:.7rem;color:#f9a8d4;background:color-mix(in srgb,#ec4899 16%,transparent);border-radius:99px;padding:1px 7px;margin-right:4px}
 .lgsup{display:flex;align-items:center;gap:12px;margin-top:10px}.lgsup .n{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.lgsup small{font-size:.8rem;color:var(--mut);line-height:1.4}.supnew{color:#25d366}
 .lgsupi{position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,#25d366 16%,transparent);color:#25d366;flex:none}.lgsupi .supdot{position:absolute;top:-3px;right:-3px}
-.kontakt{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-top:6px;padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:color-mix(in srgb,var(--card) 70%,transparent)}.kontakt .kt{color:var(--mut);font-size:.84rem}.kontakt .kb{display:flex;gap:8px;flex-wrap:wrap}.kontakt .btn2{text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}.kontakt .ke{font-size:1.05em;line-height:1}.kontakt .kchat{border-color:color-mix(in srgb,#25d366 50%,transparent)}.kontakt .kchat .supdot{position:static;margin-left:2px}
 .btn2.lgsupb{border-color:color-mix(in srgb,#25d366 50%,transparent)}
 @media(max-width:520px){.lgsup{flex-wrap:wrap}.lgsup .btn2{flex:1 1 100%}}
 :host([style*="color-scheme: light"]) .supmsgs{background-color:#efeae2;background-image:radial-gradient(rgba(0,0,0,.05) 1px,transparent 1.4px)}
@@ -3284,6 +3283,7 @@ const CSS_SUP = `
 :host([style*="color-scheme: light"]) .supmeta,:host([style*="color-scheme: light"]) .supatt{color:#667781}:host([style*="color-scheme: light"]) .supday span{background:#fff;color:#54656f}
 :host([style*="color-scheme: light"]) .supempty{color:#111b21}:host([style*="color-scheme: light"]) .supchip{background:#fff;color:#111b21;border-color:#d1d7db}
 :host([style*="color-scheme: light"]) .supta{background:#fff}:host([style*="color-scheme: light"]) .supjson{background:#f0f2f5;color:#065f46}
+.kcbar{display:inline-flex;gap:4px;align-items:center}.pillbtn.kc{position:relative;padding:5px 8px;min-width:0;line-height:1;font-size:.95rem}.pillbtn.kc .sdot{top:-6px;right:-6px}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -8582,10 +8582,10 @@ class FensterHeizungPanel extends HTMLElement {
     let n = 0; try { const ml = this._mdList().map((m) => m.id); n = this._stoCat().filter((x) => !x.on && x.top && !x.nodot && ml.includes(x.mid)).length; } catch (_) { /* egal */ }
     this._stoT = { ts: Date.now(), n }; return n;
   }
+  /* Kopf: kleine Knöpfe Chat und E-Mail (ersetzt die runden Store-/Labs-Symbole; Store und Labs liegen in der Modul-Leiste) */
   _stoBtn() {
-    if (!this._admin() || !this._stoCfg().icon) return "";
-    const n = this._stoTodo();
-    return `<button class="pillbtn sto" data-act="igopen" aria-label="Store: Integrationen und Dienste" title="Store">${ic("puzzle", 17)}${n ? `<i class="sdot">${n}</i>` : ""}</button>`;
+    const n = this._supS().unread || 0;
+    return `<span class="kcbar"><button class="pillbtn kc" data-act="supopen" aria-label="Chat mit dem Entwickler" title="Chat"><span aria-hidden="true">💬</span>${n ? `<i class="sdot">${n}</i>` : ""}</button><button class="pillbtn kc" data-act="supmail" aria-label="E-Mail an support@stromwaerme.dev" title="E-Mail"><span aria-hidden="true">✉️</span></button></span>`;
   }
   _stoCard(x) {
     return `<button class="stoc" data-act="stodet" data-k="${esc(x.id)}"><span class="stot"><span class="stoi" style="background:${x.c}">${ic(x.i, 24)}</span><span class="ston"><b>${esc(x.n)}</b><small>${esc(x.sub)} · ${esc(x.mods.join(", "))}</small></span></span><span class="stod">${esc(x.on ? x.st : x.desc)}</span><span class="stof">${x.on ? `<span class="stos ${x.bad ? "bad" : "ok"}">● ${x.bad ? "Nicht erreichbar" : "Verbunden"}</span><em>Ansehen</em>` : `<span class="stos wn">${esc(x.tag)}</span><em class="pri">Einrichten</em>`}</span></button>`;
@@ -11569,11 +11569,7 @@ class FensterHeizungPanel extends HTMLElement {
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
   _labMods() { return [...new Set(this._labCat().map((x) => x.mid))]; }
   _labCount(mid) { return this._labCat().filter((x) => !x.modul && this._labOn(x.id) && (!mid || x.mid === mid)).length; }
-  _labBtn() {
-    if (!this._admin() || !this._labCfg().icon) return "";
-    const n = this._labCount();
-    return `<button class="pillbtn sto lab" data-act="labopen" aria-label="Labs: experimentelle Funktionen" title="Labs">${ic("flask", 17)}${n ? `<i class="sdot ldot">${n}</i>` : ""}</button>`;
-  }
+  _labBtn() { return ""; }
   _labHdr(mid) { const n = this._labCount(mid); return n ? `<em class="labp">${ic("flask", 11)}${n} ${n === 1 ? "Lab" : "Labs"} aktiv</em>` : ""; }
   _labTab() {
     if (!this._admin() || !this._labCfg().tab) return "";
@@ -13322,6 +13318,7 @@ class FensterHeizungPanel extends HTMLElement {
   _supAct(a, b) {
     const k = b.dataset.k, m = this._modal;
     if (a === "supopen") { this._supOpen(); return; }
+    if (a === "supmail") { this._kontaktMail(); return; }
     if (a === "supurl") { const el = this.shadowRoot.querySelector('[data-f="supurl"]'); this._supWS("opts", { url_dev: String((el && el.value) || "").trim() }).then(() => { this._renderModal(); this._toast("Gespeichert"); }).catch(() => this._toast("Das ging nicht")); return; }
     if (!m || m.type !== "sup") return;
     if (a === "supok") { this._supWS("privacy").then(() => this._renderModal()); }
@@ -13350,13 +13347,12 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="lgt lgsup" style="--c:#25d366"><span class="lgsupi">${ic("chat", 26)}${S.unread ? `<i class="supdot">${S.unread}</i>` : ""}</span><span class="n"><b>Support-Chat${mx ? ` <em class="supmx">★ Bevorzugt</em>` : ""}</b><small>${sub}</small></span><button class="btn2 lgsupb" data-act="supopen">${ic("chat", 16)} Chat öffnen</button></div>`;
   }
   /* Kontakt-Leiste unter jeder Seite (Start und alle Module): Chat und E-Mail. Wird nach dem Zeichnen angehängt, damit nicht jedes Modul sie einzeln braucht. */
-  _kontaktLeiste() {
-    const sr = this.shadowRoot, main = sr && sr.getElementById("main");
-    if (!main || this._edit || this._blOn() || main.querySelector(".kontakt")) return;
-    const wraps = main.querySelectorAll(".wrap"), w = wraps[wraps.length - 1];
-    if (!w) return;
-    const S = this._supS(), n = S.unread || 0, mail = `mailto:${SUPPORT_MAIL}?subject=${encodeURIComponent(PRODUCT + " – Frage / Fehler")}&body=${encodeURIComponent("\n\n---\nVersion: " + (this._ver || "–"))}`;
-    w.insertAdjacentHTML("beforeend", `<div class="kontakt" role="group" aria-label="Kontakt"><span class="kt">Fragen, Fehler oder Wünsche?</span><span class="kb"><button class="btn2 kchat" data-act="supopen"><span class="ke" aria-hidden="true">💬</span> Chat${n ? ` <i class="supdot in">${n}</i>` : ""}</button><a class="btn2 kmail" href="${esc(mail)}" rel="noopener"><span class="ke" aria-hidden="true">✉️</span> E-Mail</a></span></div>`);
+  _kontaktLeiste() { /* Chat und E-Mail stehen jetzt im Kopf (siehe _stoBtn) */ }
+  /* E-Mail: Mail-Programm öffnen (je nach App/Browser nicht überall möglich) und die Adresse immer in die Zwischenablage legen */
+  _kontaktMail() {
+    const mail = `mailto:${SUPPORT_MAIL}?subject=${encodeURIComponent(PRODUCT + " – Frage / Fehler")}&body=${encodeURIComponent("\n\n---\nVersion: " + (this._ver || "–"))}`;
+    this._clip(SUPPORT_MAIL, `E-Mail-Adresse kopiert: ${SUPPORT_MAIL}`);
+    try { const a = document.createElement("a"); a.href = mail; a.style.display = "none"; document.body.appendChild(a); a.click(); a.remove(); } catch (_) { try { window.location.href = mail; } catch (__) { /* Adresse ist kopiert */ } }
   }
   /* ================= Sponsor-Lounge (Konzept Sponsor-Bereich 2.0, Stufen S1 + S2) und Sponsor Max 1 =================
      Eigene Seite statt Dialog, erreichbar über das Herz/den Stern im Kopf, die Startseite und die Einstellungen.

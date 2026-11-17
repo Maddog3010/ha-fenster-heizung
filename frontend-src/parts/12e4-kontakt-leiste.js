@@ -1,9 +1,8 @@
   /* Kontakt-Leiste unter jeder Seite (Start und alle Module): Chat und E-Mail. Wird nach dem Zeichnen angehängt, damit nicht jedes Modul sie einzeln braucht. */
-  _kontaktLeiste() {
-    const sr = this.shadowRoot, main = sr && sr.getElementById("main");
-    if (!main || this._edit || this._blOn() || main.querySelector(".kontakt")) return;
-    const wraps = main.querySelectorAll(".wrap"), w = wraps[wraps.length - 1];
-    if (!w) return;
-    const S = this._supS(), n = S.unread || 0, mail = `mailto:${SUPPORT_MAIL}?subject=${encodeURIComponent(PRODUCT + " – Frage / Fehler")}&body=${encodeURIComponent("\n\n---\nVersion: " + (this._ver || "–"))}`;
-    w.insertAdjacentHTML("beforeend", `<div class="kontakt" role="group" aria-label="Kontakt"><span class="kt">Fragen, Fehler oder Wünsche?</span><span class="kb"><button class="btn2 kchat" data-act="supopen"><span class="ke" aria-hidden="true">💬</span> Chat${n ? ` <i class="supdot in">${n}</i>` : ""}</button><a class="btn2 kmail" href="${esc(mail)}" rel="noopener"><span class="ke" aria-hidden="true">✉️</span> E-Mail</a></span></div>`);
+  _kontaktLeiste() { /* Chat und E-Mail stehen jetzt im Kopf (siehe _stoBtn) */ }
+  /* E-Mail: Mail-Programm öffnen (je nach App/Browser nicht überall möglich) und die Adresse immer in die Zwischenablage legen */
+  _kontaktMail() {
+    const mail = `mailto:${SUPPORT_MAIL}?subject=${encodeURIComponent(PRODUCT + " – Frage / Fehler")}&body=${encodeURIComponent("\n\n---\nVersion: " + (this._ver || "–"))}`;
+    this._clip(SUPPORT_MAIL, `E-Mail-Adresse kopiert: ${SUPPORT_MAIL}`);
+    try { const a = document.createElement("a"); a.href = mail; a.style.display = "none"; document.body.appendChild(a); a.click(); a.remove(); } catch (_) { try { window.location.href = mail; } catch (__) { /* Adresse ist kopiert */ } }
   }

@@ -96,11 +96,7 @@
   _labK(x) { return x.k === "g" ? ["Schaltet Geräte", "g"] : ["Nur Anzeige", "s"]; }
   _labMods() { return [...new Set(this._labCat().map((x) => x.mid))]; }
   _labCount(mid) { return this._labCat().filter((x) => !x.modul && this._labOn(x.id) && (!mid || x.mid === mid)).length; }
-  _labBtn() {
-    if (!this._admin() || !this._labCfg().icon) return "";
-    const n = this._labCount();
-    return `<button class="pillbtn sto lab" data-act="labopen" aria-label="Labs: experimentelle Funktionen" title="Labs">${ic("flask", 17)}${n ? `<i class="sdot ldot">${n}</i>` : ""}</button>`;
-  }
+  _labBtn() { return ""; }
   _labHdr(mid) { const n = this._labCount(mid); return n ? `<em class="labp">${ic("flask", 11)}${n} ${n === 1 ? "Lab" : "Labs"} aktiv</em>` : ""; }
   _labTab() {
     if (!this._admin() || !this._labCfg().tab) return "";

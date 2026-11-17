@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3.1] - 2026-11-17
+
+Kleine Korrektur zu 2026.11.3: Chat und E-Mail wandern in den Kopf, die runden Symbole für Store und Labs entfallen, der E-Mail-Knopf funktioniert auch in der App.
+
+### Geändert
+- **Kopf, Chat und E-Mail:** Statt der Leiste unter jeder Seite stehen die Knöpfe 💬 und ✉️ jetzt klein oben im Kopf, neben „Sponsor“. Ein Zähler zeigt neue Chat-Nachrichten.
+- **Kopf, Store und Labs:** Die runden Symbole für Store und Labs im Kopf entfallen. Store und Labs bleiben als Tabs in der Modul-Leiste.
+
+### Behoben
+- **E-Mail-Knopf:** Der Knopf blieb in der App und in manchen Browsern ohne Wirkung. Er kopiert jetzt die Adresse support@stromwaerme.dev und öffnet zusätzlich das Mail-Programm mit Betreff und Version.
+
 ## [2026.11.3] - 2026-11-17
 
 Dritte stabile Version im November: Haus-Szenen in Modul 1, 3 und auf der Startseite, ein komplett neues Modul 8 für das Elektroauto, Modul 3 mit Gaszähler, Modul 19 und Modul 16 stabil, Support-Chat direkt im Dashboard und Freischaltung mit GitHub. Sie enthält alles aus den Testversionen 2026.11.3b1 bis 2026.11.3b42 und die Kontakt-Leiste. README und Bedienungsanleitung sind an diese Version angepasst (Kapitel 23 „Neu in Version 2026.11.3“).
