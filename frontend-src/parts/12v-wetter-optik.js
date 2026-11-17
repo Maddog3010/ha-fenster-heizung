@@ -242,11 +242,15 @@
     const M = (S.cfg && S.cfg.map) || { on: true, layer: "warn", zoom: "region" };
     if (M.on === false) return "";
     const layer = this._wxMapL || M.layer || "warn", zoom = this._wxMapZ || M.zoom || "region", w = 760, h = 520, m = this._wxMapUrl(layer, zoom, w, h), Z = this.constructor.WX_MAP_Z;
+    /* Gegen Flackern: gleiches Bild bleibt beim Neuaufbau stehen (data-keep); bei neuem Stand liegt das alte Bild darunter, bis das neue geladen ist */
+    const W = this._wxMapPrev || (this._wxMapPrev = { cur: "", prev: "" }), sameView = W.cur && W.cur.split("&t=")[0] === m.url.split("&t=")[0];
+    if (W.cur !== m.url) { W.prev = sameView ? W.cur : ""; W.cur = m.url; }
+    const prev = W.prev;
     const t = new Date(m.slot * 300000), hm = String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
     const legend = layer === "radar" ? `<span class="wxmlg rad">leicht<i class="grad"></i>stark</span>` : `<span class="wxmlg">${[1, 2, 3, 4].map((l) => `<i style="background:${this._wxLvCol(l)}"></i>${l}`).join("")}<em>Stufe</em></span>`;
     return `<div class="card wxmap"><div class="wxtlh"><h2>${ic("pin", 18)}Wetterkarte <small class="mut">Deutscher Wetterdienst</small></h2><div class="seg wxseg"><button class="${layer === "warn" ? "sel" : ""}" data-act="wxsmapl" data-k="warn">Warnungen</button><button class="${layer === "radar" ? "sel" : ""}" data-act="wxsmapl" data-k="radar">Regenradar</button></div></div>
       ${m.ok && !m.inDe ? `<div class="wxnote">${ic("info", 15)}Dein Zuhause liegt außerhalb Deutschlands. Der DWD zeigt nur Deutschland.</div>` : ""}
-      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.url)}" alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" loading="lazy" width="${w}" height="${h}" onerror="this.parentNode.classList.add('err')">
+      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.url)}" data-keep="1"${prev ? ` style="background:url('${esc(prev)}') center/100% 100% no-repeat"` : ""} alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" width="${w}" height="${h}" onload="this.style.background='none'" onerror="this.parentNode.classList.add('err')">
         ${m.pin ? `<span class="wxpin" style="left:${m.pin[0].toFixed(2)}%;top:${m.pin[1].toFixed(2)}%" title="Zuhause">${ic("home", 14)}</span>` : ""}<div class="wxmerr">${ic("alert", 16)}Karte vom DWD gerade nicht erreichbar. Neuer Versuch beim nächsten Aufbau.</div></div>
       <div class="wxmft"><div class="gschips">${Object.entries(Z).map(([k, [, t2]]) => `<button class="gsch ${zoom === k ? "sel" : ""}" data-act="wxsmapz" data-k="${k}">${t2}</button>`).join("")}</div>${legend}</div>
       <div class="wxmsrc">Stand ${hm} Uhr · neu alle 5 Minuten · Quelle: Deutscher Wetterdienst (GeoServer) · <a href="https://www.dwd.de/DE/wetter/warnungen_gemeinden/warnWetter_node.html" target="_blank" rel="noopener">auf dwd.de öffnen</a></div></div>`;

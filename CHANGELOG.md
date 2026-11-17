@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b2] - 2026-11-17
+
+### Behoben
+- **Modul 9 · Wetterkarte flackerte:** Das Kartenbild wurde bei jedem Neuaufbau der Seite (alle paar Sekunden, z. B. bei neuen Sensorwerten) neu angelegt und neu geladen. Jetzt bleibt das Bild stehen und wird nur alle 5 Minuten erneuert; bis der neue Stand geladen ist, bleibt der alte sichtbar.
+
 ## [2026.11.4b1] - 2026-11-17
 
 ### Neu
