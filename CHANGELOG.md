@@ -2,6 +2,47 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.3] - 2026-11-17
+
+Dritte stabile Version im November: Haus-Szenen in Modul 1, 3 und auf der Startseite, ein komplett neues Modul 8 für das Elektroauto, Modul 3 mit Gaszähler, Modul 19 und Modul 16 stabil, Support-Chat direkt im Dashboard und Freischaltung mit GitHub. Sie enthält alles aus den Testversionen 2026.11.3b1 bis 2026.11.3b42 und die Kontakt-Leiste. README und Bedienungsanleitung sind an diese Version angepasst (Kapitel 23 „Neu in Version 2026.11.3“).
+
+### Neu
+- **Startseite, Neue Optik:** Haus-Kopf als Szene, Kacheln 2.0 mit Zustandsfarben und HD-Symbolen, Hinweise-Zentrale mit „Später“, Wetter, Personen und Alarm neu, Tablet-Wandansicht, Bewegung (Aus · Dezent · Voll), Vorlagen und Schnellaktionen.
+- **Modul 1 (v1.8):** Raumkarte 2.0 (Bild oben, Zahl in der Mitte, Rest im Menü „⋯“), Haus-Szene im Kopf mit deinen Räumen nach Etagen, Grundriss als Wärmekarte aus dem Baukasten von Modul 11, acht neue Raumbilder (u. a. Carport und Garage), „Warum?“ als Zeitleiste, Präsenzmelder je Raum, Messräume innen oder außen, Luftentfeuchter „Nur mit PV-Überschuss“.
+- **Modul 3 (v1.6):** Energie-Szene im Banner, Energiefluss mit HD-Plaketten, Hinweise mit Bild und Aktion, neue Diagramme und Kosten-Treppe, **Gaszähler** mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag, Einstellungen in Reitern.
+- **Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion):** Carport-Szene, Überschuss-Balken mit Start und Stopp in Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug, Strompreis im Banner, Tablet-Wandansicht, **Ladestatistik** mit Kilometern und Verbrauch, Änderungen je Ladung, Ladungen zusammenführen, mehrere Ladungen auf einmal ändern, Kosten ändern, **Import aus der go-e-App**, Ladenachweis als PDF, andere Wallboxen über Home Assistant.
+- **Modul 9 (v0.9) Wetter & Warnungen:** alle DWD-Warnungen mit Stufen, Wetter-Szene als Banner, Zeitleiste, Vorsorge für Akku, Auto, Hitze und Frost.
+- **Modul 14 Stromtarif:** gemeinsamer Preisdienst für Modul 3, 8 und 14, neue Optik, Fenster je Gerät und Preisalarm.
+- **Modul 16 Solar-Prognose (stabil, v1.0):** neue Optik mit Sonnenbogen, korrigierte Prognose, Treffsicherheit und Tipps.
+- **Modul 20 Abrechnungen** (Addon, In Entwicklung): erste Stufe, Installation unter Entdecken → Store → Addons.
+- **Modul 19 Hausfluss (stabil, v1.1):** Strom-Reiter mit „Woher kam der Strom?“ für Tag, Woche, Monat und Jahr, Haus mit Herkunfts-Ring, Themen, Tablet-Wand, bis zu vier Kacheln links und rechts und zwei unten, hellere Kacheln.
+- **Haus-Energiebuch:** zählt alle 20 Sekunden, woher der Strom im ganzen Haus kommt und wohin er geht; Modul 19 und weitere Module nutzen es.
+- **Modul 4 Gerätestrom:** Geräte-Menü in den Einstellungen als aufklappbare Karten, 13 neue Gerätetypen mit HD-Bildern.
+- **Support-Chat im Dashboard:** wie WhatsApp, mit Bildern, Mitteilung aufs Handy, Anzeige der Abwesenheit. Sponsor Max wird bevorzugt beantwortet.
+- **Kontakt-Leiste:** Auf der Startseite und unter jedem Modul stehen die Knöpfe „💬 Chat“ und „✉️ E-Mail“. Die Adresse ist support@stromwaerme.dev (auch für den Sponsor-Schlüssel per Mail).
+- **Sponsor:** Freischalten mit GitHub direkt im Panel, Stufen nach Name der GitHub-Stufe, „Auf Max hochstufen“ in „Sponsoren verwalten“.
+- **Addons:** installierte Addons erscheinen in den Modulversionen mit Stufe, Version und Update-Link.
+
+### Geändert
+- **Updates** gehören zu „Versionen & Updates“ (Einstellungen → System), automatische Sicherungen sind kompakt gruppiert.
+- **Modul 3 Gas:** Preise stehen nur in der Preisliste, der Grundpreis lässt sich pro Monat oder pro Jahr eingeben.
+- **Modul 19:** hellere Kacheln mit feinem Rand, bis zu 5 Quellen nebeneinander in der Handy-Ansicht, Verbraucher bleiben darunter.
+- **Sponsor-Mail:** Der Sponsor-Schlüssel wird an support@stromwaerme.dev geschrieben.
+
+### Behoben
+- Modul 8: Eine laufende Ladung ging beim Neustart von Home Assistant verloren, die Ladung zeigte dann zu wenig. Sie bleibt jetzt erhalten, Energie, die in keiner Ladung steht, wird beim Bearbeiten zuerst der Ladung zugerechnet (Tageswerte bleiben), und die Tagesansicht weist darauf hin.
+- Modul 8: Ladung startete nach einem Stopp nicht neu, nach einem Phasenwechsel stand eine neue Ladung in der Statistik, nach dem Zurückwechseln in die App standen kurz alle Werte auf 0, ältere Ladungen fehlten nach dem go-e-Import.
+- Modul 3 und alle Szenen: Flüsse liefen nur beim Scrollen, der Autarkie-Ring flackerte, Reiter in „Energiequellen“ ließen sich nicht antippen.
+- Modul 1: Grundriss aus Modul 11 erschien nicht, Antippen eines Raums brachte einen Fehler auf iPhone und App, Geräte der Integration wurden als Räume gezählt, Entfeuchter zeigte „läuft“ im Standby.
+- Modul 4: nach dem Wechsel aus einer anderen App standen kurz alle Werte auf 0.
+- Modul 16: Die Prognose war bei mehreren Diensten für dieselben Module zu hoch.
+- Sponsor: Nach dem Ausschalten des Entwickler-Zugangs gab es keinen Weg zurück, Beta-Sperre mit Zugang zur Verwaltung.
+
+### Wichtig beim Update
+- Nach dem Update Home Assistant neu starten und die Seite neu laden, in der App die App ganz schließen und neu öffnen. Deine Einstellungen bleiben erhalten.
+- Das Haus-Energiebuch beginnt beim Update zu zählen; Auswertungen daraus füllen sich mit der Zeit.
+- Wer die neue Optik nicht möchte: In den jeweiligen Modulen unter Anpassen → Aussehen auf „wie bisher“ stellen.
+
 ## [2026.11.3b42] - 2026-11-15
 
 ### Behoben

@@ -23,7 +23,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 <p align="center"><a href="https://youtube.com/@strom_und_waerme"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/youtube_banner.png" width="66%" alt="YouTube-Kanal Strom &amp; Wärme: Erklärvideos, Neuheiten und Shorts – @strom_und_waerme"></a> <a href="https://github.com/sponsors/Maddog3010"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/sponsor_kachel.png" width="32%" alt="Sponsor werden über GitHub Sponsors – github.com/sponsors/Maddog3010"></a></p>
 
 <p align="center">
-  <a href="#neu-in-2026112">Neu</a> ·
+  <a href="#neu-in-2026113">Neu</a> ·
   <a href="#installation">Installation</a> ·
   <a href="#module">Module</a> ·
   <a href="#bedienung">Bedienung</a> ·
@@ -39,28 +39,28 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 ---
 
-## Neu in 2026.11.2
+## Neu in 2026.11.3
 
-<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/banner_2026.11.2.png" width="760" alt="Neu in Version 2026.11.2"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/banner_2026.11.3.png" width="760" alt="Neu in Version 2026.11.3"></p>
 
-**Die neue Optik ist da.** Ein HD-Bildsatz für Modul 1, 3, 4 und 19, ein komplett neues Modul 4 und dazu die Sponsor-Lounge 2.0 mit Sponsor Max. Alles Neue lässt sich mit „wie bisher“ abschalten.
+**Dein Haus als Szene, und das Elektroauto dazu.** Haus-Szenen in Modul 1, 3 und auf der Startseite, ein komplett neues Modul 8, der Gaszähler in Modul 3, Modul 19 und Modul 16 stabil, und unter jedem Modul ein Knopf für **Chat und E-Mail**. Alles Neue lässt sich mit „wie bisher“ abschalten.
 
 | | Was ist neu |
 |---|---|
-| 🧺 **Modul 4 Gerätestrom v1.5** | **Geräte-Szene** im Banner (Kabel leuchtet gelb bei Solar, violett bei Akku, rot bei Netz), **Gerätekarten 2.0** mit Herkunfts-Ring, Restzeit „noch ~ Min.“ und Startempfehlung mit **Erinnern**, **Geräte-Seite** mit Programm-Kurve, Durchlauf-Protokoll und typischem Lauf, **bestes Startfenster** als Bild mit Solarprognose und Preisband, **Startfenster aller Geräte**, **Standby** in W und € im Jahr, **Monatsziel**, **Dein Jahr** als Bild zum Teilen, **Tablet-Wand** und Bewegung (Aus · Dezent · Voll) |
-| 🖼️ **HD-Bildsatz** | 38 Symbole für Räume, Energie und Geräte, scharf in hell und dunkel. Modul 19 mit 24 HD-Bildern, die den Zustand zeigen (Wasser in der Trommel, Akku mit Füllstand) |
-| ✋ **Anpassen in Modul 2, 3 und 4** | Karten am Griff verschieben, mit dem Auge ausblenden, in Modul 4 auch die Geräte sortieren |
-| 💧 **Modul 1 · Entfeuchter-Nachtmodus** | Eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen erst am Morgen |
-| 🔎 **Sensorsuche** | Suchfeld über allen Reitern, im Filter alle Räume und Integrationen |
-| 🔐 **Beta-Freigabe** | Testversionen mit Sponsor Max sofort, als Sponsor 3 Tage nach Erscheinen. Stabile Versionen bleiben für alle frei |
-| 🛠️ **Behoben** | Messräume verschwinden nicht mehr (mit „Zurückholen“ aus der Sicherung) · Wallbox lädt nach einem Phasenwechsel weiter · Akkukapazität mit Nachkommastelle · Standort und Abwesenheits-Temperatur fallen nicht mehr zurück · eigenes mdi-Symbol in Modul 19 · Zeile „Startseite“ in der Darstellung |
-| 💗 **Sponsor-Lounge 2.0** | Energie-Coach (jeden Montag drei Tipps mit Euro-Betrag), Monatsbericht „Dein Haus im Monat“ als Bild, Wunsch des Monats mit Abstimmung auf GitHub |
-| ⭐ **Sponsor Max** ($3 im Monat oder $10 einmalig) | Haus-Autopilot, Wächter, Woche voraus, Was wäre wenn …, Heizplan-Assistent, Morgen-Briefing, Jahres-Poster, Beta-Kanal |
+| 🏠 **Startseite und Modul 1 (v1.8)** | **Haus-Kopf als Szene**, Kacheln mit Zustandsfarben, Hinweise-Zentrale mit „Später“, Tablet-Wand. In Modul 1 **Raumkarte 2.0**, deine Räume als Haus im Schnitt, **Grundriss als Wärmekarte** aus Modul 11, acht neue Raumbilder (u. a. Carport, Garage), „Warum?“ als Zeitleiste, **Präsenzmelder** je Raum, Messräume innen oder außen |
+| ⚡ **Modul 3 Energie (v1.6)** | **Energie-Szene** im Banner, Energiefluss mit HD-Plaketten, neue Diagramme und Kosten-Treppe. Neu: **Gaszähler** für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag |
+| 🚗 **Modul 8 Elektroauto (v0.9)** | **Carport-Szene**, **Überschuss-Balken** mit Start und Stopp in Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug, Strompreis im Banner, Tablet-Wand. **Ladestatistik** mit Kilometern und Verbrauch, Ladungen bearbeiten und zusammenführen, **Import aus der go-e-App**, Ladenachweis als PDF |
+| 🌦️ **Modul 9 (v0.9) und Modul 16 (stabil 1.0)** | Alle DWD-Warnungen mit Stufen, Wetter-Szene, Vorsorge für Akku, Auto, Hitze und Frost. Solar-Prognose mit Sonnenbogen, korrigierter Prognose, Treffsicherheit und Tipps |
+| 🌐 **Modul 19 Hausfluss (stabil 1.1)** | **Strom-Reiter** mit „Woher kam der Strom?“, bis zu **vier Kacheln links und rechts und zwei unten**, bis zu 5 Quellen am Handy, hellere Kacheln |
+| 📒 **Haus-Energiebuch** | Zählt alle 20 Sekunden, woher der Strom im ganzen Haus kommt und wohin er geht. Modul 19 und weitere Module nutzen es |
+| 💬 **Support-Chat und E-Mail** | Chat wie bei WhatsApp direkt im Dashboard (mit Bildern und Mitteilung aufs Handy), dazu unter **jedem Modul und auf der Startseite** die Knöpfe „💬 Chat“ und „✉️ E-Mail“: [support@stromwaerme.dev](mailto:support@stromwaerme.dev) |
+| 💗 **Sponsor** | **Freischalten mit GitHub** direkt im Panel, „Auf Max hochstufen“, Sponsor-Schlüssel per Mail an die Support-Adresse |
+| 🛠️ **Behoben** | Laufende Ladung geht beim Neustart nicht mehr verloren · Flüsse laufen auch ohne Scrollen · Grundriss aus Modul 11 erscheint zuverlässig · Prognose bei mehreren Diensten nicht mehr doppelt gezählt · Werte nach dem App-Wechsel springen nicht mehr auf 0 |
 
-<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_geraetestrom_szene.png" width="760" alt="Modul 4: Geräte-Szene"></p>
-<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_geraet_startfenster.png" width="420" alt="Bestes Startfenster"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_geraet_kurve.png" width="420" alt="Programm-Kurve"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul19_4x4.png" width="520" alt="Modul 19: vier Kacheln links und rechts, zwei unten"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul3_gas.png" width="520" alt="Modul 3: Gaszähler"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_kontakt_leiste.png" width="760" alt="Kontakt-Leiste mit Chat und E-Mail unter jedem Modul"></p>
 
-▶️ [**Video zu 2026.11.2 auf YouTube**](https://youtube.com/@strom_und_waerme) · 📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf), komplett neu für 2026.11.2 · 📲 [**Tags & Karten mit dem iPhone anlernen**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf) · [Alle Änderungen](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md)
+▶️ [**Video zu 2026.11.3 auf YouTube**](https://youtube.com/@strom_und_waerme) · 📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf), angepasst an 2026.11.3 · 📲 [**Tags & Karten mit dem iPhone anlernen**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf) · [Alle Änderungen](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md)
 
 ---
 
@@ -113,9 +113,9 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 
 | Nr. | Modul | Stufe | Was es macht |
 |---|---|---|---|
-| 1 | **Fenster & Heizung** | Stabil 1.7 | Pause bei offenem Fenster, Heizpläne, Anwesenheit und Urlaub, Raumsensor, Messräume, Luftentfeuchter mit Nachtmodus, Berichte, Elektroheizer |
+| 1 | **Fenster & Heizung** | Stabil 1.8 | Pause bei offenem Fenster, Heizpläne, Anwesenheit und Urlaub, Raumsensor, Präsenzmelder, Messräume, Haus-Szene und Grundriss, Luftentfeuchter, Berichte, Elektroheizer |
 | 2 | **Warmwasser & Zirkulation** | Stabil 1.1 | Speicher, Zeitplan, Zirkulationspumpe, Legionellenschutz, Heizstab bei PV-Überschuss, Anpassen |
-| 3 | **Energie** | Stabil 1.2 | Solar, Netz, Batterie und Hausverbrauch, Tag/Woche/Monat/Jahr, Kosten und Autarkie, Anpassen |
+| 3 | **Energie** | Stabil 1.6 | Solar, Netz, Batterie und Hausverbrauch, Tag/Woche/Monat/Jahr, Energie-Szene, Kosten und Autarkie, Gaszähler, Anpassen |
 | 4 | **Gerätestrom** | Stabil 1.5 | Geräte-Szene, Gerätekarten mit Herkunfts-Ring und Restzeit, Geräte-Seite mit Programm-Kurve, bestes Startfenster, Standby, Monatsziel, Dein Jahr, Tablet-Wand |
 | 5 | Lüftung & Raumluft | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 6 | Rollläden & Beschattung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
@@ -131,7 +131,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 16 | **Solar-Prognose** | Stabil 1.0 | Sonnenbogen, Prognose gegen Ertrag je Stunde, korrigierte Prognose, Anlagen einzeln, Sensoren für Automationen |
 | 17 | Müllabfuhr | Addon | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend |
 | 18 | Licht & Lampen | Addon | Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe |
-| 19 | **Hausfluss** | Stabil 1.0 · Sponsoren | Dein Haus als Fluss-Bild: Leuchtlinien, Herkunfts-Ring, Lichtband-Banner, Themen, Strom-Reiter mit Kosten, Wand-Ansicht fürs Tablet |
+| 19 | **Hausfluss** | Stabil 1.1 · Sponsoren | Dein Haus als Fluss-Bild: Leuchtlinien, Herkunfts-Ring, bis zu 4+4+2 Kacheln, Themen, Strom-Reiter mit „Woher kam der Strom?“, Wand-Ansicht fürs Tablet |
 | 20 | Abrechnungen | Addon · In Entwicklung | Verträge mit Preisperioden, Wasser-Gebühren, Zähler mit geprüften Ablesungen, Fristen, Preisdienst für alle Module |
 | 21 | Saugroboter | Addon | Roboter-Karte, Raum-Kacheln mit Ampel, Karte, Woche, Wartung |
 
@@ -145,8 +145,10 @@ Die Module 5, 6, 7, 10, 12, 13 und 15 zeigen **Konzeptseiten** zum Durchklicken.
 - **Heizplan:** Wochenplan je Raum, Sommermodus und Wetter-Anpassung.
 - **Anwesenheit und Urlaub:** Home-Zone, Personen und Urlaubsplanung senken die Temperatur.
 - **Raumsensor (optional):** Raumwert neben dem Thermostat, gelernte Aufheizzeit, Taupunkt, Offset-Ausgleich und „Aus bei Ziel“.
-- **Messraum:** Räume nur mit Temperatur und Feuchte, ohne Thermostat. Fehlen Messräume, die noch in der Sicherung stehen, holt „Zurückholen“ sie mit Symbol, Farbe und Foto zurück.
-- **Luftentfeuchter:** Regelung nach der Raumfeuchte, Standort per Tipp, Handy oder NFC, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom. **Neu: Nachtmodus** mit eigener Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts und Meldungen erst am Morgen.
+- **Haus-Szene und Raumkarte 2.0 (neu in 2026.11.3):** Im Kopf dein Haus im Schnitt mit den eigenen Räumen nach Etagen, Raumkarten mit Bild, Zahl und Menü „⋯“, **Grundriss als Wärmekarte** aus dem Baukasten von Modul 11, acht neue Raumbilder (Esszimmer, Wintergarten, Keller, Werkstatt, Fitness, Dachboden, Garage, Carport), „Warum?“ als Zeitleiste.
+- **Präsenzmelder je Raum (neu in 2026.11.3):** „Mensch im Raum = heizen auf … °C“ mit Präsenz- oder Bewegungsmelder.
+- **Messraum:** Räume nur mit Temperatur und Feuchte, ohne Thermostat, auch außen (Terrasse, Carport). Fehlen Messräume, die noch in der Sicherung stehen, holt „Zurückholen“ sie mit Symbol, Farbe und Foto zurück.
+- **Luftentfeuchter:** Regelung nach der Raumfeuchte, Standort per Tipp, Handy oder NFC, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom. Mit **Nachtmodus** und eigener Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts und Meldungen erst am Morgen.
 - **Elektroheizer mit PV-Überschuss** und **Bericht** mit Heizzeit, Pausen und Ersparnis.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_fenster_heizung.png" width="560" alt="Modul 1"></p>
@@ -166,13 +168,13 @@ Zeitplan mit Zieltemperaturen, Zirkulationspumpe, Legionellenschutz und Heizstab
 <summary><b>3 · Energie</b></summary>
 <br>
 
-Solar, Netz, Batterie und Hausverbrauch für Tag, Woche, Monat und Jahr, mit ‹ › zum Blättern. Kacheln mit Verlauf und Vergleich zur Vorperiode, Diagramm zum Antippen, Kosten als Treppe bis zur Bilanz, Prüfung der Vorzeichen, optional eine zweite Solaranlage. **Neu:** Karten anpassen wie in Modul 1.
+Solar, Netz, Batterie und Hausverbrauch für Tag, Woche, Monat und Jahr, mit ‹ › zum Blättern. Kacheln mit Verlauf und Vergleich zur Vorperiode, Diagramm zum Antippen, Kosten als Treppe bis zur Bilanz, Prüfung der Vorzeichen, optional eine zweite Solaranlage. **Neu:** Karten anpassen wie in Modul 1. **Neu in 2026.11.3:** **Energie-Szene** im Banner (dein Haus mit Solar, Batterie und Netz), Energiefluss mit HD-Plaketten und **Gaszähler**: Zählerstand-Sensor in m³ oder kWh wählen, dann zeigt eine Karte Tag, Woche, Monat und Jahr, mit Abrechnungsjahr, Preisliste mit „gültig ab“, Grundpreis pro Monat oder Jahr und Abschlag.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_energie.png" width="560" alt="Modul 3"></p>
 </details>
 
-<details open>
-<summary><b>4 · Gerätestrom</b> (neu in 2026.11.2)</summary>
+<details>
+<summary><b>4 · Gerätestrom</b></summary>
 <br>
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_geraetestrom_szene.png" width="760" alt="Geräte-Szene"></p>
@@ -193,14 +195,14 @@ Die Aufteilung ist eine Näherung aus Messwerten im 20-Sekunden-Takt. Die Startz
 </details>
 
 <details>
-<summary><b>8 · Elektroauto & Wallbox</b> (Beta)</summary>
+<summary><b>8 · Elektroauto & Wallbox</b> (Vorabversion)</summary>
 <br>
 
-go-e Charger lokal im Netzwerk **oder (neu, Beta) jede Wallbox mit Home-Assistant-Integration** – „Andere Wallbox“ im Store sucht die Integration und schlägt die Entitäten vor. Betriebsarten Aus, Sonne, Sonne + Netz, Voll und Ladeplan mit Abfahrtszeit, Ziel-Ladestand, Strompreis und PV-Prognose (Modul 16). Dazu RFID-Karten je Fahrzeug, Hausanschluss-Schutz und Ladestatistik.
+go-e Charger lokal im Netzwerk **oder jede Wallbox mit Home-Assistant-Integration** – „Andere Wallbox“ im Store sucht die Integration und schlägt die Entitäten vor. Betriebsarten Aus, Sonne, Sonne + Netz, Voll und Ladeplan mit Abfahrtszeit, Ziel-Ladestand, Strompreis und PV-Prognose (Modul 16). Dazu RFID-Karten je Fahrzeug, Hausanschluss-Schutz und Ladestatistik.
 
-**Neu in 2026.11.3b22 (Modul 8 v0.9 Build 4):** Überschuss-Balken mit der eingestellten Leistung (1 Phase / 3 Phasen) und Restzeit bis Start oder Stopp · Überschuss-Vorschau für den Rest des Tages · Abfahrt aus dem Kalender je Fahrzeug (ersetzt das Lab „Ladeziel nach Kalender“) · Tablet-Wandansicht „Laden“ mit großen Knöpfen · Strompreis als Chip im Banner · Kilometer & Verbrauch in der Statistik (Sonnen-Kilometer, Verbrauch nach Außentemperatur, Jahreskilometer mit Leasing-Grenze, Kilometerstand von Hand).
+**Neu in 2026.11.3 (Modul 8 v0.9):** neue Optik mit Carport-Szene und Ladeband bis zum Ziel · **Überschuss-Balken** mit der eingestellten Leistung (1 Phase / 3 Phasen) und Restzeit bis Start oder Stopp · Überschuss-Vorschau für den Rest des Tages · Abfahrt aus dem Kalender je Fahrzeug · Strompreis als Chip im Banner · Tablet-Wandansicht „Laden“ · realistischere Autos, eigene Sensoren und eigenes Aussehen je Fahrzeug · „Heute“ und „Warum gerade so?“ als Zeitleisten.
 
-**Neu in 2026.11.3b16 (Modul 8 v0.6–v0.8):** neue Optik mit Carport-Szene, Ladeband bis zum Ziel, Kacheln mit HD-Symbolen, Modus-Karten, „Heute“ und „Warum gerade so?“ als Zeitleisten · realistischere Autos · eigene Sensoren und eigenes Aussehen je Fahrzeug · Register „Fahrzeuge“ · Ladeplan als ein Band (derselbe Plan, nach dem geregelt wird) · Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte · geschätzter Ladestand für Autos ohne Sensor · Sensoren und Ereignis `fenster_heizung_ladung_beendet` für eigene Automationen. „Wie bisher“ holt die alte Ansicht zurück.
+**Ladestatistik:** Tag, Woche, Monat und Jahr, pro 100 km und je Karte · **Kilometer & Verbrauch** (Sonnen-Kilometer, Verbrauch nach Außentemperatur, Jahreskilometer mit Leasing-Grenze) · Ladungen **bearbeiten** (Fahrzeug, Menge, Kosten, Karte, Notiz) mit Änderungsverlauf, **zusammenführen** und mehrere auf einmal ändern · **Import aus der go-e-App** (CSV) · Ladenachweis als PDF · eine laufende Ladung überlebt einen Neustart von Home Assistant. Sensoren und das Ereignis `fenster_heizung_ladung_beendet` für eigene Automationen. „Wie bisher“ holt die alte Ansicht zurück.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_elektroauto.png" width="560" alt="Modul 8"></p>
 </details>
@@ -241,10 +243,10 @@ go-e Charger lokal im Netzwerk **oder (neu, Beta) jede Wallbox mit Home-Assistan
 </details>
 
 <details>
-<summary><b>19 · Hausfluss</b> (Stabil 1.0, nur für Sponsoren)</summary>
+<summary><b>19 · Hausfluss</b> (Stabil 1.1, nur für Sponsoren)</summary>
 <br>
 
-Das Haus in der Mitte, ringsum bis zu acht Kacheln für Solar, Netz, Akku, Auto und Verbraucher. **Leuchtlinien** zeigen Richtung und Stärke, der **Herkunfts-Ring** am Haus, woher der Strom gerade kommt (Solar, Akku, Netz). Oben das **Lichtband-Banner**, dazu Themen (Nachtglas, Blaupause, Sternenhimmel, Haus im Garten), Kachelform Rund und eine helle Variante. HD-Bilder mit Zustand, Status-Punkt, Gruppen-Kacheln (z. B. alle Kühlschränke) und Anordnen per Ziehen. Der **Strom-Reiter** zeigt Tag, Woche, Monat und Jahr als Lichtsäulen nach Herkunft, Verbraucher mit Solar-Anteil und die Kosten. Auf dem Handy als Fluss-Spalte oder Kachel-Raster, im Tablet-Modus als Wand-Ansicht mit Ruhebild. **Schnellstart** aus den Haus-Werten, Einrichtungs-Prüfung und „Bild teilen“ als PNG.
+Das Haus in der Mitte, ringsum bis zu **zehn Kacheln** (links und rechts je vier, oben zwei, unten zwei) für Solar, Netz, Akku, Auto und Verbraucher. **Leuchtlinien** zeigen Richtung und Stärke, der **Herkunfts-Ring** am Haus, woher der Strom gerade kommt (Solar, Akku, Netz). Oben das **Lichtband-Banner**, dazu Themen (Nachtglas, Blaupause, Sternenhimmel, Haus im Garten), Kachelform Rund und eine helle Variante. HD-Bilder mit Zustand, Status-Punkt, Gruppen-Kacheln (z. B. alle Kühlschränke) und Anordnen per Ziehen. Der **Strom-Reiter** zeigt Tag, Woche, Monat und Jahr als Lichtsäulen nach Herkunft, Verbraucher mit Solar-Anteil und die Kosten. Auf dem Handy als Fluss-Spalte oder Kachel-Raster, im Tablet-Modus als Wand-Ansicht mit Ruhebild. **Schnellstart** aus den Haus-Werten, Einrichtungs-Prüfung und „Bild teilen“ als PNG.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_hausfluss_hd.png" width="420" alt="Hausfluss mit HD-Bildern"></p>
 </details>
@@ -365,10 +367,11 @@ Die Integration folgt dem Schema **Jahr.Monat.Release**:
 |---|---|
 | `2026.11.1` | Erstes Update im November 2026 |
 | `2026.11.2` | Zweites Update im November 2026 |
+| `2026.11.3` | Drittes Update im November 2026 |
 | `2026.12.1` | Erstes Update im Dezember, mit jedem Monat beginnt der Zähler wieder bei 1 |
 | `2026.12.1b1` | **Testversion** (Beta) für das kommende Update `2026.12.1` |
 
-Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.2b1` < `2026.11.2b14` < `2026.11.2`.
+Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.3b1` < `2026.11.3b42` < `2026.11.3`.
 
 ### Stabil oder Beta
 
@@ -379,6 +382,8 @@ Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.2b1` 
 ### Update einspielen
 
 Über HACS aktualisieren, Home Assistant neu starten und die Seite neu laden (Strg+F5, in der App nach unten ziehen). Deine Einstellungen bleiben erhalten.
+
+> **Update auf 2026.11.3:** Nach dem Update Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen und neu öffnen). Das neue Haus-Energiebuch beginnt beim Update zu zählen, Auswertungen daraus füllen sich mit der Zeit. Wer die neue Optik nicht möchte, stellt in den Modulen unter **Anpassen → Aussehen** auf „wie bisher“.
 
 > **Update auf 2026.11.2:** Modul 4 merkt sich ab dieser Version Laufzeiten, Kurven, Standby und die Jahreszähler. „noch ~ Min.“ erscheint je Gerät nach drei neuen Läufen, Standby nach einigen Stunden. Dein Jahr wird aus den gespeicherten Läufen vorbelegt. Wer die alte Optik möchte: **Einstellungen → Modul 4 → Darstellung → Karten wie bisher** und **Einstellungen → Modul 19 → Alte Symbole behalten**.
 
@@ -443,7 +448,7 @@ Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.2b1` 
 
 Die Integration fragt GitHub nur, ob und mit welcher Stufe du sponserst (Recht `read:user`, kein Zugriff auf Repos oder Mails). Es gibt keinen eigenen Server. Das Token bleibt in deinem Home Assistant und lässt sich unter GitHub → Settings → Applications jederzeit widerrufen. Geprüft wird einmal am Tag; endet das Sponsoring, gehen nur die Extras aus.
 
-Lieber ohne GitHub-Anmeldung? Dann gibt es weiter einen **Sponsor-Schlüssel**: kurze E-Mail mit GitHub-Namen und Stufe an [00.verkauf_kompass@icloud.com](mailto:00.verkauf_kompass@icloud.com), den Schlüssel im Sponsor-Bereich unter „Ich habe einen Schlüssel“ einfügen. Er wird lokal geprüft (Ed25519).
+Lieber ohne GitHub-Anmeldung? Dann gibt es weiter einen **Sponsor-Schlüssel**: kurze E-Mail mit GitHub-Namen und Stufe an [support@stromwaerme.dev](mailto:support@stromwaerme.dev), den Schlüssel im Sponsor-Bereich unter „Ich habe einen Schlüssel“ einfügen. Er wird lokal geprüft (Ed25519).
 
 ---
 
@@ -456,6 +461,9 @@ Lieber ohne GitHub-Anmeldung? Dann gibt es weiter einen **Sponsor-Schlüssel**: 
 - Der Bericht, der Energie-Coach und der Rechner brauchen Verlaufsdaten im Recorder bzw. die Langzeitstatistik.
 
 ## Häufige Fragen
+
+**Wie erreiche ich Hilfe?**
+Unter jedem Modul und auf der Startseite stehen die Knöpfe **💬 Chat** und **✉️ E-Mail**. Der Chat läuft direkt im Dashboard, Sponsor Max wird bevorzugt beantwortet. Die E-Mail-Adresse ist [support@stromwaerme.dev](mailto:support@stromwaerme.dev). Für Fehler hilft auch ein Issue auf GitHub.
 
 **Kostet „Strom & Wärme“ etwas?**
 Nein. Ein Sponsoring ist freiwillig. Was frei ist, bleibt frei.
