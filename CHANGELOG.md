@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b3] - 2026-11-17
+
+### Behoben
+- **Modul 9 · Wetterkarte ohne Warnfarben:** Die Karte blieb grün, obwohl der DWD Warnungen hatte. Die Fläche der Landkreise lag über den Warnungen und dem Regenradar und deckte sie zu. Jetzt liegen die Ebenen wie im Beispiel des DWD: Hintergrund, Landkreise, darüber Warnungen bzw. Radar.
+
 ## [2026.11.4b2] - 2026-11-17
 
 ### Behoben

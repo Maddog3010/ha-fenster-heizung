@@ -231,7 +231,8 @@
       x0 = cx - dx; x1 = cx + dx; y0 = cy - dy; y1 = cy + dy;
     }
     if (zoom === "de" || !ok) { const cx = (x0 + x1) / 2, dy = (y1 - y0) / 2, dx = (dy * w) / h; x0 = cx - dx; x1 = cx + dx; }
-    const L = layer === "radar" ? "dwd:bluemarble,dwd:Niederschlagsradar,dwd:Warngebiete_Kreise" : "dwd:bluemarble,dwd:Warnungen_Gemeinden_vereinigt,dwd:Warngebiete_Kreise";
+    /* Reihenfolge wie im Beispiel des DWD: Kreise (gefüllt) unten, Warnungen bzw. Radar oben – sonst deckt die Kreis-Fläche alles grün zu */
+    const L = layer === "radar" ? "dwd:bluemarble,dwd:Warngebiete_Kreise,dwd:Niederschlagsradar" : "dwd:bluemarble,dwd:Warngebiete_Kreise,dwd:Warnungen_Gemeinden_vereinigt";
     const slot = Math.floor(Date.now() / 300000);
     const url = `https://maps.dwd.de/geoserver/dwd/wms?service=WMS&version=1.1.1&request=GetMap&layers=${encodeURIComponent(L)}&styles=&srs=EPSG:3857&bbox=${[x0, y0, x1, y1].map((v) => v.toFixed(0)).join(",")}&width=${w}&height=${h}&format=image%2Fpng&t=${slot}`;
     let pin = null;
