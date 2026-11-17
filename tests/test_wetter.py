@@ -69,7 +69,7 @@ def _load():
     _stub("homeassistant.core", CALLBACK_TYPE=object, HomeAssistant=object)
     _stub("homeassistant.helpers.entity_registry", async_get=lambda hass: REG)
     sys.modules["homeassistant.helpers"].entity_registry = sys.modules["homeassistant.helpers.entity_registry"]
-    _stub("homeassistant.helpers.event", async_track_time_interval=lambda *a, **k: (lambda: None))
+    _stub("homeassistant.helpers.event", async_track_time_interval=lambda *a, **k: (lambda: None), async_track_state_change_event=lambda *a, **k: (lambda: None))
     SENT.clear()
     _stub("homeassistant.helpers.dispatcher", async_dispatcher_send=lambda *a, **k: SENT.append(a[1:]))
     _stub("homeassistant.helpers.storage", Store=object)
@@ -344,6 +344,7 @@ def test_ablauf_amtlich_und_snapshot():
         await m._tick(None)
         assert len([c for c in h.services.calls if c[0] == "notify"]) == n  # nicht doppelt melden
         m.cfg["official"]["vorab"] = False
+        m._off_cache = (0.0, [])  # sonst gilt die gemerkte Liste noch 10 Minuten
         await m._tick(None)
         assert len(m._offl) == 1
     run(go())
@@ -586,6 +587,59 @@ def test_verlauf_90_tage():
     m.log = [{"t": "2026-01-01T10:00:00+00:00", "x": "alt"}]
     m._add("neu", "warn")
     assert [x["x"] for x in m.log] == ["neu"] and m.log[0]["k"] == "warn"
+
+
+# ---------------------------------------------------------------- v1.0: Rückblick, Speichern bei Änderung, schneller warnen
+def test_rueckblick():
+    from datetime import date
+    today = date(2026, 11, 17)
+    days = {"2026-11-17": {"w": ["storm"], "lv": 3, "off": 2, "wmax": 96, "tmin": 4, "tmax": 9, "acts": 2},
+            "2026-11-10": {"w": ["frost"], "lv": 1, "tmin": -3.5, "tmax": 5},
+            "2026-08-01": {"w": ["heat", "thunder"], "lv": 2, "tmax": 34, "rain": 12.5},
+            "2025-12-31": {"w": ["storm"], "lv": 1}}
+    r = W.review_of(days, today)
+    assert r["m30"]["storm"] == 1 and r["m30"]["frost"] == 1 and r["m30"]["heat"] == 0 and r["m30"]["wmax"] == 96 and r["m30"]["tmin"] == -3.5
+    assert r["year"]["n"] == 3 and r["year"]["heat"] == 1 and r["year"]["thunder"] == 1 and r["year"]["tmax"] == 34 and r["year"]["rain_mm"] == 12.5 and r["year"]["off"] == 1
+    assert len(r["strip"]) == 30 and r["strip"][-1] == {"d": "2026-11-17", "lv": 3, "has": True} and r["strip"][0]["has"] is False
+
+
+def test_tageswerte_und_speichern_nur_bei_aenderung():
+    h, m = _storm_mgr([])
+
+    async def go():
+        await m._tick(None)
+        await m._tick(None)
+        d = m.days["2026-11-12"]
+        assert d["wmax"] == 95 and d["lv"] == 3 and "storm" in d["w"]
+        m._store.saved = None
+        m._save()
+        assert m._store.saved is None  # nichts geändert: kein Schreiben
+        m._add("neu")
+        m._save()
+        assert m._store.saved is not None
+        snap = await m.snapshot()
+        assert snap["rb"]["m30"]["storm"] == 1
+    run(go())
+
+
+def test_schneller_warnen():
+    h, m = _storm_mgr([])
+    n = []
+    orig = m._tick
+
+    async def tick(x):
+        n.append(1)
+        await orig(x)
+    m._tick = tick
+
+    async def go():
+        await m._on_state(None)
+        await m._on_state(None)  # innerhalb von 15 s: keine zweite Prüfung
+        assert len(n) == 1
+        m._last_tick -= W.FAST_GAP_S + 1
+        await m._on_state(None)
+        assert len(n) == 2
+    run(go())
 
 
 if __name__ == "__main__":

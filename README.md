@@ -121,12 +121,12 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 6 | Rollläden & Beschattung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 7 | Wärmepumpe | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Außenwerten |
 | 8 | **Elektroauto & Wallbox** | Vorabversion 0.9 | go-e direkt oder andere Wallboxen über Home Assistant (Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP …), Carport-Szene, Überschuss-Balken mit Vorschau, Abfahrt aus dem Kalender, Tablet-Wandansicht, Ladeplan als Band, Statistik Tag/Woche/Monat/Jahr, Sensoren je Fahrzeug |
-| 9 | **Wetter & Warnungen** | Vorabversion 0.9 | Wetter-Szene, Stufen 1–4 wie beim DWD, alle amtlichen Warnungen, 48-Stunden-Zeitleiste, Aktionen mit Aussperrschutz, Vorsorge, Tablet-Alarm |
+| 9 | **Wetter & Warnungen** | Stabil 1.0 | Wetter-Szene, Stufen 1–4 wie beim DWD, alle amtlichen Warnungen, 48-Stunden-Zeitleiste, Aktionen mit Aussperrschutz, Vorsorge, Tablet-Alarm |
 | 10 | Garten & Bewässerung | In Entwicklung 0.1 | Konzept mit Gartenplan |
 | 11 | **Rauch- & Sicherheitsmelder** | Beta 0.5 | Melder, Batterie, Grundriss-Baukasten, Wartung, Abfahrt-Prüfung |
 | 12 | Pool & Sauna | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ |
 | 13 | Batteriespeicher-Planung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echtem Ladestand |
-| 14 | **Dynamischer Stromtarif** | Beta 0.5 | Stundenpreise, Preisverlauf, günstigste Zeiten |
+| 14 | **Dynamischer Stromtarif** | Beta 0.8 | Tibber direkt oder Preis-Sensor, Viertelstunden heute und morgen, Preisband, bestes Fenster je Gerät, Preisalarm |
 | 15 | Wartung & Erinnerungen | In Entwicklung 0.1 | Konzept, auf Wunsch mit den Daten aus Modul 11 |
 | 16 | **Solar-Prognose** | Stabil 1.0 | Sonnenbogen, Prognose gegen Ertrag je Stunde, korrigierte Prognose, Anlagen einzeln, Sensoren für Automationen |
 | 17 | Müllabfuhr | Addon | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend |
@@ -208,7 +208,7 @@ go-e Charger lokal im Netzwerk **oder jede Wallbox mit Home-Assistant-Integratio
 </details>
 
 <details>
-<summary><b>9 · Wetter & Warnungen</b> (Vorabversion)</summary>
+<summary><b>9 · Wetter & Warnungen</b> (Stabil)</summary>
 <br>
 
 - **Wetter-Szene als Banner:** dasselbe Haus wie auf der Startseite. Sturm, Gewitter, Hagel, Frost und Hitze sind im Bild zu sehen, Rollläden und Markise zeigen, was die Aktionen getan haben.
@@ -216,7 +216,9 @@ go-e Charger lokal im Netzwerk **oder jede Wallbox mit Home-Assistant-Integratio
 - **48-Stunden-Zeitleiste**, Warnkacheln mit Bogen gegen die Grenze, Verlauf über 90 Tage.
 - **Aktionen** ab Stufe, mit Bedingung (abwesend, tagsüber …), Verzögerung und **Aussperrschutz** für Rollläden an Türen. „Verstanden“, „Alles schließen“ und „Aussetzen“ im Modul und als Knöpfe in der Handy-Meldung.
 - **Vorsorge:** Hausakku voll halten, Auto vorladen, Hitzeschutz, Frost-Hinweis. **Alarm auf dem Wandtablet** ab Stufe 3.
+- **Wetterkarte des DWD:** Warnungen der Gemeinden oder Regenradar rund um dein Zuhause, dazu ein **Rückblick** über 30 Tage und das Jahr.
 - **Für Automationen:** Sensoren „Warnstufe“ (gesamt und je Warnart) und das Ereignis `fenster_heizung_wetter_warnung`.
+- Ausführliche Anleitung: [Anleitung_Modul9_Wetter.pdf](docs/Anleitung_Modul9_Wetter.pdf)
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_wetter.png" width="560" alt="Modul 9"></p>
 </details>

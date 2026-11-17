@@ -270,7 +270,7 @@ const WW_DEF = { size: 300, target: 55, day: null, boost: false, circ5: false, a
   circ: { mode: "plan", ret_max: 45, run: 3, on: 3, every: 30, wd: [{ from: "05:30", to: "08:00" }, { from: "17:00", to: "21:30" }], we: [{ from: "07:00", to: "10:30" }, { from: "17:00", to: "21:30" }] },
   leg: { on: true, day: 5, time: "03:00", temp: 60, hold: 20, last: null },
   pv: { on: true, min: 1800, max: 62, watt: 2000 } };
-const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }, { id: "en", n: 3, name: "Energie-Übersicht", short: "Energie", icon: "energy", tag: "Heizung, Strom und PV im Überblick" }, { id: "gs", n: 4, name: "Gerätestrom", short: "Gerätestrom", icon: "laundry", tag: "Woher der Strom kommt und was er kostet" }, { id: "lu", n: 5, name: "Lüftung & Raumluft", short: "Lüftung", icon: "fan", tag: "KWL, CO₂ und Feuchte", beta: true }, { id: "rb", n: 6, name: "Rollläden & Beschattung", short: "Rollläden", icon: "blinds", tag: "Sonnenstand, Hitzeschutz und Heizbedarf", beta: true }, { id: "wp", n: 7, name: "Wärmepumpe", short: "Wärmepumpe", icon: "heatpump", tag: "Laufzeit, Takten und Abtauen", beta: true }, { id: "ev", n: 8, name: "Elektroauto & Wallbox", short: "E-Auto", icon: "car", tag: "Laden mit Sonne und nach Preis – go-e und andere Wallboxen", beta: true }, { id: "wx", n: 9, name: "Wetter & Warnungen", short: "Wetter", icon: "alert", tag: "Unwetter-, Sturm- und Frostwarnungen mit Aktionen", beta: true }, { id: "ga", n: 10, name: "Garten & Bewässerung", short: "Garten", icon: "plant", tag: "Regenprognose, Zisterne und Bewässerung bei PV-Überschuss", beta: true }, { id: "sf", n: 11, name: "Rauch- & Sicherheitsmelder", short: "Sicherheit", icon: "shield", tag: "Melder, Batteriestände und Alarme im Überblick", beta: true }, { id: "pl", n: 12, name: "Pool & Sauna", short: "Pool & Sauna", icon: "wave", tag: "Pumpe und Heizung nach PV-Überschuss und Strompreis", beta: true }, { id: "bt", n: 13, name: "Batteriespeicher-Planung", short: "Batterie", icon: "energy", tag: "Modi, Zeitplan und Ladestand-Grenzen", beta: true }, { id: "dt", n: 14, name: "Dynamischer Stromtarif", short: "Stromtarif", icon: "chart", tag: "Börsenpreis pro Stunde und günstigste Zeiten", beta: true }, { id: "wa", n: 15, name: "Wartung & Erinnerungen", short: "Wartung", icon: "tools", tag: "Schornsteinfeger, Filter, Termine und Betriebsstunden", beta: true }, { id: "sp", n: 16, name: "Solar-Prognose", short: "Prognose", icon: "sun", tag: "Ertrag heute und morgen, Prognose gegen tatsächlich", beta: true }, { id: "ef", n: 19, name: "Hausfluss", short: "Hausfluss", icon: "energy", tag: "Dein Haus als Fluss-Bild: Solar, Netz, Akku und Verbraucher", beta: true, sponsor: true }];
+const MODS = [{ id: "fh", n: 1, name: "Fenster & Heizung", short: "Fenster & Heizung", icon: "windowOpen", tag: "Smarte Fenster- und Heizungssteuerung" }, { id: "ww", n: 2, name: "Warmwasser & Zirkulation", short: "Warmwasser", icon: "boiler", tag: "Speicher, Zirkulation und Legionellenschutz" }, { id: "en", n: 3, name: "Energie-Übersicht", short: "Energie", icon: "energy", tag: "Heizung, Strom und PV im Überblick" }, { id: "gs", n: 4, name: "Gerätestrom", short: "Gerätestrom", icon: "laundry", tag: "Woher der Strom kommt und was er kostet" }, { id: "lu", n: 5, name: "Lüftung & Raumluft", short: "Lüftung", icon: "fan", tag: "KWL, CO₂ und Feuchte", beta: true }, { id: "rb", n: 6, name: "Rollläden & Beschattung", short: "Rollläden", icon: "blinds", tag: "Sonnenstand, Hitzeschutz und Heizbedarf", beta: true }, { id: "wp", n: 7, name: "Wärmepumpe", short: "Wärmepumpe", icon: "heatpump", tag: "Laufzeit, Takten und Abtauen", beta: true }, { id: "ev", n: 8, name: "Elektroauto & Wallbox", short: "E-Auto", icon: "car", tag: "Laden mit Sonne und nach Preis – go-e und andere Wallboxen", beta: true }, { id: "wx", n: 9, name: "Wetter & Warnungen", short: "Wetter", icon: "alert", tag: "Unwetter-, Sturm- und Frostwarnungen mit Aktionen", beta: true }, { id: "ga", n: 10, name: "Garten & Bewässerung", short: "Garten", icon: "plant", tag: "Regenprognose, Zisterne und Bewässerung bei PV-Überschuss", beta: true }, { id: "sf", n: 11, name: "Rauch- & Sicherheitsmelder", short: "Sicherheit", icon: "shield", tag: "Melder, Batteriestände und Alarme im Überblick", beta: true }, { id: "pl", n: 12, name: "Pool & Sauna", short: "Pool & Sauna", icon: "wave", tag: "Pumpe und Heizung nach PV-Überschuss und Strompreis", beta: true }, { id: "bt", n: 13, name: "Batteriespeicher-Planung", short: "Batterie", icon: "energy", tag: "Modi, Zeitplan und Ladestand-Grenzen", beta: true }, { id: "dt", n: 14, name: "Dynamischer Stromtarif", short: "Stromtarif", icon: "chart", tag: "Preise heute und morgen, in Viertelstunden, und günstigste Zeiten", beta: true }, { id: "wa", n: 15, name: "Wartung & Erinnerungen", short: "Wartung", icon: "tools", tag: "Schornsteinfeger, Filter, Termine und Betriebsstunden", beta: true }, { id: "sp", n: 16, name: "Solar-Prognose", short: "Prognose", icon: "sun", tag: "Ertrag heute und morgen, Prognose gegen tatsächlich", beta: true }, { id: "ef", n: 19, name: "Hausfluss", short: "Hausfluss", icon: "energy", tag: "Dein Haus als Fluss-Bild: Solar, Netz, Akku und Verbraucher", beta: true, sponsor: true }];
 const PK_HINT = { pv: /solar|pv|photovolt|erzeug|wechselrichter|inverter/i, grid: /netz|grid|einspeis|bezug|zähler|meter/i, bchg: /lad|charge|zufuhr|input/i, bdis: /entlad|discharge|abgabe|output/i, house: /haus|house|verbrauch|load|consum/i, bat: /batter|speicher|akku/i, pve: /solar|pv|ertrag|yield|produc|erzeug/i, pv2: /balkon|plug|mikro|solar|pv|erzeug/i, pve2: /balkon|plug|mikro|ertrag|yield|produc|solar|pv/i, imp: /bezug|import|from.?grid|consum|netz/i, exp: /einspeis|export|feed|to.?grid/i,
   top: /oben|top|warmwasser|speicher|boiler/i, mid: /mitte|mid|warmwasser|speicher|boiler/i, bot: /unten|bot|warmwasser|speicher|boiler/i, ret: /rücklauf|ruecklauf|return|zirkul/i, pump: /zirkul|pumpe|pump/i, src: /heiz|kessel|wärmepumpe|puffer|ventil/i, rod: /heizstab|stab|rod|boiler/i, trig: /taster|bewegung|button|trigger|motion/i, outdoor: /außen|aussen|outdoor|outside/i, hum: /feucht|humid/i, heater: /heiz|elektro|heater/i };
 /* Schrittweite der Achse: 1, 2, 5 × 10^n, höchstens 5 Linien (auch bei sehr großen Werten) */
@@ -305,10 +305,10 @@ const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", ico
 const MOD_LI = { id: "li", n: 18, name: "Licht & Lampen", short: "Licht", icon: "lamp", tag: "Lampen schalten, dimmen und Szenen", lab: true };
 /* Phase 3: Labs, die jetzt Addons sind (Müllabfuhr → Addon muell, Licht → Addon licht) */
 const LAB_GONE = ["mm", "li"];
-const MOD_ST = { ef: "stabil", sf: "beta", sp: "stabil", ev: "vorab", wx: "vorab", dt: "beta" };
+const MOD_ST = { ef: "stabil", sf: "beta", sp: "stabil", ev: "vorab", wx: "stabil", dt: "beta" };
 const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
-const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "mdbeta", txt: "Börsenpreis, günstigste Fenster und Preisverlauf (in Entwicklung)" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeuge mit eigenen Sensoren, Wallbox-Sensoren" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
+const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "tfxopen", txt: "Preisquelle, Stufen, Endpreis, Fenster je Gerät und Preisalarm" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeuge mit eigenen Sensoren, Wallbox-Sensoren" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
 const EV_BRANDS = ["Mercedes-Benz", "Audi", "VW", "BYD", "BMW", "Andere"];
 const EV_BODIES = { limousine: "Limousine", suv: "SUV", kombi: "Kombi", kompakt: "Kompakt" };
@@ -782,12 +782,12 @@ const MV = {
   rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   ev: { v: "0.9", b: 7, d: "2026-11-15", p: "2026.11.3", log: [["0.9", 7, "2026.11.3", "Laufende Ladung überlebt einen Neustart von Home Assistant, fehlende kWh zuerst der Ladung zurechnen, Hinweis in der Tagesansicht; go-e-Import, mehrere Ladungen bearbeiten, Kosten ändern, Kilometer-Statistik"], ["0.9", 6, "2026.11.3b24", "Carport-Szene näher an der Wirklichkeit: Kabelkanal am Träger, Wechselrichter an der Hauswand, Netzstrom aus dem Haus, Ladekabel vor dem Auto mit Typ-2-Stecker in der Ladeklappe; nach dem Zurückwechseln in die App keine leeren Werte mehr; „Heute“ übersichtlicher"], ["0.9", 5, "2026.11.3b23", "Eine Ladung reicht bis zum Abstecken (kein neuer Eintrag nach Phasenwechsel), getrennte Teile zusammenführen, Ladenachweis als echte PDF-Datei"], ["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
-  wx: { v: "0.9", b: 1, d: "2026-11-12", p: "2026.11.3", log: [["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  wx: { v: "1.0", b: 1, d: "2026-11-17", p: "2026.11.4b1", log: [["1.0", 1, "2026.11.4b1", "Stabil: DWD-Wetterkarte (Warnungen und Regenradar), Rückblick, schneller warnen, Speichern nur bei Änderung, Änderungsverlauf mit Rückgängig, Feinschliff"], ["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sf: { v: "0.5", b: 4, d: "2026-11-04", p: "2026.11.1", log: [["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  dt: { v: "0.5", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  dt: { v: "0.8", b: 1, d: "2026-11-17", p: "2026.11.4b1", log: [["0.5", 1, "3.0.6.5", "Start der Zählung"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"]] },
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "1.0", b: 2, d: "2026-11-12", p: "2026.11.3", log: [["1.0", 2, "2026.11.3b12", "Anlagen wählen: mehrere Prognose-Dienste (Forecast.Solar, Solcast, Open-Meteo) für dasselbe Dach werden nicht mehr ungefragt addiert – Auswahl je Anlage, „Nur …“-Knöpfe, Vorgabe aus dem Energie-Dashboard, Warnung auf der Seite; Korrektur lernt nach einer Änderung neu"], ["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "1.1", b: 2, d: "2026-11-15", p: "2026.11.3", log: [["1.1", 2, "2026.11.3", "Bis zu vier Kacheln links und rechts und zwei unten, bis zu fünf Quellen am Handy, hellere Kacheln, Verbraucher mit Solar-Anteil genauer"], ["1.1", 1, "2026.11.3b19", "Strom-Reiter: „Woher kam der Strom?“ mit Anteil von Solar, Akku und Netz, Akku- und Netz-Bilanz und wohin der Solarstrom ging"], ["1.0", 1, "2026.11.3b6", "Stabil: Schnellstart aus den Haus-Werten, Einrichtungs-Prüfung, Kosten im Strom-Reiter und Vorteil heute auf dem Tablet, Fluss-Bild als Bild teilen, Tablet-Modus zeichnet nur alle 5 s neu, Feinschliff der Optik (Haus als freier Ring, ruhigere Kacheln, klarere Schrift)"], ["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -1515,6 +1515,39 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .wxts{font-size:.76rem;font-weight:700;color:var(--tc)}.wxtg{font-size:.72rem;color:var(--mut);margin-top:3px}
 .wxhero h2{margin-bottom:6px}
 @media (max-width:640px){.wxbn{flex-direction:column-reverse;min-height:0}.wxbi{width:100%;min-height:170px;height:170px}.wxbi::before{background:linear-gradient(0deg,var(--card) 0,transparent 30%)}.wxbt{padding:4px 16px 16px 20px}.wxbb{font-size:1.5rem}.wxtiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.wxtv{font-size:1.25rem}.wxarc{width:42px}}
+/* Modul 14 · v0.7 Preisband, Kacheln, Heute und morgen */
+.tfbnr{display:flex;padding:0;overflow:hidden;position:relative;border:0;gap:6px;background:linear-gradient(90deg,color-mix(in srgb,var(--lc) 15%,var(--card)) 0,var(--card) 50%)}.tfbnr::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--lc)}
+.tfbt{flex:0 0 40%;min-width:0;padding:18px 10px 16px 24px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+.tfbl{display:flex;gap:6px;align-items:center;font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}.tfbl svg{color:var(--lc)}
+.tfbb{font-size:2.3rem;font-weight:800;line-height:1.1;margin:4px 0 2px}.tfbb small{font-size:1rem;font-weight:600;color:var(--mut);margin-left:6px}.tfbs{font-size:.88rem;color:var(--mut)}
+.tfbc{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.tfbc .chip{background:color-mix(in srgb,var(--primary-text-color,#fff) 8%,transparent);border:1px solid var(--line);color:var(--primary-text-color);font-size:.76rem;padding:3px 10px;border-radius:99px;display:inline-flex;gap:4px;align-items:center}
+.tfbc .chip.tfneg{color:#93c5fd;border-color:color-mix(in srgb,#3b82f6 50%,transparent)}
+.tflvp{font-size:.76rem;font-weight:800;border-radius:99px;padding:3px 11px;background:color-mix(in srgb,var(--lc) 20%,transparent);color:var(--lc);border:1px solid color-mix(in srgb,var(--lc) 55%,transparent)}
+.tfbi{flex:1;min-width:0;padding:14px 16px 10px 4px;position:relative;display:flex;flex-direction:column;justify-content:center}.tfbi .mlv{position:absolute;right:12px;top:8px;left:auto;bottom:auto;width:auto;font-size:.62rem;font-weight:700;background:rgba(3,12,22,.55);color:#e2e8f0;border-radius:99px;padding:2px 8px;z-index:3}
+.tfband{width:100%}.tfplot{position:relative;height:var(--bh,150px)}.tfplot svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;display:block}
+.tfmo{fill:color-mix(in srgb,var(--primary-text-color,#fff) 5%,transparent)}.tfsun{fill:rgba(250,204,21,.16);stroke:rgba(250,204,21,.55);stroke-width:1;vector-effect:non-scaling-stroke}
+.tfavg{stroke:var(--mut);stroke-width:1;stroke-dasharray:4 4;vector-effect:non-scaling-stroke;opacity:.8}.tfzero{stroke:var(--mut);stroke-width:1;vector-effect:non-scaling-stroke}
+.tfnow{stroke:#5eead4;stroke-width:2;vector-effect:non-scaling-stroke}.tfbest{fill:color-mix(in srgb,#2dd4bf 8%,transparent);stroke:#2dd4bf;stroke-width:2;vector-effect:non-scaling-stroke}
+.tfl{position:absolute;font-size:.66rem;font-weight:700;white-space:nowrap;pointer-events:none;line-height:1}.tfl.mo{top:4px;color:var(--mut)}.tfl.av{right:2px;transform:translateY(-130%);color:var(--mut);background:color-mix(in srgb,var(--card) 70%,transparent);padding:1px 3px;border-radius:4px}
+.tfl.nw{bottom:-14px;transform:translateX(-50%);color:#5eead4}.tfl.bw.up{bottom:auto;top:18px}.tfl.bw{bottom:4px;transform:translateX(-50%);color:#5eead4;background:color-mix(in srgb,var(--card) 75%,transparent);padding:1px 4px;border-radius:4px}
+.tfax{position:relative;height:16px;margin-top:4px;font-size:.66rem;color:var(--mut)}.tfax span{position:absolute;transform:translateX(-50%)}
+.tfleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:.76rem;color:var(--mut)}.tfleg span{display:inline-flex;gap:6px;align-items:center}.tfleg i{width:11px;height:11px;border-radius:3px;display:inline-block}.tfleg i.sn{background:rgba(250,204,21,.3);border:1px solid rgba(250,204,21,.6)}
+.tfdays{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.tfdays>div{border:1px solid var(--line);border-radius:12px;padding:9px 12px;display:flex;flex-direction:column;gap:1px}.tfdays b{font-size:1.05rem}.tfdays small{font-size:.76rem;color:var(--mut)}.tfdays .mut{font-size:.74rem}
+.tftiles{margin:0 0 14px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}.tftiles .wxts{font-weight:650}
+.tfsl{display:grid;grid-template-columns:26px minmax(0,1.3fr) minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.tfsl:last-of-type{border-bottom:0}
+.tfrk{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.76rem;font-weight:800;background:color-mix(in srgb,#2dd4bf 16%,transparent);color:#2dd4bf}
+.tfst{display:flex;flex-direction:column;min-width:0}.tfst small{font-size:.74rem;color:var(--mut)}.tfsb{height:8px;border-radius:99px;background:color-mix(in srgb,var(--primary-text-color,#fff) 7%,transparent);overflow:hidden}.tfsb i{display:block;height:100%;border-radius:99px}
+.tfsv{font-size:1rem;white-space:nowrap}.tfsv small{color:var(--mut);font-weight:600}
+.tfdev{display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:14px;margin-bottom:8px}.tfdev.off{opacity:.6}
+.tfdi{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,#2dd4bf 14%,transparent);color:#2dd4bf}
+.tfdn,.tfdw{display:flex;flex-direction:column;min-width:0}.tfdn small,.tfdw small{font-size:.76rem;color:var(--mut)}.tfdw{text-align:right}.tfdw b{font-size:1.02rem}.tfdw small{color:var(--lc)}
+.tfbadge{border:1px solid var(--line);background:transparent;color:var(--primary-text-color);border-radius:99px;padding:5px 12px;font-size:.78rem;font-weight:700;cursor:pointer;display:inline-flex;gap:4px;align-items:center;white-space:nowrap}
+.tfbadge.on{background:color-mix(in srgb,#2dd4bf 18%,transparent);color:#5eead4;border-color:color-mix(in srgb,#2dd4bf 50%,transparent)}.tfbadge.ok{background:color-mix(in srgb,#22c55e 20%,transparent);color:#4ade80;border-color:color-mix(in srgb,#22c55e 50%,transparent);cursor:default}
+.tfal{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}.tfal b{flex:1;font-weight:650}.tfal .chip{font-size:.74rem;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}.tfai{display:grid;place-items:center}
+.tflog{margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:.78rem}.tflog>div{display:grid;grid-template-columns:78px 1fr;gap:8px;color:var(--mut)}.tflog b{color:var(--primary-text-color);font-weight:650}
+.tfok{color:#22c55e}.tfnn{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}.tfnn .step b{min-width:54px}
+.hzkg.tfk{flex:1;min-width:84px;max-width:150px;align-self:flex-end}.hzkg.tfk.l{max-width:none;width:100%}.tfmini .tfplot{height:var(--bh,40px)}
+@media (max-width:640px){.tfbnr{flex-direction:column;gap:0}.tfbt{flex:none;padding:16px 16px 4px 20px}.tfbb{font-size:1.9rem}.tfbi{padding:6px 12px 10px 14px}.tfbi .mlv{display:none}.tftiles .wxtl:last-child:nth-child(odd){grid-column:1/-1}.tfsl{grid-template-columns:24px minmax(0,1fr) auto}.tfsb{display:none}.tfdays{grid-template-columns:1fr}.tfdev{grid-template-columns:36px minmax(0,1fr);gap:6px 10px;align-items:start}.tfdev .tfdw{grid-column:2;text-align:left}.tfdev .tfbadge{grid-column:2;justify-self:start}.tfal .chip{display:none}}
 .wxtlh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}.wxtlh h2{margin:0}.wxseg{margin:0;flex:none}.wxseg button{padding:5px 12px;font-size:.78rem}
 .wxtlw{display:grid;gap:6px}.wxtlx{display:grid;grid-template-columns:112px 1fr;gap:8px;align-items:center}.wxtln{display:flex;gap:5px;align-items:center;font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden}.wxtln svg{color:var(--mut);flex:none}
 .wxtlr{position:relative;height:16px;border-radius:99px;background:rgba(127,127,127,.14)}.wxtm{position:absolute;top:-4px;bottom:-4px;background:rgba(127,127,127,.08);border-radius:4px}
@@ -1545,6 +1578,18 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .wxalc{display:grid;gap:8px;margin:10px 0;font-size:1.05rem}.wxalc div{display:flex;gap:10px;align-items:center}.wxalc .ok svg{color:#34d399}.wxalc .no svg{color:#ef4444}
 .wxalb{display:flex;gap:12px;margin-top:auto}.wxalb .btn2{flex:1;font-size:1.1rem;padding:16px;border-radius:16px;justify-content:center}
 @media (max-width:640px),(orientation:portrait){.wxal{flex-direction:column}.wxalsc{width:100%;height:32vh}}
+.wxmap{margin-top:0}.wxseg button{white-space:nowrap}.wxmap .wxtlh{flex-wrap:wrap}.wxmap h2 small,.wxrb h2 small{font-weight:500;font-size:.8rem;margin-left:4px}
+.wxmimg{position:relative;border-radius:14px;overflow:hidden;background:#0b1d33;aspect-ratio:760/520;border:1px solid var(--line)}.wxmimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.wxmimg .wxmerr{display:none;position:absolute;inset:auto 12px 12px 12px;gap:8px;align-items:center;font-size:.82rem;color:#fde68a;background:rgba(3,12,22,.75);padding:8px 10px;border-radius:10px}.wxmimg.err .wxmerr{display:flex}.wxmimg.err img{opacity:.15}
+.wxpin{position:absolute;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--teal);color:#042f2e;box-shadow:0 0 0 4px rgba(45,212,191,.35),0 3px 10px rgba(0,0,0,.5)}
+.wxpin::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2px solid rgba(45,212,191,.55);animation:wxPulse2 2.4s ease-out infinite}@keyframes wxPulse2{from{transform:scale(.6);opacity:1}to{transform:scale(1.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){.wxpin::after{animation:none}}
+.wxmft{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-top:8px}.wxmft .gschips{margin:0}
+.wxmlg{display:flex;align-items:center;gap:5px;font-size:.74rem;color:var(--mut)}.wxmlg i{width:14px;height:10px;border-radius:3px;display:inline-block;margin-left:4px}.wxmlg em{font-style:normal;margin-left:4px}
+.wxmlg i.grad{width:90px;height:8px;border-radius:99px;margin:0 6px;background:linear-gradient(90deg,#a5d8ff,#3b82f6,#facc15,#ef4444,#c026d3)}.wxmsrc{font-size:.72rem;color:var(--mut);margin-top:6px}.wxmsrc a{color:var(--teal)}
+.wxlday{margin:10px 0 4px;font-size:.76rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}.wxlday:first-child{margin-top:0}.wxrb{margin-top:12px}.wxstrip{display:grid;grid-template-columns:repeat(30,1fr);gap:3px;margin:2px 0 10px}.wxstrip i{height:22px;border-radius:4px;background:var(--bc)}.wxstrip i.no{opacity:.35}
+.wxrbg{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}.wxrbg>div{border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center}.wxrbg span{grid-row:span 2;color:var(--mut)}.wxrbg b{font-size:1.25rem;line-height:1}.wxrbg small{font-size:.72rem;color:var(--mut)}.wxrbg .on span{color:var(--amber)}
+.wxrbx{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:.84rem;color:var(--mut)}.wxrbx b{color:var(--primary-text-color);margin-left:4px}
 .wxnote{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:.82rem;color:var(--mut)}
 .wxlog{display:grid;gap:0;position:relative}.wxlog>div{display:grid;grid-template-columns:78px 1fr;gap:12px;padding:8px 0;font-size:.9rem;position:relative}.wxlog time{color:var(--mut);font-variant-numeric:tabular-nums;font-size:.82rem;padding-top:1px}.wxlog span{position:relative;padding-left:18px}.wxlog span::before{content:"";position:absolute;left:0;top:.45em;width:8px;height:8px;border-radius:50%;background:var(--teal)}.wxlog>div:not(:last-child) span::after{content:"";position:absolute;left:3.5px;top:1.4em;bottom:-1.1em;width:1px;background:var(--line)}
 .tbvar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 10px}.tbvar button{display:grid;gap:5px;text-align:left;padding:10px;border-radius:14px;border:1px solid var(--line);background:transparent;color:var(--mut);font:inherit;cursor:pointer;align-content:start}.tbvar button b{color:var(--primary-text-color);font-size:.88rem}.tbvar button small{font-size:.74rem;line-height:1.35}.tbvar button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent)}@media(max-width:560px){.tbvar{grid-template-columns:1fr}}
@@ -7030,6 +7075,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("sto")) this._stoAct(a, b);
     else if (a.startsWith("ig")) this._igAct(a, b);
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
+    else if (a.startsWith("tfx")) this._tfAct(a, b);
     else if (a.startsWith("mux")) { if (this._muxAct) this._muxAct(a, b); }
     else if (a.startsWith("adx")) this._adxAct(a, b);
     else if (a.startsWith("lix")) { if (this._lixAct) this._lixAct(a, b); }
@@ -7732,6 +7778,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "sthelp" || m.type === "stlog") { box.innerHTML = m.type === "sthelp" ? this._stHelpModal() : this._stLogModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "hspr" || m.type === "hswx" || m.type === "hsmig") { box.innerHTML = m.type === "hspr" ? this._hsPrModal() : m.type === "hswx" ? this._hsWxModal() : this._hsMigModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; if (this._stOpen) this._render(); return; }
     if (m.type === "wxalarm") { box.innerHTML = this._wxAlarmModal(); return; }
+    if (m.type === "tfset") { box.innerHTML = this._tfModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wxset") { box.innerHTML = this._wxsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "igtb") { box.innerHTML = this._igTbModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "stodet") { box.innerHTML = this._stoModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -8231,7 +8278,7 @@ class FensterHeizungPanel extends HTMLElement {
       const src = (k) => p[k + "_mode"] === "entity" && p[k + "_sensor"] ? `Sensor ${esc(this._wzName(p[k + "_sensor"]))}${Number(p[k]) ? ` · Ersatzwert ${num(p[k], 2)} ct` : ""}` : "Festwert";
       return `${use("price")}${card(`<div class="sxrow stinfo hsr"><span class="sxi">${ic("total", 20)}</span><span class="sxt"><b>Bezugspreis${this._stHelpBtn("general.pv.price")}</b><small>${src("price")}</small></span><em class="hsv">${num(this._rate("price"), 2)} ct/kWh</em></div>
         <div class="sxrow stinfo hsr"><span class="sxi">${ic("sun", 20)}</span><span class="sxt"><b>Einspeisevergütung${this._stHelpBtn("general.pv.feed")}</b><small>${src("feed")}</small></span><em class="hsv">${num(this._rate("feed"), 2)} ct/kWh</em></div>
-        ${s.on.dt ? row("chart", "Stundenpreise", "Börsenpreise und günstigste Fenster · Modul 14", "mdbeta") : ""}`)}
+        ${s.on.dt ? row("chart", "Stromtarif", "Preisquelle, Stufen und Endpreis · Modul 14", "tfxopen") : ""}`)}
         ${edit("mdhspr")}`;
     }
     if (sub === "wx") {
@@ -10936,6 +10983,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _betaBox(txt) {
     const m = MODS.find((x) => x.id === (this._mdActive && this._mdActive())), st = modSt(m);
+    if (st === "stabil") return "";
     if (st === "vorab") return this._vorabBox(txt);
     if (st === "dev") return `<div class="betabox dvbox">${ic("alert", 20)}<div><b>In Entwicklung – diese Seite zeigt Beispielwerte</b>Das Modul steuert noch nichts. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`;
     return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
@@ -11067,40 +11115,6 @@ class FensterHeizungPanel extends HTMLElement {
         ${tile("Untergrenze", p.soc_min != null && p.soc_sensor ? num(p.soc_min, 0) + " %" : "–", "Heizer erst darüber (Modul 1)")}</div></div>
       <div class="card"><h2>${ic("sliders", 18)}Betriebsarten</h2><div class="lugrid">${mc}</div></div>`;
   }
-  _dtPrices() {
-    const p = this._pv(), e = p.price_sensor && this._hass.states[p.price_sensor]; if (!e) return null;
-    const a = e.attributes || {}, raw = a.raw_today || a.prices_today || a.today || a.prices;
-    if (!Array.isArray(raw) || raw.length < 12) return null;
-    const vals = raw.map((x) => Number(typeof x === "object" && x ? (x.value ?? x.price) : x));
-    if (vals.some((v) => !isFinite(v))) return null;
-    const f = vals.every((v) => Math.abs(v) < 5) ? 100 : 1, per = vals.length > 30 ? 4 : 1;
-    const h = []; for (let i = 0; i < 24; i++) { let t = 0, n = 0; for (let k = 0; k < per; k++) { const v = vals[i * per + k]; if (v != null) { t += v; n++; } } h.push(n ? (t / n) * f : null); }
-    return h.every((v) => v != null) ? h : null;
-  }
-  _dtPage() {
-    const h = this._dtPrices(), now = new Date().getHours(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    let body = `<div class="card empty">${ic("chart", 30)}<div style="margin-top:8px">Noch keine Stundenpreise. Wähle in Modul 1 unter „Strompreis“ einen Sensor mit Preisliste (zum Beispiel Tibber, Awattar oder Nord Pool).</div></div>`;
-    if (h) {
-      const mn = Math.min(...h), mx = Math.max(...h), avg = h.reduce((a, b) => a + b, 0) / 24, span = Math.max(mx - mn, 0.01);
-      const col = (v) => (v - mn) / span < 0.34 ? "#22c55e" : (v - mn) / span < 0.67 ? "#f59e0b" : "#ef4444";
-      let bi = 0, bs = Infinity; for (let i = 0; i <= 21; i++) { const sm = h[i] + h[i + 1] + h[i + 2]; if (sm < bs) { bs = sm; bi = i; } }
-      const bars = h.map((v, i) => `<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px" title="${i}:00 · ${num(v, 1)} ct/kWh"><div style="width:100%;height:${Math.round(12 + ((v - mn) / span) * 108)}px;border-radius:4px 4px 0 0;background:${col(v)};opacity:${i < now ? 0.4 : 0.95};${i === now ? "outline:2px solid var(--primary-text-color);outline-offset:1px" : ""}"></div><span class="mut" style="font-size:.62rem">${i % 3 === 0 ? i : ""}</span></div>`).join("");
-      body = `<div class="card"><h2>${ic("chart", 18)}Preisverlauf heute</h2><div style="display:flex;align-items:flex-end;gap:2px;height:150px;margin-top:8px">${bars}</div>
-        <div class="gst" style="margin-top:8px">Cent pro kWh, grün günstig, rot teuer. Der Rahmen zeigt die aktuelle Stunde.</div></div>
-        <div class="card"><h2>${ic("clock", 18)}Günstigste Zeiten</h2><div class="lugrid">
-          ${tile("Günstigste 3 Stunden", `${bi}–${bi + 3} Uhr`, `Ø ${num(bs / 3, 1)} ct/kWh · zum Laden und Waschen`)}
-          ${tile("Günstigste Stunde", `${h.indexOf(mn)}:00 Uhr`, `${num(mn, 1)} ct/kWh`)}
-          ${tile("Teuerste Stunde", `${h.indexOf(mx)}:00 Uhr`, `${num(mx, 1)} ct/kWh`)}</div></div>`;
-      body = `<div class="card"><h2>${ic("bolt", 18)}Preis jetzt</h2><div class="lugrid">
-          ${tile("Jetzt", num(h[now], 1) + " ct/kWh", h[now] <= avg ? "Unter dem Tagesschnitt" : "Über dem Tagesschnitt")}
-          ${tile("Tagesschnitt", num(avg, 1) + " ct/kWh", `Spanne ${num(mn, 1)} bis ${num(mx, 1)} ct`)}
-          ${tile("Nächste Stunde", num(h[(now + 1) % 24], 1) + " ct/kWh", h[(now + 1) % 24] < h[now] ? "Wird günstiger" : "Wird teurer")}</div></div>` + body;
-    }
-    return `${this._betaBox("Die Stundenpreise kommen aus dem Preis-Sensor, den du in Modul 1 gewählt hast.")}${body}
-      ${this._betaSoon("clock", "Günstige Fenster", "Beste Zeit zum Laden, Waschen oder Heizen vorschlagen")}
-      ${this._betaSoon("bell", "Preisalarm", "Melden, wenn der Preis unter oder über eine Grenze geht")}
-      ${this._betaSoon("chart", "Morgen", "Preise des nächsten Tages, sobald sie veröffentlicht sind")}`;
-  }
   /* Modul 11: Rauch- & Sicherheitsmelder (Alarme, Batterie, Erreichbarkeit, Prüf-Erinnerung, Aktionen und Meldungen laufen im Backend) */
   _sfxDef() { return { kinds: ["smoke", "co", "gas", "water", "heat", "safety"], excl: [], repeat: 10, bat: { on: true, pct: 20 }, off: { on: true, min: 60 }, test: { on: true, months: 6 }, acts: [], notify: { alarm: true, end: false, bat: true, off: true, test: true, life: true, depart: true, to: [] }, meta: {}, add: [], plan: { floors: [{ id: "eg", n: "EG" }], items: [], bg: {} }, quiet: { on: false, from: "22:00", to: "07:00" }, lead: 30, depart: { on: true, ents: [], frost: { on: false, ent: "", below: 3 } }, proto: { name: "", addr: "", who: "" } }; }
   _sfxNames() { return { smoke: "Rauch", co: "CO", gas: "Gas", water: "Wasser", heat: "Hitze", safety: "Sicherheit" }; }
@@ -11221,7 +11235,7 @@ class FensterHeizungPanel extends HTMLElement {
     return { w, o, wind, mx, storm, gale, frost };
   }
   /* Modul 9: Wetter & Warnungen (Regeln, Vorwarnung, Aktionen, Fenster-Erinnerung und Benachrichtigung laufen im Backend) */
-  _wxsDef() { return { warn: { storm: { on: true, kmh: 60, kmh3: 90 }, thunder: { on: true }, hail: { on: true }, rain: { on: false, mm: 10, mm3: 25 }, frost: { on: true, temp: 0, ice: true, ice_temp: 1 }, heat: { on: false, temp: 30, temp2: 35 } }, wind: "", rainrate: "", ahead: { on: true, hours: 3 }, official: { on: true, ent: "", vorab: true }, acts: [], win: { on: false, warn: ["storm", "thunder", "hail", "rain"], repeat: true }, notify: { start: true, end: false, ahead: true, to: [], stale: true, buttons: true, critical: false }, vor: { on: true, hours: 12, akku: true, akku_ent: "", akku_auto: false, car: true, car_min: 50, car_auto: false, heat: true, heat_covers: [], heat_auto: false, frost: true }, tab_lv: 3 }; }
+  _wxsDef() { return { warn: { storm: { on: true, kmh: 60, kmh3: 90 }, thunder: { on: true }, hail: { on: true }, rain: { on: false, mm: 10, mm3: 25 }, frost: { on: true, temp: 0, ice: true, ice_temp: 1 }, heat: { on: false, temp: 30, temp2: 35 } }, wind: "", rainrate: "", ahead: { on: true, hours: 3 }, official: { on: true, ent: "", vorab: true }, acts: [], win: { on: false, warn: ["storm", "thunder", "hail", "rain"], repeat: true }, notify: { start: true, end: false, ahead: true, to: [], stale: true, buttons: true, critical: false }, vor: { on: true, hours: 12, akku: true, akku_ent: "", akku_auto: false, car: true, car_min: 50, car_auto: false, heat: true, heat_covers: [], heat_auto: false, frost: true }, tab_lv: 3, map: { on: true, layer: "warn", zoom: "region" } }; }
   _wxsLoad(force) {
     if (!this._hass || this._wxsBusy) return;
     if (!force && this._wxsD && Date.now() - this._wxsD.ts < 20000) return;
@@ -11248,6 +11262,9 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "wxsopen") { this._wxsLoad(true); this._modal = { type: "wxset" }; this._renderModal(); return; }
     if (a === "wxstab") { this._wxTab = k; this._renderModal(); const sh = this.shadowRoot.querySelector(".sheet"); if (sh) sh.scrollTop = 0; return; }
     if (a === "wxstl") { this._wxTlView = k; this._render(); return; }
+    if (a === "wxsmapl") { this._wxMapL = k; this._render(); return; }
+    if (a === "wxsmapz") { this._wxMapZ = k; this._render(); return; }
+    if (a === "wxsrb") { this._wxRbP = k; this._render(); return; }
     if (a === "wxslog") { this._wxLogF = k; this._wxLogN = 12; this._render(); return; }
     if (a === "wxslogmore") { this._wxLogN = (this._wxLogN || 12) + 30; this._render(); return; }
     if (a === "wxsvor") { this._hass.callWS({ type: "fenster_heizung/wx_vor", id: k }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(r && r.ok ? "Erledigt" : "Das hat nicht geklappt"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
@@ -11282,6 +11299,9 @@ class FensterHeizungPanel extends HTMLElement {
       else if (a === "wxsvorcar") { c.vor = c.vor || {}; c.vor.car_min = Math.min(100, Math.max(10, (Number(c.vor.car_min) || 50) + s)); }
       else if (a === "wxsvorcov") { c.vor = c.vor || {}; const L = c.vor.heat_covers || []; c.vor.heat_covers = L.includes(k) ? L.filter((x) => x !== k) : [...L, k]; }
       else if (a === "wxstablv") c.tab_lv = Number(k) || 0;
+      else if (a === "wxsmapon") c.map = { ...(c.map || {}), on: !!(c.map && c.map.on === false) };
+      else if (a === "wxsmapdl") { c.map = { ...(c.map || {}), layer: k }; this._wxMapL = null; }
+      else if (a === "wxsmapdz") { c.map = { ...(c.map || {}), zoom: k }; this._wxMapZ = null; }
       else if (a === "wxsvorab") c.official.vorab = !c.official.vorab;
       else if (a === "wxsahead") c.ahead.on = !c.ahead.on;
       else if (a === "wxsaheadh") c.ahead.hours = Math.min(12, Math.max(1, (Number(c.ahead.hours) || 3) + s));
@@ -11389,7 +11409,7 @@ class FensterHeizungPanel extends HTMLElement {
     const lg = (S.log || []).slice(0, 12), dd = (iso) => { const t = new Date(iso), td = new Date(); return t.toDateString() === td.toDateString() ? hm(iso) : t.toLocaleDateString("de-DE", { weekday: "short" }) + " " + hm(iso); };
     const log = this._wxLog(S, hm);
     const staleBox = stale ? `<div class="card wxstale">${ic("alert", 20)}<div><b>Wetterquelle prüfen</b><small>${esc(stale.ent || "Wetter-Entität")} ${esc(stale.why || "")}. Eigene Warnungen sind gerade unsicher, amtliche Warnungen laufen weiter.</small></div><button class="lnk" data-act="mdhsgo" data-k="wx">Zur Wetterquelle</button></div>` : "";
-    return `${this._betaBox("Die Warnungen werden im Hintergrund aus deiner Wetter-Entität oder Wetterstation berechnet, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, diese kommen vom Deutschen Wetterdienst, NINA oder MeteoAlarm, wenn eingerichtet.")}${staleBox}${hero}${this._wxBar(S, hm)}${this._wxVor(S, hm)}${tiles}${offCard ? `<div class="wxcols">${offCard}${nextCard}</div>` : nextCard}<div class="wxcols">${acts}${log}</div>`;
+    return `${this._betaBox("Die Warnungen werden im Hintergrund aus deiner Wetter-Entität oder Wetterstation berechnet, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, diese kommen vom Deutschen Wetterdienst, NINA oder MeteoAlarm, wenn eingerichtet.")}${staleBox}${hero}${this._wxBar(S, hm)}${this._wxVor(S, hm)}${tiles}${(() => { const mp = this._wxMap(S); return offCard ? (mp ? `<div class="wxcols">${offCard}${mp}</div>${nextCard}` : `<div class="wxcols">${offCard}${nextCard}</div>`) : mp ? `<div class="wxcols">${nextCard}${mp}</div>` : nextCard; })()}<div class="wxcols">${acts}${log}</div>${this._wxReview(S)}`;
   }
   _wxsModal() {
     const S = this._wxs(), C = S.cfg, NM = this._wxsNames(), st = this._hass.states, H = this._hass;
@@ -11428,6 +11448,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow"><span>Vorabinformationen zeigen<small class="mut" style="display:block">Der DWD kündigt Unwetter oft schon Stunden oder einen Tag vorher an. Sie erscheinen als „Vorab“ und werden wie eine Vorwarnung gemeldet.</small></span>${sw("wxsvorab", "", C.official.vorab !== false, "Vorabinformationen")}</div>
       <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Datenquellen</div>
       ${this._hsLink("wx", "Wetter, Wind, Außentemperatur und amtliche Warnungen")}
+      ${this._wxsMapSet(C, sw)}
       <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Vorwarnung</div>
       <div class="vrow"><span>Warnung vorab melden<small class="mut" style="display:block">Aus der Stundenprognose der Wetter-Entität. Gilt für alle eigenen Warnungen, mit der erwarteten Stufe.</small></span>${C.ahead.on ? step("wxsaheadh", "", "", C.ahead.hours, C.ahead.hours === 1 ? "Std." : "Std.", 1) : ""}${sw("wxsahead", "", C.ahead.on, "Vorwarnung")}</div>
 ` : ""}${tab === "a" ? `<div class="lsec">${ic("blinds", 15)}Aktionen bei einer Warnung</div>
@@ -12181,7 +12202,7 @@ class FensterHeizungPanel extends HTMLElement {
       return { ...K, v: t.v, u: "kWh", l1: esc(t.l1), p: t.p, z: this._hzZ(t.c), hd: "forecast", o: { on: !t.night } };
     }
     if (m.id === "bt") { const s = this._enOn() ? this._soc() : null; if (s == null) return off("Kein Ladestand"); return { ...K, v: num(s, 0), u: "%", p: s / 100, o: { lvl: s }, l1: "Ladestand Akku" }; }
-    if (m.id === "dt") { const p = this._price(); if (!p) return off("Kein Preis"); return { ...K, v: num(p, 1), u: "ct", l1: "pro kWh jetzt" }; }
+    if (m.id === "dt") { const T = this._tfStartK({ ...K }); if (T) return T; const p = this._price(); if (!p) return off("Kein Preis"); return { ...K, v: num(p, 1), u: "ct", l1: "pro kWh jetzt" }; }
     if (m.id === "ef") { const N = this._enOn() ? this._enNow() : null; if (!N) return off("Keine Energiedaten"); return { ...K, v: num(N.house / 1000, 1), u: "kW", l1: "Haus jetzt", l2: `PV ${num(N.pv / 1000, 1)} kW`, o: { on: N.pv > 50 } }; }
     if (m.addon) { const t = this._adTile(m); return { ...K, v: null, l1: t.sub, z: this._hzZ(t.c) }; }
     return off(modSt(m) && STG[modSt(m)] ? STG[modSt(m)].t : "");
@@ -12216,7 +12237,8 @@ class FensterHeizungPanel extends HTMLElement {
     let gr = "";
     if (sz !== "s" && z !== "off") {
       const hv = K.ent && (sz === "l" || K.p == null) ? this._hzHist(K.ent) : null;
-      if (sz === "l" && hv && hv.length > 1) gr = `<div class="hzkg l">${this._hzSpark(hv, 160, 40)}</div>`;
+      if (K.gr) gr = `<div class="hzkg tfk${sz === "l" ? " l" : ""}">${K.gr}</div>`;
+      else if (sz === "l" && hv && hv.length > 1) gr = `<div class="hzkg l">${this._hzSpark(hv, 160, 40)}</div>`;
       else if (K.p != null) gr = `<div class="hzkg">${this._hzRing(K.p, 46, "k" + m.id)}</div>`;
       else if (hv && hv.length > 1) gr = `<div class="hzkg">${this._hzSpark(hv)}</div>`;
     }
@@ -14733,7 +14755,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (id === "ga") return this._modHero("ga", { icon: "plant", lbl: "Garten & Bewässerung", big: "Gartenplan", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "pl") return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: "Pool & Sauna", small: true, sub: "Bedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "bt") return this._modHero("bt", { icon: "energy", lbl: "Batteriespeicher", big: "Batteriespeicher", small: true, sub: "Ladestand jetzt, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
-      if (id === "dt") { const h = this._dtPrices(), now = new Date().getHours(); if (!h) return this._modHero("dt", { icon: "chart", lbl: "Dynamischer Stromtarif", big: "–", sub: "Noch keine Stundenpreise" }); const mn = Math.min(...h); return this._modHero("dt", { icon: "chart", lbl: "Strompreis jetzt", big: num(h[now], 1), unit: "ct/kWh", sub: `Günstigste Stunde ${h.indexOf(mn)}:00 Uhr mit ${num(mn, 1)} ct/kWh`, chips: [`Ø ${num(h.reduce((a, b) => a + b, 0) / 24, 1)} ct/kWh heute`] }); }
+      if (id === "dt") return "";  /* Modul 14 v0.7: eigenes Preisband-Banner in der Seite */
       if (id === "wa") return this._modHero("wa", { icon: "tools", lbl: "Wartung & Erinnerungen", big: "Wartung", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "sp" && this._spNew && this._spNew()) return this._spBanner();
       if (id === "sp") { const S = this._sp(); if (!this._spD || S.error || !S.found) return this._modHero("sp", { icon: "sun", lbl: "Solar-Prognose", big: "–", sub: S && S.error ? "Prognose nicht geladen" : "Noch keine Prognose" }); return this._modHero("sp", { icon: "sun", lbl: "Solar heute (Prognose)", big: num(S.today, 1), unit: "kWh", sub: `Morgen ${num(S.tomorrow, 1)} kWh`, chips: [S.got != null ? `Bisher ${num(S.got, 1)} kWh` : ""] }); }
@@ -16174,6 +16196,314 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "plxtab") { this._plT = b.dataset.k; try { localStorage.setItem("fh_pl_tab", this._plT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "plxpin") { this._plP = { ...(this._plP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
+  /* ================= Modul 14: Stromtarif · v0.6 Tarif-Dienst (Backend tarif.py) · v0.7 neue Optik ================= */
+  /* Daten: tarif_get einmal, danach Push über tarif_sub (neue Viertelstunde, Preise für morgen). Rückfall: Abruf jede Minute. */
+  _tfLoad(force) {
+    if (!this._hass) return;
+    this._tfSub();
+    if (this._tfBusy || (!force && this._tfD && Date.now() - this._tfD.ts < (this._tfUnsub ? 300000 : 60000))) return;
+    this._tfBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/tarif_get" }).then((r) => { this._tfD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._tfD = { d: { error: true }, ts: Date.now() }; })
+      .finally(() => { this._tfBusy = false; this._tfRedraw(); });
+  }
+  _tfSub() {
+    const c = this._hass && this._hass.connection;
+    if (this._tfUnsub || this._tfSubTry || !c || !c.subscribeMessage) return;
+    this._tfSubTry = true;
+    c.subscribeMessage((m) => { const old = (this._tfD && this._tfD.d) || {}; this._tfD = { d: { ...old, ...m, found: old.found }, ts: Date.now() }; this._tfRedraw(); }, { type: "fenster_heizung/tarif_sub" })
+      .then((u) => { this._tfUnsub = u; }).catch(() => { this._tfSubTry = false; });
+  }
+  _tfRedraw() {
+    if (this._modal && this._modal.type === "tfset") this._renderModal();
+    if ((this._mdActive && this._mdActive() === "dt" && !this._stOpen) || this._tfWantR) { this._tfWantR = false; this._render(); }
+  }
+  _tf() { const d = (this._tfD && this._tfD.d) || {}; return { series: [], found: [], ...d, cfg: { src: "auto", sensor: "", boerse: "auto", add: 18.6, vat: 19, down: 3, up: 4, res: "q", win_h: 3, ...(d.cfg || {}), nne: { on: false, ht_from: 17, ht_to: 20, ht_ct: 6.1, nt_from: 0, nt_to: 6, nt_ct: -4.2, ...((d.cfg || {}).nne || {}) }, devs: { ...((d.cfg || {}).devs || {}) }, alarm: this._tfAlarmCfg((d.cfg || {}).alarm) }, now: d.now || {}, devs: d.devs || [], alarm: d.alarm || {}, alog: d.alog || [] }; }
+  _tfAlarmCfg(a = {}) { const x = a || {}; return { to: x.to || [], below: { on: false, ct: 20, ...(x.below || {}) }, above: { on: false, ct: 40, ...(x.above || {}) }, neg: { on: true, ...(x.neg || {}) }, tomorrow: { on: false, ...(x.tomorrow || {}) }, lead: x.lead || 0, quiet: { on: true, from: 22, to: 7, ...(x.quiet || {}) } }; }
+  _tfHm(ts) { return ts == null ? "–" : new Date(ts * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }); }
+  _tfDayKey(ts) { const d = new Date(ts * 1000); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
+  _tfIsTomorrow(ts) { const t = new Date(); t.setHours(24, 0, 0, 0); return ts * 1000 >= t.getTime(); }
+  _tfWhen(ts) { return (this._tfIsTomorrow(ts) ? "morgen " : "") + this._tfHm(ts); }
+  _tfLv(ct, avg, C) { if (ct == null || avg == null) return ""; if (ct < 0) return "neg"; if (ct <= avg - C.down) return "cheap"; if (ct >= avg + C.up) return "dear"; return "normal"; }
+  _tfCol(lv) { return ({ cheap: "#22c55e", normal: "#f59e0b", dear: "#ef4444", neg: "#3b82f6" })[lv] || "#64748b"; }
+  _tfName(lv) { return ({ cheap: "Günstig", normal: "Normal", dear: "Teuer", neg: "Negativ" })[lv] || "–"; }
+  _tfCt(v, d = 1) { return v == null || !isFinite(v) ? "–" : num(v, d); }
+  /* Tagesschnitt je Kalendertag (gewichtet), damit morgen nach seinem eigenen Schnitt gefärbt wird */
+  _tfAvgs(ser) { const m = {}; ser.forEach((x) => { const k = this._tfDayKey(x.s); (m[k] = m[k] || [0, 0]); m[k][0] += x.ct * x.d; m[k][1] += x.d; }); return Object.fromEntries(Object.entries(m).map(([k, [a, w]]) => [k, a / w])); }
+  _tfHourly(ser) { const by = new Map(); ser.forEach((x) => { const k = Math.floor(x.s / 3600) * 3600; if (!by.has(k)) by.set(k, []); by.get(k).push(x.ct); }); return [...by.entries()].map(([s, v]) => ({ s, d: 3600, ct: v.reduce((a, b) => a + b, 0) / v.length })); }
+  /* Sonne aus Modul 16 (Stunde → kWh) als Zeitpunkte */
+  _tfSun() {
+    if (!this._mdState().on.sp) return null;
+    if (!this._spD) { this._spLoad(); return null; }
+    let C; try { C = this._spCalc(); } catch (_) { return null; }
+    const d0 = new Date(); d0.setHours(0, 0, 0, 0); const t0 = d0.getTime() / 1000, d1 = new Date(d0); d1.setDate(d1.getDate() + 1); const t1 = d1.getTime() / 1000;
+    const pts = [...(C.rows || []).map(([h, v]) => [t0 + h * 3600, v]), ...(C.tm || []).map(([h, v]) => [t1 + h * 3600, v])].filter((p) => isFinite(p[1]));
+    return pts.some((p) => p[1] > 0.01) ? pts : null;
+  }
+  /* B1/B3 · Preisband: Balken je Viertelstunde/Stunde in Stufenfarbe, Jetzt-Linie, Schnitt gestrichelt, bestes Fenster umrandet, morgen hinterlegt */
+  _tfBand(S, o = {}) {
+    let ser = (S.series || []).filter((x) => x.ct != null && isFinite(x.ct));
+    if (o.res === "h" && ser.length && ser[0].d < 3600) ser = this._tfHourly(ser);
+    const avgs = this._tfAvgs(S.series || []);
+    if (o.from != null) ser = ser.filter((x) => x.s + x.d > o.from);
+    if (o.to != null) ser = ser.filter((x) => x.s < o.to);
+    if (ser.length < 2) return "";
+    const C = S.cfg, t0 = ser[0].s, t1 = ser[ser.length - 1].s + ser[ser.length - 1].d, span = t1 - t0, X = (t) => ((t - t0) / span) * 100;
+    const vals = ser.map((x) => x.ct), mx = Math.max(...vals), mn = Math.min(...vals), neg = mn < 0;
+    const lo = neg ? Math.min(mn * 1.15, -(mx - mn) * 0.16) : Math.max(0, mn - Math.max(2, (mx - mn) * 0.45)), hi = mx + Math.max(1, (mx - mn) * 0.12), H = 100, Y = (v) => H - ((v - lo) / (hi - lo)) * H, base = neg ? Y(0) : H;
+    const gap = ser.length > 120 ? 0.12 : ser.length > 60 ? 0.2 : 0.35, now = Date.now() / 1000;
+    const bars = ser.map((x) => { const l = X(x.s), w = Math.max(0.05, X(x.s + x.d) - l - gap), lv = this._tfLv(x.ct, avgs[this._tfDayKey(x.s)], C), y = Y(x.ct), past = x.s + x.d <= now;
+      return `<rect x="${l.toFixed(3)}" y="${Math.min(y, base).toFixed(2)}" width="${w.toFixed(3)}" height="${Math.max(0.6, Math.abs(base - y)).toFixed(2)}" fill="${this._tfCol(lv)}"${past ? ' opacity=".38"' : ""}><title>${this._tfWhen(x.s)} · ${this._tfCt(x.ct)} ct/kWh · ${this._tfName(lv)}</title></rect>`; }).join("");
+    const tm = new Date(); tm.setHours(24, 0, 0, 0); const tms = tm.getTime() / 1000;
+    const shade = tms > t0 && tms < t1 ? `<rect x="${X(tms).toFixed(3)}" y="0" width="${(100 - X(tms)).toFixed(3)}" height="${H}" class="tfmo"/>` : "";
+    let sun = "";
+    const SP = o.sun ? this._tfSun() : null;
+    if (SP) { const smx = Math.max(...SP.map((p) => p[1])), pts = SP.filter((p) => p[0] + 3600 > t0 && p[0] < t1).map((p) => [Math.max(0, Math.min(100, X(p[0] + 1800))), H - (p[1] / smx) * H * 0.62]);
+      if (pts.length > 2) sun = `<path d="M${pts[0][0].toFixed(2)} ${H}${pts.map((p) => `L${p[0].toFixed(2)} ${p[1].toFixed(2)}`).join("")}L${pts[pts.length - 1][0].toFixed(2)} ${H}Z" class="tfsun"/>`; }
+    const avgT = S.today && S.today.avg != null ? S.today.avg : null, ya = avgT != null && avgT > lo && avgT < hi ? Y(avgT) : null;
+    const B = o.best && o.best.e > t0 && o.best.s < t1 ? o.best : null;
+    const nowL = now > t0 && now < t1 ? X(now) : null;
+    const html = [];
+    if (shade) html.push(`<span class="tfl mo" style="left:calc(${X(tms).toFixed(2)}% + 6px)">morgen</span>`);
+    if (ya != null) html.push(`<span class="tfl av" style="top:${ya.toFixed(1)}%">Ø ${this._tfCt(avgT)} ct</span>`);
+    if (nowL != null) html.push(`<span class="tfl nw" style="left:${nowL.toFixed(2)}%">jetzt</span>`);
+    if (B && o.bestLbl !== false) html.push(`<span class="tfl bw${neg ? " up" : ""}" style="left:${((X(Math.max(B.s, t0)) + X(Math.min(B.e, t1))) / 2).toFixed(2)}%">günstigste ${S.cfg.win_h} Std.</span>`);
+    const ticks = [], step = span > 30 * 3600 ? 6 : span > 14 * 3600 ? 3 : 2;
+    for (let t = Math.ceil(t0 / 3600) * 3600; t < t1; t += 3600) { const h = new Date(t * 1000).getHours(); if (h % step === 0 && !(nowL != null && Math.abs(X(t) - nowL) < 2.5)) ticks.push(`<span style="left:${X(t).toFixed(2)}%">${String(h).padStart(2, "0")}</span>`); }
+    return `<div class="tfband ${o.cls || ""}" style="--bh:${o.h || 150}px"><div class="tfplot"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true">${shade}${sun}${bars}
+        ${neg ? `<line x1="0" x2="100" y1="${base.toFixed(2)}" y2="${base.toFixed(2)}" class="tfzero"/>` : ""}${ya != null ? `<line x1="0" x2="100" y1="${ya.toFixed(2)}" y2="${ya.toFixed(2)}" class="tfavg"/>` : ""}
+        ${B ? `<rect x="${X(Math.max(B.s, t0)).toFixed(3)}" y="2" width="${(X(Math.min(B.e, t1)) - X(Math.max(B.s, t0))).toFixed(3)}" height="${H - 2}" rx="1.2" class="tfbest"/>` : ""}
+        ${nowL != null ? `<line x1="${nowL.toFixed(3)}" x2="${nowL.toFixed(3)}" y1="0" y2="${H}" class="tfnow"/>` : ""}</svg>${html.join("")}</div>
+      ${o.axis === false ? "" : `<div class="tfax">${ticks.join("")}</div>`}</div>`;
+  }
+  _tfBest(S) { const b = S.best, bm = S.best_tomorrow; return bm && b && bm.avg < b.avg - 0.05 ? bm : b || bm; }
+  _tfBanner(S) {
+    const C = S.cfg, N = S.now, lv = N.lv || "normal", col = this._tfCol(lv), T = S.today || {}, M = S.tomorrow, best = this._tfBest(S), mv = MV.dt;
+    const parts = [];
+    if (N.until) { const nxt = (S.series || []).find((x) => x.s === N.until); parts.push(`${this._tfName(lv).toLowerCase()} bis ${this._tfWhen(N.until)}${nxt ? `, danach ${this._tfCt(nxt.ct)} ct` : ""}`); }
+    else parts.push(this._tfName(lv).toLowerCase() + " bis zum Ende der bekannten Preise");
+    if (best) parts.push(`günstigste ${C.win_h} Std. ${this._tfIsTomorrow(best.s) ? "morgen " : "ab "}${this._tfHm(best.s)}–${this._tfHm(best.e)} Uhr`);
+    const d = N.ct != null && T.avg != null ? N.ct - T.avg : null;
+    const chips = [`<span class="tflvp" style="--lc:${col}">${this._tfName(lv)}${d != null ? ` · ${d >= 0 ? "+" : "−"}${this._tfCt(Math.abs(d))} ct ${d >= 0 ? "über" : "unter"} Ø` : ""}</span>`];
+    chips.push(`<span class="chip">${M ? `Morgen Ø ${this._tfCt(M.avg)} ct` : "Morgen ab ca. 13 Uhr"}</span>`);
+    if (S.neg) chips.push(`<span class="chip tfneg">${ic("energy", 13)}Negativ ab ${this._tfWhen(S.neg.s)}</span>`);
+    else if (M) chips.push(`<span class="chip">tiefster Preis morgen ${this._tfCt(M.min)} ct</span>`);
+    const end = (S.series || []).length ? S.series[S.series.length - 1].s + S.series[S.series.length - 1].d : null;
+    const band = this._tfBand(S, { from: Date.now() / 1000 - 2 * 3600, to: end, best, h: 132, cls: "tfbn" });
+    return `<div class="card tfbnr" style="--lc:${col}"><div class="tfbt"><div class="tfbl">${ic("chart", 15)}Strompreis jetzt · ${esc(S.src_name || "–")}</div>
+        <div class="tfbb">${this._tfCt(N.ct)}<small>ct/kWh</small></div><div class="tfbs">${esc(parts.join(" · "))}</div><div class="tfbc">${chips.join("")}</div></div>
+      <div class="tfbi">${band}${mv ? `<span class="mlv">v${esc(mv.v)} · Build ${mv.b}</span>` : ""}</div></div>`;
+  }
+  /* B2 · Kacheln 2.0: ruhig, Zustandspunkt, kein farbiger Rahmen */
+  _tfTiles(S) {
+    const C = S.cfg, N = S.now, T = S.today || {}, M = S.tomorrow, best = this._tfBest(S);
+    const tile = (icon, name, val, unit, sub, lv) => { const c = lv ? this._tfCol(lv) : "#2dd4bf"; return `<div class="wxtl" style="--tc:${c}"><div class="wxth"><span class="wxti">${ic(icon, 20)}</span><i class="wxdot" aria-hidden="true"></i></div>
+      <div class="wxtn">${name}</div><div class="wxtv">${val}${unit ? `<small>${unit}</small>` : ""}</div><div class="wxts">${sub}</div></div>`; };
+    const lvH = this._tfLv(N.next_h, T.avg, C), up = N.next_h != null && N.ct != null ? N.next_h - N.ct : null;
+    const out = [
+      tile("bolt", "Jetzt", this._tfCt(N.ct), "ct", `${this._tfName(N.lv).toLowerCase()}${N.until ? " · bis " + this._tfWhen(N.until) : ""}`, N.lv),
+      tile("up", "Nächste Stunde", this._tfCt(N.next_h), "ct", up == null ? "–" : Math.abs(up) < 0.3 ? "→ etwa gleich" : up > 0 ? "↗ wird teurer" : "↘ wird günstiger", lvH),
+      tile("clock", "Bestes Fenster", best ? this._tfHm(best.s) : "–", best ? "Uhr" : "", best ? `${this._tfIsTomorrow(best.s) ? "morgen" : "heute"} · Ø ${this._tfCt(best.avg)} ct` : "Zu wenig Preise", best ? this._tfLv(best.avg, T.avg, C) || "cheap" : ""),
+      M ? tile("today", "Morgen", this._tfCt(M.avg), "ct Ø", T.avg != null ? `${M.avg <= T.avg ? "−" : "+"}${this._tfCt(Math.abs(M.avg - T.avg))} ct zu heute` : `${this._tfCt(M.min)} bis ${this._tfCt(M.max)} ct`, T.avg != null && M.avg <= T.avg ? "cheap" : "normal")
+        : tile("today", "Morgen", "–", "", "noch nicht veröffentlicht · ab ca. 13 Uhr", ""),
+      S.neg ? tile("energy", "Negativer Preis", this._tfWhen(S.neg.s).replace("morgen ", ""), "Uhr", `${this._tfIsTomorrow(S.neg.s) ? "morgen" : "heute"} · bis ${this._tfCt(S.neg.min)} ct`, "neg")
+        : tile("alert", "Teuerste Zeit", S.dear ? this._tfHm(S.dear.s) : "–", S.dear ? "Uhr" : "", S.dear ? `${this._tfIsTomorrow(S.dear.s) ? "morgen" : "heute"} · ${this._tfCt(S.dear.ct)} ct` : "–", S.dear ? "dear" : "")];
+    return `<div class="wxtiles tftiles">${out.join("")}</div>`;
+  }
+  /* B3 · Heute und morgen in einem Band */
+  _tfDays(S) {
+    const res = this._tfView || S.cfg.res || "q", q = (S.series || []).some((x) => x.d < 3600), sun = !!this._tfSun();
+    const d0 = new Date(); d0.setHours(0, 0, 0, 0); const end = (S.series || []).length ? S.series[S.series.length - 1].s + S.series[S.series.length - 1].d : null;
+    const leg = [["cheap", "günstig"], ["normal", "normal"], ["dear", "teuer"], ["neg", "negativ"]].map(([k, t]) => `<span><i style="background:${this._tfCol(k)}"></i>${t}</span>`).join("") + (sun ? `<span><i class="sn"></i>Sonne (Modul 16)</span>` : "");
+    const M = S.tomorrow, T = S.today;
+    return `<div class="card"><div class="wxtlh"><h2>${ic("chart", 18)}Heute und morgen</h2>${q ? `<div class="seg wxseg"><button class="${res === "q" ? "sel" : ""}" data-act="tfxview" data-k="q">15 Min.</button><button class="${res === "h" ? "sel" : ""}" data-act="tfxview" data-k="h">Stunden</button></div>` : ""}</div>
+      ${this._tfBand(S, { from: d0.getTime() / 1000, to: end, res, best: S.best_tomorrow || S.best, sun: true, h: 190 })}
+      <div class="tfleg">${leg}</div>
+      <div class="tfdays"><div><span class="mut">Heute</span><b>Ø ${this._tfCt(T && T.avg)} ct</b><small>${T ? `${this._tfCt(T.min)} bis ${this._tfCt(T.max)} ct · ${num(T.hours, 0)} Std.` : "–"}</small></div>
+        <div><span class="mut">Morgen</span><b>${M ? `Ø ${this._tfCt(M.avg)} ct` : "noch offen"}</b><small>${M ? `${this._tfCt(M.min)} bis ${this._tfCt(M.max)} ct${M.neg ? ` · ${M.neg} × negativ` : ""}` : "Die Börse veröffentlicht gegen 13 Uhr, der Dienst holt sie dann von selbst."}</small></div></div></div>`;
+  }
+  /* Günstigste Zeiten ab jetzt (je eine Stunde, ohne Überschneidung) */
+  _tfSlots(S) {
+    const N = S.now, sl = S.slots || [], T = S.today || {}, mx = Math.max(1, ...sl.map((x) => Math.abs(x.avg)), N.ct || 0);
+    if (!sl.length) return "";
+    const rows = sl.map((x, i) => { const sv = N.ct != null ? N.ct - x.avg : null, lv = this._tfLv(x.avg, T.avg, S.cfg) || "cheap";
+      return `<div class="tfsl"><span class="tfrk">${i + 1}</span><div class="tfst"><b>${this._tfIsTomorrow(x.s) ? "Morgen " : ""}${this._tfHm(x.s)}–${this._tfHm(x.e)} Uhr</b><small>${sv != null && sv > 0.05 ? `${this._tfCt(sv)} ct günstiger als jetzt` : "etwa wie jetzt"}</small></div>
+        <div class="tfsb"><i style="width:${Math.max(6, (Math.abs(x.avg) / mx) * 100).toFixed(0)}%;background:${this._tfCol(lv)}"></i></div><b class="tfsv">${this._tfCt(x.avg)}<small> ct</small></b></div>`; }).join("");
+    return `<div class="card"><h2>${ic("clock", 18)}Günstigste Stunden ab jetzt</h2>${rows}<div class="gst" style="margin-top:6px">Je eine Stunde, ohne Überschneidung – zum Waschen, Spülen, Laden oder Heizen.</div></div>`;
+  }
+  _tfSrcCard(S) {
+    const C = S.cfg, res = (S.series || []).some((x) => x.d < 3600) ? "15 Minuten" : (S.series || []).length > 2 ? "Stunden" : "–";
+    const row = (k, v) => `<div><span class="mut">${k}</span><b>${v}</b></div>`;
+    return `<div class="card"><h2>${ic("sliders", 18)}Woher die Preise kommen</h2><div class="spsrc">
+      ${row("Quelle", esc(S.src_name || "–") + (C.src === "auto" ? " · automatisch" : ""))}${row("Auflösung", res)}
+      ${row("Preis", S.boerse ? `Endpreis aus Börsenpreis + ${this._tfCt(C.add, 2)} ct, ${num(C.vat, 0)} % MwSt.` : S.src === "tibber" ? "Endpreis von Tibber" : "wie geliefert")}
+      ${row("Gespeicherte Tage", `${S.hist_days || 0} von 400`)}${C.nne.on ? row("Netzentgelt", `zeitvariabel · ${C.nne.ht_from}–${C.nne.ht_to} Uhr +${this._tfCt(C.nne.ht_ct)} ct`) : ""}
+      ${S.note ? `<div class="spsrcw">${ic("alert", 14)}${esc(S.note)}</div>` : ""}</div></div>`;
+  }
+  _dtPage() {
+    this._tfLoad();
+    const S = this._tf(), adm = this._hass.user && this._hass.user.is_admin;
+    if (!this._tfD) return `<div class="card empty">${ic("chart", 30)}<div style="margin-top:8px">Preise werden geladen …</div></div>`;
+    if (S.error || !S.src) return `${this._betaBox("Modul 14 holt die Preise jetzt selbst – direkt von Tibber oder aus einem Preis-Sensor.")}<div class="card empty">${ic("chart", 30)}
+      <div style="margin-top:8px"><b>Noch keine Strompreise.</b><br>Verbinde Tibber unter Einstellungen → Integrationen oder wähle einen Preis-Sensor mit Preisliste (Tibber, Nord Pool, EPEX Spot, aWATTar, Octopus …). Ohne beides gilt der Festpreis aus den Haus-Werten.</div>
+      ${adm ? `<button class="btn2 pri" style="margin-top:12px" data-act="tfxopen">${ic("sliders", 16)} Quelle wählen</button>` : ""}</div>`;
+    if (S.src === "fix") return `${this._betaBox("Mit einem Festpreis gibt es keine günstigen Zeiten. Verbinde Tibber oder wähle einen Preis-Sensor.")}
+      <div class="card"><h2>${ic("bolt", 18)}Festpreis</h2><div class="wxtiles tftiles"><div class="wxtl" style="--tc:#2dd4bf"><div class="wxtn">Arbeitspreis</div><div class="wxtv">${this._tfCt(S.now.ct)}<small>ct/kWh</small></div><div class="wxts">aus den Haus-Werten</div></div></div>
+      ${adm ? `<button class="btn2" style="margin-top:12px" data-act="tfxopen">${ic("sliders", 16)} Quelle wählen</button>` : ""}</div>${this._tfSrcCard(S)}`;
+    return `${this._tfBanner(S)}${this._tfTiles(S)}${this._betaBox("Neu: Preise kommen über den gemeinsamen Tarif-Dienst – Tibber direkt, Preis-Sensor oder Festpreis, in Viertelstunden, heute und morgen.")}
+      ${this._tfDevCard(S)}${this._tfDays(S)}<div class="wxcols">${this._tfSlots(S)}${this._tfAlarmCard(S)}</div>${this._tfSrcCard(S)}
+      <div class="wxnote">${ic("info", 15)}Kommt mit v0.9: Batteriespeicher, Wallbox, Warmwasser und Entfeuchter nutzen dieselben Preise und Fenster.</div>`;
+  }
+  /* Startseite: Preis, Stufe, Mini-Band der nächsten 12 Stunden */
+  _tfStartK(K) {
+    this._tfLoad(); if (!this._tfD) this._tfWantR = true;
+    const S = this._tf(); if (!this._tfD || S.error || !S.src || S.now.ct == null) return null;
+    const N = S.now, now = Date.now() / 1000, sl = (S.slots || [])[0];
+    K.v = this._tfCt(N.ct); K.u = "ct"; K.l1 = `${this._tfName(N.lv).toLowerCase()}${N.until ? " bis " + this._tfHm(N.until) : ""}`;
+    if (S.src !== "fix" && sl) K.l2 = N.lv === "cheap" || N.lv === "neg" ? "jetzt günstig" : `günstig ab ${this._tfWhen(sl.s)}`;
+    K.z = N.lv === "dear" ? "hint" : N.lv === "neg" ? "act" : "ok";
+    if (S.src !== "fix") K.gr = this._tfBand(S, { from: now - 1800, to: now + 12 * 3600, res: "h", h: 40, axis: false, bestLbl: false, cls: "tfmini" }).replace(/<span class="tfl[^>]*>[^<]*<\/span>/g, "");
+    return K;
+  }
+  /* ================= v0.8 · C1 Bestes Fenster je Gerät ================= */
+  _tfDur(sec) { const m = Math.round(sec / 300) * 5, h = Math.floor(m / 60); return h ? `${h} Std.${m % 60 ? ` ${String(m % 60).padStart(2, "0")} Min.` : ""}` : `${m} Min.`; }
+  _tfDevCard(S) {
+    const all = S.devs || [], adm = this._hass.user && this._hass.user.is_admin;
+    if (!this._mdState().on.gs) return "";
+    if (!all.length) return `<div class="card"><h2>${ic("clock", 18)}Bestes Fenster je Gerät</h2><div class="mut sm">Lege in Modul 4 Geräte mit Leistungsmessung an (Waschmaschine, Trockner, Spülmaschine …). Nach zwei Läufen kennt Modul 14 die Laufzeit und schlägt die günstigste Startzeit vor.</div></div>`;
+    const on = all.filter((x) => x.on), rows = on.map((d) => {
+      const T = GS_TYP[d.typ] || {}, w = d.w, lv = w ? this._tfLv(w.avg, (S.today || {}).avg, S.cfg) || "cheap" : "";
+      const sub = w ? `${this._tfDur(d.dur)} (gelernt, ${d.n} Läufe)${d.curve ? " · Kurve" : ""} · ${w.sun >= 10 ? `${w.sun} % Sonne + Preis` : "Preis"}${d.by != null ? ` · fertig bis ${d.by} Uhr` : ""}${d.from != null ? ` · ab ${d.from} Uhr` : ""}`
+        : d.running ? "läuft gerade" : d.n < 2 ? `Noch zu wenig Läufe (${d.n} von 2) – Modul 4 lernt die Laufzeit` : "Kein passendes Fenster in den bekannten Preisen";
+      const when = w ? (w.now ? "jetzt" : `${this._tfIsTomorrow(w.s) ? "morgen " : "heute "}${this._tfHm(w.s)}`) : "–";
+      const det = w ? `Ø ${this._tfCt(w.avg)} ct${w.save >= 0.01 ? ` · −${num(w.save, 2)} € gg. jetzt` : w.now ? " · jetzt am günstigsten" : ""}` : "";
+      const btn = !w || !adm ? "" : w.now ? `<span class="tfbadge ok">Jetzt starten</span>` : d.rem ? `<button class="tfbadge on" data-act="tfxrem" data-k="${esc(d.id)}" title="Erinnerung löschen">${ic("bell", 13)}${this._tfHm(d.rem)}</button>` : `<button class="tfbadge" data-act="tfxrem" data-k="${esc(d.id)}">Erinnern</button>`;
+      return `<div class="tfdev ${w ? "" : "off"}" style="--lc:${this._tfCol(lv)}"><span class="tfdi">${ic(T.i || "plug", 20)}</span><div class="tfdn"><b>${esc(d.name)}</b><small>${esc(sub)}</small></div>
+        <div class="tfdw"><b>${when}</b><small>${det}</small></div>${btn}</div>`; }).join("");
+    const offN = all.length - on.length;
+    return `<div class="card"><div class="wxtlh"><h2>${ic("clock", 18)}Bestes Fenster je Gerät</h2>${adm ? `<button class="ibtn" data-act="tfxopen" data-k="w" aria-label="Geräte wählen">${ic("sliders", 16)}</button>` : ""}</div>
+      ${rows || `<div class="mut sm">Kein Gerät gewählt.</div>`}
+      <div class="gst" style="margin-top:8px">Laufzeit und Verbrauch gelernt aus Modul 4, bewertet mit Preis × Verbrauchsverlauf${S.cfg.sun ? "; erwartete Sonne zählt mit dem Einspeisepreis" : ""}. „Erinnern“ meldet sich zur Startzeit.${offN ? ` ${offN} ${offN === 1 ? "Gerät" : "Geräte"} ohne Fenster (z. B. Kühlschrank) – in den Einstellungen wählbar.` : ""}</div></div>`;
+  }
+  /* ================= v0.8 · C2 Preisalarm ================= */
+  _tfAlarmCard(S) {
+    const A = S.cfg.alarm, V = S.alarm || {}, adm = this._hass.user && this._hass.user.is_admin;
+    const per = (p) => p ? `${this._tfIsTomorrow(p.s) ? "morgen " : p.s * 1000 <= Date.now() ? "jetzt bis " : "heute "}${p.s * 1000 <= Date.now() ? "" : this._tfHm(p.s) + "–"}${this._tfHm(p.e)}` : "nicht in Sicht";
+    const sw = (k, on) => adm ? `<button class="sw ${on ? "on" : ""}" data-act="tfxal" data-k="${k}" aria-pressed="${!!on}" aria-label="Alarm ${k}"></button>` : "";
+    const row = (k, icon, col, name, chip) => `<div class="tfal"><span class="tfai" style="color:${col}${icon === "down" ? ";transform:rotate(180deg)" : ""}">${ic(icon === "down" ? "up" : icon, 17)}</span><b>${name}</b>${chip ? `<span class="chip">${esc(chip)}</span>` : ""}${sw(k, A[k].on)}</div>`;
+    const tgt = (V.targets || []).length, log = (S.alog || []).slice(0, 3);
+    return `<div class="card"><div class="wxtlh"><h2>${ic("bell", 18)}Preisalarm</h2>${adm ? `<button class="ibtn" data-act="tfxopen" data-k="w" aria-label="Preisalarm einstellen">${ic("sliders", 16)}</button>` : ""}</div>
+      ${row("below", "down", "#22c55e", `Unter ${this._tfCt(A.below.ct, A.below.ct % 1 ? 1 : 0)} ct`, per(V.below))}
+      ${row("neg", "energy", "#3b82f6", "Negativer Preis", per(V.neg))}
+      ${row("above", "up", "#ef4444", `Über ${this._tfCt(A.above.ct, A.above.ct % 1 ? 1 : 0)} ct`, per(V.above))}
+      ${row("tomorrow", "today", "#2dd4bf", "Preise für morgen da", V.tomorrow ? "heute schon da" : "ab ca. 13 Uhr · mit Kurzfassung")}
+      <div class="gst" style="margin-top:6px">${tgt ? `Meldung an ${V.targets.map(esc).join(", ")}` : "Noch kein Meldedienst gewählt"} · je Zeitraum höchstens einmal${A.quiet.on ? ` · Ruhe ${A.quiet.from}–${A.quiet.to} Uhr` : ""}${A.lead ? ` · ${A.lead} Min. vorher` : ""}.</div>
+      ${log.length ? `<div class="tflog">${log.map((x) => `<div><small>${new Date(x.t * 1000).toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" })}</small><span><b>${esc(x.title)}</b> ${esc(x.msg)}</span></div>`).join("")}</div>` : ""}</div>`;
+  }
+  _tfModalW(S, step, chip, sw) {
+    const C = S.cfg, A = C.alarm, H = this._hass;
+    const svc = [...new Set([...Object.keys(((H.services || {}).notify) || {}).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).sort().map((n) => "notify." + n), ...A.to])];
+    const sw2 = (act, k, on, l) => sw(act, on, l).replace(`data-act="${act}"`, `data-act="${act}" data-k="${k}"`);
+    const hc = (act, k, v, cur, t) => `<button class="gsch ${cur === v ? "sel" : ""}" data-act="${act}" data-k="${esc(k)}" data-v="${v == null ? "" : v}">${t}</button>`;
+    const devs = (S.devs || []).map((d) => { const T = GS_TYP[d.typ] || {};
+      return `<div class="rfv"><div class="vrow" style="margin:0"><span>${ic(T.i || "plug", 16)} <b>${esc(d.name)}</b><small class="mut" style="display:block">${d.n ? `${d.n} ${d.n === 1 ? "Lauf" : "Läufe"} gelernt` : "noch keine Läufe"}${d.dur ? ` · ${this._tfDur(d.dur)}` : ""}</small></span>${sw2("tfxdev", d.id, d.on, "Fenster für " + d.name)}</div>
+        ${d.on ? `<div class="mut sm" style="margin:6px 0 4px">Fertig bis</div><div class="gschips">${[null, 7, 12, 16, 18, 20, 22].map((v) => hc("tfxby", d.id, v, d.by ?? null, v == null ? "egal" : v + " Uhr")).join("")}</div>
+        <div class="mut sm" style="margin:6px 0 4px">Frühestens ab</div><div class="gschips">${[null, 6, 7, 8, 9].map((v) => hc("tfxfrom", d.id, v, d.from ?? null, v == null ? "jederzeit" : v + " Uhr")).join("")}</div>` : ""}</div>`; }).join("");
+    return `<div class="lsec">${ic("clock", 15)}Bestes Fenster je Gerät</div>
+      <div class="mut sm" style="margin:0 0 6px">Geräte aus Modul 4. Laufzeit (Median der letzten Läufe), Energie je Lauf und Verbrauchsverlauf werden gelernt. „Fertig bis“ zum Beispiel, wenn die Wäsche abends trocken sein soll; „frühestens ab“ gegen nächtliches Schleudern.</div>
+      ${devs || `<div class="mut sm">Noch keine Geräte in Modul 4.</div>`}
+      <div class="vrow"><span>Sonne einrechnen<small class="mut" style="display:block">Erwartete Solarerzeugung aus Modul 16 bzw. Modul 4 (vorsichtig: die Hälfte). Eigener Strom zählt mit dem Einspeisepreis aus den Haus-Werten.</small></span>${sw("tfxsun", C.sun, "Sonne einrechnen")}</div>
+      <div class="lsec" style="margin-top:12px">${ic("bell", 15)}Preisalarm</div>
+      <div class="vrow"><span>Unter einer Grenze</span>${A.below.on ? step("a_below", A.below.ct, "ct", 1, this._tfCt(A.below.ct, 0)) : ""}${sw2("tfxal", "below", A.below.on, "Unter einer Grenze")}</div>
+      <div class="vrow"><span>Über einer Grenze</span>${A.above.on ? step("a_above", A.above.ct, "ct", 1, this._tfCt(A.above.ct, 0)) : ""}${sw2("tfxal", "above", A.above.on, "Über einer Grenze")}</div>
+      <div class="vrow"><span>Negativer Preis<small class="mut" style="display:block">Gute Zeit für Akku, Auto und große Verbraucher.</small></span>${sw2("tfxal", "neg", A.neg.on, "Negativer Preis")}</div>
+      <div class="vrow"><span>Preise für morgen da<small class="mut" style="display:block">Einmal am Tag mit Ø, Spanne und günstigsten Stunden.</small></span>${sw2("tfxal", "tomorrow", A.tomorrow.on, "Preise für morgen")}</div>
+      <div class="mut sm" style="margin:8px 0 4px">Melden</div><div class="gschips">${[[0, "zu Beginn"], [15, "15 Min. vorher"], [30, "30 Min. vorher"], [60, "1 Std. vorher"]].map(([v, t]) => chip("tfxlead", String(v), t, A.lead === v)).join("")}</div>
+      <div class="vrow"><span>Ruhezeit<small class="mut" style="display:block">Keine Meldungen in dieser Zeit; ein noch laufender Zeitraum wird danach gemeldet.</small></span>${A.quiet.on ? `<span class="tfnn">${step("q_from", A.quiet.from, "Uhr", 1)}${step("q_to", A.quiet.to, "Uhr", 1)}</span>` : ""}${sw("tfxqon", A.quiet.on, "Ruhezeit")}</div>
+      <div class="mut sm" style="margin:8px 0 4px">Meldung an</div>
+      ${svc.length ? `<div class="gschips">${svc.map((n) => chip("tfxns", n, esc(n), A.to.includes(n))).join("")}</div>` : `<div class="mut sm">Kein Benachrichtigungsdienst (notify.*) gefunden.</div>`}
+      <div class="mut sm" style="margin:4px 0 6px">${A.to.length ? "" : "Ohne Auswahl gelten die Meldedienste aus Modul 4. "}Jede Meldung löst auch das Ereignis <code>fenster_heizung_tarif</code> aus.</div>
+      <button class="btn2" data-act="tfxtest" style="flex:none">${ic("bell", 15)} Test senden</button>`;
+  }
+  /* ---------- Einstellungen (Reiter Quelle · Preis & Stufen · Fenster & Alarm) ---------- */
+  _tfSave(cfg) {
+    if (!(this._tfD && this._tfD.d && this._tfD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
+    this._tfD = { d: { ...this._tf(), cfg }, ts: Date.now() };
+    clearTimeout(this._tfT);
+    this._tfT = setTimeout(() => {
+      this._tfT = null;
+      this._hass.callWS({ type: "fenster_heizung/tarif_set", cfg: this._tf().cfg }).then((r) => { this._tfD = { d: r || {}, ts: Date.now() }; this._tfRedraw(); this._render(); })
+        .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
+    }, 500);
+    this._render(); this._renderModal();
+  }
+  _tfPatch(fn) { const c = JSON.parse(JSON.stringify(this._tf().cfg)); fn(c); this._tfSave(c); }
+  _tfAct(a, b) {
+    const k = b.dataset.k, s = Number(b.dataset.s);
+    if (a === "tfxopen") { if (k) this._tfTab = k; this._tfLoad(true); this._modal = { type: "tfset" }; this._renderModal(); return; }
+    if (a === "tfxview") { this._tfView = k; this._render(); return; }
+    if (a === "tfxtab") { this._tfTab = k; this._renderModal(); return; }
+    if (a === "tfxsrc") { this._tfPatch((c) => { c.src = k; }); return; }
+    if (a === "tfxsens") { this._tfPatch((c) => { c.sensor = c.sensor === k ? "" : k; if (k && c.src === "auto") c.src = "sensor"; }); return; }
+    if (a === "tfxbo") { this._tfPatch((c) => { c.boerse = k; }); return; }
+    if (a === "tfxres") { this._tfPatch((c) => { c.res = k; }); this._tfView = k; return; }
+    if (a === "tfxnne") { this._tfPatch((c) => { c.nne.on = !c.nne.on; }); return; }
+    if (a === "tfxrem") { const on = !(this._tf().devs || []).find((x) => x.id === k && x.rem); this._hass.callWS({ type: "fenster_heizung/tarif_remind", dev: k, on }).then((r) => { if (r.snap) this._tfD = { d: { ...this._tf(), ...r.snap }, ts: Date.now() }; this._toast(r.ok ? (on ? `Erinnerung um ${this._tfHm(r.ts)} Uhr gestellt` : "Erinnerung gelöscht") : r.msg || "Das hat nicht geklappt"); this._render(); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
+    if (a === "tfxal") { this._tfPatch((c) => { c.alarm[k].on = !c.alarm[k].on; }); return; }
+    if (a === "tfxns") { this._tfPatch((c) => { const t = c.alarm.to; c.alarm.to = t.includes(k) ? t.filter((x) => x !== k) : [...t, k]; }); return; }
+    if (a === "tfxlead") { this._tfPatch((c) => { c.alarm.lead = Number(k); }); return; }
+    if (a === "tfxqon") { this._tfPatch((c) => { c.alarm.quiet.on = !c.alarm.quiet.on; }); return; }
+    if (a === "tfxsun") { this._tfPatch((c) => { c.sun = !c.sun; }); return; }
+    if (a === "tfxdev") { const D = (this._tf().devs || []).find((x) => x.id === k); this._tfPatch((c) => { const o = c.devs[k] || {}; c.devs[k] = { ...o, on: !(D ? D.on : o.on) }; }); return; }
+    if (a === "tfxby" || a === "tfxfrom") { const v = b.dataset.v === "" ? null : Number(b.dataset.v), D = (this._tf().devs || []).find((x) => x.id === k); this._tfPatch((c) => { const o = c.devs[k] || { on: D ? D.on : true }; c.devs[k] = { on: o.on !== false, by: o.by ?? null, from: o.from ?? null, [a === "tfxby" ? "by" : "from"]: v }; }); return; }
+    if (a === "tfxtest") { this._hass.callWS({ type: "fenster_heizung/tarif_test" }).then((r) => this._toast(r && r.sent ? `Test an ${r.sent} ${r.sent === 1 ? "Dienst" : "Diensten"} gesendet` : "Kein Benachrichtigungsdienst gewählt")).catch(() => this._toast("Test fehlgeschlagen")); return; }
+    if (a === "tfxstep") {
+      const R = { add: [0, 60, 2], vat: [0, 30, 1], down: [0.5, 20, 1], up: [0.5, 20, 1], win_h: [1, 8, 0], ht_ct: [-30, 30, 2], nt_ct: [-30, 30, 2], ht_from: [0, 23, 0], ht_to: [1, 24, 0], nt_from: [0, 23, 0], nt_to: [1, 24, 0], a_below: [-20, 100, 1], a_above: [0, 150, 1], q_from: [0, 23, 0], q_to: [0, 23, 0] }[k];
+      if (!R) return;
+      this._tfPatch((c) => {
+        let o = c, f = k;
+        if (k.startsWith("ht_") || k.startsWith("nt_")) o = c.nne;
+        else if (k.startsWith("a_")) { o = c.alarm[k.slice(2)]; f = "ct"; }
+        else if (k.startsWith("q_")) { o = c.alarm.quiet; f = k.slice(2); }
+        o[f] = Math.round(Math.max(R[0], Math.min(R[1], (Number(o[f]) || 0) + s)) * 10 ** R[2]) / 10 ** R[2];
+      });
+    }
+  }
+  _tfModal() {
+    const S = this._tf(), C = S.cfg, tab = ["p", "w"].includes(this._tfTab) ? this._tfTab : "q";
+    const step = (k, val, unit, d, fmt) => `<div class="step" style="flex:none"><button data-act="tfxstep" data-k="${k}" data-s="-${d}" aria-label="weniger">${ic("minus", 18)}</button><b>${fmt != null ? fmt : val} ${unit}</b><button data-act="tfxstep" data-k="${k}" data-s="${d}" aria-label="mehr">${ic("plus", 18)}</button></div>`;
+    const chip = (act, k, t, on) => `<button class="gsch ${on ? "sel" : ""}" data-act="${act}" data-k="${esc(k)}" aria-pressed="${!!on}">${t}</button>`;
+    const sw = (act, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" aria-pressed="${!!on}" aria-label="${label}"></button>`;
+    const found = S.found || [], sens = found.filter((f) => f.id !== "tibber"), tib = found.find((f) => f.id === "tibber");
+    const body = tab === "w" ? this._tfModalW(S, step, chip, sw) : tab === "q" ? `<div class="lsec">${ic("chart", 15)}Preisquelle</div>
+      <div class="mut sm" style="margin:0 0 6px">Fällt die gewählte Quelle aus, springt die nächste ein: Tibber → Preis-Sensor → Festpreis aus den Haus-Werten. Gerade aktiv: <b>${esc(S.src_name || "–")}</b>.</div>
+      <div class="gschips">${[["auto", "Automatisch"], ["tibber", "Tibber direkt"], ["sensor", "Preis-Sensor"], ["fix", "Festpreis"]].map(([k, t]) => chip("tfxsrc", k, t, C.src === k)).join("")}</div>
+      <div class="vrow"><span>Tibber direkt<small class="mut" style="display:block">${tib ? `Verbunden · ${esc(tib.res)}` : "Nicht verbunden. Einrichten unter Einstellungen → Integrationen → Tibber."}</small></span>${tib ? `<span class="tfok">${ic("check", 16)}</span>` : ""}</div>
+      <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Preis-Sensoren mit Zeitreihe</div>
+      ${sens.length ? `<div class="gschips">${sens.map((f) => chip("tfxsens", f.id, `${esc(f.name)} <small>· ${esc(f.res)}</small>`, C.sensor === f.id)).join("")}</div><div class="mut sm" style="margin:4px 0 6px">${C.sensor ? `Gewählt: ${esc(C.sensor)}` : "Ohne Auswahl gilt der Preis-Sensor aus den Haus-Werten oder aus Modul 1."}</div>`
+        : `<div class="mut sm">Kein Sensor mit Preisliste gefunden (Attribute wie <code>raw_today</code>, <code>prices_today</code>, <code>data</code>, <code>rates</code>).</div>`}
+      <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Anzeige</div>
+      <div class="vrow"><span>Auflösung im Band<small class="mut" style="display:block">Gespeichert wird immer die feinste Auflösung der Quelle.</small></span><div class="gschips" style="flex:none">${chip("tfxres", "q", "15 Min.", C.res === "q")}${chip("tfxres", "h", "Stunden", C.res === "h")}</div></div>
+      <div class="vrow"><span>Länge „Bestes Fenster“</span>${step("win_h", C.win_h, "Std.", 1)}</div>`
+      : `<div class="lsec">${ic("bolt", 15)}Stufen</div>
+      <div class="mut sm" style="margin:0 0 6px">Gemessen am Schnitt des jeweiligen Tages. So wirkt ein ruhiger Tag nicht plötzlich „teuer“.</div>
+      <div class="vrow"><span>Günstig ab<small class="mut" style="display:block">so viel unter dem Tagesschnitt</small></span>${step("down", C.down, "ct", 0.5, this._tfCt(C.down))}</div>
+      <div class="vrow"><span>Teuer ab<small class="mut" style="display:block">so viel über dem Tagesschnitt · unter 0 ct gilt immer „negativ“</small></span>${step("up", C.up, "ct", 0.5, this._tfCt(C.up))}</div>
+      <div class="lsec" style="margin-top:12px">${ic("chart", 15)}Endpreis für Börsenpreise</div>
+      <div class="mut sm" style="margin:0 0 6px">Nord Pool, EPEX Spot und aWATTar liefern nur den Börsenpreis. Für den echten Preis kommen Netzentgelt, Umlagen, Abgaben, Aufschlag und MwSt. dazu. Tibber liefert schon den Endpreis.</div>
+      <div class="gschips">${[["auto", "Automatisch erkennen"], ["on", "Immer rechnen"], ["off", "Nie rechnen"]].map(([k, t]) => chip("tfxbo", k, t, C.boerse === k)).join("")}</div>
+      <div class="vrow"><span>Aufschläge netto<small class="mut" style="display:block">Netzentgelt, Umlagen, Stromsteuer, Konzessionsabgabe, Aufschlag des Anbieters</small></span>${step("add", C.add, "ct", 0.1, this._tfCt(C.add, 2))}</div>
+      <div class="vrow"><span>Mehrwertsteuer</span>${step("vat", C.vat, "%", 1, num(C.vat, 0))}</div>
+      <div class="mut sm">Beispiel: 10 ct Börse → ${this._tfCt((10 + C.add) * (1 + C.vat / 100))} ct/kWh.</div>
+      <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Zeitvariables Netzentgelt (§ 14a, Modul 3)</div>
+      <div class="vrow"><span>Hoch- und Niedertarif-Zeiten<small class="mut" style="display:block">Nur wenn dein Netzbetreiber das anbietet und du es gewählt hast.</small></span>${sw("tfxnne", C.nne.on, "Zeitvariables Netzentgelt")}</div>
+      ${C.nne.on ? `<div class="vrow"><span>Hochtarif</span><span class="tfnn">${step("ht_from", C.nne.ht_from, "Uhr", 1)}${step("ht_to", C.nne.ht_to, "Uhr", 1)}${step("ht_ct", C.nne.ht_ct, "ct", 0.1, this._tfCt(C.nne.ht_ct, 2))}</span></div>
+        <div class="vrow"><span>Niedertarif</span><span class="tfnn">${step("nt_from", C.nne.nt_from, "Uhr", 1)}${step("nt_to", C.nne.nt_to, "Uhr", 1)}${step("nt_ct", C.nne.nt_ct, "ct", 0.1, this._tfCt(C.nne.nt_ct, 2))}</span></div>` : ""}`;
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Stromtarif</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="seg wxtabs">${[["q", "Quelle"], ["p", "Preis &amp; Stufen"], ["w", "Fenster &amp; Alarm"]].map(([k, t]) => `<button class="${tab === k ? "sel" : ""}" data-act="tfxtab" data-k="${k}">${t}</button>`).join("")}</div>
+      ${this._tfD ? body : `<div class="mut">Lade …</div>`}
+      <div class="mut sm" style="margin-top:12px">Sensoren für eigene Automationen: Gerät „Strom &amp; Wärme · Stromtarif“ (Preis jetzt, Stufe, nächste günstige Zeit, günstigstes Fenster, Ø heute und morgen) und das Ereignis <code>fenster_heizung_tarif</code>.</div></div>`;
+  }
   /* ================= Modul 13: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
   _btTab() {
     let t = this._btT; if (!t) { try { t = localStorage.getItem("fh_bt_tab"); } catch (_) { /* privater Modus */ } }
@@ -16369,9 +16699,10 @@ class FensterHeizungPanel extends HTMLElement {
     const dd = (iso) => { const t = new Date(iso), td = new Date(), y = new Date(td.getTime() - 864e5); return t.toDateString() === td.toDateString() ? hm(iso) : t.toDateString() === y.toDateString() ? "gestern " + hm(iso) : t.toLocaleDateString("de-DE", { day: "numeric", month: "numeric" }) + " " + hm(iso); };
     const K = { warn: "alert", off: "shield", ahead: "clock", src: "info", act: "blinds", ack: "check", win: "window", msg: "bell" };
     return `<div class="card"><h2>${ic("clock", 18)}Verlauf <small class="mut">90 Tage</small></h2><div class="gschips wxlf">${Object.entries(F).map(([k, [t]]) => `<button class="gsch ${f === k ? "sel" : ""}" data-act="wxslog" data-k="${k}">${t}</button>`).join("")}</div>
-      ${lg.length ? `<div class="wxlog">${lg.map((x) => `<div><time>${dd(x.t)}</time><span>${x.k && K[x.k] ? ic(K[x.k], 14) : ""}${esc(x.x)}</span></div>`).join("")}</div>` : `<div class="wxnote">${ic("info", 15)}Noch keine Einträge.</div>`}
+      ${lg.length ? `<div class="wxlog">${lg.map((x, i) => { const day = this._wxDay(x.t), prev = i ? this._wxDay(lg[i - 1].t) : ""; return `${day !== prev ? `<h4 class="wxlday">${esc(day)}</h4>` : ""}<div><time>${hm(x.t)}</time><span>${x.k && K[x.k] ? ic(K[x.k], 14) : ""}${esc(x.x)}</span></div>`; }).join("")}</div>` : `<div class="wxnote">${ic("info", 15)}Noch keine Einträge.</div>`}
       ${all.length > n ? `<button class="lnk" data-act="wxslogmore">${ic("chev", 14)}Mehr anzeigen (${all.length - n} weitere)</button>` : ""}</div>`;
   }
+  _wxDay(iso) { const t = new Date(iso), td = new Date(), y = new Date(td.getTime() - 864e5); return t.toDateString() === td.toDateString() ? "Heute" : t.toDateString() === y.toDateString() ? "Gestern" : t.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }); }
   /* C9 · Tablet-Alarm: ab der eingestellten Stufe weckt die Warnung das Wandtablet und zeigt eine Vollbild-Karte */
   _wxAlarmKey() {
     const S = this._wxs(), st = S.state || {}, lim = S.cfg.tab_lv == null ? 3 : S.cfg.tab_lv, lv = S.level || 0;
@@ -16418,6 +16749,56 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="lsec" style="margin-top:14px">${ic("tablet", 15)}Wandtablet</div>
       <div class="mut sm" style="margin:0 0 6px">Im Tablet-Modus weckt eine Warnung ab dieser Stufe das Display (bei „Warnungen wecken auf“) und zeigt eine Vollbild-Karte mit „Verstanden“.</div>
       <div class="gschips">${[[0, "Aus"], [1, "ab Stufe 1"], [2, "ab Stufe 2"], [3, "ab Stufe 3"], [4, "nur Stufe 4"]].map(([k, t]) => chip("wxstablv", k, t, lv === k)).join("")}</div>`;
+  }
+  /* ================= Modul 9 · v1.0: DWD-Wetterkarte und Rückblick ================= */
+  /* Karte direkt vom Deutschen Wetterdienst (GeoServer, WMS): Warnungen der Gemeinden oder Niederschlagsradar über einer Grundkarte,
+     dein Zuhause als Punkt. Projektion Web-Mercator (EPSG:3857), damit die Karte nicht verzerrt ist. Neu laden alle 5 Minuten (DWD-Vorgabe). */
+  static WX_MAP_Z = { near: [0.35, "Umgebung"], region: [1.1, "Region"], de: [0, "Deutschland"] };
+  _wxMerc(lat, lon) { const R = 6378137, x = R * lon * Math.PI / 180, y = R * Math.log(Math.tan(Math.PI / 4 + (Math.max(-85, Math.min(85, lat)) * Math.PI) / 360)); return [x, y]; }
+  _wxMapUrl(layer, zoom, w, h) {
+    const c = this._hass.config || {}, lat = Number(c.latitude), lon = Number(c.longitude), ok = isFinite(lat) && isFinite(lon);
+    let x0, y0, x1, y1;
+    if (zoom === "de" || !ok) { [x0, y0] = this._wxMerc(47.0, 5.5); [x1, y1] = this._wxMerc(55.2, 15.6); }
+    else {
+      const half = this.constructor.WX_MAP_Z[zoom][0], [cx, cy] = this._wxMerc(lat, lon), [, ty] = this._wxMerc(lat + half, lon), dy = ty - cy, dx = (dy * w) / h;
+      x0 = cx - dx; x1 = cx + dx; y0 = cy - dy; y1 = cy + dy;
+    }
+    if (zoom === "de" || !ok) { const cx = (x0 + x1) / 2, dy = (y1 - y0) / 2, dx = (dy * w) / h; x0 = cx - dx; x1 = cx + dx; }
+    const L = layer === "radar" ? "dwd:bluemarble,dwd:Niederschlagsradar,dwd:Warngebiete_Kreise" : "dwd:bluemarble,dwd:Warnungen_Gemeinden_vereinigt,dwd:Warngebiete_Kreise";
+    const slot = Math.floor(Date.now() / 300000);
+    const url = `https://maps.dwd.de/geoserver/dwd/wms?service=WMS&version=1.1.1&request=GetMap&layers=${encodeURIComponent(L)}&styles=&srs=EPSG:3857&bbox=${[x0, y0, x1, y1].map((v) => v.toFixed(0)).join(",")}&width=${w}&height=${h}&format=image%2Fpng&t=${slot}`;
+    let pin = null;
+    if (ok) { const [px, py] = this._wxMerc(lat, lon); if (px >= x0 && px <= x1 && py >= y0 && py <= y1) pin = [((px - x0) / (x1 - x0)) * 100, ((y1 - py) / (y1 - y0)) * 100]; }
+    return { url, pin, ok, inDe: ok && lat > 47 && lat < 55.3 && lon > 5.5 && lon < 15.5, slot };
+  }
+  _wxMap(S) {
+    const M = (S.cfg && S.cfg.map) || { on: true, layer: "warn", zoom: "region" };
+    if (M.on === false) return "";
+    const layer = this._wxMapL || M.layer || "warn", zoom = this._wxMapZ || M.zoom || "region", w = 760, h = 520, m = this._wxMapUrl(layer, zoom, w, h), Z = this.constructor.WX_MAP_Z;
+    const t = new Date(m.slot * 300000), hm = String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
+    const legend = layer === "radar" ? `<span class="wxmlg rad">leicht<i class="grad"></i>stark</span>` : `<span class="wxmlg">${[1, 2, 3, 4].map((l) => `<i style="background:${this._wxLvCol(l)}"></i>${l}`).join("")}<em>Stufe</em></span>`;
+    return `<div class="card wxmap"><div class="wxtlh"><h2>${ic("pin", 18)}Wetterkarte <small class="mut">Deutscher Wetterdienst</small></h2><div class="seg wxseg"><button class="${layer === "warn" ? "sel" : ""}" data-act="wxsmapl" data-k="warn">Warnungen</button><button class="${layer === "radar" ? "sel" : ""}" data-act="wxsmapl" data-k="radar">Regenradar</button></div></div>
+      ${m.ok && !m.inDe ? `<div class="wxnote">${ic("info", 15)}Dein Zuhause liegt außerhalb Deutschlands. Der DWD zeigt nur Deutschland.</div>` : ""}
+      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.url)}" alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" loading="lazy" width="${w}" height="${h}" onerror="this.parentNode.classList.add('err')">
+        ${m.pin ? `<span class="wxpin" style="left:${m.pin[0].toFixed(2)}%;top:${m.pin[1].toFixed(2)}%" title="Zuhause">${ic("home", 14)}</span>` : ""}<div class="wxmerr">${ic("alert", 16)}Karte vom DWD gerade nicht erreichbar. Neuer Versuch beim nächsten Aufbau.</div></div>
+      <div class="wxmft"><div class="gschips">${Object.entries(Z).map(([k, [, t2]]) => `<button class="gsch ${zoom === k ? "sel" : ""}" data-act="wxsmapz" data-k="${k}">${t2}</button>`).join("")}</div>${legend}</div>
+      <div class="wxmsrc">Stand ${hm} Uhr · neu alle 5 Minuten · Quelle: Deutscher Wetterdienst (GeoServer) · <a href="https://www.dwd.de/DE/wetter/warnungen_gemeinden/warnWetter_node.html" target="_blank" rel="noopener">auf dwd.de öffnen</a></div></div>`;
+  }
+  _wxReview(S) {
+    const R = S.rb; if (!R || !R.m30) return "";
+    const p = this._wxRbP === "year" ? "year" : "m30", X = R[p], nm = (v, u, d = 0) => (v == null ? "–" : `${num(v, d)}${u ? " " + u : ""}`);
+    const T = [["storm", "fan", "Sturmtage", X.storm], ["thunder", "bolt", "Gewittertage", X.thunder], ["hail", "snow", "Hageltage", X.hail], ["frost", "thermo", "Frost/Glätte", X.frost], ["heat", "sun", "Hitzetage", X.heat], ["off", "shield", "Amtliche Warntage", X.off]];
+    return `<div class="card wxrb"><div class="wxtlh"><h2>${ic("chart", 18)}Rückblick</h2><div class="seg wxseg"><button class="${p === "m30" ? "sel" : ""}" data-act="wxsrb" data-k="m30">30 Tage</button><button class="${p === "year" ? "sel" : ""}" data-act="wxsrb" data-k="year">${new Date().getFullYear()}</button></div></div>
+      ${p === "m30" ? `<div class="wxstrip" role="img" aria-label="Warnstufe je Tag der letzten 30 Tage">${R.strip.map((x) => `<i class="${x.has ? "" : "no"}" style="--bc:${x.lv ? this._wxLvCol(x.lv) : "rgba(127,127,127,.25)"}" title="${esc(new Date(x.d).toLocaleDateString("de-DE", { day: "numeric", month: "numeric" }))}${x.lv ? " · Stufe " + x.lv : x.has ? " · ruhig" : " · keine Daten"}"></i>`).join("")}</div>` : ""}
+      <div class="wxrbg">${T.map(([k, i, t, v]) => `<div class="${v ? "on" : ""}"><span>${ic(i, 16)}</span><b>${v || 0}</b><small>${t}</small></div>`).join("")}</div>
+      <div class="wxrbx"><span>Stärkste Böe <b>${nm(X.wmax, "km/h")}</b></span><span>Kältester Wert <b>${nm(X.tmin, "°C", 1)}</b></span><span>Wärmster Wert <b>${nm(X.tmax, "°C", 1)}</b></span>${X.rain_mm != null ? `<span>Regen <b>${nm(X.rain_mm, "mm", 1)}</b></span>` : ""}<span>Aktionen <b>${X.acts || 0}</b></span></div>
+      ${X.n < (p === "m30" ? 30 : 60) ? `<div class="wxnote">${ic("info", 15)}Gezählt wird ab ${X.n === 1 ? "heute" : `${X.n} Tagen`} – der Rückblick füllt sich mit jedem Tag.</div>` : ""}</div>`;
+  }
+  _wxsMapSet(C, sw) {
+    const M = C.map || {};
+    return `<div class="lsec" style="margin-top:14px">${ic("pin", 15)}Wetterkarte</div>
+      <div class="vrow"><span>Karte des Deutschen Wetterdienstes<small class="mut" style="display:block">Warnungen der Gemeinden oder Regenradar rund um dein Zuhause. Das Bild lädt dein Browser direkt bei maps.dwd.de, dafür wird der Kartenausschnitt um dein Zuhause übertragen.</small></span>${sw("wxsmapon", "", M.on !== false, "Wetterkarte")}</div>
+      ${M.on !== false ? `<div class="mut sm" style="margin:2px 0 4px">Beim Öffnen zeigen</div><div class="gschips">${[["warn", "Warnungen"], ["radar", "Regenradar"]].map(([k, t]) => `<button class="gsch ${(M.layer || "warn") === k ? "sel" : ""}" data-act="wxsmapdl" data-k="${k}">${t}</button>`).join("")}${Object.entries(this.constructor.WX_MAP_Z).map(([k, [, t]]) => `<button class="gsch ${(M.zoom || "region") === k ? "sel" : ""}" data-act="wxsmapdz" data-k="${k}">${t}</button>`).join("")}</div>` : ""}`;
   }
   /* ================= Einstellungen Stufe 3: Katalog (B1), Suche (C1), Verlauf und Rückgängig (B4, C4), Prüfregeln (B10, C2), Hilfe an der Stelle (C11) ================= */
   /* Jede Einstellung ist hier einmal beschrieben. Daraus entstehen Suche, Hilfe, Verlauf (Namen der Werte) und Prüfung.

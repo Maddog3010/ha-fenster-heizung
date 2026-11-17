@@ -100,6 +100,7 @@
     else if (a.startsWith("sto")) this._stoAct(a, b);
     else if (a.startsWith("ig")) this._igAct(a, b);
     else if (a.startsWith("wxs")) this._wxsAct(a, b);
+    else if (a.startsWith("tfx")) this._tfAct(a, b);
     else if (a.startsWith("mux")) { if (this._muxAct) this._muxAct(a, b); }
     else if (a.startsWith("adx")) this._adxAct(a, b);
     else if (a.startsWith("lix")) { if (this._lixAct) this._lixAct(a, b); }

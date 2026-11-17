@@ -133,6 +133,12 @@ class Verlauf:
             elif area == "modules" and store.get("wasser") is not None:
                 w = store["wasser"]
                 await w.async_set_modules(set_path(w.modules, e["path"], e["old"]))
+            elif area == "tarif" and store.get("tarif") is not None:
+                tm = store["tarif"]
+                await tm.async_set(set_path(tm.cfg, e["path"], e["old"]))
+            elif area == "wetter" and store.get("wetter") is not None:
+                wm = store["wetter"]
+                await wm.async_set(set_path(wm.cfg, e["path"], e["old"]))
             elif area == "ww" and store.get("wasser") is not None:
                 w = store["wasser"]
                 await w.async_set_cfg(set_path(w.cfg, e["path"], e["old"]))

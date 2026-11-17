@@ -57,6 +57,13 @@ def preis(hass: HomeAssistant, sparte: str = "strom", when: datetime | None = No
     haus = store.get("haus")
     hp = (getattr(haus, "data", None) or {}).get("price") or {}
     if sparte == "strom":
+        tm = store.get("tarif")  # Modul 14: gemeinsame Zeitreihe (Tibber, Preis-Sensor, Endpreis)
+        try:
+            ct = tm.at(when) if tm is not None and tm.src in ("tibber", "sensor") else None
+        except Exception:  # noqa: BLE001
+            ct = None
+        if ct is not None:
+            return {"ct": round(ct, 4), "unit": "kWh", "src": "tarif", "name": f"Modul 14 · {tm.src_name}", "dyn": True}
         ct = tibber_ct(hass, when)
         if ct is not None:
             return {"ct": round(ct, 4), "unit": "kWh", "src": "tibber", "name": "Tibber", "dyn": True}

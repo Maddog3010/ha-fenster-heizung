@@ -1,5 +1,6 @@
   _betaBox(txt) {
     const m = MODS.find((x) => x.id === (this._mdActive && this._mdActive())), st = modSt(m);
+    if (st === "stabil") return "";
     if (st === "vorab") return this._vorabBox(txt);
     if (st === "dev") return `<div class="betabox dvbox">${ic("alert", 20)}<div><b>In Entwicklung – diese Seite zeigt Beispielwerte</b>Das Modul steuert noch nichts. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`;
     return `<div class="betabox">${ic("alert", 20)}<div><b>Beta-Version – dieses Modul ist noch in Entwicklung</b>Funktionen können sich ändern oder fehlen noch. ${txt} Rückmeldungen helfen: <a href="https://github.com/Maddog3010/ha-fenster-heizung/issues" target="_blank" rel="noopener">Fehler oder Wunsch melden</a>.</div></div>`; }
@@ -131,40 +132,6 @@
         ${tile("Untergrenze", p.soc_min != null && p.soc_sensor ? num(p.soc_min, 0) + " %" : "–", "Heizer erst darüber (Modul 1)")}</div></div>
       <div class="card"><h2>${ic("sliders", 18)}Betriebsarten</h2><div class="lugrid">${mc}</div></div>`;
   }
-  _dtPrices() {
-    const p = this._pv(), e = p.price_sensor && this._hass.states[p.price_sensor]; if (!e) return null;
-    const a = e.attributes || {}, raw = a.raw_today || a.prices_today || a.today || a.prices;
-    if (!Array.isArray(raw) || raw.length < 12) return null;
-    const vals = raw.map((x) => Number(typeof x === "object" && x ? (x.value ?? x.price) : x));
-    if (vals.some((v) => !isFinite(v))) return null;
-    const f = vals.every((v) => Math.abs(v) < 5) ? 100 : 1, per = vals.length > 30 ? 4 : 1;
-    const h = []; for (let i = 0; i < 24; i++) { let t = 0, n = 0; for (let k = 0; k < per; k++) { const v = vals[i * per + k]; if (v != null) { t += v; n++; } } h.push(n ? (t / n) * f : null); }
-    return h.every((v) => v != null) ? h : null;
-  }
-  _dtPage() {
-    const h = this._dtPrices(), now = new Date().getHours(), tile = (t, v, sub) => `<div class="luroom"><span class="mut">${t}</span><span class="lv">${v}</span><span class="mut">${sub}</span></div>`;
-    let body = `<div class="card empty">${ic("chart", 30)}<div style="margin-top:8px">Noch keine Stundenpreise. Wähle in Modul 1 unter „Strompreis“ einen Sensor mit Preisliste (zum Beispiel Tibber, Awattar oder Nord Pool).</div></div>`;
-    if (h) {
-      const mn = Math.min(...h), mx = Math.max(...h), avg = h.reduce((a, b) => a + b, 0) / 24, span = Math.max(mx - mn, 0.01);
-      const col = (v) => (v - mn) / span < 0.34 ? "#22c55e" : (v - mn) / span < 0.67 ? "#f59e0b" : "#ef4444";
-      let bi = 0, bs = Infinity; for (let i = 0; i <= 21; i++) { const sm = h[i] + h[i + 1] + h[i + 2]; if (sm < bs) { bs = sm; bi = i; } }
-      const bars = h.map((v, i) => `<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px" title="${i}:00 · ${num(v, 1)} ct/kWh"><div style="width:100%;height:${Math.round(12 + ((v - mn) / span) * 108)}px;border-radius:4px 4px 0 0;background:${col(v)};opacity:${i < now ? 0.4 : 0.95};${i === now ? "outline:2px solid var(--primary-text-color);outline-offset:1px" : ""}"></div><span class="mut" style="font-size:.62rem">${i % 3 === 0 ? i : ""}</span></div>`).join("");
-      body = `<div class="card"><h2>${ic("chart", 18)}Preisverlauf heute</h2><div style="display:flex;align-items:flex-end;gap:2px;height:150px;margin-top:8px">${bars}</div>
-        <div class="gst" style="margin-top:8px">Cent pro kWh, grün günstig, rot teuer. Der Rahmen zeigt die aktuelle Stunde.</div></div>
-        <div class="card"><h2>${ic("clock", 18)}Günstigste Zeiten</h2><div class="lugrid">
-          ${tile("Günstigste 3 Stunden", `${bi}–${bi + 3} Uhr`, `Ø ${num(bs / 3, 1)} ct/kWh · zum Laden und Waschen`)}
-          ${tile("Günstigste Stunde", `${h.indexOf(mn)}:00 Uhr`, `${num(mn, 1)} ct/kWh`)}
-          ${tile("Teuerste Stunde", `${h.indexOf(mx)}:00 Uhr`, `${num(mx, 1)} ct/kWh`)}</div></div>`;
-      body = `<div class="card"><h2>${ic("bolt", 18)}Preis jetzt</h2><div class="lugrid">
-          ${tile("Jetzt", num(h[now], 1) + " ct/kWh", h[now] <= avg ? "Unter dem Tagesschnitt" : "Über dem Tagesschnitt")}
-          ${tile("Tagesschnitt", num(avg, 1) + " ct/kWh", `Spanne ${num(mn, 1)} bis ${num(mx, 1)} ct`)}
-          ${tile("Nächste Stunde", num(h[(now + 1) % 24], 1) + " ct/kWh", h[(now + 1) % 24] < h[now] ? "Wird günstiger" : "Wird teurer")}</div></div>` + body;
-    }
-    return `${this._betaBox("Die Stundenpreise kommen aus dem Preis-Sensor, den du in Modul 1 gewählt hast.")}${body}
-      ${this._betaSoon("clock", "Günstige Fenster", "Beste Zeit zum Laden, Waschen oder Heizen vorschlagen")}
-      ${this._betaSoon("bell", "Preisalarm", "Melden, wenn der Preis unter oder über eine Grenze geht")}
-      ${this._betaSoon("chart", "Morgen", "Preise des nächsten Tages, sobald sie veröffentlicht sind")}`;
-  }
   /* Modul 11: Rauch- & Sicherheitsmelder (Alarme, Batterie, Erreichbarkeit, Prüf-Erinnerung, Aktionen und Meldungen laufen im Backend) */
   _sfxDef() { return { kinds: ["smoke", "co", "gas", "water", "heat", "safety"], excl: [], repeat: 10, bat: { on: true, pct: 20 }, off: { on: true, min: 60 }, test: { on: true, months: 6 }, acts: [], notify: { alarm: true, end: false, bat: true, off: true, test: true, life: true, depart: true, to: [] }, meta: {}, add: [], plan: { floors: [{ id: "eg", n: "EG" }], items: [], bg: {} }, quiet: { on: false, from: "22:00", to: "07:00" }, lead: 30, depart: { on: true, ents: [], frost: { on: false, ent: "", below: 3 } }, proto: { name: "", addr: "", who: "" } }; }
   _sfxNames() { return { smoke: "Rauch", co: "CO", gas: "Gas", water: "Wasser", heat: "Hitze", safety: "Sicherheit" }; }
@@ -285,7 +252,7 @@
     return { w, o, wind, mx, storm, gale, frost };
   }
   /* Modul 9: Wetter & Warnungen (Regeln, Vorwarnung, Aktionen, Fenster-Erinnerung und Benachrichtigung laufen im Backend) */
-  _wxsDef() { return { warn: { storm: { on: true, kmh: 60, kmh3: 90 }, thunder: { on: true }, hail: { on: true }, rain: { on: false, mm: 10, mm3: 25 }, frost: { on: true, temp: 0, ice: true, ice_temp: 1 }, heat: { on: false, temp: 30, temp2: 35 } }, wind: "", rainrate: "", ahead: { on: true, hours: 3 }, official: { on: true, ent: "", vorab: true }, acts: [], win: { on: false, warn: ["storm", "thunder", "hail", "rain"], repeat: true }, notify: { start: true, end: false, ahead: true, to: [], stale: true, buttons: true, critical: false }, vor: { on: true, hours: 12, akku: true, akku_ent: "", akku_auto: false, car: true, car_min: 50, car_auto: false, heat: true, heat_covers: [], heat_auto: false, frost: true }, tab_lv: 3 }; }
+  _wxsDef() { return { warn: { storm: { on: true, kmh: 60, kmh3: 90 }, thunder: { on: true }, hail: { on: true }, rain: { on: false, mm: 10, mm3: 25 }, frost: { on: true, temp: 0, ice: true, ice_temp: 1 }, heat: { on: false, temp: 30, temp2: 35 } }, wind: "", rainrate: "", ahead: { on: true, hours: 3 }, official: { on: true, ent: "", vorab: true }, acts: [], win: { on: false, warn: ["storm", "thunder", "hail", "rain"], repeat: true }, notify: { start: true, end: false, ahead: true, to: [], stale: true, buttons: true, critical: false }, vor: { on: true, hours: 12, akku: true, akku_ent: "", akku_auto: false, car: true, car_min: 50, car_auto: false, heat: true, heat_covers: [], heat_auto: false, frost: true }, tab_lv: 3, map: { on: true, layer: "warn", zoom: "region" } }; }
   _wxsLoad(force) {
     if (!this._hass || this._wxsBusy) return;
     if (!force && this._wxsD && Date.now() - this._wxsD.ts < 20000) return;
@@ -312,6 +279,9 @@
     if (a === "wxsopen") { this._wxsLoad(true); this._modal = { type: "wxset" }; this._renderModal(); return; }
     if (a === "wxstab") { this._wxTab = k; this._renderModal(); const sh = this.shadowRoot.querySelector(".sheet"); if (sh) sh.scrollTop = 0; return; }
     if (a === "wxstl") { this._wxTlView = k; this._render(); return; }
+    if (a === "wxsmapl") { this._wxMapL = k; this._render(); return; }
+    if (a === "wxsmapz") { this._wxMapZ = k; this._render(); return; }
+    if (a === "wxsrb") { this._wxRbP = k; this._render(); return; }
     if (a === "wxslog") { this._wxLogF = k; this._wxLogN = 12; this._render(); return; }
     if (a === "wxslogmore") { this._wxLogN = (this._wxLogN || 12) + 30; this._render(); return; }
     if (a === "wxsvor") { this._hass.callWS({ type: "fenster_heizung/wx_vor", id: k }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(r && r.ok ? "Erledigt" : "Das hat nicht geklappt"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
@@ -346,6 +316,9 @@
       else if (a === "wxsvorcar") { c.vor = c.vor || {}; c.vor.car_min = Math.min(100, Math.max(10, (Number(c.vor.car_min) || 50) + s)); }
       else if (a === "wxsvorcov") { c.vor = c.vor || {}; const L = c.vor.heat_covers || []; c.vor.heat_covers = L.includes(k) ? L.filter((x) => x !== k) : [...L, k]; }
       else if (a === "wxstablv") c.tab_lv = Number(k) || 0;
+      else if (a === "wxsmapon") c.map = { ...(c.map || {}), on: !!(c.map && c.map.on === false) };
+      else if (a === "wxsmapdl") { c.map = { ...(c.map || {}), layer: k }; this._wxMapL = null; }
+      else if (a === "wxsmapdz") { c.map = { ...(c.map || {}), zoom: k }; this._wxMapZ = null; }
       else if (a === "wxsvorab") c.official.vorab = !c.official.vorab;
       else if (a === "wxsahead") c.ahead.on = !c.ahead.on;
       else if (a === "wxsaheadh") c.ahead.hours = Math.min(12, Math.max(1, (Number(c.ahead.hours) || 3) + s));
@@ -453,7 +426,7 @@
     const lg = (S.log || []).slice(0, 12), dd = (iso) => { const t = new Date(iso), td = new Date(); return t.toDateString() === td.toDateString() ? hm(iso) : t.toLocaleDateString("de-DE", { weekday: "short" }) + " " + hm(iso); };
     const log = this._wxLog(S, hm);
     const staleBox = stale ? `<div class="card wxstale">${ic("alert", 20)}<div><b>Wetterquelle prüfen</b><small>${esc(stale.ent || "Wetter-Entität")} ${esc(stale.why || "")}. Eigene Warnungen sind gerade unsicher, amtliche Warnungen laufen weiter.</small></div><button class="lnk" data-act="mdhsgo" data-k="wx">Zur Wetterquelle</button></div>` : "";
-    return `${this._betaBox("Die Warnungen werden im Hintergrund aus deiner Wetter-Entität oder Wetterstation berechnet, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, diese kommen vom Deutschen Wetterdienst, NINA oder MeteoAlarm, wenn eingerichtet.")}${staleBox}${hero}${this._wxBar(S, hm)}${this._wxVor(S, hm)}${tiles}${offCard ? `<div class="wxcols">${offCard}${nextCard}</div>` : nextCard}<div class="wxcols">${acts}${log}</div>`;
+    return `${this._betaBox("Die Warnungen werden im Hintergrund aus deiner Wetter-Entität oder Wetterstation berechnet, auch wenn das Dashboard geschlossen ist. Eigene Grenzwerte sind keine amtlichen Warnungen, diese kommen vom Deutschen Wetterdienst, NINA oder MeteoAlarm, wenn eingerichtet.")}${staleBox}${hero}${this._wxBar(S, hm)}${this._wxVor(S, hm)}${tiles}${(() => { const mp = this._wxMap(S); return offCard ? (mp ? `<div class="wxcols">${offCard}${mp}</div>${nextCard}` : `<div class="wxcols">${offCard}${nextCard}</div>`) : mp ? `<div class="wxcols">${nextCard}${mp}</div>` : nextCard; })()}<div class="wxcols">${acts}${log}</div>${this._wxReview(S)}`;
   }
   _wxsModal() {
     const S = this._wxs(), C = S.cfg, NM = this._wxsNames(), st = this._hass.states, H = this._hass;
@@ -492,6 +465,7 @@
       <div class="vrow"><span>Vorabinformationen zeigen<small class="mut" style="display:block">Der DWD kündigt Unwetter oft schon Stunden oder einen Tag vorher an. Sie erscheinen als „Vorab“ und werden wie eine Vorwarnung gemeldet.</small></span>${sw("wxsvorab", "", C.official.vorab !== false, "Vorabinformationen")}</div>
       <div class="lsec" style="margin-top:12px">${ic("sliders", 15)}Datenquellen</div>
       ${this._hsLink("wx", "Wetter, Wind, Außentemperatur und amtliche Warnungen")}
+      ${this._wxsMapSet(C, sw)}
       <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Vorwarnung</div>
       <div class="vrow"><span>Warnung vorab melden<small class="mut" style="display:block">Aus der Stundenprognose der Wetter-Entität. Gilt für alle eigenen Warnungen, mit der erwarteten Stufe.</small></span>${C.ahead.on ? step("wxsaheadh", "", "", C.ahead.hours, C.ahead.hours === 1 ? "Std." : "Std.", 1) : ""}${sw("wxsahead", "", C.ahead.on, "Vorwarnung")}</div>
 ` : ""}${tab === "a" ? `<div class="lsec">${ic("blinds", 15)}Aktionen bei einer Warnung</div>

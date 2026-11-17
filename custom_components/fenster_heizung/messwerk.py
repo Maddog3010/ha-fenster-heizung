@@ -73,7 +73,7 @@ ROOM = {
 # Weitere Speicher: Schlüssel in hass.data → (Modul, Bereich der Oberfläche, Gruppe, {Pfadteil: Zweck})
 SOURCES = {
     "wasser.cfg": (2, "Modul 2 · Einstellungen", "wasser", {"top": "Speicher oben", "mid": "Speicher Mitte", "bot": "Speicher unten", "src": "Wärmeerzeuger", "rod": "Heizstab", "pump": "Zirkulationspumpe", "ret": "Rücklauf Zirkulation", "trig": "Auslöser Zirkulation"}),
-    "wetter.cfg": (9, "Modul 9 · Einstellungen", "wetter", {"acts": "Aktion bei einer Warnung"}),
+    "wetter.cfg": (9, "Modul 9 · Einstellungen", "wetter", {"acts": "Aktion bei einer Warnung", "guard": "Aussperrschutz (Tür-/Fensterkontakt)", "rainrate": "Regenmesser für Starkregen", "akku_ent": "Vorsorge: Akku vorbereiten", "heat_covers": "Vorsorge: Hitzeschutz-Rollläden"}),
     "sicherheit.cfg": (11, "Modul 11 · Einstellungen", "sicher", {"bat": "Batterie des Melders", "depart": "Abfahrt-Prüfung", "acts": "Aktion bei Alarm", "frost": "Frost bei Abfahrt"}),
     "muell.cfg": (17, "Modul 17 · Einstellungen", "alltag", {"cal": "Abfallkalender", "tts": "Ansage", "player": "Lautsprecher", "light": "Licht als Erinnerung"}),
     "entfeuchter.cfg": (1, "Modul 1 › Geräte › Luftentfeuchter", "geraete", {"ent": "Luftentfeuchter schalten", "power": "Leistung (läuft er wirklich?)", "tank": "Wassertank voll"}),

@@ -192,6 +192,30 @@
       },
       "ev_sun": {
         "name": "Sonnenanteil der Ladung"
+      },
+      "tf_price": {
+        "name": "Strompreis jetzt"
+      },
+      "tf_level": {
+        "name": "Strompreis Stufe",
+        "state": {
+          "guenstig": "Günstig",
+          "normal": "Normal",
+          "teuer": "Teuer",
+          "negativ": "Negativ"
+        }
+      },
+      "tf_next_cheap": {
+        "name": "Nächste günstige Zeit"
+      },
+      "tf_best": {
+        "name": "Günstigstes Fenster Beginn"
+      },
+      "tf_avg_today": {
+        "name": "Strompreis Ø heute"
+      },
+      "tf_avg_tomorrow": {
+        "name": "Strompreis Ø morgen"
       }
     }
   }

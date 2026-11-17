@@ -18,11 +18,13 @@ from homeassistant.helpers.event import async_track_time_interval
 from .const import CONF_AIR_EVERY, CONF_AIR_HINT, CONF_HUMIDITY, CONF_ROOM_TEMP, CONF_WEATHER_ADJ, RT_USES, CONF_WINDOWS, DEFAULT_AIR_EVERY, DOMAIN, MODES, SIGNAL_UPDATE
 
 from .solar import SIGNAL_SOLAR
+from .tarif import SIGNAL_TARIF
 from .wetter import KEYS as WX_KEYS, NAMES as WX_NAMES, SIGNAL_WX
 
 SP_OWNER = "sp_sensor_owner"
 SP_KEYS = ("sp_today", "sp_tomorrow", "sp_rest", "sp_corr", "sp_best")
 EV_KEYS = ("ev_soc", "ev_done", "ev_next", "ev_sun")
+TF_KEYS = ("tf_price", "tf_level", "tf_next_cheap", "tf_best", "tf_avg_today", "tf_avg_tomorrow")
 
 SCOPES = {
     "minutes_today": "day",
@@ -39,7 +41,7 @@ async def async_setup_entry(
     extra: list[SensorEntity] = []
     if store.get(SP_OWNER) in (None, entry.entry_id):  # E6/F7: Solar-Werte nur einmal, am ersten Raum
         store[SP_OWNER] = entry.entry_id
-        extra = [SolarSensor(k) for k in SP_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS]
+        extra = [SolarSensor(k) for k in SP_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS] + [TarifSensor(k) for k in TF_KEYS]
     async_add_entities(
         [PausedMinutesSensor(entry, key, scope) for key, scope in SCOPES.items()]
         + [PlanTargetSensor(entry), ModeSensor(entry)]
@@ -101,6 +103,97 @@ class WetterSensor(SensorEntity):
 
     async def async_added_to_hass(self) -> None:
         self.async_on_remove(async_dispatcher_connect(self.hass, SIGNAL_WX, self._refresh))
+
+    @callback
+    def _refresh(self, *_a) -> None:
+        self.async_write_ha_state()
+
+
+class TarifSensor(SensorEntity):
+    """Modul 14 (C3): Preis jetzt, Stufe, nächste günstige Zeit, bestes Fenster, Ø heute und morgen. Gerät „Stromtarif“."""
+
+    _attr_has_entity_name = True
+    _attr_should_poll = False
+    LV = {"cheap": "guenstig", "normal": "normal", "dear": "teuer", "neg": "negativ"}
+
+    def __init__(self, key: str) -> None:
+        self._key = key
+        self._attr_translation_key = key
+        self._attr_unique_id = f"{DOMAIN}_tarif_{key[3:]}"
+        self._attr_device_info = {"identifiers": {(DOMAIN, "stromtarif")}, "name": "Strom & Wärme · Stromtarif", "manufacturer": "Strom & Wärme", "model": "Modul 14", "entry_type": "service"}
+        if key in ("tf_price", "tf_avg_today", "tf_avg_tomorrow"):
+            self._attr_native_unit_of_measurement = "ct/kWh"
+            self._attr_suggested_display_precision = 1
+            self._attr_icon = "mdi:cash-clock" if key == "tf_price" else "mdi:chart-line"
+            if key == "tf_price":
+                self._attr_state_class = SensorStateClass.MEASUREMENT
+        elif key == "tf_level":
+            self._attr_device_class = SensorDeviceClass.ENUM
+            self._attr_options = list(self.LV.values())
+            self._attr_icon = "mdi:traffic-light"
+        else:
+            self._attr_device_class = SensorDeviceClass.TIMESTAMP
+            self._attr_icon = "mdi:clock-check-outline"
+
+    def _m(self):
+        m = self.hass.data.get(DOMAIN, {}).get("tarif") if self.hass else None
+        return m if m is not None and m.active() and m.src else None
+
+    @property
+    def available(self) -> bool:
+        return self._m() is not None
+
+    def _snap(self) -> dict:
+        m = self._m()
+        try:
+            return m.snapshot() if m is not None else {}
+        except Exception:  # noqa: BLE001
+            return {}
+
+    @property
+    def native_value(self):
+        S = self._snap()
+        if not S:
+            return None
+        from homeassistant.util import dt as dt_util
+        ts = lambda v: dt_util.utc_from_timestamp(v) if v else None  # noqa: E731
+        N = S.get("now") or {}
+        if self._key == "tf_price":
+            return N.get("ct")
+        if self._key == "tf_level":
+            return self.LV.get(N.get("lv") or "")
+        if self._key == "tf_next_cheap":
+            if N.get("lv") in ("cheap", "neg"):
+                return dt_util.utcnow().replace(second=0, microsecond=0)
+            sl = S.get("slots") or []
+            return ts(sl[0]["s"]) if sl else None
+        if self._key == "tf_best":
+            b = S.get("best")
+            return ts(b["s"]) if b else None
+        d = S.get("today" if self._key == "tf_avg_today" else "tomorrow")
+        return d.get("avg") if d else None
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        S = self._snap()
+        if not S:
+            return {}
+        try:
+            if self._key == "tf_price":
+                return {"quelle": S.get("src_name"), "naechste_stunde": (S.get("now") or {}).get("next_h"), "boersenpreis_mit_aufschlaegen": bool(S.get("boerse"))}
+            if self._key == "tf_best":
+                b = S.get("best") or {}
+                return {"ende": b.get("e"), "mittel_ct": b.get("avg"), "stunden": S["cfg"]["win_h"]}
+            if self._key in ("tf_avg_today", "tf_avg_tomorrow"):
+                d = S.get("today" if self._key == "tf_avg_today" else "tomorrow") or {}
+                return {"min": d.get("min"), "max": d.get("max"), "negativ_zeitraeume": d.get("neg", 0)}
+        except Exception:  # noqa: BLE001
+            return {}
+        return {}
+
+    async def async_added_to_hass(self) -> None:
+        self.async_on_remove(async_dispatcher_connect(self.hass, SIGNAL_TARIF, self._refresh))
+        self.async_on_remove(async_track_time_interval(self.hass, self._refresh, timedelta(minutes=1)))
 
     @callback
     def _refresh(self, *_a) -> None:

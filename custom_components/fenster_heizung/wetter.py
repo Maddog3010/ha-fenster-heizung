@@ -10,7 +10,9 @@ from typing import Any
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.dispatcher import async_dispatcher_send
-from homeassistant.helpers.event import async_track_time_interval
+import json
+
+from homeassistant.helpers.event import async_track_state_change_event, async_track_time_interval
 from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore
@@ -32,6 +34,9 @@ START_TICKS = 2  # Sturm beginnt erst nach zwei Messungen in Folge (Böen glätt
 NOTE_GAP_S = 3600  # Vorwarnung/amtliche Warnung höchstens einmal pro Stunde je Art
 STALE_S = 5400  # Wetterquelle gilt nach 90 Minuten ohne neuen Wert als veraltet
 FC_TTL_S = 900
+FAST_GAP_S = 15  # B2: neue Messwerte lösen die Prüfung sofort aus, höchstens alle 15 s
+OFF_CACHE_S = 600  # B4: Liste der amtlichen Warn-Entitäten 10 Minuten merken
+DAYS_KEEP = 400  # Rückblick: Tageswerte gut ein Jahr
 FC_HOURS = 48
 MAX_ACTS = 16
 MAX_LOG = 400
@@ -66,6 +71,7 @@ def default_cfg() -> dict[str, Any]:
         "vor": {"on": True, "hours": 12, "akku": True, "akku_ent": "", "akku_auto": False, "car": True, "car_min": 50, "car_auto": False,
                 "heat": True, "heat_covers": [], "heat_auto": False, "frost": True},
         "tab_lv": 3,
+        "map": {"on": True, "layer": "warn", "zoom": "region"},
     }
 
 
@@ -184,6 +190,8 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
                 "car": bool(v.get("car", True)), "car_min": int(round(_num(v.get("car_min"), 10, 100, 50) / 5) * 5), "car_auto": bool(v.get("car_auto", False)),
                 "heat": bool(v.get("heat", True)), "heat_covers": covers, "heat_auto": bool(v.get("heat_auto", False)), "frost": bool(v.get("frost", True))}
     d["tab_lv"] = int(_num(r.get("tab_lv"), 0, 4, 3))
+    mp = r.get("map") if isinstance(r.get("map"), dict) else {}
+    d["map"] = {"on": bool(mp.get("on", True)), "layer": mp.get("layer") if mp.get("layer") in ("warn", "radar") else "warn", "zoom": mp.get("zoom") if mp.get("zoom") in ("near", "region", "de") else "region"}
     return d
 
 
@@ -463,6 +471,23 @@ def timeline(cfg: dict[str, Any], fc: list[dict[str, Any]], offl: list[dict[str,
     return {"t": [h["t"] for h in rows], "own": own, "off": off}
 
 
+def review_of(days: dict[str, dict[str, Any]], today: Any) -> dict[str, Any]:
+    """Rückblick aus Tageswerten: {m30: {...}, year: {...}, strip: [{d, lv}] der letzten 30 Tage}."""
+    def summ(keys: list[str]) -> dict[str, Any]:
+        rows = [days[k] for k in keys if k in days]
+        has = lambda a: sum(1 for x in rows if a in (x.get("w") or []))  # noqa: E731
+        w = [x["wmax"] for x in rows if "wmax" in x]
+        tn = [x["tmin"] for x in rows if "tmin" in x]
+        tx = [x["tmax"] for x in rows if "tmax" in x]
+        rn = [x["rain"] for x in rows if "rain" in x]
+        return {"n": len(rows), "storm": has("storm"), "thunder": has("thunder"), "hail": has("hail"), "rain": has("rain"), "frost": has("frost"), "heat": has("heat"),
+                "off": sum(1 for x in rows if x.get("off")), "acts": sum(int(x.get("acts") or 0) for x in rows),
+                "wmax": max(w) if w else None, "tmin": min(tn) if tn else None, "tmax": max(tx) if tx else None, "rain_mm": round(sum(rn), 1) if rn else None}
+    last30 = [(today - timedelta(days=i)).isoformat() for i in range(29, -1, -1)]
+    year = [k for k in days if k.startswith(str(today.year))]
+    return {"m30": summ(last30), "year": summ(year), "strip": [{"d": k, "lv": max(int((days.get(k) or {}).get("lv") or 0), int((days.get(k) or {}).get("off") or 0)), "has": k in days} for k in last30]}
+
+
 def plan_vorsorge(cfg: dict[str, Any], x: dict[str, Any]) -> list[dict[str, Any]]:
     """Unwetter-Vorsorge (C2, C3, C5, Frost). x: {sev, sev_at, hail, heat_now, heat_soon, heat_today, frost_soon, frost_at, day, evening, out_t, soc, car_soc, car_plugged, wallbox}.
 
@@ -527,6 +552,11 @@ class WetterManager:
         self.vor: list[dict[str, Any]] = []
         self.vor_done: dict[str, str] = {}  # Empfehlung -> erledigt (Zeit)
         self._tab_key = ""
+        self.days: dict[str, dict[str, Any]] = {}  # Rückblick je Tag
+        self._last_js = ""
+        self._last_tick = 0.0
+        self._unsub_st: CALLBACK_TYPE | None = None
+        self._off_cache: tuple[float, list[tuple[str, str, bool]]] = (0.0, [])
         self.log: list[dict[str, str]] = []
         self._off: dict[str, Any] = {"level": 0, "title": "", "text": ""}
         self._offl: list[dict[str, Any]] = []
@@ -565,12 +595,14 @@ class WetterManager:
             self.ack = {str(k): int(_num(v, 0, 4, 1)) for k, v in (d.get("ack") or {}).items() if k in KEYS} if isinstance(d.get("ack"), dict) else {}
             self.ack_off = {str(x) for x in d.get("ack_off") or []}
             self.vor_done = {str(k): str(v) for k, v in (d.get("vor_done") or {}).items()} if isinstance(d.get("vor_done"), dict) else {}
+            self.days = {str(k): v for k, v in (d.get("days") or {}).items() if isinstance(v, dict)} if isinstance(d.get("days"), dict) else {}
             self._off_seen = {str(x) for x in d.get("off_seen") or []}
             self.log = [x for x in (d.get("log") or []) if isinstance(x, dict) and "t" in x and "x" in x][:MAX_LOG]
             if changed:
                 self._add("Einstellungen für Modul 9 v0.6 übernommen: Hagel eigene Warnung, Stufen 1–4 (vorher gesichert).")
                 self._save()
         self._unsub = async_track_time_interval(self.hass, self._tick, timedelta(seconds=TICK_SECONDS))
+        self._listen()
         try:
             self._unsub_ev = self.hass.bus.async_listen("mobile_app_notification_action", self._on_action)
         except Exception:  # noqa: BLE001 - ohne Ereignisbus (Tests) keine Knöpfe
@@ -584,13 +616,48 @@ class WetterManager:
         if self._unsub_ev:
             self._unsub_ev()
             self._unsub_ev = None
+        if self._unsub_st:
+            self._unsub_st()
+            self._unsub_st = None
+
+    # ---- B2: schneller warnen – neue Messwerte lösen die Prüfung sofort aus
+    def _listen(self) -> None:
+        if self._unsub_st:
+            self._unsub_st()
+            self._unsub_st = None
+        ents = [e for e in (self.weather_entity(), self.cfg["wind"], self.cfg["rainrate"], self._layout().get("outdoor")) if e]
+        if not ents:
+            return
+        try:
+            self._unsub_st = async_track_state_change_event(self.hass, ents, self._on_state)
+        except Exception as err:  # noqa: BLE001 - ohne Ereignisse bleibt die Minuten-Prüfung
+            _LOGGER.debug("Wetter: Beobachten nicht möglich: %s", err)
+
+    async def _on_state(self, _event: Any) -> None:
+        if time.time() - self._last_tick >= FAST_GAP_S:
+            await self._tick(None)
+
+    def _data(self) -> dict[str, Any]:
+        return {
+            "cfg": self.cfg, "st": {k: {"a": v["a"], "since": v["since"], "lv": v["lv"]} for k, v in self.st.items()},
+            "acts": self.acts, "win_sent": self.win_sent, "off_seen": sorted(self._off_seen)[-40:], "log": self.log,
+            "pause_until": self.pause_until, "ack": self.ack, "ack_off": sorted(self.ack_off)[-40:], "vor_done": self.vor_done, "days": self.days,
+        }
 
     def _save(self) -> None:
+        """B3: nur speichern, wenn sich etwas geändert hat (schont z. B. die SD-Karte)."""
+        try:
+            js = json.dumps(self._data(), sort_keys=True, default=str)
+        except (TypeError, ValueError):
+            js = ""
+        if js and js == self._last_js:
+            return
+        self._last_js = js
         self._store.async_delay_save(
             lambda: {
                 "cfg": self.cfg, "st": {k: {"a": v["a"], "since": v["since"], "lv": v["lv"]} for k, v in self.st.items()},
                 "acts": self.acts, "win_sent": self.win_sent, "off_seen": sorted(self._off_seen)[-40:], "log": self.log,
-                "pause_until": self.pause_until, "ack": self.ack, "ack_off": sorted(self.ack_off)[-40:], "vor_done": self.vor_done,
+                "pause_until": self.pause_until, "ack": self.ack, "ack_off": sorted(self.ack_off)[-40:], "vor_done": self.vor_done, "days": self.days,
             }, 10,
         )
 
@@ -715,6 +782,14 @@ class WetterManager:
         return {"temp": h.get("temp"), "wind": h.get("wind"), "cond": h.get("cond"), "rain": h.get("p"), "hum": h.get("hum")}
 
     def _official_ents(self) -> list[tuple[str, str, bool]]:
+        t, cached = self._off_cache
+        if time.time() - t < OFF_CACHE_S:
+            return cached
+        out = self._official_ents_scan()
+        self._off_cache = (time.time(), out)
+        return out
+
+    def _official_ents_scan(self) -> list[tuple[str, str, bool]]:
         """Warn-Entitäten (entity_id, Plattform, Vorab). Eine gewählte Entität bringt die Geschwister ihres Eintrags mit (z. B. DWD-Vorabwarnstufe)."""
         o = self.cfg["official"]
         reg = er.async_get(self.hass)
@@ -938,6 +1013,8 @@ class WetterManager:
 
     # ---- Hauptschleife
     async def async_config_changed(self) -> None:
+        self._off_cache = (0.0, [])
+        self._listen()
         for aid in [a for a in self.acts if not any(x["id"] == a for x in self.cfg["acts"])]:
             del self.acts[aid]
         self._fc_ts = 0.0
@@ -967,6 +1044,7 @@ class WetterManager:
         if not self.active():
             return
         now_ts = time.time()
+        self._last_tick = now_ts
         fc = await self._forecast() if self.cfg["ahead"]["on"] or not self.cfg["rainrate"] else self._fc
         r = self._read()
         self._now = r
@@ -1053,6 +1131,7 @@ class WetterManager:
         if self.pause_until and now_ts >= self.pause_until:
             self.pause_until = 0.0
             self._add("Aussetzen beendet, Aktionen laufen wieder.", "act")
+        self._day_stats(r, now_ts)
         await self._vorsorge()
         await self._tablet_alarm()
         async_dispatcher_send(self.hass, SIGNAL_WX)
@@ -1113,6 +1192,38 @@ class WetterManager:
                 self.first.pop(x["id"], None)
                 if self.ares.get(x["id"], {}).get("state") != "err":
                     self.ares.pop(x["id"], None)
+
+    # ---- v1.0: Rückblick (Tageswerte)
+    def _day_stats(self, r: dict[str, Any], now_ts: float) -> None:
+        day = dt_util.now().date().isoformat()
+        d = self.days.setdefault(day, {})
+        if r.get("wind") is not None:
+            d["wmax"] = round(max(d.get("wmax", 0.0), r["wind"]), 1)
+        if r.get("temp") is not None:
+            d["tmin"] = round(min(d.get("tmin", 99.0), r["temp"]), 1)
+            d["tmax"] = round(max(d.get("tmax", -99.0), r["temp"]), 1)
+        if r.get("rain") is not None and r.get("rain_src") == "sensor":
+            last = d.get("_rt") or now_ts
+            d["rain"] = round(d.get("rain", 0.0) + r["rain"] * min(max(now_ts - last, 0), 600) / 3600, 2)
+            d["_rt"] = now_ts
+        arts = set(d.get("w") or [])
+        lv = d.get("lv", 0)
+        for k, s in self.st.items():
+            if s["a"]:
+                arts.add(k)
+                lv = max(lv, s["lv"])
+        offm = max([x["stufe"] for x in self._offl if not x["vorab"] and not x.get("kommt")] or [0])
+        d["w"] = sorted(arts)
+        d["lv"] = lv
+        d["off"] = max(d.get("off", 0), offm)
+        d["acts"] = sum(1 for x in self.log if str(x.get("t", "")).startswith(day) and x.get("k") == "act" and ("geschlossen" in x.get("x", "") or "eingeschaltet" in x.get("x", "") or "geöffnet" in x.get("x", "") or "ausgeführt" in x.get("x", "")))
+        if len(self.days) > DAYS_KEEP:
+            for k in sorted(self.days)[: len(self.days) - DAYS_KEEP]:
+                del self.days[k]
+
+    def review(self) -> dict[str, Any]:
+        """Rückblick: letzte 30 Tage und laufendes Jahr."""
+        return review_of(self.days, dt_util.now().date())
 
     # ---- Stufe 4 (v0.9): Unwetter-Vorsorge und Tablet-Alarm
     def _vor_inputs(self) -> dict[str, Any]:
@@ -1229,7 +1340,11 @@ class WetterManager:
 
     # ---- Ansicht und Speichern
     async def async_set(self, raw: Any) -> dict[str, Any]:
+        old = self.cfg
         self.cfg = clean_cfg({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
+        vl = self.hass.data.get(DOMAIN, {}).get("verlauf")
+        if vl is not None:  # A10: Änderungsverlauf mit Rückgängig
+            vl.record("wetter", old, self.cfg)
         self._save()
         haus = self.hass.data.get(DOMAIN, {}).get("haus")
         if haus is not None and isinstance(raw, dict) and ("wind" in raw or "official" in raw):  # Wetterquelle gehört dem Haus
@@ -1275,6 +1390,6 @@ class WetterManager:
                       "pause": dt_util.utc_from_timestamp(self.pause_until).isoformat() if self.pause_until > time.time() and hasattr(dt_util, "utc_from_timestamp") else None,
                       "acked": bool(actv or offcur) and all(k in self.ack for k in actv) and all(o in self.ack_off for o in offcur), "any": bool(actv or offcur)},
             "tl": timeline(self.cfg, self._fc, self._offl),
-            "vor": [{**x, "done": self.vor_done.get(x["id"])} for x in self.vor], "level": self.level(),
+            "vor": [{**x, "done": self.vor_done.get(x["id"])} for x in self.vor], "level": self.level(), "rb": self.review(),
             "warnings": self.warnings(), "fc": fc, "fc_n": len(self._fc), "open": self.open_windows(), "log": self.log[:200],
         }

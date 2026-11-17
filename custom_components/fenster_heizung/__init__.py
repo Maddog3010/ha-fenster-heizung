@@ -1272,6 +1272,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "haus" not in store:  # nach general, wasser und wetter: übernimmt deren Werte einmalig
         store["haus"] = HausManager(hass)
         await store["haus"].async_start(await _api_version(hass))
+    if "tarif" not in store:  # Modul 14: Tarif-Dienst, nach Tibber und Haus-Werten
+        from .tarif import TarifManager
+        store["tarif"] = TarifManager(hass)
+        await store["tarif"].async_start()
     if "solar" not in store:
         store["solar"] = SolarManager(hass)
         await store["solar"].async_start()
@@ -1371,6 +1375,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             wxm = hass.data.get(DOMAIN, {}).pop("wetter", None)
             if wxm is not None:
                 wxm.async_stop()
+            tfm = hass.data.get(DOMAIN, {}).pop("tarif", None)
+            if tfm is not None:
+                tfm.async_stop()
             spm = hass.data.get(DOMAIN, {}).pop("solar", None)
             if spm is not None:
                 spm.async_stop()

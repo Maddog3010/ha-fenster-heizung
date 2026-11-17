@@ -192,6 +192,30 @@
       },
       "ev_sun": {
         "name": "Solar share of charging"
+      },
+      "tf_price": {
+        "name": "Electricity price now"
+      },
+      "tf_level": {
+        "name": "Electricity price level",
+        "state": {
+          "guenstig": "Cheap",
+          "normal": "Normal",
+          "teuer": "Expensive",
+          "negativ": "Negative"
+        }
+      },
+      "tf_next_cheap": {
+        "name": "Next cheap time"
+      },
+      "tf_best": {
+        "name": "Cheapest window start"
+      },
+      "tf_avg_today": {
+        "name": "Electricity price avg today"
+      },
+      "tf_avg_tomorrow": {
+        "name": "Electricity price avg tomorrow"
       }
     }
   }

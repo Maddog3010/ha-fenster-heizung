@@ -83,7 +83,7 @@
       return { ...K, v: t.v, u: "kWh", l1: esc(t.l1), p: t.p, z: this._hzZ(t.c), hd: "forecast", o: { on: !t.night } };
     }
     if (m.id === "bt") { const s = this._enOn() ? this._soc() : null; if (s == null) return off("Kein Ladestand"); return { ...K, v: num(s, 0), u: "%", p: s / 100, o: { lvl: s }, l1: "Ladestand Akku" }; }
-    if (m.id === "dt") { const p = this._price(); if (!p) return off("Kein Preis"); return { ...K, v: num(p, 1), u: "ct", l1: "pro kWh jetzt" }; }
+    if (m.id === "dt") { const T = this._tfStartK({ ...K }); if (T) return T; const p = this._price(); if (!p) return off("Kein Preis"); return { ...K, v: num(p, 1), u: "ct", l1: "pro kWh jetzt" }; }
     if (m.id === "ef") { const N = this._enOn() ? this._enNow() : null; if (!N) return off("Keine Energiedaten"); return { ...K, v: num(N.house / 1000, 1), u: "kW", l1: "Haus jetzt", l2: `PV ${num(N.pv / 1000, 1)} kW`, o: { on: N.pv > 50 } }; }
     if (m.addon) { const t = this._adTile(m); return { ...K, v: null, l1: t.sub, z: this._hzZ(t.c) }; }
     return off(modSt(m) && STG[modSt(m)] ? STG[modSt(m)].t : "");
@@ -118,7 +118,8 @@
     let gr = "";
     if (sz !== "s" && z !== "off") {
       const hv = K.ent && (sz === "l" || K.p == null) ? this._hzHist(K.ent) : null;
-      if (sz === "l" && hv && hv.length > 1) gr = `<div class="hzkg l">${this._hzSpark(hv, 160, 40)}</div>`;
+      if (K.gr) gr = `<div class="hzkg tfk${sz === "l" ? " l" : ""}">${K.gr}</div>`;
+      else if (sz === "l" && hv && hv.length > 1) gr = `<div class="hzkg l">${this._hzSpark(hv, 160, 40)}</div>`;
       else if (K.p != null) gr = `<div class="hzkg">${this._hzRing(K.p, 46, "k" + m.id)}</div>`;
       else if (hv && hv.length > 1) gr = `<div class="hzkg">${this._hzSpark(hv)}</div>`;
     }

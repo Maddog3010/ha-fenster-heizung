@@ -166,9 +166,10 @@
     const dd = (iso) => { const t = new Date(iso), td = new Date(), y = new Date(td.getTime() - 864e5); return t.toDateString() === td.toDateString() ? hm(iso) : t.toDateString() === y.toDateString() ? "gestern " + hm(iso) : t.toLocaleDateString("de-DE", { day: "numeric", month: "numeric" }) + " " + hm(iso); };
     const K = { warn: "alert", off: "shield", ahead: "clock", src: "info", act: "blinds", ack: "check", win: "window", msg: "bell" };
     return `<div class="card"><h2>${ic("clock", 18)}Verlauf <small class="mut">90 Tage</small></h2><div class="gschips wxlf">${Object.entries(F).map(([k, [t]]) => `<button class="gsch ${f === k ? "sel" : ""}" data-act="wxslog" data-k="${k}">${t}</button>`).join("")}</div>
-      ${lg.length ? `<div class="wxlog">${lg.map((x) => `<div><time>${dd(x.t)}</time><span>${x.k && K[x.k] ? ic(K[x.k], 14) : ""}${esc(x.x)}</span></div>`).join("")}</div>` : `<div class="wxnote">${ic("info", 15)}Noch keine Einträge.</div>`}
+      ${lg.length ? `<div class="wxlog">${lg.map((x, i) => { const day = this._wxDay(x.t), prev = i ? this._wxDay(lg[i - 1].t) : ""; return `${day !== prev ? `<h4 class="wxlday">${esc(day)}</h4>` : ""}<div><time>${hm(x.t)}</time><span>${x.k && K[x.k] ? ic(K[x.k], 14) : ""}${esc(x.x)}</span></div>`; }).join("")}</div>` : `<div class="wxnote">${ic("info", 15)}Noch keine Einträge.</div>`}
       ${all.length > n ? `<button class="lnk" data-act="wxslogmore">${ic("chev", 14)}Mehr anzeigen (${all.length - n} weitere)</button>` : ""}</div>`;
   }
+  _wxDay(iso) { const t = new Date(iso), td = new Date(), y = new Date(td.getTime() - 864e5); return t.toDateString() === td.toDateString() ? "Heute" : t.toDateString() === y.toDateString() ? "Gestern" : t.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }); }
   /* C9 · Tablet-Alarm: ab der eingestellten Stufe weckt die Warnung das Wandtablet und zeigt eine Vollbild-Karte */
   _wxAlarmKey() {
     const S = this._wxs(), st = S.state || {}, lim = S.cfg.tab_lv == null ? 3 : S.cfg.tab_lv, lv = S.level || 0;
@@ -215,4 +216,54 @@
     return `<div class="lsec" style="margin-top:14px">${ic("tablet", 15)}Wandtablet</div>
       <div class="mut sm" style="margin:0 0 6px">Im Tablet-Modus weckt eine Warnung ab dieser Stufe das Display (bei „Warnungen wecken auf“) und zeigt eine Vollbild-Karte mit „Verstanden“.</div>
       <div class="gschips">${[[0, "Aus"], [1, "ab Stufe 1"], [2, "ab Stufe 2"], [3, "ab Stufe 3"], [4, "nur Stufe 4"]].map(([k, t]) => chip("wxstablv", k, t, lv === k)).join("")}</div>`;
+  }
+  /* ================= Modul 9 · v1.0: DWD-Wetterkarte und Rückblick ================= */
+  /* Karte direkt vom Deutschen Wetterdienst (GeoServer, WMS): Warnungen der Gemeinden oder Niederschlagsradar über einer Grundkarte,
+     dein Zuhause als Punkt. Projektion Web-Mercator (EPSG:3857), damit die Karte nicht verzerrt ist. Neu laden alle 5 Minuten (DWD-Vorgabe). */
+  static WX_MAP_Z = { near: [0.35, "Umgebung"], region: [1.1, "Region"], de: [0, "Deutschland"] };
+  _wxMerc(lat, lon) { const R = 6378137, x = R * lon * Math.PI / 180, y = R * Math.log(Math.tan(Math.PI / 4 + (Math.max(-85, Math.min(85, lat)) * Math.PI) / 360)); return [x, y]; }
+  _wxMapUrl(layer, zoom, w, h) {
+    const c = this._hass.config || {}, lat = Number(c.latitude), lon = Number(c.longitude), ok = isFinite(lat) && isFinite(lon);
+    let x0, y0, x1, y1;
+    if (zoom === "de" || !ok) { [x0, y0] = this._wxMerc(47.0, 5.5); [x1, y1] = this._wxMerc(55.2, 15.6); }
+    else {
+      const half = this.constructor.WX_MAP_Z[zoom][0], [cx, cy] = this._wxMerc(lat, lon), [, ty] = this._wxMerc(lat + half, lon), dy = ty - cy, dx = (dy * w) / h;
+      x0 = cx - dx; x1 = cx + dx; y0 = cy - dy; y1 = cy + dy;
+    }
+    if (zoom === "de" || !ok) { const cx = (x0 + x1) / 2, dy = (y1 - y0) / 2, dx = (dy * w) / h; x0 = cx - dx; x1 = cx + dx; }
+    const L = layer === "radar" ? "dwd:bluemarble,dwd:Niederschlagsradar,dwd:Warngebiete_Kreise" : "dwd:bluemarble,dwd:Warnungen_Gemeinden_vereinigt,dwd:Warngebiete_Kreise";
+    const slot = Math.floor(Date.now() / 300000);
+    const url = `https://maps.dwd.de/geoserver/dwd/wms?service=WMS&version=1.1.1&request=GetMap&layers=${encodeURIComponent(L)}&styles=&srs=EPSG:3857&bbox=${[x0, y0, x1, y1].map((v) => v.toFixed(0)).join(",")}&width=${w}&height=${h}&format=image%2Fpng&t=${slot}`;
+    let pin = null;
+    if (ok) { const [px, py] = this._wxMerc(lat, lon); if (px >= x0 && px <= x1 && py >= y0 && py <= y1) pin = [((px - x0) / (x1 - x0)) * 100, ((y1 - py) / (y1 - y0)) * 100]; }
+    return { url, pin, ok, inDe: ok && lat > 47 && lat < 55.3 && lon > 5.5 && lon < 15.5, slot };
+  }
+  _wxMap(S) {
+    const M = (S.cfg && S.cfg.map) || { on: true, layer: "warn", zoom: "region" };
+    if (M.on === false) return "";
+    const layer = this._wxMapL || M.layer || "warn", zoom = this._wxMapZ || M.zoom || "region", w = 760, h = 520, m = this._wxMapUrl(layer, zoom, w, h), Z = this.constructor.WX_MAP_Z;
+    const t = new Date(m.slot * 300000), hm = String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
+    const legend = layer === "radar" ? `<span class="wxmlg rad">leicht<i class="grad"></i>stark</span>` : `<span class="wxmlg">${[1, 2, 3, 4].map((l) => `<i style="background:${this._wxLvCol(l)}"></i>${l}`).join("")}<em>Stufe</em></span>`;
+    return `<div class="card wxmap"><div class="wxtlh"><h2>${ic("pin", 18)}Wetterkarte <small class="mut">Deutscher Wetterdienst</small></h2><div class="seg wxseg"><button class="${layer === "warn" ? "sel" : ""}" data-act="wxsmapl" data-k="warn">Warnungen</button><button class="${layer === "radar" ? "sel" : ""}" data-act="wxsmapl" data-k="radar">Regenradar</button></div></div>
+      ${m.ok && !m.inDe ? `<div class="wxnote">${ic("info", 15)}Dein Zuhause liegt außerhalb Deutschlands. Der DWD zeigt nur Deutschland.</div>` : ""}
+      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.url)}" alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" loading="lazy" width="${w}" height="${h}" onerror="this.parentNode.classList.add('err')">
+        ${m.pin ? `<span class="wxpin" style="left:${m.pin[0].toFixed(2)}%;top:${m.pin[1].toFixed(2)}%" title="Zuhause">${ic("home", 14)}</span>` : ""}<div class="wxmerr">${ic("alert", 16)}Karte vom DWD gerade nicht erreichbar. Neuer Versuch beim nächsten Aufbau.</div></div>
+      <div class="wxmft"><div class="gschips">${Object.entries(Z).map(([k, [, t2]]) => `<button class="gsch ${zoom === k ? "sel" : ""}" data-act="wxsmapz" data-k="${k}">${t2}</button>`).join("")}</div>${legend}</div>
+      <div class="wxmsrc">Stand ${hm} Uhr · neu alle 5 Minuten · Quelle: Deutscher Wetterdienst (GeoServer) · <a href="https://www.dwd.de/DE/wetter/warnungen_gemeinden/warnWetter_node.html" target="_blank" rel="noopener">auf dwd.de öffnen</a></div></div>`;
+  }
+  _wxReview(S) {
+    const R = S.rb; if (!R || !R.m30) return "";
+    const p = this._wxRbP === "year" ? "year" : "m30", X = R[p], nm = (v, u, d = 0) => (v == null ? "–" : `${num(v, d)}${u ? " " + u : ""}`);
+    const T = [["storm", "fan", "Sturmtage", X.storm], ["thunder", "bolt", "Gewittertage", X.thunder], ["hail", "snow", "Hageltage", X.hail], ["frost", "thermo", "Frost/Glätte", X.frost], ["heat", "sun", "Hitzetage", X.heat], ["off", "shield", "Amtliche Warntage", X.off]];
+    return `<div class="card wxrb"><div class="wxtlh"><h2>${ic("chart", 18)}Rückblick</h2><div class="seg wxseg"><button class="${p === "m30" ? "sel" : ""}" data-act="wxsrb" data-k="m30">30 Tage</button><button class="${p === "year" ? "sel" : ""}" data-act="wxsrb" data-k="year">${new Date().getFullYear()}</button></div></div>
+      ${p === "m30" ? `<div class="wxstrip" role="img" aria-label="Warnstufe je Tag der letzten 30 Tage">${R.strip.map((x) => `<i class="${x.has ? "" : "no"}" style="--bc:${x.lv ? this._wxLvCol(x.lv) : "rgba(127,127,127,.25)"}" title="${esc(new Date(x.d).toLocaleDateString("de-DE", { day: "numeric", month: "numeric" }))}${x.lv ? " · Stufe " + x.lv : x.has ? " · ruhig" : " · keine Daten"}"></i>`).join("")}</div>` : ""}
+      <div class="wxrbg">${T.map(([k, i, t, v]) => `<div class="${v ? "on" : ""}"><span>${ic(i, 16)}</span><b>${v || 0}</b><small>${t}</small></div>`).join("")}</div>
+      <div class="wxrbx"><span>Stärkste Böe <b>${nm(X.wmax, "km/h")}</b></span><span>Kältester Wert <b>${nm(X.tmin, "°C", 1)}</b></span><span>Wärmster Wert <b>${nm(X.tmax, "°C", 1)}</b></span>${X.rain_mm != null ? `<span>Regen <b>${nm(X.rain_mm, "mm", 1)}</b></span>` : ""}<span>Aktionen <b>${X.acts || 0}</b></span></div>
+      ${X.n < (p === "m30" ? 30 : 60) ? `<div class="wxnote">${ic("info", 15)}Gezählt wird ab ${X.n === 1 ? "heute" : `${X.n} Tagen`} – der Rückblick füllt sich mit jedem Tag.</div>` : ""}</div>`;
+  }
+  _wxsMapSet(C, sw) {
+    const M = C.map || {};
+    return `<div class="lsec" style="margin-top:14px">${ic("pin", 15)}Wetterkarte</div>
+      <div class="vrow"><span>Karte des Deutschen Wetterdienstes<small class="mut" style="display:block">Warnungen der Gemeinden oder Regenradar rund um dein Zuhause. Das Bild lädt dein Browser direkt bei maps.dwd.de, dafür wird der Kartenausschnitt um dein Zuhause übertragen.</small></span>${sw("wxsmapon", "", M.on !== false, "Wetterkarte")}</div>
+      ${M.on !== false ? `<div class="mut sm" style="margin:2px 0 4px">Beim Öffnen zeigen</div><div class="gschips">${[["warn", "Warnungen"], ["radar", "Regenradar"]].map(([k, t]) => `<button class="gsch ${(M.layer || "warn") === k ? "sel" : ""}" data-act="wxsmapdl" data-k="${k}">${t}</button>`).join("")}${Object.entries(this.constructor.WX_MAP_Z).map(([k, [, t]]) => `<button class="gsch ${(M.zoom || "region") === k ? "sel" : ""}" data-act="wxsmapdz" data-k="${k}">${t}</button>`).join("")}</div>` : ""}`;
   }

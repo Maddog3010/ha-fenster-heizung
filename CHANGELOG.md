@@ -2,6 +2,40 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b1] - 2026-11-17
+
+### Neu
+- **Modul 9 · Wetter & Warnungen ist stabil (v1.0).**
+  - **Wetterkarte des Deutschen Wetterdienstes:** neue Karte im Modul mit **Warnungen** (Warnstufen der Gemeinden, Kreisgrenzen) oder **Regenradar** (Niederschlagsradar, alle 5 Minuten neu) rund um dein Zuhause, das als Punkt eingezeichnet ist. Ausschnitt **Umgebung**, **Region** oder **Deutschland**, Legende mit den Stufenfarben, Stand und Quelle, Link zur Warnkarte auf dwd.de. Das Bild lädt dein Browser direkt bei maps.dwd.de (Web-Mercator, nicht verzerrt). Liegt dein Zuhause außerhalb Deutschlands, gibt es einen Hinweis. Ein- und ausschaltbar mit Standard-Ansicht unter Einstellungen → Modul 9 → Warnungen → Wetterkarte.
+  - **Rückblick:** letzte 30 Tage (mit Tagesleiste in Stufenfarben) und laufendes Jahr – Sturm-, Gewitter-, Hagel-, Frost/Glätte- und Hitzetage, Tage mit amtlicher Warnung, ausgelöste Aktionen, stärkste Böe, kältester und wärmster Wert, Regenmenge (mit Regenmesser). Gezählt wird ab dem Update.
+  - **Verlauf nach Tagen** gruppiert (Heute, Gestern, Wochentag).
+- **Modul 14 · Stromtarif v0.6 – Tarif-Dienst.** Ein neuer Hintergrund-Dienst hält die Strompreise **heute und morgen** als Zeitreihe:
+  - **Quellen** in einstellbarer Reihenfolge: **Tibber direkt** (Einstellungen → Integrationen) → Preis-Sensor (Tibber, Nord Pool, EPEX Spot, aWATTar, Octopus, Energi Data Service – Formate und Einheiten werden erkannt) → Festpreis aus den Haus-Werten. Fällt eine Quelle aus, springt die nächste ein.
+  - **Viertelstunden** werden gespeichert, Stunden nur zur Anzeige gemittelt; **23- und 25-Stunden-Tage** (Zeitumstellung) stimmen.
+  - **Endpreis** für reine Börsenpreise (Aufschläge + MwSt.), optional **zeitvariables Netzentgelt** (§ 14a).
+  - Stufen günstig / normal / teuer / negativ nach dem **Tagesschnitt**, bestes Fenster ab jetzt, günstigste Stunden, **Preis-Historie** 400 Tage.
+  - **Push statt Abfrage:** neue Preise und eine neue Viertelstunde kommen von selbst ins Dashboard. Der Preisdienst für die anderen Module nutzt die Zeitreihe.
+- **Modul 14 · Stromtarif v0.7 – Neue Optik.** Preisband-Banner (Preis jetzt, Stufe, „bis wann“, Band bis zum Ende der bekannten Preise mit Jetzt-Linie, Schnitt und bestem Fenster), Kacheln 2.0 (Jetzt, Nächste Stunde, Bestes Fenster, Morgen, Teuerste Zeit bzw. Negativ), **Heute und morgen** als ein Band mit Umschalter 15 Min./Stunden und Sonne aus Modul 16, günstigste Stunden ab jetzt, Herkunft der Preise, neue Einstellungen (Quelle · Preis & Stufen) und Startseiten-Kachel mit Mini-Band. Die drei Platzhalter entfallen.
+- **Modul 14 · Stromtarif v0.8 – Fenster je Gerät und Preisalarm.**
+  - **Bestes Fenster je Gerät** für die Geräte aus Modul 4: Laufzeit (Median der letzten Läufe), Energie je Lauf und Verbrauchsverlauf werden gelernt; bewertet wird Preis × Verbrauch, erwartete Sonne zählt mit dem Einspeisepreis. Angezeigt werden Startzeit, Ø Preis und Ersparnis gegenüber „jetzt starten“; je Gerät „fertig bis“ und „frühestens ab“. **Erinnern** meldet sich zur Startzeit. Kühlschrank & Co. sind von Haus aus aus.
+  - **Preisalarm:** unter einer Grenze, über einer Grenze, negativer Preis, Preise für morgen da – je Zeitraum höchstens einmal, auf Wunsch 15/30/60 Min. vorher, mit Ruhezeit (Standard 22–7 Uhr) und Test-Knopf. Ohne eigene Auswahl gelten die Meldedienste aus Modul 4. Die letzten Meldungen stehen in der Karte.
+  - **Sensoren** (Gerät „Strom & Wärme · Stromtarif“): Strompreis jetzt, Stufe, nächste günstige Zeit, günstigstes Fenster, Ø heute und Ø morgen – dazu das Ereignis `fenster_heizung_tarif` für eigene Automationen.
+  - Einstellungen mit drittem Reiter **Fenster & Alarm**.
+- **Schneller warnen:** Neue Werte von Wetter-Entität, Windsensor, Regenmesser oder Außentemperatur lösen die Prüfung sofort aus (höchstens alle 15 Sekunden) statt erst nach bis zu einer Minute. Die Minuten-Prüfung bleibt als Rückfall.
+- **Änderungsverlauf mit Rückgängig** auch für die Einstellungen von Modul 9 (Einstellungen → Verlauf); das Messwerk zeigt Regenmesser, Aussperrschutz-Kontakte und Vorsorge-Geräte mit „genutzt in Modul 9“.
+
+### Geändert
+- Modul 9 speichert nur noch, wenn sich etwas geändert hat (bisher jede Minute) – schont z. B. die SD-Karte.
+- Die Liste der amtlichen Warn-Entitäten wird 10 Minuten gemerkt statt jede Minute neu gesucht; nach einer Änderung der Einstellungen sofort neu.
+- Der Kasten „Vorabversion“ entfällt, Modul 9 trägt die Stufe **Stabil**.
+
+### Technik
+- 3 neue Tests (Rückblick, Speichern nur bei Änderung, schneller warnen), insgesamt 33 für Modul 9.
+- 11 neue Tests für Modul 14 (Formate, Einheiten, Zeitumstellung, Endpreis, Netzentgelt, Stufen, beste Fenster, Ersatzquelle, Historie, Gerätefenster mit Kurve und Sonne, Preisalarm mit Vorlauf, Ruhezeit und Erinnerung).
+
+### Korrigiert
+- Im Eintrag zu 2026.11.3 stand fälschlich, Modul 14 habe schon Preisdienst, neue Optik, Fenster je Gerät und Preisalarm. Diese Teile kommen erst jetzt mit v0.6 bis v0.8.
+
 ## [2026.11.3.1] - 2026-11-17
 
 Kleine Korrektur zu 2026.11.3: Chat und E-Mail wandern in den Kopf, die runden Symbole für Store und Labs entfallen, der E-Mail-Knopf funktioniert auch in der App.
@@ -23,7 +57,6 @@ Dritte stabile Version im November: Haus-Szenen in Modul 1, 3 und auf der Starts
 - **Modul 3 (v1.6):** Energie-Szene im Banner, Energiefluss mit HD-Plaketten, Hinweise mit Bild und Aktion, neue Diagramme und Kosten-Treppe, **Gaszähler** mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag, Einstellungen in Reitern.
 - **Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion):** Carport-Szene, Überschuss-Balken mit Start und Stopp in Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug, Strompreis im Banner, Tablet-Wandansicht, **Ladestatistik** mit Kilometern und Verbrauch, Änderungen je Ladung, Ladungen zusammenführen, mehrere Ladungen auf einmal ändern, Kosten ändern, **Import aus der go-e-App**, Ladenachweis als PDF, andere Wallboxen über Home Assistant.
 - **Modul 9 (v0.9) Wetter & Warnungen:** alle DWD-Warnungen mit Stufen, Wetter-Szene als Banner, Zeitleiste, Vorsorge für Akku, Auto, Hitze und Frost.
-- **Modul 14 Stromtarif:** gemeinsamer Preisdienst für Modul 3, 8 und 14, neue Optik, Fenster je Gerät und Preisalarm.
 - **Modul 16 Solar-Prognose (stabil, v1.0):** neue Optik mit Sonnenbogen, korrigierte Prognose, Treffsicherheit und Tipps.
 - **Modul 20 Abrechnungen** (Addon, In Entwicklung): erste Stufe, Installation unter Entdecken → Store → Addons.
 - **Modul 19 Hausfluss (stabil, v1.1):** Strom-Reiter mit „Woher kam der Strom?“ für Tag, Woche, Monat und Jahr, Haus mit Herkunfts-Ring, Themen, Tablet-Wand, bis zu vier Kacheln links und rechts und zwei unten, hellere Kacheln.
