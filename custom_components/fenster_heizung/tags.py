@@ -195,7 +195,7 @@ def describe(act: dict[str, Any], names: dict[str, str] | None = None) -> str:
         p = (names or {}).get(arg) or str(arg).split(".")[-1].capitalize()
         return f"{p} ist {'zu Hause' if k == 'person_home' else 'unterwegs'}"
     if k == "mu_done":
-        return f"{BIN_NAMES.get(arg, 'Tonne')} ist draußen"
+        return f"{(names or {}).get('bin:' + str(arg)) or BIN_NAMES.get(arg, 'Tonne')} ist draußen"
     N = names or {}
     if k == "lf_here":
         did, _, room = str(arg).partition("|")
@@ -263,6 +263,15 @@ class TagManager:
         return True  # fest eingebaut
 
     # ---- Wer und wo
+    def _bins(self) -> dict[str, str]:
+        """Abfallarten aus Modul 17 (seit v0.3 frei wählbar), sonst die vier Grundtonnen."""
+        mm = self.hass.data.get(DOMAIN, {}).get("muell")
+        try:
+            b = mm.bin_names() if mm is not None and hasattr(mm, "bin_names") else None
+        except Exception:  # noqa: BLE001
+            b = None
+        return b or dict(BIN_NAMES)
+
     def _names(self) -> dict[str, str]:
         """Anzeigenamen: Personen, Melder, Entfeuchter (lf:<id>) und Räume (room:<id>)."""
         out = {s.entity_id: str(s.attributes.get("friendly_name") or s.entity_id) for s in self.hass.states.async_all("person")}
@@ -277,6 +286,8 @@ class TagManager:
             out["room:" + e.entry_id] = e.title
         for m in (D.get("layout") or {}).get("mess") or []:
             out["room:" + str(m.get("id"))] = str(m.get("name") or "")
+        for k, n in self._bins().items():
+            out["bin:" + k] = n
         return out
 
     def _who(self, event: Event) -> str | None:
@@ -527,7 +538,7 @@ class TagManager:
         for x in self.log:
             last[x["id"]] = x
         return {
-            "on": self.active(), "cfg": self.cfg, "actions": catalog(), "groups": GROUPS, "bins": BIN_NAMES, "confirm": sorted(QUICK_CONFIRM),
+            "on": self.active(), "cfg": self.cfg, "actions": catalog(), "groups": GROUPS, "bins": self._bins(), "confirm": sorted(QUICK_CONFIRM),
             "last": last, "log": list(reversed(self.log)),
             "unknown": [{"id": k, **v} for k, v in sorted(self.unknown.items(), key=lambda i: -i[1]["ts"])],
             "learn": {"active": now < self.learn_until, "left": max(0, int(self.learn_until - now)), "found": self.learned},

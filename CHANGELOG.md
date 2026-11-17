@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b4] - 2026-11-17
+
+### Neu
+- **Modul 17 · Müllabfuhr v0.5 (Addon, jetzt Beta).** Drei Stufen aus dem Konzept auf einmal:
+  - **v0.2 Fundament:** Liste **„Nicht erkannt“** für Kalendertermine ohne Abfallart (zuordnen, als neue Art anlegen oder ignorieren), **„Später erinnern“** übersteht einen Neustart (Dauer 30 Min. bis 3 Std.), **Termine zwischengespeichert** (nach einem Neustart sofort da, Hinweis, wenn der Kalender nicht antwortet), **Abholzeit je Abfallart** statt fest 12 Uhr, Uhrzeit als Stunde/Minute-Felder (kein Absturz in der Mac-App), eigene Tests.
+  - **v0.3 Freie Abfallarten:** bis zu **10 Abfallarten** mit Name, Bild, Farbe, Erkennungswörtern, Abholzeit und Erinnerung, **Vorlagen** Glas, Grünschnitt, Sperrmüll, Schadstoffmobil, Weihnachtsbaum oder eigene, **Vorwarnung für Sondertermine** (2, 3, 5 Tage oder 1 Woche vorher), **bis zu drei Kalender**, neue Bilder je Abfallart. Die vier bisherigen Tonnen werden beim Update einmalig übernommen, die alten Einstellungen bleiben zusätzlich gespeichert.
+  - **v0.5 Neue Optik:** **Straßen-Szene** als Banner (fällige Tonnen am Bordstein, Müllwagen am Abholtag, Tag und Nacht, „Alle stehen draußen“), **Kacheln 2.0** mit Ring bis zur Abholung, **14-Tage-Leiste**, **Kalender** mit Farbleisten, Blättern und **Jahresansicht**, Leerzustand mit drei Schritten, Schalter **„Optik wie bisher“** und Bewegung Aus / Dezent / Voll.
+- **Morgen-Briefing (Sponsor Max):** Der Baustein „Müll“ meldet wieder heute, morgen und Sondertermine.
+- **Tags & Karten:** „Tonne ist draußen“ kennt alle Abfallarten aus Modul 17.
+
+### Geändert
+- Modul 17 kann ein eigenes Banner mitbringen (für die Straßen-Szene). Ältere Addon-Versionen zeigen weiter das bisherige Banner.
+
 ## [2026.11.4b3] - 2026-11-17
 
 ### Behoben

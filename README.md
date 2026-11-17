@@ -129,7 +129,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 14 | **Dynamischer Stromtarif** | Beta 0.8 | Tibber direkt oder Preis-Sensor, Viertelstunden heute und morgen, Preisband, bestes Fenster je Gerät, Preisalarm |
 | 15 | Wartung & Erinnerungen | In Entwicklung 0.1 | Konzept, auf Wunsch mit den Daten aus Modul 11 |
 | 16 | **Solar-Prognose** | Stabil 1.0 | Sonnenbogen, Prognose gegen Ertrag je Stunde, korrigierte Prognose, Anlagen einzeln, Sensoren für Automationen |
-| 17 | Müllabfuhr | Addon | Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend |
+| 17 | Müllabfuhr | Addon · Beta | Straßen-Szene, bis zu 10 Abfallarten, 14-Tage-Leiste, Kalender mit Jahresansicht, Erinnerung und Vorwarnung für Sondertermine |
 | 18 | Licht & Lampen | Addon | Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe |
 | 19 | **Hausfluss** | Stabil 1.1 · Sponsoren | Dein Haus als Fluss-Bild: Leuchtlinien, Herkunfts-Ring, bis zu 4+4+2 Kacheln, Themen, Strom-Reiter mit „Woher kam der Strom?“, Wand-Ansicht fürs Tablet |
 | 20 | Abrechnungen | Addon · In Entwicklung | Verträge mit Preisperioden, Wasser-Gebühren, Zähler mit geprüften Ablesungen, Fristen, Preisdienst für alle Module |
@@ -260,7 +260,7 @@ Das Haus in der Mitte, ringsum bis zu **zehn Kacheln** (links und rechts je vier
 
 Addons installierst du unter **Einstellungen → Addons** und kannst sie dort jederzeit pausieren oder wieder deinstallieren, auf Wunsch mit oder ohne deine Daten. Neue Versionen kommen aus dem Addon-Katalog und erscheinen im Reiter **Updates**.
 
-- **Müllabfuhr:** Abholtermine, Tonnen-Ampel, Erinnerung am Vorabend.
+- **Müllabfuhr (v0.5, Beta):** Abholtermine aus bis zu drei Kalendern, bis zu 10 Abfallarten mit eigenem Bild (Glas, Grünschnitt, Sperrmüll, Schadstoffmobil, Weihnachtsbaum …), Liste „Nicht erkannt“, Straßen-Szene als Banner, 14-Tage-Leiste, Kalender mit Jahresansicht, Erinnerung am Vorabend und Vorwarnung für Sondertermine.
 - **Licht & Lampen:** Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe.
 - **Abrechnungen (v0.1, In Entwicklung):** Verträge für Strom, Gas, Wasser und Einspeisung mit Preiswechseln, Zähler mit Ablesungen und Prüfung, Fristen; der Vertragspreis geht an die anderen Module. Hochrechnung, Abschläge und Rechnungen folgen.
 - **Saugroboter:** Roboter-Karte, Raum-Kacheln mit Ampel, Karte des Roboters (Roborock), Woche und Wartung.

@@ -203,7 +203,10 @@ class BriefingManager:
         return f"⚠️ {items[0]}" + (f" (+{len(items) - 1} weitere)" if len(items) > 1 else "")
 
     async def _muell(self, D: dict) -> str | None:
-        return None  # Müllabfuhr ist ein Addon; die Termine liest das Briefing erst, wenn das Addon sie anbietet
+        mm = D.get("muell")  # Addon Modul 17 (ab v0.2), stellt seinen Manager unter „muell“ bereit
+        if mm is None or not hasattr(mm, "briefing_line"):
+            return None
+        return mm.briefing_line()
 
     def _haus_line(self, D: dict, day: str, label: str) -> str | None:
         """Haus-Energiebuch: Verbrauch, Solaranteil, Autarkie und Einspeisung eines Tages."""
