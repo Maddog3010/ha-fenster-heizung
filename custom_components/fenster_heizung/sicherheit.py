@@ -24,7 +24,9 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-TICK_SECONDS = 30
+TICK_SECONDS = 60  # Netz; Zustandswechsel der Melder lösen die Prüfung sofort aus
+SCHEMA = 2  # Stand des Speichers (2 = Plan und Hintergrundbild in eigenem Speicher)
+REG_EVENT = "entity_registry_updated"
 # Geräteklasse -> (Schlüssel, Name)
 CLASSES = {
     "smoke": ("smoke", "Rauchmelder"),
@@ -48,6 +50,7 @@ MAX_BG = 320_000
 MAX_DEP = 30
 LIFE_NOTE_GAP_S = 7 * 86400
 BHIST_MAX = 60
+THIST_MAX = 24  # Prüfungen und Batterietausche je Melder fürs Jahresband
 BHIST_GAP_S = 20 * 3600
 ITEM_T = ("r", "w", "d", "f", "s", "x", "m")
 _ID = re.compile(r"^[a-z0-9_]{1,24}$")
@@ -66,7 +69,7 @@ def default_cfg() -> dict[str, Any]:
         "meta": {}, "add": [], "plan": {"floors": [{"id": "eg", "n": "EG"}], "items": [], "bg": {}},
         "quiet": {"on": False, "from": "22:00", "to": "07:00"}, "lead": 30,
         "depart": {"on": True, "ents": [], "frost": {"on": False, "ent": "", "below": 3}},
-        "proto": {"name": "", "addr": "", "who": ""},
+        "proto": {"name": "", "addr": "", "who": ""}, "ui": {"old": False},
     }
 
 
@@ -173,6 +176,8 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
     d["depart"] = {"on": bool(dp.get("on", True)), "ents": de, "frost": {"on": bool(fr.get("on", False)), "ent": _ent(fr.get("ent"), ("sensor", "weather")), "below": int(_num(fr.get("below"), -10, 10, 3))}}
     pr = r.get("proto") if isinstance(r.get("proto"), dict) else {}
     d["proto"] = {k: str(pr.get(k) or "").strip()[:60] for k in ("name", "addr", "who")}
+    ui = r.get("ui") if isinstance(r.get("ui"), dict) else {}
+    d["ui"] = {"old": bool(ui.get("old", False))}
     return d
 
 
@@ -224,6 +229,33 @@ def battery_of(attrs: dict[str, Any], sibling: Any = None) -> float | None:
     return None
 
 
+def bat_fit(h: list[list[float]]) -> dict[str, Any] | None:
+    """Batterie-Prognose aus dem Verlauf [[Zeit, Prozent], …]: Gerade durch die Punkte seit dem letzten Tausch.
+
+    Ein Sprung nach oben um mindestens 20 Punkte gilt als Batterietausch, davor zählt nichts mehr. Gibt
+    {"slope": Prozent pro Tag (negativ), "span": Tage, "pts": Anzahl} zurück, sonst None (zu wenig Daten oder keine Abnahme).
+    """
+    pts = [(float(a), float(b)) for a, b in h if isinstance(a, (int, float)) and isinstance(b, (int, float))]
+    for k in range(len(pts) - 1, 0, -1):
+        if pts[k][1] - pts[k - 1][1] >= 20:
+            pts = pts[k:]
+            break
+    if len(pts) < 2:
+        return None
+    span = (pts[-1][0] - pts[0][0]) / 86400
+    if span < 7:
+        return None
+    n = len(pts)
+    mx, my = sum(t for t, _ in pts) / n, sum(b for _, b in pts) / n
+    den = sum((t - mx) ** 2 for t, _ in pts)
+    if den <= 0:
+        return None
+    slope = sum((t - mx) * (b - my) for t, b in pts) / den * 86400
+    if slope >= -0.01:
+        return None
+    return {"slope": slope, "span": span, "pts": n}
+
+
 def months_since(iso: str | None, now: Any) -> float | None:
     if not iso:
         return None
@@ -237,12 +269,18 @@ class SicherheitManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
         self._store = SafeStore(hass, 1, f"{DOMAIN}_sicherheit")
+        self._pstore = SafeStore(hass, 1, f"{DOMAIN}_sicherheit_plan")  # Grundriss und Hintergrundbild getrennt von den Einstellungen
+        self._known: set[str] = set()
+        self._regc: tuple[dict[str, str], dict[str, str]] | None = None
+        self._unsub_reg: CALLBACK_TYPE | None = None
         self.cfg = default_cfg()
         self.st: dict[str, dict[str, Any]] = {}  # je Melder: a (Alarm), since, off_since, rep
         self.last_test = ""
         self.first_seen = ""
         self.tested: dict[str, str] = {}
         self.bhist: dict[str, list[list[float]]] = {}
+        self.thist: dict[str, list[str]] = {}  # Zeitpunkte „geprüft“ je Melder
+        self.swaps: dict[str, list[str]] = {}  # Zeitpunkte „Batterie getauscht“ je Melder
         self._home: bool | None = None
         self.log: list[dict[str, str]] = []
         self._notes: dict[str, float] = {}
@@ -253,36 +291,55 @@ class SicherheitManager:
     # ---- Start/Stop
     async def async_start(self) -> None:
         d = await self._store.async_load()
+        pd = await self._pstore.async_load()
+        migrate = False
         if isinstance(d, dict):
             self.cfg = clean_cfg(d.get("cfg"))
+            if isinstance(pd, dict) and isinstance(pd.get("plan"), dict):
+                self.cfg["plan"] = clean_plan(pd["plan"])
+            else:
+                migrate = bool(self.cfg["plan"]["items"] or self.cfg["plan"]["bg"])  # Stand vor 2026.11.4: Plan lag in den Einstellungen
             self.last_test = str(d.get("last_test") or "")
             self.first_seen = str(d.get("first_seen") or "")
             self.tested = {str(k): str(v) for k, v in (d.get("tested") or {}).items() if isinstance(v, str)}
             for k, v in (d.get("bhist") or {}).items():
                 if isinstance(v, list):
                     self.bhist[str(k)] = [[float(a), float(b)] for a, b in v if isinstance(a, (int, float)) and isinstance(b, (int, float))][-BHIST_MAX:]
+            for key, dst in (("thist", self.thist), ("swaps", self.swaps)):
+                for k, v in (d.get(key) or {}).items():
+                    if isinstance(v, list):
+                        dst[str(k)] = [str(x) for x in v if isinstance(x, str)][-THIST_MAX:]
             for k, v in (d.get("st") if isinstance(d.get("st"), dict) else {}).items():
                 if isinstance(v, dict):
                     self.st[str(k)] = {"a": bool(v.get("a")), "since": str(v.get("since") or ""), "off_since": 0.0, "rep": 0.0}
             self.log = [x for x in (d.get("log") or []) if isinstance(x, dict) and "t" in x and "x" in x][:MAX_LOG]
             self._notes = {str(k): float(v) for k, v in (d.get("notes") or {}).items() if isinstance(v, (int, float))}
+        if migrate:
+            try:
+                self._store.snapshot_now()
+            except Exception:  # noqa: BLE001 - Kopie ist nur ein Zusatz
+                _LOGGER.debug("Kopie vor der Übernahme nicht möglich", exc_info=True)
+            self._save()
         self._unsub = async_track_time_interval(self.hass, self._tick, timedelta(seconds=TICK_SECONDS))
         self._unsub_ev = self.hass.bus.async_listen(EVENT_STATE_CHANGED, self._on_state)
+        self._unsub_reg = self.hass.bus.async_listen(REG_EVENT, self._on_reg)
         self.hass.async_create_task(self._tick(None))
 
     def async_stop(self) -> None:
-        for u in (self._unsub, self._unsub_ev):
+        for u in (self._unsub, self._unsub_ev, self._unsub_reg):
             if u:
                 u()
-        self._unsub = self._unsub_ev = None
+        self._unsub = self._unsub_ev = self._unsub_reg = None
 
     def _save(self) -> None:
-        self._store.async_delay_save(
-            lambda: {
-                "cfg": self.cfg, "last_test": self.last_test, "first_seen": self.first_seen, "tested": self.tested, "bhist": self.bhist,
+        def main() -> dict[str, Any]:
+            plan = {**self.cfg["plan"], "bg": {}}  # das Bild liegt nur im Plan-Speicher, Etagen und Elemente zur Sicherheit auch hier
+            return {
+                "v": SCHEMA, "cfg": {**self.cfg, "plan": plan}, "last_test": self.last_test, "first_seen": self.first_seen, "tested": self.tested, "bhist": self.bhist, "thist": self.thist, "swaps": self.swaps,
                 "st": {k: {"a": v["a"], "since": v["since"]} for k, v in self.st.items()}, "log": self.log, "notes": self._notes,
-            }, 10,
-        )
+            }
+        self._store.async_delay_save(main, 10)
+        self._pstore.async_delay_save(lambda: {"v": SCHEMA, "plan": self.cfg["plan"]}, 10)
 
     def _add(self, text: str, c: str = "") -> None:
         self.log.insert(0, {"t": dt_util.now().isoformat(), "x": text, "c": c})
@@ -293,30 +350,38 @@ class SicherheitManager:
         return bool(wm is not None and wm.modules.get("on", {}).get("sf"))
 
     @callback
+    def _on_reg(self, event: Event) -> None:
+        self._regc = None  # Zuordnung Gerät → Batterie/Testknopf neu lesen
+
+    @callback
     def _on_state(self, event: Event) -> None:
-        """Ein Melder geht auf „an“: sofort prüfen statt bis zum nächsten Takt zu warten."""
+        """Ein Melder geht auf „an“ oder fällt aus bzw. kommt zurück: sofort prüfen statt bis zum nächsten Takt zu warten."""
         eid = event.data.get("entity_id") or ""
-        new = event.data.get("new_state")
-        if not eid.startswith("binary_sensor.") or new is None or new.state != "on" or not self.active():
+        new, old = event.data.get("new_state"), event.data.get("old_state")
+        if not eid.startswith("binary_sensor.") or new is None or not self.active():
             return
-        if kind_of(new.attributes.get("device_class")) is None:
+        if eid not in self._known and kind_of(new.attributes.get("device_class")) is None:
             return
-        self.hass.async_create_task(self._tick(None))
+        if new.state == "on" or (new.state in OFF_STATES) != (old is not None and old.state in OFF_STATES):
+            self.hass.async_create_task(self._tick(None))
 
     # ---- Melder lesen
     def detectors(self) -> list[dict[str, Any]]:
         reg = er.async_get(self.hass)
         devs = dr.async_get(self.hass)
         areas = ar.async_get(self.hass)
-        bat_by_dev: dict[str, str] = {}
-        btn_by_dev: dict[str, str] = {}
-        for e in reg.entities.values():
-            if not e.device_id or e.disabled_by:
-                continue
-            if e.domain == "sensor" and (e.device_class or e.original_device_class) == "battery":
-                bat_by_dev.setdefault(e.device_id, e.entity_id)
-            elif e.domain == "button" and "test" in e.entity_id:
-                btn_by_dev.setdefault(e.device_id, e.entity_id)
+        if self._regc is None:  # nur bei Änderung im Entitäten-Register neu lesen
+            bats: dict[str, str] = {}
+            btns: dict[str, str] = {}
+            for e in reg.entities.values():
+                if not e.device_id or e.disabled_by:
+                    continue
+                if e.domain == "sensor" and (e.device_class or e.original_device_class) == "battery":
+                    bats.setdefault(e.device_id, e.entity_id)
+                elif e.domain == "button" and "test" in e.entity_id:
+                    btns.setdefault(e.device_id, e.entity_id)
+            self._regc = (bats, btns)
+        bat_by_dev, btn_by_dev = self._regc
         out = []
         meta = self.cfg["meta"]
         for s in self.hass.states.async_all("binary_sensor"):
@@ -346,6 +411,7 @@ class SicherheitManager:
                 "test": m.get("press") or (btn_by_dev.get(did, "") if did else ""), "manual": manual and kind_of(s.attributes.get("device_class")) is None,
             })
         out.sort(key=lambda x: (not x["alarm"], x["name"].lower()))
+        self._known = {d["id"] for d in out}
         return out
 
     # ---- Meldungen und Aktionen
@@ -479,6 +545,18 @@ class SicherheitManager:
                     self._add(f"Batterie schwach: {d['name']}{where} ({round(d['bat'])} %).", "warn")
                 await self._notify("bat", "Melder-Batterie schwach", f"{d['name']}{where}: Batterie bei {round(d['bat'])} %. Bitte bald wechseln.", key, BAT_NOTE_GAP_S)
                 self._save()
+        # Frühe Erinnerung aus der Prognose: Batterie erreicht die Schwelle bald (Vorlauf wie bei der Lebensdauer)
+        lead, bt = self.cfg["lead"], self.cfg["bat"]
+        if bt["on"] and lead and not quiet:
+            for d in det:
+                f = self.bat_forecast(d["id"]) if d["bat"] is not None and d["bat"] >= bt["pct"] else None
+                if f and 0 < f["thr"] <= lead:
+                    key = f"batf:{d['id']}"
+                    if now_ts - self._notes.get(key, 0) >= BAT_NOTE_GAP_S:
+                        self._add(f"Batterie reicht bald nicht mehr: {d['name']} (noch etwa {f['thr']} Tage bis {bt['pct']} %).", "warn")
+                    where = f" ({d['area']})" if d["area"] else ""
+                    await self._notify("bat", "Melder-Batterie wird bald schwach", f"{d['name']}{where}: noch etwa {f['thr']} Tage bis {bt['pct']} %.", key, BAT_NOTE_GAP_S)
+                    self._save()
         for k in [k for k in self.st if k not in seen]:
             if not self.st[k]["a"]:
                 del self.st[k]
@@ -512,16 +590,21 @@ class SicherheitManager:
                 del h[:-BHIST_MAX]
                 self._save()
 
-    def bat_days(self, det_id: str, now_ts: float | None = None) -> int | None:
-        """Grobe Prognose: wie viele Tage die Batterie noch bis 0 % hält (Gerade durch die Messpunkte)."""
+    def bat_forecast(self, det_id: str) -> dict[str, Any] | None:
+        """Prognose aus dem Verlauf: Tage bis 0 % und bis zur Schwelle (ab Einstellung „Batterie schwach“)."""
         h = self.bhist.get(det_id) or []
-        if len(h) < 2:
+        f = bat_fit(h)
+        if f is None:
             return None
-        (t0, b0), (t1, b1) = h[0], h[-1]
-        span = (t1 - t0) / 86400
-        if span < 7 or b1 >= b0:
-            return None
-        return max(0, int(b1 / ((b0 - b1) / span)))
+        now_b = h[-1][1]
+        thr = self.cfg["bat"]["pct"]
+        days = lambda to: max(0, int((to - now_b) / f["slope"])) if now_b > to else 0  # noqa: E731
+        return {"zero": days(0), "thr": days(thr), "slope": round(f["slope"], 3)}
+
+    def bat_days(self, det_id: str, now_ts: float | None = None) -> int | None:
+        """Wie viele Tage die Batterie noch bis 0 % hält (Gerade durch die Messpunkte seit dem letzten Tausch)."""
+        f = self.bat_forecast(det_id)
+        return f["zero"] if f else None
 
     def _life_days(self, d: dict[str, Any], now: Any) -> int | None:
         m = self.cfg["meta"].get(d["id"]) or {}
@@ -573,12 +656,28 @@ class SicherheitManager:
         await self.async_config_changed()
         return await self.snapshot()
 
-    async def async_mark_tested(self, ent: str = "") -> dict[str, Any]:
-        self.last_test = dt_util.now().isoformat()
+    async def async_mark_tested(self, ent: str = "", bat: bool = False) -> dict[str, Any]:
+        """Geprüft (ein Melder oder alle). Mit bat=True: Batterie getauscht, der Verlauf beginnt neu."""
+        now = dt_util.now().isoformat()
+        if bat and ent:
+            self.bhist.pop(ent, None)
+            self._notes.pop(f"bat:{ent}", None)
+            self._notes.pop(f"batf:{ent}", None)
+            self.swaps.setdefault(ent, []).append(now)
+            del self.swaps[ent][:-THIST_MAX]
+            self._add(f"Batterie getauscht: {ent}.", "ok")
+            self._save()
+            return await self.snapshot()
+        self.last_test = now
         if ent:
-            self.tested[ent] = self.last_test
+            self.tested[ent] = now
+            self.thist.setdefault(ent, []).append(now)
+            del self.thist[ent][:-THIST_MAX]
         else:
             self.tested = {}
+            for d in self._known:
+                self.thist.setdefault(d, []).append(now)
+                del self.thist[d][:-THIST_MAX]
         self._notes.pop("test", None)
         self._add("Melder geprüft (von Hand bestätigt)." if not ent else f"Geprüft: {ent}.", "ok")
         self._save()
@@ -597,8 +696,13 @@ class SicherheitManager:
             d["floor"], d["room"], d["btype"], d["inst"], d["life"] = m.get("floor", ""), m.get("room", ""), m.get("btype", ""), m.get("inst", ""), m.get("life", 0)
             d["life_days"] = self._life_days(d, now)
             d["tested"] = self.tested.get(d["id"]) or None
+            d["tests"] = self.thist.get(d["id"]) or ([d["tested"]] if d["tested"] else [])
+            d["swaps"] = self.swaps.get(d["id"]) or []
             d["test_due"] = self._test_due(d, now)
-            d["bat_days"] = self.bat_days(d["id"])
+            fc = self.bat_forecast(d["id"])
+            d["bat_days"] = fc["zero"] if fc else None
+            d["bat_thr_days"] = fc["thr"] if fc else None
+            d["bat_hist"] = (self.bhist.get(d["id"]) or [])[-BHIST_MAX:]
         # Alle erkannten Melder inkl. ausgeschlossener, damit man sie wieder einschalten kann
         reg = er.async_get(self.hass)
         excl = []

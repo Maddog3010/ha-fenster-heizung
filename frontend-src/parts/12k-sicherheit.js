@@ -23,7 +23,7 @@
     if (bad === "ok") return this._modLogo("sf");
     return `<div class="mlogo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M32 5 9 14v17c0 14 9 22 23 28 14-6 23-14 23-28V14z" class="f"/><path d="M32 22v17"/><path d="M32 46v.5"/></svg></div>`;
   }
-  _sfPage() {
+  _sfPageOld() {
     this._sfxLoad();
     const T = this._sfStat(), { C, l, al, low, off, due, life, op } = T, tab = this._sfTab();
     const msg = !l.length ? ["Noch keine Melder", "Melder aus Home Assistant erscheinen hier automatisch. Du kannst sie auch unter Einstellungen von Hand hinzufügen."]
@@ -39,12 +39,12 @@
     return `${this._betaBox("Das Modul liest vorhandene Melder und meldet Alarme aufs Handy. Es ersetzt keine zertifizierten Rauchmelder oder Alarmanlage.")}${hero}${bar}${body}`;
   }
   /* ---- Übersicht: Ampel, Abfahrt-Prüfung, Ereignisse, Melder */
-  _sfCard(x) {
+  _sfCardOld(x) {
     const C = this._sfx().cfg, KN = this._sfxKind(), adm = this._admin(), st = x.alarm ? ["alarm", "ALARM"] : x.off ? ["off", "Nicht erreichbar"] : ["ok", "In Ordnung"], bt = x.bat != null ? Math.max(0, Math.min(100, x.bat)) : null, bc = bt == null ? "" : bt < C.bat.pct ? "#f87171" : bt < 40 ? "#f59e0b" : "#34d399", where = [x.floor ? (this._sfPl().floors.find((f) => f.id === x.floor) || {}).n : "", x.room || x.area].filter(Boolean).join(" · ");
     return `<div class="sfd ${st[0]}"><div class="sfdh"><span class="sfdi">${ic(KN[x.k][1], 20)}</span><div class="sfdt"><b>${esc(x.name)}</b><small>${esc(x.kind)}${where ? " · " + esc(where) : ""}</small></div><span class="sfs ${st[0]}">${st[1]}</span></div>
       <div class="sfb">${bt != null ? `<div class="sfbar"><i style="width:${bt}%;background:${bc}"></i></div><span>${ic("energy", 13)} Batterie ${num(bt, 0)} %${bt < C.bat.pct ? " · schwach" : ""}</span>` : `<span class="mut">Batterie unbekannt</span>`}${x.alarm && x.since ? `<span class="sfsince">seit ${esc(this._sfAgo(x.since))}</span>` : ""}${adm && x.test ? `<button class="lnk" data-act="sfxpress" data-k="${esc(x.id)}">${ic("bell", 14)}Testen</button>` : ""}</div></div>`;
   }
-  _sfOv(T) {
+  _sfOvParts(T) {
     const { S, C, l, al, low, off, due, life } = T, rows = this._sfDepRows(), H = this._hass;
     const dot = (c) => `<span class="sfdot ${c}"></span>`, ap = (c, a, b) => `<div class="sfap">${dot(c)}<span>${a}</span><b>${b}</b></div>`;
     const ampel = `<div class="card sfc"><h2>${ic("shield", 18)}Ampel</h2>
@@ -62,8 +62,9 @@
     const log = `<div class="card sfc"><h2>${ic("clock", 18)}Ereignisse</h2>${lg.length ? `<div class="sftl">${lg.map((x) => `<div style="--c:${col[x.c] || "#64748b"}"><b>${esc(x.x)}</b><small>${esc(new Date(x.t).toLocaleString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }))}</small></div>`).join("")}</div>` : `<div class="mut sm">Noch keine Ereignisse. Alarme, schwache Batterien, Prüfungen und die Abfahrt-Prüfung erscheinen hier.</div>`}</div>`;
     const empty = !l.length ? `<div class="card sfc"><h2>${ic("puzzle", 18)}Melder verbinden</h2><div class="mut sm" style="margin:0 0 10px">Das Modul liest Melder mit der Geräteklasse Rauch, CO, Gas, Wasser, Hitze oder Sicherheit. Für X-Sense, Zigbee, Z-Wave und Homematic gibt es unter Einstellungen → Integrationen eine Anleitung.</div>${this._admin() ? `<button class="btn2 pri" data-act="sfxgoig" style="flex:none;padding:10px 18px">${ic("puzzle", 16)} Integrationen öffnen</button>` : ""}</div>` : "";
     const list = l.length ? `<div class="card sfc"><h2>${ic("bell", 18)}Melder<small class="mut">${l.length}</small></h2><div class="sfg">${l.map((x) => this._sfCard(x)).join("")}</div></div>` : "";
-    return `${empty}<div class="enc"><div class="enco">${ampel}${log}</div><div class="enco">${dep}</div></div>${list}`;
+    return { empty, ampel, log, dep, list };
   }
+  _sfOvOld(T) { const p = this._sfOvParts(T); return `${p.empty}<div class="enc"><div class="enco">${p.ampel}${p.log}</div><div class="enco">${p.dep}</div></div>${p.list}`; }
   /* ---- Grundriss: Ansicht und Baukasten */
   _sfPlanInner(fl, edit) {
     const S = this._sfx(), P = this._sfPl(), dm = this._sfDetMap(), items = P.items.filter((i) => i.fl === fl), KN = this._sfxKind(), ed = this._sfEd, sel = edit && ed ? ed.sel : "", ord = ["r", "s", "w", "d", "f", "x", "m"];
@@ -136,7 +137,7 @@
     return `<div class="sffacts">${rows.map(([a, b]) => `<div><span>${a}</span><b>${esc(b)}</b></div>`).join("")}</div>${this._admin() ? `<div class="sfbtn" style="margin-top:10px">${x.test ? `<button class="btn2" data-act="sfxpress" data-k="${esc(x.id)}">Test auslösen</button>` : ""}<button class="btn2" data-act="sfxtested" data-k="${esc(x.id)}">Als geprüft</button></div>` : ""}`;
   }
   /* ---- Wartung */
-  _sfWart(T) {
+  _sfWartParts(T) {
     const { S, C, l, life, due } = T, adm = this._admin(), now = Date.now(), bad = (x) => x.life_days != null && x.life_days < 0;
     const row = (x) => {
       const m = x.inst && x.life ? (() => { const s = new Date(x.inst + "-01").getTime(), e = new Date((+x.inst.slice(0, 4) + x.life) + x.inst.slice(4) + "-01").getTime(); return Math.max(0, Math.min(100, ((now - s) / (e - s)) * 100)); })() : null;
@@ -155,8 +156,9 @@
     const sl = `<div class="card sfc"><h2>${ic("energy", 18)}Einkaufsliste</h2>${Object.keys(shop).length || newd.length ? `${Object.keys(shop).map((k) => `<div class="sfap"><span>${shop[k].length} × ${esc(k)}<small class="mut" style="display:block">${esc(shop[k].join(", "))}</small></span><b>bald</b></div>`).join("")}${newd.length ? `<div class="sfap"><span>${newd.length} × neuer Melder<small class="mut" style="display:block">${esc(newd.join(", "))}</small></span><b>fällig</b></div>` : ""}<div class="sfbtn" style="margin-top:8px"><button class="btn2" data-act="sfxcopy">${ic("copy", 15)} Liste kopieren</button></div>` : `<div class="mut sm">Im Moment ist nichts zu besorgen. Batterien unter ${C.bat.pct + 10} % und Melder am Ende der Lebensdauer erscheinen hier.</div>`}</div>`;
     const yr = new Date().getFullYear(), pr = `<div class="card sfc"><h2>${ic("list", 18)}Jahresprotokoll ${yr}</h2><div class="mut sm" style="margin:0 0 10px">Eine Seite zum Abheften oder für Vermieter und Versicherung: alle Melder mit Einbau, Tausch, letzter Prüfung und Batterie. ${C.proto.name || C.proto.addr ? "" : `Name und Adresse für den Kopf trägst du in den Einstellungen ein.`}</div>
       <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} Drucken oder als PDF sichern</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div></div>`;
-    return `<div class="enc"><div class="enco">${list}</div><div class="enco">${sl}${pr}</div></div>`;
+    return { list, sl, pr };
   }
+  _sfWartOld(T) { const p = this._sfWartParts(T); return `<div class="enc"><div class="enco">${p.list}</div><div class="enco">${p.sl}${p.pr}</div></div>`; }
   _sfxProto() {
     const T = this._sfStat(), { C, l, S } = T, yr = new Date().getFullYear(), P = C.proto, fl = (id) => (C.plan.floors.find((f) => f.id === id) || {}).n || "";
     const rows = l.map((x) => { const end = x.inst && x.life ? this._sfMon((+x.inst.slice(0, 4) + x.life) + x.inst.slice(4)) : "–", res = x.life_days != null && x.life_days < 0 ? "Tausch fällig" : x.bat != null && x.bat < C.bat.pct ? "Batterie schwach" : x.off ? "nicht erreichbar" : "in Ordnung"; return `<tr><td>${esc(x.name)}</td><td>${esc([fl(x.floor), x.room || x.area].filter(Boolean).join(" · ") || "–")}</td><td>${esc(x.kind)}</td><td>${esc(this._sfMon(x.inst) || "–")}</td><td>${esc(end)}</td><td>${esc(this._sfDate(x.tested || (S.test || {}).last))}</td><td>${x.bat != null ? num(x.bat, 0) + " %" : "–"}</td><td>${res}</td></tr>`; }).join("");
@@ -173,7 +175,7 @@
   }
   _sfxHtml() { const a = document.createElement("a"), u = URL.createObjectURL(new Blob([this._sfxProto()], { type: "text/html" })); a.href = u; a.download = `Pruefprotokoll-Melder-${new Date().getFullYear()}.html`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
   /* ---- Einstellungen: Melder und Batterie, Abfahrt-Prüfung, Allgemein */
-  _sfSet(T) {
+  _sfSetOld(T) {
     const { C, l } = T, H = this._hass, adm = this._admin(), KN = this._sfxKind(), NM = this._sfxNames();
     if (!adm) return `<div class="card sfc"><div class="mut sm">Die Einstellungen kann nur ein Administrator ändern.</div></div>`;
     const sw = (act, k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" aria-label="${label}"></button>`;
@@ -223,7 +225,7 @@
     return `<div class="enc"><div class="enco">${det}${dep}</div><div class="enco">${ed}${gen}</div></div>`;
   }
   /* ---- Aktionen und Eingaben der neuen Oberfläche */
-  _sfxNew(a, b) {
+  _sfxNewOld(a, b) {
     const k = b.dataset.k, s = Number(b.dataset.s), ed = this._sfEd;
     const uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     if (a === "sfxtab") { this._sfT = k; try { localStorage.setItem("fh_sf_tab", k); } catch (_) { /* privater Modus */ } this._render(); return true; }

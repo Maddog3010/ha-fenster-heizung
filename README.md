@@ -123,7 +123,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 8 | **Elektroauto & Wallbox** | Vorabversion 0.9 | go-e direkt oder andere Wallboxen über Home Assistant (Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP …), Carport-Szene, Überschuss-Balken mit Vorschau, Abfahrt aus dem Kalender, Tablet-Wandansicht, Ladeplan als Band, Statistik Tag/Woche/Monat/Jahr, Sensoren je Fahrzeug |
 | 9 | **Wetter & Warnungen** | Stabil 1.0 | Wetter-Szene, Stufen 1–4 wie beim DWD, alle amtlichen Warnungen, 48-Stunden-Zeitleiste, Aktionen mit Aussperrschutz, Vorsorge, Tablet-Alarm |
 | 10 | Garten & Bewässerung | In Entwicklung 0.1 | Konzept mit Gartenplan |
-| 11 | **Rauch- & Sicherheitsmelder** | Beta 0.5 | Melder, Batterie, Grundriss-Baukasten, Wartung, Abfahrt-Prüfung |
+| 11 | **Rauch- & Sicherheitsmelder** | Beta 0.7 | Haus-Szene, Melder-Karten 2.0, Batterie-Prognose, Grundriss-Baukasten, Wartung mit Jahresband, Abfahrt-Prüfung |
 | 12 | Pool & Sauna | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ |
 | 13 | Batteriespeicher-Planung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echtem Ladestand |
 | 14 | **Dynamischer Stromtarif** | Beta 0.8 | Tibber direkt oder Preis-Sensor, Viertelstunden heute und morgen, Preisband, bestes Fenster je Gerät, Preisalarm |

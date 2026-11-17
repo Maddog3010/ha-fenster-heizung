@@ -143,7 +143,7 @@
     this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { error: true }, ts: Date.now() }; })
       .finally(() => { this._sfxBusy = false; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } });
   }
-  _sfxVisible() { return !!(this._modal && this._modal.type === "sfset") || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }
+  _sfxVisible() { return !!(this._modal && (this._modal.type === "sfset" || this._modal.type === "sfdet")) || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }
   _sfx() { const d = (this._sfxD && this._sfxD.d) || {}, df = this._sfxDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, bat: { ...df.bat, ...(c.bat || {}) }, off: { ...df.off, ...(c.off || {}) }, test: { ...df.test, ...(c.test || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, kinds: c.kinds || df.kinds, excl: c.excl || [], acts: c.acts || [], meta: c.meta || {}, add: c.add || [], plan: { floors: c.plan && c.plan.floors && c.plan.floors.length ? c.plan.floors : df.plan.floors, items: (c.plan && c.plan.items) || [], bg: (c.plan && c.plan.bg) || {} }, quiet: { ...df.quiet, ...(c.quiet || {}) }, lead: c.lead != null ? c.lead : df.lead, depart: { ...df.depart, ...(c.depart || {}), frost: { ...df.depart.frost, ...((c.depart || {}).frost || {}) } }, proto: { ...df.proto, ...(c.proto || {}) } } }; }
   _sfxSave(cfg) {
     if (!(this._sfxD && this._sfxD.d && this._sfxD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }

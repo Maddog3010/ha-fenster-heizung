@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b5] - 2026-11-17
+
+Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.7, Beta): Stufe 1 (Technik) und Stufe 2 (Neue Optik) aus dem Konzept. Alarme, Aktionen und Einstellungen arbeiten wie bisher.
+
+### Neu
+- **Modul 11 · Neue Optik (v0.7):**
+  - **Haus-Szene im Banner:** das Haus im Schnitt mit jedem Melder an seinem Platz (Etage nach deinem Grundriss). Der Zustand steht als Farbe am Melder, bei Alarm mit Rauch und Ringen im Raum.
+  - **Fünf Kennzahl-Kacheln** (Alarme, Batterien, Erreichbar, Prüfung, Lebensdauer) statt der Text-Ampel und eine **Zeitleiste der letzten 30 Tage** mit Alarmen, Batterie, Ausfällen und Prüfungen.
+  - **Melder-Karten 2.0** ohne Farbbalken und Rahmen: HD-Symbol mit LED, Wort für den Zustand, Batterie-Ring. Ein Tipp öffnet das **Detailblatt** mit Batterie-Verlauf und Prognose, „Geprüft“ und „Batterie getauscht“.
+  - **Wartung:** Jahresband mit Prüfungen und Batterietausch je Melder, Batterie-Prognose, Nachweis als Jahresprotokoll.
+  - Die große Beta-Box ist eine schmale Zeile, die sich wegtippen lässt und mit einer neuen Version wiederkommt.
+  - **Schalter „Karten wie bisher“** unter Einstellungen → Modul 11 bringt die Darstellung von v0.5 zurück.
+- **Modul 11 · Batterie-Prognose (v0.6):** Gerade durch den Verlauf seit dem letzten Tausch (ein Sprung nach oben um 20 Punkte gilt als Tausch). Dazu eine **frühe Erinnerung**, wenn die Schwelle „Batterie schwach“ innerhalb des Vorlaufs erreicht wird.
+
+### Geändert
+- **Modul 11 · Technik (v0.6):** Fällt ein Melder aus oder kommt zurück, wird sofort geprüft statt beim nächsten Takt (Takt jetzt 60 s). Die Zuordnung Gerät → Batterie und Testknopf wird nur noch bei Änderung im Entitäten-Register neu gelesen. **Grundriss und Hintergrundbild** liegen in einem eigenen Speicher (mit Sicherung, auch in der Sicherung auf den Heim-Server), der Speicher hat eine Schema-Version; beim ersten Start übernimmt Modul 11 den Plan einmalig und legt vorher eine Kopie an. Neue Tests für Modul 11.
 ## [2026.11.4b4] - 2026-11-17
 
 ### Neu

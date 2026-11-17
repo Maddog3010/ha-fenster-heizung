@@ -33,7 +33,7 @@ LABELS = {
     "layout": "Aussehen des Dashboards", "coach": "Energie-Coach", "waechter": "Wächter (Sponsor Max)", "autopilot": "Autopilot (Sponsor Max)", "general": "Allgemeine Einstellungen", "presence": "Anwesenheit",
     "wasser": "Modul 2 bis 4 (Warmwasser, Energie, Gerätestrom)", "geraete": "Modul 4 Messwerte", "energiebuch": "Haus-Energiebuch",
     "wallbox": "Modul 8 Wallbox", "wallbox_stats": "Modul 8 Statistik", "solar": "Modul 16 Solar-Prognose",
-    "wetter": "Modul 9 Wetter", "entfeuchter": "Modul 1 Luftentfeuchter", "sicherheit": "Modul 11 Sicherheit", "muell": "Modul 17 Müllabfuhr",
+    "wetter": "Modul 9 Wetter", "entfeuchter": "Modul 1 Luftentfeuchter", "sicherheit": "Modul 11 Sicherheit", "sicherheit_plan": "Modul 11 Grundriss", "muell": "Modul 17 Müllabfuhr",
     "hausfluss": "Modul 19 Hausfluss", "tags": "Lab Tags & Karten", "tablets": "Tablet-Modus", "labs": "Labs",
     "tibber": "Tibber", "diag": "Diagnose", "haus": "Haus (Energiequellen, Preise, Wetterquelle)", "messwerk": "Messwerk", "briefing": "Sponsor Max: Morgen-Briefing", "addons": "Addon-Verwaltung",
 }

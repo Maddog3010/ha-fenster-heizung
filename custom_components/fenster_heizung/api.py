@@ -1654,12 +1654,12 @@ async def ws_sf_test(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 @websocket_api.require_admin
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sf_tested", vol.Optional("ent"): str})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sf_tested", vol.Optional("ent"): str, vol.Optional("bat"): bool})
 @websocket_api.async_response
 async def ws_sf_tested(hass: HomeAssistant, connection, msg: dict) -> None:
     mgr = _sf(hass, connection, msg)
     if mgr is not None:
-        connection.send_result(msg["id"], await mgr.async_mark_tested(str(msg.get("ent") or "")[:80]))
+        connection.send_result(msg["id"], await mgr.async_mark_tested(str(msg.get("ent") or "")[:80], bool(msg.get("bat"))))
 
 
 @websocket_api.require_admin

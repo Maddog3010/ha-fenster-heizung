@@ -305,6 +305,8 @@ def _without_bg(key: str, data: Any) -> Any:
         cfg = data.get("cfg")
         if isinstance(cfg, dict) and isinstance(cfg.get("plan"), dict) and cfg["plan"].get("bg"):
             data = {**data, "cfg": {**cfg, "plan": {**cfg["plan"], "bg": ""}}}
+    if key == "sicherheit_plan" and isinstance(data, dict) and isinstance(data.get("plan"), dict) and data["plan"].get("bg"):
+        data = {**data, "plan": {**data["plan"], "bg": {}}}
     return data
 
 
