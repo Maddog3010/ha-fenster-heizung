@@ -21,8 +21,13 @@ NOW = [datetime(2026, 11, 16, 19, 0, tzinfo=TZ)]   # Montagabend
 LOG: list = []
 
 
+_ALT: dict = {}   # was vor dem Laden in sys.modules stand (None = nichts)
+
+
 def _stub(name: str, **attrs) -> types.ModuleType:
-    m = sys.modules.get(name) or types.ModuleType(name)
+    """Eigenes Ersatzmodul, nie das einer anderen Testdatei: sonst überschreiben sich die Tests gegenseitig (z. B. entity_registry)."""
+    _ALT.setdefault(name, sys.modules.get(name))
+    m = types.ModuleType(name)
     for k, v in attrs.items():
         setattr(m, k, v)
     sys.modules[name] = m
@@ -66,6 +71,7 @@ def _load():
     dtm.start_of_local_day = lambda d: datetime(d.year, d.month, d.day, tzinfo=TZ)
     dtm.utc_from_timestamp = lambda ts: datetime.fromtimestamp(ts, tz=timezone.utc)
     dtm.as_local = lambda t: t.astimezone(TZ)
+    _ALT.setdefault("homeassistant.util.dt", sys.modules.get("homeassistant.util.dt"))
     sys.modules["homeassistant.util.dt"] = dtm
     sys.modules["homeassistant.util"].dt = dtm
     _stub("custom_components.fenster_heizung.backup", SafeStore=_Store)
@@ -77,7 +83,14 @@ def _load():
     return mod
 
 
-M = _load()
+try:
+    M = _load()
+finally:  # sys.modules wieder so, wie es war: die Ersatzmodule bleiben nur im geladenen Manager
+    for _n, _old in _ALT.items():
+        if _old is None:
+            sys.modules.pop(_n, None)
+        else:
+            sys.modules[_n] = _old
 
 
 class _Services:
