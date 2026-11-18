@@ -1,4 +1,4 @@
-  /* ================= Modul 11 · v0.8 „Alarm & Stufen“ (Konzept_Modul11_Neue-Optik Teil C, Empfehlungen 1–12) =================
+  /* ================= Modul 11 · v0.8–0.9 „Alarm & Stufen“ (Konzept_Modul11_Neue-Optik Teil C, Empfehlungen 1–12) =================
      C1 · Alarm-Ansicht (Handy, Tablet-Wand, Panel) mit den Stufen, „Verstanden“ und Fehlalarm-Gründen. Der Alarm kommt von sicherheit.py, hier wird nur angezeigt.
      Ausgeschaltete Melder: Schalter im Detailblatt, Frage „Ausschalten?“ nach langer Funkstille, Einstellungen unter Alarm & Stufen.
      Fluchtweg: im Grundriss zeigt eine Linie vom alarmierenden Melder zur nächsten Tür (mit Hinweis „Plan prüfen“). */

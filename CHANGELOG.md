@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b12] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** steigt auf **v0.9** (Vorabversion): Einstellungen und Auswahlmenüs in der neuen Optik.
+
+### Geändert
+- **Einstellungsfenster:** Jeder Abschnitt (Welche Melder, Bei Alarm, Batterie und Erreichbarkeit, Prüf-Erinnerung, Benachrichtigung, Senden an) ist jetzt eine Karte mit Icon, wie in den Reitern. „Test senden“ und „Fertig“ bleiben beim Scrollen unten sichtbar.
+- **Auswahlmenüs:** Alle Auswahlfelder im Modul (Art, Etage, Batterie-Typ, Austausch nach, Prüfen alle, Melder im Grundriss) haben ein einheitliches Aussehen mit Pfeil, abgerundeten Ecken und türkisem Fokusrand. Auswahl-Chips und Aktions-Karten sind runder.
+
 ## [2026.11.4b11] - 2026-11-18
 
 Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.8, Build 5): **roter Alarm beim Zurückwechseln in die App**.

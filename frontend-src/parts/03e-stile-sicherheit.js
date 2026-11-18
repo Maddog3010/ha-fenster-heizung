@@ -90,4 +90,15 @@ const CSS_SF2 = `
 .sfesa{fill:#34d399;pointer-events:none}.sfesb{fill:#064e3b;stroke:#34d399;stroke-width:1.5;pointer-events:none}.sfest{fill:#6ee7b7;font-size:12px;font-weight:700;text-anchor:middle;pointer-events:none}
 .sfpm{width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(0,0,0,.28);--sfw:#9aa7b7}
 .sftb2{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.sftb2 .btn2{flex:none;padding:7px 12px;font-size:.8rem}.sftb2 .btn2[disabled]{opacity:.4;cursor:default}
+
+/* Einstellungsfenster + Auswahlmenüs in der neuen Optik */
+.sheet.sfm .sfmb{display:grid;gap:12px;padding-bottom:8px}.sheet.sfm .sfmc{margin:0}.sheet.sfm .sfmc h2{font-size:1rem}
+.sheet.sfm .sfmc .vrow{padding:10px 0;border-top:1px solid var(--line);margin:0}.sheet.sfm .sfmc .vrow:first-of-type{border-top:0}
+.sheet.sfm .foot2{position:sticky;bottom:0;padding:12px 0 2px;background:linear-gradient(transparent,var(--card-background-color,var(--primary-background-color)) 40%)}
+.sheet.sfm .ohint{border-radius:14px;background:rgba(255,255,255,.03)}
+.sheet.sfm .gschips{gap:8px}.sheet.sfm .gsch{border-radius:999px;padding:9px 16px}
+.sheet.sfm .rfv,.sfpe .rfv{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03);padding:12px 14px}
+select.osel{-webkit-appearance:none;appearance:none;width:100%;min-height:46px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.04) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 14px center;padding:10px 40px 10px 14px;font-weight:600;color:var(--primary-text-color);transition:border-color .15s,box-shadow .15s}
+select.osel:focus{outline:0;border-color:#2dd4bf;box-shadow:0 0 0 3px rgba(45,212,191,.22)}
+select.osel option{background:#1c1f24;color:#e5e7eb}
 `;

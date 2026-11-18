@@ -148,6 +148,17 @@
     return `<svg viewBox="0 0 ${W} ${H}" class="sfgr" role="img" aria-label="Batterie-Verlauf"><line x1="6" x2="${W - 6}" y1="${Y(C.bat.pct)}" y2="${Y(C.bat.pct)}" class="sfgth"/><text x="8" y="${Y(C.bat.pct) - 3}" class="sfgtx">Schwelle ${C.bat.pct} %</text>
       <path d="${line}" class="sfgl"/>${end != null ? `<path d="M${X(now).toFixed(1)} ${Y(x.bat).toFixed(1)}L${X(t1).toFixed(1)} ${Y(end).toFixed(1)}" class="sfgf"/>` : ""}<circle cx="${X(now).toFixed(1)}" cy="${Y(x.bat).toFixed(1)}" r="3.6" class="sfgp"/><text x="${Math.min(W - 6, X(now) + 6).toFixed(1)}" y="${(Y(x.bat) - 7).toFixed(1)}" class="sfgtx" text-anchor="${X(now) > W - 60 ? "end" : "start"}">heute</text></svg>`;
   }
+  /* Einstellungsfenster in der neuen Optik: jeder Abschnitt wird eine Karte mit Icon, Fuß bleibt unten */
+  _sfxModal() {
+    const h = this._sfxModalOld(), i0 = h.indexOf('<div class="lsec"'), fi = h.indexOf('<div class="foot2"');
+    if (i0 < 0 || fi < 0) return h;
+    const head = h.slice(0, i0), foot = h.slice(fi).replace(/<\/div>\s*$/, "");
+    const parts = h.slice(i0, fi).split(/(?=<div class="lsec")/).map((x) => {
+      const m = x.match(/^<div class="lsec"[^>]*>(<svg[\s\S]*?<\/svg>)([\s\S]*?)<\/div>([\s\S]*)$/);
+      return m ? `<div class="card sfc sfmc"><h2>${m[1]}${m[2]}</h2>${m[3]}</div>` : x;
+    }).join("");
+    return head.replace('class="sheet wide"', 'class="sheet wide sfm"') + `<div class="sfmb">${parts}</div>` + foot + "</div>";
+  }
   _sfDetModal() {
     const x = this._sfList().find((d) => d.id === (this._modal && this._modal.id)), adm = this._admin();
     if (!x) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Melder</b></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div><div class="mut sm">Dieser Melder wird nicht mehr erkannt.</div></div>`;
