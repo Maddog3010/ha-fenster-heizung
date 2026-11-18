@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b10] - 2026-11-18
+
+Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.8, Build 4): **Warnmeldungen lösen keinen Vollbild-Alarm mehr aus**.
+
+### Behoben
+- **Alarm-Bild beim Wechsel zurück in die App:** Beim Zurückkehren aus einer anderen App blitzte kurz der rote Alarm auf („… Warnung 1“, Sicherheitsmelder). Ursache: ein Warndienst-Sensor (z. B. NINA) wurde als Melder behandelt. Warndienste zählen jetzt nie als Melder, auch nicht, wenn sie früher von Hand hinzugefügt wurden. Zusätzlich werden Sensoren, deren Name nach „Warnung“/„Unwetter“ klingt, automatisch ausgelassen.
+
 ## [2026.11.4b9] - 2026-11-18
 
 Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.8, Build 3): **PDF-Knöpfe in der App behoben** und **Grundriss 2.0**.

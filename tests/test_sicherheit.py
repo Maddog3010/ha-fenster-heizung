@@ -496,3 +496,8 @@ def test_plan_20_felder():
     assert it["r1"]["lk"] == "Küche"
     assert "rg" not in it["d1"] and "lk" not in it["d1"]
     assert S.clean_plan(None)["scale"] == 40
+
+
+def test_warnname_regex():
+    assert S.WARN_NAME.search("binary_sensor.rohr_roth_bayern_warnung_1 Rohr (Roth - Bayern) Warnung 1")
+    assert not S.WARN_NAME.search("binary_sensor.rauchmelder_kueche Rauchmelder Küche")

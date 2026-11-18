@@ -45,6 +45,7 @@ CLASSES = {
     "safety": ("safety", "Sicherheitsmelder"),
 }
 # Warndienste liefern auch binary_sensor mit Geräteklasse „safety“, sind aber keine Melder im Haus
+WARN_NAME = re.compile(r"warnung|warning|unwetter|wetterwarn", re.I)
 NO_DETECTOR = {"nina", "dwd_weather_warnings", "meteoalarm", "nws", "nws_alerts", "gdacs", "usgs_earthquakes_feed", "waze_travel_time"}
 KINDS = tuple(v[0] for v in CLASSES.values())
 KIND_NAMES = {v[0]: v[1] for v in CLASSES.values()}
@@ -444,8 +445,10 @@ class SicherheitManager:
             if k is not None and k[0] not in self.cfg["kinds"] and not manual:
                 continue
             ent = reg.async_get(s.entity_id)
-            if ent and ent.platform in NO_DETECTOR and not manual:
-                continue
+            if ent and ent.platform in NO_DETECTOR:
+                continue  # Warndienste sind nie Melder, auch nicht von Hand hinzugefügt
+            if not manual and WARN_NAME.search(f"{s.entity_id} {s.attributes.get('friendly_name') or ''}"):
+                continue  # Name nach Warndienst („… Warnung 1“): kein Melder, außer von Hand gewählt
             if m.get("kind"):
                 k = (m["kind"], KIND_NAMES[m["kind"]])
             elif k is None:
