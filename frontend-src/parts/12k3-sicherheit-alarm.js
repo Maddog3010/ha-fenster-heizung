@@ -60,7 +60,7 @@
       : `<div class="sfhint sfhe">${ic("door", 15)}<span>${r.kind === "s" ? "Weg zur Treppe" : "Fluchtweg zur nächsten Außentür"} (${esc(e.fl)}), ca. ${num(r.m, 0)} m, grün eingezeichnet. <b>Plan prüfen:</b> Das Modul rechnet um die Wände im Plan herum, kennt aber keine Möbel${r.unsure ? " und weiß nicht sicher, ob diese Tür nach draußen führt" : ""}.</span></div>`;
   }
   /* ---- Alarm-Ansicht */
-  _sfAlarmList() { const S = this._sfx(), L = S.det && !S.error ? S.det : this._sfxLocal(); return L.filter((x) => x.alarm && !x.ack); }
+  _sfAlarmList() { const S = this._sfx(); if (!S.det && !S.error) return []; /* Backend antwortet noch (z. B. beim Zurückwechseln in die App): kein Alarm aus Rohdaten */ const L = S.det && !S.error ? S.det : this._sfxLocal(); return L.filter((x) => x.alarm && !x.ack); }
   _sfAlarmKey() { return !this._mdState || !this._mdState().on.sf ? "" : this._sfAlarmList().map((x) => x.id).sort().join(","); }
   _sfAlarmTick() {
     if (!this._hass || !this._mdState || !this._mdState().on.sf) return;

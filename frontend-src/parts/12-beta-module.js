@@ -195,7 +195,8 @@
   /* Ohne Antwort vom Backend: Melder direkt aus den Zuständen lesen */
   _sfxLocal() {
     const H = this._hass, E = H.entities || {}, K = { smoke: "smoke", carbon_monoxide: "co", gas: "gas", moisture: "water", heat: "heat", safety: "safety" }, KN = this._sfxKind();
-    return Object.entries(H.states).filter(([id, e]) => id.startsWith("binary_sensor.") && K[(e.attributes || {}).device_class]).map(([id, e]) => {
+    const NO = ["nina", "dwd_weather_warnings", "meteoalarm", "nws", "nws_alerts", "gdacs", "usgs_earthquakes_feed", "waze_travel_time"], ex = (this._sfx().cfg.excl || []);
+    return Object.entries(H.states).filter(([id, e]) => id.startsWith("binary_sensor.") && K[(e.attributes || {}).device_class] && !ex.includes(id) && !NO.includes((E[id] || {}).platform) && !/warnung|warning|unwetter|wetterwarn/i.test(`${id} ${(e.attributes || {}).friendly_name || ""}`)).map(([id, e]) => {
       const a = e.attributes || {}, b = a.battery_level ?? a.battery, bv = b != null && isFinite(Number(b)) ? Number(b) : null, k = K[a.device_class];
       return { id, name: a.friendly_name || id, k, kind: KN[k][0], area: "", src: (E[id] || {}).platform || "", alarm: e.state === "on", off: e.state === "unavailable" || e.state === "unknown", bat: bv, test: "" };
     }).sort((x, y) => Number(y.alarm) - Number(x.alarm) || x.name.localeCompare(y.name, "de"));
