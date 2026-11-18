@@ -140,9 +140,9 @@
   }
   /* ---- Detailblatt eines Melders mit Batterie-Verlauf und Prognose (Stufe 1 · C4) */
   _sfGraph(x) {
-    const C = this._sfx().cfg, h = x.bat_hist || [], W = 300, H = 96, now = Date.now() / 1000;
+    const C = this._sfx().cfg, h = x.bat_hist || [], W = 300, H = 110, now = Date.now() / 1000;
     if (h.length < 2 || x.bat == null) return `<div class="mut sm sfgn">${x.bat == null ? "Dieser Melder meldet keinen Batteriewert." : "Der Verlauf füllt sich, sobald genug Werte da sind (alle 20 Stunden einer). Eine Prognose gibt es ab 7 Tagen."}</div>`;
-    const hor = x.bat_days != null ? Math.min(x.bat_days, 365) * 86400 : 0, t0 = h[0][0], t1 = now + hor, X = (t) => 6 + ((t - t0) / Math.max(1, t1 - t0)) * (W - 12), Y = (b) => H - 10 - (Math.max(0, Math.min(100, b)) / 100) * (H - 20);
+    const hor = x.bat_days != null ? Math.min(x.bat_days, 365) * 86400 : 0, t0 = h[0][0], t1 = now + hor, X = (t) => 6 + ((t - t0) / Math.max(1, t1 - t0)) * (W - 12), Y = (b) => H - 10 - (Math.max(0, Math.min(100, b)) / 100) * (H - 36);
     const line = h.map(([t, b], i) => `${i ? "L" : "M"}${X(t).toFixed(1)} ${Y(b).toFixed(1)}`).join("") + `L${X(now).toFixed(1)} ${Y(x.bat).toFixed(1)}`;
     const end = x.bat_days != null ? Math.max(0, x.bat - (x.bat / Math.max(1, x.bat_days)) * (hor / 86400)) : null;
     return `<svg viewBox="0 0 ${W} ${H}" class="sfgr" role="img" aria-label="Batterie-Verlauf"><line x1="6" x2="${W - 6}" y1="${Y(C.bat.pct)}" y2="${Y(C.bat.pct)}" class="sfgth"/><text x="8" y="${Y(C.bat.pct) - 3}" class="sfgtx">Schwelle ${C.bat.pct} %</text>

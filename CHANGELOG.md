@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b15] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 4: zwei Anzeigefehler auf dem Tablet.
+
+### Behoben
+- **Grundriss bearbeiten:** Das Feld eines gewählten Raums, einer Wand oder eines Melders war auseinandergezogen (Name, Breite, Höhe und Raum-Auswahl nebeneinander, Knöpfe am Rand abgeschnitten). Ursache war ein doppelt vergebener Stilname der neuen Auswahl-Seite. Das Feld steht wieder sauber untereinander.
+- **Batterie-Verlauf:** Das Wort „heute“ wurde bei vollem Akku oben abgeschnitten, und die Grafik hatte viel leeren Platz. Oben ist jetzt Rand, und die Höchstbreite ist kleiner.
+
 ## [2026.11.4b14] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 3: Melder-Seite auf großen Bildschirmen.
