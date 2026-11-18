@@ -12,15 +12,20 @@ import importlib.util
 import pathlib
 import sys
 import types
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 ROOT = pathlib.Path(__file__).resolve().parents[1] / "custom_components" / "fenster_heizung"
 NOW = [datetime(2026, 11, 17, 19, 0, tzinfo=timezone.utc)]
 DAY = 86400
 
 
+_ALT: dict = {}
+
+
 def _stub(name: str, **attrs) -> types.ModuleType:
-    m = sys.modules.get(name) or types.ModuleType(name)
+    """Eigenes Ersatzmodul, das nach dem Laden wieder verschwindet (sonst stören sich die Testdateien gegenseitig)."""
+    _ALT.setdefault(name, sys.modules.get(name))
+    m = types.ModuleType(name)
     for k, v in attrs.items():
         setattr(m, k, v)
     sys.modules[name] = m
@@ -55,6 +60,7 @@ def _load():
         _stub(f"homeassistant.helpers.{n}", async_get=lambda hass: None)
         setattr(sys.modules["homeassistant.helpers"], n, sys.modules[f"homeassistant.helpers.{n}"])
     _stub("homeassistant.helpers.event", async_track_time_interval=lambda *a, **k: (lambda: None))
+    _stub("homeassistant.helpers.dispatcher", async_dispatcher_send=lambda *a, **k: None)
     _stub("homeassistant.util.dt", now=lambda: NOW[0], utcnow=lambda: NOW[0], parse_datetime=lambda s: datetime.fromisoformat(str(s).replace("Z", "+00:00")))
     sys.modules["homeassistant.util"].dt = sys.modules["homeassistant.util.dt"]
     _stub("fhpkg").__path__ = [str(ROOT)]
@@ -62,12 +68,21 @@ def _load():
     _stub("fhpkg.const", DOMAIN="fenster_heizung")
     spec = importlib.util.spec_from_file_location("fhpkg.sicherheit", ROOT / "sicherheit.py")
     mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
+    try:
+        spec.loader.exec_module(mod)
+    finally:
+        for n, old in _ALT.items():
+            if old is None:
+                sys.modules.pop(n, None)
+            else:
+                sys.modules[n] = old
     sys.modules["fh_sicherheit"] = mod
     return mod
 
 
 S = _load()
+# eigene Uhr: andere Testdateien tauschen die Funktionen im gemeinsamen Ersatzmodul von homeassistant.util.dt aus
+S.dt_util = types.SimpleNamespace(now=lambda: NOW[0], utcnow=lambda: NOW[0], parse_datetime=lambda s: datetime.fromisoformat(str(s).replace("Z", "+00:00")))
 
 
 def hist(*pairs):
@@ -83,10 +98,42 @@ class _Bus:
         return lambda: None
 
 
+class _Bus2(_Bus):
+    def __init__(self):
+        super().__init__()
+        self.fired = []
+
+    def async_fire(self, ev, data):
+        self.fired.append((ev, data))
+
+
+class _States:
+    def __init__(self):
+        self.d = {}
+
+    def get(self, e):
+        return self.d.get(e)
+
+    def async_entity_ids(self, dom):
+        return []
+
+
+class _Services:
+    def __init__(self):
+        self.calls = []
+
+    def has_service(self, dom, name):
+        return True
+
+    async def async_call(self, dom, svc, data, blocking=False):
+        self.calls.append((dom, svc, data))
+
+
 class _Hass:
     def __init__(self):
-        self.bus, self.tasks = _Bus(), []
+        self.bus, self.tasks = _Bus2(), []
         self.data = {}
+        self.states, self.services = _States(), _Services()
 
     def async_create_task(self, coro):
         self.tasks.append(coro)
@@ -227,8 +274,215 @@ def test_ausfall_und_rueckkehr_loesen_pruefung_aus():
     assert not h2.tasks  # Modul aus
 
 
+# ---------------------------------------------------------------- v0.8: Ausgeschaltet, Stufen, Verstanden
+def _det(h, eid="binary_sensor.rauch", state="on", dc="smoke", name="Rauchmelder Küche"):
+    st = _St(state, dc)
+    st.attributes["friendly_name"] = name
+    h.states.d[eid] = st
+    return st
+
+
+def _snap_stub(m):
+    m.snapshot = lambda: asyncio.sleep(0, {})
+    m._known = {"binary_sensor.rauch", "binary_sensor.gas"}
+
+
+def test_standard_und_grenzen_v08():
+    c = S.default_cfg()
+    assert c["stages"]["s2"]["on"] and not c["stages"]["s3"]["on"] and not c["stages"]["s4"]["on"]  # Vorgabe: Stufe 1 und 2
+    assert c["offask"] == {"mode": "ask", "days": 7}
+    d = S.clean_cfg({"stages": {"s2": {"on": True, "sec": 1}, "s3": {"on": True, "sec": 99999}}, "offask": {"mode": "x", "days": 500},
+                     "tts": {"player": "media_player.kueche", "engine": "light.x"}, "contact": {"to": "notify.nachbar"},
+                     "acts": [{"id": "a1", "kind": "smoke", "ent": "light.flur", "do": "on", "st": 9}]})
+    assert d["stages"]["s2"]["sec"] == 5 and d["stages"]["s3"]["sec"] == 900 and d["offask"] == {"mode": "ask", "days": 60}
+    assert d["tts"] == {"player": "media_player.kueche", "engine": ""} and d["contact"]["to"] == "notify.nachbar"
+    assert d["acts"][0]["st"] == 4
+    assert S.clean_cfg({"acts": [{"id": "a1", "kind": "smoke", "ent": "light.flur", "do": "on"}]})["acts"][0]["st"] == 1
+
+
+def test_ausschalten_und_einschalten():
+    m, h = mgr()
+    _snap_stub(m)
+    _det(h, "binary_sensor.gas", "unavailable", "gas", "Gasmelder")
+    asyncio.run(m.async_pause("binary_sensor.gas", 0))
+    assert m.is_paused("binary_sensor.gas") and m.paused["binary_sensor.gas"]["was_off"] is True
+    asyncio.run(m.async_resume("binary_sensor.gas"))
+    assert not m.is_paused("binary_sensor.gas") and "binary_sensor.gas" not in m.paused
+    asyncio.run(m.async_pause("binary_sensor.gas", 7))
+    assert m.is_paused("binary_sensor.gas")
+    NOW[0] += timedelta(days=8)
+    try:
+        assert not m.is_paused("binary_sensor.gas")  # Zeit abgelaufen
+    finally:
+        NOW[0] -= timedelta(days=8)
+    asyncio.run(m.async_pause("binary_sensor.unbekannt", 0))
+    assert "binary_sensor.unbekannt" not in m.paused  # nur erkannte Melder
+
+
+def test_weiter_warnen_merkt_die_antwort():
+    m, h = mgr()
+    _snap_stub(m)
+    m.asked["binary_sensor.gas"] = "ask"
+    asyncio.run(m.async_resume("binary_sensor.gas", True))
+    assert m.asked["binary_sensor.gas"] == "warn"
+
+
+def test_verstanden_haelt_stufen_an_und_merkt_fehlalarm():
+    m, h = mgr()
+    _snap_stub(m)
+    _det(h)
+    m.cfg["notify"]["to"] = ["notify.handy"]
+    m.st["binary_sensor.rauch"] = {"a": True, "since": "x", "off_since": 0.0, "rep": 0.0, "stage": 1, "t0": 0.0, "ack": "", "why": ""}
+    asyncio.run(m.async_ack("", "Toast", "Handy"))
+    s = m.st["binary_sensor.rauch"]
+    assert s["ack"] and s["why"] == "Toast"
+    assert m.fa["binary_sensor.rauch"][0]["why"] == "Toast"
+    assert any(c[2].get("message") == "clear_notification" for c in h.services.calls)  # Mitteilung wird entfernt
+    assert any(e[1]["art"] == "verstanden" and e[1]["fehlalarm"] == "Toast" for e in h.bus.fired)
+    n = len(h.services.calls)
+    asyncio.run(m.async_ack("", "", "Handy"))  # zweites Mal: nichts mehr offen
+    assert len(h.services.calls) == n
+
+
+def test_stufen_laufen_der_zeit_nach_und_enden_mit_verstanden():
+    m, h = mgr()
+    _snap_stub(m)
+    _det(h)
+    m.cfg["stages"]["s3"]["on"] = True
+    m.cfg["notify"]["to"] = ["notify.handy"]
+    m.cfg["tts"] = {"player": "media_player.kueche", "engine": "tts.cloud"}
+    h.states.d["tts.cloud"] = _St("unknown", None)
+    m.cfg["acts"] = [{"id": "l2", "kind": "smoke", "ent": "light.flur", "do": "on", "st": 2}, {"id": "l1", "kind": "smoke", "ent": "light.bad", "do": "on", "st": 1}]
+    h.states.d["light.flur"], h.states.d["light.bad"] = _St("off", None), _St("off", None)
+    m.st["binary_sensor.rauch"] = {"a": True, "since": "x", "off_since": 0.0, "rep": 0.0, "stage": 1, "t0": 1000.0, "ack": "", "why": ""}
+    asyncio.run(m.stages_tick(1005.0))
+    assert m.st["binary_sensor.rauch"]["stage"] == 1  # noch nicht
+    asyncio.run(m.stages_tick(1011.0))
+    assert m.st["binary_sensor.rauch"]["stage"] == 2
+    assert [c[2]["entity_id"] for c in h.services.calls if c[0] == "light"] == ["light.flur"]  # nur die Stufe-2-Aktion
+    asyncio.run(m.stages_tick(1070.0))
+    assert m.st["binary_sensor.rauch"]["stage"] == 3
+    assert any(c[0] == "tts" and c[1] == "speak" for c in h.services.calls)  # Durchsage
+    assert any(c[0] == "notify" and "nicht quittiert" in c[2].get("title", "") for c in h.services.calls)
+    asyncio.run(m.async_ack("", "", "Panel"))
+    k = len(h.services.calls)
+    asyncio.run(m.stages_tick(5000.0))  # quittiert: keine Stufe 4 mehr
+    assert m.st["binary_sensor.rauch"]["stage"] == 3 and len(h.services.calls) == k
+
+
+def test_stufe4_meldet_kontaktperson_und_wiederholt():
+    m, h = mgr()
+    _snap_stub(m)
+    _det(h)
+    m.cfg["stages"]["s4"]["on"] = True
+    m.cfg["contact"]["to"] = "notify.nachbar"
+    m.st["binary_sensor.rauch"] = {"a": True, "since": "x", "off_since": 0.0, "rep": 0.0, "stage": 1, "t0": 1000.0, "ack": "", "why": ""}
+    asyncio.run(m.stages_tick(1400.0))
+    to = lambda: [c for c in h.services.calls if c[0] == "notify" and c[1] == "nachbar"]  # noqa: E731
+    assert m.st["binary_sensor.rauch"]["stage"] == 4 and len(to()) == 1
+    assert any(a.get("uri") == "tel:112" for a in to()[0][2]["data"]["actions"])  # 112-Knopf
+    asyncio.run(m.stages_tick(1450.0))
+    assert len(to()) == 1  # noch keine 2 Minuten
+    asyncio.run(m.stages_tick(1530.0))
+    assert len(to()) == 2
+
+
+def test_kurzstand_fuer_sensoren():
+    m, h = mgr()
+    m.first_seen = NOW[0].isoformat()
+    det = [{"id": "a", "off": False, "bat": 80}, {"id": "b", "off": True, "bat": None}, {"id": "c", "off": False, "bat": 12}]
+    m.paused["b"] = {"until": "", "since": "", "auto": False, "was_off": True}
+    sm = m._summary(det, NOW[0])
+    assert sm["status"] == "hinweis" and sm["melder"] == 2 and sm["ausgeschaltet"] == 1 and sm["bat_min"] == 12  # b ist ausgeschaltet: zählt nicht
+    m.st["a"] = {"a": True, "ack": ""}
+    sm = m._summary(det, NOW[0])
+    assert sm["status"] == "alarm" and sm["alarme"] == 1 and sm["unquittiert"] == 1
+    assert sm["pruefung"] == "2027-05-17"  # 6 Monate nach dem ersten Start
+
+
+def _check_mit(m, h, dets):
+    m.detectors = lambda: [dict(x) for x in dets]
+    m.cfg["notify"]["to"] = ["notify.handy"]
+    m.first_seen = (NOW[0] - timedelta(days=400)).isoformat()  # Prüfung wäre fällig
+    asyncio.run(m._check())
+    return [c[2].get("title", "") for c in h.services.calls if c[0] == "notify"]
+
+
+def _d(eid="binary_sensor.gas", off=True, bat=None):
+    return {"id": eid, "name": "Gasmelder", "k": "gas", "kind": "Gasmelder", "area": "Küche", "src": "", "alarm": False, "off": off, "bat": bat, "test": "", "manual": False}
+
+
+def test_ausgeschalteter_melder_loest_keine_wartungsmeldungen_aus():
+    m, h = mgr()
+    m.cfg["lead"] = 0
+    m.paused["binary_sensor.gas"] = {"until": "", "since": "", "auto": False, "was_off": True}
+    m.st["binary_sensor.gas"] = {"a": False, "since": "", "off_since": 1.0, "rep": 0.0, "stage": 0, "t0": 0.0, "ack": "", "why": ""}  # seit Jahren nicht erreichbar
+    assert _check_mit(m, h, [_d()]) == []  # weder „nicht erreichbar“ noch „Melder prüfen“
+
+
+def test_nicht_erreichbar_nur_einmal_dann_frage_nach_tagen():
+    m, h = mgr()
+    m.cfg["lead"] = 0
+    m.st["binary_sensor.gas"] = {"a": False, "since": "", "off_since": time_ago(2), "rep": 0.0, "stage": 0, "t0": 0.0, "ack": "", "why": ""}
+    t = _check_mit(m, h, [_d()])
+    assert t == ["Melder nicht erreichbar"]  # Prüf-Erinnerung entfällt, der Melder ist ja aus
+    h.services.calls.clear()
+    m._notes["off:binary_sensor.gas"] -= 2 * DAY  # am nächsten Tag
+    assert _check_mit(m, h, [_d()]) == []  # kein tägliches Wiederholen mehr
+    m.st["binary_sensor.gas"]["off_since"] = time_ago(8)
+    assert _check_mit(m, h, [_d()]) == ["Melder wirkt ausgeschaltet"]
+    assert m.asked["binary_sensor.gas"] == "ask"
+    h.services.calls.clear()
+    assert _check_mit(m, h, [_d()]) == []  # die Frage kommt nur einmal
+
+
+def test_modus_auto_schaltet_selbst_aus_und_never_warnt_wie_bisher():
+    m, h = mgr()
+    m.cfg["lead"] = 0
+    m.cfg["offask"] = {"mode": "auto", "days": 7}
+    m.st["binary_sensor.gas"] = {"a": False, "since": "", "off_since": time_ago(9), "rep": 0.0, "stage": 0, "t0": 0.0, "ack": "", "why": ""}
+    _check_mit(m, h, [_d()])
+    assert m.is_paused("binary_sensor.gas") and m.paused["binary_sensor.gas"]["auto"]
+    m2, h2 = mgr()
+    m2.cfg["lead"] = 0
+    m2.cfg["offask"] = {"mode": "never", "days": 7}
+    m2.st["binary_sensor.gas"] = {"a": False, "since": "", "off_since": time_ago(9), "rep": 0.0, "stage": 0, "t0": 0.0, "ack": "", "why": ""}
+    assert _check_mit(m2, h2, [_d()]) == ["Melder nicht erreichbar"]
+    m2._notes["off:binary_sensor.gas"] -= 2 * DAY
+    h2.services.calls.clear()
+    assert _check_mit(m2, h2, [_d()]) == ["Melder nicht erreichbar"]  # wie bisher täglich
+
+
+def test_ausgeschalteter_melder_ist_wieder_da_schaltet_sich_ein():
+    m, h = mgr()
+    m.cfg["lead"] = 0
+    m.paused["binary_sensor.gas"] = {"until": "", "since": "", "auto": True, "was_off": True}
+    t = _check_mit(m, h, [_d(off=False, bat=80)])
+    assert "binary_sensor.gas" not in m.paused and t[0] == "Melder wieder da"
+
+
+def test_alarm_kommt_auch_von_ausgeschaltetem_melder():
+    m, h = mgr()
+    m.paused["binary_sensor.gas"] = {"until": "", "since": "", "auto": False, "was_off": False}
+    d = _d(off=False, bat=80)
+    d["alarm"] = True
+    t = _check_mit(m, h, [d])
+    assert t == ["ALARM: Gasmelder"] and m.st["binary_sensor.gas"]["stage"] == 1
+    assert any(e[1]["art"] == "alarm" for e in h.bus.fired)
+
+
+def time_ago(days):
+    import time
+    return time.time() - days * DAY
+
+
 if __name__ == "__main__":
     for k, v in list(globals().items()):
         if k.startswith("test_"):
             v()
             print("ok", k)
+
+
+def test_warndienste_sind_keine_melder():
+    assert "nina" in S.NO_DETECTOR and "dwd_weather_warnings" in S.NO_DETECTOR
+    assert "zha" not in S.NO_DETECTOR

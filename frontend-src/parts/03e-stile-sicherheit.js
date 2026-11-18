@@ -38,4 +38,30 @@ const CSS_SF2 = `
 .sflg{display:flex;gap:14px;flex-wrap:wrap;font-size:.74rem;color:var(--mut);margin-top:8px}.sflg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.sflg i.ring{border:2px solid #fbbf24;width:5px;height:5px}
 .sfbp{display:grid;grid-template-columns:minmax(90px,1.2fr) 2fr minmax(70px,.9fr);gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:6px 0;color:inherit;font:inherit;font-size:.84rem;cursor:pointer}.sfbp b{text-align:right;font-size:.8rem}.sfbp span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sfdoc{background:#f8fafc;color:#0f172a;border-radius:10px;padding:11px 12px}.sfdoc b{display:block;font-size:.86rem}.sfdoc small{color:#64748b;font-size:.72rem}.sfdoc i{display:block;height:5px;background:#cbd5e1;border-radius:3px;margin-top:8px}.sfdoc i.s{width:60%}
+/* v0.8 · Ausgeschaltete Melder, Stufen, Alarm-Ansicht, Fluchtweg */
+.sfbn{padding-bottom:34px}
+.sfnc.pause{opacity:.66;border-style:dashed;background:color-mix(in srgb,var(--card) 82%,transparent)}.sfnc.pause .sfmi{filter:grayscale(1)}
+.sfhintc{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid color-mix(in srgb,#f59e0b 42%,var(--line));border-radius:16px;padding:10px 12px;margin:0 0 10px}
+.sfhi{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,#f59e0b 16%,transparent);color:#fbbf24;flex:none}
+.sfht{flex:1;min-width:180px}.sfht b{display:block;font-size:.92rem}.sfht small{color:var(--mut);font-size:.78rem}
+.sfhb{display:flex;gap:6px;flex-wrap:wrap}.sfhb .btn2{flex:none;padding:8px 14px}
+.sfstg{display:flex;align-items:center;gap:10px;background:color-mix(in srgb,var(--mut) 8%,transparent);border-radius:14px;padding:9px 11px;margin:6px 0}
+.sfsn{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:.75rem;flex:none}
+.sfst2{flex:1;min-width:0}.sfst2 b{display:block;font-size:.9rem}.sfst2 small{font-size:.74rem}.sfsub{margin:0 0 6px 32px}
+.sfesc{stroke:#34d399;stroke-width:4;stroke-dasharray:10 8;fill:none;stroke-linecap:round;pointer-events:none}.sfesd{fill:none;stroke:#34d399;stroke-width:3;pointer-events:none}
+.sfhe{color:#34d399}.sfhe b{color:inherit}
+.sfalov{position:fixed;inset:0;z-index:60;background:rgba(20,0,0,.9)}
+.sfal{position:fixed;z-index:61;inset:3vh 3vw;display:grid;grid-template-columns:1.1fr 1fr;gap:22px;padding:24px;border-radius:26px;overflow:auto;color:#fff;background:linear-gradient(160deg,#7f1d1d,#450a0a);border:3px solid #ef4444;box-shadow:0 0 0 6px rgba(239,68,68,.25),0 30px 80px rgba(0,0,0,.6)}
+.sfalt{display:grid;gap:10px;align-content:start;min-width:0}.sfalt>b{font-size:clamp(1.6rem,4vw,2.6rem);line-height:1.1;letter-spacing:-.02em}.sfalt>small{font-size:1rem;color:#fecaca}
+.sfalp{width:max-content;background:rgba(255,255,255,.2);color:#fecaca;font-size:.74rem;letter-spacing:.08em;font-weight:800;border-radius:99px;padding:4px 11px}
+.sfalm{display:flex;flex-wrap:wrap;gap:6px}.sfalm span{background:rgba(255,255,255,.16);border-radius:99px;padding:3px 10px;font-size:.78rem}
+.sfals{display:grid;gap:7px;margin-top:6px}.sfals>div{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);border-radius:13px;padding:9px 12px;font-size:.92rem}
+.sfals i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:.76rem;background:rgba(255,255,255,.22);flex:none}
+.sfals .d i{background:#34d399;color:#052e2b}.sfals .n i{background:#fbbf24;color:#451a03}.sfals span{flex:1;min-width:0}.sfals span small{display:block;color:#fecaca;font-size:.74rem}.sfals em{font-style:normal;color:#fecaca;font-size:.82rem;white-space:nowrap}
+.sfalf{display:flex;align-items:center;gap:8px;color:#bbf7d0;font-size:.86rem}
+.sfalr{display:grid;gap:12px;align-content:start;min-width:0}.sfali svg{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
+.sfok{background:#fff;color:#7f1d1d;border:0;border-radius:20px;font:inherit;font-weight:900;font-size:1.5rem;padding:20px 0;cursor:pointer;width:100%}
+.sffc{display:flex;flex-wrap:wrap;gap:7px}.sffc button,.sffc a{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;font:inherit;font-size:.84rem;padding:8px 14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.sffc .sf112{background:rgba(0,0,0,.35)}
+@media (max-width:760px),(orientation:portrait){.sfal{grid-template-columns:1fr;inset:0;border-radius:0;padding:18px 16px}.sfalr{order:2}.sfali svg{max-width:260px}}
 `;

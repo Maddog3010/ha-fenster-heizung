@@ -216,6 +216,18 @@
       },
       "tf_avg_tomorrow": {
         "name": "Electricity price avg tomorrow"
+      },
+      "sf_status": {
+        "name": "Safety status"
+      },
+      "sf_alarme": {
+        "name": "Safety alarms"
+      },
+      "sf_bat_min": {
+        "name": "Detector battery (lowest)"
+      },
+      "sf_pruefung": {
+        "name": "Detector next test"
       }
     }
   }

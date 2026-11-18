@@ -16,6 +16,7 @@ from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.helpers import area_registry as ar
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.util import dt as dt_util
 
@@ -25,7 +26,14 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 TICK_SECONDS = 60  # Netz; Zustandswechsel der Melder lösen die Prüfung sofort aus
-SCHEMA = 2  # Stand des Speichers (2 = Plan und Hintergrundbild in eigenem Speicher)
+SCHEMA = 3  # Stand des Speichers (2 = Plan in eigenem Speicher, 3 = Stufen, Ausgeschaltet, Fehlalarme)
+EVENT_SF = f"{DOMAIN}_sicherheit"  # Ereignis für eigene Automationen
+SIGNAL_SF = f"{DOMAIN}_sicherheit_update"  # Sensoren neu schreiben
+ACT_PREFIX = "SF_"  # Knöpfe in der Handy-Mitteilung
+STAGE_TICK_S = 5  # solange ein Alarm läuft, prüft das Modul die Stufen im 5-s-Takt
+S4_REPEAT_S = 120
+FA_MAX = 30  # gemerkte Fehlalarme je Melder
+PAUSE_MAX = 40
 REG_EVENT = "entity_registry_updated"
 # Geräteklasse -> (Schlüssel, Name)
 CLASSES = {
@@ -36,6 +44,8 @@ CLASSES = {
     "heat": ("heat", "Hitzemelder"),
     "safety": ("safety", "Sicherheitsmelder"),
 }
+# Warndienste liefern auch binary_sensor mit Geräteklasse „safety“, sind aber keine Melder im Haus
+NO_DETECTOR = {"nina", "dwd_weather_warnings", "meteoalarm", "nws", "nws_alerts", "gdacs", "usgs_earthquakes_feed", "waze_travel_time"}
 KINDS = tuple(v[0] for v in CLASSES.values())
 KIND_NAMES = {v[0]: v[1] for v in CLASSES.values()}
 BAT_NOTE_GAP_S = 7 * 86400
@@ -70,6 +80,8 @@ def default_cfg() -> dict[str, Any]:
         "quiet": {"on": False, "from": "22:00", "to": "07:00"}, "lead": 30,
         "depart": {"on": True, "ents": [], "frost": {"on": False, "ent": "", "below": 3}},
         "proto": {"name": "", "addr": "", "who": ""}, "ui": {"old": False},
+        "stages": {"s2": {"on": True, "sec": 10}, "s3": {"on": False, "sec": 60}, "s4": {"on": False, "sec": 300}},
+        "tts": {"player": "", "engine": ""}, "contact": {"to": ""}, "offask": {"mode": "ask", "days": 7},
     }
 
 
@@ -130,7 +142,7 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
             continue
         seen.add(aid)
         do = x.get("do") if x.get("do") in do_options(ent) else do_options(ent)[0]
-        acts.append({"id": aid, "kind": kind, "ent": ent, "do": do})
+        acts.append({"id": aid, "kind": kind, "ent": ent, "do": do, "st": int(_num(x.get("st"), 1, 4, 1))})
     d["acts"] = acts
     n = r.get("notify") if isinstance(r.get("notify"), dict) else {}
     to = []
@@ -178,6 +190,18 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
     d["proto"] = {k: str(pr.get(k) or "").strip()[:60] for k in ("name", "addr", "who")}
     ui = r.get("ui") if isinstance(r.get("ui"), dict) else {}
     d["ui"] = {"old": bool(ui.get("old", False))}
+    sg = r.get("stages") if isinstance(r.get("stages"), dict) else {}
+    dflt = d["stages"]
+    d["stages"] = {}
+    for k, lo, hi in (("s2", 5, 120), ("s3", 30, 900), ("s4", 60, 1800)):
+        v = sg.get(k) if isinstance(sg.get(k), dict) else {}
+        d["stages"][k] = {"on": bool(v.get("on", dflt[k]["on"])), "sec": int(_num(v.get("sec"), lo, hi, dflt[k]["sec"]))}
+    tt = r.get("tts") if isinstance(r.get("tts"), dict) else {}
+    d["tts"] = {"player": _ent(tt.get("player"), ("media_player",)), "engine": _ent(tt.get("engine"), ("tts",))}
+    ct = r.get("contact") if isinstance(r.get("contact"), dict) else {}
+    d["contact"] = {"to": _ent(ct.get("to"), ("notify",))}
+    oa = r.get("offask") if isinstance(r.get("offask"), dict) else {}
+    d["offask"] = {"mode": oa.get("mode") if oa.get("mode") in ("ask", "auto", "never") else "ask", "days": int(_num(oa.get("days"), 1, 60, 7))}
     return d
 
 
@@ -287,6 +311,12 @@ class SicherheitManager:
         self._unsub: CALLBACK_TYPE | None = None
         self._unsub_ev: CALLBACK_TYPE | None = None
         self._busy = False
+        self._sum: dict[str, Any] = {}
+        self.paused: dict[str, dict[str, Any]] = {}  # ausgeschaltete Melder: until (ISO oder leer = dauerhaft), since, auto, was_off
+        self.asked: dict[str, str] = {}  # Frage „Ausschalten?“ gestellt: ask (offen) oder warn (weiter warnen)
+        self.fa: dict[str, list[dict[str, str]]] = {}  # Fehlalarme je Melder (t, why)
+        self._unsub_fast: CALLBACK_TYPE | None = None
+        self._unsub_act: CALLBACK_TYPE | None = None
 
     # ---- Start/Stop
     async def async_start(self) -> None:
@@ -311,7 +341,15 @@ class SicherheitManager:
                         dst[str(k)] = [str(x) for x in v if isinstance(x, str)][-THIST_MAX:]
             for k, v in (d.get("st") if isinstance(d.get("st"), dict) else {}).items():
                 if isinstance(v, dict):
-                    self.st[str(k)] = {"a": bool(v.get("a")), "since": str(v.get("since") or ""), "off_since": 0.0, "rep": 0.0}
+                    self.st[str(k)] = {"a": bool(v.get("a")), "since": str(v.get("since") or ""), "off_since": float(v.get("off_since") or 0), "rep": 0.0,
+                                       "stage": int(v.get("stage") or 0), "t0": float(v.get("t0") or 0), "ack": str(v.get("ack") or ""), "why": str(v.get("why") or "")}
+            for k, v in (d.get("paused") if isinstance(d.get("paused"), dict) else {}).items():
+                if isinstance(v, dict) and _ENT.match(str(k)) and len(self.paused) < PAUSE_MAX:
+                    self.paused[str(k)] = {"until": str(v.get("until") or ""), "since": str(v.get("since") or ""), "auto": bool(v.get("auto")), "was_off": bool(v.get("was_off"))}
+            self.asked = {str(k): str(v) for k, v in (d.get("asked") or {}).items() if v in ("ask", "warn")}
+            for k, v in (d.get("fa") if isinstance(d.get("fa"), dict) else {}).items():
+                if isinstance(v, list):
+                    self.fa[str(k)] = [{"t": str(x.get("t") or ""), "why": str(x.get("why") or "")[:30]} for x in v if isinstance(x, dict) and x.get("t")][-FA_MAX:]
             self.log = [x for x in (d.get("log") or []) if isinstance(x, dict) and "t" in x and "x" in x][:MAX_LOG]
             self._notes = {str(k): float(v) for k, v in (d.get("notes") or {}).items() if isinstance(v, (int, float))}
         if migrate:
@@ -323,20 +361,27 @@ class SicherheitManager:
         self._unsub = async_track_time_interval(self.hass, self._tick, timedelta(seconds=TICK_SECONDS))
         self._unsub_ev = self.hass.bus.async_listen(EVENT_STATE_CHANGED, self._on_state)
         self._unsub_reg = self.hass.bus.async_listen(REG_EVENT, self._on_reg)
+        try:
+            self._unsub_act = self.hass.bus.async_listen("mobile_app_notification_action", self._on_action)
+        except Exception:  # noqa: BLE001 - ohne Ereignisbus (Tests) keine Knöpfe
+            self._unsub_act = None
+        if any(v.get("a") and not v.get("ack") for v in self.st.values()):
+            self._fast_on()
         self.hass.async_create_task(self._tick(None))
 
     def async_stop(self) -> None:
-        for u in (self._unsub, self._unsub_ev, self._unsub_reg):
+        for u in (self._unsub, self._unsub_ev, self._unsub_reg, self._unsub_fast, self._unsub_act):
             if u:
                 u()
-        self._unsub = self._unsub_ev = self._unsub_reg = None
+        self._unsub = self._unsub_ev = self._unsub_reg = self._unsub_fast = self._unsub_act = None
 
     def _save(self) -> None:
         def main() -> dict[str, Any]:
             plan = {**self.cfg["plan"], "bg": {}}  # das Bild liegt nur im Plan-Speicher, Etagen und Elemente zur Sicherheit auch hier
             return {
                 "v": SCHEMA, "cfg": {**self.cfg, "plan": plan}, "last_test": self.last_test, "first_seen": self.first_seen, "tested": self.tested, "bhist": self.bhist, "thist": self.thist, "swaps": self.swaps,
-                "st": {k: {"a": v["a"], "since": v["since"]} for k, v in self.st.items()}, "log": self.log, "notes": self._notes,
+                "st": {k: {"a": v["a"], "since": v["since"], "off_since": v.get("off_since", 0.0), "stage": v.get("stage", 0), "t0": v.get("t0", 0.0), "ack": v.get("ack", ""), "why": v.get("why", "")} for k, v in self.st.items()},
+                "log": self.log, "notes": self._notes, "paused": self.paused, "asked": self.asked, "fa": self.fa,
             }
         self._store.async_delay_save(main, 10)
         self._pstore.async_delay_save(lambda: {"v": SCHEMA, "plan": self.cfg["plan"]}, 10)
@@ -394,11 +439,13 @@ class SicherheitManager:
                 continue
             if k is not None and k[0] not in self.cfg["kinds"] and not manual:
                 continue
+            ent = reg.async_get(s.entity_id)
+            if ent and ent.platform in NO_DETECTOR and not manual:
+                continue
             if m.get("kind"):
                 k = (m["kind"], KIND_NAMES[m["kind"]])
             elif k is None:
                 k = ("safety", KIND_NAMES["safety"])
-            ent = reg.async_get(s.entity_id)
             did = ent.device_id if ent else None
             dev = devs.async_get(did) if did else None
             aid = (ent.area_id if ent and ent.area_id else (dev.area_id if dev else None))
@@ -415,7 +462,7 @@ class SicherheitManager:
         return out
 
     # ---- Meldungen und Aktionen
-    async def _notify(self, kind: str, title: str, msg: str, gap_key: str = "", gap: float = 0) -> int:
+    async def _notify(self, kind: str, title: str, msg: str, gap_key: str = "", gap: float = 0, data: dict[str, Any] | None = None, to: list[str] | None = None) -> int:
         n = self.cfg["notify"]
         if kind and not n.get(kind):
             return 0
@@ -426,12 +473,12 @@ class SicherheitManager:
                 return 0
             self._notes[gap_key] = time.time()
         sent = 0
-        for svc in n["to"]:
+        for svc in (n["to"] if to is None else to):
             name = svc.split(".", 1)[1]
             if not self.hass.services.has_service("notify", name):
                 continue
             try:
-                await self.hass.services.async_call("notify", name, {"title": title, "message": msg}, blocking=False)
+                await self.hass.services.async_call("notify", name, {"title": title, "message": msg, **({"data": data} if data else {})}, blocking=False)
                 sent += 1
             except Exception as err:  # Dienst fehlerhaft: nie die Überwachung stören
                 _LOGGER.debug("Benachrichtigung %s: %s", svc, err)
@@ -458,12 +505,163 @@ class SicherheitManager:
             _LOGGER.debug("Aktion %s %s: %s", ent, do, err)
             return False
 
-    async def _run_acts(self, kind: str) -> int:
+    async def _run_acts(self, kind: str, stage: int = 1) -> int:
         n = 0
         for a in self.cfg["acts"]:
-            if a["kind"] in (kind, "any") and await self._call(a["ent"], a["do"]):
+            if a["kind"] in (kind, "any") and a.get("st", 1) == stage and await self._call(a["ent"], a["do"]):
                 n += 1
         return n
+
+    # ---- Ausgeschaltete Melder
+    def is_paused(self, ent: str, now: Any = None) -> bool:
+        p = self.paused.get(ent)
+        if not p:
+            return False
+        if not p["until"]:
+            return True
+        until = dt_util.parse_datetime(p["until"])
+        return bool(until is not None and until > (now or dt_util.now()))
+
+    def _name(self, ent: str) -> str:
+        m = self.cfg["meta"].get(ent) or {}
+        st = self.hass.states.get(ent)
+        return m.get("name") or (st.attributes.get("friendly_name") if st is not None else "") or ent
+
+    def _pause(self, ent: str, days: int, auto: bool = False) -> None:
+        st = self.hass.states.get(ent)
+        until = (dt_util.now() + timedelta(days=days)).isoformat() if days else ""
+        self.paused[ent] = {"until": until, "since": dt_util.now().isoformat(), "auto": auto, "was_off": bool(st is None or st.state in OFF_STATES)}
+        self.asked.pop(ent, None)
+        self._add(f"Ausgeschaltet: {self._name(ent)}" + (" (nach langer Funkstille von selbst)." if auto else "."), "off")
+
+    async def async_pause(self, ent: str, days: int = 0) -> dict[str, Any]:
+        """Melder ausschalten: keine Hinweise zu Erreichbarkeit, Batterie, Prüfung und Lebensdauer. Ein Alarm kommt weiter durch."""
+        if _ENT.match(ent) and ent in self._known and (ent in self.paused or len(self.paused) < PAUSE_MAX):
+            self._pause(ent, int(_num(days, 0, 365, 0)))
+            self._save()
+        return await self.snapshot()
+
+    async def async_resume(self, ent: str, keep_warn: bool = False) -> dict[str, Any]:
+        """Wieder einschalten. Mit keep_warn=True (Antwort auf die Frage „Ausschalten?“) bleibt es beim Warnen."""
+        if ent in self.paused:
+            del self.paused[ent]
+            self._add(f"Eingeschaltet: {self._name(ent)}.", "ok")
+        if keep_warn:
+            self.asked[ent] = "warn"
+        else:
+            self.asked.pop(ent, None)
+        self._save()
+        return await self.snapshot()
+
+    # ---- Ereignis, Mitteilung mit „Verstanden“
+    def _fire(self, art: str, ent: str, **extra: Any) -> None:
+        m = self.cfg["meta"].get(ent) or {}
+        data = {"art": art, "melder": ent, "name": self._name(ent), "raum": m.get("room") or "", **extra}
+        try:
+            self.hass.bus.async_fire(EVENT_SF, data)
+        except Exception:  # noqa: BLE001 - ein Ereignis darf die Überwachung nie stören
+            _LOGGER.debug("Ereignis nicht gesendet", exc_info=True)
+
+    @staticmethod
+    def _push(ent: str, call: bool = False) -> dict[str, Any]:
+        acts = [{"action": ACT_PREFIX + "ACK", "title": "Verstanden"}]
+        if call:
+            acts.append({"action": "URI", "title": "112 anrufen", "uri": "tel:112"})
+        return {"tag": f"sf_{ent}", "ttl": 0, "priority": "high", "channel": "Alarm", "importance": "max",
+                "push": {"interruption-level": "critical", "sound": {"name": "default", "critical": 1, "volume": 1.0}}, "actions": acts}
+
+    async def _on_action(self, event: Any) -> None:
+        if str((getattr(event, "data", None) or {}).get("action") or "") == ACT_PREFIX + "ACK":
+            await self.async_ack("", "", "Handy")
+
+    def _fast_on(self) -> None:
+        if self._unsub_fast is None:
+            self._unsub_fast = async_track_time_interval(self.hass, self._stages_cb, timedelta(seconds=STAGE_TICK_S))
+
+    def _fast_off(self) -> None:
+        if self._unsub_fast is not None:
+            self._unsub_fast()
+            self._unsub_fast = None
+
+    async def _stages_cb(self, _now: Any) -> None:
+        await self.stages_tick()
+
+    async def stages_tick(self, now_ts: float | None = None) -> None:
+        """Alarm läuft und niemand hat „Verstanden“ gedrückt: die nächste Stufe auslösen, wenn ihre Zeit um ist."""
+        now_ts = now_ts or time.time()
+        live = False
+        for eid, s in list(self.st.items()):
+            if not s.get("a") or s.get("ack"):
+                continue
+            live = True
+            sg = self.cfg["stages"]
+            el = now_ts - (s.get("t0") or now_ts)
+            name = self._name(eid)
+            m = self.cfg["meta"].get(eid) or {}
+            where = f" ({m['room']})" if m.get("room") else ""
+            kind = (self.hass.states.get(eid).attributes.get("device_class") if self.hass.states.get(eid) is not None else "") or ""
+            k = (kind_of(kind) or ("safety", ""))[0]
+            for n in (2, 3, 4):
+                cfgn = sg[f"s{n}"]
+                if cfgn["on"] and s.get("stage", 1) < n and el >= cfgn["sec"]:
+                    s["stage"] = n
+                    ran = await self._run_acts(k, n)
+                    if n == 2:
+                        self._add(f"Stufe 2: Haus vorbereitet ({name}){f', {ran} Aktion(en)' if ran else ''}.", "alarm")
+                    elif n == 3:
+                        self._add(f"Stufe 3: niemand hat „Verstanden“ gedrückt, alle werden informiert ({name}).", "alarm")
+                        await self._notify("", f"ALARM nicht quittiert: {name}", f"{name}{where} hat vor {int(el)} Sekunden ausgelöst. Bitte nachsehen und „Verstanden“ drücken.", data=self._push(eid))
+                        await self._announce(f"Achtung, Alarm. {name}{where}.")
+                    else:
+                        self._add(f"Stufe 4: Kontaktperson wird benachrichtigt ({name}).", "alarm")
+                        s["s4t"] = 0.0
+                    self._fire("stufe", eid, stufe=n)
+                    self._save()
+            if s.get("stage", 1) >= 4 and now_ts - float(s.get("s4t") or 0) >= S4_REPEAT_S:
+                s["s4t"] = now_ts
+                c = self.cfg["contact"]["to"]
+                await self._notify("", f"ALARM: {name}", f"{name}{where} hat ausgelöst und niemand hat reagiert. Bitte nachsehen. Notruf 112, wenn es brennt.", data=self._push(eid, True), to=[c] if c else [])
+        if not live:
+            self._fast_off()
+        async_dispatcher_send(self.hass, SIGNAL_SF)
+
+    async def _announce(self, text: str) -> None:
+        t = self.cfg["tts"]
+        if not t["player"] or not t["engine"] or self.hass.states.get(t["engine"]) is None:
+            return
+        try:
+            await self.hass.services.async_call("tts", "speak", {"entity_id": t["engine"], "media_player_entity_id": t["player"], "message": text}, blocking=False)
+        except Exception as err:  # noqa: BLE001 - Durchsage ist nur ein Zusatz
+            _LOGGER.debug("Durchsage: %s", err)
+
+    async def async_ack(self, ent: str = "", why: str = "", who: str = "App") -> dict[str, Any]:
+        """„Verstanden“: die Stufen halten an, die Wiederholungen enden. Mit why wird der Alarm als Fehlalarm gemerkt."""
+        now = dt_util.now().isoformat()
+        why = re.sub(r"[^\wäöüÄÖÜß .,-]", "", str(why or "")).strip()[:30]
+        n = 0
+        for eid, s in list(self.st.items()):
+            if (ent and eid != ent) or not s.get("a") or s.get("ack"):
+                continue
+            s["ack"], s["why"] = now, why
+            n += 1
+            self._add(f"Verstanden: {self._name(eid)} (von {who})" + (f", Fehlalarm: {why}." if why else "."), "ack")
+            if why:
+                self.fa.setdefault(eid, []).append({"t": now, "why": why})
+                del self.fa[eid][:-FA_MAX]
+            self._fire("verstanden", eid, fehlalarm=why or None)
+            for svc in self.cfg["notify"]["to"]:
+                name = svc.split(".", 1)[1]
+                if self.hass.services.has_service("notify", name):
+                    try:
+                        await self.hass.services.async_call("notify", name, {"message": "clear_notification", "data": {"tag": f"sf_{eid}"}}, blocking=False)
+                    except Exception:  # noqa: BLE001
+                        _LOGGER.debug("Mitteilung nicht entfernt", exc_info=True)
+        if n:
+            self._save()
+            if not any(v.get("a") and not v.get("ack") for v in self.st.values()):
+                self._fast_off()
+            async_dispatcher_send(self.hass, SIGNAL_SF)
+        return await self.snapshot()
 
     async def async_press_test(self, det_id: str) -> dict[str, Any]:
         """Testknopf des Melders drücken (zum Beispiel X-Sense), sofern das Gerät einen hat."""
@@ -505,41 +703,73 @@ class SicherheitManager:
         seen = {d["id"] for d in det}
         quiet = self.is_quiet()
         self._sample_bat(det, now_ts)
+        for e, p in list(self.paused.items()):  # abgelaufen oder wieder erreichbar: von selbst einschalten
+            cur = next((x for x in det if x["id"] == e), None)
+            if not self.is_paused(e, now):
+                del self.paused[e]
+                self._add(f"Eingeschaltet: {self._name(e)} (Zeit abgelaufen).", "ok")
+                self._save()
+            elif p.get("was_off") and cur is not None and not cur["off"]:
+                del self.paused[e]
+                self._add(f"Wieder erreichbar und eingeschaltet: {self._name(e)}.", "ok")
+                await self._notify("off", "Melder wieder da", f"{self._name(e)} ist wieder erreichbar und überwacht wieder.")
+                self._save()
         for d in det:
             s = self.st.setdefault(d["id"], {"a": False, "since": "", "off_since": 0.0, "rep": 0.0})
+            s.setdefault("stage", 0), s.setdefault("t0", 0.0), s.setdefault("ack", ""), s.setdefault("why", "")
             where = f" ({d['area']})" if d["area"] else ""
-            # Alarm
+            paused = self.is_paused(d["id"], now)
+            # Alarm (kommt auch bei ausgeschaltetem Melder durch)
             if d["alarm"] and not s["a"]:
-                s.update({"a": True, "since": now.isoformat(), "rep": now_ts})
-                n = await self._run_acts(d["k"])
+                s.update({"a": True, "since": now.isoformat(), "rep": now_ts, "stage": 1, "t0": now_ts, "ack": "", "why": "", "s4t": 0.0})
+                n = await self._run_acts(d["k"], 1)
                 self._add(f"Alarm: {d['name']}{where}." + (f" {n} Aktion(en) ausgelöst." if n else ""), "alarm")
-                await self._notify("alarm", f"ALARM: {d['kind']}", f"{d['name']}{where} hat ausgelöst.")
+                await self._notify("alarm", f"ALARM: {d['kind']}", f"{d['name']}{where} hat ausgelöst.", data=self._push(d["id"]))
+                self._fire("alarm", d["id"], stufe=1, art_melder=d["k"])
+                self._fast_on()
                 self._save()
             elif d["alarm"] and s["a"]:
                 rep = self.cfg["repeat"]
-                if rep and now_ts - s["rep"] >= rep * 60:
+                if rep and not s.get("ack") and now_ts - s["rep"] >= rep * 60:
                     s["rep"] = now_ts
-                    await self._notify("alarm", f"ALARM läuft noch: {d['kind']}", f"{d['name']}{where} meldet weiter Alarm.")
+                    await self._notify("alarm", f"ALARM läuft noch: {d['kind']}", f"{d['name']}{where} meldet weiter Alarm.", data=self._push(d["id"]))
             elif not d["alarm"] and s["a"] and not d["off"]:
-                s.update({"a": False, "since": ""})
+                s.update({"a": False, "since": "", "stage": 0, "t0": 0.0, "ack": "", "why": ""})
                 self._add(f"Alarm beendet: {d['name']}{where}.", "ok")
                 await self._notify("end", f"Alarm beendet: {d['kind']}", f"{d['name']}{where} meldet keinen Alarm mehr.")
+                self._fire("ende", d["id"])
                 self._save()
             # Erreichbarkeit
             if d["off"]:
                 s["off_since"] = s["off_since"] or now_ts
-                o = self.cfg["off"]
-                if o["on"] and not quiet and now_ts - s["off_since"] >= o["min"] * 60:
+                o, oa = self.cfg["off"], self.cfg["offask"]
+                off_s = now_ts - s["off_since"]
+                if not paused:
                     key = f"off:{d['id']}"
-                    if now_ts - self._notes.get(key, 0) >= OFF_NOTE_GAP_S:
-                        self._add(f"Nicht erreichbar: {d['name']}{where}.", "off")
-                    await self._notify("off", "Melder nicht erreichbar", f"{d['name']}{where} meldet sich seit über {o['min']} Minuten nicht.", key, OFF_NOTE_GAP_S)
-                    self._save()
+                    if o["on"] and not quiet and off_s >= o["min"] * 60 and (oa["mode"] == "never" or self.asked.get(d["id"]) == "warn" or key not in self._notes):
+                        if now_ts - self._notes.get(key, 0) >= OFF_NOTE_GAP_S:
+                            self._add(f"Nicht erreichbar: {d['name']}{where}.", "off")
+                            self._fire("offline", d["id"])
+                        await self._notify("off", "Melder nicht erreichbar", f"{d['name']}{where} meldet sich seit über {o['min']} Minuten nicht.", key, OFF_NOTE_GAP_S)
+                        self._save()
+                    if oa["mode"] != "never" and off_s >= oa["days"] * 86400 and d["id"] not in self.asked:
+                        if oa["mode"] == "auto":
+                            self._pause(d["id"], 0, True)
+                        else:
+                            self.asked[d["id"]] = "ask"
+                            self._add(f"{d['name']}{where} wirkt ausgeschaltet (seit {oa['days']} Tagen nicht erreichbar).", "off")
+                            await self._notify("off", "Melder wirkt ausgeschaltet", f"{d['name']}{where} meldet sich seit {oa['days']} Tagen nicht. Im Modul „Ausschalten“ wählen, dann kommen keine Warnungen mehr dazu.")
+                        self._save()
             else:
+                if s["off_since"] or d["id"] in self.asked:
+                    self._notes.pop(f"off:{d['id']}", None)
+                    self.asked.pop(d["id"], None)
                 s["off_since"] = 0.0
             # Batterie
             b = self.cfg["bat"]
-            if b["on"] and not quiet and d["bat"] is not None and d["bat"] < b["pct"]:
+            if paused:
+                pass
+            elif b["on"] and not quiet and d["bat"] is not None and d["bat"] < b["pct"]:
                 key = f"bat:{d['id']}"
                 if now_ts - self._notes.get(key, 0) >= BAT_NOTE_GAP_S:
                     self._add(f"Batterie schwach: {d['name']}{where} ({round(d['bat'])} %).", "warn")
@@ -549,7 +779,7 @@ class SicherheitManager:
         lead, bt = self.cfg["lead"], self.cfg["bat"]
         if bt["on"] and lead and not quiet:
             for d in det:
-                f = self.bat_forecast(d["id"]) if d["bat"] is not None and d["bat"] >= bt["pct"] else None
+                f = self.bat_forecast(d["id"]) if d["bat"] is not None and d["bat"] >= bt["pct"] and not self.is_paused(d["id"], now) else None
                 if f and 0 < f["thr"] <= lead:
                     key = f"batf:{d['id']}"
                     if now_ts - self._notes.get(key, 0) >= BAT_NOTE_GAP_S:
@@ -562,7 +792,7 @@ class SicherheitManager:
                 del self.st[k]
         # Prüf-Erinnerung (je Melder, sonst nach der allgemeinen Frist) und Lebensdauer
         if not quiet and det:
-            due = [d for d in det if self._test_due(d, now)]
+            due = [d for d in det if not d["off"] and not self.is_paused(d["id"], now) and self._test_due(d, now)]
             if due and self.cfg["test"]["on"]:
                 if now_ts - self._notes.get("test", 0) >= TEST_NOTE_GAP_S:
                     self._add("Erinnerung: Melder prüfen (Testknopf drücken).", "warn")
@@ -572,13 +802,36 @@ class SicherheitManager:
             lead = self.cfg["lead"]
             for d in det:
                 left = self._life_days(d, now)
-                if left is not None and left <= lead:
+                if left is not None and left <= lead and not self.is_paused(d["id"], now):
                     key = f"life:{d['id']}"
                     if now_ts - self._notes.get(key, 0) >= LIFE_NOTE_GAP_S:
                         self._add(f"Austausch fällig: {d['name']}" + (f" (in {left} Tagen)." if left > 0 else " (überfällig)."), "warn")
                     await self._notify("life", "Melder austauschen", f"{d['name']}: " + (f"Lebensdauer endet in {left} Tagen." if left > 0 else "Die Lebensdauer ist abgelaufen. Bitte austauschen."), key, LIFE_NOTE_GAP_S)
                     self._save()
         await self._check_depart()
+        self._sum = self._summary(det, now)
+        async_dispatcher_send(self.hass, SIGNAL_SF)
+
+    def _summary(self, det: list[dict[str, Any]], now: Any) -> dict[str, Any]:
+        """Kurzstand für die Sensoren (ruhig, hinweis, alarm) und die Startseite."""
+        act = [d for d in det if not self.is_paused(d["id"], now)]
+        alarm = [d for d in det if self.st.get(d["id"], {}).get("a")]
+        b = self.cfg["bat"]
+        warn = [d for d in act if d["off"] or (d["bat"] is not None and d["bat"] < b["pct"]) or self._test_due(d, now)]
+        bats = [d["bat"] for d in act if d["bat"] is not None]
+        nxt = None
+        for d in act:
+            m = self.cfg["meta"].get(d["id"]) or {}
+            base = dt_util.parse_datetime(self.tested.get(d["id"]) or self.last_test or self.first_seen or "")
+            if base is None:
+                continue
+            mo = (m.get("int") or self.cfg["test"]["months"])
+            t = base.replace(year=base.year + (base.month - 1 + mo) // 12, month=(base.month - 1 + mo) % 12 + 1, day=min(base.day, 28))
+            if nxt is None or t < nxt:
+                nxt = t
+        return {"status": "alarm" if alarm else "hinweis" if warn else "ruhig", "alarme": len(alarm), "melder": len(act), "ausgeschaltet": len(det) - len(act),
+                "hinweise": len(warn), "bat_min": round(min(bats)) if bats else None, "pruefung": nxt.date().isoformat() if nxt else None,
+                "unquittiert": sum(1 for d in alarm if not self.st[d["id"]].get("ack"))}
 
     def _sample_bat(self, det: list[dict[str, Any]], now_ts: float) -> None:
         for d in det:
@@ -703,6 +956,14 @@ class SicherheitManager:
             d["bat_days"] = fc["zero"] if fc else None
             d["bat_thr_days"] = fc["thr"] if fc else None
             d["bat_hist"] = (self.bhist.get(d["id"]) or [])[-BHIST_MAX:]
+            p = self.paused.get(d["id"])
+            d["paused"] = {"until": p["until"] or None, "since": p["since"] or None, "auto": p["auto"]} if p and self.is_paused(d["id"], now) else None
+            d["ask"] = self.asked.get(d["id"]) == "ask"
+            d["off_days"] = int((time.time() - s["off_since"]) // 86400) if d["off"] and s.get("off_since") else 0
+            d["stage"], d["t0"], d["ack"], d["why"] = (s.get("stage") or 0) if s.get("a") else 0, s.get("t0") or 0, s.get("ack") or None, s.get("why") or None
+            cut = (now - timedelta(days=90)).isoformat()
+            d["fa_n"] = sum(1 for x in self.fa.get(d["id"], []) if x["t"] >= cut)
+            d["fa_why"] = [x["why"] for x in self.fa.get(d["id"], [])[-5:] if x["why"]]
         # Alle erkannten Melder inkl. ausgeschlossener, damit man sie wieder einschalten kann
         reg = er.async_get(self.hass)
         excl = []
@@ -711,4 +972,5 @@ class SicherheitManager:
             excl.append({"id": e, "name": (st.attributes.get("friendly_name") if st is not None else "") or e})
         xs = sum(1 for d in det if d["src"] == "xsense")
         xs_any = any(e.platform == "xsense" for e in reg.entities.values())
-        return {"cfg": self.cfg, "det": det, "excl": excl, "test": test, "log": self.log[:40], "open": self.depart_open(), "home": self._home, "xs": {"found": xs_any, "n": xs}}
+        return {"cfg": self.cfg, "det": det, "excl": excl, "test": test, "log": self.log[:40], "open": self.depart_open(), "home": self._home, "xs": {"found": xs_any, "n": xs},
+                "sum": self._sum or self._summary(det, now), "now": time.time()}

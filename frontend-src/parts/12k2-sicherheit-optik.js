@@ -8,7 +8,7 @@
   _sfNew() { const c = this._sfx().cfg || {}; return !(c.ui && c.ui.old); }
   /* HD-Symbol eines Melders: Gehäuse von unten, LED zeigt den Zustand */
   _sfHd(kind, st, size = 38) {
-    const n = (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6), u = "sh" + n + "_", led = { ok: "#34d399", warn: "#f59e0b", alarm: "#ef4444", off: "#94a3b8" }[st] || "#34d399";
+    const n = (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6), u = "sh" + n + "_", led = { ok: "#34d399", warn: "#f59e0b", alarm: "#ef4444", off: "#94a3b8", pause: "#64748b" }[st] || "#34d399";
     const defs = `<defs><linearGradient id="${u}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset="1" stop-color="#b6c0cf"/></linearGradient><linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fcd34d"/><stop offset="1" stop-color="#f97316"/></linearGradient><linearGradient id="${u}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#2563eb"/></linearGradient><linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#0f766e"/></linearGradient></defs>`;
     const vents = Array.from({ length: 12 }, (_, i) => `<rect x="31" y="11" width="2" height="4" rx="1" fill="#8b97a8" transform="rotate(${i * 30} 32 32)"/>`).join("");
     const det = `<ellipse cx="32" cy="55" rx="20" ry="3" fill="#000" opacity=".25"/><circle cx="32" cy="32" r="25" fill="url(#${u}b)" stroke="#94a3b8" stroke-width="1.2"/><circle cx="32" cy="32" r="16" fill="none" stroke="#94a3b8" stroke-width="1.4"/>${vents}`;
@@ -22,11 +22,11 @@
     else g = `<ellipse cx="32" cy="58" rx="16" ry="3" fill="#000" opacity=".25"/><path d="M32 5 10 13v17c0 13 9 21 22 27 13-6 22-14 22-27V13z" fill="url(#${u}s)"/><path d="M22 31l7 7 14-15" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
     return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true">${defs}${g}</svg>`;
   }
-  _sfSt(x) { const C = this._sfx().cfg; return x.alarm ? "alarm" : x.off ? "off" : x.bat != null && x.bat < C.bat.pct ? "warn" : "ok"; }
+  _sfSt(x) { const C = this._sfx().cfg; return x.alarm ? "alarm" : x.paused ? "pause" : x.off ? "off" : x.bat != null && x.bat < C.bat.pct ? "warn" : "ok"; }
   /* Haus im Schnitt mit den Meldern */
   _sfScene(bad, l) {
     const n = (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6), u = "sb" + n + "_", glow = { ok: "#34d399", warn: "#fbbf24", alarm: "#f87171" }[bad] || "#34d399";
-    const col = { ok: "#34d399", warn: "#f59e0b", alarm: "#ef4444", off: "#94a3b8" }, fl = this._sfPl().floors, low = [[133, 154], [213, 154], [287, 154]], up = [[155, 92], [265, 92]];
+    const col = { ok: "#34d399", warn: "#f59e0b", alarm: "#ef4444", off: "#94a3b8", pause: "#64748b" }, fl = this._sfPl().floors, low = [[133, 154], [213, 154], [287, 154]], up = [[155, 92], [265, 92]];
     const free = { low: low.slice(), up: up.slice() }, put = [];
     const order = [...l].sort((a, b) => (b.alarm ? 1 : 0) - (a.alarm ? 1 : 0));
     order.forEach((x) => {
@@ -52,17 +52,17 @@
       ${extra ? `<text x="386" y="30" text-anchor="end" font-size="12" font-weight="700" fill="#fff" opacity=".85">+${extra}</text>` : ""}</svg>`;
   }
   _sfBanner(T) {
-    const { S, C, l, al, low, off, due, life, op, bad } = T, mv = MV.sf, anim = this._rkCfg ? this._rkCfg().anim : "dezent";
+    const { S, C, l, al, low, due, life, op, bad, pa, act, ask } = T, off = T.off.filter((x) => !x.ask), mv = MV.sf, anim = this._rkCfg ? this._rkCfg().anim : "dezent";
     let big, sub;
     if (!l.length) { big = "Noch keine Melder"; sub = "Melder aus Home Assistant erscheinen hier automatisch. Du kannst sie auch unter Einstellungen von Hand hinzufügen."; }
     else if (al.length) {
       const a = al[0], t = a.since ? new Date(a.since) : null;
       big = al.length > 1 ? `${al.length} Alarme aktiv` : `${String(a.kind || "Alarm").replace(/melder$/i, "alarm")} · ${a.room || a.area || a.name}`;
       sub = `${t && isFinite(t) ? "Seit " + t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) + " Uhr · " : ""}${al.map((x) => x.name).join(", ")}`;
-    } else if (bad === "warn") { big = "Alles ruhig, aber Hinweise"; sub = [low.length ? `${low.length} Batterie${low.length === 1 ? "" : "n"} schwach` : "", off.length ? `${off.length} nicht erreichbar` : "", due.length ? "Prüfung fällig" : "", life.length ? `${life.length} Melder zu tauschen` : ""].filter(Boolean).join(" · "); }
-    else { big = "Alles in Ordnung"; sub = `${l.length} ${l.length === 1 ? "Melder" : "Melder"} · alle erreichbar · Batterien gut`; }
+    } else if (bad === "warn") { big = "Alles ruhig, aber Hinweise"; sub = [low.length ? `${low.length} Batterie${low.length === 1 ? "" : "n"} schwach` : "", off.length ? `${off.length} nicht erreichbar` : "", due.length ? "Prüfung fällig" : "", life.length ? `${life.length} Melder zu tauschen` : "", ask.length ? `${ask.length} wirken ausgeschaltet` : ""].filter(Boolean).join(" · "); }
+    else { big = "Alles in Ordnung"; sub = `${act.length} Melder · alle erreichbar · Batterien gut${pa.length ? ` · ${pa.length} ausgeschaltet` : ""}`; }
     const chip = (ico, t, w) => `<span class="chip${w ? " st warn" : ""}">${ic(ico, 14)}${esc(t)}</span>`;
-    const chips = (l.length ? chip("shield", `${l.length} Melder`) : "") + low.slice(0, 2).map((x) => chip("energy", `${x.name} ${num(x.bat, 0)} %`, 1)).join("") + off.slice(0, 2).map((x) => chip("alert", `${x.name} offline`, 1)).join("") + (due.length ? chip("clock", "Prüfung fällig", 1) : "") + (life.length ? chip("alert", `${life.length} zu tauschen`, 1) : "") + (op.length ? chip("lock", `${op.length} offen beim Gehen`, 1) : "");
+    const chips = (l.length ? chip("shield", `${act.length} Melder`) : "") + (pa.length ? chip("eyeOff", `${pa.length} ausgeschaltet`) : "") + ask.slice(0, 2).map((x) => chip("eyeOff", `${x.name} wirkt aus`, 1)).join("") + low.slice(0, 2).map((x) => chip("energy", `${x.name} ${num(x.bat, 0)} %`, 1)).join("") + off.slice(0, 2).map((x) => chip("alert", `${x.name} offline`, 1)).join("") + (due.length ? chip("clock", "Prüfung fällig", 1) : "") + (life.length ? chip("alert", `${life.length} zu tauschen`, 1) : "") + (op.length ? chip("lock", `${op.length} offen beim Gehen`, 1) : "");
     return `<div class="card sfbn ${bad}"><div class="sfbt"><div class="sfbl">${ic(bad === "alarm" ? "alert" : "shield", 15)}${bad === "alarm" ? "ALARM" : "Sicherheit im Haus"}</div><div class="sfbb">${esc(big)}</div><div class="sfbs">${esc(sub)}</div><div class="chips">${chips}</div></div>
       <div class="sfbi" data-an="${anim}">${this._sfScene(bad, l)}</div>${mv ? `<span class="mlv">v${esc(mv.v)} · Build ${mv.b}</span>` : ""}</div>`;
   }
@@ -84,13 +84,13 @@
   _sfCard(x) {
     if (!this._sfNew()) return this._sfCardOld(x);
     const C = this._sfx().cfg, st = this._sfSt(x), KN = this._sfxKind(), bt = x.bat != null ? Math.max(0, Math.min(100, x.bat)) : null;
-    const stx = { alarm: ["ALARM", "#ef4444"], off: ["Nicht erreichbar", "#94a3b8"], warn: ["Batterie schwach", "#f59e0b"], ok: ["In Ordnung", "#34d399"] }[st];
+    const stx = { alarm: ["ALARM", "#ef4444"], pause: ["Ausgeschaltet", "#94a3b8"], off: ["Nicht erreichbar", "#94a3b8"], warn: ["Batterie schwach", "#f59e0b"], ok: ["In Ordnung", "#34d399"] }[st];
     const where = [(this._sfPl().floors.find((f) => f.id === x.floor) || {}).n, x.room || x.area].filter(Boolean).join(" · ");
     const R = 15, circ = 2 * Math.PI * R, rc = bt == null ? "#64748b" : bt < C.bat.pct ? "#f59e0b" : "#34d399";
     const ring = bt == null ? `<span class="sfmq">–</span>` : `<svg viewBox="0 0 40 40" width="38" height="38" aria-hidden="true"><circle cx="20" cy="20" r="${R}" fill="none" class="sfrg"/><circle cx="20" cy="20" r="${R}" fill="none" stroke="${rc}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${(circ * (1 - bt / 100)).toFixed(1)}" transform="rotate(-90 20 20)"/><text x="20" y="23.5" text-anchor="middle" class="sfrt">${num(bt, 0)}</text></svg>`;
     const tested = x.tested || (this._sfx().test || {}).last;
-    const l1 = x.alarm ? `Alarm ${x.since ? this._sfAgo(x.since) : "aktiv"}` : x.off ? "Meldet sich nicht" : x.bat_days != null && x.bat_days < 90 ? `Batterie noch ~ ${this._sfDur(x.bat_days)}` : tested ? `Geprüft ${this._sfAgo(tested)}` : "Noch nie geprüft";
-    const l2 = x.life_days != null && !x.alarm ? (x.life_days < 0 ? "Tausch überfällig" : `Tausch in ${this._sfDur(x.life_days)}`) : x.bat_days != null && x.bat_days >= 90 ? `Batterie ~ ${this._sfDur(x.bat_days)}` : x.src ? `Quelle ${esc(x.src)}` : "";
+    const l1 = x.alarm ? `Alarm ${x.since ? this._sfAgo(x.since) : "aktiv"}` : x.paused ? "Keine Warnungen" : x.off ? "Meldet sich nicht" : x.bat_days != null && x.bat_days < 90 ? `Batterie noch ~ ${this._sfDur(x.bat_days)}` : tested ? `Geprüft ${this._sfAgo(tested)}` : "Noch nie geprüft";
+    const l2 = x.paused ? (x.paused.until ? `bis ${this._sfDate(x.paused.until)}` : "bis du ihn einschaltest") : x.life_days != null && !x.alarm ? (x.life_days < 0 ? "Tausch überfällig" : `Tausch in ${this._sfDur(x.life_days)}`) : x.bat_days != null && x.bat_days >= 90 ? `Batterie ~ ${this._sfDur(x.bat_days)}` : x.src ? `Quelle ${esc(x.src)}` : "";
     return `<button class="sfnc ${st}" data-act="sfxdet" data-k="${esc(x.id)}" aria-label="${esc(x.name)}: ${stx[0]}. Details öffnen">
       <span class="sfnt"><span class="sfmi">${this._sfHd(x.k, st, 38)}</span><span class="sfmn"><b>${esc(x.name)}</b><small>${esc(where || x.kind)}</small></span><span class="sfmm">${ic("more", 18)}</span></span>
       <span class="sfms"><i style="background:${stx[1]}"></i><b style="${st === "ok" ? "" : `color:${stx[1]}`}">${stx[0]}</b></span>
@@ -98,14 +98,14 @@
   }
   /* ---- A3 · Übersicht */
   _sfKts(T) {
-    const { S, C, l, al, low, off, due, life } = T, n = l.length, last = (S.log || []).find((x) => x.c === "alarm"), withBat = l.filter((x) => x.bat != null);
+    const { S, C, al, low, off, due, life } = T, l = T.act, n = l.length, last = (S.log || []).find((x) => x.c === "alarm"), withBat = l.filter((x) => x.bat != null);
     const soon = l.filter((x) => x.bat_thr_days != null && x.bat_thr_days <= C.lead && !(x.bat != null && x.bat < C.bat.pct));
     const nextLife = [...life].sort((a, b) => a.life_days - b.life_days)[0];
     const k = (ico, t, v, s, c, go, a = "sfxtab") => `<button class="sfkt" data-act="${a}" data-k="${go}">${ic(ico, 18)}<i style="background:${c}"></i><small>${t}</small><b>${esc(v)}</b><em>${esc(s)}</em></button>`;
     const G = "#34d399", A = "#f59e0b", R = "#ef4444";
     return `<div class="sfkts">${k("shield", "Alarme", al.length ? `${al.length} aktiv` : "keine", al.length ? al.map((x) => x.name).join(", ") : last ? "zuletzt " + this._sfAgo(last.t) : "noch keiner", al.length ? R : G, "", "sfxscroll")}
       ${k("energy", "Batterien", withBat.length ? `${withBat.length - low.length} von ${withBat.length} gut` : "unbekannt", low.length ? `${low[0].name} bald leer` : soon.length ? `${soon[0].name} in ~ ${this._sfDur(soon[0].bat_thr_days)}` : withBat.length ? "alle gut" : "kein Batteriewert", low.length ? A : soon.length ? A : G, "wa")}
-      ${k("wifi", "Erreichbar", n ? `${n - off.length} von ${n}` : "–", off.length ? `${off[0].name} offline` : "alle erreichbar", off.length ? A : G, "", "sfxscroll")}
+      ${k("wifi", "Erreichbar", n ? `${n - off.length} von ${n}` : "–", off.length ? `${off[0].name} offline` : T.pa.length ? `${T.pa.length} ausgeschaltet` : "alle erreichbar", off.length ? A : G, "", "sfxscroll")}
       ${k("clock", "Prüfung", !C.test.on ? "aus" : due.length ? "fällig" : "läuft", S.test && S.test.last ? "zuletzt " + this._sfAgo(S.test.last) : "noch nie geprüft", due.length ? A : G, "wa")}
       ${k("tools", "Lebensdauer", life.length ? `${life.length} tauschen` : "in Ordnung", nextLife ? `${nextLife.name}${nextLife.life_days < 0 ? ", überfällig" : ""}` : "keine Frist", life.length ? A : G, "wa")}</div>`;
   }
@@ -125,7 +125,7 @@
     const p = this._sfOvParts(T), l = T.l, rank = (x) => (x.alarm ? 0 : x.off ? 1 : x.bat != null && x.bat < T.C.bat.pct ? 2 : 3);
     const sorted = [...l].sort((a, b) => rank(a) - rank(b) || String(a.floor || "~").localeCompare(String(b.floor || "~")) || a.name.localeCompare(b.name, "de"));
     const list = l.length ? `<div class="card sfc sfmel"><h2>${ic("bell", 18)}Melder<small class="mut">${l.length}</small></h2><div class="sfmg">${sorted.map((x) => this._sfCard(x)).join("")}</div></div>` : "";
-    return `${p.empty}${this._sfKts(T)}<div class="enc"><div class="enco">${p.dep}</div><div class="enco">${this._sfTimeline(T.S)}${p.log}</div></div>${list}`;
+    return `${this._sfAskCards(T)}${p.empty}${this._sfKts(T)}<div class="enc"><div class="enco">${p.dep}</div><div class="enco">${this._sfTimeline(T.S)}${p.log}</div></div>${list}`;
   }
   /* ---- Detailblatt eines Melders mit Batterie-Verlauf und Prognose (Stufe 1 · C4) */
   _sfGraph(x) {
@@ -145,7 +145,7 @@
       <div class="sh"><div><b>${esc(x.name)}</b><span>${esc([(this._sfPl().floors.find((f) => f.id === x.floor) || {}).n, x.room || x.area, x.src ? "Quelle " + x.src : ""].filter(Boolean).join(" · ") || x.kind)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="sfnd">${this._sfCard(x).replace(/ data-act="sfxdet"[^>]*?(?=>)/, ' disabled')}
         <div class="card sfc" style="margin-top:10px"><h2>${ic("energy", 18)}Batterie<small class="mut">${x.bat != null ? num(x.bat, 0) + " %" : ""}</small></h2>${this._sfGraph(x)}${fc ? `<div class="sfpn">${ic("clock", 15)}${esc(fc)}</div>` : ""}</div>
-        <div class="card sfc" style="margin-top:10px"><h2>${ic("check", 18)}Prüfung und Lebensdauer</h2>${this._sfDetFactsPlain(x)}</div>
+        <div class="card sfc" style="margin-top:10px"><h2>${ic("check", 18)}Prüfung und Lebensdauer</h2>${this._sfDetFactsPlain(x)}</div>${this._sfPauseCard(x)}${this._sfFaCard(x)}
         ${adm ? `<div class="sfbtn" style="margin-top:12px"><button class="btn2 pri" data-act="sfxdt" data-k="${esc(x.id)}">${ic("check", 15)} Geprüft</button>${x.bat != null ? `<button class="btn2" data-act="sfxdbat" data-k="${esc(x.id)}">Batterie getauscht</button>` : ""}${x.test ? `<button class="btn2" data-act="sfxpress" data-k="${esc(x.id)}">Test auslösen</button>` : ""}<button class="btn2" data-act="sfxeditdet" data-k="${esc(x.id)}">Einstellungen</button></div>` : ""}</div></div>`;
   }
   _sfDetFactsPlain(x) {
@@ -179,7 +179,8 @@
     const p = this._sfWartParts(T), P = T.C.proto, yr = new Date().getFullYear();
     const nach = `<div class="card sfc"><h2>${ic("list", 18)}Nachweis ${yr}</h2><div class="sfdoc"><b>Prüfprotokoll Rauchmelder ${yr}</b><small>${esc(P.name || "Name")} · ${esc(P.addr || "Adresse")}</small><i></i><i class="s"></i><i></i><i class="s"></i></div>
       <div class="mut sm" style="margin:8px 0">Eine Seite für Versicherung, Vermieter oder Schornsteinfeger: alle Melder mit Einbau, Tausch, letzter Prüfung und Batterie.${P.name || P.addr ? "" : " Name und Adresse trägst du in den Einstellungen ein."}</div>
-      <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} PDF erstellen</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div></div>`;
+      <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} PDF erstellen</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div>
+      <div class="sfbtn" style="margin-top:8px"><button class="btn2" data-act="sfxbericht">${ic("heart", 15)} Sicherheitsbericht${this._spnS().active ? "" : " (Sponsor)"}</button></div></div>`;
     return `${this._sfBand(T)}<div class="enc"><div class="enco">${this._sfPrognose(T)}${p.list}</div><div class="enco">${nach}${p.sl}</div></div>`;
   }
   /* ---- Einstellungen: Schalter für die alte Darstellung */
@@ -187,11 +188,12 @@
     const old = this._sfSetOld(T);
     if (!this._admin()) return old;
     const o = !this._sfNew();
-    return `${old}<div class="card sfc" style="margin-top:12px"><h2>${ic("eye", 18)}Aussehen</h2><div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Banner mit Schild, Melder-Karten mit Farbbalken, Ampel als Liste und die Wartung aus v0.5 statt Haus-Szene, Kennzahl-Kacheln und Jahresband</small></span><button class="sw ${o ? "on" : ""}" data-act="sfxold" aria-pressed="${o}" aria-label="Karten wie bisher"></button></div></div>`;
+    return `${old}${this._sfStufenCard(T)}<div class="card sfc" style="margin-top:12px"><h2>${ic("eye", 18)}Aussehen</h2><div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Banner mit Schild, Melder-Karten mit Farbbalken, Ampel als Liste und die Wartung aus v0.5 statt Haus-Szene, Kennzahl-Kacheln und Jahresband</small></span><button class="sw ${o ? "on" : ""}" data-act="sfxold" aria-pressed="${o}" aria-label="Karten wie bisher"></button></div></div>`;
   }
   /* ---- Aktionen */
   _sfxNew(a, b) {
     const k = b.dataset.k;
+    if (this._sfxAlarmAct(a, b)) return true;
     if (a === "sfxdet") { this._modal = { type: "sfdet", id: k }; this._renderModal(); return true; }
     if (a === "sfxdt" || a === "sfxdbat") {
       this._hass.callWS({ type: "fenster_heizung/sf_tested", ent: k, ...(a === "sfxdbat" ? { bat: true } : {}) }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; this._render(); if (this._modal && this._modal.type === "sfdet") this._renderModal(); this._toast(a === "sfxdbat" ? "Batterie getauscht, der Verlauf beginnt neu" : "Melder als geprüft eingetragen"); }).catch(() => this._toast("Das hat nicht geklappt"));

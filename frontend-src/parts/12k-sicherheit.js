@@ -15,9 +15,10 @@
     });
   }
   _sfStat() {
-    const S = this._sfx(), C = S.cfg, l = this._sfList(), al = l.filter((x) => x.alarm), low = l.filter((x) => x.bat != null && x.bat < C.bat.pct), off = l.filter((x) => x.off);
-    const due = C.test.on ? l.filter((x) => x.test_due) : [], life = l.filter((x) => x.life_days != null && x.life_days <= C.lead), op = this._sfDepRows().filter((x) => x.open);
-    return { S, C, l, al, low, off, due, life, op, bad: al.length ? "alarm" : low.length || off.length || due.length || life.length ? "warn" : "ok" };
+    const S = this._sfx(), C = S.cfg, l = this._sfList(), al = l.filter((x) => x.alarm), pa = l.filter((x) => x.paused && !x.alarm), act = l.filter((x) => !x.paused), low = act.filter((x) => x.bat != null && x.bat < C.bat.pct), off = act.filter((x) => x.off);
+    const due = C.test.on ? act.filter((x) => x.test_due && !x.off) : [], life = act.filter((x) => x.life_days != null && x.life_days <= C.lead), op = this._sfDepRows().filter((x) => x.open), ask = act.filter((x) => x.ask);
+    /* Ausgeschaltete Melder (pa) zählen nicht bei Batterie, Erreichbarkeit, Prüfung und Lebensdauer; ein Alarm zählt immer */
+    return { S, C, l, al, pa, act, ask, low, off, due, life, op, bad: al.length ? "alarm" : low.length || off.length || due.length || life.length || ask.length ? "warn" : "ok" };
   }
   _sfLogo(bad) {
     if (bad === "ok") return this._modLogo("sf");
@@ -86,6 +87,10 @@
         out += `<g ${id} class="sfmk ${c}">${c === "a" ? `<circle class="sfpulse" cx="${i.x}" cy="${i.y}" r="26"></circle>` : ""}<circle class="sfmc" cx="${i.x}" cy="${i.y}" r="15"></circle><g transform="translate(${i.x - 8} ${i.y - 8})">${ic(ico, 16)}</g>${d && d.bat != null && d.bat < S.cfg.bat.pct ? `<text class="sfbt" x="${i.x + 19}" y="${i.y + 4}">${num(d.bat, 0)} %</text>` : ""}<circle class="sfhit" cx="${i.x}" cy="${i.y}" r="20"></circle></g>`;
       }
     });
+    if (!edit && mk.length) {  /* Fluchtweg: Linie vom alarmierenden Melder zur nächsten Tür (Luftlinie, Plan prüfen) */
+      const e = this._sfEscapeFor(mk[0]);
+      if (e) out += `<path class="sfesc" d="M${e.m.x} ${e.m.y}L${e.d.x} ${e.d.y}"></path><circle class="sfesd" cx="${e.d.x}" cy="${e.d.y}" r="22"></circle>`;
+    }
     if (sel) {
       const i = items.find((x) => x.id === sel);
       if (i) {
@@ -106,7 +111,7 @@
     if (!ed) {
       const al = T.al, sel = this._sfSelDet && T.l.find((x) => x.id === this._sfSelDet), here = P.items.filter((i) => i.fl === fl && i.t === "m").length;
       const empty = !n ? `<div class="sfemp">${ic("home", 34)}<b>Noch kein Grundriss</b><span>${adm ? "Zeichne dein Haus mit dem Baukasten: Räume, Wände, Türen und Fenster ziehen, dann die Melder darauf setzen." : "Ein Administrator kann den Grundriss zeichnen."}</span>${adm ? `<button class="btn2 pri" data-act="sfxedit" style="flex:none;padding:10px 20px">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div>` : "";
-      const side = sel ? `<div class="card sfc"><h2>${ic("bell", 18)}${esc(sel.name)}</h2>${this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : al.length ? `<div class="card sfc"><h2>${ic("alert", 18)}Alarm</h2>${al.map((x) => this._sfCard(x)).join("")}</div>` : `<div class="card sfc"><h2>${ic("info", 18)}Tipp</h2><div class="mut sm">Tippe auf einen Melder im Plan, dann siehst du Batterie, Einbaudatum und Prüfung.${here ? "" : " Auf dieser Etage sitzt noch kein Melder."}</div></div>`;
+      const side = sel ? `<div class="card sfc"><h2>${ic("bell", 18)}${esc(sel.name)}</h2>${this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : al.length ? `<div class="card sfc"><h2>${ic("alert", 18)}Alarm</h2>${al.map((x) => this._sfCard(x)).join("")}${this._sfEscHint(al[0])}</div>` : `<div class="card sfc"><h2>${ic("info", 18)}Tipp</h2><div class="mut sm">Tippe auf einen Melder im Plan, dann siehst du Batterie, Einbaudatum und Prüfung.${here ? "" : " Auf dieser Etage sitzt noch kein Melder."}</div></div>`;
       return `<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._sfFloorBar(false)}${adm && n ? `<button class="sfed" data-act="sfxedit">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>${n ? `<div class="sfpl"><svg class="sfpv" viewBox="0 0 800 480" role="img" aria-label="Grundriss">${this._sfPlanInner(fl, false)}</svg></div>` : empty}</div></div><div class="enco">${side}</div></div>`;
     }
     const sel = P.items.find((x) => x.id === ed.sel), dm = this._sfDetMap(), placed = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), free = T.l.filter((d) => !placed.has(d.id));
@@ -168,10 +173,10 @@
       <table><thead><tr><th>Melder</th><th>Ort</th><th>Art</th><th>Eingebaut</th><th>Tausch bis</th><th>Zuletzt geprüft</th><th>Batterie</th><th>Ergebnis</th></tr></thead><tbody>${rows || `<tr><td colspan="8">Keine Melder</td></tr>`}</tbody></table>
       ${ev ? `<b>Ereignisse ${yr}</b><ul>${ev}</ul>` : ""}<div class="s"><div>Datum</div><div>Unterschrift</div></div></body></html>`;
   }
-  _sfxPrint() {
+  _sfxPrint(html) {
     const f = document.createElement("iframe"); f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0"; document.body.appendChild(f);
     f.onload = () => { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (_) { this._toast("Drucken geht hier nicht. Nimm „Als Datei laden“."); } setTimeout(() => f.remove(), 60000); };
-    f.srcdoc = this._sfxProto();
+    f.srcdoc = html || this._sfxProto();
   }
   _sfxHtml() { const a = document.createElement("a"), u = URL.createObjectURL(new Blob([this._sfxProto()], { type: "text/html" })); a.href = u; a.download = `Pruefprotokoll-Melder-${new Date().getFullYear()}.html`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
   /* ---- Einstellungen: Melder und Batterie, Abfahrt-Prüfung, Allgemein */
@@ -265,6 +270,8 @@
     if (f === "sfxmadd") { if (v) { this._sfxPatch((c) => { if (!c.add.includes(v) && c.add.length < 60) c.add.push(v); }); this._sfSelDet = v; } return true; }
     if (f === "sfxdadd") { if (v) this._sfxPatch((c) => { if (!c.depart.ents.includes(v) && c.depart.ents.length < 30) c.depart.ents.push(v); }); return true; }
     if (f === "sfxfent") { this._sfxPatch((c) => { c.depart.frost.ent = v; }); return true; }
+    if (f === "sfxtts") { this._sfxPatch((c) => { c.tts[t.dataset.k] = v; }); return true; }
+    if (f === "sfxcont") { this._sfxPatch((c) => { c.contact.to = v; }); return true; }
     if (f === "sfxqt") { this._sfxPatch((c) => { c.quiet[t.dataset.k] = v || c.quiet[t.dataset.k]; }); return true; }
     if (f === "sfxpr") { this._sfxPatch((c) => { c.proto[t.dataset.k] = v.trim(); }); return true; }
     if (f === "sfxmf" || f === "sfxmbat" || f === "sfxmpress") {

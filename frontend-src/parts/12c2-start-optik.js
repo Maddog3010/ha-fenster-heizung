@@ -36,7 +36,7 @@
     if (on.sf) {
       try {
         const T = this._sfStat();
-        T.al.forEach((x) => out.push({ k: `sf:al:${x.id}`, nosn: true, i: "alert", t: `Rauchmelder ${esc(x.name || "")}: Alarm`, s: esc(x.room || x.area || "Modul 11"), r: "jetzt", c: "bad", mod: "sf", hd: "smoke", alarm: true }));
+        T.al.forEach((x) => out.push({ k: `sf:al:${x.id}`, nosn: true, i: "alert", t: `${esc(x.kind || "Melder")} ${esc(x.name || "")}: Alarm`, s: esc(x.room || x.area || "Modul 11"), r: "jetzt", c: "bad", mod: "sf", hd: "smoke", alarm: true }));
         if (T.off.length) out.push({ k: "sf:off", i: "alert", t: T.off.length === 1 ? `Melder offline: ${esc(T.off[0].name || "")}` : `${T.off.length} Melder offline`, s: "Modul 11 · nicht erreichbar", r: "", c: "bad", soft: true, mod: "sf", hd: "smoke" });
       } catch (_) { /* Modul 11 noch nicht geladen */ }
     }

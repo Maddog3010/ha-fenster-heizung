@@ -19,6 +19,7 @@ from .const import CONF_AIR_EVERY, CONF_AIR_HINT, CONF_HUMIDITY, CONF_ROOM_TEMP,
 
 from .solar import SIGNAL_SOLAR
 from .tarif import SIGNAL_TARIF
+from .sicherheit import SIGNAL_SF
 from .wetter import KEYS as WX_KEYS, NAMES as WX_NAMES, SIGNAL_WX
 from . import muell_ent
 
@@ -42,7 +43,7 @@ async def async_setup_entry(
     extra: list[SensorEntity] = []
     if store.get(SP_OWNER) in (None, entry.entry_id):  # E6/F7: Solar-Werte nur einmal, am ersten Raum
         store[SP_OWNER] = entry.entry_id
-        extra = [SolarSensor(k) for k in SP_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS] + [TarifSensor(k) for k in TF_KEYS]
+        extra = [SolarSensor(k) for k in SP_KEYS] + [SicherheitSensor(k) for k in SF_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS] + [TarifSensor(k) for k in TF_KEYS]
     if store.get(SP_OWNER) == entry.entry_id:
         muell_ent.register(hass, "sensor", async_add_entities, MuellSensor, entry.async_on_unload)  # Modul 17: Entitäten entstehen mit dem Addon
     async_add_entities(
@@ -50,6 +51,71 @@ async def async_setup_entry(
         + [PlanTargetSensor(entry), ModeSensor(entry)]
         + extra
     )
+
+
+SF_KEYS = ("sf_status", "sf_alarme", "sf_bat_min", "sf_pruefung")
+
+
+class SicherheitSensor(SensorEntity):
+    """Modul 11: Zustand der Melder für eigene Automationen (ruhig · hinweis · alarm, Zahl der Alarme, schwächste Batterie, nächste Prüfung)."""
+
+    _attr_has_entity_name = True
+    _attr_should_poll = False
+
+    def __init__(self, key: str) -> None:
+        self._key = key
+        self._attr_translation_key = key
+        self._attr_unique_id = f"{DOMAIN}_sicherheit_{key[3:]}"
+        self._attr_icon = {"sf_status": "mdi:shield-home", "sf_alarme": "mdi:smoke-detector-alert", "sf_bat_min": "mdi:battery-alert", "sf_pruefung": "mdi:calendar-check"}[key]
+        if key == "sf_bat_min":
+            self._attr_native_unit_of_measurement = "%"
+            self._attr_device_class = SensorDeviceClass.BATTERY
+        if key == "sf_pruefung":
+            self._attr_device_class = SensorDeviceClass.DATE
+        if key == "sf_status":
+            self._attr_device_class = SensorDeviceClass.ENUM
+            self._attr_options = ["ruhig", "hinweis", "alarm"]
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, "sicherheit_melder")},
+            "name": "Strom & Wärme · Rauch- & Sicherheitsmelder",
+            "manufacturer": "Strom & Wärme",
+            "model": "Modul 11",
+            "entry_type": "service",
+        }
+
+    def _m(self):
+        m = self.hass.data.get(DOMAIN, {}).get("sicherheit") if self.hass else None
+        return m if m is not None and m.active() and m._sum else None
+
+    @property
+    def available(self) -> bool:
+        return self._m() is not None
+
+    @property
+    def native_value(self):
+        m = self._m()
+        if m is None:
+            return None
+        v = m._sum.get({"sf_status": "status", "sf_alarme": "alarme", "sf_bat_min": "bat_min", "sf_pruefung": "pruefung"}[self._key])
+        if self._key == "sf_pruefung" and v:
+            from datetime import date
+            return date.fromisoformat(v)
+        return v
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        m = self._m()
+        if m is None or self._key != "sf_status":
+            return {}
+        sm = m._sum
+        return {"melder": sm.get("melder"), "ausgeschaltet": sm.get("ausgeschaltet"), "hinweise": sm.get("hinweise"), "alarme": sm.get("alarme"), "unquittiert": sm.get("unquittiert")}
+
+    async def async_added_to_hass(self) -> None:
+        self.async_on_remove(async_dispatcher_connect(self.hass, SIGNAL_SF, self._refresh))
+
+    @callback
+    def _refresh(self, *_a) -> None:
+        self.async_write_ha_state()
 
 
 class WetterSensor(SensorEntity):

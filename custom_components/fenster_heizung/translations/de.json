@@ -216,6 +216,18 @@
       },
       "tf_avg_tomorrow": {
         "name": "Strompreis Ø morgen"
+      },
+      "sf_status": {
+        "name": "Sicherheit Status"
+      },
+      "sf_alarme": {
+        "name": "Sicherheit Alarme"
+      },
+      "sf_bat_min": {
+        "name": "Melder Batterie (niedrigste)"
+      },
+      "sf_pruefung": {
+        "name": "Melder nächste Prüfung"
       }
     }
   }

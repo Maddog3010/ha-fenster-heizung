@@ -18,6 +18,7 @@ class FensterHeizungPanel extends HTMLElement {
   disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); clearInterval(this._supW); clearInterval(this._supTimer); if (this._vis) document.removeEventListener("visibilitychange", this._vis); }
   _tick() {
     this._tmTick();
+    if (this._sfAlarmTick) this._sfAlarmTick();
     this._visFix();
     if (this._rkTick) this._rkTick();
     if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); this._adLoad(true); }

@@ -2,6 +2,31 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b7] - 2026-11-18
+
+Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.8, Beta): **Ausgeschaltete Melder** und **Alarm mit Stufen und „Verstanden“**.
+
+### Neu
+- **Modul 11 · Ausgeschaltete Melder:** Ein Melder, den du abgebaut oder abgeschaltet hast, löst keine Warnungen mehr aus (Nicht erreichbar, Batterie, Prüfung, Lebensdauer). Im Detailblatt gibt es den Schalter **Ausgeschaltet** für 7 Tage, 30 Tage oder dauerhaft, der Melder erscheint grau und zählt nicht bei den Kennzahlen. **Löst er trotzdem aus, kommt der Alarm immer.** Wird ein so ausgeschalteter Melder wieder erreichbar, schaltet er sich selbst ein und meldet das einmal.
+  - **Frage nach langer Funkstille:** Meldet sich ein Melder 7 Tage nicht (einstellbar 1 bis 60), kommt einmal „Wirkt ausgeschaltet. Ausschalten?“ als Karte oben und als Mitteilung, statt täglich „Nicht erreichbar“. Unter Einstellungen → Alarm & Stufen lässt sich das auf „Selbst ausschalten“ oder „Immer warnen“ (wie bisher) stellen.
+- **Modul 11 · Alarm mit Stufen und „Verstanden“:** Wenn niemand reagiert, steigert sich der Alarm. **Der erste Alarm wird nie verzögert.**
+  - **Stufe 1 Melden** (sofort): kritische Mitteilung mit Knopf „Verstanden“ direkt in der Mitteilung, eigene Aktionen, Protokoll.
+  - **Stufe 2 Haus vorbereiten** (nach 10 s, an): Aktionen mit „Wann: Stufe 2“, zum Beispiel Licht an, Rollläden auf, Lüftung aus.
+  - **Stufe 3 Alle informieren** (nach 60 s, aus): Mitteilung an alle und Durchsage über einen Lautsprecher (Sprachdienst wählbar).
+  - **Stufe 4 Hilfe holen** (nach 5 Min., aus): Mitteilung an eine Kontaktperson mit Knopf „112 anrufen“, Wiederholung alle 2 Minuten bis „Verstanden“.
+  - **Alarm-Ansicht** auf Handy, Tablet-Wand und im Panel: großer Knopf „Verstanden“, die Stufen mit Zeit, **Fehlalarm-Gründe** (Toast, Dampf, Test) und „112 anrufen“. Das Wandtablet wird geweckt.
+  - **Fehlalarm-Hilfe:** Löst ein Melder oft aus, steht im Detailblatt ein Tipp (versetzen oder Hitzemelder). Das Modul verzögert nie von selbst.
+  - **Fluchtweg:** Im Grundriss zeigt eine grüne Linie vom alarmierenden Melder zur nächsten Tür auf der Etage, mit dem Hinweis „Plan prüfen“.
+- **Modul 11 · Behoben:** Warndienste wie NINA oder DWD (Binärsensoren der Klasse „Sicherheit“) wurden als Melder erkannt und lösten einen Alarm auf der Startseite aus. Sie werden jetzt übersprungen. Der Alarm auf der Startseite nennt zudem die echte Melderart statt immer „Rauchmelder“.
+- **Modul 11 · Sicherheitsbericht (Sponsor-Extra):** Eine Seite für die letzten 90 Tage mit Kennzahlen, jedem Melder (Zustand, Batterie, Prognose, Prüfung, Fehlalarme) und den Alarmen mit Quittierung, zum Drucken oder als PDF (Wartung → Nachweis).
+- **Modul 11 · Sensoren und Ereignis für eigene Automationen** (Gerät „Strom & Wärme · Rauch- & Sicherheitsmelder“): Sicherheit Status (ruhig, hinweis, alarm), Sicherheit Alarme, Melder Batterie (niedrigste), Melder nächste Prüfung. Das Ereignis `fenster_heizung_sicherheit` meldet `art` (alarm, stufe, verstanden, ende, offline), `melder`, `name` und `raum`.
+
+### Geändert
+- Aktionen für den Alarm haben das Feld „Wann“ (Sofort oder Stufe 2 bis 4). Bestehende Aktionen laufen weiter sofort.
+- Die Wiederholung „Alarm läuft noch“ endet mit „Verstanden“.
+- Der Speicher von Modul 11 hat jetzt die Schema-Version 3 (Stufen, Ausgeschaltet, Fehlalarme). Ältere Stände werden ohne Verlust übernommen.
+- Neue Tests für Ausgeschaltet, Stufen, „Verstanden“ und die Sensoren. Die Tests von Modul 11 stören die anderen Testdateien nicht mehr.
+
 ## [2026.11.4b6] - 2026-11-18
 
 ### Neu

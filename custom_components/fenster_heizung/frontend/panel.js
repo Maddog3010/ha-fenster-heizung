@@ -784,7 +784,7 @@ const MV = {
   ev: { v: "0.9", b: 7, d: "2026-11-15", p: "2026.11.3", log: [["0.9", 7, "2026.11.3", "Laufende Ladung überlebt einen Neustart von Home Assistant, fehlende kWh zuerst der Ladung zurechnen, Hinweis in der Tagesansicht; go-e-Import, mehrere Ladungen bearbeiten, Kosten ändern, Kilometer-Statistik"], ["0.9", 6, "2026.11.3b24", "Carport-Szene näher an der Wirklichkeit: Kabelkanal am Träger, Wechselrichter an der Hauswand, Netzstrom aus dem Haus, Ladekabel vor dem Auto mit Typ-2-Stecker in der Ladeklappe; nach dem Zurückwechseln in die App keine leeren Werte mehr; „Heute“ übersichtlicher"], ["0.9", 5, "2026.11.3b23", "Eine Ladung reicht bis zum Abstecken (kein neuer Eintrag nach Phasenwechsel), getrennte Teile zusammenführen, Ladenachweis als echte PDF-Datei"], ["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "1.0", b: 3, d: "2026-11-17", p: "2026.11.4b3", log: [["1.0", 3, "2026.11.4b3", "Wetterkarte zeigt Warnungen und Regen wieder"], ["1.0", 2, "2026.11.4b2", "Wetterkarte flackert nicht mehr"], ["1.0", 1, "2026.11.4b1", "Stabil: DWD-Wetterkarte (Warnungen und Regenradar), Rückblick, schneller warnen, Speichern nur bei Änderung, Änderungsverlauf mit Rückgängig, Feinschliff"], ["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  sf: { v: "0.7", b: 1, d: "2026-11-17", p: "2026.11.4b5", log: [["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  sf: { v: "0.8", b: 1, d: "2026-11-18", p: "2026.11.4b7", log: [["0.8", 1, "2026.11.4b7", "Ausgeschaltete Melder ohne Warnungen (Frage nach langer Funkstille), Alarm mit Stufen und „Verstanden“, Alarm-Ansicht für Handy und Wandtablet, Fehlalarm-Hilfe, Fluchtweg im Grundriss, Sensoren und Ereignis für Automationen"], ["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.8", b: 1, d: "2026-11-17", p: "2026.11.4b1", log: [["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3370,6 +3370,32 @@ const CSS_SF2 = `
 .sflg{display:flex;gap:14px;flex-wrap:wrap;font-size:.74rem;color:var(--mut);margin-top:8px}.sflg i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.sflg i.ring{border:2px solid #fbbf24;width:5px;height:5px}
 .sfbp{display:grid;grid-template-columns:minmax(90px,1.2fr) 2fr minmax(70px,.9fr);gap:10px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:6px 0;color:inherit;font:inherit;font-size:.84rem;cursor:pointer}.sfbp b{text-align:right;font-size:.8rem}.sfbp span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sfdoc{background:#f8fafc;color:#0f172a;border-radius:10px;padding:11px 12px}.sfdoc b{display:block;font-size:.86rem}.sfdoc small{color:#64748b;font-size:.72rem}.sfdoc i{display:block;height:5px;background:#cbd5e1;border-radius:3px;margin-top:8px}.sfdoc i.s{width:60%}
+/* v0.8 · Ausgeschaltete Melder, Stufen, Alarm-Ansicht, Fluchtweg */
+.sfbn{padding-bottom:34px}
+.sfnc.pause{opacity:.66;border-style:dashed;background:color-mix(in srgb,var(--card) 82%,transparent)}.sfnc.pause .sfmi{filter:grayscale(1)}
+.sfhintc{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--card);border:1px solid color-mix(in srgb,#f59e0b 42%,var(--line));border-radius:16px;padding:10px 12px;margin:0 0 10px}
+.sfhi{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,#f59e0b 16%,transparent);color:#fbbf24;flex:none}
+.sfht{flex:1;min-width:180px}.sfht b{display:block;font-size:.92rem}.sfht small{color:var(--mut);font-size:.78rem}
+.sfhb{display:flex;gap:6px;flex-wrap:wrap}.sfhb .btn2{flex:none;padding:8px 14px}
+.sfstg{display:flex;align-items:center;gap:10px;background:color-mix(in srgb,var(--mut) 8%,transparent);border-radius:14px;padding:9px 11px;margin:6px 0}
+.sfsn{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:.75rem;flex:none}
+.sfst2{flex:1;min-width:0}.sfst2 b{display:block;font-size:.9rem}.sfst2 small{font-size:.74rem}.sfsub{margin:0 0 6px 32px}
+.sfesc{stroke:#34d399;stroke-width:4;stroke-dasharray:10 8;fill:none;stroke-linecap:round;pointer-events:none}.sfesd{fill:none;stroke:#34d399;stroke-width:3;pointer-events:none}
+.sfhe{color:#34d399}.sfhe b{color:inherit}
+.sfalov{position:fixed;inset:0;z-index:60;background:rgba(20,0,0,.9)}
+.sfal{position:fixed;z-index:61;inset:3vh 3vw;display:grid;grid-template-columns:1.1fr 1fr;gap:22px;padding:24px;border-radius:26px;overflow:auto;color:#fff;background:linear-gradient(160deg,#7f1d1d,#450a0a);border:3px solid #ef4444;box-shadow:0 0 0 6px rgba(239,68,68,.25),0 30px 80px rgba(0,0,0,.6)}
+.sfalt{display:grid;gap:10px;align-content:start;min-width:0}.sfalt>b{font-size:clamp(1.6rem,4vw,2.6rem);line-height:1.1;letter-spacing:-.02em}.sfalt>small{font-size:1rem;color:#fecaca}
+.sfalp{width:max-content;background:rgba(255,255,255,.2);color:#fecaca;font-size:.74rem;letter-spacing:.08em;font-weight:800;border-radius:99px;padding:4px 11px}
+.sfalm{display:flex;flex-wrap:wrap;gap:6px}.sfalm span{background:rgba(255,255,255,.16);border-radius:99px;padding:3px 10px;font-size:.78rem}
+.sfals{display:grid;gap:7px;margin-top:6px}.sfals>div{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.25);border-radius:13px;padding:9px 12px;font-size:.92rem}
+.sfals i{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:.76rem;background:rgba(255,255,255,.22);flex:none}
+.sfals .d i{background:#34d399;color:#052e2b}.sfals .n i{background:#fbbf24;color:#451a03}.sfals span{flex:1;min-width:0}.sfals span small{display:block;color:#fecaca;font-size:.74rem}.sfals em{font-style:normal;color:#fecaca;font-size:.82rem;white-space:nowrap}
+.sfalf{display:flex;align-items:center;gap:8px;color:#bbf7d0;font-size:.86rem}
+.sfalr{display:grid;gap:12px;align-content:start;min-width:0}.sfali svg{width:100%;max-width:420px;height:auto;display:block;margin:0 auto}
+.sfok{background:#fff;color:#7f1d1d;border:0;border-radius:20px;font:inherit;font-weight:900;font-size:1.5rem;padding:20px 0;cursor:pointer;width:100%}
+.sffc{display:flex;flex-wrap:wrap;gap:7px}.sffc button,.sffc a{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;font:inherit;font-size:.84rem;padding:8px 14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.sffc .sf112{background:rgba(0,0,0,.35)}
+@media (max-width:760px),(orientation:portrait){.sfal{grid-template-columns:1fr;inset:0;border-radius:0;padding:18px 16px}.sfalr{order:2}.sfali svg{max-width:260px}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -3391,6 +3417,7 @@ class FensterHeizungPanel extends HTMLElement {
   disconnectedCallback() { this._ro && this._ro.disconnect(); this._msnRo && this._msnRo.disconnect(); clearInterval(this._ti); clearInterval(this._supW); clearInterval(this._supTimer); if (this._vis) document.removeEventListener("visibilitychange", this._vis); }
   _tick() {
     this._tmTick();
+    if (this._sfAlarmTick) this._sfAlarmTick();
     this._visFix();
     if (this._rkTick) this._rkTick();
     if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); this._adLoad(true); }
@@ -7800,6 +7827,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "diag") { box.innerHTML = this._dgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "mver") { box.innerHTML = this._mvModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wbon") { box.innerHTML = this._wbOnModal(); return; }
+    if (m.type === "sfalarm") { box.innerHTML = this._sfAlarmModal(); return; }
     if (m.type === "sfdet") { box.innerHTML = this._sfDetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sfset") { box.innerHTML = this._sfxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "spset") { box.innerHTML = this._spModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -11158,7 +11186,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="card"><h2>${ic("sliders", 18)}Betriebsarten</h2><div class="lugrid">${mc}</div></div>`;
   }
   /* Modul 11: Rauch- & Sicherheitsmelder (Alarme, Batterie, Erreichbarkeit, Prüf-Erinnerung, Aktionen und Meldungen laufen im Backend) */
-  _sfxDef() { return { kinds: ["smoke", "co", "gas", "water", "heat", "safety"], excl: [], repeat: 10, bat: { on: true, pct: 20 }, off: { on: true, min: 60 }, test: { on: true, months: 6 }, acts: [], notify: { alarm: true, end: false, bat: true, off: true, test: true, life: true, depart: true, to: [] }, meta: {}, add: [], plan: { floors: [{ id: "eg", n: "EG" }], items: [], bg: {} }, quiet: { on: false, from: "22:00", to: "07:00" }, lead: 30, depart: { on: true, ents: [], frost: { on: false, ent: "", below: 3 } }, proto: { name: "", addr: "", who: "" } }; }
+  _sfxDef() { return { kinds: ["smoke", "co", "gas", "water", "heat", "safety"], excl: [], repeat: 10, bat: { on: true, pct: 20 }, off: { on: true, min: 60 }, test: { on: true, months: 6 }, acts: [], notify: { alarm: true, end: false, bat: true, off: true, test: true, life: true, depart: true, to: [] }, meta: {}, add: [], plan: { floors: [{ id: "eg", n: "EG" }], items: [], bg: {} }, quiet: { on: false, from: "22:00", to: "07:00" }, lead: 30, depart: { on: true, ents: [], frost: { on: false, ent: "", below: 3 } }, proto: { name: "", addr: "", who: "" }, stages: { s2: { on: true, sec: 10 }, s3: { on: false, sec: 60 }, s4: { on: false, sec: 300 } }, tts: { player: "", engine: "" }, contact: { to: "" }, offask: { mode: "ask", days: 7 } }; }
   _sfxNames() { return { smoke: "Rauch", co: "CO", gas: "Gas", water: "Wasser", heat: "Hitze", safety: "Sicherheit" }; }
   _sfxKind() { return { smoke: ["Rauchmelder", "flame"], co: ["CO-Melder", "alert"], gas: ["Gasmelder", "flame"], water: ["Wassermelder", "drop"], heat: ["Hitzemelder", "thermo"], safety: ["Sicherheitsmelder", "shield"] }; }
   _sfxLoad(force) {
@@ -11168,8 +11196,8 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { error: true }, ts: Date.now() }; })
       .finally(() => { this._sfxBusy = false; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } });
   }
-  _sfxVisible() { return !!(this._modal && (this._modal.type === "sfset" || this._modal.type === "sfdet")) || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }
-  _sfx() { const d = (this._sfxD && this._sfxD.d) || {}, df = this._sfxDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, bat: { ...df.bat, ...(c.bat || {}) }, off: { ...df.off, ...(c.off || {}) }, test: { ...df.test, ...(c.test || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, kinds: c.kinds || df.kinds, excl: c.excl || [], acts: c.acts || [], meta: c.meta || {}, add: c.add || [], plan: { floors: c.plan && c.plan.floors && c.plan.floors.length ? c.plan.floors : df.plan.floors, items: (c.plan && c.plan.items) || [], bg: (c.plan && c.plan.bg) || {} }, quiet: { ...df.quiet, ...(c.quiet || {}) }, lead: c.lead != null ? c.lead : df.lead, depart: { ...df.depart, ...(c.depart || {}), frost: { ...df.depart.frost, ...((c.depart || {}).frost || {}) } }, proto: { ...df.proto, ...(c.proto || {}) } } }; }
+  _sfxVisible() { return !!(this._modal && (this._modal.type === "sfset" || this._modal.type === "sfdet" || this._modal.type === "sfalarm")) || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }
+  _sfx() { const d = (this._sfxD && this._sfxD.d) || {}, df = this._sfxDef(), c = d.cfg || {}; return { ...d, cfg: { ...df, ...c, bat: { ...df.bat, ...(c.bat || {}) }, off: { ...df.off, ...(c.off || {}) }, test: { ...df.test, ...(c.test || {}) }, notify: { ...df.notify, ...(c.notify || {}) }, kinds: c.kinds || df.kinds, excl: c.excl || [], acts: c.acts || [], meta: c.meta || {}, add: c.add || [], plan: { floors: c.plan && c.plan.floors && c.plan.floors.length ? c.plan.floors : df.plan.floors, items: (c.plan && c.plan.items) || [], bg: (c.plan && c.plan.bg) || {} }, quiet: { ...df.quiet, ...(c.quiet || {}) }, lead: c.lead != null ? c.lead : df.lead, depart: { ...df.depart, ...(c.depart || {}), frost: { ...df.depart.frost, ...((c.depart || {}).frost || {}) } }, proto: { ...df.proto, ...(c.proto || {}) }, stages: { s2: { ...df.stages.s2, ...((c.stages || {}).s2 || {}) }, s3: { ...df.stages.s3, ...((c.stages || {}).s3 || {}) }, s4: { ...df.stages.s4, ...((c.stages || {}).s4 || {}) } }, tts: { ...df.tts, ...(c.tts || {}) }, contact: { ...df.contact, ...(c.contact || {}) }, offask: { ...df.offask, ...(c.offask || {}) } } }; }
   _sfxSave(cfg) {
     if (!(this._sfxD && this._sfxD.d && this._sfxD.d.cfg)) { this._toast("Noch nicht geladen, bitte kurz warten und nochmal versuchen"); return; }
     const s = this._sfx(); this._sfxD = { d: { ...s, cfg }, ts: Date.now() };
@@ -11204,6 +11232,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (a === "sfxns") c.notify.to = c.notify.to.includes(k) ? c.notify.to.filter((x) => x !== k) : [...c.notify.to, k];
       else if (a === "sfxak") c.acts[i].kind = k;
       else if (a === "sfxad") c.acts[i].do = k;
+      else if (a === "sfxast") c.acts[i].st = Number(k);
       else if (a === "sfxrm") c.acts.splice(i, 1);
     });
   }
@@ -11236,7 +11265,8 @@ class FensterHeizungPanel extends HTMLElement {
     const all = [...(S.det || []), ...(S.excl || []).filter((x) => !(S.det || []).some((d) => d.id === x.id)).map((x) => ({ id: x.id, name: x.name, k: "safety", kind: "ausgeschlossen", area: "" }))];
     const acts = C.acts.map((x, i) => `<div class="rfv"><div class="vrow" style="margin:0"><span><b>${esc(this._wzName(x.ent))}</b><small class="mut" style="display:block">${esc(x.ent)}</small></span><button class="ibtn" data-act="sfxrm" data-i="${i}" aria-label="Aktion entfernen">${ic("trash", 18)}</button></div>
       <div class="mut sm" style="margin:6px 0 4px">Bei</div><div class="gschips">${[["any", "Jedem Alarm"], ...Object.keys(NM).map((k) => [k, NM[k]])].map(([k, t]) => chip("sfxak", k, t, x.kind === k, `data-i="${i}"`)).join("")}</div>
-      <div class="mut sm" style="margin:6px 0 4px">Dann</div><div class="gschips">${this._sfxDo(x.ent).map(([k, t]) => chip("sfxad", k, t, x.do === k, `data-i="${i}"`)).join("")}</div></div>`).join("");
+      <div class="mut sm" style="margin:6px 0 4px">Dann</div><div class="gschips">${this._sfxDo(x.ent).map(([k, t]) => chip("sfxad", k, t, x.do === k, `data-i="${i}"`)).join("")}</div>
+      <div class="mut sm" style="margin:6px 0 4px">Wann</div><div class="gschips">${[[1, "Sofort"], [2, "Stufe 2"], [3, "Stufe 3"], [4, "Stufe 4"]].map(([k, t]) => chip("sfxast", k, t, (x.st || 1) === k, `data-i="${i}"`)).join("")}</div></div>`).join("");
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Rauch- &amp; Sicherheitsmelder</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("shield", 15)}Welche Melder</div>
@@ -11246,7 +11276,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="gst">${ic("info", 15)}<span>X-Sense und andere Hersteller richtest du unter <button class="lnk" data-act="sfxgoig">Einstellungen → Integrationen</button> ein.</span></div>
       <div class="lsec" style="margin-top:12px">${ic("alert", 15)}Bei Alarm</div>
       <div class="vrow"><span>Erinnerung wiederholen<small class="mut" style="display:block">Solange der Alarm anhält, kommt alle paar Minuten eine Meldung. 0 = nur einmal.</small></span>${step("sfxrep", C.repeat, "Min.", 5)}</div>
-      <div class="mut sm" style="margin:10px 0 6px">Aktionen: das Modul schaltet nur, was du hier auswählst, einmal pro Alarm. Gut sind Licht an, Rollläden öffnen (Fluchtweg), Wasserventil schließen oder eine Sirene per Skript.</div>
+      <div class="mut sm" style="margin:10px 0 6px">Aktionen: das Modul schaltet nur, was du hier auswählst, einmal pro Alarm. Gut sind Licht an, Rollläden öffnen (Fluchtweg), Lüftung aus, Wasserventil schließen oder eine Sirene per Skript. „Wann“ legt fest, in welcher Stufe es läuft (Stufen unter Einstellungen → Alarm &amp; Stufen).</div>
       ${acts}${C.acts.length < 12 ? this._wzSel(actOpts, "", "sfxadd", "", "+ Aktion hinzufügen", /licht|light|flur|ventil|sirene|rollo/i) : ""}
       <div class="lsec" style="margin-top:12px">${ic("energy", 15)}Batterie und Erreichbarkeit</div>
       <div class="vrow"><span>Schwache Batterie melden<small class="mut" style="display:block">Einmal pro Woche, solange sie unter der Grenze liegt.</small></span>${C.bat.on ? step("sfxbatp", C.bat.pct, "%", 5) : ""}${sw("sfxbat", "", C.bat.on, "Batterie")}</div>
@@ -12113,7 +12143,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (on.sf) {
       try {
         const T = this._sfStat();
-        T.al.forEach((x) => out.push({ k: `sf:al:${x.id}`, nosn: true, i: "alert", t: `Rauchmelder ${esc(x.name || "")}: Alarm`, s: esc(x.room || x.area || "Modul 11"), r: "jetzt", c: "bad", mod: "sf", hd: "smoke", alarm: true }));
+        T.al.forEach((x) => out.push({ k: `sf:al:${x.id}`, nosn: true, i: "alert", t: `${esc(x.kind || "Melder")} ${esc(x.name || "")}: Alarm`, s: esc(x.room || x.area || "Modul 11"), r: "jetzt", c: "bad", mod: "sf", hd: "smoke", alarm: true }));
         if (T.off.length) out.push({ k: "sf:off", i: "alert", t: T.off.length === 1 ? `Melder offline: ${esc(T.off[0].name || "")}` : `${T.off.length} Melder offline`, s: "Modul 11 · nicht erreichbar", r: "", c: "bad", soft: true, mod: "sf", hd: "smoke" });
       } catch (_) { /* Modul 11 noch nicht geladen */ }
     }
@@ -14827,9 +14857,10 @@ class FensterHeizungPanel extends HTMLElement {
     });
   }
   _sfStat() {
-    const S = this._sfx(), C = S.cfg, l = this._sfList(), al = l.filter((x) => x.alarm), low = l.filter((x) => x.bat != null && x.bat < C.bat.pct), off = l.filter((x) => x.off);
-    const due = C.test.on ? l.filter((x) => x.test_due) : [], life = l.filter((x) => x.life_days != null && x.life_days <= C.lead), op = this._sfDepRows().filter((x) => x.open);
-    return { S, C, l, al, low, off, due, life, op, bad: al.length ? "alarm" : low.length || off.length || due.length || life.length ? "warn" : "ok" };
+    const S = this._sfx(), C = S.cfg, l = this._sfList(), al = l.filter((x) => x.alarm), pa = l.filter((x) => x.paused && !x.alarm), act = l.filter((x) => !x.paused), low = act.filter((x) => x.bat != null && x.bat < C.bat.pct), off = act.filter((x) => x.off);
+    const due = C.test.on ? act.filter((x) => x.test_due && !x.off) : [], life = act.filter((x) => x.life_days != null && x.life_days <= C.lead), op = this._sfDepRows().filter((x) => x.open), ask = act.filter((x) => x.ask);
+    /* Ausgeschaltete Melder (pa) zählen nicht bei Batterie, Erreichbarkeit, Prüfung und Lebensdauer; ein Alarm zählt immer */
+    return { S, C, l, al, pa, act, ask, low, off, due, life, op, bad: al.length ? "alarm" : low.length || off.length || due.length || life.length || ask.length ? "warn" : "ok" };
   }
   _sfLogo(bad) {
     if (bad === "ok") return this._modLogo("sf");
@@ -14898,6 +14929,10 @@ class FensterHeizungPanel extends HTMLElement {
         out += `<g ${id} class="sfmk ${c}">${c === "a" ? `<circle class="sfpulse" cx="${i.x}" cy="${i.y}" r="26"></circle>` : ""}<circle class="sfmc" cx="${i.x}" cy="${i.y}" r="15"></circle><g transform="translate(${i.x - 8} ${i.y - 8})">${ic(ico, 16)}</g>${d && d.bat != null && d.bat < S.cfg.bat.pct ? `<text class="sfbt" x="${i.x + 19}" y="${i.y + 4}">${num(d.bat, 0)} %</text>` : ""}<circle class="sfhit" cx="${i.x}" cy="${i.y}" r="20"></circle></g>`;
       }
     });
+    if (!edit && mk.length) {  /* Fluchtweg: Linie vom alarmierenden Melder zur nächsten Tür (Luftlinie, Plan prüfen) */
+      const e = this._sfEscapeFor(mk[0]);
+      if (e) out += `<path class="sfesc" d="M${e.m.x} ${e.m.y}L${e.d.x} ${e.d.y}"></path><circle class="sfesd" cx="${e.d.x}" cy="${e.d.y}" r="22"></circle>`;
+    }
     if (sel) {
       const i = items.find((x) => x.id === sel);
       if (i) {
@@ -14918,7 +14953,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!ed) {
       const al = T.al, sel = this._sfSelDet && T.l.find((x) => x.id === this._sfSelDet), here = P.items.filter((i) => i.fl === fl && i.t === "m").length;
       const empty = !n ? `<div class="sfemp">${ic("home", 34)}<b>Noch kein Grundriss</b><span>${adm ? "Zeichne dein Haus mit dem Baukasten: Räume, Wände, Türen und Fenster ziehen, dann die Melder darauf setzen." : "Ein Administrator kann den Grundriss zeichnen."}</span>${adm ? `<button class="btn2 pri" data-act="sfxedit" style="flex:none;padding:10px 20px">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div>` : "";
-      const side = sel ? `<div class="card sfc"><h2>${ic("bell", 18)}${esc(sel.name)}</h2>${this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : al.length ? `<div class="card sfc"><h2>${ic("alert", 18)}Alarm</h2>${al.map((x) => this._sfCard(x)).join("")}</div>` : `<div class="card sfc"><h2>${ic("info", 18)}Tipp</h2><div class="mut sm">Tippe auf einen Melder im Plan, dann siehst du Batterie, Einbaudatum und Prüfung.${here ? "" : " Auf dieser Etage sitzt noch kein Melder."}</div></div>`;
+      const side = sel ? `<div class="card sfc"><h2>${ic("bell", 18)}${esc(sel.name)}</h2>${this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : al.length ? `<div class="card sfc"><h2>${ic("alert", 18)}Alarm</h2>${al.map((x) => this._sfCard(x)).join("")}${this._sfEscHint(al[0])}</div>` : `<div class="card sfc"><h2>${ic("info", 18)}Tipp</h2><div class="mut sm">Tippe auf einen Melder im Plan, dann siehst du Batterie, Einbaudatum und Prüfung.${here ? "" : " Auf dieser Etage sitzt noch kein Melder."}</div></div>`;
       return `<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._sfFloorBar(false)}${adm && n ? `<button class="sfed" data-act="sfxedit">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>${n ? `<div class="sfpl"><svg class="sfpv" viewBox="0 0 800 480" role="img" aria-label="Grundriss">${this._sfPlanInner(fl, false)}</svg></div>` : empty}</div></div><div class="enco">${side}</div></div>`;
     }
     const sel = P.items.find((x) => x.id === ed.sel), dm = this._sfDetMap(), placed = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), free = T.l.filter((d) => !placed.has(d.id));
@@ -14980,10 +15015,10 @@ class FensterHeizungPanel extends HTMLElement {
       <table><thead><tr><th>Melder</th><th>Ort</th><th>Art</th><th>Eingebaut</th><th>Tausch bis</th><th>Zuletzt geprüft</th><th>Batterie</th><th>Ergebnis</th></tr></thead><tbody>${rows || `<tr><td colspan="8">Keine Melder</td></tr>`}</tbody></table>
       ${ev ? `<b>Ereignisse ${yr}</b><ul>${ev}</ul>` : ""}<div class="s"><div>Datum</div><div>Unterschrift</div></div></body></html>`;
   }
-  _sfxPrint() {
+  _sfxPrint(html) {
     const f = document.createElement("iframe"); f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0"; document.body.appendChild(f);
     f.onload = () => { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (_) { this._toast("Drucken geht hier nicht. Nimm „Als Datei laden“."); } setTimeout(() => f.remove(), 60000); };
-    f.srcdoc = this._sfxProto();
+    f.srcdoc = html || this._sfxProto();
   }
   _sfxHtml() { const a = document.createElement("a"), u = URL.createObjectURL(new Blob([this._sfxProto()], { type: "text/html" })); a.href = u; a.download = `Pruefprotokoll-Melder-${new Date().getFullYear()}.html`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
   /* ---- Einstellungen: Melder und Batterie, Abfahrt-Prüfung, Allgemein */
@@ -15077,6 +15112,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (f === "sfxmadd") { if (v) { this._sfxPatch((c) => { if (!c.add.includes(v) && c.add.length < 60) c.add.push(v); }); this._sfSelDet = v; } return true; }
     if (f === "sfxdadd") { if (v) this._sfxPatch((c) => { if (!c.depart.ents.includes(v) && c.depart.ents.length < 30) c.depart.ents.push(v); }); return true; }
     if (f === "sfxfent") { this._sfxPatch((c) => { c.depart.frost.ent = v; }); return true; }
+    if (f === "sfxtts") { this._sfxPatch((c) => { c.tts[t.dataset.k] = v; }); return true; }
+    if (f === "sfxcont") { this._sfxPatch((c) => { c.contact.to = v; }); return true; }
     if (f === "sfxqt") { this._sfxPatch((c) => { c.quiet[t.dataset.k] = v || c.quiet[t.dataset.k]; }); return true; }
     if (f === "sfxpr") { this._sfxPatch((c) => { c.proto[t.dataset.k] = v.trim(); }); return true; }
     if (f === "sfxmf" || f === "sfxmbat" || f === "sfxmpress") {
@@ -15313,7 +15350,7 @@ class FensterHeizungPanel extends HTMLElement {
   _sfNew() { const c = this._sfx().cfg || {}; return !(c.ui && c.ui.old); }
   /* HD-Symbol eines Melders: Gehäuse von unten, LED zeigt den Zustand */
   _sfHd(kind, st, size = 38) {
-    const n = (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6), u = "sh" + n + "_", led = { ok: "#34d399", warn: "#f59e0b", alarm: "#ef4444", off: "#94a3b8" }[st] || "#34d399";
+    const n = (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6), u = "sh" + n + "_", led = { ok: "#34d399", warn: "#f59e0b", alarm: "#ef4444", off: "#94a3b8", pause: "#64748b" }[st] || "#34d399";
     const defs = `<defs><linearGradient id="${u}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset="1" stop-color="#b6c0cf"/></linearGradient><linearGradient id="${u}f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fcd34d"/><stop offset="1" stop-color="#f97316"/></linearGradient><linearGradient id="${u}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#2563eb"/></linearGradient><linearGradient id="${u}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5eead4"/><stop offset="1" stop-color="#0f766e"/></linearGradient></defs>`;
     const vents = Array.from({ length: 12 }, (_, i) => `<rect x="31" y="11" width="2" height="4" rx="1" fill="#8b97a8" transform="rotate(${i * 30} 32 32)"/>`).join("");
     const det = `<ellipse cx="32" cy="55" rx="20" ry="3" fill="#000" opacity=".25"/><circle cx="32" cy="32" r="25" fill="url(#${u}b)" stroke="#94a3b8" stroke-width="1.2"/><circle cx="32" cy="32" r="16" fill="none" stroke="#94a3b8" stroke-width="1.4"/>${vents}`;
@@ -15327,11 +15364,11 @@ class FensterHeizungPanel extends HTMLElement {
     else g = `<ellipse cx="32" cy="58" rx="16" ry="3" fill="#000" opacity=".25"/><path d="M32 5 10 13v17c0 13 9 21 22 27 13-6 22-14 22-27V13z" fill="url(#${u}s)"/><path d="M22 31l7 7 14-15" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>`;
     return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true">${defs}${g}</svg>`;
   }
-  _sfSt(x) { const C = this._sfx().cfg; return x.alarm ? "alarm" : x.off ? "off" : x.bat != null && x.bat < C.bat.pct ? "warn" : "ok"; }
+  _sfSt(x) { const C = this._sfx().cfg; return x.alarm ? "alarm" : x.paused ? "pause" : x.off ? "off" : x.bat != null && x.bat < C.bat.pct ? "warn" : "ok"; }
   /* Haus im Schnitt mit den Meldern */
   _sfScene(bad, l) {
     const n = (this.constructor._gxN = ((this.constructor._gxN || 0) + 1) % 1e6), u = "sb" + n + "_", glow = { ok: "#34d399", warn: "#fbbf24", alarm: "#f87171" }[bad] || "#34d399";
-    const col = { ok: "#34d399", warn: "#f59e0b", alarm: "#ef4444", off: "#94a3b8" }, fl = this._sfPl().floors, low = [[133, 154], [213, 154], [287, 154]], up = [[155, 92], [265, 92]];
+    const col = { ok: "#34d399", warn: "#f59e0b", alarm: "#ef4444", off: "#94a3b8", pause: "#64748b" }, fl = this._sfPl().floors, low = [[133, 154], [213, 154], [287, 154]], up = [[155, 92], [265, 92]];
     const free = { low: low.slice(), up: up.slice() }, put = [];
     const order = [...l].sort((a, b) => (b.alarm ? 1 : 0) - (a.alarm ? 1 : 0));
     order.forEach((x) => {
@@ -15357,17 +15394,17 @@ class FensterHeizungPanel extends HTMLElement {
       ${extra ? `<text x="386" y="30" text-anchor="end" font-size="12" font-weight="700" fill="#fff" opacity=".85">+${extra}</text>` : ""}</svg>`;
   }
   _sfBanner(T) {
-    const { S, C, l, al, low, off, due, life, op, bad } = T, mv = MV.sf, anim = this._rkCfg ? this._rkCfg().anim : "dezent";
+    const { S, C, l, al, low, due, life, op, bad, pa, act, ask } = T, off = T.off.filter((x) => !x.ask), mv = MV.sf, anim = this._rkCfg ? this._rkCfg().anim : "dezent";
     let big, sub;
     if (!l.length) { big = "Noch keine Melder"; sub = "Melder aus Home Assistant erscheinen hier automatisch. Du kannst sie auch unter Einstellungen von Hand hinzufügen."; }
     else if (al.length) {
       const a = al[0], t = a.since ? new Date(a.since) : null;
       big = al.length > 1 ? `${al.length} Alarme aktiv` : `${String(a.kind || "Alarm").replace(/melder$/i, "alarm")} · ${a.room || a.area || a.name}`;
       sub = `${t && isFinite(t) ? "Seit " + t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) + " Uhr · " : ""}${al.map((x) => x.name).join(", ")}`;
-    } else if (bad === "warn") { big = "Alles ruhig, aber Hinweise"; sub = [low.length ? `${low.length} Batterie${low.length === 1 ? "" : "n"} schwach` : "", off.length ? `${off.length} nicht erreichbar` : "", due.length ? "Prüfung fällig" : "", life.length ? `${life.length} Melder zu tauschen` : ""].filter(Boolean).join(" · "); }
-    else { big = "Alles in Ordnung"; sub = `${l.length} ${l.length === 1 ? "Melder" : "Melder"} · alle erreichbar · Batterien gut`; }
+    } else if (bad === "warn") { big = "Alles ruhig, aber Hinweise"; sub = [low.length ? `${low.length} Batterie${low.length === 1 ? "" : "n"} schwach` : "", off.length ? `${off.length} nicht erreichbar` : "", due.length ? "Prüfung fällig" : "", life.length ? `${life.length} Melder zu tauschen` : "", ask.length ? `${ask.length} wirken ausgeschaltet` : ""].filter(Boolean).join(" · "); }
+    else { big = "Alles in Ordnung"; sub = `${act.length} Melder · alle erreichbar · Batterien gut${pa.length ? ` · ${pa.length} ausgeschaltet` : ""}`; }
     const chip = (ico, t, w) => `<span class="chip${w ? " st warn" : ""}">${ic(ico, 14)}${esc(t)}</span>`;
-    const chips = (l.length ? chip("shield", `${l.length} Melder`) : "") + low.slice(0, 2).map((x) => chip("energy", `${x.name} ${num(x.bat, 0)} %`, 1)).join("") + off.slice(0, 2).map((x) => chip("alert", `${x.name} offline`, 1)).join("") + (due.length ? chip("clock", "Prüfung fällig", 1) : "") + (life.length ? chip("alert", `${life.length} zu tauschen`, 1) : "") + (op.length ? chip("lock", `${op.length} offen beim Gehen`, 1) : "");
+    const chips = (l.length ? chip("shield", `${act.length} Melder`) : "") + (pa.length ? chip("eyeOff", `${pa.length} ausgeschaltet`) : "") + ask.slice(0, 2).map((x) => chip("eyeOff", `${x.name} wirkt aus`, 1)).join("") + low.slice(0, 2).map((x) => chip("energy", `${x.name} ${num(x.bat, 0)} %`, 1)).join("") + off.slice(0, 2).map((x) => chip("alert", `${x.name} offline`, 1)).join("") + (due.length ? chip("clock", "Prüfung fällig", 1) : "") + (life.length ? chip("alert", `${life.length} zu tauschen`, 1) : "") + (op.length ? chip("lock", `${op.length} offen beim Gehen`, 1) : "");
     return `<div class="card sfbn ${bad}"><div class="sfbt"><div class="sfbl">${ic(bad === "alarm" ? "alert" : "shield", 15)}${bad === "alarm" ? "ALARM" : "Sicherheit im Haus"}</div><div class="sfbb">${esc(big)}</div><div class="sfbs">${esc(sub)}</div><div class="chips">${chips}</div></div>
       <div class="sfbi" data-an="${anim}">${this._sfScene(bad, l)}</div>${mv ? `<span class="mlv">v${esc(mv.v)} · Build ${mv.b}</span>` : ""}</div>`;
   }
@@ -15389,13 +15426,13 @@ class FensterHeizungPanel extends HTMLElement {
   _sfCard(x) {
     if (!this._sfNew()) return this._sfCardOld(x);
     const C = this._sfx().cfg, st = this._sfSt(x), KN = this._sfxKind(), bt = x.bat != null ? Math.max(0, Math.min(100, x.bat)) : null;
-    const stx = { alarm: ["ALARM", "#ef4444"], off: ["Nicht erreichbar", "#94a3b8"], warn: ["Batterie schwach", "#f59e0b"], ok: ["In Ordnung", "#34d399"] }[st];
+    const stx = { alarm: ["ALARM", "#ef4444"], pause: ["Ausgeschaltet", "#94a3b8"], off: ["Nicht erreichbar", "#94a3b8"], warn: ["Batterie schwach", "#f59e0b"], ok: ["In Ordnung", "#34d399"] }[st];
     const where = [(this._sfPl().floors.find((f) => f.id === x.floor) || {}).n, x.room || x.area].filter(Boolean).join(" · ");
     const R = 15, circ = 2 * Math.PI * R, rc = bt == null ? "#64748b" : bt < C.bat.pct ? "#f59e0b" : "#34d399";
     const ring = bt == null ? `<span class="sfmq">–</span>` : `<svg viewBox="0 0 40 40" width="38" height="38" aria-hidden="true"><circle cx="20" cy="20" r="${R}" fill="none" class="sfrg"/><circle cx="20" cy="20" r="${R}" fill="none" stroke="${rc}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${(circ * (1 - bt / 100)).toFixed(1)}" transform="rotate(-90 20 20)"/><text x="20" y="23.5" text-anchor="middle" class="sfrt">${num(bt, 0)}</text></svg>`;
     const tested = x.tested || (this._sfx().test || {}).last;
-    const l1 = x.alarm ? `Alarm ${x.since ? this._sfAgo(x.since) : "aktiv"}` : x.off ? "Meldet sich nicht" : x.bat_days != null && x.bat_days < 90 ? `Batterie noch ~ ${this._sfDur(x.bat_days)}` : tested ? `Geprüft ${this._sfAgo(tested)}` : "Noch nie geprüft";
-    const l2 = x.life_days != null && !x.alarm ? (x.life_days < 0 ? "Tausch überfällig" : `Tausch in ${this._sfDur(x.life_days)}`) : x.bat_days != null && x.bat_days >= 90 ? `Batterie ~ ${this._sfDur(x.bat_days)}` : x.src ? `Quelle ${esc(x.src)}` : "";
+    const l1 = x.alarm ? `Alarm ${x.since ? this._sfAgo(x.since) : "aktiv"}` : x.paused ? "Keine Warnungen" : x.off ? "Meldet sich nicht" : x.bat_days != null && x.bat_days < 90 ? `Batterie noch ~ ${this._sfDur(x.bat_days)}` : tested ? `Geprüft ${this._sfAgo(tested)}` : "Noch nie geprüft";
+    const l2 = x.paused ? (x.paused.until ? `bis ${this._sfDate(x.paused.until)}` : "bis du ihn einschaltest") : x.life_days != null && !x.alarm ? (x.life_days < 0 ? "Tausch überfällig" : `Tausch in ${this._sfDur(x.life_days)}`) : x.bat_days != null && x.bat_days >= 90 ? `Batterie ~ ${this._sfDur(x.bat_days)}` : x.src ? `Quelle ${esc(x.src)}` : "";
     return `<button class="sfnc ${st}" data-act="sfxdet" data-k="${esc(x.id)}" aria-label="${esc(x.name)}: ${stx[0]}. Details öffnen">
       <span class="sfnt"><span class="sfmi">${this._sfHd(x.k, st, 38)}</span><span class="sfmn"><b>${esc(x.name)}</b><small>${esc(where || x.kind)}</small></span><span class="sfmm">${ic("more", 18)}</span></span>
       <span class="sfms"><i style="background:${stx[1]}"></i><b style="${st === "ok" ? "" : `color:${stx[1]}`}">${stx[0]}</b></span>
@@ -15403,14 +15440,14 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* ---- A3 · Übersicht */
   _sfKts(T) {
-    const { S, C, l, al, low, off, due, life } = T, n = l.length, last = (S.log || []).find((x) => x.c === "alarm"), withBat = l.filter((x) => x.bat != null);
+    const { S, C, al, low, off, due, life } = T, l = T.act, n = l.length, last = (S.log || []).find((x) => x.c === "alarm"), withBat = l.filter((x) => x.bat != null);
     const soon = l.filter((x) => x.bat_thr_days != null && x.bat_thr_days <= C.lead && !(x.bat != null && x.bat < C.bat.pct));
     const nextLife = [...life].sort((a, b) => a.life_days - b.life_days)[0];
     const k = (ico, t, v, s, c, go, a = "sfxtab") => `<button class="sfkt" data-act="${a}" data-k="${go}">${ic(ico, 18)}<i style="background:${c}"></i><small>${t}</small><b>${esc(v)}</b><em>${esc(s)}</em></button>`;
     const G = "#34d399", A = "#f59e0b", R = "#ef4444";
     return `<div class="sfkts">${k("shield", "Alarme", al.length ? `${al.length} aktiv` : "keine", al.length ? al.map((x) => x.name).join(", ") : last ? "zuletzt " + this._sfAgo(last.t) : "noch keiner", al.length ? R : G, "", "sfxscroll")}
       ${k("energy", "Batterien", withBat.length ? `${withBat.length - low.length} von ${withBat.length} gut` : "unbekannt", low.length ? `${low[0].name} bald leer` : soon.length ? `${soon[0].name} in ~ ${this._sfDur(soon[0].bat_thr_days)}` : withBat.length ? "alle gut" : "kein Batteriewert", low.length ? A : soon.length ? A : G, "wa")}
-      ${k("wifi", "Erreichbar", n ? `${n - off.length} von ${n}` : "–", off.length ? `${off[0].name} offline` : "alle erreichbar", off.length ? A : G, "", "sfxscroll")}
+      ${k("wifi", "Erreichbar", n ? `${n - off.length} von ${n}` : "–", off.length ? `${off[0].name} offline` : T.pa.length ? `${T.pa.length} ausgeschaltet` : "alle erreichbar", off.length ? A : G, "", "sfxscroll")}
       ${k("clock", "Prüfung", !C.test.on ? "aus" : due.length ? "fällig" : "läuft", S.test && S.test.last ? "zuletzt " + this._sfAgo(S.test.last) : "noch nie geprüft", due.length ? A : G, "wa")}
       ${k("tools", "Lebensdauer", life.length ? `${life.length} tauschen` : "in Ordnung", nextLife ? `${nextLife.name}${nextLife.life_days < 0 ? ", überfällig" : ""}` : "keine Frist", life.length ? A : G, "wa")}</div>`;
   }
@@ -15430,7 +15467,7 @@ class FensterHeizungPanel extends HTMLElement {
     const p = this._sfOvParts(T), l = T.l, rank = (x) => (x.alarm ? 0 : x.off ? 1 : x.bat != null && x.bat < T.C.bat.pct ? 2 : 3);
     const sorted = [...l].sort((a, b) => rank(a) - rank(b) || String(a.floor || "~").localeCompare(String(b.floor || "~")) || a.name.localeCompare(b.name, "de"));
     const list = l.length ? `<div class="card sfc sfmel"><h2>${ic("bell", 18)}Melder<small class="mut">${l.length}</small></h2><div class="sfmg">${sorted.map((x) => this._sfCard(x)).join("")}</div></div>` : "";
-    return `${p.empty}${this._sfKts(T)}<div class="enc"><div class="enco">${p.dep}</div><div class="enco">${this._sfTimeline(T.S)}${p.log}</div></div>${list}`;
+    return `${this._sfAskCards(T)}${p.empty}${this._sfKts(T)}<div class="enc"><div class="enco">${p.dep}</div><div class="enco">${this._sfTimeline(T.S)}${p.log}</div></div>${list}`;
   }
   /* ---- Detailblatt eines Melders mit Batterie-Verlauf und Prognose (Stufe 1 · C4) */
   _sfGraph(x) {
@@ -15450,7 +15487,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="sh"><div><b>${esc(x.name)}</b><span>${esc([(this._sfPl().floors.find((f) => f.id === x.floor) || {}).n, x.room || x.area, x.src ? "Quelle " + x.src : ""].filter(Boolean).join(" · ") || x.kind)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="sfnd">${this._sfCard(x).replace(/ data-act="sfxdet"[^>]*?(?=>)/, ' disabled')}
         <div class="card sfc" style="margin-top:10px"><h2>${ic("energy", 18)}Batterie<small class="mut">${x.bat != null ? num(x.bat, 0) + " %" : ""}</small></h2>${this._sfGraph(x)}${fc ? `<div class="sfpn">${ic("clock", 15)}${esc(fc)}</div>` : ""}</div>
-        <div class="card sfc" style="margin-top:10px"><h2>${ic("check", 18)}Prüfung und Lebensdauer</h2>${this._sfDetFactsPlain(x)}</div>
+        <div class="card sfc" style="margin-top:10px"><h2>${ic("check", 18)}Prüfung und Lebensdauer</h2>${this._sfDetFactsPlain(x)}</div>${this._sfPauseCard(x)}${this._sfFaCard(x)}
         ${adm ? `<div class="sfbtn" style="margin-top:12px"><button class="btn2 pri" data-act="sfxdt" data-k="${esc(x.id)}">${ic("check", 15)} Geprüft</button>${x.bat != null ? `<button class="btn2" data-act="sfxdbat" data-k="${esc(x.id)}">Batterie getauscht</button>` : ""}${x.test ? `<button class="btn2" data-act="sfxpress" data-k="${esc(x.id)}">Test auslösen</button>` : ""}<button class="btn2" data-act="sfxeditdet" data-k="${esc(x.id)}">Einstellungen</button></div>` : ""}</div></div>`;
   }
   _sfDetFactsPlain(x) {
@@ -15484,7 +15521,8 @@ class FensterHeizungPanel extends HTMLElement {
     const p = this._sfWartParts(T), P = T.C.proto, yr = new Date().getFullYear();
     const nach = `<div class="card sfc"><h2>${ic("list", 18)}Nachweis ${yr}</h2><div class="sfdoc"><b>Prüfprotokoll Rauchmelder ${yr}</b><small>${esc(P.name || "Name")} · ${esc(P.addr || "Adresse")}</small><i></i><i class="s"></i><i></i><i class="s"></i></div>
       <div class="mut sm" style="margin:8px 0">Eine Seite für Versicherung, Vermieter oder Schornsteinfeger: alle Melder mit Einbau, Tausch, letzter Prüfung und Batterie.${P.name || P.addr ? "" : " Name und Adresse trägst du in den Einstellungen ein."}</div>
-      <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} PDF erstellen</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div></div>`;
+      <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} PDF erstellen</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div>
+      <div class="sfbtn" style="margin-top:8px"><button class="btn2" data-act="sfxbericht">${ic("heart", 15)} Sicherheitsbericht${this._spnS().active ? "" : " (Sponsor)"}</button></div></div>`;
     return `${this._sfBand(T)}<div class="enc"><div class="enco">${this._sfPrognose(T)}${p.list}</div><div class="enco">${nach}${p.sl}</div></div>`;
   }
   /* ---- Einstellungen: Schalter für die alte Darstellung */
@@ -15492,11 +15530,12 @@ class FensterHeizungPanel extends HTMLElement {
     const old = this._sfSetOld(T);
     if (!this._admin()) return old;
     const o = !this._sfNew();
-    return `${old}<div class="card sfc" style="margin-top:12px"><h2>${ic("eye", 18)}Aussehen</h2><div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Banner mit Schild, Melder-Karten mit Farbbalken, Ampel als Liste und die Wartung aus v0.5 statt Haus-Szene, Kennzahl-Kacheln und Jahresband</small></span><button class="sw ${o ? "on" : ""}" data-act="sfxold" aria-pressed="${o}" aria-label="Karten wie bisher"></button></div></div>`;
+    return `${old}${this._sfStufenCard(T)}<div class="card sfc" style="margin-top:12px"><h2>${ic("eye", 18)}Aussehen</h2><div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Banner mit Schild, Melder-Karten mit Farbbalken, Ampel als Liste und die Wartung aus v0.5 statt Haus-Szene, Kennzahl-Kacheln und Jahresband</small></span><button class="sw ${o ? "on" : ""}" data-act="sfxold" aria-pressed="${o}" aria-label="Karten wie bisher"></button></div></div>`;
   }
   /* ---- Aktionen */
   _sfxNew(a, b) {
     const k = b.dataset.k;
+    if (this._sfxAlarmAct(a, b)) return true;
     if (a === "sfxdet") { this._modal = { type: "sfdet", id: k }; this._renderModal(); return true; }
     if (a === "sfxdt" || a === "sfxdbat") {
       this._hass.callWS({ type: "fenster_heizung/sf_tested", ent: k, ...(a === "sfxdbat" ? { bat: true } : {}) }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; this._render(); if (this._modal && this._modal.type === "sfdet") this._renderModal(); this._toast(a === "sfxdbat" ? "Batterie getauscht, der Verlauf beginnt neu" : "Melder als geprüft eingetragen"); }).catch(() => this._toast("Das hat nicht geklappt"));
@@ -15507,6 +15546,128 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "sfxscroll") { const el = (this.shadowRoot || this).querySelector(".sfmel"); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" }); return true; }
     if (a === "sfxeditdet" && this._modal && this._modal.type === "sfdet") this._modal = null, this._renderModal();
     return this._sfxNewOld(a, b);
+  }
+  /* ================= Modul 11 · v0.8 „Alarm & Stufen“ (Konzept_Modul11_Neue-Optik Teil C, Empfehlungen 1–12) =================
+     C1 · Alarm-Ansicht (Handy, Tablet-Wand, Panel) mit den Stufen, „Verstanden“ und Fehlalarm-Gründen. Der Alarm kommt von sicherheit.py, hier wird nur angezeigt.
+     Ausgeschaltete Melder: Schalter im Detailblatt, Frage „Ausschalten?“ nach langer Funkstille, Einstellungen unter Alarm & Stufen.
+     Fluchtweg: im Grundriss zeigt eine Linie vom alarmierenden Melder zur nächsten Tür (mit Hinweis „Plan prüfen“). */
+  _sfDays(n) { return n === 1 ? "1 Tag" : `${n} Tagen`; }
+  _sfFmtS(s) { s = Math.max(0, Math.round(s)); return s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}` : `0:${String(s).padStart(2, "0")}`; }
+  _sfSecTxt(s) { return s < 60 ? `${s} s` : s % 60 === 0 ? `${s / 60} Min.` : `${Math.floor(s / 60)} Min. ${s % 60} s`; }
+  /* ---- Hinweis-Karte: Melder wirkt ausgeschaltet */
+  _sfAskCards(T) {
+    const adm = this._admin();
+    return (T.ask || []).map((x) => `<div class="sfhintc"><span class="sfhi">${ic("eyeOff", 18)}</span><div class="sfht"><b>${esc(x.name)} wirkt ausgeschaltet</b><small>${x.off_days ? `Seit ${this._sfDays(x.off_days)}` : "Seit längerer Zeit"} nicht erreichbar. Warnungen dazu pausieren?</small></div>${adm ? `<div class="sfhb"><button class="btn2" data-act="sfxwarn" data-k="${esc(x.id)}">Weiter warnen</button><button class="btn2 pri" data-act="sfxpause" data-k="${esc(x.id)}" data-d="0">Ausschalten</button></div>` : ""}</div>`).join("");
+  }
+  /* ---- Detailblatt: Ausgeschaltet und Fehlalarme */
+  _sfPauseCard(x) {
+    const p = x.paused, adm = this._admin(), id = esc(x.id), chip = (d, t) => `<button class="gsch" data-act="sfxpause" data-k="${id}" data-d="${d}">${t}</button>`;
+    const until = p ? (p.until ? `bis ${this._sfDate(p.until)}` : "dauerhaft") : "";
+    const body = p
+      ? `<div class="mut sm">Keine Hinweise zu Erreichbarkeit, Batterie, Prüfung und Lebensdauer${p.auto ? " (von selbst ausgeschaltet nach langer Funkstille)" : ""}. <b>Löst er aus, kommt der Alarm trotzdem.</b>${x.off ? " Wird er wieder erreichbar, schaltet er sich selbst ein und meldet das einmal." : ""}</div>${adm ? `<div class="sfbtn" style="margin-top:8px"><button class="btn2 pri" data-act="sfxresume" data-k="${id}">Wieder einschalten</button></div>` : ""}`
+      : `<div class="mut sm">Für einen Melder, den du abgebaut oder abgeschaltet hast. Dann kommen keine Warnungen mehr dazu, ein Alarm aber weiterhin.</div>${adm ? `<div class="gschips" style="margin-top:8px">${chip(7, "7 Tage")}${chip(30, "30 Tage")}${chip(0, "Dauerhaft")}</div>` : ""}`;
+    return `<div class="card sfc" style="margin-top:10px"><h2>${ic("eyeOff", 18)}Ausgeschaltet<small class="mut">${esc(until)}</small></h2>${body}</div>`;
+  }
+  _sfFaCard(x) {
+    if (!x.fa_n) return "";
+    const why = [...new Set(x.fa_why || [])].join(", ");
+    return `<div class="card sfc" style="margin-top:10px"><h2>${ic("info", 18)}Fehlalarme<small class="mut">${x.fa_n} in 90 Tagen</small></h2><div class="mut sm">${x.fa_n >= 3 ? `Dieser Melder löst oft aus${why ? " (" + esc(why) + ")" : ""}. Tipp: etwas weiter weg vom Herd oder Bad anbringen oder in der Küche einen Hitzemelder nehmen. ` : why ? `Zuletzt: ${esc(why)}. ` : ""}Das Modul verzögert einen Alarm nie von selbst.</div></div>`;
+  }
+  /* ---- Einstellungen: Alarm & Stufen, ausgeschaltete Melder, Durchsage, Kontakt */
+  _sfStufenCard(T) {
+    const C = T.C, G = C.stages, H = this._hass, sw = (act, k, on, label) => `<button class="sw ${on ? "on" : ""}" data-act="${act}" data-k="${k}" aria-pressed="${!!on}" aria-label="${label}"></button>`;
+    const step = (k, s) => `<div class="step" style="flex:none"><button data-act="sfxstgs" data-k="${k}" data-s="-1" aria-label="früher">${ic("minus", 16)}</button><b>${this._sfSecTxt(s)}</b><button data-act="sfxstgs" data-k="${k}" data-s="1" aria-label="später">${ic("plus", 16)}</button></div>`;
+    const row = (n, t, w, col, k, extra = "") => `<div class="sfstg"><span class="sfsn" style="background:${col}">${n}</span><span class="sfst2"><b>${t}</b><small class="mut">${w}</small></span>${k ? `${G[k].on ? step(k, G[k].sec) : ""}${sw("sfxstg", k, G[k].on, t)}` : `<span class="mut sm">immer an</span>`}</div>${extra}`;
+    const ids = (p) => Object.keys(H.states).filter((e) => e.startsWith(p)).sort();
+    const svc = [...new Set([...Object.keys((H.services || {}).notify || {}).filter((n) => !["send_message", "reload", "persistent_notification"].includes(n)).sort().map((n) => "notify." + n), ...(C.contact.to ? [C.contact.to] : [])])];
+    const tts = G.s3.on ? `<div class="sffld sfsub"><label>Durchsage über Lautsprecher (optional)</label>${this._wzSel(ids("media_player."), C.tts.player, "sfxtts", 'data-k="player"', "– keiner –")}${C.tts.player ? this._wzSel(ids("tts."), C.tts.engine, "sfxtts", 'data-k="engine"', "– Sprachdienst wählen –") : ""}</div>` : "";
+    const ct = G.s4.on ? `<div class="sffld sfsub"><label>Kontaktperson (zum Beispiel Nachbar)</label>${this._wzSel(svc, C.contact.to, "sfxcont", "", "– Mitteilungsdienst wählen –")}${C.contact.to ? "" : `<div class="mut sm">Ohne Auswahl geht die Meldung in Stufe 4 an niemanden.</div>`}</div>` : "";
+    const oa = C.offask, chip = (k, t) => `<button class="gsch ${oa.mode === k ? "sel" : ""}" data-act="sfxoam" data-k="${k}" aria-pressed="${oa.mode === k}">${t}</button>`;
+    return `<div class="card sfc" style="margin-top:12px"><h2>${ic("alert", 18)}Alarm &amp; Stufen</h2>
+      <div class="mut sm" style="margin:-4px 0 8px">Wenn niemand „Verstanden“ drückt, steigert sich der Alarm Stufe für Stufe. <b>Der erste Alarm wird nie verzögert</b>, Türen werden nie entriegelt.</div>
+      ${row(1, "Melden", "sofort · Mitteilung (kritisch), eigene Aktionen, Protokoll", "#f59e0b", "")}
+      ${row(2, "Haus vorbereiten", `nach ${this._sfSecTxt(G.s2.sec)} · Aktionen mit „Wann: Stufe 2“ (Licht, Rollläden, Lüftung aus)`, "#fb7185", "s2")}
+      ${row(3, "Alle informieren", `nach ${this._sfSecTxt(G.s3.sec)} ohne „Verstanden“ · Mitteilung an alle, Durchsage`, "#ef4444", "s3", tts)}
+      ${row(4, "Hilfe holen", `nach ${this._sfSecTxt(G.s4.sec)} · Kontaktperson, Hinweis 112, Wiederholung alle 2 Min.`, "#b91c1c", "s4", ct)}
+      <button class="btn2" data-act="sfxopen" style="flex:none;width:100%;margin-top:10px">${ic("pencil", 15)} Aktionen den Stufen zuordnen</button>
+      <div class="sfgrp" style="margin-top:14px">AUSGESCHALTETE MELDER</div>
+      <div class="gschips">${chip("ask", "Nach Tagen fragen")}${chip("auto", "Selbst ausschalten")}${chip("never", "Immer warnen")}</div>
+      ${oa.mode !== "never" ? `<div class="vrow"><span>Nach wie vielen Tagen ohne Meldung<small class="mut" style="display:block">Danach kommt einmal ${oa.mode === "auto" ? "der Hinweis, dass der Melder ausgeschaltet wurde" : "die Frage „Ausschalten?“"} statt täglicher Warnungen.</small></span><div class="step" style="flex:none"><button data-act="sfxoad" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${this._sfDays(oa.days)}</b><button data-act="sfxoad" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>` : `<div class="mut sm">Wie bisher: Warnung täglich, solange der Melder fehlt.</div>`}</div>`;
+  }
+  /* ---- Fluchtweg: nächste Tür auf derselben Etage (Luftlinie, Hinweis „Plan prüfen“) */
+  _sfEscapeFor(it) {
+    if (!it) return null;
+    const P = this._sfx().cfg.plan, doors = P.items.filter((q) => q.t === "d" && q.fl === it.fl);
+    if (!doors.length) return null;
+    const d = doors.map((q) => [q, Math.hypot(q.x - it.x, q.y - it.y)]).sort((a, b) => a[1] - b[1])[0][0];
+    return { m: it, d, fl: (P.floors.find((f) => f.id === it.fl) || {}).n || "" };
+  }
+  _sfEscHint(x) {
+    const it = x && this._sfx().cfg.plan.items.find((q) => q.t === "m" && q.e === x.id), e = this._sfEscapeFor(it);
+    if (!e) return it ? `<div class="sfhint">${ic("info", 15)}<span>Fluchtweg: im Grundriss ist auf dieser Etage keine Tür eingezeichnet. Mit einer Tür im Plan zeigt das Modul den kürzesten Weg.</span></div>` : "";
+    return `<div class="sfhint sfhe">${ic("door", 15)}<span>Nächste Tür im Plan (${esc(e.fl)}): grün markiert. <b>Plan prüfen:</b> das Modul kennt nicht, ob die Tür nach draußen führt, und zeichnet eine Luftlinie.</span></div>`;
+  }
+  /* ---- Alarm-Ansicht */
+  _sfAlarmList() { const S = this._sfx(), L = S.det && !S.error ? S.det : this._sfxLocal(); return L.filter((x) => x.alarm && !x.ack); }
+  _sfAlarmKey() { return !this._mdState || !this._mdState().on.sf ? "" : this._sfAlarmList().map((x) => x.id).sort().join(","); }
+  _sfAlarmTick() {
+    if (!this._hass || !this._mdState || !this._mdState().on.sf) return;
+    const open = !!(this._modal && this._modal.type === "sfalarm");
+    if (!open && this._pollN % 3 !== 0) return;
+    if (this._sfxLocal().some((x) => x.alarm) && !this._sfxBusy && (!this._sfxD || Date.now() - this._sfxD.ts > 4000)) this._sfxLoad(true);
+    const k = this._sfAlarmKey();
+    if (k) {
+      if (!open) { this._sfAlKey = k; if (this._tmSleep && this._tmWake) this._tmWake(); this._modal = { type: "sfalarm" }; this._renderModal(); }
+      else if (k !== this._sfAlKey || this._pollN % 2 === 0) { this._sfAlKey = k; this._renderModal(); }
+    } else { if (open) { this._modal = null; this._renderModal(); } this._sfAlKey = ""; }
+  }
+  _sfAlarmModal() {
+    const S = this._sfx(), C = S.cfg, al = this._sfAlarmList();
+    if (!al.length) return `<div class="ov"></div>`;
+    const x = al[0], skew = this._sfxD && S.now ? S.now - this._sfxD.ts / 1000 : 0, el = x.t0 ? Math.max(0, Date.now() / 1000 + skew - x.t0) : 0, stg = x.stage || 1;
+    const rows = [["Gemeldet", "Mitteilung gesendet", 1, 0]];
+    [[2, "Haus vorbereitet", "Licht, Rollläden, Lüftung"], [3, "Alle informieren", "Mitteilung an alle, Durchsage"], [4, "Kontaktperson", "Mitteilung und Hinweis 112"]].forEach(([n, t, w]) => { const g = C.stages["s" + n]; if (g && g.on) rows.push([t, w, n, g.sec]); });
+    let nxt = true;
+    const steps = rows.map(([t, w, n, sec]) => {
+      const done = stg >= n, cls = done ? "d" : nxt ? "n" : "", tm = done ? this._sfFmtS(sec) : nxt ? "in " + this._sfFmtS(sec - el) : "nach " + this._sfFmtS(sec);
+      if (!done) nxt = false;
+      return `<div class="${cls}"><i>${done ? "✓" : n}</i><span>${t}<small>${w}</small></span><em>${tm}</em></div>`;
+    }).join("");
+    const k = x.kind ? String(x.kind).replace(/melder$/i, "").toUpperCase() : "ALARM", where = [(this._sfPl().floors.find((f) => f.id === x.floor) || {}).n, x.room || x.area].filter(Boolean).join(" · ");
+    const more = al.length > 1 ? `<div class="sfalm">${al.slice(1, 4).map((q) => `<span>${esc(q.name)}</span>`).join("")}</div>` : "", it = C.plan.items.find((q) => q.t === "m" && q.e === x.id), esc2 = this._sfEscapeFor(it);
+    return `<div class="ov sfalov"></div><div class="sfal" role="alertdialog" aria-modal="true" aria-label="Alarm ${esc(x.name)}">
+      <div class="sfalt"><span class="sfalp">ALARM · ${esc(k)}</span><b>${esc(x.name)}</b><small>${esc(where || x.kind)} · seit ${this._sfFmtS(el)}</small>${more}<div class="sfals">${steps}</div>
+        ${esc2 ? `<div class="sfalf">${ic("door", 16)}<span>Nächste Tür (${esc(esc2.fl)}) im Grundriss grün markiert. Plan prüfen.</span></div>` : ""}</div>
+      <div class="sfalr"><div class="sfali">${this._sfScene("alarm", S.det && !S.error ? S.det : this._sfxLocal())}</div>
+        <button class="sfok" data-act="sfxack" data-k="${al.length > 1 ? "" : esc(x.id)}">${al.length > 1 ? "Alle verstanden" : "Verstanden"}</button>
+        <div class="sffc"><button data-act="sfxack" data-k="${esc(x.id)}" data-why="Toast">Fehlalarm: Toast</button><button data-act="sfxack" data-k="${esc(x.id)}" data-why="Dampf">Dampf</button><button data-act="sfxack" data-k="${esc(x.id)}" data-why="Test">Test</button><a href="tel:112" class="sf112">${ic("alert", 15)} 112 anrufen</a><button data-act="sfxalgo">Grundriss</button></div></div></div>`;
+  }
+  /* ---- Sponsor-Extra: Sicherheitsbericht (Alarme, Fehlalarme, ausgeschaltete Melder, Batterie-Prognose der letzten 90 Tage) */
+  _sfxBericht() {
+    const T = this._sfStat(), { C, l, S } = T, P = C.proto, now = Date.now(), cut = now - 90 * 864e5, fl = (id) => (C.plan.floors.find((f) => f.id === id) || {}).n || "";
+    const ev = (S.log || []).filter((x) => new Date(x.t).getTime() >= cut && (x.c === "alarm" || x.c === "ack" || /Verstanden|Fehlalarm|Ausgeschaltet|Eingeschaltet/.test(x.x)));
+    const fa = l.reduce((n, x) => n + (x.fa_n || 0), 0), al = ev.filter((x) => /^Alarm:/.test(x.x)).length;
+    const rows = l.map((x) => `<tr><td>${esc(x.name)}</td><td>${esc([fl(x.floor), x.room || x.area].filter(Boolean).join(" · ") || "–")}</td><td>${x.paused ? "ausgeschaltet" + (x.paused.until ? " bis " + esc(this._sfDate(x.paused.until)) : "") : x.alarm ? "ALARM" : x.off ? "nicht erreichbar" : x.bat != null && x.bat < C.bat.pct ? "Batterie schwach" : "in Ordnung"}</td><td>${x.bat != null ? num(x.bat, 0) + " %" : "–"}</td><td>${x.bat_days != null ? "~ " + esc(this._sfDur(x.bat_days)) : "–"}</td><td>${esc(this._sfDate(x.tested || (S.test || {}).last))}</td><td>${x.fa_n || 0}${x.fa_why && x.fa_why.length ? " (" + esc([...new Set(x.fa_why)].join(", ")) + ")" : ""}</td></tr>`).join("");
+    const yr = new Date().getFullYear(), li = ev.slice(0, 40).map((x) => `<li>${esc(new Date(x.t).toLocaleDateString("de-DE"))} ${esc(new Date(x.t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }))}: ${esc(x.x)}</li>`).join("");
+    return `<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Sicherheitsbericht ${yr}</title><style>body{font:14px/1.45 system-ui,sans-serif;margin:32px;color:#111}h1{font-size:22px;margin:0 0 4px}table{border-collapse:collapse;width:100%;margin:14px 0}th,td{border:1px solid #bbb;padding:6px 8px;text-align:left;font-size:12.5px}th{background:#eee}.k{display:flex;gap:28px;margin:10px 0;flex-wrap:wrap}.k div{background:#f3f4f6;border-radius:10px;padding:8px 14px}.k b{display:block;font-size:20px}small{color:#555}</style></head><body><h1>Sicherheitsbericht Rauch- und Sicherheitsmelder</h1><small>${esc(P.name) || "Haushalt"}${P.addr ? " · " + esc(P.addr) : ""} · Zeitraum: letzte 90 Tage · erstellt am ${new Date().toLocaleDateString("de-DE")} mit Strom &amp; Wärme</small>
+      <div class="k"><div><b>${T.act.length}</b>Melder aktiv</div><div><b>${T.pa.length}</b>ausgeschaltet</div><div><b>${al}</b>Alarme</div><div><b>${fa}</b>Fehlalarme</div><div><b>${T.low.length}</b>Batterie schwach</div></div>
+      <table><thead><tr><th>Melder</th><th>Ort</th><th>Zustand</th><th>Batterie</th><th>Prognose</th><th>Zuletzt geprüft</th><th>Fehlalarme (90 Tage)</th></tr></thead><tbody>${rows || `<tr><td colspan="7">Keine Melder</td></tr>`}</tbody></table>
+      ${li ? `<b>Alarme, Quittierungen und Ausschalten</b><ul>${li}</ul>` : `<p>In den letzten 90 Tagen gab es keine Alarme.</p>`}
+      <small>Dieser Bericht ersetzt kein Prüfprotokoll nach Norm. Das Modul ersetzt keine zertifizierten Rauchmelder.</small></body></html>`;
+  }
+  /* ---- Aktionen */
+  _sfxAlarmAct(a, b) {
+    const k = b.dataset.k, s = Number(b.dataset.s), ws = (msg, ok) => this._hass.callWS(msg).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; this._render(); if (this._modal && ["sfdet", "sfset"].includes(this._modal.type)) this._renderModal(); if (ok) this._toast(ok); }).catch(() => this._toast("Das hat nicht geklappt"));
+    if (a === "sfxbericht") { if (!this._spnS().active) { this._toast("Der Sicherheitsbericht ist ein Sponsor-Extra"); return true; } this._sfxPrint(this._sfxBericht()); return true; }
+    if (a === "sfxack") { ws({ type: "fenster_heizung/sf_ack", ent: k || undefined, why: b.dataset.why || undefined }, b.dataset.why ? "Verstanden, als Fehlalarm gemerkt" : "Verstanden"); if (this._modal && this._modal.type === "sfalarm") { this._sfxD = { d: { ...this._sfx(), det: (this._sfx().det || []).map((x) => (!k || x.id === k ? { ...x, ack: new Date().toISOString() } : x)) }, ts: Date.now() }; this._modal = null; this._renderModal(); } return true; }
+    if (a === "sfxalgo") { this._modal = null; this._renderModal(); this._sfT = "pl"; try { localStorage.setItem("fh_sf_tab", "pl"); } catch (_) { /* privater Modus */ } this._render(); return true; }
+    if (a === "sfxpause") { ws({ type: "fenster_heizung/sf_pause", ent: k, days: Number(b.dataset.d) || 0 }, "Melder ausgeschaltet"); return true; }
+    if (a === "sfxresume" || a === "sfxwarn") { ws({ type: "fenster_heizung/sf_resume", ent: k, warn: a === "sfxwarn" }, a === "sfxwarn" ? "Du wirst weiter gewarnt" : "Melder wieder eingeschaltet"); return true; }
+    if (a === "sfxstg") { this._sfxPatch((c) => { c.stages[k].on = !c.stages[k].on; }); return true; }
+    if (a === "sfxstgs") { const m = { s2: [5, 120, 5], s3: [30, 900, 30], s4: [60, 1800, 60] }[k]; this._sfxPatch((c) => { c.stages[k].sec = Math.max(m[0], Math.min(m[1], c.stages[k].sec + s * m[2])); }); return true; }
+    if (a === "sfxoam") { this._sfxPatch((c) => { c.offask.mode = k; }); return true; }
+    if (a === "sfxoad") { this._sfxPatch((c) => { c.offask.days = Math.max(1, Math.min(60, c.offask.days + s)); }); return true; }
+    return false;
   }
   /* ================= Automatische Sicherung auf einen Homeserver (WebDAV, SMB, Ordner) ================= */
   _ebkHtml(m) {
