@@ -784,7 +784,7 @@ const MV = {
   ev: { v: "0.9", b: 7, d: "2026-11-15", p: "2026.11.3", log: [["0.9", 7, "2026.11.3", "Laufende Ladung überlebt einen Neustart von Home Assistant, fehlende kWh zuerst der Ladung zurechnen, Hinweis in der Tagesansicht; go-e-Import, mehrere Ladungen bearbeiten, Kosten ändern, Kilometer-Statistik"], ["0.9", 6, "2026.11.3b24", "Carport-Szene näher an der Wirklichkeit: Kabelkanal am Träger, Wechselrichter an der Hauswand, Netzstrom aus dem Haus, Ladekabel vor dem Auto mit Typ-2-Stecker in der Ladeklappe; nach dem Zurückwechseln in die App keine leeren Werte mehr; „Heute“ übersichtlicher"], ["0.9", 5, "2026.11.3b23", "Eine Ladung reicht bis zum Abstecken (kein neuer Eintrag nach Phasenwechsel), getrennte Teile zusammenführen, Ladenachweis als echte PDF-Datei"], ["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "1.0", b: 3, d: "2026-11-17", p: "2026.11.4b3", log: [["1.0", 3, "2026.11.4b3", "Wetterkarte zeigt Warnungen und Regen wieder"], ["1.0", 2, "2026.11.4b2", "Wetterkarte flackert nicht mehr"], ["1.0", 1, "2026.11.4b1", "Stabil: DWD-Wetterkarte (Warnungen und Regenradar), Rückblick, schneller warnen, Speichern nur bei Änderung, Änderungsverlauf mit Rückgängig, Feinschliff"], ["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  sf: { v: "0.8", b: 2, d: "2026-11-18", p: "2026.11.4b8", log: [["0.8", 2, "2026.11.4b8", "Alle Reiter in der neuen Optik: Übersicht mit „Als Nächstes“, Grundriss mit Kacheln, Legende und Melderliste, Wartung mit Kennzahlen und Lebensdauer-Karten, Einstellungen mit Sprungleiste"], ["0.8", 1, "2026.11.4b7", "Ausgeschaltete Melder ohne Warnungen (Frage nach langer Funkstille), Alarm mit Stufen und „Verstanden“, Alarm-Ansicht für Handy und Wandtablet, Fehlalarm-Hilfe, Fluchtweg im Grundriss, Sensoren und Ereignis für Automationen"], ["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  sf: { v: "0.8", b: 3, d: "2026-11-18", p: "2026.11.4b9", log: [["0.8", 3, "2026.11.4b9", "Grundriss 2.0 (Fluchtweg um Wände herum, Maßstab, Abdeckung, Halos, Rückgängig, Mehrfachauswahl), PDF-Dateien über das Teilen-Menü, Anwesenheit wie Modul 6"], ["0.8", 2, "2026.11.4b8", "Alle Reiter in der neuen Optik: Übersicht mit „Als Nächstes“, Grundriss mit Kacheln, Legende und Melderliste, Wartung mit Kennzahlen und Lebensdauer-Karten, Einstellungen mit Sprungleiste"], ["0.8", 1, "2026.11.4b7", "Ausgeschaltete Melder ohne Warnungen (Frage nach langer Funkstille), Alarm mit Stufen und „Verstanden“, Alarm-Ansicht für Handy und Wandtablet, Fehlalarm-Hilfe, Fluchtweg im Grundriss, Sensoren und Ereignis für Automationen"], ["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.8", b: 1, d: "2026-11-17", p: "2026.11.4b1", log: [["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3413,6 +3413,15 @@ const CSS_SF2 = `
 .sfnav button:hover{background:color-mix(in srgb,var(--teal,#2dd4bf) 18%,transparent);color:var(--teal,#2dd4bf)}
 .sflegw{margin:-4px 0 10px}
 .sfv9{min-width:0;max-width:100%}.sfv9 .card,.sfv9 .enco,.sfv9 .enc{min-width:0;max-width:100%}.sfv9 .sfjw{max-width:100%;overflow-x:auto}
+/* v0.9 · Grundriss 2.0 */
+.sfhalo{pointer-events:none}.sfpe .sfhalo{opacity:.55}
+.sfr.wn{fill:#f59e0b1c}
+.sfesc{stroke-width:5;stroke-linejoin:round;filter:drop-shadow(0 0 3px rgba(52,211,153,.6))}
+@media(prefers-reduced-motion:no-preference){.sfesc{animation:sfdash 1.2s linear infinite}}
+@keyframes sfdash{to{stroke-dashoffset:-36}}
+.sfesa{fill:#34d399;pointer-events:none}.sfesb{fill:#064e3b;stroke:#34d399;stroke-width:1.5;pointer-events:none}.sfest{fill:#6ee7b7;font-size:12px;font-weight:700;text-anchor:middle;pointer-events:none}
+.sfpm{width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(0,0,0,.28);--sfw:#9aa7b7}
+.sftb2{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.sftb2 .btn2{flex:none;padding:7px 12px;font-size:.8rem}.sftb2 .btn2[disabled]{opacity:.4;cursor:default}
 `;class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -14909,7 +14918,7 @@ const CSS_SF2 = `
     const ampel = `<div class="card sfc"><h2>${ic("shield", 18)}Ampel</h2>
       ${ap(al.length ? "r" : "g", "Alarme", al.length ? `${al.length} aktiv` : "keine")}${ap(low.length ? "a" : "g", "Batterien", low.length ? `${low.length} schwach` : "in Ordnung")}${ap(off.length ? "a" : "g", "Erreichbarkeit", l.length ? `${l.length - off.length} von ${l.length}` : "–")}
       ${ap(due.length ? "a" : "g", "Prüfung", !C.test.on ? "aus" : due.length ? "fällig" : S.test && S.test.last ? "zuletzt " + this._sfAgo(S.test.last) : "läuft")}${ap(life.length ? "a" : "g", "Lebensdauer", life.length ? `${life.length} zu tauschen` : "in Ordnung")}</div>`;
-    const pers = Object.keys(H.states).filter((e) => e.startsWith("person.")), home = pers.filter((e) => H.states[e].state === "home").length, fr = C.depart.frost, ft = fr.on && fr.ent && H.states[fr.ent] ? parseFloat(fr.ent.startsWith("weather.") ? H.states[fr.ent].attributes.temperature : H.states[fr.ent].state) : NaN;
+    const pp = this._pres(), op = (this._ortPersons ? this._ortPersons() : []).filter((x) => x.count), pers = op, home = pp.mode === "away" || pp.mode === "vacation" ? 0 : op.filter((x) => x.home).length, fr = C.depart.frost, ft = fr.on && fr.ent && H.states[fr.ent] ? parseFloat(fr.ent.startsWith("weather.") ? H.states[fr.ent].attributes.temperature : H.states[fr.ent].state) : NaN;
     const water = l.filter((x) => x.k === "water" && x.alarm), open = rows.filter((x) => x.open);
     const dep = `<div class="card sfc"><h2>${ic("lock", 18)}Abfahrt-Prüfung${rows.length ? `<small class="${open.length ? "sfwarn" : "mut"}">${open.length ? `${open.length} offen` : "alles zu"}</small>` : ""}</h2>
       ${rows.length ? rows.map((x) => `<div class="sfap">${ic(x.ico, 16)}<span>${esc(x.name)}</span><span class="sft ${x.open ? "a" : "g"}">${x.txt.toUpperCase()}</span></div>`).join("") : `<div class="mut sm">Hier zeigt das Modul, was offen ist, bevor du gehst: Fenster, Türen, Herd, Garage. ${this._admin() ? `Wähle es unter <button class="lnk" data-act="sfxtab" data-k="se">Einstellungen</button> aus.` : ""}</div>`}
@@ -14931,10 +14940,12 @@ const CSS_SF2 = `
     const inside = (r, m) => m.x >= r.x && m.x <= r.x + r.w && m.y >= r.y && m.y <= r.y + r.h;
     let out = P.bg[fl] ? `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".6"></image>` : "";
     if (edit) out += `<defs><pattern id="sfgr" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" class="sfgd"></circle></pattern></defs><rect width="800" height="480" fill="url(#sfgr)"></rect>`;
+    out += this._sfHalos(items, dm);
+    const wn = items.filter((i) => i.t === "m" && i.e && dm[i.e] && !dm[i.e].alarm && ["w", "o"].includes(this._sfMkState(dm[i.e])));
     const sorted = [...items].sort((a, b) => ord.indexOf(a.t) - ord.indexOf(b.t));
     sorted.forEach((i) => {
       const id = `data-id="${i.id}"`, a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
-      if (i.t === "r") out += `<g ${id}><rect class="sfr${mk.some((m) => inside(i, m)) ? " al" : ""}" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect><text class="sfrn" x="${i.x + 10}" y="${i.y + 19}">${esc(i.n)}</text></g>`;
+      if (i.t === "r") out += `<g ${id}><rect class="sfr${mk.some((m) => inside(i, m)) ? " al" : wn.some((m) => inside(i, m)) ? " wn" : ""}" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect><text class="sfrn" x="${i.x + 10}" y="${i.y + 19}">${esc(i.n)}</text></g>`;
       else if (i.t === "s") out += `<g ${id}><rect class="sfst" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${Array.from({ length: Math.max(2, Math.floor(i.h / 14)) }, (_, k) => `<path class="sfsl" d="M${i.x} ${i.y + 7 + k * 14}H${i.x + i.w}"></path>`).join("")}<text class="sfrn" x="${i.x + 6}" y="${i.y + 16}">${esc(i.n)}</text></g>`;
       else if (i.t === "w") out += `<g ${id}><path class="sfw" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path><path class="sfhit" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path></g>`;
       else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect><path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"></path><rect class="sfhit" x="${i.x - 16}" y="${i.y - 16}" width="32" height="32"></rect></g>`;
@@ -14947,8 +14958,9 @@ const CSS_SF2 = `
     });
     if (!edit && mk.length) {  /* Fluchtweg: Linie vom alarmierenden Melder zur nächsten Tür (Luftlinie, Plan prüfen) */
       const e = this._sfEscapeFor(mk[0]);
-      if (e) out += `<path class="sfesc" d="M${e.m.x} ${e.m.y}L${e.d.x} ${e.d.y}"></path><circle class="sfesd" cx="${e.d.x}" cy="${e.d.y}" r="22"></circle>`;
+      if (e) out += this._sfEscSvg(e);
     }
+    if (edit && ed && ed.multi && ed.multi.length) items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { out += i.t === "w" ? `<path class="sfsel" d="M${i.x} ${i.y}L${i.x2} ${i.y2}" style="stroke-width:6"></path>` : i.t === "r" || i.t === "s" ? `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>` : `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="22"></circle>`; });
     if (sel) {
       const i = items.find((x) => x.id === sel);
       if (i) {
@@ -14970,10 +14982,10 @@ const CSS_SF2 = `
       const al = T.al, sel = this._sfSelDet && T.l.find((x) => x.id === this._sfSelDet), here = P.items.filter((i) => i.fl === fl && i.t === "m").length;
       const empty = !n ? `<div class="sfemp">${ic("home", 34)}<b>Noch kein Grundriss</b><span>${adm ? "Zeichne dein Haus mit dem Baukasten: Räume, Wände, Türen und Fenster ziehen, dann die Melder darauf setzen." : "Ein Administrator kann den Grundriss zeichnen."}</span>${adm ? `<button class="btn2 pri" data-act="sfxedit" style="flex:none;padding:10px 20px">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div>` : "";
       const nw = this._sfNew(), KN = this._sfxKind(), dm = this._sfDetMap(), fobj = P.floors.find((f) => f.id === fl) || {}, onFl = P.items.filter((i) => i.fl === fl && i.t === "m" && i.e && dm[i.e]).map((i) => dm[i.e]);
-      const rooms = P.items.filter((i) => i.fl === fl && i.t === "r"), inR = (r, m) => m.x >= r.x && m.x <= r.x + r.w && m.y >= r.y && m.y <= r.y + r.h, mks = P.items.filter((i) => i.fl === fl && i.t === "m"), covered = rooms.filter((r) => mks.some((m) => inR(r, m))), doors = P.items.filter((i) => i.t === "d" && i.fl === fl).length;
+      const cv = this._sfCoverage(fl), ec = this._sfEscCheck(fl), rooms = cv.rooms, covered = cv.covered;
       const stc = (x) => { const s = this._sfSt(x); return { alarm: ["ALARM", "#ef4444"], pause: ["ausgeschaltet", "#94a3b8"], off: ["nicht erreichbar", "#94a3b8"], warn: [`Batterie ${num(x.bat, 0)} %`, "#f59e0b"], ok: ["In Ordnung", "#34d399"] }[s]; };
       const lrow = (x) => { const s = stc(x); return `<button class="sflr${sel && sel.id === x.id ? " on" : ""}" data-act="sfxplsel" data-k="${esc(x.id)}"><span class="sfmi">${this._sfHd(x.k, this._sfSt(x), 32)}</span><span class="sfmn"><b>${esc(x.name)}</b><small>${esc(x.room || x.area || "ohne Raum")}</small></span><span class="sfls" style="color:${s[1]}"><i style="background:${s[1]}"></i>${s[0]}</span></button>`; };
-      const kts = nw && n ? `<div class="sfkts sfk3"><div class="sfkt">${ic("shield", 18)}<i style="background:#34d399"></i><small>Melder ${esc(fobj.n || "")}</small><b>${onFl.length}</b><em>von ${T.l.length} gesamt</em></div><div class="sfkt">${ic("home", 18)}<i style="background:${rooms.length && covered.length < rooms.length ? "#f59e0b" : "#34d399"}"></i><small>Abdeckung</small><b>${rooms.length ? `${covered.length} von ${rooms.length} Räumen` : "keine Räume"}</b><em>${rooms.length && covered.length < rooms.length ? esc(rooms.filter((r) => !covered.includes(r)).map((r) => r.n).filter(Boolean).slice(0, 2).join(", ") || "Raum") + " ohne Melder" : "alle mit Melder"}</em></div><div class="sfkt">${ic("door", 18)}<i style="background:${doors ? "#34d399" : "#f59e0b"}"></i><small>Fluchtweg</small><b>${doors ? `${doors} ${doors === 1 ? "Tür" : "Türen"} im Plan` : "keine Tür"}</b><em>${doors ? "Plan prüfen" : "Tür im Plan ergänzen"}</em></div></div>` : "";
+      const kts = nw && n ? `<div class="sfkts sfk3"><div class="sfkt">${ic("shield", 18)}<i style="background:#34d399"></i><small>Melder ${esc(fobj.n || "")}</small><b>${onFl.length}</b><em>von ${T.l.length} gesamt</em></div><div class="sfkt">${ic("home", 18)}<i style="background:${cv.open.length ? "#f59e0b" : "#34d399"}"></i><small>Abdeckung</small><b>${rooms.length ? `${covered.length} von ${rooms.length} Räumen` : "keine Räume"}</b><em>${cv.open.length ? esc(cv.open.map((r) => r.n).filter(Boolean).slice(0, 2).join(", ") || "Raum") + " ohne Melder" : rooms.length ? "alle mit Melder" : "Räume im Plan ergänzen"}</em></div><div class="sfkt">${ic("door", 18)}<i style="background:${ec.exits && !ec.bad.length ? "#34d399" : "#f59e0b"}"></i><small>Fluchtweg</small><b>${ec.exits ? `${ec.exits} ${ec.exits === 1 ? "Außentür" : "Außentüren"}` : ec.doors ? "keine Außentür" : "keine Tür"}</b><em>${ec.markers && ec.bad.length ? `${ec.bad.length} ${ec.bad.length === 1 ? "Melder" : "Melder"} ohne freien Weg` : ec.exits ? "jeder Melder hat einen Weg" : "Tür im Plan ergänzen"}</em></div></div>` : "";
       const leg = nw ? `<span class="sfleg"><span><i style="background:#34d399"></i>in Ordnung</span><span><i style="background:#f59e0b"></i>Hinweis</span><span><i style="background:#ef4444"></i>Alarm</span><span><i style="background:#94a3b8"></i>aus</span></span>` : "";
       const listc = nw && onFl.length ? `<div class="card sfc"><h2>${ic("bell", 18)}Melder ${esc(fobj.n || "")}<small class="mut">${onFl.length}</small></h2>${onFl.map(lrow).join("")}</div>` : "";
       const one = sel ? `<div class="card sfc"><h2>${ic(KN[sel.k][1], 18)}${esc(sel.name)}</h2>${nw ? "" : this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : "";
@@ -14985,22 +14997,27 @@ const CSS_SF2 = `
     const tile = (k, t, p) => `<button class="sfti${ed.tool === k ? " on" : ""}" data-act="sfxtool" data-k="${k}" aria-pressed="${ed.tool === k}"><svg viewBox="0 0 34 34" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>${t}</button>`;
     const PP = { select: '<path d="M9 6l16 9-7 2-3 7z"/>', r: '<rect x="5" y="7" width="24" height="20" rx="2"/>', w: '<path d="M5 27 29 7" stroke-width="3"/>', d: '<path d="M8 27V9h18M8 9a18 18 0 0 1 18 18"/>', f: '<rect x="5" y="14" width="24" height="6"/><path d="M17 14v6"/>', s: '<path d="M6 28h6v-6h6v-6h6v-6h4"/>', x: '<path d="M8 9h18M17 9v17"/>', smoke: '<circle cx="17" cy="17" r="10"/><path d="M17 11c1 3 4 3 4 6a4 4 0 0 1-8 0c0-2 1-3 2-5z"/>', co: '<circle cx="17" cy="17" r="10"/><path d="M12 14v6M16 14h4v6h-4z"/>', gas: '<circle cx="17" cy="17" r="10"/><path d="M13 21c0-5 4-4 4-9 3 2 5 5 4 9z"/>', water: '<circle cx="17" cy="17" r="10"/><path d="M17 9c3 4 5 6 5 9a5 5 0 0 1-10 0c0-3 2-5 5-9z"/>', heat: '<circle cx="17" cy="17" r="10"/><path d="M17 9v10a3 3 0 1 1-3 3"/>', bg: '<rect x="5" y="7" width="24" height="20" rx="2"/><circle cx="12" cy="14" r="2"/><path d="M7 25l7-6 5 4 4-3 4 5"/>' };
     const fname = P.floors.find((f) => f.id === fl);
-    const prop = !sel ? `<div class="mut sm">Wähle ein Element im Plan aus, oder ein Werkzeug links. Räume und Wände ziehst du auf, alles andere setzt du mit einem Tipp.</div>`
+    const mlt = ed.multi || [], multiBox = `<div class="sfpr"><b>${mlt.length} Elemente ausgewählt</b><div class="mut sm" style="margin:4px 0 8px">Tippe weitere Elemente an oder ziehe eines, um alle zu verschieben.</div><div class="sfbtn"><button class="btn2" data-act="sfxmdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxmdel">Löschen</button></div><button class="btn2" data-act="sfxmclr" style="flex:none;width:100%;margin-top:8px">Auswahl aufheben</button></div>`;
+    const prop = mlt.length ? multiBox : !sel ? `<div class="mut sm">Wähle ein Element im Plan aus, oder ein Werkzeug links. Räume und Wände ziehst du auf, alles andere setzt du mit einem Tipp.</div>`
       : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t]}</b>
         ${sel.t === "r" || sel.t === "s" || sel.t === "x" ? `<div class="sffld"><label>Name</label><input class="osel" data-f="sfxpn" value="${esc(sel.n)}" maxlength="30" placeholder="${sel.t === "x" ? "Text" : "zum Beispiel Küche"}"></div>` : ""}
         ${sel.t === "r" || sel.t === "s" ? `<div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="sfxpw" data-s="-20" aria-label="schmaler">${ic("minus", 16)}</button><b>${sel.w}</b><button data-act="sfxpw" data-s="20" aria-label="breiter">${ic("plus", 16)}</button></div></div><div class="vrow" style="margin:6px 0"><span>Höhe</span><div class="step" style="flex:none"><button data-act="sfxph" data-s="-20" aria-label="niedriger">${ic("minus", 16)}</button><b>${sel.h}</b><button data-act="sfxph" data-s="20" aria-label="höher">${ic("plus", 16)}</button></div></div>` : ""}
         ${sel.t === "d" || sel.t === "f" ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
         ${sel.t === "m" ? `<div class="sffld"><label>Melder (aus den Einstellungen)</label><select class="osel" data-f="sfxpe"><option value="">– keiner –</option>${T.l.map((d) => `<option value="${esc(d.id)}" ${sel.e === d.id ? "selected" : ""}>${esc(d.name)}</option>`).join("")}</select></div>` : ""}
+        ${sel.t === "m" ? `<div class="vrow" style="margin:6px 0"><span>Reichweite<small class="mut" style="display:block">Wie weit der Melder im Plan reicht</small></span><div class="step" style="flex:none"><button data-act="sfxprg" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${num(this._sfRangeM(sel, sel.e ? dm[sel.e] : null), 1)} m</b><button data-act="sfxprg" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>` : ""}${sel.t === "r" ? `<div class="sffld"><label>Raum aus Modul 1 (optional)</label><select class="osel" data-f="sfxplk"><option value="">– keiner –</option>${this._sfRoomNames().map((n) => `<option value="${esc(n)}" ${sel.lk === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>` : ""}
         <div class="sfbtn"><button class="btn2" data-act="sfxpdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxpdel">Löschen</button></div></div>`;
     const bgBox = `<div class="sffld"><label>Hintergrundbild für ${esc(fname.n)} (zum Beispiel ein Foto deines Bauplans)</label><div class="sfbtn"><label class="btn2 sffile">${ic("image", 15)} ${P.bg[fl] ? "Ersetzen" : "Bild wählen"}<input type="file" accept="image/*" data-f="sfxbg" hidden></label>${P.bg[fl] ? `<button class="btn2" data-act="sfxbgrm">Entfernen</button>` : ""}</div></div>`;
     const flBox = `<div class="sffld"><label>Name der Etage</label><div class="sfbtn"><input class="osel" data-f="sfxfn" value="${esc(fname.n)}" maxlength="16">${P.floors.length > 1 ? `<button class="btn2 sfdel" data-act="sfxfrm" style="flex:none">Etage löschen</button>` : ""}</div></div>`;
-    return `<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss bearbeiten<span class="sfhr">${this._sfFloorBar(true)}</span></h2>
+    const scW = Math.round(800 / this._sfScale()), scaleBox = `<div class="sffld"><label>Maßstab: Wie breit ist der Plan in Wirklichkeit?</label><div class="gschips">${[10, 15, 20, 30].map((w) => `<button class="gsch ${scW === w ? "sel" : ""}" data-act="sfxpscale" data-k="${w}" aria-pressed="${scW === w}">${w} m</button>`).join("")}</div><div class="mut sm">Damit stimmen die Reichweiten der Melder und die Länge des Fluchtwegs.</div></div>`;
+    const ioBox = `<div class="sffld"><label>Plan sichern oder einlesen</label><div class="sfbtn"><button class="btn2" data-act="sfxpexp">${ic("download", 15)} Plan sichern</button><label class="btn2 sffile">${ic("upload", 15)} Plan einlesen<input type="file" accept="application/json,.json" data-f="sfxpimp" hidden></label></div></div>`;
+    const tb = `<div class="sftb2"><button class="btn2" data-act="sfxundo" ${(ed.hist || []).length ? "" : "disabled"}>↶ Rückgängig</button><button class="btn2" data-act="sfxredo" ${(ed.fut || []).length ? "" : "disabled"}>↷ Wiederholen</button><button class="btn2${ed.mm ? " pri" : ""}" data-act="sfxmm" aria-pressed="${!!ed.mm}">Mehrfach</button></div>`;
+    return `<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss bearbeiten<span class="sfhr">${this._sfFloorBar(true)}</span></h2>${tb}
       <div class="sfpl edit"><svg class="sfpe" viewBox="0 0 800 480" role="img" aria-label="Grundriss bearbeiten">${this._sfPlanInner(fl, true)}</svg></div>
       <div class="sfhint">${ic("info", 15)}<span>${{ select: "Elemente antippen und ziehen. Am Eckpunkt ändert sich die Größe.", r: "Auf dem Plan ziehen, um einen Raum aufzuziehen.", s: "Auf dem Plan ziehen, um eine Treppe aufzuziehen.", w: "Auf dem Plan ziehen, um eine Wand zu zeichnen." }[ed.tool] || "Auf den Plan tippen, um das Element zu setzen."}</span></div>
       ${free.length ? `<div class="sffld"><label>Noch nicht platzierte Melder (antippen setzt sie in die Mitte)</label><div class="gschips">${free.map((d) => `<button class="gsch" data-act="sfxplace" data-k="${esc(d.id)}">${esc(d.name)}</button>`).join("")}</div></div>` : ""}</div></div>
       <div class="enco"><div class="card sfc"><div class="sfgrp">RÄUME UND BAUTEILE</div><div class="sftiles">${tile("select", "Auswählen", PP.select)}${tile("r", "Raum", PP.r)}${tile("w", "Wand", PP.w)}${tile("d", "Tür", PP.d)}${tile("f", "Fenster", PP.f)}${tile("s", "Treppe", PP.s)}</div>
         <div class="sfgrp">MELDER UND TEXT</div><div class="sftiles">${tile("m:smoke", "Rauch", PP.smoke)}${tile("m:co", "CO", PP.co)}${tile("m:gas", "Gas", PP.gas)}${tile("m:water", "Wasser", PP.water)}${tile("m:heat", "Hitze", PP.heat)}${tile("x", "Text", PP.x)}</div></div>
-        <div class="card sfc">${prop}</div><div class="card sfc">${flBox}${bgBox}</div>
+        <div class="card sfc">${prop}</div><div class="card sfc">${flBox}${scaleBox}${bgBox}${ioBox}</div>
         <div class="sfbtn"><button class="btn2" data-act="sfxcancel">Abbrechen</button><button class="btn2 pri" data-act="sfxsave">Speichern</button></div></div></div>`;
   }
   _sfDetFacts(x) {
@@ -15027,7 +15044,7 @@ const CSS_SF2 = `
     const list = `<div class="card sfc"><h2>${ic("clock", 18)}Lebensdauer und Batterie</h2>${l.length ? `<div class="sfwg">${l.map(row).join("")}</div>` : `<div class="mut sm">Noch keine Melder.</div>`}</div>`;
     const sl = `<div class="card sfc"><h2>${ic("energy", 18)}Einkaufsliste</h2>${Object.keys(shop).length || newd.length ? `${Object.keys(shop).map((k) => `<div class="sfap"><span>${shop[k].length} × ${esc(k)}<small class="mut" style="display:block">${esc(shop[k].join(", "))}</small></span><b>bald</b></div>`).join("")}${newd.length ? `<div class="sfap"><span>${newd.length} × neuer Melder<small class="mut" style="display:block">${esc(newd.join(", "))}</small></span><b>fällig</b></div>` : ""}<div class="sfbtn" style="margin-top:8px"><button class="btn2" data-act="sfxcopy">${ic("copy", 15)} Liste kopieren</button></div>` : `<div class="mut sm">Im Moment ist nichts zu besorgen. Batterien unter ${C.bat.pct + 10} % und Melder am Ende der Lebensdauer erscheinen hier.</div>`}</div>`;
     const yr = new Date().getFullYear(), pr = `<div class="card sfc"><h2>${ic("list", 18)}Jahresprotokoll ${yr}</h2><div class="mut sm" style="margin:0 0 10px">Eine Seite zum Abheften oder für Vermieter und Versicherung: alle Melder mit Einbau, Tausch, letzter Prüfung und Batterie. ${C.proto.name || C.proto.addr ? "" : `Name und Adresse für den Kopf trägst du in den Einstellungen ein.`}</div>
-      <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} Drucken oder als PDF sichern</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div></div>`;
+      <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} PDF erstellen</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div></div>`;
     return { list, sl, pr };
   }
   _sfWartOld(T) { const p = this._sfWartParts(T); return `<div class="enc"><div class="enco">${p.list}</div><div class="enco">${p.sl}${p.pr}</div></div>`; }
@@ -15040,12 +15057,16 @@ const CSS_SF2 = `
       <table><thead><tr><th>Melder</th><th>Ort</th><th>Art</th><th>Eingebaut</th><th>Tausch bis</th><th>Zuletzt geprüft</th><th>Batterie</th><th>Ergebnis</th></tr></thead><tbody>${rows || `<tr><td colspan="8">Keine Melder</td></tr>`}</tbody></table>
       ${ev ? `<b>Ereignisse ${yr}</b><ul>${ev}</ul>` : ""}<div class="s"><div>Datum</div><div>Unterschrift</div></div></body></html>`;
   }
-  _sfxPrint(html) {
-    const f = document.createElement("iframe"); f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0"; document.body.appendChild(f);
-    f.onload = () => { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (_) { this._toast("Drucken geht hier nicht. Nimm „Als Datei laden“."); } setTimeout(() => f.remove(), 60000); };
-    f.srcdoc = html || this._sfxProto();
+  /* Ausgabe als Datei: auf Handy und Tablet über das Teilen-Menü (in der App geht weder Drucken noch ein Download), am Rechner als Download */
+  _sfDeliver(data, name, mime, title) {
+    try {
+      const blob = new Blob([data], { type: mime }), file = typeof File !== "undefined" ? new File([blob], name, { type: mime }) : null, touch = window.matchMedia && window.matchMedia("(pointer:coarse)").matches;
+      if (file && touch && navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title }).catch(() => {}); return; }
+      const u = URL.createObjectURL(blob), a = document.createElement("a"); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); this._toast(`Gespeichert: ${name}`);
+    } catch (_) { this._toast("Das hat nicht geklappt"); }
   }
-  _sfxHtml() { const a = document.createElement("a"), u = URL.createObjectURL(new Blob([this._sfxProto()], { type: "text/html" })); a.href = u; a.download = `Pruefprotokoll-Melder-${new Date().getFullYear()}.html`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+  _sfxPrint() { this._sfxPdf("proto"); }
+  _sfxHtml() { this._sfDeliver(this._sfxProto(), `Pruefprotokoll-Melder-${new Date().getFullYear()}.html`, "text/html", "Prüfprotokoll Melder"); }
   /* ---- Einstellungen: Melder und Batterie, Abfahrt-Prüfung, Allgemein */
   _sfSetOld(T, ex = {}) {
     const { C, l } = T, H = this._hass, adm = this._admin(), KN = this._sfxKind(), NM = this._sfxNames();
@@ -15120,8 +15141,10 @@ const CSS_SF2 = `
     if (a === "sfxq") { this._sfxPatch((c) => { c.quiet.on = !c.quiet.on; }); return true; }
     if (a === "sfxlead") { this._sfxPatch((c) => { c.lead = Number(k); }); return true; }
     if (!ed) return false;
+    if (this._sfxP2(a, b)) return true;
     const P = ed.plan, fl = this._sfFl(), cur = P.items.find((x) => x.id === ed.sel);
-    if (a === "sfxtool") { ed.tool = k; ed.sel = ""; this._render(); return true; }
+    if (["sfxfadd", "sfxfrm", "sfxbgrm", "sfxplace", "sfxpdel", "sfxpdup", "sfxprot", "sfxpw", "sfxph"].includes(a)) this._sfSnap();
+    if (a === "sfxtool") { ed.tool = k; ed.sel = ""; ed.mm = false; ed.multi = []; this._render(); return true; }
     if (a === "sfxfadd") { const nm = ["OG", "Keller", "DG", "UG", "Garten", "Anbau"].find((n) => !P.floors.some((f) => f.n === n)) || "Etage", id = "f" + Date.now().toString(36).slice(-6); P.floors.push({ id, n: nm }); this._sfFlId = id; ed.sel = ""; this._render(); return true; }
     if (a === "sfxfrm") { if (P.floors.length > 1) { P.items = P.items.filter((x) => x.fl !== fl); delete P.bg[fl]; P.floors = P.floors.filter((f) => f.id !== fl); this._sfFlId = P.floors[0].id; ed.sel = ""; this._render(); } return true; }
     if (a === "sfxbgrm") { delete P.bg[fl]; this._render(); return true; }
@@ -15149,7 +15172,9 @@ const CSS_SF2 = `
       return true;
     }
     if (!ed) return false;
+    if (this._sfxP2Change(t)) return true;
     const P = ed.plan, cur = P.items.find((x) => x.id === ed.sel);
+    if (["sfxfn", "sfxpn", "sfxpe"].includes(f)) this._sfSnap();
     if (f === "sfxfn") { const fl = P.floors.find((x) => x.id === this._sfFl()); if (fl && v.trim()) { fl.n = v.trim().slice(0, 16); this._render(); } return true; }
     if (f === "sfxpn" && cur) { cur.n = v.slice(0, 30); this._render(); return true; }
     if (f === "sfxpe" && cur) { cur.e = v; this._render(); return true; }
@@ -15176,30 +15201,34 @@ const CSS_SF2 = `
     sr.addEventListener("pointerdown", (e) => {
       const svg = e.target.closest && e.target.closest("svg.sfpe"), ed = this._sfEd; if (!svg || !ed) return;
       e.preventDefault(); const [x, y] = pt(e, svg), P = ed.plan, fl = this._sfFl(), h = e.target.closest("[data-h]"), el = e.target.closest("[data-id]"), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tool = ed.tool;
-      this._sfDrag = null;
+      this._sfDrag = null; this._sfSnap();
       if (h && ed.sel) { this._sfDrag = { k: h.dataset.h, id: ed.sel }; }
-      else if (tool === "select") { if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false }; } else ed.sel = ""; paint(); }
+      else if (tool === "select" && ed.mm) { ed.multi = ed.multi || []; if (el) { const id = el.dataset.id, pre = ed.multi.includes(id); if (!pre) ed.multi.push(id); ed.sel = ""; const os = {}; P.items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { os[i.id] = JSON.parse(JSON.stringify(i)); }); this._sfDrag = { k: "movem", os, sx: x, sy: y, moved: false, off: pre ? id : "" }; } else ed.multi = []; paint(); }
+      else if (tool === "select") { ed.multi = []; if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false }; } else ed.sel = ""; paint(); }
       else if (tool === "r" || tool === "s" || tool === "w") {
         const it = tool === "w" ? { id: uid(), fl, t: "w", x: g(x), y: g(y), x2: g(x), y2: g(y), r: 0, n: "", e: "" } : { id: uid(), fl, t: tool, x: g(x), y: g(y), w: 0, h: 0, r: 0, n: "", e: "" };
         P.items.push(it); ed.sel = it.id; this._sfDrag = { k: "new", id: it.id, sx: g(x), sy: g(y) }; paint();
       } else {
         const it = { id: uid(), fl, t: tool.startsWith("m:") ? "m" : tool, x: g10(x), y: g10(y), r: 0, n: tool === "x" ? "Text" : "", e: "" };
         if (it.t === "m") { const kind = tool.slice(2), pl = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), d = this._sfList().find((q) => q.k === kind && !pl.has(q.id)); if (d) it.e = d.id; }
+        if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(fl, x, y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } }
         P.items.push(it); ed.sel = it.id; ed.tool = "select"; this._render();
       }
     });
     window.addEventListener("pointermove", (e) => {
       const d = this._sfDrag, ed = this._sfEd, svg = sr.querySelector("svg.sfpe"); if (!d || !ed || !svg) return;
+      if (d.k === "movem") { e.preventDefault(); const [mx, my] = pt(e, svg), dx = g(mx - d.sx), dy = g(my - d.sy); if (dx || dy) d.moved = true; ed.plan.items.forEach((i) => { const o = d.os[i.id]; if (!o) return; i.x = o.x + dx; i.y = o.y + dy; if (i.t === "w") { i.x2 = o.x2 + dx; i.y2 = o.y2 + dy; } }); paint(); return; }
       const [x, y] = pt(e, svg), it = ed.plan.items.find((i) => i.id === d.id); if (!it) return; e.preventDefault();
-      if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } }
+      if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } }
       else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const dx = Math.abs(X - it.x), dy = Math.abs(Y - it.y); if (dx > dy * 4) Y = it.y; else if (dy > dx * 4) X = it.x; it.x2 = X; it.y2 = Y; } else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
       else if (d.k === "p1") { it.x = g(x); it.y = g(y); } else if (d.k === "p2") { it.x2 = g(x); it.y2 = g(y); }
       paint();
     }, { passive: false });
     const up = () => {
       const d = this._sfDrag, ed = this._sfEd; if (!d) return; this._sfDrag = null; if (!ed) return;
+      if (d.k === "movem") { if (!d.moved && d.off) ed.multi = ed.multi.filter((i) => i !== d.off); this._sfSnapTrim(); this._render(); return; }
       if (d.k === "new") { const it = ed.plan.items.find((i) => i.id === d.id); if (it && ((it.t === "w" && Math.abs(it.x2 - it.x) + Math.abs(it.y2 - it.y) < 20) || (it.t !== "w" && (it.w < 40 || it.h < 40)))) { ed.plan.items = ed.plan.items.filter((i) => i.id !== d.id); ed.sel = ""; } else ed.tool = "select"; }
-      this._render();
+      this._sfSnapTrim(); this._render();
     };
     window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
     /* Im Ansichtsmodus: Melder antippen zeigt die Daten */
@@ -15647,15 +15676,16 @@ const CSS_SF2 = `
   /* ---- Fluchtweg: nächste Tür auf derselben Etage (Luftlinie, Hinweis „Plan prüfen“) */
   _sfEscapeFor(it) {
     if (!it) return null;
-    const P = this._sfx().cfg.plan, doors = P.items.filter((q) => q.t === "d" && q.fl === it.fl);
-    if (!doors.length) return null;
-    const d = doors.map((q) => [q, Math.hypot(q.x - it.x, q.y - it.y)]).sort((a, b) => a[1] - b[1])[0][0];
-    return { m: it, d, fl: (P.floors.find((f) => f.id === it.fl) || {}).n || "" };
+    const route = this._sfEscRoute(it); if (!route) return null;
+    const P = this._sfx().cfg.plan;
+    return { m: it, d: route.exit, route, fl: (P.floors.find((f) => f.id === it.fl) || {}).n || "" };
   }
   _sfEscHint(x) {
     const it = x && this._sfx().cfg.plan.items.find((q) => q.t === "m" && q.e === x.id), e = this._sfEscapeFor(it);
-    if (!e) return it ? `<div class="sfhint">${ic("info", 15)}<span>Fluchtweg: im Grundriss ist auf dieser Etage keine Tür eingezeichnet. Mit einer Tür im Plan zeigt das Modul den kürzesten Weg.</span></div>` : "";
-    return `<div class="sfhint sfhe">${ic("door", 15)}<span>Nächste Tür im Plan (${esc(e.fl)}): grün markiert. <b>Plan prüfen:</b> das Modul kennt nicht, ob die Tür nach draußen führt, und zeichnet eine Luftlinie.</span></div>`;
+    if (!e) return it ? `<div class="sfhint">${ic("info", 15)}<span>Fluchtweg: Im Grundriss ist auf dieser Etage keine Tür eingezeichnet. Mit einer Tür im Plan sucht das Modul den kürzesten Weg.</span></div>` : "";
+    const r = e.route;
+    return r.fallback ? `<div class="sfhint">${ic("door", 15)}<span><b>Plan prüfen:</b> Zur nächsten Tür (${esc(e.fl)}) fand das Modul keinen freien Weg und zeichnet eine Luftlinie. Sitzen die Türen auf den Wänden?</span></div>`
+      : `<div class="sfhint sfhe">${ic("door", 15)}<span>${r.kind === "s" ? "Weg zur Treppe" : "Fluchtweg zur nächsten Außentür"} (${esc(e.fl)}), ca. ${num(r.m, 0)} m, grün eingezeichnet. <b>Plan prüfen:</b> Das Modul rechnet um die Wände im Plan herum, kennt aber keine Möbel${r.unsure ? " und weiß nicht sicher, ob diese Tür nach draußen führt" : ""}.</span></div>`;
   }
   /* ---- Alarm-Ansicht */
   _sfAlarmList() { const S = this._sfx(), L = S.det && !S.error ? S.det : this._sfxLocal(); return L.filter((x) => x.alarm && !x.ack); }
@@ -15687,8 +15717,8 @@ const CSS_SF2 = `
     const more = al.length > 1 ? `<div class="sfalm">${al.slice(1, 4).map((q) => `<span>${esc(q.name)}</span>`).join("")}</div>` : "", it = C.plan.items.find((q) => q.t === "m" && q.e === x.id), esc2 = this._sfEscapeFor(it);
     return `<div class="ov sfalov"></div><div class="sfal" role="alertdialog" aria-modal="true" aria-label="Alarm ${esc(x.name)}">
       <div class="sfalt"><span class="sfalp">ALARM · ${esc(k)}</span><b>${esc(x.name)}</b><small>${esc(where || x.kind)} · seit ${this._sfFmtS(el)}</small>${more}<div class="sfals">${steps}</div>
-        ${esc2 ? `<div class="sfalf">${ic("door", 16)}<span>Nächste Tür (${esc(esc2.fl)}) im Grundriss grün markiert. Plan prüfen.</span></div>` : ""}</div>
-      <div class="sfalr"><div class="sfali">${this._sfScene("alarm", S.det && !S.error ? S.det : this._sfxLocal())}</div>
+        ${esc2 ? `<div class="sfalf">${ic("door", 16)}<span>${esc2.route.fallback ? `Nächste Tür (${esc(esc2.fl)}): Luftlinie im Grundriss. Plan prüfen.` : `Fluchtweg ca. ${num(esc2.route.m, 0)} m im Grundriss grün eingezeichnet. Plan prüfen.`}</span></div>` : ""}</div>
+      <div class="sfalr"><div class="sfali">${it && C.plan.items.some((q) => q.fl === it.fl && (q.t === "r" || q.t === "w")) ? `<svg class="sfpm" viewBox="0 0 800 480" role="img" aria-label="Grundriss mit Fluchtweg">${this._sfPlanInner(it.fl, false)}</svg>` : this._sfScene("alarm", S.det && !S.error ? S.det : this._sfxLocal())}</div>
         <button class="sfok" data-act="sfxack" data-k="${al.length > 1 ? "" : esc(x.id)}">${al.length > 1 ? "Alle verstanden" : "Verstanden"}</button>
         <div class="sffc"><button data-act="sfxack" data-k="${esc(x.id)}" data-why="Toast">Fehlalarm: Toast</button><button data-act="sfxack" data-k="${esc(x.id)}" data-why="Dampf">Dampf</button><button data-act="sfxack" data-k="${esc(x.id)}" data-why="Test">Test</button><a href="tel:112" class="sf112">${ic("alert", 15)} 112 anrufen</a><button data-act="sfxalgo">Grundriss</button></div></div></div>`;
   }
@@ -15705,10 +15735,56 @@ const CSS_SF2 = `
       ${li ? `<b>Alarme, Quittierungen und Ausschalten</b><ul>${li}</ul>` : `<p>In den letzten 90 Tagen gab es keine Alarme.</p>`}
       <small>Dieser Bericht ersetzt kein Prüfprotokoll nach Norm. Das Modul ersetzt keine zertifizierten Rauchmelder.</small></body></html>`;
   }
+  /* ---- PDF: Prüfprotokoll und Sicherheitsbericht als echte Datei (A4, Tabelle, Seitenzahl) mit dem PDF-Schreiber von Modul 8 */
+  _sfxPdf(kind) {
+    try {
+      const T = this._sfStat(), { C, l, S } = T, P = C.proto, yr = new Date().getFullYear(), now = Date.now(), fl = (id) => (C.plan.floors.find((f) => f.id === id) || {}).n || "", ort = (x) => [fl(x.floor), x.room || x.area].filter(Boolean).join(" · ") || "–";
+      const bat = (x) => (x.bat != null ? num(x.bat, 0) + " %" : "–"), when = (t) => this._sfDate(t || (S.test || {}).last);
+      const bericht = kind === "bericht", cut = now - 90 * 864e5;
+      const ev = bericht ? (S.log || []).filter((x) => new Date(x.t).getTime() >= cut && (x.c === "alarm" || /Verstanden|Fehlalarm|Ausgeschaltet|Eingeschaltet/.test(x.x))).slice(0, 40) : (S.log || []).filter((x) => new Date(x.t).getFullYear() === yr).slice(0, 20);
+      const evl = ev.map((x) => `${new Date(x.t).toLocaleDateString("de-DE")}${bericht ? " " + new Date(x.t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : ""}: ${x.x}`);
+      let cols, rows, head;
+      if (bericht) {
+        const fa = l.reduce((n, x) => n + (x.fa_n || 0), 0), al = ev.filter((x) => /^Alarm:/.test(x.x)).length;
+        head = [`${T.act.length} Melder aktiv · ${T.pa.length} ausgeschaltet · ${al} Alarme · ${fa} Fehlalarme · ${T.low.length} Batterie schwach`];
+        cols = [["Melder", 40, 0, 115], ["Ort", 160, 0, 80], ["Zustand", 244, 0, 82], ["Batterie", 366, 1, 36], ["Prognose", 374, 0, 58], ["Geprüft", 436, 0, 56], ["Fehlalarme", 555, 1, 40]];
+        rows = l.map((x) => [x.name, ort(x), x.paused ? "ausgeschaltet" : x.alarm ? "ALARM" : x.off ? "nicht erreichbar" : x.bat != null && x.bat < C.bat.pct ? "Batterie schwach" : "in Ordnung", bat(x), x.bat_days != null ? "~ " + this._sfDur(x.bat_days) : "–", when(x.tested), String(x.fa_n || 0)]);
+      } else {
+        head = [`Name: ${P.name || "______________________"}   Adresse: ${P.addr || "______________________"}`, `Geprüft von: ${P.who || "______________________"}`];
+        cols = [["Melder", 40, 0, 120], ["Ort", 164, 0, 82], ["Eingebaut", 250, 0, 50], ["Tausch bis", 304, 0, 52], ["Geprüft", 360, 0, 56], ["Batterie", 462, 1, 40], ["Ergebnis", 470, 0, 85]];
+        rows = l.map((x) => [x.name, ort(x), this._sfMon(x.inst) || "–", x.inst && x.life ? this._sfMon((+x.inst.slice(0, 4) + x.life) + x.inst.slice(4)) : "–", when(x.tested), bat(x), x.life_days != null && x.life_days < 0 ? "Tausch fällig" : x.bat != null && x.bat < C.bat.pct ? "Batterie schwach" : x.off ? "nicht erreichbar" : "in Ordnung"]);
+      }
+      const title = bericht ? "Sicherheitsbericht Rauch- und Sicherheitsmelder" : `Prüfprotokoll Rauch- und Sicherheitsmelder ${yr}`, today = new Date().toLocaleDateString("de-DE");
+      const sub = bericht ? `${P.name || "Haushalt"}${P.addr ? " · " + P.addr : ""} · letzte 90 Tage · erstellt am ${today} mit Strom & Wärme` : `Erstellt am ${today} mit Strom & Wärme`;
+      const pages = []; let ops = [], y = 0, pno = 0;
+      const Tx = (x, yy, v, s, b, c) => ops.push({ t: "text", x, y: yy, v, s, b, c }), Tr = (xr, yy, v, s, b, c) => Tx(xr - this._pdfW(v, s, b), yy, v, s, b, c), Ln = (yy, c, w) => ops.push({ t: "line", x1: 40, x2: 555, y: yy, c, w });
+      const hdr = () => {
+        ops = []; pno++; y = 800;
+        if (pno === 1) { Tx(40, y, title, 16, true); y -= 17; Tx(40, y, this._pdfFit(sub, 9, 515), 9, false, "0.33 0.33 0.33"); y -= 20; head.forEach((h) => { Tx(40, y, this._pdfFit(h, 10, 515), 10); y -= 15; }); y -= 8; } else { Tx(40, y, title + " (Fortsetzung)", 10, true); y -= 22; }
+        ops.push({ t: "rect", x: 40, y: y - 5, w: 515, h: 17, c: "0.94 0.95 0.96" });
+        cols.forEach(([t, x, r]) => (r ? Tr(x, y, t, 8.5, true) : Tx(x + (x === 40 ? 4 : 0), y, t, 8.5, true))); y -= 19;
+      };
+      const end = () => { Tx(40, 30, bericht ? "Dieser Bericht ersetzt kein Prüfprotokoll nach Norm. Das Modul ersetzt keine zertifizierten Rauchmelder." : "Strom & Wärme · Modul 11", 7.5, false, "0.45 0.45 0.45"); pages.push(ops); };
+      hdr();
+      rows.forEach((r) => {
+        if (y < 70) { end(); hdr(); }
+        cols.forEach(([, x, rr, w], i) => { const v = this._pdfFit(r[i], 8.5, w, false); if (rr) Tr(x, y, v, 8.5); else Tx(x + (x === 40 ? 4 : 0), y, v, 8.5, r[i] === "ALARM", r[i] === "ALARM" ? "0.8 0.1 0.1" : undefined); });
+        Ln(y - 5); y -= 16;
+      });
+      if (!rows.length) { Tx(44, y, "Keine Melder", 9); y -= 16; }
+      y -= 8;
+      if (evl.length) { if (y < 90) { end(); hdr(); } Tx(40, y, bericht ? "Alarme, Quittierungen und Ausschalten" : `Ereignisse ${yr}`, 10, true); y -= 15; evl.forEach((t) => { if (y < 60) { end(); hdr(); } Tx(44, y, this._pdfFit("• " + t, 8.5, 508), 8.5); y -= 13; }); }
+      else if (bericht) { Tx(40, y, "In den letzten 90 Tagen gab es keine Alarme.", 9.5); y -= 15; }
+      if (!bericht) { if (y < 100) { end(); hdr(); } y -= 28; Ln(y, "0.2 0.2 0.2", 0.8); Tx(40, y - 11, "Datum", 8.5, false, "0.33 0.33 0.33"); ops.push({ t: "line", x1: 300, x2: 555, y, c: "0.2 0.2 0.2", w: 0.8 }); Tx(300, y - 11, "Unterschrift", 8.5, false, "0.33 0.33 0.33"); }
+      end();
+      pages.forEach((p, i) => p.push({ t: "text", x: 555 - this._pdfW(`Seite ${i + 1} von ${pages.length}`, 8), y: 30, v: `Seite ${i + 1} von ${pages.length}`, s: 8, c: "0.45 0.45 0.45" }));
+      this._sfDeliver(this._pdfBytes(pages), `${bericht ? "Sicherheitsbericht" : "Pruefprotokoll-Melder"}-${yr}.pdf`, "application/pdf", bericht ? "Sicherheitsbericht" : "Prüfprotokoll Melder");
+    } catch (e) { this._toast("PDF konnte nicht erstellt werden"); }
+  }
   /* ---- Aktionen */
   _sfxAlarmAct(a, b) {
     const k = b.dataset.k, s = Number(b.dataset.s), ws = (msg, ok) => this._hass.callWS(msg).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; this._render(); if (this._modal && ["sfdet", "sfset"].includes(this._modal.type)) this._renderModal(); if (ok) this._toast(ok); }).catch(() => this._toast("Das hat nicht geklappt"));
-    if (a === "sfxbericht") { if (!this._spnS().active) { this._toast("Der Sicherheitsbericht ist ein Sponsor-Extra"); return true; } this._sfxPrint(this._sfxBericht()); return true; }
+    if (a === "sfxbericht") { if (!this._spnS().active) { this._toast("Der Sicherheitsbericht ist ein Sponsor-Extra"); return true; } this._sfxPdf("bericht"); return true; }
     if (a === "sfxack") { ws({ type: "fenster_heizung/sf_ack", ent: k || undefined, why: b.dataset.why || undefined }, b.dataset.why ? "Verstanden, als Fehlalarm gemerkt" : "Verstanden"); if (this._modal && this._modal.type === "sfalarm") { this._sfxD = { d: { ...this._sfx(), det: (this._sfx().det || []).map((x) => (!k || x.id === k ? { ...x, ack: new Date().toISOString() } : x)) }, ts: Date.now() }; this._modal = null; this._renderModal(); } return true; }
     if (a === "sfxalgo") { this._modal = null; this._renderModal(); this._sfT = "pl"; try { localStorage.setItem("fh_sf_tab", "pl"); } catch (_) { /* privater Modus */ } this._render(); return true; }
     if (a === "sfxpause") { ws({ type: "fenster_heizung/sf_pause", ent: k, days: Number(b.dataset.d) || 0 }, "Melder ausgeschaltet"); return true; }
@@ -15717,6 +15793,153 @@ const CSS_SF2 = `
     if (a === "sfxstgs") { const m = { s2: [5, 120, 5], s3: [30, 900, 30], s4: [60, 1800, 60] }[k]; this._sfxPatch((c) => { c.stages[k].sec = Math.max(m[0], Math.min(m[1], c.stages[k].sec + s * m[2])); }); return true; }
     if (a === "sfxoam") { this._sfxPatch((c) => { c.offask.mode = k; }); return true; }
     if (a === "sfxoad") { this._sfxPatch((c) => { c.offask.days = Math.max(1, Math.min(60, c.offask.days + s)); }); return true; }
+    return false;
+  }
+  /* ================= Modul 11 · Grundriss 2.0 (2026.11.4b10) =================
+     Ansicht: Reichweite der Melder als weicher Halo, Räume färben sich, im Alarm sucht das Modul den Weg zur nächsten Außentür um die Wände
+     im Plan herum (Raster, kürzester Weg) und zeichnet ihn ein. Baukasten: Rückgängig und Wiederholen, Mehrfachauswahl, Türen und Fenster
+     rasten an Wänden ein, Maßstab, Räume mit Räumen aus Modul 1 verknüpfen, Plan als Datei sichern und einlesen. Nur Anzeige, keine Steuerung. */
+  _sfScale() { const s = this._sfPl().scale; return s > 0 ? s : 40; }
+  _sfRangeM(it, d) { return it.rg > 0 ? it.rg : ({ smoke: 5, co: 6, gas: 4, water: 1.5, heat: 4, safety: 4 }[d ? d.k : "smoke"] || 4); }
+  _sfMkState(d) { const C = this._sfx().cfg; return !d ? "n" : d.alarm ? "a" : d.paused ? "o" : d.off ? "o" : d.bat != null && d.bat < C.bat.pct ? "w" : "g"; }
+  /* Raster des Plans (Zellen zu 10 Bildpunkten): Raumränder und Wände sperren, Türen öffnen eine Lücke */
+  _sfGrid(fl) {
+    const P = this._sfPl(), C = 10, W = 80, H = 48, B = new Uint8Array(W * H), items = P.items.filter((i) => i.fl === fl);
+    const cell = (x, y) => { const cx = Math.floor(x / C), cy = Math.floor(y / C); return cx >= 0 && cx < W && cy >= 0 && cy < H ? cy * W + cx : -1; };
+    const mark = (x, y, v) => { const k = cell(x, y); if (k >= 0) B[k] = v; };
+    const line = (x1, y1, x2, y2) => { const n = Math.max(1, Math.ceil(Math.hypot(x2 - x1, y2 - y1) / 4)); for (let k = 0; k <= n; k++) mark(x1 + ((x2 - x1) * k) / n, y1 + ((y2 - y1) * k) / n, 1); };
+    items.forEach((i) => {
+      if (i.t === "r") { line(i.x, i.y, i.x + i.w, i.y); line(i.x + i.w, i.y, i.x + i.w, i.y + i.h); line(i.x + i.w, i.y + i.h, i.x, i.y + i.h); line(i.x, i.y + i.h, i.x, i.y); }
+      else if (i.t === "w") line(i.x, i.y, i.x2, i.y2);
+    });
+    items.filter((i) => i.t === "d").forEach((i) => { for (let y = i.y - 17; y <= i.y + 17; y += 5) for (let x = i.x - 17; x <= i.x + 17; x += 5) if (Math.hypot(x - i.x, y - i.y) <= 17) mark(x, y, 0); });
+    return { B, W, H, C, items, cell };
+  }
+  /* Türen, die nach draußen führen: eine Seite liegt in einem Raum, die andere nicht. Ohne Räume im Plan zählt jede Tür. */
+  _sfExitsOf(fl) {
+    const items = this._sfPl().items.filter((i) => i.fl === fl), rooms = items.filter((i) => i.t === "r"), doors = items.filter((i) => i.t === "d");
+    const inR = (x, y) => rooms.some((r) => x > r.x + 1 && x < r.x + r.w - 1 && y > r.y + 1 && y < r.y + r.h - 1);
+    const clamp = (x, y) => [Math.max(2, Math.min(798, x)), Math.max(2, Math.min(478, y))];
+    const sides = (d) => ((d.r || 0) % 180 === 0 ? [[d.x, d.y - 18], [d.x, d.y + 18]] : [[d.x - 18, d.y], [d.x + 18, d.y]]);
+    const out = doors.map((d) => { const [a, b] = sides(d), ia = inR(a[0], a[1]), ib = inR(b[0], b[1]); return { d, out: rooms.length ? (ia && !ib ? clamp(...b) : ib && !ia ? clamp(...a) : null) : clamp(d.x, d.y) }; }).filter((e) => e.out);
+    return { outdoor: out, doors, rooms, any: out.length > 0 };
+  }
+  /* Kürzester Weg vom Melder zur nächsten Außentür (Dijkstra auf dem Raster), danach geglättet. Gibt null zurück, wenn es keine Tür gibt. */
+  _sfEscRoute(it) {
+    if (!it) return null;
+    const G = this._sfGrid(it.fl), { B, W, H, C } = G, X = this._sfExitsOf(it.fl), items = G.items;
+    const idx = (x, y) => y * W + x, cellOf = (x, y) => G.cell(x, y);
+    let s0 = cellOf(it.x, it.y); if (s0 < 0) return null;
+    if (B[s0]) { let found = -1; for (let r = 1; r <= 2 && found < 0; r++) for (let dy = -r; dy <= r && found < 0; dy++) for (let dx = -r; dx <= r; dx++) { const cx = (s0 % W) + dx, cy = Math.floor(s0 / W) + dy; if (cx >= 0 && cx < W && cy >= 0 && cy < H && !B[idx(cx, cy)]) { found = idx(cx, cy); break; } } if (found < 0) return this._sfEscLine(it, X); s0 = found; }
+    const goals = new Map();
+    X.outdoor.forEach((e) => { const c = cellOf(e.out[0], e.out[1]); if (c >= 0) goals.set(c, { d: e.d, p: { x: e.out[0], y: e.out[1] }, k: "d" }); });
+    let kind = "d";
+    if (!goals.size) { /* keine Außentür: nächste Tür, sonst Treppe */
+      X.doors.forEach((d) => { const c = cellOf(d.x, d.y); if (c >= 0) goals.set(c, { d, p: { x: d.x, y: d.y }, k: "d", unsure: true }); });
+      if (!goals.size) { items.filter((i) => i.t === "s").forEach((s) => { for (let y = s.y + 5; y < s.y + s.h; y += 10) for (let x = s.x + 5; x < s.x + s.w; x += 10) { const c = cellOf(x, y); if (c >= 0) goals.set(c, { d: s, p: { x: s.x + s.w / 2, y: s.y + s.h / 2 }, k: "s" }); } }); kind = "s"; }
+    }
+    if (!goals.size) return null;
+    const dist = new Float64Array(W * H).fill(1e9), prev = new Int32Array(W * H).fill(-1), heap = [[0, s0]];
+    dist[s0] = 0;
+    const push = (e) => { heap.push(e); let i = heap.length - 1; while (i > 0) { const p = (i - 1) >> 1; if (heap[p][0] <= heap[i][0]) break; [heap[p], heap[i]] = [heap[i], heap[p]]; i = p; } };
+    const pop = () => { const top = heap[0], last = heap.pop(); if (heap.length) { heap[0] = last; let i = 0; for (;;) { let l = 2 * i + 1, r = l + 1, m = i; if (l < heap.length && heap[l][0] < heap[m][0]) m = l; if (r < heap.length && heap[r][0] < heap[m][0]) m = r; if (m === i) break; [heap[m], heap[i]] = [heap[i], heap[m]]; i = m; } } return top; };
+    let hit = -1;
+    while (heap.length) {
+      const [dd, c] = pop(); if (dd > dist[c]) continue;
+      if (goals.has(c)) { hit = c; break; }
+      const cx = c % W, cy = Math.floor(c / W);
+      for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+        if (!dx && !dy) continue; const nx = cx + dx, ny = cy + dy; if (nx < 0 || ny < 0 || nx >= W || ny >= H || B[idx(nx, ny)]) continue;
+        if (dx && dy && (B[idx(cx + dx, cy)] || B[idx(cx, cy + dy)])) continue;  /* nicht durch Ecken schneiden */
+        const nd = dd + (dx && dy ? 14.14 : 10), n = idx(nx, ny); if (nd < dist[n]) { dist[n] = nd; prev[n] = c; push([nd, n]); }
+      }
+    }
+    if (hit < 0) return this._sfEscLine(it, X);
+    const raw = []; for (let c = hit; c >= 0; c = prev[c]) raw.push({ x: (c % W) * C + C / 2, y: Math.floor(c / W) * C + C / 2 }); raw.reverse();
+    const g = goals.get(hit); raw[0] = { x: it.x, y: it.y }; raw[raw.length - 1] = g.p;
+    const clear = (a, b) => { const n = Math.ceil(Math.hypot(b.x - a.x, b.y - a.y) / 3); for (let k = 1; k < n; k++) { const c = cellOf(a.x + ((b.x - a.x) * k) / n, a.y + ((b.y - a.y) * k) / n); if (c >= 0 && B[c]) return false; } return true; };
+    const pts = [raw[0]]; let i = 0;
+    while (i < raw.length - 1) { let j = raw.length - 1; while (j > i + 1 && !clear(raw[i], raw[j])) j--; pts.push(raw[j]); i = j; }
+    let len = 0; for (let k = 1; k < pts.length; k++) len += Math.hypot(pts[k].x - pts[k - 1].x, pts[k].y - pts[k - 1].y);
+    return { pts, m: len / this._sfScale(), exit: g.d, kind: g.k === "s" ? "s" : kind, unsure: !!g.unsure, fallback: false };
+  }
+  _sfEscLine(it, X) {  /* kein freier Weg: Luftlinie zur nächsten Tür, damit wenigstens die Richtung stimmt */
+    const doors = X.doors; if (!doors.length) return null;
+    const d = [...doors].sort((a, b) => Math.hypot(a.x - it.x, a.y - it.y) - Math.hypot(b.x - it.x, b.y - it.y))[0];
+    return { pts: [{ x: it.x, y: it.y }, { x: d.x, y: d.y }], m: Math.hypot(d.x - it.x, d.y - it.y) / this._sfScale(), exit: d, kind: "d", unsure: true, fallback: true };
+  }
+  /* Fluchtweg als SVG: gestrichelte Linie, Pfeil, Beschriftung */
+  _sfEscSvg(e) {
+    const r = e.route, p = r.pts, a = p[p.length - 2], b = p[p.length - 1], ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+    const lab = r.fallback ? "Luftlinie · Plan prüfen" : r.kind === "s" ? `Treppe ca. ${num(r.m, 0)} m` : `Fluchtweg ca. ${num(r.m, 0)} m`, w = lab.length * 6.4 + 18, tx = Math.max(w / 2 + 4, Math.min(796 - w / 2, b.x)), ty = b.y + 40 > 470 ? b.y - 30 : b.y + 30;
+    return `<path class="sfesc" d="M${p.map((q) => `${q.x.toFixed(0)} ${q.y.toFixed(0)}`).join("L")}"></path><g transform="translate(${b.x.toFixed(0)} ${b.y.toFixed(0)}) rotate(${ang.toFixed(0)})"><path class="sfesa" d="M-6 -9L9 0L-6 9z"></path></g><g><rect class="sfesb" x="${(tx - w / 2).toFixed(0)}" y="${(ty - 11).toFixed(0)}" width="${w.toFixed(0)}" height="22" rx="11"></rect><text class="sfest" x="${tx.toFixed(0)}" y="${(ty + 4).toFixed(0)}">${esc(lab)}</text></g>`;
+  }
+  /* Halos der Melder (Reichweite) */
+  _sfHalos(items, dm) {
+    const sc = this._sfScale(), col = { g: "#34d399", w: "#f59e0b", a: "#ef4444", o: "#94a3b8" };
+    const defs = `<defs>${Object.keys(col).map((k) => `<radialGradient id="sfhg${k}"><stop offset="0" stop-color="${col[k]}" stop-opacity="${k === "a" ? ".5" : ".26"}"/><stop offset="1" stop-color="${col[k]}" stop-opacity="0"/></radialGradient>`).join("")}</defs>`;
+    return defs + items.filter((i) => i.t === "m" && i.e && dm[i.e]).map((i) => { const d = dm[i.e], c = this._sfMkState(d); return c === "n" ? "" : `<circle class="sfhalo" cx="${i.x}" cy="${i.y}" r="${(this._sfRangeM(i, d) * sc).toFixed(0)}" fill="url(#sfhg${c})"></circle>`; }).join("");
+  }
+  /* Abdeckung: ein Raum gilt als abgedeckt, wenn ein Melder darin sitzt oder seine Reichweite die Raummitte erreicht */
+  _sfCoverage(fl) {
+    const P = this._sfPl(), dm = this._sfDetMap(), sc = this._sfScale(), rooms = P.items.filter((i) => i.fl === fl && i.t === "r"), mk = P.items.filter((i) => i.fl === fl && i.t === "m");
+    const cov = (r) => mk.some((m) => (m.x >= r.x && m.x <= r.x + r.w && m.y >= r.y && m.y <= r.y + r.h) || Math.hypot(m.x - (r.x + r.w / 2), m.y - (r.y + r.h / 2)) <= this._sfRangeM(m, m.e ? dm[m.e] : null) * sc);
+    return { rooms, covered: rooms.filter(cov), open: rooms.filter((r) => !cov(r)) };
+  }
+  /* Prüft jeden Melder der Etage: Gibt es einen freien Weg zu einer Außentür? */
+  _sfEscCheck(fl) {
+    const P = this._sfPl(), mk = P.items.filter((i) => i.fl === fl && i.t === "m"), X = this._sfExitsOf(fl);
+    const bad = mk.filter((m) => { const r = this._sfEscRoute(m); return !r || r.fallback; });
+    return { exits: X.outdoor.length, doors: X.doors.length, markers: mk.length, bad };
+  }
+  /* Türen und Fenster rasten an der nächsten Wand oder Raumkante ein (nur waagerecht und senkrecht) */
+  _sfSnapOpen(fl, x, y) {
+    const items = this._sfPl().items.filter((i) => i.fl === fl), segs = [];
+    items.forEach((i) => { if (i.t === "r") { segs.push([i.x, i.y, i.x + i.w, i.y], [i.x, i.y + i.h, i.x + i.w, i.y + i.h], [i.x, i.y, i.x, i.y + i.h], [i.x + i.w, i.y, i.x + i.w, i.y + i.h]); } else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2]); });
+    let best = null;
+    segs.forEach(([x1, y1, x2, y2]) => {
+      const hor = Math.abs(y1 - y2) < 1, ver = Math.abs(x1 - x2) < 1; if (!hor && !ver) return;
+      const px = hor ? Math.max(Math.min(x1, x2), Math.min(Math.max(x1, x2), x)) : x1, py = ver ? Math.max(Math.min(y1, y2), Math.min(Math.max(y1, y2), y)) : y1, d = Math.hypot(px - x, py - y);
+      if (d <= 18 && (!best || d < best.d)) best = { x: hor ? Math.round(px / 10) * 10 : px, y: ver ? Math.round(py / 10) * 10 : py, r: hor ? 0 : 90, d };
+    });
+    return best;
+  }
+  /* Rückgängig und Wiederholen (ohne Hintergrundbilder) */
+  _sfSer() { const P = this._sfEd.plan; return JSON.stringify({ f: P.floors, i: P.items, s: P.scale || 40 }); }
+  _sfSnap() { const ed = this._sfEd; if (!ed) return; ed.hist = ed.hist || []; ed.fut = []; const j = this._sfSer(); if (ed.hist[ed.hist.length - 1] !== j) { ed.hist.push(j); if (ed.hist.length > 60) ed.hist.shift(); } }
+  _sfSnapTrim() { const ed = this._sfEd; if (ed && ed.hist && ed.hist.length && ed.hist[ed.hist.length - 1] === this._sfSer()) ed.hist.pop(); }
+  _sfRestore(j) { const ed = this._sfEd, o = JSON.parse(j); ed.plan.floors = o.f; ed.plan.items = o.i; ed.plan.scale = o.s; if (!ed.plan.floors.some((f) => f.id === this._sfFlId)) this._sfFlId = ed.plan.floors[0].id; ed.sel = ""; ed.multi = []; }
+  _sfRoomNames() { try { return [...new Set(this._collect0().map((r) => r.name).filter(Boolean))]; } catch (_) { return []; } }
+  /* Aktionen und Eingaben des Baukastens, die neu sind */
+  _sfxP2(a, b) {
+    const ed = this._sfEd; if (!ed) return false; const P = ed.plan, fl = this._sfFl(), k = b.dataset.k, cur = P.items.find((x) => x.id === ed.sel), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    if (a === "sfxundo") { if (ed.hist && ed.hist.length) { ed.fut = ed.fut || []; ed.fut.push(this._sfSer()); this._sfRestore(ed.hist.pop()); this._render(); } return true; }
+    if (a === "sfxredo") { if (ed.fut && ed.fut.length) { ed.hist = ed.hist || []; ed.hist.push(this._sfSer()); this._sfRestore(ed.fut.pop()); this._render(); } return true; }
+    if (a === "sfxmm") { ed.mm = !ed.mm; ed.multi = []; ed.sel = ""; ed.tool = "select"; this._render(); return true; }
+    if (a === "sfxmclr") { ed.multi = []; this._render(); return true; }
+    if (a === "sfxmdel") { this._sfSnap(); const s = new Set(ed.multi); P.items = P.items.filter((x) => !s.has(x.id)); ed.multi = []; this._render(); return true; }
+    if (a === "sfxmdup") { this._sfSnap(); const ids = []; P.items.filter((x) => ed.multi.includes(x.id)).forEach((x) => { const c = { ...x, id: uid(), x: x.x + 20, y: x.y + 20 }; if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m") c.e = ""; P.items.push(c); ids.push(c.id); }); ed.multi = ids; this._render(); return true; }
+    if (a === "sfxpscale") { this._sfSnap(); P.scale = Math.round(800 / Number(k)); this._render(); return true; }
+    if (a === "sfxprg" && cur && cur.t === "m") { this._sfSnap(); const d = cur.e ? this._sfDetMap()[cur.e] : null, now = this._sfRangeM(cur, d); cur.rg = Math.max(1, Math.min(15, Math.round((now + Number(b.dataset.s) * 0.5) * 2) / 2)); this._render(); return true; }
+    if (a === "sfxpexp") { this._sfDeliver(JSON.stringify({ app: "fenster_heizung", modul: "sicherheit", v: 1, plan: P }), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss Modul 11"); return true; }
+    return false;
+  }
+  _sfxP2Change(t) {
+    const ed = this._sfEd, f = t.dataset.f, v = t.value || ""; if (!ed) return false; const P = ed.plan, cur = P.items.find((x) => x.id === ed.sel);
+    if (f === "sfxplk" && cur && cur.t === "r") { this._sfSnap(); cur.lk = v; if (v && !cur.n) cur.n = v.slice(0, 30); this._render(); return true; }
+    if (f === "sfxpimp") {
+      const file = t.files && t.files[0]; if (!file) return true;
+      const rd = new FileReader();
+      rd.onload = () => {
+        try {
+          const o = JSON.parse(String(rd.result || "")), p = o && o.plan; if (!p || !Array.isArray(p.floors) || !p.floors.length || !Array.isArray(p.items)) throw new Error("form");
+          const ids = new Set(p.floors.map((x) => x && x.id)), items = p.items.filter((i) => i && typeof i.id === "string" && ids.has(i.fl) && ["r", "w", "d", "f", "s", "x", "m"].includes(i.t)).slice(0, 300);
+          this._sfSnap(); ed.plan.floors = p.floors.filter((x) => x && typeof x.id === "string").slice(0, 6).map((x) => ({ id: x.id, n: String(x.n || x.id).slice(0, 16) })); ed.plan.items = items; ed.plan.scale = Number(p.scale) > 0 ? Number(p.scale) : 40; if (p.bg && typeof p.bg === "object") ed.plan.bg = p.bg;
+          this._sfFlId = ed.plan.floors[0].id; ed.sel = ""; ed.multi = []; this._render(); this._toast(`Plan eingelesen: ${items.length} Elemente. Mit „Speichern“ übernehmen.`);
+        } catch (_) { this._toast("Die Datei ist kein Grundriss aus diesem Modul"); }
+      };
+      rd.readAsText(file); t.value = ""; return true;
+    }
     return false;
   }
   /* ================= Automatische Sicherung auf einen Homeserver (WebDAV, SMB, Ordner) ================= */

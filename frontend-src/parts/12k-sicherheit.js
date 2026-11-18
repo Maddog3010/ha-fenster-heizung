@@ -51,7 +51,7 @@
     const ampel = `<div class="card sfc"><h2>${ic("shield", 18)}Ampel</h2>
       ${ap(al.length ? "r" : "g", "Alarme", al.length ? `${al.length} aktiv` : "keine")}${ap(low.length ? "a" : "g", "Batterien", low.length ? `${low.length} schwach` : "in Ordnung")}${ap(off.length ? "a" : "g", "Erreichbarkeit", l.length ? `${l.length - off.length} von ${l.length}` : "–")}
       ${ap(due.length ? "a" : "g", "Prüfung", !C.test.on ? "aus" : due.length ? "fällig" : S.test && S.test.last ? "zuletzt " + this._sfAgo(S.test.last) : "läuft")}${ap(life.length ? "a" : "g", "Lebensdauer", life.length ? `${life.length} zu tauschen` : "in Ordnung")}</div>`;
-    const pers = Object.keys(H.states).filter((e) => e.startsWith("person.")), home = pers.filter((e) => H.states[e].state === "home").length, fr = C.depart.frost, ft = fr.on && fr.ent && H.states[fr.ent] ? parseFloat(fr.ent.startsWith("weather.") ? H.states[fr.ent].attributes.temperature : H.states[fr.ent].state) : NaN;
+    const pp = this._pres(), op = (this._ortPersons ? this._ortPersons() : []).filter((x) => x.count), pers = op, home = pp.mode === "away" || pp.mode === "vacation" ? 0 : op.filter((x) => x.home).length, fr = C.depart.frost, ft = fr.on && fr.ent && H.states[fr.ent] ? parseFloat(fr.ent.startsWith("weather.") ? H.states[fr.ent].attributes.temperature : H.states[fr.ent].state) : NaN;
     const water = l.filter((x) => x.k === "water" && x.alarm), open = rows.filter((x) => x.open);
     const dep = `<div class="card sfc"><h2>${ic("lock", 18)}Abfahrt-Prüfung${rows.length ? `<small class="${open.length ? "sfwarn" : "mut"}">${open.length ? `${open.length} offen` : "alles zu"}</small>` : ""}</h2>
       ${rows.length ? rows.map((x) => `<div class="sfap">${ic(x.ico, 16)}<span>${esc(x.name)}</span><span class="sft ${x.open ? "a" : "g"}">${x.txt.toUpperCase()}</span></div>`).join("") : `<div class="mut sm">Hier zeigt das Modul, was offen ist, bevor du gehst: Fenster, Türen, Herd, Garage. ${this._admin() ? `Wähle es unter <button class="lnk" data-act="sfxtab" data-k="se">Einstellungen</button> aus.` : ""}</div>`}
@@ -73,10 +73,12 @@
     const inside = (r, m) => m.x >= r.x && m.x <= r.x + r.w && m.y >= r.y && m.y <= r.y + r.h;
     let out = P.bg[fl] ? `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".6"></image>` : "";
     if (edit) out += `<defs><pattern id="sfgr" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" class="sfgd"></circle></pattern></defs><rect width="800" height="480" fill="url(#sfgr)"></rect>`;
+    out += this._sfHalos(items, dm);
+    const wn = items.filter((i) => i.t === "m" && i.e && dm[i.e] && !dm[i.e].alarm && ["w", "o"].includes(this._sfMkState(dm[i.e])));
     const sorted = [...items].sort((a, b) => ord.indexOf(a.t) - ord.indexOf(b.t));
     sorted.forEach((i) => {
       const id = `data-id="${i.id}"`, a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
-      if (i.t === "r") out += `<g ${id}><rect class="sfr${mk.some((m) => inside(i, m)) ? " al" : ""}" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect><text class="sfrn" x="${i.x + 10}" y="${i.y + 19}">${esc(i.n)}</text></g>`;
+      if (i.t === "r") out += `<g ${id}><rect class="sfr${mk.some((m) => inside(i, m)) ? " al" : wn.some((m) => inside(i, m)) ? " wn" : ""}" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect><text class="sfrn" x="${i.x + 10}" y="${i.y + 19}">${esc(i.n)}</text></g>`;
       else if (i.t === "s") out += `<g ${id}><rect class="sfst" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${Array.from({ length: Math.max(2, Math.floor(i.h / 14)) }, (_, k) => `<path class="sfsl" d="M${i.x} ${i.y + 7 + k * 14}H${i.x + i.w}"></path>`).join("")}<text class="sfrn" x="${i.x + 6}" y="${i.y + 16}">${esc(i.n)}</text></g>`;
       else if (i.t === "w") out += `<g ${id}><path class="sfw" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path><path class="sfhit" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path></g>`;
       else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect><path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"></path><rect class="sfhit" x="${i.x - 16}" y="${i.y - 16}" width="32" height="32"></rect></g>`;
@@ -89,8 +91,9 @@
     });
     if (!edit && mk.length) {  /* Fluchtweg: Linie vom alarmierenden Melder zur nächsten Tür (Luftlinie, Plan prüfen) */
       const e = this._sfEscapeFor(mk[0]);
-      if (e) out += `<path class="sfesc" d="M${e.m.x} ${e.m.y}L${e.d.x} ${e.d.y}"></path><circle class="sfesd" cx="${e.d.x}" cy="${e.d.y}" r="22"></circle>`;
+      if (e) out += this._sfEscSvg(e);
     }
+    if (edit && ed && ed.multi && ed.multi.length) items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { out += i.t === "w" ? `<path class="sfsel" d="M${i.x} ${i.y}L${i.x2} ${i.y2}" style="stroke-width:6"></path>` : i.t === "r" || i.t === "s" ? `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>` : `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="22"></circle>`; });
     if (sel) {
       const i = items.find((x) => x.id === sel);
       if (i) {
@@ -112,10 +115,10 @@
       const al = T.al, sel = this._sfSelDet && T.l.find((x) => x.id === this._sfSelDet), here = P.items.filter((i) => i.fl === fl && i.t === "m").length;
       const empty = !n ? `<div class="sfemp">${ic("home", 34)}<b>Noch kein Grundriss</b><span>${adm ? "Zeichne dein Haus mit dem Baukasten: Räume, Wände, Türen und Fenster ziehen, dann die Melder darauf setzen." : "Ein Administrator kann den Grundriss zeichnen."}</span>${adm ? `<button class="btn2 pri" data-act="sfxedit" style="flex:none;padding:10px 20px">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div>` : "";
       const nw = this._sfNew(), KN = this._sfxKind(), dm = this._sfDetMap(), fobj = P.floors.find((f) => f.id === fl) || {}, onFl = P.items.filter((i) => i.fl === fl && i.t === "m" && i.e && dm[i.e]).map((i) => dm[i.e]);
-      const rooms = P.items.filter((i) => i.fl === fl && i.t === "r"), inR = (r, m) => m.x >= r.x && m.x <= r.x + r.w && m.y >= r.y && m.y <= r.y + r.h, mks = P.items.filter((i) => i.fl === fl && i.t === "m"), covered = rooms.filter((r) => mks.some((m) => inR(r, m))), doors = P.items.filter((i) => i.t === "d" && i.fl === fl).length;
+      const cv = this._sfCoverage(fl), ec = this._sfEscCheck(fl), rooms = cv.rooms, covered = cv.covered;
       const stc = (x) => { const s = this._sfSt(x); return { alarm: ["ALARM", "#ef4444"], pause: ["ausgeschaltet", "#94a3b8"], off: ["nicht erreichbar", "#94a3b8"], warn: [`Batterie ${num(x.bat, 0)} %`, "#f59e0b"], ok: ["In Ordnung", "#34d399"] }[s]; };
       const lrow = (x) => { const s = stc(x); return `<button class="sflr${sel && sel.id === x.id ? " on" : ""}" data-act="sfxplsel" data-k="${esc(x.id)}"><span class="sfmi">${this._sfHd(x.k, this._sfSt(x), 32)}</span><span class="sfmn"><b>${esc(x.name)}</b><small>${esc(x.room || x.area || "ohne Raum")}</small></span><span class="sfls" style="color:${s[1]}"><i style="background:${s[1]}"></i>${s[0]}</span></button>`; };
-      const kts = nw && n ? `<div class="sfkts sfk3"><div class="sfkt">${ic("shield", 18)}<i style="background:#34d399"></i><small>Melder ${esc(fobj.n || "")}</small><b>${onFl.length}</b><em>von ${T.l.length} gesamt</em></div><div class="sfkt">${ic("home", 18)}<i style="background:${rooms.length && covered.length < rooms.length ? "#f59e0b" : "#34d399"}"></i><small>Abdeckung</small><b>${rooms.length ? `${covered.length} von ${rooms.length} Räumen` : "keine Räume"}</b><em>${rooms.length && covered.length < rooms.length ? esc(rooms.filter((r) => !covered.includes(r)).map((r) => r.n).filter(Boolean).slice(0, 2).join(", ") || "Raum") + " ohne Melder" : "alle mit Melder"}</em></div><div class="sfkt">${ic("door", 18)}<i style="background:${doors ? "#34d399" : "#f59e0b"}"></i><small>Fluchtweg</small><b>${doors ? `${doors} ${doors === 1 ? "Tür" : "Türen"} im Plan` : "keine Tür"}</b><em>${doors ? "Plan prüfen" : "Tür im Plan ergänzen"}</em></div></div>` : "";
+      const kts = nw && n ? `<div class="sfkts sfk3"><div class="sfkt">${ic("shield", 18)}<i style="background:#34d399"></i><small>Melder ${esc(fobj.n || "")}</small><b>${onFl.length}</b><em>von ${T.l.length} gesamt</em></div><div class="sfkt">${ic("home", 18)}<i style="background:${cv.open.length ? "#f59e0b" : "#34d399"}"></i><small>Abdeckung</small><b>${rooms.length ? `${covered.length} von ${rooms.length} Räumen` : "keine Räume"}</b><em>${cv.open.length ? esc(cv.open.map((r) => r.n).filter(Boolean).slice(0, 2).join(", ") || "Raum") + " ohne Melder" : rooms.length ? "alle mit Melder" : "Räume im Plan ergänzen"}</em></div><div class="sfkt">${ic("door", 18)}<i style="background:${ec.exits && !ec.bad.length ? "#34d399" : "#f59e0b"}"></i><small>Fluchtweg</small><b>${ec.exits ? `${ec.exits} ${ec.exits === 1 ? "Außentür" : "Außentüren"}` : ec.doors ? "keine Außentür" : "keine Tür"}</b><em>${ec.markers && ec.bad.length ? `${ec.bad.length} ${ec.bad.length === 1 ? "Melder" : "Melder"} ohne freien Weg` : ec.exits ? "jeder Melder hat einen Weg" : "Tür im Plan ergänzen"}</em></div></div>` : "";
       const leg = nw ? `<span class="sfleg"><span><i style="background:#34d399"></i>in Ordnung</span><span><i style="background:#f59e0b"></i>Hinweis</span><span><i style="background:#ef4444"></i>Alarm</span><span><i style="background:#94a3b8"></i>aus</span></span>` : "";
       const listc = nw && onFl.length ? `<div class="card sfc"><h2>${ic("bell", 18)}Melder ${esc(fobj.n || "")}<small class="mut">${onFl.length}</small></h2>${onFl.map(lrow).join("")}</div>` : "";
       const one = sel ? `<div class="card sfc"><h2>${ic(KN[sel.k][1], 18)}${esc(sel.name)}</h2>${nw ? "" : this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : "";
@@ -127,22 +130,27 @@
     const tile = (k, t, p) => `<button class="sfti${ed.tool === k ? " on" : ""}" data-act="sfxtool" data-k="${k}" aria-pressed="${ed.tool === k}"><svg viewBox="0 0 34 34" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>${t}</button>`;
     const PP = { select: '<path d="M9 6l16 9-7 2-3 7z"/>', r: '<rect x="5" y="7" width="24" height="20" rx="2"/>', w: '<path d="M5 27 29 7" stroke-width="3"/>', d: '<path d="M8 27V9h18M8 9a18 18 0 0 1 18 18"/>', f: '<rect x="5" y="14" width="24" height="6"/><path d="M17 14v6"/>', s: '<path d="M6 28h6v-6h6v-6h6v-6h4"/>', x: '<path d="M8 9h18M17 9v17"/>', smoke: '<circle cx="17" cy="17" r="10"/><path d="M17 11c1 3 4 3 4 6a4 4 0 0 1-8 0c0-2 1-3 2-5z"/>', co: '<circle cx="17" cy="17" r="10"/><path d="M12 14v6M16 14h4v6h-4z"/>', gas: '<circle cx="17" cy="17" r="10"/><path d="M13 21c0-5 4-4 4-9 3 2 5 5 4 9z"/>', water: '<circle cx="17" cy="17" r="10"/><path d="M17 9c3 4 5 6 5 9a5 5 0 0 1-10 0c0-3 2-5 5-9z"/>', heat: '<circle cx="17" cy="17" r="10"/><path d="M17 9v10a3 3 0 1 1-3 3"/>', bg: '<rect x="5" y="7" width="24" height="20" rx="2"/><circle cx="12" cy="14" r="2"/><path d="M7 25l7-6 5 4 4-3 4 5"/>' };
     const fname = P.floors.find((f) => f.id === fl);
-    const prop = !sel ? `<div class="mut sm">Wähle ein Element im Plan aus, oder ein Werkzeug links. Räume und Wände ziehst du auf, alles andere setzt du mit einem Tipp.</div>`
+    const mlt = ed.multi || [], multiBox = `<div class="sfpr"><b>${mlt.length} Elemente ausgewählt</b><div class="mut sm" style="margin:4px 0 8px">Tippe weitere Elemente an oder ziehe eines, um alle zu verschieben.</div><div class="sfbtn"><button class="btn2" data-act="sfxmdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxmdel">Löschen</button></div><button class="btn2" data-act="sfxmclr" style="flex:none;width:100%;margin-top:8px">Auswahl aufheben</button></div>`;
+    const prop = mlt.length ? multiBox : !sel ? `<div class="mut sm">Wähle ein Element im Plan aus, oder ein Werkzeug links. Räume und Wände ziehst du auf, alles andere setzt du mit einem Tipp.</div>`
       : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t]}</b>
         ${sel.t === "r" || sel.t === "s" || sel.t === "x" ? `<div class="sffld"><label>Name</label><input class="osel" data-f="sfxpn" value="${esc(sel.n)}" maxlength="30" placeholder="${sel.t === "x" ? "Text" : "zum Beispiel Küche"}"></div>` : ""}
         ${sel.t === "r" || sel.t === "s" ? `<div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="sfxpw" data-s="-20" aria-label="schmaler">${ic("minus", 16)}</button><b>${sel.w}</b><button data-act="sfxpw" data-s="20" aria-label="breiter">${ic("plus", 16)}</button></div></div><div class="vrow" style="margin:6px 0"><span>Höhe</span><div class="step" style="flex:none"><button data-act="sfxph" data-s="-20" aria-label="niedriger">${ic("minus", 16)}</button><b>${sel.h}</b><button data-act="sfxph" data-s="20" aria-label="höher">${ic("plus", 16)}</button></div></div>` : ""}
         ${sel.t === "d" || sel.t === "f" ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
         ${sel.t === "m" ? `<div class="sffld"><label>Melder (aus den Einstellungen)</label><select class="osel" data-f="sfxpe"><option value="">– keiner –</option>${T.l.map((d) => `<option value="${esc(d.id)}" ${sel.e === d.id ? "selected" : ""}>${esc(d.name)}</option>`).join("")}</select></div>` : ""}
+        ${sel.t === "m" ? `<div class="vrow" style="margin:6px 0"><span>Reichweite<small class="mut" style="display:block">Wie weit der Melder im Plan reicht</small></span><div class="step" style="flex:none"><button data-act="sfxprg" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${num(this._sfRangeM(sel, sel.e ? dm[sel.e] : null), 1)} m</b><button data-act="sfxprg" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>` : ""}${sel.t === "r" ? `<div class="sffld"><label>Raum aus Modul 1 (optional)</label><select class="osel" data-f="sfxplk"><option value="">– keiner –</option>${this._sfRoomNames().map((n) => `<option value="${esc(n)}" ${sel.lk === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>` : ""}
         <div class="sfbtn"><button class="btn2" data-act="sfxpdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxpdel">Löschen</button></div></div>`;
     const bgBox = `<div class="sffld"><label>Hintergrundbild für ${esc(fname.n)} (zum Beispiel ein Foto deines Bauplans)</label><div class="sfbtn"><label class="btn2 sffile">${ic("image", 15)} ${P.bg[fl] ? "Ersetzen" : "Bild wählen"}<input type="file" accept="image/*" data-f="sfxbg" hidden></label>${P.bg[fl] ? `<button class="btn2" data-act="sfxbgrm">Entfernen</button>` : ""}</div></div>`;
     const flBox = `<div class="sffld"><label>Name der Etage</label><div class="sfbtn"><input class="osel" data-f="sfxfn" value="${esc(fname.n)}" maxlength="16">${P.floors.length > 1 ? `<button class="btn2 sfdel" data-act="sfxfrm" style="flex:none">Etage löschen</button>` : ""}</div></div>`;
-    return `<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss bearbeiten<span class="sfhr">${this._sfFloorBar(true)}</span></h2>
+    const scW = Math.round(800 / this._sfScale()), scaleBox = `<div class="sffld"><label>Maßstab: Wie breit ist der Plan in Wirklichkeit?</label><div class="gschips">${[10, 15, 20, 30].map((w) => `<button class="gsch ${scW === w ? "sel" : ""}" data-act="sfxpscale" data-k="${w}" aria-pressed="${scW === w}">${w} m</button>`).join("")}</div><div class="mut sm">Damit stimmen die Reichweiten der Melder und die Länge des Fluchtwegs.</div></div>`;
+    const ioBox = `<div class="sffld"><label>Plan sichern oder einlesen</label><div class="sfbtn"><button class="btn2" data-act="sfxpexp">${ic("download", 15)} Plan sichern</button><label class="btn2 sffile">${ic("upload", 15)} Plan einlesen<input type="file" accept="application/json,.json" data-f="sfxpimp" hidden></label></div></div>`;
+    const tb = `<div class="sftb2"><button class="btn2" data-act="sfxundo" ${(ed.hist || []).length ? "" : "disabled"}>↶ Rückgängig</button><button class="btn2" data-act="sfxredo" ${(ed.fut || []).length ? "" : "disabled"}>↷ Wiederholen</button><button class="btn2${ed.mm ? " pri" : ""}" data-act="sfxmm" aria-pressed="${!!ed.mm}">Mehrfach</button></div>`;
+    return `<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss bearbeiten<span class="sfhr">${this._sfFloorBar(true)}</span></h2>${tb}
       <div class="sfpl edit"><svg class="sfpe" viewBox="0 0 800 480" role="img" aria-label="Grundriss bearbeiten">${this._sfPlanInner(fl, true)}</svg></div>
       <div class="sfhint">${ic("info", 15)}<span>${{ select: "Elemente antippen und ziehen. Am Eckpunkt ändert sich die Größe.", r: "Auf dem Plan ziehen, um einen Raum aufzuziehen.", s: "Auf dem Plan ziehen, um eine Treppe aufzuziehen.", w: "Auf dem Plan ziehen, um eine Wand zu zeichnen." }[ed.tool] || "Auf den Plan tippen, um das Element zu setzen."}</span></div>
       ${free.length ? `<div class="sffld"><label>Noch nicht platzierte Melder (antippen setzt sie in die Mitte)</label><div class="gschips">${free.map((d) => `<button class="gsch" data-act="sfxplace" data-k="${esc(d.id)}">${esc(d.name)}</button>`).join("")}</div></div>` : ""}</div></div>
       <div class="enco"><div class="card sfc"><div class="sfgrp">RÄUME UND BAUTEILE</div><div class="sftiles">${tile("select", "Auswählen", PP.select)}${tile("r", "Raum", PP.r)}${tile("w", "Wand", PP.w)}${tile("d", "Tür", PP.d)}${tile("f", "Fenster", PP.f)}${tile("s", "Treppe", PP.s)}</div>
         <div class="sfgrp">MELDER UND TEXT</div><div class="sftiles">${tile("m:smoke", "Rauch", PP.smoke)}${tile("m:co", "CO", PP.co)}${tile("m:gas", "Gas", PP.gas)}${tile("m:water", "Wasser", PP.water)}${tile("m:heat", "Hitze", PP.heat)}${tile("x", "Text", PP.x)}</div></div>
-        <div class="card sfc">${prop}</div><div class="card sfc">${flBox}${bgBox}</div>
+        <div class="card sfc">${prop}</div><div class="card sfc">${flBox}${scaleBox}${bgBox}${ioBox}</div>
         <div class="sfbtn"><button class="btn2" data-act="sfxcancel">Abbrechen</button><button class="btn2 pri" data-act="sfxsave">Speichern</button></div></div></div>`;
   }
   _sfDetFacts(x) {
@@ -169,7 +177,7 @@
     const list = `<div class="card sfc"><h2>${ic("clock", 18)}Lebensdauer und Batterie</h2>${l.length ? `<div class="sfwg">${l.map(row).join("")}</div>` : `<div class="mut sm">Noch keine Melder.</div>`}</div>`;
     const sl = `<div class="card sfc"><h2>${ic("energy", 18)}Einkaufsliste</h2>${Object.keys(shop).length || newd.length ? `${Object.keys(shop).map((k) => `<div class="sfap"><span>${shop[k].length} × ${esc(k)}<small class="mut" style="display:block">${esc(shop[k].join(", "))}</small></span><b>bald</b></div>`).join("")}${newd.length ? `<div class="sfap"><span>${newd.length} × neuer Melder<small class="mut" style="display:block">${esc(newd.join(", "))}</small></span><b>fällig</b></div>` : ""}<div class="sfbtn" style="margin-top:8px"><button class="btn2" data-act="sfxcopy">${ic("copy", 15)} Liste kopieren</button></div>` : `<div class="mut sm">Im Moment ist nichts zu besorgen. Batterien unter ${C.bat.pct + 10} % und Melder am Ende der Lebensdauer erscheinen hier.</div>`}</div>`;
     const yr = new Date().getFullYear(), pr = `<div class="card sfc"><h2>${ic("list", 18)}Jahresprotokoll ${yr}</h2><div class="mut sm" style="margin:0 0 10px">Eine Seite zum Abheften oder für Vermieter und Versicherung: alle Melder mit Einbau, Tausch, letzter Prüfung und Batterie. ${C.proto.name || C.proto.addr ? "" : `Name und Adresse für den Kopf trägst du in den Einstellungen ein.`}</div>
-      <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} Drucken oder als PDF sichern</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div></div>`;
+      <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} PDF erstellen</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div></div>`;
     return { list, sl, pr };
   }
   _sfWartOld(T) { const p = this._sfWartParts(T); return `<div class="enc"><div class="enco">${p.list}</div><div class="enco">${p.sl}${p.pr}</div></div>`; }
@@ -182,12 +190,16 @@
       <table><thead><tr><th>Melder</th><th>Ort</th><th>Art</th><th>Eingebaut</th><th>Tausch bis</th><th>Zuletzt geprüft</th><th>Batterie</th><th>Ergebnis</th></tr></thead><tbody>${rows || `<tr><td colspan="8">Keine Melder</td></tr>`}</tbody></table>
       ${ev ? `<b>Ereignisse ${yr}</b><ul>${ev}</ul>` : ""}<div class="s"><div>Datum</div><div>Unterschrift</div></div></body></html>`;
   }
-  _sfxPrint(html) {
-    const f = document.createElement("iframe"); f.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0"; document.body.appendChild(f);
-    f.onload = () => { try { f.contentWindow.focus(); f.contentWindow.print(); } catch (_) { this._toast("Drucken geht hier nicht. Nimm „Als Datei laden“."); } setTimeout(() => f.remove(), 60000); };
-    f.srcdoc = html || this._sfxProto();
+  /* Ausgabe als Datei: auf Handy und Tablet über das Teilen-Menü (in der App geht weder Drucken noch ein Download), am Rechner als Download */
+  _sfDeliver(data, name, mime, title) {
+    try {
+      const blob = new Blob([data], { type: mime }), file = typeof File !== "undefined" ? new File([blob], name, { type: mime }) : null, touch = window.matchMedia && window.matchMedia("(pointer:coarse)").matches;
+      if (file && touch && navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title }).catch(() => {}); return; }
+      const u = URL.createObjectURL(blob), a = document.createElement("a"); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); this._toast(`Gespeichert: ${name}`);
+    } catch (_) { this._toast("Das hat nicht geklappt"); }
   }
-  _sfxHtml() { const a = document.createElement("a"), u = URL.createObjectURL(new Blob([this._sfxProto()], { type: "text/html" })); a.href = u; a.download = `Pruefprotokoll-Melder-${new Date().getFullYear()}.html`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+  _sfxPrint() { this._sfxPdf("proto"); }
+  _sfxHtml() { this._sfDeliver(this._sfxProto(), `Pruefprotokoll-Melder-${new Date().getFullYear()}.html`, "text/html", "Prüfprotokoll Melder"); }
   /* ---- Einstellungen: Melder und Batterie, Abfahrt-Prüfung, Allgemein */
   _sfSetOld(T, ex = {}) {
     const { C, l } = T, H = this._hass, adm = this._admin(), KN = this._sfxKind(), NM = this._sfxNames();
@@ -262,8 +274,10 @@
     if (a === "sfxq") { this._sfxPatch((c) => { c.quiet.on = !c.quiet.on; }); return true; }
     if (a === "sfxlead") { this._sfxPatch((c) => { c.lead = Number(k); }); return true; }
     if (!ed) return false;
+    if (this._sfxP2(a, b)) return true;
     const P = ed.plan, fl = this._sfFl(), cur = P.items.find((x) => x.id === ed.sel);
-    if (a === "sfxtool") { ed.tool = k; ed.sel = ""; this._render(); return true; }
+    if (["sfxfadd", "sfxfrm", "sfxbgrm", "sfxplace", "sfxpdel", "sfxpdup", "sfxprot", "sfxpw", "sfxph"].includes(a)) this._sfSnap();
+    if (a === "sfxtool") { ed.tool = k; ed.sel = ""; ed.mm = false; ed.multi = []; this._render(); return true; }
     if (a === "sfxfadd") { const nm = ["OG", "Keller", "DG", "UG", "Garten", "Anbau"].find((n) => !P.floors.some((f) => f.n === n)) || "Etage", id = "f" + Date.now().toString(36).slice(-6); P.floors.push({ id, n: nm }); this._sfFlId = id; ed.sel = ""; this._render(); return true; }
     if (a === "sfxfrm") { if (P.floors.length > 1) { P.items = P.items.filter((x) => x.fl !== fl); delete P.bg[fl]; P.floors = P.floors.filter((f) => f.id !== fl); this._sfFlId = P.floors[0].id; ed.sel = ""; this._render(); } return true; }
     if (a === "sfxbgrm") { delete P.bg[fl]; this._render(); return true; }
@@ -291,7 +305,9 @@
       return true;
     }
     if (!ed) return false;
+    if (this._sfxP2Change(t)) return true;
     const P = ed.plan, cur = P.items.find((x) => x.id === ed.sel);
+    if (["sfxfn", "sfxpn", "sfxpe"].includes(f)) this._sfSnap();
     if (f === "sfxfn") { const fl = P.floors.find((x) => x.id === this._sfFl()); if (fl && v.trim()) { fl.n = v.trim().slice(0, 16); this._render(); } return true; }
     if (f === "sfxpn" && cur) { cur.n = v.slice(0, 30); this._render(); return true; }
     if (f === "sfxpe" && cur) { cur.e = v; this._render(); return true; }
@@ -318,30 +334,34 @@
     sr.addEventListener("pointerdown", (e) => {
       const svg = e.target.closest && e.target.closest("svg.sfpe"), ed = this._sfEd; if (!svg || !ed) return;
       e.preventDefault(); const [x, y] = pt(e, svg), P = ed.plan, fl = this._sfFl(), h = e.target.closest("[data-h]"), el = e.target.closest("[data-id]"), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tool = ed.tool;
-      this._sfDrag = null;
+      this._sfDrag = null; this._sfSnap();
       if (h && ed.sel) { this._sfDrag = { k: h.dataset.h, id: ed.sel }; }
-      else if (tool === "select") { if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false }; } else ed.sel = ""; paint(); }
+      else if (tool === "select" && ed.mm) { ed.multi = ed.multi || []; if (el) { const id = el.dataset.id, pre = ed.multi.includes(id); if (!pre) ed.multi.push(id); ed.sel = ""; const os = {}; P.items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { os[i.id] = JSON.parse(JSON.stringify(i)); }); this._sfDrag = { k: "movem", os, sx: x, sy: y, moved: false, off: pre ? id : "" }; } else ed.multi = []; paint(); }
+      else if (tool === "select") { ed.multi = []; if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false }; } else ed.sel = ""; paint(); }
       else if (tool === "r" || tool === "s" || tool === "w") {
         const it = tool === "w" ? { id: uid(), fl, t: "w", x: g(x), y: g(y), x2: g(x), y2: g(y), r: 0, n: "", e: "" } : { id: uid(), fl, t: tool, x: g(x), y: g(y), w: 0, h: 0, r: 0, n: "", e: "" };
         P.items.push(it); ed.sel = it.id; this._sfDrag = { k: "new", id: it.id, sx: g(x), sy: g(y) }; paint();
       } else {
         const it = { id: uid(), fl, t: tool.startsWith("m:") ? "m" : tool, x: g10(x), y: g10(y), r: 0, n: tool === "x" ? "Text" : "", e: "" };
         if (it.t === "m") { const kind = tool.slice(2), pl = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), d = this._sfList().find((q) => q.k === kind && !pl.has(q.id)); if (d) it.e = d.id; }
+        if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(fl, x, y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } }
         P.items.push(it); ed.sel = it.id; ed.tool = "select"; this._render();
       }
     });
     window.addEventListener("pointermove", (e) => {
       const d = this._sfDrag, ed = this._sfEd, svg = sr.querySelector("svg.sfpe"); if (!d || !ed || !svg) return;
+      if (d.k === "movem") { e.preventDefault(); const [mx, my] = pt(e, svg), dx = g(mx - d.sx), dy = g(my - d.sy); if (dx || dy) d.moved = true; ed.plan.items.forEach((i) => { const o = d.os[i.id]; if (!o) return; i.x = o.x + dx; i.y = o.y + dy; if (i.t === "w") { i.x2 = o.x2 + dx; i.y2 = o.y2 + dy; } }); paint(); return; }
       const [x, y] = pt(e, svg), it = ed.plan.items.find((i) => i.id === d.id); if (!it) return; e.preventDefault();
-      if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } }
+      if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } }
       else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const dx = Math.abs(X - it.x), dy = Math.abs(Y - it.y); if (dx > dy * 4) Y = it.y; else if (dy > dx * 4) X = it.x; it.x2 = X; it.y2 = Y; } else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
       else if (d.k === "p1") { it.x = g(x); it.y = g(y); } else if (d.k === "p2") { it.x2 = g(x); it.y2 = g(y); }
       paint();
     }, { passive: false });
     const up = () => {
       const d = this._sfDrag, ed = this._sfEd; if (!d) return; this._sfDrag = null; if (!ed) return;
+      if (d.k === "movem") { if (!d.moved && d.off) ed.multi = ed.multi.filter((i) => i !== d.off); this._sfSnapTrim(); this._render(); return; }
       if (d.k === "new") { const it = ed.plan.items.find((i) => i.id === d.id); if (it && ((it.t === "w" && Math.abs(it.x2 - it.x) + Math.abs(it.y2 - it.y) < 20) || (it.t !== "w" && (it.w < 40 || it.h < 40)))) { ed.plan.items = ed.plan.items.filter((i) => i.id !== d.id); ed.sel = ""; } else ed.tool = "select"; }
-      this._render();
+      this._sfSnapTrim(); this._render();
     };
     window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
     /* Im Ansichtsmodus: Melder antippen zeigt die Daten */

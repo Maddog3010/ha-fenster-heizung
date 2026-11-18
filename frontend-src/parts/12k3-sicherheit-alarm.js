@@ -48,15 +48,16 @@
   /* ---- Fluchtweg: nächste Tür auf derselben Etage (Luftlinie, Hinweis „Plan prüfen“) */
   _sfEscapeFor(it) {
     if (!it) return null;
-    const P = this._sfx().cfg.plan, doors = P.items.filter((q) => q.t === "d" && q.fl === it.fl);
-    if (!doors.length) return null;
-    const d = doors.map((q) => [q, Math.hypot(q.x - it.x, q.y - it.y)]).sort((a, b) => a[1] - b[1])[0][0];
-    return { m: it, d, fl: (P.floors.find((f) => f.id === it.fl) || {}).n || "" };
+    const route = this._sfEscRoute(it); if (!route) return null;
+    const P = this._sfx().cfg.plan;
+    return { m: it, d: route.exit, route, fl: (P.floors.find((f) => f.id === it.fl) || {}).n || "" };
   }
   _sfEscHint(x) {
     const it = x && this._sfx().cfg.plan.items.find((q) => q.t === "m" && q.e === x.id), e = this._sfEscapeFor(it);
-    if (!e) return it ? `<div class="sfhint">${ic("info", 15)}<span>Fluchtweg: im Grundriss ist auf dieser Etage keine Tür eingezeichnet. Mit einer Tür im Plan zeigt das Modul den kürzesten Weg.</span></div>` : "";
-    return `<div class="sfhint sfhe">${ic("door", 15)}<span>Nächste Tür im Plan (${esc(e.fl)}): grün markiert. <b>Plan prüfen:</b> das Modul kennt nicht, ob die Tür nach draußen führt, und zeichnet eine Luftlinie.</span></div>`;
+    if (!e) return it ? `<div class="sfhint">${ic("info", 15)}<span>Fluchtweg: Im Grundriss ist auf dieser Etage keine Tür eingezeichnet. Mit einer Tür im Plan sucht das Modul den kürzesten Weg.</span></div>` : "";
+    const r = e.route;
+    return r.fallback ? `<div class="sfhint">${ic("door", 15)}<span><b>Plan prüfen:</b> Zur nächsten Tür (${esc(e.fl)}) fand das Modul keinen freien Weg und zeichnet eine Luftlinie. Sitzen die Türen auf den Wänden?</span></div>`
+      : `<div class="sfhint sfhe">${ic("door", 15)}<span>${r.kind === "s" ? "Weg zur Treppe" : "Fluchtweg zur nächsten Außentür"} (${esc(e.fl)}), ca. ${num(r.m, 0)} m, grün eingezeichnet. <b>Plan prüfen:</b> Das Modul rechnet um die Wände im Plan herum, kennt aber keine Möbel${r.unsure ? " und weiß nicht sicher, ob diese Tür nach draußen führt" : ""}.</span></div>`;
   }
   /* ---- Alarm-Ansicht */
   _sfAlarmList() { const S = this._sfx(), L = S.det && !S.error ? S.det : this._sfxLocal(); return L.filter((x) => x.alarm && !x.ack); }
@@ -88,8 +89,8 @@
     const more = al.length > 1 ? `<div class="sfalm">${al.slice(1, 4).map((q) => `<span>${esc(q.name)}</span>`).join("")}</div>` : "", it = C.plan.items.find((q) => q.t === "m" && q.e === x.id), esc2 = this._sfEscapeFor(it);
     return `<div class="ov sfalov"></div><div class="sfal" role="alertdialog" aria-modal="true" aria-label="Alarm ${esc(x.name)}">
       <div class="sfalt"><span class="sfalp">ALARM · ${esc(k)}</span><b>${esc(x.name)}</b><small>${esc(where || x.kind)} · seit ${this._sfFmtS(el)}</small>${more}<div class="sfals">${steps}</div>
-        ${esc2 ? `<div class="sfalf">${ic("door", 16)}<span>Nächste Tür (${esc(esc2.fl)}) im Grundriss grün markiert. Plan prüfen.</span></div>` : ""}</div>
-      <div class="sfalr"><div class="sfali">${this._sfScene("alarm", S.det && !S.error ? S.det : this._sfxLocal())}</div>
+        ${esc2 ? `<div class="sfalf">${ic("door", 16)}<span>${esc2.route.fallback ? `Nächste Tür (${esc(esc2.fl)}): Luftlinie im Grundriss. Plan prüfen.` : `Fluchtweg ca. ${num(esc2.route.m, 0)} m im Grundriss grün eingezeichnet. Plan prüfen.`}</span></div>` : ""}</div>
+      <div class="sfalr"><div class="sfali">${it && C.plan.items.some((q) => q.fl === it.fl && (q.t === "r" || q.t === "w")) ? `<svg class="sfpm" viewBox="0 0 800 480" role="img" aria-label="Grundriss mit Fluchtweg">${this._sfPlanInner(it.fl, false)}</svg>` : this._sfScene("alarm", S.det && !S.error ? S.det : this._sfxLocal())}</div>
         <button class="sfok" data-act="sfxack" data-k="${al.length > 1 ? "" : esc(x.id)}">${al.length > 1 ? "Alle verstanden" : "Verstanden"}</button>
         <div class="sffc"><button data-act="sfxack" data-k="${esc(x.id)}" data-why="Toast">Fehlalarm: Toast</button><button data-act="sfxack" data-k="${esc(x.id)}" data-why="Dampf">Dampf</button><button data-act="sfxack" data-k="${esc(x.id)}" data-why="Test">Test</button><a href="tel:112" class="sf112">${ic("alert", 15)} 112 anrufen</a><button data-act="sfxalgo">Grundriss</button></div></div></div>`;
   }
@@ -106,10 +107,56 @@
       ${li ? `<b>Alarme, Quittierungen und Ausschalten</b><ul>${li}</ul>` : `<p>In den letzten 90 Tagen gab es keine Alarme.</p>`}
       <small>Dieser Bericht ersetzt kein Prüfprotokoll nach Norm. Das Modul ersetzt keine zertifizierten Rauchmelder.</small></body></html>`;
   }
+  /* ---- PDF: Prüfprotokoll und Sicherheitsbericht als echte Datei (A4, Tabelle, Seitenzahl) mit dem PDF-Schreiber von Modul 8 */
+  _sfxPdf(kind) {
+    try {
+      const T = this._sfStat(), { C, l, S } = T, P = C.proto, yr = new Date().getFullYear(), now = Date.now(), fl = (id) => (C.plan.floors.find((f) => f.id === id) || {}).n || "", ort = (x) => [fl(x.floor), x.room || x.area].filter(Boolean).join(" · ") || "–";
+      const bat = (x) => (x.bat != null ? num(x.bat, 0) + " %" : "–"), when = (t) => this._sfDate(t || (S.test || {}).last);
+      const bericht = kind === "bericht", cut = now - 90 * 864e5;
+      const ev = bericht ? (S.log || []).filter((x) => new Date(x.t).getTime() >= cut && (x.c === "alarm" || /Verstanden|Fehlalarm|Ausgeschaltet|Eingeschaltet/.test(x.x))).slice(0, 40) : (S.log || []).filter((x) => new Date(x.t).getFullYear() === yr).slice(0, 20);
+      const evl = ev.map((x) => `${new Date(x.t).toLocaleDateString("de-DE")}${bericht ? " " + new Date(x.t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : ""}: ${x.x}`);
+      let cols, rows, head;
+      if (bericht) {
+        const fa = l.reduce((n, x) => n + (x.fa_n || 0), 0), al = ev.filter((x) => /^Alarm:/.test(x.x)).length;
+        head = [`${T.act.length} Melder aktiv · ${T.pa.length} ausgeschaltet · ${al} Alarme · ${fa} Fehlalarme · ${T.low.length} Batterie schwach`];
+        cols = [["Melder", 40, 0, 115], ["Ort", 160, 0, 80], ["Zustand", 244, 0, 82], ["Batterie", 366, 1, 36], ["Prognose", 374, 0, 58], ["Geprüft", 436, 0, 56], ["Fehlalarme", 555, 1, 40]];
+        rows = l.map((x) => [x.name, ort(x), x.paused ? "ausgeschaltet" : x.alarm ? "ALARM" : x.off ? "nicht erreichbar" : x.bat != null && x.bat < C.bat.pct ? "Batterie schwach" : "in Ordnung", bat(x), x.bat_days != null ? "~ " + this._sfDur(x.bat_days) : "–", when(x.tested), String(x.fa_n || 0)]);
+      } else {
+        head = [`Name: ${P.name || "______________________"}   Adresse: ${P.addr || "______________________"}`, `Geprüft von: ${P.who || "______________________"}`];
+        cols = [["Melder", 40, 0, 120], ["Ort", 164, 0, 82], ["Eingebaut", 250, 0, 50], ["Tausch bis", 304, 0, 52], ["Geprüft", 360, 0, 56], ["Batterie", 462, 1, 40], ["Ergebnis", 470, 0, 85]];
+        rows = l.map((x) => [x.name, ort(x), this._sfMon(x.inst) || "–", x.inst && x.life ? this._sfMon((+x.inst.slice(0, 4) + x.life) + x.inst.slice(4)) : "–", when(x.tested), bat(x), x.life_days != null && x.life_days < 0 ? "Tausch fällig" : x.bat != null && x.bat < C.bat.pct ? "Batterie schwach" : x.off ? "nicht erreichbar" : "in Ordnung"]);
+      }
+      const title = bericht ? "Sicherheitsbericht Rauch- und Sicherheitsmelder" : `Prüfprotokoll Rauch- und Sicherheitsmelder ${yr}`, today = new Date().toLocaleDateString("de-DE");
+      const sub = bericht ? `${P.name || "Haushalt"}${P.addr ? " · " + P.addr : ""} · letzte 90 Tage · erstellt am ${today} mit Strom & Wärme` : `Erstellt am ${today} mit Strom & Wärme`;
+      const pages = []; let ops = [], y = 0, pno = 0;
+      const Tx = (x, yy, v, s, b, c) => ops.push({ t: "text", x, y: yy, v, s, b, c }), Tr = (xr, yy, v, s, b, c) => Tx(xr - this._pdfW(v, s, b), yy, v, s, b, c), Ln = (yy, c, w) => ops.push({ t: "line", x1: 40, x2: 555, y: yy, c, w });
+      const hdr = () => {
+        ops = []; pno++; y = 800;
+        if (pno === 1) { Tx(40, y, title, 16, true); y -= 17; Tx(40, y, this._pdfFit(sub, 9, 515), 9, false, "0.33 0.33 0.33"); y -= 20; head.forEach((h) => { Tx(40, y, this._pdfFit(h, 10, 515), 10); y -= 15; }); y -= 8; } else { Tx(40, y, title + " (Fortsetzung)", 10, true); y -= 22; }
+        ops.push({ t: "rect", x: 40, y: y - 5, w: 515, h: 17, c: "0.94 0.95 0.96" });
+        cols.forEach(([t, x, r]) => (r ? Tr(x, y, t, 8.5, true) : Tx(x + (x === 40 ? 4 : 0), y, t, 8.5, true))); y -= 19;
+      };
+      const end = () => { Tx(40, 30, bericht ? "Dieser Bericht ersetzt kein Prüfprotokoll nach Norm. Das Modul ersetzt keine zertifizierten Rauchmelder." : "Strom & Wärme · Modul 11", 7.5, false, "0.45 0.45 0.45"); pages.push(ops); };
+      hdr();
+      rows.forEach((r) => {
+        if (y < 70) { end(); hdr(); }
+        cols.forEach(([, x, rr, w], i) => { const v = this._pdfFit(r[i], 8.5, w, false); if (rr) Tr(x, y, v, 8.5); else Tx(x + (x === 40 ? 4 : 0), y, v, 8.5, r[i] === "ALARM", r[i] === "ALARM" ? "0.8 0.1 0.1" : undefined); });
+        Ln(y - 5); y -= 16;
+      });
+      if (!rows.length) { Tx(44, y, "Keine Melder", 9); y -= 16; }
+      y -= 8;
+      if (evl.length) { if (y < 90) { end(); hdr(); } Tx(40, y, bericht ? "Alarme, Quittierungen und Ausschalten" : `Ereignisse ${yr}`, 10, true); y -= 15; evl.forEach((t) => { if (y < 60) { end(); hdr(); } Tx(44, y, this._pdfFit("• " + t, 8.5, 508), 8.5); y -= 13; }); }
+      else if (bericht) { Tx(40, y, "In den letzten 90 Tagen gab es keine Alarme.", 9.5); y -= 15; }
+      if (!bericht) { if (y < 100) { end(); hdr(); } y -= 28; Ln(y, "0.2 0.2 0.2", 0.8); Tx(40, y - 11, "Datum", 8.5, false, "0.33 0.33 0.33"); ops.push({ t: "line", x1: 300, x2: 555, y, c: "0.2 0.2 0.2", w: 0.8 }); Tx(300, y - 11, "Unterschrift", 8.5, false, "0.33 0.33 0.33"); }
+      end();
+      pages.forEach((p, i) => p.push({ t: "text", x: 555 - this._pdfW(`Seite ${i + 1} von ${pages.length}`, 8), y: 30, v: `Seite ${i + 1} von ${pages.length}`, s: 8, c: "0.45 0.45 0.45" }));
+      this._sfDeliver(this._pdfBytes(pages), `${bericht ? "Sicherheitsbericht" : "Pruefprotokoll-Melder"}-${yr}.pdf`, "application/pdf", bericht ? "Sicherheitsbericht" : "Prüfprotokoll Melder");
+    } catch (e) { this._toast("PDF konnte nicht erstellt werden"); }
+  }
   /* ---- Aktionen */
   _sfxAlarmAct(a, b) {
     const k = b.dataset.k, s = Number(b.dataset.s), ws = (msg, ok) => this._hass.callWS(msg).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; this._render(); if (this._modal && ["sfdet", "sfset"].includes(this._modal.type)) this._renderModal(); if (ok) this._toast(ok); }).catch(() => this._toast("Das hat nicht geklappt"));
-    if (a === "sfxbericht") { if (!this._spnS().active) { this._toast("Der Sicherheitsbericht ist ein Sponsor-Extra"); return true; } this._sfxPrint(this._sfxBericht()); return true; }
+    if (a === "sfxbericht") { if (!this._spnS().active) { this._toast("Der Sicherheitsbericht ist ein Sponsor-Extra"); return true; } this._sfxPdf("bericht"); return true; }
     if (a === "sfxack") { ws({ type: "fenster_heizung/sf_ack", ent: k || undefined, why: b.dataset.why || undefined }, b.dataset.why ? "Verstanden, als Fehlalarm gemerkt" : "Verstanden"); if (this._modal && this._modal.type === "sfalarm") { this._sfxD = { d: { ...this._sfx(), det: (this._sfx().det || []).map((x) => (!k || x.id === k ? { ...x, ack: new Date().toISOString() } : x)) }, ts: Date.now() }; this._modal = null; this._renderModal(); } return true; }
     if (a === "sfxalgo") { this._modal = null; this._renderModal(); this._sfT = "pl"; try { localStorage.setItem("fh_sf_tab", "pl"); } catch (_) { /* privater Modus */ } this._render(); return true; }
     if (a === "sfxpause") { ws({ type: "fenster_heizung/sf_pause", ent: k, days: Number(b.dataset.d) || 0 }, "Melder ausgeschaltet"); return true; }

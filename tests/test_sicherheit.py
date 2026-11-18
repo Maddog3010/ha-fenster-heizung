@@ -486,3 +486,13 @@ if __name__ == "__main__":
 def test_warndienste_sind_keine_melder():
     assert "nina" in S.NO_DETECTOR and "dwd_weather_warnings" in S.NO_DETECTOR
     assert "zha" not in S.NO_DETECTOR
+
+
+def test_plan_20_felder():
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "scale": 500, "items": [{"id": "m1", "fl": "eg", "t": "m", "e": "binary_sensor.x", "rg": 4.3}, {"id": "m2", "fl": "eg", "t": "m", "rg": 99}, {"id": "r1", "fl": "eg", "t": "r", "w": 100, "h": 80, "lk": "  Küche  "}, {"id": "d1", "fl": "eg", "t": "d", "rg": 3, "lk": "x"}]})
+    assert p["scale"] == 120
+    it = {i["id"]: i for i in p["items"]}
+    assert it["m1"]["rg"] == 4.5 and it["m2"]["rg"] == 15
+    assert it["r1"]["lk"] == "Küche"
+    assert "rg" not in it["d1"] and "lk" not in it["d1"]
+    assert S.clean_plan(None)["scale"] == 40

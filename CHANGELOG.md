@@ -2,6 +2,21 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b9] - 2026-11-18
+
+Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.8, Build 3): **PDF-Knöpfe in der App behoben** und **Grundriss 2.0**.
+
+### Neu
+- **Fluchtweg über die Wände des Plans:** Das Modul sucht den kürzesten Weg vom Melder durch Türen zur nächsten Außentür und zeichnet ihn samt Länge in Metern ein (auch im Alarmfenster). Ohne Außentür oder ohne freien Weg gibt es einen Hinweis.
+- **Maßstab:** Breite des Plans in Metern einstellbar (10/15/20/30 m); Reichweiten und Wegstrecken stimmen damit.
+- **Abdeckung & Plan-Prüfung:** Kacheln zeigen Räume mit/ohne Melder und Melder ohne freien Fluchtweg.
+- **Melder-Halos** und Raumtönung nach Zustand, Melderliste neben dem Plan.
+- **Bearbeiten:** Rückgängig/Wiederholen, Mehrfachauswahl (gemeinsam verschieben, duplizieren, löschen), Einrasten an Wänden und Türen, Raum-Verknüpfung.
+
+### Behoben
+- **Abfahrt-Prüfung:** Die Anwesenheit zeigte „2 von 3 zu Hause“, obwohl niemand da war. Sie zählt jetzt wie Modul 6 (erkannter Standort, nur zählende Personen; bei „Abwesend“/„Urlaub“ alle unterwegs).
+- **Modul 11 · Wartung → Nachweis:** „PDF erstellen“, „Als Datei laden“ und „Sicherheitsbericht“ taten in der Home-Assistant-App auf dem Handy nichts, weil dort weder Drucken noch ein Download aus dem Panel möglich ist. Das Prüfprotokoll und der Sicherheitsbericht sind jetzt **echte PDF-Dateien** (A4, Tabelle, Seitenzahl, Unterschriftszeile beim Prüfprotokoll). Auf Handy und Tablet öffnet sich das Teilen-Menü (Dateien, Drucken, Mail, Nachrichten), am Rechner startet ein Download. „Als Datei laden“ liefert weiter die HTML-Seite auf demselben Weg.
+
 ## [2026.11.4b8] - 2026-11-18
 
 Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.8, Build 2): **alle vier Reiter in der neuen Optik**.

@@ -81,4 +81,13 @@ const CSS_SF2 = `
 .sfnav button:hover{background:color-mix(in srgb,var(--teal,#2dd4bf) 18%,transparent);color:var(--teal,#2dd4bf)}
 .sflegw{margin:-4px 0 10px}
 .sfv9{min-width:0;max-width:100%}.sfv9 .card,.sfv9 .enco,.sfv9 .enc{min-width:0;max-width:100%}.sfv9 .sfjw{max-width:100%;overflow-x:auto}
+/* v0.9 · Grundriss 2.0 */
+.sfhalo{pointer-events:none}.sfpe .sfhalo{opacity:.55}
+.sfr.wn{fill:#f59e0b1c}
+.sfesc{stroke-width:5;stroke-linejoin:round;filter:drop-shadow(0 0 3px rgba(52,211,153,.6))}
+@media(prefers-reduced-motion:no-preference){.sfesc{animation:sfdash 1.2s linear infinite}}
+@keyframes sfdash{to{stroke-dashoffset:-36}}
+.sfesa{fill:#34d399;pointer-events:none}.sfesb{fill:#064e3b;stroke:#34d399;stroke-width:1.5;pointer-events:none}.sfest{fill:#6ee7b7;font-size:12px;font-weight:700;text-anchor:middle;pointer-events:none}
+.sfpm{width:100%;height:auto;display:block;border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(0,0,0,.28);--sfw:#9aa7b7}
+.sftb2{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.sftb2 .btn2{flex:none;padding:7px 12px;font-size:.8rem}.sftb2 .btn2[disabled]{opacity:.4;cursor:default}
 `;

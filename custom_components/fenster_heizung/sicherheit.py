@@ -76,7 +76,7 @@ def default_cfg() -> dict[str, Any]:
         "kinds": list(KINDS), "excl": [], "repeat": 10,
         "bat": {"on": True, "pct": 20}, "off": {"on": True, "min": 60}, "test": {"on": True, "months": 6},
         "acts": [], "notify": {"alarm": True, "end": False, "bat": True, "off": True, "test": True, "life": True, "depart": True, "to": []},
-        "meta": {}, "add": [], "plan": {"floors": [{"id": "eg", "n": "EG"}], "items": [], "bg": {}},
+        "meta": {}, "add": [], "plan": {"floors": [{"id": "eg", "n": "EG"}], "items": [], "bg": {}, "scale": 40},
         "quiet": {"on": False, "from": "22:00", "to": "07:00"}, "lead": 30,
         "depart": {"on": True, "ents": [], "frost": {"on": False, "ent": "", "below": 3}},
         "proto": {"name": "", "addr": "", "who": ""}, "ui": {"old": False},
@@ -229,12 +229,16 @@ def clean_plan(raw: Any) -> dict[str, Any]:
         o["r"] = int(_num(it.get("r"), 0, 270, 0) // 90 * 90)
         o["n"] = str(it.get("n") or "").strip()[:30]
         o["e"] = _ent(it.get("e"), ("binary_sensor",))
+        if it["t"] == "m":
+            o["rg"] = round(_num(it.get("rg"), 0, 15, 0) * 2) / 2  # Reichweite in Metern, 0 = je nach Art
+        if it["t"] == "r":
+            o["lk"] = str(it.get("lk") or "").strip()[:40]  # Raum aus Modul 1
         items.append(o)
     bg = {}
     for k, v in (r.get("bg") if isinstance(r.get("bg"), dict) else {}).items():
         if k in ids and isinstance(v, str) and len(v) <= MAX_BG and re.match(r"^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$", v):
             bg[k] = v
-    return {"floors": floors, "items": items, "bg": bg}
+    return {"floors": floors, "items": items, "bg": bg, "scale": int(_num(r.get("scale"), 10, 120, 40))}  # Bildpunkte je Meter (Plan ist 800 breit)
 
 
 def kind_of(device_class: Any) -> tuple[str, str] | None:
