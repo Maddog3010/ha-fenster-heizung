@@ -2,6 +2,26 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b22] - 2026-11-18
+
+**Modul 20 · Abrechnungen** (Addon) v0.3 „Übersicht & Prognose“ und v0.5 „Rechnungen“ – Modul 20 ist jetzt Beta.
+
+### Neu
+- **Banner mit der einen Antwort:** „+89 € voraussichtlich zurück“ über alle Sparten mit Abschlag, mit Bandbreite; rechts die Abrechnungs-Szene mit einem Ring je Sparte (wie viel die Abschläge decken).
+- **Hochrechnung** bis zum Ende des Abrechnungszeitraums (Jahr, Quartal oder Monat): bisher gemessen, der Rest nach Monatsprofil (eigenes Vorjahr, sonst Standardprofil je Sparte), Preiswechsel und Bonus eingerechnet; ohne Ablesungen aus dem eingestellten Jahresverbrauch.
+- **Spartenkarten 2.0** mit Deckungsbalken und Ergebnis in Worten, **Jahreskurve** Kosten gegen Abschläge mit Bandbreite (Monat antippen zeigt die Werte).
+- **Register „Abschläge“:** Abschlag gegen Kosten je Monat bzw. Quartal, Empfehlung mit Begründung (aufgerundet auf ganze Euro, damit der Zeitraum bei ± 0 € endet), „Abschlag ändern“ ab einem Datum, „Zahlung buchen“ (0 € = ausgefallen, sonst Sonderzahlung); sind alle bezahlt, ein Vorschlag fürs nächste Jahr.
+- **Dynamisch oder fest?** Netzbezug je Stunde (Haus-Energiebuch) × Tibber-Stundenpreis der letzten 30 Tage gegen einen festen Vergleichspreis; der eigene Ø Preis fließt in Kosten und Hochrechnung des dynamischen Vertrags.
+- **Register „Rechnungen“:** Rechnung mit Beleg (PDF oder Foto, bis 3 MB, lokal unter /config/strom_waerme/belege), Prüfung in fünf Punkten (Verbrauch gegen eigene Messung, Gas-Umrechnung, Preise laut Vertrag, geschätzter Endstand, Abschläge), Brennwert, neuen Abschlag und Zählerstände übernehmen.
+- **Register „Fahrtkosten“:** Elektroautos und Verbrenner mit Tanken, Laden zuhause/unterwegs, Kilometerstand und Fixkosten; € je 100 km, Verbrauch (Volltank zu Volltank), Vollkosten je km, Vergleich und Fahrt-Rechner.
+- **Register „Vorräte“:** Heizöl, Pellets, Flüssiggas, Brennholz und Betriebsmittel; Bestand mit gleitendem Durchschnittspreis, Wärmepreis je kWh, Reichweite und „bestellen bis“.
+- **Mitteilungen** (Einstellungen → Modul 20): Erinnerung am Stichtag mit Link direkt in die Eingabe, Mindestbestand erreicht (auf Wunsch als Eintrag in einer To-do-Liste).
+- **Tags & Karten:** neue Aktionen „Zählerstand erfassen“, „Tankbeleg erfassen“ und „Vorrat: 1 entnommen“ (Modul 20).
+- Direktlinks mit `?modul=` öffnen jetzt auch Addon-Module, die erst nach dem Kern geladen werden.
+
+### Behoben
+- Modul 20: Handy-Ansicht war zu breit, kleine Knöpfe in Listen hatten zu viel Abstand.
+
 ## [2026.11.4b21] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 10: „Anpassen“ in der Übersicht, Ereignisse kompakt.

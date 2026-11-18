@@ -34,6 +34,7 @@
     if (a.k === "mu_in") return `${(D.bins || {})[a.arg] || "Tonne"} ist wieder drin`;
     if (a.k === "lf_here") { const [dv, rm] = String(a.arg || "").split("|"); return `${(this._lfDev(dv) || {}).name || "Entfeuchter"} steht in ${this._lfRoomName(rm) || "einem Raum"}`; }
     if (a.k === "lf_off" || a.k === "lf_tank") { const n = (this._lfDev(a.arg) || {}).name || "Entfeuchter"; return a.k === "lf_off" ? `${n} heute aus` : `${n}: Wassertank geleert`; }
+    if (a.k.startsWith("ab_")) { const L = (this._tgxD && this._tgxD.ab) || {}, x = [...(L.meters || []), ...(L.cars || []), ...(L.items || [])].find((y) => y.id === a.arg); return a.k === "ab_read" ? `Zählerstand ${x ? x.name : ""}`.trim() : a.k === "ab_fuel" ? `Tankbeleg ${x ? x.name : ""}`.trim() : `${x ? x.name : "Vorrat"}: 1 entnommen`; }
     if (a.k === "sf_tested") return `${a.arg ? this._tgxName(a.arg) : "Alle Melder"} geprüft`;
     return c.n;
   }
@@ -66,10 +67,11 @@
     if (!m || m.type !== "tgxedit") return;
     const d = m.draft;
     if (a === "tgxg") { d.g = k; if (!D.actions.some((x) => x.g === k && x.k === d.act.k)) d.act = { k: "", arg: null }; }
-    else if (a === "tgxa") { const c = D.actions.find((x) => x.k === k), L = this._lfDevs(); d.act = { k, arg: c.arg === "days" ? 7 : c.arg === "bin" ? "rest" : c.arg === "person" ? "" : c.arg === "lfdev" ? (L[0] ? L[0].id : "") : c.arg === "lfroom" ? (L[0] ? L[0].id + "|" : "") : c.arg === "det" ? "" : null }; }
+    else if (a === "tgxa") { const c = D.actions.find((x) => x.k === k), L = this._lfDevs(); d.act = { k, arg: c.arg === "days" ? 7 : c.arg === "bin" ? "rest" : c.arg === "person" ? "" : c.arg === "lfdev" ? (L[0] ? L[0].id : "") : c.arg === "lfroom" ? (L[0] ? L[0].id + "|" : "") : c.arg === "det" ? "" : ["abmeter", "abcar", "abitem"].includes(c.arg) ? (((D.ab || {})[{ abmeter: "meters", abcar: "cars", abitem: "items" }[c.arg]] || [])[0] || {}).id || "" : null }; }
     else if (a === "tgxlfd") { const rm = d.act.k === "lf_here" ? String(d.act.arg || "").split("|")[1] || "" : null; d.act.arg = rm === null ? k : `${k}|${rm}`; }
     else if (a === "tgxlfr") { const dv = String(d.act.arg || "").split("|")[0]; d.act.arg = `${dv}|${k}`; }
     else if (a === "tgxdet") d.act.arg = k;
+    else if (a === "tgxab") d.act.arg = k;
     else if (a === "tgxdays") d.act.arg = Math.min(21, Math.max(1, (d.act.arg || 7) + Number(b.dataset.s)));
     else if (a === "tgxbin") d.act.arg = k;
     else if (a === "tgxwho") d.persons = d.persons.includes(k) ? d.persons.filter((x) => x !== k) : [...d.persons, k];
@@ -77,6 +79,7 @@
     else if (a === "tgxwclr") { d.from = ""; d.to = ""; }
     else if (a === "tgxsave") {
       if (!d.act.k || (d.act.k.startsWith("person_") && !d.act.arg)) { this._toast("Bitte eine Aktion wählen"); return; }
+      if (d.act.k.startsWith("ab_") && !d.act.arg) { this._toast("Bitte Zähler, Fahrzeug oder Vorrat wählen"); return; }
       if ((d.act.k === "lf_here" && !/^d\w+\|.+/.test(d.act.arg || "")) || ((d.act.k === "lf_off" || d.act.k === "lf_tank") && !d.act.arg)) { this._toast(d.act.k === "lf_here" ? "Bitte Entfeuchter und Raum wählen" : "Bitte einen Entfeuchter wählen"); return; }
       const c = this._tgxCfgNow(), { id, isNew, g, ...t } = d; t.name = (d.name || "").trim() || "Tag"; t.from = d.from && d.to ? d.from : ""; t.to = d.from && d.to ? d.to : "";
       c.tags[id] = t; this._tgxPut(c).then(() => { this._modal = { type: "tgxmgr" }; this._renderModal(); this._tgxPoll(); this._toast("Tag gespeichert"); }); return;
@@ -131,6 +134,9 @@
         : cur.arg === "lfdev" || cur.arg === "lfroom" ? (() => { const L = this._lfDevs(), [dv, rm] = String(d.act.arg || "").split("|"), R = ((this._lf() || {}).rooms || []);
             return `${L.length ? `<div class="mut sm" style="margin:8px 0 4px">Entfeuchter</div><div class="gschips">${L.map((x) => chip("tgxlfd", x.id, x.name, dv === x.id)).join("")}</div>` : `<div class="mut sm" style="margin-top:6px">Noch kein Luftentfeuchter eingerichtet.</div>`}
               ${cur.arg === "lfroom" ? `<div class="mut sm" style="margin:8px 0 4px">Stellplatz (Raum mit Luftfeuchte-Sensor)</div><div class="gschips">${R.length ? R.map((r) => chip("tgxlfr", r.id, r.name, rm === r.id)).join("") : `<span class="mut sm">Kein Raum mit Luftfeuchte-Sensor.</span>`}</div><div class="mut sm" style="margin-top:4px">Beim Scannen steht der Entfeuchter dort, der Standort gilt für heute als bestätigt.</div>` : ""}`; })()
+        : ["abmeter", "abcar", "abitem"].includes(cur.arg) ? (() => { const L = ((D.ab || {})[{ abmeter: "meters", abcar: "cars", abitem: "items" }[cur.arg]] || []);
+            return L.length ? `<div class="mut sm" style="margin:8px 0 4px">${{ abmeter: "Welcher Zähler? Klebe das Tag an den Zähler. Beim Scannen kommt eine Mitteilung, ein Tipp öffnet die Eingabe.", abcar: "Welches Fahrzeug? Klebe das Tag ins Auto, etwa an die Tankklappe.", abitem: "Welcher Vorrat? Beim Scannen wird sofort 1 Einheit abgebucht." }[cur.arg]}</div><div class="gschips">${L.map((x) => chip("tgxab", x.id, x.name, d.act.arg === x.id)).join("")}</div>`
+              : `<div class="mut sm" style="margin-top:6px">${{ abmeter: "Noch kein Zähler", abcar: "Noch kein Fahrzeug", abitem: "Noch kein Vorrat" }[cur.arg]} in Modul 20 Abrechnungen.</div>`; })()
         : cur.arg === "det" ? `<div class="mut sm" style="margin:8px 0 4px">Welcher Melder? Klebe das Tag neben den Melder und scanne es nach dem Test.</div><div class="gschips">${chip("tgxdet", "", "Alle Melder", !d.act.arg)}${this._tgxDets().map((e) => chip("tgxdet", e, this._tgxName(e), d.act.arg === e)).join("")}</div>`
         : cur.arg === "person" ? `<div style="margin:6px 0">${this._wzSel(persons, d.act.arg || "", "tgxperson", "", "– Person wählen –")}</div><div class="mut sm">${d.act.k === "person_home" ? "Zählt für die automatische Abwesenheit als „zu Hause“, höchstens 12 Stunden." : "Gilt als „unterwegs“. Sind alle unterwegs, wechseln die Räume nach der eingestellten Zeit auf „Abwesend“."}</div>` : "";
       const fbk = (k, t, ok, why) => chip("tgxfbt", k, t, !!d.fb[k] && ok, ok ? "" : `disabled title="${esc(why)}"`);

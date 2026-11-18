@@ -8,16 +8,26 @@ Rechnen:
   eff_price()     Arbeitspreis inkl. Grundpreis-Anteil beim eigenen Jahresverbrauch
   check_reading() Prüfung einer Ablesung gegen Verlauf (Rückwärtslauf, Zahlendreher, ungewöhnlicher Verbrauch)
   usage()/cost()  Verbrauch und Kosten eines Zeitraums, tagesgenau über Preiswechsel hinweg
+v0.3 „Übersicht & Prognose“:
+  bounds()        Abrechnungszeitraum (Jahr, Quartal oder Monat)
+  schedule()      Abschlagsplan mit Änderungen (gültig ab) und gebuchten Zahlungen
+  forecast()      Hochrechnung bis zum Ende des Zeitraums mit Bandbreite, Monatsreihe, Ergebnis und Empfehlung
+  dyn_compare()   Dynamischer Tarif gegen festen Vergleichspreis mit dem eigenen Stundenprofil
+v0.5 „Rechnungen“ (Beta):
+  check_invoice() Rechnungsprüfung gegen eigene Messung, Vertrag und gezahlte Abschläge
+  vehicle_stats() Fahrtkosten je Fahrzeug: € je 100 km, Verbrauch (Volltank zu Volltank), Vollkosten je km
+  stock()         Vorräte: Bestand, gleitender Durchschnittspreis, Verbrauch je Tag, Reichweite, „bestellen bis“
 Geld wird mit Decimal gerechnet und erst am Ende kaufmännisch gerundet.
 """
 from __future__ import annotations
 
+import math
 import re
 from datetime import date, datetime, timedelta
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Any
 
-SCHEMA = 1
+SCHEMA = 3
 SPARTEN = ("strom", "gas", "wasser", "einspeisung")
 SP_NAME = {"strom": "Strom", "gas": "Gas", "wasser": "Wasser & Abwasser", "einspeisung": "Einspeisung"}
 SP_UNIT = {"strom": "kWh", "gas": "kWh", "wasser": "m³", "einspeisung": "kWh"}
@@ -26,6 +36,15 @@ QUELLEN = ("manuell", "sensor", "nfc", "foto", "rechnung", "start", "geschaetzt"
 DEF_VERBRAUCH = {"strom": 3500.0, "gas": 14000.0, "wasser": 120.0, "einspeisung": 4000.0}
 DEF_BRENNWERT, DEF_ZUSTAND = 11.2, 0.96
 KEEP_READ = 800
+# Monatsanteile am Jahresverbrauch (Jan … Dez), solange kein eigenes Vorjahr vorliegt. Gas: Heizung + Warmwasser, Strom: Haushalt,
+# Wasser: Garten im Sommer, Einspeisung: Ertrag einer Süd-Anlage in Deutschland.
+PROFIL = {
+    "gas": (0.165, 0.14, 0.12, 0.08, 0.045, 0.025, 0.02, 0.02, 0.035, 0.075, 0.12, 0.155),
+    "strom": (0.095, 0.085, 0.088, 0.08, 0.078, 0.072, 0.074, 0.074, 0.076, 0.084, 0.09, 0.104),
+    "wasser": (0.075, 0.07, 0.078, 0.082, 0.09, 0.095, 0.1, 0.1, 0.085, 0.078, 0.072, 0.075),
+    "einspeisung": (0.02, 0.04, 0.08, 0.11, 0.13, 0.15, 0.15, 0.12, 0.09, 0.06, 0.03, 0.02),
+}
+MONATE = ("Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez")
 _ID = re.compile(r"^[a-z0-9]{2,16}$")
 _ENT = re.compile(r"^(sensor|number|input_number)\.[a-z0-9_]+$")
 _TXT = re.compile(r"[<>\"'&\x00-\x1f]")
@@ -112,7 +131,32 @@ def clean_contract(raw: Any) -> dict[str, Any] | None:
         "abschlag": {"betrag": _f(ab.get("betrag"), 0, 5000, 0.0), "rhythmus": ab.get("rhythmus") if ab.get("rhythmus") in ("monat", "quartal") else "monat", "tag": int(_f(ab.get("tag"), 1, 28, 1))},
         "brennwert": _f(r.get("brennwert"), 5, 15, DEF_BRENNWERT), "zustand": _f(r.get("zustand"), 0.5, 1.2, DEF_ZUSTAND),
         "meters": [m for m in r.get("meters") or [] if isinstance(m, str) and _ID.match(m)][:6], "periods": periods,
+        "abplan": clean_abplan(r.get("abplan")), "zahlungen": clean_pays(r.get("zahlungen")),
+        "rechnungen": sorted((x for x in (clean_invoice(y) for y in r.get("rechnungen") or []) if x), key=lambda x: x["bis"])[-30:],
     }
+
+
+def clean_abplan(raw: Any) -> list[dict[str, Any]]:
+    """Abschlagsänderungen: ab diesem Tag gilt der neue Betrag (Rhythmus und Fälligkeitstag)."""
+    out: dict[str, dict[str, Any]] = {}
+    for x in raw if isinstance(raw, list) else []:
+        x = x if isinstance(x, dict) else {}
+        ab = _d(x.get("ab"))
+        if ab:
+            out[ab] = {"ab": ab, "betrag": _f(x.get("betrag"), 0, 5000, 0.0), "rhythmus": x.get("rhythmus") if x.get("rhythmus") in ("monat", "quartal") else "monat",
+                       "tag": int(_f(x.get("tag"), 1, 28, 1)), "note": _t(x.get("note"), 60)}
+    return [out[k] for k in sorted(out)][-40:]
+
+
+def clean_pays(raw: Any) -> list[dict[str, Any]]:
+    """Gebuchte Zahlungen: gleicher Tag wie ein geplanter Abschlag ersetzt ihn (0 € = ausgefallen), sonst Sonderzahlung."""
+    out: dict[str, dict[str, Any]] = {}
+    for x in raw if isinstance(raw, list) else []:
+        x = x if isinstance(x, dict) else {}
+        d = _d(x.get("d"))
+        if d:
+            out[d] = {"d": d, "betrag": _f(x.get("betrag"), 0, 20000, 0.0), "note": _t(x.get("note"), 60)}
+    return [out[k] for k in sorted(out)][-120:]
 
 
 def clean_reading(raw: Any) -> dict[str, Any] | None:
@@ -166,7 +210,25 @@ def clean_data(raw: Any) -> dict[str, Any]:
     for c in cs:
         c["meters"] = [m for m in c["meters"] if m in ids]
     hp = r.get("haus_prev") if isinstance(r.get("haus_prev"), dict) else None
-    return {"v": SCHEMA, "opts": {"mirror": bool(o.get("mirror", True)), "verbrauch": {k: _f(vb.get(k), 1, 1e6, DEF_VERBRAUCH[k]) for k in SPARTEN}},
+    vg = o.get("vgl") if isinstance(o.get("vgl"), dict) else {}
+    vgl = {"ap": _f(vg.get("ap"), 0, 200, 0.0), "gp": _f(vg.get("gp"), 0, 100, 0.0), "name": _t(vg.get("name"), 30)} if vg.get("ap") not in (None, "", 0, 0.0) else None
+    rm = o.get("remind") if isinstance(o.get("remind"), dict) else {}
+    opts = {"mirror": bool(o.get("mirror", True)), "verbrauch": {k: _f(vb.get(k), 1, 1e6, DEF_VERBRAUCH[k]) for k in SPARTEN}, "vgl": vgl,
+            "notify": [x for x in dict.fromkeys(o.get("notify") or []) if isinstance(x, str) and re.match(r"^notify\.[a-z0-9_]+$", x)][:6],
+            "remind": {"on": bool(rm.get("on", True)), "tage": int(_f(rm.get("tage"), 0, 14, 0))}, "tol": _f(o.get("tol"), 0.5, 10, 2.0),
+            "todo": str(o.get("todo") or "") if re.match(r"^todo\.[a-z0-9_]+$", str(o.get("todo") or "")) else "", "solar": o.get("solar") if o.get("solar") in ("null", "einsp", "vertrag") else "einsp"}
+    cars, seen = [], set()
+    for v in (clean_vehicle(x) for x in r.get("fahrzeuge") or []):
+        if v and v["id"] not in seen:
+            seen.add(v["id"])
+            cars.append(v)
+    st, seen = [], set()
+    for v in (clean_item(x) for x in r.get("vorraete") or []):
+        if v and v["id"] not in seen:
+            seen.add(v["id"])
+            st.append(v)
+    sent = r.get("sent") if isinstance(r.get("sent"), dict) else {}
+    return {"v": SCHEMA, "opts": opts, "fahrzeuge": cars[:8], "vorraete": st[:30], "sent": {str(k)[:40]: str(v)[:10] for k, v in list(sent.items())[-200:]},
             "contracts": cs[:24], "meters": ms[:16], "haus_prev": hp}
 
 
@@ -299,10 +361,32 @@ def events(data: dict[str, Any], today: date) -> list[dict[str, Any]]:
                 pct = f"{'+' if (x['pct'] or 0) > 0 else ''}{str(x['pct']).replace('.', ',')} %" if x["pct"] is not None else ""
                 out.append({"k": "preis", "d": x["ab"], "tage": (d - today).days, "t": f"Neuer Preis ab {_de(x['ab'])} · {nm}", "s": f"{pct}{' · Sonderkündigung möglich' if (x['pct'] or 0) > 0 else ''}".strip(" ·"),
                             "c": "wa" if (x["pct"] or 0) > 0 else "ok"})
+        if c["sparte"] in ("strom", "gas", "wasser") and (not c["ende"] or c["ende"] >= today.isoformat()):
+            nx = next((x for x in schedule(c, today, add_months(today, 2)) if x["d"] >= today.isoformat() and x["betrag"] > 0), None)
+            if nx and (parse_date(nx["d"]) - today).days <= 21:
+                out.append({"k": "abschlag", "d": nx["d"], "tage": (parse_date(nx["d"]) - today).days, "t": f"Abschlag {SP_NAME[c['sparte']].split(' ')[0]}",
+                            "s": f"{_eur(nx['betrag'])}{' · gebucht' if nx['src'] != 'plan' else ''}", "c": ""})
+        if c["sparte"] != "einspeisung" and c.get("zahl") != "monat" and (not c["ende"] or c["ende"] >= today.isoformat()):
+            stich = bounds(c, today)[1] - timedelta(days=1)
+            hand = [m for m in data["meters"] if m["id"] in c["meters"] and not m["sensor"]]
+            if hand and 0 <= (stich - today).days <= 30:
+                out.append({"k": "ablesen", "d": stich.isoformat(), "tage": (stich - today).days, "t": f"Ablesung {SP_NAME[c['sparte']].split(' ')[0]}",
+                            "s": f"Stichtag · {', '.join(m['name'] for m in hand)}", "c": "", "m": hand[0]["id"]})
+    for it in data.get("vorraete") or []:
+        st = stock(it, today)
+        if st["unter_min"]:
+            out.append({"k": "vorrat", "d": today.isoformat(), "tage": 0, "t": f"{it['name']} nachkaufen", "s": f"Bestand {_n(st['bestand'], 1)} {it['unit']} · Mindestbestand erreicht", "c": "wa"})
+        elif st.get("bestellen_bis") and (parse_date(st["bestellen_bis"]) - today).days <= 30:
+            out.append({"k": "vorrat", "d": st["bestellen_bis"], "tage": max(0, (parse_date(st["bestellen_bis"]) - today).days), "t": f"{it['name']} bestellen",
+                        "s": f"reicht bis {_de(st['reicht_bis'])} · {it['liefer']} Tage Lieferzeit", "c": "wa" if (parse_date(st["bestellen_bis"]) - today).days <= 7 else ""})
     for m in data["meters"]:
         if m["eich"] and m["eich"] <= today.year + 1:
             out.append({"k": "eich", "d": f"{m['eich']}-12-31", "tage": (date(m["eich"], 12, 31) - today).days, "t": f"Eichfrist {m['name']}", "s": f"gültig bis Ende {m['eich']}", "c": "wa" if m["eich"] <= today.year else ""})
     return sorted(out, key=lambda x: x["d"])
+
+
+def _eur(x: float) -> str:
+    return f"{x:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
 
 
 def _de(iso: str) -> str:
@@ -495,3 +579,685 @@ def cost(c: dict[str, Any], meters: list[dict[str, Any]], d0: date, d1: date, dy
         else:
             arbeit += Decimal(str(u["ct"])) * Decimal(str(v)) / 100
     return {"eur": money(arbeit + grund), "arbeit": money(arbeit), "grund": money(grund), "menge": round(menge, 3), "unit": SP_UNIT[c["sparte"]], "est": est, "gemessen": any_use, "kurz": kurz, "tage": (d1 - d0).days}
+
+
+# --------------------------------------------------------------------------- v0.3: Abrechnungszeitraum, Abschläge, Hochrechnung
+def _month_start(d: date) -> date:
+    return date(d.year, d.month, 1)
+
+
+def bounds(c: dict[str, Any], today: date) -> tuple[date, date]:
+    """Laufender Abrechnungszeitraum [Beginn, Ende): Jahr ab Stichtag, Quartal oder Kalendermonat. Nie vor Vertragsbeginn, nie nach Vertragsende."""
+    if c.get("zahl") == "monat":
+        s, e = _month_start(today), add_months(_month_start(today), 1)
+    elif c.get("zahl") == "quartal":
+        s = date(today.year, (today.month - 1) // 3 * 3 + 1, 1)
+        e = add_months(s, 3)
+    else:
+        s = billing_start(c, today)
+        m, d = int(c["abr"][:2]), int(c["abr"][3:])
+        try:
+            e = date(s.year + 1, m, d) if (s.month, s.day) >= (m, d) else date(s.year, m, d)
+        except ValueError:
+            e = date(s.year + 1, 1, 1)
+        if e <= s:
+            e = add_months(s, 12)
+    b = parse_date(c.get("beginn"))
+    if b and s < b <= today:
+        s = b
+    end = parse_date(c.get("ende"))
+    if end and s < end + timedelta(days=1) < e:
+        e = end + timedelta(days=1)
+    return s, e
+
+
+def abschlag_at(c: dict[str, Any], day: date) -> dict[str, Any]:
+    """Abschlag, der an dem Tag gilt: letzte Änderung mit „ab“ <= Tag, sonst der Abschlag aus dem Vertrag."""
+    k = day.isoformat()
+    cur = [x for x in c.get("abplan") or [] if x["ab"] <= k]
+    return cur[-1] if cur else {"ab": "", **c.get("abschlag", {"betrag": 0.0, "rhythmus": "monat", "tag": 1})}
+
+
+def schedule(c: dict[str, Any], d0: date, d1: date) -> list[dict[str, Any]]:
+    """Abschläge von d0 (inkl.) bis d1 (exkl.). Lastschrift: am Fälligkeitstag gilt der Abschlag als bezahlt.
+    src: plan (aus dem Plan) · gebucht (am Tag eines geplanten Abschlags anders gezahlt, 0 € = ausgefallen) · extra (Sonderzahlung)."""
+    if c.get("sparte") == "einspeisung" or d1 <= d0:
+        return []
+    b = parse_date(c.get("beginn"))
+    e = parse_date(c.get("ende"))
+    out: dict[str, dict[str, Any]] = {}
+    anchor = _month_start(bounds(c, d0)[0])
+    m = _month_start(d0)
+    while m < d1:
+        a = abschlag_at(c, m.replace(day=min(28, abschlag_at(c, m)["tag"])))
+        day = m.replace(day=a["tag"])
+        anc = _month_start(parse_date(a["ab"])) if a.get("ab") else anchor
+        months = (m.year - anc.year) * 12 + m.month - anc.month
+        if a["betrag"] > 0 and d0 <= day < d1 and (a["rhythmus"] == "monat" or months % 3 == 0) and (not b or day >= b) and (not e or day <= e):
+            out[day.isoformat()] = {"d": day.isoformat(), "betrag": a["betrag"], "src": "plan", "plan": a["betrag"]}
+        m = add_months(m, 1)
+    for p in c.get("zahlungen") or []:
+        dp = parse_date(p["d"])
+        if dp and d0 <= dp < d1:
+            x = out.get(p["d"])
+            out[p["d"]] = {"d": p["d"], "betrag": p["betrag"], "src": "gebucht" if x else "extra", "plan": x["plan"] if x else 0.0, "note": p.get("note", "")}
+    return [out[k] for k in sorted(out)]
+
+
+def _share(prof: tuple[float, ...], a: date, b: date) -> float:
+    """Anteil des Jahresverbrauchs zwischen a (inkl.) und b (exkl.) nach Monatsprofil, tagesgenau."""
+    t, d = 0.0, a
+    while d < b:
+        nm = add_months(_month_start(d), 1)
+        e = min(b, nm)
+        dim = (nm - _month_start(d)).days
+        t += prof[d.month - 1] * (e - d).days / dim
+        d = e
+    return t
+
+
+def learned_profile(meters: list[dict[str, Any]], today: date) -> tuple[float, ...] | None:
+    """Eigenes Monatsprofil aus den letzten zwölf vollen Monaten (Vorjahr), wenn die Zähler so weit zurückreichen."""
+    main = [m for m in meters if m["art"] != "garten"]
+    end = _month_start(today)
+    start = add_months(end, -12)
+    t0 = datetime.combine(start, datetime.min.time())
+    if not main or any(not m["readings"] or parse_ts(m["readings"][0]["t"]) > t0 + timedelta(days=3) for m in main):
+        return None
+    vals = []
+    for i in range(12):
+        a = add_months(start, i)
+        b = add_months(a, 1)
+        v = 0.0
+        for m in main:
+            u = usage(m, datetime.combine(a, datetime.min.time()), datetime.combine(b, datetime.min.time()))
+            v += u["v"] if u else 0.0
+        vals.append((a.month, v))
+    tot = sum(v for _, v in vals)
+    if tot <= 0:
+        return None
+    prof = [0.0] * 12
+    for mo, v in vals:
+        prof[mo - 1] = v / tot
+    return tuple(prof)
+
+
+def _rest(c: dict[str, Any], a: date, b: date, annual: float, prof: tuple[float, ...], gfrac: float, dyn_ct: float | None) -> dict[str, Decimal | float]:
+    """Kosten von a bis b aus einem angenommenen Jahresverbrauch (Zählereinheit) – Monate und Preisperioden tagesgenau geteilt."""
+    cuts = {a, b}
+    d = add_months(_month_start(a), 1)
+    while d < b:
+        cuts.add(d)
+        d = add_months(d, 1)
+    cuts |= {x for x in (parse_date(p["ab"]) for p in c["periods"]) if x and a < x < b}
+    cuts = sorted(cuts)
+    arbeit = grund = Decimal(0)
+    menge = 0.0
+    for x, y in zip(cuts, cuts[1:]):
+        u = unit_price(c, x, dyn_ct)
+        if u is None:
+            continue
+        days = (y - x).days
+        grund += Decimal(str(u["grund"])) * 12 * days / Decimal(365) + Decimal(str(u["jahr"])) * days / Decimal(365)
+        v = annual * _share(prof, x, y)
+        if c["sparte"] == "gas":
+            v *= gas_factor(c)
+        menge += v
+        if u["ct"] is None:
+            continue
+        if c["sparte"] == "wasser":
+            t = u["teile"]
+            arbeit += Decimal(str(t["frisch"])) * Decimal(str(v)) + Decimal(str(t["abw"])) * Decimal(str(v * (1 - gfrac)))
+        else:
+            arbeit += Decimal(str(u["ct"])) * Decimal(str(v)) / 100
+    return {"arbeit": arbeit, "grund": grund, "menge": menge}
+
+
+def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbrauch: float, dyn_ct: float | None = None) -> dict[str, Any]:
+    """Hochrechnung für den laufenden Abrechnungszeitraum.
+
+    bisher  gemessen von Beginn bis heute (inkl.), ohne passende Ablesungen aus dem Jahresverbrauch geschätzt
+    rest    ab morgen bis zum Ende: Jahresverbrauch × Monatsprofil (Vorjahr, sonst Standard), Jahresverbrauch aus dem bisherigen Verlauf
+    Bandbreite: je kürzer der Verlauf, desto breiter; mit eigenem Vorjahr schmal.
+    Ergebnis = Abschläge bis zum Ende – Kosten bis zum Ende (+ Guthaben, – Nachzahlung). Bei Einspeisung: Gutschrift."""
+    sp = c["sparte"]
+    s, e = bounds(c, today)
+    t1 = min(e, today + timedelta(days=1))
+    learned = learned_profile(meters, today)
+    prof = learned or PROFIL[sp]
+    unit_factor = gas_factor(c) if sp == "gas" else 1.0
+    base_annual = verbrauch / unit_factor  # Jahresverbrauch in Zählereinheit (Gas: kWh -> m³)
+    main = [m for m in meters if m["art"] != "garten"]
+    garden = [m for m in meters if m["art"] == "garten"]
+    k = cost(c, meters, s, t1, dyn_ct) if main else None
+    measured = bool(k and k["gemessen"])
+    # Verlauf, aus dem der Jahresverbrauch geschätzt wird: von der ersten Ablesung im Zeitraum (bzw. 120 Tage zurück) bis heute
+    win0 = max(s, today - timedelta(days=120)) if measured else s
+    if measured:
+        first = min(parse_ts(m["readings"][0]["t"]).date() for m in main if m["readings"])
+        win0 = max(win0, first)
+    used = 0.0
+    for m in main:
+        u = usage(m, datetime.combine(win0, datetime.min.time()), datetime.combine(t1, datetime.min.time()))
+        used += u["v"] if u else 0.0
+    days = (t1 - win0).days
+    sh = _share(prof, win0, t1)
+    w = min(1.0, days / 120) if measured and sh >= 0.01 else 0.0
+    implied = used / sh if w > 0 else base_annual
+    annual = w * implied + (1 - w) * base_annual
+    gfrac = 0.0
+    if sp == "wasser" and garden and main and measured:
+        gv = sum((usage(g, datetime.combine(s, datetime.min.time()), datetime.combine(t1, datetime.min.time())) or {"v": 0.0})["v"] for g in garden)
+        mv = sum((usage(m, datetime.combine(s, datetime.min.time()), datetime.combine(t1, datetime.min.time())) or {"v": 0.0})["v"] for m in main)
+        gfrac = min(0.9, gv / mv) if mv > 0 else 0.0
+    if measured:
+        bis = {"eur": Decimal(str(k["eur"])), "arbeit": Decimal(str(k["arbeit"])), "menge": k["menge"], "est": k["est"]}
+    else:
+        r0 = _rest(c, s, t1, annual, prof, gfrac, dyn_ct)
+        bis = {"eur": r0["arbeit"] + r0["grund"], "arbeit": r0["arbeit"], "menge": r0["menge"], "est": True}
+    r = _rest(c, t1, e, annual, prof, gfrac, dyn_ct) if t1 < e else {"arbeit": Decimal(0), "grund": Decimal(0), "menge": 0.0}
+    total = bis["eur"] + r["arbeit"] + r["grund"]
+    pct = 0.08 if learned and measured else 0.10 + 0.15 * (1 - w) if measured else 0.2
+    unsicher = (r["arbeit"] + (bis["arbeit"] if not measured else Decimal(0))) * Decimal(str(pct))
+    plan = schedule(c, s, e)
+    paid = sum(x["betrag"] for x in plan if x["d"] <= today.isoformat())
+    ab_total = sum(x["betrag"] for x in plan)
+    bezug = sp != "einspeisung"
+    bonus = 0.0
+    b = parse_date(c.get("beginn"))
+    if bezug and c.get("bonus") and b and s <= b < e:
+        bonus = c["bonus"]  # Bonus wird mit der Rechnung des ersten Jahres verrechnet
+    total_eur = money(total) - bonus
+    res: dict[str, Any] = {
+        "start": s.isoformat(), "ende": e.isoformat(), "tage": (e - s).days, "vergangen": (t1 - s).days, "zahl": c.get("zahl", "jahr"),
+        "bisher": money(bis["eur"]), "menge_bisher": round(bis["menge"], 3), "gemessen": measured, "geschaetzt": bool(bis["est"]),
+        "total": round(total_eur, 2), "lo": round(total_eur - money(unsicher), 2), "hi": round(total_eur + money(unsicher), 2), "pct": round(pct * 100),
+        "menge": round(bis["menge"] + r["menge"], 3), "unit": SP_UNIT[sp], "jahr_v": round(annual * unit_factor, 1),
+        "profil": "vorjahr" if learned else "standard", "basis": "zaehler" if measured else "jahresverbrauch", "bonus": bonus,
+        "abschlaege": [{**x, "bezahlt": x["d"] <= today.isoformat()} for x in plan], "gezahlt": round(paid, 2), "ab_total": round(ab_total, 2),
+    }
+    if measured and bis["menge"] > 0 and sp != "wasser":
+        res["avg_ct"] = round(float(bis["eur"]) * 100 / bis["menge"], 2)  # Ø Preis inkl. Grundpreis-Anteil
+    if bezug and ab_total > 0:
+        res["ergebnis"] = round(ab_total - total_eur, 2)
+        res["deckung"] = round(ab_total / total_eur * 100) if total_eur > 0 else None
+        res["erg_lo"] = round(ab_total - res["hi"], 2)
+        res["erg_hi"] = round(ab_total - res["lo"], 2)
+    res["empf"] = recommend(c, res, today)
+    res["gruende"] = reasons(c, res, today, implied if w > 0 else None, base_annual, w)
+    res["monate"] = months(c, meters, s, e, today, annual, prof, gfrac, dyn_ct, plan, pct)
+    return res
+
+
+def recommend(c: dict[str, Any], f: dict[str, Any], today: date) -> dict[str, Any] | None:
+    """Abschlag, mit dem der Zeitraum bei ± 0 € endet: (Hochrechnung – schon gezahlt – feste Sonderzahlungen) ÷ offene Termine, auf ganze Euro aufgerundet."""
+    if c["sparte"] == "einspeisung" or f["zahl"] == "monat":
+        return None
+    offen = [x for x in f["abschlaege"] if not x["bezahlt"] and x["src"] == "plan"]
+    if not offen:
+        # Alles bezahlt: Ergebnis kommt mit der Rechnung. Vorschlag fürs nächste Jahr = Hochrechnung ÷ Termine im Jahr.
+        alle = [x for x in f["abschlaege"] if x["src"] in ("plan", "gebucht")]
+        if not alle:
+            return None
+        last = abschlag_at(c, parse_date(alle[-1]["d"]))
+        return {"neu": None, "next": float(math.ceil(round(f["total"] / len(alle), 6))), "alt": last["betrag"], "diff": 0.0, "n": 0, "ab": "", "show": False,
+                "rhythmus": last["rhythmus"], "tag": last["tag"]}
+    fest = sum(x["betrag"] for x in f["abschlaege"] if not x["bezahlt"] and x["src"] != "plan")
+    need = max(0.0, f["total"] - f["gezahlt"] - fest)
+    neu = float(math.ceil(round(need / len(offen), 6)))  # auf ganze Euro aufrunden
+    cur = offen[0]["plan"]
+    diff = neu - cur
+    show = abs(diff) >= max(2.0, cur * 0.03) and f["vergangen"] >= 14
+    return {"neu": neu, "alt": cur, "diff": round(diff, 2), "n": len(offen), "ab": offen[0]["d"], "show": show,
+            "rhythmus": abschlag_at(c, parse_date(offen[0]["d"]))["rhythmus"], "tag": abschlag_at(c, parse_date(offen[0]["d"]))["tag"]}
+
+
+def reasons(c: dict[str, Any], f: dict[str, Any], today: date, implied: float | None, base: float, w: float) -> list[str]:
+    """Kurze Begründung für Ergebnis und Empfehlung."""
+    out: list[str] = []
+    fac = gas_factor(c) if c["sparte"] == "gas" else 1.0
+    if implied is not None and w >= 0.25 and base > 0:
+        d = (implied - base) / base * 100
+        if abs(d) >= 5:
+            out.append(f"Verbrauch bisher {abs(round(d))} % {'über' if d > 0 else 'unter'} dem eingestellten Jahresverbrauch ({round(implied * fac):,} statt {round(base * fac):,} {SP_UNIT[c['sparte']]})".replace(",", "."))
+    for x in price_changes(c):
+        d = parse_date(x["ab"])
+        if d and today < d < parse_date(f["ende"]) and x["pct"]:
+            out.append(f"Preis ändert sich am {_de(x['ab'])} um {'+' if x['pct'] > 0 else ''}{str(x['pct']).replace('.', ',')} %")
+    if f.get("bonus"):
+        out.append(f"Bonus {_eur(f['bonus'])} ist eingerechnet")
+    if f["basis"] == "jahresverbrauch":
+        out.append("Noch keine zwei Ablesungen: geschätzt aus dem eingestellten Jahresverbrauch")
+    elif f["profil"] == "vorjahr":
+        out.append("Verteilung über das Jahr wie im Vorjahr gemessen")
+    return out[:4]
+
+
+def months(c: dict[str, Any], meters: list[dict[str, Any]], s: date, e: date, today: date, annual: float, prof: tuple[float, ...], gfrac: float,
+           dyn_ct: float | None, plan: list[dict[str, Any]], pct: float) -> list[dict[str, Any]]:
+    """Monatsreihe für die Jahreskurve: Kosten (gemessen bzw. hochgerechnet) und Abschläge je Monat, dazu die Summen."""
+    out: list[dict[str, Any]] = []
+    main = [m for m in meters if m["art"] != "garten"]
+    t1 = today + timedelta(days=1)
+    cum_k = cum_z = cum_u = 0.0
+    a = s
+    while a < e:
+        b = min(e, add_months(_month_start(a), 1))
+        kosten = Decimal(0)
+        g_frac = 0.0
+        unsicher = Decimal(0)
+        gm = False
+        k_bis = Decimal(0)
+        if a < t1:
+            m1 = min(b, t1)
+            k = cost(c, meters, a, m1, dyn_ct) if main else None
+            if k and k["gemessen"]:
+                k_bis = Decimal(str(k["eur"]))
+                gm = True
+            else:
+                r0 = _rest(c, a, m1, annual, prof, gfrac, dyn_ct)
+                k_bis = r0["arbeit"] + r0["grund"]
+            kosten += k_bis
+            g_frac = (m1 - a).days / (b - a).days
+        if b > t1:
+            r = _rest(c, max(a, t1), b, annual, prof, gfrac, dyn_ct)
+            kosten += r["arbeit"] + r["grund"]
+            unsicher = r["arbeit"] * Decimal(str(pct))
+        z = sum(x["betrag"] for x in plan if a.isoformat() <= x["d"] < b.isoformat())
+        zb = sum(x["betrag"] for x in plan if a.isoformat() <= x["d"] < b.isoformat() and x["d"] <= today.isoformat())
+        cum_k += money(kosten)
+        cum_z += z
+        cum_u += money(unsicher)
+        out.append({"m": a.isoformat()[:7], "l": MONATE[a.month - 1], "a": a.isoformat(), "kosten": money(kosten), "zahl": round(z, 2), "zahl_bez": round(zb, 2),
+                    "gemessen": gm, "anteil": round(g_frac, 3), "k_bis": money(k_bis), "cum_k": round(cum_k, 2), "cum_z": round(cum_z, 2), "u": round(cum_u, 2)})
+        a = b
+    return out
+
+
+def dyn_compare(hours: list[tuple[int, float]], prices: dict[int, float], auf: float, own_gp: float, vgl: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Dynamisch gegen fest mit dem eigenen Stundenprofil: Netzbezug je Stunde × Börsenpreis der Stunde (+ Aufschlag)
+    gegen denselben Bezug × festen Vergleichspreis. Grundpreise werden je Monat dazugerechnet."""
+    if not hours:
+        return None
+    kwh = sum(v for _, v in hours)
+    hit = [(t, v) for t, v in hours if t in prices]
+    kwh_hit = sum(v for _, v in hit)
+    if kwh <= 0 or kwh_hit <= 0:
+        return None
+    dyn = Decimal(0)
+    for t, v in hit:
+        dyn += Decimal(str(prices[t] + auf)) * Decimal(str(v)) / 100
+    avg = float(dyn) * 100 / kwh_hit
+    span_days = max(1.0, (max(t for t, _ in hours) - min(t for t, _ in hours) + 3600) / 86400)
+    out = {"kwh": round(kwh, 2), "abdeckung": round(kwh_hit / kwh * 100), "avg_ct": round(avg, 2), "tage": round(span_days, 1),
+           "dyn": money(dyn * Decimal(str(kwh / kwh_hit)) + Decimal(str(own_gp * span_days / 30.4)))}
+    # Anteil des Bezugs in den günstigsten Stunden (unter dem Durchschnitt aller Preise der Zeit)
+    allp = [prices[t] for t, _ in hit]
+    mean = sum(allp) / len(allp)
+    out["guenstig"] = round(sum(v for t, v in hit if prices[t] < mean) / kwh_hit * 100)
+    out["mittel_ct"] = round(mean + auf, 2)  # Ø Börsenpreis ohne Gewichtung
+    if vgl and vgl.get("ap"):
+        fix = Decimal(str(vgl["ap"])) * Decimal(str(kwh)) / 100 + Decimal(str(vgl.get("gp", 0.0) * span_days / 30.4))
+        out["fix"] = money(fix)
+        out["diff"] = round(out["fix"] - out["dyn"], 2)  # > 0: dynamisch günstiger
+        out["diff_monat"] = round(out["diff"] / span_days * 30.4, 2)
+    return out
+
+
+
+# --------------------------------------------------------------------------- v0.5: Rechnungen
+def clean_invoice(raw: Any) -> dict[str, Any] | None:
+    """Rechnung: Zeitraum von–bis (bis = letzter Tag), Zählerstände und Menge laut Rechnung, Betrag, angerechnete Abschläge, Ergebnis, neuer Abschlag, Beleg."""
+    r = raw if isinstance(raw, dict) else {}
+    iid, von, bis = str(r.get("id") or ""), _d(r.get("von")), _d(r.get("bis"))
+    if not _ID.match(iid) or not von or not bis or bis < von:
+        return None
+    def num_or_none(k: str, lo: float, hi: float) -> float | None:
+        v = r.get(k)
+        return None if v in (None, "") else _f(v, lo, hi, 0.0)
+    b = r.get("beleg") if isinstance(r.get("beleg"), dict) else {}
+    beleg = {"name": _t(b.get("name"), 80), "file": str(b.get("file") or "") if re.fullmatch(r"[a-z0-9_]{2,40}\.(pdf|jpg|jpeg|png|heic|webp)", str(b.get("file") or "")) else "", "size": int(_f(b.get("size"), 0, 2e7, 0)), "type": _t(b.get("type"), 40)} if b.get("file") else None
+    out = {"id": iid, "von": von, "bis": bis, "datum": _d(r.get("datum")), "nr": _t(r.get("nr"), 30), "anfang": num_or_none("anfang", 0, 1e9), "ende": num_or_none("ende", 0, 1e9),
+           "menge": num_or_none("menge", 0, 1e8), "betrag": _f(r.get("betrag"), 0, 1e6, 0.0), "angerechnet": _f(r.get("angerechnet"), 0, 1e6, 0.0),
+           "ergebnis": num_or_none("ergebnis", -1e6, 1e6), "neu_abschlag": num_or_none("neu_abschlag", 0, 5000), "brennwert": num_or_none("brennwert", 5, 15), "zustand": num_or_none("zustand", 0.5, 1.2),
+           "geschaetzt": bool(r.get("geschaetzt")), "note": _t(r.get("note"), 80), "beleg": beleg, "gelernt": bool(r.get("gelernt"))}
+    if out["ergebnis"] is None:
+        out["ergebnis"] = round(out["angerechnet"] - out["betrag"], 2)
+    return out
+
+
+def _day0(x: date) -> datetime:
+    return datetime.combine(x, datetime.min.time())
+
+
+def own_usage(meters: list[dict[str, Any]], von: date, bis: date) -> dict[str, Any] | None:
+    """Eigene Messung der Hauptzähler von „von“ 0 Uhr bis „bis“ 24 Uhr (Zählereinheit)."""
+    return _usage_tol([m for m in meters if m["art"] != "garten"], von, bis)
+
+
+def _usage_tol(ms: list[dict[str, Any]], von: date, bis: date) -> dict[str, Any] | None:
+    """Verbrauch von „von“ 0 Uhr bis „bis“ 24 Uhr. Eine Ablesung bis zu drei Tage nach Beginn zählt noch (z. B. am 1. um 9 Uhr abgelesen)."""
+    t0, t1 = _day0(von), _day0(bis + timedelta(days=1))
+    v, est, ok = 0.0, False, False
+    for m in ms:
+        if not m["readings"]:
+            continue
+        first = parse_ts(m["readings"][0]["t"])
+        if first > t0 + timedelta(days=3) or first >= t1:
+            continue
+        u = usage(m, max(t0, first), t1)
+        if u:
+            v, est, ok = v + u["v"], est or u["est"] or first > t0, True
+    return {"v": v, "est": est} if ok else None
+
+
+def expected_cost(c: dict[str, Any], meters: list[dict[str, Any]], inv: dict[str, Any]) -> float | None:
+    """Was die Rechnung nach Vertrag kosten müsste: Menge laut Rechnung, auf die Preisperioden verteilt wie der eigene Verbrauch
+    (ohne Messung: nach Tagen), plus feste Kosten tagesanteilig, minus Bonus im Zeitraum."""
+    von, bis = parse_date(inv["von"]), parse_date(inv["bis"])
+    d1 = bis + timedelta(days=1)
+    menge = inv["menge"]
+    if menge is None and inv["anfang"] is not None and inv["ende"] is not None:
+        menge = (inv["ende"] - inv["anfang"]) * (_inv_factor(c, inv) if c["sparte"] == "gas" else 1.0)
+    if menge is None or not c["periods"]:
+        return None
+    cuts = sorted({von, d1, *(x for x in (parse_date(p["ab"]) for p in c["periods"]) if x and von < x < d1)})
+    own = [own_usage(meters, a, b - timedelta(days=1)) for a, b in zip(cuts, cuts[1:])]
+    tot = sum(x["v"] for x in own if x) if all(own) else 0.0
+    arbeit = grund = Decimal(0)
+    for (a, b), o in zip(zip(cuts, cuts[1:]), own):
+        u = unit_price(c, a)
+        if u is None:
+            continue
+        days = (b - a).days
+        share = (o["v"] / tot) if tot > 0 and o else days / (d1 - von).days
+        v = menge * share
+        grund += Decimal(str(u["grund"])) * 12 * days / Decimal(365) + Decimal(str(u["jahr"])) * days / Decimal(365)
+        if u["ct"] is None:
+            return None
+        if c["sparte"] == "wasser":
+            g = _usage_tol([m for m in meters if m["art"] == "garten"], a, b - timedelta(days=1)) if any(m["art"] == "garten" for m in meters) else None
+            gv = min(v, g["v"]) if g else 0.0  # Gartenwasser: kein Abwasser
+            arbeit += Decimal(str(u["teile"]["frisch"])) * Decimal(str(v)) + Decimal(str(u["teile"]["abw"])) * Decimal(str(v - gv))
+        else:
+            arbeit += Decimal(str(u["ct"])) * Decimal(str(v)) / 100
+    bonus = c["bonus"] if c.get("bonus") and von <= (parse_date(c.get("beginn")) or date(1900, 1, 1)) <= bis else 0.0
+    return money(arbeit + grund) - bonus
+
+
+def _inv_factor(c: dict[str, Any], inv: dict[str, Any]) -> float:
+    return (inv.get("brennwert") or c.get("brennwert", DEF_BRENNWERT)) * (inv.get("zustand") or c.get("zustand", DEF_ZUSTAND))
+
+
+def _n(x: float, d: int = 1) -> str:
+    return f"{x:,.{d}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+def check_invoice(c: dict[str, Any], meters: list[dict[str, Any]], inv: dict[str, Any], tol: float = 2.0) -> list[dict[str, Any]]:
+    """Rechnungsprüfung in fünf Punkten. lv: ok · warn · na (nicht prüfbar). v = kurzer Wert rechts."""
+    out: list[dict[str, Any]] = []
+    sp, von, bis = c["sparte"], parse_date(inv["von"]), parse_date(inv["bis"])
+    fac = _inv_factor(c, inv) if sp == "gas" else 1.0
+    zu = "m³" if sp in ("gas", "wasser") else "kWh"
+    # 1 Verbrauch gegen eigene Messung (in Zählereinheit)
+    inv_z = (inv["ende"] - inv["anfang"]) if inv["anfang"] is not None and inv["ende"] is not None else (inv["menge"] / fac if inv["menge"] is not None else None)
+    own = own_usage(meters, von, bis)
+    if inv_z is None:
+        out.append({"k": "menge", "lv": "na", "t": "Verbrauch: auf der Rechnung fehlen Zählerstände oder Menge", "v": ""})
+    elif own is None:
+        out.append({"k": "menge", "lv": "na", "t": f"Verbrauch: Rechnung {_n(inv_z, 0)} {zu} · eigene Ablesungen decken den Zeitraum nicht ab", "v": ""})
+    else:
+        d = (inv_z - own["v"]) / own["v"] * 100 if own["v"] > 0 else 0.0
+        out.append({"k": "menge", "lv": "ok" if abs(d) <= tol else "warn", "t": f"Verbrauch: Rechnung {_n(inv_z, 0)} {zu} · gemessen {_n(own['v'], 0)} {zu}{' (teils geschätzt)' if own['est'] else ''}",
+                    "v": f"{'+' if d > 0 else '−' if d < 0 else '±'}{_n(abs(d))} %", "d": round(d, 2)})
+    # 2 Gas: Umrechnung m³ → kWh
+    if sp == "gas":
+        if inv["anfang"] is not None and inv["ende"] is not None and inv["menge"] is not None:
+            calc = (inv["ende"] - inv["anfang"]) * fac
+            d = (inv["menge"] - calc) / calc * 100 if calc > 0 else 0.0
+            out.append({"k": "umr", "lv": "ok" if abs(d) <= 0.5 else "warn", "t": f"Umrechnung {_n(inv['ende'] - inv['anfang'], 0)} m³ × {_n(inv.get('brennwert') or c['brennwert'], 3)} × {_n(inv.get('zustand') or c['zustand'], 4)} = {_n(calc, 0)} kWh",
+                        "v": "stimmt" if abs(d) <= 0.5 else f"Rechnung {_n(inv['menge'], 0)} kWh"})
+        else:
+            out.append({"k": "umr", "lv": "na", "t": "Umrechnung: Zählerstände und kWh auf der Rechnung eintragen, dann wird sie geprüft", "v": ""})
+    # 3 Preise laut Vertrag
+    exp = expected_cost(c, meters, inv)
+    if exp is None or not inv["betrag"]:
+        out.append({"k": "preis", "lv": "na", "t": "Preise: Betrag oder Menge fehlt", "v": ""})
+    else:
+        d = inv["betrag"] - exp
+        ok = abs(d) <= max(2.0, exp * 0.01)
+        out.append({"k": "preis", "lv": "ok" if ok else "warn", "t": f"Preise wie im Vertrag{' (Preiswechsel tagesgenau)' if len(c['periods']) > 1 else ''}: erwartet {_eur(exp)}",
+                    "v": "stimmt" if ok else f"{'+' if d > 0 else '−'}{_eur(abs(d))}", "d": round(d, 2)})
+    # 4 Endstand vom Versorger geschätzt?
+    if inv["ende"] is not None:
+        t = _day0(bis + timedelta(days=1))
+        near = [(abs((parse_ts(r["t"]) - t).total_seconds()), m, r) for m in meters if m["art"] != "garten" for r in m["readings"] if r["src"] not in ("rechnung", "geschaetzt")]
+        near = [x for x in near if x[0] <= 3 * 86400]
+        if near:
+            _, m, r = min(near, key=lambda x: x[0])
+            ip = interp(m, t)
+            # eigener Stand auf den Stichtag umgerechnet (fortlaufender Verbrauch → Zählerstand über die letzte Ablesung)
+            diff = None
+            if ip is not None:
+                c0 = cumulative(m)
+                base = next((v - cum for ts, cum, rr in c0 for v in [rr["v"]] if rr is r), None)
+                if base is not None:
+                    diff = inv["ende"] - (base + ip[0])
+            if diff is not None:
+                ok = abs(diff) <= max(0.5, abs(inv_z or 0) * tol / 100)
+                out.append({"k": "ende", "lv": "ok" if ok else "warn",
+                            "t": f"Endstand {'vom Versorger geschätzt' if inv['geschaetzt'] else 'laut Rechnung'} {_n(inv['ende'], 1)} {zu} · eigene Ablesung {_de(r['t'])}: {_n(inv['ende'] - diff, 1)} {zu}",
+                            "v": "passt" if ok else f"Δ {_n(abs(diff), 1)} {zu}"})
+        else:
+            out.append({"k": "ende", "lv": "warn" if inv["geschaetzt"] else "na", "t": "Endstand: keine eigene Ablesung am Stichtag" + (" – der Versorger hat geschätzt" if inv["geschaetzt"] else ""), "v": ""})
+    # 5 Abschläge angerechnet
+    plan = [x for x in schedule(c, von, bis + timedelta(days=1)) if x["betrag"] > 0]
+    gez = sum(x["betrag"] for x in plan)
+    if not plan and not inv["angerechnet"]:
+        out.append({"k": "ab", "lv": "na", "t": "Abschläge: keine im Zeitraum", "v": ""})
+    else:
+        d = inv["angerechnet"] - gez
+        out.append({"k": "ab", "lv": "ok" if abs(d) < 0.5 else "warn", "t": f"Abschläge: {len(plan)} gezahlt = {_eur(gez)} · auf der Rechnung {_eur(inv['angerechnet'])}",
+                    "v": "alle erkannt" if abs(d) < 0.5 else f"{'+' if d > 0 else '−'}{_eur(abs(d))}"})
+    return out
+
+
+def invoice_view(c: dict[str, Any], meters: list[dict[str, Any]], inv: dict[str, Any], tol: float, today: date, fc: dict[str, Any] | None) -> dict[str, Any]:
+    chk = check_invoice(c, meters, inv, tol)
+    warn = sum(1 for x in chk if x["lv"] == "warn")
+    learn = []
+    if c["sparte"] == "gas" and inv["brennwert"] and abs(inv["brennwert"] - c["brennwert"]) > 1e-6:
+        learn.append({"k": "bw", "t": f"Brennwert {_n(inv['brennwert'], 3)} und Zustandszahl {_n(inv['zustand'] or c['zustand'], 4)} übernehmen"})
+    later = [x for x in c.get("abplan") or [] if x["ab"] > (inv["datum"] or inv["bis"])]  # danach schon geändert: nicht mehr anbieten
+    if inv["neu_abschlag"] and not later and abs(inv["neu_abschlag"] - abschlag_at(c, today)["betrag"]) > 0.005:
+        learn.append({"k": "ab", "t": f"Neuen Abschlag {_eur(inv['neu_abschlag'])} ab dem nächsten Termin eintragen"})
+    ms = [m for m in meters if m["art"] != "garten"]
+    def has(d: date) -> bool:
+        return any(abs((parse_ts(r["t"]) - _day0(d)).total_seconds()) < 86400 for m in ms for r in m["readings"])
+    need = [d for d, v in ((parse_date(inv["von"]), inv["anfang"]), (parse_date(inv["bis"]) + timedelta(days=1), inv["ende"])) if v is not None and not has(d)]
+    if len(ms) == 1 and need:
+        learn.append({"k": "st", "t": "Zählerstände der Rechnung in die Ablesungen übernehmen"})
+    return {**inv, "cid": c["id"], "sparte": c["sparte"], "pruefung": chk, "warn": warn, "learn": learn,
+            "empf": (fc or {}).get("empf") if fc and inv["neu_abschlag"] else None}
+
+
+# --------------------------------------------------------------------------- v0.5: Fahrtkosten
+ANTRIEB = {"elektro": "Elektro", "benzin": "Benzin", "diesel": "Diesel", "lpg": "Autogas", "hybrid": "Plug-in-Hybrid"}
+FAHRT_ART = ("tanken", "laden_haus", "laden_weg", "km", "fix")
+FIX_K = ("vers", "steuer", "wartung", "reifen", "sonst")
+
+
+def clean_entry(raw: Any) -> dict[str, Any] | None:
+    r = raw if isinstance(raw, dict) else {}
+    eid, ts, art = str(r.get("id") or ""), parse_ts(r.get("t")), r.get("art")
+    if not _ID.match(eid) or ts is None or art not in FAHRT_ART:
+        return None
+    def nn(k: str, hi: float) -> float | None:
+        v = r.get(k)
+        return None if v in (None, "") else _f(v, 0, hi, 0.0)
+    out = {"id": eid, "t": ts.isoformat(timespec="minutes"), "art": art, "menge": nn("menge", 2000), "preis": nn("preis", 500), "betrag": nn("betrag", 1e5), "km": nn("km", 2e6),
+           "voll": bool(r.get("voll", art == "tanken")), "note": _t(r.get("note"), 60), "src": r.get("src") if r.get("src") in ("manuell", "nfc", "modul8", "foto") else "manuell",
+           "fix": r.get("fix") if r.get("fix") in FIX_K else "sonst", "solar": _f(r.get("solar"), 0, 100, 0.0)}
+    # zwei von drei Werten genügen: Menge × Preis = Betrag
+    m, p, b = out["menge"], out["preis"], out["betrag"]
+    if art in ("tanken", "laden_haus", "laden_weg"):
+        if b is None and m is not None and p is not None:
+            out["betrag"] = round(m * p, 2)
+        elif p is None and m and b is not None:
+            out["preis"] = round(b / m, 4)
+        elif m is None and p and b is not None:
+            out["menge"] = round(b / p, 3)
+    return out
+
+
+def clean_vehicle(raw: Any) -> dict[str, Any] | None:
+    r = raw if isinstance(raw, dict) else {}
+    vid = str(r.get("id") or "")
+    if not _ID.match(vid):
+        return None
+    fx = r.get("fix") if isinstance(r.get("fix"), dict) else {}
+    ent = sorted((x for x in (clean_entry(y) for y in r.get("eintraege") or []) if x), key=lambda x: x["t"])[-600:]
+    return {"id": vid, "name": _t(r.get("name"), 30) or "Fahrzeug", "antrieb": r.get("antrieb") if r.get("antrieb") in ANTRIEB else "benzin", "tank": _f(r.get("tank"), 0, 200, 50.0),
+            "akku": _f(r.get("akku"), 0, 200, 0.0), "sensor": str(r.get("sensor") or "") if _ENT.match(str(r.get("sensor") or "")) else "", "start_km": _f(r.get("start_km"), 0, 2e6, 0.0),
+            "fix": {k: _f(fx.get(k), 0, 20000, 0.0) for k in FIX_K}, "m8": _t(r.get("m8"), 20), "farbe": _t(r.get("farbe"), 12), "eintraege": ent}
+
+
+def _km_points(v: dict[str, Any], sensor_km: float | None, now: datetime) -> list[tuple[datetime, float]]:
+    pts = [(parse_ts(e["t"]), e["km"]) for e in v["eintraege"] if e["km"]]
+    if sensor_km:
+        pts.append((now, sensor_km))
+    pts.sort()
+    out: list[tuple[datetime, float]] = []
+    for t, k in pts:  # Kilometerstand läuft nie rückwärts
+        if not out or k >= out[-1][1]:
+            out.append((t, k))
+    return out
+
+
+def km_between(pts: list[tuple[datetime, float]], t0: datetime, t1: datetime) -> float | None:
+    """Gefahrene km zwischen zwei Zeitpunkten, zwischen Kilometerständen tagesgenau verteilt."""
+    if len(pts) < 2:
+        return None
+    def at(t: datetime) -> float:
+        if t <= pts[0][0]:
+            return pts[0][1]
+        if t >= pts[-1][0]:
+            return pts[-1][1]
+        for (a, x), (b, y) in zip(pts, pts[1:]):
+            if a <= t <= b:
+                return x + (y - x) * ((t - a).total_seconds() / max(1, (b - a).total_seconds()))
+        return pts[-1][1]
+    return max(0.0, at(t1) - at(t0))
+
+
+def vehicle_stats(v: dict[str, Any], d0: date, d1: date, now: datetime, sensor_km: float | None = None) -> dict[str, Any]:
+    """Fahrtkosten eines Zeitraums [d0, d1). Energie: Tanken und Laden (zuhause/unterwegs). Fixkosten: Jahresbeträge tagesanteilig + Einzelbelege.
+    Verbrauch Verbrenner: Liter zwischen zwei Volltankungen ÷ km dazwischen (Teiltankungen zählen zur nächsten Volltankung)."""
+    t0, t1 = _day0(d0), _day0(d1)
+    E = [e for e in v["eintraege"] if t0 <= parse_ts(e["t"]) < t1]
+    elek = v["antrieb"] == "elektro"
+    pts = _km_points(v, sensor_km, now)
+    km = km_between(pts, t0, min(t1, now)) or 0.0
+    by = {a: {"menge": 0.0, "eur": 0.0, "n": 0} for a in ("tanken", "laden_haus", "laden_weg")}
+    fixe = 0.0
+    for e in E:
+        if e["art"] in by and e["betrag"] is not None:
+            by[e["art"]]["menge"] += e["menge"] or 0.0
+            by[e["art"]]["eur"] += e["betrag"]
+            by[e["art"]]["n"] += 1
+        elif e["art"] == "fix" and e["betrag"]:
+            fixe += e["betrag"]
+    days = (min(d1, now.date() + timedelta(days=1)) - d0).days
+    fix_jahr = sum(v["fix"].values())
+    fix = fix_jahr * max(0, days) / 365 + fixe
+    eur = sum(x["eur"] for x in by.values())
+    kwh = by["laden_haus"]["menge"] + by["laden_weg"]["menge"]
+    liter = by["tanken"]["menge"]
+    # Verbrauch Volltank zu Volltank (Verbrenner) über alle Einträge, damit auch kurze Zeiträume einen Wert haben
+    full = [e for e in v["eintraege"] if e["art"] == "tanken"]
+    vb_l, seg = [], 0.0
+    last_full = None
+    for e in full:
+        if last_full is not None:
+            seg += e["menge"] or 0.0
+        if e["voll"] and e["km"]:
+            if last_full is not None and e["km"] > last_full["km"] and seg > 0:
+                vb_l.append((seg, e["km"] - last_full["km"], e["t"]))
+            last_full, seg = e, 0.0
+    l100 = round(sum(x[0] for x in vb_l[-6:]) / sum(x[1] for x in vb_l[-6:]) * 100, 2) if vb_l else None
+    kwh100 = round(kwh / km * 100, 1) if elek and km >= 50 and kwh else None
+    e100 = round(eur / km * 100, 2) if km >= 50 and eur else None
+    voll = round((eur + fix) / km * 100, 2) if km >= 50 else None
+    share = {k: round(by[k]["menge"] / kwh * 100) for k in ("laden_haus", "laden_weg")} if kwh else {}
+    return {"km": round(km, 0), "eur": round(eur, 2), "fix": round(fix, 2), "fix_jahr": round(fix_jahr, 2), "kwh": round(kwh, 1), "liter": round(liter, 1),
+            "l100": l100, "kwh100": kwh100, "e100": e100, "voll_ct": voll, "by": {k: {**x, "eur": round(x["eur"], 2), "menge": round(x["menge"], 2)} for k, x in by.items()},
+            "anteil": share, "verlauf_l100": [{"t": t[:10], "l100": round(l / k * 100, 2)} for l, k, t in vb_l[-12:]], "km_stand": pts[-1][1] if pts else None,
+            "preis_l": [{"t": e["t"][:10], "p": e["preis"]} for e in full if e["preis"]][-24:]}
+
+
+# --------------------------------------------------------------------------- v0.5: Vorräte
+VORRAT_ART = {"oel": ("Heizöl", "l", 9.8), "pellets": ("Pellets", "t", 4800.0), "lpg": ("Flüssiggas", "l", 6.6), "holz": ("Brennholz", "rm", 1900.0),
+              "briketts": ("Briketts", "kg", 5.0), "salz": ("Regeneriersalz", "Sack", 0.0), "pool": ("Poolchemie", "kg", 0.0), "adblue": ("AdBlue", "l", 0.0),
+              "filter": ("Filter", "Stück", 0.0), "sonst": ("Vorrat", "Stück", 0.0)}
+BUCH_ART = ("kauf", "entnahme", "zaehlung")
+
+
+def clean_item(raw: Any) -> dict[str, Any] | None:
+    r = raw if isinstance(raw, dict) else {}
+    iid, art = str(r.get("id") or ""), r.get("art")
+    if not _ID.match(iid) or art not in VORRAT_ART:
+        return None
+    nm, unit, hw = VORRAT_ART[art]
+    bs = []
+    for x in r.get("buchungen") or []:
+        x = x if isinstance(x, dict) else {}
+        ts, ba = parse_ts(x.get("t")), x.get("art")
+        if ts is None or ba not in BUCH_ART or not _ID.match(str(x.get("id") or "")):
+            continue
+        bs.append({"id": str(x["id"]), "t": ts.isoformat(timespec="minutes"), "art": ba, "menge": _f(x.get("menge"), 0, 1e6, 0.0), "betrag": _f(x.get("betrag"), 0, 1e6, 0.0),
+                   "liefer": _t(x.get("liefer"), 40), "note": _t(x.get("note"), 60), "src": x.get("src") if x.get("src") in ("manuell", "sensor", "nfc", "liste") else "manuell"})
+    bs.sort(key=lambda x: x["t"])
+    return {"id": iid, "art": art, "name": _t(r.get("name"), 30) or nm, "unit": _t(r.get("unit"), 8) or unit, "lager": _f(r.get("lager"), 0, 1e6, 0.0), "min": _f(r.get("min"), 0, 1e6, 0.0),
+            "liefer": int(_f(r.get("liefer"), 0, 120, 7)), "sensor": str(r.get("sensor") or "") if _ENT.match(str(r.get("sensor") or "")) else "",
+            "pct": bool(r.get("pct")), "heizwert": _f(r.get("heizwert"), 0, 1e5, hw), "brennstoff": hw > 0, "buchungen": bs[-500:]}
+
+
+def stock(it: dict[str, Any], today: date) -> dict[str, Any]:
+    """Bestand und Wert mit gleitendem Durchschnittspreis. Kosten zählen beim Verbrauch, nicht beim Kauf.
+    Verbrauch je Tag aus Entnahmen und Zählungen der letzten 120 Tage; Reichweite und „bestellen bis“ (Mindestbestand minus Lieferzeit)."""
+    best, avg = 0.0, 0.0
+    verbraucht: list[tuple[str, float, float]] = []  # (Zeit, Menge, Kosten)
+    kaeufe = []
+    for b in it["buchungen"]:
+        if b["art"] == "kauf":
+            if b["menge"] > 0:
+                # Startbestand ohne Kaufpreis (Zählung): er gilt zum Preis des ersten Einkaufs, sonst würde er den Durchschnitt drücken
+                avg = b["betrag"] / b["menge"] if avg == 0 else (best * avg + b["betrag"]) / (best + b["menge"])
+                kaeufe.append(b)
+            best += b["menge"]
+        elif b["art"] == "entnahme":
+            x = min(best, b["menge"])
+            verbraucht.append((b["t"], x, x * avg))
+            best -= x
+        else:  # Zählung setzt den Bestand; weniger als vorher = verbraucht
+            if b["menge"] < best:
+                verbraucht.append((b["t"], best - b["menge"], (best - b["menge"]) * avg))
+            best = b["menge"]  # mehr als vorher ohne Kauf (Startbestand): Wert bleibt beim bisherigen Durchschnittspreis
+    lim = (today - timedelta(days=120)).isoformat()
+    rec = [x for x in verbraucht if x[0][:10] >= lim]
+    first = min((b["t"][:10] for b in it["buchungen"]), default=today.isoformat())
+    span = max(1, (today - max(parse_date(lim), parse_date(first))).days)
+    rate = sum(x[1] for x in rec) / span if rec else None
+    out = {"bestand": round(best, 3), "avg": round(avg, 4), "wert": round(best * avg, 2), "rate": round(rate, 4) if rate else None,
+           "fuell": round(best / it["lager"] * 100) if it["lager"] else None, "unter_min": it["min"] > 0 and best <= it["min"],
+           "kosten_jahr": round(sum(x[2] for x in verbraucht if x[0][:4] == str(today.year)), 2), "verbraucht_jahr": round(sum(x[1] for x in verbraucht if x[0][:4] == str(today.year)), 3),
+           "kaeufe": len(kaeufe), "letzter_kauf": kaeufe[-1]["t"][:10] if kaeufe else ""}
+    if rate and rate > 0:
+        out["reicht_tage"] = int(best / rate)
+        out["reicht_bis"] = (today + timedelta(days=int(best / rate))).isoformat()
+        if it["min"] > 0:
+            t_min = max(0.0, (best - it["min"]) / rate)
+            out["bestellen_bis"] = (today + timedelta(days=int(t_min) - it["liefer"])).isoformat()
+    if it["heizwert"] and avg:
+        out["ct_kwh"] = round(avg / it["heizwert"] * 100, 2)  # Wärmepreis je kWh (Heizwert)
+    return out

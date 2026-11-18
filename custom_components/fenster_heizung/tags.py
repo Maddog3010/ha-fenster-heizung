@@ -40,7 +40,7 @@ BINS = ("rest", "bio", "papier", "gelb")
 GROUPS = {
     "fh": "Modul 1 · Fenster & Heizung", "lf": "Modul 1 · Luftentfeuchter", "pe": "Personen", "ww": "Modul 2 · Warmwasser",
     "ev": "Modul 8 · Elektroauto", "sf": "Modul 11 · Sicherheit",
-    "mu": "Modul 17 · Müllabfuhr", "li": "Modul 18 · Licht",
+    "mu": "Modul 17 · Müllabfuhr", "li": "Modul 18 · Licht", "ab": "Modul 20 · Abrechnungen",
 }
 ACTIONS: dict[str, tuple[str, str, str | None]] = {
     "pres_home": ("fh", "Alle Räume auf „Zu Hause“", None),
@@ -70,6 +70,9 @@ ACTIONS: dict[str, tuple[str, str, str | None]] = {
     "li_arrive": ("li", "Szene „Ankommen“", None),
     "li_cozy": ("li", "Szene „Gemütlich“", None),
     "li_off": ("li", "Alle Lampen aus", None),
+    "ab_read": ("ab", "Zählerstand erfassen", "abmeter"),
+    "ab_fuel": ("ab", "Tankbeleg erfassen", "abcar"),
+    "ab_take": ("ab", "Vorrat: 1 entnommen", "abitem"),
 }
 BIN_NAMES = {"rest": "Restmüll", "bio": "Bio", "papier": "Papier", "gelb": "Gelber Sack"}
 
@@ -134,6 +137,10 @@ def clean_tag(raw: Any) -> dict[str, Any] | None:
             return None
     elif need == "lfdev":
         arg = arg if isinstance(arg, str) and re.match(r"^d[0-9a-z]{1,10}$", arg) else ""
+        if not arg:
+            return None
+    elif need in ("abmeter", "abcar", "abitem"):  # Zähler, Fahrzeug oder Vorrat aus Modul 20
+        arg = arg if isinstance(arg, str) and re.match(r"^[a-z0-9]{2,16}$", arg) else ""
         if not arg:
             return None
     elif need == "det":  # ein Melder oder alle (leer)
@@ -460,6 +467,12 @@ class TagManager:
                 return False, "Modul 17 ist aus oder zu alt"
             await mm.async_in(str(arg))
             return True, ""
+        if k.startswith("ab_"):
+            ab = D.get("abrechnung")
+            from .addon_api import addon_on
+            if ab is None or not addon_on(self.hass, "abrechnung"):
+                return False, "Modul 20 ist aus"
+            return await ab.async_tag({"ab_read": "read", "ab_fuel": "fuel", "ab_take": "take"}[k], str(arg or ""))
         if k.startswith("li_"):
             from .addon_api import addon_on
             if not addon_on(self.hass, "licht"):
@@ -541,6 +554,13 @@ class TagManager:
         self._save()
         return self.snapshot()
 
+    def _ab_lists(self) -> dict[str, Any]:
+        ab = self.hass.data.get(DOMAIN, {}).get("abrechnung")
+        try:
+            return ab.tag_lists() if ab is not None else {}
+        except Exception:  # noqa: BLE001
+            return {}
+
     def snapshot(self) -> dict[str, Any]:
         now = time.time()
         last: dict[str, dict[str, Any]] = {}
@@ -548,6 +568,7 @@ class TagManager:
             last[x["id"]] = x
         return {
             "on": self.active(), "cfg": self.cfg, "actions": catalog(), "groups": GROUPS, "bins": self._bins(), "confirm": sorted(QUICK_CONFIRM),
+            "ab": self._ab_lists(),
             "last": last, "log": list(reversed(self.log)),
             "unknown": [{"id": k, **v} for k, v in sorted(self.unknown.items(), key=lambda i: -i[1]["ts"])],
             "learn": {"active": now < self.learn_until, "left": max(0, int(self.learn_until - now)), "found": self.learned},

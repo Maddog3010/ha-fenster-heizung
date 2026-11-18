@@ -132,7 +132,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 17 | **Müllabfuhr** | Addon · Stabil 1.0 | Straßen-Szene, bis zu 10 Abfallarten, Erinnerung mit Knöpfen, Reinholen, Wer ist dran, Diesmal nicht, Verlauf, Jahresübersicht, Sensoren |
 | 18 | Licht & Lampen | Addon | Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe |
 | 19 | **Hausfluss** | Stabil 1.1 · Sponsoren | Dein Haus als Fluss-Bild: Leuchtlinien, Herkunfts-Ring, bis zu 4+4+2 Kacheln, Themen, Strom-Reiter mit „Woher kam der Strom?“, Wand-Ansicht fürs Tablet |
-| 20 | Abrechnungen | Addon · In Entwicklung | Verträge mit Preisperioden, Wasser-Gebühren, Zähler mit geprüften Ablesungen, Fristen, Preisdienst für alle Module |
+| 20 | **Abrechnungen** | Addon · Beta 0.5 | „Bekomme ich Geld zurück?“: Hochrechnung mit Bandbreite, Abschläge mit Empfehlung, Rechnungsprüfung mit Beleg, Fahrtkosten für E-Auto und Verbrenner, Vorräte mit Reichweite, Preisdienst für alle Module |
 | 21 | Saugroboter | Addon | Roboter-Karte, Raum-Kacheln mit Ampel, Karte, Woche, Wartung |
 
 Die Module 5, 6, 7, 10, 12, 13 und 15 zeigen **Konzeptseiten** zum Durchklicken. Alle Zahlen dort sind Beispiele, diese Module schalten nichts.
@@ -303,7 +303,7 @@ Addons installierst du unter **Einstellungen → Addons** und kannst sie dort je
 
 - **Müllabfuhr (v1.0, Stabil):** siehe [Modul 17 im Detail](#modul-17-müllabfuhr).
 - **Licht & Lampen:** Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe.
-- **Abrechnungen (v0.1, In Entwicklung):** Verträge für Strom, Gas, Wasser und Einspeisung mit Preiswechseln, Zähler mit Ablesungen und Prüfung, Fristen; der Vertragspreis geht an die anderen Module. Hochrechnung, Abschläge und Rechnungen folgen.
+- **Abrechnungen (v0.5, Beta):** Verträge für Strom, Gas, Wasser und Einspeisung mit allen Preis-Bestandteilen und Preiswechseln, Zähler mit geprüften Ablesungen. Im Banner die Antwort auf „Bekomme ich Geld zurück?“ mit Bandbreite, je Sparte ein Ring, Jahreskurve Kosten gegen Abschläge. Register **Abschläge** mit Empfehlung („135 € → 122 €“) und gebuchten Zahlungen, **Rechnungen** mit Prüfung in fünf Punkten und Beleg, **Fahrtkosten** (€ je 100 km, Verbrauch, Vollkosten je km) für Elektroautos und Verbrenner, **Vorräte** (Heizöl, Pellets, Holz, Salz …) mit Reichweite und „bestellen bis“. Vergleich dynamischer Tarif gegen festen Preis mit dem eigenen Stundenprofil. Erinnerung am Stichtag ans Handy, NFC-Tags für Zählerstand, Tankbeleg und Vorrat. Der Vertragspreis geht an die anderen Module; die volle Anbindung folgt mit v0.7.
 - **Saugroboter:** Roboter-Karte, Raum-Kacheln mit Ampel, Karte des Roboters (Roborock), Woche und Wartung.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_saugroboter.png" width="640" alt="Modul 21 Saugroboter"></p>

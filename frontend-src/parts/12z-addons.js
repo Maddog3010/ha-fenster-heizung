@@ -33,7 +33,9 @@
           Object.getOwnPropertyNames(def.mixin.prototype).filter((n) => n !== "constructor").forEach((n) => { P[n] = def.mixin.prototype[n]; });
         }
         Object.assign(ICONS, def.icons || {}); if (def.art) MOD_ART[a.id] = def.art;
-        this._adDefs[a.id] = def; this._render(); if (this._modal) this._renderModal();
+        this._adDefs[a.id] = def;
+        try { if (!this._adDeep && new URLSearchParams(location.search).get("modul") === (a.mid || a.id)) { this._adDeep = 1; this._mdActiveSet(a.mid || a.id); } } catch (_) { /* Direktlink aus einer Mitteilung, Addon lädt nach dem Kern */ }
+        this._render(); if (this._modal) this._renderModal();
       }).catch((e) => { this._adDefs[a.id] = { err: String(e && e.message || e) }; this._render(); });
     });
   }
