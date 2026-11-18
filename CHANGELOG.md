@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b17] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 6: Test am Melder wird erkannt.
+
+### Behoben
+- **Wartung:** Drückt man den Testknopf am Melder, wird das Ende des Alarms jetzt sofort erkannt. Dauert der Alarm höchstens 2 Minuten, trägt Modul 11 die Prüfung selbst ein (Haken im Jahresband, „zuletzt geprüft“, Eintrag im Protokoll). Vorher wurde das Ende erst beim nächsten Minutentakt bemerkt, und ein kurzer Test blieb ohne Haken. Nach dem Update Home Assistant neu starten.
+
 ## [2026.11.4b16] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 5: Räume im Grundriss sind nicht mehr nur Rechtecke.
@@ -12,7 +19,6 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 - **Fluchtweg, Abdeckung und Melder-Zuordnung** nutzen die echte Raumform: Wände folgen den Ecken, ein Melder zählt nur im Raum, wenn er wirklich darin liegt, Türen zum Außenbereich werden korrekt erkannt, und Türen rasten auch an schrägen Kanten ein.
 
 ### Behoben
-- **Wartung:** Drückt man den Testknopf am Melder und der Alarm endet nach höchstens 2 Minuten, trägt Modul 11 die Prüfung selbst ein (Haken im Jahresband, „zuletzt geprüft“, Eintrag im Protokoll). Das Ende des Alarms wird sofort erkannt. Vorher musste man „Geprüft“ von Hand antippen.
 - **Zurück aus einer anderen App:** Die Daten von Modul 11 verschwanden zunächst. Beim Zurückkehren lädt das Modul jetzt sofort neu, behält bis dahin den letzten Stand und versucht es bei einem Verbindungsfehler automatisch noch einmal.
 
 ### Geändert
