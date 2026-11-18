@@ -319,6 +319,7 @@ class SicherheitManager:
         self._store = SafeStore(hass, 1, f"{DOMAIN}_sicherheit")
         self._pstore = SafeStore(hass, 1, f"{DOMAIN}_sicherheit_plan")  # Grundriss und Hintergrundbild getrennt von den Einstellungen
         self._known: set[str] = set()
+        self._btns: dict[str, str] = {}  # Testknopf-Entität → Melder
         self._regc: tuple[dict[str, str], dict[str, str]] | None = None
         self._unsub_reg: CALLBACK_TYPE | None = None
         self.cfg = default_cfg()
@@ -422,15 +423,42 @@ class SicherheitManager:
     def _on_reg(self, event: Event) -> None:
         self._regc = None  # Zuordnung Gerät → Batterie/Testknopf neu lesen
 
+    def _auto_test(self, eid: str, how: str) -> None:
+        """Test am Melder erkannt (Testknopf-Entität ausgelöst oder kurzer Alarm): als Prüfung eintragen."""
+        if not self.cfg["test"]["on"]:
+            return
+        now = dt_util.now()
+        prev = dt_util.parse_datetime(self.tested[eid]) if self.tested.get(eid) else None
+        if prev is not None and abs((now - prev).total_seconds()) < TEST_ALARM_MAX_S:
+            return  # Knopf und Alarm gehören zum selben Test
+        self.last_test = now.isoformat()
+        self.tested[eid] = now.isoformat()
+        self.thist.setdefault(eid, []).append(now.isoformat())
+        del self.thist[eid][:-THIST_MAX]
+        self._notes.pop("test", None)
+        self._add(f"Test erkannt und eingetragen: {self._name(eid)} ({how}).", "ok")
+        self._save()
+
     @callback
     def _on_state(self, event: Event) -> None:
         """Ein Melder geht auf „an“ oder fällt aus bzw. kommt zurück: sofort prüfen statt bis zum nächsten Takt zu warten."""
         eid = event.data.get("entity_id") or ""
         new, old = event.data.get("new_state"), event.data.get("old_state")
+        if eid.startswith("button.") and new is not None and old is not None and eid in self._btns and new.state != old.state and new.state not in OFF_STATES and old.state not in OFF_STATES:
+            if self.active():
+                self._auto_test(self._btns[eid], "Testknopf")  # die Entität „Test“ wurde ausgelöst
+            return
         if not eid.startswith("binary_sensor.") or new is None or not self.active():
             return
         if eid not in self._known and kind_of(new.attributes.get("device_class")) is None:
             return
+        if old is not None and old.state == "on" and new.state == "off" and eid in self._known:
+            try:  # kurzer Alarm = Testknopf am Melder gedrückt
+                el = (new.last_changed - old.last_changed).total_seconds()
+            except Exception:  # noqa: BLE001
+                el = None
+            if el is not None and 0 <= el <= TEST_ALARM_MAX_S:
+                self._auto_test(eid, f"Alarm {int(el)} s")
         if new.state == "on" or (old is not None and old.state == "on") or (new.state in OFF_STATES) != (old is not None and old.state in OFF_STATES):
             self.hass.async_create_task(self._tick(None))
 
@@ -485,6 +513,7 @@ class SicherheitManager:
             })
         out.sort(key=lambda x: (not x["alarm"], x["name"].lower()))
         self._known = {d["id"] for d in out}
+        self._btns = {d["test"]: d["id"] for d in out if d.get("test")}
         return out
 
     # ---- Meldungen und Aktionen
@@ -760,16 +789,8 @@ class SicherheitManager:
                     s["rep"] = now_ts
                     await self._notify("alarm", f"ALARM läuft noch: {d['kind']}", f"{d['name']}{where} meldet weiter Alarm.", data=self._push(d["id"]))
             elif not d["alarm"] and s["a"] and not d["off"]:
-                short = 0 < now_ts - (s.get("t0") or 0) <= TEST_ALARM_MAX_S
                 s.update({"a": False, "since": "", "stage": 0, "t0": 0.0, "ack": "", "why": ""})
                 self._add(f"Alarm beendet: {d['name']}{where}.", "ok")
-                if short and self.cfg["test"]["on"]:  # kurzer Alarm = Testknopf am Melder gedrückt
-                    self.last_test = now.isoformat()
-                    self.tested[d["id"]] = now.isoformat()
-                    self.thist.setdefault(d["id"], []).append(now.isoformat())
-                    del self.thist[d["id"]][:-THIST_MAX]
-                    self._notes.pop("test", None)
-                    self._add(f"Test erkannt und eingetragen: {d['name']}{where}.", "ok")
                 await self._notify("end", f"Alarm beendet: {d['kind']}", f"{d['name']}{where} meldet keinen Alarm mehr.")
                 self._fire("ende", d["id"])
                 self._save()

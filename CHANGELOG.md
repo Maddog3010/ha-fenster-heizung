@@ -2,6 +2,13 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b18] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 7: Test am Melder wird automatisch eingetragen.
+
+### Behoben
+- **Wartung:** Modul 11 trägt eine Prüfung jetzt selbst ein, auf zwei Wegen. Erstens, wenn die Test-Entität des Melders (zum Beispiel „Rauchmelder 3 Gerätetest“) ausgelöst wird, auch über „Test auslösen“ in der App oder per Automation. Zweitens, wenn der Melder auf „an“ geht und nach höchstens 2 Minuten wieder auf „aus“, also bei Druck auf den Testknopf am Gerät selbst. Beides wird direkt an der Zustandsänderung erkannt, ein Test zählt nur einmal. Im Jahresband erscheint der Haken, „zuletzt geprüft“ wird aktualisiert, und das Protokoll zeigt „Test erkannt und eingetragen“. Nach dem Update Home Assistant neu starten.
+
 ## [2026.11.4b17] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 6: Test am Melder wird erkannt.

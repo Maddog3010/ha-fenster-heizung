@@ -513,3 +513,29 @@ def test_raum_form_pts():
     assert len(it["r1"]["pts"]) == 6 and (it["r1"]["x"], it["r1"]["y"], it["r1"]["w"], it["r1"]["h"]) == (40, 40, 400, 260)
     assert "pts" not in it["r2"] and "pts" not in it["r3"] and "pts" not in it["r4"]
     assert it["r4"]["w"] == 100
+
+
+def test_testknopf_wird_als_pruefung_eingetragen():
+    from datetime import datetime, timedelta
+    m, h = mgr()
+    m._known.add("binary_sensor.rauch")
+    t0 = datetime(2026, 11, 18, 12, 0, 0)
+    old, new = _St("on"), _St("off")
+    old.last_changed, new.last_changed = t0, t0 + timedelta(seconds=15)
+    m._on_state(_Ev("binary_sensor.rauch", new, old))
+    assert "binary_sensor.rauch" in m.tested and m.thist["binary_sensor.rauch"]
+    m2, _ = mgr()
+    m2._known.add("binary_sensor.rauch")
+    old.last_changed, new.last_changed = t0, t0 + timedelta(seconds=600)
+    m2._on_state(_Ev("binary_sensor.rauch", new, old))
+    assert not m2.tested
+
+
+def test_testknopf_entitaet_traegt_pruefung_ein():
+    m, h = mgr()
+    m._btns["button.rauch_test"] = "binary_sensor.rauch"
+    m._on_state(_Ev("button.rauch_test", _St("2026-11-18T19:00:00+00:00", None), _St("2026-11-01T11:00:00+00:00", None)))
+    assert "binary_sensor.rauch" in m.tested
+    n = len(m.thist["binary_sensor.rauch"])
+    m._on_state(_Ev("button.rauch_test", _St("2026-11-18T19:00:05+00:00", None), _St("2026-11-18T19:00:00+00:00", None)))
+    assert len(m.thist["binary_sensor.rauch"]) == n  # derselbe Test, nicht doppelt
