@@ -243,6 +243,12 @@ def clean_plan(raw: Any) -> dict[str, Any]:
                 o[k] = int(_num(it[k], -50, 1200, 0))
         o["r"] = int(_num(it.get("r"), 0, 270, 0) // 90 * 90)
         o["n"] = str(it.get("n") or "").strip()[:30]
+        if it["t"] == "d":
+            for mk_ in ("mv", "mh"):
+                if it.get(mk_) in (1, True):
+                    o[mk_] = 1  # Türöffnung gespiegelt (Seite, Angel)
+        if it["t"] in ("d", "s") and it.get("ex") in (0, 1, True, False):
+            o["ex"] = 1 if it["ex"] else 0  # Ausgang: Außentür oder Treppe nach unten
         o["e"] = _ent(it.get("e"), ("binary_sensor",))
         if it["t"] == "m":
             o["rg"] = round(_num(it.get("rg"), 0, 15, 0) * 2) / 2  # Reichweite in Metern, 0 = je nach Art

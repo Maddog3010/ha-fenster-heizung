@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b19] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 8: Ausgänge im Grundriss selbst markieren.
+
+### Neu
+- **Ausgang markieren:** Im Bearbeiten-Feld einer Tür gibt es „Innentür“ und „Außentür“, bei einer Treppe „Kein Ausgang“ und „Ausgang nach unten“. Sobald auf einer Etage etwas markiert ist, zählen nur noch die markierten Ausgänge für den Fluchtweg. Damit gilt im Obergeschoss die Treppe nach unten als Ausgang.
+- **Türöffnung spiegeln:** Bei einer Tür gibt es „Öffnung spiegeln (innen/außen)“ und „Angel spiegeln (links/rechts)“. Der Bogen der Öffnung lässt sich so auf jede Seite und jede Angel stellen.
+- **Kachel „Fluchtweg“:** zeigt die markierten Ausgänge, zum Beispiel „1 Außentür · 1 Treppe“. Ist nichts markiert, steht dort „kein Ausgang markiert“.
+
+### Geändert
+- **Ohne Markierung** gilt wie bisher die Raum-Erkennung. Ein nicht gezeichneter Flur lässt dabei jede Zimmertür wie eine Außentür aussehen. Das Markieren löst das genau.
+
 ## [2026.11.4b18] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 7: Test am Melder wird automatisch eingetragen.

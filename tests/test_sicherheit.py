@@ -539,3 +539,14 @@ def test_testknopf_entitaet_traegt_pruefung_ein():
     n = len(m.thist["binary_sensor.rauch"])
     m._on_state(_Ev("button.rauch_test", _St("2026-11-18T19:00:05+00:00", None), _St("2026-11-18T19:00:00+00:00", None)))
     assert len(m.thist["binary_sensor.rauch"]) == n  # derselbe Test, nicht doppelt
+
+
+def test_plan_ausgang_markierung():
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {"id": "d1", "fl": "eg", "t": "d", "x": 10, "y": 10, "ex": 1},
+        {"id": "d2", "fl": "eg", "t": "d", "x": 20, "y": 10, "ex": 0},
+        {"id": "d3", "fl": "eg", "t": "d", "x": 30, "y": 10, "ex": "ja", "mv": 1, "mh": 0},
+        {"id": "s1", "fl": "eg", "t": "s", "x": 0, "y": 0, "w": 40, "h": 80, "ex": 1},
+        {"id": "w1", "fl": "eg", "t": "w", "x": 0, "y": 0, "x2": 40, "y2": 0, "ex": 1}]})
+    it = {i["id"]: i for i in p["items"]}
+    assert it["d1"]["ex"] == 1 and it["d2"]["ex"] == 0 and "ex" not in it["d3"] and it["d3"]["mv"] == 1 and "mh" not in it["d3"] and it["s1"]["ex"] == 1 and "ex" not in it["w1"]

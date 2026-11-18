@@ -24,6 +24,11 @@
     const inR = (x, y) => rooms.some((r) => this._sfInRoom(r, x, y, 1));
     const clamp = (x, y) => [Math.max(2, Math.min(798, x)), Math.max(2, Math.min(478, y))];
     const sides = (d) => ((d.r || 0) % 180 === 0 ? [[d.x, d.y - 18], [d.x, d.y + 18]] : [[d.x - 18, d.y], [d.x + 18, d.y]]);
+    const stairs = items.filter((i) => i.t === "s");
+    if (doors.some((d) => d.ex === 0 || d.ex === 1) || stairs.some((s) => s.ex === 0 || s.ex === 1)) {  /* vom Nutzer markiert: nur diese Ausgänge zählen */
+      const ex = doors.filter((d) => d.ex === 1).map((d) => ({ d, out: [d.x, d.y] })).concat(stairs.filter((s) => s.ex === 1).map((s) => ({ d: s, out: [s.x + s.w / 2, s.y + s.h / 2], s: true })));
+      return { outdoor: ex, doors, rooms, any: ex.length > 0, explicit: true };
+    }
     const out = doors.map((d) => { const [a, b] = sides(d), ia = inR(a[0], a[1]), ib = inR(b[0], b[1]); return { d, out: rooms.length ? (ia && !ib ? clamp(...b) : ib && !ia ? clamp(...a) : null) : clamp(d.x, d.y) }; }).filter((e) => e.out);
     return { outdoor: out, doors, rooms, any: out.length > 0 };
   }
@@ -35,7 +40,7 @@
     let s0 = cellOf(it.x, it.y); if (s0 < 0) return null;
     if (B[s0]) { let found = -1; for (let r = 1; r <= 2 && found < 0; r++) for (let dy = -r; dy <= r && found < 0; dy++) for (let dx = -r; dx <= r; dx++) { const cx = (s0 % W) + dx, cy = Math.floor(s0 / W) + dy; if (cx >= 0 && cx < W && cy >= 0 && cy < H && !B[idx(cx, cy)]) { found = idx(cx, cy); break; } } if (found < 0) return this._sfEscLine(it, X); s0 = found; }
     const goals = new Map();
-    X.outdoor.forEach((e) => { const c = cellOf(e.out[0], e.out[1]); if (c >= 0) goals.set(c, { d: e.d, p: { x: e.out[0], y: e.out[1] }, k: "d" }); });
+    X.outdoor.forEach((e) => { const c = cellOf(e.out[0], e.out[1]); if (c >= 0) goals.set(c, { d: e.d, p: { x: e.out[0], y: e.out[1] }, k: e.s ? "s" : "d" }); });
     let kind = "d";
     if (!goals.size) { /* keine Außentür: nächste Tür, sonst Treppe */
       X.doors.forEach((d) => { const c = cellOf(d.x, d.y); if (c >= 0) goals.set(c, { d, p: { x: d.x, y: d.y }, k: "d", unsure: true }); });
@@ -93,7 +98,7 @@
   _sfEscCheck(fl) {
     const P = this._sfPl(), mk = P.items.filter((i) => i.fl === fl && i.t === "m"), X = this._sfExitsOf(fl);
     const bad = mk.filter((m) => { const r = this._sfEscRoute(m); return !r || r.fallback; });
-    return { exits: X.outdoor.length, doors: X.doors.length, markers: mk.length, bad };
+    return { exits: X.outdoor.length, nd: X.outdoor.filter((e) => !e.s).length, ns: X.outdoor.filter((e) => e.s).length, explicit: !!X.explicit, doors: X.doors.length, markers: mk.length, bad };
   }
   /* Türen und Fenster rasten an der nächsten Wand oder Raumkante ein (nur waagerecht und senkrecht) */
   _sfSnapOpen(fl, x, y) {
