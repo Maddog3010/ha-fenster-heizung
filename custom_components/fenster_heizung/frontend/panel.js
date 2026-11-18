@@ -784,7 +784,7 @@ const MV = {
   ev: { v: "0.9", b: 7, d: "2026-11-15", p: "2026.11.3", log: [["0.9", 7, "2026.11.3", "Laufende Ladung überlebt einen Neustart von Home Assistant, fehlende kWh zuerst der Ladung zurechnen, Hinweis in der Tagesansicht; go-e-Import, mehrere Ladungen bearbeiten, Kosten ändern, Kilometer-Statistik"], ["0.9", 6, "2026.11.3b24", "Carport-Szene näher an der Wirklichkeit: Kabelkanal am Träger, Wechselrichter an der Hauswand, Netzstrom aus dem Haus, Ladekabel vor dem Auto mit Typ-2-Stecker in der Ladeklappe; nach dem Zurückwechseln in die App keine leeren Werte mehr; „Heute“ übersichtlicher"], ["0.9", 5, "2026.11.3b23", "Eine Ladung reicht bis zum Abstecken (kein neuer Eintrag nach Phasenwechsel), getrennte Teile zusammenführen, Ladenachweis als echte PDF-Datei"], ["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "1.0", b: 3, d: "2026-11-17", p: "2026.11.4b3", log: [["1.0", 3, "2026.11.4b3", "Wetterkarte zeigt Warnungen und Regen wieder"], ["1.0", 2, "2026.11.4b2", "Wetterkarte flackert nicht mehr"], ["1.0", 1, "2026.11.4b1", "Stabil: DWD-Wetterkarte (Warnungen und Regenradar), Rückblick, schneller warnen, Speichern nur bei Änderung, Änderungsverlauf mit Rückgängig, Feinschliff"], ["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  sf: { v: "0.9", b: 4, d: "2026-11-18", p: "2026.11.4b15", log: [["0.9", 4, "2026.11.4b15", "Grundriss-Bearbeiten-Feld und Batterie-Verlauf auf dem Tablet korrigiert"], ["0.9", 3, "2026.11.4b14", "Batterie-Verlauf mit festem Maximum, Einbaudatum als Kalender-Karte statt Monatsrad"], ["0.9", 2, "2026.11.4b13", "Neue Menüstruktur: Reiter Melder, Melder-Seite, Einstellungen mit Bereichs-Reitern, Auswahl-Seiten statt Aufklappmenüs"], ["0.9", 1, "2026.11.4b12", "Vorabversion: Einstellungsfenster und Auswahlmenüs in der neuen Optik"], ["0.8", 5, "2026.11.4b11", "Kein roter Alarm mehr beim Zurückwechseln in die App (Warndienste, Ladephase)"], ["0.8", 4, "2026.11.4b10", "Warndienst-Sensoren (z. B. NINA) lösen keinen Alarm mehr aus"], ["0.8", 3, "2026.11.4b9", "Grundriss 2.0 (Fluchtweg um Wände herum, Maßstab, Abdeckung, Halos, Rückgängig, Mehrfachauswahl), PDF-Dateien über das Teilen-Menü, Anwesenheit wie Modul 6"], ["0.8", 2, "2026.11.4b8", "Alle Reiter in der neuen Optik: Übersicht mit „Als Nächstes“, Grundriss mit Kacheln, Legende und Melderliste, Wartung mit Kennzahlen und Lebensdauer-Karten, Einstellungen mit Sprungleiste"], ["0.8", 1, "2026.11.4b7", "Ausgeschaltete Melder ohne Warnungen (Frage nach langer Funkstille), Alarm mit Stufen und „Verstanden“, Alarm-Ansicht für Handy und Wandtablet, Fehlalarm-Hilfe, Fluchtweg im Grundriss, Sensoren und Ereignis für Automationen"], ["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  sf: { v: "0.9", b: 5, d: "2026-11-18", p: "2026.11.4b16", log: [["0.9", 5, "2026.11.4b16", "Räume im Grundriss mit freier Form: L, T, U und beliebige Ecken"], ["0.9", 4, "2026.11.4b15", "Grundriss-Bearbeiten-Feld und Batterie-Verlauf auf dem Tablet korrigiert"], ["0.9", 3, "2026.11.4b14", "Batterie-Verlauf mit festem Maximum, Einbaudatum als Kalender-Karte statt Monatsrad"], ["0.9", 2, "2026.11.4b13", "Neue Menüstruktur: Reiter Melder, Melder-Seite, Einstellungen mit Bereichs-Reitern, Auswahl-Seiten statt Aufklappmenüs"], ["0.9", 1, "2026.11.4b12", "Vorabversion: Einstellungsfenster und Auswahlmenüs in der neuen Optik"], ["0.8", 5, "2026.11.4b11", "Kein roter Alarm mehr beim Zurückwechseln in die App (Warndienste, Ladephase)"], ["0.8", 4, "2026.11.4b10", "Warndienst-Sensoren (z. B. NINA) lösen keinen Alarm mehr aus"], ["0.8", 3, "2026.11.4b9", "Grundriss 2.0 (Fluchtweg um Wände herum, Maßstab, Abdeckung, Halos, Rückgängig, Mehrfachauswahl), PDF-Dateien über das Teilen-Menü, Anwesenheit wie Modul 6"], ["0.8", 2, "2026.11.4b8", "Alle Reiter in der neuen Optik: Übersicht mit „Als Nächstes“, Grundriss mit Kacheln, Legende und Melderliste, Wartung mit Kennzahlen und Lebensdauer-Karten, Einstellungen mit Sprungleiste"], ["0.8", 1, "2026.11.4b7", "Ausgeschaltete Melder ohne Warnungen (Frage nach langer Funkstille), Alarm mit Stufen und „Verstanden“, Alarm-Ansicht für Handy und Wandtablet, Fehlalarm-Hilfe, Fluchtweg im Grundriss, Sensoren und Ereignis für Automationen"], ["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.8", b: 1, d: "2026-11-17", p: "2026.11.4b1", log: [["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3460,6 +3460,8 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 .sfyb{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line,#2a303a);background:rgba(255,255,255,.04);color:inherit;cursor:pointer}.sfyb:first-child .ic{transform:rotate(90deg)}.sfyb:last-child .ic{transform:rotate(-90deg)}.sfyb[disabled]{opacity:.3;cursor:default}
 .sfcm{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.sfcm button{font:inherit;font-weight:700;padding:11px 0;border-radius:13px;border:1px solid var(--line,#2a303a);background:rgba(255,255,255,.04);color:inherit;cursor:pointer}.sfcm button.on{background:#2dd4bf;border-color:#2dd4bf;color:#04201c}.sfcm button[disabled]{opacity:.3;cursor:default}
 .sfcc{display:block;width:100%;margin-top:10px;font:inherit;font-weight:700;font-size:.82rem;color:#f87171;background:none;border:0;padding:6px;cursor:pointer}
+.sfvt{fill:#fff;stroke:var(--teal);stroke-width:2.5}.sfvt.on{fill:var(--teal)}.sfad{fill:var(--card,#1c2530);stroke:var(--teal);stroke-width:1.5;stroke-dasharray:3 2}.sfap2{stroke:var(--teal);stroke-width:2;fill:none}
+.sfshp{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0}.sfshp button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;font:inherit;font-size:.72rem;color:inherit;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;cursor:pointer}.sfshp button.on{border-color:var(--teal);background:rgba(45,212,191,.12)}.sfshp svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -3557,6 +3559,7 @@ class FensterHeizungPanel extends HTMLElement {
     const m = this._mdActive && this._mdActive();
     if (m === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); }
     if (m === "gs") this._gsLoad(true);
+    if (m === "sf") { this._sfxRetry = 0; this._sfxLoad(true); }
     if (m === "ef" && this._efxD && this._efxD.err) this._efxLoad(true);
   }
   set hass(h) {
@@ -11257,7 +11260,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!this._hass || this._sfxBusy) return;
     if (!force && this._sfxD && Date.now() - this._sfxD.ts < 15000) return;
     this._sfxBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { error: true }, ts: Date.now() }; })
+    this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxRetry = 0; this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { const o = this._sfxD && this._sfxD.d && this._sfxD.d.cfg ? this._sfxD.d : null; this._sfxD = { d: o || { error: true }, ts: o ? Date.now() - 12000 : Date.now() }; this._sfxRetry = (this._sfxRetry || 0) + 1; if (this._sfxRetry <= 4) setTimeout(() => this._sfxLoad(true), 2500); })
       .finally(() => { this._sfxBusy = false; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } });
   }
   _sfxVisible() { return !!(this._modal && (this._modal.type === "sfset" || this._modal.type === "sfdet" || this._modal.type === "sfalarm")) || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }
@@ -14977,7 +14980,7 @@ class FensterHeizungPanel extends HTMLElement {
   _sfPlanInner(fl, edit) {
     const S = this._sfx(), P = this._sfPl(), dm = this._sfDetMap(), items = P.items.filter((i) => i.fl === fl), KN = this._sfxKind(), ed = this._sfEd, sel = edit && ed ? ed.sel : "", ord = ["r", "s", "w", "d", "f", "x", "m"];
     const mk = items.filter((i) => i.t === "m" && i.e && dm[i.e] && dm[i.e].alarm);
-    const inside = (r, m) => m.x >= r.x && m.x <= r.x + r.w && m.y >= r.y && m.y <= r.y + r.h;
+    const inside = (r, m) => this._sfInRoom(r, m.x, m.y, -0.01);
     let out = P.bg[fl] ? `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".6"></image>` : "";
     if (edit) out += `<defs><pattern id="sfgr" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" class="sfgd"></circle></pattern></defs><rect width="800" height="480" fill="url(#sfgr)"></rect>`;
     out += this._sfHalos(items, dm);
@@ -14985,7 +14988,7 @@ class FensterHeizungPanel extends HTMLElement {
     const sorted = [...items].sort((a, b) => ord.indexOf(a.t) - ord.indexOf(b.t));
     sorted.forEach((i) => {
       const id = `data-id="${i.id}"`, a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
-      if (i.t === "r") out += `<g ${id}><rect class="sfr${mk.some((m) => inside(i, m)) ? " al" : wn.some((m) => inside(i, m)) ? " wn" : ""}" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect><text class="sfrn" x="${i.x + 10}" y="${i.y + 19}">${esc(i.n)}</text></g>`;
+      if (i.t === "r") out += `<g ${id}><path class="sfr${mk.some((m) => inside(i, m)) ? " al" : wn.some((m) => inside(i, m)) ? " wn" : ""}" d="${this._sfRPath(i)}"></path><text class="sfrn" x="${this._sfRLab(i)[0]}" y="${this._sfRLab(i)[1]}">${esc(i.n)}</text></g>`;
       else if (i.t === "s") out += `<g ${id}><rect class="sfst" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${Array.from({ length: Math.max(2, Math.floor(i.h / 14)) }, (_, k) => `<path class="sfsl" d="M${i.x} ${i.y + 7 + k * 14}H${i.x + i.w}"></path>`).join("")}<text class="sfrn" x="${i.x + 6}" y="${i.y + 16}">${esc(i.n)}</text></g>`;
       else if (i.t === "w") out += `<g ${id}><path class="sfw" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path><path class="sfhit" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path></g>`;
       else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect><path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"></path><rect class="sfhit" x="${i.x - 16}" y="${i.y - 16}" width="32" height="32"></rect></g>`;
@@ -15000,12 +15003,13 @@ class FensterHeizungPanel extends HTMLElement {
       const e = this._sfEscapeFor(mk[0]);
       if (e) out += this._sfEscSvg(e);
     }
-    if (edit && ed && ed.multi && ed.multi.length) items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { out += i.t === "w" ? `<path class="sfsel" d="M${i.x} ${i.y}L${i.x2} ${i.y2}" style="stroke-width:6"></path>` : i.t === "r" || i.t === "s" ? `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>` : `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="22"></circle>`; });
+    if (edit && ed && ed.multi && ed.multi.length) items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { out += i.t === "w" ? `<path class="sfsel" d="M${i.x} ${i.y}L${i.x2} ${i.y2}" style="stroke-width:6"></path>` : i.t === "r" && i.pts ? `<path class="sfsel" d="${this._sfRPath(i)}"></path>` : i.t === "r" || i.t === "s" ? `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>` : `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="22"></circle>`; });
     if (sel) {
       const i = items.find((x) => x.id === sel);
       if (i) {
         const hd = (k, x, y) => `<g data-h="${k}"><circle class="sfhh" cx="${x}" cy="${y}" r="18"></circle><rect class="sfhd" x="${x - 5}" y="${y - 5}" width="10" height="10" rx="2"></rect></g>`;
-        if (i.t === "r" || i.t === "s") out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${hd("br", i.x + i.w, i.y + i.h)}`;
+        if (i.t === "r" && i.pts) out += `<path class="sfsel" d="${this._sfRPath(i)}"></path>${this._sfRHandles(i, ed.vsel)}`;
+        else if (i.t === "r" || i.t === "s") out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${hd("br", i.x + i.w, i.y + i.h)}`;
         else if (i.t === "w") out += hd("p1", i.x, i.y) + hd("p2", i.x2, i.y2);
         else out += `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="${i.t === "m" ? 22 : 20}"></circle>`;
       }
@@ -15042,6 +15046,7 @@ class FensterHeizungPanel extends HTMLElement {
       : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t]}</b>
         ${sel.t === "r" || sel.t === "s" || sel.t === "x" ? `<div class="sffld"><label>Name</label><input class="osel" data-f="sfxpn" value="${esc(sel.n)}" maxlength="30" placeholder="${sel.t === "x" ? "Text" : "zum Beispiel Küche"}"></div>` : ""}
         ${sel.t === "r" || sel.t === "s" ? `<div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="sfxpw" data-s="-20" aria-label="schmaler">${ic("minus", 16)}</button><b>${sel.w}</b><button data-act="sfxpw" data-s="20" aria-label="breiter">${ic("plus", 16)}</button></div></div><div class="vrow" style="margin:6px 0"><span>Höhe</span><div class="step" style="flex:none"><button data-act="sfxph" data-s="-20" aria-label="niedriger">${ic("minus", 16)}</button><b>${sel.h}</b><button data-act="sfxph" data-s="20" aria-label="höher">${ic("plus", 16)}</button></div></div>` : ""}
+        ${sel.t === "r" ? this._sfRPanel(sel) : ""}
         ${sel.t === "d" || sel.t === "f" ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
         ${sel.t === "m" ? `<div class="sffld"><label>Melder (aus den Einstellungen)</label>${this._sfSel(T.l.map((d) => d.id), sel.e || "", "sfxpe", "", "– keiner –")}</div>` : ""}
         ${sel.t === "m" ? `<div class="vrow" style="margin:6px 0"><span>Reichweite<small class="mut" style="display:block">Wie weit der Melder im Plan reicht</small></span><div class="step" style="flex:none"><button data-act="sfxprg" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${num(this._sfRangeM(sel, sel.e ? dm[sel.e] : null), 1)} m</b><button data-act="sfxprg" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>` : ""}${sel.t === "r" ? `<div class="sffld"><label>Raum aus Modul 1 (optional)</label><div class="gschips"><button class="gsch ${!sel.lk ? "sel" : ""}" data-act="sfxplkset" data-v="">keiner</button>${this._sfRoomNames().map((n) => `<button class="gsch ${sel.lk === n ? "sel" : ""}" data-act="sfxplkset" data-v="${esc(n)}">${esc(n)}</button>`).join("")}</div></div>` : ""}
@@ -15191,10 +15196,10 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "sfxplace") { const d = this._sfDetMap()[k]; if (d) { const it = { id: uid(), fl, t: "m", x: 400, y: 240, r: 0, n: "", e: k }; P.items.push(it); ed.sel = it.id; this._render(); } return true; }
     if (!cur) return false;
     if (a === "sfxpdel") { P.items = P.items.filter((x) => x.id !== cur.id); ed.sel = ""; this._render(); return true; }
-    if (a === "sfxpdup") { const c = { ...cur, id: uid(), x: cur.x + 20, y: cur.y + 20 }; if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m") c.e = ""; P.items.push(c); ed.sel = c.id; this._render(); return true; }
+    if (a === "sfxpdup") { const c = { ...cur, id: uid(), x: cur.x + 20, y: cur.y + 20 }; if (c.pts) c.pts = c.pts.map((q) => [q[0] + 20, q[1] + 20]); if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m") c.e = ""; P.items.push(c); ed.sel = c.id; this._render(); return true; }
     if (a === "sfxprot") { cur.r = ((cur.r || 0) + 90) % 360; this._render(); return true; }
-    if (a === "sfxpw") { cur.w = Math.max(40, Math.min(780, cur.w + s)); this._render(); return true; }
-    if (a === "sfxph") { cur.h = Math.max(40, Math.min(460, cur.h + s)); this._render(); return true; }
+    if (a === "sfxpw") { const nw = Math.max(40, Math.min(780, cur.w + s)); if (cur.t === "r" && cur.pts) this._sfRResize(cur, nw, cur.h); else cur.w = nw; this._render(); return true; }
+    if (a === "sfxph") { const nh = Math.max(40, Math.min(460, cur.h + s)); if (cur.t === "r" && cur.pts) this._sfRResize(cur, cur.w, nh); else cur.h = nh; this._render(); return true; }
     return false;
   }
   _sfxNewChange(t) {
@@ -15242,7 +15247,7 @@ class FensterHeizungPanel extends HTMLElement {
       const svg = e.target.closest && e.target.closest("svg.sfpe"), ed = this._sfEd; if (!svg || !ed) return;
       e.preventDefault(); const [x, y] = pt(e, svg), P = ed.plan, fl = this._sfFl(), h = e.target.closest("[data-h]"), el = e.target.closest("[data-id]"), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tool = ed.tool;
       this._sfDrag = null; this._sfSnap();
-      if (h && ed.sel) { this._sfDrag = { k: h.dataset.h, id: ed.sel }; }
+      if (h && ed.sel) { let hk = h.dataset.h; const rm = P.items.find((i) => i.id === ed.sel); if (rm && rm.t === "r" && rm.pts && /^a\d+$/.test(hk)) { const k0 = Number(hk.slice(1)), A = rm.pts[k0], B = rm.pts[(k0 + 1) % rm.pts.length]; if (rm.pts.length < 16) { rm.pts.splice(k0 + 1, 0, [Math.round((A[0] + B[0]) / 20) * 10, Math.round((A[1] + B[1]) / 20) * 10]); hk = "v" + (k0 + 1); } } if (/^v\d+$/.test(hk)) ed.vsel = Number(hk.slice(1)); this._sfDrag = { k: hk, id: ed.sel }; }
       else if (tool === "select" && ed.mm) { ed.multi = ed.multi || []; if (el) { const id = el.dataset.id, pre = ed.multi.includes(id); if (!pre) ed.multi.push(id); ed.sel = ""; const os = {}; P.items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { os[i.id] = JSON.parse(JSON.stringify(i)); }); this._sfDrag = { k: "movem", os, sx: x, sy: y, moved: false, off: pre ? id : "" }; } else ed.multi = []; paint(); }
       else if (tool === "select") { ed.multi = []; if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false }; } else ed.sel = ""; paint(); }
       else if (tool === "r" || tool === "s" || tool === "w") {
@@ -15257,9 +15262,10 @@ class FensterHeizungPanel extends HTMLElement {
     });
     window.addEventListener("pointermove", (e) => {
       const d = this._sfDrag, ed = this._sfEd, svg = sr.querySelector("svg.sfpe"); if (!d || !ed || !svg) return;
-      if (d.k === "movem") { e.preventDefault(); const [mx, my] = pt(e, svg), dx = g(mx - d.sx), dy = g(my - d.sy); if (dx || dy) d.moved = true; ed.plan.items.forEach((i) => { const o = d.os[i.id]; if (!o) return; i.x = o.x + dx; i.y = o.y + dy; if (i.t === "w") { i.x2 = o.x2 + dx; i.y2 = o.y2 + dy; } }); paint(); return; }
+      if (d.k === "movem") { e.preventDefault(); const [mx, my] = pt(e, svg), dx = g(mx - d.sx), dy = g(my - d.sy); if (dx || dy) d.moved = true; ed.plan.items.forEach((i) => { const o = d.os[i.id]; if (!o) return; i.x = o.x + dx; i.y = o.y + dy; if (o.pts) i.pts = o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (i.t === "w") { i.x2 = o.x2 + dx; i.y2 = o.y2 + dy; } }); paint(); return; }
       const [x, y] = pt(e, svg), it = ed.plan.items.find((i) => i.id === d.id); if (!it) return; e.preventDefault();
-      if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } }
+      if (/^v\d+$/.test(d.k)) { if (it.pts) { it.pts[Number(d.k.slice(1))] = [g10(x), g10(y)]; this._sfRSync(it); } }
+      else if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (d.o.pts) it.pts = d.o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } }
       else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const dx = Math.abs(X - it.x), dy = Math.abs(Y - it.y); if (dx > dy * 4) Y = it.y; else if (dy > dx * 4) X = it.x; it.x2 = X; it.y2 = Y; } else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
       else if (d.k === "p1") { it.x = g(x); it.y = g(y); } else if (d.k === "p2") { it.x2 = g(x); it.y2 = g(y); }
       paint();
@@ -15860,7 +15866,7 @@ class FensterHeizungPanel extends HTMLElement {
     const mark = (x, y, v) => { const k = cell(x, y); if (k >= 0) B[k] = v; };
     const line = (x1, y1, x2, y2) => { const n = Math.max(1, Math.ceil(Math.hypot(x2 - x1, y2 - y1) / 4)); for (let k = 0; k <= n; k++) mark(x1 + ((x2 - x1) * k) / n, y1 + ((y2 - y1) * k) / n, 1); };
     items.forEach((i) => {
-      if (i.t === "r") { line(i.x, i.y, i.x + i.w, i.y); line(i.x + i.w, i.y, i.x + i.w, i.y + i.h); line(i.x + i.w, i.y + i.h, i.x, i.y + i.h); line(i.x, i.y + i.h, i.x, i.y); }
+      if (i.t === "r") { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; line(p[0], p[1], q[0], q[1]); }); }
       else if (i.t === "w") line(i.x, i.y, i.x2, i.y2);
     });
     items.filter((i) => i.t === "d").forEach((i) => { for (let y = i.y - 17; y <= i.y + 17; y += 5) for (let x = i.x - 17; x <= i.x + 17; x += 5) if (Math.hypot(x - i.x, y - i.y) <= 17) mark(x, y, 0); });
@@ -15869,7 +15875,7 @@ class FensterHeizungPanel extends HTMLElement {
   /* Türen, die nach draußen führen: eine Seite liegt in einem Raum, die andere nicht. Ohne Räume im Plan zählt jede Tür. */
   _sfExitsOf(fl) {
     const items = this._sfPl().items.filter((i) => i.fl === fl), rooms = items.filter((i) => i.t === "r"), doors = items.filter((i) => i.t === "d");
-    const inR = (x, y) => rooms.some((r) => x > r.x + 1 && x < r.x + r.w - 1 && y > r.y + 1 && y < r.y + r.h - 1);
+    const inR = (x, y) => rooms.some((r) => this._sfInRoom(r, x, y, 1));
     const clamp = (x, y) => [Math.max(2, Math.min(798, x)), Math.max(2, Math.min(478, y))];
     const sides = (d) => ((d.r || 0) % 180 === 0 ? [[d.x, d.y - 18], [d.x, d.y + 18]] : [[d.x - 18, d.y], [d.x + 18, d.y]]);
     const out = doors.map((d) => { const [a, b] = sides(d), ia = inR(a[0], a[1]), ib = inR(b[0], b[1]); return { d, out: rooms.length ? (ia && !ib ? clamp(...b) : ib && !ia ? clamp(...a) : null) : clamp(d.x, d.y) }; }).filter((e) => e.out);
@@ -15934,7 +15940,7 @@ class FensterHeizungPanel extends HTMLElement {
   /* Abdeckung: ein Raum gilt als abgedeckt, wenn ein Melder darin sitzt oder seine Reichweite die Raummitte erreicht */
   _sfCoverage(fl) {
     const P = this._sfPl(), dm = this._sfDetMap(), sc = this._sfScale(), rooms = P.items.filter((i) => i.fl === fl && i.t === "r"), mk = P.items.filter((i) => i.fl === fl && i.t === "m");
-    const cov = (r) => mk.some((m) => (m.x >= r.x && m.x <= r.x + r.w && m.y >= r.y && m.y <= r.y + r.h) || Math.hypot(m.x - (r.x + r.w / 2), m.y - (r.y + r.h / 2)) <= this._sfRangeM(m, m.e ? dm[m.e] : null) * sc);
+    const cov = (r) => { const [cx, cy] = this._sfRCen(r); return mk.some((m) => this._sfInRoom(r, m.x, m.y, -1) || Math.hypot(m.x - cx, m.y - cy) <= this._sfRangeM(m, m.e ? dm[m.e] : null) * sc); };
     return { rooms, covered: rooms.filter(cov), open: rooms.filter((r) => !cov(r)) };
   }
   /* Prüft jeden Melder der Etage: Gibt es einen freien Weg zu einer Außentür? */
@@ -15946,7 +15952,7 @@ class FensterHeizungPanel extends HTMLElement {
   /* Türen und Fenster rasten an der nächsten Wand oder Raumkante ein (nur waagerecht und senkrecht) */
   _sfSnapOpen(fl, x, y) {
     const items = this._sfPl().items.filter((i) => i.fl === fl), segs = [];
-    items.forEach((i) => { if (i.t === "r") { segs.push([i.x, i.y, i.x + i.w, i.y], [i.x, i.y + i.h, i.x + i.w, i.y + i.h], [i.x, i.y, i.x, i.y + i.h], [i.x + i.w, i.y, i.x + i.w, i.y + i.h]); } else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2]); });
+    items.forEach((i) => { if (i.t === "r") { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; segs.push([p[0], p[1], q[0], q[1]]); }); } else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2]); });
     let best = null;
     segs.forEach(([x1, y1, x2, y2]) => {
       const hor = Math.abs(y1 - y2) < 1, ver = Math.abs(x1 - x2) < 1; if (!hor && !ver) return;
@@ -15963,6 +15969,7 @@ class FensterHeizungPanel extends HTMLElement {
   _sfRoomNames() { try { return [...new Set(this._collect0().map((r) => r.name).filter(Boolean))]; } catch (_) { return []; } }
   /* Aktionen und Eingaben des Baukastens, die neu sind */
   _sfxP2(a, b) {
+    if (this._sfxR(a, b)) return true;
     const ed = this._sfEd; if (!ed) return false; const P = ed.plan, fl = this._sfFl(), k = b.dataset.k, cur = P.items.find((x) => x.id === ed.sel), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     if (a === "sfxundo") { if (ed.hist && ed.hist.length) { ed.fut = ed.fut || []; ed.fut.push(this._sfSer()); this._sfRestore(ed.hist.pop()); this._render(); } return true; }
     if (a === "sfxredo") { if (ed.fut && ed.fut.length) { ed.hist = ed.hist || []; ed.hist.push(this._sfSer()); this._sfRestore(ed.fut.pop()); this._render(); } return true; }
@@ -16029,10 +16036,8 @@ class FensterHeizungPanel extends HTMLElement {
     fl.forEach((f) => { const g = T.l.filter((x) => x.floor === f.id); if (g.length) groups.push([f.n, g]); });
     const rest = T.l.filter((x) => !fl.some((f) => f.id === x.floor)); if (rest.length) groups.push([fl.length ? "Ohne Etage" : "Melder", rest]);
     const ids = new Set(T.l.map((x) => x.id)), H = this._hass.states, cand = Object.keys(H).filter((e) => e.startsWith("binary_sensor.") && !ids.has(e));
-    const hid = S.excl || [];
     return `${this._sfKts(T)}<div class="sfmel">${groups.length ? groups.map(([n, g]) => `<div class="sfgh">${esc(n)}<small>${g.length}</small></div>${g.map((x) => this._sfRow(x)).join("")}`).join("") : `<div class="card sfc"><div class="mut sm">Noch keine Melder gefunden. Füge einen von Hand hinzu oder richte deinen Hersteller unter Integrationen ein.</div></div>`}</div>
-      ${adm ? `<div class="sfgh">Hinzufügen</div>${this._sfSel(cand, "", "sfxmadd", "", "+ Melder (Binärsensor) hinzufügen", /rauch|smoke|wasser|water|leck|gas|co|hitze|heat/i)}` : ""}
-      ${hid.length ? `<div class="sfgh">Ausgeblendet<small>${hid.length}</small></div>${hid.map((x) => `<div class="sfrow o"><span class="sfri">${ic("eyeOff", 20)}</span><span class="sfrt"><b>${esc(x.name || x.id)}</b><small>${esc(x.id)}</small></span>${adm ? `<button class="btn2" data-act="sfxexcl" data-k="${esc(x.id)}" style="flex:none">Einblenden</button>` : ""}</div>`).join("")}` : ""}`;
+      ${adm ? `<div class="sfgh">Hinzufügen</div>${this._sfSel(cand, "", "sfxmadd", "", "+ Melder (Binärsensor) hinzufügen", /rauch|smoke|wasser|water|leck|gas|co|hitze|heat/i)}` : ""}`;
   }
   /* ---- Melder-Seite (ersetzt das Fenster) */
   _sfDetPage(id, T) {
@@ -16134,6 +16139,67 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "sfxbatv") { this._sfxPatch((c) => { c.bat.pct = Number(k); }); return true; }
     if (a === "sfxfbv") { this._sfxPatch((c) => { c.depart.frost.below = Number(k); }); return true; }
     return false;
+  }
+  /* ================= Modul 11 · Raumformen: Räume sind Rechtecke oder haben freie Eckpunkte (pts) =================
+     x, y, w, h bleiben bei freien Formen der umschließende Rahmen, damit Verschieben, Auswahl und Ränder weiter funktionieren. */
+  _sfRP(i) { return i.pts && i.pts.length >= 3 ? i.pts : [[i.x, i.y], [i.x + i.w, i.y], [i.x + i.w, i.y + i.h], [i.x, i.y + i.h]]; }
+  _sfRLab(i) { if (!i.pts) return [i.x + 10, i.y + 19]; const P = i.pts, t = P.reduce((m, p) => (p[1] < m[1] || (p[1] === m[1] && p[0] < m[0]) ? p : m), P[0]); return [t[0] + 10, t[1] + 19]; }
+  _sfRPath(i) { return "M" + this._sfRP(i).map((p) => p[0] + " " + p[1]).join("L") + "Z"; }
+  _sfInRoom(i, x, y, m = 0) {
+    if (!(i.pts && i.pts.length >= 3)) return x > i.x + m && x < i.x + i.w - m && y > i.y + m && y < i.y + i.h - m;
+    const P = i.pts; let c = false;
+    for (let a = 0, b = P.length - 1; a < P.length; b = a++) if ((P[a][1] > y) !== (P[b][1] > y) && x < ((P[b][0] - P[a][0]) * (y - P[a][1])) / (P[b][1] - P[a][1]) + P[a][0]) c = !c;
+    return c;
+  }
+  _sfRCen(i) {
+    const P = this._sfRP(i); let A = 0, cx = 0, cy = 0;
+    for (let k = 0; k < P.length; k++) { const [x1, y1] = P[k], [x2, y2] = P[(k + 1) % P.length], f = x1 * y2 - x2 * y1; A += f; cx += (x1 + x2) * f; cy += (y1 + y2) * f; }
+    return Math.abs(A) < 1 ? [i.x + i.w / 2, i.y + i.h / 2] : [cx / (3 * A), cy / (3 * A)];
+  }
+  _sfRSync(i) { if (!i.pts) return; const xs = i.pts.map((p) => p[0]), ys = i.pts.map((p) => p[1]); i.x = Math.min(...xs); i.y = Math.min(...ys); i.w = Math.max(...xs) - i.x; i.h = Math.max(...ys) - i.y; }
+  _sfRShape(i, k) {
+    const { x, y, w, h } = i, R = (v) => Math.round(v / 10) * 10, X = (f) => R(x + w * f), Y = (f) => R(y + h * f), E = [[x, y], [x + w, y], [x + w, y + h], [x, y + h]];
+    const S = { rect: null, free: E, L: [[x, y], [X(0.55), y], [X(0.55), Y(0.45)], [x + w, Y(0.45)], [x + w, y + h], [x, y + h]], T: [[x, y], [x + w, y], [x + w, Y(0.35)], [X(0.7), Y(0.35)], [X(0.7), y + h], [X(0.3), y + h], [X(0.3), Y(0.35)], [x, Y(0.35)]], U: [[x, y], [X(0.3), y], [X(0.3), Y(0.6)], [X(0.7), Y(0.6)], [X(0.7), y], [x + w, y], [x + w, y + h], [x, y + h]] }[k];
+    if (S) i.pts = S.map((p) => [p[0], p[1]]); else delete i.pts;
+    this._sfRSync(i);
+  }
+  _sfRRot(i) { const P = this._sfRP(i), cx = i.x + i.w / 2, cy = i.y + i.h / 2, R = (v) => Math.round(v / 10) * 10; i.pts = P.map((p) => [R(cx - (p[1] - cy)), R(cy + (p[0] - cx))]); this._sfRSync(i); }
+  _sfRResize(i, nw, nh) {
+    if (!i.pts) { i.w = nw; i.h = nh; return; }
+    const ow = Math.max(1, i.w), oh = Math.max(1, i.h), x0 = i.x, y0 = i.y;
+    i.pts = i.pts.map((p) => [Math.round((x0 + ((p[0] - x0) * nw) / ow) / 10) * 10, Math.round((y0 + ((p[1] - y0) * nh) / oh) / 10) * 10]); this._sfRSync(i);
+  }
+  _sfRShift(i, dx, dy) { if (i.pts) i.pts = i.pts.map((p) => [p[0] + dx, p[1] + dy]); }
+  /* Eckpunkt-Griffe und „+“ auf den Kanten für den gewählten Raum */
+  _sfRHandles(i, vsel) {
+    const P = this._sfRP(i), hd = (k, x, y, on) => `<g data-h="${k}"><circle class="sfhh" cx="${x}" cy="${y}" r="16"></circle><circle class="sfvt${on ? " on" : ""}" cx="${x}" cy="${y}" r="7"></circle></g>`;
+    let o = P.map((p, k) => hd("v" + k, p[0], p[1], vsel === k)).join("");
+    o += P.map((p, k) => { const q = P[(k + 1) % P.length], mx = Math.round((p[0] + q[0]) / 20) * 10, my = Math.round((p[1] + q[1]) / 20) * 10; return Math.hypot(q[0] - p[0], q[1] - p[1]) < 40 ? "" : `<g data-h="a${k}"><circle class="sfhh" cx="${mx}" cy="${my}" r="14"></circle><circle class="sfad" cx="${mx}" cy="${my}" r="6"></circle><path class="sfap2" d="M${mx - 3} ${my}h6M${mx} ${my - 3}v6"></path></g>`; }).join("");
+    return o;
+  }
+  /* Aktionen im Bearbeiten-Modus */
+  _sfxR(a, b) {
+    const ed = this._sfEd; if (!ed) return false;
+    const cur = ed.plan.items.find((x) => x.id === ed.sel); if (!cur || cur.t !== "r") return false;
+    const k = b.dataset.k, s = Number(b.dataset.s);
+    if (a === "sfxshape") { this._sfSnap(); this._sfRShape(cur, k); ed.vsel = -1; this._render(); return true; }
+    if (a === "sfxrrot") { this._sfSnap(); this._sfRRot(cur); this._render(); return true; }
+    if (a === "sfxvdel") { if (cur.pts && cur.pts.length > 3 && ed.vsel >= 0) { this._sfSnap(); cur.pts.splice(ed.vsel, 1); ed.vsel = -1; this._sfRSync(cur); this._render(); } return true; }
+    if (a === "sfxvx" || a === "sfxvy") { if (cur.pts && ed.vsel >= 0 && cur.pts[ed.vsel]) { this._sfSnap(); cur.pts[ed.vsel][a === "sfxvx" ? 0 : 1] += s; this._sfRSync(cur); this._render(); } return true; }
+    return false;
+  }  /* ================= Modul 11 · Raumformen: Räume sind Rechtecke oder haben freie Eckpunkte (pts) =================
+     x, y, w, h bleiben bei freien Formen der umschließende Rahmen, damit Verschieben, Auswahl und Ränder weiter funktionieren. */
+  _sfRPanel(sel) {
+    const ed = this._sfEd, kind = !sel.pts ? "rect" : "free";
+    const sh = (k, n, d) => `<button data-act="sfxshape" data-k="${k}" class="${k === "rect" && kind === "rect" ? "on" : ""}"><svg viewBox="0 0 24 24"><path d="${d}"></path></svg>${n}</button>`;
+    let o = `<div class="sfshp">${sh("rect", "Rechteck", "M4 5h16v14H4z")}${sh("L", "L-Form", "M4 4h9v7h7v9H4z")}${sh("T", "T-Form", "M4 4h16v6h-5v10H9V10H4z")}${sh("U", "U-Form", "M4 4h5v9h6V4h5v16H4z")}${sh("free", "Frei", "M5 6l8-2 6 6-3 9-9 1z")}</div>`;
+    if (sel.pts) {
+      o += `<button class="btn2" data-act="sfxrrot" style="flex:none;width:100%;margin:4px 0">Raum drehen (90°)</button>`;
+      const v = ed && ed.vsel >= 0 && sel.pts[ed.vsel] ? sel.pts[ed.vsel] : null;
+      if (v) o += `<div class="vrow" style="margin:6px 0"><span>Ecke ${ed.vsel + 1} · x</span><div class="step" style="flex:none"><button data-act="sfxvx" data-s="-10" aria-label="links">${ic("minus", 16)}</button><b>${v[0]}</b><button data-act="sfxvx" data-s="10" aria-label="rechts">${ic("plus", 16)}</button></div></div><div class="vrow" style="margin:6px 0"><span>Ecke ${ed.vsel + 1} · y</span><div class="step" style="flex:none"><button data-act="sfxvy" data-s="-10" aria-label="hoch">${ic("minus", 16)}</button><b>${v[1]}</b><button data-act="sfxvy" data-s="10" aria-label="runter">${ic("plus", 16)}</button></div></div><button class="btn2" data-act="sfxvdel" style="flex:none;width:100%;margin:4px 0"${sel.pts.length <= 3 ? " disabled" : ""}>Ecke löschen</button>`;
+      else o += `<small class="mut" style="display:block;margin:4px 0">Ecken ziehen, „+“ auf einer Kante fügt eine Ecke hinzu. Ecke antippen für genaue Werte.</small>`;
+    }
+    return o;
   }
   /* ================= Automatische Sicherung auf einen Homeserver (WebDAV, SMB, Ordner) ================= */
   _ebkHtml(m) {

@@ -34,10 +34,8 @@
     fl.forEach((f) => { const g = T.l.filter((x) => x.floor === f.id); if (g.length) groups.push([f.n, g]); });
     const rest = T.l.filter((x) => !fl.some((f) => f.id === x.floor)); if (rest.length) groups.push([fl.length ? "Ohne Etage" : "Melder", rest]);
     const ids = new Set(T.l.map((x) => x.id)), H = this._hass.states, cand = Object.keys(H).filter((e) => e.startsWith("binary_sensor.") && !ids.has(e));
-    const hid = S.excl || [];
     return `${this._sfKts(T)}<div class="sfmel">${groups.length ? groups.map(([n, g]) => `<div class="sfgh">${esc(n)}<small>${g.length}</small></div>${g.map((x) => this._sfRow(x)).join("")}`).join("") : `<div class="card sfc"><div class="mut sm">Noch keine Melder gefunden. Füge einen von Hand hinzu oder richte deinen Hersteller unter Integrationen ein.</div></div>`}</div>
-      ${adm ? `<div class="sfgh">Hinzufügen</div>${this._sfSel(cand, "", "sfxmadd", "", "+ Melder (Binärsensor) hinzufügen", /rauch|smoke|wasser|water|leck|gas|co|hitze|heat/i)}` : ""}
-      ${hid.length ? `<div class="sfgh">Ausgeblendet<small>${hid.length}</small></div>${hid.map((x) => `<div class="sfrow o"><span class="sfri">${ic("eyeOff", 20)}</span><span class="sfrt"><b>${esc(x.name || x.id)}</b><small>${esc(x.id)}</small></span>${adm ? `<button class="btn2" data-act="sfxexcl" data-k="${esc(x.id)}" style="flex:none">Einblenden</button>` : ""}</div>`).join("")}` : ""}`;
+      ${adm ? `<div class="sfgh">Hinzufügen</div>${this._sfSel(cand, "", "sfxmadd", "", "+ Melder (Binärsensor) hinzufügen", /rauch|smoke|wasser|water|leck|gas|co|hitze|heat/i)}` : ""}`;
   }
   /* ---- Melder-Seite (ersetzt das Fenster) */
   _sfDetPage(id, T) {

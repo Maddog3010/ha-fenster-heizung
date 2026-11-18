@@ -70,7 +70,7 @@
   _sfPlanInner(fl, edit) {
     const S = this._sfx(), P = this._sfPl(), dm = this._sfDetMap(), items = P.items.filter((i) => i.fl === fl), KN = this._sfxKind(), ed = this._sfEd, sel = edit && ed ? ed.sel : "", ord = ["r", "s", "w", "d", "f", "x", "m"];
     const mk = items.filter((i) => i.t === "m" && i.e && dm[i.e] && dm[i.e].alarm);
-    const inside = (r, m) => m.x >= r.x && m.x <= r.x + r.w && m.y >= r.y && m.y <= r.y + r.h;
+    const inside = (r, m) => this._sfInRoom(r, m.x, m.y, -0.01);
     let out = P.bg[fl] ? `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".6"></image>` : "";
     if (edit) out += `<defs><pattern id="sfgr" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" class="sfgd"></circle></pattern></defs><rect width="800" height="480" fill="url(#sfgr)"></rect>`;
     out += this._sfHalos(items, dm);
@@ -78,7 +78,7 @@
     const sorted = [...items].sort((a, b) => ord.indexOf(a.t) - ord.indexOf(b.t));
     sorted.forEach((i) => {
       const id = `data-id="${i.id}"`, a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
-      if (i.t === "r") out += `<g ${id}><rect class="sfr${mk.some((m) => inside(i, m)) ? " al" : wn.some((m) => inside(i, m)) ? " wn" : ""}" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect><text class="sfrn" x="${i.x + 10}" y="${i.y + 19}">${esc(i.n)}</text></g>`;
+      if (i.t === "r") out += `<g ${id}><path class="sfr${mk.some((m) => inside(i, m)) ? " al" : wn.some((m) => inside(i, m)) ? " wn" : ""}" d="${this._sfRPath(i)}"></path><text class="sfrn" x="${this._sfRLab(i)[0]}" y="${this._sfRLab(i)[1]}">${esc(i.n)}</text></g>`;
       else if (i.t === "s") out += `<g ${id}><rect class="sfst" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${Array.from({ length: Math.max(2, Math.floor(i.h / 14)) }, (_, k) => `<path class="sfsl" d="M${i.x} ${i.y + 7 + k * 14}H${i.x + i.w}"></path>`).join("")}<text class="sfrn" x="${i.x + 6}" y="${i.y + 16}">${esc(i.n)}</text></g>`;
       else if (i.t === "w") out += `<g ${id}><path class="sfw" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path><path class="sfhit" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path></g>`;
       else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect><path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"></path><rect class="sfhit" x="${i.x - 16}" y="${i.y - 16}" width="32" height="32"></rect></g>`;
@@ -93,12 +93,13 @@
       const e = this._sfEscapeFor(mk[0]);
       if (e) out += this._sfEscSvg(e);
     }
-    if (edit && ed && ed.multi && ed.multi.length) items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { out += i.t === "w" ? `<path class="sfsel" d="M${i.x} ${i.y}L${i.x2} ${i.y2}" style="stroke-width:6"></path>` : i.t === "r" || i.t === "s" ? `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>` : `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="22"></circle>`; });
+    if (edit && ed && ed.multi && ed.multi.length) items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { out += i.t === "w" ? `<path class="sfsel" d="M${i.x} ${i.y}L${i.x2} ${i.y2}" style="stroke-width:6"></path>` : i.t === "r" && i.pts ? `<path class="sfsel" d="${this._sfRPath(i)}"></path>` : i.t === "r" || i.t === "s" ? `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>` : `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="22"></circle>`; });
     if (sel) {
       const i = items.find((x) => x.id === sel);
       if (i) {
         const hd = (k, x, y) => `<g data-h="${k}"><circle class="sfhh" cx="${x}" cy="${y}" r="18"></circle><rect class="sfhd" x="${x - 5}" y="${y - 5}" width="10" height="10" rx="2"></rect></g>`;
-        if (i.t === "r" || i.t === "s") out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${hd("br", i.x + i.w, i.y + i.h)}`;
+        if (i.t === "r" && i.pts) out += `<path class="sfsel" d="${this._sfRPath(i)}"></path>${this._sfRHandles(i, ed.vsel)}`;
+        else if (i.t === "r" || i.t === "s") out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${hd("br", i.x + i.w, i.y + i.h)}`;
         else if (i.t === "w") out += hd("p1", i.x, i.y) + hd("p2", i.x2, i.y2);
         else out += `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="${i.t === "m" ? 22 : 20}"></circle>`;
       }
@@ -135,6 +136,7 @@
       : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t]}</b>
         ${sel.t === "r" || sel.t === "s" || sel.t === "x" ? `<div class="sffld"><label>Name</label><input class="osel" data-f="sfxpn" value="${esc(sel.n)}" maxlength="30" placeholder="${sel.t === "x" ? "Text" : "zum Beispiel Küche"}"></div>` : ""}
         ${sel.t === "r" || sel.t === "s" ? `<div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="sfxpw" data-s="-20" aria-label="schmaler">${ic("minus", 16)}</button><b>${sel.w}</b><button data-act="sfxpw" data-s="20" aria-label="breiter">${ic("plus", 16)}</button></div></div><div class="vrow" style="margin:6px 0"><span>Höhe</span><div class="step" style="flex:none"><button data-act="sfxph" data-s="-20" aria-label="niedriger">${ic("minus", 16)}</button><b>${sel.h}</b><button data-act="sfxph" data-s="20" aria-label="höher">${ic("plus", 16)}</button></div></div>` : ""}
+        ${sel.t === "r" ? this._sfRPanel(sel) : ""}
         ${sel.t === "d" || sel.t === "f" ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
         ${sel.t === "m" ? `<div class="sffld"><label>Melder (aus den Einstellungen)</label>${this._sfSel(T.l.map((d) => d.id), sel.e || "", "sfxpe", "", "– keiner –")}</div>` : ""}
         ${sel.t === "m" ? `<div class="vrow" style="margin:6px 0"><span>Reichweite<small class="mut" style="display:block">Wie weit der Melder im Plan reicht</small></span><div class="step" style="flex:none"><button data-act="sfxprg" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${num(this._sfRangeM(sel, sel.e ? dm[sel.e] : null), 1)} m</b><button data-act="sfxprg" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>` : ""}${sel.t === "r" ? `<div class="sffld"><label>Raum aus Modul 1 (optional)</label><div class="gschips"><button class="gsch ${!sel.lk ? "sel" : ""}" data-act="sfxplkset" data-v="">keiner</button>${this._sfRoomNames().map((n) => `<button class="gsch ${sel.lk === n ? "sel" : ""}" data-act="sfxplkset" data-v="${esc(n)}">${esc(n)}</button>`).join("")}</div></div>` : ""}
@@ -284,10 +286,10 @@
     if (a === "sfxplace") { const d = this._sfDetMap()[k]; if (d) { const it = { id: uid(), fl, t: "m", x: 400, y: 240, r: 0, n: "", e: k }; P.items.push(it); ed.sel = it.id; this._render(); } return true; }
     if (!cur) return false;
     if (a === "sfxpdel") { P.items = P.items.filter((x) => x.id !== cur.id); ed.sel = ""; this._render(); return true; }
-    if (a === "sfxpdup") { const c = { ...cur, id: uid(), x: cur.x + 20, y: cur.y + 20 }; if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m") c.e = ""; P.items.push(c); ed.sel = c.id; this._render(); return true; }
+    if (a === "sfxpdup") { const c = { ...cur, id: uid(), x: cur.x + 20, y: cur.y + 20 }; if (c.pts) c.pts = c.pts.map((q) => [q[0] + 20, q[1] + 20]); if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m") c.e = ""; P.items.push(c); ed.sel = c.id; this._render(); return true; }
     if (a === "sfxprot") { cur.r = ((cur.r || 0) + 90) % 360; this._render(); return true; }
-    if (a === "sfxpw") { cur.w = Math.max(40, Math.min(780, cur.w + s)); this._render(); return true; }
-    if (a === "sfxph") { cur.h = Math.max(40, Math.min(460, cur.h + s)); this._render(); return true; }
+    if (a === "sfxpw") { const nw = Math.max(40, Math.min(780, cur.w + s)); if (cur.t === "r" && cur.pts) this._sfRResize(cur, nw, cur.h); else cur.w = nw; this._render(); return true; }
+    if (a === "sfxph") { const nh = Math.max(40, Math.min(460, cur.h + s)); if (cur.t === "r" && cur.pts) this._sfRResize(cur, cur.w, nh); else cur.h = nh; this._render(); return true; }
     return false;
   }
   _sfxNewChange(t) {
@@ -335,7 +337,7 @@
       const svg = e.target.closest && e.target.closest("svg.sfpe"), ed = this._sfEd; if (!svg || !ed) return;
       e.preventDefault(); const [x, y] = pt(e, svg), P = ed.plan, fl = this._sfFl(), h = e.target.closest("[data-h]"), el = e.target.closest("[data-id]"), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tool = ed.tool;
       this._sfDrag = null; this._sfSnap();
-      if (h && ed.sel) { this._sfDrag = { k: h.dataset.h, id: ed.sel }; }
+      if (h && ed.sel) { let hk = h.dataset.h; const rm = P.items.find((i) => i.id === ed.sel); if (rm && rm.t === "r" && rm.pts && /^a\d+$/.test(hk)) { const k0 = Number(hk.slice(1)), A = rm.pts[k0], B = rm.pts[(k0 + 1) % rm.pts.length]; if (rm.pts.length < 16) { rm.pts.splice(k0 + 1, 0, [Math.round((A[0] + B[0]) / 20) * 10, Math.round((A[1] + B[1]) / 20) * 10]); hk = "v" + (k0 + 1); } } if (/^v\d+$/.test(hk)) ed.vsel = Number(hk.slice(1)); this._sfDrag = { k: hk, id: ed.sel }; }
       else if (tool === "select" && ed.mm) { ed.multi = ed.multi || []; if (el) { const id = el.dataset.id, pre = ed.multi.includes(id); if (!pre) ed.multi.push(id); ed.sel = ""; const os = {}; P.items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { os[i.id] = JSON.parse(JSON.stringify(i)); }); this._sfDrag = { k: "movem", os, sx: x, sy: y, moved: false, off: pre ? id : "" }; } else ed.multi = []; paint(); }
       else if (tool === "select") { ed.multi = []; if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false }; } else ed.sel = ""; paint(); }
       else if (tool === "r" || tool === "s" || tool === "w") {
@@ -350,9 +352,10 @@
     });
     window.addEventListener("pointermove", (e) => {
       const d = this._sfDrag, ed = this._sfEd, svg = sr.querySelector("svg.sfpe"); if (!d || !ed || !svg) return;
-      if (d.k === "movem") { e.preventDefault(); const [mx, my] = pt(e, svg), dx = g(mx - d.sx), dy = g(my - d.sy); if (dx || dy) d.moved = true; ed.plan.items.forEach((i) => { const o = d.os[i.id]; if (!o) return; i.x = o.x + dx; i.y = o.y + dy; if (i.t === "w") { i.x2 = o.x2 + dx; i.y2 = o.y2 + dy; } }); paint(); return; }
+      if (d.k === "movem") { e.preventDefault(); const [mx, my] = pt(e, svg), dx = g(mx - d.sx), dy = g(my - d.sy); if (dx || dy) d.moved = true; ed.plan.items.forEach((i) => { const o = d.os[i.id]; if (!o) return; i.x = o.x + dx; i.y = o.y + dy; if (o.pts) i.pts = o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (i.t === "w") { i.x2 = o.x2 + dx; i.y2 = o.y2 + dy; } }); paint(); return; }
       const [x, y] = pt(e, svg), it = ed.plan.items.find((i) => i.id === d.id); if (!it) return; e.preventDefault();
-      if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } }
+      if (/^v\d+$/.test(d.k)) { if (it.pts) { it.pts[Number(d.k.slice(1))] = [g10(x), g10(y)]; this._sfRSync(it); } }
+      else if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (d.o.pts) it.pts = d.o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } }
       else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const dx = Math.abs(X - it.x), dy = Math.abs(Y - it.y); if (dx > dy * 4) Y = it.y; else if (dy > dx * 4) X = it.x; it.x2 = X; it.y2 = Y; } else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
       else if (d.k === "p1") { it.x = g(x); it.y = g(y); } else if (d.k === "p2") { it.x2 = g(x); it.y2 = g(y); }
       paint();

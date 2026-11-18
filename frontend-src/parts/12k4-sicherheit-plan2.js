@@ -12,7 +12,7 @@
     const mark = (x, y, v) => { const k = cell(x, y); if (k >= 0) B[k] = v; };
     const line = (x1, y1, x2, y2) => { const n = Math.max(1, Math.ceil(Math.hypot(x2 - x1, y2 - y1) / 4)); for (let k = 0; k <= n; k++) mark(x1 + ((x2 - x1) * k) / n, y1 + ((y2 - y1) * k) / n, 1); };
     items.forEach((i) => {
-      if (i.t === "r") { line(i.x, i.y, i.x + i.w, i.y); line(i.x + i.w, i.y, i.x + i.w, i.y + i.h); line(i.x + i.w, i.y + i.h, i.x, i.y + i.h); line(i.x, i.y + i.h, i.x, i.y); }
+      if (i.t === "r") { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; line(p[0], p[1], q[0], q[1]); }); }
       else if (i.t === "w") line(i.x, i.y, i.x2, i.y2);
     });
     items.filter((i) => i.t === "d").forEach((i) => { for (let y = i.y - 17; y <= i.y + 17; y += 5) for (let x = i.x - 17; x <= i.x + 17; x += 5) if (Math.hypot(x - i.x, y - i.y) <= 17) mark(x, y, 0); });
@@ -21,7 +21,7 @@
   /* Türen, die nach draußen führen: eine Seite liegt in einem Raum, die andere nicht. Ohne Räume im Plan zählt jede Tür. */
   _sfExitsOf(fl) {
     const items = this._sfPl().items.filter((i) => i.fl === fl), rooms = items.filter((i) => i.t === "r"), doors = items.filter((i) => i.t === "d");
-    const inR = (x, y) => rooms.some((r) => x > r.x + 1 && x < r.x + r.w - 1 && y > r.y + 1 && y < r.y + r.h - 1);
+    const inR = (x, y) => rooms.some((r) => this._sfInRoom(r, x, y, 1));
     const clamp = (x, y) => [Math.max(2, Math.min(798, x)), Math.max(2, Math.min(478, y))];
     const sides = (d) => ((d.r || 0) % 180 === 0 ? [[d.x, d.y - 18], [d.x, d.y + 18]] : [[d.x - 18, d.y], [d.x + 18, d.y]]);
     const out = doors.map((d) => { const [a, b] = sides(d), ia = inR(a[0], a[1]), ib = inR(b[0], b[1]); return { d, out: rooms.length ? (ia && !ib ? clamp(...b) : ib && !ia ? clamp(...a) : null) : clamp(d.x, d.y) }; }).filter((e) => e.out);
@@ -86,7 +86,7 @@
   /* Abdeckung: ein Raum gilt als abgedeckt, wenn ein Melder darin sitzt oder seine Reichweite die Raummitte erreicht */
   _sfCoverage(fl) {
     const P = this._sfPl(), dm = this._sfDetMap(), sc = this._sfScale(), rooms = P.items.filter((i) => i.fl === fl && i.t === "r"), mk = P.items.filter((i) => i.fl === fl && i.t === "m");
-    const cov = (r) => mk.some((m) => (m.x >= r.x && m.x <= r.x + r.w && m.y >= r.y && m.y <= r.y + r.h) || Math.hypot(m.x - (r.x + r.w / 2), m.y - (r.y + r.h / 2)) <= this._sfRangeM(m, m.e ? dm[m.e] : null) * sc);
+    const cov = (r) => { const [cx, cy] = this._sfRCen(r); return mk.some((m) => this._sfInRoom(r, m.x, m.y, -1) || Math.hypot(m.x - cx, m.y - cy) <= this._sfRangeM(m, m.e ? dm[m.e] : null) * sc); };
     return { rooms, covered: rooms.filter(cov), open: rooms.filter((r) => !cov(r)) };
   }
   /* Prüft jeden Melder der Etage: Gibt es einen freien Weg zu einer Außentür? */
@@ -98,7 +98,7 @@
   /* Türen und Fenster rasten an der nächsten Wand oder Raumkante ein (nur waagerecht und senkrecht) */
   _sfSnapOpen(fl, x, y) {
     const items = this._sfPl().items.filter((i) => i.fl === fl), segs = [];
-    items.forEach((i) => { if (i.t === "r") { segs.push([i.x, i.y, i.x + i.w, i.y], [i.x, i.y + i.h, i.x + i.w, i.y + i.h], [i.x, i.y, i.x, i.y + i.h], [i.x + i.w, i.y, i.x + i.w, i.y + i.h]); } else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2]); });
+    items.forEach((i) => { if (i.t === "r") { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; segs.push([p[0], p[1], q[0], q[1]]); }); } else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2]); });
     let best = null;
     segs.forEach(([x1, y1, x2, y2]) => {
       const hor = Math.abs(y1 - y2) < 1, ver = Math.abs(x1 - x2) < 1; if (!hor && !ver) return;
@@ -115,6 +115,7 @@
   _sfRoomNames() { try { return [...new Set(this._collect0().map((r) => r.name).filter(Boolean))]; } catch (_) { return []; } }
   /* Aktionen und Eingaben des Baukastens, die neu sind */
   _sfxP2(a, b) {
+    if (this._sfxR(a, b)) return true;
     const ed = this._sfEd; if (!ed) return false; const P = ed.plan, fl = this._sfFl(), k = b.dataset.k, cur = P.items.find((x) => x.id === ed.sel), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     if (a === "sfxundo") { if (ed.hist && ed.hist.length) { ed.fut = ed.fut || []; ed.fut.push(this._sfSer()); this._sfRestore(ed.hist.pop()); this._render(); } return true; }
     if (a === "sfxredo") { if (ed.fut && ed.fut.length) { ed.hist = ed.hist || []; ed.hist.push(this._sfSer()); this._sfRestore(ed.fut.pop()); this._render(); } return true; }

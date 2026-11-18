@@ -2,6 +2,25 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b16] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 5: Räume im Grundriss sind nicht mehr nur Rechtecke.
+
+### Neu
+- **Raumformen:** Im Feld „Raum“ gibt es Kacheln für Rechteck, L-, T-, U-Form und Frei. Eine Form lässt sich danach über Breite und Höhe skalieren und um 90° drehen.
+- **Ecken bearbeiten:** Beim gewählten Raum lassen sich alle Ecken ziehen. Ein „+“ auf einer Kante fügt eine Ecke hinzu (bis 16). Tippt man eine Ecke an, stellt man x und y genau ein oder löscht sie (mindestens 3 bleiben).
+- **Fluchtweg, Abdeckung und Melder-Zuordnung** nutzen die echte Raumform: Wände folgen den Ecken, ein Melder zählt nur im Raum, wenn er wirklich darin liegt, Türen zum Außenbereich werden korrekt erkannt, und Türen rasten auch an schrägen Kanten ein.
+
+### Behoben
+- **Wartung:** Drückt man den Testknopf am Melder und der Alarm endet nach höchstens 2 Minuten, trägt Modul 11 die Prüfung selbst ein (Haken im Jahresband, „zuletzt geprüft“, Eintrag im Protokoll). Vorher musste man „Geprüft“ von Hand antippen.
+- **Zurück aus einer anderen App:** Die Daten von Modul 11 verschwanden zunächst. Beim Zurückkehren lädt das Modul jetzt sofort neu, behält bis dahin den letzten Stand und versucht es bei einem Verbindungsfehler automatisch noch einmal.
+
+### Geändert
+- **Melder-Seite:** Die Liste „Ausgeblendet“ ist entfernt. Melder hinzufügen geht über das Suchfeld „+ Melder (Binärsensor) hinzufügen“.
+
+### Hinweis
+- Bestehende Pläne bleiben unverändert, Räume ohne Eckpunkte sind weiter Rechtecke. Die Form wird sauber geprüft gespeichert (Eckpunkte ganzzahlig, 3 bis 16, mit Fläche).
+
 ## [2026.11.4b15] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 4: zwei Anzeigefehler auf dem Tablet.

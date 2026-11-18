@@ -501,3 +501,15 @@ def test_plan_20_felder():
 def test_warnname_regex():
     assert S.WARN_NAME.search("binary_sensor.rohr_roth_bayern_warnung_1 Rohr (Roth - Bayern) Warnung 1")
     assert not S.WARN_NAME.search("binary_sensor.rauchmelder_kueche Rauchmelder Küche")
+
+
+def test_raum_form_pts():
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {"id": "r1", "fl": "eg", "t": "r", "x": 0, "y": 0, "w": 5, "h": 5, "pts": [[40, 40], [300, 40], [300, 150], [440, 150], [440, 300], [40, 300]]},
+        {"id": "r2", "fl": "eg", "t": "r", "x": 10, "y": 10, "w": 100, "h": 80, "pts": [[0, 0], [10, 10]]},
+        {"id": "r3", "fl": "eg", "t": "r", "x": 10, "y": 10, "w": 100, "h": 80, "pts": [[0, 0], [10, 0], [20, 0]]},
+        {"id": "r4", "fl": "eg", "t": "r", "x": 10, "y": 10, "w": 100, "h": 80, "pts": "x"}]})
+    it = {i["id"]: i for i in p["items"]}
+    assert len(it["r1"]["pts"]) == 6 and (it["r1"]["x"], it["r1"]["y"], it["r1"]["w"], it["r1"]["h"]) == (40, 40, 400, 260)
+    assert "pts" not in it["r2"] and "pts" not in it["r3"] and "pts" not in it["r4"]
+    assert it["r4"]["w"] == 100

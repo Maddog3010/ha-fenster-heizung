@@ -61,6 +61,7 @@ MAX_BG = 320_000
 MAX_DEP = 30
 LIFE_NOTE_GAP_S = 7 * 86400
 BHIST_MAX = 60
+TEST_ALARM_MAX_S = 120  # Alarm bis zu dieser Dauer gilt als Test per Testknopf
 THIST_MAX = 24  # Prüfungen und Batterietausche je Melder fürs Jahresband
 BHIST_GAP_S = 20 * 3600
 ITEM_T = ("r", "w", "d", "f", "s", "x", "m")
@@ -206,6 +207,19 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
     return d
 
 
+def _poly(raw: Any) -> list[list[int]] | None:
+    """Eckpunkte eines Raums (3 bis 16, ganze Zahlen). Ungültig oder ohne Fläche: None, dann gilt das Rechteck."""
+    if not isinstance(raw, list) or not 3 <= len(raw) <= 16:
+        return None
+    out: list[list[int]] = []
+    for p in raw:
+        if not (isinstance(p, (list, tuple)) and len(p) == 2):
+            return None
+        out.append([int(_num(p[0], -50, 1200, 0)), int(_num(p[1], -50, 1200, 0))])
+    area = sum(out[i][0] * out[(i + 1) % len(out)][1] - out[(i + 1) % len(out)][0] * out[i][1] for i in range(len(out)))
+    return out if abs(area) >= 400 else None
+
+
 def clean_plan(raw: Any) -> dict[str, Any]:
     r = raw if isinstance(raw, dict) else {}
     floors, ids = [], set()
@@ -234,6 +248,11 @@ def clean_plan(raw: Any) -> dict[str, Any]:
             o["rg"] = round(_num(it.get("rg"), 0, 15, 0) * 2) / 2  # Reichweite in Metern, 0 = je nach Art
         if it["t"] == "r":
             o["lk"] = str(it.get("lk") or "").strip()[:40]  # Raum aus Modul 1
+            pts = _poly(it.get("pts"))
+            if pts:  # freie Raumform: x, y, w, h bleiben der umschließende Rahmen
+                o["pts"] = pts
+                xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+                o["x"], o["y"], o["w"], o["h"] = min(xs), min(ys), max(xs) - min(xs), max(ys) - min(ys)
         items.append(o)
     bg = {}
     for k, v in (r.get("bg") if isinstance(r.get("bg"), dict) else {}).items():
@@ -741,8 +760,16 @@ class SicherheitManager:
                     s["rep"] = now_ts
                     await self._notify("alarm", f"ALARM läuft noch: {d['kind']}", f"{d['name']}{where} meldet weiter Alarm.", data=self._push(d["id"]))
             elif not d["alarm"] and s["a"] and not d["off"]:
+                short = 0 < now_ts - (s.get("t0") or 0) <= TEST_ALARM_MAX_S
                 s.update({"a": False, "since": "", "stage": 0, "t0": 0.0, "ack": "", "why": ""})
                 self._add(f"Alarm beendet: {d['name']}{where}.", "ok")
+                if short and self.cfg["test"]["on"]:  # kurzer Alarm = Testknopf am Melder gedrückt
+                    self.last_test = now.isoformat()
+                    self.tested[d["id"]] = now.isoformat()
+                    self.thist.setdefault(d["id"], []).append(now.isoformat())
+                    del self.thist[d["id"]][:-THIST_MAX]
+                    self._notes.pop("test", None)
+                    self._add(f"Test erkannt und eingetragen: {d['name']}{where}.", "ok")
                 await self._notify("end", f"Alarm beendet: {d['kind']}", f"{d['name']}{where} meldet keinen Alarm mehr.")
                 self._fire("ende", d["id"])
                 self._save()

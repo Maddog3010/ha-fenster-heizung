@@ -140,7 +140,7 @@
     if (!this._hass || this._sfxBusy) return;
     if (!force && this._sfxD && Date.now() - this._sfxD.ts < 15000) return;
     this._sfxBusy = true;
-    this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { error: true }, ts: Date.now() }; })
+    this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxRetry = 0; this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { const o = this._sfxD && this._sfxD.d && this._sfxD.d.cfg ? this._sfxD.d : null; this._sfxD = { d: o || { error: true }, ts: o ? Date.now() - 12000 : Date.now() }; this._sfxRetry = (this._sfxRetry || 0) + 1; if (this._sfxRetry <= 4) setTimeout(() => this._sfxLoad(true), 2500); })
       .finally(() => { this._sfxBusy = false; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } });
   }
   _sfxVisible() { return !!(this._modal && (this._modal.type === "sfset" || this._modal.type === "sfdet" || this._modal.type === "sfalarm")) || (!!this._mdActive && this._mdActive() === "sf" && !this._stOpen); }

@@ -94,6 +94,7 @@ class FensterHeizungPanel extends HTMLElement {
     const m = this._mdActive && this._mdActive();
     if (m === "ev") { this._wbLoad(true); this._wbStatLoad(true); this._wbFcLoad(true); }
     if (m === "gs") this._gsLoad(true);
+    if (m === "sf") { this._sfxRetry = 0; this._sfxLoad(true); }
     if (m === "ef" && this._efxD && this._efxD.err) this._efxLoad(true);
   }
   set hass(h) {
