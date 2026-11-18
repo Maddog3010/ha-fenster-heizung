@@ -20,6 +20,7 @@ from .const import CONF_AIR_EVERY, CONF_AIR_HINT, CONF_HUMIDITY, CONF_ROOM_TEMP,
 from .solar import SIGNAL_SOLAR
 from .tarif import SIGNAL_TARIF
 from .wetter import KEYS as WX_KEYS, NAMES as WX_NAMES, SIGNAL_WX
+from . import muell_ent
 
 SP_OWNER = "sp_sensor_owner"
 SP_KEYS = ("sp_today", "sp_tomorrow", "sp_rest", "sp_corr", "sp_best")
@@ -42,6 +43,8 @@ async def async_setup_entry(
     if store.get(SP_OWNER) in (None, entry.entry_id):  # E6/F7: Solar-Werte nur einmal, am ersten Raum
         store[SP_OWNER] = entry.entry_id
         extra = [SolarSensor(k) for k in SP_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS] + [TarifSensor(k) for k in TF_KEYS]
+    if store.get(SP_OWNER) == entry.entry_id:
+        muell_ent.register(hass, "sensor", async_add_entities, MuellSensor, entry.async_on_unload)  # Modul 17: Entitäten entstehen mit dem Addon
     async_add_entities(
         [PausedMinutesSensor(entry, key, scope) for key, scope in SCOPES.items()]
         + [PlanTargetSensor(entry), ModeSensor(entry)]
@@ -453,3 +456,30 @@ class PlanTargetSensor(_Base):
     @property
     def extra_state_attributes(self) -> dict:
         return self._ctrl.plan_info()
+
+
+class MuellSensor(muell_ent._Base, SensorEntity):
+    """Modul 17: nächste Abholung (Datum), je Abfallart Tage bis zur Abholung, Vorrat Säcke."""
+
+    def __init__(self, key: str) -> None:
+        muell_ent._Base.__init__(self, "sensor", key)
+        if key == "naechste_abholung":
+            self._attr_device_class = SensorDeviceClass.DATE
+        elif key == "gelbe_saecke":
+            self._attr_native_unit_of_measurement = "Stk."
+        else:
+            self._attr_native_unit_of_measurement = UnitOfTime.DAYS
+
+    @property
+    def native_value(self):
+        r = self._row()
+        if not r:
+            return None
+        v = r.get("value")
+        if self._key == "naechste_abholung" and isinstance(v, str):
+            from datetime import date
+            try:
+                return date.fromisoformat(v)
+            except ValueError:
+                return None
+        return v

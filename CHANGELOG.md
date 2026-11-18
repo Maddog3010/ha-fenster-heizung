@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b6] - 2026-11-18
+
+### Neu
+- **Modul 17 · Müllabfuhr ist stabil (v1.0, Addon).** Vier Stufen auf einmal:
+  - **v0.6 Erinnern:** **Knöpfe in der Meldung** der Home-Assistant-App („Steht draußen“, „Später“, „Wieder drin“), **Erinnerung am Morgen** des Abholtags (nur wenn die Tonne noch nicht draußen steht), **Tonne reinholen** nach der Abholung mit Meldung, Licht mit wählbarer Helligkeit, wechselnder Farbe bei mehreren Tonnen und danach **wieder wie vorher**, große Karte auf dem **Wandtablet**.
+  - **v0.8 Haushalt:** **Wer ist dran?** (Personen im Wechsel je Abholung oder Woche, Meldung an die Person, die dran und zu Hause ist, Tauschen mit einem Tipp), **Diesmal nicht** (Leerung auslassen), **Verlauf** je Abholung (wann, wie, wer), **Kosten** wahlweise nur für Tonnen, die draußen standen, Hinweis vor dem **Urlaub** (Modul 1), bei **Sturm** wahlweise erst morgens erinnern (Modul 9), Hitze-Tipp für die Biotonne.
+  - **v0.9:** **Jahresübersicht** je Abfallart, **Vorrat Säcke** mit Meldung, **Labs „Automatisch erkennen“** (Sensor an der Tonne oder am Stellplatz), Ereignis `strom_waerme_muell`.
+  - **v1.0:** **Echte Entitäten** im Gerät „Strom & Wärme · Müllabfuhr“: nächste Abholung, Tage je Abfallart, Vorrat, Binärsensoren „Tonne rausstellen“ und „Tonne reinholen“ (Entitäts-IDs `…strom_waerme_muell_…` wie bisher).
+- **Startseite:** Hinweise für „Reinholen“ (mit „Wieder drin“), Sondertermine, Urlaub und Vorrat.
+- **Tags & Karten:** neue Aktion „Tonne ist wieder drin“; Scans landen als „per Tag“ im Verlauf.
+- README: Abschnitt „Modul 17 im Detail“.
+
+### Geändert
+- Neue Plattform **binary_sensor** für die Integration. Nach dem Update Home Assistant einmal neu starten.
+
+### Behoben
+- Modul 17 auf dem Handy: Die 14-Tage-Leiste machte die Seite zu breit, Banner und Knopf wurden abgeschnitten.
+
 ## [2026.11.4b5] - 2026-11-17
 
 Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.7, Beta): Stufe 1 (Technik) und Stufe 2 (Neue Optik) aus dem Konzept. Alarme, Aktionen und Einstellungen arbeiten wie bisher.

@@ -5,8 +5,8 @@
          HD-Bilder je Abfallart. */
 export default (api) => {
   const { ic, esc, num } = api;
-  const MU_NAMES = { tonnen: "Tonnen", leiste: "14 Tage", unk: "Nicht erkannt", next: "Nächste Abholungen", cal: "Kalender", rem: "Erinnerung am Vorabend", hint: "Hinweise", cost: "Kosten" };
-  const MU_WIDE = ["tonnen", "leiste", "unk", "cost"];
+  const MU_NAMES = { tonnen: "Tonnen", leiste: "14 Tage", unk: "Nicht erkannt", next: "Nächste Abholungen", cal: "Kalender", wer: "Wer ist dran", vorrat: "Vorrat", rem: "Erinnerungen", hint: "Hinweise", hist: "Verlauf", jahr: "Jahresübersicht", cost: "Kosten" };
+  const MU_WIDE = ["tonnen", "leiste", "unk", "jahr", "cost"];
   const DAYS_SHORT_MU = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
   const COLORS = ["#78716c", "#a8531a", "#3b82f6", "#eab308", "#16a34a", "#65a30d", "#a855f7", "#ef4444", "#0ea5e9", "#ec4899"];
   const IMGS = { tonne: "Tonne", sack: "Sack", glas: "Container", gruen: "Grünschnitt", sperr: "Sperrmüll", schad: "Schadstoff", baum: "Baum" };
@@ -115,14 +115,43 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
 .muym span{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}.muym i{display:block;aspect-ratio:1;border-radius:2px;background:rgba(127,127,127,.12)}.muym i.t{outline:1px solid var(--teal)}
 .muleg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:.78rem;color:var(--mut)}.muleg span{display:inline-flex;gap:5px;align-items:center}.muleg u{width:10px;height:10px;border-radius:3px}
 .mustep{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.mustep>div{position:relative;display:flex;flex-direction:column;gap:4px;padding:14px;border-radius:14px;background:rgba(127,127,127,.07)}.mustep .n{position:absolute;right:12px;top:10px;font-weight:800;color:var(--teal)}.mustep small{color:var(--mut)}
+.mut2.back{background:color-mix(in srgb,#7dd3fc 12%,transparent)}.mut2.back em{color:#7dd3fc}
+.mubn.back .mubt .k{color:#7dd3fc}.mubtn.back{background:#7dd3fc;color:#082f49}
+.mutab{display:flex;align-items:center;gap:22px;padding:18px 24px;margin:0 0 16px;border-radius:22px;background:color-mix(in srgb,var(--amber) 15%,var(--card));color:var(--primary-text-color)}
+.mutab.back{background:color-mix(in srgb,#7dd3fc 13%,var(--card))}.mutabi{display:flex;gap:4px;flex:none}.mutabt{flex:1;min-width:0}.mutabt b{display:block;font-size:1.5rem;color:var(--amber)}.mutab.back .mutabt b{color:#7dd3fc}.mutabt span{color:var(--mut);font-size:1rem}
+.mutab .mubtn{margin:0;padding:14px 22px;font-size:1.1rem;border-radius:16px}
+@media (max-width:640px){.mutab{flex-wrap:wrap}.mutab .mubtn{width:100%;justify-content:center}}
+.mubn.mob .mubs{height:124px}
+.mublks>section{min-width:0}
+.muyl{display:flex;flex-direction:column;gap:8px}.muyr{display:grid;grid-template-columns:auto minmax(120px,1fr) 2fr auto;gap:10px;align-items:center}
+.muyn b{display:block;font-size:.9rem}.muyn small{color:var(--mut);font-size:.74rem}
+.muyb{display:flex;height:10px;border-radius:5px;overflow:hidden;background:rgba(127,127,127,.12)}.muyb i{display:block;height:100%}.muyb .o{background:var(--teal)}.muyb .s{background:var(--gray)}.muyb .n{background:var(--amber)}.muyb .u{background:rgba(127,127,127,.35)}
+.muyv{text-align:right;font-weight:800;font-size:1.05rem;line-height:1}.muyv small{display:block;font-weight:500;font-size:.68rem;color:var(--mut)}
+.muyt{display:flex;align-items:baseline;gap:10px;margin:0 0 12px}.muyt b{font-size:1.6rem;color:var(--teal)}.muyt small{color:var(--mut)}
+@media (max-width:640px){.muyr{grid-template-columns:auto 1fr auto}.muyb{grid-column:1/-1}}
+.mubag{display:flex;flex-wrap:wrap;gap:14px;align-items:center}.mubag>div:nth-child(2){flex:1;min-width:180px}.mubag b{font-size:1.8rem;display:block}.mubag b small{font-size:.85rem;font-weight:500;color:var(--mut)}.mubag span{color:var(--mut);font-size:.84rem}.mubag.low b{color:var(--amber)}
+.mubagb{display:flex;gap:8px;align-items:center;width:100%}.mubagb .btn2{white-space:nowrap;flex:none}.mubagb .osel{width:80px;margin:0;text-align:center}.mubagb .ibtn{font-size:1.2rem;font-weight:700}
+.muents{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px}.muents code{font-size:.72rem;padding:2px 6px;border-radius:6px;background:rgba(127,127,127,.12)}
+
+.mubtns{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}.mubtns .mubtn{margin:0}
+.mubtn2{border:1px solid rgba(255,255,255,.35);background:transparent;color:#e5e7eb;border-radius:12px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+.mubn.mob .mubtns{flex-direction:column;align-items:stretch}.mubn.mob .mubtn2{text-align:center}
+.mut2.skip{opacity:.75}.mut2.skip em{color:var(--gray)}.mut2.skip .muimg{filter:grayscale(.7)}
+.musk{margin-top:2px;font-size:.78rem}
+.muturns{display:flex;flex-direction:column;gap:8px}.muturn{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:rgba(127,127,127,.07)}
+.muav{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:hsl(var(--h) 55% 42%)}
+.mutt{flex:1;min-width:0}.mutt b{display:block}.mutt small{color:var(--mut);font-size:.78rem}.mutk{display:flex;gap:2px}.muturn .gsch{display:inline-flex;gap:5px;align-items:center;padding:4px 10px;font-size:.76rem}
+.muhl{display:flex;flex-direction:column}.muhr{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.muhr:last-child{border:0}
+.muht{flex:1}.muht b{display:block;font-size:.9rem}.muht small,.muhs small{color:var(--mut);font-size:.76rem}.muhs{text-align:right}.muhs em{display:block;font-style:normal;font-weight:700;font-size:.82rem}.muhs em.ok{color:var(--teal)}.muhs em.sk{color:var(--gray)}.muhs em.no{color:var(--mut);font-weight:600}
+.mus14r{max-width:100%}
 `;
 
   const Mixin = class {
   /* Modul 17: Müllabfuhr (Addon). Termine, Ampel, Erinnerung, Ansage und Licht laufen im Python-Teil des Addons. */
-  _muDef() { return { v: 2, cals: [], cal: "", time: "18:30", kinds: KDEF.map((k) => ({ ...k })), ignore: [], snooze: 60, push: { on: false, to: [] }, cost: { on: false, fee: 0, incl: 0 }, wx: true, tts: { on: false, ent: "", player: "", text: "Morgen wird {tonnen} abgeholt." }, light: { on: false, ent: "" }, look: { old: false, motion: "dezent" } }; }
+  _muDef() { return { v: 2, cals: [], cal: "", time: "18:30", kinds: KDEF.map((k) => ({ ...k })), ignore: [], snooze: 60, push: { on: false, to: [], btn: true }, morning: { on: false, time: "06:30" }, back: { on: false, time: "17:00" }, cost: { on: false, fee: 0, incl: 0, count: "cal" }, wx: true, wxmode: "hint", vac: true, ha: true, labs_auto: false, bags: { on: false, kind: "gelb", per: 1, warn: 5 }, turn: { on: false, mode: "pickup", home: true, people: [], since: "" }, tts: { on: false, ent: "", player: "", text: "Morgen wird {tonnen} abgeholt." }, light: { on: false, ent: "", bri: 60, restore: true }, look: { old: false, motion: "dezent" } }; }
   _mu() {
     const d = (this._muD && this._muD.d) || {}, df = this._muDef(), c = d.cfg || {};
-    return { ...d, cfg: { ...df, ...c, kinds: Array.isArray(c.kinds) && c.kinds.length ? c.kinds : df.kinds, cals: Array.isArray(c.cals) ? c.cals : df.cals, ignore: Array.isArray(c.ignore) ? c.ignore : [], push: { ...df.push, ...(c.push || {}) }, cost: { ...df.cost, ...(c.cost || {}) }, tts: { ...df.tts, ...(c.tts || {}) }, light: { ...df.light, ...(c.light || {}) }, look: { ...df.look, ...(c.look || {}) } } };
+    return { ...d, cfg: { ...df, ...c, kinds: Array.isArray(c.kinds) && c.kinds.length ? c.kinds : df.kinds, cals: Array.isArray(c.cals) ? c.cals : df.cals, ignore: Array.isArray(c.ignore) ? c.ignore : [], push: { ...df.push, ...(c.push || {}) }, morning: { ...df.morning, ...(c.morning || {}) }, back: { ...df.back, ...(c.back || {}) }, cost: { ...df.cost, ...(c.cost || {}) }, bags: { ...df.bags, ...(c.bags || {}) }, turn: { ...df.turn, ...(c.turn || {}), people: Array.isArray((c.turn || {}).people) ? c.turn.people : [] }, tts: { ...df.tts, ...(c.tts || {}) }, light: { ...df.light, ...(c.light || {}) }, look: { ...df.look, ...(c.look || {}) } } };
   }
   _muImg(img, color, size, cls) { return muImg(img, color, size, cls); }
   _muLoad(force) {
@@ -130,7 +159,7 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
     if (!force && this._muD && Date.now() - this._muD.ts < 20000) return;
     this._muBusy = true;
     this._hass.callWS({ type: "fenster_heizung/mu_get" }).then((r) => { if (!this._muT) this._muD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._muD = { d: { error: "Keine Antwort von Home Assistant" }, ts: Date.now() }; })
-      .finally(() => { this._muBusy = false; if (this._muVisible()) { this._render(); if (this._modal && this._modal.type === "muset") this._renderModal(); } });
+      .finally(() => { this._muBusy = false; if (this._muWant) { this._muWant = false; this._render(); return; } if (this._muVisible()) { this._render(); if (this._modal && this._modal.type === "muset") this._renderModal(); } });
   }
   _muVisible() { return !!(this._modal && this._modal.type === "muset") || (!!this._mdActive && this._mdActive() === "mu" && !this._stOpen && !this._igOpen && !this._labOpen); }
   _muHasWcs() { return Object.values(this._hass.entities || {}).some((e) => e && e.platform === "waste_collection_schedule"); }
@@ -147,7 +176,7 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
     if (!quiet) { this._render(); if (this._modal && this._modal.type === "muset") this._renderModal(); }
   }
   _muPatch(fn, quiet) { const c = JSON.parse(JSON.stringify(this._mu().cfg)); fn(c); this._muSave(c, quiet); }
-  _muCall(act, bin) { this._hass.callWS({ type: "fenster_heizung/mu_act", act, ...(bin ? { bin } : {}) }).then((r) => { this._muD = { d: r || {}, ts: Date.now() }; this._render(); }).catch(() => this._toast("Das hat nicht geklappt")); }
+  _muCall(act, bin, extra) { this._hass.callWS({ type: "fenster_heizung/mu_act", act, ...(bin ? { bin } : {}), ...(extra || {}) }).then((r) => { this._muD = { d: r || {}, ts: Date.now() }; this._render(); }).catch(() => this._toast("Das hat nicht geklappt")); }
   _muDate(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" }) : ""; }
   _muWhen(d) { return d == null ? "" : d === 0 ? "heute" : d === 1 ? "morgen" : `in ${d} Tagen`; }
   _muK(c, id) { return (c.kinds || []).find((k) => k.id === id); }
@@ -177,20 +206,35 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
     if (a === "muxreset") { this._muLaySave({ order: Object.keys(MU_NAMES), hidden: [] }); this._toast("Anordnung zurückgesetzt"); return; }
     if (a === "muxstore") { this._modal = null; this._renderModal(); this._sto = { q: "", c: "haus" }; this._igOpen = true; this._labOpen = false; this._render(); return; }
     if (a === "muxked") { this._muEd = this._muEd === k ? null : k; this._renderModal(); return; }
-    if (a === "muxdoneall") { const S = this._mu(); (S.bins || []).filter((x) => ["out", "today"].includes(x.state)).forEach((x) => this._muCall("done", x.k)); return; }
+    if (a === "muxdoneall") { this._muCall("doneall"); return; }
+    if (a === "muxin") { this._muCall("in", k); return; }
+    if (a === "muxskip") { this._muCall("skip", k); this._toast("Diesmal nicht: keine Erinnerung, zählt nicht als Leerung"); return; }
+    if (a === "muxunskip") { this._muCall("unskip", k); return; }
+    if (a === "muxtake") { this._muCall("take", "", { d: b.dataset.d, pid: k || "" }); return; }
+    if (a === "muxbagd") { const n = Math.max(0, (this._mu().bags || 0) + Number(b.dataset.v || 0)); this._muCall("bags", "", { n }); return; }
+    if (a === "muxinall") { this._muCall("in"); this._toast("Alles wieder drin"); return; }
     if (a === "muxday") { this._muDay = this._muDay === k ? null : k; this._render(); return; }
     if (a === "muxmon") { this._muMon = Number(k) || 0; this._muCalM = "m"; this._render(); return; }
     if (a === "muxcalm") { this._muCalM = k; this._render(); return; }
     if (a === "muxunkall") { this._muUnkAll = !this._muUnkAll; this._render(); return; }
     this._muPatch((c) => {
       const K = this._muK(c, k);
-      if (a === "muxsw") { if (k.startsWith("bin:")) { const x = this._muK(c, k.slice(4)); if (x) x.on = !x.on; } else if (k === "push") c.push.on = !c.push.on; else if (k === "tts") c.tts.on = !c.tts.on; else if (k === "light") c.light.on = !c.light.on; else if (k === "cost") c.cost.on = !c.cost.on; else if (k === "wx") c.wx = !c.wx; else if (k === "look") c.look.old = !c.look.old; }
+      if (a === "muxsw") { if (k.startsWith("bin:")) { const x = this._muK(c, k.slice(4)); if (x) x.on = !x.on; } else if (k === "push") c.push.on = !c.push.on; else if (k === "tts") c.tts.on = !c.tts.on; else if (k === "light") c.light.on = !c.light.on; else if (k === "cost") c.cost.on = !c.cost.on; else if (k === "wx") c.wx = !c.wx; else if (k === "look") c.look.old = !c.look.old; else if (k === "btn") c.push.btn = !c.push.btn; else if (k === "morning") c.morning.on = !c.morning.on; else if (k === "back") c.back.on = !c.back.on; else if (k === "lrestore") c.light.restore = !c.light.restore; else if (k === "turn") c.turn.on = !c.turn.on; else if (k === "turnhome") c.turn.home = !c.turn.home; else if (k === "vac") c.vac = !c.vac; else if (k === "ha") c.ha = !c.ha; else if (k === "bags") c.bags.on = !c.bags.on; else if (k === "labs") c.labs_auto = !c.labs_auto; }
       else if (a === "muxns") c.push.to = c.push.to.includes(k) ? c.push.to.filter((x) => x !== k) : [...c.push.to, k];
       else if (a === "muxcal") { c.cals = c.cals.includes(k) ? c.cals.filter((x) => x !== k) : c.cals.length >= 3 ? (this._toast("Höchstens drei Kalender"), c.cals) : [...c.cals, k]; c.cal = c.cals[0] || ""; }
       else if (a === "muxcalauto") { c.cals = []; c.cal = ""; }
       else if (a === "muxsnz") c.snooze = Number(k) || 60;
       else if (a === "muxlook") c.look.old = !c.look.old;
       else if (a === "muxmot") c.look.motion = k;
+      else if (a === "muxbri") c.light.bri = Number(k) || 60;
+      else if (a === "muxturnp") { const i = c.turn.people.findIndex((x) => x.pid === k); if (i >= 0) c.turn.people.splice(i, 1); else if (c.turn.people.length < 6) c.turn.people.push({ pid: k, to: "" }); }
+      else if (a === "muxturnm") c.turn.mode = k;
+      else if (a === "muxwxm") c.wxmode = k;
+      else if (a === "muxcount") c.cost.count = k;
+      else if (a === "muxbagk") c.bags.kind = k;
+      else if (a === "muxbagp") c.bags.per = Number(k) || 1;
+      else if (a === "muxbagw") c.bags.warn = Number(k);
+      else if (a === "muxkso" && K) K.sensor_out = b.dataset.v;
       else if (a === "muxkcol" && K) K.color = b.dataset.v;
       else if (a === "muxkimg" && K) K.img = b.dataset.v;
       else if (a === "muxkpre" && K) K.pre = Number(b.dataset.v) || 1;
@@ -205,11 +249,13 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
   }
   _muxChange(t) {
     const f = t.dataset.f, k = t.dataset.k, v = t.value || "";
-    if (f === "muxsel") { this._muPatch((c) => { if (k === "tts_ent") c.tts.ent = v; else if (k === "tts_player") c.tts.player = v; else if (k === "light") c.light.ent = v; }); return true; }
+    if (f === "muxsel") { this._muPatch((c) => { if (k.startsWith("ksensor:")) { const K = this._muK(c, k.slice(8)); if (K) K.sensor = v; } else if (k.startsWith("turnto:")) { const x = c.turn.people.find((q) => q.pid === k.slice(7)); if (x) x.to = v; } else if (k === "tts_ent") c.tts.ent = v; else if (k === "tts_player") c.tts.player = v; else if (k === "light") c.light.ent = v; }); return true; }
     if (f === "muxtime") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) this._muPatch((c) => { c.time = v; }, true); return true; }
+    if (f === "muxmtime" || f === "muxbtime") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) this._muPatch((c) => { (f === "muxmtime" ? c.morning : c.back).time = v; }, true); return true; }
     if (f === "muxkuntil") { if (/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) this._muPatch((c) => { const K = this._muK(c, k); if (K) K.until = v; }, true); return true; }
     if (f === "muxkname") { this._muPatch((c) => { const K = this._muK(c, k); if (K) K.name = v.trim().slice(0, 30) || K.name; }, true); return true; }
     if (f === "muxmatch" || f === "muxkmatch") { this._muPatch((c) => { const K = this._muK(c, k); if (K) K.match = v; }, true); return true; }
+    if (f === "muxbagn") { const n = parseInt(v, 10); if (isFinite(n)) this._muCall("bags", "", { n: Math.max(0, n) }); return true; }
     if (f === "muxtext") { this._muPatch((c) => { c.tts.text = v; }, true); return true; }
     if (f === "muxnum") { const n = Number(String(v).replace(",", ".")); if (isFinite(n)) this._muPatch((c) => { c.cost[k] = Math.max(0, n); }, true); return true; }
     return false;
@@ -243,29 +289,31 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
     const NEW = this._muNew();
     if (!S.cal || (S.error && !(S.bins || []).some((x) => x.next))) return `<style>${CSS}</style>` + (NEW ? this._muEmpty2(S) : this._muSetupCard(S)) + this._muUnkCard(S);
     const rows = S.bins || [], due = rows.filter((x) => ["out", "today"].includes(x.state)), up = rows.filter((x) => x.next);
-    const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", none: "–" };
-    const tile = (x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}" ${tap ? `aria-label="${esc(x.name)}: ${tap === "muxdone" ? "steht draußen" : "wieder zurücknehmen"}"` : ""}>${muImg(x.img, x.color, 34)}<b>${esc(x.name)}</b><small>${lbl[x.state]}</small><i class="when">${x.next ? (x.days <= 1 ? this._muDate(x.next) : this._muWhen(x.days)) : "kein Termin"}</i></${tap ? "button" : "div"}>`; };
+    const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", back: "reinholen", skip: "diesmal nicht", none: "–" };
+    const tile = (x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : x.state === "back" ? "muxin" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}" ${tap ? `aria-label="${esc(x.name)}: ${tap === "muxdone" ? "steht draußen" : "wieder zurücknehmen"}"` : ""}>${muImg(x.img, x.color, 34)}<b>${esc(x.name)}</b><small>${lbl[x.state]}</small><i class="when">${x.state === "back" ? `abgeholt ${this._muDate(x.back_d)}` : x.next ? (x.days <= 1 ? this._muDate(x.next) : this._muWhen(x.days)) : "kein Termin"}</i></${tap ? "button" : "div"}>`; };
     const head = due.length ? `<div class="mulead"><b>${due.some((x) => x.state === "today") ? "Heute wird abgeholt" : "Morgen wird abgeholt"}</b><span>${due.map((x) => esc(x.name)).join(", ")}. Tippe auf die Tonne, wenn sie draußen steht.</span></div>` : `<div class="mulead ok"><b>Nichts zu tun</b><span>${up[0] ? `Als Nächstes: ${esc(up[0].name)}, ${this._muWhen(up[0].days)}.` : "Keine Termine in den nächsten Wochen."}</span></div>`;
     const cache = S.cached ? `<div class="mucache">${ic("alert", 15)}<span>Der Kalender antwortet gerade nicht. Angezeigt werden die Termine vom ${esc(S.ev_ok)} Uhr.</span></div>` : (S.cal_err || []).length ? `<div class="mucache">${ic("alert", 15)}<span>${(S.cal_err || []).map((e) => esc(this._wzName ? this._wzName(e) || e : e)).join(", ")} antwortet nicht.</span></div>` : "";
     const snz = C.snooze || 60, snzT = snz % 60 === 0 ? `${snz / 60} ${snz === 60 ? "Stunde" : "Std."}` : `${snz} Min.`;
     const ampel = `<div class="card"><h2>${ic("trash", 18)}Tonnen</h2>${cache}${head}<div class="mugrid">${rows.map(tile).join("")}</div>${C.push.on && due.some((x) => x.state === "out") ? `<div class="gbtns" style="margin-top:10px">${S.snooze ? `<span class="mut sm">${ic("clock", 14)} Ich erinnere um ${esc(S.snooze_until)} Uhr noch einmal.</span>` : `<button class="btn2" data-act="muxsnooze">${ic("clock", 16)} Später erinnern (${snzT})</button>`}</div>` : ""}</div>`;
-    const next = `<div class="card"><h2>${ic("clock", 18)}Nächste Abholungen</h2><div class="wxl">${up.map((x) => `<div class="wxr ${x.days <= 1 ? "hot" : ""}"><span class="wxi" style="background:none">${muImg(x.img, x.color, 22)}</span><div class="wxm"><div class="wxt"><b>${esc(x.name)}</b><em>${this._muWhen(x.days)}</em></div><small>${this._muDate(x.next)}${x.pre > 1 ? ` · Vorwarnung ${x.pre} Tage vorher` : ""}</small></div></div>`).join("") || `<div class="mut sm">Keine Termine gefunden.</div>`}</div></div>`;
+    const next = `<div class="card"><h2>${ic("clock", 18)}Nächste Abholungen</h2><div class="wxl">${up.map((x) => `<div class="wxr ${x.days <= 1 ? "hot" : ""}"><span class="wxi" style="background:none">${muImg(x.img, x.color, 22)}</span><div class="wxm"><div class="wxt"><b>${esc(x.name)}</b><em>${x.state === "skip" ? "diesmal nicht" : this._muWhen(x.days)}</em></div><small>${this._muDate(x.next)}${x.pre > 1 ? ` · Vorwarnung ${x.pre} Tage vorher` : ""}${(S.turn || []).find((t) => t.d === x.next) ? ` · ${esc(S.turn.find((t) => t.d === x.next).name)} ist dran` : ""}</small>${S.api_v >= 2 && x.days != null && (x.days <= 7 || x.state === "skip") && x.state !== "back" ? (x.state === "skip" ? `<button class="lnk musk" data-act="muxunskip" data-k="${x.k}">Doch abholen</button>` : `<button class="lnk musk" data-act="muxskip" data-k="${x.k}">Diesmal nicht</button>`) : ""}</div></div>`).join("") || `<div class="mut sm">Keine Termine gefunden.</div>`}</div></div>`;
     const M = S.month || {}, first = (new Date(M.y || 2026, (M.m || 1) - 1, 1).getDay() + 6) % 7, n = new Date(M.y || 2026, M.m || 1, 0).getDate(), col = Object.fromEntries(C.kinds.map((x) => [x.id, x.color]));
     const cells = [...Array(first).fill(`<i class="mucd e"></i>`), ...Array.from({ length: n }, (_, i) => { const d = i + 1, bs = (M.d || {})[d] || []; return `<i class="mucd ${d === M.today ? "today" : ""}"><b>${d}</b><span>${bs.map((k) => `<u style="background:${col[k] || "#999"}"></u>`).join("")}</span></i>`; })];
     const mon = new Date(M.y || 2026, (M.m || 1) - 1, 1).toLocaleDateString("de-DE", { month: "long", year: "numeric" });
     const cal = `<div class="card"><h2>${ic("today", 18)}${esc(mon)}</h2><div class="mucal">${DAYS_SHORT_MU.map((d) => `<em>${d}</em>`).join("")}${cells.join("")}</div></div>`;
-    const notes = S.notes || [], nIc = { storm: "windy", frost: "snow", pre: "today" };
+    const notes = S.notes || [], nIc = { storm: "windy", frost: "snow", pre: "today", vac: "suitcase", heat: "sun" };
     const nt = `<div class="card"><h2>${ic("info", 18)}Hinweise</h2>${notes.length ? `<div class="wxl">${notes.map((x) => { const K = x.bin && C.kinds.find((k) => k.id === x.bin); return `<div class="wxr hot"><span class="wxi" ${K ? 'style="background:none"' : ""}>${K && x.k === "pre" ? muImg(K.img, K.color, 22) : ic(nIc[x.k] || "alert", 18)}</span><div class="wxm"><small>${esc(x.text)}</small></div></div>`; }).join("")}</div>` : `<div class="mut sm">Keine Sondertermine, keine Verschiebung und keine Wetterwarnung für die nächsten Abholungen.${C.wx ? "" : " Wetter-Hinweise sind aus."}</div>`}</div>`;
     const info = (ico, t, txt, on) => `<div class="wxr ${on ? "" : "off"}"><span class="wxi">${ic(ico, 18)}</span><div class="wxm"><div class="wxt"><b>${t}</b><em>${on ? "An" : "Aus"}</em></div><small>${txt}</small></div></div>`;
     const nTo = C.push.to.length, tn = (e) => esc(this._wzName(e) || e);
-    const rem = `<div class="card"><h2>${ic("bell", 18)}Erinnerung am Vorabend</h2><div class="wxl">
-      ${info("bell", "Nachricht aufs Handy", C.push.on ? (nTo ? `Um ${esc(C.time)} Uhr an ${nTo} ${nTo === 1 ? "Dienst" : "Dienste"}. „Später“ erinnert nach ${snzT} noch einmal.` : "An, aber noch kein Dienst gewählt (Einstellungen).") : "Aus. In den Einstellungen einschalten.", C.push.on)}
+    const rem = `<div class="card"><h2>${ic("bell", 18)}Erinnerungen</h2><div class="wxl">
+      ${info("bell", "Nachricht aufs Handy", C.push.on ? (nTo ? `Am Vorabend um ${esc(C.time)} Uhr an ${nTo} ${nTo === 1 ? "Dienst" : "Dienste"}${C.push.btn ? ", mit Knöpfen „Steht draußen“ und „Später“" : ""}. „Später“ erinnert nach ${snzT} noch einmal.` : "An, aber noch kein Dienst gewählt (Einstellungen).") : "Aus. In den Einstellungen einschalten.", C.push.on)}
       ${info("music", "Ansage", C.tts.on && C.tts.ent && C.tts.player ? `Sprachausgabe auf ${tn(C.tts.player)} um ${esc(C.time)} Uhr.` : "Sprachausgabe über einen Lautsprecher, zum Beispiel im Flur.", C.tts.on && !!C.tts.ent && !!C.tts.player)}
-      ${info("lamp", "Licht", C.light.on && C.light.ent ? `${tn(C.light.ent)} leuchtet in der Farbe der Tonne ab ${esc(C.time)} Uhr${S.light_on ? " (jetzt an)" : ""}, bis sie als draußen markiert ist.` : "Ein Licht in der Farbe der Tonne, bis sie draußen steht.", C.light.on && !!C.light.ent)}</div>
+      ${info("sun", "Am Abholtag", C.morning.on ? `Um ${esc(C.morning.time)} Uhr noch einmal, wenn die Tonne noch nicht draußen steht.` : "Zweite Erinnerung am Morgen, nur wenn nötig.", C.morning.on && C.push.on)}
+      ${info("trash", "Tonne reinholen", C.back.on ? `Um ${esc(C.back.time)} Uhr nach der Abholung, bis du sie als wieder drin markierst.` : "Erinnert nach der Abholung ans Reinholen.", C.back.on)}
+      ${info("lamp", "Licht", C.light.on && C.light.ent ? `${tn(C.light.ent)} leuchtet mit ${C.light.bri || 60} % in der Farbe der Tonne ab ${esc(C.time)} Uhr${S.light_on ? " (jetzt an)" : ""}, bis sie als draußen markiert ist${C.light.restore ? ", danach wie vorher" : ""}.` : "Ein Licht in der Farbe der Tonne, bis sie draußen steht.", C.light.on && !!C.light.ent)}</div>
       ${adm ? `<div class="gbtns" style="margin-top:8px"><button class="btn2" data-act="muxopen">${ic("sliders", 16)} Einstellungen</button></div>` : ""}</div>`;
-    let cost = ""; if (C.cost.on && S.stats) { const s = S.stats; cost = `<div class="card"><h2>${ic("chart", 18)}Restmüll ${s.year}: Leerungen und Kosten</h2><div class="lugrid">${this._labTile("Bisher geleert", `${s.done} von ${s.total}`, "Restmüll in diesem Jahr")}${this._labTile("Enthalten", s.incl ? String(s.incl) : "–", s.incl ? `noch ${s.free} frei` : "Keine Zahl eingetragen", s.incl && s.free === 0 ? "amber" : "")}${this._labTile("Extra", s.extra != null ? String(s.extra) : "–", s.cost != null ? `${num(s.cost, 2)} € zusätzlich` : "Gebühr je Leerung eintragen", s.extra ? "amber" : "green")}</div></div>`; }
+    let cost = ""; if (C.cost.on && S.stats) { const s = S.stats; cost = `<div class="card"><h2>${ic("chart", 18)}Restmüll ${s.year}: Leerungen und Kosten</h2><div class="lugrid">${this._labTile("Bisher geleert", `${s.done} von ${s.total}`, s.count === "out" ? `nur wenn draußen${s.not_out ? ` · ${s.not_out}× nicht draußen` : ""}` : "Restmüll in diesem Jahr")}${this._labTile("Enthalten", s.incl ? String(s.incl) : "–", s.incl ? `noch ${s.free} frei` : "Keine Zahl eingetragen", s.incl && s.free === 0 ? "amber" : "")}${this._labTile("Extra", s.extra != null ? String(s.extra) : "–", s.cost != null ? `${num(s.cost, 2)} € zusätzlich` : "Gebühr je Leerung eintragen", s.extra ? "amber" : "green")}${s.skipped ? this._labTile("Ausgelassen", String(s.skipped), "„Diesmal nicht“", "green") : ""}</div></div>`; }
     const ampel2 = `<div class="card"><h2>${ic("trash", 18)}Abfallarten<span class="hzrt">${rows.length}</span></h2>${this._muTiles2(S)}${C.push.on && due.some((x) => x.state === "out") ? `<div class="gbtns" style="margin-top:10px">${S.snooze ? `<span class="mut sm">${ic("clock", 14)} Ich erinnere um ${esc(S.snooze_until)} Uhr noch einmal.</span>` : `<button class="btn2" data-act="muxsnooze">${ic("clock", 16)} Später erinnern (${snzT})</button>`}</div>` : ""}</div>`;
-    const B = NEW ? { tonnen: ampel2, leiste: this._muStrip(S), unk: this._muUnkCard(S), next, cal: this._muCal2(S), rem, hint: nt, cost } : { tonnen: ampel, unk: this._muUnkCard(S), next, cal, rem, hint: nt, cost }, lay = this._muLay(), edit = this._edit && adm;
+    const B = NEW ? { tonnen: ampel2, leiste: this._muStrip(S), unk: this._muUnkCard(S), next, cal: this._muCal2(S), wer: this._muTurnCard(S), rem, hint: nt, hist: this._muHistCard(S), jahr: this._muYearCard(S), vorrat: this._muBagCard(S), cost } : { tonnen: ampel, unk: this._muUnkCard(S), next, cal, rem, hint: nt, cost }, lay = this._muLay(), edit = this._edit && adm;
     const eb = edit ? `<div class="banner">${ic("grip", 18)}<div>Ziehe die Karten an den Griffen, um sie zu verschieben. Mit dem Auge blendest du eine Karte aus. <button class="lnk" data-act="muxreset">Zurücksetzen</button></div></div>` : "";
     const blocks = lay.order.filter((id) => B[id] && (edit || !lay.hidden.includes(id))).map((id) => `<section class="blk mub ${MU_WIDE.includes(id) ? "wide" : ""} ${edit ? "editing" : ""} ${lay.hidden.includes(id) ? "hid" : ""}" data-sort="mublk" data-id="${id}">
       ${edit ? `<div class="etag"><span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>${MU_NAMES[id]}<button class="eyeb" data-act="muxhide" data-k="${id}" aria-pressed="${!lay.hidden.includes(id)}" aria-label="${MU_NAMES[id]} ${lay.hidden.includes(id) ? "einblenden" : "ausblenden"}" title="${lay.hidden.includes(id) ? "Einblenden" : "Ausblenden"}">${ic(lay.hidden.includes(id) ? "eyeOff" : "eye", 18)}<span>${lay.hidden.includes(id) ? "Ausgeblendet" : "Sichtbar"}</span></button></div>` : ""}${B[id]}</section>`).join("");
@@ -289,6 +337,8 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
       <div class="vrow"><span>Abholung erledigt ab<small class="mut" style="display:block">Bis dahin zeigt der Abholtag „heute“. Danach geht es zum nächsten Termin.</small></span><span class="tin">${this._tIn(K.until, !adm, `Abholung erledigt ab (${K.name})`)}<input type="hidden" data-f="muxkuntil" data-k="${esc(K.id)}" value="${esc(K.until)}"></span></div>
       <div class="mut sm">Erinnern</div><div class="gschips">${PRE.map(([d, t]) => `<button class="gsch ${K.pre === d ? "sel" : ""}" data-act="muxkpre" data-k="${esc(K.id)}" data-v="${d}" aria-pressed="${K.pre === d}">${t}</button>`).join("")}</div>
       <div class="mut sm" style="margin:-2px 0 8px">${K.pre > 1 ? `Zusätzlich ${esc(preT)} vorher eine Vorwarnung, gut für seltene Termine wie Sperrmüll.` : "Wie bisher am Vorabend."}</div>
+      ${this._mu().cfg.labs_auto ? `<div class="mut sm" style="margin-top:6px">${ic("flask", 13)} Labs · Automatisch erkennen</div>${this._wzSel(Object.keys(this._hass.states).filter((e) => /^(binary_sensor|device_tracker|input_boolean)\./.test(e)), K.sensor || "", "muxsel", `data-k="ksensor:${esc(K.id)}"`, "– kein Sensor –", /tonne|müll|muell|bin|stellplatz/i)}
+      ${K.sensor ? `<div class="mut sm">„Draußen“ heißt, der Sensor meldet:</div><div class="gschips">${[["on", "an / offen"], ["off", "aus / zu"], ["not_home", "nicht zu Hause"], ["home", "zu Hause"]].map(([v, t]) => `<button class="gsch ${K.sensor_out === v ? "sel" : ""}" data-act="muxkso" data-k="${esc(K.id)}" data-v="${v}">${t}</button>`).join("")}</div>` : ""}` : ""}
       <div class="foot2" style="margin-top:4px"><span class="mumv"><button class="ibtn" data-act="muxkup" data-k="${esc(K.id)}" aria-label="Nach oben" ${i === 0 ? "disabled" : ""}>${ic("up", 16)}</button><button class="ibtn" data-act="muxkdn" data-k="${esc(K.id)}" aria-label="Nach unten" ${i === n - 1 ? "disabled" : ""}>${ic("chev", 16)}</button></span><button class="btn2" data-act="muxkdel" data-k="${esc(K.id)}" ${n <= 1 ? "disabled" : ""}>${ic("trash", 16)} Entfernen</button></div></div>`;
     return row + ed;
   }
@@ -323,21 +373,42 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
       <div class="vrow"><span>Am Vorabend erinnern<small class="mut" style="display:block">Eine Nachricht, wenn morgen eine Tonne abgeholt wird und sie noch nicht als draußen markiert ist.</small></span>${sw("push", C.push.on, "Nachricht aufs Handy")}</div>
       ${svc.length ? `<div class="gschips">${svc.map((n) => chip("muxns", n, esc(n), C.push.to.includes(n))).join("")}</div>` : `<div class="mut sm">Es wurde kein Benachrichtigungsdienst (notify.*) gefunden. Die Mobile App von Home Assistant legt einen an.</div>`}
       <div class="mut sm" style="margin:2px 0 6px">${C.push.to.length ? `Gesendet wird an: ${C.push.to.map(esc).join(", ")}.` : "Es ist noch kein Dienst gewählt."}</div>
+      <div class="vrow"><span>Knöpfe in der Meldung<small class="mut" style="display:block">„Steht draußen“, „Später“ und „Wieder drin“ direkt in der Meldung der Home-Assistant-App, ohne das Dashboard zu öffnen.</small></span>${sw("btn", C.push.btn, "Knöpfe in der Meldung")}</div>
       <div class="mut sm" style="margin:8px 0 0">„Später erinnern“ nach</div><div class="gschips">${SNZ.map((m) => chip("muxsnz", String(m), m % 60 === 0 ? `${m / 60} Std.` : `${m} Min.`, (C.snooze || 60) === m)).join("")}</div>
+      <div class="lsec" style="margin-top:12px">${ic("sun", 15)}Am Abholtag</div>
+      <div class="vrow"><span>Erinnerung am Morgen<small class="mut" style="display:block">Nur wenn die Tonne noch nicht als draußen markiert ist. Die letzte Chance, bevor der Wagen kommt.</small></span>${C.morning.on ? `<span class="tin">${this._tIn(C.morning.time, !adm, "Uhrzeit am Morgen")}<input type="hidden" data-f="muxmtime" value="${esc(C.morning.time)}"></span>` : ""}${sw("morning", C.morning.on, "Erinnerung am Morgen")}</div>
+      <div class="vrow"><span>Tonne reinholen<small class="mut" style="display:block">Nach der Abholung zeigt Modul 17 „reinholen“, bis du die Tonne als wieder drin markierst. Zur Uhrzeit kommt eine Meldung.</small></span>${C.back.on ? `<span class="tin">${this._tIn(C.back.time, !adm, "Uhrzeit fürs Reinholen")}<input type="hidden" data-f="muxbtime" value="${esc(C.back.time)}"></span>` : ""}${sw("back", C.back.on, "Tonne reinholen")}</div>
+      <div class="lsec" style="margin-top:12px">${ic("users", 15)}Wer ist dran?</div>
+      <div class="vrow"><span>Im Wechsel<small class="mut" style="display:block">Die Erinnerung geht an die Person, die dran ist, mit ihrem eigenen Benachrichtigungsdienst. Tauschen geht auf der Seite.</small></span>${sw("turn", C.turn.on, "Wer ist dran")}</div>
+      ${C.turn.on ? `<div class="gschips">${(S.people || []).map((q) => chip("muxturnp", q.pid, `${C.turn.people.some((x) => x.pid === q.pid) ? ic("check", 13) + " " : ""}${esc(q.name)}`, C.turn.people.some((x) => x.pid === q.pid))).join("") || `<span class="mut sm">Keine Personen in Home Assistant gefunden.</span>`}</div>
+      ${C.turn.people.map((x, i) => `<div class="vrow"><span>${i + 1}. ${esc(((S.people || []).find((q) => q.pid === x.pid) || {}).name || x.pid)}</span><select class="osel" data-f="muxsel" data-k="turnto:${esc(x.pid)}" style="width:55%;flex:none;margin:0" ${adm ? "" : "disabled"}><option value="">– alle gewählten Dienste –</option>${svc.map((n) => `<option value="${esc(n)}" ${x.to === n ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></div>`).join("")}
+      <div class="gschips">${chip("muxturnm", "pickup", "Je Abholung", C.turn.mode !== "week")}${chip("muxturnm", "week", "Jede Woche", C.turn.mode === "week")}</div>
+      <div class="vrow"><span>Nur wer zu Hause ist<small class="mut" style="display:block">Ist die Person zur Erinnerung nicht da, bekommt sie die nächste. Ist niemand da, alle.</small></span>${sw("turnhome", C.turn.home, "Nur wer zu Hause ist")}</div>` : ""}
       <div class="lsec" style="margin-top:12px">${ic("music", 15)}Ansage</div>
       <div class="vrow"><span>Sprachausgabe<small class="mut" style="display:block">Sagt die Erinnerung über einen Lautsprecher an. Im Text steht {tonnen} für die Tonnen.</small></span>${sw("tts", C.tts.on, "Ansage")}</div>
       ${C.tts.on ? `${this._wzSel(tts, C.tts.ent, "muxsel", 'data-k="tts_ent"', "– Sprachdienst (tts) wählen –", /cloud|piper|google|tts/i)}${this._wzSel(pl, C.tts.player, "muxsel", 'data-k="tts_player"', "– Lautsprecher wählen –", /flur|wohn|küche|speaker|echo|nest|sonos/i)}<input class="osel" type="text" data-f="muxtext" value="${esc(C.tts.text)}" style="margin:6px 0" aria-label="Text der Ansage" ${adm ? "" : "disabled"}>` : ""}
       <div class="lsec" style="margin-top:12px">${ic("lamp", 15)}Licht</div>
       <div class="vrow"><span>Licht in der Farbe der Tonne<small class="mut" style="display:block">Leuchtet ab der Vorabend-Uhrzeit, bis die Tonne als draußen markiert ist, und geht dann wieder aus.</small></span>${sw("light", C.light.on, "Licht")}</div>
-      ${C.light.on ? this._wzSel(li, C.light.ent, "muxsel", 'data-k="light"', "– Licht wählen –", /flur|eingang|tür|tuer|diele/i) : ""}
+      ${C.light.on ? this._wzSel(li, C.light.ent, "muxsel", 'data-k="light"', "– Licht wählen –", /flur|eingang|tür|tuer|diele/i) + `<div class="mut sm" style="margin:6px 0 0">Helligkeit</div><div class="gschips">${[30, 60, 100].map((b) => chip("muxbri", String(b), `${b} %`, (C.light.bri || 60) === b)).join("")}</div>
+      <div class="vrow"><span>Danach wie vorher<small class="mut" style="display:block">War das Licht vorher an, geht es mit seiner Farbe und Helligkeit wieder an, sonst aus. Bei mehreren Tonnen wechselt die Farbe jede Minute.</small></span>${sw("lrestore", C.light.restore, "Danach wie vorher")}</div>` : ""}
       <div class="lsec" style="margin-top:12px">${ic("chart", 15)}Kosten</div>
       <div class="vrow"><span>Leerungen zählen<small class="mut" style="display:block">Zeigt Restmüll-Leerungen im Jahr und was darüber hinaus kostet.</small></span>${sw("cost", C.cost.on, "Kosten")}</div>
-      ${C.cost.on ? `<div class="vrow"><span>Enthaltene Leerungen pro Jahr</span><input class="osel" type="number" inputmode="numeric" min="0" max="99" data-f="muxnum" data-k="incl" value="${C.cost.incl}" style="width:90px;margin:0" ${adm ? "" : "disabled"}></div><div class="vrow"><span>Gebühr je weitere Leerung (€)</span><input class="osel" type="number" inputmode="decimal" min="0" step="0.01" data-f="muxnum" data-k="fee" value="${C.cost.fee}" style="width:90px;margin:0" ${adm ? "" : "disabled"}></div>` : ""}
+      ${C.cost.on ? `<div class="mut sm" style="margin:0 0 2px">Was als Leerung zählt</div><div class="gschips">${chip("muxcount", "cal", "Jeder Termin im Kalender", C.cost.count !== "out")}${chip("muxcount", "out", "Nur wenn die Tonne draußen stand", C.cost.count === "out")}</div><div class="vrow"><span>Enthaltene Leerungen pro Jahr</span><input class="osel" type="number" inputmode="numeric" min="0" max="99" data-f="muxnum" data-k="incl" value="${C.cost.incl}" style="width:90px;margin:0" ${adm ? "" : "disabled"}></div><div class="vrow"><span>Gebühr je weitere Leerung (€)</span><input class="osel" type="number" inputmode="decimal" min="0" step="0.01" data-f="muxnum" data-k="fee" value="${C.cost.fee}" style="width:90px;margin:0" ${adm ? "" : "disabled"}></div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("trash", 15)}Vorrat Säcke</div>
+      <div class="vrow"><span>Vorrat zählen<small class="mut" style="display:block">Zählt bei jeder Abholung herunter und meldet sich rechtzeitig, bevor die Säcke ausgehen.</small></span>${sw("bags", C.bags.on, "Vorrat zählen")}</div>
+      ${C.bags.on ? `<div class="gschips">${C.kinds.filter((k) => k.on).map((k) => chip("muxbagk", k.id, esc(k.name), C.bags.kind === k.id)).join("")}</div><div class="mut sm" style="margin:4px 0 0">Je Abholung</div><div class="gschips">${[1, 2, 3].map((n) => chip("muxbagp", String(n), `${n} ${n === 1 ? "Sack" : "Säcke"}`, C.bags.per === n)).join("")}</div><div class="mut sm" style="margin:4px 0 0">Melden ab</div><div class="gschips">${[3, 5, 10].map((n) => chip("muxbagw", String(n), `${n} übrig`, C.bags.warn === n)).join("")}</div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("home", 15)}Home Assistant</div>
+      <div class="vrow"><span>Sensoren und Ereignis<small class="mut" style="display:block">Legt Werte für eigene Karten und Automationen an. Bei jeder Erinnerung, „draußen“, „ausgelassen“, „reinholen“ und „drin“ kommt das Ereignis <code>strom_waerme_muell</code>.</small></span>${sw("ha", C.ha, "Sensoren und Ereignis")}</div>
+      ${C.ha && (S.ents || []).length ? `<div class="mut sm" style="margin:0 0 4px">${S.ents_real ? "Als Gerät „Strom & Wärme · Müllabfuhr“ unter Einstellungen → Geräte & Dienste, umbenennbar und mit Verlauf:" : "Mit diesem Kern als einfache Zustände, ab Integration 2026.11.4b6 als echte Entitäten:"}</div><div class="muents">${S.ents.map((e) => `<code>${esc(e)}</code>`).join("")}</div>` : ""}
+      <div class="lsec" style="margin-top:12px">${ic("flask", 15)}Labs</div>
+      <div class="vrow"><span>Automatisch erkennen<small class="mut" style="display:block">Ein Sensor an der Tonne oder am Stellplatz (Kontakt, Bluetooth, Tracker) markiert „draußen“ und „wieder drin“ von selbst. Sensor je Abfallart beim Bearbeiten wählen. Experimentell.</small></span>${sw("labs", C.labs_auto, "Automatisch erkennen")}</div>
       <div class="lsec" style="margin-top:12px">${ic("eye", 15)}Darstellung</div>
       <div class="vrow"><span>Optik wie bisher<small class="mut" style="display:block">Zeigt Modul 17 ohne Straßen-Szene, neue Kacheln, 14-Tage-Leiste und neuen Kalender.</small></span>${sw("look", C.look.old, "Optik wie bisher")}</div>
       ${C.look.old ? "" : `<div class="mut sm" style="margin:0 0 2px">Bewegung in der Szene</div><div class="gschips">${[["aus", "Aus"], ["dezent", "Dezent"], ["voll", "Voll"]].map(([v, t]) => chip("muxmot", v, t, (C.look.motion || "dezent") === v)).join("")}</div>`}
       <div class="lsec" style="margin-top:12px">${ic("alert", 15)}Hinweise</div>
-      <div class="vrow"><span>Wetter-Hinweise<small class="mut" style="display:block">Warnt vor Sturm und Frost an Abholtagen. Nutzt Modul 9, falls eingeschaltet.</small></span>${sw("wx", C.wx, "Wetter-Hinweise")}</div>
+      <div class="vrow"><span>Wetter-Hinweise<small class="mut" style="display:block">Warnt vor Sturm, Frost und Hitze an Abholtagen. Nutzt Modul 9, falls eingeschaltet.</small></span>${sw("wx", C.wx, "Wetter-Hinweise")}</div>
+      <div class="mut sm" style="margin:0 0 2px">Bei Sturm am Vorabend</div><div class="gschips">${chip("muxwxm", "hint", "Nur Hinweis", C.wxmode !== "shift")}${chip("muxwxm", "shift", "Erst morgens erinnern", C.wxmode === "shift")}</div>
+      <div class="vrow"><span>Hinweis vor dem Urlaub<small class="mut" style="display:block">Fällt eine Abholung in deinen Urlaub aus Modul 1, steht es unter Hinweise und kommt am Vorabend der Abreise als Meldung.</small></span>${sw("vac", C.vac, "Hinweis vor dem Urlaub")}</div>
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="muxtest" ${C.push.to.length || C.tts.on ? "" : "disabled"}>${ic("bell", 16)} Test senden</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   /* ================= v0.5 Neue Optik (A1–A4, A7, A9, A10) ================= */
@@ -350,7 +421,7 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
   /* A1: Straßen-Szene. Fällige Arten stehen am Bordstein (Orange = muss raus, Türkis = steht draußen), die übrigen ruhen am Haus. */
   _muSceneSvg(S, mob, empty) {
     const rows = S.bins || [], hr = parseInt(String(S.now || "").slice(11, 13), 10), night = !(hr >= 7 && hr < 17), mot = this._muMot();
-    const curb = empty ? [] : rows.filter((x) => ["out", "today", "done"].includes(x.state)).slice(0, 4);
+    const curb = empty ? [] : rows.filter((x) => ["out", "today", "done", "back"].includes(x.state)).slice(0, 4);
     const home = empty ? [] : rows.filter((x) => !curb.includes(x)).slice(0, 4);
     const truck = !empty && rows.some((x) => x.state === "today");
     const g = (x, img, col, sc, op, glow) => `<g transform="translate(${x},${172 - 76 * sc}) scale(${sc})" opacity="${op}">${glow ? `<ellipse class="muglow ${mot}" cx="30" cy="76" rx="27" ry="6.5" fill="${glow}" opacity=".55"/>` : `<ellipse cx="30" cy="76" rx="20" ry="3.5" fill="#000" opacity=".35"/>`}${(ART[img] || ART.tonne)(col)}</g>`;
@@ -362,7 +433,7 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
       <rect x="346" y="112" width="26" height="24" rx="2" fill="${win}" opacity="${night ? .85 : .7}"/><rect x="412" y="112" width="26" height="24" rx="2" fill="${win}" opacity="${night ? .45 : .7}"/><rect x="382" y="126" width="22" height="42" rx="2" fill="#16212b"/><rect x="426" y="62" width="10" height="22" fill="#3b4652"/>`;
     const lampOn = night ? `<circle cx="782" cy="104" r="56" fill="url(#mulamp)"/>` : "";
     const homeG = home.map((x, i) => g(470 + i * 34, x.img, x.color, .56, .62, null)).join("");
-    const curbG = curb.map((x, i) => g((truck ? 548 : 612) + i * 46 - (curb.length > 2 ? 20 : 0), x.img, x.color, .84, 1, x.state === "done" ? "#2dd4bf" : "#f59e0b")).join("");
+    const curbG = curb.map((x, i) => g((truck ? 548 : 612) + i * 46 - (curb.length > 2 ? 20 : 0), x.img, x.color, .84, 1, x.state === "done" ? "#2dd4bf" : x.state === "back" ? "#7dd3fc" : "#f59e0b")).join("");
     const trk = truck ? `<g class="mutruck ${mot}" transform="translate(680,156)"><rect x="0" y="6" width="62" height="30" rx="4" fill="#f97316"/><rect x="62" y="14" width="26" height="22" rx="3" fill="#fb923c"/><rect x="68" y="17" width="13" height="9" rx="1.5" fill="#bae6fd"/><path d="M6 14h48M6 22h48" stroke="#fff" stroke-opacity=".25" stroke-width="2"/><circle cx="16" cy="40" r="7" fill="#0b0f13"/><circle cx="70" cy="40" r="7" fill="#0b0f13"/></g>` : "";
     const emp = empty ? `<g transform="translate(640,${172 - 76 * .84}) scale(.84)" opacity=".5"><ellipse cx="30" cy="76" rx="20" ry="3.5" fill="#000" opacity=".35"/>${ART.tonne("#64748b")}</g><text x="665" y="120" font-size="30" font-weight="800" fill="#fff" opacity=".85" font-family="inherit">?</text>` : "";
     const vb = mob ? "300 20 500 200" : "-400 0 1200 220";
@@ -379,29 +450,33 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
     let k = "", t = "", s = "", tone = "ok";
     if (today.length && nDone(today) < today.length) { k = "HEUTE"; t = this._muNames(today); s = `${nDone(today)} von ${today.length} steht draußen · Abholung bis ${this._muHM(Math.min(...today.map((x) => (S.until || {})[x.k] || 720)))} Uhr`; tone = "due"; }
     else if (tom.length && nDone(tom) < tom.length) { k = "MORGEN FRÜH"; t = this._muNames(tom); s = tom.length > 1 ? `${nDone(tom)} von ${tom.length} steht draußen · jetzt rausstellen` : "Jetzt rausstellen"; tone = "due"; }
+    else if (rows.some((x) => x.state === "back")) { const bk = rows.filter((x) => x.state === "back"); k = "REINHOLEN"; t = this._muNames(bk); s = `Abgeholt ${this._muDate(bk[0].back_d)} · wieder reinstellen`; tone = "back"; }
     else if (due.length) { k = "ERLEDIGT"; t = due.length > 1 ? "Alles steht draußen" : `${due[0].name} steht draußen`; s = due.length > 1 ? this._muNames(due) : (today.length ? "Abholung heute" : "Abholung morgen früh"); tone = "done"; }
     else if (soon.length) { k = "MORGEN"; t = this._muNames(soon); s = `Ab ${esc(C.time)} Uhr rausstellen`; tone = "soon"; }
     else if (up.length) { const d0 = up[0].next, same = up.filter((x) => x.next === d0); k = "NÄCHSTE ABHOLUNG"; t = this._muNames(same); s = `${this._muDate(d0)} · ${this._muWhen(up[0].days)}`; }
     else { k = "MÜLLABFUHR"; t = "Keine Termine"; s = "In den nächsten Wochen steht nichts im Kalender."; }
-    const preK = new Set((S.notes || []).filter((n) => n.k === "pre").map((n) => n.bin)), after = rows.filter((x) => x.next && !t.includes(x.name) && !preK.has(x.k)).slice(0, 1).map((x) => `Danach: ${esc(x.name)} ${this._muWhen(x.days)}`)[0] || "";
+    const preK = new Set((S.notes || []).filter((n) => n.k === "pre").map((n) => n.bin)), after = rows.filter((x) => x.next && x.state !== "skip" && !t.includes(x.name) && !preK.has(x.k)).slice(0, 1).map((x) => `Danach: ${esc(x.name)} ${this._muWhen(x.days)}`)[0] || "";
     const chips = [
       ...(S.notes || []).filter((n) => n.k === "pre").slice(0, 2).map((n) => { const K = C.kinds.find((q) => q.id === n.bin); return `<span class="muchip">${K ? muImg(K.img, K.color, 14) : ""}${esc(K ? K.name : "")} ${this._muWhen((new Date(n.d + "T12:00:00") - new Date(S.today + "T12:00:00")) / 864e5)}</span>`; }),
+      (() => { const nx = rows.find((x) => ["out", "today", "soon"].includes(x.state)), w = nx && (S.turn || []).find((t) => t.d === nx.next); return w ? `<span class="muchip">${ic("users", 13)} ${esc(w.name)} ist dran</span>` : ""; })(),
       S.snooze ? `<span class="muchip">${ic("clock", 13)} Erinnerung um ${esc(S.snooze_until)}</span>` : "",
       S.light_on ? `<span class="muchip">${ic("lamp", 13)} Licht an</span>` : "",
       S.cached ? `<span class="muchip warn">${ic("alert", 13)} Stand ${esc(S.ev_ok)}</span>` : "",
     ].filter(Boolean).join("");
     const open = rows.filter((x) => ["out", "today"].includes(x.state));
-    const btn = open.length ? `<button class="mubtn" data-act="muxdoneall">${ic("check", 16)} ${open.length > 1 ? "Alle stehen draußen" : "Steht draußen"}</button>` : "";
+    const backs = rows.filter((x) => x.state === "back");
+    const btn = open.length ? `<button class="mubtn" data-act="muxdoneall">${ic("check", 16)} ${open.length > 1 ? "Alle stehen draußen" : "Steht draußen"}</button>` : tone === "back" ? `<button class="mubtn back" data-act="muxinall">${ic("check", 16)} ${backs.length > 1 ? "Alle wieder drin" : "Wieder drin"}</button>` : "";
+    const sk = S.api_v >= 2 && open.length === 1 ? `<button class="mubtn2" data-act="muxskip" data-k="${open[0].k}">Diesmal nicht</button>` : "";
     return `<div class="card mubn ${tone} ${mob ? "mob" : ""}">${mob ? `<div class="mubs">${this._muSceneSvg(S, true)}</div>` : this._muSceneSvg(S, false)}
-      <div class="mubt"><span class="k">${k}</span><b>${esc(t)}</b><span class="s">${esc(s)}</span>${after ? `<span class="a">${after}</span>` : ""}${chips ? `<div class="muchips">${chips}</div>` : ""}${btn}</div></div>`;
+      <div class="mubt"><span class="k">${k}</span><b>${esc(t)}</b><span class="s">${esc(s)}</span>${after ? `<span class="a">${after}</span>` : ""}${chips ? `<div class="muchips">${chips}</div>` : ""}${btn || sk ? `<div class="mubtns">${btn}${sk}</div>` : ""}</div></div>`;
   }
   /* A2 + A7: Tonnen-Kacheln 2.0 – ruhige Kacheln, Zustand als Wort und Farbe, Ring bis zur Abholung (14 Tage) */
   _muTiles2(S) {
     const rows = S.bins || [];
-    const word = (x) => x.state === "out" ? "raus!" : x.state === "today" ? "heute raus" : x.state === "soon" ? "morgen" : x.state === "done" ? "steht draußen" : x.state === "none" ? "kein Termin" : x.days <= 3 ? "bald" : "ok";
+    const word = (x) => x.state === "skip" ? "diesmal nicht" : x.state === "back" ? "reinholen" : x.state === "out" ? "raus!" : x.state === "today" ? "heute raus" : x.state === "soon" ? "morgen" : x.state === "done" ? "steht draußen" : x.state === "none" ? "kein Termin" : x.days <= 3 ? "bald" : "ok";
     const cls = (x) => x.state === "ok" && x.days <= 3 ? "bald" : x.state;
-    return `<div class="mut2g">${rows.map((x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : ""; const p = x.next ? Math.max(4, Math.round((1 - Math.min(14, x.days) / 14) * 100)) : 0;
-      return `<${tap ? `button data-act="${tap}" data-k="${x.k}" aria-label="${esc(x.name)}: ${tap === "muxdone" ? "steht draußen" : "zurücknehmen"}"` : "div"} class="mut2 ${cls(x)}"><span class="ring" style="--p:${p};--c:${x.color}" title="${x.next ? this._muWhen(x.days) : ""}"></span>${muImg(x.img, x.color, 46)}<b>${esc(x.name)}</b><em>${word(x)}</em><small>${x.next ? `${this._muWhen(x.days)} · ${this._muDate(x.next)}` : "–"}</small>${tap === "muxdone" ? `<i class="tap">antippen, wenn draußen</i>` : tap === "muxundo" ? `<i class="tap">antippen zum Zurücknehmen</i>` : ""}</${tap ? "button" : "div"}>`; }).join("")}</div>`;
+    return `<div class="mut2g">${rows.map((x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : x.state === "back" ? "muxin" : x.state === "skip" ? "muxunskip" : ""; const p = x.next ? Math.max(4, Math.round((1 - Math.min(14, x.days) / 14) * 100)) : 0;
+      return `<${tap ? `button data-act="${tap}" data-k="${x.k}" aria-label="${esc(x.name)}: ${tap === "muxdone" ? "steht draußen" : tap === "muxin" ? "wieder drin" : tap === "muxunskip" ? "doch abholen lassen" : "zurücknehmen"}"` : "div"} class="mut2 ${cls(x)}"><span class="ring" style="--p:${p};--c:${x.color}" title="${x.next ? this._muWhen(x.days) : ""}"></span>${muImg(x.img, x.color, 46)}<b>${esc(x.name)}</b><em>${word(x)}</em><small>${x.state === "back" ? `abgeholt ${this._muDate(x.back_d)}` : x.next ? `${this._muWhen(x.days)} · ${this._muDate(x.next)}` : "–"}</small>${tap === "muxunskip" ? `<i class="tap">antippen: doch abholen</i>` : tap === "muxin" ? `<i class="tap">antippen, wenn wieder drin</i>` : tap === "muxdone" ? `<i class="tap">antippen, wenn draußen</i>` : tap === "muxundo" ? `<i class="tap">antippen zum Zurücknehmen</i>` : ""}</${tap ? "button" : "div"}>`; }).join("")}</div>`;
   }
   /* A3: 14-Tage-Leiste */
   _muStrip(S) {
@@ -436,6 +511,56 @@ button.mut2{cursor:pointer}button.mut2:hover{background:rgba(127,127,127,.13)}bu
   }
   /* Banner oben: neue Optik mit Straßen-Szene, sonst das bisherige Banner des Kerns. Der Kern ruft _muHero() ab 2026.11.4b4. */
   _muHero() { const S = this._mu(); if (!this._muNew()) return this._modHeroFor("mu"); if (!(S.on && S.cal && (S.bins || []).some((x) => x.next))) return ""; const mob = !!this._narrow || (this.offsetWidth > 0 && this.offsetWidth < 640); return `<style>${CSS}</style>` + this._muBanner(S, mob); }
+  /* C4: Wer ist dran? – die nächsten Abholtage mit Person, antippen zum Tauschen */
+  _muTurnCard(S) {
+    const C = S.cfg; if (!C.turn.on) return "";
+    const T = S.turn || [], P = C.turn.people, K = Object.fromEntries(C.kinds.map((k) => [k.id, k])), adm = this._admin();
+    if (!P.length) return `<div class="card"><h2>${ic("users", 18)}Wer ist dran?</h2><div class="mut sm">Noch keine Personen gewählt. ${adm ? `<button class="lnk" data-act="muxopen">Einstellungen</button>` : ""}</div></div>`;
+    const ini = (n) => esc(String(n || "?").trim().slice(0, 1).toUpperCase());
+    const row = (t) => { const i = P.findIndex((p) => p.pid === t.pid), nx = P[(i + 1) % P.length]; return `<div class="muturn"><span class="muav" style="--h:${(i * 67) % 360}">${ini(t.name)}</span><div class="mutt"><b>${esc(t.name)}${t.ovr ? ` <small class="mut">(getauscht)</small>` : ""}</b><small>${this._muDate(t.d)} · ${t.kinds.map((k) => K[k] ? esc(K[k].name) : k).join(", ")}</small></div><span class="mutk">${t.kinds.map((k) => K[k] ? muImg(K[k].img, K[k].color, 20) : "").join("")}</span>${P.length > 1 ? `<button class="gsch" data-act="muxtake" data-d="${t.d}" data-k="${nx.pid}" title="Tauschen: diese Person übernimmt">⇄ ${esc(String((S.people || []).find((q) => q.pid === nx.pid)?.name || nx.pid.split(".")[1]))}</button>` : ""}</div>`; };
+    return `<div class="card"><h2>${ic("users", 18)}Wer ist dran?<span class="hzrt">${C.turn.mode === "week" ? "wöchentlich" : "je Abholung"}</span></h2><div class="muturns">${T.map(row).join("") || `<div class="mut sm">Keine Abholungen in nächster Zeit.</div>`}</div>
+      <div class="mut sm" style="margin-top:8px">${C.turn.home ? "Die Erinnerung bekommt die Person, die dran ist. Ist sie nicht zu Hause, geht sie an die nächste." : "Die Erinnerung bekommt die Person, die dran ist."}</div></div>`;
+  }
+  /* B6: Verlauf je Abholung */
+  _muHistCard(S) {
+    const H = S.hist || [], K = Object.fromEntries(S.cfg.kinds.map((k) => [k.id, k])); if (!S.api_v || S.api_v < 2) return "";
+    const how = { tipp: "per Tipp", tag: "per Tag", meldung: "aus der Meldung", auto: "automatisch erkannt" };
+    const row = (h) => { const k = K[h.k] || { name: h.k, img: "tonne", color: "#888" }, t = h.ts ? new Date(h.ts * 1000).toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" }) : "";
+      const st = h.st === "out" ? `<em class="ok">draußen</em><small>${esc(t)}${h.how ? " · " + (how[h.how] || esc(h.how)) : ""}${h.who ? " · " + esc(h.who) : ""}${h.in ? " · wieder drin" : ""}</small>` : h.st === "skip" ? `<em class="sk">ausgelassen</em><small>diesmal nicht abgeholt${h.who ? " · " + esc(h.who) : ""}</small>` : `<em class="no">nicht markiert</em><small>keine Angabe</small>`;
+      return `<div class="muhr">${muImg(k.img, k.color, 22)}<div class="muht"><b>${esc(k.name)}</b><small>${this._muDate(h.d)}</small></div><div class="muhs">${st}</div></div>`; };
+    return `<div class="card"><h2>${ic("clock", 18)}Verlauf</h2>${H.length ? `<div class="muhl">${H.map(row).join("")}</div>` : `<div class="mut sm">Ab jetzt wird jede Abholung festgehalten: draußen, ausgelassen, wann und wer.</div>`}</div>`;
+  }
+  /* C9: Jahresübersicht je Abfallart */
+  _muYearCard(S) {
+    const Y = S.year; if (!Y || !(Y.rows || []).length) return "";
+    const K = Object.fromEntries(S.cfg.kinds.map((k) => [k.id, k])), T = Y.tot, P = S.prev_year;
+    const bar = (r) => { const t = Math.max(1, r.plan), w = (n) => `${(n / t) * 100}%`, un = Math.max(0, r.past - r.tracked);
+      return `<div class="muyb" title="${r.past} von ${r.plan} vorbei"><i class="o" style="width:${w(r.out)}"></i><i class="s" style="width:${w(r.skip)}"></i><i class="n" style="width:${w(r.none)}"></i><i class="u" style="width:${w(un)}"></i></div>`; };
+    const row = (r) => { const k = K[r.k] || { img: "tonne", color: "#888" }, pr = P && (P.rows || []).find((x) => x.k === r.k);
+      return `<div class="muyr">${muImg(k.img, k.color, 24)}<div class="muyn"><b>${esc(r.name)}</b><small>${r.past} von ${r.plan} vorbei${r.skip ? ` · ${r.skip}× ausgelassen` : ""}${pr ? ` · Vorjahr ${pr.plan}` : ""}</small></div>${bar(r)}<span class="muyv">${r.out}<small>draußen</small></span></div>`; };
+    const rate = T.rate != null ? `<div class="muyt"><b>${T.rate} %</b><small>der Abholungen seit ${this._muDate(Y.since)} als draußen markiert</small></div>` : "";
+    return `<div class="card"><h2>${ic("chart", 18)}Jahresübersicht ${Y.year}<span class="hzrt">${T.plan} Abholungen</span></h2>${rate}<div class="muyl">${Y.rows.filter((r) => r.plan > 0).map(row).join("")}</div>
+      <div class="muleg"><span><u style="background:var(--teal)"></u>draußen</span><span><u style="background:var(--gray)"></u>ausgelassen</span><span><u style="background:var(--amber)"></u>ohne Angabe</span><span><u style="background:rgba(127,127,127,.35)"></u>vor Beginn des Verlaufs</span></div></div>`;
+  }
+  /* C11: Vorrat Säcke */
+  _muBagCard(S) {
+    const C = S.cfg; if (!C.bags.on) return "";
+    const K = C.kinds.find((k) => k.id === C.bags.kind) || { name: "Säcke", img: "sack", color: "#eab308" }, n = S.bags, adm = this._admin();
+    const low = n != null && n <= C.bags.warn, fut = (S.ev || []).filter(([d, k]) => k === C.bags.kind && d >= S.today).length, reach = n != null ? Math.floor(n / Math.max(1, C.bags.per)) : null;
+    return `<div class="card"><h2>${ic("trash", 18)}Vorrat ${esc(K.name === "Gelber Sack" ? "Gelbe Säcke" : K.name)}</h2><div class="mubag ${low ? "low" : ""}">${muImg(K.img, K.color, 44)}<div><b>${n == null ? "–" : n}<small> übrig</small></b><span>${n == null ? "Trag ein, wie viele du hast." : `reicht für etwa ${reach} ${reach === 1 ? "Abholung" : "Abholungen"}${fut ? ` · noch ${fut} in diesem Jahr` : ""}${low ? " · Zeit für eine neue Rolle" : ""}`}</span></div>
+      ${adm ? `<div class="mubagb"><button class="ibtn" data-act="muxbagd" data-v="-1" aria-label="einer weniger">−</button><input class="osel" type="number" inputmode="numeric" min="0" max="500" data-f="muxbagn" value="${n == null ? "" : n}" aria-label="Anzahl"><button class="ibtn" data-act="muxbagd" data-v="1" aria-label="einer mehr">+</button><button class="btn2" data-act="muxbagd" data-v="13">+ Rolle (13)</button></div>` : ""}</div></div>`;
+  }
+  /* A6: Karte auf dem Wandtablet – erscheint nur, wenn etwas zu tun ist (raus oder reinholen) */
+  _muTabCard() {
+    if (!this._muD) this._muWant = true;
+    this._muLoad(); const S = this._mu(); if (!S.on || !S.bins) return "";
+    const rows = S.bins, open = rows.filter((x) => ["out", "today"].includes(x.state)), back = rows.filter((x) => x.state === "back");
+    const L = open.length ? open : back; if (!L.length) return "";
+    const isB = !open.length, t = isB ? "Tonnen reinholen" : open.some((x) => x.state === "today") ? "Heute ist Abholung" : "Morgen wird abgeholt";
+    const sub = isB ? `${this._muNames(L)} · abgeholt ${this._muDate(L[0].back_d)}` : `${this._muNames(L)} · ${this._muDate(L[0].next)}`;
+    return `<style>${CSS}</style><div class="mutab ${isB ? "back" : ""}"><div class="mutabi">${L.slice(0, 3).map((x) => muImg(x.img, x.color, 64)).join("")}</div><div class="mutabt"><b>${t}</b><span>${esc(sub)}</span></div>
+      <button class="mubtn ${isB ? "back" : ""}" data-act="${isB ? "muxinall" : "muxdoneall"}">${ic("check", 20)} ${isB ? (L.length > 1 ? "Alle wieder drin" : "Wieder drin") : L.length > 1 ? "Alle stehen draußen" : "Steht draußen"}</button></div>`;
+  }
   /* A9: Leerzustand mit Bild und drei Schritten */
   _muEmpty2(S) {
     const none = !S.cal;

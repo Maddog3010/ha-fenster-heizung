@@ -37,6 +37,10 @@
     if (this._mdState().on.ww && this._wwConfigured()) this._wwProblems().filter((p) => p[0] === "bad" || p[0] === "warn").slice(0, 2).forEach((p) => out.push({ k: `ww:${String(p[2]).replace(/[\d.,()°C ]+/g, "")}`, i: "drop", t: esc(p[2]), s: esc(p[3]), r: "", c: p[0] === "bad" ? "bad" : "wa", mod: "ww" }));
     const due = this._hzMu().filter((x) => ["out", "today", "soon"].includes(x.state));
     if (due.length) out.push({ k: "mu", i: "trash", t: `${due.some((x) => x.state === "today") ? "Heute" : "Morgen"}: ${due.map((x) => esc(x.name)).join(", ")}`, s: "Abholung, Tonne rausstellen", r: due.some((x) => x.state === "today") ? "heute" : "morgen", c: this._hzNew() && !due.some((x) => x.state === "out") ? "in" : "wa", mod: "mu" });
+    const bk = this._hzMu().filter((x) => x.state === "back");
+    if (bk.length) out.push({ k: "mu:back", i: "trash", t: `Reinholen: ${bk.map((x) => esc(x.name)).join(", ")}`, s: "Abgeholt, Tonne wieder reinstellen", r: "heute", c: "in", mod: "mu", muin: true });
+    if (this._muOn()) { const M = this._mu(), B = M.cfg && M.cfg.bags; (M.notes || []).filter((n) => n.k === "pre" || n.k === "vac").slice(0, 2).forEach((n) => out.push({ k: `mu:${n.k}:${n.d || ""}`, i: n.k === "vac" ? "suitcase" : "today", t: n.k === "vac" ? `Abholung im ${esc(String(n.text).split(":")[0])}` : esc(String(n.text).split(/\. (?=[A-ZÄÖÜ])/)[0]), s: n.k === "vac" ? esc(String(n.text).split(": ").slice(1).join(": ").replace(/\. Vorher.*$/, "")) : "Müllabfuhr", r: "", c: "in", mod: "mu", nodone: true }));
+      if (B && B.on && M.bags != null && M.bags <= B.warn) out.push({ k: "mu:bags", i: "trash", t: `Nur noch ${M.bags} Säcke`, s: "Müllabfuhr · Vorrat", r: "", c: "in", mod: "mu", nodone: true }); }
     const al = this._hzAlarmEnt(); if (al && st[al] && st[al].state === "triggered") out.push({ k: "alarm", nosn: true, since: new Date(st[al].last_changed || Date.now()).getTime(), i: "shield", t: "Alarm ausgelöst", s: esc(this._wzName(al)), r: "jetzt", c: "bad", blk: "alarm" });
     let nb = 0;
     Object.keys(st).forEach((e) => {
@@ -127,8 +131,8 @@
   }
   _hzMuell() {
     if (!this._muOn()) return ""; this._muLoad(); const S = this._mu(), rows = (S.bins || []).filter((x) => x.next); if (!S.on || !rows.length) return "";
-    const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", none: "–" };
-    return `<div class="card"><h2>${ic("trash", 18)}Müllabfuhr<span class="hzrt">Modul 17</span></h2><div class="mugrid">${(S.bins || []).map((x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}"><i class="bin" style="background:${x.color}"></i><b>${esc(x.name)}</b><small>${x.next ? (x.days <= 1 ? lbl[x.state] : this._muWhen(x.days)) : "–"}</small></${tap ? "button" : "div"}>`; }).join("")}</div></div>`;
+    const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", back: "reinholen", none: "–" };
+    return `<div class="card"><h2>${ic("trash", 18)}Müllabfuhr<span class="hzrt">Modul 17</span></h2><div class="mugrid">${(S.bins || []).map((x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : x.state === "back" ? "muxin" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}"><i class="bin" style="background:${x.color}"></i><b>${esc(x.name)}</b><small>${x.state === "back" ? lbl.back : x.next ? (x.days <= 1 ? lbl[x.state] : this._muWhen(x.days)) : "–"}</small></${tap ? "button" : "div"}>`; }).join("")}</div></div>`;
   }
   /* Bubbles (Lab) */
   _hzBubDef(id) {

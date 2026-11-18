@@ -129,7 +129,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 14 | **Dynamischer Stromtarif** | Beta 0.8 | Tibber direkt oder Preis-Sensor, Viertelstunden heute und morgen, Preisband, bestes Fenster je Gerät, Preisalarm |
 | 15 | Wartung & Erinnerungen | In Entwicklung 0.1 | Konzept, auf Wunsch mit den Daten aus Modul 11 |
 | 16 | **Solar-Prognose** | Stabil 1.0 | Sonnenbogen, Prognose gegen Ertrag je Stunde, korrigierte Prognose, Anlagen einzeln, Sensoren für Automationen |
-| 17 | Müllabfuhr | Addon · Beta | Straßen-Szene, bis zu 10 Abfallarten, 14-Tage-Leiste, Kalender mit Jahresansicht, Erinnerung und Vorwarnung für Sondertermine |
+| 17 | **Müllabfuhr** | Addon · Stabil 1.0 | Straßen-Szene, bis zu 10 Abfallarten, Erinnerung mit Knöpfen, Reinholen, Wer ist dran, Diesmal nicht, Verlauf, Jahresübersicht, Sensoren |
 | 18 | Licht & Lampen | Addon | Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe |
 | 19 | **Hausfluss** | Stabil 1.1 · Sponsoren | Dein Haus als Fluss-Bild: Leuchtlinien, Herkunfts-Ring, bis zu 4+4+2 Kacheln, Themen, Strom-Reiter mit „Woher kam der Strom?“, Wand-Ansicht fürs Tablet |
 | 20 | Abrechnungen | Addon · In Entwicklung | Verträge mit Preisperioden, Wasser-Gebühren, Zähler mit geprüften Ablesungen, Fristen, Preisdienst für alle Module |
@@ -253,6 +253,47 @@ Das Haus in der Mitte, ringsum bis zu **zehn Kacheln** (links und rechts je vier
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_hausfluss_hd.png" width="420" alt="Hausfluss mit HD-Bildern"></p>
 </details>
 
+<a id="modul-17-müllabfuhr"></a>
+<details>
+<summary><b>Modul 17 Müllabfuhr im Detail (Addon, v1.0)</b></summary>
+<br>
+
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_muell_v1.jpg" width="760" alt="Modul 17 Müllabfuhr"></p>
+
+**Termine.** Die Abholtermine kommen aus bis zu drei Kalendern in Home Assistant, am einfachsten aus der Community-Integration [waste_collection_schedule](https://github.com/mampfes/hacs_waste_collection_schedule) (im Store als „Abfallkalender“). Ohne Auswahl nimmt Modul 17 alle Kalender dieser Integration. Die Termine werden zwischengespeichert, nach einem Neustart sind sie sofort da.
+
+**Abfallarten.** Bis zu 10, jede mit Name, Bild, Farbe, Erkennungswörtern, Abholzeit und Erinnerung. Vorlagen: Restmüll, Bio, Papier, Gelber Sack, Glas, Grünschnitt, Sperrmüll, Schadstoffmobil, Weihnachtsbaum oder eine eigene Art. Termine, die zu keiner Art passen, erscheinen unter **Nicht erkannt** und lassen sich zuordnen, neu anlegen oder ignorieren.
+
+**Ansicht.** Straßen-Szene als Banner (fällige Tonnen am Bordstein, Müllwagen am Abholtag, Tag und Nacht), Kacheln mit Ring bis zur Abholung, die nächsten 14 Tage, Kalender mit Jahresansicht, Verlauf und Jahresübersicht. „Optik wie bisher“ und Bewegung Aus/Dezent/Voll unter Einstellungen → Darstellung.
+
+**Erinnern.**
+- Am **Vorabend** aufs Handy, als Ansage und mit Licht in der Farbe der Tonne (Helligkeit wählbar, danach wieder wie vorher).
+- **Knöpfe in der Meldung** der Home-Assistant-App: „Steht draußen“, „Später“, „Wieder drin“.
+- **Am Abholtag** noch einmal, nur wenn die Tonne noch nicht draußen steht.
+- **Vorwarnung** für seltene Termine (2, 3, 5 Tage oder 1 Woche vorher).
+- **Tonne reinholen** nach der Abholung, mit Meldung zur gewählten Uhrzeit.
+
+**Haushalt.**
+- **Wer ist dran?** Personen im Wechsel (je Abholung oder wöchentlich), die Meldung geht an die Person, die dran ist; ist sie nicht zu Hause, an die nächste. Tauschen mit einem Tipp.
+- **Diesmal nicht:** Leerung auslassen, keine Erinnerung, zählt nicht bei den Kosten.
+- **Urlaub** aus Modul 1: Abholungen im Urlaub stehen unter Hinweise und kommen vor der Abreise als Meldung.
+- **Sturm** aus Modul 9: wahlweise erst am Morgen erinnern. Hinweise bei Frost und Hitze.
+- **Kosten** für den Restmüll: jeder Termin oder nur, wenn die Tonne draußen stand.
+- **Vorrat Säcke:** zählt herunter und meldet sich rechtzeitig.
+
+**Startseite, Tablet, Tags.** Hinweise in der Hinweise-Zentrale (rausstellen, reinholen, Sondertermine, Urlaub, Vorrat), große Karte auf dem Wandtablet, Tag-Aktionen „Tonne ist draußen“ und „Tonne ist wieder drin“, Baustein im Morgen-Briefing (Sponsor Max).
+
+**Für Automationen.** Gerät „Strom & Wärme · Müllabfuhr“ mit
+- `sensor.strom_waerme_muell_naechste_abholung` (Datum, Attribute `arten`, `tage`)
+- `sensor.strom_waerme_muell_<art>` (Tage bis zur Abholung, Attribute `naechste_abholung`, `zustand`, `farbe`)
+- `sensor.strom_waerme_muell_gelbe_saecke` (Vorrat, wenn eingeschaltet)
+- `binary_sensor.strom_waerme_muell_rausstellen` und `binary_sensor.strom_waerme_muell_reinholen` (Attribut `arten`)
+
+Ereignis `strom_waerme_muell` mit `typ`: `erinnerung`, `draussen`, `ausgelassen`, `reinholen`, `drin`, `vorwarnung`, `vorrat` (dazu `art`, `name`, `datum`, `wie`, `wer`).
+
+**Labs · Automatisch erkennen.** Ein Sensor an der Tonne oder am Stellplatz (Kontakt, Bluetooth, Tracker) markiert „draußen“ und „wieder drin“ von selbst.
+</details>
+
 <a id="addons"></a>
 <details>
 <summary><b>Addons: 17 Müllabfuhr, 18 Licht & Lampen, 20 Abrechnungen, 21 Saugroboter</b></summary>
@@ -260,7 +301,7 @@ Das Haus in der Mitte, ringsum bis zu **zehn Kacheln** (links und rechts je vier
 
 Addons installierst du unter **Einstellungen → Addons** und kannst sie dort jederzeit pausieren oder wieder deinstallieren, auf Wunsch mit oder ohne deine Daten. Neue Versionen kommen aus dem Addon-Katalog und erscheinen im Reiter **Updates**.
 
-- **Müllabfuhr (v0.5, Beta):** Abholtermine aus bis zu drei Kalendern, bis zu 10 Abfallarten mit eigenem Bild (Glas, Grünschnitt, Sperrmüll, Schadstoffmobil, Weihnachtsbaum …), Liste „Nicht erkannt“, Straßen-Szene als Banner, 14-Tage-Leiste, Kalender mit Jahresansicht, Erinnerung am Vorabend und Vorwarnung für Sondertermine.
+- **Müllabfuhr (v1.0, Stabil):** siehe [Modul 17 im Detail](#modul-17-müllabfuhr).
 - **Licht & Lampen:** Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe.
 - **Abrechnungen (v0.1, In Entwicklung):** Verträge für Strom, Gas, Wasser und Einspeisung mit Preiswechseln, Zähler mit Ablesungen und Prüfung, Fristen; der Vertragspreis geht an die anderen Module. Hochrechnung, Abschläge und Rechnungen folgen.
 - **Saugroboter:** Roboter-Karte, Raum-Kacheln mit Ampel, Karte des Roboters (Roborock), Woche und Wartung.

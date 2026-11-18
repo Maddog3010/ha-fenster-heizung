@@ -84,8 +84,8 @@
   _tmStart() {
     const hints = this._hzHints(), mods = this._mdList().filter((x) => x.id !== "st"), bubs = this._labOn("sb") ? this._hzBubs().replace(/data-act="hzbub"/g, 'data-act="tmbub"') : "";
     const rows = hints.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join("");
-    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._hzTmAmp(vis)}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
-    return `${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
+    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._hzTmAmp(vis)}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
+    return `${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
   }
   _tmRoom(r) {
     const st = this._hass.states, cl = (r.thermos || []).map((e) => st[e]).filter(Boolean), A = (cl[0] && cl[0].attributes) || {};

@@ -31,6 +31,7 @@
     if (a.k === "pres_vac") return `Urlaub für ${a.arg} ${a.arg === 1 ? "Tag" : "Tage"}`;
     if (a.k === "person_home" || a.k === "person_away") return `${this._tgxPerson(a.arg)} ist ${a.k === "person_home" ? "zu Hause" : "unterwegs"}`;
     if (a.k === "mu_done") return `${(D.bins || {})[a.arg] || "Tonne"} ist draußen`;
+    if (a.k === "mu_in") return `${(D.bins || {})[a.arg] || "Tonne"} ist wieder drin`;
     if (a.k === "lf_here") { const [dv, rm] = String(a.arg || "").split("|"); return `${(this._lfDev(dv) || {}).name || "Entfeuchter"} steht in ${this._lfRoomName(rm) || "einem Raum"}`; }
     if (a.k === "lf_off" || a.k === "lf_tank") { const n = (this._lfDev(a.arg) || {}).name || "Entfeuchter"; return a.k === "lf_off" ? `${n} heute aus` : `${n}: Wassertank geleert`; }
     if (a.k === "sf_tested") return `${a.arg ? this._tgxName(a.arg) : "Alle Melder"} geprüft`;

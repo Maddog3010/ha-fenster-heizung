@@ -106,7 +106,7 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-PLATFORMS = ["switch", "sensor"]
+PLATFORMS = ["switch", "sensor", "binary_sensor"]
 RECHECK_SECONDS = 300
 
 
@@ -1343,6 +1343,8 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         await entry.runtime_data.async_stop()
         if hass.data.get(DOMAIN, {}).get("sp_sensor_owner") == entry.entry_id:  # Solar-Sensoren gehen beim nächsten Laden an diesen oder den nächsten Raum
             hass.data[DOMAIN].pop("sp_sensor_owner", None)
+        if hass.data.get(DOMAIN, {}).get("bs_owner") == entry.entry_id:
+            hass.data[DOMAIN].pop("bs_owner", None)
         others = [
             e
             for e in hass.config_entries.async_entries(DOMAIN)

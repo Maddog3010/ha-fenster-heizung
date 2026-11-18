@@ -151,7 +151,7 @@
     const row = (h) => {
       const z = this._hzZ(h.c || "in"), k = this._hzKey(h), hd = h.hd || (h.i === "alert" && /Batterie/.test(h.t) ? "smoke" : HD[h.mod] || (h.blk === "alarm" ? "shield" : "")), pic = hd ? this._gx(hd, 30, { alarm: !!h.alarm, frost: !!h.frost, k: h.c === "bad" ? "bad" : "ok" }) : ic(h.i, 20);
       const go = h.mod || h.blk ? `<button class="hzzb" data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}">Ansehen</button>` : "";
-      const done = h.mod === "mu" && this._muxAct ? `<button class="hzzb" data-act="hzmudone">Erledigt</button>` : "";
+      const done = h.mod === "mu" && this._muxAct && !h.nodone ? `<button class="hzzb" data-act="${h.muin ? "hzmuin" : "hzmudone"}">${h.muin ? "Wieder drin" : "Erledigt"}</button>` : "";
       const later = h.nosn ? "" : `<button class="hzzb q" data-act="hzlater" data-k="${esc(k)}" aria-label="Später erinnern">Später</button>`;
       return `<div class="hzz z-${z}"><span class="hzzi">${pic}</span><div class="hzzx"><b>${h.t}</b><small>${esc(this._hzSrc(h))}${h.s ? ` · ${h.s}` : ""}</small><em class="hzzp">${ZN[z] || "Info"}</em></div><div class="hzzbs">${done || go}${later}</div></div>`;
     };
@@ -175,6 +175,7 @@
     if (a === "hzlaterset") { this._hzLaterSet(k, Number(b.dataset.t) || 0); this._modal = null; this._renderModal(); this._render(); this._toast("Hinweis kommt später wieder"); return true; }
     if (a === "hzlaterclr") { this._hzLM = {}; try { localStorage.removeItem("fh_hz_later"); } catch (_) { /* egal */ } this._render(); return true; }
     if (a === "hzall") { this._hzAll = !this._hzAll; this._render(); return true; }
+    if (a === "hzmuin") { this._muxAct("muxinall", { dataset: {} }); return true; }
     if (a === "hzmudone") { this._hzMu().filter((x) => ["out", "today", "soon"].includes(x.state)).forEach((x) => this._muxAct("muxdone", { dataset: { k: x.k } })); return true; }
     if (a === "hzhead") { this._hzSave({ head: ["scene", "text", "simple"].includes(k) ? k : "scene" }); return true; }
     if (a === "hzksize") { this._hzSave({ ksize: ["s", "m", "l"].includes(k) ? k : "m" }); return true; }

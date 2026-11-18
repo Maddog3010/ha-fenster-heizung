@@ -11863,6 +11863,10 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._mdState().on.ww && this._wwConfigured()) this._wwProblems().filter((p) => p[0] === "bad" || p[0] === "warn").slice(0, 2).forEach((p) => out.push({ k: `ww:${String(p[2]).replace(/[\d.,()°C ]+/g, "")}`, i: "drop", t: esc(p[2]), s: esc(p[3]), r: "", c: p[0] === "bad" ? "bad" : "wa", mod: "ww" }));
     const due = this._hzMu().filter((x) => ["out", "today", "soon"].includes(x.state));
     if (due.length) out.push({ k: "mu", i: "trash", t: `${due.some((x) => x.state === "today") ? "Heute" : "Morgen"}: ${due.map((x) => esc(x.name)).join(", ")}`, s: "Abholung, Tonne rausstellen", r: due.some((x) => x.state === "today") ? "heute" : "morgen", c: this._hzNew() && !due.some((x) => x.state === "out") ? "in" : "wa", mod: "mu" });
+    const bk = this._hzMu().filter((x) => x.state === "back");
+    if (bk.length) out.push({ k: "mu:back", i: "trash", t: `Reinholen: ${bk.map((x) => esc(x.name)).join(", ")}`, s: "Abgeholt, Tonne wieder reinstellen", r: "heute", c: "in", mod: "mu", muin: true });
+    if (this._muOn()) { const M = this._mu(), B = M.cfg && M.cfg.bags; (M.notes || []).filter((n) => n.k === "pre" || n.k === "vac").slice(0, 2).forEach((n) => out.push({ k: `mu:${n.k}:${n.d || ""}`, i: n.k === "vac" ? "suitcase" : "today", t: n.k === "vac" ? `Abholung im ${esc(String(n.text).split(":")[0])}` : esc(String(n.text).split(/\. (?=[A-ZÄÖÜ])/)[0]), s: n.k === "vac" ? esc(String(n.text).split(": ").slice(1).join(": ").replace(/\. Vorher.*$/, "")) : "Müllabfuhr", r: "", c: "in", mod: "mu", nodone: true }));
+      if (B && B.on && M.bags != null && M.bags <= B.warn) out.push({ k: "mu:bags", i: "trash", t: `Nur noch ${M.bags} Säcke`, s: "Müllabfuhr · Vorrat", r: "", c: "in", mod: "mu", nodone: true }); }
     const al = this._hzAlarmEnt(); if (al && st[al] && st[al].state === "triggered") out.push({ k: "alarm", nosn: true, since: new Date(st[al].last_changed || Date.now()).getTime(), i: "shield", t: "Alarm ausgelöst", s: esc(this._wzName(al)), r: "jetzt", c: "bad", blk: "alarm" });
     let nb = 0;
     Object.keys(st).forEach((e) => {
@@ -11953,8 +11957,8 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _hzMuell() {
     if (!this._muOn()) return ""; this._muLoad(); const S = this._mu(), rows = (S.bins || []).filter((x) => x.next); if (!S.on || !rows.length) return "";
-    const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", none: "–" };
-    return `<div class="card"><h2>${ic("trash", 18)}Müllabfuhr<span class="hzrt">Modul 17</span></h2><div class="mugrid">${(S.bins || []).map((x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}"><i class="bin" style="background:${x.color}"></i><b>${esc(x.name)}</b><small>${x.next ? (x.days <= 1 ? lbl[x.state] : this._muWhen(x.days)) : "–"}</small></${tap ? "button" : "div"}>`; }).join("")}</div></div>`;
+    const lbl = { out: "raus!", today: "heute", soon: "morgen", ok: "ok", done: "draußen", back: "reinholen", none: "–" };
+    return `<div class="card"><h2>${ic("trash", 18)}Müllabfuhr<span class="hzrt">Modul 17</span></h2><div class="mugrid">${(S.bins || []).map((x) => { const tap = ["out", "today", "soon"].includes(x.state) ? "muxdone" : x.state === "done" ? "muxundo" : x.state === "back" ? "muxin" : ""; return `<${tap ? `button data-act="${tap}" data-k="${x.k}"` : "div"} class="mubin ${x.state}"><i class="bin" style="background:${x.color}"></i><b>${esc(x.name)}</b><small>${x.state === "back" ? lbl.back : x.next ? (x.days <= 1 ? lbl[x.state] : this._muWhen(x.days)) : "–"}</small></${tap ? "button" : "div"}>`; }).join("")}</div></div>`;
   }
   /* Bubbles (Lab) */
   _hzBubDef(id) {
@@ -12312,7 +12316,7 @@ class FensterHeizungPanel extends HTMLElement {
     const row = (h) => {
       const z = this._hzZ(h.c || "in"), k = this._hzKey(h), hd = h.hd || (h.i === "alert" && /Batterie/.test(h.t) ? "smoke" : HD[h.mod] || (h.blk === "alarm" ? "shield" : "")), pic = hd ? this._gx(hd, 30, { alarm: !!h.alarm, frost: !!h.frost, k: h.c === "bad" ? "bad" : "ok" }) : ic(h.i, 20);
       const go = h.mod || h.blk ? `<button class="hzzb" data-act="hzgo" data-k="${h.mod || ""}" data-b="${h.blk || ""}">Ansehen</button>` : "";
-      const done = h.mod === "mu" && this._muxAct ? `<button class="hzzb" data-act="hzmudone">Erledigt</button>` : "";
+      const done = h.mod === "mu" && this._muxAct && !h.nodone ? `<button class="hzzb" data-act="${h.muin ? "hzmuin" : "hzmudone"}">${h.muin ? "Wieder drin" : "Erledigt"}</button>` : "";
       const later = h.nosn ? "" : `<button class="hzzb q" data-act="hzlater" data-k="${esc(k)}" aria-label="Später erinnern">Später</button>`;
       return `<div class="hzz z-${z}"><span class="hzzi">${pic}</span><div class="hzzx"><b>${h.t}</b><small>${esc(this._hzSrc(h))}${h.s ? ` · ${h.s}` : ""}</small><em class="hzzp">${ZN[z] || "Info"}</em></div><div class="hzzbs">${done || go}${later}</div></div>`;
     };
@@ -12336,6 +12340,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "hzlaterset") { this._hzLaterSet(k, Number(b.dataset.t) || 0); this._modal = null; this._renderModal(); this._render(); this._toast("Hinweis kommt später wieder"); return true; }
     if (a === "hzlaterclr") { this._hzLM = {}; try { localStorage.removeItem("fh_hz_later"); } catch (_) { /* egal */ } this._render(); return true; }
     if (a === "hzall") { this._hzAll = !this._hzAll; this._render(); return true; }
+    if (a === "hzmuin") { this._muxAct("muxinall", { dataset: {} }); return true; }
     if (a === "hzmudone") { this._hzMu().filter((x) => ["out", "today", "soon"].includes(x.state)).forEach((x) => this._muxAct("muxdone", { dataset: { k: x.k } })); return true; }
     if (a === "hzhead") { this._hzSave({ head: ["scene", "text", "simple"].includes(k) ? k : "scene" }); return true; }
     if (a === "hzksize") { this._hzSave({ ksize: ["s", "m", "l"].includes(k) ? k : "m" }); return true; }
@@ -12759,8 +12764,8 @@ class FensterHeizungPanel extends HTMLElement {
   _tmStart() {
     const hints = this._hzHints(), mods = this._mdList().filter((x) => x.id !== "st"), bubs = this._labOn("sb") ? this._hzBubs().replace(/data-act="hzbub"/g, 'data-act="tmbub"') : "";
     const rows = hints.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join("");
-    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._hzTmAmp(vis)}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
-    return `${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
+    if (this._hzNew()) { const vis = this._hzVis(hints), r2 = vis.slice(0, 3).map((h) => `<div class="tmhint ${h.c || ""}"><span class="tmhi">${ic(ICONS[h.i] ? h.i : "info", 20)}</span><span><b>${h.t}</b>${h.s ? `<small>${h.s}</small>` : ""}</span></div>`).join(""); return this._hzWrap(`${this._hzTmAmp(vis)}${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${this._hzQaRow(true)}${bubs}<div class="tmgrid">${this._hzMods().map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${r2 ? `<div class="tmhints">${r2}</div>` : ""}`); }
+    return `${this._muTabCard && this._muOn() ? this._muTabCard() : ""}${bubs}<div class="tmgrid">${mods.map((m) => this._hzTile(m).replace('data-act="hzgo"', 'data-act="tmgo"')).join("")}</div>${rows ? `<div class="tmhints">${rows}</div>` : ""}`;
   }
   _tmRoom(r) {
     const st = this._hass.states, cl = (r.thermos || []).map((e) => st[e]).filter(Boolean), A = (cl[0] && cl[0].attributes) || {};
@@ -13677,6 +13682,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a.k === "pres_vac") return `Urlaub für ${a.arg} ${a.arg === 1 ? "Tag" : "Tage"}`;
     if (a.k === "person_home" || a.k === "person_away") return `${this._tgxPerson(a.arg)} ist ${a.k === "person_home" ? "zu Hause" : "unterwegs"}`;
     if (a.k === "mu_done") return `${(D.bins || {})[a.arg] || "Tonne"} ist draußen`;
+    if (a.k === "mu_in") return `${(D.bins || {})[a.arg] || "Tonne"} ist wieder drin`;
     if (a.k === "lf_here") { const [dv, rm] = String(a.arg || "").split("|"); return `${(this._lfDev(dv) || {}).name || "Entfeuchter"} steht in ${this._lfRoomName(rm) || "einem Raum"}`; }
     if (a.k === "lf_off" || a.k === "lf_tank") { const n = (this._lfDev(a.arg) || {}).name || "Entfeuchter"; return a.k === "lf_off" ? `${n} heute aus` : `${n}: Wassertank geleert`; }
     if (a.k === "sf_tested") return `${a.arg ? this._tgxName(a.arg) : "Alle Melder"} geprüft`;

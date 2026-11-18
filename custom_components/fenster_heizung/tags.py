@@ -65,6 +65,7 @@ ACTIONS: dict[str, tuple[str, str, str | None]] = {
     "ev_stop": ("ev", "Schnellstart stoppen", None),
     "sf_tested": ("sf", "Melder geprüft", "det"),
     "mu_done": ("mu", "Tonne ist draußen", "bin"),
+    "mu_in": ("mu", "Tonne ist wieder drin", "bin"),
     "li_night": ("li", "Szene „Gute Nacht“", None),
     "li_arrive": ("li", "Szene „Ankommen“", None),
     "li_cozy": ("li", "Szene „Gemütlich“", None),
@@ -196,6 +197,8 @@ def describe(act: dict[str, Any], names: dict[str, str] | None = None) -> str:
         return f"{p} ist {'zu Hause' if k == 'person_home' else 'unterwegs'}"
     if k == "mu_done":
         return f"{(names or {}).get('bin:' + str(arg)) or BIN_NAMES.get(arg, 'Tonne')} ist draußen"
+    if k == "mu_in":
+        return f"{(names or {}).get('bin:' + str(arg)) or BIN_NAMES.get(arg, 'Tonne')} ist wieder drin"
     N = names or {}
     if k == "lf_here":
         did, _, room = str(arg).partition("|")
@@ -449,7 +452,13 @@ class TagManager:
             mm = D.get("muell")
             if mm is None:
                 return False, "Modul 17 ist aus"
-            await mm.async_done(str(arg))
+            await (mm.async_done(str(arg), "tag") if getattr(mm, "api_v", 1) >= 2 else mm.async_done(str(arg)))
+            return True, ""
+        if k == "mu_in":
+            mm = D.get("muell")
+            if mm is None or not hasattr(mm, "async_in"):
+                return False, "Modul 17 ist aus oder zu alt"
+            await mm.async_in(str(arg))
             return True, ""
         if k.startswith("li_"):
             from .addon_api import addon_on

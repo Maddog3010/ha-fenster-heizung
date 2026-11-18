@@ -1363,7 +1363,7 @@ async def ws_mu_set(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], await mgr.async_set(msg["cfg"]))
 
 
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mu_act", vol.Required("act"): vol.In(["done", "undo", "snooze"]), vol.Optional("bin"): str})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/mu_act", vol.Required("act"): vol.In(["done", "undo", "snooze", "in", "doneall", "skip", "unskip", "take", "bags"]), vol.Optional("bin"): str, vol.Optional("d"): str, vol.Optional("pid"): str, vol.Optional("n"): vol.Coerce(int)})
 @websocket_api.async_response
 async def ws_mu_act(hass: HomeAssistant, connection, msg: dict) -> None:
     mgr = hass.data.get(DOMAIN, {}).get("muell")
@@ -1371,7 +1371,26 @@ async def ws_mu_act(hass: HomeAssistant, connection, msg: dict) -> None:
         connection.send_error(msg["id"], "not_ready", "Müllabfuhr ist noch nicht bereit")
         return
     act, k = msg["act"], str(msg.get("bin") or "")
-    connection.send_result(msg["id"], await (mgr.async_done(k) if act == "done" else mgr.async_undo(k) if act == "undo" else mgr.async_snooze()))
+    v2 = getattr(mgr, "api_v", 1) >= 2
+    if (act in ("in", "doneall") and not hasattr(mgr, "async_in")) or (act in ("skip", "unskip", "take") and not v2) or (act == "bags" and not hasattr(mgr, "async_bags")):
+        connection.send_error(msg["id"], "not_supported", "Bitte Modul 17 aktualisieren")
+        return
+    who = str(getattr(connection.user, "name", "") or "") if getattr(connection, "user", None) else ""
+    if act == "done":
+        res = await (mgr.async_done(k, "tipp", who) if v2 else mgr.async_done(k))
+    elif act == "doneall":
+        res = await (mgr.async_done_all("tipp", who) if v2 else mgr.async_done_all())
+    elif act == "skip":
+        res = await mgr.async_skip(k, who)
+    elif act == "unskip":
+        res = await mgr.async_unskip(k)
+    elif act == "bags":
+        res = await mgr.async_bags(int(msg.get("n") or 0))
+    elif act == "take":
+        res = await mgr.async_take(str(msg.get("d") or ""), str(msg.get("pid") or ""))
+    else:
+        res = await (mgr.async_undo(k) if act == "undo" else mgr.async_in(k) if act == "in" else mgr.async_snooze())
+    connection.send_result(msg["id"], res)
 
 
 @websocket_api.require_admin
