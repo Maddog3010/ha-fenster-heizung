@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b13] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 2: **neue Menüstruktur ohne Aufklappmenüs und Popups**.
+
+### Geändert
+- **Neuer Reiter „Melder“:** Alle Melder nach Etage gruppiert, mit Status, Batterie-Balken und Zeile zum Hinzufügen. Ausgeblendete Melder stehen darunter und lassen sich wieder einblenden.
+- **Melder-Seite statt Fenster:** Ein Melder öffnet jetzt eine eigene Seite mit „Zurück“ (Zustandsring, Batterieverlauf, Prüfung, Bearbeiten). Art, Etage, Batterie-Typ, Austausch und Prüfintervall wählst du mit Kacheln und Chips statt Auswahlmenüs.
+- **Einstellungen mit Bereichs-Reitern:** Melder, Alarm, Aktionen, Batterie, Prüfung, Meldungen, Abfahrt und Aussehen. Es ist immer nur ein Bereich sichtbar. Das frühere Einstellungs-Fenster entfällt (außer im Modus „Karten wie bisher“).
+- **Geräte-Auswahl als Seite:** Aktion, Batterie-Sensor, Test-Knopf, Außentemperatur, Lautsprecher und weitere Auswahlen öffnen eine Seite mit Suche statt eines Aufklappmenüs. Neue Aktionen gelten standardmäßig für jeden Alarm.
+- **Grundriss:** Melder und Raum-Verknüpfung im Bearbeiten-Modus nutzen dieselbe Auswahl-Seite bzw. Chips.
+- Werte wie Erinnerung, Batterie-Grenze und Frost-Grenze stellst du mit Chips ein.
+
 ## [2026.11.4b12] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** steigt auf **v0.9** (Vorabversion): Einstellungen und Auswahlmenüs in der neuen Optik.

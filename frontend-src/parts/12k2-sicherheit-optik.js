@@ -75,9 +75,9 @@
   _sfPage() {
     if (!this._sfNew()) return this._sfPageOld();
     this._sfxLoad();
-    const T = this._sfStat(), tab = this._sfTab(), tabs = [["ov", "Übersicht"], ["pl", "Grundriss"], ["wa", "Wartung"], ["se", "Einstellungen"]];
+    const T = this._sfStat(), tab = this._sfTab(), tabs = [["ov", "Übersicht"], ["me", "Melder"], ["pl", "Grundriss"], ["wa", "Wartung"], ["se", "Einstellungen"]];
     const bar = `<div class="sftabs" role="tablist">${tabs.map(([k, t]) => `<button class="${k === tab ? "on" : ""}" data-act="sfxtab" data-k="${k}" role="tab" aria-selected="${k === tab}">${t}</button>`).join("")}</div>`;
-    const body = tab === "pl" ? this._sfPlan(T) : tab === "wa" ? this._sfWart(T) : tab === "se" ? this._sfSet(T) : this._sfOv(T);
+    const body = this._sfV ? this._sfView(this._sfV, T) : tab === "me" ? this._sfMel(T) : tab === "pl" ? this._sfPlan(T) : tab === "wa" ? this._sfWart(T) : tab === "se" ? this._sfSet(T) : this._sfOv(T);
     return `${this._sfBanner(T)}${this._sfBetaLine()}${bar}<div class="sfv9">${body}</div>`;
   }
   /* ---- A2 · Melder-Karte 2.0 */
@@ -103,9 +103,9 @@
     const nextLife = [...life].sort((a, b) => a.life_days - b.life_days)[0];
     const k = (ico, t, v, s, c, go, a = "sfxtab") => `<button class="sfkt" data-act="${a}" data-k="${go}">${ic(ico, 18)}<i style="background:${c}"></i><small>${t}</small><b>${esc(v)}</b><em>${esc(s)}</em></button>`;
     const G = "#34d399", A = "#f59e0b", R = "#ef4444";
-    return `<div class="sfkts">${k("shield", "Alarme", al.length ? `${al.length} aktiv` : "keine", al.length ? al.map((x) => x.name).join(", ") : last ? "zuletzt " + this._sfAgo(last.t) : "noch keiner", al.length ? R : G, "", "sfxscroll")}
+    return `<div class="sfkts">${k("shield", "Alarme", al.length ? `${al.length} aktiv` : "keine", al.length ? al.map((x) => x.name).join(", ") : last ? "zuletzt " + this._sfAgo(last.t) : "noch keiner", al.length ? R : G, "me")}
       ${k("energy", "Batterien", withBat.length ? `${withBat.length - low.length} von ${withBat.length} gut` : "unbekannt", low.length ? `${low[0].name} bald leer` : soon.length ? `${soon[0].name} in ~ ${this._sfDur(soon[0].bat_thr_days)}` : withBat.length ? "alle gut" : "kein Batteriewert", low.length ? A : soon.length ? A : G, "wa")}
-      ${k("wifi", "Erreichbar", n ? `${n - off.length} von ${n}` : "–", off.length ? `${off[0].name} offline` : T.pa.length ? `${T.pa.length} ausgeschaltet` : "alle erreichbar", off.length ? A : G, "", "sfxscroll")}
+      ${k("wifi", "Erreichbar", n ? `${n - off.length} von ${n}` : "–", off.length ? `${off[0].name} offline` : T.pa.length ? `${T.pa.length} ausgeschaltet` : "alle erreichbar", off.length ? A : G, "me")}
       ${k("clock", "Prüfung", !C.test.on ? "aus" : due.length ? "fällig" : "läuft", S.test && S.test.last ? "zuletzt " + this._sfAgo(S.test.last) : "noch nie geprüft", due.length ? A : G, "wa")}
       ${k("tools", "Lebensdauer", life.length ? `${life.length} tauschen` : "in Ordnung", nextLife ? `${nextLife.name}${nextLife.life_days < 0 ? ", überfällig" : ""}` : "keine Frist", life.length ? A : G, "wa")}</div>`;
   }
@@ -221,12 +221,12 @@
     const o = !this._sfNew();
     const aus = `<div class="card sfc" data-sec="aussehen"><h2>${ic("eye", 18)}Aussehen</h2><div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Banner mit Schild, Melder-Karten mit Farbbalken, Ampel als Liste und die Wartung aus v0.5 statt Haus-Szene, Kennzahl-Kacheln und Jahresband</small></span><button class="sw ${o ? "on" : ""}" data-act="sfxold" aria-pressed="${o}" aria-label="Karten wie bisher"></button></div></div>`;
     if (o) return `${this._sfSetOld(T)}${this._sfStufenCard(T).replace('data-sec="alarm"', 'style="margin-top:12px"')}${aus.replace('data-sec="aussehen"', 'style="margin-top:12px"')}`;
-    const nav = [["melder", "shield", "Melder"], ["alarm", "alert", "Alarm & Stufen"], ["abfahrt", "lock", "Abfahrt"], ["allg", "bell", "Allgemein"], ["aussehen", "eye", "Aussehen"]];
-    return `<div class="sfnav" role="navigation" aria-label="Springe zu">${nav.map(([k, i, t]) => `<button data-act="sfxjump" data-k="${k}">${ic(i, 14)}${t}</button>`).join("")}</div>${this._sfSetOld(T, { mid: this._sfStufenCard(T), post: aus })}`;
+    return this._sfSetNew(T);
   }
   /* ---- Aktionen */
   _sfxNew(a, b) {
     const k = b.dataset.k;
+    if (this._sfxM(a, b)) return true;
     if (this._sfxAlarmAct(a, b)) return true;
     if (a === "sfxdet") { this._modal = { type: "sfdet", id: k }; this._renderModal(); return true; }
     if (a === "sfxdt" || a === "sfxdbat") {
