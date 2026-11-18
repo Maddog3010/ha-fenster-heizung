@@ -4,9 +4,10 @@
   static MP_NAMES = {
     ww: { speicher: "Speicher & Kennzahlen", verlauf: "Verlauf 24 Stunden", zeitplan: "Warmwasser-Zeitplan", zirk: "Zirkulation", leg: "Legionellenschutz", pv: "PV-Überschuss", zustand: "Zustand" },
     en: { kacheln: "Kennzahlen", fluss: "Energiefluss", verlauf: "Verlauf", verteilung: "Verteilung", kosten: "Kosten und Vorteil", gas: "Gas", spar: "Sparschwein", heizung: "Heizung", hinweise: "Hinweise" },
+    sf: { kacheln: "Kennzahlen", zustand: "Abfahrt-Prüfung", verlauf: "Letzte 30 Tage", ereignisse: "Ereignisse", naechstes: "Als Nächstes", melder: "Melder" },
     gs: { kacheln: "Kennzahlen", geraete: "Geräte", fenster: "Startfenster", verlauf: "Verlauf nach Quelle", jahr: "Dein Jahr" },
   };
-  static MP_WIDE = { ww: ["speicher", "verlauf", "zustand"], en: ["kacheln"], gs: ["kacheln", "fenster", "geraete", "verlauf", "jahr"] };
+  static MP_WIDE = { sf: ["kacheln", "melder"], ww: ["speicher", "verlauf", "zustand"], en: ["kacheln"], gs: ["kacheln", "fenster", "geraete", "verlauf", "jahr"] };
   _mpCfg(mod) {
     const l = ((this._cfg && this._cfg.layout && this._cfg.layout.mp) || {})[mod] || {}, known = Object.keys(this.constructor.MP_NAMES[mod] || {});
     const o = (Array.isArray(l.order) ? l.order : []).filter((x) => known.includes(x));

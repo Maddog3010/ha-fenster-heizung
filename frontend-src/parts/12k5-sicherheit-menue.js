@@ -113,6 +113,7 @@
   }
   /* ---- Aktionen */
   _sfxM(a, b) {
+    if (a === "sfxlogmore") { this._sfLogMore = !this._sfLogMore; this._render(); return true; }
     const k = b.dataset.k;
     if (a === "sfxdet" && this._sfNew()) { this._sfGo({ t: "det", id: k }); return true; }
     if (a === "sfxeditdet" && this._sfNew()) { if (k) this._sfGo({ t: "det", id: k }); return true; }

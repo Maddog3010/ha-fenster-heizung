@@ -120,12 +120,24 @@
     const rw = rows.map(([k, n]) => `<div class="sftr"><small>${n}</small><div class="sftb">${pts[k].map((q) => `<span style="left:${q.p.toFixed(1)}%;background:${q.c}" title="${esc(q.t)}"></span>`).join("")}</div></div>`).join("");
     return `<div class="card sfc"><h2>${ic("clock", 18)}Letzte 30 Tage</h2><div class="sftl2">${rw}<div class="sfta"><span>vor 30 Tagen</span><span>heute</span></div></div></div>`;
   }
+  /* Ereignisse kompakt: eine Zeile je Ereignis, Entitäts-Namen statt IDs, die letzten 6 sichtbar, der Rest nach „Mehr anzeigen“ */
+  _sfLogName(x) {
+    const dm = this._sfDetMap();
+    return String(x || "").replace(/(?:binary_sensor|sensor|button)\.[a-z0-9_]+/g, (id) => (dm[id] && dm[id].name) || id.split(".")[1].replace(/_(rauch|smoke|alarmstatus)$/, "").replace(/_/g, " ").replace(/^./, (c) => c.toUpperCase()));
+  }
+  _sfLogCard(S) {
+    const all = (S.log || []).slice(0, 40), n = this._sfLogMore ? 40 : 6, col = { alarm: "#ef4444", warn: "#f59e0b", ok: "#34d399", off: "#94a3b8" }, today = new Date().toDateString();
+    const tm = (t) => { const d = new Date(t); if (!isFinite(d)) return ""; return d.toDateString() === today ? d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }) + " " + d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }); };
+    const rows = all.slice(0, n).map((x) => `<div class="sfev" style="--c:${col[x.c] || "#64748b"}"><i></i><span>${esc(this._sfLogName(x.x))}</span><small>${esc(tm(x.t))}</small></div>`).join("");
+    const more = all.length > 6 ? `<button class="lnk sfevm" data-act="sfxlogmore">${this._sfLogMore ? "Weniger anzeigen" : `Mehr anzeigen (${all.length - 6})`}</button>` : "";
+    return `<div class="card sfc"><h2>${ic("clock", 18)}Ereignisse${all.length ? `<small class="mut">${all.length}</small>` : ""}</h2>${all.length ? `<div class="sfevl${this._sfLogMore ? " all" : ""}">${rows}</div>${more}` : `<div class="mut sm">Noch keine Ereignisse. Alarme, schwache Batterien, Prüfungen und die Abfahrt-Prüfung erscheinen hier.</div>`}</div>`;
+  }
   _sfOv(T) {
     if (!this._sfNew()) return this._sfOvOld(T);
     const p = this._sfOvParts(T), l = T.l, rank = (x) => (x.alarm ? 0 : x.off ? 1 : x.bat != null && x.bat < T.C.bat.pct ? 2 : 3);
     const sorted = [...l].sort((a, b) => rank(a) - rank(b) || String(a.floor || "~").localeCompare(String(b.floor || "~")) || a.name.localeCompare(b.name, "de"));
     const list = l.length ? `<div class="card sfc sfmel"><h2>${ic("bell", 18)}Melder<small class="mut">${l.length}</small></h2><div class="sfmg">${sorted.map((x) => this._sfCard(x)).join("")}</div></div>` : "";
-    return `${this._sfAskCards(T)}${p.empty}${this._sfKts(T)}<div class="enc"><div class="enco">${p.dep}${p.log}</div><div class="enco">${this._sfTimeline(T.S)}${this._sfNext(T)}</div></div>${list}`;
+    return `${this._sfAskCards(T)}${p.empty}${this._mpWrap("sf", { kacheln: this._sfKts(T), zustand: p.dep, verlauf: this._sfTimeline(T.S), ereignisse: this._sfLogCard(T.S), naechstes: this._sfNext(T), melder: list })}`;
   }
   /* Karte „Als Nächstes“: was als Nächstes ansteht (Batterie, Prüfung, Tausch), nach Dringlichkeit */
   _sfNext(T) {

@@ -983,7 +983,7 @@ class SicherheitManager:
             self._notes.pop(f"batf:{ent}", None)
             self.swaps.setdefault(ent, []).append(now)
             del self.swaps[ent][:-THIST_MAX]
-            self._add(f"Batterie getauscht: {ent}.", "ok")
+            self._add(f"Batterie getauscht: {self._name(ent)}.", "ok")
             self._save()
             return await self.snapshot()
         self.last_test = now
@@ -997,7 +997,7 @@ class SicherheitManager:
                 self.thist.setdefault(d, []).append(now)
                 del self.thist[d][:-THIST_MAX]
         self._notes.pop("test", None)
-        self._add("Melder geprüft (von Hand bestätigt)." if not ent else f"Geprüft: {ent}.", "ok")
+        self._add("Melder geprüft (von Hand bestätigt)." if not ent else f"Geprüft: {self._name(ent)}.", "ok")
         self._save()
         return await self.snapshot()
 

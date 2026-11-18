@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b21] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 10: „Anpassen“ in der Übersicht, Ereignisse kompakt.
+
+### Neu
+- **Anpassen:** Die Übersicht hat jetzt wie die anderen Module den Knopf „Anpassen“. Die Karten Kennzahlen, Abfahrt-Prüfung, Letzte 30 Tage, Ereignisse, Als Nächstes und Melder lassen sich am Griff verschieben und mit dem Auge ausblenden. „Zurücksetzen“ stellt die Standardanordnung wieder her.
+- **Ereignisse kompakt:** Jedes Ereignis steht in einer Zeile mit Uhrzeit am Rand (heute nur die Zeit, sonst Datum und Zeit). Sichtbar sind die letzten 6, „Mehr anzeigen“ klappt bis zu 40 in einer scrollbaren Liste auf, „Weniger anzeigen“ räumt wieder auf.
+
+### Behoben
+- **Ereignisse zeigen Namen statt Entitäten-IDs:** „Geprüft: Rauchmelder 6“ statt „Geprüft: binary_sensor.rauchmelder_6_rauch“. Neue Einträge speichern den Namen, ältere werden beim Anzeigen umgewandelt.
+
 ## [2026.11.4b20] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 9: Durchgänge und Räume ohne eigene Wand im Grundriss.
