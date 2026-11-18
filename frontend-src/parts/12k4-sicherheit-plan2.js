@@ -12,7 +12,7 @@
     const mark = (x, y, v) => { const k = cell(x, y); if (k >= 0) B[k] = v; };
     const line = (x1, y1, x2, y2) => { const n = Math.max(1, Math.ceil(Math.hypot(x2 - x1, y2 - y1) / 4)); for (let k = 0; k <= n; k++) mark(x1 + ((x2 - x1) * k) / n, y1 + ((y2 - y1) * k) / n, 1); };
     items.forEach((i) => {
-      if (i.t === "r") { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; line(p[0], p[1], q[0], q[1]); }); }
+      if (i.t === "r" && !i.ds) { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; line(p[0], p[1], q[0], q[1]); }); }
       else if (i.t === "w") line(i.x, i.y, i.x2, i.y2);
     });
     items.filter((i) => i.t === "d").forEach((i) => { for (let y = i.y - 17; y <= i.y + 17; y += 5) for (let x = i.x - 17; x <= i.x + 17; x += 5) if (Math.hypot(x - i.x, y - i.y) <= 17) mark(x, y, 0); });
@@ -103,7 +103,7 @@
   /* Türen und Fenster rasten an der nächsten Wand oder Raumkante ein (nur waagerecht und senkrecht) */
   _sfSnapOpen(fl, x, y) {
     const items = this._sfPl().items.filter((i) => i.fl === fl), segs = [];
-    items.forEach((i) => { if (i.t === "r") { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; segs.push([p[0], p[1], q[0], q[1]]); }); } else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2]); });
+    items.forEach((i) => { if (i.t === "r" && !i.ds) { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; segs.push([p[0], p[1], q[0], q[1]]); }); } else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2]); });
     let best = null;
     segs.forEach(([x1, y1, x2, y2]) => {
       const hor = Math.abs(y1 - y2) < 1, ver = Math.abs(x1 - x2) < 1; if (!hor && !ver) return;

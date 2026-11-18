@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b20] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 9: Durchgänge und Räume ohne eigene Wand im Grundriss.
+
+### Neu
+- **Durchgang:** Neues Werkzeug „Durchgang“ neben der Tür. Es öffnet die Wand ohne Türblatt, etwa zwischen Flur und Treppe oder zur Küche. Eine vorhandene Tür lässt sich im Bearbeiten-Feld zwischen „Tür“ und „Durchgang“ umstellen. Für den Fluchtweg ist ein Durchgang eine offene Lücke.
+- **Raumrand gestrichelt:** Im Feld „Raum“ macht „Rand nur gestrichelt“ den Raum zur reinen Fläche mit Namen. Die Wände zeichnest du dann nur mit dem Wand-Werkzeug, es gibt keine doppelten Linien mehr. Ein gestrichelter Raum sperrt den Fluchtweg nicht, nur die gezeichneten Wände tun das. „Alle Räume der Etage“ stellt alle Räume der Etage auf einmal um.
+
 ## [2026.11.4b19] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 8: Ausgänge im Grundriss selbst markieren.

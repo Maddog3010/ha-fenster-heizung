@@ -550,3 +550,12 @@ def test_plan_ausgang_markierung():
         {"id": "w1", "fl": "eg", "t": "w", "x": 0, "y": 0, "x2": 40, "y2": 0, "ex": 1}]})
     it = {i["id"]: i for i in p["items"]}
     assert it["d1"]["ex"] == 1 and it["d2"]["ex"] == 0 and "ex" not in it["d3"] and it["d3"]["mv"] == 1 and "mh" not in it["d3"] and it["s1"]["ex"] == 1 and "ex" not in it["w1"]
+
+
+def test_plan_durchgang_und_raumrand():
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {"id": "d1", "fl": "eg", "t": "d", "x": 10, "y": 10, "dg": 1},
+        {"id": "d2", "fl": "eg", "t": "d", "x": 20, "y": 10, "ds": 1},
+        {"id": "r1", "fl": "eg", "t": "r", "x": 0, "y": 0, "w": 100, "h": 100, "ds": 1, "dg": 1}]})
+    it = {i["id"]: i for i in p["items"]}
+    assert it["d1"]["dg"] == 1 and "ds" not in it["d2"] and it["r1"]["ds"] == 1 and "dg" not in it["r1"]

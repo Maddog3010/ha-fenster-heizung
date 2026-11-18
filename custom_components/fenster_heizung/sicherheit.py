@@ -243,6 +243,10 @@ def clean_plan(raw: Any) -> dict[str, Any]:
                 o[k] = int(_num(it[k], -50, 1200, 0))
         o["r"] = int(_num(it.get("r"), 0, 270, 0) // 90 * 90)
         o["n"] = str(it.get("n") or "").strip()[:30]
+        if it["t"] in ("d", "r"):
+            for fk_ in ("dg", "ds"):  # dg: Durchgang statt Tür, ds: Raumrand nur gestrichelt (keine Wand)
+                if (fk_ == "dg") == (it["t"] == "d") and it.get(fk_) in (1, True):
+                    o[fk_] = 1
         if it["t"] == "d":
             for mk_ in ("mv", "mh"):
                 if it.get(mk_) in (1, True):
