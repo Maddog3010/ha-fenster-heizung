@@ -78,7 +78,7 @@
     const T = this._sfStat(), tab = this._sfTab(), tabs = [["ov", "Übersicht"], ["pl", "Grundriss"], ["wa", "Wartung"], ["se", "Einstellungen"]];
     const bar = `<div class="sftabs" role="tablist">${tabs.map(([k, t]) => `<button class="${k === tab ? "on" : ""}" data-act="sfxtab" data-k="${k}" role="tab" aria-selected="${k === tab}">${t}</button>`).join("")}</div>`;
     const body = tab === "pl" ? this._sfPlan(T) : tab === "wa" ? this._sfWart(T) : tab === "se" ? this._sfSet(T) : this._sfOv(T);
-    return `${this._sfBanner(T)}${this._sfBetaLine()}${bar}${body}`;
+    return `${this._sfBanner(T)}${this._sfBetaLine()}${bar}<div class="sfv9">${body}</div>`;
   }
   /* ---- A2 · Melder-Karte 2.0 */
   _sfCard(x) {
@@ -125,7 +125,18 @@
     const p = this._sfOvParts(T), l = T.l, rank = (x) => (x.alarm ? 0 : x.off ? 1 : x.bat != null && x.bat < T.C.bat.pct ? 2 : 3);
     const sorted = [...l].sort((a, b) => rank(a) - rank(b) || String(a.floor || "~").localeCompare(String(b.floor || "~")) || a.name.localeCompare(b.name, "de"));
     const list = l.length ? `<div class="card sfc sfmel"><h2>${ic("bell", 18)}Melder<small class="mut">${l.length}</small></h2><div class="sfmg">${sorted.map((x) => this._sfCard(x)).join("")}</div></div>` : "";
-    return `${this._sfAskCards(T)}${p.empty}${this._sfKts(T)}<div class="enc"><div class="enco">${p.dep}</div><div class="enco">${this._sfTimeline(T.S)}${p.log}</div></div>${list}`;
+    return `${this._sfAskCards(T)}${p.empty}${this._sfKts(T)}<div class="enc"><div class="enco">${p.dep}${p.log}</div><div class="enco">${this._sfTimeline(T.S)}${this._sfNext(T)}</div></div>${list}`;
+  }
+  /* Karte „Als Nächstes“: was als Nächstes ansteht (Batterie, Prüfung, Tausch), nach Dringlichkeit */
+  _sfNext(T) {
+    const { C, act, due, life } = T, out = [];
+    act.filter((x) => x.bat != null && x.bat < C.bat.pct).forEach((x) => out.push([0, "energy", `Batterie ${x.name}`, x.bat_days != null ? "~ " + this._sfDur(x.bat_days) : num(x.bat, 0) + " %", "a", x.id]));
+    act.filter((x) => x.bat_thr_days != null && x.bat_thr_days <= C.lead && !(x.bat != null && x.bat < C.bat.pct)).forEach((x) => out.push([1, "energy", `Batterie ${x.name}`, "in ~ " + this._sfDur(x.bat_thr_days), "g", x.id]));
+    if (C.test.on && due.length) out.push([0, "clock", due.length === 1 ? `Prüfung ${due[0].name}` : `Prüfung von ${due.length} Meldern`, "fällig", "a", due.length === 1 ? due[0].id : ""]);
+    life.forEach((x) => out.push([x.life_days < 0 ? 0 : 1, "tools", `${x.name} tauschen`, x.life_days < 0 ? "überfällig" : "in " + this._sfDur(x.life_days), x.life_days < 0 ? "r" : "a", x.id]));
+    out.sort((a, b) => a[0] - b[0]);
+    const rows = out.slice(0, 5).map(([, ico, t, v, c, id]) => `<${id ? "button" : "div"} class="sfap sfnx" ${id ? `data-act="sfxdet" data-k="${esc(id)}"` : ""}>${ic(ico, 16)}<span>${esc(t)}</span><span class="sft ${c}">${esc(v).toUpperCase()}</span></${id ? "button" : "div"}>`).join("");
+    return `<div class="card sfc"><h2>${ic("list", 18)}Als Nächstes</h2>${rows || `<div class="mut sm">Im Moment steht nichts an.</div>`}</div>`;
   }
   /* ---- Detailblatt eines Melders mit Batterie-Verlauf und Prognose (Stufe 1 · C4) */
   _sfGraph(x) {
@@ -181,14 +192,26 @@
       <div class="mut sm" style="margin:8px 0">Eine Seite für Versicherung, Vermieter oder Schornsteinfeger: alle Melder mit Einbau, Tausch, letzter Prüfung und Batterie.${P.name || P.addr ? "" : " Name und Adresse trägst du in den Einstellungen ein."}</div>
       <div class="sfbtn"><button class="btn2 pri" data-act="sfxprint">${ic("download", 15)} PDF erstellen</button><button class="btn2" data-act="sfxhtml">Als Datei laden</button></div>
       <div class="sfbtn" style="margin-top:8px"><button class="btn2" data-act="sfxbericht">${ic("heart", 15)} Sicherheitsbericht${this._spnS().active ? "" : " (Sponsor)"}</button></div></div>`;
-    return `${this._sfBand(T)}<div class="enc"><div class="enco">${this._sfPrognose(T)}${p.list}</div><div class="enco">${nach}${p.sl}</div></div>`;
+    return `${this._sfWKts(T)}${this._sfBand(T)}<div class="enc"><div class="enco">${this._sfPrognose(T)}</div><div class="enco">${nach}</div></div>${p.list}${p.sl}`;
+  }
+  _sfWKts(T) {
+    const { S, C, l, due, life } = T, w = (T.act || l), low = w.filter((x) => x.bat != null && x.bat < C.bat.pct), soon = w.filter((x) => x.bat_thr_days != null && x.bat_thr_days <= C.lead && !(x.bat != null && x.bat < C.bat.pct));
+    const bad = life.filter((x) => x.life_days < 0), nl = [...life].sort((a, b) => a.life_days - b.life_days)[0], shop = new Set();
+    l.forEach((x) => { if (x.bat != null && (x.bat < C.bat.pct + 10 || (x.bat_days != null && x.bat_days < 90))) shop.add("b:" + x.id); if (x.life_days != null && x.life_days < 0) shop.add("n:" + x.id); });
+    const k = (ico, t, v, s, c) => `<div class="sfkt">${ic(ico, 18)}<i style="background:${c}"></i><small>${t}</small><b>${esc(v)}</b><em>${esc(s)}</em></div>`, G = "#34d399", A = "#f59e0b", R = "#ef4444";
+    return `<div class="sfkts sfk4">${k("clock", "Nächste Prüfung", !C.test.on ? "aus" : due.length ? "fällig" : "läuft", S.test && S.test.last ? "zuletzt " + this._sfAgo(S.test.last) : "noch nie geprüft", due.length ? A : G)}
+      ${k("tools", "Tausch fällig", bad.length ? `${bad.length} ${bad.length === 1 ? "Melder" : "Melder"}` : life.length ? `${life.length} bald` : "keiner", nl ? esc(nl.name) : "keine Frist", bad.length ? R : life.length ? A : G)}
+      ${k("energy", "Batterie bald", low.length || soon.length ? `${low.length + soon.length} ${low.length + soon.length === 1 ? "Melder" : "Melder"}` : "alle gut", low.length ? `${low[0].name}${low[0].bat_days != null ? " ~ " + this._sfDur(low[0].bat_days) : ""}` : soon.length ? soon[0].name : "kein Handlungsbedarf", low.length ? A : soon.length ? A : G)}
+      ${k("list", "Einkauf", shop.size ? `${shop.size} ${shop.size === 1 ? "Ding" : "Dinge"}` : "nichts", shop.size ? "Batterien, neue Melder" : "nichts zu besorgen", shop.size ? "#94a3b8" : G)}</div>`;
   }
   /* ---- Einstellungen: Schalter für die alte Darstellung */
   _sfSet(T) {
-    const old = this._sfSetOld(T);
-    if (!this._admin()) return old;
+    if (!this._admin()) return this._sfSetOld(T);
     const o = !this._sfNew();
-    return `${old}${this._sfStufenCard(T)}<div class="card sfc" style="margin-top:12px"><h2>${ic("eye", 18)}Aussehen</h2><div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Banner mit Schild, Melder-Karten mit Farbbalken, Ampel als Liste und die Wartung aus v0.5 statt Haus-Szene, Kennzahl-Kacheln und Jahresband</small></span><button class="sw ${o ? "on" : ""}" data-act="sfxold" aria-pressed="${o}" aria-label="Karten wie bisher"></button></div></div>`;
+    const aus = `<div class="card sfc" data-sec="aussehen"><h2>${ic("eye", 18)}Aussehen</h2><div class="vrow"><span>Karten wie bisher<small class="mut" style="display:block">An: Banner mit Schild, Melder-Karten mit Farbbalken, Ampel als Liste und die Wartung aus v0.5 statt Haus-Szene, Kennzahl-Kacheln und Jahresband</small></span><button class="sw ${o ? "on" : ""}" data-act="sfxold" aria-pressed="${o}" aria-label="Karten wie bisher"></button></div></div>`;
+    if (o) return `${this._sfSetOld(T)}${this._sfStufenCard(T).replace('data-sec="alarm"', 'style="margin-top:12px"')}${aus.replace('data-sec="aussehen"', 'style="margin-top:12px"')}`;
+    const nav = [["melder", "shield", "Melder"], ["alarm", "alert", "Alarm & Stufen"], ["abfahrt", "lock", "Abfahrt"], ["allg", "bell", "Allgemein"], ["aussehen", "eye", "Aussehen"]];
+    return `<div class="sfnav" role="navigation" aria-label="Springe zu">${nav.map(([k, i, t]) => `<button data-act="sfxjump" data-k="${k}">${ic(i, 14)}${t}</button>`).join("")}</div>${this._sfSetOld(T, { mid: this._sfStufenCard(T), post: aus })}`;
   }
   /* ---- Aktionen */
   _sfxNew(a, b) {

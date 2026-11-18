@@ -64,4 +64,21 @@ const CSS_SF2 = `
 .sffc{display:flex;flex-wrap:wrap;gap:7px}.sffc button,.sffc a{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:99px;font:inherit;font-size:.84rem;padding:8px 14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 .sffc .sf112{background:rgba(0,0,0,.35)}
 @media (max-width:760px),(orientation:portrait){.sfal{grid-template-columns:1fr;inset:0;border-radius:0;padding:18px 16px}.sfalr{order:2}.sfali svg{max-width:260px}}
+/* v0.8 · Reiter in der neuen Optik: Symbol-Kachel an Karten, Kennzahlen, Melderliste, Sprungleiste */
+.sfv9 .card.sfc>h2>svg:first-child{box-sizing:content-box;width:16px;height:16px;padding:6px;border-radius:10px;background:color-mix(in srgb,var(--teal,#2dd4bf) 14%,transparent);color:var(--teal,#2dd4bf);flex:none}
+.sfk3{grid-template-columns:repeat(3,1fr)}.sfk4{grid-template-columns:repeat(4,1fr)}
+.sfk3 .sfkt,.sfk4 .sfkt{cursor:default}
+@media(max-width:900px){.sfk3{grid-template-columns:1fr}.sfk4{grid-template-columns:repeat(2,1fr)}.sfk4 .sfkt:last-child{grid-column:auto}.sfk3 .sfkt:last-child{grid-column:auto}}
+.sfleg{display:flex;gap:11px;flex-wrap:wrap;font-size:.72rem;color:var(--mut);font-weight:500}.sfleg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.sflr{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:14px;padding:7px 8px;color:inherit;font:inherit;cursor:pointer;margin:2px 0}
+.sflr:hover{background:color-mix(in srgb,var(--mut) 8%,transparent)}.sflr.on{background:color-mix(in srgb,var(--teal,#2dd4bf) 10%,transparent);border-color:color-mix(in srgb,var(--teal,#2dd4bf) 45%,transparent)}
+.sflr .sfmi{width:34px;height:34px;border-radius:11px}.sflr .sfmn b{font-size:.88rem}.sfls{margin-left:auto;display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;white-space:nowrap}.sfls i{width:8px;height:8px;border-radius:50%}
+.sfnx{background:none;border:0;color:inherit;font:inherit;width:100%;text-align:left}button.sfnx{cursor:pointer}
+.sfwg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:10px}
+.sfwg .sfwr{flex-direction:column;align-items:stretch;gap:8px;background:color-mix(in srgb,var(--mut) 7%,transparent);border:1px solid var(--line);border-radius:16px;padding:11px 12px;margin:0}
+.sfwg .sfwr2{align-self:flex-start;flex-direction:row;align-items:center;gap:10px}
+.sfnav{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 12px}.sfnav button{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;background:color-mix(in srgb,var(--mut) 12%,transparent);color:var(--text,inherit);font:inherit;font-size:.78rem;font-weight:700;padding:6px 13px;cursor:pointer}
+.sfnav button:hover{background:color-mix(in srgb,var(--teal,#2dd4bf) 18%,transparent);color:var(--teal,#2dd4bf)}
+.sflegw{margin:-4px 0 10px}
+.sfv9{min-width:0;max-width:100%}.sfv9 .card,.sfv9 .enco,.sfv9 .enc{min-width:0;max-width:100%}.sfv9 .sfjw{max-width:100%;overflow-x:auto}
 `;

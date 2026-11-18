@@ -34,7 +34,7 @@
     const tts = G.s3.on ? `<div class="sffld sfsub"><label>Durchsage über Lautsprecher (optional)</label>${this._wzSel(ids("media_player."), C.tts.player, "sfxtts", 'data-k="player"', "– keiner –")}${C.tts.player ? this._wzSel(ids("tts."), C.tts.engine, "sfxtts", 'data-k="engine"', "– Sprachdienst wählen –") : ""}</div>` : "";
     const ct = G.s4.on ? `<div class="sffld sfsub"><label>Kontaktperson (zum Beispiel Nachbar)</label>${this._wzSel(svc, C.contact.to, "sfxcont", "", "– Mitteilungsdienst wählen –")}${C.contact.to ? "" : `<div class="mut sm">Ohne Auswahl geht die Meldung in Stufe 4 an niemanden.</div>`}</div>` : "";
     const oa = C.offask, chip = (k, t) => `<button class="gsch ${oa.mode === k ? "sel" : ""}" data-act="sfxoam" data-k="${k}" aria-pressed="${oa.mode === k}">${t}</button>`;
-    return `<div class="card sfc" style="margin-top:12px"><h2>${ic("alert", 18)}Alarm &amp; Stufen</h2>
+    return `<div class="card sfc" data-sec="alarm"><h2>${ic("alert", 18)}Alarm &amp; Stufen</h2>
       <div class="mut sm" style="margin:-4px 0 8px">Wenn niemand „Verstanden“ drückt, steigert sich der Alarm Stufe für Stufe. <b>Der erste Alarm wird nie verzögert</b>, Türen werden nie entriegelt.</div>
       ${row(1, "Melden", "sofort · Mitteilung (kritisch), eigene Aktionen, Protokoll", "#f59e0b", "")}
       ${row(2, "Haus vorbereiten", `nach ${this._sfSecTxt(G.s2.sec)} · Aktionen mit „Wann: Stufe 2“ (Licht, Rollläden, Lüftung aus)`, "#fb7185", "s2")}

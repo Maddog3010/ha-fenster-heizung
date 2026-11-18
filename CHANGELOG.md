@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b8] - 2026-11-18
+
+Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.8, Build 2): **alle vier Reiter in der neuen Optik**.
+
+### Geändert
+- **Modul 11 · Übersicht:** Neue Verteilung ohne Lücke: links Abfahrt-Prüfung und Ereignisse, rechts „Letzte 30 Tage“ und die neue Karte **„Als Nächstes“** (Batterie, Prüfung, Tausch, nach Dringlichkeit). Karten haben ein Symbol-Kästchen im Kopf.
+- **Modul 11 · Grundriss:** Drei Kennzahl-Kacheln (Melder der Etage, Abdeckung der Räume, Fluchtweg), Legende der Farben und rechts eine **Melderliste der Etage** mit Status. Antippen zeigt die Details; bei Alarm steht die Alarm-Karte oben.
+- **Modul 11 · Wartung:** Vier Kennzahlen oben (nächste Prüfung, Tausch fällig, Batterie bald, Einkauf). Die Lebensdauer steht als **Karten nebeneinander** statt als lange Liste, die Einkaufsliste darunter.
+- **Modul 11 · Einstellungen:** Neue **Sprungleiste** (Melder, Alarm & Stufen, Abfahrt, Allgemein, Aussehen). „Alarm & Stufen“ steht jetzt rechts oben unter der Melder-Auswahl, „Aussehen“ am Ende. Schaltet man „Karten wie bisher“ ein, bleibt die alte Anordnung.
+
 ## [2026.11.4b7] - 2026-11-18
 
 Testversion für **Modul 11 · Rauch- & Sicherheitsmelder** (v0.8, Beta): **Ausgeschaltete Melder** und **Alarm mit Stufen und „Verstanden“**.
