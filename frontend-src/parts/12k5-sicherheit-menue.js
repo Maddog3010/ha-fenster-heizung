@@ -35,9 +35,9 @@
     const rest = T.l.filter((x) => !fl.some((f) => f.id === x.floor)); if (rest.length) groups.push([fl.length ? "Ohne Etage" : "Melder", rest]);
     const ids = new Set(T.l.map((x) => x.id)), H = this._hass.states, cand = Object.keys(H).filter((e) => e.startsWith("binary_sensor.") && !ids.has(e));
     const hid = S.excl || [];
-    return `${this._sfKts(T)}<div class="sfmel">${groups.length ? groups.map(([n, g]) => `<div class="sfgl">${esc(n)}<small>${g.length}</small></div>${g.map((x) => this._sfRow(x)).join("")}`).join("") : `<div class="card sfc"><div class="mut sm">Noch keine Melder gefunden. Füge einen von Hand hinzu oder richte deinen Hersteller unter Integrationen ein.</div></div>`}</div>
-      ${adm ? `<div class="sfgl">Hinzufügen</div>${this._sfSel(cand, "", "sfxmadd", "", "+ Melder (Binärsensor) hinzufügen", /rauch|smoke|wasser|water|leck|gas|co|hitze|heat/i)}` : ""}
-      ${hid.length ? `<div class="sfgl">Ausgeblendet<small>${hid.length}</small></div>${hid.map((x) => `<div class="sfrow o"><span class="sfri">${ic("eyeOff", 20)}</span><span class="sfrt"><b>${esc(x.name || x.id)}</b><small>${esc(x.id)}</small></span>${adm ? `<button class="btn2" data-act="sfxexcl" data-k="${esc(x.id)}" style="flex:none">Einblenden</button>` : ""}</div>`).join("")}` : ""}`;
+    return `${this._sfKts(T)}<div class="sfmel">${groups.length ? groups.map(([n, g]) => `<div class="sfgh">${esc(n)}<small>${g.length}</small></div>${g.map((x) => this._sfRow(x)).join("")}`).join("") : `<div class="card sfc"><div class="mut sm">Noch keine Melder gefunden. Füge einen von Hand hinzu oder richte deinen Hersteller unter Integrationen ein.</div></div>`}</div>
+      ${adm ? `<div class="sfgh">Hinzufügen</div>${this._sfSel(cand, "", "sfxmadd", "", "+ Melder (Binärsensor) hinzufügen", /rauch|smoke|wasser|water|leck|gas|co|hitze|heat/i)}` : ""}
+      ${hid.length ? `<div class="sfgh">Ausgeblendet<small>${hid.length}</small></div>${hid.map((x) => `<div class="sfrow o"><span class="sfri">${ic("eyeOff", 20)}</span><span class="sfrt"><b>${esc(x.name || x.id)}</b><small>${esc(x.id)}</small></span>${adm ? `<button class="btn2" data-act="sfxexcl" data-k="${esc(x.id)}" style="flex:none">Einblenden</button>` : ""}</div>`).join("")}` : ""}`;
   }
   /* ---- Melder-Seite (ersetzt das Fenster) */
   _sfDetPage(id, T) {
@@ -60,7 +60,7 @@
         <div class="sffld"><label>Raum${x.area ? ` (aus Home Assistant: ${esc(x.area)})` : ""}</label><input class="osel" data-f="sfxmf" data-k="room" data-e="${e}" value="${esc(m.room || "")}" maxlength="40" placeholder="${esc(x.area || "zum Beispiel Schlafzimmer")}"></div>
         <div class="sfhl">Batterie-Typ (für die Einkaufsliste)</div><div class="gschips">${c("btype", "", "unbekannt", !m.btype)}${bty.map((b) => c("btype", b, b, m.btype === b)).join("")}</div>
         <div class="sffld"><label>Batterie-Sensor${x.bat != null ? ` (aktuell ${num(x.bat, 0)} %)` : " (nicht gefunden)"}</label>${this._sfSel(bat, m.bat || "", "sfxmbat", `data-e="${e}"`, "automatisch suchen", /batter|akku/i)}</div>
-        <div class="sffld"><label>Eingebaut am</label><input class="osel" type="month" data-f="sfxmf" data-k="inst" data-e="${e}" value="${esc(m.inst || "")}"></div>
+        ${(() => { const iv = m.inst || "", y0 = new Date().getFullYear(), iy = Number(iv.slice(0, 4)) || y0, im = iv.slice(5, 7), MN = ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"], ys = (this._sfInstY && this._sfInstY[x.id]) || iy, mm = (i) => String(i + 1).padStart(2, "0"), yb = (d, t) => `<button class="sfyb" data-act="sfxinsty" data-e="${e}" data-k="${ys + d}" aria-label="${t}" ${ys + d > y0 || ys + d < y0 - 40 ? "disabled" : ""}>${ic("chev", 18)}</button>`; return `<div class="sfhl">Eingebaut am<b class="sfdv">${iv ? this._sfMon(iv) : "nicht eingetragen"}</b></div><div class="sfcal"><div class="sfcy">${yb(-1, "Jahr zurück")}<b>${ys}</b>${yb(1, "Jahr vor")}</div><div class="sfcm">${MN.map((n, i) => `<button class="${iv && ys === iy && im === mm(i) ? "on" : ""}" data-act="sfxmset" data-e="${e}" data-k="inst" data-v="${ys}-${mm(i)}" ${ys === y0 && i > new Date().getMonth() ? "disabled" : ""}>${n}</button>`).join("")}</div>${iv ? `<button class="sfcc" data-act="sfxmset" data-e="${e}" data-k="inst" data-v="">Datum entfernen</button>` : ""}</div>`; })()}
         <div class="sfhl">Austausch nach</div><div class="gschips">${[[0, "nicht überwachen"], [5, "5 Jahre"], [7, "7 Jahre"], [10, "10 Jahre"], [15, "15 Jahre"]].map(([v, t]) => c("life", v, t, (m.life || 0) === v)).join("")}</div>
         <div class="sfhl">Prüfen alle</div><div class="gschips">${[[0, `wie allgemein (${C.test.months} Mon.)`], [1, "1 Monat"], [3, "3 Monate"], [6, "6 Monate"], [12, "12 Monate"]].map(([v, t]) => c("int", v, t, (m.int || 0) === v)).join("")}</div>
         <div class="sffld"><label>Test-Knopf des Melders${x.test ? "" : " (keiner gefunden)"}</label>${this._sfSel(btn, m.press || "", "sfxmpress", `data-e="${e}"`, "automatisch suchen", /test/i)}</div></div>`;
@@ -132,6 +132,7 @@
       else this._sfxChange({ dataset: { ...meta, f }, value: v });
       this._render(); return true;
     }
+    if (a === "sfxinsty") { (this._sfInstY = this._sfInstY || {})[b.dataset.e] = Number(k); this._render(); return true; }
     if (a === "sfxmset") { this._sfxNewChange({ dataset: { f: "sfxmf", k, e: b.dataset.e }, value: b.dataset.v || "" }); return true; }
     if (a === "sfxplkset") { this._sfxNewChange({ dataset: { f: "sfxplk" }, value: b.dataset.v || "" }); return true; }
     if (a === "sfxrepv") { this._sfxPatch((c) => { c.repeat = Number(k); }); return true; }

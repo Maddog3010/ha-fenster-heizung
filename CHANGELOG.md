@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b14] - 2026-11-18
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 3: Melder-Seite auf großen Bildschirmen.
+
+### Behoben
+- **Batterie-Verlauf zu groß und Schrift verdeckt:** Auf Tablet und Rechner wurde der Verlauf über die volle Breite gezogen, die Beschriftung wuchs mit und überdeckte die Linie. Die Grafik hat jetzt eine feste Höchstbreite. Dabei fiel auf, dass eine neue Stilregel der Melder-Seite die Linienfarbe des Verlaufs überschrieben hatte; auch das ist behoben.
+- **Eingebaut am:** Das Datum öffnete das Monatsrad des Geräts, das beim Antippen wieder verschwand. Jetzt steht direkt auf der Seite eine kleine Kalender-Karte: Jahr mit Pfeilen, darunter die zwölf Monate zum Antippen, dazu „Datum entfernen“. Zukünftige Monate sind gesperrt.
+
 ## [2026.11.4b13] - 2026-11-18
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 2: **neue Menüstruktur ohne Aufklappmenüs und Popups**.
