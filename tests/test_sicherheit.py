@@ -263,12 +263,12 @@ def test_ausfall_und_rueckkehr_loesen_pruefung_aus():
     m, h = mgr()
     on = lambda ev: m._on_state(ev) or len(h.tasks)  # noqa: E731
     assert on(_Ev("binary_sensor.rauch", _St("on"))) == 1  # Alarm
-    assert on(_Ev("binary_sensor.rauch", _St("off"), _St("on"))) == 1  # Ende: wie bisher erst im Takt
-    assert on(_Ev("binary_sensor.rauch", _St("unavailable"), _St("off"))) == 2  # Ausfall
-    assert on(_Ev("binary_sensor.rauch", _St("off"), _St("unavailable"))) == 3  # Rückkehr
-    assert on(_Ev("binary_sensor.tuer", _St("on", "door"))) == 3  # kein Melder
+    assert on(_Ev("binary_sensor.rauch", _St("off"), _St("on"))) == 2  # Ende: sofort prüfen (Test per Testknopf wird so erkannt)
+    assert on(_Ev("binary_sensor.rauch", _St("unavailable"), _St("off"))) == 3  # Ausfall
+    assert on(_Ev("binary_sensor.rauch", _St("off"), _St("unavailable"))) == 4  # Rückkehr
+    assert on(_Ev("binary_sensor.tuer", _St("on", "door"))) == 4  # kein Melder
     m._known.add("binary_sensor.eigener")
-    assert on(_Ev("binary_sensor.eigener", _St("unavailable", None), _St("off", None))) == 4  # von Hand hinzugefügt, ohne Geräteklasse
+    assert on(_Ev("binary_sensor.eigener", _St("unavailable", None), _St("off", None))) == 5  # von Hand hinzugefügt, ohne Geräteklasse
     m2, h2 = mgr(wm_on=False)
     m2._on_state(_Ev("binary_sensor.rauch", _St("on")))
     assert not h2.tasks  # Modul aus

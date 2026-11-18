@@ -12,7 +12,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 - **Fluchtweg, Abdeckung und Melder-Zuordnung** nutzen die echte Raumform: Wände folgen den Ecken, ein Melder zählt nur im Raum, wenn er wirklich darin liegt, Türen zum Außenbereich werden korrekt erkannt, und Türen rasten auch an schrägen Kanten ein.
 
 ### Behoben
-- **Wartung:** Drückt man den Testknopf am Melder und der Alarm endet nach höchstens 2 Minuten, trägt Modul 11 die Prüfung selbst ein (Haken im Jahresband, „zuletzt geprüft“, Eintrag im Protokoll). Vorher musste man „Geprüft“ von Hand antippen.
+- **Wartung:** Drückt man den Testknopf am Melder und der Alarm endet nach höchstens 2 Minuten, trägt Modul 11 die Prüfung selbst ein (Haken im Jahresband, „zuletzt geprüft“, Eintrag im Protokoll). Das Ende des Alarms wird sofort erkannt. Vorher musste man „Geprüft“ von Hand antippen.
 - **Zurück aus einer anderen App:** Die Daten von Modul 11 verschwanden zunächst. Beim Zurückkehren lädt das Modul jetzt sofort neu, behält bis dahin den letzten Stand und versucht es bei einem Verbindungsfehler automatisch noch einmal.
 
 ### Geändert

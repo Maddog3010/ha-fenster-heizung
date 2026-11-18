@@ -431,7 +431,7 @@ class SicherheitManager:
             return
         if eid not in self._known and kind_of(new.attributes.get("device_class")) is None:
             return
-        if new.state == "on" or (new.state in OFF_STATES) != (old is not None and old.state in OFF_STATES):
+        if new.state == "on" or (old is not None and old.state == "on") or (new.state in OFF_STATES) != (old is not None and old.state in OFF_STATES):
             self.hass.async_create_task(self._tick(None))
 
     # ---- Melder lesen
