@@ -1,0 +1,26 @@
+[Unit]
+Description=Statistik-Server fuer Strom & Waerme (Versions-Statistik)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=stats
+Group=stats
+EnvironmentFile=/etc/stats/stats.env
+ExecStart=/usr/bin/python3 /opt/stats/server.py
+Restart=on-failure
+RestartSec=5
+# Absichern: kein Zugriff aufs System, nur die Datenbank ist beschreibbar
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/stats
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+CapabilityBoundingSet=
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

@@ -1305,6 +1305,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         from .support import SupportChat
         store["support"] = SupportChat(hass)
         await store["support"].async_start()
+    if "stats" not in store:  # Versions-Statistik (freiwillig, anonym; sendet nur nach Zustimmung)
+        from .stats import VersionStats
+        store["stats"] = VersionStats(hass)
+        await store["stats"].async_start()
     if "autopilot" not in store:
         from .autopilot import AutopilotManager
         store["autopilot"] = AutopilotManager(hass)
@@ -1402,6 +1406,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             sup = hass.data.get(DOMAIN, {}).pop("support", None)
             if sup is not None:
                 sup.async_stop()
+            sts = hass.data.get(DOMAIN, {}).pop("stats", None)
+            if sts is not None:
+                sts.async_stop()
             spn = hass.data.get(DOMAIN, {}).pop("sponsor", None)
             if spn is not None:
                 spn.async_stop()

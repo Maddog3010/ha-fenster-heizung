@@ -2076,6 +2076,33 @@ async def ws_support(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], {**sup.snapshot(), **res})
 
 
+@websocket_api.require_admin
+@websocket_api.websocket_command({
+    vol.Required("type"): "fenster_heizung/stats",
+    vol.Required("act"): vol.In(["get", "answer", "reset", "send", "forget", "opts"]),
+    vol.Optional("on"): bool, vol.Optional("url_dev"): str,
+})
+@websocket_api.async_response
+async def ws_stats(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Versions-Statistik: Stand holen, Zustimmung geben/zurücknehmen, Kennung erneuern, jetzt senden, Daten löschen."""
+    sts = hass.data.get(DOMAIN, {}).get("stats")
+    if sts is None:
+        connection.send_error(msg["id"], "not_ready", "Statistik ist noch nicht bereit")
+        return
+    act, res = msg["act"], {}
+    if act == "answer":
+        await sts.async_answer(bool(msg.get("on")))
+    elif act == "reset":
+        await sts.async_reset_id()
+    elif act == "send":
+        res = {"sent": await sts.async_send()}
+    elif act == "forget":
+        res = await sts.async_forget()
+    elif act == "opts":
+        sts.set_dev(msg.get("url_dev"))
+    connection.send_result(msg["id"], {**(await sts.snapshot()), **res})
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_haus_get, ws_haus_set, ws_log_get, ws_log_undo, ws_mw_get, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
@@ -2084,6 +2111,6 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_scan, ws_wb_ha_test, ws_wb_est, ws_wb_odo, ws_wb_session, ws_wb_import, ws_wb_sessions, ws_wb_assign, ws_preise, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test, ws_wx_ack, ws_wx_pause, ws_wx_close, ws_wx_vor, ws_tarif_get, ws_tarif_set, ws_tarif_sub, ws_tarif_remind, ws_tarif_test,
         ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sf_ack, ws_sf_pause, ws_sf_resume, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_tg_quick_set, ws_tg_quick, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
-        ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act, ws_spn_gh, ws_support, ws_ef_link, ws_ebuch,
+        ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act, ws_spn_gh, ws_support, ws_stats, ws_ef_link, ws_ebuch,
     ):
         websocket_api.async_register_command(hass, command)

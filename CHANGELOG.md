@@ -2,6 +2,21 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b27] - 2026-11-19
+
+**Versions-Statistik** (freiwillig, anonym): Popup beim ersten Start nach dem Update und Seite unter Einstellungen → System → Versions-Statistik.
+
+### Neu
+- **Popup mit Zustimmung:** Erscheint einmalig für Administratoren (nicht im Tablet-Modus). „Ja, teilnehmen“ und „Nein danke“ sind gleichwertig, Schließen zählt als „Nein“. Bis zum „Ja“ wird nichts gesendet und es gibt keine Kennung.
+- **Nur diese Angaben:** Gesendet wird höchstens 1× pro Tag eine zufällige Kennung, die Versionsnummer, der Kanal (Stabil oder Beta) und welche Module eingeschaltet sind (nur Kurzzeichen wie `ww`, `en`, `gs`; eigene Erweiterungen nie). Eine gemeinsame Zustimmung gilt für alles. Nicht gesendet werden Name, Standort, Räume, Geräte, Sensorwerte, IP-Adresse (wird nicht gespeichert) und die Home-Assistant-Instanz-ID.
+- **Einstellungen → System → Versions-Statistik:** Schalter, Stand (zuletzt gesendet, nächste Meldung), „Gesendete Daten ansehen“ mit der echten Meldung, „Jetzt senden“, „Kennung zurücksetzen“ und „Meine Daten auf dem Server löschen“. Ausschalten bittet den Server, die Kennung zu vergessen, und löscht sie hier.
+- **Fehler bleiben still:** Ist der Server nicht erreichbar, läuft die Integration normal weiter und versucht es am nächsten Tag erneut.
+- **Auswertung der Module:** Das Dashboard zeigt, wie viele Installationen welches Modul eingeschaltet haben.
+- **Statistik-Dienst als Cloudflare Worker (Ordner `statistik-worker/`):** Eingang (nur Meldungen, gibt nie Daten heraus) und Dashboard auf getrennten Adressen. Das Dashboard liegt hinter Cloudflare Access (Anmeldung per E-Mail-Code), der Worker prüft das Token zusätzlich selbst. Daten in einer D1-Datenbank, keine IP-Adressen, Kennungen ohne Meldung werden nach 180 Tagen gelöscht. Bebilderte Anleitung: `docs/Anleitung_Statistik-Cloudflare-Worker.pdf`.
+- **Alternative Statistik-Server (Ordner `statistik-server/`):** Python ohne Zusatzpakete für einen eigenen Container, z. B. auf Proxmox, mit Passwort-Dashboard nur im Heimnetz oder per VPN. Eingang (nur Meldungen, gibt nie Daten heraus) und Dashboard (Passwort, nur im Heimnetz oder per VPN) sind getrennte Listener. Ohne Protokoll von IP-Adressen, Kennungen ohne Meldung werden nach 180 Tagen gelöscht. Anleitung in `statistik-server/README.md`.
+- **Entwickler:** Sponsoren verwalten → Test-Adresse des Statistik-Servers (leer = echter Server).
+- README: Abschnitt „Versions-Statistik und Datenschutz“.
+
 ## [2026.11.4b26] - 2026-11-19
 
 **Modul 20 · Abrechnungen** (Addon) v0.7 Build 1: „Anbindung Module“ – die anderen Module rechnen mit deinen Verträgen.
@@ -16,6 +31,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 ### Behoben
 - **Modul 4 · Gerätedetail:** Der Ring um das Gerätebild ragte in Text und Kachel darunter (eine Regel der Geräteliste in den Einstellungen galt auch hier). Auf dem Handy steht der Ring jetzt zentriert über dem Namen.
 - **Modul 4 · Programm-Kurve:** Lange Wartezeit am Anfang (Startverzögerung, Bereitschaft) wird ausgeblendet und darunter genannt, statt das Programm an den rechten Rand zu drängen. Abschnitts-Schilder („Aufheizen“, „Heizen 2“ …) überlappen nicht mehr.
+
 
 ## [2026.11.4b25] - 2026-11-19
 

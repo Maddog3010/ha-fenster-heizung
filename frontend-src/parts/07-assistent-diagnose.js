@@ -397,6 +397,7 @@
     if (m.type === "s3rep") { box.innerHTML = this._s3RepModal(); return; }
     if (m.type === "mxsim" || m.type === "mxwaset" || m.type === "mxapset") { const top = (box.querySelector(".sheet") || {}).scrollTop || 0; box.innerHTML = this._mxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sup") { box.innerHTML = this._supModal(); this._supBind(box); return; }
+    if (m.type === "sts") { box.innerHTML = this._stsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm", "spngh"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

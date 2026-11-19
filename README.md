@@ -433,6 +433,28 @@ Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.3b1` 
 
 ---
 
+## Versions-Statistik und Datenschutz
+
+Seit `2026.11.4` fragt die Integration einmalig, ob sie **anonym mitteilen darf, welche Version du nutzt und welche Module eingeschaltet sind**. Das hilft, Updates besser zu planen (zum Beispiel, wie schnell neue Versionen ankommen und wann alte Versionen nicht mehr gebraucht werden) und zu sehen, welche Module wirklich genutzt werden. Die Teilnahme ist **freiwillig**. Ohne dein „Ja“ wird nichts gesendet.
+
+**Was gesendet wird** (höchstens 1× pro Tag):
+
+```json
+{ "schema": 2, "id": "7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41", "version": "2026.11.4", "channel": "stable", "modules": ["ww", "en", "gs"] }
+```
+
+- `id`: eine zufällige Kennung, die erst bei „Ja“ erzeugt wird. Sie hat keinen Bezug zu dir, deinem Home Assistant oder deinem GitHub-Konto.
+- `version` und `channel`: die installierte Versionsnummer und ob es eine stabile oder eine Testversion (Beta) ist.
+- `modules`: welche Module eingeschaltet sind, nur als Kurzzeichen (z. B. `ww` = Modul 2 Warmwasser). Nur diese festen Kurzzeichen werden angenommen, eigene Erweiterungen und alles andere nie.
+
+**Was nie gesendet wird:** Name, E-Mail, Standort, Räume, Geräte, Sensor- und Verbrauchswerte, Anwesenheit, die Instanz-ID von Home Assistant und Zugangsdaten. Die IP-Adresse wird auf dem Server weder gespeichert noch protokolliert.
+
+**Wohin:** an einen Statistik-Dienst des Entwicklers, der auf Cloudflare läuft (ein kleiner Worker mit Datenbank), nicht bei einem Analyse-Dienst. Gespeichert werden Kennung, Version, Kanal, die Modul-Kurzzeichen sowie erster und letzter Tag der Meldung, keine IP-Adressen. Cloudflare sieht als Betreiber technisch die Verbindungsdaten, wertet sie aber nicht für diese Statistik aus. Kennungen, die 180 Tage nicht gemeldet haben, werden automatisch gelöscht. Die Auswertung sieht nur der Entwickler (Anmeldung per E-Mail-Code).
+
+**Deine Rechte und Kontrolle:** Unter **Einstellungen → System → Versions-Statistik** kannst du jederzeit ausschalten, die genaue Meldung ansehen, die Kennung erneuern und **deine Daten auf dem Server löschen**. Beim Ausschalten wird der Server gebeten, die Kennung zu vergessen. Fragen oder Löschwünsche: support@stromwaerme.dev. Die Zahlen sind Untergrenzen (nur Teilnehmende zählen) und zeigen Trends, keine absolute Nutzerzahl.
+
+Der Dienst ist offen: `statistik-worker/` (Cloudflare Worker, Anleitung in `docs/Anleitung_Statistik-Cloudflare-Worker.pdf`) und alternativ `statistik-server/` (eigener Container, z. B. Proxmox).
+
 ## Sponsor werden
 
 „Strom & Wärme“ entsteht in meiner Freizeit und bleibt **kostenlos und offen**. Als Dank für ein Sponsoring gibt es Extras – freigeschaltet direkt im Panel mit deinem GitHub-Konto. **Es wird nichts gesperrt, was ohne Sponsoring schon da war.**

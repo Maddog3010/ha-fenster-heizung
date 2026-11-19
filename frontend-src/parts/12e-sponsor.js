@@ -205,5 +205,8 @@
       <div class="lsec" style="margin-top:16px">${ic("chat", 15)}Support-Chat</div>
       <div class="mut sm" style="margin:0 0 6px">${this._supS().ready && !this._supS().url_dev ? "Eingerichtet – Nachrichten kommen in deinem Telegram an." : "Test-Adresse deines Vermittlers (nur bei dir). Anleitung: Ordner support-worker im Repo."}</div>
       <div class="gbtns"><input class="osel" data-f="supurl" placeholder="https://….workers.dev" value="${esc(this._supS().url_dev || "")}" aria-label="Test-Adresse Support-Vermittler" style="flex:1;min-width:0"><button class="btn2" data-act="supurl">Speichern</button></div>
+      <div class="lsec" style="margin-top:16px">${ic("chart", 15)}Versions-Statistik</div>
+      <div class="mut sm" style="margin:0 0 6px">${this._stsS().url_dev ? "Test-Adresse aktiv: Meldungen gehen an diesen Server." : "Test-Adresse deines Statistik-Servers (nur bei dir). Leer = echter Server. Anleitung: Ordner statistik-server im Repo."}</div>
+      <div class="gbtns"><input class="osel" data-f="stsurl" placeholder="http://192.168.1.50:8081" value="${esc(this._stsS().url_dev || "")}" aria-label="Test-Adresse Statistik-Server" style="flex:1;min-width:0"><button class="btn2" data-act="stsurl">Speichern</button></div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
   }

@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS installs(id TEXT PRIMARY KEY, first_day TEXT NOT NULL, last_day TEXT NOT NULL,
+  version TEXT NOT NULL, channel TEXT NOT NULL, last_ts INTEGER NOT NULL, modules TEXT);
+CREATE TABLE IF NOT EXISTS daily(day TEXT NOT NULL, id TEXT NOT NULL, version TEXT NOT NULL, channel TEXT NOT NULL,
+  PRIMARY KEY(day, id));
+CREATE INDEX IF NOT EXISTS daily_id ON daily(id);

@@ -1,0 +1,30 @@
+# Statistik-Worker für „Strom & Wärme“ (Versions-Statistik) – Cloudflare Workers + D1
+name = "stats-stromwaerme"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+
+# Keine workers.dev-Adresse: erreichbar sind nur die beiden eigenen Hostnamen unten.
+workers_dev = false
+preview_urls = false
+
+routes = [
+  { pattern = "stats.stromwaerme.dev", custom_domain = true },  # Eingang (öffentlich, nur Meldungen)
+  { pattern = "dash.stromwaerme.dev",  custom_domain = true },  # Dashboard (nur hinter Cloudflare Access)
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "stats"
+database_id = "HIER-DIE-ID-AUS-WRANGLER-D1-CREATE-EINTRAGEN"
+
+# Täglich um 03:17 UTC: Kennungen ohne Meldung seit RETENTION_DAYS löschen
+[triggers]
+crons = ["17 3 * * *"]
+
+[vars]
+INGEST_HOST = "stats.stromwaerme.dev"
+DASH_HOST = "dash.stromwaerme.dev"
+RETENTION_DAYS = "180"
+# Aus Cloudflare Zero Trust (Access → Anwendung): Team-Domain und „Application Audience (AUD) Tag“
+TEAM_DOMAIN = "DEIN-TEAM.cloudflareaccess.com"
+POLICY_AUD = "HIER-DEN-AUD-TAG-EINTRAGEN"

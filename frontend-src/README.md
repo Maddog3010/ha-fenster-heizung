@@ -16,6 +16,7 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 01-symbole | Symbole, Raumsymbole, Farben |
 | 02-konstanten | Konstanten, Module, Vorlagen |
 | 03-stile | CSS |
+| 03f-stile-statistik, 12e5-statistik | Versions-Statistik: Popup (einmalig, freiwillig), Seite in Einstellungen → System, Daten-Dialog |
 | 03b-stile-raumkarte | CSS der Raumkarte 2.0 (Modul 1) |
 | 04-kern | Grundgerüst der Komponente, Hilfsfunktionen |
 | 05-modul1-fenster-heizung | Modul 1: Räume, Kopfkarte, Heizung, PV-Heizer |

@@ -1,6 +1,6 @@
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_GOE}${CSS_SF2}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
@@ -111,6 +111,7 @@
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
     else if (a.startsWith("spn")) this._spnAct(a, b);
     else if (a.startsWith("sup")) this._supAct(a, b);
+    else if (a.startsWith("sts")) this._stsAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
     else if (a.startsWith("mx") && this._mxAct) this._mxAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);

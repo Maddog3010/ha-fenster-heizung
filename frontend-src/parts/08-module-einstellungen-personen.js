@@ -151,6 +151,7 @@
       sy: () => card(`${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern, Homeserver, interne Kopien", "gen", "", `<em class="sxc ${lt ? "ok" : ""}">${esc(ltTxt)}</em>`)}
           ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
+          ${this._admin() ? this._stsRow(row) : ""}
           ${row("layers", "Versionen &amp; Updates", "Nach Updates suchen, letzte Änderungen, Module und Addons", "mver", "", this._upd && vgt(this._upd.latest, this._ver) ? `<em class="sxc warn">Update</em>` : "")}`),
       sp: () => card(this._spnRow()),
       ad: () => this._adSetPage(card),

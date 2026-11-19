@@ -3465,6 +3465,25 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 .sfshp{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0}.sfshp button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;font:inherit;font-size:.72rem;color:inherit;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;cursor:pointer}.sfshp button.on{border-color:var(--teal);background:rgba(45,212,191,.12)}.sfshp svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
 .sfevl{display:flex;flex-direction:column}.sfevl.all{max-height:360px;overflow:auto}.sfev{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid rgba(255,255,255,.06);font-size:.84rem}.sfev:first-child{border-top:0}.sfev i{width:8px;height:8px;border-radius:50%;background:var(--c)}.sfev span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sfev small{color:var(--mut);font-size:.74rem;white-space:nowrap}.sfevm{margin-top:6px;font-size:.82rem}
 `;
+/* Versions-Statistik: Popup und Seite in Einstellungen → System */
+const CSS_STS = `
+.sheet.stssh{max-width:520px}
+.stsp{margin:2px 0 12px;font-size:.92rem;line-height:1.45}
+.stsbox{margin:8px 0 10px;padding:11px 13px;border-radius:14px;border:1px solid var(--line);background:color-mix(in srgb,var(--teal) 7%,transparent);font-size:.88rem;line-height:1.45}
+.stsbox ul{margin:6px 0 0;padding-left:18px}.stsbox li{margin:3px 0}
+.stsh{display:block;color:var(--teal);font-size:.84rem}
+.stslks{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;margin:6px 0 10px;font-size:.84rem;color:var(--mut)}
+.stslk,.stslks .lnk{color:var(--primary-color,#3b82f6);text-decoration:none;font-weight:600;cursor:pointer}
+.stslk:hover,.stslks .lnk:hover{text-decoration:underline}
+.stsjs{margin:6px 0 10px;padding:12px 14px;border-radius:12px;background:#0e1413;color:#bfe9e5;border:1px solid var(--line);font:500 .8rem/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all;overflow:auto}
+.stsrows{margin:8px 0 12px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stsrows>div{display:flex;justify-content:space-between;gap:12px;padding:9px 13px;font-size:.86rem}
+.stsrows>div+div{border-top:1px solid var(--line)}.stsrows span{color:var(--mut)}.stsrows b{text-align:right;font-weight:600}
+.stsrows .stsok{color:#34d399}
+.stsnote{margin:8px 0 4px;padding:9px 12px;border-radius:12px;border:1px solid color-mix(in srgb,var(--teal) 30%,transparent);background:color-mix(in srgb,var(--teal) 6%,transparent);font-size:.78rem;color:var(--mut);line-height:1.45}
+.btn2.stsdan{border-color:#c0504d;color:#e88a87}
+.btn2:disabled{opacity:.6;cursor:default}
+`;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -3602,6 +3621,7 @@ class FensterHeizungPanel extends HTMLElement {
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     if (this._admin()) this._supWatch();
+    if (this._admin()) this._stsInit();
     try { if (this._admin() && new URLSearchParams(location.search).get("support") === "1") { history.replaceState(null, "", location.pathname); this._supOpen(); } } catch (_) { /* Link aus der Handy-Mitteilung */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     if (vbeta(this._ver)) { try { this._blG = await this._hass.callWS({ type: "fenster_heizung/beta_gate" }); } catch (_) { this._blG = null; } }  /* Beta-Freigabe, für alle Nutzer */
@@ -7112,7 +7132,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_GOE}${CSS_SF2}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
@@ -7223,6 +7243,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("tm") && a !== "tmin") this._tmAct(a, b);
     else if (a.startsWith("spn")) this._spnAct(a, b);
     else if (a.startsWith("sup")) this._supAct(a, b);
+    else if (a.startsWith("sts")) this._stsAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
     else if (a.startsWith("mx") && this._mxAct) this._mxAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
@@ -7903,6 +7924,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "s3rep") { box.innerHTML = this._s3RepModal(); return; }
     if (m.type === "mxsim" || m.type === "mxwaset" || m.type === "mxapset") { const top = (box.querySelector(".sheet") || {}).scrollTop || 0; box.innerHTML = this._mxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sup") { box.innerHTML = this._supModal(); this._supBind(box); return; }
+    if (m.type === "sts") { box.innerHTML = this._stsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm", "spngh"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tmpin", "tmset", "tmnorm", "tmmore"].includes(m.type)) { box.innerHTML = this._tmModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -8338,6 +8360,7 @@ class FensterHeizungPanel extends HTMLElement {
       sy: () => card(`${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern, Homeserver, interne Kopien", "gen", "", `<em class="sxc ${lt ? "ok" : ""}">${esc(ltTxt)}</em>`)}
           ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
+          ${this._admin() ? this._stsRow(row) : ""}
           ${row("layers", "Versionen &amp; Updates", "Nach Updates suchen, letzte Änderungen, Module und Addons", "mver", "", this._upd && vgt(this._upd.latest, this._ver) ? `<em class="sxc warn">Update</em>` : "")}`),
       sp: () => card(this._spnRow()),
       ad: () => this._adSetPage(card),
@@ -13257,6 +13280,9 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="lsec" style="margin-top:16px">${ic("chat", 15)}Support-Chat</div>
       <div class="mut sm" style="margin:0 0 6px">${this._supS().ready && !this._supS().url_dev ? "Eingerichtet – Nachrichten kommen in deinem Telegram an." : "Test-Adresse deines Vermittlers (nur bei dir). Anleitung: Ordner support-worker im Repo."}</div>
       <div class="gbtns"><input class="osel" data-f="supurl" placeholder="https://….workers.dev" value="${esc(this._supS().url_dev || "")}" aria-label="Test-Adresse Support-Vermittler" style="flex:1;min-width:0"><button class="btn2" data-act="supurl">Speichern</button></div>
+      <div class="lsec" style="margin-top:16px">${ic("chart", 15)}Versions-Statistik</div>
+      <div class="mut sm" style="margin:0 0 6px">${this._stsS().url_dev ? "Test-Adresse aktiv: Meldungen gehen an diesen Server." : "Test-Adresse deines Statistik-Servers (nur bei dir). Leer = echter Server. Anleitung: Ordner statistik-server im Repo."}</div>
+      <div class="gbtns"><input class="osel" data-f="stsurl" placeholder="http://192.168.1.50:8081" value="${esc(this._stsS().url_dev || "")}" aria-label="Test-Adresse Statistik-Server" style="flex:1;min-width:0"><button class="btn2" data-act="stsurl">Speichern</button></div>
       <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="spnforget" style="font-size:.8rem">Verwaltung ausschalten</button></div>`);
   }
   /* ================= Mit GitHub freischalten (Konzept Sponsor-Freischaltung, Stufe 2) =================
@@ -13532,6 +13558,102 @@ class FensterHeizungPanel extends HTMLElement {
     const mail = `mailto:${SUPPORT_MAIL}?subject=${encodeURIComponent(PRODUCT + " – Frage / Fehler")}&body=${encodeURIComponent("\n\n---\nVersion: " + (this._ver || "–"))}`;
     this._clip(SUPPORT_MAIL, `E-Mail-Adresse kopiert: ${SUPPORT_MAIL}`);
     try { const a = document.createElement("a"); a.href = mail; a.style.display = "none"; document.body.appendChild(a); a.click(); a.remove(); } catch (_) { try { window.location.href = mail; } catch (__) { /* Adresse ist kopiert */ } }
+  }
+  /* ================= Versions-Statistik (freiwillig, anonym) =================
+     Popup einmalig nach dem Update (nur Administratoren, nicht im Tablet-Modus) und Seite Einstellungen → System → Versions-Statistik.
+     Gesendet wird höchstens 1× pro Tag: zufällige Kennung, Versionsnummer, Kanal und die Kurzzeichen der eingeschalteten Module (stats.py). Ohne „Ja“ wird nichts gesendet. */
+  _stsS() { return this._stsD || { ok: false, asked: true, on: false, version: "", channel: "stable", id: "", last_ok: 0, last_try: 0, next: 0, err: "", url_dev: "", payload: null }; }
+  _stsWS(act, extra = {}) {
+    return this._hass.callWS({ type: "fenster_heizung/stats", act, ...extra }).then((r) => { this._stsD = r; return r; });
+  }
+  /* beim Start: Stand laden und – falls noch nie gefragt – das Popup zeigen, sobald nichts anderes offen ist */
+  _stsInit() {
+    this._stsWS("get").then((r) => { if (r && !r.asked) this._stsTry(0); }).catch(() => { /* Statistik ist optional */ });
+  }
+  _stsTry(n) {
+    const S = this._stsS();
+    if (S.asked || n > 12) return;
+    const busy = this._modal || this._blOn() || this._tmOn();
+    if (this._tmOn()) return;  // an der Wandtafel nicht fragen; es kommt beim nächsten Öffnen am Handy oder Computer
+    if (busy) { setTimeout(() => this._stsTry(n + 1), 15000); return; }
+    setTimeout(() => { if (!this._modal && !this._stsS().asked) { this._modal = { type: "sts", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 2500);
+  }
+  _stsWhen(ts, next) {
+    if (!ts) return next ? "gleich" : "noch nicht";
+    const d = new Date(ts * 1000), now = new Date(), p = (x) => String(x).padStart(2, "0"), hm = `${p(d.getHours())}:${p(d.getMinutes())}`;
+    const day = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime(), diff = Math.round((day(d) - day(now)) / 864e5);
+    if (next && ts * 1000 <= Date.now()) return "gleich";
+    if (diff === 0) return next ? "heute" : `heute, ${hm}`;
+    if (diff === 1) return "morgen";
+    if (diff === -1) return `gestern, ${hm}`;
+    return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${next ? "" : ", " + hm}`;
+  }
+  /* Zeile in Einstellungen → System */
+  _stsRow(row) {
+    const S = this._stsS();
+    return row("chart", "Versions-Statistik", S.on ? "Sendet 1× pro Tag anonym die Versionsnummer" : "Aus · freiwillig, nur Versionsnummer", "stsopen", "", `<em class="sxc ${S.on ? "ok" : "off"}">${S.on ? "An" : "Aus"}</em>`);
+  }
+  _stsModal() {
+    const S = this._stsS(), m = this._modal, x = `<button class="ibtn" data-act="${m.mode === "ask" ? "stsno" : "close"}" aria-label="Schließen">${ic("close", 20)}</button>`;
+    const link = `<a class="stslk" href="https://github.com/Maddog3010/ha-fenster-heizung#versions-statistik-und-datenschutz" target="_blank" rel="noopener noreferrer">Datenschutz</a>`;
+    const wrap = (title, sub, body, ov) => `<div class="ov" data-act="${ov}"></div><div class="sheet stssh" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="sh"><div><b>${title}</b>${sub ? `<span>${sub}</span>` : ""}</div>${x}</div>${body}</div>`;
+    if (m.mode === "data") {
+      const P = S.payload, json = P ? JSON.stringify(P, null, 2) : "";
+      return wrap("Gesendete Daten", S.on ? "Genau das wird gesendet" : "So sieht die Meldung aus (Beispiel-Kennung)",
+        `<pre class="stsjs" aria-label="Meldung">${esc(json)}</pre>
+         <div class="mut sm" style="margin:2px 0 10px">Das ist alles. Keine IP-Adresse, kein Name, keine Räume, Geräte oder Sensorwerte. Gesendet wird höchstens 1× pro Tag${S.on ? "" : ", und erst nach deinem „Ja“"}.</div>
+         <div class="gbtns"><button class="btn2" data-act="stscopy">Kopieren</button><button class="btn2 pri" data-act="stsback">Schließen</button></div>`, "stsback");
+    }
+    if (m.mode === "del") {
+      return wrap("Daten auf dem Server löschen?", "", `<div class="stsbox">Der Server vergisst deine Kennung, hier wird sie gelöscht und die Statistik schaltet sich aus. Du kannst sie später jederzeit neu einschalten (mit neuer Kennung).</div>
+        <div class="gbtns"><button class="btn2" data-act="stsback">Abbrechen</button><button class="btn2 stsdan" data-act="stsdelok">Löschen und ausschalten</button></div>`, "stsback");
+    }
+    if (m.mode === "ask") {
+      return wrap(`${ic("chart", 18)} Hilf mit, Strom &amp; Wärme besser zu machen`, "",
+        `<p class="stsp">Darf die Integration anonym mitteilen, welche Version du nutzt und welche Module eingeschaltet sind? Es werden <b>nur diese Angaben</b> erhoben – sonst nichts.</p>
+         <div class="stsbox"><b class="stsh">Das wird gesendet (höchstens 1× pro Tag)</b>
+           <ul><li>Zufällige Kennung (ohne Bezug zu dir oder Home Assistant)</li><li>Versionsnummer, z. B. ${esc(S.version || "2026.11.4")}</li><li>Kanal: Stabil oder Beta</li><li>Welche Module an sind, nur als Kurzzeichen (z. B. ww, en, gs)</li></ul></div>
+         <div class="mut sm">Nicht gesendet: Name, Standort, Räume, Geräte, Sensorwerte, eigene Erweiterungen. Deine IP-Adresse wird nicht gespeichert.</div>
+         <div class="stslks"><button class="lnk" data-act="stsdata">Gesendete Daten ansehen</button><span>·</span>${link}</div>
+         <div class="gbtns"><button class="btn2 pri" data-act="stsyes">Ja, teilnehmen</button><button class="btn2" data-act="stsno">Nein danke</button></div>
+         <div class="mut sm" style="text-align:center;margin:2px 0 0">Jederzeit änderbar: Einstellungen → System → Versions-Statistik</div>`, "stsno");
+    }
+    /* Seite „Versions-Statistik“ */
+    const sw = `<button class="sw ${S.on ? "on" : ""}" data-act="${S.on ? "stsoff" : "stsask"}" role="switch" aria-checked="${S.on}" aria-label="Versions-Statistik"></button>`;
+    const when = (t, n) => this._stsWhen(t, n);
+    const fail = S.on && S.last_try > S.last_ok && S.err;
+    const body = S.on ? `<div class="stsrows"><div><span>Zuletzt gesendet</span><b class="${S.last_ok ? "stsok" : ""}">${esc(when(S.last_ok))}${S.last_ok ? " ✓" : ""}</b></div>
+         <div><span>Nächste Meldung</span><b>${esc(when(S.next, true))}</b></div>
+         <div><span>Version · Kanal</span><b>${esc(S.version)} · ${S.channel === "beta" ? "Beta" : "Stabil"}</b></div>
+         <div><span>Aktive Module</span><b>${esc(((S.payload && S.payload.modules) || []).join(", ") || "–")}</b></div>
+         <div><span>Kennung</span><b>${esc(S.id)}</b></div></div>
+       <div class="gbtns"><button class="btn2 pri" data-act="stsdata">Gesendete Daten ansehen</button></div>
+       <div class="gbtns"><button class="btn2" data-act="stssend"${m.busy ? " disabled" : ""}>${m.busy ? "Sendet …" : "Jetzt senden"}</button><button class="btn2" data-act="stsreset">Kennung zurücksetzen</button></div>
+       <div class="gbtns"><button class="btn2 stsdan" data-act="stsdel">Meine Daten auf dem Server löschen</button></div>
+       ${fail ? `<div class="stsnote">Der Server war zuletzt nicht erreichbar. Das ist kein Fehler: Die Integration läuft normal weiter und versucht es am nächsten Tag erneut.</div>` : `<div class="stsnote">Ist der Server nicht erreichbar, passiert nichts: Die Integration läuft normal weiter und versucht es am nächsten Tag erneut.</div>`}`
+      : `<div class="stsbox">Du hilfst, Strom &amp; Wärme besser zu machen, wenn du die Statistik einschaltest. Du kannst das jederzeit ändern.</div>
+       <div class="gbtns"><button class="btn2 pri" data-act="stsask">Einschalten und Erklärung ansehen</button></div>`;
+    return wrap("Versions-Statistik", "Einstellungen › System",
+      `<div class="vrow"><span><b>Versions-Statistik</b><small class="mut" style="display:block">${S.on ? "Sendet höchstens 1× pro Tag anonym deine Versionsnummer und welche Module an sind. Sonst nichts." : "Aus. Es wird nichts gesendet und es gibt keine Kennung."}</small></span>${sw}</div>
+       ${body}<div class="stslks"><button class="lnk" data-act="stsdata">Was wird gesendet?</button><span>·</span>${link}</div>`, "close");
+  }
+  _stsAct(a, b) {
+    const m = this._modal, S = this._stsS(), fail = () => this._toast("Das ging nicht");
+    if (a === "stsopen") { this._modal = { type: "sts", mode: "main" }; this._renderModal(); this._stsWS("get").then(() => { if (this._modal && this._modal.type === "sts") this._renderModal(); }).catch(() => {}); return; }
+    if (a === "stsurl") { const el = this.shadowRoot.querySelector('[data-f="stsurl"]'); this._stsWS("opts", { url_dev: String((el && el.value) || "").trim() }).then(() => { this._renderModal(); this._toast("Gespeichert"); }).catch(fail); return; }
+    if (!m || m.type !== "sts") return;
+    const done = () => { this._modal = null; this._renderModal(); this._render(); };
+    if (a === "stsyes") this._stsWS("answer", { on: true }).then(() => { this._toast("Danke fürs Mitmachen"); done(); }).catch(fail);
+    else if (a === "stsno") this._stsWS("answer", { on: false }).then(() => { this._modal = null; this._renderModal(); this._render(); }).catch(() => { this._modal = null; this._renderModal(); });
+    else if (a === "stsask") { m.mode = "ask"; m.from = "main"; this._renderModal(); }
+    else if (a === "stsoff") this._stsWS("answer", { on: false }).then(() => { m.mode = "main"; this._renderModal(); this._render(); this._toast("Statistik ausgeschaltet"); }).catch(fail);
+    else if (a === "stsdata") { m.back = m.mode; m.mode = "data"; this._renderModal(); }
+    else if (a === "stsback") { m.mode = m.back || "main"; m.back = ""; this._renderModal(); }
+    else if (a === "stscopy") { try { navigator.clipboard.writeText(JSON.stringify(S.payload, null, 2)); this._toast("Kopiert"); } catch (_) { this._toast("Kopieren ging nicht"); } }
+    else if (a === "stssend") { m.busy = true; this._renderModal(); this._stsWS("send").then((r) => { m.busy = false; this._renderModal(); this._toast(r.sent ? "Gesendet" : "Server nicht erreichbar – neuer Versuch folgt"); }).catch(() => { m.busy = false; this._renderModal(); fail(); }); }
+    else if (a === "stsreset") this._stsWS("reset").then(() => { this._renderModal(); this._toast("Neue Kennung erzeugt"); }).catch(fail);
+    else if (a === "stsdel") { m.mode = "del"; this._renderModal(); }
+    else if (a === "stsdelok") this._stsWS("forget").then((r) => { m.mode = "main"; this._renderModal(); this._render(); this._toast(r.forgotten ? "Gelöscht, Statistik aus" : "Hier gelöscht, Server nicht erreichbar"); }).catch(fail);
   }
   /* ================= Sponsor-Lounge (Konzept Sponsor-Bereich 2.0, Stufen S1 + S2) und Sponsor Max 1 =================
      Eigene Seite statt Dialog, erreichbar über das Herz/den Stern im Kopf, die Startseite und die Einstellungen.
@@ -17854,6 +17976,7 @@ class FensterHeizungPanel extends HTMLElement {
       { id: "backup", t: "Sichern & Wiederherstellen", p: "System", k: "sicherung backup homeserver webdav smb wiederherstellen datei", go: ["gen"], h: "Einstellungen als Datei sichern, automatisch auf einen Homeserver kopieren oder interne Kopien zurückholen." },
       { id: "verlauf", t: "Änderungsverlauf", p: "System", k: "verlauf rückgängig änderung wer wann undo", go: ["mdstlog"], h: "Die letzten 50 Änderungen mit Benutzer und Zeit. Jede lässt sich einzeln zurücknehmen." },
       { id: "diag", t: "Diagnose", p: "System", k: "diagnose ventil thermostat batterie problem", go: ["diag"] },
+      { id: "stats", t: "Versions-Statistik", p: "System", k: "statistik version anonym daten senden datenschutz popup teilnehmen kennung", go: ["stsopen"], h: "Freiwillig und anonym: höchstens 1× pro Tag Versionsnummer und Kanal an den Entwickler. Ausschalten und Daten löschen jederzeit möglich." },
       { id: "versions", t: "Versionen", p: "System", k: "version changelog beta modulversion", go: ["mver"] },
     ];
     MODS.forEach((m) => { const ms = MOD_SET[m.id]; if (ms) C.push({ id: `modules.on.${m.id}`, t: `Modul ${m.n} ${m.name}`, p: "Module", k: `modul ${m.short} ${ms.txt}`.toLowerCase(), go: [ms.act], v: () => (this._stIsOn(m) ? "An" : "Aus"), h: ms.txt }); });

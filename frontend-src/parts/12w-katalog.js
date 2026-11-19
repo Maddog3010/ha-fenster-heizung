@@ -54,6 +54,7 @@
       { id: "backup", t: "Sichern & Wiederherstellen", p: "System", k: "sicherung backup homeserver webdav smb wiederherstellen datei", go: ["gen"], h: "Einstellungen als Datei sichern, automatisch auf einen Homeserver kopieren oder interne Kopien zurückholen." },
       { id: "verlauf", t: "Änderungsverlauf", p: "System", k: "verlauf rückgängig änderung wer wann undo", go: ["mdstlog"], h: "Die letzten 50 Änderungen mit Benutzer und Zeit. Jede lässt sich einzeln zurücknehmen." },
       { id: "diag", t: "Diagnose", p: "System", k: "diagnose ventil thermostat batterie problem", go: ["diag"] },
+      { id: "stats", t: "Versions-Statistik", p: "System", k: "statistik version anonym daten senden datenschutz popup teilnehmen kennung", go: ["stsopen"], h: "Freiwillig und anonym: höchstens 1× pro Tag Versionsnummer und Kanal an den Entwickler. Ausschalten und Daten löschen jederzeit möglich." },
       { id: "versions", t: "Versionen", p: "System", k: "version changelog beta modulversion", go: ["mver"] },
     ];
     MODS.forEach((m) => { const ms = MOD_SET[m.id]; if (ms) C.push({ id: `modules.on.${m.id}`, t: `Modul ${m.n} ${m.name}`, p: "Module", k: `modul ${m.short} ${ms.txt}`.toLowerCase(), go: [ms.act], v: () => (this._stIsOn(m) ? "An" : "Aus"), h: ms.txt }); });
