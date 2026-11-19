@@ -1172,7 +1172,8 @@ async def ws_wb_odo(hass: HomeAssistant, connection, msg: dict) -> None:
                                   vol.Optional("card"): vol.All(str, vol.Length(max=30)), vol.Optional("note"): vol.All(str, vol.Length(max=80)),
                                   vol.Optional("biz"): bool, vol.Optional("delete"): bool, vol.Optional("merge"): bool,
                                   vol.Optional("ct"): vol.All(vol.Coerce(float), vol.Range(min=0, max=500)),
-                                  vol.Optional("cost"): vol.All(vol.Coerce(float), vol.Range(min=0, max=1000))})
+                                  vol.Optional("cost"): vol.All(vol.Coerce(float), vol.Range(min=0, max=1000)),
+                                  vol.Optional("sun"): vol.All(vol.Coerce(float), vol.Range(min=0, max=100))})
 @websocket_api.async_response
 async def ws_wb_session(hass: HomeAssistant, connection, msg: dict) -> None:
     """Ladestatistik: Ladung bearbeiten (Fahrzeug, Menge, Karte, Notiz, dienstlich) oder löschen."""
@@ -1181,7 +1182,7 @@ async def ws_wb_session(hass: HomeAssistant, connection, msg: dict) -> None:
         connection.send_error(msg["id"], "not_ready", "Wallbox ist noch nicht bereit")
         return
     try:
-        res = await mgr.async_session(msg["start"], {k: msg[k] for k in ("veh", "kwh", "card", "note", "biz", "delete", "merge", "ct", "cost") if k in msg})
+        res = await mgr.async_session(msg["start"], {k: msg[k] for k in ("veh", "kwh", "card", "note", "biz", "delete", "merge", "ct", "cost", "sun") if k in msg})
     except ValueError as e:
         connection.send_error(msg["id"], "not_found", str(e))
         return

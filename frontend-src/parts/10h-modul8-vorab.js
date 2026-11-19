@@ -67,8 +67,8 @@
   _sesGrab() {
     const m = this._modal, q = (f) => this.shadowRoot.querySelector(`[data-f="${f}"]`);
     if (!m || m.type !== "wbses") return;
-    const k = q("wbseskwh"), c = q("wbsescard"), n = q("wbsesnote"), p = q("wbsescost");
-    if (k) m.kwh = k.value; if (c) m.card = c.value; if (n) m.note = n.value; if (p) m.cost = p.value;
+    const k = q("wbseskwh"), c = q("wbsescard"), n = q("wbsesnote"), p = q("wbsescost"), u = q("wbsessun");
+    if (k) m.kwh = k.value; if (c) m.card = c.value; if (n) m.note = n.value; if (p) m.cost = p.value; if (u) m.sun = u.value;
   }
   _sesModal() {
     const m = this._modal, x = this._sesFind(m.start);
@@ -83,6 +83,7 @@
       <div class="lsec">${ic("car", 15)}Fahrzeug</div>
       <div class="gschips">${names.map(chip).join("")}</div>
       <div class="vrow"><span>Geladene Menge<small class="mut" style="display:block">${x.orig != null ? `Von Hand geändert. Gemessen wurden ${num(x.orig, 2)} kWh.` : "Nur ändern, wenn die Wallbox falsch gemessen hat."}</small></span><span style="flex:none;display:flex;align-items:center;gap:6px"><input class="otxt" style="width:96px;text-align:right" type="text" inputmode="decimal" data-f="wbseskwh" value="${esc(m.kwh)}" aria-label="Geladene Menge in kWh"> kWh</span></div>
+      <div class="vrow"><span>Sonnenanteil<small class="mut" style="display:block">Z. B. 0 %, wenn nur nachts geladen wurde. Die Kosten werden mit angepasst.</small></span><span style="flex:none;display:flex;align-items:center;gap:6px"><button class="gsch" data-act="wbvsessun0">0 %</button><input class="otxt" style="width:64px;text-align:right" type="text" inputmode="numeric" data-f="wbsessun" value="${esc(m.sun)}" aria-label="Sonnenanteil in Prozent"> %</span></div>
       <div class="vrow"><span>Karte<small class="mut" style="display:block">Leer lassen für „ohne Karte“.</small></span><input class="otxt" style="max-width:200px" type="text" maxlength="30" data-f="wbsescard" value="${esc(m.card)}" placeholder="ohne Karte" aria-label="Karte"></div>
       <div class="vrow"><span>Dienstlich<small class="mut" style="display:block">Für den Ladenachweis an den Arbeitgeber.</small></span><button class="sw ${m.biz ? "on" : ""}" data-act="wbvsesbiz" aria-pressed="${!!m.biz}" aria-label="Dienstlich"></button></div>
       <div class="vrow" style="display:block"><span>Notiz</span><input class="otxt" style="width:100%;margin-top:6px" type="text" maxlength="80" data-f="wbsesnote" value="${esc(m.note)}" placeholder="z. B. Gast geladen, Fahrt nach Hamburg" aria-label="Notiz"></div>
@@ -101,7 +102,7 @@
     if (a === "wbvses") {
       const x = this._sesFind(b.dataset.k); if (!x) return;
       if (!this._admin()) { this._toast("Nur Administratoren können Ladungen bearbeiten"); return; }
-      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), kwh0: num(x.kwh, 2), cost: num(x.cost, 2), cost0: num(x.cost, 2), costEdit: false, card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
+      this._modal = { type: "wbses", start: x.start, veh: x.veh || "Unbekannt", kwh: num(x.kwh, 2), kwh0: num(x.kwh, 2), cost: num(x.cost, 2), cost0: num(x.cost, 2), costEdit: false, sun: num(x.kwh > 0 ? x.pv / x.kwh * 100 : 0, 0), sun0: num(x.kwh > 0 ? x.pv / x.kwh * 100 : 0, 0), card: x.card || "", note: x.note || "", biz: !!x.biz, del: false }; this._renderModal(); return;
     }
     const m = this._modal; if (!m || m.type !== "wbses") return;
     this._sesGrab();
@@ -109,6 +110,7 @@
     if (a === "wbvsesbiz") { m.biz = !m.biz; this._renderModal(); return; }
     if (a === "wbvsescost") { m.costEdit = true; this._renderModal(); const i = this.shadowRoot.querySelector('[data-f="wbsescost"]'); if (i) { i.focus(); i.select(); } return; }
     if (a === "wbvsesdel") { m.del = true; this._renderModal(); return; }
+    if (a === "wbvsessun0") { m.sun = "0"; this._renderModal(); return; }
     const send = (body, msg) => { m.busy = true; this._renderModal();
       this._hass.callWS({ type: "fenster_heizung/wb_session", start: m.start, ...body }).then((r) => { this._wbStD = { data: r || {}, ts: Date.now() }; this._modal = null; this._renderModal(); this._render(); this._toast(msg); })
         .catch(() => { m.busy = false; this._renderModal(); this._toast("Ladung konnte nicht gespeichert werden"); }); };
@@ -121,6 +123,8 @@
       if (String(m.kwh).trim() !== m.kwh0) body.kwh = k; // nur senden, wenn wirklich geändert (sonst würde die Rundung als Änderung zählen)
       const co = parseFloat(String(m.cost || "").replace(",", "."));
       if (String(m.cost || "").trim() !== m.cost0) { if (!isFinite(co) || co < 0 || co > 1000) { this._toast("Bitte Kosten von 0 bis 1000 € eingeben"); return; } body.cost = co; }
+      const su = parseFloat(String(m.sun || "").replace(",", "."));
+      if (String(m.sun || "").trim() !== m.sun0) { if (!isFinite(su) || su < 0 || su > 100) { this._toast("Bitte einen Sonnenanteil von 0 bis 100 % eingeben"); return; } body.sun = su; }
       send(body, "Ladung gespeichert");
     }
   }

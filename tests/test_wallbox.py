@@ -586,3 +586,14 @@ def test_edit_normal_when_everything_is_covered():
     P.session_edit(st, "2026-11-15T10:00:00", {"kwh": 3.0}, datetime(2026, 11, 15, 18, 0, tzinfo=TZ))
     d = st["days"]["2026-11-15"]
     assert abs(d["pv"] + d["grid"] - 3.0) < 1e-6
+
+
+
+def test_session_sun_share_edit_adjusts_day_and_cost():
+    st = P.clean_stats(None)
+    st["days"]["2026-11-18"] = {"pv": 0.73, "grid": 35.77, "cost": 13.77, "full": 14.0, "km": 0.0, "veh": {"BYD": {"kwh": 36.5, "cost": 13.77}}}
+    st["sessions"] = [{"start": "2026-11-18T21:15:00", "min": 400.0, "veh": "BYD", "kwh": 36.5, "pv": 0.73, "cost": 13.77}]
+    r = P.session_edit(st, "2026-11-18T21:15:00", {"sun": 0}, NOW)
+    d = st["days"]["2026-11-18"]
+    assert r["pv"] == 0 and abs(d["pv"]) < 1e-9 and abs(d["grid"] - 36.5) < 1e-6
+    assert abs(r["cost"] - 13.77 / 35.77 * 36.5) < 0.01 and "Sonnenanteil: 2 % → 0 %" in r["chg"][-1]["x"][0]

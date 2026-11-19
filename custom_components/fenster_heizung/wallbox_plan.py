@@ -582,6 +582,28 @@ def session_edit(st: dict[str, Any], start: str, ch: dict[str, Any], now: dateti
             log.append(f"Kosten: {_fmt(s['cost'])} → {_fmt(nc)} €")
             s["cost"], s["pcost"] = nc, True
             s.pop("pct", None)
+    if ch.get("sun") is not None:  # Sonnenanteil der Ladung (%), z. B. 0 % für eine Ladung in der Nacht
+        sh = max(0.0, min(100.0, float(ch["sun"])))
+        npv = round(s["kwh"] * sh / 100, 3)
+        if abs(npv - s["pv"]) >= 0.005:
+            dpv, g_old = npv - s["pv"], max(0.0, s["kwh"] - s["pv"])
+            per = s["pct"] / 100 if s.get("pct") is not None else (s["cost"] / g_old if g_old > 0.01 else None)
+            if d is not None:
+                d["pv"] = max(0.0, d["pv"] + dpv)
+                d["grid"] = max(0.0, d["grid"] - dpv)
+            old_sh = s["pv"] / s["kwh"] * 100 if s["kwh"] > 0 else 0.0
+            log.append(f"Sonnenanteil: {round(old_sh)} % → {round(sh)} %")
+            s["pv"] = npv
+            if per is not None and not s.get("pcost"):
+                nc = round(max(0.0, s["kwh"] - npv) * per, 4)
+                if d is not None:
+                    d["cost"] = max(0.0, d["cost"] + nc - s["cost"])
+                    vv = d["veh"].get(s["veh"])
+                    if vv:
+                        vv["cost"] = max(0.0, vv["cost"] + nc - s["cost"])
+                if abs(nc - s["cost"]) >= 0.005:
+                    log.append(f"Kosten: {_fmt(s['cost'])} → {_fmt(nc)} €")
+                s["cost"] = nc
     if ch.get("ct") is not None:
         ct = round(max(0.0, min(500.0, float(ch["ct"]))), 2)
         grid = max(0.0, s["kwh"] - s["pv"])

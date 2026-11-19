@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b23] - 2026-11-19
+
+### Behoben
+- **Modul 8 (v0.9 Build 8): Ladelimit wurde überfahren, das Auto lud bis 100 %.** Mit „Nur mit erkannter Karte regeln“ hat Strom & Wärme ohne erkannte Karte nichts an der Wallbox verändert. Ist in der go-e-App die Zugangskontrolle aber „Offen“, lädt die go-e auch ohne Karte – dann lief die Ladung ungeregelt bis 100 %, obwohl z. B. 65 % eingestellt waren. Jetzt liest Modul 8 die Zugangskontrolle der go-e mit: Ist sie offen oder lädt das Auto bereits ohne Karte, wird trotzdem geregelt – mit dem Fahrzeug „ohne Karte“ und dessen Ladelimit und Modus. Ein Hinweis im Register „Laden“ erklärt das; damit wirklich nur mit Karte geladen wird, die Zugangskontrolle in der go-e-App auf „Authentifizierung erforderlich“ stellen. Mit Kartenpflicht bleibt alles wie bisher.
+- **Modul 8: Nachts geladene Ladungen zeigten 1–2 % Sonne.** Als Sonne zählte bisher der Überschuss am Netz-Sensor – nachts kam der aus dem Hausakku oder aus kleinen Messabweichungen zwischen Netz-Sensor und Wallbox. Jetzt zählt als Sonne höchstens, was die Solaranlage gerade erzeugt (Solar-Sensor aus den Haus-Werten, eine oder zwei Anlagen); ohne Solar-Sensor nach Sonnenuntergang nichts. Strom aus dem Hausakku zählt damit nicht mehr als Sonne.
+
+### Neu
+- **Modul 8: Sonnenanteil einer Ladung von Hand ändern** (Ladung bearbeiten → „Sonnenanteil“, mit Knopf „0 %“). Tageswerte und Kosten werden angepasst, die Änderung steht im Verlauf der Ladung – so lassen sich ältere Nachtladungen korrigieren.
+
 ## [2026.11.4b22] - 2026-11-18
 
 **Modul 20 · Abrechnungen** (Addon) v0.3 „Übersicht & Prognose“ und v0.5 „Rechnungen“ – Modul 20 ist jetzt Beta.

@@ -37,7 +37,7 @@ _LOGGER = logging.getLogger(__name__)
 
 TICK_SECONDS = 10
 TIMEOUT_S = 5
-KEYS = ("car", "amp", "psm", "frc", "nrg", "wh", "eto", "fwv", "sse", "typ", "fna", "err", "alw", "acu", "pnp", "cbl", "ama", "trx", "cards")
+KEYS = ("car", "amp", "psm", "frc", "nrg", "wh", "eto", "fwv", "sse", "typ", "fna", "err", "alw", "acu", "pnp", "cbl", "ama", "trx", "cards", "acs")
 CAR_TEXT = {0: "Unbekannt", 1: "Nicht angesteckt", 2: "Lädt", 3: "Wartet aufs Auto", 4: "Fertig geladen", 5: "Fehler"}
 
 
@@ -106,6 +106,7 @@ def summarize(st: dict[str, Any]) -> dict[str, Any]:
         "power": n["power"], "cur": n["amp"], "phases": n["phases"], "session_wh": st.get("wh"), "total_wh": st.get("eto"),
         "fw": st.get("fwv"), "serial": st.get("sse"), "type": st.get("typ"), "name": st.get("fna"), "err": st.get("err"),
         "cable": st.get("cbl"), "ama": st.get("ama"), "trx": trx, "cards": cards,
+        "acs": st.get("acs") if isinstance(st.get("acs"), int) and not isinstance(st.get("acs"), bool) else None,  # Kartenpflicht: 0 offen, 1 Karte nötig
     }
 
 
@@ -151,6 +152,8 @@ class WallboxManager:
         self._last_veh = ""  # zuletzt erkanntes Fahrzeug (für die Anzeige nach dem Abstecken)
         self._cal: dict[str, tuple[float, list[dict[str, Any]]]] = {}  # Kalender-Termine je Kalender (5 Minuten zwischengespeichert)
         self._cal_said = ""
+        self.lock_open = False  # „Nur mit Karte“ an, aber die Wallbox lädt auch ohne Karte (Kartenpflicht aus)
+        self._lock_said = False
 
     async def async_start(self) -> None:
         self.cfg = clean_wb(await self._store.async_load())
@@ -307,6 +310,30 @@ class WallboxManager:
         e = en.get("ent") or {}
         w = lambda k: (lambda st: watts(st.state, st.attributes.get("unit_of_measurement")) if st is not None else None)(self.hass.states.get(e[k]) if e.get(k) else None)  # noqa: E731
         return bat_split(en.get("bmode") or "one", en.get("bsign") or "charge", w("bat"), w("bchg"), w("bdis"))
+
+    def _pv_w(self) -> float | None:
+        """Solarleistung jetzt (W) aus den Haus-Werten (eine oder zwei Anlagen). None = kein Sensor gewählt."""
+        en = self._haus().get("energy") or self._modules().get("energy") or {}
+        e, tot, any_ = en.get("ent") or {}, 0.0, False
+        for k in ("pv", "pv2"):
+            st = self.hass.states.get(e[k]) if e.get(k) else None
+            w = watts(st.state, st.attributes.get("unit_of_measurement")) if st is not None else None
+            if w is not None:
+                tot, any_ = tot + max(0.0, w), True
+        return tot if any_ else None
+
+    def sun_for_stats(self, wb_power: float) -> float | None:
+        """Sonnen-Anteil für die Ladestatistik (W): Überschuss, aber nie mehr, als die Solaranlage gerade erzeugt.
+        Nachts zählt damit nichts als Sonne – auch nicht Strom aus dem Hausakku oder kurze Messabweichungen am Netz-Sensor.
+        Ohne Solar-Sensor: nach Sonnenuntergang 0."""
+        raw = self.surplus_raw(wb_power)
+        if raw is None:
+            return None
+        pv = self._pv_w()
+        if pv is not None:
+            return min(raw, pv)
+        sun = self.hass.states.get("sun.sun")
+        return 0.0 if sun is not None and sun.state == "below_horizon" else raw
 
     def surplus_raw(self, wb_power: float) -> float | None:
         imp = self._grid_import()
@@ -764,8 +791,24 @@ class WallboxManager:
         if who and who.get("kind") == "vehicle":
             self._last_veh = who.get("id") or ""
         if cfg["lock"] and who is None and cl.rfid:
-            self.want = {"state": "gesperrt", "reason": "Wartet auf eine Karte. Strom & Wärme verändert nichts, bis ein Fahrzeug erkannt ist."}
-            return
+            # „Nur mit Karte“ wirkt nur, wenn die Wallbox selbst eine Karte verlangt. Ist die Kartenpflicht in der go-e-App aus
+            # (acs = 0) oder lädt das Auto schon ohne Karte (trx = 0), würde die Wallbox sonst ungeregelt bis 100 % laden.
+            # Dann wird wie ohne „Nur mit Karte“ geregelt: Fahrzeug „ohne Karte“ mit seinem Ladelimit.
+            acs, open_tx = self.info.get("acs"), car == CAR_CHARGING and trx == 0
+            if acs == 0 or open_tx:
+                who = resolve_who({**cfg, "lock": False}, None)
+                self.who = who
+                self.lock_open = True
+                if not self._lock_said:
+                    self._lock_said = True
+                    self._add(("Kartenpflicht in der go-e-App ist aus" if acs == 0 else "Das Auto lädt ohne Karte")
+                              + f": Es wird trotzdem geregelt{' wie „' + who['name'] + '“' if who else ''}, damit das Ladelimit gilt.")
+            else:
+                self.lock_open = False
+                self.want = {"state": "gesperrt", "reason": "Wartet auf eine Karte. Die Wallbox lädt erst, wenn eine Karte angelegt wird."}
+                return
+        else:
+            self.lock_open, self._lock_said = False, False
         cfg = self._eff_cfg(who)
         # Jemand hat von Hand umgestellt: nicht dagegen regeln
         if manual_change(self._last_set, cur, cl.kind, self._set_ts, now_ts):
@@ -844,7 +887,7 @@ class WallboxManager:
             except Exception:  # noqa: BLE001 - die Temperatur ist nur für die Statistik
                 pass
         if charging and power > 0 and dt > 0:
-            add_energy(self._st, now, dt, power, self.surplus_raw(power), self._price_now(now), veh, card)  # Sonne = Überschuss und Hausakku (wie bisher)
+            add_energy(self._st, now, dt, power, self.sun_for_stats(power), self._price_now(now), veh, card)  # Sonne = Überschuss, höchstens die Solarleistung
             if cv and not cv["ent"].get("soc"):
                 est_add(self._st, cv["id"], power * dt / 3.6e6, self._cap())
         day = now.date().isoformat()
@@ -1172,6 +1215,6 @@ class WallboxManager:
             "veh": (self.cur_vehicle() or {}).get("id") or "", "socs": {v["id"]: self.veh_soc(v) for v in self.cfg["vehicles"]},
             "est": {v["id"]: self.veh_est(v) for v in self.cfg["vehicles"] if self.veh_est(v)},
             "price": self._price_view(), "eff": self._eff_view(),
-            "ready": self.configured(), "kind": self.cfg["wbx"]["kind"], "dimmed": self.dimmed, "stale": self._grid_stale,
+            "ready": self.configured(), "kind": self.cfg["wbx"]["kind"], "lock_open": self.lock_open, "dimmed": self.dimmed, "stale": self._grid_stale,
             "bat": dict(zip(("chg", "dis"), self._bat())),
         }

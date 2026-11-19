@@ -43,6 +43,7 @@
     if (!s.ok) N.push([`Keine Verbindung zur Wallbox${s.error ? " (" + esc(s.error) + ")" : ""}. Prüfe Strom und WLAN der Wallbox.`, "wb", "Verbindung prüfen"]);
     else if (c.enabled && s.hold > 0) N.push([`Du hast die Wallbox von Hand umgestellt. Die Regelung pausiert noch ${Math.ceil(s.hold / 60)} Min. und regelt dann wieder.`]);
     if (s.ok && c.enabled && !s.hold && w.state === "gesperrt") N.push(["Die Regelung wartet auf eine Karte. Lege die Karte an der Wallbox an.", "veh", "Karten ansehen"]);
+    if (s.ok && c.enabled && s.lock_open) N.push([`„Nur mit Karte“ ist an, aber die go-e lädt auch ohne Karte (Zugangskontrolle „Offen“ in der go-e-App). Strom &amp; Wärme regelt deshalb trotzdem${who ? ` wie „${esc(who.name)}“ mit Limit ${who.limit} %` : ""}. Damit wirklich nur mit Karte geladen wird, stelle die Zugangskontrolle auf „Authentifizierung erforderlich“.`, "veh", "Karten ansehen"]);
     if (s.ok && c.enabled && !s.hold && w.state && w.state !== "gesperrt" && w.surplus_w == null && (em === "pv" || em === "minpv" || c.planOn)) N.push(["Es fehlt ein Netz-Sensor für den Überschuss (Einstellungen → Haus → Energiequellen). Ohne ihn wird nicht mit Sonne geladen."]);
     return N;
   }
