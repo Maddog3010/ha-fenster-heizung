@@ -347,6 +347,81 @@ export default (api) => {
     : `${sp === "strom" ? `<div class="gschips">${chip("pmode", "fix", "Fester Preis", f.mode !== "dyn")}${chip("pmode", "dyn", "Dynamisch (Börsenpreis)", f.mode === "dyn")}</div>` : ""}
       <div class="abfs">${f.mode === "dyn" ? inp("auf", "Aufschlag auf den Börsenpreis", nv(f.auf), { num: 1, unit: "ct/kWh" }) : inp("ap", sp === "einspeisung" ? "Vergütung" : "Arbeitspreis", nv(f.ap), { num: 1, unit: "ct/kWh" })}${sp !== "einspeisung" ? inp("gp", "Grundpreis", nv(f.gp), { num: 1, unit: "€/Monat" }) + inp("mess", "Messstellenbetrieb", nv(f.mess), { num: 1, unit: "€/Monat", ph: "falls getrennt" }) : ""}${sp === "gas" ? inp("co2", "davon CO₂-Preis", nv(f.co2), { num: 1, unit: "ct/kWh", ph: "nur zur Info" }) : ""}${inp("ust", "Umsatzsteuer", nv(f.ust, 0), { num: 1, unit: "%" })}</div>`;
   const bruttoRow = (f) => `<div class="vrow"><span>Preise sind brutto<small class="mut" style="display:block">Aus: Du gibst netto ein, gerechnet und angezeigt wird immer brutto.</small></span><button class="sw ${f.brutto !== false ? "on" : ""}" data-act="adxa" data-ad="${ID}" data-a="pbrutto" aria-pressed="${f.brutto !== false}" aria-label="Preise sind brutto"></button></div>`;
+
+  /* ---------- Sensor für den Zählerstand: nur fortlaufende Zählerstände vorschlagen ----------
+     Ein Zählerstand zählt immer weiter (state_class total/total_increasing) und hat die Einheit des Zählers.
+     Nicht geeignet: Tages-/Monatszähler (setzen sich zurück), Prognosen, Momentanwerte (measurement). Bonus: Richtung passt
+     (Bezug/Einspeisung), Wert passt zum letzten Ablesestand. Abzug: Zähler eines einzelnen Geräts (Steckdose, Schalter). */
+  const norm = (t) => String(t || "").toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss");
+  const UNIT = { strom_bezug: ["kWh", "Wh", "MWh"], strom_einsp: ["kWh", "Wh", "MWh"], gas: ["m³", "m3"], wasser: ["m³", "m3", "L"], garten: ["m³", "m3", "L"] };
+  const UF = { Wh: 0.001, MWh: 1000, L: 0.001 };
+  const RX = {
+    prog: /forecast|prognose|vorhersage|estimat|geschaetzt|erwartet|solcast|forecast_solar|open_meteo/,
+    reset: /heute|today|daily|taeglich|(^|[ _.-])tag([ _.-]|$)|day|reset|monat|month|woche|week|(^|[ _.-])jahr([ _.-]|$)|year|stunde|hour|letzte|last_|session|ladevorgang|accumulated|akkumul/,
+    dev: /plug|steckdose|switch|schalter|(^|[ _.-])shelly|aqara|sonoff|tasmota|wallbox|go_?e|waschmaschine|trockner|spuel|kuehl|gefrier|fernseh|(^|[ _.-])tv|pc|computer|lampe|licht|light|pumpe|heizstab|klima|entfeuchter|server|router/,
+    bez: /bezug|import|consumption|verbrauch|1[._]?8[._]?0|from_grid|netzbezug|zaehlerstand|meter|obis|bought|purchased/,
+    ein: /einspeis|export|feed|2[._]?8[._]?0|to_grid|sold|returned|delivered/,
+    gen: /production|erzeugung|solar|(^|[ _.-])pv|ertrag|yield|wechselrichter|inverter|fronius|symo|batter|akku/,
+    gas: /gas/, wasser: /wasser|water/, garten: /garten|garden|bewaesser/,
+  };
+  const rank = (p, art, mt, e) => {
+    const H = p._hass, x = H.states[e], at = (x && x.attributes) || {}, en = (H.entities || {})[e] || {}, dv = en.device_id ? (H.devices || {})[en.device_id] || {} : {};
+    const name = at.friendly_name || e, t = norm(`${name} ${e} ${dv.name_by_user || dv.name || ""}`), pl = norm(en.platform || ""), u = String(at.unit_of_measurement || ""), why = [], bad = [];
+    const sc = at.state_class || "", dc = at.device_class || "";
+    if (RX.prog.test(t) || RX.prog.test(pl)) bad.push("Prognose, kein Zählerstand");
+    if (at.last_reset || RX.reset.test(t)) bad.push("setzt sich zurück (Tages-, Monats- oder Ladezähler)");
+    if (sc === "measurement") bad.push("Momentanwert, zählt nicht weiter");
+    let s = 40;
+    if (sc === "total_increasing" || sc === "total") { s += 15; why.push("zählt fortlaufend"); } else if (!sc) s -= 10;
+    if (["energy", "gas", "water"].includes(dc)) s += 8;
+    if (art === "strom_bezug") { if (RX.bez.test(t)) { s += 22; why.push("Bezug"); } if (RX.ein.test(t)) { s -= 40; bad.push("Einspeisung, nicht Bezug"); } else if (RX.gen.test(t)) { s -= 35; bad.push("Erzeugung (Solar/Akku), kein Netzbezug"); } }
+    if (art === "strom_einsp") { if (RX.ein.test(t)) { s += 22; why.push("Einspeisung"); } else if (RX.bez.test(t)) { s -= 40; bad.push("Bezug, nicht Einspeisung"); } if (RX.gen.test(t) && !RX.ein.test(t)) { s -= 25; bad.push("Erzeugung der Anlage, nicht die Einspeisung"); } }
+    if (art === "gas" && RX.gas.test(t)) { s += 22; why.push("Gas"); }
+    if ((art === "wasser" || art === "garten") && RX.wasser.test(t)) { s += 14; why.push("Wasser"); }
+    if (art === "garten") { if (RX.garten.test(t)) { s += 18; why.push("Garten"); } else s -= 8; }
+    if (art === "wasser" && RX.garten.test(t)) s -= 15;
+    if (RX.dev.test(t)) { s -= 28; why.push("misst nur ein Gerät"); }
+    const raw = x ? parseFloat(x.state) : NaN, v = isFinite(raw) ? raw * (UF[u] || 1) : null;
+    if (v == null) { s -= 20; why.push("liefert gerade nichts"); }
+    const last = mt && mt.last ? mt.last.v : null;
+    if (v != null && last != null) {
+      const days = Math.max(0.5, (Date.now() - Date.parse(mt.last.t)) / 864e5), max = last + Math.max(50, (mt.rate || 0) * days * 4 + 5);
+      if (v >= last - 0.5 && v <= max) { s += 35; why.unshift(`passt zu deinem Stand ${num(last, 0)} ${mt.unit}`); }
+      else if (v < last * 0.5) { s -= 30; bad.push(`viel kleiner als dein Stand ${num(last, 0)} ${mt.unit}`); }
+      else if (v < last - 0.5) { s -= 12; why.push("kleiner als dein letzter Stand"); }
+    }
+    if (u && u !== "kWh" && u !== "m³") why.push(`${u} → wird umgerechnet`);
+    return { e, name, s: Math.max(1, Math.min(99, s - bad.length * 30)), why, bad, v, u: u === "m3" ? "m³" : u, q: norm(`${name} ${e} ${dv.name || ""} ${dv.manufacturer || ""}`) };
+  };
+  const sensPick = (p, D, m) => {
+    const f = m.f, st = p._hass.states, units = UNIT[f.art] || [], mt = f.id ? M(D, f.id) : null;
+    const all = Object.keys(st).filter((e) => e.startsWith("sensor.") && units.includes(String((st[e].attributes || {}).unit_of_measurement || ""))).map((e) => rank(p, f.art, mt, e));
+    if (f.sensor && !all.some((x) => x.e === f.sensor) && st[f.sensor]) all.push(rank(p, f.art, mt, f.sensor));
+    const good = all.filter((x) => !x.bad.length).sort((a, b) => b.s - a.s || a.name.localeCompare(b.name, "de")), bad = all.filter((x) => x.bad.length).sort((a, b) => a.name.localeCompare(b.name, "de"));
+    const val = (x) => (x.v == null ? "–" : `${num(x.v, x.v >= 1000 ? 0 : 1)} ${x.u === "Wh" || x.u === "MWh" ? "kWh" : x.u === "L" ? "m³" : x.u}`);
+    const row = (x, warn) => `<button class="abss-r${x.e === f.sensor ? " sel" : ""}${warn ? " bad" : ""}" data-act="adxa" data-ad="${ID}" data-a="msens" data-k="${esc(x.e)}" data-q="${esc(x.q)}"><span><b>${esc(x.name)}</b><small>${esc(warn ? x.bad[0] : x.why.join(" · ") || x.e)}</small></span><em>${val(x)}</em></button>`;
+    const card = (x, i) => `<div class="abss-c${i === 0 ? " best" : ""}${x.e === f.sensor ? " sel" : ""}"><div class="abss-h"><span><b>${esc(x.name)}</b><small>${esc(x.e)}</small></span><em>${val(x)}</em></div><div class="abss-w">${x.why.map((w) => `<i class="${/^passt|zählt|Bezug|Einspeisung|Gas|Wasser|Garten/.test(w) ? "ok" : /Gerät|kleiner|nichts/.test(w) ? "wa" : ""}">${esc(w)}</i>`).join("")}</div>${x.e === f.sensor ? `<span class="mut sm">${ic("check", 13)} ist gewählt</span>` : `<button class="btn2${i === 0 ? " pri" : ""}" data-act="adxa" data-ad="${ID}" data-a="msens" data-k="${esc(x.e)}">Passt</button>`}</div>`;
+    const top = good.slice(0, 3), rest = good.slice(3), lim = m.smore ? rest.length : 0;
+    const sel = all.find((x) => x.e === f.sensor);
+    const gone = f.sensor && !st[f.sensor];
+    const cur = gone ? `<div class="abss-cur bad">${ic("alert", 16)}<span><b>${esc(f.sensor)}</b><small>Diesen Sensor gibt es in Home Assistant nicht mehr. Bitte einen neuen wählen oder von Hand ablesen.</small></span><button class="lnk" data-act="adxa" data-ad="${ID}" data-a="msens" data-k="">Von Hand</button></div>`
+      : !f.sensor ? `<div class="abss-cur">${ic("pencil", 16)}<span><b>Von Hand ablesen</b><small>Kein Sensor gewählt – du trägst die Stände selbst ein.</small></span></div>`
+      : `<div class="abss-cur${sel && sel.bad.length ? " bad" : ""}">${ic(sel && sel.bad.length ? "alert" : "check", 16)}<span><b>${esc(sel ? sel.name : f.sensor)}</b><small>${sel ? (sel.bad.length ? `Achtung: ${esc(sel.bad.join(", "))}. Der Tagesstand würde falsch gespeichert.` : `${val(sel)} · ${esc(sel.why.join(" · ") || f.sensor)}`) : esc(f.sensor)}</small></span><button class="lnk" data-act="adxa" data-ad="${ID}" data-a="msens" data-k="">Von Hand</button></div>`;
+    const list = `<div class="abss-all" hidden>${good.map((x) => row(x)).join("")}${bad.map((x) => row(x, 1)).join("")}<div class="mut sm abss-none" hidden>Nichts gefunden.</div></div>`;
+    return `${cur}<div class="abss-q">${ic("search", 16)}<input type="search" data-f="adxq" data-ad="${ID}" placeholder="Sensor suchen: Name, Gerät, Hersteller …" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Sensor suchen"></div>
+      <div class="abss-def">${top.length ? `<div class="abss-t">Vorschläge <span class="mut sm">· ${good.length} geeignete von ${all.length} Sensoren mit ${units.filter((u) => u !== "m3").join(" oder ")}</span></div><div class="abss-cs">${top.map(card).join("")}</div>` : `<div class="mut sm" style="margin:6px 0">Kein fortlaufender Zählerstand mit ${units[0]} gefunden. ${f.art.startsWith("strom") ? "Ein Stromzähler-Lesekopf (z. B. Tibber Pulse, Tasmota, ESPHome) liefert ihn." : "Ein Lesekopf am Zähler (z. B. ESPHome) liefert ihn."}</div>`}
+        ${rest.length ? `${rest.slice(0, lim).map((x) => row(x)).join("")}${!m.smore ? `<button class="lnk abss-more" data-act="adxa" data-ad="${ID}" data-a="smore">${rest.length} weitere geeignete zeigen</button>` : ""}` : ""}
+        ${bad.length ? `<button class="abss-tg" data-act="adxa" data-ad="${ID}" data-a="sbad" aria-expanded="${!!m.sbad}">${ic(m.sbad ? "minus" : "plus", 14)} Nicht geeignet (${bad.length}) <span class="mut sm">· Tageszähler, Prognosen, einzelne Geräte</span></button>${m.sbad ? bad.map((x) => row(x, 1)).join("") : ""}` : ""}</div>${list}`;
+  };
+  const input = (p, el) => {
+    if (el.dataset.f !== "adxq") return false;
+    const box = el.closest(".absh") || el.getRootNode(), q = norm(el.value.trim()), words = q.split(/\s+/).filter(Boolean);
+    const all = box.querySelector(".abss-all"), def = box.querySelector(".abss-def"); if (!all || !def) return true;
+    all.hidden = !q; def.hidden = !!q; let n = 0;
+    all.querySelectorAll(".abss-r").forEach((r) => { const ok = words.every((w) => (r.dataset.q || "").includes(w)); r.hidden = !ok; if (ok) n++; });
+    const none = all.querySelector(".abss-none"); if (none) none.hidden = n > 0;
+    return true;
+  };
   const modal = (p, m) => {
     const s = S(p), D = s.d; if (!D) return wrap(hd("Abrechnungen", "Lädt …"));
     const f = m.f || {};
@@ -372,13 +447,10 @@ export default (api) => {
         <div class="foot2" style="margin-top:14px">${m.i != null && c.periods.length > 1 ? btn("pdel", "trash", "Diesen Preis löschen") : btn("close2", "", "Abbrechen")}${btn("psave", "check", "Speichern", { pri: 1 })}</div>`);
     }
     if (m.k === "m") {
-      const st = p._hass.states, u = (ART[f.art] || [])[0] ? (["strom_bezug", "strom_einsp"].includes(f.art) ? "kWh" : "m³") : "";
-      const cand = f.art ? Object.keys(st).filter((e) => e.startsWith("sensor.") && String((st[e].attributes || {}).unit_of_measurement || "") === u && (st[e].attributes || {}).state_class !== "measurement").sort().slice(0, 14) : [];
       return wrap(hd(f.id ? "Zähler bearbeiten" : "Zähler hinzufügen", "Modul 20 · gilt für alle Nutzer") + `<div class="lsec">${ic("gauge", 15)}Art</div><div class="gschips">${Object.entries(ART).map(([k, a]) => chip("mart", k, a[0], f.art === k)).join("")}</div>
         ${f.art ? `<div class="abfs">${inp("name", "Name", f.name, { ph: ART[f.art][0], max: 30 })}${inp("nr", "Zählernummer", f.nr, { ph: "optional, bleibt lokal", max: 30 })}${inp("digits", "Stellen vor dem Komma", nv(f.digits, 0), { num: 1 })}${inp("dec", "Stellen nach dem Komma", nv(f.dec, 0), { num: 1 })}${inp("eich", "Eichfrist bis Jahr", f.eich || "", { num: 1, ph: "z. B. 2032" })}</div>
-        <div class="lsec">${ic("link", 15)}Sensor <span class="mut sm">· optional: speichert täglich um 0 Uhr einen Stand</span></div><div class="gschips">${chip("msens", "", "keiner – von Hand", !f.sensor)}${cand.map((e) => chip("msens", e, esc((st[e].attributes || {}).friendly_name || e), f.sensor === e)).join("")}</div>
-        ${f.sensor && !cand.includes(f.sensor) ? `<div class="mut sm">Gewählt: ${esc(f.sensor)}</div>` : ""}${!cand.length ? `<div class="mut sm">Kein Sensor mit der Einheit ${u} gefunden.</div>` : ""}` : `<div class="mut sm">Wähle zuerst die Art des Zählers.</div>`}
-        <div class="foot2" style="margin-top:14px">${!f.id ? btn("close2", "", "Abbrechen") : m.del ? btn("mdel2", "trash", "Wirklich löschen", { dng: 1 }) : btn("mdel", "trash", "Löschen")}${btn("msave", "check", "Speichern", { pri: 1, dis: !f.art })}</div>`);
+        <div class="lsec">${ic("link", 15)}Sensor für den Zählerstand <span class="mut sm">· optional: speichert täglich um 0 Uhr einen Stand</span></div>${sensPick(p, D, m)}` : `<div class="mut sm">Wähle zuerst die Art des Zählers.</div>`}
+        <div class="foot2" style="margin-top:14px">${!f.id ? btn("close2", "", "Abbrechen") : m.del ? btn("mdel2", "trash", "Wirklich löschen", { dng: 1 }) : btn("mdel", "trash", "Löschen")}${btn("msave", "check", "Speichern", { pri: 1, dis: !f.art })}</div>`, true);
     }
     if (m.k === "r") {
       const mt = M(D, m.mid) || D.meters[0]; if (!mt) return "";
@@ -618,6 +690,8 @@ export default (api) => {
     if (a === "medit") { const x = M(D, k); if (!x) return; p._modal = { type: "adx", id: ID, k: "m", f: { id: x.id, art: x.art, name: x.name, nr: x.nr, sensor: x.sensor, digits: x.digits, dec: x.dec, eich: x.eich || "" } }; p._renderModal(); return; }
     if (a === "mart") { m.f.art = k; if (!m.f.id) { const e = ["strom_bezug", "strom_einsp"].includes(k); m.f.digits = e ? 6 : 5; m.f.dec = e ? 1 : 3; m.f.sensor = ""; } p._renderModal(); return; }
     if (a === "msens") { m.f.sensor = k; p._renderModal(); return; }
+    if (a === "smore") { m.smore = true; p._renderModal(); return; }
+    if (a === "sbad") { m.sbad = !m.sbad; p._renderModal(); return; }
     if (a === "mdel") { m.del = true; p._renderModal(); return; }
     if (a === "mdel2") { send(p, "meter_del", { id: m.f.id }, "Zähler gelöscht"); s.mid = ""; return; }
     if (a === "msave") { const f = m.f; send(p, "meter", { meter: { id: f.id || "", art: f.art, name: f.name, nr: f.nr, sensor: f.sensor, digits: pn(f.digits), dec: pn(f.dec), eich: pn(f.eich) || 0 } }, "", (r) => { s.mid = r.saved; s.tab = "met"; p._modal = null; p._renderModal(); p._render(); p._toast("Zähler gespeichert"); }); return; }
@@ -713,6 +787,16 @@ export default (api) => {
 @media(max-width:700px){.abpy{grid-template-columns:84px 80px minmax(0,1fr) 30px}.abpy .abq{display:none}}
 .abvs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.abvs>div{background:color-mix(in srgb,var(--line) 45%,transparent);border-radius:12px;padding:8px 10px}.abvs small{display:block;color:var(--mut);font-size:.7rem}.abvs b{font-size:1.05rem}.abvs .ok{background:color-mix(in srgb,#34d399 15%,transparent)}.abvs .ok b{color:#34d399}.abvs .wa{background:color-mix(in srgb,#f59e0b 15%,transparent)}.abvs .wa b{color:#f59e0b}
 .abpg>.gschips{margin:0 0 10px}
+/* Sensor für den Zählerstand */
+.abss-cur{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,#34d399 12%,transparent);color:#6ee7b7;margin:6px 0 10px}.abss-cur span{flex:1;min-width:0}.abss-cur b{display:block;color:var(--primary-text-color)}.abss-cur small{display:block;color:var(--mut);font-size:.78rem}.abss-cur.bad{background:color-mix(in srgb,#f59e0b 16%,transparent);color:#fbbf24}.abss-cur .lnk{flex:none}
+.abss-q{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:10px;color:var(--mut)}.abss-q input{flex:1;border:0;background:transparent;color:var(--primary-text-color);font:inherit;font-size:.95rem;padding:10px 0;outline:0;min-width:0}
+.abss-t{font-weight:700;font-size:.86rem;margin:2px 0 6px}.abss-cs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin-bottom:8px}
+.abss-c{border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:7px}.abss-c.best{border-color:#f5c451;box-shadow:inset 0 0 0 1px #f5c451}.abss-c.sel{border-color:#34d399;box-shadow:inset 0 0 0 1px #34d399}
+.abss-h{display:flex;gap:8px;align-items:flex-start}.abss-h span{flex:1;min-width:0}.abss-h b{display:block;font-size:.88rem;line-height:1.25}.abss-h small{display:block;color:var(--mut);font-size:.7rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.abss-h em,.abss-r em{font-style:normal;font-weight:700;font-size:.84rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+.abss-w{display:flex;flex-wrap:wrap;gap:4px}.abss-w i{font-style:normal;font-size:.7rem;padding:2px 7px;border-radius:6px;background:var(--line);color:var(--mut)}.abss-w i.ok{background:color-mix(in srgb,#34d399 18%,transparent);color:#6ee7b7}.abss-w i.wa{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#fbbf24}
+.abss-c .btn2{padding:7px 10px;justify-content:center;flex:none;min-height:0;margin-top:auto}.abss-c .btn2.pri{background:#f5c451;border-color:#f5c451;color:#2a1d02}
+.abss-r{all:unset;box-sizing:border-box;display:flex;gap:10px;align-items:center;width:100%;padding:8px 10px;border-radius:10px;cursor:pointer}.abss-r:hover{background:color-mix(in srgb,var(--line) 50%,transparent)}.abss-r span{flex:1;min-width:0}.abss-r b{display:block;font-size:.88rem;font-weight:600}.abss-r small{display:block;color:var(--mut);font-size:.72rem}.abss-r.bad b{color:var(--mut)}.abss-r.bad small{color:#fbbf24}.abss-r.sel{background:color-mix(in srgb,#34d399 14%,transparent)}.abss-r[hidden]{display:none}
+.abss-more{display:block;margin:4px 0 6px}.abss-tg{all:unset;box-sizing:border-box;display:flex;gap:6px;align-items:center;width:100%;padding:9px 2px;margin-top:4px;border-top:1px solid var(--line);font-size:.86rem;font-weight:600;cursor:pointer}
 /* v0.5 */
 .abtabs button.on{background:#f5c451}.abli em{margin-left:auto;font-style:normal;font-weight:800;text-align:right;white-space:nowrap}.abli em small{display:block;font-weight:500;color:var(--mut);font-size:.7rem}.abli em.ok{color:#34d399}.abli em.wa{color:#f59e0b}.abli i.abwa{font-style:normal}
 .abwa{color:#f59e0b}.abok{color:#34d399}.abna{color:var(--mut);text-align:center}.abprs{display:flex;flex-direction:column}.abpr{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:.88rem}.abpr:first-child{border-top:0}.abpr b{font-size:.84rem;white-space:nowrap}.abpr b.ok{color:#34d399}.abpr b.wa{color:#f59e0b}.abpr b.mut{color:var(--mut)}
@@ -741,6 +825,6 @@ export default (api) => {
     { id: "vorrat", t: "Abrechnungen: Vorräte", k: "vorrat vorräte heizöl pellets flüssiggas brennholz salz einkauf bestand mindestbestand nachkaufen reichweite", h: "Bestand, Reichweite, Einkäufe und Mindestbestand." },
     { id: "abschlag", t: "Abrechnungen: Abschläge und Hochrechnung", k: "abschlag abschläge guthaben nachzahlung hochrechnung prognose empfehlung zahlung buchen dynamisch fest vergleich tibber", h: "Reicht der Abschlag? Hochrechnung, Empfehlung und gebuchte Zahlungen." },
   ];
-  return { id: ID, page, modal, act: actFn, change, css, art, settings: true, settingsTxt: "Verträge, Preise, Zähler, Ablesungen", search,
+  return { id: ID, page, modal, act: actFn, change, input, css, art, settings: true, settingsTxt: "Verträge, Preise, Zähler, Ablesungen", search,
     icons: { euro: '<circle cx="12" cy="12" r="8.5"/><path d="M15 8.8a4 4 0 1 0 0 6.4M7.5 11h5.5M7.5 13.5h5"/>' } };
 };

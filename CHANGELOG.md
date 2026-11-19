@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b24] - 2026-11-19
+
+**Modul 20 · Abrechnungen** (Addon) v0.5 Build 2: neue Auswahl für den Sensor eines Zählers.
+
+### Neu
+- **Vorschläge statt langer Liste:** Beim Zähler stehen oben höchstens drei passende Sensoren mit aktuellem Wert und Begründung („passt zu deinem Stand 28.666 kWh“, „zählt fortlaufend“, „Bezug“). Vorgeschlagen werden nur fortlaufende Zählerstände mit der Einheit des Zählers und der richtigen Richtung (Bezug oder Einspeisung); am stärksten zählt, dass der Wert zu deinem letzten Ablesestand passt.
+- **„Nicht geeignet“ mit Grund:** Tageszähler (setzen sich zurück), Prognosen, Momentanwerte, Erzeugung der Solaranlage, Einspeisung statt Bezug und Zähler einzelner Geräte (Schalter, Steckdose, Wallbox …) stehen eingeklappt darunter. Wählbar bleiben sie, dann mit Warnung.
+- **Suche** über Name, Entitäts-ID, Gerät und Hersteller, filtert schon beim Tippen.
+- **Gewählter Sensor oben** mit Prüfung: Hinweis, wenn er nicht passt oder in Home Assistant nicht mehr existiert; „Von Hand“ setzt ihn zurück.
+- Addons können jetzt Tastatureingaben direkt verarbeiten (Suche ohne Neuzeichnen).
+
+### Behoben
+- **Zähler mit Sensor in Wh, MWh oder Litern:** Der tägliche Stand wird jetzt in kWh bzw. m³ umgerechnet, statt 1000-fach falsch gespeichert zu werden.
+
 ## [2026.11.4b23] - 2026-11-19
 
 ### Behoben

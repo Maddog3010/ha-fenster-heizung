@@ -162,6 +162,15 @@ class Addon(SWAddon):
             return None
         return v if v is not None and v == v and v >= 0 else None
 
+    def _meter_val(self, m: dict[str, Any]) -> float | None:
+        """Zählerstand aus dem Sensor in der Einheit des Zählers: Wh und MWh → kWh, Liter → m³."""
+        v = self._sensor_val(m["sensor"])
+        if v is None:
+            return None
+        st = self.hass.states.get(m["sensor"])
+        u = str((st.attributes or {}).get("unit_of_measurement") or "") if st is not None else ""
+        return v * {"Wh": 0.001, "MWh": 1000.0, "L": 0.001}.get(u, 1.0)
+
     async def _tick(self, _now_: Any = None) -> None:
         now = _now()
         day = now.date().isoformat()
@@ -171,7 +180,7 @@ class Addon(SWAddon):
         ts = datetime.combine(now.date(), datetime.min.time())
         n = 0
         for m in self.data["meters"]:
-            v = self._sensor_val(m["sensor"])
+            v = self._meter_val(m)
             if v is None:
                 continue
             if L.check_reading(m, v, ts, now)["level"] == "bad":
@@ -214,7 +223,7 @@ class Addon(SWAddon):
         meters = []
         for m in self.data["meters"]:
             last = m["readings"][-1] if m["readings"] else None
-            live = self._sensor_val(m["sensor"])
+            live = self._meter_val(m)
             meters.append({**{k: v for k, v in m.items() if k != "readings"}, "n": len(m["readings"]), "last": last, "live": live, "rate": L.rate(m),
                            "expect": L.expect(m, now), "rows": L.daily(m)[-40:][::-1], "used": [c["id"] for c in self.data["contracts"] if m["id"] in c["meters"]]})
         contracts = [{**c, "changes": L.price_changes(c), "term": L.term(c, today), "u": L.unit_price(c, today, self._dyn_ct(dt_util.now()) if c["sparte"] == "strom" else None),

@@ -143,4 +143,6 @@
       return L.map((x) => ({ id: `addon.${m.aid}${x.id ? "." + x.id : ""}`, t: x.t, p: x.p || P, k: `addon modul ${m.n} ${m.name} ${x.k || ""}`.toLowerCase(), go: ["adxset", m.aid], tab: x.tab || "", h: x.h || "", v: x.v ? () => { try { return x.v(this); } catch (_) { return ""; } } : undefined })); });
     return extra.length ? C.concat(extra) : C;
   }
+  /* Tippen in einem Feld des Addons (z. B. Suche), ohne neu zu zeichnen: input(p, el) liefert true, wenn das Addon es behandelt hat */
+  _adxInput(t) { const d = this._adDef(t.dataset.ad); return !!(d && d.input && d.input(this, t)); }
   _adxChange(t) { const d = this._adDef(t.dataset.ad); if (d && d.change) { d.change(this, t); return true; } return false; }

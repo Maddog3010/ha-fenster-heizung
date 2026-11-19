@@ -1,5 +1,11 @@
 # Modul 20 Abrechnungen
 
+## 0.5 Build 2 – 2026-11-19 (Beta)
+- Neue Auswahl für den Sensor eines Zählers: Vorschläge mit Begründung statt einer langen Liste aller Sensoren mit kWh. Vorgeschlagen werden nur fortlaufende Zählerstände (zählt weiter, passende Einheit, Richtung Bezug oder Einspeisung, Wert passt zum letzten Ablesestand). Tageszähler, Prognosen, Momentanwerte, Erzeugung der Solaranlage und Zähler einzelner Geräte stehen getrennt unter „Nicht geeignet“ – mit Grund.
+- Suche über Name, Entitäts-ID, Gerät und Hersteller, filtert beim Tippen
+- Warnung, wenn der gewählte Sensor nicht passt oder nicht mehr existiert
+- Sensoren in Wh, MWh oder Litern werden beim Tagesstand in kWh bzw. m³ umgerechnet
+
 ## 0.5 Build 1 – 2026-11-18 (Beta)
 Dritte Stufe aus dem Konzept: „Rechnungen“ – Modul 20 ist jetzt Beta.
 - Register „Rechnungen“: Rechnung je Vertrag mit Zeitraum, Zählerständen, Menge, Betrag, angerechneten Abschlägen, Ergebnis und neuem Abschlag; Beleg als PDF oder Foto (bis 3 MB, Fotos werden verkleinert, gespeichert unter /config/strom_waerme/belege)
