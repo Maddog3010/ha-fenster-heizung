@@ -12,10 +12,6 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 - **Einstellungen → System → Versions-Statistik:** Schalter, Stand (zuletzt gesendet, nächste Meldung), „Gesendete Daten ansehen“ mit der echten Meldung, „Jetzt senden“, „Kennung zurücksetzen“ und „Meine Daten auf dem Server löschen“. Ausschalten bittet den Server, die Kennung zu vergessen, und löscht sie hier.
 - **Fehler bleiben still:** Ist der Server nicht erreichbar, läuft die Integration normal weiter und versucht es am nächsten Tag erneut.
 - **Auswertung der Module:** Das Dashboard zeigt, wie viele Installationen welches Modul eingeschaltet haben.
-- **Statistik-Dienst als Cloudflare Worker (Ordner `statistik-worker/`):** Eingang (nur Meldungen, gibt nie Daten heraus) und Dashboard auf getrennten Adressen. Das Dashboard liegt hinter Cloudflare Access (Anmeldung per E-Mail-Code), der Worker prüft das Token zusätzlich selbst. Daten in einer D1-Datenbank, keine IP-Adressen, Kennungen ohne Meldung werden nach 180 Tagen gelöscht. Bebilderte Anleitung: `docs/Anleitung_Statistik-Cloudflare-Worker.pdf`.
-- **Alternative Statistik-Server (Ordner `statistik-server/`):** Python ohne Zusatzpakete für einen eigenen Container, z. B. auf Proxmox, mit Passwort-Dashboard nur im Heimnetz oder per VPN. Eingang (nur Meldungen, gibt nie Daten heraus) und Dashboard (Passwort, nur im Heimnetz oder per VPN) sind getrennte Listener. Ohne Protokoll von IP-Adressen, Kennungen ohne Meldung werden nach 180 Tagen gelöscht. Anleitung in `statistik-server/README.md`.
-- **Entwickler:** Sponsoren verwalten → Test-Adresse des Statistik-Servers (leer = echter Server).
-- README: Abschnitt „Versions-Statistik und Datenschutz“.
 
 ## [2026.11.4b26] - 2026-11-19
 
