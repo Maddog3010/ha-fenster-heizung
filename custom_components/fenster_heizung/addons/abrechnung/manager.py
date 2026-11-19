@@ -40,18 +40,70 @@ class Addon(SWAddon):
         self._day = _now().date().isoformat()
         self._dyn: dict[str, Any] = {"t": 0.0, "res": None, "busy": False}
         for c in ("get", "contract", "contract_del", "meter", "meter_del", "check", "read", "read_del", "swap", "opts", "abplan", "pay", "pay_del", "vgl",
-                  "inv", "inv_del", "inv_learn", "beleg_get", "car", "car_del", "entry", "entry_del", "item", "item_del", "book", "book_del"):
+                  "inv", "inv_del", "inv_learn", "beleg_get", "car", "car_del", "entry", "entry_del", "item", "item_del", "book", "book_del", "switch"):
             self.core.cmd(c, getattr(self, f"_c_{c}"))
         self.core.provide("preis_anbieter", self)
         self.core.provide("abrechnung", self)  # für Tags & Karten (Zählerstand, Tankbeleg, Vorrat entnommen)
+        self._vals: dict[str, Any] = {"sensor": {}, "keys": []}
+        self._vals_t = 0.0
+        self._energy: dict[str, Any] = {}
         self.core.every(300, self._tick)
         await self._mirror()
+        self.hass.async_create_task(self._energy_check())
 
     async def async_unload(self) -> None:
         self._save(0)
 
     def _save(self, delay: float = 3) -> None:
         self.store.async_delay_save(lambda: self.data, delay)
+        self._ha_push()
+
+    # ---- v0.9: Sensoren für Home Assistant (Kern: abr_ent.py, sensor.strom_waerme_abrechnung_…)
+    def values(self) -> dict[str, Any]:
+        if not self.data["opts"]["sensoren"]:
+            return {"sensor": {}, "keys": []}
+        if time.time() - self._vals_t > 240:
+            try:
+                self._vals = L.ha_values(self._view())
+            except Exception:  # noqa: BLE001 - Sensoren sind ein Zusatz
+                _LOGGER.exception("Modul 20: Werte für die Sensoren")
+            self._vals_t = time.time()
+        return self._vals
+
+    def _ha_push(self) -> None:
+        self._vals_t = 0.0
+        f = self.hass.data.get(DOMAIN, {}).get("abr_push")
+        if callable(f):
+            try:
+                f()
+            except Exception:  # noqa: BLE001
+                _LOGGER.debug("Modul 20: Sensoren nicht aktualisiert", exc_info=True)
+
+    async def _energy_check(self) -> None:
+        """Welche Preis-Entitäten nutzt das Energie-Dashboard von Home Assistant? Nur lesen, nie ändern."""
+        try:
+            from homeassistant.components.energy.data import async_get_manager
+            mgr = await async_get_manager(self.hass)
+            src = (mgr.data or {}).get("energy_sources") or []
+        except Exception:  # noqa: BLE001 - Energie-Dashboard nicht eingerichtet oder andere HA-Version
+            self._energy = {"ok": False}
+            return
+        used: dict[str, list[str]] = {}
+        def walk(x: Any, typ: str) -> None:
+            if isinstance(x, dict):
+                t = x.get("type") if isinstance(x.get("type"), str) else typ
+                for k, v in x.items():
+                    if k == "entity_energy_price" and isinstance(v, str) and v:
+                        used.setdefault(v, []).append(t)
+                    elif k == "number_energy_price" and v not in (None, ""):
+                        used.setdefault("#fest", []).append(t)
+                    else:
+                        walk(v, k if k in ("flow_from", "flow_to") else t)
+            elif isinstance(x, list):
+                for y in x:
+                    walk(y, typ)
+        walk(src, "")
+        self._energy = {"ok": True, "used": {k: sorted(set(v)) for k, v in used.items()}, "types": sorted({str(x.get("type")) for x in src if isinstance(x, dict)})}
 
     # ---- Preis-Anbieter für den Preisdienst des Kerns
     def _dyn_ct(self, when: datetime) -> float | None:
@@ -238,6 +290,9 @@ class Addon(SWAddon):
         return v * {"Wh": 0.001, "MWh": 1000.0, "L": 0.001}.get(u, 1.0)
 
     async def _tick(self, _now_: Any = None) -> None:
+        self._ha_push()  # Preis der Stunde, Termine
+        if int(time.time() // 300) % 12 == 0:
+            self.hass.async_create_task(self._energy_check())
         now = _now()
         day = now.date().isoformat()
         if day == self._day:
@@ -340,7 +395,7 @@ class Addon(SWAddon):
                 "notify_svc": sorted(n for n in (self.hass.services.async_services().get("notify") or {}) if n not in ("notify", "persistent_notification"))[:30] if hasattr(self.hass.services, "async_services") else [],
                 "todos": sorted(s.entity_id for s in self.hass.states.async_all("todo"))[:20] if hasattr(self.hass.states, "async_all") else [], "today": today.isoformat(), "opts": self.data["opts"], "cards": cards, "contracts": contracts, "meters": meters,
                 "events": L.events(self.data, today), "managed": self.managed(), "haus": dict((getattr(haus, "data", None) or {}).get("price") or {}),
-                "tibber": self._dyn_ct(dt_util.now()) is not None, "m8": m8_names, "gas_m3": self._gas_m3(), "dyncmp": self._dyn.get("res"), "sum": self._sum(cards),
+                "tibber": self._dyn_ct(dt_util.now()) is not None, "m8": m8_names, "energy": self._energy, "max": self._is_max(), "ha_n": len(self._vals.get("keys") or []), "ents": bool(self.hass.data.get(DOMAIN, {}).get("abr_ent")), "gas_m3": self._gas_m3(), "dyncmp": self._dyn.get("res"), "sum": self._sum(cards),
                 "ebuch": DOMAIN in self.hass.data and "ebuch" in self.hass.data[DOMAIN]}
 
     @staticmethod
@@ -504,7 +559,7 @@ class Addon(SWAddon):
         self._need_admin(admin)
         o = data.get("opts") if isinstance(data.get("opts"), dict) else {}
         cur = self.data["opts"]
-        merged = {**cur, **{k: o[k] for k in ("mirror", "notify", "remind", "tol", "todo", "solar") if k in o},
+        merged = {**cur, **{k: o[k] for k in ("mirror", "notify", "remind", "tol", "todo", "solar", "sensoren") if k in o},
                   "verbrauch": {**cur["verbrauch"], **(o.get("verbrauch") if isinstance(o.get("verbrauch"), dict) else {})}}
         self.data["opts"] = L.clean_data({"opts": merged})["opts"]
         self._save()
@@ -693,6 +748,36 @@ class Addon(SWAddon):
         if v is None:
             raise AddonError("Fahrzeug nicht gefunden.")
         return v
+
+    def _is_max(self) -> bool:
+        sm = self.hass.data.get(DOMAIN, {}).get("sponsor")
+        try:
+            return bool(sm and sm.is_max())
+        except Exception:  # noqa: BLE001
+            return False
+
+    async def _c_switch(self, data: dict[str, Any], admin: bool) -> Any:
+        """Tarifwechsel-Rechner (Sponsor Max): rechnet nur, speichert nichts."""
+        if not self._is_max():
+            raise AddonError("Der Tarifwechsel-Rechner gehört zu Sponsor Max.")
+        c = self._contract(data.get("cid"))
+        if c["sparte"] not in ("strom", "gas"):
+            raise AddonError("Vergleichen lassen sich Strom- und Gasverträge.")
+        o = L.clean_offer(data.get("offer"))
+        if o is None:
+            raise AddonError("Bitte einen Arbeitspreis eintragen.")
+        today = _now().date()
+        ms = [m for m in self.data["meters"] if m["id"] in c["meters"]]
+        avg = self._dyn_avg() if c["sparte"] == "strom" else None
+        try:
+            fc = L.forecast(c, ms, today, self.data["opts"]["verbrauch"][c["sparte"]], avg)
+            menge = fc.get("jahr_v") or self.data["opts"]["verbrauch"][c["sparte"]]
+        except Exception:  # noqa: BLE001
+            menge = self.data["opts"]["verbrauch"][c["sparte"]]
+        pm = L._f(data.get("menge"), 0, 1e6, 0.0)  # eigener Jahresverbrauch statt Hochrechnung
+        if pm > 0:
+            menge = pm
+        return {"res": L.switch_calc(c, float(menge), o, today, avg), "offer": o}
 
     async def _c_car(self, data: dict[str, Any], admin: bool) -> Any:
         self._need_admin(admin)

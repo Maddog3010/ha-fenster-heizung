@@ -401,3 +401,35 @@ def test_gas_prev_survives_clean():
     d = L.clean_data({"gas_prev": {"price": 12.0, "years": {}}})
     assert d["gas_prev"] == {"price": 12.0, "years": {}}
     assert L.clean_data({})["gas_prev"] is None
+
+
+# ---------------------------------------------------------------- v0.9: Sensoren und Tarifwechsel-Rechner
+def test_ha_values_prices_and_result():
+    view = {"contracts": [{"id": "s1", "anbieter": "Tibber", "tarif": "dynamisch"}, {"id": "c1", "anbieter": "Stadtwerke", "tarif": "Fix"}],
+            "cards": {"strom": {"id": "s1", "u": {"ct": 24.02, "jetzt": 31.5, "dyn": True, "grund": 12.66, "src": "30d", "ab": "2025-02-01"},
+                                "fc": {"ergebnis": -12.5, "total": 900, "erg_lo": -40, "erg_hi": 10, "empf": {"neu": 80}}},
+                      "gas": {"id": "c1", "u": {"ct": 9.87, "ct_m3": 106.65, "dyn": False, "grund": 17.4, "ab": "2026-04-01"}, "fc": None},
+                      "wasser": None, "einspeisung": None},
+            "sum": {"ergebnis": 89.0, "lo": 24, "hi": 154, "teile": ["strom", "gas"]},
+            "events": [{"d": "2026-12-01", "t": "Abschlag Gas", "s": "137 €", "tage": 12}],
+            "fahrzeuge": [{"id": "vbyd", "name": "BYD", "jahr": {"e100": 3.33, "voll_ct": 16.9, "km": 4520}, "d30": {}}],
+            "vorraete": [{"id": "pel", "name": "Pellets", "unit": "t", "min": 1, "st": {"bestand": 2.5, "reicht_bis": "2027-03-01", "unter_min": False, "wert": 900, "avg": 360}}]}
+    v = L.ha_values(view)
+    S = v["sensor"]
+    assert S["preis_strom"]["value"] == 0.315 and S["preis_strom"]["unit"] == "EUR/kWh" and S["preis_strom"]["attrs"]["durchschnitt_30_tage"] == 0.2402
+    assert S["preis_gas"]["value"] == 0.0987 and S["preis_gas_m3"]["unit"] == "EUR/m³" and S["preis_gas_m3"]["value"] == 1.0665
+    assert S["ergebnis"]["value"] == 89.0 and S["ergebnis_strom"]["value"] == -12.5 and "ergebnis_gas" not in S
+    assert S["naechster_termin"]["value"] == "2026-12-01" and S["fahrtkosten_vbyd"]["value"] == 3.33 and S["vorrat_pel"]["value"] == 2.5
+    assert set(v["keys"]) == set(S) and "preis_wasser" not in S
+
+
+def test_switch_calc():
+    c = gas()
+    o = L.clean_offer({"ap": "8,90", "gp": 15, "bonus": 100, "laufzeit": 12})
+    r = L.switch_calc(c, 14000, o, date(2026, 11, 19))
+    assert r["aktuell"] == round(14000 * 0.0987 + (14.90 + 2.50) * 12, 2) and r["jahr2"] == round(14000 * 0.089 + 180, 2) and r["jahr1"] == round(r["jahr2"] - 100, 2)
+    assert r["urteil"] == "lohnt" and r["spart2"] > 0 and r["kuendigen_bis"] == "2027-03-03"
+    assert math.isclose(L.switch_calc(c, 14000, {**o, "ap": r["gleich_ap"], "bonus": 0}, date(2026, 11, 19))["spart2"], 0, abs_tol=1.0)
+    assert L.switch_calc(c, 14000, {**o, "ap": 10.2, "bonus": 150}, date(2026, 11, 19))["urteil"] == "bonus"
+    assert L.clean_offer({"ap": 0}) is None
+    assert L.clean_data({})["opts"]["sensoren"] is True

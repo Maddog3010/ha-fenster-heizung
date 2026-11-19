@@ -1,5 +1,13 @@
 # Modul 20 Abrechnungen
 
+## 0.9 Build 1 – 2026-11-19 (Beta)
+Fünfte Stufe aus dem Konzept: „Feinschliff“.
+- **Sensoren in Home Assistant** (sensor.strom_waerme_abrechnung_…, Gerät „Strom & Wärme · Abrechnungen“): Strompreis, Gaspreis (je kWh und je m³), Wasserpreis und Einspeisevergütung in €/kWh bzw. €/m³ – passend fürs Energie-Dashboard („Entität mit dem aktuellen Preis“). Dazu erwartetes Ergebnis gesamt und je Sparte (mit Bandbreite und empfohlenem Abschlag als Merkmale), nächster Termin, Fahrtkosten je Fahrzeug (€ je 100 km) und Vorrat je Lager (Bestand, reicht bis, bestellen bis). In den Einstellungen abschaltbar.
+- Dynamischer Strom: Der Preis-Sensor zeigt den Preis der aktuellen Stunde inkl. Aufschlag (so rechnet das Energie-Dashboard stundengenau richtig), der Ø 30 Tage steht als Merkmal dabei.
+- **Karte „Home Assistant & Energie-Dashboard“** in der Übersicht: welcher Sensor wofür, und ob das Energie-Dashboard ihn schon nutzt (nur lesen, Modul 20 ändert dort nichts).
+- **Tarifwechsel-Rechner** (Sponsor Max): Angebot mit Arbeits- und Grundpreis, Bonus und Laufzeit gegen den laufenden Strom- oder Gasvertrag – mit deinem Jahresverbrauch aus der Hochrechnung, Jahr 1 mit Bonus, ab Jahr 2 ohne, Gleichstand-Arbeitspreis und „kündigen bis“. Alles andere in Modul 20 bleibt frei.
+- Weniger Bewegung, wenn das Gerät „Bewegung reduzieren“ eingestellt hat.
+
 ## 0.7 Build 1 – 2026-11-19 (Beta)
 Vierte Stufe aus dem Konzept: „Anbindung Module“ – die anderen Module rechnen mit deinen Verträgen.
 - **Dynamischer Stromvertrag:** Hauptwert ist jetzt der Ø-Preis der letzten 30 Tage (dein Netzbezug je Stunde aus dem Energiebuch × Tibber-Stundenpreis + Aufschlag), „jetzt“ steht klein daneben. Effektivpreis, Banner und Preisdienst-Karte rechnen mit dem Durchschnitt; ein Hinweis nennt die Quelle. Ohne Energiebuch gilt vorerst der Preis der aktuellen Stunde. Modul 8 lädt weiter nach dem Stundenpreis.

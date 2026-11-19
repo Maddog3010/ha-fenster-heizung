@@ -217,7 +217,8 @@ def clean_data(raw: Any) -> dict[str, Any]:
     opts = {"mirror": bool(o.get("mirror", True)), "verbrauch": {k: _f(vb.get(k), 1, 1e6, DEF_VERBRAUCH[k]) for k in SPARTEN}, "vgl": vgl,
             "notify": [x for x in dict.fromkeys(o.get("notify") or []) if isinstance(x, str) and re.match(r"^notify\.[a-z0-9_]+$", x)][:6],
             "remind": {"on": bool(rm.get("on", True)), "tage": int(_f(rm.get("tage"), 0, 14, 0))}, "tol": _f(o.get("tol"), 0.5, 10, 2.0),
-            "todo": str(o.get("todo") or "") if re.match(r"^todo\.[a-z0-9_]+$", str(o.get("todo") or "")) else "", "solar": o.get("solar") if o.get("solar") in ("null", "einsp", "vertrag") else "einsp"}
+            "todo": str(o.get("todo") or "") if re.match(r"^todo\.[a-z0-9_]+$", str(o.get("todo") or "")) else "", "solar": o.get("solar") if o.get("solar") in ("null", "einsp", "vertrag") else "einsp",
+            "sensoren": bool(o.get("sensoren", True))}
     cars, seen = [], set()
     for v in (clean_vehicle(x) for x in r.get("fahrzeuge") or []):
         if v and v["id"] not in seen:
@@ -1310,3 +1311,93 @@ def merge_m8(entries: list[dict[str, Any]], m8: list[dict[str, Any]]) -> list[di
     first = m8[0]["t"]
     keep = [e for e in entries if not (e["art"] == "laden_haus" and e["t"] >= first)]
     return sorted(keep + m8, key=lambda x: x["t"])
+
+
+# --------------------------------------------------------------------------- v0.9: Sensoren für Home Assistant
+SP_NAME = {"strom": "Strom", "gas": "Gas", "wasser": "Wasser", "einspeisung": "Einspeisung"}
+
+
+def _slug(x: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", str(x).lower()).strip("_")[:24] or "x"
+
+
+def ha_values(view: dict[str, Any]) -> dict[str, Any]:
+    """Sensoren aus der Ansicht. Preise brutto in €/kWh bzw. €/m³ (Energie-Dashboard: „Entität mit dem aktuellen Preis“).
+    Dynamischer Strom: Zustand = Preis der aktuellen Stunde inkl. Aufschlag (so rechnet das Energie-Dashboard stundengenau), Ø 30 Tage als Merkmal."""
+    out: dict[str, dict[str, Any]] = {}
+    cards = view.get("cards") or {}
+    C = {c["id"]: c for c in view.get("contracts") or []}
+    def price(key: str, name: str, eur: float | None, unit: str, icon: str, attrs: dict[str, Any]) -> None:
+        out[key] = {"name": name, "icon": icon, "unit": unit, "sc": "measurement", "value": None if eur is None else round(eur, 5), "attrs": attrs}
+    for sp in SPARTEN:
+        X = cards.get(sp)
+        if not X or not X.get("u"):
+            continue
+        u, c = X["u"], C.get(X["id"]) or {}
+        base = {"anbieter": c.get("anbieter", ""), "tarif": c.get("tarif", ""), "grundpreis_monat": u.get("grund"), "gueltig_ab": u.get("ab")}
+        if sp == "strom":
+            cur = u.get("jetzt") if u.get("dyn") else u.get("ct")
+            if u.get("dyn"):
+                base.update(dynamisch=True, durchschnitt_30_tage=None if u.get("ct") is None else round(u["ct"] / 100, 5), quelle=u.get("src") or "")
+            price("preis_strom", "Strompreis", None if cur is None else cur / 100, "EUR/kWh", "mdi:flash", base)
+        elif sp == "gas":
+            price("preis_gas", "Gaspreis", None if u.get("ct") is None else u["ct"] / 100, "EUR/kWh", "mdi:fire", base)
+            if u.get("ct_m3") is not None:
+                price("preis_gas_m3", "Gaspreis je m³", u["ct_m3"] / 100, "EUR/m³", "mdi:fire", {**base, "faktor_kwh_m3": round(u["ct_m3"] / u["ct"], 4) if u.get("ct") else None})
+        elif sp == "wasser":
+            price("preis_wasser", "Wasserpreis", None if u.get("ct") is None else u["ct"] / 100, "EUR/m³", "mdi:water", {**base, **(u.get("teile") or {})})
+        else:
+            price("verguetung_einspeisung", "Einspeisevergütung", None if u.get("ct") is None else u["ct"] / 100, "EUR/kWh", "mdi:solar-power", base)
+        f = X.get("fc")
+        if f and sp != "einspeisung":
+            out["ergebnis_" + sp] = {"name": f"Ergebnis {SP_NAME[sp]}", "icon": "mdi:scale-balance", "unit": "EUR", "dc": "monetary", "value": f.get("ergebnis"),
+                                     "attrs": {"kosten_jahr": f.get("total"), "bisher": f.get("bisher"), "abschlaege": f.get("ab_total"), "deckung_prozent": f.get("deckung"),
+                                               "von": f.get("erg_lo"), "bis": f.get("erg_hi"), "abrechnung_bis": f.get("ende"),
+                                               "empfohlener_abschlag": (f.get("empf") or {}).get("neu"), "hinweis": "positiv = Guthaben, negativ = Nachzahlung"}}
+    sm = view.get("sum") or {}
+    if sm.get("ergebnis") is not None:
+        out["ergebnis"] = {"name": "Erwartetes Ergebnis", "icon": "mdi:cash-check", "unit": "EUR", "dc": "monetary", "value": sm["ergebnis"],
+                           "attrs": {"von": sm.get("lo"), "bis": sm.get("hi"), "sparten": sm.get("teile"), "einspeisung": sm.get("einspeisung"), "hinweis": "positiv = Guthaben, negativ = Nachzahlung"}}
+    ev = view.get("events") or []
+    out["naechster_termin"] = {"name": "Nächster Termin", "icon": "mdi:calendar-clock", "dc": "date", "value": ev[0]["d"] if ev else None,
+                               "attrs": {"titel": ev[0]["t"], "text": ev[0]["s"], "tage": ev[0]["tage"], "weitere": [f"{e['d']} {e['t']}" for e in ev[1:5]]} if ev else {}}
+    for v in view.get("fahrzeuge") or []:
+        J = v.get("jahr") or {}
+        out["fahrtkosten_" + _slug(v["id"])] = {"name": f"Fahrtkosten {v['name']}", "icon": "mdi:car", "unit": "EUR", "value": J.get("e100") if J.get("e100") is not None else (v.get("d30") or {}).get("e100"),
+                                                "attrs": {"je": "100 km", "vollkosten_ct_km": J.get("voll_ct"), "km_jahr": J.get("km"), "kosten_jahr": J.get("eur"), "verbrauch_l_100km": J.get("l100"), "verbrauch_kwh_100km": J.get("kwh100")}}
+    for it in view.get("vorraete") or []:
+        st = it.get("st") or {}
+        out["vorrat_" + _slug(it["id"])] = {"name": f"Vorrat {it['name']}", "icon": "mdi:package-variant", "unit": it.get("unit"), "sc": "measurement", "value": st.get("bestand"),
+                                            "attrs": {"reicht_bis": st.get("reicht_bis"), "bestellen_bis": st.get("bestellen_bis"), "mindestbestand": it.get("min"), "unter_mindestbestand": st.get("unter_min"),
+                                                      "wert_eur": st.get("wert"), "preis_je_einheit": st.get("avg")}}
+    return {"sensor": out, "keys": list(out)}
+
+
+# --------------------------------------------------------------------------- v0.9: Tarifwechsel-Rechner (Sponsor Max)
+def clean_offer(raw: Any) -> dict[str, Any] | None:
+    r = raw if isinstance(raw, dict) else {}
+    ap = _f(r.get("ap"), 0, 300, -1.0)
+    if ap <= 0:
+        return None
+    return {"name": _t(r.get("name"), 30) or "Angebot", "ap": ap, "gp": _f(r.get("gp"), 0, 200, 0.0), "bonus": _f(r.get("bonus"), 0, 2000, 0.0),
+            "laufzeit": int(_f(r.get("laufzeit"), 0, 36, 12)), "garantie": int(_f(r.get("garantie"), 0, 36, 0))}
+
+
+def switch_calc(c: dict[str, Any], menge: float, offer: dict[str, Any], today: date, dyn_ct: float | None = None) -> dict[str, Any]:
+    """Angebot gegen den laufenden Vertrag mit deinem Jahresverbrauch (aus der Hochrechnung). Brutto, Grundpreis je Monat.
+    Jahr 1 mit Bonus, ab Jahr 2 ohne. Der „Gleichstand-Arbeitspreis“ sagt, ab welchem Arbeitspreis sich das Angebot nicht mehr lohnt."""
+    u = unit_price(c, today, dyn_ct) or {"ct": None, "grund": 0.0}
+    q = Decimal(str(round(menge, 3)))
+    cur = None if u["ct"] is None else money(q * Decimal(str(u["ct"])) / 100 + Decimal(str(u["grund"])) * 12)
+    y2 = money(q * Decimal(str(offer["ap"])) / 100 + Decimal(str(offer["gp"])) * 12)
+    y1 = money(Decimal(str(y2)) - Decimal(str(offer["bonus"])))
+    t = term(c, today)
+    out = {"menge": round(menge, 0), "unit": SP_UNIT[c["sparte"]], "aktuell": cur, "ct_aktuell": u["ct"], "jahr1": y1, "jahr2": y2,
+           "kuendigen_bis": t["kuendigen_bis"] if t else None, "wechsel_ab": t["ende"] if t else None, "dyn": bool(u.get("dyn"))}
+    if cur is not None:
+        out["spart1"] = round(cur - y1, 2)
+        out["spart2"] = round(cur - y2, 2)
+        out["spart_laufzeit"] = round(cur * offer["laufzeit"] / 12 - (y2 * offer["laufzeit"] / 12 - offer["bonus"]), 2) if offer["laufzeit"] else out["spart1"]
+        out["gleich_ap"] = round(((cur - offer["gp"] * 12) / menge) * 100, 2) if menge > 0 else None
+        out["urteil"] = "lohnt" if out["spart2"] > 20 else "bonus" if out["spart1"] > 20 else "nein"
+    return out

@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b28] - 2026-11-19
+
+**Modul 20 · Abrechnungen** (Addon) v0.9 Build 1: „Feinschliff“ – Sensoren, Energie-Dashboard, Tarifwechsel-Rechner.
+
+### Neu
+- **Sensoren in Home Assistant** (Gerät „Strom & Wärme · Abrechnungen“, `sensor.strom_waerme_abrechnung_…`): Strompreis, Gaspreis (je kWh und je m³), Wasserpreis und Einspeisevergütung in €/kWh bzw. €/m³ – direkt fürs Energie-Dashboard („Entität mit dem aktuellen Preis verwenden“). Dazu erwartetes Ergebnis gesamt und je Sparte (Bandbreite und empfohlener Abschlag als Merkmale), nächster Termin, Fahrtkosten je Fahrzeug (€ je 100 km) und Vorrat je Lager (Bestand, reicht bis, bestellen bis). In den Einstellungen von Modul 20 abschaltbar.
+- Dynamischer Strom: Der Preis-Sensor zeigt den Preis der aktuellen Stunde inkl. Aufschlag, damit das Energie-Dashboard stundengenau rechnet; der Ø 30 Tage steht als Merkmal dabei.
+- **Karte „Home Assistant & Energie-Dashboard“** in der Übersicht: welcher Sensor wofür und ob das Energie-Dashboard ihn schon nutzt (nur lesen, Modul 20 ändert dort nichts).
+- **Tarifwechsel-Rechner** (Sponsor Max): Angebot mit Arbeits- und Grundpreis, Bonus und Laufzeit gegen den laufenden Strom- oder Gasvertrag – mit deinem Jahresverbrauch aus der Hochrechnung, Jahr 1 mit Bonus, ab Jahr 2 ohne, Gleichstand-Arbeitspreis und „kündigen bis“. Alles andere in Modul 20 bleibt frei.
+- Weniger Bewegung in Modul 20, wenn das Gerät „Bewegung reduzieren“ eingestellt hat.
+
+### Hinweis
+- Die neuen Sensoren erscheinen nach einem Neustart von Home Assistant.
+
 ## [2026.11.4b27] - 2026-11-19
 
 **Versions-Statistik** (freiwillig, anonym): Popup beim ersten Start nach dem Update und Seite unter Einstellungen → System → Versions-Statistik.
