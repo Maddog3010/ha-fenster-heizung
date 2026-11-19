@@ -7,6 +7,15 @@
      mit den Werten des Abrechnungsjahrs gerechnet, in das sie fallen. */
   _gasCfg() { const g = { ent: "", brw: 10.5, hw: 0, zz: 0, price: 12, grund: 0, netto: false, mwst: 19, start: 1, abschlag: 0, absday: 1, gunit: "y", ...(((this._haus || {}).gas) || {}) }; g.years = g.years || {}; g.prices = g.prices || []; return g; }
   _gasOn() { return !!this._gasCfg().ent; }
+  /* Modul 20 (v0.7): Gasvertrag verwaltet Preise, Brennwert, Zustandszahl, Abrechnungsjahr und Abschlag – hier nur anzeigen */
+  _gasM20() { const a = (this._adState().addons || []).find((x) => x.id === "abrechnung" && x.status === "on"); return !!(((a || {}).summary || {}).managed || {}).gas; }
+  _gasM20Html(c, m3) {
+    const G = this._gasAt(Date.now()), Y = this._gasY(this._gasBy(Date.now())), MON = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+    const row = (l, v) => `<div class="vrow"><span>${l}</span><b>${v}</b></div>`;
+    return `<button class="gst hsm20" data-act="hsm20">${ic("link", 15)}<span><b>Verwaltet in Modul 20 Abrechnungen.</b> Preise, Brennwert, Abrechnungsjahr und Abschlag kommen aus deinem Gasvertrag – ändern kannst du sie dort.</span></button>
+      ${row("Arbeitspreis", `${num(G.price, 2)} ct/kWh`)}${row("Grundpreis", `${num(G.grund, 2)} €/Jahr`)}${m3 ? row("Umrechnung", `${num(Y.fac, 3)} kWh/m³`) : ""}
+      ${row("Abrechnungsjahr ab", MON[c.start - 1])}${Y.abs ? row("Abschlag", `${num(Y.abs, 0)} € am ${c.absday}.`) : ""}${c.prices.length > 1 ? row("Preisänderungen", `${c.prices.length} aus dem Vertrag`) : ""}`;
+  }
   _gasUnit() { const c = this._gasCfg(), s = this._hass.states[c.ent], u = ((s && s.attributes.unit_of_measurement) || "").replace("m3", "m³"); return /Wh$/i.test(u) ? "kwh" : "m3"; }
   /* Abrechnungsjahr eines Zeitpunkts: Jahr, in dem es begonnen hat */
   _gasBy(t) { const d = new Date(t), sm = this._gasCfg().start - 1; return d.getMonth() >= sm ? d.getFullYear() : d.getFullYear() - 1; }
@@ -162,7 +171,7 @@
     };
     return `<div class="lsec">${ic("flame", 15)}Gaszähler (optional)</div>
       <div class="mut sm" style="margin:2px 0 0">Zählerstand in m³ oder kWh</div>${this._wzSel(this._gasSensors(), c.ent, "engas", `data-k="ent"`, "– kein Gaszähler –")}
-      ${c.ent ? `<div class="lsec">${ic("clock", 15)}Abrechnung</div><div class="gasins">
+      ${c.ent && this._gasM20() ? this._gasM20Html(c, m3) : ""}${c.ent && !this._gasM20() ? `<div class="lsec">${ic("clock", 15)}Abrechnung</div><div class="gasins">
         <label class="gasin"><span>Abrechnungsjahr beginnt im</span><select class="otxt" data-f="engas" data-k="start" aria-label="Abrechnungsjahr beginnt im">${MON.map((m, i) => `<option value="${i + 1}"${c.start === i + 1 ? " selected" : ""}>${m}</option>`).join("")}</select></label>
         ${inp("absday", c.absday, "Abschlag abgebucht am", ". des Monats", "1")}</div>
       <div class="vrow"><span>Preise ohne MwSt eingeben<small class="mut" style="display:block">Wie auf vielen Gasrechnungen: netto, zzgl. MwSt. Angezeigt wird immer mit MwSt.</small></span><button class="sw ${c.netto ? "on" : ""}" data-act="engasnet" aria-pressed="${c.netto}" aria-label="Preise ohne MwSt eingeben"></button></div>

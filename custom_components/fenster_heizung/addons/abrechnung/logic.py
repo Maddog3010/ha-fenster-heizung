@@ -210,6 +210,7 @@ def clean_data(raw: Any) -> dict[str, Any]:
     for c in cs:
         c["meters"] = [m for m in c["meters"] if m in ids]
     hp = r.get("haus_prev") if isinstance(r.get("haus_prev"), dict) else None
+    gp = r.get("gas_prev") if isinstance(r.get("gas_prev"), dict) else None
     vg = o.get("vgl") if isinstance(o.get("vgl"), dict) else {}
     vgl = {"ap": _f(vg.get("ap"), 0, 200, 0.0), "gp": _f(vg.get("gp"), 0, 100, 0.0), "name": _t(vg.get("name"), 30)} if vg.get("ap") not in (None, "", 0, 0.0) else None
     rm = o.get("remind") if isinstance(o.get("remind"), dict) else {}
@@ -229,7 +230,7 @@ def clean_data(raw: Any) -> dict[str, Any]:
             st.append(v)
     sent = r.get("sent") if isinstance(r.get("sent"), dict) else {}
     return {"v": SCHEMA, "opts": opts, "fahrzeuge": cars[:8], "vorraete": st[:30], "sent": {str(k)[:40]: str(v)[:10] for k, v in list(sent.items())[-200:]},
-            "contracts": cs[:24], "meters": ms[:16], "haus_prev": hp}
+            "contracts": cs[:24], "meters": ms[:16], "haus_prev": hp, "gas_prev": gp}
 
 
 # --------------------------------------------------------------------------- Verträge und Preise
@@ -1261,3 +1262,51 @@ def stock(it: dict[str, Any], today: date) -> dict[str, Any]:
     if it["heizwert"] and avg:
         out["ct_kwh"] = round(avg / it["heizwert"] * 100, 2)  # Wärmepreis je kWh (Heizwert)
     return out
+
+
+# --------------------------------------------------------------------------- v0.7: Anbindung der Module
+GAS_KEYS = ("price", "grund", "gunit", "netto", "mwst", "hw", "zz", "start", "abschlag", "absday", "prices", "years")
+
+
+def gas_mirror(c: dict[str, Any], today: date) -> dict[str, Any]:
+    """Gasvertrag für Modul 3 (Haus-Werte „gas“): Preise brutto, Grundpreis je Jahr, Preisliste aus den Preisperioden,
+    Brennwert und Zustandszahl, Beginn des Abrechnungsjahrs, Abschlag je Monat (bei Quartal ein Drittel). Eigene Jahreswerte entfallen."""
+    u = unit_price(c, today) or {"ct": 0.0, "grund": 0.0}
+    p = period_at(c, today) or {}
+    prices = []
+    for x in c["periods"]:
+        ux = unit_price({**c, "periods": [x]}, parse_date(x["ab"]))
+        if ux and ux["ct"] is not None:
+            prices.append({"ab": x["ab"], "price": round(ux["ct"], 4), "grund": round(ux["grund"] * 12, 2)})
+    a = abschlag_at(c, today)
+    ab = a["betrag"] / 3 if a["rhythmus"] == "quartal" else a["betrag"]
+    return {"price": round(u["ct"] or 0.0, 4), "grund": round(u["grund"] * 12, 2), "gunit": "y", "netto": False, "mwst": p.get("ust", 19.0),
+            "hw": round(c["brennwert"], 4), "zz": round(c["zustand"], 5), "start": int(c["abr"][:2]), "abschlag": round(ab, 2), "absday": a["tag"],
+            "prices": prices[-40:], "years": {}}
+
+
+def m8_entries(sessions: list[dict[str, Any]], name: str, solar_ct: float) -> list[dict[str, Any]]:
+    """Ladungen aus Modul 8 (Ladestatistik) als Einträge „Laden zuhause“ für die Fahrtkosten.
+    Kosten = Netzanteil laut Modul 8 + Solaranteil × Bewertung des Solarstroms (0 €, entgangene Einspeisung oder Vertragspreis)."""
+    out = []
+    for s in sessions or []:
+        if str(s.get("veh") or "") != name or s.get("running"):
+            continue
+        ts = parse_ts(s.get("start"))
+        kwh, pv, cost = float(s.get("kwh") or 0), float(s.get("pv") or 0), float(s.get("cost") or 0)
+        if ts is None or kwh < 0.05:
+            continue
+        eur = round(cost + pv * solar_ct / 100, 2)
+        out.append({"id": "m8" + ts.strftime("%y%m%d%H%M"), "t": ts.isoformat(timespec="minutes"), "art": "laden_haus", "menge": round(kwh, 2), "preis": round(eur / kwh, 4),
+                    "betrag": eur, "km": None, "voll": False, "note": f"{round(pv / kwh * 100)} % Solar" if pv > 0 else "", "src": "modul8", "fix": "sonst",
+                    "solar": round(pv / kwh * 100, 1)})
+    return sorted(out, key=lambda x: x["t"])
+
+
+def merge_m8(entries: list[dict[str, Any]], m8: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Ab der ersten Ladung aus Modul 8 zählen dessen Ladungen; von Hand eingetragenes „Laden zuhause“ ab dann nicht mehr (sonst doppelt)."""
+    if not m8:
+        return entries
+    first = m8[0]["t"]
+    keep = [e for e in entries if not (e["art"] == "laden_haus" and e["t"] >= first)]
+    return sorted(keep + m8, key=lambda x: x["t"])

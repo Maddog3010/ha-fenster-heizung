@@ -364,3 +364,40 @@ def test_invoice_learn_skips_what_is_already_known():
     inv = L.clean_invoice({"id": "r1", "von": "2025-04-01", "bis": "2026-03-31", "datum": "2026-04-14", "anfang": 16754, "ende": 18050, "betrag": 1500, "neu_abschlag": 125})
     v = L.invoice_view(c, [m], inv, 2.0, date(2026, 11, 18), None)
     assert [x["k"] for x in v["learn"]] == []  # Abschlag später geändert, Zählerstände schon da, Brennwert gleich
+
+
+# ---------------------------------------------------------------- v0.7: Anbindung der Module
+def test_gas_mirror_for_modul3():
+    c = gas(abschlag={"betrag": 95, "rhythmus": "monat", "tag": 15})
+    g = L.gas_mirror(c, date(2026, 11, 19))
+    assert g["price"] == 9.87 and g["grund"] == round((14.90 + 2.50) * 12, 2) and g["gunit"] == "y" and g["netto"] is False
+    assert g["hw"] == 11.214 and g["zz"] == 0.9636 and g["start"] == 4 and g["abschlag"] == 95 and g["absday"] == 15 and g["years"] == {}
+    assert [p["ab"] for p in g["prices"]] == ["2026-04-01", "2027-01-01"] and g["prices"][1]["price"] == 10.49
+    q = L.gas_mirror(gas(abschlag={"betrag": 300, "rhythmus": "quartal", "tag": 1}), date(2026, 11, 19))
+    assert q["abschlag"] == 100  # Quartal → je Monat ein Drittel
+
+
+def test_m8_sessions_become_home_charging():
+    ses = [{"start": "2026-11-18T22:00:00+01:00", "min": 180, "veh": "BYD", "kwh": 20.0, "pv": 5.0, "cost": 4.5},
+           {"start": "2026-11-17T12:00:00+01:00", "min": 60, "veh": "Zoe", "kwh": 8.0, "pv": 8.0, "cost": 0.0},
+           {"start": "2026-11-19T08:00:00+01:00", "min": 0, "veh": "BYD", "kwh": 3.0, "pv": 0, "cost": 1.0, "running": True}]
+    e = L.m8_entries(ses, "BYD", 8.0)
+    assert len(e) == 1 and e[0]["art"] == "laden_haus" and e[0]["src"] == "modul8" and e[0]["solar"] == 25.0
+    assert e[0]["betrag"] == round(4.5 + 5 * 0.08, 2) and e[0]["menge"] == 20.0 and math.isclose(e[0]["preis"], e[0]["betrag"] / 20, rel_tol=1e-3)
+    assert L.m8_entries(ses, "BYD", 0.0)[0]["betrag"] == 4.5
+    manual = [L.clean_entry({"id": "e1", "t": "2026-11-01T10:00", "art": "laden_haus", "menge": 10, "preis": 0.3}),
+              L.clean_entry({"id": "e2", "t": "2026-11-19T07:00", "art": "laden_haus", "menge": 10, "preis": 0.3}),
+              L.clean_entry({"id": "e3", "t": "2026-11-19T07:30", "art": "laden_weg", "menge": 30, "preis": 0.59})]
+    m = L.merge_m8(manual, e)
+    assert [x["id"] for x in m] == ["e1", e[0]["id"], "e3"]  # e2 nach der ersten Modul-8-Ladung zählt nicht doppelt
+    assert L.merge_m8(manual, []) == manual
+    v = L.clean_vehicle({"id": "v1", "name": "BYD", "antrieb": "elektro", "m8": "BYD", "eintraege": []})
+    assert v["m8"] == "BYD"
+    st = L.vehicle_stats({**v, "eintraege": m}, date(2026, 11, 1), date(2026, 12, 1), datetime(2026, 11, 19, 12, 0))
+    assert st["by"]["laden_haus"]["menge"] == 30.0 and st["by"]["laden_weg"]["n"] == 1
+
+
+def test_gas_prev_survives_clean():
+    d = L.clean_data({"gas_prev": {"price": 12.0, "years": {}}})
+    assert d["gas_prev"] == {"price": 12.0, "years": {}}
+    assert L.clean_data({})["gas_prev"] is None

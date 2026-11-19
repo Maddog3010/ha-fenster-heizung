@@ -2,6 +2,21 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b26] - 2026-11-19
+
+**Modul 20 · Abrechnungen** (Addon) v0.7 Build 1: „Anbindung Module“ – die anderen Module rechnen mit deinen Verträgen.
+
+### Neu
+- **Dynamischer Stromvertrag mit Ø-Preis:** Hauptwert ist jetzt der Durchschnitt der letzten 30 Tage (dein Netzbezug je Stunde aus dem Energiebuch × Tibber-Stundenpreis + Aufschlag), „jetzt“ steht klein daneben. Effektivpreis, Banner und Preisdienst rechnen mit dem Durchschnitt, ein Hinweis nennt die Quelle. Ohne Energiebuch gilt vorerst der Preis der aktuellen Stunde. Modul 8 lädt weiter nach dem Stundenpreis.
+- **Modul 3 · Gaszähler rechnet mit dem Gasvertrag:** Arbeits- und Grundpreis, Preisänderungen, Brennwert, Zustandszahl, Abrechnungsjahr und Abschlag kommen aus Modul 20; Modul 3 zeigt „Verwaltet in Modul 20“. Ausschalten oder Vertrag löschen stellt die alten Werte wieder her.
+- **Modul 8 · Wallbox → Fahrtkosten:** Elektroauto oder Plug-in-Hybrid mit seinem Fahrzeug aus Modul 8 verknüpfen – jede Ladung zuhause erscheint automatisch mit Menge, Solaranteil und Kosten. Von Hand erfasste Ladungen zuhause zählen ab dann nicht doppelt.
+- Einstellung „Solarstrom beim Laden zuhause“: kostenlos, entgangene Einspeisevergütung (Standard) oder Bezugspreis.
+- Preisdienst-Karte „Angebunden“: Haus-Werte, Modul 3 und Modul 8 mit Status.
+
+### Behoben
+- **Modul 4 · Gerätedetail:** Der Ring um das Gerätebild ragte in Text und Kachel darunter (eine Regel der Geräteliste in den Einstellungen galt auch hier). Auf dem Handy steht der Ring jetzt zentriert über dem Namen.
+- **Modul 4 · Programm-Kurve:** Lange Wartezeit am Anfang (Startverzögerung, Bereitschaft) wird ausgeblendet und darunter genannt, statt das Programm an den rechten Rand zu drängen. Abschnitts-Schilder („Aufheizen“, „Heizen 2“ …) überlappen nicht mehr.
+
 ## [2026.11.4b25] - 2026-11-19
 
 **Modul 20 · Abrechnungen** (Addon) v0.5 Build 3: alle Sensor-Auswahlen wie beim Zähler.

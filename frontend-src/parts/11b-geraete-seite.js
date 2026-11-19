@@ -29,6 +29,10 @@
   }
   _gsCurve(cv, t0, typ) {
     if (!cv || cv.length < 2) return `<div class="s3learn">${ic("chart", 18)}<span>Für diesen Lauf gibt es noch keine Kurve. Modul 4 speichert sie ab Version 1.3 mit jedem Durchlauf.</span></div>`;
+    /* b26: lange Wartezeit am Anfang (Startverzögerung, Bereitschaft) ausblenden, sonst drängt sich das Programm ganz nach rechts */
+    let wait = "";
+    { const tw = cv.map((p) => p[1] + p[2] + p[3]), pk = Math.max(0, ...tw), i0 = tw.findIndex((w) => w >= Math.max(30, pk * 0.05)), Tn = cv[cv.length - 1][0] || 1;
+      if (i0 > 0 && cv[i0][0] > Tn * 0.15 && cv.length - i0 >= 2) { const k = i0 - 1, off = cv[k][0]; wait = `<div class="mut sm gscvw">${ic("clock", 13)} Wartezeit ${this._gsHm((t0 + cv[0][0]) * 1000)}–${this._gsHm((t0 + off) * 1000)} ausgeblendet (Startverzögerung oder Bereitschaft)</div>`; cv = cv.slice(k).map((p) => [p[0] - off, p[1], p[2], p[3]]); t0 += off; } }
     const narrow = this.clientWidth > 0 && this.clientWidth < 640, Wd = narrow ? 420 : 980, H = narrow ? 200 : 260, pl = narrow ? 36 : 44, pb = 22, pt = 28, ih = H - pb - pt, T = cv[cv.length - 1][0] || 1, tot = cv.map((p) => p[1] + p[2] + p[3]), mx = Math.max(100, ...tot);
     const step = mx > 2000 ? 1000 : mx > 800 ? 500 : mx > 300 ? 100 : 50, top = Math.ceil(mx / step) * step, X = (s) => pl + (s / T) * (Wd - pl - 4), Y = (w) => pt + ih - (w / top) * ih;
     let g = ""; for (let v = 0; v <= top; v += step) g += `<line x1="${pl}" x2="${Wd}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="var(--line)" stroke-dasharray="3 4"/><text x="${pl - 5}" y="${(Y(v) + 4).toFixed(1)}" text-anchor="end" font-size="10" fill="var(--mut)">${v >= 1000 ? num(v / 1000, v % 1000 ? 1 : 0) + " kW" : v + " W"}</text>`;
@@ -38,9 +42,10 @@
       [p[1], p[2], p[3]].forEach((v, k) => { if (v <= 0) return; bars += `<rect x="${x0.toFixed(1)}" y="${Y(y + v).toFixed(1)}" width="${w.toFixed(1)}" height="${(Y(y) - Y(y + v)).toFixed(1)}" fill="${GS_COL[k]}" opacity=".85"/>`; y += v; });
     });
     const line = cv.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)} ${Y(tot[i]).toFixed(1)}`).join(" ");
-    const ph = this._gsPhases(cv, typ).map((o) => { const x = (X(cv[o.a][0]) + X(cv[o.b][0])) / 2; return `<g transform="translate(${x.toFixed(1)} 12)"><rect x="-34" y="-9" width="68" height="17" rx="8.5" fill="var(--card, #1a2129)" stroke="var(--line)"/><text text-anchor="middle" y="4" font-size="9.5" font-weight="700" fill="var(--primary-text-color)">${esc(o.t)}</text></g>`; }).join("");
+    let lastX = -1e9; /* b26: Hinweise dürfen sich nicht überlappen – zu nahe Abschnitte bekommen kein eigenes Schild */
+    const ph = this._gsPhases(cv, typ).filter((o) => { const x = (X(cv[o.a][0]) + X(cv[o.b][0])) / 2; if (x - lastX < 74) return false; lastX = x; return true; }).map((o) => { const x = Math.min(Wd - 36, Math.max(pl + 34, (X(cv[o.a][0]) + X(cv[o.b][0])) / 2)); return `<g transform="translate(${x.toFixed(1)} 12)"><rect x="-34" y="-9" width="68" height="17" rx="8.5" fill="var(--card, #1a2129)" stroke="var(--line)"/><text text-anchor="middle" y="4" font-size="9.5" font-weight="700" fill="var(--primary-text-color)">${esc(o.t)}</text></g>`; }).join("");
     const ticks = [0, 0.25, 0.5, 0.75, 1].map((f) => `<text x="${X(T * f).toFixed(1)}" y="${H - 6}" text-anchor="${f === 0 ? "start" : f === 1 ? "end" : "middle"}" font-size="10" fill="var(--mut)">${this._gsHm(t0 * 1000 + T * f * 1000)}</text>`).join("");
-    return `<svg class="gscv" viewBox="0 0 ${Wd} ${H}" role="img" aria-label="Programm-Kurve nach Herkunft">${g}${bars}<path d="${line}" fill="none" stroke="#e6edf3" stroke-width="1.6" opacity=".9"/>${ph}${ticks}</svg>`;
+    return `<svg class="gscv" viewBox="0 0 ${Wd} ${H}" role="img" aria-label="Programm-Kurve nach Herkunft">${g}${bars}<path d="${line}" fill="none" stroke="#e6edf3" stroke-width="1.6" opacity=".9"/>${ph}${ticks}</svg>${wait}`;
   }
   _gsShareTiles(v) {
     const t = v[0] + v[1] + v[2];

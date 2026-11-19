@@ -69,6 +69,38 @@ class Addon(SWAddon):
             return r["avg_ct"] - r.get("auf", 0.0)
         return self._dyn_ct(dt_util.now())
 
+    def _dyn_src(self) -> dict[str, Any]:
+        """Woher der Preis eines dynamischen Vertrags kommt: „30d“ = Ø der letzten 30 Tage (Energiebuch × Tibber), „stunde“ = aktuelle Stunde, „“ = keiner."""
+        r = self._dyn.get("res")
+        if r and r.get("abdeckung", 0) >= 70:
+            return {"src": "30d", "tage": r.get("tage"), "abdeckung": r.get("abdeckung")}
+        return {"src": "stunde" if self._dyn_ct(dt_util.now()) is not None else ""}
+
+    # ---- v0.7: Ladungen aus Modul 8
+    def _m8(self) -> tuple[list[str], list[dict[str, Any]]]:
+        wb = self.hass.data.get(DOMAIN, {}).get("wallbox")
+        if wb is None:
+            return [], []
+        try:
+            names = [str(v.get("name") or "") for v in (getattr(wb, "cfg", None) or {}).get("vehicles") or []]
+            return [n for n in names if n], list(wb.stats().get("sessions") or [])
+        except Exception:  # noqa: BLE001 - Modul 8 darf die Seite nicht sperren
+            _LOGGER.debug("Modul 20: Ladungen aus Modul 8 nicht lesbar", exc_info=True)
+            return [], []
+
+    def _solar_ct(self, today: date) -> float:
+        """Bewertung des Solarstroms beim Laden zuhause: 0 €, entgangene Einspeisevergütung oder Bezugspreis laut Vertrag."""
+        how = self.data["opts"]["solar"]
+        if how == "null":
+            return 0.0
+        sp = "einspeisung" if how == "einsp" else "strom"
+        return float((L.preis(self.data, sp, today, False, self._dyn_avg() if sp == "strom" else None) or {}).get("ct") or 0.0)
+
+    def _car_entries(self, v: dict[str, Any], sessions: list[dict[str, Any]], solar_ct: float) -> list[dict[str, Any]]:
+        if not v.get("m8") or v["antrieb"] not in ("elektro", "hybrid"):
+            return v["eintraege"]
+        return L.merge_m8(v["eintraege"], L.m8_entries(sessions, v["m8"], solar_ct))
+
     async def _dyn_refresh(self) -> None:
         """Stundenvergleich dynamisch/fest: Netzbezug je Stunde aus dem Haus-Energiebuch, Börsenpreise je Stunde aus dem Tibber-Verlauf.
         Höchstens alle 6 Stunden, nur mit dynamischem Stromvertrag. Ohne Energiebuch oder Tibber bleibt der Vergleich leer."""
@@ -129,6 +161,12 @@ class Addon(SWAddon):
             u = L.unit_price(e, today) if e else None
             if u and u["ct"] is not None:
                 want.update(feed=round(min(100.0, u["ct"]), 2), feed_mode="fix")
+        gas_want = None
+        if self.data["opts"]["mirror"]:
+            g = L.active_contract(self.data["contracts"], "gas", today)
+            if g is not None and g["periods"]:
+                gas_want = L.gas_mirror(g, today)
+        await self._mirror_gas(haus, gas_want)
         prev = self.data.get("haus_prev") or {}
         # Was nicht mehr gespiegelt wird, bekommt seinen alten Wert zurück
         back = {k: v for k, v in prev.items() if k not in want and cur.get(k) != v}
@@ -149,9 +187,37 @@ class Addon(SWAddon):
         self._save()
         return sorted(diff)
 
+    async def _mirror_gas(self, haus: Any, want: dict[str, Any] | None) -> None:
+        """Gasvertrag → Haus-Werte „gas“ (Modul 3). Der Stand davor wird gemerkt und beim Ausschalten oder Löschen des Vertrags zurückgegeben."""
+        cur = dict((getattr(haus, "data", None) or {}).get("gas") or {})
+        gp = self.data.get("gas_prev")
+        if want is None:
+            if gp is None:
+                return
+            back = {k: gp[k] for k in L.GAS_KEYS if k in gp}
+            self.data["gas_prev"] = None
+        else:
+            if gp is None:
+                self.data["gas_prev"] = {k: cur.get(k) for k in L.GAS_KEYS if k in cur}
+            back = {k: v for k, v in want.items() if cur.get(k) != v}
+        if not back:
+            return
+        try:
+            await haus.async_set({"gas": back})
+        except Exception:  # noqa: BLE001
+            _LOGGER.exception("Modul 20: Gaspreis für Modul 3 konnte nicht gesetzt werden")
+            return
+        self._save()
+
+    def _gas_m3(self) -> dict[str, Any] | None:
+        """Modul 3: ist ein Gaszähler eingerichtet? Dann zeigt die Vertragsseite „Modul 3 rechnet mit diesem Vertrag“."""
+        haus = self.hass.data.get(DOMAIN, {}).get("haus")
+        g = ((getattr(haus, "data", None) or {}).get("gas") or {}) if haus is not None else {}
+        return {"ent": g.get("ent") or ""} if g else None
+
     def managed(self) -> dict[str, bool]:
         p = self.data.get("haus_prev") or {}
-        return {"price": "price" in p, "feed": "feed" in p}
+        return {"price": "price" in p, "feed": "feed" in p, "gas": self.data.get("gas_prev") is not None}
 
     # ---- Tagesstand der Zähler mit Sensor (0 Uhr) und Preiswechsel am Stichtag
     def _sensor_val(self, eid: str) -> float | None:
@@ -210,7 +276,10 @@ class Addon(SWAddon):
                 continue
             dyn = self._dyn_ct(dt_util.now()) if sp == "strom" else None
             avg = self._dyn_avg() if sp == "strom" else None
-            u = L.unit_price(c, today, dyn)
+            u = L.unit_price(c, today, avg)
+            if u is not None and u.get("dyn"):
+                jetzt = L.unit_price(c, today, dyn)
+                u = {**u, "jetzt": jetzt["ct"] if jetzt else None, **self._dyn_src()}
             start = L.billing_start(c, today)
             ms = [mets[i] for i in c["meters"] if i in mets]
             k = L.cost(c, ms, start, today + timedelta(days=1), avg) if ms else None
@@ -219,15 +288,24 @@ class Addon(SWAddon):
             except Exception:  # noqa: BLE001 - eine fehlerhafte Hochrechnung darf die Seite nicht sperren
                 _LOGGER.exception("Modul 20: Hochrechnung %s", sp)
                 fc = None
-            cards[sp] = {"id": c["id"], "u": u, "eff": L.eff_price(c, today, self.data["opts"]["verbrauch"][sp], dyn), "start": start.isoformat(), "cost": k, "term": L.term(c, today), "fc": fc}
+            cards[sp] = {"id": c["id"], "u": u, "eff": L.eff_price(c, today, self.data["opts"]["verbrauch"][sp], avg), "start": start.isoformat(), "cost": k, "term": L.term(c, today), "fc": fc}
         meters = []
         for m in self.data["meters"]:
             last = m["readings"][-1] if m["readings"] else None
             live = self._meter_val(m)
             meters.append({**{k: v for k, v in m.items() if k != "readings"}, "n": len(m["readings"]), "last": last, "live": live, "rate": L.rate(m),
                            "expect": L.expect(m, now), "rows": L.daily(m)[-40:][::-1], "used": [c["id"] for c in self.data["contracts"] if m["id"] in c["meters"]]})
-        contracts = [{**c, "changes": L.price_changes(c), "term": L.term(c, today), "u": L.unit_price(c, today, self._dyn_ct(dt_util.now()) if c["sparte"] == "strom" else None),
-                      "eff": L.eff_price(c, today, self.data["opts"]["verbrauch"][c["sparte"]], self._dyn_ct(dt_util.now()) if c["sparte"] == "strom" else None),
+        d_now, d_avg, d_src = self._dyn_ct(dt_util.now()), self._dyn_avg(), self._dyn_src()
+        def u_of(c: dict[str, Any]) -> dict[str, Any] | None:
+            if c["sparte"] != "strom":
+                return L.unit_price(c, today)
+            u = L.unit_price(c, today, d_avg)
+            if u is not None and u.get("dyn"):
+                j = L.unit_price(c, today, d_now)
+                u = {**u, "jetzt": j["ct"] if j else None, **d_src}
+            return u
+        contracts = [{**c, "changes": L.price_changes(c), "term": L.term(c, today), "u": u_of(c),
+                      "eff": L.eff_price(c, today, self.data["opts"]["verbrauch"][c["sparte"]], d_avg if c["sparte"] == "strom" else None),
                       "aktiv": (L.active_contract(self.data["contracts"], c["sparte"], today) or {}).get("id") == c["id"]} for c in self.data["contracts"]]
         haus = self.hass.data.get(DOMAIN, {}).get("haus")
         tol = self.data["opts"]["tol"]
@@ -242,13 +320,17 @@ class Addon(SWAddon):
                     _LOGGER.exception("Modul 20: Rechnungsprüfung %s", r["id"])
         invs.sort(key=lambda x: x["bis"], reverse=True)
         cars = []
+        m8_names, m8_ses = self._m8()
+        sol = self._solar_ct(today)
         for v in self.data["fahrzeuge"]:
+            v = {**v, "eintraege": self._car_entries(v, m8_ses, sol)}
             skm = self._sensor_val(v["sensor"])
             sst = self.hass.states.get(v["sensor"]) if v["sensor"] else None
             if skm is not None and sst is not None and (sst.attributes or {}).get("unit_of_measurement") == "mi":
                 skm *= 1.609344  # Meilen → km
             y0 = today.replace(month=1, day=1)
             cars.append({**{k: x for k, x in v.items() if k != "eintraege"}, "eintraege": v["eintraege"][-60:][::-1], "n": len(v["eintraege"]), "km_live": skm,
+                         "m8_n": sum(1 for e in v["eintraege"] if e["src"] == "modul8"),
                          "monat": L.vehicle_stats(v, today.replace(day=1), L.add_months(today.replace(day=1), 1), now, skm),
                          "jahr": L.vehicle_stats(v, y0, y0.replace(year=y0.year + 1), now, skm),
                          "d30": L.vehicle_stats(v, today - timedelta(days=90), today + timedelta(days=1), now, skm)})
@@ -258,7 +340,7 @@ class Addon(SWAddon):
                 "notify_svc": sorted(n for n in (self.hass.services.async_services().get("notify") or {}) if n not in ("notify", "persistent_notification"))[:30] if hasattr(self.hass.services, "async_services") else [],
                 "todos": sorted(s.entity_id for s in self.hass.states.async_all("todo"))[:20] if hasattr(self.hass.states, "async_all") else [], "today": today.isoformat(), "opts": self.data["opts"], "cards": cards, "contracts": contracts, "meters": meters,
                 "events": L.events(self.data, today), "managed": self.managed(), "haus": dict((getattr(haus, "data", None) or {}).get("price") or {}),
-                "tibber": self._dyn_ct(dt_util.now()) is not None, "dyncmp": self._dyn.get("res"), "sum": self._sum(cards),
+                "tibber": self._dyn_ct(dt_util.now()) is not None, "m8": m8_names, "gas_m3": self._gas_m3(), "dyncmp": self._dyn.get("res"), "sum": self._sum(cards),
                 "ebuch": DOMAIN in self.hass.data and "ebuch" in self.hass.data[DOMAIN]}
 
     @staticmethod

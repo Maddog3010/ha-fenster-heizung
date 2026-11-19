@@ -1,5 +1,13 @@
 # Modul 20 Abrechnungen
 
+## 0.7 Build 1 – 2026-11-19 (Beta)
+Vierte Stufe aus dem Konzept: „Anbindung Module“ – die anderen Module rechnen mit deinen Verträgen.
+- **Dynamischer Stromvertrag:** Hauptwert ist jetzt der Ø-Preis der letzten 30 Tage (dein Netzbezug je Stunde aus dem Energiebuch × Tibber-Stundenpreis + Aufschlag), „jetzt“ steht klein daneben. Effektivpreis, Banner und Preisdienst-Karte rechnen mit dem Durchschnitt; ein Hinweis nennt die Quelle. Ohne Energiebuch gilt vorerst der Preis der aktuellen Stunde. Modul 8 lädt weiter nach dem Stundenpreis.
+- **Modul 3 · Gaszähler:** Arbeits- und Grundpreis (brutto, je Jahr), Preisänderungen, Brennwert, Zustandszahl, Beginn des Abrechnungsjahrs und Abschlag kommen aus dem Gasvertrag. Modul 3 zeigt „Verwaltet in Modul 20“ statt der Eingabefelder. Ausschalten oder Vertrag löschen gibt die alten Werte zurück.
+- **Modul 8 · Wallbox → Fahrtkosten:** Ein Elektroauto oder Plug-in-Hybrid lässt sich mit seinem Fahrzeug aus Modul 8 verknüpfen. Jede Ladung zuhause erscheint dann automatisch als „Laden zuhause“ mit Menge, Solaranteil und Kosten (Netzanteil zum Preis aus Modul 8). Von Hand erfasste Ladungen zuhause zählen ab der ersten übernommenen Ladung nicht mehr doppelt.
+- Neue Einstellung „Solarstrom beim Laden zuhause“: kostenlos, entgangene Einspeisevergütung (Standard) oder Bezugspreis
+- Preisdienst-Karte mit „Angebunden“: Haus-Werte, Modul 3 und Modul 8 mit Status auf einen Blick
+
 ## 0.5 Build 3 – 2026-11-19 (Beta)
 - Alle Sensor-Auswahlen in Modul 20 arbeiten jetzt wie beim Zähler: gewählter Sensor oben, Suche beim Tippen, Vorschläge mit Begründung, „Nicht geeignet“ mit Grund.
 - **Kilometerstand beim Fahrzeug:** Vorgeschlagen werden nur Gesamt-Kilometerstände des eigenen Fahrzeugs (Name oder Marke im Sensor, Wert passt zum letzten eingetragenen Kilometerstand). Nicht geeignet: Reichweite, Monats-, Tages- und Fahrtenzähler, Sensoren eines anderen Fahrzeugs oder einer anderen Marke, Ladepunkt (evcc) bei Verbrennern. Meilen werden in km umgerechnet.
