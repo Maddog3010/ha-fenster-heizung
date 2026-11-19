@@ -391,27 +391,93 @@ export default (api) => {
       else if (v < last - 0.5) { s -= 12; why.push("kleiner als dein letzter Stand"); }
     }
     if (u && u !== "kWh" && u !== "m³") why.push(`${u} → wird umgerechnet`);
-    return { e, name, s: Math.max(1, Math.min(99, s - bad.length * 30)), why, bad, v, u: u === "m3" ? "m³" : u, q: norm(`${name} ${e} ${dv.name || ""} ${dv.manufacturer || ""}`) };
+    return { e, name, s: Math.max(1, Math.min(99, s - bad.length * 30)), why, bad, v, u: { Wh: "kWh", MWh: "kWh", L: "m³", m3: "m³" }[u] || u, q: norm(`${name} ${e} ${dv.name || ""} ${dv.manufacturer || ""}`) };
   };
-  const sensPick = (p, D, m) => {
-    const f = m.f, st = p._hass.states, units = UNIT[f.art] || [], mt = f.id ? M(D, f.id) : null;
-    const all = Object.keys(st).filter((e) => e.startsWith("sensor.") && units.includes(String((st[e].attributes || {}).unit_of_measurement || ""))).map((e) => rank(p, f.art, mt, e));
-    if (f.sensor && !all.some((x) => x.e === f.sensor) && st[f.sensor]) all.push(rank(p, f.art, mt, f.sensor));
+  /* Gemeinsame Oberfläche aller Sensor-Auswahlen in Modul 20: gewählter Sensor oben, Suche, höchstens drei Vorschläge mit Begründung,
+     weitere geeignete auf Wunsch, „Nicht geeignet“ eingeklappt mit Grund. all = [{ e, name, s, why, bad, v, u, q }] */
+  const OKW = /^passt|zählt|Bezug|Einspeisung|Gas|Wasser|Garten|gehört zu|Kilometerstand|Füllstand|Liter|Heizöl|Pellets|Salz/;
+  const pickUI = (p, m, all, c) => {
+    const st = p._hass.states, cur = m.f.sensor;
+    if (cur && !all.some((x) => x.e === cur) && st[cur]) all.push(c.rank(cur));
     const good = all.filter((x) => !x.bad.length).sort((a, b) => b.s - a.s || a.name.localeCompare(b.name, "de")), bad = all.filter((x) => x.bad.length).sort((a, b) => a.name.localeCompare(b.name, "de"));
-    const val = (x) => (x.v == null ? "–" : `${num(x.v, x.v >= 1000 ? 0 : 1)} ${x.u === "Wh" || x.u === "MWh" ? "kWh" : x.u === "L" ? "m³" : x.u}`);
-    const row = (x, warn) => `<button class="abss-r${x.e === f.sensor ? " sel" : ""}${warn ? " bad" : ""}" data-act="adxa" data-ad="${ID}" data-a="msens" data-k="${esc(x.e)}" data-q="${esc(x.q)}"><span><b>${esc(x.name)}</b><small>${esc(warn ? x.bad[0] : x.why.join(" · ") || x.e)}</small></span><em>${val(x)}</em></button>`;
-    const card = (x, i) => `<div class="abss-c${i === 0 ? " best" : ""}${x.e === f.sensor ? " sel" : ""}"><div class="abss-h"><span><b>${esc(x.name)}</b><small>${esc(x.e)}</small></span><em>${val(x)}</em></div><div class="abss-w">${x.why.map((w) => `<i class="${/^passt|zählt|Bezug|Einspeisung|Gas|Wasser|Garten/.test(w) ? "ok" : /Gerät|kleiner|nichts/.test(w) ? "wa" : ""}">${esc(w)}</i>`).join("")}</div>${x.e === f.sensor ? `<span class="mut sm">${ic("check", 13)} ist gewählt</span>` : `<button class="btn2${i === 0 ? " pri" : ""}" data-act="adxa" data-ad="${ID}" data-a="msens" data-k="${esc(x.e)}">Passt</button>`}</div>`;
-    const top = good.slice(0, 3), rest = good.slice(3), lim = m.smore ? rest.length : 0;
-    const sel = all.find((x) => x.e === f.sensor);
-    const gone = f.sensor && !st[f.sensor];
-    const cur = gone ? `<div class="abss-cur bad">${ic("alert", 16)}<span><b>${esc(f.sensor)}</b><small>Diesen Sensor gibt es in Home Assistant nicht mehr. Bitte einen neuen wählen oder von Hand ablesen.</small></span><button class="lnk" data-act="adxa" data-ad="${ID}" data-a="msens" data-k="">Von Hand</button></div>`
-      : !f.sensor ? `<div class="abss-cur">${ic("pencil", 16)}<span><b>Von Hand ablesen</b><small>Kein Sensor gewählt – du trägst die Stände selbst ein.</small></span></div>`
-      : `<div class="abss-cur${sel && sel.bad.length ? " bad" : ""}">${ic(sel && sel.bad.length ? "alert" : "check", 16)}<span><b>${esc(sel ? sel.name : f.sensor)}</b><small>${sel ? (sel.bad.length ? `Achtung: ${esc(sel.bad.join(", "))}. Der Tagesstand würde falsch gespeichert.` : `${val(sel)} · ${esc(sel.why.join(" · ") || f.sensor)}`) : esc(f.sensor)}</small></span><button class="lnk" data-act="adxa" data-ad="${ID}" data-a="msens" data-k="">Von Hand</button></div>`;
+    const val = (x) => (x.v == null ? "–" : `${num(x.v, Math.abs(x.v) >= 1000 ? 0 : 1)} ${x.u}`);
+    const act = (e) => `data-act="adxa" data-ad="${ID}" data-a="${c.act}" data-k="${esc(e)}"`;
+    const row = (x, warn) => `<button class="abss-r${x.e === cur ? " sel" : ""}${warn ? " bad" : ""}" ${act(x.e)} data-q="${esc(x.q)}"><span><b>${esc(x.name)}</b><small>${esc(warn ? x.bad[0] : x.why.join(" · ") || x.e)}</small></span><em>${val(x)}</em></button>`;
+    const card = (x, i) => `<div class="abss-c${i === 0 ? " best" : ""}${x.e === cur ? " sel" : ""}"><div class="abss-h"><span><b>${esc(x.name)}</b><small>${esc(x.e)}</small></span><em>${val(x)}</em></div><div class="abss-w">${x.why.map((w) => `<i class="${OKW.test(w) ? "ok" : /Gerät|kleiner|nichts|wechselt/.test(w) ? "wa" : ""}">${esc(w)}</i>`).join("")}</div>${x.e === cur ? `<span class="mut sm">${ic("check", 13)} ist gewählt</span>` : `<button class="btn2${i === 0 ? " pri" : ""}" ${act(x.e)}>Passt</button>`}</div>`;
+    const top = good.slice(0, 3), rest = good.slice(3), sel = all.find((x) => x.e === cur), gone = cur && !st[cur];
+    const off = `<button class="lnk" ${act("")}>${esc(c.none)}</button>`;
+    const head = gone ? `<div class="abss-cur bad">${ic("alert", 16)}<span><b>${esc(cur)}</b><small>Diesen Sensor gibt es in Home Assistant nicht mehr. Bitte einen neuen wählen.</small></span>${off}</div>`
+      : !cur ? `<div class="abss-cur">${ic("pencil", 16)}<span><b>${esc(c.noneT)}</b><small>${esc(c.noneS)}</small></span></div>`
+        : `<div class="abss-cur${sel && sel.bad.length ? " bad" : ""}">${ic(sel && sel.bad.length ? "alert" : "check", 16)}<span><b>${esc(sel ? sel.name : cur)}</b><small>${sel ? (sel.bad.length ? `Achtung: ${esc(sel.bad.join(", "))}. ${esc(c.warn)}` : `${val(sel)} · ${esc(sel.why.join(" · ") || cur)}`) : esc(cur)}</small></span>${off}</div>`;
     const list = `<div class="abss-all" hidden>${good.map((x) => row(x)).join("")}${bad.map((x) => row(x, 1)).join("")}<div class="mut sm abss-none" hidden>Nichts gefunden.</div></div>`;
-    return `${cur}<div class="abss-q">${ic("search", 16)}<input type="search" data-f="adxq" data-ad="${ID}" placeholder="Sensor suchen: Name, Gerät, Hersteller …" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Sensor suchen"></div>
-      <div class="abss-def">${top.length ? `<div class="abss-t">Vorschläge <span class="mut sm">· ${good.length} geeignete von ${all.length} Sensoren mit ${units.filter((u) => u !== "m3").join(" oder ")}</span></div><div class="abss-cs">${top.map(card).join("")}</div>` : `<div class="mut sm" style="margin:6px 0">Kein fortlaufender Zählerstand mit ${units[0]} gefunden. ${f.art.startsWith("strom") ? "Ein Stromzähler-Lesekopf (z. B. Tibber Pulse, Tasmota, ESPHome) liefert ihn." : "Ein Lesekopf am Zähler (z. B. ESPHome) liefert ihn."}</div>`}
-        ${rest.length ? `${rest.slice(0, lim).map((x) => row(x)).join("")}${!m.smore ? `<button class="lnk abss-more" data-act="adxa" data-ad="${ID}" data-a="smore">${rest.length} weitere geeignete zeigen</button>` : ""}` : ""}
-        ${bad.length ? `<button class="abss-tg" data-act="adxa" data-ad="${ID}" data-a="sbad" aria-expanded="${!!m.sbad}">${ic(m.sbad ? "minus" : "plus", 14)} Nicht geeignet (${bad.length}) <span class="mut sm">· Tageszähler, Prognosen, einzelne Geräte</span></button>${m.sbad ? bad.map((x) => row(x, 1)).join("") : ""}` : ""}</div>${list}`;
+    return `${head}<div class="abss-q">${ic("search", 16)}<input type="search" data-f="adxq" data-ad="${ID}" placeholder="Sensor suchen: Name, Gerät, Hersteller …" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Sensor suchen"></div>
+      <div class="abss-def">${top.length ? `<div class="abss-t">Vorschläge <span class="mut sm">· ${good.length} geeignete von ${all.length} Sensoren mit ${esc(c.units)}</span></div><div class="abss-cs">${top.map(card).join("")}</div>` : `<div class="mut sm" style="margin:6px 0 10px">${esc(c.empty)}</div>`}
+        ${rest.length ? `${m.smore ? rest.map((x) => row(x)).join("") : `<button class="lnk abss-more" data-act="adxa" data-ad="${ID}" data-a="smore">${rest.length} weitere geeignete zeigen</button>`}` : ""}
+        ${bad.length ? `<button class="abss-tg" data-act="adxa" data-ad="${ID}" data-a="sbad" aria-expanded="${!!m.sbad}">${ic(m.sbad ? "minus" : "plus", 14)} Nicht geeignet (${bad.length}) <span class="mut sm">· ${esc(c.badT)}</span></button>${m.sbad ? bad.map((x) => row(x, 1)).join("") : ""}` : ""}</div>${list}`;
+  };
+  const cands = (p, units) => Object.keys(p._hass.states).filter((e) => e.startsWith("sensor.") && units.includes(String((p._hass.states[e].attributes || {}).unit_of_measurement || "")));
+  const sensPick = (p, D, m) => {
+    const f = m.f, units = UNIT[f.art] || [], mt = f.id ? M(D, f.id) : null, rk = (e) => rank(p, f.art, mt, e);
+    return pickUI(p, m, cands(p, units).map(rk), { act: "msens", rank: rk, units: units.filter((u) => u !== "m3").join(" oder "), none: "Von Hand", noneT: "Von Hand ablesen", noneS: "Kein Sensor gewählt – du trägst die Stände selbst ein.",
+      warn: "Der Tagesstand würde falsch gespeichert.", badT: "Tageszähler, Prognosen, einzelne Geräte",
+      empty: `Kein fortlaufender Zählerstand mit ${units[0]} gefunden. ${f.art.startsWith("strom") ? "Ein Stromzähler-Lesekopf (z. B. Tibber Pulse, Tasmota, ESPHome) liefert ihn." : "Ein Lesekopf am Zähler (z. B. ESPHome) liefert ihn."}` });
+  };
+  /* Kilometerstand: nur Gesamt-Kilometer des eigenen Fahrzeugs. Nicht geeignet: Reichweite, Monats-/Fahrtenzähler, anderes Fahrzeug,
+     Ladepunkt (evcc) bei Verbrennern. Bonus: Fahrzeugname oder Marke im Sensor, Wert passt zum letzten Kilometerstand. */
+  const BRANDS = ["byd", "mercedes", "benz", "volkswagen", "vw", "audi", "bmw", "mini", "tesla", "skoda", "seat", "cupra", "renault", "dacia", "opel", "ford", "hyundai", "kia", "toyota", "lexus", "fiat", "peugeot", "citroen", "ds", "nissan", "volvo", "polestar", "porsche", "smart", "mg", "mazda", "honda", "suzuki", "mitsubishi", "subaru", "jeep", "zoe", "dolphin", "atto", "seal", "id3", "id4", "ioniq", "enyaq", "eqa", "eqb", "eqc", "golf", "polo", "passat", "tiguan"];
+  const words = (t) => norm(t).split(/[^a-z0-9]+/).filter((w) => w.length >= 2);
+  const kmRank = (p, D, v, e) => {
+    const H = p._hass, x = H.states[e], at = (x && x.attributes) || {}, en = (H.entities || {})[e] || {}, dv = en.device_id ? (H.devices || {})[en.device_id] || {} : {};
+    const name = at.friendly_name || e, t = norm(`${name} ${e} ${dv.name_by_user || dv.name || ""} ${dv.model || ""}`), tw = new Set(words(t)), u = String(at.unit_of_measurement || ""), why = [], bad = [];
+    let sc = 40;
+    if (/reichweite|range|remaining|verbleib|restreichweite|distance_to_empty|bis_leer/.test(t)) bad.push("Reichweite, kein Kilometerstand");
+    if (/monat|month|(^|[ _.-])tag([ _.-]|$)|today|heute|daily|week|woche|trip|fahrt|journey|reset|start|seit|since|letzte/.test(t)) bad.push("Monats-, Tages- oder Fahrtenzähler");
+    if (/kilometerstand|kilometerzaehler|odometer|mileage|odo([ _.-]|$)|gesamtkilometer|total_distance|tachostand|laufleistung/.test(t)) { sc += 25; why.push("Kilometerstand"); }
+    if (at.state_class === "total_increasing" || at.state_class === "total") sc += 8;
+    const mine = words(v.name).filter((w) => w.length >= 3 && !/^(der|die|das|mein|auto|wagen)$/.test(w)), hitMine = mine.some((w) => tw.has(w) || t.includes(w));
+    const others = (D.fahrzeuge || []).filter((o) => o.id !== v.id), other = others.find((o) => words(o.name).filter((w) => w.length >= 3).some((w) => tw.has(w)));
+    const myBrands = BRANDS.filter((b) => mine.includes(b) || norm(v.name).includes(b)), foreign = BRANDS.filter((b) => tw.has(b) && !myBrands.includes(b));
+    if (hitMine) { sc += 30; why.unshift(`gehört zu ${v.name}`); }
+    else if (other) bad.push(`gehört zu ${other.name}`);
+    else if (foreign.length) bad.push(`anderes Fahrzeug (${foreign[0].toUpperCase()})`);
+    if (/evcc|ladepunkt|loadpoint|wallbox|carport/.test(t)) { if (v.antrieb !== "elektro" && v.antrieb !== "hybrid") bad.push("Ladepunkt – nur für Elektroautos"); else { sc -= 5; why.push("Ladepunkt: wechselt mit dem angesteckten Auto"); } }
+    const raw = x ? parseFloat(x.state) : NaN, val = isFinite(raw) ? raw * (u === "mi" ? 1.609344 : 1) : null;
+    if (val == null) { sc -= 20; why.push("liefert gerade nichts"); }
+    const last = ((v.eintraege || []).find((y) => y.km) || {}).km || null;  /* letzter eingetragener Kilometerstand */
+    if (val != null && last) { if (val >= last - 5 && val <= last + 30000) { sc += 30; why.unshift(`passt zu deinem Stand ${num(last, 0)} km`); } else if (val < last * 0.5) bad.push(`viel kleiner als dein Stand ${num(last, 0)} km`); }
+    if (u === "mi") why.push("Meilen → wird umgerechnet");
+    return { e, name, s: Math.max(1, Math.min(99, sc)), why, bad, v: val, u: "km", q: norm(`${name} ${e} ${dv.name || ""} ${dv.manufacturer || ""}`) };
+  };
+  const kmPick = (p, D, m) => {
+    const f = m.f, v = { id: f.id || "", name: f.name || "", antrieb: f.antrieb, ...((D.fahrzeuge || []).find((x) => x.id === f.id) || {}), name2: f.name };
+    v.name = f.name || v.name; v.antrieb = f.antrieb;
+    const rk = (e) => kmRank(p, D, v, e);
+    return pickUI(p, m, cands(p, ["km", "mi"]).map(rk), { act: "cks", rank: rk, units: "km", none: "Aus den Einträgen", noneT: "Kilometerstand aus den Einträgen", noneS: "Kein Sensor – Strecke kommt aus Tankbelegen, Ladungen und Kilometerständen, die du einträgst.",
+      warn: "Strecke und Verbrauch würden falsch gerechnet.", badT: "Reichweite, Monatszähler, andere Fahrzeuge",
+      empty: `Kein Kilometerstand-Sensor für ${f.name || "dieses Fahrzeug"} gefunden. Kein Problem: Die Strecke kommt aus den Kilometerständen deiner Einträge.` });
+  };
+  /* Füllstand eines Vorrats: Liter, Prozent, Tonnen … – nicht Akku, Feuchte, Speicherplatz. Bonus: Art des Vorrats im Namen, Wert passt zum Bestand. */
+  const lvRank = (p, it, art, lager, e) => {
+    const H = p._hass, x = H.states[e], at = (x && x.attributes) || {}, en = (H.entities || {})[e] || {}, dv = en.device_id ? (H.devices || {})[en.device_id] || {} : {};
+    const name = at.friendly_name || e, t = norm(`${name} ${e} ${dv.name_by_user || dv.name || ""}`), u = String(at.unit_of_measurement || ""), dc = at.device_class || "", why = [], bad = [];
+    let sc = 35;
+    if (["battery", "humidity", "moisture", "signal_strength", "power_factor", "data_size"].includes(dc) || /akku|batter|feuchte|humidity|signal|rssi|wifi|cpu|ram|disk|speicherplatz|memory|ladestand|soc|ventil|valve|helligkeit|brightness|volume_level|lautst/.test(t)) bad.push("kein Füllstand (Akku, Feuchte, Gerät …)");
+    if (/forecast|prognose|verbrauch_heute|today|heute|daily|tag([ _.-]|$)/.test(t)) bad.push("Tages- oder Prognosewert, kein Bestand");
+    if (/fuellstand|level|tank|vorrat|bestand|silo|lager|inhalt|menge|liter|volume|fuel/.test(t)) { sc += 22; why.push("Füllstand"); }
+    const K = { oel: /oel|heizoel|heating.?oil|tank/, pellets: /pellet|silo/, lpg: /lpg|propan|fluessiggas|gastank/, holz: /holz|wood/, salz: /salz|salt|regenerier|enthaert/, pool: /chlor|pool/, adblue: /adblue/, filter: /filter/ }[art];
+    if (K && K.test(t)) { sc += 28; why.unshift({ oel: "Heizöl", pellets: "Pellets", lpg: "Flüssiggas", holz: "Holz", salz: "Salz", pool: "Pool", adblue: "AdBlue", filter: "Filter" }[art]); }
+    else if (/oel|pellet|lpg|propan|salz|zisterne|regen|wasser|water/.test(t)) { sc -= 18; why.push("anderer Vorrat?"); }
+    if (u === "%") { why.push(lager ? `% × Lager ${num(lager, 0)}` : "Prozent – Lagergröße eintragen"); if (!lager) sc -= 10; }
+    const raw = x ? parseFloat(x.state) : NaN, val = isFinite(raw) ? raw : null, best = it && it.st ? it.st.bestand : null;
+    if (val == null) { sc -= 20; why.push("liefert gerade nichts"); }
+    if (val != null && best != null && best > 0) { const q = u === "%" && lager ? val * lager / 100 : val; if (Math.abs(q - best) <= Math.max(best * 0.2, 0.5)) { sc += 28; why.unshift(`passt zum Bestand ${num(best, best < 20 ? 1 : 0)}`); } }
+    return { e, name, s: Math.max(1, Math.min(99, sc)), why, bad, v: val, u: u === "L" ? "l" : u, q: norm(`${name} ${e} ${dv.name || ""} ${dv.manufacturer || ""}`) };
+  };
+  const lvPick = (p, D, m) => {
+    const f = m.f, it = f.id ? (D.vorraete || []).find((x) => x.id === f.id) : null, lager = pn(f.lager), rk = (e) => lvRank(p, it, f.art, lager, e);
+    return pickUI(p, m, cands(p, ["l", "L", "%", "t", "kg", "m³", "rm"]).map(rk), { act: "isens", rank: rk, units: "l, %, t, kg oder m³", none: "Kein Sensor", noneT: "Bestand zählen oder rechnen", noneS: "Kein Sensor – der Bestand kommt aus Einkäufen, Entnahmen und Zählungen.",
+      warn: "Der Bestand würde täglich falsch überschrieben.", badT: "Akku, Feuchte, Tageswerte",
+      empty: "Kein Füllstand-Sensor gefunden. Kein Problem: Der Bestand kommt aus Einkäufen, Entnahmen und Zählungen." });
   };
   const input = (p, el) => {
     if (el.dataset.f !== "adxq") return false;
@@ -502,11 +568,10 @@ export default (api) => {
         <div class="foot2" style="margin-top:14px">${!f.id ? btn("close2", "", "Abbrechen") : m.del ? btn("idel2", "trash", "Wirklich löschen", { dng: 1 }) : btn("idel", "trash", "Löschen")}${btn("isave", "check", m.busy ? "Speichert …" : "Speichern", { pri: 1, dis: !c || m.busy })}</div>`, true);
     }
     if (m.k === "car") {
-      const st = p._hass.states, km = Object.keys(st).filter((e) => e.startsWith("sensor.") && /^(km|mi)$/.test(String((st[e].attributes || {}).unit_of_measurement || ""))).sort().slice(0, 12);
       return wrap(hd(f.id ? "Fahrzeug bearbeiten" : "Fahrzeug hinzufügen", "Fahrtkosten · gilt für alle Nutzer") + `<div class="abfs">${inp("name", "Name", f.name, { ph: "z. B. BYD Dolphin", max: 30 })}${inp("start_km", "Kilometerstand heute", f.start_km, { num: 1, unit: "km", ph: "optional" })}</div>
         <div class="lsec">${ic("car", 15)}Antrieb</div><div class="gschips">${Object.entries(AN).map(([k, l]) => chip("can", k, l, f.antrieb === k)).join("")}</div>
         <div class="abfs">${f.antrieb !== "elektro" ? inp("tank", "Tankinhalt", f.tank, { num: 1, unit: "l" }) : ""}${f.antrieb === "elektro" || f.antrieb === "hybrid" ? inp("akku", "Akku", f.akku, { num: 1, unit: "kWh" }) : ""}</div>
-        <div class="lsec">${ic("gauge", 15)}Kilometerstand-Sensor <span class="mut sm">· optional, z. B. aus der Hersteller-Integration</span></div><div class="gschips">${chip("cks", "", "keiner – aus den Einträgen", !f.sensor)}${km.map((e) => chip("cks", e, esc((st[e].attributes || {}).friendly_name || e), f.sensor === e)).join("")}</div>
+        <div class="lsec">${ic("gauge", 15)}Kilometerstand-Sensor <span class="mut sm">· optional, z. B. aus der Hersteller-Integration</span></div>${kmPick(p, D, m)}
         <div class="lsec">${ic("euro", 15)}Fixkosten im Jahr <span class="mut sm">· für die Vollkosten je km, optional</span></div><div class="abfs">${Object.entries(FX).map(([k, l]) => inp("fx_" + k, l, (f.fix || {})[k] || "", { num: 1, unit: "€" })).join("")}</div>
         <div class="foot2" style="margin-top:14px">${!f.id ? btn("close2", "", "Abbrechen") : m.del ? btn("cardel2", "trash", "Wirklich löschen", { dng: 1 }) : btn("cardel", "trash", "Löschen")}${btn("carsave", "check", "Speichern", { pri: 1 })}</div>`, true);
     }
@@ -521,10 +586,10 @@ export default (api) => {
         <div class="foot2" style="margin-top:14px">${btn("close2", "", "Abbrechen")}${btn("entsave", "check", "Speichern", { pri: 1 })}</div>`, true);
     }
     if (m.k === "item") {
-      const st = p._hass.states, cand = Object.keys(st).filter((e) => e.startsWith("sensor.") && /^(l|L|%|t|kg|m³)$/.test(String((st[e].attributes || {}).unit_of_measurement || ""))).sort().slice(0, 12);
+      const st = p._hass.states;
       return wrap(hd(f.id ? "Vorrat bearbeiten" : "Vorrat hinzufügen", "Vorräte · gilt für alle Nutzer") + `<div class="gschips">${Object.entries(VA).map(([k, [l]]) => chip("iart", k, l, f.art === k)).join("")}</div>
         ${f.art ? `<div class="abfs">${inp("name", "Name", f.name, { ph: VA[f.art][0], max: 30 })}${inp("unit", "Einheit", f.unit, { ph: VA[f.art][1], max: 8 })}${inp("lager", "Lagergröße", f.lager, { num: 1, unit: f.unit || VA[f.art][1], ph: "Tank, Lager" })}${inp("min", "Mindestbestand", f.min, { num: 1, unit: f.unit || VA[f.art][1] })}${inp("liefer", "Lieferzeit", f.liefer, { num: 1, unit: "Tage" })}${!f.id ? inp("start", "Bestand heute", f.start, { num: 1, unit: f.unit || VA[f.art][1] }) : ""}</div>
-        <div class="lsec">${ic("gauge", 15)}Füllstand-Sensor <span class="mut sm">· optional, speichert täglich den Bestand</span></div><div class="gschips">${chip("isens", "", "keiner – zählen oder rechnen", !f.sensor)}${cand.map((e) => chip("isens", e, esc((st[e].attributes || {}).friendly_name || e), f.sensor === e)).join("")}</div>
+        <div class="lsec">${ic("gauge", 15)}Füllstand-Sensor <span class="mut sm">· optional, speichert täglich den Bestand</span></div>${lvPick(p, D, m)}
         ${f.sensor && String((st[f.sensor] || { attributes: {} }).attributes.unit_of_measurement) === "%" ? `<div class="mut sm">Sensor in % – Bestand = Prozent × Lagergröße.</div>` : ""}` : `<div class="mut sm">Wähle zuerst, was du lagerst.</div>`}
         <div class="foot2" style="margin-top:14px">${!f.id ? btn("close2", "", "Abbrechen") : m.del ? btn("itemdel2", "trash", "Wirklich löschen", { dng: 1 }) : btn("itemdel", "trash", "Löschen")}${btn("itemsave", "check", "Speichern", { pri: 1, dis: !f.art })}</div>`, true);
     }

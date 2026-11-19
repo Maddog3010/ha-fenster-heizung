@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b25] - 2026-11-19
+
+**Modul 20 · Abrechnungen** (Addon) v0.5 Build 3: alle Sensor-Auswahlen wie beim Zähler.
+
+### Neu
+- **Kilometerstand beim Fahrzeug:** Vorschläge nur mit Gesamt-Kilometerständen des eigenen Fahrzeugs (Name oder Marke im Sensor, Wert passt zum letzten eingetragenen Kilometerstand). Unter „Nicht geeignet“ mit Grund: Reichweite, Monats-, Tages- und Fahrtenzähler, Sensoren eines anderen Fahrzeugs oder einer anderen Marke, der evcc-Ladepunkt bei Verbrennern. Ohne passenden Sensor kommt die Strecke wie bisher aus den Einträgen.
+- **Füllstand beim Vorrat:** Vorschläge mit passender Art (Heizöl, Pellets, Salz …) und Abgleich mit dem Bestand. Unter „Nicht geeignet“: Akku- und Ladestände, Luftfeuchte, Geräte- und Tageswerte.
+- Überall: gewählter Sensor oben mit Prüfung, Suche beim Tippen, Vorschläge mit Begründung.
+
+### Behoben
+- Kilometerstand-Sensoren in Meilen werden in km umgerechnet.
+
 ## [2026.11.4b24] - 2026-11-19
 
 **Modul 20 · Abrechnungen** (Addon) v0.5 Build 2: neue Auswahl für den Sensor eines Zählers.

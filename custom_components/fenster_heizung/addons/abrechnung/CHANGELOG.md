@@ -1,5 +1,10 @@
 # Modul 20 Abrechnungen
 
+## 0.5 Build 3 – 2026-11-19 (Beta)
+- Alle Sensor-Auswahlen in Modul 20 arbeiten jetzt wie beim Zähler: gewählter Sensor oben, Suche beim Tippen, Vorschläge mit Begründung, „Nicht geeignet“ mit Grund.
+- **Kilometerstand beim Fahrzeug:** Vorgeschlagen werden nur Gesamt-Kilometerstände des eigenen Fahrzeugs (Name oder Marke im Sensor, Wert passt zum letzten eingetragenen Kilometerstand). Nicht geeignet: Reichweite, Monats-, Tages- und Fahrtenzähler, Sensoren eines anderen Fahrzeugs oder einer anderen Marke, Ladepunkt (evcc) bei Verbrennern. Meilen werden in km umgerechnet.
+- **Füllstand beim Vorrat:** Vorgeschlagen werden Füllstände mit passender Art (Heizöl, Pellets, Salz …) und Wert passend zum Bestand. Nicht geeignet: Akku- und Ladestände, Luftfeuchte, Geräte- und Tageswerte.
+
 ## 0.5 Build 2 – 2026-11-19 (Beta)
 - Neue Auswahl für den Sensor eines Zählers: Vorschläge mit Begründung statt einer langen Liste aller Sensoren mit kWh. Vorgeschlagen werden nur fortlaufende Zählerstände (zählt weiter, passende Einheit, Richtung Bezug oder Einspeisung, Wert passt zum letzten Ablesestand). Tageszähler, Prognosen, Momentanwerte, Erzeugung der Solaranlage und Zähler einzelner Geräte stehen getrennt unter „Nicht geeignet“ – mit Grund.
 - Suche über Name, Entitäts-ID, Gerät und Hersteller, filtert beim Tippen

@@ -244,6 +244,9 @@ class Addon(SWAddon):
         cars = []
         for v in self.data["fahrzeuge"]:
             skm = self._sensor_val(v["sensor"])
+            sst = self.hass.states.get(v["sensor"]) if v["sensor"] else None
+            if skm is not None and sst is not None and (sst.attributes or {}).get("unit_of_measurement") == "mi":
+                skm *= 1.609344  # Meilen → km
             y0 = today.replace(month=1, day=1)
             cars.append({**{k: x for k, x in v.items() if k != "eintraege"}, "eintraege": v["eintraege"][-60:][::-1], "n": len(v["eintraege"]), "km_live": skm,
                          "monat": L.vehicle_stats(v, today.replace(day=1), L.add_months(today.replace(day=1), 1), now, skm),
