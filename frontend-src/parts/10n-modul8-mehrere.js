@@ -9,7 +9,7 @@
     if (m.act === "delete") return wrap(`${lad(n)} löschen?`, "Mehrere auf einmal", `<div class="mut sm" style="margin:0 0 10px">Die Ladungen verschwinden aus der Liste, ihre Energie und Kosten werden aus den Tageswerten abgezogen. Aus go-e importierte Ladungen lassen sich später wieder importieren.</div>
       <div class="gbtns"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 dng" data-act="wbvbulkgo" ${busy}>${ic("trash", 16)} ${lad(n)} löschen</button></div>`);
     if (m.act === "veh") {
-      const names = [...new Set([...(this._wb().vehicles || []).map((v) => v.name), "Unbekannt"])];
+      const names = [...new Set([...(this._wb().vehicles || []).map((v) => v.name), "Gastfahrzeug", "Unbekannt"])];
       return wrap("Fahrzeug ändern", `${lad(n)}${m.card ? ` · Karte ${esc(m.card)}` : ""}`, `<div class="gschips" style="margin:0 0 10px">${names.map((x) => `<button class="gsch ${m.veh === x ? "sel" : ""}" data-act="wbvbulkveh" data-k="${esc(x)}" aria-pressed="${m.veh === x}">${esc(x)}</button>`).join("")}</div>
         <div class="mut sm" style="margin:0 0 10px">Energie und Kosten werden in den Tageswerten mit umgebucht – „Fahrzeuge &amp; Karten“ stimmt danach mit der Liste überein.${m.card ? ` Damit künftige Ladungen mit dieser Karte gleich richtig zählen: Karte unter Einstellungen → Modul 8 → Fahrzeuge dem Fahrzeug zuordnen.` : ""}</div>
         <div class="gbtns"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="wbvbulkgo" ${m.veh && !m.busy ? "" : "disabled"}>${ic("car", 16)} ${lad(n)} zuordnen</button></div>`);

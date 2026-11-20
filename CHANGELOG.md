@@ -2,6 +2,12 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b36] - 2026-11-20
+
+### Neu
+- **Modul 8 (v0.9 Build 9): „Wer lädt gerade?“** – im Register „Laden“ unter „Wie soll geladen werden?“ lässt sich von Hand umstellen: **Automatisch** (Karte bzw. Fahrzeug „ohne Karte“), eines deiner Fahrzeuge oder **Gastfahrzeug**. Die Auswahl gilt bis zum Abstecken (sie darf auch vor dem Anstecken gesetzt werden) und zählt auch ohne Karte – „Nur mit Karte“ wartet dann nicht. Für das Gastfahrzeug gelten dessen Modus und Limit (Einstellungen → Fahrzeuge), die Ladung erscheint in der Statistik als „Gastfahrzeug“ und der Ladestand des eigenen Autos wird dafür nicht benutzt.
+- **Gastfahrzeug auch beim Bearbeiten von Ladungen** – einzeln und bei „Fahrzeug ändern“ für mehrere Ladungen.
+
 ## [2026.11.4b35] - 2026-11-20
 
 **Modul 20 · Abrechnungen** (Addon) v1.6 Build 1 – Grundgebühren und einmalige Gebühren.

@@ -152,6 +152,8 @@ class WallboxManager:
         self._last_veh = ""  # zuletzt erkanntes Fahrzeug (für die Anzeige nach dem Abstecken)
         self._cal: dict[str, tuple[float, list[dict[str, Any]]]] = {}  # Kalender-Termine je Kalender (5 Minuten zwischengespeichert)
         self._cal_said = ""
+        self._who_seen = False
+        self._who_set: str | None = None  # von Hand gewählt, wer gerade lädt („guest“ oder Fahrzeug-ID) – gilt bis zum Abstecken
         self.lock_open = False  # „Nur mit Karte“ an, aber die Wallbox lädt auch ohne Karte (Kartenpflicht aus)
         self._lock_said = False
 
@@ -406,6 +408,33 @@ class WallboxManager:
     # ---- Fahrzeuge
     def _vehicle(self, vid: str | None) -> dict[str, Any] | None:
         return next((v for v in self.cfg["vehicles"] if v["id"] == vid), None) if vid else None
+
+    def _who_override(self, cfg: dict[str, Any]) -> dict[str, Any] | None:
+        """Von Hand gewählt: Gastfahrzeug oder ein bestimmtes Fahrzeug für die laufende Ladung (bis zum Abstecken)."""
+        k = self._who_set
+        if not k:
+            return None
+        if k == "guest":
+            g = cfg["guest"]
+            return {"kind": "guest", "name": "Gastfahrzeug", "card": self._card, "mode": g["mode"], "limit": g["limit"], "set": True}
+        v = self._vehicle(k)
+        if v is None:
+            self._who_set = None
+            return None
+        return {"kind": "vehicle", "id": v["id"], "name": v["name"], "card": self._card, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep"), "set": True}
+
+    async def async_who(self, k: str) -> dict[str, Any]:
+        """„Wer lädt gerade?“ von Hand: "" = automatisch (Karte), "guest" = Gastfahrzeug, sonst eine Fahrzeug-ID."""
+        k = str(k or "")
+        if k and k != "guest" and self._vehicle(k) is None:
+            raise ValueError("Fahrzeug nicht gefunden")
+        self._who_set = k or None
+        self._who_seen = self.info.get("car") not in (None, CAR_IDLE)
+        o = self._who_override(self.cfg)
+        self._add(f"Von Hand umgestellt: Es lädt {'das Gastfahrzeug' if k == 'guest' else '„' + o['name'] + '“'} (bis zum Abstecken)." if o else "Wieder automatisch: Das Fahrzeug wird an der Karte erkannt.")
+        self._hold_until = 0.0
+        await self._tick(None)
+        return self.snapshot()
 
     def cur_vehicle(self) -> dict[str, Any] | None:
         """Das Fahrzeug, das gerade gilt: an der Karte erkannt, sonst das Fahrzeug ohne Karte, sonst das einzige
@@ -764,9 +793,14 @@ class WallboxManager:
             self._restore = False
             await self._apply(cl, {"frc": 0}, "Regelung ausgeschaltet: Die Wallbox ist wieder auf „neutral“.")
             return
+        if self._who_set:  # Auswahl von Hand: darf vor dem Anstecken gesetzt werden und endet mit dem Abstecken
+            if self.info.get("car") not in (None, CAR_IDLE):
+                self._who_seen = True
+            elif self._who_seen:
+                self._who_set, self._who_seen = None, False
         if not cfg["enabled"]:
             self.want = {}
-            self.who = resolve_who(cfg, self._card)
+            self.who = self._who_override(cfg) or resolve_who(cfg, self._card)
             return
         if not self.info.get("ctrl", True):
             self.want = {"state": "anzeige", "reason": "Diese Wallbox hat keine Schalter-Entität. Strom & Wärme zeigt nur an und regelt nicht."}
@@ -786,7 +820,7 @@ class WallboxManager:
             if cur.get("frc") != 0:
                 await self._apply(cl, {"frc": 0}, "Abgesteckt: Die Wallbox ist wieder auf „neutral“.")
             return
-        who = resolve_who(cfg, self._card)
+        who = self._who_override(cfg) or resolve_who(cfg, self._card)
         self.who = who
         if who and who.get("kind") == "vehicle":
             self._last_veh = who.get("id") or ""
@@ -870,7 +904,7 @@ class WallboxManager:
         charging = st_car == CAR_CHARGING
         power = (self.info.get("power") or 0.0) if charging else 0.0
         trx = self.info.get("trx")
-        w = resolve_who(self.cfg, trx if isinstance(trx, int) and trx >= 1 else self._card)
+        w = self._who_override(self.cfg) or resolve_who(self.cfg, trx if isinstance(trx, int) and trx >= 1 else self._card)
         veh = w["name"] if w else "Unbekannt"
         card = next((c["n"] for c in self.info.get("cards") or [] if w and c["i"] == w.get("card")), "") if w and w.get("card") else ""
         cv = self.cur_vehicle()
@@ -1215,6 +1249,6 @@ class WallboxManager:
             "veh": (self.cur_vehicle() or {}).get("id") or "", "socs": {v["id"]: self.veh_soc(v) for v in self.cfg["vehicles"]},
             "est": {v["id"]: self.veh_est(v) for v in self.cfg["vehicles"] if self.veh_est(v)},
             "price": self._price_view(), "eff": self._eff_view(),
-            "ready": self.configured(), "kind": self.cfg["wbx"]["kind"], "lock_open": self.lock_open, "dimmed": self.dimmed, "stale": self._grid_stale,
+            "ready": self.configured(), "kind": self.cfg["wbx"]["kind"], "lock_open": self.lock_open, "who_set": self._who_set or "", "dimmed": self.dimmed, "stale": self._grid_stale,
             "bat": dict(zip(("chg", "dis"), self._bat())),
         }

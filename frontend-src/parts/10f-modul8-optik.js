@@ -84,7 +84,7 @@
     const MN = { off: "Aus", pv: "Sonne", minpv: "Sonne + Netz", now: "Voll" }, wv = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.id === who.id || x.name === who.name) : null;
     const mode = who ? (wv ? wv.mode : who.kind === "guest" ? c.guest.mode : c.mode) : c.mode;
     const tm = (t) => t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
-    const card = !who ? "" : who.kind === "guest" ? `Gast · Karte ${who.card}` : who.auto ? (this._wbHa(c) ? "fest zugeordnet" : "ohne Karte") : who.card == null ? "" : `Karte ${esc(((i.cards || []).find((x) => x.i === who.card) || {}).n || String(who.card))}`;
+    const card = !who ? "" : who.set && who.card == null ? "von Hand gewählt" : who.kind === "guest" ? (who.card != null ? `Gast · Karte ${who.card}` : "Gast") : who.auto ? (this._wbHa(c) ? "fest zugeordnet" : "ohne Karte") : who.card == null ? "" : `Karte ${esc(((i.cards || []).find((x) => x.i === who.card) || {}).n || String(who.card))}`;
     return { sn, c, i, w, who, v, wbOn, dep, limit, goal, cap, soc, need, pw, sun, done, doneT: done ? tm(done) : "", mode, modeN: MN[mode] || "–", MN, card, tm,
       night: ((this._hass.states["sun.sun"] || {}).state || "") === "below_horizon" };
   }
@@ -183,6 +183,16 @@
       ${k(this._gx("car", 38), "Reichweite", d.range != null ? num(d.range, 0) : "–", d.range != null ? "km" : "", d.odo != null ? `${num(d.odo, 0)} km gesamt` : "kein Sensor", "")}</div>`;
   }
   /* A5: Modus-Karten mit Wirkung in einem Satz, dazu Regelung an/aus und Schnellstart */
+  /* „Wer lädt gerade?“ von Hand – z. B. Gastfahrzeug ohne eigene Karte. Gilt bis zum Abstecken. */
+  _evWhoRow(N) {
+    const sn = N.sn, c = N.c, vs = c.vehicles || [], set = sn.who_set || "", adm = this._admin();
+    if (!this._wbOn() || (!vs.length && !set)) return "";
+    const who = N.who, auto = !set, det = who && !who.set ? (who.kind === "guest" ? "Gastfahrzeug" : who.name) : "";
+    const chip = (k, t, g) => `<button class="gsch ${set === k ? "sel" : ""}" data-act="wbwho" data-k="${esc(k)}" aria-pressed="${set === k}" ${adm ? "" : "disabled"}>${g ? this._gx(g, 18) : ""}${esc(t)}</button>`;
+    return `<div class="lsec" style="margin-top:12px">${ic("car", 15)}Wer lädt gerade?</div>
+      <div class="gschips evwho">${chip("", auto && det ? `Automatisch · ${det}` : "Automatisch")}${vs.map((v) => chip(v.id, v.name)).join("")}${chip("guest", "Gastfahrzeug", "people")}</div>
+      <div class="mut sm" style="margin:2px 0 0">${set ? `Von Hand gewählt – gilt bis zum Abstecken${set === "guest" ? `. Es gelten Modus „${N.MN[c.guest.mode] || "–"}“ und Limit ${c.guest.limit} % des Gastfahrzeugs (Einstellungen → Fahrzeuge)` : ""}.` : "Automatisch: an der Karte erkannt, sonst das Fahrzeug „ohne Karte“."}</div>`;
+  }
   _evModes(d) {
     const N = this._evNow(d), c = N.c, adm = this._admin(), X = this._wbxParts();
     const M = [["off", "Aus", "plug", "Wallbox lädt nicht"], ["pv", "Sonne", "sun", "Nur mit Überschuss"], ["minpv", "Sonne + Netz", "grid", "Mindeststrom, mehr bei Sonne"], ["now", "Voll", "bolt", "Sofort mit voller Leistung"]];
@@ -190,6 +200,7 @@
     return `<div class="card evmc"><h2>${this._gx("wallbox", 24)}Wie soll geladen werden?<span class="evmr">${esc(this._wbName())}</span></h2>
       <div class="vrow"><span>Laderegelung<small class="mut" style="display:block">${c.enabled ? "Strom &amp; Wärme steuert Start, Ladestrom und Phasen." : "Aus: Es wird nichts an der Wallbox verändert."}</small></span><button class="sw ${c.enabled ? "on" : ""}" data-act="wbsw" data-k="wbon" aria-pressed="${c.enabled}" aria-label="Laderegelung" ${adm ? "" : "disabled"}></button></div>
       <div class="evmodes">${M.map(([k, t, g, s]) => `<button class="evmode ${N.mode === k ? "sel" : ""}" data-act="wbmode" data-k="${k}" aria-pressed="${N.mode === k}" ${adm && !c.planOn && c.enabled ? "" : "disabled"}>${this._gx(g, 34, { on: N.mode === k ? 1 : 0 })}<span><b>${t}</b><small>${s}</small></span></button>`).join("")}</div>
+      ${this._evWhoRow(N)}
       <div class="mut sm" style="margin:8px 0 0">${c.planOn ? "Die <b>Planung</b> steuert gerade die Wallbox (Register „Planung“)." : wv ? `Gilt für <b>${esc(wv)}</b>${N.card ? " (" + N.card + ")" : ""}.` : "Gilt, solange kein Fahrzeug erkannt ist."}${c.enabled && N.w.reason ? ` ${esc(N.w.reason)}` : ""}</div>
       ${c.enabled ? `<div class="lsec" style="margin-top:12px">${ic("energy", 15)}Schnellstart</div>${X.quick}<div class="mut sm" style="margin-top:6px">Auch ohne App: NFC-Tag an der Wallbox mit „1 Stunde voll“, „Heute nur Sonne“ oder „Stopp“ – Einstellungen → Haus → Tags &amp; Karten.</div>` : ""}</div>`;
   }

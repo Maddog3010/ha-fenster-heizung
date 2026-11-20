@@ -61,6 +61,7 @@
   }
   _wbAct(a, b) {
     if (a.startsWith("wbgoe") && this._goeAct(a, b)) return;
+    if (a === "wbwho") { const k = b.dataset.k || ""; this._hass.callWS({ type: "fenster_heizung/wb_who", k }).then((r) => { this._wbD = { snap: r, ts: Date.now() }; this._render(); this._toast(k === "guest" ? "Gastfahrzeug lädt – bis zum Abstecken" : k ? "Fahrzeug gewählt – bis zum Abstecken" : "Wieder automatisch"); }).catch(() => this._toast("Konnte nicht umgestellt werden")); return; }
     if (a === "wbkmfrom") { const c = this._wb(); this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === b.dataset.v ? { ...x, kmFrom: (((x.kmFrom || 1) - 1 + Number(b.dataset.s) + 12) % 12) + 1 } : x)) }, true); this._renderModal(); return; }
     if (a === "wbkmok") return this._evKmOdo(b);
     if (a === "wbstretry") { this._wbStFail = 0; this._wbStatLoad(true); return; }

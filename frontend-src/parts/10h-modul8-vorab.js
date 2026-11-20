@@ -73,7 +73,7 @@
   _sesModal() {
     const m = this._modal, x = this._sesFind(m.start);
     if (!x) return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Ladung</b><span>Nicht mehr vorhanden</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div><div class="mut sm">Diese Ladung wurde gelöscht oder ist älter als die letzten 100 Ladungen.</div></div>`;
-    const t = new Date(x.start), c = this._wb(), names = [...new Set([...(c.vehicles || []).map((v) => v.name), x.veh, "Unbekannt"].filter(Boolean))];
+    const t = new Date(x.start), c = this._wb(), names = [...new Set([...(c.vehicles || []).map((v) => v.name), x.veh, "Gastfahrzeug", "Unbekannt"].filter(Boolean))];
     const s2 = x.kwh > 0 ? x.pv / x.kwh * 100 : 0, dur = x.min ? (x.min >= 60 ? num(x.min / 60, 1) + " h" : num(x.min, 0) + " Min.") : "";
     const chip = (n) => `<button class="gsch ${m.veh === n ? "sel" : ""}" data-act="wbvsesveh" data-k="${esc(n)}" aria-pressed="${m.veh === n}">${esc(n)}</button>`;
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Ladung bearbeiten">
