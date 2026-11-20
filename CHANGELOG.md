@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b30] - 2026-11-20
+
+### Behoben
+- **Einstellungs-Knopf oben rechts:** öffnet jetzt in jedem Modul die Haupt-Einstellungen. Bei Addons (zum Beispiel Modul 20 Abrechnungen, Modul 21 Saugroboter) und auf der Startseite öffnete er bisher nur die eigenen Einstellungen. Die bleiben erreichbar über Einstellungen → Module (Addons) bzw. Einstellungen → Darstellung → Startseite, bei Modul 20 auch über „Einstellungen“ in der Fußzeile.
+
 ## [2026.11.4b29] - 2026-11-20
 
 **Modul 20 · Abrechnungen** (Addon) **v1.0 – Stabil.** Alle Stufen aus dem Konzept sind drin.
