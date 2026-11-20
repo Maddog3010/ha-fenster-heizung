@@ -1,7 +1,6 @@
-/* Modul 20 Abrechnungen – Seite des Addons (Addon-API 1), Stufe v0.3 „Übersicht & Prognose“.
-   Der Kern lädt diese Datei per import() und ruft die Funktionen mit seiner Panel-Instanz p auf.
-   Daten kommen aus dem Python-Teil über api.call("abrechnung", …); gerechnet wird nur dort (logic.py).
-   Register: Übersicht · Verträge · Zähler & Ablesungen · Abschläge. Rechnungen, Fahrtkosten und Vorräte folgen (v0.5). */
+/* Modul 20 Abrechnungen – Seite des Addons (Addon-API 1), Version 1.0 (stabil).
+   Register: Übersicht · Verträge · Zähler & Ablesungen · Abschläge · Rechnungen · Fahrtkosten · Vorräte.
+   Stufen: v0.1 Grundgerüst · v0.3 Übersicht & Prognose · v0.5 Rechnungen, Fahrtkosten, Vorräte · v0.7 Anbindung Module · v0.9 Sensoren, Energie-Dashboard, Tarifwechsel-Rechner. */
 const ID = "abrechnung";
 
 export default (api) => {
@@ -170,7 +169,8 @@ export default (api) => {
       <div class="mut sm">${mg.price || mg.feed || mg.gas ? `${ic("check", 14)} Von Modul 20 gepflegt: ${[mg.price ? "Strompreis" : "", mg.feed ? "Einspeisevergütung" : "", mg.gas ? "Gasvertrag in Modul 3" : ""].filter(Boolean).join(", ")}.` : ""}${s && s.u && s.u.dyn ? ` Dein Stromvertrag ist dynamisch: Modul 8 lädt weiter nach dem Preis der Stunde von Tibber.` : ""}</div>
       <div class="lsec">${ic("link", 15)}Angebunden</div>${links(p, D)}</div>`;
   };
-  const stages = `<div class="card abnext"><h2>${ic("layers", 18)}So geht es weiter</h2><div class="abst">${[["v0.1", "Grundgerüst", "Verträge, Zähler, Ablesungen, Preisdienst", 1], ["v0.3", "Übersicht & Prognose", "„Bekomme ich Geld zurück?“, Abschläge, Jahreskurve", 1], ["v0.5", "Rechnungen", "Rechnungsprüfung, Fahrtkosten, Vorräte", 1], ["v0.7", "Anbindung Module", "Modul 3 rechnet mit dem Gasvertrag, Modul 8 liefert die Ladungen", 1], ["v0.9", "Feinschliff", "Sensoren, Energie-Dashboard, Tarifwechsel-Rechner", 1], ["v1.0", "Stabil", "Anleitung, README", 0]].map(([v, t, d, on]) => `<div class="${on ? "on" : ""}"><em>${v}</em><b>${t}</b><small>${d}</small></div>`).join("")}</div></div>`;
+  /* v1.0: die Stufenkarte entfällt, die Anleitung steht in der Fußzeile */
+  const DOC = "https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Modul20_Abrechnungen.pdf";
   /* v0.9: Sensoren in Home Assistant und Energie-Dashboard */
   const ENT = "sensor.strom_waerme_abrechnung_";
   const ED = [["preis_strom", "Strom", "Netzbezug", "flash", "flow_from"], ["verguetung_einspeisung", "Einspeisung", "Rückspeisung ins Netz", "sun", "flow_to"], ["preis_gas", "Gas (Zähler in kWh)", "Gasverbrauch", "flame", "gas"], ["preis_gas_m3", "Gas (Zähler in m³)", "Gasverbrauch", "flame", "gas"], ["preis_wasser", "Wasser", "Wasserverbrauch", "water", "water"]];
@@ -187,7 +187,7 @@ export default (api) => {
       <div class="mut sm" style="margin-top:8px">${ic("info", 14)} Außerdem: <b>Erwartetes Ergebnis</b> (gesamt und je Sparte), <b>Nächster Termin</b>, <b>Fahrtkosten</b> je Fahrzeug und <b>Vorrat</b> je Lager – für eigene Karten und Automationen.${D.cards.strom && D.cards.strom.u && D.cards.strom.u.dyn ? " Dynamischer Strom: Der Sensor zeigt den Preis der aktuellen Stunde, den Ø 30 Tage als Merkmal." : ""}</div></div>`;
   };
   const overview = (p, D, s) => { const dc = dynCard(p, D);
-    return `<div class="abgrid">${SPK.map((k) => spCard(p, D, k)).join("")}</div><div class="ab2 w">${curve(p, D, s) || `<div class="card empty">${ic("chart", 30)}<div class="mut sm" style="margin-top:6px">Die Jahreskurve erscheint, sobald ein Vertrag angelegt ist.</div></div>`}${evCard(D)}</div><div class="ab2">${svcCard(p, D)}${dc || haCard(p, D)}</div>${dc ? `<div class="ab2">${haCard(p, D)}${stages}</div>` : stages}`; };
+    return `<div class="abgrid">${SPK.map((k) => spCard(p, D, k)).join("")}</div><div class="ab2 w">${curve(p, D, s) || `<div class="card empty">${ic("chart", 30)}<div class="mut sm" style="margin-top:6px">Die Jahreskurve erscheint, sobald ein Vertrag angelegt ist.</div></div>`}${evCard(D)}</div><div class="ab2">${svcCard(p, D)}<div class="abcol">${dc || ""}${haCard(p, D)}</div></div>`; };
 
   /* ---------- Abschläge (v0.3) ---------- */
   const AST = { plan: "geplant", gebucht: "gebucht", extra: "Sonderzahlung" };
@@ -367,7 +367,7 @@ export default (api) => {
     if (!D) return `<div class="card empty">${s.err ? esc(s.err) : "Lädt …"}</div>`;
     if (!s.deep) { s.deep = true; deep(p, D, s); }
     const body = s.tab === "con" ? contracts(p, D, s) : s.tab === "met" ? meters(p, D, s) : s.tab === "ab" ? payments(p, D, s) : s.tab === "inv" ? invoices(p, D, s) : s.tab === "fk" ? cars(p, D, s) : s.tab === "vr" ? stocks(p, D, s) : overview(p, D, s);
-    return `${hero(p, D)}${tabs(s)}<div class="abpg">${body}</div><div class="stleg abfoot">${ic("package", 14)} Addon · Modul 20 · v${esc((m.ad || {}).version || "")} Build ${(m.ad || {}).build || 1} · Beta · alles bleibt lokal in Home Assistant${p._admin() ? ` · <button class="lnk" data-act="adxa" data-ad="${ID}" data-a="settings">Einstellungen</button>` : ""}</div>`;
+    return `${hero(p, D)}${tabs(s)}<div class="abpg">${body}</div><div class="stleg abfoot">${ic("package", 14)} Addon · Modul 20 · v${esc((m.ad || {}).version || "")} Build ${(m.ad || {}).build || 1} · ${{ dev: "In Entwicklung", beta: "Beta", vorab: "Vorabversion", stabil: "Stabil" }[(m.ad || {}).stage] || "Stabil"} · alles bleibt lokal in Home Assistant · <a class="lnk" href="${DOC}" target="_blank" rel="noopener">Anleitung</a>${p._admin() ? ` · <button class="lnk" data-act="adxa" data-ad="${ID}" data-a="settings">Einstellungen</button>` : ""}</div>`;
   };
 
   /* ---------- Fenster ---------- */
@@ -589,16 +589,31 @@ export default (api) => {
         <div class="foot2" style="margin-top:14px">${btn("close2", "", "Schließen")}${btn("swcalc", "chart", "Berechnen", { pri: 1 })}</div>`, true);
     }
     if (m.k === "set") {
-      const o = D.opts, svc = D.notify_svc || [], td = D.todos || [];
-      return wrap(hd("Einstellungen · Modul 20", "Abrechnungen · gilt für alle Nutzer") + `<div class="lsec">${ic("bell", 15)}Mitteilungen ans Handy <span class="mut sm">· Stichtag, NFC-Tag, Mindestbestand</span></div>
-        <div class="gschips">${svc.map((n) => chip("snot", "notify." + n, n.replace(/^mobile_app_/, "Handy "), (m.f.notify || []).includes("notify." + n))).join("") || `<span class="mut sm">Kein Mitteilungsdienst gefunden (Home-Assistant-App einrichten).</span>`}</div>
-        <div class="vrow"><span>Erinnerung am Stichtag<small class="mut" style="display:block">Für Zähler ohne Sensor: Mitteilung mit Link direkt in die Eingabe.</small></span><button class="sw ${m.f.rem ? "on" : ""}" data-act="adxa" data-ad="${ID}" data-a="srem" aria-pressed="${!!m.f.rem}" aria-label="Erinnerung am Stichtag"></button></div>
-        <div class="abfs">${inp("tage", "Tage vor dem Stichtag", m.f.tage, { num: 1, ph: "0 = am Stichtag" })}${inp("tol", "Toleranz Rechnungsprüfung", m.f.tol, { num: 1, unit: "%" })}</div>
-        <div class="lsec">${ic("list", 15)}To-do-Liste für „nachkaufen“</div><div class="gschips">${chip("stodo", "", "keine", !m.f.todo)}${td.map((e) => chip("stodo", e, e.replace("todo.", ""), m.f.todo === e)).join("")}</div>
-        <div class="vrow"><span>Sensoren in Home Assistant<small class="mut" style="display:block">Preise fürs Energie-Dashboard, erwartetes Ergebnis, nächster Termin, Fahrtkosten und Vorräte als sensor.strom_waerme_abrechnung_…</small></span><button class="sw ${m.f.sens ? "on" : ""}" data-act="adxa" data-ad="${ID}" data-a="ssens" aria-pressed="${!!m.f.sens}" aria-label="Sensoren in Home Assistant"></button></div>
-        <div class="lsec">${ic("sun", 15)}Solarstrom beim Laden zuhause <span class="mut sm">· Ladungen aus Modul 8</span></div><div class="gschips">${[["null", "kostenlos"], ["einsp", "entgangene Vergütung"], ["vertrag", "Bezugspreis"]].map(([k, l]) => chip("ssol", k, l, m.f.solar === k)).join("")}</div>
+      /* v1.0: Einstellungen wie die Module im Kern – in den Haupt-Einstellungen geöffnet, ohne Modul 20 zu verlassen */
+      if (!m.f || !D) return wrap(hd("Abrechnungen", "Modul 20 · Addon · gilt für alle Nutzer") + `<div class="mut sm" style="padding:18px 0">${s.err ? esc(s.err) : "Wird geladen …"}</div>`, true);
+      const svc = D.notify_svc || [], td = D.todos || [], dyn = !!(D.cards.strom && D.cards.strom.u && D.cards.strom.u.dyn), vg = D.opts.vgl;
+      const sw = (a, on, l, sub) => `<div class="vrow"><span>${l}${sub ? `<small class="mut" style="display:block">${sub}</small>` : ""}</span><button class="sw ${on ? "on" : ""}" data-act="adxa" data-ad="${ID}" data-a="${a}" aria-pressed="${!!on}" aria-label="${esc(l)}"></button></div>`;
+      const go = (t, i, l, sub) => `<button class="stck abgo" data-act="adxa" data-ad="${ID}" data-a="sgo" data-k="${t}">${ic(i, 18)}<span class="sxt"><b>${l}</b><small>${sub}</small></span><span class="stgo">Öffnen ${ic("chev", 14)}</span></button>`;
+      const nC = D.contracts.length, nM = D.meters.length, nF = (D.fahrzeuge || []).length, nV = (D.vorraete || []).length;
+      return wrap(hd("Abrechnungen", `Modul 20 · v${esc((((p._adState && p._adState().addons) || []).find((x) => x.id === ID) || {}).version || "")} · Addon · gilt für alle Nutzer`) + `
+        <div class="lsec">${ic("link", 15)}Preise und Anbindung</div>
+        ${sw("smir", m.f.mirror, "Vertragspreis an die Module geben", "Fester Strompreis und Einspeisevergütung in die Haus-Werte, der Gasvertrag in Modul 3. Aus: Der Stand von vorher kommt zurück.")}
+        ${sw("ssens", m.f.sens, "Sensoren in Home Assistant", "Preise fürs Energie-Dashboard, erwartetes Ergebnis, nächster Termin, Fahrtkosten und Vorräte als sensor.strom_waerme_abrechnung_…")}
+        ${dyn ? `<div class="vrow"><span>Vergleichspreis für den dynamischen Tarif<small class="mut" style="display:block">${vg ? `${esc(vg.name || "Fester Preis")} · ${num(vg.ap, 2)} ct/kWh · ${num(vg.gp, 2)} €/Monat` : "Noch keiner – dann gibt es keinen Vergleich dynamisch gegen fest."}</small></span><span class="abvb">${btn("vgl", "pencil", vg ? "Ändern" : "Festlegen")}</span></div>` : ""}
+        <div class="lsec">${ic("sun", 15)}Solarstrom beim Laden zuhause</div><div class="mut sm" style="margin:0 0 6px">Wie der Solaranteil der Ladungen aus Modul 8 in die Fahrtkosten eingeht.</div><div class="gschips">${[["null", "kostenlos"], ["einsp", "entgangene Vergütung"], ["vertrag", "Bezugspreis"]].map(([k, l]) => chip("ssol", k, l, m.f.solar === k)).join("")}</div>
         <div class="mut sm" style="margin:4px 0 0">${{ null: "Sonne vom Dach zählt mit 0 € – die Fahrtkosten zeigen nur, was du wirklich bezahlst.", einsp: "Was du fürs Einspeisen bekommen hättest – ehrlichste Rechnung, wenn du sonst einspeisen würdest.", vertrag: "Als hättest du den Strom gekauft – zeigt, was das Auto ohne Solaranlage kosten würde." }[m.f.solar]}</div>
-        <div class="lsec">${ic("chart", 15)}Jahresverbrauch <span class="mut sm">· für die Hochrechnung, solange Ablesungen fehlen</span></div><div class="abfs">${inp("v_strom", "Strom", m.f.v_strom, { num: 1, unit: "kWh" })}${inp("v_gas", "Gas", m.f.v_gas, { num: 1, unit: "kWh" })}${inp("v_wasser", "Wasser", m.f.v_wasser, { num: 1, unit: "m³" })}${inp("v_einspeisung", "Einspeisung", m.f.v_einspeisung, { num: 1, unit: "kWh" })}</div>
+        <div class="lsec">${ic("bell", 15)}Mitteilungen und Erinnerungen</div>
+        <div class="mut sm" style="margin:0 0 6px">Ans Handy: Stichtag zum Ablesen, NFC-Tag, Mindestbestand bei Vorräten.</div>
+        <div class="gschips">${svc.map((n) => chip("snot", "notify." + n, n.replace(/^mobile_app_/, "Handy "), (m.f.notify || []).includes("notify." + n))).join("") || `<span class="mut sm">Kein Mitteilungsdienst gefunden (Home-Assistant-App einrichten).</span>`}</div>
+        ${sw("srem", m.f.rem, "Erinnerung am Stichtag", "Für Zähler ohne Sensor: Mitteilung mit Link direkt in die Eingabe.")}
+        ${m.f.rem ? `<div class="abfs one">${inp("tage", "Tage vor dem Stichtag", m.f.tage, { num: 1, ph: "0 = am Stichtag" })}</div>` : ""}
+        <div class="mut sm" style="margin:8px 0 6px">To-do-Liste für „nachkaufen“</div><div class="gschips">${chip("stodo", "", "keine", !m.f.todo)}${td.map((e) => chip("stodo", e, e.replace("todo.", ""), m.f.todo === e)).join("")}</div>
+        <div class="lsec">${ic("chart", 15)}Hochrechnung und Rechnungsprüfung</div>
+        <div class="mut sm" style="margin:0 0 6px">Jahresverbrauch gilt, solange Ablesungen fehlen. Die Toleranz bestimmt, ab wann der Verbrauch einer Rechnung markiert wird.</div>
+        <div class="abfs">${inp("v_strom", "Strom", m.f.v_strom, { num: 1, unit: "kWh" })}${inp("v_gas", "Gas", m.f.v_gas, { num: 1, unit: "kWh" })}${inp("v_wasser", "Wasser", m.f.v_wasser, { num: 1, unit: "m³" })}${inp("v_einspeisung", "Einspeisung", m.f.v_einspeisung, { num: 1, unit: "kWh" })}${inp("tol", "Toleranz Rechnungsprüfung", m.f.tol, { num: 1, unit: "%" })}</div>
+        <div class="lsec">${ic("list", 15)}Daten</div>
+        <div class="abgos">${go("con", "euro", "Verträge", `${nC} ${nC === 1 ? "Vertrag" : "Verträge"} · Preise, Abschlag, Fristen`)}${go("met", "gauge", "Zähler & Ablesungen", `${nM} ${nM === 1 ? "Zähler" : "Zähler"} · Sensor, Ablesungen, Tausch`)}${go("fk", "car", "Fahrtkosten", `${nF} ${nF === 1 ? "Fahrzeug" : "Fahrzeuge"} · Modul 8, Fixkosten`)}${go("vr", "package", "Vorräte", `${nV} ${nV === 1 ? "Lager" : "Lager"} · Mindestbestand, Füllstand`)}</div>
+        <div class="mut sm" style="margin-top:8px">${ic("book", 14)} <a class="lnk" href="${DOC}" target="_blank" rel="noopener">Anleitung zu Modul 20 (PDF)</a></div>
         <div class="foot2" style="margin-top:14px">${btn("close2", "", "Abbrechen")}${btn("ssave", "check", "Speichern", { pri: 1 })}</div>`, true);
     }
     if (m.k === "inv") {
@@ -674,8 +689,14 @@ export default (api) => {
   const abHint = (D, m) => { m.abHint = ""; };
   const actFn = (p, a, el) => {
     const s = S(p), D = s.d, k = el.dataset.k, v = el.dataset.v, adm = p._admin();
-    if (a === "settings") { p._mdActiveSet && p._mdActiveSet(ID); p._render(); if (!D || !adm) { s.tab = "ov"; p._modal = null; p._renderModal(); return; } const o = D.opts, vb = o.verbrauch;
-      p._modal = { type: "adx", id: ID, k: "set", f: { notify: [...o.notify], rem: o.remind.on, tage: String(o.remind.tage), tol: num(o.tol, 1), todo: o.todo, solar: o.solar || "einsp", sens: o.sensoren !== false, v_strom: num(vb.strom, 0), v_gas: num(vb.gas, 0), v_wasser: num(vb.wasser, 0), v_einspeisung: num(vb.einspeisung, 0) } }; p._renderModal(); return; }
+    if (a === "settings") {
+      /* Aus den Haupt-Einstellungen: dort bleiben. Aus Modul 20 (Fußzeile, Deep-Link): Seite bleibt Modul 20. */
+      if (!p._stOpen && p._mdActiveSet) { p._mdActiveSet(ID); p._render(); }
+      if (!adm) { p._toast("Die Einstellungen ändert ein Administrator"); return; }
+      const fill = (X) => { const o = X.opts, vb = o.verbrauch; return { mirror: !!o.mirror, notify: [...o.notify], rem: o.remind.on, tage: String(o.remind.tage), tol: num(o.tol, 1), todo: o.todo, solar: o.solar || "einsp", sens: o.sensoren !== false, v_strom: num(vb.strom, 0), v_gas: num(vb.gas, 0), v_wasser: num(vb.wasser, 0), v_einspeisung: num(vb.einspeisung, 0) }; };
+      p._modal = { type: "adx", id: ID, k: "set", f: D ? fill(D) : null }; p._renderModal();
+      if (!D) api.call(ID, "get", {}).then((d) => { s.d = d; s.ts = Date.now(); s.err = ""; if (p._modal && p._modal.k === "set") { p._modal.f = fill(d); p._renderModal(); } }).catch((e) => { s.err = (e && e.message) || "Keine Antwort"; p._renderModal(); });
+      return; }
     if (a === "isel") { s.iid = k; p._render(); return; }
     if (a === "fkp") { s.fkp = k; p._render(); return; }
     if (a === "tab") { s.tab = k; p._render(); return; }
@@ -760,6 +781,8 @@ export default (api) => {
     if (a === "vgldel") { send(p, "vgl", { vgl: {} }, "Vergleich ausgeschaltet"); return; }
     /* Einstellungen */
     if (a === "snot") { const L = m.f.notify || []; m.f.notify = L.includes(k) ? L.filter((x) => x !== k) : [...L, k]; p._renderModal(); return; }
+    if (a === "smir") { m.f.mirror = !m.f.mirror; p._renderModal(); return; }
+    if (a === "sgo") { p._modal = null; p._renderModal(); if (p._stOpen) p._stOpen = false; s.tab = k; p._mdActiveSet && p._mdActiveSet(ID); p._render(); const sc = p._scroller && p._scroller(); if (sc) sc.scrollTop = 0; return; }
     if (a === "srem") { m.f.rem = !m.f.rem; p._renderModal(); return; }
     if (a === "stodo") { m.f.todo = k; p._renderModal(); return; }
     if (a === "ssens") { m.f.sens = !m.f.sens; p._renderModal(); return; }
@@ -768,7 +791,7 @@ export default (api) => {
     if (a === "swcalc") { const f = m.f; api.call(ID, "switch", { cid: f.cid, menge: pn(f.menge) || 0, offer: { name: f.name, ap: pn(f.ap), gp: pn(f.gp) || 0, bonus: pn(f.bonus) || 0, laufzeit: pn(f.laufzeit) || 0, garantie: pn(f.garantie) || 0 } })
       .then((r) => { m.res = r.res; m.err = ""; p._renderModal(); }).catch((e) => { m.err = (e && e.message) || "Fehler"; m.res = null; p._renderModal(); }); return; }
     if (a === "ssol") { m.f.solar = k; p._renderModal(); return; }
-    if (a === "ssave") { const f = m.f; send(p, "opts", { opts: { notify: f.notify, remind: { on: !!f.rem, tage: pn(f.tage) || 0 }, tol: pn(f.tol) || 2, todo: f.todo || "", solar: f.solar, sensoren: !!f.sens, verbrauch: { strom: pn(f.v_strom), gas: pn(f.v_gas), wasser: pn(f.v_wasser), einspeisung: pn(f.v_einspeisung) } } }, "Einstellungen gespeichert"); return; }
+    if (a === "ssave") { const f = m.f; send(p, "opts", { opts: { mirror: !!f.mirror, notify: f.notify, remind: { on: !!f.rem, tage: pn(f.tage) || 0 }, tol: pn(f.tol) || 2, todo: f.todo || "", solar: f.solar, sensoren: !!f.sens, verbrauch: { strom: pn(f.v_strom), gas: pn(f.v_gas), wasser: pn(f.v_wasser), einspeisung: pn(f.v_einspeisung) } } }, "Einstellungen gespeichert"); return; }
     /* Rechnungen */
     if (a === "invnew") { const c = D.contracts.find((x) => x.aktiv && x.sparte !== "einspeisung") || D.contracts[0]; p._modal = { type: "adx", id: ID, k: "inv", f: invDefaults(D, c) }; abHint(D, p._modal); p._renderModal(); return; }
     if (a === "icon") { m.f = { ...invDefaults(D, C(D, k)), id: m.f.id }; abHint(D, m); p._renderModal(); return; }
@@ -857,6 +880,8 @@ export default (api) => {
 .abev{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}.abev:first-of-type{border-top:0}.abei{color:var(--mut);display:flex}.abev.wa .abei,.abev.wa .abed b{color:#f59e0b}.abev.ok .abed b{color:#34d399}
 .abet b,.abed b{display:block;font-size:.9rem}.abet small,.abed small{color:var(--mut);font-size:.76rem}.abed{text-align:right;white-space:nowrap}
 .absrc{font-style:normal;font-size:.68rem;font-weight:700;margin-left:8px;padding:1px 7px;border-radius:6px;background:var(--line);color:var(--mut)}.absrc.m{background:color-mix(in srgb,#f5c451 22%,transparent);color:#f5c451}
+.abcol{display:grid;gap:12px;align-content:start;min-width:0}.abcol>.card{margin:0}
+.abgos{display:grid;gap:6px}.abvb{flex:none}.abvb .btn2{width:auto;padding:8px 14px}.abgo{width:100%;border:1px solid var(--line);border-radius:12px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px}.abgo .sxt{flex:1;min-width:0;display:flex;flex-direction:column}.abgo small{color:var(--mut);font-size:.78rem}.abgo .stgo{color:var(--mut);font-size:.8rem;display:inline-flex;align-items:center;gap:2px}
 .abln{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.abln>span{flex:1;min-width:0}.abln b{display:block;font-size:.88rem}.abln small{color:var(--mut);font-size:.76rem}
 .abln em{font-style:normal;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:7px;background:var(--line);color:var(--mut)}.abln.on em{background:color-mix(in srgb,#34d399 20%,transparent);color:#34d399}
 .abent{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.68rem!important;overflow-wrap:anywhere}.abenv{font-style:normal;font-weight:600;color:var(--mut);font-size:.8rem;margin-left:6px}
@@ -864,6 +889,7 @@ export default (api) => {
 .abswr.lohnt .abswv{background:color-mix(in srgb,#34d399 16%,transparent);color:#34d399}.abswr.bonus .abswv{background:color-mix(in srgb,#f59e0b 16%,transparent);color:#f59e0b}.abswv span{color:var(--primary-text-color)}
 @media (prefers-reduced-motion:reduce){.absc *,.abrm *,.abpg *{animation:none!important;transition:none!important}}
 .absrch{margin:10px 0 0;font-size:.78rem;font-weight:400;align-items:flex-start;line-height:1.4}.absrch svg{flex:none;margin-top:2px}
+.abdoc{display:flex!important;width:100%;justify-content:center;margin-top:10px;text-decoration:none}.abst>div.on em{display:inline-flex;color:#f5c451}
 .abst{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.abst>div{border:1px solid var(--line);border-radius:14px;padding:10px 12px;opacity:.6}.abst>div.on{opacity:1;border-color:#f5c451}.abst em{font-style:normal;font-size:.7rem;font-weight:800;color:#f5c451}.abst b{display:block;font-size:.9rem}.abst small{color:var(--mut);font-size:.74rem}@media(max-width:700px){.abst{grid-template-columns:1fr 1fr}}
 .abcon{display:grid;grid-template-columns:260px minmax(0,1fr);gap:12px;align-items:start}@media(max-width:860px){.abcon{grid-template-columns:1fr}.ablist{flex-direction:row!important;overflow-x:auto}.abli{flex:none;min-width:200px}}
 .ablist{display:flex;flex-direction:column;gap:8px}.abli{all:unset;box-sizing:border-box;display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line);cursor:pointer}.abli.sel{border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}.abli.off{opacity:.6}.abli b{display:block;font-size:.92rem}.abli small{color:var(--mut);font-size:.74rem}.abli.add{border-style:dashed;color:var(--mut);justify-content:center}
@@ -927,7 +953,7 @@ export default (api) => {
 .abtabs button.on{background:#f5c451}.abli em{margin-left:auto;font-style:normal;font-weight:800;text-align:right;white-space:nowrap}.abli em small{display:block;font-weight:500;color:var(--mut);font-size:.7rem}.abli em.ok{color:#34d399}.abli em.wa{color:#f59e0b}.abli i.abwa{font-style:normal}
 .abwa{color:#f59e0b}.abok{color:#34d399}.abna{color:var(--mut);text-align:center}.abprs{display:flex;flex-direction:column}.abpr{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line);font-size:.88rem}.abpr:first-child{border-top:0}.abpr b{font-size:.84rem;white-space:nowrap}.abpr b.ok{color:#34d399}.abpr b.wa{color:#f59e0b}.abpr b.mut{color:var(--mut)}
 .abdet .abk3{margin:4px 0 6px}.mut b.tx{color:var(--primary-text-color)}.mut b.hl{color:#f5c451}.abln{margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:10px 12px}.abln .abbh small{color:#34d399}.abcb{display:flex;gap:9px;align-items:center;padding:5px 0;font-size:.88rem;cursor:pointer}.abcb input{width:18px;height:18px;accent-color:#f5c451}
-.abdb{display:flex;gap:6px}@media(max-width:560px){.abdh{flex-wrap:wrap}.abdh>div{flex:1 1 calc(100% - 64px)}.abdb{width:100%}.abdb .btn2{flex:1;justify-content:center}.abdh b{font-size:1.08rem}}.abfile{display:flex;gap:10px;align-items:center;padding:12px 14px;border:1px dashed var(--line);border-radius:14px;cursor:pointer;color:var(--mut);font-size:.88rem}.abfile input{position:absolute;opacity:0;width:1px;height:1px}.abfile:hover{border-color:#f5c451;color:var(--primary-text-color)}
+.abdb{display:flex;gap:6px;flex:none}.abdb .btn2{white-space:nowrap}@media(max-width:560px){.abdh{flex-wrap:wrap}.abdh>div{flex:1 1 calc(100% - 64px)}.abdb{width:100%}.abdb .btn2{flex:1;justify-content:center}.abdh b{font-size:1.08rem}}.abfile{display:flex;gap:10px;align-items:center;padding:12px 14px;border:1px dashed var(--line);border-radius:14px;cursor:pointer;color:var(--mut);font-size:.88rem}.abfile input{position:absolute;opacity:0;width:1px;height:1px}.abfile:hover{border-color:#f5c451;color:var(--primary-text-color)}
 .abfkh{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.abfkh .gschips{margin:0}.abfkh .gbtns{margin:0;display:flex;gap:8px;flex-wrap:wrap}.abfkh .gbtns .btn2{flex:none;white-space:nowrap;padding:9px 14px}.abfkh .btn2{display:inline-flex;gap:6px;align-items:center}.abfkh .btn2.pri{background:#f5c451;border-color:#f5c451;color:#2a1d02}
 .abcar .abch{margin-bottom:6px}.abcar .abch>div:nth-child(2){flex:1;min-width:0}.abbig{text-align:right}.abbig b{display:block;font-size:1.75rem;font-weight:800;color:var(--c);letter-spacing:-.02em}.abbig small{color:var(--mut);font-size:.74rem}
 .abr2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}.abr2 .abr:nth-child(2){border-top:0}.abseg{display:flex;height:11px;border-radius:99px;overflow:hidden;margin:10px 0 6px;background:var(--line)}.abspk{width:100%;height:40px;margin-top:8px;display:block}
@@ -951,6 +977,6 @@ export default (api) => {
     { id: "vorrat", t: "Abrechnungen: Vorräte", k: "vorrat vorräte heizöl pellets flüssiggas brennholz salz einkauf bestand mindestbestand nachkaufen reichweite", h: "Bestand, Reichweite, Einkäufe und Mindestbestand." },
     { id: "abschlag", t: "Abrechnungen: Abschläge und Hochrechnung", k: "abschlag abschläge guthaben nachzahlung hochrechnung prognose empfehlung zahlung buchen dynamisch fest vergleich tibber", h: "Reicht der Abschlag? Hochrechnung, Empfehlung und gebuchte Zahlungen." },
   ];
-  return { id: ID, page, modal, act: actFn, change, input, css, art, settings: true, settingsTxt: "Verträge, Preise, Zähler, Ablesungen", search,
+  return { id: ID, page, modal, act: actFn, change, input, css, art, settings: true, settingsTxt: "Preise an die Module, Sensoren, Solarstrom, Erinnerungen, Hochrechnung", search,
     icons: { euro: '<circle cx="12" cy="12" r="8.5"/><path d="M15 8.8a4 4 0 1 0 0 6.4M7.5 11h5.5M7.5 13.5h5"/>' } };
 };

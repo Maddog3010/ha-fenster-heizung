@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b29] - 2026-11-20
+
+**Modul 20 · Abrechnungen** (Addon) **v1.0 – Stabil.** Alle Stufen aus dem Konzept sind drin.
+
+### Neu
+- **Modul 20 ist stabil (v1.0).** Die Fußzeile zeigt die Stufe und verlinkt die neue **Anleitung** ([PDF, 11 Seiten](docs/Anleitung_Modul20_Abrechnungen.pdf)): Einrichten in vier Schritten, jedes Register, Sensoren und Energie-Dashboard, Einstellungen und häufige Fragen.
+- **Einstellungen in den Haupt-Einstellungen:** Einstellungen → Module → Abrechnungen öffnet die Einstellungen direkt dort, ohne zu Modul 20 zu wechseln. Neu geordnet in „Preise und Anbindung“ (Vertragspreis an die Module, Sensoren, Vergleichspreis, Solarstrom), „Mitteilungen und Erinnerungen“, „Hochrechnung und Rechnungsprüfung“ und „Daten“ mit Sprung zu Verträgen, Zählern, Fahrtkosten und Vorräten.
+- **Addons, die mit der Integration kommen** (Müllabfuhr, Licht, Abrechnungen …): Nach einem Update übernimmt der Addon-Store die neue Version beim Start selbst, statt „Update verfügbar“ anzuzeigen, obwohl sie schon läuft. Im Diagnose-Protokoll steht „… mit der Integration von v0.9 auf v1.0 aktualisiert“.
+
+### Geändert
+- Modul 20: „So geht es weiter“ entfällt; die Übersicht stapelt „Dynamisch oder fest?“ und „Home Assistant & Energie-Dashboard“ rechts.
+- README: Modul 20 als Stabil 1.0 mit Link zur Anleitung.
+
+### Behoben
+- Modul 20: Knöpfe im Vertragskopf („Tarif vergleichen“, „Bearbeiten“) brechen nicht mehr um.
+
 ## [2026.11.4b28] - 2026-11-19
 
 **Modul 20 · Abrechnungen** (Addon) v0.9 Build 1: „Feinschliff“ – Sensoren, Energie-Dashboard, Tarifwechsel-Rechner.

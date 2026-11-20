@@ -137,13 +137,25 @@ class AddonManager:
         await self.async_rescan()
         for aid, st in list(self.inst.items()):
             if not st.get("paused") and aid in self.avail:
-                await self._load(aid)
+                if await self._load(aid):
+                    self._adopt_bundled(aid)
         await self._migrate_labs()
         from homeassistant.helpers.event import async_call_later, async_track_time_interval
         from datetime import timedelta
 
         self._unsubs.append(async_call_later(self.hass, CHECK_FIRST, self._check_cb))
         self._unsubs.append(async_track_time_interval(self.hass, self._check_cb, timedelta(seconds=CHECK_EVERY)))
+
+    def _adopt_bundled(self, aid: str) -> None:
+        """Mitgeliefertes Addon kam mit einem Integrations-Update in neuerer Version und läuft schon (beim Start werden die Dateien
+        aus addons/ geladen). Dann die neue Version eintragen, statt ein Update anzuzeigen, das nur noch neu starten würde."""
+        m, st = self.avail.get(aid), self.inst.get(aid)
+        if not m or not st or m.get("src") != "bundled" or aid not in self.live or not self._newer(m, st):
+            return
+        old = f"{st.get('v')} Build {st.get('b') or 1}"
+        st.update(v=m["version"], b=m["build"], src="bundled")
+        self._save()
+        diag_log(self.hass, "info", f"{m.get('name') or aid}: mit der Integration von v{old} auf v{m['version']} Build {m['build']} aktualisiert")
 
     async def _migrate_labs(self) -> None:
         """Frühere Labs (Müllabfuhr, Licht) einmal als Addon installieren und das Lab ausschalten. Daten bleiben, wo sie waren."""

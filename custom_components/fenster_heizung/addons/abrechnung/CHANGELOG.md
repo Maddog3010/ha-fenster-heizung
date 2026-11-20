@@ -1,5 +1,13 @@
 # Modul 20 Abrechnungen
 
+## 1.0 Build 1 – 2026-11-20 (Stabil)
+Modul 20 ist fertig: alle Stufen aus dem Konzept sind drin.
+- Stufe „Stabil“, die Fußzeile zeigt die Stufe aus dem Steckbrief
+- „So geht es weiter“ entfällt; die Anleitung (PDF, 11 Seiten, docs/Anleitung_Modul20_Abrechnungen.pdf) ist über die Fußzeile erreichbar
+- Helle Ansicht durchgesehen: alle sieben Register lesbar
+- **Einstellungen in den Haupt-Einstellungen:** Einstellungen → Module → Abrechnungen öffnet die Einstellungen direkt dort, ohne zu Modul 20 zu wechseln (lädt die Daten bei Bedarf nach). Neu geordnet in „Preise und Anbindung“ (Vertragspreis an die Module, Sensoren, Vergleichspreis, Solarstrom), „Mitteilungen und Erinnerungen“, „Hochrechnung und Rechnungsprüfung“ und „Daten“ mit Sprung zu Verträgen, Zählern, Fahrtkosten und Vorräten
+- Knöpfe im Vertragskopf („Tarif vergleichen“, „Bearbeiten“) brechen nicht mehr um
+
 ## 0.9 Build 1 – 2026-11-19 (Beta)
 Fünfte Stufe aus dem Konzept: „Feinschliff“.
 - **Sensoren in Home Assistant** (sensor.strom_waerme_abrechnung_…, Gerät „Strom & Wärme · Abrechnungen“): Strompreis, Gaspreis (je kWh und je m³), Wasserpreis und Einspeisevergütung in €/kWh bzw. €/m³ – passend fürs Energie-Dashboard („Entität mit dem aktuellen Preis“). Dazu erwartetes Ergebnis gesamt und je Sparte (mit Bandbreite und empfohlenem Abschlag als Merkmale), nächster Termin, Fahrtkosten je Fahrzeug (€ je 100 km) und Vorrat je Lager (Bestand, reicht bis, bestellen bis). In den Einstellungen abschaltbar.

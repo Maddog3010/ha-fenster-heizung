@@ -6,9 +6,9 @@
   "icon": "euro",
   "tag": "Verträge, Preise, Zähler und Ablesungen für Strom, Gas und Wasser",
   "desc": "Ein Ort für alles Vertragliche: Verträge mit allen Preis-Bestandteilen, Zähler mit geprüften Ablesungen, Hochrechnung mit Bandbreite, Abschläge mit Empfehlung, Rechnungen mit Prüfung und Beleg, Fahrtkosten für Elektroautos und Verbrenner, Vorräte mit Einkauf und Reichweite. Der Vertragspreis geht über den Preisdienst an die anderen Module.",
-  "version": "0.9",
+  "version": "1.0",
   "build": 1,
-  "stage": "beta",
+  "stage": "stabil",
   "api": 1,
   "core_min": "2026.11.3b20",
   "needs": {
