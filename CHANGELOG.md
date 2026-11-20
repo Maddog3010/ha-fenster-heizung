@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b34] - 2026-11-20
+
+**Modul 20 · Abrechnungen** (Addon) v1.5 Build 1 – Einspeisung mit Abschlägen und Balkonkraftwerk.
+
+### Neu
+- **Einspeisung mit Abschlägen:** Beim Einspeisevertrag lässt sich eintragen, was der Netzbetreiber überweist – fester Betrag monatlich, je Quartal oder **jeden Monat anders**. Bei wechselnden Beträgen trägst du je Monat den Eingang ein; künftige Monate schätzt Modul 20 aus der Vergütung des Monats und der bisherigen Auszahlungsquote. Daraus die Hochrechnung, ob mit der Abrechnung eine **Nachzahlung an dich** oder eine **Rückzahlung** kommt (mit Bandbreite) – auf der Einspeise-Karte, im Banner (Ring „ausgezahlt“, große Zahl), im Register Abschläge (erhalten statt bezahlt) und im Sensor „Ergebnis Einspeisung“.
+- **Balkonkraftwerk am selben Zähler:** Im Einspeisevertrag unter „Anlagen an diesem Zähler“ Hauptanlage und Balkonkraftwerk mit Modulleistung eintragen und wählen, wie der Netzbetreiber rechnet: **Mischsatz nach Leistung** (§ 24 Abs. 3 EEG, Verhältnis der installierten Modulleistung, Steckersolargerät meist unentgeltlich) oder **fester Abzug in kWh je Jahr** laut Abrechnung. Vertrag, Karte, Jahreskurve und Hochrechnung rechnen damit.
+
+### Behoben
+- Einspeisung: Jahreskurve und Monatswerte heißen „Vergütung“ statt „Kosten“.
+
 ## [2026.11.4b33] - 2026-11-20
 
 **Modul 20 · Abrechnungen** (Addon) v1.4 Build 1.

@@ -128,12 +128,39 @@ def clean_contract(raw: Any) -> dict[str, Any] | None:
         "beginn": _d(r.get("beginn")), "ende": _d(r.get("ende")), "erst": _d(r.get("erst")), "verl": int(_f(r.get("verl"), 0, 36, 0)), "frist": int(_f(r.get("frist"), 0, 52, 0)),
         "garantie": _d(r.get("garantie")), "bonus": _f(r.get("bonus"), 0, 2000, 0.0), "abr": abr if re.fullmatch(r"\d{2}-\d{2}", abr) else "01-01",
         "zahl": r.get("zahl") if r.get("zahl") in ("jahr", "quartal", "monat") else "jahr",
-        "abschlag": {"betrag": _f(ab.get("betrag"), 0, 5000, 0.0), "rhythmus": ab.get("rhythmus") if ab.get("rhythmus") in ("monat", "quartal") else "monat", "tag": int(_f(ab.get("tag"), 1, 28, 1))},
+        "abschlag": {"betrag": _f(ab.get("betrag"), 0, 5000, 0.0), "rhythmus": ab.get("rhythmus") if ab.get("rhythmus") in ("monat", "quartal") or (ab.get("rhythmus") == "var" and sp == "einspeisung") else "monat", "tag": int(_f(ab.get("tag"), 1, 28, 1))},
         "brennwert": _f(r.get("brennwert"), 5, 40, DEF_BRENNWERT), "zustand": _f(r.get("zustand"), 0.5, 1.2, DEF_ZUSTAND),
         "meters": [m for m in r.get("meters") or [] if isinstance(m, str) and _ID.match(m)][:6], "periods": periods,
         "abplan": clean_abplan(r.get("abplan")), "zahlungen": clean_pays(r.get("zahlungen")),
         "rechnungen": sorted((x for x in (clean_invoice(y) for y in r.get("rechnungen") or []) if x), key=lambda x: x["bis"])[-30:],
+        **({"anlagen": clean_anlagen(r.get("anlagen"))} if sp == "einspeisung" else {}),
     }
+
+
+def clean_anlagen(raw: Any) -> dict[str, Any]:
+    """Einspeisung: mehrere Anlagen hinter demselben Zähler (z. B. Dachanlage + Balkonkraftwerk). kwp = installierte Modulleistung,
+    ct = Vergütung der weiteren Anlage (0 = unentgeltliche Abnahme, wie bei Steckersolargeräten üblich)."""
+    r = raw if isinstance(raw, dict) else {}
+    w = []
+    for x in (r.get("weitere") if isinstance(r.get("weitere"), list) else [])[:4]:
+        x = x if isinstance(x, dict) else {}
+        k = _f(x.get("kwp"), 0, 100, 0.0)
+        if k > 0:
+            w.append({"name": _t(x.get("name"), 30) or "Balkonkraftwerk", "kwp": round(k, 3), "ct": _f(x.get("ct"), 0, 50, 0.0)})
+    return {"kwp": round(_f(r.get("kwp"), 0, 1000, 0.0), 3), "weitere": w, "modus": "kwh" if r.get("modus") == "kwh" else "mix",
+            "abzug_kwh": round(_f(r.get("abzug_kwh"), 0, 100000, 0.0), 1)}
+
+
+def mix_rate(c: dict[str, Any], ct: float) -> tuple[float, dict[str, Any] | None]:
+    """§ 24 Abs. 3 EEG: Speisen Anlagen mit unterschiedlicher Vergütung über denselben Zähler ein, gilt für die gemessene Einspeisung
+    ein Mischsatz im Verhältnis der installierten Modulleistung (Bundesnetzagentur, Steckersolargeräte)."""
+    a = c.get("anlagen") or {}
+    w = a.get("weitere") or []
+    if c.get("sparte") != "einspeisung" or not w or not a.get("kwp") or a.get("modus") == "kwh":
+        return ct, None
+    tot = a["kwp"] + sum(x["kwp"] for x in w)
+    mix = ct * a["kwp"] / tot + sum(x["kwp"] * x["ct"] for x in w) / tot
+    return mix, {"satz": round(ct, 4), "mix": round(mix, 4), "anteil": round(a["kwp"] / tot * 100, 1), "abzug": round(ct - mix, 4), "kwp": a["kwp"], "weitere": w, "summe_kwp": round(tot, 3)}
 
 
 def clean_abplan(raw: Any) -> list[dict[str, Any]]:
@@ -277,7 +304,10 @@ def unit_price(c: dict[str, Any], day: date, dyn_ct: float | None = None) -> dic
         ct = None if dyn_ct is None else dyn_ct + _g(p["auf"], p)
     else:
         ct = _g(p["ap"], p)
-    out = {"ct": None if ct is None else round(ct, 4), "unit": "kWh", "grund": round(_g(p["gp"] + p["mess"], p), 4), "jahr": 0.0, "dyn": dyn, "ab": p["ab"]}
+    mx = None
+    if ct is not None and c["sparte"] == "einspeisung":
+        ct, mx = mix_rate(c, ct)
+    out = {"ct": None if ct is None else round(ct, 4), "unit": "kWh", "grund": round(_g(p["gp"] + p["mess"], p), 4), "jahr": 0.0, "dyn": dyn, "ab": p["ab"], **({"mix": mx} if mx else {})}
     if c["sparte"] == "gas" and ct is not None:
         out["ct_m3"] = round(ct * gas_factor(c), 4)
     return out
@@ -625,8 +655,8 @@ def abschlag_at(c: dict[str, Any], day: date) -> dict[str, Any]:
 def schedule(c: dict[str, Any], d0: date, d1: date) -> list[dict[str, Any]]:
     """Abschläge von d0 (inkl.) bis d1 (exkl.). Lastschrift: am Fälligkeitstag gilt der Abschlag als bezahlt.
     src: plan (aus dem Plan) · gebucht (am Tag eines geplanten Abschlags anders gezahlt, 0 € = ausgefallen) · extra (Sonderzahlung)."""
-    if c.get("sparte") == "einspeisung" or d1 <= d0:
-        return []
+    if d1 <= d0:
+        return []  # bei Einspeisung: Abschläge, die der Netzbetreiber überweist
     b = parse_date(c.get("beginn"))
     e = parse_date(c.get("ende"))
     out: dict[str, dict[str, Any]] = {}
@@ -637,7 +667,7 @@ def schedule(c: dict[str, Any], d0: date, d1: date) -> list[dict[str, Any]]:
         day = m.replace(day=a["tag"])
         anc = _month_start(parse_date(a["ab"])) if a.get("ab") else anchor
         months = (m.year - anc.year) * 12 + m.month - anc.month
-        if a["betrag"] > 0 and d0 <= day < d1 and (a["rhythmus"] == "monat" or months % 3 == 0) and (not b or day >= b) and (not e or day <= e):
+        if a["betrag"] > 0 and a["rhythmus"] != "var" and d0 <= day < d1 and (a["rhythmus"] == "monat" or months % 3 == 0) and (not b or day >= b) and (not e or day <= e):
             out[day.isoformat()] = {"d": day.isoformat(), "betrag": a["betrag"], "src": "plan", "plan": a["betrag"]}
         m = add_months(m, 1)
     for p in c.get("zahlungen") or []:
@@ -770,6 +800,8 @@ def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbr
     pct = 0.08 if learned and measured else 0.10 + 0.15 * (1 - w) if measured else 0.2
     unsicher = (r["arbeit"] + (bis["arbeit"] if not measured else Decimal(0))) * Decimal(str(pct))
     plan = schedule(c, s, e)
+    if sp == "einspeisung" and (c.get("abschlag") or {}).get("rhythmus") == "var":
+        plan = var_payments(c, plan, s, e, today, bis, annual, prof, dyn_ct)
     paid = sum(x["betrag"] for x in plan if x["d"] <= today.isoformat())
     ab_total = sum(x["betrag"] for x in plan)
     bezug = sp != "einspeisung"
@@ -778,6 +810,10 @@ def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbr
     if bezug and c.get("bonus") and b and s <= b < e:
         bonus = c["bonus"]  # Bonus wird mit der Rechnung des ersten Jahres verrechnet
     total_eur = money(total) - bonus
+    abz = kwh_abzug(c, s, e, t1)
+    if abz:
+        total_eur = round(total_eur - abz["eur"], 2)
+        bis = {**bis, "eur": bis["eur"] - Decimal(str(abz["eur_bis"]))}
     res: dict[str, Any] = {
         "start": s.isoformat(), "ende": e.isoformat(), "tage": (e - s).days, "vergangen": (t1 - s).days, "zahl": c.get("zahl", "jahr"),
         "bisher": money(bis["eur"]), "menge_bisher": round(bis["menge"], 3), "gemessen": measured, "geschaetzt": bool(bis["est"]),
@@ -793,17 +829,35 @@ def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbr
         res["deckung"] = round(ab_total / total_eur * 100) if total_eur > 0 else None
         res["erg_lo"] = round(ab_total - res["hi"], 2)
         res["erg_hi"] = round(ab_total - res["lo"], 2)
+    if not bezug and ab_total > 0:
+        # Einspeisung: positiv = der Netzbetreiber zahlt mit der Abrechnung nach, negativ = du zahlst zurück
+        res["ergebnis"] = round(total_eur - ab_total, 2)
+        res["deckung"] = round(ab_total / total_eur * 100) if total_eur > 0 else None
+        res["erg_lo"] = round(res["lo"] - ab_total, 2)
+        res["erg_hi"] = round(res["hi"] - ab_total, 2)
+    if abz:
+        res["abzug"] = abz
     if wx:
         res["wetter"] = wx
     res["empf"] = recommend(c, res, today)
     res["gruende"] = reasons(c, res, today, implied if w > 0 else None, base_annual, w)
     res["monate"] = months(c, meters, s, e, today, annual, prof, gfrac, dyn_ct, plan, pct)
+    if abz:  # fester kWh-Abzug auch in der Monatsreihe, tagesgenau verteilt
+        cum, span = 0.0, max(1, (e - s).days)
+        for mo in res["monate"]:
+            a0 = parse_date(mo["a"])
+            b0 = min(e, add_months(a0, 1))
+            d = round(abz["eur"] * (b0 - max(s, a0)).days / span, 2)
+            mo["kosten"] = round(mo["kosten"] - d, 2)
+            mo["k_bis"] = round(max(0.0, mo["k_bis"] - d * mo["anteil"]), 2)
+            cum += d
+            mo["cum_k"] = round(mo["cum_k"] - cum, 2)
     return res
 
 
 def recommend(c: dict[str, Any], f: dict[str, Any], today: date) -> dict[str, Any] | None:
     """Abschlag, mit dem der Zeitraum bei ± 0 € endet: (Hochrechnung – schon gezahlt – feste Sonderzahlungen) ÷ offene Termine, auf ganze Euro aufgerundet."""
-    if c["sparte"] == "einspeisung" or f["zahl"] == "monat":
+    if f["zahl"] == "monat":
         return None
     offen = [x for x in f["abschlaege"] if not x["bezahlt"] and x["src"] == "plan"]
     if not offen:
@@ -831,7 +885,7 @@ def reasons(c: dict[str, Any], f: dict[str, Any], today: date, implied: float | 
     if implied is not None and w >= 0.25 and base > 0:
         d = (implied - base) / base * 100
         if abs(d) >= 5:
-            out.append(f"Verbrauch bisher {abs(round(d))} % {'über' if d > 0 else 'unter'} dem eingestellten Jahresverbrauch ({round(implied * fac):,} statt {round(base * fac):,} {SP_UNIT[c['sparte']]})".replace(",", "."))
+            out.append(f"{'Einspeisung' if c['sparte'] == 'einspeisung' else 'Verbrauch'} bisher {abs(round(d))} % {'über' if d > 0 else 'unter'} dem eingestellten Jahresverbrauch ({round(implied * fac):,} statt {round(base * fac):,} {SP_UNIT[c['sparte']]})".replace(",", "."))
     for x in price_changes(c):
         d = parse_date(x["ab"])
         if d and today < d < parse_date(f["ende"]) and x["pct"]:
@@ -1362,7 +1416,7 @@ def ha_values(view: dict[str, Any]) -> dict[str, Any]:
         else:
             price("verguetung_einspeisung", "Einspeisevergütung", None if u.get("ct") is None else u["ct"] / 100, "EUR/kWh", "mdi:solar-power", base)
         f = X.get("fc")
-        if f and sp != "einspeisung":
+        if f and (sp != "einspeisung" or f.get("ergebnis") is not None):
             out["ergebnis_" + sp] = {"name": f"Ergebnis {SP_NAME[sp]}", "icon": "mdi:scale-balance", "unit": "EUR", "dc": "monetary", "value": f.get("ergebnis"),
                                      "attrs": {"kosten_jahr": f.get("total"), "bisher": f.get("bisher"), "abschlaege": f.get("ab_total"), "deckung_prozent": f.get("deckung"),
                                                "von": f.get("erg_lo"), "bis": f.get("erg_hi"), "abrechnung_bis": f.get("ende"),
@@ -1627,3 +1681,50 @@ def fix_m3_import(c: dict[str, Any], g: dict[str, Any] | None) -> list[str]:
         c["zahlungen"] = sorted(c["zahlungen"], key=lambda x: x["d"])
         out.append(f"{add} abweichende Abschlags-Monate")
     return out
+
+
+
+def var_payments(c: dict[str, Any], plan: list[dict[str, Any]], s: date, e: date, today: date, bis: dict[str, Any], annual: float,
+                 prof: tuple[float, ...], dyn_ct: float | None) -> list[dict[str, Any]]:
+    """Einspeisung mit wechselnden Monatsbeträgen: gebuchte Eingänge zählen, künftige Monate werden geschätzt –
+    Vergütung des Monats × bisherige Auszahlungsquote (Eingänge ÷ Vergütung bis zum Monat des letzten Eingangs)."""
+    got = [x for x in plan if x["d"] <= today.isoformat()]
+    tag = int((c.get("abschlag") or {}).get("tag") or 15)
+    quote = 1.0
+    if got:
+        last = parse_date(got[-1]["d"])
+        cut = max(s + timedelta(days=1), _month_start(last))
+        verg = float(_rest(c, s, cut, annual, prof, 0.0, dyn_ct)["arbeit"]) if cut > s else 0.0
+        if bis.get("menge") and today > s:
+            # gemessene Vergütung bis heute auf den Zeitraum bis zum letzten Eingang herunterrechnen
+            share = _share(prof, s, cut) / max(1e-9, _share(prof, s, today + timedelta(days=1)))
+            verg = float(bis["eur"]) * min(1.0, share)
+        paid = sum(x["betrag"] for x in got)
+        if verg > 1:
+            quote = max(0.2, min(2.0, paid / verg))
+    out = [dict(x) for x in plan]
+    have = {x["d"][:7] for x in plan}
+    m = _month_start(today)
+    while m < e:
+        d = m.replace(day=min(28, tag))
+        if d > today and s <= d < e and d.isoformat()[:7] not in have:
+            prev0 = add_months(m, -1)
+            v = float(_rest(c, max(s, prev0), max(s + timedelta(days=1), m), annual, prof, 0.0, dyn_ct)["arbeit"]) if m > s else 0.0
+            out.append({"d": d.isoformat(), "betrag": round(v * quote, 2), "src": "schaetz", "plan": 0.0, "note": f"geschätzt · {round(quote * 100)} % der Vergütung"})
+        m = add_months(m, 1)
+    return sorted(out, key=lambda x: x["d"])
+
+
+
+def kwh_abzug(c: dict[str, Any], s: date, e: date, t1: date) -> dict[str, Any] | None:
+    """Einspeisung: fester Abzug in kWh je Jahr, wie ihn manche Netzbetreiber für ein Balkonkraftwerk am selben Zähler ansetzen
+    (statt Mischsatz). Bewertet mit der Vergütung laut Vertrag, tagesgenau auf den Zeitraum verteilt."""
+    a = c.get("anlagen") or {}
+    if c.get("sparte") != "einspeisung" or a.get("modus") != "kwh" or not a.get("abzug_kwh"):
+        return None
+    u = unit_price(c, min(max(s, t1 - timedelta(days=1)), e - timedelta(days=1))) or {}
+    ct = float(u.get("ct") or 0.0)
+    year = (e - s).days / 365.0 if (e - s).days > 40 else (e - s).days / 365.0
+    kwh = a["abzug_kwh"] * year
+    frac = max(0.0, min(1.0, (t1 - s).days / max(1, (e - s).days)))
+    return {"kwh": round(kwh, 1), "kwh_jahr": a["abzug_kwh"], "ct": ct, "eur": round(kwh * ct / 100, 2), "eur_bis": round(kwh * frac * ct / 100, 2)}

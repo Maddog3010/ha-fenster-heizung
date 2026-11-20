@@ -527,3 +527,51 @@ def test_m3_fixes():
     assert old["brennwert"] == 25.9 and [p["gp"] for p in old["periods"]] == [11.7, 11.7] and len(old["zahlungen"]) == 1 and len(done) == 3
     assert L.fix_m3_import(old, g) == []  # zweimal ändert nichts
     assert L.from_modul3({**g, "grund": 168.0}, date(2026, 11, 20), "c2", "m2", [], True)["contract"]["periods"][0]["gp"] == 14.0
+
+
+def test_einspeisung_abschlag():
+    c = L.clean_contract({"id": "ce", "sparte": "einspeisung", "beginn": "2024-01-01", "abr": "01-01", "meters": ["me"], "abschlag": {"betrag": 25, "rhythmus": "monat", "tag": 15},
+                          "periods": [{"ab": "2024-01-01", "ap": 8.11, "ust": 0}], "zahlungen": [{"d": "2026-06-15", "betrag": 0}]})
+    m = L.clean_meter({"id": "me", "art": "strom_einsp", "readings": [{"t": "2026-01-01T00:00", "v": 9480.0}, {"t": "2026-06-01T00:00", "v": 10790.0}, {"t": "2026-11-18T00:00", "v": 12906.0}]})
+    f = L.forecast(c, [m], date(2026, 11, 20), 4200)
+    plan = [x for x in f["abschlaege"]]
+    assert len(plan) == 12 and plan[5]["betrag"] == 0 and f["ab_total"] == 275.0
+    assert f["ergebnis"] == round(f["total"] - 275.0, 2) and f["ergebnis"] > 0 and f["deckung"] is not None
+    assert f["erg_lo"] <= f["ergebnis"] <= f["erg_hi"]
+    v = L.ha_values({"cards": {"einspeisung": {"id": "ce", "u": L.unit_price(c, date(2026, 11, 20)), "fc": f}}, "contracts": [c]})
+    assert v["sensor"]["ergebnis_einspeisung"]["value"] == f["ergebnis"]
+
+
+def test_einspeisung_wechselnd():
+    pays = [{"d": f"2026-{m:02d}-15", "betrag": b} for m, b in [(1, 5.2), (2, 9.8), (3, 17.4), (4, 26.0), (5, 33.1), (6, 38.5), (7, 37.0), (8, 30.2), (9, 21.6), (10, 12.4), (11, 6.1)]]
+    c = L.clean_contract({"id": "ce", "sparte": "einspeisung", "beginn": "2024-01-01", "abr": "01-01", "meters": ["me"], "abschlag": {"betrag": 0, "rhythmus": "var", "tag": 15},
+                          "periods": [{"ab": "2024-01-01", "ap": 8.11, "ust": 0}], "zahlungen": pays})
+    assert c["abschlag"]["rhythmus"] == "var"
+    m = L.clean_meter({"id": "me", "art": "strom_einsp", "readings": [{"t": "2026-01-01T00:00", "v": 9480.0}, {"t": "2026-06-01T00:00", "v": 10790.0}, {"t": "2026-11-18T00:00", "v": 12906.0}]})
+    f = L.forecast(c, [m], date(2026, 11, 20), 4200)
+    est = [x for x in f["abschlaege"] if x["src"] == "schaetz"]
+    assert len(est) == 1 and est[0]["d"] == "2026-12-15" and est[0]["betrag"] > 0 and "geschätzt" in est[0]["note"]
+    assert f["gezahlt"] == round(sum(p["betrag"] for p in pays), 2) and f["ergebnis"] == round(f["total"] - f["ab_total"], 2)
+    assert L.clean_contract({"id": "cx", "sparte": "gas", "abschlag": {"rhythmus": "var"}, "periods": [{"ab": "2026-01-01", "ap": 9}]})["abschlag"]["rhythmus"] == "monat"
+
+
+def test_mischsatz_balkonkraftwerk():
+    base = {"id": "ce", "sparte": "einspeisung", "beginn": "2024-01-01", "periods": [{"ab": "2024-01-01", "ap": 10.08, "ust": 0}]}
+    c = L.clean_contract({**base, "anlagen": {"kwp": 8, "weitere": [{"name": "Balkon", "kwp": 1, "ct": 0}]}})
+    u = L.unit_price(c, date(2026, 11, 20))
+    assert u["ct"] == round(8 / 9 * 10.08, 4) and u["mix"]["satz"] == 10.08 and u["mix"]["anteil"] == 88.9  # Beispiel der Bundesnetzagentur: ≈ 8,96 ct
+    v1 = L.unit_price(L.clean_contract({**base, "anlagen": {"kwp": 8, "weitere": [{"kwp": 1, "ct": 8.11}]}}), date(2026, 11, 20))
+    assert round(v1["ct"], 2) == 9.86
+    assert "mix" not in L.unit_price(L.clean_contract({**base, "anlagen": {"kwp": 0, "weitere": [{"kwp": 1}]}}), date(2026, 11, 20))
+    assert "anlagen" not in L.clean_contract({**base, "sparte": "strom", "anlagen": {"kwp": 8}})
+
+
+def test_fester_kwh_abzug():
+    c = L.clean_contract({"id": "ce", "sparte": "einspeisung", "beginn": "2024-01-01", "abr": "01-01", "meters": ["me"], "periods": [{"ab": "2024-01-01", "ap": 8.11, "ust": 0}],
+                          "anlagen": {"kwp": 9.8, "modus": "kwh", "abzug_kwh": 164, "weitere": [{"name": "Balkonkraftwerk", "kwp": 0.9, "ct": 0}]}})
+    assert L.unit_price(c, date(2026, 11, 20))["ct"] == 8.11  # kein Mischsatz
+    m = L.clean_meter({"id": "me", "art": "strom_einsp", "readings": [{"t": "2026-01-01T00:00", "v": 9480.0}, {"t": "2026-11-18T00:00", "v": 12906.0}]})
+    f = L.forecast(c, [m], date(2026, 11, 20), 4200)
+    f0 = L.forecast({**c, "anlagen": {**c["anlagen"], "abzug_kwh": 0}}, [m], date(2026, 11, 20), 4200)
+    assert f["abzug"]["kwh"] == 164.0 and f["abzug"]["eur"] == round(164 * 8.11 / 100, 2)
+    assert round(f0["total"] - f["total"], 2) == f["abzug"]["eur"] and f["bisher"] < f0["bisher"]

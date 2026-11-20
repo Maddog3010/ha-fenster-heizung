@@ -1,5 +1,11 @@
 # Modul 20 Abrechnungen
 
+## 1.5 Build 1 – 2026-11-20 (Stabil)
+- **Einspeisung mit Abschlägen:** Beim Einspeisevertrag lässt sich eintragen, was der Netzbetreiber monatlich (oder je Quartal) überweist – auch je Abrechnungsjahr und einzelne Monate wie bei Gas und Strom. Modul 20 rechnet hoch, ob mit der Abrechnung eine **Nachzahlung an dich** oder eine **Rückzahlung** kommt (mit Bandbreite). Einspeise-Karte mit „Abschläge erhalten“ und Balken „ausgezahlt“, Ring im Banner, Ergebnis in der großen Zahl, eigenes Register in Abschläge (erhalten statt bezahlt, Zahlung buchen, 0 € = nicht gekommen) und Sensor „Ergebnis Einspeisung“.
+- **Balkonkraftwerk am selben Zähler:** Im Einspeisevertrag unter „Anlagen an diesem Zähler“ Hauptanlage und Balkonkraftwerk mit Modulleistung eintragen und wählen, wie der Netzbetreiber rechnet: **Mischsatz nach Leistung** (§ 24 Abs. 3 EEG, Verhältnis der installierten Modulleistung, Balkonkraftwerk meist unentgeltlich = 0 ct; Beispiel der Bundesnetzagentur 8 kWp + 1 kWp: 8,96 statt 10,08 ct) oder **fester Abzug in kWh je Jahr** laut Abrechnung. Vertrag, Karte, Jahreskurve und Hochrechnung rechnen damit.
+- Einspeisung: Jahreskurve und Monatswerte heißen „Vergütung“ statt „Kosten“.
+- **Jeden Monat anders:** Überweist der Netzbetreiber wechselnde Beträge, im Einspeisevertrag „jeden Monat anders“ wählen und je Monat den Eingang eintragen (oder in Abschläge mit dem Stift buchen). Künftige Monate schätzt Modul 20: Vergütung des Monats × bisherige Auszahlungsquote (Eingänge ÷ Vergütung bis zum letzten Eingang); die Schätzung steht als „geschätzt“ in der Liste.
+
 ## 1.4 Build 1 – 2026-11-20 (Stabil)
 - **Abschläge je Abrechnungsjahr wie in Modul 3:** Im Vertrag (Bearbeiten) je Abrechnungsjahr ein Betrag (leer = wie davor) und „Einzelne Monate anpassen“ mit allen zwölf Monaten (0 = ausgefallen). Jahresbeträge werden zum Abschlagsplan ab Jahresbeginn, einzelne Monate zu gebuchten Zahlungen am Fälligkeitstag.
 - **Brennwert bis 40 kWh/m³** (vorher 15) – Flüssiggas liegt bei etwa 25–28.
