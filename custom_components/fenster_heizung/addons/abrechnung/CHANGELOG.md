@@ -1,5 +1,8 @@
 # Modul 20 Abrechnungen
 
+## 1.1 Build 1 – 2026-11-20 (Stabil)
+- **Gas aus Modul 3 übernehmen:** Hat Modul 3 einen Gaszähler und Modul 20 noch keinen Gasvertrag, legt ein Tipp Vertrag und Zähler an – Preisliste (brutto/netto, MwSt, Grundpreis je Monat), Abrechnungsjahr, Brennwert und Zustandszahl, Abschlag mit Abbuchungstag, abweichende Abschläge früherer Jahre als Abschlagsplan. Der Zähler bekommt den Sensor aus Modul 3 und bis zu 36 Monatsstände aus der Langzeitstatistik von Home Assistant (Zählertausch wird erkannt). Vorher zeigt ein Dialog, was übernommen wird. Knopf in Verträge, auf der leeren Gas-Karte und bei „Vertrag hinzufügen“.
+
 ## 1.0 Build 1 – 2026-11-20 (Stabil)
 Modul 20 ist fertig: alle Stufen aus dem Konzept sind drin.
 - Stufe „Stabil“, die Fußzeile zeigt die Stufe aus dem Steckbrief

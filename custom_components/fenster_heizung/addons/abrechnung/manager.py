@@ -40,7 +40,7 @@ class Addon(SWAddon):
         self._day = _now().date().isoformat()
         self._dyn: dict[str, Any] = {"t": 0.0, "res": None, "busy": False}
         for c in ("get", "contract", "contract_del", "meter", "meter_del", "check", "read", "read_del", "swap", "opts", "abplan", "pay", "pay_del", "vgl",
-                  "inv", "inv_del", "inv_learn", "beleg_get", "car", "car_del", "entry", "entry_del", "item", "item_del", "book", "book_del", "switch"):
+                  "inv", "inv_del", "inv_learn", "beleg_get", "car", "car_del", "entry", "entry_del", "item", "item_del", "book", "book_del", "switch", "m3"):
             self.core.cmd(c, getattr(self, f"_c_{c}"))
         self.core.provide("preis_anbieter", self)
         self.core.provide("abrechnung", self)  # für Tags & Karten (Zählerstand, Tankbeleg, Vorrat entnommen)
@@ -395,7 +395,7 @@ class Addon(SWAddon):
                 "notify_svc": sorted(n for n in (self.hass.services.async_services().get("notify") or {}) if n not in ("notify", "persistent_notification"))[:30] if hasattr(self.hass.services, "async_services") else [],
                 "todos": sorted(s.entity_id for s in self.hass.states.async_all("todo"))[:20] if hasattr(self.hass.states, "async_all") else [], "today": today.isoformat(), "opts": self.data["opts"], "cards": cards, "contracts": contracts, "meters": meters,
                 "events": L.events(self.data, today), "managed": self.managed(), "haus": dict((getattr(haus, "data", None) or {}).get("price") or {}),
-                "tibber": self._dyn_ct(dt_util.now()) is not None, "m8": m8_names, "energy": self._energy, "max": self._is_max(), "ha_n": len(self._vals.get("keys") or []), "ents": bool(self.hass.data.get(DOMAIN, {}).get("abr_ent")), "gas_m3": self._gas_m3(), "dyncmp": self._dyn.get("res"), "sum": self._sum(cards),
+                "tibber": self._dyn_ct(dt_util.now()) is not None, "m8": m8_names, "energy": self._energy, "max": self._is_max(), "m3gas": bool(self._m3_gas()), "ha_n": len(self._vals.get("keys") or []), "ents": bool(self.hass.data.get(DOMAIN, {}).get("abr_ent")), "gas_m3": self._gas_m3(), "dyncmp": self._dyn.get("res"), "sum": self._sum(cards),
                 "ebuch": DOMAIN in self.hass.data and "ebuch" in self.hass.data[DOMAIN]}
 
     @staticmethod
@@ -748,6 +748,72 @@ class Addon(SWAddon):
         if v is None:
             raise AddonError("Fahrzeug nicht gefunden.")
         return v
+
+    # ---- 1.1: Gas aus Modul 3 übernehmen
+    def _m3_gas(self) -> dict[str, Any] | None:
+        """Modul 3 hat einen Gaszähler mit eigenen Preisen, Modul 20 noch keinen Gasvertrag? Dann lässt sich beides übernehmen."""
+        if any(c["sparte"] == "gas" for c in self.data["contracts"]):
+            return None
+        haus = self.hass.data.get(DOMAIN, {}).get("haus")
+        g = dict(((getattr(haus, "data", None) or {}).get("gas") or {})) if haus is not None else {}
+        if not g.get("ent"):
+            return None
+        st = self.hass.states.get(g["ent"])
+        u = str((st.attributes or {}).get("unit_of_measurement") or "").replace("m3", "m³") if st is not None else ""
+        return {**g, "unit": u, "sensor_ok": u in ("m³", "L"), "name": str((st.attributes or {}).get("friendly_name") or g["ent"]) if st is not None else g["ent"]}
+
+    async def _m3_reads(self, eid: str, unit: str, months: int = 36) -> list[dict[str, Any]]:
+        """Monatsstände aus der Langzeitstatistik von Home Assistant (state am Ende jedes Monats)."""
+        now = dt_util.now()
+        start = (now.replace(day=1, hour=0, minute=0, second=0, microsecond=0) - timedelta(days=31 * months)).replace(day=1)
+        try:
+            from homeassistant.components.recorder import get_instance
+            from homeassistant.components.recorder.statistics import statistics_during_period
+
+            def job() -> dict[str, list[Any]]:
+                return statistics_during_period(self.hass, dt_util.as_utc(start), dt_util.as_utc(now), {eid}, "month", None, {"state"})
+
+            res = await get_instance(self.hass).async_add_executor_job(job)
+        except Exception:  # noqa: BLE001 - ohne Recorder oder ohne Statistik gibt es keine Stände
+            _LOGGER.debug("Modul 20: Statistik für %s nicht lesbar", eid, exc_info=True)
+            return []
+        rows = []
+        tz = dt_util.DEFAULT_TIME_ZONE
+        for x in (res or {}).get(eid) or []:
+            try:
+                t = x.get("end") or x["start"]
+                t = datetime.fromtimestamp(t, tz) if isinstance(t, (int, float)) else (t if isinstance(t, datetime) else datetime.fromisoformat(str(t))).astimezone(tz)
+                if x.get("end") is None:
+                    t = (t.replace(day=28) + timedelta(days=4)).replace(day=1)
+                if t > now:
+                    continue  # laufender Monat: der Tagesstand kommt wie gewohnt aus dem Sensor
+                rows.append((t, float(x["state"])))
+            except (KeyError, TypeError, ValueError):
+                continue
+        return L.stats_readings(rows, 0.001 if unit == "L" else 1.0)
+
+    async def _c_m3(self, data: dict[str, Any], admin: bool) -> Any:
+        """Gas aus Modul 3 übernehmen: ohne go nur die Vorschau, mit go anlegen. Modul 3 bekommt danach den Vertrag zurück (gespiegelt)."""
+        self._need_admin(admin)
+        g = self._m3_gas()
+        if g is None:
+            raise AddonError("In Modul 3 ist kein Gaszähler eingerichtet, oder Modul 20 hat schon einen Gasvertrag.")
+        today = _now().date()
+        reads = await self._m3_reads(g["ent"], g["unit"]) if g["sensor_ok"] else []
+        r = L.from_modul3(g, today, "c" + secrets.token_hex(3), "m" + secrets.token_hex(3), reads, g["sensor_ok"])
+        c, m = r["contract"], r["meter"]
+        if not data.get("go"):
+            u = L.unit_price(c, today) or {}
+            return {"preview": {"beginn": c["beginn"], "abr": c["abr"], "perioden": [{"ab": p["ab"], "ap": p["ap"], "gp": p["gp"], "brutto": p["brutto"], "ust": p["ust"]} for p in c["periods"]],
+                                "ct": u.get("ct"), "grund": u.get("grund"), "brennwert": c["brennwert"], "zustand": c["zustand"], "abschlag": c["abschlag"], "abplan": c["abplan"],
+                                "sensor": m["sensor"], "sensor_name": g["name"], "unit": g["unit"], "n_reads": len(m["readings"]),
+                                "von": m["readings"][0]["t"][:10] if m["readings"] else None, "bis": m["readings"][-1]["t"][:10] if m["readings"] else None,
+                                "monate_abweichend": r["monate_abweichend"]}}
+        self.data["meters"].append(m)
+        self.data["contracts"].append(c)
+        self._save()
+        await self._mirror()
+        return {**self._view(), "saved": c["id"]}
 
     def _is_max(self) -> bool:
         sm = self.hass.data.get(DOMAIN, {}).get("sponsor")

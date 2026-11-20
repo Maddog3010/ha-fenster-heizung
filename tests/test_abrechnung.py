@@ -433,3 +433,29 @@ def test_switch_calc():
     assert L.switch_calc(c, 14000, {**o, "ap": 10.2, "bonus": 150}, date(2026, 11, 19))["urteil"] == "bonus"
     assert L.clean_offer({"ap": 0}) is None
     assert L.clean_data({})["opts"]["sensoren"] is True
+
+
+# ---------------------------------------------------------------- 1.1: Gas aus Modul 3 übernehmen
+def test_from_modul3():
+    g = {"ent": "sensor.gas", "price": 11.0, "grund": 180.0, "gunit": "y", "netto": False, "mwst": 19, "hw": 11.2, "zz": 0.96, "start": 4, "abschlag": 120, "absday": 5,
+         "prices": [{"ab": "2025-04-01", "price": 12.0}, {"ab": "2026-01-01", "price": 10.5, "grund": 192.0}],
+         "years": {"2025": {"abs": 130, "absm": {"3": 0}}, "2026": {"abs": 120, "hw": 11.4, "zz": 0.95}}}
+    reads = L.stats_readings([(datetime(2025, 5, 1), 1000.0), (datetime(2025, 6, 1), 1050.5), (datetime(2025, 7, 1), 1080.0)])
+    r = L.from_modul3(g, date(2026, 11, 20), "c3", "m3", reads, True)
+    c, m = r["contract"], r["meter"]
+    assert c["sparte"] == "gas" and c["abr"] == "04-01" and c["beginn"] == "2025-04-01" and c["meters"] == ["m3"]
+    assert [(p["ab"], p["ap"], round(p["gp"], 2)) for p in c["periods"]] == [("2025-04-01", 12.0, 15.0), ("2026-01-01", 10.5, 16.0)]
+    assert c["brennwert"] == 11.4 and c["zustand"] == 0.95 and c["abschlag"] == {"betrag": 120.0, "rhythmus": "monat", "tag": 5}
+    assert [(x["ab"], x["betrag"]) for x in c["abplan"]] == [("2025-04-01", 130.0), ("2026-04-01", 120.0)]
+    assert m["sensor"] == "sensor.gas" and len(m["readings"]) == 3 and m["readings"][0]["src"] == "sensor"
+    assert r["monate_abweichend"] == ["2025"]
+    assert L.unit_price(c, date(2026, 11, 20))["ct"] == 10.5
+    n = L.from_modul3({**g, "netto": True, "hw": 0, "zz": 0, "years": {}, "brw": 10.4}, date(2026, 11, 20), "c4", "m4", [], False)
+    assert n["contract"]["periods"][0]["brutto"] is False and n["contract"]["brennwert"] == 10.4 and n["contract"]["zustand"] == 1.0 and n["meter"]["sensor"] == ""
+    assert L.unit_price(n["contract"], date(2026, 11, 20))["ct"] == round(10.5 * 1.19, 4)
+
+
+def test_stats_readings_meter_swap():
+    r = L.stats_readings([(datetime(2025, 1, 1), 500.0), (datetime(2025, 2, 1), 520.0), (datetime(2025, 3, 1), 3.0), (datetime(2025, 4, 1), 40.0)])
+    assert [x["v"] for x in r] == [3.0, 40.0]
+    assert L.stats_readings([(datetime(2025, 1, 1), 1500.0)], 0.001)[0]["v"] == 1.5

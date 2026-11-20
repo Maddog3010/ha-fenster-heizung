@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b31] - 2026-11-20
+
+**Modul 20 · Abrechnungen** (Addon) v1.1 Build 1.
+
+### Neu
+- **Gas aus Modul 3 übernehmen:** Hat Modul 3 einen Gaszähler und Modul 20 noch keinen Gasvertrag, legt ein Tipp Vertrag und Zähler an – Arbeits- und Grundpreis mit allen Preisänderungen (brutto/netto und MwSt wie eingetragen, Grundpreis je Jahr wird auf den Monat umgerechnet), Abrechnungsjahr, Brennwert und Zustandszahl, Abschlag mit Abbuchungstag und abweichende Abschläge früherer Jahre. Der Zähler bekommt den Sensor aus Modul 3 und bis zu 36 Monatsstände aus der Langzeitstatistik von Home Assistant, damit stimmt die Hochrechnung sofort. Ein Dialog zeigt vorher, was übernommen wird. Knopf in Verträge, auf der leeren Gas-Karte der Übersicht und bei „Vertrag hinzufügen“.
+- Danach rechnet Modul 3 mit dem Vertrag aus Modul 20 („Verwaltet in Modul 20“). „Vertragspreis an die Module geben“ aus stellt die alten Werte in Modul 3 wieder her.
+
+### Hinweis
+- Anbieter, Vertragsnummer, Laufzeit und Kündigungsfrist kennt Modul 3 nicht – nach der Übernahme unter „Bearbeiten“ eintragen. Einzeln abweichende Abschlags-Monate werden nicht übernommen. Ein Gassensor in kWh wird nicht als Zähler übernommen (Modul 20 braucht m³).
+
 ## [2026.11.4b30] - 2026-11-20
 
 ### Behoben

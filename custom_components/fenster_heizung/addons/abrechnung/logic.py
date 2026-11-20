@@ -1401,3 +1401,63 @@ def switch_calc(c: dict[str, Any], menge: float, offer: dict[str, Any], today: d
         out["gleich_ap"] = round(((cur - offer["gp"] * 12) / menge) * 100, 2) if menge > 0 else None
         out["urteil"] = "lohnt" if out["spart2"] > 20 else "bonus" if out["spart1"] > 20 else "nein"
     return out
+
+
+# --------------------------------------------------------------------------- 1.1: Gas aus Modul 3 übernehmen
+def from_modul3(g: dict[str, Any], today: date, cid: str, mid: str, reads: list[dict[str, Any]], sensor_ok: bool) -> dict[str, Any]:
+    """Gaszähler-Einstellungen aus Modul 3 (Haus-Werte „gas“) als Vertrag und Zähler für Modul 20.
+    Preisliste → Preisperioden (Grundpreis je Monat, netto/brutto wie eingegeben), Brennwert und Zustandszahl des laufenden
+    Abrechnungsjahrs, Abschläge je Abrechnungsjahr → Abschlagsplan. Einzelne abweichende Monate werden nicht übernommen."""
+    start = int(_f(g.get("start"), 1, 12, 1))
+    by = today.year if today.month >= start else today.year - 1  # laufendes Abrechnungsjahr
+    years = {int(k): v for k, v in (g.get("years") or {}).items() if re.fullmatch(r"20\d\d", str(k)) and isinstance(v, dict)}
+    prices = sorted((p for p in g.get("prices") or [] if isinstance(p, dict) and re.fullmatch(r"20\d\d-\d\d-\d\d", str(p.get("ab") or ""))), key=lambda p: p["ab"])
+    y0 = min([by, *years, *(int(p["ab"][:4]) - (1 if int(p["ab"][5:7]) < start else 0) for p in prices)])
+    beginn = date(y0, start, 1)
+    if reads:
+        r0 = parse_ts(reads[0]["t"])
+        if r0 is not None and r0.date() < beginn:
+            beginn = date(r0.year if r0.month >= start else r0.year - 1, start, 1)
+    netto, gj = bool(g.get("netto")), 12.0 if g.get("gunit", "y") != "m" else 1.0
+    def per(ab: str, price: float, grund: float, y: int) -> dict[str, Any]:
+        mw = (years.get(y) or {}).get("mwst", g.get("mwst", 19.0))
+        return {"ab": ab, "ap": round(float(price), 4), "gp": round(float(grund) / gj, 4), "mess": 0.0, "brutto": not netto, "ust": float(mw), "note": "aus Modul 3"}
+    def yof(ab: str) -> int:
+        return int(ab[:4]) if int(ab[5:7]) >= start else int(ab[:4]) - 1
+    periods = [per(beginn.isoformat(), g.get("price") or 0.0, g.get("grund") or 0.0, beginn.year)]
+    pr, gr = float(g.get("price") or 0.0), float(g.get("grund") or 0.0)
+    for p in prices:
+        pr = float(p["price"]) if p.get("price") is not None else pr
+        gr = float(p["grund"]) if p.get("grund") is not None else gr
+        if p["ab"] <= beginn.isoformat():
+            periods = [per(beginn.isoformat(), pr, gr, beginn.year)]
+        else:
+            periods.append(per(p["ab"], pr, gr, yof(p["ab"])))
+    cur = years.get(by) or {}
+    hw, zz = float(cur.get("hw", g.get("hw") or 0)), float(cur.get("zz", g.get("zz") or 0))
+    if not (hw > 0 and zz > 0):
+        hw, zz = float(g.get("brw") or DEF_BRENNWERT * DEF_ZUSTAND), 1.0  # nur ein Umrechnungsfaktor bekannt
+    tag = int(_f(g.get("absday"), 1, 28, 1))
+    abplan = []
+    for y in sorted(years):
+        if years[y].get("abs") is not None and date(y, start, 1) >= beginn:
+            abplan.append({"ab": date(y, start, 1).isoformat(), "betrag": float(years[y]["abs"]), "rhythmus": "monat", "tag": tag, "note": "aus Modul 3"})
+    contract = clean_contract({"id": cid, "sparte": "gas", "anbieter": "", "tarif": "aus Modul 3", "beginn": beginn.isoformat(), "abr": f"{start:02d}-01", "zahl": "jahr",
+                               "abschlag": {"betrag": float(g.get("abschlag") or 0.0), "rhythmus": "monat", "tag": tag}, "brennwert": hw, "zustand": zz, "meters": [mid],
+                               "periods": periods, "abplan": abplan})
+    meter = clean_meter({"id": mid, "art": "gas", "name": "Gaszähler", "dec": 3, "digits": 5, "sensor": g.get("ent") if sensor_ok else "", "readings": reads})
+    skipped = [str(y) for y in sorted(years) if (years[y].get("absm") or {})]
+    return {"contract": contract, "meter": meter, "monate_abweichend": skipped}
+
+
+def stats_readings(rows: list[tuple[datetime, float]], factor: float = 1.0) -> list[dict[str, Any]]:
+    """Monatsendstände aus der Langzeitstatistik als Ablesungen (Stand am Monatsersten 00:00). Rückwärts laufende Werte (Zählertausch) beenden die Übernahme davor."""
+    out: list[dict[str, Any]] = []
+    for t, v in sorted(rows):
+        if v is None or v < 0:
+            continue
+        v = round(v * factor, 3)
+        if out and v < out[-1]["v"]:
+            out = []  # Zähler wurde getauscht oder zurückgesetzt: nur der neue Verlauf zählt
+        out.append({"t": t.replace(tzinfo=None).isoformat(timespec="minutes"), "v": v, "src": "sensor", "note": "aus der Statistik (Modul 3)"})
+    return out
