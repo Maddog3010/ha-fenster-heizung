@@ -218,7 +218,8 @@ def clean_data(raw: Any) -> dict[str, Any]:
             "notify": [x for x in dict.fromkeys(o.get("notify") or []) if isinstance(x, str) and re.match(r"^notify\.[a-z0-9_]+$", x)][:6],
             "remind": {"on": bool(rm.get("on", True)), "tage": int(_f(rm.get("tage"), 0, 14, 0))}, "tol": _f(o.get("tol"), 0.5, 10, 2.0),
             "todo": str(o.get("todo") or "") if re.match(r"^todo\.[a-z0-9_]+$", str(o.get("todo") or "")) else "", "solar": o.get("solar") if o.get("solar") in ("null", "einsp", "vertrag") else "einsp",
-            "sensoren": bool(o.get("sensoren", True))}
+            "sensoren": bool(o.get("sensoren", True)),
+            "muell": {"grund": _f((o.get("muell") or {}).get("grund") if isinstance(o.get("muell"), dict) else None, 0, 5000, 0.0)}}
     cars, seen = [], set()
     for v in (clean_vehicle(x) for x in r.get("fahrzeuge") or []):
         if v and v["id"] not in seen:
@@ -715,7 +716,8 @@ def _rest(c: dict[str, Any], a: date, b: date, annual: float, prof: tuple[float,
     return {"arbeit": arbeit, "grund": grund, "menge": menge}
 
 
-def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbrauch: float, dyn_ct: float | None = None) -> dict[str, Any]:
+def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbrauch: float, dyn_ct: float | None = None,
+             temps: dict[str, float] | None = None) -> dict[str, Any]:
     """Hochrechnung für den laufenden Abrechnungszeitraum.
 
     bisher  gemessen von Beginn bis heute (inkl.), ohne passende Ablesungen aus dem Jahresverbrauch geschätzt
@@ -745,7 +747,12 @@ def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbr
     days = (t1 - win0).days
     sh = _share(prof, win0, t1)
     w = min(1.0, days / 120) if measured and sh >= 0.01 else 0.0
-    implied = used / sh if w > 0 else base_annual
+    wx = weather_factor(temps, win0, t1) if sp == "gas" and w > 0 else None
+    if wx:
+        # nur der Heizanteil hängt vom Wetter ab; Warmwasser & Co. (Sommer-Grundlast laut Profil) bleiben
+        heat = max(0.0, min(1.0, 1 - (min(prof) * days / 30.44) / sh))
+        wx = {**wx, "heiz": round(heat, 2), "faktor": round(1 + (wx["faktor"] - 1) * heat, 3)}
+    implied = used / sh * (wx["faktor"] if wx else 1.0) if w > 0 else base_annual
     annual = w * implied + (1 - w) * base_annual
     gfrac = 0.0
     if sp == "wasser" and garden and main and measured:
@@ -785,6 +792,8 @@ def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbr
         res["deckung"] = round(ab_total / total_eur * 100) if total_eur > 0 else None
         res["erg_lo"] = round(ab_total - res["hi"], 2)
         res["erg_hi"] = round(ab_total - res["lo"], 2)
+    if wx:
+        res["wetter"] = wx
     res["empf"] = recommend(c, res, today)
     res["gruende"] = reasons(c, res, today, implied if w > 0 else None, base_annual, w)
     res["monate"] = months(c, meters, s, e, today, annual, prof, gfrac, dyn_ct, plan, pct)
@@ -828,6 +837,9 @@ def reasons(c: dict[str, Any], f: dict[str, Any], today: date, implied: float | 
             out.append(f"Preis ändert sich am {_de(x['ab'])} um {'+' if x['pct'] > 0 else ''}{str(x['pct']).replace('.', ',')} %")
     if f.get("bonus"):
         out.append(f"Bonus {_eur(f['bonus'])} ist eingerechnet")
+    wx = f.get("wetter")
+    if wx and abs(wx["abw"]) >= 3:
+        out.insert(0, f"Die letzten {wx['tage']} Tage waren {abs(wx['abw'])} % {'kälter' if wx['abw'] > 0 else 'wärmer'} als normal – hochgerechnet ist mit normalem Wetter")
     if f["basis"] == "jahresverbrauch":
         out.append("Noch keine zwei Ablesungen: geschätzt aus dem eingestellten Jahresverbrauch")
     elif f["profil"] == "vorjahr":
@@ -1361,6 +1373,10 @@ def ha_values(view: dict[str, Any]) -> dict[str, Any]:
     ev = view.get("events") or []
     out["naechster_termin"] = {"name": "Nächster Termin", "icon": "mdi:calendar-clock", "dc": "date", "value": ev[0]["d"] if ev else None,
                                "attrs": {"titel": ev[0]["t"], "text": ev[0]["s"], "tage": ev[0]["tage"], "weitere": [f"{e['d']} {e['t']}" for e in ev[1:5]]} if ev else {}}
+    mu = view.get("muell")
+    if mu:
+        out["kosten_muell"] = {"name": "Müllgebühren im Jahr", "icon": "mdi:trash-can", "unit": "EUR", "dc": "monetary", "value": mu["jahr"],
+                               "attrs": {"grundgebuehr": mu["grund"], "zusatzleerungen": mu["extra_n"], "zusatzkosten_bisher": mu["extra_bisher"], "leerungen_bisher": mu["done"], "leerungen_im_jahr": mu["total"], "inklusive": mu["incl"]}}
     for v in view.get("fahrzeuge") or []:
         J = v.get("jahr") or {}
         out["fahrtkosten_" + _slug(v["id"])] = {"name": f"Fahrtkosten {v['name']}", "icon": "mdi:car", "unit": "EUR", "value": J.get("e100") if J.get("e100") is not None else (v.get("d30") or {}).get("e100"),
@@ -1461,3 +1477,96 @@ def stats_readings(rows: list[tuple[datetime, float]], factor: float = 1.0) -> l
             out = []  # Zähler wurde getauscht oder zurückgesetzt: nur der neue Verlauf zählt
         out.append({"t": t.replace(tzinfo=None).isoformat(timespec="minutes"), "v": v, "src": "sensor", "note": "aus der Statistik (Modul 3)"})
     return out
+
+
+# --------------------------------------------------------------------------- 1.2: aus den Modulen übernehmen
+UNIT_F = {"kWh": 1.0, "Wh": 0.001, "MWh": 1000.0, "m³": 1.0, "m3": 1.0, "L": 0.001}
+
+
+def strom_from_haus(cid: str, today: date, dyn: bool, price_ct: float, meters: list[str]) -> dict[str, Any] | None:
+    """Stromvertrag aus den Haus-Werten (Festpreis) bzw. mit Tibber dynamisch (Tibber-Preis ist schon der Endpreis, Aufschlag 0).
+    Grundpreis und Abschlag kennt kein Modul – sie bleiben 0 und werden danach eingetragen."""
+    b = date(today.year, 1, 1).isoformat()
+    p = {"ab": b, "mode": "dyn", "auf": 0.0, "gp": 0.0, "ust": 19.0, "note": "Tibber-Endpreis"} if dyn else {"ab": b, "ap": round(price_ct, 4), "gp": 0.0, "ust": 19.0, "note": "aus den Haus-Werten"}
+    return clean_contract({"id": cid, "sparte": "strom", "anbieter": "Tibber" if dyn else "", "tarif": "dynamisch" if dyn else "aus den Haus-Werten", "beginn": b, "abr": "01-01",
+                           "zahl": "monat" if dyn else "jahr", "meters": meters, "periods": [p]})
+
+
+def einsp_from_haus(cid: str, today: date, feed_ct: float, meters: list[str]) -> dict[str, Any] | None:
+    b = date(today.year, 1, 1).isoformat()
+    return clean_contract({"id": cid, "sparte": "einspeisung", "anbieter": "Netzbetreiber", "tarif": "aus den Haus-Werten", "beginn": b, "abr": "01-01", "zahl": "jahr", "meters": meters,
+                           "periods": [{"ab": b, "ap": round(feed_ct, 4), "ust": 0.0, "note": "aus den Haus-Werten"}]})
+
+
+def car_from_m8(vid: str, v: dict[str, Any]) -> dict[str, Any] | None:
+    """Elektroauto aus Modul 8: Name, Akku, Kilometer-Sensor und gleich mit den Ladungen verknüpft."""
+    ent = v.get("ent") or {}
+    return clean_vehicle({"id": vid, "name": v.get("name"), "antrieb": "elektro", "akku": v.get("cap") or 0,
+                          "sensor": ent.get("odo") or "", "m8": v.get("name"), "eintraege": []})
+
+
+
+# --------------------------------------------------------------------------- 1.3: genauer rechnen
+# Monatsmittel der Lufttemperatur in Deutschland (DWD, Klimanormal 1991–2020, gerundet) – Maßstab für „normales“ Wetter
+NORM_T = (0.9, 1.6, 4.6, 8.9, 12.9, 16.2, 18.0, 17.6, 13.9, 9.4, 4.9, 1.8)
+HEIZGRENZE = 15.0
+
+
+def weather_factor(temps: dict[str, float] | None, a: date, b: date) -> dict[str, Any] | None:
+    """Gradtage (Heizgrenze 15 °C) im Zeitraum [a, b) gemessen gegen das Klimanormal. faktor < 1: kälter als normal – der gemessene
+    Verbrauch war wetterbedingt höher und wird für die Hochrechnung heruntergerechnet. Nur mit Tagesmitteln für mindestens 80 % der Tage."""
+    if not temps or b <= a:
+        return None
+    n = (b - a).days
+    hdd = norm = 0.0
+    have = 0
+    d = a
+    while d < b:
+        nt = max(0.0, HEIZGRENZE - NORM_T[d.month - 1])
+        t = temps.get(d.isoformat())
+        if t is not None:
+            have += 1
+            hdd += max(0.0, HEIZGRENZE - t)
+            norm += nt
+        d += timedelta(days=1)
+    if have < max(14, 0.8 * n) or norm < 60 or hdd <= 0:  # im Sommer gibt es kaum Gradtage – dann keine Bereinigung
+        return None
+    f = max(0.6, min(1.6, norm / hdd))
+    return {"faktor": round(f, 3), "gradtage": round(hdd), "normal": round(norm), "tage": have, "abw": round((hdd / norm - 1) * 100)}
+
+
+def device_split(days: dict[str, dict[str, list[float]]], names: dict[str, str], d0: date, d1: date, total_kwh: float | None) -> dict[str, Any]:
+    """Modul 4: Strom je Gerät im Abrechnungszeitraum [d0, d1) – kWh (Sonne, Batterie, Netz), Kosten, Anteil am gemessenen Hausverbrauch."""
+    k0, k1 = d0.isoformat(), d1.isoformat()
+    agg: dict[str, list[float]] = {}
+    for k, row in days.items():
+        if not (k0 <= k < k1) or not isinstance(row, dict):
+            continue
+        for did, v in row.items():
+            if did in names and isinstance(v, list) and len(v) >= 4:
+                a = agg.setdefault(did, [0.0, 0.0, 0.0, 0.0])
+                for i in range(4):
+                    a[i] += float(v[i] or 0)
+    rows = [{"id": did, "name": names[did], "kwh": round(a[0] + a[1] + a[2], 2), "netz": round(a[2], 2), "sonne": round(a[0], 2), "eur": round(a[3], 2)} for did, a in agg.items() if a[0] + a[1] + a[2] > 0.01]
+    rows.sort(key=lambda x: -x["kwh"])
+    dev = sum(r["kwh"] for r in rows)
+    tot = total_kwh if total_kwh and total_kwh > 0 else None
+    for r in rows:
+        r["pct"] = round(r["kwh"] / tot * 100, 1) if tot else None
+    return {"rows": rows, "kwh": round(dev, 2), "eur": round(sum(r["eur"] for r in rows), 2), "haus": round(max(0.0, tot - dev), 2) if tot else None,
+            "pct": round(dev / tot * 100) if tot else None, "von": k0, "bis": k1}
+
+
+
+def muell_costs(info: dict[str, Any] | None, grund: float) -> dict[str, Any] | None:
+    """Modul 17: Müllgebühren im Jahr = Grundgebühr (in Modul 20 eingetragen) + Restmüll-Leerungen über den inklusiven hinaus × Gebühr.
+    Hochgerechnet mit allen Restmüll-Terminen des Jahres im Kalender."""
+    if info is None and not grund:
+        return None
+    i = info or {}
+    fee, incl, done, total = float(i.get("fee") or 0), int(i.get("incl") or 0), int(i.get("done") or 0), int(i.get("total") or 0)
+    extra_bis = max(0, done - incl) * fee if incl else 0.0
+    extra_jahr = max(0, total - incl) * fee if incl else 0.0
+    return {"grund": round(grund, 2), "fee": fee, "incl": incl, "done": done, "total": total, "year": i.get("year"), "zaehlt": info is not None,
+            "extra_bisher": round(extra_bis, 2), "extra_jahr": round(extra_jahr, 2), "jahr": round(grund + extra_jahr, 2),
+            "frei": max(0, incl - done) if incl else None, "extra_n": max(0, total - incl) if incl else 0}

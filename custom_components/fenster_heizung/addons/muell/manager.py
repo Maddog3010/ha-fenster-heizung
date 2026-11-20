@@ -797,6 +797,16 @@ class MuellManager:
               "reinholen": {"name": "Tonne reinholen", "icon": "mdi:delete-restore", "value": bool(back), "attrs": {"arten": back}}}
         return {"sensor": sen, "sensor_keys": list(sen), "binary_sensor": bs, "binary_sensor_keys": list(bs)}
 
+    def cost_info(self) -> dict[str, Any] | None:
+        """Für Modul 20 (Kosten an einem Ort): Restmüll-Leerungen und Zusatzkosten im laufenden Jahr – nur wenn „Leerungen zählen“ an ist."""
+        c = self.cfg["cost"]
+        if not c["on"]:
+            return None
+        today = dt_util.now().date()
+        s = stats(self.ev, today, c["incl"], c["fee"], c["count"], {h["d"] for h in self.hist if h["k"] == "rest" and h["act"] == "out"},
+                  {h["d"] for h in self.hist if h["k"] == "rest" and h["act"] == "skip"} | ({self.skip["rest"]} if self.skip.get("rest") else set()), self.hist_since)
+        return {**s, "fee": c["fee"]}
+
     def values(self) -> dict[str, Any]:
         """Für die Entitäten im Kern (ab 2026.11.4b6). Ausgeschaltet: keine Werte, die Entitäten sind dann nicht verfügbar."""
         return self._vals if self.cfg["ha"] else {"sensor": {}, "binary_sensor": {}}

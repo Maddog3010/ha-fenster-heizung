@@ -1,5 +1,8 @@
 # Modul 17 Müllabfuhr
 
+## [1.0.0] Build 2 - 2026-11-20 · Stabil
+- Gibt Restmüll-Leerungen und Zusatzkosten an Modul 20 Abrechnungen weiter (nur wenn „Leerungen zählen“ an ist); dort stehen sie mit der Grundgebühr als „Müll im Jahr“
+
 ## [1.0.0] Build 1 - 2026-11-18 · Stabil
 - **Echte Entitäten** im Gerät „Strom & Wärme · Müllabfuhr“ (umbenennbar, mit Verlauf): nächste Abholung, Tage je Abfallart, Vorrat, „Tonne rausstellen“ und „Tonne reinholen“ als Binärsensoren; Entitäts-IDs wie bisher. Braucht Integration 2026.11.4b6, ältere Versionen bekommen weiter einfache Zustände
 - Doku: eigener Abschnitt „Modul 17 im Detail“ im README mit allen Funktionen, Sensoren und dem Ereignis

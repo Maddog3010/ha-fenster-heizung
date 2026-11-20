@@ -459,3 +459,56 @@ def test_stats_readings_meter_swap():
     r = L.stats_readings([(datetime(2025, 1, 1), 500.0), (datetime(2025, 2, 1), 520.0), (datetime(2025, 3, 1), 3.0), (datetime(2025, 4, 1), 40.0)])
     assert [x["v"] for x in r] == [3.0, 40.0]
     assert L.stats_readings([(datetime(2025, 1, 1), 1500.0)], 0.001)[0]["v"] == 1.5
+
+
+# ---------------------------------------------------------------- 1.2: aus den Modulen übernehmen
+def test_import_from_modules():
+    t = date(2026, 11, 20)
+    s = L.strom_from_haus("cs1", t, True, 32.0, ["mb1"])
+    assert s["sparte"] == "strom" and s["periods"][0]["mode"] == "dyn" and s["periods"][0]["auf"] == 0 and s["zahl"] == "monat" and s["anbieter"] == "Tibber" and s["meters"] == ["mb1"]
+    f = L.strom_from_haus("cs2", t, False, 32.5, [])
+    assert f["periods"][0]["mode"] == "fix" and f["periods"][0]["ap"] == 32.5 and L.unit_price(f, t)["ct"] == 32.5 and f["beginn"] == "2026-01-01"
+    e = L.einsp_from_haus("ce1", t, 8.11, ["me1"])
+    assert e["sparte"] == "einspeisung" and L.unit_price(e, t)["ct"] == 8.11 and e["periods"][0]["ust"] == 0
+    v = L.car_from_m8("vab", {"name": "BYD", "brand": "BYD", "model": "Dolphin Surf", "cap": 43.2, "ent": {"odo": "sensor.byd_km", "soc": "sensor.byd_soc"}})
+    assert v["name"] == "BYD" and v["antrieb"] == "elektro" and v["akku"] == 43.2 and v["sensor"] == "sensor.byd_km" and v["m8"] == "BYD"
+    assert L.stats_readings([(datetime(2026, 1, 1), 28000000.0)], L.UNIT_F["Wh"])[0]["v"] == 28000.0
+
+
+# ---------------------------------------------------------------- 1.3: genauer rechnen
+def test_weather_factor_and_forecast():
+    from datetime import timedelta as TD
+    a, b = date(2026, 7, 1), date(2026, 11, 20)
+    norm = {(a + TD(days=i)).isoformat(): L.NORM_T[(a + TD(days=i)).month - 1] for i in range((b - a).days)}
+    cold = {k: v - 2.0 for k, v in norm.items()}
+    assert L.weather_factor(norm, a, b)["faktor"] == 1.0
+    w = L.weather_factor(cold, a, b)
+    assert w["faktor"] < 1 and w["abw"] > 0
+    assert L.weather_factor({k: v for i, (k, v) in enumerate(cold.items()) if i % 3 == 0}, a, b) is None  # zu wenige Tage
+    m = meter([("2026-04-01T09:00", 18050.0), ("2026-09-01T09:00", 18200.0), ("2026-11-19T09:00", 18560.0)])
+    c = gas(abschlag={"betrag": 120, "rhythmus": "monat", "tag": 1})
+    t = date(2026, 11, 20)
+    f0, f1 = L.forecast(c, [m], t, 14000), L.forecast(c, [m], t, 14000, None, cold)
+    assert "wetter" not in f0 and f1["wetter"]["abw"] > 0 and f1["total"] < f0["total"]
+    assert any("kälter als normal" in g for g in f1["gruende"])
+
+
+def test_device_split():
+    days = {"2026-11-01": {"d1": [1.0, 0.0, 2.0, 0.6, 0.1, 1], "d2": [0.0, 0.0, 0.5, 0.15, 0, 1]}, "2026-11-02": {"d1": [0.0, 0.0, 1.0, 0.3, 0, 1]},
+            "2026-10-31": {"d1": [5.0, 0, 5.0, 1.0, 0, 1]}, "2026-11-03": {"weg": [9, 9, 9, 9, 0, 1]}}
+    r = L.device_split(days, {"d1": "Waschmaschine", "d2": "Trockner"}, date(2026, 11, 1), date(2026, 12, 1), 40.0)
+    assert [(x["name"], x["kwh"], x["eur"]) for x in r["rows"]] == [("Waschmaschine", 4.0, 0.9), ("Trockner", 0.5, 0.15)]
+    assert r["rows"][0]["pct"] == 10.0 and r["haus"] == 35.5 and r["pct"] == 11
+    assert L.device_split(days, {"d1": "W"}, date(2026, 11, 1), date(2026, 12, 1), None)["haus"] is None
+
+
+def test_muell_costs():
+    info = {"year": 2026, "total": 26, "done": 23, "incl": 13, "fee": 6.5}
+    m = L.muell_costs(info, 180.0)
+    assert m["extra_bisher"] == 65.0 and m["extra_jahr"] == 84.5 and m["jahr"] == 264.5 and m["frei"] == 0 and m["extra_n"] == 13
+    assert L.muell_costs(None, 0) is None
+    g = L.muell_costs(None, 150.0)
+    assert g["jahr"] == 150.0 and g["zaehlt"] is False
+    v = L.ha_values({"cards": {}, "contracts": [], "muell": m})
+    assert v["sensor"]["kosten_muell"]["value"] == 264.5
+    assert L.clean_data({"opts": {"muell": {"grund": "180,50"}}})["opts"]["muell"]["grund"] == 180.5

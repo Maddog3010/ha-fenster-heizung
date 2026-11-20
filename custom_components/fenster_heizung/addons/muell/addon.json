@@ -8,7 +8,7 @@
   "tag": "Abholtermine, Tonnen-Ampel und Erinnerung",
   "desc": "Abholtermine aus bis zu drei Abfallkalendern (zum Beispiel waste_collection_schedule), bis zu 10 Abfallarten mit eigenem Bild und Farbe, Tonnen-Ampel, Erinnerung am Vorabend, Vorwarnung für Sondertermine, Ansage und Licht in der Farbe der Tonne, Monatskalender und Kosten für den Restmüll.",
   "version": "1.0.0",
-  "build": 1,
+  "build": 2,
   "stage": "stabil",
   "api": 1,
   "core_min": "2026.11.1b12",

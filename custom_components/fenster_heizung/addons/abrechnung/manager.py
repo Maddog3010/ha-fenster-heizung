@@ -40,16 +40,18 @@ class Addon(SWAddon):
         self._day = _now().date().isoformat()
         self._dyn: dict[str, Any] = {"t": 0.0, "res": None, "busy": False}
         for c in ("get", "contract", "contract_del", "meter", "meter_del", "check", "read", "read_del", "swap", "opts", "abplan", "pay", "pay_del", "vgl",
-                  "inv", "inv_del", "inv_learn", "beleg_get", "car", "car_del", "entry", "entry_del", "item", "item_del", "book", "book_del", "switch", "m3"):
+                  "inv", "inv_del", "inv_learn", "beleg_get", "car", "car_del", "entry", "entry_del", "item", "item_del", "book", "book_del", "switch", "m3", "imp"):
             self.core.cmd(c, getattr(self, f"_c_{c}"))
         self.core.provide("preis_anbieter", self)
         self.core.provide("abrechnung", self)  # für Tags & Karten (Zählerstand, Tankbeleg, Vorrat entnommen)
         self._vals: dict[str, Any] = {"sensor": {}, "keys": []}
         self._vals_t = 0.0
         self._energy: dict[str, Any] = {}
+        self._temps: dict[str, Any] = {"t": None, "ent": "", "day": ""}
         self.core.every(300, self._tick)
         await self._mirror()
         self.hass.async_create_task(self._energy_check())
+        self.hass.async_create_task(self._temps_load())
 
     async def async_unload(self) -> None:
         self._save(0)
@@ -293,6 +295,8 @@ class Addon(SWAddon):
         self._ha_push()  # Preis der Stunde, Termine
         if int(time.time() // 300) % 12 == 0:
             self.hass.async_create_task(self._energy_check())
+        if self._temps.get("day") != _now().date().isoformat():
+            self.hass.async_create_task(self._temps_load())
         now = _now()
         day = now.date().isoformat()
         if day == self._day:
@@ -339,7 +343,7 @@ class Addon(SWAddon):
             ms = [mets[i] for i in c["meters"] if i in mets]
             k = L.cost(c, ms, start, today + timedelta(days=1), avg) if ms else None
             try:
-                fc = L.forecast(c, ms, today, self.data["opts"]["verbrauch"][sp], avg)
+                fc = L.forecast(c, ms, today, self.data["opts"]["verbrauch"][sp], avg, self._temps.get("t") if sp == "gas" else None)
             except Exception:  # noqa: BLE001 - eine fehlerhafte Hochrechnung darf die Seite nicht sperren
                 _LOGGER.exception("Modul 20: Hochrechnung %s", sp)
                 fc = None
@@ -395,7 +399,7 @@ class Addon(SWAddon):
                 "notify_svc": sorted(n for n in (self.hass.services.async_services().get("notify") or {}) if n not in ("notify", "persistent_notification"))[:30] if hasattr(self.hass.services, "async_services") else [],
                 "todos": sorted(s.entity_id for s in self.hass.states.async_all("todo"))[:20] if hasattr(self.hass.states, "async_all") else [], "today": today.isoformat(), "opts": self.data["opts"], "cards": cards, "contracts": contracts, "meters": meters,
                 "events": L.events(self.data, today), "managed": self.managed(), "haus": dict((getattr(haus, "data", None) or {}).get("price") or {}),
-                "tibber": self._dyn_ct(dt_util.now()) is not None, "m8": m8_names, "energy": self._energy, "max": self._is_max(), "m3gas": bool(self._m3_gas()), "ha_n": len(self._vals.get("keys") or []), "ents": bool(self.hass.data.get(DOMAIN, {}).get("abr_ent")), "gas_m3": self._gas_m3(), "dyncmp": self._dyn.get("res"), "sum": self._sum(cards),
+                "tibber": self._dyn_ct(dt_util.now()) is not None, "m8": m8_names, "energy": self._energy, "max": self._is_max(), "m3gas": bool(self._m3_gas()), "imp_n": sum(1 for x in self._imp_items() if x["ok"]), "geraete": self._devices(today), "outdoor": self._temps.get("ent") or "", "muell": self._muell(), "muell_on": self.hass.data.get(DOMAIN, {}).get("muell") is not None, "ha_n": len(self._vals.get("keys") or []), "ents": bool(self.hass.data.get(DOMAIN, {}).get("abr_ent")), "gas_m3": self._gas_m3(), "dyncmp": self._dyn.get("res"), "sum": self._sum(cards),
                 "ebuch": DOMAIN in self.hass.data and "ebuch" in self.hass.data[DOMAIN]}
 
     @staticmethod
@@ -559,7 +563,7 @@ class Addon(SWAddon):
         self._need_admin(admin)
         o = data.get("opts") if isinstance(data.get("opts"), dict) else {}
         cur = self.data["opts"]
-        merged = {**cur, **{k: o[k] for k in ("mirror", "notify", "remind", "tol", "todo", "solar", "sensoren") if k in o},
+        merged = {**cur, **{k: o[k] for k in ("mirror", "notify", "remind", "tol", "todo", "solar", "sensoren", "muell") if k in o},
                   "verbrauch": {**cur["verbrauch"], **(o.get("verbrauch") if isinstance(o.get("verbrauch"), dict) else {})}}
         self.data["opts"] = L.clean_data({"opts": merged})["opts"]
         self._save()
@@ -790,7 +794,7 @@ class Addon(SWAddon):
                 rows.append((t, float(x["state"])))
             except (KeyError, TypeError, ValueError):
                 continue
-        return L.stats_readings(rows, 0.001 if unit == "L" else 1.0)
+        return L.stats_readings(rows, L.UNIT_F.get(unit, 1.0))
 
     async def _c_m3(self, data: dict[str, Any], admin: bool) -> Any:
         """Gas aus Modul 3 übernehmen: ohne go nur die Vorschau, mit go anlegen. Modul 3 bekommt danach den Vertrag zurück (gespiegelt)."""
@@ -815,6 +819,174 @@ class Addon(SWAddon):
         await self._mirror()
         return {**self._view(), "saved": c["id"]}
 
+    # ---- 1.3: genauer rechnen – Außentemperatur (Modul 9) und Gerätestrom (Modul 4)
+    def _outdoor(self) -> str:
+        d = self.hass.data.get(DOMAIN, {})
+        lay = ((d.get("layout") or {}).get("wx") or {}) if isinstance(d.get("layout"), dict) else {}
+        H = (getattr(d.get("haus"), "data", None) or {}) if d.get("haus") is not None else {}
+        return str(lay.get("outdoor") or (H.get("wx") or {}).get("outdoor") or "")
+
+    async def _temps_load(self) -> None:
+        """Tagesmittel der Außentemperatur der letzten 130 Tage aus der Langzeitstatistik (Außenfühler aus Modul 9 bzw. Haus-Werten)."""
+        eid = self._outdoor()
+        self._temps = {"t": None, "ent": eid, "day": _now().date().isoformat()}
+        if not eid or not any(c["sparte"] == "gas" for c in self.data["contracts"]):
+            return
+        now = dt_util.now()
+        start = (now - timedelta(days=130)).replace(hour=0, minute=0, second=0, microsecond=0)
+        try:
+            from homeassistant.components.recorder import get_instance
+            from homeassistant.components.recorder.statistics import statistics_during_period
+
+            def job() -> dict[str, list[Any]]:
+                return statistics_during_period(self.hass, dt_util.as_utc(start), dt_util.as_utc(now), {eid}, "day", None, {"mean"})
+
+            res = await get_instance(self.hass).async_add_executor_job(job)
+        except Exception:  # noqa: BLE001
+            _LOGGER.debug("Modul 20: Außentemperatur %s nicht lesbar", eid, exc_info=True)
+            return
+        tz, out = dt_util.DEFAULT_TIME_ZONE, {}
+        for x in (res or {}).get(eid) or []:
+            try:
+                t = x["start"]
+                t = datetime.fromtimestamp(t, tz) if isinstance(t, (int, float)) else (t if isinstance(t, datetime) else datetime.fromisoformat(str(t))).astimezone(tz)
+                if x.get("mean") is not None:
+                    out[t.date().isoformat()] = round(float(x["mean"]), 2)
+            except (KeyError, TypeError, ValueError):
+                continue
+        self._temps["t"] = out or None
+        self._ha_push()
+
+    def _devices(self, today: Any) -> dict[str, Any] | None:
+        """Modul 4: Strom je Gerät im laufenden Abrechnungszeitraum des Stromvertrags."""
+        gm = self.hass.data.get(DOMAIN, {}).get("geraete")
+        c = L.active_contract(self.data["contracts"], "strom", today)
+        if gm is None or c is None:
+            return None
+        try:
+            names = {d["id"]: d["name"] for d in (gm._cfg().get("devices") or [])}  # noqa: SLF001
+            days = dict(getattr(gm, "days", {}) or {})
+        except Exception:  # noqa: BLE001
+            return None
+        if not names:
+            return None
+        s, _e = L.bounds(c, today)
+        mets = {m["id"]: m for m in self.data["meters"]}
+        k = L.cost(c, [mets[i] for i in c["meters"] if i in mets], s, today + timedelta(days=1)) if c["meters"] else None
+        return L.device_split(days, names, s, today + timedelta(days=1), (k or {}).get("menge"))
+
+    def _muell(self) -> dict[str, Any] | None:
+        """Modul 17: Leerungen und Zusatzkosten Restmüll, dazu die Grundgebühr aus den Einstellungen von Modul 20."""
+        mm = self.hass.data.get(DOMAIN, {}).get("muell")
+        info = None
+        if mm is not None and hasattr(mm, "cost_info"):
+            try:
+                info = mm.cost_info()
+            except Exception:  # noqa: BLE001
+                info = None
+        if mm is None:
+            return None
+        return L.muell_costs(info, self.data["opts"]["muell"]["grund"])
+
+    # ---- 1.2: aus den Modulen übernehmen (Strom, Einspeisung, Gas, Fahrzeuge)
+    def _unit(self, eid: str) -> str:
+        st = self.hass.states.get(eid) if eid else None
+        return str((st.attributes or {}).get("unit_of_measurement") or "").replace("m3", "m³") if st is not None else ""
+
+    def _fname(self, eid: str) -> str:
+        st = self.hass.states.get(eid) if eid else None
+        return str((st.attributes or {}).get("friendly_name") or eid) if st is not None else eid
+
+    def _imp_items(self) -> list[dict[str, Any]]:
+        """Was sich aus den anderen Modulen übernehmen lässt. ok = möglich, on = vorausgewählt."""
+        d = self.hass.data.get(DOMAIN, {})
+        H = (getattr(d.get("haus"), "data", None) or {}) if d.get("haus") is not None else {}
+        en, pr = (H.get("energy") or {}).get("ent") or {}, H.get("price") or {}
+        arts = {m["art"] for m in self.data["meters"]}
+        sps = {c["sparte"] for c in self.data["contracts"]}
+        out: list[dict[str, Any]] = []
+        for key, art, ek, nm in (("zb", "strom_bezug", "imp", "Stromzähler Bezug"), ("ze", "strom_einsp", "exp", "Stromzähler Einspeisung")):
+            eid, u = en.get(ek) or "", self._unit(en.get(ek) or "")
+            if art in arts:
+                continue
+            ok = bool(eid) and u in ("kWh", "Wh", "MWh")
+            out.append({"k": key, "g": "zaehler", "t": nm, "s": f"{self._fname(eid)} · Monatsstände aus der Statistik" if ok else ("Sensor misst nicht in kWh" if eid else "In Modul 3 unter Haus → Energiequellen kein Zähler gewählt"),
+                        "src": "Modul 3 · Energiequellen", "ok": ok, "on": ok, "eid": eid, "unit": u})
+        if "strom" not in sps:
+            tb = d.get("tibber")
+            dyn = bool(tb is not None and getattr(tb, "connected", False))
+            fix = pr.get("price_mode", "fix") == "fix"
+            ok = dyn or (fix and float(pr.get("price") or 0) > 0)
+            out.append({"k": "vs", "g": "vertrag", "t": "Stromvertrag", "s": "Tibber dynamisch · Endpreis von Tibber" if dyn else f"Festpreis {L._n(float(pr.get('price') or 0), 2)} ct/kWh" if ok else "Preis kommt aus einem Sensor – bitte selbst anlegen",
+                        "src": "Modul 14 · Tibber" if dyn else "Haus-Werte", "ok": ok, "on": ok, "dyn": dyn, "ct": float(pr.get("price") or 0)})
+        if "einspeisung" not in sps:
+            ok = pr.get("feed_mode", "fix") == "fix" and float(pr.get("feed") or 0) > 0
+            out.append({"k": "ve", "g": "vertrag", "t": "Einspeisevergütung", "s": f"{L._n(float(pr.get('feed') or 0), 2)} ct/kWh" if ok else "Keine feste Vergütung in den Haus-Werten",
+                        "src": "Haus-Werte", "ok": ok, "on": ok, "ct": float(pr.get("feed") or 0)})
+        g = self._m3_gas()
+        if g is not None:
+            out.append({"k": "gas", "g": "vertrag", "t": "Gasvertrag und Gaszähler", "s": f"{self._fname(g['ent'])} · Preise, Brennwert, Abschlag" + ("" if g["sensor_ok"] else " · Zähler ohne Sensor (kWh)"),
+                        "src": "Modul 3 · Gaszähler", "ok": True, "on": True})
+        wb = d.get("wallbox")
+        have = {v.get("m8") for v in self.data["fahrzeuge"]} | {v["name"] for v in self.data["fahrzeuge"]}
+        for v in ((getattr(wb, "cfg", None) or {}).get("vehicles") or []) if wb is not None else []:
+            if v.get("name") in have:
+                continue
+            odo = (v.get("ent") or {}).get("odo") or ""
+            out.append({"k": "car:" + str(v.get("id")), "g": "fahrzeug", "t": str(v.get("name")), "s": " · ".join(x for x in (f"Akku {L._n(v['cap'], 1)} kWh" if v.get("cap") else "", "Kilometerstand " + self._fname(odo) if odo else "ohne Kilometer-Sensor", "Ladungen verknüpft") if x),
+                        "src": "Modul 8 · Wallbox", "ok": len(self.data["fahrzeuge"]) < 8, "on": bool(v.get("cap") or odo), "v": v})  # Gastfahrzeuge ohne Daten nicht vorauswählen
+        return out
+
+    async def _c_imp(self, data: dict[str, Any], admin: bool) -> Any:
+        """Ohne go: Liste, was sich übernehmen lässt. Mit go und keys: anlegen – erst Zähler, dann Verträge (mit den Zählern verknüpft), dann Fahrzeuge."""
+        self._need_admin(admin)
+        items = self._imp_items()
+        if not data.get("go"):
+            return {"items": [{k: v for k, v in x.items() if k not in ("v", "eid", "unit", "ct", "dyn")} for x in items]}
+        want = {str(k) for k in data.get("keys") or []}
+        sel = [x for x in items if x["ok"] and x["k"] in want]
+        if not sel:
+            raise AddonError("Nichts ausgewählt.")
+        today = _now().date()
+        done: list[str] = []
+        new_m: dict[str, str] = {}
+        for x in [x for x in sel if x["g"] == "zaehler"]:
+            art = "strom_bezug" if x["k"] == "zb" else "strom_einsp"
+            mid = "m" + secrets.token_hex(3)
+            reads = await self._m3_reads(x["eid"], x["unit"])
+            m = L.clean_meter({"id": mid, "art": art, "name": "Strom Bezug" if art == "strom_bezug" else "Strom Einspeisung", "sensor": x["eid"], "readings": reads})
+            self.data["meters"].append(m)
+            new_m[art] = mid
+            done.append(f"{x['t']} ({len(m['readings'])} Monatsstände)")
+        by_art = lambda a: [m["id"] for m in self.data["meters"] if m["art"] == a][:1]  # noqa: E731
+        for x in sel:
+            if x["k"] == "vs":
+                c = L.strom_from_haus("c" + secrets.token_hex(3), today, x["dyn"], x["ct"], by_art("strom_bezug"))
+            elif x["k"] == "ve":
+                c = L.einsp_from_haus("c" + secrets.token_hex(3), today, x["ct"], by_art("strom_einsp"))
+            elif x["k"] == "gas":
+                g = self._m3_gas()
+                if g is None:
+                    continue
+                reads = await self._m3_reads(g["ent"], g["unit"]) if g["sensor_ok"] else []
+                r = L.from_modul3(g, today, "c" + secrets.token_hex(3), "m" + secrets.token_hex(3), reads, g["sensor_ok"])
+                self.data["meters"].append(r["meter"])
+                c = r["contract"]
+            elif x["g"] == "fahrzeug":
+                v = L.car_from_m8("v" + secrets.token_hex(3), x["v"])
+                if v is not None and len(self.data["fahrzeuge"]) < 8:
+                    self.data["fahrzeuge"].append(v)
+                    done.append(f"Fahrzeug {v['name']}")
+                continue
+            else:
+                continue
+            if c is not None:
+                self.data["contracts"].append(c)
+                done.append(x["t"])
+        self._save()
+        await self._mirror()
+        return {**self._view(), "done": done}
+
     def _is_max(self) -> bool:
         sm = self.hass.data.get(DOMAIN, {}).get("sponsor")
         try:
@@ -836,7 +1008,7 @@ class Addon(SWAddon):
         ms = [m for m in self.data["meters"] if m["id"] in c["meters"]]
         avg = self._dyn_avg() if c["sparte"] == "strom" else None
         try:
-            fc = L.forecast(c, ms, today, self.data["opts"]["verbrauch"][c["sparte"]], avg)
+            fc = L.forecast(c, ms, today, self.data["opts"]["verbrauch"][c["sparte"]], avg, self._temps.get("t") if c["sparte"] == "gas" else None)
             menge = fc.get("jahr_v") or self.data["opts"]["verbrauch"][c["sparte"]]
         except Exception:  # noqa: BLE001
             menge = self.data["opts"]["verbrauch"][c["sparte"]]
@@ -1090,7 +1262,7 @@ class Addon(SWAddon):
             for sp in ("strom", "gas", "wasser"):
                 k = L.active_contract(self.data["contracts"], sp, today)
                 if k:
-                    f = L.forecast(k, [mets[i] for i in k["meters"] if i in mets], today, self.data["opts"]["verbrauch"][sp], self._dyn_avg() if sp == "strom" else None)
+                    f = L.forecast(k, [mets[i] for i in k["meters"] if i in mets], today, self.data["opts"]["verbrauch"][sp], self._dyn_avg() if sp == "strom" else None, self._temps.get("t") if sp == "gas" else None)
                     if f.get("ergebnis") is not None:
                         erg.append(f["ergebnis"])
             if erg:

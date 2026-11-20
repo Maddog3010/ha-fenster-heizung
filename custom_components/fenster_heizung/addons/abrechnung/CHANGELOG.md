@@ -1,5 +1,14 @@
 # Modul 20 Abrechnungen
 
+## 1.3 Build 1 – 2026-11-20 (Stabil)
+- **Gas-Hochrechnung wetterbereinigt:** Mit dem Außenfühler aus Modul 9 (Tagesmittel aus der Langzeitstatistik) vergleicht Modul 20 die Gradtage der letzten bis zu 120 Tage mit dem Klimanormal (DWD 1991–2020, Heizgrenze 15 °C). War es kälter als normal, wird der gemessene Verbrauch für die Hochrechnung heruntergerechnet, bei wärmerem Wetter hoch – nur der Heizanteil, die Sommer-Grundlast (Warmwasser) bleibt. Die Gas-Karte zeigt „wetterbereinigt“, unter „Warum?“ steht, wie viel kälter oder wärmer es war. Ohne genug Tageswerte oder im Sommer bleibt alles wie bisher.
+- **Müllabfuhr (Modul 17):** Neue Karte in der Übersicht – Grundgebühr (in den Einstellungen von Modul 20 eintragen), Restmüll-Leerungen bisher und im Jahr, Zusatzleerungen über die inklusiven hinaus × Gebühr aus Modul 17, „Müll im Jahr“. Dazu ein Chip im Banner und der Sensor sensor.strom_waerme_abrechnung_kosten_muell. Ohne „Leerungen zählen“ in Modul 17 zählt nur die Grundgebühr.
+- **Wofür der Strom (Modul 4):** Neue Karte in der Übersicht – Strom je Gerät im laufenden Abrechnungszeitraum mit kWh, Sonnenanteil, Kosten und Anteil am gemessenen Verbrauch, dazu „übriges Haus“.
+
+## 1.2 Build 1 – 2026-11-20 (Stabil)
+- **Aus den Modulen übernehmen:** Ein Dialog sammelt, was die anderen Module schon wissen, und legt es mit einem Tipp an – Stromzähler Bezug und Einspeisung aus Modul 3 (Haus → Energiequellen) mit Sensor und bis zu 36 Monatsständen aus der Statistik, Stromvertrag (Tibber dynamisch aus Modul 14 oder Festpreis aus den Haus-Werten), Einspeisevergütung aus den Haus-Werten, Gasvertrag und Gaszähler aus Modul 3 und Elektroautos aus Modul 8 (Akku, Kilometer-Sensor, Ladungen gleich verknüpft). Jeder Punkt lässt sich abwählen; Verträge werden mit den Zählern verknüpft. Knopf im Banner (mit Anzahl), in Verträge, auf leeren Karten, bei leeren Zählern und Fahrzeugen.
+- Leere Spartenkarten: Knöpfe untereinander statt gequetscht nebeneinander
+
 ## 1.1 Build 1 – 2026-11-20 (Stabil)
 - **Gas aus Modul 3 übernehmen:** Hat Modul 3 einen Gaszähler und Modul 20 noch keinen Gasvertrag, legt ein Tipp Vertrag und Zähler an – Preisliste (brutto/netto, MwSt, Grundpreis je Monat), Abrechnungsjahr, Brennwert und Zustandszahl, Abschlag mit Abbuchungstag, abweichende Abschläge früherer Jahre als Abschlagsplan. Der Zähler bekommt den Sensor aus Modul 3 und bis zu 36 Monatsstände aus der Langzeitstatistik von Home Assistant (Zählertausch wird erkannt). Vorher zeigt ein Dialog, was übernommen wird. Knopf in Verträge, auf der leeren Gas-Karte und bei „Vertrag hinzufügen“.
 

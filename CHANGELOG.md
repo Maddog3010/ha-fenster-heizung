@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b32] - 2026-11-20
+
+**Modul 20 · Abrechnungen** (Addon) v1.3 Build 1 – Daten aus den anderen Modulen. **Modul 17 · Müllabfuhr** 1.0.0 Build 2.
+
+### Neu
+- **Aus den Modulen übernehmen:** Ein Dialog sammelt, was die anderen Module schon wissen, und legt es mit einem Tipp an – Stromzähler Bezug und Einspeisung aus Modul 3 (Haus → Energiequellen) mit Sensor und bis zu 36 Monatsständen aus der Langzeitstatistik, Stromvertrag (Tibber dynamisch aus Modul 14 oder Festpreis aus den Haus-Werten), Einspeisevergütung aus den Haus-Werten, Gasvertrag und Gaszähler aus Modul 3 und Elektroautos aus Modul 8 (Akku, Kilometer-Sensor, Ladungen gleich verknüpft). Jeder Punkt lässt sich abwählen, Verträge werden mit den Zählern verknüpft. Knopf im Banner (mit Anzahl), in Verträge, auf leeren Karten und bei leeren Zählern und Fahrzeugen.
+- **Gas-Hochrechnung wetterbereinigt (Modul 9):** Mit den Tagesmitteln des Außenfühlers vergleicht Modul 20 die Heizgradtage der letzten bis zu 120 Tage mit dem Klimanormal (DWD 1991–2020, Heizgrenze 15 °C). War es kälter als normal, wird der gemessene Verbrauch für die Hochrechnung heruntergerechnet, bei wärmerem Wetter hoch – nur der Heizanteil, die Grundlast für Warmwasser bleibt. Die Gas-Karte zeigt „wetterbereinigt“, unter „Warum?“ steht die Abweichung.
+- **Wofür der Strom (Modul 4):** Neue Karte mit dem Strom je Gerät im laufenden Abrechnungszeitraum – kWh, Sonnenanteil, Kosten, Anteil am gemessenen Verbrauch und „übriges Haus“.
+- **Müllabfuhr (Modul 17):** Neue Karte mit Grundgebühr (in den Einstellungen von Modul 20), Restmüll-Leerungen bisher und im Jahr, Zusatzleerungen × Gebühr aus Modul 17 und „Müll im Jahr“. Chip im Banner und Sensor `sensor.strom_waerme_abrechnung_kosten_muell`. Modul 17 gibt die Zahlen weiter, wenn „Leerungen zählen“ an ist.
+
+### Geändert
+- Modul 20: Knöpfe auf leeren Spartenkarten stehen untereinander.
+
+### Hinweis
+- Monatsstände, Außentemperatur und Gaszähler kommen aus der Langzeitstatistik von Home Assistant. Sensoren ohne Statistik (state_class) liefern keine Vergangenheit – dann geht es mit den Tagesständen ab heute weiter.
+
 ## [2026.11.4b31] - 2026-11-20
 
 **Modul 20 · Abrechnungen** (Addon) v1.1 Build 1.
