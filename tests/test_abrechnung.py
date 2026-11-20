@@ -575,3 +575,34 @@ def test_fester_kwh_abzug():
     f0 = L.forecast({**c, "anlagen": {**c["anlagen"], "abzug_kwh": 0}}, [m], date(2026, 11, 20), 4200)
     assert f["abzug"]["kwh"] == 164.0 and f["abzug"]["eur"] == round(164 * 8.11 / 100, 2)
     assert round(f0["total"] - f["total"], 2) == f["abzug"]["eur"] and f["bisher"] < f0["bisher"]
+
+
+def test_wasser_grundgebuehr_getrennt():
+    c = L.clean_contract({"id": "cw", "sparte": "wasser", "beginn": "2026-01-01", "periods": [{"ab": "2026-01-01", "frisch": 2.49, "abw": 3.29, "zg": 2.0, "zga": 3.5, "brutto": False, "ust": 7}]})
+    u = L.unit_price(c, date(2026, 11, 20))
+    assert u["teile"]["grund_wasser"] == round(2.0 * 1.07, 4) and u["teile"]["grund_abwasser"] == 3.5 and u["grund"] == round(2.0 * 1.07 + 3.5, 4)
+    assert L.unit_price(L.clean_contract({**c, "periods": [{"ab": "2026-01-01", "frisch": 2.49, "abw": 3.29, "zg": 2.0}]}), date(2026, 11, 20))["teile"]["grund_abwasser"] == 0
+
+
+def test_grundgebuehr_jaehrlich():
+    w = L.clean_contract({"id": "cw", "sparte": "wasser", "beginn": "2026-01-01", "periods": [{"ab": "2026-01-01", "frisch": 2.0, "abw": 3.0, "zg": 24.0, "zga": 42.0, "gjahr": True, "brutto": True}]})
+    u = L.unit_price(w, date(2026, 6, 1))
+    assert u["teile"]["grund_wasser"] == 2.0 and u["teile"]["grund_abwasser"] == 3.5 and u["grund"] == 5.5
+    s = L.clean_contract({"id": "cs", "sparte": "strom", "beginn": "2026-01-01", "periods": [{"ab": "2026-01-01", "ap": 30, "gp": 1200, "gjahr": True}]})
+    assert s["periods"][0]["gp"] == 1200 and L.unit_price(s, date(2026, 6, 1))["grund"] == 100.0
+    assert L.clean_contract({**s, "periods": [{"ab": "2026-01-01", "ap": 30, "gp": 1200}]})["periods"][0]["gp"] == 500  # pro Monat begrenzt
+
+
+def test_einmalige_gebuehren():
+    c = L.clean_contract({"id": "cw", "sparte": "wasser", "beginn": "2026-01-01", "abschlag": {"betrag": 50, "rhythmus": "monat", "tag": 1},
+                          "periods": [{"ab": "2026-01-01", "frisch": 2.0, "abw": 3.0, "zg": 2.0}],
+                          "einmal": [{"d": "2026-03-10", "betrag": 45, "text": "Zählerwechsel"}, {"d": "2026-12-01", "betrag": 10}, {"d": "kaputt", "betrag": 5}, {"d": "2026-04-01", "betrag": 0}]})
+    assert [x["text"] for x in c["einmal"]] == ["Zählerwechsel", "Einmalige Gebühr"]
+    base = L.forecast({**c, "einmal": []}, [], date(2026, 6, 1), 100)
+    f = L.forecast(c, [], date(2026, 6, 1), 100)
+    assert round(f["total"] - base["total"], 2) == 55.0 and round(f["bisher"] - base["bisher"], 2) == 45.0
+    assert f["ergebnis"] == round(base["ergebnis"] - 55, 2) and len(f["einmal"]) == 2 and f["einmal"][0]["faellig"] and not f["einmal"][1]["faellig"]
+    mar = next(m for m in f["monate"] if m["m"] == "2026-03")
+    mar0 = next(m for m in base["monate"] if m["m"] == "2026-03")
+    assert round(mar["kosten"] - mar0["kosten"], 2) == 45.0 and round(f["monate"][-1]["cum_k"] - base["monate"][-1]["cum_k"], 2) == 55.0
+    assert any("Zählerwechsel" in r for r in f["gruende"])

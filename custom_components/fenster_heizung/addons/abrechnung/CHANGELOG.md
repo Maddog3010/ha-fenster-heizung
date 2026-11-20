@@ -1,5 +1,10 @@
 # Modul 20 Abrechnungen
 
+## 1.6 Build 1 – 2026-11-20 (Stabil)
+- **Grundgebühr für Wasser und Abwasser getrennt:** Im Preis von Wasser & Abwasser gibt es jetzt „Grundgebühr Wasser“ (Zählergebühr, mit Umsatzsteuer) und „Grundgebühr Abwasser“ (ohne Umsatzsteuer). Die bisherige Zählergebühr bleibt als Grundgebühr Wasser erhalten.
+- **Grundgebühren pro Monat oder pro Jahr:** Im Preisdialog umschaltbar – für Wasser/Abwasser sowie Grundpreis und Messstellenbetrieb bei Strom und Gas. Beim Umschalten werden eingetragene Werte umgerechnet; die Vertragsansicht zeigt Jahresbetrag und Monatswert.
+- **Einmalige Gebühren:** Im Vertrag unter „Einmalige Gebühren“ Datum, Betrag und Bezeichnung eintragen (z. B. Zählerwechsel, Mahngebühr; negativ = Gutschrift). Sie fließen am Datum in Kosten bisher, Hochrechnung, Guthaben/Nachzahlung, Monatskurve und Rechnungsprüfung ein und stehen auf der Karte („davon Zählerwechsel“), in der Vertragsansicht und in der Begründung. Bei der Einspeisung mindern sie die Vergütung.
+
 ## 1.5 Build 1 – 2026-11-20 (Stabil)
 - **Einspeisung mit Abschlägen:** Beim Einspeisevertrag lässt sich eintragen, was der Netzbetreiber monatlich (oder je Quartal) überweist – auch je Abrechnungsjahr und einzelne Monate wie bei Gas und Strom. Modul 20 rechnet hoch, ob mit der Abrechnung eine **Nachzahlung an dich** oder eine **Rückzahlung** kommt (mit Bandbreite). Einspeise-Karte mit „Abschläge erhalten“ und Balken „ausgezahlt“, Ring im Banner, Ergebnis in der großen Zahl, eigenes Register in Abschläge (erhalten statt bezahlt, Zahlung buchen, 0 € = nicht gekommen) und Sensor „Ergebnis Einspeisung“.
 - **Balkonkraftwerk am selben Zähler:** Im Einspeisevertrag unter „Anlagen an diesem Zähler“ Hauptanlage und Balkonkraftwerk mit Modulleistung eintragen und wählen, wie der Netzbetreiber rechnet: **Mischsatz nach Leistung** (§ 24 Abs. 3 EEG, Verhältnis der installierten Modulleistung, Balkonkraftwerk meist unentgeltlich = 0 ct; Beispiel der Bundesnetzagentur 8 kWp + 1 kWp: 8,96 statt 10,08 ct) oder **fester Abzug in kWh je Jahr** laut Abrechnung. Vertrag, Karte, Jahreskurve und Hochrechnung rechnen damit.

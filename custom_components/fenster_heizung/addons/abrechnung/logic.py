@@ -106,12 +106,15 @@ def clean_period(sparte: str, raw: Any) -> dict[str, Any] | None:
     ab = _d(r.get("ab"))
     if not ab:
         return None
-    base = {"ab": ab, "brutto": bool(r.get("brutto", True)), "note": _t(r.get("note"), 60)}
+    gj = bool(r.get("gjahr")) and sparte != "einspeisung"  # Grundgebühren als Jahresbetrag eingegeben
+    k = 12 if gj else 1
+    base = {"ab": ab, "brutto": bool(r.get("brutto", True)), "note": _t(r.get("note"), 60), **({"gjahr": True} if gj else {})}
     if sparte == "wasser":
         return {**base, "frisch": _f(r.get("frisch"), 0, 50, 0.0), "abw": _f(r.get("abw"), 0, 50, 0.0), "nieder": _f(r.get("nieder"), 0, 20, 0.0),
-                "flaeche": _f(r.get("flaeche"), 0, 100000, 0.0), "zg": _f(r.get("zg"), 0, 200, 0.0), "ust": _f(r.get("ust"), 0, 30, 7.0)}
+                "flaeche": _f(r.get("flaeche"), 0, 100000, 0.0), "zg": _f(r.get("zg"), 0, 200 * k, 0.0),
+                "zga": _f(r.get("zga"), 0, 200 * k, 0.0), "ust": _f(r.get("ust"), 0, 30, 7.0)}  # zg = Grundgebühr Wasser (mit USt), zga = Grundgebühr Abwasser (ohne USt)
     return {**base, "mode": "dyn" if r.get("mode") == "dyn" and sparte == "strom" else "fix", "ap": _f(r.get("ap"), 0, 500, 0.0), "auf": _f(r.get("auf"), 0, 100, 0.0),
-            "gp": _f(r.get("gp"), 0, 500, 0.0), "mess": _f(r.get("mess"), 0, 200, 0.0), "co2": _f(r.get("co2"), 0, 100, 0.0), "steuer": _f(r.get("steuer"), 0, 100, 0.0),
+            "gp": _f(r.get("gp"), 0, 500 * k, 0.0), "mess": _f(r.get("mess"), 0, 200 * k, 0.0), "co2": _f(r.get("co2"), 0, 100, 0.0), "steuer": _f(r.get("steuer"), 0, 100, 0.0),
             "ust": _f(r.get("ust"), 0, 30, 0.0 if sparte == "einspeisung" else 19.0)}
 
 
@@ -132,6 +135,7 @@ def clean_contract(raw: Any) -> dict[str, Any] | None:
         "brennwert": _f(r.get("brennwert"), 5, 40, DEF_BRENNWERT), "zustand": _f(r.get("zustand"), 0.5, 1.2, DEF_ZUSTAND),
         "meters": [m for m in r.get("meters") or [] if isinstance(m, str) and _ID.match(m)][:6], "periods": periods,
         "abplan": clean_abplan(r.get("abplan")), "zahlungen": clean_pays(r.get("zahlungen")),
+        "einmal": clean_einmal(r.get("einmal")),
         "rechnungen": sorted((x for x in (clean_invoice(y) for y in r.get("rechnungen") or []) if x), key=lambda x: x["bis"])[-30:],
         **({"anlagen": clean_anlagen(r.get("anlagen"))} if sp == "einspeisung" else {}),
     }
@@ -161,6 +165,27 @@ def mix_rate(c: dict[str, Any], ct: float) -> tuple[float, dict[str, Any] | None
     tot = a["kwp"] + sum(x["kwp"] for x in w)
     mix = ct * a["kwp"] / tot + sum(x["kwp"] * x["ct"] for x in w) / tot
     return mix, {"satz": round(ct, 4), "mix": round(mix, 4), "anteil": round(a["kwp"] / tot * 100, 1), "abzug": round(ct - mix, 4), "kwp": a["kwp"], "weitere": w, "summe_kwp": round(tot, 3)}
+
+
+def clean_einmal(raw: Any) -> list[dict[str, Any]]:
+    """Einmalige Gebühren am Vertrag (Zählerwechsel, Mahngebühr, Anschluss …): Datum, Betrag brutto, Bezeichnung. Negativ = Gutschrift."""
+    out = []
+    for x in raw if isinstance(raw, list) else []:
+        if not isinstance(x, dict) or not _d(x.get("d")):
+            continue
+        b = _f(x.get("betrag"), -5000, 5000, 0.0)
+        if b:
+            out.append({"d": _d(x.get("d")), "betrag": round(b, 2), "text": _t(x.get("text"), 40) or "Einmalige Gebühr"})
+    return sorted(out, key=lambda x: x["d"])[-40:]
+
+
+def einmal_in(c: dict[str, Any], a: date, b: date) -> list[dict[str, Any]]:
+    """Einmalige Gebühren mit Datum in [a, b)."""
+    return [x for x in c.get("einmal") or [] if a.isoformat() <= x["d"] < b.isoformat()]
+
+
+def einmal_sum(c: dict[str, Any], a: date, b: date) -> float:
+    return round(sum(x["betrag"] for x in einmal_in(c, a, b)), 2)
 
 
 def clean_abplan(raw: Any) -> list[dict[str, Any]]:
@@ -280,6 +305,11 @@ def active_contract(contracts: list[dict[str, Any]], sparte: str, day: date) -> 
     return max(ok, key=lambda c: c["beginn"]) if ok else None
 
 
+def _gm(x: float, p: dict[str, Any]) -> float:
+    """Grundgebühr je Monat – als Jahresbetrag eingegeben wird durch 12 geteilt."""
+    return x / 12 if p.get("gjahr") else x
+
+
 def _g(x: float, p: dict[str, Any]) -> float:
     """Brutto: Eingaben können brutto oder netto sein, gerechnet und angezeigt wird immer brutto."""
     return x if p.get("brutto", True) else x * (1 + p.get("ust", 0) / 100)
@@ -297,8 +327,9 @@ def unit_price(c: dict[str, Any], day: date, dyn_ct: float | None = None) -> dic
         return None
     if c["sparte"] == "wasser":
         ct = (_g(p["frisch"], p) + p["abw"]) * 100  # Abwasser ist eine Gebühr ohne Umsatzsteuer
-        return {"ct": round(ct, 4), "unit": "m³", "grund": round(_g(p["zg"], p), 4), "jahr": round(p["nieder"] * p["flaeche"], 2), "dyn": False, "ab": p["ab"],
-                "teile": {"frisch": round(_g(p["frisch"], p), 4), "abw": p["abw"], "nieder": p["nieder"], "flaeche": p["flaeche"]}}
+        return {"ct": round(ct, 4), "unit": "m³", "grund": round(_gm(_g(p["zg"], p) + p.get("zga", 0.0), p), 4), "jahr": round(p["nieder"] * p["flaeche"], 2), "dyn": False, "ab": p["ab"],
+                "teile": {"frisch": round(_g(p["frisch"], p), 4), "abw": p["abw"], "nieder": p["nieder"], "flaeche": p["flaeche"],
+                          "grund_wasser": round(_gm(_g(p["zg"], p), p), 4), "grund_abwasser": round(_gm(p.get("zga", 0.0), p), 4)}}
     dyn = p.get("mode") == "dyn"
     if dyn:
         ct = None if dyn_ct is None else dyn_ct + _g(p["auf"], p)
@@ -307,7 +338,7 @@ def unit_price(c: dict[str, Any], day: date, dyn_ct: float | None = None) -> dic
     mx = None
     if ct is not None and c["sparte"] == "einspeisung":
         ct, mx = mix_rate(c, ct)
-    out = {"ct": None if ct is None else round(ct, 4), "unit": "kWh", "grund": round(_g(p["gp"] + p["mess"], p), 4), "jahr": 0.0, "dyn": dyn, "ab": p["ab"], **({"mix": mx} if mx else {})}
+    out = {"ct": None if ct is None else round(ct, 4), "unit": "kWh", "grund": round(_gm(_g(p["gp"] + p["mess"], p), p), 4), "jahr": 0.0, "dyn": dyn, "ab": p["ab"], **({"mix": mx} if mx else {})}
     if c["sparte"] == "gas" and ct is not None:
         out["ct_m3"] = round(ct * gas_factor(c), 4)
     return out
@@ -814,6 +845,11 @@ def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbr
     if abz:
         total_eur = round(total_eur - abz["eur"], 2)
         bis = {**bis, "eur": bis["eur"] - Decimal(str(abz["eur_bis"]))}
+    sg = 1 if bezug else -1  # Einspeisung: eine Gebühr mindert die Vergütung
+    em = einmal_in(c, s, e)
+    if em:
+        total_eur = round(total_eur + sg * sum(x["betrag"] for x in em), 2)
+        bis = {**bis, "eur": bis["eur"] + Decimal(str(sg * einmal_sum(c, s, t1)))}
     res: dict[str, Any] = {
         "start": s.isoformat(), "ende": e.isoformat(), "tage": (e - s).days, "vergangen": (t1 - s).days, "zahl": c.get("zahl", "jahr"),
         "bisher": money(bis["eur"]), "menge_bisher": round(bis["menge"], 3), "gemessen": measured, "geschaetzt": bool(bis["est"]),
@@ -837,6 +873,8 @@ def forecast(c: dict[str, Any], meters: list[dict[str, Any]], today: date, verbr
         res["erg_hi"] = round(res["hi"] - ab_total, 2)
     if abz:
         res["abzug"] = abz
+    if em:
+        res["einmal"] = [{**x, "faellig": x["d"] <= today.isoformat()} for x in em]
     if wx:
         res["wetter"] = wx
     res["empf"] = recommend(c, res, today)
@@ -892,6 +930,9 @@ def reasons(c: dict[str, Any], f: dict[str, Any], today: date, implied: float | 
             out.append(f"Preis ändert sich am {_de(x['ab'])} um {'+' if x['pct'] > 0 else ''}{str(x['pct']).replace('.', ',')} %")
     if f.get("bonus"):
         out.append(f"Bonus {_eur(f['bonus'])} ist eingerechnet")
+    if f.get("einmal"):
+        em = f["einmal"]
+        out.append(f"{'Einmalige Gebühr' if len(em) == 1 else f'{len(em)} einmalige Gebühren'} eingerechnet: " + ", ".join(f"{x['text']} {_eur(x['betrag'])}" for x in em[:2]))
     wx = f.get("wetter")
     if wx and abs(wx["abw"]) >= 3:
         out.insert(0, f"Die letzten {wx['tage']} Tage waren {abs(wx['abw'])} % {'kälter' if wx['abw'] > 0 else 'wärmer'} als normal – hochgerechnet ist mit normalem Wetter")
@@ -932,6 +973,11 @@ def months(c: dict[str, Any], meters: list[dict[str, Any]], s: date, e: date, to
             r = _rest(c, max(a, t1), b, annual, prof, gfrac, dyn_ct)
             kosten += r["arbeit"] + r["grund"]
             unsicher = r["arbeit"] * Decimal(str(pct))
+        sg = -1 if c["sparte"] == "einspeisung" else 1
+        for x in einmal_in(c, a, b):
+            kosten += Decimal(str(sg * x["betrag"]))
+            if x["d"] <= today.isoformat():
+                k_bis += Decimal(str(sg * x["betrag"]))
         z = sum(x["betrag"] for x in plan if a.isoformat() <= x["d"] < b.isoformat())
         zb = sum(x["betrag"] for x in plan if a.isoformat() <= x["d"] < b.isoformat() and x["d"] <= today.isoformat())
         cum_k += money(kosten)
@@ -1051,7 +1097,8 @@ def expected_cost(c: dict[str, Any], meters: list[dict[str, Any]], inv: dict[str
         else:
             arbeit += Decimal(str(u["ct"])) * Decimal(str(v)) / 100
     bonus = c["bonus"] if c.get("bonus") and von <= (parse_date(c.get("beginn")) or date(1900, 1, 1)) <= bis else 0.0
-    return money(arbeit + grund) - bonus
+    fee = einmal_sum(c, von, d1) * (-1 if c["sparte"] == "einspeisung" else 1)
+    return round(money(arbeit + grund) - bonus + fee, 2)
 
 
 def _inv_factor(c: dict[str, Any], inv: dict[str, Any]) -> float:

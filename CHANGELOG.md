@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b35] - 2026-11-20
+
+**Modul 20 · Abrechnungen** (Addon) v1.6 Build 1 – Grundgebühren und einmalige Gebühren.
+
+### Neu
+- **Grundgebühr für Wasser und Abwasser getrennt:** Im Preis von Wasser & Abwasser gibt es jetzt „Grundgebühr Wasser“ (Zählergebühr, mit Umsatzsteuer) und „Grundgebühr Abwasser“ (ohne Umsatzsteuer). Die bisherige Zählergebühr bleibt als Grundgebühr Wasser erhalten.
+- **Grundgebühren pro Monat oder pro Jahr:** Im Preisdialog umschaltbar – für Wasser/Abwasser sowie Grundpreis und Messstellenbetrieb bei Strom und Gas. Beim Umschalten werden eingetragene Werte umgerechnet; die Vertragsansicht zeigt Jahresbetrag und Monatswert.
+- **Einmalige Gebühren:** Im Vertrag unter „Einmalige Gebühren“ Datum, Betrag und Bezeichnung eintragen (z. B. Zählerwechsel, Mahngebühr; negativ = Gutschrift). Sie fließen am Datum in Kosten bisher, Hochrechnung, Guthaben/Nachzahlung, Monatskurve und Rechnungsprüfung ein und stehen auf der Karte („davon Zählerwechsel“), in der Vertragsansicht und in der Begründung. Bei der Einspeisung mindern sie die Vergütung.
+
 ## [2026.11.4b34] - 2026-11-20
 
 **Modul 20 · Abrechnungen** (Addon) v1.5 Build 1 – Einspeisung mit Abschlägen und Balkonkraftwerk.
