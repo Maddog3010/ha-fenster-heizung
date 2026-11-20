@@ -48,6 +48,15 @@ class Addon(SWAddon):
         self._vals_t = 0.0
         self._energy: dict[str, Any] = {}
         self._temps: dict[str, Any] = {"t": None, "ent": "", "day": ""}
+        if "m3b33" not in self.data["fixes"]:
+            # Gasverträge aus Modul 3 (b31/b32): Brennwert, Grundpreis und abweichende Monate nachträglich richtigstellen
+            for c in self.data["contracts"]:
+                if c["sparte"] == "gas" and (c.get("tarif") == "aus Modul 3" or any(p.get("note") == "aus Modul 3" for p in c["periods"])):
+                    done = L.fix_m3_import(c, self.data.get("gas_prev"))
+                    if done:
+                        self.core.log("info", "Modul 20: Gasvertrag aus Modul 3 berichtigt – " + ", ".join(done))
+            self.data["fixes"].append("m3b33")
+            self._save(0)
         self.core.every(300, self._tick)
         await self._mirror()
         self.hass.async_create_task(self._energy_check())

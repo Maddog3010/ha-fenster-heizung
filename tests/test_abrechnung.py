@@ -448,7 +448,7 @@ def test_from_modul3():
     assert c["brennwert"] == 11.4 and c["zustand"] == 0.95 and c["abschlag"] == {"betrag": 120.0, "rhythmus": "monat", "tag": 5}
     assert [(x["ab"], x["betrag"]) for x in c["abplan"]] == [("2025-04-01", 130.0), ("2026-04-01", 120.0)]
     assert m["sensor"] == "sensor.gas" and len(m["readings"]) == 3 and m["readings"][0]["src"] == "sensor"
-    assert r["monate_abweichend"] == ["2025"]
+    assert r["monate_abweichend"] == [] and c["zahlungen"] == [{"d": "2025-07-05", "betrag": 0.0, "note": "Monat abweichend (Modul 3)"}]
     assert L.unit_price(c, date(2026, 11, 20))["ct"] == 10.5
     n = L.from_modul3({**g, "netto": True, "hw": 0, "zz": 0, "years": {}, "brw": 10.4}, date(2026, 11, 20), "c4", "m4", [], False)
     assert n["contract"]["periods"][0]["brutto"] is False and n["contract"]["brennwert"] == 10.4 and n["contract"]["zustand"] == 1.0 and n["meter"]["sensor"] == ""
@@ -512,3 +512,18 @@ def test_muell_costs():
     v = L.ha_values({"cards": {}, "contracts": [], "muell": m})
     assert v["sensor"]["kosten_muell"]["value"] == 264.5
     assert L.clean_data({"opts": {"muell": {"grund": "180,50"}}})["opts"]["muell"]["grund"] == 180.5
+
+
+
+def test_m3_fixes():
+    g = {"ent": "sensor.gas", "price": 14.07, "grund": 11.70, "gunit": "y", "netto": True, "mwst": 19, "hw": 25.9, "zz": 0.9509, "start": 4, "abschlag": 0, "absday": 16,
+         "prices": [], "years": {"2026": {"abs": 120, "absm": {"0": 140}}}}
+    r = L.from_modul3(g, date(2026, 11, 20), "c1", "m1", [], True)
+    c = r["contract"]
+    assert c["brennwert"] == 25.9 and c["periods"][0]["gp"] == 11.7 and c["zahlungen"][0] == {"d": "2026-04-16", "betrag": 140.0, "note": "Monat abweichend (Modul 3)"}
+    # schon mit b31/b32 übernommen: Brennwert 15, Grundpreis /12, ohne Monate
+    old = L.clean_contract({**c, "brennwert": 15.0, "zahlungen": [], "periods": [{**c["periods"][0], "gp": 0.975}, {**c["periods"][0], "ab": "2026-01-01", "gp": 11.7}]})
+    done = L.fix_m3_import(old, g)
+    assert old["brennwert"] == 25.9 and [p["gp"] for p in old["periods"]] == [11.7, 11.7] and len(old["zahlungen"]) == 1 and len(done) == 3
+    assert L.fix_m3_import(old, g) == []  # zweimal ändert nichts
+    assert L.from_modul3({**g, "grund": 168.0}, date(2026, 11, 20), "c2", "m2", [], True)["contract"]["periods"][0]["gp"] == 14.0

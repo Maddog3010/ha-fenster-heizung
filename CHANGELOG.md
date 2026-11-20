@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b33] - 2026-11-20
+
+**Modul 20 · Abrechnungen** (Addon) v1.4 Build 1.
+
+### Neu
+- **Abschläge je Abrechnungsjahr wie in Modul 3:** Im Vertrag (Bearbeiten) je Abrechnungsjahr ein Betrag in €/Monat (leer = wie davor) und „Einzelne Monate anpassen“ mit allen zwölf Monaten (0 = ausgefallen). Hochrechnung, Empfehlung und Register Abschläge rechnen damit.
+- **Brennwert bis 40 kWh/m³** (vorher 15) – für Flüssiggas (gasförmig etwa 25–28 kWh/m³).
+
+### Behoben
+- **Übernahme aus Modul 3:** Ein Grundpreis „pro Jahr“ unter 40 € wurde durch 12 geteilt – er gilt jetzt als Monatswert. Ein Brennwert über 15 wurde abgeschnitten, einzelne abweichende Abschlags-Monate fehlten. Schon übernommene Gasverträge werden beim Start einmal berichtigt (mit den Werten aus Modul 3 von vor der Übernahme); im Protokoll steht, was geändert wurde. Selbst korrigierte Grundpreise bleiben.
+- **Datumsfelder im Vertrag:** Nach dem Auf- oder Zuklappen im Bearbeiten-Dialog konnte ein Datum zu „undefined.undefined.…“ werden und das Speichern scheiterte.
+
 ## [2026.11.4b32] - 2026-11-20
 
 **Modul 20 · Abrechnungen** (Addon) v1.3 Build 1 – Daten aus den anderen Modulen. **Modul 17 · Müllabfuhr** 1.0.0 Build 2.

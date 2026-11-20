@@ -129,7 +129,7 @@ def clean_contract(raw: Any) -> dict[str, Any] | None:
         "garantie": _d(r.get("garantie")), "bonus": _f(r.get("bonus"), 0, 2000, 0.0), "abr": abr if re.fullmatch(r"\d{2}-\d{2}", abr) else "01-01",
         "zahl": r.get("zahl") if r.get("zahl") in ("jahr", "quartal", "monat") else "jahr",
         "abschlag": {"betrag": _f(ab.get("betrag"), 0, 5000, 0.0), "rhythmus": ab.get("rhythmus") if ab.get("rhythmus") in ("monat", "quartal") else "monat", "tag": int(_f(ab.get("tag"), 1, 28, 1))},
-        "brennwert": _f(r.get("brennwert"), 5, 15, DEF_BRENNWERT), "zustand": _f(r.get("zustand"), 0.5, 1.2, DEF_ZUSTAND),
+        "brennwert": _f(r.get("brennwert"), 5, 40, DEF_BRENNWERT), "zustand": _f(r.get("zustand"), 0.5, 1.2, DEF_ZUSTAND),
         "meters": [m for m in r.get("meters") or [] if isinstance(m, str) and _ID.match(m)][:6], "periods": periods,
         "abplan": clean_abplan(r.get("abplan")), "zahlungen": clean_pays(r.get("zahlungen")),
         "rechnungen": sorted((x for x in (clean_invoice(y) for y in r.get("rechnungen") or []) if x), key=lambda x: x["bis"])[-30:],
@@ -232,7 +232,8 @@ def clean_data(raw: Any) -> dict[str, Any]:
             st.append(v)
     sent = r.get("sent") if isinstance(r.get("sent"), dict) else {}
     return {"v": SCHEMA, "opts": opts, "fahrzeuge": cars[:8], "vorraete": st[:30], "sent": {str(k)[:40]: str(v)[:10] for k, v in list(sent.items())[-200:]},
-            "contracts": cs[:24], "meters": ms[:16], "haus_prev": hp, "gas_prev": gp}
+            "contracts": cs[:24], "meters": ms[:16], "haus_prev": hp, "gas_prev": gp,
+            "fixes": [str(x)[:20] for x in (r.get("fixes") or []) if isinstance(x, str)][:20]}
 
 
 # --------------------------------------------------------------------------- Verträge und Preise
@@ -933,7 +934,7 @@ def clean_invoice(raw: Any) -> dict[str, Any] | None:
     beleg = {"name": _t(b.get("name"), 80), "file": str(b.get("file") or "") if re.fullmatch(r"[a-z0-9_]{2,40}\.(pdf|jpg|jpeg|png|heic|webp)", str(b.get("file") or "")) else "", "size": int(_f(b.get("size"), 0, 2e7, 0)), "type": _t(b.get("type"), 40)} if b.get("file") else None
     out = {"id": iid, "von": von, "bis": bis, "datum": _d(r.get("datum")), "nr": _t(r.get("nr"), 30), "anfang": num_or_none("anfang", 0, 1e9), "ende": num_or_none("ende", 0, 1e9),
            "menge": num_or_none("menge", 0, 1e8), "betrag": _f(r.get("betrag"), 0, 1e6, 0.0), "angerechnet": _f(r.get("angerechnet"), 0, 1e6, 0.0),
-           "ergebnis": num_or_none("ergebnis", -1e6, 1e6), "neu_abschlag": num_or_none("neu_abschlag", 0, 5000), "brennwert": num_or_none("brennwert", 5, 15), "zustand": num_or_none("zustand", 0.5, 1.2),
+           "ergebnis": num_or_none("ergebnis", -1e6, 1e6), "neu_abschlag": num_or_none("neu_abschlag", 0, 5000), "brennwert": num_or_none("brennwert", 5, 40), "zustand": num_or_none("zustand", 0.5, 1.2),
            "geschaetzt": bool(r.get("geschaetzt")), "note": _t(r.get("note"), 80), "beleg": beleg, "gelernt": bool(r.get("gelernt"))}
     if out["ergebnis"] is None:
         out["ergebnis"] = round(out["angerechnet"] - out["betrag"], 2)
@@ -1435,9 +1436,12 @@ def from_modul3(g: dict[str, Any], today: date, cid: str, mid: str, reads: list[
         if r0 is not None and r0.date() < beginn:
             beginn = date(r0.year if r0.month >= start else r0.year - 1, start, 1)
     netto, gj = bool(g.get("netto")), 12.0 if g.get("gunit", "y") != "m" else 1.0
+    def gpm(grund: float) -> float:
+        """Grundpreis je Monat. „pro Jahr“ mit weniger als 40 € ist fast sicher ein Monatswert (Gas-Grundpreise liegen bei 100–300 € im Jahr)."""
+        return float(grund) / gj if gj == 1.0 or float(grund) >= 40 else float(grund)
     def per(ab: str, price: float, grund: float, y: int) -> dict[str, Any]:
         mw = (years.get(y) or {}).get("mwst", g.get("mwst", 19.0))
-        return {"ab": ab, "ap": round(float(price), 4), "gp": round(float(grund) / gj, 4), "mess": 0.0, "brutto": not netto, "ust": float(mw), "note": "aus Modul 3"}
+        return {"ab": ab, "ap": round(float(price), 4), "gp": round(gpm(grund), 4), "mess": 0.0, "brutto": not netto, "ust": float(mw), "note": "aus Modul 3"}
     def yof(ab: str) -> int:
         return int(ab[:4]) if int(ab[5:7]) >= start else int(ab[:4]) - 1
     periods = [per(beginn.isoformat(), g.get("price") or 0.0, g.get("grund") or 0.0, beginn.year)]
@@ -1458,12 +1462,23 @@ def from_modul3(g: dict[str, Any], today: date, cid: str, mid: str, reads: list[
     for y in sorted(years):
         if years[y].get("abs") is not None and date(y, start, 1) >= beginn:
             abplan.append({"ab": date(y, start, 1).isoformat(), "betrag": float(years[y]["abs"]), "rhythmus": "monat", "tag": tag, "note": "aus Modul 3"})
-    contract = clean_contract({"id": cid, "sparte": "gas", "anbieter": "", "tarif": "aus Modul 3", "beginn": beginn.isoformat(), "abr": f"{start:02d}-01", "zahl": "jahr",
+    pays = []
+    for y in sorted(years):
+        for k, v in (years[y].get("absm") or {}).items():
+            try:
+                i = int(k)
+            except (TypeError, ValueError):
+                continue
+            mm = (start - 1 + i) % 12 + 1
+            yy = y + (start - 1 + i) // 12
+            d = date(yy, mm, min(28, tag))
+            if d >= beginn:
+                pays.append({"d": d.isoformat(), "betrag": float(v), "note": "Monat abweichend (Modul 3)"})
+    contract = clean_contract({"id": cid, "sparte": "gas", "anbieter": "", "tarif": "aus Modul 3", "zahlungen": pays, "beginn": beginn.isoformat(), "abr": f"{start:02d}-01", "zahl": "jahr",
                                "abschlag": {"betrag": float(g.get("abschlag") or 0.0), "rhythmus": "monat", "tag": tag}, "brennwert": hw, "zustand": zz, "meters": [mid],
                                "periods": periods, "abplan": abplan})
     meter = clean_meter({"id": mid, "art": "gas", "name": "Gaszähler", "dec": 3, "digits": 5, "sensor": g.get("ent") if sensor_ok else "", "readings": reads})
-    skipped = [str(y) for y in sorted(years) if (years[y].get("absm") or {})]
-    return {"contract": contract, "meter": meter, "monate_abweichend": skipped}
+    return {"contract": contract, "meter": meter, "monate_abweichend": []}
 
 
 def stats_readings(rows: list[tuple[datetime, float]], factor: float = 1.0) -> list[dict[str, Any]]:
@@ -1570,3 +1585,45 @@ def muell_costs(info: dict[str, Any] | None, grund: float) -> dict[str, Any] | N
     return {"grund": round(grund, 2), "fee": fee, "incl": incl, "done": done, "total": total, "year": i.get("year"), "zaehlt": info is not None,
             "extra_bisher": round(extra_bis, 2), "extra_jahr": round(extra_jahr, 2), "jahr": round(grund + extra_jahr, 2),
             "frei": max(0, incl - done) if incl else None, "extra_n": max(0, total - incl) if incl else 0}
+
+
+
+def fix_m3_import(c: dict[str, Any], g: dict[str, Any] | None) -> list[str]:
+    """2026.11.4b33: Korrektur für Gasverträge aus Modul 3 (übernommen mit b31/b32). g = Werte von Modul 3 vor der Übernahme (gas_prev).
+    Brennwert über 15 wurde abgeschnitten, ein Grundpreis „pro Jahr“ unter 40 € durch 12 geteilt, einzelne Abschlags-Monate fehlten."""
+    out: list[str] = []
+    if c.get("sparte") != "gas":
+        return out
+    g = g or {}
+    hw = float(g.get("hw") or 0) if float(g.get("zz") or 0) > 0 else float(g.get("brw") or 0)
+    if abs(c["brennwert"] - 15.0) < 1e-9 and hw > 15:
+        c["brennwert"] = round(min(40.0, hw), 4)
+        out.append(f"Brennwert {str(round(hw, 3)).replace('.', ',')} kWh/m³")
+    n = 0
+    for p in c["periods"]:
+        if p.get("note") == "aus Modul 3" and 0 < p["gp"] * 12 < 40:
+            p["gp"] = round(p["gp"] * 12, 4)
+            n += 1
+    if n:
+        out.append(f"Grundpreis in {n} {'Preis' if n == 1 else 'Preisen'}")
+    tag = c["abschlag"]["tag"]
+    start = int(c["abr"][:2])
+    have = {x["d"] for x in c.get("zahlungen") or []}
+    add = 0
+    b = parse_date(c.get("beginn"))
+    for y, yv in (g.get("years") or {}).items():
+        if not (re.fullmatch(r"20\d\d", str(y)) and isinstance(yv, dict)):
+            continue
+        for k, v in (yv.get("absm") or {}).items():
+            try:
+                i = int(k)
+            except (TypeError, ValueError):
+                continue
+            d = date(int(y) + (start - 1 + i) // 12, (start - 1 + i) % 12 + 1, min(28, tag))
+            if (b is None or d >= b) and d.isoformat() not in have:
+                c.setdefault("zahlungen", []).append({"d": d.isoformat(), "betrag": float(v), "note": "Monat abweichend (Modul 3)"})
+                add += 1
+    if add:
+        c["zahlungen"] = sorted(c["zahlungen"], key=lambda x: x["d"])
+        out.append(f"{add} abweichende Abschlags-Monate")
+    return out

@@ -1,5 +1,11 @@
 # Modul 20 Abrechnungen
 
+## 1.4 Build 1 – 2026-11-20 (Stabil)
+- **Abschläge je Abrechnungsjahr wie in Modul 3:** Im Vertrag (Bearbeiten) je Abrechnungsjahr ein Betrag (leer = wie davor) und „Einzelne Monate anpassen“ mit allen zwölf Monaten (0 = ausgefallen). Jahresbeträge werden zum Abschlagsplan ab Jahresbeginn, einzelne Monate zu gebuchten Zahlungen am Fälligkeitstag.
+- **Brennwert bis 40 kWh/m³** (vorher 15) – Flüssiggas liegt bei etwa 25–28.
+- **Übernahme aus Modul 3 berichtigt:** Grundpreis „pro Jahr“ unter 40 € gilt als Monatswert (wurde durch 12 geteilt), Brennwert über 15 wird übernommen, einzelne abweichende Abschlags-Monate werden übernommen. Schon übernommene Gasverträge werden beim Start einmal berichtigt (Werte aus Modul 3 von vor der Übernahme), im Protokoll steht, was geändert wurde.
+- Datumsfelder im Vertrag werden beim Neuzeichnen nicht mehr verstümmelt („undefined.undefined.…“)
+
 ## 1.3 Build 1 – 2026-11-20 (Stabil)
 - **Gas-Hochrechnung wetterbereinigt:** Mit dem Außenfühler aus Modul 9 (Tagesmittel aus der Langzeitstatistik) vergleicht Modul 20 die Gradtage der letzten bis zu 120 Tage mit dem Klimanormal (DWD 1991–2020, Heizgrenze 15 °C). War es kälter als normal, wird der gemessene Verbrauch für die Hochrechnung heruntergerechnet, bei wärmerem Wetter hoch – nur der Heizanteil, die Sommer-Grundlast (Warmwasser) bleibt. Die Gas-Karte zeigt „wetterbereinigt“, unter „Warum?“ steht, wie viel kälter oder wärmer es war. Ohne genug Tageswerte oder im Sommer bleibt alles wie bisher.
 - **Müllabfuhr (Modul 17):** Neue Karte in der Übersicht – Grundgebühr (in den Einstellungen von Modul 20 eintragen), Restmüll-Leerungen bisher und im Jahr, Zusatzleerungen über die inklusiven hinaus × Gebühr aus Modul 17, „Müll im Jahr“. Dazu ein Chip im Banner und der Sensor sensor.strom_waerme_abrechnung_kosten_muell. Ohne „Leerungen zählen“ in Modul 17 zählt nur die Grundgebühr.

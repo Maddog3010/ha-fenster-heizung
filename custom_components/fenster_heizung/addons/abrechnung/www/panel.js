@@ -31,7 +31,7 @@ export default (api) => {
 
   /* ---------- Helfer ---------- */
   const pn = (v) => { const t = String(v == null ? "" : v).trim().replace(/\s/g, ""); if (!t) return null; const x = Number(t.includes(",") ? t.replace(/\./g, "").replace(",", ".") : t); return isFinite(x) ? x : null; };
-  const de = (iso) => { if (!iso) return "–"; const [y, m, d] = String(iso).slice(0, 10).split("-"); return `${d}.${m}.${y}`; };
+  const de = (iso) => { if (!iso) return "–"; if (/^\d{1,2}\.\d{1,2}\.\d{2,4}$/.test(String(iso).trim())) return String(iso).trim(); const [y, m, d] = String(iso).slice(0, 10).split("-"); return `${d}.${m}.${y}`; };
   const deS = (iso) => { if (!iso) return "–"; const [, m, d] = String(iso).slice(0, 10).split("-"); return `${d}.${m}.`; };
   const iso = (t) => { const m = /^(\d{1,2})\.(\d{1,2})\.(\d{2,4})$/.exec(String(t || "").trim()); if (!m) return /^\d{4}-\d{2}-\d{2}$/.test(String(t || "")) ? t : ""; const y = m[3].length === 2 ? "20" + m[3] : m[3]; return `${y}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`; };
   const eur = (v) => `${num(v, 2)} €`;
@@ -394,6 +394,45 @@ export default (api) => {
 
   /* ---------- Fenster ---------- */
   const hd = (t, sub) => `<div class="sh"><div><b>${t}</b><span>${sub}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>`;
+  /* 1.4: Abschläge je Abrechnungsjahr wie in Modul 3 – Betrag je Jahr (→ Abschlagsplan ab Jahresbeginn) und einzelne Monate (→ gebuchte Zahlung am Fälligkeitstag) */
+  const abYears = (f, today) => {
+    const ab = /^(\d{1,2})\.(\d{1,2})\.?$/.exec(String(f.abr || "").trim()), sm = ab ? +ab[2] : +((f.abr || "01-01").slice(0, 2)) || 1, by = (d) => (+d.slice(5, 7) >= sm ? +d.slice(0, 4) : +d.slice(0, 4) - 1);
+    const b0 = iso(f.beginn), y1 = by(today), y0 = Math.max(y1 - 4, b0 ? by(b0) : y1 - 1);
+    const out = []; for (let y = y1 + 1; y >= y0; y--) out.push(y); return { sm, ys: out, cur: y1 };
+  };
+  const abYs = (y, sm) => `${y}-${String(sm).padStart(2, "0")}-01`;
+  const abMd = (y, sm, i, tag) => { const mm = (sm - 1 + i) % 12, yy = y + Math.floor((sm - 1 + i) / 12); return `${yy}-${String(mm + 1).padStart(2, "0")}-${String(Math.min(28, tag || 1)).padStart(2, "0")}`; };
+  const abInit = (f, today) => {
+    if (f._aby) return;
+    const { sm, ys } = abYears(f, today), tag = (f.abschlag || {}).tag || 1, plan = f.abplan || [], pays = f.zahlungen || [];
+    f._aby = {}; f._abm = {};
+    ys.forEach((y) => { const st = abYs(y, sm), e = plan.find((x) => x.ab === st); f._aby[y] = e ? num(e.betrag, 2) : "";
+      for (let i = 0; i < 12; i++) { const d = abMd(y, sm, i, tag), z = pays.find((x) => x.d === d); if (z) (f._abm[y] = f._abm[y] || {})[i] = num(z.betrag, 2); } });
+  };
+  const abApply = (c, f, today) => {
+    if (!f._aby) return;
+    const { sm, ys } = abYears(f, today), tag = (c.abschlag || {}).tag || 1, rh = (c.abschlag || {}).rhythmus || "monat";
+    const starts = new Set(ys.map((y) => abYs(y, sm)));
+    let plan = (c.abplan || []).filter((x) => !starts.has(x.ab));
+    ys.forEach((y) => { const v = pn(f._aby[y]); if (v != null) plan.push({ ab: abYs(y, sm), betrag: v, rhythmus: rh, tag, note: "je Abrechnungsjahr" }); });
+    c.abplan = plan.sort((a, b) => (a.ab < b.ab ? -1 : 1));
+    const dates = new Set(); ys.forEach((y) => { for (let i = 0; i < 12; i++) dates.add(abMd(y, sm, i, tag)); });
+    const pays = (c.zahlungen || []).filter((x) => !dates.has(x.d));
+    ys.forEach((y) => { const M = f._abm[y] || {}; Object.keys(M).forEach((i) => { const v = pn(M[i]); if (v != null) pays.push({ d: abMd(y, sm, +i, tag), betrag: v, note: "Monat abweichend" }); }); });
+    c.zahlungen = pays.sort((a, b) => (a.d < b.d ? -1 : 1));
+    delete c._aby; delete c._abm; delete c._abo;
+  };
+  const abEditor = (f, today) => {
+    abInit(f, today);
+    const { sm, ys, cur } = abYears(f, today), O = (f._abo = f._abo || {}), base = nv((f.abschlag || {}).betrag), tag = (f.abschlag || {}).tag || 1;
+    const lbl = (y) => (sm === 1 ? String(y) : `${String(sm).padStart(2, "0")}/${y} – ${String(sm === 1 ? 12 : sm - 1).padStart(2, "0")}/${y + 1}`);
+    let prev = base;
+    const rows = ys.slice().reverse().map((y) => { const ph = prev; if (pn(f._aby[y]) != null) prev = f._aby[y]; const own = Object.keys(f._abm[y] || {}).filter((i) => (f._abm[y] || {})[i] !== "").length;
+      return { y, html: `<div class="abyr${y === cur ? " cur" : ""}"><div class="abyrh"><b>${lbl(y)}</b>${y === cur ? "<em>läuft</em>" : ""}<label class="abf sm"><input data-f="adxf" data-ad="${ID}" data-k="aby_${y}" type="text" inputmode="decimal" value="${esc(f._aby[y] || "")}" placeholder="${esc(ph || "0")}" maxlength="10" aria-label="Abschlag ${lbl(y)}"><span class="abu">€/Monat</span></label></div>
+        <button class="lnk" data-act="adxa" data-ad="${ID}" data-a="abmo" data-k="${y}">${O[y] ? "Monate zuklappen" : `Einzelne Monate anpassen${own ? ` (${own} abweichend)` : ""}`}</button>
+        ${O[y] ? `<div class="abmon">${Array.from({ length: 12 }, (_, i) => { const d = abMd(y, sm, i, tag); return `<label class="abf sm"><span>${MON[+d.slice(5, 7) - 1].slice(0, 3)} ${d.slice(2, 4)}</span><input data-f="adxf" data-ad="${ID}" data-k="abm_${y}_${i}" type="text" inputmode="decimal" value="${esc((f._abm[y] || {})[i] || "")}" placeholder="${esc(f._aby[y] || ph || "0")}" maxlength="10"></label>`; }).join("")}</div>` : ""}</div>` }; }).reverse();
+    return `<div class="lsec">${ic("euro", 15)}Abschläge je Abrechnungsjahr</div><div class="mut sm" style="margin:0 0 6px">Wie in Modul 3: Betrag je Abrechnungsjahr, leer = wie davor. Einzelne Monate abweichend (0 = ausgefallen) – so, wie abgebucht wurde.</div><div class="abyrs">${rows.map((r) => r.html).join("")}</div>`;
+  };
   const wrap = (body, wide) => `<div class="ov" data-act="close"></div><div class="sheet${wide ? " wide" : ""} absh" role="dialog" aria-modal="true">${body}</div>`;
   const periodFields = (sp, f) => sp === "wasser"
     ? `<div class="abfs">${inp("frisch", "Frischwasser", nv(f.frisch), { num: 1, unit: "€/m³" })}${inp("abw", "Abwasser", nv(f.abw), { num: 1, unit: "€/m³" })}${inp("zg", "Zählergebühr", nv(f.zg), { num: 1, unit: "€/Monat" })}${inp("nieder", "Niederschlagswasser", nv(f.nieder), { num: 1, unit: "€/m² im Jahr" })}${inp("flaeche", "Versiegelte Fläche", nv(f.flaeche, 0), { num: 1, unit: "m²" })}${inp("ust", "Umsatzsteuer", nv(f.ust, 0), { num: 1, unit: "%" })}</div>`
@@ -555,6 +594,7 @@ export default (api) => {
         ${neu ? `<div class="lsec">${ic("euro", 15)}Preis ab Vertragsbeginn</div>${periodFields(sp, f.p || {})}${bruttoRow(f.p || {})}` : ""}
         <div class="lsec">${ic("chart", 15)}Abrechnung</div><div class="abfs">${inp("abr", "Abrechnungsjahr beginnt am", f.abr ? `${f.abr.slice(3)}.${f.abr.slice(0, 2)}.` : "01.01.", { ph: "TT.MM." })}${sp !== "einspeisung" ? inp("ab_betrag", "Abschlag", nv((f.abschlag || {}).betrag), { num: 1, unit: "€" }) + inp("ab_tag", "fällig am", nv((f.abschlag || {}).tag, 0), { num: 1, unit: ". des Monats" }) : ""}${sp !== "wasser" && sp !== "einspeisung" ? inp("bonus", "Bonus im ersten Jahr", nv(f.bonus), { num: 1, unit: "€" }) : ""}</div>
         ${sp !== "einspeisung" ? `<div class="gschips">${chip("cab", "monat", "Abschlag monatlich", (f.abschlag || {}).rhythmus !== "quartal")}${chip("cab", "quartal", "je Quartal", (f.abschlag || {}).rhythmus === "quartal")}</div>` : ""}
+        ${sp !== "einspeisung" && (f.abschlag || {}).rhythmus !== "quartal" ? abEditor(f, D.today) : ""}
         ${sp === "gas" ? `<div class="lsec">${ic("flame", 15)}Umrechnung m³ → kWh <span class="mut sm">· steht auf der letzten Rechnung</span></div><div class="abfs">${inp("brennwert", "Brennwert", nv(f.brennwert, 3), { num: 1, unit: "kWh/m³" })}${inp("zustand", "Zustandszahl", nv(f.zustand, 4), { num: 1 })}</div>` : ""}
         <div class="lsec">${ic("gauge", 15)}Zähler</div><div class="gschips">${ms.map((x) => chip("cmeter", x.id, esc(x.name), (f.meters || []).includes(x.id))).join("") || `<span class="mut sm">Noch kein passender Zähler – du kannst ihn danach im Register „Zähler & Ablesungen“ anlegen.</span>`}</div>
         <div class="foot2" style="margin-top:14px">${neu ? btn("close2", "", "Abbrechen") : m.del ? btn("cdel2", "trash", "Wirklich löschen", { dng: 1 }) : btn("cdel", "trash", "Löschen")}${btn("csave", "check", "Speichern", { pri: 1 })}</div>`, true);
@@ -723,7 +763,7 @@ export default (api) => {
   /* ---------- Aktionen ---------- */
   const grab = (p) => { const m = p._modal; if (!m || m.type !== "adx" || m.id !== ID || !m.f) return; p.shadowRoot.querySelectorAll(`#modal [data-f="adxf"][data-ad="${ID}"]`).forEach((el) => put(m, el.dataset.k, el.value)); };
   const PK = ["mode", "ap", "auf", "gp", "mess", "co2", "steuer", "ust", "frisch", "abw", "nieder", "flaeche", "zg"];
-  const put = (m, k, v) => { const f = m.f; if (m.k === "car" && k.startsWith("fx_")) { (f.fix = f.fix || {})[k.slice(3)] = v; return; } if (m.k === "c" && PK.includes(k)) { (f.p = f.p || {})[k] = v; } else if (k === "ab_betrag" || k === "ab_tag") { (f.abschlag = f.abschlag || {})[k === "ab_betrag" ? "betrag" : "tag"] = v; } else f[k] = v; };
+  const put = (m, k, v) => { const f = m.f; if (m.k === "car" && k.startsWith("fx_")) { (f.fix = f.fix || {})[k.slice(3)] = v; return; } if (m.k === "c" && PK.includes(k)) { (f.p = f.p || {})[k] = v; } else if (k.startsWith("aby_")) { f._aby[k.slice(4)] = v; } else if (k.startsWith("abm_")) { const [, y, i] = k.split("_"); (f._abm[y] = f._abm[y] || {})[i] = v; } else if (k === "ab_betrag" || k === "ab_tag") { (f.abschlag = f.abschlag || {})[k === "ab_betrag" ? "betrag" : "tag"] = v; } else f[k] = v; };
   const period = (f, ab) => { const o = { ab, brutto: f.brutto !== false, note: f.note || "", mode: f.mode === "dyn" ? "dyn" : "fix" }; PK.slice(1).forEach((k) => { const x = pn(f[k]); if (x != null) o[k] = x; }); return o; };
   const nowF = () => { const n = new Date(); return { d: n.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }), hh: String(n.getHours()), mm: String(n.getMinutes()).padStart(2, "0") }; };
   const ts = (f) => { const d = iso(f.d); if (!d) return null; const h = Math.min(23, Math.max(0, parseInt(f.hh, 10) || 0)), mi = Math.min(59, Math.max(0, parseInt(f.mm, 10) || 0)); return `${d}T${String(h).padStart(2, "0")}:${String(mi).padStart(2, "0")}`; };
@@ -791,6 +831,7 @@ export default (api) => {
     if (a === "cab") { (m.f.abschlag = m.f.abschlag || {}).rhythmus = k; p._renderModal(); return; }
     if (a === "cmeter") { const L = m.f.meters || []; m.f.meters = L.includes(k) ? L.filter((x) => x !== k) : [...L, k]; p._renderModal(); return; }
     if (a === "cdel") { m.del = true; p._renderModal(); return; }
+    if (a === "abmo") { m.f._abo = m.f._abo || {}; m.f._abo[k] = !m.f._abo[k]; p._renderModal(); return; }
     if (a === "cdel2") { send(p, "contract_del", { id: m.f.id }, "Vertrag gelöscht"); s.cid = ""; return; }
     if (a === "csave") {
       const f = m.f, dt = (x) => (x ? iso(x) || x : ""), c = { ...f };
@@ -798,6 +839,7 @@ export default (api) => {
       const ab = /^(\d{1,2})\.(\d{1,2})\.?$/.exec(String(f.abr || "").trim()); if (ab) c.abr = `${ab[2].padStart(2, "0")}-${ab[1].padStart(2, "0")}`;
       ["verl", "frist", "bonus", "brennwert", "zustand"].forEach((q) => { const x = pn(f[q]); if (x != null) c[q] = x; else delete c[q]; });
       c.abschlag = { rhythmus: (f.abschlag || {}).rhythmus || "monat", betrag: pn((f.abschlag || {}).betrag) || 0, tag: pn((f.abschlag || {}).tag) || 1 };
+      abApply(c, f, D.today);
       if (!f.id) { if (!c.beginn) { p._toast("Bitte den Vertragsbeginn eingeben"); return; } const pp = period(f.p || {}, c.beginn); if (c.sparte !== "wasser" && pp.mode !== "dyn" && pp.ap == null) { p._toast("Bitte den Arbeitspreis eingeben"); return; } if (c.sparte === "wasser" && pp.frisch == null) { p._toast("Bitte den Preis für Frischwasser eingeben"); return; } c.periods = [pp]; }
       delete c.p; delete c.changes; delete c.term; delete c.u; delete c.eff; delete c.aktiv;
       send(p, "contract", { contract: c }, "", (r) => { s.cid = r.saved; s.tab = "con"; p._modal = null; p._renderModal(); p._render(); p._toast((r.mirrored || []).length ? "Gespeichert – Haus-Werte aktualisiert" : "Vertrag gespeichert"); }); return;
@@ -936,7 +978,10 @@ export default (api) => {
 .abimp .sxt{flex:1;min-width:0;display:flex;flex-direction:column}.abimp b{font-size:.92rem}.abimp small{color:var(--mut);font-size:.78rem}.abimp em{font-style:normal;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:7px;background:var(--line);color:var(--mut);white-space:nowrap}
 .abck{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;flex:none;color:#0f1419}.abimp.on .abck{background:#2dd4bf;border-color:#2dd4bf}
 .abdv{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line)}.abdvn,.abdvv{display:flex;flex-direction:column;min-width:0}.abdvn b,.abdvv b{font-size:.86rem}.abdvn small,.abdvv small{color:var(--mut);font-size:.74rem}.abdvv{text-align:right}.abdvb{height:8px;border-radius:5px;background:var(--line);overflow:hidden}.abdvb i{display:block;height:100%;border-radius:5px}
-.abwx{display:flex;align-items:center;gap:4px;margin-top:2px}.abgos{display:grid;gap:6px}.absh .gst{font-weight:400;align-items:flex-start}.absh .gst svg{flex:none;margin-top:2px}.abm3{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:640px){.abm3{grid-template-columns:1fr}}.abli.add.m3 small{display:block;color:var(--mut);font-size:.74rem;font-weight:400}.abvb{flex:none}.abvb .btn2{width:auto;padding:8px 14px}.abgo{width:100%;border:1px solid var(--line);border-radius:12px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px}.abgo .sxt{flex:1;min-width:0;display:flex;flex-direction:column}.abgo small{color:var(--mut);font-size:.78rem}.abgo .stgo{color:var(--mut);font-size:.8rem;display:inline-flex;align-items:center;gap:2px}
+.abwx{display:flex;align-items:center;gap:4px;margin-top:2px}.abyrs{display:grid;gap:6px}.abyr{border:1px solid var(--line);border-radius:12px;padding:8px 12px}.abyr.cur{border-color:color-mix(in srgb,#f5c451 55%,var(--line))}
+.abyrh{display:flex;align-items:center;gap:10px}.abyrh b{flex:1;font-size:.9rem}.abyrh em{font-style:normal;font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:6px;background:color-mix(in srgb,#f5c451 22%,transparent);color:#f5c451}
+.abyrh .abf.sm{display:flex;flex-direction:row;align-items:center;gap:6px;max-width:190px;margin:0}.abyrh .abf.sm input{width:110px;padding:7px 10px}.abu{color:var(--mut);font-size:.78rem;white-space:nowrap}.abyr .lnk{margin-top:4px}.abmon{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:6px}.abmon .abf.sm{display:flex;flex-direction:column;align-items:stretch;gap:2px;margin:0}.abmon .abf.sm input{padding:7px 10px}.abmon .abf.sm span{font-size:.72rem;color:var(--mut)}@media(max-width:560px){.abmon{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.abgos{display:grid;gap:6px}.absh .gst{font-weight:400;align-items:flex-start}.absh .gst svg{flex:none;margin-top:2px}.abm3{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:640px){.abm3{grid-template-columns:1fr}}.abli.add.m3 small{display:block;color:var(--mut);font-size:.74rem;font-weight:400}.abvb{flex:none}.abvb .btn2{width:auto;padding:8px 14px}.abgo{width:100%;border:1px solid var(--line);border-radius:12px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;padding:9px 12px}.abgo .sxt{flex:1;min-width:0;display:flex;flex-direction:column}.abgo small{color:var(--mut);font-size:.78rem}.abgo .stgo{color:var(--mut);font-size:.8rem;display:inline-flex;align-items:center;gap:2px}
 .abln{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--line)}.abln>span{flex:1;min-width:0}.abln b{display:block;font-size:.88rem}.abln small{color:var(--mut);font-size:.76rem}
 .abln em{font-style:normal;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:7px;background:var(--line);color:var(--mut)}.abln.on em{background:color-mix(in srgb,#34d399 20%,transparent);color:#34d399}
 .abent{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.68rem!important;overflow-wrap:anywhere}.abenv{font-style:normal;font-weight:600;color:var(--mut);font-size:.8rem;margin-left:6px}
