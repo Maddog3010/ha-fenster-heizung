@@ -231,7 +231,43 @@
       },
       "sf_pruefung": {
         "name": "Melder nächste Prüfung"
+      },
+      "sf_offline": {
+        "name": "Melder nicht erreichbar"
+      },
+      "sf_letzter_alarm": {
+        "name": "Letzter Alarm"
       }
+    }
+  },
+  "services": {
+    "sicherheit_quittieren": {
+      "name": "Alarm quittieren (Modul 11)",
+      "description": "Wie „Verstanden“: Die Alarmstufen halten an, die Wiederholungen enden. Der Alarm bleibt sichtbar, solange der Melder auslöst.",
+      "fields": {
+        "melder": {
+          "name": "Melder",
+          "description": "Nur diesen Melder quittieren. Leer = alle laufenden Alarme."
+        },
+        "fehlalarm": {
+          "name": "Fehlalarm-Ursache",
+          "description": "Optional, z. B. Toast oder Dampf. Wird in der Fehlalarm-Statistik gemerkt."
+        }
+      }
+    },
+    "melder_geprueft": {
+      "name": "Melder geprüft (Modul 11)",
+      "description": "Trägt eine Prüfung ein (Jahresband, „zuletzt geprüft“, Protokoll).",
+      "fields": {
+        "melder": {
+          "name": "Melder",
+          "description": "Leer = alle Melder."
+        }
+      }
+    },
+    "sicherheit_selbsttest": {
+      "name": "Selbsttest (Modul 11)",
+      "description": "Prüft sofort, ob alle Melder erreichbar sind und die Batterien gut. Ergebnis im Protokoll und als Ereignis, ohne Mitteilung."
     }
   }
 }

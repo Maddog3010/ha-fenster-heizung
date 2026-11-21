@@ -123,7 +123,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 8 | **Elektroauto & Wallbox** | Vorabversion 0.9 | go-e direkt oder andere Wallboxen über Home Assistant (Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP …), Carport-Szene, Überschuss-Balken mit Vorschau, Abfahrt aus dem Kalender, Tablet-Wandansicht, Ladeplan als Band, Statistik Tag/Woche/Monat/Jahr, Sensoren je Fahrzeug |
 | 9 | **Wetter & Warnungen** | Stabil 1.0 | Wetter-Szene, Stufen 1–4 wie beim DWD, alle amtlichen Warnungen, 48-Stunden-Zeitleiste, Aktionen mit Aussperrschutz, Vorsorge, Tablet-Alarm |
 | 10 | Garten & Bewässerung | In Entwicklung 0.1 | Konzept mit Gartenplan |
-| 11 | **Rauch- & Sicherheitsmelder** | Beta 0.8 | Haus-Szene, Alarm mit Stufen und „Verstanden“, ausgeschaltete Melder, Melder-Karten 2.0, Batterie-Prognose, Grundriss-Baukasten mit Fluchtweg, Wartung mit Jahresband, Abfahrt-Prüfung |
+| 11 | **Rauch- & Sicherheitsmelder** | Vorabversion 0.9 | Haus-Szene, Alarm mit Stufen und „Verstanden“, ausgeschaltete Melder, Melder-Karten 2.0, Batterie-Prognose, Grundriss-Baukasten mit Fluchtweg, Wartung mit Jahresband, Abfahrt-Prüfung, Quellen-Wächter, Wochen-Selbsttest |
 | 12 | Pool & Sauna | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ |
 | 13 | Batteriespeicher-Planung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echtem Ladestand |
 | 14 | **Dynamischer Stromtarif** | Vorabversion 0.9 | Tibber direkt oder Preis-Sensor, Viertelstunden heute und morgen, Preisband mit Woche, bestes Fenster je Gerät, Preisalarm, „Lohnt sich dein Tarif?“ |
@@ -224,12 +224,14 @@ go-e Charger lokal im Netzwerk **oder jede Wallbox mit Home-Assistant-Integratio
 </details>
 
 <details>
-<summary><b>11 · Rauch- & Sicherheitsmelder</b> (Beta)</summary>
+<summary><b>11 · Rauch- & Sicherheitsmelder</b> (Vorabversion)</summary>
 <br>
 
 - **Grundriss-Baukasten:** Räume, Wände, Türen, Fenster und Treppen zeichnen, Melder platzieren, mehrere Etagen. Bei Alarm leuchtet der Raum.
 - **Wartung:** Einbaudatum, Lebensdauer, Prüfintervall, Batterie-Prognose, Einkaufsliste und Jahresprotokoll.
 - **Abfahrt-Prüfung:** zeigt offene Fenster, Türen und Geräte, wenn du das Haus verlässt.
+- **Quellen-Wächter und Wochen-Selbsttest:** fällt eine ganze Quelle aus (z. B. X-Sense-Cloud), kommt eine Meldung statt vieler. Sonntags prüft das Modul alle Melder und meldet sich nur bei Hinweisen.
+- **Für Automationen:** sechs Sensoren (u. a. Status, nicht erreichbar, letzter Alarm), das Ereignis `fenster_heizung_sicherheit` und die Dienste `sicherheit_quittieren`, `melder_geprueft` und `sicherheit_selbsttest`.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_sicherheit.png" width="560" alt="Modul 11"></p>
 </details>

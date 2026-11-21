@@ -231,7 +231,43 @@
       },
       "sf_pruefung": {
         "name": "Detector next test"
+      },
+      "sf_offline": {
+        "name": "Detectors unreachable"
+      },
+      "sf_letzter_alarm": {
+        "name": "Last alarm"
       }
+    }
+  },
+  "services": {
+    "sicherheit_quittieren": {
+      "name": "Acknowledge alarm (module 11)",
+      "description": "Like “Got it”: escalation stops and repeats end. The alarm stays visible while the detector is triggered.",
+      "fields": {
+        "melder": {
+          "name": "Detector",
+          "description": "Only this detector. Empty = all running alarms."
+        },
+        "fehlalarm": {
+          "name": "False alarm cause",
+          "description": "Optional, e.g. toast or steam. Counted in the false-alarm statistics."
+        }
+      }
+    },
+    "melder_geprueft": {
+      "name": "Detector tested (module 11)",
+      "description": "Records a test (year band, last tested, log).",
+      "fields": {
+        "melder": {
+          "name": "Detector",
+          "description": "Empty = all detectors."
+        }
+      }
+    },
+    "sicherheit_selbsttest": {
+      "name": "Self-test (module 11)",
+      "description": "Checks right away whether all detectors are reachable and batteries are fine. Result in the log and as an event, no notification."
     }
   }
 }

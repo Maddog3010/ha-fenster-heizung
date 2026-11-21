@@ -1,0 +1,19 @@
+sicherheit_quittieren:
+  fields:
+    melder:
+      example: binary_sensor.rauchmelder_kueche
+      selector:
+        entity:
+          domain: binary_sensor
+    fehlalarm:
+      example: Toast
+      selector:
+        text:
+melder_geprueft:
+  fields:
+    melder:
+      example: binary_sensor.rauchmelder_flur
+      selector:
+        entity:
+          domain: binary_sensor
+sicherheit_selbsttest:
