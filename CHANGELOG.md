@@ -2,40 +2,30 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [2026.11.4b40] - 2026-11-21
+## [2026.11.4b39] - 2026-11-21
 
-**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 12 – Testwoche: Fehler behoben, Diagnose, Anleitung. Ab hier kommen bis 1.0 keine neuen Funktionen mehr dazu.
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 11 und Build 12 – Lücken auf dem Weg zu 1.0 geschlossen und Testwoche (Konzept „Modul 11 · Version 1.0“). Ab hier kommen bis 1.0 keine neuen Funktionen mehr dazu.
+
+### Neu
+- **Quellen-Wächter:** Fallen alle Melder einer Quelle gleichzeitig aus (ab 3 Meldern, zum Beispiel X-Sense-Cloud, Zigbee-Stick oder Z-Wave), kommt **eine** Meldung „Melder-Quelle ausgefallen“ statt einer je Melder. Die Übersicht zeigt dazu die Karte „Quelle ausgefallen“, das Protokoll und das Ereignis `fenster_heizung_sicherheit` (art `quelle_aus` bzw. `quelle_da`) nennen die Quelle. Kommt die Quelle zurück, gibt es einmal „Melder-Quelle wieder da“. Die Frage „Ausschalten?“ nach langer Funkstille wird für diese Melder nicht gestellt. Einstellungen → Batterie → „Quellen-Wächter“, standardmäßig an.
+- **Wochen-Selbsttest:** Sonntags ab 18 Uhr prüft Modul 11, ob alle Melder erreichbar sind, die Batterien gut und Prüfung und Austausch im Plan. Nur Anzeige, das Modul schaltet nichts. Eine Mitteilung kommt nur bei Hinweisen, das Ergebnis steht immer im Protokoll und unter „Als Nächstes“. Mit „Jetzt prüfen“ unter Einstellungen → Prüfung sofort. Fällt der Test in die Ruhezeit, kommt die Mitteilung danach. Ausgeschaltete Melder zählen nicht.
+- **Zwei neue Sensoren** (Gerät „Strom & Wärme · Rauch- & Sicherheitsmelder“): **Melder nicht erreichbar** (Anzahl, Namen und ausgefallene Quellen als Attribute) und **Letzter Alarm** (Zeitpunkt, Melder, Name und Raum als Attribute).
+- **Dienste für eigene Automationen:** `fenster_heizung.sicherheit_quittieren` (wie „Verstanden“, optional nur ein Melder und eine Fehlalarm-Ursache), `fenster_heizung.melder_geprueft` (Prüfung eintragen, ein Melder oder alle) und `fenster_heizung.sicherheit_selbsttest` (Selbsttest sofort). Das Ereignis meldet zusätzlich `selbsttest`.
+- **Meldungen:** neuer Schalter „Wochen-Selbsttest (nur bei Hinweisen)“.
+- **Diagnose:** Modul 11 erscheint in den Diagnosedaten von Home Assistant (Geräte & Dienste → Strom & Wärme → Diagnose herunterladen) – Melder mit Zustand und Prognose, Stufen, Quellen-Wächter, Selbsttest, Fehlalarme, Einstellungen und die letzten 50 Ereignisse. Ohne Benachrichtigungsdienste, Kontaktperson, Name und Adresse, Lautsprecher und Hintergrundbild.
+- **Anleitung_Modul11_Sicherheit.pdf** im Ordner docs (6 Seiten), README verlinkt.
+
+### Geändert
+- Modul 11 trägt in der Modul-Liste jetzt das Abzeichen **Vorabversion** statt „Beta“ (seit v0.9 Build 1 so vorgesehen).
 
 ### Behoben
 - **Stufe 2 bis 4 trafen bei Meldern mit eigener Melderart die falschen Aktionen.** Wer die Art eines Melders von Hand gesetzt oder einen Melder ohne Geräteklasse hinzugefügt hat, bekam in Stufe 1 die richtigen Aktionen, ab Stufe 2 wurde er aber als „Sicherheitsmelder“ gelesen – Aktionen für zum Beispiel „Hitzemelder“ liefen dann nicht. Alle Stufen nutzen jetzt dieselbe Melderart.
 - **Ein kurzer Fehlalarm galt als Prüfung.** Ein Alarm unter 2 Minuten wurde immer als Test per Testknopf eingetragen, auch wenn er als Fehlalarm quittiert war (Toast, Dampf). Jetzt zählt er dann nicht als Prüfung.
 - **Alarm-Mitteilungen blieben auf den Handys stehen, wenn der Alarm von selbst endete.** Sie verschwinden jetzt auch dann, nicht nur nach „Verstanden“.
 - **Die Kontaktperson erfuhr nicht, dass sich jemand kümmert.** War Stufe 4 erreicht, bekommt sie nach „Verstanden“ die Nachricht „Erledigt – jemand kümmert sich“ (mit Ursache, falls angegeben), endet der Alarm ohne Quittung eine Entwarnung. Ihre Alarm-Mitteilung wird entfernt.
-- **Wochen-Selbsttest fiel in der Ruhezeit aus.** Lag 18 Uhr am Sonntag in der Ruhezeit, lief der Test die ganze Woche nicht (seit Build 11). Jetzt läuft er immer, die Mitteilung kommt nach der Ruhezeit.
-
-### Neu
-- **Diagnose:** Modul 11 erscheint in den Diagnosedaten von Home Assistant (Geräte & Dienste → Strom & Wärme → Diagnose herunterladen) – Melder mit Zustand und Prognose, Stufen, Quellen-Wächter, Selbsttest, Fehlalarme, Einstellungen und die letzten 50 Ereignisse. Ohne Benachrichtigungsdienste, Kontaktperson, Name und Adresse, Lautsprecher und Hintergrundbild.
-- **Anleitung_Modul11_Sicherheit.pdf** im Ordner docs (6 Seiten), README verlinkt.
 
 ### Technik
-- 4 neue Tests (Melderart in den Stufen, Fehlalarm kein Test, Kontaktperson und Mitteilungen, Diagnose ohne persönliche Daten), Selbsttest-Test um die Ruhezeit erweitert.
-
-## [2026.11.4b39] - 2026-11-21
-
-**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 11 – Lücken auf dem Weg zu 1.0 geschlossen (Konzept „Modul 11 · Version 1.0“).
-
-### Neu
-- **Quellen-Wächter:** Fallen alle Melder einer Quelle gleichzeitig aus (ab 3 Meldern, zum Beispiel X-Sense-Cloud, Zigbee-Stick oder Z-Wave), kommt **eine** Meldung „Melder-Quelle ausgefallen“ statt einer je Melder. Die Übersicht zeigt dazu die Karte „Quelle ausgefallen“, das Protokoll und das Ereignis `fenster_heizung_sicherheit` (art `quelle_aus` bzw. `quelle_da`) nennen die Quelle. Kommt die Quelle zurück, gibt es einmal „Melder-Quelle wieder da“. Die Frage „Ausschalten?“ nach langer Funkstille wird für diese Melder nicht gestellt. Einstellungen → Batterie → „Quellen-Wächter“, standardmäßig an.
-- **Wochen-Selbsttest:** Sonntags ab 18 Uhr prüft Modul 11, ob alle Melder erreichbar sind, die Batterien gut und Prüfung und Austausch im Plan. Nur Anzeige, das Modul schaltet nichts. Eine Mitteilung kommt nur bei Hinweisen, das Ergebnis steht immer im Protokoll und unter „Als Nächstes“. Mit „Jetzt prüfen“ unter Einstellungen → Prüfung sofort. Ruhezeit wird beachtet, ausgeschaltete Melder zählen nicht.
-- **Zwei neue Sensoren** (Gerät „Strom & Wärme · Rauch- & Sicherheitsmelder“): **Melder nicht erreichbar** (Anzahl, Namen und ausgefallene Quellen als Attribute) und **Letzter Alarm** (Zeitpunkt, Melder, Name und Raum als Attribute).
-- **Dienste für eigene Automationen:** `fenster_heizung.sicherheit_quittieren` (wie „Verstanden“, optional nur ein Melder und eine Fehlalarm-Ursache), `fenster_heizung.melder_geprueft` (Prüfung eintragen, ein Melder oder alle) und `fenster_heizung.sicherheit_selbsttest` (Selbsttest sofort). Das Ereignis meldet zusätzlich `selbsttest`.
-- **Meldungen:** neuer Schalter „Wochen-Selbsttest (nur bei Hinweisen)“.
-
-### Geändert
-- Modul 11 trägt in der Modul-Liste jetzt das Abzeichen **Vorabversion** statt „Beta“ (seit v0.9 Build 1 so vorgesehen).
-
-### Technik
-- 9 neue Tests für Modul 11 (Quellen-Wächter: Ausfall, Mindestzahl, ausgeschaltete Melder, Rückkehr, Einzelwarnung unterdrückt; Selbsttest: Zeitpunkt, einmal je Sonntag, Hinweise, Ruhezeit; letzter Alarm; Einstellungen).
+- 13 neue Tests für Modul 11 (Quellen-Wächter: Ausfall, Mindestzahl, ausgeschaltete Melder, Rückkehr, Einzelwarnung unterdrückt; Selbsttest: Zeitpunkt, einmal je Sonntag, Hinweise, Ruhezeit; letzter Alarm; Einstellungen) und für die Fehler aus der Testwoche (Melderart in den Stufen, Fehlalarm kein Test, Kontaktperson und Mitteilungen, Selbsttest in der Ruhezeit, Diagnose ohne persönliche Daten).
 - Neuer WebSocket-Befehl `fenster_heizung/sf_selftest`, neue Datei `services.yaml`.
 
 ## [2026.11.4b38] - 2026-11-21
