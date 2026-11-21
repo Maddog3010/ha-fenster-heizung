@@ -29,7 +29,7 @@ from homeassistant.helpers.event import async_call_later, async_track_time_inter
 from homeassistant.helpers.storage import Store
 
 from .const import DOMAIN
-from .stats_logic import SCHEMA, active_modules, build_payload, channel_of, is_due, next_due
+from .stats_logic import _ID_RE, SCHEMA, active_modules, build_payload, channel_of, is_due, next_due
 
 _LOGGER = logging.getLogger(__name__)
 
