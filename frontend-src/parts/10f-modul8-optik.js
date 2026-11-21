@@ -193,6 +193,14 @@
       <div class="gschips evwho">${chip("", auto && det ? `Automatisch · ${det}` : "Automatisch")}${vs.map((v) => chip(v.id, v.name)).join("")}${chip("guest", "Gastfahrzeug", "people")}</div>
       <div class="mut sm" style="margin:2px 0 0">${set ? `Von Hand gewählt – gilt bis zum Abstecken${set === "guest" ? `. Es gelten Modus „${N.MN[c.guest.mode] || "–"}“ und Limit ${c.guest.limit} % des Gastfahrzeugs (Einstellungen → Fahrzeuge)` : ""}.` : "Automatisch: an der Karte erkannt, sonst das Fahrzeug „ohne Karte“."}</div>`;
   }
+  /* Build 10: Hinweis nach dem Anstecken, wenn „Beim Anstecken“ den Modus gesetzt hat */
+  _evPlugRow(d) {
+    const p = (this._wbSnap() || {}).plugInfo;
+    if (!p || !p.veh) return "";
+    const ML = { off: "Aus", pv: "Sonne", minpv: "Sonne + Netz", now: "Voll" }, t = String(p.t || "").slice(11, 16);
+    const ch = p.prev && p.prev !== p.mode;
+    return `<div class="gst" style="margin:10px 0 0">${ic("plug", 15)}<span><b>Angesteckt${t ? " " + esc(t) : ""} · ${esc(p.veh)}</b><br>Startet mit „${esc(ML[p.mode] || p.mode)}“ – Einstellung beim Anstecken.${ch ? ` Zuletzt war „${esc(ML[p.prev] || p.prev)}“ gewählt.` : ""} Umstellen gilt bis zum Abstecken.</span></div>`;
+  }
   _evModes(d) {
     const N = this._evNow(d), c = N.c, adm = this._admin(), X = this._wbxParts();
     const M = [["off", "Aus", "plug", "Wallbox lädt nicht"], ["pv", "Sonne", "sun", "Nur mit Überschuss"], ["minpv", "Sonne + Netz", "grid", "Mindeststrom, mehr bei Sonne"], ["now", "Voll", "bolt", "Sofort mit voller Leistung"]];
@@ -200,6 +208,7 @@
     return `<div class="card evmc"><h2>${this._gx("wallbox", 24)}Wie soll geladen werden?<span class="evmr">${esc(this._wbName())}</span></h2>
       <div class="vrow"><span>Laderegelung<small class="mut" style="display:block">${c.enabled ? "Strom &amp; Wärme steuert Start, Ladestrom und Phasen." : "Aus: Es wird nichts an der Wallbox verändert."}</small></span><button class="sw ${c.enabled ? "on" : ""}" data-act="wbsw" data-k="wbon" aria-pressed="${c.enabled}" aria-label="Laderegelung" ${adm ? "" : "disabled"}></button></div>
       <div class="evmodes">${M.map(([k, t, g, s]) => `<button class="evmode ${N.mode === k ? "sel" : ""}" data-act="wbmode" data-k="${k}" aria-pressed="${N.mode === k}" ${adm && !c.planOn && c.enabled ? "" : "disabled"}>${this._gx(g, 34, { on: N.mode === k ? 1 : 0 })}<span><b>${t}</b><small>${s}</small></span></button>`).join("")}</div>
+      ${this._evPlugRow(d)}
       ${this._evWhoRow(N)}
       <div class="mut sm" style="margin:8px 0 0">${c.planOn ? "Die <b>Planung</b> steuert gerade die Wallbox (Register „Planung“)." : wv ? `Gilt für <b>${esc(wv)}</b>${N.card ? " (" + N.card + ")" : ""}.` : "Gilt, solange kein Fahrzeug erkannt ist."}${c.enabled && N.w.reason ? ` ${esc(N.w.reason)}` : ""}</div>
       ${c.enabled ? `<div class="lsec" style="margin-top:12px">${ic("energy", 15)}Schnellstart</div>${X.quick}<div class="mut sm" style="margin-top:6px">Auch ohne App: NFC-Tag an der Wallbox mit „1 Stunde voll“, „Heute nur Sonne“ oder „Stopp“ – Einstellungen → Haus → Tags &amp; Karten.</div>` : ""}</div>`;
@@ -240,11 +249,15 @@
   }
   /* A7: „Warum gerade so?“ – Entscheidungen mit Grund, wie die Zeitleiste in Modul 1 */
   _evWhy() {
-    const L = (this._wbSnap().log || []).slice(0, this._wbLogAll ? 12 : 5);
+    /* Build 10: bleibt nach einem Neustart erhalten, mit Filter (Befehle, Fehler, Karten) */
+    const all = this._wbSnap().log || [], F = this._wbLogF || "", kind = (e) => e.k || "info";
+    const L = (this._wbLogAll && F ? all.filter((e) => kind(e) === F) : all).slice(0, this._wbLogAll ? 50 : 5);
+    const FL = [["", "Alle"], ["cmd", "Befehle"], ["err", "Fehler"], ["card", "Karten"]];
+    const chips = this._wbLogAll && all.length > 5 ? `<div class="gschips" style="margin:0 0 8px">${FL.map(([k, l]) => `<button class="gsch ${F === k ? "sel" : ""}" data-act="wblogf" data-k="${k}" aria-pressed="${F === k}">${l}${k ? ` (${all.filter((e) => kind(e) === k).length})` : ""}</button>`).join("")}</div>` : "";
     const col = (x) => /nicht erreichbar|fehlgeschlagen|abgelehnt/i.test(x) ? "var(--red,#f87171)" : /Hausanschluss|gedrosselt|von Hand/i.test(x) ? "var(--amber)" : /Karte|erkannt|Fahrzeug/i.test(x) ? "#60a5fa" : /Schnellstart/i.test(x) ? "#a78bfa" : "var(--teal)";
     const tm = (iso) => { const t = new Date(iso); return isFinite(t) ? t.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : ""; };
     const split = (x) => { const m = String(x || "").match(/^(.+?[.:])\s+(.+)$/); return m ? [m[1].replace(/[.:]$/, ""), m[2]] : [String(x || ""), ""]; };
-    return `<div class="card evwhy"><h2>${this._gx("meter", 24)}Warum gerade so?</h2>${L.length ? `<div class="evwl">${L.map((e) => { const [a, b] = split(e.x); return `<div style="--c:${col(e.x)}"><time>${tm(e.t)}</time><i></i><span><b>${esc(a)}</b>${b ? `<small>${esc(b)}</small>` : ""}</span></div>`; }).join("")}</div>${(this._wbSnap().log || []).length > 5 ? `<button class="lnk" data-act="wblog">${this._wbLogAll ? "Weniger" : "Mehr anzeigen"}</button>` : ""}` : `<div class="mut sm">Noch keine Entscheidungen. Sobald die Regelung läuft, steht hier, was sie tut und warum.</div>`}</div>`;
+    return `<div class="card evwhy"><h2>${this._gx("meter", 24)}Warum gerade so?</h2>${chips}${L.length ? `<div class="evwl">${L.map((e) => { const [a, b] = split(e.x); return `<div style="--c:${col(e.x)}"><time>${tm(e.t)}</time><i></i><span><b>${esc(a)}</b>${b ? `<small>${esc(b)}</small>` : ""}</span></div>`; }).join("")}</div>${(this._wbSnap().log || []).length > 5 ? `<button class="lnk" data-act="wblog">${this._wbLogAll ? "Weniger" : `Mehr anzeigen (${all.length})`}</button>` : ""}` : F ? `<div class="mut sm">Keine Einträge dieser Art.</div><button class="lnk" data-act="wblogf" data-k="">Alle anzeigen</button>` : `<div class="mut sm">Noch keine Entscheidungen. Sobald die Regelung läuft, steht hier, was sie tut und warum.</div>`}</div>`;
   }
   /* Register (A10) und Seite in der neuen Optik */
   _evTabsNew() {

@@ -14,6 +14,7 @@ from urllib.parse import quote
 from homeassistant.core import CALLBACK_TYPE, HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers.storage import Store
 from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore
@@ -23,6 +24,7 @@ from .wallbox_adapter import KNOWN, WALLBOXISH, GoeAdapter, HaAdapter, WallboxEr
 from .wallbox_calc import (
     CAR_CHARGING, CAR_DONE, CAR_IDLE, EXTERN_HOLD_S, SCHEMA, VOLT, cal_pick, clean_wb, clean_wbx, commands, decide, guard_limit, migrate_v2, parse_nrg,
     plan_due, resolve_who, valid_host, wbx_ready, bat_split, dim_amp, surplus_adj,
+    CMD_RETRIES, CMD_WAIT_S, MODE_NAMES, cmd_match, plug_target, soc_guess,
 )
 STALE_S = 180  # B6: so alt darf der Netz-Sensor sein, sonst wird nicht mehr erhöht
 from .wallbox_plan import (
@@ -36,9 +38,22 @@ SIGNAL_EV = f"{DOMAIN}_wallbox_update"
 _LOGGER = logging.getLogger(__name__)
 
 TICK_SECONDS = 10
+LOG_MAX = 200  # Build 10: so viele Entscheidungen werden gespeichert
 TIMEOUT_S = 5
 KEYS = ("car", "amp", "psm", "frc", "nrg", "wh", "eto", "fwv", "sse", "typ", "fna", "err", "alw", "acu", "pnp", "cbl", "ama", "trx", "cards", "acs")
 CAR_TEXT = {0: "Unbekannt", 1: "Nicht angesteckt", 2: "Lädt", 3: "Wartet aufs Auto", 4: "Fertig geladen", 5: "Fehler"}
+
+
+def _log_kind(text: str) -> str:
+    """Art eines alten Protokolleintrags (ohne „k“) am Text erkennen – für den Filter."""
+    t = text.lower()
+    if any(w in t for w in ("fehlgeschlagen", "nicht erreichbar", "kommt nicht an", "fehler")):
+        return "err"
+    if any(w in t for w in ("karte", "angesteckt", "abgesteckt", "gastfahrzeug")):
+        return "card"
+    if any(w in t for w in ("laden an", "laden aus", "wallbox frei", " a,", " a.", "phase")):
+        return "cmd"
+    return "info"
 
 
 class GoeError(WallboxError):
@@ -119,7 +134,8 @@ class WallboxManager:
         self.ok = False
         self.err = ""
         self.want: dict[str, Any] = {}
-        self.log: deque[dict[str, Any]] = deque(maxlen=40)
+        self.log: deque[dict[str, Any]] = deque(maxlen=LOG_MAX)
+        self._log_store = Store(hass, 1, f"{DOMAIN}_wallbox_log")  # Build 10: Entscheidungen überstehen einen Neustart (ohne Sicherungen, nur ein Protokoll)
         self._mem: dict[str, Any] = {"above_since": None, "below_since": None, "ph_change_ts": None, "ph_set": None, "chg_ts": None, "done_since": None}
         self._last_set: dict[str, int] = {}
         self._hold_until = 0.0
@@ -156,17 +172,30 @@ class WallboxManager:
         self._who_set: str | None = None  # von Hand gewählt, wer gerade lädt („guest“ oder Fahrzeug-ID) – gilt bis zum Abstecken
         self.lock_open = False  # „Nur mit Karte“ an, aber die Wallbox lädt auch ohne Karte (Kartenpflicht aus)
         self._lock_said = False
+        # Build 10
+        self._plug_new = False  # echtes Anstecken gesehen, Modus beim Anstecken noch nicht angewendet
+        self.plug_info: dict[str, Any] | None = None  # zuletzt angewendeter Modus beim Anstecken (Anzeige im Register „Laden“)
+        self._pend: dict[str, Any] | None = None  # gesendeter, noch nicht bestätigter Befehl
+        self._cmd = {"day": "", "ok": 0, "fail": 0, "last": None}
+        self._soc_trk: dict[str, dict[str, Any]] = {}  # je Fahrzeug: Zeitstempel des Ladestand-Sensors und seither geladene kWh
+        self.soc_est: dict[str, dict[str, Any]] = {}  # je Fahrzeug: Ladestand ist veraltet, es wird geschätzt
+        self.check: dict[str, Any] = {"t": None, "fixed": 0, "ok": True}
 
     async def async_start(self) -> None:
         self.cfg = clean_wb(await self._store.async_load())
         self._st = clean_stats(await self._st_store.async_load())
+        lg = await self._log_store.async_load()
+        if isinstance(lg, list):
+            self.log.extend(e for e in lg[:LOG_MAX] if isinstance(e, dict) and isinstance(e.get("x"), str) and isinstance(e.get("t"), str))
         try:
             fixed = reconcile_days(self._st)  # b33: Fahrzeug-Werte der Tage an die Ladungen angleichen
+            self.check = {"t": dt_util.now().isoformat(timespec="minutes"), "fixed": fixed, "ok": True}
             if fixed:
                 _LOGGER.info("Ladestatistik: %d Fahrzeug-Werte an die Ladungen angeglichen", fixed)
                 self._st_store.async_delay_save(lambda: self._st, 5)
         except Exception:  # noqa: BLE001 - der Abgleich darf den Start nie verhindern
             _LOGGER.exception("Ladestatistik-Abgleich fehlgeschlagen")
+            self.check = {"t": dt_util.now().isoformat(timespec="minutes"), "fixed": 0, "ok": False}
         self._unsub = async_track_time_interval(self.hass, self._tick, timedelta(seconds=TICK_SECONDS))
 
     def async_stop(self) -> None:
@@ -175,6 +204,7 @@ class WallboxManager:
             self._unsub = None
         close_session(self._st)
         self.hass.async_create_task(self._st_store.async_save(self._st))
+        self.hass.async_create_task(self._log_store.async_save(list(self.log)))
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
         old = self.cfg
@@ -184,11 +214,12 @@ class WallboxManager:
             self._last_set, self._hold_until = {}, 0.0
         if not self.cfg["enabled"]:
             self._quick = None
+            self._pend = None
         if old["enabled"] and not self.cfg["enabled"]:
             self._restore = True  # Wallbox wieder auf „neutral“ stellen
         if self.cfg["enabled"] != old["enabled"] or self.cfg["mode"] != old["mode"]:
             self._hold_until = 0.0
-            mn = {"off": "Aus", "pv": "Sonne", "minpv": "Sonne + Netz", "now": "Voll"}.get(self.cfg["mode"], self.cfg["mode"])
+            mn = MODE_NAMES.get(self.cfg["mode"], self.cfg["mode"])
             self._add(f"Regelung {'ein' if self.cfg['enabled'] else 'aus'}. Modus „{mn}“.")
         await self._store.async_save(self.cfg)
         self._fc = None
@@ -254,8 +285,10 @@ class WallboxManager:
         except GoeError as err:
             return {"ok": False, "error": str(err)}
 
-    def _add(self, text: str) -> None:
-        self.log.appendleft({"t": dt_util.now().isoformat(timespec="seconds"), "x": text})
+    def _add(self, text: str, k: str = "") -> None:
+        """Protokoll „Letzte Entscheidungen“. k: cmd (Befehl), err (Fehler), card (Karte/Fahrzeug), sonst Hinweis."""
+        self.log.appendleft({"t": dt_util.now().isoformat(timespec="seconds"), "x": text, "k": k or _log_kind(text)})
+        self._log_store.async_delay_save(lambda: list(self.log), 30)
 
     # ---- Messwerte
     def _modules(self) -> dict[str, Any]:
@@ -416,12 +449,12 @@ class WallboxManager:
             return None
         if k == "guest":
             g = cfg["guest"]
-            return {"kind": "guest", "name": "Gastfahrzeug", "card": self._card, "mode": g["mode"], "limit": g["limit"], "set": True}
+            return {"kind": "guest", "name": "Gastfahrzeug", "card": self._card, "mode": g["mode"], "limit": g["limit"], "plug": g.get("plug", "last"), "set": True}
         v = self._vehicle(k)
         if v is None:
             self._who_set = None
             return None
-        return {"kind": "vehicle", "id": v["id"], "name": v["name"], "card": self._card, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep"), "set": True}
+        return {"kind": "vehicle", "id": v["id"], "name": v["name"], "card": self._card, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep"), "plug": v.get("plug", "last"), "set": True}
 
     async def async_who(self, k: str) -> dict[str, Any]:
         """„Wer lädt gerade?“ von Hand: "" = automatisch (Karte), "guest" = Gastfahrzeug, sonst eine Fahrzeug-ID."""
@@ -458,9 +491,32 @@ class WallboxManager:
         eid = (v or {}).get("ent", {}).get("soc") if v else (self._legacy_ent("soc") if not self.cfg["vehicles"] else "")
         x = self._num(eid)
         if x is not None and 0 <= x <= 100:
-            return x
+            g = self._soc_aged(v, eid, x) if v else None
+            return g if g is not None else x
         e = self._st["est"].get(v["id"]) if v and not eid else None
         return round(e["soc"], 1) if e else None
+
+    def _soc_aged(self, v: dict[str, Any], eid: str, x: float) -> float | None:
+        """Build 10: Ladestand aus der Auto-Cloud veraltet und seither geladen? Dann Sensorwert plus geladene Energie.
+
+        Als Alter zählt der letzte Bericht des Sensors (last_reported, sonst last_updated). Rückgabe None = Sensorwert gilt.
+        """
+        st = self.hass.states.get(eid)
+        if st is None:
+            return None
+        upd = getattr(st, "last_reported", None) or st.last_updated
+        trk = self._soc_trk.get(v["id"])
+        if trk is None or trk["upd"] != upd:
+            trk = self._soc_trk[v["id"]] = {"upd": upd, "kwh": 0.0}
+        lim = int(self.cfg.get("socAge") or 0)
+        age = (dt_util.utcnow() - upd).total_seconds() if upd else 0.0
+        if not lim or age < lim * 60 or trk["kwh"] < 0.05:
+            self.soc_est.pop(v["id"], None)
+            return None
+        cap = float(v.get("cap") or self.cfg["cap"])
+        g = soc_guess(x, trk["kwh"], cap)
+        self.soc_est[v["id"]] = {"sensor": x, "soc": g, "min": round(age / 60), "kwh": round(trk["kwh"], 1)}
+        return max(g or x, x)
 
     def veh_est(self, v: dict[str, Any] | None) -> dict[str, Any] | None:
         """B4: Schätzung für ein Fahrzeug ohne Ladestand-Sensor (soc, set, stale) oder None."""
@@ -773,7 +829,7 @@ class WallboxManager:
             rd = await cl.read()
         except WallboxError as err:
             if self.ok or not self.err:
-                self._add(f"Wallbox nicht erreichbar: {err}")
+                self._add(f"Wallbox nicht erreichbar: {err}", "err")
             self.ok, self.err = False, str(err)
             self._fail += 1
             self._skip = 2 if self._fail >= 30 else 0  # nach 5 Minuten Funkstille nur noch alle 30 Sekunden fragen
@@ -843,9 +899,13 @@ class WallboxManager:
                 return
         else:
             self.lock_open, self._lock_said = False, False
+        if self._plug_new and who is not None:  # Build 10: Modus beim Anstecken, sobald klar ist, wer lädt
+            who = await self._plug_apply(who)
+            self.who = who
         cfg = self._eff_cfg(who)
         # Jemand hat von Hand umgestellt: nicht dagegen regeln
-        if manual_change(self._last_set, cur, cl.kind, self._set_ts, now_ts):
+        pending = self._pend_check(cur, cl.kind, now_ts)
+        if not pending and manual_change(self._last_set, cur, cl.kind, self._set_ts, now_ts):
             self._hold_until = now_ts + EXTERN_HOLD_S
             self._last_set = {}
             self._add("Wallbox von Hand umgestellt: Die Regelung pausiert 30 Minuten.")
@@ -924,6 +984,8 @@ class WallboxManager:
             add_energy(self._st, now, dt, power, self.sun_for_stats(power), self._price_now(now), veh, card)  # Sonne = Überschuss, höchstens die Solarleistung
             if cv and not cv["ent"].get("soc"):
                 est_add(self._st, cv["id"], power * dt / 3.6e6, self._cap())
+            elif cv and cv["id"] in self._soc_trk:  # Build 10: für den Fall, dass der Ladestand-Sensor veraltet
+                self._soc_trk[cv["id"]]["kwh"] += power * dt / 3.6e6
         day = now.date().isoformat()
         if day != self._st_day:
             self._st_day = day
@@ -1201,6 +1263,8 @@ class WallboxManager:
         """Meldungen aufs Handy: Ladung gestartet, Ziel erreicht, Plan reicht nicht, lange ohne Ladung."""
         car, prev = self.info.get("car"), self._prev_car
         self._prev_car = car
+        if prev == CAR_IDLE and car not in (None, CAR_IDLE):
+            self._plug_new = True  # Build 10: echtes Anstecken (nach einem Neustart ist prev None und zählt nicht)
         who = self.who["name"] if self.who else "Das Auto"
         if car == CAR_CHARGING and prev is not None and prev != CAR_CHARGING and not self._n["start"]:
             self._n["start"] = True
@@ -1210,6 +1274,7 @@ class WallboxManager:
                 for e in self._st["est"].values():
                     e["stale"] = True
             self._plug_ts, self._charged = None, False
+            self._plug_new, self._pend = False, None
             self._n.update(start=False, goal=False, plan=False, long=False)
             return
         if self._plug_ts is None:
@@ -1231,18 +1296,86 @@ class WallboxManager:
         try:
             await cl.set(cmd, self.cfg["maxA"])
         except WallboxError as err:
-            self._add(f"Befehl fehlgeschlagen: {err}")
+            self._add(f"Befehl fehlgeschlagen: {err}", "err")
+            self._pend_try(cmd, why)
             return
         self._set_ts = time.time()
         self._last_set.update({k: v for k, v in cmd.items() if k in ("frc", "amp")})
+        self._pend_try(cmd, why)
         names = {"frc": {0: "Wallbox frei", 1: "Laden aus", 2: "Laden an"}, "amp": None, "psm": {1: "1 Phase", 2: "3 Phasen"}}
         txt = ", ".join(names[k][v] if names[k] else f"{v} A" for k, v in cmd.items())
-        self._add(f"{txt}. {why}".strip())
+        self._add(f"{txt}. {why}".strip(), "cmd")
+
+    # ---- Build 10: Befehls-Rückmeldung
+    def _cmd_day(self) -> None:
+        d = dt_util.now().date().isoformat()
+        if self._cmd["day"] != d:
+            self._cmd.update(day=d, ok=0, fail=0)
+
+    def _pend_try(self, cmd: dict[str, int], why: str) -> None:
+        """Gesendeten Befehl merken. Derselbe Befehl noch einmal zählt als weiterer Versuch."""
+        keep = {k: v for k, v in cmd.items() if (k == "frc" and v in (1, 2)) or (k == "amp" and cmd.get("frc") != 1)}  # wie cmd_match: nur Prüfbares
+        if not keep:
+            self._pend = None if cmd.get("frc") == 0 else self._pend  # „neutral“ ersetzt einen offenen Befehl
+            return
+        p = self._pend
+        if p and p["cmd"] == keep:
+            p["tries"] += 1
+            p["ts"] = time.time()
+        else:
+            self._pend = {"cmd": keep, "ts": time.time(), "first": time.time(), "tries": 1, "why": why, "warned": False}
+
+    def _pend_check(self, cur: dict[str, Any], kind: str, now_ts: float) -> bool:
+        """Hat die Wallbox den letzten Befehl übernommen? True, solange er noch aussteht.
+
+        Solange ein Befehl aussteht, gilt eine Abweichung nicht als „von Hand umgestellt“ – sonst würde z. B. ein nicht
+        angekommenes „Laden aus“ am Ladelimit die Regelung 30 Minuten pausieren und das Auto weiterladen.
+        """
+        p = self._pend
+        if not p:
+            return False
+        self._cmd_day()
+        if cmd_match(p["cmd"], cur, kind):
+            self._pend = None
+            self._cmd["ok"] += 1
+            self._cmd["last"] = {"t": dt_util.now().isoformat(timespec="seconds"), "ok": True, "s": round(now_ts - p["first"], 1), "tries": p["tries"]}
+            if p["warned"]:
+                self._add("Befehl jetzt übernommen – die Wallbox reagiert wieder.", "cmd")
+            return False
+        wait = CMD_WAIT_S if kind == "goe" else 45  # Werte von Wallboxen über Home Assistant kommen verzögert
+        if now_ts - p["ts"] < wait and p["tries"] < CMD_RETRIES:
+            return True
+        if p["tries"] >= CMD_RETRIES and now_ts - p["first"] >= 2 * wait and not p["warned"]:
+            p["warned"] = True
+            self._cmd["fail"] += 1
+            self._cmd["last"] = {"t": dt_util.now().isoformat(timespec="seconds"), "ok": False, "s": round(now_ts - p["first"], 1), "tries": p["tries"]}
+            what = "Laden aus" if p["cmd"].get("frc") == 1 else "Laden an" if p["cmd"].get("frc") == 2 else f"{p['cmd'].get('amp')} A"
+            self._add(f"Befehl „{what}“ kommt nicht an ({p['tries']} Versuche). Es wird weiter gesendet.", "err")
+            self.hass.async_create_task(self._notify("cmd", "Wallbox reagiert nicht",
+                                                     f"Der Befehl „{what}“ kam nach {p['tries']} Versuchen nicht an. "
+                                                     + ("Das Auto lädt womöglich über das Ladelimit. Bitte die Wallbox prüfen." if p["cmd"].get("frc") == 1 else "Bitte die Wallbox prüfen.")))
+        self._last_set = {}  # nicht als Handumstellung werten – der nächste Takt sendet erneut
+        return True
+
+    async def _plug_apply(self, who: dict[str, Any]) -> dict[str, Any]:
+        """Build 10: Modus beim Anstecken auf das erkannte Fahrzeug bzw. das Gastfahrzeug anwenden (einmal je Anstecken)."""
+        self._plug_new = False
+        r = plug_target(self.cfg, who)
+        if r is None:
+            if (who.get("plug") or "last") != "last":
+                self.plug_info = {"t": dt_util.now().isoformat(timespec="minutes"), "veh": who.get("name"), "mode": who.get("mode"), "prev": who.get("mode")}
+            return who
+        cfg, txt = r
+        self.plug_info = {"t": dt_util.now().isoformat(timespec="minutes"), "veh": who.get("name"), "mode": who["plug"], "prev": who.get("mode")}
+        self.cfg = clean_wb(cfg)
+        await self._store.async_save(self.cfg)
+        self._add(txt, "card")
+        return {**who, "mode": who["plug"]}
 
     def snapshot(self) -> dict[str, Any]:
         due = plan_due({**self.cfg, "cap": self._cap()}, self._soc(), dt_util.now())
         return {
-            "cfg": self.cfg, "ok": self.ok, "error": self.err, "info": self.info, "want": self.want, "log": list(self.log),
+            "cfg": self.cfg, "ok": self.ok, "error": self.err, "info": self.info, "want": self.want, "log": list(self.log)[:50],
             "who": self.who, "soc": self._soc(), "plan": {"due": due[0], "need_kwh": round(due[1], 1), "start": due[2].isoformat(timespec="minutes") if due[2] else None},
             "hold": max(0, int(self._hold_until - time.time())),
             "quick": {"k": self._quick["k"], "until": self._quick["until"]} if self._quick else None, "guard": self.guard,
@@ -1251,4 +1384,8 @@ class WallboxManager:
             "price": self._price_view(), "eff": self._eff_view(),
             "ready": self.configured(), "kind": self.cfg["wbx"]["kind"], "lock_open": self.lock_open, "who_set": self._who_set or "", "dimmed": self.dimmed, "stale": self._grid_stale,
             "bat": dict(zip(("chg", "dis"), self._bat())),
+            # Build 10
+            "plugInfo": self.plug_info if self.info.get("car") not in (None, CAR_IDLE) else None,
+            "cmd": {**{k: self._cmd[k] for k in ("ok", "fail", "last")}, "pend": bool(self._pend and self._pend["warned"])},
+            "socEst": self.soc_est, "check": self.check,
         }

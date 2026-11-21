@@ -72,7 +72,8 @@
     if (a.startsWith("wbd")) return this._wbdAct(a, b);
     if (a === "wbtab" || a === "wbsec" || a === "wbsecall" || a === "wbgo" || a === "wbplan" || a === "wbsrc" || a === "wbpv" || a === "wbsper" || a === "wbswhat" || a === "wbsby" || a === "wbnav") return this._wbStAct(a, b);
     if (a === "wbtest") { this._wbTest = { busy: true }; this._render(); this._hass.callWS({ type: "fenster_heizung/wb_test", ip: this._wb().ip }).then((r) => { this._wbTest = r || { ok: false, error: "Keine Antwort" }; }).catch(() => { this._wbTest = { ok: false, error: "Keine Antwort von Home Assistant" }; }).finally(() => this._render()); return; }
-    if (a === "wblog") { this._wbLogAll = !this._wbLogAll; this._render(); return; }
+    if (a === "wblog") { this._wbLogAll = !this._wbLogAll; if (!this._wbLogAll) this._wbLogF = ""; this._render(); return; }
+    if (a === "wblogf") { this._wbLogF = b.dataset.k || ""; this._render(); return; }
     const c = this._wb(), k = b.dataset.k, R = { minA: [6, 32], maxA: [6, 32], startW: [500, 8000], onMin: [0, 15], offMin: [0, 30], limit: [50, 100], planSoc: [20, 100], cap: [10, 150], batSoc: [0, 100], priceMax: [1, 80], baseW: [0, 3000] };
     if (a === "wbmode") { const who = this._wbSnap().who, v = who && who.kind === "vehicle" ? c.vehicles.find((x) => x.name === who.name) : null; if (v) this._wbSave({ vehicles: c.vehicles.map((x) => (x.id === v.id ? { ...x, mode: k } : x)) }); else if (who && who.kind === "guest") this._wbSave({ guest: { ...c.guest, mode: k } }); else this._wbSave({ mode: k }); }
     else if (a === "wbset") this._wbSave({ [b.dataset.key]: k });

@@ -9,6 +9,10 @@ from typing import Any
 
 VOLT = 230.0
 MODES = ("off", "pv", "minpv", "now")
+PLUG_MODES = ("last", "pv", "minpv", "now")  # Build 10: Modus beim Anstecken („last“ = wie zuletzt)
+MODE_NAMES = {"off": "Aus", "pv": "Sonne", "minpv": "Sonne + Netz", "now": "Voll"}
+CMD_RETRIES = 3  # Build 10: so oft wird ein Befehl gesendet, bevor eine Meldung kommt
+CMD_WAIT_S = 8  # go-e: so lange darf es dauern, bis ein Befehl im Status steht
 PHASE_MODES = ("auto", "1", "3")
 PLAN_DAYS = ("all", "wk", "we")
 PLAN_STRATS = ("mix", "sun", "price")
@@ -26,8 +30,8 @@ DEFAULT: dict[str, Any] = {
     "ip": "", "enabled": False, "mode": "off", "minA": 6, "maxA": 16, "ph": "auto", "startW": 1400,
     "onMin": 1, "offMin": 3, "limit": 80, "plan": False, "planSoc": 80, "planTime": "07:00", "planDays": "all",
     "cap": 60, "batOn": True, "batSoc": 30, "priceOn": False, "priceMax": 18,
-    "lock": False, "reset": True, "vehicles": [], "guest": {"mode": "off", "limit": 80},
-    "guard": {"on": False, "maxA": 35}, "notify": {"start": True, "goal": True, "plan": True, "off": True, "long": False, "to": []},
+    "lock": False, "reset": True, "vehicles": [], "guest": {"mode": "off", "limit": 80, "plug": "last"}, "socAge": 45,
+    "guard": {"on": False, "maxA": 35}, "notify": {"start": True, "goal": True, "plan": True, "off": True, "long": False, "cmd": True, "to": []},
     "planOn": False, "planStrat": "mix", "planSrc": "auto", "pvSrc": "auto", "baseW": 400,
     "vs": 2, "defVeh": "", "look": "new", "batProtect": True, "carFirst": False, "dim": {"on": False, "ent": "", "kw": 4.2}, "pdf": {"ct": 30.0, "name": ""}, "wbx": {"kind": "goe", "plat": "", "name": "", "ent": {}, "ph": 3},
 }
@@ -111,10 +115,11 @@ def clean_wb(raw: Any) -> dict[str, Any]:
     gd = raw.get("guard") if isinstance(raw.get("guard"), dict) else {}
     out["guard"] = {"on": bool(gd.get("on", False)), "maxA": _int(gd.get("maxA"), 10, 63, 35)}
     nt = raw.get("notify") if isinstance(raw.get("notify"), dict) else {}
-    out["notify"] = {k: bool(nt.get(k, d["notify"][k])) for k in ("start", "goal", "plan", "off", "long")}
+    out["notify"] = {k: bool(nt.get(k, d["notify"][k])) for k in ("start", "goal", "plan", "off", "long", "cmd")}
     out["notify"]["to"] = [x for x in dict.fromkeys(nt.get("to") if isinstance(nt.get("to"), list) else []) if isinstance(x, str) and re.fullmatch(r"notify\.[a-z0-9_]{1,60}", x)][:6]
     g = raw.get("guest") if isinstance(raw.get("guest"), dict) else {}
-    out["guest"] = {"mode": g.get("mode") if g.get("mode") in MODES else "off", "limit": _int(g.get("limit"), 50, 100, 80)}
+    out["guest"] = {"mode": g.get("mode") if g.get("mode") in MODES else "off", "limit": _int(g.get("limit"), 50, 100, 80), "plug": g.get("plug") if g.get("plug") in PLUG_MODES else "last"}
+    out["socAge"] = _int(raw.get("socAge"), 0, 240, 45)  # Build 10: so alt (Min.) darf der Ladestand aus der Auto-Cloud sein, 0 = nicht prüfen
     out["look"] = "classic" if raw.get("look") == "classic" else "new"  # v0.7: neue Optik oder „wie bisher“
     # v0.9: Hausakku schützen (nicht ins Auto entladen), Auto vor dem Hausakku, § 14a EnWG Dimmen, Ladenachweis
     out["batProtect"] = bool(raw.get("batProtect", True))
@@ -235,6 +240,7 @@ def clean_vehicles(raw: Any) -> list[dict[str, Any]]:
             cap = 0.0
         person = str(v.get("person") or "")
         out.append({"person": person if re.fullmatch(r"person\.[a-z0-9_]{1,80}", person) else "", "id": vid, "name": name, "ids": ids, "mode": v.get("mode") if v.get("mode") in MODES else "pv", "limit": _int(v.get("limit"), 50, 100, 80), "dep": dep,
+                    "plug": v.get("plug") if v.get("plug") in PLUG_MODES else "last",
                     "brand": re.sub(r"[<>\"'&]", "", str(v.get("brand") or "")).strip()[:20], "model": re.sub(r"[<>\"'&]", "", str(v.get("model") or "")).strip()[:30],
                     "body": v.get("body") if v.get("body") in EV_BODIES else "limousine", "color": v.get("color") if v.get("color") in EV_COLORS else "blue",
                     "cap": cap, "ent": {k: _eid(ent.get(k)) for k in VEH_ENT},
@@ -279,12 +285,12 @@ def resolve_who(cfg: dict[str, Any], card: int | None) -> dict[str, Any] | None:
         v = next((x for x in cfg["vehicles"] if x["id"] == dv), None) if dv and not cfg.get("lock") else None
         if v is None:
             return None
-        return {"kind": "vehicle", "id": v["id"], "name": v["name"], "card": None, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep"), "auto": True}
+        return {"kind": "vehicle", "id": v["id"], "name": v["name"], "card": None, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep"), "plug": v.get("plug", "last"), "auto": True}
     for v in cfg["vehicles"]:
         if card in v["ids"]:
-            return {"kind": "vehicle", "id": v["id"], "name": v["name"], "card": card, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep")}
+            return {"kind": "vehicle", "id": v["id"], "name": v["name"], "card": card, "mode": v["mode"], "limit": v["limit"], "dep": v.get("dep"), "plug": v.get("plug", "last")}
     g = cfg["guest"]
-    return {"kind": "guest", "name": "Gastfahrzeug", "card": card, "mode": g["mode"], "limit": g["limit"]}
+    return {"kind": "guest", "name": "Gastfahrzeug", "card": card, "mode": g["mode"], "limit": g["limit"], "plug": g.get("plug", "last")}
 
 
 def parse_nrg(nrg: Any) -> dict[str, float | None]:
@@ -514,3 +520,62 @@ def dim_amp(kw: float, phases: int) -> int:
     ph = 1 if phases == 1 else 3
     return max(6, int(kw * 1000 // (VOLT * ph)))
 
+
+
+# ---- Build 10: Modus beim Anstecken, Befehls-Rückmeldung, Ladestand-Alter
+
+def plug_target(cfg: dict[str, Any], who: dict[str, Any] | None) -> tuple[dict[str, Any], str] | None:
+    """Modus beim Anstecken: (neue Einstellungen, Text fürs Protokoll) oder None, wenn nichts zu ändern ist.
+
+    Setzt den gespeicherten Modus des erkannten Fahrzeugs (bzw. des Gastfahrzeugs) auf den Modus „beim Anstecken“.
+    „Wie zuletzt“ und ein schon passender Modus ändern nichts.
+    """
+    if not who:
+        return None
+    pm = who.get("plug") or "last"
+    if pm not in PLUG_MODES or pm == "last" or who.get("mode") == pm:
+        return None
+    name, old = who.get("name") or "Fahrzeug", MODE_NAMES.get(who.get("mode") or "", who.get("mode") or "")
+    txt = f"Angesteckt: Modus „{MODE_NAMES[pm]}“ für {name} (Einstellung beim Anstecken, zuletzt „{old}“)."
+    if who.get("kind") == "guest":
+        return {**cfg, "guest": {**cfg["guest"], "mode": pm}}, txt
+    vid = who.get("id")
+    if not any(v["id"] == vid for v in cfg["vehicles"]):
+        return None
+    return {**cfg, "vehicles": [{**v, "mode": pm} if v["id"] == vid else v for v in cfg["vehicles"]]}, txt
+
+
+def cmd_match(cmd: dict[str, int], cur: dict[str, Any], kind: str) -> bool:
+    """Steht ein gesendeter Befehl im Status der Wallbox? Geprüft werden Laden an/aus und der Ladestrom.
+
+    „neutral“ (frc 0) und die Phasen werden nicht geprüft: Wallboxen über Home Assistant kennen kein „neutral“,
+    und eine Phasenumschaltung braucht je nach Auto mehrere Minuten. Fehlt ein Wert im Status, gilt er als übernommen.
+    """
+    for k in ("frc", "amp"):
+        if k not in cmd or (k == "frc" and cmd[k] == 0):
+            continue
+        c = cur.get(k)
+        if c is None:
+            continue
+        if k == "amp":
+            if cmd.get("frc") == 1:  # bei „Laden aus“ ist der Strom egal
+                continue
+            try:
+                if abs(float(c) - float(cmd[k])) < (1 if kind == "ha" else 0.5):
+                    continue
+            except (TypeError, ValueError):
+                continue
+            return False
+        if c != cmd[k]:
+            return False
+    return True
+
+
+def soc_guess(sensor: float | None, kwh_since: float, cap: float) -> float | None:
+    """Ladestand, wenn der Wert aus der Auto-Cloud veraltet ist: letzter Wert plus seither geladene Energie.
+
+    Ohne Abzug für Ladeverluste – die Schätzung liegt damit eher zu hoch, das Ladelimit greift also eher zu früh als zu spät.
+    """
+    if sensor is None or cap <= 0:
+        return sensor
+    return round(min(100.0, sensor + max(0.0, kwh_since) / cap * 100), 1)

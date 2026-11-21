@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b37] - 2026-11-21
+
+**Modul 8 · Elektroauto & Wallbox** v0.9 Build 10 – Release-Kandidat für Version 1.0 (Stabil).
+
+### Neu
+- **Modus beim Anstecken:** Je Fahrzeug (und für das Gastfahrzeug) unter Fahrzeuge → „Beim Anstecken“: **Wie zuletzt**, **Sonne**, **Sonne + Netz** oder **Voll**. Jede neue Ladung startet mit diesem Modus, egal was zuletzt gewählt war – wer abends einmal auf „Voll“ stellt, lädt beim nächsten Anstecken wieder mit Sonne. Umstellen während der Ladung gilt bis zum Abstecken. Wird die Karte erst nach dem Anstecken angelegt oder „Wer lädt gerade?“ von Hand gewählt, greift die Einstellung, sobald klar ist, wer lädt. Ein Neustart von Home Assistant mit angestecktem Auto setzt den Modus nicht zurück. Ladeplan, Abfahrt aus dem Kalender und Schnellstart haben weiter Vorrang. Im Register „Laden“ steht ein Hinweis, das Protokoll nennt den vorherigen Modus. Vorhandene Fahrzeuge stehen auf „Wie zuletzt“ – es ändert sich nichts, bis du etwas anderes wählst.
+- **Befehls-Rückmeldung:** Nach jedem Befehl prüft Modul 8, ob die Wallbox ihn übernommen hat, und sendet sonst erneut. Kommt ein Befehl nach drei Versuchen nicht an, steht das im Protokoll und es kommt eine Meldung („Wallbox reagiert nicht“, abschaltbar unter Meldungen). Wichtig vor allem bei „Laden aus“ am Ladelimit.
+- **Veralteter Ladestand aus der Auto-Cloud:** Meldet sich der Ladestand-Sensor länger nicht (Standard 45 Minuten, einstellbar beim Fahrzeug unter „Ladestand gilt als veraltet nach“, 0 = aus) und lädt das Auto, rechnet Modul 8 mit dem letzten Wert plus der seither geladenen Energie weiter. Für das Ladelimit zählt der höhere Wert – lieber etwas früher stoppen als überladen.
+- **Diagnose:** Modul 8 erscheint in den Diagnosedaten von Home Assistant (Geräte & Dienste → Strom & Wärme → Diagnose herunterladen) – Zustand, Einstellungen, Befehle und die letzten 50 Entscheidungen, ohne Adresse der Wallbox, Kartennamen, Personen, Kalender und Benachrichtigungsdienste.
+- **Einrichtungs-Check erweitert:** Befehle an die Wallbox (heute übernommen / nicht angekommen), veralteter Ladestand mit Schätzung, Hausanschluss-Schutz (empfohlen bei 11- und 22-kW-Wallboxen) und das Ergebnis der Datenprüfung der Ladestatistik beim Start.
+- **„Warum gerade so?“ bleibt erhalten:** Die letzten 200 Entscheidungen überstehen einen Neustart. „Mehr anzeigen“ zeigt bis zu 50, mit Filter Befehle, Fehler und Karten.
+
+### Behoben
+- **Modul 8: Ein nicht angekommener Befehl galt als „von Hand umgestellt“.** Kam z. B. „Laden aus“ am Ladelimit nicht bei der Wallbox an, hielt die Regelung das für eine Umstellung in der App und pausierte 30 Minuten – das Auto lud weiter. Jetzt zählt eine Abweichung erst als Handumstellung, wenn der letzte Befehl bestätigt wurde.
+
+### Technik
+- Regel-Simulator: 21 neue Tests spielen ganze Ladeabläufe mit einer nachgebauten go-e durch (Modus beim Anstecken, Befehls-Rückmeldung, veralteter Ladestand, offene Zugangskontrolle aus Build 8, Abstecken, Protokoll, Diagnose, Sichern und Wiederherstellen).
+
 ## [2026.11.4b36] - 2026-11-20
 
 ### Neu
