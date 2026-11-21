@@ -231,6 +231,7 @@ go-e Charger lokal im Netzwerk **oder jede Wallbox mit Home-Assistant-Integratio
 - **Wartung:** Einbaudatum, Lebensdauer, Prüfintervall, Batterie-Prognose, Einkaufsliste und Jahresprotokoll.
 - **Abfahrt-Prüfung:** zeigt offene Fenster, Türen und Geräte, wenn du das Haus verlässt.
 - **Quellen-Wächter und Wochen-Selbsttest:** fällt eine ganze Quelle aus (z. B. X-Sense-Cloud), kommt eine Meldung statt vieler. Sonntags prüft das Modul alle Melder und meldet sich nur bei Hinweisen.
+- Ausführliche Anleitung: [Anleitung_Modul11_Sicherheit.pdf](docs/Anleitung_Modul11_Sicherheit.pdf)
 - **Für Automationen:** sechs Sensoren (u. a. Status, nicht erreichbar, letzter Alarm), das Ereignis `fenster_heizung_sicherheit` und die Dienste `sicherheit_quittieren`, `melder_geprueft` und `sicherheit_selbsttest`.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_sicherheit.png" width="560" alt="Modul 11"></p>

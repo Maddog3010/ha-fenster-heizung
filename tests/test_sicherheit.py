@@ -654,9 +654,12 @@ def test_selbsttest_alles_gut_ohne_mitteilung_und_ruhezeit():
         assert _check_mit(m, h, [{**_d("binary_sensor.b", off=False, bat=90)}]) == [] and m.selftest["ok"] is True
         assert m.log[0]["x"].startswith("Wochen-Selbsttest: alle 1 Melder")
         m2, h2 = mgr()
+        m2.cfg["lead"], m2.cfg["test"]["on"], m2.cfg["bat"]["on"] = 0, False, False
         m2.cfg["quiet"] = {"on": True, "from": "17:00", "to": "07:00"}
-        _check_mit(m2, h2, [_d("binary_sensor.b", off=False, bat=90)])
-        assert not m2.selftest  # in der Ruhezeit verschoben
+        assert _check_mit(m2, h2, [_d("binary_sensor.b", off=False, bat=5)]) == []  # Test läuft, Mitteilung wartet
+        assert m2.selftest["ok"] is False and m2.selftest["pend"] is True
+        m2.cfg["quiet"]["on"] = False
+        assert _check_mit(m2, h2, [_d("binary_sensor.b", off=False, bat=5)]) == ["Wochen-Selbsttest: 1 Hinweis"] and not m2.selftest["pend"]
         nx = S.SicherheitManager._selftest_next(datetime(2026, 11, 17, 19, 0, tzinfo=timezone.utc))
         assert nx.startswith("2026-11-22T18:00")
     finally:
@@ -683,3 +686,81 @@ def test_clean_cfg_build11():
     c = S.clean_cfg({"guard": {"src": 0}, "selftest": {"on": False}, "notify": {"self": False}})
     assert c["guard"]["src"] is False and c["selftest"]["on"] is False and c["notify"]["self"] is False
     assert S.src_name("xsense") == "X-Sense" and S.src_name("foo") == "foo"
+
+
+# ---------------------------------------------------------------- v0.9 Build 12: Fehler aus der Testwoche
+def test_stufe2_nutzt_eigene_melderart():
+    m, h = mgr()
+    _snap_stub(m)
+    h.states.d["binary_sensor.melder_x"] = _St("on", None)  # von Hand hinzugefügt, ohne Geräteklasse
+    m.cfg["meta"]["binary_sensor.melder_x"] = {"kind": "heat"}
+    m.cfg["acts"] = [{"id": "l2", "kind": "heat", "ent": "light.flur", "do": "on", "st": 2}]
+    h.states.d["light.flur"] = _St("off", None)
+    m.st["binary_sensor.melder_x"] = {"a": True, "since": "x", "off_since": 0.0, "rep": 0.0, "stage": 1, "t0": 1000.0, "ack": "", "why": ""}
+    asyncio.run(m.stages_tick(1011.0))
+    assert [c[2]["entity_id"] for c in h.services.calls if c[0] == "light"] == ["light.flur"]  # vorher: als „safety“ gelesen, Aktion fehlte
+
+
+def test_fehlalarm_zaehlt_nicht_als_pruefung():
+    m, h = mgr()
+    m._known.add("binary_sensor.rauch")
+    m.st["binary_sensor.rauch"] = {"a": True, "since": "x", "off_since": 0.0, "rep": 0.0, "stage": 1, "t0": 1.0, "ack": "x", "why": "Toast"}
+    t0 = datetime(2026, 11, 18, 12, 0, 0)
+    old, new = _St("on"), _St("off")
+    old.last_changed, new.last_changed = t0, t0 + timedelta(seconds=40)
+    m._on_state(_Ev("binary_sensor.rauch", new, old))
+    assert not m.tested
+
+
+def test_kontaktperson_bekommt_entwarnung_und_mitteilungen_verschwinden():
+    m, h = mgr()
+    _snap_stub(m)
+    _det(h)
+    m.cfg["notify"]["to"] = ["notify.handy"]
+    m.cfg["contact"]["to"] = "notify.nachbar"
+    m.st["binary_sensor.rauch"] = {"a": True, "since": "x", "off_since": 0.0, "rep": 0.0, "stage": 4, "t0": 1000.0, "ack": "", "why": "", "s4t": 1.0}
+    asyncio.run(m.async_ack("", "", "Handy"))
+    nb = [c for c in h.services.calls if c[0] == "notify" and c[1] == "nachbar"]
+    assert any(c[2]["message"] == "clear_notification" for c in nb) and any("Erledigt" in c[2]["message"] for c in nb)
+    m2, h2 = mgr()
+    m2.cfg["lead"], m2.cfg["test"]["on"] = 0, False
+    m2.st["binary_sensor.gas"] = {"a": True, "since": "x", "off_since": 0.0, "rep": 0.0, "stage": 4, "t0": 1.0, "ack": "", "why": ""}
+    m2.cfg["contact"]["to"] = "notify.nachbar"
+    _check_mit(m2, h2, [_d(off=False, bat=80)])
+    calls = [(c[1], c[2]["message"]) for c in h2.services.calls if c[0] == "notify"]
+    assert ("handy", "clear_notification") in calls and ("nachbar", "clear_notification") in calls
+    assert any(n == "nachbar" and m.startswith("Entwarnung") for n, m in calls)
+
+
+def test_diagnose_modul11_ohne_persoenliche_daten():
+    import importlib.util as iu
+    saved = {n: sys.modules.get(n) for n in ("homeassistant", "homeassistant.config_entries", "homeassistant.core", "fhdiag", "fhdiag.const")}
+    try:
+        for n, kw in (("homeassistant", {}), ("homeassistant.config_entries", {"ConfigEntry": object}), ("homeassistant.core", {"HomeAssistant": object}), ("fhdiag.const", {"DOMAIN": "fenster_heizung"})):
+            mm = types.ModuleType(n)
+            for k, v in kw.items():
+                setattr(mm, k, v)
+            sys.modules[n] = mm
+        sys.modules["fhdiag"] = types.ModuleType("fhdiag")
+        sys.modules["fhdiag"].__path__ = [str(ROOT)]
+        spec = iu.spec_from_file_location("fhdiag.diagnostics", ROOT / "diagnostics.py")
+        D = iu.module_from_spec(spec)
+        spec.loader.exec_module(D)
+    finally:
+        for n, old in saved.items():
+            if old is None:
+                sys.modules.pop(n, None)
+            else:
+                sys.modules[n] = old
+    m, h = mgr()
+    m.cfg["notify"]["to"] = ["notify.handy"]
+    m.cfg["contact"]["to"] = "notify.nachbar"
+    m.cfg["proto"] = {"name": "Max", "addr": "Musterweg 1", "who": ""}
+    m.cfg["plan"]["bg"] = {"eg": "data:image/png;base64,AAAA"}
+    m.detectors = lambda: [_d(off=False, bat=80)]
+    dd = D.sicherheit_diag(m)
+    txt = str(dd)
+    assert "notify.handy" not in txt and "nachbar" not in txt and "Musterweg" not in txt and "base64" not in txt
+    assert dd["einstellungen"]["proto"] == {"name": D.REDACT, "addr": D.REDACT, "who": ""} and dd["schema"] == S.SCHEMA
+    assert dd["melder"][0]["id"] == "binary_sensor.gas" and dd["einstellungen"]["plan"]["hintergrundbild"] is True
+    assert m.cfg["notify"]["to"] == ["notify.handy"] and D.sicherheit_diag(None) == {"eingerichtet": False}

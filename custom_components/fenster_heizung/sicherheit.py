@@ -346,6 +346,8 @@ def months_since(iso: str | None, now: Any) -> float | None:
 
 
 class SicherheitManager:
+    SCHEMA = SCHEMA  # für die Diagnose
+
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
         self._store = SafeStore(hass, 1, f"{DOMAIN}_sicherheit")
@@ -415,7 +417,7 @@ class SicherheitManager:
             self.src_off = {str(k): str(v) for k, v in (d.get("src_off") or {}).items() if isinstance(v, str)}
             se = d.get("selftest") if isinstance(d.get("selftest"), dict) else {}
             if se.get("t"):
-                self.selftest = {"t": str(se["t"]), "ok": bool(se.get("ok")), "n": int(se.get("n") or 0), "p": [str(x)[:80] for x in (se.get("p") or [])][:10]}
+                self.selftest = {"t": str(se["t"]), "ok": bool(se.get("ok")), "n": int(se.get("n") or 0), "p": [str(x)[:80] for x in (se.get("p") or [])][:10], "pend": bool(se.get("pend"))}
             la = d.get("last_alarm") if isinstance(d.get("last_alarm"), dict) else {}
             if la.get("t"):
                 self.last_alarm = {k: str(la.get(k) or "") for k in ("t", "melder", "name", "raum")}
@@ -500,8 +502,8 @@ class SicherheitManager:
                 el = (new.last_changed - old.last_changed).total_seconds()
             except Exception:  # noqa: BLE001
                 el = None
-            if el is not None and 0 <= el <= TEST_ALARM_MAX_S:
-                self._auto_test(eid, f"Alarm {int(el)} s")
+            if el is not None and 0 <= el <= TEST_ALARM_MAX_S and not (self.st.get(eid) or {}).get("why"):
+                self._auto_test(eid, f"Alarm {int(el)} s")  # als Fehlalarm quittiert (Toast, Dampf …) zählt nicht als Prüfung
         if new.state == "on" or (old is not None and old.state == "on") or (new.state in OFF_STATES) != (old is not None and old.state in OFF_STATES):
             self.hass.async_create_task(self._tick(None))
 
@@ -620,6 +622,14 @@ class SicherheitManager:
         until = dt_util.parse_datetime(p["until"])
         return bool(until is not None and until > (now or dt_util.now()))
 
+    def _kind(self, ent: str) -> str:
+        """Melderart wie in Stufe 1: eigene Zuordnung vor der Geräteklasse, sonst „safety“ (auch für von Hand hinzugefügte)."""
+        m = self.cfg["meta"].get(ent) or {}
+        if m.get("kind") in KINDS:
+            return m["kind"]
+        st = self.hass.states.get(ent)
+        return (kind_of(st.attributes.get("device_class") if st is not None else "") or ("safety", ""))[0]
+
     def _name(self, ent: str) -> str:
         m = self.cfg["meta"].get(ent) or {}
         st = self.hass.states.get(ent)
@@ -697,8 +707,7 @@ class SicherheitManager:
             name = self._name(eid)
             m = self.cfg["meta"].get(eid) or {}
             where = f" ({m['room']})" if m.get("room") else ""
-            kind = (self.hass.states.get(eid).attributes.get("device_class") if self.hass.states.get(eid) is not None else "") or ""
-            k = (kind_of(kind) or ("safety", ""))[0]
+            k = self._kind(eid)
             for n in (2, 3, 4):
                 cfgn = sg[f"s{n}"]
                 if cfgn["on"] and s.get("stage", 1) < n and el >= cfgn["sec"]:
@@ -747,19 +756,35 @@ class SicherheitManager:
                 self.fa.setdefault(eid, []).append({"t": now, "why": why})
                 del self.fa[eid][:-FA_MAX]
             self._fire("verstanden", eid, fehlalarm=why or None)
-            for svc in self.cfg["notify"]["to"]:
-                name = svc.split(".", 1)[1]
-                if self.hass.services.has_service("notify", name):
-                    try:
-                        await self.hass.services.async_call("notify", name, {"message": "clear_notification", "data": {"tag": f"sf_{eid}"}}, blocking=False)
-                    except Exception:  # noqa: BLE001
-                        _LOGGER.debug("Mitteilung nicht entfernt", exc_info=True)
+            s4 = s.get("stage", 0) >= 4
+            await self._clear_push(eid, with_contact=s4)
+            if s4:  # die Kontaktperson wurde schon gerufen: Bescheid geben, dass sich jemand kümmert
+                await self._tell_contact(f"Erledigt: {self._name(eid)} – jemand hat „Verstanden“ gedrückt und kümmert sich." + (f" Ursache: {why}." if why else ""))
         if n:
             self._save()
             if not any(v.get("a") and not v.get("ack") for v in self.st.values()):
                 self._fast_off()
             async_dispatcher_send(self.hass, SIGNAL_SF)
         return await self.snapshot()
+
+    async def _clear_push(self, eid: str, with_contact: bool = False) -> None:
+        """Alarm-Mitteilungen (gleicher Tag) auf den Handys entfernen – nach „Verstanden“ und wenn der Alarm endet."""
+        to = list(self.cfg["notify"]["to"])
+        c = self.cfg["contact"]["to"]
+        if with_contact and c and c not in to:
+            to.append(c)
+        for svc in to:
+            name = svc.split(".", 1)[1]
+            if self.hass.services.has_service("notify", name):
+                try:
+                    await self.hass.services.async_call("notify", name, {"message": "clear_notification", "data": {"tag": f"sf_{eid}"}}, blocking=False)
+                except Exception:  # noqa: BLE001
+                    _LOGGER.debug("Mitteilung nicht entfernt", exc_info=True)
+
+    async def _tell_contact(self, msg: str) -> None:
+        c = self.cfg["contact"]["to"]
+        if c:
+            await self._notify("", "Rauch- und Sicherheitsmelder", msg, to=[c])
 
     async def async_press_test(self, det_id: str) -> dict[str, Any]:
         """Testknopf des Melders drücken (zum Beispiel X-Sense), sofern das Gerät einen hat."""
@@ -835,9 +860,13 @@ class SicherheitManager:
                     s["rep"] = now_ts
                     await self._notify("alarm", f"ALARM läuft noch: {d['kind']}", f"{d['name']}{where} meldet weiter Alarm.", data=self._push(d["id"]))
             elif not d["alarm"] and s["a"] and not d["off"]:
+                was_s4, was_ack = s.get("stage", 0) >= 4, bool(s.get("ack"))
                 s.update({"a": False, "since": "", "stage": 0, "t0": 0.0, "ack": "", "why": ""})
                 self._add(f"Alarm beendet: {d['name']}{where}.", "ok")
+                await self._clear_push(d["id"], with_contact=was_s4)
                 await self._notify("end", f"Alarm beendet: {d['kind']}", f"{d['name']}{where} meldet keinen Alarm mehr.")
+                if was_s4 and not was_ack:
+                    await self._tell_contact(f"Entwarnung: {d['name']}{where} meldet keinen Alarm mehr.")
                 self._fire("ende", d["id"])
                 self._save()
             # Erreichbarkeit
@@ -971,12 +1000,22 @@ class SicherheitManager:
         return self.selftest
 
     async def _selftest_due(self, det: list[dict[str, Any]], now: Any, quiet: bool) -> None:
-        if not self.cfg["selftest"]["on"] or not det or quiet or now.weekday() != SELF_DAY or now.strftime("%H:%M") < SELF_AT:
+        """Sonntags ab 18 Uhr einmal prüfen. Fällt das in die Ruhezeit, läuft der Test trotzdem, die Mitteilung kommt danach."""
+        r = self.selftest
+        if r.get("pend") and not quiet:
+            r["pend"] = False
+            self._save()
+            if not r.get("ok"):
+                await self._notify("self", "Wochen-Selbsttest: " + (f"{len(r['p'])} Hinweise" if len(r["p"]) > 1 else "1 Hinweis"), "\n".join(r["p"][:6]))
+        if not self.cfg["selftest"]["on"] or not det or now.weekday() != SELF_DAY or now.strftime("%H:%M") < SELF_AT:
             return
         if str(self.selftest.get("t") or "")[:10] == now.date().isoformat():
             return
         r = self.selftest_run(det, now)
-        if not r["ok"]:
+        if not r["ok"] and quiet:
+            r["pend"] = True
+            self._save()
+        elif not r["ok"]:
             await self._notify("self", "Wochen-Selbsttest: " + (f"{len(r['p'])} Hinweise" if len(r["p"]) > 1 else "1 Hinweis"), "\n".join(r["p"][:6]))
 
     async def async_selftest(self) -> dict[str, Any]:
