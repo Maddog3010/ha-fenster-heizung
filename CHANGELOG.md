@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b40] - 2026-11-21
+
+**Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 12 – Testwoche: Fehler behoben, Diagnose, Anleitung. Ab hier kommen bis 1.0 keine neuen Funktionen mehr dazu.
+
+### Behoben
+- **Stufe 2 bis 4 trafen bei Meldern mit eigener Melderart die falschen Aktionen.** Wer die Art eines Melders von Hand gesetzt oder einen Melder ohne Geräteklasse hinzugefügt hat, bekam in Stufe 1 die richtigen Aktionen, ab Stufe 2 wurde er aber als „Sicherheitsmelder“ gelesen – Aktionen für zum Beispiel „Hitzemelder“ liefen dann nicht. Alle Stufen nutzen jetzt dieselbe Melderart.
+- **Ein kurzer Fehlalarm galt als Prüfung.** Ein Alarm unter 2 Minuten wurde immer als Test per Testknopf eingetragen, auch wenn er als Fehlalarm quittiert war (Toast, Dampf). Jetzt zählt er dann nicht als Prüfung.
+- **Alarm-Mitteilungen blieben auf den Handys stehen, wenn der Alarm von selbst endete.** Sie verschwinden jetzt auch dann, nicht nur nach „Verstanden“.
+- **Die Kontaktperson erfuhr nicht, dass sich jemand kümmert.** War Stufe 4 erreicht, bekommt sie nach „Verstanden“ die Nachricht „Erledigt – jemand kümmert sich“ (mit Ursache, falls angegeben), endet der Alarm ohne Quittung eine Entwarnung. Ihre Alarm-Mitteilung wird entfernt.
+- **Wochen-Selbsttest fiel in der Ruhezeit aus.** Lag 18 Uhr am Sonntag in der Ruhezeit, lief der Test die ganze Woche nicht (seit Build 11). Jetzt läuft er immer, die Mitteilung kommt nach der Ruhezeit.
+
+### Neu
+- **Diagnose:** Modul 11 erscheint in den Diagnosedaten von Home Assistant (Geräte & Dienste → Strom & Wärme → Diagnose herunterladen) – Melder mit Zustand und Prognose, Stufen, Quellen-Wächter, Selbsttest, Fehlalarme, Einstellungen und die letzten 50 Ereignisse. Ohne Benachrichtigungsdienste, Kontaktperson, Name und Adresse, Lautsprecher und Hintergrundbild.
+- **Anleitung_Modul11_Sicherheit.pdf** im Ordner docs (6 Seiten), README verlinkt.
+
+### Technik
+- 4 neue Tests (Melderart in den Stufen, Fehlalarm kein Test, Kontaktperson und Mitteilungen, Diagnose ohne persönliche Daten), Selbsttest-Test um die Ruhezeit erweitert.
+
 ## [2026.11.4b39] - 2026-11-21
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 11 – Lücken auf dem Weg zu 1.0 geschlossen (Konzept „Modul 11 · Version 1.0“).
