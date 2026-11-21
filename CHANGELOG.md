@@ -2,6 +2,30 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b38] - 2026-11-21
+
+**Modul 14 · Dynamischer Stromtarif** v0.9 Build 1 – Vorabversion auf dem Weg zu 1.0 (letzter Schritt aus dem Konzept „Neue Optik & Technik bis v1.0“).
+
+### Neu
+- **„Lohnt sich dein Tarif?“** – neue Karte in Modul 14 für einen Monat oder ein Jahr (zum Blättern): **bezahlt** = dein Netzbezug je Stunde aus dem Haus-Energiebuch × Preis dieser Stunde aus der Preis-Historie, **wäre gewesen** = dieselben kWh × Vergleichs-Festpreis, dazu die **Ersparnis** in € und %. Balken je Tag (Ø Preis in Stufenfarbe) bzw. je Monat, Festpreis als Linie. Tage ohne Stundenwerte (älter als 62 Tage) werden mit Tages-kWh × Tagesschnitt geschätzt und blass gezeigt. Gerechnet wird mit dem Netzbezug, ohne Solarstrom und Akku.
+- **Vergleichs-Festpreis** unter Einstellungen → Modul 14 → Preis & Stufen → „Tarif-Check“: Standard ist der Festpreis aus Haus › Preise & Tarif, eigener Wert (z. B. Angebot des alten Anbieters) und Grundgebühr-Unterschied je Monat möglich.
+- **Kachel „Gespart im Monat“** und **Sensor „Ersparnis Monat“** (Gerät „Strom & Wärme · Stromtarif“, € mit bezahltem Betrag, kWh, Tagen und geschätzten Tagen als Attribute).
+- **Wochenansicht** im Band „Heute und morgen“ (Umschalter 15 Min. · Stunden · Woche): letzte Tage, heute und morgen mit Tagesschnitt, günstigster und teuerster Zeit und negativen Preisen – aus der eigenen Preis-Historie.
+- **Daten prüfen** im Reiter Quelle: Quelle mit Ersatzquelle, Auflösung, Preise für morgen, Lücken, Preis-Historie und Stundenwerte des Haus-Energiebuchs, jeweils grün, gelb oder rot.
+- **Startseite:** Hinweis, sobald negative Strompreise für heute oder morgen bekannt sind, mit „Ansehen“ und „Später“.
+- **Diagnose:** Modul 14 in den Diagnosedaten von Home Assistant (ohne Meldedienste).
+- **Anleitung_Modul14_Stromtarif.pdf** im Ordner docs, README und Vorschaubild aktualisiert.
+
+### Geändert
+- Modul 14 trägt die Stufe **Vorabversion** (v0.9). Der Hinweis „Kommt mit v0.9“ am Seitenende entfällt.
+
+### Behoben
+- **Versions-Statistik: Nach einer Antwort im Popup und einem Neustart wurde nichts mehr gesendet.** Beim Start fehlte ein Import (`_ID_RE`), das Laden der gespeicherten Zustimmung brach mit einem Fehler ab – je nach Ablauf auch der Start der Integration an dieser Stelle. Seit 2026.11.4b27.
+
+### Technik
+- 10 neue Tests für Modul 14 (Tarif-Check stundengenau, geschätzte Tage und Grundgebühr, fehlende Preise und Stunden, Zeitumstellung, Monate, Woche, Lücken, Vergleichspreis, Dienst mit Daten prüfen und Diagnose), 1 Test für den Start der Versions-Statistik.
+- Neuer WebSocket-Befehl `fenster_heizung/tarif_check` (per m/y, ref JJJJ-MM bzw. JJJJ).
+
 ## [2026.11.4b37] - 2026-11-21
 
 **Modul 8 · Elektroauto & Wallbox** v0.9 Build 10 – Release-Kandidat für Version 1.0 (Stabil).

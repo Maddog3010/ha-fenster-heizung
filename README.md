@@ -126,7 +126,7 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 | 11 | **Rauch- & Sicherheitsmelder** | Beta 0.8 | Haus-Szene, Alarm mit Stufen und „Verstanden“, ausgeschaltete Melder, Melder-Karten 2.0, Batterie-Prognose, Grundriss-Baukasten mit Fluchtweg, Wartung mit Jahresband, Abfahrt-Prüfung |
 | 12 | Pool & Sauna | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ |
 | 13 | Batteriespeicher-Planung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echtem Ladestand |
-| 14 | **Dynamischer Stromtarif** | Beta 0.8 | Tibber direkt oder Preis-Sensor, Viertelstunden heute und morgen, Preisband, bestes Fenster je Gerät, Preisalarm |
+| 14 | **Dynamischer Stromtarif** | Vorabversion 0.9 | Tibber direkt oder Preis-Sensor, Viertelstunden heute und morgen, Preisband mit Woche, bestes Fenster je Gerät, Preisalarm, „Lohnt sich dein Tarif?“ |
 | 15 | Wartung & Erinnerungen | In Entwicklung 0.1 | Konzept, auf Wunsch mit den Daten aus Modul 11 |
 | 16 | **Solar-Prognose** | Stabil 1.0 | Sonnenbogen, Prognose gegen Ertrag je Stunde, korrigierte Prognose, Anlagen einzeln, Sensoren für Automationen |
 | 17 | **Müllabfuhr** | Addon · Stabil 1.0 | Straßen-Szene, bis zu 10 Abfallarten, Erinnerung mit Knöpfen, Reinholen, Wer ist dran, Diesmal nicht, Verlauf, Jahresübersicht, Sensoren |
@@ -238,7 +238,8 @@ go-e Charger lokal im Netzwerk **oder jede Wallbox mit Home-Assistant-Integratio
 <summary><b>14 · Stromtarif und 16 · Solar-Prognose</b></summary>
 <br>
 
-- **Dynamischer Stromtarif (Beta):** Stundenpreise, Preisverlauf und die günstigsten Zeiten, zum Beispiel aus Tibber.
+- **Dynamischer Stromtarif (Vorabversion):** Preise heute und morgen in Viertelstunden aus Tibber oder einem Preis-Sensor (Nord Pool, EPEX Spot, aWATTar, Octopus …), Preisband mit Wochenansicht, bestes Fenster je Gerät aus Modul 4, Preisalarm, Hinweis bei negativen Preisen auf der Startseite und **„Lohnt sich dein Tarif?“** – dein Netzbezug je Stunde mit den echten Preisen gegen einen Festpreis, je Monat und Jahr. Sieben Sensoren und das Ereignis `fenster_heizung_tarif` für Automationen.
+- Ausführliche Anleitung: [Anleitung_Modul14_Stromtarif.pdf](docs/Anleitung_Modul14_Stromtarif.pdf)
 - **Solar-Prognose (stabil):** heute und morgen als Sonnenbogen, Prognose und Ertrag je Stunde, beste Zeit mit Geräten, korrigierte Prognose, Treffer-Kalender, Anlagen einzeln und fünf Sensoren für Automationen. Quelle: Forecast.Solar, Solcast, Open-Meteo oder ein eigener Sensor. Modul 2, 3, 4 und 8 nutzen sie.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_stromtarif.png" width="400" alt="Modul 14"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul_prognose.png" width="400" alt="Modul 16"></p>

@@ -50,6 +50,7 @@
     });
     try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ k: "spn", src: "Sponsor", i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: this._hzNew() ? "in" : "wa" }); } catch (_) { /* egal */ }
     this._adHints().forEach((h) => out.push(h));
+    if (this._mdState().on.dt) { try { const h = this._tfHint(); if (h) out.push(h); } catch (_) { /* Modul 14 noch nicht geladen */ } }
     if (this._hzNew()) { this._hzWarnX().forEach((h) => out.push(h)); const ff = this._hzFrostFc(); if (ff) out.push({ k: "frostfc", i: "snow", t: "Frost heute Nacht", s: `ab ${ff.at.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} · bis ${num(ff.min, 0)} °C`, r: "heute", c: "wa", blk: "wetter", src: "Wetter", hd: "weather", frost: true }); }
     const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
   }

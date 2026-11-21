@@ -7,6 +7,10 @@ Stunden), deshalb stimmen auch 23- und 25-Stunden-Tage. Für reine Börsenpreise
 (Aufschläge + MwSt.), optional mit zeitvariablem Netzentgelt. Die Preise jedes Tages werden 400 Tage gemerkt
 (Grundlage für den Tarif-Check in v1.0). Oberfläche: WebSocket tarif_get / tarif_set / tarif_sub (Push).
 
+v0.9 (Vorabversion): Tarif-Check „Lohnt sich dein Tarif?“ – Netzbezug je Stunde aus dem Haus-Energiebuch × Preis dieser
+Stunde aus der Preis-Historie gegen einen Vergleichs-Festpreis (Monat und Jahr, ältere Tage aus Tageswerten geschätzt),
+Wochenansicht aus der Historie, Prüfung der Daten und Sensor „Ersparnis Monat“.
+
 v0.8: bestes Startfenster je Gerät aus Modul 4 (gelernte Laufzeit und Leistungskurve, Preis × Verbrauch, eigener
 Solarstrom aus der Prognose zum Einspeisepreis gerechnet) mit Erinnerung, Preisalarm (unter/über einer Grenze, negativ,
 Preise für morgen da – je Zeitraum höchstens einmal, mit Ruhezeit) und das Ereignis fenster_heizung_tarif.
@@ -47,7 +51,7 @@ BOERSE_HINT = ("nordpool", "nord_pool", "epex", "awattar", "energi_data", "entso
 def default_cfg() -> dict[str, Any]:
     return {"src": "auto", "sensor": "", "boerse": "auto", "add": 18.6, "vat": 19.0, "down": 3.0, "up": 4.0, "res": "q", "win_h": 3,
             "nne": {"on": False, "ht_from": 17, "ht_to": 20, "ht_ct": 6.1, "nt_from": 0, "nt_to": 6, "nt_ct": -4.2},
-            "devs": {}, "sun": True,
+            "devs": {}, "sun": True, "cmp": {"ct": None, "base": 0.0},
             "alarm": {"to": [], "below": {"on": False, "ct": 20.0}, "above": {"on": False, "ct": 40.0}, "neg": {"on": True}, "tomorrow": {"on": False},
                       "lead": 0, "quiet": {"on": True, "from": 22, "to": 7}}}
 
@@ -84,6 +88,8 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
             d["devs"][k] = {"on": bool(v.get("on", True)), "by": int(_f(v.get("by"), 0, 24, 0)) if v.get("by") not in (None, "", 0) else None,
                             "from": int(_f(v.get("from"), 0, 23, 0)) if v.get("from") not in (None, "") else None}
     d["sun"] = r.get("sun") is not False
+    c = r.get("cmp") if isinstance(r.get("cmp"), dict) else {}  # v0.9: Vergleichs-Festpreis (None = aus den Haus-Werten), Grundgebühr-Unterschied €/Monat
+    d["cmp"] = {"ct": round(_f(c.get("ct"), 1, 100, 30.0), 2) if c.get("ct") not in (None, "") else None, "base": round(_f(c.get("base"), -50, 50, 0.0), 2)}
     a = r.get("alarm") if isinstance(r.get("alarm"), dict) else {}
     da = d["alarm"]
     to = [x for x in (a.get("to") or []) if isinstance(x, str) and x.startswith("notify.") and len(x) < 120] if isinstance(a.get("to"), list) else []
@@ -357,6 +363,127 @@ def best_dev(prof: list[tuple[float, float, float]], now: float, end: float, pri
 
 
 # ---------------------------------------------------------------- Dienst
+# ---------------------------------------------------------------- v0.9: Tarif-Check, Woche, Daten prüfen
+IMP = 6  # Index „imp“ (Netzbezug gesamt) in den Zeilen des Haus-Energiebuchs
+MONTHS = ("Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember")
+
+
+def hour_prices(rows: list[list[float]]) -> dict[int, float]:
+    """Preise eines Tages ([Start, Dauer, ct]) → Ortsstunde (0–23) → Ø ct, nach Dauer gewichtet."""
+    by: dict[int, list[float]] = {}
+    for r in rows or []:
+        try:
+            s, d, ct = float(r[0]), float(r[1]), float(r[2])
+        except (TypeError, ValueError, IndexError):
+            continue
+        h = datetime.fromtimestamp(s, tz=dt_util.DEFAULT_TIME_ZONE).hour
+        a = by.setdefault(h, [0.0, 0.0])
+        a[0] += ct * d
+        a[1] += d
+    return {h: v[0] / v[1] for h, v in by.items() if v[1] > 0}
+
+
+def day_mean(rows: list[list[float]]) -> float | None:
+    w = sum(float(r[1]) for r in rows or [] if len(r) >= 3)
+    return sum(float(r[2]) * float(r[1]) for r in rows if len(r) >= 3) / w if w > 0 else None
+
+
+def tariff_check(hist: dict[str, list[Any]], ebh: dict[str, dict[str, list[float]]], ebd: dict[str, list[float]], cmp_ct: float, base_m: float,
+                 d0: date, d1: date, cfg: dict[str, Any]) -> dict[str, Any]:
+    """„Lohnt sich dein Tarif?“ für die Tage d0 (inkl.) bis d1 (exkl.).
+
+    Je Tag: Netzbezug (kWh) × Preis. Mit Stundenwerten aus dem Energiebuch wird jede Stunde mit ihrem Preis gerechnet;
+    fehlen sie (älter als 62 Tage) oder fehlt eine Stunde im Preis, gilt der Tagesschnitt und der Tag ist „geschätzt“.
+    Ohne Preise für den Tag (Festpreis-Quelle, Lücke) wird der Tag ausgelassen. Vergleich: dieselben kWh × cmp_ct,
+    dazu der Grundgebühr-Unterschied je Monat anteilig für die Tage mit Daten (positiv = Festpreis-Vertrag ist teurer).
+    """
+    days: list[dict[str, Any]] = []
+    d = d0
+    while d < d1:
+        k = d.isoformat()
+        rows = hist.get(k)
+        hp, mean = (hour_prices(rows), day_mean(rows)) if rows else ({}, None)
+        hrs = ebh.get(k) or {}
+        if mean is not None:
+            kwh = paid = 0.0
+            est = False
+            if hrs:
+                for h, v in hrs.items():
+                    try:
+                        e = float(v[IMP])
+                    except (TypeError, ValueError, IndexError):
+                        continue
+                    ct = hp.get(int(h))
+                    if ct is None:
+                        ct, est = mean, True
+                    kwh += e
+                    paid += e * ct / 100
+            elif ebd.get(k) is not None and len(ebd[k]) > IMP:
+                kwh = float(ebd[k][IMP])
+                paid, est = kwh * mean / 100, True
+            if kwh > 0.001:
+                days.append({"d": k, "kwh": round(kwh, 3), "paid": round(paid, 4), "fix": round(kwh * cmp_ct / 100, 4),
+                             "ct": round(paid / kwh * 100, 2), "mean": round(mean, 2), "est": est})
+        d += timedelta(days=1)
+    kwh = sum(x["kwh"] for x in days)
+    paid = sum(x["paid"] for x in days)
+    fix = sum(x["fix"] for x in days)
+    avg = paid / kwh * 100 if kwh > 0 else None
+    for x in days:
+        x["lv"] = level(x["ct"], avg, cfg) if avg is not None else ""
+    base = 0.0
+    if base_m and days:  # Grundgebühr-Unterschied anteilig je Monat für die Tage mit Daten
+        for x in days:
+            y, m = int(x["d"][:4]), int(x["d"][5:7])
+            nd = ((date(y + (m == 12), m % 12 + 1, 1)) - date(y, m, 1)).days
+            base += base_m / nd
+    return {"days": days, "kwh": round(kwh, 2), "paid": round(paid, 2), "fix": round(fix + base, 2), "base": round(base, 2), "save": round(fix + base - paid, 2),
+            "ct": round(avg, 2) if avg is not None else None, "cmp_ct": cmp_ct, "est": sum(1 for x in days if x["est"]), "n": len(days)}
+
+
+def months_of(check: dict[str, Any]) -> list[dict[str, Any]]:
+    """Tageswerte eines Jahres-Checks zu Monaten zusammenfassen (für die Jahresansicht)."""
+    by: dict[str, dict[str, float]] = {}
+    for x in check["days"]:
+        m = by.setdefault(x["d"][:7], {"kwh": 0.0, "paid": 0.0, "fix": 0.0, "est": 0, "n": 0})
+        m["kwh"] += x["kwh"]
+        m["paid"] += x["paid"]
+        m["fix"] += x["fix"]
+        m["est"] += 1 if x["est"] else 0
+        m["n"] += 1
+    return [{"m": k, "kwh": round(v["kwh"], 2), "paid": round(v["paid"], 2), "fix": round(v["fix"], 2), "save": round(v["fix"] - v["paid"], 2),
+             "ct": round(v["paid"] / v["kwh"] * 100, 2) if v["kwh"] > 0 else None, "est": int(v["est"]), "n": int(v["n"])} for k, v in sorted(by.items())]
+
+
+def week_view(hist: dict[str, list[Any]], series: list[dict[str, Any]], today: date) -> list[dict[str, Any]]:
+    """Letzte 6 Tage und heute aus der Historie, morgen aus der Zeitreihe: Schnitt, günstigste und teuerste Zeit, negative Zeiten."""
+    out = []
+    for i in range(-6, 2):
+        d = today + timedelta(days=i)
+        st = day_stats(series, d) if i >= 0 else None
+        if st is None:
+            rows = hist.get(d.isoformat())
+            if rows:
+                ser = [{"s": int(r[0]), "d": int(r[1]), "ct": float(r[2])} for r in rows if len(r) >= 3]
+                st = day_stats(ser, d)
+        if st:
+            out.append({"d": d.isoformat(), "avg": st["avg"], "min": st["min"], "max": st["max"], "neg": st["neg"], "tomorrow": i == 1})
+    return out
+
+
+def _de(iso: str) -> str:
+    """JJJJ-MM-TT → TT.MM.JJJJ (für Texte in der Oberfläche)."""
+    try:
+        return date.fromisoformat(iso[:10]).strftime("%d.%m.%Y")
+    except ValueError:
+        return iso
+
+
+def gaps(series: list[dict[str, Any]]) -> int:
+    """Lücken in der Zeitreihe (Ende eines Werts ≠ Beginn des nächsten)."""
+    return sum(1 for a, b in zip(series, series[1:]) if b["s"] - (a["s"] + a["d"]) > 60)
+
+
 class TarifManager:
     def __init__(self, hass: HomeAssistant) -> None:
         self.hass = hass
@@ -729,6 +856,84 @@ class TarifManager:
                 return x["ct"]
         return None
 
+    # ---- v0.9: Tarif-Check
+    def cmp_ct(self) -> float:
+        """Vergleichs-Festpreis: eigener Wert in Modul 14, sonst der Festpreis aus Haus › Preise & Tarif."""
+        if self.cfg["cmp"]["ct"] is not None:
+            return float(self.cfg["cmp"]["ct"])
+        haus = self.hass.data.get(DOMAIN, {}).get("haus")
+        hp = ((getattr(haus, "data", None) or {}).get("price") or {})
+        try:
+            return float(hp.get("price"))
+        except (TypeError, ValueError):
+            return 30.0
+
+    def _eb(self) -> tuple[dict[str, Any], dict[str, Any], Any]:
+        eb = self.hass.data.get(DOMAIN, {}).get("ebuch")
+        return (getattr(eb, "hours", None) or {}, getattr(eb, "days", None) or {}, eb)
+
+    def check(self, per: str, ref: str) -> dict[str, Any]:
+        """per „m“ (ref JJJJ-MM) oder „y“ (ref JJJJ). Bis höchstens heute."""
+        today = dt_util.now().date()
+        try:
+            if per == "y":
+                y = int(ref[:4])
+                d0, d1 = date(y, 1, 1), date(y + 1, 1, 1)
+            else:
+                y, m = int(ref[:4]), int(ref[5:7])
+                d0 = date(y, m, 1)
+                d1 = date(y + (m == 12), m % 12 + 1, 1)
+        except (TypeError, ValueError):
+            d0 = today.replace(day=1)
+            d1 = date(d0.year + (d0.month == 12), d0.month % 12 + 1, 1)
+            per = "m"
+        ebh, ebd, eb = self._eb()
+        r = tariff_check(self.hist, ebh, ebd, self.cmp_ct(), self.cfg["cmp"]["base"], d0, min(d1, today + timedelta(days=1)), self.cfg)
+        first = min(self.hist) if self.hist else ""
+        r.update(per=per, ref=d0.isoformat()[:7] if per == "m" else str(d0.year), title=(f"{MONTHS[d0.month - 1]} {d0.year}" if per == "m" else str(d0.year)),
+                 first=first, eb=eb is not None and bool(getattr(eb, "ok", False) or ebd), hours_from=min(ebh) if ebh else "", cmp_own=self.cfg["cmp"]["ct"] is not None)
+        if per == "y":
+            r["months"] = months_of(r)
+            r["days"] = []
+        return r
+
+    def _saved_month(self) -> dict[str, Any] | None:
+        """Kachel und Sensor „Ersparnis Monat“ – höchstens alle 10 Minuten neu gerechnet."""
+        now = dt_util.now().timestamp()
+        c = getattr(self, "_sm", None)
+        if c and now - c[0] < 600:
+            return c[1]
+        try:
+            r = self.check("m", dt_util.now().date().isoformat())
+            v = {"save": r["save"], "paid": r["paid"], "kwh": r["kwh"], "n": r["n"], "est": r["est"]} if r["n"] else None
+        except Exception as err:  # noqa: BLE001 - der Check darf die Anzeige nie stören
+            _LOGGER.debug("Tarif-Check: %s", err)
+            v = None
+        self._sm = (now, v)
+        return v
+
+    def datacheck(self) -> list[dict[str, Any]]:
+        """A9: Daten prüfen – Quelle, Auflösung, morgen, Lücken, Historie, Energiebuch. st: ok / warn / bad."""
+        today = dt_util.now().date()
+        ser = self.series
+        tm = day_stats(ser, today + timedelta(days=1))
+        res = ser[0]["d"] if ser else 0
+        ebh, ebd, eb = self._eb()
+        n_today = (day_stats(ser, today) or {}).get("n", 0)
+        g = gaps(ser) if self.src != "fix" else 0
+        out = [
+            {"k": "src", "t": "Quelle", "st": "ok" if self.src in ("tibber", "sensor") else "warn" if self.src == "fix" else "bad",
+             "v": (self.src_name or "keine") + (" · " + self.note if self.note else "") if self.src else "Keine Preise gefunden"},
+            {"k": "res", "t": "Auflösung", "st": "ok" if ser else "bad", "v": ("15 Minuten" if res and res <= 900 else "Stunden" if res else "–") + (f" · {n_today} Werte heute" if n_today else "")},
+            {"k": "tm", "t": "Preise für morgen", "st": "ok" if tm else ("ok" if dt_util.now().hour < 14 else "warn") if self.src != "fix" else "ok",
+             "v": f"da · {tm['n']} Werte" if tm else "kommen meist ab 13 Uhr" if self.src != "fix" else "Festpreis"},
+            {"k": "gap", "t": "Lücken", "st": "ok" if not g else "warn", "v": "keine" if not g else f"{g} in der Zeitreihe"},
+            {"k": "hist", "t": "Preis-Historie", "st": "ok" if self.hist else "warn", "v": f"{len(self.hist)} Tage seit {_de(min(self.hist))}" if self.hist else "noch leer – füllt sich ab heute"},
+            {"k": "eb", "t": "Verbrauch je Stunde", "st": "ok" if ebh else "warn" if ebd else "bad",
+             "v": f"Haus-Energiebuch seit {_de(min(ebh))}" + (", davor geschätzt" if ebd and min(ebd) < min(ebh) else "") if ebh else "nur Tageswerte (geschätzt)" if ebd else "Haus-Energiebuch fehlt (Einstellungen → Haus → Energiequellen)"},
+        ]
+        return out
+
     def snapshot(self) -> dict[str, Any]:
         nd = dt_util.now()
         now = nd.timestamp()
@@ -762,7 +967,7 @@ class TarifManager:
             "today": st_t, "tomorrow": st_m, "best": best, "best_tomorrow": best_m,
             "slots": cheapest_slots(self.series, now, 3, 1.0), "dear": {"s": dear["s"], "ct": dear["ct"]} if dear else None,
             "neg": {"n": len(neg), "s": neg[0]["s"], "min": min(x["ct"] for x in neg)} if neg else None,
-            "hist_days": len(self.hist),
+            "hist_days": len(self.hist), "week": week_view(self.hist, self.series, today), "saved_m": self._saved_month(),
             "devs": [{**d, "rem": self.rem.get(d["id"])} for d in self.devs], "alarm": self.alarm_view(), "alog": self.alog[-20:][::-1],
         }
 
@@ -775,4 +980,4 @@ class TarifManager:
         self._listen()
         self._last = ""
         await self._tick(None)
-        return {**self.snapshot(), "found": self.found()}
+        return {**self.snapshot(), "found": self.found(), "datacheck": self.datacheck()}

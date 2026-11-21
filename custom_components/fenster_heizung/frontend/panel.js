@@ -305,10 +305,10 @@ const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", ico
 const MOD_LI = { id: "li", n: 18, name: "Licht & Lampen", short: "Licht", icon: "lamp", tag: "Lampen schalten, dimmen und Szenen", lab: true };
 /* Phase 3: Labs, die jetzt Addons sind (Müllabfuhr → Addon muell, Licht → Addon licht) */
 const LAB_GONE = ["mm", "li"];
-const MOD_ST = { ef: "stabil", sf: "beta", sp: "stabil", ev: "vorab", wx: "stabil", dt: "beta" };
+const MOD_ST = { ef: "stabil", sf: "beta", sp: "stabil", ev: "vorab", wx: "stabil", dt: "vorab" };
 const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
-const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "tfxopen", txt: "Preisquelle, Stufen, Endpreis, Fenster je Gerät und Preisalarm" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeuge mit eigenen Sensoren, Wallbox-Sensoren" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
+const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "tfxopen", txt: "Preisquelle, Stufen, Endpreis, Vergleichspreis, Fenster je Gerät, Preisalarm und Daten prüfen" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeuge mit eigenen Sensoren, Wallbox-Sensoren" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
 const EV_BRANDS = ["Mercedes-Benz", "Audi", "VW", "BYD", "BMW", "Andere"];
 const EV_BODIES = { limousine: "Limousine", suv: "SUV", kombi: "Kombi", kompakt: "Kompakt" };
@@ -787,7 +787,7 @@ const MV = {
   sf: { v: "0.9", b: 10, d: "2026-11-18", p: "2026.11.4b21", log: [["0.9", 10, "2026.11.4b21", "Anpassen in der Übersicht, Ereignisse kompakt"], ["0.9", 9, "2026.11.4b20", "Grundriss: Durchgang und Räume mit gestricheltem Rand"], ["0.9", 8, "2026.11.4b19", "Ausgänge im Grundriss selbst markieren: Außentür oder Treppe nach unten"], ["0.9", 7, "2026.11.4b18", "Test per Testknopf wird automatisch eingetragen (Test-Entität oder kurzer Alarm)"], ["0.9", 6, "2026.11.4b17", "Test per Testknopf wird sofort erkannt und eingetragen"], ["0.9", 5, "2026.11.4b16", "Räume im Grundriss mit freier Form: L, T, U und beliebige Ecken"], ["0.9", 4, "2026.11.4b15", "Grundriss-Bearbeiten-Feld und Batterie-Verlauf auf dem Tablet korrigiert"], ["0.9", 3, "2026.11.4b14", "Batterie-Verlauf mit festem Maximum, Einbaudatum als Kalender-Karte statt Monatsrad"], ["0.9", 2, "2026.11.4b13", "Neue Menüstruktur: Reiter Melder, Melder-Seite, Einstellungen mit Bereichs-Reitern, Auswahl-Seiten statt Aufklappmenüs"], ["0.9", 1, "2026.11.4b12", "Vorabversion: Einstellungsfenster und Auswahlmenüs in der neuen Optik"], ["0.8", 5, "2026.11.4b11", "Kein roter Alarm mehr beim Zurückwechseln in die App (Warndienste, Ladephase)"], ["0.8", 4, "2026.11.4b10", "Warndienst-Sensoren (z. B. NINA) lösen keinen Alarm mehr aus"], ["0.8", 3, "2026.11.4b9", "Grundriss 2.0 (Fluchtweg um Wände herum, Maßstab, Abdeckung, Halos, Rückgängig, Mehrfachauswahl), PDF-Dateien über das Teilen-Menü, Anwesenheit wie Modul 6"], ["0.8", 2, "2026.11.4b8", "Alle Reiter in der neuen Optik: Übersicht mit „Als Nächstes“, Grundriss mit Kacheln, Legende und Melderliste, Wartung mit Kennzahlen und Lebensdauer-Karten, Einstellungen mit Sprungleiste"], ["0.8", 1, "2026.11.4b7", "Ausgeschaltete Melder ohne Warnungen (Frage nach langer Funkstille), Alarm mit Stufen und „Verstanden“, Alarm-Ansicht für Handy und Wandtablet, Fehlalarm-Hilfe, Fluchtweg im Grundriss, Sensoren und Ereignis für Automationen"], ["0.7", 1, "2026.11.4b5", "Neue Optik: Haus-Szene im Banner, Kennzahl-Kacheln, Zeitleiste, Melder-Karten 2.0 mit Detailblatt, Wartung mit Jahresband und Batterie-Prognose; Schalter „Karten wie bisher“"], ["0.6", 1, "2026.11.4b5", "Technik: Melder-Ausfall in Sekunden erkannt, Plan und Hintergrundbild in eigenem Speicher, Batterie-Prognose seit dem letzten Tausch mit früher Erinnerung, Schema-Version, Tests"], ["0.5", 4, "2026.11.1b16", "Neue Tag-Aktion „Melder geprüft“ für ein NFC-Tag neben dem Melder"], ["0.5", 3, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  dt: { v: "0.8", b: 1, d: "2026-11-17", p: "2026.11.4b1", log: [["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
+  dt: { v: "0.9", b: 1, d: "2026-11-21", p: "2026.11.4b38", log: [["0.9", 1, "2026.11.4b38", "Vorabversion: „Lohnt sich dein Tarif?“ (Monat und Jahr gegen Festpreis), Kachel „Gespart im Monat“, Wochenansicht, Daten prüfen, Hinweis auf der Startseite bei negativen Preisen, Sensor Ersparnis Monat, Diagnose"], ["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "1.0", b: 2, d: "2026-11-12", p: "2026.11.3", log: [["1.0", 2, "2026.11.3b12", "Anlagen wählen: mehrere Prognose-Dienste (Forecast.Solar, Solcast, Open-Meteo) für dasselbe Dach werden nicht mehr ungefragt addiert – Auswahl je Anlage, „Nur …“-Knöpfe, Vorgabe aus dem Energie-Dashboard, Warnung auf der Seite; Korrektur lernt nach einer Änderung neu"], ["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "1.1", b: 2, d: "2026-11-15", p: "2026.11.3", log: [["1.1", 2, "2026.11.3", "Bis zu vier Kacheln links und rechts und zwei unten, bis zu fünf Quellen am Handy, hellere Kacheln, Verbraucher mit Solar-Anteil genauer"], ["1.1", 1, "2026.11.3b19", "Strom-Reiter: „Woher kam der Strom?“ mit Anteil von Solar, Akku und Netz, Akku- und Netz-Bilanz und wohin der Solarstrom ging"], ["1.0", 1, "2026.11.3b6", "Stabil: Schnellstart aus den Haus-Werten, Einrichtungs-Prüfung, Kosten im Strom-Reiter und Vorteil heute auf dem Tablet, Fluss-Bild als Bild teilen, Tablet-Modus zeichnet nur alle 5 s neu, Feinschliff der Optik (Haus als freier Ring, ruhigere Kacheln, klarere Schrift)"], ["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -1547,6 +1547,17 @@ button.achip{border:0;cursor:pointer;font-family:inherit}.achip.red{--c:#f87171}
 .tflog{margin-top:10px;display:flex;flex-direction:column;gap:6px;font-size:.78rem}.tflog>div{display:grid;grid-template-columns:78px 1fr;gap:8px;color:var(--mut)}.tflog b{color:var(--primary-text-color);font-weight:650}
 .tfok{color:#22c55e}.tfnn{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}.tfnn .step b{min-width:54px}
 .hzkg.tfk{flex:1;min-width:84px;max-width:150px;align-self:flex-end}.hzkg.tfk.l{max-width:none;width:100%}.tfmini .tfplot{height:var(--bh,40px)}
+/* Modul 14 v0.9: Tarif-Check, Woche */
+.tfckn{display:flex;align-items:center;justify-content:center;gap:12px;margin:2px 0 10px}.tfckn b{min-width:140px;text-align:center}.tfckn .ibtn{font-size:1.2rem;line-height:1}
+.tfcks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.tfckt{border:1px solid var(--line);border-radius:12px;padding:9px 12px;display:flex;flex-direction:column;gap:1px;min-width:0}.tfckt .mut{font-size:.74rem}.tfckt b{font-size:1.2rem}.tfckt small{font-size:.72rem;color:var(--mut)}
+.tfckc{position:relative;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:2px;height:120px;margin-top:14px;padding-bottom:16px;align-items:end}
+.tfckb{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}.tfckb i{display:block;width:100%;border-radius:3px 3px 0 0}.tfckb.est i{opacity:.45}.tfckb small{position:absolute;bottom:-16px;font-size:.62rem;color:var(--mut)}
+.tfckf{position:absolute;left:0;right:0;border-top:1.5px dashed var(--fg,#e5e7eb);opacity:.7;z-index:1;pointer-events:none}.tfckf span{position:absolute;right:0;top:-16px;font-size:.66rem;color:var(--mut)}
+.tfwkc{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;height:170px;margin-top:6px}.tfwk{display:flex;flex-direction:column;align-items:center;gap:4px}.tfwk small{font-size:.72rem;color:var(--mut)}.tfwk.tm small{font-style:italic}
+.tfwkp{position:relative;flex:1;width:100%}.tfwkr{position:absolute;left:50%;width:12px;margin-left:-6px;border-radius:6px;background:var(--line);opacity:.9}.tfwk.tm .tfwkr{opacity:.5}
+.tfwka{position:absolute;left:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--c)}.tfwkn{position:absolute;left:50%;width:7px;height:7px;margin:-3px 0 0 -3.5px;border-radius:50%;background:#3b82f6}
+.tfwkp em{position:absolute;left:calc(50% + 10px);transform:translateY(-50%);font-style:normal;font-size:.68rem;color:var(--mut)}
+@media (max-width:640px){.tfcks{grid-template-columns:1fr 1fr}.tfcks .tfckt:last-child{grid-column:1/-1}.tfckc{--n:31}.tfckb small{display:none}.tfckb:nth-child(7n+2) small{display:block}.tfwkp em{display:none}}
 @media (max-width:640px){.tfbnr{flex-direction:column;gap:0}.tfbt{flex:none;padding:16px 16px 4px 20px}.tfbb{font-size:1.9rem}.tfbi{padding:6px 12px 10px 14px}.tfbi .mlv{display:none}.tftiles .wxtl:last-child:nth-child(odd){grid-column:1/-1}.tfsl{grid-template-columns:24px minmax(0,1fr) auto}.tfsb{display:none}.tfdays{grid-template-columns:1fr}.tfdev{grid-template-columns:36px minmax(0,1fr);gap:6px 10px;align-items:start}.tfdev .tfdw{grid-column:2;text-align:left}.tfdev .tfbadge{grid-column:2;justify-self:start}.tfal .chip{display:none}}
 .wxtlh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}.wxtlh h2{margin:0}.wxseg{margin:0;flex:none}.wxseg button{padding:5px 12px;font-size:.78rem}
 .wxtlw{display:grid;gap:6px}.wxtlx{display:grid;grid-template-columns:112px 1fr;gap:8px;align-items:center}.wxtln{display:flex;gap:5px;align-items:center;font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden}.wxtln svg{color:var(--mut);flex:none}
@@ -12046,6 +12057,7 @@ class FensterHeizungPanel extends HTMLElement {
     });
     try { const sp = this._spnS(); if (this._admin() && sp.soon) out.push({ k: "spn", src: "Sponsor", i: "heart", t: sp.soon === 1 ? "Ein Sponsor-Schlüssel läuft bald ab" : `${sp.soon} Sponsor-Schlüssel laufen bald ab`, s: "Unter Einstellungen, Sponsor-Bereich verlängern", r: "bald", c: this._hzNew() ? "in" : "wa" }); } catch (_) { /* egal */ }
     this._adHints().forEach((h) => out.push(h));
+    if (this._mdState().on.dt) { try { const h = this._tfHint(); if (h) out.push(h); } catch (_) { /* Modul 14 noch nicht geladen */ } }
     if (this._hzNew()) { this._hzWarnX().forEach((h) => out.push(h)); const ff = this._hzFrostFc(); if (ff) out.push({ k: "frostfc", i: "snow", t: "Frost heute Nacht", s: `ab ${ff.at.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} · bis ${num(ff.min, 0)} °C`, r: "heute", c: "wa", blk: "wetter", src: "Wetter", hd: "weather", frost: true }); }
     const rank = { bad: 0, wa: 1 }; return out.sort((a, b) => (rank[a.c] ?? 2) - (rank[b.c] ?? 2));
   }
@@ -17348,7 +17360,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "plxtab") { this._plT = b.dataset.k; try { localStorage.setItem("fh_pl_tab", this._plT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "plxpin") { this._plP = { ...(this._plP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
   }
-  /* ================= Modul 14: Stromtarif · v0.6 Tarif-Dienst (Backend tarif.py) · v0.7 neue Optik ================= */
+  /* ================= Modul 14: Stromtarif · v0.6 Tarif-Dienst (Backend tarif.py) · v0.7 neue Optik · v0.9 Tarif-Check, Woche, Daten prüfen ================= */
   /* Daten: tarif_get einmal, danach Push über tarif_sub (neue Viertelstunde, Preise für morgen). Rückfall: Abruf jede Minute. */
   _tfLoad(force) {
     if (!this._hass) return;
@@ -17457,18 +17469,19 @@ class FensterHeizungPanel extends HTMLElement {
       tile("clock", "Bestes Fenster", best ? this._tfHm(best.s) : "–", best ? "Uhr" : "", best ? `${this._tfIsTomorrow(best.s) ? "morgen" : "heute"} · Ø ${this._tfCt(best.avg)} ct` : "Zu wenig Preise", best ? this._tfLv(best.avg, T.avg, C) || "cheap" : ""),
       M ? tile("today", "Morgen", this._tfCt(M.avg), "ct Ø", T.avg != null ? `${M.avg <= T.avg ? "−" : "+"}${this._tfCt(Math.abs(M.avg - T.avg))} ct zu heute` : `${this._tfCt(M.min)} bis ${this._tfCt(M.max)} ct`, T.avg != null && M.avg <= T.avg ? "cheap" : "normal")
         : tile("today", "Morgen", "–", "", "noch nicht veröffentlicht · ab ca. 13 Uhr", ""),
-      S.neg ? tile("energy", "Negativer Preis", this._tfWhen(S.neg.s).replace("morgen ", ""), "Uhr", `${this._tfIsTomorrow(S.neg.s) ? "morgen" : "heute"} · bis ${this._tfCt(S.neg.min)} ct`, "neg")
+      S.saved_m && S.saved_m.n ? tile("chart", "Gespart im Monat", `${S.saved_m.save >= 0 ? "" : "−"}${num(Math.abs(S.saved_m.save), 2)}`, "€", `${S.saved_m.save >= 0 ? "gegenüber Festpreis" : "mehr als mit Festpreis"} · ${num(S.saved_m.kwh, 0)} kWh${S.saved_m.est ? " · teils geschätzt" : ""}`, S.saved_m.save >= 0 ? "cheap" : "dear")
+        : S.neg ? tile("energy", "Negativer Preis", this._tfWhen(S.neg.s).replace("morgen ", ""), "Uhr", `${this._tfIsTomorrow(S.neg.s) ? "morgen" : "heute"} · bis ${this._tfCt(S.neg.min)} ct`, "neg")
         : tile("alert", "Teuerste Zeit", S.dear ? this._tfHm(S.dear.s) : "–", S.dear ? "Uhr" : "", S.dear ? `${this._tfIsTomorrow(S.dear.s) ? "morgen" : "heute"} · ${this._tfCt(S.dear.ct)} ct` : "–", S.dear ? "dear" : "")];
     return `<div class="wxtiles tftiles">${out.join("")}</div>`;
   }
   /* B3 · Heute und morgen in einem Band */
   _tfDays(S) {
-    const res = this._tfView || S.cfg.res || "q", q = (S.series || []).some((x) => x.d < 3600), sun = !!this._tfSun();
+    const res = this._tfView || S.cfg.res || "q", q = (S.series || []).some((x) => x.d < 3600), sun = !!this._tfSun(), wk = (S.week || []).length >= 2;
     const d0 = new Date(); d0.setHours(0, 0, 0, 0); const end = (S.series || []).length ? S.series[S.series.length - 1].s + S.series[S.series.length - 1].d : null;
     const leg = [["cheap", "günstig"], ["normal", "normal"], ["dear", "teuer"], ["neg", "negativ"]].map(([k, t]) => `<span><i style="background:${this._tfCol(k)}"></i>${t}</span>`).join("") + (sun ? `<span><i class="sn"></i>Sonne (Modul 16)</span>` : "");
     const M = S.tomorrow, T = S.today;
-    return `<div class="card"><div class="wxtlh"><h2>${ic("chart", 18)}Heute und morgen</h2>${q ? `<div class="seg wxseg"><button class="${res === "q" ? "sel" : ""}" data-act="tfxview" data-k="q">15 Min.</button><button class="${res === "h" ? "sel" : ""}" data-act="tfxview" data-k="h">Stunden</button></div>` : ""}</div>
-      ${this._tfBand(S, { from: d0.getTime() / 1000, to: end, res, best: S.best_tomorrow || S.best, sun: true, h: 190 })}
+    return `<div class="card"><div class="wxtlh"><h2>${ic("chart", 18)}Heute und morgen</h2>${q || wk ? `<div class="seg wxseg">${q ? `<button class="${res === "q" ? "sel" : ""}" data-act="tfxview" data-k="q">15 Min.</button>` : ""}<button class="${res === "h" ? "sel" : ""}" data-act="tfxview" data-k="h">Stunden</button>${wk ? `<button class="${res === "w" ? "sel" : ""}" data-act="tfxview" data-k="w">Woche</button>` : ""}</div>` : ""}</div>
+      ${res === "w" && wk ? this._tfWeek(S) : this._tfBand(S, { from: d0.getTime() / 1000, to: end, res, best: S.best_tomorrow || S.best, sun: true, h: 190 })}
       <div class="tfleg">${leg}</div>
       <div class="tfdays"><div><span class="mut">Heute</span><b>Ø ${this._tfCt(T && T.avg)} ct</b><small>${T ? `${this._tfCt(T.min)} bis ${this._tfCt(T.max)} ct · ${num(T.hours, 0)} Std.` : "–"}</small></div>
         <div><span class="mut">Morgen</span><b>${M ? `Ø ${this._tfCt(M.avg)} ct` : "noch offen"}</b><small>${M ? `${this._tfCt(M.min)} bis ${this._tfCt(M.max)} ct${M.neg ? ` · ${M.neg} × negativ` : ""}` : "Die Börse veröffentlicht gegen 13 Uhr, der Dienst holt sie dann von selbst."}</small></div></div></div>`;
@@ -17501,9 +17514,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (S.src === "fix") return `${this._betaBox("Mit einem Festpreis gibt es keine günstigen Zeiten. Verbinde Tibber oder wähle einen Preis-Sensor.")}
       <div class="card"><h2>${ic("bolt", 18)}Festpreis</h2><div class="wxtiles tftiles"><div class="wxtl" style="--tc:#2dd4bf"><div class="wxtn">Arbeitspreis</div><div class="wxtv">${this._tfCt(S.now.ct)}<small>ct/kWh</small></div><div class="wxts">aus den Haus-Werten</div></div></div>
       ${adm ? `<button class="btn2" style="margin-top:12px" data-act="tfxopen">${ic("sliders", 16)} Quelle wählen</button>` : ""}</div>${this._tfSrcCard(S)}`;
-    return `${this._tfBanner(S)}${this._tfTiles(S)}${this._betaBox("Neu: Preise kommen über den gemeinsamen Tarif-Dienst – Tibber direkt, Preis-Sensor oder Festpreis, in Viertelstunden, heute und morgen.")}
-      ${this._tfDevCard(S)}${this._tfDays(S)}<div class="wxcols">${this._tfSlots(S)}${this._tfAlarmCard(S)}</div>${this._tfSrcCard(S)}
-      <div class="wxnote">${ic("info", 15)}Kommt mit v0.9: Batteriespeicher, Wallbox, Warmwasser und Entfeuchter nutzen dieselben Preise und Fenster.</div>`;
+    return `${this._tfBanner(S)}${this._tfTiles(S)}${this._betaBox("Neu in v0.9: „Lohnt sich dein Tarif?“, Wochenansicht und „Daten prüfen“ in den Einstellungen.")}
+      ${this._tfDevCard(S)}${this._tfDays(S)}${this._tfCheckCard(S)}<div class="wxcols">${this._tfSlots(S)}${this._tfAlarmCard(S)}</div>${this._tfSrcCard(S)}`;
   }
   /* Startseite: Preis, Stufe, Mini-Band der nächsten 12 Stunden */
   _tfStartK(K) {
@@ -17590,7 +17602,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _tfPatch(fn) { const c = JSON.parse(JSON.stringify(this._tf().cfg)); fn(c); this._tfSave(c); }
   _tfAct(a, b) {
-    const k = b.dataset.k, s = Number(b.dataset.s);
+    const k = b.dataset.k, s = Number(b.dataset.s), S0 = this._tf();
     if (a === "tfxopen") { if (k) this._tfTab = k; this._tfLoad(true); this._modal = { type: "tfset" }; this._renderModal(); return; }
     if (a === "tfxview") { this._tfView = k; this._render(); return; }
     if (a === "tfxtab") { this._tfTab = k; this._renderModal(); return; }
@@ -17608,17 +17620,89 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "tfxdev") { const D = (this._tf().devs || []).find((x) => x.id === k); this._tfPatch((c) => { const o = c.devs[k] || {}; c.devs[k] = { ...o, on: !(D ? D.on : o.on) }; }); return; }
     if (a === "tfxby" || a === "tfxfrom") { const v = b.dataset.v === "" ? null : Number(b.dataset.v), D = (this._tf().devs || []).find((x) => x.id === k); this._tfPatch((c) => { const o = c.devs[k] || { on: D ? D.on : true }; c.devs[k] = { on: o.on !== false, by: o.by ?? null, from: o.from ?? null, [a === "tfxby" ? "by" : "from"]: v }; }); return; }
     if (a === "tfxtest") { this._hass.callWS({ type: "fenster_heizung/tarif_test" }).then((r) => this._toast(r && r.sent ? `Test an ${r.sent} ${r.sent === 1 ? "Dienst" : "Diensten"} gesendet` : "Kein Benachrichtigungsdienst gewählt")).catch(() => this._toast("Test fehlgeschlagen")); return; }
+    if (a === "tfxck" || a === "tfxckp") { const C = this._tfCk || {}, per = a === "tfxck" ? k : C.per || "m"; let ref = C.ref || "";
+      if (a === "tfxckp") { const st = Number(k); if (per === "y") ref = String(Number(ref.slice(0, 4)) + st); else { const d = new Date(Number(ref.slice(0, 4)), Number(ref.slice(5, 7)) - 1 + st, 1); ref = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; } }
+      else ref = per === "y" ? (ref || "").slice(0, 4) : (C.per === "y" ? "" : ref);
+      this._tfCkLoad(per, ref); return; }
+    if (a === "tfxcmpreset") { this._tfPatch((c) => { c.cmp = { ...(c.cmp || {}), ct: null }; }); this._tfCk = null; return; }
     if (a === "tfxstep") {
-      const R = { add: [0, 60, 2], vat: [0, 30, 1], down: [0.5, 20, 1], up: [0.5, 20, 1], win_h: [1, 8, 0], ht_ct: [-30, 30, 2], nt_ct: [-30, 30, 2], ht_from: [0, 23, 0], ht_to: [1, 24, 0], nt_from: [0, 23, 0], nt_to: [1, 24, 0], a_below: [-20, 100, 1], a_above: [0, 150, 1], q_from: [0, 23, 0], q_to: [0, 23, 0] }[k];
+      const R = { add: [0, 60, 2], vat: [0, 30, 1], down: [0.5, 20, 1], up: [0.5, 20, 1], win_h: [1, 8, 0], ht_ct: [-30, 30, 2], nt_ct: [-30, 30, 2], ht_from: [0, 23, 0], ht_to: [1, 24, 0], nt_from: [0, 23, 0], nt_to: [1, 24, 0], a_below: [-20, 100, 1], a_above: [0, 150, 1], q_from: [0, 23, 0], q_to: [0, 23, 0], c_ct: [1, 100, 2], c_base: [-50, 50, 2] }[k];
       if (!R) return;
       this._tfPatch((c) => {
         let o = c, f = k;
         if (k.startsWith("ht_") || k.startsWith("nt_")) o = c.nne;
         else if (k.startsWith("a_")) { o = c.alarm[k.slice(2)]; f = "ct"; }
         else if (k.startsWith("q_")) { o = c.alarm.quiet; f = k.slice(2); }
+        else if (k.startsWith("c_")) { c.cmp = { ct: null, base: 0, ...(c.cmp || {}) }; o = c.cmp; f = k.slice(2); if (o.ct == null && f === "ct") o.ct = (this._tfCk && this._tfCk.d && this._tfCk.d.cmp_ct) || S0.now.ct || 30; }
         o[f] = Math.round(Math.max(R[0], Math.min(R[1], (Number(o[f]) || 0) + s)) * 10 ** R[2]) / 10 ** R[2];
       });
     }
+  }
+  /* ================= v0.9 · A7 „Lohnt sich dein Tarif?“ · A3 Woche · A9 Daten prüfen · A10 Hinweis auf der Startseite ================= */
+  _tfCkLoad(per, ref) {
+    if (!this._hass) return;
+    this._tfCk = { ...(this._tfCk || {}), per: per || "m", ref: ref || "", busy: true };
+    this._hass.callWS({ type: "fenster_heizung/tarif_check", per: per || "m", ref: ref || "" }).then((r) => { this._tfCk = { per: r.per, ref: r.ref, d: r, ts: Date.now() }; })
+      .catch(() => { this._tfCk = { per: per || "m", ref: ref || "", d: { error: true }, ts: Date.now() }; }).finally(() => { this._tfWantR = true; this._tfRedraw(); this._render(); });
+  }
+  _tfCheckCard(S) {
+    const K = this._tfCk;
+    if (!K || (!K.d && !K.busy) || (K.d && Date.now() - (K.ts || 0) > 600000 && !K.busy)) { if (!K || !K.busy) this._tfCkLoad(K ? K.per : "m", K ? K.ref : ""); }
+    const R = (K && K.d) || null, per = (K && K.per) || "m";
+    const head = `<div class="wxtlh"><h2>${ic("chart", 18)}Lohnt sich dein Tarif?</h2><div class="seg wxseg"><button class="${per === "m" ? "sel" : ""}" data-act="tfxck" data-k="m">Monat</button><button class="${per === "y" ? "sel" : ""}" data-act="tfxck" data-k="y">Jahr</button></div></div>`;
+    if (!R) return `<div class="card">${head}<div class="mut sm">Wird gerechnet …</div></div>`;
+    if (R.error) return `<div class="card">${head}<div class="mut sm">Der Tarif-Check ist gerade nicht verfügbar.</div></div>`;
+    const MONL = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+    const nav = `<div class="tfckn"><button class="ibtn" data-act="tfxckp" data-k="-1" aria-label="zurück">‹</button><b>${esc(R.title)}</b><button class="ibtn" data-act="tfxckp" data-k="1" aria-label="weiter">›</button></div>`;
+    if (!R.n) {
+      const why = !R.eb ? "Dafür braucht es das Haus-Energiebuch (Einstellungen → Haus → Energiequellen mit Netz-Sensor)." : !R.first ? "Die Preis-Historie ist noch leer – sie füllt sich ab heute jeden Tag." : `Für diesen Zeitraum gibt es keine Preise oder keinen Verbrauch. Preise sind gespeichert seit ${new Date(R.first).toLocaleDateString("de-DE")}.`;
+      return `<div class="card">${head}${nav}<div class="mut sm" style="margin-top:6px">${why}</div></div>`;
+    }
+    const sv = R.save, tile = (l, v, s, c) => `<div class="tfckt"><span class="mut">${l}</span><b${c ? ` style="color:${c}"` : ""}>${v}</b><small>${s}</small></div>`;
+    const tiles = `<div class="tfcks">${tile(`Bezahlt (${esc(S.src_name || "dynamisch")})`, `${num(R.paid, 2)} €`, `Ø ${this._tfCt(R.ct)} ct/kWh · ${num(R.kwh, 0)} kWh`)}
+      ${tile("Mit Festpreis wäre", `${num(R.fix, 2)} €`, `${this._tfCt(R.cmp_ct, 2)} ct/kWh${R.cmp_own ? "" : " laut Haus-Werten"}${R.base ? ` · ${R.base > 0 ? "+" : "−"}${num(Math.abs(R.base), 2)} € Grundgebühr` : ""}`)}
+      ${tile(sv >= 0 ? "Ersparnis" : "Mehrkosten", `${sv >= 0 ? "+" : "−"}${num(Math.abs(sv), 2)} €`, R.fix > 0 ? `${num(Math.abs(sv) / R.fix * 100, 0)} % ${sv >= 0 ? "günstiger" : "teurer"}` : "", sv >= 0 ? "#22c55e" : "#ef4444")}</div>`;
+    const rows = per === "y" ? (R.months || []).map((m) => ({ l: MONL[Number(m.m.slice(5, 7)) - 1].slice(0, 3), ct: m.ct, t: `${MONL[Number(m.m.slice(5, 7)) - 1]}: ${num(m.paid, 2)} € statt ${num(m.fix, 2)} € · Ø ${this._tfCt(m.ct)} ct${m.est ? ` · ${m.est} Tage geschätzt` : ""}`, est: m.est >= m.n, lv: m.save >= 0 ? "cheap" : "dear" }))
+      : (R.days || []).map((d) => ({ l: String(Number(d.d.slice(8, 10))), ct: d.ct, t: `${new Date(d.d).toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "numeric" })}: ${num(d.kwh, 1)} kWh · Ø ${this._tfCt(d.ct)} ct · ${num(d.paid, 2)} €${d.est ? " · geschätzt" : ""}`, est: d.est, lv: d.lv }));
+    const n = per === "y" ? 12 : Math.max(28, rows.length), mx = Math.max(R.cmp_ct, ...rows.map((r) => r.ct || 0)) * 1.12, fy = 100 - (R.cmp_ct / mx) * 100;
+    const bars = rows.map((r) => `<div class="tfckb${r.est ? " est" : ""}" title="${esc(r.t)}"><i style="height:${Math.max(2, ((r.ct || 0) / mx) * 100).toFixed(1)}%;background:${this._tfCol(r.lv || "normal")}"></i><small>${r.l}</small></div>`).join("");
+    const chart = `<div class="tfckc" style="--n:${n}"><div class="tfckf" style="top:${fy.toFixed(1)}%"><span>Festpreis ${this._tfCt(R.cmp_ct)} ct</span></div>${bars}</div>`;
+    const note = [per === "y" ? "Balken: dein Ø Preis je Monat, grün = günstiger als Festpreis." : "Balken: dein Ø Preis je Tag (nach Verbrauch gewichtet), Farbe = Preisstufe.", R.est ? `${R.est} ${R.est === 1 ? "Tag" : "Tage"} aus Tageswerten geschätzt (blass)${R.hours_from ? `, Stundenwerte ab ${new Date(R.hours_from).toLocaleDateString("de-DE")}` : ""}.` : "", "Gerechnet mit deinem Netzbezug aus dem Haus-Energiebuch, ohne Solarstrom und Akku."].filter(Boolean).join(" ");
+    return `<div class="card">${head}${nav}${tiles}${chart}<div class="gst" style="margin-top:8px">${esc(note)}${this._admin() ? ` <button class="lnk" data-act="tfxopen" data-k="p">Vergleichspreis ändern</button>` : ""}</div></div>`;
+  }
+  _tfCmpSet(C, step) {
+    const cm = C.cmp || { ct: null, base: 0 }, cur = (this._tfCk && this._tfCk.d && this._tfCk.d.cmp_ct) || null;
+    return `<div class="lsec" style="margin-top:12px">${ic("chart", 15)}Tarif-Check: Vergleich mit Festpreis</div>
+      <div class="mut sm" style="margin:0 0 6px">„Lohnt sich dein Tarif?“ rechnet deinen Netzbezug einmal mit den dynamischen Preisen und einmal mit diesem Festpreis.</div>
+      <div class="vrow"><span>Vergleichs-Festpreis<small class="mut" style="display:block">${cm.ct == null ? "Aus Haus › Preise &amp; Tarif" + (cur ? ` (${this._tfCt(cur, 2)} ct)` : "") + ". Mit +/− eigenen Wert setzen, z. B. das Angebot deines alten Anbieters." : `Eigener Wert · <button class="lnk" data-act="tfxcmpreset">Haus-Werte nehmen</button>`}</small></span>${step("c_ct", cm.ct == null ? cur || 30 : cm.ct, "ct", 0.5, this._tfCt(cm.ct == null ? cur : cm.ct, 2))}</div>
+      <div class="vrow"><span>Grundgebühr-Unterschied je Monat<small class="mut" style="display:block">Positiv, wenn der Festpreis-Vertrag eine höhere Grundgebühr hat. Wird anteilig für die Tage mit Daten gerechnet.</small></span>${step("c_base", cm.base || 0, "€", 0.5, num(cm.base || 0, 2))}</div>`;
+  }
+  _tfWeek(S) {
+    const W = S.week || [], C = S.cfg, td = new Date(), today = `${td.getFullYear()}-${String(td.getMonth() + 1).padStart(2, "0")}-${String(td.getDate()).padStart(2, "0")}`;
+    const all = W.flatMap((d) => [d.min, d.max]), lo = Math.min(0, ...all), hi = Math.max(...all) * 1.08, Y = (v) => 100 - ((v - lo) / (hi - lo)) * 100;
+    const cols = W.map((d) => { const lv = d.neg ? "neg" : this._tfLv(d.avg, W.reduce((a, x) => a + x.avg, 0) / W.length, C) || "normal", dt = new Date(d.d + "T12:00:00");
+      return `<div class="tfwk${d.tomorrow ? " tm" : ""}" title="${esc(dt.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }))}: Ø ${this._tfCt(d.avg)} ct · ${this._tfCt(d.min)} bis ${this._tfCt(d.max)} ct${d.neg ? ` · ${d.neg} × negativ` : ""}">
+        <div class="tfwkp"><span class="tfwkr" style="top:${Y(d.max).toFixed(1)}%;bottom:${(100 - Y(d.min)).toFixed(1)}%"></span>${d.neg ? `<span class="tfwkn" style="top:${Y(d.min).toFixed(1)}%"></span>` : ""}<span class="tfwka" style="top:${Y(d.avg).toFixed(1)}%;--c:${this._tfCol(lv)}"></span><em style="top:${Y(d.avg).toFixed(1)}%">${this._tfCt(d.avg, 0)}</em></div>
+        <small>${d.tomorrow ? "morgen" : d.d === today ? "heute" : dt.toLocaleDateString("de-DE", { weekday: "short" })}</small></div>`; }).join("");
+    return `<div class="tfwkc">${cols}</div><div class="mut sm" style="margin-top:6px">Punkt: Tagesschnitt in Stufenfarbe · Säule: günstigste bis teuerste Zeit · blau: negative Preise. Aus der eigenen Preis-Historie.</div>`;
+  }
+  _tfDataCheck(S) {
+    const L = S.datacheck || [];
+    if (!L.length) return "";
+    const col = { ok: "#22c55e", warn: "#f59e0b", bad: "#ef4444" }, bad = L.filter((x) => x.st !== "ok").length;
+    return `<div class="lsec" style="margin-top:12px">${ic("check", 15)}Daten prüfen<span class="mut sm" style="margin-left:auto;font-weight:500">${bad ? `${bad} ${bad === 1 ? "Hinweis" : "Hinweise"}` : "alles in Ordnung"}</span></div>
+      ${L.map((x) => `<div class="wck"><span class="wcki" style="color:${col[x.st] || col.warn}">${ic(x.st === "ok" ? "check" : "info", 16)}</span><span class="wckt"><b>${esc(x.t)}</b><small class="mut">${esc(x.v)}</small></span></div>`).join("")}`;
+  }
+  /* A10: Hinweis auf der Startseite, sobald negative Preise bekannt sind („Später“ und „Ansehen“ kommen von der Hinweise-Zentrale) */
+  _tfHint() {
+    this._tfLoad();
+    const S = this._tf();
+    if (!this._tfD || S.error || !S.neg || S.src === "fix") return null;
+    const ser = (S.series || []).filter((x) => x.s + x.d > Date.now() / 1000), i0 = ser.findIndex((x) => x.s === S.neg.s);
+    let e = S.neg.s; for (let i = Math.max(0, i0); i < ser.length && ser[i].ct < 0; i++) e = ser[i].s + ser[i].d;
+    const tm = this._tfIsTomorrow(S.neg.s), now = S.neg.s * 1000 <= Date.now();
+    return { k: `tf:neg:${S.neg.s}`, i: "energy", hd: "pvRoof", mod: "dt", src: "Modul 14", c: "in", r: tm ? "morgen" : now ? "jetzt" : "heute",
+      t: `${now ? "Jetzt" : tm ? "Morgen" : "Heute"} ${now ? "bis " + this._tfHm(e) : this._tfHm(S.neg.s) + "–" + this._tfHm(e)} negative Strompreise`, s: `bis ${this._tfCt(S.neg.min)} ct/kWh · gut für Auto, Akku und große Verbraucher` };
   }
   _tfModal() {
     const S = this._tf(), C = S.cfg, tab = ["p", "w"].includes(this._tfTab) ? this._tfTab : "q";
@@ -17635,7 +17719,8 @@ class FensterHeizungPanel extends HTMLElement {
         : `<div class="mut sm">Kein Sensor mit Preisliste gefunden (Attribute wie <code>raw_today</code>, <code>prices_today</code>, <code>data</code>, <code>rates</code>).</div>`}
       <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Anzeige</div>
       <div class="vrow"><span>Auflösung im Band<small class="mut" style="display:block">Gespeichert wird immer die feinste Auflösung der Quelle.</small></span><div class="gschips" style="flex:none">${chip("tfxres", "q", "15 Min.", C.res === "q")}${chip("tfxres", "h", "Stunden", C.res === "h")}</div></div>
-      <div class="vrow"><span>Länge „Bestes Fenster“</span>${step("win_h", C.win_h, "Std.", 1)}</div>`
+      <div class="vrow"><span>Länge „Bestes Fenster“</span>${step("win_h", C.win_h, "Std.", 1)}</div>
+      ${this._tfDataCheck(S)}`
       : `<div class="lsec">${ic("bolt", 15)}Stufen</div>
       <div class="mut sm" style="margin:0 0 6px">Gemessen am Schnitt des jeweiligen Tages. So wirkt ein ruhiger Tag nicht plötzlich „teuer“.</div>
       <div class="vrow"><span>Günstig ab<small class="mut" style="display:block">so viel unter dem Tagesschnitt</small></span>${step("down", C.down, "ct", 0.5, this._tfCt(C.down))}</div>
@@ -17649,7 +17734,8 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Zeitvariables Netzentgelt (§ 14a, Modul 3)</div>
       <div class="vrow"><span>Hoch- und Niedertarif-Zeiten<small class="mut" style="display:block">Nur wenn dein Netzbetreiber das anbietet und du es gewählt hast.</small></span>${sw("tfxnne", C.nne.on, "Zeitvariables Netzentgelt")}</div>
       ${C.nne.on ? `<div class="vrow"><span>Hochtarif</span><span class="tfnn">${step("ht_from", C.nne.ht_from, "Uhr", 1)}${step("ht_to", C.nne.ht_to, "Uhr", 1)}${step("ht_ct", C.nne.ht_ct, "ct", 0.1, this._tfCt(C.nne.ht_ct, 2))}</span></div>
-        <div class="vrow"><span>Niedertarif</span><span class="tfnn">${step("nt_from", C.nne.nt_from, "Uhr", 1)}${step("nt_to", C.nne.nt_to, "Uhr", 1)}${step("nt_ct", C.nne.nt_ct, "ct", 0.1, this._tfCt(C.nne.nt_ct, 2))}</span></div>` : ""}`;
+        <div class="vrow"><span>Niedertarif</span><span class="tfnn">${step("nt_from", C.nne.nt_from, "Uhr", 1)}${step("nt_to", C.nne.nt_to, "Uhr", 1)}${step("nt_ct", C.nne.nt_ct, "ct", 0.1, this._tfCt(C.nne.nt_ct, 2))}</span></div>` : ""}
+      ${this._tfCmpSet(C, step)}`;
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Stromtarif</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="seg wxtabs">${[["q", "Quelle"], ["p", "Preis &amp; Stufen"], ["w", "Fenster &amp; Alarm"]].map(([k, t]) => `<button class="${tab === k ? "sel" : ""}" data-act="tfxtab" data-k="${k}">${t}</button>`).join("")}</div>

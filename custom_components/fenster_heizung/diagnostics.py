@@ -1,7 +1,8 @@
 """Diagnosedaten für Home Assistant (Einstellungen → Geräte & Dienste → Strom & Wärme → Diagnose herunterladen).
 
-Build 10 von Modul 8: Zustand, Einstellungen und letzte Entscheidungen der Wallbox – ohne Adresse der Wallbox,
+Modul 8 (Build 10): Zustand, Einstellungen und letzte Entscheidungen der Wallbox – ohne Adresse der Wallbox,
 Kartennamen, Personen, Kalender und Benachrichtigungsdienste.
+Modul 14 (v0.9): Quelle, Einstellungen, Umfang der Zeitreihe und Historie, Prüfung der Daten – ohne Benachrichtigungsdienste.
 """
 from __future__ import annotations
 
@@ -38,6 +39,22 @@ def wallbox_diag(wbm: Any) -> dict[str, Any]:
     }
 
 
+def tarif_diag(tm: Any) -> dict[str, Any]:
+    """Modul 14 für die Diagnose (ohne Preise im Einzelnen, ohne Meldedienste)."""
+    if tm is None:
+        return {"eingerichtet": False}
+    cfg = dict(tm.cfg)
+    cfg["alarm"] = {**cfg.get("alarm", {}), "to": [REDACT for _ in (cfg.get("alarm") or {}).get("to", [])]}
+    ser = tm.series or []
+    try:
+        dc = tm.datacheck()
+    except Exception as err:  # noqa: BLE001 - die Diagnose darf nie scheitern
+        dc = [{"fehler": str(err)}]
+    return {"eingerichtet": True, "quelle": tm.src, "quelle_name": tm.src_name, "boerse": tm.boerse, "hinweis": tm.note, "einstellungen": cfg,
+            "zeitreihe": {"werte": len(ser), "aufloesung_s": ser[0]["d"] if ser else 0, "von": ser[0]["s"] if ser else None, "bis": (ser[-1]["s"] + ser[-1]["d"]) if ser else None},
+            "historie_tage": len(tm.hist), "historie_ab": min(tm.hist) if tm.hist else None, "datenpruefung": dc, "meldungen": len(tm.alog)}
+
+
 async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigEntry) -> dict[str, Any]:
     data = hass.data.get(DOMAIN, {})
-    return {"version": entry.version, "modul_8": wallbox_diag(data.get("wallbox"))}
+    return {"version": entry.version, "modul_8": wallbox_diag(data.get("wallbox")), "modul_14": tarif_diag(data.get("tarif"))}
