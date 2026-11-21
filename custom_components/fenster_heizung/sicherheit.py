@@ -71,19 +71,37 @@ _HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 MAX_EXCL = 60
 _ENT = re.compile(r"^[a-z_]+\.[a-z0-9_]+$")
 OFF_STATES = ("unavailable", "unknown")
+SRC_MIN = 3  # Quellen-Wächter: ab so vielen Meldern einer Quelle gilt „alle weg“ als Ausfall der Quelle
+SRC_NAMES = {"xsense": "X-Sense", "zha": "Zigbee (ZHA)", "mqtt": "MQTT / Zigbee2MQTT", "zwave_js": "Z-Wave", "homematicip_cloud": "Homematic IP",
+             "homematic": "Homematic", "deconz": "deCONZ", "hue": "Philips Hue", "tuya": "Tuya", "shelly": "Shelly", "matter": "Matter", "netatmo": "Netatmo"}
+SELF_DAY, SELF_AT = 6, "18:00"  # Wochen-Selbsttest: sonntags ab 18 Uhr
+
+
+def src_name(src: str) -> str:
+    return SRC_NAMES.get(src, src or "unbekannt")
+
+
+def src_down(det: list[dict[str, Any]], skip: set[str] | None = None) -> dict[str, list[dict[str, Any]]]:
+    """Quellen, deren Melder (ohne ausgeschaltete) alle gleichzeitig nicht erreichbar sind, ab SRC_MIN Meldern."""
+    by: dict[str, list[dict[str, Any]]] = {}
+    for d in det:
+        if d.get("src") and d["id"] not in (skip or set()):
+            by.setdefault(d["src"], []).append(d)
+    return {k: v for k, v in by.items() if len(v) >= SRC_MIN and all(x["off"] for x in v)}
 
 
 def default_cfg() -> dict[str, Any]:
     return {
         "kinds": list(KINDS), "excl": [], "repeat": 10,
         "bat": {"on": True, "pct": 20}, "off": {"on": True, "min": 60}, "test": {"on": True, "months": 6},
-        "acts": [], "notify": {"alarm": True, "end": False, "bat": True, "off": True, "test": True, "life": True, "depart": True, "to": []},
+        "acts": [], "notify": {"alarm": True, "end": False, "bat": True, "off": True, "test": True, "life": True, "depart": True, "self": True, "to": []},
         "meta": {}, "add": [], "plan": {"floors": [{"id": "eg", "n": "EG"}], "items": [], "bg": {}, "scale": 40},
         "quiet": {"on": False, "from": "22:00", "to": "07:00"}, "lead": 30,
         "depart": {"on": True, "ents": [], "frost": {"on": False, "ent": "", "below": 3}},
         "proto": {"name": "", "addr": "", "who": ""}, "ui": {"old": False},
         "stages": {"s2": {"on": True, "sec": 10}, "s3": {"on": False, "sec": 60}, "s4": {"on": False, "sec": 300}},
         "tts": {"player": "", "engine": ""}, "contact": {"to": ""}, "offask": {"mode": "ask", "days": 7},
+        "guard": {"src": True}, "selftest": {"on": True},
     }
 
 
@@ -152,7 +170,7 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
         s = _ent(s, ("notify",))
         if s and s not in to and len(to) < 10:
             to.append(s)
-    d["notify"] = {k: bool(n.get(k, d["notify"][k])) for k in ("alarm", "end", "bat", "off", "test", "life", "depart")}
+    d["notify"] = {k: bool(n.get(k, d["notify"][k])) for k in ("alarm", "end", "bat", "off", "test", "life", "depart", "self")}
     d["notify"]["to"] = to
     add = []
     for e in r.get("add") if isinstance(r.get("add"), list) else []:
@@ -204,6 +222,10 @@ def clean_cfg(raw: Any) -> dict[str, Any]:
     d["contact"] = {"to": _ent(ct.get("to"), ("notify",))}
     oa = r.get("offask") if isinstance(r.get("offask"), dict) else {}
     d["offask"] = {"mode": oa.get("mode") if oa.get("mode") in ("ask", "auto", "never") else "ask", "days": int(_num(oa.get("days"), 1, 60, 7))}
+    gd = r.get("guard") if isinstance(r.get("guard"), dict) else {}
+    d["guard"] = {"src": bool(gd.get("src", True))}
+    se = r.get("selftest") if isinstance(r.get("selftest"), dict) else {}
+    d["selftest"] = {"on": bool(se.get("on", True))}
     return d
 
 
@@ -352,6 +374,9 @@ class SicherheitManager:
         self.fa: dict[str, list[dict[str, str]]] = {}  # Fehlalarme je Melder (t, why)
         self._unsub_fast: CALLBACK_TYPE | None = None
         self._unsub_act: CALLBACK_TYPE | None = None
+        self.src_off: dict[str, str] = {}  # Quellen-Wächter: ausgefallene Quelle → seit (ISO)
+        self.selftest: dict[str, Any] = {}  # letzter Wochen-Selbsttest: t, ok, n, p (Hinweise)
+        self.last_alarm: dict[str, str] = {}  # letzter Alarm: t, melder, name, raum
 
     # ---- Start/Stop
     async def async_start(self) -> None:
@@ -387,6 +412,13 @@ class SicherheitManager:
                     self.fa[str(k)] = [{"t": str(x.get("t") or ""), "why": str(x.get("why") or "")[:30]} for x in v if isinstance(x, dict) and x.get("t")][-FA_MAX:]
             self.log = [x for x in (d.get("log") or []) if isinstance(x, dict) and "t" in x and "x" in x][:MAX_LOG]
             self._notes = {str(k): float(v) for k, v in (d.get("notes") or {}).items() if isinstance(v, (int, float))}
+            self.src_off = {str(k): str(v) for k, v in (d.get("src_off") or {}).items() if isinstance(v, str)}
+            se = d.get("selftest") if isinstance(d.get("selftest"), dict) else {}
+            if se.get("t"):
+                self.selftest = {"t": str(se["t"]), "ok": bool(se.get("ok")), "n": int(se.get("n") or 0), "p": [str(x)[:80] for x in (se.get("p") or [])][:10]}
+            la = d.get("last_alarm") if isinstance(d.get("last_alarm"), dict) else {}
+            if la.get("t"):
+                self.last_alarm = {k: str(la.get(k) or "") for k in ("t", "melder", "name", "raum")}
         if migrate:
             try:
                 self._store.snapshot_now()
@@ -417,6 +449,7 @@ class SicherheitManager:
                 "v": SCHEMA, "cfg": {**self.cfg, "plan": plan}, "last_test": self.last_test, "first_seen": self.first_seen, "tested": self.tested, "bhist": self.bhist, "thist": self.thist, "swaps": self.swaps,
                 "st": {k: {"a": v["a"], "since": v["since"], "off_since": v.get("off_since", 0.0), "stage": v.get("stage", 0), "t0": v.get("t0", 0.0), "ack": v.get("ack", ""), "why": v.get("why", "")} for k, v in self.st.items()},
                 "log": self.log, "notes": self._notes, "paused": self.paused, "asked": self.asked, "fa": self.fa,
+                "src_off": self.src_off, "selftest": self.selftest, "last_alarm": self.last_alarm,
             }
         self._store.async_delay_save(main, 10)
         self._pstore.async_delay_save(lambda: {"v": SCHEMA, "plan": self.cfg["plan"]}, 10)
@@ -779,11 +812,13 @@ class SicherheitManager:
                 self._add(f"Wieder erreichbar und eingeschaltet: {self._name(e)}.", "ok")
                 await self._notify("off", "Melder wieder da", f"{self._name(e)} ist wieder erreichbar und überwacht wieder.")
                 self._save()
+        down = await self._src_guard(det, now_ts, now, quiet)
         for d in det:
             s = self.st.setdefault(d["id"], {"a": False, "since": "", "off_since": 0.0, "rep": 0.0})
             s.setdefault("stage", 0), s.setdefault("t0", 0.0), s.setdefault("ack", ""), s.setdefault("why", "")
             where = f" ({d['area']})" if d["area"] else ""
             paused = self.is_paused(d["id"], now)
+            in_down = d["src"] in down  # ganze Quelle weg: eine Meldung für alle statt je Melder
             # Alarm (kommt auch bei ausgeschaltetem Melder durch)
             if d["alarm"] and not s["a"]:
                 s.update({"a": True, "since": now.isoformat(), "rep": now_ts, "stage": 1, "t0": now_ts, "ack": "", "why": "", "s4t": 0.0})
@@ -791,6 +826,7 @@ class SicherheitManager:
                 self._add(f"Alarm: {d['name']}{where}." + (f" {n} Aktion(en) ausgelöst." if n else ""), "alarm")
                 await self._notify("alarm", f"ALARM: {d['kind']}", f"{d['name']}{where} hat ausgelöst.", data=self._push(d["id"]))
                 self._fire("alarm", d["id"], stufe=1, art_melder=d["k"])
+                self.last_alarm = {"t": now.isoformat(), "melder": d["id"], "name": d["name"], "raum": (self.cfg["meta"].get(d["id"]) or {}).get("room") or d["area"]}
                 self._fast_on()
                 self._save()
             elif d["alarm"] and s["a"]:
@@ -809,7 +845,7 @@ class SicherheitManager:
                 s["off_since"] = s["off_since"] or now_ts
                 o, oa = self.cfg["off"], self.cfg["offask"]
                 off_s = now_ts - s["off_since"]
-                if not paused:
+                if not paused and not in_down:
                     key = f"off:{d['id']}"
                     if o["on"] and not quiet and off_s >= o["min"] * 60 and (oa["mode"] == "never" or self.asked.get(d["id"]) == "warn" or key not in self._notes):
                         if now_ts - self._notes.get(key, 0) >= OFF_NOTE_GAP_S:
@@ -874,8 +910,81 @@ class SicherheitManager:
                     await self._notify("life", "Melder austauschen", f"{d['name']}: " + (f"Lebensdauer endet in {left} Tagen." if left > 0 else "Die Lebensdauer ist abgelaufen. Bitte austauschen."), key, LIFE_NOTE_GAP_S)
                     self._save()
         await self._check_depart()
+        await self._selftest_due(det, now, quiet)
         self._sum = self._summary(det, now)
         async_dispatcher_send(self.hass, SIGNAL_SF)
+
+    async def _src_guard(self, det: list[dict[str, Any]], now_ts: float, now: Any, quiet: bool) -> set[str]:
+        """Quellen-Wächter: Fallen alle Melder einer Quelle (z. B. X-Sense-Cloud) gleichzeitig aus, kommt eine Meldung statt vieler."""
+        if not self.cfg["guard"]["src"]:
+            if self.src_off:
+                self.src_off = {}
+                self._save()
+            return set()
+        down = src_down(det, {d["id"] for d in det if self.is_paused(d["id"], now)})
+        o = self.cfg["off"]
+        for src, lst in down.items():
+            for d in lst:  # Ausfallzeit gilt je Melder, damit die Einzelwarnung später richtig weiterzählt
+                s = self.st.setdefault(d["id"], {"a": False, "since": "", "off_since": 0.0, "rep": 0.0})
+                s["off_since"] = s.get("off_since") or now_ts
+            since = min(self.st[d["id"]]["off_since"] for d in lst)
+            key = f"src:{src}"
+            if src not in self.src_off and o["on"] and now_ts - since >= o["min"] * 60:
+                self.src_off[src] = dt_util.now().isoformat()
+                self._add(f"Quelle ausgefallen: {src_name(src)} ({len(lst)} Melder nicht erreichbar).", "off")
+                self._fire("quelle_aus", "", quelle=src, anzahl=len(lst))
+                if not quiet:
+                    await self._notify("off", "Melder-Quelle ausgefallen", f"Alle {len(lst)} Melder von {src_name(src)} sind seit über {o['min']} Minuten nicht erreichbar. "
+                                       "Meist liegt es an der Cloud, dem Gateway oder dem Internet, nicht an den Meldern. Die Melder warnen vor Ort weiter selbst.", key, OFF_NOTE_GAP_S)
+                self._save()
+        for src in [k for k in self.src_off if k not in down]:
+            del self.src_off[src]
+            self._add(f"Quelle wieder erreichbar: {src_name(src)}.", "ok")
+            self._fire("quelle_da", "", quelle=src)
+            if self._notes.pop(f"src:{src}", None) is not None and not quiet:
+                await self._notify("off", "Melder-Quelle wieder da", f"Die Melder von {src_name(src)} melden sich wieder.")
+            self._save()
+        return set(down)
+
+    def selftest_run(self, det: list[dict[str, Any]], now: Any) -> dict[str, Any]:
+        """Wochen-Selbsttest: Sind alle Melder erreichbar, Batterien gut, Prüfung und Austausch im Plan? Nur Anzeige, keine Aktion."""
+        act = [d for d in det if not self.is_paused(d["id"], now)]
+        b, p = self.cfg["bat"], []
+        for src, lst in src_down(act).items():
+            p.append(f"Quelle {src_name(src)} ausgefallen ({len(lst)} Melder)")
+        gone = {d["id"] for lst in src_down(act).values() for d in lst}
+        p += [f"{d['name']} nicht erreichbar" for d in act if d["off"] and d["id"] not in gone]
+        p += [f"{d['name']}: Batterie {round(d['bat'])} %" for d in act if d["bat"] is not None and d["bat"] < b["pct"]]
+        if self.cfg["test"]["on"]:
+            p += [f"{d['name']}: Prüfung fällig" for d in act if not d["off"] and self._test_due(d, now)]
+        for d in act:
+            left = self._life_days(d, now)
+            if left is not None and left <= 0:
+                p.append(f"{d['name']}: Lebensdauer abgelaufen")
+        self.selftest = {"t": now.isoformat(), "ok": not p, "n": len(act), "p": p[:10]}
+        if p:
+            self._add(f"Wochen-Selbsttest: {len(p)} Hinweis(e) – " + "; ".join(p[:3]) + (" …" if len(p) > 3 else "."), "warn")
+        else:
+            self._add(f"Wochen-Selbsttest: alle {len(act)} Melder erreichbar, Batterien gut.", "ok")
+        self._fire("selbsttest", "", ok=not p, hinweise=len(p))
+        self._save()
+        return self.selftest
+
+    async def _selftest_due(self, det: list[dict[str, Any]], now: Any, quiet: bool) -> None:
+        if not self.cfg["selftest"]["on"] or not det or quiet or now.weekday() != SELF_DAY or now.strftime("%H:%M") < SELF_AT:
+            return
+        if str(self.selftest.get("t") or "")[:10] == now.date().isoformat():
+            return
+        r = self.selftest_run(det, now)
+        if not r["ok"]:
+            await self._notify("self", "Wochen-Selbsttest: " + (f"{len(r['p'])} Hinweise" if len(r["p"]) > 1 else "1 Hinweis"), "\n".join(r["p"][:6]))
+
+    async def async_selftest(self) -> dict[str, Any]:
+        """„Jetzt prüfen“ in der App oder per Dienst: Selbsttest sofort, ohne Mitteilung."""
+        if self.active():
+            self.selftest_run(self.detectors(), dt_util.now())
+            async_dispatcher_send(self.hass, SIGNAL_SF)
+        return await self.snapshot()
 
     def _summary(self, det: list[dict[str, Any]], now: Any) -> dict[str, Any]:
         """Kurzstand für die Sensoren (ruhig, hinweis, alarm) und die Startseite."""
@@ -896,7 +1005,9 @@ class SicherheitManager:
                 nxt = t
         return {"status": "alarm" if alarm else "hinweis" if warn else "ruhig", "alarme": len(alarm), "melder": len(act), "ausgeschaltet": len(det) - len(act),
                 "hinweise": len(warn), "bat_min": round(min(bats)) if bats else None, "pruefung": nxt.date().isoformat() if nxt else None,
-                "unquittiert": sum(1 for d in alarm if not self.st[d["id"]].get("ack"))}
+                "unquittiert": sum(1 for d in alarm if not self.st[d["id"]].get("ack")),
+                "offline": [d["name"] for d in act if d["off"]], "quellen_aus": [src_name(k) for k in self.src_off],
+                "letzter_alarm": self.last_alarm.get("t") or None, "letzter_alarm_info": dict(self.last_alarm)}
 
     def _sample_bat(self, det: list[dict[str, Any]], now_ts: float) -> None:
         for d in det:
@@ -1038,4 +1149,44 @@ class SicherheitManager:
         xs = sum(1 for d in det if d["src"] == "xsense")
         xs_any = any(e.platform == "xsense" for e in reg.entities.values())
         return {"cfg": self.cfg, "det": det, "excl": excl, "test": test, "log": self.log[:40], "open": self.depart_open(), "home": self._home, "xs": {"found": xs_any, "n": xs},
-                "sum": self._sum or self._summary(det, now), "now": time.time()}
+                "sum": self._sum or self._summary(det, now), "now": time.time(),
+                "src_off": [{"src": k, "name": src_name(k), "since": v} for k, v in self.src_off.items()], "selftest": self.selftest or None,
+                "selftest_next": self._selftest_next(now) if self.cfg["selftest"]["on"] else None}
+
+    @staticmethod
+    def _selftest_next(now: Any) -> str:
+        h, m = (int(x) for x in SELF_AT.split(":"))
+        t = (now + timedelta(days=(SELF_DAY - now.weekday()) % 7)).replace(hour=h, minute=m, second=0, microsecond=0)
+        return (t if t > now else t + timedelta(days=7)).isoformat()
+
+
+SERVICES = ("sicherheit_quittieren", "melder_geprueft", "sicherheit_selbsttest")
+
+
+def async_register_services(hass: HomeAssistant) -> None:
+    """Dienste für eigene Automationen: quittieren, Melder geprüft, Selbsttest. Ohne aktives Modul 11 tun sie nichts."""
+    import voluptuous as vol  # erst hier, damit die Tests ohne Home Assistant laufen
+
+    def mgr() -> SicherheitManager | None:
+        m = hass.data.get(DOMAIN, {}).get("sicherheit")
+        return m if m is not None and m.active() else None
+
+    async def ack(call: Any) -> None:
+        m = mgr()
+        if m is not None:
+            await m.async_ack(_ent(call.data.get("melder"), ("binary_sensor",)), str(call.data.get("fehlalarm") or "")[:30], "Automation")
+
+    async def tested(call: Any) -> None:
+        m = mgr()
+        if m is not None:
+            await m.async_mark_tested(_ent(call.data.get("melder"), ("binary_sensor",)))
+
+    async def selftest(call: Any) -> None:
+        m = mgr()
+        if m is not None:
+            await m.async_selftest()
+
+    opt = vol.Schema({vol.Optional("melder"): str, vol.Optional("fehlalarm"): str})
+    for name, fn, schema in (("sicherheit_quittieren", ack, opt), ("melder_geprueft", tested, vol.Schema({vol.Optional("melder"): str})), ("sicherheit_selbsttest", selftest, vol.Schema({}))):
+        if not hass.services.has_service(DOMAIN, name):
+            hass.services.async_register(DOMAIN, name, fn, schema=schema)

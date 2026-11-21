@@ -559,3 +559,127 @@ def test_plan_durchgang_und_raumrand():
         {"id": "r1", "fl": "eg", "t": "r", "x": 0, "y": 0, "w": 100, "h": 100, "ds": 1, "dg": 1}]})
     it = {i["id"]: i for i in p["items"]}
     assert it["d1"]["dg"] == 1 and "ds" not in it["d2"] and it["r1"]["ds"] == 1 and "dg" not in it["r1"]
+
+
+# ---------------------------------------------------------------- v0.9 Build 11: Quellen-Wächter, Selbsttest, letzter Alarm
+def _xs(n, off=True, bat=80):
+    return [{**_d(f"binary_sensor.rauch_{i}", off=off, bat=bat), "name": f"Rauchmelder {i}", "k": "smoke", "kind": "Rauchmelder", "src": "xsense"} for i in range(n)]
+
+
+def _offen_seit(m, dets, days):
+    for d in dets:
+        m.st[d["id"]] = {"a": False, "since": "", "off_since": time_ago(days), "rep": 0.0, "stage": 0, "t0": 0.0, "ack": "", "why": ""}
+
+
+def test_quelle_aus_eine_meldung_statt_vieler():
+    m, h = mgr()
+    m.cfg["lead"], m.cfg["test"]["on"] = 0, False
+    dets = _xs(4)
+    _offen_seit(m, dets, 0.5)
+    t = _check_mit(m, h, dets)
+    assert t == ["Melder-Quelle ausgefallen"] and "xsense" in m.src_off
+    assert any(ev == "fenster_heizung_sicherheit" and d["art"] == "quelle_aus" and d["anzahl"] == 4 for ev, d in h.bus.fired)
+    h.services.calls.clear()
+    assert _check_mit(m, h, dets) == []  # keine Einzelwarnungen und keine Wiederholung
+
+
+def test_quelle_unter_mindestzahl_warnt_je_melder():
+    m, h = mgr()
+    m.cfg["lead"], m.cfg["test"]["on"] = 0, False
+    dets = _xs(2)
+    _offen_seit(m, dets, 0.5)
+    assert _check_mit(m, h, dets) == ["Melder nicht erreichbar", "Melder nicht erreichbar"] and not m.src_off
+
+
+def test_quelle_nicht_aus_wenn_einer_noch_da_ist():
+    m, h = mgr()
+    m.cfg["lead"], m.cfg["test"]["on"] = 0, False
+    dets = _xs(3) + [{**_xs(1, off=False)[0], "id": "binary_sensor.rauch_x"}]
+    _offen_seit(m, dets[:3], 0.5)
+    assert _check_mit(m, h, dets).count("Melder nicht erreichbar") == 3 and not m.src_off
+
+
+def test_quelle_wieder_da_und_waechter_aus():
+    m, h = mgr()
+    m.cfg["lead"], m.cfg["test"]["on"] = 0, False
+    dets = _xs(3)
+    _offen_seit(m, dets, 0.5)
+    _check_mit(m, h, dets)
+    h.services.calls.clear()
+    assert _check_mit(m, h, _xs(3, off=False)) == ["Melder-Quelle wieder da"] and not m.src_off
+    m2, h2 = mgr()
+    m2.cfg["lead"], m2.cfg["test"]["on"] = 0, False
+    m2.cfg["guard"]["src"] = False
+    _offen_seit(m2, dets, 0.5)
+    assert _check_mit(m2, h2, dets) == ["Melder nicht erreichbar"] * 3
+
+
+def test_quelle_aus_ausgeschaltete_zaehlen_nicht_und_keine_frage():
+    m, h = mgr()
+    m.cfg["lead"], m.cfg["test"]["on"] = 0, False
+    dets = _xs(3)
+    _offen_seit(m, dets, 9)  # länger als „Ausschalten?“-Frist
+    assert _check_mit(m, h, dets) == ["Melder-Quelle ausgefallen"] and not m.asked
+    m.paused[dets[0]["id"]] = {"until": "", "since": "", "auto": False, "was_off": True}
+    assert S.src_down(dets, {dets[0]["id"]}) == {}  # nur noch 2 aktive Melder
+
+
+def test_selbsttest_sonntags_einmal_mit_hinweisen():
+    old = NOW[0]
+    try:
+        NOW[0] = datetime(2026, 11, 22, 18, 5, tzinfo=timezone.utc)  # Sonntag
+        m, h = mgr()
+        m.cfg["lead"], m.cfg["test"]["on"], m.cfg["off"]["on"], m.cfg["bat"]["on"] = 0, False, False, False
+        dets = [_d("binary_sensor.a", off=False, bat=8), _d("binary_sensor.b", off=False, bat=90)]
+        t = _check_mit(m, h, dets)
+        assert t == ["Wochen-Selbsttest: 1 Hinweis"] and m.selftest["ok"] is False and m.selftest["n"] == 2
+        assert "Batterie 8 %" in m.selftest["p"][0]
+        h.services.calls.clear()
+        assert _check_mit(m, h, dets) == []  # nur einmal je Sonntag
+        NOW[0] = datetime(2026, 11, 22, 17, 0, tzinfo=timezone.utc)
+        m2, h2 = mgr()
+        m2.cfg["lead"], m2.cfg["test"]["on"] = 0, False
+        assert _check_mit(m2, h2, [_d("binary_sensor.b", off=False, bat=90)]) == [] and not m2.selftest  # vor 18 Uhr nicht
+    finally:
+        NOW[0] = old
+
+
+def test_selbsttest_alles_gut_ohne_mitteilung_und_ruhezeit():
+    old = NOW[0]
+    try:
+        NOW[0] = datetime(2026, 11, 22, 18, 5, tzinfo=timezone.utc)
+        m, h = mgr()
+        m.cfg["lead"] = 0
+        m.tested = {"binary_sensor.b": NOW[0].isoformat()}
+        assert _check_mit(m, h, [{**_d("binary_sensor.b", off=False, bat=90)}]) == [] and m.selftest["ok"] is True
+        assert m.log[0]["x"].startswith("Wochen-Selbsttest: alle 1 Melder")
+        m2, h2 = mgr()
+        m2.cfg["quiet"] = {"on": True, "from": "17:00", "to": "07:00"}
+        _check_mit(m2, h2, [_d("binary_sensor.b", off=False, bat=90)])
+        assert not m2.selftest  # in der Ruhezeit verschoben
+        nx = S.SicherheitManager._selftest_next(datetime(2026, 11, 17, 19, 0, tzinfo=timezone.utc))
+        assert nx.startswith("2026-11-22T18:00")
+    finally:
+        NOW[0] = old
+
+
+def test_letzter_alarm_und_neue_sensorwerte():
+    m, h = mgr()
+    m.cfg["lead"] = 0
+    d = _d(off=False, bat=80)
+    d["alarm"] = True
+    _check_mit(m, h, [d, _d("binary_sensor.weg", off=True)])
+    assert m.last_alarm["melder"] == "binary_sensor.gas" and m.last_alarm["raum"] == "Küche"
+    sm = m._sum
+    assert sm["letzter_alarm"] == NOW[0].isoformat() and sm["offline"] == ["Gasmelder"]
+    m._save()
+    saved = [x for x in _Store.stores if x.key.endswith("_sicherheit")][0].saved
+    assert saved["last_alarm"]["melder"] == "binary_sensor.gas" and "selftest" in saved and "src_off" in saved
+
+
+def test_clean_cfg_build11():
+    c = S.clean_cfg({})
+    assert c["guard"] == {"src": True} and c["selftest"] == {"on": True} and c["notify"]["self"] is True
+    c = S.clean_cfg({"guard": {"src": 0}, "selftest": {"on": False}, "notify": {"self": False}})
+    assert c["guard"]["src"] is False and c["selftest"]["on"] is False and c["notify"]["self"] is False
+    assert S.src_name("xsense") == "X-Sense" and S.src_name("foo") == "foo"

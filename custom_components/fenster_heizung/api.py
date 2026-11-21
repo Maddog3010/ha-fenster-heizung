@@ -1730,6 +1730,16 @@ async def ws_sf_ack(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 @websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sf_selftest"})
+@websocket_api.async_response
+async def ws_sf_selftest(hass: HomeAssistant, connection, msg: dict) -> None:
+    """Wochen-Selbsttest sofort (Knopf „Jetzt prüfen“)."""
+    mgr = _sf(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], await mgr.async_selftest())
+
+
+@websocket_api.require_admin
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/sf_pause", vol.Required("ent"): str, vol.Optional("days"): int})
 @websocket_api.async_response
 async def ws_sf_pause(hass: HomeAssistant, connection, msg: dict) -> None:
@@ -2138,7 +2148,7 @@ def async_register_api(hass: HomeAssistant) -> None:
         ws_get_general, ws_set_general, ws_get_update, ws_beta_gate, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_gs_runs, ws_gs_remind, ws_brief_get, ws_brief_set, ws_brief_test, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_scan, ws_wb_ha_test, ws_wb_est, ws_wb_odo, ws_wb_who, ws_wb_session, ws_wb_import, ws_wb_sessions, ws_wb_assign, ws_preise, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test, ws_wx_ack, ws_wx_pause, ws_wx_close, ws_wx_vor, ws_tarif_get, ws_tarif_set, ws_tarif_sub, ws_tarif_remind, ws_tarif_test, ws_tarif_check,
-        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sf_ack, ws_sf_pause, ws_sf_resume, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_tg_quick_set, ws_tg_quick, ws_ef_get, ws_ef_set,
+        ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sf_ack, ws_sf_pause, ws_sf_resume, ws_sf_selftest, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_tg_quick_set, ws_tg_quick, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
         ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act, ws_spn_gh, ws_support, ws_stats, ws_ef_link, ws_ebuch,
     ):

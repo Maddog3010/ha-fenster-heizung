@@ -55,7 +55,7 @@ async def async_setup_entry(
     )
 
 
-SF_KEYS = ("sf_status", "sf_alarme", "sf_bat_min", "sf_pruefung")
+SF_KEYS = ("sf_status", "sf_alarme", "sf_bat_min", "sf_pruefung", "sf_offline", "sf_letzter_alarm")
 
 
 class SicherheitSensor(SensorEntity):
@@ -68,12 +68,14 @@ class SicherheitSensor(SensorEntity):
         self._key = key
         self._attr_translation_key = key
         self._attr_unique_id = f"{DOMAIN}_sicherheit_{key[3:]}"
-        self._attr_icon = {"sf_status": "mdi:shield-home", "sf_alarme": "mdi:smoke-detector-alert", "sf_bat_min": "mdi:battery-alert", "sf_pruefung": "mdi:calendar-check"}[key]
+        self._attr_icon = {"sf_status": "mdi:shield-home", "sf_alarme": "mdi:smoke-detector-alert", "sf_bat_min": "mdi:battery-alert", "sf_pruefung": "mdi:calendar-check", "sf_offline": "mdi:access-point-network-off", "sf_letzter_alarm": "mdi:history"}[key]
         if key == "sf_bat_min":
             self._attr_native_unit_of_measurement = "%"
             self._attr_device_class = SensorDeviceClass.BATTERY
         if key == "sf_pruefung":
             self._attr_device_class = SensorDeviceClass.DATE
+        if key == "sf_letzter_alarm":
+            self._attr_device_class = SensorDeviceClass.TIMESTAMP
         if key == "sf_status":
             self._attr_device_class = SensorDeviceClass.ENUM
             self._attr_options = ["ruhig", "hinweis", "alarm"]
@@ -98,7 +100,15 @@ class SicherheitSensor(SensorEntity):
         m = self._m()
         if m is None:
             return None
-        v = m._sum.get({"sf_status": "status", "sf_alarme": "alarme", "sf_bat_min": "bat_min", "sf_pruefung": "pruefung"}[self._key])
+        if self._key == "sf_offline":
+            return len(m._sum.get("offline") or [])
+        v = m._sum.get({"sf_status": "status", "sf_alarme": "alarme", "sf_bat_min": "bat_min", "sf_pruefung": "pruefung", "sf_letzter_alarm": "letzter_alarm"}[self._key])
+        if self._key == "sf_letzter_alarm":
+            from datetime import datetime
+            try:
+                return datetime.fromisoformat(v) if v else None
+            except ValueError:
+                return None
         if self._key == "sf_pruefung" and v:
             from datetime import date
             return date.fromisoformat(v)
@@ -107,9 +117,16 @@ class SicherheitSensor(SensorEntity):
     @property
     def extra_state_attributes(self) -> dict:
         m = self._m()
-        if m is None or self._key != "sf_status":
+        if m is None:
             return {}
         sm = m._sum
+        if self._key == "sf_offline":
+            return {"melder": sm.get("offline") or [], "quellen_ausgefallen": sm.get("quellen_aus") or []}
+        if self._key == "sf_letzter_alarm":
+            la = sm.get("letzter_alarm_info") or {}
+            return {"melder": la.get("melder") or None, "name": la.get("name") or None, "raum": la.get("raum") or None}
+        if self._key != "sf_status":
+            return {}
         return {"melder": sm.get("melder"), "ausgeschaltet": sm.get("ausgeschaltet"), "hinweise": sm.get("hinweise"), "alarme": sm.get("alarme"), "unquittiert": sm.get("unquittiert")}
 
     async def async_added_to_hass(self) -> None:

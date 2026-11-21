@@ -33,7 +33,7 @@ from .geraete import GeraeteManager
 from .hersteller import logic as hs_logic, lookup as hs_lookup
 from .raumregelung import RoomRegulator
 from .praesenz import RoomPresence
-from .sicherheit import SicherheitManager
+from .sicherheit import SicherheitManager, async_register_services as sf_services
 from .labs import LabsManager
 from .entfeuchter import EntfeuchterManager
 from .hausfluss import FlussManager
@@ -1328,6 +1328,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     if "sicherheit" not in store:
         store["sicherheit"] = SicherheitManager(hass)
         await store["sicherheit"].async_start()
+        try:
+            sf_services(hass)  # Modul 11: Dienste quittieren, Melder geprüft, Selbsttest
+        except Exception:  # noqa: BLE001 - Dienste sind ein Zusatz, der Start darf daran nie scheitern
+            _LOGGER.warning("Dienste von Modul 11 nicht angemeldet", exc_info=True)
     if "messwerk" not in store:  # liest alle anderen Speicher, deshalb als Letztes
         store["messwerk"] = Messwerk(hass)
         await store["messwerk"].async_start()

@@ -137,7 +137,7 @@
     const p = this._sfOvParts(T), l = T.l, rank = (x) => (x.alarm ? 0 : x.off ? 1 : x.bat != null && x.bat < T.C.bat.pct ? 2 : 3);
     const sorted = [...l].sort((a, b) => rank(a) - rank(b) || String(a.floor || "~").localeCompare(String(b.floor || "~")) || a.name.localeCompare(b.name, "de"));
     const list = l.length ? `<div class="card sfc sfmel"><h2>${ic("bell", 18)}Melder<small class="mut">${l.length}</small></h2><div class="sfmg">${sorted.map((x) => this._sfCard(x)).join("")}</div></div>` : "";
-    return `${this._sfAskCards(T)}${p.empty}${this._mpWrap("sf", { kacheln: this._sfKts(T), zustand: p.dep, verlauf: this._sfTimeline(T.S), ereignisse: this._sfLogCard(T.S), naechstes: this._sfNext(T), melder: list })}`;
+    return `${this._sfSrcCard(T.S)}${this._sfAskCards(T)}${p.empty}${this._mpWrap("sf", { kacheln: this._sfKts(T), zustand: p.dep, verlauf: this._sfTimeline(T.S), ereignisse: this._sfLogCard(T.S), naechstes: this._sfNext(T), melder: list })}`;
   }
   /* Karte „Als Nächstes“: was als Nächstes ansteht (Batterie, Prüfung, Tausch), nach Dringlichkeit */
   _sfNext(T) {
@@ -146,6 +146,7 @@
     act.filter((x) => x.bat_thr_days != null && x.bat_thr_days <= C.lead && !(x.bat != null && x.bat < C.bat.pct)).forEach((x) => out.push([1, "energy", `Batterie ${x.name}`, "in ~ " + this._sfDur(x.bat_thr_days), "g", x.id]));
     if (C.test.on && due.length) out.push([0, "clock", due.length === 1 ? `Prüfung ${due[0].name}` : `Prüfung von ${due.length} Meldern`, "fällig", "a", due.length === 1 ? due[0].id : ""]);
     life.forEach((x) => out.push([x.life_days < 0 ? 0 : 1, "tools", `${x.name} tauschen`, x.life_days < 0 ? "überfällig" : "in " + this._sfDur(x.life_days), x.life_days < 0 ? "r" : "a", x.id]));
+    const sr = this._sfSelfRow(T.S); if (sr) out.push(sr);
     out.sort((a, b) => a[0] - b[0]);
     const rows = out.slice(0, 5).map(([, ico, t, v, c, id]) => `<${id ? "button" : "div"} class="sfap sfnx" ${id ? `data-act="sfxdet" data-k="${esc(id)}"` : ""}>${ic(ico, 16)}<span>${esc(t)}</span><span class="sft ${c}">${esc(v).toUpperCase()}</span></${id ? "button" : "div"}>`).join("");
     return `<div class="card sfc"><h2>${ic("list", 18)}Als Nächstes</h2>${rows || `<div class="mut sm">Im Moment steht nichts an.</div>`}</div>`;
@@ -238,6 +239,7 @@
   /* ---- Aktionen */
   _sfxNew(a, b) {
     const k = b.dataset.k;
+    if (this._sfxB11(a, b)) return true;
     if (this._sfxM(a, b)) return true;
     if (this._sfxAlarmAct(a, b)) return true;
     if (a === "sfxdet") { this._modal = { type: "sfdet", id: k }; this._renderModal(); return true; }
