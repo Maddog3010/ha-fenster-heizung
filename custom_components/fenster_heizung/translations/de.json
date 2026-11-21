@@ -214,6 +214,9 @@
       "tf_avg_today": {
         "name": "Strompreis Ø heute"
       },
+      "tf_saved_month": {
+        "name": "Ersparnis Monat"
+      },
       "tf_avg_tomorrow": {
         "name": "Strompreis Ø morgen"
       },

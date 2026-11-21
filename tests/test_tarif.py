@@ -324,6 +324,146 @@ def test_dienst_fenster_alarm_erinnerung():
     run(go())
 
 
+
+def _tz(f):
+    """Reine Funktionen mit Ortszeit: wie run() die gemeinsame Ersatz-Uhr kurz setzen."""
+    def w():
+        async def go():
+            f()
+        run(go())
+    w.__name__ = f.__name__
+    return w
+
+
+def test_dienst_tarif_check_und_daten_pruefen():
+    NOW[0] = datetime(2026, 11, 17, 17, 40, tzinfo=TZ)
+    tib = [{"start": day0() + timedelta(minutes=15 * i), "ct": 20.0 if i < 40 else 30.0} for i in range(192)]
+    h, m = _mgr(Tib(tib), fix=28.0)
+    h.data["fenster_heizung"]["ebuch"] = types.SimpleNamespace(ok=True, hours={"2026-11-17": {str(x): [0, 0, 0, 0, 0, 0, 1.0, 0, 0, 0, 0] for x in range(17)}},
+                                                               days={"2026-11-01": [0, 0, 0, 0, 0, 0, 9.0, 0, 0, 0, 0]})
+
+    async def go():
+        await m._tick(None)
+        r = m.check("m", "2026-11")
+        assert r["title"] == "November 2026" and r["n"] == 1 and r["kwh"] == 17.0 and r["cmp_ct"] == 28.0 and not r["cmp_own"]
+        assert r["paid"] == 4.1 and r["save"] == round(17 * 0.28 - 4.1, 2)  # 10 Std. à 20 ct, 7 Std. à 30 ct
+        y = m.check("y", "2026")
+        assert y["months"][0]["m"] == "2026-11" and y["days"] == []
+        await m.async_set({"cmp": {"ct": 35, "base": 0}})
+        assert m.check("m", "2026-11")["cmp_ct"] == 35.0
+        s = m.snapshot()
+        assert s["saved_m"]["n"] == 1 and s["week"][-1]["tomorrow"]
+        dc = {x["k"]: x["st"] for x in m.datacheck()}
+        assert dc["src"] == "ok" and dc["tm"] == "ok" and dc["gap"] == "ok" and dc["eb"] == "ok"
+        assert m.check("m", "kaputt")["per"] == "m"
+        await m.async_set({"alarm": {"to": ["notify.handy"]}})
+        D = _diag()
+        dd = D.tarif_diag(m)
+        assert dd["quelle"] == "tibber" and dd["einstellungen"]["alarm"]["to"] == [D.REDACT] and dd["zeitreihe"]["werte"] == 192
+        assert m.cfg["alarm"]["to"] == ["notify.handy"] and D.tarif_diag(None) == {"eingerichtet": False}
+    run(go())
+
+
+def _diag():
+    _stub("homeassistant.config_entries", ConfigEntry=object)
+    _stub("fhtar.const", DOMAIN="fenster_heizung")
+    spec = importlib.util.spec_from_file_location("fhtar.diagnostics", ROOT / "diagnostics.py")
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+# ---------------------------------------------------------------- v0.9: Tarif-Check, Woche, Daten prüfen
+def _hist_day(d, cts):
+    """Preise eines Tages: 24 Stunden mit den Werten cts (Liste mit 24 ct)."""
+    return [[int((d + timedelta(hours=h)).timestamp()), 3600, cts[h]] for h in range(24)]
+
+
+def _eb_hours(kwh_by_hour):
+    return {str(h): [0, 0, 0, 0, 0, 0, k, 0, 0, 0, 0] for h, k in kwh_by_hour.items()}
+
+
+@_tz
+def test_tarif_check_stunden_genau():
+    d = day0(10)
+    cts = [10.0] * 6 + [30.0] * 18
+    hist = {"2026-11-10": _hist_day(d, cts)}
+    ebh = {"2026-11-10": _eb_hours({2: 4.0, 19: 1.0})}  # nachts viel, abends wenig
+    r = T.tariff_check(hist, ebh, {}, 30.0, 0.0, d.date(), (d + timedelta(days=1)).date(), CFG)
+    assert r["n"] == 1 and r["kwh"] == 5.0
+    assert r["paid"] == round((4 * 10 + 1 * 30) / 100, 2) and r["fix"] == 1.5 and r["save"] == 0.8
+    assert r["ct"] == 14.0 and r["est"] == 0 and r["days"][0]["est"] is False
+
+
+@_tz
+def test_tarif_check_geschaetzt_und_grundgebuehr():
+    d = day0(1, 9)
+    hist = {"2026-09-01": _hist_day(d, [20.0] * 24), "2026-09-02": _hist_day(d + timedelta(days=1), [26.0] * 24)}
+    ebd = {"2026-09-01": [0, 0, 0, 0, 0, 0, 10.0, 0, 0, 0, 0], "2026-09-02": [0, 0, 0, 0, 0, 0, 5.0, 0, 0, 0, 0]}
+    r = T.tariff_check(hist, {}, ebd, 30.0, 3.0, d.date(), d.date() + timedelta(days=30), CFG)
+    assert r["n"] == 2 and r["est"] == 2  # nur Tageswerte -> geschätzt
+    assert r["paid"] == 3.3 and r["base"] == 0.2  # 3 €/Monat anteilig für 2 von 30 Tagen
+    assert r["fix"] == 4.7 and r["save"] == 1.4
+    assert r["ct"] == 22.0 and [x["lv"] for x in r["days"]] == ["normal", "dear"]  # 26 ct liegt 4 ct über dem Ø von 22
+
+
+@_tz
+def test_tarif_check_ohne_preise_oder_verbrauch():
+    d = day0(5)
+    hist = {"2026-11-05": _hist_day(d, [25.0] * 24)}
+    r = T.tariff_check(hist, {}, {"2026-11-06": [0] * 11}, 30.0, 0.0, d.date(), d.date() + timedelta(days=3), CFG)
+    assert r["n"] == 0 and r["ct"] is None and r["save"] == 0
+
+
+@_tz
+def test_tarif_check_fehlende_stunde_im_preis():
+    d = day0(10)
+    rows = [r for r in _hist_day(d, [20.0] * 24) if r[0] != int((d + timedelta(hours=5)).timestamp())]
+    r = T.tariff_check({"2026-11-10": rows}, {"2026-11-10": _eb_hours({5: 2.0})}, {}, 30.0, 0.0, d.date(), d.date() + timedelta(days=1), CFG)
+    assert r["days"][0]["est"] is True and r["paid"] == 0.4
+
+
+@_tz
+def test_tarif_check_zeitumstellung():
+    d = datetime(2026, 10, 25, tzinfo=TZ)  # 25 Stunden: 2 Uhr gibt es zweimal
+    rows = [[int(d.timestamp()) + i * 3600, 3600, 10.0 if i == 2 else 30.0] for i in range(25)]
+    hp = T.hour_prices(rows)
+    assert len(hp) == 24 and hp[2] == 20.0  # beide „2 Uhr“-Stunden gemittelt
+
+
+@_tz
+def test_monate_und_woche():
+    d = day0(1, 10)
+    hist, ebd = {}, {}
+    for i in range(40):
+        k = (d + timedelta(days=i)).date().isoformat()
+        hist[k] = _hist_day(d + timedelta(days=i), [25.0] * 24)
+        ebd[k] = [0, 0, 0, 0, 0, 0, 2.0, 0, 0, 0, 0]
+    r = T.tariff_check(hist, {}, ebd, 30.0, 0.0, date_(2026, 1, 1), date_(2026, 12, 31), CFG)
+    ms = T.months_of(r)
+    assert [m["m"] for m in ms] == ["2026-10", "2026-11"] and ms[0]["kwh"] == 62.0 and ms[0]["save"] == 3.1
+    today = day0(9, 11)
+    ser = [{"s": int((today + timedelta(days=1, hours=h)).timestamp()), "d": 3600, "ct": -1.0 if h == 13 else 22.0} for h in range(24)]
+    w = T.week_view(hist, ser, today.date())
+    assert len(w) == 8 and w[-1]["tomorrow"] and w[-1]["neg"] == 1 and w[0]["d"] == "2026-11-03"
+
+
+def test_luecken():
+    ser = [{"s": 0, "d": 900, "ct": 1}, {"s": 900, "d": 900, "ct": 1}, {"s": 3600, "d": 900, "ct": 1}]
+    assert T.gaps(ser) == 1 and T.gaps(ser[:2]) == 0
+
+
+def test_vergleichspreis_geklemmt():
+    c = T.clean_cfg({"cmp": {"ct": "29,5x", "base": 99}})
+    assert c["cmp"] == {"ct": 30.0, "base": 50.0}
+    assert T.clean_cfg({})["cmp"] == {"ct": None, "base": 0.0}
+    assert T.clean_cfg({"cmp": {"ct": 27.4, "base": -2.5}})["cmp"] == {"ct": 27.4, "base": -2.5}
+
+
+def date_(y, m, d):
+    from datetime import date
+    return date(y, m, d)
+
 if __name__ == "__main__":
     fails = 0
     for name, fn in list(globals().items()):

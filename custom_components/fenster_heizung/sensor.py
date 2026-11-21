@@ -27,7 +27,7 @@ from . import abr_ent
 SP_OWNER = "sp_sensor_owner"
 SP_KEYS = ("sp_today", "sp_tomorrow", "sp_rest", "sp_corr", "sp_best")
 EV_KEYS = ("ev_soc", "ev_done", "ev_next", "ev_sun")
-TF_KEYS = ("tf_price", "tf_level", "tf_next_cheap", "tf_best", "tf_avg_today", "tf_avg_tomorrow")
+TF_KEYS = ("tf_price", "tf_level", "tf_next_cheap", "tf_best", "tf_avg_today", "tf_avg_tomorrow", "tf_saved_month")
 
 SCOPES = {
     "minutes_today": "day",
@@ -198,6 +198,11 @@ class TarifSensor(SensorEntity):
             self._attr_icon = "mdi:cash-clock" if key == "tf_price" else "mdi:chart-line"
             if key == "tf_price":
                 self._attr_state_class = SensorStateClass.MEASUREMENT
+        elif key == "tf_saved_month":  # v0.9: Tarif-Check, Ersparnis im laufenden Monat gegenüber dem Vergleichs-Festpreis
+            self._attr_device_class = SensorDeviceClass.MONETARY
+            self._attr_native_unit_of_measurement = "EUR"
+            self._attr_suggested_display_precision = 2
+            self._attr_icon = "mdi:piggy-bank-outline"
         elif key == "tf_level":
             self._attr_device_class = SensorDeviceClass.ENUM
             self._attr_options = list(self.LV.values())
@@ -238,6 +243,9 @@ class TarifSensor(SensorEntity):
                 return dt_util.utcnow().replace(second=0, microsecond=0)
             sl = S.get("slots") or []
             return ts(sl[0]["s"]) if sl else None
+        if self._key == "tf_saved_month":
+            v = S.get("saved_m")
+            return v.get("save") if v else None
         if self._key == "tf_best":
             b = S.get("best")
             return ts(b["s"]) if b else None
@@ -255,6 +263,9 @@ class TarifSensor(SensorEntity):
             if self._key == "tf_best":
                 b = S.get("best") or {}
                 return {"ende": b.get("e"), "mittel_ct": b.get("avg"), "stunden": S["cfg"]["win_h"]}
+            if self._key == "tf_saved_month":
+                v = S.get("saved_m") or {}
+                return {"bezahlt_eur": v.get("paid"), "netzbezug_kwh": v.get("kwh"), "tage": v.get("n"), "davon_geschaetzt": v.get("est")}
             if self._key in ("tf_avg_today", "tf_avg_tomorrow"):
                 d = S.get("today" if self._key == "tf_avg_today" else "tomorrow") or {}
                 return {"min": d.get("min"), "max": d.get("max"), "negativ_zeitraeume": d.get("neg", 0)}

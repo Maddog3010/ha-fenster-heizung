@@ -1,4 +1,4 @@
-  /* ================= Modul 14: Stromtarif · v0.6 Tarif-Dienst (Backend tarif.py) · v0.7 neue Optik ================= */
+  /* ================= Modul 14: Stromtarif · v0.6 Tarif-Dienst (Backend tarif.py) · v0.7 neue Optik · v0.9 Tarif-Check, Woche, Daten prüfen ================= */
   /* Daten: tarif_get einmal, danach Push über tarif_sub (neue Viertelstunde, Preise für morgen). Rückfall: Abruf jede Minute. */
   _tfLoad(force) {
     if (!this._hass) return;
@@ -107,18 +107,19 @@
       tile("clock", "Bestes Fenster", best ? this._tfHm(best.s) : "–", best ? "Uhr" : "", best ? `${this._tfIsTomorrow(best.s) ? "morgen" : "heute"} · Ø ${this._tfCt(best.avg)} ct` : "Zu wenig Preise", best ? this._tfLv(best.avg, T.avg, C) || "cheap" : ""),
       M ? tile("today", "Morgen", this._tfCt(M.avg), "ct Ø", T.avg != null ? `${M.avg <= T.avg ? "−" : "+"}${this._tfCt(Math.abs(M.avg - T.avg))} ct zu heute` : `${this._tfCt(M.min)} bis ${this._tfCt(M.max)} ct`, T.avg != null && M.avg <= T.avg ? "cheap" : "normal")
         : tile("today", "Morgen", "–", "", "noch nicht veröffentlicht · ab ca. 13 Uhr", ""),
-      S.neg ? tile("energy", "Negativer Preis", this._tfWhen(S.neg.s).replace("morgen ", ""), "Uhr", `${this._tfIsTomorrow(S.neg.s) ? "morgen" : "heute"} · bis ${this._tfCt(S.neg.min)} ct`, "neg")
+      S.saved_m && S.saved_m.n ? tile("chart", "Gespart im Monat", `${S.saved_m.save >= 0 ? "" : "−"}${num(Math.abs(S.saved_m.save), 2)}`, "€", `${S.saved_m.save >= 0 ? "gegenüber Festpreis" : "mehr als mit Festpreis"} · ${num(S.saved_m.kwh, 0)} kWh${S.saved_m.est ? " · teils geschätzt" : ""}`, S.saved_m.save >= 0 ? "cheap" : "dear")
+        : S.neg ? tile("energy", "Negativer Preis", this._tfWhen(S.neg.s).replace("morgen ", ""), "Uhr", `${this._tfIsTomorrow(S.neg.s) ? "morgen" : "heute"} · bis ${this._tfCt(S.neg.min)} ct`, "neg")
         : tile("alert", "Teuerste Zeit", S.dear ? this._tfHm(S.dear.s) : "–", S.dear ? "Uhr" : "", S.dear ? `${this._tfIsTomorrow(S.dear.s) ? "morgen" : "heute"} · ${this._tfCt(S.dear.ct)} ct` : "–", S.dear ? "dear" : "")];
     return `<div class="wxtiles tftiles">${out.join("")}</div>`;
   }
   /* B3 · Heute und morgen in einem Band */
   _tfDays(S) {
-    const res = this._tfView || S.cfg.res || "q", q = (S.series || []).some((x) => x.d < 3600), sun = !!this._tfSun();
+    const res = this._tfView || S.cfg.res || "q", q = (S.series || []).some((x) => x.d < 3600), sun = !!this._tfSun(), wk = (S.week || []).length >= 2;
     const d0 = new Date(); d0.setHours(0, 0, 0, 0); const end = (S.series || []).length ? S.series[S.series.length - 1].s + S.series[S.series.length - 1].d : null;
     const leg = [["cheap", "günstig"], ["normal", "normal"], ["dear", "teuer"], ["neg", "negativ"]].map(([k, t]) => `<span><i style="background:${this._tfCol(k)}"></i>${t}</span>`).join("") + (sun ? `<span><i class="sn"></i>Sonne (Modul 16)</span>` : "");
     const M = S.tomorrow, T = S.today;
-    return `<div class="card"><div class="wxtlh"><h2>${ic("chart", 18)}Heute und morgen</h2>${q ? `<div class="seg wxseg"><button class="${res === "q" ? "sel" : ""}" data-act="tfxview" data-k="q">15 Min.</button><button class="${res === "h" ? "sel" : ""}" data-act="tfxview" data-k="h">Stunden</button></div>` : ""}</div>
-      ${this._tfBand(S, { from: d0.getTime() / 1000, to: end, res, best: S.best_tomorrow || S.best, sun: true, h: 190 })}
+    return `<div class="card"><div class="wxtlh"><h2>${ic("chart", 18)}Heute und morgen</h2>${q || wk ? `<div class="seg wxseg">${q ? `<button class="${res === "q" ? "sel" : ""}" data-act="tfxview" data-k="q">15 Min.</button>` : ""}<button class="${res === "h" ? "sel" : ""}" data-act="tfxview" data-k="h">Stunden</button>${wk ? `<button class="${res === "w" ? "sel" : ""}" data-act="tfxview" data-k="w">Woche</button>` : ""}</div>` : ""}</div>
+      ${res === "w" && wk ? this._tfWeek(S) : this._tfBand(S, { from: d0.getTime() / 1000, to: end, res, best: S.best_tomorrow || S.best, sun: true, h: 190 })}
       <div class="tfleg">${leg}</div>
       <div class="tfdays"><div><span class="mut">Heute</span><b>Ø ${this._tfCt(T && T.avg)} ct</b><small>${T ? `${this._tfCt(T.min)} bis ${this._tfCt(T.max)} ct · ${num(T.hours, 0)} Std.` : "–"}</small></div>
         <div><span class="mut">Morgen</span><b>${M ? `Ø ${this._tfCt(M.avg)} ct` : "noch offen"}</b><small>${M ? `${this._tfCt(M.min)} bis ${this._tfCt(M.max)} ct${M.neg ? ` · ${M.neg} × negativ` : ""}` : "Die Börse veröffentlicht gegen 13 Uhr, der Dienst holt sie dann von selbst."}</small></div></div></div>`;
@@ -151,9 +152,8 @@
     if (S.src === "fix") return `${this._betaBox("Mit einem Festpreis gibt es keine günstigen Zeiten. Verbinde Tibber oder wähle einen Preis-Sensor.")}
       <div class="card"><h2>${ic("bolt", 18)}Festpreis</h2><div class="wxtiles tftiles"><div class="wxtl" style="--tc:#2dd4bf"><div class="wxtn">Arbeitspreis</div><div class="wxtv">${this._tfCt(S.now.ct)}<small>ct/kWh</small></div><div class="wxts">aus den Haus-Werten</div></div></div>
       ${adm ? `<button class="btn2" style="margin-top:12px" data-act="tfxopen">${ic("sliders", 16)} Quelle wählen</button>` : ""}</div>${this._tfSrcCard(S)}`;
-    return `${this._tfBanner(S)}${this._tfTiles(S)}${this._betaBox("Neu: Preise kommen über den gemeinsamen Tarif-Dienst – Tibber direkt, Preis-Sensor oder Festpreis, in Viertelstunden, heute und morgen.")}
-      ${this._tfDevCard(S)}${this._tfDays(S)}<div class="wxcols">${this._tfSlots(S)}${this._tfAlarmCard(S)}</div>${this._tfSrcCard(S)}
-      <div class="wxnote">${ic("info", 15)}Kommt mit v0.9: Batteriespeicher, Wallbox, Warmwasser und Entfeuchter nutzen dieselben Preise und Fenster.</div>`;
+    return `${this._tfBanner(S)}${this._tfTiles(S)}${this._betaBox("Neu in v0.9: „Lohnt sich dein Tarif?“, Wochenansicht und „Daten prüfen“ in den Einstellungen.")}
+      ${this._tfDevCard(S)}${this._tfDays(S)}${this._tfCheckCard(S)}<div class="wxcols">${this._tfSlots(S)}${this._tfAlarmCard(S)}</div>${this._tfSrcCard(S)}`;
   }
   /* Startseite: Preis, Stufe, Mini-Band der nächsten 12 Stunden */
   _tfStartK(K) {
@@ -240,7 +240,7 @@
   }
   _tfPatch(fn) { const c = JSON.parse(JSON.stringify(this._tf().cfg)); fn(c); this._tfSave(c); }
   _tfAct(a, b) {
-    const k = b.dataset.k, s = Number(b.dataset.s);
+    const k = b.dataset.k, s = Number(b.dataset.s), S0 = this._tf();
     if (a === "tfxopen") { if (k) this._tfTab = k; this._tfLoad(true); this._modal = { type: "tfset" }; this._renderModal(); return; }
     if (a === "tfxview") { this._tfView = k; this._render(); return; }
     if (a === "tfxtab") { this._tfTab = k; this._renderModal(); return; }
@@ -258,17 +258,89 @@
     if (a === "tfxdev") { const D = (this._tf().devs || []).find((x) => x.id === k); this._tfPatch((c) => { const o = c.devs[k] || {}; c.devs[k] = { ...o, on: !(D ? D.on : o.on) }; }); return; }
     if (a === "tfxby" || a === "tfxfrom") { const v = b.dataset.v === "" ? null : Number(b.dataset.v), D = (this._tf().devs || []).find((x) => x.id === k); this._tfPatch((c) => { const o = c.devs[k] || { on: D ? D.on : true }; c.devs[k] = { on: o.on !== false, by: o.by ?? null, from: o.from ?? null, [a === "tfxby" ? "by" : "from"]: v }; }); return; }
     if (a === "tfxtest") { this._hass.callWS({ type: "fenster_heizung/tarif_test" }).then((r) => this._toast(r && r.sent ? `Test an ${r.sent} ${r.sent === 1 ? "Dienst" : "Diensten"} gesendet` : "Kein Benachrichtigungsdienst gewählt")).catch(() => this._toast("Test fehlgeschlagen")); return; }
+    if (a === "tfxck" || a === "tfxckp") { const C = this._tfCk || {}, per = a === "tfxck" ? k : C.per || "m"; let ref = C.ref || "";
+      if (a === "tfxckp") { const st = Number(k); if (per === "y") ref = String(Number(ref.slice(0, 4)) + st); else { const d = new Date(Number(ref.slice(0, 4)), Number(ref.slice(5, 7)) - 1 + st, 1); ref = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; } }
+      else ref = per === "y" ? (ref || "").slice(0, 4) : (C.per === "y" ? "" : ref);
+      this._tfCkLoad(per, ref); return; }
+    if (a === "tfxcmpreset") { this._tfPatch((c) => { c.cmp = { ...(c.cmp || {}), ct: null }; }); this._tfCk = null; return; }
     if (a === "tfxstep") {
-      const R = { add: [0, 60, 2], vat: [0, 30, 1], down: [0.5, 20, 1], up: [0.5, 20, 1], win_h: [1, 8, 0], ht_ct: [-30, 30, 2], nt_ct: [-30, 30, 2], ht_from: [0, 23, 0], ht_to: [1, 24, 0], nt_from: [0, 23, 0], nt_to: [1, 24, 0], a_below: [-20, 100, 1], a_above: [0, 150, 1], q_from: [0, 23, 0], q_to: [0, 23, 0] }[k];
+      const R = { add: [0, 60, 2], vat: [0, 30, 1], down: [0.5, 20, 1], up: [0.5, 20, 1], win_h: [1, 8, 0], ht_ct: [-30, 30, 2], nt_ct: [-30, 30, 2], ht_from: [0, 23, 0], ht_to: [1, 24, 0], nt_from: [0, 23, 0], nt_to: [1, 24, 0], a_below: [-20, 100, 1], a_above: [0, 150, 1], q_from: [0, 23, 0], q_to: [0, 23, 0], c_ct: [1, 100, 2], c_base: [-50, 50, 2] }[k];
       if (!R) return;
       this._tfPatch((c) => {
         let o = c, f = k;
         if (k.startsWith("ht_") || k.startsWith("nt_")) o = c.nne;
         else if (k.startsWith("a_")) { o = c.alarm[k.slice(2)]; f = "ct"; }
         else if (k.startsWith("q_")) { o = c.alarm.quiet; f = k.slice(2); }
+        else if (k.startsWith("c_")) { c.cmp = { ct: null, base: 0, ...(c.cmp || {}) }; o = c.cmp; f = k.slice(2); if (o.ct == null && f === "ct") o.ct = (this._tfCk && this._tfCk.d && this._tfCk.d.cmp_ct) || S0.now.ct || 30; }
         o[f] = Math.round(Math.max(R[0], Math.min(R[1], (Number(o[f]) || 0) + s)) * 10 ** R[2]) / 10 ** R[2];
       });
     }
+  }
+  /* ================= v0.9 · A7 „Lohnt sich dein Tarif?“ · A3 Woche · A9 Daten prüfen · A10 Hinweis auf der Startseite ================= */
+  _tfCkLoad(per, ref) {
+    if (!this._hass) return;
+    this._tfCk = { ...(this._tfCk || {}), per: per || "m", ref: ref || "", busy: true };
+    this._hass.callWS({ type: "fenster_heizung/tarif_check", per: per || "m", ref: ref || "" }).then((r) => { this._tfCk = { per: r.per, ref: r.ref, d: r, ts: Date.now() }; })
+      .catch(() => { this._tfCk = { per: per || "m", ref: ref || "", d: { error: true }, ts: Date.now() }; }).finally(() => { this._tfWantR = true; this._tfRedraw(); this._render(); });
+  }
+  _tfCheckCard(S) {
+    const K = this._tfCk;
+    if (!K || (!K.d && !K.busy) || (K.d && Date.now() - (K.ts || 0) > 600000 && !K.busy)) { if (!K || !K.busy) this._tfCkLoad(K ? K.per : "m", K ? K.ref : ""); }
+    const R = (K && K.d) || null, per = (K && K.per) || "m";
+    const head = `<div class="wxtlh"><h2>${ic("chart", 18)}Lohnt sich dein Tarif?</h2><div class="seg wxseg"><button class="${per === "m" ? "sel" : ""}" data-act="tfxck" data-k="m">Monat</button><button class="${per === "y" ? "sel" : ""}" data-act="tfxck" data-k="y">Jahr</button></div></div>`;
+    if (!R) return `<div class="card">${head}<div class="mut sm">Wird gerechnet …</div></div>`;
+    if (R.error) return `<div class="card">${head}<div class="mut sm">Der Tarif-Check ist gerade nicht verfügbar.</div></div>`;
+    const MONL = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+    const nav = `<div class="tfckn"><button class="ibtn" data-act="tfxckp" data-k="-1" aria-label="zurück">‹</button><b>${esc(R.title)}</b><button class="ibtn" data-act="tfxckp" data-k="1" aria-label="weiter">›</button></div>`;
+    if (!R.n) {
+      const why = !R.eb ? "Dafür braucht es das Haus-Energiebuch (Einstellungen → Haus → Energiequellen mit Netz-Sensor)." : !R.first ? "Die Preis-Historie ist noch leer – sie füllt sich ab heute jeden Tag." : `Für diesen Zeitraum gibt es keine Preise oder keinen Verbrauch. Preise sind gespeichert seit ${new Date(R.first).toLocaleDateString("de-DE")}.`;
+      return `<div class="card">${head}${nav}<div class="mut sm" style="margin-top:6px">${why}</div></div>`;
+    }
+    const sv = R.save, tile = (l, v, s, c) => `<div class="tfckt"><span class="mut">${l}</span><b${c ? ` style="color:${c}"` : ""}>${v}</b><small>${s}</small></div>`;
+    const tiles = `<div class="tfcks">${tile(`Bezahlt (${esc(S.src_name || "dynamisch")})`, `${num(R.paid, 2)} €`, `Ø ${this._tfCt(R.ct)} ct/kWh · ${num(R.kwh, 0)} kWh`)}
+      ${tile("Mit Festpreis wäre", `${num(R.fix, 2)} €`, `${this._tfCt(R.cmp_ct, 2)} ct/kWh${R.cmp_own ? "" : " laut Haus-Werten"}${R.base ? ` · ${R.base > 0 ? "+" : "−"}${num(Math.abs(R.base), 2)} € Grundgebühr` : ""}`)}
+      ${tile(sv >= 0 ? "Ersparnis" : "Mehrkosten", `${sv >= 0 ? "+" : "−"}${num(Math.abs(sv), 2)} €`, R.fix > 0 ? `${num(Math.abs(sv) / R.fix * 100, 0)} % ${sv >= 0 ? "günstiger" : "teurer"}` : "", sv >= 0 ? "#22c55e" : "#ef4444")}</div>`;
+    const rows = per === "y" ? (R.months || []).map((m) => ({ l: MONL[Number(m.m.slice(5, 7)) - 1].slice(0, 3), ct: m.ct, t: `${MONL[Number(m.m.slice(5, 7)) - 1]}: ${num(m.paid, 2)} € statt ${num(m.fix, 2)} € · Ø ${this._tfCt(m.ct)} ct${m.est ? ` · ${m.est} Tage geschätzt` : ""}`, est: m.est >= m.n, lv: m.save >= 0 ? "cheap" : "dear" }))
+      : (R.days || []).map((d) => ({ l: String(Number(d.d.slice(8, 10))), ct: d.ct, t: `${new Date(d.d).toLocaleDateString("de-DE", { weekday: "short", day: "numeric", month: "numeric" })}: ${num(d.kwh, 1)} kWh · Ø ${this._tfCt(d.ct)} ct · ${num(d.paid, 2)} €${d.est ? " · geschätzt" : ""}`, est: d.est, lv: d.lv }));
+    const n = per === "y" ? 12 : Math.max(28, rows.length), mx = Math.max(R.cmp_ct, ...rows.map((r) => r.ct || 0)) * 1.12, fy = 100 - (R.cmp_ct / mx) * 100;
+    const bars = rows.map((r) => `<div class="tfckb${r.est ? " est" : ""}" title="${esc(r.t)}"><i style="height:${Math.max(2, ((r.ct || 0) / mx) * 100).toFixed(1)}%;background:${this._tfCol(r.lv || "normal")}"></i><small>${r.l}</small></div>`).join("");
+    const chart = `<div class="tfckc" style="--n:${n}"><div class="tfckf" style="top:${fy.toFixed(1)}%"><span>Festpreis ${this._tfCt(R.cmp_ct)} ct</span></div>${bars}</div>`;
+    const note = [per === "y" ? "Balken: dein Ø Preis je Monat, grün = günstiger als Festpreis." : "Balken: dein Ø Preis je Tag (nach Verbrauch gewichtet), Farbe = Preisstufe.", R.est ? `${R.est} ${R.est === 1 ? "Tag" : "Tage"} aus Tageswerten geschätzt (blass)${R.hours_from ? `, Stundenwerte ab ${new Date(R.hours_from).toLocaleDateString("de-DE")}` : ""}.` : "", "Gerechnet mit deinem Netzbezug aus dem Haus-Energiebuch, ohne Solarstrom und Akku."].filter(Boolean).join(" ");
+    return `<div class="card">${head}${nav}${tiles}${chart}<div class="gst" style="margin-top:8px">${esc(note)}${this._admin() ? ` <button class="lnk" data-act="tfxopen" data-k="p">Vergleichspreis ändern</button>` : ""}</div></div>`;
+  }
+  _tfCmpSet(C, step) {
+    const cm = C.cmp || { ct: null, base: 0 }, cur = (this._tfCk && this._tfCk.d && this._tfCk.d.cmp_ct) || null;
+    return `<div class="lsec" style="margin-top:12px">${ic("chart", 15)}Tarif-Check: Vergleich mit Festpreis</div>
+      <div class="mut sm" style="margin:0 0 6px">„Lohnt sich dein Tarif?“ rechnet deinen Netzbezug einmal mit den dynamischen Preisen und einmal mit diesem Festpreis.</div>
+      <div class="vrow"><span>Vergleichs-Festpreis<small class="mut" style="display:block">${cm.ct == null ? "Aus Haus › Preise &amp; Tarif" + (cur ? ` (${this._tfCt(cur, 2)} ct)` : "") + ". Mit +/− eigenen Wert setzen, z. B. das Angebot deines alten Anbieters." : `Eigener Wert · <button class="lnk" data-act="tfxcmpreset">Haus-Werte nehmen</button>`}</small></span>${step("c_ct", cm.ct == null ? cur || 30 : cm.ct, "ct", 0.5, this._tfCt(cm.ct == null ? cur : cm.ct, 2))}</div>
+      <div class="vrow"><span>Grundgebühr-Unterschied je Monat<small class="mut" style="display:block">Positiv, wenn der Festpreis-Vertrag eine höhere Grundgebühr hat. Wird anteilig für die Tage mit Daten gerechnet.</small></span>${step("c_base", cm.base || 0, "€", 0.5, num(cm.base || 0, 2))}</div>`;
+  }
+  _tfWeek(S) {
+    const W = S.week || [], C = S.cfg, td = new Date(), today = `${td.getFullYear()}-${String(td.getMonth() + 1).padStart(2, "0")}-${String(td.getDate()).padStart(2, "0")}`;
+    const all = W.flatMap((d) => [d.min, d.max]), lo = Math.min(0, ...all), hi = Math.max(...all) * 1.08, Y = (v) => 100 - ((v - lo) / (hi - lo)) * 100;
+    const cols = W.map((d) => { const lv = d.neg ? "neg" : this._tfLv(d.avg, W.reduce((a, x) => a + x.avg, 0) / W.length, C) || "normal", dt = new Date(d.d + "T12:00:00");
+      return `<div class="tfwk${d.tomorrow ? " tm" : ""}" title="${esc(dt.toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" }))}: Ø ${this._tfCt(d.avg)} ct · ${this._tfCt(d.min)} bis ${this._tfCt(d.max)} ct${d.neg ? ` · ${d.neg} × negativ` : ""}">
+        <div class="tfwkp"><span class="tfwkr" style="top:${Y(d.max).toFixed(1)}%;bottom:${(100 - Y(d.min)).toFixed(1)}%"></span>${d.neg ? `<span class="tfwkn" style="top:${Y(d.min).toFixed(1)}%"></span>` : ""}<span class="tfwka" style="top:${Y(d.avg).toFixed(1)}%;--c:${this._tfCol(lv)}"></span><em style="top:${Y(d.avg).toFixed(1)}%">${this._tfCt(d.avg, 0)}</em></div>
+        <small>${d.tomorrow ? "morgen" : d.d === today ? "heute" : dt.toLocaleDateString("de-DE", { weekday: "short" })}</small></div>`; }).join("");
+    return `<div class="tfwkc">${cols}</div><div class="mut sm" style="margin-top:6px">Punkt: Tagesschnitt in Stufenfarbe · Säule: günstigste bis teuerste Zeit · blau: negative Preise. Aus der eigenen Preis-Historie.</div>`;
+  }
+  _tfDataCheck(S) {
+    const L = S.datacheck || [];
+    if (!L.length) return "";
+    const col = { ok: "#22c55e", warn: "#f59e0b", bad: "#ef4444" }, bad = L.filter((x) => x.st !== "ok").length;
+    return `<div class="lsec" style="margin-top:12px">${ic("check", 15)}Daten prüfen<span class="mut sm" style="margin-left:auto;font-weight:500">${bad ? `${bad} ${bad === 1 ? "Hinweis" : "Hinweise"}` : "alles in Ordnung"}</span></div>
+      ${L.map((x) => `<div class="wck"><span class="wcki" style="color:${col[x.st] || col.warn}">${ic(x.st === "ok" ? "check" : "info", 16)}</span><span class="wckt"><b>${esc(x.t)}</b><small class="mut">${esc(x.v)}</small></span></div>`).join("")}`;
+  }
+  /* A10: Hinweis auf der Startseite, sobald negative Preise bekannt sind („Später“ und „Ansehen“ kommen von der Hinweise-Zentrale) */
+  _tfHint() {
+    this._tfLoad();
+    const S = this._tf();
+    if (!this._tfD || S.error || !S.neg || S.src === "fix") return null;
+    const ser = (S.series || []).filter((x) => x.s + x.d > Date.now() / 1000), i0 = ser.findIndex((x) => x.s === S.neg.s);
+    let e = S.neg.s; for (let i = Math.max(0, i0); i < ser.length && ser[i].ct < 0; i++) e = ser[i].s + ser[i].d;
+    const tm = this._tfIsTomorrow(S.neg.s), now = S.neg.s * 1000 <= Date.now();
+    return { k: `tf:neg:${S.neg.s}`, i: "energy", hd: "pvRoof", mod: "dt", src: "Modul 14", c: "in", r: tm ? "morgen" : now ? "jetzt" : "heute",
+      t: `${now ? "Jetzt" : tm ? "Morgen" : "Heute"} ${now ? "bis " + this._tfHm(e) : this._tfHm(S.neg.s) + "–" + this._tfHm(e)} negative Strompreise`, s: `bis ${this._tfCt(S.neg.min)} ct/kWh · gut für Auto, Akku und große Verbraucher` };
   }
   _tfModal() {
     const S = this._tf(), C = S.cfg, tab = ["p", "w"].includes(this._tfTab) ? this._tfTab : "q";
@@ -285,7 +357,8 @@
         : `<div class="mut sm">Kein Sensor mit Preisliste gefunden (Attribute wie <code>raw_today</code>, <code>prices_today</code>, <code>data</code>, <code>rates</code>).</div>`}
       <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Anzeige</div>
       <div class="vrow"><span>Auflösung im Band<small class="mut" style="display:block">Gespeichert wird immer die feinste Auflösung der Quelle.</small></span><div class="gschips" style="flex:none">${chip("tfxres", "q", "15 Min.", C.res === "q")}${chip("tfxres", "h", "Stunden", C.res === "h")}</div></div>
-      <div class="vrow"><span>Länge „Bestes Fenster“</span>${step("win_h", C.win_h, "Std.", 1)}</div>`
+      <div class="vrow"><span>Länge „Bestes Fenster“</span>${step("win_h", C.win_h, "Std.", 1)}</div>
+      ${this._tfDataCheck(S)}`
       : `<div class="lsec">${ic("bolt", 15)}Stufen</div>
       <div class="mut sm" style="margin:0 0 6px">Gemessen am Schnitt des jeweiligen Tages. So wirkt ein ruhiger Tag nicht plötzlich „teuer“.</div>
       <div class="vrow"><span>Günstig ab<small class="mut" style="display:block">so viel unter dem Tagesschnitt</small></span>${step("down", C.down, "ct", 0.5, this._tfCt(C.down))}</div>
@@ -299,7 +372,8 @@
       <div class="lsec" style="margin-top:12px">${ic("clock", 15)}Zeitvariables Netzentgelt (§ 14a, Modul 3)</div>
       <div class="vrow"><span>Hoch- und Niedertarif-Zeiten<small class="mut" style="display:block">Nur wenn dein Netzbetreiber das anbietet und du es gewählt hast.</small></span>${sw("tfxnne", C.nne.on, "Zeitvariables Netzentgelt")}</div>
       ${C.nne.on ? `<div class="vrow"><span>Hochtarif</span><span class="tfnn">${step("ht_from", C.nne.ht_from, "Uhr", 1)}${step("ht_to", C.nne.ht_to, "Uhr", 1)}${step("ht_ct", C.nne.ht_ct, "ct", 0.1, this._tfCt(C.nne.ht_ct, 2))}</span></div>
-        <div class="vrow"><span>Niedertarif</span><span class="tfnn">${step("nt_from", C.nne.nt_from, "Uhr", 1)}${step("nt_to", C.nne.nt_to, "Uhr", 1)}${step("nt_ct", C.nne.nt_ct, "ct", 0.1, this._tfCt(C.nne.nt_ct, 2))}</span></div>` : ""}`;
+        <div class="vrow"><span>Niedertarif</span><span class="tfnn">${step("nt_from", C.nne.nt_from, "Uhr", 1)}${step("nt_to", C.nne.nt_to, "Uhr", 1)}${step("nt_ct", C.nne.nt_ct, "ct", 0.1, this._tfCt(C.nne.nt_ct, 2))}</span></div>` : ""}
+      ${this._tfCmpSet(C, step)}`;
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Stromtarif</b><span>Einstellungen · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="seg wxtabs">${[["q", "Quelle"], ["p", "Preis &amp; Stufen"], ["w", "Fenster &amp; Alarm"]].map(([k, t]) => `<button class="${tab === k ? "sel" : ""}" data-act="tfxtab" data-k="${k}">${t}</button>`).join("")}</div>
