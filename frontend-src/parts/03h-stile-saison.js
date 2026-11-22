@@ -4,11 +4,13 @@ const CSS_SAI = `
 .saiL::before{content:"";position:absolute;left:-4%;right:-4%;top:-10px;height:20px;border-bottom:1.5px solid rgba(255,255,255,.28);border-radius:0 0 50% 50%}
 .saiL i{position:relative;width:7px;height:10px;margin-top:6px;border-radius:50% 50% 45% 45%;background:var(--c);box-shadow:0 0 7px 1px var(--c);opacity:.95}
 .saiL i:nth-child(odd){margin-top:9px}
-.saiL.mv i{animation:saiTw 3.2s ease-in-out infinite;animation-delay:calc(var(--i) * -.37s)}
+.saiL.mv i{animation:saiTw 3.2s ease-in-out infinite;animation-delay:calc(var(--i) * -.37s - var(--t,0s))}
 @keyframes saiTw{0%,100%{opacity:.95;filter:none}50%{opacity:.35;filter:saturate(.6)}}
 @media(prefers-reduced-motion:reduce){.saiL.mv i{animation:none}}
 .hero.saiH{padding-top:28px}
 .hzhd>.saiL{z-index:4}
+.hero.mh.saiX{position:relative;overflow:hidden;padding-top:30px}.hero.mh.saiX>.saiL{z-index:5}.hero.mh.saiX>.saiS{z-index:4}
+@media(max-width:600px){.hero.mh.saiX.sbx .sbv{top:176px}}
 .chip.saiC{gap:7px;padding:4px 11px 4px 7px}.chip.saiC svg{flex:none;display:block}
 .saiK{display:block}
 .rk2nm .saiR{font-size:.95rem;margin-left:6px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}

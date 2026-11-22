@@ -6,6 +6,12 @@
   _sbAnim() { return this._rkCfg ? this._rkCfg().anim : "dezent"; }
   /* Laufende Bewegung über den Neuaufbau retten: Phase aus der Uhrzeit statt Neustart bei jedem Zeichnen */
   _sbPh(sec) { return `animation-delay:-${((Date.now() / 1000) % sec).toFixed(2)}s`; }
+  /* Ebene 2 Weihnachten: kleine Details in den Bildern, nur wenn das Weihnachts-Theme sichtbar ist */
+  _sbX() { try { return !!(this._sai && this._saiD && this._sai().vis); } catch (_) { return false; } }
+  _sbXc() { return this._advLightCols ? this._advLightCols() : ["#e05a6b", "#f4d58d", "#3fa37a", "#8cc8f5", "#c9a6f5"]; }
+  _sbXl(pts) { const C = this._sbXc(); return pts.map(([x, y], i) => `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.6" fill="${C[i % C.length]}"/>`).join(""); }
+  /* Punkte entlang zweier Dachkanten (links unten → First → rechts unten) */
+  _sbXroof(x1, y1, xf, yf, x2, n) { const P = []; for (let i = 0; i <= n; i++) { const t = i / n, x = t < 0.5 ? x1 + (xf - x1) * t * 2 : xf + (x2 - xf) * (t - 0.5) * 2, y = t < 0.5 ? y1 + (yf - y1) * t * 2 : yf + (y1 - yf) * (t - 0.5) * 2; P.push([x, y + 3]); } return P; }
   _sbArt(id, inner) {
     const mv = MV[id];
     return `<div class="sbart" data-an="${this._sbAnim()}" aria-hidden="true">${inner}</div>${mv ? `<span class="sbv">v${esc(mv.v)} · Build ${mv.b}</span>` : ""}`;
@@ -41,7 +47,7 @@
       ${lo != null ? `<text x="266" y="${y0 + h - 12}" fill="rgba(207,230,255,.75)" font-size="12">${num(lo, 0)} °C</text>` : ""}
       ${heat ? `<g transform="translate(210 ${y0 + h + 4})" class="sbflame"><path d="M0 -14 C6 -8 8 -2 0 0 C-8 -2 -6 -8 0 -14Z" fill="#fb923c"/><path d="M0 -9 C3 -6 4 -2 0 0 C-4 -2 -3 -6 0 -9Z" fill="#fde68a"/></g>` : ""}
       <g opacity="${pv ? 1 : 0.22}"><circle cx="296" cy="${y0 + 4}" r="11" fill="#ffd36b"/><path d="M270 ${y0 + 54} l14 -18 h30 l-14 18z" fill="#2b5c9e" stroke="#9cc3ff55"/>${pv ? `<path class="sbpv${mv ? " run" : ""}" d="M290 ${y0 + 56} C292 ${y0 + 80} 270 ${y0 + 84} 252 ${y0 + 90}" style="${this._sbPh(1.4)}"/>` : ""}</g>
-    </svg>`;
+    ${this._sbX() ? `<g class="sbxm"><path d="M178 ${y0 + 12} Q212 ${y0 - 26} 244 ${y0 + 6} L246 ${y0 + 12} Z" fill="#e05a6b"/><rect x="172" y="${y0 + 6}" width="76" height="10" rx="5" fill="#fff"/><circle cx="244" cy="${y0 + 2}" r="5.5" fill="#fff"/></g>` : ""}</svg>`;
   }
 
   /* ---------- Modul 15: Kalenderblatt mit Ampel-Ringen ---------- */
@@ -56,7 +62,7 @@
       return `<span class="sbrg" title="${esc(x.name)}"><svg viewBox="0 0 54 54"><circle cx="27" cy="27" r="21" fill="rgba(3,12,22,.45)" stroke="rgba(255,255,255,.14)" stroke-width="5"/><circle cx="27" cy="27" r="21" fill="none" stroke="${col(x.st)}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(C * p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 27 27)"/></svg><i>${ic(x.icon || "tools", 18)}</i></span>`;
     }).join("");
     const over = nx && (nx.st === "over" || nx.st === "due");
-    return `<div class="sbwa"><div class="sbcal${over ? " bad" : ""}"><b>${MON[dd.getMonth()]}</b><em>${dd.getDate()}</em><small>${esc(nx ? nx.name : "Noch keine Termine")}</small></div>${rings ? `<div class="sbrgs">${rings}</div>` : ""}</div>`;
+    return `<div class="sbwa"><div class="sbcal${over ? " bad" : ""}">${this._sbX() ? `<span class="sbxstar sbxm" aria-hidden="true">★</span>` : ""}<b>${MON[dd.getMonth()]}</b><em>${dd.getDate()}</em><small>${esc(nx ? nx.name : "Noch keine Termine")}</small></div>${rings ? `<div class="sbrgs">${rings}</div>` : ""}</div>`;
   }
 
   /* ================= Build 2: Modul 5 Lüftung, Modul 6 Rollläden, Modul 7 Wärmepumpe ================= */
@@ -83,7 +89,7 @@
     const cells = P.map(([x, y], i) => { const r = rooms[i]; return r ? `<rect x="${x}" y="${y}" width="90" height="50" rx="8" fill="${r.c}" opacity=".88"/><text x="${x + 8}" y="${y + 18}" fill="#fff" font-size="11" font-weight="700">${esc(r.n.length > 11 ? r.n.slice(0, 10) + "…" : r.n)}</text><text x="${x + 8}" y="${y + 40}" fill="#fff" font-size="16" font-weight="800">${r.v} %</text>` : `<rect x="${x}" y="${y}" width="90" height="50" rx="8" fill="rgba(255,255,255,.07)"/>`; }).join("");
     const air = on ? [0, 1, 2].map((i) => `<path class="sbair${mv ? " run" : ""}" d="M30 ${84 + i * 30} C 58 ${74 + i * 30} 74 ${96 + i * 30} 110 ${88 + i * 30}" style="${this._sbPh(1.8)}"/>`).join("") : "";
     const fan = `<g transform="translate(40 118)"><circle r="24" fill="rgba(3,20,26,.7)" stroke="rgba(189,240,255,.45)" stroke-width="2"/><g class="${on && mv ? "sbspin" : ""}" style="${this._sbPh(3)}">${[0, 120, 240].map((a) => `<ellipse rx="5.5" ry="14" fill="#bdf0ff" transform="rotate(${a}) translate(0 -9)"/>`).join("")}</g><circle r="3.5" fill="#0f2a33"/></g>`;
-    return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet">${air}<polygon points="106,62 212,16 318,62" fill="rgba(255,255,255,.1)"/><rect x="110" y="62" width="202" height="124" rx="4" fill="rgba(3,20,26,.45)"/>${cells}${fan}</svg>`;
+    return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet">${air}<polygon points="106,62 212,16 318,62" fill="rgba(255,255,255,.1)"/><rect x="110" y="62" width="202" height="124" rx="4" fill="rgba(3,20,26,.45)"/>${cells}${fan}${this._sbX() ? `<g class="sbxm"><polygon points="106,62 212,16 318,62 306,62 212,24 118,62" fill="#fff" opacity=".95"/>${this._sbXl(this._sbXroof(112, 62, 212, 18, 312, 14))}</g>` : ""}</svg>`;
   }
 
   /* Modul 6: Fassade mit Sonnenbogen (sun.sun), nachts Mond und Licht in den Fenstern */
@@ -108,7 +114,7 @@
     const win = [0, 1, 2].map((i) => { const x = 136 + i * 50; return `<rect x="${x}" y="156" width="34" height="34" fill="${day ? "#9ccfe8" : "#ffd98a"}"/>${day ? "" : `<rect x="${x}" y="156" width="34" height="${i === 1 ? 14 : 34}" fill="#6b7280"/>`}<rect x="${x}" y="156" width="34" height="34" fill="none" stroke="#fff" stroke-width="2"/>`; }).join("");
     return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet"><defs><linearGradient id="sbrbs${q}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient><linearGradient id="sbrbf${q}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#fff" stop-opacity="1"/></linearGradient><mask id="sbrbm${q}"><rect width="320" height="200" fill="url(#sbrbf${q})"/></mask></defs><rect width="320" height="200" fill="url(#sbrbs${q})" mask="url(#sbrbm${q})"/>
       <path d="M30 120 Q160 -64 290 120" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2" stroke-dasharray="4 6"/>${sun}${moon}
-      <polygon points="120,142 196,112 272,142" fill="#8b3a2b"/><rect x="126" y="142" width="140" height="58" fill="#e9e1d3"/>${win}</svg>`;
+      <polygon points="120,142 196,112 272,142" fill="#8b3a2b"/><rect x="126" y="142" width="140" height="58" fill="#e9e1d3"/>${win}${this._sbX() ? `<g class="sbxm"><polygon points="120,142 196,112 272,142 262,142 196,119 130,142" fill="#fff"/><circle cx="196" cy="131" r="6.5" fill="none" stroke="#2d7a5c" stroke-width="4"/><circle cx="196" cy="137" r="2" fill="#e05a6b"/>${day ? "" : this._sbXl(this._sbXroof(124, 142, 196, 113, 268, 10))}</g>` : ""}</svg>`;
   }
   /* Modul 7: Außengerät mit Thermometer, Reif und Schnee bei Frost */
   _sbWpData() {
@@ -130,7 +136,7 @@
       <circle cx="176" cy="117" r="34" fill="#9aa3ad"/><g class="${mv ? "sbspin" : ""}" style="${this._sbPh(2.4)}">${[0, 60, 120].map((a) => `<ellipse cx="176" cy="117" rx="7" ry="27" fill="#6b7480" transform="rotate(${a} 176 117)"/>`).join("")}</g><circle cx="176" cy="117" r="5" fill="#4b5563"/>
       <rect x="222" y="86" width="22" height="62" rx="4" fill="#bfc6cf"/>
       <path d="M254 112 H286 V50" stroke="#f87171" stroke-width="5" fill="none"/><path d="M254 130 H300 V50" stroke="#60a5fa" stroke-width="5" fill="none"/>
-      <polygon points="272,52 296,34 320,52" fill="rgba(255,255,255,.18)"/></svg>`;
+      <polygon points="272,52 296,34 320,52" fill="rgba(255,255,255,.18)"/>${this._sbX() ? `<g class="sbxm"><rect x="122" y="63" width="136" height="11" rx="5.5" fill="#fff"/><circle cx="140" cy="76" r="3" fill="#fff"/><circle cx="232" cy="76" r="2.5" fill="#fff"/></g>` : ""}</svg>`;
   }
 
   /* ================= Build 3: Modul 10 Garten, Modul 12 Pool & Sauna, Modul 13 Batteriespeicher ================= */
@@ -153,7 +159,7 @@
     const plants = Array.from({ length: 6 }, (_, i) => { const x = 128 + i * 32, h = 22 + (i % 3) * 9; return `<g transform="translate(${x} 168)"><path d="M0 0 V-${h}" stroke="#2d7a5c" stroke-width="3"/><ellipse cx="-7" cy="-${h * 0.55}" rx="8" ry="4.5" fill="${t != null && t <= 0 ? "#7fae9a" : "#3fa37a"}" transform="rotate(-30 -7 -${h * 0.55})"/><ellipse cx="7" cy="-${h * 0.85}" rx="8" ry="4.5" fill="${t != null && t <= 0 ? "#7fae9a" : "#3fa37a"}" transform="rotate(30 7 -${h * 0.85})"/>${i % 2 && !(t != null && t <= 0) ? `<circle cy="-${h + 4}" r="5" fill="#f472b6"/>` : ""}</g>`; }).join("");
     return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet"><defs><linearGradient id="sbgas${q}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient><linearGradient id="sbgaf${q}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#fff"/></linearGradient><mask id="sbgam${q}"><rect width="320" height="200" fill="url(#sbgaf${q})"/></mask></defs>
       <rect width="320" height="200" fill="url(#sbgas${q})" mask="url(#sbgam${q})"/>${sky2}${fall}
-      <path d="M100 172 Q210 156 320 170 V200 H100Z" fill="${snow ? "#e9f1f3" : "#6b4a32"}"/><path d="M100 174 Q210 158 320 172" stroke="${snow ? "#fff" : "#3fa37a"}" stroke-width="5" fill="none"/>${plants}</svg>`;
+      <path d="M100 172 Q210 156 320 170 V200 H100Z" fill="${snow ? "#e9f1f3" : "#6b4a32"}"/><path d="M100 174 Q210 158 320 172" stroke="${snow ? "#fff" : "#3fa37a"}" stroke-width="5" fill="none"/>${plants}${this._sbX() ? `<g class="sbxm"><g transform="translate(110 172)"><polygon points="0,-46 -15,0 15,0" fill="#2d7a5c"/><circle cx="-5" cy="-12" r="2.2" fill="#f4d58d"/><circle cx="5" cy="-22" r="2.2" fill="#e05a6b"/><circle cx="-2" cy="-32" r="2.2" fill="#8cc8f5"/><polygon points="0,-54 2,-48 8,-48 3,-44 5,-38 0,-42 -5,-38 -3,-44 -8,-48 -2,-48" fill="#f4d58d"/></g><g transform="translate(304 164)"><circle r="10" fill="#fff"/><circle cy="-15" r="7" fill="#fff"/><circle cx="-2.4" cy="-16" r="1" fill="#222"/><circle cx="2.4" cy="-16" r="1" fill="#222"/><path d="M0 -14 l5 1.6 -5 1.6z" fill="#f08a1f"/></g></g>` : ""}</svg>`;
   }
 
   /* Modul 12: Pool mit Wellen und Saunahütte (Bedingungen wie „Bedingungen jetzt“) */
@@ -170,7 +176,7 @@
       ${sun ? `<circle cx="160" cy="44" r="24" fill="#ffe27a" opacity=".3"/><circle cx="160" cy="44" r="15" fill="#ffe27a"/>` : `<g fill="rgba(255,255,255,.55)"><ellipse cx="170" cy="46" rx="40" ry="14"/><ellipse cx="150" cy="40" rx="22" ry="14"/></g>`}
       <rect x="128" y="138" width="152" height="8" rx="4" fill="#e9eef2"/><path d="M134 146 h140 l-12 40 h-116 z" fill="url(#sbplw)"/>${waves}
       ${t != null ? `<g transform="translate(204 128)"><rect x="-36" y="-14" width="72" height="24" rx="12" fill="rgba(11,34,51,.8)"/><text y="3" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="800">${num(t, 1)} °C</text></g>` : ""}
-      <polygon points="282,112 302,96 320,112" fill="#7a4b2a"/><rect x="286" y="112" width="34" height="66" fill="#a0673c"/><rect x="298" y="140" width="12" height="38" fill="#5a3a20"/></svg>`;
+      <polygon points="282,112 302,96 320,112" fill="#7a4b2a"/><rect x="286" y="112" width="34" height="66" fill="#a0673c"/><rect x="298" y="140" width="12" height="38" fill="#5a3a20"/>${this._sbX() ? `<g class="sbxm"><polygon points="280,112 302,94 320,110 320,113 302,100 286,112" fill="#fff"/>${this._sbXl(this._sbXroof(284, 112, 302, 96, 320, 8))}</g>` : ""}</svg>`;
   }
 
   /* Modul 13: Akku mit Füllstand und PV (Ladestand-Sensor und PV-Überschuss aus Modul 1) */
@@ -189,5 +195,5 @@
       <rect x="196" y="40" width="78" height="134" rx="14" fill="rgba(3,18,26,.65)" stroke="rgba(207,230,255,.5)" stroke-width="3"/><rect x="222" y="30" width="26" height="11" rx="3" fill="rgba(207,230,255,.5)"/>
       ${soc != null ? `<rect x="203" y="${167 - fill}" width="64" height="${fill}" rx="8" fill="${c}"/><text x="235" y="114" text-anchor="middle" fill="#fff" font-size="21" font-weight="800">${num(Math.round(s))} %</text>` : `<text x="235" y="114" text-anchor="middle" fill="#fff" font-size="21" font-weight="800">–</text>`}
       <polygon points="282,118 301,102 320,118" fill="rgba(255,255,255,.2)"/><rect x="286" y="118" width="30" height="40" fill="rgba(255,255,255,.12)"/><rect x="295" y="128" width="11" height="11" fill="#ffd98a"/>
-      ${sun && pv != null ? `<g transform="translate(150 150)"><rect x="-38" y="-13" width="76" height="24" rx="12" fill="rgba(11,34,51,.8)"/><text y="3" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">${wfmt(pv)}</text></g>` : ""}</svg>`;
+      ${sun && pv != null ? `<g transform="translate(150 150)"><rect x="-38" y="-13" width="76" height="24" rx="12" fill="rgba(11,34,51,.8)"/><text y="3" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">${wfmt(pv)}</text></g>` : ""}${this._sbX() ? `<g class="sbxm"><rect x="198" y="136" width="74" height="9" fill="#e05a6b" opacity=".92"/><rect x="196" y="40" width="9" height="134" rx="4" fill="#e05a6b" opacity=".92"/><path d="M200 38 C182 22 178 42 200 38 C222 22 218 42 200 38Z" fill="#e05a6b"/><circle cx="200" cy="38" r="3.5" fill="#b91c1c"/></g>` : ""}</svg>`;
   }

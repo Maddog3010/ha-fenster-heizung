@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b50] - 2026-11-22
+
+**Weihnachts-Theme in allen Modulen** (Vorschau „Handy-Banner korrigieren & Weihnachten überall“, Teil 2).
+
+### Neu
+- **Ebene 1 – jede Kopfkarte:** Vom 01.12. bis 27.12. (bzw. bei „Immer an“) bekommt jedes Modul-Banner die **Lichterkette** (Farbset aus den Einstellungen), **Schnee** (wenn eingeschaltet) und den **Kranz-Chip** mit Countdown – ein Tipp darauf öffnet den Adventskalender. Gilt für alle Module und auch für die Addons (Müll, Licht, Saugroboter, Abrechnung). Startseite und Modul 1 behalten ihre eigene Deko.
+- **Ebene 2 – Details in den Bildern:** Nikolausmütze auf dem Warmwasserspeicher, Schnee und Lichterkette am Giebel (Lüftung), Schneedach und Kranz (Rollläden, nachts mit Lichtern), Schneehaube auf der Wärmepumpe, Tannenbaum mit Stern und Schneemann im Garten, Lichterkette und Schnee an der Saunahütte, Geschenkschleife um den Akku, Stern am Kalenderblatt (Wartung).
+- Alles folgt „Saison-Theme“ (Aus · Nur Akzente), Anpassen → Animationen und „Bewegung reduzieren“. Lichter und Schnee beginnen beim Neuzeichnen nicht von vorn.
+
+### Technik
+- `_saiDeco` hängt die Deko nach jedem Zeichnen an `#main .card.hero.mh` (ohne eigene Deko), `_sbX` schaltet die Bild-Details. Test `test_szenen_banner.py` prüft die Details mit und ohne Theme.
+- Im Browser geprüft: alle Szenen-Banner breit und am Handy (390 px) mit „Immer an“ und Schnee.
+
 ## [2026.11.4b49] - 2026-11-22
 
 **Neue Banner** – Handy-Ansicht korrigiert (Vorschau „Handy-Banner korrigieren & Weihnachten überall“, Teil 1).
