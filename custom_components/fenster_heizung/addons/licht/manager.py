@@ -51,6 +51,9 @@ class Addon(SWAddon):
         self.core.on_unload(self.hass.bus.async_listen("state_changed", self._on_state))
         self.core.every(60, self._tick)
         self.core.provide("licht", self)
+        gr = self.hass.data.get(DOMAIN, {}).get("grundriss")  # ab Modul 0 Build 2: Zuordnung zieht in die Raumliste von Modul 0
+        if gr is not None and hasattr(gr, "merge_pmap") and self.pmap:
+            gr.merge_pmap(self.pmap)
         self._save(1)
         self._push()
 
@@ -181,6 +184,9 @@ class Addon(SWAddon):
                 if v in ("", None):
                     merged.pop(k, None)
             self.pmap = L.clean_pmap(merged)
+            gr = self.hass.data.get(DOMAIN, {}).get("grundriss")
+            if gr is not None and hasattr(gr, "set_rooms"):
+                gr.set_rooms({k: v for k, v in pm.items() if isinstance(k, str)})
         self._save(2)
         return self._state()
 

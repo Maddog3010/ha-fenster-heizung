@@ -2,6 +2,28 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b54] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.2 Build 2 – Raumliste und Einstellungen.
+
+### Neu
+- **Reiter „Räume“:** eine Liste für alle Module mit den Spalten Raum im Plan (mit Etage), **Bereich in Home Assistant**, **Raum in Modul 1** und **genutzt von** (M1, M11 mit Zahl der Melder, M18 Licht). Ohne Auswahl ordnet der Name zu („automatisch“). Fehlende Bereiche sind gelb, ihre Zahl steht am Reiter. Am Handy wird jede Zeile zur Karte.
+- **„Bereich zuordnen“:** Bereiche aus Home Assistant, „Kein Bereich“ und „Automatisch“. Gilt für alle Module, die nach Bereichen arbeiten.
+- **Raum in Modul 1** wird direkt hier geändert (dasselbe Fenster wie in der Wärmekarte).
+- **Reiter „Einstellungen“** (Administratoren): Modul 0 ein/aus mit **Rückfrage**, die die Module nennt, die den Plan nutzen. Dazu Umzug und Kopie, zuletzt geändert, Speicherort. Ausschalten blendet nur die Seite aus, der Plan bleibt in Modul 1, 11 und 18 sichtbar.
+- **Einstellungen → Module:** Modul 0 steht jetzt vor Modul 1 und hat einen eigenen Schalter (mit derselben Rückfrage).
+
+### Geändert
+- **Modul 18:** Die Zuordnung Fläche → Bereich (bisher `pmap` im Addon) steht jetzt in der Raumliste von Modul 0. Sie wird beim Start einmalig übernommen, Einträge in Modul 0 haben Vorrang. „Fläche zuordnen“ in der Lichtkarte schreibt in die Raumliste. Addon `licht` 0.5.2.
+
+### Behoben
+- Einstellungen → Module zeigte bei stabilen Modulen „· undefined“ statt „· stabil“.
+
+### Technik
+- `grundriss.py`: `rooms` (Plan-Raum → Bereich oder „-“), `set_rooms`, `merge_pmap` (einmalig, vermerkt in `meta.pmap`). Neuer WebSocket `gr_set` (nur Administratoren). `gr_get` liefert `rooms`.
+- Die Spalte „Raum in Modul 1“ bleibt im Layout (`gmap`) und wird nur von hier aus bearbeitet. Ein Umzug in die Raumliste ist für später vorgesehen.
+- 1 neuer Test (Raumliste setzen, zurücksetzen, Übernahme aus Modul 18, Neustart), alle Tests grün.
+
 ## [2026.11.4b53] - 2026-11-22
 
 **Modul 0 · Haus & Grundriss** v0.1 Build 1 – neues Modul aus dem Konzept „Lampen selbst verwalten & Modul 0 · Haus & Grundriss“: der Grundriss gehört ab jetzt dem Kern statt Modul 11.

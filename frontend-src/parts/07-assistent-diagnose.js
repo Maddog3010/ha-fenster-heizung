@@ -406,6 +406,7 @@
     if (["hzset", "hzbub", "hzpin", "hzlater", "hztiles", "hzqaok", "hzqm", "hzqaset"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["efxmgr", "efxedit", "efxgrp"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (String(m.type).startsWith("grx") && this._grModal) { box.innerHTML = this._grModal(m); return; }   /* Modul 0 · Haus & Grundriss */
     if (String(m.type).startsWith("lix") && this._lixModal) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["adinst", "addel", "adupd", "adx"].includes(m.type)) { box.innerHTML = this._adModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset" && this._muxModal) { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }

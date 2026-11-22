@@ -289,6 +289,7 @@ export default (api) => {
   }
   /* Plan-Fläche → Bereich in Home Assistant (Bereichs-ID oder ""): von Hand (pmap), sonst über den Namen */
   _liPArea(item) {
+    if (this._grArea && this._grS && this._grS.d && this._grS.d.rooms) { const g = this._grArea(item); return g ? g.id : ""; }   /* ab Modul 0 Build 2: Raumliste von Modul 0 */
     const pm = this._liD().pmap || {}, v = pm[item.id];
     if (v === "-") return "";
     if (v) return v;
@@ -440,9 +441,9 @@ export default (api) => {
   }
   _lixPmapModal(m) {
     const P = this._gpPlan && this._gpPlan(), it = P && (P.items || []).find((i) => i.id === m.k); if (!it) return `<div class="ov" data-act="close"></div>`;
-    const rooms = this._liRooms().filter((r) => r.k !== "_"), cur = (this._liD().pmap || {})[it.id] || "", auto = cur ? null : this._liPRoom(it, rooms);
+    const rooms = this._liRooms().filter((r) => r.k !== "_"), cur = ((this._grS && this._grS.d && this._grS.d.rooms) || this._liD().pmap || {})[it.id] || "", auto = cur ? null : this._liPRoom(it, rooms);
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Fläche zuordnen</b><span>Grundriss: ${esc(it.n || "ohne Namen")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="mut sm" style="margin:0 0 10px">Welcher Bereich aus Home Assistant liegt hier? Seine Lampen leuchten dann auf dieser Fläche. Die Zuordnung gilt nur für Modul 18.</div>
+      <div class="mut sm" style="margin:0 0 10px">Welcher Bereich aus Home Assistant liegt hier? Seine Lampen leuchten dann auf dieser Fläche. Die Zuordnung steht in der Raumliste von Modul 0 und gilt für alle Module.</div>
       <div class="gschips">${rooms.map((r) => `<button class="gsch ${cur === r.k || (!cur && auto && auto.k === r.k) ? "sel" : ""}" data-act="lixpmset" data-k="${esc(it.id)}" data-v="${esc(r.k)}">${esc(r.name)} (${r.lamps.length})</button>`).join("")}</div>
       <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="lixpmset" data-k="${esc(it.id)}" data-v="-">Kein Bereich</button>${cur ? `<button class="btn2" data-act="lixpmset" data-k="${esc(it.id)}" data-v="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
@@ -506,7 +507,8 @@ export default (api) => {
       if (v) pm[k] = v; else delete pm[k];
       if (S.d) S.d.pmap = pm;
       this._modal = null; this._renderModal(); this._render();
-      api.call(ID, "set", { pmap: { [k]: v } }).then((d) => { if (this._liX) { this._liX.d = d; this._liX.ts = Date.now(); } this._render(); }).catch(() => this._toast("Speichern fehlgeschlagen"));
+      if (this._grS && this._grS.d) { const r = { ...(this._grS.d.rooms || {}) }; if (v) r[k] = v; else delete r[k]; this._grS.d = { ...this._grS.d, rooms: r }; }   /* Raumliste von Modul 0 sofort mitziehen */
+      api.call(ID, "set", { pmap: { [k]: v } }).then((d) => { if (this._liX) { this._liX.d = d; this._liX.ts = Date.now(); } if (this._grDirty) this._grDirty(); this._render(); }).catch(() => this._toast("Speichern fehlgeschlagen"));
       return;
     }
     if (a === "lixview" || a === "lixoptik") {

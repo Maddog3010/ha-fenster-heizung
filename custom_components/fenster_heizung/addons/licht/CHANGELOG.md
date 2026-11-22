@@ -1,5 +1,8 @@
 # Modul 18 Licht & Lampen
 
+## [0.5.2] - 2026-11-22
+- Zuordnung Fläche → Bereich steht ab Modul 0 Build 2 in der Raumliste von Modul 0 (wird einmalig übernommen, „Fläche zuordnen“ schreibt dorthin)
+
 ## [0.5.1] - 2026-11-22
 - Flächen mit Bereich ohne Lampen gelten als zugeordnet („keine Lampen“)
 - Noch nicht platzierte Lampen klar als eigene Punkte, verständliche Fehlermeldung beim Schalten

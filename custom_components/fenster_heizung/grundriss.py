@@ -4,12 +4,16 @@ Bis 2026.11.4b52 lag der Grundriss im Speicher von Modul 11 (fenster_heizung_sic
 Speicher fenster_heizung_grundriss, Schema 1. Modul 11 liest und schreibt seinen Plan ab jetzt hier (sein eigener Plan-Speicher bleibt als
 zusätzliche Kopie). Modul 1 (Wärmekarte) und Modul 18 (Lichtkarte) lesen über gr_get. (Nicht zu verwechseln mit haus.py, den Haus-Werten aus den Einstellungen.)
 
+Build 2: Raumliste – Plan-Raum → Bereich in Home Assistant (rooms, „-“ = bewusst kein Bereich). Ersetzt die Zuordnung pmap aus Modul 18
+(wird einmalig übernommen). Die Spalte „Raum in Modul 1“ bleibt im Layout (gmap) und wird aus Modul 0 bearbeitet.
+
 Umzug: Beim ersten Start übernimmt Modul 0 den Plan aus Modul 11 (mit Meldern und Lampen als Ebenen-Elemente „m“ und „l“) und legt eine
 Umzugs-Kopie an, die 90 Tage aufgehoben wird. Bearbeitet wird in Build 1 noch im Baukasten von Modul 11 (zieht in Build 3 um).
 """
 from __future__ import annotations
 
 import logging
+import re
 from datetime import timedelta
 from typing import Any, Callable
 
@@ -24,6 +28,21 @@ _LOGGER = logging.getLogger(__name__)
 SCHEMA = 1
 KEEP_COPY_DAYS = 90
 LAYERS = {"m": "sf", "l": "licht"}  # Element-Typ → Ebene (Modul 11 Melder, Modul 18 Lampen)
+_ID = re.compile(r"^[A-Za-z0-9_.:-]{1,64}$")
+ROOMS_MAX = 300
+
+
+def clean_rooms(raw: Any) -> dict[str, str]:
+    """Raumliste: Plan-Raum-ID → Bereichs-ID in Home Assistant oder „-“ (bewusst kein Bereich). Fehlt ein Eintrag, gilt der Name."""
+    out: dict[str, str] = {}
+    if not isinstance(raw, dict):
+        return out
+    for k, v in raw.items():
+        if len(out) >= ROOMS_MAX:
+            break
+        if isinstance(k, str) and _ID.match(k) and isinstance(v, str) and (v == "-" or _ID.match(v)):
+            out[k] = v
+    return out
 
 
 def plan_stats(plan: dict[str, Any]) -> dict[str, Any]:
@@ -46,7 +65,8 @@ class GrundrissManager:
         self._copy = SafeStore(hass, 1, f"{DOMAIN}_grundriss_umzug")  # Stand des Plans aus Modul 11 beim Umzug
         self.plan: dict[str, Any] = clean_plan(None)
         self.has = False                  # gibt es schon einen eigenen Plan in Modul 0?
-        self.meta: dict[str, Any] = {}    # since (Umzug), src, copy_until, changed
+        self.meta: dict[str, Any] = {}    # since (Umzug), src, copy_until, changed, pmap (Übernahme aus Modul 18)
+        self.rooms: dict[str, str] = {}   # Plan-Raum → Bereich (Build 2)
         self._listeners: list[Callable[[], None]] = []
 
     async def async_start(self) -> None:
@@ -55,6 +75,8 @@ class GrundrissManager:
             self.plan = clean_plan(d["plan"])
             self.has = True
             self.meta = {k: str(v) for k, v in (d.get("meta") or {}).items() if isinstance(v, str)}
+        if isinstance(d, dict):
+            self.rooms = clean_rooms(d.get("rooms"))
         until = self.meta.get("copy_until")
         if until:
             u = dt_util.parse_datetime(until)
@@ -64,7 +86,7 @@ class GrundrissManager:
                 self._save(1)
 
     def _save(self, delay: float = 5) -> None:
-        self._store.async_delay_save(lambda: {"v": SCHEMA, "plan": self.plan, "meta": self.meta}, delay)
+        self._store.async_delay_save(lambda: {"v": SCHEMA, "plan": self.plan, "meta": self.meta, "rooms": self.rooms}, delay)
 
     def listen(self, cb: Callable[[], None]) -> Callable[[], None]:
         self._listeners.append(cb)
@@ -104,6 +126,36 @@ class GrundrissManager:
                 _LOGGER.debug("Plan-Hörer fehlgeschlagen", exc_info=True)
         return True
 
+    # ---- Raumliste (Build 2)
+    def set_rooms(self, patch: Any) -> bool:
+        """Einträge setzen; leerer Wert = wieder automatisch über den Namen."""
+        if not isinstance(patch, dict):
+            return False
+        r = dict(self.rooms)
+        for k, v in patch.items():
+            if not isinstance(k, str):
+                continue
+            if v in ("", None):
+                r.pop(k, None)
+            else:
+                r[k] = v
+        r = clean_rooms(r)
+        if r == self.rooms:
+            return False
+        self.rooms = r
+        self._save()
+        return True
+
+    def merge_pmap(self, pmap: Any) -> int:
+        """Einmalig: Zuordnung aus Modul 18 (pmap) übernehmen. Was in Modul 0 schon steht, gewinnt. Gibt die Zahl übernommener Einträge zurück."""
+        if self.meta.get("pmap"):
+            return 0
+        add = {k: v for k, v in clean_rooms(pmap).items() if k not in self.rooms}
+        self.rooms = clean_rooms({**self.rooms, **add})
+        self.meta["pmap"] = dt_util.now().isoformat()
+        self._save(1)
+        return len(add)
+
     # ---- Lesen
     def users(self) -> list[str]:
         """Welche Module den Plan gerade nutzen (für Banner, Rückfrage beim Ausschalten)."""
@@ -118,4 +170,4 @@ class GrundrissManager:
         return out
 
     def snapshot(self) -> dict[str, Any]:
-        return {"v": SCHEMA, "plan": self.plan, "has": self.has, "meta": dict(self.meta), "stats": plan_stats(self.plan), "users": self.users()}
+        return {"v": SCHEMA, "plan": self.plan, "rooms": dict(self.rooms), "has": self.has, "meta": dict(self.meta), "stats": plan_stats(self.plan), "users": self.users()}

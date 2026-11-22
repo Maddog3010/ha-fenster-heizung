@@ -784,7 +784,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  gr: { v: "0.1", b: 1, d: "2026-11-22", p: "2026.11.4b53", log: [["0.1", 1, "2026.11.4b53", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
+  gr: { v: "0.2", b: 2, d: "2026-11-22", p: "2026.11.4b54", log: [["0.2", 2, "2026.11.4b54", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b53", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
   fh: { v: "1.8", b: 8, d: "2026-11-12", p: "2026.11.3", log: [["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -8093,6 +8093,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (["hzset", "hzbub", "hzpin", "hzlater", "hztiles", "hzqaok", "hzqm", "hzqaset"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["efxmgr", "efxedit", "efxgrp"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (String(m.type).startsWith("grx") && this._grModal) { box.innerHTML = this._grModal(m); return; }   /* Modul 0 · Haus & Grundriss */
     if (String(m.type).startsWith("lix") && this._lixModal) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["adinst", "addel", "adupd", "adx"].includes(m.type)) { box.innerHTML = this._adModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset" && this._muxModal) { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -16954,7 +16955,9 @@ class FensterHeizungPanel extends HTMLElement {
   /* ================= Modul 0 · Haus & Grundriss (Build 1) =================
      Der Grundriss gehört ab jetzt dem Kern (Speicher fenster_heizung_grundriss, WebSocket gr_get) statt Modul 11. Beim ersten Start wird er
      aus Modul 11 übernommen. Modul 0 zeigt den Plan mit allen Ebenen (Melder aus Modul 11, Lampen aus Modul 18). Modul 1 (Wärmekarte) und
-     Modul 18 (Lichtkarte) lesen über _grPlan(). Bearbeitet wird in Build 1 noch im Baukasten von Modul 11 (zieht in Build 3 um). */
+     Modul 18 (Lichtkarte) lesen über _grPlan(). Bearbeitet wird in Build 1 noch im Baukasten von Modul 11 (zieht in Build 3 um).
+     Build 2: Reiter „Räume“ – eine Liste für alle Module: Plan-Raum ↔ Bereich in Home Assistant (zentral in Modul 0, ersetzt pmap aus Modul 18)
+     ↔ Raum in Modul 1 (bleibt im Layout gmap, wird hier bearbeitet) und „genutzt von“. Reiter „Einstellungen“ mit Rückfrage beim Ausschalten. */
   _grS0() { return (this._grS = this._grS || { d: null, ts: 0, busy: false, err: false }); }
   _grLoad(force) {
     const S = this._grS0(), age = Date.now() - S.ts;
@@ -16968,6 +16971,20 @@ class FensterHeizungPanel extends HTMLElement {
   _grPlan() { this._grLoad(); const S = this._grS0(); return S.d ? S.d.plan : S.err ? { error: true } : null; }
   _grRaw() { const S = this._grS0(); return S.d && S.d.plan ? S.d.plan : null; }
   _grDirty() { if (this._grS) { this._grS.ts = 0; this._grS.d = this._grS.d && { ...this._grS.d }; } this._grLoad(true); }
+  _grRooms() { const S = this._grS0(); return (S.d && S.d.rooms) || {}; }
+  /* Plan-Raum → Bereich in Home Assistant: { id, auto } oder null. Von Hand (Raumliste), sonst über den Namen; „-“ = bewusst keiner */
+  _grArea(item) {
+    const v = this._grRooms()[item.id];
+    if (v === "-") return null;
+    if (v) return { id: v, auto: false };
+    const nm = (x) => String(x || "").toLowerCase().replace(/zimmer|raum|[^a-zäöüß0-9]/g, ""), n = nm(item.n);
+    if (!n) return null;
+    const A = Object.values(this._hass.areas || {}).map((a) => ({ id: a.area_id, m: nm(a.name) }));
+    const hit = A.find((a) => a.m === n) || A.find((a) => a.m.length > 2 && (a.m.includes(n) || n.includes(a.m)));
+    return hit ? { id: hit.id, auto: true } : null;
+  }
+  _grAreaName(id) { const a = (this._hass.areas || {})[id]; return (a && a.name) || id; }
+  _grEntArea(e) { const H = this._hass, en = (H.entities || {})[e]; if (!en) return ""; if (en.area_id) return en.area_id; const dv = en.device_id && (H.devices || {})[en.device_id]; return (dv && dv.area_id) || ""; }
   _grFloors(P) { return P && P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }]; }
   /* Banner: Haus im Schnitt, eine Reihe je Etage (oben die höchste), Zellen = Räume der Etage */
   _grHouse(P) {
@@ -16990,6 +17007,13 @@ class FensterHeizungPanel extends HTMLElement {
       .grt{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap}.grt button{border:1px solid color-mix(in srgb,var(--primary-text-color) 14%,transparent);background:var(--card);color:var(--primary-text-color);border-radius:999px;padding:8px 16px;font:inherit;font-weight:650}.grt button.on{border-color:var(--teal);color:var(--teal);box-shadow:inset 0 0 0 1px var(--teal)}.grt button:disabled{opacity:.45}.grt small{font-weight:500;opacity:.8}
       .grl{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.grl button{display:inline-flex;gap:6px;align-items:center;border:0;border-radius:999px;padding:5px 11px;font:inherit;font-size:.78rem;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent);color:var(--mut);cursor:pointer}.grl button.on{background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal)}.grl i{width:9px;height:9px;border-radius:50%;display:inline-block}
       .grv{border-radius:14px;overflow:hidden;background:color-mix(in srgb,#020617 55%,var(--card,#111a2b))}.grv svg{display:block;width:100%;height:auto;max-height:66vh}.grv text{font-family:inherit}
+      .grtb{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:#f59e0b;color:#1c1003;font-size:.72rem;margin-left:4px}
+      .grtab{width:100%;border-collapse:collapse;font-size:.9rem}.grtab th{text-align:left;color:var(--mut);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;padding:8px 10px;font-weight:700}.grtab td{padding:9px 10px;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 9%,transparent);vertical-align:middle}
+      .grsel{display:inline-flex;align-items:center;gap:8px;justify-content:space-between;min-width:150px;max-width:100%;border:1px solid color-mix(in srgb,var(--primary-text-color) 16%,transparent);border-radius:10px;padding:6px 10px;background:none;color:var(--primary-text-color);font:inherit;font-size:.86rem;cursor:pointer;text-align:left}
+      .grsel.warn{border-color:#f59e0b;color:#fbbf24}.grsel.none{color:var(--mut)}.grsel small{color:var(--mut);font-size:.72rem}.grsel:disabled{cursor:default;opacity:.85}
+      .grmods span{display:inline-block;margin:2px 4px 2px 0;border-radius:6px;padding:1px 7px;font-size:.72rem;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}
+      .grfl{font-size:.72rem;color:var(--mut)}
+      @media (max-width:700px){.grtab thead{display:none}.grtab tr{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 0;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 9%,transparent)}.grtab td{border:0;padding:2px 4px}.grtab td:first-child{grid-column:1/-1}.grtab td[data-l]::before{content:attr(data-l);display:block;font-size:.7rem;color:var(--mut)}}
       .grinfo{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));margin-top:12px}.grinfo .card{margin:0}.grinfo b{display:block}.grinfo small{color:var(--mut)}
       @media (max-width:560px){.grh{flex-direction:column;align-items:flex-start}.grh svg.grhs{width:100%;max-width:240px}}</style>`;
     if (!P) return css + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Grundriss wird geladen …</div></div>`;
@@ -16999,8 +17023,12 @@ class FensterHeizungPanel extends HTMLElement {
     const edit = adm ? (sfOn ? `<button data-act="gpedit">${ic("pencil", 14)} Bearbeiten</button>` : `<button data-act="grxsfon" title="Der Baukasten liegt bis Build 3 in Modul 11">${ic("pencil", 14)} Bearbeiten</button>`) : "";
     const hero = `<div class="grh">${this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.length} ${fls.length === 1 ? "Etage" : "Etagen"} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
       <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div><div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
-    const tabs = `<div class="grt"><button class="on">Plan</button><button disabled title="kommt in Build 2">Räume <small>· Build 2</small></button><button disabled title="kommt in Build 3">Ebenen <small>· Build 3</small></button><button disabled title="kommt in Build 4">Sichern &amp; Einlesen <small>· Build 4</small></button></div>`;
+    const tab = ["plan", "raeume", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
+    const tb = (k, t) => `<button class="${tab === k ? "on" : ""}" data-act="grxtab" data-k="${k}" aria-pressed="${tab === k}">${t}</button>`;
+    const tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}<button disabled title="kommt in Build 3">Ebenen <small>· Build 3</small></button><button disabled title="kommt in Build 4">Sichern &amp; Einlesen <small>· Build 4</small></button>${adm ? tb("einst", "Einstellungen") : ""}</div>`;
+    if (tab === "einst" && adm) return css + hero + tabs + this._grSetView(D);
     if (!items.some((i) => i.t === "r")) return css + hero + tabs + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? (sfOn ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : `<button class="btn2 pri" data-act="grxsfon">${ic("pencil", 16)} Grundriss zeichnen</button>`) : ""}</div></div>`;
+    if (tab === "raeume") return css + hero + tabs + this._grRoomsView(P);
     const fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, ly = this._grLy(), here = items.filter((i) => i.fl === fl);
     const rs = here.filter((i) => i.t === "r"), B = rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
     if (!rs.length) Object.assign(B, { x0: 0, y0: 0, x1: 800, y1: 480 });
@@ -17040,11 +17068,80 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="card"><b>${ic("pencil", 15)} Bearbeiten</b><small>Bis Build 3 im Baukasten von Modul 11. Gespeichert wird hier in Modul 0, alle Module sehen die Änderung sofort.</small></div></div>`;
     return css + hero + tabs + card + info;
   }
+  /* Zahlen für den Reiter „Räume“: n Räume, open = ohne Bereich und nicht bewusst „kein Bereich“ */
+  _grRoomStats(P) {
+    const rs = ((P && P.items) || []).filter((i) => i.t === "r"), R = this._grRooms();
+    return { n: rs.length, open: rs.filter((i) => R[i.id] !== "-" && !this._grArea(i)).length };
+  }
+  _grRoomsView(P) {
+    const adm = this._admin(), fls = this._grFloors(P), fo = fls.map((f) => f.id), fn = Object.fromEntries(fls.map((f) => [f.id, f.n]));
+    const rs = (P.items || []).filter((i) => i.t === "r").sort((x, y) => fo.indexOf(y.fl) - fo.indexOf(x.fl) || String(x.n || "").localeCompare(String(y.n || ""), "de"));
+    const all = this._gpAll ? this._gpAll() : [], gm = (this._cfg.layout && this._cfg.layout.gmap) || {}, R = this._grRooms(), st = this._hass.states;
+    const inR = (r, i) => (this._sfInRoom ? this._sfInRoom(r, i.x, i.y) : i.x > r.x && i.x < r.x + r.w && i.y > r.y && i.y < r.y + r.h);
+    const lampsByArea = {}; if (this._liOn && this._liOn()) Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).forEach((e) => { const a = this._grEntArea(e); if (a) lampsByArea[a] = (lampsByArea[a] || 0) + 1; });
+    let withA = 0, withF = 0;
+    const rows = rs.map((i) => {
+      const ar = this._grArea(i), none = R[i.id] === "-", f = this._gpMatch ? this._gpMatch(i, all) : null, fNone = gm[i.id] === "-", fAuto = f && !gm[i.id];
+      if (ar || none) withA++; if (f || fNone) withF++;
+      const mel = (P.items || []).filter((m) => m.t === "m" && m.fl === i.fl && inR(i, m)).length, lam = (P.items || []).filter((m) => m.t === "l" && m.fl === i.fl && inR(i, m)).length + (ar ? lampsByArea[ar.id] || 0 : 0);
+      const mods = [f ? "M1" : "", mel ? `M11 · ${mel} Melder` : "", lam && this._liOn && this._liOn() ? `M18 · Licht` : ""].filter(Boolean);
+      const aBtn = `<button class="grsel ${ar ? "" : none ? "none" : "warn"}" ${adm ? `data-act="grxarea" data-k="${esc(i.id)}"` : "disabled"}><span>${ar ? `${ar.auto ? "" : "✓ "}${esc(this._grAreaName(ar.id))}${ar.auto ? " <small>automatisch</small>" : ""}` : none ? "kein Bereich" : "Bereich wählen"}</span>${adm ? "▾" : ""}</button>`;
+      const fBtn = `<button class="grsel ${f ? "" : "none"}" ${adm ? `data-act="gpmap" data-k="${esc(i.id)}"` : "disabled"}><span>${f ? `${esc(f.name)}${fAuto ? " <small>automatisch</small>" : ""}` : fNone ? "kein Raum" : "–"}</span>${adm ? "▾" : ""}</button>`;
+      return `<tr><td><b>${esc(i.n || "Raum ohne Namen")}</b> <span class="grfl">${esc(fn[i.fl] || i.fl)}</span></td><td data-l="Bereich in Home Assistant">${aBtn}</td><td data-l="Raum in Modul 1">${fBtn}</td><td data-l="Genutzt von" class="grmods">${mods.map((x) => `<span>${x}</span>`).join("") || `<span class="mut" style="background:none">–</span>`}</td></tr>`;
+    }).join("");
+    if (!rs.length) return `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Räume im Plan</div>Zeichne Räume mit dem Werkzeug „Raum“ und gib ihnen Namen. Dann erscheinen sie hier.</div>`;
+    return `<div class="card"><h2>${ic("grid", 18)}Räume<span class="sfhr"><span class="mut sm">${withA} von ${rs.length} mit Bereich · ${withF} mit Raum aus Modul 1</span></span></h2>
+      <div class="mut sm" style="margin:-4px 0 10px">Eine Liste für alle Module. Der <b>Bereich</b> gilt für Modul 18 (Lichtkarte) und kommende Ebenen, der <b>Raum aus Modul 1</b> färbt die Wärmekarte. Ohne Auswahl ordnet der Name zu („automatisch“).</div>
+      <table class="grtab"><thead><tr><th>Raum im Plan</th><th>Bereich in Home Assistant</th><th>Raum in Modul 1</th><th>Genutzt von</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+  _grSetView(D) {
+    const meta = D.meta || {}, users = (D.users || []).filter((u) => u !== "gr"), on = this._mdState().on.gr !== false, UN = { fh: "Modul 1 (Wärmekarte)", sf: "Modul 11 (Melder)", li: "Modul 18 (Lichtkarte)" };
+    const dt = (x) => (x ? new Date(x).toLocaleDateString("de-DE") : "");
+    return `<div class="card"><h2>${ic("sliders", 18)}Einstellungen</h2>
+      <div class="vrow"><span>Modul 0 eingeschaltet<small class="mut" style="display:block">Wird von ${esc(users.map((u) => UN[u] || u).join(", "))} genutzt. Ausschalten blendet nur diese Seite aus – der Plan bleibt gespeichert und in den anderen Modulen sichtbar.</small></span><button class="sw ${on ? "on" : ""}" data-act="grxoff" aria-pressed="${on}" aria-label="Modul 0 ein- oder ausschalten"></button></div>
+      <div class="vrow"><span>Umzug aus Modul 11<small class="mut" style="display:block">${meta.since ? `Am ${dt(meta.since)} übernommen.${meta.copy_until ? ` Die Kopie vom alten Stand wird bis ${dt(meta.copy_until)} aufgehoben.` : ""}` : "Kein Umzug nötig – der Plan wurde direkt hier angelegt."}${meta.pmap ? ` Zuordnungen aus Modul 18 am ${dt(meta.pmap)} übernommen.` : ""}</small></span></div>
+      <div class="vrow"><span>Zuletzt geändert<small class="mut" style="display:block">${meta.changed ? `${new Date(meta.changed).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })}${meta.by === "sf" ? " im Baukasten von Modul 11" : ""}` : "–"}</small></span></div>
+      <div class="vrow"><span>Gespeichert<small class="mut" style="display:block">Im Kern von Strom &amp; Wärme (fenster_heizung_grundriss), mit automatischen Sicherungskopien. Ausschalten oder Deinstallieren eines Moduls löscht den Plan nicht.</small></span></div></div>`;
+  }
+  _grModal(m) {
+    const P = this._grRaw();
+    if (m.type === "grxarea") {
+      const it = P && (P.items || []).find((i) => i.id === m.k); if (!it) return `<div class="ov" data-act="close"></div>`;
+      const cur = this._grRooms()[it.id] || "", auto = cur ? null : this._grArea(it), A = Object.values(this._hass.areas || {}).sort((a, b) => String(a.name).localeCompare(String(b.name), "de"));
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Bereich zuordnen</b><span>Raum im Plan: ${esc(it.n || "ohne Namen")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm" style="margin:0 0 10px">Welcher Bereich aus Home Assistant liegt hier? Das gilt für alle Module, die nach Bereichen arbeiten (z. B. Modul 18 · Lichtkarte).</div>
+        <div class="gschips">${A.map((a) => `<button class="gsch ${cur === a.area_id || (!cur && auto && auto.id === a.area_id) ? "sel" : ""}" data-act="grxaset" data-k="${esc(it.id)}" data-v="${esc(a.area_id)}">${esc(a.name)}</button>`).join("") || `<span class="mut sm">In Home Assistant sind noch keine Bereiche angelegt.</span>`}</div>
+        <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="-">Kein Bereich</button>${cur ? `<button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+    }
+    if (m.type === "grxoff") {
+      const D = this._grS0().d || {}, UN = { fh: "Modul 1", sf: "Modul 11", li: "Modul 18" }, U = (D.users || []).map((u) => UN[u]).filter(Boolean);
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Modul 0 ausschalten?</b><span>Haus &amp; Grundriss</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm" style="margin-bottom:10px">${U.length ? `Der Grundriss wird von <b style="color:var(--primary-text-color)">${esc(U.join(", ").replace(/, ([^,]*)$/, " und $1"))}</b> genutzt.` : "Der Grundriss wird gerade von keinem anderen Modul genutzt."}</div>
+        <div class="mut sm">Ausschalten blendet nur die Seite „Haus &amp; Grundriss“ aus. Der Plan bleibt gespeichert, die anderen Module zeigen ihn weiter. Einschalten geht jederzeit unter Einstellungen → Module.</div>
+        <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grxoffgo">Trotzdem ausschalten</button></div></div>`;
+    }
+    return `<div class="ov" data-act="close"></div>`;
+  }
   _grAct(a, b) {
     const k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxfl") { this._grFl = k; this._render(); return true; }
     if (a === "grxly") { const L = this._grLy(); if (k in L) { L[k] = !L[k]; this._render(); } return true; }
-    if (a === "grxtab") { this._render(); return true; }
+    if (a === "grxtab") { this._grTab = k || "plan"; this._render(); return true; }
+    if (a === "grxarea") { if (this._admin()) { this._modal = { type: "grxarea", k }; this._renderModal(); } return true; }
+    if (a === "grxaset") {
+      if (!this._admin()) return true;
+      const S = this._grS0(), v = b.dataset.v || "";
+      if (S.d) { const r = { ...(S.d.rooms || {}) }; if (v) r[k] = v; else delete r[k]; S.d = { ...S.d, rooms: r }; }   /* sofort zeigen */
+      this._modal = null; this._renderModal(); this._render();
+      this._hass.callWS({ type: "fenster_heizung/gr_set", rooms: { [k]: v } }).then((r) => { S.d = r; S.ts = Date.now(); this._render(); }).catch(() => { this._toast("Speichern fehlgeschlagen"); this._grDirty(); });
+      return true;
+    }
+    if (a === "grxoff") {
+      const s = this._mdState();
+      if (s.on.gr === false) { s.on.gr = true; this._mdSave(); this._render(); this._renderModal(); return true; }
+      this._modal = { type: "grxoff" }; this._renderModal(); return true;
+    }
+    if (a === "grxoffgo") { const s = this._mdState(); s.on.gr = false; this._modal = null; this._renderModal(); if (this._mdActive() === "gr") this._mdActiveSet("fh"); this._mdSave(); this._render(); this._toast("Modul 0 ist aus – der Grundriss bleibt in den anderen Modulen sichtbar"); return true; }
     if (a === "grxsfon") { this._toast("Der Baukasten liegt bis Build 3 noch in Modul 11. Schalte Modul 11 unter Einstellungen → Module ein."); return true; }
     return false;
   }
@@ -19898,6 +19995,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "mdensetup") { this._modal = { type: "enset", tab: k || "" }; this._renderModal(); }
     else if (a === "mdtog") {
       if (MODS.some((x) => x.id === k && x.sponsor) && !this._spnS().active) { this._modal = { type: "spndlg", err: "" }; this._renderModal(); return; }
+      if (k === "gr") { if (s.on.gr === false) { s.on.gr = true; this._mdSave(); this._renderModal(); this._render(); } else { this._modal = { type: "grxoff" }; this._renderModal(); } return; }   /* Modul 0: Rückfrage */
       if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else if (k === "gs") s.on.gs = s.on.gs === false; else if (MODS.some((m) => m.beta && m.id === k)) s.on[k] = s.on[k] !== true; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
       if (!this._mdList().some((x) => x.id === s.active)) this._mdActiveSet("fh");
       this._mdSave(); this._renderModal(); this._render();
@@ -19940,12 +20038,13 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Module</b><span>Funktionen erweitern, ohne dass sie sich stören</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("check", 15)}Installiert</div>
+      ${row("gr", "home", "Modul 0 – Haus & Grundriss", "Ein Bauplan für alle Module · in Entwicklung", `<span class="mact"><span class="mbadge dvl">In Entwicklung</span>${tog("gr", s.on.gr !== false)}</span>`)}
       ${row("fh", "windowOpen", "Modul 1 – Fenster & Heizung", "Fenster, Heizpläne, Elektroheizer, Berichte", `<span class="mbadge">Grundmodul</span>`)}
       ${row("ww", "boiler", "Modul 2 – Warmwasser & Zirkulation", ok ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!ok && s.on.ww ? `<button class="btn2 pri" data-act="mdsetup">Einrichten</button>` : ""}${tog("ww", s.on.ww)}</span>`)}
       ${row("en", "energy", "Modul 3 – Energie-Übersicht", this._enConfigured() ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!this._enConfigured() && this._enOn() ? `<button class="btn2 pri" data-act="mdensetup">Einrichten</button>` : ""}${tog("en", this._enOn())}</span>`)}
       ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
       ${row("gs", "laundry", "Modul 4 – Gerätestrom", this._gsState().devices.length ? this._gsState().devices.length + (this._gsState().devices.length === 1 ? " Gerät" : " Geräte") : "Noch nicht eingerichtet", `<span class="mact">${tog("gs", s.on.gs !== false)}</span>`)}
-      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion" }[modSt(x)] + "", `<span class="mact">${x.sponsor ? `<span class="mbadge sp">${ic("heart", 11)}Nur Sponsoren</span>` : ""}<span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
+      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion", stabil: "stabil" }[modSt(x)] + "", `<span class="mact">${x.sponsor ? `<span class="mbadge sp">${ic("heart", 11)}Nur Sponsoren</span>` : ""}<span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
       ${MOD_SOON.length ? `<div class="lsec">${ic("clock", 15)}Geplant</div>
       ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
       <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>

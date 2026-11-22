@@ -3,7 +3,8 @@
 Ausführen: python3 -m pytest tests  oder  python3 tests/test_grundriss.py
 Geprüft werden: Umzug des Plans aus Modul 11 beim ersten Start (mit Melder- und Lampen-Ebene und Umzugs-Kopie), leere Pläne werden nicht
 übernommen, danach hat Modul 0 Vorrang, der Baukasten von Modul 11 schreibt in Modul 0 (nur wenn der Plan mitgeschickt wird), Zahlen für
-Banner und Ebenen, welche Module den Plan nutzen und das Aufräumen der Umzugs-Kopie nach 90 Tagen.
+Banner und Ebenen, welche Module den Plan nutzen, das Aufräumen der Umzugs-Kopie nach 90 Tagen und (Build 2) die Raumliste
+mit einmaliger Übernahme der Zuordnung aus Modul 18.
 """
 from __future__ import annotations
 
@@ -141,6 +142,26 @@ def test_umzugs_kopie_wird_nach_90_tagen_geleert():
     m, gm, h, st = _setup(None, gr_data=old)
     assert "copy_until" not in gm.meta and st["fenster_heizung_grundriss_umzug"].saved["plan"] is None
     assert st["fenster_heizung_grundriss"].saved["meta"]["since"] == "2026-08-01T10:00:00+00:00"
+    m.async_stop()
+
+
+def test_raumliste_setzen_und_uebernehmen():
+    m, gm, h, st = _setup(PLAN)
+    assert gm.set_rooms({"r1": "wohnen", "r2": "-", "bad id!": "x", "r9": "ok ä"}) is True
+    assert gm.rooms == {"r1": "wohnen", "r2": "-"} and gm.snapshot()["rooms"] == {"r1": "wohnen", "r2": "-"}
+    assert gm.set_rooms({"r1": "wohnen"}) is False                                 # nichts geändert
+    assert gm.set_rooms({"r2": ""}) is True and gm.rooms == {"r1": "wohnen"}      # leer = wieder automatisch
+    # einmalige Übernahme aus Modul 18: was in Modul 0 schon steht, gewinnt
+    assert gm.merge_pmap({"r1": "kueche", "r2": "bad", "r3": "-"}) == 2
+    assert gm.rooms == {"r1": "wohnen", "r2": "bad", "r3": "-"} and gm.meta["pmap"]
+    assert gm.merge_pmap({"r4": "flur"}) == 0                                      # nur einmal
+    saved = st["fenster_heizung_grundriss"].saved
+    assert saved["rooms"] == gm.rooms
+    # Neustart: Raumliste bleibt
+    gm2 = G.GrundrissManager(h)
+    [x for x in T._Store.stores if x.key == "fenster_heizung_grundriss"][-1].data = saved
+    asyncio.run(gm2.async_start())
+    assert gm2.rooms == gm.rooms and gm2.has
     m.async_stop()
 
 
