@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b48] - 2026-11-22
+
+**Neue Banner** Build 3 – Garten, Pool & Sauna, Batteriespeicher (Schritt 3 von 3). Damit haben alle Module ein Szenen-Banner.
+
+### Neu
+- **Modul 10 · Garten & Bewässerung** (v0.1 Build 2): **Beet mit dem aktuellen Wetter** – Sonne, Wolken, Regen oder Schnee aus der Wetterquelle, bei Frost blasse Blätter. Große Zahl das Wetter („Sonnig“, „Regen“), dazu Hinweise „Heute nicht gießen“, „Abends gießen“ (ab 25 °C und trocken) oder „Frost – Außenleitungen entleeren“.
+- **Modul 12 · Pool & Sauna** (v0.1 Build 2): **Pool mit Wellen und Saunahütte**, Sonne bei PV-Überschuss, bei Kälte kühles Wasser. Große Zahl die Außentemperatur, dazu PV-Überschuss und Strompreis, „Gut für Pumpe und Heizung“ ab 1 kW Überschuss.
+- **Modul 13 · Batteriespeicher** (v0.1 Build 2): **Akku mit Füllstand** (grün, unter 30 % gelb), PV-Dach mit Fluss zum Akku bei Überschuss. Große Zahl der Ladestand, dazu Untergrenze aus Modul 1 und „Nah an der Untergrenze“.
+
+### Technik
+- Ohne Sensor zeigt jedes Banner „–“ mit Hinweis. Wasser- und Saunatemperatur sowie die Lade-/Entladeleistung folgen, wenn die Module eigene Sensoren bekommen.
+- Neuer Test `tests/test_szenen_banner.py` (läuft mit Node): alle neuen Banner ohne Sensor, große Zahlen und Hinweise mit Werten, Sonne an der richtigen Seite, keine leeren Werte in den Bildern.
+
 ## [2026.11.4b47] - 2026-11-22
 
 **Neue Banner** Build 2 – Lüftung, Rollläden und Wärmepumpe (Schritt 2 von 3).

@@ -132,3 +132,62 @@
       <path d="M254 112 H286 V50" stroke="#f87171" stroke-width="5" fill="none"/><path d="M254 130 H300 V50" stroke="#60a5fa" stroke-width="5" fill="none"/>
       <polygon points="272,52 296,34 320,52" fill="rgba(255,255,255,.18)"/></svg>`;
   }
+
+  /* ================= Build 3: Modul 10 Garten, Modul 12 Pool & Sauna, Modul 13 Batteriespeicher ================= */
+  /* Modul 10: Beet mit dem aktuellen Wetter (Wetterquelle unter Haus) */
+  _sbGaData() {
+    const o = this._out(), dev = "§dev|In Entwicklung", w = o.w || "", wl = (WX[w] || [null, ""])[1];
+    if (!w && o.t == null) return { big: "–", sub: "Keine Wetterquelle – unter Haus wählen", chips: [dev], scene: this._sbGaScene("", null) };
+    const wet = /rain|pouring|lightning-rainy|snowy-rainy/.test(w), snow = w === "snowy", frost = o.t != null && o.t <= 0;
+    const hot = !wet && o.t != null && o.t >= 25 && /sunny|partlycloudy|clear/.test(w);
+    const hint = frost ? "§warn|Frost – Außenleitungen entleeren" : wet ? "§ok|Heute nicht gießen" : hot ? "§warn|Abends gießen" : o.t != null && o.t < 10 ? "Kaum Gießbedarf" : "";
+    return { big: wl || "Wetter", small: (wl || "").length > 9, sub: `${o.t != null ? `Draußen ${num(o.t, 1)} °C` : ""}${o.rh != null ? ` · Luftfeuchte ${num(Math.round(o.rh))} %` : ""}`,
+      chips: [hint, snow ? "Schnee" : "", dev], scene: this._sbGaScene(w, o.t) };
+  }
+  _sbGaScene(w, t) {
+    const mv = this._sbAnim() !== "aus", wet = /rain|pouring|lightning/.test(w), snow = /snow/.test(w), cloud = wet || snow || /cloudy|fog/.test(w), night = w === "clear-night";
+    const q = wet ? "r" : snow ? "s" : night ? "n" : cloud ? "c" : "d", sky = { r: ["#5b6b7d", "#8fa3b5"], s: ["#7f93a8", "#c9d6e2"], n: ["#0b1630", "#1d2d55"], c: ["#5d86ab", "#a9c4d8"], d: ["#3c8fd0", "#bfe6f5"] }[q];
+    let seed = 3; const R = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const fall = wet || snow ? Array.from({ length: snow ? 22 : 16 }, () => { const x = 150 + R() * 150, y = 60 + R() * 60; return snow ? `<circle class="${mv ? "sbsnow" : ""}" cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(1.2 + R() * 1.4).toFixed(1)}" fill="#fff" style="animation-delay:-${(R() * 6).toFixed(1)}s"/>` : `<line class="${mv ? "sbrain" : ""}" x1="${x.toFixed(0)}" y1="${y.toFixed(0)}" x2="${(x - 4).toFixed(0)}" y2="${(y + 12).toFixed(0)}" stroke="#cfe6ff" stroke-width="2" stroke-linecap="round" style="animation-delay:-${(R() * 1).toFixed(2)}s"/>`; }).join("") : "";
+    const sky2 = cloud ? `<g fill="${wet ? "#d6dee6" : "#eef3f7"}" opacity=".95"><ellipse cx="226" cy="46" rx="58" ry="20"/><ellipse cx="194" cy="38" rx="32" ry="22"/><ellipse cx="262" cy="36" rx="30" ry="18"/></g>` : night ? `<circle cx="282" cy="34" r="11" fill="#f4f1d8"/><circle cx="288" cy="29" r="10" fill="${sky[0]}"/>` : `<circle cx="282" cy="36" r="22" fill="#ffd36b" opacity=".3"/><circle cx="282" cy="36" r="14" fill="#ffd36b"/>`;
+    const plants = Array.from({ length: 6 }, (_, i) => { const x = 128 + i * 32, h = 22 + (i % 3) * 9; return `<g transform="translate(${x} 168)"><path d="M0 0 V-${h}" stroke="#2d7a5c" stroke-width="3"/><ellipse cx="-7" cy="-${h * 0.55}" rx="8" ry="4.5" fill="${t != null && t <= 0 ? "#7fae9a" : "#3fa37a"}" transform="rotate(-30 -7 -${h * 0.55})"/><ellipse cx="7" cy="-${h * 0.85}" rx="8" ry="4.5" fill="${t != null && t <= 0 ? "#7fae9a" : "#3fa37a"}" transform="rotate(30 7 -${h * 0.85})"/>${i % 2 && !(t != null && t <= 0) ? `<circle cy="-${h + 4}" r="5" fill="#f472b6"/>` : ""}</g>`; }).join("");
+    return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet"><defs><linearGradient id="sbgas${q}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient><linearGradient id="sbgaf${q}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#fff"/></linearGradient><mask id="sbgam${q}"><rect width="320" height="200" fill="url(#sbgaf${q})"/></mask></defs>
+      <rect width="320" height="200" fill="url(#sbgas${q})" mask="url(#sbgam${q})"/>${sky2}${fall}
+      <path d="M100 172 Q210 156 320 170 V200 H100Z" fill="${snow ? "#e9f1f3" : "#6b4a32"}"/><path d="M100 174 Q210 158 320 172" stroke="${snow ? "#fff" : "#3fa37a"}" stroke-width="5" fill="none"/>${plants}</svg>`;
+  }
+
+  /* Modul 12: Pool mit Wellen und Saunahütte (Bedingungen wie „Bedingungen jetzt“) */
+  _sbPlData() {
+    const o = this._out(), pv = this._pvNow(), pr = this._price(), dev = "§dev|In Entwicklung";
+    if (o.t == null && pv == null) return { big: "–", sub: "Noch keine Außentemperatur und kein PV-Sensor", chips: [dev], scene: this._sbPlScene(null, false) };
+    return { big: o.t != null ? num(o.t, 1) : "–", unit: o.t != null ? "°C draußen" : "", sub: [pv != null ? `PV-Überschuss ${wfmt(pv)}` : "", pr ? `Strom ${num(pr, 1)} ct/kWh` : ""].filter(Boolean).join(" · ") || "Bedingungen jetzt",
+      chips: [pv != null ? (pv >= 1000 ? "§ok|Gut für Pumpe und Heizung" : "Eher wenig PV") : "", o.t != null && o.t < 10 ? "Pool-Heizung lohnt kaum" : "", dev], scene: this._sbPlScene(o.t, pv != null && pv >= 300) };
+  }
+  _sbPlScene(t, sun) {
+    const mv = this._sbAnim() !== "aus", cold = t != null && t < 5;
+    const waves = [0, 1, 2, 3].map((i) => `<path class="${mv ? "sbwave" : ""}" d="M${150 + i * 34} 160 q8 -5 16 0 t16 0" stroke="#fff" stroke-opacity=".65" stroke-width="2" fill="none" style="${this._sbPh(2.6)}"/>`).join("");
+    return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet"><defs><linearGradient id="sbplw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cold ? "#7fb3c8" : "#4fd1e0"}"/><stop offset="1" stop-color="${cold ? "#3f6f86" : "#1b8fb0"}"/></linearGradient></defs>
+      ${sun ? `<circle cx="160" cy="44" r="24" fill="#ffe27a" opacity=".3"/><circle cx="160" cy="44" r="15" fill="#ffe27a"/>` : `<g fill="rgba(255,255,255,.55)"><ellipse cx="170" cy="46" rx="40" ry="14"/><ellipse cx="150" cy="40" rx="22" ry="14"/></g>`}
+      <rect x="128" y="138" width="152" height="8" rx="4" fill="#e9eef2"/><path d="M134 146 h140 l-12 40 h-116 z" fill="url(#sbplw)"/>${waves}
+      ${t != null ? `<g transform="translate(204 128)"><rect x="-36" y="-14" width="72" height="24" rx="12" fill="rgba(11,34,51,.8)"/><text y="3" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="800">${num(t, 1)} °C</text></g>` : ""}
+      <polygon points="282,112 302,96 320,112" fill="#7a4b2a"/><rect x="286" y="112" width="34" height="66" fill="#a0673c"/><rect x="298" y="140" width="12" height="38" fill="#5a3a20"/></svg>`;
+  }
+
+  /* Modul 13: Akku mit Füllstand und PV (Ladestand-Sensor und PV-Überschuss aus Modul 1) */
+  _sbBtData() {
+    const soc = this._soc(), pv = this._pvNow(), p = this._pv(), min = p.soc_sensor && p.soc_min != null ? p.soc_min : null, dev = "§dev|In Entwicklung";
+    if (soc == null) return { big: "–", sub: "Noch kein Ladestand-Sensor gewählt (Modul 1 → PV)", chips: [dev], scene: this._sbBtScene(null, false) };
+    const sun = pv != null && pv > 100 && soc < 99, low = min != null && soc < min + 10;
+    return { big: num(Math.round(soc)), unit: "%", sub: soc >= 99 ? "Akku ist voll" : sun ? `PV-Überschuss ${wfmt(pv)} zum Laden verfügbar` : pv != null ? "Kein PV-Überschuss" : "Ladestand jetzt",
+      chips: [sun ? "§ok|PV laden" : "", min != null ? `Untergrenze ${num(min, 0)} %` : "", low ? "§warn|Nah an der Untergrenze" : "", dev], scene: this._sbBtScene(soc, sun, pv) };
+  }
+  _sbBtScene(soc, sun, pv) {
+    const mv = this._sbAnim() !== "aus", s = soc == null ? 0 : Math.max(0, Math.min(100, soc)), fill = Math.round(118 * s / 100), c = s >= 30 ? "#22a06b" : "#f59e0b";
+    return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet">
+      <g opacity="${sun ? 1 : 0.35}"><circle cx="138" cy="34" r="12" fill="#ffd36b"/><path d="M104 82 l14 -26 h48 l-14 26z" fill="#2b5c9e" stroke="#9cc3ff66"/></g>
+      ${sun ? `<path class="sbpv${mv ? " run" : ""}" d="M146 84 C160 100 176 104 196 108" style="${this._sbPh(1.4)}"/>` : ""}
+      <rect x="196" y="40" width="78" height="134" rx="14" fill="rgba(3,18,26,.65)" stroke="rgba(207,230,255,.5)" stroke-width="3"/><rect x="222" y="30" width="26" height="11" rx="3" fill="rgba(207,230,255,.5)"/>
+      ${soc != null ? `<rect x="203" y="${167 - fill}" width="64" height="${fill}" rx="8" fill="${c}"/><text x="235" y="114" text-anchor="middle" fill="#fff" font-size="21" font-weight="800">${num(Math.round(s))} %</text>` : `<text x="235" y="114" text-anchor="middle" fill="#fff" font-size="21" font-weight="800">–</text>`}
+      <polygon points="282,118 301,102 320,118" fill="rgba(255,255,255,.2)"/><rect x="286" y="118" width="30" height="40" fill="rgba(255,255,255,.12)"/><rect x="295" y="128" width="11" height="11" fill="#ffd98a"/>
+      ${sun && pv != null ? `<g transform="translate(150 150)"><rect x="-38" y="-13" width="76" height="24" rx="12" fill="rgba(11,34,51,.8)"/><text y="3" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">${wfmt(pv)}</text></g>` : ""}</svg>`;
+  }
