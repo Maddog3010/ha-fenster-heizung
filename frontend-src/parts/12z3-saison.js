@@ -31,7 +31,7 @@
   _saiTick() {
     if (!this._saiD) return;
     const k = this._sai().key;
-    if (this._saiK !== undefined && this._saiK !== k) { this._saiK = k; if (this._advLoad) this._advLoad().then(() => { this._render(); if (this._modal && this._modal.type === "advent") this._renderModal(); }); this._render(); if (this._modal && this._modal.type === "look") this._renderModal(); return; }
+    if (this._saiK !== undefined && this._saiK !== k) { this._saiK = k; if (this._advLoad) this._advLoad().then(() => { this._render(); if (this._modal && this._modal.type === "advent") this._renderModal(); }); this._render(); if (this._modal && (this._modal.type === "look" || this._modal.type === "sai")) this._renderModal(); return; }
     this._saiK = k;
   }
   _saiKranz(n, w = 30) {
@@ -62,7 +62,15 @@
     const I = { wohnen: "🎄", kueche: "🍪", kind: "⛄", esszimmer: "🕯️", schlafen: "🌙" };
     return I[t] ? `<span class="saiR" aria-hidden="true">${I[t]}</span>` : "";
   }
-  /* Einstellungen → Darstellung */
+  /* Einstellungen → Darstellung: eigene Zeile, Link im Darstellungs-Fenster und eigenes Fenster */
+  _saiStatus() { const c = this._saiCfg(), s = this._sai(); return s.vis ? `Aktiv · ${this._saiText(s)}` : c.modus === "aus" ? "Aus" : "Startet am 01.12. · Adventskalender, Lichterkette, Schnee"; }
+  _saiRow(row) { return this._admin() ? row("tree", "Weihnachts-Theme", esc(this._saiStatus()), "saixdlg", "", this._saiD && this._saiD.dev ? `<em class="sxc ok">Entwickler</em>` : "") : ""; }
+  _saiLink() { return `<div class="lsec">${ic("tree", 15)}Weihnachts-Theme</div><button class="sxrow" data-act="saixdlg"><span class="sxi">${ic("tree", 20)}</span><span class="sxt"><b>Weihnachts-Theme &amp; Adventskalender</b><small>${esc(this._saiStatus())}</small></span><span class="sxg">${ic("chev", 16)}</span></button>`; }
+  _saiModal() {
+    const body = this._saiD ? this._saiLook() : `<div class="mut" style="padding:16px">Lädt …</div>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Weihnachts-Theme</b><span>gilt für alle Nutzer · 01.12.–27.12.</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${body}<div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
   _saiLook() {
     if (!this._saiD) return "";
     const c = this._saiCfg(), s = this._sai(), d = this._saiD, sim = d.sim && d.sim.on && Date.now() / 1000 < d.sim.until;
@@ -99,7 +107,8 @@
   }
   _saiAct(a, b) {
     const box = this.shadowRoot.getElementById("modal");
-    if (a === "saixmode") this._saiSave({ ...this._saiCfg(), modus: b.dataset.k });
+    if (a === "saixdlg") { this._modal = { type: "sai" }; this._renderModal(); if (!this._saiD) this._saiLoad().then(() => this._renderModal()); if (!this._advD && this._advLoad) this._advLoad().then(() => this._renderModal()); }
+    else if (a === "saixmode") this._saiSave({ ...this._saiCfg(), modus: b.dataset.k });
     else if (a === "saixtog") { const k = b.dataset.k, c = this._saiCfg(); this._saiSave({ ...c, [k]: !c[k] }); }
     else if (a === "saixsim") this._saiSim("on", b.dataset.k);
     else if (a === "saixgo") { const i = box && box.querySelector('[data-f="saisimat"]'), m = box && box.querySelector('[data-f="saisimmin"]'); if (m) this._saiMin = +m.value || 60; this._saiSim("on", i ? i.value.trim() : ""); }
