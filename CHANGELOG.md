@@ -2,74 +2,26 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [2026.11.4b56] - 2026-11-22
+## [2026.11.4b52] - 2026-11-22
 
-**Modul 0 · Haus & Grundriss** v0.3 Build 3 – der Baukasten zieht aus Modul 11 nach Modul 0.
+Großes Paket rund um den Grundriss: **Modul 0 · Haus & Grundriss** (neu, v0.3 Build 3) wird der zentrale Bauplan für alle Module samt Baukasten, und **Modul 18 · Licht & Lampen** (v0.6, Addon `licht` 0.6.1) bekommt den Reiter „Lampen“ zum Selbstverwalten sowie Korrekturen an der Lichtkarte.
 
-### Neu
-- **Baukasten in Modul 0:** „Bearbeiten“ im Banner und „Grundriss zeichnen“ öffnen den Baukasten direkt in Modul 0. Oben steht ein Streifen „Grundriss bearbeiten“ mit den aktiven Ebenen (Bauplan, Melder, Lampen).
-- **„Bearbeiten“ aus jedem Modul:** Modul 1 (Wärmekarte), Modul 11 (Grundriss) und Modul 18 („Im Plan platzieren“) führen in den Baukasten von Modul 0. Nach Speichern oder Abbrechen geht es zurück („Grundriss gespeichert – zurück in Modul 11 · Sicherheit“), und „← Zurück zu …“ steht im Streifen.
-- **Ohne Modul 11:** Den Grundriss kannst du jetzt auch zeichnen, wenn Modul 11 aus ist. Dann fehlen nur die Melder-Werkzeuge.
-- **Reiter „Ebenen“:** Bauplan, Melder (Modul 11), Lampen (Modul 18) und Wärme (Modul 1). Jede Ebene zeigt ihre Zahlen, z. B. Elemente im Plan, „noch ohne Platz“ und Räume mit Raum aus Modul 1. „Melder setzen“ und „Lampen setzen“ öffnen den Baukasten mit dem passenden Werkzeug. Die Sichtbarkeit lässt sich je Ebene umschalten. Ebenen ausgeschalteter Module bleiben gespeichert.
-- **Modul 0 aus:** Dann fragt „Bearbeiten“, ob Modul 0 eingeschaltet werden soll.
+### Teil 1 · Modul 18 – Korrekturen Lichtkarte
 
-### Geändert
-- Modul 11 schreibt den Plan nicht mehr mit seinen Einstellungen. Der Plan wird nur noch im Baukasten gespeichert (`gr_set`), Modul 11 übernimmt Änderungen sofort.
-- Im Baukasten stehen bei „Noch nicht platzierte Lampen“ mit „Meine Lampen“ aus Modul 18 nur deine Lampen mit deinem Namen. Addon `licht` 0.6.1.
+**Modul 18 · Licht & Lampen** v0.5.1 – Korrekturen an der Lichtkarte nach dem ersten Test auf echtem Grundriss.
 
-### Technik
-- `gr_set` nimmt `plan` an (nur Administratoren, gespeichert mit `by: "gr"`). `sicherheit.py` hört über `listen()` auf Modul 0 und zieht seine Kopie nach, ohne zurückzuschreiben.
-- Frontend: `_grEdit(von, Werkzeug)`, `_grSavePlan`, `_grEditDone`, `_grLayersView`. Der Baukasten selbst (`_sfPlan`) bleibt gemeinsam genutzt und kennt jetzt `host: "gr"`.
-- 1 neuer Test (Speichern in Modul 0, Modul 11 zieht nach, Abmelden beim Stoppen), alle Tests grün.
+#### Behoben
+- **„… Flächen nicht zugeordnet“ war viel zu hoch:** Räume, deren Bereich in Home Assistant keine Lampen hat (z. B. Bad, Flur, Abstellkammer), galten als nicht zugeordnet und waren schraffiert. Jetzt sind sie zugeordnet und zeigen „keine Lampen“. Gezählt und schraffiert werden nur Flächen ohne passenden Bereich.
+- **Punkte und Lampen im Plan waren nicht zu unterscheiden:** Lampen, die noch keinen Platz im Plan haben, erscheinen jetzt kleiner mit gestricheltem Ring unten links („noch nicht platziert“, auch in der Legende). Lampen im Plan stehen an ihrem Platz.
+- **Fehlermeldung beim Schalten:** Lehnt die Integration einen Befehl ab (z. B. Overkiz „No such command : on … (ogp:Light)“), erscheint eine Meldung mit dem Namen der Lampe statt der technischen Meldung von Home Assistant. Auch beim Schalten ganzer Räume kommt der Fehler jetzt auf der Seite an.
+- **Gleiche Lampennamen im Baukasten** (z. B. zweimal „H70D1“) zeigen zusätzlich die Entitäts-ID.
+- „Nicht im Grundriss“ heißt für Lampen ohne Bereich jetzt „Ohne Bereich · 2 Lampen“, die Namen stehen im Hinweis.
 
-## [2026.11.4b55] - 2026-11-22
-
-**Modul 18 · Licht & Lampen** v0.6 Build 6 – Reiter „Lampen“ aus dem Konzept „Lampen selbst verwalten“. Addon `licht` 0.6.0.
-
-### Neu
-- **Reiter „Übersicht | Lampen“** oben in Modul 18. Unter „Lampen“ steht **„Meine Lampen“**, nach Räumen gruppiert. Jede Lampe zeigt Art, „✓ im Plan“ oder „Platz fehlt“, ihren Zustand und den letzten Fehler. Die Kopfzeile zählt Lampen, Räume, fehlende Plätze und Fehler.
-- **Lampe hinzufügen:** Suche, Filter „Noch nicht hinzugefügt / Alle / Gruppen“, Fähigkeiten je Lampe („dimmbar · Farbe“, „nur an/aus“) und **Testen**, damit die Lampe kurz blinkt. Bei einer Lampe geht es weiter zum Einrichten. Mehrere Lampen werden mit einem Vorschlag hinzugefügt (Art aus dem Namen, Raum aus Home Assistant).
-- **Lampe bearbeiten:** eigener Name, Raum (zuerst die Räume aus Modul 0, dann weitere Bereiche, oder „Wie in Home Assistant“), Art, „Bei Alle aus mitschalten“, Platz im Grundriss, Testen, Entfernen.
-- **Umstieg:** Beim ersten Öffnen fragt Modul 18 „Alle übernehmen“, „Selbst auswählen“ oder „Später“. „Alle übernehmen“ übernimmt Namen, Bereiche und einmalig den Raum aus der Position im Plan.
-- **Neue Lampen** in Home Assistant erscheinen nur als Hinweis mit „Hinzufügen“ und „Ausblenden“. Die Zahl steht am Reiter.
-- **Einstellungen:** „Welche Lampen?“ mit „Meine Lampen“ oder „Automatisch“ (wie bisher).
-
-### Geändert
-- Mit „Meine Lampen“ zeigen Übersicht, Haus-Szene, Lichtkarte, Kacheln und das Banner nur deine Lampen, mit deinem Namen und Raum. Der Raum aus der Position im Plan entfällt dann.
-- „Alle aus“ lässt Lampen mit ausgeschaltetem „Bei Alle aus mitschalten“ an.
-- Einzelne Lampen schaltet jetzt der Python-Teil. Ein abgelehnter Befehl (z. B. Overkiz „No such command“) wird an der Lampe gemerkt und beim nächsten Erfolg gelöscht.
-
-### Technik
-- `licht/logic.py`: `clean_lamps`, `guess_kind`, `clean_ignored`. `manager.py` speichert `lamps`, `mode`, `ignored` und hält `errs`. Neue Aktion `act {a:"test"}` (Blinken mit `flash`, sonst zweimal umschalten).
-- Neue Tests für Lampenliste, Art-Vorschlag, Modus „mine“ und Fehler je Lampe, alle Tests grün.
-
-## [2026.11.4b54] - 2026-11-22
-
-**Modul 0 · Haus & Grundriss** v0.2 Build 2 – Raumliste und Einstellungen.
-
-### Neu
-- **Reiter „Räume“:** eine Liste für alle Module mit den Spalten Raum im Plan (mit Etage), **Bereich in Home Assistant**, **Raum in Modul 1** und **genutzt von** (M1, M11 mit Zahl der Melder, M18 Licht). Ohne Auswahl ordnet der Name zu („automatisch“). Fehlende Bereiche sind gelb, ihre Zahl steht am Reiter. Am Handy wird jede Zeile zur Karte.
-- **„Bereich zuordnen“:** Bereiche aus Home Assistant, „Kein Bereich“ und „Automatisch“. Gilt für alle Module, die nach Bereichen arbeiten.
-- **Raum in Modul 1** wird direkt hier geändert (dasselbe Fenster wie in der Wärmekarte).
-- **Reiter „Einstellungen“** (Administratoren): Modul 0 ein/aus mit **Rückfrage**, die die Module nennt, die den Plan nutzen. Dazu Umzug und Kopie, zuletzt geändert, Speicherort. Ausschalten blendet nur die Seite aus, der Plan bleibt in Modul 1, 11 und 18 sichtbar.
-- **Einstellungen → Module:** Modul 0 steht jetzt vor Modul 1 und hat einen eigenen Schalter (mit derselben Rückfrage).
-
-### Geändert
-- **Modul 18:** Die Zuordnung Fläche → Bereich (bisher `pmap` im Addon) steht jetzt in der Raumliste von Modul 0. Sie wird beim Start einmalig übernommen, Einträge in Modul 0 haben Vorrang. „Fläche zuordnen“ in der Lichtkarte schreibt in die Raumliste. Addon `licht` 0.5.2.
-
-### Behoben
-- Einstellungen → Module zeigte bei stabilen Modulen „· undefined“ statt „· stabil“.
-
-### Technik
-- `grundriss.py`: `rooms` (Plan-Raum → Bereich oder „-“), `set_rooms`, `merge_pmap` (einmalig, vermerkt in `meta.pmap`). Neuer WebSocket `gr_set` (nur Administratoren). `gr_get` liefert `rooms`.
-- Die Spalte „Raum in Modul 1“ bleibt im Layout (`gmap`) und wird nur von hier aus bearbeitet. Ein Umzug in die Raumliste ist für später vorgesehen.
-- 1 neuer Test (Raumliste setzen, zurücksetzen, Übernahme aus Modul 18, Neustart), alle Tests grün.
-
-## [2026.11.4b53] - 2026-11-22
+### Teil 2 · Modul 0 Build 1 – neues Modul Haus & Grundriss
 
 **Modul 0 · Haus & Grundriss** v0.1 Build 1 – neues Modul aus dem Konzept „Lampen selbst verwalten & Modul 0 · Haus & Grundriss“: der Grundriss gehört ab jetzt dem Kern statt Modul 11.
 
-### Neu
+#### Neu
 - **Modul 0 in der Leiste** direkt nach „Start“ und vor Modul 1, mit Version und Stufe „In Entwicklung“. Es ist standardmäßig an.
 - **Banner:** Haus im Schnitt mit den Etagen und Räumen aus dem Plan, „2 Etagen · 9 Räume“, Zahl der Melder und Lampen im Plan, welche Module den Plan nutzen.
 - **Reiter „Plan“:** Grundriss mit Etagen-Umschalter, Bauplan (Räume auch in freier Form, Wände, Türen, Fenster, Treppen, Texte, Hintergrundbild) und zwei **Ebenen** zum Ein- und Ausblenden: Melder (Modul 11) und Lampen (Modul 18, eingeschaltete in ihrer Farbe). Räume, Ebenen und Sichern & Einlesen sind als kommende Reiter zu sehen (Build 2 bis 4).
@@ -77,22 +29,74 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 - **Modul 1 (Wärmekarte) und Modul 18 (Lichtkarte)** lesen den Plan jetzt aus Modul 0.
 - **Bearbeiten** geht bis Build 3 noch im Baukasten von Modul 11. Gespeichert wird in Modul 0, alle Module sehen die Änderung sofort.
 
-### Technik
+#### Technik
 - Neu: `grundriss.py` (`GrundrissManager`, Speicher `fenster_heizung_grundriss` Schema 1, Umzugs-Kopie `fenster_heizung_grundriss_umzug`), WebSocket `gr_get` (lesen dürfen alle). Das Modul startet vor Modul 11.
 - `sicherheit.py`: liest den Plan aus Modul 0, wenn es dort einen gibt, sonst einmaliger Umzug. `sf_set` mit Plan schreibt nach Modul 0. Der eigene Plan-Speicher bleibt als zusätzliche Kopie, `sf_get` liefert weiter den Plan.
 - Modul-Schalter `gr` (Standard an). Frontend-Teil `12m2-grundriss.js`, `_gpPlan()` nutzt `gr_get`, das Addon „licht“ liest platzierte Lampen über `_grRaw()`.
 - 6 neue Tests (`test_grundriss.py`): Umzug mit Ebenen und Kopie, leerer Plan, Vorrang von Modul 0, Baukasten schreibt in Modul 0, Zahlen und Nutzer, Aufräumen der Kopie nach 90 Tagen.
 
-## [2026.11.4b52] - 2026-11-22
+### Teil 3 · Modul 0 Build 2 – Raumliste und Einstellungen
 
-**Modul 18 · Licht & Lampen** v0.5.1 – Korrekturen an der Lichtkarte nach dem ersten Test auf echtem Grundriss.
+**Modul 0 · Haus & Grundriss** v0.2 Build 2 – Raumliste und Einstellungen.
 
-### Behoben
-- **„… Flächen nicht zugeordnet“ war viel zu hoch:** Räume, deren Bereich in Home Assistant keine Lampen hat (z. B. Bad, Flur, Abstellkammer), galten als nicht zugeordnet und waren schraffiert. Jetzt sind sie zugeordnet und zeigen „keine Lampen“. Gezählt und schraffiert werden nur Flächen ohne passenden Bereich.
-- **Punkte und Lampen im Plan waren nicht zu unterscheiden:** Lampen, die noch keinen Platz im Plan haben, erscheinen jetzt kleiner mit gestricheltem Ring unten links („noch nicht platziert“, auch in der Legende). Lampen im Plan stehen an ihrem Platz.
-- **Fehlermeldung beim Schalten:** Lehnt die Integration einen Befehl ab (z. B. Overkiz „No such command : on … (ogp:Light)“), erscheint eine Meldung mit dem Namen der Lampe statt der technischen Meldung von Home Assistant. Auch beim Schalten ganzer Räume kommt der Fehler jetzt auf der Seite an.
-- **Gleiche Lampennamen im Baukasten** (z. B. zweimal „H70D1“) zeigen zusätzlich die Entitäts-ID.
-- „Nicht im Grundriss“ heißt für Lampen ohne Bereich jetzt „Ohne Bereich · 2 Lampen“, die Namen stehen im Hinweis.
+#### Neu
+- **Reiter „Räume“:** eine Liste für alle Module mit den Spalten Raum im Plan (mit Etage), **Bereich in Home Assistant**, **Raum in Modul 1** und **genutzt von** (M1, M11 mit Zahl der Melder, M18 Licht). Ohne Auswahl ordnet der Name zu („automatisch“). Fehlende Bereiche sind gelb, ihre Zahl steht am Reiter. Am Handy wird jede Zeile zur Karte.
+- **„Bereich zuordnen“:** Bereiche aus Home Assistant, „Kein Bereich“ und „Automatisch“. Gilt für alle Module, die nach Bereichen arbeiten.
+- **Raum in Modul 1** wird direkt hier geändert (dasselbe Fenster wie in der Wärmekarte).
+- **Reiter „Einstellungen“** (Administratoren): Modul 0 ein/aus mit **Rückfrage**, die die Module nennt, die den Plan nutzen. Dazu Umzug und Kopie, zuletzt geändert, Speicherort. Ausschalten blendet nur die Seite aus, der Plan bleibt in Modul 1, 11 und 18 sichtbar.
+- **Einstellungen → Module:** Modul 0 steht jetzt vor Modul 1 und hat einen eigenen Schalter (mit derselben Rückfrage).
+
+#### Geändert
+- **Modul 18:** Die Zuordnung Fläche → Bereich (bisher `pmap` im Addon) steht jetzt in der Raumliste von Modul 0. Sie wird beim Start einmalig übernommen, Einträge in Modul 0 haben Vorrang. „Fläche zuordnen“ in der Lichtkarte schreibt in die Raumliste. Addon `licht` 0.5.2.
+
+#### Behoben
+- Einstellungen → Module zeigte bei stabilen Modulen „· undefined“ statt „· stabil“.
+
+#### Technik
+- `grundriss.py`: `rooms` (Plan-Raum → Bereich oder „-“), `set_rooms`, `merge_pmap` (einmalig, vermerkt in `meta.pmap`). Neuer WebSocket `gr_set` (nur Administratoren). `gr_get` liefert `rooms`.
+- Die Spalte „Raum in Modul 1“ bleibt im Layout (`gmap`) und wird nur von hier aus bearbeitet. Ein Umzug in die Raumliste ist für später vorgesehen.
+- 1 neuer Test (Raumliste setzen, zurücksetzen, Übernahme aus Modul 18, Neustart), alle Tests grün.
+
+### Teil 4 · Modul 18 Build 6 – Reiter „Lampen“
+
+**Modul 18 · Licht & Lampen** v0.6 Build 6 – Reiter „Lampen“ aus dem Konzept „Lampen selbst verwalten“. Addon `licht` 0.6.0.
+
+#### Neu
+- **Reiter „Übersicht | Lampen“** oben in Modul 18. Unter „Lampen“ steht **„Meine Lampen“**, nach Räumen gruppiert. Jede Lampe zeigt Art, „✓ im Plan“ oder „Platz fehlt“, ihren Zustand und den letzten Fehler. Die Kopfzeile zählt Lampen, Räume, fehlende Plätze und Fehler.
+- **Lampe hinzufügen:** Suche, Filter „Noch nicht hinzugefügt / Alle / Gruppen“, Fähigkeiten je Lampe („dimmbar · Farbe“, „nur an/aus“) und **Testen**, damit die Lampe kurz blinkt. Bei einer Lampe geht es weiter zum Einrichten. Mehrere Lampen werden mit einem Vorschlag hinzugefügt (Art aus dem Namen, Raum aus Home Assistant).
+- **Lampe bearbeiten:** eigener Name, Raum (zuerst die Räume aus Modul 0, dann weitere Bereiche, oder „Wie in Home Assistant“), Art, „Bei Alle aus mitschalten“, Platz im Grundriss, Testen, Entfernen.
+- **Umstieg:** Beim ersten Öffnen fragt Modul 18 „Alle übernehmen“, „Selbst auswählen“ oder „Später“. „Alle übernehmen“ übernimmt Namen, Bereiche und einmalig den Raum aus der Position im Plan.
+- **Neue Lampen** in Home Assistant erscheinen nur als Hinweis mit „Hinzufügen“ und „Ausblenden“. Die Zahl steht am Reiter.
+- **Einstellungen:** „Welche Lampen?“ mit „Meine Lampen“ oder „Automatisch“ (wie bisher).
+
+#### Geändert
+- Mit „Meine Lampen“ zeigen Übersicht, Haus-Szene, Lichtkarte, Kacheln und das Banner nur deine Lampen, mit deinem Namen und Raum. Der Raum aus der Position im Plan entfällt dann.
+- „Alle aus“ lässt Lampen mit ausgeschaltetem „Bei Alle aus mitschalten“ an.
+- Einzelne Lampen schaltet jetzt der Python-Teil. Ein abgelehnter Befehl (z. B. Overkiz „No such command“) wird an der Lampe gemerkt und beim nächsten Erfolg gelöscht.
+
+#### Technik
+- `licht/logic.py`: `clean_lamps`, `guess_kind`, `clean_ignored`. `manager.py` speichert `lamps`, `mode`, `ignored` und hält `errs`. Neue Aktion `act {a:"test"}` (Blinken mit `flash`, sonst zweimal umschalten).
+- Neue Tests für Lampenliste, Art-Vorschlag, Modus „mine“ und Fehler je Lampe, alle Tests grün.
+
+### Teil 5 · Modul 0 Build 3 – Baukasten zieht nach Modul 0
+
+**Modul 0 · Haus & Grundriss** v0.3 Build 3 – der Baukasten zieht aus Modul 11 nach Modul 0.
+
+#### Neu
+- **Baukasten in Modul 0:** „Bearbeiten“ im Banner und „Grundriss zeichnen“ öffnen den Baukasten direkt in Modul 0. Oben steht ein Streifen „Grundriss bearbeiten“ mit den aktiven Ebenen (Bauplan, Melder, Lampen).
+- **„Bearbeiten“ aus jedem Modul:** Modul 1 (Wärmekarte), Modul 11 (Grundriss) und Modul 18 („Im Plan platzieren“) führen in den Baukasten von Modul 0. Nach Speichern oder Abbrechen geht es zurück („Grundriss gespeichert – zurück in Modul 11 · Sicherheit“), und „← Zurück zu …“ steht im Streifen.
+- **Ohne Modul 11:** Den Grundriss kannst du jetzt auch zeichnen, wenn Modul 11 aus ist. Dann fehlen nur die Melder-Werkzeuge.
+- **Reiter „Ebenen“:** Bauplan, Melder (Modul 11), Lampen (Modul 18) und Wärme (Modul 1). Jede Ebene zeigt ihre Zahlen, z. B. Elemente im Plan, „noch ohne Platz“ und Räume mit Raum aus Modul 1. „Melder setzen“ und „Lampen setzen“ öffnen den Baukasten mit dem passenden Werkzeug. Die Sichtbarkeit lässt sich je Ebene umschalten. Ebenen ausgeschalteter Module bleiben gespeichert.
+- **Modul 0 aus:** Dann fragt „Bearbeiten“, ob Modul 0 eingeschaltet werden soll.
+
+#### Geändert
+- Modul 11 schreibt den Plan nicht mehr mit seinen Einstellungen. Der Plan wird nur noch im Baukasten gespeichert (`gr_set`), Modul 11 übernimmt Änderungen sofort.
+- Im Baukasten stehen bei „Noch nicht platzierte Lampen“ mit „Meine Lampen“ aus Modul 18 nur deine Lampen mit deinem Namen. Addon `licht` 0.6.1.
+
+#### Technik
+- `gr_set` nimmt `plan` an (nur Administratoren, gespeichert mit `by: "gr"`). `sicherheit.py` hört über `listen()` auf Modul 0 und zieht seine Kopie nach, ohne zurückzuschreiben.
+- Frontend: `_grEdit(von, Werkzeug)`, `_grSavePlan`, `_grEditDone`, `_grLayersView`. Der Baukasten selbst (`_sfPlan`) bleibt gemeinsam genutzt und kennt jetzt `host: "gr"`.
+- 1 neuer Test (Speichern in Modul 0, Modul 11 zieht nach, Abmelden beim Stoppen), alle Tests grün.
 
 ## [2026.11.4b51] - 2026-11-22
 

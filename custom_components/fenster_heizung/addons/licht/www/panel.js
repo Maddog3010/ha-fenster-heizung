@@ -422,7 +422,7 @@ export default (api) => {
   _liPRoom(item, rooms) { const a = this._liPArea(item); return a ? rooms.find((r) => r.k === a) || null : null; }
   /* Platzierte Lampen aus dem Grundriss: { light.x: { it, room } } (room = Fläche, in der die Lampe steht). Lädt den Plan nicht neu. */
   _liPlaced() {
-    const P = this._grRaw ? this._grRaw() : (this._sfxD && this._sfxD.d && this._sfxD.d.cfg && this._sfxD.d.cfg.plan);   /* ab 2026.11.4b53 aus Modul 0 */
+    const P = this._grRaw ? this._grRaw() : (this._sfxD && this._sfxD.d && this._sfxD.d.cfg && this._sfxD.d.cfg.plan);   /* ab 2026.11.4b52 aus Modul 0 */
     if (!P || !Array.isArray(P.items)) return {};
     if (this._liPlC && this._liPlC.p === P && this._liPlC.pm === this._liD().pmap) return this._liPlC.m;
     const rs = P.items.filter((i) => i.t === "r"), m = {};

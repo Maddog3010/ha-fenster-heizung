@@ -6,7 +6,7 @@
   /* Grundriss aus Modul 11 laden. Bisher nur ein einziges Mal: War Home Assistant beim ersten Abruf noch nicht fertig gestartet
      (Modul 11 startet spät) oder wurde der Grundriss danach – auch auf einem anderen Gerät – gezeichnet, blieb Modul 1 bei
      „Noch kein Grundriss“, bis der Browser neu geladen wurde. Jetzt: nach einem Fehler nach 10 s erneut, sonst jede Minute im Hintergrund. */
-  /* Plan aus Modul 0 · Haus & Grundriss (gr_get, ab 2026.11.4b53); vorher kam er aus Modul 11 (sf_get) */
+  /* Plan aus Modul 0 · Haus & Grundriss (gr_get, ab 2026.11.4b52); vorher kam er aus Modul 11 (sf_get) */
   _gpPlan() { return this._grPlan(); }
   /* Alle Räume, die eine Grundriss-Fläche bekommen können: Heizungsräume und Messräume (innen und außen) */
   _gpAll(rooms) { return [...(rooms || this._collect(true)), ...this._msList().map((m) => ({ id: m.id, name: m.name, ms: m }))]; }
