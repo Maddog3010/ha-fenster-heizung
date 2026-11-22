@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b58] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.10.1 – Korrektur und Aufräumen.
+
+### Behoben
+- Die Werkzeugleiste im Baukasten (Handy/iPad) springt nach dem Wischen nicht mehr an den Anfang zurück, wenn Home Assistant neue Werte meldet. Gilt auch für die Ebenen- und Etagen-Knöpfe.
+
+### Entfernt
+- Puppenhaus: Umschalter „Plan · Puppenhaus“ und die schräge Ansicht im Banner sind weg; im Banner steht wieder das Haus-Symbol. Pläne und Daten bleiben unverändert.
+
 ## [2026.11.4b57] - 2026-11-22
 
 **Modul 18 · Licht & Lampen** (Addon v0.9.0 Build 11) – die Lichtkarte nutzt jetzt den Grundriss von Modul 0.

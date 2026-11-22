@@ -1,7 +1,6 @@
-  /* ================= Modul 0 Build 10: Möbel, Außenbereich, Puppenhaus, Sonnenlicht =================
+  /* ================= Modul 0 Build 10: Möbel, Außenbereich, Sonnenlicht =================
      Element „o“: Möbel (Bett, Sofa, Küche, Bad …) und Außen (Baum, Hecke, Pool, Carport, PV …) mit Größe in cm, drehbar, teils mit Entität.
      Grundstück als eigene Etage „Außen“ (floor.ga): das Haus erscheint dort als Umriss, Antippen öffnet die Etage.
-     Puppenhaus: alle Etagen schräg übereinander, Wände leicht hochgezogen; Antippen einer Etage klappt sie flach.
      Sonnenlicht: Nordrichtung des Plans + Sonnenstand (sun.sun oder berechnet) → Lichtflächen durch die Fenster, Tageszeit-Regler. */
   _grMK() {
     if (this._grMKc) return this._grMKc;
@@ -166,46 +165,6 @@
     return `<div class="grsun"><span class="gsi">☀</span><span><b>${hh}</b> · ${S.el > 0 ? `${this._grDir(S.az)} · ${num(S.el, 0)}° hoch` : "Sonne unter dem Horizont"}${S.el > 0 ? ` · <b>${G.rooms.length ? "Sonne in: " + esc(G.rooms.join(", ")) : "keine Sonne durch die Fenster"}</b>` : ""}</span>
       <input type="range" min="5" max="22" step="0.25" value="${h.toFixed(2)}" data-f="grxsunh" aria-label="Tageszeit"><button class="grb ${this._grSunH == null ? "on" : ""}" data-act="grxsunnow">Jetzt</button></div>`;
   }
-  /* ---- Puppenhaus */
-  _grDoll(P, o) {
-    o = o || {}; const sty = o.style || this._grStyle(), T = this._grTheme(sty), fls = this._grFloors(P), ga = fls.find((f) => f.ga), houses = fls.filter((f) => !f.ga);
-    const k = o.k || 1, a = 0.866 * k, b = 0.5 * k, pr = (x, y) => [a * x - a * y, b * x + b * y], H = (o.wall || 22) * k;
-    const box = (fl) => { const rs = (P.items || []).filter((i) => (i.t === "r" || (i.t === "o" && fl === (ga || {}).id)) && i.fl === fl); if (!rs.length) return null; return { x0: Math.min(...rs.map((r) => r.x)), y0: Math.min(...rs.map((r) => r.y)), x1: Math.max(...rs.map((r) => r.x + (r.w || 0))), y1: Math.max(...rs.map((r) => r.y + (r.h || 0))) }; };
-    const stack = [...(ga ? [ga] : []), ...houses].filter((f) => box(f.id)); if (!stack.length) return null;
-    const hb = houses.map((f) => box(f.id)).filter(Boolean), hy = hb.length ? Math.max(...hb.map((q) => { const c = [[q.x0, q.y0], [q.x1, q.y0], [q.x0, q.y1], [q.x1, q.y1]].map((p) => pr(p[0], p[1])[1]); return Math.max(...c) - Math.min(...c); })) : 200;
-    const LH = Math.max(90 * k, hy * (o.gap || 0.62));
-    let body = "", pts = [];
-    stack.forEach((f, idx) => {
-      const lvl = f.ga ? 0 : houses.indexOf(f) + (ga ? 0 : 0), dy = -lvl * LH, q = box(f.id);
-      const G = this._grDraw(P, f.id, { style: sty, labels: o.labels !== false, deco: false, dims: false, bare: true, doors: true, windows: true, layers: { licht: !!o.licht, sf: false, gt: false, mo: true, ht: false } });
-      const corners = [[q.x0, q.y0], [q.x1, q.y0], [q.x1, q.y1], [q.x0, q.y1]].map((p) => { const r = pr(p[0], p[1]); return [r[0], r[1] + dy]; });
-      corners.forEach((c) => pts.push(c, [c[0], c[1] - H]));
-      const slab = corners.map((c) => c.join(" ")).join("L"), th = 7 * k;
-      const side = `<path d="M${corners[1][0]} ${corners[1][1]}L${corners[2][0]} ${corners[2][1]}L${corners[2][0]} ${corners[2][1] + th}L${corners[1][0]} ${corners[1][1] + th}Z" fill="${sty === "hell" ? "#cbd5e1" : "#0b1424"}"/><path d="M${corners[2][0]} ${corners[2][1]}L${corners[3][0]} ${corners[3][1]}L${corners[3][0]} ${corners[3][1] + th}L${corners[2][0]} ${corners[2][1] + th}Z" fill="${sty === "hell" ? "#94a3b8" : "#070d18"}"/>`;
-      const shadow = idx ? `<path d="M${slab}Z" transform="translate(${10 * k} ${26 * k})" fill="#000" opacity=".28" filter="url(#dollblur)"/>` : "";
-      body += `<g class="grdl" data-act="grxdoll" data-k="${esc(f.id)}" style="cursor:pointer">${shadow}${f.ga ? "" : side}<g transform="matrix(${a} ${b} ${-a} ${b} 0 ${dy})">${G.svg}</g>`;
-      if (!f.ga) {   /* Wände hochziehen: Außenkanten der Räume, hinten zuerst */
-        const W = [];
-        (P.items || []).filter((i) => i.t === "r" && i.fl === f.id && !i.ds && this._grKind(i).k !== "aussen").forEach((r) => { const Q = this._grPoly(r); Q.forEach((p, j) => { const q2 = Q[(j + 1) % Q.length]; W.push([p, q2]); }); });
-        const key = (s) => `${Math.round(Math.min(s[0][0], s[1][0]))},${Math.round(Math.min(s[0][1], s[1][1]))},${Math.round(Math.max(s[0][0], s[1][0]))},${Math.round(Math.max(s[0][1], s[1][1]))}`, cnt = new Map();
-        W.forEach((s) => cnt.set(key(s), (cnt.get(key(s)) || 0) + 1));
-        W.sort((s1, s2) => (s1[0][0] + s1[0][1] + s1[1][0] + s1[1][1]) - (s2[0][0] + s2[0][1] + s2[1][0] + s2[1][1])).forEach((s) => {
-          const inner = cnt.get(key(s)) > 1, A1 = pr(...s[0]), A2 = pr(...s[1]), y1 = A1[1] + dy, y2 = A2[1] + dy, hh = inner ? H * 0.55 : H;
-          const dxs = s[1][0] - s[0][0], dys = s[1][1] - s[0][1], lightSide = Math.abs(dxs) > Math.abs(dys);
-          const fill = sty === "hell" ? (lightSide ? "#e2e8f0" : "#cbd5e1") : sty === "bauplan" ? (lightSide ? "#1e5ba8" : "#174a8a") : lightSide ? "#3b475c" : "#2b3547";
-          body += `<path d="M${A1[0]} ${y1}L${A2[0]} ${y2}L${A2[0]} ${y2 - hh}L${A1[0]} ${y1 - hh}Z" fill="${fill}" fill-opacity="${inner ? 0.55 : 0.82}" stroke="${sty === "hell" ? "#94a3b8" : "#5b6b84"}" stroke-width="${0.8 * k}"/>`;
-        });
-        const lp = corners[0], lab = `${f.n}`;
-        body += `<g pointer-events="none"><rect x="${lp[0] - 30 * k - lab.length * 4.2 * k}" y="${lp[1] - 13 * k - H}" width="${lab.length * 8.4 * k + 18 * k}" height="${24 * k}" rx="${12 * k}" fill="${sty === "hell" ? "#fff" : "#0b1220"}" stroke="var(--teal,#2dd4bf)" stroke-width="${1.2 * k}"/><text x="${lp[0] - 21 * k}" y="${lp[1] + 4 * k - H}" text-anchor="end" font-size="${12 * k}" font-weight="800" fill="${sty === "hell" ? "#0f172a" : "#e2e8f0"}">${esc(lab)}</text></g>`;
-      }
-      body += `</g>`;
-    });
-    const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]), m = 30 * k, vb = { x: Math.min(...xs) - m - 60 * k, y: Math.min(...ys) - m, w: Math.max(...xs) - Math.min(...xs) + 2 * m + 60 * k, h: Math.max(...ys) - Math.min(...ys) + 2 * m + 10 * k };
-    return { vb, svg: `<defs><filter id="dollblur"><feGaussianBlur stdDeviation="${8 * k}"/></filter></defs>${body}`, T };
-  }
-  _grDollMini(P) {
-    try { const D = this._grDoll(P, { k: 1, labels: false, wall: 26, gap: 0.55 }); if (!D) return this._grHouse(P); return `<svg class="grhs grdm" viewBox="${D.vb.x} ${D.vb.y} ${D.vb.w} ${D.vb.h}" aria-hidden="true">${D.svg}</svg>`; } catch (_) { return this._grHouse(P); }
-  }
   /* ---- Baukasten: Möbel/Außen */
   _grMobCat(cur, act, onlyOut) { const K = this._grMK(); return Object.entries(K.G).filter(([g]) => onlyOut == null || this._grOUT.has(g) === onlyOut).map(([g, [gn, gc]]) => `<div class="grtkg"><small style="color:${gc}">${gn}</small><div class="grseg">${K.L.filter((x) => x[2] === g).map((x) => `<button class="${cur === x[0] ? "on" : ""}" data-act="${act}" data-v="${x[0]}">${x[1]}</button>`).join("")}</div></div>`).join(""); }
   _grMobProps(sel) {
@@ -225,8 +184,6 @@
   }
   _grB10Act(a, b) {
     const v = b && b.dataset ? b.dataset.v : "", s = b && b.dataset ? Number(b.dataset.s || 0) : 0, k = b && b.dataset ? b.dataset.k : "";
-    if (a === "grxview") { this._grView = k === "3d" ? "3d" : "2d"; this._render(); return true; }
-    if (a === "grxdoll") { this._grFl = k; this._grView = "2d"; this._render(); return true; }
     if (a === "grxsunnow") { this._grSunH = null; this._render(); return true; }
     const ed = this._sfEd; if (!ed) return false;
     const P = ed.plan;
