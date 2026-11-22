@@ -2,6 +2,34 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b56] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.5 – neue, detaillierte Optik des Grundrisses.
+
+### Neu
+- **Wände mit Stärke:** Außenwände sind kräftig, Innenwände schmaler, mit leichtem Schatten. Freie Wände aus dem Baukasten werden passend dazu gezeichnet.
+- **Böden je Raumart**, erkannt am Namen oder Bereich:
+  - Parkett in Wohn-, Schlaf-, Kinder- und Arbeitszimmern
+  - Fliesen in Bad, WC, Küche und Flur
+  - Pflaster auf Terrasse, Balkon und in der Garage, mit gestricheltem Rand
+  - Schraffur in Technik-, Abstell- und Kellerräumen
+  - Teppich sonst
+- **Türen** mit Öffnung in der Wand, Türblatt und Schwenkbogen. Außentüren sind farbig und tragen einen Pfeil, Durchgänge zeigen nur die Laibung.
+- **Fenster** mit Rahmen und Glas. Ist ein Fensterkontakt zugeordnet, wird ein offenes Fenster gelb und aufgeklappt gezeigt.
+- **Treppen** mit Stufen und Pfeil in Laufrichtung.
+- **Raumbeschriftung** mit Symbol (Sofa, Bett, Topf, Badewanne …), Name und Fläche in m². Die Beschriftung sucht sich einen freien Platz und weicht Lampen, Meldern und Türen aus, auch in L-förmigen Räumen.
+- **Maße** zum Einschalten: Maßketten für Breite und Tiefe der Etage und Raummaße wie „7 × 5,5 m“.
+- **Nordpfeil und Maßstab** (2 m oder 5 m).
+- **Drei Stile:**
+  - „Modern“ (dunkel)
+  - „Bauplan“ (blau mit weißen, schraffierten Wänden)
+  - „Hell“ (Papier mit schwarzen Wänden)
+  Stil und Maße merkt sich der Browser.
+- Leuchtende Lampen haben einen weichen Lichtschein in ihrer Farbe. Melder tragen ihr Schild-Symbol.
+
+### Technik
+- Neuer Teil `12m3-grundriss-optik.js` mit `_grDraw(Plan, Etage, Optionen)`, `_grKind`, `_grAreaM2` und `_grTheme`. Der Reiter „Plan“ in Modul 0 nutzt ihn. Baukasten, Wärmekarte und Lichtkarte bleiben unverändert.
+
 ## [2026.11.4b55] - 2026-11-22
 
 **Modul 18 · Licht & Lampen** v0.8 Build 8 – Regeln: das Licht reagiert von selbst. Addon `licht` 0.8.0.

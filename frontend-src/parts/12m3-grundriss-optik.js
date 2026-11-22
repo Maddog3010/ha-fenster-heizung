@@ -1,0 +1,116 @@
+  /* ================= Modul 0 · Grundriss-Optik (v0.5) =================
+     Detaillierte Darstellung des Plans: Wände mit Stärke (Außenwände kräftiger als Innenwände), Böden je Raumart (Parkett, Fliesen,
+     Teppich, Pflaster draußen), Türen mit Türblatt und Schwenkbogen, Fenster mit Rahmen und Glas (offen = gelb, aus dem Kontakt),
+     Treppen mit Stufen und Laufrichtung, Raumnamen mit Symbol und Fläche in m², Maßketten, Nordpfeil und Maßstab. Drei Stile:
+     „Modern“ (dunkel), „Bauplan“ (blau mit weißen Linien) und „Hell“ (Papier). Stil und „Maße“ merkt sich der Browser. */
+  _grStyle() { let s = this._grSty; if (!s) { try { s = localStorage.getItem("fh_gr_style"); } catch (_) { /* privater Modus */ } } return ["modern", "bauplan", "hell"].includes(s) ? s : "modern"; }
+  _grDimsOn() { if (this._grDim == null) { try { this._grDim = localStorage.getItem("fh_gr_dims") === "1"; } catch (_) { this._grDim = false; } } return this._grDim; }
+  _grTheme(s) {
+    return {
+      modern: { bg: "#0d1524", grid: "#ffffff0d", gridDot: true, wall: "#d7dee8", wallIn: "#b9c3d1", shadow: true, text: "#f1f5f9", sub: "#94a3b8", leaf: "#e2e8f0", arc: "#64748b", glass: "#7dd3fc", frame: "#e2e8f0", open: "#fbbf24", dim: "#64748b", stair: "#94a3b8", accent: "#2dd4bf",
+        fl: { holz: ["#33291f", "#3f3226", "#2c241b"], fliese: ["#1c2633", "#2a3747"], teppich: ["#262a3a", "#2f3448"], aussen: ["#18241f", "#22322a"], technik: ["#22262d", "#2c3139"] } },
+      bauplan: { bg: "#0a3566", grid: "#ffffff12", gridDot: false, wall: "url(#U_hatchW)", wallIn: "url(#U_hatchW)", wallStroke: "#e0f2fe", shadow: false, text: "#ffffff", sub: "#bae6fd", leaf: "#ffffff", arc: "#93c5fd", glass: "#bae6fd", frame: "#ffffff", open: "#fde047", dim: "#bae6fd", stair: "#e0f2fe", accent: "#fde047",
+        fl: { holz: ["#0a3566", "#ffffff10", "#0a3566"], fliese: ["#0a3566", "#ffffff14"], teppich: ["#0a3566", "#ffffff0a"], aussen: ["#0a3566", "#ffffff12"], technik: ["#0a3566", "#ffffff0d"] } },
+      hell: { bg: "#f7f4ee", grid: "#00000009", gridDot: false, wall: "#1f2430", wallIn: "#3b4252", shadow: true, text: "#111827", sub: "#6b7280", leaf: "#111827", arc: "#9ca3af", glass: "#38bdf8", frame: "#111827", open: "#d97706", dim: "#6b7280", stair: "#4b5563", accent: "#0d9488",
+        fl: { holz: ["#ead9bf", "#dcc6a4", "#e3cfb1"], fliese: ["#e8edf2", "#cfd7e0"], teppich: ["#ece7f4", "#e0d9ee"], aussen: ["#e4e9dc", "#cfd9c3"], technik: ["#e7e7e4", "#d5d5d0"] } },
+    }[s];
+  }
+  /* Raumart aus Name oder Bereich: Boden und Symbol */
+  _grKind(r) {
+    const a = this._grArea ? this._grArea(r) : null, n = `${r.n || ""} ${a ? a.name || "" : ""}`.toLowerCase();
+    const K = [
+      [/terrasse|balkon|garten|loggia|einfahrt|hof|carport/, "aussen", "tree"], [/garage/, "aussen", "car"],
+      [/bad|dusche|wc|toilette|gäste-wc|gaeste/, "fliese", /wc|toilette/.test(n) ? "toilet" : "bath"], [/küche|kueche|koch/, "fliese", "pot"],
+      [/hwr|hauswirtschaft|wasch|technik|heiz|keller|abstell|vorrat|speis/, "technik", /wasch/.test(n) ? "laundry" : /heiz|technik/.test(n) ? "flame" : "package"],
+      [/schlaf|eltern/, "holz", "bed"], [/kind|baby/, "holz", "baby"], [/büro|buero|arbeit|office/, "holz", "desk"], [/gäste|gast/, "holz", "bed"],
+      [/wohn|lounge|tv/, "holz", "sofa"], [/ess/, "holz", "dining"], [/flur|diele|eingang|gang|treppenhaus/, "fliese", "door"], [/ankleide|garderobe/, "teppich", "wardrobe"],
+    ];
+    const hit = K.find(([rx]) => rx.test(n));
+    return hit ? { k: hit[1], i: hit[2] } : { k: "teppich", i: "home" };
+  }
+  _grPoly(r) { return r.pts && r.pts.length >= 3 ? r.pts : [[r.x, r.y], [r.x + r.w, r.y], [r.x + r.w, r.y + r.h], [r.x, r.y + r.h]]; }
+  _grAreaM2(r, sc) { const p = this._grPoly(r); let s = 0; p.forEach((a, i) => { const b = p[(i + 1) % p.length]; s += a[0] * b[1] - b[0] * a[1]; }); return Math.abs(s) / 2 / (sc * sc); }
+  _grCen(r) { if (!(r.pts && r.pts.length >= 3)) return [r.x + r.w / 2, r.y + r.h / 2]; const n = r.pts.length; return [r.pts.reduce((a, p) => a + p[0], 0) / n, r.pts.reduce((a, p) => a + p[1], 0) / n]; }
+  /* Der ganze Plan einer Etage als SVG. o: { style, dims, layers: {licht, sf}, narrow } → { vb, svg } */
+  _grDraw(P, fl, o) {
+    const T = this._grTheme(o.style), items = (P.items || []).filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r"), sc = P.scale > 0 ? P.scale : 40;
+    const u = "gd" + (this.constructor._gdN = ((this.constructor._gdN || 0) + 1) % 1e6) + "_", st = this._hass.states, NF = o.narrow ? 1.6 : 1, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: 1 });
+    const pathOf = (r) => "M" + this._grPoly(r).map((p) => p[0] + " " + p[1]).join("L") + "Z";
+    const bx = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
+    const pad = o.dims ? 70 : 40, vb = { x: bx.x0 - pad, y: bx.y0 - pad, w: bx.x1 - bx.x0 + pad * 2, h: bx.y1 - bx.y0 + pad * 2 + 34 };
+    const W = (T.wall || "").replace("U_", u), WI = (T.wallIn || "").replace("U_", u), kinds = new Map(rs.map((r) => [r.id, this._grKind(r)]));
+    /* Muster: Böden in Plan-Einheiten (40 = 1 m) */
+    const F = T.fl;
+    let d = `<defs>
+      <pattern id="${u}holz" width="180" height="40" patternUnits="userSpaceOnUse"><rect width="180" height="40" fill="${F.holz[0]}"/><rect y="10" width="180" height="10" fill="${F.holz[2]}"/><rect y="30" width="180" height="10" fill="${F.holz[2]}"/><path d="M0 10H180M0 20H180M0 30H180M0 40H180M40 0V10M130 0V10M85 10V20M175 10V20M20 20V30M110 20V30M65 30V40M155 30V40" stroke="${F.holz[1]}" stroke-width="1"/></pattern>
+      <pattern id="${u}fliese" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="${F.fliese[0]}"/><path d="M0 0.5H24M0.5 0V24" stroke="${F.fliese[1]}" stroke-width="1.2"/></pattern>
+      <pattern id="${u}teppich" width="10" height="10" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="${F.teppich[0]}"/><circle cx="5" cy="5" r="1" fill="${F.teppich[1]}"/></pattern>
+      <pattern id="${u}aussen" width="40" height="20" patternUnits="userSpaceOnUse"><rect width="40" height="20" fill="${F.aussen[0]}"/><path d="M0 0.5H40M0 10.5H40M20.5 0V10M0.5 10V20M40 10V20" stroke="${F.aussen[1]}" stroke-width="1.4"/></pattern>
+      <pattern id="${u}technik" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="16" height="16" fill="${F.technik[0]}"/><path d="M0 0.5H16" stroke="${F.technik[1]}" stroke-width="1"/></pattern>
+      <pattern id="${u}hatchW" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="${T.wallStroke ? "#0a3566" : T.bg}"/><path d="M0 0V6" stroke="${T.wallStroke || T.wall}" stroke-width="2.2"/></pattern>
+      ${T.gridDot ? `<pattern id="${u}grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="${T.grid}"/></pattern>` : `<pattern id="${u}grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="${T.grid}" stroke-width="1"/></pattern>`}
+      <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="${o.style === "hell" ? 3 : 6}" stdDeviation="${o.style === "hell" ? 4 : 8}" flood-color="#000" flood-opacity="${o.style === "hell" ? 0.18 : 0.55}"/></filter>
+      <marker id="${u}ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="${T.stair}"/></marker>
+    </defs>
+    <rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/><rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="url(#${u}grid)"/>`;
+    const bg = (P.bg || {})[fl]; if (bg) d += `<image href="${esc(bg)}" x="${bx.x0}" y="${bx.y0}" width="${bx.x1 - bx.x0}" height="${bx.y1 - bx.y0}" opacity=".22" preserveAspectRatio="xMidYMid meet"/>`;
+    const out = rs.filter((r) => kinds.get(r.id).k === "aussen" || r.ds), ins = rs.filter((r) => !out.includes(r));
+    /* 1) Außenflächen: Pflaster, gestrichelter Rand */
+    out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${T.sub}" stroke-width="2" stroke-dasharray="8 6" opacity=".9"/>`; });
+    /* 2) Wände: dicke Kontur aller Innenräume (wird zur Außenwand), darüber Böden mit dünner Kontur (Innenwand). Gemeinsame Kanten bleiben dünn. */
+    d += `<g${T.shadow ? ` filter="url(#${u}sh)"` : ""}>${ins.map((r) => `<path d="${pathOf(r)}" fill="${o.style === "bauplan" ? "#0a3566" : T.wallIn.startsWith("url") ? T.bg : T.wallIn}" stroke="${W}" stroke-width="16" stroke-linejoin="miter"/>`).join("")}</g>`;
+    d += ins.map((r) => `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${WI}" stroke-width="6" stroke-linejoin="miter"/>`).join("");
+    /* 3) Freie Wände */
+    items.filter((i) => i.t === "w").forEach((w) => { d += `<line x1="${w.x}" y1="${w.y}" x2="${w.x2}" y2="${w.y2}" stroke="${WI}" stroke-width="7" stroke-linecap="square"/>`; });
+    /* 4) Türen, Durchgänge, Fenster, Treppen, Text */
+    const floorAt = (x, y) => { const r = ins.find((q) => (this._sfInRoom ? this._sfInRoom(q, x, y + 10) || this._sfInRoom(q, x, y - 10) : x > q.x && x < q.x + q.w && y > q.y - 10 && y < q.y + q.h + 10)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
+    items.forEach((i) => {
+      const rot = i.r ? `rotate(${i.r} ${i.x} ${i.y})` : "", mir = i.mh || i.mv ? ` translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})` : "";
+      if (i.t === "d") {
+        const gap = `<rect x="${i.x - 16}" y="${i.y - 9}" width="32" height="18" fill="${floorAt(i.x, i.y)}"/>`;
+        if (i.dg) d += `<g transform="${rot}">${gap}<path d="M${i.x - 16} ${i.y - 9}v18M${i.x + 16} ${i.y - 9}v18" stroke="${WI}" stroke-width="3"/></g>`;
+        else d += `<g transform="${rot}${mir}">${gap}<path d="M${i.x - 15} ${i.y}V${i.y - 30}" stroke="${i.ex === 1 ? T.accent : T.leaf}" stroke-width="2.6" stroke-linecap="round"/><path d="M${i.x + 15} ${i.y}A30 30 0 0 0 ${i.x - 15} ${i.y - 30}" fill="none" stroke="${T.arc}" stroke-width="1.3" stroke-dasharray="4 3"/>${i.ex === 1 ? `<path d="M${i.x - 6} ${i.y + 16}l6 6l6-6" fill="none" stroke="${T.accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : ""}</g>`;
+      } else if (i.t === "f") {
+        const open = !!(i.e && st[i.e] && st[i.e].state === "on"), c = open ? T.open : T.glass;
+        d += `<g transform="${rot}"><title>Fenster${i.e ? ` · ${esc(this._wzName(i.e))} · ${open ? "offen" : "zu"}` : ""}</title><rect x="${i.x - 18}" y="${i.y - 6}" width="36" height="12" fill="${T.bg}"/><rect x="${i.x - 18}" y="${i.y - 6}" width="36" height="12" fill="none" stroke="${T.frame}" stroke-width="1.6"/><path d="M${i.x - 18} ${i.y}H${i.x + 18}" stroke="${c}" stroke-width="3"/>${open ? `<path d="M${i.x - 16} ${i.y - 6}L${i.x - 4} ${i.y - 20}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>` : ""}</g>`;
+      } else if (i.t === "s") {
+        const w = i.w || 60, h = i.h || 90, n = Math.max(5, Math.round(h / 14)), vert = h >= w;
+        const steps = Array.from({ length: n - 1 }, (_, k) => vert ? `M${i.x} ${i.y + (k + 1) * h / n}h${w}` : `M${i.x + (k + 1) * w / n} ${i.y}v${h}`).join("");
+        d += `<g transform="${rot}"><rect x="${i.x}" y="${i.y}" width="${w}" height="${h}" fill="${T.bg}" stroke="${T.stair}" stroke-width="1.6"/><path d="${steps}" stroke="${T.stair}" stroke-width="1" opacity=".8"/>${vert ? `<path d="M${i.x + w / 2} ${i.y + h - 8}V${i.y + 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>` : `<path d="M${i.x + 8} ${i.y + h / 2}H${i.x + w - 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>`}</g>`;
+      } else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" font-size="${12 * NF}" font-style="italic" fill="${T.sub}">${esc(i.n || "")}</text>`;
+    });
+    /* 6) Ebenen: Lampen (Modul 18) und Melder (Modul 11) */
+    const q = o.narrow ? 1.4 : 1;
+    if (o.layers.licht) items.filter((i) => i.t === "l" && i.e).forEach((i, n) => {
+      const s2 = st[i.e], on = !!(s2 && s2.state === "on"), c = on && this._liLampHex ? this._liLampHex(i.e) : "#64748b", g = `${u}lg${n}`;
+      d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><circle cx="${i.x}" cy="${i.y}" r="${46 * q}" fill="url(#${g})"/>` : ""}
+        ${i.k === "streifen" ? `<rect x="${i.x - 22 * q}" y="${i.y - 3.5 * q}" width="${44 * q}" height="${7 * q}" rx="${3.5 * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.4"${i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : ""}/>` : `<circle cx="${i.x}" cy="${i.y}" r="${(i.k === "spot" ? 5 : 8) * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.8"/>`}</g>`;
+    });
+    if (o.layers.sf) items.filter((i) => i.t === "m").forEach((i) => {
+      const s2 = i.e && st[i.e], al = !!(s2 && s2.state === "on");
+      d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${10 * q}" fill="${o.style === "hell" ? "#fff" : "#111827"}" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><g transform="translate(${i.x - 6 * q} ${i.y - 6 * q}) scale(${(12 * q) / 24})" fill="none" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
+    });
+    /* 5) Raumnamen mit Symbol und Fläche */
+    rs.forEach((r) => {
+      const [cx0, cy0] = this._grCen(r), obs = items.filter((i) => ["l", "m", "d", "s"].includes(i.t));   /* Platz für die Beschriftung suchen: im Raum, nicht auf Lampen, Meldern, Türen */
+      const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y);
+      const free = (x, y) => y - 44 > r.y + 6 && y + 22 < r.y + r.h - 6 && inR(x, y - 34) && inR(x - 44, y + 4) && inR(x + 44, y + 4) && inR(x - 36, y + 22) && inR(x + 36, y + 22) && !obs.some((i) => Math.abs(i.x - x) < 72 && i.y > y - 48 && i.y < y + 28);
+      const cand = [];
+      [cx0, r.x + r.w * 0.3, r.x + r.w * 0.7].forEach((x) => [0, 40, -40, 70, -70, 100, -100].forEach((o2) => cand.push([x, cy0 + o2])));
+      const [cx, cy] = cand.find(([x, y]) => free(x, y)) || [cx0, cy0], k = kinds.get(r.id), m2 = this._grAreaM2(r, sc), small = Math.min(r.w, r.h) < 80, fz = Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1);
+      const nm = r.n || (this._grArea && this._grArea(r) ? this._grArea(r).name : "Raum"), ico = !small && ICONS[k.i] ? `<g transform="translate(${cx - 10 * NF} ${cy - fz - 22 * NF}) scale(${(20 * NF) / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
+      const plate = o.style === "modern" ? `<rect x="${cx - Math.min(r.w - 16, nm.length * fz * 0.62 + 18) / 2}" y="${cy - fz - 2}" width="${Math.min(r.w - 16, nm.length * fz * 0.62 + 18)}" height="${fz * 2.4 + 6}" rx="${fz * 0.6}" fill="#0b1220" opacity=".55"/>` : "";
+      d += `<g pointer-events="none">${ico}${plate}<text x="${cx}" y="${cy + fz * 0.15}" text-anchor="middle" font-size="${fz}" font-weight="700" fill="${T.text}">${esc(nm)}</text>
+        <text x="${cx}" y="${cy + fz * 1.3}" text-anchor="middle" font-size="${fz * 0.78}" fill="${T.sub}">${m2 >= 0.5 ? `${f1(m2)} m²` : ""}${o.dims && !(r.pts && r.pts.length >= 3) ? ` · ${f1(r.w / sc)} × ${f1(r.h / sc)} m` : ""}</text></g>`;
+    });
+    /* 7) Maßketten außen, Nordpfeil und Maßstab */
+    if (o.dims && rs.length) {
+      const y = bx.y0 - 38, x = bx.x0 - 38, wm = (bx.x1 - bx.x0) / sc, hm = (bx.y1 - bx.y0) / sc, tick = (x1, y1) => `<path d="M${x1 - 5} ${y1 + 5}L${x1 + 5} ${y1 - 5}" stroke="${T.dim}" stroke-width="1.6"/>`;
+      d += `<g font-size="${12 * NF}" fill="${T.dim}"><path d="M${bx.x0} ${y}H${bx.x1}M${bx.x0} ${y - 8}V${bx.y0 - 12}M${bx.x1} ${y - 8}V${bx.y0 - 12}" stroke="${T.dim}" stroke-width="1"/>${tick(bx.x0, y)}${tick(bx.x1, y)}<text x="${(bx.x0 + bx.x1) / 2}" y="${y - 6}" text-anchor="middle">${f1(wm)} m</text>
+        <path d="M${x} ${bx.y0}V${bx.y1}M${x - 8} ${bx.y0}H${bx.x0 - 12}M${x - 8} ${bx.y1}H${bx.x0 - 12}" stroke="${T.dim}" stroke-width="1"/>${tick(x, bx.y0)}${tick(x, bx.y1)}<text x="${x - 6}" y="${(bx.y0 + bx.y1) / 2}" text-anchor="middle" transform="rotate(-90 ${x - 6} ${(bx.y0 + bx.y1) / 2})">${f1(hm)} m</text></g>`;
+    }
+    const sbM = (bx.x1 - bx.x0) / sc > 12 ? 5 : 2, sx = bx.x1 - sbM * sc, sy = bx.y1 + 30;
+    d += `<g fill="${T.dim}" font-size="${11 * NF}"><rect x="${sx}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="${T.dim}"/><rect x="${sx + sbM * sc / 2}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="none" stroke="${T.dim}"/><text x="${sx}" y="${sy - 5}">0</text><text x="${bx.x1}" y="${sy - 5}" text-anchor="end">${sbM} m</text>
+      <g transform="translate(${bx.x0 + 10} ${sy - 2})"><path d="M0 -14L6 4L0 0L-6 4Z" fill="${T.text}"/><text x="12" y="2" font-weight="700" fill="${T.text}">N</text></g></g>`;
+    return { vb, svg: d };
+  }
