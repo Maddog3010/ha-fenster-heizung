@@ -292,12 +292,36 @@ class SponsorManager:
             return g
         return g if str(g.get("bis") or "") >= str(k.get("bis") or "") else k
 
+    def base_tier(self) -> str:
+        """Stufe ohne Tagesschlüssel aus dem Adventskalender: '' · sponsor · max (Entwickler-Zugang = max)."""
+        st = self.combined()
+        if st.get("ok"):
+            return st.get("tier", "sponsor")
+        return "max" if self.priv and not self.dev_off else ""
+
+    def push(self) -> None:
+        """Dashboard informieren, dass sich die Stufe geändert hat (Tagesschlüssel)."""
+        try:
+            self.hass.bus.async_fire("fenster_heizung_sponsor", {"art": "stufe"})
+        except Exception:  # noqa: BLE001
+            pass
+
+    def _tag_stufe(self) -> str | None:
+        adv = self.hass.data.get("fenster_heizung", {}).get("advent") if self.hass is not None else None
+        try:
+            return adv.tag_stufe() if adv is not None else None
+        except Exception:  # noqa: BLE001 - der Kalender darf das Sponsoring nie stören
+            return None
+
     def snapshot(self, admin: bool = False) -> dict[str, Any]:
         st = self.combined()
         active = bool(st.get("ok"))
         if not active and self.priv and not self.dev_off:
             st = {"state": "dev", "ok": True, "name": "Entwickler", "bis": "", "days": None, "tier": "max"}
             active = True
+        from .tagesschluessel import tag_upgrade
+
+        st, active = tag_upgrade(st, active, self._tag_stufe(), dt_util.now().date().isoformat())
         tier = st.get("tier", "sponsor") if active else ""
         out: dict[str, Any] = {
             "url": SPONSOR_URL, "state": st["state"], "active": active, "name": st.get("name", ""), "tier": tier,

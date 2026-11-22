@@ -51,4 +51,17 @@ const CSS_SAI = `
 .advTy.t-tipp{background:#1f4d3a;color:#8ee0b0}.advTy.t-statistik{background:#1e3d57;color:#8cc8f5}.advTy.t-deko{background:#4d2a1f;color:#f5b38c}.advTy.t-funktion{background:#3b2557;color:#c9a6f5}.advTy.t-raetsel{background:#4d4219;color:#f4d58d}.advTy.t-besonders{background:#5a1e2a;color:#ff9fb0}
 .advDb{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 @media(max-width:520px){.advG{gap:5px;grid-template-columns:repeat(5,minmax(0,1fr))}.door2{font-size:.9rem;border-radius:8px}}
+.advTag{display:flex;justify-content:space-between;align-items:center;gap:8px;background:linear-gradient(90deg,#4d4219,#2a2a14);border:1px solid #f4d58d55;border-radius:10px;padding:7px 11px;margin:0 0 10px;font-size:.86rem}.advTag b{color:#f4d58d}
+.advDanke{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;border:1px solid var(--line);border-radius:12px;padding:9px 11px;margin:0 0 10px;font-size:.86rem}
+.advKey,.advBon{border:1px solid #f4d58d66;background:color-mix(in srgb,#f4d58d 9%,transparent);border-radius:12px;padding:10px 12px;margin:0 auto 12px;max-width:460px;display:flex;flex-direction:column;gap:6px;align-items:center}
+.advKey.on{border-color:#3fa37a;background:color-mix(in srgb,#3fa37a 12%,transparent)}
+.advKey code{font-family:ui-monospace,monospace;font-size:1rem;letter-spacing:1px;background:color-mix(in srgb,var(--card) 70%,#000);padding:6px 10px;border-radius:8px}
+.advKey small,.advBon small{color:var(--mut)}
+.advSt b{display:block;font-size:1.05rem}.advSt small{color:var(--mut)}
+.advSg{display:grid;grid-template-columns:repeat(8,minmax(0,40px));gap:6px;margin-top:10px}.advSg .door2{font-size:.85rem}
+.door2.st{background:#4d4219;border-color:#f4d58d88;color:#f4d58d}
+.advDorf svg{display:block;width:100%;max-width:440px;margin-bottom:10px}
+.advLi{animation:saiTw 3.2s ease-in-out infinite;animation-delay:calc(var(--i) * -.29s)}@media(prefers-reduced-motion:reduce){.advLi{animation:none}}
+.advCode{width:100%;box-sizing:border-box;font-family:ui-monospace,monospace;font-size:.8rem;background:color-mix(in srgb,var(--card) 70%,#000);color:inherit;border:1px solid var(--line);border-radius:10px;padding:8px;margin:8px 0}
+@media(max-width:520px){.advSg{grid-template-columns:repeat(6,minmax(0,1fr))}}
 `;

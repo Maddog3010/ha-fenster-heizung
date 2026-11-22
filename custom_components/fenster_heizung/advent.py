@@ -10,19 +10,22 @@ Läuft im Weihnachts-Theme „Datum simulieren“ (nur Entwickler), gilt dessen 
 im Arbeitsspeicher und sind mit dem Ende der Simulation wieder zu. Der echte Stand bleibt unberührt.
 
 Beim Öffnen kommt das Ereignis strom_waerme_advent_geoeffnet (tag, typ, titel, jahr, benutzer) für eigene Automationen.
-Die reine Logik oben braucht kein Home Assistant und ist in tests/test_advent.py geprüft.
+Build 3: Varianten C (Sterne, Sponsor) und D (Hausfluss-Dorf, Sponsor Max), Farbsets und Schneefall Mittel/Stark (Sponsor),
+persönliche Tagesschlüssel an Tag 6/13/20/24 (tagesschluessel.py), Kerzen-Erinnerung an Adventssonntagen (Modul 11).
+Die reine Logik oben braucht kein Home Assistant und ist in tests/test_advent.py und tests/test_tagesschluessel.py geprüft.
 """
 from __future__ import annotations
 
 import logging
 import pathlib
 import re
-from datetime import date, datetime
+from datetime import date, timedelta
 from typing import Any
 
 from homeassistant.util import dt as dt_util
 
 from .backup import SafeStore
+from . import tagesschluessel as TS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,9 +33,11 @@ SCHEMA = 1
 EVENT = "strom_waerme_advent_geoeffnet"
 SIGNAL = "fenster_heizung_advent"
 TYPEN = ("tipp", "statistik", "deko", "funktion", "raetsel", "besonders")
-VARIANTEN = ("A", "B")
+VARIANTEN = ("A", "B", "C", "D")  # C: Sponsor, D: Sponsor Max
 STAENDE = ("gemeinsam", "benutzer")
-SCHNEE = ("aus", "leicht")
+SCHNEE = ("aus", "leicht", "mittel", "stark")  # mittel/stark: Sponsor
+FARBSETS = ("klassisch", "eis", "gold")  # eis/gold: Sponsor
+CODES_URL = "https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/advent_codes.json"
 DIR = pathlib.Path(__file__).parent / "advent"
 _NOTIFY = re.compile(r"^notify\.[a-z0-9_]+$")
 _TIME = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
@@ -103,7 +108,8 @@ def datei_fuer(jahr: int, vorhanden: list[int]) -> int | None:
 
 
 def default_cfg() -> dict[str, Any]:
-    return {"variante": "A", "stand": GEMEINSAM, "schnee": "aus", "notify": {"on": False, "zeit": "07:00", "dienst": ""}}
+    return {"variante": "A", "stand": GEMEINSAM, "schnee": "aus", "farbset": "klassisch", "kerzen": True,
+            "notify": {"on": False, "zeit": "07:00", "dienst": ""}}
 
 
 def clean_cfg(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -116,6 +122,10 @@ def clean_cfg(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
         c["stand"] = r["stand"]
     if r.get("schnee") in SCHNEE:
         c["schnee"] = r["schnee"]
+    if r.get("farbset") in FARBSETS:
+        c["farbset"] = r["farbset"]
+    if isinstance(r.get("kerzen"), bool):
+        c["kerzen"] = r["kerzen"]
     n = r.get("notify") if isinstance(r.get("notify"), dict) else {}
     if isinstance(n.get("on"), bool):
         c["notify"]["on"] = n["on"]
@@ -124,6 +134,11 @@ def clean_cfg(raw: Any, old: dict[str, Any] | None = None) -> dict[str, Any]:
     if isinstance(n.get("dienst"), str) and (n["dienst"] == "" or _NOTIFY.match(n["dienst"])):
         c["notify"]["dienst"] = n["dienst"]
     return c
+
+
+def sterne(offen: dict[str, str], jahr: int) -> list[int]:
+    """Variante C: ein Stern für jedes Türchen, das an seinem eigenen Tag geöffnet wurde."""
+    return sorted(int(k) for k, v in offen.items() if str(v)[:10] == f"{jahr}-12-{int(k):02d}")
 
 
 def clean_offen(raw: Any) -> dict[str, str]:
@@ -147,6 +162,13 @@ class AdventManager:
         self._dateien: list[int] = []
         self._unsubs: list = []
         self._notified = ""
+        self.tk: dict[str, Any] = {}  # aktivierter Tagesschlüssel {"tag": "2026-12-06", "stufe": "sponsor", "gesehen": False}
+        self.letztes = ""  # höchstes je gesehenes echtes Datum (Uhr-Schutz)
+        self.codes: dict[str, dict[str, str]] = {}  # aus advent_codes.json (GitHub), zuletzt geladen
+        self.install_id = ""
+        self._home: int | None = None
+        self._file_codes: dict[str, dict[str, str]] = {}
+        self._kerzen_tag = ""
 
     async def async_start(self) -> None:
         d = await self._store.async_load()
@@ -155,11 +177,24 @@ class AdventManager:
             for j, users in (d.get("jahre") or {}).items() if isinstance(d.get("jahre"), dict) else []:
                 if str(j).isdigit() and isinstance(users, dict):
                     self.jahre[str(j)] = {str(u)[:64]: clean_offen(o) for u, o in users.items() if _UID.match(str(u))}
+            tk = d.get("tk") if isinstance(d.get("tk"), dict) else {}
+            if re.match(r"^\d{4}-\d{2}-\d{2}$", str(tk.get("tag") or "")) and tk.get("stufe") in ("sponsor", "max"):
+                self.tk = {"tag": tk["tag"], "stufe": tk["stufe"], "gesehen": bool(tk.get("gesehen"))}
+            self.letztes = str(d.get("letztes") or "")[:10] if re.match(r"^\d{4}-\d{2}-\d{2}$", str(d.get("letztes") or "")) else ""
+            self.codes = TS.clean_codes(d.get("codes"))
         await self._load_files()
         if self.hass is not None:
-            from homeassistant.helpers.event import async_track_time_change
+            from homeassistant.helpers.event import async_call_later, async_track_time_change, async_track_time_interval
 
+            try:
+                from homeassistant.helpers import instance_id
+
+                self.install_id = await instance_id.async_get(self.hass)
+            except Exception:  # noqa: BLE001 - ohne ID keine Tagesschlüssel, sonst läuft alles
+                _LOGGER.debug("Installations-ID nicht verfügbar", exc_info=True)
             self._unsubs.append(async_track_time_change(self.hass, self._tick, second=20))
+            self._unsubs.append(async_call_later(self.hass, 45, self._codes_cb))
+            self._unsubs.append(async_track_time_interval(self.hass, self._codes_cb, timedelta(hours=6)))
 
     async def _load_files(self) -> None:
         def _read() -> dict[int, Any]:
@@ -176,6 +211,7 @@ class AdventManager:
 
         raw = await self.hass.async_add_executor_job(_read) if self.hass is not None else _read()
         self._inhalt = {j: parse_inhalt(r) for j, r in raw.items()}
+        self._file_codes = TS.clean_codes({str(j): (r or {}).get("codes") for j, r in raw.items() if isinstance(r, dict)})
         self._dateien = sorted(j for j, v in self._inhalt.items() if v)
 
     def async_stop(self) -> None:
@@ -184,7 +220,7 @@ class AdventManager:
         self._unsubs = []
 
     def _save(self) -> None:
-        self._store.async_delay_save(lambda: {"v": SCHEMA, "cfg": self.cfg, "jahre": self.jahre}, 1)
+        self._store.async_delay_save(lambda: {"v": SCHEMA, "cfg": self.cfg, "jahre": self.jahre, "tk": self.tk, "letztes": self.letztes, "codes": self.codes}, 1)
 
     # ---- Zeit (Datum simulieren aus dem Weihnachts-Theme)
     def _saison(self):
@@ -233,8 +269,112 @@ class AdventManager:
             if str(tag) in offen:
                 row["am"] = offen[str(tag)]
             tueren.append(row)
+        tier = self.base_tier()
+        key = self.key_heute(tier)
+        if key:
+            row = tueren[heute.day - 1]
+            if row["st"] in ("heute", "offen"):
+                row["key"] = key
         return {"cfg": self.cfg, "jahr": jahr, "heute": heute.isoformat(), "sichtbar": sichtbar(heute), "sim": self.sim(),
-                "dev": bool(dev), "tueren": tueren, "offen": len(offen), "haben_inhalt": bool(inh)}
+                "dev": bool(dev), "tueren": tueren, "offen": len(offen), "haben_inhalt": bool(inh), "tier": tier,
+                "sterne": sterne(offen, jahr), "tag": self.tag_info(), "danke": self.danke_offen()}
+
+    # ---- Build 3: Stufe, Tagesschlüssel, Uhr-Schutz
+    def echt(self) -> date:
+        return dt_util.now().date()
+
+    def base_tier(self) -> str:
+        """Sponsor-Stufe ohne Tagesschlüssel: '' · sponsor · max (Entwickler zählt als max)."""
+        spn = self.hass.data.get("fenster_heizung", {}).get("sponsor") if self.hass is not None else None
+        try:
+            return spn.base_tier() if spn is not None else ""
+        except Exception:  # noqa: BLE001
+            return ""
+
+    def codes_fuer(self, jahr: int) -> dict[str, str]:
+        return {**self._file_codes.get(str(jahr), {}), **self.codes.get(str(jahr), {})}
+
+    def key_heute(self, tier: str | None = None) -> dict[str, Any] | None:
+        """Schlüssel für das heutige Türchen, wenn dieser Nutzer heute einen bekommt (sonst None)."""
+        heute = self.heute()
+        st = TS.wer_bekommt(heute, self.base_tier() if tier is None else tier)
+        code = self.codes_fuer(heute.year).get(TS.mmtt(heute)) if st else None
+        if not st or not code or not self.install_id:
+            return {"fehlt": True, "stufe": TS.STUFE[st]} if st else None
+        return {"text": TS.schluessel_fuer(self.install_id, heute, code), "stufe": TS.STUFE[st], "aktiv": self.tag_stufe() == TS.STUFE[st]}
+
+    def tag_stufe(self) -> str | None:
+        """Heute gültiger Tagesschlüssel: 'sponsor' · 'max' · None. Bei zurückgestellter Uhr nie."""
+        if not self.tk or self.tk.get("tag") != self.heute().isoformat():
+            return None
+        if self.letztes and self.echt().isoformat() < self.letztes:
+            return None
+        return self.tk.get("stufe")
+
+    def tag_info(self) -> dict[str, Any] | None:
+        st = self.tag_stufe()
+        return {"stufe": st, "bis": self.heute().isoformat() + "T23:59"} if st else None
+
+    def danke_offen(self) -> bool:
+        return bool(self.tk and not self.tk.get("gesehen") and self.tk.get("tag", "") < self.heute().isoformat() and not self.sim())
+
+    def _seen(self) -> None:
+        e = self.echt().isoformat()
+        if e > self.letztes:
+            self.letztes = e
+            self._save()
+
+    def aktivieren(self, key: Any, dev: bool = False) -> dict[str, Any]:
+        heute, echt = self.heute(), self.echt()
+        letztes = date.fromisoformat(self.letztes) if self.letztes else None
+        spn = self.hass.data.get("fenster_heizung", {}).get("sponsor") if self.hass is not None else None
+        try:
+            from .sponsor import PUBLIC_KEY
+
+            verify = TS.verifier(PUBLIC_KEY)
+        except Exception:  # noqa: BLE001
+            return {"ok": False, "err": "Prüfung nicht möglich"}
+        ok, info = TS.pruefen(key, heute, letztes, self.install_id, self.codes_fuer(heute.year), verify, dev, echt)
+        if not ok:
+            return {"ok": False, "err": info}
+        if str(key or "").strip().upper() not in TS.DEV_KEYS:
+            erlaubt = TS.wer_bekommt(heute, self.base_tier())
+            if erlaubt is None or TS.STUFE[erlaubt] != info:
+                return {"ok": False, "err": "Du hast diese Stufe schon"}
+        if not (letztes and echt < letztes):
+            self.letztes = max(self.letztes, echt.isoformat())
+        self.tk = {"tag": heute.isoformat(), "stufe": info, "gesehen": False}
+        self._save()
+        if spn is not None and hasattr(spn, "push"):
+            spn.push()
+        return {"ok": True, "stufe": info}
+
+    def danke(self) -> None:
+        if self.tk:
+            self.tk["gesehen"] = True
+            self._save()
+
+    def signieren(self, priv: str) -> dict[str, Any]:
+        jahr = kalender_jahr(self.echt()) if self.echt().month in (1, 12) else self.echt().year
+        return {"jahr": jahr, "codes": TS.signiere(priv, jahr)}
+
+    async def _codes_cb(self, _now: Any = None) -> None:
+        """advent_codes.json von GitHub laden – die Signatur prüft jeden Code ohnehin selbst."""
+        try:
+            import json
+
+            from homeassistant.helpers.aiohttp_client import async_get_clientsession
+
+            async with async_get_clientsession(self.hass).get(CODES_URL, timeout=15) as r:
+                if r.status != 200:
+                    return
+                c = TS.clean_codes(json.loads(await r.text()))
+        except Exception as err:  # noqa: BLE001 - ohne GitHub bleibt der letzte Stand
+            _LOGGER.debug("Advent-Codes nicht geladen: %s", err)
+            return
+        if c != self.codes:
+            self.codes = c
+            self._save()
 
     def count(self) -> dict[str, Any]:
         """Für den Sensor (echtes Datum): geöffnete Türchen (gemeinsam bzw. der weiteste Benutzer), heutiges noch zu?"""
@@ -266,7 +406,7 @@ class AdventManager:
         t = self.inhalt(jahr).get(tag) or {"tag": tag, "typ": "tipp", "icon": "🎁", "titel": f"Türchen {tag}", "text": ""}
         neu = st in ("heute", "nachholen")
         if neu:
-            self._bucket(jahr, user_id, True)[str(tag)] = datetime.now().isoformat(timespec="seconds")
+            self._bucket(jahr, user_id, True)[str(tag)] = dt_util.now().replace(tzinfo=None).isoformat(timespec="seconds")
             if not self.sim():
                 self._save()
                 self._push()
@@ -300,8 +440,14 @@ class AdventManager:
     # ---- Benachrichtigung und Tageswechsel
     async def _tick(self, now: Any = None) -> None:
         n = dt_util.now()
+        if n.minute == 0:
+            self._seen()
         if n.hour == 0 and n.minute == 0:
             self._push()  # Sensor: neues Türchen verfügbar
+            spn = self.hass.data.get("fenster_heizung", {}).get("sponsor")
+            if spn is not None and hasattr(spn, "push"):
+                spn.push()  # Tagesschlüssel läuft ab
+        await self._kerzen(n)
         c = self.cfg["notify"]
         if not (c["on"] and c["dienst"]) or n.strftime("%H:%M") != c["zeit"]:
             return
@@ -319,6 +465,31 @@ class AdventManager:
                 "data": {"url": "/fenster-heizung", "clickAction": "/fenster-heizung"}}, blocking=False)
         except Exception:  # noqa: BLE001 - eine fehlende Mitteilung darf nichts anderes stören
             _LOGGER.debug("Advent-Mitteilung fehlgeschlagen", exc_info=True)
+
+
+    async def _kerzen(self, n: Any) -> None:
+        """Modul 11: an Adventssonntagen und Heiligabend 12–23 Uhr – verlassen alle das Haus, kommt „Kerzen aus?“."""
+        st = self.hass.states.get("zone.home")
+        try:
+            home = int(float(st.state)) if st is not None else None
+        except (TypeError, ValueError):
+            home = None
+        prev, self._home = self._home, home
+        c = self.cfg
+        if not (c.get("kerzen") and c["notify"]["dienst"]) or home is None or prev is None or not (prev > 0 and home == 0):
+            return
+        d = n.date()
+        from .saison import advent_sonntage
+
+        if not (12 <= n.hour <= 23 and (d in advent_sonntage(d.year) or (d.month == 12 and d.day == 24))) or self._kerzen_tag == d.isoformat():
+            return
+        self._kerzen_tag = d.isoformat()
+        dom, name = c["notify"]["dienst"].split(".", 1)
+        if self.hass.services.has_service(dom, name):
+            try:
+                await self.hass.services.async_call(dom, name, {"title": "🕯️ Kerzen aus?", "message": "Gerade hat jeder das Haus verlassen – brennt noch der Adventskranz?"}, blocking=False)
+            except Exception:  # noqa: BLE001
+                _LOGGER.debug("Kerzen-Erinnerung fehlgeschlagen", exc_info=True)
 
 
 def async_register_services(hass) -> None:
