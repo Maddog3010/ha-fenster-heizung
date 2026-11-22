@@ -1,16 +1,8 @@
 """Modul 18 Licht & Lampen – Addon (früher Lab „Licht & Lampen“ im Kern).
 
-Das Modul läuft ganz im Dashboard. Seine Einstellungen (Szenen, Hinweis bei langem Licht) liegen weiter im Layout
-unter „li“, deshalb bleibt beim Umzug alles erhalten. Der Python-Teil meldet nur, dass das Addon läuft.
+Ab v0.2 Build 2 mit Hintergrund-Teil (manager.py): Einschaltzeiten über einen Neustart, Brennstunden, Lichtgruppen,
+Sensoren. Szenen, ausgeblendete Räume und „Licht lange an“ liegen weiter im Layout unter „li“.
 """
-from __future__ import annotations
+from .manager import Addon
 
-from typing import Any
-
-from custom_components.fenster_heizung.addon_api import SWAddon
-
-
-class Addon(SWAddon):
-    def summary(self) -> dict[str, Any]:
-        n = sum(1 for s in self.hass.states.async_all("light") if not isinstance(s.attributes.get("entity_id"), (list, tuple)))
-        return {"info": f"{n} Lampen"}
+__all__ = ["Addon"]

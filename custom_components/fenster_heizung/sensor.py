@@ -23,6 +23,7 @@ from .sicherheit import SIGNAL_SF
 from .wetter import KEYS as WX_KEYS, NAMES as WX_NAMES, SIGNAL_WX
 from . import muell_ent
 from . import abr_ent
+from . import licht_ent
 
 SP_OWNER = "sp_sensor_owner"
 SP_KEYS = ("sp_today", "sp_tomorrow", "sp_rest", "sp_corr", "sp_best")
@@ -48,6 +49,7 @@ async def async_setup_entry(
     if store.get(SP_OWNER) == entry.entry_id:
         muell_ent.register(hass, "sensor", async_add_entities, MuellSensor, entry.async_on_unload)  # Modul 17: Entitäten entstehen mit dem Addon
         abr_ent.register(hass, async_add_entities, AbrSensor, entry.async_on_unload)  # Modul 20: Preise, Ergebnis, Termine (Addon v0.9)
+        licht_ent.register(hass, async_add_entities, LichtSensor, entry.async_on_unload)  # Modul 18: Lampen an, Licht heute, Längste an (Addon v0.2)
     async_add_entities(
         [PausedMinutesSensor(entry, key, scope) for key, scope in SCOPES.items()]
         + [PlanTargetSensor(entry), ModeSensor(entry)]
@@ -579,6 +581,10 @@ class MuellSensor(muell_ent._Base, SensorEntity):
             except ValueError:
                 return None
         return v
+
+
+class LichtSensor(licht_ent.Base, SensorEntity):
+    """Modul 18: Lampen an, Brennstunden heute, längste Einschaltdauer."""
 
 
 class AbrSensor(abr_ent.Base, SensorEntity):
