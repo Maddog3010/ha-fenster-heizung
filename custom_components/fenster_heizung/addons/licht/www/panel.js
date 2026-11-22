@@ -109,6 +109,7 @@ export default (api) => {
 .l3poff{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
 .l3plg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:.74rem;color:var(--mut)}.l3plg span{display:inline-flex;align-items:center;gap:6px}
 .l3plg i{width:11px;height:11px;border-radius:50%;display:inline-block}.l3plg i.un{border-radius:3px;background:repeating-linear-gradient(45deg,var(--line,#334155) 0 2px,transparent 2px 5px);border:1px dashed var(--line,#334155)}
+.l4pv{border-radius:14px;overflow:hidden}.l4pv svg{display:block;width:100%;height:auto;max-height:70vh}.l4hit{cursor:pointer}.l4hit:hover{fill:#ffffff;fill-opacity:.05}.l4glow{mix-blend-mode:screen;transition:opacity .6s}
 .l3pe{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:26px 18px}.l3pe b{font-size:1rem}.l3pe span{color:var(--mut);max-width:440px}
 .l3.an-voll .l3pr.on .l3pglow{animation:l3g 4s ease-in-out infinite}@keyframes l3g{50%{opacity:.7}}
 .l3tabs{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap}.l3tabs button{border:1px solid color-mix(in srgb,var(--primary-text-color) 14%,transparent);background:var(--card);color:var(--primary-text-color);border-radius:999px;padding:8px 16px;font:inherit;font-weight:650;cursor:pointer}.l3tabs button.on{border-color:var(--teal);color:var(--teal);box-shadow:inset 0 0 0 1px var(--teal)}.l3tabs b{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:#f59e0b;color:#1c1003;font-size:.72rem;margin-left:4px}
@@ -672,7 +673,96 @@ export default (api) => {
   _liPlanEmpty(t, s, btn) {
     return `<div class="card l3pe"><svg viewBox="0 0 220 110" width="200" aria-hidden="true"><rect x="10" y="8" width="200" height="94" rx="10" fill="none" stroke="var(--line,#334155)" stroke-width="3"/><path d="M110 8v56M10 64h130" stroke="var(--line,#334155)" stroke-width="3"/><circle cx="60" cy="36" r="26" fill="#ffb36b" opacity=".35"/><circle cx="60" cy="36" r="5" fill="#ffd2a1"/><circle cx="160" cy="58" r="30" fill="#a78bfa" opacity=".3"/><circle cx="160" cy="58" r="5" fill="#c4b5fd"/><circle cx="60" cy="84" r="4" fill="#475569"/></svg><b>${t}</b><span>${s}</span>${btn || ""}</div>`;
   }
+  /* ================= Lichtkarte v0.9 Build 11: eine Optik mit Modul 0 – nur Ansicht =================
+     Der Plan wird mit dem Zeichner von Modul 0 gezeichnet (Böden, Wände, Türen, Fenster, Treppen, Möbel, Stil wie in Modul 0).
+     Darüber: Räume mit Licht leuchten in der Mischfarbe, Räume ohne Licht sind abgedunkelt, Lampen im Plan mit Schein.
+     Raumnamen kommen aus Modul 0 (bleiben im Raum, meiden Lampen), zweite Zeile „75 % · 2 von 3 an“. Zoom und Vollbild wie in Modul 0.
+     Bearbeitet wird nur in Modul 0: Zuordnen und Platzieren führen dorthin. Ältere Kerne (ohne _grLiCap) bekommen die bisherige Ansicht. */
   _liPlanView(rooms, longK) {
+    if (!(this._grLiCap && this._grDraw && this._grLabels && this._grChipBox)) return this._liPlanViewOld(rooms, longK);
+    const P = this._liPlan(), adm = this._admin();
+    if (!P) return this._liPlanEmpty("Grundriss wird geladen …", "Einen Moment.");
+    if (P.error) return this._liPlanEmpty("Grundriss gerade nicht erreichbar", "Modul 0 antwortet noch nicht – meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.");
+    const allR = (P.items || []).filter((i) => i.t === "r");
+    if (!allR.length) return this._liPlanEmpty("Noch kein Grundriss mit Räumen", "Den Grundriss zeichnest du einmal in Modul 0 · Haus & Grundriss: Räume, Wände, Türen und Fenster. Die Lichtkarte zeigt ihn dann mit deinen Lampen.", adm && this._grEdit ? `<button class="btn2 pri" data-act="lixedit0">${ic("pencil", 16)} In Modul 0 zeichnen</button>` : "");
+    const fls0 = P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }], fls = fls0.filter((f) => !f.ga || allR.some((i) => i.fl === f.id));
+    const map = new Map(allR.map((i) => [i.id, this._liPRoom(i, rooms)]));
+    const fl = fls.some((f) => f.id === this._liFl) ? this._liFl : (fls.find((f) => allR.some((i) => i.fl === f.id && map.get(i.id) && map.get(i.id).on.length)) || fls.find((f) => allR.some((i) => i.fl === f.id)) || fls[0]).id;
+    const items = (P.items || []).filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r");
+    const sty = this._grStyle ? this._grStyle() : "modern", narrow = !!(this._narrow || (this.clientWidth || 999) < 600), T = this._grTheme(sty), sc = P.scale > 0 ? P.scale : 40, NF = narrow ? 1.6 : 1, q = narrow ? 1.4 : 1;
+    const f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: 1 }), kinds = new Map(rs.map((r) => [r.id, this._grKind(r)])), u = "l4p" + (this.constructor._l4N = ((this.constructor._l4N || 0) + 1) % 1e6) + "_";
+    const G = this._grDraw(P, fl, { style: sty, dims: false, narrow, labels: false, now: false, click: false, layers: { licht: false, sf: false, gt: false, ht: false, mo: true } });
+    const LA = rooms.flatMap((r) => r.lamps), here = LA.filter((x) => x.pe && x.pe.it.fl === fl), pathOf = (i) => "M" + this._grPoly(i).map((p) => p[0] + " " + p[1]).join("L") + "Z";
+    const hell = sty === "hell", veil = hell ? "#0f172a" : "#020617";
+    let d = `<defs><pattern id="${u}un" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v10" stroke="${T.sub}" stroke-width="2.5" opacity=".55"/></pattern>${rs.map((i) => `<clipPath id="${u}k${esc(i.id)}"><path d="${pathOf(i)}"/></clipPath>`).join("")}</defs>`;
+    /* 1) Räume: Licht in Mischfarbe, sonst abgedunkelt; nicht zugeordnet: schraffiert */
+    rs.forEach((i, ix) => {
+      const r = map.get(i.id), n = r ? r.on.length : 0, p = n ? r.pct / 100 : 0, path = pathOf(i), aid = r ? r.k : this._liPArea(i), cid = `${u}g${ix}`;
+      if (r && n) {
+        const pin = here.some((x) => x.on && x.pe.room && x.pe.room.id === i.id), o = (0.38 + 0.45 * p) * (pin ? 0.45 : 1), [cx, cy] = this._grCen(i);
+        d += `<radialGradient id="${cid}" gradientUnits="userSpaceOnUse" cx="${cx}" cy="${cy}" r="${Math.max(i.w, i.h) * 0.75}"><stop offset="0" stop-color="${r.col}" stop-opacity="${o.toFixed(2)}"/><stop offset=".6" stop-color="${r.col}" stop-opacity="${(o * 0.5).toFixed(2)}"/><stop offset="1" stop-color="${r.col}" stop-opacity=".08"/></radialGradient><path d="${path}" fill="url(#${cid})" class="l4glow"/><path d="${path}" fill="none" stroke="${r.col}" stroke-width="2.5" stroke-opacity=".75"/>`;
+      } else if (r) d += `<path d="${path}" fill="${veil}" opacity="${hell ? 0.16 : 0.42}"/>`;
+      else d += `<path d="${path}" fill="${veil}" opacity="${hell ? 0.2 : 0.5}"/>${aid || (this._liD().pmap || {})[i.id] === "-" ? "" : `<path d="${path}" fill="url(#${u}un)"/>`}`;
+      if (r && r.lamps.some((x) => !x.un)) d += `<path d="${path}" fill="transparent" class="l4hit" data-act="lixroom" data-k="${esc(r.k)}"><title>${esc(i.n || r.name)} · ${n ? `${n} an · ${r.pct} %` : "aus"} · Antippen schaltet den Raum</title></path>`;
+    });
+    /* 2) Schein der eingeschalteten Lampen im Plan, auf ihren Raum begrenzt */
+    here.filter((x) => x.on).forEach((x, k) => {
+      const it = x.pe.it, c = hex(x.rgb), b = (x.dim ? x.br : 100) / 100, R = (it.k === "spot" ? 0.7 : it.k === "aussen" ? 1.3 : 1) * (45 + 105 * b), g = `${u}lg${k}`;
+      d += `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity="${(0.55 + 0.35 * b).toFixed(2)}"/><stop offset=".45" stop-color="${c}" stop-opacity="${(0.25 + 0.18 * b).toFixed(2)}"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><g pointer-events="none"${x.pe.room ? ` clip-path="url(#${u}k${esc(x.pe.room.id)})"` : ""}><circle cx="${it.x}" cy="${it.y}" r="${R.toFixed(1)}" fill="url(#${g})"/></g>`;
+    });
+    /* 3) Plaketten „seit …“ / „offline“ oben rechts im Raum (freigehalten für die Namen) */
+    if (this._grChipAt) this._grChipAt = {}; else this._grChipAt = {};
+    rs.forEach((i) => {
+      const r = map.get(i.id); if (!r) return;
+      const lk = longK[r.k], nu = r.lamps.filter((y) => y.un).length, t = [lk ? `seit ${this._liDur(lk)}` : "", nu ? (nu > 1 ? `${nu} offline` : "offline") : ""].filter(Boolean).join(" · "); if (!t) return;
+      const B = this._grChipBox(i, t); this._grChipAt[i.id] = B;
+      d += `<g pointer-events="none"><rect x="${B[0]}" y="${B[1]}" width="${B[2] - B[0]}" height="20" rx="10" fill="${lk ? "#f59e0b" : "#dc2626"}"/><text x="${(B[0] + B[2]) / 2}" y="${B[1] + 14}" text-anchor="middle" font-size="11.5" font-weight="800" fill="${lk ? "#1c1003" : "#fff"}">${esc(t)}</text></g>`;
+    });
+    /* 4) Lampen ohne Platz: kleine Punkte unten links im Raum (Platz suchen im Raum) */
+    const loose = [];
+    rs.forEach((i) => {
+      const r = map.get(i.id); if (!r) return;
+      const L = r.lamps.filter((y) => !(y.pe && y.pe.it.fl === fl)); if (!L.length) return;
+      const pr = 6 * q, stp = pr * 3.4, inR = (x, y) => !this._sfInRoom || this._sfInRoom(i, x, y); let sx = i.x + 18, sy = i.y + i.h - 18;
+      for (let k = 0; k < 12 && !inR(sx, sy); k++) { sx += 10; sy -= 8; }
+      const maxN = Math.max(1, Math.floor((i.w - 36) / stp)), sh = L.slice(0, maxN);
+      sh.forEach((x2, k) => loose.push({ x2, cx: sx + k * stp, cy: sy, pr }));
+      if (L.length > sh.length) loose.push({ more: L.length - sh.length, cx: sx + sh.length * stp, cy: sy, pr });
+    });
+    /* 5) Raumnamen (Modul 0): zweite Zeile mit Licht-Zustand */
+    const sub = (i) => { const r = map.get(i.id); if (r) { const n = r.on.length; return n ? `${r.pct} % · ${n} von ${r.lamps.length} an` : `aus · ${r.lamps.length} ${r.lamps.length === 1 ? "Lampe" : "Lampen"}`; } const aid = this._liPArea(i); return aid ? "keine Lampen" : (this._liD().pmap || {})[i.id] === "-" ? "kein Bereich" : "nicht zugeordnet"; };
+    const subCol = (i) => { const r = map.get(i.id); return r && r.on.length ? (hell ? "#b45309" : "#fde68a") : null; };
+    const obsIt = items.concat(loose.map((l) => ({ t: "l", x: l.cx, y: l.cy })));
+    d += this._grLabels(rs, obsIt, { style: sty, narrow, now: false, sub, subCol }, T, kinds, NF, sc, f1, q);
+    /* 6) Lampen ohne Platz und Lampen im Plan – antippen schaltet, lang drücken öffnet das Detail */
+    loose.forEach(({ x2, cx, cy, pr, more }) => {
+      if (more) { d += `<text x="${cx - pr * 0.4}" y="${cy + pr * 0.45}" font-size="${pr * 1.4}" fill="${T.sub}" pointer-events="none">+${more}</text>`; return; }
+      const c = hex(x2.rgb);
+      d += `<g class="l3pl loose${x2.on ? " on" : ""}${x2.un ? " un" : ""}" ${x2.un ? "" : `data-act="lixsw" data-k="${esc(x2.id)}" data-lhold="${esc(x2.id)}"`}><title>${esc(x2.name)} · ${x2.un ? "nicht erreichbar" : x2.on ? (x2.dim ? x2.br + " %" : "an") : "aus"} · noch nicht im Plan platziert</title><circle cx="${cx}" cy="${cy}" r="${pr * 1.9}" fill="transparent"/><circle cx="${cx}" cy="${cy}" r="${pr * 1.5}" fill="none" stroke="${T.sub}" stroke-width="1.2" stroke-dasharray="2.5 2.5"/>${x2.on ? `<circle cx="${cx}" cy="${cy}" r="${pr * 1.8}" fill="${c}" opacity=".3"/>` : ""}<circle cx="${cx}" cy="${cy}" r="${pr}" fill="${x2.un ? "transparent" : x2.on ? c : "#475569"}" stroke="${x2.on ? "#fff" : "#94a3b8"}" stroke-width="1.4"/></g>`;
+    });
+    here.forEach((x) => {
+      const it = x.pe.it, c = hex(x.rgb), rot = it.r ? ` transform="rotate(${it.r} ${it.x} ${it.y})"` : "", fill = x.un ? "transparent" : x.on ? c : hell ? "#e2e8f0" : "#334155", stroke = x.un ? "#64748b" : x.on ? "#fff" : "#94a3b8";
+      const body = it.k === "streifen" ? `<rect x="${it.x - 22 * q}" y="${it.y - 4 * q}" width="${44 * q}" height="${8 * q}" rx="${4 * q}" fill="${fill}" stroke="${stroke}" stroke-width="1.8"${x.un ? ` stroke-dasharray="3 2"` : ""}${rot}/>`
+        : `<circle cx="${it.x}" cy="${it.y}" r="${(it.k === "spot" ? 6 : 9) * q}" fill="${fill}" stroke="${stroke}" stroke-width="2"${x.un ? ` stroke-dasharray="2.5 2.5"` : ""}/>`;
+      d += `<g class="l3pl${x.on ? " on" : ""}${x.un ? " un" : ""}" ${x.un ? "" : `data-act="lixsw" data-k="${esc(x.id)}" data-lhold="${esc(x.id)}"`}><title>${esc(x.name)} · ${x.un ? "nicht erreichbar" : x.on ? (x.dim ? x.br + " %" : "an") : "aus"} · antippen schaltet, lang drücken für Details</title><circle cx="${it.x}" cy="${it.y}" r="${16 * q}" fill="transparent"/>${body}</g>`;
+    });
+    /* Kopfzeile, Etagen, Hinweise (führen nach Modul 0), Räume ohne Fläche, Legende */
+    const mapped = new Set([...map.values()].filter(Boolean).map((r) => r.k)), un = allR.filter((i) => !this._liPArea(i) && (this._liD().pmap || {})[i.id] !== "-");
+    const flOn = rs.map((i) => map.get(i.id)).filter((r) => r && r.on.length), nOn = flOn.reduce((a, r) => a + r.on.length, 0), np = LA.filter((x) => !x.pe).length;
+    const shown = rooms.filter((r) => !r.hid), off = shown.filter((r) => !mapped.has(r.k) && r.lamps.length);
+    const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => { const c = allR.filter((i) => i.fl === f.id).map((i) => map.get(i.id)).filter((r) => r && r.on.length).length; return `<button class="${f.id === fl ? "on" : ""}" data-act="lixfl" data-k="${esc(f.id)}">${esc(f.n)}${c ? ` <b class="l3fc">${c}</b>` : ""}</button>`; }).join("")}</span>` : "";
+    const sum = `<div class="l3psum"><span>${ic("lamp", 14)}<b>${nOn}</b> ${nOn === 1 ? "Lampe" : "Lampen"} an auf dieser Etage</span><span>${ic("grid", 14)}<b>${flOn.length}</b> von ${rs.filter((i) => map.get(i.id)).length} Räumen hell</span>
+      ${(() => { const nl = rs.map((i) => map.get(i.id)).filter((r) => r && longK[r.k]).length; return nl ? `<span class="w">${ic("bell", 14)}<b>${nl}</b> lange an</span>` : ""; })()}
+      ${np ? (adm && this._grEdit ? `<button class="u" data-act="lixplace" title="In Modul 0 platzieren">${np} ${np === 1 ? "Lampe" : "Lampen"} nicht im Plan · in Modul 0 setzen${ic("chev", 13)}</button>` : `<span>${np} ${np === 1 ? "Lampe" : "Lampen"} nicht im Plan</span>`) : ""}
+      ${un.length ? (adm ? `<button class="u" data-act="lixgo0">${un.length} ${un.length === 1 ? "Raum" : "Räume"} ohne Bereich · in Modul 0 zuordnen${ic("chev", 13)}</button>` : `<span class="u">${un.length} ohne Bereich</span>`) : ""}</div>`;
+    const offRow = off.length ? `<div class="l3poff"><span class="mut sm">Nicht im Grundriss:</span>${off.map((r) => `<button class="l3chip ${r.on.length ? "" : "off"}" style="--c:${r.on.length ? r.col : "#475569"}" data-act="lixroom" data-k="${esc(r.k)}" aria-label="${esc(r.name)} ${r.on.length ? "ausschalten" : "einschalten"}"><i></i>${esc(r.name)}${r.on.length ? ` · ${r.on.length} an` : ""}</button>`).join("")}</div>` : "";
+    const legend = `<div class="l3plg"><span><i style="background:#ffd2a1;box-shadow:0 0 6px #ffb36b"></i>Licht an (echte Farbe)</span><span><i style="background:#1e293b"></i>Licht aus (abgedunkelt)</span><span><i style="border:1.5px dashed #64748b"></i>offline</span><span><i style="background:#334155;border:1.5px solid #94a3b8"></i>Lampe im Plan</span><span><i style="background:#475569;outline:1.5px dashed #94a3b8;outline-offset:2px"></i>ohne Platz</span><span><i class="un"></i>ohne Bereich</span><span class="mut">Bearbeiten in Modul 0</span></div>`;
+    const VB = this._grVB ? this._grVB(G.vb, fl) : G.vb;
+    this._liHold(); if (this._grZoomBind) this._grZoomBind(this.shadowRoot);
+    return `<div class="card l3pc${this._grFull ? " grfull" : ""}"><h2>${ic("home", 18)}Lichtkarte<span class="sfhr">${bar}${adm && this._grEdit ? `<button class="sfed" data-act="lixedit0" title="Bearbeitet wird in Modul 0">${ic("pencil", 14)} In Modul 0 bearbeiten</button>` : ""}</span></h2>
+      ${sum}<div class="grv grv-${sty} l4pv">${this._grZoomBar ? this._grZoomBar(fl, { noExp: true }) : ""}<svg class="grzsvg${VB !== G.vb ? " zm" : ""}" data-fl="${esc(fl)}" data-vb="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" viewBox="${VB.x} ${VB.y} ${VB.w} ${VB.h}" role="img" aria-label="Lichtkarte">${G.svg}${d}</svg></div>${offRow}${legend}</div>`;
+  }
+  _liPlanViewOld(rooms, longK) {
     const P = this._liPlan(), adm = this._admin(), sf = this._mdList && this._mdList().some((m) => m.id === "sf");
     if (!P) return this._liPlanEmpty("Grundriss wird geladen …", "Einen Moment.");
     if (P.error) return this._liPlanEmpty("Grundriss gerade nicht erreichbar", "Modul 11 antwortet noch nicht – meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.");
@@ -829,6 +919,8 @@ export default (api) => {
     if (a === "lixunlink") { const l = this._liLay(); this._liSave({ scenes: { ...l.scenes, [k]: "" } }); return; }
     if ((a === "lixsw" || a === "lixroom") && this._liHeld && Date.now() - this._liHeld < 700) return;   /* nach langem Drücken nicht zusätzlich schalten */
     if (a === "lixfl") { this._liFl = k; this._render(); return; }
+    if (a === "lixgo0") { if (this._mdActiveSet) { this._mdActiveSet("gr"); this._grTab = "raeume"; this._render(); } return; }   /* Zuordnen passiert in Modul 0 */
+    if (a === "lixedit0") { if (this._grEdit) { this._grEdit("li", ""); this._render(); } return; }
     if (a === "lixtab") { this._liTab = ["lampen", "regeln"].includes(k) ? k : "ov"; this._render(); return; }
     if (a.startsWith("lixr") && this._lixRAct(a, b, k)) return;
     if (a === "lixmig") {   /* Umstieg auf „Meine Lampen“ */

@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b57] - 2026-11-22
+
+**Modul 18 · Licht & Lampen** (Addon v0.9.0 Build 11) – die Lichtkarte nutzt jetzt den Grundriss von Modul 0.
+
+### Neu
+- **Lichtkarte in der Optik von Modul 0:** gleicher Zeichner wie in Modul 0, 1 und 11 – Böden, Wände, Türen, Fenster, Treppen, Möbel, Stil wie in Modul 0. Licht in echter Farbe, Räume ohne Licht abgedunkelt, Lampen mit Schein.
+- Raumnamen wie in Modul 0 (bleiben im Raum, verdecken keine Lampen) mit Licht-Zustand als zweite Zeile.
+- Zoom und Vollbild auch in der Lichtkarte.
+
+### Geändert
+- Die Lichtkarte ist nur noch eine Ansicht: Bearbeiten, Lampen platzieren und Räume zuordnen passiert in Modul 0 (Knöpfe führen dorthin).
+- Modul 0: Raumnamen können eine eigene zweite Zeile tragen; die Zoom-Leiste kennt ihre Etage (für Ansichten außerhalb von Modul 0).
+
 ## [2026.11.4b56] - 2026-11-22
 
 **Modul 0 · Haus & Grundriss** v0.10 Build 10 – Puppenhaus, Sonnenlicht, Möbel und Außenbereich.
