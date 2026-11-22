@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b42] - 2026-11-22
+
+**Weihnachts-Theme** Build 1 – erster Schritt aus dem Konzept „Weihnachts-Theme & Adventskalender“ (Build 1 → 3, Release 2026.12.0): Saison-Erkennung und Theme-Grundlage.
+
+### Neu
+- **Weihnachtszeit von selbst:** Vom **01.12. bis 27.12.** zeigt Modul 1 jedes Jahr das Weihnachts-Theme, am 28.12. ist es wieder weg – ohne Neustart, der Wechsel kommt um Mitternacht. Vier Phasen: **Advent** (1.–23.), **Heiligabend** (24.), **Feiertage** (25.–26.), **Ausklang** (27.).
+- **Adventskranz und Countdown** auf der Startseite und als erster Chip der Kopfkarte von Modul 1: Die Kerzen zählen nach den Adventssonntagen mit (jedes Jahr neu berechnet, 2028 ist der 4. Advent Heiligabend), dazu „noch 18 Tage“ bis Heiligabend, an den Feiertagen ein Gruß.
+- **Lichterkette** oben an der Kopfkarte der Startseite und von Modul 1, Farben je Phase (an Heiligabend golden). Die Lichter blinken sanft, folgen Anpassen → Animationen und „Bewegung reduzieren“.
+- **Weihnachtliche Raum-Symbole** an den Raumkarten (Wohnzimmer 🎄, Küche 🍪, Kinderzimmer ⛄, Esszimmer 🕯️, Schlafzimmer 🌙, an Heiligabend ⭐).
+- **Einstellungen → Darstellung → Weihnachts-Theme:** Automatisch (Standard), Immer an, Aus oder Nur Akzente (ohne Bewegung), dazu Schalter für Lichterkette, Countdown und Raum-Symbole. Bei „Aus“ sieht alles aus wie bisher.
+- **Datum simulieren** (nur mit Entwickler-Zugang): Schnellwahl für alle Phasenwechsel (30.11. 23:59, 1.12., 6.12., 20.12., 24.12., 25.12., 27.12., 28.12.) oder ein eigenes Datum, Dauer 15 Minuten bis 8 Stunden. Die Simulation verschiebt nur das Theme im Dashboard – Heizpläne, Statistiken, Automationen und die Entitäten bleiben bei der echten Zeit. Sie endet von selbst oder mit dem nächsten Neustart.
+- **Vier Entitäten** (Gerät „Strom & Wärme · Saison“, immer echtes Datum): `binary_sensor.strom_waerme_weihnachtszeit`, `sensor.strom_waerme_saison_phase` (mit Adventssonntagen als Attribut), `sensor.strom_waerme_advent_kerzen` und `sensor.strom_waerme_tage_bis_heiligabend`.
+
+### Technik
+- Neue Dateien `saison.py` (Logik ohne Home Assistant testbar, Manager mit eigenem Speicher `fenster_heizung_saison`, Schema 1; die Simulation liegt nur im Arbeitsspeicher) und `saison_ent.py`. WebSocket-Befehle `fenster_heizung/saison_get`, `saison_set` (nur Administratoren) und `saison_sim` (nur Administratoren mit Entwickler-Zugang).
+- Dashboard: neue Teile `03h-stile-saison` und `12z3-saison`. Die Logik im Dashboard ist für 2026–2035 Tag für Tag mit `saison.py` abgeglichen. Das Theme-Datum rechnet das Dashboard selbst, geprüft wird jede Sekunde, gezeichnet nur bei einer Änderung.
+- 6 neue Tests (Adventssonntage 2026–2059, alle Phasengrenzen, Kerzen und Countdown mit Schaltjahr, Einstellungen, Speichern und Laden, Simulation nur fürs Theme mit Ablauf und Grenzen).
+
 ## [2026.11.4b41] - 2026-11-22
 
 **Modul 18 · Licht & Lampen** v0.3 Build 3 (enthält Build 2) – die ersten beiden Schritte aus dem Konzept „Modul 18 · Licht & Lampen“ (v0.1 Build 1 → 1.0): Technik und neue Optik.

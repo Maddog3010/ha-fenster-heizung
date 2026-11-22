@@ -237,6 +237,16 @@
       },
       "sf_letzter_alarm": {
         "name": "Letzter Alarm"
+      },
+      "saison_phase": {
+        "name": "Saison-Phase",
+        "state": {
+          "aus": "Aus",
+          "advent": "Advent",
+          "heiligabend": "Heiligabend",
+          "feiertage": "Feiertage",
+          "ausklang": "Ausklang"
+        }
       }
     }
   },

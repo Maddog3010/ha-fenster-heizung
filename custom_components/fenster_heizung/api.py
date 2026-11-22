@@ -2185,13 +2185,64 @@ async def ws_stats(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], {**(await sts.snapshot()), **res})
 
 
+# ------------------------------------------------------------ Weihnachts-Theme (Build 1)
+def _sz(hass: HomeAssistant, connection, msg: dict):
+    mgr = hass.data.get(DOMAIN, {}).get("saison")
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Saison ist noch nicht bereit")
+    return mgr
+
+
+def _sz_dev(hass: HomeAssistant, connection) -> bool:
+    """Entwickler-Zugang: Administrator und privater Schlüssel im Sponsor-Bereich eingetragen."""
+    spn = hass.data.get(DOMAIN, {}).get("sponsor")
+    return bool(connection.user and connection.user.is_admin and spn is not None and getattr(spn, "priv", ""))
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/saison_get"})
+@websocket_api.async_response
+async def ws_saison_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _sz(hass, connection, msg)
+    if mgr is not None:
+        connection.send_result(msg["id"], mgr.snapshot(_sz_dev(hass, connection)))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/saison_set", vol.Required("cfg"): dict})
+@websocket_api.async_response
+async def ws_saison_set(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _sz(hass, connection, msg)
+    if mgr is not None:
+        mgr.set_cfg(msg["cfg"])
+        connection.send_result(msg["id"], mgr.snapshot(_sz_dev(hass, connection)))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/saison_sim", vol.Required("act"): vol.In(["on", "off"]),
+                                  vol.Optional("at"): str, vol.Optional("minutes"): int})
+@websocket_api.async_response
+async def ws_saison_sim(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _sz(hass, connection, msg)
+    if mgr is None:
+        return
+    if not _sz_dev(hass, connection):
+        connection.send_error(msg["id"], "no_dev", "Nur mit Entwickler-Zugang")
+        return
+    if msg["act"] == "off":
+        mgr.stop_sim()
+    elif not mgr.set_sim(msg.get("at", ""), msg.get("minutes", 60)):
+        connection.send_error(msg["id"], "bad_date", "Ungültiges Datum")
+        return
+    connection.send_result(msg["id"], mgr.snapshot(True))
+
+
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
         ws_get_state, ws_set_layout, ws_haus_get, ws_haus_set, ws_log_get, ws_log_undo, ws_mw_get, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
         ws_get_general, ws_set_general, ws_get_update, ws_beta_gate, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_gs_runs, ws_gs_remind, ws_brief_get, ws_brief_set, ws_brief_test, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_scan, ws_wb_ha_test, ws_wb_est, ws_wb_odo, ws_wb_who, ws_wb_session, ws_wb_import, ws_wb_sessions, ws_wb_assign, ws_preise, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test, ws_wx_ack, ws_wx_pause, ws_wx_close, ws_wx_vor, ws_tarif_get, ws_tarif_set, ws_tarif_sub, ws_tarif_remind, ws_tarif_test, ws_tarif_check,
-        ws_wt_get, ws_wt_save, ws_wt_act, ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sf_ack, ws_sf_pause, ws_sf_resume, ws_sf_selftest, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_tg_quick_set, ws_tg_quick, ws_ef_get, ws_ef_set,
+        ws_wt_get, ws_wt_save, ws_wt_act, ws_saison_get, ws_saison_set, ws_saison_sim, ws_sf_get, ws_sf_set, ws_sf_test, ws_sf_tested, ws_sf_press, ws_sf_ack, ws_sf_pause, ws_sf_resume, ws_sf_selftest, ws_sp_get, ws_sp_set, ws_labs_get, ws_mu_get, ws_mu_set, ws_mu_act, ws_mu_test, ws_tg_get, ws_tg_set, ws_tg_act, ws_tg_quick_set, ws_tg_quick, ws_ef_get, ws_ef_set,
         ws_tm_get, ws_tm_hello, ws_tm_set, ws_tm_check, ws_tm_pin, ws_tm_reset, ws_tm_del, ws_lf_get, ws_lf_set, ws_lf_cmd,
         ws_mess_rescue_get, ws_mess_rescue, ws_coach_get, ws_report_get, ws_wa_get, ws_wa_set, ws_ap_get, ws_ap_act, ws_spn_get, ws_spn_redeem, ws_spn_clear, ws_spn_prefs, ws_spn_admin_get, ws_spn_admin_setup, ws_spn_admin_act, ws_spn_gh, ws_support, ws_stats, ws_ef_link, ws_ebuch,
     ):

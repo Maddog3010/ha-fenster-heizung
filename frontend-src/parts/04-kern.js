@@ -21,6 +21,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._sfAlarmTick) this._sfAlarmTick();
     this._visFix();
     if (this._rkTick) this._rkTick();
+    if (this._saiTick) this._saiTick();
     if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); this._adLoad(true); }
     this.shadowRoot.querySelectorAll("[data-since]").forEach((el) => {
       const c = cdown(+el.dataset.since, +el.dataset.need), b = el.querySelector("[data-cd]"), f = el.querySelector("[data-bar]");
@@ -134,6 +135,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._cfgOk && this._admin()) this._msRescueLoad();
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
+    try { await this._saiLoad(); } catch (_) { /* Weihnachts-Theme ist optional */ }
     if (this._admin()) this._supWatch();
     if (this._admin()) this._stsInit();
     try { if (this._admin() && new URLSearchParams(location.search).get("support") === "1") { history.replaceState(null, "", location.pathname); this._supOpen(); } } catch (_) { /* Link aus der Handy-Mitteilung */ }
