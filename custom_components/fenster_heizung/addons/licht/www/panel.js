@@ -2,6 +2,8 @@
    v0.2 Build 2 (Technik): Einschaltzeiten und Brennstunden kommen aus dem Python-Teil (api.call("licht", "get")), damit „an seit“
    einen Neustart von Home Assistant übersteht. Räume schalten über eine passende Lichtgruppe (alle Lampen gleichzeitig),
    Lichtfarbe wird aus Kelvin, hs, xy und rgb gelesen, die Mischfarbe eines Raums nach Helligkeit gewichtet.
+   v0.8 Build 8: Reiter „Regeln“ – Bewegung → Licht, Alle weg → Alle aus, Alarm (Modul 11) → Licht an, Abends → Licht an. Laufen im
+   Python-Teil, Vorschläge aus Bewegungsmeldern und Räumen, Pause für alle, Protokoll „Zuletzt“.
    v0.7 Build 7: Mini-Grundriss im Lampen-Fenster – Platz per Tipp setzen, Etage wechseln, „Raum übernehmen“, „Aus dem Plan nehmen“.
    Gespeichert wird zusammen mit der Lampe in Modul 0 (gr_set plan); die Art wandert mit in den Plan.
    v0.6 Build 6 (Konzept „Lampen selbst verwalten“): Reiter „Lampen“ mit „Meine Lampen“ – nur hinzugefügte Lampen (auch Gruppen), eigener
@@ -126,6 +128,15 @@ export default (api) => {
 .l3pr2 small{display:block;color:var(--mut);font-size:.74rem}.l3pr2.dim{opacity:.5}
 .l3fm label{display:block;color:var(--mut);font-size:.78rem;margin:12px 0 4px}.l3fm input,.l3fm select{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid color-mix(in srgb,var(--primary-text-color) 18%,transparent);background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);color:var(--primary-text-color);font:inherit;padding:9px 11px}
 .l3new .btn2,.l3lth .btn2,.l3um .btn2{flex:0 0 auto;width:auto}.l3lr>.mut{line-height:1.2;align-self:center}
+.l3rl{display:grid}.l3rc{display:flex;align-items:center;gap:10px;padding:4px 14px 4px 0;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 7%,transparent)}.l3rc.off .l3rb{opacity:.55}
+.l3rb{flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:10px 0 10px 14px;border:0;background:none;color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer}
+.l3rb i,.l3sgc i{width:38px;height:38px;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;flex:none}.l3rb .tx{flex:1;min-width:0}.l3rb .tx b{display:block}.l3rb .tx small{display:block;color:var(--mut);font-size:.8rem}
+.l3rb .mb{display:none}@media (max-width:640px){.l3rb .dk{display:none}.l3rb .mb{display:block;margin-top:4px}.l3lgr{grid-template-columns:8px 64px minmax(0,1fr)}.l3lth .btn2{padding:8px 12px}}
+.l3sgg{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr))}.l3sgc{display:flex;align-items:center;gap:12px;padding:12px;border-radius:14px;border:1px dashed color-mix(in srgb,var(--primary-text-color) 22%,transparent);background:var(--card);color:var(--primary-text-color);font:inherit;text-align:left;cursor:pointer}
+.l3sgc.big{border-style:solid;padding:14px}.l3sgc span:not(.pl){flex:1;min-width:0}.l3sgc b{display:block}.l3sgc small{display:block;color:var(--mut);font-size:.78rem}.l3sgc .pl{color:var(--teal);font-size:1.2rem}
+.l3lgr{display:grid;grid-template-columns:10px 92px minmax(0,1fr);gap:10px;align-items:center;padding:8px 14px;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 7%,transparent);font-size:.84rem}.l3lgr .d{width:8px;height:8px;border-radius:50%}.l3lgr .tm{color:var(--mut);font-variant-numeric:tabular-nums}
+.l3chs{display:flex;flex-wrap:wrap;gap:6px}.l3ch{border:1px solid color-mix(in srgb,var(--primary-text-color) 16%,transparent);background:none;color:var(--primary-text-color);border-radius:999px;padding:6px 12px;font:inherit;font-size:.84rem;cursor:pointer}.l3ch.on{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 14%,transparent)}.l3ch small{color:var(--mut)}
+.l3rsum{display:flex;gap:8px;align-items:flex-start;margin-top:14px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--teal) 9%,transparent);font-size:.86rem}
 .l3mini{border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);padding:6px}.l3mini svg{display:block;width:100%;max-height:260px}.l3mini.ed svg{cursor:crosshair}
 .l3minif{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}.l3minif>span{flex:1 1 100%!important}.l3minif .btn2{flex:0 0 auto}
 .l3fm .hint{color:var(--mut);font-size:.74rem;margin-top:4px}
@@ -305,14 +316,16 @@ export default (api) => {
     const unlinked = ["night", "arrive", "cozy"].filter((k) => !(L.scenes[k] && this._hass.states[L.scenes[k]])).length;
     const note = [mul ? `${ic("trash", 14)} Müll-Licht (Modul 17): ${esc(this._wzName(mul))} · ${this._hass.states[mul] && this._hass.states[mul].state === "on" ? "an" : "aus"}` : "", unlinked && adm ? `${ic("link", 14)} ${unlinked} Szenenknopf${unlinked === 1 ? "" : "e"} noch nicht verknüpft – Antippen öffnet die Einstellungen` : ""].filter(Boolean);
     if (this._liTab === "lampen") return `${head}<div class="l3 an-${this._liAnim()}">${this._liTabs()}${this._liLampTab()}</div>`;
+    if (this._liTab === "regeln") return `${head}<div class="l3 an-${this._liAnim()}">${this._liTabs()}${this._liRulesTab()}</div>`;
     const vw = this._liPrefs().view, body = vw === "plan" ? this._liPlanView(rooms, longK) : vw === "list" ? this._liList(shown) : `<div class="l3grid">${shown.map((r) => this._liRoomCard(r, longK)).join("") || `<div class="card empty">Alle Räume sind ausgeblendet. Einblenden kannst du sie in den Einstellungen.</div>`}</div>`;
     return `${head}<div class="l3 an-${this._liAnim()}">${this._liTabs()}${this._liUmstieg(true)}${this._liTiles(shown, lamps, on, long)}${this._liScenes(on)}${note.length ? `<div class="mut sm" style="margin:-6px 0 12px;display:flex;flex-direction:column;gap:4px">${note.map((t) => `<span style="display:inline-flex;gap:6px;align-items:center">${t}</span>`).join("")}</div>` : ""}${body}</div>`;
   }
   /* ================= Reiter „Lampen“ (Build 6) ================= */
   _liTabs() {
-    const n = this._liMine() ? (this._liD().lamps || []).length : 0, nw = this._liNewLamps().length, err = Object.keys(this._liD().errs || {}).length, t = this._liTab === "lampen" ? "lampen" : "ov";
+    const D = this._liD(), n = this._liMine() ? (D.lamps || []).length : 0, nw = this._liNewLamps().length, err = Object.keys(D.errs || {}).length, t = ["lampen", "regeln"].includes(this._liTab) ? this._liTab : "ov";
     const b = (k, l) => `<button class="${t === k ? "on" : ""}" data-act="lixtab" data-k="${k}" aria-pressed="${t === k}">${l}</button>`;
-    return `<div class="l3tabs">${b("ov", "Übersicht")}${b("lampen", `Lampen${n ? ` (${n})` : ""}${nw + err ? `<b>${nw + err}</b>` : ""}`)}</div>`;
+    const rs = D.rules || [], ra = rs.filter((r) => r.on).length, rw = rs.filter((r) => r.on && ((D.rinfo || {})[r.id] || {}).warn).length;
+    return `<div class="l3tabs">${b("ov", "Übersicht")}${b("lampen", `Lampen${n ? ` (${n})` : ""}${nw + err ? `<b>${nw + err}</b>` : ""}`)}${b("regeln", `Regeln${rs.length ? ` (${ra})` : ""}${D.rpause ? ` <b style="background:#94a3b8">Pause</b>` : rw ? `<b>${rw}</b>` : ""}`)}</div>`;
   }
   _liAllLights() { const st = this._hass.states; return Object.keys(st).filter((e) => e.startsWith("light.")).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")); }
   /* Neue Lampen in Home Assistant, die weder hinzugefügt noch ausgeblendet sind (nur mit „Meine Lampen“) */
@@ -377,6 +390,152 @@ export default (api) => {
       <div class="vrow" style="margin-top:12px"><span>Bei „Alle aus“ mitschalten<small class="mut" style="display:block">Aus z. B. für Aquarium oder Außenlicht mit eigenem Zeitplan</small></span><button class="sw ${c.alloff !== false ? "on" : ""}" data-act="lixeao" aria-pressed="${c.alloff !== false}"></button></div>
       ${this._lixMini(m, c, x)}
       <div class="foot2" style="margin-top:14px">${isNew ? `<button class="btn2" data-act="close">Abbrechen</button>` : `<button class="btn2" data-act="lixedel" data-k="${esc(e)}">Entfernen</button>`}<button class="btn2" data-act="lixtest" data-k="${esc(e)}">${ic("lamp", 15)} Testen</button><button class="btn2 pri" data-act="lixesave">${isNew ? "Hinzufügen" : "Speichern"}</button></div></div>`;
+  }
+  /* ================= Reiter „Regeln“ (Build 8) ================= */
+  _liRT() { return { motion: { i: "eye", c: "#2dd4bf", n: "Bewegung → Licht", d: "Ein Bewegungsmelder schaltet das Licht im Raum an – und nach einer Weile ohne Bewegung wieder aus." },
+    away: { i: "home", c: "#a78bfa", n: "Alle weg → Alle aus", d: "Wenn niemand mehr zu Hause ist, gehen alle Lampen aus (außer denen ohne „Bei Alle aus mitschalten“)." },
+    alarm: { i: "shield", c: "#f87171", n: "Alarm → Licht an", d: "Löst ein Melder aus Modul 11 aus, gehen die Lampen auf volle Helligkeit – damit der Weg nach draußen hell ist." },
+    sun: { i: "sun", c: "#fbbf24", n: "Abends → Licht an", d: "Zum Sonnenuntergang Licht an (z. B. außen), zur gewählten Uhrzeit oder bei Sonnenaufgang wieder aus." } }; }
+  _liMotionSensors() {
+    const st = this._hass.states;
+    return Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class)).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de"));
+  }
+  _liRLamps(r) {
+    const all = this._liLamps();
+    if ((r.lamps || []).length) return all.filter((x) => r.lamps.includes(x.id));
+    if (r.room) return all.filter((x) => x.area === r.room);
+    return ["alarm", "away"].includes(r.t) ? all : [];
+  }
+  _liRText(r) {
+    const n = this._liRLamps(r).length, lp = `${n} Lampe${n === 1 ? "" : "n"}`, rn = r.room ? this._liAreaName(r.room) : "";
+    if (r.t === "motion") return `Bewegung${rn ? " · " + rn : ""} → ${lp} an${r.cond === "dark" ? ", wenn dunkel" : ""}${r.off_min ? `, aus nach ${r.off_min} Min. ohne Bewegung` : ""}`;
+    if (r.t === "away") return `Alle weg${r.delay_min ? ` seit ${r.delay_min} Min.` : ""} → Alle aus`;
+    if (r.t === "alarm") return `Alarm in Modul 11 → ${(r.lamps || []).length ? lp : "alle Lampen"} auf 100 %${r.off_end ? ", danach wieder aus" : ""}`;
+    const o = r.offset || 0;
+    return `Sonnenuntergang${o ? ` ${o > 0 ? "+" : "−"}${Math.abs(o)} Min.` : ""} → ${lp} an${r.off === "sunrise" ? ", aus bei Sonnenaufgang" : r.off ? `, aus um ${r.off} Uhr` : ""}`;
+  }
+  _liRName(r) { const T = this._liRT()[r.t] || {}; return r.n || (r.t === "motion" && r.room ? `Bewegung · ${this._liAreaName(r.room)}` : T.n || "Regel"); }
+  /* Vorschläge: Räume mit Bewegungsmelder und Lampen, Personen → Alle weg, Modul 11 → Alarm, Außenlampen → Abends */
+  _liRSugg() {
+    const D = this._liD(), rs = D.rules || [], st = this._hass.states, out = [], mo = [], has = (t, room) => rs.some((r) => r.t === t && (!room || r.room === room));
+    const byArea = {}; this._liMotionSensors().forEach((e) => { const a = this._liAreaOf(e); if (a) (byArea[a] = byArea[a] || []).push(e); });
+    Object.entries(byArea).forEach(([a, sens]) => { const n = this._liLamps().filter((x) => x.area === a).length; if (n && !has("motion", a)) mo.push({ t: "motion", room: a, sensors: sens, why: `${this._wzName(sens[0])} · ${n} Lampe${n === 1 ? "" : "n"}` }); });
+    if (mo.length) out.push(mo.shift());
+    const pp = Object.keys(st).filter((e) => e.startsWith("person."));
+    if (pp.length && !has("away")) out.push({ t: "away", why: `${pp.length} Person${pp.length === 1 ? "" : "en"} in Home Assistant` });
+    if (this._mdList && this._mdList().some((m) => m.id === "sf") && !has("alarm")) out.push({ t: "alarm", why: "Modul 11 ist an" });
+    const au = this._liLamps().filter((x) => (x.cfg && x.cfg.k === "aussen") || /au(ss|ß)en|garten|terrasse|einfahrt/i.test(x.name));
+    if (au.length && !has("sun")) out.push({ t: "sun", lamps: au.map((x) => x.id), why: `${au.length} Außenlampe${au.length === 1 ? "" : "n"}` });
+    return [...out, ...mo].slice(0, 6);   /* gemischt: erst je Art einer, dann weitere Räume */
+  }
+  _liRNew(t, pre) {
+    const id = "r" + Date.now().toString(36).slice(-6) + Math.random().toString(36).slice(2, 4);
+    const base = { id, t, on: true, n: "", room: "", lamps: [] };
+    const d = t === "motion" ? { sensors: [], cond: "dark", lux: "", lux_max: 30, off_min: 5, bri: 0, night_bri: 20 } : t === "away" ? { delay_min: 10 } : t === "alarm" ? { off_end: true } : { offset: 0, off: "23:00" };
+    return { ...base, ...d, ...(pre || {}) };
+  }
+  _liRulesTab() {
+    const D = this._liD(), rs = D.rules || [], RI = D.rinfo || {}, T = this._liRT(), adm = this._admin(), log = D.rlog || [];
+    const ago = (t) => { const d = new Date(t); return isNaN(d) ? "" : d.toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" }); };
+    const card = (r) => {
+      const ri = RI[r.id] || {}, tt = T[r.t] || {}, mine = (ri.mine || []).length;
+      const st = !r.on ? `<span class="l3tag">aus</span>` : ri.warn ? `<span class="l3tag w">${esc(ri.warn)}</span>` : mine ? `<span class="l3tag ok">hat ${mine} Lampe${mine === 1 ? "" : "n"} an</span>` : `<span class="l3tag ok">aktiv</span>`;
+      return `<div class="l3rc${r.on ? "" : " off"}"><button class="l3rb" ${adm ? `data-act="lixredit" data-k="${esc(r.id)}"` : ""}><i style="background:${tt.c}22;color:${tt.c}">${ic(tt.i, 20)}</i><span class="tx"><b>${esc(this._liRName(r))}</b><small>${esc(this._liRText(r))}</small><span class="mb">${st}</span></span><span class="dk">${st}</span></button>${adm ? `<button class="sw ${r.on ? "on" : ""}" data-act="lixrton" data-k="${esc(r.id)}" aria-pressed="${r.on}" aria-label="Regel an/aus"></button>` : ""}</div>`;
+    };
+    const sugg = adm ? this._liRSugg() : [];
+    const pz = D.rpause ? `<div class="l3new" style="background:color-mix(in srgb,#94a3b8 16%,transparent)">${ic("pause", 16)}<span style="flex:1"><b>Alle Regeln pausiert</b> bis ${esc(new Date(D.rpause * 1000).toLocaleString("de-DE", { weekday: "short", hour: "2-digit", minute: "2-digit" }))} Uhr</span>${adm ? `<button class="btn2 pri" data-act="lixrpause" data-k="0">Fortsetzen</button>` : ""}</div>` : "";
+    return `${pz}<div class="l3lt"><div class="l3lth"><div class="t"><b>Regeln</b><small>${rs.length ? `${rs.filter((r) => r.on).length} von ${rs.length} aktiv · laufen im Hintergrund, auch ohne offenes Dashboard` : "Noch keine Regel – das Licht reagiert dann von selbst"}</small></div>
+      ${adm && rs.length && !D.rpause ? `<button class="btn2" data-act="lixrpausem">${ic("pause", 15)} Pausieren</button>` : ""}${adm ? `<button class="btn2 pri" data-act="lixrnew">${ic("plus", 15)} Regel</button>` : ""}</div>
+      ${rs.length ? `<div class="l3rl">${rs.map(card).join("")}</div>` : ""}</div>
+      ${sugg.length ? `<div class="l3sg"><div class="l3lg" style="border:0;padding:14px 2px 6px">Vorschläge für dein Haus</div><div class="l3sgg">${sugg.map((x, i) => { const tt = T[x.t]; return `<button class="l3sgc" data-act="lixrsugg" data-k="${i}"><i style="background:${tt.c}22;color:${tt.c}">${ic(tt.i, 18)}</i><span><b>${x.t === "motion" ? `Bewegung · ${esc(this._liAreaName(x.room))}` : tt.n}</b><small>${esc(x.why)}</small></span><span class="pl">${ic("plus", 16)}</span></button>`; }).join("")}</div></div>` : ""}
+      <div class="l3lt" style="margin-top:12px"><div class="l3lth"><div class="t"><b>Zuletzt</b><small>Was die Regeln geschaltet haben</small></div></div>
+      ${log.length ? log.slice(0, 12).map((x) => { const tt = T[x.rt] || {}; return `<div class="l3lgr"><span class="d" style="background:${tt.c || "#64748b"}"></span><span class="tm">${esc(ago(x.t))}</span><span class="tx"><b>${esc(x.n || (rs.find((r) => r.id === x.id) ? this._liRName(rs.find((r) => r.id === x.id)) : tt.n || ""))}</b> · ${esc(x.txt)}</span></div>`; }).join("") : `<div class="mut sm" style="padding:12px 14px">Noch nichts – sobald eine Regel schaltet, steht es hier.</div>`}</div>`;
+  }
+  _lixRNewModal() {
+    const T = this._liRT();
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Neue Regel</b><span>Was soll das Licht von selbst tun?</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="l3sgg" style="grid-template-columns:1fr">${Object.entries(T).map(([k, t]) => `<button class="l3sgc big" data-act="lixrtype" data-k="${k}"><i style="background:${t.c}22;color:${t.c}">${ic(t.i, 22)}</i><span><b>${t.n}</b><small>${t.d}</small></span><span class="pl">›</span></button>`).join("")}</div></div>`;
+  }
+  _lixREditModal(m) {
+    const r = m.draft, T = this._liRT()[r.t], isNew = !(this._liD().rules || []).some((x) => x.id === r.id), st = this._hass.states;
+    const seg = (act, cur, opts) => `<div class="seg" style="flex-wrap:wrap">${opts.map(([v, t]) => `<button class="${String(cur) === String(v) ? "sel" : ""}" data-act="${act}" data-k="${esc(String(v))}">${t}</button>`).join("")}</div>`;
+    const chip = (act, e, on, label, sub) => `<button class="l3ch ${on ? "on" : ""}" data-act="${act}" data-k="${esc(e)}" aria-pressed="${on}">${on ? "✓ " : ""}${esc(label)}${sub ? `<small> · ${esc(sub)}</small>` : ""}</button>`;
+    const opts = this._liRoomOpts(), rsel = `<select data-f="lixrroom"><option value="">– kein Raum –</option>${opts.map((q) => `<option value="${esc(q.id)}" ${r.room === q.id ? "selected" : ""}>${esc(q.t)}</option>`).join("")}</select>`;
+    const roomLamps = r.room ? this._liLamps().filter((x) => x.area === r.room) : [];
+    const lampPick = (allTxt) => `<label>Lampen</label>${seg("lixrlm", (r.lamps || []).length || m.pick ? "pick" : "all", [["all", allTxt], ["pick", "Auswählen"]])}
+      ${(r.lamps || []).length || m.pick ? `<div class="l3chs">${this._liLamps().filter((x) => !x.grp).sort((a, b) => (b.area === r.room) - (a.area === r.room)).map((x) => chip("lixrlamp", x.id, (r.lamps || []).includes(x.id), x.name, x.area ? this._liAreaName(x.area) : "")).join("")}</div>` : ""}`;
+    let body = "";
+    if (r.t === "motion") {
+      const sens = this._liMotionSensors().sort((a, b) => (this._liAreaOf(b) === r.room) - (this._liAreaOf(a) === r.room));
+      body = `<label>Raum</label>${rsel}
+        <label>Bewegungsmelder</label>${sens.length ? `<div class="l3chs">${sens.map((e) => chip("lixrsens", e, r.sensors.includes(e), this._wzName(e), [this._liAreaOf(e) ? this._liAreaName(this._liAreaOf(e)) : "", st[e] && st[e].state === "on" ? "jetzt Bewegung" : ""].filter(Boolean).join(" · "))).join("")}</div>` : `<div class="hint">Keine Bewegungs- oder Präsenzmelder in Home Assistant gefunden (Geräteklasse motion, occupancy oder presence).</div>`}
+        ${lampPick(r.room ? `Alle im Raum (${roomLamps.length})` : "Alle im Raum")}
+        <label>Wann</label>${seg("lixrcond", r.cond, [["dark", "Nur wenn dunkel"], ["always", "Immer"]])}
+        <div class="hint">„Dunkel“ = Sonne unter dem Horizont.</div>
+        <label>Helligkeit</label>${seg("lixrbri", r.bri, [[0, "Wie zuletzt"], [30, "30 %"], [60, "60 %"], [100, "100 %"]])}
+        <label>Nachts (22–6 Uhr)</label>${seg("lixrnb", r.night_bri, [[0, "Wie tagsüber"], [10, "10 %"], [20, "20 %"], [40, "40 %"]])}
+        <label>Wieder aus nach … ohne Bewegung</label>${seg("lixroff", r.off_min, [[1, "1 Min."], [2, "2"], [5, "5"], [10, "10"], [15, "15"], [30, "30"], [0, "Nie"]])}
+        <div class="hint">Ausgeschaltet werden nur Lampen, die die Regel selbst angemacht hat. Von Hand eingeschaltete bleiben an.</div>`;
+    } else if (r.t === "away") {
+      const pp = Object.keys(st).filter((e) => e.startsWith("person."));
+      const keep = this._liLamps().filter((x) => x.cfg && x.cfg.alloff === false);
+      body = `<label>Personen</label>${pp.length ? `<div class="l3chs">${pp.map((e) => `<span class="l3ch ${st[e].state === "home" ? "on" : ""}">${esc(this._wzName(e))}<small> · ${st[e].state === "home" ? "zu Hause" : "weg"}</small></span>`).join("")}</div>` : `<div class="hint">Keine Personen in Home Assistant – die Regel kann erst laufen, wenn es welche gibt.</div>`}
+        <label>Warten, bis alle weg sind seit</label>${seg("lixrdel", r.delay_min, [[0, "Sofort"], [5, "5 Min."], [10, "10 Min."], [30, "30 Min."], [60, "1 Std."]])}
+        <div class="hint">${keep.length ? `Bleiben an (ohne „Bei Alle aus mitschalten“): ${esc(keep.map((x) => x.name).join(", "))}.` : "Alle Lampen gehen aus. Einzelne nimmst du im Reiter „Lampen“ mit „Bei Alle aus mitschalten“ heraus."}</div>`;
+    } else if (r.t === "alarm") {
+      const sf = this._mdList && this._mdList().some((x) => x.id === "sf");
+      body = `${sf ? "" : `<div class="l3new" style="background:color-mix(in srgb,#f59e0b 14%,transparent)">${ic("alert", 16)}<span>Modul 11 ist aus – die Regel wartet, bis es an ist.</span></div>`}
+        ${lampPick(`Alle Lampen (${this._liLamps().length})`)}
+        <div class="vrow" style="margin-top:12px"><span>Nach dem Alarm wieder aus<small class="mut" style="display:block">Nur die Lampen, die vorher aus waren</small></span><button class="sw ${r.off_end ? "on" : ""}" data-act="lixroffend" aria-pressed="${r.off_end}"></button></div>`;
+    } else {
+      body = `${lampPick(r.room ? `Alle im Raum (${roomLamps.length})` : "Alle im Raum")}${!(r.lamps || []).length && !m.pick ? `<label>Raum</label>${rsel}` : ""}
+        <label>An zum Sonnenuntergang</label>${seg("lixroffs", r.offset, [[-30, "30 Min. vorher"], [-15, "15 vorher"], [0, "pünktlich"], [15, "15 danach"], [30, "30 danach"]])}
+        <label>Aus</label>${seg("lixroffat", r.off, [["22:00", "22 Uhr"], ["23:00", "23 Uhr"], ["00:00", "0 Uhr"], ["sunrise", "Sonnenaufgang"], ["", "Nie"]])}`;
+    }
+    return `<div class="ov" data-act="close"></div><div class="sheet l3fm" role="dialog" aria-modal="true"><div class="sh"><div><b>${isNew ? "Neue Regel" : "Regel bearbeiten"}</b><span style="color:${T.c}">${T.n}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <label>Name</label><input data-f="lixrn" value="${esc(r.n)}" placeholder="${esc(this._liRName({ ...r, n: "" }))}" maxlength="40" autocomplete="off">
+      ${body}
+      <div class="l3rsum">${ic("info", 15)}<span>${esc(this._liRText(r))}</span></div>
+      <div class="foot2" style="margin-top:12px">${isNew ? `<button class="btn2" data-act="close">Abbrechen</button>` : `<button class="btn2" data-act="lixrdelr" data-k="${esc(r.id)}">Löschen</button><button class="btn2" data-act="lixrtest" data-k="${esc(r.id)}">Testen</button>`}<button class="btn2 pri" data-act="lixrsave">${isNew ? "Regel anlegen" : "Speichern"}</button></div></div>`;
+  }
+  _liSaveRules(rules, msg) {
+    const S = this._liX || {}; if (S.d) S.d = { ...S.d, rules };
+    this._render();
+    return api.call(ID, "set", { rules }).then((d) => { if (this._liX) { this._liX.d = d; this._liX.ts = Date.now(); } this._render(); if (msg) this._toast(msg); }).catch(() => this._toast("Speichern fehlgeschlagen"));
+  }
+  _lixRAct(a, b, k) {
+    const m = this._modal, r = m && m.draft, D = this._liD(), rs = D.rules || [];
+    const up = () => { this._renderModal(); return true; };
+    if (a === "lixrnew") { if (this._admin()) { this._modal = { type: "lixrnew" }; this._renderModal(); } return true; }
+    if (a === "lixrtype") { this._modal = { type: "lixredit", draft: this._liRNew(k) }; this._renderModal(); return true; }
+    if (a === "lixrsugg") { const x = this._liRSugg()[Number(k)]; if (x) { const { why, ...pre } = x; void why; this._modal = { type: "lixredit", draft: this._liRNew(x.t, pre) }; this._renderModal(); } return true; }
+    if (a === "lixredit") { const x = rs.find((y) => y.id === k); if (x && this._admin()) { this._modal = { type: "lixredit", draft: JSON.parse(JSON.stringify(x)) }; this._renderModal(); } return true; }
+    if (a === "lixrton") { const list = rs.map((y) => (y.id === k ? { ...y, on: !y.on } : y)), y = list.find((z) => z.id === k); this._liSaveRules(list, y ? `${this._liRName(y)}: ${y.on ? "an" : "aus"}` : ""); return true; }
+    if (a === "lixrpausem") { this._modal = { type: "lixrpause" }; this._renderModal(); return true; }
+    if (a === "lixrpause") { this._modal = null; this._renderModal(); api.call(ID, "act", { a: "rules_pause", min: Number(k) || 0 }).then((d) => { if (this._liX) { this._liX.d = d; this._liX.ts = Date.now(); } this._render(); this._toast(Number(k) ? "Regeln pausiert" : "Regeln laufen wieder"); }).catch(() => this._toast("Das hat nicht geklappt")); return true; }
+    if (a === "lixrtest") { api.call(ID, "act", { a: "rule_test", id: k }).then((d) => { if (this._liX) { this._liX.d = d; this._liX.ts = Date.now(); } this._toast("Regel getestet – siehe „Zuletzt“"); this._render(); }).catch((err) => this._toast(String((err && err.message) || "Testen hat nicht geklappt").slice(0, 140))); return true; }
+    if (a === "lixrdelr") { const x = rs.find((y) => y.id === k); this._modal = null; this._renderModal(); this._liSaveRules(rs.filter((y) => y.id !== k), x ? `${this._liRName(x)} gelöscht` : ""); return true; }
+    if (a === "lixrsave") {
+      if (!r) return true;
+      if (r.t === "motion" && !r.sensors.length) { this._toast("Bitte mindestens einen Bewegungsmelder wählen"); return true; }
+      const i = rs.findIndex((y) => y.id === r.id), list = i < 0 ? [...rs, r] : rs.map((y) => (y.id === r.id ? r : y));
+      this._modal = null; this._renderModal(); this._liSaveRules(list, i < 0 ? `${this._liRName(r)} angelegt` : "Gespeichert"); return true;
+    }
+    if (!r) return false;
+    if (a === "lixrsens") { r.sensors = r.sensors.includes(k) ? r.sensors.filter((e) => e !== k) : [...r.sensors, k].slice(0, 6); if (!r.room && this._liAreaOf(k)) r.room = this._liAreaOf(k); return up(); }
+    if (a === "lixrlm") { if (k === "all") { r.lamps = []; m.pick = false; } else { m.pick = true; if (!r.lamps.length) r.lamps = this._liRLamps({ ...r, lamps: [] }).map((x) => x.id); } return up(); }
+    if (a === "lixrlamp") { r.lamps = r.lamps.includes(k) ? r.lamps.filter((e) => e !== k) : [...r.lamps, k].slice(0, 30); return up(); }
+    const num = { lixrbri: "bri", lixrnb: "night_bri", lixroff: "off_min", lixrdel: "delay_min", lixroffs: "offset" }[a];
+    if (num) { r[num] = Number(k) || 0; return up(); }
+    if (a === "lixrcond") { r.cond = k; return up(); }
+    if (a === "lixroffat") { r.off = k; return up(); }
+    if (a === "lixroffend") { r.off_end = !r.off_end; return up(); }
+    return false;
+  }
+  _lixRPauseModal() {
+    const opt = [[60, "1 Stunde"], [180, "3 Stunden"], [(() => { const d = new Date(), t = new Date(d); t.setDate(d.getDate() + 1); t.setHours(6, 0, 0, 0); return Math.round((t - d) / 60000); })(), "Bis morgen früh (6 Uhr)"], [1440 * 7, "Eine Woche (z. B. Gäste)"]];
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Regeln pausieren</b><span>Alle Regeln auf einmal – das Licht reagiert dann nicht von selbst</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="l3sgg" style="grid-template-columns:1fr">${opt.map(([v, t]) => `<button class="l3sgc" data-act="lixrpause" data-k="${v}"><i style="background:#94a3b822;color:#cbd5e1">${ic("pause", 18)}</i><span><b>${t}</b></span><span class="pl">›</span></button>`).join("")}</div></div>`;
   }
   /* ---- Build 7: Mini-Grundriss im Lampen-Fenster */
   _lixMini(m, c, x) {
@@ -670,7 +829,8 @@ export default (api) => {
     if (a === "lixunlink") { const l = this._liLay(); this._liSave({ scenes: { ...l.scenes, [k]: "" } }); return; }
     if ((a === "lixsw" || a === "lixroom") && this._liHeld && Date.now() - this._liHeld < 700) return;   /* nach langem Drücken nicht zusätzlich schalten */
     if (a === "lixfl") { this._liFl = k; this._render(); return; }
-    if (a === "lixtab") { this._liTab = k === "lampen" ? "lampen" : "ov"; this._render(); return; }
+    if (a === "lixtab") { this._liTab = ["lampen", "regeln"].includes(k) ? k : "ov"; this._render(); return; }
+    if (a.startsWith("lixr") && this._lixRAct(a, b, k)) return;
     if (a === "lixmig") {   /* Umstieg auf „Meine Lampen“ */
       if (!this._admin()) return;
       if (k === "later") { this._liSaveLamps(this._liD().lamps || [], { mode: "auto" }, "Alles bleibt wie bisher – umstellen kannst du jederzeit im Reiter „Lampen“"); return; }
@@ -735,6 +895,8 @@ export default (api) => {
   }
   _lixChange(t) {
     const f = t.dataset.f, k = t.dataset.k, v = t.value || "";
+    if (f === "lixrn") { const m = this._modal; if (m && m.draft) m.draft.n = String(v).slice(0, 40); return true; }
+    if (f === "lixrroom") { const m = this._modal; if (m && m.draft) { m.draft.room = v; if (!m.pick) m.draft.lamps = []; this._renderModal(); } return true; }
     if (f === "lixen") { const m = this._modal; if (m && m.draft) m.draft.n = String(v).slice(0, 40); return true; }
     if (f === "lixer") { const m = this._modal; if (m && m.draft) m.draft.room = v; return true; }
     if (f === "lixaq") { const m = this._modal; if (m && m.type === "lixadd") { m.q = v; this._renderModal(); } return true; }
@@ -760,6 +922,9 @@ export default (api) => {
     const m = this._modal, adm = this._admin();
     if (m.type === "lixpmap") return this._lixPmapModal(m);
     if (m.type === "lixedit") return this._lixEditModal(m);
+    if (m.type === "lixrnew") return this._lixRNewModal();
+    if (m.type === "lixredit") return this._lixREditModal(m);
+    if (m.type === "lixrpause") return this._lixRPauseModal();
     if (m.type === "lixadd") return this._lixAddModal(m);
     if (m.type === "lixoff") {
       const n = this._liLamps().filter((x) => x.on).length;

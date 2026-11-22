@@ -1,5 +1,10 @@
 # Modul 18 Licht & Lampen
 
+## [0.8.0] Build 8 - 2026-11-22
+- **Reiter „Regeln“** mit vier Arten: Bewegung → Licht, Alle weg → Alle aus, Alarm (Modul 11) → Licht an, Abends → Licht an
+- Regeln laufen im Python-Teil, auch ohne offenes Dashboard; ausgeschaltet wird nur, was die Regel selbst angemacht hat
+- Vorschläge aus Bewegungsmeldern, Personen, Modul 11 und Außenlampen; Pausieren für alle (1 Std. bis 1 Woche); Protokoll „Zuletzt“
+
 ## [0.7.0] Build 7 - 2026-11-22
 - **Mini-Grundriss im Lampen-Fenster:** Platz per Tipp setzen oder versetzen, Etage wechseln, „Aus dem Plan nehmen“ – ohne in den Baukasten zu wechseln
 - Der Raum der Lampe ist im Mini-Plan markiert; steht sie woanders, gibt es „Raum … übernehmen“. Lampen ohne jeden Raum bekommen ihn aus dem Platz

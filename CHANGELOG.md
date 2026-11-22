@@ -2,6 +2,32 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b55] - 2026-11-22
+
+**Modul 18 · Licht & Lampen** v0.8 Build 8 – Regeln: das Licht reagiert von selbst. Addon `licht` 0.8.0.
+
+### Neu
+- **Reiter „Regeln“** mit vier Arten:
+  - **Bewegung → Licht:** Ein Bewegungs- oder Präsenzmelder schaltet die Lampen eines Raums an, wahlweise nur wenn es dunkel ist (Sonne unter dem Horizont). Dazu gibt es eine eigene Helligkeit und gedimmt nachts (22–6 Uhr). Nach 1 bis 30 Min. ohne Bewegung geht das Licht wieder aus, auf Wunsch nie.
+  - **Alle weg → Alle aus:** Ist keine Person mehr zu Hause, gehen nach einer Wartezeit alle Lampen aus. Lampen ohne „Bei Alle aus mitschalten“ bleiben an.
+  - **Alarm → Licht an:** Löst ein Melder in Modul 11 aus, gehen die Lampen auf 100 %. Nach dem Alarm gehen die Lampen, die vorher aus waren, auf Wunsch wieder aus.
+  - **Abends → Licht an:** an zum Sonnenuntergang (30 Min. vorher bis 30 Min. danach), aus um 22, 23 oder 0 Uhr, bei Sonnenaufgang oder nie.
+- **Vorschläge für dein Haus:** Räume mit Bewegungsmelder und Lampen, Personen, Modul 11 und Außenlampen werden als fertige Regel vorgeschlagen.
+- **Jede Regel als Satz**, z. B. „Bewegung im Flur → 2 Lampen an, wenn dunkel, aus nach 5 Min. ohne Bewegung“. Der Status zeigt „aktiv“, „hat 2 Lampen an“ oder einen Hinweis wie „Keine Personen in Home Assistant“. Jede Regel lässt sich einzeln an- und ausschalten und testen.
+- **Pausieren** aller Regeln für 1 Std., 3 Std., bis morgen früh oder eine Woche, z. B. bei Gästen.
+- **Zuletzt:** Protokoll der letzten 40 Schaltungen mit Uhrzeit, es übersteht Neustarts.
+
+### Wichtig
+- Die Regeln laufen im Python-Teil, also auch ohne offenes Dashboard.
+- Ausgeschaltet wird nur, was eine Regel selbst angemacht hat. Wer eine Lampe von Hand einschaltet oder ausschaltet, übernimmt sie.
+- Fehler beim Schalten landen im Protokoll und an der Lampe.
+
+### Technik
+- `licht/logic.py`: `clean_rules`, `motion_step`, `away_step`, `sun_step`, `is_dark`, `rule_text`.
+- `manager.py` hört auf Melder, Personen und das Ereignis `fenster_heizung_sicherheit` (alarm/ende). Dazu kommt ein Takt alle 20 s für Ausschalt-Zeiten, Wartezeiten und Sonnenzeiten.
+- Neue Aktionen `rule_test` und `rules_pause` (nur Administratoren).
+- 4 neue Tests (Prüfen der Regeln, Bewegung, Alle weg / Abends, Python-Teil mit Bewegung, Pause, Alle weg, Alarm und Neustart), alle 335 Tests grün.
+
 ## [2026.11.4b54] - 2026-11-22
 
 **Modul 0 · Haus & Grundriss** v0.4 Build 4 – Sichern & Einlesen.

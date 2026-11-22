@@ -1,5 +1,9 @@
 """Modul 18 Licht & Lampen: Hintergrund-Teil des Addons (ab v0.2 Build 2).
 
+Ab Build 8: Regeln – Bewegung → Licht, Alle weg → Alle aus, Alarm in Modul 11 → Licht an, Abends → Licht an. Die Regeln laufen hier im
+Python-Teil (auch ohne offenes Dashboard), schalten nur Lampen, die sie selbst angemacht haben, wieder aus und schreiben ein kurzes
+Protokoll (letzte 40 Einträge). Pausieren geht für alle Regeln auf einmal.
+
 Ab Build 6: „Meine Lampen“ – Liste mit eigenem Namen, Raum (Bereich), Art und „bei Alle aus“, Modus auto/mine, Testen (Blinken) und
 der letzte Fehler je Lampe (z. B. Overkiz „No such command“), bis das Schalten wieder klappt.
 
@@ -50,6 +54,13 @@ class Addon(SWAddon):
         self.ignored = L.clean_ignored(d.get("ignored"))
         self.errs: dict[str, dict[str, str]] = {}
         self.started = d.get("started") or dt_util.now().date().isoformat()
+        self.rules = L.clean_rules(d.get("rules"))                       # Build 8
+        self.rlog: list[dict[str, Any]] = [x for x in d.get("rlog") or [] if isinstance(x, dict)][: L.LOG_MAX]
+        self.rpause = float(d.get("rpause") or 0)                         # Regeln pausiert bis (Zeitstempel), 0 = aktiv
+        self.rsun: dict[str, dict[str, str]] = d.get("rsun") if isinstance(d.get("rsun"), dict) else {}
+        self._rs: dict[str, dict[str, Any]] = {}                          # Laufzeit je Regel: mine (selbst angemacht), last (Bewegung)
+        self._away_since: float | None = None
+        self._watch: dict[str, list[str]] = {}
         now = time.time()
         self.burn.resume({e: self._lc(e) for e in self._lamps() if self._is_on(e)}, now)
         self.burn.prune(now)
@@ -57,6 +68,9 @@ class Addon(SWAddon):
             self.core.cmd(c, getattr(self, f"_c_{c}"))
         self.core.on_unload(self.hass.bus.async_listen("state_changed", self._on_state))
         self.core.every(60, self._tick)
+        self.core.every(20, self._rules_tick)
+        self.core.on_unload(self.hass.bus.async_listen(f"{DOMAIN}_sicherheit", self._on_sf))
+        self._rewatch()
         self.core.provide("licht", self)
         gr = self.hass.data.get(DOMAIN, {}).get("grundriss")  # ab Modul 0 Build 2: Zuordnung zieht in die Raumliste von Modul 0
         if gr is not None and hasattr(gr, "merge_pmap") and self.pmap:
@@ -72,7 +86,8 @@ class Addon(SWAddon):
         self.hass.data.get(DOMAIN, {}).pop("licht", None)
 
     def _save(self, delay: float = 10) -> None:
-        self.store.async_delay_save(lambda: {"burn": self.burn.dump(), "prefs": self.prefs, "pmap": self.pmap, "lamps": self.lamps, "mode": self.mode, "ignored": self.ignored, "legacy": self.legacy, "started": self.started}, delay)
+        self.store.async_delay_save(lambda: {"burn": self.burn.dump(), "prefs": self.prefs, "pmap": self.pmap, "lamps": self.lamps, "mode": self.mode, "ignored": self.ignored, "legacy": self.legacy, "started": self.started,
+                                             "rules": self.rules, "rlog": self.rlog, "rpause": self.rpause, "rsun": self.rsun}, delay)
 
     # ---- Lampen
     def _lamps(self) -> list[str]:
@@ -106,6 +121,8 @@ class Addon(SWAddon):
     @callback
     def _on_state(self, ev: Event) -> None:
         eid = ev.data.get("entity_id") or ""
+        if eid in self._watch or eid.startswith("person."):
+            self.hass.async_create_task(self._rules_eval(eid))
         if not eid.startswith("light."):
             return
         new, old = ev.data.get("new_state"), ev.data.get("old_state")
@@ -119,6 +136,8 @@ class Addon(SWAddon):
             self.burn.start(eid, t)
         else:
             self.burn.stop(eid, t)
+            for rs in self._rs.values():   # von Hand oder anders ausgeschaltet: die Regel kümmert sich nicht mehr darum
+                rs.get("mine", set()).discard(eid)
         self._save()
         self._push()
 
@@ -172,7 +191,8 @@ class Addon(SWAddon):
         t = time.time()
         return {"ver": 2, "on": {e: round(v) for e, v in self.burn.on.items()}, "today": {e: round(s) for e, s in self.burn.today(t).items()},
                 "week": self.burn.week(t), "groups": self._groups(), "prefs": self.prefs, "pmap": self.pmap, "lamps": self.lamps, "mode": self.mode, "ignored": self.ignored, "errs": self.errs, "legacy": bool(self.legacy),
-                "areas": self.core.areas(), "floors": self._floors(), "since": self.started}
+                "areas": self.core.areas(), "floors": self._floors(), "since": self.started,
+                "rules": self.rules, "rlog": self.rlog, "rpause": self.rpause if self._paused() else 0, "rinfo": self._rinfo()}
 
     async def _c_get(self, data: dict[str, Any], admin: bool) -> dict[str, Any]:
         if self.legacy is None and admin:  # Kopie der bisherigen Einstellungen, einmal
@@ -192,6 +212,12 @@ class Addon(SWAddon):
             self.mode = data["mode"]
         if "ignored" in data:
             self.ignored = L.clean_ignored(data.get("ignored"))
+        if "rules" in data:   # Regeln (Build 8): ganze Liste
+            self.rules = L.clean_rules(data.get("rules"))
+            ids = {r["id"] for r in self.rules}
+            self._rs = {k: v for k, v in self._rs.items() if k in ids}
+            self.rsun = {k: v for k, v in self.rsun.items() if k in ids}
+            self._rewatch()
         pm = data.get("pmap")  # Grundriss-Zuordnung: {Plan-ID: Bereich | "-" | ""}; leer = wieder automatisch
         if isinstance(pm, dict):
             merged = {**self.pmap, **{k: v for k, v in pm.items() if isinstance(v, str) and v}}
@@ -215,6 +241,16 @@ class Addon(SWAddon):
                 raise AddonError("Lampe nicht gefunden")
             await self._test(e)
             return {"ok": True}
+        if a in ("rule_test", "rules_pause"):
+            if not admin:
+                raise AddonError("Nur Administratoren können das ändern")
+            if a == "rule_test":
+                await self._rule_test(str(data.get("id") or ""))
+            else:
+                mins = int(data.get("min") or 0)
+                self.rpause = time.time() + max(0, min(7 * 1440, mins)) * 60 if mins > 0 else 0
+                self._save(1)
+            return self._state()
         if a != "switch":
             raise AddonError("Unbekannte Aktion")
         lamps = set(self._lamps())
@@ -260,6 +296,203 @@ class Addon(SWAddon):
         except Exception as err:  # noqa: BLE001
             self.errs[e] = {"t": dt_util.now().isoformat(), "msg": str(err)[:160], "svc": "test"}
             raise AddonError(f"Integration meldet: {str(err)[:160]}") from err
+
+    # ---- Regeln (Build 8)
+    def _rewatch(self) -> None:
+        w: dict[str, list[str]] = {}
+        for r in self.rules:
+            for e in (r.get("sensors") or []) + ([r["lux"]] if r.get("lux") else []):
+                w.setdefault(e, []).append(r["id"])
+        self._watch = w
+
+    def _rule_lamps(self, r: dict[str, Any]) -> list[str]:
+        """Lampen einer Regel: ausgewählte, sonst alle Lampen im Raum, bei Alarm ohne Auswahl alle Lampen."""
+        lamps = self._lamps()
+        if r.get("lamps"):
+            return [e for e in r["lamps"] if self.hass.states.get(e) is not None]
+        if r.get("room"):
+            return [e for e in lamps if self._area(e) == r["room"]]
+        return lamps if r["t"] in ("alarm", "away") else []
+
+    def _area(self, e: str) -> str:
+        c = next((x for x in self.lamps if x["e"] == e), None) if self.mode == "mine" else None
+        if c and c.get("room"):
+            return c["room"]
+        try:
+            from homeassistant.helpers import device_registry as dr, entity_registry as er
+            ent = er.async_get(self.hass).async_get(e)
+            if ent is None:
+                return ""
+            if ent.area_id:
+                return ent.area_id
+            dev = dr.async_get(self.hass).async_get(ent.device_id) if ent.device_id else None
+            return (dev.area_id if dev else "") or ""
+        except Exception:  # noqa: BLE001
+            return ""
+
+    def _paused(self) -> bool:
+        return self.rpause > time.time()
+
+    def _log(self, r: dict[str, Any], txt: str) -> None:
+        self.rlog = ([{"t": dt_util.now().isoformat(), "id": r["id"], "n": r.get("n") or "", "rt": r["t"], "txt": txt[:140]}] + self.rlog)[: L.LOG_MAX]
+        self._save(5)
+
+    async def _rule_switch(self, r: dict[str, Any], ids: list[str], on: bool, bri: int | None = None) -> bool:
+        if not ids:
+            return False
+        sd: dict[str, Any] = {"entity_id": L.plan_switch(ids, self._groups())}
+        if on and bri:
+            sd["brightness_pct"] = bri
+        try:
+            await self.hass.services.async_call("light", "turn_on" if on else "turn_off", sd, blocking=True)
+        except Exception as err:  # noqa: BLE001
+            for e in ids:
+                self.errs[e] = {"t": dt_util.now().isoformat(), "msg": str(err)[:160], "svc": "regel"}
+            self._log(r, f"Schalten hat nicht geklappt: {str(err)[:90]}")
+            return False
+        return True
+
+    def _names(self, ids: list[str]) -> str:
+        st = self.hass.states
+        nm = [next((x["n"] for x in self.lamps if x["e"] == e and x["n"]), None) or (st.get(e).attributes.get("friendly_name") if st.get(e) else None) or e for e in ids]
+        return ", ".join(nm[:3]) + (f" und {len(nm) - 3} weitere" if len(nm) > 3 else "")
+
+    def _sensor_on(self, e: str) -> bool:
+        s = self.hass.states.get(e)
+        return bool(s and s.state == ON)
+
+    def _lux(self, e: str) -> float | None:
+        s = self.hass.states.get(e) if e else None
+        try:
+            return float(s.state) if s else None
+        except (TypeError, ValueError):
+            return None
+
+    async def _rules_eval(self, eid: str | None = None) -> None:
+        if self._paused():
+            return
+        now, now_dt = time.time(), dt_util.now()
+        sun = self.hass.states.get("sun.sun")
+        for r in self.rules:
+            if not r["on"]:
+                continue
+            rs = self._rs.setdefault(r["id"], {"mine": set(), "last": None})
+            if r["t"] == "motion" and (eid is None or eid in (r.get("sensors") or []) or eid == r.get("lux")):
+                motion = any(self._sensor_on(e) for e in r.get("sensors") or [])
+                if motion:
+                    rs["last"] = now
+                lamps = self._rule_lamps(r)
+                st = {e: self._is_on(e) for e in lamps}
+                dark = L.is_dark(sun.state if sun else None, self._lux(r.get("lux") or ""), r.get("lux_max", 30))
+                step = L.motion_step({**r, "lamps": lamps}, now, now_dt, motion, rs["last"], dark, st, rs["mine"])
+                if step and step[0] == "on" and await self._rule_switch(r, step[1], True, step[2]):
+                    rs["mine"].update(step[1])
+                    self._log(r, f"Bewegung → an: {self._names(step[1])}" + (f" ({step[2]} %)" if step[2] else ""))
+                elif step and step[0] == "off" and await self._rule_switch(r, step[1], False):
+                    rs["mine"].clear()
+                    self._log(r, f"Keine Bewegung seit {r['off_min']} Min. → aus: {self._names(step[1])}")
+                elif step and step[0] == "forget":
+                    rs["mine"].clear()
+            elif r["t"] == "away" and (eid is None or eid.startswith("person.")):
+                persons = [s for s in self.hass.states.async_all("person")]
+                home = sum(1 for s in persons if s.state == "home")
+                if home or not persons:
+                    self._away_since, rs["fired"] = None, False
+                elif self._away_since is None:
+                    self._away_since = now
+                if L.away_step(r, home, len(persons), self._away_since, now, bool(rs.get("fired"))):
+                    rs["fired"] = True
+                    alloff = {x["e"]: x["alloff"] for x in self.lamps}
+                    ids = [e for e in self._rule_lamps(r) if self._is_on(e) and alloff.get(e, True)]
+                    if ids and await self._rule_switch(r, ids, False):
+                        self._log(r, f"Alle weg → aus: {self._names(ids)}")
+                    elif not ids:
+                        self._log(r, "Alle weg – es war schon alles aus")
+            elif r["t"] == "sun" and eid is None:
+                done = self.rsun.setdefault(r["id"], {})
+                ss, sr = self._sun_events(now_dt)
+                act = L.sun_step(r, now_dt, ss, sr, done)
+                lamps = self._rule_lamps(r)
+                if act == "on":
+                    done["on"] = now_dt.date().isoformat()
+                    ids = [e for e in lamps if not self._is_on(e)]
+                    if ids and await self._rule_switch(r, ids, True):
+                        rs["mine"].update(ids)
+                        self._log(r, f"Sonnenuntergang → an: {self._names(ids)}")
+                    self._save(2)
+                elif act == "off":
+                    done["off"] = done.get("on", "")
+                    ids = [e for e in lamps if self._is_on(e) and (e in rs["mine"] or not rs["mine"])]
+                    if ids and await self._rule_switch(r, ids, False):
+                        self._log(r, f"Feierabend fürs Licht → aus: {self._names(ids)}")
+                    rs["mine"].clear()
+                    self._save(2)
+
+    def _sun_events(self, now_dt: Any) -> tuple[Any, Any]:
+        try:
+            from datetime import timedelta
+            from homeassistant.helpers.sun import get_astral_event_date
+            ss = get_astral_event_date(self.hass, "sunset", now_dt.date())
+            sr = get_astral_event_date(self.hass, "sunrise", now_dt.date() + timedelta(days=1))
+            return (dt_util.as_local(ss) if ss else None, dt_util.as_local(sr) if sr else None)
+        except Exception:  # noqa: BLE001
+            return (None, None)
+
+    @callback
+    def _rules_tick(self, _now: Any = None) -> None:
+        if self.rules:
+            self.hass.async_create_task(self._rules_eval(None))
+
+    @callback
+    def _on_sf(self, ev: Event) -> None:
+        art = ev.data.get("art")
+        if art in ("alarm", "ende") and not self._paused():
+            self.hass.async_create_task(self._rules_alarm(art, ev.data))
+
+    async def _rules_alarm(self, art: str, data: dict[str, Any]) -> None:
+        for r in self.rules:
+            if not r["on"] or r["t"] != "alarm":
+                continue
+            rs = self._rs.setdefault(r["id"], {"mine": set(), "last": None})
+            if art == "alarm":
+                ids = self._rule_lamps(r)   # alle auf volle Helligkeit; „wieder aus“ betrifft später nur die, die vorher aus waren
+                was_off = [e for e in ids if not self._is_on(e)]
+                if await self._rule_switch(r, ids, True, 100):
+                    rs["mine"].update(was_off)
+                    self._log(r, f"Alarm ({data.get('name') or 'Melder'}) → {len(ids)} Lampen auf 100 %")
+            elif art == "ende" and r.get("off_end") and rs["mine"]:
+                ids = [e for e in rs["mine"] if self._is_on(e)]
+                if await self._rule_switch(r, ids, False):
+                    self._log(r, f"Alarm vorbei → wieder aus: {len(ids)} Lampen")
+                rs["mine"].clear()
+
+    def _rinfo(self) -> dict[str, Any]:
+        out = {}
+        persons = self.hass.states.async_all("person")
+        for r in self.rules:
+            rs = self._rs.get(r["id"]) or {}
+            lamps = self._rule_lamps(r)
+            out[r["id"]] = {"lamps": lamps, "mine": sorted(rs.get("mine") or []), "last": rs.get("last"),
+                            "warn": ("Keine Bewegungsmelder gewählt" if r["t"] == "motion" and not r.get("sensors") else
+                                     "Keine Lampen" if not lamps else
+                                     "Keine Personen in Home Assistant" if r["t"] == "away" and not persons else
+                                     "Modul 11 ist aus" if r["t"] == "alarm" and self.hass.data.get(DOMAIN, {}).get("sicherheit") is None else "")}
+        return out
+
+    async def _rule_test(self, rid: str) -> None:
+        r = next((x for x in self.rules if x["id"] == rid), None)
+        if r is None:
+            raise AddonError("Regel nicht gefunden")
+        lamps = self._rule_lamps(r)
+        if not lamps:
+            raise AddonError("Die Regel hat keine Lampen")
+        on = r["t"] != "away"
+        ids = [e for e in lamps if self._is_on(e) != on]
+        if ids and await self._rule_switch(r, ids, on, 100 if r["t"] == "alarm" else (r.get("bri") or None)):
+            if on:
+                self._rs.setdefault(r["id"], {"mine": set(), "last": time.time()})["mine"].update(ids)
+                self._rs[r["id"]]["last"] = time.time()
+            self._log(r, f"Test → {'an' if on else 'aus'}: {self._names(ids)}")
 
     def summary(self) -> dict[str, Any]:
         lamps = self._lamps()
