@@ -2,6 +2,25 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b51] - 2026-11-22
+
+**Modul 18 · Licht & Lampen** v0.4 Build 4 – Grundriss I aus dem Konzept „Modul 18 · Licht & Lampen“ (Teil B1, B2, B5).
+
+### Neu
+- **Dritte Ansicht „Grundriss“ als Lichtkarte** (Umschalter im Banner: Räume · Liste · Grundriss). Der Grundriss kommt aus dem Baukasten von Modul 11 – einmal gezeichnet, in Modul 1, 11 und 18 genutzt. Freie Raumformen werden mitgezeichnet.
+- **Räume leuchten in der Mischfarbe ihrer Lampen**, die Stärke folgt der Helligkeit. Darauf Name, Prozent, „3 von 4 an“ und die Plakette „seit … “, wenn Licht lange brennt.
+- **Lampenpunkte** je Raum in ihrer echten Farbe (grau = aus, gestrichelt = offline).
+- **Bedienen im Plan:** Fläche antippen schaltet den Raum (über die passende Lichtgruppe), Punkt antippen schaltet die Lampe, **lang drücken** (am Computer Rechtsklick) öffnet das Lampen-Detail.
+- **Etagen-Umschalter** mit der Zahl heller Räume je Etage. Geöffnet wird die erste Etage mit Licht.
+- **Zuordnung Fläche → Bereich** automatisch über den Namen. „… Flächen nicht zugeordnet“ springt zur nächsten freien Fläche, dort wählt ein Administrator den Bereich oder „Kein Bereich“. Gilt nur für Modul 18.
+- **„Nicht im Grundriss“:** Räume mit Lampen ohne Fläche stehen als Schalter unter dem Plan.
+- Ohne Grundriss: Hinweis mit „Grundriss zeichnen“ (öffnet den Baukasten von Modul 11).
+
+### Technik
+- Addon `licht` 0.4.0 Build 4 (`core_min` 2026.11.4b51): Ansicht `plan`, Zuordnung `pmap` im Addon-Speicher, `set` nimmt `pmap` an (nur Administratoren).
+- Kern: Fenster des Addons werden über das Präfix `lix` geöffnet statt über eine feste Liste.
+- 2 neue Tests (Zuordnung prüfen, setzen, zurücksetzen, über Neustart), alle Tests grün.
+
 ## [2026.11.4b50] - 2026-11-22
 
 **Weihnachts-Theme in allen Modulen** (Vorschau „Handy-Banner korrigieren & Weihnachten überall“, Teil 2).

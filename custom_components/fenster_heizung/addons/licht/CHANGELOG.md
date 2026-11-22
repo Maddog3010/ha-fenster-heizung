@@ -1,5 +1,10 @@
 # Modul 18 Licht & Lampen
 
+## [0.4.0] Build 4 - 2026-11-22
+- **Grundriss als Lichtkarte**: dritte Ansicht mit Flächen in der Lichtfarbe, Lampenpunkten, Etagen und Plaketten
+- Fläche antippen = Raum schalten, Punkt antippen = Lampe, lang drücken = Detail
+- Zuordnung Fläche → Bereich automatisch über den Namen oder von Hand; „Nicht im Grundriss“ als Schalter
+
 ## [0.3.0] Build 3 - 2026-11-22
 - **Neue Optik**: Haus-Szene im Banner (Etagen aus Home Assistant, Fenster in Lichtfarbe), Kacheln 2.0, Szenenleiste, Raumkarten 2.0 mit Lichtschein in echter Farbe, Ansicht „Liste“, Lampen-Detail mit Ring und Weißton-Leiste
 - Einstellungen → Darstellung: Optik „Neu“ oder „Wie bisher“, Ansicht Räume oder Liste

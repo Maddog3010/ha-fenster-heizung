@@ -2,6 +2,9 @@
    v0.2 Build 2 (Technik): Einschaltzeiten und Brennstunden kommen aus dem Python-Teil (api.call("licht", "get")), damit „an seit“
    einen Neustart von Home Assistant übersteht. Räume schalten über eine passende Lichtgruppe (alle Lampen gleichzeitig),
    Lichtfarbe wird aus Kelvin, hs, xy und rgb gelesen, die Mischfarbe eines Raums nach Helligkeit gewichtet.
+   v0.4 Build 4 (Grundriss I, Konzept Teil B1, B2, B5): dritte Ansicht „Grundriss“ als Lichtkarte aus dem Baukasten von Modul 11 –
+   Räume leuchten in der Mischfarbe ihrer Lampen, Fläche antippen schaltet den Raum, Lampenpunkt antippen schaltet die Lampe,
+   lang drücken öffnet das Detail. Zuordnung Fläche → Bereich automatisch über den Namen oder von Hand (pmap im Addon-Speicher).
    v0.3 Build 3 (Neue Optik, Konzept Teil A): Haus-Szene im Banner, Kacheln 2.0, Szenenleiste, Raumkarten 2.0 mit Lichtschein
    in echter Farbe, Liste kompakt, Lampen-Detail mit Ring, Weißton-Leiste und markierter Farbe. „Optik wie bisher“ zeigt die Seite
    von Build 1. Der Kern hängt die Methoden der Klasse unten an das Panel. Szenen und Räume stehen weiter im Layout (layout.li). */
@@ -81,6 +84,22 @@ export default (api) => {
 @keyframes l3p{50%{opacity:calc(.25 + var(--p) * .55);transform:scale(1.06)}}
 .l3.an-aus *,.l3.an-aus .glow{transition:none!important;animation:none!important}
 @media (prefers-reduced-motion:reduce){.l3 *{animation:none!important;transition:none!important}}
+.l3pc h2{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.l3psum{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.l3psum>*{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 10px;font-size:.78rem;background:color-mix(in srgb,var(--primary-text-color) 6%,transparent);color:var(--mut);border:0;font-family:inherit}
+.l3psum b{color:var(--primary-text-color)}.l3psum .w{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#fbbf24}.l3psum .w b{color:#fbbf24}.l3psum .u{cursor:pointer;color:var(--teal);background:color-mix(in srgb,var(--teal) 12%,transparent)}
+.l3fc{display:inline-block;min-width:16px;padding:0 4px;border-radius:8px;background:#f59e0b;color:#1c1003;font-size:.7rem;text-align:center}
+.l3pv{border-radius:14px;overflow:hidden;background:color-mix(in srgb,#020617 55%,var(--card,#111a2b))}.l3pv svg{display:block;width:100%;height:auto;max-height:68vh}
+.l3pv text{font-family:inherit}.l3pn{fill:var(--primary-text-color);font-weight:700}.l3pt{fill:#fff;font-weight:750}.l3pt.off{fill:var(--mut);font-weight:600}.l3pz{fill:var(--mut)}
+.l3pbase{fill:color-mix(in srgb,var(--card,#111a2b) 88%,#000)}.l3pbase.un{fill:color-mix(in srgb,var(--card,#111a2b) 70%,transparent)}
+.l3pr.ok{cursor:pointer}.l3pr.ok:hover .l3pbase{fill:color-mix(in srgb,var(--card,#111a2b) 75%,#fff)}.l3pr[data-act="lixpmap"]{cursor:pointer}
+.l3pglow{transition:opacity .6s,fill .6s}.l3pw{stroke:color-mix(in srgb,var(--primary-text-color) 55%,transparent);stroke-width:5;stroke-linecap:round}
+.l3pd rect{fill:color-mix(in srgb,#020617 55%,var(--card,#111a2b))}
+.l3pl{cursor:pointer}.l3pl.un{cursor:default}.l3pl:hover circle:last-child{stroke:#fff}
+.l3poff{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px}
+.l3plg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:.74rem;color:var(--mut)}.l3plg span{display:inline-flex;align-items:center;gap:6px}
+.l3plg i{width:11px;height:11px;border-radius:50%;display:inline-block}.l3plg i.un{border-radius:3px;background:repeating-linear-gradient(45deg,var(--line,#334155) 0 2px,transparent 2px 5px);border:1px dashed var(--line,#334155)}
+.l3pe{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:26px 18px}.l3pe b{font-size:1rem}.l3pe span{color:var(--mut);max-width:440px}
+.l3.an-voll .l3pr.on .l3pglow{animation:l3g 4s ease-in-out infinite}@keyframes l3g{50%{opacity:.7}}
 @media (max-width:560px){.l3hero{flex-direction:column;align-items:flex-start}.l3hero svg.l3house{width:100%;max-width:260px}}`;
   const Mixin = class {
   /* Modul 18: Licht & Lampen (Addon). Schaltet nur auf Fingertipp über Home Assistant (light.*, scene.*, script.*). */
@@ -196,7 +215,7 @@ export default (api) => {
     const big = !lamps.length ? "Keine Lampen" : on.length ? `${on.length} ${on.length === 1 ? "Lampe" : "Lampen"} an · ${roomsOn} ${roomsOn === 1 ? "Raum" : "Räume"}` : "Alles aus";
     const sub = [lamps.length ? `heute ${fmtH(todayS)} Std. Licht` : "", sunTxt, long.length ? `${long.length} ${long.length === 1 ? "Hinweis" : "Hinweise"}` : ""].filter(Boolean).join(" · ");
     const v = (k, t, i) => `<button class="l3pill ${P.view === k ? "sel" : ""}" data-act="lixview" data-k="${k}" aria-pressed="${P.view === k}">${ic(i, 14)}${t}</button>`;
-    return `<style>${CSS}</style><div class="l3hero ${this._liNight() ? "" : "day"}">${this._liHouse(rooms)}<div class="l3ht"><div class="l3hk">Modul 18 · Licht &amp; Lampen</div><div class="l3hb">${esc(big)}</div><div class="l3hsub">${esc(sub)}</div><div class="l3hv">${v("rooms", "Räume", "grid")}${v("list", "Liste", "list")}</div></div></div>`;
+    return `<style>${CSS}</style><div class="l3hero ${this._liNight() ? "" : "day"}">${this._liHouse(rooms)}<div class="l3ht"><div class="l3hk">Modul 18 · Licht &amp; Lampen</div><div class="l3hb">${esc(big)}</div><div class="l3hsub">${esc(sub)}</div><div class="l3hv">${v("rooms", "Räume", "grid")}${v("list", "Liste", "list")}${v("plan", "Grundriss", "home")}</div></div></div>`;
   }
   _liTiles(shown, lamps, on, long) {
     const D = this._liD(), td = Object.values(D.today || {}).reduce((a, v) => a + v, 0), wk = (D.week || []).map((x) => x.h), mx = Math.max(0.1, ...wk);
@@ -237,8 +256,138 @@ export default (api) => {
     const mu = this._muOn && this._muOn() ? this._mu() : null, mul = mu && mu.cfg && mu.cfg.light && mu.cfg.light.on && mu.cfg.light.ent ? mu.cfg.light.ent : "";
     const unlinked = ["night", "arrive", "cozy"].filter((k) => !(L.scenes[k] && this._hass.states[L.scenes[k]])).length;
     const note = [mul ? `${ic("trash", 14)} Müll-Licht (Modul 17): ${esc(this._wzName(mul))} · ${this._hass.states[mul] && this._hass.states[mul].state === "on" ? "an" : "aus"}` : "", unlinked && adm ? `${ic("link", 14)} ${unlinked} Szenenknopf${unlinked === 1 ? "" : "e"} noch nicht verknüpft – Antippen öffnet die Einstellungen` : ""].filter(Boolean);
-    const body = this._liPrefs().view === "list" ? this._liList(shown) : `<div class="l3grid">${shown.map((r) => this._liRoomCard(r, longK)).join("") || `<div class="card empty">Alle Räume sind ausgeblendet. Einblenden kannst du sie in den Einstellungen.</div>`}</div>`;
+    const vw = this._liPrefs().view, body = vw === "plan" ? this._liPlanView(rooms, longK) : vw === "list" ? this._liList(shown) : `<div class="l3grid">${shown.map((r) => this._liRoomCard(r, longK)).join("") || `<div class="card empty">Alle Räume sind ausgeblendet. Einblenden kannst du sie in den Einstellungen.</div>`}</div>`;
     return `${head}<div class="l3 an-${this._liAnim()}">${this._liTiles(shown, lamps, on, long)}${this._liScenes(on)}${note.length ? `<div class="mut sm" style="margin:-6px 0 12px;display:flex;flex-direction:column;gap:4px">${note.map((t) => `<span style="display:inline-flex;gap:6px;align-items:center">${t}</span>`).join("")}</div>` : ""}${body}</div>`;
+  }
+  /* ================= Grundriss als Lichtkarte (Build 4, Konzept Teil B1, B2, B5) =================
+     Der Grundriss kommt aus dem Baukasten von Modul 11 (sf_get, derselbe Zwischenspeicher wie in Modul 1). Jede Raumfläche leuchtet
+     in der Mischfarbe ihrer Lampen, die Stärke folgt der Helligkeit. Zuordnung Fläche → Bereich in Home Assistant automatisch über den
+     Namen, sonst von Hand (pmap im Addon-Speicher, nur Administratoren). Bedienen: Fläche antippen = Raum schalten, Lampenpunkt
+     antippen = Lampe schalten, lang drücken (oder Rechtsklick) = Lampen-Detail. Lampen als eigene Elemente im Plan folgen in Build 5. */
+  _liPlan() {
+    const P = this._gpPlan ? this._gpPlan() : { error: true };
+    if (!P || (this._gpBusy && !(this._sfxD && this._sfxD.d && this._sfxD.d.cfg))) {   /* lädt noch: gleich neu zeichnen */
+      clearTimeout(this._liPT); this._liPT = setTimeout(() => { if (this._mdActive && this._mdActive() === "li") this._render(); }, 700);
+    }
+    return P;
+  }
+  _liPRoom(item, rooms) {
+    const pm = this._liD().pmap || {}, v = pm[item.id];
+    if (v === "-") return null;
+    if (v) return rooms.find((r) => r.k === v) || null;
+    const nm = (s) => String(s || "").toLowerCase().replace(/zimmer|raum|[^a-zäöüß0-9]/g, ""), n = nm(item.n);
+    if (!n) return null;
+    const rs = rooms.filter((r) => r.k !== "_");
+    return rs.find((r) => nm(r.name) === n) || rs.find((r) => { const m = nm(r.name); return m.length > 2 && (m.includes(n) || n.includes(m)); }) || null;
+  }
+  _liPath(i, g) {
+    if (i.pts && i.pts.length >= 3) return "M" + i.pts.map((p) => p[0] + " " + p[1]).join("L") + "Z";
+    const x = i.x + g, y = i.y + g, w = Math.max(4, i.w - 2 * g), h = Math.max(4, i.h - 2 * g), r = Math.min(14, w / 6, h / 6);
+    return `M${x + r} ${y}H${x + w - r}Q${x + w} ${y} ${x + w} ${y + r}V${y + h - r}Q${x + w} ${y + h} ${x + w - r} ${y + h}H${x + r}Q${x} ${y + h} ${x} ${y + h - r}V${y + r}Q${x} ${y} ${x + r} ${y}Z`;
+  }
+  _liCen(i) {
+    if (!(i.pts && i.pts.length >= 3)) return [i.x + i.w / 2, i.y + i.h / 2];
+    const n = i.pts.length; return [i.pts.reduce((a, p) => a + p[0], 0) / n, i.pts.reduce((a, p) => a + p[1], 0) / n];
+  }
+  _liPlanEmpty(t, s, btn) {
+    return `<div class="card l3pe"><svg viewBox="0 0 220 110" width="200" aria-hidden="true"><rect x="10" y="8" width="200" height="94" rx="10" fill="none" stroke="var(--line,#334155)" stroke-width="3"/><path d="M110 8v56M10 64h130" stroke="var(--line,#334155)" stroke-width="3"/><circle cx="60" cy="36" r="26" fill="#ffb36b" opacity=".35"/><circle cx="60" cy="36" r="5" fill="#ffd2a1"/><circle cx="160" cy="58" r="30" fill="#a78bfa" opacity=".3"/><circle cx="160" cy="58" r="5" fill="#c4b5fd"/><circle cx="60" cy="84" r="4" fill="#475569"/></svg><b>${t}</b><span>${s}</span>${btn || ""}</div>`;
+  }
+  _liPlanView(rooms, longK) {
+    const P = this._liPlan(), adm = this._admin(), sf = this._mdList && this._mdList().some((m) => m.id === "sf");
+    if (!P) return this._liPlanEmpty("Grundriss wird geladen …", "Einen Moment.");
+    if (P.error) return this._liPlanEmpty("Grundriss gerade nicht erreichbar", "Modul 11 antwortet noch nicht – meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.");
+    const allR = (P.items || []).filter((i) => i.t === "r");
+    if (!allR.length) return this._liPlanEmpty("Noch kein Grundriss mit Räumen", "Den Grundriss zeichnest du einmal mit dem Baukasten aus Modul 11: Räume, Wände, Türen und Fenster. Modul 1 und Modul 18 nutzen ihn dann mit.",
+      adm ? (sf ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : `<span class="mut sm">Schalte dafür unter Einstellungen → Module das Modul 11 ein.</span>`) : "");
+    const fls = P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }];
+    const map = new Map(allR.map((i) => [i.id, this._liPRoom(i, rooms)]));
+    const fl = fls.some((f) => f.id === this._liFl) ? this._liFl : (fls.find((f) => allR.some((i) => i.fl === f.id && map.get(i.id) && map.get(i.id).on.length)) || fls.find((f) => allR.some((i) => i.fl === f.id)) || fls[0]).id;
+    const items = (P.items || []).filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r");
+    const NF = this._narrow || (this.clientWidth || 999) < 600 ? 2.1 : 1, u = "l3p" + (this.constructor._l3N = ((this.constructor._l3N || 0) + 1) % 1e6) + "_";
+    const B = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
+    let d = `<defs><pattern id="${u}dot" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.1" fill="var(--primary-text-color)" opacity=".13"/></pattern>
+      <pattern id="${u}un" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v10" stroke="var(--line,#334155)" stroke-width="3"/></pattern>
+</defs>
+      <rect x="${B.x0 - 400}" y="${B.y0 - 400}" width="${B.x1 - B.x0 + 800}" height="${B.y1 - B.y0 + 800}" fill="url(#${u}dot)"/>`;
+    const lab = [];
+    rs.forEach((i, ix) => {
+      const r = map.get(i.id), n = r ? r.on.length : 0, p = n ? r.pct / 100 : 0, path = this._liPath(i, 3), cid = `${u}c${ix}`;
+      const act = r ? (r.lamps.some((x) => !x.un) ? `data-act="lixroom" data-k="${esc(r.k)}"` : "") : adm ? `data-act="lixpmap" data-k="${esc(i.id)}"` : "";
+      d += `<g class="l3pr${r ? " ok" : ""}${n ? " on" : ""}" ${act}><title>${esc(i.n || "Raum")}${r ? ` · ${n ? `${n} an · ${r.pct} %` : "aus"} · Antippen schaltet den Raum` : " · nicht zugeordnet"}</title>`;
+      if (r) {
+        const o = 0.32 + 0.5 * p;   /* weicher Schein von der Mitte, Stärke nach Helligkeit – Schrift und Punkte bleiben lesbar */
+        d += `<path d="${path}" class="l3pbase"/>`;
+        if (n) d += `<radialGradient id="${cid}" cx=".5" cy=".5" r=".72"><stop offset="0" stop-color="${r.col}" stop-opacity="${o.toFixed(2)}"/><stop offset=".55" stop-color="${r.col}" stop-opacity="${(o * 0.55).toFixed(2)}"/><stop offset="1" stop-color="${r.col}" stop-opacity=".06"/></radialGradient><path class="l3pglow" d="${path}" fill="url(#${cid})"/>`;
+        d += `<path d="${path}" fill="none" stroke="${n ? r.col : "var(--line,#334155)"}" stroke-width="2" stroke-opacity="${n ? 0.85 : 0.7}"/>`;
+      } else d += `<path d="${path}" class="l3pbase un"/><path d="${path}" fill="url(#${u}un)" opacity=".6"/><path d="${path}" fill="none" stroke="var(--line,#334155)" stroke-width="2" stroke-dasharray="6 5"/>`;
+      d += `</g>`;
+      lab.push({ i, r });
+    });
+    /* Wände, Türen, Fenster – schlicht, damit das Licht die Hauptrolle spielt */
+    items.forEach((i) => {
+      const a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
+      if (i.t === "w") d += `<path d="M${i.x} ${i.y}L${i.x2} ${i.y2}" class="l3pw"/>`;
+      else if (i.t === "d") d += `<g${a} class="l3pd"><rect x="${i.x - 15}" y="${i.y - 4}" width="30" height="8" rx="2"/></g>`;
+      else if (i.t === "f") d += `<g${a}><rect x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7" rx="2.5" fill="#bfdbfe" fill-opacity=".55" stroke="#60a5fa" stroke-width="1"/></g>`;
+    });
+    /* Beschriftung und Lampenpunkte */
+    lab.forEach(({ i, r }) => {
+      const big = Math.min(26 * NF, i.h * 0.26, i.w * 0.22), small = Math.min(13 * NF, Math.max(10, big * 0.5), i.w * 0.095), pad = Math.max(8, Math.min(14, i.w * 0.05));
+      const x = i.x + 3, y = i.y + 3, w = i.w - 6, h = i.h - 6;
+      let nm = String(i.n || (r ? r.name : "Raum")); const mx = Math.max(3, Math.floor((w - pad * 2) / (small * 0.58))); if (nm.length > mx) nm = nm.slice(0, mx - 1) + "…";
+      d += `<g pointer-events="none"><text x="${x + pad}" y="${y + pad + small}" font-size="${small}" class="l3pn">${esc(nm)}</text>`;
+      if (r) {
+        const n = r.on.length, ty = y + pad + small + 5 + big;
+        if (h > small * 2 + big) d += `<text x="${x + pad}" y="${ty}" font-size="${big}" class="l3pt${n ? "" : " off"}">${n ? r.pct + " %" : "aus"}</text>`;
+        if (n && h > small * 3.4 + big + 26 * NF) d += `<text x="${x + pad}" y="${ty + small * 1.3}" font-size="${small * 0.88}" class="l3pz">${n} von ${r.lamps.length} an</text>`;
+        const lk = longK[r.k];
+        if (lk) { const fz = 10.5 * NF, t = `seit ${this._liDur(lk)}`, bw = t.length * fz * 0.56 + fz * 1.9;
+          if (bw < w * 0.6) d += `<g><rect x="${x + w - bw - 8}" y="${y + 8}" width="${bw}" height="${fz * 1.7}" rx="${fz * 0.85}" fill="#f59e0b" fill-opacity=".9"/><text x="${x + w - bw - 8 + fz * 0.9}" y="${y + 8 + fz * 1.2}" font-size="${fz}" font-weight="700" fill="#1c1003">${t}</text></g>`;
+          else d += `<g><circle cx="${x + w - 8 - fz * 0.75}" cy="${y + 8 + fz * 0.75}" r="${fz * 0.75}" fill="#f59e0b"/><text x="${x + w - 8 - fz * 0.75}" y="${y + 8 + fz * 1.12}" font-size="${fz}" font-weight="800" fill="#1c1003" text-anchor="middle">!</text></g>`; }
+      } else d += `<text x="${x + pad}" y="${y + pad + small * 2.4}" font-size="${small * 0.88}" class="l3pz">${adm ? "Antippen zum Zuordnen" : "nicht zugeordnet"}</text>`;
+      d += `</g>`;
+      if (r && r.lamps.length) {   /* Lampenpunkte unten links, in kleinen Räumen weniger */
+        const pr = Math.max(5.5, Math.min(9 * NF, h * 0.07, w * 0.05)), stp = pr * 2.9, maxN = Math.max(1, Math.floor((w - pad * 2) / stp)), shown = r.lamps.slice(0, maxN), py = y + h - pad - pr;
+        shown.forEach((x2, k) => {
+          const cx = x + pad + pr + k * stp, c = hex(x2.rgb);
+          d += `<g class="l3pl${x2.on ? " on" : ""}${x2.un ? " un" : ""}" ${x2.un ? "" : `data-act="lixsw" data-k="${esc(x2.id)}" data-lhold="${esc(x2.id)}"`}><title>${esc(x2.name)} · ${x2.un ? "nicht erreichbar" : x2.on ? (x2.dim ? x2.br + " %" : "an") : "aus"} · lang drücken für Details</title>
+            <circle cx="${cx}" cy="${py}" r="${pr * 1.9}" fill="transparent"/>${x2.on ? `<circle cx="${cx}" cy="${py}" r="${pr * 1.8}" fill="${c}" opacity=".28"/>` : ""}<circle cx="${cx}" cy="${py}" r="${pr}" fill="${x2.un ? "none" : x2.on ? c : "#475569"}" stroke="${x2.un ? "#64748b" : x2.on ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.45)"}" stroke-width="${x2.un ? 1.5 : 2}" ${x2.un ? `stroke-dasharray="2.5 2.5"` : ""}/></g>`;
+        });
+        if (r.lamps.length > shown.length) d += `<text x="${x + pad + shown.length * stp + pr * 0.2}" y="${py + pr * 0.45}" font-size="${pr * 1.3}" class="l3pz" pointer-events="none">+${r.lamps.length - shown.length}</text>`;
+      }
+    });
+    /* Kopfzeile, Etagen, nicht zugeordnete Flächen, Räume ohne Fläche */
+    const mapped = new Set([...map.values()].filter(Boolean).map((r) => r.k)), un = allR.filter((i) => !map.get(i.id) && (this._liD().pmap || {})[i.id] !== "-");
+    const flOn = rs.map((i) => map.get(i.id)).filter((r) => r && r.on.length), nOn = flOn.reduce((a, r) => a + r.on.length, 0);
+    const shown = rooms.filter((r) => !r.hid), off = shown.filter((r) => !mapped.has(r.k) && r.lamps.length);
+    const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => { const c = allR.filter((i) => i.fl === f.id).map((i) => map.get(i.id)).filter((r) => r && r.on.length).length; return `<button class="${f.id === fl ? "on" : ""}" data-act="lixfl" data-k="${esc(f.id)}">${esc(f.n)}${c ? ` <b class="l3fc">${c}</b>` : ""}</button>`; }).join("")}</span>` : "";
+    const sum = `<div class="l3psum"><span>${ic("lamp", 14)}<b>${nOn}</b> ${nOn === 1 ? "Lampe" : "Lampen"} an auf dieser Etage</span><span>${ic("grid", 14)}<b>${flOn.length}</b> von ${rs.filter((i) => map.get(i.id)).length} Räumen hell</span>
+      ${(() => { const nl = rs.map((i) => map.get(i.id)).filter((r) => r && longK[r.k]).length; return nl ? `<span class="w">${ic("bell", 14)}<b>${nl}</b> lange an</span>` : ""; })()}
+      ${un.length ? (adm ? `<button class="u" data-act="lixpun">${un.length} ${un.length === 1 ? "Fläche" : "Flächen"} nicht zugeordnet${ic("chev", 13)}</button>` : `<span class="u">${un.length} nicht zugeordnet</span>`) : ""}</div>`;
+    const offRow = off.length ? `<div class="l3poff"><span class="mut sm">Nicht im Grundriss:</span>${off.map((r) => `<button class="l3chip ${r.on.length ? "" : "off"}" style="--c:${r.on.length ? r.col : "#475569"}" data-act="lixroom" data-k="${esc(r.k)}" aria-label="${esc(r.name)} ${r.on.length ? "ausschalten" : "einschalten"}"><i></i>${esc(r.name)} · ${r.on.length ? r.on.length + " an" : "aus"}</button>`).join("")}</div>` : "";
+    const legend = `<div class="l3plg"><span><i style="background:#ffd2a1;box-shadow:0 0 6px #ffb36b"></i>an (echte Farbe)</span><span><i style="background:#475569"></i>aus</span><span><i style="border:1.5px dashed #64748b"></i>offline</span><span><i class="un"></i>nicht zugeordnet</span><span>Fläche antippen = Raum schalten · Punkt antippen = Lampe · lang drücken = Details</span></div>`;
+    const vb = `${B.x0 - 16} ${B.y0 - 16} ${B.x1 - B.x0 + 32} ${B.y1 - B.y0 + 32}`;
+    this._liHold();
+    return `<div class="card l3pc"><h2>${ic("home", 18)}Lichtkarte<span class="sfhr">${bar}${adm && sf ? `<button class="sfed" data-act="gpedit">${ic("pencil", 14)} Grundriss bearbeiten</button>` : ""}</span></h2>
+      ${sum}<div class="l3pv"><svg viewBox="${vb}" role="img" aria-label="Grundriss mit eingeschalteten Lampen">${d}</svg></div>${offRow}${legend}</div>`;
+  }
+  /* Lang drücken (Handy) oder Rechtsklick (Computer) auf einen Lampenpunkt öffnet das Detail statt zu schalten */
+  _liHold() {
+    const sr = this.shadowRoot; if (!sr || this._liHoldOn) return; this._liHoldOn = true;
+    const end = () => { clearTimeout(this._liHT); this._liHS = null; };
+    sr.addEventListener("pointerdown", (e) => { const g = e.target.closest && e.target.closest("[data-lhold]"); if (!g) return; this._liHS = { x: e.clientX, y: e.clientY }; clearTimeout(this._liHT);
+      this._liHT = setTimeout(() => { this._liHeld = Date.now(); this._modal = { type: "lixdet", id: g.dataset.lhold }; this._renderModal(); try { navigator.vibrate && navigator.vibrate(12); } catch (_) {} }, 520); }, true);
+    sr.addEventListener("pointermove", (e) => { if (this._liHS && Math.hypot(e.clientX - this._liHS.x, e.clientY - this._liHS.y) > 8) end(); }, true);
+    ["pointerup", "pointercancel", "pointerleave"].forEach((t) => sr.addEventListener(t, end, true));
+    sr.addEventListener("contextmenu", (e) => { const g = e.target.closest && e.target.closest("[data-lhold]"); if (!g) return; e.preventDefault(); end(); this._liHeld = Date.now(); this._modal = { type: "lixdet", id: g.dataset.lhold }; this._renderModal(); }, true);
+  }
+  _lixPmapModal(m) {
+    const P = this._gpPlan && this._gpPlan(), it = P && (P.items || []).find((i) => i.id === m.k); if (!it) return `<div class="ov" data-act="close"></div>`;
+    const rooms = this._liRooms().filter((r) => r.k !== "_"), cur = (this._liD().pmap || {})[it.id] || "", auto = cur ? null : this._liPRoom(it, rooms);
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Fläche zuordnen</b><span>Grundriss: ${esc(it.n || "ohne Namen")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:0 0 10px">Welcher Bereich aus Home Assistant liegt hier? Seine Lampen leuchten dann auf dieser Fläche. Die Zuordnung gilt nur für Modul 18.</div>
+      <div class="gschips">${rooms.map((r) => `<button class="gsch ${cur === r.k || (!cur && auto && auto.k === r.k) ? "sel" : ""}" data-act="lixpmset" data-k="${esc(it.id)}" data-v="${esc(r.k)}">${esc(r.name)} (${r.lamps.length})</button>`).join("")}</div>
+      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="lixpmset" data-k="${esc(it.id)}" data-v="-">Kein Bereich</button>${cur ? `<button class="btn2" data-act="lixpmset" data-k="${esc(it.id)}" data-v="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   /* ================= Seite wie bisher (Build 1), für „Optik wie bisher“ ================= */
   _liPageOld() {
@@ -279,6 +428,24 @@ export default (api) => {
     if (a === "lixhrs") { this._liSave({ hours: +k }); return; }
     if (a === "lixhide") { const h = this._liLay().hidden; this._liSave({ hidden: h.includes(k) ? h.filter((x) => x !== k) : [...h, k] }); return; }
     if (a === "lixunlink") { const l = this._liLay(); this._liSave({ scenes: { ...l.scenes, [k]: "" } }); return; }
+    if ((a === "lixsw" || a === "lixroom") && this._liHeld && Date.now() - this._liHeld < 700) return;   /* nach langem Drücken nicht zusätzlich schalten */
+    if (a === "lixfl") { this._liFl = k; this._render(); return; }
+    if (a === "lixpmap") { if (this._admin()) { this._modal = { type: "lixpmap", k }; this._renderModal(); } return; }
+    if (a === "lixpun") {   /* nächste nicht zugeordnete Fläche: Etage wechseln und „Fläche zuordnen“ öffnen */
+      const P = this._gpPlan && this._gpPlan(), rs = this._liRooms(), pm = this._liD().pmap || {}, fo = ((P && P.floors) || []).map((f) => f.id);
+      const un = ((P && P.items) || []).filter((i) => i.t === "r" && pm[i.id] !== "-" && !this._liPRoom(i, rs)).sort((x, y) => (x.fl === this._liFl ? -1 : 0) - (y.fl === this._liFl ? -1 : 0) || fo.indexOf(x.fl) - fo.indexOf(y.fl));
+      if (!un.length) return;
+      this._liFl = un[0].fl; this._render(); this._modal = { type: "lixpmap", k: un[0].id }; this._renderModal(); return;
+    }
+    if (a === "lixpmset") {
+      if (!this._admin()) return;
+      const S = this._liX || {}, v = b.dataset.v || "", pm = { ...((S.d && S.d.pmap) || {}) };
+      if (v) pm[k] = v; else delete pm[k];
+      if (S.d) S.d.pmap = pm;
+      this._modal = null; this._renderModal(); this._render();
+      api.call(ID, "set", { pmap: { [k]: v } }).then((d) => { if (this._liX) { this._liX.d = d; this._liX.ts = Date.now(); } this._render(); }).catch(() => this._toast("Speichern fehlgeschlagen"));
+      return;
+    }
     if (a === "lixview" || a === "lixoptik") {
       const S = this._liX || {}, patch = a === "lixview" ? { view: k } : { optik: k };
       if (S.d) S.d.prefs = { ...(S.d.prefs || {}), ...patch };  // sofort zeigen
@@ -309,6 +476,7 @@ export default (api) => {
   }
   _lixModal() {
     const m = this._modal, adm = this._admin();
+    if (m.type === "lixpmap") return this._lixPmapModal(m);
     if (m.type === "lixoff") {
       const n = this._liLamps().filter((x) => x.on).length;
       return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Alle Lampen ausschalten?</b><span>Modul 18 · Licht & Lampen</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -332,7 +500,7 @@ export default (api) => {
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true"><div class="sh"><div><b>Licht & Lampen</b><span>Modul 18 · Addon · gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("palette", 15)}Darstellung</div>
       <div class="vrow"><span>Optik<small class="mut" style="display:block">„Wie bisher“ zeigt die Seite von Build 1 ohne Haus-Szene und Lichtschein.</small></span>${seg(P.optik, "lixoptik", [["neu", "Neu"], ["alt", "Wie bisher"]])}</div>
-      <div class="vrow"><span>Ansicht<small class="mut" style="display:block">Räume als Karten oder alle Lampen als Liste. Bewegung folgt Anpassen → Animationen (Aus · Dezent · Voll).</small></span>${seg(P.view, "lixview", [["rooms", "Räume"], ["list", "Liste"]])}</div>
+      <div class="vrow"><span>Ansicht<small class="mut" style="display:block">Räume als Karten, alle Lampen als Liste oder der Grundriss aus Modul 11 als Lichtkarte. Bewegung folgt Anpassen → Animationen (Aus · Dezent · Voll).</small></span>${seg(P.view, "lixview", [["rooms", "Räume"], ["list", "Liste"], ["plan", "Grundriss"]])}</div>
       <div class="lsec" style="margin-top:14px">${ic("lamp", 15)}Szenenknöpfe</div>
       <div class="mut sm" style="margin:0 0 4px">Jeder Knopf ruft eine Szene oder ein Skript aus Home Assistant auf. Ohne Auswahl bleibt er unverknüpft und öffnet diese Einstellungen. „Alle aus“ ist eingebaut.</div>
       ${slot("night", "Gute Nacht", "Zum Beispiel deine Szene zum Schlafengehen")}${slot("arrive", "Ankommen", "Zum Beispiel Licht im Flur und Wohnzimmer")}${slot("cozy", "Gemütlich", "Zum Beispiel warmes, gedimmtes Licht")}
@@ -353,7 +521,8 @@ export default (api) => {
     search: [
       { id: "scenes", t: "Licht: Szenen", k: "licht lampe szene gute nacht ankommen gemütlich", h: "Szenenknöpfe wie „Gute Nacht“ und „Ankommen“." },
       { id: "long", t: "Licht: Hinweis bei langem Licht", k: "licht lange an hinweis leer raum vergessen", h: "Hinweis, wenn Licht lange brennt." },
-      { id: "look", t: "Licht: Optik und Ansicht", k: "licht optik wie bisher liste räume ansicht", h: "Neue Optik oder wie bisher, Räume oder Liste." },
+      { id: "look", t: "Licht: Optik und Ansicht", k: "licht optik wie bisher liste räume ansicht", h: "Neue Optik oder wie bisher, Räume, Liste oder Grundriss." },
+      { id: "plan", t: "Licht: Grundriss als Lichtkarte", k: "licht grundriss lichtkarte plan etage fläche zuordnen", h: "Räume im Grundriss leuchten in der Farbe ihrer Lampen." },
     ],
   };
 };
