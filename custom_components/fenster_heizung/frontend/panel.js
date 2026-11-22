@@ -786,9 +786,9 @@ const MV = {
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  rb: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
-  wp: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  lu: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Haus-Schnitt mit den Räumen in der Farbe ihrer Luftfeuchte, Lüfter und Luftströme, kritischster Raum als große Zahl"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  rb: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Fassade mit der Sonne auf ihrem Bogen (Richtung und Höhe aus sun.sun), nachts Mond und Licht in den Fenstern"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  wp: { v: "0.1", b: 2, d: "2026-11-22", p: "2026.11.4b47", log: [["0.1", 2, "2026.11.4b47", "Neues Banner: Außengerät mit drehendem Lüfter und Thermometer, bei Frost Reif und Schnee, Hinweis auf Abtauen"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   ev: { v: "0.9", b: 10, d: "2026-11-21", p: "2026.11.4b37", log: [["0.9", 10, "2026.11.4b37", "Release-Kandidat: Modus beim Anstecken je Fahrzeug, Befehls-Rückmeldung (kein „von Hand umgestellt“ mehr bei nicht angekommenem Befehl), veralteter Ladestand mit Schätzung, Diagnose, Einrichtungs-Check erweitert, Entscheidungen bleiben nach Neustart"], ["0.9", 9, "2026.11.4b36", "„Wer lädt gerade?“: Gastfahrzeug oder ein Fahrzeug von Hand wählen (bis zum Abstecken); Gastfahrzeug auch beim Bearbeiten von Ladungen"], ["0.9", 8, "2026.11.4b23", "„Nur mit Karte“ bei offener Zugangskontrolle der go-e: Ladelimit gilt trotzdem (vorher lud die Wallbox ohne Karte ungeregelt bis 100 %); nachts keine Sonne mehr in der Statistik, Sonnenanteil von Hand änderbar"], ["0.9", 7, "2026.11.3", "Laufende Ladung überlebt einen Neustart von Home Assistant, fehlende kWh zuerst der Ladung zurechnen, Hinweis in der Tagesansicht; go-e-Import, mehrere Ladungen bearbeiten, Kosten ändern, Kilometer-Statistik"], ["0.9", 6, "2026.11.3b24", "Carport-Szene näher an der Wirklichkeit: Kabelkanal am Träger, Wechselrichter an der Hauswand, Netzstrom aus dem Haus, Ladekabel vor dem Auto mit Typ-2-Stecker in der Ladeklappe; nach dem Zurückwechseln in die App keine leeren Werte mehr; „Heute“ übersichtlicher"], ["0.9", 5, "2026.11.3b23", "Eine Ladung reicht bis zum Abstecken (kein neuer Eintrag nach Phasenwechsel), getrennte Teile zusammenführen, Ladenachweis als echte PDF-Datei"], ["0.9", 4, "2026.11.3b22", "Überschuss-Balken mit eingestellter Leistung, Start/Stopp mit Restzeit, Überschuss-Vorschau, Abfahrt aus dem Kalender je Fahrzeug (Lab übernommen), Tablet-Wandansicht, Strompreis-Chip, Kilometer & Verbrauch in der Statistik"], ["0.9", 3, "2026.11.3b20", "Laden startete nach einem Stopp nicht wieder (Wallbox meldete „fertig“); Ziel-Etikett bleibt in der Karte"], ["0.9", 2, "2026.11.3b18", "Ladungen bearbeiten: Fahrzeug-Werte rechnen mit, jede Änderung wird angezeigt, „Unbekannt“ zuordnen"], ["0.9", 1, "2026.11.3b17", "Vorabversion: Hausakku nicht ins Auto entladen, Auto vor dem Hausakku, § 14a Dimmen, Anwesenheit, Ladenachweis, Ladungen bearbeiten, Startseite, robuster bei Funkstille und alten Werten"], ["0.8", 1, "2026.11.3b16", "Planung als ein Band mit Satz, Statistik mit Tag/Woche/Monat/Jahr, pro 100 km und je Karte, geschätzter Ladestand ohne Sensor, Sensoren und Ereignis „Ladung beendet“"], ["0.7", 2, "2026.11.3b16", "Autos realistischer gezeichnet: echte Proportionen, Radläufe, Aero-Felgen, LED-Licht, Spiegelungen, Ladeklappe mit Stecker"], ["0.7", 1, "2026.11.3b16", "Neue Optik: Carport-Szene als Banner, Satz-Zeile, Ladeband bis zum Ziel, Kacheln 2.0, Modus-Karten, Heute-Zeitleiste, „Warum gerade so?“, Register „Fahrzeuge“, Handy und Hell"], ["0.6", 1, "2026.11.3b16", "Technik-Stufe: ein Ladeplan aus dem Backend, Sensoren und Aussehen je Fahrzeug, Quellen aus Haus-Werten und Modul 16, andere Wallboxen über Home Assistant, Tests"], ["0.5", 3, "2026.11.2b10", "Nach dem Umschalten der Phasen gilt „fertig“ kurz als Pause, die Ladung läuft weiter; Akkukapazität mit einer Nachkommastelle"], ["0.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   wx: { v: "1.0", b: 3, d: "2026-11-17", p: "2026.11.4b3", log: [["1.0", 3, "2026.11.4b3", "Wetterkarte zeigt Warnungen und Regen wieder"], ["1.0", 2, "2026.11.4b2", "Wetterkarte flackert nicht mehr"], ["1.0", 1, "2026.11.4b1", "Stabil: DWD-Wetterkarte (Warnungen und Regenradar), Rückblick, schneller warnen, Speichern nur bei Änderung, Änderungsverlauf mit Rückgängig, Feinschliff"], ["0.9", 1, "2026.11.3b11", "Vorabversion: Vorsorge (Akku, Auto, Hitzeschutz, Frost), Alarm auf dem Wandtablet, Startseite mit amtlichen Warnungen und Stufen, Sensoren und Ereignis für Automationen, Verlauf mit Filter"], ["0.8", 1, "2026.11.3b11", "48-Stunden-Zeitleiste, Aktionen als Ablaufkarten mit Stufe, Bedingung, Verzögerung und Aussperrschutz, Quittieren, Aussetzen, Knöpfe in der Meldung, Einstellungen mit Reitern"], ["0.7", 1, "2026.11.3b11", "Neue Optik Stufe 1: Wetter-Szene als Banner, Warnkacheln 2.0 mit Bogen, Stufenfarben wie beim DWD, Handy-Ansicht"], ["0.6", 1, "2026.11.3b11", "Stufe 1 der Fertigstellung: alle amtlichen Warnungen mit Vorabinformation, Stufen 1–4, Hagel getrennt, Starkregen in mm/h, Glätte, Wetterquelle wird geprüft"], ["0.5", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
   ga: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3600,6 +3600,7 @@ const CSS_SAI = `
 const CSS_SB = `
 .hero.mh.sbx .sbart{position:absolute;right:0;top:0;bottom:24px;width:58%;pointer-events:none;z-index:0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 34%);mask-image:linear-gradient(90deg,transparent 0,#000 34%)}
 .hero.mh.sbx .sbart>svg{width:100%;height:100%;display:block}
+.hero.mh.sbx.a-rb .sbart{bottom:0;-webkit-mask-image:none;mask-image:none}
 .hero.mh.sbx>.lbl,.hero.mh.sbx>.big,.hero.mh.sbx>.sub,.hero.mh.sbx>.chips,.hero.mh.sbx>.wwl1,.hero.mh.sbx>.wwacts{position:relative;z-index:1}
 .hero.mh.sbx .lbl,.hero.mh.sbx .sub{max-width:52%}.hero.mh.sbx .big{max-width:56%}.hero.mh.sbx>.chips{max-width:62%}
 .hero.mh.sbx.wwh .wwl1{max-width:56%}
@@ -3627,6 +3628,12 @@ const CSS_SB = `
 @media(max-width:600px){.hero.mh.sbx .sbart{width:100%;opacity:.38;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 60%);mask-image:linear-gradient(90deg,transparent 0,#000 60%)}
   .hero.mh.sbx .lbl,.hero.mh.sbx .sub,.hero.mh.sbx .big,.hero.mh.sbx>.chips,.hero.mh.sbx.wwh .wwl1{max-width:none}
   .sbwa{right:10px;gap:8px}.sbcal{width:84px}.sbcal em{font-size:2rem}.sbrgs{grid-template-columns:repeat(2,40px)}.sbrg{width:40px;height:40px}}
+.hero.mh .chip.stok{background:rgba(22,83,62,.75);border-color:#34d399}.hero.mh .chip.stwarn{background:rgba(90,69,19,.8);border-color:#fbbf24}.hero.mh .chip.stbad{background:rgba(90,30,42,.85);border-color:#f87171}
+.sbair{fill:none;stroke:#bdf0ff;stroke-width:3;stroke-linecap:round;stroke-dasharray:10 8;opacity:.85}.sbair.run{animation:sbDash 1.8s linear infinite}
+.sbspin{animation:sbSpin 3s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes sbSpin{to{transform:rotate(360deg)}}
+.sbsnow{animation:sbSnow 6s linear infinite}@keyframes sbSnow{0%{transform:translateY(-20px)}100%{transform:translateY(40px)}}
+.sbart[data-an="voll"] .sbspin{animation-duration:1.6s}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -15216,13 +15223,16 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _modHero(id, o) {
     const chips = (o.chips || []).filter(Boolean), sc = o.scene && this._sbOn && this._sbOn();
-    return `<div class="card hero mh a-${id}${o.cls ? " " + o.cls : ""}${sc ? " sbx" : ""}">${sc ? this._sbArt(id, o.scene) : this._modLogo(id)}<div class="lbl">${ic(o.icon || "info", 16)}${esc(o.lbl)}</div><div class="big${o.small ? " bs" : ""}">${esc(o.big)}${o.unit ? `<small>${esc(o.unit)}</small>` : ""}</div>${o.sub ? `<div class="sub">${esc(o.sub)}</div>` : ""}${chips.length ? `<div class="chips">${chips.map((c) => /^§(dev|soon)\|/.test(c) ? `<span class="chip st${c.slice(1, c.indexOf("|"))}">${esc(c.slice(c.indexOf("|") + 1))}</span>` : `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>`;
+    return `<div class="card hero mh a-${id}${o.cls ? " " + o.cls : ""}${sc ? " sbx" : ""}">${sc ? this._sbArt(id, o.scene) : this._modLogo(id)}<div class="lbl">${ic(o.icon || "info", 16)}${esc(o.lbl)}</div><div class="big${o.small ? " bs" : ""}">${esc(o.big)}${o.unit ? `<small>${esc(o.unit)}</small>` : ""}</div>${o.sub ? `<div class="sub">${esc(o.sub)}</div>` : ""}${chips.length ? `<div class="chips">${chips.map((c) => /^§(dev|soon|ok|warn|bad)\|/.test(c) ? `<span class="chip st${c.slice(1, c.indexOf("|"))}">${esc(c.slice(c.indexOf("|") + 1))}</span>` : `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>`;
   }
   /* Banner der Module ohne eigenes Banner (aus den Werten, die die Seite ohnehin zeigt) */
   _modHeroFor(id) {
     try {
+      if (id === "lu" && this._sbOn && this._sbOn()) { const D = this._sbLuData(); return this._modHero("lu", { icon: "fan", lbl: "Lüftung & Raumluft", ...D }); }
       if (id === "lu") return this._modHero("lu", { icon: "fan", lbl: "Lüftung & Raumluft", big: "Lüftung", small: true, sub: "Räume heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
+      if (id === "rb" && this._sbOn && this._sbOn()) { const D = this._sbRbData(); return this._modHero("rb", { icon: "sun", lbl: "Rollläden & Beschattung", ...D }); }
       if (id === "rb") return this._modHero("rb", { icon: "sun", lbl: "Rollläden & Beschattung", big: "Rollläden", small: true, sub: "Sonnenstand heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
+      if (id === "wp" && this._sbOn && this._sbOn()) { const D = this._sbWpData(); return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", ...D }); }
       if (id === "wp") return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", big: "Wärmepumpe", small: true, sub: "Außenbedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "li" && this._liOn() && this._liHero) { const h = this._liHero(); if (h) return h; }  // Modul 18 ab Build 3: Haus-Szene (null = „Optik wie bisher“)
       if (id === "li" && this._liOn()) { const rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on); return this._modHero("li", { icon: "lamp", lbl: "Licht & Lampen", big: String(on.length), unit: on.length === 1 ? "Lampe an" : "Lampen an", sub: lamps.length ? `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}` : "Keine Lampen gefunden" }); }
@@ -15298,6 +15308,80 @@ class FensterHeizungPanel extends HTMLElement {
     }).join("");
     const over = nx && (nx.st === "over" || nx.st === "due");
     return `<div class="sbwa"><div class="sbcal${over ? " bad" : ""}"><b>${MON[dd.getMonth()]}</b><em>${dd.getDate()}</em><small>${esc(nx ? nx.name : "Noch keine Termine")}</small></div>${rings ? `<div class="sbrgs">${rings}</div>` : ""}</div>`;
+  }
+
+  /* ================= Build 2: Modul 5 Lüftung, Modul 6 Rollläden, Modul 7 Wärmepumpe ================= */
+  /* Modul 5: Haus-Schnitt, jeder Raum in der Farbe seiner Luftfeuchte (Werte wie im Reiter „Jetzt“) */
+  _sbLuData() {
+    let R = []; try { R = this._collect(); } catch (_) { R = []; }
+    const A = R.map((r) => ({ r, a: this._airData(r) })).filter((x) => x.a);
+    const col = (v) => (v >= 70 ? "#ef4444" : v >= 60 ? "#f59e0b" : "#22a06b");
+    const dev = "§dev|In Entwicklung";
+    if (!A.length) return { big: "–", small: false, sub: R.length ? "Noch keine Luftfeuchte-Sensoren in den Räumen" : "Noch keine Räume eingerichtet", chips: [dev], scene: this._sbLuScene([], false) };
+    const worst = [...A].sort((x, y) => y.a.rh - x.a.rh)[0], avg = A.reduce((s, x) => s + x.a.rh, 0) / A.length, wet = A.filter((x) => x.a.rh >= 70), open = A.reduce((s, x) => s + x.a.open, 0);
+    const tdMax = Math.max(...A.map((x) => x.a.td));
+    const show = [...A].sort((x, y) => y.a.rh - x.a.rh).slice(0, 4).map((x) => ({ n: x.r.name, v: Math.round(x.a.rh), c: col(x.a.rh) }));
+    const bad = worst.a.rh >= 60;
+    return {
+      big: bad ? `${worst.r.name} ${num(Math.round(worst.a.rh))}` : "Luft gut", unit: bad ? "%" : "", small: !bad || worst.r.name.length > 10,
+      sub: bad ? `${worst.a.rh >= 70 ? "Lüften – Schimmelrisiko " + MOLD[worst.a.lvl][0] : "Etwas feucht"} · Taupunkt ${num(worst.a.td, 1)} °C` : `${A.length} ${A.length === 1 ? "Raum" : "Räume"} · Ø ${num(Math.round(avg))} % Luftfeuchte · Schimmelrisiko gering`,
+      chips: [wet.length ? `§bad|${wet.length} ${wet.length === 1 ? "Raum" : "Räume"} zu feucht` : bad ? "" : "Alle Räume im grünen Bereich", bad ? `Ø ${num(Math.round(avg))} % Luftfeuchte` : `Taupunkt max. ${num(tdMax, 1)} °C`, open ? `${open} ${open === 1 ? "Fenster" : "Fenster"} offen` : "Fenster zu", dev],
+      scene: this._sbLuScene(show, true),
+    };
+  }
+  _sbLuScene(rooms, on) {
+    const mv = this._sbAnim() !== "aus", P = [[118, 70], [214, 70], [118, 128], [214, 128]];
+    const cells = P.map(([x, y], i) => { const r = rooms[i]; return r ? `<rect x="${x}" y="${y}" width="90" height="50" rx="8" fill="${r.c}" opacity=".88"/><text x="${x + 8}" y="${y + 18}" fill="#fff" font-size="11" font-weight="700">${esc(r.n.length > 11 ? r.n.slice(0, 10) + "…" : r.n)}</text><text x="${x + 8}" y="${y + 40}" fill="#fff" font-size="16" font-weight="800">${r.v} %</text>` : `<rect x="${x}" y="${y}" width="90" height="50" rx="8" fill="rgba(255,255,255,.07)"/>`; }).join("");
+    const air = on ? [0, 1, 2].map((i) => `<path class="sbair${mv ? " run" : ""}" d="M30 ${84 + i * 30} C 58 ${74 + i * 30} 74 ${96 + i * 30} 110 ${88 + i * 30}" style="${this._sbPh(1.8)}"/>`).join("") : "";
+    const fan = `<g transform="translate(40 118)"><circle r="24" fill="rgba(3,20,26,.7)" stroke="rgba(189,240,255,.45)" stroke-width="2"/><g class="${on && mv ? "sbspin" : ""}" style="${this._sbPh(3)}">${[0, 120, 240].map((a) => `<ellipse rx="5.5" ry="14" fill="#bdf0ff" transform="rotate(${a}) translate(0 -9)"/>`).join("")}</g><circle r="3.5" fill="#0f2a33"/></g>`;
+    return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet">${air}<polygon points="106,62 212,16 318,62" fill="rgba(255,255,255,.1)"/><rect x="110" y="62" width="202" height="124" rx="4" fill="rgba(3,20,26,.45)"/>${cells}${fan}</svg>`;
+  }
+
+  /* Modul 6: Fassade mit Sonnenbogen (sun.sun), nachts Mond und Licht in den Fenstern */
+  _sbRbData() {
+    const s = this._hass.states["sun.sun"], o = this._out(), dev = "§dev|In Entwicklung";
+    const tm = (x) => { const d = x ? new Date(x) : null; return d && !isNaN(d) ? d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : ""; };
+    if (!s) return { big: "–", sub: "Keine Sonnen-Entität (sun.sun) gefunden", chips: [dev], scene: this._sbRbScene(null, null, false) };
+    const el = Number(s.attributes.elevation), az = Number(s.attributes.azimuth), up = isFinite(el) ? el > 0 : s.state === "above_horizon";
+    const di = isFinite(az) ? Math.round(az / 45) % 8 : -1, dir = di >= 0 ? ["Nord", "Nordost", "Ost", "Südost", "Süd", "Südwest", "West", "Nordwest"][di] : "", dirD = di >= 0 ? ["Norden", "Nordosten", "Osten", "Südosten", "Süden", "Südwesten", "Westen", "Nordwesten"][di] : "";
+    const shade = up && el > 25 && az >= 120 && az <= 250 && o.t != null && o.t >= 20;
+    return up
+      ? { big: dir || "Tag", unit: isFinite(el) ? `· ${num(Math.round(el))}°` : "", sub: `Sonne steht im ${dirD || "Himmel"}${o.t != null ? ` · draußen ${num(o.t, 1)} °C` : ""}`,
+          chips: [shade ? "Beschattung sinnvoll (Südseite)" : "", tm(s.attributes.next_setting) ? `Sonnenuntergang ${tm(s.attributes.next_setting)}` : "", dev], scene: this._sbRbScene(el, az, true) }
+      : { big: "Nacht", sub: `Sonne unter dem Horizont${tm(s.attributes.next_rising) ? ` · Aufgang ${tm(s.attributes.next_rising)}` : ""}`,
+          chips: [o.t != null ? `Draußen ${num(o.t, 1)} °C` : "", o.t != null && o.t <= 0 ? "Frost – Rollläden zu lassen" : "", dev], scene: this._sbRbScene(el, az, false) };
+  }
+  _sbRbScene(el, az, day) {
+    const q = day ? "d" : "n", sky = day ? ["#3c8fd0", "#a9dcf3"] : ["#0b1630", "#1d2d55"];
+    let sun = "";
+    if (day && isFinite(az) && isFinite(el)) { const t = Math.max(0, Math.min(1, (az - 90) / 180)), x = 30 + 260 * t, y = 112 - Math.max(0, Math.min(1, el / 60)) * 92; sun = `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="20" fill="#ffd36b" opacity=".28"/><circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="11" fill="#ffd36b"/>`; }
+    const moon = day ? "" : `<circle cx="262" cy="34" r="11" fill="#f4f1d8"/><circle cx="268" cy="29" r="10" fill="${sky[0]}"/>${[[40, 30], [90, 18], [150, 40], [210, 22], [300, 60]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="1.2" fill="#fff" opacity=".8"/>`).join("")}`;
+    const win = [0, 1, 2].map((i) => { const x = 136 + i * 50; return `<rect x="${x}" y="156" width="34" height="34" fill="${day ? "#9ccfe8" : "#ffd98a"}"/>${day ? "" : `<rect x="${x}" y="156" width="34" height="${i === 1 ? 14 : 34}" fill="#6b7280"/>`}<rect x="${x}" y="156" width="34" height="34" fill="none" stroke="#fff" stroke-width="2"/>`; }).join("");
+    return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet"><defs><linearGradient id="sbrbs${q}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient><linearGradient id="sbrbf${q}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#fff" stop-opacity="1"/></linearGradient><mask id="sbrbm${q}"><rect width="320" height="200" fill="url(#sbrbf${q})"/></mask></defs><rect width="320" height="200" fill="url(#sbrbs${q})" mask="url(#sbrbm${q})"/>
+      <path d="M30 120 Q160 -64 290 120" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2" stroke-dasharray="4 6"/>${sun}${moon}
+      <polygon points="120,142 196,112 272,142" fill="#8b3a2b"/><rect x="126" y="142" width="140" height="58" fill="#e9e1d3"/>${win}</svg>`;
+  }
+  /* Modul 7: Außengerät mit Thermometer, Reif und Schnee bei Frost */
+  _sbWpData() {
+    const o = this._out(), dev = "§dev|In Entwicklung";
+    if (o.t == null) return { big: "–", sub: "Keine Außentemperatur – Wetterquelle unter Haus wählen", chips: [dev], scene: this._sbWpScene(null) };
+    const abt = o.t > -8 && o.t < 7 && (o.rh == null || o.rh >= 70);
+    return { big: num(o.t, 1), unit: "°C", sub: `Draußen${o.rh != null ? ` · Luftfeuchte ${num(Math.round(o.rh))} %` : ""}`,
+      chips: [abt ? "§warn|Abtauen wird wahrscheinlicher" : "Kaum Abtau-Bedarf", o.t <= 0 ? "Frost" : "", dev], scene: this._sbWpScene(o.t) };
+  }
+  _sbWpScene(t) {
+    const mv = this._sbAnim() !== "aus", frost = t != null && t <= 3, c = t == null ? "#94a3b8" : t < 7 ? "#60a5fa" : "#f59e0b";
+    const lv = t == null ? 40 : Math.max(8, Math.min(86, (t + 15) * 2.4));
+    let seed = 5; const R = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const snow = frost ? Array.from({ length: 22 }, () => `<circle class="${mv ? "sbsnow" : ""}" cx="${(R() * 320).toFixed(0)}" cy="${(R() * 190).toFixed(0)}" r="${(1 + R() * 1.6).toFixed(1)}" fill="#fff" opacity=".75" style="animation-delay:-${(R() * 6).toFixed(1)}s"/>`).join("") : "";
+    const rime = frost ? [0, 1, 2, 3, 4].map((i) => `<path d="M${132 + i * 24} 70 l5 -8 l5 8" fill="#e0f2ff"/>`).join("") : "";
+    return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet">${snow}
+      <g transform="translate(70 40)"><rect x="-6" y="0" width="12" height="96" rx="6" fill="rgba(3,12,22,.6)" stroke="rgba(207,230,255,.45)"/><rect x="-3" y="${96 - lv}" width="6" height="${lv}" rx="3" fill="${c}"/><circle cy="106" r="12" fill="${c}"/><text x="18" y="12" fill="#fff" font-size="12" font-weight="700">${t != null ? num(t, 1) + " °C" : "–"}</text></g>
+      <rect x="126" y="70" width="128" height="94" rx="10" fill="#d9dee5"/>${rime}
+      <circle cx="176" cy="117" r="34" fill="#9aa3ad"/><g class="${mv ? "sbspin" : ""}" style="${this._sbPh(2.4)}">${[0, 60, 120].map((a) => `<ellipse cx="176" cy="117" rx="7" ry="27" fill="#6b7480" transform="rotate(${a} 176 117)"/>`).join("")}</g><circle cx="176" cy="117" r="5" fill="#4b5563"/>
+      <rect x="222" y="86" width="22" height="62" rx="4" fill="#bfc6cf"/>
+      <path d="M254 112 H286 V50" stroke="#f87171" stroke-width="5" fill="none"/><path d="M254 130 H300 V50" stroke="#60a5fa" stroke-width="5" fill="none"/>
+      <polygon points="272,52 296,34 320,52" fill="rgba(255,255,255,.18)"/></svg>`;
   }
   /* Modul 11 (Beta): Reiter Übersicht, Grundriss (Baukasten), Wartung und Einstellungen. Daten und Meldungen kommen aus sicherheit.py. */
   _sfTab() { let t = this._sfT; if (!t) { try { t = localStorage.getItem("fh_sf_tab"); } catch (_) { /* privater Modus */ } } return ["ov", "me", "pl", "wa", "se"].includes(t) ? t : "ov"; }

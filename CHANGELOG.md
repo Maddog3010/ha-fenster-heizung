@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b47] - 2026-11-22
+
+**Neue Banner** Build 2 – Lüftung, Rollläden und Wärmepumpe (Schritt 2 von 3).
+
+### Neu
+- **Modul 5 · Lüftung & Raumluft** (v0.1 Build 2): **Haus-Schnitt** mit bis zu vier Räumen in der Farbe ihrer Luftfeuchte (grün unter 60 %, gelb unter 70 %, rot ab 70 %), Lüfter und Luftströme. Große Zahl „Luft gut“ oder der feuchteste Raum („Bad 74 %“) mit Schimmelrisiko und Taupunkt, dazu Ø-Luftfeuchte und offene Fenster. Werte wie im Reiter „Jetzt“.
+- **Modul 6 · Rollläden & Beschattung** (v0.1 Build 2): **Fassade mit Sonnenbogen** – die Sonne steht dort, wo sie wirklich ist (Richtung und Höhe aus `sun.sun`), nachts Mond, Sterne und Licht in den Fenstern. Große Zahl Richtung und Höhe („Süd · 22°“) oder „Nacht“ mit Sonnenaufgang; Hinweis „Beschattung sinnvoll“ bei hoher Sonne aus Süden ab 20 °C, „Frost – Rollläden zu lassen“ bei Frost.
+- **Modul 7 · Wärmepumpe** (v0.1 Build 2): **Außengerät** mit drehendem Lüfter, Thermometer und Vor-/Rücklauf, bei Frost Reif und Schnee. Große Zahl Außentemperatur, Hinweis „Abtauen wird wahrscheinlicher“ zwischen −8 und 7 °C bei feuchter Luft.
+- Chips in Ampelfarben (gut, Hinweis, Warnung) für alle neuen Banner. „Coming soon …“ steht nur noch unten in der Seite.
+
+### Technik
+- Ohne Sensor zeigt jedes Banner „–“ mit Hinweis, was fehlt (keine erfundenen Werte). Der geschätzte COP aus der Vorschau entfällt, bis echte Werte der Anlage da sind.
+- Im Browser geprüft: alle drei Module in zwei Zuständen (Luft gut / Bad zu feucht, Tag / Nacht, Frost / mild), breit und am Handy.
+
 ## [2026.11.4b46] - 2026-11-22
 
 **Neue Banner** Build 1 – Szenen-Banner für die restlichen Module (Vorschau „Neue Banner für die restlichen 8 Module“), Schritt 1 von 3.

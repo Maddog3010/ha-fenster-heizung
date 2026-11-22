@@ -2,6 +2,7 @@
 const CSS_SB = `
 .hero.mh.sbx .sbart{position:absolute;right:0;top:0;bottom:24px;width:58%;pointer-events:none;z-index:0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 34%);mask-image:linear-gradient(90deg,transparent 0,#000 34%)}
 .hero.mh.sbx .sbart>svg{width:100%;height:100%;display:block}
+.hero.mh.sbx.a-rb .sbart{bottom:0;-webkit-mask-image:none;mask-image:none}
 .hero.mh.sbx>.lbl,.hero.mh.sbx>.big,.hero.mh.sbx>.sub,.hero.mh.sbx>.chips,.hero.mh.sbx>.wwl1,.hero.mh.sbx>.wwacts{position:relative;z-index:1}
 .hero.mh.sbx .lbl,.hero.mh.sbx .sub{max-width:52%}.hero.mh.sbx .big{max-width:56%}.hero.mh.sbx>.chips{max-width:62%}
 .hero.mh.sbx.wwh .wwl1{max-width:56%}
@@ -29,4 +30,10 @@ const CSS_SB = `
 @media(max-width:600px){.hero.mh.sbx .sbart{width:100%;opacity:.38;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 60%);mask-image:linear-gradient(90deg,transparent 0,#000 60%)}
   .hero.mh.sbx .lbl,.hero.mh.sbx .sub,.hero.mh.sbx .big,.hero.mh.sbx>.chips,.hero.mh.sbx.wwh .wwl1{max-width:none}
   .sbwa{right:10px;gap:8px}.sbcal{width:84px}.sbcal em{font-size:2rem}.sbrgs{grid-template-columns:repeat(2,40px)}.sbrg{width:40px;height:40px}}
+.hero.mh .chip.stok{background:rgba(22,83,62,.75);border-color:#34d399}.hero.mh .chip.stwarn{background:rgba(90,69,19,.8);border-color:#fbbf24}.hero.mh .chip.stbad{background:rgba(90,30,42,.85);border-color:#f87171}
+.sbair{fill:none;stroke:#bdf0ff;stroke-width:3;stroke-linecap:round;stroke-dasharray:10 8;opacity:.85}.sbair.run{animation:sbDash 1.8s linear infinite}
+.sbspin{animation:sbSpin 3s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes sbSpin{to{transform:rotate(360deg)}}
+.sbsnow{animation:sbSnow 6s linear infinite}@keyframes sbSnow{0%{transform:translateY(-20px)}100%{transform:translateY(40px)}}
+.sbart[data-an="voll"] .sbspin{animation-duration:1.6s}
 `;
