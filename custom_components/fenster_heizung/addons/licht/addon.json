@@ -6,19 +6,21 @@
   "short": "Licht",
   "icon": "lamp",
   "tag": "Lampen schalten, dimmen und Szenen",
-  "desc": "Alle Lampen nach Räumen, schalten und dimmen, Szenenknöpfe wie „Gute Nacht“ und „Ankommen“ und ein Hinweis, wenn Licht lange in leeren Räumen brennt.",
-  "version": "0.1.0",
-  "build": 1,
+  "desc": "Alle Lampen nach Räumen in der neuen Optik: Lichtschein in echter Farbe, Szenenknöpfe, Brennstunden und ein Hinweis, wenn Licht lange in leeren Räumen brennt.",
+  "version": "0.3.0",
+  "build": 3,
   "stage": "dev",
   "api": 1,
-  "core_min": "2026.11.1b12",
+  "core_min": "2026.11.4b41",
   "needs": {
     "domains": [
       "light"
     ],
     "text": "Noch keine Lampe in Home Assistant gefunden."
   },
-  "optional": [],
+  "optional": [
+    "binary_sensor"
+  ],
   "sponsor": false,
   "network": []
 }

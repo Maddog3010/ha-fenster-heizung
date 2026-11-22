@@ -2,6 +2,26 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b41] - 2026-11-22
+
+**Modul 18 · Licht & Lampen** v0.3 Build 3 (enthält Build 2) – die ersten beiden Schritte aus dem Konzept „Modul 18 · Licht & Lampen“ (v0.1 Build 1 → 1.0): Technik und neue Optik.
+
+### Neu
+- **Build 2 · Technik:** Der Python-Teil des Addons merkt sich, **seit wann jede Lampe an ist** – auch über einen Neustart von Home Assistant. Vorher stand danach jede Lampe auf „seit 0 Min.“, „Längste an“ und „Licht lange an“ waren falsch. Kurze Lücken (bis 30 Min.) zählen als „war an“.
+- **Brennstunden** je Lampe und Tag (90 Tage), Kachel „Licht heute“ mit den letzten 7 Tagen, „Heute an“ im Lampen-Detail.
+- **Lichtgruppen:** Räume, „Alle aus“ und die Raumhelligkeit schalten über eine Lichtgruppe, deren Lampen genau passen (Gruppen-Helfer, Hue-Räume, Zigbee-Gruppen). Alle Lampen reagieren gleichzeitig, weniger Funkverkehr. Gruppen werden nicht doppelt gezählt.
+- **Drei Sensoren** (Gerät „Strom & Wärme · Licht“): `sensor.strom_waerme_licht_lampen_an`, `…_licht_heute` (Std.) und `…_laengste_an` (Min., mit Lampe und Zeitpunkt).
+- **Build 3 · Neue Optik:** **Haus-Szene im Banner** mit einer Reihe je Etage aus Home Assistant, die Fenster leuchten in der Lichtfarbe der Räume, Tag und Nacht nach dem Sonnenstand. **Kacheln 2.0** (Lampen an, Licht heute, Längste an, Hinweise), **Szenenleiste**, **Raumkarten 2.0** mit Lichtschein in der echten Mischfarbe der Lampen, großer Prozentzahl, Lampen als Chips mit Farbpunkt und Plakette „brennt seit …“.
+- **Ansicht „Liste“:** eine Zeile je Lampe mit „an seit“ bzw. „heute … Std. an“, umschaltbar im Banner.
+- **Lampen-Detail 2.0:** Helligkeitsring in der Lichtfarbe, Weißton-Leiste mit Markierung des aktuellen Werts, die gewählte Farbe ist markiert.
+- **Einstellungen → Darstellung:** Optik „Neu“ oder „Wie bisher“ (Seite von Build 1), Ansicht Räume oder Liste. Bewegung folgt Anpassen → Animationen (Aus · Dezent · Voll), „Bewegung reduzieren“ wird beachtet.
+
+### Technik
+- Neue Dateien `addons/licht/logic.py` (Farbe, Gruppen, Brennstunden, ohne Home Assistant testbar) und `addons/licht/manager.py` mit eigenem Speicher (`fenster_heizung_addon_licht`, Schema 1). Befehle `get`, `set` (nur Administratoren) und `act` über `addon_call`.
+- Szenen, ausgeblendete Räume und „Licht lange an“ bleiben im Layout (`layout.li`), weil Tags und Messwerk sie dort lesen. Beim ersten Öffnen durch einen Administrator legt das Addon eine Kopie davon in seinem Speicher ab.
+- Neu im Kern: `licht_ent.py` (Sensoren entstehen erst mit dem Addon), Banner nutzt `_liHero()` des Addons.
+- 10 neue Tests für Modul 18 (Farben, Gruppen, Mitternacht und Zeitumstellung, Neustart mit kurzer und langer Lücke, Aufräumen, Python-Teil mit Rechten).
+
 ## [2026.11.4b40] - 2026-11-21
 
 **Modul 15 · Wartung & Erinnerungen** v0.2 Build 2 – erster Schritt aus dem Konzept „Modul 15 · Wartung & Erinnerungen“ (0.1 Build 1 → 1.0): echte Termine statt nur Beispielbilder.
