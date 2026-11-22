@@ -322,7 +322,7 @@
     const pic = this._rkPic(r, s);
     const top = `<div class="rk2top">${edit ? `<button class="rk2eb" data-act="icon" data-id="${id}" aria-label="Raumbild, Symbol, Farbe und Foto ändern">${pic}<span class="rk2pen">${ic("pencil", 14)}Raumbild</span></button>` : pic}
       <div class="rk2ov">${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${chip}<span class="rk2sp"></span>${r.sw ? `<span class="rk2swb"><button class="sw ${r.on ? "on" : ""}" data-act="sw" data-sw="${esc(r.sw)}" aria-label="Fensterregelung umschalten" aria-pressed="${!!r.on}"></button></span>` : ""}</div>
-      <div class="rk2nm"><b>${esc(r.name)}</b></div>${edit ? "" : this._rkBadges(r, s)}</div>`;
+      <div class="rk2nm"><b>${esc(r.name)}${this._saiRoomIcon(r)}</b></div>${edit ? "" : this._rkBadges(r, s)}</div>`;
     const notes = `${this._wxaNote(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : this._sum().active ? `<div class="pnote">${ic("sun", 16)}Sommermodus: Der Heizplan ruht, die Fenstermeldung bleibt aktiv.</div>` : ""}`;
     /* Raumluft nur, wenn es etwas zu tun gibt; die Werte stehen schon in der Zeile Luftfeuchte */
     const a = this._airData(r), al = !a && this._airLite(r);

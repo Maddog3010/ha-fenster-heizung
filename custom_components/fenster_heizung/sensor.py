@@ -24,6 +24,7 @@ from .wetter import KEYS as WX_KEYS, NAMES as WX_NAMES, SIGNAL_WX
 from . import muell_ent
 from . import abr_ent
 from . import licht_ent
+from . import saison_ent
 
 SP_OWNER = "sp_sensor_owner"
 SP_KEYS = ("sp_today", "sp_tomorrow", "sp_rest", "sp_corr", "sp_best")
@@ -45,7 +46,7 @@ async def async_setup_entry(
     extra: list[SensorEntity] = []
     if store.get(SP_OWNER) in (None, entry.entry_id):  # E6/F7: Solar-Werte nur einmal, am ersten Raum
         store[SP_OWNER] = entry.entry_id
-        extra = [SolarSensor(k) for k in SP_KEYS] + [SicherheitSensor(k) for k in SF_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS] + [TarifSensor(k) for k in TF_KEYS]
+        extra = [SolarSensor(k) for k in SP_KEYS] + [SicherheitSensor(k) for k in SF_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS] + [TarifSensor(k) for k in TF_KEYS] + [SaisonSensor(k) for k in saison_ent.SENSORS]
     if store.get(SP_OWNER) == entry.entry_id:
         muell_ent.register(hass, "sensor", async_add_entities, MuellSensor, entry.async_on_unload)  # Modul 17: Entitäten entstehen mit dem Addon
         abr_ent.register(hass, async_add_entities, AbrSensor, entry.async_on_unload)  # Modul 20: Preise, Ergebnis, Termine (Addon v0.9)
@@ -585,6 +586,30 @@ class MuellSensor(muell_ent._Base, SensorEntity):
 
 class LichtSensor(licht_ent.Base, SensorEntity):
     """Modul 18: Lampen an, Brennstunden heute, längste Einschaltdauer."""
+
+
+class SaisonSensor(saison_ent.Base, SensorEntity):
+    """Weihnachts-Theme: Saison-Phase, Adventskerzen, Tage bis Heiligabend (echtes Datum)."""
+
+    def __init__(self, key: str) -> None:
+        name, icon = saison_ent.SENSORS[key]
+        saison_ent.Base.__init__(self, "sensor", key, name, icon)
+        if key == "saison_phase":
+            self._attr_device_class = SensorDeviceClass.ENUM
+            self._attr_options = saison_ent.PHASE_OPTIONS
+            self._attr_translation_key = "saison_phase"
+        elif key == "tage_bis_heiligabend":
+            self._attr_native_unit_of_measurement = UnitOfTime.DAYS
+
+    @property
+    def native_value(self):
+        r = saison_ent.real(self.hass)
+        return saison_ent.sensor_value(self._key, r) if r else None
+
+    @property
+    def extra_state_attributes(self):
+        r = saison_ent.real(self.hass)
+        return saison_ent.sensor_attrs(self._key, r) if r else {}
 
 
 class AbrSensor(abr_ent.Base, SensorEntity):

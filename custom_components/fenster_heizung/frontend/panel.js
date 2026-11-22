@@ -3529,6 +3529,32 @@ const CSS_WT = `
 .wtempty{text-align:center;padding:22px 12px}.wtempty p{color:var(--mut);margin:6px auto 12px;max-width:420px;line-height:1.45}
 @media(max-width:640px){.wtk{grid-template-columns:repeat(2,minmax(0,1fr))}.wtr{grid-template-columns:auto 1fr}.wtbtns{grid-column:1/-1;justify-content:flex-end}.wted .row{grid-template-columns:1fr}}
 `;
+/* Weihnachts-Theme (Build 1): Lichterkette, Adventskranz, Countdown, Raum-Symbole, Einstellungen */
+const CSS_SAI = `
+.saiL{position:absolute;left:0;right:0;top:0;height:22px;z-index:3;pointer-events:none;display:flex;justify-content:space-around;align-items:flex-start;padding:0 10px}
+.saiL::before{content:"";position:absolute;left:-4%;right:-4%;top:-10px;height:20px;border-bottom:1.5px solid rgba(255,255,255,.28);border-radius:0 0 50% 50%}
+.saiL i{position:relative;width:7px;height:10px;margin-top:6px;border-radius:50% 50% 45% 45%;background:var(--c);box-shadow:0 0 7px 1px var(--c);opacity:.95}
+.saiL i:nth-child(odd){margin-top:9px}
+.saiL.mv i{animation:saiTw 3.2s ease-in-out infinite;animation-delay:calc(var(--i) * -.37s)}
+@keyframes saiTw{0%,100%{opacity:.95;filter:none}50%{opacity:.35;filter:saturate(.6)}}
+@media(prefers-reduced-motion:reduce){.saiL.mv i{animation:none}}
+.hero.saiH{padding-top:28px}
+.hzhd>.saiL{z-index:4}
+.chip.saiC{gap:7px;padding:4px 11px 4px 7px}.chip.saiC svg{flex:none;display:block}
+.saiK{display:block}
+.rk2nm .saiR{font-size:.95rem;margin-left:6px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.saiBox{border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin:6px 0 10px;display:flex;gap:12px;align-items:center}
+.saiBox .t{font-weight:700}.saiBox .s{color:var(--mut);font-size:.82rem}
+.saiDev{border:1px dashed color-mix(in srgb,#e05a6b 60%,var(--line));border-radius:14px;padding:10px 12px;margin:8px 0 10px}
+.saiDev .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:700;margin-bottom:6px}
+.saiDev .tag{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:99px;background:color-mix(in srgb,#e05a6b 22%,transparent);color:#ff8fa3}
+.saiQ{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.saiQ button{border:1px solid var(--line);background:transparent;color:inherit;border-radius:10px;padding:5px 9px;font-size:.8rem;font-weight:600;cursor:pointer}
+.saiQ button.sel{border-color:var(--teal);background:color-mix(in srgb,var(--teal) 18%,transparent)}
+.saiRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.saiRow input,.saiRow select{background:transparent;color:inherit;border:1px solid var(--line);border-radius:10px;padding:7px 9px;font:inherit;font-size:.86rem}
+.saiWarn{background:color-mix(in srgb,#e05a6b 14%,transparent);border:1px solid color-mix(in srgb,#e05a6b 45%,transparent);border-radius:10px;padding:7px 10px;font-size:.82rem;margin-top:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+`;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
     super();
@@ -3552,6 +3578,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._sfAlarmTick) this._sfAlarmTick();
     this._visFix();
     if (this._rkTick) this._rkTick();
+    if (this._saiTick) this._saiTick();
     if (this._hass && ++this._pollN % 60 === 0) { this._pollGen(); this._mdPoll(); this._adLoad(true); }
     this.shadowRoot.querySelectorAll("[data-since]").forEach((el) => {
       const c = cdown(+el.dataset.since, +el.dataset.need), b = el.querySelector("[data-cd]"), f = el.querySelector("[data-bar]");
@@ -3665,6 +3692,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._cfgOk && this._admin()) this._msRescueLoad();
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
+    try { await this._saiLoad(); } catch (_) { /* Weihnachts-Theme ist optional */ }
     if (this._admin()) this._supWatch();
     if (this._admin()) this._stsInit();
     try { if (this._admin() && new URLSearchParams(location.search).get("support") === "1") { history.replaceState(null, "", location.pathname); this._supOpen(); } } catch (_) { /* Link aus der Handy-Mitteilung */ }
@@ -4647,10 +4675,10 @@ class FensterHeizungPanel extends HTMLElement {
     const dateStr = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const tiles = [["day", "today", "Heute", "var(--teal)"], ["month", "month", "Monat", "#60a5fa"], ["year", "year", "Jahr", "#a78bfa"], ["total", "total", "Gesamt", "#f472b6"]];
     const content = {
-      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}${this._hsCfg().on ? " hsx" : ""}">${this._heroBg()}${this._hsCfg().on ? this._hsScene(rooms) : this._modLogo("fh")}
+      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}${this._hsCfg().on ? " hsx" : ""}${this._saiHeroCls()}">${this._heroBg()}${this._saiLights()}${this._hsCfg().on ? this._hsScene(rooms) : this._modLogo("fh")}
         <div class="lbl">${ic("flame", 16)}Heute ${F.short} gespart (geschätzt)</div>
         <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>${this._wx()}
-        <div class="chips">${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
+        <div class="chips">${this._saiChip()}${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
           <span class="chip">${ic("radiator", 16)}${paused} von ${rooms.length} ${rooms.length === 1 ? "Raum" : "Räumen"} pausiert</span>
           <span class="chip">${ic("thermo", 16)}${num(sum("day", "kwh"), 1)} kWh Wärme</span>${this._msList().length ? `<span class="chip">${ic("drop", 16)}${this._msList().length} ${this._msList().length === 1 ? "Messraum" : "Messräume"}</span>` : ""}</div></div>`,
       presence: () => this._presenceCard(),
@@ -6042,7 +6070,7 @@ class FensterHeizungPanel extends HTMLElement {
     const pic = this._rkPic(r, s);
     const top = `<div class="rk2top">${edit ? `<button class="rk2eb" data-act="icon" data-id="${id}" aria-label="Raumbild, Symbol, Farbe und Foto ändern">${pic}<span class="rk2pen">${ic("pencil", 14)}Raumbild</span></button>` : pic}
       <div class="rk2ov">${edit ? `<span class="grip" data-handle title="Verschieben">${ic("grip", 18)}</span>` : ""}${chip}<span class="rk2sp"></span>${r.sw ? `<span class="rk2swb"><button class="sw ${r.on ? "on" : ""}" data-act="sw" data-sw="${esc(r.sw)}" aria-label="Fensterregelung umschalten" aria-pressed="${!!r.on}"></button></span>` : ""}</div>
-      <div class="rk2nm"><b>${esc(r.name)}</b></div>${edit ? "" : this._rkBadges(r, s)}</div>`;
+      <div class="rk2nm"><b>${esc(r.name)}${this._saiRoomIcon(r)}</b></div>${edit ? "" : this._rkBadges(r, s)}</div>`;
     const notes = `${this._wxaNote(r)}${this._away() ? `<div class="pnote">${ic("suitcase", 16)}${this._pres().effective === "vacation" || this._pres().mode === "vacation" ? "Urlaubsmodus" : "Abwesend"}: Absenkung auf ${num(this._pres().temp, 1)} °C, der Heizplan ruht.</div>` : this._sum().active ? `<div class="pnote">${ic("sun", 16)}Sommermodus: Der Heizplan ruht, die Fenstermeldung bleibt aktiv.</div>` : ""}`;
     /* Raumluft nur, wenn es etwas zu tun gibt; die Werte stehen schon in der Zeile Luftfeuchte */
     const a = this._airData(r), al = !a && this._airLite(r);
@@ -7177,7 +7205,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
@@ -7270,6 +7298,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "mwpx") { this._pkId = null; this._pkS = null; const m = this._modal; this._modal = m && m.k ? { type: "mwdet", k: m.k } : null; this._renderModal(); }
     else if (a === "pkpick") { const meta = (this._pkReg || {})[b.dataset.pid]; this._pkId = null; if (meta) { const t = { dataset: { ...meta }, value: b.dataset.v, tagName: "SELECT" }; this._onInput(t); this._onChange(t); } this._renderModal(); }
     else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || (a.startsWith("gs") && a !== "gsum") || a.startsWith("ev")) this._mdAct(a, b);
+    else if (a.startsWith("saix")) this._saiAct(a, b);
     else if (a.startsWith("msx")) this._msAct(a, b);
     else if (a.startsWith("lfx")) this._lfAct(a, b);
     else if (a.startsWith("ort")) this._ortAct(a, b);
@@ -8099,7 +8128,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sh"><div><b>Darstellung</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="lsec">${ic("palette", 15)}Akzentfarbe</div>
         <div class="swatches">${ACCENTS.map((c) => `<button class="sw2 ${a === c ? "sel" : ""}" style="background:${c}" data-act="lacc" data-k="${c}" aria-label="${c}"></button>`).join("")}<label class="cpick"><input type="color" data-f="lacc" value="${a}">Eigene</label></div>
-        ${this._heroLook()}${this._hsLook()}${this._rkLook()}
+        ${this._heroLook()}${this._hsLook()}${this._rkLook()}${this._saiLook()}
         <div class="lsec">${ic("sun", 15)}Wetter in der Kopfkarte</div>
         <div class="ltog"><span>Außentemperatur und Wetter anzeigen</span><button class="sw ${w.on ? "on" : ""}" data-act="lwx" aria-pressed="${w.on}" aria-label="Wetter anzeigen"></button></div>
         ${w.on ? `<div class="hslk">${this._hsLink("wx", `Wetter ${w.entity ? esc(this._wzName(w.entity)) : "automatisch"}${w.outdoor ? " · Außentemperatur " + esc(this._wzName(w.outdoor)) : ""}`)}</div>` : ""}
@@ -12634,10 +12663,10 @@ class FensterHeizungPanel extends HTMLElement {
     const N = this._enOn() ? this._enNow() : null, P = this._ortPersons().filter((p) => p.count), H = P.filter((p) => p.home), al = this._hzAlarmEnt();
     const chips = [o.t != null ? [this._gx("weather", 18, { frost: o.t <= 0 }), `Draußen ${num(o.t, 1)} °C`] : null, N ? [this._gx("pvRoof", 18), `PV ${num(N.pv / 1000, 2)} kW`] : null,
       P.length ? [this._gx("people", 18), H.length === 0 ? "niemand zu Hause" : H.length === 1 ? `${esc(H[0].name)} zu Hause` : `${H.length} zu Hause`] : null,
-      al ? [this._gx("shield", 18, { k: st[al].state === "triggered" ? "bad" : st[al].state === "disarmed" ? "off" : "ok" }), `Alarm ${st[al].state === "disarmed" ? "aus" : st[al].state === "triggered" ? "AUSGELÖST" : "scharf"}`] : null].filter(Boolean);
+      al ? [this._gx("shield", 18, { k: st[al].state === "triggered" ? "bad" : st[al].state === "disarmed" ? "off" : "ok" }), `Alarm ${st[al].state === "disarmed" ? "aus" : st[al].state === "triggered" ? "AUSGELÖST" : "scharf"}`] : null, this._saiStartChip ? this._saiStartChip() : null].filter(Boolean);
     const day = this._hzDayLine(), tap = L.n || L.info;
     const sv = this._hzScSvg({ vb: "100 20 260 160" });
-    return `<div class="card hzhd z-${L.z}"><div class="hzhs" aria-hidden="true" style="background:${this._hzScBg}">${sv}</div><div class="hzho">
+    return `<div class="card hzhd z-${L.z}">${this._saiLights ? this._saiLights(16) : ""}<div class="hzhs" aria-hidden="true" style="background:${this._hzScBg}">${sv}</div><div class="hzho">
       <div class="hzhg"><b>${g[0]}</b><small>${g[1] || ""}</small></div>
       <div class="hzha"${tap ? ` data-act="hzgo" data-k="" data-b="hinweise" role="button" tabindex="0"` : ""}><span class="hzab" aria-hidden="true">${L.z === "ok" ? ic("check", 22) : "<b>!</b>"}</span><span class="hzax"><b>${esc(L.t)}</b><small>${esc(L.s)}</small></span>${tap ? `<span class="hzago">${ic("chev", 16)}</span>` : ""}</div>
       ${chips.length ? `<div class="hzhc">${chips.map(([i, t]) => `<span>${i}${t}</span>`).join("")}</div>` : ""}${day ? `<div class="hzhw">${day}</div>` : ""}</div></div>`;
@@ -19011,6 +19040,113 @@ class FensterHeizungPanel extends HTMLElement {
     if (!ok) return true;
     this._gasSave({ [k]: Math.min(lim, v) });
     return true;
+  }
+  /* ================= Weihnachts-Theme (Build 1) =================
+     Saison 01.12.–27.12., Phasen advent · heiligabend · feiertage · ausklang, Kerzen nach Adventssonntag, Countdown.
+     Einstellungen kommen vom Backend (fenster_heizung/saison_get), das Theme-Datum rechnet das Dashboard selbst aus –
+     bei „Datum simulieren“ (nur Entwickler) mit dem Versatz aus dem Backend. Die Logik entspricht saison.py. */
+  async _saiLoad() { try { this._saiD = await this._hass.callWS({ type: "fenster_heizung/saison_get" }); this._saiT0 = Date.now(); } catch (_) { this._saiD = null; } }
+  _saiCfg() { return { modus: "auto", lichter: true, countdown: true, icons: true, ...((this._saiD && this._saiD.cfg) || {}) }; }
+  _saiNow() {
+    const d = this._saiD, s = d && d.sim;
+    if (s && s.on && Date.now() / 1000 < s.until) return new Date(Date.now() + s.offset * 1000);
+    return new Date();
+  }
+  _saiSundays(y) {
+    const x = new Date(y, 11, 25), back = ((x.getDay() + 6) % 7 + 1) % 7 || 7;  /* JS: Sonntag = 0 → wie Python weekday()+1 */
+    const v = new Date(y, 11, 25 - back);
+    return [3, 2, 1, 0].map((w) => new Date(y, 11, v.getDate() - w * 7));
+  }
+  _saiState(now) {
+    const c = this._saiCfg(), y = now.getFullYear(), m = now.getMonth(), dd = now.getDate(), day = new Date(y, m, dd);
+    const inS = m === 11 && dd >= 1 && dd <= 27;
+    let ph = !inS ? "aus" : dd <= 23 ? "advent" : dd === 24 ? "heiligabend" : dd <= 26 ? "feiertage" : "ausklang";
+    if (c.modus === "an" && ph === "aus") ph = "advent";
+    const vis = c.modus === "an" || ((c.modus === "auto" || c.modus === "akzente") && inS);
+    const kz = day > new Date(y, 11, 27) ? 0 : this._saiSundays(y).filter((s) => s <= day).length;
+    let ha = new Date(y, 11, 24); if (day > ha) ha = new Date(y + 1, 11, 24);
+    const tage = Math.round((ha - day) / 864e5);
+    const anim = ((this._cfg.layout.rk || {}).anim) !== "aus";
+    return { ph, vis, kz, tage, mv: vis && c.modus !== "akzente" && anim, key: `${ph}|${vis}|${kz}|${tage}|${c.modus}`, day };
+  }
+  _sai() { return this._saiState(this._saiNow()); }
+  /* Jede Sekunde aus _tick: nur neu zeichnen, wenn sich am Theme etwas ändert (Tageswechsel, Ende der Simulation) */
+  _saiTick() {
+    if (!this._saiD) return;
+    const k = this._sai().key;
+    if (this._saiK !== undefined && this._saiK !== k) { this._saiK = k; this._render(); if (this._modal && this._modal.type === "look") this._renderModal(); return; }
+    this._saiK = k;
+  }
+  _saiKranz(n, w = 30) {
+    const xs = [8, 20, 32, 44];
+    const c = xs.map((x, i) => `<rect x="${x}" y="14" width="6" height="13" rx="1" fill="#e05a6b" opacity="${i < n ? 1 : 0.38}"/>${i < n ? `<ellipse cx="${x + 3}" cy="10" rx="2.3" ry="3.7" fill="#f4d58d"/><ellipse cx="${x + 3}" cy="11" rx="1" ry="1.8" fill="#fff"/>` : ""}`).join("");
+    return `<svg class="saiK" width="${w}" height="${Math.round(w * 0.6)}" viewBox="0 0 58 34" aria-hidden="true"><ellipse cx="29" cy="28" rx="27" ry="6" fill="#2d7a5c"/><circle cx="10" cy="29" r="2" fill="#e05a6b"/><circle cx="29" cy="31" r="2" fill="#e05a6b"/><circle cx="48" cy="29" r="2" fill="#e05a6b"/>${c}</svg>`;
+  }
+  _saiText(s) {
+    if (s.ph === "heiligabend") return "Frohe Weihnachten!";
+    if (s.ph === "feiertage") return `${s.day.getDate() === 25 ? "1." : "2."} Weihnachtsfeiertag`;
+    if (s.ph === "ausklang") return "Bis nächstes Jahr";
+    const adv = s.kz ? `${s.kz}. Advent` : "Advent";
+    return this._saiCfg().countdown ? `${adv} · noch ${s.tage} ${s.tage === 1 ? "Tag" : "Tage"}` : adv;
+  }
+  /* Kopfkarte Modul 1: Lichterkette oben, Kranz und Countdown als erster Chip */
+  _saiHeroCls() { const s = this._sai(); return s.vis && this._saiCfg().lichter ? " saiH" : ""; }
+  _saiLights(n = 14) {
+    const s = this._sai(); if (!s.vis || !this._saiCfg().lichter) return "";
+    const C = s.ph === "heiligabend" ? ["#f4d58d", "#fff3c0", "#f4d58d", "#ffe08a"] : s.ph === "feiertage" ? ["#e05a6b", "#f4d58d", "#ff8fa3", "#f4d58d"] : ["#e05a6b", "#f4d58d", "#3fa37a", "#8cc8f5", "#c9a6f5"];
+    return `<div class="saiL${s.mv ? " mv" : ""}" aria-hidden="true">${Array.from({ length: n }, (_, i) => `<i style="--c:${C[i % C.length]};--i:${i}"></i>`).join("")}</div>`;
+  }
+  _saiStartChip() { const s = this._sai(); return s.vis ? [this._saiKranz(s.kz, 26), esc(this._saiText(s))] : null; }
+  _saiChip() { const s = this._sai(); return s.vis ? `<span class="chip saiC">${this._saiKranz(s.kz, 30)}${esc(this._saiText(s))}</span>` : ""; }
+  _saiRoomIcon(r) {
+    const s = this._sai(); if (!s.vis || !this._saiCfg().icons) return "";
+    if (s.ph === "heiligabend") return `<span class="saiR" aria-hidden="true">⭐</span>`;
+    const t = this._rkType ? this._rkType(r) : "";
+    const I = { wohnen: "🎄", kueche: "🍪", kind: "⛄", esszimmer: "🕯️", schlafen: "🌙" };
+    return I[t] ? `<span class="saiR" aria-hidden="true">${I[t]}</span>` : "";
+  }
+  /* Einstellungen → Darstellung */
+  _saiLook() {
+    if (!this._saiD) return "";
+    const c = this._saiCfg(), s = this._sai(), d = this._saiD, sim = d.sim && d.sim.on && Date.now() / 1000 < d.sim.until;
+    const PH = { aus: "aus", advent: "Advent", heiligabend: "Heiligabend", feiertage: "Feiertage", ausklang: "Ausklang" };
+    const status = s.vis ? `Aktiv: ${PH[s.ph]} · ${s.kz} ${s.kz === 1 ? "Kerze" : "Kerzen"}` : c.modus === "aus" ? "Ausgeschaltet" : "Startet am 01.12. und endet am 27.12.";
+    const M = [["auto", "Automatisch"], ["an", "Immer an"], ["aus", "Aus"], ["akzente", "Nur Akzente"]];
+    const info = { auto: "Vom 01.12. bis 27.12. von selbst, jedes Jahr.", an: "Immer sichtbar, z. B. für Bildschirmfotos. Außerhalb der Weihnachtszeit mit Advents-Optik.", aus: "Nie anzeigen – alles sieht aus wie bisher.", akzente: "Nach Datum, aber ohne Bewegung: Kranz, Farben und Countdown bleiben, die Lichter blinken nicht." }[c.modus];
+    const tog = (k, l) => `<div class="ltog"><span>${l}</span><button class="sw ${c[k] ? "on" : ""}" data-act="saixtog" data-k="${k}" aria-pressed="${c[k]}" aria-label="${esc(l)}"></button></div>`;
+    let dev = "";
+    if (d.dev) {
+      const y = s.day.getFullYear(), Q = [["11-30T23:59", "30.11. 23:59"], ["12-01T08:00", "1.12."], ["12-06T08:00", "6.12."], ["12-20T08:00", "20.12."], ["12-24T08:00", "24.12."], ["12-25T08:00", "25.12."], ["12-27T08:00", "27.12."], ["12-28T08:00", "28.12."]];
+      const at = sim ? String(d.sim.at || "").slice(5, 10) : "";
+      const until = sim ? new Date(d.sim.until * 1000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : "";
+      dev = `<div class="saiDev"><div class="hd"><span>${ic("flask", 15)} Datum simulieren</span><span class="tag">Entwickler</span></div>
+        <div class="mut sm">Verschiebt nur das Theme im Dashboard. Heizpläne, Statistiken, Automationen und die Entitäten bleiben bei der echten Zeit.</div>
+        <div class="saiQ">${Q.map(([v, l]) => `<button class="${at && v.startsWith(at) ? "sel" : ""}" data-act="saixsim" data-k="${y}-${v}">${l}</button>`).join("")}</div>
+        <div class="saiRow"><input data-f="saisimat" placeholder="JJJJ-MM-TTTHH:MM" value="${sim ? esc(d.sim.at) : `${y}-12-24T08:00`}" style="width:170px"><select data-f="saisimmin">${[15, 30, 60, 120, 480].map((n) => `<option value="${n}" ${n === (this._saiMin || 60) ? "selected" : ""}>${n < 60 ? n + " Min." : n / 60 + " Std."}</option>`).join("")}</select><button class="btn2" data-act="saixgo">Simulieren</button></div>
+        ${sim ? `<div class="saiWarn"><span>⚠️ Simulation aktiv: <b>${esc(String(d.sim.at).replace("T", " "))}</b> · endet um ${until}</span><button class="btn2" data-act="saixoff">Beenden</button></div>` : ""}</div>`;
+    }
+    return `<div class="lsec">${ic("tree", 15)}Weihnachts-Theme</div>
+      <div class="saiBox">${this._saiKranz(s.kz, 46)}<div><div class="t">${esc(status)}</div><div class="s">${s.vis ? esc(this._saiText(s)) : "Lichterkette, Adventskranz und Countdown auf der Startseite und in Modul 1"}</div></div></div>
+      <div class="seg" style="margin-top:6px">${M.map(([k, l]) => `<button class="${c.modus === k ? "sel" : ""}" data-act="saixmode" data-k="${k}">${l}</button>`).join("")}</div>
+      <div class="mut sm" style="margin:0 0 8px">${info}</div>
+      ${tog("lichter", "Lichterkette an den Kopfkarten")}${tog("countdown", "Countdown bis Heiligabend")}${tog("icons", "Weihnachtliche Raum-Symbole")}${dev}`;
+  }
+  _saiSave(cfg) {
+    this._hass.callWS({ type: "fenster_heizung/saison_set", cfg }).then((r) => { this._saiD = r; this._saiK = undefined; this._render(); this._renderModal(); })
+      .catch(() => this._toast("Einstellung konnte nicht gespeichert werden"));
+  }
+  _saiSim(act, at) {
+    const msg = { type: "fenster_heizung/saison_sim", act }; if (act === "on") { msg.at = at; msg.minutes = this._saiMin || 60; }
+    this._hass.callWS(msg).then((r) => { this._saiD = r; this._saiK = undefined; this._render(); this._renderModal(); this._toast(act === "on" ? "Simulation läuft – nur das Theme" : "Simulation beendet"); })
+      .catch((e) => this._toast(e && e.code === "bad_date" ? "Ungültiges Datum (Format JJJJ-MM-TTTHH:MM)" : e && e.code === "no_dev" ? "Nur mit Entwickler-Zugang" : "Simulation nicht möglich"));
+  }
+  _saiAct(a, b) {
+    const box = this.shadowRoot.getElementById("modal");
+    if (a === "saixmode") this._saiSave({ ...this._saiCfg(), modus: b.dataset.k });
+    else if (a === "saixtog") { const k = b.dataset.k, c = this._saiCfg(); this._saiSave({ ...c, [k]: !c[k] }); }
+    else if (a === "saixsim") this._saiSim("on", b.dataset.k);
+    else if (a === "saixgo") { const i = box && box.querySelector('[data-f="saisimat"]'), m = box && box.querySelector('[data-f="saisimmin"]'); if (m) this._saiMin = +m.value || 60; this._saiSim("on", i ? i.value.trim() : ""); }
+    else if (a === "saixoff") this._saiSim("off");
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");

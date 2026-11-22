@@ -1336,6 +1336,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         from .wartung import WartungManager
         store["wartung"] = WartungManager(hass)
         await store["wartung"].async_start()
+    if "saison" not in store:  # Weihnachts-Theme (Build 1): Saison, Kerzen, Countdown, Datum simulieren
+        from .saison import SaisonManager
+        store["saison"] = SaisonManager(hass)
+        await store["saison"].async_start()
     if "messwerk" not in store:  # liest alle anderen Speicher, deshalb als Letztes
         store["messwerk"] = Messwerk(hass)
         await store["messwerk"].async_start()
@@ -1441,6 +1445,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             wtm = hass.data.get(DOMAIN, {}).pop("wartung", None)
             if wtm is not None:
                 wtm.async_stop()
+            szm = hass.data.get(DOMAIN, {}).pop("saison", None)
+            if szm is not None:
+                szm.async_stop()
             sfm = hass.data.get(DOMAIN, {}).pop("sicherheit", None)
             if sfm is not None:
                 sfm.async_stop()

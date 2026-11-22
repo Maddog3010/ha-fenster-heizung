@@ -70,10 +70,10 @@
     const N = this._enOn() ? this._enNow() : null, P = this._ortPersons().filter((p) => p.count), H = P.filter((p) => p.home), al = this._hzAlarmEnt();
     const chips = [o.t != null ? [this._gx("weather", 18, { frost: o.t <= 0 }), `Draußen ${num(o.t, 1)} °C`] : null, N ? [this._gx("pvRoof", 18), `PV ${num(N.pv / 1000, 2)} kW`] : null,
       P.length ? [this._gx("people", 18), H.length === 0 ? "niemand zu Hause" : H.length === 1 ? `${esc(H[0].name)} zu Hause` : `${H.length} zu Hause`] : null,
-      al ? [this._gx("shield", 18, { k: st[al].state === "triggered" ? "bad" : st[al].state === "disarmed" ? "off" : "ok" }), `Alarm ${st[al].state === "disarmed" ? "aus" : st[al].state === "triggered" ? "AUSGELÖST" : "scharf"}`] : null].filter(Boolean);
+      al ? [this._gx("shield", 18, { k: st[al].state === "triggered" ? "bad" : st[al].state === "disarmed" ? "off" : "ok" }), `Alarm ${st[al].state === "disarmed" ? "aus" : st[al].state === "triggered" ? "AUSGELÖST" : "scharf"}`] : null, this._saiStartChip ? this._saiStartChip() : null].filter(Boolean);
     const day = this._hzDayLine(), tap = L.n || L.info;
     const sv = this._hzScSvg({ vb: "100 20 260 160" });
-    return `<div class="card hzhd z-${L.z}"><div class="hzhs" aria-hidden="true" style="background:${this._hzScBg}">${sv}</div><div class="hzho">
+    return `<div class="card hzhd z-${L.z}">${this._saiLights ? this._saiLights(16) : ""}<div class="hzhs" aria-hidden="true" style="background:${this._hzScBg}">${sv}</div><div class="hzho">
       <div class="hzhg"><b>${g[0]}</b><small>${g[1] || ""}</small></div>
       <div class="hzha"${tap ? ` data-act="hzgo" data-k="" data-b="hinweise" role="button" tabindex="0"` : ""}><span class="hzab" aria-hidden="true">${L.z === "ok" ? ic("check", 22) : "<b>!</b>"}</span><span class="hzax"><b>${esc(L.t)}</b><small>${esc(L.s)}</small></span>${tap ? `<span class="hzago">${ic("chev", 16)}</span>` : ""}</div>
       ${chips.length ? `<div class="hzhc">${chips.map(([i, t]) => `<span>${i}${t}</span>`).join("")}</div>` : ""}${day ? `<div class="hzhw">${day}</div>` : ""}</div></div>`;
