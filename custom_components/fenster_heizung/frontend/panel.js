@@ -785,7 +785,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  gr: { v: "0.7", b: 7, d: "2026-11-22", p: "2026.11.4b54", log: [["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
+  gr: { v: "0.8", b: 8, d: "2026-11-22", p: "2026.11.4b55", log: [["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
   fh: { v: "1.8", b: 8, d: "2026-11-12", p: "2026.11.3", log: [["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3519,6 +3519,11 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 .grang{width:62px;text-align:center;border:1px solid var(--line);background:none;color:var(--primary-text-color);border-radius:8px;padding:6px 4px;font:inherit;font-weight:700}
 .grck{display:flex;flex-direction:column;gap:2px;max-height:60vh;overflow:auto}.grckr{display:flex;align-items:center;gap:10px;padding:9px 2px;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.grckr>i{width:10px;height:10px;border-radius:50%;flex:none}.grckr span{flex:1;min-width:0}.grckr b{display:block;font-size:.88rem}.grckr small{color:var(--mut);font-size:.78rem}.grckr.ok b{font-weight:600;color:var(--mut)}
 .sfpe.gd .sfdg,.sfpe.gd .sfda,.sfpe.gd .sffw,.sfpe.gd .sfst,.sfpe.gd .sfsl{opacity:0}
+/* Modul 0 Build 8: Zoom, Vollbild */
+.grv{position:relative}.grv svg.grzsvg{touch-action:pan-y}.grv svg.grzsvg.zm{touch-action:none;cursor:grab}
+.grzb{position:absolute;right:10px;bottom:10px;z-index:2;display:flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:color-mix(in srgb,#0b1220 82%,transparent);border:1px solid var(--line);backdrop-filter:blur(6px)}.grzb button{border:0;background:none;color:#e2e8f0;font:inherit;font-weight:700;min-width:34px;height:32px;border-radius:9px;cursor:pointer;padding:0 8px}.grzb button:hover{background:#ffffff14}.grzb button.on{color:var(--teal,#2dd4bf)}.grzb i{width:1px;height:20px;background:var(--line);margin:0 3px}
+.card.grfull{position:fixed;inset:0;z-index:30;margin:0;border-radius:0;overflow:auto;display:flex;flex-direction:column}.card.grfull .grv{flex:1;display:flex;align-items:center;justify-content:center}.card.grfull .grv svg{max-height:calc(100vh - 120px);width:100%}
+.grpre{margin:0;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--primary-text-color) 6%,transparent);font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre;overflow:auto}
 `;
 /* Versions-Statistik: Popup und Seite in Einstellungen → System */
 const CSS_STS = `
@@ -7353,6 +7358,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._sfxBind(sr);
     if (this._grDragBind) this._grDragBind(sr);
     if (this._grKeyBind) this._grKeyBind();
+    if (this._grZoomBind) this._grZoomBind(sr);
   }
 
   /* Uhrzeit-Felder: zwei kleine Zahlenfelder „08 : 00“, funktionieren in allen Apps und Browsern */
@@ -10615,11 +10621,13 @@ class FensterHeizungPanel extends HTMLElement {
     const objs = [], add = (s) => { objs.push(s); return objs.length; };
     const cat = add(""), pg = add(""), f1 = add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>"), f2 = add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
     const kids = pages.map((ops) => {
-      const body = ops.map((o) => o.t === "text" ? `BT /${o.b ? "F2" : "F1"} ${o.s} Tf ${o.c || "0 0 0"} rg ${o.x.toFixed(1)} ${o.y.toFixed(1)} Td (${enc(o.v)}) Tj ET`
+      const xo = [];   /* Modul 0 Build 8: Bilder (JPEG) im PDF, z. B. der Grundriss */
+      ops.filter((o) => o.t === "img").forEach((o) => { o.k = "Im" + xo.length; xo.push(`/${o.k} ${add(`<< /Type /XObject /Subtype /Image /Width ${o.iw} /Height ${o.ih} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${o.jpg.length} >>\nstream\n${o.jpg}\nendstream`)} 0 R`); });
+      const body = ops.map((o) => o.t === "img" ? `q ${o.w.toFixed(1)} 0 0 ${o.h.toFixed(1)} ${o.x.toFixed(1)} ${o.y.toFixed(1)} cm /${o.k} Do Q` : o.t === "text" ? `BT /${o.b ? "F2" : "F1"} ${o.s} Tf ${o.c || "0 0 0"} rg ${o.x.toFixed(1)} ${o.y.toFixed(1)} Td (${enc(o.v)}) Tj ET`
         : o.t === "line" ? `${o.c || "0.8 0.8 0.8"} RG ${o.w || 0.5} w ${o.x1.toFixed(1)} ${o.y.toFixed(1)} m ${o.x2.toFixed(1)} ${o.y.toFixed(1)} l S`
         : `${o.c} rg ${o.x.toFixed(1)} ${o.y.toFixed(1)} ${o.w.toFixed(1)} ${o.h.toFixed(1)} re f`).join("\n");
       const st = add(`<< /Length ${body.length} >>\nstream\n${body}\nendstream`);
-      return add(`<< /Type /Page /Parent ${pg} 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R >> >> /Contents ${st} 0 R >>`);
+      return add(`<< /Type /Page /Parent ${pg} 0 R /MediaBox [0 0 ${(ops.box || [595, 842]).join(" ")}] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R >>${xo.length ? ` /XObject << ${xo.join(" ")} >>` : ""} >> /Contents ${st} 0 R >>`);
     });
     objs[cat - 1] = `<< /Type /Catalog /Pages ${pg} 0 R >>`;
     objs[pg - 1] = `<< /Type /Pages /Kids [${kids.map((k) => k + " 0 R").join(" ")}] /Count ${kids.length} >>`;
@@ -17110,8 +17118,9 @@ class FensterHeizungPanel extends HTMLElement {
     const nL = items.filter((i) => i.t === "l").length, nM = items.filter((i) => i.t === "m").length, liOn = !!(this._liOn && this._liOn());
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
     const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button>${items.some((i) => i.t === "g") ? `<button class="${ly.gt !== false ? "on" : ""}" data-act="grxly" data-k="gt"><i style="background:#f97316"></i>Geräte (${items.filter((i) => i.t === "g").length})</button>` : ""}<button class="${ly.now !== false ? "on" : ""}" data-act="grxnow" title="Temperatur aus Modul 1 und Bewegung"><i style="background:#2dd4bf"></i>Jetzt</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
-    const card = `<div class="card"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
-      <div class="grv grv-${sty}"><svg viewBox="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${G.svg}</svg></div></div>`;
+    const VB = this._grVB ? this._grVB(G.vb, fl) : G.vb;
+    const card = `<div class="card${this._grFull ? " grfull" : ""}"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
+      <div class="grv grv-${sty}">${this._grZoomBar ? this._grZoomBar(fl) : ""}<svg class="grzsvg${VB !== G.vb ? " zm" : ""}" data-fl="${esc(fl)}" data-vb="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" viewBox="${VB.x} ${VB.y} ${VB.w} ${VB.h}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${G.svg}</svg></div></div>`;
     const since = meta.since ? new Date(meta.since).toLocaleDateString("de-DE") : "", until = meta.copy_until ? new Date(meta.copy_until).toLocaleDateString("de-DE") : "";
     const info = `<div class="grinfo">
       <div class="card"><b>${ic("users", 15)} Genutzt von</b><small>${esc(uTxt)}. Einmal gezeichnet, überall derselbe Plan.</small></div>
@@ -17279,7 +17288,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow"><span>Modul 0 eingeschaltet<small class="mut" style="display:block">Wird von ${esc(users.map((u) => UN[u] || u).join(", "))} genutzt. Ausschalten blendet nur diese Seite aus – der Plan bleibt gespeichert und in den anderen Modulen sichtbar.</small></span><button class="sw ${on ? "on" : ""}" data-act="grxoff" aria-pressed="${on}" aria-label="Modul 0 ein- oder ausschalten"></button></div>
       <div class="vrow"><span>Umzug aus Modul 11<small class="mut" style="display:block">${meta.since ? `Am ${dt(meta.since)} übernommen.${meta.copy_until ? ` Die Kopie vom alten Stand wird bis ${dt(meta.copy_until)} aufgehoben.` : ""}` : "Kein Umzug nötig – der Plan wurde direkt hier angelegt."}${meta.pmap ? ` Zuordnungen aus Modul 18 am ${dt(meta.pmap)} übernommen.` : ""}</small></span></div>
       <div class="vrow"><span>Zuletzt geändert<small class="mut" style="display:block">${meta.changed ? `${new Date(meta.changed).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })}${meta.by === "gr" ? " im Baukasten von Modul 0" : meta.by === "sf" ? " über Modul 11" : ""}` : "–"}</small></span></div>
-      <div class="vrow"><span>Gespeichert<small class="mut" style="display:block">Im Kern von Strom &amp; Wärme (fenster_heizung_grundriss), mit automatischen Sicherungskopien. Ausschalten oder Deinstallieren eines Moduls löscht den Plan nicht.</small></span></div></div>`;
+      <div class="vrow"><span>Gespeichert<small class="mut" style="display:block">Im Kern von Strom &amp; Wärme (fenster_heizung_grundriss), mit automatischen Sicherungskopien. Ausschalten oder Deinstallieren eines Moduls löscht den Plan nicht.</small></span></div></div>${this._grCardInfo ? this._grCardInfo() : ""}`;
   }
   _grModal(m) {
     const P = this._grRaw();
@@ -17293,6 +17302,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     if (m.type === "grxroom") return this._grRoomModal(m);
     if (m.type === "grxchk" && this._grChkModal) return this._grChkModal();
+    if (m.type === "grxexp" && this._grExModal) return this._grExModal();
     if (m.type === "grxcal" && this._grCalModal) return this._grCalModal();
     if (m.type === "grximp") return this._grImpModal(m);
     if (m.type === "grxrest") { const H = this._grH && this._grH.d, h = m.k === "umzug" ? H && H.copy : H && (H.hist || []).find((x) => x.id === m.k); return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Stand wiederherstellen?</b><span>${m.k === "umzug" ? "Umzugs-Kopie aus Modul 11" : h ? esc(new Date(h.t).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })) : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -17592,10 +17602,11 @@ class FensterHeizungPanel extends HTMLElement {
       ${mot.length ? row("eye", "Bewegung", mot.some((e) => st[e].state === "on") ? "gerade" : "keine", mot.some((e) => st[e].state === "on") ? "var(--teal)" : "") : ""}
       ${this._grDevRow ? this._grDevRow(r, P) : ""}${mel.length ? row("shield", "Melder", mel.map((i) => `${this._grNiceName(i.e)}${st[i.e] && st[i.e].state === "on" ? " · ALARM" : ""}`).join(", "), mel.some((i) => st[i.e] && st[i.e].state === "on") ? "#ef4444" : "#34d399") : ""}
       ${lamps.length ? `<div class="grrb" style="border:0;padding-bottom:0"><span class="i">${ic("lamp", 18)}</span><span class="t">Lampen</span><b>${lamps.filter((x) => x.on).length} von ${lamps.length} an</b></div><div class="grrl">${lamps.map((x) => `<button class="${x.on ? "on" : ""}" data-act="grxrlamp" data-k="${esc(x.id)}" data-r="${esc(r.id)}">${esc(x.name)}</button>`).join("")}</div>` : ""}
-      <div class="foot2" style="margin-top:14px;flex-wrap:wrap">${s ? `<button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte</button>` : ""}${lamps.length ? `<button class="btn2" data-act="grxgo" data-k="li">Lichtkarte</button>` : ""}${mel.length ? `<button class="btn2" data-act="grxgo" data-k="sf">Modul 11</button>` : ""}${this._admin() ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 15)} Bearbeiten</button>` : ""}</div></div>`;
+      <div class="foot2" style="margin-top:14px;flex-wrap:wrap">${s ? `<button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte</button>` : ""}${lamps.length ? `<button class="btn2" data-act="grxgo" data-k="li">Lichtkarte</button>` : ""}${mel.length ? `<button class="btn2" data-act="grxgo" data-k="sf">Modul 11</button>` : ""}${this._grFocus ? `<button class="btn2" data-act="grxfocus" data-k="${esc(r.id)}">◎ Heranzoomen</button>` : ""}${this._admin() ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 15)} Bearbeiten</button>` : ""}</div></div>`;
   }
   _grB6Act(a, b) {
     if (this._grB7Act && this._grB7Act(a, b)) return true;
+    if (this._grB8Act && this._grB8Act(a, b)) return true;
     const k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxroom") { this._modal = { type: "grxroom", k }; this._renderModal(); return true; }
     if (a === "grxrlamp") { const s = this._hass.states[k]; if (s) this._hass.callService("light", s.state === "on" ? "turn_off" : "turn_on", { entity_id: k }).catch(() => this._toast("Die Lampe hat nicht reagiert")); setTimeout(() => this._renderModal(), 600); return true; }
@@ -17966,6 +17977,130 @@ class FensterHeizungPanel extends HTMLElement {
       if (a === "grxae") { this._sfSnap(); cur.e = v; this._render(); return true; }
     }
     return false;
+  }
+  /* ================= Modul 0 Build 8: Zoom, Vollbild, Raum-Fokus, Export =================
+     Plan in Modul 0: Zoom mit + / − / Mausrad (mit Strg oder im Vollbild) / zwei Fingern, Verschieben durch Ziehen, Vollbild für Tablets.
+     Raum-Fokus aus dem Raum-Blatt („Heranzoomen“). Export als PNG, SVG oder PDF (A4 quer, eine Seite je Etage, mit Titel, Datum,
+     Fläche und Legende). Die Dashboard-Karte custom:sw-grundriss-card (frontend/grundriss-card.js) nutzt denselben Zeichner. */
+  _grZ(fl) { const z = this._grZm; return z && z.fl === fl ? z : { fl, s: 1, cx: null, cy: null }; }
+  _grVB(vb, fl) {
+    const z = this._grZ(fl); if (z.s <= 1.001) return vb;
+    const w = vb.w / z.s, h = vb.h / z.s, cx = Math.max(vb.x + w / 2, Math.min(vb.x + vb.w - w / 2, z.cx == null ? vb.x + vb.w / 2 : z.cx)), cy = Math.max(vb.y + h / 2, Math.min(vb.y + vb.h - h / 2, z.cy == null ? vb.y + vb.h / 2 : z.cy));
+    return { x: cx - w / 2, y: cy - h / 2, w, h };
+  }
+  _grZoomBar(fl) {
+    const z = this._grZ(fl), b = (k, t, l, on) => `<button class="${on ? "on" : ""}" data-act="grxz" data-k="${k}" title="${l}" aria-label="${l}">${t}</button>`;
+    return `<div class="grzb">${b("out", "−", "Verkleinern")}<button data-act="grxz" data-k="reset" title="Ganzer Plan">${Math.round(z.s * 100)} %</button>${b("in", "+", "Vergrößern")}<i></i>${b("full", this._grFull ? "✕" : "⤢", this._grFull ? "Vollbild beenden" : "Vollbild", this._grFull)}${b("exp", "⇩", "Exportieren")}</div>`;
+  }
+  _grZoomTo(fl, s, cx, cy) { this._grZm = { fl, s: Math.max(1, Math.min(8, s)), cx, cy }; }
+  /* Raum-Fokus: Raum füllt den Plan */
+  _grFocus(id) {
+    const P = this._grRaw(), r = P && (P.items || []).find((i) => i.id === id); if (!r) return;
+    this._grFl = r.fl; const G = this._grDraw(P, r.fl, { style: this._grStyle(), dims: this._grDimsOn(), layers: {} }), vb = G.vb, pad = 50;
+    const s = Math.min(vb.w / (r.w + pad * 2), vb.h / (r.h + pad * 2)); this._grZoomTo(r.fl, s, r.x + r.w / 2, r.y + r.h / 2);
+  }
+  _grZoomBind(sr) {
+    if (this._grZB) return; this._grZB = true;
+    const ptrs = new Map(); let st = null;
+    const svgOf = (e) => e.target && e.target.closest && e.target.closest("svg.grzsvg");
+    const apply = (svg, fl) => { const vb = svg.dataset.vb.split(" ").map(Number), v = this._grVB({ x: vb[0], y: vb[1], w: vb[2], h: vb[3] }, fl); svg.setAttribute("viewBox", `${v.x} ${v.y} ${v.w} ${v.h}`); svg.classList.toggle("zm", this._grZ(fl).s > 1.001); const lb = sr.querySelector('.grzb [data-k="reset"]'); if (lb) lb.textContent = Math.round(this._grZ(fl).s * 100) + " %"; };
+    const toPlan = (svg, cx, cy) => { const b = svg.getBoundingClientRect(), v = svg.viewBox.baseVal; return [v.x + ((cx - b.left) / b.width) * v.width, v.y + ((cy - b.top) / b.height) * v.height]; };
+    sr.addEventListener("pointerdown", (e) => {
+      const svg = svgOf(e); if (!svg) return; const fl = svg.dataset.fl;
+      ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+      const z = this._grZ(fl), v = svg.viewBox.baseVal;
+      if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; st = { pinch: true, d0: Math.hypot(a[0] - b[0], a[1] - b[1]), s0: z.s, mid: toPlan(svg, (a[0] + b[0]) / 2, (a[1] + b[1]) / 2), svg, fl, moved: true }; }
+      else st = { x: e.clientX, y: e.clientY, cx: v.x + v.width / 2, cy: v.y + v.height / 2, s: z.s, svg, fl, moved: false, sc: v.width / svg.getBoundingClientRect().width };
+    }, true);
+    window.addEventListener("pointermove", (e) => {
+      if (!st || !ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId, [e.clientX, e.clientY]);
+      if (st.pinch && ptrs.size >= 2) { const [a, b] = [...ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); this._grZoomTo(st.fl, st.s0 * (d / Math.max(20, st.d0)), st.mid[0], st.mid[1]); apply(st.svg, st.fl); this._dragging = true; e.preventDefault(); return; }
+      if (st.pinch || st.s <= 1.001) return;
+      const dx = e.clientX - st.x, dy = e.clientY - st.y; if (!st.moved && Math.hypot(dx, dy) < 6) return;
+      st.moved = true; this._dragging = true; e.preventDefault();
+      this._grZoomTo(st.fl, st.s, st.cx - dx * st.sc, st.cy - dy * st.sc); apply(st.svg, st.fl);
+    }, { passive: false });
+    const up = (e) => { ptrs.delete(e.pointerId); if (!ptrs.size && st) { if (st.moved) this._grZMoved = Date.now(); st = null; this._dragging = false; } };
+    window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
+    sr.addEventListener("click", (e) => { if (this._grZMoved && Date.now() - this._grZMoved < 350 && svgOf(e)) { e.stopPropagation(); e.preventDefault(); } }, true);
+    sr.addEventListener("wheel", (e) => {
+      const svg = svgOf(e); if (!svg || !(e.ctrlKey || e.metaKey || this._grFull)) return;
+      e.preventDefault(); const fl = svg.dataset.fl, z = this._grZ(fl), [px, py] = toPlan(svg, e.clientX, e.clientY), f = Math.exp(-e.deltaY * 0.0025), s = Math.max(1, Math.min(8, z.s * f));
+      const v = svg.viewBox.baseVal, cx = v.x + v.width / 2, cy = v.y + v.height / 2;   /* Punkt unter der Maus bleibt stehen */
+      this._grZoomTo(fl, s, px + (cx - px) * (z.s / s), py + (cy - py) * (z.s / s)); apply(svg, fl);
+    }, { passive: false });
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape" && this._grFull && !this._modal) { this._grFull = false; this._render(); } });
+  }
+  /* ---- Export */
+  _grExOpt() { return (this._grEx = this._grEx || { f: "pdf", all: true, dims: true }); }
+  _grExModal() {
+    const o = this._grExOpt(), P = this._grRaw(), n = P ? this._grFloors(P).length : 1, seg = (k, opts) => `<div class="grseg">${opts.map(([v, t]) => `<button class="${String(o[k]) === String(v) ? "on" : ""}" data-act="grxexo" data-k="${k}" data-v="${v}">${t}</button>`).join("")}</div>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Grundriss exportieren</b><span>Stil „${{ modern: "Modern", bauplan: "Bauplan", hell: "Hell" }[this._grStyle()]}“ · Ebenen wie im Plan</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="sffld"><label>Format</label>${seg("f", [["pdf", "PDF (A4 quer)"], ["png", "PNG-Bild"], ["svg", "SVG (Vektor)"]])}<small class="mut" style="display:block;margin-top:4px">${{ pdf: "Zum Drucken, für Handwerker oder Versicherung – mit Titel, Datum, Fläche und Legende.", png: "Bild in hoher Auflösung, z. B. für Nachrichten.", svg: "Vektorgrafik zum Weiterbearbeiten." }[o.f]}</small></div>
+      ${o.f === "pdf" && n > 1 ? `<div class="sffld"><label>Etagen</label>${seg("all", [[true, `Alle ${n} Etagen`], [false, "Nur diese Etage"]])}</div>` : ""}
+      <div class="sffld"><label>Maße</label>${seg("dims", [[true, "Mit Maßen"], [false, "Ohne"]])}</div>
+      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grxexgo">${ic("download", 15)} Exportieren</button></div></div>`;
+  }
+  _grExSvg(P, fl, o) {
+    const sty = this._grStyle(), T = this._grTheme(sty), ly = this._grLy(), li = !!(this._liOn && this._liOn());
+    const G = this._grDraw(P, fl, { style: sty, dims: o.dims, narrow: false, now: false, layers: { licht: ly.licht && li, sf: ly.sf, gt: ly.gt !== false } }), vb = G.vb, top = o.head ? 56 : 0, bot = o.head ? 30 : 0;
+    const fn = ((P.floors || []).find((f) => f.id === fl) || {}).n || "", rs = (P.items || []).filter((i) => i.t === "r" && i.fl === fl), m2 = rs.filter((r) => !r.ds && this._grKind(r).k !== "aussen").reduce((s, r) => s + this._grAreaM2(r, P.scale > 0 ? P.scale : 40), 0);
+    const head = o.head ? `<rect x="${vb.x}" y="${vb.y - top}" width="${vb.w}" height="${vb.h + top + bot}" fill="${T.bg}"/><text x="${vb.x + 20}" y="${vb.y - top + 30}" font-size="22" font-weight="800" fill="${T.text}">Grundriss ${esc(fn)}</text><text x="${vb.x + 20}" y="${vb.y - top + 50}" font-size="12" fill="${T.sub}">${rs.length} Räume · ${num(m2, 1)} m² Wohnfläche · ${new Date().toLocaleDateString("de-DE")}</text><text x="${vb.x + vb.w - 20}" y="${vb.y + vb.h + 20}" text-anchor="end" font-size="10" fill="${T.sub}">Strom &amp; Wärme · Modul 0 · Haus &amp; Grundriss</text>` : "";
+    const w = vb.w, h = vb.h + top + bot;
+    return { svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb.x} ${vb.y - top} ${w} ${h}" width="${Math.round(w)}" height="${Math.round(h)}" font-family="Helvetica, Arial, sans-serif">${head}${G.svg}</svg>`, w, h, fn, n: rs.length, m2, bg: T.bg };
+  }
+  _grRaster(X, px, mime, q) {
+    return new Promise((ok, no) => {
+      const img = new Image(), url = URL.createObjectURL(new Blob([X.svg], { type: "image/svg+xml" }));
+      img.onload = () => { try { const sc = px / X.w, cv = document.createElement("canvas"); cv.width = Math.round(X.w * sc); cv.height = Math.round(X.h * sc); const c = cv.getContext("2d"); c.fillStyle = X.bg; c.fillRect(0, 0, cv.width, cv.height); c.drawImage(img, 0, 0, cv.width, cv.height); URL.revokeObjectURL(url); ok({ cv, data: cv.toDataURL(mime, q) }); } catch (e) { no(e); } };
+      img.onerror = () => { URL.revokeObjectURL(url); no(new Error("svg")); };
+      img.src = url;
+    });
+  }
+  async _grExport() {
+    const o = this._grExOpt(), P = this._grRaw(); if (!P) return;
+    const fls = this._grFloors(P), cur = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, day = new Date().toISOString().slice(0, 10);
+    this._toast("Export wird erstellt …");
+    try {
+      if (o.f === "svg") { const X = this._grExSvg(P, cur, { dims: o.dims, head: true }); this._sfDeliver(X.svg, `Grundriss-${X.fn || "Plan"}-${day}.svg`, "image/svg+xml", "Grundriss"); return; }
+      if (o.f === "png") { const X = this._grExSvg(P, cur, { dims: o.dims, head: true }), R = await this._grRaster(X, 2400, "image/png"); const bin = atob(R.data.split(",")[1]), b = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) b[i] = bin.charCodeAt(i); this._sfDeliver(b, `Grundriss-${X.fn || "Plan"}-${day}.png`, "image/png", "Grundriss"); return; }
+      const list = o.all ? fls.map((f) => f.id) : [cur], pages = [];
+      for (const fl of list) {
+        const X = this._grExSvg(P, fl, { dims: o.dims, head: false }), R = await this._grRaster(X, 2000, "image/jpeg", 0.9), jpg = atob(R.data.split(",")[1]);
+        const W = 842, H = 595, m = 28, top = 62, bw = W - m * 2, bh = H - top - 40, k = Math.min(bw / R.cv.width, bh / R.cv.height), iw = R.cv.width * k, ih = R.cv.height * k;
+        const ops = [{ t: "text", x: m, y: H - 40, v: `Grundriss ${X.fn}`, s: 16, b: true }, { t: "text", x: m, y: H - 56, v: `${X.n} Räume · ${num(X.m2, 1)} m² Wohnfläche · Stand ${new Date().toLocaleDateString("de-DE")}`, s: 9, c: "0.33 0.33 0.33" },
+          { t: "img", x: m + (bw - iw) / 2, y: 40 + (bh - ih) / 2, w: iw, h: ih, iw: R.cv.width, ih: R.cv.height, jpg },
+          { t: "line", x1: m, x2: W - m, y: 30, c: "0.8 0.8 0.8", w: 0.5 }, { t: "text", x: m, y: 18, v: "Strom & Wärme · Modul 0 · Haus & Grundriss · Maßstab 1 m = " + (P.scale > 0 ? P.scale : 40) + " Punkte", s: 7.5, c: "0.45 0.45 0.45" }];
+        ops.box = [W, H]; pages.push(ops);
+      }
+      pages.forEach((p, i) => p.push({ t: "text", x: 842 - 28 - this._pdfW(`Seite ${i + 1} von ${pages.length}`, 8), y: 18, v: `Seite ${i + 1} von ${pages.length}`, s: 8, c: "0.45 0.45 0.45" }));
+      this._sfDeliver(this._pdfBytes(pages), `Grundriss-${day}.pdf`, "application/pdf", "Grundriss");
+    } catch (e) { this._toast("Export hat nicht geklappt"); }
+  }
+  _grB8Act(a, b) {
+    const k = b && b.dataset ? b.dataset.k : "", v = b && b.dataset ? b.dataset.v : "";
+    if (a === "grxz") {
+      const P = this._grRaw(); if (!P) return true; const fls = this._grFloors(P), fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, z = this._grZ(fl);
+      if (k === "in" || k === "out") this._grZoomTo(fl, z.s * (k === "in" ? 1.4 : 1 / 1.4), z.cx, z.cy);
+      else if (k === "reset") this._grZm = null;
+      else if (k === "full") this._grFull = !this._grFull;
+      else if (k === "exp") { this._modal = { type: "grxexp" }; this._renderModal(); return true; }
+      this._render(); return true;
+    }
+    if (a === "grxfocus") { this._grFocus(k); this._modal = null; this._renderModal(); this._render(); return true; }
+    if (a === "grxexo") { const o = this._grExOpt(); o[k] = v === "true" ? true : v === "false" ? false : v; this._renderModal(); return true; }
+    if (a === "grxcopy") { try { navigator.clipboard.writeText(this._grCardYaml()).then(() => this._toast("Kopiert"), () => this._toast("Kopieren nicht möglich")); } catch (_) { this._toast("Kopieren nicht möglich"); } return true; }
+    if (a === "grxexgo") { this._modal = null; this._renderModal(); this._grExport(); return true; }
+    return false;
+  }
+  /* Dashboard-Karte: Hinweis mit Beispiel zum Kopieren (Reiter Einstellungen) */
+  _grCardYaml() { return "type: custom:sw-grundriss-card\ntitel: Unser Haus\netage: EG\nstil: modern\nebenen:\n  - jetzt\n  - licht\n  - melder\n  - geraete\ntippen: raum"; }
+  _grCardInfo() {
+    return `<div class="card"><h2>${ic("grid", 18)}Grundriss im Dashboard</h2>
+      <div class="mut sm" style="margin-bottom:8px">Den Plan gibt es auch als Karte für deine Dashboards – z. B. auf dem Tablet an der Wand. Dashboard bearbeiten → Karte hinzufügen → „Grundriss (Strom &amp; Wärme)“, oder als YAML:</div>
+      <pre class="grpre">${esc(this._grCardYaml())}</pre>
+      <div class="grseg" style="margin-top:8px"><button data-act="grxcopy">Kopieren</button></div>
+      <div class="mut sm" style="margin-top:8px"><b>etage</b>: Name oder Kürzel (ohne = Umschalter) · <b>stil</b>: modern, bauplan, hell · <b>ebenen</b>: jetzt, licht, melder, geraete · <b>tippen</b>: raum (Raum-Blatt), modul0 (öffnet Modul 0) oder nichts. Zoomen mit zwei Fingern, Doppeltipp setzt zurück.</div></div>`;
   }
   /* ================= Modul 10: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
   _gaTab() {
@@ -21688,4 +21823,4 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="foot2"><button class="btn2 pri" data-act="ensdone">Fertig</button></div></div>`;
   }
 }
-customElements.define("fenster-heizung-panel", FensterHeizungPanel);
+if (!customElements.get("fenster-heizung-panel")) customElements.define("fenster-heizung-panel", FensterHeizungPanel);   /* auch von der Dashboard-Karte nachgeladen */

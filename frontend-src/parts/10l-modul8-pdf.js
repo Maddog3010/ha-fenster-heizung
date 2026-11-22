@@ -7,11 +7,13 @@
     const objs = [], add = (s) => { objs.push(s); return objs.length; };
     const cat = add(""), pg = add(""), f1 = add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>"), f2 = add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
     const kids = pages.map((ops) => {
-      const body = ops.map((o) => o.t === "text" ? `BT /${o.b ? "F2" : "F1"} ${o.s} Tf ${o.c || "0 0 0"} rg ${o.x.toFixed(1)} ${o.y.toFixed(1)} Td (${enc(o.v)}) Tj ET`
+      const xo = [];   /* Modul 0 Build 8: Bilder (JPEG) im PDF, z. B. der Grundriss */
+      ops.filter((o) => o.t === "img").forEach((o) => { o.k = "Im" + xo.length; xo.push(`/${o.k} ${add(`<< /Type /XObject /Subtype /Image /Width ${o.iw} /Height ${o.ih} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${o.jpg.length} >>\nstream\n${o.jpg}\nendstream`)} 0 R`); });
+      const body = ops.map((o) => o.t === "img" ? `q ${o.w.toFixed(1)} 0 0 ${o.h.toFixed(1)} ${o.x.toFixed(1)} ${o.y.toFixed(1)} cm /${o.k} Do Q` : o.t === "text" ? `BT /${o.b ? "F2" : "F1"} ${o.s} Tf ${o.c || "0 0 0"} rg ${o.x.toFixed(1)} ${o.y.toFixed(1)} Td (${enc(o.v)}) Tj ET`
         : o.t === "line" ? `${o.c || "0.8 0.8 0.8"} RG ${o.w || 0.5} w ${o.x1.toFixed(1)} ${o.y.toFixed(1)} m ${o.x2.toFixed(1)} ${o.y.toFixed(1)} l S`
         : `${o.c} rg ${o.x.toFixed(1)} ${o.y.toFixed(1)} ${o.w.toFixed(1)} ${o.h.toFixed(1)} re f`).join("\n");
       const st = add(`<< /Length ${body.length} >>\nstream\n${body}\nendstream`);
-      return add(`<< /Type /Page /Parent ${pg} 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R >> >> /Contents ${st} 0 R >>`);
+      return add(`<< /Type /Page /Parent ${pg} 0 R /MediaBox [0 0 ${(ops.box || [595, 842]).join(" ")}] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R >>${xo.length ? ` /XObject << ${xo.join(" ")} >>` : ""} >> /Contents ${st} 0 R >>`);
     });
     objs[cat - 1] = `<< /Type /Catalog /Pages ${pg} 0 R >>`;
     objs[pg - 1] = `<< /Type /Pages /Kids [${kids.map((k) => k + " 0 R").join(" ")}] /Count ${kids.length} >>`;

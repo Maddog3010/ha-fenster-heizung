@@ -117,10 +117,11 @@
       ${mot.length ? row("eye", "Bewegung", mot.some((e) => st[e].state === "on") ? "gerade" : "keine", mot.some((e) => st[e].state === "on") ? "var(--teal)" : "") : ""}
       ${this._grDevRow ? this._grDevRow(r, P) : ""}${mel.length ? row("shield", "Melder", mel.map((i) => `${this._grNiceName(i.e)}${st[i.e] && st[i.e].state === "on" ? " · ALARM" : ""}`).join(", "), mel.some((i) => st[i.e] && st[i.e].state === "on") ? "#ef4444" : "#34d399") : ""}
       ${lamps.length ? `<div class="grrb" style="border:0;padding-bottom:0"><span class="i">${ic("lamp", 18)}</span><span class="t">Lampen</span><b>${lamps.filter((x) => x.on).length} von ${lamps.length} an</b></div><div class="grrl">${lamps.map((x) => `<button class="${x.on ? "on" : ""}" data-act="grxrlamp" data-k="${esc(x.id)}" data-r="${esc(r.id)}">${esc(x.name)}</button>`).join("")}</div>` : ""}
-      <div class="foot2" style="margin-top:14px;flex-wrap:wrap">${s ? `<button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte</button>` : ""}${lamps.length ? `<button class="btn2" data-act="grxgo" data-k="li">Lichtkarte</button>` : ""}${mel.length ? `<button class="btn2" data-act="grxgo" data-k="sf">Modul 11</button>` : ""}${this._admin() ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 15)} Bearbeiten</button>` : ""}</div></div>`;
+      <div class="foot2" style="margin-top:14px;flex-wrap:wrap">${s ? `<button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte</button>` : ""}${lamps.length ? `<button class="btn2" data-act="grxgo" data-k="li">Lichtkarte</button>` : ""}${mel.length ? `<button class="btn2" data-act="grxgo" data-k="sf">Modul 11</button>` : ""}${this._grFocus ? `<button class="btn2" data-act="grxfocus" data-k="${esc(r.id)}">◎ Heranzoomen</button>` : ""}${this._admin() ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 15)} Bearbeiten</button>` : ""}</div></div>`;
   }
   _grB6Act(a, b) {
     if (this._grB7Act && this._grB7Act(a, b)) return true;
+    if (this._grB8Act && this._grB8Act(a, b)) return true;
     const k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxroom") { this._modal = { type: "grxroom", k }; this._renderModal(); return true; }
     if (a === "grxrlamp") { const s = this._hass.states[k]; if (s) this._hass.callService("light", s.state === "on" ? "turn_off" : "turn_on", { entity_id: k }).catch(() => this._toast("Die Lampe hat nicht reagiert")); setTimeout(() => this._renderModal(), 600); return true; }

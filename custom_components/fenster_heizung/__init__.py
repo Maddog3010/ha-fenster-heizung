@@ -1225,6 +1225,10 @@ async def _async_register_panel(hass: HomeAssistant) -> None:
         )
     except ValueError:  # Panel existiert bereits
         pass
+    try:  # Modul 0 Build 8: Dashboard-Karte custom:sw-grundriss-card (lädt panel.js erst, wenn sie im Dashboard steht)
+        frontend.add_extra_js_url(hass, f"{STATIC_URL}/grundriss-card.js?v={version}")
+    except Exception:  # noqa: BLE001 – ohne Karte läuft alles andere weiter
+        _LOGGER.debug("Dashboard-Karte Grundriss nicht registriert", exc_info=True)
     store["panel"] = True
 
 
