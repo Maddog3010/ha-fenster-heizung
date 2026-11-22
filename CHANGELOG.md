@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b53] - 2026-11-22
+
+**Modul 18 · Licht & Lampen** v0.7 Build 7 – Platz der Lampe direkt im Lampen-Fenster. Addon `licht` 0.7.0.
+
+### Neu
+- **Mini-Grundriss in „Lampe bearbeiten“:** Tippen setzt die Lampe an diese Stelle, nochmal tippen versetzt sie. Bei mehreren Etagen wechselst du oben die Etage (● zeigt, wo sie steht). „Aus dem Plan nehmen“ entfernt den Platz.
+- Der Raum der Lampe ist im Plan farbig markiert. Steht die Lampe in einem anderen Raum, gibt es „Raum „Küche“ übernehmen“. Hat die Lampe noch gar keinen Raum, übernimmt sie ihn aus dem Platz.
+- Der Platz wird mit „Speichern“ zusammen mit der Lampe in Modul 0 geschrieben. Die gewählte Art (z. B. „Streifen“) wandert in den Plan mit.
+
+### Geändert
+- Lampen-Art **„Tisch“** gibt es jetzt auch im Plan und im Baukasten.
+- Leere Lichtkarte: „Grundriss zeichnen“ führt in den Baukasten von Modul 0 statt zu Modul 11.
+
+### Technik
+- `sicherheit.LAMP_K` um `tisch` erweitert, Test ergänzt. Addon: `_lixMini`, `_lixMiniBind` (Tipp → Plan-Koordinaten über `getScreenCTM`), `_lixSavePos` (nur bei Änderung, über `_grSavePlan`).
+
 ## [2026.11.4b52] - 2026-11-22
 
 Großes Paket rund um den Grundriss: **Modul 0 · Haus & Grundriss** (neu, v0.3 Build 3) wird der zentrale Bauplan für alle Module samt Baukasten, und **Modul 18 · Licht & Lampen** (v0.6, Addon `licht` 0.6.1) bekommt den Reiter „Lampen“ zum Selbstverwalten sowie Korrekturen an der Lichtkarte.

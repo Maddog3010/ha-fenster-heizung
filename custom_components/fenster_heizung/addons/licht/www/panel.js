@@ -2,6 +2,8 @@
    v0.2 Build 2 (Technik): Einschaltzeiten und Brennstunden kommen aus dem Python-Teil (api.call("licht", "get")), damit „an seit“
    einen Neustart von Home Assistant übersteht. Räume schalten über eine passende Lichtgruppe (alle Lampen gleichzeitig),
    Lichtfarbe wird aus Kelvin, hs, xy und rgb gelesen, die Mischfarbe eines Raums nach Helligkeit gewichtet.
+   v0.7 Build 7: Mini-Grundriss im Lampen-Fenster – Platz per Tipp setzen, Etage wechseln, „Raum übernehmen“, „Aus dem Plan nehmen“.
+   Gespeichert wird zusammen mit der Lampe in Modul 0 (gr_set plan); die Art wandert mit in den Plan.
    v0.6 Build 6 (Konzept „Lampen selbst verwalten“): Reiter „Lampen“ mit „Meine Lampen“ – nur hinzugefügte Lampen (auch Gruppen), eigener
    Name, Raum aus den Räumen von Modul 0 bzw. Bereichen, Art, „bei Alle aus“, Testen (Blinken), letzter Fehler an der Lampe, Umstiegs-Frage
    und Hinweis auf neue Lampen. Mit „Meine Lampen“ entfällt der Raum aus der Position im Plan.
@@ -124,6 +126,8 @@ export default (api) => {
 .l3pr2 small{display:block;color:var(--mut);font-size:.74rem}.l3pr2.dim{opacity:.5}
 .l3fm label{display:block;color:var(--mut);font-size:.78rem;margin:12px 0 4px}.l3fm input,.l3fm select{width:100%;box-sizing:border-box;border-radius:10px;border:1px solid color-mix(in srgb,var(--primary-text-color) 18%,transparent);background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);color:var(--primary-text-color);font:inherit;padding:9px 11px}
 .l3new .btn2,.l3lth .btn2,.l3um .btn2{flex:0 0 auto;width:auto}.l3lr>.mut{line-height:1.2;align-self:center}
+.l3mini{border-radius:12px;background:color-mix(in srgb,var(--primary-text-color) 4%,transparent);padding:6px}.l3mini svg{display:block;width:100%;max-height:260px}.l3mini.ed svg{cursor:crosshair}
+.l3minif{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}.l3minif>span{flex:1 1 100%!important}.l3minif .btn2{flex:0 0 auto}
 .l3fm .hint{color:var(--mut);font-size:.74rem;margin-top:4px}
 @media (max-width:640px){.l3new>span{flex-basis:100%}.l3lr{grid-template-columns:16px minmax(0,1fr) auto 18px}.l3lr .hm{display:none}}
 @media (max-width:560px){.l3hero{flex-direction:column;align-items:flex-start}.l3hero svg.l3house{width:100%;max-width:260px}}`;
@@ -371,8 +375,66 @@ export default (api) => {
       <div class="hint">Der Raum, den du wählst, gilt immer – auch wenn Home Assistant etwas anderes sagt.</div>
       <label>Art</label><div class="seg" style="flex-wrap:wrap">${K.map(([k, t]) => `<button class="${c.k === k ? "sel" : ""}" data-act="lixek" data-k="${k}">${t}</button>`).join("")}</div>
       <div class="vrow" style="margin-top:12px"><span>Bei „Alle aus“ mitschalten<small class="mut" style="display:block">Aus z. B. für Aquarium oder Außenlicht mit eigenem Zeitplan</small></span><button class="sw ${c.alloff !== false ? "on" : ""}" data-act="lixeao" aria-pressed="${c.alloff !== false}"></button></div>
-      <div class="vrow"><span>Platz im Grundriss<small class="mut" style="display:block">${x && x.pe ? "Steht im Plan von Modul 0." : "Noch kein Platz – setzen im Baukasten (direkt in diesem Fenster ab Build 7)."}</small></span>${x && x.pe ? `<span class="l3tag ok">✓ im Plan</span>` : `<button class="btn2" data-act="lixplace">Platzieren</button>`}</div>
+      ${this._lixMini(m, c, x)}
       <div class="foot2" style="margin-top:14px">${isNew ? `<button class="btn2" data-act="close">Abbrechen</button>` : `<button class="btn2" data-act="lixedel" data-k="${esc(e)}">Entfernen</button>`}<button class="btn2" data-act="lixtest" data-k="${esc(e)}">${ic("lamp", 15)} Testen</button><button class="btn2 pri" data-act="lixesave">${isNew ? "Hinzufügen" : "Speichern"}</button></div></div>`;
+  }
+  /* ---- Build 7: Mini-Grundriss im Lampen-Fenster */
+  _lixMini(m, c, x) {
+    const P = this._grRaw ? this._grRaw() : null, e = m.k, adm = this._admin();
+    const rsAll = P ? (P.items || []).filter((i) => i.t === "r") : [];
+    if (!P || !rsAll.length) return `<div class="vrow"><span>Platz im Grundriss<small class="mut" style="display:block">${P ? "Noch kein Grundriss mit Räumen." : "Grundriss wird geladen …"}</small></span>${P && adm && this._grEdit ? `<button class="btn2" data-act="lixplace">Grundriss zeichnen</button>` : ""}</div>`;
+    const pl = this._liPlaced()[e];
+    if (m.pos === undefined) { m.pos = pl ? { fl: pl.it.fl, x: pl.it.x, y: pl.it.y } : null; m.pos0 = JSON.stringify(m.pos); }
+    const fls = P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }], area = c.room || this._liAreaOf(e);
+    const sugg = area ? rsAll.find((r) => this._liPArea(r) === area) : null;
+    const fl = fls.some((f) => f.id === m.mfl) ? m.mfl : (m.pos && m.pos.fl) || (sugg && sugg.fl) || fls[0].id; m.mfl = fl;
+    const items = (P.items || []).filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r");
+    const B0 = rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
+    const B = rs.length ? { x: B0.x0 - 24, y: B0.y0 - 24, w: B0.x1 - B0.x0 + 48, h: B0.y1 - B0.y0 + 48 } : { x: 0, y: 0, w: 800, h: 480 };
+    const inR = (r, px, py) => this._sfInRoom ? this._sfInRoom(r, px, py) : px > r.x && px < r.x + r.w && py > r.y && py < r.y + r.h;
+    const here = m.pos && m.pos.fl === fl ? m.pos : null, hr = m.pos ? (P.items || []).find((r) => r.t === "r" && r.fl === m.pos.fl && inR(r, m.pos.x, m.pos.y)) : null, hrA = hr ? this._liPArea(hr) : "";
+    const s0 = this._hass.states[e], col = hex(lampRgb(s0 && s0.attributes)), fz = Math.max(13, Math.round(B.w / 34));
+    let g = rs.map((r) => { const a = this._liPArea(r), tg = area && a === area; return `<path d="${this._liPath(r, 2)}" fill="${tg ? "color-mix(in srgb,var(--teal) 16%,transparent)" : "color-mix(in srgb,var(--primary-text-color) 5%,transparent)"}" stroke="${tg ? "var(--teal)" : "color-mix(in srgb,var(--primary-text-color) 28%,transparent)"}" stroke-width="${tg ? 3 : 2}"/>`; }).join("");
+    g += items.filter((i) => i.t === "w").map((w) => `<line x1="${w.x}" y1="${w.y}" x2="${w.x2}" y2="${w.y2}" stroke="color-mix(in srgb,var(--primary-text-color) 45%,transparent)" stroke-width="5" stroke-linecap="round"/>`).join("");
+    g += rs.map((r) => { const [cx, cy] = this._liCen(r); return `<text x="${cx}" y="${cy + fz / 3}" text-anchor="middle" font-size="${fz}" fill="var(--mut,#94a3b8)" style="pointer-events:none">${esc(r.n || (this._liPArea(r) ? this._liAreaName(this._liPArea(r)) : ""))}</text>`; }).join("");
+    g += items.filter((i) => i.t === "l" && i.e && i.e !== e).map((i) => `<circle cx="${i.x}" cy="${i.y}" r="${fz * 0.42}" fill="#64748b" opacity=".75"/>`).join("");
+    if (here) g += `<circle cx="${here.x}" cy="${here.y}" r="${fz * 1.8}" fill="${col}" opacity=".3"/><circle cx="${here.x}" cy="${here.y}" r="${fz * 0.95}" fill="${col}" stroke="#fff" stroke-width="3"/>`;
+    const fchips = fls.length > 1 ? `<div class="seg" style="margin:0 0 6px">${fls.map((f) => `<button class="${f.id === fl ? "sel" : ""}" data-act="lixmfl" data-k="${esc(f.id)}">${esc(f.n)}${m.pos && m.pos.fl === f.id ? " ●" : ""}</button>`).join("")}</div>` : "";
+    const chg = JSON.stringify(m.pos) !== m.pos0;
+    const st = m.pos ? `${hr ? `Steht in <b>${esc(hr.n || this._liAreaName(hrA))}</b>` : "Steht außerhalb der Räume"}${fls.length > 1 ? ` · ${esc((fls.find((f) => f.id === m.pos.fl) || {}).n || "")}` : ""}${chg ? " · <span style=\"color:var(--teal)\">neu, wird mit gespeichert</span>" : ""}` : `Noch kein Platz${chg ? " · <span style=\"color:var(--teal)\">wird aus dem Plan genommen</span>" : ""}`;
+    const adopt = hrA && hrA !== area && adm ? `<button class="btn2" data-act="lixeroom" data-k="${esc(hrA)}">Raum „${esc(this._liAreaName(hrA))}“ übernehmen</button>` : "";
+    if (adm) requestAnimationFrame(() => this._lixMiniBind());
+    return `<label>Platz im Grundriss</label>${fchips}<div class="l3mini${adm ? " ed" : ""}"><svg viewBox="${B.x} ${B.y} ${B.w} ${B.h}" data-fl="${esc(fl)}" role="img" aria-label="Grundriss – tippen setzt die Lampe">${g}</svg></div>
+      <div class="l3minif"><span class="mut sm" style="flex:1">${st}${adm ? `<br><small>${here ? "Tippe woanders hin, um sie zu versetzen." : "Tippe in den Plan, um die Lampe zu setzen."}${area && sugg ? " Der markierte Raum ist ihr Raum." : ""}</small>` : ""}</span>${adopt}${m.pos && adm ? `<button class="btn2" data-act="lixeunpl">Aus dem Plan nehmen</button>` : ""}</div>`;
+  }
+  _lixMiniBind() {
+    const svg = this.shadowRoot && this.shadowRoot.querySelector(".l3mini.ed svg");
+    if (!svg || svg.dataset.b) return; svg.dataset.b = "1";
+    svg.addEventListener("click", (ev) => {
+      const m = this._modal; if (!m || m.type !== "lixedit" || !svg.getScreenCTM) return;
+      const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+      const q = pt.matrixTransform(svg.getScreenCTM().inverse()), r10 = (v) => Math.max(-50, Math.min(1200, Math.round(v / 10) * 10));
+      m.pos = { fl: svg.dataset.fl, x: r10(q.x), y: r10(q.y) };
+      const P = this._grRaw(), inR = (r) => this._sfInRoom ? this._sfInRoom(r, m.pos.x, m.pos.y) : m.pos.x > r.x && m.pos.x < r.x + r.w && m.pos.y > r.y && m.pos.y < r.y + r.h;
+      const hr = ((P && P.items) || []).find((r) => r.t === "r" && r.fl === m.pos.fl && inR(r)), a = hr ? this._liPArea(hr) : "";
+      if (a && m.draft && !m.draft.room && !this._liAreaOf(m.k)) m.draft.room = a;   /* Lampe ohne jeden Raum: Raum aus dem Platz */
+      this._renderModal();
+    });
+  }
+  /* Platz der Lampe in Modul 0 schreiben (nur wenn geändert); Art wandert mit */
+  _lixSavePos(m, d) {
+    const P0 = this._grRaw ? this._grRaw() : null; if (!P0 || !this._grSavePlan) return;
+    const moved = m.pos !== undefined && JSON.stringify(m.pos) !== m.pos0, cur = (P0.items || []).find((i) => i.t === "l" && i.e === m.k);
+    if (!moved && !(cur && cur.k !== d.k)) return;
+    const p = JSON.parse(JSON.stringify({ ...P0, floors: P0.floors && P0.floors.length ? P0.floors : [{ id: "eg", n: "EG" }], items: P0.items || [], bg: P0.bg || {} }));
+    if (moved && !m.pos) p.items = p.items.filter((i) => !(i.t === "l" && i.e === m.k));
+    else {
+      let it = p.items.find((i) => i.t === "l" && i.e === m.k);
+      if (!it) { it = { id: "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), t: "l", r: 0, n: "", e: m.k }; p.items.push(it); }
+      if (moved) Object.assign(it, { fl: m.pos.fl, x: m.pos.x, y: m.pos.y });
+      it.k = d.k || "decke";
+    }
+    this._grSavePlan(p);
   }
   _lixAddModal(m) {
     const st = this._hass.states, D = this._liD(), have = new Set((D.lamps || []).map((x) => x.e)), f = m.f || "neu", q = String(m.q || "").toLowerCase(), sel = new Set(m.sel || []);
@@ -456,8 +518,8 @@ export default (api) => {
     if (!P) return this._liPlanEmpty("Grundriss wird geladen …", "Einen Moment.");
     if (P.error) return this._liPlanEmpty("Grundriss gerade nicht erreichbar", "Modul 11 antwortet noch nicht – meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.");
     const allR = (P.items || []).filter((i) => i.t === "r");
-    if (!allR.length) return this._liPlanEmpty("Noch kein Grundriss mit Räumen", "Den Grundriss zeichnest du einmal mit dem Baukasten aus Modul 11: Räume, Wände, Türen und Fenster. Modul 1 und Modul 18 nutzen ihn dann mit.",
-      adm ? (sf ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : `<span class="mut sm">Schalte dafür unter Einstellungen → Module das Modul 11 ein.</span>`) : "");
+    if (!allR.length) return this._liPlanEmpty("Noch kein Grundriss mit Räumen", "Den Grundriss zeichnest du einmal mit dem Baukasten in Modul 0 · Haus & Grundriss: Räume, Wände, Türen und Fenster. Modul 1, 11 und 18 nutzen ihn dann mit.",
+      adm ? (this._grEdit ? `<button class="btn2 pri" data-act="lixplace">${ic("pencil", 16)} Grundriss zeichnen</button>` : sf ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : "") : "");
     const fls = P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }];
     const map = new Map(allR.map((i) => [i.id, this._liPRoom(i, rooms)]));
     const fl = fls.some((f) => f.id === this._liFl) ? this._liFl : (fls.find((f) => allR.some((i) => i.fl === f.id && map.get(i.id) && map.get(i.id).on.length)) || fls.find((f) => allR.some((i) => i.fl === f.id)) || fls[0]).id;
@@ -626,8 +688,12 @@ export default (api) => {
     if (a === "lixedit") { if (this._admin()) { this._modal = { type: "lixedit", k }; this._renderModal(); } return; }
     if (a === "lixek") { const m = this._modal; if (m && m.draft) { m.draft.k = k; this._renderModal(); } return; }
     if (a === "lixeao") { const m = this._modal; if (m && m.draft) { m.draft.alloff = m.draft.alloff === false; this._renderModal(); } return; }
+    if (a === "lixmfl") { const m = this._modal; if (m && m.type === "lixedit") { m.mfl = k; this._renderModal(); } return; }
+    if (a === "lixeunpl") { const m = this._modal; if (m && m.type === "lixedit") { m.pos = null; this._renderModal(); } return; }
+    if (a === "lixeroom") { const m = this._modal; if (m && m.draft) { m.draft.room = k; this._renderModal(); } return; }
     if (a === "lixesave") {
       const m = this._modal; if (!m || !m.draft) return;
+      this._lixSavePos(m, m.draft);
       const cur = (this._liD().lamps || []).filter((x) => x.e !== m.k), i = (this._liD().lamps || []).findIndex((x) => x.e === m.k), isNew = i < 0;
       const list = isNew ? [...cur, m.draft] : [...cur.slice(0, i), m.draft, ...cur.slice(i)];
       this._modal = null; this._renderModal(); this._liSaveLamps(list, { mode: "mine" }, isNew ? `${m.draft.n || this._wzName(m.k)} hinzugefügt` : "Gespeichert"); return;

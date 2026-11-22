@@ -15583,9 +15583,9 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _sfLampProps(sel) {
     const pl = new Set(this._sfEd.plan.items.filter((i) => i.t === "l" && i.e && i.id !== sel.id).map((i) => i.e)), ids = this._sfLampIds().filter((e) => !pl.has(e) || e === sel.e);
-    const K = [["decke", "Decke"], ["steh", "Steh"], ["spot", "Spot"], ["streifen", "Streifen"], ["aussen", "Außen"]];
+    const K = [["decke", "Decke"], ["steh", "Steh"], ["spot", "Spot"], ["streifen", "Streifen"], ["tisch", "Tisch"], ["aussen", "Außen"]];
     return `<div class="sffld"><label>Lampe aus Home Assistant</label>${this._sfSel(ids, sel.e || "", "sfxpl", "", "– keine –")}</div>
-      <div class="sffld"><label>Art</label><div class="sfshp" style="grid-template-columns:repeat(5,1fr)">${K.map(([k, t]) => `<button data-act="sfxplk" data-v="${k}" class="${(sel.k || "decke") === k ? "on" : ""}">${t}</button>`).join("")}</div>
+      <div class="sffld"><label>Art</label><div class="sfshp" style="grid-template-columns:repeat(3,1fr)">${K.map(([k, t]) => `<button data-act="sfxplk" data-v="${k}" class="${(sel.k || "decke") === k ? "on" : ""}">${t}</button>`).join("")}</div>
       <small class="mut" style="display:block">Streifen erscheint als Balken und lässt sich drehen. Hat die Lampe keinen Bereich in Home Assistant, bekommt sie in Modul 18 den Raum, in dem sie hier steht.</small></div>`;
   }
   _sfFloorBar(edit) {
@@ -15778,7 +15778,7 @@ class FensterHeizungPanel extends HTMLElement {
       P.items.push(it); ed.sel = it.id; this._render(); return true;
     }
     if (!cur) return false;
-    if (a === "sfxplk") { if (cur.t === "l" && ["decke", "steh", "spot", "streifen", "aussen"].includes(b.dataset.v)) { cur.k = b.dataset.v; this._render(); } return true; }
+    if (a === "sfxplk") { if (cur.t === "l" && ["decke", "steh", "spot", "streifen", "aussen", "tisch"].includes(b.dataset.v)) { cur.k = b.dataset.v; this._render(); } return true; }
     if (a === "sfxpdel") { P.items = P.items.filter((x) => x.id !== cur.id); ed.sel = ""; this._render(); return true; }
     if (a === "sfxpdup") { const c = { ...cur, id: uid(), x: cur.x + 20, y: cur.y + 20 }; if (c.pts) c.pts = c.pts.map((q) => [q[0] + 20, q[1] + 20]); if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m" || c.t === "l") c.e = ""; P.items.push(c); ed.sel = c.id; this._render(); return true; }
     if (a === "sfxpmir") { if (cur && cur.t === "d" && (k === "mv" || k === "mh")) { this._sfSnap(); cur[k] = cur[k] ? 0 : 1; this._render(); } return true; }

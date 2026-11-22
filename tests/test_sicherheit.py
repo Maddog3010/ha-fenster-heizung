@@ -526,6 +526,8 @@ def test_lampe_im_plan():
     assert it["l2"]["e"] == "" and it["l2"]["k"] == "decke" and it["l2"]["r"] == 90
     assert it["m1"]["e"] == "" and "k" not in it["m1"]   # Melder nehmen weiter nur binary_sensor
     assert S.MAX_ITEMS == 400
+    t = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [{"id": "l3", "fl": "eg", "t": "l", "x": 5, "y": 5, "e": "light.nacht", "k": "tisch"}]})
+    assert t["items"][0]["k"] == "tisch"   # Modul 18 Build 7: Art „Tisch“ auch im Plan
 
 
 def test_testknopf_wird_als_pruefung_eingetragen():
