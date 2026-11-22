@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b53] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.1 Build 1 – neues Modul aus dem Konzept „Lampen selbst verwalten & Modul 0 · Haus & Grundriss“: der Grundriss gehört ab jetzt dem Kern statt Modul 11.
+
+### Neu
+- **Modul 0 in der Leiste** direkt nach „Start“ und vor Modul 1, mit Version und Stufe „In Entwicklung“. Es ist standardmäßig an.
+- **Banner:** Haus im Schnitt mit den Etagen und Räumen aus dem Plan, „2 Etagen · 9 Räume“, Zahl der Melder und Lampen im Plan, welche Module den Plan nutzen.
+- **Reiter „Plan“:** Grundriss mit Etagen-Umschalter, Bauplan (Räume auch in freier Form, Wände, Türen, Fenster, Treppen, Texte, Hintergrundbild) und zwei **Ebenen** zum Ein- und Ausblenden: Melder (Modul 11) und Lampen (Modul 18, eingeschaltete in ihrer Farbe). Räume, Ebenen und Sichern & Einlesen sind als kommende Reiter zu sehen (Build 2 bis 4).
+- **Umzug aus Modul 11:** Beim ersten Start übernimmt Modul 0 den Plan aus Modul 11 mit Meldern und Lampen. Die Kopie vom alten Stand wird 90 Tage aufgehoben. Leere Pläne werden nicht übernommen.
+- **Modul 1 (Wärmekarte) und Modul 18 (Lichtkarte)** lesen den Plan jetzt aus Modul 0.
+- **Bearbeiten** geht bis Build 3 noch im Baukasten von Modul 11. Gespeichert wird in Modul 0, alle Module sehen die Änderung sofort.
+
+### Technik
+- Neu: `grundriss.py` (`GrundrissManager`, Speicher `fenster_heizung_grundriss` Schema 1, Umzugs-Kopie `fenster_heizung_grundriss_umzug`), WebSocket `gr_get` (lesen dürfen alle). Das Modul startet vor Modul 11.
+- `sicherheit.py`: liest den Plan aus Modul 0, wenn es dort einen gibt, sonst einmaliger Umzug. `sf_set` mit Plan schreibt nach Modul 0. Der eigene Plan-Speicher bleibt als zusätzliche Kopie, `sf_get` liefert weiter den Plan.
+- Modul-Schalter `gr` (Standard an). Frontend-Teil `12m2-grundriss.js`, `_gpPlan()` nutzt `gr_get`, das Addon „licht“ liest platzierte Lampen über `_grRaw()`.
+- 6 neue Tests (`test_grundriss.py`): Umzug mit Ebenen und Kopie, leerer Plan, Vorrang von Modul 0, Baukasten schreibt in Modul 0, Zahlen und Nutzer, Aufräumen der Kopie nach 90 Tagen.
+
 ## [2026.11.4b52] - 2026-11-22
 
 **Modul 18 · Licht & Lampen** v0.5.1 – Korrekturen an der Lichtkarte nach dem ersten Test auf echtem Grundriss.

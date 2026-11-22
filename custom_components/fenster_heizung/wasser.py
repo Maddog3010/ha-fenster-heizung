@@ -205,7 +205,7 @@ def clean_modules(raw: Any) -> dict[str, Any]:
         seen.add(xid)
         name = re.sub(r"[<>\"'&]", "", str(x.get("name") or "").strip())[:40] or "Eigenes Modul"
         ext.append({"id": xid, "name": name, "url": url, "on": bool(x.get("on", True))})
-    return {"on": {"ww": bool(on.get("ww", True)), "en": bool(on.get("en", True)), "gs": bool(on.get("gs", True)), "lu": bool(on.get("lu", False)), "rb": bool(on.get("rb", False)), "wp": bool(on.get("wp", False)), "ev": bool(on.get("ev", False)), **{k: bool(on.get(k, False)) for k in BETA_KEYS}}, "ext": ext, "energy": clean_energy(raw.get("energy")), "gs": clean_gs(raw.get("gs")), "ev": clean_ev(raw.get("ev"))}
+    return {"on": {"ww": bool(on.get("ww", True)), "en": bool(on.get("en", True)), "gs": bool(on.get("gs", True)), "lu": bool(on.get("lu", False)), "rb": bool(on.get("rb", False)), "wp": bool(on.get("wp", False)), "ev": bool(on.get("ev", False)), "gr": bool(on.get("gr", True)), **{k: bool(on.get(k, False)) for k in BETA_KEYS}}, "ext": ext, "energy": clean_energy(raw.get("energy")), "gs": clean_gs(raw.get("gs")), "ev": clean_ev(raw.get("ev"))}
 
 
 def configured(cfg: dict[str, Any]) -> bool:

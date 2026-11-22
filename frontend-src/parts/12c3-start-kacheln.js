@@ -114,7 +114,7 @@
   _hzTile2(m) {
     const K = this._hzK(m), sz = this._hzKs(), hd = K.hd || this._hzHdFor(m), z = K.z;
     const pic = K.pic || (hd ? this._gx(hd, sz === "s" ? 26 : 32, { ...(this._hzTileO ? {} : {}), ...K.o }) : ic(m.icon, 20));
-    const sub = m.addon ? "Addon" : m.n ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst" title="${STG[modSt(m)].t}">${({ dev: "Entwicklung", vorab: "Vorab" })[modSt(m)] || STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
+    const sub = m.addon ? "Addon" : m.n || m.num0 ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst" title="${STG[modSt(m)].t}">${({ dev: "Entwicklung", vorab: "Vorab" })[modSt(m)] || STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
     let gr = "";
     if (sz !== "s" && z !== "off") {
       const hv = K.ent && (sz === "l" || K.p == null) ? this._hzHist(K.ent) : null;

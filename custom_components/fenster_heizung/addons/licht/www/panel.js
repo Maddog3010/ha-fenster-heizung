@@ -276,13 +276,13 @@ export default (api) => {
     return `${head}<div class="l3 an-${this._liAnim()}">${this._liTiles(shown, lamps, on, long)}${this._liScenes(on)}${note.length ? `<div class="mut sm" style="margin:-6px 0 12px;display:flex;flex-direction:column;gap:4px">${note.map((t) => `<span style="display:inline-flex;gap:6px;align-items:center">${t}</span>`).join("")}</div>` : ""}${body}</div>`;
   }
   /* ================= Grundriss als Lichtkarte (Build 4, Konzept Teil B1, B2, B5) =================
-     Der Grundriss kommt aus dem Baukasten von Modul 11 (sf_get, derselbe Zwischenspeicher wie in Modul 1). Jede Raumfläche leuchtet
+     Der Grundriss kommt aus Modul 0 · Haus & Grundriss (gr_get, derselbe Zwischenspeicher wie in Modul 1), gezeichnet wird er bis Modul 0 Build 3 im Baukasten von Modul 11. Jede Raumfläche leuchtet
      in der Mischfarbe ihrer Lampen, die Stärke folgt der Helligkeit. Zuordnung Fläche → Bereich in Home Assistant automatisch über den
      Namen, sonst von Hand (pmap im Addon-Speicher, nur Administratoren). Bedienen: Fläche antippen = Raum schalten, Lampenpunkt
      antippen = Lampe schalten, lang drücken (oder Rechtsklick) = Lampen-Detail. Lampen als eigene Elemente im Plan folgen in Build 5. */
   _liPlan() {
     const P = this._gpPlan ? this._gpPlan() : { error: true };
-    if (!P || (this._gpBusy && !(this._sfxD && this._sfxD.d && this._sfxD.d.cfg))) {   /* lädt noch: gleich neu zeichnen */
+    if (!P) {   /* lädt noch: gleich neu zeichnen */
       clearTimeout(this._liPT); this._liPT = setTimeout(() => { if (this._mdActive && this._mdActive() === "li") this._render(); }, 700);
     }
     return P;
@@ -301,7 +301,7 @@ export default (api) => {
   _liPRoom(item, rooms) { const a = this._liPArea(item); return a ? rooms.find((r) => r.k === a) || null : null; }
   /* Platzierte Lampen aus dem Grundriss: { light.x: { it, room } } (room = Fläche, in der die Lampe steht). Lädt den Plan nicht neu. */
   _liPlaced() {
-    const D = this._sfxD, P = D && D.d && D.d.cfg && D.d.cfg.plan;
+    const P = this._grRaw ? this._grRaw() : (this._sfxD && this._sfxD.d && this._sfxD.d.cfg && this._sfxD.d.cfg.plan);   /* ab 2026.11.4b53 aus Modul 0 */
     if (!P || !Array.isArray(P.items)) return {};
     if (this._liPlC && this._liPlC.p === P && this._liPlC.pm === this._liD().pmap) return this._liPlC.m;
     const rs = P.items.filter((i) => i.t === "r"), m = {};

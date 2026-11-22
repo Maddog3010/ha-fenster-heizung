@@ -6,16 +6,8 @@
   /* Grundriss aus Modul 11 laden. Bisher nur ein einziges Mal: War Home Assistant beim ersten Abruf noch nicht fertig gestartet
      (Modul 11 startet spät) oder wurde der Grundriss danach – auch auf einem anderen Gerät – gezeichnet, blieb Modul 1 bei
      „Noch kein Grundriss“, bis der Browser neu geladen wurde. Jetzt: nach einem Fehler nach 10 s erneut, sonst jede Minute im Hintergrund. */
-  _gpPlan() {
-    const D = this._sfxD, err = !!(D && D.d && D.d.error), age = D ? Date.now() - D.ts : Infinity;
-    if (this._hass && !this._gpBusy && !this._sfxBusy && (!D || (err && age > 10000) || age > 60000)) {
-      this._gpBusy = true;
-      this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { ...((this._sfxD && !this._sfxD.d.error && this._sfxD.d) || {}), error: true }, ts: Date.now() }; })
-        .finally(() => { this._gpBusy = false; if (this._mdActive() === "fh" && this._view && this._view() === "plan") this._render(); });
-    }
-    if (!D) return null;
-    return D.d && D.d.cfg ? this._sfx().cfg.plan : err ? { error: true } : this._sfx().cfg.plan;
-  }
+  /* Plan aus Modul 0 · Haus & Grundriss (gr_get, ab 2026.11.4b53); vorher kam er aus Modul 11 (sf_get) */
+  _gpPlan() { return this._grPlan(); }
   /* Alle Räume, die eine Grundriss-Fläche bekommen können: Heizungsräume und Messräume (innen und außen) */
   _gpAll(rooms) { return [...(rooms || this._collect(true)), ...this._msList().map((m) => ({ id: m.id, name: m.name, ms: m }))]; }
   /* Messraum als Zustand wie _rkState, damit der Grundriss ihn wie einen Raum zeichnen kann */

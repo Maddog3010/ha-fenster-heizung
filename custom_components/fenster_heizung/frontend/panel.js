@@ -302,11 +302,13 @@ const HZ_BUBS = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fe
 const HZ_BUB_DEF = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell"];
 const HZ_BUB_N = { wetter: ["Wetter", "Außentemperatur und Wetterlage", "cloud"], personen: ["Personen zu Hause", "Anzahl der Personen daheim", "users"], alarm: ["Alarm", "Zustand der Alarmanlage", "shield"], solar: ["Solar jetzt", "Leistung der PV-Anlage", "sun"], batterie: ["Batterie", "Ladestand des Speichers", "bolt"], auto: ["E-Auto", "Ladestand und ob es lädt", "car"], fenster: ["Offene Fenster", "Anzahl offener Fenster", "windowOpen"], muell: ["Nächste Müllabfuhr", "nur wenn Modul 17 an ist", "trash"], warmwasser: ["Warmwasser", "Temperatur im Speicher", "drop"], preis: ["Strompreis", "Preis aus Modul 3", "chart"], hinweise: ["Hinweise", "Anzahl der Hinweise", "info"] };
 const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", icon: "trash", tag: "Abholtermine, Tonnen-Ampel und Erinnerung", lab: true };
+/* Modul 0 · Haus & Grundriss (Build 1): gemeinsamer Bauplan, vor Modul 1 in der Leiste */
+const MOD_GR = { id: "gr", n: 0, num0: true, name: "Haus & Grundriss", short: "Haus & Grundriss", icon: "home", tag: "Ein Bauplan für alle Module", stage: "dev" };
 const MOD_LI = { id: "li", n: 18, name: "Licht & Lampen", short: "Licht", icon: "lamp", tag: "Lampen schalten, dimmen und Szenen", lab: true };
 /* Phase 3: Labs, die jetzt Addons sind (Müllabfuhr → Addon muell, Licht → Addon licht) */
 const LAB_GONE = ["mm", "li"];
 const MOD_ST = { ef: "stabil", sf: "vorab", sp: "stabil", ev: "vorab", wx: "stabil", dt: "vorab" };
-const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
+const modSt = (m) => (!m ? "" : m.num0 ? m.stage || "dev" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
 const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Termine legst du direkt in Modul 15 unter „Termine“ an – Betriebsstunden und Erinnerungen folgen" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "tfxopen", txt: "Preisquelle, Stufen, Endpreis, Vergleichspreis, Fenster je Gerät, Preisalarm und Daten prüfen" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeuge mit eigenen Sensoren, Wallbox-Sensoren" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
@@ -782,6 +784,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
+  gr: { v: "0.1", b: 1, d: "2026-11-22", p: "2026.11.4b53", log: [["0.1", 1, "2026.11.4b53", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
   fh: { v: "1.8", b: 8, d: "2026-11-12", p: "2026.11.3", log: [["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -6539,16 +6542,8 @@ class FensterHeizungPanel extends HTMLElement {
   /* Grundriss aus Modul 11 laden. Bisher nur ein einziges Mal: War Home Assistant beim ersten Abruf noch nicht fertig gestartet
      (Modul 11 startet spät) oder wurde der Grundriss danach – auch auf einem anderen Gerät – gezeichnet, blieb Modul 1 bei
      „Noch kein Grundriss“, bis der Browser neu geladen wurde. Jetzt: nach einem Fehler nach 10 s erneut, sonst jede Minute im Hintergrund. */
-  _gpPlan() {
-    const D = this._sfxD, err = !!(D && D.d && D.d.error), age = D ? Date.now() - D.ts : Infinity;
-    if (this._hass && !this._gpBusy && !this._sfxBusy && (!D || (err && age > 10000) || age > 60000)) {
-      this._gpBusy = true;
-      this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { ...((this._sfxD && !this._sfxD.d.error && this._sfxD.d) || {}), error: true }, ts: Date.now() }; })
-        .finally(() => { this._gpBusy = false; if (this._mdActive() === "fh" && this._view && this._view() === "plan") this._render(); });
-    }
-    if (!D) return null;
-    return D.d && D.d.cfg ? this._sfx().cfg.plan : err ? { error: true } : this._sfx().cfg.plan;
-  }
+  /* Plan aus Modul 0 · Haus & Grundriss (gr_get, ab 2026.11.4b53); vorher kam er aus Modul 11 (sf_get) */
+  _gpPlan() { return this._grPlan(); }
   /* Alle Räume, die eine Grundriss-Fläche bekommen können: Heizungsräume und Messräume (innen und außen) */
   _gpAll(rooms) { return [...(rooms || this._collect(true)), ...this._msList().map((m) => ({ id: m.id, name: m.name, ms: m }))]; }
   /* Messraum als Zustand wie _rkState, damit der Grundriss ihn wie einen Raum zeichnen kann */
@@ -7517,6 +7512,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "m3old") { const L = this._cfg.layout; L.m3 = { ...(L.m3 || {}), old: !(L.m3 || {}).old }; this._saveLayout(); this._render(); this._renderModal(); }
     else if (["hsgo", "hsoff", "hswx", "hsxh", "hsxs"].includes(a) && this._hsAct(a, b)) { /* Haus-Szene, Stile (W7) */ }
     else if (["gpfl", "gpmap", "gpset", "gpedit"].includes(a) && this._gpAct(a, b)) { /* Grundriss */ }
+    else if (a.startsWith("grx") && this._grAct(a, b)) { /* Modul 0 · Haus & Grundriss */ }
     else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
     else if (a === "pm") {
       const p = this._pres();
@@ -8425,6 +8421,7 @@ class FensterHeizungPanel extends HTMLElement {
   _mdList() {
     const s = this._mdState(), home = this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : [];
     const rest = [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...this._adMods()];
+    if (s.on.gr !== false) rest.push(MOD_GR);   /* Modul 0 · Haus & Grundriss */
     rest.sort((a, b) => a.n - b.n);
     return [...home, ...rest, ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))];
   }
@@ -11509,7 +11506,7 @@ class FensterHeizungPanel extends HTMLElement {
     clearTimeout(this._sfxT);
     this._sfxT = setTimeout(() => {
       this._sfxT = null;
-      this._hass.callWS({ type: "fenster_heizung/sf_set", cfg: this._sfx().cfg }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } })
+      this._hass.callWS({ type: "fenster_heizung/sf_set", cfg: this._sfx().cfg }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; if (this._grDirty) this._grDirty(); if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } })
         .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
     }, 500);
     this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal();
@@ -12616,7 +12613,7 @@ class FensterHeizungPanel extends HTMLElement {
   _hzTile2(m) {
     const K = this._hzK(m), sz = this._hzKs(), hd = K.hd || this._hzHdFor(m), z = K.z;
     const pic = K.pic || (hd ? this._gx(hd, sz === "s" ? 26 : 32, { ...(this._hzTileO ? {} : {}), ...K.o }) : ic(m.icon, 20));
-    const sub = m.addon ? "Addon" : m.n ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst" title="${STG[modSt(m)].t}">${({ dev: "Entwicklung", vorab: "Vorab" })[modSt(m)] || STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
+    const sub = m.addon ? "Addon" : m.n || m.num0 ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst" title="${STG[modSt(m)].t}">${({ dev: "Entwicklung", vorab: "Vorab" })[modSt(m)] || STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
     let gr = "";
     if (sz !== "s" && z !== "off") {
       const hv = K.ent && (sz === "l" || K.p == null) ? this._hzHist(K.ent) : null;
@@ -16954,6 +16951,103 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "mpdhide") { const h = this._mpCfg("gs").devhid; this._mpSave("gs", { devhid: h.includes(k) ? h.filter((x) => x !== k) : [...h, k] }); return; }
     if (a === "mpreset") { this._mpSave(m, m === "gs" ? { order: [], hidden: [], dev: [], devhid: [] } : { order: [], hidden: [] }); this._toast("Anordnung zurückgesetzt"); }
   }
+  /* ================= Modul 0 · Haus & Grundriss (Build 1) =================
+     Der Grundriss gehört ab jetzt dem Kern (Speicher fenster_heizung_grundriss, WebSocket gr_get) statt Modul 11. Beim ersten Start wird er
+     aus Modul 11 übernommen. Modul 0 zeigt den Plan mit allen Ebenen (Melder aus Modul 11, Lampen aus Modul 18). Modul 1 (Wärmekarte) und
+     Modul 18 (Lichtkarte) lesen über _grPlan(). Bearbeitet wird in Build 1 noch im Baukasten von Modul 11 (zieht in Build 3 um). */
+  _grS0() { return (this._grS = this._grS || { d: null, ts: 0, busy: false, err: false }); }
+  _grLoad(force) {
+    const S = this._grS0(), age = Date.now() - S.ts;
+    if (!this._hass || S.busy || (!force && S.d && age < 60000) || (!force && S.err && age < 10000)) return;
+    S.busy = true;
+    this._hass.callWS({ type: "fenster_heizung/gr_get" }).then((r) => { S.d = r || null; S.err = false; })
+      .catch(() => { S.err = true; })
+      .finally(() => { S.busy = false; S.ts = Date.now(); const a = this._mdActive && this._mdActive(); if (a === "gr" || a === "li" || (a === "fh" && this._view && this._view() === "plan")) this._render(); });
+  }
+  /* Plan für alle Module: null = lädt, { error: true } = nicht erreichbar, sonst der Plan */
+  _grPlan() { this._grLoad(); const S = this._grS0(); return S.d ? S.d.plan : S.err ? { error: true } : null; }
+  _grRaw() { const S = this._grS0(); return S.d && S.d.plan ? S.d.plan : null; }
+  _grDirty() { if (this._grS) { this._grS.ts = 0; this._grS.d = this._grS.d && { ...this._grS.d }; } this._grLoad(true); }
+  _grFloors(P) { return P && P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }]; }
+  /* Banner: Haus im Schnitt, eine Reihe je Etage (oben die höchste), Zellen = Räume der Etage */
+  _grHouse(P) {
+    const fls = this._grFloors(P).slice().reverse().slice(0, 3), W = 200, X0 = 24, H0 = 46, rowH = Math.max(22, Math.min(34, 90 / fls.length)), H = fls.length * rowH;
+    let s = `<svg class="grhs" viewBox="0 0 248 ${H0 + H + 14}" aria-hidden="true"><polygon points="${X0 - 8},${H0} ${X0 + W / 2},${H0 - 34} ${X0 + W + 8},${H0}" fill="#13233a" stroke="var(--teal,#2dd4bf)" stroke-width="2" stroke-linejoin="round"/><rect x="${X0}" y="${H0}" width="${W}" height="${H}" fill="#0f1b2d" stroke="var(--teal,#2dd4bf)" stroke-width="2"/>`;
+    fls.forEach((f, i) => {
+      const y = H0 + i * rowH, rs = (P.items || []).filter((x) => x.t === "r" && x.fl === f.id).slice(0, 6), n = Math.max(1, rs.length), cw = W / n;
+      if (i) s += `<line x1="${X0}" y1="${y}" x2="${X0 + W}" y2="${y}" stroke="#1e3350" stroke-width="2"/>`;
+      rs.forEach((r, j) => { const x = X0 + j * cw; if (j) s += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y + rowH}" stroke="#1e3350" stroke-width="2"/>`; s += `<rect x="${x + 3}" y="${y + 3}" width="${cw - 6}" height="${rowH - 6}" rx="3" fill="#2dd4bf" fill-opacity="${(0.12 + 0.08 * (j % 3)).toFixed(2)}" stroke="#2dd4bf" stroke-opacity=".35"><title>${esc(r.n || "Raum")}</title></rect>`; });
+      s += `<text x="${X0 - 4}" y="${y + rowH / 2 + 3}" text-anchor="end" font-size="8" fill="#7f95ad">${esc(String(f.n || "").slice(0, 4))}</text>`;
+    });
+    return s + `<rect x="0" y="${H0 + H}" width="248" height="14" fill="#06101a" opacity=".55"/></svg>`;
+  }
+  _grLy() { return (this._grLys = this._grLys || { sf: true, licht: true }); }
+  _grPage() {
+    const S = this._grS0(), P = this._grPlan(), adm = this._admin(), sfOn = this._mdList().some((m) => m.id === "sf");
+    const css = `<style>.grh{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;padding:16px 18px;border-radius:18px;margin-bottom:14px;color:#e2e8f0;background:radial-gradient(120% 140% at 90% 0%,#0e7490 0%,transparent 55%),linear-gradient(135deg,#0f3d3a,#0b1a2c 70%)}
+      .grh svg.grhs{width:min(40%,220px);flex:none;height:auto}.grh .k{font-size:.68rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#5eead4}.grh .b{font-size:1.5rem;font-weight:750;color:#fff;margin:2px 0}.grh .s{color:#a5b8cc;font-size:.86rem}
+      .grh .v{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.grh .v button{border:1px solid #ffffff2e;background:#ffffff0f;color:inherit;border-radius:999px;padding:6px 13px;font:inherit;font-size:.8rem;font-weight:650;cursor:pointer}.grh .v button.pri{background:var(--teal);border-color:var(--teal);color:var(--on-acc,#042f2e)}
+      .grt{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap}.grt button{border:1px solid color-mix(in srgb,var(--primary-text-color) 14%,transparent);background:var(--card);color:var(--primary-text-color);border-radius:999px;padding:8px 16px;font:inherit;font-weight:650}.grt button.on{border-color:var(--teal);color:var(--teal);box-shadow:inset 0 0 0 1px var(--teal)}.grt button:disabled{opacity:.45}.grt small{font-weight:500;opacity:.8}
+      .grl{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.grl button{display:inline-flex;gap:6px;align-items:center;border:0;border-radius:999px;padding:5px 11px;font:inherit;font-size:.78rem;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent);color:var(--mut);cursor:pointer}.grl button.on{background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal)}.grl i{width:9px;height:9px;border-radius:50%;display:inline-block}
+      .grv{border-radius:14px;overflow:hidden;background:color-mix(in srgb,#020617 55%,var(--card,#111a2b))}.grv svg{display:block;width:100%;height:auto;max-height:66vh}.grv text{font-family:inherit}
+      .grinfo{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));margin-top:12px}.grinfo .card{margin:0}.grinfo b{display:block}.grinfo small{color:var(--mut)}
+      @media (max-width:560px){.grh{flex-direction:column;align-items:flex-start}.grh svg.grhs{width:100%;max-width:240px}}</style>`;
+    if (!P) return css + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Grundriss wird geladen …</div></div>`;
+    if (P.error) return css + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Grundriss gerade nicht erreichbar</div>Meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.</div>`;
+    const D = S.d || {}, st = D.stats || {}, meta = D.meta || {}, users = D.users || [], items = P.items || [], fls = this._grFloors(P);
+    const UN = { fh: "Modul 1", sf: "Modul 11", li: "Modul 18" }, uTxt = users.map((u) => UN[u] || u).join(", ").replace(/, ([^,]*)$/, " und $1");
+    const edit = adm ? (sfOn ? `<button data-act="gpedit">${ic("pencil", 14)} Bearbeiten</button>` : `<button data-act="grxsfon" title="Der Baukasten liegt bis Build 3 in Modul 11">${ic("pencil", 14)} Bearbeiten</button>`) : "";
+    const hero = `<div class="grh">${this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.length} ${fls.length === 1 ? "Etage" : "Etagen"} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
+      <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div><div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
+    const tabs = `<div class="grt"><button class="on">Plan</button><button disabled title="kommt in Build 2">Räume <small>· Build 2</small></button><button disabled title="kommt in Build 3">Ebenen <small>· Build 3</small></button><button disabled title="kommt in Build 4">Sichern &amp; Einlesen <small>· Build 4</small></button></div>`;
+    if (!items.some((i) => i.t === "r")) return css + hero + tabs + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? (sfOn ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : `<button class="btn2 pri" data-act="grxsfon">${ic("pencil", 16)} Grundriss zeichnen</button>`) : ""}</div></div>`;
+    const fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, ly = this._grLy(), here = items.filter((i) => i.fl === fl);
+    const rs = here.filter((i) => i.t === "r"), B = rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
+    if (!rs.length) Object.assign(B, { x0: 0, y0: 0, x1: 800, y1: 480 });
+    const NF = this._narrow || (this.clientWidth || 999) < 600 ? 2 : 1, u = "gr" + (this.constructor._grN = ((this.constructor._grN || 0) + 1) % 1e6) + "_", st2 = this._hass.states;
+    const path = (i) => (i.pts && i.pts.length >= 3 ? "M" + i.pts.map((p) => p[0] + " " + p[1]).join("L") + "Z" : `M${i.x + 3} ${i.y + 3}h${i.w - 6}v${i.h - 6}h${-(i.w - 6)}Z`);
+    let d = `<defs><pattern id="${u}dot" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.1" fill="var(--primary-text-color)" opacity=".13"/></pattern></defs><rect x="${B.x0 - 400}" y="${B.y0 - 400}" width="${B.x1 - B.x0 + 800}" height="${B.y1 - B.y0 + 800}" fill="url(#${u}dot)"/>`;
+    const bg = (P.bg || {})[fl]; if (bg) d += `<image href="${esc(bg)}" x="${B.x0}" y="${B.y0}" width="${B.x1 - B.x0}" height="${B.y1 - B.y0}" opacity=".25" preserveAspectRatio="xMidYMid meet"/>`;
+    rs.forEach((i) => { d += `<path d="${path(i)}" fill="color-mix(in srgb,var(--card,#111a2b) 88%,#000)" stroke="var(--line,#334155)" stroke-width="2"/>`; });
+    here.forEach((i) => {
+      const a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
+      if (i.t === "w") d += `<path d="M${i.x} ${i.y}L${i.x2} ${i.y2}" stroke="color-mix(in srgb,var(--primary-text-color) 55%,transparent)" stroke-width="5" stroke-linecap="round"/>`;
+      else if (i.t === "d") d += `<rect x="${i.x - 15}" y="${i.y - 4}" width="30" height="8" rx="2" fill="color-mix(in srgb,#020617 55%,var(--card,#111a2b))"${a}/>`;
+      else if (i.t === "f") d += `<rect x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7" rx="2.5" fill="#bfdbfe" fill-opacity=".55" stroke="#60a5fa"${a}/>`;
+      else if (i.t === "s") d += `<g${a}><rect x="${i.x}" y="${i.y}" width="${i.w || 60}" height="${i.h || 90}" fill="none" stroke="var(--line,#334155)" stroke-width="1.5"/>${Array.from({ length: 6 }, (_, k) => `<line x1="${i.x}" y1="${i.y + (k + 1) * (i.h || 90) / 7}" x2="${i.x + (i.w || 60)}" y2="${i.y + (k + 1) * (i.h || 90) / 7}" stroke="var(--line,#334155)"/>`).join("")}</g>`;
+      else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" font-size="${13 * NF}" fill="var(--mut)">${esc(i.n || "")}</text>`;
+    });
+    rs.forEach((i) => { const fz = Math.min(14 * NF, i.w * 0.1); d += `<text x="${i.x + 12}" y="${i.y + 12 + fz}" font-size="${fz}" font-weight="700" fill="var(--primary-text-color)" pointer-events="none">${esc(i.n || "Raum")}</text>`; });
+    /* Ebenen: Lampen (Modul 18, nur mit Addon) und Melder (Modul 11) */
+    const q = NF > 1 ? 1.4 : 1;
+    if (ly.licht && this._liOn && this._liOn()) here.filter((i) => i.t === "l" && i.e).forEach((i) => {
+      const s2 = st2[i.e], on = !!(s2 && s2.state === "on"), c = on && this._liLampHex ? this._liLampHex(i.e) : "#475569";
+      d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<circle cx="${i.x}" cy="${i.y}" r="${22 * q}" fill="${c}" opacity=".3"/>` : ""}${i.k === "streifen" ? `<rect x="${i.x - 22 * q}" y="${i.y - 4 * q}" width="${44 * q}" height="${8 * q}" rx="${4 * q}" fill="${c}" stroke="${on ? "#fff" : "#94a3b8"}" stroke-width="1.6"${i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : ""}/>` : `<circle cx="${i.x}" cy="${i.y}" r="${(i.k === "spot" ? 6 : 9) * q}" fill="${c}" stroke="${on ? "#fff" : "#94a3b8"}" stroke-width="2"/>`}</g>`;
+    });
+    if (ly.sf) here.filter((i) => i.t === "m").forEach((i) => {
+      const s2 = i.e && st2[i.e], al = !!(s2 && s2.state === "on");
+      d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${11 * q}" fill="#1f2937" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><circle cx="${i.x}" cy="${i.y}" r="${4 * q}" fill="${al ? "#ef4444" : "#f87171"}"/></g>`;
+    });
+    const nL = items.filter((i) => i.t === "l").length, nM = items.filter((i) => i.t === "m").length, liOn = !!(this._liOn && this._liOn());
+    const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
+    const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button><span class="mut sm" style="align-self:center">Ebene antippen = ein- und ausblenden</span></div>`;
+    const card = `<div class="card"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
+      <div class="grv"><svg viewBox="${B.x0 - 16} ${B.y0 - 16} ${B.x1 - B.x0 + 32} ${B.y1 - B.y0 + 32}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${d}</svg></div></div>`;
+    const since = meta.since ? new Date(meta.since).toLocaleDateString("de-DE") : "", until = meta.copy_until ? new Date(meta.copy_until).toLocaleDateString("de-DE") : "";
+    const info = `<div class="grinfo">
+      <div class="card"><b>${ic("users", 15)} Genutzt von</b><small>${esc(uTxt)}. Einmal gezeichnet, überall derselbe Plan.</small></div>
+      <div class="card"><b>${ic("shield", 15)} Umzug aus Modul 11</b><small>${since ? `Am ${since} übernommen${meta.src === "sf" ? " aus Modul 11" : ""}. Die Kopie vom alten Stand wird bis ${until} aufgehoben.` : "Der Plan liegt jetzt im Kern von Strom &amp; Wärme."}</small></div>
+      <div class="card"><b>${ic("pencil", 15)} Bearbeiten</b><small>Bis Build 3 im Baukasten von Modul 11. Gespeichert wird hier in Modul 0, alle Module sehen die Änderung sofort.</small></div></div>`;
+    return css + hero + tabs + card + info;
+  }
+  _grAct(a, b) {
+    const k = b && b.dataset ? b.dataset.k : "";
+    if (a === "grxfl") { this._grFl = k; this._render(); return true; }
+    if (a === "grxly") { const L = this._grLy(); if (k in L) { L[k] = !L[k]; this._render(); } return true; }
+    if (a === "grxtab") { this._render(); return true; }
+    if (a === "grxsfon") { this._toast("Der Baukasten liegt bis Build 3 noch in Modul 11. Schalte Modul 11 unter Einstellungen → Module ein."); return true; }
+    return false;
+  }
   /* ================= Modul 10: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
   _gaTab() {
     let t = this._gaT; if (!t) { try { t = localStorage.getItem("fh_ga_tab"); } catch (_) { /* privater Modus */ } }
@@ -17250,7 +17344,7 @@ class FensterHeizungPanel extends HTMLElement {
   _mvNew(id) { const m = MV[id]; return !!(m && this._ver && m.p === this._ver && m.log.length > 1); }
   _mvTrack(cur) { const i = MV_STG.findIndex((x) => x[0] === cur); return `<div class="mvtr">${MV_STG.map((x, k) => `<span class="${k < i ? "done" : k === i ? "now" : ""}"><em class="sxc ${STG[x[0]].c}">${STG[x[0]].t}</em><small>${x[1]}</small></span>`).join("<i>›</i>")}</div>`; }
   _mvTab(id) { const m = MV[id]; if (!m || this._narrow) return ["", ""]; return [`<span class="mvv"> · v${esc(m.v)}</span>`, this._mvNew(id) ? `<i class="mnew">neu</i>` : ""]; }
-  _mvAll() { return [...MODS, MOD_MU, MOD_LI].filter((x) => MV[x.id]).sort((x, y) => x.n - y.n); }
+  _mvAll() { return [MOD_GR, ...MODS, MOD_MU, MOD_LI].filter((x) => MV[x.id]).sort((x, y) => x.n - y.n); }
   /* Versionshinweis in der Kopfzeile: stabil „Version 2026.11.1“, Testversion „Beta 2026.11.2b1“. Tipp öffnet Versionen. */
   _verTag() {
     if (!this._ver) return "";
@@ -19739,7 +19833,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
-    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}${this._mvTab(m.id)[0]}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : this._mvTab(m.id)[1]}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
+    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n || m.num0 ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}${this._mvTab(m.id)[0]}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : this._mvTab(m.id)[1]}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
   }
   _mdRender() {
     const sr = this.shadowRoot, a = this._mdActive(), m = this._mdList().find((x) => x.id === a), adm = this._admin();
@@ -19748,6 +19842,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "gs") { body = this._gsPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._gsState().devices.length && !this._gsDet ? this._mpPill() : ""}` : ""; }
     else if (a === "st") { body = this._hzPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; }
     else if (a === "mu" && this._muOn()) { body = (this._muHero ? this._muHero() : this._modHeroFor("mu")) + this._muPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; this._muLoad(); }
+    else if (a === "gr") { body = this._grPage(); }
     else if (a === "li" && this._liOn()) { body = this._modHeroFor("li") + this._liPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "ef") { body = this._efPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (m.addon) { body = this._adPage(m); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
@@ -19757,7 +19852,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "li" && a !== "st" && !m.beta && !m.addon && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? this._verTag() : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n || m.num0 ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? this._verTag() : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
       ${this._mdBar()}<div class="wrap">${this._mvPop(a)}${this._tmHint()}${this._labCards(a)}${body}</div>`;
     /* Das Banner steht in jedem Modul ganz oben, auch wenn davor Labs-Karten oder Hinweise erzeugt werden. */
     const wr = sr.getElementById("main").querySelector(".wrap"), hb = wr && wr.querySelector(":scope > .hero.mh");

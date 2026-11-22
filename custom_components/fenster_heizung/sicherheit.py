@@ -425,6 +425,12 @@ class SicherheitManager:
             la = d.get("last_alarm") if isinstance(d.get("last_alarm"), dict) else {}
             if la.get("t"):
                 self.last_alarm = {k: str(la.get(k) or "") for k in ("t", "melder", "name", "raum")}
+        hs = self.hass.data.get(DOMAIN, {}).get("grundriss")  # Modul 0 · Haus & Grundriss: der Plan gehört dem Kern
+        if hs is not None:
+            if hs.has:
+                self.cfg["plan"] = clean_plan(hs.plan)
+            else:
+                hs.adopt(self.cfg["plan"], "sf")  # einmaliger Umzug aus Modul 11
         if migrate:
             try:
                 self._store.snapshot_now()
@@ -1124,6 +1130,9 @@ class SicherheitManager:
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
         self.cfg = clean_cfg({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
+        hs = self.hass.data.get(DOMAIN, {}).get("grundriss")
+        if hs is not None and isinstance(raw, dict) and "plan" in raw:
+            hs.set_plan(self.cfg["plan"], "sf")  # Baukasten von Modul 11 schreibt in Modul 0
         self._save()
         await self.async_config_changed()
         return await self.snapshot()
