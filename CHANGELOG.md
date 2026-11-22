@@ -32,7 +32,7 @@ Zwei Builds für **Modul 0 · Haus & Grundriss** (jetzt v0.9): Build 8 – Zoom,
 - **Bewegungsmelder und Kamera** mit Erfassungskegel (Reichweite, Blickwinkel, Richtung), **WLAN** und Router mit Reichweite.
 - **Notfall-Punkte** sind rote Dreiecke und erscheinen auch im Grundriss von **Modul 11** – bei einem Alarm sieht man sofort Haupthahn, Sicherungen und Feuerlöscher.
 - Neue Ebene „Technik“ im Plan von Modul 0.
-- **Raum-Sensoren in Home Assistant** (Modul 0 → Einstellungen, aus Wunsch): je Raum `sensor.strom_waerme_raum_<raum>_flaeche`, `…_temperatur` (Mittel der Temperatursensoren im Bereich), `…_lampen_an`, `binary_sensor.strom_waerme_raum_<raum>_fenster_offen` und `…_belegt` (Bewegung/Präsenz), dazu `sensor.strom_waerme_haus_wohnflaeche`. Für Automationen je Raum, Sprachassistenten und Kennzahlen. Aktualisiert sich bei jeder Änderung im Bereich.
+- **Raum-Sensoren in Home Assistant** (Modul 0 → Einstellungen, auf Wunsch): je Raum `sensor.strom_waerme_raum_<raum>_flaeche`, `…_temperatur` (Mittel der Temperatursensoren im Bereich), `…_lampen_an`, `binary_sensor.strom_waerme_raum_<raum>_fenster_offen` und `…_belegt` (Bewegung/Präsenz), dazu `sensor.strom_waerme_haus_wohnflaeche`. Für Automationen je Raum, Sprachassistenten und Kennzahlen. Aktualisiert sich bei jeder Änderung im Bereich.
 - **Bereiche anlegen** (Reiter „Räume“): Räume ohne Bereich bekommen mit einem Tipp einen neuen Bereich in Home Assistant und werden gleich zugeordnet – auf Wunsch mit den Etagen (EG, OG …). Bestehende Bereiche mit gleichem Namen werden nur zugeordnet.
 
 ## [2026.11.4b54] - 2026-11-22
