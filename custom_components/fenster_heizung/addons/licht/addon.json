@@ -7,7 +7,7 @@
   "icon": "lamp",
   "tag": "Lampen schalten, dimmen und Szenen",
   "desc": "Deine Lampen nach Räumen in der neuen Optik: im Reiter „Lampen“ selbst hinzufügen, benennen und Räumen zuordnen, Lichtschein in echter Farbe, Grundriss als Lichtkarte, Szenenknöpfe, Brennstunden.",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "build": 8,
   "stage": "dev",
   "api": 1,

@@ -8,7 +8,9 @@ Build 2: Raumliste – Plan-Raum → Bereich in Home Assistant (rooms, „-“ =
 (wird einmalig übernommen). Die Spalte „Raum in Modul 1“ bleibt im Layout (gmap) und wird aus Modul 0 bearbeitet.
 
 Umzug: Beim ersten Start übernimmt Modul 0 den Plan aus Modul 11 (mit Meldern und Lampen als Ebenen-Elemente „m“ und „l“) und legt eine
-Umzugs-Kopie an, die 90 Tage aufgehoben wird. Bearbeitet wird in Build 1 noch im Baukasten von Modul 11 (zieht in Build 3 um).
+Umzugs-Kopie an, die 90 Tage aufgehoben wird.
+
+Build 3: Der Baukasten zieht nach Modul 0 und speichert über gr_set (plan). Modul 11 hört über listen() mit und zieht seine Kopie nach.
 """
 from __future__ import annotations
 
@@ -110,7 +112,7 @@ class GrundrissManager:
         return True
 
     def set_plan(self, plan: dict[str, Any], src: str = "") -> bool:
-        """Plan schreiben (Build 1: aus dem Baukasten von Modul 11). True, wenn sich etwas geändert hat."""
+        """Plan schreiben (src „gr“ = Baukasten in Modul 0, „sf“ = ältere Oberfläche über Modul 11). True, wenn sich etwas geändert hat."""
         p = clean_plan(plan)
         if self.has and p == self.plan:
             return False

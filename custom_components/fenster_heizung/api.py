@@ -1731,14 +1731,16 @@ async def ws_gr_get(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 @websocket_api.require_admin
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/gr_set", vol.Optional("rooms"): dict})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/gr_set", vol.Optional("rooms"): dict, vol.Optional("plan"): dict})
 @websocket_api.async_response
 async def ws_gr_set(hass: HomeAssistant, connection, msg: dict) -> None:
-    """Modul 0 Build 2: Raumliste ändern (Plan-Raum → Bereich). Nur Administratoren."""
+    """Modul 0: Raumliste ändern (Build 2) und Plan aus dem Baukasten speichern (Build 3). Nur Administratoren."""
     hs = hass.data.get(DOMAIN, {}).get("grundriss")
     if hs is None:
         connection.send_error(msg["id"], "not_ready", "Haus & Grundriss ist noch nicht bereit")
         return
+    if "plan" in msg:
+        hs.set_plan(msg["plan"], "gr")  # Baukasten in Modul 0; Modul 11 zieht über listen() nach
     if "rooms" in msg:
         hs.set_rooms(msg["rooms"])
     connection.send_result(msg["id"], hs.snapshot())

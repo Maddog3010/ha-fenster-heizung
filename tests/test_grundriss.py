@@ -165,6 +165,17 @@ def test_raumliste_setzen_und_uebernehmen():
     m.async_stop()
 
 
+def test_baukasten_in_modul_0_modul_11_zieht_nach():
+    m, gm, h, st = _setup(PLAN)
+    p2 = {**PLAN, "items": PLAN["items"][:2] + [{"id": "d1", "fl": "eg", "t": "d", "x": 100, "y": 0, "r": 0}]}
+    assert gm.set_plan(p2, "gr") is True and gm.meta["by"] == "gr"
+    assert [i["id"] for i in m.cfg["plan"]["items"]] == ["r1", "r2", "d1"]       # Modul 11 liest mit, ohne zurückzuschreiben
+    assert [x for x in T._Store.stores if x.key.endswith("sicherheit_plan")][-1].saved["plan"]["items"] == m.cfg["plan"]["items"]
+    m.async_stop()
+    assert gm.set_plan(PLAN, "gr") is True and len(m.cfg["plan"]["items"]) == 3   # nach dem Stoppen hört Modul 11 nicht mehr zu
+    assert not gm._listeners
+
+
 if __name__ == "__main__":
     n = 0
     for k, f in list(globals().items()):

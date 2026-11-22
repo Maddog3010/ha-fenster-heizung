@@ -3,7 +3,9 @@
      aus Modul 11 übernommen. Modul 0 zeigt den Plan mit allen Ebenen (Melder aus Modul 11, Lampen aus Modul 18). Modul 1 (Wärmekarte) und
      Modul 18 (Lichtkarte) lesen über _grPlan(). Bearbeitet wird in Build 1 noch im Baukasten von Modul 11 (zieht in Build 3 um).
      Build 2: Reiter „Räume“ – eine Liste für alle Module: Plan-Raum ↔ Bereich in Home Assistant (zentral in Modul 0, ersetzt pmap aus Modul 18)
-     ↔ Raum in Modul 1 (bleibt im Layout gmap, wird hier bearbeitet) und „genutzt von“. Reiter „Einstellungen“ mit Rückfrage beim Ausschalten. */
+     ↔ Raum in Modul 1 (bleibt im Layout gmap, wird hier bearbeitet) und „genutzt von“. Reiter „Einstellungen“ mit Rückfrage beim Ausschalten.
+     Build 3: Der Baukasten zieht aus Modul 11 hierher (_grEdit, gespeichert über gr_set plan). „Bearbeiten“ in Modul 1, 11 und 18 öffnet ihn
+     hier und kehrt nach Speichern oder Abbrechen zurück. Reiter „Ebenen“: Bauplan, Melder, Lampen, Wärme – mit Zahlen und Sprung ins Werkzeug. */
   _grS0() { return (this._grS = this._grS || { d: null, ts: 0, busy: false, err: false }); }
   _grLoad(force) {
     const S = this._grS0(), age = Date.now() - S.ts;
@@ -11,7 +13,7 @@
     S.busy = true;
     this._hass.callWS({ type: "fenster_heizung/gr_get" }).then((r) => { S.d = r || null; S.err = false; })
       .catch(() => { S.err = true; })
-      .finally(() => { S.busy = false; S.ts = Date.now(); const a = this._mdActive && this._mdActive(); if (a === "gr" || a === "li" || (a === "fh" && this._view && this._view() === "plan")) this._render(); });
+      .finally(() => { S.busy = false; S.ts = Date.now(); if (this._grPend) { const q = this._grPend; this._grPend = null; if (S.d) { this._grEdit(q[0], q[1]); return; } this._toast("Der Grundriss ist gerade nicht erreichbar – bitte gleich nochmal versuchen"); } const a = this._mdActive && this._mdActive(); if (a === "gr" || a === "li" || (a === "fh" && this._view && this._view() === "plan")) this._render(); });
   }
   /* Plan für alle Module: null = lädt, { error: true } = nicht erreichbar, sonst der Plan */
   _grPlan() { this._grLoad(); const S = this._grS0(); return S.d ? S.d.plan : S.err ? { error: true } : null; }
@@ -59,22 +61,32 @@
       .grsel.warn{border-color:#f59e0b;color:#fbbf24}.grsel.none{color:var(--mut)}.grsel small{color:var(--mut);font-size:.72rem}.grsel:disabled{cursor:default;opacity:.85}
       .grmods span{display:inline-block;margin:2px 4px 2px 0;border-radius:6px;padding:1px 7px;font-size:.72rem;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}
       .grfl{font-size:.72rem;color:var(--mut)}
+      .gred{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-radius:16px;margin-bottom:12px;color:#e2e8f0;background:linear-gradient(135deg,#0f3d3a,#0b1a2c 75%);border:1px solid #2dd4bf55}
+      .gred .t{flex:1;min-width:220px}.gred .k{font-size:.68rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#5eead4}.gred b{display:block;font-size:1.05rem;color:#fff}.gred small{color:#a5b8cc}
+      .gred .ch{display:flex;gap:6px;flex-wrap:wrap}.gred .ch span{border-radius:999px;padding:3px 10px;font-size:.74rem;background:#ffffff14}.gred .ch span.off{opacity:.5;text-decoration:line-through}
+      .gred button{border:1px solid #ffffff33;background:#ffffff10;color:inherit;border-radius:999px;padding:7px 14px;font:inherit;font-size:.82rem;font-weight:650;cursor:pointer}
+      .grly{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}.grly .card{margin:0;display:flex;flex-direction:column;gap:8px}
+      .grly .hd{display:flex;align-items:center;gap:10px}.grly .hd i{width:34px;height:34px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;flex:none}.grly .hd b{display:block;font-size:1rem}.grly .hd small{color:var(--mut)}
+      .grly .nums{display:flex;gap:6px;flex-wrap:wrap}.grly .nums span{border-radius:8px;padding:3px 9px;font-size:.78rem;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent)}.grly .nums span.w{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#fbbf24}
+      .grly .ft{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}.grly .ft .btn2{flex:0 0 auto}.grly .card.off{opacity:.62}
       @media (max-width:700px){.grtab thead{display:none}.grtab tr{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 0;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 9%,transparent)}.grtab td{border:0;padding:2px 4px}.grtab td:first-child{grid-column:1/-1}.grtab td[data-l]::before{content:attr(data-l);display:block;font-size:.7rem;color:var(--mut)}}
       .grinfo{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));margin-top:12px}.grinfo .card{margin:0}.grinfo b{display:block}.grinfo small{color:var(--mut)}
       @media (max-width:560px){.grh{flex-direction:column;align-items:flex-start}.grh svg.grhs{width:100%;max-width:240px}}</style>`;
     if (!P) return css + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Grundriss wird geladen …</div></div>`;
     if (P.error) return css + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Grundriss gerade nicht erreichbar</div>Meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.</div>`;
     const D = S.d || {}, st = D.stats || {}, meta = D.meta || {}, users = D.users || [], items = P.items || [], fls = this._grFloors(P);
+    if (this._sfEd && this._sfEd.host === "gr" && adm) return css + this._grEditHead(this._sfEd) + this._sfPlan(this._grT());
     const UN = { fh: "Modul 1", sf: "Modul 11", li: "Modul 18" }, uTxt = users.map((u) => UN[u] || u).join(", ").replace(/, ([^,]*)$/, " und $1");
-    const edit = adm ? (sfOn ? `<button data-act="gpedit">${ic("pencil", 14)} Bearbeiten</button>` : `<button data-act="grxsfon" title="Der Baukasten liegt bis Build 3 in Modul 11">${ic("pencil", 14)} Bearbeiten</button>`) : "";
+    const edit = adm ? `<button data-act="grxedit">${ic("pencil", 14)} Bearbeiten</button>` : "";
     const hero = `<div class="grh">${this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.length} ${fls.length === 1 ? "Etage" : "Etagen"} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
       <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div><div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
-    const tab = ["plan", "raeume", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
+    const tab = ["plan", "raeume", "ebenen", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
     const tb = (k, t) => `<button class="${tab === k ? "on" : ""}" data-act="grxtab" data-k="${k}" aria-pressed="${tab === k}">${t}</button>`;
-    const tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}<button disabled title="kommt in Build 3">Ebenen <small>· Build 3</small></button><button disabled title="kommt in Build 4">Sichern &amp; Einlesen <small>· Build 4</small></button>${adm ? tb("einst", "Einstellungen") : ""}</div>`;
+    const tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}${tb("ebenen", "Ebenen")}<button disabled title="kommt in Build 4">Sichern &amp; Einlesen <small>· Build 4</small></button>${adm ? tb("einst", "Einstellungen") : ""}</div>`;
     if (tab === "einst" && adm) return css + hero + tabs + this._grSetView(D);
-    if (!items.some((i) => i.t === "r")) return css + hero + tabs + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? (sfOn ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : `<button class="btn2 pri" data-act="grxsfon">${ic("pencil", 16)} Grundriss zeichnen</button>`) : ""}</div></div>`;
+    if (!items.some((i) => i.t === "r")) return css + hero + tabs + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div></div>`;
     if (tab === "raeume") return css + hero + tabs + this._grRoomsView(P);
+    if (tab === "ebenen") return css + hero + tabs + this._grLayersView(P);
     const fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, ly = this._grLy(), here = items.filter((i) => i.fl === fl);
     const rs = here.filter((i) => i.t === "r"), B = rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
     if (!rs.length) Object.assign(B, { x0: 0, y0: 0, x1: 800, y1: 480 });
@@ -111,8 +123,60 @@
     const info = `<div class="grinfo">
       <div class="card"><b>${ic("users", 15)} Genutzt von</b><small>${esc(uTxt)}. Einmal gezeichnet, überall derselbe Plan.</small></div>
       <div class="card"><b>${ic("shield", 15)} Umzug aus Modul 11</b><small>${since ? `Am ${since} übernommen${meta.src === "sf" ? " aus Modul 11" : ""}. Die Kopie vom alten Stand wird bis ${until} aufgehoben.` : "Der Plan liegt jetzt im Kern von Strom &amp; Wärme."}</small></div>
-      <div class="card"><b>${ic("pencil", 15)} Bearbeiten</b><small>Bis Build 3 im Baukasten von Modul 11. Gespeichert wird hier in Modul 0, alle Module sehen die Änderung sofort.</small></div></div>`;
+      <div class="card"><b>${ic("pencil", 15)} Bearbeiten</b><small>Im Baukasten hier in Modul 0 – auch „Bearbeiten“ in Modul 1, 11 und 18 führt hierher und danach zurück. Alle Module sehen die Änderung sofort.</small></div></div>`;
     return css + hero + tabs + card + info;
+  }
+  /* ---- Baukasten in Modul 0 (Build 3) */
+  _grT() { return this._mdList().some((m) => m.id === "sf") && this._sfStat ? this._sfStat() : { l: [], al: [] }; }
+  _grModName(id) { return { fh: "Modul 1 · Wärmekarte", sf: "Modul 11 · Sicherheit", li: "Modul 18 · Licht", gr: "Modul 0" }[id] || "Modul 0"; }
+  _grEdit(from, tool) {
+    if (!this._admin()) return;
+    if (this._mdState().on.gr === false) { this._modal = { type: "grxeditoff", from: from || "gr", tool: tool || "" }; this._renderModal(); return; }
+    const P = this._grRaw();
+    if (!P) { this._grPend = [from, tool]; this._grLoad(true); return; }   /* noch nicht geladen (z. B. aus Modul 11): nach dem Laden weiter */
+    const plan = JSON.parse(JSON.stringify({ ...P, floors: P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }], items: P.items || [], bg: P.bg || {} }));
+    this._sfEd = { plan, sel: "", tool: tool || "select", host: "gr", from: from || "gr" };
+    if (plan.floors.some((f) => f.id === this._grFl)) this._sfFlId = this._grFl;
+    if (this._mdList().some((m) => m.id === "sf") && this._sfxLoad) this._sfxLoad();   /* Melder für die Werkzeuge */
+    this._modal = null; this._renderModal(); this._grTab = "plan"; this._mdActiveSet("gr"); this._render();
+    try { this.shadowRoot.querySelector(".gred").scrollIntoView({ block: "start" }); } catch (_) { /* egal */ }
+  }
+  _grEditHead(ed) {
+    const ms = this._mdList(), sf = ms.some((m) => m.id === "sf"), li = !!(this._liOn && this._liOn());
+    const back = ed.from && ed.from !== "gr" ? `<button data-act="sfxcancel">← Zurück zu ${esc(this._grModName(ed.from))}</button>` : "";
+    return `<div class="gred">${this._grHouse(ed.plan)}<div class="t"><div class="k">Modul 0 · Baukasten</div><b>Grundriss bearbeiten</b><small>Ein Plan für alle Module – nach dem Speichern sehen ${esc(["Modul 1", sf ? "Modul 11" : "", li ? "Modul 18" : ""].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " und $1"))} die Änderung sofort.${ed.from && ed.from !== "gr" ? ` Danach geht es zurück zu ${esc(this._grModName(ed.from))}.` : ""}</small></div>
+      <div class="ch"><span>Bauplan</span><span class="${sf ? "" : "off"}" title="${sf ? "" : "Modul 11 ist aus"}">Melder</span><span class="${li ? "" : "off"}" title="${li ? "" : "Addon „licht“ ist aus"}">Lampen</span></div>${back}</div>`.replace('<svg class="grhs"', '<svg class="grhs" style="width:110px;flex:none"');
+  }
+  _grSavePlan(p) {
+    const S = this._grS0();
+    if (S.d) S.d = { ...S.d, plan: p };   /* sofort zeigen */
+    if (this._sfxD && this._sfxD.d && this._sfxD.d.cfg) this._sfxD.d = { ...this._sfxD.d, cfg: { ...this._sfxD.d.cfg, plan: p } };
+    this._hass.callWS({ type: "fenster_heizung/gr_set", plan: p })
+      .then((r) => { S.d = r; S.ts = Date.now(); if (this._mdList().some((m) => m.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); })
+      .catch(() => { this._toast("Der Grundriss konnte nicht gespeichert werden – bitte nochmal versuchen"); this._grDirty(); });
+  }
+  _grEditDone(ed, saved) {
+    const to = ed && ed.from && ed.from !== "gr" && this._mdList().some((m) => m.id === ed.from) ? ed.from : "";
+    if (to) { if (to === "sf") this._sfT = "pl"; this._mdActiveSet(to); }
+    this._render();
+    if (saved) this._toast(`Grundriss gespeichert${to ? ` – zurück in ${this._grModName(to)}` : ""}`);
+  }
+  /* Reiter „Ebenen“: was liegt auf dem Plan, wer nutzt es, wo wird es bearbeitet */
+  _grLayersView(P) {
+    const adm = this._admin(), it = P.items || [], ms = this._mdList(), sf = ms.some((m) => m.id === "sf"), li = !!(this._liOn && this._liOn()), ly = this._grLy();
+    const c = (t) => it.filter((i) => i.t === t).length, nFl = this._grFloors(P).length, bgN = Object.values(P.bg || {}).filter(Boolean).length;
+    const T = sf ? this._grT() : { l: [] }, pm = new Set(it.filter((i) => i.t === "m" && i.e).map((i) => i.e)), mFree = (T.l || []).filter((d) => !pm.has(d.id)).length;
+    const lamps = li && this._liLamps ? this._liLamps() : [], lFree = lamps.filter((x) => !x.pe && !x.grp).length;
+    const gm = (this._cfg.layout && this._cfg.layout.gmap) || {}, all = this._gpAll ? this._gpAll() : [], rs = it.filter((i) => i.t === "r"), fhN = rs.filter((r) => this._gpMatch && this._gpMatch(r, all)).length;
+    const btn = (act, txt, k, t, pri) => adm ? `<button class="btn2${pri ? " pri" : ""}" data-act="${act}"${k ? ` data-k="${esc(k)}"` : ""}${t ? ` data-t="${esc(t)}"` : ""}>${txt}</button>` : "";
+    const vis = (k, on, dis) => `<button class="btn2" data-act="grxly" data-k="${k}" ${dis ? "disabled" : ""} aria-pressed="${on}">${on ? "Im Plan sichtbar" : "Im Plan ausgeblendet"}</button>`;
+    const card = (o) => `<div class="card${o.off ? " off" : ""}"><div class="hd"><i style="background:${o.c}22;color:${o.c}">${ic(o.i, 18)}</i><div><b>${o.n}</b><small>${o.s}</small></div></div><div class="nums">${o.nums.map((x) => `<span class="${x[1] ? "w" : ""}">${x[0]}</span>`).join("")}</div><div class="mut sm">${o.d}</div><div class="ft">${o.ft}</div></div>`;
+    return `<div class="mut sm" style="margin:-2px 0 10px">Der Plan besteht aus Ebenen. Den <b>Bauplan</b> zeichnest du einmal, die Module legen ihre Ebenen darüber. Bearbeitet wird alles im Baukasten hier – Ebenen ausgeschalteter Module bleiben gespeichert.</div><div class="grly">
+      ${card({ n: "Bauplan", s: "Modul 0 · Grundlage für alle", i: "home", c: "#2dd4bf", nums: [[`${nFl} ${nFl === 1 ? "Etage" : "Etagen"}`], [`${c("r")} Räume`], [`${c("w")} Wände`], [`${c("d")} Türen`], [`${c("f")} Fenster`], [`${c("s")} Treppen`], ...(bgN ? [[`${bgN} Hintergrundbild${bgN === 1 ? "" : "er"}`]] : [])], d: "Räume, Wände, Türen, Fenster, Treppen und Text. Räume bekommen im Reiter „Räume“ ihren Bereich aus Home Assistant.", ft: btn("grxedit", `${ic("pencil", 15)} Bauplan bearbeiten`, "gr", "r", true) + `<button class="btn2" data-act="grxtab" data-k="raeume">Räume zuordnen</button>` })}
+      ${card({ n: "Melder", s: sf ? "Modul 11 · Sicherheit" : "Modul 11 ist aus", i: "shield", c: "#f87171", off: !sf, nums: [[`${c("m")} im Plan`], ...(sf ? [[`${(T.l || []).length} Melder gesamt`], ...(mFree ? [[`${mFree} noch ohne Platz`, 1]] : [])] : [])], d: sf ? "Rauch-, CO-, Gas-, Wasser- und Hitzemelder mit Reichweite. Modul 11 zeigt daraus Abdeckung und Fluchtweg." : "Die Melder bleiben im Plan gespeichert und erscheinen wieder, sobald Modul 11 an ist.", ft: (sf ? btn("grxedit", `${ic("pencil", 15)} Melder setzen`, "gr", "m:smoke", !!mFree) : "") + vis("sf", ly.sf, !sf) })}
+      ${card({ n: "Lampen", s: li ? "Modul 18 · Licht" : "Addon „licht“ ist aus", i: "lamp", c: "#ffb36b", off: !li, nums: [[`${c("l")} im Plan`], ...(li ? [[`${lamps.length} Lampen in Modul 18`], ...(lFree ? [[`${lFree} noch ohne Platz`, 1]] : [])] : [])], d: li ? "Lichtkegel in echter Farbe für die Lichtkarte. Hinzufügen und benennen im Reiter „Lampen“ von Modul 18." : "Die Lampen bleiben im Plan gespeichert und erscheinen wieder, sobald das Addon an ist.", ft: (li ? btn("grxedit", `${ic("pencil", 15)} Lampen setzen`, "gr", "l", !!lFree) : "") + vis("licht", ly.licht && li, !li) })}
+      ${card({ n: "Wärme", s: "Modul 1 · Wärmekarte", i: "flame", c: "#fb923c", nums: [[`${fhN} von ${rs.length} Räumen mit Raum aus Modul 1`, fhN < rs.length && rs.length ? 1 : 0]], d: "Keine eigenen Elemente: Modul 1 färbt die Räume des Bauplans nach Temperatur, Fenster zeigen offen oder zu.", ft: `<button class="btn2" data-act="grxtab" data-k="raeume">Räume zuordnen</button><button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte öffnen</button>` })}
+      </div>`;
   }
   /* Zahlen für den Reiter „Räume“: n Räume, open = ohne Bereich und nicht bewusst „kein Bereich“ */
   _grRoomStats(P) {
@@ -146,7 +210,7 @@
     return `<div class="card"><h2>${ic("sliders", 18)}Einstellungen</h2>
       <div class="vrow"><span>Modul 0 eingeschaltet<small class="mut" style="display:block">Wird von ${esc(users.map((u) => UN[u] || u).join(", "))} genutzt. Ausschalten blendet nur diese Seite aus – der Plan bleibt gespeichert und in den anderen Modulen sichtbar.</small></span><button class="sw ${on ? "on" : ""}" data-act="grxoff" aria-pressed="${on}" aria-label="Modul 0 ein- oder ausschalten"></button></div>
       <div class="vrow"><span>Umzug aus Modul 11<small class="mut" style="display:block">${meta.since ? `Am ${dt(meta.since)} übernommen.${meta.copy_until ? ` Die Kopie vom alten Stand wird bis ${dt(meta.copy_until)} aufgehoben.` : ""}` : "Kein Umzug nötig – der Plan wurde direkt hier angelegt."}${meta.pmap ? ` Zuordnungen aus Modul 18 am ${dt(meta.pmap)} übernommen.` : ""}</small></span></div>
-      <div class="vrow"><span>Zuletzt geändert<small class="mut" style="display:block">${meta.changed ? `${new Date(meta.changed).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })}${meta.by === "sf" ? " im Baukasten von Modul 11" : ""}` : "–"}</small></span></div>
+      <div class="vrow"><span>Zuletzt geändert<small class="mut" style="display:block">${meta.changed ? `${new Date(meta.changed).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })}${meta.by === "gr" ? " im Baukasten von Modul 0" : meta.by === "sf" ? " über Modul 11" : ""}` : "–"}</small></span></div>
       <div class="vrow"><span>Gespeichert<small class="mut" style="display:block">Im Kern von Strom &amp; Wärme (fenster_heizung_grundriss), mit automatischen Sicherungskopien. Ausschalten oder Deinstallieren eines Moduls löscht den Plan nicht.</small></span></div></div>`;
   }
   _grModal(m) {
@@ -159,6 +223,9 @@
         <div class="gschips">${A.map((a) => `<button class="gsch ${cur === a.area_id || (!cur && auto && auto.id === a.area_id) ? "sel" : ""}" data-act="grxaset" data-k="${esc(it.id)}" data-v="${esc(a.area_id)}">${esc(a.name)}</button>`).join("") || `<span class="mut sm">In Home Assistant sind noch keine Bereiche angelegt.</span>`}</div>
         <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="-">Kein Bereich</button>${cur ? `<button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     }
+    if (m.type === "grxeditoff") return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Modul 0 einschalten?</b><span>Haus &amp; Grundriss</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm">Der Baukasten liegt jetzt in <b style="color:var(--primary-text-color)">Modul 0 · Haus &amp; Grundriss</b>. Zum Bearbeiten wird Modul 0 eingeschaltet. ${m.from && m.from !== "gr" ? `Nach dem Speichern geht es zurück zu ${esc(this._grModName(m.from))}.` : ""}</div>
+        <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grxeditgo">Einschalten und bearbeiten</button></div></div>`;
     if (m.type === "grxoff") {
       const D = this._grS0().d || {}, UN = { fh: "Modul 1", sf: "Modul 11", li: "Modul 18" }, U = (D.users || []).map((u) => UN[u]).filter(Boolean);
       return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Modul 0 ausschalten?</b><span>Haus &amp; Grundriss</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -188,6 +255,9 @@
       this._modal = { type: "grxoff" }; this._renderModal(); return true;
     }
     if (a === "grxoffgo") { const s = this._mdState(); s.on.gr = false; this._modal = null; this._renderModal(); if (this._mdActive() === "gr") this._mdActiveSet("fh"); this._mdSave(); this._render(); this._toast("Modul 0 ist aus – der Grundriss bleibt in den anderen Modulen sichtbar"); return true; }
+    if (a === "grxedit") { this._grEdit((b && b.dataset && b.dataset.k) || "gr", (b && b.dataset && b.dataset.t) || ""); return true; }
+    if (a === "grxeditgo") { const m = this._modal || {}, s = this._mdState(); s.on.gr = true; this._mdSave(); this._modal = null; this._grEdit(m.from, m.tool); return true; }
+    if (a === "grxgo") { if (this._mdList().some((x) => x.id === k)) { this._mdActiveSet(k); this._render(); } return true; }
     if (a === "grxsfon") { this._toast("Der Baukasten liegt bis Build 3 noch in Modul 11. Schalte Modul 11 unter Einstellungen → Module ein."); return true; }
     return false;
   }

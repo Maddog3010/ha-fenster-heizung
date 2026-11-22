@@ -1,5 +1,9 @@
 # Modul 18 Licht & Lampen
 
+## [0.6.1] - 2026-11-22
+- „Im Plan platzieren“ öffnet den Baukasten in Modul 0 (ab 2026.11.4b56) mit dem Werkzeug „Lampe“ und kehrt danach zu Modul 18 zurück – auch ohne Modul 11
+- Im Baukasten stehen mit „Meine Lampen“ nur deine Lampen mit deinem Namen
+
 ## [0.6.0] Build 6 - 2026-11-22
 - **Reiter „Lampen“**: „Meine Lampen“ – nur hinzugefügte Lampen (auch Gruppen) mit eigenem Namen, Raum (Räume aus Modul 0 oder Bereiche), Art und „bei Alle aus mitschalten“
 - „Lampe hinzufügen“ mit Suche, Filtern, Mehrfachauswahl und **Testen** (Lampe blinkt kurz)

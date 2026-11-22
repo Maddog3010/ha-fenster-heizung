@@ -2,6 +2,26 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b56] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.3 Build 3 – der Baukasten zieht aus Modul 11 nach Modul 0.
+
+### Neu
+- **Baukasten in Modul 0:** „Bearbeiten“ im Banner und „Grundriss zeichnen“ öffnen den Baukasten direkt in Modul 0. Oben steht ein Streifen „Grundriss bearbeiten“ mit den aktiven Ebenen (Bauplan, Melder, Lampen).
+- **„Bearbeiten“ aus jedem Modul:** Modul 1 (Wärmekarte), Modul 11 (Grundriss) und Modul 18 („Im Plan platzieren“) führen in den Baukasten von Modul 0. Nach Speichern oder Abbrechen geht es zurück („Grundriss gespeichert – zurück in Modul 11 · Sicherheit“), und „← Zurück zu …“ steht im Streifen.
+- **Ohne Modul 11:** Den Grundriss kannst du jetzt auch zeichnen, wenn Modul 11 aus ist. Dann fehlen nur die Melder-Werkzeuge.
+- **Reiter „Ebenen“:** Bauplan, Melder (Modul 11), Lampen (Modul 18) und Wärme (Modul 1). Jede Ebene zeigt ihre Zahlen, z. B. Elemente im Plan, „noch ohne Platz“ und Räume mit Raum aus Modul 1. „Melder setzen“ und „Lampen setzen“ öffnen den Baukasten mit dem passenden Werkzeug. Die Sichtbarkeit lässt sich je Ebene umschalten. Ebenen ausgeschalteter Module bleiben gespeichert.
+- **Modul 0 aus:** Dann fragt „Bearbeiten“, ob Modul 0 eingeschaltet werden soll.
+
+### Geändert
+- Modul 11 schreibt den Plan nicht mehr mit seinen Einstellungen. Der Plan wird nur noch im Baukasten gespeichert (`gr_set`), Modul 11 übernimmt Änderungen sofort.
+- Im Baukasten stehen bei „Noch nicht platzierte Lampen“ mit „Meine Lampen“ aus Modul 18 nur deine Lampen mit deinem Namen. Addon `licht` 0.6.1.
+
+### Technik
+- `gr_set` nimmt `plan` an (nur Administratoren, gespeichert mit `by: "gr"`). `sicherheit.py` hört über `listen()` auf Modul 0 und zieht seine Kopie nach, ohne zurückzuschreiben.
+- Frontend: `_grEdit(von, Werkzeug)`, `_grSavePlan`, `_grEditDone`, `_grLayersView`. Der Baukasten selbst (`_sfPlan`) bleibt gemeinsam genutzt und kennt jetzt `host: "gr"`.
+- 1 neuer Test (Speichern in Modul 0, Modul 11 zieht nach, Abmelden beim Stoppen), alle Tests grün.
+
 ## [2026.11.4b55] - 2026-11-22
 
 **Modul 18 · Licht & Lampen** v0.6 Build 6 – Reiter „Lampen“ aus dem Konzept „Lampen selbst verwalten“. Addon `licht` 0.6.0.

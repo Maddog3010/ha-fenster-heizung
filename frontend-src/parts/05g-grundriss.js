@@ -32,13 +32,12 @@
     if (P.error) return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Grundriss gerade nicht erreichbar</b><span>Modul 11 antwortet noch nicht – meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.</span></div>`;
     const any = (P.items || []).some((i) => i.t === "r");
     if (!any && (P.items || []).some((i) => i.t === "w")) {
-      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Im Grundriss sind noch keine Räume</b><span>Der Grundriss aus Modul 11 besteht bisher nur aus Wänden. Modul 1 färbt <b>Räume</b>: Zeichne sie im Baukasten mit dem Werkzeug „Raum“ über die Wände und gib ihnen einen Namen – dann erscheinen sie hier mit Temperatur.</span>
-        ${adm && this._mdList().some((m) => m.id === "sf") ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Räume einzeichnen</button>` : ""}</div>`;
+      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Im Grundriss sind noch keine Räume</b><span>Der Grundriss besteht bisher nur aus Wänden. Modul 1 färbt <b>Räume</b>: Zeichne sie im Baukasten mit dem Werkzeug „Raum“ über die Wände und gib ihnen einen Namen – dann erscheinen sie hier mit Temperatur.</span>
+        ${adm ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Räume einzeichnen</button>` : ""}</div>`;
     }
     if (!any) {
-      const sf = this._mdList().some((m) => m.id === "sf");
-      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Noch kein Grundriss</b><span>Den Grundriss zeichnest du einmal mit dem Baukasten aus Modul 11 (Rauch- &amp; Sicherheitsmelder): Räume, Wände, Türen und Fenster. Modul 1 färbt die Räume dann nach Temperatur.</span>
-        ${adm ? (sf ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : `<span class="mut sm">Schalte dafür unter Einstellungen → Module das Modul 11 ein.</span>`) : ""}</div>`;
+      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Noch kein Grundriss</b><span>Den Grundriss zeichnest du einmal mit dem Baukasten in Modul 0 (Haus &amp; Grundriss): Räume, Wände, Türen und Fenster. Modul 1 färbt die Räume dann nach Temperatur.</span>
+        ${adm ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div>`;
     }
     const fls = P.floors || [], fl = fls.some((f) => f.id === this._gpFl) ? this._gpFl : (fls.find((f) => (P.items || []).some((i) => i.fl === f.id && i.t === "r")) || fls[0]).id;
     const items = P.items.filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r" || i.t === "s");
@@ -141,9 +140,9 @@
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="gpfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
     const B = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
     const vb = `${B.x0 - 20} ${B.y0 - 20} ${B.x1 - B.x0 + 40} ${B.y1 - B.y0 + 40}`;
-    return `<div class="card gpc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${adm && this._mdList().some((m) => m.id === "sf") ? `<button class="sfed" data-act="gpedit">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>
+    return `<div class="card gpc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${adm ? `<button class="sfed" data-act="gpedit" title="Öffnet den Baukasten in Modul 0 und kommt danach hierher zurück">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>
       ${sum}<div class="gpv" data-an="${an}"><svg viewBox="${vb}" role="img" aria-label="Grundriss mit Raumtemperaturen">${d}</svg></div>${legend}
-      <div class="mut sm gpnote">Antippen eines Raums öffnet seine Aktionen. Gezeichnet wird der Grundriss in Modul 11 und dort auch für die Melder genutzt.</div></div>`;
+      <div class="mut sm gpnote">Antippen eines Raums öffnet seine Aktionen. Gezeichnet wird der Grundriss in Modul 0 · Haus &amp; Grundriss – derselbe Plan für Melder (Modul 11) und Lichtkarte (Modul 18).</div></div>`;
   }
   /* W3: Plaketten je Raum (höchstens zwei) */
   _gpBadges(r, s) {
@@ -182,6 +181,6 @@
     if (a === "gpmap") { this._modal = { type: "gpmap", k: b.dataset.k }; this._renderModal(); return true; }
     if (a === "gpset") { const g = { ...(this._cfg.layout.gmap || {}) }, v = b.dataset.id; if (v && v.startsWith("ms_")) for (const k of Object.keys(g)) if (g[k] === v) delete g[k];   /* ein Messraum hat genau eine Fläche */
       if (v) g[b.dataset.k] = v; else delete g[b.dataset.k]; this._cfg.layout.gmap = g; this._saveLayout(); this._modal = null; this._renderModal(); this._render(); return true; }
-    if (a === "gpedit") { this._modal = null; this._renderModal(); this._sfT = "pl"; this._mdActiveSet("sf"); this._sfxLoad(true); setTimeout(() => { if (this._sfxD && this._sfxD.d && this._sfxD.d.cfg) this._act("sfxedit", b); }, 400); this._render(); return true; }
+    if (a === "gpedit") { this._grEdit("fh"); return true; }   /* Modul 0 Build 3: Baukasten in Modul 0, danach zurück in die Wärmekarte */
     return false;
   }

@@ -151,7 +151,8 @@
     clearTimeout(this._sfxT);
     this._sfxT = setTimeout(() => {
       this._sfxT = null;
-      this._hass.callWS({ type: "fenster_heizung/sf_set", cfg: this._sfx().cfg }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; if (this._grDirty) this._grDirty(); if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } })
+      const { plan: _p, ...cfg2 } = this._sfx().cfg;   /* Modul 0 Build 3: den Plan schreibt nur noch der Baukasten in Modul 0 (gr_set) */
+      this._hass.callWS({ type: "fenster_heizung/sf_set", cfg: cfg2 }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; if (this._grDirty) this._grDirty(); if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } })
         .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
     }, 500);
     this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal();
