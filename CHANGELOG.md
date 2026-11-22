@@ -2,6 +2,30 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b45] - 2026-11-22
+
+**Weihnachts-Theme** Build 3 – Sponsor-Varianten, Tagesschlüssel und Modul-Details (Konzept „Weihnachts-Theme & Adventskalender“, Build 3 von 3).
+
+### Neu
+- **Variante C · Sterne** (Sponsor): ein Stern für jedes Türchen, das am eigenen Tag geöffnet wird – Nachholen geht trotzdem.
+- **Variante D · Hausfluss-Dorf** (Sponsor Max): jedes Türchen schmückt das Dorf weiter – Lichter am Dach, Fenster, Schneemann (6), Schlitten (13), Baum (20), Stern (24).
+- **Farbsets** Klassisch, Eis-Blau und Gold für Lichterkette und Dorf, **Schneefall Mittel und Stark** (Sponsor).
+- **Persönliche Tagesschlüssel:** Wer kein Sponsor ist, findet an Tag 6 und 13 einen Sponsor- und an Tag 20 und 24 einen Sponsor-Max-Tagesschlüssel; Sponsoren testen an Tag 20 und 24 die Stufe Max. „Jetzt aktivieren“ im Türchen oder von Hand unter Darstellung → Weihnachts-Theme. Der Schlüssel gilt **nur an seinem Tag**, nur auf der eigenen Installation und schaltet bis 23:59 alle Funktionen der Stufe frei. Banner „Sponsor-Tag aktiv · noch … h“, am nächsten Tag ein Danke-Hinweis.
+- **Schutz:** An allen anderen Tagen wird jeder Tagesschlüssel abgelehnt. Die Tages-Codes sind mit dem Entwickler-Schlüssel signiert (Ed25519, derselbe öffentliche Schlüssel wie bei den Sponsor-Schlüsseln) – nachgebaute Schlüssel für andere Tage oder Stufen sind ohne privaten Schlüssel nicht möglich. Eine zurückgestellte Uhr wird erkannt.
+- **Sponsor-Bonus** an Tag 6, 13 und 20 (Eis-Blau, Schneefall Stark, Gold zum Ausprobieren), an Tag 24 für Sponsor Max ein **Jahresrückblick**.
+- **Modul 11:** Kerzen-Erinnerung „Kerzen aus?“ an Adventssonntagen und Heiligabend, wenn alle das Haus verlassen (über das Gerät der Kalender-Benachrichtigung, abschaltbar).
+- **Modul 18:** Chip „3 von 5 Weihnachtslichtern an“ auf der Startseite für Lampen und Schalter mit dem Label `weihnachten`.
+- **Entwickler:** „Tages-Codes signieren“ (die vier Codes für `advent_codes.json`), Testschlüssel `SW26-XMAS-SPON-T7K4-Q9M2` und `SW26-XMAS-SMAX-T3R8-D5VX` (nur mit Entwickler-Zugang, bis 06.01.2027, ohne Tage-Sperre).
+
+### Technik
+- Neue Datei `tagesschluessel.py` (Prüfung in 6 Schritten, Signieren, ohne Home Assistant testbar), `advent_codes.json` im Repository (wird alle 6 Stunden geladen; die Signatur prüft jeden Code selbst). `sponsor.py`: `base_tier()` und Hochstufen mit gültigem Tagesschlüssel.
+- WebSocket `fenster_heizung/advent_key` (aktivieren, danke) und `advent_sign` (nur Entwickler). Speicher `fenster_heizung_advent` um Tagesschlüssel, Uhr-Schutz und Codes erweitert (Schema 1, alte Daten bleiben gültig).
+- 10 neue Tests (Tagesschlüssel mit echter Signatur: eigener Tag, falsche Tage, Fälschungen, andere Installation, Uhr, Testschlüssel, wer was bekommt, Hochstufen; Kalender: Aktivieren mit Ablauf und Danke, Regeln je Stufe, Sterne und neue Optionen).
+
+### Noch offen
+- Die Tagesschlüssel brauchen die vier signierten Tages-Codes für 2026 in `advent_codes.json` (Entwickler → „Tages-Codes signieren“). Bis dahin zeigt das Türchen „Der Tages-Code für heute ist noch nicht da“.
+- Optik-Details für Modul 1 (Backofen-Wärme), Modul 8 (Schlitten) und Modul 19 (Schneedach) sowie das PDF zum Jahresrückblick folgen später.
+
 ## [2026.11.4b44] - 2026-11-22
 
 **Weihnachts-Theme** – Einstellungen leichter zu finden.

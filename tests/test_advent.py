@@ -198,6 +198,82 @@ def test_counter_for_sensor():
     assert m.count()["heute_verfuegbar"] is False
 
 
+# ------------------------------------------------------------ Build 3
+class _Spn:
+    def __init__(self, tier="", priv=""):
+        self.tier, self.priv, self.pushed = tier, priv, 0
+
+    def base_tier(self):
+        return self.tier
+
+    def push(self):
+        self.pushed += 1
+
+
+def _setup_keys(m, h, tier=""):
+    import base64
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+    from cryptography.hazmat.primitives import serialization as S
+    TS = sys.modules["fhpkg.tagesschluessel"] if "fhpkg.tagesschluessel" in sys.modules else A.TS
+    k = Ed25519PrivateKey.generate()
+    b64 = lambda b: base64.urlsafe_b64encode(b).rstrip(b"=").decode()
+    priv = "FHPRIV1-" + b64(k.private_bytes(S.Encoding.Raw, S.PrivateFormat.Raw, S.NoEncryption()))
+    pub = b64(k.public_key().public_bytes(S.Encoding.Raw, S.PublicFormat.Raw))
+    m.codes = {"2026": TS.signiere(priv, 2026)}
+    m.install_id = "inst-1"
+    spn = _Spn(tier)
+    h.data["fenster_heizung"]["sponsor"] = spn
+    sys.modules["fhpkg.sponsor"] = types.SimpleNamespace(PUBLIC_KEY=pub)
+    return spn
+
+
+def test_day_key_flow_and_stars():
+    NOW[0] = datetime(2026, 12, 6, 9, 0)
+    h = _Hass()
+    m = _mgr(hass=h)
+    spn = _setup_keys(m, h)
+    snap = m.snapshot()
+    key = snap["tueren"][5]["key"]
+    assert key["stufe"] == "sponsor" and key["text"].startswith("SW26-1206-SPON-") and not key["aktiv"]
+    assert m.tag_stufe() is None
+    r = m.aktivieren(key["text"])
+    assert r == {"ok": True, "stufe": "sponsor"} and m.tag_stufe() == "sponsor" and spn.pushed == 1
+    assert m.snapshot()["tag"] == {"stufe": "sponsor", "bis": "2026-12-06T23:59"}
+    m.open(6)
+    assert m.snapshot()["sterne"] == [6]  # am eigenen Tag geöffnet = Stern
+    NOW[0] = datetime(2026, 12, 7, 9, 0)  # nächster Tag: abgelaufen, Danke-Hinweis
+    assert m.tag_stufe() is None and m.snapshot()["danke"] is True
+    m.danke()
+    assert m.snapshot()["danke"] is False
+    assert not m.aktivieren(key["text"])["ok"]  # gestern ist vorbei
+    m2 = _mgr(m._store.saved)  # Neustart: Schlüssel und Uhr-Schutz bleiben gespeichert
+    assert m2.tk["stufe"] == "sponsor" and m2.letztes == "2026-12-06"
+
+
+def test_day_key_rules_by_tier_and_clock():
+    NOW[0] = datetime(2026, 12, 13, 9, 0)
+    h = _Hass()
+    m = _mgr(hass=h)
+    _setup_keys(m, h, tier="sponsor")
+    assert "key" not in m.snapshot()["tueren"][12]  # Sponsor bekommt an Tag 13 keinen Schlüssel
+    NOW[0] = datetime(2026, 12, 20, 9, 0)
+    k = m.snapshot()["tueren"][19]["key"]
+    assert k["stufe"] == "max" and m.aktivieren(k["text"])["ok"]  # Sponsor testet Max
+    m.letztes = "2026-12-22"  # Uhr wurde zurückgestellt
+    assert m.tag_stufe() is None
+    h.data["fenster_heizung"]["sponsor"].tier = "max"
+    NOW[0] = datetime(2026, 12, 24, 9, 0)
+    m.letztes = ""
+    assert "key" not in m.snapshot()["tueren"][23]  # Max braucht keinen Schlüssel
+
+
+def test_stars_and_new_options():
+    assert A.sterne({"3": "2026-12-03T07:00:00", "4": "2026-12-08T09:00:00", "8": "2026-12-08T10:00:00"}, 2026) == [3, 8]
+    c = A.clean_cfg({"variante": "D", "schnee": "stark", "farbset": "gold", "kerzen": False})
+    assert (c["variante"], c["schnee"], c["farbset"], c["kerzen"]) == ("D", "stark", "gold", False)
+    assert A.clean_cfg({"farbset": "pink"})["farbset"] == "klassisch"
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):
