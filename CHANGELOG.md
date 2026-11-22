@@ -2,6 +2,28 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b54] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.4 Build 4 – Sichern & Einlesen.
+
+### Neu
+- **Reiter „Sichern & Einlesen“** (nur Administratoren).
+- **Als Datei sichern:** eine JSON-Datei mit Etagen, Räumen, Bauteilen, Meldern, Lampen und Raumliste. Hintergrundbilder lassen sich mitnehmen oder weglassen, die Größe steht dabei.
+- **Datei einlesen** mit Vorschau „jetzt → danach“ für Etagen, Räume, Bauteile, Melder, Lampen und Bilder. Du wählst:
+  - **Plan ersetzen**, auf Wunsch mit der Raumliste aus der Datei
+  - **Als weitere Etagen hinzufügen** (höchstens 6 Etagen; doppelte Namen bekommen „(neu)“)
+  Ältere Dateien aus dem Baukasten von Modul 11 werden erkannt.
+- **Verlauf:** Vor jedem Speichern, Einlesen oder Wiederherstellen legt Modul 0 den vorherigen Stand ab (die letzten 15, ohne Hintergrundbilder). Jeder Eintrag zeigt, wann und worüber er gespeichert wurde und was ihn ersetzt hat. Mit „Wiederherstellen“ kommt der Stand zurück, die Bilder bleiben wie sie sind.
+- **Umzugs-Kopie aus Modul 11:** Solange sie aufgehoben wird (90 Tage), steht sie im Verlauf und lässt sich wiederherstellen.
+
+### Geändert
+- „Plan sichern“ im Baukasten schreibt jetzt dasselbe Format wie Modul 0, inklusive Raumliste.
+
+### Technik
+- `grundriss.py`: `_push_hist`, `hist_list`, `restore`. Der Verlauf liegt im eigenen Speicher `fenster_heizung_grundriss_verlauf`.
+- Neue WS-Befehle `gr_hist` und `gr_restore` (nur Administratoren). `gr_set` nimmt `src: "import"` an.
+- 2 neue Tests (Verlauf, Wiederherstellen samt Bildern und Modul 11, Obergrenze, Umzugs-Kopie). Alle 331 Tests laufen durch.
+
 ## [2026.11.4b53] - 2026-11-22
 
 **Modul 18 · Licht & Lampen** v0.7 Build 7 – Platz der Lampe direkt im Lampen-Fenster. Addon `licht` 0.7.0.

@@ -130,7 +130,7 @@
     if (a === "sfxmdup") { this._sfSnap(); const ids = []; P.items.filter((x) => ed.multi.includes(x.id)).forEach((x) => { const c = { ...x, id: uid(), x: x.x + 20, y: x.y + 20 }; if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m") c.e = ""; P.items.push(c); ids.push(c.id); }); ed.multi = ids; this._render(); return true; }
     if (a === "sfxpscale") { this._sfSnap(); P.scale = Math.round(800 / Number(k)); this._render(); return true; }
     if (a === "sfxprg" && cur && cur.t === "m") { this._sfSnap(); const d = cur.e ? this._sfDetMap()[cur.e] : null, now = this._sfRangeM(cur, d); cur.rg = Math.max(1, Math.min(15, Math.round((now + Number(b.dataset.s) * 0.5) * 2) / 2)); this._render(); return true; }
-    if (a === "sfxpexp") { this._sfDeliver(JSON.stringify({ app: "fenster_heizung", modul: "sicherheit", v: 1, plan: P }), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss Modul 11"); return true; }
+    if (a === "sfxpexp") { this._sfDeliver(this._grExport ? this._grExport(P, true) : JSON.stringify({ app: "fenster_heizung", modul: "sicherheit", v: 1, plan: P }), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss Modul 11"); return true; }
     return false;
   }
   _sfxP2Change(t) {

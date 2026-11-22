@@ -176,6 +176,42 @@ def test_baukasten_in_modul_0_modul_11_zieht_nach():
     assert not gm._listeners
 
 
+def _p(n):
+    """Plan mit n Wänden – jeder Stand unterscheidbar."""
+    return {**PLAN, "items": PLAN["items"][:1] + [{"id": f"w{i}", "fl": "eg", "t": "w", "x": 0, "y": i, "x2": 10, "y2": i} for i in range(n)]}
+
+
+def test_verlauf_und_wiederherstellen():
+    m, gm, h, st = _setup(PLAN)
+    bg = {"eg": "data:image/png;base64,AAAA"}
+    gm.set_plan({**_p(1), "bg": bg}, "gr")
+    gm.set_plan({**_p(2), "bg": bg}, "import")
+    assert [x["by"] for x in gm.hist] == ["gr", "umzug"] and gm.hist[0]["next"] == "import"   # neuester zuerst, wer davor schrieb
+    assert all(x["plan"]["bg"] == {} for x in gm.hist)                                      # ohne Hintergrundbilder
+    assert st["fenster_heizung_grundriss_verlauf"].saved["hist"] == gm.hist
+    lst = asyncio.run(gm.hist_list())
+    assert len(lst["hist"]) == 2 and "plan" not in lst["hist"][0] and lst["hist"][0]["stats"]["build"] == 2
+    hid = gm.hist[0]["id"]
+    assert asyncio.run(gm.restore(hid)) is True
+    assert len(gm.plan["items"]) == 2 and gm.plan["bg"] == bg and gm.meta["by"] == "restore"   # Bilder bleiben
+    assert len(m.cfg["plan"]["items"]) == 2                                                   # Modul 11 zieht nach
+    assert gm.hist[0]["next"] == "restore" and len(gm.plan["items"]) == 2
+    assert asyncio.run(gm.restore("gibtsnicht")) is False
+    m.async_stop()
+
+
+def test_verlauf_hat_ein_ende_und_umzugs_kopie():
+    m, gm, h, st = _setup(PLAN)
+    for n in range(1, 20):
+        gm.set_plan(_p(n), "gr")
+    assert len(gm.hist) == G.HIST_MAX
+    st["fenster_heizung_grundriss_umzug"].data = st["fenster_heizung_grundriss_umzug"].saved
+    lst = asyncio.run(gm.hist_list())
+    assert lst["copy"]["src"] == "sf" and lst["copy"]["stats"]["layers"] == {"sf": 1, "licht": 1}
+    assert asyncio.run(gm.restore("umzug")) is True and len(gm.plan["items"]) == 5
+    m.async_stop()
+
+
 if __name__ == "__main__":
     n = 0
     for k, f in list(globals().items()):

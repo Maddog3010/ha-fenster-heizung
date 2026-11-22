@@ -5,7 +5,9 @@
      Build 2: Reiter „Räume“ – eine Liste für alle Module: Plan-Raum ↔ Bereich in Home Assistant (zentral in Modul 0, ersetzt pmap aus Modul 18)
      ↔ Raum in Modul 1 (bleibt im Layout gmap, wird hier bearbeitet) und „genutzt von“. Reiter „Einstellungen“ mit Rückfrage beim Ausschalten.
      Build 3: Der Baukasten zieht aus Modul 11 hierher (_grEdit, gespeichert über gr_set plan). „Bearbeiten“ in Modul 1, 11 und 18 öffnet ihn
-     hier und kehrt nach Speichern oder Abbrechen zurück. Reiter „Ebenen“: Bauplan, Melder, Lampen, Wärme – mit Zahlen und Sprung ins Werkzeug. */
+     hier und kehrt nach Speichern oder Abbrechen zurück. Reiter „Ebenen“: Bauplan, Melder, Lampen, Wärme – mit Zahlen und Sprung ins Werkzeug.
+     Build 4: Reiter „Sichern & Einlesen“ – Plan als Datei (mit oder ohne Hintergrundbilder, inkl. Raumliste), Datei einlesen mit Vorschau
+     (ersetzen oder als weitere Etagen), Verlauf der letzten Stände und die Umzugs-Kopie aus Modul 11 zum Wiederherstellen. */
   _grS0() { return (this._grS = this._grS || { d: null, ts: 0, busy: false, err: false }); }
   _grLoad(force) {
     const S = this._grS0(), age = Date.now() - S.ts;
@@ -65,6 +67,13 @@
       .gred .t{flex:1;min-width:220px}.gred .k{font-size:.68rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#5eead4}.gred b{display:block;font-size:1.05rem;color:#fff}.gred small{color:#a5b8cc}
       .gred .ch{display:flex;gap:6px;flex-wrap:wrap}.gred .ch span{border-radius:999px;padding:3px 10px;font-size:.74rem;background:#ffffff14}.gred .ch span.off{opacity:.5;text-decoration:line-through}
       .gred button{border:1px solid #ffffff33;background:#ffffff10;color:inherit;border-radius:999px;padding:7px 14px;font:inherit;font-size:.82rem;font-weight:650;cursor:pointer}
+      .grio{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}.grio .card{margin:0;display:flex;flex-direction:column;gap:8px}.grio .card h3{margin:0;font-size:1rem;display:flex;align-items:center;gap:8px}
+      .grio .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.grio .row .btn2{flex:0 0 auto}.grio .nums{display:flex;gap:6px;flex-wrap:wrap}.grio .nums span{border-radius:8px;padding:3px 9px;font-size:.78rem;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent)}
+      .grio label.btn2{cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+      .grhist{display:grid;gap:0}.grhr{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 8%,transparent)}
+      .grhr:first-child{border-top:0}.grhr .dt{font-weight:700;font-variant-numeric:tabular-nums;min-width:92px}.grhr .dt small{display:block;font-weight:400;color:var(--mut);font-size:.74rem}.grhr .tx small{display:block;color:var(--mut);font-size:.76rem}
+      .grhr.cp{background:color-mix(in srgb,#f59e0b 9%,transparent);border-radius:10px;padding:10px;margin-top:6px;border:0}
+      .grcmp{width:100%;border-collapse:collapse;font-size:.86rem}.grcmp td,.grcmp th{padding:6px 8px;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.grcmp th{color:var(--mut);font-weight:600;font-size:.76rem}.grcmp td.n{text-align:right;font-variant-numeric:tabular-nums}.grcmp td.up{color:var(--teal)}.grcmp td.dn{color:#fbbf24}
       .grly{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}.grly .card{margin:0;display:flex;flex-direction:column;gap:8px}
       .grly .hd{display:flex;align-items:center;gap:10px}.grly .hd i{width:34px;height:34px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;flex:none}.grly .hd b{display:block;font-size:1rem}.grly .hd small{color:var(--mut)}
       .grly .nums{display:flex;gap:6px;flex-wrap:wrap}.grly .nums span{border-radius:8px;padding:3px 9px;font-size:.78rem;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent)}.grly .nums span.w{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#fbbf24}
@@ -80,10 +89,11 @@
     const edit = adm ? `<button data-act="grxedit">${ic("pencil", 14)} Bearbeiten</button>` : "";
     const hero = `<div class="grh">${this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.length} ${fls.length === 1 ? "Etage" : "Etagen"} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
       <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div><div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
-    const tab = ["plan", "raeume", "ebenen", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
+    const tab = ["plan", "raeume", "ebenen", "io", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
     const tb = (k, t) => `<button class="${tab === k ? "on" : ""}" data-act="grxtab" data-k="${k}" aria-pressed="${tab === k}">${t}</button>`;
-    const tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}${tb("ebenen", "Ebenen")}<button disabled title="kommt in Build 4">Sichern &amp; Einlesen <small>· Build 4</small></button>${adm ? tb("einst", "Einstellungen") : ""}</div>`;
+    const tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}${tb("ebenen", "Ebenen")}${adm ? tb("io", "Sichern &amp; Einlesen") : ""}${adm ? tb("einst", "Einstellungen") : ""}</div>`;
     if (tab === "einst" && adm) return css + hero + tabs + this._grSetView(D);
+    if (tab === "io" && adm) return css + hero + tabs + this._grIoView(P, D);
     if (!items.some((i) => i.t === "r")) return css + hero + tabs + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div></div>`;
     if (tab === "raeume") return css + hero + tabs + this._grRoomsView(P);
     if (tab === "ebenen") return css + hero + tabs + this._grLayersView(P);
@@ -178,6 +188,83 @@
       ${card({ n: "Wärme", s: "Modul 1 · Wärmekarte", i: "flame", c: "#fb923c", nums: [[`${fhN} von ${rs.length} Räumen mit Raum aus Modul 1`, fhN < rs.length && rs.length ? 1 : 0]], d: "Keine eigenen Elemente: Modul 1 färbt die Räume des Bauplans nach Temperatur, Fenster zeigen offen oder zu.", ft: `<button class="btn2" data-act="grxtab" data-k="raeume">Räume zuordnen</button><button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte öffnen</button>` })}
       </div>`;
   }
+  /* ---- Sichern & Einlesen (Build 4) */
+  _grSt(p) {
+    const it = (p && p.items) || [], c = (t) => it.filter((i) => i.t === t).length;
+    return { fl: ((p && p.floors) || []).length, r: c("r"), b: it.filter((i) => !["r", "m", "l"].includes(i.t)).length, m: c("m"), l: c("l"), bg: Object.values((p && p.bg) || {}).filter(Boolean).length };
+  }
+  _grStTxt(s) { return [`${s.fl || s.floors || 0} Et.`, `${s.r != null ? s.r : s.rooms} Räume`, `${s.b != null ? s.b : Math.max(0, (s.build || 0) - (s.rooms || 0))} Bauteile`, `${s.m != null ? s.m : (s.layers || {}).sf || 0} Melder`, `${s.l != null ? s.l : (s.layers || {}).licht || 0} Lampen`].join(" · "); }
+  _grHLoad(force) {
+    const H = (this._grH = this._grH || { d: null, ts: 0, busy: false });
+    if (H.busy || (!force && H.d && Date.now() - H.ts < 30000)) return H;
+    H.busy = true;
+    this._hass.callWS({ type: "fenster_heizung/gr_hist" }).then((r) => { H.d = r; }).catch(() => { H.d = H.d || { hist: [], copy: null, err: true }; }).finally(() => { H.busy = false; H.ts = Date.now(); if (this._mdActive() === "gr") this._render(); });
+    return H;
+  }
+  _grExport(P, withBg) {
+    const D = this._grS0().d || {}, p = { ...P, bg: withBg ? P.bg || {} : {} };
+    return JSON.stringify({ app: "fenster_heizung", modul: "grundriss", v: 1, date: new Date().toISOString(), stats: this._grSt(p), plan: p, rooms: D.rooms || {} });
+  }
+  _grIoView(P, D) {
+    const st = this._grSt(P), bgB = Object.values(P.bg || {}).reduce((a, v) => a + String(v || "").length, 0), mb = (n) => (n / 1048576).toLocaleString("de-DE", { maximumFractionDigits: 1 }) + " MB";
+    const H = this._grHLoad(), hd = H.d, BY = { gr: "Baukasten", sf: "Modul 11", import: "Datei eingelesen", restore: "Wiederhergestellt", umzug: "Umzug aus Modul 11", "": "–" };
+    const dt = (t) => { const d = new Date(t); return isNaN(d) ? "–" : `${d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })} ${d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}<small>${this._ago((Date.now() - d) / 3600000)}</small>`; };
+    const withBg = this._grExBg !== false;
+    const hist = !hd ? `<div class="mut sm">Verlauf wird geladen …</div>` : !(hd.hist || []).length ? `<div class="mut sm">Noch kein früherer Stand. Ab jetzt merkt sich Modul 0 vor jedem Speichern, Einlesen oder Wiederherstellen den vorherigen Stand (die letzten 15).</div>`
+      : `<div class="grhist">${hd.hist.map((h, i) => `<div class="grhr"><span class="dt">${dt(h.t)}</span><span class="tx">${esc(this._grStTxt(h.stats || {}))}<small>gespeichert über ${esc(BY[h.by] || h.by)} · ersetzt durch ${esc(BY[h.next] || h.next || "–")}${i === 0 ? " · <b>letzter Stand vor jetzt</b>" : ""}</small></span><button class="btn2" data-act="grxrest" data-k="${esc(h.id)}">Wiederherstellen</button></div>`).join("")}</div>`;
+    const cp = hd && hd.copy ? `<div class="grhr cp"><span class="dt">${ic("shield", 16)}</span><span class="tx"><b>Umzugs-Kopie aus Modul 11</b> · ${esc(this._grStTxt(hd.copy.stats || {}))}<small>Stand beim Umzug am ${esc(new Date(hd.copy.t).toLocaleDateString("de-DE"))} · aufgehoben bis ${esc(new Date(hd.copy.until).toLocaleDateString("de-DE"))}</small></span><button class="btn2" data-act="grxrest" data-k="umzug">Wiederherstellen</button></div>` : "";
+    return `<div class="grio">
+      <div class="card"><h3>${ic("download", 18)} Als Datei sichern</h3><div class="nums">${this._grStTxt(st).split(" · ").map((x) => `<span>${x}</span>`).join("")}${st.bg ? `<span>${st.bg} Hintergrundbild${st.bg === 1 ? "" : "er"}</span>` : ""}</div>
+        <div class="mut sm">Eine JSON-Datei mit Etagen, Räumen, Bauteilen, Meldern und Lampen sowie der Raumliste. Zum Aufheben, für eine zweite Installation oder bevor du größer umbaust.</div>
+        ${st.bg ? `<div class="vrow"><span>Hintergrundbilder mitnehmen<small class="mut" style="display:block">${st.bg} Bild${st.bg === 1 ? "" : "er"} · etwa ${mb(bgB * 0.75)}</small></span><button class="sw ${withBg ? "on" : ""}" data-act="grxexbg" aria-pressed="${withBg}"></button></div>` : ""}
+        <div class="row" style="margin-top:auto"><button class="btn2 pri" data-act="grxexp">${ic("download", 15)} Datei herunterladen</button><span class="mut sm">Grundriss-${new Date().toISOString().slice(0, 10)}.json</span></div></div>
+      <div class="card"><h3>${ic("upload", 18)} Datei einlesen</h3>
+        <div class="mut sm">Liest eine gesicherte Datei aus Modul 0 – oder eine ältere aus dem Baukasten von Modul 11. Du siehst vorher, was sich ändert, und wählst: <b>ersetzen</b> oder <b>als weitere Etagen hinzufügen</b>. Der jetzige Stand landet im Verlauf.</div>
+        <div class="row" style="margin-top:auto"><label class="btn2 pri">${ic("upload", 15)} Datei wählen<input type="file" accept="application/json,.json" data-f="grximp" hidden></label></div></div>
+      </div>
+      <div class="card" style="margin-top:12px"><h3 style="margin:0 0 6px;font-size:1rem;display:flex;gap:8px;align-items:center">${ic("clock", 18)} Verlauf</h3><div class="mut sm" style="margin-bottom:6px">Vor jedem Speichern legt Modul 0 den vorherigen Stand hier ab – ohne Hintergrundbilder, die bleiben beim Wiederherstellen wie sie sind.</div>${hist}${cp}</div>`;
+  }
+  /* Datei gelesen → Vorschau-Fenster */
+  _grImpRead(file) {
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const o = JSON.parse(String(rd.result || "")), p = o && o.plan;
+        if (!p || !Array.isArray(p.floors) || !p.floors.length || !Array.isArray(p.items)) throw new Error("form");
+        const src = o.modul === "grundriss" ? "Modul 0 · Haus & Grundriss" : o.modul === "sicherheit" ? "Baukasten aus Modul 11 (ältere Datei)" : "unbekannt";
+        this._modal = { type: "grximp", name: file.name, o, src, mode: "replace", rooms: !!(o.rooms && Object.keys(o.rooms).length) }; this._renderModal();
+      } catch (_) { this._toast("Die Datei ist kein Grundriss aus Strom & Wärme"); }
+    };
+    rd.readAsText(file);
+  }
+  _grImpPlan(m) {
+    const cur = this._grRaw() || { floors: [], items: [], bg: {} }, p = m.o.plan;
+    if (m.mode === "replace") return { ...p, bg: p.bg || {}, scale: p.scale || cur.scale };
+    const rnd = () => Math.random().toString(36).slice(2, 6), fmap = {}, imap = {};
+    const nf = p.floors.slice(0, Math.max(0, 6 - (cur.floors || []).length)).map((f) => { const id = "f" + rnd(); fmap[f.id] = id; return { id, n: (cur.floors || []).some((x) => x.n === f.n) ? `${f.n} (neu)`.slice(0, 16) : f.n }; });
+    const ni = p.items.filter((i) => fmap[i.fl]).map((i) => { const id = "i" + rnd() + rnd(); imap[i.id] = id; return { ...i, id, fl: fmap[i.fl] }; });
+    const bg = { ...(cur.bg || {}) }; Object.entries(p.bg || {}).forEach(([k, v]) => { if (fmap[k] && v) bg[fmap[k]] = v; });
+    m.imap = imap;
+    const low = (f) => /keller|^ug$|^kg$|untergeschoss/i.test(f.n);   /* Keller kommt nach unten (zuerst), alles andere obendrauf */
+    return { ...cur, floors: [...nf.filter(low), ...(cur.floors || []), ...nf.filter((f) => !low(f))], items: [...(cur.items || []), ...ni], bg };
+  }
+  _grImpModal(m) {
+    const cur = this._grRaw() || { floors: [], items: [], bg: {} }, a = this._grSt(cur), np = this._grImpPlan(m), b = this._grSt(np), f = this._grSt(m.o.plan);
+    const curN = (cur.floors || []).length, cut = m.mode === "add" && curN + f.fl > 6;
+    const row = (t, k) => { const d = b[k] - a[k]; return `<tr><td>${t}</td><td class="n">${a[k]}</td><td class="n ${d > 0 ? "up" : d < 0 ? "dn" : ""}">${b[k]}${d ? ` <small>(${d > 0 ? "+" : ""}${d})</small>` : ""}</td></tr>`; };
+    const seg = (k, t) => `<button class="${m.mode === k ? "sel" : ""}" data-act="grximpm" data-k="${k}">${t}</button>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Grundriss einlesen</b><span>${esc(m.name)} · ${esc(m.src)}${m.o.date ? ` · gesichert am ${esc(new Date(m.o.date).toLocaleDateString("de-DE"))}` : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="seg" style="margin-bottom:10px">${seg("replace", "Plan ersetzen")}${seg("add", `Als weitere Etage${f.fl === 1 ? "" : "n"} hinzufügen`)}</div>
+      <table class="grcmp"><tr><th></th><th style="text-align:right">jetzt</th><th style="text-align:right">danach</th></tr>${row("Etagen", "fl")}${row("Räume", "r")}${row("Bauteile", "b")}${row("Melder (Modul 11)", "m")}${row("Lampen (Modul 18)", "l")}${row("Hintergrundbilder", "bg")}</table>
+      ${cut ? `<div class="mut sm" style="color:#fbbf24;margin-top:8px">Es gehen höchstens 6 Etagen – ${curN + f.fl - 6} Etage${curN + f.fl - 6 === 1 ? "" : "n"} aus der Datei ${curN + f.fl - 6 === 1 ? "bleibt" : "bleiben"} draußen.</div>` : ""}
+      ${m.mode === "replace" && m.o.rooms && Object.keys(m.o.rooms).length ? `<div class="vrow" style="margin-top:10px"><span>Raumliste übernehmen<small class="mut" style="display:block">${Object.keys(m.o.rooms).length} Zuordnungen Plan-Raum → Bereich aus der Datei</small></span><button class="sw ${m.rooms ? "on" : ""}" data-act="grximpr" aria-pressed="${m.rooms}"></button></div>` : ""}
+      <div class="mut sm" style="margin-top:10px">${ic("info", 14)} Der jetzige Stand landet im Verlauf – du kannst jederzeit zurück. Melder und Lampen in der Datei werden mit ihren Entitäten übernommen; fehlt eine Entität hier, bleibt das Element ohne Zuordnung.</div>
+      <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grximpgo">${m.mode === "replace" ? "Plan ersetzen" : "Etagen hinzufügen"}</button></div></div>`;
+  }
+  _grChange(t) {
+    if (t.dataset.f === "grximp") { const file = t.files && t.files[0]; if (file) this._grImpRead(file); t.value = ""; return true; }
+    return false;
+  }
   /* Zahlen für den Reiter „Räume“: n Räume, open = ohne Bereich und nicht bewusst „kein Bereich“ */
   _grRoomStats(P) {
     const rs = ((P && P.items) || []).filter((i) => i.t === "r"), R = this._grRooms();
@@ -223,6 +310,10 @@
         <div class="gschips">${A.map((a) => `<button class="gsch ${cur === a.area_id || (!cur && auto && auto.id === a.area_id) ? "sel" : ""}" data-act="grxaset" data-k="${esc(it.id)}" data-v="${esc(a.area_id)}">${esc(a.name)}</button>`).join("") || `<span class="mut sm">In Home Assistant sind noch keine Bereiche angelegt.</span>`}</div>
         <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="-">Kein Bereich</button>${cur ? `<button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     }
+    if (m.type === "grximp") return this._grImpModal(m);
+    if (m.type === "grxrest") { const H = this._grH && this._grH.d, h = m.k === "umzug" ? H && H.copy : H && (H.hist || []).find((x) => x.id === m.k); return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Stand wiederherstellen?</b><span>${m.k === "umzug" ? "Umzugs-Kopie aus Modul 11" : h ? esc(new Date(h.t).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })) : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm">${h ? `Danach: <b style="color:var(--primary-text-color)">${esc(this._grStTxt(h.stats || {}))}</b>. ` : ""}Der jetzige Stand landet im Verlauf, du kannst also wieder zurück. Hintergrundbilder bleiben, wie sie jetzt sind. Modul 1, 11 und 18 sehen den Stand sofort.</div>
+        <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grxrestgo" data-k="${esc(m.k)}">Wiederherstellen</button></div></div>`; }
     if (m.type === "grxeditoff") return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Modul 0 einschalten?</b><span>Haus &amp; Grundriss</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="mut sm">Der Baukasten liegt jetzt in <b style="color:var(--primary-text-color)">Modul 0 · Haus &amp; Grundriss</b>. Zum Bearbeiten wird Modul 0 eingeschaltet. ${m.from && m.from !== "gr" ? `Nach dem Speichern geht es zurück zu ${esc(this._grModName(m.from))}.` : ""}</div>
         <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grxeditgo">Einschalten und bearbeiten</button></div></div>`;
@@ -255,6 +346,26 @@
       this._modal = { type: "grxoff" }; this._renderModal(); return true;
     }
     if (a === "grxoffgo") { const s = this._mdState(); s.on.gr = false; this._modal = null; this._renderModal(); if (this._mdActive() === "gr") this._mdActiveSet("fh"); this._mdSave(); this._render(); this._toast("Modul 0 ist aus – der Grundriss bleibt in den anderen Modulen sichtbar"); return true; }
+    if (a === "grxexbg") { this._grExBg = this._grExBg === false; this._render(); return true; }
+    if (a === "grxexp") { const P = this._grRaw(); if (P) this._sfDeliver(this._grExport(P, this._grExBg !== false), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss"); return true; }
+    if (a === "grximpm") { const m = this._modal; if (m && m.type === "grximp") { m.mode = k === "add" ? "add" : "replace"; this._renderModal(); } return true; }
+    if (a === "grximpr") { const m = this._modal; if (m && m.type === "grximp") { m.rooms = !m.rooms; this._renderModal(); } return true; }
+    if (a === "grximpgo") {
+      const m = this._modal; if (!m || m.type !== "grximp") return true;
+      const p = this._grImpPlan(m), msg = { type: "fenster_heizung/gr_set", plan: p, src: "import" }, S = this._grS0();
+      if (m.mode === "replace" && m.rooms && m.o.rooms) msg.rooms = m.o.rooms;
+      this._modal = null; this._renderModal();
+      this._hass.callWS(msg).then((r) => { S.d = r; S.ts = Date.now(); this._grHLoad(true); if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); const s2 = this._grSt(r.plan); this._toast(`Eingelesen: ${s2.fl} Etagen, ${s2.r} Räume – der vorherige Stand liegt im Verlauf`); })
+        .catch(() => this._toast("Einlesen hat nicht geklappt – die Datei passt nicht"));
+      return true;
+    }
+    if (a === "grxrest") { this._grHLoad(); this._modal = { type: "grxrest", k }; this._renderModal(); return true; }
+    if (a === "grxrestgo") {
+      const S = this._grS0(); this._modal = null; this._renderModal();
+      this._hass.callWS({ type: "fenster_heizung/gr_restore", id: k }).then((r) => { const { h, ...d } = r; S.d = d; S.ts = Date.now(); if (this._grH) { this._grH.d = h; this._grH.ts = Date.now(); } if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); this._toast("Stand wiederhergestellt"); })
+        .catch(() => this._toast("Dieser Stand ist nicht mehr da"));
+      return true;
+    }
     if (a === "grxedit") { this._grEdit((b && b.dataset && b.dataset.k) || "gr", (b && b.dataset && b.dataset.t) || ""); return true; }
     if (a === "grxeditgo") { const m = this._modal || {}, s = this._mdState(); s.on.gr = true; this._mdSave(); this._modal = null; this._grEdit(m.from, m.tool); return true; }
     if (a === "grxgo") { if (this._mdList().some((x) => x.id === k)) { this._mdActiveSet(k); this._render(); } return true; }

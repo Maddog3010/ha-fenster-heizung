@@ -70,6 +70,7 @@
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("mux") && this._muxChange && this._muxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("adx") && this._adxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lix") && this._lixChange && this._lixChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("grx") && this._grChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("efx") && this._efxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tgx") && this._tgxChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("hz") && this._hzChange(t)) return;
