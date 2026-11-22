@@ -134,6 +134,17 @@ def test_grundriss_zuordnung():
     assert len(L.clean_pmap({f"r{i}": "a" for i in range(500)})) == 200
 
 
+def test_meine_lampen_pruefen():
+    L2 = L.clean_lamps([{"e": "light.a", "n": "  Decke Wohnen  ", "room": "wohnen", "k": "spot", "alloff": False},
+                        {"e": "light.a", "n": "doppelt"}, {"e": "switch.x"}, "kaputt", {"e": "light.b", "room": "bad id!", "k": "laser"}])
+    assert L2 == [{"e": "light.a", "n": "Decke Wohnen", "room": "wohnen", "k": "spot", "alloff": False},
+                  {"e": "light.b", "n": "", "room": "", "k": "decke", "alloff": True}]
+    assert len(L.clean_lamps([{"e": f"light.l{i}"} for i in range(400)])) == L.LAMPS_MAX
+    assert L.guess_kind("LED-Streifen Sofa") == "streifen" and L.guess_kind("Stehlampe") == "steh" and L.guess_kind("Connectivity kit-ledBox") == "streifen"
+    assert L.guess_kind("Nachttisch") == "tisch" and L.guess_kind("Wandlampe Terrasse") == "aussen" and L.guess_kind("H70D1") == "decke"
+    assert L.clean_ignored(["light.x", "sensor.y", 3]) == ["light.x"]
+
+
 def test_einstellungen_und_layout_kopie():
     assert L.clean_prefs(None) == {"view": "rooms", "optik": "neu"}
     assert L.clean_prefs({"view": "list", "optik": "alt"}) == {"view": "list", "optik": "alt"}
@@ -314,6 +325,28 @@ def test_python_teil_sensoren_schalten_neustart():
     A2 = M.Addon(_Core(H)); asyncio.run(A2.async_setup())
     assert A2.burn.on["light.steh"] == ts(2026, 11, 22, 18, 30) and A2.prefs["view"] == "list" and A2.legacy["hours"] == 4
     assert A2.pmap == {"r1": "wohnen"}   # Zuordnung übersteht den Neustart
+    # Build 6: Meine Lampen
+    st = asyncio.run(A2.core.cmds["set"]({"mode": "mine", "lamps": [{"e": "light.steh", "n": "Leselicht"}, {"e": "light.wohnen"}], "ignored": ["light.bad"]}, True))
+    assert st["mode"] == "mine" and [x["e"] for x in st["lamps"]] == ["light.steh", "light.wohnen"] and st["ignored"] == ["light.bad"]
+    assert A2._lamps() == ["light.steh", "light.wohnen"]                        # nur hinzugefügte, Gruppen erlaubt
+    assert A2.values()["sensor"]["lampen_an"]["attrs"]["von"] == 2
+    try:   # nicht hinzugefügte Lampe lässt sich über das Modul nicht schalten
+        asyncio.run(A2.core.cmds["act"]({"a": "switch", "ids": ["light.bad"], "on": True}, False)); assert False
+    except AddonError:
+        pass
+    # Fehler an der Lampe merken und nach Erfolg vergessen
+    H.states.d["light.kaputt"] = _State("light.kaputt", "off", {"friendly_name": "LED-Box"})
+    asyncio.run(A2.core.cmds["set"]({"lamps": [{"e": "light.steh"}, {"e": "light.kaputt"}]}, True))
+    try:
+        asyncio.run(A2.core.cmds["act"]({"a": "switch", "ids": ["light.kaputt"], "on": True}, False)); assert False
+    except AddonError:
+        pass
+    assert "No such command" in A2.errs["light.kaputt"]["msg"] and asyncio.run(A2.core.cmds["get"]({}, True))["errs"]["light.kaputt"]
+    asyncio.run(A2.core.cmds["act"]({"a": "test", "e": "light.steh"}, False))
+    assert H.services.calls[-1] == ("light", "turn_on", {"entity_id": "light.steh", "flash": "short"})
+    asyncio.run(A2.async_unload())
+    A3 = M.Addon(_Core(H)); asyncio.run(A3.async_setup())
+    assert A3.mode == "mine" and [x["e"] for x in A3.lamps] == ["light.steh", "light.kaputt"] and A3.errs == {}   # Liste bleibt, Fehler sind nur bis zum Neustart
     assert round(A2.values()["sensor"]["licht_heute"]["value"], 2) == round((9000 + 65 * 60) / 3600, 2)
 
 

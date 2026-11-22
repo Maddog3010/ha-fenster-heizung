@@ -1,5 +1,12 @@
 # Modul 18 Licht & Lampen
 
+## [0.6.0] Build 6 - 2026-11-22
+- **Reiter „Lampen“**: „Meine Lampen“ – nur hinzugefügte Lampen (auch Gruppen) mit eigenem Namen, Raum (Räume aus Modul 0 oder Bereiche), Art und „bei Alle aus mitschalten“
+- „Lampe hinzufügen“ mit Suche, Filtern, Mehrfachauswahl und **Testen** (Lampe blinkt kurz)
+- Umstiegs-Frage: „Alle übernehmen“, „Selbst auswählen“ oder „Später“; Hinweis auf neue Lampen mit „Hinzufügen“/„Ausblenden“
+- Letzter abgelehnter Befehl wird je Lampe gemerkt und in der Liste gezeigt
+- Mit „Meine Lampen“ entfällt der Raum aus der Position im Plan; Einstellungen: „Welche Lampen?“
+
 ## [0.5.2] - 2026-11-22
 - Zuordnung Fläche → Bereich steht ab Modul 0 Build 2 in der Raumliste von Modul 0 (wird einmalig übernommen, „Fläche zuordnen“ schreibt dorthin)
 

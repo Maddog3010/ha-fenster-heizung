@@ -2,6 +2,27 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b55] - 2026-11-22
+
+**Modul 18 · Licht & Lampen** v0.6 Build 6 – Reiter „Lampen“ aus dem Konzept „Lampen selbst verwalten“. Addon `licht` 0.6.0.
+
+### Neu
+- **Reiter „Übersicht | Lampen“** oben in Modul 18. Unter „Lampen“ steht **„Meine Lampen“**, nach Räumen gruppiert. Jede Lampe zeigt Art, „✓ im Plan“ oder „Platz fehlt“, ihren Zustand und den letzten Fehler. Die Kopfzeile zählt Lampen, Räume, fehlende Plätze und Fehler.
+- **Lampe hinzufügen:** Suche, Filter „Noch nicht hinzugefügt / Alle / Gruppen“, Fähigkeiten je Lampe („dimmbar · Farbe“, „nur an/aus“) und **Testen**, damit die Lampe kurz blinkt. Bei einer Lampe geht es weiter zum Einrichten. Mehrere Lampen werden mit einem Vorschlag hinzugefügt (Art aus dem Namen, Raum aus Home Assistant).
+- **Lampe bearbeiten:** eigener Name, Raum (zuerst die Räume aus Modul 0, dann weitere Bereiche, oder „Wie in Home Assistant“), Art, „Bei Alle aus mitschalten“, Platz im Grundriss, Testen, Entfernen.
+- **Umstieg:** Beim ersten Öffnen fragt Modul 18 „Alle übernehmen“, „Selbst auswählen“ oder „Später“. „Alle übernehmen“ übernimmt Namen, Bereiche und einmalig den Raum aus der Position im Plan.
+- **Neue Lampen** in Home Assistant erscheinen nur als Hinweis mit „Hinzufügen“ und „Ausblenden“. Die Zahl steht am Reiter.
+- **Einstellungen:** „Welche Lampen?“ mit „Meine Lampen“ oder „Automatisch“ (wie bisher).
+
+### Geändert
+- Mit „Meine Lampen“ zeigen Übersicht, Haus-Szene, Lichtkarte, Kacheln und das Banner nur deine Lampen, mit deinem Namen und Raum. Der Raum aus der Position im Plan entfällt dann.
+- „Alle aus“ lässt Lampen mit ausgeschaltetem „Bei Alle aus mitschalten“ an.
+- Einzelne Lampen schaltet jetzt der Python-Teil. Ein abgelehnter Befehl (z. B. Overkiz „No such command“) wird an der Lampe gemerkt und beim nächsten Erfolg gelöscht.
+
+### Technik
+- `licht/logic.py`: `clean_lamps`, `guess_kind`, `clean_ignored`. `manager.py` speichert `lamps`, `mode`, `ignored` und hält `errs`. Neue Aktion `act {a:"test"}` (Blinken mit `flash`, sonst zweimal umschalten).
+- Neue Tests für Lampenliste, Art-Vorschlag, Modus „mine“ und Fehler je Lampe, alle Tests grün.
+
 ## [2026.11.4b54] - 2026-11-22
 
 **Modul 0 · Haus & Grundriss** v0.2 Build 2 – Raumliste und Einstellungen.
