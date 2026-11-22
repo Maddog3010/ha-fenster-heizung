@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b44] - 2026-11-22
+
+**Weihnachts-Theme** – Einstellungen leichter zu finden.
+
+### Geändert
+- **Einstellungen → Darstellung → Weihnachts-Theme** ist jetzt eine eigene Zeile mit Status („Startet am 01.12.“, „Aktiv · 2. Advent · noch 16 Tage“) und öffnet ein eigenes Fenster mit Theme, Adventskalender und – mit Entwickler-Zugang – „Datum simulieren“ und „Kalender testen“. Vorher lag alles ganz unten im Fenster „Darstellung“; dort steht jetzt nur noch ein Link.
+- **Einstellung suchen** findet „Weihnachts-Theme“, „Adventskalender“ und „Datum simulieren“ (auch mit „Weihnachten“, „Advent“, „Schnee“, „Türchen“).
+
 ## [2026.11.4b43] - 2026-11-22
 
 **Weihnachts-Theme** Build 2 – der Adventskalender (Konzept „Weihnachts-Theme & Adventskalender“, Build 2 von 3).

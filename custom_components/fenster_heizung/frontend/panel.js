@@ -8013,6 +8013,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (!m) { box.innerHTML = ""; return; }
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
     if (m.type === "advent") { box.innerHTML = this._advModal(); return; }
+    if (m.type === "sai") { box.innerHTML = this._saiModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfloc") { box.innerHTML = this._lfLocModal(); return; }
     if (m.type === "lflist") { box.innerHTML = this._lfListModal(); return; }
@@ -8159,7 +8160,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sh"><div><b>Darstellung</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="lsec">${ic("palette", 15)}Akzentfarbe</div>
         <div class="swatches">${ACCENTS.map((c) => `<button class="sw2 ${a === c ? "sel" : ""}" style="background:${c}" data-act="lacc" data-k="${c}" aria-label="${c}"></button>`).join("")}<label class="cpick"><input type="color" data-f="lacc" value="${a}">Eigene</label></div>
-        ${this._heroLook()}${this._hsLook()}${this._rkLook()}${this._saiLook()}
+        ${this._heroLook()}${this._hsLook()}${this._rkLook()}${this._saiLink ? this._saiLink() : ""}
         <div class="lsec">${ic("sun", 15)}Wetter in der Kopfkarte</div>
         <div class="ltog"><span>Außentemperatur und Wetter anzeigen</span><button class="sw ${w.on ? "on" : ""}" data-act="lwx" aria-pressed="${w.on}" aria-label="Wetter anzeigen"></button></div>
         ${w.on ? `<div class="hslk">${this._hsLink("wx", `Wetter ${w.entity ? esc(this._wzName(w.entity)) : "automatisch"}${w.outdoor ? " · Außentemperatur " + esc(this._wzName(w.outdoor)) : ""}`)}</div>` : ""}
@@ -8455,7 +8456,7 @@ class FensterHeizungPanel extends HTMLElement {
       md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).concat(this._adMods().map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n} · v${esc(m.ad.version)}</i>`, esc((this._adDef(m.aid) || {}).settingsTxt || m.tag), "adxset", m.aid, `<em class="sxc ${STG[m.stage] ? STG[m.stage].c : ""}">Addon</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
         ${off.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdstoff" aria-expanded="${!this._stOffC}">Ausgeschaltet <small>· ${off.length} · ein Tipp schaltet ein</small><span class="stgo">${this._stOffC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>
           ${this._stOffC ? "" : `<div class="stmini">${off.map((m) => `<button class="stmb" data-act="mdtog" data-k="${m.id}" title="${esc(m.name)} einschalten">${ic(m.icon, 16)}<span class="stmt"><b>${esc(m.short)}</b><small>Modul ${m.n}${m.sponsor ? " · Sponsor" : m.beta && modSt(m) ? " · " + STG[modSt(m)].t : ""}</small></span></button>`).join("")}</div>`}</div>` : ""}`,
-      lk: () => card(`${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}${row("home", "Startseite", this._hzOn() ? "Karten, Bubbles und Begrüßung" : "ausgeschaltet · hier wieder einschalten", "hzopen")}`),
+      lk: () => card(`${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}${this._saiRow ? this._saiRow(row) : ""}${row("home", "Startseite", this._hzOn() ? "Karten, Bubbles und Begrüßung" : "ausgeschaltet · hier wieder einschalten", "hzopen")}`),
       dv: () => `${card(`${row("tablet", `Tablet-Modus ${lv("dev")}`, `${this._tmOn() ? "An" : "Aus"} · PIN, Ruhemodus, Display`, "tmopen")}
           <div class="sxrow stinfo"><span class="sxi">${ic("month", 20)}</span><span class="sxt"><b>Zeitraum Modul 3 und 4 ${lv("dev")}</b><small>Wird in diesem Browser gemerkt, wenn du ihn im Modul wechselst</small></span></div>
           <div class="sxrow stinfo"><span class="sxi">${ic("grid", 20)}</span><span class="sxt"><b>Ansicht der Raumkarten ${lv("dev")}</b><small>${this._view() === "compact" ? "Kompakt" : "Detail"} · umschalten in Modul 1</small></span></div>`)}<div class="stleg">${lv("dev")} Diese Einstellungen gelten nur für diesen Browser und sind nicht in der Sicherung.</div>`,
@@ -18312,6 +18313,9 @@ class FensterHeizungPanel extends HTMLElement {
       { id: "general.valve.warn", t: "Batterie schwach ab", p: `${M1} › Geräte`, k: "batterie thermostat ventil schwach warnung", go: ["diag"], v: () => `${(g().valve || {}).warn || 20} %`, n: "%", h: "Ab diesem Batteriestand meldet die Diagnose ein Thermostat als schwach." },
       { id: "general.valve.notify", t: "Meldung bei Ventil-Problemen", p: `${M1} › Geräte`, k: "benachrichtigung ventil problem meldung", go: ["diag"], h: "Benachrichtigungsdienst für ausgefallene Ventile und schwache Batterien." },
       // Darstellung, Gerät, Erweiterungen, System
+      { id: "saison.modus", t: "Weihnachts-Theme", p: "Darstellung", k: "weihnachten weihnacht advent theme saison lichterkette kranz countdown dezember", go: ["saixdlg"], v: () => (this._saiCfg ? ({ auto: "Automatisch", an: "Immer an", aus: "Aus", akzente: "Nur Akzente" })[this._saiCfg().modus] : ""), h: "Vom 01.12. bis 27.12. von selbst: Lichterkette, Adventskranz, Countdown, Raum-Symbole." },
+      { id: "advent.kalender", t: "Adventskalender", p: "Darstellung › Weihnachts-Theme", k: "advent kalender türchen tuerchen weihnachten schnee benachrichtigung", go: ["saixdlg"], v: () => (this._advCfg ? (this._advCfg().variante === "B" ? "Kranz" : "Raster") : ""), h: "24 Türchen auf der Startseite, Stand, Schneefall, Benachrichtigung." },
+      { id: "saison.sim", t: "Datum simulieren (Weihnachten)", p: "Darstellung › Weihnachts-Theme", k: "simulieren datum entwickler test weihnachten advent", go: ["saixdlg"], h: "Nur mit Entwickler-Zugang: Theme und Kalender an einem anderen Tag ansehen." },
       { id: "layout.accent", t: "Akzentfarbe", p: "Darstellung", k: "farbe akzent design theme", go: ["look"], h: "Farbe für Knöpfe und Markierungen. Gilt für alle." },
       { id: "layout.rk.old", t: "Raumkarten wie bisher", p: "Darstellung", k: "raumkarte raumbild optik alt neu modul 1 karten", go: ["look"], v: () => onoff(!!(this._cfg.layout.rk || {}).old), h: "Modul 1: Raumkarte 2.0 mit Raumbild und Ring oder die Karten aus v1.7." },
       { id: "layout.rk.anim", t: "Bewegung im Raumbild", p: "Darstellung", k: "animation bewegung wärmewellen raumbild", go: ["look"], v: () => ({ aus: "Aus", dezent: "Dezent", voll: "Voll" })[this._rkCfg().anim], h: "Wärmewellen am Heizkörper und Luft am offenen Fenster. Aus, Dezent oder Voll." },
@@ -19105,7 +19109,7 @@ class FensterHeizungPanel extends HTMLElement {
   _saiTick() {
     if (!this._saiD) return;
     const k = this._sai().key;
-    if (this._saiK !== undefined && this._saiK !== k) { this._saiK = k; if (this._advLoad) this._advLoad().then(() => { this._render(); if (this._modal && this._modal.type === "advent") this._renderModal(); }); this._render(); if (this._modal && this._modal.type === "look") this._renderModal(); return; }
+    if (this._saiK !== undefined && this._saiK !== k) { this._saiK = k; if (this._advLoad) this._advLoad().then(() => { this._render(); if (this._modal && this._modal.type === "advent") this._renderModal(); }); this._render(); if (this._modal && (this._modal.type === "look" || this._modal.type === "sai")) this._renderModal(); return; }
     this._saiK = k;
   }
   _saiKranz(n, w = 30) {
@@ -19136,7 +19140,15 @@ class FensterHeizungPanel extends HTMLElement {
     const I = { wohnen: "🎄", kueche: "🍪", kind: "⛄", esszimmer: "🕯️", schlafen: "🌙" };
     return I[t] ? `<span class="saiR" aria-hidden="true">${I[t]}</span>` : "";
   }
-  /* Einstellungen → Darstellung */
+  /* Einstellungen → Darstellung: eigene Zeile, Link im Darstellungs-Fenster und eigenes Fenster */
+  _saiStatus() { const c = this._saiCfg(), s = this._sai(); return s.vis ? `Aktiv · ${this._saiText(s)}` : c.modus === "aus" ? "Aus" : "Startet am 01.12. · Adventskalender, Lichterkette, Schnee"; }
+  _saiRow(row) { return this._admin() ? row("tree", "Weihnachts-Theme", esc(this._saiStatus()), "saixdlg", "", this._saiD && this._saiD.dev ? `<em class="sxc ok">Entwickler</em>` : "") : ""; }
+  _saiLink() { return `<div class="lsec">${ic("tree", 15)}Weihnachts-Theme</div><button class="sxrow" data-act="saixdlg"><span class="sxi">${ic("tree", 20)}</span><span class="sxt"><b>Weihnachts-Theme &amp; Adventskalender</b><small>${esc(this._saiStatus())}</small></span><span class="sxg">${ic("chev", 16)}</span></button>`; }
+  _saiModal() {
+    const body = this._saiD ? this._saiLook() : `<div class="mut" style="padding:16px">Lädt …</div>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Weihnachts-Theme</b><span>gilt für alle Nutzer · 01.12.–27.12.</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${body}<div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
   _saiLook() {
     if (!this._saiD) return "";
     const c = this._saiCfg(), s = this._sai(), d = this._saiD, sim = d.sim && d.sim.on && Date.now() / 1000 < d.sim.until;
@@ -19173,7 +19185,8 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _saiAct(a, b) {
     const box = this.shadowRoot.getElementById("modal");
-    if (a === "saixmode") this._saiSave({ ...this._saiCfg(), modus: b.dataset.k });
+    if (a === "saixdlg") { this._modal = { type: "sai" }; this._renderModal(); if (!this._saiD) this._saiLoad().then(() => this._renderModal()); if (!this._advD && this._advLoad) this._advLoad().then(() => this._renderModal()); }
+    else if (a === "saixmode") this._saiSave({ ...this._saiCfg(), modus: b.dataset.k });
     else if (a === "saixtog") { const k = b.dataset.k, c = this._saiCfg(); this._saiSave({ ...c, [k]: !c[k] }); }
     else if (a === "saixsim") this._saiSim("on", b.dataset.k);
     else if (a === "saixgo") { const i = box && box.querySelector('[data-f="saisimat"]'), m = box && box.querySelector('[data-f="saisimmin"]'); if (m) this._saiMin = +m.value || 60; this._saiSim("on", i ? i.value.trim() : ""); }
