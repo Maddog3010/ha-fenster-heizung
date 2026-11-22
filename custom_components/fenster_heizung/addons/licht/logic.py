@@ -305,3 +305,148 @@ def clean_legacy(raw: Any) -> dict[str, Any] | None:
     return {"scenes": {k: str(sc.get(k) or "")[:80] for k in ("night", "arrive", "cozy")},
             "hours": raw.get("hours") if raw.get("hours") in (1, 2, 4) else 2,
             "hidden": [str(x)[:64] for x in raw.get("hidden") or [] if isinstance(x, str)][:60]}
+
+
+# ---- Regeln (Build 8): Bewegung → Licht, Alle weg → Alle aus, Alarm → Licht an, Abends → Licht an
+RULE_T = ("motion", "away", "alarm", "sun")
+RULES_MAX = 40
+LOG_MAX = 40
+_BENT = re.compile(r"^binary_sensor\.[a-z0-9_]{1,80}$")
+_SENT = re.compile(r"^sensor\.[a-z0-9_]{1,80}$")
+_HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
+_RID = re.compile(r"^[A-Za-z0-9_-]{1,20}$")
+
+
+def _int(v: Any, lo: int, hi: int, d: int) -> int:
+    try:
+        return max(lo, min(hi, int(v)))
+    except (TypeError, ValueError):
+        return d
+
+
+def _ents(raw: Any, rx: re.Pattern[str], n: int) -> list[str]:
+    out: list[str] = []
+    for e in raw if isinstance(raw, list) else []:
+        if isinstance(e, str) and rx.match(e) and e not in out:
+            out.append(e)
+    return out[:n]
+
+
+def clean_rules(raw: Any) -> list[dict[str, Any]]:
+    """Regeln prüfen. Gemeinsam: id, t (Art), on (an/aus), n (eigener Name). Je Art eigene Felder mit Grenzen und Vorgaben."""
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for x in raw if isinstance(raw, list) else []:
+        if len(out) >= RULES_MAX or not isinstance(x, dict) or x.get("t") not in RULE_T:
+            continue
+        rid = x.get("id")
+        if not (isinstance(rid, str) and _RID.match(rid)) or rid in seen:
+            continue
+        seen.add(rid)
+        t = x["t"]
+        r: dict[str, Any] = {"id": rid, "t": t, "on": x.get("on") is not False, "n": str(x.get("n") or "").strip()[:40],
+                             "room": x.get("room") if isinstance(x.get("room"), str) and _AREA.match(x.get("room") or "") else "",
+                             "lamps": _ents(x.get("lamps"), _LENT, 30)}
+        if t == "motion":
+            r.update(sensors=_ents(x.get("sensors"), _BENT, 6), cond=x.get("cond") if x.get("cond") in ("dark", "always") else "dark",
+                     lux=x.get("lux") if isinstance(x.get("lux"), str) and _SENT.match(x.get("lux") or "") else "",
+                     lux_max=_int(x.get("lux_max"), 0, 2000, 30), off_min=_int(x.get("off_min"), 0, 120, 5),
+                     bri=_int(x.get("bri"), 0, 100, 0), night_bri=_int(x.get("night_bri"), 0, 100, 0))
+        elif t == "away":
+            r.update(delay_min=_int(x.get("delay_min"), 0, 120, 10))
+        elif t == "alarm":
+            r.update(off_end=x.get("off_end") is not False)
+        elif t == "sun":
+            off = x.get("off") if isinstance(x.get("off"), str) and (x.get("off") in ("", "sunrise") or _HM.match(x.get("off"))) else "23:00"
+            r.update(offset=_int(x.get("offset"), -120, 120, 0), off=off)
+        out.append(r)
+    return out
+
+
+def hm(dt: datetime) -> int:
+    return dt.hour * 60 + dt.minute
+
+
+def parse_hm(s: str) -> int | None:
+    return int(s[:2]) * 60 + int(s[3:]) if isinstance(s, str) and _HM.match(s) else None
+
+
+NIGHT = (22 * 60, 6 * 60)   # nachts gedimmt: 22–6 Uhr
+
+
+def is_night(dt: datetime) -> bool:
+    m = hm(dt)
+    return m >= NIGHT[0] or m < NIGHT[1]
+
+
+def is_dark(sun_state: str | None, lux: float | None, lux_max: int) -> bool:
+    """Dunkel: mit Helligkeitssensor nach Lux, sonst nach dem Sonnenstand (unter dem Horizont)."""
+    if lux is not None:
+        return lux <= lux_max
+    return sun_state != "above_horizon"
+
+
+def motion_step(rule: dict[str, Any], now: float, now_dt: datetime, motion: bool, last_motion: float | None, dark: bool,
+                lamps_on: dict[str, bool], mine: set[str]) -> tuple[str, list[str], int | None] | None:
+    """Ein Schritt für „Bewegung → Licht“. Schaltet nur Lampen an, die aus sind, und schaltet später nur die wieder aus, die die
+    Regel selbst angemacht hat (von Hand eingeschaltete bleiben an). Ergebnis: ("on"|"off", Lampen, Helligkeit) oder None."""
+    lamps = [e for e in rule.get("lamps") or [] if e in lamps_on]
+    if motion:
+        if rule.get("cond") == "dark" and not dark:
+            return None
+        ids = [e for e in lamps if not lamps_on[e]]
+        if not ids:
+            return None
+        bri = rule.get("night_bri") if rule.get("night_bri") and is_night(now_dt) else rule.get("bri")
+        return ("on", ids, bri or None)
+    off = rule.get("off_min") or 0
+    if off and mine and last_motion is not None and now - last_motion >= off * 60:
+        ids = [e for e in lamps if e in mine and lamps_on.get(e)]
+        return ("off", ids, None) if ids else ("forget", [], None)
+    return None
+
+
+def away_step(rule: dict[str, Any], home: int, persons: int, away_since: float | None, now: float, fired: bool) -> bool:
+    """„Alle weg → Alle aus“: feuert einmal, wenn es Personen gibt, keine zu Hause ist und die Wartezeit um ist."""
+    if persons <= 0 or home > 0 or away_since is None or fired:
+        return False
+    return now - away_since >= (rule.get("delay_min") or 0) * 60
+
+
+def sun_step(rule: dict[str, Any], now_dt: datetime, sunset: datetime | None, sunrise_next: datetime | None, done: dict[str, str]) -> str | None:
+    """„Abends Licht an“: an zum Sonnenuntergang (+/− Versatz), aus zur Uhrzeit oder zum Sonnenaufgang. done merkt je Tag, was schon lief
+    ({"on": "2026-11-22", "off": "2026-11-22"}), damit ein Neustart nichts doppelt schaltet."""
+    if sunset is None:
+        return None
+    day = now_dt.date().isoformat()
+    start = sunset + timedelta(minutes=rule.get("offset") or 0)
+    off = rule.get("off") or ""
+    stop: datetime | None = None
+    if off == "sunrise":
+        stop = sunrise_next
+    elif parse_hm(off) is not None:
+        m = parse_hm(off)
+        stop = now_dt.replace(hour=m // 60, minute=m % 60, second=0, microsecond=0)
+        if stop <= start:
+            stop += timedelta(days=1)
+    if stop is not None and now_dt >= stop and done.get("on") and done.get("off") != done.get("on"):
+        return "off"
+    if now_dt >= start and (stop is None or now_dt < stop) and done.get("on") != day:
+        return "on"
+    return None
+
+
+def rule_text(r: dict[str, Any], n_lamps: int, room_name: str) -> str:
+    """Ein Satz, der die Regel beschreibt (für Liste und Protokoll)."""
+    lp = f"{n_lamps} Lampe{'' if n_lamps == 1 else 'n'}"
+    if r["t"] == "motion":
+        s = f"Bewegung{' · ' + room_name if room_name else ''} → {lp} an{', wenn dunkel' if r.get('cond') == 'dark' else ''}"
+        return s + (f", aus nach {r['off_min']} Min. ohne Bewegung" if r.get("off_min") else "")
+    if r["t"] == "away":
+        return f"Alle weg{' seit ' + str(r['delay_min']) + ' Min.' if r.get('delay_min') else ''} → Alle aus"
+    if r["t"] == "alarm":
+        return f"Alarm in Modul 11 → {lp} an, volle Helligkeit{', danach wieder aus' if r.get('off_end') else ''}"
+    off = r.get("off") or ""
+    o = r.get("offset") or 0
+    return f"Sonnenuntergang{(' ' + ('+' if o > 0 else '−') + str(abs(o)) + ' Min.') if o else ''} → {lp} an" + (
+        ", aus bei Sonnenaufgang" if off == "sunrise" else f", aus um {off} Uhr" if off else "")

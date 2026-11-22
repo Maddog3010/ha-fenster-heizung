@@ -171,6 +171,9 @@ class _States:
     def async_entity_ids(self, dom):
         return [e for e in self.d if e.startswith(dom + ".")]
 
+    def async_all(self, dom):
+        return [v for e, v in self.d.items() if e.startswith(dom + ".")]
+
 
 class _Services:
     def __init__(self):
@@ -184,16 +187,27 @@ class _Services:
 
 class _Bus:
     def __init__(self):
-        self.cb = None
+        self.cbs = {}
+
+    @property
+    def cb(self):
+        return self.cbs.get("state_changed")
 
     def async_listen(self, ev, cb):
-        self.cb = cb
+        self.cbs[ev] = cb
         return lambda: None
 
 
 class _Hass:
     def __init__(self):
-        self.states, self.services, self.bus, self.data = _States(), _Services(), _Bus(), {}
+        self.states, self.services, self.bus, self.data, self.tasks = _States(), _Services(), _Bus(), {}, []
+
+    def async_create_task(self, coro):
+        self.tasks.append(coro)
+
+    def run(self):
+        while self.tasks:
+            asyncio.run(self.tasks.pop(0))
 
 
 class _StoreX:
@@ -348,6 +362,114 @@ def test_python_teil_sensoren_schalten_neustart():
     A3 = M.Addon(_Core(H)); asyncio.run(A3.async_setup())
     assert A3.mode == "mine" and [x["e"] for x in A3.lamps] == ["light.steh", "light.kaputt"] and A3.errs == {}   # Liste bleibt, Fehler sind nur bis zum Neustart
     assert round(A2.values()["sensor"]["licht_heute"]["value"], 2) == round((9000 + 65 * 60) / 3600, 2)
+
+
+# ------------------------------------------------------------------ Regeln (Build 8)
+def test_regeln_pruefen():
+    R = L.clean_rules([
+        {"id": "r1", "t": "motion", "sensors": ["binary_sensor.flur", "light.x"], "lamps": ["light.flur", "sensor.y"], "off_min": 999, "cond": "nie", "bri": -5},
+        {"id": "r1", "t": "away"}, {"id": "bad id!", "t": "away"}, {"id": "r2", "t": "laser"},
+        {"id": "r3", "t": "sun", "off": "25:00", "offset": -500}, {"id": "r4", "t": "sun", "off": "sunrise"}, {"id": "r5", "t": "alarm", "on": False}])
+    assert [r["id"] for r in R] == ["r1", "r3", "r4", "r5"]
+    m = R[0]
+    assert m["sensors"] == ["binary_sensor.flur"] and m["lamps"] == ["light.flur"] and m["off_min"] == 120 and m["cond"] == "dark" and m["bri"] == 0 and m["on"]
+    assert R[1]["off"] == "23:00" and R[1]["offset"] == -120 and R[2]["off"] == "sunrise"
+    assert R[3]["on"] is False and R[3]["off_end"] is True
+    assert L.rule_text(m, 1, "Flur") == "Bewegung · Flur → 1 Lampe an, wenn dunkel, aus nach 120 Min. ohne Bewegung"
+    assert L.rule_text({"t": "away", "delay_min": 10}, 0, "") == "Alle weg seit 10 Min. → Alle aus"
+    assert L.rule_text(R[2], 2, "") == "Sonnenuntergang → 2 Lampen an, aus bei Sonnenaufgang"
+
+
+def test_bewegung_schritt():
+    r = {"t": "motion", "lamps": ["light.a", "light.b"], "cond": "dark", "off_min": 5, "bri": 80, "night_bri": 20}
+    abend, nacht = datetime(2026, 11, 22, 19, 0, tzinfo=TZ), datetime(2026, 11, 22, 23, 30, tzinfo=TZ)
+    t = ts(2026, 11, 22, 19, 0)
+    assert L.motion_step(r, t, abend, True, t, True, {"light.a": False, "light.b": True}, set()) == ("on", ["light.a"], 80)
+    assert L.motion_step(r, t, nacht, True, t, True, {"light.a": False, "light.b": False}, set()) == ("on", ["light.a", "light.b"], 20)
+    assert L.motion_step(r, t, abend, True, t, False, {"light.a": False, "light.b": False}, set()) is None            # hell: nichts
+    assert L.motion_step({**r, "cond": "always"}, t, abend, True, t, False, {"light.a": False, "light.b": False}, set())[0] == "on"
+    # ohne Bewegung: erst nach 5 Min. aus, und nur, was die Regel selbst angemacht hat
+    assert L.motion_step(r, t + 240, abend, False, t, True, {"light.a": True, "light.b": True}, {"light.a"}) is None
+    assert L.motion_step(r, t + 300, abend, False, t, True, {"light.a": True, "light.b": True}, {"light.a"}) == ("off", ["light.a"], None)
+    assert L.motion_step(r, t + 300, abend, False, t, True, {"light.a": False, "light.b": True}, {"light.a"}) == ("forget", [], None)
+    assert L.motion_step({**r, "off_min": 0}, t + 9999, abend, False, t, True, {"light.a": True}, {"light.a"}) is None   # nie aus
+    assert L.is_dark("above_horizon", None, 30) is False and L.is_dark("below_horizon", None, 30) is True
+    assert L.is_dark("above_horizon", 12.0, 30) is True and L.is_dark("below_horizon", 80.0, 30) is False                  # Lux gewinnt
+
+
+def test_alle_weg_und_abends():
+    r = {"t": "away", "delay_min": 10}
+    t = ts(2026, 11, 22, 8, 0)
+    assert L.away_step(r, 0, 2, t, t + 599, False) is False and L.away_step(r, 0, 2, t, t + 600, False) is True
+    assert L.away_step(r, 1, 2, t, t + 9999, False) is False and L.away_step(r, 0, 0, t, t + 9999, False) is False
+    assert L.away_step(r, 0, 2, t, t + 9999, True) is False                                                             # nur einmal
+    s = {"t": "sun", "offset": 15, "off": "23:00"}
+    ss, sr = datetime(2026, 11, 22, 16, 30, tzinfo=TZ), datetime(2026, 11, 23, 7, 50, tzinfo=TZ)
+    done: dict = {}
+    assert L.sun_step(s, datetime(2026, 11, 22, 16, 40, tzinfo=TZ), ss, sr, done) is None
+    assert L.sun_step(s, datetime(2026, 11, 22, 16, 45, tzinfo=TZ), ss, sr, done) == "on"
+    done["on"] = "2026-11-22"
+    assert L.sun_step(s, datetime(2026, 11, 22, 20, 0, tzinfo=TZ), ss, sr, done) is None                               # schon an
+    assert L.sun_step(s, datetime(2026, 11, 22, 23, 0, tzinfo=TZ), ss, sr, done) == "off"
+    done["off"] = "2026-11-22"
+    assert L.sun_step(s, datetime(2026, 11, 22, 23, 30, tzinfo=TZ), ss, sr, done) is None
+    s2 = {"t": "sun", "offset": 0, "off": "sunrise"}
+    d2 = {"on": "2026-11-22"}
+    assert L.sun_step(s2, datetime(2026, 11, 23, 7, 55, tzinfo=TZ), ss, sr, d2) == "off"
+
+
+def test_python_teil_regeln():
+    M, AddonError = _manager()
+    _StoreX.DATA.clear()
+    NOW[0] = ts(2026, 11, 22, 19, 0)
+    H = _Hass(); S = H.states.d
+    S["light.flur"] = _State("light.flur", "off", {"friendly_name": "Flur"})
+    S["light.wohnen"] = _State("light.wohnen", "on", {"friendly_name": "Wohnen"})
+    S["binary_sensor.flur_bew"] = _State("binary_sensor.flur_bew", "off")
+    S["sun.sun"] = _State("sun.sun", "below_horizon")
+    S["person.anna"] = _State("person.anna", "home")
+    A = M.Addon(_Core(H)); asyncio.run(A.async_setup())
+    st = asyncio.run(A.core.cmds["set"]({"rules": [
+        {"id": "m1", "t": "motion", "sensors": ["binary_sensor.flur_bew"], "lamps": ["light.flur"], "off_min": 2, "n": "Flur"},
+        {"id": "a1", "t": "away", "delay_min": 5}, {"id": "x1", "t": "alarm", "lamps": ["light.flur"]}]}, True))
+    assert [r["id"] for r in st["rules"]] == ["m1", "a1", "x1"] and st["rinfo"]["m1"]["lamps"] == ["light.flur"]
+    # Bewegung → Flur an
+    old, S["binary_sensor.flur_bew"] = S["binary_sensor.flur_bew"], _State("binary_sensor.flur_bew", "on")
+    H.bus.cb(types.SimpleNamespace(data={"entity_id": "binary_sensor.flur_bew", "old_state": old, "new_state": S["binary_sensor.flur_bew"]})); H.run()
+    assert H.services.calls[-1] == ("light", "turn_on", {"entity_id": ["light.flur"]}) and A._rs["m1"]["mine"] == {"light.flur"}
+    assert A.rlog[0]["id"] == "m1" and "Bewegung → an: Flur" in A.rlog[0]["txt"]
+    S["light.flur"] = _State("light.flur", "on")
+    # Bewegung weg, nach 2 Min. aus
+    S["binary_sensor.flur_bew"] = _State("binary_sensor.flur_bew", "off")
+    NOW[0] += 60; asyncio.run(A._rules_eval(None)); n = len(H.services.calls)
+    NOW[0] += 61; asyncio.run(A._rules_eval(None))
+    assert len(H.services.calls) == n + 1 and H.services.calls[-1] == ("light", "turn_off", {"entity_id": ["light.flur"]}) and not A._rs["m1"]["mine"]
+    # Pause: nichts passiert
+    asyncio.run(A.core.cmds["act"]({"a": "rules_pause", "min": 60}, True))
+    S["binary_sensor.flur_bew"] = _State("binary_sensor.flur_bew", "on"); S["light.flur"] = _State("light.flur", "off")
+    n = len(H.services.calls); asyncio.run(A._rules_eval("binary_sensor.flur_bew"))
+    assert len(H.services.calls) == n
+    asyncio.run(A.core.cmds["act"]({"a": "rules_pause", "min": 0}, True))
+    # Alle weg: nach 5 Min. aus (Wohnen ist an)
+    S["person.anna"] = _State("person.anna", "not_home")
+    asyncio.run(A._rules_eval("person.anna"))
+    NOW[0] += 301; S["binary_sensor.flur_bew"] = _State("binary_sensor.flur_bew", "off")
+    asyncio.run(A._rules_eval(None))
+    assert ("light", "turn_off", {"entity_id": ["light.wohnen"]}) in H.services.calls[-2:] and "Alle weg" in A.rlog[0]["txt"]
+    # Alarm aus Modul 11 → an mit 100 %, Ende → wieder aus
+    S["light.flur"] = _State("light.flur", "off")
+    H.bus.cbs["fenster_heizung_sicherheit"](types.SimpleNamespace(data={"art": "alarm", "name": "Rauchmelder Küche"})); H.run()
+    assert H.services.calls[-1] == ("light", "turn_on", {"entity_id": ["light.flur"], "brightness_pct": 100})
+    S["light.flur"] = _State("light.flur", "on")
+    H.bus.cbs["fenster_heizung_sicherheit"](types.SimpleNamespace(data={"art": "ende"})); H.run()
+    assert H.services.calls[-1] == ("light", "turn_off", {"entity_id": ["light.flur"]})
+    try:
+        asyncio.run(A.core.cmds["act"]({"a": "rule_test", "id": "m1"}, False)); assert False
+    except AddonError:
+        pass
+    asyncio.run(A.async_unload())
+    A2 = M.Addon(_Core(H)); asyncio.run(A2.async_setup())
+    assert [r["id"] for r in A2.rules] == ["m1", "a1", "x1"] and len(A2.rlog) >= 4   # Regeln und Protokoll überstehen den Neustart
 
 
 if __name__ == "__main__":

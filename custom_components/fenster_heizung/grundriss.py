@@ -11,11 +11,16 @@ Umzug: Beim ersten Start übernimmt Modul 0 den Plan aus Modul 11 (mit Meldern u
 Umzugs-Kopie an, die 90 Tage aufgehoben wird.
 
 Build 3: Der Baukasten zieht nach Modul 0 und speichert über gr_set (plan). Modul 11 hört über listen() mit und zieht seine Kopie nach.
+
+Build 4: Sichern & Einlesen. Verlauf der letzten Stände (HIST_MAX, ohne Hintergrundbilder, eigener Speicher
+fenster_heizung_grundriss_verlauf), Wiederherstellen eines Stands oder der Umzugs-Kopie (gr_hist, gr_restore). Sichern als Datei und
+Einlesen laufen im Browser; eingelesen wird über gr_set mit src „import“, damit der Verlauf die Herkunft kennt.
 """
 from __future__ import annotations
 
 import logging
 import re
+import secrets
 from datetime import timedelta
 from typing import Any, Callable
 
@@ -32,6 +37,8 @@ KEEP_COPY_DAYS = 90
 LAYERS = {"m": "sf", "l": "licht"}  # Element-Typ → Ebene (Modul 11 Melder, Modul 18 Lampen)
 _ID = re.compile(r"^[A-Za-z0-9_.:-]{1,64}$")
 ROOMS_MAX = 300
+HIST_MAX = 15
+SRC = ("gr", "sf", "import", "restore")  # wer hat geschrieben: Baukasten, Modul 11, Datei, Wiederherstellen
 
 
 def clean_rooms(raw: Any) -> dict[str, str]:
@@ -70,6 +77,8 @@ class GrundrissManager:
         self.meta: dict[str, Any] = {}    # since (Umzug), src, copy_until, changed, pmap (Übernahme aus Modul 18)
         self.rooms: dict[str, str] = {}   # Plan-Raum → Bereich (Build 2)
         self._listeners: list[Callable[[], None]] = []
+        self._hstore = SafeStore(hass, 1, f"{DOMAIN}_grundriss_verlauf")  # Build 4: frühere Stände ohne Hintergrundbilder
+        self.hist: list[dict[str, Any]] = []
 
     async def async_start(self) -> None:
         d = await self._store.async_load()
@@ -79,6 +88,9 @@ class GrundrissManager:
             self.meta = {k: str(v) for k, v in (d.get("meta") or {}).items() if isinstance(v, str)}
         if isinstance(d, dict):
             self.rooms = clean_rooms(d.get("rooms"))
+        h = await self._hstore.async_load()
+        if isinstance(h, dict) and isinstance(h.get("hist"), list):
+            self.hist = [x for x in h["hist"] if isinstance(x, dict) and isinstance(x.get("plan"), dict) and isinstance(x.get("id"), str)][:HIST_MAX]
         until = self.meta.get("copy_until")
         if until:
             u = dt_util.parse_datetime(until)
@@ -111,11 +123,22 @@ class GrundrissManager:
         _LOGGER.info("Modul 0: Grundriss aus %s übernommen (%s Etagen, %s Räume, %s Melder, %s Lampen)", src, s["floors"], s["rooms"], s["layers"]["sf"], s["layers"]["licht"])
         return True
 
+    def _push_hist(self, by: str) -> None:
+        """Den jetzigen Stand in den Verlauf legen (neuester zuerst). Hintergrundbilder bleiben draußen – sie sind groß und ändern sich selten."""
+        if not self.has or not (self.plan.get("items") or []):
+            return
+        now = dt_util.now()
+        hid = now.strftime("%Y%m%d%H%M%S") + "-" + secrets.token_hex(3)
+        entry = {"id": hid, "t": now.isoformat(), "by": self.meta.get("by") or ("umzug" if self.meta.get("src") else ""), "next": by, "plan": {**self.plan, "bg": {}}, "stats": plan_stats(self.plan)}
+        self.hist = [entry] + [x for x in self.hist if x.get("plan") != entry["plan"]][: HIST_MAX - 1]
+        self._hstore.async_delay_save(lambda: {"v": 1, "hist": self.hist}, 5)
+
     def set_plan(self, plan: dict[str, Any], src: str = "") -> bool:
         """Plan schreiben (src „gr“ = Baukasten in Modul 0, „sf“ = ältere Oberfläche über Modul 11). True, wenn sich etwas geändert hat."""
         p = clean_plan(plan)
         if self.has and p == self.plan:
             return False
+        self._push_hist(src)
         self.plan, self.has = p, True
         self.meta["changed"] = dt_util.now().isoformat()
         if src:
@@ -127,6 +150,31 @@ class GrundrissManager:
             except Exception:  # noqa: BLE001
                 _LOGGER.debug("Plan-Hörer fehlgeschlagen", exc_info=True)
         return True
+
+    # ---- Verlauf und Wiederherstellen (Build 4)
+    async def hist_list(self) -> dict[str, Any]:
+        """Verlauf für die Oberfläche (ohne Pläne) und die Umzugs-Kopie aus Modul 11, falls noch da."""
+        out = {"hist": [{k: x.get(k) for k in ("id", "t", "by", "next", "stats")} for x in self.hist], "copy": None}
+        c = await self._copy.async_load() if self.meta.get("copy_until") else None
+        if isinstance(c, dict) and isinstance(c.get("plan"), dict):
+            out["copy"] = {"t": c.get("t", ""), "src": c.get("src", ""), "until": self.meta.get("copy_until", ""), "stats": plan_stats(clean_plan(c["plan"]))}
+        return out
+
+    async def restore(self, hid: str) -> bool:
+        """Einen Stand aus dem Verlauf („umzug“ = Kopie aus Modul 11) wiederherstellen. Der jetzige Stand landet vorher im Verlauf.
+        Hintergrundbilder bleiben, wie sie jetzt sind (für Etagen, die es im wiederhergestellten Stand gibt)."""
+        if hid == "umzug":
+            c = await self._copy.async_load() if self.meta.get("copy_until") else None
+            plan = c.get("plan") if isinstance(c, dict) else None
+        else:
+            plan = next((x["plan"] for x in self.hist if x.get("id") == hid), None)
+        if not isinstance(plan, dict):
+            return False
+        p = clean_plan(plan)
+        ids = {f["id"] for f in p["floors"]}
+        if hid != "umzug" or not any(p["bg"].values()):
+            p["bg"] = {k: v for k, v in (self.plan.get("bg") or {}).items() if k in ids and v}
+        return self.set_plan(p, "restore")
 
     # ---- Raumliste (Build 2)
     def set_rooms(self, patch: Any) -> bool:

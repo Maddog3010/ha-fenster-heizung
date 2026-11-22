@@ -2,6 +2,102 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b53] - 2026-11-22
+
+Zweites Paket rund um Grundriss und Licht: **Modul 18 · Licht & Lampen** v0.8 (Addon `licht` 0.8.0) bekommt den Platz im Lampen-Fenster und **Regeln** (Bewegung, Alle weg, Alarm, Abends). **Modul 0 · Haus & Grundriss** v0.5 bekommt Sichern & Einlesen mit Verlauf und eine neue, detaillierte Grundriss-Optik in drei Stilen.
+
+### Teil 1 · Modul 18 Build 7 – Platz im Lampen-Fenster
+
+**Modul 18 · Licht & Lampen** v0.7 Build 7 – Platz der Lampe direkt im Lampen-Fenster. Addon `licht` 0.7.0.
+
+#### Neu
+- **Mini-Grundriss in „Lampe bearbeiten“:** Tippen setzt die Lampe an diese Stelle, nochmal tippen versetzt sie. Bei mehreren Etagen wechselst du oben die Etage (● zeigt, wo sie steht). „Aus dem Plan nehmen“ entfernt den Platz.
+- Der Raum der Lampe ist im Plan farbig markiert. Steht die Lampe in einem anderen Raum, gibt es „Raum „Küche“ übernehmen“. Hat die Lampe noch gar keinen Raum, übernimmt sie ihn aus dem Platz.
+- Der Platz wird mit „Speichern“ zusammen mit der Lampe in Modul 0 geschrieben. Die gewählte Art (z. B. „Streifen“) wandert in den Plan mit.
+
+#### Geändert
+- Lampen-Art **„Tisch“** gibt es jetzt auch im Plan und im Baukasten.
+- Leere Lichtkarte: „Grundriss zeichnen“ führt in den Baukasten von Modul 0 statt zu Modul 11.
+
+#### Technik
+- `sicherheit.LAMP_K` um `tisch` erweitert, Test ergänzt. Addon: `_lixMini`, `_lixMiniBind` (Tipp → Plan-Koordinaten über `getScreenCTM`), `_lixSavePos` (nur bei Änderung, über `_grSavePlan`).
+
+### Teil 2 · Modul 0 Build 4 – Sichern & Einlesen
+
+**Modul 0 · Haus & Grundriss** v0.4 Build 4 – Sichern & Einlesen.
+
+#### Neu
+- **Reiter „Sichern & Einlesen“** (nur Administratoren).
+- **Als Datei sichern:** eine JSON-Datei mit Etagen, Räumen, Bauteilen, Meldern, Lampen und Raumliste. Hintergrundbilder lassen sich mitnehmen oder weglassen, die Größe steht dabei.
+- **Datei einlesen** mit Vorschau „jetzt → danach“ für Etagen, Räume, Bauteile, Melder, Lampen und Bilder. Du wählst:
+  - **Plan ersetzen**, auf Wunsch mit der Raumliste aus der Datei
+  - **Als weitere Etagen hinzufügen** (höchstens 6 Etagen; doppelte Namen bekommen „(neu)“)
+  Ältere Dateien aus dem Baukasten von Modul 11 werden erkannt.
+- **Verlauf:** Vor jedem Speichern, Einlesen oder Wiederherstellen legt Modul 0 den vorherigen Stand ab (die letzten 15, ohne Hintergrundbilder). Jeder Eintrag zeigt, wann und worüber er gespeichert wurde und was ihn ersetzt hat. Mit „Wiederherstellen“ kommt der Stand zurück, die Bilder bleiben wie sie sind.
+- **Umzugs-Kopie aus Modul 11:** Solange sie aufgehoben wird (90 Tage), steht sie im Verlauf und lässt sich wiederherstellen.
+
+#### Geändert
+- „Plan sichern“ im Baukasten schreibt jetzt dasselbe Format wie Modul 0, inklusive Raumliste.
+
+#### Technik
+- `grundriss.py`: `_push_hist`, `hist_list`, `restore`. Der Verlauf liegt im eigenen Speicher `fenster_heizung_grundriss_verlauf`.
+- Neue WS-Befehle `gr_hist` und `gr_restore` (nur Administratoren). `gr_set` nimmt `src: "import"` an.
+- 2 neue Tests (Verlauf, Wiederherstellen samt Bildern und Modul 11, Obergrenze, Umzugs-Kopie). Alle 331 Tests laufen durch.
+
+### Teil 3 · Modul 18 Build 8 – Regeln
+
+**Modul 18 · Licht & Lampen** v0.8 Build 8 – Regeln: das Licht reagiert von selbst. Addon `licht` 0.8.0.
+
+#### Neu
+- **Reiter „Regeln“** mit vier Arten:
+  - **Bewegung → Licht:** Ein Bewegungs- oder Präsenzmelder schaltet die Lampen eines Raums an, wahlweise nur wenn es dunkel ist (Sonne unter dem Horizont). Dazu gibt es eine eigene Helligkeit und gedimmt nachts (22–6 Uhr). Nach 1 bis 30 Min. ohne Bewegung geht das Licht wieder aus, auf Wunsch nie.
+  - **Alle weg → Alle aus:** Ist keine Person mehr zu Hause, gehen nach einer Wartezeit alle Lampen aus. Lampen ohne „Bei Alle aus mitschalten“ bleiben an.
+  - **Alarm → Licht an:** Löst ein Melder in Modul 11 aus, gehen die Lampen auf 100 %. Nach dem Alarm gehen die Lampen, die vorher aus waren, auf Wunsch wieder aus.
+  - **Abends → Licht an:** an zum Sonnenuntergang (30 Min. vorher bis 30 Min. danach), aus um 22, 23 oder 0 Uhr, bei Sonnenaufgang oder nie.
+- **Vorschläge für dein Haus:** Räume mit Bewegungsmelder und Lampen, Personen, Modul 11 und Außenlampen werden als fertige Regel vorgeschlagen.
+- **Jede Regel als Satz**, z. B. „Bewegung im Flur → 2 Lampen an, wenn dunkel, aus nach 5 Min. ohne Bewegung“. Der Status zeigt „aktiv“, „hat 2 Lampen an“ oder einen Hinweis wie „Keine Personen in Home Assistant“. Jede Regel lässt sich einzeln an- und ausschalten und testen.
+- **Pausieren** aller Regeln für 1 Std., 3 Std., bis morgen früh oder eine Woche, z. B. bei Gästen.
+- **Zuletzt:** Protokoll der letzten 40 Schaltungen mit Uhrzeit, es übersteht Neustarts.
+
+#### Wichtig
+- Die Regeln laufen im Python-Teil, also auch ohne offenes Dashboard.
+- Ausgeschaltet wird nur, was eine Regel selbst angemacht hat. Wer eine Lampe von Hand einschaltet oder ausschaltet, übernimmt sie.
+- Fehler beim Schalten landen im Protokoll und an der Lampe.
+
+#### Technik
+- `licht/logic.py`: `clean_rules`, `motion_step`, `away_step`, `sun_step`, `is_dark`, `rule_text`.
+- `manager.py` hört auf Melder, Personen und das Ereignis `fenster_heizung_sicherheit` (alarm/ende). Dazu kommt ein Takt alle 20 s für Ausschalt-Zeiten, Wartezeiten und Sonnenzeiten.
+- Neue Aktionen `rule_test` und `rules_pause` (nur Administratoren).
+- 4 neue Tests (Prüfen der Regeln, Bewegung, Alle weg / Abends, Python-Teil mit Bewegung, Pause, Alle weg, Alarm und Neustart), alle 335 Tests grün.
+
+### Teil 4 · Modul 0 v0.5 – neue Grundriss-Optik
+
+**Modul 0 · Haus & Grundriss** v0.5 – neue, detaillierte Optik des Grundrisses.
+
+#### Neu
+- **Wände mit Stärke:** Außenwände sind kräftig, Innenwände schmaler, mit leichtem Schatten. Freie Wände aus dem Baukasten werden passend dazu gezeichnet.
+- **Böden je Raumart**, erkannt am Namen oder Bereich:
+  - Parkett in Wohn-, Schlaf-, Kinder- und Arbeitszimmern
+  - Fliesen in Bad, WC, Küche und Flur
+  - Pflaster auf Terrasse, Balkon und in der Garage, mit gestricheltem Rand
+  - Schraffur in Technik-, Abstell- und Kellerräumen
+  - Teppich sonst
+- **Türen** mit Öffnung in der Wand, Türblatt und Schwenkbogen. Außentüren sind farbig und tragen einen Pfeil, Durchgänge zeigen nur die Laibung.
+- **Fenster** mit Rahmen und Glas. Ist ein Fensterkontakt zugeordnet, wird ein offenes Fenster gelb und aufgeklappt gezeigt.
+- **Treppen** mit Stufen und Pfeil in Laufrichtung.
+- **Raumbeschriftung** mit Symbol (Sofa, Bett, Topf, Badewanne …), Name und Fläche in m². Die Beschriftung sucht sich einen freien Platz und weicht Lampen, Meldern und Türen aus, auch in L-förmigen Räumen.
+- **Maße** zum Einschalten: Maßketten für Breite und Tiefe der Etage und Raummaße wie „7 × 5,5 m“.
+- **Nordpfeil und Maßstab** (2 m oder 5 m).
+- **Drei Stile:**
+  - „Modern“ (dunkel)
+  - „Bauplan“ (blau mit weißen, schraffierten Wänden)
+  - „Hell“ (Papier mit schwarzen Wänden)
+  Stil und Maße merkt sich der Browser.
+- Leuchtende Lampen haben einen weichen Lichtschein in ihrer Farbe. Melder tragen ihr Schild-Symbol.
+
+#### Technik
+- Neuer Teil `12m3-grundriss-optik.js` mit `_grDraw(Plan, Etage, Optionen)`, `_grKind`, `_grAreaM2` und `_grTheme`. Der Reiter „Plan“ in Modul 0 nutzt ihn. Baukasten, Wärmekarte und Lichtkarte bleiben unverändert.
+
 ## [2026.11.4b52] - 2026-11-22
 
 Großes Paket rund um den Grundriss: **Modul 0 · Haus & Grundriss** (neu, v0.3 Build 3) wird der zentrale Bauplan für alle Module samt Baukasten, und **Modul 18 · Licht & Lampen** (v0.6, Addon `licht` 0.6.1) bekommt den Reiter „Lampen“ zum Selbstverwalten sowie Korrekturen an der Lichtkarte.
