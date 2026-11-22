@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b52] - 2026-11-22
+
+**Modul 18 · Licht & Lampen** v0.5.1 – Korrekturen an der Lichtkarte nach dem ersten Test auf echtem Grundriss.
+
+### Behoben
+- **„… Flächen nicht zugeordnet“ war viel zu hoch:** Räume, deren Bereich in Home Assistant keine Lampen hat (z. B. Bad, Flur, Abstellkammer), galten als nicht zugeordnet und waren schraffiert. Jetzt sind sie zugeordnet und zeigen „keine Lampen“. Gezählt und schraffiert werden nur Flächen ohne passenden Bereich.
+- **Punkte und Lampen im Plan waren nicht zu unterscheiden:** Lampen, die noch keinen Platz im Plan haben, erscheinen jetzt kleiner mit gestricheltem Ring unten links („noch nicht platziert“, auch in der Legende). Lampen im Plan stehen an ihrem Platz.
+- **Fehlermeldung beim Schalten:** Lehnt die Integration einen Befehl ab (z. B. Overkiz „No such command : on … (ogp:Light)“), erscheint eine Meldung mit dem Namen der Lampe statt der technischen Meldung von Home Assistant. Auch beim Schalten ganzer Räume kommt der Fehler jetzt auf der Seite an.
+- **Gleiche Lampennamen im Baukasten** (z. B. zweimal „H70D1“) zeigen zusätzlich die Entitäts-ID.
+- „Nicht im Grundriss“ heißt für Lampen ohne Bereich jetzt „Ohne Bereich · 2 Lampen“, die Namen stehen im Hinweis.
+
 ## [2026.11.4b51] - 2026-11-22
 
 **Modul 18 · Licht & Lampen** v0.5 Build 5 (mit Build 4) – Grundriss I und II aus dem Konzept „Modul 18 · Licht & Lampen“ (Teil B1–B7): Grundriss als Lichtkarte und Lampen im Plan.

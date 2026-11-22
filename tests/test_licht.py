@@ -167,6 +167,8 @@ class _Services:
 
     async def async_call(self, dom, svc, data, blocking=False):
         self.calls.append((dom, svc, data))
+        if "light.kaputt" in data.get("entity_id", []):
+            raise RuntimeError("No such command : on on device ogp://x (ogp:Light)")
 
 
 class _Bus:
@@ -285,6 +287,12 @@ def test_python_teil_sensoren_schalten_neustart():
     assert r["via"] == ["light.wohnen"] and H.services.calls[-1] == ("light", "turn_off", {"entity_id": ["light.wohnen"]})
     asyncio.run(A.core.cmds["act"]({"a": "switch", "ids": ["light.bad", "light.unbekannt"], "on": True, "brightness_pct": 400}, False))
     assert H.services.calls[-1] == ("light", "turn_on", {"entity_id": ["light.bad"], "brightness_pct": 100})
+    H.states.d["light.kaputt"] = _State("light.kaputt", "off", {"friendly_name": "LED-Box"})
+    try:   # Fehler der Integration kommt als verständliche Meldung an
+        asyncio.run(A.core.cmds["act"]({"a": "switch", "ids": ["light.kaputt"], "on": True}, False)); assert False
+    except AddonError as e:
+        assert "Integration meldet" in str(e) and "No such command" in str(e)
+    H.states.d.pop("light.kaputt")
     try:
         asyncio.run(A.core.cmds["set"]({"prefs": {"view": "list"}}, False)); assert False
     except AddonError:

@@ -1,5 +1,9 @@
 # Modul 18 Licht & Lampen
 
+## [0.5.1] - 2026-11-22
+- Flächen mit Bereich ohne Lampen gelten als zugeordnet („keine Lampen“)
+- Noch nicht platzierte Lampen klar als eigene Punkte, verständliche Fehlermeldung beim Schalten
+
 ## [0.5.0] Build 5 - 2026-11-22
 - **Lampen im Grundriss**: Werkzeug „Lampe“ im Baukasten von Modul 11, Lichtkegel am echten Platz
 - Raum aus der Position für Lampen ohne Bereich, Plakette „offline“, „… Lampen nicht im Plan“ öffnet den Baukasten

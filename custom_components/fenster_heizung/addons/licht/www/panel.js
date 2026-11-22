@@ -93,7 +93,7 @@ export default (api) => {
 .l3fc{display:inline-block;min-width:16px;padding:0 4px;border-radius:8px;background:#f59e0b;color:#1c1003;font-size:.7rem;text-align:center}
 .l3pv{border-radius:14px;overflow:hidden;background:color-mix(in srgb,#020617 55%,var(--card,#111a2b))}.l3pv svg{display:block;width:100%;height:auto;max-height:68vh}
 .l3pv text{font-family:inherit}.l3pn{fill:var(--primary-text-color);font-weight:700}.l3pt{fill:#fff;font-weight:750}.l3pt.off{fill:var(--mut);font-weight:600}.l3pz{fill:var(--mut)}
-.l3pbase{fill:color-mix(in srgb,var(--card,#111a2b) 88%,#000)}.l3pbase.un{fill:color-mix(in srgb,var(--card,#111a2b) 70%,transparent)}
+.l3pbase{fill:color-mix(in srgb,var(--card,#111a2b) 88%,#000)}.l3pbase.un{fill:color-mix(in srgb,var(--card,#111a2b) 70%,transparent)}.l3pbase.dim{fill:color-mix(in srgb,var(--card,#111a2b) 60%,transparent)}
 .l3pr.ok{cursor:pointer}.l3pr.ok:hover .l3pbase{fill:color-mix(in srgb,var(--card,#111a2b) 75%,#fff)}.l3pr[data-act="lixpmap"]{cursor:pointer}
 .l3pglow{transition:opacity .6s,fill .6s}.l3pw{stroke:color-mix(in srgb,var(--primary-text-color) 55%,transparent);stroke-width:5;stroke-linecap:round}
 .l3pd rect{fill:color-mix(in srgb,#020617 55%,var(--card,#111a2b))}
@@ -160,12 +160,23 @@ export default (api) => {
   }
   _liDur(ms) { const m = Math.round(ms / 60000); return m < 60 ? `${m} Min.` : `${num(Math.floor(m / 60), 0)} Std.${m % 60 >= 10 ? " " + (m % 60) + " Min." : ""}`; }
   _liLong() { const lim = this._liLay().hours * 36e5; return this._liRooms().filter((r) => !r.hid).map((r) => ({ r, l: r.on.filter((x) => x.since >= lim) })).filter((x) => x.l.length && !this._liBusy(x.r.k === "_" ? "" : x.r.k)).map((x) => ({ r: x.r, ms: Math.max(...x.l.map((y) => y.since)), l: x.l })).sort((a, b) => b.ms - a.ms); }
-  _liCall(dom, svc, data) { return this._hass.callService(dom, svc, data).catch(() => this._toast("Das hat nicht geklappt")); }
+  /* Schalten über call_service per WebSocket: Home Assistant zeigt dann keine eigene Fehlermeldung, wir zeigen eine verständliche mit dem Lampennamen */
+  _liCall(dom, svc, data) {
+    return this._hass.callWS({ type: "call_service", domain: dom, service: svc, service_data: data }).catch((e) => {
+      const ids = [].concat((data && data.entity_id) || []), nm = ids.length === 1 ? this._wzName(ids[0]) : ids.length ? `${ids.length} Lampen` : "Das";
+      const why = String((e && (e.message || e.code)) || "").replace(/\s+/g, " ").slice(0, 140);
+      this._toast(`${nm}: ${svc === "turn_off" ? "Ausschalten" : "Einschalten"} hat nicht geklappt – die Integration meldet: ${why || "keine Antwort"}`);
+    });
+  }
   /* Mehrere Lampen schalten: über den Python-Teil, der eine genau passende Lichtgruppe nimmt (gleichzeitig, weniger Funkverkehr).
      Antwortet er nicht (z. B. Addon noch nicht neu gestartet), direkt über Home Assistant. */
   _liSwitch(ids, on, extra) {
     if (!ids.length) return Promise.resolve();
-    return api.call(ID, "act", { a: "switch", ids, on, ...(extra || {}) }).catch(() => this._liCall("light", on ? "turn_on" : "turn_off", { entity_id: ids, ...(on && extra && extra.brightness_pct ? { brightness_pct: extra.brightness_pct } : {}) }));
+    return api.call(ID, "act", { a: "switch", ids, on, ...(extra || {}) }).catch((e) => {
+      const m = String((e && e.message) || "");
+      if (m.includes("Integration meldet")) { this._toast(`${ids.length === 1 ? this._wzName(ids[0]) : ids.length + " Lampen"}: ${on ? "Einschalten" : "Ausschalten"} hat nicht geklappt – ${m.slice(0, 160)}`); return; }
+      return this._liCall("light", on ? "turn_on" : "turn_off", { entity_id: ids, ...(on && extra && extra.brightness_pct ? { brightness_pct: extra.brightness_pct } : {}) });   /* Addon antwortet nicht: direkt */
+    });
   }
   _liSwatches(x) {
     const out = [];
@@ -338,17 +349,19 @@ export default (api) => {
       <rect x="${B.x0 - 400}" y="${B.y0 - 400}" width="${B.x1 - B.x0 + 800}" height="${B.y1 - B.y0 + 800}" fill="url(#${u}dot)"/>`;
     const lab = [], LA = rooms.flatMap((r) => r.lamps), here = LA.filter((x) => x.pe && x.pe.it.fl === fl);   /* B3: im Plan platzierte Lampen dieser Etage */
     rs.forEach((i, ix) => {
-      const r = map.get(i.id), n = r ? r.on.length : 0, p = n ? r.pct / 100 : 0, path = this._liPath(i, 3), cid = `${u}c${ix}`;
+      const r = map.get(i.id), n = r ? r.on.length : 0, p = n ? r.pct / 100 : 0, path = this._liPath(i, 3), cid = `${u}c${ix}`, aid = r ? r.k : this._liPArea(i), none = (this._liD().pmap || {})[i.id] === "-";
       const act = r ? (r.lamps.some((x) => !x.un) ? `data-act="lixroom" data-k="${esc(r.k)}"` : "") : adm ? `data-act="lixpmap" data-k="${esc(i.id)}"` : "";
-      d += `<g class="l3pr${r ? " ok" : ""}${n ? " on" : ""}" ${act}><title>${esc(i.n || "Raum")}${r ? ` · ${n ? `${n} an · ${r.pct} %` : "aus"} · Antippen schaltet den Raum` : " · nicht zugeordnet"}</title>`;
+      const tip = r ? ` · ${n ? `${n} an · ${r.pct} %` : "aus"} · Antippen schaltet den Raum` : aid ? ` · Bereich „${this._liAreaName(aid)}“ hat keine Lampen` : none ? " · gehört zu keinem Bereich" : " · nicht zugeordnet";
+      d += `<g class="l3pr${r ? " ok" : ""}${n ? " on" : ""}" ${act}><title>${esc(i.n || "Raum")}${esc(tip)}</title>`;
       if (r) {
         const pin = here.some((x) => x.on && x.pe.room && x.pe.room.id === i.id), o = (0.32 + 0.5 * p) * (pin ? 0.4 : 1);   /* weicher Schein von der Mitte; stehen Lampen im Plan, leuchten vor allem sie */
         d += `<clipPath id="${u}k${esc(i.id)}"><path d="${path}"/></clipPath><path d="${path}" class="l3pbase"/>`;
         if (n) d += `<radialGradient id="${cid}" cx=".5" cy=".5" r=".72"><stop offset="0" stop-color="${r.col}" stop-opacity="${o.toFixed(2)}"/><stop offset=".55" stop-color="${r.col}" stop-opacity="${(o * 0.55).toFixed(2)}"/><stop offset="1" stop-color="${r.col}" stop-opacity=".06"/></radialGradient><path class="l3pglow" d="${path}" fill="url(#${cid})"/>`;
         d += `<path d="${path}" fill="none" stroke="${n ? r.col : "var(--line,#334155)"}" stroke-width="2" stroke-opacity="${n ? 0.85 : 0.7}"/>`;
-      } else d += `<path d="${path}" class="l3pbase un"/><path d="${path}" fill="url(#${u}un)" opacity=".6"/><path d="${path}" fill="none" stroke="var(--line,#334155)" stroke-width="2" stroke-dasharray="6 5"/>`;
+      } else if (aid || none) d += `<clipPath id="${u}k${esc(i.id)}"><path d="${path}"/></clipPath><path d="${path}" class="l3pbase dim"/><path d="${path}" fill="none" stroke="var(--line,#334155)" stroke-width="1.5" stroke-opacity=".6"/>`;
+      else d += `<path d="${path}" class="l3pbase un"/><path d="${path}" fill="url(#${u}un)" opacity=".6"/><path d="${path}" fill="none" stroke="var(--line,#334155)" stroke-width="2" stroke-dasharray="6 5"/>`;
       d += `</g>`;
-      lab.push({ i, r });
+      lab.push({ i, r, aid, none });
     });
     here.filter((x) => x.on).forEach((x, k) => {
       const it = x.pe.it, c = hex(x.rgb), b = (x.dim ? x.br : 100) / 100, R = (it.k === "spot" ? 0.7 : it.k === "aussen" ? 1.3 : 1) * (45 + 105 * b), g = `${u}lg${k}`;
@@ -363,7 +376,7 @@ export default (api) => {
       else if (i.t === "f") d += `<g${a}><rect x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7" rx="2.5" fill="#bfdbfe" fill-opacity=".55" stroke="#60a5fa" stroke-width="1"/></g>`;
     });
     /* Beschriftung und Lampenpunkte */
-    lab.forEach(({ i, r }) => {
+    lab.forEach(({ i, r, aid, none }) => {
       const big = Math.min(26 * NF, i.h * 0.26, i.w * 0.22), small = Math.min(13 * NF, Math.max(10, big * 0.5), i.w * 0.095), pad = Math.max(8, Math.min(14, i.w * 0.05));
       const x = i.x + 3, y = i.y + 3, w = i.w - 6, h = i.h - 6;
       let nm = String(i.n || (r ? r.name : "Raum")); const mx = Math.max(3, Math.floor((w - pad * 2) / (small * 0.58))); if (nm.length > mx) nm = nm.slice(0, mx - 1) + "…";
@@ -379,15 +392,15 @@ export default (api) => {
         const nu = r.lamps.filter((q) => q.un).length;   /* B6: Plakette „offline“ unter der Zeit-Plakette */
         if (nu) { const fz = 10.5 * NF, t = nu > 1 ? `${nu} offline` : "offline", bw = t.length * fz * 0.56 + fz * 1.9, by = y + 8 + (lk ? fz * 2.1 : 0);
           if (bw < w * 0.6) d += `<g><rect x="${x + w - bw - 8}" y="${by}" width="${bw}" height="${fz * 1.7}" rx="${fz * 0.85}" fill="#dc2626" fill-opacity=".9"/><text x="${x + w - bw - 8 + fz * 0.9}" y="${by + fz * 1.2}" font-size="${fz}" font-weight="700" fill="#fff">${t}</text></g>`; }
-      } else d += `<text x="${x + pad}" y="${y + pad + small * 2.4}" font-size="${small * 0.88}" class="l3pz">${adm ? "Antippen zum Zuordnen" : "nicht zugeordnet"}</text>`;
+      } else d += `<text x="${x + pad}" y="${y + pad + small * 2.4}" font-size="${small * 0.88}" class="l3pz">${aid ? "keine Lampen" : none ? "kein Bereich" : adm ? "Antippen zum Zuordnen" : "nicht zugeordnet"}</text>`;
       d += `</g>`;
       const loose = r ? r.lamps.filter((q) => !(q.pe && q.pe.it.fl === fl)) : [];
       if (r && loose.length) {   /* Punkte unten links für Lampen, die (noch) nicht im Plan stehen; in kleinen Räumen weniger */
-        const pr = Math.max(5.5, Math.min(9 * NF, h * 0.07, w * 0.05)), stp = pr * 2.9, maxN = Math.max(1, Math.floor((w - pad * 2) / stp)), shown = loose.slice(0, maxN), py = y + h - pad - pr;
+        const pr = Math.max(4.5, Math.min(7 * NF, h * 0.055, w * 0.04)), stp = pr * 3.6, maxN = Math.max(1, Math.floor((w - pad * 2) / stp)), shown = loose.slice(0, maxN), py = y + h - pad - pr;
         shown.forEach((x2, k) => {
           const cx = x + pad + pr + k * stp, c = hex(x2.rgb);
-          d += `<g class="l3pl${x2.on ? " on" : ""}${x2.un ? " un" : ""}" ${x2.un ? "" : `data-act="lixsw" data-k="${esc(x2.id)}" data-lhold="${esc(x2.id)}"`}><title>${esc(x2.name)} · ${x2.un ? "nicht erreichbar" : x2.on ? (x2.dim ? x2.br + " %" : "an") : "aus"} · lang drücken für Details</title>
-            <circle cx="${cx}" cy="${py}" r="${pr * 1.9}" fill="transparent"/>${x2.on ? `<circle cx="${cx}" cy="${py}" r="${pr * 1.8}" fill="${c}" opacity=".28"/>` : ""}<circle cx="${cx}" cy="${py}" r="${pr}" fill="${x2.un ? "none" : x2.on ? c : "#475569"}" stroke="${x2.un ? "#64748b" : x2.on ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.45)"}" stroke-width="${x2.un ? 1.5 : 2}" ${x2.un ? `stroke-dasharray="2.5 2.5"` : ""}/></g>`;
+          d += `<g class="l3pl loose${x2.on ? " on" : ""}${x2.un ? " un" : ""}" ${x2.un ? "" : `data-act="lixsw" data-k="${esc(x2.id)}" data-lhold="${esc(x2.id)}"`}><title>${esc(x2.name)} · ${x2.un ? "nicht erreichbar" : x2.on ? (x2.dim ? x2.br + " %" : "an") : "aus"} · noch nicht im Plan platziert · lang drücken für Details</title>
+            <circle cx="${cx}" cy="${py}" r="${pr * 1.9}" fill="transparent"/><circle cx="${cx}" cy="${py}" r="${pr * 1.55}" fill="none" stroke="var(--mut,#94a3b8)" stroke-width="1.2" stroke-dasharray="2.5 2.5" opacity=".8"/>${x2.on ? `<circle cx="${cx}" cy="${py}" r="${pr * 1.8}" fill="${c}" opacity=".28"/>` : ""}<circle cx="${cx}" cy="${py}" r="${pr}" fill="${x2.un ? "none" : x2.on ? c : "#475569"}" stroke="${x2.un ? "#64748b" : x2.on ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.45)"}" stroke-width="${x2.un ? 1.5 : 2}" ${x2.un ? `stroke-dasharray="2.5 2.5"` : ""}/></g>`;
         });
         if (loose.length > shown.length) d += `<text x="${x + pad + shown.length * stp + pr * 0.2}" y="${py + pr * 0.45}" font-size="${pr * 1.3}" class="l3pz" pointer-events="none">+${loose.length - shown.length}</text>`;
       }
@@ -400,7 +413,7 @@ export default (api) => {
       d += `<g class="l3pl${x.on ? " on" : ""}${x.un ? " un" : ""}" ${x.un ? "" : `data-act="lixsw" data-k="${esc(x.id)}" data-lhold="${esc(x.id)}"`}><title>${esc(x.name)} · ${x.un ? "nicht erreichbar" : x.on ? (x.dim ? x.br + " %" : "an") : "aus"}${x.pos ? " · Raum aus der Position" : ""} · lang drücken für Details</title><circle cx="${it.x}" cy="${it.y}" r="${20 * q}" fill="transparent"/>${body}</g>`;
     });
     /* Kopfzeile, Etagen, nicht zugeordnete Flächen, Räume ohne Fläche */
-    const mapped = new Set([...map.values()].filter(Boolean).map((r) => r.k)), un = allR.filter((i) => !map.get(i.id) && (this._liD().pmap || {})[i.id] !== "-");
+    const mapped = new Set([...map.values()].filter(Boolean).map((r) => r.k)), un = allR.filter((i) => !this._liPArea(i) && (this._liD().pmap || {})[i.id] !== "-");
     const flOn = rs.map((i) => map.get(i.id)).filter((r) => r && r.on.length), nOn = flOn.reduce((a, r) => a + r.on.length, 0);
     const shown = rooms.filter((r) => !r.hid), off = shown.filter((r) => !mapped.has(r.k) && r.lamps.length);
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => { const c = allR.filter((i) => i.fl === f.id).map((i) => map.get(i.id)).filter((r) => r && r.on.length).length; return `<button class="${f.id === fl ? "on" : ""}" data-act="lixfl" data-k="${esc(f.id)}">${esc(f.n)}${c ? ` <b class="l3fc">${c}</b>` : ""}</button>`; }).join("")}</span>` : "";
@@ -408,8 +421,8 @@ export default (api) => {
       ${(() => { const nl = rs.map((i) => map.get(i.id)).filter((r) => r && longK[r.k]).length; return nl ? `<span class="w">${ic("bell", 14)}<b>${nl}</b> lange an</span>` : ""; })()}
       ${(() => { const np = LA.filter((x) => !x.pe).length; return np ? (adm && sf ? `<button class="u" data-act="lixplace" title="Im Baukasten von Modul 11 platzieren">${np} ${np === 1 ? "Lampe" : "Lampen"} nicht im Plan${ic("chev", 13)}</button>` : `<span>${np} ${np === 1 ? "Lampe" : "Lampen"} nicht im Plan</span>`) : ""; })()}
       ${un.length ? (adm ? `<button class="u" data-act="lixpun">${un.length} ${un.length === 1 ? "Fläche" : "Flächen"} nicht zugeordnet${ic("chev", 13)}</button>` : `<span class="u">${un.length} nicht zugeordnet</span>`) : ""}</div>`;
-    const offRow = off.length ? `<div class="l3poff"><span class="mut sm">Nicht im Grundriss:</span>${off.map((r) => `<button class="l3chip ${r.on.length ? "" : "off"}" style="--c:${r.on.length ? r.col : "#475569"}" data-act="lixroom" data-k="${esc(r.k)}" aria-label="${esc(r.name)} ${r.on.length ? "ausschalten" : "einschalten"}"><i></i>${esc(r.name)} · ${r.on.length ? r.on.length + " an" : "aus"}</button>`).join("")}</div>` : "";
-    const legend = `<div class="l3plg"><span><i style="background:#ffd2a1;box-shadow:0 0 6px #ffb36b"></i>an (echte Farbe)</span><span><i style="background:#475569"></i>aus</span><span><i style="border:1.5px dashed #64748b"></i>offline</span><span><i style="background:#334155;border:1.5px solid #94a3b8"></i>Lampe im Plan</span><span><i class="un"></i>nicht zugeordnet</span><span>Fläche antippen = Raum schalten · Punkt antippen = Lampe · lang drücken = Details</span></div>`;
+    const offRow = off.length ? `<div class="l3poff"><span class="mut sm">Nicht im Grundriss:</span>${off.map((r) => `<button class="l3chip ${r.on.length ? "" : "off"}" style="--c:${r.on.length ? r.col : "#475569"}" data-act="lixroom" data-k="${esc(r.k)}" aria-label="${esc(r.name)} ${r.on.length ? "ausschalten" : "einschalten"}" title="${esc(r.lamps.map((q) => q.name).join(", "))}"><i></i>${esc(r.k === "_" ? "Ohne Bereich" : r.name)} · ${r.lamps.length} ${r.lamps.length === 1 ? "Lampe" : "Lampen"} · ${r.on.length ? r.on.length + " an" : "aus"}</button>`).join("")}</div>` : "";
+    const legend = `<div class="l3plg"><span><i style="background:#ffd2a1;box-shadow:0 0 6px #ffb36b"></i>an (echte Farbe)</span><span><i style="background:#475569"></i>aus</span><span><i style="border:1.5px dashed #64748b"></i>offline</span><span><i style="background:#334155;border:1.5px solid #94a3b8"></i>Lampe im Plan</span><span><i style="background:#475569;outline:1.5px dashed #94a3b8;outline-offset:2px;width:8px;height:8px"></i>noch nicht platziert</span><span><i class="un"></i>nicht zugeordnet</span><span>Fläche antippen = Raum schalten · Punkt antippen = Lampe · lang drücken = Details</span></div>`;
     const vb = `${B.x0 - 16} ${B.y0 - 16} ${B.x1 - B.x0 + 32} ${B.y1 - B.y0 + 32}`;
     this._liHold();
     return `<div class="card l3pc"><h2>${ic("home", 18)}Lichtkarte<span class="sfhr">${bar}${adm && sf ? `<button class="sfed" data-act="gpedit">${ic("pencil", 14)} Grundriss bearbeiten</button>` : ""}</span></h2>
@@ -483,7 +496,7 @@ export default (api) => {
     if (a === "lixpmap") { if (this._admin()) { this._modal = { type: "lixpmap", k }; this._renderModal(); } return; }
     if (a === "lixpun") {   /* nächste nicht zugeordnete Fläche: Etage wechseln und „Fläche zuordnen“ öffnen */
       const P = this._gpPlan && this._gpPlan(), rs = this._liRooms(), pm = this._liD().pmap || {}, fo = ((P && P.floors) || []).map((f) => f.id);
-      const un = ((P && P.items) || []).filter((i) => i.t === "r" && pm[i.id] !== "-" && !this._liPRoom(i, rs)).sort((x, y) => (x.fl === this._liFl ? -1 : 0) - (y.fl === this._liFl ? -1 : 0) || fo.indexOf(x.fl) - fo.indexOf(y.fl));
+      const un = ((P && P.items) || []).filter((i) => i.t === "r" && pm[i.id] !== "-" && !this._liPArea(i)).sort((x, y) => (x.fl === this._liFl ? -1 : 0) - (y.fl === this._liFl ? -1 : 0) || fo.indexOf(x.fl) - fo.indexOf(y.fl));
       if (!un.length) return;
       this._liFl = un[0].fl; this._render(); this._modal = { type: "lixpmap", k: un[0].id }; this._renderModal(); return;
     }

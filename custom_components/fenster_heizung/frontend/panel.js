@@ -15578,7 +15578,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (!(this._liOn && this._liOn())) return "";
     const pl = new Set(P.items.filter((i) => i.t === "l" && i.e).map((i) => i.e)), free = this._sfLampIds().filter((e) => !pl.has(e));
     if (!free.length) return "";
-    return `<div class="sffld"><label>Noch nicht platzierte Lampen (antippen setzt sie in ihren Raum, sonst in die Mitte)</label><div class="gschips">${free.slice(0, 60).map((e) => `<button class="gsch" data-act="sfxlplace" data-k="${esc(e)}">${esc(this._wzName(e))}${this._liAreaOf && this._liAreaOf(e) ? `<small class="mut"> · ${esc(this._liAreaName(this._liAreaOf(e)))}</small>` : ""}</button>`).join("")}${free.length > 60 ? `<span class="mut sm">+${free.length - 60}</span>` : ""}</div></div>`;
+    const cnt = {}; free.forEach((e) => { const n = this._wzName(e); cnt[n] = (cnt[n] || 0) + 1; });   /* gleiche Namen (z. B. zwei „H70D1“): Entitäts-ID dazu */
+    return `<div class="sffld"><label>Noch nicht platzierte Lampen (antippen setzt sie in ihren Raum, sonst in die Mitte)</label><div class="gschips">${free.slice(0, 60).map((e) => `<button class="gsch" data-act="sfxlplace" data-k="${esc(e)}" title="${esc(e)}">${esc(this._wzName(e))}${cnt[this._wzName(e)] > 1 ? `<small class="mut"> · ${esc(e.replace(/^light\./, ""))}</small>` : ""}${this._liAreaOf && this._liAreaOf(e) ? `<small class="mut"> · ${esc(this._liAreaName(this._liAreaOf(e)))}</small>` : ""}</button>`).join("")}${free.length > 60 ? `<span class="mut sm">+${free.length - 60}</span>` : ""}</div></div>`;
   }
   _sfLampProps(sel) {
     const pl = new Set(this._sfEd.plan.items.filter((i) => i.t === "l" && i.e && i.id !== sel.id).map((i) => i.e)), ids = this._sfLampIds().filter((e) => !pl.has(e) || e === sel.e);

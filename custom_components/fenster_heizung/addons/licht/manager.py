@@ -202,7 +202,10 @@ class Addon(SWAddon):
                 sd["brightness_pct"] = max(1, min(100, int(data["brightness_pct"])))
             except (TypeError, ValueError):
                 pass
-        await self.hass.services.async_call("light", svc, sd, blocking=False)
+        try:  # warten, damit ein Fehler der Integration (z. B. „No such command“) auf der Seite ankommt
+            await self.hass.services.async_call("light", svc, sd, blocking=True)
+        except Exception as err:  # noqa: BLE001
+            raise AddonError(f"Integration meldet: {err}"[:200]) from err
         return {"via": target}
 
     def summary(self) -> dict[str, Any]:
