@@ -3625,18 +3625,16 @@ const CSS_SB = `
 .sbrgs{display:grid;grid-template-columns:repeat(2,54px);gap:8px}
 .sbrg{position:relative;width:54px;height:54px;display:block}.sbrg svg{width:100%;height:100%;display:block}
 .sbrg i{position:absolute;inset:0;display:grid;place-items:center;color:#fff}
-@media(max-width:600px){.hero.mh.sbx .sbart{width:100%;opacity:.38;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 60%);mask-image:linear-gradient(90deg,transparent 0,#000 60%)}
+@media(max-width:600px){
+  /* Handy: Bild als eigener Streifen über dem Text – nichts liegt mehr übereinander */
+  .hero.mh.sbx{display:flex;flex-direction:column;align-items:stretch}
+  .hero.mh.sbx>*{flex:none}
+  .hero.mh.sbx .sbart,.hero.mh.sbx.a-rb .sbart,.hero.mh.sbx.a-ga .sbart{order:-1;position:relative;inset:auto;width:auto;height:132px;margin:0 0 10px;border-radius:14px;overflow:hidden;opacity:1;display:flex;justify-content:center;align-items:stretch;background:rgba(3,12,22,.18);-webkit-mask-image:linear-gradient(#000 72%,transparent);mask-image:linear-gradient(#000 72%,transparent)}
+  .hero.mh.sbx .sbart>svg{width:auto;height:100%;max-width:100%;aspect-ratio:320/200}
   .hero.mh.sbx .lbl,.hero.mh.sbx .sub,.hero.mh.sbx .big,.hero.mh.sbx>.chips,.hero.mh.sbx.wwh .wwl1{max-width:none}
-  .sbwa{right:10px;gap:8px}.sbcal{width:84px}.sbcal em{font-size:2rem}.sbrgs{grid-template-columns:repeat(2,40px)}.sbrg{width:40px;height:40px}}
-.hero.mh .chip.stok{background:rgba(22,83,62,.75);border-color:#34d399}.hero.mh .chip.stwarn{background:rgba(90,69,19,.8);border-color:#fbbf24}.hero.mh .chip.stbad{background:rgba(90,30,42,.85);border-color:#f87171}
-.sbair{fill:none;stroke:#bdf0ff;stroke-width:3;stroke-linecap:round;stroke-dasharray:10 8;opacity:.85}.sbair.run{animation:sbDash 1.8s linear infinite}
-.sbspin{animation:sbSpin 3s linear infinite;transform-box:fill-box;transform-origin:center}
-@keyframes sbSpin{to{transform:rotate(360deg)}}
-.sbsnow{animation:sbSnow 6s linear infinite}@keyframes sbSnow{0%{transform:translateY(-20px)}100%{transform:translateY(40px)}}
-.sbart[data-an="voll"] .sbspin{animation-duration:1.6s}
-.sbrain{animation:sbRain 1s linear infinite}@keyframes sbRain{0%{transform:translateY(-10px);opacity:0}20%{opacity:1}100%{transform:translateY(30px);opacity:0}}
-.sbwave{animation:sbWave 2.6s ease-in-out infinite alternate}@keyframes sbWave{to{transform:translateX(6px)}}
-.hero.mh.sbx.a-ga .sbart{bottom:0;-webkit-mask-image:none;mask-image:none}
+  .hero.mh.sbx .sbv{top:166px;bottom:auto;right:20px}
+  .hero.mh.sbx .saiL{z-index:3}
+  .sbwa{position:static;transform:none;margin:auto;gap:12px}.sbcal{width:92px}.sbcal em{font-size:2.1rem}.sbrgs{grid-template-columns:repeat(2,44px)}.sbrg{width:44px;height:44px}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {

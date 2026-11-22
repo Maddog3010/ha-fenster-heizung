@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b49] - 2026-11-22
+
+**Neue Banner** – Handy-Ansicht korrigiert (Vorschau „Handy-Banner korrigieren & Weihnachten überall“, Teil 1).
+
+### Behoben
+- **Banner am Handy nicht mehr verdeckt:** Bisher lag das Bild bei schmalen Bildschirmen halb durchsichtig hinter dem ganzen Text – bei Lüftung liefen Raum-Namen und Werte durch die Schrift, bei Rollläden saß das Haus unter den Chips. Jetzt steht das Bild unter 600 px Breite als **eigener Streifen über dem Text** und läuft nach unten in die Kartenfarbe aus. Gilt für alle acht Szenen-Banner (Warmwasser, Lüftung, Rollläden, Wärmepumpe, Garten, Pool & Sauna, Batterie, Wartung). Die Versions-Plakette steht neben der Titelzeile.
+- iPad und Computer bleiben unverändert (Bild rechts).
+
 ## [2026.11.4b48] - 2026-11-22
 
 **Neue Banner** Build 3 – Garten, Pool & Sauna, Batteriespeicher (Schritt 3 von 3). Damit haben alle Module ein Szenen-Banner.
