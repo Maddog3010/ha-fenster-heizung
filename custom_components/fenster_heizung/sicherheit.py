@@ -9,7 +9,7 @@ import logging
 import re
 import time
 from datetime import timedelta
-from typing import Any
+from typing import Any, Callable
 
 from homeassistant.const import EVENT_STATE_CHANGED
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
@@ -372,6 +372,7 @@ class SicherheitManager:
         self.log: list[dict[str, str]] = []
         self._notes: dict[str, float] = {}
         self._unsub: CALLBACK_TYPE | None = None
+        self._unsub_gr: Callable[[], None] | None = None
         self._unsub_ev: CALLBACK_TYPE | None = None
         self._busy = False
         self._sum: dict[str, Any] = {}
@@ -425,6 +426,13 @@ class SicherheitManager:
             la = d.get("last_alarm") if isinstance(d.get("last_alarm"), dict) else {}
             if la.get("t"):
                 self.last_alarm = {k: str(la.get(k) or "") for k in ("t", "melder", "name", "raum")}
+        hs = self.hass.data.get(DOMAIN, {}).get("grundriss")  # Modul 0 · Haus & Grundriss: der Plan gehört dem Kern
+        if hs is not None:
+            if hs.has:
+                self.cfg["plan"] = clean_plan(hs.plan)
+            else:
+                hs.adopt(self.cfg["plan"], "sf")  # einmaliger Umzug aus Modul 11
+            self._unsub_gr = hs.listen(self._gr_changed)  # Modul 0 Build 3: Plan wird in Modul 0 bearbeitet, Modul 11 liest mit
         if migrate:
             try:
                 self._store.snapshot_now()
@@ -442,7 +450,20 @@ class SicherheitManager:
             self._fast_on()
         self.hass.async_create_task(self._tick(None))
 
+    def _gr_changed(self) -> None:
+        """Plan in Modul 0 geändert (Baukasten in Modul 0): eigene Kopie nachziehen, ohne zurückzuschreiben."""
+        hs = self.hass.data.get(DOMAIN, {}).get("grundriss")
+        if hs is None:
+            return
+        p = clean_plan(hs.plan)
+        if p != self.cfg["plan"]:
+            self.cfg["plan"] = p
+            self._save()
+
     def async_stop(self) -> None:
+        if getattr(self, "_unsub_gr", None):
+            self._unsub_gr()
+            self._unsub_gr = None
         for u in (self._unsub, self._unsub_ev, self._unsub_reg, self._unsub_fast, self._unsub_act):
             if u:
                 u()
@@ -1124,6 +1145,9 @@ class SicherheitManager:
 
     async def async_set(self, raw: Any) -> dict[str, Any]:
         self.cfg = clean_cfg({**self.cfg, **raw} if isinstance(raw, dict) else raw)  # fehlende Felder (alter Browser) behalten ihren Stand
+        hs = self.hass.data.get(DOMAIN, {}).get("grundriss")
+        if hs is not None and isinstance(raw, dict) and "plan" in raw:
+            hs.set_plan(self.cfg["plan"], "sf")  # Baukasten von Modul 11 schreibt in Modul 0
         self._save()
         await self.async_config_changed()
         return await self.snapshot()

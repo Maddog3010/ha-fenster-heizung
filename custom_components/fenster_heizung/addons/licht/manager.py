@@ -1,5 +1,8 @@
 """Modul 18 Licht & Lampen: Hintergrund-Teil des Addons (ab v0.2 Build 2).
 
+Ab Build 6: „Meine Lampen“ – Liste mit eigenem Namen, Raum (Bereich), Art und „bei Alle aus“, Modus auto/mine, Testen (Blinken) und
+der letzte Fehler je Lampe (z. B. Overkiz „No such command“), bis das Schalten wieder klappt.
+
 Ab Build 4 auch die Zuordnung Grundriss-Raum → Bereich (pmap) für die Ansicht „Grundriss“.
 
 Bis Build 1 lief das Modul nur im Dashboard. Ab Build 2 merkt sich der Python-Teil:
@@ -42,6 +45,10 @@ class Addon(SWAddon):
         self.prefs = L.clean_prefs(d.get("prefs"))
         self.legacy = L.clean_legacy(d.get("legacy"))
         self.pmap = L.clean_pmap(d.get("pmap"))
+        self.lamps = L.clean_lamps(d.get("lamps"))
+        self.mode = d.get("mode") if d.get("mode") in L.MODES else ""
+        self.ignored = L.clean_ignored(d.get("ignored"))
+        self.errs: dict[str, dict[str, str]] = {}
         self.started = d.get("started") or dt_util.now().date().isoformat()
         now = time.time()
         self.burn.resume({e: self._lc(e) for e in self._lamps() if self._is_on(e)}, now)
@@ -51,6 +58,9 @@ class Addon(SWAddon):
         self.core.on_unload(self.hass.bus.async_listen("state_changed", self._on_state))
         self.core.every(60, self._tick)
         self.core.provide("licht", self)
+        gr = self.hass.data.get(DOMAIN, {}).get("grundriss")  # ab Modul 0 Build 2: Zuordnung zieht in die Raumliste von Modul 0
+        if gr is not None and hasattr(gr, "merge_pmap") and self.pmap:
+            gr.merge_pmap(self.pmap)
         self._save(1)
         self._push()
 
@@ -62,12 +72,14 @@ class Addon(SWAddon):
         self.hass.data.get(DOMAIN, {}).pop("licht", None)
 
     def _save(self, delay: float = 10) -> None:
-        self.store.async_delay_save(lambda: {"burn": self.burn.dump(), "prefs": self.prefs, "pmap": self.pmap, "legacy": self.legacy, "started": self.started}, delay)
+        self.store.async_delay_save(lambda: {"burn": self.burn.dump(), "prefs": self.prefs, "pmap": self.pmap, "lamps": self.lamps, "mode": self.mode, "ignored": self.ignored, "legacy": self.legacy, "started": self.started}, delay)
 
     # ---- Lampen
     def _lamps(self) -> list[str]:
-        """Einzelne Lampen (ohne Lichtgruppen)."""
+        """Lampen des Moduls: mit „Meine Lampen“ nur die hinzugefügten (auch Gruppen), sonst alle einzelnen Lampen (ohne Lichtgruppen)."""
         st = self.hass.states
+        if self.mode == "mine":
+            return sorted(x["e"] for x in self.lamps if st.get(x["e"]) is not None)
         return sorted(e for e in st.async_entity_ids("light") if not L.members((st.get(e).attributes if st.get(e) else {})))
 
     def _groups(self) -> dict[str, list[str]]:
@@ -159,7 +171,7 @@ class Addon(SWAddon):
     def _state(self) -> dict[str, Any]:
         t = time.time()
         return {"ver": 2, "on": {e: round(v) for e, v in self.burn.on.items()}, "today": {e: round(s) for e, s in self.burn.today(t).items()},
-                "week": self.burn.week(t), "groups": self._groups(), "prefs": self.prefs, "pmap": self.pmap, "legacy": bool(self.legacy),
+                "week": self.burn.week(t), "groups": self._groups(), "prefs": self.prefs, "pmap": self.pmap, "lamps": self.lamps, "mode": self.mode, "ignored": self.ignored, "errs": self.errs, "legacy": bool(self.legacy),
                 "areas": self.core.areas(), "floors": self._floors(), "since": self.started}
 
     async def _c_get(self, data: dict[str, Any], admin: bool) -> dict[str, Any]:
@@ -174,6 +186,12 @@ class Addon(SWAddon):
         if not admin:
             raise AddonError("Nur Administratoren können das ändern")
         self.prefs = L.clean_prefs({**self.prefs, **(data.get("prefs") or {})})
+        if "lamps" in data:   # Meine Lampen (Build 6): ganze Liste
+            self.lamps = L.clean_lamps(data.get("lamps"))
+        if data.get("mode") in L.MODES:
+            self.mode = data["mode"]
+        if "ignored" in data:
+            self.ignored = L.clean_ignored(data.get("ignored"))
         pm = data.get("pmap")  # Grundriss-Zuordnung: {Plan-ID: Bereich | "-" | ""}; leer = wieder automatisch
         if isinstance(pm, dict):
             merged = {**self.pmap, **{k: v for k, v in pm.items() if isinstance(v, str) and v}}
@@ -181,6 +199,9 @@ class Addon(SWAddon):
                 if v in ("", None):
                     merged.pop(k, None)
             self.pmap = L.clean_pmap(merged)
+            gr = self.hass.data.get(DOMAIN, {}).get("grundriss")
+            if gr is not None and hasattr(gr, "set_rooms"):
+                gr.set_rooms({k: v for k, v in pm.items() if isinstance(k, str)})
         self._save(2)
         return self._state()
 
@@ -188,6 +209,12 @@ class Addon(SWAddon):
         """Schalten über die Seite. a = "switch": ids (Lampen), on (bool), optional brightness_pct.
         Passt eine Lichtgruppe genau, wird über sie geschaltet (alle Lampen gleichzeitig, weniger Funkverkehr)."""
         a = data.get("a")
+        if a == "test":   # kurz blinken lassen, damit man weiß, welche Lampe welche ist
+            e = data.get("e")
+            if not (isinstance(e, str) and _ENT.match(e) and self.hass.states.get(e) is not None):
+                raise AddonError("Lampe nicht gefunden")
+            await self._test(e)
+            return {"ok": True}
         if a != "switch":
             raise AddonError("Unbekannte Aktion")
         lamps = set(self._lamps())
@@ -202,8 +229,37 @@ class Addon(SWAddon):
                 sd["brightness_pct"] = max(1, min(100, int(data["brightness_pct"])))
             except (TypeError, ValueError):
                 pass
-        await self.hass.services.async_call("light", svc, sd, blocking=False)
+        try:  # warten, damit ein Fehler der Integration (z. B. „No such command“) auf der Seite ankommt
+            await self.hass.services.async_call("light", svc, sd, blocking=True)
+        except Exception as err:  # noqa: BLE001
+            msg = str(err)[:160]
+            for e in ids:   # Fehler an der Lampe merken, bis es wieder klappt
+                self.errs[e] = {"t": dt_util.now().isoformat(), "msg": msg, "svc": svc}
+            raise AddonError(f"Integration meldet: {msg}"[:200]) from err
+        for e in ids:
+            self.errs.pop(e, None)
         return {"via": target}
+
+    async def _test(self, e: str) -> None:
+        """Blinken: mit flash, wenn die Lampe es kann, sonst zweimal kurz umschalten und den alten Zustand wiederherstellen."""
+        import asyncio
+        st = self.hass.states.get(e)
+        was_on = bool(st and st.state == ON)
+        try:
+            await self.hass.services.async_call("light", "turn_on", {"entity_id": e, "flash": "short"}, blocking=True)
+            return
+        except Exception:  # noqa: BLE001 - flash wird nicht überall unterstützt
+            pass
+        try:
+            for _ in range(2):
+                await self.hass.services.async_call("light", "turn_off" if was_on else "turn_on", {"entity_id": e}, blocking=True)
+                await asyncio.sleep(0.6)
+                await self.hass.services.async_call("light", "turn_on" if was_on else "turn_off", {"entity_id": e}, blocking=True)
+                await asyncio.sleep(0.6)
+            self.errs.pop(e, None)
+        except Exception as err:  # noqa: BLE001
+            self.errs[e] = {"t": dt_util.now().isoformat(), "msg": str(err)[:160], "svc": "test"}
+            raise AddonError(f"Integration meldet: {str(err)[:160]}") from err
 
     def summary(self) -> dict[str, Any]:
         lamps = self._lamps()

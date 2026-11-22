@@ -256,6 +256,47 @@ def clean_pmap(raw: Any) -> dict[str, str]:
     return out
 
 
+# ---------------------------------------------------------------- Meine Lampen (Build 6)
+KINDS = ("decke", "steh", "spot", "streifen", "aussen", "tisch")
+MODES = ("", "auto", "mine")   # "" = noch nicht entschieden (verhält sich wie "auto"), "mine" = nur hinzugefügte Lampen
+LAMPS_MAX = 150
+_LENT = re.compile(r"^light\.[a-z0-9_]{1,80}$")
+_AREA = re.compile(r"^[A-Za-z0-9_.:-]{1,64}$")
+
+
+def guess_kind(name: str) -> str:
+    """Art aus dem Namen erraten (nur als Vorschlag beim Hinzufügen)."""
+    n = str(name or "").lower()
+    for k, words in (("streifen", ("streifen", "strip", "leiste", "led-band", "ledbox", "lightstrip")), ("steh", ("steh", "floor")), ("spot", ("spot", "strahler", "einbau")),
+                     ("aussen", ("außen", "aussen", "garten", "terrasse", "wand", "outdoor")), ("tisch", ("tisch", "nacht", "lese", "desk"))):
+        if any(w in n for w in words):
+            return k
+    return "decke"
+
+
+def clean_lamps(raw: Any) -> list[dict[str, Any]]:
+    """Meine Lampen: e (light.*), n (eigener Name, leer = Name aus Home Assistant), room (Bereichs-ID, leer = wie in Home Assistant),
+    k (Art), alloff (bei „Alle aus“ mitschalten). Doppelte Entitäten zählen einmal."""
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for x in raw if isinstance(raw, list) else []:
+        if len(out) >= LAMPS_MAX:
+            break
+        if not isinstance(x, dict):
+            continue
+        e = x.get("e")
+        if not (isinstance(e, str) and _LENT.match(e)) or e in seen:
+            continue
+        seen.add(e)
+        room = x.get("room") if isinstance(x.get("room"), str) and _AREA.match(x.get("room") or "") else ""
+        out.append({"e": e, "n": str(x.get("n") or "").strip()[:40], "room": room, "k": x.get("k") if x.get("k") in KINDS else "decke", "alloff": x.get("alloff") is not False})
+    return out
+
+
+def clean_ignored(raw: Any) -> list[str]:
+    return [e for e in (raw if isinstance(raw, list) else []) if isinstance(e, str) and _LENT.match(e)][:300]
+
+
 def clean_legacy(raw: Any) -> dict[str, Any] | None:
     """Kopie der bisherigen Einstellungen aus dem Layout (layout.li), so wie Build 1 sie gespeichert hat."""
     if not isinstance(raw, dict):

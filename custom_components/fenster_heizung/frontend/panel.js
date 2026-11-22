@@ -302,11 +302,13 @@ const HZ_BUBS = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fe
 const HZ_BUB_DEF = ["wetter", "personen", "alarm", "solar", "batterie", "auto", "fenster", "muell"];
 const HZ_BUB_N = { wetter: ["Wetter", "Außentemperatur und Wetterlage", "cloud"], personen: ["Personen zu Hause", "Anzahl der Personen daheim", "users"], alarm: ["Alarm", "Zustand der Alarmanlage", "shield"], solar: ["Solar jetzt", "Leistung der PV-Anlage", "sun"], batterie: ["Batterie", "Ladestand des Speichers", "bolt"], auto: ["E-Auto", "Ladestand und ob es lädt", "car"], fenster: ["Offene Fenster", "Anzahl offener Fenster", "windowOpen"], muell: ["Nächste Müllabfuhr", "nur wenn Modul 17 an ist", "trash"], warmwasser: ["Warmwasser", "Temperatur im Speicher", "drop"], preis: ["Strompreis", "Preis aus Modul 3", "chart"], hinweise: ["Hinweise", "Anzahl der Hinweise", "info"] };
 const MOD_MU = { id: "mu", n: 17, name: "Müllabfuhr", short: "Müllabfuhr", icon: "trash", tag: "Abholtermine, Tonnen-Ampel und Erinnerung", lab: true };
+/* Modul 0 · Haus & Grundriss (Build 1): gemeinsamer Bauplan, vor Modul 1 in der Leiste */
+const MOD_GR = { id: "gr", n: 0, num0: true, name: "Haus & Grundriss", short: "Haus & Grundriss", icon: "home", tag: "Ein Bauplan für alle Module", stage: "dev" };
 const MOD_LI = { id: "li", n: 18, name: "Licht & Lampen", short: "Licht", icon: "lamp", tag: "Lampen schalten, dimmen und Szenen", lab: true };
 /* Phase 3: Labs, die jetzt Addons sind (Müllabfuhr → Addon muell, Licht → Addon licht) */
 const LAB_GONE = ["mm", "li"];
 const MOD_ST = { ef: "stabil", sf: "vorab", sp: "stabil", ev: "vorab", wx: "stabil", dt: "vorab" };
-const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
+const modSt = (m) => (!m ? "" : m.num0 ? m.stage || "dev" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
 const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Termine legst du direkt in Modul 15 unter „Termine“ an – Betriebsstunden und Erinnerungen folgen" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "tfxopen", txt: "Preisquelle, Stufen, Endpreis, Vergleichspreis, Fenster je Gerät, Preisalarm und Daten prüfen" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeuge mit eigenen Sensoren, Wallbox-Sensoren" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
@@ -782,6 +784,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
+  gr: { v: "0.3", b: 3, d: "2026-11-22", p: "2026.11.4b52", log: [["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
   fh: { v: "1.8", b: 8, d: "2026-11-12", p: "2026.11.3", log: [["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -6539,16 +6542,8 @@ class FensterHeizungPanel extends HTMLElement {
   /* Grundriss aus Modul 11 laden. Bisher nur ein einziges Mal: War Home Assistant beim ersten Abruf noch nicht fertig gestartet
      (Modul 11 startet spät) oder wurde der Grundriss danach – auch auf einem anderen Gerät – gezeichnet, blieb Modul 1 bei
      „Noch kein Grundriss“, bis der Browser neu geladen wurde. Jetzt: nach einem Fehler nach 10 s erneut, sonst jede Minute im Hintergrund. */
-  _gpPlan() {
-    const D = this._sfxD, err = !!(D && D.d && D.d.error), age = D ? Date.now() - D.ts : Infinity;
-    if (this._hass && !this._gpBusy && !this._sfxBusy && (!D || (err && age > 10000) || age > 60000)) {
-      this._gpBusy = true;
-      this._hass.callWS({ type: "fenster_heizung/sf_get" }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; }).catch(() => { this._sfxD = { d: { ...((this._sfxD && !this._sfxD.d.error && this._sfxD.d) || {}), error: true }, ts: Date.now() }; })
-        .finally(() => { this._gpBusy = false; if (this._mdActive() === "fh" && this._view && this._view() === "plan") this._render(); });
-    }
-    if (!D) return null;
-    return D.d && D.d.cfg ? this._sfx().cfg.plan : err ? { error: true } : this._sfx().cfg.plan;
-  }
+  /* Plan aus Modul 0 · Haus & Grundriss (gr_get, ab 2026.11.4b52); vorher kam er aus Modul 11 (sf_get) */
+  _gpPlan() { return this._grPlan(); }
   /* Alle Räume, die eine Grundriss-Fläche bekommen können: Heizungsräume und Messräume (innen und außen) */
   _gpAll(rooms) { return [...(rooms || this._collect(true)), ...this._msList().map((m) => ({ id: m.id, name: m.name, ms: m }))]; }
   /* Messraum als Zustand wie _rkState, damit der Grundriss ihn wie einen Raum zeichnen kann */
@@ -6573,13 +6568,12 @@ class FensterHeizungPanel extends HTMLElement {
     if (P.error) return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Grundriss gerade nicht erreichbar</b><span>Modul 11 antwortet noch nicht – meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.</span></div>`;
     const any = (P.items || []).some((i) => i.t === "r");
     if (!any && (P.items || []).some((i) => i.t === "w")) {
-      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Im Grundriss sind noch keine Räume</b><span>Der Grundriss aus Modul 11 besteht bisher nur aus Wänden. Modul 1 färbt <b>Räume</b>: Zeichne sie im Baukasten mit dem Werkzeug „Raum“ über die Wände und gib ihnen einen Namen – dann erscheinen sie hier mit Temperatur.</span>
-        ${adm && this._mdList().some((m) => m.id === "sf") ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Räume einzeichnen</button>` : ""}</div>`;
+      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Im Grundriss sind noch keine Räume</b><span>Der Grundriss besteht bisher nur aus Wänden. Modul 1 färbt <b>Räume</b>: Zeichne sie im Baukasten mit dem Werkzeug „Raum“ über die Wände und gib ihnen einen Namen – dann erscheinen sie hier mit Temperatur.</span>
+        ${adm ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Räume einzeichnen</button>` : ""}</div>`;
     }
     if (!any) {
-      const sf = this._mdList().some((m) => m.id === "sf");
-      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Noch kein Grundriss</b><span>Den Grundriss zeichnest du einmal mit dem Baukasten aus Modul 11 (Rauch- &amp; Sicherheitsmelder): Räume, Wände, Türen und Fenster. Modul 1 färbt die Räume dann nach Temperatur.</span>
-        ${adm ? (sf ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : `<span class="mut sm">Schalte dafür unter Einstellungen → Module das Modul 11 ein.</span>`) : ""}</div>`;
+      return `<div class="card gpc gpempty">${this._gpEmptyArt()}<b>Noch kein Grundriss</b><span>Den Grundriss zeichnest du einmal mit dem Baukasten in Modul 0 (Haus &amp; Grundriss): Räume, Wände, Türen und Fenster. Modul 1 färbt die Räume dann nach Temperatur.</span>
+        ${adm ? `<button class="btn2 pri" data-act="gpedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div>`;
     }
     const fls = P.floors || [], fl = fls.some((f) => f.id === this._gpFl) ? this._gpFl : (fls.find((f) => (P.items || []).some((i) => i.fl === f.id && i.t === "r")) || fls[0]).id;
     const items = P.items.filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r" || i.t === "s");
@@ -6682,9 +6676,9 @@ class FensterHeizungPanel extends HTMLElement {
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="gpfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
     const B = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
     const vb = `${B.x0 - 20} ${B.y0 - 20} ${B.x1 - B.x0 + 40} ${B.y1 - B.y0 + 40}`;
-    return `<div class="card gpc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${adm && this._mdList().some((m) => m.id === "sf") ? `<button class="sfed" data-act="gpedit">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>
+    return `<div class="card gpc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${adm ? `<button class="sfed" data-act="gpedit" title="Öffnet den Baukasten in Modul 0 und kommt danach hierher zurück">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>
       ${sum}<div class="gpv" data-an="${an}"><svg viewBox="${vb}" role="img" aria-label="Grundriss mit Raumtemperaturen">${d}</svg></div>${legend}
-      <div class="mut sm gpnote">Antippen eines Raums öffnet seine Aktionen. Gezeichnet wird der Grundriss in Modul 11 und dort auch für die Melder genutzt.</div></div>`;
+      <div class="mut sm gpnote">Antippen eines Raums öffnet seine Aktionen. Gezeichnet wird der Grundriss in Modul 0 · Haus &amp; Grundriss – derselbe Plan für Melder (Modul 11) und Lichtkarte (Modul 18).</div></div>`;
   }
   /* W3: Plaketten je Raum (höchstens zwei) */
   _gpBadges(r, s) {
@@ -6723,7 +6717,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "gpmap") { this._modal = { type: "gpmap", k: b.dataset.k }; this._renderModal(); return true; }
     if (a === "gpset") { const g = { ...(this._cfg.layout.gmap || {}) }, v = b.dataset.id; if (v && v.startsWith("ms_")) for (const k of Object.keys(g)) if (g[k] === v) delete g[k];   /* ein Messraum hat genau eine Fläche */
       if (v) g[b.dataset.k] = v; else delete g[b.dataset.k]; this._cfg.layout.gmap = g; this._saveLayout(); this._modal = null; this._renderModal(); this._render(); return true; }
-    if (a === "gpedit") { this._modal = null; this._renderModal(); this._sfT = "pl"; this._mdActiveSet("sf"); this._sfxLoad(true); setTimeout(() => { if (this._sfxD && this._sfxD.d && this._sfxD.d.cfg) this._act("sfxedit", b); }, 400); this._render(); return true; }
+    if (a === "gpedit") { this._grEdit("fh"); return true; }   /* Modul 0 Build 3: Baukasten in Modul 0, danach zurück in die Wärmekarte */
     return false;
   }
   /* ================= Modul 1 · „Warum?“ als Zeitleiste (D3) ================= */
@@ -7517,6 +7511,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "m3old") { const L = this._cfg.layout; L.m3 = { ...(L.m3 || {}), old: !(L.m3 || {}).old }; this._saveLayout(); this._render(); this._renderModal(); }
     else if (["hsgo", "hsoff", "hswx", "hsxh", "hsxs"].includes(a) && this._hsAct(a, b)) { /* Haus-Szene, Stile (W7) */ }
     else if (["gpfl", "gpmap", "gpset", "gpedit"].includes(a) && this._gpAct(a, b)) { /* Grundriss */ }
+    else if (a.startsWith("grx") && this._grAct(a, b)) { /* Modul 0 · Haus & Grundriss */ }
     else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
     else if (a === "pm") {
       const p = this._pres();
@@ -8097,6 +8092,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (["hzset", "hzbub", "hzpin", "hzlater", "hztiles", "hzqaok", "hzqm", "hzqaset"].includes(m.type)) { box.innerHTML = this._hzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["efxmgr", "efxedit", "efxgrp"].includes(m.type)) { box.innerHTML = this._efxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["tgxmgr", "tgxedit", "tgxfb"].includes(m.type)) { box.innerHTML = this._tgxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (String(m.type).startsWith("grx") && this._grModal) { box.innerHTML = this._grModal(m); return; }   /* Modul 0 · Haus & Grundriss */
     if (String(m.type).startsWith("lix") && this._lixModal) { box.innerHTML = this._lixModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["adinst", "addel", "adupd", "adx"].includes(m.type)) { box.innerHTML = this._adModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "muset" && this._muxModal) { box.innerHTML = this._muxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -8425,6 +8421,7 @@ class FensterHeizungPanel extends HTMLElement {
   _mdList() {
     const s = this._mdState(), home = this._hzOn() ? [{ ...MOD_HOME, tag: this._hzGreet() }] : [];
     const rest = [MODS[0], ...(s.on.ww ? [MODS[1]] : []), ...(this._enOn() ? [MODS[2]] : []), ...(s.on.gs !== false ? [MODS[3]] : []), ...MODS.filter((m) => m.beta && s.on[m.id] === true && (!m.sponsor || this._spnS().active)), ...this._adMods()];
+    if (s.on.gr !== false) rest.push(MOD_GR);   /* Modul 0 · Haus & Grundriss */
     rest.sort((a, b) => a.n - b.n);
     return [...home, ...rest, ...s.ext.filter((x) => x.on).map((x) => ({ id: x.id, n: 0, name: x.name, short: x.name, icon: "puzzle", tag: "Externes Modul", ext: x }))];
   }
@@ -11509,7 +11506,8 @@ class FensterHeizungPanel extends HTMLElement {
     clearTimeout(this._sfxT);
     this._sfxT = setTimeout(() => {
       this._sfxT = null;
-      this._hass.callWS({ type: "fenster_heizung/sf_set", cfg: this._sfx().cfg }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } })
+      const { plan: _p, ...cfg2 } = this._sfx().cfg;   /* Modul 0 Build 3: den Plan schreibt nur noch der Baukasten in Modul 0 (gr_set) */
+      this._hass.callWS({ type: "fenster_heizung/sf_set", cfg: cfg2 }).then((r) => { this._sfxD = { d: r || {}, ts: Date.now() }; if (this._grDirty) this._grDirty(); if (this._sfxVisible()) { this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal(); } })
         .catch(() => this._toast("Die Einstellung konnte nicht gespeichert werden"));
     }, 500);
     this._render(); if (this._modal && this._modal.type === "sfset") this._renderModal();
@@ -12616,7 +12614,7 @@ class FensterHeizungPanel extends HTMLElement {
   _hzTile2(m) {
     const K = this._hzK(m), sz = this._hzKs(), hd = K.hd || this._hzHdFor(m), z = K.z;
     const pic = K.pic || (hd ? this._gx(hd, sz === "s" ? 26 : 32, { ...(this._hzTileO ? {} : {}), ...K.o }) : ic(m.icon, 20));
-    const sub = m.addon ? "Addon" : m.n ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst" title="${STG[modSt(m)].t}">${({ dev: "Entwicklung", vorab: "Vorab" })[modSt(m)] || STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
+    const sub = m.addon ? "Addon" : m.n || m.num0 ? `Modul ${m.n}` : "", stg = modSt(m) && modSt(m) !== "stabil" && STG[modSt(m)] ? `<em class="hzkst" title="${STG[modSt(m)].t}">${({ dev: "Entwicklung", vorab: "Vorab" })[modSt(m)] || STG[modSt(m)].t}</em>` : m.addon ? `<em class="hzkst">Addon</em>` : "";
     let gr = "";
     if (sz !== "s" && z !== "off") {
       const hv = K.ent && (sz === "l" || K.p == null) ? this._hzHist(K.ent) : null;
@@ -15573,12 +15571,15 @@ class FensterHeizungPanel extends HTMLElement {
     return out;
   }
   /* ---- Lampen im Baukasten (Modul 18 ab Build 5). Ohne Addon „licht“ bleiben sie unsichtbar und unverändert gespeichert. */
-  _sfLampIds() { const st = this._hass.states; return Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")); }
+  _sfLampIds() { const st = this._hass.states; if (this._liMine && this._liMine()) return (this._liD().lamps || []).map((x) => x.e).filter((e) => st[e]).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de"));   /* Modul 18 „Meine Lampen“: nur deine Lampen */
+    return Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")); }
+  _sfLampName(e) { const c = this._liMine && this._liMine() && this._liCfg ? this._liCfg()[e] : null; return (c && c.n) || this._wzName(e); }
   _sfLampFree(P) {
     if (!(this._liOn && this._liOn())) return "";
     const pl = new Set(P.items.filter((i) => i.t === "l" && i.e).map((i) => i.e)), free = this._sfLampIds().filter((e) => !pl.has(e));
     if (!free.length) return "";
-    return `<div class="sffld"><label>Noch nicht platzierte Lampen (antippen setzt sie in ihren Raum, sonst in die Mitte)</label><div class="gschips">${free.slice(0, 60).map((e) => `<button class="gsch" data-act="sfxlplace" data-k="${esc(e)}">${esc(this._wzName(e))}${this._liAreaOf && this._liAreaOf(e) ? `<small class="mut"> · ${esc(this._liAreaName(this._liAreaOf(e)))}</small>` : ""}</button>`).join("")}${free.length > 60 ? `<span class="mut sm">+${free.length - 60}</span>` : ""}</div></div>`;
+    const cnt = {}; free.forEach((e) => { const n = this._sfLampName(e); cnt[n] = (cnt[n] || 0) + 1; });   /* gleiche Namen (z. B. zwei „H70D1“): Entitäts-ID dazu */
+    return `<div class="sffld"><label>Noch nicht platzierte Lampen (antippen setzt sie in ihren Raum, sonst in die Mitte)</label><div class="gschips">${free.slice(0, 60).map((e) => `<button class="gsch" data-act="sfxlplace" data-k="${esc(e)}" title="${esc(e)}">${esc(this._sfLampName(e))}${cnt[this._sfLampName(e)] > 1 ? `<small class="mut"> · ${esc(e.replace(/^light\./, ""))}</small>` : ""}${this._liAreaOf && this._liAreaOf(e) ? `<small class="mut"> · ${esc(this._liAreaName(this._liAreaOf(e)))}</small>` : ""}</button>`).join("")}${free.length > 60 ? `<span class="mut sm">+${free.length - 60}</span>` : ""}</div></div>`;
   }
   _sfLampProps(sel) {
     const pl = new Set(this._sfEd.plan.items.filter((i) => i.t === "l" && i.e && i.id !== sel.id).map((i) => i.e)), ids = this._sfLampIds().filter((e) => !pl.has(e) || e === sel.e);
@@ -15606,7 +15607,7 @@ class FensterHeizungPanel extends HTMLElement {
       const one = sel ? `<div class="card sfc"><h2>${ic(KN[sel.k][1], 18)}${esc(sel.name)}</h2>${nw ? "" : this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : "";
       const side = nw ? `${al.length ? `<div class="card sfc"><h2>${ic("alert", 18)}Alarm</h2>${al.map((x) => this._sfCard(x)).join("")}${this._sfEscHint(al[0])}</div>` : ""}${listc}${one}${!listc && !al.length && !one ? `<div class="card sfc"><h2>${ic("info", 18)}Tipp</h2><div class="mut sm">Tippe auf einen Melder im Plan, dann siehst du Batterie, Einbaudatum und Prüfung.${here ? "" : " Auf dieser Etage sitzt noch kein Melder."}</div></div>` : ""}`
         : sel ? `<div class="card sfc"><h2>${ic("bell", 18)}${esc(sel.name)}</h2>${this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : al.length ? `<div class="card sfc"><h2>${ic("alert", 18)}Alarm</h2>${al.map((x) => this._sfCard(x)).join("")}${this._sfEscHint(al[0])}</div>` : `<div class="card sfc"><h2>${ic("info", 18)}Tipp</h2><div class="mut sm">Tippe auf einen Melder im Plan, dann siehst du Batterie, Einbaudatum und Prüfung.${here ? "" : " Auf dieser Etage sitzt noch kein Melder."}</div></div>`;
-      return `${kts}<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._sfFloorBar(false)}${adm && n ? `<button class="sfed" data-act="sfxedit">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>${leg ? `<div class="sflegw">${leg}</div>` : ""}${n ? `<div class="sfpl"><svg class="sfpv" viewBox="0 0 800 480" role="img" aria-label="Grundriss">${this._sfPlanInner(fl, false)}</svg></div>` : empty}</div></div><div class="enco">${side}</div></div>`;
+      return `${kts}<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._sfFloorBar(false)}${adm && n ? `<button class="sfed" data-act="sfxedit" title="Der Baukasten liegt in Modul 0 · Haus & Grundriss. Nach dem Speichern geht es hierher zurück.">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>${leg ? `<div class="sflegw">${leg}</div>` : ""}${n ? `<div class="sfpl"><svg class="sfpv" viewBox="0 0 800 480" role="img" aria-label="Grundriss">${this._sfPlanInner(fl, false)}</svg></div>` : empty}</div></div><div class="enco">${side}</div></div>`;
     }
     const sel = P.items.find((x) => x.id === ed.sel), dm = this._sfDetMap(), placed = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), free = T.l.filter((d) => !placed.has(d.id));
     const tile = (k, t, p) => `<button class="sfti${ed.tool === k ? " on" : ""}" data-act="sfxtool" data-k="${k}" aria-pressed="${ed.tool === k}"><svg viewBox="0 0 34 34" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>${t}</button>`;
@@ -15638,7 +15639,7 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._sfLampFree(P)}
       ${free.length ? `<div class="sffld"><label>Noch nicht platzierte Melder (antippen setzt sie in die Mitte)</label><div class="gschips">${free.map((d) => `<button class="gsch" data-act="sfxplace" data-k="${esc(d.id)}">${esc(d.name)}</button>`).join("")}</div></div>` : ""}</div></div>
       <div class="enco"><div class="card sfc"><div class="sfgrp">RÄUME UND BAUTEILE</div><div class="sftiles">${tile("select", "Auswählen", PP.select)}${tile("r", "Raum", PP.r)}${tile("w", "Wand", PP.w)}${tile("d", "Tür", PP.d)}${tile("dg", "Durchgang", '<path d="M5 10h7M22 10h7M5 24h7M22 24h7M12 7v6M22 7v6M12 21v6M22 21v6"/>')}${tile("f", "Fenster", PP.f)}${tile("s", "Treppe", PP.s)}</div>
-        <div class="sfgrp">MELDER UND TEXT</div><div class="sftiles">${tile("m:smoke", "Rauch", PP.smoke)}${tile("m:co", "CO", PP.co)}${tile("m:gas", "Gas", PP.gas)}${tile("m:water", "Wasser", PP.water)}${tile("m:heat", "Hitze", PP.heat)}${tile("x", "Text", PP.x)}</div>${this._liOn && this._liOn() ? `<div class="sfgrp">LICHT (MODUL 18)</div><div class="sftiles">${tile("l", "Lampe", '<path d="M12 22a7 7 0 1 1 10 0c-1 1-1.5 2-1.5 3.5h-7c0-1.5-.5-2.5-1.5-3.5z"/><path d="M14 29h6"/>')}</div>` : ""}</div>
+        ${this._mdList().some((m) => m.id === "sf") ? `<div class="sfgrp">MELDER (MODUL 11) UND TEXT</div><div class="sftiles">${tile("m:smoke", "Rauch", PP.smoke)}${tile("m:co", "CO", PP.co)}${tile("m:gas", "Gas", PP.gas)}${tile("m:water", "Wasser", PP.water)}${tile("m:heat", "Hitze", PP.heat)}${tile("x", "Text", PP.x)}</div>` : `<div class="sfgrp">TEXT</div><div class="sftiles">${tile("x", "Text", PP.x)}</div>`}${this._liOn && this._liOn() ? `<div class="sfgrp">LICHT (MODUL 18)</div><div class="sftiles">${tile("l", "Lampe", '<path d="M12 22a7 7 0 1 1 10 0c-1 1-1.5 2-1.5 3.5h-7c0-1.5-.5-2.5-1.5-3.5z"/><path d="M14 29h6"/>')}</div>` : ""}</div>
         <div class="card sfc">${prop}</div><div class="card sfc">${flBox}${scaleBox}${bgBox}${ioBox}</div>
         <div class="sfbtn"><button class="btn2" data-act="sfxcancel">Abbrechen</button><button class="btn2 pri" data-act="sfxsave">Speichern</button></div></div></div>`;
   }
@@ -15745,9 +15746,9 @@ class FensterHeizungPanel extends HTMLElement {
     const uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     if (a === "sfxtab") { this._sfT = k; try { localStorage.setItem("fh_sf_tab", k); } catch (_) { /* privater Modus */ } this._render(); return true; }
     if (a === "sfxfl") { this._sfFlId = k; if (ed) ed.sel = ""; this._render(); return true; }
-    if (a === "sfxedit") { this._sfEd = { plan: JSON.parse(JSON.stringify(this._sfx().cfg.plan)), sel: "", tool: "select" }; this._sfT = "pl"; this._render(); return true; }
-    if (a === "sfxcancel") { this._sfEd = null; this._render(); return true; }
-    if (a === "sfxsave") { const p = JSON.parse(JSON.stringify(ed.plan)); this._sfEd = null; this._sfxPatch((c) => { c.plan = p; }); this._toast("Grundriss gespeichert"); return true; }
+    if (a === "sfxedit") { this._grEdit("sf"); return true; }   /* Modul 0 Build 3: der Baukasten liegt in Modul 0 */
+    if (a === "sfxcancel") { this._sfEd = null; if (ed && ed.host === "gr") this._grEditDone(ed, false); else this._render(); return true; }
+    if (a === "sfxsave") { if (!ed) return true; const p = JSON.parse(JSON.stringify(ed.plan)); this._sfEd = null; if (ed.host === "gr") { this._grSavePlan(p); this._grEditDone(ed, true); } else { this._sfxPatch((c) => { c.plan = p; }); this._toast("Grundriss gespeichert"); } return true; }
     if (a === "sfxprint") { this._sfxPrint(); return true; }
     if (a === "sfxhtml") { this._sfxHtml(); return true; }
     if (a === "sfxcopy") { const T = this._sfStat(), C = T.C, sh = {}; T.l.forEach((x) => { if (x.bat != null && (x.bat < C.bat.pct + 10 || (x.bat_days != null && x.bat_days < 90))) { const q = x.btype || "Batterie"; sh[q] = (sh[q] || 0) + 1; } }); const txt = Object.entries(sh).map(([q, n]) => `${n} × ${q}`).concat(T.l.filter((x) => x.life_days != null && x.life_days < 0).map((x) => `1 × neuer Melder (${x.name})`)).join("\n") || "Nichts zu besorgen"; this._clip(txt, "Liste kopiert"); return true; }
@@ -16953,6 +16954,269 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "mpdhide") { const h = this._mpCfg("gs").devhid; this._mpSave("gs", { devhid: h.includes(k) ? h.filter((x) => x !== k) : [...h, k] }); return; }
     if (a === "mpreset") { this._mpSave(m, m === "gs" ? { order: [], hidden: [], dev: [], devhid: [] } : { order: [], hidden: [] }); this._toast("Anordnung zurückgesetzt"); }
   }
+  /* ================= Modul 0 · Haus & Grundriss (Build 1) =================
+     Der Grundriss gehört ab jetzt dem Kern (Speicher fenster_heizung_grundriss, WebSocket gr_get) statt Modul 11. Beim ersten Start wird er
+     aus Modul 11 übernommen. Modul 0 zeigt den Plan mit allen Ebenen (Melder aus Modul 11, Lampen aus Modul 18). Modul 1 (Wärmekarte) und
+     Modul 18 (Lichtkarte) lesen über _grPlan(). Bearbeitet wird in Build 1 noch im Baukasten von Modul 11 (zieht in Build 3 um).
+     Build 2: Reiter „Räume“ – eine Liste für alle Module: Plan-Raum ↔ Bereich in Home Assistant (zentral in Modul 0, ersetzt pmap aus Modul 18)
+     ↔ Raum in Modul 1 (bleibt im Layout gmap, wird hier bearbeitet) und „genutzt von“. Reiter „Einstellungen“ mit Rückfrage beim Ausschalten.
+     Build 3: Der Baukasten zieht aus Modul 11 hierher (_grEdit, gespeichert über gr_set plan). „Bearbeiten“ in Modul 1, 11 und 18 öffnet ihn
+     hier und kehrt nach Speichern oder Abbrechen zurück. Reiter „Ebenen“: Bauplan, Melder, Lampen, Wärme – mit Zahlen und Sprung ins Werkzeug. */
+  _grS0() { return (this._grS = this._grS || { d: null, ts: 0, busy: false, err: false }); }
+  _grLoad(force) {
+    const S = this._grS0(), age = Date.now() - S.ts;
+    if (!this._hass || S.busy || (!force && S.d && age < 60000) || (!force && S.err && age < 10000)) return;
+    S.busy = true;
+    this._hass.callWS({ type: "fenster_heizung/gr_get" }).then((r) => { S.d = r || null; S.err = false; })
+      .catch(() => { S.err = true; })
+      .finally(() => { S.busy = false; S.ts = Date.now(); if (this._grPend) { const q = this._grPend; this._grPend = null; if (S.d) { this._grEdit(q[0], q[1]); return; } this._toast("Der Grundriss ist gerade nicht erreichbar – bitte gleich nochmal versuchen"); } const a = this._mdActive && this._mdActive(); if (a === "gr" || a === "li" || (a === "fh" && this._view && this._view() === "plan")) this._render(); });
+  }
+  /* Plan für alle Module: null = lädt, { error: true } = nicht erreichbar, sonst der Plan */
+  _grPlan() { this._grLoad(); const S = this._grS0(); return S.d ? S.d.plan : S.err ? { error: true } : null; }
+  _grRaw() { const S = this._grS0(); return S.d && S.d.plan ? S.d.plan : null; }
+  _grDirty() { if (this._grS) { this._grS.ts = 0; this._grS.d = this._grS.d && { ...this._grS.d }; } this._grLoad(true); }
+  _grRooms() { const S = this._grS0(); return (S.d && S.d.rooms) || {}; }
+  /* Plan-Raum → Bereich in Home Assistant: { id, auto } oder null. Von Hand (Raumliste), sonst über den Namen; „-“ = bewusst keiner */
+  _grArea(item) {
+    const v = this._grRooms()[item.id];
+    if (v === "-") return null;
+    if (v) return { id: v, auto: false };
+    const nm = (x) => String(x || "").toLowerCase().replace(/zimmer|raum|[^a-zäöüß0-9]/g, ""), n = nm(item.n);
+    if (!n) return null;
+    const A = Object.values(this._hass.areas || {}).map((a) => ({ id: a.area_id, m: nm(a.name) }));
+    const hit = A.find((a) => a.m === n) || A.find((a) => a.m.length > 2 && (a.m.includes(n) || n.includes(a.m)));
+    return hit ? { id: hit.id, auto: true } : null;
+  }
+  _grAreaName(id) { const a = (this._hass.areas || {})[id]; return (a && a.name) || id; }
+  _grEntArea(e) { const H = this._hass, en = (H.entities || {})[e]; if (!en) return ""; if (en.area_id) return en.area_id; const dv = en.device_id && (H.devices || {})[en.device_id]; return (dv && dv.area_id) || ""; }
+  _grFloors(P) { return P && P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }]; }
+  /* Banner: Haus im Schnitt, eine Reihe je Etage (oben die höchste), Zellen = Räume der Etage */
+  _grHouse(P) {
+    const fls = this._grFloors(P).slice().reverse().slice(0, 3), W = 200, X0 = 24, H0 = 46, rowH = Math.max(22, Math.min(34, 90 / fls.length)), H = fls.length * rowH;
+    let s = `<svg class="grhs" viewBox="0 0 248 ${H0 + H + 14}" aria-hidden="true"><polygon points="${X0 - 8},${H0} ${X0 + W / 2},${H0 - 34} ${X0 + W + 8},${H0}" fill="#13233a" stroke="var(--teal,#2dd4bf)" stroke-width="2" stroke-linejoin="round"/><rect x="${X0}" y="${H0}" width="${W}" height="${H}" fill="#0f1b2d" stroke="var(--teal,#2dd4bf)" stroke-width="2"/>`;
+    fls.forEach((f, i) => {
+      const y = H0 + i * rowH, rs = (P.items || []).filter((x) => x.t === "r" && x.fl === f.id).slice(0, 6), n = Math.max(1, rs.length), cw = W / n;
+      if (i) s += `<line x1="${X0}" y1="${y}" x2="${X0 + W}" y2="${y}" stroke="#1e3350" stroke-width="2"/>`;
+      rs.forEach((r, j) => { const x = X0 + j * cw; if (j) s += `<line x1="${x}" y1="${y}" x2="${x}" y2="${y + rowH}" stroke="#1e3350" stroke-width="2"/>`; s += `<rect x="${x + 3}" y="${y + 3}" width="${cw - 6}" height="${rowH - 6}" rx="3" fill="#2dd4bf" fill-opacity="${(0.12 + 0.08 * (j % 3)).toFixed(2)}" stroke="#2dd4bf" stroke-opacity=".35"><title>${esc(r.n || "Raum")}</title></rect>`; });
+      s += `<text x="${X0 - 4}" y="${y + rowH / 2 + 3}" text-anchor="end" font-size="8" fill="#7f95ad">${esc(String(f.n || "").slice(0, 4))}</text>`;
+    });
+    return s + `<rect x="0" y="${H0 + H}" width="248" height="14" fill="#06101a" opacity=".55"/></svg>`;
+  }
+  _grLy() { return (this._grLys = this._grLys || { sf: true, licht: true }); }
+  _grPage() {
+    const S = this._grS0(), P = this._grPlan(), adm = this._admin(), sfOn = this._mdList().some((m) => m.id === "sf");
+    const css = `<style>.grh{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;padding:16px 18px;border-radius:18px;margin-bottom:14px;color:#e2e8f0;background:radial-gradient(120% 140% at 90% 0%,#0e7490 0%,transparent 55%),linear-gradient(135deg,#0f3d3a,#0b1a2c 70%)}
+      .grh svg.grhs{width:min(40%,220px);flex:none;height:auto}.grh .k{font-size:.68rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#5eead4}.grh .b{font-size:1.5rem;font-weight:750;color:#fff;margin:2px 0}.grh .s{color:#a5b8cc;font-size:.86rem}
+      .grh .v{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.grh .v button{border:1px solid #ffffff2e;background:#ffffff0f;color:inherit;border-radius:999px;padding:6px 13px;font:inherit;font-size:.8rem;font-weight:650;cursor:pointer}.grh .v button.pri{background:var(--teal);border-color:var(--teal);color:var(--on-acc,#042f2e)}
+      .grt{display:flex;gap:8px;margin:0 0 12px;flex-wrap:wrap}.grt button{border:1px solid color-mix(in srgb,var(--primary-text-color) 14%,transparent);background:var(--card);color:var(--primary-text-color);border-radius:999px;padding:8px 16px;font:inherit;font-weight:650}.grt button.on{border-color:var(--teal);color:var(--teal);box-shadow:inset 0 0 0 1px var(--teal)}.grt button:disabled{opacity:.45}.grt small{font-weight:500;opacity:.8}
+      .grl{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.grl button{display:inline-flex;gap:6px;align-items:center;border:0;border-radius:999px;padding:5px 11px;font:inherit;font-size:.78rem;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent);color:var(--mut);cursor:pointer}.grl button.on{background:color-mix(in srgb,var(--teal) 16%,transparent);color:var(--teal)}.grl i{width:9px;height:9px;border-radius:50%;display:inline-block}
+      .grv{border-radius:14px;overflow:hidden;background:color-mix(in srgb,#020617 55%,var(--card,#111a2b))}.grv svg{display:block;width:100%;height:auto;max-height:66vh}.grv text{font-family:inherit}
+      .grtb{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:#f59e0b;color:#1c1003;font-size:.72rem;margin-left:4px}
+      .grtab{width:100%;border-collapse:collapse;font-size:.9rem}.grtab th{text-align:left;color:var(--mut);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;padding:8px 10px;font-weight:700}.grtab td{padding:9px 10px;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 9%,transparent);vertical-align:middle}
+      .grsel{display:inline-flex;align-items:center;gap:8px;justify-content:space-between;min-width:150px;max-width:100%;border:1px solid color-mix(in srgb,var(--primary-text-color) 16%,transparent);border-radius:10px;padding:6px 10px;background:none;color:var(--primary-text-color);font:inherit;font-size:.86rem;cursor:pointer;text-align:left}
+      .grsel.warn{border-color:#f59e0b;color:#fbbf24}.grsel.none{color:var(--mut)}.grsel small{color:var(--mut);font-size:.72rem}.grsel:disabled{cursor:default;opacity:.85}
+      .grmods span{display:inline-block;margin:2px 4px 2px 0;border-radius:6px;padding:1px 7px;font-size:.72rem;background:color-mix(in srgb,var(--primary-text-color) 8%,transparent)}
+      .grfl{font-size:.72rem;color:var(--mut)}
+      .gred{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;border-radius:16px;margin-bottom:12px;color:#e2e8f0;background:linear-gradient(135deg,#0f3d3a,#0b1a2c 75%);border:1px solid #2dd4bf55}
+      .gred .t{flex:1;min-width:220px}.gred .k{font-size:.68rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase;color:#5eead4}.gred b{display:block;font-size:1.05rem;color:#fff}.gred small{color:#a5b8cc}
+      .gred .ch{display:flex;gap:6px;flex-wrap:wrap}.gred .ch span{border-radius:999px;padding:3px 10px;font-size:.74rem;background:#ffffff14}.gred .ch span.off{opacity:.5;text-decoration:line-through}
+      .gred button{border:1px solid #ffffff33;background:#ffffff10;color:inherit;border-radius:999px;padding:7px 14px;font:inherit;font-size:.82rem;font-weight:650;cursor:pointer}
+      .grly{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}.grly .card{margin:0;display:flex;flex-direction:column;gap:8px}
+      .grly .hd{display:flex;align-items:center;gap:10px}.grly .hd i{width:34px;height:34px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;flex:none}.grly .hd b{display:block;font-size:1rem}.grly .hd small{color:var(--mut)}
+      .grly .nums{display:flex;gap:6px;flex-wrap:wrap}.grly .nums span{border-radius:8px;padding:3px 9px;font-size:.78rem;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent)}.grly .nums span.w{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#fbbf24}
+      .grly .ft{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}.grly .ft .btn2{flex:0 0 auto}.grly .card.off{opacity:.62}
+      @media (max-width:700px){.grtab thead{display:none}.grtab tr{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 0;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 9%,transparent)}.grtab td{border:0;padding:2px 4px}.grtab td:first-child{grid-column:1/-1}.grtab td[data-l]::before{content:attr(data-l);display:block;font-size:.7rem;color:var(--mut)}}
+      .grinfo{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));margin-top:12px}.grinfo .card{margin:0}.grinfo b{display:block}.grinfo small{color:var(--mut)}
+      @media (max-width:560px){.grh{flex-direction:column;align-items:flex-start}.grh svg.grhs{width:100%;max-width:240px}}</style>`;
+    if (!P) return css + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Grundriss wird geladen …</div></div>`;
+    if (P.error) return css + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Grundriss gerade nicht erreichbar</div>Meist direkt nach einem Neustart von Home Assistant. Es wird gleich von selbst erneut versucht.</div>`;
+    const D = S.d || {}, st = D.stats || {}, meta = D.meta || {}, users = D.users || [], items = P.items || [], fls = this._grFloors(P);
+    if (this._sfEd && this._sfEd.host === "gr" && adm) return css + this._grEditHead(this._sfEd) + this._sfPlan(this._grT());
+    const UN = { fh: "Modul 1", sf: "Modul 11", li: "Modul 18" }, uTxt = users.map((u) => UN[u] || u).join(", ").replace(/, ([^,]*)$/, " und $1");
+    const edit = adm ? `<button data-act="grxedit">${ic("pencil", 14)} Bearbeiten</button>` : "";
+    const hero = `<div class="grh">${this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.length} ${fls.length === 1 ? "Etage" : "Etagen"} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
+      <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div><div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
+    const tab = ["plan", "raeume", "ebenen", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
+    const tb = (k, t) => `<button class="${tab === k ? "on" : ""}" data-act="grxtab" data-k="${k}" aria-pressed="${tab === k}">${t}</button>`;
+    const tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}${tb("ebenen", "Ebenen")}<button disabled title="kommt in Build 4">Sichern &amp; Einlesen <small>· Build 4</small></button>${adm ? tb("einst", "Einstellungen") : ""}</div>`;
+    if (tab === "einst" && adm) return css + hero + tabs + this._grSetView(D);
+    if (!items.some((i) => i.t === "r")) return css + hero + tabs + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div></div>`;
+    if (tab === "raeume") return css + hero + tabs + this._grRoomsView(P);
+    if (tab === "ebenen") return css + hero + tabs + this._grLayersView(P);
+    const fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, ly = this._grLy(), here = items.filter((i) => i.fl === fl);
+    const rs = here.filter((i) => i.t === "r"), B = rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
+    if (!rs.length) Object.assign(B, { x0: 0, y0: 0, x1: 800, y1: 480 });
+    const NF = this._narrow || (this.clientWidth || 999) < 600 ? 2 : 1, u = "gr" + (this.constructor._grN = ((this.constructor._grN || 0) + 1) % 1e6) + "_", st2 = this._hass.states;
+    const path = (i) => (i.pts && i.pts.length >= 3 ? "M" + i.pts.map((p) => p[0] + " " + p[1]).join("L") + "Z" : `M${i.x + 3} ${i.y + 3}h${i.w - 6}v${i.h - 6}h${-(i.w - 6)}Z`);
+    let d = `<defs><pattern id="${u}dot" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.1" fill="var(--primary-text-color)" opacity=".13"/></pattern></defs><rect x="${B.x0 - 400}" y="${B.y0 - 400}" width="${B.x1 - B.x0 + 800}" height="${B.y1 - B.y0 + 800}" fill="url(#${u}dot)"/>`;
+    const bg = (P.bg || {})[fl]; if (bg) d += `<image href="${esc(bg)}" x="${B.x0}" y="${B.y0}" width="${B.x1 - B.x0}" height="${B.y1 - B.y0}" opacity=".25" preserveAspectRatio="xMidYMid meet"/>`;
+    rs.forEach((i) => { d += `<path d="${path(i)}" fill="color-mix(in srgb,var(--card,#111a2b) 88%,#000)" stroke="var(--line,#334155)" stroke-width="2"/>`; });
+    here.forEach((i) => {
+      const a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
+      if (i.t === "w") d += `<path d="M${i.x} ${i.y}L${i.x2} ${i.y2}" stroke="color-mix(in srgb,var(--primary-text-color) 55%,transparent)" stroke-width="5" stroke-linecap="round"/>`;
+      else if (i.t === "d") d += `<rect x="${i.x - 15}" y="${i.y - 4}" width="30" height="8" rx="2" fill="color-mix(in srgb,#020617 55%,var(--card,#111a2b))"${a}/>`;
+      else if (i.t === "f") d += `<rect x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7" rx="2.5" fill="#bfdbfe" fill-opacity=".55" stroke="#60a5fa"${a}/>`;
+      else if (i.t === "s") d += `<g${a}><rect x="${i.x}" y="${i.y}" width="${i.w || 60}" height="${i.h || 90}" fill="none" stroke="var(--line,#334155)" stroke-width="1.5"/>${Array.from({ length: 6 }, (_, k) => `<line x1="${i.x}" y1="${i.y + (k + 1) * (i.h || 90) / 7}" x2="${i.x + (i.w || 60)}" y2="${i.y + (k + 1) * (i.h || 90) / 7}" stroke="var(--line,#334155)"/>`).join("")}</g>`;
+      else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" font-size="${13 * NF}" fill="var(--mut)">${esc(i.n || "")}</text>`;
+    });
+    rs.forEach((i) => { const fz = Math.min(14 * NF, i.w * 0.1); d += `<text x="${i.x + 12}" y="${i.y + 12 + fz}" font-size="${fz}" font-weight="700" fill="var(--primary-text-color)" pointer-events="none">${esc(i.n || "Raum")}</text>`; });
+    /* Ebenen: Lampen (Modul 18, nur mit Addon) und Melder (Modul 11) */
+    const q = NF > 1 ? 1.4 : 1;
+    if (ly.licht && this._liOn && this._liOn()) here.filter((i) => i.t === "l" && i.e).forEach((i) => {
+      const s2 = st2[i.e], on = !!(s2 && s2.state === "on"), c = on && this._liLampHex ? this._liLampHex(i.e) : "#475569";
+      d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<circle cx="${i.x}" cy="${i.y}" r="${22 * q}" fill="${c}" opacity=".3"/>` : ""}${i.k === "streifen" ? `<rect x="${i.x - 22 * q}" y="${i.y - 4 * q}" width="${44 * q}" height="${8 * q}" rx="${4 * q}" fill="${c}" stroke="${on ? "#fff" : "#94a3b8"}" stroke-width="1.6"${i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : ""}/>` : `<circle cx="${i.x}" cy="${i.y}" r="${(i.k === "spot" ? 6 : 9) * q}" fill="${c}" stroke="${on ? "#fff" : "#94a3b8"}" stroke-width="2"/>`}</g>`;
+    });
+    if (ly.sf) here.filter((i) => i.t === "m").forEach((i) => {
+      const s2 = i.e && st2[i.e], al = !!(s2 && s2.state === "on");
+      d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${11 * q}" fill="#1f2937" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><circle cx="${i.x}" cy="${i.y}" r="${4 * q}" fill="${al ? "#ef4444" : "#f87171"}"/></g>`;
+    });
+    const nL = items.filter((i) => i.t === "l").length, nM = items.filter((i) => i.t === "m").length, liOn = !!(this._liOn && this._liOn());
+    const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
+    const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button><span class="mut sm" style="align-self:center">Ebene antippen = ein- und ausblenden</span></div>`;
+    const card = `<div class="card"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
+      <div class="grv"><svg viewBox="${B.x0 - 16} ${B.y0 - 16} ${B.x1 - B.x0 + 32} ${B.y1 - B.y0 + 32}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${d}</svg></div></div>`;
+    const since = meta.since ? new Date(meta.since).toLocaleDateString("de-DE") : "", until = meta.copy_until ? new Date(meta.copy_until).toLocaleDateString("de-DE") : "";
+    const info = `<div class="grinfo">
+      <div class="card"><b>${ic("users", 15)} Genutzt von</b><small>${esc(uTxt)}. Einmal gezeichnet, überall derselbe Plan.</small></div>
+      <div class="card"><b>${ic("shield", 15)} Umzug aus Modul 11</b><small>${since ? `Am ${since} übernommen${meta.src === "sf" ? " aus Modul 11" : ""}. Die Kopie vom alten Stand wird bis ${until} aufgehoben.` : "Der Plan liegt jetzt im Kern von Strom &amp; Wärme."}</small></div>
+      <div class="card"><b>${ic("pencil", 15)} Bearbeiten</b><small>Im Baukasten hier in Modul 0 – auch „Bearbeiten“ in Modul 1, 11 und 18 führt hierher und danach zurück. Alle Module sehen die Änderung sofort.</small></div></div>`;
+    return css + hero + tabs + card + info;
+  }
+  /* ---- Baukasten in Modul 0 (Build 3) */
+  _grT() { return this._mdList().some((m) => m.id === "sf") && this._sfStat ? this._sfStat() : { l: [], al: [] }; }
+  _grModName(id) { return { fh: "Modul 1 · Wärmekarte", sf: "Modul 11 · Sicherheit", li: "Modul 18 · Licht", gr: "Modul 0" }[id] || "Modul 0"; }
+  _grEdit(from, tool) {
+    if (!this._admin()) return;
+    if (this._mdState().on.gr === false) { this._modal = { type: "grxeditoff", from: from || "gr", tool: tool || "" }; this._renderModal(); return; }
+    const P = this._grRaw();
+    if (!P) { this._grPend = [from, tool]; this._grLoad(true); return; }   /* noch nicht geladen (z. B. aus Modul 11): nach dem Laden weiter */
+    const plan = JSON.parse(JSON.stringify({ ...P, floors: P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }], items: P.items || [], bg: P.bg || {} }));
+    this._sfEd = { plan, sel: "", tool: tool || "select", host: "gr", from: from || "gr" };
+    if (plan.floors.some((f) => f.id === this._grFl)) this._sfFlId = this._grFl;
+    if (this._mdList().some((m) => m.id === "sf") && this._sfxLoad) this._sfxLoad();   /* Melder für die Werkzeuge */
+    this._modal = null; this._renderModal(); this._grTab = "plan"; this._mdActiveSet("gr"); this._render();
+    try { this.shadowRoot.querySelector(".gred").scrollIntoView({ block: "start" }); } catch (_) { /* egal */ }
+  }
+  _grEditHead(ed) {
+    const ms = this._mdList(), sf = ms.some((m) => m.id === "sf"), li = !!(this._liOn && this._liOn());
+    const back = ed.from && ed.from !== "gr" ? `<button data-act="sfxcancel">← Zurück zu ${esc(this._grModName(ed.from))}</button>` : "";
+    return `<div class="gred">${this._grHouse(ed.plan)}<div class="t"><div class="k">Modul 0 · Baukasten</div><b>Grundriss bearbeiten</b><small>Ein Plan für alle Module – nach dem Speichern sehen ${esc(["Modul 1", sf ? "Modul 11" : "", li ? "Modul 18" : ""].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " und $1"))} die Änderung sofort.${ed.from && ed.from !== "gr" ? ` Danach geht es zurück zu ${esc(this._grModName(ed.from))}.` : ""}</small></div>
+      <div class="ch"><span>Bauplan</span><span class="${sf ? "" : "off"}" title="${sf ? "" : "Modul 11 ist aus"}">Melder</span><span class="${li ? "" : "off"}" title="${li ? "" : "Addon „licht“ ist aus"}">Lampen</span></div>${back}</div>`.replace('<svg class="grhs"', '<svg class="grhs" style="width:110px;flex:none"');
+  }
+  _grSavePlan(p) {
+    const S = this._grS0();
+    if (S.d) S.d = { ...S.d, plan: p };   /* sofort zeigen */
+    if (this._sfxD && this._sfxD.d && this._sfxD.d.cfg) this._sfxD.d = { ...this._sfxD.d, cfg: { ...this._sfxD.d.cfg, plan: p } };
+    this._hass.callWS({ type: "fenster_heizung/gr_set", plan: p })
+      .then((r) => { S.d = r; S.ts = Date.now(); if (this._mdList().some((m) => m.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); })
+      .catch(() => { this._toast("Der Grundriss konnte nicht gespeichert werden – bitte nochmal versuchen"); this._grDirty(); });
+  }
+  _grEditDone(ed, saved) {
+    const to = ed && ed.from && ed.from !== "gr" && this._mdList().some((m) => m.id === ed.from) ? ed.from : "";
+    if (to) { if (to === "sf") this._sfT = "pl"; this._mdActiveSet(to); }
+    this._render();
+    if (saved) this._toast(`Grundriss gespeichert${to ? ` – zurück in ${this._grModName(to)}` : ""}`);
+  }
+  /* Reiter „Ebenen“: was liegt auf dem Plan, wer nutzt es, wo wird es bearbeitet */
+  _grLayersView(P) {
+    const adm = this._admin(), it = P.items || [], ms = this._mdList(), sf = ms.some((m) => m.id === "sf"), li = !!(this._liOn && this._liOn()), ly = this._grLy();
+    const c = (t) => it.filter((i) => i.t === t).length, nFl = this._grFloors(P).length, bgN = Object.values(P.bg || {}).filter(Boolean).length;
+    const T = sf ? this._grT() : { l: [] }, pm = new Set(it.filter((i) => i.t === "m" && i.e).map((i) => i.e)), mFree = (T.l || []).filter((d) => !pm.has(d.id)).length;
+    const lamps = li && this._liLamps ? this._liLamps() : [], lFree = lamps.filter((x) => !x.pe && !x.grp).length;
+    const gm = (this._cfg.layout && this._cfg.layout.gmap) || {}, all = this._gpAll ? this._gpAll() : [], rs = it.filter((i) => i.t === "r"), fhN = rs.filter((r) => this._gpMatch && this._gpMatch(r, all)).length;
+    const btn = (act, txt, k, t, pri) => adm ? `<button class="btn2${pri ? " pri" : ""}" data-act="${act}"${k ? ` data-k="${esc(k)}"` : ""}${t ? ` data-t="${esc(t)}"` : ""}>${txt}</button>` : "";
+    const vis = (k, on, dis) => `<button class="btn2" data-act="grxly" data-k="${k}" ${dis ? "disabled" : ""} aria-pressed="${on}">${on ? "Im Plan sichtbar" : "Im Plan ausgeblendet"}</button>`;
+    const card = (o) => `<div class="card${o.off ? " off" : ""}"><div class="hd"><i style="background:${o.c}22;color:${o.c}">${ic(o.i, 18)}</i><div><b>${o.n}</b><small>${o.s}</small></div></div><div class="nums">${o.nums.map((x) => `<span class="${x[1] ? "w" : ""}">${x[0]}</span>`).join("")}</div><div class="mut sm">${o.d}</div><div class="ft">${o.ft}</div></div>`;
+    return `<div class="mut sm" style="margin:-2px 0 10px">Der Plan besteht aus Ebenen. Den <b>Bauplan</b> zeichnest du einmal, die Module legen ihre Ebenen darüber. Bearbeitet wird alles im Baukasten hier – Ebenen ausgeschalteter Module bleiben gespeichert.</div><div class="grly">
+      ${card({ n: "Bauplan", s: "Modul 0 · Grundlage für alle", i: "home", c: "#2dd4bf", nums: [[`${nFl} ${nFl === 1 ? "Etage" : "Etagen"}`], [`${c("r")} Räume`], [`${c("w")} Wände`], [`${c("d")} Türen`], [`${c("f")} Fenster`], [`${c("s")} Treppen`], ...(bgN ? [[`${bgN} Hintergrundbild${bgN === 1 ? "" : "er"}`]] : [])], d: "Räume, Wände, Türen, Fenster, Treppen und Text. Räume bekommen im Reiter „Räume“ ihren Bereich aus Home Assistant.", ft: btn("grxedit", `${ic("pencil", 15)} Bauplan bearbeiten`, "gr", "r", true) + `<button class="btn2" data-act="grxtab" data-k="raeume">Räume zuordnen</button>` })}
+      ${card({ n: "Melder", s: sf ? "Modul 11 · Sicherheit" : "Modul 11 ist aus", i: "shield", c: "#f87171", off: !sf, nums: [[`${c("m")} im Plan`], ...(sf ? [[`${(T.l || []).length} Melder gesamt`], ...(mFree ? [[`${mFree} noch ohne Platz`, 1]] : [])] : [])], d: sf ? "Rauch-, CO-, Gas-, Wasser- und Hitzemelder mit Reichweite. Modul 11 zeigt daraus Abdeckung und Fluchtweg." : "Die Melder bleiben im Plan gespeichert und erscheinen wieder, sobald Modul 11 an ist.", ft: (sf ? btn("grxedit", `${ic("pencil", 15)} Melder setzen`, "gr", "m:smoke", !!mFree) : "") + vis("sf", ly.sf, !sf) })}
+      ${card({ n: "Lampen", s: li ? "Modul 18 · Licht" : "Addon „licht“ ist aus", i: "lamp", c: "#ffb36b", off: !li, nums: [[`${c("l")} im Plan`], ...(li ? [[`${lamps.length} Lampen in Modul 18`], ...(lFree ? [[`${lFree} noch ohne Platz`, 1]] : [])] : [])], d: li ? "Lichtkegel in echter Farbe für die Lichtkarte. Hinzufügen und benennen im Reiter „Lampen“ von Modul 18." : "Die Lampen bleiben im Plan gespeichert und erscheinen wieder, sobald das Addon an ist.", ft: (li ? btn("grxedit", `${ic("pencil", 15)} Lampen setzen`, "gr", "l", !!lFree) : "") + vis("licht", ly.licht && li, !li) })}
+      ${card({ n: "Wärme", s: "Modul 1 · Wärmekarte", i: "flame", c: "#fb923c", nums: [[`${fhN} von ${rs.length} Räumen mit Raum aus Modul 1`, fhN < rs.length && rs.length ? 1 : 0]], d: "Keine eigenen Elemente: Modul 1 färbt die Räume des Bauplans nach Temperatur, Fenster zeigen offen oder zu.", ft: `<button class="btn2" data-act="grxtab" data-k="raeume">Räume zuordnen</button><button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte öffnen</button>` })}
+      </div>`;
+  }
+  /* Zahlen für den Reiter „Räume“: n Räume, open = ohne Bereich und nicht bewusst „kein Bereich“ */
+  _grRoomStats(P) {
+    const rs = ((P && P.items) || []).filter((i) => i.t === "r"), R = this._grRooms();
+    return { n: rs.length, open: rs.filter((i) => R[i.id] !== "-" && !this._grArea(i)).length };
+  }
+  _grRoomsView(P) {
+    const adm = this._admin(), fls = this._grFloors(P), fo = fls.map((f) => f.id), fn = Object.fromEntries(fls.map((f) => [f.id, f.n]));
+    const rs = (P.items || []).filter((i) => i.t === "r").sort((x, y) => fo.indexOf(y.fl) - fo.indexOf(x.fl) || String(x.n || "").localeCompare(String(y.n || ""), "de"));
+    const all = this._gpAll ? this._gpAll() : [], gm = (this._cfg.layout && this._cfg.layout.gmap) || {}, R = this._grRooms(), st = this._hass.states;
+    const inR = (r, i) => (this._sfInRoom ? this._sfInRoom(r, i.x, i.y) : i.x > r.x && i.x < r.x + r.w && i.y > r.y && i.y < r.y + r.h);
+    const lampsByArea = {}; if (this._liOn && this._liOn()) Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).forEach((e) => { const a = this._grEntArea(e); if (a) lampsByArea[a] = (lampsByArea[a] || 0) + 1; });
+    let withA = 0, withF = 0;
+    const rows = rs.map((i) => {
+      const ar = this._grArea(i), none = R[i.id] === "-", f = this._gpMatch ? this._gpMatch(i, all) : null, fNone = gm[i.id] === "-", fAuto = f && !gm[i.id];
+      if (ar || none) withA++; if (f || fNone) withF++;
+      const mel = (P.items || []).filter((m) => m.t === "m" && m.fl === i.fl && inR(i, m)).length, lam = (P.items || []).filter((m) => m.t === "l" && m.fl === i.fl && inR(i, m)).length + (ar ? lampsByArea[ar.id] || 0 : 0);
+      const mods = [f ? "M1" : "", mel ? `M11 · ${mel} Melder` : "", lam && this._liOn && this._liOn() ? `M18 · Licht` : ""].filter(Boolean);
+      const aBtn = `<button class="grsel ${ar ? "" : none ? "none" : "warn"}" ${adm ? `data-act="grxarea" data-k="${esc(i.id)}"` : "disabled"}><span>${ar ? `${ar.auto ? "" : "✓ "}${esc(this._grAreaName(ar.id))}${ar.auto ? " <small>automatisch</small>" : ""}` : none ? "kein Bereich" : "Bereich wählen"}</span>${adm ? "▾" : ""}</button>`;
+      const fBtn = `<button class="grsel ${f ? "" : "none"}" ${adm ? `data-act="gpmap" data-k="${esc(i.id)}"` : "disabled"}><span>${f ? `${esc(f.name)}${fAuto ? " <small>automatisch</small>" : ""}` : fNone ? "kein Raum" : "–"}</span>${adm ? "▾" : ""}</button>`;
+      return `<tr><td><b>${esc(i.n || "Raum ohne Namen")}</b> <span class="grfl">${esc(fn[i.fl] || i.fl)}</span></td><td data-l="Bereich in Home Assistant">${aBtn}</td><td data-l="Raum in Modul 1">${fBtn}</td><td data-l="Genutzt von" class="grmods">${mods.map((x) => `<span>${x}</span>`).join("") || `<span class="mut" style="background:none">–</span>`}</td></tr>`;
+    }).join("");
+    if (!rs.length) return `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch keine Räume im Plan</div>Zeichne Räume mit dem Werkzeug „Raum“ und gib ihnen Namen. Dann erscheinen sie hier.</div>`;
+    return `<div class="card"><h2>${ic("grid", 18)}Räume<span class="sfhr"><span class="mut sm">${withA} von ${rs.length} mit Bereich · ${withF} mit Raum aus Modul 1</span></span></h2>
+      <div class="mut sm" style="margin:-4px 0 10px">Eine Liste für alle Module. Der <b>Bereich</b> gilt für Modul 18 (Lichtkarte) und kommende Ebenen, der <b>Raum aus Modul 1</b> färbt die Wärmekarte. Ohne Auswahl ordnet der Name zu („automatisch“).</div>
+      <table class="grtab"><thead><tr><th>Raum im Plan</th><th>Bereich in Home Assistant</th><th>Raum in Modul 1</th><th>Genutzt von</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+  _grSetView(D) {
+    const meta = D.meta || {}, users = (D.users || []).filter((u) => u !== "gr"), on = this._mdState().on.gr !== false, UN = { fh: "Modul 1 (Wärmekarte)", sf: "Modul 11 (Melder)", li: "Modul 18 (Lichtkarte)" };
+    const dt = (x) => (x ? new Date(x).toLocaleDateString("de-DE") : "");
+    return `<div class="card"><h2>${ic("sliders", 18)}Einstellungen</h2>
+      <div class="vrow"><span>Modul 0 eingeschaltet<small class="mut" style="display:block">Wird von ${esc(users.map((u) => UN[u] || u).join(", "))} genutzt. Ausschalten blendet nur diese Seite aus – der Plan bleibt gespeichert und in den anderen Modulen sichtbar.</small></span><button class="sw ${on ? "on" : ""}" data-act="grxoff" aria-pressed="${on}" aria-label="Modul 0 ein- oder ausschalten"></button></div>
+      <div class="vrow"><span>Umzug aus Modul 11<small class="mut" style="display:block">${meta.since ? `Am ${dt(meta.since)} übernommen.${meta.copy_until ? ` Die Kopie vom alten Stand wird bis ${dt(meta.copy_until)} aufgehoben.` : ""}` : "Kein Umzug nötig – der Plan wurde direkt hier angelegt."}${meta.pmap ? ` Zuordnungen aus Modul 18 am ${dt(meta.pmap)} übernommen.` : ""}</small></span></div>
+      <div class="vrow"><span>Zuletzt geändert<small class="mut" style="display:block">${meta.changed ? `${new Date(meta.changed).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })}${meta.by === "gr" ? " im Baukasten von Modul 0" : meta.by === "sf" ? " über Modul 11" : ""}` : "–"}</small></span></div>
+      <div class="vrow"><span>Gespeichert<small class="mut" style="display:block">Im Kern von Strom &amp; Wärme (fenster_heizung_grundriss), mit automatischen Sicherungskopien. Ausschalten oder Deinstallieren eines Moduls löscht den Plan nicht.</small></span></div></div>`;
+  }
+  _grModal(m) {
+    const P = this._grRaw();
+    if (m.type === "grxarea") {
+      const it = P && (P.items || []).find((i) => i.id === m.k); if (!it) return `<div class="ov" data-act="close"></div>`;
+      const cur = this._grRooms()[it.id] || "", auto = cur ? null : this._grArea(it), A = Object.values(this._hass.areas || {}).sort((a, b) => String(a.name).localeCompare(String(b.name), "de"));
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Bereich zuordnen</b><span>Raum im Plan: ${esc(it.n || "ohne Namen")}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm" style="margin:0 0 10px">Welcher Bereich aus Home Assistant liegt hier? Das gilt für alle Module, die nach Bereichen arbeiten (z. B. Modul 18 · Lichtkarte).</div>
+        <div class="gschips">${A.map((a) => `<button class="gsch ${cur === a.area_id || (!cur && auto && auto.id === a.area_id) ? "sel" : ""}" data-act="grxaset" data-k="${esc(it.id)}" data-v="${esc(a.area_id)}">${esc(a.name)}</button>`).join("") || `<span class="mut sm">In Home Assistant sind noch keine Bereiche angelegt.</span>`}</div>
+        <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="-">Kein Bereich</button>${cur ? `<button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+    }
+    if (m.type === "grxeditoff") return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Modul 0 einschalten?</b><span>Haus &amp; Grundriss</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm">Der Baukasten liegt jetzt in <b style="color:var(--primary-text-color)">Modul 0 · Haus &amp; Grundriss</b>. Zum Bearbeiten wird Modul 0 eingeschaltet. ${m.from && m.from !== "gr" ? `Nach dem Speichern geht es zurück zu ${esc(this._grModName(m.from))}.` : ""}</div>
+        <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grxeditgo">Einschalten und bearbeiten</button></div></div>`;
+    if (m.type === "grxoff") {
+      const D = this._grS0().d || {}, UN = { fh: "Modul 1", sf: "Modul 11", li: "Modul 18" }, U = (D.users || []).map((u) => UN[u]).filter(Boolean);
+      return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Modul 0 ausschalten?</b><span>Haus &amp; Grundriss</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+        <div class="mut sm" style="margin-bottom:10px">${U.length ? `Der Grundriss wird von <b style="color:var(--primary-text-color)">${esc(U.join(", ").replace(/, ([^,]*)$/, " und $1"))}</b> genutzt.` : "Der Grundriss wird gerade von keinem anderen Modul genutzt."}</div>
+        <div class="mut sm">Ausschalten blendet nur die Seite „Haus &amp; Grundriss“ aus. Der Plan bleibt gespeichert, die anderen Module zeigen ihn weiter. Einschalten geht jederzeit unter Einstellungen → Module.</div>
+        <div class="foot2" style="margin-top:14px"><button class="btn2" data-act="close">Abbrechen</button><button class="btn2 pri" data-act="grxoffgo">Trotzdem ausschalten</button></div></div>`;
+    }
+    return `<div class="ov" data-act="close"></div>`;
+  }
+  _grAct(a, b) {
+    const k = b && b.dataset ? b.dataset.k : "";
+    if (a === "grxfl") { this._grFl = k; this._render(); return true; }
+    if (a === "grxly") { const L = this._grLy(); if (k in L) { L[k] = !L[k]; this._render(); } return true; }
+    if (a === "grxtab") { this._grTab = k || "plan"; this._render(); return true; }
+    if (a === "grxarea") { if (this._admin()) { this._modal = { type: "grxarea", k }; this._renderModal(); } return true; }
+    if (a === "grxaset") {
+      if (!this._admin()) return true;
+      const S = this._grS0(), v = b.dataset.v || "";
+      if (S.d) { const r = { ...(S.d.rooms || {}) }; if (v) r[k] = v; else delete r[k]; S.d = { ...S.d, rooms: r }; }   /* sofort zeigen */
+      this._modal = null; this._renderModal(); this._render();
+      this._hass.callWS({ type: "fenster_heizung/gr_set", rooms: { [k]: v } }).then((r) => { S.d = r; S.ts = Date.now(); this._render(); }).catch(() => { this._toast("Speichern fehlgeschlagen"); this._grDirty(); });
+      return true;
+    }
+    if (a === "grxoff") {
+      const s = this._mdState();
+      if (s.on.gr === false) { s.on.gr = true; this._mdSave(); this._render(); this._renderModal(); return true; }
+      this._modal = { type: "grxoff" }; this._renderModal(); return true;
+    }
+    if (a === "grxoffgo") { const s = this._mdState(); s.on.gr = false; this._modal = null; this._renderModal(); if (this._mdActive() === "gr") this._mdActiveSet("fh"); this._mdSave(); this._render(); this._toast("Modul 0 ist aus – der Grundriss bleibt in den anderen Modulen sichtbar"); return true; }
+    if (a === "grxedit") { this._grEdit((b && b.dataset && b.dataset.k) || "gr", (b && b.dataset && b.dataset.t) || ""); return true; }
+    if (a === "grxeditgo") { const m = this._modal || {}, s = this._mdState(); s.on.gr = true; this._mdSave(); this._modal = null; this._grEdit(m.from, m.tool); return true; }
+    if (a === "grxgo") { if (this._mdList().some((x) => x.id === k)) { this._mdActiveSet(k); this._render(); } return true; }
+    if (a === "grxsfon") { this._toast("Der Baukasten liegt bis Build 3 noch in Modul 11. Schalte Modul 11 unter Einstellungen → Module ein."); return true; }
+    return false;
+  }
   /* ================= Modul 10: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
   _gaTab() {
     let t = this._gaT; if (!t) { try { t = localStorage.getItem("fh_ga_tab"); } catch (_) { /* privater Modus */ } }
@@ -17249,7 +17513,7 @@ class FensterHeizungPanel extends HTMLElement {
   _mvNew(id) { const m = MV[id]; return !!(m && this._ver && m.p === this._ver && m.log.length > 1); }
   _mvTrack(cur) { const i = MV_STG.findIndex((x) => x[0] === cur); return `<div class="mvtr">${MV_STG.map((x, k) => `<span class="${k < i ? "done" : k === i ? "now" : ""}"><em class="sxc ${STG[x[0]].c}">${STG[x[0]].t}</em><small>${x[1]}</small></span>`).join("<i>›</i>")}</div>`; }
   _mvTab(id) { const m = MV[id]; if (!m || this._narrow) return ["", ""]; return [`<span class="mvv"> · v${esc(m.v)}</span>`, this._mvNew(id) ? `<i class="mnew">neu</i>` : ""]; }
-  _mvAll() { return [...MODS, MOD_MU, MOD_LI].filter((x) => MV[x.id]).sort((x, y) => x.n - y.n); }
+  _mvAll() { return [MOD_GR, ...MODS, MOD_MU, MOD_LI].filter((x) => MV[x.id]).sort((x, y) => x.n - y.n); }
   /* Versionshinweis in der Kopfzeile: stabil „Version 2026.11.1“, Testversion „Beta 2026.11.2b1“. Tipp öffnet Versionen. */
   _verTag() {
     if (!this._ver) return "";
@@ -19738,7 +20002,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");
-    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}${this._mvTab(m.id)[0]}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : this._mvTab(m.id)[1]}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
+    return `<nav class="mbar" aria-label="Module">${this._mdList().map((m) => `<button class="mtab ${a === m.id ? "sel" : ""}" data-act="mdgo" data-k="${m.id}" aria-pressed="${a === m.id}">${ic(m.icon, 20)}<span><small>${m.n || m.num0 ? "Modul " + m.n : m.start ? "Übersicht" : "Eigenes Modul"}${this._mvTab(m.id)[0]}</small><b>${esc(m.short)}</b></span>${m.id === "ww" && bad ? `<i class="mdot" title="Hinweise vorhanden"></i>` : this._mvTab(m.id)[1]}${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : ""}</button>`).join("")}${this._labTab()}${this._admin() && this._stoCfg().tab ? `<button class="mtab sto" data-act="igopen" aria-label="Store: Integrationen und Dienste">${ic("puzzle", 20)}<span><small>Entdecken</small><b>Store</b></span>${this._stoTodo() ? `<i class="sdot">${this._stoTodo()}</i>` : ""}</button>` : `<button class="mtab add" data-act="mdmgr" aria-label="Module verwalten">${ic("plus", 18)}<span><small>Erweitern</small><b>Module</b></span></button>`}</nav>`;
   }
   _mdRender() {
     const sr = this.shadowRoot, a = this._mdActive(), m = this._mdList().find((x) => x.id === a), adm = this._admin();
@@ -19747,6 +20011,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "gs") { body = this._gsPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._gsState().devices.length && !this._gsDet ? this._mpPill() : ""}` : ""; }
     else if (a === "st") { body = this._hzPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; }
     else if (a === "mu" && this._muOn()) { body = (this._muHero ? this._muHero() : this._modHeroFor("mu")) + this._muPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>${this._edit ? `<button class="pillbtn pri" data-act="done">${ic("check", 16)}<span class="bl">Fertig</span></button>` : `<button class="pillbtn" data-act="edit">${ic("pencil", 16)}<span class="bl">Anpassen</span></button>`}` : ""; this._muLoad(); }
+    else if (a === "gr") { body = this._grPage(); }
     else if (a === "li" && this._liOn()) { body = this._modHeroFor("li") + this._liPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (a === "ef") { body = this._efPage(); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
     else if (m.addon) { body = this._adPage(m); pills = adm ? `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>` : ""; }
@@ -19756,7 +20021,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a !== "ww" && a !== "en" && a !== "gs" && a !== "mu" && a !== "li" && a !== "st" && !m.beta && !m.addon && adm) pills = `<button class="pillbtn" data-act="mdst" aria-label="Einstellungen">${ic("sliders", 16)}<span class="bl">Einstellungen</span></button>`;
     sr.getElementById("main").innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
-        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? this._verTag() : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
+        <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>${m.n || m.num0 ? `<i class="mn">Modul ${m.n} – </i>` : ""}${esc(m.name)}</b><span>${modSt(m) ? `<em class="${STG[modSt(m)].c}">${STG[modSt(m)].h}</em>` : ""}${MV[a] ? this._mvChip(a) : ""}<em class="tag">${esc(m.tag)}</em>${this._labHdr(a)}${MV[a] ? this._verTag() : this._mvVer(a)}</span></div></div>${this._tmBtn()}${this._spnBtn()}${this._stoBtn()}${pills}</div>
       ${this._mdBar()}<div class="wrap">${this._mvPop(a)}${this._tmHint()}${this._labCards(a)}${body}</div>`;
     /* Das Banner steht in jedem Modul ganz oben, auch wenn davor Labs-Karten oder Hinweise erzeugt werden. */
     const wr = sr.getElementById("main").querySelector(".wrap"), hb = wr && wr.querySelector(":scope > .hero.mh");
@@ -19802,6 +20067,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "mdensetup") { this._modal = { type: "enset", tab: k || "" }; this._renderModal(); }
     else if (a === "mdtog") {
       if (MODS.some((x) => x.id === k && x.sponsor) && !this._spnS().active) { this._modal = { type: "spndlg", err: "" }; this._renderModal(); return; }
+      if (k === "gr") { if (s.on.gr === false) { s.on.gr = true; this._mdSave(); this._renderModal(); this._render(); } else { this._modal = { type: "grxoff" }; this._renderModal(); } return; }   /* Modul 0: Rückfrage */
       if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else if (k === "gs") s.on.gs = s.on.gs === false; else if (MODS.some((m) => m.beta && m.id === k)) s.on[k] = s.on[k] !== true; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
       if (!this._mdList().some((x) => x.id === s.active)) this._mdActiveSet("fh");
       this._mdSave(); this._renderModal(); this._render();
@@ -19844,12 +20110,13 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
       <div class="sh"><div><b>Module</b><span>Funktionen erweitern, ohne dass sie sich stören</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="lsec">${ic("check", 15)}Installiert</div>
+      ${row("gr", "home", "Modul 0 – Haus & Grundriss", "Ein Bauplan für alle Module · in Entwicklung", `<span class="mact"><span class="mbadge dvl">In Entwicklung</span>${tog("gr", s.on.gr !== false)}</span>`)}
       ${row("fh", "windowOpen", "Modul 1 – Fenster & Heizung", "Fenster, Heizpläne, Elektroheizer, Berichte", `<span class="mbadge">Grundmodul</span>`)}
       ${row("ww", "boiler", "Modul 2 – Warmwasser & Zirkulation", ok ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!ok && s.on.ww ? `<button class="btn2 pri" data-act="mdsetup">Einrichten</button>` : ""}${tog("ww", s.on.ww)}</span>`)}
       ${row("en", "energy", "Modul 3 – Energie-Übersicht", this._enConfigured() ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!this._enConfigured() && this._enOn() ? `<button class="btn2 pri" data-act="mdensetup">Einrichten</button>` : ""}${tog("en", this._enOn())}</span>`)}
       ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
       ${row("gs", "laundry", "Modul 4 – Gerätestrom", this._gsState().devices.length ? this._gsState().devices.length + (this._gsState().devices.length === 1 ? " Gerät" : " Geräte") : "Noch nicht eingerichtet", `<span class="mact">${tog("gs", s.on.gs !== false)}</span>`)}
-      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion" }[modSt(x)] + "", `<span class="mact">${x.sponsor ? `<span class="mbadge sp">${ic("heart", 11)}Nur Sponsoren</span>` : ""}<span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
+      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion", stabil: "stabil" }[modSt(x)] + "", `<span class="mact">${x.sponsor ? `<span class="mbadge sp">${ic("heart", 11)}Nur Sponsoren</span>` : ""}<span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
       ${MOD_SOON.length ? `<div class="lsec">${ic("clock", 15)}Geplant</div>
       ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
       <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>

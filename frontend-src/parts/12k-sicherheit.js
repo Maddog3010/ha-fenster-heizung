@@ -113,12 +113,15 @@
     return out;
   }
   /* ---- Lampen im Baukasten (Modul 18 ab Build 5). Ohne Addon „licht“ bleiben sie unsichtbar und unverändert gespeichert. */
-  _sfLampIds() { const st = this._hass.states; return Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")); }
+  _sfLampIds() { const st = this._hass.states; if (this._liMine && this._liMine()) return (this._liD().lamps || []).map((x) => x.e).filter((e) => st[e]).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de"));   /* Modul 18 „Meine Lampen“: nur deine Lampen */
+    return Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")); }
+  _sfLampName(e) { const c = this._liMine && this._liMine() && this._liCfg ? this._liCfg()[e] : null; return (c && c.n) || this._wzName(e); }
   _sfLampFree(P) {
     if (!(this._liOn && this._liOn())) return "";
     const pl = new Set(P.items.filter((i) => i.t === "l" && i.e).map((i) => i.e)), free = this._sfLampIds().filter((e) => !pl.has(e));
     if (!free.length) return "";
-    return `<div class="sffld"><label>Noch nicht platzierte Lampen (antippen setzt sie in ihren Raum, sonst in die Mitte)</label><div class="gschips">${free.slice(0, 60).map((e) => `<button class="gsch" data-act="sfxlplace" data-k="${esc(e)}">${esc(this._wzName(e))}${this._liAreaOf && this._liAreaOf(e) ? `<small class="mut"> · ${esc(this._liAreaName(this._liAreaOf(e)))}</small>` : ""}</button>`).join("")}${free.length > 60 ? `<span class="mut sm">+${free.length - 60}</span>` : ""}</div></div>`;
+    const cnt = {}; free.forEach((e) => { const n = this._sfLampName(e); cnt[n] = (cnt[n] || 0) + 1; });   /* gleiche Namen (z. B. zwei „H70D1“): Entitäts-ID dazu */
+    return `<div class="sffld"><label>Noch nicht platzierte Lampen (antippen setzt sie in ihren Raum, sonst in die Mitte)</label><div class="gschips">${free.slice(0, 60).map((e) => `<button class="gsch" data-act="sfxlplace" data-k="${esc(e)}" title="${esc(e)}">${esc(this._sfLampName(e))}${cnt[this._sfLampName(e)] > 1 ? `<small class="mut"> · ${esc(e.replace(/^light\./, ""))}</small>` : ""}${this._liAreaOf && this._liAreaOf(e) ? `<small class="mut"> · ${esc(this._liAreaName(this._liAreaOf(e)))}</small>` : ""}</button>`).join("")}${free.length > 60 ? `<span class="mut sm">+${free.length - 60}</span>` : ""}</div></div>`;
   }
   _sfLampProps(sel) {
     const pl = new Set(this._sfEd.plan.items.filter((i) => i.t === "l" && i.e && i.id !== sel.id).map((i) => i.e)), ids = this._sfLampIds().filter((e) => !pl.has(e) || e === sel.e);
@@ -146,7 +149,7 @@
       const one = sel ? `<div class="card sfc"><h2>${ic(KN[sel.k][1], 18)}${esc(sel.name)}</h2>${nw ? "" : this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : "";
       const side = nw ? `${al.length ? `<div class="card sfc"><h2>${ic("alert", 18)}Alarm</h2>${al.map((x) => this._sfCard(x)).join("")}${this._sfEscHint(al[0])}</div>` : ""}${listc}${one}${!listc && !al.length && !one ? `<div class="card sfc"><h2>${ic("info", 18)}Tipp</h2><div class="mut sm">Tippe auf einen Melder im Plan, dann siehst du Batterie, Einbaudatum und Prüfung.${here ? "" : " Auf dieser Etage sitzt noch kein Melder."}</div></div>` : ""}`
         : sel ? `<div class="card sfc"><h2>${ic("bell", 18)}${esc(sel.name)}</h2>${this._sfCard(sel)}${this._sfDetFacts(sel)}</div>` : al.length ? `<div class="card sfc"><h2>${ic("alert", 18)}Alarm</h2>${al.map((x) => this._sfCard(x)).join("")}${this._sfEscHint(al[0])}</div>` : `<div class="card sfc"><h2>${ic("info", 18)}Tipp</h2><div class="mut sm">Tippe auf einen Melder im Plan, dann siehst du Batterie, Einbaudatum und Prüfung.${here ? "" : " Auf dieser Etage sitzt noch kein Melder."}</div></div>`;
-      return `${kts}<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._sfFloorBar(false)}${adm && n ? `<button class="sfed" data-act="sfxedit">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>${leg ? `<div class="sflegw">${leg}</div>` : ""}${n ? `<div class="sfpl"><svg class="sfpv" viewBox="0 0 800 480" role="img" aria-label="Grundriss">${this._sfPlanInner(fl, false)}</svg></div>` : empty}</div></div><div class="enco">${side}</div></div>`;
+      return `${kts}<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._sfFloorBar(false)}${adm && n ? `<button class="sfed" data-act="sfxedit" title="Der Baukasten liegt in Modul 0 · Haus & Grundriss. Nach dem Speichern geht es hierher zurück.">${ic("pencil", 14)} Bearbeiten</button>` : ""}</span></h2>${leg ? `<div class="sflegw">${leg}</div>` : ""}${n ? `<div class="sfpl"><svg class="sfpv" viewBox="0 0 800 480" role="img" aria-label="Grundriss">${this._sfPlanInner(fl, false)}</svg></div>` : empty}</div></div><div class="enco">${side}</div></div>`;
     }
     const sel = P.items.find((x) => x.id === ed.sel), dm = this._sfDetMap(), placed = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), free = T.l.filter((d) => !placed.has(d.id));
     const tile = (k, t, p) => `<button class="sfti${ed.tool === k ? " on" : ""}" data-act="sfxtool" data-k="${k}" aria-pressed="${ed.tool === k}"><svg viewBox="0 0 34 34" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${p}</svg>${t}</button>`;
@@ -178,7 +181,7 @@
       ${this._sfLampFree(P)}
       ${free.length ? `<div class="sffld"><label>Noch nicht platzierte Melder (antippen setzt sie in die Mitte)</label><div class="gschips">${free.map((d) => `<button class="gsch" data-act="sfxplace" data-k="${esc(d.id)}">${esc(d.name)}</button>`).join("")}</div></div>` : ""}</div></div>
       <div class="enco"><div class="card sfc"><div class="sfgrp">RÄUME UND BAUTEILE</div><div class="sftiles">${tile("select", "Auswählen", PP.select)}${tile("r", "Raum", PP.r)}${tile("w", "Wand", PP.w)}${tile("d", "Tür", PP.d)}${tile("dg", "Durchgang", '<path d="M5 10h7M22 10h7M5 24h7M22 24h7M12 7v6M22 7v6M12 21v6M22 21v6"/>')}${tile("f", "Fenster", PP.f)}${tile("s", "Treppe", PP.s)}</div>
-        <div class="sfgrp">MELDER UND TEXT</div><div class="sftiles">${tile("m:smoke", "Rauch", PP.smoke)}${tile("m:co", "CO", PP.co)}${tile("m:gas", "Gas", PP.gas)}${tile("m:water", "Wasser", PP.water)}${tile("m:heat", "Hitze", PP.heat)}${tile("x", "Text", PP.x)}</div>${this._liOn && this._liOn() ? `<div class="sfgrp">LICHT (MODUL 18)</div><div class="sftiles">${tile("l", "Lampe", '<path d="M12 22a7 7 0 1 1 10 0c-1 1-1.5 2-1.5 3.5h-7c0-1.5-.5-2.5-1.5-3.5z"/><path d="M14 29h6"/>')}</div>` : ""}</div>
+        ${this._mdList().some((m) => m.id === "sf") ? `<div class="sfgrp">MELDER (MODUL 11) UND TEXT</div><div class="sftiles">${tile("m:smoke", "Rauch", PP.smoke)}${tile("m:co", "CO", PP.co)}${tile("m:gas", "Gas", PP.gas)}${tile("m:water", "Wasser", PP.water)}${tile("m:heat", "Hitze", PP.heat)}${tile("x", "Text", PP.x)}</div>` : `<div class="sfgrp">TEXT</div><div class="sftiles">${tile("x", "Text", PP.x)}</div>`}${this._liOn && this._liOn() ? `<div class="sfgrp">LICHT (MODUL 18)</div><div class="sftiles">${tile("l", "Lampe", '<path d="M12 22a7 7 0 1 1 10 0c-1 1-1.5 2-1.5 3.5h-7c0-1.5-.5-2.5-1.5-3.5z"/><path d="M14 29h6"/>')}</div>` : ""}</div>
         <div class="card sfc">${prop}</div><div class="card sfc">${flBox}${scaleBox}${bgBox}${ioBox}</div>
         <div class="sfbtn"><button class="btn2" data-act="sfxcancel">Abbrechen</button><button class="btn2 pri" data-act="sfxsave">Speichern</button></div></div></div>`;
   }
@@ -285,9 +288,9 @@
     const uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
     if (a === "sfxtab") { this._sfT = k; try { localStorage.setItem("fh_sf_tab", k); } catch (_) { /* privater Modus */ } this._render(); return true; }
     if (a === "sfxfl") { this._sfFlId = k; if (ed) ed.sel = ""; this._render(); return true; }
-    if (a === "sfxedit") { this._sfEd = { plan: JSON.parse(JSON.stringify(this._sfx().cfg.plan)), sel: "", tool: "select" }; this._sfT = "pl"; this._render(); return true; }
-    if (a === "sfxcancel") { this._sfEd = null; this._render(); return true; }
-    if (a === "sfxsave") { const p = JSON.parse(JSON.stringify(ed.plan)); this._sfEd = null; this._sfxPatch((c) => { c.plan = p; }); this._toast("Grundriss gespeichert"); return true; }
+    if (a === "sfxedit") { this._grEdit("sf"); return true; }   /* Modul 0 Build 3: der Baukasten liegt in Modul 0 */
+    if (a === "sfxcancel") { this._sfEd = null; if (ed && ed.host === "gr") this._grEditDone(ed, false); else this._render(); return true; }
+    if (a === "sfxsave") { if (!ed) return true; const p = JSON.parse(JSON.stringify(ed.plan)); this._sfEd = null; if (ed.host === "gr") { this._grSavePlan(p); this._grEditDone(ed, true); } else { this._sfxPatch((c) => { c.plan = p; }); this._toast("Grundriss gespeichert"); } return true; }
     if (a === "sfxprint") { this._sfxPrint(); return true; }
     if (a === "sfxhtml") { this._sfxHtml(); return true; }
     if (a === "sfxcopy") { const T = this._sfStat(), C = T.C, sh = {}; T.l.forEach((x) => { if (x.bat != null && (x.bat < C.bat.pct + 10 || (x.bat_days != null && x.bat_days < 90))) { const q = x.btype || "Batterie"; sh[q] = (sh[q] || 0) + 1; } }); const txt = Object.entries(sh).map(([q, n]) => `${n} × ${q}`).concat(T.l.filter((x) => x.life_days != null && x.life_days < 0).map((x) => `1 × neuer Melder (${x.name})`)).join("\n") || "Nichts zu besorgen"; this._clip(txt, "Liste kopiert"); return true; }

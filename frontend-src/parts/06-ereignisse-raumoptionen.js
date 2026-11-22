@@ -225,6 +225,7 @@
     else if (a === "m3old") { const L = this._cfg.layout; L.m3 = { ...(L.m3 || {}), old: !(L.m3 || {}).old }; this._saveLayout(); this._render(); this._renderModal(); }
     else if (["hsgo", "hsoff", "hswx", "hsxh", "hsxs"].includes(a) && this._hsAct(a, b)) { /* Haus-Szene, Stile (W7) */ }
     else if (["gpfl", "gpmap", "gpset", "gpedit"].includes(a) && this._gpAct(a, b)) { /* Grundriss */ }
+    else if (a.startsWith("grx") && this._grAct(a, b)) { /* Modul 0 · Haus & Grundriss */ }
     else if (a === "why") { this._modal = { type: "why", id }; this._renderModal(); }
     else if (a === "pm") {
       const p = this._pres();

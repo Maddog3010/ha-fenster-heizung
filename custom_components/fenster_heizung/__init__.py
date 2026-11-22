@@ -1325,6 +1325,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         from .briefing import BriefingManager
         store["briefing"] = BriefingManager(hass)
         await store["briefing"].async_start()
+    if "grundriss" not in store:  # Modul 0 · Haus & Grundriss: vor Modul 11 starten, das seinen Plan hier ablegt
+        from .grundriss import GrundrissManager
+        store["grundriss"] = GrundrissManager(hass)
+        await store["grundriss"].async_start()
     if "sicherheit" not in store:
         store["sicherheit"] = SicherheitManager(hass)
         await store["sicherheit"].async_start()
