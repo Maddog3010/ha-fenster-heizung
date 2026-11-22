@@ -4,7 +4,7 @@ Ausführen: python3 -m pytest tests  oder  python3 tests/test_licht.py
 Geprüft werden (Build 2): Lichtfarbe aus Kelvin, hs, xy und rgb, Mischfarbe nach Helligkeit, Erkennung von Lichtgruppen
 und Schalten über eine genau passende Gruppe, Brennstunden über Mitternacht und Zeitumstellung, Einschaltzeit über einen
 Neustart (kurze und lange Lücke), Aufräumen nach 90 Tagen, Einstellungen und Kopie des Layouts, dazu der Python-Teil mit
-Ersatz-Home-Assistant: Sensorwerte, Schalten über die Gruppe, Rechte und Neustart.
+Ersatz-Home-Assistant: Sensorwerte, Schalten über die Gruppe, Rechte und Neustart; ab Build 4 die Grundriss-Zuordnung.
 """
 from __future__ import annotations
 
@@ -126,10 +126,18 @@ def test_aufraeumen_und_kaputte_daten():
     assert "2026-01-01" not in B.days and B.on == {}
 
 
+def test_grundriss_zuordnung():
+    assert L.clean_prefs({"view": "plan"})["view"] == "plan"
+    assert L.clean_pmap(None) == {}
+    pm = L.clean_pmap({"r1": "wohnen", "r2": "-", "r3": "", "bad id!": "x", "r4": 5, "r5": "küche ä"})
+    assert pm == {"r1": "wohnen", "r2": "-"}
+    assert len(L.clean_pmap({f"r{i}": "a" for i in range(500)})) == 200
+
+
 def test_einstellungen_und_layout_kopie():
     assert L.clean_prefs(None) == {"view": "rooms", "optik": "neu"}
     assert L.clean_prefs({"view": "list", "optik": "alt"}) == {"view": "list", "optik": "alt"}
-    assert L.clean_prefs({"view": "plan", "optik": 1}) == {"view": "rooms", "optik": "neu"}
+    assert L.clean_prefs({"view": "karte", "optik": 1}) == {"view": "rooms", "optik": "neu"}
     assert L.clean_legacy("x") is None
     leg = L.clean_legacy({"scenes": {"night": "scene.nacht", "evil": "x"}, "hours": 3, "hidden": ["garten", 5]})
     assert leg == {"scenes": {"night": "scene.nacht", "arrive": "", "cozy": ""}, "hours": 2, "hidden": ["garten"]}
@@ -282,6 +290,11 @@ def test_python_teil_sensoren_schalten_neustart():
     except AddonError:
         pass
     assert asyncio.run(A.core.cmds["set"]({"prefs": {"view": "list"}}, True))["prefs"]["view"] == "list"
+    # Grundriss-Zuordnung (Build 4): setzen, „kein Bereich“, zurück auf automatisch
+    st = asyncio.run(A.core.cmds["set"]({"pmap": {"r1": "wohnen", "r2": "-"}}, True))
+    assert st["pmap"] == {"r1": "wohnen", "r2": "-"}
+    st = asyncio.run(A.core.cmds["set"]({"pmap": {"r2": ""}}, True))
+    assert st["pmap"] == {"r1": "wohnen"} and st["prefs"]["view"] == "list"
     # Ereignis: Decke geht aus
     NOW[0] = ts(2026, 11, 22, 19, 30)
     old, H.states.d["light.decke"] = H.states.d["light.decke"], _State("light.decke", "off")
@@ -292,6 +305,7 @@ def test_python_teil_sensoren_schalten_neustart():
     NOW[0] = ts(2026, 11, 22, 19, 35)
     A2 = M.Addon(_Core(H)); asyncio.run(A2.async_setup())
     assert A2.burn.on["light.steh"] == ts(2026, 11, 22, 18, 30) and A2.prefs["view"] == "list" and A2.legacy["hours"] == 4
+    assert A2.pmap == {"r1": "wohnen"}   # Zuordnung übersteht den Neustart
     assert round(A2.values()["sensor"]["licht_heute"]["value"], 2) == round((9000 + 65 * 60) / 3600, 2)
 
 

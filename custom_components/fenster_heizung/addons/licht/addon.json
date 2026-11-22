@@ -6,12 +6,12 @@
   "short": "Licht",
   "icon": "lamp",
   "tag": "Lampen schalten, dimmen und Szenen",
-  "desc": "Alle Lampen nach Räumen in der neuen Optik: Lichtschein in echter Farbe, Szenenknöpfe, Brennstunden und ein Hinweis, wenn Licht lange in leeren Räumen brennt.",
-  "version": "0.3.0",
-  "build": 3,
+  "desc": "Alle Lampen nach Räumen in der neuen Optik: Lichtschein in echter Farbe, Grundriss als Lichtkarte, Szenenknöpfe, Brennstunden und ein Hinweis, wenn Licht lange brennt.",
+  "version": "0.5.0",
+  "build": 5,
   "stage": "dev",
   "api": 1,
-  "core_min": "2026.11.4b41",
+  "core_min": "2026.11.4b51",
   "needs": {
     "domains": [
       "light"

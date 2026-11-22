@@ -515,6 +515,19 @@ def test_raum_form_pts():
     assert it["r4"]["w"] == 100
 
 
+def test_lampe_im_plan():
+    """Modul 18 Build 5: Lampen als eigenes Element im Baukasten (Typ „l“)."""
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {"id": "l1", "fl": "eg", "t": "l", "x": 120, "y": 80, "e": "light.decke", "k": "spot"},
+        {"id": "l2", "fl": "eg", "t": "l", "x": 200, "y": 80, "e": "binary_sensor.x", "k": "laser", "r": 90},
+        {"id": "m1", "fl": "eg", "t": "m", "x": 10, "y": 10, "e": "light.decke"}]})
+    it = {i["id"]: i for i in p["items"]}
+    assert it["l1"]["e"] == "light.decke" and it["l1"]["k"] == "spot"
+    assert it["l2"]["e"] == "" and it["l2"]["k"] == "decke" and it["l2"]["r"] == 90
+    assert it["m1"]["e"] == "" and "k" not in it["m1"]   # Melder nehmen weiter nur binary_sensor
+    assert S.MAX_ITEMS == 400
+
+
 def test_testknopf_wird_als_pruefung_eingetragen():
     from datetime import datetime, timedelta
     m, h = mgr()

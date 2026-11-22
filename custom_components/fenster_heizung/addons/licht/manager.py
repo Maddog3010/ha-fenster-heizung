@@ -1,5 +1,7 @@
 """Modul 18 Licht & Lampen: Hintergrund-Teil des Addons (ab v0.2 Build 2).
 
+Ab Build 4 auch die Zuordnung Grundriss-Raum → Bereich (pmap) für die Ansicht „Grundriss“.
+
 Bis Build 1 lief das Modul nur im Dashboard. Ab Build 2 merkt sich der Python-Teil:
   * seit wann jede Lampe an ist – auch über einen Neustart von Home Assistant (vorher kam „an seit“ aus last_changed)
   * die Brennstunden je Lampe und Tag (90 Tage)
@@ -39,6 +41,7 @@ class Addon(SWAddon):
         self.burn = L.Burn(dt_util.DEFAULT_TIME_ZONE, d.get("burn"))
         self.prefs = L.clean_prefs(d.get("prefs"))
         self.legacy = L.clean_legacy(d.get("legacy"))
+        self.pmap = L.clean_pmap(d.get("pmap"))
         self.started = d.get("started") or dt_util.now().date().isoformat()
         now = time.time()
         self.burn.resume({e: self._lc(e) for e in self._lamps() if self._is_on(e)}, now)
@@ -59,7 +62,7 @@ class Addon(SWAddon):
         self.hass.data.get(DOMAIN, {}).pop("licht", None)
 
     def _save(self, delay: float = 10) -> None:
-        self.store.async_delay_save(lambda: {"burn": self.burn.dump(), "prefs": self.prefs, "legacy": self.legacy, "started": self.started}, delay)
+        self.store.async_delay_save(lambda: {"burn": self.burn.dump(), "prefs": self.prefs, "pmap": self.pmap, "legacy": self.legacy, "started": self.started}, delay)
 
     # ---- Lampen
     def _lamps(self) -> list[str]:
@@ -156,7 +159,7 @@ class Addon(SWAddon):
     def _state(self) -> dict[str, Any]:
         t = time.time()
         return {"ver": 2, "on": {e: round(v) for e, v in self.burn.on.items()}, "today": {e: round(s) for e, s in self.burn.today(t).items()},
-                "week": self.burn.week(t), "groups": self._groups(), "prefs": self.prefs, "legacy": bool(self.legacy),
+                "week": self.burn.week(t), "groups": self._groups(), "prefs": self.prefs, "pmap": self.pmap, "legacy": bool(self.legacy),
                 "areas": self.core.areas(), "floors": self._floors(), "since": self.started}
 
     async def _c_get(self, data: dict[str, Any], admin: bool) -> dict[str, Any]:
@@ -171,6 +174,13 @@ class Addon(SWAddon):
         if not admin:
             raise AddonError("Nur Administratoren können das ändern")
         self.prefs = L.clean_prefs({**self.prefs, **(data.get("prefs") or {})})
+        pm = data.get("pmap")  # Grundriss-Zuordnung: {Plan-ID: Bereich | "-" | ""}; leer = wieder automatisch
+        if isinstance(pm, dict):
+            merged = {**self.pmap, **{k: v for k, v in pm.items() if isinstance(v, str) and v}}
+            for k, v in pm.items():
+                if v in ("", None):
+                    merged.pop(k, None)
+            self.pmap = L.clean_pmap(merged)
         self._save(2)
         return self._state()
 

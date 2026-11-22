@@ -8,6 +8,7 @@ Build 2 (Konzept „Modul 18 · Licht & Lampen“, Teil C3, C4, C9):
 from __future__ import annotations
 
 import math
+import re
 from datetime import datetime, timedelta, tzinfo
 from typing import Any, Callable, Iterable
 
@@ -229,13 +230,30 @@ class Burn:
 
 
 # ---------------------------------------------------------------- Einstellungen des Addons
-VIEWS = ("rooms", "list")
+VIEWS = ("rooms", "list", "plan")  # „plan“ = Grundriss als Lichtkarte (ab Build 4)
 OPTIK = ("neu", "alt")
 
 
 def clean_prefs(raw: Any) -> dict[str, Any]:
     r = raw if isinstance(raw, dict) else {}
     return {"view": r.get("view") if r.get("view") in VIEWS else "rooms", "optik": r.get("optik") if r.get("optik") in OPTIK else "neu"}
+
+
+_ID = re.compile(r"^[A-Za-z0-9_.:-]{1,32}$")
+
+
+def clean_pmap(raw: Any) -> dict[str, str]:
+    """Zuordnung Grundriss-Raum (Modul 11) → Bereich in Home Assistant (ab Build 4).
+    Wert = Bereichs-ID oder „-“ (Fläche gehört zu keinem Bereich). Fehlt ein Eintrag, gilt die Zuordnung über den Namen."""
+    if not isinstance(raw, dict):
+        return {}
+    out: dict[str, str] = {}
+    for k, v in raw.items():
+        if len(out) >= 200:
+            break
+        if isinstance(k, str) and _ID.match(k) and isinstance(v, str) and v and (v == "-" or _ID.match(v[:64])):
+            out[k] = v[:64]
+    return out
 
 
 def clean_legacy(raw: Any) -> dict[str, Any] | None:
