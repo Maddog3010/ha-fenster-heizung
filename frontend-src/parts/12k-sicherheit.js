@@ -68,7 +68,7 @@
   _sfOvOld(T) { const p = this._sfOvParts(T); return `${p.empty}<div class="enc"><div class="enco">${p.ampel}${p.log}</div><div class="enco">${p.dep}</div></div>${p.list}`; }
   /* ---- Grundriss: Ansicht und Baukasten */
   _sfPlanInner(fl, edit) {
-    const S = this._sfx(), P = this._sfPl(), dm = this._sfDetMap(), items = P.items.filter((i) => i.fl === fl), KN = this._sfxKind(), ed = this._sfEd, sel = edit && ed ? ed.sel : "", ord = ["r", "s", "w", "a", "d", "f", "x", "h", "g", "l", "m"], liOn = !!(this._liOn && this._liOn());
+    const S = this._sfx(), P = this._sfPl(), dm = this._sfDetMap(), items = P.items.filter((i) => i.fl === fl), KN = this._sfxKind(), ed = this._sfEd, sel = edit && ed ? ed.sel : "", ord = ["r", "o", "s", "w", "a", "d", "f", "x", "h", "g", "l", "m"], liOn = !!(this._liOn && this._liOn());
     const mk = items.filter((i) => i.t === "m" && i.e && dm[i.e] && dm[i.e].alarm);
     const inside = (r, m) => this._sfInRoom(r, m.x, m.y, -0.01);
     let out = P.bg[fl] ? `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".6"></image>` : "";
@@ -83,6 +83,7 @@
       else if (i.t === "w") out += `<g ${id}><path class="sfw" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path><path class="sfhit" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path></g>`;
       else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect>${i.dg ? `<path class="sfda" d="M${i.x - 15} ${i.y - 6}v12M${i.x + 15} ${i.y - 6}v12"></path>` : `<path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"${i.mh || i.mv ? ` transform="translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})"` : ""}></path>`}<rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 16) - 2}" y="${i.y - 16}" width="${(this._grHw ? this._grHw(i) : 16) * 2 + 4}" height="32"></rect></g>`;
       else if (i.t === "f") out += `<g ${id}${a}><rect class="sffw" x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7"></rect><rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 18) - 2}" y="${i.y - 14}" width="${(this._grHw ? this._grHw(i) : 18) * 2 + 4}" height="28"></rect></g>`;
+      else if (i.t === "o") out += `<g ${id}><rect class="sfhit" x="${i.x}" y="${i.y}" width="${Math.max(8, i.w || 0)}" height="${Math.max(8, i.h || 0)}"${i.r ? ` transform="rotate(${i.r} ${i.x + (i.w || 0) / 2} ${i.y + (i.h || 0) / 2})"` : ""}></rect></g>`;
       else if (i.t === "h") out += `<g ${id}><rect class="sfhit" x="${i.x - 14}" y="${i.y - 14}" width="28" height="28" rx="6"></rect></g>`;
       else if (i.t === "g") { out += `<g ${id}><rect class="sfhit" x="${i.x - 15}" y="${i.y - 15}" width="30" height="30" rx="7"></rect></g>`; }
       else if (i.t === "a") { const hw = this._grHw ? this._grHw(i) : 80; out += `<g ${id}${a}><rect class="sfhit" x="${i.x - hw}" y="${i.y - 10}" width="${hw * 2}" height="20"></rect></g>`; }
@@ -108,7 +109,7 @@
       if (i) {
         const hd = (k, x, y) => `<g data-h="${k}"><circle class="sfhh" cx="${x}" cy="${y}" r="18"></circle><rect class="sfhd" x="${x - 5}" y="${y - 5}" width="10" height="10" rx="2"></rect></g>`;
         if (i.t === "r" && i.pts) out += `<path class="sfsel" d="${this._sfRPath(i)}"></path>${this._sfRHandles(i, ed.vsel)}`;
-        else if (i.t === "r" || i.t === "s") out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${hd("br", i.x + i.w, i.y + i.h)}`;
+        else if (i.t === "r" || i.t === "s" || i.t === "o") out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${hd("br", i.x + i.w, i.y + i.h)}`;
         else if (i.t === "w") out += hd("p1", i.x, i.y) + hd("p2", i.x2, i.y2);
         else out += `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="${i.t === "m" ? 22 : 20}"></circle>`;
       }
@@ -160,7 +161,7 @@
     const fname = P.floors.find((f) => f.id === fl);
     const mlt = ed.multi || [], multiBox = `<div class="sfpr"><b>${mlt.length} Elemente ausgewählt</b><div class="mut sm" style="margin:4px 0 8px">Tippe weitere Elemente an oder ziehe eines, um alle zu verschieben.</div><div class="sfbtn"><button class="btn2" data-act="sfxmdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxmdel">Löschen</button></div><button class="btn2" data-act="sfxmclr" style="flex:none;width:100%;margin-top:8px">Auswahl aufheben</button></div>`;
     const prop = mlt.length ? multiBox : !sel ? `<div class="mut sm">Wähle ein Element im Plan aus, oder ein Werkzeug links. Räume und Wände ziehst du auf, alles andere setzt du mit einem Tipp.</div>`
-      : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t === "d" && sel.dg ? "x" : sel.t] === "Text" && sel.t === "d" ? "Durchgang" : { r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder", l: "Lampe", g: sel.gk === "entf" ? "Luftentfeuchter" : "Mobiler Heizer", a: "Markise", h: this._grTk ? this._grTk(sel).n : "Technik" }[sel.t]}</b>
+      : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t === "d" && sel.dg ? "x" : sel.t] === "Text" && sel.t === "d" ? "Durchgang" : { r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder", l: "Lampe", g: sel.gk === "entf" ? "Luftentfeuchter" : "Mobiler Heizer", a: "Markise", h: this._grTk ? this._grTk(sel).n : "Technik", o: this._grMk ? this._grMk(sel).n : "Möbel" }[sel.t]}</b>
         ${sel.t === "r" || sel.t === "s" || sel.t === "x" ? `<div class="sffld"><label>Name</label><input class="osel" data-f="sfxpn" value="${esc(sel.n)}" maxlength="30" placeholder="${sel.t === "x" ? "Text" : "zum Beispiel Küche"}"></div>` : ""}
         ${sel.t === "r" || sel.t === "s" ? `<div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="sfxpw" data-s="-10" aria-label="schmaler">${ic("minus", 16)}</button><b>${num(sel.w / this._sfScale(), 2)} m</b><button data-act="sfxpw" data-s="10" aria-label="breiter">${ic("plus", 16)}</button></div></div><div class="vrow" style="margin:6px 0"><span>Tiefe</span><div class="step" style="flex:none"><button data-act="sfxph" data-s="-10" aria-label="weniger tief">${ic("minus", 16)}</button><b>${num(sel.h / this._sfScale(), 2)} m</b><button data-act="sfxph" data-s="10" aria-label="tiefer">${ic("plus", 16)}</button></div></div>${sel.t === "r" ? `<div class="mut sm" style="margin:-2px 0 6px">= ${num(this._grAreaM2 ? this._grAreaM2(sel, this._sfScale()) : (sel.w * sel.h) / (this._sfScale() ** 2), 1)} m²</div>` : ""}` : ""}
         ${sel.t === "r" ? this._sfRPanel(sel) : ""}
@@ -169,7 +170,7 @@
         ${(sel.t === "d" || sel.t === "f") && this._grOpenProps ? this._grOpenProps(sel) : ""}${(sel.t === "l" && sel.k === "streifen") || ((sel.t === "d" || sel.t === "f") && !this._grOpenProps) ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
         ${sel.t === "d" ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpdg" data-v="0" class="${sel.dg ? "" : "on"}">Tür</button><button data-act="sfxpdg" data-v="1" class="${sel.dg ? "on" : ""}">Durchgang</button></div>` : ""}
         ${sel.t === "d" && !sel.dg ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpmir" data-k="mv" class="${sel.mv ? "on" : ""}">Öffnung spiegeln (innen/außen)</button><button data-act="sfxpmir" data-k="mh" class="${sel.mh ? "on" : ""}">Angel spiegeln (links/rechts)</button></div>` : ""}
-        ${sel.t === "l" ? this._sfLampProps(sel) : ""}${sel.t === "s" && this._grStairProps ? this._grStairProps(sel) : ""}${sel.t === "g" && this._grDevProps ? this._grDevProps(sel) : ""}${sel.t === "a" && this._grAwnProps ? this._grAwnProps(sel) : ""}${sel.t === "h" && this._grTechProps ? this._grTechProps(sel) : ""}
+        ${sel.t === "l" ? this._sfLampProps(sel) : ""}${sel.t === "s" && this._grStairProps ? this._grStairProps(sel) : ""}${sel.t === "g" && this._grDevProps ? this._grDevProps(sel) : ""}${sel.t === "a" && this._grAwnProps ? this._grAwnProps(sel) : ""}${sel.t === "h" && this._grTechProps ? this._grTechProps(sel) : ""}${sel.t === "o" && this._grMobProps ? this._grMobProps(sel) : ""}
         ${sel.t === "m" ? `<div class="sffld"><label>Melder (aus den Einstellungen)</label>${this._sfSel(T.l.map((d) => d.id), sel.e || "", "sfxpe", "", "– keiner –")}</div>` : ""}
         ${sel.t === "m" ? `<div class="vrow" style="margin:6px 0"><span>Reichweite<small class="mut" style="display:block">Wie weit der Melder im Plan reicht</small></span><div class="step" style="flex:none"><button data-act="sfxprg" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${num(this._sfRangeM(sel, sel.e ? dm[sel.e] : null), 1)} m</b><button data-act="sfxprg" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>` : ""}${sel.t === "r" ? `<div class="sffld"><label>Raum aus Modul 1 (optional)</label><div class="gschips"><button class="gsch ${!sel.lk ? "sel" : ""}" data-act="sfxplkset" data-v="">keiner</button>${this._sfRoomNames().map((n) => `<button class="gsch ${sel.lk === n ? "sel" : ""}" data-act="sfxplkset" data-v="${esc(n)}">${esc(n)}</button>`).join("")}</div></div>` : ""}
         <div class="sfbtn"><button class="btn2" data-act="sfxpdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxpdel">Löschen</button></div></div>`;
@@ -376,7 +377,11 @@
   }
   /* Zeigen und Ziehen im Baukasten (Maus, Finger, Stift) */
   _sfxBind(sr) {
-    const pt = (e, svg) => { const b = svg.getBoundingClientRect(); return [Math.max(0, Math.min(800, ((e.clientX - b.left) / b.width) * 800)), Math.max(0, Math.min(480, ((e.clientY - b.top) / b.height) * 480))]; };
+    const pt = (e, svg) => {   /* Build 10: über die Bildschirm-Matrix – der Baukasten kann größer sein als 800 × 480 (Grundstück) */
+      const v = svg.viewBox.baseVal, lo = v && v.width ? [Math.max(-50, v.x), Math.max(-50, v.y)] : [0, 0], hi = v && v.width ? [Math.min(1200, v.x + v.width), Math.min(1200, v.y + v.height)] : [800, 480];
+      try { const m = svg.getScreenCTM(), q = svg.createSVGPoint(); q.x = e.clientX; q.y = e.clientY; const r = q.matrixTransform(m.inverse()); return [Math.max(lo[0], Math.min(hi[0], r.x)), Math.max(lo[1], Math.min(hi[1], r.y))]; }
+      catch (_) { const b = svg.getBoundingClientRect(); return [Math.max(0, Math.min(800, ((e.clientX - b.left) / b.width) * 800)), Math.max(0, Math.min(480, ((e.clientY - b.top) / b.height) * 480))]; }
+    };
     const stp = () => (this._grStep ? this._grStep() : 20), g = (v) => Math.round(Math.round(v / stp()) * stp()), g10 = (v) => (stp() <= 10 ? g(v) : Math.round(v / 10) * 10);
     const paint = () => { const svg = sr.querySelector("svg.sfpe"); if (svg && this._sfEd) svg.innerHTML = this._grEditSvg ? this._grEditSvg(this._sfFl()) : this._sfPlanInner(this._sfFl(), true); };
     sr.addEventListener("pointerdown", (e) => {
@@ -395,6 +400,7 @@
         if (it.t === "g") { it.gk = tool === "g:entf" ? "entf" : "heizer"; const fr = this._grDevFree ? this._grDevFree(P).find((q) => q.gk === it.gk) : null; if (fr) it.e = fr.e; }
         if (it.t === "a") { it.b = 400; it.tf = 300; }
         if (it.t === "h") it.hk = this._grHkLast || "steckdose";
+        if (it.t === "o" && this._grMK) { const kk = this._grMK().by[this._grOkLast] || this._grMK().by.tisch, sc0 = this._sfScale(); it.ok = kk.k; it.w = Math.max(4, Math.round((kk.w / 100) * sc0)); it.h = Math.max(4, Math.round((kk.h / 100) * sc0)); it.x = Math.round(x - it.w / 2); it.y = Math.round(y - it.h / 2); }
         if (it.t === "l") { it.k = "decke"; it.e = this._liFreeLampAt ? this._liFreeLampAt(fl, x, y, P) : ""; }
         if (it.t === "m") { const kind = tool.slice(2), pl = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), d = this._sfList().find((q) => q.k === kind && !pl.has(q.id)); if (d) it.e = d.id; }
         if (["d", "f", "a"].includes(it.t)) { const sn = this._sfSnapOpen(fl, x, y, it.t === "a" ? 40 : 24, it); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } }
@@ -407,7 +413,7 @@
       const [x, y] = pt(e, svg), it = ed.plan.items.find((i) => i.id === d.id); if (!it) return; e.preventDefault();
       if (/^v\d+$/.test(d.k)) { if (it.pts) { it.pts[Number(d.k.slice(1))] = [g10(x), g10(y)]; this._sfRSync(it); } }
       else if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (d.o.pts) it.pts = d.o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (["d", "f", "a"].includes(it.t)) { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y, 18, it); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } (d.att || []).forEach((q) => { const o2 = ed.plan.items.find((i) => i.id === q.id); if (o2) { o2.x = q.x + dx; o2.y = q.y + dy; } }); }
-      else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const L = Math.hypot(X - it.x, Y - it.y), an = Math.atan2(Y - it.y, X - it.x), a15 = Math.round(an / (Math.PI / 12)) * (Math.PI / 12); if (L > 0 && Math.abs(an - a15) < 0.1) { X = Math.round(it.x + L * Math.cos(a15)); Y = Math.round(it.y + L * Math.sin(a15)); } it.x2 = X; it.y2 = Y; }   /* Build 7: rastet auf 15°-Schritte */ else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
+      else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const L = Math.hypot(X - it.x, Y - it.y), an = Math.atan2(Y - it.y, X - it.x), a15 = Math.round(an / (Math.PI / 12)) * (Math.PI / 12); if (L > 0 && Math.abs(an - a15) < 0.1) { X = Math.round(it.x + L * Math.cos(a15)); Y = Math.round(it.y + L * Math.sin(a15)); } it.x2 = X; it.y2 = Y; }   /* Build 7: rastet auf 15°-Schritte */ else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { const mn = it.t === "o" ? 4 : 20; it.w = Math.max(mn, g(x) - it.x); it.h = Math.max(mn, g(y) - it.y); } } }
       else if (d.k === "p1") { it.x = g(x); it.y = g(y); } else if (d.k === "p2") { it.x2 = g(x); it.y2 = g(y); }
       paint();
     }, { passive: false });

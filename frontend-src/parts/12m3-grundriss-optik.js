@@ -38,7 +38,7 @@
     const T = this._grTheme(o.style), items = (P.items || []).filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r"), sc = P.scale > 0 ? P.scale : 40;
     const u = "gd" + (this.constructor._gdN = ((this.constructor._gdN || 0) + 1) % 1e6) + "_", st = this._hass.states, NF = o.narrow ? 1.6 : 1, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: 1 });
     const pathOf = (r) => "M" + this._grPoly(r).map((p) => p[0] + " " + p[1]).join("L") + "Z";
-    const bx = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
+    const bxl = [...rs, ...items.filter((i) => i.t === "o" && i.w)], bx = bxl.length ? bxl.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
     o = { labels: true, windows: true, doors: true, stairs: true, deco: true, bgImg: true, ...o };
     const pad = o.dims ? 70 : 40, vb = { x: bx.x0 - pad, y: bx.y0 - pad, w: bx.x1 - bx.x0 + pad * 2, h: bx.y1 - bx.y0 + pad * 2 + 34 };
     const W = (T.wall || "").replace("U_", u), WI = (T.wallIn || "").replace("U_", u), kinds = new Map(rs.map((r) => [r.id, this._grKind(r)]));
@@ -55,9 +55,10 @@
       <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="${o.style === "hell" ? 3 : 6}" stdDeviation="${o.style === "hell" ? 4 : 8}" flood-color="#000" flood-opacity="${o.style === "hell" ? 0.18 : 0.55}"/></filter>
       <marker id="${u}ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="${T.stair}"/></marker>
     </defs>
-    <rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/>${o.cover ? `<rect x="${o.cover.x}" y="${o.cover.y}" width="${o.cover.w}" height="${o.cover.h}" fill="${T.bg}"/>` : ""}<rect x="${Math.min(vb.x, o.cover ? o.cover.x : vb.x)}" y="${Math.min(vb.y, o.cover ? o.cover.y : vb.y)}" width="${Math.max(vb.w, o.cover ? o.cover.w + 400 : 0)}" height="${Math.max(vb.h, o.cover ? o.cover.h + 400 : 0)}" fill="url(#${u}grid)"/>`;
+    ${o.bare ? "" : `<rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/>${o.cover ? `<rect x="${o.cover.x}" y="${o.cover.y}" width="${o.cover.w}" height="${o.cover.h}" fill="${T.bg}"/>` : ""}<rect x="${Math.min(vb.x, o.cover ? o.cover.x : vb.x)}" y="${Math.min(vb.y, o.cover ? o.cover.y : vb.y)}" width="${Math.max(vb.w, o.cover ? o.cover.w + 400 : 0)}" height="${Math.max(vb.h, o.cover ? o.cover.h + 400 : 0)}" fill="url(#${u}grid)"/>`}`;   /* bare: ohne Hintergrund (Puppenhaus) */
     const bg = (P.bg || {})[fl]; if (bg && o.bgImg) d += `<image href="${esc(bg)}" x="${bx.x0}" y="${bx.y0}" width="${bx.x1 - bx.x0}" height="${bx.y1 - bx.y0}" opacity=".22" preserveAspectRatio="xMidYMid meet"/>`;
     const out = rs.filter((r) => kinds.get(r.id).k === "aussen" || r.ds), ins = rs.filter((r) => !out.includes(r));
+    if (this._grMobLayer) d += this._grMobLayer(P, fl, T, o, "aussen", st);   /* Build 10: Grundstück, Rasen, Wege, Pool … unter den Räumen */
     /* 1) Außenflächen: Pflaster, gestrichelter Rand */
     out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${T.sub}" stroke-width="2" stroke-dasharray="8 6" opacity=".9"/>`; });
     /* 2) Wände: dicke Kontur aller Innenräume (wird zur Außenwand), darüber Böden mit dünner Kontur (Innenwand). Gemeinsame Kanten bleiben dünn. */
@@ -66,6 +67,8 @@
     if (o.click) out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="transparent" data-act="grxroom" data-k="${esc(r.id)}" style="cursor:pointer"/>`; });
     /* 3) Freie Wände */
     items.filter((i) => i.t === "w").forEach((w) => { d += `<line x1="${w.x}" y1="${w.y}" x2="${w.x2}" y2="${w.y2}" stroke="${WI}" stroke-width="7" stroke-linecap="square"/>`; });
+    if (this._grMobLayer && (!o.layers || o.layers.mo)) d += this._grMobLayer(P, fl, T, o, "innen", st);   /* Build 10: Möbel */
+    if (o.layers && o.layers.sun && this._grSunSvg) { const SG = this._grSunSvg(P, fl, T, u, ins, bx); this._grSunLast = SG; d += SG.svg; }   /* Build 10: Sonnenlicht */
     /* 4) Türen, Durchgänge, Fenster, Treppen, Text */
     const floorAtR = (i) => { const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an) * 10, ny = Math.cos(an) * 10, inR = (q, x, y) => (this._sfInRoom ? this._sfInRoom(q, x, y) : x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h); const r = ins.find((q) => inR(q, i.x + nx, i.y + ny) || inR(q, i.x - nx, i.y - ny)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
     items.forEach((i) => {
@@ -110,6 +113,6 @@
     }
     const sbM = (bx.x1 - bx.x0) / sc > 12 ? 5 : 2, sx = bx.x1 - sbM * sc, sy = bx.y1 + 30;
     if (o.deco) d += `<g fill="${T.dim}" font-size="${11 * NF}"><rect x="${sx}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="${T.dim}"/><rect x="${sx + sbM * sc / 2}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="none" stroke="${T.dim}"/><text x="${sx}" y="${sy - 5}">0</text><text x="${bx.x1}" y="${sy - 5}" text-anchor="end">${sbM} m</text>
-      <g transform="translate(${bx.x0 + 10} ${sy - 2})"><path d="M0 -14L6 4L0 0L-6 4Z" fill="${T.text}"/><text x="12" y="2" font-weight="700" fill="${T.text}">N</text></g></g>`;
+      <g transform="translate(${bx.x0 + 10} ${sy - 2}) rotate(${P.north || 0})"><path d="M0 -14L6 4L0 0L-6 4Z" fill="${T.text}"/><text x="12" y="2" font-weight="700" fill="${T.text}">N</text></g></g>`;
     return { vb, svg: d };
   }

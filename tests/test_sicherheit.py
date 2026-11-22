@@ -825,3 +825,17 @@ def test_haustechnik():
     assert it["h1"]["hk"] == "bewegung" and it["h1"]["e"] == "binary_sensor.flur" and it["h1"]["rg"] == 7.5 and it["h1"]["fov"] == 360 and it["h1"]["r"] == 45
     assert it["h2"]["hk"] == "steckdose" and it["h2"]["e"] == "" and "tx" not in it["h2"] and "rg" not in it["h2"]
     assert len(it["h3"]["tx"]) == 200 and it["h4"]["e"] == "climate.bad"
+
+
+def test_moebel_aussen_norden():
+    """Modul 0 Build 10: Möbel/Außen (Typ „o“), Grundstück als Etage, Nordrichtung."""
+    p = S.clean_plan({"north": 405, "floors": [{"id": "eg", "n": "EG"}, {"id": "ga", "n": "Außen", "ga": 1}, {"id": "og", "n": "OG", "ga": "ja"}], "items": [
+        {"id": "o1", "fl": "eg", "t": "o", "x": 10, "y": 10, "w": 72, "h": 80, "ok": "bett", "r": 90},
+        {"id": "o2", "fl": "ga", "t": "o", "x": 10, "y": 10, "w": 240, "h": 120, "ok": "pool", "e": "sensor.pool_temp"},
+        {"id": "o3", "fl": "ga", "t": "o", "x": 10, "y": 10, "w": 40, "h": 40, "ok": "ufo", "e": "x"}]})
+    assert p["north"] == 45 and p["floors"][1]["ga"] == 1 and "ga" not in p["floors"][0] and "ga" not in p["floors"][2]
+    it = {i["id"]: i for i in p["items"]}
+    assert it["o1"]["ok"] == "bett" and it["o1"]["w"] == 72 and it["o1"]["r"] == 90 and it["o1"]["e"] == ""
+    assert it["o2"]["ok"] == "pool" and it["o2"]["e"] == "sensor.pool_temp"
+    assert it["o3"]["ok"] == "tisch" and it["o3"]["e"] == ""
+    assert "north" not in S.clean_plan({"floors": []})

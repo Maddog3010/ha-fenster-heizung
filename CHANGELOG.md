@@ -2,6 +2,23 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b56] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.10 Build 10 – Puppenhaus, Sonnenlicht, Möbel und Außenbereich.
+
+### Neu
+- **Puppenhaus:** Im Plan von Modul 0 neben „Plan“ der Knopf „Puppenhaus“ – alle Etagen schräg übereinander, Wände leicht hochgezogen, mit Böden, Möbeln, Türen, Fenstern und Lampen. Eine Etage antippen klappt sie flach. Das Puppenhaus ist auch das Bild im Banner von Modul 0.
+- **Sonnenlicht:** Neue Ebene „Sonne“. Aus dem Sonnenstand (sun.sun oder aus dem Standort berechnet) und der Nordrichtung des Plans fallen Lichtflächen durch die Fenster auf den Boden. Leiste mit Uhrzeit, Himmelsrichtung, Höhe der Sonne und „Sonne in: Wohnzimmer …“, dazu ein Tageszeit-Regler (5–22 Uhr) und „Jetzt“.
+- **Nordrichtung** unter „Etage & Plan“ in 15°-Schritten; der Nordpfeil im Plan dreht mit.
+- **Möbel** (Werkzeug „Möbel“): Doppel- und Einzelbett, Sofa, Sessel, Esstisch mit Stühlen, Couchtisch, Schreibtisch, Schrank, Regal, Kommode, TV-Board, Küchenzeile, Kochinsel, Kühlschrank, Waschmaschine, Badewanne, Dusche, WC, Waschbecken – mit Normgröße, Breite und Tiefe in 10-cm-Schritten, drehbar. Eigene Ebene „Möbel“.
+- **Außenbereich:** Rasen, Beet, Weg/Einfahrt, Baum, Busch, Hecke, Zaun, Tor, Pool, Zisterne, Gartenhaus, Garage, Carport, PV-Anlage, Mülltonnen, Gartentisch, Grill, Trampolin, Auto, Mähroboter. Pool, PV, Zisterne, Mülltonnen, Garage/Tor, Auto und Mähroboter lassen sich mit einer Entität verbinden und zeigen ihren Zustand („24,5 °C“, „zu“, „mäht“ …).
+- **Grundstück:** „Grundstück anlegen“ unter „Etage & Plan“ erzeugt die Etage „Außen“. Das Haus erscheint dort als Umriss mit „Haus · EG“ – antippen öffnet die Etage. Im Puppenhaus liegt das Grundstück unter dem Haus.
+- Der Baukasten wächst mit: Was über 800 × 480 hinausragt (z. B. der Garten), bleibt sichtbar und bearbeitbar.
+
+### Geändert
+- Banner: „2 Etagen + Grundstück“, das Grundstück zählt nicht als Etage.
+- Zustände im Plan kennen jetzt auch Rollo/Tor („offen 70 %“), Mähroboter, Personen-Tracker und Kalender.
+
 ## [2026.11.4b55] - 2026-11-22
 
 Zwei Builds für **Modul 0 · Haus & Grundriss** (jetzt v0.9): Build 8 – Zoom, Vollbild, Export und Dashboard-Karte; Build 9 – Haustechnik und Notfall-Punkte, Raum-Sensoren, Bereiche anlegen.

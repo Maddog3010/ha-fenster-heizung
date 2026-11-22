@@ -170,4 +170,8 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 .card.grfull{position:fixed;inset:0;z-index:30;margin:0;border-radius:0;overflow:auto;display:flex;flex-direction:column}.card.grfull .grv{flex:1;display:flex;align-items:center;justify-content:center}.card.grfull .grv svg{max-height:calc(100vh - 120px);width:100%}
 .grpre{margin:0;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--primary-text-color) 6%,transparent);font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre;overflow:auto}
 .grtkg{margin:6px 0}.grtkg small{display:block;font-weight:700;margin-bottom:4px}.grtkd{margin:4px 0 8px}.grtkd summary{cursor:pointer;font-weight:700;padding:4px 0}
+/* Modul 0 Build 10: Puppenhaus, Sonne */
+.grv3{display:flex;flex-direction:column;align-items:center}.grv3 svg{width:100%;max-height:72vh}.grv3 .grdl:hover{filter:brightness(1.15)}.grv3h{margin-top:4px}
+.grhs.grdm{width:190px;height:auto;max-height:140px;flex:none}
+.grsun{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 8px;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,#fbbf24 10%,transparent);border:1px solid color-mix(in srgb,#fbbf24 35%,transparent);font-size:.82rem}.grsun .gsi{color:#fbbf24;font-size:1.1rem}.grsun>span:nth-child(2){flex:1;min-width:200px}.grsun input[type=range]{flex:1;min-width:140px;accent-color:#fbbf24}
 `;
