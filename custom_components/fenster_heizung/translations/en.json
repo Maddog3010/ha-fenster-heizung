@@ -278,6 +278,20 @@
     "sicherheit_selbsttest": {
       "name": "Self-test (module 11)",
       "description": "Checks right away whether all detectors are reachable and batteries are fine. Result in the log and as an event, no notification."
+    },
+    "advent_tuer_oeffnen": {
+      "name": "Advent calendar: open door",
+      "description": "Opens a door of the advent calendar (today's if no day is given), e.g. via NFC tag. Locked doors stay closed. Fires the event strom_waerme_advent_geoeffnet.",
+      "fields": {
+        "tag": {
+          "name": "Day",
+          "description": "1–24, empty = today"
+        }
+      }
+    },
+    "advent_zuruecksetzen": {
+      "name": "Reset advent calendar",
+      "description": "Closes all doors of this year again. Developer access only."
     }
   }
 }

@@ -381,6 +381,7 @@
     const old = box.querySelector(".sheet"), top = old ? old.scrollTop : 0;
     if (!m) { box.innerHTML = ""; return; }
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
+    if (m.type === "advent") { box.innerHTML = this._advModal(); return; }
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfloc") { box.innerHTML = this._lfLocModal(); return; }
     if (m.type === "lflist") { box.innerHTML = this._lfListModal(); return; }

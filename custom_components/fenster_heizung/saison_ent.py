@@ -68,3 +68,12 @@ def sensor_attrs(key: str, r: dict[str, Any]) -> dict[str, Any]:
 
 
 PHASE_OPTIONS = list(PHASEN)
+
+
+# ------------------------------------------------------------ Adventskalender (Build 2)
+def advent_count(hass: HomeAssistant) -> dict[str, Any] | None:
+    m = hass.data.get(DOMAIN, {}).get("advent") if hass else None
+    try:
+        return m.count() if m is not None else None
+    except Exception:  # noqa: BLE001
+        return None

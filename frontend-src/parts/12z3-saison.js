@@ -31,7 +31,7 @@
   _saiTick() {
     if (!this._saiD) return;
     const k = this._sai().key;
-    if (this._saiK !== undefined && this._saiK !== k) { this._saiK = k; this._render(); if (this._modal && this._modal.type === "look") this._renderModal(); return; }
+    if (this._saiK !== undefined && this._saiK !== k) { this._saiK = k; if (this._advLoad) this._advLoad().then(() => { this._render(); if (this._modal && this._modal.type === "advent") this._renderModal(); }); this._render(); if (this._modal && this._modal.type === "look") this._renderModal(); return; }
     this._saiK = k;
   }
   _saiKranz(n, w = 30) {
@@ -54,7 +54,7 @@
     return `<div class="saiL${s.mv ? " mv" : ""}" aria-hidden="true">${Array.from({ length: n }, (_, i) => `<i style="--c:${C[i % C.length]};--i:${i}"></i>`).join("")}</div>`;
   }
   _saiStartChip() { const s = this._sai(); return s.vis ? [this._saiKranz(s.kz, 26), esc(this._saiText(s))] : null; }
-  _saiChip() { const s = this._sai(); return s.vis ? `<span class="chip saiC">${this._saiKranz(s.kz, 30)}${esc(this._saiText(s))}</span>` : ""; }
+  _saiChip() { const s = this._sai(); return s.vis ? `<span class="chip saiC"${this._advOn && this._advOn() ? ` data-act="advxkal" role="button" tabindex="0"` : ""}>${this._saiKranz(s.kz, 30)}${esc(this._saiText(s))}</span>` : ""; }
   _saiRoomIcon(r) {
     const s = this._sai(); if (!s.vis || !this._saiCfg().icons) return "";
     if (s.ph === "heiligabend") return `<span class="saiR" aria-hidden="true">⭐</span>`;
@@ -86,7 +86,7 @@
       <div class="saiBox">${this._saiKranz(s.kz, 46)}<div><div class="t">${esc(status)}</div><div class="s">${s.vis ? esc(this._saiText(s)) : "Lichterkette, Adventskranz und Countdown auf der Startseite und in Modul 1"}</div></div></div>
       <div class="seg" style="margin-top:6px">${M.map(([k, l]) => `<button class="${c.modus === k ? "sel" : ""}" data-act="saixmode" data-k="${k}">${l}</button>`).join("")}</div>
       <div class="mut sm" style="margin:0 0 8px">${info}</div>
-      ${tog("lichter", "Lichterkette an den Kopfkarten")}${tog("countdown", "Countdown bis Heiligabend")}${tog("icons", "Weihnachtliche Raum-Symbole")}${dev}`;
+      ${tog("lichter", "Lichterkette an den Kopfkarten")}${tog("countdown", "Countdown bis Heiligabend")}${tog("icons", "Weihnachtliche Raum-Symbole")}${dev}${this._advLook ? this._advLook() : ""}`;
   }
   _saiSave(cfg) {
     this._hass.callWS({ type: "fenster_heizung/saison_set", cfg }).then((r) => { this._saiD = r; this._saiK = undefined; this._render(); this._renderModal(); })
@@ -94,7 +94,7 @@
   }
   _saiSim(act, at) {
     const msg = { type: "fenster_heizung/saison_sim", act }; if (act === "on") { msg.at = at; msg.minutes = this._saiMin || 60; }
-    this._hass.callWS(msg).then((r) => { this._saiD = r; this._saiK = undefined; this._render(); this._renderModal(); this._toast(act === "on" ? "Simulation läuft – nur das Theme" : "Simulation beendet"); })
+    this._hass.callWS(msg).then(async (r) => { this._saiD = r; this._saiK = undefined; if (this._advLoad) await this._advLoad(); this._render(); this._renderModal(); this._toast(act === "on" ? "Simulation läuft – nur das Theme" : "Simulation beendet"); })
       .catch((e) => this._toast(e && e.code === "bad_date" ? "Ungültiges Datum (Format JJJJ-MM-TTTHH:MM)" : e && e.code === "no_dev" ? "Nur mit Entwickler-Zugang" : "Simulation nicht möglich"));
   }
   _saiAct(a, b) {

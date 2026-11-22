@@ -1340,6 +1340,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         from .saison import SaisonManager
         store["saison"] = SaisonManager(hass)
         await store["saison"].async_start()
+    if "advent" not in store:  # Weihnachts-Theme (Build 2): Adventskalender
+        from .advent import AdventManager, async_register_services as advent_services
+        store["advent"] = AdventManager(hass)
+        await store["advent"].async_start()
+        try:
+            advent_services(hass)  # advent_tuer_oeffnen, advent_zuruecksetzen
+        except Exception:  # noqa: BLE001 - Dienste sind ein Zusatz, der Start darf daran nie scheitern
+            _LOGGER.warning("Dienste des Adventskalenders nicht angemeldet", exc_info=True)
     if "messwerk" not in store:  # liest alle anderen Speicher, deshalb als Letztes
         store["messwerk"] = Messwerk(hass)
         await store["messwerk"].async_start()
@@ -1448,6 +1456,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             szm = hass.data.get(DOMAIN, {}).pop("saison", None)
             if szm is not None:
                 szm.async_stop()
+            adv = hass.data.get(DOMAIN, {}).pop("advent", None)
+            if adv is not None:
+                adv.async_stop()
             sfm = hass.data.get(DOMAIN, {}).pop("sicherheit", None)
             if sfm is not None:
                 sfm.async_stop()

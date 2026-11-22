@@ -56,6 +56,7 @@
     this._onInput(hid); this._onChange(hid);
   }
   _onChange(t) {
+    if (this._advInput && this._advInput(t)) return;
       if (t.dataset && t.dataset.f === "mwset") { this._mwAssign(t.dataset.k, t.value); return; }
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("msx") && this._msChange(t)) return;
@@ -94,6 +95,7 @@
     else if (a === "pkpick") { const meta = (this._pkReg || {})[b.dataset.pid]; this._pkId = null; if (meta) { const t = { dataset: { ...meta }, value: b.dataset.v, tagName: "SELECT" }; this._onInput(t); this._onChange(t); } this._renderModal(); }
     else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || (a.startsWith("gs") && a !== "gsum") || a.startsWith("ev")) this._mdAct(a, b);
     else if (a.startsWith("saix")) this._saiAct(a, b);
+    else if (a.startsWith("advx")) this._advAct(a, b);
     else if (a.startsWith("msx")) this._msAct(a, b);
     else if (a.startsWith("lfx")) this._lfAct(a, b);
     else if (a.startsWith("ort")) this._ortAct(a, b);

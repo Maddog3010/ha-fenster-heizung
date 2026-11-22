@@ -46,7 +46,7 @@ async def async_setup_entry(
     extra: list[SensorEntity] = []
     if store.get(SP_OWNER) in (None, entry.entry_id):  # E6/F7: Solar-Werte nur einmal, am ersten Raum
         store[SP_OWNER] = entry.entry_id
-        extra = [SolarSensor(k) for k in SP_KEYS] + [SicherheitSensor(k) for k in SF_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS] + [TarifSensor(k) for k in TF_KEYS] + [SaisonSensor(k) for k in saison_ent.SENSORS]
+        extra = [SolarSensor(k) for k in SP_KEYS] + [SicherheitSensor(k) for k in SF_KEYS] + [WetterSensor("wx_level")] + [WetterSensor("wx_" + k) for k in WX_KEYS] + [EvSensor(k) for k in EV_KEYS] + [TarifSensor(k) for k in TF_KEYS] + [SaisonSensor(k) for k in saison_ent.SENSORS] + [AdventSensor()]
     if store.get(SP_OWNER) == entry.entry_id:
         muell_ent.register(hass, "sensor", async_add_entities, MuellSensor, entry.async_on_unload)  # Modul 17: Entitäten entstehen mit dem Addon
         abr_ent.register(hass, async_add_entities, AbrSensor, entry.async_on_unload)  # Modul 20: Preise, Ergebnis, Termine (Addon v0.9)
@@ -586,6 +586,33 @@ class MuellSensor(muell_ent._Base, SensorEntity):
 
 class LichtSensor(licht_ent.Base, SensorEntity):
     """Modul 18: Lampen an, Brennstunden heute, längste Einschaltdauer."""
+
+
+class AdventSensor(saison_ent.Base, SensorEntity):
+    """Adventskalender: geöffnete Türchen (0–24), Attribut heute_verfuegbar."""
+
+    def __init__(self) -> None:
+        saison_ent.Base.__init__(self, "sensor", "advent_tuerchen", "Adventskalender Türchen", "mdi:gift-open")
+
+    @property
+    def available(self) -> bool:
+        return saison_ent.advent_count(self.hass) is not None
+
+    @property
+    def native_value(self):
+        r = saison_ent.advent_count(self.hass)
+        return r["n"] if r else None
+
+    @property
+    def extra_state_attributes(self):
+        r = saison_ent.advent_count(self.hass)
+        return {"heute_verfuegbar": r["heute_verfuegbar"], "jahr": r["jahr"]} if r else {}
+
+    async def async_added_to_hass(self) -> None:
+        from .advent import SIGNAL as ADV_SIGNAL
+
+        await super().async_added_to_hass()
+        self.async_on_remove(async_dispatcher_connect(self.hass, ADV_SIGNAL, self._refresh))
 
 
 class SaisonSensor(saison_ent.Base, SensorEntity):
