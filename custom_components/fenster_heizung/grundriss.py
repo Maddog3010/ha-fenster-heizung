@@ -151,6 +151,14 @@ class GrundrissManager:
                 _LOGGER.debug("Plan-Hörer fehlgeschlagen", exc_info=True)
         return True
 
+    def set_flag(self, key: str, on: bool) -> None:
+        """Schalter in meta (Build 9: „ent“ = Raum-Sensoren in Home Assistant)."""
+        if on:
+            self.meta[key] = "1"
+        else:
+            self.meta.pop(key, None)
+        self._save(1)
+
     # ---- Verlauf und Wiederherstellen (Build 4)
     async def hist_list(self) -> dict[str, Any]:
         """Verlauf für die Oberfläche (ohne Pläne) und die Umzugs-Kopie aus Modul 11, falls noch da."""

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from datetime import timedelta
+from typing import Any
 
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -25,6 +26,7 @@ from . import muell_ent
 from . import abr_ent
 from . import licht_ent
 from . import saison_ent
+from . import gr_ent
 
 SP_OWNER = "sp_sensor_owner"
 SP_KEYS = ("sp_today", "sp_tomorrow", "sp_rest", "sp_corr", "sp_best")
@@ -51,6 +53,7 @@ async def async_setup_entry(
         muell_ent.register(hass, "sensor", async_add_entities, MuellSensor, entry.async_on_unload)  # Modul 17: Entitäten entstehen mit dem Addon
         abr_ent.register(hass, async_add_entities, AbrSensor, entry.async_on_unload)  # Modul 20: Preise, Ergebnis, Termine (Addon v0.9)
         licht_ent.register(hass, async_add_entities, LichtSensor, entry.async_on_unload)  # Modul 18: Lampen an, Licht heute, Längste an (Addon v0.2)
+        gr_ent.register(hass, "sensor", async_add_entities, RaumSensor, entry.async_on_unload)  # Modul 0 Build 9: Raum-Sensoren (nur wenn eingeschaltet)
     async_add_entities(
         [PausedMinutesSensor(entry, key, scope) for key, scope in SCOPES.items()]
         + [PlanTargetSensor(entry), ModeSensor(entry)]
@@ -582,6 +585,26 @@ class MuellSensor(muell_ent._Base, SensorEntity):
             except ValueError:
                 return None
         return v
+
+
+class RaumSensor(gr_ent.Base, SensorEntity):
+    """Modul 0: Fläche, Temperatur und Lampen an je Raum, Wohnfläche des Hauses."""
+
+    @property
+    def native_value(self) -> Any:
+        return (self._row() or {}).get("value")
+
+    @property
+    def native_unit_of_measurement(self) -> str | None:
+        return (self._row() or {}).get("unit")
+
+    @property
+    def device_class(self) -> str | None:
+        return (self._row() or {}).get("dc")
+
+    @property
+    def state_class(self) -> str | None:
+        return (self._row() or {}).get("sc")
 
 
 class LichtSensor(licht_ent.Base, SensorEntity):

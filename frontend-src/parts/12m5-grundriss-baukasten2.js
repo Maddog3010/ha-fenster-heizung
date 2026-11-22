@@ -200,6 +200,7 @@
     return false;
   }
   _grB7Change(t) {
+    if (this._grB9Change && this._grB9Change(t)) return true;
     const f = t.dataset ? t.dataset.f : "", ed = this._sfEd;
     if (f === "grxcall") { this._grCalM = t.value; return true; }
     if (f === "grxang" && ed) { const cur = ed.plan.items.find((x) => x.id === ed.sel); if (cur) { this._sfSnap(); cur.r = ((Math.round(Number(t.value) || 0) % 360) + 360) % 360; this._render(); } return true; }

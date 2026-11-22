@@ -64,13 +64,16 @@ BHIST_MAX = 60
 TEST_ALARM_MAX_S = 120  # Alarm bis zu dieser Dauer gilt als Test per Testknopf
 THIST_MAX = 24  # Prüfungen und Batterietausche je Melder fürs Jahresband
 BHIST_GAP_S = 20 * 3600
-ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l", "g", "a")  # l = Lampe (Modul 18, ab 2026.11.4b51), g = mobiles Gerät, a = Markise (Modul 0 Build 7)
+ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l", "g", "a", "h")  # l = Lampe (Modul 18, ab 2026.11.4b51), g = mobiles Gerät, a = Markise (Modul 0 Build 7), h = Haustechnik (Build 9)
 LAMP_K = ("decke", "steh", "spot", "streifen", "aussen", "tisch")  # tisch ab Modul 18 Build 7
 DOOR_K = ("doppel", "schiebe", "pendel", "falt", "garage", "glas")  # Modul 0 Build 7: Arten der Tür (ohne = Drehtür)
 WIN_K = ("boden", "dach", "rollo")  # Modul 0 Build 7: Arten des Fensters (ohne = normal)
 STAIR_K = ("l", "u", "wendel", "boden")  # Modul 0 Build 7: L-Treppe, U-Treppe (halbgewendelt), Wendeltreppe, Dachbodentreppe (ohne = gerade)
 DEV_K = ("heizer", "entf")  # Modul 0 Build 7: mobiler Heizer, mobiler Luftentfeuchter (aus Modul 1)
 DEV_DOM = ("switch", "climate", "humidifier", "fan", "input_boolean", "water_heater")
+TECH_K = ("heizkoerper", "thermostat", "klima", "lueftung", "kamin", "therme", "wp", "speicher", "steckdose", "schalter", "sicherung", "zaehler", "wechselrichter", "akku", "wallbox",
+          "temp", "bewegung", "kontakt", "wasser", "luft", "hell", "wlan", "router", "kamera", "klingel", "lautsprecher", "tv",
+          "haupthahn_w", "haupthahn_g", "feuerloescher", "notausgang", "sammelpunkt", "erstehilfe", "notiz")  # Modul 0 Build 9: Haustechnik, Sensoren, Notfall
 _ID = re.compile(r"^[a-z0-9_]{1,24}$")
 _MON = re.compile(r"^(20\d\d|19\d\d)-(0[1-9]|1[0-2])$")
 _HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
@@ -298,6 +301,15 @@ def clean_plan(raw: Any) -> dict[str, Any]:
             o["gk"] = it.get("gk") if it.get("gk") in DEV_K else "heizer"
             if it.get("fix") in (1, True):
                 o["fix"] = 1
+        if it["t"] == "h":  # Haustechnik: Art, beliebige Entität, Reichweite/Blickwinkel, Notiztext
+            o["hk"] = it.get("hk") if it.get("hk") in TECH_K else "steckdose"
+            o["e"] = _ent(it.get("e"))
+            if it.get("rg") is not None:
+                o["rg"] = round(_num(it.get("rg"), 1, 30, 6) * 2) / 2
+            if it.get("fov") is not None:
+                o["fov"] = int(_num(it.get("fov"), 20, 360, 90))
+            if o["hk"] == "notiz":
+                o["tx"] = str(it.get("tx") or "").strip()[:200]
         if it["t"] == "a":  # Markise: Rollo-Entität (cover), Ausfall in cm
             o["e"] = _ent(it.get("e"), ("cover",))
             o["tf"] = int(_num(it.get("tf"), 50, 800, 300))
