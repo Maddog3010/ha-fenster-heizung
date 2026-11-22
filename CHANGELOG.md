@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b46] - 2026-11-22
+
+**Neue Banner** Build 1 – Szenen-Banner für die restlichen Module (Vorschau „Neue Banner für die restlichen 8 Module“), Schritt 1 von 3.
+
+### Neu
+- **Modul 2 · Warmwasser & Zirkulation** (v1.1 Build 2): Banner mit dem **Speicher im Schnitt** – Füllung in den Farben der Temperatur (oben heiß, unten kalt), Temperatur oben und unten, Zirkulation als laufende Leitung mit Dusche, Flamme beim Aufheizen, PV-Dach bei Überschuss. Die Knöpfe „Einmal aufheizen“, „Zirkulation 5 Min.“ und „Abwesend“ bleiben im Banner.
+- **Modul 15 · Wartung & Erinnerungen** (v0.2 Build 3): Banner mit einem **Kalenderblatt** für den nächsten Termin (rot, wenn er fällig ist) und **Ampel-Ringen** für die vier wichtigsten Termine – der Ring zeigt, wie weit der Abstand schon abgelaufen ist.
+- **Gemeinsamer Banner-Baustein** für die nächsten Module: Bild rechts, das zur Kartenfarbe ausläuft, Versions-Plakette unten rechts, am Handy halb durchsichtig hinter dem Text. Bewegung folgt Anpassen → Animationen (Aus · Dezent · Voll) und „Bewegung reduzieren“, Bilder außerhalb des Bildschirms halten an, laufende Bewegung beginnt beim Neuzeichnen nicht von vorn.
+- **Einstellungen → Darstellung → „Banner wie bisher“:** zurück zum Logo-Feld (auch über „Einstellung suchen“).
+
+### Technik
+- Neue Dashboard-Teile `03i-stile-szenen-banner` und `12i2-szenen-banner`. `_modHero` nimmt ein Bild über `scene` an; Module ohne Bild bleiben unverändert.
+- Im Browser geprüft: breite Ansicht und Handy (400 px), Speicher warm und kalt, Wartung mit überfälligem Termin.
+
 ## [2026.11.4b45] - 2026-11-22
 
 **Weihnachts-Theme** Build 3 – Sponsor-Varianten, Tagesschlüssel und Modul-Details (Konzept „Weihnachts-Theme & Adventskalender“, Build 3 von 3).

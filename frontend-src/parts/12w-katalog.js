@@ -47,6 +47,7 @@
       { id: "layout.accent", t: "Akzentfarbe", p: "Darstellung", k: "farbe akzent design theme", go: ["look"], h: "Farbe für Knöpfe und Markierungen. Gilt für alle." },
       { id: "layout.rk.old", t: "Raumkarten wie bisher", p: "Darstellung", k: "raumkarte raumbild optik alt neu modul 1 karten", go: ["look"], v: () => onoff(!!(this._cfg.layout.rk || {}).old), h: "Modul 1: Raumkarte 2.0 mit Raumbild und Ring oder die Karten aus v1.7." },
       { id: "layout.rk.anim", t: "Bewegung im Raumbild", p: "Darstellung", k: "animation bewegung wärmewellen raumbild", go: ["look"], v: () => ({ aus: "Aus", dezent: "Dezent", voll: "Voll" })[this._rkCfg().anim], h: "Wärmewellen am Heizkörper und Luft am offenen Fenster. Aus, Dezent oder Voll." },
+      { id: "layout.sb.old", t: "Banner wie bisher", p: "Darstellung", k: "banner szene bild logo optik alt neu warmwasser wartung modul 2 15", go: ["look"], v: () => onoff(!!(this._cfg.layout.sb || {}).old), h: "Logo-Feld statt Bild im Banner von Warmwasser, Wartung und den Modulen in Entwicklung." },
       { id: "layout.wx.on", t: "Wetter in der Kopfkarte", p: "Darstellung", k: "wetter anzeige kopfkarte", go: ["look"], v: () => onoff(L().on) },
       { id: "hz", t: "Startseite", p: "Darstellung", k: "startseite begrüßung karten bubbles", go: ["hzopen"] },
       { id: "tablet", t: "Tablet-Modus", p: "Dieses Gerät", k: "tablet fully kiosk pin wandtablet", lv: "dev", go: ["tmopen"], v: () => onoff(this._tmOn()), h: "Nur für diesen Browser: Vollbild für ein Wandtablet mit PIN und Ruhemodus." },
