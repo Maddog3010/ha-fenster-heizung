@@ -11,9 +11,18 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 - **Sonnenlicht:** Neue Ebene „Sonne“. Aus dem Sonnenstand (sun.sun oder aus dem Standort berechnet) und der Nordrichtung des Plans fallen Lichtflächen durch die Fenster auf den Boden. Leiste mit Uhrzeit, Himmelsrichtung, Höhe der Sonne und „Sonne in: Wohnzimmer …“, dazu ein Tageszeit-Regler (5–22 Uhr) und „Jetzt“.
 - **Nordrichtung** unter „Etage & Plan“ in 15°-Schritten; der Nordpfeil im Plan dreht mit.
 - **Möbel** (Werkzeug „Möbel“): Doppel- und Einzelbett, Sofa, Sessel, Esstisch mit Stühlen, Couchtisch, Schreibtisch, Schrank, Regal, Kommode, TV-Board, Küchenzeile, Kochinsel, Kühlschrank, Waschmaschine, Badewanne, Dusche, WC, Waschbecken – mit Normgröße, Breite und Tiefe in 10-cm-Schritten, drehbar. Eigene Ebene „Möbel“.
-- **Außenbereich:** Rasen, Beet, Weg/Einfahrt, Baum, Busch, Hecke, Zaun, Tor, Pool, Zisterne, Gartenhaus, Garage, Carport, PV-Anlage, Mülltonnen, Gartentisch, Grill, Trampolin, Auto, Mähroboter. Pool, PV, Zisterne, Mülltonnen, Garage/Tor, Auto und Mähroboter lassen sich mit einer Entität verbinden und zeigen ihren Zustand („24,5 °C“, „zu“, „mäht“ …).
+- **Außenbereich** mit 42 Teilen in drei Gruppen:
+  - Garten & Pflanzen: Rasen, Beet, Hochbeet, Baum, Obstbaum, Busch, Hecke, Gartenteich, Gewächshaus, Kompost, Regentonne, Bewässerungszone, Wasserhahn außen, Mähroboter
+  - Spielen & Freizeit: Spielturm mit Rutsche, Schaukel, Sandkasten, Trampolin, Pool, Whirlpool, Gartensauna, Gartentisch, Liegestuhl, Sonnenschirm, Grill, Feuerstelle
+  - Wege, Bauten & Technik: Weg/Einfahrt, Trittsteine, Holzterrasse, Zaun, Tor, Gartenhaus, Garage, Carport, PV-Anlage, Zisterne, Mülltonnen, Fahrradständer, Auto, Gartenlampe
+- Viele Gartenteile lassen sich mit einer Entität verbinden und zeigen ihren Zustand: Pool, Whirlpool, Sauna, Teich und Gewächshaus mit Temperatur, Bewässerungszone wird blau mit Sprühbögen, solange sie läuft, Gartenlampe leuchtet, Garage/Tor „offen/zu“, Mähroboter „mäht“, Regentonne und Zisterne mit Füllstand.
 - **Grundstück:** „Grundstück anlegen“ unter „Etage & Plan“ erzeugt die Etage „Außen“. Das Haus erscheint dort als Umriss mit „Haus · EG“ – antippen öffnet die Etage. Im Puppenhaus liegt das Grundstück unter dem Haus.
 - Der Baukasten wächst mit: Was über 800 × 480 hinausragt (z. B. der Garten), bleibt sichtbar und bearbeitbar.
+
+### Behoben
+- **Raumnamen** blieben bei kleinen oder schmalen Räumen (besonders auf Handy und iPad) nicht im Raum und lagen über Meldern. Die Beschriftung passt jetzt ihre Schrift der Raumbreite an, bricht lange Namen um oder kürzt sie, bleibt ganz im Raum und weicht Meldern, Lampen, Türen, Fenstern, Treppen, Geräten, Technik und der Temperatur-Marke aus. Melder, Lampen und Geräte liegen immer über den Namen.
+- Die Temperatur-Marke („Jetzt“) sitzt auch bei schrägen und L-förmigen Räumen im Raum.
+- Auf dem Handy liegt die Zoom-Leiste über dem Plan statt darauf.
 
 ### Geändert
 - Banner: „2 Etagen + Grundstück“, das Grundstück zählt nicht als Etage.

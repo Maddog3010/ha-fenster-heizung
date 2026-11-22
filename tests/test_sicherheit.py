@@ -832,10 +832,13 @@ def test_moebel_aussen_norden():
     p = S.clean_plan({"north": 405, "floors": [{"id": "eg", "n": "EG"}, {"id": "ga", "n": "Außen", "ga": 1}, {"id": "og", "n": "OG", "ga": "ja"}], "items": [
         {"id": "o1", "fl": "eg", "t": "o", "x": 10, "y": 10, "w": 72, "h": 80, "ok": "bett", "r": 90},
         {"id": "o2", "fl": "ga", "t": "o", "x": 10, "y": 10, "w": 240, "h": 120, "ok": "pool", "e": "sensor.pool_temp"},
-        {"id": "o3", "fl": "ga", "t": "o", "x": 10, "y": 10, "w": 40, "h": 40, "ok": "ufo", "e": "x"}]})
+        {"id": "o3", "fl": "ga", "t": "o", "x": 10, "y": 10, "w": 40, "h": 40, "ok": "ufo", "e": "x"},
+        {"id": "o4", "fl": "ga", "t": "o", "x": 10, "y": 10, "w": 120, "h": 80, "ok": "spielturm"},
+        {"id": "o5", "fl": "ga", "t": "o", "x": 10, "y": 10, "w": 160, "h": 120, "ok": "bewaesserung", "e": "valve.zone_rasen"}]})
     assert p["north"] == 45 and p["floors"][1]["ga"] == 1 and "ga" not in p["floors"][0] and "ga" not in p["floors"][2]
     it = {i["id"]: i for i in p["items"]}
     assert it["o1"]["ok"] == "bett" and it["o1"]["w"] == 72 and it["o1"]["r"] == 90 and it["o1"]["e"] == ""
     assert it["o2"]["ok"] == "pool" and it["o2"]["e"] == "sensor.pool_temp"
     assert it["o3"]["ok"] == "tisch" and it["o3"]["e"] == ""
+    assert it["o4"]["ok"] == "spielturm" and it["o5"]["ok"] == "bewaesserung" and it["o5"]["e"] == "valve.zone_rasen"
     assert "north" not in S.clean_plan({"floors": []})

@@ -21,6 +21,13 @@
     return this._grUnder(ed.plan, fl, { labels: true, bgImg: false, layers: { licht: false, sf: false, gt: true, ht: true, mo: true } }) + this._sfPlanInner(fl, true) + (this._grEdOver ? this._grEdOver(fl) : "");
   }
   /* Ebene „Jetzt“: Temperatur (Modul 1) als Chip oben rechts im Raum, Bewegung als Puls */
+  /* Temperatur-Marke: oben rechts, aber sicher im Raum (auch bei schrägen und L-förmigen Räumen) → [x0, y0, x1, y1] */
+  _grChipBox(r, t) {
+    const w = String(t || "00,0°").length * 7.4 + 22, inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y);
+    const ok = (x, y) => [[x, y], [x + w, y], [x, y + 20], [x + w, y + 20]].every((p) => inR(p[0], p[1]));
+    for (let dy = 0; dy <= r.h - 32; dy += 12) for (let dx = 0; dx <= r.w - w - 20; dx += 12) { const x = r.x + r.w - w - 10 - dx, y = r.y + 12 + dy; if (ok(x, y)) return [x, y, x + w, y + 20]; }
+    return [r.x + r.w - w - 10, r.y + 12, r.x + r.w - 10, r.y + 32];
+  }
   _grNow(P, fl, rs, o, T) {
     let d = "";
     const st = this._hass.states, rooms = this._collect ? this._collect(true) : [], all = this._gpAll ? this._gpAll(rooms) : [];
@@ -28,7 +35,7 @@
     rs.forEach((r) => {
       const m = this._gpMatch ? this._gpMatch(r, all) : null, s = m && !m.ms && this._rkState ? this._rkState(m) : null;
       if (s && s.cur != null) {
-        const t = `${num(s.cur, 1)}°`, col = s.k === "aus" ? "#64748b" : this._rkCol(s.cur, 17, 22), w = t.length * 7.4 + 22, x = r.x + r.w - w - 10, y = r.y + 12;
+        const t = `${num(s.cur, 1)}°`, col = s.k === "aus" ? "#64748b" : this._rkCol(s.cur, 17, 22), B = this._grChipBox(r, t), w = B[2] - B[0], x = B[0], y = B[1]; if (this._grChipAt) this._grChipAt[r.id] = B;
         d += `<g pointer-events="none"><title>${esc(m.name)} · ${t}${s.ziel != null ? ` · Ziel ${num(s.ziel, 1)}°` : ""}</title><rect x="${x}" y="${y}" width="${w}" height="20" rx="10" fill="${col}"/><circle cx="${x + 10}" cy="${y + 10}" r="3.4" fill="#fff" opacity=".85"/><text x="${x + 17}" y="${y + 14.3}" font-size="12" font-weight="800" fill="#111">${t}</text>${s.heating ? `<text x="${x - 12}" y="${y + 15}" font-size="13">🔥</text>` : ""}</g>`;
       }
       const a = this._grArea ? this._grArea(r) : null, mv = a ? mot.filter((e) => this._grEntArea(e) === a.id) : [];

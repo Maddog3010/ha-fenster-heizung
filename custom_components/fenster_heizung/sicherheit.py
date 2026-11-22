@@ -77,7 +77,9 @@ TECH_K = ("heizkoerper", "thermostat", "klima", "lueftung", "kamin", "therme", "
 MOB_K = ("bett", "bett1", "sofa", "sessel", "tisch", "couchtisch", "schreibtisch", "schrank", "regal", "kommode", "tvboard", "kueche", "insel", "kuehlschrank",
          "waschmaschine", "badewanne", "dusche", "wc", "waschbecken",
          "baum", "busch", "hecke", "beet", "rasen", "weg", "zaun", "tor", "pool", "gartenhaus", "garage", "carport", "pv", "muell", "zisterne",
-         "gartentisch", "grill", "trampolin", "auto", "maehroboter")  # Modul 0 Build 10: Möbel und Außenbereich
+         "gartentisch", "grill", "trampolin", "auto", "maehroboter",
+         "hochbeet", "obstbaum", "teich", "gewaechshaus", "kompost", "regentonne", "bewaesserung", "wasserhahn", "spielturm", "schaukel", "sandkasten",
+         "whirlpool", "sauna", "liegestuhl", "sonnenschirm", "feuerstelle", "trittsteine", "holzterrasse", "fahrrad", "gartenlampe")  # Modul 0 Build 10: Möbel und Außenbereich
 _ID = re.compile(r"^[a-z0-9_]{1,24}$")
 _MON = re.compile(r"^(20\d\d|19\d\d)-(0[1-9]|1[0-2])$")
 _HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
