@@ -26,12 +26,13 @@
   _grArea(item) {
     const v = this._grRooms()[item.id];
     if (v === "-") return null;
-    if (v) return { id: v, auto: false };
+    const AR = this._hass.areas || {}, nmOf = (id) => (AR[id] && AR[id].name) || id;
+    if (v) return { id: v, name: nmOf(v), auto: false };
     const nm = (x) => String(x || "").toLowerCase().replace(/zimmer|raum|[^a-zäöüß0-9]/g, ""), n = nm(item.n);
     if (!n) return null;
     const A = Object.values(this._hass.areas || {}).map((a) => ({ id: a.area_id, m: nm(a.name) }));
     const hit = A.find((a) => a.m === n) || A.find((a) => a.m.length > 2 && (a.m.includes(n) || n.includes(a.m)));
-    return hit ? { id: hit.id, auto: true } : null;
+    return hit ? { id: hit.id, name: nmOf(hit.id), auto: true } : null;
   }
   _grAreaName(id) { const a = (this._hass.areas || {})[id]; return (a && a.name) || id; }
   _grEntArea(e) { const H = this._hass, en = (H.entities || {})[e]; if (!en) return ""; if (en.area_id) return en.area_id; const dv = en.device_id && (H.devices || {})[en.device_id]; return (dv && dv.area_id) || ""; }
@@ -48,7 +49,7 @@
     });
     return s + `<rect x="0" y="${H0 + H}" width="248" height="14" fill="#06101a" opacity=".55"/></svg>`;
   }
-  _grLy() { return (this._grLys = this._grLys || { sf: true, licht: true }); }
+  _grLy() { return (this._grLys = this._grLys || { sf: true, licht: true, gt: true }); }
   _grPage() {
     const S = this._grS0(), P = this._grPlan(), adm = this._admin(), sfOn = this._mdList().some((m) => m.id === "sf");
     const css = `<style>.grh{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;padding:16px 18px;border-radius:18px;margin-bottom:14px;color:#e2e8f0;background:radial-gradient(120% 140% at 90% 0%,#0e7490 0%,transparent 55%),linear-gradient(135deg,#0f3d3a,#0b1a2c 70%)}
@@ -105,11 +106,11 @@
     const rs = here.filter((i) => i.t === "r"), B = rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
     if (!rs.length) Object.assign(B, { x0: 0, y0: 0, x1: 800, y1: 480 });
     const narrow = this._narrow || (this.clientWidth || 999) < 600, sty = this._grStyle(), dims = this._grDimsOn();
-    const G = this._grDraw(P, fl, { style: sty, dims, narrow, layers: { licht: ly.licht && !!(this._liOn && this._liOn()), sf: ly.sf } });
+    const G = this._grDraw(P, fl, { style: sty, dims, narrow, click: true, now: ly.now !== false, layers: { licht: ly.licht && !!(this._liOn && this._liOn()), sf: ly.sf, gt: ly.gt !== false } });
     const nL = items.filter((i) => i.t === "l").length, nM = items.filter((i) => i.t === "m").length, liOn = !!(this._liOn && this._liOn());
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
-    const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
-    const card = `<div class="card"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
+    const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button>${items.some((i) => i.t === "g") ? `<button class="${ly.gt !== false ? "on" : ""}" data-act="grxly" data-k="gt"><i style="background:#f97316"></i>Geräte (${items.filter((i) => i.t === "g").length})</button>` : ""}<button class="${ly.now !== false ? "on" : ""}" data-act="grxnow" title="Temperatur aus Modul 1 und Bewegung"><i style="background:#2dd4bf"></i>Jetzt</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
+    const card = `<div class="card"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
       <div class="grv grv-${sty}"><svg viewBox="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${G.svg}</svg></div></div>`;
     const since = meta.since ? new Date(meta.since).toLocaleDateString("de-DE") : "", until = meta.copy_until ? new Date(meta.copy_until).toLocaleDateString("de-DE") : "";
     const info = `<div class="grinfo">
@@ -135,9 +136,7 @@
   }
   _grEditHead(ed) {
     const ms = this._mdList(), sf = ms.some((m) => m.id === "sf"), li = !!(this._liOn && this._liOn());
-    const back = ed.from && ed.from !== "gr" ? `<button data-act="sfxcancel">← Zurück zu ${esc(this._grModName(ed.from))}</button>` : "";
-    return `<div class="gred">${this._grHouse(ed.plan)}<div class="t"><div class="k">Modul 0 · Baukasten</div><b>Grundriss bearbeiten</b><small>Ein Plan für alle Module – nach dem Speichern sehen ${esc(["Modul 1", sf ? "Modul 11" : "", li ? "Modul 18" : ""].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " und $1"))} die Änderung sofort.${ed.from && ed.from !== "gr" ? ` Danach geht es zurück zu ${esc(this._grModName(ed.from))}.` : ""}</small></div>
-      <div class="ch"><span>Bauplan</span><span class="${sf ? "" : "off"}" title="${sf ? "" : "Modul 11 ist aus"}">Melder</span><span class="${li ? "" : "off"}" title="${li ? "" : "Addon „licht“ ist aus"}">Lampen</span></div>${back}</div>`.replace('<svg class="grhs"', '<svg class="grhs" style="width:110px;flex:none"');
+    return `<div class="gredh">${ic("pencil", 16)}<b>Grundriss bearbeiten</b><span>Modul 0 · ein Plan für Modul 1${sf ? ", 11" : ""}${li ? " und 18" : ""} – nach dem Speichern sofort überall${ed.from && ed.from !== "gr" ? `, danach zurück zu ${esc(this._grModName(ed.from))}` : ""}</span></div>`;
   }
   _grSavePlan(p) {
     const S = this._grS0();
@@ -292,6 +291,9 @@
         <div class="gschips">${A.map((a) => `<button class="gsch ${cur === a.area_id || (!cur && auto && auto.id === a.area_id) ? "sel" : ""}" data-act="grxaset" data-k="${esc(it.id)}" data-v="${esc(a.area_id)}">${esc(a.name)}</button>`).join("") || `<span class="mut sm">In Home Assistant sind noch keine Bereiche angelegt.</span>`}</div>
         <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="-">Kein Bereich</button>${cur ? `<button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     }
+    if (m.type === "grxroom") return this._grRoomModal(m);
+    if (m.type === "grxchk" && this._grChkModal) return this._grChkModal();
+    if (m.type === "grxcal" && this._grCalModal) return this._grCalModal();
     if (m.type === "grximp") return this._grImpModal(m);
     if (m.type === "grxrest") { const H = this._grH && this._grH.d, h = m.k === "umzug" ? H && H.copy : H && (H.hist || []).find((x) => x.id === m.k); return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Stand wiederherstellen?</b><span>${m.k === "umzug" ? "Umzugs-Kopie aus Modul 11" : h ? esc(new Date(h.t).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })) : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="mut sm">${h ? `Danach: <b style="color:var(--primary-text-color)">${esc(this._grStTxt(h.stats || {}))}</b>. ` : ""}Der jetzige Stand landet im Verlauf, du kannst also wieder zurück. Hintergrundbilder bleiben, wie sie jetzt sind. Modul 1, 11 und 18 sehen den Stand sofort.</div>
@@ -309,6 +311,7 @@
     return `<div class="ov" data-act="close"></div>`;
   }
   _grAct(a, b) {
+    if (this._grB6Act && this._grB6Act(a, b)) return true;
     const k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxfl") { this._grFl = k; this._render(); return true; }
     if (a === "grxly") { const L = this._grLy(); if (k in L) { L[k] = !L[k]; this._render(); } return true; }

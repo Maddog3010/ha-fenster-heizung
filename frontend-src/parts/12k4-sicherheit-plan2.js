@@ -101,15 +101,18 @@
     return { exits: X.outdoor.length, nd: X.outdoor.filter((e) => !e.s).length, ns: X.outdoor.filter((e) => e.s).length, explicit: !!X.explicit, doors: X.doors.length, markers: mk.length, bad };
   }
   /* Türen und Fenster rasten an der nächsten Wand oder Raumkante ein (nur waagerecht und senkrecht) */
-  _sfSnapOpen(fl, x, y) {
-    const items = this._sfPl().items.filter((i) => i.fl === fl), segs = [];
-    items.forEach((i) => { if (i.t === "r" && !i.ds) { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; segs.push([p[0], p[1], q[0], q[1]]); }); } else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2]); });
+  _sfSnapOpen(fl, x, y, rad, it) {   /* Modul 0 Build 7: Wände in jedem Winkel, Raster entlang der Wand, Drehung bleibt erhalten */
+    const st = this._grStep ? this._grStep() : 10, segs = this._grSegs ? this._grSegs(fl) : [];
     let best = null;
     segs.forEach(([x1, y1, x2, y2]) => {
-      const hor = Math.abs(y1 - y2) < 1, ver = Math.abs(x1 - x2) < 1; if (!hor && !ver) return;
-      const px = hor ? Math.max(Math.min(x1, x2), Math.min(Math.max(x1, x2), x)) : x1, py = ver ? Math.max(Math.min(y1, y2), Math.min(Math.max(y1, y2), y)) : y1, d = Math.hypot(px - x, py - y);
-      if (d <= 18 && (!best || d < best.d)) best = { x: hor ? Math.round(px / 10) * 10 : px, y: ver ? Math.round(py / 10) * 10 : py, r: hor ? 0 : 90, d };
+      const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 8) return;
+      let t = Math.max(0, Math.min(L, ((x - x1) * dx + (y - y1) * dy) / L));
+      const d = Math.hypot(x1 + (dx * t) / L - x, y1 + (dy * t) / L - y); if (d > (rad || 18) || (best && d >= best.d)) return;
+      t = Math.max(0, Math.min(L, Math.round(t / st) * st));
+      let r = Math.round((Math.atan2(dy, dx) * 180) / Math.PI); r = ((r % 180) + 180) % 180;
+      best = { x: Math.round(x1 + (dx * t) / L), y: Math.round(y1 + (dy * t) / L), r, d };
     });
+    if (best && it && ((((it.r || 0) - best.r) % 360) + 360) % 360 === 180) best.r = (best.r + 180) % 360;
     return best;
   }
   /* Rückgängig und Wiederholen (ohne Hintergrundbilder) */
