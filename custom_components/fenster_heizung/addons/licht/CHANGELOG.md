@@ -1,5 +1,15 @@
 # Modul 18 Licht & Lampen
 
+## [0.9.0] Build 11 - 2026-11-22
+- **Lichtkarte in der Optik von Modul 0:** Böden, Wände, Türen, Fenster, Treppen und Möbel wie im Grundriss von Modul 0, im dort gewählten Stil (Modern, Bauplan, Hell)
+- Räume mit Licht leuchten in der Mischfarbe ihrer Lampen, Räume ohne Licht sind abgedunkelt, Lampen im Plan mit Schein
+- Raumnamen bleiben im Raum (auch auf Handy und iPad) und verdecken keine Lampen; zweite Zeile „58 % · 3 von 5 an“ bzw. „aus · 2 Lampen“
+- Plaketten „seit …“ und „offline“ sitzen im Raum oben rechts
+- Zoom (+/−, zwei Finger, Strg + Mausrad) und Vollbild wie in Modul 0
+- **Nur noch Ansicht:** bearbeitet wird in Modul 0. „In Modul 0 bearbeiten“, „… Lampen nicht im Plan · in Modul 0 setzen“ und „… Räume ohne Bereich · in Modul 0 zuordnen“ führen dorthin; das Zuordnen direkt in der Lichtkarte entfällt
+- Schalten bleibt: Raum antippen schaltet den Raum, Lampe antippen schaltet die Lampe, lang drücken öffnet das Detail
+- Braucht Strom & Wärme ab 2026.11.4b57; ältere Versionen zeigen die bisherige Lichtkarte
+
 ## [0.8.0] Build 8 - 2026-11-22
 - **Reiter „Regeln“** mit vier Arten: Bewegung → Licht, Alle weg → Alle aus, Alarm (Modul 11) → Licht an, Abends → Licht an
 - Regeln laufen im Python-Teil, auch ohne offenes Dashboard; ausgeschaltet wird nur, was die Regel selbst angemacht hat

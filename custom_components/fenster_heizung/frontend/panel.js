@@ -17423,7 +17423,7 @@ class FensterHeizungPanel extends HTMLElement {
     rs.forEach((r) => {
       const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y), k = kinds.get(r.id), m2 = this._grAreaM2(r, sc), [cx0, cy0] = this._grCen(r);
       const nm = r.n || (this._grArea && this._grArea(r) ? this._grArea(r).name : "Raum"), chip = (this._grChipAt || {})[r.id];
-      const obs = obsAll.concat(chip ? [chip] : []);   /* Temperatur-Marke freihalten */
+      const obs = obsAll.concat(chip ? [chip] : [], o.obs || []);   /* Temperatur-Marke (und was der Aufrufer freihalten will) */
       const maxW = Math.max(30, r.w - 18), base = Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1), minF = 7.5 * (o.narrow ? 1.15 : 1);
       let fz = Math.min(base, (maxW - 14) / Math.max(1, [...nm].length * 0.6)), lines = [nm];
       if (fz < minF) {   /* zweizeilig an Leerzeichen, Bindestrich oder „s“-Fuge, sonst kürzen */
@@ -17431,7 +17431,7 @@ class FensterHeizungPanel extends HTMLElement {
         lines = a2 ? [a1, a2] : [nm]; fz = Math.min(base, (maxW - 14) / Math.max(1, Math.max(...lines.map((x) => [...x].length)) * 0.6));
         if (fz < minF) { fz = minF; const n = Math.max(3, Math.floor((maxW - 14) / (fz * 0.6)) - 1); lines = lines.map((x) => ([...x].length > n ? [...x].slice(0, n).join("") + "…" : x)); }
       }
-      const area = m2 >= 0.5 ? `${f1(m2)} m²` : "", dim = o.dims && !(r.pts && r.pts.length >= 3) ? ` · ${f1(r.w / sc)} × ${f1(r.h / sc)} m` : "";
+      const area = o.sub ? String(o.sub(r) || "") : m2 >= 0.5 ? `${f1(m2)} m²` : "", dim = o.sub ? "" : o.dims && !(r.pts && r.pts.length >= 3) ? ` · ${f1(r.w / sc)} × ${f1(r.h / sc)} m` : "";
       const variants = [{ ico: true, ar: true, s: 1 }, { ico: false, ar: true, s: 1 }, { ico: false, ar: true, s: 0.85 }, { ico: false, ar: true, s: 0.72 }, { ico: false, ar: false, s: 0.85 }];
       const fz0 = fz;
       let pick = null;
@@ -17450,7 +17450,7 @@ class FensterHeizungPanel extends HTMLElement {
       const { x, y, w, h, lh, sub, ih } = pick, top = y - h / 2;
       const ico = ih ? `<g transform="translate(${x - 10 * NF} ${top - ih}) scale(${(20 * NF) / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
       const plate = o.style === "modern" ? `<rect x="${x - w / 2}" y="${top}" width="${w}" height="${h}" rx="${Math.min(10, fz * 0.6)}" fill="#0b1220" opacity=".55"/>` : "";
-      d += `<g pointer-events="none">${ico}${plate}${lines.map((t, n) => `<text x="${x}" y="${top + 4 + lh * (n + 0.8)}" text-anchor="middle" font-size="${fz}" font-weight="700" fill="${T.text}">${esc(t)}</text>`).join("")}${sub ? `<text x="${x}" y="${top + 4 + lh * lines.length + fz * 0.8}" text-anchor="middle" font-size="${fz * 0.78}" fill="${T.sub}">${esc(sub)}</text>` : ""}</g>`;
+      d += `<g pointer-events="none">${ico}${plate}${lines.map((t, n) => `<text x="${x}" y="${top + 4 + lh * (n + 0.8)}" text-anchor="middle" font-size="${fz}" font-weight="700" fill="${T.text}">${esc(t)}</text>`).join("")}${sub ? `<text x="${x}" y="${top + 4 + lh * lines.length + fz * 0.8}" text-anchor="middle" font-size="${fz * 0.78}" font-weight="${o.subCol && o.subCol(r) ? 700 : 400}" fill="${(o.subCol && o.subCol(r)) || T.sub}">${esc(sub)}</text>` : ""}</g>`;   /* o.sub/o.subCol: eigene zweite Zeile, z. B. Lichtkarte „75 % · 2 von 3 an“ */
     });
     return d;
   }
@@ -18050,10 +18050,11 @@ class FensterHeizungPanel extends HTMLElement {
     const w = vb.w / z.s, h = vb.h / z.s, cx = Math.max(vb.x + w / 2, Math.min(vb.x + vb.w - w / 2, z.cx == null ? vb.x + vb.w / 2 : z.cx)), cy = Math.max(vb.y + h / 2, Math.min(vb.y + vb.h - h / 2, z.cy == null ? vb.y + vb.h / 2 : z.cy));
     return { x: cx - w / 2, y: cy - h / 2, w, h };
   }
-  _grZoomBar(fl) {
-    const z = this._grZ(fl), b = (k, t, l, on) => `<button class="${on ? "on" : ""}" data-act="grxz" data-k="${k}" title="${l}" aria-label="${l}">${t}</button>`;
-    return `<div class="grzb">${b("out", "−", "Verkleinern")}<button data-act="grxz" data-k="reset" title="Ganzer Plan">${Math.round(z.s * 100)} %</button>${b("in", "+", "Vergrößern")}<i></i>${b("full", this._grFull ? "✕" : "⤢", this._grFull ? "Vollbild beenden" : "Vollbild", this._grFull)}${b("exp", "⇩", "Exportieren")}</div>`;
+  _grZoomBar(fl, opt) {   /* opt.noExp: ohne Export (z. B. Lichtkarte in Modul 18) */
+    const z = this._grZ(fl), F = ` data-fl="${esc(fl)}"`, b = (k, t, l, on) => `<button class="${on ? "on" : ""}" data-act="grxz" data-k="${k}"${F} title="${l}" aria-label="${l}">${t}</button>`;
+    return `<div class="grzb">${b("out", "−", "Verkleinern")}<button data-act="grxz" data-k="reset"${F} title="Ganzer Plan">${Math.round(z.s * 100)} %</button>${b("in", "+", "Vergrößern")}<i></i>${b("full", this._grFull ? "✕" : "⤢", this._grFull ? "Vollbild beenden" : "Vollbild", this._grFull)}${opt && opt.noExp ? "" : b("exp", "⇩", "Exportieren")}</div>`;
   }
+  _grLiCap() { return 1; }   /* Kennzeichen für das Licht-Addon: Lichtkarte kann den Zeichner von Modul 0 nutzen (ab 2026.11.4b57) */
   _grZoomTo(fl, s, cx, cy) { this._grZm = { fl, s: Math.max(1, Math.min(8, s)), cx, cy }; }
   /* Raum-Fokus: Raum füllt den Plan */
   _grFocus(id) {
@@ -18142,7 +18143,7 @@ class FensterHeizungPanel extends HTMLElement {
   _grB8Act(a, b) {
     const k = b && b.dataset ? b.dataset.k : "", v = b && b.dataset ? b.dataset.v : "";
     if (a === "grxz") {
-      const P = this._grRaw(); if (!P) return true; const fls = this._grFloors(P), fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, z = this._grZ(fl);
+      const P = this._grRaw(); if (!P) return true; const fls = this._grFloors(P), want = b && b.dataset && b.dataset.fl, fl = want && fls.some((f) => f.id === want) ? want : fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, z = this._grZ(fl);
       if (k === "in" || k === "out") this._grZoomTo(fl, z.s * (k === "in" ? 1.4 : 1 / 1.4), z.cx, z.cy);
       else if (k === "reset") this._grZm = null;
       else if (k === "full") this._grFull = !this._grFull;

@@ -8,10 +8,11 @@
     const w = vb.w / z.s, h = vb.h / z.s, cx = Math.max(vb.x + w / 2, Math.min(vb.x + vb.w - w / 2, z.cx == null ? vb.x + vb.w / 2 : z.cx)), cy = Math.max(vb.y + h / 2, Math.min(vb.y + vb.h - h / 2, z.cy == null ? vb.y + vb.h / 2 : z.cy));
     return { x: cx - w / 2, y: cy - h / 2, w, h };
   }
-  _grZoomBar(fl) {
-    const z = this._grZ(fl), b = (k, t, l, on) => `<button class="${on ? "on" : ""}" data-act="grxz" data-k="${k}" title="${l}" aria-label="${l}">${t}</button>`;
-    return `<div class="grzb">${b("out", "−", "Verkleinern")}<button data-act="grxz" data-k="reset" title="Ganzer Plan">${Math.round(z.s * 100)} %</button>${b("in", "+", "Vergrößern")}<i></i>${b("full", this._grFull ? "✕" : "⤢", this._grFull ? "Vollbild beenden" : "Vollbild", this._grFull)}${b("exp", "⇩", "Exportieren")}</div>`;
+  _grZoomBar(fl, opt) {   /* opt.noExp: ohne Export (z. B. Lichtkarte in Modul 18) */
+    const z = this._grZ(fl), F = ` data-fl="${esc(fl)}"`, b = (k, t, l, on) => `<button class="${on ? "on" : ""}" data-act="grxz" data-k="${k}"${F} title="${l}" aria-label="${l}">${t}</button>`;
+    return `<div class="grzb">${b("out", "−", "Verkleinern")}<button data-act="grxz" data-k="reset"${F} title="Ganzer Plan">${Math.round(z.s * 100)} %</button>${b("in", "+", "Vergrößern")}<i></i>${b("full", this._grFull ? "✕" : "⤢", this._grFull ? "Vollbild beenden" : "Vollbild", this._grFull)}${opt && opt.noExp ? "" : b("exp", "⇩", "Exportieren")}</div>`;
   }
+  _grLiCap() { return 1; }   /* Kennzeichen für das Licht-Addon: Lichtkarte kann den Zeichner von Modul 0 nutzen (ab 2026.11.4b57) */
   _grZoomTo(fl, s, cx, cy) { this._grZm = { fl, s: Math.max(1, Math.min(8, s)), cx, cy }; }
   /* Raum-Fokus: Raum füllt den Plan */
   _grFocus(id) {
@@ -100,7 +101,7 @@
   _grB8Act(a, b) {
     const k = b && b.dataset ? b.dataset.k : "", v = b && b.dataset ? b.dataset.v : "";
     if (a === "grxz") {
-      const P = this._grRaw(); if (!P) return true; const fls = this._grFloors(P), fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, z = this._grZ(fl);
+      const P = this._grRaw(); if (!P) return true; const fls = this._grFloors(P), want = b && b.dataset && b.dataset.fl, fl = want && fls.some((f) => f.id === want) ? want : fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, z = this._grZ(fl);
       if (k === "in" || k === "out") this._grZoomTo(fl, z.s * (k === "in" ? 1.4 : 1 / 1.4), z.cx, z.cy);
       else if (k === "reset") this._grZm = null;
       else if (k === "full") this._grFull = !this._grFull;
