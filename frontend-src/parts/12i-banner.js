@@ -7,13 +7,16 @@
   }
   _modHero(id, o) {
     const chips = (o.chips || []).filter(Boolean), sc = o.scene && this._sbOn && this._sbOn();
-    return `<div class="card hero mh a-${id}${o.cls ? " " + o.cls : ""}${sc ? " sbx" : ""}">${sc ? this._sbArt(id, o.scene) : this._modLogo(id)}<div class="lbl">${ic(o.icon || "info", 16)}${esc(o.lbl)}</div><div class="big${o.small ? " bs" : ""}">${esc(o.big)}${o.unit ? `<small>${esc(o.unit)}</small>` : ""}</div>${o.sub ? `<div class="sub">${esc(o.sub)}</div>` : ""}${chips.length ? `<div class="chips">${chips.map((c) => /^§(dev|soon)\|/.test(c) ? `<span class="chip st${c.slice(1, c.indexOf("|"))}">${esc(c.slice(c.indexOf("|") + 1))}</span>` : `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>`;
+    return `<div class="card hero mh a-${id}${o.cls ? " " + o.cls : ""}${sc ? " sbx" : ""}">${sc ? this._sbArt(id, o.scene) : this._modLogo(id)}<div class="lbl">${ic(o.icon || "info", 16)}${esc(o.lbl)}</div><div class="big${o.small ? " bs" : ""}">${esc(o.big)}${o.unit ? `<small>${esc(o.unit)}</small>` : ""}</div>${o.sub ? `<div class="sub">${esc(o.sub)}</div>` : ""}${chips.length ? `<div class="chips">${chips.map((c) => /^§(dev|soon|ok|warn|bad)\|/.test(c) ? `<span class="chip st${c.slice(1, c.indexOf("|"))}">${esc(c.slice(c.indexOf("|") + 1))}</span>` : `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>`;
   }
   /* Banner der Module ohne eigenes Banner (aus den Werten, die die Seite ohnehin zeigt) */
   _modHeroFor(id) {
     try {
+      if (id === "lu" && this._sbOn && this._sbOn()) { const D = this._sbLuData(); return this._modHero("lu", { icon: "fan", lbl: "Lüftung & Raumluft", ...D }); }
       if (id === "lu") return this._modHero("lu", { icon: "fan", lbl: "Lüftung & Raumluft", big: "Lüftung", small: true, sub: "Räume heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
+      if (id === "rb" && this._sbOn && this._sbOn()) { const D = this._sbRbData(); return this._modHero("rb", { icon: "sun", lbl: "Rollläden & Beschattung", ...D }); }
       if (id === "rb") return this._modHero("rb", { icon: "sun", lbl: "Rollläden & Beschattung", big: "Rollläden", small: true, sub: "Sonnenstand heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
+      if (id === "wp" && this._sbOn && this._sbOn()) { const D = this._sbWpData(); return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", ...D }); }
       if (id === "wp") return this._modHero("wp", { icon: "thermo", lbl: "Wärmepumpe", big: "Wärmepumpe", small: true, sub: "Außenbedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "li" && this._liOn() && this._liHero) { const h = this._liHero(); if (h) return h; }  // Modul 18 ab Build 3: Haus-Szene (null = „Optik wie bisher“)
       if (id === "li" && this._liOn()) { const rooms = this._liRooms(), shown = rooms.filter((r) => !r.hid), lamps = shown.flatMap((r) => r.lamps).filter((x) => !x.un), on = lamps.filter((x) => x.on); return this._modHero("li", { icon: "lamp", lbl: "Licht & Lampen", big: String(on.length), unit: on.length === 1 ? "Lampe an" : "Lampen an", sub: lamps.length ? `von ${lamps.length} in ${shown.length} ${shown.length === 1 ? "Raum" : "Räumen"}` : "Keine Lampen gefunden" }); }
