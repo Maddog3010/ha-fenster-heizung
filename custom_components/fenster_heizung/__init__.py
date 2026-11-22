@@ -1332,6 +1332,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             sf_services(hass)  # Modul 11: Dienste quittieren, Melder geprüft, Selbsttest
         except Exception:  # noqa: BLE001 - Dienste sind ein Zusatz, der Start darf daran nie scheitern
             _LOGGER.warning("Dienste von Modul 11 nicht angemeldet", exc_info=True)
+    if "wartung" not in store:
+        from .wartung import WartungManager
+        store["wartung"] = WartungManager(hass)
+        await store["wartung"].async_start()
     if "messwerk" not in store:  # liest alle anderen Speicher, deshalb als Letztes
         store["messwerk"] = Messwerk(hass)
         await store["messwerk"].async_start()
@@ -1434,6 +1438,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             hass.data.get(DOMAIN, {}).pop("haus", None)
             hass.data.get(DOMAIN, {}).pop("verlauf", None)
             hass.data.get(DOMAIN, {}).pop("messwerk", None)
+            wtm = hass.data.get(DOMAIN, {}).pop("wartung", None)
+            if wtm is not None:
+                wtm.async_stop()
             sfm = hass.data.get(DOMAIN, {}).pop("sicherheit", None)
             if sfm is not None:
                 sfm.async_stop()

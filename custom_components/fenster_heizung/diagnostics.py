@@ -85,6 +85,16 @@ def sicherheit_diag(sm: Any) -> dict[str, Any]:
     }
 
 
+def wartung_diag(wm: Any) -> dict[str, Any]:
+    """Modul 15 für die Diagnose: Abstände, Daten und Ampel, ohne Namen, Notizen und Kosten."""
+    if wm is None:
+        return {"eingerichtet": False}
+    try:
+        return {"eingerichtet": True, **wm.diag()}
+    except Exception as err:  # noqa: BLE001 - die Diagnose darf nie scheitern
+        return {"eingerichtet": True, "_fehler": str(err)}
+
+
 async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: ConfigEntry) -> dict[str, Any]:
     data = hass.data.get(DOMAIN, {})
-    return {"version": entry.version, "modul_8": wallbox_diag(data.get("wallbox")), "modul_14": tarif_diag(data.get("tarif")), "modul_11": sicherheit_diag(data.get("sicherheit"))}
+    return {"version": entry.version, "modul_8": wallbox_diag(data.get("wallbox")), "modul_14": tarif_diag(data.get("tarif")), "modul_11": sicherheit_diag(data.get("sicherheit")), "modul_15": wartung_diag(data.get("wartung"))}

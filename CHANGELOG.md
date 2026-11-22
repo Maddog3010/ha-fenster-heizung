@@ -2,6 +2,24 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b40] - 2026-11-21
+
+**Modul 15 · Wartung & Erinnerungen** v0.2 Build 2 – erster Schritt aus dem Konzept „Modul 15 · Wartung & Erinnerungen“ (0.1 Build 1 → 1.0): echte Termine statt nur Beispielbilder.
+
+### Neu
+- **Reiter „Termine“** (neue Startseite von Modul 15): eigene Wartungstermine anlegen, bearbeiten und löschen. Je Termin Name, Anlage oder Bereich, Abstand (Tage, Wochen, Monate oder Jahre), Vorwarnung, zuletzt erledigt, erster Termin (wenn noch nie erledigt), Symbol, Notiz, „Macht ein Fachbetrieb“ und „Pausiert“. Bis zu 100 Termine.
+- **Vorlagen** beim Anlegen: Schornsteinfeger, Heizungswartung, Rauchmelder prüfen, Lüftungsfilter, Dunstabzug-Filter, Wasserfilter, Regenrinne, Klimaanlage, Wärmepumpe Service, Saugroboter Bürsten – füllen die Felder, alles bleibt änderbar.
+- **Erledigt mit einem Tipp:** setzt das Datum auf heute, der nächste Termin rechnet sich aus dem Abstand (31.01. + 1 Monat = Monatsende). Am selben Tag lässt sich das mit **„Rückgängig“** zurücknehmen.
+- **Ampel:** im Plan, bald (in der Vorwarnzeit), fällig (ab dem Termin, 3 Tage Kulanz), überfällig; dazu ein Fortschrittsring je Termin und Kennzahlen (fällig, bald, im Plan, erledigt dieses Jahr). Das Banner zeigt, wie viele Termine fällig sind und was als Nächstes kommt.
+- **Diagnose:** Modul 15 in den Diagnosedaten von Home Assistant – Abstände, Daten und Ampel, ohne Namen, Notizen und Kosten.
+
+### Geändert
+- Der Reiter „Fahrplan“ zeigt den neuen Weg in Builds bis 1.0 (Fälligkeits-Engine, Entitäten, Erinnerungen, andere Module, neue Optik, Vorschläge und Heft, Testwoche). Die übrigen Konzept-Reiter bleiben als Vorschau.
+
+### Technik
+- Neue Datei `wartung.py` mit eigenem Speicher (`fenster_heizung_wartung`, Schema 1, automatische Sicherungskopien), neue WebSocket-Befehle `fenster_heizung/wt_get`, `wt_save` und `wt_act` (done, undo, del; Ändern nur für Administratoren).
+- 8 neue Tests für Modul 15 (Abstände mit Monatsende und Schaltjahr, Ampel mit Vorwarnung und Kulanz, Eingaben prüfen, Anlegen/Ändern/Löschen mit Neustart, Erledigt mit Nachtrag und Rückgängig, kaputte Einträge, Reihenfolge, Diagnose ohne Namen).
+
 ## [2026.11.4b39] - 2026-11-21
 
 **Modul 11 · Rauch- & Sicherheitsmelder** v0.9 Build 11 und Build 12 – Lücken auf dem Weg zu 1.0 geschlossen und Testwoche (Konzept „Modul 11 · Version 1.0“). Ab hier kommen bis 1.0 keine neuen Funktionen mehr dazu.

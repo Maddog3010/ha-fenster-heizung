@@ -308,7 +308,7 @@ const LAB_GONE = ["mm", "li"];
 const MOD_ST = { ef: "stabil", sf: "vorab", sp: "stabil", ev: "vorab", wx: "stabil", dt: "vorab" };
 const modSt = (m) => (!m ? "" : m.addon ? m.stage || "dev" : m.beta ? MOD_ST[m.id] || "dev" : m.n >= 1 && m.n <= 4 ? "stabil" : "");
 const STG = { dev: { t: "In Entwicklung", h: "In Entwicklung", c: "dvl" }, beta: { t: "Beta", h: "Beta-Version", c: "beta" }, vorab: { t: "Vorabversion", h: "Vorabversion", c: "vab" }, stabil: { t: "Stabil", h: "Stabil", c: "stb" } };
-const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Wartungstermine, Filter und Betriebsstunden (in Entwicklung)" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "tfxopen", txt: "Preisquelle, Stufen, Endpreis, Vergleichspreis, Fenster je Gerät, Preisalarm und Daten prüfen" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeuge mit eigenen Sensoren, Wallbox-Sensoren" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
+const MOD_SET = { ef: { act: "efxopen", txt: "Kacheln, Entitäten, Flussarten, Bilder und Kopfbereich" }, sp: { act: "spxopen", txt: "Prognose-Quelle und Ertragssensor für den Vergleich" }, wa: { act: "mdbeta", txt: "Termine legst du direkt in Modul 15 unter „Termine“ an – Betriebsstunden und Erinnerungen folgen" }, bt: { act: "mdbeta", txt: "Modi, Zeitplan und Ladestand-Grenzen (in Entwicklung)" }, dt: { act: "tfxopen", txt: "Preisquelle, Stufen, Endpreis, Vergleichspreis, Fenster je Gerät, Preisalarm und Daten prüfen" }, sf: { act: "sfxopen", txt: "Melderarten, Alarm-Aktionen, Batterie, Prüf-Erinnerung und Meldungen (Melder und Grundriss unter Einstellungen im Modul)" }, pl: { act: "mdbeta", txt: "Pumpe und Heizung nach Überschuss und Preis (in Entwicklung)" }, wx: { act: "wxsopen", txt: "Grenzwerte, Vorwarnung, Aktionen, Fenster-Erinnerung und Meldungen" }, ga: { act: "mdbeta", txt: "Regenprognose, Zisterne und Bewässerung (in Entwicklung)" }, ev: { act: "mdevset", txt: "Fahrzeuge mit eigenen Sensoren, Wallbox-Sensoren" }, gs: { act: "mdgs", txt: "Geräte, Batteriekosten, Prognose und Meldungen" }, lu: { act: "mdbeta", txt: "Raumluft-Übersicht, KWL und CO₂ (in Entwicklung)" }, rb: { act: "mdbeta", txt: "Sonnenstand, Hitzeschutz und Heizbedarf (in Entwicklung)" }, wp: { act: "mdbeta", txt: "Laufzeit, Takten und Abtauen (in Entwicklung)" }, fh: { act: "fhset", txt: "Sommermodus, Wetter-Absenkung, PV-Überschuss und Preise" }, ww: { act: "mdsetup", txt: "Speicher, Wärmeerzeuger, Zirkulation, Legionellenschutz" }, en: { act: "mdensetup", txt: "Solaranlagen, Netz, Batterie, Hausverbrauch" } };
 /* Elektroauto: Marken (nur als Beschriftung), Karosserieformen und Farben der Zeichnung */
 const EV_BRANDS = ["Mercedes-Benz", "Audi", "VW", "BYD", "BMW", "Andere"];
 const EV_BODIES = { limousine: "Limousine", suv: "SUV", kombi: "Kombi", kompakt: "Kompakt" };
@@ -513,7 +513,7 @@ const GA_STEPS = [
   ["3", "Radar und Verbrauch", "Regenradar, Heatmap der Feuchte und Wasserverbrauch."]];
 const GA_IDEAS = ["Regenradar als Ebene", "Wasserverbrauch pro Zone und Tag am Symbol", "Weitere Ebenen: Gartenbeleuchtung, Mähroboter, Pool (Modul 12)", "Frost- und Regenschutz mit Sperrsymbol", "Editor als Sponsor-Lab, Basiskarte frei"];
 const GA_OPEN = ["Kachelanbieter: OSM-Standard mit Zwischenspeicher oder Anbieter mit Kontingent", "Editor als Sponsor-Lab oder frei für alle", "Umfang von Stufe 1"];
-const WA_TABS = [["a", "Liste"], ["b", "Jahresband"], ["c", "Anlagen"], ["d", "Heft"], ["e", "Modul 11"], ["fp", "Fahrplan"]];
+const WA_TABS = [["t", "Termine"], ["a", "Liste"], ["b", "Jahresband"], ["c", "Anlagen"], ["d", "Heft"], ["e", "Modul 11"], ["fp", "Fahrplan"]];
 const WA_PINS = {
   a: { img: "wa-a.jpg", t: "Fälligkeitsliste", alt: "Überfällige und bald fällige Termine links, spätere rechts, mit Ampelfarben", pins: [
     [50, 12, "Zähler oben", "Überfällig, in 30 Tagen fällig, später und was dieses Jahr erledigt wurde. Die Zahlen sind der schnelle Blick, ohne zu scrollen."],
@@ -549,11 +549,19 @@ const WA_PINS = {
     [50, 88, "Wieder abschalten", "Beim Ausschalten verschwinden nur die Einträge „Aus Modul 11“. Eigene Termine und das Heft bleiben."]] },
 };
 const WA_STEPS = [
-  ["1", "Liste und Erledigt", "Eigene Termine anlegen, mit Abstand, Erledigt-Knopf und Ampel."],
-  ["2", "Erinnerung und Zähler", "Erinnerung aufs Handy, Betriebsstunden aus Sensoren, Wartung bei einer Stundenzahl."],
-  ["3", "Modul 11 und Heft", "Wartungsdaten aus Modul 11 auf Wunsch übernehmen, Wartungsheft mit Kosten und PDF."]];
+  ["1", "Konzeptseite", "Vier Ansichten zum Durchklicken mit Beispielwerten."],
+  ["2", "Termine und Erledigt", "Eigener Speicher, Termine anlegen, bearbeiten und löschen, Abstand in Tagen bis Jahren, Erledigt mit Rückgängig, Ampel."],
+  ["3", "Fälligkeits-Engine", "Betriebsstunden, Zähler und Zustände als Auslöser, kombinierbar („was zuerst eintritt“), Prognose aus der Nutzung."],
+  ["4", "Entitäten und Dienste", "Sensoren, Kalender und To-do-Liste in Home Assistant, Dienste und Ereignis für Automationen."],
+  ["5", "Erinnerungen", "Mitteilung aufs Handy mit Erledigt, +3 Tage und Öffnen, Ruhezeiten, Sammel-Meldung."],
+  ["6", "Andere Module", "Module melden Wartungen an (zuerst 1, 5, 7, 11 und 21), auf Wunsch je Modul einschaltbar."],
+  ["7", "Neue Optik", "Jahresband, Anlagenkarten, Startseiten-Kachel und Abzeichen im Hausfluss."],
+  ["8", "Vorschläge und Heft", "Smarte Vorschläge, Wartungsheft mit Kosten und PDF, Kosten an Modul 20."],
+  ["9", "Testwoche", "Testlabor mit Zeitraffer, Grenzfälle, Anleitung."],
+  ["1.0", "Stabil", "Freigabe."]];
+const WA_DONE = 2; /* so viele Schritte sind fertig */
 const WA_IDEAS = ["Jahresband und Anlagenkarten als zusätzliche Ansichten", "Weitere Quellen: Wärmepumpe (Modul 7), Lüftung (Modul 5), Garten (Modul 10)", "Beleg als Foto zum Eintrag", "Termine in den Kalender von Home Assistant schreiben", "Erinnerung auch als Ansage"];
-const WA_OPEN = ["Welche Ansicht kommt als Startseite: Liste, Jahresband oder Anlagen", "Wartungsheft als Sponsor-Lab oder frei für alle", "Welche Quellen aus anderen Modulen in Stufe 1"];
+const WA_OPEN = ["Sollen Vorschläge (zum Beispiel PV-Reinigung) standardmäßig an sein oder erst im Entwickler-Modus", "Kosten nur speichern oder direkt als Buchung in Modul 20", "Wer bekommt Erinnerungen: alle Personen oder je Termin wählbar", "Sollen Vorlagen anderer Module nach einem Update von selbst als Vorschlag erscheinen"];
 const LU_TABS = [["j", "Jetzt"], ["a", "Räume"], ["b", "Verlauf"], ["c", "Anlage"], ["d", "Grundriss"], ["e", "Verknüpfung"], ["fp", "Fahrplan"]];
 const LU_PINS = {
   a: { img: "lu-a.jpg", t: "Räume mit Ampel", alt: "Jeder Raum mit CO₂, Luftfeuchte, Temperatur, Taupunkt und Lüftungsempfehlung", pins: [
@@ -788,7 +796,7 @@ const MV = {
   pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.9", b: 1, d: "2026-11-21", p: "2026.11.4b38", log: [["0.9", 1, "2026.11.4b38", "Vorabversion: „Lohnt sich dein Tarif?“ (Monat und Jahr gegen Festpreis), Kachel „Gespart im Monat“, Wochenansicht, Daten prüfen, Hinweis auf der Startseite bei negativen Preisen, Sensor Ersparnis Monat, Diagnose"], ["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
-  wa: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  wa: { v: "0.2", b: 2, d: "2026-11-21", p: "2026.11.4b40", log: [["0.2", 2, "2026.11.4b40", "Termine: eigener Speicher, anlegen, bearbeiten, löschen, Abstand in Tagen bis Jahren, Vorlagen, Erledigt mit Rückgängig, Ampel mit Vorwarnung, Kosten des Jahres, Diagnose"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "1.0", b: 2, d: "2026-11-12", p: "2026.11.3", log: [["1.0", 2, "2026.11.3b12", "Anlagen wählen: mehrere Prognose-Dienste (Forecast.Solar, Solcast, Open-Meteo) für dasselbe Dach werden nicht mehr ungefragt addiert – Auswahl je Anlage, „Nur …“-Knöpfe, Vorgabe aus dem Energie-Dashboard, Warnung auf der Seite; Korrektur lernt nach einer Änderung neu"], ["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "1.1", b: 2, d: "2026-11-15", p: "2026.11.3", log: [["1.1", 2, "2026.11.3", "Bis zu vier Kacheln links und rechts und zwei unten, bis zu fünf Quellen am Handy, hellere Kacheln, Verbraucher mit Solar-Anteil genauer"], ["1.1", 1, "2026.11.3b19", "Strom-Reiter: „Woher kam der Strom?“ mit Anteil von Solar, Akku und Netz, Akku- und Netz-Bilanz und wohin der Solarstrom ging"], ["1.0", 1, "2026.11.3b6", "Stabil: Schnellstart aus den Haus-Werten, Einrichtungs-Prüfung, Kosten im Strom-Reiter und Vorteil heute auf dem Tablet, Fluss-Bild als Bild teilen, Tablet-Modus zeichnet nur alle 5 s neu, Feinschliff der Optik (Haus als freier Ring, ruhigere Kacheln, klarere Schrift)"], ["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
 };
@@ -3494,6 +3502,32 @@ const CSS_STS = `
 .stsnote{margin:8px 0 4px;padding:9px 12px;border-radius:12px;border:1px solid color-mix(in srgb,var(--teal) 30%,transparent);background:color-mix(in srgb,var(--teal) 6%,transparent);font-size:.78rem;color:var(--mut);line-height:1.45}
 .btn2.stsdan{border-color:#c0504d;color:#e88a87}
 .btn2:disabled{opacity:.6;cursor:default}
+`;
+/* Modul 15 · Wartung & Erinnerungen (v0.2 Build 2): Termine, Ampel, Bearbeiten */
+const CSS_WT = `
+.wtk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.wtk>div{position:relative;border:1px solid var(--line);border-radius:16px;padding:12px 14px 12px 18px;background:color-mix(in srgb,var(--primary-text-color) 4%,var(--card));overflow:hidden}
+.wtk>div::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--wtc,#2dd4bf)}
+.wtk small{display:block;color:var(--mut);font-size:.74rem}.wtk b{display:block;font-size:1.45rem;font-weight:800;color:var(--wtc,inherit);margin-top:2px}
+.wtk .r{--wtc:#f87171}.wtk .a{--wtc:#fbbf24}.wtk .g{--wtc:#2dd4bf}.wtk .l{--wtc:#a78bfa}
+.wtbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}.wtbar .btn2{flex:none;padding:10px 16px}
+.wtl{display:grid;gap:8px}
+.wtr{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:10px 12px;background:color-mix(in srgb,var(--primary-text-color) 3%,var(--card))}
+.wtr.over{border-color:rgba(248,113,113,.55)}.wtr.off{opacity:.55}
+.wtring{--p:0;--c:#2dd4bf;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--p)*1%),color-mix(in srgb,var(--primary-text-color) 12%,transparent) 0)}
+.wtring>span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--card);color:var(--c)}
+.wtr .t{min-width:0}.wtr .t b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.wtr .t small{display:block;color:var(--mut);font-size:.78rem;line-height:1.35}
+.wtst{display:inline-block;font-size:.68rem;font-weight:800;border-radius:999px;padding:2px 9px;margin-top:4px}
+.wtst.ok{background:rgba(45,212,191,.16);color:#2dd4bf}.wtst.soon{background:rgba(251,191,36,.16);color:#fbbf24}.wtst.due,.wtst.over{background:rgba(248,113,113,.18);color:#f87171}.wtst.new,.wtst.off{background:rgba(167,139,250,.16);color:#c4b5fd}
+.wtbtns{display:flex;gap:6px;align-items:center}.wtbtns button{border:1px solid var(--line);background:transparent;color:inherit;border-radius:12px;padding:8px 11px;font:inherit;font-weight:700;font-size:.8rem;cursor:pointer;display:inline-flex;gap:5px;align-items:center}
+.wtbtns .wtok{background:#2dd4bf;color:#06201c;border-color:#2dd4bf}.wtbtns .wtun{border:0;padding:4px 6px;color:var(--mut);text-decoration:underline;font-weight:600}
+.wted{display:grid;gap:10px}.wted .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.wted label{display:block;font-size:.78rem;color:var(--mut);margin-bottom:2px}
+.wted .inl{display:grid;grid-template-columns:90px 1fr;gap:8px}.wted .ck{display:flex;gap:8px;align-items:center;font-size:.88rem}
+.wtic{display:flex;flex-wrap:wrap;gap:6px}.wtic button{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:transparent;color:inherit;display:grid;place-items:center;cursor:pointer}.wtic button.on{border-color:#2dd4bf;color:#2dd4bf;background:rgba(45,212,191,.12)}
+.wttpl{display:flex;flex-wrap:wrap;gap:6px}.wttpl button{border:1px dashed var(--line);background:transparent;color:inherit;border-radius:999px;padding:6px 11px;font:inherit;font-size:.78rem;cursor:pointer}
+.wtacts{display:flex;flex-wrap:wrap;gap:8px}.wtacts .btn2{flex:none;padding:10px 16px}.wtacts .wtdel{margin-left:auto;border-color:#c0504d;color:#e88a87}
+.wtempty{text-align:center;padding:22px 12px}.wtempty p{color:var(--mut);margin:6px auto 12px;max-width:420px;line-height:1.45}
+@media(max-width:640px){.wtk{grid-template-columns:repeat(2,minmax(0,1fr))}.wtr{grid-template-columns:auto 1fr}.wtbtns{grid-column:1/-1;justify-content:flex-end}.wted .row{grid-template-columns:1fr}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -7143,7 +7177,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
@@ -7225,7 +7259,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (t.dataset && t.dataset.f === "gname" && this._modal) { this._modal.draft.name = t.value; }
       else if (t.dataset && t.dataset.f === "time" && this._modal) { this._modal.draft.entries[+t.dataset.i].time = t.value || "00:00"; this._renderModal(); }
   }
-  _onInput(t) { if (t.dataset && t.dataset.f && t.dataset.f.startsWith("adx") && this._adxInput && this._adxInput(t)) return; if (t.dataset && t.dataset.f === "sfpq") { const q = t.value.trim().toLowerCase(); t.closest(".sfpk").querySelectorAll(".sfprw").forEach((r) => { r.hidden = !!q && !(r.dataset.q || "").includes(q); }); return; } if (t.dataset && t.dataset.f === "stq") { this._stInput(t); return; } if (t.dataset && t.dataset.f === "pkq") { this._pkInput(t); return; } if (t.dataset && (t.dataset.f === "msxname" || t.dataset.f === "msxn") && this._msChange(t)) return; if (t.dataset && t.dataset.f === "lfxname" && this._lfChange(t)) return; if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
+  _onInput(t) { if (t.dataset && t.dataset.f === "wtf") { this._wtIn(t); return; } if (t.dataset && t.dataset.f && t.dataset.f.startsWith("adx") && this._adxInput && this._adxInput(t)) return; if (t.dataset && t.dataset.f === "sfpq") { const q = t.value.trim().toLowerCase(); t.closest(".sfpk").querySelectorAll(".sfprw").forEach((r) => { r.hidden = !!q && !(r.dataset.q || "").includes(q); }); return; } if (t.dataset && t.dataset.f === "stq") { this._stInput(t); return; } if (t.dataset && t.dataset.f === "pkq") { this._pkInput(t); return; } if (t.dataset && (t.dataset.f === "msxname" || t.dataset.f === "msxn") && this._msChange(t)) return; if (t.dataset && t.dataset.f === "lfxname" && this._lfChange(t)) return; if (t.dataset && t.dataset.f === "hpre" && this._modal && this._modal.type === "opt") { const D = this._modal.draft, a = Array.isArray(D.htr_presets) ? [...D.htr_presets] : []; a[+t.dataset.i] = t.value; D.htr_presets = a; return; } if (t.dataset && t.dataset.f === "oadd" && this._modal && this._modal.type === "opt") { if (t.value) { this._modal.draft[t.dataset.k].push(t.value); this._renderModal(); } return; } if (t.dataset && t.dataset.f === "oval" && this._modal && this._modal.type === "opt") { const D = this._modal.draft; D[t.dataset.k] = t.dataset.num ? (t.value === "" ? "" : Number(t.value)) : t.value; if (t.tagName === "SELECT" || t.dataset.k === "room_area") this._renderModal(); return; } if (t.dataset && t.dataset.f === "gname" && this._modal) this._modal.draft.name = t.value;  }
 
   /* ---------------- Aktionen ---------------- */
   _act(a, b) {
@@ -15091,7 +15125,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (id === "pl") return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: "Pool & Sauna", small: true, sub: "Bedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "bt") return this._modHero("bt", { icon: "energy", lbl: "Batteriespeicher", big: "Batteriespeicher", small: true, sub: "Ladestand jetzt, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "dt") return "";  /* Modul 14 v0.7: eigenes Preisband-Banner in der Seite */
-      if (id === "wa") return this._modHero("wa", { icon: "tools", lbl: "Wartung & Erinnerungen", big: "Wartung", small: true, sub: "Ein Konzept zum Durchklicken, noch ohne Funktion", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
+      if (id === "wa") { this._wtLoad && this._wtLoad(); const S = (this._wtD && this._wtD.d && this._wtD.d.sum) || null, f = S ? (S.over || 0) + (S.due || 0) : 0; return this._modHero("wa", { icon: "tools", lbl: "Wartung & Erinnerungen", big: S && S.total ? (f ? String(f) : "Alles im Plan") : "Wartung", small: !(S && S.total && f), sub: !S || !S.total ? "Lege deine ersten Termine an" : f ? `${f === 1 ? "Termin ist" : "Termine sind"} fällig${S.soon ? ` · ${S.soon} bald` : ""}` : S.next ? `Als Nächstes: ${S.next.name}` : `${S.total} Termine`, chips: ["§dev|In Entwicklung", S && S.done_year ? `${S.done_year} erledigt dieses Jahr` : ""] }); }
       if (id === "sp" && this._spNew && this._spNew()) return this._spBanner();
       if (id === "sp") { const S = this._sp(); if (!this._spD || S.error || !S.found) return this._modHero("sp", { icon: "sun", lbl: "Solar-Prognose", big: "–", sub: S && S.error ? "Prognose nicht geladen" : "Noch keine Prognose" }); return this._modHero("sp", { icon: "sun", lbl: "Solar heute (Prognose)", big: num(S.today, 1), unit: "kWh", sub: `Morgen ${num(S.tomorrow, 1)} kWh`, chips: [S.got != null ? `Bisher ${num(S.got, 1)} kWh` : ""] }); }
     } catch (e) { return ""; }
@@ -16925,10 +16959,10 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="foot2"><button class="btn2" data-act="mvsub" data-k="">Zurück</button><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
   _mvAct(a, b) { if (a === "mvx") { this._mvO = this._mvO === b.dataset.k ? null : b.dataset.k; this._render(); } }
-  /* ================= Modul 15: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
+  /* ================= Modul 15: Termine (ab v0.2 Build 2) und Konzept zum Durchklicken ================= */
   _waTab() {
     let t = this._waT; if (!t) { try { t = localStorage.getItem("fh_wa_tab"); } catch (_) { /* privater Modus */ } }
-    return WA_TABS.some((x) => x[0] === t) ? t : "a";
+    return WA_TABS.some((x) => x[0] === t) ? t : "t";
   }
   _waSel(k) { const s = (this._waP || {})[k], n = WA_PINS[k].pins.length; return Number.isInteger(s) && s >= 0 && s < n ? s : 0; }
   _waShot(k) {
@@ -16942,15 +16976,113 @@ class FensterHeizungPanel extends HTMLElement {
   _waPage() {
     const t = this._waTab();
     const tabs = `<div class="sftabs gatabs" role="tablist">${WA_TABS.map(([k, l]) => `<button class="${k === t ? "on" : ""}" role="tab" aria-selected="${k === t}" data-act="waxtab" data-k="${k}">${l}</button>`).join("")}</div>`;
-    const body = t !== "fp" ? this._waShot(t) : `<div class="gast">${WA_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i === 0 ? "d" : "s"}">Stufe ${n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
+    if (t === "t") return `${tabs}${this._wtPage()}`;
+    const body = t !== "fp" ? this._waShot(t) : `<div class="gast">${WA_STEPS.map(([n, tt, d], i) => `<div class="s"><b><span class="gastg ${i < WA_DONE ? "d" : "s"}">${/^\d+$/.test(n) ? "Build " + n : n}</span>${tt}</b><span class="d">${d}</span></div>`).join("")}</div>
       <div class="card"><h2>${ic("puzzle", 18)}Weitere Ideen</h2><div class="gschips">${WA_IDEAS.map((x) => `<span class="chip">${esc(x)}</span>`).join("")}</div></div>
       <div class="card"><h2>${ic("info", 18)}Noch offen</h2><ul style="margin:6px 0 0;padding-left:20px;line-height:1.6">${WA_OPEN.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
     return `${tabs}<div style="display:grid;gap:12px">${body}</div>
-      <div class="gasoon" style="margin-top:12px">${ic("clock", 22)}<div><b>Coming soon …</b><br><span class="mut">Dieses Modul ist in Entwicklung. Die Seite zeigt vier mögliche Ansichten und die Verknüpfung mit Modul 11. Erinnern kann es noch nicht. Die Termine in den Bildern sind Beispiele.</span></div></div>`;
+      <div class="gasoon" style="margin-top:12px">${ic("clock", 22)}<div><b>Coming soon …</b><br><span class="mut">Dieses Modul ist in Entwicklung. Unter „Termine“ legst du schon echte Termine an. Die übrigen Reiter zeigen, wie es weitergeht – die Termine in den Bildern sind Beispiele. Erinnerungen aufs Handy kommen mit Build 5.</span></div></div>`;
   }
   _waAct(a, b) {
+    if (a.startsWith("waxt") && a !== "waxtab") { this._wtAct(a, b); return; }
     if (a === "waxtab") { this._waT = b.dataset.k; try { localStorage.setItem("fh_wa_tab", this._waT); } catch (_) { /* privater Modus */ } this._render(); }
     else if (a === "waxpin") { this._waP = { ...(this._waP || {}), [b.dataset.k]: +b.dataset.i }; this._render(); }
+  }
+
+  /* ---- Termine (echte Daten aus wartung.py) ---- */
+  _wtLoad(force) {
+    if (!this._hass || this._wtBusy) return;
+    if (!force && this._wtD && Date.now() - this._wtD.ts < 15000) return;
+    this._wtBusy = true;
+    this._hass.callWS({ type: "fenster_heizung/wt_get" }).then((r) => { this._wtD = { d: r || {}, ts: Date.now() }; })
+      .catch(() => { this._wtD = { d: { ...((this._wtD && this._wtD.d) || {}), error: true }, ts: Date.now() - 10000 }; })
+      .finally(() => { this._wtBusy = false; if (this._mdActive && this._mdActive() === "wa") this._render(); });
+  }
+  _wt() { return (this._wtD && this._wtD.d) || {}; }
+  _wtDay(iso) { if (!iso) return "–"; const [y, m, d] = String(iso).split("-"); return `${d}.${m}.${y}`; }
+  _wtEvery(t) { const n = +t.every || 1, u = t.unit in { d: 1, w: 1, m: 1, y: 1 } ? t.unit : "m"; return n === 1 ? { d: "jeden Tag", w: "jede Woche", m: "jeden Monat", y: "jedes Jahr" }[u] : `alle ${n} ${{ d: "Tage", w: "Wochen", m: "Monate", y: "Jahre" }[u]}`; }
+  _wtWhen(t) {
+    const d = t.days;
+    if (t.st === "off") return "pausiert";
+    if (t.st === "new") return "noch kein Datum";
+    if (d === 0) return "heute fällig";
+    if (d === 1) return "morgen";
+    if (d > 1) return d > 60 ? `am ${this._wtDay(t.due)}` : `in ${d} Tagen`;
+    return d === -1 ? "seit gestern fällig" : `seit ${-d} Tagen fällig`;
+  }
+  _wtPct(t) {
+    if (!t.due || !t.last) return t.st === "new" ? 0 : 100;
+    const a = new Date(t.last + "T12:00:00").getTime(), b = new Date(t.due + "T12:00:00").getTime(), n = Date.now();
+    return Math.max(0, Math.min(100, Math.round(((n - a) / Math.max(1, b - a)) * 100)));
+  }
+  _wtPage() {
+    this._wtLoad();
+    const D = this._wt(), S = D.sum || {}, T = D.tasks || [], adm = this._admin(), today = D.today || "";
+    if (!this._wtD) return `<div class="card"><span class="mut">Termine werden geladen …</span></div>`;
+    if (D.error && !D.tasks) return `<div class="card"><b>Termine nicht geladen</b><div class="mut sm">Modul 15 antwortet nicht. Nach einem Update bitte Home Assistant neu starten.</div></div>`;
+    const yr = (today || "").slice(0, 4) || new Date().getFullYear();
+    const kpi = `<div class="wtk"><div class="r"><small>Fällig</small><b>${(S.over || 0) + (S.due || 0)}</b></div><div class="a"><small>Bald</small><b>${S.soon || 0}</b></div><div class="g"><small>Im Plan</small><b>${S.ok || 0}</b></div><div class="l"><small>Erledigt ${yr}</small><b>${S.done_year || 0}</b></div></div>`;
+    const ed = this._wtEd ? this._wtEditor() : "";
+    const bar = `<div class="wtbar"><span class="mut sm">${T.length ? `${T.length} ${T.length === 1 ? "Termin" : "Termine"}${S.next ? ` · als Nächstes: ${esc(S.next.name)} ${esc(this._wtWhen(S.next))}` : ""}` : ""}</span>${adm && !this._wtEd && T.length < (D.max || 100) ? `<button class="btn2" data-act="waxtnew">${ic("plus", 16)} Neuer Termin</button>` : ""}</div>`;
+    if (!T.length && !this._wtEd) return `<div style="display:grid;gap:12px">${kpi}<div class="card wtempty">${ic("tools", 30)}<b style="display:block;margin-top:6px">Noch keine Termine</b><p>Lege Wartungen mit einem Abstand an, zum Beispiel „Heizungswartung jedes Jahr“. Ein Tipp auf „Erledigt“ setzt das Datum, der nächste Termin rechnet sich von selbst.</p>${adm ? `<button class="btn2" style="flex:none;padding:10px 18px" data-act="waxtnew">${ic("plus", 16)} Ersten Termin anlegen</button>` : `<span class="mut sm">Anlegen können nur Administratoren.</span>`}</div></div>`;
+    const lbl = { ok: "im Plan", soon: "bald", due: "fällig", over: "überfällig", new: "offen", off: "pausiert" };
+    const col = { ok: "#2dd4bf", soon: "#fbbf24", due: "#f87171", over: "#f87171", new: "#a78bfa", off: "#8e99ae" };
+    const rows = T.map((t) => {
+      const h = (t.hist || [])[(t.hist || []).length - 1], undo = adm && h && h.d === today && "prev" in h;
+      const sub = [t.area, this._wtEvery(t), t.last ? `zuletzt ${this._wtDay(t.last)}` : "", t.pro ? "Fachbetrieb" : ""].filter(Boolean).map(esc).join(" · ");
+      const btns = adm ? `<div class="wtbtns">${undo ? `<button class="wtun" data-act="waxtundo" data-id="${esc(t.id)}">Rückgängig</button>` : ""}${t.st !== "off" && !undo ? `<button class="wtok" data-act="waxtdone" data-id="${esc(t.id)}" aria-label="${esc(t.name)} erledigt">${ic("check", 15)} Erledigt</button>` : ""}<button data-act="waxtedit" data-id="${esc(t.id)}" aria-label="${esc(t.name)} bearbeiten">${ic("pencil", 15)}</button></div>` : "";
+      return `<div class="wtr ${t.st}"><div class="wtring" style="--p:${this._wtPct(t)};--c:${col[t.st] || col.ok}"><span>${ic(t.icon || "tools", 18)}</span></div>
+        <div class="t"><b>${esc(t.name)}</b><small>${sub}</small><span class="wtst ${t.st}">${lbl[t.st] || ""}${t.st !== "new" && t.st !== "off" ? " · " + esc(this._wtWhen(t)) : ""}</span></div>${btns}</div>`;
+    }).join("");
+    return `<div style="display:grid;gap:12px">${kpi}${bar}${ed}<div class="wtl">${rows}</div>
+      ${S.cost_year ? `<div class="mut sm">Kosten ${yr}: ${num(S.cost_year, 2)} € (aus den Erledigt-Einträgen)</div>` : ""}</div>`;
+  }
+  _wtTpl() { return [["Schornsteinfeger", 1, "y", "flame", "Heizung"], ["Heizungswartung", 1, "y", "flame", "Heizung"], ["Rauchmelder prüfen", 1, "y", "shield", "Sicherheit"], ["Lüftungsfilter", 6, "m", "fan", "Lüftung"], ["Dunstabzug-Filter", 3, "m", "pot", "Küche"], ["Wasserfilter", 6, "m", "drop", "Wasser"], ["Regenrinne reinigen", 1, "y", "roof", "Haus"], ["Klimaanlage Filter", 3, "m", "fan", "Klima"], ["Wärmepumpe Service", 1, "y", "heatpump", "Heizung"], ["Saugroboter Bürsten", 2, "m", "robot", "Geräte"]]; }
+  _wtEditor() {
+    const E = this._wtEd, isNew = !E.id, u = E.unit || "m";
+    const icons = ["tools", "flame", "fan", "drop", "shield", "heatpump", "boiler", "home", "roof", "plant", "car", "robot", "energy", "sun", "wave", "lamp", "laundry", "pot"];
+    const fld = (l, h) => `<div><label>${l}</label>${h}</div>`;
+    const inp = (k, type = "text", extra = "") => `<input class="osel" type="${type}" data-f="wtf" data-k="${k}" value="${esc(E[k] == null ? "" : String(E[k]))}" ${extra}>`;
+    const tpl = isNew ? `<div><label>Vorlage (füllt die Felder, alles änderbar)</label><div class="wttpl">${this._wtTpl().map((x, i) => `<button data-act="waxttpl" data-i="${i}">${esc(x[0])}</button>`).join("")}</div></div>` : "";
+    const ask = this._wtDelAsk === E.id;
+    return `<div class="card wted"><h2 style="margin:0">${ic(isNew ? "plus" : "pencil", 18)}${isNew ? "Neuer Termin" : "Termin bearbeiten"}</h2>${tpl}
+      <div class="row">${fld("Name", inp("name", "text", 'maxlength="40" placeholder="zum Beispiel Heizungswartung"'))}${fld("Anlage oder Bereich", inp("area", "text", 'maxlength="30" placeholder="zum Beispiel Heizung"'))}</div>
+      <div class="row">${fld("Abstand", `<div class="inl">${inp("every", "number", 'min="1" max="3650" inputmode="numeric"')}<select class="osel" data-f="wtf" data-k="unit">${[["d", "Tage"], ["w", "Wochen"], ["m", "Monate"], ["y", "Jahre"]].map(([k, l]) => `<option value="${k}"${k === u ? " selected" : ""}>${l}</option>`).join("")}</select></div>`)}${fld("Vorwarnung (Tage vorher „bald“)", inp("lead", "number", 'min="0" max="90" inputmode="numeric"'))}</div>
+      <div class="row">${fld("Zuletzt erledigt", inp("last", "date", `max="${esc(this._wt().today || "")}"`))}${fld("Erster Termin (wenn noch nie erledigt)", inp("first", "date"))}</div>
+      ${fld("Symbol", `<div class="wtic">${icons.map((k) => `<button class="${(E.icon || "tools") === k ? "on" : ""}" data-act="waxticon" data-k="${k}" aria-label="${k}">${ic(k, 18)}</button>`).join("")}</div>`)}
+      ${fld("Notiz", inp("note", "text", 'maxlength="200" placeholder="zum Beispiel Filtertyp oder Telefonnummer"'))}
+      <label class="ck"><input type="checkbox" data-f="wtf" data-k="pro"${E.pro ? " checked" : ""}> Macht ein Fachbetrieb</label>
+      <label class="ck"><input type="checkbox" data-f="wtf" data-k="off"${E.off ? " checked" : ""}> Pausiert (keine Ampel, zählt nicht mit)</label>
+      <div class="wtacts"><button class="btn2" data-act="waxtsave" style="background:#2dd4bf;color:#06201c;border-color:#2dd4bf">${ic("check", 16)} Speichern</button><button class="btn2" data-act="waxtcancel">Abbrechen</button>${isNew ? "" : `<button class="btn2 wtdel" data-act="waxtdel">${ic("trash", 16)} ${ask ? "Wirklich löschen?" : "Löschen"}</button>`}</div></div>`;
+  }
+  _wtIn(t) { if (!this._wtEd) return; const k = t.dataset.k; this._wtEd[k] = t.type === "checkbox" ? t.checked : t.value; }
+  _wtCall(msg, ok) {
+    if (this._wtSending) return; this._wtSending = true;
+    this._hass.callWS(msg).then((r) => {
+      if (r && r.tasks) this._wtD = { d: r, ts: Date.now() };
+      if (r && r.ok === false) this._toast({ name: "Bitte einen Namen eingeben", full: "Es sind schon 100 Termine angelegt", future: "Das Datum liegt in der Zukunft", unknown: "Den Termin gibt es nicht mehr", nothing: "Nichts zum Zurücknehmen" }[r.err] || "Hat nicht geklappt");
+      else if (ok) ok(r);
+    }).catch((e) => this._toast("Nicht gespeichert: " + ((e && e.message) || e))).finally(() => { this._wtSending = false; this._render(); });
+  }
+  _wtAct(a, b) {
+    const id = b.dataset.id || "", T = this._wt().tasks || [];
+    if (a === "waxtnew") { this._wtEd = { name: "", area: "", every: 12, unit: "m", lead: 7, last: "", first: "", icon: "tools", note: "", pro: false, off: false }; this._wtDelAsk = null; this._render(); }
+    else if (a === "waxtedit") { const t = T.find((x) => x.id === id); if (t) { const { hist, st, due, days, created, ...rest } = t; this._wtEd = { ...rest }; this._wtDelAsk = null; this._render(); } }
+    else if (a === "waxtcancel") { this._wtEd = null; this._wtDelAsk = null; this._render(); }
+    else if (a === "waxttpl") { const x = this._wtTpl()[+b.dataset.i]; if (x && this._wtEd) { Object.assign(this._wtEd, { name: x[0], every: x[1], unit: x[2], icon: x[3], area: x[4] }); this._render(); } }
+    else if (a === "waxticon") { if (this._wtEd) { this._wtEd.icon = b.dataset.k; this._render(); } }
+    else if (a === "waxtsave") {
+      const E = { ...this._wtEd }; if (!String(E.name || "").trim()) { this._toast("Bitte einen Namen eingeben"); return; }
+      E.every = +E.every || 1; E.lead = E.lead === "" ? 7 : +E.lead;
+      this._wtCall({ type: "fenster_heizung/wt_save", task: E }, (r) => { const t = (r.tasks || []).find((x) => x.id === r.id); this._wtEd = null; this._toast(t && t.due ? `Gespeichert – nächster Termin ${this._wtDay(t.due)}` : "Gespeichert"); });
+    }
+    else if (a === "waxtdel") {
+      if (!this._wtEd || !this._wtEd.id) return;
+      if (this._wtDelAsk !== this._wtEd.id) { this._wtDelAsk = this._wtEd.id; this._render(); return; }
+      const tid = this._wtEd.id; this._wtCall({ type: "fenster_heizung/wt_act", act: "del", tid }, () => { this._wtEd = null; this._wtDelAsk = null; this._toast("Termin gelöscht"); });
+    }
+    else if (a === "waxtdone") this._wtCall({ type: "fenster_heizung/wt_act", act: "done", tid: id }, (r) => { const t = (r.tasks || []).find((x) => x.id === id); this._toast(t && t.due ? `Erledigt – nächster Termin ${this._wtDay(t.due)}` : "Erledigt"); });
+    else if (a === "waxtundo") this._wtCall({ type: "fenster_heizung/wt_act", act: "undo", tid: id }, () => this._toast("Zurückgenommen"));
   }
   /* ================= Modul 5: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
   _luTab() {
