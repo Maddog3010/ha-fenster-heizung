@@ -36,6 +36,7 @@
     sr.addEventListener("change", (e) => this._onChange(e.target));
     this._sfxBind(sr);
     if (this._grDragBind) this._grDragBind(sr);
+    if (this._grKeyBind) this._grKeyBind();
   }
 
   /* Uhrzeit-Felder: zwei kleine Zahlenfelder „08 : 00“, funktionieren in allen Apps und Browsern */
@@ -78,6 +79,7 @@
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tm") && this._tmChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("spx") && this._spChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("sfx") && this._sfxChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("grx") && this._grB7Change && this._grB7Change(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wb") && this._wbChange(t)) return;
       if (this._lookChange(t)) return;
       if (t.dataset && t.dataset.k === "htr_steps" && this._modal && this._modal.type === "opt") { this._renderModal(); return; }

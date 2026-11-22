@@ -18,7 +18,7 @@
   _grEditSvg(fl) {
     const ed = this._sfEd;
     if (!ed) return this._sfPlanInner(fl, true);
-    return this._grUnder(ed.plan, fl, { labels: true, bgImg: false }) + this._sfPlanInner(fl, true);
+    return this._grUnder(ed.plan, fl, { labels: true, bgImg: false }) + this._sfPlanInner(fl, true) + (this._grEdOver ? this._grEdOver(fl) : "");
   }
   /* Ebene „Jetzt“: Temperatur (Modul 1) als Chip oben rechts im Raum, Bewegung als Puls */
   _grNow(P, fl, rs, o, T) {
@@ -55,8 +55,9 @@
     const tray = chips.length ? `<div class="grtray"><span>${ic("plus", 14)} Noch ohne Platz – in den Plan ziehen oder antippen:</span>${chips.join("")}</div>` : "";
     const bar = `<div class="grtop">${this._sfFloorBar(true)}<span class="grsp"></span><button class="grb" data-act="sfxundo" ${(ed.hist || []).length ? "" : "disabled"} title="Rückgängig">↶</button><button class="grb" data-act="sfxredo" ${(ed.fut || []).length ? "" : "disabled"} title="Wiederholen">↷</button><button class="grb${ed.mm ? " on" : ""}" data-act="sfxmm" aria-pressed="${!!ed.mm}">Mehrfach</button>
       <button class="grb" data-act="grxsty" data-k="${{ modern: "bauplan", bauplan: "hell", hell: "modern" }[sty]}" title="Stil wechseln"><i class="sw-${sty}"></i>${{ modern: "Modern", bauplan: "Bauplan", hell: "Hell" }[sty]}</button>
+      ${this._grCheck ? (() => { const C = this._grCheck(P); return `<button class="grb${C.n ? " warn" : ""}" data-act="grxchk" title="Plan-Check">${ic(C.n ? "alert" : "check", 14)} Prüfen${C.n ? ` (${C.n})` : ""}</button>`; })() : ""}${this._grGridCm ? `<button class="grb" data-act="grxgrid" title="Raster beim Ziehen – tippen wechselt">▦ ${this._grGridCm()} cm</button>` : ""}
       <span class="grfill"></span>${ed.from && ed.from !== "gr" ? `<button class="grb" data-act="sfxcancel">← ${esc(this._grModName(ed.from))}</button>` : `<button class="grb" data-act="sfxcancel">Abbrechen</button>`}<button class="grb pri" data-act="sfxsave">${ic("check", 15)} Speichern</button></div>`;
-    const props = `<div class="grprops">${mk}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
+    const props = `<div class="grprops">${mk}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
     return `<div class="gred2">${bar}<div class="grbody">${rail}<div class="grcv"><div class="sfpl edit"><svg class="sfpe gd" viewBox="0 0 800 480" role="img" aria-label="Grundriss bearbeiten">${this._grEditSvg(fl)}</svg></div>
       <div class="grhint">${ic("info", 14)}<span>${hint}</span></div>${tray}</div>${props}</div></div>`;
   }
@@ -116,6 +117,7 @@
       <div class="foot2" style="margin-top:14px;flex-wrap:wrap">${s ? `<button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte</button>` : ""}${lamps.length ? `<button class="btn2" data-act="grxgo" data-k="li">Lichtkarte</button>` : ""}${mel.length ? `<button class="btn2" data-act="grxgo" data-k="sf">Modul 11</button>` : ""}${this._admin() ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 15)} Bearbeiten</button>` : ""}</div></div>`;
   }
   _grB6Act(a, b) {
+    if (this._grB7Act && this._grB7Act(a, b)) return true;
     const k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxroom") { this._modal = { type: "grxroom", k }; this._renderModal(); return true; }
     if (a === "grxrlamp") { const s = this._hass.states[k]; if (s) this._hass.callService("light", s.state === "on" ? "turn_off" : "turn_on", { entity_id: k }).catch(() => this._toast("Die Lampe hat nicht reagiert")); setTimeout(() => this._renderModal(), 600); return true; }

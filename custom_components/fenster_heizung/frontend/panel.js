@@ -84,6 +84,7 @@ const ICONS = {
   menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
   pencil: '<path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  ruler: '<rect x="2.5" y="8" width="19" height="8" rx="1.5"/><path d="M6.5 8v3M10 8v4M13.5 8v3M17 8v4"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
   flask: '<path d="M9 3h6M10 3v6.5L4.6 18.4A2 2 0 0 0 6.3 21.5h11.4a2 2 0 0 0 1.7-3.1L14 9.5V3M7.5 15h9"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
@@ -784,7 +785,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  gr: { v: "0.6", b: 6, d: "2026-11-22", p: "2026.11.4b54", log: [["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
+  gr: { v: "0.7", b: 7, d: "2026-11-22", p: "2026.11.4b55", log: [["0.7", 7, "2026.11.4b55", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
   fh: { v: "1.8", b: 8, d: "2026-11-12", p: "2026.11.3", log: [["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3511,6 +3512,12 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 .grprops{position:sticky;top:64px;display:flex;flex-direction:column;gap:10px}.grpsec{background:var(--card,#111a2b);border:1px solid var(--line);border-radius:14px;padding:12px}.grpsec summary{cursor:pointer;font-weight:700}.grpsec>b{display:block;margin-bottom:6px}
 .grseg{display:flex;flex-wrap:wrap;gap:6px}.grseg button{border:1px solid var(--line);background:none;color:var(--primary-text-color);border-radius:999px;padding:5px 11px;font:inherit;font-size:.8rem;cursor:pointer}.grseg button.on{border-color:var(--teal);color:var(--teal)}
 @media (max-width:900px){.grbody{grid-template-columns:minmax(0,1fr)}.grrail{position:static;flex-direction:row;overflow-x:auto;order:2}.grrail i{width:1px;height:auto;margin:6px 3px}.grtl{min-width:56px}.grcv{order:1}.grprops{position:static;order:3}}
+/* Modul 0 Build 7: Baukasten 2.0, Plan-Check */
+.grb.warn{border-color:#f59e0b;color:#fbbf24}
+.grchk{display:inline-flex;align-items:center;gap:5px;border:1px solid color-mix(in srgb,#34d399 45%,transparent);background:none;color:#34d399;border-radius:999px;padding:5px 11px;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;margin-right:6px}.grchk.w{border-color:color-mix(in srgb,#f59e0b 55%,transparent);color:#fbbf24}
+.grwall{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:.8rem;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,#f59e0b 12%,transparent);color:#fcd34d;margin-top:4px}.grwall.ok{background:color-mix(in srgb,#2dd4bf 10%,transparent);color:var(--primary-text-color)}.grwall.ok b{color:var(--teal,#2dd4bf)}.grwall span{flex:1;min-width:160px}
+.grang{width:62px;text-align:center;border:1px solid var(--line);background:none;color:var(--primary-text-color);border-radius:8px;padding:6px 4px;font:inherit;font-weight:700}
+.grck{display:flex;flex-direction:column;gap:2px;max-height:60vh;overflow:auto}.grckr{display:flex;align-items:center;gap:10px;padding:9px 2px;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.grckr>i{width:10px;height:10px;border-radius:50%;flex:none}.grckr span{flex:1;min-width:0}.grckr b{display:block;font-size:.88rem}.grckr small{color:var(--mut);font-size:.78rem}.grckr.ok b{font-weight:600;color:var(--mut)}
 `;
 /* Versions-Statistik: Popup und Seite in Einstellungen → System */
 const CSS_STS = `
@@ -7344,6 +7351,7 @@ class FensterHeizungPanel extends HTMLElement {
     sr.addEventListener("change", (e) => this._onChange(e.target));
     this._sfxBind(sr);
     if (this._grDragBind) this._grDragBind(sr);
+    if (this._grKeyBind) this._grKeyBind();
   }
 
   /* Uhrzeit-Felder: zwei kleine Zahlenfelder „08 : 00“, funktionieren in allen Apps und Browsern */
@@ -7386,6 +7394,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("tm") && this._tmChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("spx") && this._spChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("sfx") && this._sfxChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("grx") && this._grB7Change && this._grB7Change(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wb") && this._wbChange(t)) return;
       if (this._lookChange(t)) return;
       if (t.dataset && t.dataset.k === "htr_steps" && this._modal && this._modal.type === "opt") { this._renderModal(); return; }
@@ -15563,8 +15572,8 @@ class FensterHeizungPanel extends HTMLElement {
       if (i.t === "r") out += `<g ${id}><path class="sfr${i.ds ? " ds" : ""}${mk.some((m) => inside(i, m)) ? " al" : wn.some((m) => inside(i, m)) ? " wn" : ""}" d="${this._sfRPath(i)}"></path><text class="sfrn" x="${this._sfRLab(i)[0]}" y="${this._sfRLab(i)[1]}">${esc(i.n)}</text></g>`;
       else if (i.t === "s") out += `<g ${id}><rect class="sfst" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${Array.from({ length: Math.max(2, Math.floor(i.h / 14)) }, (_, k) => `<path class="sfsl" d="M${i.x} ${i.y + 7 + k * 14}H${i.x + i.w}"></path>`).join("")}<text class="sfrn" x="${i.x + 6}" y="${i.y + 16}">${esc(i.n)}</text></g>`;
       else if (i.t === "w") out += `<g ${id}><path class="sfw" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path><path class="sfhit" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path></g>`;
-      else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect>${i.dg ? `<path class="sfda" d="M${i.x - 15} ${i.y - 6}v12M${i.x + 15} ${i.y - 6}v12"></path>` : `<path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"${i.mh || i.mv ? ` transform="translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})"` : ""}></path>`}<rect class="sfhit" x="${i.x - 16}" y="${i.y - 16}" width="32" height="32"></rect></g>`;
-      else if (i.t === "f") out += `<g ${id}${a}><rect class="sffw" x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7"></rect><rect class="sfhit" x="${i.x - 18}" y="${i.y - 14}" width="36" height="28"></rect></g>`;
+      else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect>${i.dg ? `<path class="sfda" d="M${i.x - 15} ${i.y - 6}v12M${i.x + 15} ${i.y - 6}v12"></path>` : `<path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"${i.mh || i.mv ? ` transform="translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})"` : ""}></path>`}<rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 16) - 2}" y="${i.y - 16}" width="${(this._grHw ? this._grHw(i) : 16) * 2 + 4}" height="32"></rect></g>`;
+      else if (i.t === "f") out += `<g ${id}${a}><rect class="sffw" x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7"></rect><rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 18) - 2}" y="${i.y - 14}" width="${(this._grHw ? this._grHw(i) : 18) * 2 + 4}" height="28"></rect></g>`;
       else if (i.t === "x") out += `<text ${id} class="sftx" x="${i.x}" y="${i.y}">${esc(i.n || "Text")}</text>`;
       else if (i.t === "l") {   /* Lampe (Modul 18): nur sichtbar, wenn das Addon an ist. Leuchtet in ihrer Farbe, wenn sie an ist. */
         if (!liOn) return;
@@ -15645,7 +15654,7 @@ class FensterHeizungPanel extends HTMLElement {
         ${sel.t === "r" ? this._sfRPanel(sel) : ""}
         ${sel.t === "r" ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpds" class="${sel.ds ? "on" : ""}">Rand nur gestrichelt</button><button data-act="sfxpds" data-v="all">Alle Räume der Etage</button></div><small class="mut" style="display:block">Gestrichelte Räume sind nur Flächen mit Namen. Wände zeichnest du extra, nur sie sperren den Weg.</small>` : ""}
         ${sel.t === "d" || sel.t === "s" ? `<div class="sffld"><label>${sel.t === "d" ? "Art der Tür" : "Treppe"}</label><div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpex" data-v="0" class="${sel.ex === 1 ? "" : "on"}">${sel.t === "d" ? "Innentür" : "Kein Ausgang"}</button><button data-act="sfxpex" data-v="1" class="${sel.ex === 1 ? "on" : ""}">${sel.t === "d" ? "Außentür" : "Ausgang nach unten"}</button></div><small class="mut" style="display:block">Nur markierte Ausgänge zählen für den Fluchtweg.</small></div>` : ""}
-        ${sel.t === "d" || sel.t === "f" || (sel.t === "l" && sel.k === "streifen") ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
+        ${(sel.t === "d" || sel.t === "f") && this._grOpenProps ? this._grOpenProps(sel) : ""}${(sel.t === "l" && sel.k === "streifen") || ((sel.t === "d" || sel.t === "f") && !this._grOpenProps) ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
         ${sel.t === "d" ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpdg" data-v="0" class="${sel.dg ? "" : "on"}">Tür</button><button data-act="sfxpdg" data-v="1" class="${sel.dg ? "on" : ""}">Durchgang</button></div>` : ""}
         ${sel.t === "d" && !sel.dg ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpmir" data-k="mv" class="${sel.mv ? "on" : ""}">Öffnung spiegeln (innen/außen)</button><button data-act="sfxpmir" data-k="mh" class="${sel.mh ? "on" : ""}">Angel spiegeln (links/rechts)</button></div>` : ""}
         ${sel.t === "l" ? this._sfLampProps(sel) : ""}
@@ -15829,6 +15838,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._sfxPatch((c) => { const m = (c.meta[e] = c.meta[e] || {}); m[key] = ["life", "int"].includes(key) ? Number(v) || 0 : v; if (key === "kind" && !v) delete m.kind; });
       return true;
     }
+    if (this._grB7Change && this._grB7Change(t)) return true;
     if (!ed) return false;
     if (this._sfxP2Change(t)) return true;
     const P = ed.plan, cur = P.items.find((x) => x.id === ed.sel);
@@ -15855,15 +15865,16 @@ class FensterHeizungPanel extends HTMLElement {
   /* Zeigen und Ziehen im Baukasten (Maus, Finger, Stift) */
   _sfxBind(sr) {
     const pt = (e, svg) => { const b = svg.getBoundingClientRect(); return [Math.max(0, Math.min(800, ((e.clientX - b.left) / b.width) * 800)), Math.max(0, Math.min(480, ((e.clientY - b.top) / b.height) * 480))]; };
-    const g = (v) => Math.round(v / 20) * 20, g10 = (v) => Math.round(v / 10) * 10;
+    const stp = () => (this._grStep ? this._grStep() : 20), g = (v) => Math.round(Math.round(v / stp()) * stp()), g10 = (v) => (stp() <= 10 ? g(v) : Math.round(v / 10) * 10);
     const paint = () => { const svg = sr.querySelector("svg.sfpe"); if (svg && this._sfEd) svg.innerHTML = this._grEditSvg ? this._grEditSvg(this._sfFl()) : this._sfPlanInner(this._sfFl(), true); };
     sr.addEventListener("pointerdown", (e) => {
       const svg = e.target.closest && e.target.closest("svg.sfpe"), ed = this._sfEd; if (!svg || !ed) return;
-      e.preventDefault(); const [x, y] = pt(e, svg), P = ed.plan, fl = this._sfFl(), h = e.target.closest("[data-h]"), el = e.target.closest("[data-id]"), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tool = ed.tool;
+      e.preventDefault(); if (ed.cal) { const q = pt(e, svg); ed.cal.p = ed.cal.p.length >= 2 ? [] : ed.cal.p; ed.cal.p.push([Math.round(q[0]), Math.round(q[1])]); paint(); if (ed.cal.p.length === 2) { this._modal = { type: "grxcal" }; this._renderModal(); } else this._toast("Jetzt auf das Ende der Strecke tippen"); return; }
+      const [x, y] = pt(e, svg), P = ed.plan, fl = this._sfFl(), h = e.target.closest("[data-h]"), el = e.target.closest("[data-id]"), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tool = ed.tool;
       this._sfDrag = null; this._sfSnap();
       if (h && ed.sel) { let hk = h.dataset.h; const rm = P.items.find((i) => i.id === ed.sel); if (rm && rm.t === "r" && rm.pts && /^a\d+$/.test(hk)) { const k0 = Number(hk.slice(1)), A = rm.pts[k0], B = rm.pts[(k0 + 1) % rm.pts.length]; if (rm.pts.length < 16) { rm.pts.splice(k0 + 1, 0, [Math.round((A[0] + B[0]) / 20) * 10, Math.round((A[1] + B[1]) / 20) * 10]); hk = "v" + (k0 + 1); } } if (/^v\d+$/.test(hk)) ed.vsel = Number(hk.slice(1)); this._sfDrag = { k: hk, id: ed.sel }; }
       else if (tool === "select" && ed.mm) { ed.multi = ed.multi || []; if (el) { const id = el.dataset.id, pre = ed.multi.includes(id); if (!pre) ed.multi.push(id); ed.sel = ""; const os = {}; P.items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { os[i.id] = JSON.parse(JSON.stringify(i)); }); this._sfDrag = { k: "movem", os, sx: x, sy: y, moved: false, off: pre ? id : "" }; } else ed.multi = []; paint(); }
-      else if (tool === "select") { ed.multi = []; if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false }; } else ed.sel = ""; paint(); }
+      else if (tool === "select") { ed.multi = []; if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false, att: this._grAttached ? this._grAttached(it, P) : [] }; } else ed.sel = ""; paint(); }
       else if (tool === "r" || tool === "s" || tool === "w") {
         const it = tool === "w" ? { id: uid(), fl, t: "w", x: g(x), y: g(y), x2: g(x), y2: g(y), r: 0, n: "", e: "" } : { id: uid(), fl, t: tool, x: g(x), y: g(y), w: 0, h: 0, r: 0, n: "", e: "" };
         P.items.push(it); ed.sel = it.id; this._sfDrag = { k: "new", id: it.id, sx: g(x), sy: g(y) }; paint();
@@ -15871,7 +15882,7 @@ class FensterHeizungPanel extends HTMLElement {
         const it = { id: uid(), fl, t: tool.startsWith("m:") ? "m" : tool === "dg" ? "d" : tool, x: g10(x), y: g10(y), r: 0, n: tool === "x" ? "Text" : "", e: "" }; if (tool === "dg") it.dg = 1;
         if (it.t === "l") { it.k = "decke"; it.e = this._liFreeLampAt ? this._liFreeLampAt(fl, x, y, P) : ""; }
         if (it.t === "m") { const kind = tool.slice(2), pl = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), d = this._sfList().find((q) => q.k === kind && !pl.has(q.id)); if (d) it.e = d.id; }
-        if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(fl, x, y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } }
+        if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(fl, x, y, 24, it); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } }
         P.items.push(it); ed.sel = it.id; ed.tool = "select"; this._render();
       }
     });
@@ -15880,8 +15891,8 @@ class FensterHeizungPanel extends HTMLElement {
       if (d.k === "movem") { e.preventDefault(); const [mx, my] = pt(e, svg), dx = g(mx - d.sx), dy = g(my - d.sy); if (dx || dy) d.moved = true; ed.plan.items.forEach((i) => { const o = d.os[i.id]; if (!o) return; i.x = o.x + dx; i.y = o.y + dy; if (o.pts) i.pts = o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (i.t === "w") { i.x2 = o.x2 + dx; i.y2 = o.y2 + dy; } }); paint(); return; }
       const [x, y] = pt(e, svg), it = ed.plan.items.find((i) => i.id === d.id); if (!it) return; e.preventDefault();
       if (/^v\d+$/.test(d.k)) { if (it.pts) { it.pts[Number(d.k.slice(1))] = [g10(x), g10(y)]; this._sfRSync(it); } }
-      else if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (d.o.pts) it.pts = d.o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } }
-      else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const dx = Math.abs(X - it.x), dy = Math.abs(Y - it.y); if (dx > dy * 4) Y = it.y; else if (dy > dx * 4) X = it.x; it.x2 = X; it.y2 = Y; } else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
+      else if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (d.o.pts) it.pts = d.o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y, 18, it); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } (d.att || []).forEach((q) => { const o2 = ed.plan.items.find((i) => i.id === q.id); if (o2) { o2.x = q.x + dx; o2.y = q.y + dy; } }); }
+      else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const L = Math.hypot(X - it.x, Y - it.y), an = Math.atan2(Y - it.y, X - it.x), a15 = Math.round(an / (Math.PI / 12)) * (Math.PI / 12); if (L > 0 && Math.abs(an - a15) < 0.1) { X = Math.round(it.x + L * Math.cos(a15)); Y = Math.round(it.y + L * Math.sin(a15)); } it.x2 = X; it.y2 = Y; }   /* Build 7: rastet auf 15°-Schritte */ else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
       else if (d.k === "p1") { it.x = g(x); it.y = g(y); } else if (d.k === "p2") { it.x2 = g(x); it.y2 = g(y); }
       paint();
     }, { passive: false });
@@ -16584,15 +16595,18 @@ class FensterHeizungPanel extends HTMLElement {
     return { exits: X.outdoor.length, nd: X.outdoor.filter((e) => !e.s).length, ns: X.outdoor.filter((e) => e.s).length, explicit: !!X.explicit, doors: X.doors.length, markers: mk.length, bad };
   }
   /* Türen und Fenster rasten an der nächsten Wand oder Raumkante ein (nur waagerecht und senkrecht) */
-  _sfSnapOpen(fl, x, y) {
-    const items = this._sfPl().items.filter((i) => i.fl === fl), segs = [];
-    items.forEach((i) => { if (i.t === "r" && !i.ds) { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; segs.push([p[0], p[1], q[0], q[1]]); }); } else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2]); });
+  _sfSnapOpen(fl, x, y, rad, it) {   /* Modul 0 Build 7: Wände in jedem Winkel, Raster entlang der Wand, Drehung bleibt erhalten */
+    const st = this._grStep ? this._grStep() : 10, segs = this._grSegs ? this._grSegs(fl) : [];
     let best = null;
     segs.forEach(([x1, y1, x2, y2]) => {
-      const hor = Math.abs(y1 - y2) < 1, ver = Math.abs(x1 - x2) < 1; if (!hor && !ver) return;
-      const px = hor ? Math.max(Math.min(x1, x2), Math.min(Math.max(x1, x2), x)) : x1, py = ver ? Math.max(Math.min(y1, y2), Math.min(Math.max(y1, y2), y)) : y1, d = Math.hypot(px - x, py - y);
-      if (d <= 18 && (!best || d < best.d)) best = { x: hor ? Math.round(px / 10) * 10 : px, y: ver ? Math.round(py / 10) * 10 : py, r: hor ? 0 : 90, d };
+      const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 8) return;
+      let t = Math.max(0, Math.min(L, ((x - x1) * dx + (y - y1) * dy) / L));
+      const d = Math.hypot(x1 + (dx * t) / L - x, y1 + (dy * t) / L - y); if (d > (rad || 18) || (best && d >= best.d)) return;
+      t = Math.max(0, Math.min(L, Math.round(t / st) * st));
+      let r = Math.round((Math.atan2(dy, dx) * 180) / Math.PI); r = ((r % 180) + 180) % 180;
+      best = { x: Math.round(x1 + (dx * t) / L), y: Math.round(y1 + (dy * t) / L), r, d };
     });
+    if (best && it && ((((it.r || 0) - best.r) % 360) + 360) % 360 === 180) best.r = (best.r + 180) % 360;
     return best;
   }
   /* Rückgängig und Wiederholen (ohne Hintergrundbilder) */
@@ -17091,7 +17105,7 @@ class FensterHeizungPanel extends HTMLElement {
     const nL = items.filter((i) => i.t === "l").length, nM = items.filter((i) => i.t === "m").length, liOn = !!(this._liOn && this._liOn());
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
     const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button><button class="${ly.now !== false ? "on" : ""}" data-act="grxnow" title="Temperatur aus Modul 1 und Bewegung"><i style="background:#2dd4bf"></i>Jetzt</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
-    const card = `<div class="card"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
+    const card = `<div class="card"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
       <div class="grv grv-${sty}"><svg viewBox="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${G.svg}</svg></div></div>`;
     const since = meta.since ? new Date(meta.since).toLocaleDateString("de-DE") : "", until = meta.copy_until ? new Date(meta.copy_until).toLocaleDateString("de-DE") : "";
     const info = `<div class="grinfo">
@@ -17273,6 +17287,8 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="-">Kein Bereich</button>${cur ? `<button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     }
     if (m.type === "grxroom") return this._grRoomModal(m);
+    if (m.type === "grxchk" && this._grChkModal) return this._grChkModal();
+    if (m.type === "grxcal" && this._grCalModal) return this._grCalModal();
     if (m.type === "grximp") return this._grImpModal(m);
     if (m.type === "grxrest") { const H = this._grH && this._grH.d, h = m.k === "umzug" ? H && H.copy : H && (H.hist || []).find((x) => x.id === m.k); return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Stand wiederherstellen?</b><span>${m.k === "umzug" ? "Umzugs-Kopie aus Modul 11" : h ? esc(new Date(h.t).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })) : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="mut sm">${h ? `Danach: <b style="color:var(--primary-text-color)">${esc(this._grStTxt(h.stats || {}))}</b>. ` : ""}Der jetzige Stand landet im Verlauf, du kannst also wieder zurück. Hintergrundbilder bleiben, wie sie jetzt sind. Modul 1, 11 und 18 sehen den Stand sofort.</div>
@@ -17407,17 +17423,11 @@ class FensterHeizungPanel extends HTMLElement {
     /* 3) Freie Wände */
     items.filter((i) => i.t === "w").forEach((w) => { d += `<line x1="${w.x}" y1="${w.y}" x2="${w.x2}" y2="${w.y2}" stroke="${WI}" stroke-width="7" stroke-linecap="square"/>`; });
     /* 4) Türen, Durchgänge, Fenster, Treppen, Text */
-    const floorAt = (x, y) => { const r = ins.find((q) => (this._sfInRoom ? this._sfInRoom(q, x, y + 10) || this._sfInRoom(q, x, y - 10) : x > q.x && x < q.x + q.w && y > q.y - 10 && y < q.y + q.h + 10)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
+    const floorAtR = (i) => { const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an) * 10, ny = Math.cos(an) * 10, inR = (q, x, y) => (this._sfInRoom ? this._sfInRoom(q, x, y) : x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h); const r = ins.find((q) => inR(q, i.x + nx, i.y + ny) || inR(q, i.x - nx, i.y - ny)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
     items.forEach((i) => {
       const rot = i.r ? `rotate(${i.r} ${i.x} ${i.y})` : "", mir = i.mh || i.mv ? ` translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})` : "";
-      if (i.t === "d" && o.doors) {
-        const gap = `<rect x="${i.x - 16}" y="${i.y - 9}" width="32" height="18" fill="${floorAt(i.x, i.y)}"/>`;
-        if (i.dg) d += `<g transform="${rot}">${gap}<path d="M${i.x - 16} ${i.y - 9}v18M${i.x + 16} ${i.y - 9}v18" stroke="${WI}" stroke-width="3"/></g>`;
-        else d += `<g transform="${rot}${mir}">${gap}<path d="M${i.x - 15} ${i.y}V${i.y - 30}" stroke="${i.ex === 1 ? T.accent : T.leaf}" stroke-width="2.6" stroke-linecap="round"/><path d="M${i.x + 15} ${i.y}A30 30 0 0 0 ${i.x - 15} ${i.y - 30}" fill="none" stroke="${T.arc}" stroke-width="1.3" stroke-dasharray="4 3"/>${i.ex === 1 ? `<path d="M${i.x - 6} ${i.y + 16}l6 6l6-6" fill="none" stroke="${T.accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : ""}</g>`;
-      } else if (i.t === "f" && o.windows) {
-        const open = !!(i.e && st[i.e] && st[i.e].state === "on"), c = open ? T.open : T.glass;
-        d += `<g transform="${rot}"><title>Fenster${i.e ? ` · ${esc(this._wzName(i.e))} · ${open ? "offen" : "zu"}` : ""}</title><rect x="${i.x - 18}" y="${i.y - 6}" width="36" height="12" fill="${T.bg}"/><rect x="${i.x - 18}" y="${i.y - 6}" width="36" height="12" fill="none" stroke="${T.frame}" stroke-width="1.6"/><path d="M${i.x - 18} ${i.y}H${i.x + 18}" stroke="${c}" stroke-width="3"/>${open ? `<path d="M${i.x - 16} ${i.y - 6}L${i.x - 4} ${i.y - 20}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>` : ""}</g>`;
-      } else if (i.t === "s" && o.stairs) {
+      if ((i.t === "d" && o.doors) || (i.t === "f" && o.windows)) d += this._grOpenSvg(i, T, WI, i.t === "d" ? floorAtR(i) : T.bg, P.scale > 0 ? P.scale : 40, st);   /* Build 7: alle Arten, jede Breite, jeder Winkel */
+      else if (i.t === "s" && o.stairs) {
         const w = i.w || 60, h = i.h || 90, n = Math.max(5, Math.round(h / 14)), vert = h >= w;
         const steps = Array.from({ length: n - 1 }, (_, k) => vert ? `M${i.x} ${i.y + (k + 1) * h / n}h${w}` : `M${i.x + (k + 1) * w / n} ${i.y}v${h}`).join("");
         d += `<g transform="${rot}"><rect x="${i.x}" y="${i.y}" width="${w}" height="${h}" fill="${T.bg}" stroke="${T.stair}" stroke-width="1.6"/><path d="${steps}" stroke="${T.stair}" stroke-width="1" opacity=".8"/>${vert ? `<path d="M${i.x + w / 2} ${i.y + h - 8}V${i.y + 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>` : `<path d="M${i.x + 8} ${i.y + h / 2}H${i.x + w - 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>`}</g>`;
@@ -17479,7 +17489,7 @@ class FensterHeizungPanel extends HTMLElement {
   _grEditSvg(fl) {
     const ed = this._sfEd;
     if (!ed) return this._sfPlanInner(fl, true);
-    return this._grUnder(ed.plan, fl, { labels: true, bgImg: false }) + this._sfPlanInner(fl, true);
+    return this._grUnder(ed.plan, fl, { labels: true, bgImg: false }) + this._sfPlanInner(fl, true) + (this._grEdOver ? this._grEdOver(fl) : "");
   }
   /* Ebene „Jetzt“: Temperatur (Modul 1) als Chip oben rechts im Raum, Bewegung als Puls */
   _grNow(P, fl, rs, o, T) {
@@ -17516,8 +17526,9 @@ class FensterHeizungPanel extends HTMLElement {
     const tray = chips.length ? `<div class="grtray"><span>${ic("plus", 14)} Noch ohne Platz – in den Plan ziehen oder antippen:</span>${chips.join("")}</div>` : "";
     const bar = `<div class="grtop">${this._sfFloorBar(true)}<span class="grsp"></span><button class="grb" data-act="sfxundo" ${(ed.hist || []).length ? "" : "disabled"} title="Rückgängig">↶</button><button class="grb" data-act="sfxredo" ${(ed.fut || []).length ? "" : "disabled"} title="Wiederholen">↷</button><button class="grb${ed.mm ? " on" : ""}" data-act="sfxmm" aria-pressed="${!!ed.mm}">Mehrfach</button>
       <button class="grb" data-act="grxsty" data-k="${{ modern: "bauplan", bauplan: "hell", hell: "modern" }[sty]}" title="Stil wechseln"><i class="sw-${sty}"></i>${{ modern: "Modern", bauplan: "Bauplan", hell: "Hell" }[sty]}</button>
+      ${this._grCheck ? (() => { const C = this._grCheck(P); return `<button class="grb${C.n ? " warn" : ""}" data-act="grxchk" title="Plan-Check">${ic(C.n ? "alert" : "check", 14)} Prüfen${C.n ? ` (${C.n})` : ""}</button>`; })() : ""}${this._grGridCm ? `<button class="grb" data-act="grxgrid" title="Raster beim Ziehen – tippen wechselt">▦ ${this._grGridCm()} cm</button>` : ""}
       <span class="grfill"></span>${ed.from && ed.from !== "gr" ? `<button class="grb" data-act="sfxcancel">← ${esc(this._grModName(ed.from))}</button>` : `<button class="grb" data-act="sfxcancel">Abbrechen</button>`}<button class="grb pri" data-act="sfxsave">${ic("check", 15)} Speichern</button></div>`;
-    const props = `<div class="grprops">${mk}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
+    const props = `<div class="grprops">${mk}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
     return `<div class="gred2">${bar}<div class="grbody">${rail}<div class="grcv"><div class="sfpl edit"><svg class="sfpe gd" viewBox="0 0 800 480" role="img" aria-label="Grundriss bearbeiten">${this._grEditSvg(fl)}</svg></div>
       <div class="grhint">${ic("info", 14)}<span>${hint}</span></div>${tray}</div>${props}</div></div>`;
   }
@@ -17577,12 +17588,239 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="foot2" style="margin-top:14px;flex-wrap:wrap">${s ? `<button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte</button>` : ""}${lamps.length ? `<button class="btn2" data-act="grxgo" data-k="li">Lichtkarte</button>` : ""}${mel.length ? `<button class="btn2" data-act="grxgo" data-k="sf">Modul 11</button>` : ""}${this._admin() ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 15)} Bearbeiten</button>` : ""}</div></div>`;
   }
   _grB6Act(a, b) {
+    if (this._grB7Act && this._grB7Act(a, b)) return true;
     const k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxroom") { this._modal = { type: "grxroom", k }; this._renderModal(); return true; }
     if (a === "grxrlamp") { const s = this._hass.states[k]; if (s) this._hass.callService("light", s.state === "on" ? "turn_off" : "turn_on", { entity_id: k }).catch(() => this._toast("Die Lampe hat nicht reagiert")); setTimeout(() => this._renderModal(), 600); return true; }
     if (a === "grxedfl") { this._grEdFl = !this._grEdFl; setTimeout(() => this._render(), 0); return true; }
     if (a === "grxnow") { const ly = this._grLy(); ly.now = ly.now === false; this._render(); return true; }
     return false;
+  }
+  /* ================= Modul 0 Build 7: Baukasten 2.0 – genau statt ungefähr =================
+     Raster in Zentimetern (5/10/25/50 cm), Wände rasten auf 15°-Schritte ein, Maße beim Bearbeiten im Plan.
+     Türen und Fenster sitzen auf Wänden in jedem Winkel (auch schräg), sind frei drehbar, haben eine Breite und eine Art
+     (Drehtür, Doppeltür, Schiebetür, Pendeltür, Falttür, Terrassentür, Garagentor · Fenster, bodentief, Dachfenster, mit Rollladen).
+     Abstand zur Ecke wird angezeigt, beim Verschieben eines Raums wandern seine Türen und Fenster mit.
+     Plan-Check (Räume ohne Tür, Fenster neben der Wand, Überlappungen, ohne Namen/Bereich, kein Ausgang) mit Beheben per Tipp.
+     Maßstab messen: zwei Punkte im Plan (z. B. auf dem Bauplan-Foto) und die echte Länge eingeben. Etage kopieren. Tastatur am PC. */
+  _grGridCm() { let v = 25; try { v = Number(localStorage.getItem("fh_gr_grid")) || 25; } catch (_) { /* privater Modus */ } return [5, 10, 25, 50].includes(v) ? v : 25; }
+  _grStep() { return Math.max(1, (this._grGridCm() * this._sfScale()) / 100); }
+  _grHw(i, sc) { return ((i.b || (i.t === "f" ? 90 : 80)) / 100) * (sc || this._sfScale()) / 2; }
+  _grM(px, sc) { return num(px / (sc || this._sfScale()), 2) + " m"; }
+  /* Alle Wandstücke einer Etage: Raumkanten (ohne gestrichelte Räume) und freie Wände */
+  _grSegs(fl, P) {
+    const segs = [];
+    (P || this._sfPl()).items.filter((i) => i.fl === fl).forEach((i) => {
+      if (i.t === "r" && !i.ds) { const Q = this._sfRP(i); Q.forEach((p, k) => { const q = Q[(k + 1) % Q.length]; segs.push([p[0], p[1], q[0], q[1], i.id]); }); }
+      else if (i.t === "w") segs.push([i.x, i.y, i.x2, i.y2, i.id]);
+    });
+    return segs;
+  }
+  _grOnSeg(s, x, y) { const [x1, y1, x2, y2] = s, dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 1) return null; const t = Math.max(0, Math.min(L, ((x - x1) * dx + (y - y1) * dy) / L)); return { t, L, d: Math.hypot(x1 + (dx * t) / L - x, y1 + (dy * t) / L - y) }; }
+  /* Wo sitzt eine Tür / ein Fenster? Wand, Abstand zu beiden Ecken (in Plan-Punkten) */
+  _grOpenInfo(it, P) {
+    let best = null;
+    this._grSegs(it.fl, P).forEach((s) => { const o = this._grOnSeg(s, it.x, it.y); if (o && o.d <= 3 && o.L > 8 && (!best || o.d < best.d)) best = { ...o, seg: s }; });
+    if (!best) return null;
+    const hw = this._grHw(it, (P || this._sfPl()).scale || 40);
+    return { ...best, a: best.t - hw, b: best.L - best.t - hw };
+  }
+  /* ---- Zeichnen: Türen und Fenster in allen Arten (für _grDraw) */
+  _grOpenSvg(i, T, WI, fill, sc, st) {
+    const x = i.x, y = i.y, h = this._grHw(i, sc), rot = i.r ? `rotate(${i.r} ${x} ${y})` : "", mir = i.mh || i.mv ? ` translate(${x} ${y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-x} ${-y})` : "";
+    if (i.t === "d") {
+      const gap = `<rect x="${x - h}" y="${y - 9}" width="${2 * h}" height="18" fill="${fill}"/>`, jamb = `<path d="M${x - h} ${y - 9}v18M${x + h} ${y - 9}v18" stroke="${WI}" stroke-width="3"/>`;
+      if (i.dg) return `<g transform="${rot}">${gap}${jamb}</g>`;
+      const lc = i.ex === 1 ? T.accent : T.leaf, arc = (d) => `<path d="${d}" fill="none" stroke="${T.arc}" stroke-width="1.3" stroke-dasharray="4 3"/>`, leaf = (d, c, w) => `<path d="${d}" stroke="${c || lc}" stroke-width="${w || 2.6}" stroke-linecap="round" fill="none"/>`;
+      let s = "";
+      switch (i.dk) {
+        case "doppel": s = leaf(`M${x - h} ${y}V${y - h}M${x + h} ${y}V${y - h}`) + arc(`M${x} ${y}A${h} ${h} 0 0 0 ${x - h} ${y - h}M${x} ${y}A${h} ${h} 0 0 1 ${x + h} ${y - h}`); break;
+        case "schiebe": s = `<rect x="${x - h}" y="${y - 5}" width="${h * 1.15}" height="3" fill="${lc}"/><rect x="${x - h * 0.15}" y="${y + 2}" width="${h * 1.15}" height="3" fill="${lc}"/>` + arc(`M${x - h * 0.5} ${y - 13}H${x + h * 0.5}M${x + h * 0.5 - 4} ${y - 16}l4 3l-4 3`); break;
+        case "pendel": s = leaf(`M${x - h} ${y - 2 * h}V${y + 2 * h}`, null, 2.2) + arc(`M${x + h} ${y}A${2 * h} ${2 * h} 0 0 0 ${x - h} ${y - 2 * h}M${x + h} ${y}A${2 * h} ${2 * h} 0 0 1 ${x - h} ${y + 2 * h}`); break;
+        case "falt": s = leaf(`M${x - h} ${y}L${x - h / 2} ${y - h * 0.55}L${x} ${y}L${x + h / 2} ${y - h * 0.55}L${x + h} ${y}`, null, 2.2); break;
+        case "garage": s = `<path d="M${x - h} ${y}H${x + h}" stroke="${lc}" stroke-width="4" stroke-dasharray="7 4"/>` + `<rect x="${x - h}" y="${y - h * 1.3}" width="${2 * h}" height="${h * 1.3}" fill="none" stroke="${T.arc}" stroke-width="1.2" stroke-dasharray="5 4"/>`; break;
+        case "glas": s = leaf(`M${x - h} ${y}V${y - 2 * h}`, T.glass, 4) + leaf(`M${x - h + 2.5} ${y - 2}V${y - 2 * h + 2}`, T.frame, 1) + arc(`M${x + h} ${y}A${2 * h} ${2 * h} 0 0 0 ${x - h} ${y - 2 * h}`); break;
+        default: s = leaf(`M${x - h} ${y}V${y - 2 * h}`) + arc(`M${x + h} ${y}A${2 * h} ${2 * h} 0 0 0 ${x - h} ${y - 2 * h}`);
+      }
+      const exA = i.ex === 1 ? `<path d="M${x - 6} ${y + 16}l6 6l6-6" fill="none" stroke="${T.accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : "";
+      return `<g transform="${rot}${mir}">${gap}${s}${exA}</g>`;
+    }
+    const open = !!(i.e && st && st[i.e] && st[i.e].state === "on"), c = open ? T.open : T.glass, ttl = `<title>${{ boden: "Fenster bodentief", dach: "Dachfenster", rollo: "Fenster mit Rollladen" }[i.fk] || "Fenster"}${i.e ? ` · ${esc(this._wzName(i.e))} · ${open ? "offen" : "zu"}` : ""}</title>`;
+    if (i.fk === "dach") return `<g transform="${rot}">${ttl}<rect x="${x - h}" y="${y - h * 0.7}" width="${2 * h}" height="${h * 1.4}" fill="${c}" fill-opacity=".18" stroke="${T.frame}" stroke-width="1.6" stroke-dasharray="6 3"/><path d="M${x - h} ${y - h * 0.7}L${x + h} ${y + h * 0.7}M${x + h} ${y - h * 0.7}L${x - h} ${y + h * 0.7}" stroke="${c}" stroke-width="1" opacity=".7"/></g>`;
+    const frame = `<rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="${T.bg}"/><rect x="${x - h}" y="${y - 6}" width="${2 * h}" height="12" fill="none" stroke="${T.frame}" stroke-width="1.6"/>`;
+    const glass = i.fk === "boden" ? `<path d="M${x - h} ${y - 2}H${x + h}M${x - h} ${y + 2}H${x + h}" stroke="${c}" stroke-width="2.2"/><path d="M${x - h + 3} ${y + 9}h${2 * h - 6}" stroke="${T.frame}" stroke-width="1" stroke-dasharray="2 2"/>` : `<path d="M${x - h} ${y}H${x + h}" stroke="${c}" stroke-width="3"/>`;
+    const rollo = i.fk === "rollo" ? `<rect x="${x - h}" y="${y - 12}" width="${2 * h}" height="4" rx="1" fill="${T.sub}" opacity=".85"/>` : "";
+    return `<g transform="${rot}">${ttl}${frame}${glass}${rollo}${open ? `<path d="M${x - h + 2} ${y - 6}L${x - h + 14} ${y - 20}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>` : ""}</g>`;
+  }
+  /* ---- Eigenschaften für Türen und Fenster */
+  _grOpenProps(sel) {
+    const isD = sel.t === "d", b = sel.b || (isD ? 80 : 90), sc = this._sfScale(), inf = this._grOpenInfo(sel);
+    const K = isD ? [["", "Drehtür"], ["doppel", "Doppeltür"], ["schiebe", "Schiebetür"], ["pendel", "Pendeltür"], ["falt", "Falttür"], ["glas", "Terrassentür"], ["garage", "Garagentor"]] : [["", "Fenster"], ["boden", "bodentief"], ["dach", "Dachfenster"], ["rollo", "mit Rollladen"]];
+    const cur = isD ? sel.dk || "" : sel.fk || "";
+    const kinds = isD && sel.dg ? "" : `<div class="sffld"><label>${isD ? "Bauart" : "Art des Fensters"}</label><div class="grseg">${K.map(([k, t]) => `<button class="${cur === k ? "on" : ""}" data-act="grxok" data-v="${k}">${t}</button>`).join("")}</div></div>`;
+    const where = sel.fk === "dach" ? `<div class="grwall ok">${ic("info", 14)}<span>Dachfenster liegen in der Dachfläche, nicht auf einer Wand.</span></div>`
+      : inf ? `<div class="grwall ok">${ic("check", 14)}<span>Auf der Wand · Abstand zur Ecke <b>${num(Math.max(0, inf.a) / sc, 2)} m</b> und <b>${num(Math.max(0, inf.b) / sc, 2)} m</b> · Wand ${num(inf.L / sc, 2)} m</span></div>`
+      : `<div class="grwall">${ic("alert", 14)}<span>Liegt nicht auf einer Wand.</span><button class="grb" data-act="grxosnap">An Wand einrasten</button></div>`;
+    return `${kinds}
+      <div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="grxob" data-s="-5" aria-label="schmaler">${ic("minus", 16)}</button><b>${num(b / 100, 2)} m</b><button data-act="grxob" data-s="5" aria-label="breiter">${ic("plus", 16)}</button></div></div>
+      <div class="vrow" style="margin:6px 0"><span>Winkel</span><div class="step" style="flex:none"><button data-act="grxor" data-s="-15" aria-label="15 Grad zurück">${ic("minus", 16)}</button><input class="grang" type="number" min="0" max="359" step="1" data-f="grxang" value="${sel.r || 0}" aria-label="Winkel in Grad"><button data-act="grxor" data-s="15" aria-label="15 Grad weiter">${ic("plus", 16)}</button></div></div>
+      <div class="grseg" style="margin:2px 0 8px"><button data-act="grxor" data-s="90">↻ 90°</button><button data-act="grxor" data-s="180">Umdrehen</button></div>${where}`;
+  }
+  /* ---- Maße im Plan beim Bearbeiten (über allem, nicht anklickbar) */
+  _grPill(x, y, t, warn) { const w = t.length * 6.3 + 14; return `<rect x="${x - w / 2}" y="${y - 9}" width="${w}" height="18" rx="9" fill="#0b1220" stroke="${warn ? "#f59e0b" : "#2dd4bf"}" opacity=".95"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-size="11" font-weight="700" fill="${warn ? "#fcd34d" : "#5eead4"}">${esc(t)}</text>`; }
+  _grEdOver(fl) {
+    const ed = this._sfEd; if (!ed) return "";
+    const P = ed.plan, sc = this._sfScale(), it = P.items.find((i) => i.id === ed.sel && i.fl === fl); let d = "";
+    const line = (x1, y1, x2, y2) => `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="#2dd4bf" stroke-width="1.2"/><circle cx="${x1}" cy="${y1}" r="2.2" fill="#2dd4bf"/><circle cx="${x2}" cy="${y2}" r="2.2" fill="#2dd4bf"/>`;
+    if (it && it.t === "w") { const L = Math.hypot(it.x2 - it.x, it.y2 - it.y); let a = Math.round((Math.atan2(it.y2 - it.y, it.x2 - it.x) * 180) / Math.PI); a = ((a % 180) + 180) % 180; d += this._grPill((it.x + it.x2) / 2, (it.y + it.y2) / 2 - 16, `${num(L / sc, 2)} m${a % 90 ? ` · ${a}°` : ""}`); }
+    if (it && (it.t === "r" || it.t === "s") && !it.pts) { d += line(it.x, it.y - 14, it.x + it.w, it.y - 14) + this._grPill(it.x + it.w / 2, it.y - 14, this._grM(it.w, sc)) + line(it.x - 14, it.y, it.x - 14, it.y + it.h) + this._grPill(it.x - 14, it.y + it.h / 2, this._grM(it.h, sc)); }
+    if (it && (it.t === "d" || it.t === "f") && it.fk !== "dach") {
+      const inf = this._grOpenInfo(it);
+      if (inf) {
+        const [x1, y1, x2, y2] = inf.seg, ux = (x2 - x1) / inf.L, uy = (y2 - y1) / inf.L, o = 20, nx = -uy * o, ny = ux * o, hw = this._grHw(it, sc);
+        const P0 = [x1 + nx, y1 + ny], E1 = [x1 + ux * (inf.t - hw) + nx, y1 + uy * (inf.t - hw) + ny], E2 = [x1 + ux * (inf.t + hw) + nx, y1 + uy * (inf.t + hw) + ny], P1 = [x2 + nx, y2 + ny];
+        if (inf.a > 1) d += line(P0[0], P0[1], E1[0], E1[1]) + this._grPill((P0[0] + E1[0]) / 2, (P0[1] + E1[1]) / 2, this._grM(inf.a, sc));
+        if (inf.b > 1) d += line(E2[0], E2[1], P1[0], P1[1]) + this._grPill((E2[0] + P1[0]) / 2, (E2[1] + P1[1]) / 2, this._grM(inf.b, sc));
+      } else d += this._grPill(it.x, it.y - 26, "nicht auf der Wand", true);
+    }
+    if (ed.cal) {
+      const p = ed.cal.p;
+      p.forEach((q) => { d += `<circle cx="${q[0]}" cy="${q[1]}" r="9" fill="none" stroke="#f59e0b" stroke-width="2"/><path d="M${q[0] - 13} ${q[1]}h26M${q[0]} ${q[1] - 13}v26" stroke="#f59e0b" stroke-width="1.4"/>`; });
+      if (p.length === 2) d += `<path d="M${p[0][0]} ${p[0][1]}L${p[1][0]} ${p[1][1]}" stroke="#f59e0b" stroke-width="2" stroke-dasharray="6 4"/>` + this._grPill((p[0][0] + p[1][0]) / 2, (p[0][1] + p[1][1]) / 2 - 14, `${Math.round(Math.hypot(p[1][0] - p[0][0], p[1][1] - p[0][1]))} Punkte`, true);
+    }
+    return d ? `<g class="grover" pointer-events="none">${d}</g>` : "";
+  }
+  /* Räume verschieben: Türen und Fenster auf ihren Kanten wandern mit */
+  _grAttached(rm, P) {
+    if (!rm || rm.t !== "r") return [];
+    const Q = this._sfRP(rm), segs = Q.map((p, k) => [p[0], p[1], Q[(k + 1) % Q.length][0], Q[(k + 1) % Q.length][1]]);
+    return P.items.filter((i) => i.fl === rm.fl && (i.t === "d" || i.t === "f") && segs.some((s) => { const o = this._grOnSeg(s, i.x, i.y); return o && o.d <= 3; })).map((i) => ({ id: i.id, x: i.x, y: i.y }));
+  }
+  /* ---- Plan-Check */
+  _grCheck(P) {
+    const out = [], ok = [], sc = P && P.scale > 0 ? P.scale : 40; if (!P || !(P.items || []).length) return { list: out, ok, n: 0, fix: 0 };
+    const fls = P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }], multi = fls.length > 1, its = P.items, nm = (fl) => (multi ? ((fls.find((f) => f.id === fl) || {}).n || "") + " · " : "");
+    const inner = (r) => !r.ds && this._grKind(r).k !== "aussen";
+    let noDoor = 0, noName = 0, noArea = 0, offWall = 0, ovl = 0;
+    fls.forEach((f) => {
+      const here = its.filter((i) => i.fl === f.id), rs = here.filter((i) => i.t === "r"), ops = here.filter((i) => i.t === "d"), segsOf = (r) => { const Q = this._sfRP(r); return Q.map((p, k) => [p[0], p[1], Q[(k + 1) % Q.length][0], Q[(k + 1) % Q.length][1]]); };
+      rs.filter(inner).forEach((r) => {
+        const S = segsOf(r), has = ops.some((d) => S.some((s) => { const o = this._grOnSeg(s, d.x, d.y); return o && o.d <= 4; })) || here.some((s) => s.t === "s" && this._sfInRoom(r, s.x + (s.w || 0) / 2, s.y + (s.h || 0) / 2));
+        if (!has) { noDoor++; out.push({ l: "w", t: `${nm(f.id)}${r.n || "Raum ohne Namen"} hat keine Tür`, s: "Ohne Tür kann Modul 11 keinen Fluchtweg aus diesem Raum zeigen.", fx: "show", id: r.id }); }
+      });
+      here.filter((i) => (i.t === "d" || i.t === "f") && i.fk !== "dach").forEach((i) => {
+        if (this._grOpenInfo(i, P)) return;
+        let best = 1e9; this._grSegs(f.id, P).forEach((s) => { const o = this._grOnSeg(s, i.x, i.y); if (o) best = Math.min(best, o.d); });
+        offWall++; const near = best <= 30;
+        out.push({ l: "w", t: `${nm(f.id)}${i.t === "d" ? (i.dg ? "Durchgang" : "Tür") : "Fenster"} liegt nicht auf einer Wand`, s: best < 1e8 ? `${num(best / sc * 100, 0)} cm daneben${near ? " – Einrasten setzt es auf die Wand" : ""}` : "Auf dieser Etage gibt es keine Wand", fx: near ? "snap" : "show", id: i.id });
+      });
+      const rr = rs.filter((r) => inner(r) && !r.pts);
+      for (let a = 0; a < rr.length; a++) for (let b = a + 1; b < rr.length; b++) {
+        const A = rr[a], B = rr[b], ix = Math.min(A.x + A.w, B.x + B.w) - Math.max(A.x, B.x), iy = Math.min(A.y + A.h, B.y + B.h) - Math.max(A.y, B.y), m2 = ix > 0 && iy > 0 ? (ix * iy) / (sc * sc) : 0;
+        if (m2 >= 0.1) { ovl++; out.push({ l: "i", t: `${nm(f.id)}${A.n || "Raum"} und ${B.n || "Raum"} überlappen`, s: `um ${num(m2, 1)} m² – Fläche und Wärmekarte stimmen dann nicht ganz`, fx: "show", id: B.id }); }
+      }
+      rs.forEach((r) => {
+        if (!r.n) { noName++; out.push({ l: "i", t: `${nm(f.id)}Raum ohne Namen`, s: "Der Name erscheint im Plan und in allen Modulen.", fx: "show", id: r.id }); }
+        else if (inner(r) && this._grArea && !this._grArea(r) && this._grRooms()[r.id] !== "-") { noArea++; out.push({ l: "i", t: `${nm(f.id)}${r.n} ohne Bereich in Home Assistant`, s: "Mit Bereich findet Modul 18 die Lampen und Modul 0 die Bewegungsmelder des Raums.", fx: "area", id: r.id }); }
+      });
+    });
+    const hasEx = its.some((i) => (i.t === "d" || i.t === "s") && i.ex === 1), hasD = its.some((i) => i.t === "d");
+    if (!hasEx && hasD) out.push({ l: "w", t: "Kein Ausgang markiert", s: "Markiere die Haustür als „Außentür“ – Modul 11 braucht sie für den Fluchtweg.", fx: "exit", id: (its.find((i) => i.t === "d" && !i.dg) || {}).id || "" });
+    if (!noDoor) ok.push("Alle Räume haben eine Tür"); if (!offWall) ok.push("Türen und Fenster sitzen auf Wänden"); if (hasEx) ok.push("Ausgang vorhanden");
+    if (!noName) ok.push("Alle Räume haben einen Namen"); if (!ovl) ok.push("Keine Überlappungen"); ok.push(`Maßstab: 1 m = ${sc} Punkte · Plan ${num(800 / sc, 1)} m breit`);
+    return { list: out, ok, n: out.length, fix: out.filter((x) => x.fx === "snap").length };
+  }
+  _grChkModal() {
+    const ed = this._sfEd, P = ed ? ed.plan : this._grRaw(), C = this._grCheck(P), col = { w: "#f59e0b", i: "#60a5fa" };
+    const btn = { snap: "Einrasten", show: "Zeigen", area: "Zuordnen", exit: "Zeigen" };
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Plan-Check</b><span>${C.n ? `${C.n} ${C.n === 1 ? "Hinweis" : "Hinweise"}` : "Alles in Ordnung"}${ed ? " · im Baukasten, noch nicht gespeichert" : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="grck">${C.list.map((x) => `<div class="grckr"><i style="background:${col[x.l]}"></i><span><b>${esc(x.t)}</b><small>${esc(x.s)}</small></span>${this._admin() ? `<button class="grb" data-act="grxfix" data-k="${x.fx}" data-v="${esc(x.id)}">${btn[x.fx]}</button>` : ""}</div>`).join("")}
+      ${C.ok.map((t) => `<div class="grckr ok"><i style="background:#34d399"></i><span><b>${esc(t)}</b></span></div>`).join("")}</div>
+      <div class="foot2" style="margin-top:12px">${C.fix > 1 && this._admin() ? `<button class="btn2 pri" data-act="grxfix" data-k="all">Alle ${C.fix} einrasten</button>` : ""}<button class="btn2" data-act="close">Schließen</button></div></div>`;
+  }
+  _grChkChip(P) { const C = this._grCheck(P); return `<button class="grchk${C.n ? " w" : ""}" data-act="grxchk" title="Plan prüfen">${ic(C.n ? "alert" : "check", 14)} Plan-Check${C.n ? ` · ${C.n}` : ""}</button>`; }
+  _grCalModal() {
+    const ed = this._sfEd, p = ed && ed.cal ? ed.cal.p : []; if (p.length < 2) return `<div class="ov" data-act="close"></div>`;
+    const px = Math.hypot(p[1][0] - p[0][0], p[1][1] - p[0][1]), sc = this._sfScale();
+    return `<div class="ov" data-act="grxcalx"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Maßstab messen</b><span>Strecke im Plan: ${Math.round(px)} Punkte · jetzt ${num(px / sc, 2)} m</span></div><button class="ibtn" data-act="grxcalx" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:0 0 10px">Wie lang ist diese Strecke in Wirklichkeit? Zum Beispiel eine Wand aus dem Bauplan. Danach stimmen alle Maße, Flächen und Reichweiten.</div>
+      <div class="sffld"><label>Echte Länge in Metern</label><input class="osel" type="number" min="0.5" max="100" step="0.01" data-f="grxcall" value="${num(px / sc, 2).replace(",", ".")}" inputmode="decimal"></div>
+      <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="grxcalx">Abbrechen</button><button class="btn2 pri" data-act="grxcalok">Maßstab übernehmen</button></div></div>`;
+  }
+  /* Kasten in „Etage & Plan“: Raster, Maßstab messen, Etage kopieren */
+  _grB7Box() {
+    const g = this._grGridCm(), ed = this._sfEd;
+    return `<div class="sffld"><label>Raster beim Ziehen</label><div class="grseg">${[5, 10, 25, 50].map((c) => `<button class="${g === c ? "on" : ""}" data-act="grxgrid" data-k="${c}">${c} cm</button>`).join("")}</div></div>
+      <div class="sffld"><label>Maßstab messen</label><div class="mut sm" style="margin-bottom:6px">Zwei Punkte im Plan antippen (z. B. Anfang und Ende einer Wand auf dem Bauplan-Foto) und die echte Länge eingeben.</div><button class="btn2" data-act="grxcal" style="flex:none">${ic("ruler", 15)} ${ed && ed.cal ? "Messen läuft …" : "Strecke messen"}</button></div>
+      <div class="sffld"><label>Etage kopieren</label><div class="mut sm" style="margin-bottom:6px">Räume, Wände, Türen, Fenster und Treppen dieser Etage als neue Etage – z. B. OG wie EG.</div><button class="btn2" data-act="grxflcp" style="flex:none" ${ed && ed.plan.floors.length >= 6 ? "disabled" : ""}>Etage kopieren</button></div>`;
+  }
+  _grB7Act(a, b) {
+    const k = b && b.dataset ? b.dataset.k : "", v = b && b.dataset ? b.dataset.v : "", ed = this._sfEd;
+    if (a === "grxchk") { this._modal = { type: "grxchk" }; this._renderModal(); return true; }
+    if (a === "grxfix") {
+      if (!this._admin()) return true;
+      if (k === "area" && !ed) { this._modal = null; this._renderModal(); this._grTab = "raeume"; this._render(); return true; }
+      if (!ed) { this._grEdit("gr", ""); if (!this._sfEd) return true; }
+      const E = this._sfEd, P = E.plan, it = P.items.find((i) => i.id === v);
+      if (k === "area") { this._modal = null; this._renderModal(); if (E) { this._toast("Erst speichern, dann im Reiter „Räume“ zuordnen"); } return true; }
+      this._sfSnap();
+      const snap = (i) => { const sn = this._sfSnapOpen(i.fl, i.x, i.y, 30, i); if (sn) { i.x = sn.x; i.y = sn.y; i.r = sn.r; return true; } return false; };
+      if (k === "all") { const C = this._grCheck(P); let n = 0; C.list.filter((x) => x.fx === "snap").forEach((x) => { const q = P.items.find((i) => i.id === x.id); if (q && snap(q)) n++; }); this._toast(`${n} eingerastet · mit „Speichern“ übernehmen`); }
+      else if (it) { if (k === "snap") snap(it); this._sfFlId = it.fl; E.sel = it.id; E.tool = "select"; E.multi = []; if (k === "exit") this._toast("Tür wählen und „Außentür“ setzen"); }
+      this._modal = null; this._renderModal(); this._render(); return true;
+    }
+    if (a === "grxgrid") { const c = Number(k) || ({ 5: 10, 10: 25, 25: 50, 50: 5 })[this._grGridCm()]; try { localStorage.setItem("fh_gr_grid", String(c)); } catch (_) { /* egal */ } this._render(); return true; }
+    if (!ed) return false;
+    const P = ed.plan, cur = P.items.find((x) => x.id === ed.sel);
+    if (a === "grxcal") { ed.cal = ed.cal ? null : { p: [] }; ed.sel = ""; ed.tool = "select"; if (ed.cal) this._toast("Tippe auf den Anfang der Strecke"); this._render(); return true; }
+    if (a === "grxcalx") { ed.cal = null; this._modal = null; this._renderModal(); this._render(); return true; }
+    if (a === "grxcalok") {
+      const inp = this.shadowRoot && this.shadowRoot.querySelector('[data-f="grxcall"]'), m = Number(String((inp && inp.value) || this._grCalM || "").replace(",", ".")), p = ed.cal ? ed.cal.p : [];
+      if (!(m > 0.3) || p.length < 2) { this._toast("Bitte eine Länge in Metern eingeben"); return true; }
+      const sc = Math.max(10, Math.min(120, Math.round(Math.hypot(p[1][0] - p[0][0], p[1][1] - p[0][1]) / m)));
+      this._sfSnap(); P.scale = sc; ed.cal = null; this._modal = null; this._renderModal(); this._render();
+      this._toast(`Maßstab: 1 m = ${sc} Punkte · Plan ${num(800 / sc, 1)} m breit`); return true;
+    }
+    if (a === "grxflcp") {
+      if (P.floors.length >= 6) return true;
+      this._sfSnap(); const fl = this._sfFl(), src = P.floors.find((f) => f.id === fl) || { n: "Etage" }, id = "f" + Date.now().toString(36).slice(-6), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      const nm = ["OG", "DG", "Keller", "UG", "Anbau"].find((n) => !P.floors.some((f) => f.n === n)) || `${src.n} 2`.slice(0, 16);
+      P.floors.push({ id, n: nm }); P.items.filter((i) => i.fl === fl && ["r", "w", "d", "f", "s", "x"].includes(i.t)).forEach((i) => { const c = JSON.parse(JSON.stringify(i)); c.id = uid(); c.fl = id; if (c.t === "f") c.e = ""; P.items.push(c); });
+      this._sfFlId = id; ed.sel = ""; this._render(); this._toast(`„${src.n}“ kopiert als „${nm}“ · Namen und Lampen passt du hier an`); return true;
+    }
+    if (!cur || (cur.t !== "d" && cur.t !== "f")) return false;
+    if (a === "grxok") { this._sfSnap(); if (cur.t === "d") { if (v) cur.dk = v; else delete cur.dk; } else { if (v) cur.fk = v; else delete cur.fk; } this._render(); return true; }
+    if (a === "grxob") { this._sfSnap(); cur.b = Math.max(40, Math.min(600, (cur.b || (cur.t === "d" ? 80 : 90)) + Number(b.dataset.s || 0))); this._render(); return true; }
+    if (a === "grxor") { this._sfSnap(); const s = Number(b.dataset.s || 0); cur.r = ((((cur.r || 0) + s) % 360) + 360) % 360; if (Math.abs(s) === 15) cur.r = Math.round(cur.r / 15) * 15 % 360; this._render(); return true; }
+    if (a === "grxosnap") { this._sfSnap(); const sn = this._sfSnapOpen(cur.fl, cur.x, cur.y, 60, cur); if (sn) { cur.x = sn.x; cur.y = sn.y; cur.r = sn.r; } else this._toast("Keine Wand in der Nähe"); this._render(); return true; }
+    return false;
+  }
+  _grB7Change(t) {
+    const f = t.dataset ? t.dataset.f : "", ed = this._sfEd;
+    if (f === "grxcall") { this._grCalM = t.value; return true; }
+    if (f === "grxang" && ed) { const cur = ed.plan.items.find((x) => x.id === ed.sel); if (cur) { this._sfSnap(); cur.r = ((Math.round(Number(t.value) || 0) % 360) + 360) % 360; this._render(); } return true; }
+    return false;
+  }
+  /* Tastatur am PC: Pfeile verschieben (Umschalt = 4 Schritte), Entf löscht, Strg+Z / Strg+Y, Esc hebt die Auswahl auf */
+  _grKeyBind() {
+    if (this._grKeyOn) return; this._grKeyOn = true;
+    window.addEventListener("keydown", (e) => {
+      const ed = this._sfEd; if (!ed || !this.isConnected || this._modal) return;
+      const tg = e.composedPath ? e.composedPath()[0] : e.target; if (tg && (/^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName || "") || tg.isContentEditable)) return;
+      const P = ed.plan, ids = ed.multi && ed.multi.length ? ed.multi : ed.sel ? [ed.sel] : [], K = e.key, mod = e.ctrlKey || e.metaKey;
+      if (mod && (K === "z" || K === "Z")) { e.preventDefault(); this._sfxP2(e.shiftKey ? "sfxredo" : "sfxundo", { dataset: {} }); return; }
+      if (mod && (K === "y" || K === "Y")) { e.preventDefault(); this._sfxP2("sfxredo", { dataset: {} }); return; }
+      if (K === "Escape") { if (ed.cal) ed.cal = null; else { ed.sel = ""; ed.multi = []; ed.tool = "select"; } this._render(); return; }
+      if ((K === "Delete" || K === "Backspace") && ids.length) { e.preventDefault(); this._sfSnap(); const s = new Set(ids); P.items = P.items.filter((i) => !s.has(i.id)); ed.sel = ""; ed.multi = []; this._render(); return; }
+      const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[K];
+      if (dir && ids.length) {
+        e.preventDefault(); const now = Date.now(); if (!this._grKeyT || now - this._grKeyT > 900) this._sfSnap(); this._grKeyT = now;
+        const st = this._grStep() * (e.shiftKey ? 4 : 1), dx = Math.round(dir[0] * st), dy = Math.round(dir[1] * st), mv = new Set(ids);
+        ids.forEach((id) => { const it = P.items.find((i) => i.id === id); this._grAttached(it, P).forEach((q) => mv.add(q.id)); });
+        P.items.forEach((i) => { if (!mv.has(i.id)) return; i.x += dx; i.y += dy; if (i.pts) i.pts = i.pts.map((q) => [q[0] + dx, q[1] + dy]); if (i.t === "w") { i.x2 += dx; i.y2 += dy; } });
+        this._render();
+      }
+    });
   }
   /* ================= Modul 10: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
   _gaTab() {

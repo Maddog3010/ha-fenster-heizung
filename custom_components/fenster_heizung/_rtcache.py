@@ -1,3 +1,3 @@
 """Laufzeit-Zwischenspeicher (automatisch erzeugt)."""
-# 2026.11.4b54
-RT = "3#{?f7p?Nl4gU7lMXmJP46pUn3Z(T!@4Bu"
+# 2026.11.4b55
+RT = "3#{?f7p?Nl4gU7mMXmJP46pUo38nJr?}JS"

@@ -81,8 +81,8 @@
       if (i.t === "r") out += `<g ${id}><path class="sfr${i.ds ? " ds" : ""}${mk.some((m) => inside(i, m)) ? " al" : wn.some((m) => inside(i, m)) ? " wn" : ""}" d="${this._sfRPath(i)}"></path><text class="sfrn" x="${this._sfRLab(i)[0]}" y="${this._sfRLab(i)[1]}">${esc(i.n)}</text></g>`;
       else if (i.t === "s") out += `<g ${id}><rect class="sfst" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${Array.from({ length: Math.max(2, Math.floor(i.h / 14)) }, (_, k) => `<path class="sfsl" d="M${i.x} ${i.y + 7 + k * 14}H${i.x + i.w}"></path>`).join("")}<text class="sfrn" x="${i.x + 6}" y="${i.y + 16}">${esc(i.n)}</text></g>`;
       else if (i.t === "w") out += `<g ${id}><path class="sfw" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path><path class="sfhit" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path></g>`;
-      else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect>${i.dg ? `<path class="sfda" d="M${i.x - 15} ${i.y - 6}v12M${i.x + 15} ${i.y - 6}v12"></path>` : `<path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"${i.mh || i.mv ? ` transform="translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})"` : ""}></path>`}<rect class="sfhit" x="${i.x - 16}" y="${i.y - 16}" width="32" height="32"></rect></g>`;
-      else if (i.t === "f") out += `<g ${id}${a}><rect class="sffw" x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7"></rect><rect class="sfhit" x="${i.x - 18}" y="${i.y - 14}" width="36" height="28"></rect></g>`;
+      else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect>${i.dg ? `<path class="sfda" d="M${i.x - 15} ${i.y - 6}v12M${i.x + 15} ${i.y - 6}v12"></path>` : `<path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"${i.mh || i.mv ? ` transform="translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})"` : ""}></path>`}<rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 16) - 2}" y="${i.y - 16}" width="${(this._grHw ? this._grHw(i) : 16) * 2 + 4}" height="32"></rect></g>`;
+      else if (i.t === "f") out += `<g ${id}${a}><rect class="sffw" x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7"></rect><rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 18) - 2}" y="${i.y - 14}" width="${(this._grHw ? this._grHw(i) : 18) * 2 + 4}" height="28"></rect></g>`;
       else if (i.t === "x") out += `<text ${id} class="sftx" x="${i.x}" y="${i.y}">${esc(i.n || "Text")}</text>`;
       else if (i.t === "l") {   /* Lampe (Modul 18): nur sichtbar, wenn das Addon an ist. Leuchtet in ihrer Farbe, wenn sie an ist. */
         if (!liOn) return;
@@ -163,7 +163,7 @@
         ${sel.t === "r" ? this._sfRPanel(sel) : ""}
         ${sel.t === "r" ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpds" class="${sel.ds ? "on" : ""}">Rand nur gestrichelt</button><button data-act="sfxpds" data-v="all">Alle Räume der Etage</button></div><small class="mut" style="display:block">Gestrichelte Räume sind nur Flächen mit Namen. Wände zeichnest du extra, nur sie sperren den Weg.</small>` : ""}
         ${sel.t === "d" || sel.t === "s" ? `<div class="sffld"><label>${sel.t === "d" ? "Art der Tür" : "Treppe"}</label><div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpex" data-v="0" class="${sel.ex === 1 ? "" : "on"}">${sel.t === "d" ? "Innentür" : "Kein Ausgang"}</button><button data-act="sfxpex" data-v="1" class="${sel.ex === 1 ? "on" : ""}">${sel.t === "d" ? "Außentür" : "Ausgang nach unten"}</button></div><small class="mut" style="display:block">Nur markierte Ausgänge zählen für den Fluchtweg.</small></div>` : ""}
-        ${sel.t === "d" || sel.t === "f" || (sel.t === "l" && sel.k === "streifen") ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
+        ${(sel.t === "d" || sel.t === "f") && this._grOpenProps ? this._grOpenProps(sel) : ""}${(sel.t === "l" && sel.k === "streifen") || ((sel.t === "d" || sel.t === "f") && !this._grOpenProps) ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
         ${sel.t === "d" ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpdg" data-v="0" class="${sel.dg ? "" : "on"}">Tür</button><button data-act="sfxpdg" data-v="1" class="${sel.dg ? "on" : ""}">Durchgang</button></div>` : ""}
         ${sel.t === "d" && !sel.dg ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpmir" data-k="mv" class="${sel.mv ? "on" : ""}">Öffnung spiegeln (innen/außen)</button><button data-act="sfxpmir" data-k="mh" class="${sel.mh ? "on" : ""}">Angel spiegeln (links/rechts)</button></div>` : ""}
         ${sel.t === "l" ? this._sfLampProps(sel) : ""}
@@ -347,6 +347,7 @@
       this._sfxPatch((c) => { const m = (c.meta[e] = c.meta[e] || {}); m[key] = ["life", "int"].includes(key) ? Number(v) || 0 : v; if (key === "kind" && !v) delete m.kind; });
       return true;
     }
+    if (this._grB7Change && this._grB7Change(t)) return true;
     if (!ed) return false;
     if (this._sfxP2Change(t)) return true;
     const P = ed.plan, cur = P.items.find((x) => x.id === ed.sel);
@@ -373,15 +374,16 @@
   /* Zeigen und Ziehen im Baukasten (Maus, Finger, Stift) */
   _sfxBind(sr) {
     const pt = (e, svg) => { const b = svg.getBoundingClientRect(); return [Math.max(0, Math.min(800, ((e.clientX - b.left) / b.width) * 800)), Math.max(0, Math.min(480, ((e.clientY - b.top) / b.height) * 480))]; };
-    const g = (v) => Math.round(v / 20) * 20, g10 = (v) => Math.round(v / 10) * 10;
+    const stp = () => (this._grStep ? this._grStep() : 20), g = (v) => Math.round(Math.round(v / stp()) * stp()), g10 = (v) => (stp() <= 10 ? g(v) : Math.round(v / 10) * 10);
     const paint = () => { const svg = sr.querySelector("svg.sfpe"); if (svg && this._sfEd) svg.innerHTML = this._grEditSvg ? this._grEditSvg(this._sfFl()) : this._sfPlanInner(this._sfFl(), true); };
     sr.addEventListener("pointerdown", (e) => {
       const svg = e.target.closest && e.target.closest("svg.sfpe"), ed = this._sfEd; if (!svg || !ed) return;
-      e.preventDefault(); const [x, y] = pt(e, svg), P = ed.plan, fl = this._sfFl(), h = e.target.closest("[data-h]"), el = e.target.closest("[data-id]"), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tool = ed.tool;
+      e.preventDefault(); if (ed.cal) { const q = pt(e, svg); ed.cal.p = ed.cal.p.length >= 2 ? [] : ed.cal.p; ed.cal.p.push([Math.round(q[0]), Math.round(q[1])]); paint(); if (ed.cal.p.length === 2) { this._modal = { type: "grxcal" }; this._renderModal(); } else this._toast("Jetzt auf das Ende der Strecke tippen"); return; }
+      const [x, y] = pt(e, svg), P = ed.plan, fl = this._sfFl(), h = e.target.closest("[data-h]"), el = e.target.closest("[data-id]"), uid = () => "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), tool = ed.tool;
       this._sfDrag = null; this._sfSnap();
       if (h && ed.sel) { let hk = h.dataset.h; const rm = P.items.find((i) => i.id === ed.sel); if (rm && rm.t === "r" && rm.pts && /^a\d+$/.test(hk)) { const k0 = Number(hk.slice(1)), A = rm.pts[k0], B = rm.pts[(k0 + 1) % rm.pts.length]; if (rm.pts.length < 16) { rm.pts.splice(k0 + 1, 0, [Math.round((A[0] + B[0]) / 20) * 10, Math.round((A[1] + B[1]) / 20) * 10]); hk = "v" + (k0 + 1); } } if (/^v\d+$/.test(hk)) ed.vsel = Number(hk.slice(1)); this._sfDrag = { k: hk, id: ed.sel }; }
       else if (tool === "select" && ed.mm) { ed.multi = ed.multi || []; if (el) { const id = el.dataset.id, pre = ed.multi.includes(id); if (!pre) ed.multi.push(id); ed.sel = ""; const os = {}; P.items.filter((i) => ed.multi.includes(i.id)).forEach((i) => { os[i.id] = JSON.parse(JSON.stringify(i)); }); this._sfDrag = { k: "movem", os, sx: x, sy: y, moved: false, off: pre ? id : "" }; } else ed.multi = []; paint(); }
-      else if (tool === "select") { ed.multi = []; if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false }; } else ed.sel = ""; paint(); }
+      else if (tool === "select") { ed.multi = []; if (el) { ed.sel = el.dataset.id; const it = P.items.find((i) => i.id === ed.sel); this._sfDrag = { k: "move", id: ed.sel, sx: x, sy: y, o: JSON.parse(JSON.stringify(it)), moved: false, att: this._grAttached ? this._grAttached(it, P) : [] }; } else ed.sel = ""; paint(); }
       else if (tool === "r" || tool === "s" || tool === "w") {
         const it = tool === "w" ? { id: uid(), fl, t: "w", x: g(x), y: g(y), x2: g(x), y2: g(y), r: 0, n: "", e: "" } : { id: uid(), fl, t: tool, x: g(x), y: g(y), w: 0, h: 0, r: 0, n: "", e: "" };
         P.items.push(it); ed.sel = it.id; this._sfDrag = { k: "new", id: it.id, sx: g(x), sy: g(y) }; paint();
@@ -389,7 +391,7 @@
         const it = { id: uid(), fl, t: tool.startsWith("m:") ? "m" : tool === "dg" ? "d" : tool, x: g10(x), y: g10(y), r: 0, n: tool === "x" ? "Text" : "", e: "" }; if (tool === "dg") it.dg = 1;
         if (it.t === "l") { it.k = "decke"; it.e = this._liFreeLampAt ? this._liFreeLampAt(fl, x, y, P) : ""; }
         if (it.t === "m") { const kind = tool.slice(2), pl = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), d = this._sfList().find((q) => q.k === kind && !pl.has(q.id)); if (d) it.e = d.id; }
-        if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(fl, x, y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } }
+        if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(fl, x, y, 24, it); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } }
         P.items.push(it); ed.sel = it.id; ed.tool = "select"; this._render();
       }
     });
@@ -398,8 +400,8 @@
       if (d.k === "movem") { e.preventDefault(); const [mx, my] = pt(e, svg), dx = g(mx - d.sx), dy = g(my - d.sy); if (dx || dy) d.moved = true; ed.plan.items.forEach((i) => { const o = d.os[i.id]; if (!o) return; i.x = o.x + dx; i.y = o.y + dy; if (o.pts) i.pts = o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (i.t === "w") { i.x2 = o.x2 + dx; i.y2 = o.y2 + dy; } }); paint(); return; }
       const [x, y] = pt(e, svg), it = ed.plan.items.find((i) => i.id === d.id); if (!it) return; e.preventDefault();
       if (/^v\d+$/.test(d.k)) { if (it.pts) { it.pts[Number(d.k.slice(1))] = [g10(x), g10(y)]; this._sfRSync(it); } }
-      else if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (d.o.pts) it.pts = d.o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } }
-      else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const dx = Math.abs(X - it.x), dy = Math.abs(Y - it.y); if (dx > dy * 4) Y = it.y; else if (dy > dx * 4) X = it.x; it.x2 = X; it.y2 = Y; } else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
+      else if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (d.o.pts) it.pts = d.o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y, 18, it); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } (d.att || []).forEach((q) => { const o2 = ed.plan.items.find((i) => i.id === q.id); if (o2) { o2.x = q.x + dx; o2.y = q.y + dy; } }); }
+      else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const L = Math.hypot(X - it.x, Y - it.y), an = Math.atan2(Y - it.y, X - it.x), a15 = Math.round(an / (Math.PI / 12)) * (Math.PI / 12); if (L > 0 && Math.abs(an - a15) < 0.1) { X = Math.round(it.x + L * Math.cos(a15)); Y = Math.round(it.y + L * Math.sin(a15)); } it.x2 = X; it.y2 = Y; }   /* Build 7: rastet auf 15°-Schritte */ else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
       else if (d.k === "p1") { it.x = g(x); it.y = g(y); } else if (d.k === "p2") { it.x2 = g(x); it.y2 = g(y); }
       paint();
     }, { passive: false });

@@ -779,3 +779,17 @@ def test_diagnose_modul11_ohne_persoenliche_daten():
     assert dd["einstellungen"]["proto"] == {"name": D.REDACT, "addr": D.REDACT, "who": ""} and dd["schema"] == S.SCHEMA
     assert dd["melder"][0]["id"] == "binary_sensor.gas" and dd["einstellungen"]["plan"]["hintergrundbild"] is True
     assert m.cfg["notify"]["to"] == ["notify.handy"] and D.sicherheit_diag(None) == {"eingerichtet": False}
+
+
+def test_tueren_fenster_schraeg_und_arten():
+    """Modul 0 Build 7: Türen und Fenster frei drehbar, mit Breite und Art."""
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {"id": "d1", "fl": "eg", "t": "d", "x": 10, "y": 10, "r": 45.4, "b": 88.5, "dk": "schiebe"},
+        {"id": "d2", "fl": "eg", "t": "d", "x": 10, "y": 10, "r": -30, "b": 9999, "dk": "rakete"},
+        {"id": "f1", "fl": "eg", "t": "f", "x": 10, "y": 10, "r": 375, "b": 10, "fk": "dach", "dk": "doppel"},
+        {"id": "r1", "fl": "eg", "t": "r", "x": 0, "y": 0, "w": 100, "h": 100, "b": 120, "fk": "boden"}]})
+    it = {i["id"]: i for i in p["items"]}
+    assert it["d1"]["r"] == 45 and it["d1"]["b"] == 88 and it["d1"]["dk"] == "schiebe"
+    assert it["d2"]["r"] == 330 and it["d2"]["b"] == 600 and "dk" not in it["d2"]
+    assert it["f1"]["r"] == 15 and it["f1"]["b"] == 40 and it["f1"]["fk"] == "dach" and "dk" not in it["f1"]
+    assert "b" not in it["r1"] and "fk" not in it["r1"] and it["r1"]["r"] == 0

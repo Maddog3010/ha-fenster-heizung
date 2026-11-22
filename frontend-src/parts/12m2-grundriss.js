@@ -110,7 +110,7 @@
     const nL = items.filter((i) => i.t === "l").length, nM = items.filter((i) => i.t === "m").length, liOn = !!(this._liOn && this._liOn());
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
     const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button><button class="${ly.now !== false ? "on" : ""}" data-act="grxnow" title="Temperatur aus Modul 1 und Bewegung"><i style="background:#2dd4bf"></i>Jetzt</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
-    const card = `<div class="card"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
+    const card = `<div class="card"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
       <div class="grv grv-${sty}"><svg viewBox="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${G.svg}</svg></div></div>`;
     const since = meta.since ? new Date(meta.since).toLocaleDateString("de-DE") : "", until = meta.copy_until ? new Date(meta.copy_until).toLocaleDateString("de-DE") : "";
     const info = `<div class="grinfo">
@@ -292,6 +292,8 @@
         <div class="foot2" style="margin-top:12px"><button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="-">Kein Bereich</button>${cur ? `<button class="btn2" data-act="grxaset" data-k="${esc(it.id)}" data-v="">Automatisch</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     }
     if (m.type === "grxroom") return this._grRoomModal(m);
+    if (m.type === "grxchk" && this._grChkModal) return this._grChkModal();
+    if (m.type === "grxcal" && this._grCalModal) return this._grCalModal();
     if (m.type === "grximp") return this._grImpModal(m);
     if (m.type === "grxrest") { const H = this._grH && this._grH.d, h = m.k === "umzug" ? H && H.copy : H && (H.hist || []).find((x) => x.id === m.k); return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Stand wiederherstellen?</b><span>${m.k === "umzug" ? "Umzugs-Kopie aus Modul 11" : h ? esc(new Date(h.t).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" })) : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="mut sm">${h ? `Danach: <b style="color:var(--primary-text-color)">${esc(this._grStTxt(h.stats || {}))}</b>. ` : ""}Der jetzige Stand landet im Verlauf, du kannst also wieder zurück. Hintergrundbilder bleiben, wie sie jetzt sind. Modul 1, 11 und 18 sehen den Stand sofort.</div>

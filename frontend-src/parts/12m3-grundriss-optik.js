@@ -67,17 +67,11 @@
     /* 3) Freie Wände */
     items.filter((i) => i.t === "w").forEach((w) => { d += `<line x1="${w.x}" y1="${w.y}" x2="${w.x2}" y2="${w.y2}" stroke="${WI}" stroke-width="7" stroke-linecap="square"/>`; });
     /* 4) Türen, Durchgänge, Fenster, Treppen, Text */
-    const floorAt = (x, y) => { const r = ins.find((q) => (this._sfInRoom ? this._sfInRoom(q, x, y + 10) || this._sfInRoom(q, x, y - 10) : x > q.x && x < q.x + q.w && y > q.y - 10 && y < q.y + q.h + 10)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
+    const floorAtR = (i) => { const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an) * 10, ny = Math.cos(an) * 10, inR = (q, x, y) => (this._sfInRoom ? this._sfInRoom(q, x, y) : x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h); const r = ins.find((q) => inR(q, i.x + nx, i.y + ny) || inR(q, i.x - nx, i.y - ny)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
     items.forEach((i) => {
       const rot = i.r ? `rotate(${i.r} ${i.x} ${i.y})` : "", mir = i.mh || i.mv ? ` translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})` : "";
-      if (i.t === "d" && o.doors) {
-        const gap = `<rect x="${i.x - 16}" y="${i.y - 9}" width="32" height="18" fill="${floorAt(i.x, i.y)}"/>`;
-        if (i.dg) d += `<g transform="${rot}">${gap}<path d="M${i.x - 16} ${i.y - 9}v18M${i.x + 16} ${i.y - 9}v18" stroke="${WI}" stroke-width="3"/></g>`;
-        else d += `<g transform="${rot}${mir}">${gap}<path d="M${i.x - 15} ${i.y}V${i.y - 30}" stroke="${i.ex === 1 ? T.accent : T.leaf}" stroke-width="2.6" stroke-linecap="round"/><path d="M${i.x + 15} ${i.y}A30 30 0 0 0 ${i.x - 15} ${i.y - 30}" fill="none" stroke="${T.arc}" stroke-width="1.3" stroke-dasharray="4 3"/>${i.ex === 1 ? `<path d="M${i.x - 6} ${i.y + 16}l6 6l6-6" fill="none" stroke="${T.accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : ""}</g>`;
-      } else if (i.t === "f" && o.windows) {
-        const open = !!(i.e && st[i.e] && st[i.e].state === "on"), c = open ? T.open : T.glass;
-        d += `<g transform="${rot}"><title>Fenster${i.e ? ` · ${esc(this._wzName(i.e))} · ${open ? "offen" : "zu"}` : ""}</title><rect x="${i.x - 18}" y="${i.y - 6}" width="36" height="12" fill="${T.bg}"/><rect x="${i.x - 18}" y="${i.y - 6}" width="36" height="12" fill="none" stroke="${T.frame}" stroke-width="1.6"/><path d="M${i.x - 18} ${i.y}H${i.x + 18}" stroke="${c}" stroke-width="3"/>${open ? `<path d="M${i.x - 16} ${i.y - 6}L${i.x - 4} ${i.y - 20}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>` : ""}</g>`;
-      } else if (i.t === "s" && o.stairs) {
+      if ((i.t === "d" && o.doors) || (i.t === "f" && o.windows)) d += this._grOpenSvg(i, T, WI, i.t === "d" ? floorAtR(i) : T.bg, P.scale > 0 ? P.scale : 40, st);   /* Build 7: alle Arten, jede Breite, jeder Winkel */
+      else if (i.t === "s" && o.stairs) {
         const w = i.w || 60, h = i.h || 90, n = Math.max(5, Math.round(h / 14)), vert = h >= w;
         const steps = Array.from({ length: n - 1 }, (_, k) => vert ? `M${i.x} ${i.y + (k + 1) * h / n}h${w}` : `M${i.x + (k + 1) * w / n} ${i.y}v${h}`).join("");
         d += `<g transform="${rot}"><rect x="${i.x}" y="${i.y}" width="${w}" height="${h}" fill="${T.bg}" stroke="${T.stair}" stroke-width="1.6"/><path d="${steps}" stroke="${T.stair}" stroke-width="1" opacity=".8"/>${vert ? `<path d="M${i.x + w / 2} ${i.y + h - 8}V${i.y + 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>` : `<path d="M${i.x + 8} ${i.y + h / 2}H${i.x + w - 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>`}</g>`;

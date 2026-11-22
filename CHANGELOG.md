@@ -2,6 +2,26 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b55] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.7 Build 7 – Baukasten 2.0: genau statt ungefähr, Türen und Fenster schräg und in allen Arten, Plan-Check.
+
+### Neu
+- **Raster in Zentimetern:** 5, 10, 25 oder 50 cm (oben in der Leiste oder unter „Etage & Plan“). Alles rastet beim Ziehen darauf ein.
+- **Schräge Wände:** Wände rasten beim Zeichnen auf 15°-Schritte ein (also auch 45°). Beim Bearbeiten stehen Länge und Winkel im Plan, bei Räumen Breite und Tiefe.
+- **Türen und Fenster in jedem Winkel:** Sie setzen sich auf jede Wand – auch auf schräge Wände und Raumkanten – übernehmen deren Winkel und gleiten entlang der Wand. Winkel frei einstellbar (±15°, 90°, Umdrehen oder in Grad eingeben).
+- **Breite** jeder Tür und jedes Fensters (in 5-cm-Schritten).
+- **Arten:** Drehtür, Doppeltür, Schiebetür, Pendeltür, Falttür, Terrassentür (Glas), Garagentor · Fenster, bodentief, Dachfenster, mit Rollladen. Jede Art hat ihr eigenes Planzeichen – in Modul 0, im Baukasten und in Modul 11.
+- **Abstand zur Ecke:** Bei einer gewählten Tür oder einem Fenster stehen die Abstände zu beiden Ecken im Plan und in den Eigenschaften. Liegt sie neben der Wand, gibt es „An Wand einrasten“.
+- **Türen und Fenster wandern mit:** Verschiebt man einen Raum, kommen seine Türen und Fenster mit.
+- **Plan-Check:** prüft Räume ohne Tür, Türen und Fenster neben der Wand, überlappende Räume, Räume ohne Namen oder ohne Bereich in Home Assistant und einen fehlenden Ausgang. Viele Punkte lassen sich mit einem Tipp beheben („Einrasten“, „Zeigen“, „Zuordnen“). Zu finden am Plan in Modul 0 und als „Prüfen“ im Baukasten.
+- **Maßstab messen:** zwei Punkte im Plan antippen (z. B. eine Wand auf dem Bauplan-Foto), echte Länge eingeben – fertig.
+- **Etage kopieren:** Räume, Wände, Türen, Fenster und Treppen als neue Etage (z. B. OG wie EG).
+- **Tastatur am PC:** Pfeiltasten verschieben (mit Umschalt 4 Schritte), Entf löscht, Strg+Z / Strg+Y, Esc hebt die Auswahl auf.
+
+### Geändert
+- Türen und Fenster dürfen jetzt jeden Winkel haben (bisher nur 0/90/180/270°); gespeichert werden zusätzlich Breite und Art.
+
 ## [2026.11.4b54] - 2026-11-22
 
 **Modul 0 · Haus & Grundriss** v0.6 Build 6 – eine Optik überall, neuer Baukasten, Ebene „Jetzt“ und Raum-Blatt.

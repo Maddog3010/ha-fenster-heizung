@@ -84,6 +84,7 @@ const ICONS = {
   menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
   pencil: '<path d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19zM14.5 6.5l3 3"/>',
   check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  ruler: '<rect x="2.5" y="8" width="19" height="8" rx="1.5"/><path d="M6.5 8v3M10 8v4M13.5 8v3M17 8v4"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
   flask: '<path d="M9 3h6M10 3v6.5L4.6 18.4A2 2 0 0 0 6.3 21.5h11.4a2 2 0 0 0 1.7-3.1L14 9.5V3M7.5 15h9"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
