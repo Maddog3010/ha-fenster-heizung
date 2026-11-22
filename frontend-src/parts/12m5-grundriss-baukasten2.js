@@ -7,7 +7,7 @@
      Maßstab messen: zwei Punkte im Plan (z. B. auf dem Bauplan-Foto) und die echte Länge eingeben. Etage kopieren. Tastatur am PC. */
   _grGridCm() { let v = 25; try { v = Number(localStorage.getItem("fh_gr_grid")) || 25; } catch (_) { /* privater Modus */ } return [5, 10, 25, 50].includes(v) ? v : 25; }
   _grStep() { return Math.max(1, (this._grGridCm() * this._sfScale()) / 100); }
-  _grHw(i, sc) { return ((i.b || (i.t === "f" ? 90 : 80)) / 100) * (sc || this._sfScale()) / 2; }
+  _grHw(i, sc) { return ((i.b || (i.t === "f" ? 90 : i.t === "a" ? 400 : 80)) / 100) * (sc || this._sfScale()) / 2; }
   _grM(px, sc) { return num(px / (sc || this._sfScale()), 2) + " m"; }
   /* Alle Wandstücke einer Etage: Raumkanten (ohne gestrichelte Räume) und freie Wände */
   _grSegs(fl, P) {
@@ -76,7 +76,7 @@
     const line = (x1, y1, x2, y2) => `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="#2dd4bf" stroke-width="1.2"/><circle cx="${x1}" cy="${y1}" r="2.2" fill="#2dd4bf"/><circle cx="${x2}" cy="${y2}" r="2.2" fill="#2dd4bf"/>`;
     if (it && it.t === "w") { const L = Math.hypot(it.x2 - it.x, it.y2 - it.y); let a = Math.round((Math.atan2(it.y2 - it.y, it.x2 - it.x) * 180) / Math.PI); a = ((a % 180) + 180) % 180; d += this._grPill((it.x + it.x2) / 2, (it.y + it.y2) / 2 - 16, `${num(L / sc, 2)} m${a % 90 ? ` · ${a}°` : ""}`); }
     if (it && (it.t === "r" || it.t === "s") && !it.pts) { d += line(it.x, it.y - 14, it.x + it.w, it.y - 14) + this._grPill(it.x + it.w / 2, it.y - 14, this._grM(it.w, sc)) + line(it.x - 14, it.y, it.x - 14, it.y + it.h) + this._grPill(it.x - 14, it.y + it.h / 2, this._grM(it.h, sc)); }
-    if (it && (it.t === "d" || it.t === "f") && it.fk !== "dach") {
+    if (it && ["d", "f", "a"].includes(it.t) && it.fk !== "dach") {
       const inf = this._grOpenInfo(it);
       if (inf) {
         const [x1, y1, x2, y2] = inf.seg, ux = (x2 - x1) / inf.L, uy = (y2 - y1) / inf.L, o = 20, nx = -uy * o, ny = ux * o, hw = this._grHw(it, sc);
@@ -96,7 +96,7 @@
   _grAttached(rm, P) {
     if (!rm || rm.t !== "r") return [];
     const Q = this._sfRP(rm), segs = Q.map((p, k) => [p[0], p[1], Q[(k + 1) % Q.length][0], Q[(k + 1) % Q.length][1]]);
-    return P.items.filter((i) => i.fl === rm.fl && (i.t === "d" || i.t === "f") && segs.some((s) => { const o = this._grOnSeg(s, i.x, i.y); return o && o.d <= 3; })).map((i) => ({ id: i.id, x: i.x, y: i.y }));
+    return P.items.filter((i) => i.fl === rm.fl && ["d", "f", "a"].includes(i.t) && segs.some((s) => { const o = this._grOnSeg(s, i.x, i.y); return o && o.d <= 3; })).map((i) => ({ id: i.id, x: i.x, y: i.y }));
   }
   /* ---- Plan-Check */
   _grCheck(P) {
@@ -158,6 +158,7 @@
   }
   _grB7Act(a, b) {
     const k = b && b.dataset ? b.dataset.k : "", v = b && b.dataset ? b.dataset.v : "", ed = this._sfEd;
+    if (this._grB7bAct && this._grB7bAct(a, b)) return true;
     if (a === "grxchk") { this._modal = { type: "grxchk" }; this._renderModal(); return true; }
     if (a === "grxfix") {
       if (!this._admin()) return true;
@@ -190,9 +191,10 @@
       P.floors.push({ id, n: nm }); P.items.filter((i) => i.fl === fl && ["r", "w", "d", "f", "s", "x"].includes(i.t)).forEach((i) => { const c = JSON.parse(JSON.stringify(i)); c.id = uid(); c.fl = id; if (c.t === "f") c.e = ""; P.items.push(c); });
       this._sfFlId = id; ed.sel = ""; this._render(); this._toast(`„${src.n}“ kopiert als „${nm}“ · Namen und Lampen passt du hier an`); return true;
     }
-    if (!cur || (cur.t !== "d" && cur.t !== "f")) return false;
+    if (a === "grxor" && cur && cur.t === "s") { this._sfSnap(); cur.r = ((cur.r || 0) + 90) % 360; this._render(); return true; }
+    if (!cur || !["d", "f", "a"].includes(cur.t)) return false;
     if (a === "grxok") { this._sfSnap(); if (cur.t === "d") { if (v) cur.dk = v; else delete cur.dk; } else { if (v) cur.fk = v; else delete cur.fk; } this._render(); return true; }
-    if (a === "grxob") { this._sfSnap(); cur.b = Math.max(40, Math.min(600, (cur.b || (cur.t === "d" ? 80 : 90)) + Number(b.dataset.s || 0))); this._render(); return true; }
+    if (a === "grxob") { this._sfSnap(); cur.b = Math.max(40, Math.min(cur.t === "a" ? 800 : 600, (cur.b || (cur.t === "d" ? 80 : cur.t === "a" ? 400 : 90)) + Number(b.dataset.s || 0))); this._render(); return true; }
     if (a === "grxor") { this._sfSnap(); const s = Number(b.dataset.s || 0); cur.r = ((((cur.r || 0) + s) % 360) + 360) % 360; if (Math.abs(s) === 15) cur.r = Math.round(cur.r / 15) * 15 % 360; this._render(); return true; }
     if (a === "grxosnap") { this._sfSnap(); const sn = this._sfSnapOpen(cur.fl, cur.x, cur.y, 60, cur); if (sn) { cur.x = sn.x; cur.y = sn.y; cur.r = sn.r; } else this._toast("Keine Wand in der Nähe"); this._render(); return true; }
     return false;

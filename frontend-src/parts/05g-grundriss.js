@@ -54,7 +54,7 @@
       <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity=".35"/></filter></defs>
       `;
     /* Modul 0 Build 6: Unterlage im neuen Stil (Wände, Böden, Türen, Treppen); Modul 1 legt nur Temperaturfarben, Fenster und Beschriftung darüber */
-    d += this._grDraw ? `<g pointer-events="none">${this._grDraw(P, fl, { style: this._grStyle(), dims: false, narrow: NF > 1, labels: false, windows: false, deco: false, layers: { licht: false, sf: false } }).svg}</g>` : `<rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#${u}dot)"/>`;
+    d += this._grDraw ? `<g pointer-events="none">${this._grDraw(P, fl, { style: this._grStyle(), dims: false, narrow: NF > 1, labels: false, windows: false, deco: false, layers: { licht: false, sf: false, gt: true } }).svg}</g>` : `<rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#${u}dot)"/>`;
     /* Räume: Kachel, Licht, Rand, Heizkörper */
     const label = [];
     rs.forEach((i, ix) => {

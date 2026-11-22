@@ -64,10 +64,13 @@ BHIST_MAX = 60
 TEST_ALARM_MAX_S = 120  # Alarm bis zu dieser Dauer gilt als Test per Testknopf
 THIST_MAX = 24  # Prüfungen und Batterietausche je Melder fürs Jahresband
 BHIST_GAP_S = 20 * 3600
-ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l")  # l = Lampe (Modul 18, ab 2026.11.4b51)
+ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l", "g", "a")  # l = Lampe (Modul 18, ab 2026.11.4b51), g = mobiles Gerät, a = Markise (Modul 0 Build 7)
 LAMP_K = ("decke", "steh", "spot", "streifen", "aussen", "tisch")  # tisch ab Modul 18 Build 7
 DOOR_K = ("doppel", "schiebe", "pendel", "falt", "garage", "glas")  # Modul 0 Build 7: Arten der Tür (ohne = Drehtür)
 WIN_K = ("boden", "dach", "rollo")  # Modul 0 Build 7: Arten des Fensters (ohne = normal)
+STAIR_K = ("l", "u", "wendel", "boden")  # Modul 0 Build 7: L-Treppe, U-Treppe (halbgewendelt), Wendeltreppe, Dachbodentreppe (ohne = gerade)
+DEV_K = ("heizer", "entf")  # Modul 0 Build 7: mobiler Heizer, mobiler Luftentfeuchter (aus Modul 1)
+DEV_DOM = ("switch", "climate", "humidifier", "fan", "input_boolean", "water_heater")
 _ID = re.compile(r"^[a-z0-9_]{1,24}$")
 _MON = re.compile(r"^(20\d\d|19\d\d)-(0[1-9]|1[0-2])$")
 _HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
@@ -267,18 +270,20 @@ def clean_plan(raw: Any) -> dict[str, Any]:
             if k in it:
                 o[k] = int(_num(it[k], -50, 1200, 0))
         o["r"] = int(round(_num(it.get("r"), -360, 720, 0))) % 360  # Modul 0 Build 7: frei drehbar (0–359°)
-        if it["t"] in ("d", "f") and it.get("b") is not None:
+        if it["t"] in ("d", "f", "a") and it.get("b") is not None:
             o["b"] = int(_num(it.get("b"), 40, 600, 90))  # Breite in cm
         if it["t"] == "d" and it.get("dk") in DOOR_K:
             o["dk"] = it["dk"]
         if it["t"] == "f" and it.get("fk") in WIN_K:
             o["fk"] = it["fk"]
+        if it["t"] == "s" and it.get("sk") in STAIR_K:
+            o["sk"] = it["sk"]
         o["n"] = str(it.get("n") or "").strip()[:30]
         if it["t"] in ("d", "r"):
             for fk_ in ("dg", "ds"):  # dg: Durchgang statt Tür, ds: Raumrand nur gestrichelt (keine Wand)
                 if (fk_ == "dg") == (it["t"] == "d") and it.get(fk_) in (1, True):
                     o[fk_] = 1
-        if it["t"] == "d":
+        if it["t"] in ("d", "a"):
             for mk_ in ("mv", "mh"):
                 if it.get(mk_) in (1, True):
                     o[mk_] = 1  # Türöffnung gespiegelt (Seite, Angel)
@@ -288,6 +293,14 @@ def clean_plan(raw: Any) -> dict[str, Any]:
         if it["t"] == "l":  # Lampe: Entität light.*, Art (Streifen wird als Balken gezeichnet und gedreht)
             o["e"] = _ent(it.get("e"), ("light",))
             o["k"] = it.get("k") if it.get("k") in LAMP_K else "decke"
+        if it["t"] == "g":  # mobiles Gerät: Heizer oder Luftentfeuchter, folgt auf Wunsch dem Standort aus Modul 1
+            o["e"] = _ent(it.get("e"), DEV_DOM)
+            o["gk"] = it.get("gk") if it.get("gk") in DEV_K else "heizer"
+            if it.get("fix") in (1, True):
+                o["fix"] = 1
+        if it["t"] == "a":  # Markise: Rollo-Entität (cover), Ausfall in cm
+            o["e"] = _ent(it.get("e"), ("cover",))
+            o["tf"] = int(_num(it.get("tf"), 50, 800, 300))
         if it["t"] == "m":
             o["rg"] = round(_num(it.get("rg"), 0, 15, 0) * 2) / 2  # Reichweite in Metern, 0 = je nach Art
         if it["t"] == "r":

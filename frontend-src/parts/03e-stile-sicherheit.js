@@ -163,4 +163,5 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 .grwall{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;font-size:.8rem;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,#f59e0b 12%,transparent);color:#fcd34d;margin-top:4px}.grwall.ok{background:color-mix(in srgb,#2dd4bf 10%,transparent);color:var(--primary-text-color)}.grwall.ok b{color:var(--teal,#2dd4bf)}.grwall span{flex:1;min-width:160px}
 .grang{width:62px;text-align:center;border:1px solid var(--line);background:none;color:var(--primary-text-color);border-radius:8px;padding:6px 4px;font:inherit;font-weight:700}
 .grck{display:flex;flex-direction:column;gap:2px;max-height:60vh;overflow:auto}.grckr{display:flex;align-items:center;gap:10px;padding:9px 2px;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.grckr>i{width:10px;height:10px;border-radius:50%;flex:none}.grckr span{flex:1;min-width:0}.grckr b{display:block;font-size:.88rem}.grckr small{color:var(--mut);font-size:.78rem}.grckr.ok b{font-weight:600;color:var(--mut)}
+.sfpe.gd .sfdg,.sfpe.gd .sfda,.sfpe.gd .sffw,.sfpe.gd .sfst,.sfpe.gd .sfsl{opacity:0}
 `;

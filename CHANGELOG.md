@@ -18,6 +18,10 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 - **Maßstab messen:** zwei Punkte im Plan antippen (z. B. eine Wand auf dem Bauplan-Foto), echte Länge eingeben – fertig.
 - **Etage kopieren:** Räume, Wände, Türen, Fenster und Treppen als neue Etage (z. B. OG wie EG).
 - **Tastatur am PC:** Pfeiltasten verschieben (mit Umschalt 4 Schritte), Entf löscht, Strg+Z / Strg+Y, Esc hebt die Auswahl auf.
+- **Treppenarten:** gerade, L-Treppe, U-Treppe (halbgewendelt), Wendeltreppe und Dachbodentreppe (Bodenluke) – jede mit eigenem Planzeichen und Laufrichtung, drehbar in 90°-Schritten.
+- **Mobile Geräte aus Modul 1:** Elektroheizer (je Raum) und Luftentfeuchter lassen sich als „Gerät“ in den Plan setzen oder aus der Ablage ziehen. Im Plan leuchten sie, wenn sie laufen (Heizer mit Leistung in W). Ein Entfeuchter **folgt seinem Standort aus Modul 1** („Hierher stellen“, NFC) – oder bleibt „fest hier“. Eigene Ebene „Geräte“ im Plan von Modul 0, auch in der Wärmekarte sichtbar und im Raum-Blatt aufgeführt.
+- **Markise:** an der Wand mit Breite und Ausfall, Seite wählbar. Mit einer Rollo-Entität (cover) zeigt der Plan, wie weit sie ausgefahren ist („Markise 70 %“).
+- Raumnamen weichen Treppen und Geräten aus.
 
 ### Geändert
 - Türen und Fenster dürfen jetzt jeden Winkel haben (bisher nur 0/90/180/270°); gespeichert werden zusätzlich Breite und Art.

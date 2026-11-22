@@ -71,11 +71,9 @@
     items.forEach((i) => {
       const rot = i.r ? `rotate(${i.r} ${i.x} ${i.y})` : "", mir = i.mh || i.mv ? ` translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})` : "";
       if ((i.t === "d" && o.doors) || (i.t === "f" && o.windows)) d += this._grOpenSvg(i, T, WI, i.t === "d" ? floorAtR(i) : T.bg, P.scale > 0 ? P.scale : 40, st);   /* Build 7: alle Arten, jede Breite, jeder Winkel */
-      else if (i.t === "s" && o.stairs) {
-        const w = i.w || 60, h = i.h || 90, n = Math.max(5, Math.round(h / 14)), vert = h >= w;
-        const steps = Array.from({ length: n - 1 }, (_, k) => vert ? `M${i.x} ${i.y + (k + 1) * h / n}h${w}` : `M${i.x + (k + 1) * w / n} ${i.y}v${h}`).join("");
-        d += `<g transform="${rot}"><rect x="${i.x}" y="${i.y}" width="${w}" height="${h}" fill="${T.bg}" stroke="${T.stair}" stroke-width="1.6"/><path d="${steps}" stroke="${T.stair}" stroke-width="1" opacity=".8"/>${vert ? `<path d="M${i.x + w / 2} ${i.y + h - 8}V${i.y + 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>` : `<path d="M${i.x + 8} ${i.y + h / 2}H${i.x + w - 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>`}</g>`;
-      } else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" font-size="${12 * NF}" font-style="italic" fill="${T.sub}">${esc(i.n || "")}</text>`;
+      else if (i.t === "s" && o.stairs) d += this._grStairSvg ? this._grStairSvg(i, T, u) : "";   /* Build 7: Treppenarten */
+      else if (i.t === "a" && o.doors && this._grAwnSvg) d += this._grAwnSvg(i, T, P.scale > 0 ? P.scale : 40, st, u);   /* Build 7: Markise */
+      else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" font-size="${12 * NF}" font-style="italic" fill="${T.sub}">${esc(i.n || "")}</text>`;
     });
     /* 6) Ebenen: Lampen (Modul 18) und Melder (Modul 11) */
     const q = o.narrow ? 1.4 : 1;
@@ -84,6 +82,7 @@
       d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><circle cx="${i.x}" cy="${i.y}" r="${46 * q}" fill="url(#${g})"/>` : ""}
         ${i.k === "streifen" ? `<rect x="${i.x - 22 * q}" y="${i.y - 3.5 * q}" width="${44 * q}" height="${7 * q}" rx="${3.5 * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.4"${i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : ""}/>` : `<circle cx="${i.x}" cy="${i.y}" r="${(i.k === "spot" ? 5 : 8) * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.8"/>`}</g>`;
     });
+    if (o.layers.gt && this._grDevSvg) d += this._grDevSvg(P, fl, T, q, u, o.style === "hell");   /* Build 7: mobile Heizer und Entfeuchter */
     if (o.layers.sf) items.filter((i) => i.t === "m").forEach((i) => {
       const s2 = i.e && st[i.e], al = !!(s2 && s2.state === "on");
       d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${10 * q}" fill="${o.style === "hell" ? "#fff" : "#111827"}" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><g transform="translate(${i.x - 6 * q} ${i.y - 6 * q}) scale(${(12 * q) / 24})" fill="none" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
@@ -91,11 +90,11 @@
     /* 5) Raumnamen mit Symbol und Fläche */
     if (o.now) d += this._grNow(P, fl, rs, o, T);
     if (o.labels) rs.forEach((r) => {
-      const [cx0, cy0] = this._grCen(r), obs = items.filter((i) => ["l", "m", "d", "s"].includes(i.t));   /* Platz für die Beschriftung suchen: im Raum, nicht auf Lampen, Meldern, Türen */
+      const [cx0, cy0] = this._grCen(r), obs = items.filter((i) => ["l", "m", "d", "s", "g"].includes(i.t)).map((i) => (i.t === "s" ? [i.x, i.y, i.x + (i.w || 60), i.y + (i.h || 90)] : [i.x - 8, i.y - 8, i.x + 8, i.y + 8]));   /* Platz für die Beschriftung suchen: im Raum, nicht auf Lampen, Meldern, Türen */
       const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y);
-      const free = (x, y) => y - 44 > r.y + 6 && y + 22 < r.y + r.h - 6 && inR(x, y - 34) && inR(x - 44, y + 4) && inR(x + 44, y + 4) && inR(x - 36, y + 22) && inR(x + 36, y + 22) && !obs.some((i) => Math.abs(i.x - x) < 72 && i.y > y - 48 && i.y < y + 28);
+      const free = (x, y) => y - 44 > r.y + 6 && y + 22 < r.y + r.h - 6 && inR(x, y - 34) && inR(x - 44, y + 4) && inR(x + 44, y + 4) && inR(x - 36, y + 22) && inR(x + 36, y + 22) && !obs.some((b) => b[0] < x + 64 && b[2] > x - 64 && b[1] < y + 28 && b[3] > y - 48);
       const cand = [];
-      [cx0, r.x + r.w * 0.3, r.x + r.w * 0.7].forEach((x) => [0, 40, -40, 70, -70, 100, -100].forEach((o2) => cand.push([x, cy0 + o2])));
+      [cx0, r.x + r.w * 0.3, r.x + r.w * 0.7, r.x + r.w * 0.15, r.x + r.w * 0.85].forEach((x) => [0, 40, -40, 70, -70, 100, -100, 140, -140].forEach((o2) => cand.push([x, cy0 + o2])));
       const [cx, cy] = cand.find(([x, y]) => free(x, y)) || [cx0, cy0], k = kinds.get(r.id), m2 = this._grAreaM2(r, sc), small = Math.min(r.w, r.h) < 80, fz = Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1);
       const nm = r.n || (this._grArea && this._grArea(r) ? this._grArea(r).name : "Raum"), ico = !small && ICONS[k.i] ? `<g transform="translate(${cx - 10 * NF} ${cy - fz - 22 * NF}) scale(${(20 * NF) / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
       const plate = o.style === "modern" ? `<rect x="${cx - Math.min(r.w - 16, nm.length * fz * 0.62 + 18) / 2}" y="${cy - fz - 2}" width="${Math.min(r.w - 16, nm.length * fz * 0.62 + 18)}" height="${fz * 2.4 + 6}" rx="${fz * 0.6}" fill="#0b1220" opacity=".55"/>` : "";
