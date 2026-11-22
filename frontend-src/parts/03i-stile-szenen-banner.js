@@ -36,4 +36,7 @@ const CSS_SB = `
 @keyframes sbSpin{to{transform:rotate(360deg)}}
 .sbsnow{animation:sbSnow 6s linear infinite}@keyframes sbSnow{0%{transform:translateY(-20px)}100%{transform:translateY(40px)}}
 .sbart[data-an="voll"] .sbspin{animation-duration:1.6s}
+.sbrain{animation:sbRain 1s linear infinite}@keyframes sbRain{0%{transform:translateY(-10px);opacity:0}20%{opacity:1}100%{transform:translateY(30px);opacity:0}}
+.sbwave{animation:sbWave 2.6s ease-in-out infinite alternate}@keyframes sbWave{to{transform:translateX(6px)}}
+.hero.mh.sbx.a-ga .sbart{bottom:0;-webkit-mask-image:none;mask-image:none}
 `;
