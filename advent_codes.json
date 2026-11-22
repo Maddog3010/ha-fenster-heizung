@@ -1,4 +1,9 @@
 {
   "info": "Tages-Codes für die Tagesschlüssel im Adventskalender (Strom & Wärme). Signiert mit dem Entwickler-Schlüssel, gelten nur an ihrem Tag und nur zusammen mit der eigenen Installation.",
-  "2026": {}
+  "2026": {
+    "1206": "CZObIRdLTneICZ5qD5CZQ0GcoxAgK7fVD3-48Mwnngm-FKjA6aU9JzRUtsL3FiwCNTQ-Z22hYjH1BMfMlMbXDg",
+    "1213": "qQhzewfhX_vC-ocfzioOC_hpLFAKGtC-M5QJRuWm7RDvrNezvhPmu6u0NlLB5jX1vtthcH7mOJ5HdeIfpsOEDQ",
+    "1220": "RDyr_QjDP8zAPHOdEXI5O8-I9QEvi4sR4Mqixdy6crvX8PCFBgWT42O_ho22R0FM5bJ9B3JTuBFnoeLIooJpDA",
+    "1224": "f0FYX7FSm8SC0hp7EQIAC_ryY_ZLaIHT_rTNVJ2jimrRCRpK8Zvamnn-akpZIZnHOkTvnDyuzy6-1uAyWazTDA"
+  }
 }
