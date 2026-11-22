@@ -17,3 +17,13 @@ melder_geprueft:
         entity:
           domain: binary_sensor
 sicherheit_selbsttest:
+advent_tuer_oeffnen:
+  fields:
+    tag:
+      example: 8
+      selector:
+        number:
+          min: 1
+          max: 24
+          mode: box
+advent_zuruecksetzen:

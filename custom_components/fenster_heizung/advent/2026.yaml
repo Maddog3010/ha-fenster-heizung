@@ -1,0 +1,162 @@
+# Adventskalender 2026 – Inhalte der 24 Türchen (Weihnachts-Theme Build 2)
+#
+# typ:    tipp | statistik | deko | funktion | raetsel | besonders
+# daten:  optional, Werte aus deinem System (das Dashboard füllt {platzhalter} im Text „mit_daten“).
+#         Fehlen die Werte (z. B. keine PV), zeigt das Türchen „text“ – kein Türchen bleibt leer.
+# modul:  optional, Knopf „Zu Modul …“ (fh = Modul 1, sf = Modul 11, ev = Modul 8, li = Modul 18 …)
+# Neues Jahr = neue Datei (2027.yaml), kein Code nötig. Fehlt die Datei, gilt die letzte vorhandene.
+jahr: 2026
+tuerchen:
+  - tag: 1
+    typ: besonders
+    icon: "🎄"
+    titel: "Willkommen im Advent"
+    text: "Ab heute ist Weihnachtszeit in Strom & Wärme: Lichterkette, Adventskranz und jeden Tag ein neues Türchen. Der 1. Advent war schon am Sonntag – deshalb brennt bereits eine Kerze."
+  - tag: 2
+    typ: tipp
+    icon: "⏰"
+    titel: "Lichterkette mit Zeitplan"
+    text: "Lichterketten mit Zeitschaltung laufen nur, wenn jemand sie sieht: zum Beispiel ab Sonnenuntergang bis 23 Uhr und nur, wenn jemand zu Hause ist. Eine Automation mit „Sonne geht unter“ und der Anwesenheit reicht dafür."
+  - tag: 3
+    typ: statistik
+    icon: "🔥"
+    titel: "Dein Heiz-Start in den Dezember"
+    daten: heiz_monat
+    mit_daten: "Diesen Monat hat die Fenster-Pause schon {min} Minuten Heizen eingespart – rund {kwh} kWh Wärme."
+    text: "Jede Minute, in der bei offenem Fenster nicht geheizt wird, spart Wärme. Modul 1 zählt das für jeden Raum mit."
+    modul: fh
+  - tag: 4
+    typ: raetsel
+    icon: "🤔"
+    titel: "Barbara-Rätsel"
+    text: "Was braucht mehr Strom: eine Stunde Backofen oder eine Woche LED-Lichterkette (5 W, 8 Stunden am Tag)? Auflösung: Der Backofen braucht etwa 1 kWh, die Lichterkette in einer Woche nur rund 0,3 kWh."
+  - tag: 5
+    typ: funktion
+    icon: "💡"
+    titel: "Lichterketten im Blick"
+    daten: licht_heute
+    mit_daten: "Deine Lampen waren heute zusammen schon {std} Stunden an. Tipp: Gib deinen Lichterketten in Home Assistant das Label „weihnachten“ – so findest du sie in jeder Liste schnell wieder."
+    text: "Tipp: Gib deinen Lichterketten in Home Assistant das Label „weihnachten“ – so findest du sie in jeder Liste schnell wieder und kannst sie mit einer Automation gemeinsam schalten."
+    modul: li
+  - tag: 6
+    typ: besonders
+    icon: "🥾"
+    titel: "Nikolaus & 2. Advent"
+    text: "Heute brennt die zweite Kerze. Frohen Nikolaus – hoffentlich war der Stiefel gut gefüllt!"
+  - tag: 7
+    typ: tipp
+    icon: "🍪"
+    titel: "Plätzchen-Wärme nutzen"
+    text: "Nach dem Backen die Ofentür einen Spalt offen lassen: Die Restwärme heizt die Küche mit. Das Thermostat in der Küche darf dann ruhig eine Stunde tiefer stehen."
+  - tag: 8
+    typ: statistik
+    icon: "☀️"
+    titel: "Sonne im dunkelsten Monat"
+    daten: pv_jetzt
+    mit_daten: "Deine PV liefert gerade {kw} kW. Im Dezember steht die Sonne so tief wie nie – jedes Kilowatt zählt doppelt."
+    text: "Im Dezember liefert eine PV-Anlage oft nur ein Zehntel des Juni-Ertrags. Wer Geräte in die Mittagsstunden legt, nutzt das Wenige trotzdem gut."
+  - tag: 9
+    typ: raetsel
+    icon: "🌡️"
+    titel: "Welcher Raum ist der wärmste?"
+    daten: raum_waermster
+    mit_daten: "Rate kurz … Auflösung: Am wärmsten ist es gerade in „{raum}“ mit {t} °C."
+    text: "Rate kurz, welcher Raum gerade der wärmste ist – und schau dann in Modul 1 nach. Oft ist es die Küche oder das Bad."
+    modul: fh
+  - tag: 10
+    typ: deko
+    icon: "❄️"
+    titel: "Schnee in der Kopfkarte"
+    text: "Unter Einstellungen → Darstellung → Weihnachts-Theme kannst du leichten Schneefall in den Kopfkarten einschalten. Er pausiert, wenn dein Gerät „Bewegung reduzieren“ nutzt."
+  - tag: 11
+    typ: tipp
+    icon: "🪟"
+    titel: "Richtig lüften bei Frost"
+    daten: fenster_offen
+    mit_daten: "Gerade sind {n} Fenster offen. Bei Frost reichen 3–5 Minuten Stoßlüften – Kippen kühlt nur die Wände aus."
+    text: "Bei Frost reichen 3–5 Minuten Stoßlüften. Gekippte Fenster kühlen die Wände aus und bringen kaum frische Luft."
+    modul: fh
+  - tag: 12
+    typ: statistik
+    icon: "🚗"
+    titel: "Laden im Winter"
+    daten: ev_soc
+    mit_daten: "Dein Auto steht gerade bei {soc} %. Im Winter braucht es spürbar mehr Strom – Vorheizen am Kabel spart Reichweite."
+    text: "Im Winter braucht ein E-Auto spürbar mehr Strom. Vorheizen, solange es noch am Kabel hängt, spart Reichweite."
+    modul: ev
+  - tag: 13
+    typ: besonders
+    icon: "🛡️"
+    titel: "3. Advent – Sicherheits-Check"
+    daten: melder
+    mit_daten: "Deine Melder: {status}. Schwächste Batterie: {bat} %. Und denk dran: Adventskranz nie unbeaufsichtigt brennen lassen."
+    text: "Drei Kerzen brennen – Zeit für einen kurzen Check: Rauchmelder testen, Batterien prüfen und den Adventskranz nie unbeaufsichtigt brennen lassen."
+    modul: sf
+  - tag: 14
+    typ: tipp
+    icon: "🌡️"
+    titel: "1 °C weniger"
+    text: "Faustregel: Jedes Grad weniger Raumtemperatur spart rund 6 % Heizenergie. Im Schlafzimmer sind 17–18 °C für die meisten angenehm."
+    modul: fh
+  - tag: 15
+    typ: deko
+    icon: "✨"
+    titel: "Lichter nach Phase"
+    text: "Die Lichterkette an den Kopfkarten wechselt ihre Farben mit der Weihnachtszeit: bunt im Advent, golden an Heiligabend, rot-gold an den Feiertagen."
+  - tag: 16
+    typ: statistik
+    icon: "💧"
+    titel: "Raumklima-Check"
+    daten: feuchte
+    mit_daten: "Am feuchtesten ist es gerade in „{raum}“ mit {rh} % Luftfeuchte. Über 60 % lohnt sich Lüften oder der Luftentfeuchter."
+    text: "Ideal sind 40–60 % Luftfeuchte. Wäsche trocknen und Kochen treiben sie im Winter schnell nach oben."
+    modul: fh
+  - tag: 17
+    typ: raetsel
+    icon: "❓"
+    titel: "Energie-Quiz"
+    text: "Wie viel Strom braucht ein Router im Jahr? Rund 50–90 kWh. Und ein alter Kühlschrank? Gern 300 kWh und mehr. Und eine Stunde Föhnen? Etwa 1,5–2 kWh."
+  - tag: 18
+    typ: funktion
+    icon: "🛏️"
+    titel: "Gäste über die Feiertage"
+    text: "Kommt Besuch? Leg in Modul 1 einen eigenen Heizplan für das Gästezimmer an – dann ist es warm, wenn die Gäste ankommen, und danach wieder sparsam."
+    modul: fh
+  - tag: 19
+    typ: tipp
+    icon: "🔌"
+    titel: "Standby vor dem Urlaub"
+    text: "Fernseher, Konsole, Drucker: Im Standby kommen schnell 20–50 W zusammen. Eine schaltbare Steckdosenleiste vor der Abreise spart über die Feiertage mehrere kWh."
+  - tag: 20
+    typ: besonders
+    icon: "🕯️"
+    titel: "4. Advent"
+    text: "Alle vier Kerzen brennen. Nur noch vier Tage bis Heiligabend!"
+  - tag: 21
+    typ: statistik
+    icon: "🌅"
+    titel: "Der kürzeste Tag"
+    daten: sonne
+    mit_daten: "Wintersonnenwende: Die Sonne geht um {auf} Uhr auf und um {unter} Uhr unter. Ab morgen werden die Tage wieder länger."
+    text: "Wintersonnenwende: Heute ist der kürzeste Tag des Jahres. Ab morgen werden die Tage wieder länger."
+  - tag: 22
+    typ: statistik
+    icon: "📊"
+    titel: "Dein Dezember bisher"
+    daten: heiz_monat
+    mit_daten: "Seit dem 1. Dezember: {min} Minuten Heizpause bei offenem Fenster und rund {kwh} kWh Wärme gespart."
+    text: "Modul 1 zählt für jeden Raum, wie lange bei offenem Fenster nicht geheizt wurde – schau dir deinen Dezember an."
+    modul: fh
+  - tag: 23
+    typ: funktion
+    icon: "🧳"
+    titel: "Über Weihnachten weg?"
+    text: "Fährst du zur Familie? Mit „Urlaub“ in Modul 1 heizen alle Räume auf Frostschutz und sind bei deiner Rückkehr wieder warm."
+    modul: fh
+  - tag: 24
+    typ: besonders
+    icon: "⭐"
+    titel: "Frohe Weihnachten!"
+    daten: heiz_jahr
+    mit_daten: "Dieses Jahr hat Strom & Wärme rund {kwh} kWh Wärme eingespart. Danke, dass du dabei bist – frohe Weihnachten!"
+    text: "Danke, dass du Strom & Wärme nutzt. Frohe Weihnachten und schöne Feiertage!"

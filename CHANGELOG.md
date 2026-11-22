@@ -2,6 +2,27 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b43] - 2026-11-22
+
+**Weihnachts-Theme** Build 2 – der Adventskalender (Konzept „Weihnachts-Theme & Adventskalender“, Build 2 von 3).
+
+### Neu
+- **Adventskalender auf der Startseite** in zwei Varianten: **A · Raster** mit allen 24 Türchen (Türchen 24 doppelt breit) oder **B · Kranz** kompakt mit dem heutigen Türchen und „Alle 24“. Auch der Kranz-Chip in Modul 1 öffnet den Kalender.
+- **24 Türchen** mit Spartipps, Statistiken, Rätseln, Deko und Funktionen. Wo möglich mit **deinen echten Werten** – Heizpause und gesparte Wärme im Monat und im Jahr, wärmster und feuchtester Raum, offene Fenster, Lampen heute (Modul 18), PV jetzt, Ladestand des Autos, Zustand der Rauchmelder, Sonnenauf- und -untergang. Fehlen Werte (z. B. keine PV), zeigt das Türchen einen passenden Text – keins bleibt leer. Knopf „Zu Modul …“, wo es passt.
+- **Türchen-Zustände:** offen ✓, **heute** (rot), **nachholen** (goldener Rand, verpasste Türchen lassen sich öffnen), **noch zu** (mit „Noch 2 Tage – Geduld!“). Ab 28.12. nur noch zum Nachlesen, ab 7.1. ausgeblendet.
+- **Stand gemeinsam oder pro Benutzer** von Home Assistant.
+- **Schneefall** (Aus · Leicht) in den Kopfkarten der Startseite und von Modul 1 – höchstens 26 Flocken, nur CSS, aus bei „Bewegung reduzieren“ und ohne Animationen.
+- **Benachrichtigung „Türchen ist da“** zur gewählten Uhrzeit an ein Gerät der Companion-App (Standard: aus).
+- **Dienst** `fenster_heizung.advent_tuer_oeffnen` (z. B. per NFC-Tag, ohne Tag das heutige) und **Ereignis** `strom_waerme_advent_geoeffnet` (tag, typ, titel, jahr, benutzer) für eigene Automationen.
+- **Sensor** `sensor.strom_waerme_advent_tuerchen` (geöffnete Türchen, Attribut `heute_verfuegbar`).
+- **Entwickler:** „Alle Türchen ansehen“ (Vorschau ohne Öffnen), „Kalender zurücksetzen“ (auch als Dienst `advent_zuruecksetzen`). Mit „Datum simulieren“ geöffnete Türchen werden nicht gespeichert.
+- Einstellungen unter Darstellung → Weihnachts-Theme → Adventskalender.
+
+### Technik
+- Neue Dateien `advent.py` (Logik ohne Home Assistant testbar, Speicher `fenster_heizung_advent`, Schema 1) und `advent/2026.yaml` (Inhalte; neues Jahr = neue Datei, fehlt sie, gilt die letzte). WebSocket `fenster_heizung/advent_get`, `advent_open`, `advent_set` (nur Administratoren), `advent_reset` (nur Entwickler).
+- Dashboard: neuer Teil `12z4-advent`, Stile in `03h-stile-saison`.
+- 7 neue Tests (Türchen-Zustände an allen Grenzen, Inhaltsdatei vollständig mit gültigen Platzhaltern, Ersatz-Datei, Grenzen der Einstellungen, Öffnen und Nachholen mit Neustart und Ereignis, Stand pro Benutzer, Simulation nur im Arbeitsspeicher, Zurücksetzen, Zähler).
+
 ## [2026.11.4b42] - 2026-11-22
 
 **Weihnachts-Theme** Build 1 – erster Schritt aus dem Konzept „Weihnachts-Theme & Adventskalender“ (Build 1 → 3, Release 2026.12.0): Saison-Erkennung und Theme-Grundlage.

@@ -846,7 +846,7 @@
     const dateStr = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const tiles = [["day", "today", "Heute", "var(--teal)"], ["month", "month", "Monat", "#60a5fa"], ["year", "year", "Jahr", "#a78bfa"], ["total", "total", "Gesamt", "#f472b6"]];
     const content = {
-      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}${this._hsCfg().on ? " hsx" : ""}${this._saiHeroCls()}">${this._heroBg()}${this._saiLights()}${this._hsCfg().on ? this._hsScene(rooms) : this._modLogo("fh")}
+      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}${this._hsCfg().on ? " hsx" : ""}${this._saiHeroCls()}">${this._heroBg()}${this._saiLights()}${this._saiSnow()}${this._hsCfg().on ? this._hsScene(rooms) : this._modLogo("fh")}
         <div class="lbl">${ic("flame", 16)}Heute ${F.short} gespart (geschätzt)</div>
         <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>${this._wx()}
         <div class="chips">${this._saiChip()}${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>

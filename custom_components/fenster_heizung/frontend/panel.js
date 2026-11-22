@@ -3554,6 +3554,34 @@ const CSS_SAI = `
 .saiRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
 .saiRow input,.saiRow select{background:transparent;color:inherit;border:1px solid var(--line);border-radius:10px;padding:7px 9px;font:inherit;font-size:.86rem}
 .saiWarn{background:color-mix(in srgb,#e05a6b 14%,transparent);border:1px solid color-mix(in srgb,#e05a6b 45%,transparent);border-radius:10px;padding:7px 10px;font-size:.82rem;margin-top:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.saiS{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.saiS i{position:absolute;top:-8px;width:var(--s);height:var(--s);border-radius:50%;background:#fff;opacity:.75;animation:saiF var(--d) linear infinite}
+@keyframes saiF{0%{transform:translate(0,-10px)}100%{transform:translate(var(--w),260px)}}
+@media(prefers-reduced-motion:reduce){.saiS{display:none}}
+.chip.saiC[data-act]{cursor:pointer}
+.advC h2 .hzrt{margin-left:auto}
+.advG{display:grid;grid-template-columns:repeat(5,minmax(0,60px));gap:7px}
+.door2{position:relative;aspect-ratio:1/1;border-radius:10px;border:1px solid #3c6b61;background:linear-gradient(145deg,#2a4f47,#1b3532);color:#f4d58d;font-weight:800;font-size:1.05rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:2px;padding:0}
+.door2 small{font-size:.7rem;color:#3fa37a}
+.door2.big{grid-column:span 2;aspect-ratio:auto;font-size:1.5rem}
+.door2.o{background:transparent;border-style:dashed;color:#3fa37a;font-size:.9rem}
+.door2.today{background:linear-gradient(145deg,#c43c52,#8f2236);border-color:#ff8fa3;color:#fff;box-shadow:0 0 12px #e05a6b88}
+.door2.late{border-color:#f4d58d;box-shadow:0 0 0 1px #f4d58d55 inset}
+.door2.lock{background:color-mix(in srgb,var(--card) 80%,#000);border-color:var(--line);color:var(--mut);cursor:default}
+.door2.rb{border-color:var(--line);color:var(--mut)}
+.advRe{position:absolute;top:2px;right:4px;font-size:.62rem;color:#f4d58d}
+.advLg{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-size:.76rem;color:var(--mut)}
+.advLg span{display:inline-flex;align-items:center;gap:5px}.advLg i.door2{width:14px;height:14px;border-radius:4px;aspect-ratio:auto;cursor:default}
+.advBk{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.advBk b{display:block;font-size:1.05rem}.advBk small{color:var(--mut)}
+.advBb{display:flex;gap:8px;margin-top:8px;align-items:center}.advBb .door2{width:46px;height:38px;aspect-ratio:auto}
+.advD{text-align:center;padding:4px 4px 2px}.advD h3{margin:6px 0 6px;font-size:1.2rem}.advD p{line-height:1.5;margin:0 auto 14px;max-width:460px}
+.advDi{font-size:2.6rem;line-height:1.1}
+.advD.pop{animation:advPop .55s cubic-bezier(.2,1.4,.4,1)}@keyframes advPop{0%{transform:perspective(600px) rotateY(-70deg) scale(.85);opacity:0}100%{transform:none;opacity:1}}
+@media(prefers-reduced-motion:reduce){.advD.pop{animation:none}}
+.advTy{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:99px;background:color-mix(in srgb,var(--teal) 18%,transparent)}
+.advTy.t-tipp{background:#1f4d3a;color:#8ee0b0}.advTy.t-statistik{background:#1e3d57;color:#8cc8f5}.advTy.t-deko{background:#4d2a1f;color:#f5b38c}.advTy.t-funktion{background:#3b2557;color:#c9a6f5}.advTy.t-raetsel{background:#4d4219;color:#f4d58d}.advTy.t-besonders{background:#5a1e2a;color:#ff9fb0}
+.advDb{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+@media(max-width:520px){.advG{gap:5px;grid-template-columns:repeat(5,minmax(0,1fr))}.door2{font-size:.9rem;border-radius:8px}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -3692,7 +3720,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._cfgOk && this._admin()) this._msRescueLoad();
     try { await this._tmLoad(); } catch (_) { /* Tablet-Modus ist optional */ }
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
-    try { await this._saiLoad(); } catch (_) { /* Weihnachts-Theme ist optional */ }
+    try { await this._saiLoad(); await this._advLoad(); } catch (_) { /* Weihnachts-Theme ist optional */ }
     if (this._admin()) this._supWatch();
     if (this._admin()) this._stsInit();
     try { if (this._admin() && new URLSearchParams(location.search).get("support") === "1") { history.replaceState(null, "", location.pathname); this._supOpen(); } } catch (_) { /* Link aus der Handy-Mitteilung */ }
@@ -4675,7 +4703,7 @@ class FensterHeizungPanel extends HTMLElement {
     const dateStr = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
     const tiles = [["day", "today", "Heute", "var(--teal)"], ["month", "month", "Monat", "#60a5fa"], ["year", "year", "Jahr", "#a78bfa"], ["total", "total", "Gesamt", "#f472b6"]];
     const content = {
-      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}${this._hsCfg().on ? " hsx" : ""}${this._saiHeroCls()}">${this._heroBg()}${this._saiLights()}${this._hsCfg().on ? this._hsScene(rooms) : this._modLogo("fh")}
+      hero: () => `<div class="card hero mh a-fh${this._heroCfg().mode !== "standard" ? " hs" : ""}${this._hsCfg().on ? " hsx" : ""}${this._saiHeroCls()}">${this._heroBg()}${this._saiLights()}${this._saiSnow()}${this._hsCfg().on ? this._hsScene(rooms) : this._modLogo("fh")}
         <div class="lbl">${ic("flame", 16)}Heute ${F.short} gespart (geschätzt)</div>
         <div class="big">${num(amt("day"), 2)}<small>${F.label}</small></div><div class="sub">${esc(dateStr)}</div>${this._wx()}
         <div class="chips">${this._saiChip()}${this._sum().active ? `<span class="chip sum">${ic("sun", 16)}Sommermodus${this._sum().out != null ? ` · ${num(this._sum().out, 1)} °C draußen` : ""}</span>` : ""}${(() => { const a = this._wxAdj(); return a && a.d ? `<span class="chip">${ic(a.fr ? "snow" : "partly", 16)}Wetter-Anpassung ${a.d > 0 ? "+" : "−"}${num(Math.abs(a.d), 1)} °C</span>` : ""; })()}${this._pvChip()}<span class="chip">${ic("clock", 16)}${num(sum("day", "min"))} Min. pausiert</span>
@@ -7261,6 +7289,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._onInput(hid); this._onChange(hid);
   }
   _onChange(t) {
+    if (this._advInput && this._advInput(t)) return;
       if (t.dataset && t.dataset.f === "mwset") { this._mwAssign(t.dataset.k, t.value); return; }
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("msx") && this._msChange(t)) return;
@@ -7299,6 +7328,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "pkpick") { const meta = (this._pkReg || {})[b.dataset.pid]; this._pkId = null; if (meta) { const t = { dataset: { ...meta }, value: b.dataset.v, tagName: "SELECT" }; this._onInput(t); this._onChange(t); } this._renderModal(); }
     else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || (a.startsWith("gs") && a !== "gsum") || a.startsWith("ev")) this._mdAct(a, b);
     else if (a.startsWith("saix")) this._saiAct(a, b);
+    else if (a.startsWith("advx")) this._advAct(a, b);
     else if (a.startsWith("msx")) this._msAct(a, b);
     else if (a.startsWith("lfx")) this._lfAct(a, b);
     else if (a.startsWith("ort")) this._ortAct(a, b);
@@ -7982,6 +8012,7 @@ class FensterHeizungPanel extends HTMLElement {
     const old = box.querySelector(".sheet"), top = old ? old.scrollTop : 0;
     if (!m) { box.innerHTML = ""; return; }
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id) || { name: "" };
+    if (m.type === "advent") { box.innerHTML = this._advModal(); return; }
     if (m.type === "lfset") { box.innerHTML = this._lfSetModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "lfloc") { box.innerHTML = this._lfLocModal(); return; }
     if (m.type === "lflist") { box.innerHTML = this._lfListModal(); return; }
@@ -12666,10 +12697,10 @@ class FensterHeizungPanel extends HTMLElement {
       al ? [this._gx("shield", 18, { k: st[al].state === "triggered" ? "bad" : st[al].state === "disarmed" ? "off" : "ok" }), `Alarm ${st[al].state === "disarmed" ? "aus" : st[al].state === "triggered" ? "AUSGELÖST" : "scharf"}`] : null, this._saiStartChip ? this._saiStartChip() : null].filter(Boolean);
     const day = this._hzDayLine(), tap = L.n || L.info;
     const sv = this._hzScSvg({ vb: "100 20 260 160" });
-    return `<div class="card hzhd z-${L.z}">${this._saiLights ? this._saiLights(16) : ""}<div class="hzhs" aria-hidden="true" style="background:${this._hzScBg}">${sv}</div><div class="hzho">
+    return `<div class="card hzhd z-${L.z}">${this._saiLights ? this._saiLights(16) + this._saiSnow() : ""}<div class="hzhs" aria-hidden="true" style="background:${this._hzScBg}">${sv}</div><div class="hzho">
       <div class="hzhg"><b>${g[0]}</b><small>${g[1] || ""}</small></div>
       <div class="hzha"${tap ? ` data-act="hzgo" data-k="" data-b="hinweise" role="button" tabindex="0"` : ""}><span class="hzab" aria-hidden="true">${L.z === "ok" ? ic("check", 22) : "<b>!</b>"}</span><span class="hzax"><b>${esc(L.t)}</b><small>${esc(L.s)}</small></span>${tap ? `<span class="hzago">${ic("chev", 16)}</span>` : ""}</div>
-      ${chips.length ? `<div class="hzhc">${chips.map(([i, t]) => `<span>${i}${t}</span>`).join("")}</div>` : ""}${day ? `<div class="hzhw">${day}</div>` : ""}</div></div>`;
+      ${chips.length ? `<div class="hzhc">${chips.map(([i, t]) => `<span>${i}${t}</span>`).join("")}</div>` : ""}${day ? `<div class="hzhw">${day}</div>` : ""}</div></div>${this._advCard ? this._advCard() : ""}`;
   }
   /* ---------- D1 · Wetter ---------- */
   _hzFcDay(wid) {
@@ -19074,7 +19105,7 @@ class FensterHeizungPanel extends HTMLElement {
   _saiTick() {
     if (!this._saiD) return;
     const k = this._sai().key;
-    if (this._saiK !== undefined && this._saiK !== k) { this._saiK = k; this._render(); if (this._modal && this._modal.type === "look") this._renderModal(); return; }
+    if (this._saiK !== undefined && this._saiK !== k) { this._saiK = k; if (this._advLoad) this._advLoad().then(() => { this._render(); if (this._modal && this._modal.type === "advent") this._renderModal(); }); this._render(); if (this._modal && this._modal.type === "look") this._renderModal(); return; }
     this._saiK = k;
   }
   _saiKranz(n, w = 30) {
@@ -19097,7 +19128,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="saiL${s.mv ? " mv" : ""}" aria-hidden="true">${Array.from({ length: n }, (_, i) => `<i style="--c:${C[i % C.length]};--i:${i}"></i>`).join("")}</div>`;
   }
   _saiStartChip() { const s = this._sai(); return s.vis ? [this._saiKranz(s.kz, 26), esc(this._saiText(s))] : null; }
-  _saiChip() { const s = this._sai(); return s.vis ? `<span class="chip saiC">${this._saiKranz(s.kz, 30)}${esc(this._saiText(s))}</span>` : ""; }
+  _saiChip() { const s = this._sai(); return s.vis ? `<span class="chip saiC"${this._advOn && this._advOn() ? ` data-act="advxkal" role="button" tabindex="0"` : ""}>${this._saiKranz(s.kz, 30)}${esc(this._saiText(s))}</span>` : ""; }
   _saiRoomIcon(r) {
     const s = this._sai(); if (!s.vis || !this._saiCfg().icons) return "";
     if (s.ph === "heiligabend") return `<span class="saiR" aria-hidden="true">⭐</span>`;
@@ -19129,7 +19160,7 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="saiBox">${this._saiKranz(s.kz, 46)}<div><div class="t">${esc(status)}</div><div class="s">${s.vis ? esc(this._saiText(s)) : "Lichterkette, Adventskranz und Countdown auf der Startseite und in Modul 1"}</div></div></div>
       <div class="seg" style="margin-top:6px">${M.map(([k, l]) => `<button class="${c.modus === k ? "sel" : ""}" data-act="saixmode" data-k="${k}">${l}</button>`).join("")}</div>
       <div class="mut sm" style="margin:0 0 8px">${info}</div>
-      ${tog("lichter", "Lichterkette an den Kopfkarten")}${tog("countdown", "Countdown bis Heiligabend")}${tog("icons", "Weihnachtliche Raum-Symbole")}${dev}`;
+      ${tog("lichter", "Lichterkette an den Kopfkarten")}${tog("countdown", "Countdown bis Heiligabend")}${tog("icons", "Weihnachtliche Raum-Symbole")}${dev}${this._advLook ? this._advLook() : ""}`;
   }
   _saiSave(cfg) {
     this._hass.callWS({ type: "fenster_heizung/saison_set", cfg }).then((r) => { this._saiD = r; this._saiK = undefined; this._render(); this._renderModal(); })
@@ -19137,7 +19168,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _saiSim(act, at) {
     const msg = { type: "fenster_heizung/saison_sim", act }; if (act === "on") { msg.at = at; msg.minutes = this._saiMin || 60; }
-    this._hass.callWS(msg).then((r) => { this._saiD = r; this._saiK = undefined; this._render(); this._renderModal(); this._toast(act === "on" ? "Simulation läuft – nur das Theme" : "Simulation beendet"); })
+    this._hass.callWS(msg).then(async (r) => { this._saiD = r; this._saiK = undefined; if (this._advLoad) await this._advLoad(); this._render(); this._renderModal(); this._toast(act === "on" ? "Simulation läuft – nur das Theme" : "Simulation beendet"); })
       .catch((e) => this._toast(e && e.code === "bad_date" ? "Ungültiges Datum (Format JJJJ-MM-TTTHH:MM)" : e && e.code === "no_dev" ? "Nur mit Entwickler-Zugang" : "Simulation nicht möglich"));
   }
   _saiAct(a, b) {
@@ -19147,6 +19178,144 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "saixsim") this._saiSim("on", b.dataset.k);
     else if (a === "saixgo") { const i = box && box.querySelector('[data-f="saisimat"]'), m = box && box.querySelector('[data-f="saisimmin"]'); if (m) this._saiMin = +m.value || 60; this._saiSim("on", i ? i.value.trim() : ""); }
     else if (a === "saixoff") this._saiSim("off");
+  }
+  /* ================= Adventskalender (Weihnachts-Theme Build 2) =================
+     Varianten A (Raster, 24 Türchen) und B (Kranz, kompakt), Türchen öffnen, nachholen, Rückblick, Inhalte mit echten Werten,
+     Schneefall. Stand und Inhalte kommen vom Backend (fenster_heizung/advent_get), Werte füllt das Dashboard selbst ein. */
+  static ADV_ORDER = [7, 15, 2, 21, 11, 4, 18, 1, 13, 9, 22, 6, 16, 3, 20, 10, 14, 19, 5, 12, 17, 23, 8];
+  async _advLoad() { try { this._advD = await this._hass.callWS({ type: "fenster_heizung/advent_get" }); } catch (_) { this._advD = null; } }
+  _advCfg() { return { variante: "A", stand: "gemeinsam", schnee: "aus", notify: { on: false, zeit: "07:00", dienst: "" }, ...((this._advD && this._advD.cfg) || {}) }; }
+  _advOn() { const d = this._advD; return !!(d && d.sichtbar && d.haben_inhalt && this._saiCfg().modus !== "aus"); }
+  _advToday() { const d = this._advD; return d ? (d.tueren || []).find((t) => t.st === "heute") : null; }
+  /* Werte aus dem eigenen System; null = nicht vorhanden → Türchen zeigt den normalen Text */
+  _advTk(tk) { for (const [eid, e] of Object.entries(this._hass.entities || {})) if (e.platform === "fenster_heizung" && e.translation_key === tk && this._hass.states[eid]) return eid; return null; }
+  _advSrc(n) {
+    const st = this._hass.states; let R = []; try { R = this._collect0(); } catch (_) { R = []; }
+    const fv = (e) => { const v = e && st[e] ? parseFloat(st[e].state) : NaN; return isFinite(v) ? v : null; };
+    if (n === "heiz_monat" || n === "heiz_jahr") {
+      const sc = n === "heiz_monat" ? "month" : "year", min = R.reduce((a, r) => a + ((r.sc[sc] || {}).min || 0), 0), kwh = R.reduce((a, r) => a + ((r.sc[sc] || {}).kwh || 0), 0);
+      return min > 0 || kwh > 0 ? { min: num(Math.round(min)), kwh: num(kwh, 1) } : null;
+    }
+    if (n === "licht_heute") { const v = fv("sensor.strom_waerme_licht_licht_heute"); return v ? { std: num(v, 1) } : null; }
+    if (n === "pv_jetzt") { const N = this._enOn && this._enOn() ? this._enNow() : null; return N && N.pv > 50 ? { kw: num(N.pv / 1000, 2) } : null; }
+    if (n === "raum_waermster" || n === "feuchte") {
+      const key = n === "feuchte" ? "humEid" : "rtEid"; let best = null;
+      R.forEach((r) => { const v = fv(r[key]); if (v != null && (!best || v > best.v)) best = { v, raum: r.name }; });
+      return !best ? null : n === "feuchte" ? { raum: best.raum, rh: num(Math.round(best.v)) } : { raum: best.raum, t: num(best.v, 1) };
+    }
+    if (n === "fenster_offen") { const W = [...new Set(R.flatMap((r) => r.windows || []))].filter((e) => st[e]); return W.length ? { n: num(W.filter((e) => st[e].state === "on").length) } : null; }
+    if (n === "ev_soc") { const v = fv(this._advTk("ev_soc")); return v != null ? { soc: num(Math.round(v)) } : null; }
+    if (n === "melder") {
+      const e = this._advTk("sf_status"), b = fv(this._advTk("sf_bat_min")); if (!e || b == null) return null;
+      return { status: { ruhig: "alles ruhig", hinweis: "es gibt Hinweise", alarm: "ALARM" }[st[e].state] || st[e].state, bat: num(Math.round(b)) };
+    }
+    if (n === "sonne") {
+      const s = st["sun.sun"]; if (!s) return null;
+      const t = (x) => { const d = x ? new Date(x) : null; return d && !isNaN(d) ? d.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }) : null; };
+      const a = t(s.attributes.next_rising), u = t(s.attributes.next_setting); return a && u ? { auf: a, unter: u } : null;
+    }
+    return null;
+  }
+  _advFill(t) {
+    if (t.daten && t.mit_daten) {
+      const v = this._advSrc(t.daten);
+      if (v) { let miss = false; const out = t.mit_daten.replace(/\{([a-z]+)\}/g, (_, k) => (v[k] != null ? String(v[k]) : (miss = true, ""))); if (!miss) return out; }
+    }
+    return t.text || "";
+  }
+  /* Schneefall: höchstens 26 Flocken, nur CSS, aus bei „Bewegung reduzieren“ und ohne Animationen */
+  _saiSnow() {
+    const s = this._sai(); if (!s.vis || !s.mv || this._advCfg().schnee !== "leicht") return "";
+    let seed = 7; const R = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    return `<div class="saiS" aria-hidden="true">${Array.from({ length: 26 }, () => `<i style="left:${(R() * 100).toFixed(1)}%;--s:${(2 + R() * 3.5).toFixed(1)}px;--d:${(7 + R() * 7).toFixed(1)}s;--w:${(R() * 40 - 20).toFixed(0)}px;animation-delay:-${(R() * 14).toFixed(1)}s"></i>`).join("")}</div>`;
+  }
+  /* Karte auf der Startseite: A = Raster, B = Kranz kompakt */
+  _advCard() {
+    if (!this._advOn()) return "";
+    const d = this._advD, c = this._advCfg(), h = this._advToday(), rb = (d.tueren || []).some((t) => t.st === "rueckblick");
+    const head = `<h2>${ic("tree", 18)}Adventskalender<span class="hzrt">${d.offen} von 24 geöffnet</span></h2>`;
+    if (c.variante === "B") {
+      const s = this._sai();
+      return `<div class="card advC advB">${head}<div class="advBk">${this._saiKranz(s.kz, 120)}<div><b>${h ? `Türchen ${h.tag} wartet` : rb ? "Zum Nachlesen" : "Alle Türchen offen"}</b><small>${esc(this._saiText(s))}</small>
+        <div class="advBb">${h ? `<button class="door2 today" data-act="advxopen" data-k="${h.tag}">${h.tag}</button>` : ""}<button class="btn2" data-act="advxkal">Alle 24</button></div></div></div></div>`;
+    }
+    return `<div class="card advC">${head}${this._advGrid(false)}</div>`;
+  }
+  _advGrid(peek) {
+    const d = this._advD, T = {}; (d.tueren || []).forEach((t) => { T[t.tag] = t; });
+    const cell = (n) => {
+      const t = T[n] || { st: "gesperrt" }, cls = { offen: "o", heute: "today", nachholen: "late", gesperrt: "lock", rueckblick: "rb" }[t.st] || "lock";
+      return `<button class="door2 ${cls}${n === 24 ? " big" : ""}" data-act="advxopen" data-k="${n}"${peek ? ` data-p="1"` : ""} aria-label="Türchen ${n}${t.st === "gesperrt" ? " (noch zu)" : ""}">${t.st === "offen" ? `<small>✓</small>${n}` : n}${t.st === "nachholen" ? `<span class="advRe" aria-hidden="true">↺</span>` : ""}</button>`;
+    };
+    const cells = this.constructor.ADV_ORDER.map(cell); cells.splice(10, 0, cell(24));
+    return `<div class="advG">${cells.join("")}</div><div class="advLg"><span><i class="door2 o"></i>offen</span><span><i class="door2 today"></i>heute</span><span><i class="door2 late"></i>nachholen</span><span><i class="door2 lock"></i>noch zu</span></div>`;
+  }
+  _advModal() {
+    const m = this._modal, d = this._advD;
+    const shell = (title, sub, body) => `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>${title}</b><span>${sub}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>${body}</div>`;
+    if (!d) return shell("Adventskalender", "lädt …", `<div class="mut" style="padding:20px">Einen Moment …</div>`);
+    if (m.door) {
+      const t = m.door, TY = { tipp: "Spartipp", statistik: "Statistik", deko: "Deko", funktion: "Funktion", raetsel: "Rätsel", besonders: "Besonders" };
+      const mod = t.modul && this._mdList().some((x) => x.id === t.modul) ? this._mdList().find((x) => x.id === t.modul) : null;
+      return shell(`Türchen ${t.tag}`, `${esc(TY[t.typ] || "")}${d.sim ? " · Simulation" : ""}`, `<div class="advD${m.anim ? " pop" : ""}"><div class="advDi" aria-hidden="true">${esc(t.icon || "🎁")}</div><span class="advTy t-${esc(t.typ)}">${esc(TY[t.typ] || "")}</span>
+        <h3>${esc(t.titel)}</h3><p>${esc(this._advFill(t))}</p>
+        <div class="advDb">${mod ? `<button class="btn2 pri" data-act="advxmod" data-k="${mod.id}">Zu ${esc(mod.short || mod.name)}</button>` : ""}<button class="btn2" data-act="advxkal">Zum Kalender</button></div></div>`);
+    }
+    const sub = `${d.offen} von 24 geöffnet${d.stand === "benutzer" || this._advCfg().stand === "benutzer" ? " · dein Stand" : ""}${d.sim ? " · Simulation " + esc(d.heute.split("-").reverse().join(".")) : ""}`;
+    return shell(m.peek ? "Alle Türchen (Entwickler)" : "Adventskalender", sub, `${m.peek ? `<div class="mut sm" style="margin-bottom:8px">Vorschau ohne Öffnen – nichts wird gespeichert.</div>` : ""}${this._advGrid(!!m.peek)}`);
+  }
+  _advOpenDoor(tag, peek) {
+    const d = this._advD; if (!d) return;
+    const row = (d.tueren || []).find((t) => t.tag === tag);
+    if (peek && row && row.t) { this._modal = { type: "advent", door: row.t, peek: true }; this._renderModal(); return; }
+    if (row && row.st === "gesperrt") { const n = tag - (+String(d.heute).slice(8, 10) || 0); this._toast(String(d.heute).slice(5, 7) === "12" && n > 0 ? `Noch ${n} ${n === 1 ? "Tag" : "Tage"} – Geduld!` : "Dieses Türchen ist noch zu"); return; }
+    this._hass.callWS({ type: "fenster_heizung/advent_open", tag }).then((r) => {
+      if (r.kal) this._advD = r.kal;
+      if (!r.ok) { this._toast(r.err === "gesperrt" ? "Dieses Türchen ist noch zu" : "Türchen nicht gefunden"); return; }
+      this._modal = { type: "advent", door: r.t, anim: !!r.neu && this._sai().mv }; this._renderModal(); this._render();
+    }).catch(() => this._toast("Türchen konnte nicht geöffnet werden"));
+  }
+  _advSave(cfg) {
+    this._hass.callWS({ type: "fenster_heizung/advent_set", cfg }).then((r) => { this._advD = r; this._render(); this._renderModal(); })
+      .catch(() => this._toast("Einstellung konnte nicht gespeichert werden"));
+  }
+  /* Abschnitt in Darstellung → Weihnachts-Theme */
+  _advLook() {
+    if (!this._advD) return "";
+    const c = this._advCfg(), d = this._advD, N = Object.keys((this._hass.services || {}).notify || {}).filter((k) => k !== "persistent_notification" && k !== "send_message").sort();
+    const seg = (k, opts) => `<div class="seg" style="margin:4px 0 8px">${opts.map(([v, l]) => `<button class="${c[k] === v ? "sel" : ""}" data-act="advxset" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
+    const times = []; for (let h = 5; h <= 21; h++) for (const mm of ["00", "30"]) times.push(`${String(h).padStart(2, "0")}:${mm}`);
+    return `<div class="lsec">${ic("schedule", 15)}Adventskalender</div>
+      <div class="mut sm">Darstellung auf der Startseite</div>${seg("variante", [["A", "Raster (24 Türchen)"], ["B", "Kranz (kompakt)"]])}
+      <div class="mut sm">Stand</div>${seg("stand", [["gemeinsam", "Gemeinsam"], ["benutzer", "Pro Benutzer"]])}
+      <div class="mut sm">Schneefall in den Kopfkarten</div>${seg("schnee", [["aus", "Aus"], ["leicht", "Leicht"]])}
+      <div class="ltog"><span>Benachrichtigung „Türchen ist da“</span><button class="sw ${c.notify.on ? "on" : ""}" data-act="advxnot" aria-pressed="${c.notify.on}" aria-label="Benachrichtigung"></button></div>
+      ${c.notify.on ? `<div class="saiRow"><select data-f="advnzeit">${times.map((t) => `<option ${t === c.notify.zeit ? "selected" : ""}>${t}</option>`).join("")}</select>
+        <select data-f="advndienst"><option value="">Gerät wählen …</option>${N.map((k) => `<option value="notify.${esc(k)}" ${c.notify.dienst === "notify." + k ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></div>
+        ${!c.notify.dienst ? `<div class="mut sm">Wähle ein Gerät (Companion-App), sonst kommt keine Mitteilung.</div>` : ""}` : ""}
+      ${d.dev ? `<div class="saiDev"><div class="hd"><span>${ic("flask", 15)} Kalender testen</span><span class="tag">Entwickler</span></div>
+        <div class="saiRow"><button class="btn2" data-act="advxpeek">Alle Türchen ansehen</button><button class="btn2" data-act="advxreset">Kalender zurücksetzen</button></div>
+        <div class="mut sm">Mit „Datum simulieren“ geöffnete Türchen werden nicht gespeichert und sind nach der Simulation wieder zu.</div></div>` : ""}`;
+  }
+  _advInput(t) {
+    if (!t.dataset) return false;
+    const c = this._advCfg();
+    if (t.dataset.f === "advnzeit") { this._advSave({ notify: { ...c.notify, zeit: t.value } }); return true; }
+    if (t.dataset.f === "advndienst") { this._advSave({ notify: { ...c.notify, dienst: t.value } }); return true; }
+    return false;
+  }
+  _advAct(a, b) {
+    const k = b.dataset.k;
+    if (a === "advxkal") { this._modal = { type: "advent" }; this._renderModal(); }
+    else if (a === "advxopen") this._advOpenDoor(+k, b.dataset.p === "1" || !!(this._modal && this._modal.peek));
+    else if (a === "advxmod") { this._modal = null; this._renderModal(); this._stOpen = false; this._edit = false; this._mdActiveSet(k); this._render(); }
+    else if (a === "advxset") this._advSave({ [k]: b.dataset.v });
+    else if (a === "advxnot") { const c = this._advCfg(); this._advSave({ notify: { ...c.notify, on: !c.notify.on } }); }
+    else if (a === "advxpeek") { this._modal = { type: "advent", peek: true }; this._renderModal(); }
+    else if (a === "advxreset") {
+      this._hass.callWS({ type: "fenster_heizung/advent_reset" }).then((r) => { this._advD = r; this._toast("Kalender zurückgesetzt"); this._render(); this._renderModal(); })
+        .catch(() => this._toast("Nur mit Entwickler-Zugang"));
+    }
   }
   _mdBar() {
     const a = this._mdActive(), bad = this._wwProblems().some((p) => p[0] === "bad" || p[0] === "warn");

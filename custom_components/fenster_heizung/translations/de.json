@@ -278,6 +278,20 @@
     "sicherheit_selbsttest": {
       "name": "Selbsttest (Modul 11)",
       "description": "Prüft sofort, ob alle Melder erreichbar sind und die Batterien gut. Ergebnis im Protokoll und als Ereignis, ohne Mitteilung."
+    },
+    "advent_tuer_oeffnen": {
+      "name": "Adventskalender: Türchen öffnen",
+      "description": "Öffnet ein Türchen des Adventskalenders (ohne Angabe das heutige), z. B. per NFC-Tag. Gesperrte Türchen bleiben zu. Löst das Ereignis strom_waerme_advent_geoeffnet aus.",
+      "fields": {
+        "tag": {
+          "name": "Tag",
+          "description": "1–24, leer = heute"
+        }
+      }
+    },
+    "advent_zuruecksetzen": {
+      "name": "Adventskalender zurücksetzen",
+      "description": "Schließt alle Türchen dieses Jahres wieder. Nur mit Entwickler-Zugang."
     }
   }
 }
