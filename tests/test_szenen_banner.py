@@ -45,6 +45,12 @@ R.pl = mk({ out: { t: 22 }, pv: 2300, price: 18.4 })._sbPlData();
 R.bt = mk({ soc: 24, pv: 0, pvcfg: { soc_sensor: "sensor.x", soc_min: 20 } })._sbBtData();
 R.ww = mk({})._sbWw({ top: 58, mid: 50, bot: 34 }, { want: 55, pump: true, heat: true, pv: true });
 R.wa = mk({})._sbWa({ tasks: [{ name: "Schornsteinfeger", st: "over", due: "2026-12-03", days: -1, every: 1, unit: "y", icon: "flame" }] });
+const xm = (o) => { const x = mk(o); x._saiD = {}; x._sai = () => ({ vis: true }); return x; };
+R.xm = [xm({ rooms: [{ name: "Bad", a: { rh: 50, td: 9, lvl: 0, open: 0 } }] })._sbLuData().scene,
+  xm({ states: { "sun.sun": { state: "above_horizon", attributes: { elevation: 20, azimuth: 180 } } }, out: { t: 1 } })._sbRbData().scene,
+  xm({ out: { t: 1, rh: 90 } })._sbWpData().scene, xm({ out: { t: 1, rh: 90, w: "snowy" } })._sbGaData().scene,
+  xm({ out: { t: 1 }, pv: 500 })._sbPlData().scene, xm({ soc: 50, pv: 0, pvcfg: {} })._sbBtData().scene,
+  xm({})._sbWw({ top: 50 }, { want: 55 }), xm({})._sbWa({ tasks: [] })];
 console.log(JSON.stringify(R));
 """
 
@@ -69,9 +75,14 @@ def test_scene_banners():
     assert R["pl"]["big"] == "22,0" and any("Pumpe" in c for c in R["pl"]["chips"])
     assert R["bt"]["big"] == "24" and any("Untergrenze" in c for c in R["bt"]["chips"])
     for k, v in R.items():
+        if isinstance(v, list):
+            continue
         html = v if isinstance(v, str) else v["scene"]
         assert "undefined" not in html and "NaN" not in html, k
     assert R["ww"].startswith("<svg") and "58 °C" in R["ww"] and "Schornsteinfeger" in R["wa"]
+    # Weihnachts-Details nur, wenn das Theme sichtbar ist
+    assert all("sbxm" in x for x in R["xm"]) and all("undefined" not in x and "NaN" not in x for x in R["xm"])
+    assert "sbxm" not in R["ww"] and "sbxm" not in R["lu"]["scene"]
 
 
 if __name__ == "__main__":

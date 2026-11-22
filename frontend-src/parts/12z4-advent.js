@@ -53,7 +53,8 @@
   _saiSnow() {
     const s = this._sai(), n = { leicht: 26, mittel: 40, stark: 60 }[this._advEff().schnee]; if (!s.vis || !s.mv || !n) return "";
     let seed = 7; const R = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
-    return `<div class="saiS" aria-hidden="true">${Array.from({ length: n }, () => `<i style="left:${(R() * 100).toFixed(1)}%;--s:${(2 + R() * 3.5).toFixed(1)}px;--d:${(7 + R() * 7).toFixed(1)}s;--w:${(R() * 40 - 20).toFixed(0)}px;animation-delay:-${(R() * 14).toFixed(1)}s"></i>`).join("")}</div>`;
+    const t0 = (Date.now() / 1000) % 14;
+    return `<div class="saiS" aria-hidden="true">${Array.from({ length: n }, () => `<i style="left:${(R() * 100).toFixed(1)}%;--s:${(2 + R() * 3.5).toFixed(1)}px;--d:${(7 + R() * 7).toFixed(1)}s;--w:${(R() * 40 - 20).toFixed(0)}px;animation-delay:-${(R() * 14 + t0).toFixed(1)}s"></i>`).join("")}</div>`;
   }
   /* Karte auf der Startseite: A = Raster, B = Kranz kompakt */
   _advBanner() {

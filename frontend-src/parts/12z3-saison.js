@@ -52,9 +52,23 @@
     const s = this._sai(); if (!s.vis || !this._saiCfg().lichter) return "";
     const fs = this._advEff ? this._advEff().farbset : "klassisch";
     const C = fs !== "klassisch" && this._advLightCols ? this._advLightCols() : s.ph === "heiligabend" ? ["#f4d58d", "#fff3c0", "#f4d58d", "#ffe08a"] : s.ph === "feiertage" ? ["#e05a6b", "#f4d58d", "#ff8fa3", "#f4d58d"] : ["#e05a6b", "#f4d58d", "#3fa37a", "#8cc8f5", "#c9a6f5"];
-    return `<div class="saiL${s.mv ? " mv" : ""}" aria-hidden="true">${Array.from({ length: n }, (_, i) => `<i style="--c:${C[i % C.length]};--i:${i}"></i>`).join("")}</div>`;
+    return `<div class="saiL${s.mv ? " mv" : ""}" aria-hidden="true" style="--t:${((Date.now() / 1000) % 3.2).toFixed(2)}s">${Array.from({ length: n }, (_, i) => `<i style="--c:${C[i % C.length]};--i:${i}"></i>`).join("")}</div>`;
   }
   _saiStartChip() { const s = this._sai(); return s.vis ? [this._saiKranz(s.kz, 26), esc(this._saiText(s))] : null; }
+  /* Ebene 1: Lichterkette, Schnee und Kranz-Chip an jede Kopfkarte im Inhalt hängen – auch an die Addons.
+     Läuft nach jedem Zeichnen (aus _render), Karten mit eigener Deko (Modul 1, Startseite) werden übersprungen. */
+  _saiDeco(root) {
+    if (!root || !this._saiD) return;
+    const s = this._sai(); if (!s.vis) return;
+    const L = this._saiLights(14), S = this._saiSnow ? this._saiSnow() : "", K = this._saiChip();
+    root.querySelectorAll("#main .card.hero.mh").forEach((h) => {
+      if (h.dataset.sai || h.querySelector(":scope > .saiL, .saiC")) return;
+      h.dataset.sai = "1"; h.classList.add("saiH", "saiX");
+      if (L || S) h.insertAdjacentHTML("afterbegin", L + S);
+      const c = h.querySelector(":scope > .chips, :scope .chips");
+      if (c && K) c.insertAdjacentHTML("afterbegin", K);
+    });
+  }
   _saiChip() { const s = this._sai(); return s.vis ? `<span class="chip saiC"${this._advOn && this._advOn() ? ` data-act="advxkal" role="button" tabindex="0"` : ""}>${this._saiKranz(s.kz, 30)}${esc(this._saiText(s))}</span>` : ""; }
   _saiRoomIcon(r) {
     const s = this._sai(); if (!s.vis || !this._saiCfg().icons) return "";

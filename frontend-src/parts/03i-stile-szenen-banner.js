@@ -19,7 +19,8 @@ const CSS_SB = `
 .sbart[data-an="aus"] *{animation:none!important}
 @media(prefers-reduced-motion:reduce){.sbart *{animation:none!important}}
 .sbwa{position:absolute;right:20px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:16px}
-.sbcal{width:118px;border-radius:16px;overflow:hidden;background:#f2f6f5;color:#14303a;text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.sbcal{position:relative;width:118px;border-radius:16px;overflow:hidden;background:#f2f6f5;color:#14303a;text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.sbxstar{position:absolute;right:-6px;top:-10px;font-size:1.5rem;color:#f4d58d;text-shadow:0 0 8px #f4d58d99}
 .sbcal b{display:block;background:#0d9488;color:#fff;font-size:.78rem;letter-spacing:.12em;padding:6px 0}
 .sbcal.bad b{background:#dc2626}
 .sbcal em{display:block;font-style:normal;font-size:2.7rem;font-weight:800;line-height:1.1;margin-top:4px}
