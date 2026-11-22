@@ -2,6 +2,23 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b52] - 2026-11-22
+
+**Modul 18 · Licht & Lampen** v0.5 Build 5 – Grundriss II aus dem Konzept „Modul 18 · Licht & Lampen“ (Teil B3, B4, B6, B7).
+
+### Neu
+- **Lampen im Baukasten:** Modul 11 hat das neue Werkzeug **„Lampe“** (Gruppe „Licht (Modul 18)“, nur mit dem Addon sichtbar). Antippen auf dem Plan setzt eine freie Lampe aus dem Raum unter dem Finger. Die Liste „Noch nicht platzierte Lampen“ setzt sie direkt in ihren Raum. Einstellbar sind Entität und Art (Decke, Steh, Spot, Streifen, Außen); Streifen erscheinen als Balken und lassen sich drehen.
+- **Lichtkarte mit echten Plätzen:** Platzierte Lampen leuchten an ihrem Platz, mit Lichtkegel in ihrer Farbe und Größe nach Helligkeit, begrenzt auf ihren Raum. Antippen schaltet die Lampe, lang drücken öffnet das Detail. Lampen ohne Platz bleiben als Punkte im Raum.
+- **Raum aus der Position:** Hat eine Lampe keinen Bereich in Home Assistant, gehört sie zum Raum, in dem sie im Plan steht – in allen Ansichten (Räume, Liste, Grundriss, Haus-Szene). Der Bereich aus Home Assistant hat Vorrang.
+- **Plakette „offline“** auf der Raumfläche, wenn eine Lampe nicht erreichbar ist.
+- **„… Lampen nicht im Plan“** in der Kopfzeile (über alle Etagen) öffnet den Baukasten mit dem Werkzeug „Lampe“.
+- Im Baukasten und in der Grundriss-Ansicht von Modul 11 leuchten eingeschaltete Lampen in ihrer Farbe.
+
+### Technik
+- `sicherheit.py`: neuer Element-Typ `l` (Felder `e` nur `light.*`, `k` Art), `MAX_ITEMS` 300 → 400. Ohne Addon bleiben Lampen gespeichert, aber unsichtbar. Plan sichern und einlesen nimmt Lampen mit.
+- Addon `licht` 0.5.0 Build 5 (`core_min` 2026.11.4b52). Der Baukasten nutzt `_liLampHex`, `_liRoomOfLamp` und `_liFreeLampAt` des Addons.
+- Neuer Test für Lampen im Plan (`test_sicherheit.py`), alle Tests grün.
+
 ## [2026.11.4b51] - 2026-11-22
 
 **Modul 18 · Licht & Lampen** v0.4 Build 4 – Grundriss I aus dem Konzept „Modul 18 · Licht & Lampen“ (Teil B1, B2, B5).

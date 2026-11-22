@@ -142,7 +142,7 @@
       rd.onload = () => {
         try {
           const o = JSON.parse(String(rd.result || "")), p = o && o.plan; if (!p || !Array.isArray(p.floors) || !p.floors.length || !Array.isArray(p.items)) throw new Error("form");
-          const ids = new Set(p.floors.map((x) => x && x.id)), items = p.items.filter((i) => i && typeof i.id === "string" && ids.has(i.fl) && ["r", "w", "d", "f", "s", "x", "m"].includes(i.t)).slice(0, 300);
+          const ids = new Set(p.floors.map((x) => x && x.id)), items = p.items.filter((i) => i && typeof i.id === "string" && ids.has(i.fl) && ["r", "w", "d", "f", "s", "x", "m", "l"].includes(i.t)).slice(0, 300);
           this._sfSnap(); ed.plan.floors = p.floors.filter((x) => x && typeof x.id === "string").slice(0, 6).map((x) => ({ id: x.id, n: String(x.n || x.id).slice(0, 16) })); ed.plan.items = items; ed.plan.scale = Number(p.scale) > 0 ? Number(p.scale) : 40; if (p.bg && typeof p.bg === "object") ed.plan.bg = p.bg;
           this._sfFlId = ed.plan.floors[0].id; ed.sel = ""; ed.multi = []; this._render(); this._toast(`Plan eingelesen: ${items.length} Elemente. Mit „Speichern“ übernehmen.`);
         } catch (_) { this._toast("Die Datei ist kein Grundriss aus diesem Modul"); }

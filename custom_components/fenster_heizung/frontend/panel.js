@@ -3483,6 +3483,9 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 .sfvt{fill:#fff;stroke:var(--teal);stroke-width:2.5}.sfvt.on{fill:var(--teal)}.sfad{fill:var(--card,#1c2530);stroke:var(--teal);stroke-width:1.5;stroke-dasharray:3 2}.sfap2{stroke:var(--teal);stroke-width:2;fill:none}
 .sfshp{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:6px 0}.sfshp button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;font:inherit;font-size:.72rem;color:inherit;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;cursor:pointer}.sfshp button.on{border-color:var(--teal);background:rgba(45,212,191,.12)}.sfshp svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
 .sfevl{display:flex;flex-direction:column}.sfevl.all{max-height:360px;overflow:auto}.sfev{display:grid;grid-template-columns:10px 1fr auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid rgba(255,255,255,.06);font-size:.84rem}.sfev:first-child{border-top:0}.sfev i{width:8px;height:8px;border-radius:50%;background:var(--c)}.sfev span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sfev small{color:var(--mut);font-size:.74rem;white-space:nowrap}.sfevm{margin-top:6px;font-size:.82rem}
+/* Lampen im Baukasten (Modul 18 ab Build 5) */
+.sfli .sflp{fill:#334155;stroke:#94a3b8;stroke-width:1.6}.sfli.on .sflp{fill:var(--lc);stroke:#fff}.sfli .sflg{fill:var(--lc);opacity:.32}.sfli .sflf{stroke:#94a3b8;stroke-width:1.6;fill:none}
+.sfli.no .sflp{stroke-dasharray:3 2;fill:transparent}.sfli.un .sflp{fill:transparent;stroke-dasharray:2 2}
 `;
 /* Versions-Statistik: Popup und Seite in Einstellungen → System */
 const CSS_STS = `
@@ -15525,7 +15528,7 @@ class FensterHeizungPanel extends HTMLElement {
   _sfOvOld(T) { const p = this._sfOvParts(T); return `${p.empty}<div class="enc"><div class="enco">${p.ampel}${p.log}</div><div class="enco">${p.dep}</div></div>${p.list}`; }
   /* ---- Grundriss: Ansicht und Baukasten */
   _sfPlanInner(fl, edit) {
-    const S = this._sfx(), P = this._sfPl(), dm = this._sfDetMap(), items = P.items.filter((i) => i.fl === fl), KN = this._sfxKind(), ed = this._sfEd, sel = edit && ed ? ed.sel : "", ord = ["r", "s", "w", "d", "f", "x", "m"];
+    const S = this._sfx(), P = this._sfPl(), dm = this._sfDetMap(), items = P.items.filter((i) => i.fl === fl), KN = this._sfxKind(), ed = this._sfEd, sel = edit && ed ? ed.sel : "", ord = ["r", "s", "w", "d", "f", "x", "l", "m"], liOn = !!(this._liOn && this._liOn());
     const mk = items.filter((i) => i.t === "m" && i.e && dm[i.e] && dm[i.e].alarm);
     const inside = (r, m) => this._sfInRoom(r, m.x, m.y, -0.01);
     let out = P.bg[fl] ? `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".6"></image>` : "";
@@ -15541,6 +15544,12 @@ class FensterHeizungPanel extends HTMLElement {
       else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect>${i.dg ? `<path class="sfda" d="M${i.x - 15} ${i.y - 6}v12M${i.x + 15} ${i.y - 6}v12"></path>` : `<path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"${i.mh || i.mv ? ` transform="translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})"` : ""}></path>`}<rect class="sfhit" x="${i.x - 16}" y="${i.y - 16}" width="32" height="32"></rect></g>`;
       else if (i.t === "f") out += `<g ${id}${a}><rect class="sffw" x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7"></rect><rect class="sfhit" x="${i.x - 18}" y="${i.y - 14}" width="36" height="28"></rect></g>`;
       else if (i.t === "x") out += `<text ${id} class="sftx" x="${i.x}" y="${i.y}">${esc(i.n || "Text")}</text>`;
+      else if (i.t === "l") {   /* Lampe (Modul 18): nur sichtbar, wenn das Addon an ist. Leuchtet in ihrer Farbe, wenn sie an ist. */
+        if (!liOn) return;
+        const st = i.e && this._hass.states[i.e], on = !!(st && st.state === "on"), un = !st || st.state === "unavailable", c = on && this._liLampHex ? this._liLampHex(i.e) : "#ffd27a";
+        const body = i.k === "streifen" ? `<rect class="sflp" x="${i.x - 22}" y="${i.y - 4}" width="44" height="8" rx="4"${a}></rect>` : `<circle class="sflp" cx="${i.x}" cy="${i.y}" r="${i.k === "spot" ? 6 : 9}"></circle>${i.k === "steh" ? `<path class="sflf" d="M${i.x} ${i.y + 9}v7M${i.x - 5} ${i.y + 16}h10"></path>` : ""}`;
+        out += `<g ${id} class="sfli${on ? " on" : ""}${un ? " un" : ""}${i.e ? "" : " no"}" style="--lc:${c}">${on ? `<circle class="sflg" cx="${i.x}" cy="${i.y}" r="24"></circle>` : ""}${body}<circle class="sfhit" cx="${i.x}" cy="${i.y}" r="18"></circle><title>${esc(i.e ? this._wzName(i.e) : "Lampe ohne Entität")}</title></g>`;
+      }
       else if (i.t === "m") {
         const d = i.e ? dm[i.e] : null, c = !d ? "n" : d.alarm ? "a" : d.off ? "o" : d.bat != null && d.bat < S.cfg.bat.pct ? "w" : "g", ico = d ? KN[d.k][1] : "shield";
         out += `<g ${id} class="sfmk ${c}">${c === "a" ? `<circle class="sfpulse" cx="${i.x}" cy="${i.y}" r="26"></circle>` : ""}<circle class="sfmc" cx="${i.x}" cy="${i.y}" r="15"></circle><g transform="translate(${i.x - 8} ${i.y - 8})">${ic(ico, 16)}</g>${d && d.bat != null && d.bat < S.cfg.bat.pct ? `<text class="sfbt" x="${i.x + 19}" y="${i.y + 4}">${num(d.bat, 0)} %</text>` : ""}<circle class="sfhit" cx="${i.x}" cy="${i.y}" r="20"></circle></g>`;
@@ -15562,6 +15571,21 @@ class FensterHeizungPanel extends HTMLElement {
       }
     }
     return out;
+  }
+  /* ---- Lampen im Baukasten (Modul 18 ab Build 5). Ohne Addon „licht“ bleiben sie unsichtbar und unverändert gespeichert. */
+  _sfLampIds() { const st = this._hass.states; return Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")); }
+  _sfLampFree(P) {
+    if (!(this._liOn && this._liOn())) return "";
+    const pl = new Set(P.items.filter((i) => i.t === "l" && i.e).map((i) => i.e)), free = this._sfLampIds().filter((e) => !pl.has(e));
+    if (!free.length) return "";
+    return `<div class="sffld"><label>Noch nicht platzierte Lampen (antippen setzt sie in ihren Raum, sonst in die Mitte)</label><div class="gschips">${free.slice(0, 60).map((e) => `<button class="gsch" data-act="sfxlplace" data-k="${esc(e)}">${esc(this._wzName(e))}${this._liAreaOf && this._liAreaOf(e) ? `<small class="mut"> · ${esc(this._liAreaName(this._liAreaOf(e)))}</small>` : ""}</button>`).join("")}${free.length > 60 ? `<span class="mut sm">+${free.length - 60}</span>` : ""}</div></div>`;
+  }
+  _sfLampProps(sel) {
+    const pl = new Set(this._sfEd.plan.items.filter((i) => i.t === "l" && i.e && i.id !== sel.id).map((i) => i.e)), ids = this._sfLampIds().filter((e) => !pl.has(e) || e === sel.e);
+    const K = [["decke", "Decke"], ["steh", "Steh"], ["spot", "Spot"], ["streifen", "Streifen"], ["aussen", "Außen"]];
+    return `<div class="sffld"><label>Lampe aus Home Assistant</label>${this._sfSel(ids, sel.e || "", "sfxpl", "", "– keine –")}</div>
+      <div class="sffld"><label>Art</label><div class="sfshp" style="grid-template-columns:repeat(5,1fr)">${K.map(([k, t]) => `<button data-act="sfxplk" data-v="${k}" class="${(sel.k || "decke") === k ? "on" : ""}">${t}</button>`).join("")}</div>
+      <small class="mut" style="display:block">Streifen erscheint als Balken und lässt sich drehen. Hat die Lampe keinen Bereich in Home Assistant, bekommt sie in Modul 18 den Raum, in dem sie hier steht.</small></div>`;
   }
   _sfFloorBar(edit) {
     const P = this._sfPl(), fl = this._sfFl();
@@ -15590,15 +15614,16 @@ class FensterHeizungPanel extends HTMLElement {
     const fname = P.floors.find((f) => f.id === fl);
     const mlt = ed.multi || [], multiBox = `<div class="sfpr"><b>${mlt.length} Elemente ausgewählt</b><div class="mut sm" style="margin:4px 0 8px">Tippe weitere Elemente an oder ziehe eines, um alle zu verschieben.</div><div class="sfbtn"><button class="btn2" data-act="sfxmdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxmdel">Löschen</button></div><button class="btn2" data-act="sfxmclr" style="flex:none;width:100%;margin-top:8px">Auswahl aufheben</button></div>`;
     const prop = mlt.length ? multiBox : !sel ? `<div class="mut sm">Wähle ein Element im Plan aus, oder ein Werkzeug links. Räume und Wände ziehst du auf, alles andere setzt du mit einem Tipp.</div>`
-      : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t === "d" && sel.dg ? "x" : sel.t] === "Text" && sel.t === "d" ? "Durchgang" : { r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t]}</b>
+      : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t === "d" && sel.dg ? "x" : sel.t] === "Text" && sel.t === "d" ? "Durchgang" : { r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder", l: "Lampe" }[sel.t]}</b>
         ${sel.t === "r" || sel.t === "s" || sel.t === "x" ? `<div class="sffld"><label>Name</label><input class="osel" data-f="sfxpn" value="${esc(sel.n)}" maxlength="30" placeholder="${sel.t === "x" ? "Text" : "zum Beispiel Küche"}"></div>` : ""}
         ${sel.t === "r" || sel.t === "s" ? `<div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="sfxpw" data-s="-20" aria-label="schmaler">${ic("minus", 16)}</button><b>${sel.w}</b><button data-act="sfxpw" data-s="20" aria-label="breiter">${ic("plus", 16)}</button></div></div><div class="vrow" style="margin:6px 0"><span>Höhe</span><div class="step" style="flex:none"><button data-act="sfxph" data-s="-20" aria-label="niedriger">${ic("minus", 16)}</button><b>${sel.h}</b><button data-act="sfxph" data-s="20" aria-label="höher">${ic("plus", 16)}</button></div></div>` : ""}
         ${sel.t === "r" ? this._sfRPanel(sel) : ""}
         ${sel.t === "r" ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpds" class="${sel.ds ? "on" : ""}">Rand nur gestrichelt</button><button data-act="sfxpds" data-v="all">Alle Räume der Etage</button></div><small class="mut" style="display:block">Gestrichelte Räume sind nur Flächen mit Namen. Wände zeichnest du extra, nur sie sperren den Weg.</small>` : ""}
         ${sel.t === "d" || sel.t === "s" ? `<div class="sffld"><label>${sel.t === "d" ? "Art der Tür" : "Treppe"}</label><div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpex" data-v="0" class="${sel.ex === 1 ? "" : "on"}">${sel.t === "d" ? "Innentür" : "Kein Ausgang"}</button><button data-act="sfxpex" data-v="1" class="${sel.ex === 1 ? "on" : ""}">${sel.t === "d" ? "Außentür" : "Ausgang nach unten"}</button></div><small class="mut" style="display:block">Nur markierte Ausgänge zählen für den Fluchtweg.</small></div>` : ""}
-        ${sel.t === "d" || sel.t === "f" ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
+        ${sel.t === "d" || sel.t === "f" || (sel.t === "l" && sel.k === "streifen") ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
         ${sel.t === "d" ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpdg" data-v="0" class="${sel.dg ? "" : "on"}">Tür</button><button data-act="sfxpdg" data-v="1" class="${sel.dg ? "on" : ""}">Durchgang</button></div>` : ""}
         ${sel.t === "d" && !sel.dg ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpmir" data-k="mv" class="${sel.mv ? "on" : ""}">Öffnung spiegeln (innen/außen)</button><button data-act="sfxpmir" data-k="mh" class="${sel.mh ? "on" : ""}">Angel spiegeln (links/rechts)</button></div>` : ""}
+        ${sel.t === "l" ? this._sfLampProps(sel) : ""}
         ${sel.t === "m" ? `<div class="sffld"><label>Melder (aus den Einstellungen)</label>${this._sfSel(T.l.map((d) => d.id), sel.e || "", "sfxpe", "", "– keiner –")}</div>` : ""}
         ${sel.t === "m" ? `<div class="vrow" style="margin:6px 0"><span>Reichweite<small class="mut" style="display:block">Wie weit der Melder im Plan reicht</small></span><div class="step" style="flex:none"><button data-act="sfxprg" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${num(this._sfRangeM(sel, sel.e ? dm[sel.e] : null), 1)} m</b><button data-act="sfxprg" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>` : ""}${sel.t === "r" ? `<div class="sffld"><label>Raum aus Modul 1 (optional)</label><div class="gschips"><button class="gsch ${!sel.lk ? "sel" : ""}" data-act="sfxplkset" data-v="">keiner</button>${this._sfRoomNames().map((n) => `<button class="gsch ${sel.lk === n ? "sel" : ""}" data-act="sfxplkset" data-v="${esc(n)}">${esc(n)}</button>`).join("")}</div></div>` : ""}
         <div class="sfbtn"><button class="btn2" data-act="sfxpdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxpdel">Löschen</button></div></div>`;
@@ -15610,9 +15635,10 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="enc"><div class="enco"><div class="card sfc"><h2>${ic("home", 18)}Grundriss bearbeiten<span class="sfhr">${this._sfFloorBar(true)}</span></h2>${tb}
       <div class="sfpl edit"><svg class="sfpe" viewBox="0 0 800 480" role="img" aria-label="Grundriss bearbeiten">${this._sfPlanInner(fl, true)}</svg></div>
       <div class="sfhint">${ic("info", 15)}<span>${{ select: "Elemente antippen und ziehen. Am Eckpunkt ändert sich die Größe.", r: "Auf dem Plan ziehen, um einen Raum aufzuziehen.", s: "Auf dem Plan ziehen, um eine Treppe aufzuziehen.", w: "Auf dem Plan ziehen, um eine Wand zu zeichnen." }[ed.tool] || "Auf den Plan tippen, um das Element zu setzen."}</span></div>
+      ${this._sfLampFree(P)}
       ${free.length ? `<div class="sffld"><label>Noch nicht platzierte Melder (antippen setzt sie in die Mitte)</label><div class="gschips">${free.map((d) => `<button class="gsch" data-act="sfxplace" data-k="${esc(d.id)}">${esc(d.name)}</button>`).join("")}</div></div>` : ""}</div></div>
       <div class="enco"><div class="card sfc"><div class="sfgrp">RÄUME UND BAUTEILE</div><div class="sftiles">${tile("select", "Auswählen", PP.select)}${tile("r", "Raum", PP.r)}${tile("w", "Wand", PP.w)}${tile("d", "Tür", PP.d)}${tile("dg", "Durchgang", '<path d="M5 10h7M22 10h7M5 24h7M22 24h7M12 7v6M22 7v6M12 21v6M22 21v6"/>')}${tile("f", "Fenster", PP.f)}${tile("s", "Treppe", PP.s)}</div>
-        <div class="sfgrp">MELDER UND TEXT</div><div class="sftiles">${tile("m:smoke", "Rauch", PP.smoke)}${tile("m:co", "CO", PP.co)}${tile("m:gas", "Gas", PP.gas)}${tile("m:water", "Wasser", PP.water)}${tile("m:heat", "Hitze", PP.heat)}${tile("x", "Text", PP.x)}</div></div>
+        <div class="sfgrp">MELDER UND TEXT</div><div class="sftiles">${tile("m:smoke", "Rauch", PP.smoke)}${tile("m:co", "CO", PP.co)}${tile("m:gas", "Gas", PP.gas)}${tile("m:water", "Wasser", PP.water)}${tile("m:heat", "Hitze", PP.heat)}${tile("x", "Text", PP.x)}</div>${this._liOn && this._liOn() ? `<div class="sfgrp">LICHT (MODUL 18)</div><div class="sftiles">${tile("l", "Lampe", '<path d="M12 22a7 7 0 1 1 10 0c-1 1-1.5 2-1.5 3.5h-7c0-1.5-.5-2.5-1.5-3.5z"/><path d="M14 29h6"/>')}</div>` : ""}</div>
         <div class="card sfc">${prop}</div><div class="card sfc">${flBox}${scaleBox}${bgBox}${ioBox}</div>
         <div class="sfbtn"><button class="btn2" data-act="sfxcancel">Abbrechen</button><button class="btn2 pri" data-act="sfxsave">Speichern</button></div></div></div>`;
   }
@@ -15739,15 +15765,21 @@ class FensterHeizungPanel extends HTMLElement {
     if (!ed) return false;
     if (this._sfxP2(a, b)) return true;
     const P = ed.plan, fl = this._sfFl(), cur = P.items.find((x) => x.id === ed.sel);
-    if (["sfxfadd", "sfxfrm", "sfxbgrm", "sfxplace", "sfxpdel", "sfxpdup", "sfxprot", "sfxpw", "sfxph"].includes(a)) this._sfSnap();
+    if (["sfxfadd", "sfxfrm", "sfxbgrm", "sfxplace", "sfxlplace", "sfxpdel", "sfxpdup", "sfxprot", "sfxpw", "sfxph", "sfxplk"].includes(a)) this._sfSnap();
     if (a === "sfxtool") { ed.tool = k; ed.sel = ""; ed.mm = false; ed.multi = []; this._render(); return true; }
     if (a === "sfxfadd") { const nm = ["OG", "Keller", "DG", "UG", "Garten", "Anbau"].find((n) => !P.floors.some((f) => f.n === n)) || "Etage", id = "f" + Date.now().toString(36).slice(-6); P.floors.push({ id, n: nm }); this._sfFlId = id; ed.sel = ""; this._render(); return true; }
     if (a === "sfxfrm") { if (P.floors.length > 1) { P.items = P.items.filter((x) => x.fl !== fl); delete P.bg[fl]; P.floors = P.floors.filter((f) => f.id !== fl); this._sfFlId = P.floors[0].id; ed.sel = ""; this._render(); } return true; }
     if (a === "sfxbgrm") { delete P.bg[fl]; this._render(); return true; }
     if (a === "sfxplace") { const d = this._sfDetMap()[k]; if (d) { const it = { id: uid(), fl, t: "m", x: 400, y: 240, r: 0, n: "", e: k }; P.items.push(it); ed.sel = it.id; this._render(); } return true; }
+    if (a === "sfxlplace") {   /* Lampe aus der Liste setzen: in die Mitte ihres Raums, sonst in die Planmitte */
+      const it = { id: uid(), fl, t: "l", x: 400, y: 240, r: 0, n: "", e: k, k: "decke" }, rm = this._liRoomOfLamp ? this._liRoomOfLamp(k, fl, P) : null;
+      if (rm) { const c = this._sfRCen ? this._sfRCen(rm) : [rm.x + rm.w / 2, rm.y + rm.h / 2]; const n = P.items.filter((q) => q.t === "l" && this._sfInRoom(rm, q.x, q.y)).length; it.x = Math.round((c[0] + (n % 3) * 30 - 30) / 10) * 10; it.y = Math.round((c[1] + Math.floor(n / 3) * 30) / 10) * 10; }
+      P.items.push(it); ed.sel = it.id; this._render(); return true;
+    }
     if (!cur) return false;
+    if (a === "sfxplk") { if (cur.t === "l" && ["decke", "steh", "spot", "streifen", "aussen"].includes(b.dataset.v)) { cur.k = b.dataset.v; this._render(); } return true; }
     if (a === "sfxpdel") { P.items = P.items.filter((x) => x.id !== cur.id); ed.sel = ""; this._render(); return true; }
-    if (a === "sfxpdup") { const c = { ...cur, id: uid(), x: cur.x + 20, y: cur.y + 20 }; if (c.pts) c.pts = c.pts.map((q) => [q[0] + 20, q[1] + 20]); if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m") c.e = ""; P.items.push(c); ed.sel = c.id; this._render(); return true; }
+    if (a === "sfxpdup") { const c = { ...cur, id: uid(), x: cur.x + 20, y: cur.y + 20 }; if (c.pts) c.pts = c.pts.map((q) => [q[0] + 20, q[1] + 20]); if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m" || c.t === "l") c.e = ""; P.items.push(c); ed.sel = c.id; this._render(); return true; }
     if (a === "sfxpmir") { if (cur && cur.t === "d" && (k === "mv" || k === "mh")) { this._sfSnap(); cur[k] = cur[k] ? 0 : 1; this._render(); } return true; }
     if (a === "sfxpdg") { if (cur && cur.t === "d") { this._sfSnap(); if (Number(b.dataset.v)) cur.dg = 1; else delete cur.dg; this._render(); } return true; }
     if (a === "sfxpds") { if (cur && cur.t === "r") { this._sfSnap(); if (b.dataset.v === "all") P.items.filter((q) => q.t === "r" && q.fl === fl).forEach((q) => { q.ds = 1; }); else if (cur.ds) delete cur.ds; else cur.ds = 1; this._render(); } return true; }
@@ -15774,10 +15806,11 @@ class FensterHeizungPanel extends HTMLElement {
     if (!ed) return false;
     if (this._sfxP2Change(t)) return true;
     const P = ed.plan, cur = P.items.find((x) => x.id === ed.sel);
-    if (["sfxfn", "sfxpn", "sfxpe"].includes(f)) this._sfSnap();
+    if (["sfxfn", "sfxpn", "sfxpe", "sfxpl"].includes(f)) this._sfSnap();
     if (f === "sfxfn") { const fl = P.floors.find((x) => x.id === this._sfFl()); if (fl && v.trim()) { fl.n = v.trim().slice(0, 16); this._render(); } return true; }
     if (f === "sfxpn" && cur) { cur.n = v.slice(0, 30); this._render(); return true; }
     if (f === "sfxpe" && cur) { cur.e = v; this._render(); return true; }
+    if (f === "sfxpl" && cur && cur.t === "l") { cur.e = /^light\.[a-z0-9_]+$/.test(v) ? v : ""; this._render(); return true; }
     if (f === "sfxbg") {
       const file = t.files && t.files[0]; if (!file) return true;
       const img = new Image(), url = URL.createObjectURL(file);
@@ -15810,6 +15843,7 @@ class FensterHeizungPanel extends HTMLElement {
         P.items.push(it); ed.sel = it.id; this._sfDrag = { k: "new", id: it.id, sx: g(x), sy: g(y) }; paint();
       } else {
         const it = { id: uid(), fl, t: tool.startsWith("m:") ? "m" : tool === "dg" ? "d" : tool, x: g10(x), y: g10(y), r: 0, n: tool === "x" ? "Text" : "", e: "" }; if (tool === "dg") it.dg = 1;
+        if (it.t === "l") { it.k = "decke"; it.e = this._liFreeLampAt ? this._liFreeLampAt(fl, x, y, P) : ""; }
         if (it.t === "m") { const kind = tool.slice(2), pl = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), d = this._sfList().find((q) => q.k === kind && !pl.has(q.id)); if (d) it.e = d.id; }
         if (it.t === "d" || it.t === "f") { const sn = this._sfSnapOpen(fl, x, y); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } }
         P.items.push(it); ed.sel = it.id; ed.tool = "select"; this._render();
@@ -16565,7 +16599,7 @@ class FensterHeizungPanel extends HTMLElement {
       rd.onload = () => {
         try {
           const o = JSON.parse(String(rd.result || "")), p = o && o.plan; if (!p || !Array.isArray(p.floors) || !p.floors.length || !Array.isArray(p.items)) throw new Error("form");
-          const ids = new Set(p.floors.map((x) => x && x.id)), items = p.items.filter((i) => i && typeof i.id === "string" && ids.has(i.fl) && ["r", "w", "d", "f", "s", "x", "m"].includes(i.t)).slice(0, 300);
+          const ids = new Set(p.floors.map((x) => x && x.id)), items = p.items.filter((i) => i && typeof i.id === "string" && ids.has(i.fl) && ["r", "w", "d", "f", "s", "x", "m", "l"].includes(i.t)).slice(0, 300);
           this._sfSnap(); ed.plan.floors = p.floors.filter((x) => x && typeof x.id === "string").slice(0, 6).map((x) => ({ id: x.id, n: String(x.n || x.id).slice(0, 16) })); ed.plan.items = items; ed.plan.scale = Number(p.scale) > 0 ? Number(p.scale) : 40; if (p.bg && typeof p.bg === "object") ed.plan.bg = p.bg;
           this._sfFlId = ed.plan.floors[0].id; ed.sel = ""; ed.multi = []; this._render(); this._toast(`Plan eingelesen: ${items.length} Elemente. Mit „Speichern“ übernehmen.`);
         } catch (_) { this._toast("Die Datei ist kein Grundriss aus diesem Modul"); }

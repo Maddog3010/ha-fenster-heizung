@@ -1,5 +1,9 @@
 # Modul 18 Licht & Lampen
 
+## [0.5.0] Build 5 - 2026-11-22
+- **Lampen im Grundriss**: Werkzeug „Lampe“ im Baukasten von Modul 11, Lichtkegel am echten Platz
+- Raum aus der Position für Lampen ohne Bereich, Plakette „offline“, „… Lampen nicht im Plan“ öffnet den Baukasten
+
 ## [0.4.0] Build 4 - 2026-11-22
 - **Grundriss als Lichtkarte**: dritte Ansicht mit Flächen in der Lichtfarbe, Lampenpunkten, Etagen und Plaketten
 - Fläche antippen = Raum schalten, Punkt antippen = Lampe, lang drücken = Detail

@@ -2,6 +2,9 @@
    v0.2 Build 2 (Technik): Einschaltzeiten und Brennstunden kommen aus dem Python-Teil (api.call("licht", "get")), damit „an seit“
    einen Neustart von Home Assistant übersteht. Räume schalten über eine passende Lichtgruppe (alle Lampen gleichzeitig),
    Lichtfarbe wird aus Kelvin, hs, xy und rgb gelesen, die Mischfarbe eines Raums nach Helligkeit gewichtet.
+   v0.5 Build 5 (Grundriss II, Konzept Teil B3, B4, B6, B7): Lampen als eigenes Element „Lampe“ im Baukasten von Modul 11 (Typ „l“).
+   Platzierte Lampen leuchten an ihrem Platz, Lampen ohne Bereich bekommen den Raum aus ihrer Position, Plakette „offline“,
+   „… Lampen nicht im Plan“ springt in den Baukasten. Die Methoden _liLampHex, _liRoomOfLamp und _liFreeLampAt nutzt der Baukasten.
    v0.4 Build 4 (Grundriss I, Konzept Teil B1, B2, B5): dritte Ansicht „Grundriss“ als Lichtkarte aus dem Baukasten von Modul 11 –
    Räume leuchten in der Mischfarbe ihrer Lampen, Fläche antippen schaltet den Raum, Lampenpunkt antippen schaltet die Lampe,
    lang drücken öffnet das Detail. Zuordnung Fläche → Bereich automatisch über den Namen oder von Hand (pmap im Addon-Speicher).
@@ -119,7 +122,7 @@ export default (api) => {
     }
     return S.d || { on: {}, today: {}, week: [], groups: {}, prefs: { view: "rooms", optik: "neu" }, areas: [], floors: {} };
   }
-  _liPrefs() { return this._liD().prefs || { view: "rooms", optik: "neu" }; }
+  _liPrefs() { try { if (this._gpPlan && this._mdActive && this._mdActive() === "li") this._liPlan(); } catch (_) {} return this._liD().prefs || { view: "rooms", optik: "neu" }; }
   _liNew() { return this._liPrefs().optik !== "alt"; }
   _liAreaOf(eid) {
     const H = this._hass, en = (H.entities || {})[eid]; if (!en) return "";
@@ -130,12 +133,14 @@ export default (api) => {
   /* Alle einzelnen Lampen. Lichtgruppen (mit entity_id-Liste) werden ausgelassen, sonst zählt jede Lampe doppelt.
      „an seit“ kommt ab Build 2 aus dem Python-Teil (übersteht einen Neustart), sonst wie bisher aus last_changed. */
   _liLamps() {
-    const st = this._hass.states, now = Date.now(), D = this._liD(), ON = D.on || {}, TD = D.today || {};
+    const st = this._hass.states, now = Date.now(), D = this._liD(), ON = D.on || {}, TD = D.today || {}, PL = this._liPlaced();
     return Object.keys(st).filter((e) => e.startsWith("light.") && !Array.isArray((st[e].attributes || {}).entity_id)).map((e) => {
       const s = st[e], a = s.attributes || {}, modes = Array.isArray(a.supported_color_modes) ? a.supported_color_modes : [], un = s.state === "unavailable" || s.state === "unknown";
       const dim = modes.some((m) => m !== "onoff"), ct = modes.includes("color_temp"), col = modes.some((m) => ["hs", "xy", "rgb", "rgbw", "rgbww"].includes(m));
-      const on = s.state === "on", t = ON[e] ? ON[e] * 1000 : new Date(s.last_changed).getTime();
-      return { id: e, name: a.friendly_name || e, on, un, dim, ct, col, br: a.brightness != null ? Math.round(Number(a.brightness) / 2.55) : (on ? 100 : 0), kel: a.color_temp_kelvin || null, kmin: a.min_color_temp_kelvin || 2000, kmax: a.max_color_temp_kelvin || 6500, since: isFinite(t) ? Math.max(0, now - t) : 0, area: this._liAreaOf(e), rgb: lampRgb(a), mode: a.color_mode || "", today: TD[e] || 0 };
+      const on = s.state === "on", t = ON[e] ? ON[e] * 1000 : new Date(s.last_changed).getTime(), pe = PL[e];
+      let area = this._liAreaOf(e), pos = false;
+      if (!area && pe && pe.room) { const pa = this._liPArea(pe.room); if (pa) { area = pa; pos = true; } }   /* B4: Raum aus der Position im Plan */
+      return { pe: pe || null, pos, id: e, name: a.friendly_name || e, on, un, dim, ct, col, br: a.brightness != null ? Math.round(Number(a.brightness) / 2.55) : (on ? 100 : 0), kel: a.color_temp_kelvin || null, kmin: a.min_color_temp_kelvin || 2000, kmax: a.max_color_temp_kelvin || 6500, since: isFinite(t) ? Math.max(0, now - t) : 0, area, rgb: lampRgb(a), mode: a.color_mode || "", today: TD[e] || 0 };
     });
   }
   _liRooms() {
@@ -271,14 +276,36 @@ export default (api) => {
     }
     return P;
   }
-  _liPRoom(item, rooms) {
+  /* Plan-Fläche → Bereich in Home Assistant (Bereichs-ID oder ""): von Hand (pmap), sonst über den Namen */
+  _liPArea(item) {
     const pm = this._liD().pmap || {}, v = pm[item.id];
-    if (v === "-") return null;
-    if (v) return rooms.find((r) => r.k === v) || null;
+    if (v === "-") return "";
+    if (v) return v;
     const nm = (s) => String(s || "").toLowerCase().replace(/zimmer|raum|[^a-zäöüß0-9]/g, ""), n = nm(item.n);
-    if (!n) return null;
-    const rs = rooms.filter((r) => r.k !== "_");
-    return rs.find((r) => nm(r.name) === n) || rs.find((r) => { const m = nm(r.name); return m.length > 2 && (m.includes(n) || n.includes(m)); }) || null;
+    if (!n) return "";
+    const A = Object.values(this._hass.areas || {}).map((a) => ({ id: a.area_id, m: nm(a.name) }));
+    const hit = A.find((a) => a.m === n) || A.find((a) => a.m.length > 2 && (a.m.includes(n) || n.includes(a.m)));
+    return hit ? hit.id : "";
+  }
+  _liPRoom(item, rooms) { const a = this._liPArea(item); return a ? rooms.find((r) => r.k === a) || null : null; }
+  /* Platzierte Lampen aus dem Grundriss: { light.x: { it, room } } (room = Fläche, in der die Lampe steht). Lädt den Plan nicht neu. */
+  _liPlaced() {
+    const D = this._sfxD, P = D && D.d && D.d.cfg && D.d.cfg.plan;
+    if (!P || !Array.isArray(P.items)) return {};
+    if (this._liPlC && this._liPlC.p === P && this._liPlC.pm === this._liD().pmap) return this._liPlC.m;
+    const rs = P.items.filter((i) => i.t === "r"), m = {};
+    const inR = (r, x, y) => this._sfInRoom ? this._sfInRoom(r, x, y) : x > r.x && x < r.x + r.w && y > r.y && y < r.y + r.h;
+    P.items.filter((i) => i.t === "l" && i.e).forEach((i) => { m[i.e] = { it: i, room: rs.find((r) => r.fl === i.fl && inR(r, i.x, i.y)) || null }; });
+    this._liPlC = { p: P, pm: this._liD().pmap, m };
+    return m;
+  }
+  /* Für den Baukasten (Modul 11): Lichtfarbe einer Lampe, Fläche ihres Raums auf der Etage, freie Lampe für einen Tipp an (x, y) */
+  _liLampHex(e) { const s = this._hass.states[e]; return hex(lampRgb(s && s.attributes)); }
+  _liRoomOfLamp(e, fl, P) { const a = this._liAreaOf(e); if (!a) return null; return (P.items || []).find((i) => i.t === "r" && i.fl === fl && this._liPArea(i) === a) || null; }
+  _liFreeLampAt(fl, x, y, P) {
+    const pl = new Set((P.items || []).filter((i) => i.t === "l" && i.e).map((i) => i.e)), r = (P.items || []).find((i) => i.t === "r" && i.fl === fl && this._sfInRoom && this._sfInRoom(i, x, y)), a = r ? this._liPArea(r) : "";
+    const free = Object.keys(this._hass.states).filter((e) => e.startsWith("light.") && !pl.has(e) && !Array.isArray((this._hass.states[e].attributes || {}).entity_id));
+    return (a && free.find((e) => this._liAreaOf(e) === a)) || (r ? free.find((e) => !this._liAreaOf(e)) : "") || "";
   }
   _liPath(i, g) {
     if (i.pts && i.pts.length >= 3) return "M" + i.pts.map((p) => p[0] + " " + p[1]).join("L") + "Z";
@@ -309,19 +336,24 @@ export default (api) => {
       <pattern id="${u}un" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v10" stroke="var(--line,#334155)" stroke-width="3"/></pattern>
 </defs>
       <rect x="${B.x0 - 400}" y="${B.y0 - 400}" width="${B.x1 - B.x0 + 800}" height="${B.y1 - B.y0 + 800}" fill="url(#${u}dot)"/>`;
-    const lab = [];
+    const lab = [], LA = rooms.flatMap((r) => r.lamps), here = LA.filter((x) => x.pe && x.pe.it.fl === fl);   /* B3: im Plan platzierte Lampen dieser Etage */
     rs.forEach((i, ix) => {
       const r = map.get(i.id), n = r ? r.on.length : 0, p = n ? r.pct / 100 : 0, path = this._liPath(i, 3), cid = `${u}c${ix}`;
       const act = r ? (r.lamps.some((x) => !x.un) ? `data-act="lixroom" data-k="${esc(r.k)}"` : "") : adm ? `data-act="lixpmap" data-k="${esc(i.id)}"` : "";
       d += `<g class="l3pr${r ? " ok" : ""}${n ? " on" : ""}" ${act}><title>${esc(i.n || "Raum")}${r ? ` · ${n ? `${n} an · ${r.pct} %` : "aus"} · Antippen schaltet den Raum` : " · nicht zugeordnet"}</title>`;
       if (r) {
-        const o = 0.32 + 0.5 * p;   /* weicher Schein von der Mitte, Stärke nach Helligkeit – Schrift und Punkte bleiben lesbar */
-        d += `<path d="${path}" class="l3pbase"/>`;
+        const pin = here.some((x) => x.on && x.pe.room && x.pe.room.id === i.id), o = (0.32 + 0.5 * p) * (pin ? 0.4 : 1);   /* weicher Schein von der Mitte; stehen Lampen im Plan, leuchten vor allem sie */
+        d += `<clipPath id="${u}k${esc(i.id)}"><path d="${path}"/></clipPath><path d="${path}" class="l3pbase"/>`;
         if (n) d += `<radialGradient id="${cid}" cx=".5" cy=".5" r=".72"><stop offset="0" stop-color="${r.col}" stop-opacity="${o.toFixed(2)}"/><stop offset=".55" stop-color="${r.col}" stop-opacity="${(o * 0.55).toFixed(2)}"/><stop offset="1" stop-color="${r.col}" stop-opacity=".06"/></radialGradient><path class="l3pglow" d="${path}" fill="url(#${cid})"/>`;
         d += `<path d="${path}" fill="none" stroke="${n ? r.col : "var(--line,#334155)"}" stroke-width="2" stroke-opacity="${n ? 0.85 : 0.7}"/>`;
       } else d += `<path d="${path}" class="l3pbase un"/><path d="${path}" fill="url(#${u}un)" opacity=".6"/><path d="${path}" fill="none" stroke="var(--line,#334155)" stroke-width="2" stroke-dasharray="6 5"/>`;
       d += `</g>`;
       lab.push({ i, r });
+    });
+    here.filter((x) => x.on).forEach((x, k) => {
+      const it = x.pe.it, c = hex(x.rgb), b = (x.dim ? x.br : 100) / 100, R = (it.k === "spot" ? 0.7 : it.k === "aussen" ? 1.3 : 1) * (45 + 105 * b), g = `${u}lg${k}`;
+      d += `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity="${(0.5 + 0.35 * b).toFixed(2)}"/><stop offset=".45" stop-color="${c}" stop-opacity="${(0.22 + 0.18 * b).toFixed(2)}"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient>
+        <g pointer-events="none"${x.pe.room ? ` clip-path="url(#${u}k${esc(x.pe.room.id)})"` : ""}>${it.k === "streifen" ? `<rect x="${it.x - 70}" y="${it.y - 45}" width="140" height="90" rx="45" fill="url(#${g})"${it.r ? ` transform="rotate(${it.r} ${it.x} ${it.y})"` : ""}/>` : `<circle cx="${it.x}" cy="${it.y}" r="${R.toFixed(0)}" fill="url(#${g})"/>`}</g>`;
     });
     /* Wände, Türen, Fenster – schlicht, damit das Licht die Hauptrolle spielt */
     items.forEach((i) => {
@@ -344,17 +376,28 @@ export default (api) => {
         if (lk) { const fz = 10.5 * NF, t = `seit ${this._liDur(lk)}`, bw = t.length * fz * 0.56 + fz * 1.9;
           if (bw < w * 0.6) d += `<g><rect x="${x + w - bw - 8}" y="${y + 8}" width="${bw}" height="${fz * 1.7}" rx="${fz * 0.85}" fill="#f59e0b" fill-opacity=".9"/><text x="${x + w - bw - 8 + fz * 0.9}" y="${y + 8 + fz * 1.2}" font-size="${fz}" font-weight="700" fill="#1c1003">${t}</text></g>`;
           else d += `<g><circle cx="${x + w - 8 - fz * 0.75}" cy="${y + 8 + fz * 0.75}" r="${fz * 0.75}" fill="#f59e0b"/><text x="${x + w - 8 - fz * 0.75}" y="${y + 8 + fz * 1.12}" font-size="${fz}" font-weight="800" fill="#1c1003" text-anchor="middle">!</text></g>`; }
+        const nu = r.lamps.filter((q) => q.un).length;   /* B6: Plakette „offline“ unter der Zeit-Plakette */
+        if (nu) { const fz = 10.5 * NF, t = nu > 1 ? `${nu} offline` : "offline", bw = t.length * fz * 0.56 + fz * 1.9, by = y + 8 + (lk ? fz * 2.1 : 0);
+          if (bw < w * 0.6) d += `<g><rect x="${x + w - bw - 8}" y="${by}" width="${bw}" height="${fz * 1.7}" rx="${fz * 0.85}" fill="#dc2626" fill-opacity=".9"/><text x="${x + w - bw - 8 + fz * 0.9}" y="${by + fz * 1.2}" font-size="${fz}" font-weight="700" fill="#fff">${t}</text></g>`; }
       } else d += `<text x="${x + pad}" y="${y + pad + small * 2.4}" font-size="${small * 0.88}" class="l3pz">${adm ? "Antippen zum Zuordnen" : "nicht zugeordnet"}</text>`;
       d += `</g>`;
-      if (r && r.lamps.length) {   /* Lampenpunkte unten links, in kleinen Räumen weniger */
-        const pr = Math.max(5.5, Math.min(9 * NF, h * 0.07, w * 0.05)), stp = pr * 2.9, maxN = Math.max(1, Math.floor((w - pad * 2) / stp)), shown = r.lamps.slice(0, maxN), py = y + h - pad - pr;
+      const loose = r ? r.lamps.filter((q) => !(q.pe && q.pe.it.fl === fl)) : [];
+      if (r && loose.length) {   /* Punkte unten links für Lampen, die (noch) nicht im Plan stehen; in kleinen Räumen weniger */
+        const pr = Math.max(5.5, Math.min(9 * NF, h * 0.07, w * 0.05)), stp = pr * 2.9, maxN = Math.max(1, Math.floor((w - pad * 2) / stp)), shown = loose.slice(0, maxN), py = y + h - pad - pr;
         shown.forEach((x2, k) => {
           const cx = x + pad + pr + k * stp, c = hex(x2.rgb);
           d += `<g class="l3pl${x2.on ? " on" : ""}${x2.un ? " un" : ""}" ${x2.un ? "" : `data-act="lixsw" data-k="${esc(x2.id)}" data-lhold="${esc(x2.id)}"`}><title>${esc(x2.name)} · ${x2.un ? "nicht erreichbar" : x2.on ? (x2.dim ? x2.br + " %" : "an") : "aus"} · lang drücken für Details</title>
             <circle cx="${cx}" cy="${py}" r="${pr * 1.9}" fill="transparent"/>${x2.on ? `<circle cx="${cx}" cy="${py}" r="${pr * 1.8}" fill="${c}" opacity=".28"/>` : ""}<circle cx="${cx}" cy="${py}" r="${pr}" fill="${x2.un ? "none" : x2.on ? c : "#475569"}" stroke="${x2.un ? "#64748b" : x2.on ? "rgba(255,255,255,.85)" : "rgba(0,0,0,.45)"}" stroke-width="${x2.un ? 1.5 : 2}" ${x2.un ? `stroke-dasharray="2.5 2.5"` : ""}/></g>`;
         });
-        if (r.lamps.length > shown.length) d += `<text x="${x + pad + shown.length * stp + pr * 0.2}" y="${py + pr * 0.45}" font-size="${pr * 1.3}" class="l3pz" pointer-events="none">+${r.lamps.length - shown.length}</text>`;
+        if (loose.length > shown.length) d += `<text x="${x + pad + shown.length * stp + pr * 0.2}" y="${py + pr * 0.45}" font-size="${pr * 1.3}" class="l3pz" pointer-events="none">+${loose.length - shown.length}</text>`;
       }
+    });
+    /* B3: Lampen an ihrem Platz (wie im Baukasten), antippen schaltet, lang drücken öffnet das Detail */
+    here.forEach((x) => {
+      const it = x.pe.it, c = hex(x.rgb), q = NF > 1 ? 1.35 : 1, rot = it.r ? ` transform="rotate(${it.r} ${it.x} ${it.y})"` : "", fill = x.un ? "transparent" : x.on ? c : "#334155", stroke = x.un ? "#64748b" : x.on ? "#fff" : "#94a3b8";
+      const body = it.k === "streifen" ? `<rect x="${it.x - 22 * q}" y="${it.y - 4 * q}" width="${44 * q}" height="${8 * q}" rx="${4 * q}" fill="${fill}" stroke="${stroke}" stroke-width="1.8"${x.un ? ` stroke-dasharray="3 2"` : ""}${rot}/>`
+        : `<circle cx="${it.x}" cy="${it.y}" r="${(it.k === "spot" ? 6 : 9) * q}" fill="${fill}" stroke="${stroke}" stroke-width="2"${x.un ? ` stroke-dasharray="2.5 2.5"` : ""}/>${it.k === "steh" ? `<path d="M${it.x} ${it.y + 9 * q}v${7 * q}M${it.x - 5 * q} ${it.y + 16 * q}h${10 * q}" stroke="${stroke}" stroke-width="1.8"/>` : ""}`;
+      d += `<g class="l3pl${x.on ? " on" : ""}${x.un ? " un" : ""}" ${x.un ? "" : `data-act="lixsw" data-k="${esc(x.id)}" data-lhold="${esc(x.id)}"`}><title>${esc(x.name)} · ${x.un ? "nicht erreichbar" : x.on ? (x.dim ? x.br + " %" : "an") : "aus"}${x.pos ? " · Raum aus der Position" : ""} · lang drücken für Details</title><circle cx="${it.x}" cy="${it.y}" r="${20 * q}" fill="transparent"/>${body}</g>`;
     });
     /* Kopfzeile, Etagen, nicht zugeordnete Flächen, Räume ohne Fläche */
     const mapped = new Set([...map.values()].filter(Boolean).map((r) => r.k)), un = allR.filter((i) => !map.get(i.id) && (this._liD().pmap || {})[i.id] !== "-");
@@ -363,9 +406,10 @@ export default (api) => {
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => { const c = allR.filter((i) => i.fl === f.id).map((i) => map.get(i.id)).filter((r) => r && r.on.length).length; return `<button class="${f.id === fl ? "on" : ""}" data-act="lixfl" data-k="${esc(f.id)}">${esc(f.n)}${c ? ` <b class="l3fc">${c}</b>` : ""}</button>`; }).join("")}</span>` : "";
     const sum = `<div class="l3psum"><span>${ic("lamp", 14)}<b>${nOn}</b> ${nOn === 1 ? "Lampe" : "Lampen"} an auf dieser Etage</span><span>${ic("grid", 14)}<b>${flOn.length}</b> von ${rs.filter((i) => map.get(i.id)).length} Räumen hell</span>
       ${(() => { const nl = rs.map((i) => map.get(i.id)).filter((r) => r && longK[r.k]).length; return nl ? `<span class="w">${ic("bell", 14)}<b>${nl}</b> lange an</span>` : ""; })()}
+      ${(() => { const np = LA.filter((x) => !x.pe).length; return np ? (adm && sf ? `<button class="u" data-act="lixplace" title="Im Baukasten von Modul 11 platzieren">${np} ${np === 1 ? "Lampe" : "Lampen"} nicht im Plan${ic("chev", 13)}</button>` : `<span>${np} ${np === 1 ? "Lampe" : "Lampen"} nicht im Plan</span>`) : ""; })()}
       ${un.length ? (adm ? `<button class="u" data-act="lixpun">${un.length} ${un.length === 1 ? "Fläche" : "Flächen"} nicht zugeordnet${ic("chev", 13)}</button>` : `<span class="u">${un.length} nicht zugeordnet</span>`) : ""}</div>`;
     const offRow = off.length ? `<div class="l3poff"><span class="mut sm">Nicht im Grundriss:</span>${off.map((r) => `<button class="l3chip ${r.on.length ? "" : "off"}" style="--c:${r.on.length ? r.col : "#475569"}" data-act="lixroom" data-k="${esc(r.k)}" aria-label="${esc(r.name)} ${r.on.length ? "ausschalten" : "einschalten"}"><i></i>${esc(r.name)} · ${r.on.length ? r.on.length + " an" : "aus"}</button>`).join("")}</div>` : "";
-    const legend = `<div class="l3plg"><span><i style="background:#ffd2a1;box-shadow:0 0 6px #ffb36b"></i>an (echte Farbe)</span><span><i style="background:#475569"></i>aus</span><span><i style="border:1.5px dashed #64748b"></i>offline</span><span><i class="un"></i>nicht zugeordnet</span><span>Fläche antippen = Raum schalten · Punkt antippen = Lampe · lang drücken = Details</span></div>`;
+    const legend = `<div class="l3plg"><span><i style="background:#ffd2a1;box-shadow:0 0 6px #ffb36b"></i>an (echte Farbe)</span><span><i style="background:#475569"></i>aus</span><span><i style="border:1.5px dashed #64748b"></i>offline</span><span><i style="background:#334155;border:1.5px solid #94a3b8"></i>Lampe im Plan</span><span><i class="un"></i>nicht zugeordnet</span><span>Fläche antippen = Raum schalten · Punkt antippen = Lampe · lang drücken = Details</span></div>`;
     const vb = `${B.x0 - 16} ${B.y0 - 16} ${B.x1 - B.x0 + 32} ${B.y1 - B.y0 + 32}`;
     this._liHold();
     return `<div class="card l3pc"><h2>${ic("home", 18)}Lichtkarte<span class="sfhr">${bar}${adm && sf ? `<button class="sfed" data-act="gpedit">${ic("pencil", 14)} Grundriss bearbeiten</button>` : ""}</span></h2>
@@ -430,6 +474,12 @@ export default (api) => {
     if (a === "lixunlink") { const l = this._liLay(); this._liSave({ scenes: { ...l.scenes, [k]: "" } }); return; }
     if ((a === "lixsw" || a === "lixroom") && this._liHeld && Date.now() - this._liHeld < 700) return;   /* nach langem Drücken nicht zusätzlich schalten */
     if (a === "lixfl") { this._liFl = k; this._render(); return; }
+    if (a === "lixplace") {   /* B7: in den Baukasten von Modul 11, Werkzeug „Lampe“ gewählt; die freien Lampen stehen dort als Liste */
+      if (!this._admin()) return;
+      this._act("gpedit", b);
+      let n = 0; const go = () => { if (this._sfEd) { this._sfEd.tool = "l"; this._sfEd.sel = ""; this._render(); } else if (n++ < 12) setTimeout(go, 250); };
+      setTimeout(go, 500); return;
+    }
     if (a === "lixpmap") { if (this._admin()) { this._modal = { type: "lixpmap", k }; this._renderModal(); } return; }
     if (a === "lixpun") {   /* nächste nicht zugeordnete Fläche: Etage wechseln und „Fläche zuordnen“ öffnen */
       const P = this._gpPlan && this._gpPlan(), rs = this._liRooms(), pm = this._liD().pmap || {}, fo = ((P && P.floors) || []).map((f) => f.id);

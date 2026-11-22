@@ -55,7 +55,7 @@ TEST_NOTE_GAP_S = 7 * 86400
 MAX_ACTS = 12
 MAX_LOG = 100
 MAX_META = 60
-MAX_ITEMS = 300
+MAX_ITEMS = 400
 MAX_FLOORS = 6
 MAX_BG = 320_000
 MAX_DEP = 30
@@ -64,7 +64,8 @@ BHIST_MAX = 60
 TEST_ALARM_MAX_S = 120  # Alarm bis zu dieser Dauer gilt als Test per Testknopf
 THIST_MAX = 24  # Prüfungen und Batterietausche je Melder fürs Jahresband
 BHIST_GAP_S = 20 * 3600
-ITEM_T = ("r", "w", "d", "f", "s", "x", "m")
+ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l")  # l = Lampe (Modul 18, ab 2026.11.4b52)
+LAMP_K = ("decke", "steh", "spot", "streifen", "aussen")
 _ID = re.compile(r"^[a-z0-9_]{1,24}$")
 _MON = re.compile(r"^(20\d\d|19\d\d)-(0[1-9]|1[0-2])$")
 _HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
@@ -276,6 +277,9 @@ def clean_plan(raw: Any) -> dict[str, Any]:
         if it["t"] in ("d", "s") and it.get("ex") in (0, 1, True, False):
             o["ex"] = 1 if it["ex"] else 0  # Ausgang: Außentür oder Treppe nach unten
         o["e"] = _ent(it.get("e"), ("binary_sensor",))
+        if it["t"] == "l":  # Lampe: Entität light.*, Art (Streifen wird als Balken gezeichnet und gedreht)
+            o["e"] = _ent(it.get("e"), ("light",))
+            o["k"] = it.get("k") if it.get("k") in LAMP_K else "decke"
         if it["t"] == "m":
             o["rg"] = round(_num(it.get("rg"), 0, 15, 0) * 2) / 2  # Reichweite in Metern, 0 = je nach Art
         if it["t"] == "r":
