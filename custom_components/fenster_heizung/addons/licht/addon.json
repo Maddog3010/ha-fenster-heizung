@@ -11,7 +11,7 @@
   "build": 5,
   "stage": "dev",
   "api": 1,
-  "core_min": "2026.11.4b52",
+  "core_min": "2026.11.4b51",
   "needs": {
     "domains": [
       "light"

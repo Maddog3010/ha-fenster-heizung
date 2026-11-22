@@ -64,7 +64,7 @@ BHIST_MAX = 60
 TEST_ALARM_MAX_S = 120  # Alarm bis zu dieser Dauer gilt als Test per Testknopf
 THIST_MAX = 24  # Prüfungen und Batterietausche je Melder fürs Jahresband
 BHIST_GAP_S = 20 * 3600
-ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l")  # l = Lampe (Modul 18, ab 2026.11.4b52)
+ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l")  # l = Lampe (Modul 18, ab 2026.11.4b51)
 LAMP_K = ("decke", "steh", "spot", "streifen", "aussen")
 _ID = re.compile(r"^[a-z0-9_]{1,24}$")
 _MON = re.compile(r"^(20\d\d|19\d\d)-(0[1-9]|1[0-2])$")
