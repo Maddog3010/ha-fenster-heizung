@@ -2,6 +2,21 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b54] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.6 Build 6 – eine Optik überall, neuer Baukasten, Ebene „Jetzt“ und Raum-Blatt.
+
+### Neu
+- **Eine Optik überall:** Die Wärmekarte (Modul 1), der Plan in Modul 11 und der Baukasten zeichnen den Grundriss jetzt mit derselben Optik wie Modul 0 (Wände, Böden, Türen, Fenster, Treppen). Die Module legen nur noch ihre eigenen Dinge darüber – Temperaturfarben, Melder, Lampen.
+- **Neuer Baukasten:** Leiste oben (Etage, Rückgängig/Wiederholen, Mehrfach, Stil, Speichern), schmale Werkzeugleiste links, Eigenschaften rechts neben dem Plan. Auf dem Handy liegen die Werkzeuge unter dem Plan.
+- **Ablage zum Ziehen:** Lampen und Melder ohne Platz liegen unter dem Plan und lassen sich direkt an ihre Stelle ziehen (oder wie bisher antippen).
+- **Ebene „Jetzt“:** Im Plan von Modul 0 zeigt jeder Raum seine Temperatur, Räume mit Bewegung leuchten kurz auf.
+- **Raum-Blatt:** Ein Raum im Plan antippen öffnet ein Blatt mit Temperatur, Fenster, Bewegung, Meldern und Lampen (direkt schaltbar) und Sprüngen zu Wärmekarte, Lichtkarte, Modul 11 und Bearbeiten.
+
+### Geändert
+- Breite und Tiefe eines Raums stehen im Baukasten in Metern mit Fläche in m².
+- „Etage & Plan“ (Name, Maßstab, Hintergrundbild) ist in den Eigenschaften zusammengeklappt.
+
 ## [2026.11.4b53] - 2026-11-22
 
 Zweites Paket rund um Grundriss und Licht: **Modul 18 · Licht & Lampen** v0.8 (Addon `licht` 0.8.0) bekommt den Platz im Lampen-Fenster und **Regeln** (Bewegung, Alle weg, Alarm, Abends). **Modul 0 · Haus & Grundriss** v0.5 bekommt Sichern & Einlesen mit Verlauf und eine neue, detaillierte Grundriss-Optik in drei Stilen.

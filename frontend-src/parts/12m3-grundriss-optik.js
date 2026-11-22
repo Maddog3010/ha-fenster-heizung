@@ -31,12 +31,15 @@
   _grPoly(r) { return r.pts && r.pts.length >= 3 ? r.pts : [[r.x, r.y], [r.x + r.w, r.y], [r.x + r.w, r.y + r.h], [r.x, r.y + r.h]]; }
   _grAreaM2(r, sc) { const p = this._grPoly(r); let s = 0; p.forEach((a, i) => { const b = p[(i + 1) % p.length]; s += a[0] * b[1] - b[0] * a[1]; }); return Math.abs(s) / 2 / (sc * sc); }
   _grCen(r) { if (!(r.pts && r.pts.length >= 3)) return [r.x + r.w / 2, r.y + r.h / 2]; const n = r.pts.length; return [r.pts.reduce((a, p) => a + p[0], 0) / n, r.pts.reduce((a, p) => a + p[1], 0) / n]; }
-  /* Der ganze Plan einer Etage als SVG. o: { style, dims, layers: {licht, sf}, narrow } → { vb, svg } */
+  /* Der ganze Plan einer Etage als SVG. o: { style, dims, layers: {licht, sf}, narrow } → { vb, svg }
+     Ab Build 6 auch als Unterlage für Baukasten, Wärmekarte und Modul 11: labels (Raumnamen), windows, doors, stairs, deco (Nordpfeil/Maßstab),
+     cover (Fläche, die der Hintergrund mindestens abdeckt), click (Räume antippbar → Raum-Blatt), now (Ebene „Jetzt“), bgImg. */
   _grDraw(P, fl, o) {
     const T = this._grTheme(o.style), items = (P.items || []).filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r"), sc = P.scale > 0 ? P.scale : 40;
     const u = "gd" + (this.constructor._gdN = ((this.constructor._gdN || 0) + 1) % 1e6) + "_", st = this._hass.states, NF = o.narrow ? 1.6 : 1, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: 1 });
     const pathOf = (r) => "M" + this._grPoly(r).map((p) => p[0] + " " + p[1]).join("L") + "Z";
     const bx = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
+    o = { labels: true, windows: true, doors: true, stairs: true, deco: true, bgImg: true, ...o };
     const pad = o.dims ? 70 : 40, vb = { x: bx.x0 - pad, y: bx.y0 - pad, w: bx.x1 - bx.x0 + pad * 2, h: bx.y1 - bx.y0 + pad * 2 + 34 };
     const W = (T.wall || "").replace("U_", u), WI = (T.wallIn || "").replace("U_", u), kinds = new Map(rs.map((r) => [r.id, this._grKind(r)]));
     /* Muster: Böden in Plan-Einheiten (40 = 1 m) */
@@ -52,28 +55,29 @@
       <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="${o.style === "hell" ? 3 : 6}" stdDeviation="${o.style === "hell" ? 4 : 8}" flood-color="#000" flood-opacity="${o.style === "hell" ? 0.18 : 0.55}"/></filter>
       <marker id="${u}ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="${T.stair}"/></marker>
     </defs>
-    <rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/><rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="url(#${u}grid)"/>`;
-    const bg = (P.bg || {})[fl]; if (bg) d += `<image href="${esc(bg)}" x="${bx.x0}" y="${bx.y0}" width="${bx.x1 - bx.x0}" height="${bx.y1 - bx.y0}" opacity=".22" preserveAspectRatio="xMidYMid meet"/>`;
+    <rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/>${o.cover ? `<rect x="${o.cover.x}" y="${o.cover.y}" width="${o.cover.w}" height="${o.cover.h}" fill="${T.bg}"/>` : ""}<rect x="${Math.min(vb.x, o.cover ? o.cover.x : vb.x)}" y="${Math.min(vb.y, o.cover ? o.cover.y : vb.y)}" width="${Math.max(vb.w, o.cover ? o.cover.w + 400 : 0)}" height="${Math.max(vb.h, o.cover ? o.cover.h + 400 : 0)}" fill="url(#${u}grid)"/>`;
+    const bg = (P.bg || {})[fl]; if (bg && o.bgImg) d += `<image href="${esc(bg)}" x="${bx.x0}" y="${bx.y0}" width="${bx.x1 - bx.x0}" height="${bx.y1 - bx.y0}" opacity=".22" preserveAspectRatio="xMidYMid meet"/>`;
     const out = rs.filter((r) => kinds.get(r.id).k === "aussen" || r.ds), ins = rs.filter((r) => !out.includes(r));
     /* 1) Außenflächen: Pflaster, gestrichelter Rand */
     out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${T.sub}" stroke-width="2" stroke-dasharray="8 6" opacity=".9"/>`; });
     /* 2) Wände: dicke Kontur aller Innenräume (wird zur Außenwand), darüber Böden mit dünner Kontur (Innenwand). Gemeinsame Kanten bleiben dünn. */
     d += `<g${T.shadow ? ` filter="url(#${u}sh)"` : ""}>${ins.map((r) => `<path d="${pathOf(r)}" fill="${o.style === "bauplan" ? "#0a3566" : T.wallIn.startsWith("url") ? T.bg : T.wallIn}" stroke="${W}" stroke-width="16" stroke-linejoin="miter"/>`).join("")}</g>`;
-    d += ins.map((r) => `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${WI}" stroke-width="6" stroke-linejoin="miter"/>`).join("");
+    d += ins.map((r) => `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${WI}" stroke-width="6" stroke-linejoin="miter"${o.click ? ` data-act="grxroom" data-k="${esc(r.id)}" style="cursor:pointer"` : ""}/>`).join("");
+    if (o.click) out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="transparent" data-act="grxroom" data-k="${esc(r.id)}" style="cursor:pointer"/>`; });
     /* 3) Freie Wände */
     items.filter((i) => i.t === "w").forEach((w) => { d += `<line x1="${w.x}" y1="${w.y}" x2="${w.x2}" y2="${w.y2}" stroke="${WI}" stroke-width="7" stroke-linecap="square"/>`; });
     /* 4) Türen, Durchgänge, Fenster, Treppen, Text */
     const floorAt = (x, y) => { const r = ins.find((q) => (this._sfInRoom ? this._sfInRoom(q, x, y + 10) || this._sfInRoom(q, x, y - 10) : x > q.x && x < q.x + q.w && y > q.y - 10 && y < q.y + q.h + 10)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
     items.forEach((i) => {
       const rot = i.r ? `rotate(${i.r} ${i.x} ${i.y})` : "", mir = i.mh || i.mv ? ` translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})` : "";
-      if (i.t === "d") {
+      if (i.t === "d" && o.doors) {
         const gap = `<rect x="${i.x - 16}" y="${i.y - 9}" width="32" height="18" fill="${floorAt(i.x, i.y)}"/>`;
         if (i.dg) d += `<g transform="${rot}">${gap}<path d="M${i.x - 16} ${i.y - 9}v18M${i.x + 16} ${i.y - 9}v18" stroke="${WI}" stroke-width="3"/></g>`;
         else d += `<g transform="${rot}${mir}">${gap}<path d="M${i.x - 15} ${i.y}V${i.y - 30}" stroke="${i.ex === 1 ? T.accent : T.leaf}" stroke-width="2.6" stroke-linecap="round"/><path d="M${i.x + 15} ${i.y}A30 30 0 0 0 ${i.x - 15} ${i.y - 30}" fill="none" stroke="${T.arc}" stroke-width="1.3" stroke-dasharray="4 3"/>${i.ex === 1 ? `<path d="M${i.x - 6} ${i.y + 16}l6 6l6-6" fill="none" stroke="${T.accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>` : ""}</g>`;
-      } else if (i.t === "f") {
+      } else if (i.t === "f" && o.windows) {
         const open = !!(i.e && st[i.e] && st[i.e].state === "on"), c = open ? T.open : T.glass;
         d += `<g transform="${rot}"><title>Fenster${i.e ? ` · ${esc(this._wzName(i.e))} · ${open ? "offen" : "zu"}` : ""}</title><rect x="${i.x - 18}" y="${i.y - 6}" width="36" height="12" fill="${T.bg}"/><rect x="${i.x - 18}" y="${i.y - 6}" width="36" height="12" fill="none" stroke="${T.frame}" stroke-width="1.6"/><path d="M${i.x - 18} ${i.y}H${i.x + 18}" stroke="${c}" stroke-width="3"/>${open ? `<path d="M${i.x - 16} ${i.y - 6}L${i.x - 4} ${i.y - 20}" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/>` : ""}</g>`;
-      } else if (i.t === "s") {
+      } else if (i.t === "s" && o.stairs) {
         const w = i.w || 60, h = i.h || 90, n = Math.max(5, Math.round(h / 14)), vert = h >= w;
         const steps = Array.from({ length: n - 1 }, (_, k) => vert ? `M${i.x} ${i.y + (k + 1) * h / n}h${w}` : `M${i.x + (k + 1) * w / n} ${i.y}v${h}`).join("");
         d += `<g transform="${rot}"><rect x="${i.x}" y="${i.y}" width="${w}" height="${h}" fill="${T.bg}" stroke="${T.stair}" stroke-width="1.6"/><path d="${steps}" stroke="${T.stair}" stroke-width="1" opacity=".8"/>${vert ? `<path d="M${i.x + w / 2} ${i.y + h - 8}V${i.y + 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>` : `<path d="M${i.x + 8} ${i.y + h / 2}H${i.x + w - 10}" stroke="${T.stair}" stroke-width="1.8" marker-end="url(#${u}ar)"/>`}</g>`;
@@ -91,7 +95,8 @@
       d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${10 * q}" fill="${o.style === "hell" ? "#fff" : "#111827"}" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><g transform="translate(${i.x - 6 * q} ${i.y - 6 * q}) scale(${(12 * q) / 24})" fill="none" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
     });
     /* 5) Raumnamen mit Symbol und Fläche */
-    rs.forEach((r) => {
+    if (o.now) d += this._grNow(P, fl, rs, o, T);
+    if (o.labels) rs.forEach((r) => {
       const [cx0, cy0] = this._grCen(r), obs = items.filter((i) => ["l", "m", "d", "s"].includes(i.t));   /* Platz für die Beschriftung suchen: im Raum, nicht auf Lampen, Meldern, Türen */
       const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y);
       const free = (x, y) => y - 44 > r.y + 6 && y + 22 < r.y + r.h - 6 && inR(x, y - 34) && inR(x - 44, y + 4) && inR(x + 44, y + 4) && inR(x - 36, y + 22) && inR(x + 36, y + 22) && !obs.some((i) => Math.abs(i.x - x) < 72 && i.y > y - 48 && i.y < y + 28);
@@ -110,7 +115,7 @@
         <path d="M${x} ${bx.y0}V${bx.y1}M${x - 8} ${bx.y0}H${bx.x0 - 12}M${x - 8} ${bx.y1}H${bx.x0 - 12}" stroke="${T.dim}" stroke-width="1"/>${tick(x, bx.y0)}${tick(x, bx.y1)}<text x="${x - 6}" y="${(bx.y0 + bx.y1) / 2}" text-anchor="middle" transform="rotate(-90 ${x - 6} ${(bx.y0 + bx.y1) / 2})">${f1(hm)} m</text></g>`;
     }
     const sbM = (bx.x1 - bx.x0) / sc > 12 ? 5 : 2, sx = bx.x1 - sbM * sc, sy = bx.y1 + 30;
-    d += `<g fill="${T.dim}" font-size="${11 * NF}"><rect x="${sx}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="${T.dim}"/><rect x="${sx + sbM * sc / 2}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="none" stroke="${T.dim}"/><text x="${sx}" y="${sy - 5}">0</text><text x="${bx.x1}" y="${sy - 5}" text-anchor="end">${sbM} m</text>
+    if (o.deco) d += `<g fill="${T.dim}" font-size="${11 * NF}"><rect x="${sx}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="${T.dim}"/><rect x="${sx + sbM * sc / 2}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="none" stroke="${T.dim}"/><text x="${sx}" y="${sy - 5}">0</text><text x="${bx.x1}" y="${sy - 5}" text-anchor="end">${sbM} m</text>
       <g transform="translate(${bx.x0 + 10} ${sy - 2})"><path d="M0 -14L6 4L0 0L-6 4Z" fill="${T.text}"/><text x="12" y="2" font-weight="700" fill="${T.text}">N</text></g></g>`;
     return { vb, svg: d };
   }

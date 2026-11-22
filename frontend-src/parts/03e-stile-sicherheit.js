@@ -135,4 +135,26 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 /* Lampen im Baukasten (Modul 18 ab Build 5) */
 .sfli .sflp{fill:#334155;stroke:#94a3b8;stroke-width:1.6}.sfli.on .sflp{fill:var(--lc);stroke:#fff}.sfli .sflg{fill:var(--lc);opacity:.32}.sfli .sflf{stroke:#94a3b8;stroke-width:1.6;fill:none}
 .sfli.no .sflp{stroke-dasharray:3 2;fill:transparent}.sfli.un .sflp{fill:transparent;stroke-dasharray:2 2}
+
+/* Modul 0 Build 6: neue Optik als Unterlage (Baukasten, Modul 11) und neuer Baukasten */
+.sfpe.gd .sfr,.sfpv.gd .sfr{fill:transparent;stroke:transparent}.sfpv.gd .sfr.al{fill:rgba(239,68,68,.3)}.sfpv.gd .sfr.wn{fill:rgba(245,158,11,.18)}
+.sfpe.gd .sfrn,.sfpv.gd .sfrn{display:none}.sfpe.gd .sfw,.sfpv.gd .sfw{stroke:transparent}.sfpe.gd .sfdg,.sfpe.gd .sfda,.sfpe.gd .sffw,.sfpe.gd .sfst,.sfpe.gd .sfsl,
+.sfpv.gd .sfdg,.sfpv.gd .sfda,.sfpv.gd .sffw,.sfpv.gd .sfst,.sfpv.gd .sfsl{opacity:0}.sfpe.gd image{opacity:.35}.sfpe.gd .sfsel{stroke:#2dd4bf;stroke-width:3;stroke-dasharray:8 5;fill:rgba(45,212,191,.08)}
+.sfpe.gd .sftx,.sfpv.gd .sftx{fill:#94a3b8;font-style:italic}
+.gredh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 14px;border-radius:12px;margin-bottom:10px;background:color-mix(in srgb,var(--teal,#2dd4bf) 10%,transparent);color:var(--primary-text-color)}.gredh span{color:var(--mut);font-size:.84rem}
+.gred2{display:flex;flex-direction:column;gap:10px}
+.grtop{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;border-radius:14px;background:var(--card,#111a2b);border:1px solid var(--line)}
+.grtop .sffl{display:inline-flex;gap:6px;flex-wrap:wrap}.grtop .grfill{flex:1}.grtop .grsp{width:4px}
+.grb{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:none;color:var(--primary-text-color);border-radius:999px;padding:7px 13px;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer}.grb:disabled{opacity:.4}.grb.on{border-color:var(--teal);color:var(--teal)}.grb.pri{background:var(--teal,#2dd4bf);border-color:var(--teal,#2dd4bf);color:#042f2e}
+.grb i{width:12px;height:12px;border-radius:4px;display:inline-block}.grb .sw-modern{background:linear-gradient(135deg,#0d1524 50%,#d7dee8 50%)}.grb .sw-bauplan{background:linear-gradient(135deg,#0a3566 50%,#e0f2fe 50%)}.grb .sw-hell{background:linear-gradient(135deg,#f7f4ee 50%,#1f2430 50%)}
+.grbody{display:grid;grid-template-columns:64px minmax(0,1fr) minmax(250px,300px);gap:10px;align-items:start}
+.grrail{position:sticky;top:64px;display:flex;flex-direction:column;gap:4px;padding:6px 4px;border-radius:14px;background:var(--card,#111a2b);border:1px solid var(--line)}.grrail i{height:1px;background:var(--line);margin:3px 6px}
+.grtl{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:none;color:var(--mut);border-radius:10px;padding:6px 2px;font:inherit;font-size:.62rem;cursor:pointer}.grtl.on{background:color-mix(in srgb,var(--teal,#2dd4bf) 18%,transparent);color:var(--teal,#2dd4bf);box-shadow:inset 0 0 0 1px var(--teal,#2dd4bf)}
+.grcv{min-width:0}.grcv .sfpl.edit{border-radius:14px;overflow:hidden;border:1px solid var(--line)}.grcv svg.sfpe{display:block;width:100%;height:auto;touch-action:none}
+.grhint{display:flex;gap:8px;align-items:center;color:var(--mut);font-size:.8rem;margin:8px 2px}
+.grtray{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px 10px;border:1px dashed var(--line);border-radius:12px}.grtray>span{color:var(--mut);font-size:.8rem;display:inline-flex;gap:6px;align-items:center;width:100%}
+.grchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card,#111a2b);color:var(--primary-text-color);border-radius:999px;padding:6px 12px;font:inherit;font-size:.82rem;cursor:grab;touch-action:none}.grchip i{width:9px;height:9px;border-radius:50%}.grchip small{color:var(--mut)}
+.grprops{position:sticky;top:64px;display:flex;flex-direction:column;gap:10px}.grpsec{background:var(--card,#111a2b);border:1px solid var(--line);border-radius:14px;padding:12px}.grpsec summary{cursor:pointer;font-weight:700}.grpsec>b{display:block;margin-bottom:6px}
+.grseg{display:flex;flex-wrap:wrap;gap:6px}.grseg button{border:1px solid var(--line);background:none;color:var(--primary-text-color);border-radius:999px;padding:5px 11px;font:inherit;font-size:.8rem;cursor:pointer}.grseg button.on{border-color:var(--teal);color:var(--teal)}
+@media (max-width:900px){.grbody{grid-template-columns:minmax(0,1fr)}.grrail{position:static;flex-direction:row;overflow-x:auto;order:2}.grrail i{width:1px;height:auto;margin:6px 3px}.grtl{min-width:56px}.grcv{order:1}.grprops{position:static;order:3}}
 `;

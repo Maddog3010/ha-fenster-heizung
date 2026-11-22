@@ -35,6 +35,7 @@
       else if (t && t.getAttribute && t.getAttribute("role") === "button" && t.dataset && t.dataset.act && t.tagName !== "BUTTON" && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); t.click(); } });
     sr.addEventListener("change", (e) => this._onChange(e.target));
     this._sfxBind(sr);
+    if (this._grDragBind) this._grDragBind(sr);
   }
 
   /* Uhrzeit-Felder: zwei kleine Zahlenfelder „08 : 00“, funktionieren in allen Apps und Browsern */

@@ -52,19 +52,20 @@
       <pattern id="${u}dot" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.1" fill="var(--primary-text-color)" opacity=".13"/></pattern>
       <linearGradient id="${u}hw" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f97316" stop-opacity=".9"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></linearGradient>
       <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#000" flood-opacity=".35"/></filter></defs>
-      <rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#${u}dot)"/>`;
-    if (P.bg && P.bg[fl]) d += `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".25"></image>`;
+      `;
+    /* Modul 0 Build 6: Unterlage im neuen Stil (Wände, Böden, Türen, Treppen); Modul 1 legt nur Temperaturfarben, Fenster und Beschriftung darüber */
+    d += this._grDraw ? `<g pointer-events="none">${this._grDraw(P, fl, { style: this._grStyle(), dims: false, narrow: NF > 1, labels: false, windows: false, deco: false, layers: { licht: false, sf: false } }).svg}</g>` : `<rect x="-2000" y="-2000" width="5000" height="5000" fill="url(#${u}dot)"/>`;
     /* Räume: Kachel, Licht, Rand, Heizkörper */
     const label = [];
     rs.forEach((i, ix) => {
+      if (i.t === "s") return;   /* Treppen zeichnet die Unterlage */
       const r = i.t === "r" ? this._gpMatch(i, all) : null, s = r ? (r.ms ? this._gpMsS(r.ms) : S[r.id]) : null, col = s ? (s.k === "aus" ? "#64748b" : this._rkCol(s.cur, lo, hi)) : null;
       const x = i.x + gap, y = i.y + gap, w = Math.max(4, i.w - 2 * gap), h = Math.max(4, i.h - 2 * gap), rx = Math.min(14, w / 6, h / 6), gid = `${u}r${ix}`;
       const act = r ? (r.ms ? (adm ? `data-act="msxedit" data-id="${esc(r.id)}"` : "") : `data-act="rkmenu" data-id="${esc(r.id)}"`) : adm && i.t === "r" ? `data-act="gpmap" data-k="${esc(i.id)}"` : "";
       d += `<g class="gpr${r ? " on" : ""}${s ? " k-" + s.k : ""}${s && s.out ? " out" : ""}" ${act}><title>${esc(i.n || "Raum")}${s ? " · " + esc(s.lab) : r ? "" : " · nicht zugeordnet"}</title>`;
       if (s) {
         d += `<radialGradient id="${gid}" cx="0" cy="0" r="1.25" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="${col}" stop-opacity="${s.k === "aus" ? .18 : .62}"/><stop offset=".65" stop-color="${col}" stop-opacity="${s.k === "aus" ? .06 : .2}"/><stop offset="1" stop-color="${col}" stop-opacity=".08"/></radialGradient>
-          <rect class="gpbase" x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" filter="url(#${u}sh)"/>
-          <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#${gid})"/>
+          <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#${gid})" opacity=".9"/>
           <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="${col}" stroke-width="2" stroke-opacity=".85"${s.out ? ` stroke-dasharray="9 6"` : ""}/>`;
         if (s.ms && w > 70 && h > 60) {   /* Messraum: Bild statt Heizkörper (außen Wetter, innen Thermometer) */
           const rs2 = Math.min(40 * NF, w * .26, h * .34), gx2 = x + w - rs2 - 8, gy2 = y + h - rs2 - 6, g = s.out ? (s.qk === "frost" || s.qk === "glatt" ? "frost" : "forecast") : "thermostat";
@@ -76,7 +77,7 @@
           d += this._gx("radiator", rs2, { on: s.heating }).replace('<svg class="gx" ', `<svg class="gx gprad${s.heating ? " hot" : ""}" x="${gx2.toFixed(1)}" y="${gy2.toFixed(1)}" `);
           if (s.heating) d += `<g class="gphw">${[0, 1, 2].map((k) => `<path class="gphw${k}" d="M${(gx2 + rs2 * (.25 + k * .25)).toFixed(1)} ${(gy2 + rs2 * .2).toFixed(1)} q-3 -5 0 -10 q3 -5 0 -10" fill="none" stroke="url(#${u}hw)" stroke-width="2.6" stroke-linecap="round"/>`).join("")}</g>`;
         }
-      } else d += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" class="gpbase un"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#${u}un)" opacity=".7"/>
+      } else d += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="transparent"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${rx}" fill="url(#${u}un)" opacity=".45"/>
           <rect x="${x + 1}" y="${y + 1}" width="${w - 2}" height="${h - 2}" rx="${rx - 1}" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="6 5"/>`;
       d += `</g>`;
       label.push({ i, r, s, x, y, w, h });
@@ -85,9 +86,8 @@
     const used = new Map();
     items.forEach((i) => {
       const a = i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : "";
-      if (i.t === "w") d += `<path d="M${i.x} ${i.y}L${i.x2} ${i.y2}" class="gpw"/>`;
-      else if (i.t === "d") d += `<g${a} class="gpdo"><rect x="${i.x - 15}" y="${i.y - 4}" width="30" height="8" rx="2" class="gpgapr"/><path d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15" fill="none" stroke-width="1.5" stroke-dasharray="3 3"/><path d="M${i.x - 15} ${i.y}v-15" stroke-width="2" stroke-linecap="round"/></g>`;
-      else if (i.t === "f") {
+      if (i.t === "w" || i.t === "d") return;   /* zeichnet die Unterlage */
+      if (i.t === "f") {
         const lr = label.find((x) => x.s && x.i.t === "r" && inside(x.i, i.x, i.y)), k0 = lr ? used.get(lr.i.id) || 0 : 0;
         if (lr) used.set(lr.i.id, k0 + 1);
         const op = lr && k0 < lr.s.open.length + lr.s.tilt.length, full = op && lr.s.open.length;
