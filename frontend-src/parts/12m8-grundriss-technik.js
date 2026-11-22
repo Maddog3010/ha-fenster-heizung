@@ -39,7 +39,11 @@
     const a = s.attributes || {}, d = i.e.split(".")[0], v = s.state, un = a.unit_of_measurement || "";
     if (["unavailable", "unknown"].includes(v)) return { t: "offline", on: false };
     if (d === "climate") return { t: `${a.current_temperature != null ? num(a.current_temperature, 1) + "°" : ""}${a.temperature != null ? " → " + num(a.temperature, 1) + "°" : ""}`.trim() || v, on: a.hvac_action === "heating" || a.hvac_action === "cooling" || (v !== "off" && a.hvac_action == null) };
-    if (d === "sensor") { const n = Number(v); return { t: isFinite(n) && v !== "" ? `${num(n, Math.abs(n) < 10 && !Number.isInteger(n) ? 1 : 0)}${un ? " " + un : ""}` : v, on: false }; }
+    if (d === "sensor") { const n = Number(v); return { t: isFinite(n) && v !== "" ? `${num(n, (un === "°C" || (Math.abs(n) < 10 && !Number.isInteger(n))) && !Number.isInteger(n) ? 1 : 0)}${un ? " " + un : ""}` : v, on: false }; }
+    if (d === "cover") return { t: ({ open: "offen", closed: "zu", opening: "öffnet", closing: "schließt" }[v] || v) + (a.current_position != null && v !== "closed" ? ` ${a.current_position} %` : ""), on: v !== "closed" };
+    if (d === "lawn_mower" || d === "vacuum") return { t: { mowing: "mäht", cleaning: "saugt", docked: "in Station", paused: "Pause", returning: "fährt heim", error: "Fehler" }[v] || v, on: ["mowing", "cleaning"].includes(v), al: v === "error" };
+    if (d === "device_tracker") return { t: v === "home" ? "zu Hause" : v === "not_home" ? "unterwegs" : v, on: v === "home" };
+    if (d === "calendar") return { t: a.message ? String(a.message).slice(0, 24) : v === "on" ? "heute" : "–", on: v === "on" };
     if (d === "binary_sensor") { const dc = a.device_class; return { t: v === "on" ? ({ moisture: "NASS", window: "offen", door: "offen", opening: "offen", motion: "Bewegung", occupancy: "belegt", presence: "da" }[dc] || "an") : ({ moisture: "trocken", window: "zu", door: "zu", opening: "zu" }[dc] || "–"), on: v === "on", al: v === "on" && dc === "moisture" }; }
     if (d === "valve") return { t: v === "open" ? "offen" : v === "closed" ? "zu" : v, on: v === "open" };
     if (d === "media_player") return { t: v === "playing" ? "spielt" : v === "off" ? "aus" : v, on: v === "playing" };

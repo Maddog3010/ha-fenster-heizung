@@ -2,6 +2,32 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b56] - 2026-11-22
+
+**Modul 0 · Haus & Grundriss** v0.10 Build 10 – Puppenhaus, Sonnenlicht, Möbel und Außenbereich.
+
+### Neu
+- **Puppenhaus:** Im Plan von Modul 0 neben „Plan“ der Knopf „Puppenhaus“ – alle Etagen schräg übereinander, Wände leicht hochgezogen, mit Böden, Möbeln, Türen, Fenstern und Lampen. Eine Etage antippen klappt sie flach. Das Puppenhaus ist auch das Bild im Banner von Modul 0.
+- **Sonnenlicht:** Neue Ebene „Sonne“. Aus dem Sonnenstand (sun.sun oder aus dem Standort berechnet) und der Nordrichtung des Plans fallen Lichtflächen durch die Fenster auf den Boden. Leiste mit Uhrzeit, Himmelsrichtung, Höhe der Sonne und „Sonne in: Wohnzimmer …“, dazu ein Tageszeit-Regler (5–22 Uhr) und „Jetzt“.
+- **Nordrichtung** unter „Etage & Plan“ in 15°-Schritten; der Nordpfeil im Plan dreht mit.
+- **Möbel** (Werkzeug „Möbel“): Doppel- und Einzelbett, Sofa, Sessel, Esstisch mit Stühlen, Couchtisch, Schreibtisch, Schrank, Regal, Kommode, TV-Board, Küchenzeile, Kochinsel, Kühlschrank, Waschmaschine, Badewanne, Dusche, WC, Waschbecken – mit Normgröße, Breite und Tiefe in 10-cm-Schritten, drehbar. Eigene Ebene „Möbel“.
+- **Außenbereich** mit 42 Teilen in drei Gruppen:
+  - Garten & Pflanzen: Rasen, Beet, Hochbeet, Baum, Obstbaum, Busch, Hecke, Gartenteich, Gewächshaus, Kompost, Regentonne, Bewässerungszone, Wasserhahn außen, Mähroboter
+  - Spielen & Freizeit: Spielturm mit Rutsche, Schaukel, Sandkasten, Trampolin, Pool, Whirlpool, Gartensauna, Gartentisch, Liegestuhl, Sonnenschirm, Grill, Feuerstelle
+  - Wege, Bauten & Technik: Weg/Einfahrt, Trittsteine, Holzterrasse, Zaun, Tor, Gartenhaus, Garage, Carport, PV-Anlage, Zisterne, Mülltonnen, Fahrradständer, Auto, Gartenlampe
+- Viele Gartenteile lassen sich mit einer Entität verbinden und zeigen ihren Zustand: Pool, Whirlpool, Sauna, Teich und Gewächshaus mit Temperatur, Bewässerungszone wird blau mit Sprühbögen, solange sie läuft, Gartenlampe leuchtet, Garage/Tor „offen/zu“, Mähroboter „mäht“, Regentonne und Zisterne mit Füllstand.
+- **Grundstück:** „Grundstück anlegen“ unter „Etage & Plan“ erzeugt die Etage „Außen“. Das Haus erscheint dort als Umriss mit „Haus · EG“ – antippen öffnet die Etage. Im Puppenhaus liegt das Grundstück unter dem Haus.
+- Der Baukasten wächst mit: Was über 800 × 480 hinausragt (z. B. der Garten), bleibt sichtbar und bearbeitbar.
+
+### Behoben
+- **Raumnamen** blieben bei kleinen oder schmalen Räumen (besonders auf Handy und iPad) nicht im Raum und lagen über Meldern. Die Beschriftung passt jetzt ihre Schrift der Raumbreite an, bricht lange Namen um oder kürzt sie, bleibt ganz im Raum und weicht Meldern, Lampen, Türen, Fenstern, Treppen, Geräten, Technik und der Temperatur-Marke aus. Melder, Lampen und Geräte liegen immer über den Namen.
+- Die Temperatur-Marke („Jetzt“) sitzt auch bei schrägen und L-förmigen Räumen im Raum.
+- Auf dem Handy liegt die Zoom-Leiste über dem Plan statt darauf.
+
+### Geändert
+- Banner: „2 Etagen + Grundstück“, das Grundstück zählt nicht als Etage.
+- Zustände im Plan kennen jetzt auch Rollo/Tor („offen 70 %“), Mähroboter, Personen-Tracker und Kalender.
+
 ## [2026.11.4b55] - 2026-11-22
 
 Zwei Builds für **Modul 0 · Haus & Grundriss** (jetzt v0.9): Build 8 – Zoom, Vollbild, Export und Dashboard-Karte; Build 9 – Haustechnik und Notfall-Punkte, Raum-Sensoren, Bereiche anlegen.

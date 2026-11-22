@@ -28,6 +28,46 @@
     const hit = K.find(([rx]) => rx.test(n));
     return hit ? { k: hit[1], i: hit[2] } : { k: "teppich", i: "home" };
   }
+  /* Raumnamen (Build 10 neu): Schrift passt sich der Raumbreite an (kleiner, sonst zweizeilig oder gekürzt), die Plakette liegt ganz im Raum
+     und meidet Melder, Lampen, Türen, Treppen, Geräte, Technik und die Temperatur-Marke. Ohne Platz: zuerst ohne Symbol, dann ohne Fläche. */
+  _grLabels(rs, items, o, T, kinds, NF, sc, f1, q) {
+    let d = "";
+    const obsAll = items.filter((i) => ["l", "m", "d", "s", "g", "h", "f"].includes(i.t)).map((i) => (i.t === "s" ? [i.x, i.y, i.x + (i.w || 60), i.y + (i.h || 90)] : i.t === "d" || i.t === "f" ? [i.x - 14, i.y - 14, i.x + 14, i.y + 14] : [i.x - 12 * q, i.y - 12 * q, i.x + 12 * q, i.y + 12 * q]));
+    const tw = (t, f) => [...String(t)].length * f * 0.6;
+    rs.forEach((r) => {
+      const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y), k = kinds.get(r.id), m2 = this._grAreaM2(r, sc), [cx0, cy0] = this._grCen(r);
+      const nm = r.n || (this._grArea && this._grArea(r) ? this._grArea(r).name : "Raum"), chip = (this._grChipAt || {})[r.id];
+      const obs = obsAll.concat(chip ? [chip] : []);   /* Temperatur-Marke freihalten */
+      const maxW = Math.max(30, r.w - 18), base = Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1), minF = 7.5 * (o.narrow ? 1.15 : 1);
+      let fz = Math.min(base, (maxW - 14) / Math.max(1, [...nm].length * 0.6)), lines = [nm];
+      if (fz < minF) {   /* zweizeilig an Leerzeichen, Bindestrich oder „s“-Fuge, sonst kürzen */
+        const cut = nm.search(/[ \-\u2010]/) > 0 ? nm.search(/[ \-\u2010]/) : Math.ceil(nm.length / 2), a1 = nm.slice(0, cut + (nm[cut] === "-" ? 1 : 0)).trim(), a2 = nm.slice(cut + (nm[cut] === "-" ? 1 : 0)).trim();
+        lines = a2 ? [a1, a2] : [nm]; fz = Math.min(base, (maxW - 14) / Math.max(1, Math.max(...lines.map((x) => [...x].length)) * 0.6));
+        if (fz < minF) { fz = minF; const n = Math.max(3, Math.floor((maxW - 14) / (fz * 0.6)) - 1); lines = lines.map((x) => ([...x].length > n ? [...x].slice(0, n).join("") + "…" : x)); }
+      }
+      const area = m2 >= 0.5 ? `${f1(m2)} m²` : "", dim = o.dims && !(r.pts && r.pts.length >= 3) ? ` · ${f1(r.w / sc)} × ${f1(r.h / sc)} m` : "";
+      const variants = [{ ico: true, ar: true, s: 1 }, { ico: false, ar: true, s: 1 }, { ico: false, ar: true, s: 0.85 }, { ico: false, ar: true, s: 0.72 }, { ico: false, ar: false, s: 0.85 }];
+      const fz0 = fz;
+      let pick = null;
+      for (const v of variants) {
+        fz = Math.max(minF * 0.9, fz0 * v.s);
+        const sub = v.ar ? area + dim : "", w = Math.min(maxW, Math.max(...lines.map((x) => tw(x, fz)), tw(sub, fz * 0.78)) + 16), lh = fz * 1.2, h = lines.length * lh + (sub ? fz * 1.05 : 0) + 8, ih = v.ico && !(Math.min(r.w, r.h) < 80) && ICONS[k.i] ? 22 * NF : 0;
+        if (v.ico && !ih) continue;
+        const fits = (x, y) => { const x0 = x - w / 2, x1 = x + w / 2, y0 = y - h / 2 - ih, y1 = y + h / 2; return [[x0, y0], [x1, y0], [x0, y1], [x1, y1], [x, y0], [x, y1], [x0, y], [x1, y]].every((p) => inR(p[0], p[1])) && !obs.some((b) => b[0] < x1 + 2 && b[2] > x0 - 2 && b[1] < y1 + 2 && b[3] > y0 - 2); };
+        const cand = [];
+        for (let gy = 0; gy <= 8; gy++) for (let gx = 0; gx <= 8; gx++) { const x = r.x + (r.w * (gx + 0.5)) / 9, y = r.y + (r.h * (gy + 0.5)) / 9; cand.push([x, y, Math.hypot(x - cx0, (y - cy0) * 1.3)]); }
+        cand.sort((A, B) => A[2] - B[2]);
+        const hit = cand.find(([x, y]) => fits(x, y));
+        if (hit) { pick = { x: hit[0], y: hit[1], w, h, lh, sub, ih }; break; }
+      }
+      if (!pick) { fz = Math.max(minF * 0.9, fz0 * 0.85); const w = Math.min(maxW, Math.max(...lines.map((x) => tw(x, fz))) + 16), lh = fz * 1.2; pick = { x: cx0, y: cy0, w, h: lines.length * lh + 8, lh, sub: "", ih: 0 }; }
+      const { x, y, w, h, lh, sub, ih } = pick, top = y - h / 2;
+      const ico = ih ? `<g transform="translate(${x - 10 * NF} ${top - ih}) scale(${(20 * NF) / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
+      const plate = o.style === "modern" ? `<rect x="${x - w / 2}" y="${top}" width="${w}" height="${h}" rx="${Math.min(10, fz * 0.6)}" fill="#0b1220" opacity=".55"/>` : "";
+      d += `<g pointer-events="none">${ico}${plate}${lines.map((t, n) => `<text x="${x}" y="${top + 4 + lh * (n + 0.8)}" text-anchor="middle" font-size="${fz}" font-weight="700" fill="${T.text}">${esc(t)}</text>`).join("")}${sub ? `<text x="${x}" y="${top + 4 + lh * lines.length + fz * 0.8}" text-anchor="middle" font-size="${fz * 0.78}" fill="${T.sub}">${esc(sub)}</text>` : ""}</g>`;
+    });
+    return d;
+  }
   _grPoly(r) { return r.pts && r.pts.length >= 3 ? r.pts : [[r.x, r.y], [r.x + r.w, r.y], [r.x + r.w, r.y + r.h], [r.x, r.y + r.h]]; }
   _grAreaM2(r, sc) { const p = this._grPoly(r); let s = 0; p.forEach((a, i) => { const b = p[(i + 1) % p.length]; s += a[0] * b[1] - b[0] * a[1]; }); return Math.abs(s) / 2 / (sc * sc); }
   _grCen(r) { if (!(r.pts && r.pts.length >= 3)) return [r.x + r.w / 2, r.y + r.h / 2]; const n = r.pts.length; return [r.pts.reduce((a, p) => a + p[0], 0) / n, r.pts.reduce((a, p) => a + p[1], 0) / n]; }
@@ -38,7 +78,7 @@
     const T = this._grTheme(o.style), items = (P.items || []).filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r"), sc = P.scale > 0 ? P.scale : 40;
     const u = "gd" + (this.constructor._gdN = ((this.constructor._gdN || 0) + 1) % 1e6) + "_", st = this._hass.states, NF = o.narrow ? 1.6 : 1, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: 1 });
     const pathOf = (r) => "M" + this._grPoly(r).map((p) => p[0] + " " + p[1]).join("L") + "Z";
-    const bx = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
+    const bxl = [...rs, ...items.filter((i) => i.t === "o" && i.w)], bx = bxl.length ? bxl.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
     o = { labels: true, windows: true, doors: true, stairs: true, deco: true, bgImg: true, ...o };
     const pad = o.dims ? 70 : 40, vb = { x: bx.x0 - pad, y: bx.y0 - pad, w: bx.x1 - bx.x0 + pad * 2, h: bx.y1 - bx.y0 + pad * 2 + 34 };
     const W = (T.wall || "").replace("U_", u), WI = (T.wallIn || "").replace("U_", u), kinds = new Map(rs.map((r) => [r.id, this._grKind(r)]));
@@ -55,9 +95,10 @@
       <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="${o.style === "hell" ? 3 : 6}" stdDeviation="${o.style === "hell" ? 4 : 8}" flood-color="#000" flood-opacity="${o.style === "hell" ? 0.18 : 0.55}"/></filter>
       <marker id="${u}ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="${T.stair}"/></marker>
     </defs>
-    <rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/>${o.cover ? `<rect x="${o.cover.x}" y="${o.cover.y}" width="${o.cover.w}" height="${o.cover.h}" fill="${T.bg}"/>` : ""}<rect x="${Math.min(vb.x, o.cover ? o.cover.x : vb.x)}" y="${Math.min(vb.y, o.cover ? o.cover.y : vb.y)}" width="${Math.max(vb.w, o.cover ? o.cover.w + 400 : 0)}" height="${Math.max(vb.h, o.cover ? o.cover.h + 400 : 0)}" fill="url(#${u}grid)"/>`;
+    ${o.bare ? "" : `<rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/>${o.cover ? `<rect x="${o.cover.x}" y="${o.cover.y}" width="${o.cover.w}" height="${o.cover.h}" fill="${T.bg}"/>` : ""}<rect x="${Math.min(vb.x, o.cover ? o.cover.x : vb.x)}" y="${Math.min(vb.y, o.cover ? o.cover.y : vb.y)}" width="${Math.max(vb.w, o.cover ? o.cover.w + 400 : 0)}" height="${Math.max(vb.h, o.cover ? o.cover.h + 400 : 0)}" fill="url(#${u}grid)"/>`}`;   /* bare: ohne Hintergrund (Puppenhaus) */
     const bg = (P.bg || {})[fl]; if (bg && o.bgImg) d += `<image href="${esc(bg)}" x="${bx.x0}" y="${bx.y0}" width="${bx.x1 - bx.x0}" height="${bx.y1 - bx.y0}" opacity=".22" preserveAspectRatio="xMidYMid meet"/>`;
     const out = rs.filter((r) => kinds.get(r.id).k === "aussen" || r.ds), ins = rs.filter((r) => !out.includes(r));
+    if (this._grMobLayer) d += this._grMobLayer(P, fl, T, o, "aussen", st);   /* Build 10: Grundstück, Rasen, Wege, Pool … unter den Räumen */
     /* 1) Außenflächen: Pflaster, gestrichelter Rand */
     out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${T.sub}" stroke-width="2" stroke-dasharray="8 6" opacity=".9"/>`; });
     /* 2) Wände: dicke Kontur aller Innenräume (wird zur Außenwand), darüber Böden mit dünner Kontur (Innenwand). Gemeinsame Kanten bleiben dünn. */
@@ -66,6 +107,8 @@
     if (o.click) out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="transparent" data-act="grxroom" data-k="${esc(r.id)}" style="cursor:pointer"/>`; });
     /* 3) Freie Wände */
     items.filter((i) => i.t === "w").forEach((w) => { d += `<line x1="${w.x}" y1="${w.y}" x2="${w.x2}" y2="${w.y2}" stroke="${WI}" stroke-width="7" stroke-linecap="square"/>`; });
+    if (this._grMobLayer && (!o.layers || o.layers.mo)) d += this._grMobLayer(P, fl, T, o, "innen", st);   /* Build 10: Möbel */
+    if (o.layers && o.layers.sun && this._grSunSvg) { const SG = this._grSunSvg(P, fl, T, u, ins, bx); this._grSunLast = SG; d += SG.svg; }   /* Build 10: Sonnenlicht */
     /* 4) Türen, Durchgänge, Fenster, Treppen, Text */
     const floorAtR = (i) => { const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an) * 10, ny = Math.cos(an) * 10, inR = (q, x, y) => (this._sfInRoom ? this._sfInRoom(q, x, y) : x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h); const r = ins.find((q) => inR(q, i.x + nx, i.y + ny) || inR(q, i.x - nx, i.y - ny)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
     items.forEach((i) => {
@@ -75,8 +118,12 @@
       else if (i.t === "a" && o.doors && this._grAwnSvg) d += this._grAwnSvg(i, T, P.scale > 0 ? P.scale : 40, st, u);   /* Build 7: Markise */
       else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" font-size="${12 * NF}" font-style="italic" fill="${T.sub}">${esc(i.n || "")}</text>`;
     });
-    /* 6) Ebenen: Lampen (Modul 18) und Melder (Modul 11) */
+    /* 5) Raumnamen und „Jetzt“ – vor den Lampen und Meldern, damit diese immer sichtbar oben liegen (Build 10) */
     const q = o.narrow ? 1.4 : 1;
+    this._grChipAt = {}; const nowSvg = o.now ? this._grNow(P, fl, rs, o, T) : "";   /* merkt sich, wo Temperatur-Marken sitzen */
+    if (o.labels) d += this._grLabels(rs, items, o, T, kinds, NF, sc, f1, q);
+    d += nowSvg;
+    /* 6) Ebenen: Lampen (Modul 18) und Melder (Modul 11) */
     if (o.layers.licht) items.filter((i) => i.t === "l" && i.e).forEach((i, n) => {
       const s2 = st[i.e], on = !!(s2 && s2.state === "on"), c = on && this._liLampHex ? this._liLampHex(i.e) : "#64748b", g = `${u}lg${n}`;
       d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><circle cx="${i.x}" cy="${i.y}" r="${46 * q}" fill="url(#${g})"/>` : ""}
@@ -88,20 +135,6 @@
       const s2 = i.e && st[i.e], al = !!(s2 && s2.state === "on");
       d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${10 * q}" fill="${o.style === "hell" ? "#fff" : "#111827"}" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><g transform="translate(${i.x - 6 * q} ${i.y - 6 * q}) scale(${(12 * q) / 24})" fill="none" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
     });
-    /* 5) Raumnamen mit Symbol und Fläche */
-    if (o.now) d += this._grNow(P, fl, rs, o, T);
-    if (o.labels) rs.forEach((r) => {
-      const [cx0, cy0] = this._grCen(r), obs = items.filter((i) => ["l", "m", "d", "s", "g"].includes(i.t)).map((i) => (i.t === "s" ? [i.x, i.y, i.x + (i.w || 60), i.y + (i.h || 90)] : [i.x - 8, i.y - 8, i.x + 8, i.y + 8]));   /* Platz für die Beschriftung suchen: im Raum, nicht auf Lampen, Meldern, Türen */
-      const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y);
-      const free = (x, y) => y - 44 > r.y + 6 && y + 22 < r.y + r.h - 6 && inR(x, y - 34) && inR(x - 44, y + 4) && inR(x + 44, y + 4) && inR(x - 36, y + 22) && inR(x + 36, y + 22) && !obs.some((b) => b[0] < x + 64 && b[2] > x - 64 && b[1] < y + 28 && b[3] > y - 48);
-      const cand = [];
-      [cx0, r.x + r.w * 0.3, r.x + r.w * 0.7, r.x + r.w * 0.15, r.x + r.w * 0.85].forEach((x) => [0, 40, -40, 70, -70, 100, -100, 140, -140].forEach((o2) => cand.push([x, cy0 + o2])));
-      const [cx, cy] = cand.find(([x, y]) => free(x, y)) || [cx0, cy0], k = kinds.get(r.id), m2 = this._grAreaM2(r, sc), small = Math.min(r.w, r.h) < 80, fz = Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1);
-      const nm = r.n || (this._grArea && this._grArea(r) ? this._grArea(r).name : "Raum"), ico = !small && ICONS[k.i] ? `<g transform="translate(${cx - 10 * NF} ${cy - fz - 22 * NF}) scale(${(20 * NF) / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
-      const plate = o.style === "modern" ? `<rect x="${cx - Math.min(r.w - 16, nm.length * fz * 0.62 + 18) / 2}" y="${cy - fz - 2}" width="${Math.min(r.w - 16, nm.length * fz * 0.62 + 18)}" height="${fz * 2.4 + 6}" rx="${fz * 0.6}" fill="#0b1220" opacity=".55"/>` : "";
-      d += `<g pointer-events="none">${ico}${plate}<text x="${cx}" y="${cy + fz * 0.15}" text-anchor="middle" font-size="${fz}" font-weight="700" fill="${T.text}">${esc(nm)}</text>
-        <text x="${cx}" y="${cy + fz * 1.3}" text-anchor="middle" font-size="${fz * 0.78}" fill="${T.sub}">${m2 >= 0.5 ? `${f1(m2)} m²` : ""}${o.dims && !(r.pts && r.pts.length >= 3) ? ` · ${f1(r.w / sc)} × ${f1(r.h / sc)} m` : ""}</text></g>`;
-    });
     /* 7) Maßketten außen, Nordpfeil und Maßstab */
     if (o.dims && rs.length) {
       const y = bx.y0 - 38, x = bx.x0 - 38, wm = (bx.x1 - bx.x0) / sc, hm = (bx.y1 - bx.y0) / sc, tick = (x1, y1) => `<path d="M${x1 - 5} ${y1 + 5}L${x1 + 5} ${y1 - 5}" stroke="${T.dim}" stroke-width="1.6"/>`;
@@ -110,6 +143,6 @@
     }
     const sbM = (bx.x1 - bx.x0) / sc > 12 ? 5 : 2, sx = bx.x1 - sbM * sc, sy = bx.y1 + 30;
     if (o.deco) d += `<g fill="${T.dim}" font-size="${11 * NF}"><rect x="${sx}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="${T.dim}"/><rect x="${sx + sbM * sc / 2}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="none" stroke="${T.dim}"/><text x="${sx}" y="${sy - 5}">0</text><text x="${bx.x1}" y="${sy - 5}" text-anchor="end">${sbM} m</text>
-      <g transform="translate(${bx.x0 + 10} ${sy - 2})"><path d="M0 -14L6 4L0 0L-6 4Z" fill="${T.text}"/><text x="12" y="2" font-weight="700" fill="${T.text}">N</text></g></g>`;
+      <g transform="translate(${bx.x0 + 10} ${sy - 2}) rotate(${P.north || 0})"><path d="M0 -14L6 4L0 0L-6 4Z" fill="${T.text}"/><text x="12" y="2" font-weight="700" fill="${T.text}">N</text></g></g>`;
     return { vb, svg: d };
   }

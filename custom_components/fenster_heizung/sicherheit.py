@@ -64,7 +64,7 @@ BHIST_MAX = 60
 TEST_ALARM_MAX_S = 120  # Alarm bis zu dieser Dauer gilt als Test per Testknopf
 THIST_MAX = 24  # Prüfungen und Batterietausche je Melder fürs Jahresband
 BHIST_GAP_S = 20 * 3600
-ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l", "g", "a", "h")  # l = Lampe (Modul 18, ab 2026.11.4b51), g = mobiles Gerät, a = Markise (Modul 0 Build 7), h = Haustechnik (Build 9)
+ITEM_T = ("r", "w", "d", "f", "s", "x", "m", "l", "g", "a", "h", "o")  # l = Lampe (Modul 18, ab 2026.11.4b51), g = mobiles Gerät, a = Markise (Modul 0 Build 7), h = Haustechnik (Build 9)
 LAMP_K = ("decke", "steh", "spot", "streifen", "aussen", "tisch")  # tisch ab Modul 18 Build 7
 DOOR_K = ("doppel", "schiebe", "pendel", "falt", "garage", "glas")  # Modul 0 Build 7: Arten der Tür (ohne = Drehtür)
 WIN_K = ("boden", "dach", "rollo")  # Modul 0 Build 7: Arten des Fensters (ohne = normal)
@@ -74,6 +74,12 @@ DEV_DOM = ("switch", "climate", "humidifier", "fan", "input_boolean", "water_hea
 TECH_K = ("heizkoerper", "thermostat", "klima", "lueftung", "kamin", "therme", "wp", "speicher", "steckdose", "schalter", "sicherung", "zaehler", "wechselrichter", "akku", "wallbox",
           "temp", "bewegung", "kontakt", "wasser", "luft", "hell", "wlan", "router", "kamera", "klingel", "lautsprecher", "tv",
           "haupthahn_w", "haupthahn_g", "feuerloescher", "notausgang", "sammelpunkt", "erstehilfe", "notiz")  # Modul 0 Build 9: Haustechnik, Sensoren, Notfall
+MOB_K = ("bett", "bett1", "sofa", "sessel", "tisch", "couchtisch", "schreibtisch", "schrank", "regal", "kommode", "tvboard", "kueche", "insel", "kuehlschrank",
+         "waschmaschine", "badewanne", "dusche", "wc", "waschbecken",
+         "baum", "busch", "hecke", "beet", "rasen", "weg", "zaun", "tor", "pool", "gartenhaus", "garage", "carport", "pv", "muell", "zisterne",
+         "gartentisch", "grill", "trampolin", "auto", "maehroboter",
+         "hochbeet", "obstbaum", "teich", "gewaechshaus", "kompost", "regentonne", "bewaesserung", "wasserhahn", "spielturm", "schaukel", "sandkasten",
+         "whirlpool", "sauna", "liegestuhl", "sonnenschirm", "feuerstelle", "trittsteine", "holzterrasse", "fahrrad", "gartenlampe")  # Modul 0 Build 10: Möbel und Außenbereich
 _ID = re.compile(r"^[a-z0-9_]{1,24}$")
 _MON = re.compile(r"^(20\d\d|19\d\d)-(0[1-9]|1[0-2])$")
 _HM = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
@@ -258,6 +264,8 @@ def clean_plan(raw: Any) -> dict[str, Any]:
         if isinstance(f, dict) and _ID.match(str(f.get("id") or "")) and f["id"] not in ids and len(floors) < MAX_FLOORS:
             ids.add(f["id"])
             floors.append({"id": f["id"], "n": str(f.get("n") or f["id"]).strip()[:16] or f["id"]})
+            if f.get("ga") in (1, True):  # Modul 0 Build 10: Grundstück (Außenbereich) statt Geschoss
+                floors[-1]["ga"] = 1
     if not floors:
         floors, ids = [{"id": "eg", "n": "EG"}], {"eg"}
     items, seen = [], set()
@@ -301,6 +309,9 @@ def clean_plan(raw: Any) -> dict[str, Any]:
             o["gk"] = it.get("gk") if it.get("gk") in DEV_K else "heizer"
             if it.get("fix") in (1, True):
                 o["fix"] = 1
+        if it["t"] == "o":  # Möbel / Außen: Art, Größe über w/h, optional eine Entität (Pool-Temperatur, PV-Leistung, Zisterne …)
+            o["ok"] = it.get("ok") if it.get("ok") in MOB_K else "tisch"
+            o["e"] = _ent(it.get("e"))
         if it["t"] == "h":  # Haustechnik: Art, beliebige Entität, Reichweite/Blickwinkel, Notiztext
             o["hk"] = it.get("hk") if it.get("hk") in TECH_K else "steckdose"
             o["e"] = _ent(it.get("e"))
@@ -327,7 +338,10 @@ def clean_plan(raw: Any) -> dict[str, Any]:
     for k, v in (r.get("bg") if isinstance(r.get("bg"), dict) else {}).items():
         if k in ids and isinstance(v, str) and len(v) <= MAX_BG and re.match(r"^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$", v):
             bg[k] = v
-    return {"floors": floors, "items": items, "bg": bg, "scale": int(_num(r.get("scale"), 10, 120, 40))}  # Bildpunkte je Meter (Plan ist 800 breit)
+    out = {"floors": floors, "items": items, "bg": bg, "scale": int(_num(r.get("scale"), 10, 120, 40))}  # Bildpunkte je Meter (Plan ist 800 breit)
+    if r.get("north") is not None:  # Modul 0 Build 10: wohin Norden zeigt (Grad, im Uhrzeigersinn ab „oben“) – für das Sonnenlicht
+        out["north"] = int(round(_num(r.get("north"), -360, 720, 0))) % 360
+    return out  # Bildpunkte je Meter (Plan ist 800 breit)
 
 
 def kind_of(device_class: Any) -> tuple[str, str] | None:

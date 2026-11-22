@@ -785,7 +785,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  gr: { v: "0.9", b: 9, d: "2026-11-22", p: "2026.11.4b55", log: [["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
+  gr: { v: "0.10", b: 10, d: "2026-11-22", p: "2026.11.4b56", log: [["0.10", 10, "2026.11.4b56", "Puppenhaus (alle Etagen schräg übereinander, Antippen klappt flach, auch im Banner), Sonnenlicht durch die Fenster mit Tageszeit-Regler und Nordrichtung, Möbel (19) und Außenbereich (42: Garten & Pflanzen, Spielen & Freizeit, Wege, Bauten & Technik) mit Größe in cm, Grundstück als eigene Etage mit Haus-Umriss, Zustände (Pool, Bewässerung, Gartenlampe …). Raumnamen passen sich dem Raum an und verdecken keine Melder mehr"], ["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
   fh: { v: "1.8", b: 8, d: "2026-11-12", p: "2026.11.3", log: [["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3525,6 +3525,11 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 .card.grfull{position:fixed;inset:0;z-index:30;margin:0;border-radius:0;overflow:auto;display:flex;flex-direction:column}.card.grfull .grv{flex:1;display:flex;align-items:center;justify-content:center}.card.grfull .grv svg{max-height:calc(100vh - 120px);width:100%}
 .grpre{margin:0;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--primary-text-color) 6%,transparent);font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre;overflow:auto}
 .grtkg{margin:6px 0}.grtkg small{display:block;font-weight:700;margin-bottom:4px}.grtkd{margin:4px 0 8px}.grtkd summary{cursor:pointer;font-weight:700;padding:4px 0}
+/* Modul 0 Build 10: Puppenhaus, Sonne */
+.grv3{display:flex;flex-direction:column;align-items:center}.grv3 svg{width:100%;max-height:72vh}.grv3 .grdl:hover{filter:brightness(1.15)}.grv3h{margin-top:4px}
+.grhs.grdm{width:190px;height:auto;max-height:140px;flex:none}
+.grsun{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 8px;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,#fbbf24 10%,transparent);border:1px solid color-mix(in srgb,#fbbf24 35%,transparent);font-size:.82rem}.grsun .gsi{color:#fbbf24;font-size:1.1rem}.grsun>span:nth-child(2){flex:1;min-width:200px}.grsun input[type=range]{flex:1;min-width:140px;accent-color:#fbbf24}
+@media (max-width:600px){.grzb{position:static;margin:8px auto 0;width:max-content}.grzb button{min-width:30px;height:30px}}
 `;
 /* Versions-Statistik: Popup und Seite in Einstellungen → System */
 const CSS_STS = `
@@ -15569,7 +15574,7 @@ class FensterHeizungPanel extends HTMLElement {
   _sfOvOld(T) { const p = this._sfOvParts(T); return `${p.empty}<div class="enc"><div class="enco">${p.ampel}${p.log}</div><div class="enco">${p.dep}</div></div>${p.list}`; }
   /* ---- Grundriss: Ansicht und Baukasten */
   _sfPlanInner(fl, edit) {
-    const S = this._sfx(), P = this._sfPl(), dm = this._sfDetMap(), items = P.items.filter((i) => i.fl === fl), KN = this._sfxKind(), ed = this._sfEd, sel = edit && ed ? ed.sel : "", ord = ["r", "s", "w", "a", "d", "f", "x", "h", "g", "l", "m"], liOn = !!(this._liOn && this._liOn());
+    const S = this._sfx(), P = this._sfPl(), dm = this._sfDetMap(), items = P.items.filter((i) => i.fl === fl), KN = this._sfxKind(), ed = this._sfEd, sel = edit && ed ? ed.sel : "", ord = ["r", "o", "s", "w", "a", "d", "f", "x", "h", "g", "l", "m"], liOn = !!(this._liOn && this._liOn());
     const mk = items.filter((i) => i.t === "m" && i.e && dm[i.e] && dm[i.e].alarm);
     const inside = (r, m) => this._sfInRoom(r, m.x, m.y, -0.01);
     let out = P.bg[fl] ? `<image href="${P.bg[fl]}" x="0" y="0" width="800" height="480" preserveAspectRatio="xMidYMid meet" opacity=".6"></image>` : "";
@@ -15584,6 +15589,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (i.t === "w") out += `<g ${id}><path class="sfw" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path><path class="sfhit" d="M${i.x} ${i.y}L${i.x2} ${i.y2}"></path></g>`;
       else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect>${i.dg ? `<path class="sfda" d="M${i.x - 15} ${i.y - 6}v12M${i.x + 15} ${i.y - 6}v12"></path>` : `<path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"${i.mh || i.mv ? ` transform="translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})"` : ""}></path>`}<rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 16) - 2}" y="${i.y - 16}" width="${(this._grHw ? this._grHw(i) : 16) * 2 + 4}" height="32"></rect></g>`;
       else if (i.t === "f") out += `<g ${id}${a}><rect class="sffw" x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7"></rect><rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 18) - 2}" y="${i.y - 14}" width="${(this._grHw ? this._grHw(i) : 18) * 2 + 4}" height="28"></rect></g>`;
+      else if (i.t === "o") out += `<g ${id}><rect class="sfhit" x="${i.x}" y="${i.y}" width="${Math.max(8, i.w || 0)}" height="${Math.max(8, i.h || 0)}"${i.r ? ` transform="rotate(${i.r} ${i.x + (i.w || 0) / 2} ${i.y + (i.h || 0) / 2})"` : ""}></rect></g>`;
       else if (i.t === "h") out += `<g ${id}><rect class="sfhit" x="${i.x - 14}" y="${i.y - 14}" width="28" height="28" rx="6"></rect></g>`;
       else if (i.t === "g") { out += `<g ${id}><rect class="sfhit" x="${i.x - 15}" y="${i.y - 15}" width="30" height="30" rx="7"></rect></g>`; }
       else if (i.t === "a") { const hw = this._grHw ? this._grHw(i) : 80; out += `<g ${id}${a}><rect class="sfhit" x="${i.x - hw}" y="${i.y - 10}" width="${hw * 2}" height="20"></rect></g>`; }
@@ -15609,7 +15615,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (i) {
         const hd = (k, x, y) => `<g data-h="${k}"><circle class="sfhh" cx="${x}" cy="${y}" r="18"></circle><rect class="sfhd" x="${x - 5}" y="${y - 5}" width="10" height="10" rx="2"></rect></g>`;
         if (i.t === "r" && i.pts) out += `<path class="sfsel" d="${this._sfRPath(i)}"></path>${this._sfRHandles(i, ed.vsel)}`;
-        else if (i.t === "r" || i.t === "s") out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${hd("br", i.x + i.w, i.y + i.h)}`;
+        else if (i.t === "r" || i.t === "s" || i.t === "o") out += `<rect class="sfsel" x="${i.x}" y="${i.y}" width="${i.w}" height="${i.h}"></rect>${hd("br", i.x + i.w, i.y + i.h)}`;
         else if (i.t === "w") out += hd("p1", i.x, i.y) + hd("p2", i.x2, i.y2);
         else out += `<circle class="sfsel" cx="${i.x}" cy="${i.y}" r="${i.t === "m" ? 22 : 20}"></circle>`;
       }
@@ -15661,7 +15667,7 @@ class FensterHeizungPanel extends HTMLElement {
     const fname = P.floors.find((f) => f.id === fl);
     const mlt = ed.multi || [], multiBox = `<div class="sfpr"><b>${mlt.length} Elemente ausgewählt</b><div class="mut sm" style="margin:4px 0 8px">Tippe weitere Elemente an oder ziehe eines, um alle zu verschieben.</div><div class="sfbtn"><button class="btn2" data-act="sfxmdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxmdel">Löschen</button></div><button class="btn2" data-act="sfxmclr" style="flex:none;width:100%;margin-top:8px">Auswahl aufheben</button></div>`;
     const prop = mlt.length ? multiBox : !sel ? `<div class="mut sm">Wähle ein Element im Plan aus, oder ein Werkzeug links. Räume und Wände ziehst du auf, alles andere setzt du mit einem Tipp.</div>`
-      : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t === "d" && sel.dg ? "x" : sel.t] === "Text" && sel.t === "d" ? "Durchgang" : { r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder", l: "Lampe", g: sel.gk === "entf" ? "Luftentfeuchter" : "Mobiler Heizer", a: "Markise", h: this._grTk ? this._grTk(sel).n : "Technik" }[sel.t]}</b>
+      : `<div class="sfpr"><b>${{ r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder" }[sel.t === "d" && sel.dg ? "x" : sel.t] === "Text" && sel.t === "d" ? "Durchgang" : { r: "Raum", w: "Wand", d: "Tür", f: "Fenster", s: "Treppe", x: "Text", m: "Melder", l: "Lampe", g: sel.gk === "entf" ? "Luftentfeuchter" : "Mobiler Heizer", a: "Markise", h: this._grTk ? this._grTk(sel).n : "Technik", o: this._grMk ? this._grMk(sel).n : "Möbel" }[sel.t]}</b>
         ${sel.t === "r" || sel.t === "s" || sel.t === "x" ? `<div class="sffld"><label>Name</label><input class="osel" data-f="sfxpn" value="${esc(sel.n)}" maxlength="30" placeholder="${sel.t === "x" ? "Text" : "zum Beispiel Küche"}"></div>` : ""}
         ${sel.t === "r" || sel.t === "s" ? `<div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="sfxpw" data-s="-10" aria-label="schmaler">${ic("minus", 16)}</button><b>${num(sel.w / this._sfScale(), 2)} m</b><button data-act="sfxpw" data-s="10" aria-label="breiter">${ic("plus", 16)}</button></div></div><div class="vrow" style="margin:6px 0"><span>Tiefe</span><div class="step" style="flex:none"><button data-act="sfxph" data-s="-10" aria-label="weniger tief">${ic("minus", 16)}</button><b>${num(sel.h / this._sfScale(), 2)} m</b><button data-act="sfxph" data-s="10" aria-label="tiefer">${ic("plus", 16)}</button></div></div>${sel.t === "r" ? `<div class="mut sm" style="margin:-2px 0 6px">= ${num(this._grAreaM2 ? this._grAreaM2(sel, this._sfScale()) : (sel.w * sel.h) / (this._sfScale() ** 2), 1)} m²</div>` : ""}` : ""}
         ${sel.t === "r" ? this._sfRPanel(sel) : ""}
@@ -15670,7 +15676,7 @@ class FensterHeizungPanel extends HTMLElement {
         ${(sel.t === "d" || sel.t === "f") && this._grOpenProps ? this._grOpenProps(sel) : ""}${(sel.t === "l" && sel.k === "streifen") || ((sel.t === "d" || sel.t === "f") && !this._grOpenProps) ? `<button class="btn2" data-act="sfxprot" style="flex:none;width:100%;margin:6px 0">Drehen</button>` : ""}
         ${sel.t === "d" ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpdg" data-v="0" class="${sel.dg ? "" : "on"}">Tür</button><button data-act="sfxpdg" data-v="1" class="${sel.dg ? "on" : ""}">Durchgang</button></div>` : ""}
         ${sel.t === "d" && !sel.dg ? `<div class="sfshp" style="grid-template-columns:repeat(2,1fr)"><button data-act="sfxpmir" data-k="mv" class="${sel.mv ? "on" : ""}">Öffnung spiegeln (innen/außen)</button><button data-act="sfxpmir" data-k="mh" class="${sel.mh ? "on" : ""}">Angel spiegeln (links/rechts)</button></div>` : ""}
-        ${sel.t === "l" ? this._sfLampProps(sel) : ""}${sel.t === "s" && this._grStairProps ? this._grStairProps(sel) : ""}${sel.t === "g" && this._grDevProps ? this._grDevProps(sel) : ""}${sel.t === "a" && this._grAwnProps ? this._grAwnProps(sel) : ""}${sel.t === "h" && this._grTechProps ? this._grTechProps(sel) : ""}
+        ${sel.t === "l" ? this._sfLampProps(sel) : ""}${sel.t === "s" && this._grStairProps ? this._grStairProps(sel) : ""}${sel.t === "g" && this._grDevProps ? this._grDevProps(sel) : ""}${sel.t === "a" && this._grAwnProps ? this._grAwnProps(sel) : ""}${sel.t === "h" && this._grTechProps ? this._grTechProps(sel) : ""}${sel.t === "o" && this._grMobProps ? this._grMobProps(sel) : ""}
         ${sel.t === "m" ? `<div class="sffld"><label>Melder (aus den Einstellungen)</label>${this._sfSel(T.l.map((d) => d.id), sel.e || "", "sfxpe", "", "– keiner –")}</div>` : ""}
         ${sel.t === "m" ? `<div class="vrow" style="margin:6px 0"><span>Reichweite<small class="mut" style="display:block">Wie weit der Melder im Plan reicht</small></span><div class="step" style="flex:none"><button data-act="sfxprg" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${num(this._sfRangeM(sel, sel.e ? dm[sel.e] : null), 1)} m</b><button data-act="sfxprg" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>` : ""}${sel.t === "r" ? `<div class="sffld"><label>Raum aus Modul 1 (optional)</label><div class="gschips"><button class="gsch ${!sel.lk ? "sel" : ""}" data-act="sfxplkset" data-v="">keiner</button>${this._sfRoomNames().map((n) => `<button class="gsch ${sel.lk === n ? "sel" : ""}" data-act="sfxplkset" data-v="${esc(n)}">${esc(n)}</button>`).join("")}</div></div>` : ""}
         <div class="sfbtn"><button class="btn2" data-act="sfxpdup">Duplizieren</button><button class="btn2 sfdel" data-act="sfxpdel">Löschen</button></div></div>`;
@@ -15877,7 +15883,11 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Zeigen und Ziehen im Baukasten (Maus, Finger, Stift) */
   _sfxBind(sr) {
-    const pt = (e, svg) => { const b = svg.getBoundingClientRect(); return [Math.max(0, Math.min(800, ((e.clientX - b.left) / b.width) * 800)), Math.max(0, Math.min(480, ((e.clientY - b.top) / b.height) * 480))]; };
+    const pt = (e, svg) => {   /* Build 10: über die Bildschirm-Matrix – der Baukasten kann größer sein als 800 × 480 (Grundstück) */
+      const v = svg.viewBox.baseVal, lo = v && v.width ? [Math.max(-50, v.x), Math.max(-50, v.y)] : [0, 0], hi = v && v.width ? [Math.min(1200, v.x + v.width), Math.min(1200, v.y + v.height)] : [800, 480];
+      try { const m = svg.getScreenCTM(), q = svg.createSVGPoint(); q.x = e.clientX; q.y = e.clientY; const r = q.matrixTransform(m.inverse()); return [Math.max(lo[0], Math.min(hi[0], r.x)), Math.max(lo[1], Math.min(hi[1], r.y))]; }
+      catch (_) { const b = svg.getBoundingClientRect(); return [Math.max(0, Math.min(800, ((e.clientX - b.left) / b.width) * 800)), Math.max(0, Math.min(480, ((e.clientY - b.top) / b.height) * 480))]; }
+    };
     const stp = () => (this._grStep ? this._grStep() : 20), g = (v) => Math.round(Math.round(v / stp()) * stp()), g10 = (v) => (stp() <= 10 ? g(v) : Math.round(v / 10) * 10);
     const paint = () => { const svg = sr.querySelector("svg.sfpe"); if (svg && this._sfEd) svg.innerHTML = this._grEditSvg ? this._grEditSvg(this._sfFl()) : this._sfPlanInner(this._sfFl(), true); };
     sr.addEventListener("pointerdown", (e) => {
@@ -15896,6 +15906,7 @@ class FensterHeizungPanel extends HTMLElement {
         if (it.t === "g") { it.gk = tool === "g:entf" ? "entf" : "heizer"; const fr = this._grDevFree ? this._grDevFree(P).find((q) => q.gk === it.gk) : null; if (fr) it.e = fr.e; }
         if (it.t === "a") { it.b = 400; it.tf = 300; }
         if (it.t === "h") it.hk = this._grHkLast || "steckdose";
+        if (it.t === "o" && this._grMK) { const kk = this._grMK().by[this._grOkLast] || this._grMK().by.tisch, sc0 = this._sfScale(); it.ok = kk.k; it.w = Math.max(4, Math.round((kk.w / 100) * sc0)); it.h = Math.max(4, Math.round((kk.h / 100) * sc0)); it.x = Math.round(x - it.w / 2); it.y = Math.round(y - it.h / 2); }
         if (it.t === "l") { it.k = "decke"; it.e = this._liFreeLampAt ? this._liFreeLampAt(fl, x, y, P) : ""; }
         if (it.t === "m") { const kind = tool.slice(2), pl = new Set(P.items.filter((i) => i.t === "m" && i.e).map((i) => i.e)), d = this._sfList().find((q) => q.k === kind && !pl.has(q.id)); if (d) it.e = d.id; }
         if (["d", "f", "a"].includes(it.t)) { const sn = this._sfSnapOpen(fl, x, y, it.t === "a" ? 40 : 24, it); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } }
@@ -15908,7 +15919,7 @@ class FensterHeizungPanel extends HTMLElement {
       const [x, y] = pt(e, svg), it = ed.plan.items.find((i) => i.id === d.id); if (!it) return; e.preventDefault();
       if (/^v\d+$/.test(d.k)) { if (it.pts) { it.pts[Number(d.k.slice(1))] = [g10(x), g10(y)]; this._sfRSync(it); } }
       else if (d.k === "move") { const dx = g(x - d.sx), dy = g(y - d.sy); if (dx || dy) d.moved = true; it.x = d.o.x + dx; it.y = d.o.y + dy; if (d.o.pts) it.pts = d.o.pts.map((q) => [q[0] + dx, q[1] + dy]); if (it.t === "w") { it.x2 = d.o.x2 + dx; it.y2 = d.o.y2 + dy; } if (["d", "f", "a"].includes(it.t)) { const sn = this._sfSnapOpen(this._sfFl(), it.x, it.y, 18, it); if (sn) { it.x = sn.x; it.y = sn.y; it.r = sn.r; } } (d.att || []).forEach((q) => { const o2 = ed.plan.items.find((i) => i.id === q.id); if (o2) { o2.x = q.x + dx; o2.y = q.y + dy; } }); }
-      else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const L = Math.hypot(X - it.x, Y - it.y), an = Math.atan2(Y - it.y, X - it.x), a15 = Math.round(an / (Math.PI / 12)) * (Math.PI / 12); if (L > 0 && Math.abs(an - a15) < 0.1) { X = Math.round(it.x + L * Math.cos(a15)); Y = Math.round(it.y + L * Math.sin(a15)); } it.x2 = X; it.y2 = Y; }   /* Build 7: rastet auf 15°-Schritte */ else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { it.w = Math.max(20, g(x) - it.x); it.h = Math.max(20, g(y) - it.y); } } }
+      else if (d.k === "new" || d.k === "br") { if (it.t === "w") { let X = g(x), Y = g(y); const L = Math.hypot(X - it.x, Y - it.y), an = Math.atan2(Y - it.y, X - it.x), a15 = Math.round(an / (Math.PI / 12)) * (Math.PI / 12); if (L > 0 && Math.abs(an - a15) < 0.1) { X = Math.round(it.x + L * Math.cos(a15)); Y = Math.round(it.y + L * Math.sin(a15)); } it.x2 = X; it.y2 = Y; }   /* Build 7: rastet auf 15°-Schritte */ else { const ox = d.k === "new" ? d.sx : it.x, oy = d.k === "new" ? d.sy : it.y; if (d.k === "new") { it.x = Math.min(ox, g(x)); it.y = Math.min(oy, g(y)); it.w = Math.abs(g(x) - ox); it.h = Math.abs(g(y) - oy); } else { const mn = it.t === "o" ? 4 : 20; it.w = Math.max(mn, g(x) - it.x); it.h = Math.max(mn, g(y) - it.y); } } }
       else if (d.k === "p1") { it.x = g(x); it.y = g(y); } else if (d.k === "p2") { it.x2 = g(x); it.y2 = g(y); }
       paint();
     }, { passive: false });
@@ -17060,7 +17071,7 @@ class FensterHeizungPanel extends HTMLElement {
     });
     return s + `<rect x="0" y="${H0 + H}" width="248" height="14" fill="#06101a" opacity=".55"/></svg>`;
   }
-  _grLy() { return (this._grLys = this._grLys || { sf: true, licht: true, gt: true, ht: true }); }
+  _grLy() { return (this._grLys = this._grLys || { sf: true, licht: true, gt: true, ht: true, mo: true, sun: false }); }
   _grPage() {
     const S = this._grS0(), P = this._grPlan(), adm = this._admin(), sfOn = this._mdList().some((m) => m.id === "sf");
     const css = `<style>.grh{position:relative;overflow:hidden;display:flex;align-items:center;gap:18px;padding:16px 18px;border-radius:18px;margin-bottom:14px;color:#e2e8f0;background:radial-gradient(120% 140% at 90% 0%,#0e7490 0%,transparent 55%),linear-gradient(135deg,#0f3d3a,#0b1a2c 70%)}
@@ -17103,7 +17114,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._sfEd && this._sfEd.host === "gr" && adm) return css + this._grEditHead(this._sfEd) + this._sfPlan(this._grT());
     const UN = { fh: "Modul 1", sf: "Modul 11", li: "Modul 18" }, uTxt = users.map((u) => UN[u] || u).join(", ").replace(/, ([^,]*)$/, " und $1");
     const edit = adm ? `<button data-act="grxedit">${ic("pencil", 14)} Bearbeiten</button>` : "";
-    const hero = `<div class="grh">${this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.length} ${fls.length === 1 ? "Etage" : "Etagen"} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
+    const hero = `<div class="grh">${this._grDollMini && st.rooms ? this._grDollMini(P) : this._grHouse(P)}<div style="flex:1;min-width:0"><div class="k">Modul 0 · Haus &amp; Grundriss</div><div class="b">${st.rooms ? `${fls.filter((f) => !f.ga).length} ${fls.filter((f) => !f.ga).length === 1 ? "Etage" : "Etagen"}${fls.some((f) => f.ga) ? " + Grundstück" : ""} · ${st.rooms} ${st.rooms === 1 ? "Raum" : "Räume"}` : "Noch kein Grundriss"}</div>
       <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div><div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
     const tab = ["plan", "raeume", "ebenen", "io", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
     const tb = (k, t) => `<button class="${tab === k ? "on" : ""}" data-act="grxtab" data-k="${k}" aria-pressed="${tab === k}">${t}</button>`;
@@ -17117,13 +17128,14 @@ class FensterHeizungPanel extends HTMLElement {
     const rs = here.filter((i) => i.t === "r"), B = rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
     if (!rs.length) Object.assign(B, { x0: 0, y0: 0, x1: 800, y1: 480 });
     const narrow = this._narrow || (this.clientWidth || 999) < 600, sty = this._grStyle(), dims = this._grDimsOn();
-    const G = this._grDraw(P, fl, { style: sty, dims, narrow, click: true, now: ly.now !== false, layers: { licht: ly.licht && !!(this._liOn && this._liOn()), sf: ly.sf, gt: ly.gt !== false, ht: ly.ht !== false } });
+    const G = this._grDraw(P, fl, { style: sty, dims, narrow, click: true, now: ly.now !== false, layers: { licht: ly.licht && !!(this._liOn && this._liOn()), sf: ly.sf, gt: ly.gt !== false, ht: ly.ht !== false, mo: ly.mo !== false, sun: !!ly.sun } });
     const nL = items.filter((i) => i.t === "l").length, nM = items.filter((i) => i.t === "m").length, liOn = !!(this._liOn && this._liOn());
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
-    const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button>${items.some((i) => i.t === "h") ? `<button class="${ly.ht !== false ? "on" : ""}" data-act="grxly" data-k="ht"><i style="background:#eab308"></i>Technik (${items.filter((i) => i.t === "h").length})</button>` : ""}${items.some((i) => i.t === "g") ? `<button class="${ly.gt !== false ? "on" : ""}" data-act="grxly" data-k="gt"><i style="background:#f97316"></i>Geräte (${items.filter((i) => i.t === "g").length})</button>` : ""}<button class="${ly.now !== false ? "on" : ""}" data-act="grxnow" title="Temperatur aus Modul 1 und Bewegung"><i style="background:#2dd4bf"></i>Jetzt</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
-    const VB = this._grVB ? this._grVB(G.vb, fl) : G.vb;
-    const card = `<div class="card${this._grFull ? " grfull" : ""}"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
-      <div class="grv grv-${sty}">${this._grZoomBar ? this._grZoomBar(fl) : ""}<svg class="grzsvg${VB !== G.vb ? " zm" : ""}" data-fl="${esc(fl)}" data-vb="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" viewBox="${VB.x} ${VB.y} ${VB.w} ${VB.h}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${G.svg}</svg></div></div>`;
+    const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button>${items.some((i) => i.t === "h") ? `<button class="${ly.ht !== false ? "on" : ""}" data-act="grxly" data-k="ht"><i style="background:#eab308"></i>Technik (${items.filter((i) => i.t === "h").length})</button>` : ""}${items.some((i) => i.t === "g") ? `<button class="${ly.gt !== false ? "on" : ""}" data-act="grxly" data-k="gt"><i style="background:#f97316"></i>Geräte (${items.filter((i) => i.t === "g").length})</button>` : ""}${items.some((i) => i.t === "o") ? `<button class="${ly.mo !== false ? "on" : ""}" data-act="grxly" data-k="mo"><i style="background:#94a3b8"></i>Möbel (${items.filter((i) => i.t === "o").length})</button>` : ""}<button class="${ly.sun ? "on" : ""}" data-act="grxly" data-k="sun" title="Sonnenlicht durch die Fenster"><i style="background:#fbbf24"></i>Sonne</button><button class="${ly.now !== false ? "on" : ""}" data-act="grxnow" title="Temperatur aus Modul 1 und Bewegung"><i style="background:#2dd4bf"></i>Jetzt</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
+    const VB = this._grVB ? this._grVB(G.vb, fl) : G.vb, v3 = this._grView === "3d" && this._grDoll, D3 = v3 ? this._grDoll(P, { style: sty, licht: ly.licht && liOn }) : null;
+    const vsw = this._grDoll ? `<span class="sffl"><button class="${v3 ? "" : "on"}" data-act="grxview" data-k="2d">Plan</button><button class="${v3 ? "on" : ""}" data-act="grxview" data-k="3d">Puppenhaus</button></span>` : "";
+    const card = `<div class="card${this._grFull ? " grfull" : ""}"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${vsw}${v3 ? "" : bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
+      ${D3 ? `<div class="grv grv-${sty} grv3"><svg viewBox="${D3.vb.x} ${D3.vb.y} ${D3.vb.w} ${D3.vb.h}" role="img" aria-label="Puppenhaus: alle Etagen">${D3.svg}</svg><div class="grv3h mut sm">Etage antippen klappt sie flach</div></div>` : ""}${ly.sun && !v3 && this._grSunBar ? this._grSunBar(P, fl) : ""}<div class="grv grv-${sty}"${v3 ? ' style="display:none"' : ""}>${this._grZoomBar ? this._grZoomBar(fl) : ""}<svg class="grzsvg${VB !== G.vb ? " zm" : ""}" data-fl="${esc(fl)}" data-vb="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" viewBox="${VB.x} ${VB.y} ${VB.w} ${VB.h}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${G.svg}</svg></div></div>`;
     const since = meta.since ? new Date(meta.since).toLocaleDateString("de-DE") : "", until = meta.copy_until ? new Date(meta.copy_until).toLocaleDateString("de-DE") : "";
     const info = `<div class="grinfo">
       <div class="card"><b>${ic("users", 15)} Genutzt von</b><small>${esc(uTxt)}. Einmal gezeichnet, überall derselbe Plan.</small></div>
@@ -17402,6 +17414,46 @@ class FensterHeizungPanel extends HTMLElement {
     const hit = K.find(([rx]) => rx.test(n));
     return hit ? { k: hit[1], i: hit[2] } : { k: "teppich", i: "home" };
   }
+  /* Raumnamen (Build 10 neu): Schrift passt sich der Raumbreite an (kleiner, sonst zweizeilig oder gekürzt), die Plakette liegt ganz im Raum
+     und meidet Melder, Lampen, Türen, Treppen, Geräte, Technik und die Temperatur-Marke. Ohne Platz: zuerst ohne Symbol, dann ohne Fläche. */
+  _grLabels(rs, items, o, T, kinds, NF, sc, f1, q) {
+    let d = "";
+    const obsAll = items.filter((i) => ["l", "m", "d", "s", "g", "h", "f"].includes(i.t)).map((i) => (i.t === "s" ? [i.x, i.y, i.x + (i.w || 60), i.y + (i.h || 90)] : i.t === "d" || i.t === "f" ? [i.x - 14, i.y - 14, i.x + 14, i.y + 14] : [i.x - 12 * q, i.y - 12 * q, i.x + 12 * q, i.y + 12 * q]));
+    const tw = (t, f) => [...String(t)].length * f * 0.6;
+    rs.forEach((r) => {
+      const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y), k = kinds.get(r.id), m2 = this._grAreaM2(r, sc), [cx0, cy0] = this._grCen(r);
+      const nm = r.n || (this._grArea && this._grArea(r) ? this._grArea(r).name : "Raum"), chip = (this._grChipAt || {})[r.id];
+      const obs = obsAll.concat(chip ? [chip] : []);   /* Temperatur-Marke freihalten */
+      const maxW = Math.max(30, r.w - 18), base = Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1), minF = 7.5 * (o.narrow ? 1.15 : 1);
+      let fz = Math.min(base, (maxW - 14) / Math.max(1, [...nm].length * 0.6)), lines = [nm];
+      if (fz < minF) {   /* zweizeilig an Leerzeichen, Bindestrich oder „s“-Fuge, sonst kürzen */
+        const cut = nm.search(/[ \-\u2010]/) > 0 ? nm.search(/[ \-\u2010]/) : Math.ceil(nm.length / 2), a1 = nm.slice(0, cut + (nm[cut] === "-" ? 1 : 0)).trim(), a2 = nm.slice(cut + (nm[cut] === "-" ? 1 : 0)).trim();
+        lines = a2 ? [a1, a2] : [nm]; fz = Math.min(base, (maxW - 14) / Math.max(1, Math.max(...lines.map((x) => [...x].length)) * 0.6));
+        if (fz < minF) { fz = minF; const n = Math.max(3, Math.floor((maxW - 14) / (fz * 0.6)) - 1); lines = lines.map((x) => ([...x].length > n ? [...x].slice(0, n).join("") + "…" : x)); }
+      }
+      const area = m2 >= 0.5 ? `${f1(m2)} m²` : "", dim = o.dims && !(r.pts && r.pts.length >= 3) ? ` · ${f1(r.w / sc)} × ${f1(r.h / sc)} m` : "";
+      const variants = [{ ico: true, ar: true, s: 1 }, { ico: false, ar: true, s: 1 }, { ico: false, ar: true, s: 0.85 }, { ico: false, ar: true, s: 0.72 }, { ico: false, ar: false, s: 0.85 }];
+      const fz0 = fz;
+      let pick = null;
+      for (const v of variants) {
+        fz = Math.max(minF * 0.9, fz0 * v.s);
+        const sub = v.ar ? area + dim : "", w = Math.min(maxW, Math.max(...lines.map((x) => tw(x, fz)), tw(sub, fz * 0.78)) + 16), lh = fz * 1.2, h = lines.length * lh + (sub ? fz * 1.05 : 0) + 8, ih = v.ico && !(Math.min(r.w, r.h) < 80) && ICONS[k.i] ? 22 * NF : 0;
+        if (v.ico && !ih) continue;
+        const fits = (x, y) => { const x0 = x - w / 2, x1 = x + w / 2, y0 = y - h / 2 - ih, y1 = y + h / 2; return [[x0, y0], [x1, y0], [x0, y1], [x1, y1], [x, y0], [x, y1], [x0, y], [x1, y]].every((p) => inR(p[0], p[1])) && !obs.some((b) => b[0] < x1 + 2 && b[2] > x0 - 2 && b[1] < y1 + 2 && b[3] > y0 - 2); };
+        const cand = [];
+        for (let gy = 0; gy <= 8; gy++) for (let gx = 0; gx <= 8; gx++) { const x = r.x + (r.w * (gx + 0.5)) / 9, y = r.y + (r.h * (gy + 0.5)) / 9; cand.push([x, y, Math.hypot(x - cx0, (y - cy0) * 1.3)]); }
+        cand.sort((A, B) => A[2] - B[2]);
+        const hit = cand.find(([x, y]) => fits(x, y));
+        if (hit) { pick = { x: hit[0], y: hit[1], w, h, lh, sub, ih }; break; }
+      }
+      if (!pick) { fz = Math.max(minF * 0.9, fz0 * 0.85); const w = Math.min(maxW, Math.max(...lines.map((x) => tw(x, fz))) + 16), lh = fz * 1.2; pick = { x: cx0, y: cy0, w, h: lines.length * lh + 8, lh, sub: "", ih: 0 }; }
+      const { x, y, w, h, lh, sub, ih } = pick, top = y - h / 2;
+      const ico = ih ? `<g transform="translate(${x - 10 * NF} ${top - ih}) scale(${(20 * NF) / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
+      const plate = o.style === "modern" ? `<rect x="${x - w / 2}" y="${top}" width="${w}" height="${h}" rx="${Math.min(10, fz * 0.6)}" fill="#0b1220" opacity=".55"/>` : "";
+      d += `<g pointer-events="none">${ico}${plate}${lines.map((t, n) => `<text x="${x}" y="${top + 4 + lh * (n + 0.8)}" text-anchor="middle" font-size="${fz}" font-weight="700" fill="${T.text}">${esc(t)}</text>`).join("")}${sub ? `<text x="${x}" y="${top + 4 + lh * lines.length + fz * 0.8}" text-anchor="middle" font-size="${fz * 0.78}" fill="${T.sub}">${esc(sub)}</text>` : ""}</g>`;
+    });
+    return d;
+  }
   _grPoly(r) { return r.pts && r.pts.length >= 3 ? r.pts : [[r.x, r.y], [r.x + r.w, r.y], [r.x + r.w, r.y + r.h], [r.x, r.y + r.h]]; }
   _grAreaM2(r, sc) { const p = this._grPoly(r); let s = 0; p.forEach((a, i) => { const b = p[(i + 1) % p.length]; s += a[0] * b[1] - b[0] * a[1]; }); return Math.abs(s) / 2 / (sc * sc); }
   _grCen(r) { if (!(r.pts && r.pts.length >= 3)) return [r.x + r.w / 2, r.y + r.h / 2]; const n = r.pts.length; return [r.pts.reduce((a, p) => a + p[0], 0) / n, r.pts.reduce((a, p) => a + p[1], 0) / n]; }
@@ -17412,7 +17464,7 @@ class FensterHeizungPanel extends HTMLElement {
     const T = this._grTheme(o.style), items = (P.items || []).filter((i) => i.fl === fl), rs = items.filter((i) => i.t === "r"), sc = P.scale > 0 ? P.scale : 40;
     const u = "gd" + (this.constructor._gdN = ((this.constructor._gdN || 0) + 1) % 1e6) + "_", st = this._hass.states, NF = o.narrow ? 1.6 : 1, f1 = (v) => v.toLocaleString("de-DE", { maximumFractionDigits: 1 });
     const pathOf = (r) => "M" + this._grPoly(r).map((p) => p[0] + " " + p[1]).join("L") + "Z";
-    const bx = rs.length ? rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
+    const bxl = [...rs, ...items.filter((i) => i.t === "o" && i.w)], bx = bxl.length ? bxl.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
     o = { labels: true, windows: true, doors: true, stairs: true, deco: true, bgImg: true, ...o };
     const pad = o.dims ? 70 : 40, vb = { x: bx.x0 - pad, y: bx.y0 - pad, w: bx.x1 - bx.x0 + pad * 2, h: bx.y1 - bx.y0 + pad * 2 + 34 };
     const W = (T.wall || "").replace("U_", u), WI = (T.wallIn || "").replace("U_", u), kinds = new Map(rs.map((r) => [r.id, this._grKind(r)]));
@@ -17429,9 +17481,10 @@ class FensterHeizungPanel extends HTMLElement {
       <filter id="${u}sh" x="-10%" y="-10%" width="120%" height="120%"><feDropShadow dx="0" dy="${o.style === "hell" ? 3 : 6}" stdDeviation="${o.style === "hell" ? 4 : 8}" flood-color="#000" flood-opacity="${o.style === "hell" ? 0.18 : 0.55}"/></filter>
       <marker id="${u}ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="${T.stair}"/></marker>
     </defs>
-    <rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/>${o.cover ? `<rect x="${o.cover.x}" y="${o.cover.y}" width="${o.cover.w}" height="${o.cover.h}" fill="${T.bg}"/>` : ""}<rect x="${Math.min(vb.x, o.cover ? o.cover.x : vb.x)}" y="${Math.min(vb.y, o.cover ? o.cover.y : vb.y)}" width="${Math.max(vb.w, o.cover ? o.cover.w + 400 : 0)}" height="${Math.max(vb.h, o.cover ? o.cover.h + 400 : 0)}" fill="url(#${u}grid)"/>`;
+    ${o.bare ? "" : `<rect x="${vb.x}" y="${vb.y}" width="${vb.w}" height="${vb.h}" fill="${T.bg}"/>${o.cover ? `<rect x="${o.cover.x}" y="${o.cover.y}" width="${o.cover.w}" height="${o.cover.h}" fill="${T.bg}"/>` : ""}<rect x="${Math.min(vb.x, o.cover ? o.cover.x : vb.x)}" y="${Math.min(vb.y, o.cover ? o.cover.y : vb.y)}" width="${Math.max(vb.w, o.cover ? o.cover.w + 400 : 0)}" height="${Math.max(vb.h, o.cover ? o.cover.h + 400 : 0)}" fill="url(#${u}grid)"/>`}`;   /* bare: ohne Hintergrund (Puppenhaus) */
     const bg = (P.bg || {})[fl]; if (bg && o.bgImg) d += `<image href="${esc(bg)}" x="${bx.x0}" y="${bx.y0}" width="${bx.x1 - bx.x0}" height="${bx.y1 - bx.y0}" opacity=".22" preserveAspectRatio="xMidYMid meet"/>`;
     const out = rs.filter((r) => kinds.get(r.id).k === "aussen" || r.ds), ins = rs.filter((r) => !out.includes(r));
+    if (this._grMobLayer) d += this._grMobLayer(P, fl, T, o, "aussen", st);   /* Build 10: Grundstück, Rasen, Wege, Pool … unter den Räumen */
     /* 1) Außenflächen: Pflaster, gestrichelter Rand */
     out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="url(#${u}${kinds.get(r.id).k})" stroke="${T.sub}" stroke-width="2" stroke-dasharray="8 6" opacity=".9"/>`; });
     /* 2) Wände: dicke Kontur aller Innenräume (wird zur Außenwand), darüber Böden mit dünner Kontur (Innenwand). Gemeinsame Kanten bleiben dünn. */
@@ -17440,6 +17493,8 @@ class FensterHeizungPanel extends HTMLElement {
     if (o.click) out.forEach((r) => { d += `<path d="${pathOf(r)}" fill="transparent" data-act="grxroom" data-k="${esc(r.id)}" style="cursor:pointer"/>`; });
     /* 3) Freie Wände */
     items.filter((i) => i.t === "w").forEach((w) => { d += `<line x1="${w.x}" y1="${w.y}" x2="${w.x2}" y2="${w.y2}" stroke="${WI}" stroke-width="7" stroke-linecap="square"/>`; });
+    if (this._grMobLayer && (!o.layers || o.layers.mo)) d += this._grMobLayer(P, fl, T, o, "innen", st);   /* Build 10: Möbel */
+    if (o.layers && o.layers.sun && this._grSunSvg) { const SG = this._grSunSvg(P, fl, T, u, ins, bx); this._grSunLast = SG; d += SG.svg; }   /* Build 10: Sonnenlicht */
     /* 4) Türen, Durchgänge, Fenster, Treppen, Text */
     const floorAtR = (i) => { const an = ((i.r || 0) * Math.PI) / 180, nx = -Math.sin(an) * 10, ny = Math.cos(an) * 10, inR = (q, x, y) => (this._sfInRoom ? this._sfInRoom(q, x, y) : x > q.x && x < q.x + q.w && y > q.y && y < q.y + q.h); const r = ins.find((q) => inR(q, i.x + nx, i.y + ny) || inR(q, i.x - nx, i.y - ny)); return r ? `url(#${u}${kinds.get(r.id).k})` : T.bg; };
     items.forEach((i) => {
@@ -17449,8 +17504,12 @@ class FensterHeizungPanel extends HTMLElement {
       else if (i.t === "a" && o.doors && this._grAwnSvg) d += this._grAwnSvg(i, T, P.scale > 0 ? P.scale : 40, st, u);   /* Build 7: Markise */
       else if (i.t === "x") d += `<text x="${i.x}" y="${i.y}" font-size="${12 * NF}" font-style="italic" fill="${T.sub}">${esc(i.n || "")}</text>`;
     });
-    /* 6) Ebenen: Lampen (Modul 18) und Melder (Modul 11) */
+    /* 5) Raumnamen und „Jetzt“ – vor den Lampen und Meldern, damit diese immer sichtbar oben liegen (Build 10) */
     const q = o.narrow ? 1.4 : 1;
+    this._grChipAt = {}; const nowSvg = o.now ? this._grNow(P, fl, rs, o, T) : "";   /* merkt sich, wo Temperatur-Marken sitzen */
+    if (o.labels) d += this._grLabels(rs, items, o, T, kinds, NF, sc, f1, q);
+    d += nowSvg;
+    /* 6) Ebenen: Lampen (Modul 18) und Melder (Modul 11) */
     if (o.layers.licht) items.filter((i) => i.t === "l" && i.e).forEach((i, n) => {
       const s2 = st[i.e], on = !!(s2 && s2.state === "on"), c = on && this._liLampHex ? this._liLampHex(i.e) : "#64748b", g = `${u}lg${n}`;
       d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><circle cx="${i.x}" cy="${i.y}" r="${46 * q}" fill="url(#${g})"/>` : ""}
@@ -17462,20 +17521,6 @@ class FensterHeizungPanel extends HTMLElement {
       const s2 = i.e && st[i.e], al = !!(s2 && s2.state === "on");
       d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${10 * q}" fill="${o.style === "hell" ? "#fff" : "#111827"}" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><g transform="translate(${i.x - 6 * q} ${i.y - 6 * q}) scale(${(12 * q) / 24})" fill="none" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
     });
-    /* 5) Raumnamen mit Symbol und Fläche */
-    if (o.now) d += this._grNow(P, fl, rs, o, T);
-    if (o.labels) rs.forEach((r) => {
-      const [cx0, cy0] = this._grCen(r), obs = items.filter((i) => ["l", "m", "d", "s", "g"].includes(i.t)).map((i) => (i.t === "s" ? [i.x, i.y, i.x + (i.w || 60), i.y + (i.h || 90)] : [i.x - 8, i.y - 8, i.x + 8, i.y + 8]));   /* Platz für die Beschriftung suchen: im Raum, nicht auf Lampen, Meldern, Türen */
-      const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y);
-      const free = (x, y) => y - 44 > r.y + 6 && y + 22 < r.y + r.h - 6 && inR(x, y - 34) && inR(x - 44, y + 4) && inR(x + 44, y + 4) && inR(x - 36, y + 22) && inR(x + 36, y + 22) && !obs.some((b) => b[0] < x + 64 && b[2] > x - 64 && b[1] < y + 28 && b[3] > y - 48);
-      const cand = [];
-      [cx0, r.x + r.w * 0.3, r.x + r.w * 0.7, r.x + r.w * 0.15, r.x + r.w * 0.85].forEach((x) => [0, 40, -40, 70, -70, 100, -100, 140, -140].forEach((o2) => cand.push([x, cy0 + o2])));
-      const [cx, cy] = cand.find(([x, y]) => free(x, y)) || [cx0, cy0], k = kinds.get(r.id), m2 = this._grAreaM2(r, sc), small = Math.min(r.w, r.h) < 80, fz = Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1);
-      const nm = r.n || (this._grArea && this._grArea(r) ? this._grArea(r).name : "Raum"), ico = !small && ICONS[k.i] ? `<g transform="translate(${cx - 10 * NF} ${cy - fz - 22 * NF}) scale(${(20 * NF) / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
-      const plate = o.style === "modern" ? `<rect x="${cx - Math.min(r.w - 16, nm.length * fz * 0.62 + 18) / 2}" y="${cy - fz - 2}" width="${Math.min(r.w - 16, nm.length * fz * 0.62 + 18)}" height="${fz * 2.4 + 6}" rx="${fz * 0.6}" fill="#0b1220" opacity=".55"/>` : "";
-      d += `<g pointer-events="none">${ico}${plate}<text x="${cx}" y="${cy + fz * 0.15}" text-anchor="middle" font-size="${fz}" font-weight="700" fill="${T.text}">${esc(nm)}</text>
-        <text x="${cx}" y="${cy + fz * 1.3}" text-anchor="middle" font-size="${fz * 0.78}" fill="${T.sub}">${m2 >= 0.5 ? `${f1(m2)} m²` : ""}${o.dims && !(r.pts && r.pts.length >= 3) ? ` · ${f1(r.w / sc)} × ${f1(r.h / sc)} m` : ""}</text></g>`;
-    });
     /* 7) Maßketten außen, Nordpfeil und Maßstab */
     if (o.dims && rs.length) {
       const y = bx.y0 - 38, x = bx.x0 - 38, wm = (bx.x1 - bx.x0) / sc, hm = (bx.y1 - bx.y0) / sc, tick = (x1, y1) => `<path d="M${x1 - 5} ${y1 + 5}L${x1 + 5} ${y1 - 5}" stroke="${T.dim}" stroke-width="1.6"/>`;
@@ -17484,7 +17529,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     const sbM = (bx.x1 - bx.x0) / sc > 12 ? 5 : 2, sx = bx.x1 - sbM * sc, sy = bx.y1 + 30;
     if (o.deco) d += `<g fill="${T.dim}" font-size="${11 * NF}"><rect x="${sx}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="${T.dim}"/><rect x="${sx + sbM * sc / 2}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="none" stroke="${T.dim}"/><text x="${sx}" y="${sy - 5}">0</text><text x="${bx.x1}" y="${sy - 5}" text-anchor="end">${sbM} m</text>
-      <g transform="translate(${bx.x0 + 10} ${sy - 2})"><path d="M0 -14L6 4L0 0L-6 4Z" fill="${T.text}"/><text x="12" y="2" font-weight="700" fill="${T.text}">N</text></g></g>`;
+      <g transform="translate(${bx.x0 + 10} ${sy - 2}) rotate(${P.north || 0})"><path d="M0 -14L6 4L0 0L-6 4Z" fill="${T.text}"/><text x="12" y="2" font-weight="700" fill="${T.text}">N</text></g></g>`;
     return { vb, svg: d };
   }
   /* ================= Modul 0 Build 6: eine Optik überall, neuer Baukasten, Ebene „Jetzt“, Raum-Blatt =================
@@ -17501,15 +17546,22 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Unterlage im 800×480-Raster des Baukastens und von Modul 11 */
   _grUnder(P, fl, o) {
-    const G = this._grDraw(P, fl, { style: this._grStyle(), dims: false, narrow: false, layers: { licht: false, sf: false, nf: true }, deco: false, cover: { x: -40, y: -40, w: 880, h: 560 }, ...(o || {}) });
+    const G = this._grDraw(P, fl, { style: this._grStyle(), dims: false, narrow: false, layers: { licht: false, sf: false, nf: true }, deco: false, cover: (() => { const v = this._grEdVB ? this._grEdVB(fl) : [0, 0, 800, 480]; return { x: v[0] - 40, y: v[1] - 40, w: v[2] + 80, h: v[3] + 80 }; })(), ...(o || {}) });
     return `<g class="gdbase" pointer-events="none">${G.svg}</g>`;
   }
   _grEditSvg(fl) {
     const ed = this._sfEd;
     if (!ed) return this._sfPlanInner(fl, true);
-    return this._grUnder(ed.plan, fl, { labels: true, bgImg: false, layers: { licht: false, sf: false, gt: true, ht: true } }) + this._sfPlanInner(fl, true) + (this._grEdOver ? this._grEdOver(fl) : "");
+    return this._grUnder(ed.plan, fl, { labels: true, bgImg: false, layers: { licht: false, sf: false, gt: true, ht: true, mo: true } }) + this._sfPlanInner(fl, true) + (this._grEdOver ? this._grEdOver(fl) : "");
   }
   /* Ebene „Jetzt“: Temperatur (Modul 1) als Chip oben rechts im Raum, Bewegung als Puls */
+  /* Temperatur-Marke: oben rechts, aber sicher im Raum (auch bei schrägen und L-förmigen Räumen) → [x0, y0, x1, y1] */
+  _grChipBox(r, t) {
+    const w = String(t || "00,0°").length * 7.4 + 22, inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y);
+    const ok = (x, y) => [[x, y], [x + w, y], [x, y + 20], [x + w, y + 20]].every((p) => inR(p[0], p[1]));
+    for (let dy = 0; dy <= r.h - 32; dy += 12) for (let dx = 0; dx <= r.w - w - 20; dx += 12) { const x = r.x + r.w - w - 10 - dx, y = r.y + 12 + dy; if (ok(x, y)) return [x, y, x + w, y + 20]; }
+    return [r.x + r.w - w - 10, r.y + 12, r.x + r.w - 10, r.y + 32];
+  }
   _grNow(P, fl, rs, o, T) {
     let d = "";
     const st = this._hass.states, rooms = this._collect ? this._collect(true) : [], all = this._gpAll ? this._gpAll(rooms) : [];
@@ -17517,7 +17569,7 @@ class FensterHeizungPanel extends HTMLElement {
     rs.forEach((r) => {
       const m = this._gpMatch ? this._gpMatch(r, all) : null, s = m && !m.ms && this._rkState ? this._rkState(m) : null;
       if (s && s.cur != null) {
-        const t = `${num(s.cur, 1)}°`, col = s.k === "aus" ? "#64748b" : this._rkCol(s.cur, 17, 22), w = t.length * 7.4 + 22, x = r.x + r.w - w - 10, y = r.y + 12;
+        const t = `${num(s.cur, 1)}°`, col = s.k === "aus" ? "#64748b" : this._rkCol(s.cur, 17, 22), B = this._grChipBox(r, t), w = B[2] - B[0], x = B[0], y = B[1]; if (this._grChipAt) this._grChipAt[r.id] = B;
         d += `<g pointer-events="none"><title>${esc(m.name)} · ${t}${s.ziel != null ? ` · Ziel ${num(s.ziel, 1)}°` : ""}</title><rect x="${x}" y="${y}" width="${w}" height="20" rx="10" fill="${col}"/><circle cx="${x + 10}" cy="${y + 10}" r="3.4" fill="#fff" opacity=".85"/><text x="${x + 17}" y="${y + 14.3}" font-size="12" font-weight="800" fill="#111">${t}</text>${s.heating ? `<text x="${x - 12}" y="${y + 15}" font-size="13">🔥</text>` : ""}</g>`;
       }
       const a = this._grArea ? this._grArea(r) : null, mv = a ? mot.filter((e) => this._grEntArea(e) === a.id) : [];
@@ -17533,7 +17585,7 @@ class FensterHeizungPanel extends HTMLElement {
     const ed = this._sfEd, fl = this._sfFl(), P = ed.plan, sf = this._mdList().some((m) => m.id === "sf"), li = !!(this._liOn && this._liOn()), sty = this._grStyle();
     const rb = (k, t, p, on) => `<button class="grtl${on ? " on" : ""}" data-act="sfxtool" data-k="${k}" aria-pressed="${on}" title="${t}"><svg viewBox="0 0 34 34" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg><span>${t}</span></button>`;
     const PP = X.PP, tl = ed.tool, mT = String(tl).startsWith("m:");
-    const rail = `<div class="grrail">${rb("select", "Wählen", PP.select, tl === "select")}${rb("r", "Raum", PP.r, tl === "r")}${rb("w", "Wand", PP.w, tl === "w")}<i></i>${rb("d", "Tür", PP.d, tl === "d")}${rb("dg", "Durchgang", '<path d="M5 10h7M22 10h7M5 24h7M22 24h7M12 7v6M22 7v6M12 21v6M22 21v6"/>', tl === "dg")}${rb("f", "Fenster", PP.f, tl === "f")}${rb("s", "Treppe", PP.s, tl === "s")}<i></i>${sf ? rb(mT ? tl : "m:smoke", "Melder", PP.smoke, mT) : ""}${li ? rb("l", "Lampe", '<path d="M12 22a7 7 0 1 1 10 0c-1 1-1.5 2-1.5 3.5h-7c0-1.5-.5-2.5-1.5-3.5z"/><path d="M14 29h6"/>', tl === "l") : ""}${rb(String(tl).startsWith("g:") ? tl : "g:heizer", "Gerät", '<rect x="8" y="9" width="18" height="17" rx="4"/><path d="M13 13v9M17 13v9M21 13v9"/><path d="M12 6c-1.5 1.5 1.5 2 0 3.5M17 6c-1.5 1.5 1.5 2 0 3.5M22 6c-1.5 1.5 1.5 2 0 3.5"/>', String(tl).startsWith("g:"))}${rb("h", "Technik", '<rect x="7" y="7" width="20" height="20" rx="4"/><path d="M13 13v3M21 13v3M13 21h8"/>', tl === "h")}${rb("a", "Markise", '<path d="M5 10h24"/><path d="M6 10l3 12h16l3-12" stroke-dasharray="3 2"/><path d="M9 22h16"/>', tl === "a")}${rb("x", "Text", PP.x, tl === "x")}</div>`;
+    const rail = `<div class="grrail">${rb("select", "Wählen", PP.select, tl === "select")}${rb("r", "Raum", PP.r, tl === "r")}${rb("w", "Wand", PP.w, tl === "w")}<i></i>${rb("d", "Tür", PP.d, tl === "d")}${rb("dg", "Durchgang", '<path d="M5 10h7M22 10h7M5 24h7M22 24h7M12 7v6M22 7v6M12 21v6M22 21v6"/>', tl === "dg")}${rb("f", "Fenster", PP.f, tl === "f")}${rb("s", "Treppe", PP.s, tl === "s")}<i></i>${sf ? rb(mT ? tl : "m:smoke", "Melder", PP.smoke, mT) : ""}${li ? rb("l", "Lampe", '<path d="M12 22a7 7 0 1 1 10 0c-1 1-1.5 2-1.5 3.5h-7c0-1.5-.5-2.5-1.5-3.5z"/><path d="M14 29h6"/>', tl === "l") : ""}${rb(String(tl).startsWith("g:") ? tl : "g:heizer", "Gerät", '<rect x="8" y="9" width="18" height="17" rx="4"/><path d="M13 13v9M17 13v9M21 13v9"/><path d="M12 6c-1.5 1.5 1.5 2 0 3.5M17 6c-1.5 1.5 1.5 2 0 3.5M22 6c-1.5 1.5 1.5 2 0 3.5"/>', String(tl).startsWith("g:"))}${rb("o", "Möbel", '<rect x="6" y="12" width="22" height="12" rx="3"/><path d="M6 16h22M9 24v3M25 24v3M9 12V9h16v3"/>', tl === "o")}${rb("h", "Technik", '<rect x="7" y="7" width="20" height="20" rx="4"/><path d="M13 13v3M21 13v3M13 21h8"/>', tl === "h")}${rb("a", "Markise", '<path d="M5 10h24"/><path d="M6 10l3 12h16l3-12" stroke-dasharray="3 2"/><path d="M9 22h16"/>', tl === "a")}${rb("x", "Text", PP.x, tl === "x")}</div>`;
     const mk = mT && sf ? `<div class="grpsec"><b>Art des Melders</b><div class="grseg">${[["m:smoke", "Rauch"], ["m:co", "CO"], ["m:gas", "Gas"], ["m:water", "Wasser"], ["m:heat", "Hitze"]].map(([k, t]) => `<button class="${tl === k ? "on" : ""}" data-act="sfxtool" data-k="${k}">${t}</button>`).join("")}</div></div>` : "";
     const gS = String(tl).startsWith("g:") ? `<div class="grpsec"><b>Art des Geräts</b><div class="grseg">${[["g:heizer", "Mobiler Heizer"], ["g:entf", "Luftentfeuchter"]].map(([k, t]) => `<button class="${tl === k ? "on" : ""}" data-act="sfxtool" data-k="${k}">${t}</button>`).join("")}</div><small class="mut" style="display:block;margin-top:6px">Geräte kommen aus Modul 1 (Elektroheizer je Raum, Luftentfeuchter). Ein Entfeuchter folgt im Plan seinem Standort aus Modul 1.</small></div>` : "";
     const hint = { select: "Antippen und ziehen. Am Eckpunkt ändert sich die Größe.", r: "Im Plan ziehen, um einen Raum aufzuziehen.", s: "Im Plan ziehen, um eine Treppe aufzuziehen.", w: "Im Plan ziehen, um eine Wand zu zeichnen." }[tl] || "In den Plan tippen, um das Element zu setzen.";
@@ -17549,8 +17601,9 @@ class FensterHeizungPanel extends HTMLElement {
       ${this._grCheck ? (() => { const C = this._grCheck(P); return `<button class="grb${C.n ? " warn" : ""}" data-act="grxchk" title="Plan-Check">${ic(C.n ? "alert" : "check", 14)} Prüfen${C.n ? ` (${C.n})` : ""}</button>`; })() : ""}${this._grGridCm ? `<button class="grb" data-act="grxgrid" title="Raster beim Ziehen – tippen wechselt">▦ ${this._grGridCm()} cm</button>` : ""}
       <span class="grfill"></span>${ed.from && ed.from !== "gr" ? `<button class="grb" data-act="sfxcancel">← ${esc(this._grModName(ed.from))}</button>` : `<button class="grb" data-act="sfxcancel">Abbrechen</button>`}<button class="grb pri" data-act="sfxsave">${ic("check", 15)} Speichern</button></div>`;
     const hS = tl === "h" && this._grTechCat ? `<div class="grpsec"><b>Was setzen? Danach in den Plan tippen.</b>${this._grTechCat(this._grHkLast || "steckdose", "grxhkt")}</div>` : "";
-    const props = `<div class="grprops">${mk}${gS}${hS}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
-    return `<div class="gred2">${bar}<div class="grbody">${rail}<div class="grcv"><div class="sfpl edit"><svg class="sfpe gd" viewBox="0 0 800 480" role="img" aria-label="Grundriss bearbeiten">${this._grEditSvg(fl)}</svg></div>
+    const oS = tl === "o" && this._grMobCat ? `<div class="grpsec"><b>Was setzen? Danach in den Plan tippen.</b>${this._grMobCat(this._grOkLast || "tisch", "grxokt", (ed.plan.floors.find((f) => f.id === fl) || {}).ga ? true : null)}</div>` : "";
+    const props = `<div class="grprops">${mk}${gS}${hS}${oS}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${this._grB10Box ? this._grB10Box() : ""}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
+    return `<div class="gred2">${bar}<div class="grbody">${rail}<div class="grcv"><div class="sfpl edit"><svg class="sfpe gd" viewBox="${this._grEdVB ? this._grEdVB(fl).join(" ") : "0 0 800 480"}" role="img" aria-label="Grundriss bearbeiten">${this._grEditSvg(fl)}</svg></div>
       <div class="grhint">${ic("info", 14)}<span>${hint}</span></div>${tray}</div>${props}</div></div>`;
   }
   /* Ziehen aus der Ablage in den Plan (Maus, Finger, Stift) */
@@ -17571,7 +17624,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._grDragDone = Date.now();   /* der folgende Klick setzt nichts in die Raummitte */
       const svg = sr.querySelector("svg.sfpe"), ed = this._sfEd; if (!svg || !ed) return;
       const b = svg.getBoundingClientRect(); if (e.clientX < b.left || e.clientX > b.right || e.clientY < b.top || e.clientY > b.bottom) return;
-      const x = Math.round(((e.clientX - b.left) / b.width) * 80) * 10, y = Math.round(((e.clientY - b.top) / b.height) * 48) * 10, fl = this._sfFl(), [t, ...rest] = d0.k.split(":"), id = rest.join(":");
+      const [x, y] = (() => { try { const q = svg.createSVGPoint(); q.x = e.clientX; q.y = e.clientY; const r = q.matrixTransform(svg.getScreenCTM().inverse()); return [Math.round(r.x / 10) * 10, Math.round(r.y / 10) * 10]; } catch (_) { return [Math.round(((e.clientX - b.left) / b.width) * 80) * 10, Math.round(((e.clientY - b.top) / b.height) * 48) * 10]; } })(), fl = this._sfFl(), [t, ...rest] = d0.k.split(":"), id = rest.join(":");
       this._sfSnap();
       if (t === "g" && this._grDevPlace) { const it = this._grDevPlace(ed.plan, fl, rest[0] === "entf" ? "entf" : "heizer", rest.slice(1).join(":"), x, y); it.fix = rest[0] === "entf" ? 1 : undefined; if (!it.fix) delete it.fix; ed.plan.items.push(it); ed.sel = it.id; ed.tool = "select"; this._render(); this._toast(`${d0.label} gesetzt`); return; }
       const it = t === "l" ? { id: "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), fl, t: "l", x, y, r: 0, n: "", e: id, k: "decke" } : { id: "i" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), fl, t: "m", x, y, r: 0, n: "", e: id };
@@ -17613,6 +17666,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._grB7Act && this._grB7Act(a, b)) return true;
     if (this._grB8Act && this._grB8Act(a, b)) return true;
     if (this._grB9Act && (this._grB9Act(a, b) || this._grB9Act2(a, b))) return true;
+    if (this._grB10Act && this._grB10Act(a, b)) return true;
     const k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxroom") { this._modal = { type: "grxroom", k }; this._renderModal(); return true; }
     if (a === "grxrlamp") { const s = this._hass.states[k]; if (s) this._hass.callService("light", s.state === "on" ? "turn_off" : "turn_on", { entity_id: k }).catch(() => this._toast("Die Lampe hat nicht reagiert")); setTimeout(() => this._renderModal(), 600); return true; }
@@ -17823,6 +17877,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _grB7Change(t) {
     if (this._grB9Change && this._grB9Change(t)) return true;
+    if (this._grB10Change && this._grB10Change(t)) return true;
     const f = t.dataset ? t.dataset.f : "", ed = this._sfEd;
     if (f === "grxcall") { this._grCalM = t.value; return true; }
     if (f === "grxang" && ed) { const cur = ed.plan.items.find((x) => x.id === ed.sel); if (cur) { this._sfSnap(); cur.r = ((Math.round(Number(t.value) || 0) % 360) + 360) % 360; this._render(); } return true; }
@@ -18150,7 +18205,11 @@ class FensterHeizungPanel extends HTMLElement {
     const a = s.attributes || {}, d = i.e.split(".")[0], v = s.state, un = a.unit_of_measurement || "";
     if (["unavailable", "unknown"].includes(v)) return { t: "offline", on: false };
     if (d === "climate") return { t: `${a.current_temperature != null ? num(a.current_temperature, 1) + "°" : ""}${a.temperature != null ? " → " + num(a.temperature, 1) + "°" : ""}`.trim() || v, on: a.hvac_action === "heating" || a.hvac_action === "cooling" || (v !== "off" && a.hvac_action == null) };
-    if (d === "sensor") { const n = Number(v); return { t: isFinite(n) && v !== "" ? `${num(n, Math.abs(n) < 10 && !Number.isInteger(n) ? 1 : 0)}${un ? " " + un : ""}` : v, on: false }; }
+    if (d === "sensor") { const n = Number(v); return { t: isFinite(n) && v !== "" ? `${num(n, (un === "°C" || (Math.abs(n) < 10 && !Number.isInteger(n))) && !Number.isInteger(n) ? 1 : 0)}${un ? " " + un : ""}` : v, on: false }; }
+    if (d === "cover") return { t: ({ open: "offen", closed: "zu", opening: "öffnet", closing: "schließt" }[v] || v) + (a.current_position != null && v !== "closed" ? ` ${a.current_position} %` : ""), on: v !== "closed" };
+    if (d === "lawn_mower" || d === "vacuum") return { t: { mowing: "mäht", cleaning: "saugt", docked: "in Station", paused: "Pause", returning: "fährt heim", error: "Fehler" }[v] || v, on: ["mowing", "cleaning"].includes(v), al: v === "error" };
+    if (d === "device_tracker") return { t: v === "home" ? "zu Hause" : v === "not_home" ? "unterwegs" : v, on: v === "home" };
+    if (d === "calendar") return { t: a.message ? String(a.message).slice(0, 24) : v === "on" ? "heute" : "–", on: v === "on" };
     if (d === "binary_sensor") { const dc = a.device_class; return { t: v === "on" ? ({ moisture: "NASS", window: "offen", door: "offen", opening: "offen", motion: "Bewegung", occupancy: "belegt", presence: "da" }[dc] || "an") : ({ moisture: "trocken", window: "zu", door: "zu", opening: "zu" }[dc] || "–"), on: v === "on", al: v === "on" && dc === "moisture" }; }
     if (d === "valve") return { t: v === "open" ? "offen" : v === "closed" ? "zu" : v, on: v === "open" };
     if (d === "media_player") return { t: v === "playing" ? "spielt" : v === "off" ? "aus" : v, on: v === "playing" };
@@ -18262,6 +18321,262 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     if (a === "grxmkar") { this._grMakeAreas(k === "1"); return true; }
     if (a === "grxent") { const S = this._grS0(), on = !(S.d && S.d.meta && S.d.meta.ent === "1"); this._hass.callWS({ type: "fenster_heizung/gr_cfg", ent: on }).then((d) => { S.d = d; S.ts = Date.now(); this._render(); this._toast(on ? "Raum-Sensoren werden angelegt" : "Raum-Sensoren ausgeschaltet"); }).catch(() => this._toast("Das hat nicht geklappt")); return true; }
     return false;
+  }
+  /* ================= Modul 0 Build 10: Möbel, Außenbereich, Puppenhaus, Sonnenlicht =================
+     Element „o“: Möbel (Bett, Sofa, Küche, Bad …) und Außen (Baum, Hecke, Pool, Carport, PV …) mit Größe in cm, drehbar, teils mit Entität.
+     Grundstück als eigene Etage „Außen“ (floor.ga): das Haus erscheint dort als Umriss, Antippen öffnet die Etage.
+     Puppenhaus: alle Etagen schräg übereinander, Wände leicht hochgezogen; Antippen einer Etage klappt sie flach.
+     Sonnenlicht: Nordrichtung des Plans + Sonnenstand (sun.sun oder berechnet) → Lichtflächen durch die Fenster, Tageszeit-Regler. */
+  _grMK() {
+    if (this._grMKc) return this._grMKc;
+    const L = [
+      ["bett", "Doppelbett", "wohnen", 180, 200], ["bett1", "Einzelbett", "wohnen", 90, 200], ["sofa", "Sofa", "wohnen", 220, 90], ["sessel", "Sessel", "wohnen", 80, 80], ["tisch", "Esstisch", "wohnen", 160, 90],
+      ["couchtisch", "Couchtisch", "wohnen", 100, 60], ["schreibtisch", "Schreibtisch", "wohnen", 140, 70], ["schrank", "Schrank", "wohnen", 200, 60], ["regal", "Regal", "wohnen", 100, 35], ["kommode", "Kommode", "wohnen", 120, 50], ["tvboard", "TV-Board", "wohnen", 180, 45],
+      ["kueche", "Küchenzeile", "kueche", 300, 60], ["insel", "Kochinsel", "kueche", 180, 90], ["kuehlschrank", "Kühlschrank", "kueche", 60, 65], ["waschmaschine", "Waschmaschine", "bad", 60, 60],
+      ["badewanne", "Badewanne", "bad", 170, 75], ["dusche", "Dusche", "bad", 90, 90], ["wc", "WC", "bad", 40, 65], ["waschbecken", "Waschbecken", "bad", 60, 45],
+      ["rasen", "Rasen", "garten", 600, 400], ["beet", "Beet", "garten", 200, 100], ["hochbeet", "Hochbeet", "garten", 200, 80], ["baum", "Baum", "garten", 400, 400], ["obstbaum", "Obstbaum", "garten", 350, 350], ["busch", "Busch", "garten", 150, 150],
+      ["hecke", "Hecke", "garten", 400, 80], ["teich", "Gartenteich", "garten", 300, 200], ["gewaechshaus", "Gewächshaus", "garten", 300, 200], ["kompost", "Kompost", "garten", 100, 100], ["regentonne", "Regentonne", "garten", 60, 60],
+      ["bewaesserung", "Bewässerungszone", "garten", 400, 300], ["wasserhahn", "Wasserhahn außen", "garten", 40, 40], ["maehroboter", "Mähroboter", "garten", 60, 60],
+      ["spielturm", "Spielturm mit Rutsche", "spiel", 300, 200], ["schaukel", "Schaukel", "spiel", 250, 150], ["sandkasten", "Sandkasten", "spiel", 150, 150], ["trampolin", "Trampolin", "spiel", 300, 300], ["pool", "Pool", "spiel", 600, 300],
+      ["whirlpool", "Whirlpool", "spiel", 220, 220], ["sauna", "Gartensauna", "spiel", 250, 250], ["gartentisch", "Gartentisch", "spiel", 180, 180], ["liegestuhl", "Liegestuhl", "spiel", 70, 190], ["sonnenschirm", "Sonnenschirm", "spiel", 300, 300],
+      ["grill", "Grill", "spiel", 60, 50], ["feuerstelle", "Feuerstelle", "spiel", 120, 120],
+      ["weg", "Weg / Einfahrt", "bauten", 300, 120], ["trittsteine", "Trittsteine", "bauten", 300, 60], ["holzterrasse", "Holzterrasse", "bauten", 400, 300], ["zaun", "Zaun", "bauten", 400, 10], ["tor", "Tor", "bauten", 300, 10],
+      ["gartenhaus", "Gartenhaus", "bauten", 300, 250], ["garage", "Garage", "bauten", 300, 600], ["carport", "Carport", "bauten", 300, 550], ["pv", "PV-Anlage", "bauten", 500, 300], ["zisterne", "Zisterne", "bauten", 200, 200],
+      ["muell", "Mülltonnen", "bauten", 150, 70], ["fahrrad", "Fahrradständer", "bauten", 180, 60], ["auto", "Auto", "bauten", 180, 450], ["gartenlampe", "Gartenlampe", "bauten", 30, 30]];
+    const G = { wohnen: ["Wohnen & Schlafen", "#94a3b8"], kueche: ["Küche", "#94a3b8"], bad: ["Bad & Wäsche", "#7dd3fc"], garten: ["Garten & Pflanzen", "#4ade80"], spiel: ["Spielen & Freizeit", "#fbbf24"], bauten: ["Wege, Bauten & Technik", "#a8a29e"] };
+    const D = { pool: ["sensor:temperature"], pv: ["sensor:power", "sensor:energy"], zisterne: ["sensor"], muell: ["sensor", "calendar"], garage: ["cover"], tor: ["cover"], maehroboter: ["lawn_mower", "vacuum"], auto: ["sensor:battery", "device_tracker"], waschmaschine: ["sensor:power", "switch", "sensor"], kuehlschrank: ["sensor:temperature"],
+      bewaesserung: ["valve", "switch"], wasserhahn: ["valve", "switch"], gartenlampe: ["light", "switch"], whirlpool: ["sensor:temperature", "climate", "water_heater"], sauna: ["sensor:temperature", "climate"], regentonne: ["sensor"], teich: ["sensor:temperature"], gewaechshaus: ["sensor:temperature", "sensor:humidity"] };
+    this._grOUT = new Set(["garten", "spiel", "bauten"]);
+    this._grMKc = { L, G, D, by: Object.fromEntries(L.map((x) => [x[0], { k: x[0], n: x[1], g: x[2], w: x[3], h: x[4], d: D[x[0]] || [] }])) };
+    return this._grMKc;
+  }
+  _grMk(i) { const K = this._grMK(); return K.by[i.ok] || K.by.tisch; }
+  _grMobSvg(i, T, hell, st) {
+    st = st || this._hass.states;
+    const k = this._grMk(i), x = i.x, y = i.y, w = i.w || 40, h = i.h || 40, cx = x + w / 2, cy = y + h / 2, rot = i.r ? ` transform="rotate(${i.r} ${cx} ${cy})"` : "";
+    const S = hell ? "#64748b" : "#9aa7bb", F = hell ? "#ffffff" : "#1b2638", L = (dd, c, sw, da) => `<path d="${dd}" fill="none" stroke="${c || S}" stroke-width="${sw || 1.2}"${da ? ` stroke-dasharray="${da}"` : ""} stroke-linecap="round"/>`;
+    const R = (xx, yy, ww, hh, rx, f, c, sw) => `<rect x="${xx}" y="${yy}" width="${ww}" height="${hh}" rx="${rx || 0}" fill="${f || F}" stroke="${c || S}" stroke-width="${sw || 1.3}"/>`;
+    const C = (xx, yy, r, f, c, sw, da) => `<circle cx="${xx}" cy="${yy}" r="${r}" fill="${f || F}" stroke="${c || S}" stroke-width="${sw || 1.3}"${da ? ` stroke-dasharray="${da}"` : ""}/>`;
+    const G1 = "#3f7d4e", G2 = "#5fae6c", m = Math.min(w, h);
+    let s = "";
+    switch (k.k) {
+      case "bett": case "bett1": { const n = k.k === "bett" ? 2 : 1, pw = (w - 8 - (n - 1) * 4) / n; s = R(x, y, w, h, 3) + Array.from({ length: n }, (_, j) => R(x + 4 + j * (pw + 4), y + 4, pw, h * 0.16, 3)) + L(`M${x} ${y + h * 0.3}H${x + w}`) + L(`M${x + 6} ${y + h * 0.36}l${w * 0.25} ${h * 0.08}`, null, 0.8); break; }
+      case "sofa": case "sessel": s = R(x, y, w, h, 5) + R(x, y, w, h * 0.28, 4) + R(x, y, w * 0.12, h, 4) + R(x + w * 0.88, y, w * 0.12, h, 4) + (k.k === "sofa" ? L(`M${cx} ${y + h * 0.28}V${y + h}`, null, 0.8) : ""); break;
+      case "tisch": { const n = Math.max(1, Math.floor(w / 55)), cw = Math.min(16, w / n - 6); s = Array.from({ length: n }, (_, j) => { const xx = x + (w / n) * (j + 0.5) - cw / 2; return R(xx, y - 12, cw, 10, 3) + R(xx, y + h + 2, cw, 10, 3); }).join("") + R(x, y, w, h, 3); break; }
+      case "couchtisch": s = R(x, y, w, h, 6); break;
+      case "schreibtisch": s = R(x, y, w, h, 2) + C(cx, y + h + 12, 9) + L(`M${x + 6} ${y + 6}h${w * 0.3}`, null, 0.8); break;
+      case "schrank": s = R(x, y, w, h, 1) + L(Array.from({ length: Math.max(1, Math.floor(w / 50)) - 1 }, (_, j) => `M${x + (j + 1) * (w / Math.max(1, Math.floor(w / 50)))} ${y}V${y + h}`).join("") || "M0 0") + L(`M${x} ${y}L${x + w} ${y + h}`, null, 0.6, "3 3"); break;
+      case "regal": s = R(x, y, w, h, 1) + L(Array.from({ length: Math.max(1, Math.floor(w / 25)) }, (_, j) => `M${x + (j + 0.5) * (w / Math.max(1, Math.floor(w / 25)))} ${y + 2}V${y + h - 2}`).join(""), null, 0.7); break;
+      case "kommode": s = R(x, y, w, h, 2) + L(`M${x + 4} ${y + h * 0.33}H${x + w - 4}M${x + 4} ${y + h * 0.66}H${x + w - 4}`, null, 0.8); break;
+      case "tvboard": s = R(x, y, w, h, 2) + L(`M${x + w * 0.15} ${y + h * 0.5}H${x + w * 0.85}`, S, 3); break;
+      case "kueche": { s = R(x, y, w, h, 1); const sx = x + w * 0.62, hx = x + w * 0.2, r = Math.min(h * 0.16, 7); s += R(sx, y + h * 0.18, w * 0.16, h * 0.64, 4) + C(sx + w * 0.08, y + h * 0.5, 2) + [[0, 0], [1, 0], [0, 1], [1, 1]].map(([a, b]) => C(hx + a * h * 0.42, y + h * 0.29 + b * h * 0.42, r)).join(""); break; }
+      case "insel": { const r = Math.min(h * 0.14, 8); s = R(x, y, w, h, 3) + [[0, 0], [1, 0], [0, 1], [1, 1]].map(([a, b]) => C(x + w * 0.3 + a * h * 0.38, y + h * 0.31 + b * h * 0.38, r)).join(""); break; }
+      case "kuehlschrank": s = R(x, y, w, h, 2) + L(`M${x} ${y + h * 0.75}H${x + w}`, null, 0.8) + `<text x="${cx}" y="${y + h * 0.48}" text-anchor="middle" font-size="${Math.min(10, w * 0.32)}" fill="${S}">KS</text>`; break;
+      case "waschmaschine": s = R(x, y, w, h, 3) + C(cx, cy + h * 0.06, m * 0.3) + C(cx, cy + h * 0.06, m * 0.18, "none", null, 0.8); break;
+      case "badewanne": s = R(x, y, w, h, 6) + R(x + 5, y + 5, w - 10, h - 10, Math.min(h, w) * 0.4, F === "#ffffff" ? "#e0f2fe" : "#16324a", "#7dd3fc") + C(x + w * 0.85, cy, 2.5, "#7dd3fc", "#7dd3fc"); break;
+      case "dusche": s = R(x, y, w, h, 2, F === "#ffffff" ? "#e0f2fe" : "#16324a", "#7dd3fc") + L(`M${x} ${y}L${x + w} ${y + h}M${x + w} ${y}L${x} ${y + h}`, "#7dd3fc", 0.8) + C(cx, cy, 3, "#7dd3fc", "#7dd3fc"); break;
+      case "wc": s = R(x + w * 0.1, y, w * 0.8, h * 0.28, 2) + `<ellipse cx="${cx}" cy="${y + h * 0.62}" rx="${w * 0.42}" ry="${h * 0.36}" fill="${F}" stroke="${S}" stroke-width="1.3"/>`; break;
+      case "waschbecken": s = R(x, y, w, h, 3) + `<ellipse cx="${cx}" cy="${cy + h * 0.06}" rx="${w * 0.32}" ry="${h * 0.28}" fill="none" stroke="#7dd3fc" stroke-width="1.3"/>`; break;
+      case "rasen": s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="6" fill="${G1}" fill-opacity="${hell ? 0.28 : 0.35}" stroke="${G2}" stroke-opacity=".5" stroke-dasharray="6 5"/>`; break;
+      case "beet": s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="#6b4b2e" fill-opacity=".55" stroke="#8b6b4a"/>` + Array.from({ length: Math.max(2, Math.floor(w / 18)) }, (_, j) => C(x + 9 + j * ((w - 18) / Math.max(1, Math.floor(w / 18) - 1)), y + h * (j % 2 ? 0.35 : 0.65), 4, G2, G2, 1)).join(""); break;
+      case "weg": s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${hell ? "#e2e8f0" : "#3a4558"}" stroke="${S}" stroke-opacity=".5"/>` + L(Array.from({ length: Math.floor(Math.max(w, h) / 16) }, (_, j) => (w >= h ? `M${x + (j + 1) * 16} ${y}V${y + h}` : `M${x} ${y + (j + 1) * 16}H${x + w}`)).join(""), S, 0.5); break;
+      case "baum": case "busch": { const r = m / 2, n = 9; s = `<path d="${Array.from({ length: n }, (_, j) => { const a = (j / n) * Math.PI * 2, a2 = ((j + 1) / n) * Math.PI * 2; return `${j ? "" : `M${cx + r * 0.82 * Math.cos(a)} ${cy + r * 0.82 * Math.sin(a)}`}Q${cx + r * 1.08 * Math.cos((a + a2) / 2)} ${cy + r * 1.08 * Math.sin((a + a2) / 2)} ${cx + r * 0.82 * Math.cos(a2)} ${cy + r * 0.82 * Math.sin(a2)}`; }).join("")}Z" fill="${G1}" fill-opacity=".75" stroke="${G2}" stroke-width="1.4"/>` + (k.k === "baum" ? C(cx, cy, Math.max(2, r * 0.08), "#6b4b2e", "#6b4b2e") + L(`M${cx} ${cy}l${r * 0.4} ${-r * 0.3}M${cx} ${cy}l${-r * 0.35} ${-r * 0.35}M${cx} ${cy}l${r * 0.05} ${r * 0.45}`, G2, 1) : ""); break; }
+      case "hecke": s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${Math.min(w, h) / 2}" fill="${G1}" fill-opacity=".8" stroke="${G2}" stroke-width="1.4"/>` + L(Array.from({ length: Math.floor(Math.max(w, h) / 14) }, (_, j) => (w >= h ? `M${x + 7 + j * 14} ${cy - 2}l3 4` : `M${cx - 2} ${y + 7 + j * 14}l4 3`)).join(""), G2, 1); break;
+      case "zaun": { const hor = w >= h; s = L(hor ? `M${x} ${cy}H${x + w}` : `M${cx} ${y}V${y + h}`, "#a8a29e", 2) + Array.from({ length: Math.floor(Math.max(w, h) / 40) + 1 }, (_, j) => (hor ? R(x + j * 40 - 2, cy - 2, 4, 4, 0, "#a8a29e", "#a8a29e") : R(cx - 2, y + j * 40 - 2, 4, 4, 0, "#a8a29e", "#a8a29e"))).join(""); break; }
+      case "tor": s = L(`M${x} ${cy}H${x + w}`, "#a8a29e", 3, "8 4") + L(`M${x + w} ${cy}A${w} ${w} 0 0 0 ${x} ${cy - w * 0.0}`, S, 0.8, "4 4"); break;
+      case "pool": s = R(x, y, w, h, 10, "#0e7490", "#67e8f9", 2) + R(x + 6, y + 6, w - 12, h - 12, 7, "#22d3ee", "none", 0).replace('fill="#22d3ee"', 'fill="#22d3ee" fill-opacity=".45"') + L(`M${x + w - 20} ${y + 8}v${h * 0.3}M${x + w - 12} ${y + 8}v${h * 0.3}`, "#e0f2fe", 1.2) + L(`M${x + w * 0.2} ${cy}q8 -5 16 0t16 0t16 0`, "#e0f2fe", 1); break;
+      case "zisterne": s = C(cx, cy, m / 2, "#0c4a6e", "#38bdf8", 1.6, "6 4") + C(cx, cy, m * 0.12, F, "#38bdf8"); break;
+      case "gartenhaus": case "garage": { const rr = Math.min(w, h) / 2; s = R(x, y, w, h, 1, hell ? "#f1f5f9" : "#2a3446", S, 1.6) + L(w >= h ? `M${x} ${y}L${x + rr} ${cy}L${x} ${y + h}M${x + w} ${y}L${x + w - rr} ${cy}L${x + w} ${y + h}M${x + rr} ${cy}H${x + w - rr}` : `M${x} ${y}L${cx} ${y + rr}L${x + w} ${y}M${x} ${y + h}L${cx} ${y + h - rr}L${x + w} ${y + h}M${cx} ${y + rr}V${y + h - rr}`, S, 1) + (k.k === "garage" ? L(`M${x + w * 0.1} ${y + h}H${x + w * 0.9}`, "#f59e0b", 3, "6 3") : ""); break; }
+      case "carport": s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${S}" fill-opacity=".08" stroke="${S}" stroke-width="1.4" stroke-dasharray="7 5"/>` + [[0, 0], [1, 0], [0, 1], [1, 1], [0, 0.5], [1, 0.5]].map(([a, b]) => R(x + a * (w - 6), y + b * (h - 6), 6, 6, 1, S, S)).join("") + L(`M${x} ${y}L${x + w} ${y + h}`, S, 0.6, "4 4"); break;
+      case "pv": { const cols = Math.max(2, Math.round(w / 34)), rows = Math.max(1, Math.round(h / 60)); s = R(x, y, w, h, 2, "#1e3a8a", "#93c5fd", 1.4) + L(Array.from({ length: cols - 1 }, (_, j) => `M${x + ((j + 1) * w) / cols} ${y}V${y + h}`).join("") + Array.from({ length: rows - 1 }, (_, j) => `M${x} ${y + ((j + 1) * h) / rows}H${x + w}`).join("") || "M0 0", "#93c5fd", 0.8); break; }
+      case "muell": { const n = 3, cw = w / n - 3, c = ["#6b7280", "#2563eb", "#92400e"]; s = Array.from({ length: n }, (_, j) => R(x + j * (cw + 3), y, cw, h, 3, c[j], "#0b1220", 1)).join(""); break; }
+      case "gartentisch": s = C(cx, cy, m * 0.28) + [0, 1, 2, 3, 4, 5].map((j) => C(cx + m * 0.42 * Math.cos((j * Math.PI) / 3), cy + m * 0.42 * Math.sin((j * Math.PI) / 3), m * 0.08)).join(""); break;
+      case "grill": s = C(cx, cy, m / 2, "#1f2937", S) + L(`M${cx - m * 0.3} ${cy - m * 0.12}H${cx + m * 0.3}M${cx - m * 0.32} ${cy}H${cx + m * 0.32}M${cx - m * 0.3} ${cy + m * 0.12}H${cx + m * 0.3}`, "#f97316", 0.9); break;
+      case "trampolin": s = C(cx, cy, m / 2, "#111827", "#38bdf8", 2) + C(cx, cy, m * 0.38, "#1f2937", S, 1, "3 3"); break;
+      case "auto": { const v = h >= w; s = R(x, y, w, h, Math.min(w, h) * 0.28, hell ? "#cbd5e1" : "#475569", S, 1.4) + (v ? R(x + w * 0.12, y + h * 0.2, w * 0.76, h * 0.15, 4, "#93c5fd", "none", 0) + R(x + w * 0.14, y + h * 0.68, w * 0.72, h * 0.1, 3, "#93c5fd", "none", 0) : R(x + w * 0.2, y + h * 0.12, w * 0.15, h * 0.76, 4, "#93c5fd", "none", 0) + R(x + w * 0.68, y + h * 0.14, w * 0.1, h * 0.72, 3, "#93c5fd", "none", 0)); break; }
+      case "maehroboter": s = C(cx, cy, m / 2, "#14532d", "#4ade80", 1.6) + L(`M${cx - m * 0.25} ${cy}H${cx + m * 0.25}`, "#4ade80", 1.4); break;
+      case "hochbeet": s = R(x, y, w, h, 3, "#3f7d4e", "#8b5a2b", 4) + Array.from({ length: Math.max(2, Math.floor(w / 22)) }, (_, j) => C(x + 11 + j * ((w - 22) / Math.max(1, Math.floor(w / 22) - 1)), cy + (j % 2 ? -h * 0.15 : h * 0.15), Math.min(5, h * 0.18), G2, G2, 1)).join(""); break;
+      case "obstbaum": { const r = m / 2; s = C(cx, cy, r * 0.92, G1, G2, 1.4).replace('fill="' + G1 + '"', 'fill="' + G1 + '" fill-opacity=".75"') + [[0.35, -0.2], [-0.3, 0.1], [0.1, 0.4], [-0.1, -0.45], [0.45, 0.3]].map(([a, b]) => C(cx + a * r, cy + b * r, Math.max(2, r * 0.08), "#ef4444", "#b91c1c", 0.8)).join("") + C(cx, cy, Math.max(2, r * 0.07), "#6b4b2e", "#6b4b2e"); break; }
+      case "teich": s = `<path d="M${x + w * 0.1} ${cy}C${x} ${y + h * 0.1} ${x + w * 0.55} ${y - h * 0.05} ${x + w * 0.75} ${y + h * 0.15}S${x + w * 1.02} ${y + h * 0.8} ${x + w * 0.6} ${y + h * 0.95}S${x + w * 0.05} ${y + h * 0.95} ${x + w * 0.1} ${cy}Z" fill="#0e7490" fill-opacity=".75" stroke="#67e8f9" stroke-width="1.6"/>` + C(x + w * 0.35, y + h * 0.4, Math.min(8, m * 0.08), "#4ade80", "#166534", 0.8) + C(x + w * 0.55, y + h * 0.65, Math.min(6, m * 0.06), "#4ade80", "#166534", 0.8); break;
+      case "gewaechshaus": s = R(x, y, w, h, 2, "#ecfeff", "#a5f3fc", 1.6).replace('fill="#ecfeff"', 'fill="#a5f3fc" fill-opacity=".22"') + L((w >= h ? `M${x} ${cy}H${x + w}` : `M${cx} ${y}V${y + h}`) + Array.from({ length: Math.max(1, Math.floor(Math.max(w, h) / 30)) }, (_, j) => (w >= h ? `M${x + (j + 1) * 30} ${y}V${y + h}` : `M${x} ${y + (j + 1) * 30}H${x + w}`)).join(""), "#a5f3fc", 0.8) + Array.from({ length: 3 }, (_, j) => C(x + w * (0.25 + j * 0.25), cy + (w >= h ? h * 0.25 : 0), Math.min(5, m * 0.08), G2, G2, 1)).join(""); break;
+      case "kompost": s = R(x, y, w, h, 2, "#5b3a1e", "#8b5a2b", 2) + L(Array.from({ length: 4 }, (_, j) => `M${x + (j + 1) * w / 5} ${y + 3}L${x + (j + 1) * w / 5 - w * 0.15} ${y + h - 3}`).join(""), "#a16207", 0.8); break;
+      case "regentonne": s = C(cx, cy, m / 2, "#14532d", "#4ade80", 1.4) + C(cx, cy, m * 0.36, "#0e7490", "#67e8f9", 0.8); break;
+      case "bewaesserung": { const wet = !!(i.e && st && st[i.e] && ["on", "open"].includes(st[i.e].state)); s = `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="#38bdf8" fill-opacity="${wet ? 0.28 : 0.07}" stroke="#38bdf8" stroke-width="1.4" stroke-dasharray="7 5"/>` + [[0.25, 0.3], [0.75, 0.3], [0.5, 0.72]].map(([a, b]) => { const px = x + a * w, py = y + b * h, rr = Math.min(w, h) * 0.18; return C(px, py, 3, "#38bdf8", "#38bdf8") + (wet ? `<path d="M${px - rr} ${py}A${rr} ${rr} 0 0 1 ${px + rr} ${py}" fill="none" stroke="#7dd3fc" stroke-width="1.2" stroke-dasharray="2 3"/>` : ""); }).join(""); break; }
+      case "wasserhahn": s = R(x, y, w, h, 3, "#0c4a6e", "#38bdf8", 1.4) + L(`M${x + w * 0.25} ${y + h * 0.4}H${x + w * 0.7}V${y + h * 0.75}`, "#7dd3fc", 1.6); break;
+      case "spielturm": { const p = Math.min(w * 0.45, h); s = R(x, y, p, p, 2, "#8b5a2b", "#d6a46b", 1.6) + L(`M${x} ${y}L${x + p} ${y + p}M${x + p} ${y}L${x} ${y + p}`, "#d6a46b", 1) + `<rect x="${x + p}" y="${y + p * 0.3}" width="${w - p}" height="${p * 0.4}" rx="${p * 0.2}" fill="#f97316" fill-opacity=".8" stroke="#fdba74" stroke-width="1.2"/>` + L(`M${x + p + 6} ${cy - p * 0.02 + (y + p * 0.5 - cy)}h${(w - p) * 0.7}`, "#fff7ed", 0.8); break; }
+      case "schaukel": s = L(`M${x} ${y + h * 0.2}H${x + w}M${x} ${y}V${y + h}M${x + w} ${y}V${y + h}`, "#d6a46b", 2.4) + [0.35, 0.65].map((a) => R(x + w * a - w * 0.08, y + h * 0.5, w * 0.16, h * 0.12, 2, "#f59e0b", "#fbbf24", 1) + L(`M${x + w * a - w * 0.07} ${y + h * 0.2}V${y + h * 0.5}M${x + w * a + w * 0.07} ${y + h * 0.2}V${y + h * 0.5}`, S, 0.7)).join(""); break;
+      case "sandkasten": s = R(x, y, w, h, 3, "#fde68a", "#a16207", 4).replace('fill="#fde68a"', 'fill="#fde68a" fill-opacity=".7"') + Array.from({ length: 9 }, (_, j) => C(x + w * (0.2 + (j % 3) * 0.3), y + h * (0.2 + Math.floor(j / 3) * 0.3), 1.2, "#d97706", "#d97706", 0.5)).join(""); break;
+      case "whirlpool": s = R(x, y, w, h, m * 0.18, "#164e63", "#67e8f9", 1.6) + C(cx, cy, m * 0.36, "#22d3ee", "#a5f3fc", 1).replace('fill="#22d3ee"', 'fill="#22d3ee" fill-opacity=".45"') + [[-0.12, -0.1], [0.1, 0.05], [-0.02, 0.16], [0.16, -0.14]].map(([a, b]) => C(cx + a * m, cy + b * m, 2, "none", "#e0f2fe", 0.8)).join(""); break;
+      case "sauna": s = R(x, y, w, h, 2, "#7c4a21", "#d6a46b", 1.6) + L(`M${x + w * 0.1} ${y + h * 0.3}H${x + w * 0.9}M${x + w * 0.1} ${y + h * 0.5}H${x + w * 0.9}`, "#d6a46b", 1) + R(x + w * 0.65, y + h * 0.65, w * 0.2, h * 0.2, 2, "#1f2937", "#f97316", 1); break;
+      case "liegestuhl": s = R(x, y, w, h, 4, "#f8fafc", S, 1.2).replace('fill="#f8fafc"', 'fill="#38bdf8" fill-opacity=".35"') + L(`M${x + 3} ${y + h * 0.3}H${x + w - 3}`, S, 1); break;
+      case "sonnenschirm": { const r = m / 2; s = `<polygon points="${Array.from({ length: 8 }, (_, j) => { const a = (j * Math.PI) / 4 + Math.PI / 8; return `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`; }).join(" ")}" fill="#f97316" fill-opacity=".35" stroke="#fdba74" stroke-width="1.4"/>` + L(Array.from({ length: 4 }, (_, j) => { const a = (j * Math.PI) / 4 + Math.PI / 8; return `M${cx - r * Math.cos(a)} ${cy - r * Math.sin(a)}L${cx + r * Math.cos(a)} ${cy + r * Math.sin(a)}`; }).join(""), "#fdba74", 0.8) + C(cx, cy, 2.5, "#fdba74", "#fdba74"); break; }
+      case "feuerstelle": s = C(cx, cy, m / 2, "#44403c", "#a8a29e", 3, "4 2") + `<path d="M${cx} ${cy - m * 0.25}c${m * 0.12} ${m * 0.12} ${m * 0.16} ${m * 0.22} 0 ${m * 0.36}c${-m * 0.16} ${-m * 0.14} ${-m * 0.12} ${-m * 0.24} 0 ${-m * 0.36}z" fill="#f97316" stroke="#fbbf24" stroke-width="0.8"/>`; break;
+      case "trittsteine": { const n = Math.max(2, Math.round(Math.max(w, h) / 22)), hor = w >= h; s = Array.from({ length: n }, (_, j) => { const t = (j + 0.5) / n; return `<ellipse cx="${hor ? x + w * t : cx + (j % 2 ? 3 : -3)}" cy="${hor ? cy + (j % 2 ? 3 : -3) : y + h * t}" rx="${hor ? w / n * 0.38 : w * 0.4}" ry="${hor ? h * 0.4 : h / n * 0.38}" fill="${hell ? "#e2e8f0" : "#64748b"}" stroke="${S}" stroke-width="0.8"/>`; }).join(""); break; }
+      case "holzterrasse": s = R(x, y, w, h, 1, "#8b5a2b", "#d6a46b", 1.2).replace('fill="#8b5a2b"', 'fill="#8b5a2b" fill-opacity=".8"') + L(Array.from({ length: Math.floor((w >= h ? h : w) / 10) }, (_, j) => (w >= h ? `M${x} ${y + (j + 1) * 10}H${x + w}` : `M${x + (j + 1) * 10} ${y}V${y + h}`)).join(""), "#a16207", 0.6); break;
+      case "fahrrad": s = L(`M${x} ${cy}H${x + w}`, S, 1.6) + Array.from({ length: Math.max(2, Math.floor(w / 30)) }, (_, j) => { const bx2 = x + 12 + j * ((w - 24) / Math.max(1, Math.floor(w / 30) - 1)); return L(`M${bx2} ${y}V${y + h}`, "#94a3b8", 2.2); }).join(""); break;
+      case "gartenlampe": { const on = !!(i.e && st && st[i.e] && st[i.e].state === "on"); s = (on ? `<circle cx="${cx}" cy="${cy}" r="${m * 2.2}" fill="#fde68a" opacity=".25"/>` : "") + C(cx, cy, Math.max(4, m / 2), on ? "#fde68a" : F, on ? "#fbbf24" : S, 1.4); break; }
+      default: s = R(x, y, w, h, 3);
+    }
+    const S2 = i.e && this._grTechState ? this._grTechState(i) : null, lab = S2 && S2.t ? S2.t : "", lw = lab.length * 5.6 + 12;
+    const chip = lab ? `<rect x="${cx - lw / 2}" y="${cy - 7.5}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" opacity=".92"/><text x="${cx}" y="${cy + 3.5}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${S2.on ? "#fbbf24" : hell ? "#334155" : "#e2e8f0"}">${esc(lab)}</text>` : "";
+    return `<g><title>${esc(k.n)}${i.n ? ` · ${esc(i.n)}` : ""}${lab ? ` · ${esc(lab)}` : ""}</title><g${rot}>${s}</g>${chip}</g>`;
+  }
+  /* Möbel und Außen-Gegenstände einer Etage. which = "aussen" (unter den Räumen) oder "innen" (über den Böden) */
+  _grMobLayer(P, fl, T, o, which, st) {
+    const hell = o.style === "hell", K = this._grMK(), isOut = (i) => this._grMK() && this._grOUT.has(this._grMk(i).g), f = (P.floors || []).find((x) => x.id === fl) || {};
+    let d = "";
+    if (which === "aussen" && f.ga) d += this._grHouseOnLot(P, T, o);
+    const its = (P.items || []).filter((i) => i.t === "o" && i.fl === fl && (which === "aussen" ? isOut(i) : !isOut(i)));
+    const z = (i) => K.L.findIndex((x) => x[0] === i.ok);
+    its.sort((a, b) => z(a) - z(b)).forEach((i) => { d += this._grMobSvg(i, T, hell, st); });
+    return d;
+  }
+  /* Grundstück: Haus (erste Etage, die kein Grundstück ist) als Umriss mit Dach-Schraffur; Antippen öffnet die Etage */
+  _grHouseOnLot(P, T, o) {
+    const main = (P.floors || []).find((f) => !f.ga && /^(eg|erdgeschoss)$/i.test(f.n)) || (P.floors || []).find((f) => !f.ga); if (!main) return "";
+    const rs = (P.items || []).filter((i) => i.t === "r" && i.fl === main.id && !i.ds && this._grKind(i).k !== "aussen"); if (!rs.length) return "";
+    const pth = rs.map((r) => "M" + this._grPoly(r).map((p) => p[0] + " " + p[1]).join("L") + "Z").join(""), x0 = Math.min(...rs.map((r) => r.x)), y0 = Math.min(...rs.map((r) => r.y)), x1 = Math.max(...rs.map((r) => r.x + r.w)), y1 = Math.max(...rs.map((r) => r.y + r.h));
+    const hell = o.style === "hell", fill = hell ? "#e2e8f0" : "#273246";
+    return `<g${o.click ? ` data-act="grxfl" data-k="${esc(main.id)}" style="cursor:pointer"` : ""}><title>Haus · ${esc(main.n)} öffnen</title><path d="${pth}" fill="${fill}" stroke="${fill}" stroke-width="16" stroke-linejoin="miter"/><path d="${pth}" fill="${fill}" stroke="${hell ? "#94a3b8" : "#64748b"}" stroke-width="2"/>
+      <path d="M${x0} ${y0}L${(x0 + x1) / 2} ${(y0 + y1) / 2}L${x1} ${y0}M${x0} ${y1}L${(x0 + x1) / 2} ${(y0 + y1) / 2}L${x1} ${y1}" stroke="${hell ? "#94a3b8" : "#475569"}" stroke-width="1.2" fill="none"/>
+      <rect x="${(x0 + x1) / 2 - 46}" y="${(y0 + y1) / 2 - 13}" width="92" height="26" rx="13" fill="${hell ? "#fff" : "#0b1220"}" stroke="var(--teal,#2dd4bf)"/><text x="${(x0 + x1) / 2}" y="${(y0 + y1) / 2 + 4}" text-anchor="middle" font-size="12" font-weight="800" fill="${hell ? "#0f172a" : "#e2e8f0"}">Haus · ${esc(main.n)}</text></g>`;
+  }
+  /* ---- Sonnenlicht */
+  _grSunPos(date, lat, lon) {
+    const rad = Math.PI / 180, n = date.getTime() / 86400000 + 2440587.5 - 2451545.0;
+    const L = (280.46 + 0.9856474 * n) % 360, g = ((357.528 + 0.9856003 * n) % 360) * rad, lam = (L + 1.915 * Math.sin(g) + 0.02 * Math.sin(2 * g)) * rad, eps = (23.439 - 0.0000004 * n) * rad;
+    const ra = Math.atan2(Math.cos(eps) * Math.sin(lam), Math.cos(lam)), dec = Math.asin(Math.sin(eps) * Math.sin(lam));
+    const gmst = (((18.697374558 + 24.06570982441908 * n) % 24) + 24) % 24, ha = (gmst * 15 + lon) * rad - ra, la = lat * rad;
+    const el = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(ha));
+    const az = Math.atan2(-Math.sin(ha), Math.tan(dec) * Math.cos(la) - Math.sin(la) * Math.cos(ha));
+    return { az: ((az / rad) % 360 + 360) % 360, el: el / rad };
+  }
+  _grSun() {
+    const c = (this._hass && this._hass.config) || {}, lat = Number(c.latitude), lon = Number(c.longitude), now = new Date();
+    if (this._grSunH != null && isFinite(lat) && isFinite(lon)) { const d = new Date(now); d.setHours(Math.floor(this._grSunH), Math.round((this._grSunH % 1) * 60), 0, 0); return { ...this._grSunPos(d, lat, lon), t: d, src: "Regler" }; }
+    const s = this._hass.states["sun.sun"], a = s && s.attributes;
+    if (a && a.azimuth != null && a.elevation != null) return { az: Number(a.azimuth), el: Number(a.elevation), t: now, src: "sun.sun" };
+    if (isFinite(lat) && isFinite(lon)) return { ...this._grSunPos(now, lat, lon), t: now, src: "berechnet" };
+    return null;
+  }
+  _grDir(az) { return ["Nord", "Nordost", "Ost", "Südost", "Süd", "Südwest", "West", "Nordwest"][Math.round(((az % 360) + 360) % 360 / 45) % 8]; }
+  _grSunSvg(P, fl, T, u, ins, bx) {
+    const S = this._grSun(); if (!S) return { svg: "", rooms: [], S: null };
+    const sc = P.scale > 0 ? P.scale : 40, N = ((P.north || 0) * Math.PI) / 180, A = (S.az * Math.PI) / 180 + N, sx = Math.sin(A), sy = -Math.cos(A), lit = new Set();
+    let d = "", clips = "";
+    if (S.el > 0.5) {
+      const tn = Math.tan((S.el * Math.PI) / 180);
+      (P.items || []).filter((i) => i.t === "f" && i.fl === fl && i.fk !== "dach").forEach((i, n) => {
+        const inf = this._grOpenInfo(i, P); if (!inf) return;
+        const [x1, y1, x2, y2] = inf.seg, ux = (x2 - x1) / inf.L, uy = (y2 - y1) / inf.L, nx = -uy, ny = ux, hw = this._grHw(i, sc);
+        const room = ins.find((r) => this._sfInRoom(r, i.x + nx * 12, i.y + ny * 12)) ? 1 : ins.find((r) => this._sfInRoom(r, i.x - nx * 12, i.y - ny * 12)) ? -1 : 0; if (!room) return;
+        const inx = nx * room, iny = ny * room, outDot = -(sx * inx + sy * iny); if (outDot < 0.05) return;
+        const rm = ins.find((r) => this._sfInRoom(r, i.x + inx * 12, i.y + iny * 12)); if (!rm) return;
+        const far = Math.min(8, 2.1 / tn), n0 = (i.fk === "boden" ? 0 : 0.9) / tn, near = n0 > far - 0.5 ? Math.max(0, far - 3) : n0,   /* tiefe Wintersonne: Lichtstreifen bis weit in den Raum */ dx = -sx, dy = -sy, k = (v) => v * sc;
+        const E1 = [i.x - ux * hw, i.y - uy * hw], E2 = [i.x + ux * hw, i.y + uy * hw];
+        const pt = (E, t) => `${E[0] + dx * k(t)} ${E[1] + dy * k(t)}`;
+        const id = `${u}sun${n}`; clips += `<clipPath id="${id}"><path d="M${this._grPoly(rm).map((p) => p[0] + " " + p[1]).join("L")}Z"/></clipPath>`;
+        d += `<path d="M${pt(E1, 0)}L${pt(E2, 0)}L${pt(E2, near)}L${pt(E1, near)}Z" fill="#fde68a" fill-opacity=".1" clip-path="url(#${id})"/><path d="M${pt(E1, near)}L${pt(E2, near)}L${pt(E2, far)}L${pt(E1, far)}Z" fill="url(#${u}sung)" clip-path="url(#${id})"/>`;   /* schwacher Strahl vom Fenster, dann die Lichtfläche auf dem Boden */
+        lit.add(rm.n || "Raum");
+      });
+    }
+    const cx = (bx.x0 + bx.x1) / 2, cy = (bx.y0 + bx.y1) / 2, R = Math.max(bx.x1 - bx.x0, bx.y1 - bx.y0) / 2 + 26, px = cx + sx * R, py = cy + sy * R, up = S.el > 0;
+    const sun = `<g pointer-events="none"><circle cx="${px}" cy="${py}" r="11" fill="${up ? "#fbbf24" : "#475569"}" opacity="${up ? 1 : 0.6}"/>${up ? Array.from({ length: 8 }, (_, j) => { const a = (j * Math.PI) / 4; return `<path d="M${px + 14 * Math.cos(a)} ${py + 14 * Math.sin(a)}L${px + 19 * Math.cos(a)} ${py + 19 * Math.sin(a)}" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>`; }).join("") : ""}</g>`;
+    return { svg: `<defs><linearGradient id="${u}sung" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a" stop-opacity=".55"/><stop offset="1" stop-color="#fbbf24" stop-opacity=".22"/></linearGradient>${clips}</defs><g pointer-events="none" style="mix-blend-mode:screen">${d}</g>${sun}`, rooms: [...lit], S };
+  }
+  _grSunBar(P, fl) {
+    const S = this._grSun(); if (!S) return `<div class="grsun mut sm">Sonnenlicht braucht den Standort in Home Assistant (Einstellungen → System → Allgemein).</div>`;
+    const G = this._grSunLast || { rooms: [] }, h = this._grSunH != null ? this._grSunH : S.t.getHours() + S.t.getMinutes() / 60, hh = `${String(Math.floor(h)).padStart(2, "0")}:${String(Math.round((h % 1) * 60)).padStart(2, "0")}`;
+    return `<div class="grsun"><span class="gsi">☀</span><span><b>${hh}</b> · ${S.el > 0 ? `${this._grDir(S.az)} · ${num(S.el, 0)}° hoch` : "Sonne unter dem Horizont"}${S.el > 0 ? ` · <b>${G.rooms.length ? "Sonne in: " + esc(G.rooms.join(", ")) : "keine Sonne durch die Fenster"}</b>` : ""}</span>
+      <input type="range" min="5" max="22" step="0.25" value="${h.toFixed(2)}" data-f="grxsunh" aria-label="Tageszeit"><button class="grb ${this._grSunH == null ? "on" : ""}" data-act="grxsunnow">Jetzt</button></div>`;
+  }
+  /* ---- Puppenhaus */
+  _grDoll(P, o) {
+    o = o || {}; const sty = o.style || this._grStyle(), T = this._grTheme(sty), fls = this._grFloors(P), ga = fls.find((f) => f.ga), houses = fls.filter((f) => !f.ga);
+    const k = o.k || 1, a = 0.866 * k, b = 0.5 * k, pr = (x, y) => [a * x - a * y, b * x + b * y], H = (o.wall || 22) * k;
+    const box = (fl) => { const rs = (P.items || []).filter((i) => (i.t === "r" || (i.t === "o" && fl === (ga || {}).id)) && i.fl === fl); if (!rs.length) return null; return { x0: Math.min(...rs.map((r) => r.x)), y0: Math.min(...rs.map((r) => r.y)), x1: Math.max(...rs.map((r) => r.x + (r.w || 0))), y1: Math.max(...rs.map((r) => r.y + (r.h || 0))) }; };
+    const stack = [...(ga ? [ga] : []), ...houses].filter((f) => box(f.id)); if (!stack.length) return null;
+    const hb = houses.map((f) => box(f.id)).filter(Boolean), hy = hb.length ? Math.max(...hb.map((q) => { const c = [[q.x0, q.y0], [q.x1, q.y0], [q.x0, q.y1], [q.x1, q.y1]].map((p) => pr(p[0], p[1])[1]); return Math.max(...c) - Math.min(...c); })) : 200;
+    const LH = Math.max(90 * k, hy * (o.gap || 0.62));
+    let body = "", pts = [];
+    stack.forEach((f, idx) => {
+      const lvl = f.ga ? 0 : houses.indexOf(f) + (ga ? 0 : 0), dy = -lvl * LH, q = box(f.id);
+      const G = this._grDraw(P, f.id, { style: sty, labels: o.labels !== false, deco: false, dims: false, bare: true, doors: true, windows: true, layers: { licht: !!o.licht, sf: false, gt: false, mo: true, ht: false } });
+      const corners = [[q.x0, q.y0], [q.x1, q.y0], [q.x1, q.y1], [q.x0, q.y1]].map((p) => { const r = pr(p[0], p[1]); return [r[0], r[1] + dy]; });
+      corners.forEach((c) => pts.push(c, [c[0], c[1] - H]));
+      const slab = corners.map((c) => c.join(" ")).join("L"), th = 7 * k;
+      const side = `<path d="M${corners[1][0]} ${corners[1][1]}L${corners[2][0]} ${corners[2][1]}L${corners[2][0]} ${corners[2][1] + th}L${corners[1][0]} ${corners[1][1] + th}Z" fill="${sty === "hell" ? "#cbd5e1" : "#0b1424"}"/><path d="M${corners[2][0]} ${corners[2][1]}L${corners[3][0]} ${corners[3][1]}L${corners[3][0]} ${corners[3][1] + th}L${corners[2][0]} ${corners[2][1] + th}Z" fill="${sty === "hell" ? "#94a3b8" : "#070d18"}"/>`;
+      const shadow = idx ? `<path d="M${slab}Z" transform="translate(${10 * k} ${26 * k})" fill="#000" opacity=".28" filter="url(#dollblur)"/>` : "";
+      body += `<g class="grdl" data-act="grxdoll" data-k="${esc(f.id)}" style="cursor:pointer">${shadow}${f.ga ? "" : side}<g transform="matrix(${a} ${b} ${-a} ${b} 0 ${dy})">${G.svg}</g>`;
+      if (!f.ga) {   /* Wände hochziehen: Außenkanten der Räume, hinten zuerst */
+        const W = [];
+        (P.items || []).filter((i) => i.t === "r" && i.fl === f.id && !i.ds && this._grKind(i).k !== "aussen").forEach((r) => { const Q = this._grPoly(r); Q.forEach((p, j) => { const q2 = Q[(j + 1) % Q.length]; W.push([p, q2]); }); });
+        const key = (s) => `${Math.round(Math.min(s[0][0], s[1][0]))},${Math.round(Math.min(s[0][1], s[1][1]))},${Math.round(Math.max(s[0][0], s[1][0]))},${Math.round(Math.max(s[0][1], s[1][1]))}`, cnt = new Map();
+        W.forEach((s) => cnt.set(key(s), (cnt.get(key(s)) || 0) + 1));
+        W.sort((s1, s2) => (s1[0][0] + s1[0][1] + s1[1][0] + s1[1][1]) - (s2[0][0] + s2[0][1] + s2[1][0] + s2[1][1])).forEach((s) => {
+          const inner = cnt.get(key(s)) > 1, A1 = pr(...s[0]), A2 = pr(...s[1]), y1 = A1[1] + dy, y2 = A2[1] + dy, hh = inner ? H * 0.55 : H;
+          const dxs = s[1][0] - s[0][0], dys = s[1][1] - s[0][1], lightSide = Math.abs(dxs) > Math.abs(dys);
+          const fill = sty === "hell" ? (lightSide ? "#e2e8f0" : "#cbd5e1") : sty === "bauplan" ? (lightSide ? "#1e5ba8" : "#174a8a") : lightSide ? "#3b475c" : "#2b3547";
+          body += `<path d="M${A1[0]} ${y1}L${A2[0]} ${y2}L${A2[0]} ${y2 - hh}L${A1[0]} ${y1 - hh}Z" fill="${fill}" fill-opacity="${inner ? 0.55 : 0.82}" stroke="${sty === "hell" ? "#94a3b8" : "#5b6b84"}" stroke-width="${0.8 * k}"/>`;
+        });
+        const lp = corners[0], lab = `${f.n}`;
+        body += `<g pointer-events="none"><rect x="${lp[0] - 30 * k - lab.length * 4.2 * k}" y="${lp[1] - 13 * k - H}" width="${lab.length * 8.4 * k + 18 * k}" height="${24 * k}" rx="${12 * k}" fill="${sty === "hell" ? "#fff" : "#0b1220"}" stroke="var(--teal,#2dd4bf)" stroke-width="${1.2 * k}"/><text x="${lp[0] - 21 * k}" y="${lp[1] + 4 * k - H}" text-anchor="end" font-size="${12 * k}" font-weight="800" fill="${sty === "hell" ? "#0f172a" : "#e2e8f0"}">${esc(lab)}</text></g>`;
+      }
+      body += `</g>`;
+    });
+    const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]), m = 30 * k, vb = { x: Math.min(...xs) - m - 60 * k, y: Math.min(...ys) - m, w: Math.max(...xs) - Math.min(...xs) + 2 * m + 60 * k, h: Math.max(...ys) - Math.min(...ys) + 2 * m + 10 * k };
+    return { vb, svg: `<defs><filter id="dollblur"><feGaussianBlur stdDeviation="${8 * k}"/></filter></defs>${body}`, T };
+  }
+  _grDollMini(P) {
+    try { const D = this._grDoll(P, { k: 1, labels: false, wall: 26, gap: 0.55 }); if (!D) return this._grHouse(P); return `<svg class="grhs grdm" viewBox="${D.vb.x} ${D.vb.y} ${D.vb.w} ${D.vb.h}" aria-hidden="true">${D.svg}</svg>`; } catch (_) { return this._grHouse(P); }
+  }
+  /* ---- Baukasten: Möbel/Außen */
+  _grMobCat(cur, act, onlyOut) { const K = this._grMK(); return Object.entries(K.G).filter(([g]) => onlyOut == null || this._grOUT.has(g) === onlyOut).map(([g, [gn, gc]]) => `<div class="grtkg"><small style="color:${gc}">${gn}</small><div class="grseg">${K.L.filter((x) => x[2] === g).map((x) => `<button class="${cur === x[0] ? "on" : ""}" data-act="${act}" data-v="${x[0]}">${x[1]}</button>`).join("")}</div></div>`).join(""); }
+  _grMobProps(sel) {
+    const k = this._grMk(sel), sc = this._sfScale(), st = this._hass.states, cm = (px) => Math.round((px / sc) * 100);
+    const want = k.d, match = (e) => want.some((w) => { const [dm, dc] = w.split(":"); return e.startsWith(dm + ".") && (!dc || ((st[e].attributes || {}).device_class === dc)); }), cand = want.length ? Object.keys(st).filter(match).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")).slice(0, 20) : [];
+    const S = sel.e && this._grTechState ? this._grTechState(sel) : null, step = (act, lab, v) => `<div class="vrow" style="margin:6px 0"><span>${lab}</span><div class="step" style="flex:none"><button data-act="${act}" data-s="-10" aria-label="weniger">${ic("minus", 16)}</button><b>${num(v / 100, 2)} m</b><button data-act="${act}" data-s="10" aria-label="mehr">${ic("plus", 16)}</button></div></div>`;
+    return `<details class="grtkd"><summary><span style="color:${this._grMK().G[k.g][1]}">●</span> ${esc(k.n)} <small class="mut">· ändern</small></summary>${this._grMobCat(sel.ok, "grxok2")}</details>
+      ${step("grxow", "Breite", cm(sel.w || 40))}${step("grxoh", "Tiefe", cm(sel.h || 40))}
+      <div class="grseg" style="margin:2px 0 8px"><button data-act="grxorot" data-s="-15">↺ 15°</button><button data-act="grxorot" data-s="15">↻ 15°</button><button data-act="grxorot" data-s="90">↻ 90°</button><button data-act="grxosz">Normgröße</button></div>
+      ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length ? `<div class="gschips"><button class="gsch ${!sel.e ? "sel" : ""}" data-act="grxoe" data-v="">keine</button>${cand.map((e) => `<button class="gsch ${sel.e === e ? "sel" : ""}" data-act="grxoe" data-v="${esc(e)}">${esc(this._wzName(e))}</button>`).join("")}</div>` : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}`;
+  }
+  _grB10Box() {
+    const ed = this._sfEd; if (!ed) return "";
+    const P = ed.plan, nth = P.north || 0, hasGa = (P.floors || []).some((f) => f.ga);
+    return `<div class="sffld"><label>Norden zeigt nach</label><div class="vrow" style="margin:0"><svg viewBox="-20 -20 40 40" width="40" height="40" aria-hidden="true"><circle r="18" fill="none" stroke="var(--line)"/><g transform="rotate(${nth})"><path d="M0 -15L5 3L0 0L-5 3Z" fill="var(--teal,#2dd4bf)"/></g></svg><span class="mut sm" style="flex:1">${nth}° · ${this._grDir(nth)} (für Sonnenlicht und Nordpfeil)</span><div class="step" style="flex:none"><button data-act="grxnorth" data-s="-15" aria-label="15 Grad zurück">${ic("minus", 16)}</button><button data-act="grxnorth" data-s="15" aria-label="15 Grad weiter">${ic("plus", 16)}</button></div></div></div>
+      <div class="sffld"><label>Grundstück</label><div class="mut sm" style="margin-bottom:6px">${hasGa ? "Das Grundstück ist eine eigene Etage „Außen“ – das Haus erscheint dort als Umriss." : "Eigene Etage „Außen“ für Garten, Pool, Carport, PV und Wege. Das Haus erscheint dort als Umriss."}</div>${hasGa ? "" : `<button class="btn2" data-act="grxlot" style="flex:none" ${P.floors.length >= 6 ? "disabled" : ""}>Grundstück anlegen</button>`}</div>`;
+  }
+  _grB10Act(a, b) {
+    const v = b && b.dataset ? b.dataset.v : "", s = b && b.dataset ? Number(b.dataset.s || 0) : 0, k = b && b.dataset ? b.dataset.k : "";
+    if (a === "grxview") { this._grView = k === "3d" ? "3d" : "2d"; this._render(); return true; }
+    if (a === "grxdoll") { this._grFl = k; this._grView = "2d"; this._render(); return true; }
+    if (a === "grxsunnow") { this._grSunH = null; this._render(); return true; }
+    const ed = this._sfEd; if (!ed) return false;
+    const P = ed.plan;
+    if (a === "grxnorth") { this._sfSnap(); P.north = ((((P.north || 0) + s) % 360) + 360) % 360; this._render(); return true; }
+    if (a === "grxlot") { if (P.floors.length >= 6 || P.floors.some((f) => f.ga)) return true; this._sfSnap(); const id = "ga" + Date.now().toString(36).slice(-4); P.floors.push({ id, n: "Außen", ga: 1 }); this._sfFlId = id; ed.sel = ""; ed.tool = "o"; this._grOkLast = "rasen"; this._render(); this._toast("Grundstück angelegt – Rasen, Wege, Pool & Co. mit „Möbel“ setzen"); return true; }
+    if (a === "grxokt") { this._grOkLast = v; this._render(); return true; }
+    const cur = P.items.find((x) => x.id === ed.sel); if (!cur || cur.t !== "o") return false;
+    const sc = this._sfScale(), px = (cm) => Math.max(4, Math.round((cm / 100) * sc));
+    if (a === "grxok2") { this._sfSnap(); const kk = this._grMK().by[v]; if (kk) { const cx = cur.x + cur.w / 2, cy = cur.y + cur.h / 2; cur.ok = v; cur.w = px(kk.w); cur.h = px(kk.h); cur.x = Math.round(cx - cur.w / 2); cur.y = Math.round(cy - cur.h / 2); if (!kk.d.length) cur.e = ""; } this._grOkLast = v; this._render(); return true; }
+    if (a === "grxow" || a === "grxoh") { this._sfSnap(); const key = a === "grxow" ? "w" : "h", cm = Math.max(10, Math.round(((cur[key] || 40) / sc) * 100) + s); cur[key] = px(cm); this._render(); return true; }
+    if (a === "grxorot") { this._sfSnap(); cur.r = ((((cur.r || 0) + s) % 360) + 360) % 360; this._render(); return true; }
+    if (a === "grxosz") { this._sfSnap(); const kk = this._grMk(cur); cur.w = px(kk.w); cur.h = px(kk.h); this._render(); return true; }
+    if (a === "grxoe") { this._sfSnap(); cur.e = v; this._render(); return true; }
+    return false;
+  }
+  _grB10Change(t) {
+    if (t.dataset && t.dataset.f === "grxsunh") { this._grSunH = Number(t.value); this._render(); return true; }
+    return false;
+  }
+  /* Sichtfeld des Baukastens: mindestens 800 × 480, größer, wenn etwas darüber hinausragt (z. B. das Grundstück) */
+  _grEdVB(fl) {
+    const ed = this._sfEd, its = ed ? ed.plan.items.filter((i) => i.fl === fl) : [];
+    let x0 = 0, y0 = 0, x1 = 800, y1 = 480;
+    its.forEach((i) => { const a = [i.x, i.x2, i.x + (i.w || 0)].filter((v) => v != null), b = [i.y, i.y2, i.y + (i.h || 0)].filter((v) => v != null); x0 = Math.min(x0, ...a.map((v) => v - 20)); y0 = Math.min(y0, ...b.map((v) => v - 20)); x1 = Math.max(x1, ...a.map((v) => v + 20)); y1 = Math.max(y1, ...b.map((v) => v + 20)); });
+    x0 = Math.max(-50, x0); y0 = Math.max(-50, y0); x1 = Math.min(1200, x1); y1 = Math.min(1200, y1);
+    return [x0, y0, x1 - x0, y1 - y0];
   }
   /* ================= Modul 10: Konzept zum Durchklicken (In Entwicklung, Coming soon) ================= */
   _gaTab() {
