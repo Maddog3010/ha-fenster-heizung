@@ -812,3 +812,16 @@ def test_treppen_geraete_markise():
     assert it["g3"]["e"] == "humidifier.keller" and it["g3"]["gk"] == "entf"
     assert it["a1"]["e"] == "cover.markise" and it["a1"]["b"] == 400 and it["a1"]["tf"] == 350 and it["a1"]["mv"] == 1
     assert it["a2"]["e"] == "" and it["a2"]["tf"] == 800
+
+
+def test_haustechnik():
+    """Modul 0 Build 9: Haustechnik, Sensoren und Notfall-Punkte (Typ „h“)."""
+    p = S.clean_plan({"floors": [{"id": "eg", "n": "EG"}], "items": [
+        {"id": "h1", "fl": "eg", "t": "h", "x": 5, "y": 5, "hk": "bewegung", "e": "binary_sensor.flur", "rg": 7.3, "fov": 999, "r": 45},
+        {"id": "h2", "fl": "eg", "t": "h", "x": 5, "y": 5, "hk": "rakete", "e": "kaputt", "tx": "x"},
+        {"id": "h3", "fl": "eg", "t": "h", "x": 5, "y": 5, "hk": "notiz", "tx": "Rohr in der Wand " * 20},
+        {"id": "h4", "fl": "eg", "t": "h", "x": 5, "y": 5, "hk": "heizkoerper", "e": "climate.bad"}]})
+    it = {i["id"]: i for i in p["items"]}
+    assert it["h1"]["hk"] == "bewegung" and it["h1"]["e"] == "binary_sensor.flur" and it["h1"]["rg"] == 7.5 and it["h1"]["fov"] == 360 and it["h1"]["r"] == 45
+    assert it["h2"]["hk"] == "steckdose" and it["h2"]["e"] == "" and "tx" not in it["h2"] and "rg" not in it["h2"]
+    assert len(it["h3"]["tx"]) == 200 and it["h4"]["e"] == "climate.bad"

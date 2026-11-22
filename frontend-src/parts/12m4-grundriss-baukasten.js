@@ -12,13 +12,13 @@
   }
   /* Unterlage im 800×480-Raster des Baukastens und von Modul 11 */
   _grUnder(P, fl, o) {
-    const G = this._grDraw(P, fl, { style: this._grStyle(), dims: false, narrow: false, layers: { licht: false, sf: false }, deco: false, cover: { x: -40, y: -40, w: 880, h: 560 }, ...(o || {}) });
+    const G = this._grDraw(P, fl, { style: this._grStyle(), dims: false, narrow: false, layers: { licht: false, sf: false, nf: true }, deco: false, cover: { x: -40, y: -40, w: 880, h: 560 }, ...(o || {}) });
     return `<g class="gdbase" pointer-events="none">${G.svg}</g>`;
   }
   _grEditSvg(fl) {
     const ed = this._sfEd;
     if (!ed) return this._sfPlanInner(fl, true);
-    return this._grUnder(ed.plan, fl, { labels: true, bgImg: false, layers: { licht: false, sf: false, gt: true } }) + this._sfPlanInner(fl, true) + (this._grEdOver ? this._grEdOver(fl) : "");
+    return this._grUnder(ed.plan, fl, { labels: true, bgImg: false, layers: { licht: false, sf: false, gt: true, ht: true } }) + this._sfPlanInner(fl, true) + (this._grEdOver ? this._grEdOver(fl) : "");
   }
   /* Ebene „Jetzt“: Temperatur (Modul 1) als Chip oben rechts im Raum, Bewegung als Puls */
   _grNow(P, fl, rs, o, T) {
@@ -44,7 +44,7 @@
     const ed = this._sfEd, fl = this._sfFl(), P = ed.plan, sf = this._mdList().some((m) => m.id === "sf"), li = !!(this._liOn && this._liOn()), sty = this._grStyle();
     const rb = (k, t, p, on) => `<button class="grtl${on ? " on" : ""}" data-act="sfxtool" data-k="${k}" aria-pressed="${on}" title="${t}"><svg viewBox="0 0 34 34" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg><span>${t}</span></button>`;
     const PP = X.PP, tl = ed.tool, mT = String(tl).startsWith("m:");
-    const rail = `<div class="grrail">${rb("select", "Wählen", PP.select, tl === "select")}${rb("r", "Raum", PP.r, tl === "r")}${rb("w", "Wand", PP.w, tl === "w")}<i></i>${rb("d", "Tür", PP.d, tl === "d")}${rb("dg", "Durchgang", '<path d="M5 10h7M22 10h7M5 24h7M22 24h7M12 7v6M22 7v6M12 21v6M22 21v6"/>', tl === "dg")}${rb("f", "Fenster", PP.f, tl === "f")}${rb("s", "Treppe", PP.s, tl === "s")}<i></i>${sf ? rb(mT ? tl : "m:smoke", "Melder", PP.smoke, mT) : ""}${li ? rb("l", "Lampe", '<path d="M12 22a7 7 0 1 1 10 0c-1 1-1.5 2-1.5 3.5h-7c0-1.5-.5-2.5-1.5-3.5z"/><path d="M14 29h6"/>', tl === "l") : ""}${rb(String(tl).startsWith("g:") ? tl : "g:heizer", "Gerät", '<rect x="8" y="9" width="18" height="17" rx="4"/><path d="M13 13v9M17 13v9M21 13v9"/><path d="M12 6c-1.5 1.5 1.5 2 0 3.5M17 6c-1.5 1.5 1.5 2 0 3.5M22 6c-1.5 1.5 1.5 2 0 3.5"/>', String(tl).startsWith("g:"))}${rb("a", "Markise", '<path d="M5 10h24"/><path d="M6 10l3 12h16l3-12" stroke-dasharray="3 2"/><path d="M9 22h16"/>', tl === "a")}${rb("x", "Text", PP.x, tl === "x")}</div>`;
+    const rail = `<div class="grrail">${rb("select", "Wählen", PP.select, tl === "select")}${rb("r", "Raum", PP.r, tl === "r")}${rb("w", "Wand", PP.w, tl === "w")}<i></i>${rb("d", "Tür", PP.d, tl === "d")}${rb("dg", "Durchgang", '<path d="M5 10h7M22 10h7M5 24h7M22 24h7M12 7v6M22 7v6M12 21v6M22 21v6"/>', tl === "dg")}${rb("f", "Fenster", PP.f, tl === "f")}${rb("s", "Treppe", PP.s, tl === "s")}<i></i>${sf ? rb(mT ? tl : "m:smoke", "Melder", PP.smoke, mT) : ""}${li ? rb("l", "Lampe", '<path d="M12 22a7 7 0 1 1 10 0c-1 1-1.5 2-1.5 3.5h-7c0-1.5-.5-2.5-1.5-3.5z"/><path d="M14 29h6"/>', tl === "l") : ""}${rb(String(tl).startsWith("g:") ? tl : "g:heizer", "Gerät", '<rect x="8" y="9" width="18" height="17" rx="4"/><path d="M13 13v9M17 13v9M21 13v9"/><path d="M12 6c-1.5 1.5 1.5 2 0 3.5M17 6c-1.5 1.5 1.5 2 0 3.5M22 6c-1.5 1.5 1.5 2 0 3.5"/>', String(tl).startsWith("g:"))}${rb("h", "Technik", '<rect x="7" y="7" width="20" height="20" rx="4"/><path d="M13 13v3M21 13v3M13 21h8"/>', tl === "h")}${rb("a", "Markise", '<path d="M5 10h24"/><path d="M6 10l3 12h16l3-12" stroke-dasharray="3 2"/><path d="M9 22h16"/>', tl === "a")}${rb("x", "Text", PP.x, tl === "x")}</div>`;
     const mk = mT && sf ? `<div class="grpsec"><b>Art des Melders</b><div class="grseg">${[["m:smoke", "Rauch"], ["m:co", "CO"], ["m:gas", "Gas"], ["m:water", "Wasser"], ["m:heat", "Hitze"]].map(([k, t]) => `<button class="${tl === k ? "on" : ""}" data-act="sfxtool" data-k="${k}">${t}</button>`).join("")}</div></div>` : "";
     const gS = String(tl).startsWith("g:") ? `<div class="grpsec"><b>Art des Geräts</b><div class="grseg">${[["g:heizer", "Mobiler Heizer"], ["g:entf", "Luftentfeuchter"]].map(([k, t]) => `<button class="${tl === k ? "on" : ""}" data-act="sfxtool" data-k="${k}">${t}</button>`).join("")}</div><small class="mut" style="display:block;margin-top:6px">Geräte kommen aus Modul 1 (Elektroheizer je Raum, Luftentfeuchter). Ein Entfeuchter folgt im Plan seinem Standort aus Modul 1.</small></div>` : "";
     const hint = { select: "Antippen und ziehen. Am Eckpunkt ändert sich die Größe.", r: "Im Plan ziehen, um einen Raum aufzuziehen.", s: "Im Plan ziehen, um eine Treppe aufzuziehen.", w: "Im Plan ziehen, um eine Wand zu zeichnen." }[tl] || "In den Plan tippen, um das Element zu setzen.";
@@ -59,7 +59,8 @@
       <button class="grb" data-act="grxsty" data-k="${{ modern: "bauplan", bauplan: "hell", hell: "modern" }[sty]}" title="Stil wechseln"><i class="sw-${sty}"></i>${{ modern: "Modern", bauplan: "Bauplan", hell: "Hell" }[sty]}</button>
       ${this._grCheck ? (() => { const C = this._grCheck(P); return `<button class="grb${C.n ? " warn" : ""}" data-act="grxchk" title="Plan-Check">${ic(C.n ? "alert" : "check", 14)} Prüfen${C.n ? ` (${C.n})` : ""}</button>`; })() : ""}${this._grGridCm ? `<button class="grb" data-act="grxgrid" title="Raster beim Ziehen – tippen wechselt">▦ ${this._grGridCm()} cm</button>` : ""}
       <span class="grfill"></span>${ed.from && ed.from !== "gr" ? `<button class="grb" data-act="sfxcancel">← ${esc(this._grModName(ed.from))}</button>` : `<button class="grb" data-act="sfxcancel">Abbrechen</button>`}<button class="grb pri" data-act="sfxsave">${ic("check", 15)} Speichern</button></div>`;
-    const props = `<div class="grprops">${mk}${gS}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
+    const hS = tl === "h" && this._grTechCat ? `<div class="grpsec"><b>Was setzen? Danach in den Plan tippen.</b>${this._grTechCat(this._grHkLast || "steckdose", "grxhkt")}</div>` : "";
+    const props = `<div class="grprops">${mk}${gS}${hS}<div class="grpsec">${X.prop}</div><details class="grpsec"${this._grEdFl ? " open" : ""}><summary data-act="grxedfl">Etage &amp; Plan</summary>${X.flBox}${this._grB7Box ? this._grB7Box() : ""}${X.scaleBox}${X.bgBox}${X.ioBox}</details></div>`;
     return `<div class="gred2">${bar}<div class="grbody">${rail}<div class="grcv"><div class="sfpl edit"><svg class="sfpe gd" viewBox="0 0 800 480" role="img" aria-label="Grundriss bearbeiten">${this._grEditSvg(fl)}</svg></div>
       <div class="grhint">${ic("info", 14)}<span>${hint}</span></div>${tray}</div>${props}</div></div>`;
   }
@@ -117,10 +118,12 @@
       ${mot.length ? row("eye", "Bewegung", mot.some((e) => st[e].state === "on") ? "gerade" : "keine", mot.some((e) => st[e].state === "on") ? "var(--teal)" : "") : ""}
       ${this._grDevRow ? this._grDevRow(r, P) : ""}${mel.length ? row("shield", "Melder", mel.map((i) => `${this._grNiceName(i.e)}${st[i.e] && st[i.e].state === "on" ? " · ALARM" : ""}`).join(", "), mel.some((i) => st[i.e] && st[i.e].state === "on") ? "#ef4444" : "#34d399") : ""}
       ${lamps.length ? `<div class="grrb" style="border:0;padding-bottom:0"><span class="i">${ic("lamp", 18)}</span><span class="t">Lampen</span><b>${lamps.filter((x) => x.on).length} von ${lamps.length} an</b></div><div class="grrl">${lamps.map((x) => `<button class="${x.on ? "on" : ""}" data-act="grxrlamp" data-k="${esc(x.id)}" data-r="${esc(r.id)}">${esc(x.name)}</button>`).join("")}</div>` : ""}
-      <div class="foot2" style="margin-top:14px;flex-wrap:wrap">${s ? `<button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte</button>` : ""}${lamps.length ? `<button class="btn2" data-act="grxgo" data-k="li">Lichtkarte</button>` : ""}${mel.length ? `<button class="btn2" data-act="grxgo" data-k="sf">Modul 11</button>` : ""}${this._admin() ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 15)} Bearbeiten</button>` : ""}</div></div>`;
+      <div class="foot2" style="margin-top:14px;flex-wrap:wrap">${s ? `<button class="btn2" data-act="grxgo" data-k="fh">Wärmekarte</button>` : ""}${lamps.length ? `<button class="btn2" data-act="grxgo" data-k="li">Lichtkarte</button>` : ""}${mel.length ? `<button class="btn2" data-act="grxgo" data-k="sf">Modul 11</button>` : ""}${this._grFocus ? `<button class="btn2" data-act="grxfocus" data-k="${esc(r.id)}">◎ Heranzoomen</button>` : ""}${this._admin() ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 15)} Bearbeiten</button>` : ""}</div></div>`;
   }
   _grB6Act(a, b) {
     if (this._grB7Act && this._grB7Act(a, b)) return true;
+    if (this._grB8Act && this._grB8Act(a, b)) return true;
+    if (this._grB9Act && (this._grB9Act(a, b) || this._grB9Act2(a, b))) return true;
     const k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxroom") { this._modal = { type: "grxroom", k }; this._renderModal(); return true; }
     if (a === "grxrlamp") { const s = this._hass.states[k]; if (s) this._hass.callService("light", s.state === "on" ? "turn_off" : "turn_on", { entity_id: k }).catch(() => this._toast("Die Lampe hat nicht reagiert")); setTimeout(() => this._renderModal(), 600); return true; }

@@ -2,6 +2,39 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b55] - 2026-11-22
+
+Zwei Builds für **Modul 0 · Haus & Grundriss** (jetzt v0.9): Build 8 – Zoom, Vollbild, Export und Dashboard-Karte; Build 9 – Haustechnik und Notfall-Punkte, Raum-Sensoren, Bereiche anlegen.
+
+### Teil 1 · Build 8 – Zoom, Export, Dashboard-Karte
+
+#### Neu
+- **Zoom und Verschieben:** Im Plan von Modul 0 unten rechts − / % / +. Am PC Strg + Mausrad (zoomt dorthin, wo die Maus steht), auf Tablet und Handy mit zwei Fingern. Vergrößert lässt sich der Plan mit dem Finger oder der Maus verschieben; ein Tipp auf die Prozentzahl zeigt wieder den ganzen Plan.
+- **Vollbild** (⤢) für Tablets an der Wand – im Vollbild zoomt auch das Mausrad ohne Strg. Esc oder ✕ beendet es.
+- **Raum-Fokus:** „◎ Heranzoomen“ im Raum-Blatt zoomt auf den Raum.
+- **Export (⇩):** als **PDF** (A4 quer, auf Wunsch alle Etagen, je Seite mit Titel, Anzahl der Räume, Wohnfläche, Datum und Maßstab), als **PNG** in hoher Auflösung oder als **SVG**. Stil und Ebenen wie im Plan, Maße wählbar. Am Handy und Tablet über „Teilen“.
+- **Dashboard-Karte „Grundriss (Strom & Wärme)“** – `type: custom:sw-grundriss-card`. Im Karten-Dialog auswählbar und ohne YAML einstellbar: Titel, Etage (oder Umschalter), Stil (Modern, Bauplan, Hell), Ebenen (Jetzt, Lampen, Melder, Geräte) und was beim Antippen eines Raums passiert (Raum-Blatt mit Temperatur und Lampen zum Schalten, Modul 0 öffnen oder nichts). Zoom mit zwei Fingern oder Strg + Mausrad, Doppeltipp zeigt wieder alles. Die Karte ist klein und lädt den Zeichner erst, wenn sie wirklich im Dashboard steht. Beispiel zum Kopieren unter Modul 0 → Einstellungen.
+
+#### Geändert
+- Der PDF-Schreiber kann jetzt Bilder und Querformat (wird für den Grundriss genutzt).
+
+### Teil 2 · Build 9 – Haustechnik, Raum-Sensoren, Bereiche
+
+#### Neu
+- **Werkzeug „Technik“** im Baukasten mit 34 Teilen in sechs Gruppen:
+  - Heizen & Klima: Heizkörper, Thermostat, Klimagerät, Lüftung, Kamin/Ofen, Therme, Wärmepumpe, Warmwasserspeicher
+  - Strom: Steckdose, Schalter/Taster, Zähler, Wechselrichter, Batteriespeicher, Wallbox
+  - Sensoren: Temperatur/Feuchte, Bewegungsmelder, Tür-/Fensterkontakt, Wassermelder, Luftqualität, Helligkeit
+  - Netz & Medien: WLAN-Zugangspunkt, Zigbee/Thread-Router, Kamera, Klingel, Lautsprecher, TV
+  - Notfall: Haupthahn Wasser, Haupthahn Gas, Sicherungskasten, Feuerlöscher, Notausgang, Sammelpunkt, Erste Hilfe
+  - Notiz mit eigenem Text („Wasserrohr in der Wand“)
+- Jedes Teil lässt sich mit einer passenden Entität verbinden (Vorschläge aus dem Bereich des Raums zuerst) und zeigt dann seinen **Zustand im Plan**: Heizkörper „21,4° → 22,0°“, Steckdose „an“, Wassermelder „NASS“ in Rot, Bewegung mit Puls, Haupthahn „offen“.
+- **Bewegungsmelder und Kamera** mit Erfassungskegel (Reichweite, Blickwinkel, Richtung), **WLAN** und Router mit Reichweite.
+- **Notfall-Punkte** sind rote Dreiecke und erscheinen auch im Grundriss von **Modul 11** – bei einem Alarm sieht man sofort Haupthahn, Sicherungen und Feuerlöscher.
+- Neue Ebene „Technik“ im Plan von Modul 0.
+- **Raum-Sensoren in Home Assistant** (Modul 0 → Einstellungen, auf Wunsch): je Raum `sensor.strom_waerme_raum_<raum>_flaeche`, `…_temperatur` (Mittel der Temperatursensoren im Bereich), `…_lampen_an`, `binary_sensor.strom_waerme_raum_<raum>_fenster_offen` und `…_belegt` (Bewegung/Präsenz), dazu `sensor.strom_waerme_haus_wohnflaeche`. Für Automationen je Raum, Sprachassistenten und Kennzahlen. Aktualisiert sich bei jeder Änderung im Bereich.
+- **Bereiche anlegen** (Reiter „Räume“): Räume ohne Bereich bekommen mit einem Tipp einen neuen Bereich in Home Assistant und werden gleich zugeordnet – auf Wunsch mit den Etagen (EG, OG …). Bestehende Bereiche mit gleichem Namen werden nur zugeordnet.
+
 ## [2026.11.4b54] - 2026-11-22
 
 Zwei Builds für **Modul 0 · Haus & Grundriss** (jetzt v0.7): Build 6 – eine Optik überall, neuer Baukasten, Ebene „Jetzt“, Raum-Blatt; Build 7 – Baukasten 2.0, Türen und Fenster schräg und in allen Arten, Treppenarten, mobile Geräte, Markise, Plan-Check.

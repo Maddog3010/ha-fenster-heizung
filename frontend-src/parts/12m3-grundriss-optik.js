@@ -82,6 +82,7 @@
       d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><circle cx="${i.x}" cy="${i.y}" r="${46 * q}" fill="url(#${g})"/>` : ""}
         ${i.k === "streifen" ? `<rect x="${i.x - 22 * q}" y="${i.y - 3.5 * q}" width="${44 * q}" height="${7 * q}" rx="${3.5 * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.4"${i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : ""}/>` : `<circle cx="${i.x}" cy="${i.y}" r="${(i.k === "spot" ? 5 : 8) * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.8"/>`}</g>`;
     });
+    if ((o.layers.ht || o.layers.nf) && this._grTechSvg) d += this._grTechSvg(P, fl, T, q, u, o.style === "hell", o.layers.ht ? "" : "notfall");   /* Build 9: Haustechnik, Notfall-Punkte */
     if (o.layers.gt && this._grDevSvg) d += this._grDevSvg(P, fl, T, q, u, o.style === "hell");   /* Build 7: mobile Heizer und Entfeuchter */
     if (o.layers.sf) items.filter((i) => i.t === "m").forEach((i) => {
       const s2 = i.e && st[i.e], al = !!(s2 && s2.state === "on");

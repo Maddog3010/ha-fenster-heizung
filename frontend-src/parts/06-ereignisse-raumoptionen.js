@@ -37,6 +37,7 @@
     this._sfxBind(sr);
     if (this._grDragBind) this._grDragBind(sr);
     if (this._grKeyBind) this._grKeyBind();
+    if (this._grZoomBind) this._grZoomBind(sr);
   }
 
   /* Uhrzeit-Felder: zwei kleine Zahlenfelder „08 : 00“, funktionieren in allen Apps und Browsern */

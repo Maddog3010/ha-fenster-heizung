@@ -164,4 +164,10 @@ select.osel option{background:#1c1f24;color:#e5e7eb}
 .grang{width:62px;text-align:center;border:1px solid var(--line);background:none;color:var(--primary-text-color);border-radius:8px;padding:6px 4px;font:inherit;font-weight:700}
 .grck{display:flex;flex-direction:column;gap:2px;max-height:60vh;overflow:auto}.grckr{display:flex;align-items:center;gap:10px;padding:9px 2px;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 8%,transparent)}.grckr>i{width:10px;height:10px;border-radius:50%;flex:none}.grckr span{flex:1;min-width:0}.grckr b{display:block;font-size:.88rem}.grckr small{color:var(--mut);font-size:.78rem}.grckr.ok b{font-weight:600;color:var(--mut)}
 .sfpe.gd .sfdg,.sfpe.gd .sfda,.sfpe.gd .sffw,.sfpe.gd .sfst,.sfpe.gd .sfsl{opacity:0}
+/* Modul 0 Build 8: Zoom, Vollbild */
+.grv{position:relative}.grv svg.grzsvg{touch-action:pan-y}.grv svg.grzsvg.zm{touch-action:none;cursor:grab}
+.grzb{position:absolute;right:10px;bottom:10px;z-index:2;display:flex;align-items:center;gap:2px;padding:3px;border-radius:12px;background:color-mix(in srgb,#0b1220 82%,transparent);border:1px solid var(--line);backdrop-filter:blur(6px)}.grzb button{border:0;background:none;color:#e2e8f0;font:inherit;font-weight:700;min-width:34px;height:32px;border-radius:9px;cursor:pointer;padding:0 8px}.grzb button:hover{background:#ffffff14}.grzb button.on{color:var(--teal,#2dd4bf)}.grzb i{width:1px;height:20px;background:var(--line);margin:0 3px}
+.card.grfull{position:fixed;inset:0;z-index:30;margin:0;border-radius:0;overflow:auto;display:flex;flex-direction:column}.card.grfull .grv{flex:1;display:flex;align-items:center;justify-content:center}.card.grfull .grv svg{max-height:calc(100vh - 120px);width:100%}
+.grpre{margin:0;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--primary-text-color) 6%,transparent);font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre;overflow:auto}
+.grtkg{margin:6px 0}.grtkg small{display:block;font-weight:700;margin-bottom:4px}.grtkd{margin:4px 0 8px}.grtkd summary{cursor:pointer;font-weight:700;padding:4px 0}
 `;
