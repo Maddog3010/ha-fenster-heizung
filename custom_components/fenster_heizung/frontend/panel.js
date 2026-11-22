@@ -783,7 +783,7 @@ const MV_STG = [
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
   fh: { v: "1.8", b: 8, d: "2026-11-12", p: "2026.11.3", log: [["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
-  ww: { v: "1.1", b: 1, d: "2026-11-10", p: "2026.11.2b10", log: [["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   lu: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -796,7 +796,7 @@ const MV = {
   pl: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   bt: { v: "0.1", b: 1, d: "2026-10-29", p: "3.0.6.5", log: [["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   dt: { v: "0.9", b: 1, d: "2026-11-21", p: "2026.11.4b38", log: [["0.9", 1, "2026.11.4b38", "Vorabversion: „Lohnt sich dein Tarif?“ (Monat und Jahr gegen Festpreis), Kachel „Gespart im Monat“, Wochenansicht, Daten prüfen, Hinweis auf der Startseite bei negativen Preisen, Sensor Ersparnis Monat, Diagnose"], ["0.8", 1, "2026.11.4b1", "Bestes Fenster je Gerät, Preisalarm, Sensoren und Ereignis"], ["0.7", 1, "2026.11.4b1", "Neue Optik: Preisband-Banner, Kacheln 2.0, Heute und morgen mit Sonne"], ["0.6", 1, "2026.11.4b1", "Tarif-Dienst: Tibber direkt, Preis-Sensoren, Viertelstunden, morgen, Endpreis, Push"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
-  wa: { v: "0.2", b: 2, d: "2026-11-21", p: "2026.11.4b40", log: [["0.2", 2, "2026.11.4b40", "Termine: eigener Speicher, anlegen, bearbeiten, löschen, Abstand in Tagen bis Jahren, Vorlagen, Erledigt mit Rückgängig, Ampel mit Vorwarnung, Kosten des Jahres, Diagnose"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
+  wa: { v: "0.2", b: 3, d: "2026-11-22", p: "2026.11.4b46", log: [["0.2", 3, "2026.11.4b46", "Neues Banner: Kalenderblatt mit dem nächsten Termin und Ampel-Ringen für die wichtigsten Termine"], ["0.2", 2, "2026.11.4b40", "Termine: eigener Speicher, anlegen, bearbeiten, löschen, Abstand in Tagen bis Jahren, Vorlagen, Erledigt mit Rückgängig, Ampel mit Vorwarnung, Kosten des Jahres, Diagnose"], ["0.1", 1, "3.0.6.5", "Start der Zählung"]] },
   sp: { v: "1.0", b: 2, d: "2026-11-12", p: "2026.11.3", log: [["1.0", 2, "2026.11.3b12", "Anlagen wählen: mehrere Prognose-Dienste (Forecast.Solar, Solcast, Open-Meteo) für dasselbe Dach werden nicht mehr ungefragt addiert – Auswahl je Anlage, „Nur …“-Knöpfe, Vorgabe aus dem Energie-Dashboard, Warnung auf der Seite; Korrektur lernt nach einer Änderung neu"], ["1.0", 1, "2026.11.3b8", "Stabil: Anlagen einzeln, fünf Sensoren für Automationen (heute, morgen, Rest heute, korrigiert, beste Zeit), Kachel mit Sonnenbogen auf der Startseite, Tablet-Wand, Ertragssensor aus dem Energie-Dashboard vorschlagen, Einrichtungs-Check, Lab „Lernfaktor“ fest eingebaut"], ["0.9", 5, "2026.11.3b8", "Treffsicherheit & Tipps: korrigierte Prognose (lernt aus 14 Tagen), Tage im Vergleich 7/14/30 und Treffer-Kalender mit Tag als Kurve, Empfehlungen mit Startzeit, Hinweis bei Schnee oder Störung"], ["0.9", 4, "2026.11.3b7", "Technik: Prognose über die Energie-Schnittstelle (Forecast.Solar, Solcast, Open-Meteo), Solcast-Sensoren, Ertrag je Stunde aus der Langzeitstatistik, Kurve von heute früh als Messlatte, Speicher mit Schema-Version (400 Tage), Abruf nur alle 30 Min. im Hintergrund"], ["0.9", 3, "2026.11.3b7", "Neue Optik Stufe 1: Sonnenbogen-Banner (nachts Mond und morgen), Kacheln mit HD-Bildern und Ring, Prognose und Ertrag je Stunde in einer Kurve, beste Zeit mit Geräten und Knopf ins Modul, Preisband, Verlauf mit Abweichung je Tag, Handy und Hell, Schalter „Wie bisher“"], ["0.9", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["0.9", 1, "3.0.6.5", "Start der Zählung"]] },
   ef: { v: "1.1", b: 2, d: "2026-11-15", p: "2026.11.3", log: [["1.1", 2, "2026.11.3", "Bis zu vier Kacheln links und rechts und zwei unten, bis zu fünf Quellen am Handy, hellere Kacheln, Verbraucher mit Solar-Anteil genauer"], ["1.1", 1, "2026.11.3b19", "Strom-Reiter: „Woher kam der Strom?“ mit Anteil von Solar, Akku und Netz, Akku- und Netz-Bilanz und wohin der Solarstrom ging"], ["1.0", 1, "2026.11.3b6", "Stabil: Schnellstart aus den Haus-Werten, Einrichtungs-Prüfung, Kosten im Strom-Reiter und Vorteil heute auf dem Tablet, Fluss-Bild als Bild teilen, Tablet-Modus zeichnet nur alle 5 s neu, Feinschliff der Optik (Haus als freier Ring, ruhigere Kacheln, klarere Schrift)"], ["0.9", 1, "2026.11.3b5", "Vorabversion: Strom-Reiter mit Lichtsäulen und Verbrauchern mit Solar-Anteil (Tag/Woche/Monat/Jahr), Animationen „Voll“, Kacheln ziehen, Vorlagen, Gruppen-Kachel, Tageswerte-Leiste, Sponsor-Abzeichen im Banner"], ["0.8", 1, "2026.11.3b5", "Banner & Themen (Konzept Neue Optik A, F, H): Lichtband-Banner mit Herkunfts-Balken, Themen Nachtglas, Blaupause, Sternenhimmel, Haus im Garten, Kachelform Rund, Hell-Variante, Handy als Fluss-Spalte oder Kachel-Raster, Wand-Ansicht im Tablet-Modus mit Ruhebild"], ["0.7", 1, "2026.11.3b5", "Linien & Haus (Konzept Neue Optik C/D): Leuchtlinien mit Stärke nach Leistung und Verlauf als Option, Haus mit Herkunfts-Ring und wählbarem Haus-Bild, Bilder mit Zustand (Läuft ab, Ladestand-Ring), Status-Punkt, Kachel „keine Daten“"], ["0.6", 3, "2026.11.2b10", "Eigenes mdi-Symbol: „Mdi:…“ (iPhone) und „_“ werden richtig übernommen, sonst ein Hinweis"], ["0.6", 2, "2026.11.2b3", "Aktive Kacheln heben sich deutlicher von ruhenden ab"], ["0.6", 1, "2026.11.2b2", "24 HD-Bilder im Bildkatalog, alte Symbole einmalig umgestellt (Schalter „Alte Symbole behalten“), ruhige Kacheln ohne farbigen Rahmen"], ["0.5", 6, "3.0.7.6", "Fluss in den Linien richtet sich nach der Leistung: wenig Watt wenige langsame Punkte, viel Watt viele schnelle"], ["0.5", 5, "3.0.7.5", "Handy: die beiden oberen Kacheln stehen nebeneinander mittig über dem Haus"], ["0.5", 4, "3.0.7.4", "Fluss in den Linien läuft durchgängig (drei Punkte, bleibt beim Neuzeichnen im Takt, kein Punkt mehr oben links), Handy-Ansicht wie Tablet: Haus mittig, Linien wie im Vorbild"], ["0.5", 3, "3.0.7.3", "Jetzt-Ansicht flackerte bei neuen Werten: Kachelgröße und Linien stehen jetzt schon beim Neuzeichnen"], ["0.5", 2, "3.0.7.2", "Fluss-Bild passt sich Tablet und Desktop an (Kachelgröße nach der Höhe, Einstellung „Größe“), Banner bleibt oben, Umschalter „Jetzt | Strom“, Linien wie im Vorbild, Haus mittig"], ["0.5", 1, "3.0.6.5", "Start der Zählung"]] },
 };
@@ -3595,6 +3595,38 @@ const CSS_SAI = `
 .advLi{animation:saiTw 3.2s ease-in-out infinite;animation-delay:calc(var(--i) * -.29s)}@media(prefers-reduced-motion:reduce){.advLi{animation:none}}
 .advCode{width:100%;box-sizing:border-box;font-family:ui-monospace,monospace;font-size:.8rem;background:color-mix(in srgb,var(--card) 70%,#000);color:inherit;border:1px solid var(--line);border-radius:10px;padding:8px;margin:8px 0}
 @media(max-width:520px){.advSg{grid-template-columns:repeat(6,minmax(0,1fr))}}
+`;
+/* Szenen-Banner für die restlichen Module (Build 1): Bild rechts, Verlauf zur Kartenfarbe, Versions-Plakette */
+const CSS_SB = `
+.hero.mh.sbx .sbart{position:absolute;right:0;top:0;bottom:24px;width:58%;pointer-events:none;z-index:0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 34%);mask-image:linear-gradient(90deg,transparent 0,#000 34%)}
+.hero.mh.sbx .sbart>svg{width:100%;height:100%;display:block}
+.hero.mh.sbx>.lbl,.hero.mh.sbx>.big,.hero.mh.sbx>.sub,.hero.mh.sbx>.chips,.hero.mh.sbx>.wwl1,.hero.mh.sbx>.wwacts{position:relative;z-index:1}
+.hero.mh.sbx .lbl,.hero.mh.sbx .sub{max-width:52%}.hero.mh.sbx .big{max-width:56%}.hero.mh.sbx>.chips{max-width:62%}
+.hero.mh.sbx.wwh .wwl1{max-width:56%}
+.sbv{position:absolute;right:14px;bottom:10px;z-index:2;font-size:.68rem;font-weight:700;letter-spacing:.02em;color:#fff;background:rgba(3,12,22,.45);border:1px solid rgba(255,255,255,.14);padding:2px 9px;border-radius:99px}
+.sbloop{fill:none;stroke:#fb923c;stroke-width:5;stroke-linejoin:round;stroke-dasharray:10 8}
+.sbloop.run{animation:sbDash 1.6s linear infinite}
+.sbpv{fill:none;stroke:#ffd36b;stroke-width:3;stroke-dasharray:6 6}.sbpv.run{animation:sbDash 1.4s linear infinite}
+@keyframes sbDash{to{stroke-dashoffset:-36}}
+.sbdrop{stroke:#8cc8f5;stroke-width:2.2;stroke-linecap:round;animation:sbDrop 1.2s linear infinite}
+@keyframes sbDrop{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(14px);opacity:0}}
+.sbflame{animation:sbFl 1.1s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center bottom}
+@keyframes sbFl{to{transform:scaleY(1.18)}}
+.sbart[data-an="voll"] .run,.sbart[data-an="voll"] .sbdrop{animation-duration:.9s}
+.sbart[data-an="aus"] *{animation:none!important}
+@media(prefers-reduced-motion:reduce){.sbart *{animation:none!important}}
+.sbwa{position:absolute;right:20px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:16px}
+.sbcal{width:118px;border-radius:16px;overflow:hidden;background:#f2f6f5;color:#14303a;text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.35)}
+.sbcal b{display:block;background:#0d9488;color:#fff;font-size:.78rem;letter-spacing:.12em;padding:6px 0}
+.sbcal.bad b{background:#dc2626}
+.sbcal em{display:block;font-style:normal;font-size:2.7rem;font-weight:800;line-height:1.1;margin-top:4px}
+.sbcal small{display:block;font-size:.7rem;color:#55707a;padding:0 8px 9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbrgs{display:grid;grid-template-columns:repeat(2,54px);gap:8px}
+.sbrg{position:relative;width:54px;height:54px;display:block}.sbrg svg{width:100%;height:100%;display:block}
+.sbrg i{position:absolute;inset:0;display:grid;place-items:center;color:#fff}
+@media(max-width:600px){.hero.mh.sbx .sbart{width:100%;opacity:.38;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 60%);mask-image:linear-gradient(90deg,transparent 0,#000 60%)}
+  .hero.mh.sbx .lbl,.hero.mh.sbx .sub,.hero.mh.sbx .big,.hero.mh.sbx>.chips,.hero.mh.sbx.wwh .wwl1{max-width:none}
+  .sbwa{right:10px;gap:8px}.sbcal{width:84px}.sbcal em{font-size:2rem}.sbrgs{grid-template-columns:repeat(2,40px)}.sbrg{width:40px;height:40px}}
 `;
 class FensterHeizungPanel extends HTMLElement {
   constructor() {
@@ -7246,7 +7278,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _build() {
     const sr = this.shadowRoot;
-    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
+    sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
@@ -7341,6 +7373,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "pkpick") { const meta = (this._pkReg || {})[b.dataset.pid]; this._pkId = null; if (meta) { const t = { dataset: { ...meta }, value: b.dataset.v, tagName: "SELECT" }; this._onInput(t); this._onChange(t); } this._renderModal(); }
     else if (a.startsWith("md") || a.startsWith("ww") || a.startsWith("en") || (a.startsWith("gs") && a !== "gsum") || a.startsWith("ev")) this._mdAct(a, b);
     else if (a.startsWith("saix")) this._saiAct(a, b);
+    else if (a.startsWith("sbx")) this._sbAct(a, b);
     else if (a.startsWith("advx")) this._advAct(a, b);
     else if (a.startsWith("msx")) this._msAct(a, b);
     else if (a.startsWith("lfx")) this._lfAct(a, b);
@@ -8173,7 +8206,7 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="sh"><div><b>Darstellung</b><span>gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <div class="lsec">${ic("palette", 15)}Akzentfarbe</div>
         <div class="swatches">${ACCENTS.map((c) => `<button class="sw2 ${a === c ? "sel" : ""}" style="background:${c}" data-act="lacc" data-k="${c}" aria-label="${c}"></button>`).join("")}<label class="cpick"><input type="color" data-f="lacc" value="${a}">Eigene</label></div>
-        ${this._heroLook()}${this._hsLook()}${this._rkLook()}${this._saiLink ? this._saiLink() : ""}
+        ${this._heroLook()}${this._hsLook()}${this._rkLook()}${this._sbLook ? this._sbLook() : ""}${this._saiLink ? this._saiLink() : ""}
         <div class="lsec">${ic("sun", 15)}Wetter in der Kopfkarte</div>
         <div class="ltog"><span>Außentemperatur und Wetter anzeigen</span><button class="sw ${w.on ? "on" : ""}" data-act="lwx" aria-pressed="${w.on}" aria-label="Wetter anzeigen"></button></div>
         ${w.on ? `<div class="hslk">${this._hsLink("wx", `Wetter ${w.entity ? esc(this._wzName(w.entity)) : "automatisch"}${w.outdoor ? " · Außentemperatur " + esc(this._wzName(w.outdoor)) : ""}`)}</div>` : ""}
@@ -15182,8 +15215,8 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="mring" aria-hidden="true"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" class="rb"/><circle cx="60" cy="60" r="50" class="rf" stroke-dasharray="${(p * 3.1416).toFixed(1)} 314.2" transform="rotate(-90 60 60)"/></svg><div class="rv"><b>${p}<small>%</small></b><span>${esc(label)}</span></div></div>`;
   }
   _modHero(id, o) {
-    const chips = (o.chips || []).filter(Boolean);
-    return `<div class="card hero mh a-${id}${o.cls ? " " + o.cls : ""}">${this._modLogo(id)}<div class="lbl">${ic(o.icon || "info", 16)}${esc(o.lbl)}</div><div class="big${o.small ? " bs" : ""}">${esc(o.big)}${o.unit ? `<small>${esc(o.unit)}</small>` : ""}</div>${o.sub ? `<div class="sub">${esc(o.sub)}</div>` : ""}${chips.length ? `<div class="chips">${chips.map((c) => /^§(dev|soon)\|/.test(c) ? `<span class="chip st${c.slice(1, c.indexOf("|"))}">${esc(c.slice(c.indexOf("|") + 1))}</span>` : `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>`;
+    const chips = (o.chips || []).filter(Boolean), sc = o.scene && this._sbOn && this._sbOn();
+    return `<div class="card hero mh a-${id}${o.cls ? " " + o.cls : ""}${sc ? " sbx" : ""}">${sc ? this._sbArt(id, o.scene) : this._modLogo(id)}<div class="lbl">${ic(o.icon || "info", 16)}${esc(o.lbl)}</div><div class="big${o.small ? " bs" : ""}">${esc(o.big)}${o.unit ? `<small>${esc(o.unit)}</small>` : ""}</div>${o.sub ? `<div class="sub">${esc(o.sub)}</div>` : ""}${chips.length ? `<div class="chips">${chips.map((c) => /^§(dev|soon)\|/.test(c) ? `<span class="chip st${c.slice(1, c.indexOf("|"))}">${esc(c.slice(c.indexOf("|") + 1))}</span>` : `<span class="chip">${esc(c)}</span>`).join("")}</div>` : ""}</div>`;
   }
   /* Banner der Module ohne eigenes Banner (aus den Werten, die die Seite ohnehin zeigt) */
   _modHeroFor(id) {
@@ -15200,11 +15233,71 @@ class FensterHeizungPanel extends HTMLElement {
       if (id === "pl") return this._modHero("pl", { icon: "wave", lbl: "Pool & Sauna", big: "Pool & Sauna", small: true, sub: "Bedingungen heute, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "bt") return this._modHero("bt", { icon: "energy", lbl: "Batteriespeicher", big: "Batteriespeicher", small: true, sub: "Ladestand jetzt, Entwürfe zum Durchklicken", chips: ["§dev|In Entwicklung", "§soon|Coming soon …"] });
       if (id === "dt") return "";  /* Modul 14 v0.7: eigenes Preisband-Banner in der Seite */
-      if (id === "wa") { this._wtLoad && this._wtLoad(); const S = (this._wtD && this._wtD.d && this._wtD.d.sum) || null, f = S ? (S.over || 0) + (S.due || 0) : 0; return this._modHero("wa", { icon: "tools", lbl: "Wartung & Erinnerungen", big: S && S.total ? (f ? String(f) : "Alles im Plan") : "Wartung", small: !(S && S.total && f), sub: !S || !S.total ? "Lege deine ersten Termine an" : f ? `${f === 1 ? "Termin ist" : "Termine sind"} fällig${S.soon ? ` · ${S.soon} bald` : ""}` : S.next ? `Als Nächstes: ${S.next.name}` : `${S.total} Termine`, chips: ["§dev|In Entwicklung", S && S.done_year ? `${S.done_year} erledigt dieses Jahr` : ""] }); }
+      if (id === "wa") { this._wtLoad && this._wtLoad(); const S = (this._wtD && this._wtD.d && this._wtD.d.sum) || null, f = S ? (S.over || 0) + (S.due || 0) : 0; return this._modHero("wa", { scene: this._sbWa ? this._sbWa(this._wtD && this._wtD.d) : "", icon: "tools", lbl: "Wartung & Erinnerungen", big: S && S.total ? (f ? String(f) : "Alles im Plan") : "Wartung", small: !(S && S.total && f), sub: !S || !S.total ? "Lege deine ersten Termine an" : f ? `${f === 1 ? "Termin ist" : "Termine sind"} fällig${S.soon ? ` · ${S.soon} bald` : ""}` : S.next ? `Als Nächstes: ${S.next.name}` : `${S.total} Termine`, chips: ["§dev|In Entwicklung", S && S.done_year ? `${S.done_year} erledigt dieses Jahr` : ""] }); }
       if (id === "sp" && this._spNew && this._spNew()) return this._spBanner();
       if (id === "sp") { const S = this._sp(); if (!this._spD || S.error || !S.found) return this._modHero("sp", { icon: "sun", lbl: "Solar-Prognose", big: "–", sub: S && S.error ? "Prognose nicht geladen" : "Noch keine Prognose" }); return this._modHero("sp", { icon: "sun", lbl: "Solar heute (Prognose)", big: num(S.today, 1), unit: "kWh", sub: `Morgen ${num(S.tomorrow, 1)} kWh`, chips: [S.got != null ? `Bisher ${num(S.got, 1)} kWh` : ""] }); }
     } catch (e) { return ""; }
     return "";
+  }
+  /* ================= Szenen-Banner für die restlichen Module (Build 1: Baustein, Modul 2, Modul 15) =================
+     Gleicher Aufbau wie das einheitliche Banner (Titel, große Zahl, Zusatzzeile, Chips), rechts statt des Logo-Felds ein
+     Bild mit echten Werten, das zur Kartenfarbe ausläuft. Bewegung folgt Anpassen → Animationen und „Bewegung reduzieren“,
+     Bilder außerhalb des Bildschirms halten an (data-an). Schalter „Banner wie bisher“: layout.sb.old. */
+  _sbOn() { return !((this._cfg.layout.sb || {}).old); }
+  _sbAnim() { return this._rkCfg ? this._rkCfg().anim : "dezent"; }
+  /* Laufende Bewegung über den Neuaufbau retten: Phase aus der Uhrzeit statt Neustart bei jedem Zeichnen */
+  _sbPh(sec) { return `animation-delay:-${((Date.now() / 1000) % sec).toFixed(2)}s`; }
+  _sbArt(id, inner) {
+    const mv = MV[id];
+    return `<div class="sbart" data-an="${this._sbAnim()}" aria-hidden="true">${inner}</div>${mv ? `<span class="sbv">v${esc(mv.v)} · Build ${mv.b}</span>` : ""}`;
+  }
+  /* Darstellung: gemeinsamer Schalter für alle Szenen-Banner dieses Bausteins */
+  _sbLook() {
+    const old = !this._sbOn();
+    return `<div class="lsec">${ic("image", 15)}Banner der Module</div>
+      <div class="ltog"><span>Banner wie bisher<small class="mut" style="display:block">An: Logo-Feld statt Bild bei Warmwasser, Wartung und den Modulen in Entwicklung</small></span><button class="sw ${old ? "on" : ""}" data-act="sbxold" aria-pressed="${old}" aria-label="Banner wie bisher"></button></div>`;
+  }
+  _sbAct(a) {
+    if (a === "sbxold") { this._cfg.layout.sb = { ...(this._cfg.layout.sb || {}), old: this._sbOn() }; this._saveLayout(); this._render(); this._renderModal(); }
+  }
+
+  /* ---------- Modul 2: Speicher im Schnitt ---------- */
+  _sbWw(t, o) {
+    const top = t.top, mid = t.mid, bot = t.bot, want = o.want || 55;
+    const lo = bot != null ? bot : mid != null ? mid - 8 : top != null ? top - 20 : null;
+    const fill = top == null ? 0.5 : Math.max(0.12, Math.min(1, (top - 20) / Math.max(10, want - 20)));
+    const y0 = 22, h = 156, fh = Math.round((h - 8) * fill);
+    const c1 = wwCol(top), c2 = wwCol(mid != null ? mid : top != null && lo != null ? (top + lo) / 2 : null), c3 = wwCol(lo);
+    const pump = o.pump, heat = o.heat, pv = o.pv, mv = this._sbAnim() !== "aus";
+    const drops = pump ? [0, 1, 2, 3].map((i) => `<line class="sbdrop" x1="${64 + i * 6}" y1="58" x2="${62 + i * 6}" y2="72" style="${this._sbPh(1.2)};animation-delay:-${(i * 0.3 + (Date.now() / 1000) % 1.2).toFixed(2)}s"/>`).join("") : "";
+    return `<svg viewBox="0 0 320 200" preserveAspectRatio="xMaxYMid meet">
+      <defs><linearGradient id="sbwwg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset=".55" stop-color="${c2}"/><stop offset="1" stop-color="${c3}"/></linearGradient>
+      <clipPath id="sbwwc"><rect x="174" y="${y0 + 4}" width="72" height="${h - 8}" rx="32"/></clipPath></defs>
+      <path class="sbloop${pump && mv ? " run" : ""}" d="M172 ${y0 + 34} H96 V${y0 + h - 30} H172" style="${this._sbPh(1.6)}" opacity="${pump ? 1 : 0.3}"/>
+      <g transform="translate(46 34)" opacity="${pump ? 1 : 0.55}"><path d="M0 0 h26 v8" stroke="#cfe6ff" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="30" cy="12" rx="12" ry="4" fill="#cfe6ff"/></g>${drops}
+      <rect x="170" y="${y0}" width="80" height="${h}" rx="36" fill="#0b2232" stroke="rgba(207,230,255,.45)" stroke-width="3"/>
+      <rect clip-path="url(#sbwwc)" x="170" y="${y0 + h - 4 - fh}" width="80" height="${fh}" fill="url(#sbwwg)"/>
+      ${[0, 1, 2, 3, 4].map((i) => `<line x1="252" y1="${y0 + 22 + i * 28}" x2="260" y2="${y0 + 22 + i * 28}" stroke="rgba(207,230,255,.45)"/>`).join("")}
+      <text x="266" y="${y0 + 26}" fill="#fff" font-size="15" font-weight="800">${top != null ? num(top, 0) + " °C" : "–"}</text>
+      ${lo != null ? `<text x="266" y="${y0 + h - 12}" fill="rgba(207,230,255,.75)" font-size="12">${num(lo, 0)} °C</text>` : ""}
+      ${heat ? `<g transform="translate(210 ${y0 + h + 4})" class="sbflame"><path d="M0 -14 C6 -8 8 -2 0 0 C-8 -2 -6 -8 0 -14Z" fill="#fb923c"/><path d="M0 -9 C3 -6 4 -2 0 0 C-4 -2 -3 -6 0 -9Z" fill="#fde68a"/></g>` : ""}
+      <g opacity="${pv ? 1 : 0.22}"><circle cx="296" cy="${y0 + 4}" r="11" fill="#ffd36b"/><path d="M270 ${y0 + 54} l14 -18 h30 l-14 18z" fill="#2b5c9e" stroke="#9cc3ff55"/>${pv ? `<path class="sbpv${mv ? " run" : ""}" d="M290 ${y0 + 56} C292 ${y0 + 80} 270 ${y0 + 84} 252 ${y0 + 90}" style="${this._sbPh(1.4)}"/>` : ""}</g>
+    </svg>`;
+  }
+
+  /* ---------- Modul 15: Kalenderblatt mit Ampel-Ringen ---------- */
+  _sbWa(d) {
+    const T = ((d && d.tasks) || []).filter((x) => x.st !== "off");
+    const nx = T.find((x) => x.due), dd = nx ? new Date(nx.due + "T12:00:00") : new Date();
+    const MON = ["JAN", "FEB", "MÄR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEZ"];
+    const per = (x) => (+x.every || 1) * ({ d: 1, w: 7, m: 30.44, y: 365.25 }[x.unit] || 30.44);
+    const col = (st) => (st === "over" || st === "due" ? "#ef4444" : st === "soon" ? "#fbbf24" : st === "new" ? "#94a3b8" : "#34d399");
+    const rings = T.slice(0, 4).map((x) => {
+      const p = x.days == null ? 0 : Math.max(0.04, Math.min(1, 1 - x.days / per(x))), C = 2 * Math.PI * 21;
+      return `<span class="sbrg" title="${esc(x.name)}"><svg viewBox="0 0 54 54"><circle cx="27" cy="27" r="21" fill="rgba(3,12,22,.45)" stroke="rgba(255,255,255,.14)" stroke-width="5"/><circle cx="27" cy="27" r="21" fill="none" stroke="${col(x.st)}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${(C * p).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 27 27)"/></svg><i>${ic(x.icon || "tools", 18)}</i></span>`;
+    }).join("");
+    const over = nx && (nx.st === "over" || nx.st === "due");
+    return `<div class="sbwa"><div class="sbcal${over ? " bad" : ""}"><b>${MON[dd.getMonth()]}</b><em>${dd.getDate()}</em><small>${esc(nx ? nx.name : "Noch keine Termine")}</small></div>${rings ? `<div class="sbrgs">${rings}</div>` : ""}</div>`;
   }
   /* Modul 11 (Beta): Reiter Übersicht, Grundriss (Baukasten), Wartung und Einstellungen. Daten und Meldungen kommen aus sicherheit.py. */
   _sfTab() { let t = this._sfT; if (!t) { try { t = localStorage.getItem("fh_sf_tab"); } catch (_) { /* privater Modus */ } } return ["ov", "me", "pl", "wa", "se"].includes(t) ? t : "ov"; }
@@ -18332,6 +18425,7 @@ class FensterHeizungPanel extends HTMLElement {
       { id: "layout.accent", t: "Akzentfarbe", p: "Darstellung", k: "farbe akzent design theme", go: ["look"], h: "Farbe für Knöpfe und Markierungen. Gilt für alle." },
       { id: "layout.rk.old", t: "Raumkarten wie bisher", p: "Darstellung", k: "raumkarte raumbild optik alt neu modul 1 karten", go: ["look"], v: () => onoff(!!(this._cfg.layout.rk || {}).old), h: "Modul 1: Raumkarte 2.0 mit Raumbild und Ring oder die Karten aus v1.7." },
       { id: "layout.rk.anim", t: "Bewegung im Raumbild", p: "Darstellung", k: "animation bewegung wärmewellen raumbild", go: ["look"], v: () => ({ aus: "Aus", dezent: "Dezent", voll: "Voll" })[this._rkCfg().anim], h: "Wärmewellen am Heizkörper und Luft am offenen Fenster. Aus, Dezent oder Voll." },
+      { id: "layout.sb.old", t: "Banner wie bisher", p: "Darstellung", k: "banner szene bild logo optik alt neu warmwasser wartung modul 2 15", go: ["look"], v: () => onoff(!!(this._cfg.layout.sb || {}).old), h: "Logo-Feld statt Bild im Banner von Warmwasser, Wartung und den Modulen in Entwicklung." },
       { id: "layout.wx.on", t: "Wetter in der Kopfkarte", p: "Darstellung", k: "wetter anzeige kopfkarte", go: ["look"], v: () => onoff(L().on) },
       { id: "hz", t: "Startseite", p: "Darstellung", k: "startseite begrüßung karten bubbles", go: ["hzopen"] },
       { id: "tablet", t: "Tablet-Modus", p: "Dieses Gerät", k: "tablet fully kiosk pin wandtablet", lv: "dev", go: ["tmopen"], v: () => onoff(this._tmOn()), h: "Nur für diesen Browser: Vollbild für ein Wandtablet mit PIN und Ruhemodus." },
@@ -19723,10 +19817,10 @@ class FensterHeizungPanel extends HTMLElement {
     const pumpOn = this._wwIsOn(E.pump), rv = this._wwV(E.ret), legD = this._wwLegDays(), pvNow = this._pvNow(), srcMin = this._wwMinutesOn(E.src || E.rod), pumpMin = this._wwMinutesOn(E.pump);
     const circH = (W.circ[today] || []).reduce((a, x) => a + Math.max(0, wwTm(x.to) - wwTm(x.from)), 0) / 60;
     const probs = this._wwProblems(), hasGen = !!(E.src || E.rod), hasPump = !!E.pump;
-    const hero = `<div class="card hero mh a-ww wwh">
+    const sbo = this._sbOn && this._sbOn(), hero = `<div class="card hero mh a-ww wwh${sbo ? " sbx" : ""}">
       <div class="wwl1"><div class="lbl">${ic("drop", 16)}Warmwasser oben im Speicher</div>
       <div class="big">${t.top != null ? num(t.top, 1) : "–"}<small>°C</small></div><div class="sub">Soll ${num(want, 0)} °C · ${W.size} Liter</div></div>
-      ${this._modLogo("ww")}
+      ${sbo ? this._sbArt("ww", this._sbWw(t, { want, pump: pumpOn, heat: !!W.boost || (hasGen && this._wwIsOn(E.src || E.rod)), pv: !!(W.pv.on && pvNow != null && pvNow > 50) })) : this._modLogo("ww")}
       <div class="chips"><span class="chip st ${st[2]}">${ic(st[0], 16)}${st[1]}</span>${sh != null ? `<span class="chip">${ic("shower", 16)}Reicht für ca. ${sh} ${sh === 1 ? "Dusche" : "Duschen"}</span>` : ""}${E.pump ? `<span class="chip">${ic("drop", 16)}Zirkulation ${pumpOn ? "läuft" : "aus"}</span>` : ""}${W.pv.on && pvNow != null ? `<span class="chip">${ic("bolt", 16)}PV-Überschuss ${wfmt(pvNow)}</span>` : ""}</div>
       ${adm ? `<div class="wwacts"><button class="wwa ${W.boost ? "on" : ""}" data-act="wwboost" ${hasGen || W.boost ? "" : "disabled"} title="${hasGen ? "" : "Kein Wärmeerzeuger gewählt"}">${ic("flame", 17)}<span>${W.boost ? "Aufheizen stoppen" : "Einmal aufheizen"}</span>${hasGen || W.boost ? "" : "<small>Kein Erzeuger gewählt</small>"}</button><button class="wwa ${W.circ5 ? "on" : ""}" data-act="wwcirc5" ${E.pump ? "" : "disabled"}>${ic("clock", 17)}<span>${W.circ5 ? "Zirkulation läuft 5 Min." : "Zirkulation 5 Min."}</span>${E.pump ? "" : "<small>Keine Pumpe gewählt</small>"}</button><button class="wwa ${W.away ? "on" : ""}" data-act="wwaway">${ic("suitcase", 17)}<span>${W.away ? "Abwesend: an" : "Abwesend"}</span></button></div>` : ""}</div>`;
     const tiles = `<div class="tiles">${[

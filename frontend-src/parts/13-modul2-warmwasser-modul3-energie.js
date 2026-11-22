@@ -284,10 +284,10 @@
     const pumpOn = this._wwIsOn(E.pump), rv = this._wwV(E.ret), legD = this._wwLegDays(), pvNow = this._pvNow(), srcMin = this._wwMinutesOn(E.src || E.rod), pumpMin = this._wwMinutesOn(E.pump);
     const circH = (W.circ[today] || []).reduce((a, x) => a + Math.max(0, wwTm(x.to) - wwTm(x.from)), 0) / 60;
     const probs = this._wwProblems(), hasGen = !!(E.src || E.rod), hasPump = !!E.pump;
-    const hero = `<div class="card hero mh a-ww wwh">
+    const sbo = this._sbOn && this._sbOn(), hero = `<div class="card hero mh a-ww wwh${sbo ? " sbx" : ""}">
       <div class="wwl1"><div class="lbl">${ic("drop", 16)}Warmwasser oben im Speicher</div>
       <div class="big">${t.top != null ? num(t.top, 1) : "–"}<small>°C</small></div><div class="sub">Soll ${num(want, 0)} °C · ${W.size} Liter</div></div>
-      ${this._modLogo("ww")}
+      ${sbo ? this._sbArt("ww", this._sbWw(t, { want, pump: pumpOn, heat: !!W.boost || (hasGen && this._wwIsOn(E.src || E.rod)), pv: !!(W.pv.on && pvNow != null && pvNow > 50) })) : this._modLogo("ww")}
       <div class="chips"><span class="chip st ${st[2]}">${ic(st[0], 16)}${st[1]}</span>${sh != null ? `<span class="chip">${ic("shower", 16)}Reicht für ca. ${sh} ${sh === 1 ? "Dusche" : "Duschen"}</span>` : ""}${E.pump ? `<span class="chip">${ic("drop", 16)}Zirkulation ${pumpOn ? "läuft" : "aus"}</span>` : ""}${W.pv.on && pvNow != null ? `<span class="chip">${ic("bolt", 16)}PV-Überschuss ${wfmt(pvNow)}</span>` : ""}</div>
       ${adm ? `<div class="wwacts"><button class="wwa ${W.boost ? "on" : ""}" data-act="wwboost" ${hasGen || W.boost ? "" : "disabled"} title="${hasGen ? "" : "Kein Wärmeerzeuger gewählt"}">${ic("flame", 17)}<span>${W.boost ? "Aufheizen stoppen" : "Einmal aufheizen"}</span>${hasGen || W.boost ? "" : "<small>Kein Erzeuger gewählt</small>"}</button><button class="wwa ${W.circ5 ? "on" : ""}" data-act="wwcirc5" ${E.pump ? "" : "disabled"}>${ic("clock", 17)}<span>${W.circ5 ? "Zirkulation läuft 5 Min." : "Zirkulation 5 Min."}</span>${E.pump ? "" : "<small>Keine Pumpe gewählt</small>"}</button><button class="wwa ${W.away ? "on" : ""}" data-act="wwaway">${ic("suitcase", 17)}<span>${W.away ? "Abwesend: an" : "Abwesend"}</span></button></div>` : ""}</div>`;
     const tiles = `<div class="tiles">${[
