@@ -2,6 +2,40 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4] - 2026-11-23
+
+Vierte stabile Version im November: **Ein Bauplan für dein ganzes Haus.** Das neue Modul 0 wird der gemeinsame Grundriss aller Module, Modul 18 zeigt das Licht darin, ab dem 1. Dezember kommt das Weihnachts-Theme mit Adventskalender, Modul 1 bekommt den neuen Elektroheizer, und **Modul 8 Elektroauto & Wallbox** sowie **Modul 11 Rauch- & Sicherheitsmelder** sind stabil (1.0). Die Version enthält alles aus den Testversionen 2026.11.4b1 bis 2026.11.4b59. README und Bedienungsanleitung sind an diese Version angepasst (Kapitel 24 „Neu in Version 2026.11.4“).
+
+### Neu
+- **Modul 0 · Haus & Grundriss (neu, Beta v0.10):** der gemeinsame Bauplan für Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte). Baukasten 2.0 mit Türen und Fenstern in allen Arten (auch schräg), Treppenarten, Möbeln, Außenbereich, Markise, mobilen Geräten, Haustechnik und Notfall-Punkten; Sonnenlicht, Ebene „Jetzt“ mit Raum-Sensoren, Raum-Blatt, Bereiche anlegen, Zoom, Vollbild, Export und Dashboard-Karte, Sichern & Einlesen mit Verlauf. Der Grundriss aus Modul 11 zieht beim ersten Start automatisch um.
+- **Modul 18 · Licht & Lampen (Addon v0.9):** Lichtkarte im Grundriss von Modul 0 mit der echten Lampenfarbe, Lampen selbst anlegen und Räumen zuordnen (Reiter „Lampen“), Lampen im Plan, Regeln für Bewegung, Alle weg, Alarm und Abends.
+- **Weihnachts-Theme & Adventskalender:** automatisch vom 1. bis 27. Dezember in allen Modulen – Lichterkette, Adventskranz nach Adventssonntag, Countdown bis Heiligabend, Adventskalender in mehreren Varianten mit Tagesinhalten und Tagesschlüsseln für Sponsor und Sponsor Max (nur am jeweiligen Tag gültig). Einstellungen unter Einstellungen → Darstellung → Weihnachts-Theme.
+- **Szenen-Banner für alle Module:** Lüftung, Rollläden, Wärmepumpe, Garten, Pool & Sauna, Batteriespeicher und Wartung haben jetzt ein eigenes Banner; die Handy-Ansicht der Banner ist korrigiert.
+- **Modul 1 (v1.9) · Elektroheizer 2.0:** Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum, Leistung per Vorlage oder **Messen** mit dem Leistungssensor, Regeln) mit Testlauf. Heizer stehen unter Modul 1 · Einstellungen › Geräte (der Reiter „Elektroheizer“ entfällt) – mit Bearbeiten, Pausieren, **In anderen Raum stellen**, **Entfernen** mit Rückgängig und Papierkorb (30 Tage).
+- **Modul 8 · Elektroauto & Wallbox – Stabil 1.0:** „Wer lädt gerade?“ von Hand umstellen, Gastfahrzeug auch beim Bearbeiten, Modus beim Anstecken je Fahrzeug, Sonnenanteil von Hand ändern, Befehls-Rückmeldung, Diagnose und erweiterter Einrichtungs-Check.
+- **Modul 11 · Rauch- & Sicherheitsmelder – Stabil 1.0:** neue Optik ohne Aufklappmenüs und Popups, Alarm mit Stufen und „Verstanden“, ausgeschaltete Melder, Warnmeldungen ohne Vollbild-Alarm, Test am Melder wird erkannt und eingetragen, Grundriss 2.0 mit frei geformten Räumen, Ausgängen und Durchgängen, Diagnose und Anleitung.
+- **Modul 14 · Dynamischer Stromtarif (v0.9):** Tarif-Dienst für heute und morgen, Preisband-Banner, Fenster je Gerät, Preisalarm, „Lohnt sich dein Tarif?“.
+- **Modul 15 · Wartung & Erinnerungen (v0.2):** echte Termine statt Beispielbilder.
+- **Modul 17 · Müllabfuhr (Addon) – Stabil 1.0** und **Modul 20 · Abrechnungen (Addon) – Stabil 1.6:** Reinholen, Sondertermine und Morgen-Briefing; Abrechnungen mit Übersicht & Prognose, Rechnungen, Anbindung an die Module, Einspeisung mit Abschlägen, Balkonkraftwerk, Grund- und Einmalgebühren, Tarifwechsel-Rechner.
+- **Modul 9 · Wetter & Warnungen – Stabil 1.0:** DWD-Wetterkarte mit Warnungen und Regenradar, Rückblick, Änderungsverlauf mit Rückgängig.
+- **Versions-Statistik** (freiwillig, anonym): Abfrage beim ersten Start nach dem Update, Seite unter Einstellungen → System → Versions-Statistik.
+
+### Geändert
+- Einstellungs-Knopf oben rechts öffnet in jedem Modul (auch bei Addons und auf der Startseite) die passenden Einstellungen.
+- Modul 1: Raumeinstellungen zeigen beim Elektroheizer nur noch eine Kurzinfo; Entfernen räumt auf (Schalter „Elektroheizer aktiv“ bleibt nicht als „nicht verfügbar“ stehen).
+
+### Behoben
+- Modul 8: Ladelimit wurde ohne erkannte Karte überfahren; nachts geladene Ladungen zeigten 1–2 % Sonne.
+- Modul 9: Wetterkarte zeigte keine Warnfarben und flackerte.
+- Modul 11: PDF-Knöpfe in der App, roter Alarm beim Zurückwechseln in die App, Anzeigefehler auf dem Tablet.
+- Modul 1: Die PV-Reserve ließ sich im Dashboard nicht über 100 W einstellen.
+
+### Wichtig beim Update
+- Nach dem Update Home Assistant neu starten und die Seite neu laden, in der App die App ganz schließen und neu öffnen. Deine Einstellungen bleiben erhalten.
+- Bestehende Elektroheizer werden beim ersten Start in die neue Geräteliste übernommen, die Raum-Einstellungen bleiben unverändert. Nach „In anderen Raum stellen“ ist der Schalter „Elektroheizer aktiv“ eine neue Entität im neuen Raum – Automationen bitte anpassen.
+- Der Grundriss liegt jetzt in Modul 0. Wer von 2026.11.3 kommt: Der Plan aus Modul 11 wird automatisch übernommen, eine Umzugs-Kopie bleibt 90 Tage erhalten.
+- Das Weihnachts-Theme startet von selbst am 1. Dezember; abschalten unter Einstellungen → Darstellung → Weihnachts-Theme.
+
 ## [2026.11.4b59] - 2026-11-23
 
 **Modul 1 · Fenster & Heizung** v1.9 Build 9 – Elektroheizer 2.0 (Build 1 bis 4): einfach hinzufügen und sauber entfernen.

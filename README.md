@@ -23,7 +23,7 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 <p align="center"><a href="https://youtube.com/@strom_und_waerme"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/youtube_banner.png" width="66%" alt="YouTube-Kanal Strom &amp; Wärme: Erklärvideos, Neuheiten und Shorts – @strom_und_waerme"></a> <a href="https://github.com/sponsors/Maddog3010"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/sponsor_kachel.png" width="32%" alt="Sponsor werden über GitHub Sponsors – github.com/sponsors/Maddog3010"></a></p>
 
 <p align="center">
-  <a href="#neu-in-2026113">Neu</a> ·
+  <a href="#neu-in-2026114">Neu</a> ·
   <a href="#installation">Installation</a> ·
   <a href="#module">Module</a> ·
   <a href="#bedienung">Bedienung</a> ·
@@ -39,7 +39,33 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 ---
 
-## Neu in 2026.11.3
+## Neu in 2026.11.4
+
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/banner_2026.11.4.png" width="760" alt="Neu in Version 2026.11.4"></p>
+
+**Ein Bauplan für dein ganzes Haus.** Mit dem neuen **Modul 0** zeichnest du deinen Grundriss einmal, und alle Module nutzen ihn: Wärmekarte in Modul 1, Melder in Modul 11, Lichtkarte in Modul 18. Dazu Weihnachten ab dem 1. Dezember, der neue Elektroheizer und zwei Module, die stabil werden: **Elektroauto & Wallbox** und **Rauch- & Sicherheitsmelder**.
+
+| | Was ist neu |
+|---|---|
+| 🏠 **Modul 0 · Haus & Grundriss (neu, Beta)** | Ein Bauplan für alle Module: Baukasten mit Türen und Fenstern in allen Arten, Treppen, Möbeln, Außenbereich, Markise, Haustechnik und Notfall-Punkten, Sonnenlicht, Ebene „Jetzt“ mit echten Werten, Zoom, Vollbild, Export, Dashboard-Karte, Sichern & Einlesen mit Verlauf |
+| 💡 **Modul 18 · Licht & Lampen (Addon 0.9)** | Lichtkarte im Grundriss von Modul 0, Räume leuchten in der echten Lampenfarbe, Lampen selbst anlegen und Räumen zuordnen, Regeln (Bewegung, Alle weg, Alarm, Abends) |
+| 🎄 **Weihnachts-Theme & Adventskalender** | Automatisch vom 1. bis 27. Dezember in allen Modulen: Lichterkette, Adventskranz, Countdown bis Heiligabend und ein Adventskalender mit Tagesinhalten. An bestimmten Tagen gibt es einen Tagesschlüssel zum Ausprobieren von Sponsor und Sponsor Max. Abschalten unter Einstellungen › Darstellung |
+| ⚡ **Modul 1 · Elektroheizer 2.0 (v1.9)** | Einrichten in vier Schritten mit Gerätevorschlägen, **Leistung messen** und Testlauf. Heizer stehen unter Modul 1 · Einstellungen › Geräte: Bearbeiten, Pausieren, **In anderen Raum stellen**, Entfernen mit Rückgängig und Papierkorb (30 Tage) |
+| 🚗 **Modul 8 · Elektroauto & Wallbox – Stabil 1.0** | Laden mit Sonne und nach Preis, Planung bis zur Abfahrt, Ladestatistik mit Nachweis, „Wer lädt gerade?“, Gastfahrzeug, Modus beim Anstecken je Fahrzeug, Schutz vor überfahrenem Ladelimit |
+| 🔥 **Modul 11 · Rauch- & Sicherheitsmelder – Stabil 1.0** | Neue Optik ohne Aufklappmenüs, Alarm mit Stufen und „Verstanden“, ausgeschaltete Melder, Test am Melder wird erkannt und eingetragen, Grundriss mit Ausgängen und Durchgängen, Diagnose und Anleitung |
+| 🖼️ **Szenen-Banner in allen Modulen** | Lüftung, Rollläden, Wärmepumpe, Garten, Pool & Sauna, Batteriespeicher und Wartung bekommen ein eigenes Banner, die Handy-Ansicht ist korrigiert |
+| 💶 **Modul 14 (0.9) · Modul 15 (0.2) · Modul 20 (Addon, Stabil 1.6)** | Stromtarif mit Preisband, Fenster je Gerät und Preisalarm · Wartung mit echten Terminen · Abrechnungen mit Einspeisung, Balkonkraftwerk, Grund- und Einmalgebühren |
+| ✅ **Ebenfalls stabil** | Modul 9 · Wetter & Warnungen 1.0 · Modul 17 · Müllabfuhr 1.0 (Addon) |
+| 🛠️ **Behoben** | Ladelimit wurde überfahren · nachts geladene Ladungen zeigten Sonne · Wetterkarte ohne Warnfarben und mit Flackern · Einstellungs-Knopf öffnet in jedem Modul die richtigen Einstellungen · PV-Reserve über 100 W |
+
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul0_grundriss.png" width="520" alt="Modul 0: Grundriss mit Räumen, Möbeln, Meldern und Raumtemperaturen"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_elektroheizer_assistent.png" width="200" alt="Modul 1: Elektroheizer-Assistent, Schritt Leistung"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_weihnachten_start.png" width="760" alt="Startseite mit Weihnachts-Theme: Lichterkette und Adventskranz"></p>
+
+▶️ [**Short zu 2026.11.4 auf YouTube**](https://youtube.com/@strom_und_waerme) · 📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf), angepasst an 2026.11.4 · [Alle Änderungen](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md)
+
+<details>
+<summary><b>Neu in 2026.11.3</b></summary>
+<br>
 
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/banner_2026.11.3.png" width="760" alt="Neu in Version 2026.11.3"></p>
 
@@ -60,7 +86,9 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul19_4x4.png" width="520" alt="Modul 19: vier Kacheln links und rechts, zwei unten"> <img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_modul3_gas.png" width="520" alt="Modul 3: Gaszähler"></p>
 <p align="center"><img src="https://raw.githubusercontent.com/Maddog3010/ha-fenster-heizung/main/docs/vorschau_kontakt_leiste.png" width="760" alt="Chat und E-Mail oben im Kopf"></p>
 
-▶️ [**Video zu 2026.11.3 auf YouTube**](https://youtube.com/@strom_und_waerme) · 📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf), angepasst an 2026.11.3 · 📲 [**Tags & Karten mit dem iPhone anlernen**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf) · [Alle Änderungen](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md)
+▶️ [**Video zu 2026.11.3 auf YouTube**](https://youtube.com/@strom_und_waerme) · 📖 [**Bedienungsanleitung (PDF)**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Bedienungsanleitung.pdf), angepasst an 2026.11.4 · 📲 [**Tags & Karten mit dem iPhone anlernen**](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/docs/Anleitung_Tags_iPhone.pdf) · [Alle Änderungen](https://github.com/Maddog3010/ha-fenster-heizung/blob/main/CHANGELOG.md)
+
+</details>
 
 ---
 
@@ -113,29 +141,30 @@ Eine neue Funktion hebt die Modulversion um 0.1 und setzt den Build auf 1. Eine 
 
 | Nr. | Modul | Stufe | Was es macht |
 |---|---|---|---|
-| 1 | **Fenster & Heizung** | Stabil 1.8 | Pause bei offenem Fenster, Heizpläne, Anwesenheit und Urlaub, Raumsensor, Präsenzmelder, Messräume, Haus-Szene und Grundriss, Luftentfeuchter, Berichte, Elektroheizer |
+| 0 | **Haus & Grundriss** | Beta 0.10 | Ein Bauplan für alle Module: Baukasten, Möbel, Außenbereich, Haustechnik, Sonnenlicht, Ebene „Jetzt“, Export und Dashboard-Karte |
+| 1 | **Fenster & Heizung** | Stabil 1.9 | Pause bei offenem Fenster, Heizpläne, Anwesenheit und Urlaub, Raumsensor, Präsenzmelder, Messräume, Haus-Szene und Grundriss, Luftentfeuchter, Berichte, Elektroheizer |
 | 2 | **Warmwasser & Zirkulation** | Stabil 1.1 | Speicher, Zeitplan, Zirkulationspumpe, Legionellenschutz, Heizstab bei PV-Überschuss, Anpassen |
 | 3 | **Energie** | Stabil 1.6 | Solar, Netz, Batterie und Hausverbrauch, Tag/Woche/Monat/Jahr, Energie-Szene, Kosten und Autarkie, Gaszähler, Anpassen |
 | 4 | **Gerätestrom** | Stabil 1.5 | Geräte-Szene, Gerätekarten mit Herkunfts-Ring und Restzeit, Geräte-Seite mit Programm-Kurve, bestes Startfenster, Standby, Monatsziel, Dein Jahr, Tablet-Wand |
 | 5 | Lüftung & Raumluft | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 6 | Rollläden & Beschattung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Werten |
 | 7 | Wärmepumpe | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echten Außenwerten |
-| 8 | **Elektroauto & Wallbox** | Vorabversion 0.9 | go-e direkt oder andere Wallboxen über Home Assistant (Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP …), Carport-Szene, Überschuss-Balken mit Vorschau, Abfahrt aus dem Kalender, Tablet-Wandansicht, Ladeplan als Band, Statistik Tag/Woche/Monat/Jahr, Sensoren je Fahrzeug |
+| 8 | **Elektroauto & Wallbox** | Stabil 1.0 | go-e direkt oder andere Wallboxen über Home Assistant (Easee, Zaptec, Wallbox, KEBA, Alfen, openWB, OCPP …), Carport-Szene, Überschuss-Balken mit Vorschau, Abfahrt aus dem Kalender, Tablet-Wandansicht, Ladeplan als Band, Statistik Tag/Woche/Monat/Jahr, Sensoren je Fahrzeug |
 | 9 | **Wetter & Warnungen** | Stabil 1.0 | Wetter-Szene, Stufen 1–4 wie beim DWD, alle amtlichen Warnungen, 48-Stunden-Zeitleiste, Aktionen mit Aussperrschutz, Vorsorge, Tablet-Alarm |
 | 10 | Garten & Bewässerung | In Entwicklung 0.1 | Konzept mit Gartenplan |
-| 11 | **Rauch- & Sicherheitsmelder** | Vorabversion 0.9 | Haus-Szene, Alarm mit Stufen und „Verstanden“, ausgeschaltete Melder, Melder-Karten 2.0, Batterie-Prognose, Grundriss-Baukasten mit Fluchtweg, Wartung mit Jahresband, Abfahrt-Prüfung, Quellen-Wächter, Wochen-Selbsttest |
+| 11 | **Rauch- & Sicherheitsmelder** | Stabil 1.0 | Haus-Szene, Alarm mit Stufen und „Verstanden“, ausgeschaltete Melder, Melder-Karten 2.0, Batterie-Prognose, Grundriss-Baukasten mit Fluchtweg, Wartung mit Jahresband, Abfahrt-Prüfung, Quellen-Wächter, Wochen-Selbsttest |
 | 12 | Pool & Sauna | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ |
 | 13 | Batteriespeicher-Planung | In Entwicklung 0.1 | Konzept, Reiter „Jetzt“ mit echtem Ladestand |
 | 14 | **Dynamischer Stromtarif** | Vorabversion 0.9 | Tibber direkt oder Preis-Sensor, Viertelstunden heute und morgen, Preisband mit Woche, bestes Fenster je Gerät, Preisalarm, „Lohnt sich dein Tarif?“ |
-| 15 | Wartung & Erinnerungen | In Entwicklung 0.1 | Konzept, auf Wunsch mit den Daten aus Modul 11 |
+| 15 | Wartung & Erinnerungen | In Entwicklung 0.2 | Echte Termine (Schornsteinfeger, Filter, Wartung), auf Wunsch mit den Daten aus Modul 11 |
 | 16 | **Solar-Prognose** | Stabil 1.0 | Sonnenbogen, Prognose gegen Ertrag je Stunde, korrigierte Prognose, Anlagen einzeln, Sensoren für Automationen |
 | 17 | **Müllabfuhr** | Addon · Stabil 1.0 | Straßen-Szene, bis zu 10 Abfallarten, Erinnerung mit Knöpfen, Reinholen, Wer ist dran, Diesmal nicht, Verlauf, Jahresübersicht, Sensoren |
-| 18 | Licht & Lampen | Addon | Lampen nach Räumen, dimmen, Lichtfarbe, Szenenknöpfe |
+| 18 | **Licht & Lampen** | Addon · Vorabversion 0.9 | Lichtkarte im Grundriss von Modul 0, Lampen selbst verwalten und Räumen zuordnen, Regeln, dimmen, Lichtfarbe, Szenenknöpfe |
 | 19 | **Hausfluss** | Stabil 1.1 · Sponsoren | Dein Haus als Fluss-Bild: Leuchtlinien, Herkunfts-Ring, bis zu 4+4+2 Kacheln, Themen, Strom-Reiter mit „Woher kam der Strom?“, Wand-Ansicht fürs Tablet |
-| 20 | **Abrechnungen** | Addon · Stabil 1.5 | „Bekomme ich Geld zurück?“: Hochrechnung mit Bandbreite, Abschläge mit Empfehlung, Rechnungsprüfung mit Beleg, Fahrtkosten für E-Auto und Verbrenner, Vorräte mit Reichweite, Preise für alle Module, Modul 3 und das Energie-Dashboard |
+| 20 | **Abrechnungen** | Addon · Stabil 1.6 | „Bekomme ich Geld zurück?“: Hochrechnung mit Bandbreite, Abschläge mit Empfehlung, Rechnungsprüfung mit Beleg, Fahrtkosten für E-Auto und Verbrenner, Vorräte mit Reichweite, Preise für alle Module, Modul 3 und das Energie-Dashboard |
 | 21 | Saugroboter | Addon | Roboter-Karte, Raum-Kacheln mit Ampel, Karte, Woche, Wartung |
 
-Die Module 5, 6, 7, 10, 12, 13 und 15 zeigen **Konzeptseiten** zum Durchklicken. Alle Zahlen dort sind Beispiele, diese Module schalten nichts.
+Die Module 5, 6, 7, 10, 12 und 13 zeigen **Konzeptseiten** zum Durchklicken (mit eigenem Szenen-Banner). Alle Zahlen dort sind Beispiele, diese Module schalten nichts. Modul 15 zeigt schon deine echten Termine.
 
 <details>
 <summary><b>1 · Fenster & Heizung</b></summary>
@@ -416,10 +445,11 @@ Die Integration folgt dem Schema **Jahr.Monat.Release**:
 | `2026.11.2` | Zweites Update im November 2026 |
 | `2026.11.3` | Drittes Update im November 2026 |
 | `2026.11.3.1` | Kleine Korrektur zu `2026.11.3` (eine vierte Stelle bedeutet: Korrektur ohne neue Funktionen) |
+| `2026.11.4` | Viertes Update im November 2026 |
 | `2026.12.1` | Erstes Update im Dezember, mit jedem Monat beginnt der Zähler wieder bei 1 |
 | `2026.12.1b1` | **Testversion** (Beta) für das kommende Update `2026.12.1` |
 
-Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.3b1` < `2026.11.3b42` < `2026.11.3` < `2026.11.3.1`.
+Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.4b1` < `2026.11.4b59` < `2026.11.4`.
 
 ### Stabil oder Beta
 
@@ -430,6 +460,8 @@ Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.3b1` 
 ### Update einspielen
 
 Über HACS aktualisieren, Home Assistant neu starten und die Seite neu laden (Strg+F5, in der App nach unten ziehen). Deine Einstellungen bleiben erhalten.
+
+> **Update auf 2026.11.4:** Nach dem Update Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen und neu öffnen). Bestehende Elektroheizer werden beim ersten Start automatisch in die neue Geräteliste übernommen, deine Raum-Einstellungen bleiben unverändert. Der Grundriss aus Modul 11 ist schon seit den Testversionen in Modul 0 umgezogen; Modul 11 und Modul 18 lesen ihn von dort. Das Weihnachts-Theme startet von selbst am 1. Dezember.
 
 > **Update auf 2026.11.3:** Nach dem Update Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen und neu öffnen). Das neue Haus-Energiebuch beginnt beim Update zu zählen, Auswertungen daraus füllen sich mit der Zeit. Wer die neue Optik nicht möchte, stellt in den Modulen unter **Anpassen → Aussehen** auf „wie bisher“.
 
