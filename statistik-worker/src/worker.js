@@ -6,7 +6,7 @@
 // Gespeichert wird je Installation: zufällige Kennung, Version, Kanal, erster/letzter Tag. Keine IP-Adresse,
 // kein User-Agent. Die Begrenzung pro Absender übernimmt eine Cloudflare-Rate-Limit-Regel (siehe Anleitung).
 
-import { validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs } from "./fehler.js";
+import { validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus } from "./fehler.js";
 export const SCHEMAS = [1, 2];   // Schema 1: ohne Module · Schema 2: mit Modulliste
 export const MODULES = { ww: "2 Warmwasser", en: "3 Energie", gs: "4 Gerätestrom", lu: "5 Lüftung", rb: "6 Rollläden", wp: "7 Wärmepumpe", ev: "8 E-Auto", wx: "9 Wetter", ga: "10 Garten", sf: "11 Sicherheit", pl: "12 Pool & Sauna", bt: "13 Batterie", dt: "14 Stromtarif", wa: "15 Wartung", sp: "16 Prognose", ef: "19 Hausfluss" };
 const MAX_BODY = 1024;
@@ -353,15 +353,25 @@ const html = (s, code = 200) => new Response(s, { status: code, headers: { "cont
 
 async function dashboard(req, env, url) {
   const fm = /^\/fehler(?:\/([0-9a-f]{12}))?\/?$/.exec(url.pathname);
-  if (req.method !== "GET" || (url.pathname !== "/" && !fm)) return json(404, { ok: false });
+  const post = req.method === "POST" && fm && fm[1];
+  if ((req.method !== "GET" && !post) || (url.pathname !== "/" && !fm)) return json(404, { ok: false });
   if (!(await verifyAccess(req.headers.get("cf-access-jwt-assertion"), env))) return new Response("Zugriff verweigert", { status: 403, headers: { "cache-control": "no-store" } });
   const today = S(Date.now());
+  if (post) {   /* Build 4: Status speichern – nur aus dem eigenen Dashboard (gleiche Herkunft), nur hinter Access */
+    const origin = req.headers.get("origin"), site = req.headers.get("sec-fetch-site");
+    if ((origin && origin !== `https://${env.DASH_HOST}`) || (!origin && site !== "same-origin")) return new Response("Fremde Herkunft", { status: 403, headers: { "cache-control": "no-store" } });
+    let form; try { form = await req.formData(); } catch { return json(400, { ok: false }); }
+    const st = validStatus(form);
+    if (!st) return json(400, { ok: false });
+    if (!(await dbErrStatus(env.DB, fm[1], st, Date.now()))) return json(404, { ok: false });
+    return new Response(null, { status: 303, headers: { location: `/fehler/${fm[1]}`, "cache-control": "no-store" } });
+  }
   if (fm && fm[1]) {
     const D = await errLoadOne(env.DB, fm[1], today);
-    return D ? html(page("Fehler · Strom &amp; Wärme", errRenderOne(D), today)) : html(page("Fehler · Strom &amp; Wärme", '<div class="c"><div class="empty">Diesen Fehler gibt es nicht (mehr).</div></div>', today), 404);
+    return D ? html(page("Fehler · Strom &amp; Wärme", errRenderOne(D, env.GITHUB_REPO), today)) : html(page("Fehler · Strom &amp; Wärme", '<div class="c"><div class="empty">Diesen Fehler gibt es nicht (mehr).</div></div>', today), 404);
   }
   if (fm) {
-    const q = {}; for (const k of ["tage", "mod", "src", "neu", "alle"]) { const v = url.searchParams.get(k); if (v) q[k] = v.slice(0, 40); }
+    const q = {}; for (const k of ["tage", "mod", "src", "neu", "alle", "ign"]) { const v = url.searchParams.get(k); if (v) q[k] = v.slice(0, 40); }
     const days = [30, 90].includes(+q.tage) ? +q.tage : 7;
     return html(page("Fehler · Strom &amp; Wärme", errRender(await errLoad(env.DB, today, days), q), today));
   }

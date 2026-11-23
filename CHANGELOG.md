@@ -9,6 +9,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 ### Neu
 - **Worker:** Eingang `POST /v1/errors` (höchstens 50 Fehler, 64 KB, 1 Bericht pro Kennung und Stunde, jedes Feld wird geprüft, Adressen werden zusätzlich entfernt, keine IP-Adressen gespeichert) und `POST /v1/errors/forget`. Berichte werden nach 90 Tagen gelöscht.
 - **Dashboard, Reiter „Fehler“:** gleiche Fehler aller Nutzer als eine Zeile, sortiert nach betroffenen Installationen – mit Modul, Quelle, Anzahl, Versionen, 14-Tage-Verlauf und Kennzeichen „neu“, „steigt“, „bekannt“, „behoben?“, „ruhig“. Filter nach Zeitraum (7/30/90 Tage), Modul und Quelle. Detailansicht je Fehler mit Verlauf über 30 Tage, Versionen, Home-Assistant-Versionen und Kanal.
+- **Dashboard, Build 4:** Status je Fehler (offen, in Arbeit, behoben in Version …, ignorieren) und GitHub-Issue-Nummer. „Behoben in“ wird geprüft: Taucht der Fehler in dieser oder einer neueren Version wieder auf, steht er rot als „wieder da“ ganz oben. Ignorierte Fehler nur auf Wunsch. „GitHub-Issue anlegen“ öffnet ein vorausgefülltes Issue (Titel, Meldung, Stelle, Fehler-ID, Versionen, Anzahl).
 - Integration: „Gerade erst gesendet“ statt Fehlermeldung, wenn innerhalb einer Stunde erneut gesendet wird.
 
 ### Wichtig beim Update

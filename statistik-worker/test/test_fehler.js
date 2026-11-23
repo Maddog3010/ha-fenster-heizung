@@ -77,3 +77,39 @@ env.DB.raw.prepare("UPDATE err_hits SET day='2020-01-01'").run();
 await dbErrCleanup(env.DB, Date.now());
 assert.equal(q("SELECT count(*) n FROM err_hits").n + q("SELECT count(*) n FROM err_groups").n, 0);
 console.log("Fehler-Tests OK");
+
+// ---- Build 4: Status, „behoben in“, GitHub-Issue
+{
+  const { issueUrl, errLoad: L2, errRender: R2, errLoadOne: O2, errRenderOne: RO2 } = await import("../src/fehler.js");
+  const env = mkenv(), a = ID(), b2 = ID(), c = ID();
+  await post(env, "/v1/errors", R(a, [E()]));
+  await post(env, "/v1/errors", R(b2, [E()], { version: "2026.11.4.2" }));
+  const sp = (fp, body, h = {}) => worker.fetch(new Request(`https://dash.x.dev/fehler/${fp}`, { method: "POST", body: new URLSearchParams(body), headers: { "cf-access-jwt-assertion": tok, "content-type": "application/x-www-form-urlencoded", origin: "https://dash.x.dev", ...h } }), env);
+  assert.equal((await sp("a1b2c3d4e5f6", { status: "behoben", fixed_in: "2026.11.4.2" }, { origin: "https://boese.dev" })).status, 403, "fremde Herkunft");
+  assert.equal((await worker.fetch(new Request("https://dash.x.dev/fehler/a1b2c3d4e5f6", { method: "POST", body: "status=offen", headers: { "content-type": "application/x-www-form-urlencoded", origin: "https://dash.x.dev" } }), env)).status, 403, "ohne Access");
+  assert.equal((await sp("a1b2c3d4e5f6", { status: "weg" })).status, 400);
+  assert.equal((await sp("a1b2c3d4e5f6", { status: "behoben", fixed_in: "irgendwann" })).status, 400);
+  assert.equal((await sp("000000000000", { status: "offen" })).status, 404);
+  let res = await sp("a1b2c3d4e5f6", { status: "behoben", fixed_in: "2026.11.4.2", issue: "#36" });
+  assert.equal(res.status, 303); assert.equal(res.headers.get("location"), "/fehler/a1b2c3d4e5f6");
+  let r = await L2(env.DB, today, 7);
+  assert.equal(r.rows[0].tag, "wieder da", "tritt in 2026.11.4.2 noch auf → rot, ganz oben");
+  assert.equal(r.rows[0].issue, 36);
+  await sp("a1b2c3d4e5f6", { status: "behoben", fixed_in: "2026.11.5" });
+  r = await L2(env.DB, today, 7); assert.equal(r.rows[0].tag, "behoben");
+  await post(env, "/v1/errors", R(c, [E()], { version: "2026.11.5b1", channel: "beta" }));
+  r = await L2(env.DB, today, 7); assert.equal(r.rows[0].tag, "behoben", "Beta vor 2026.11.5 zählt nicht");
+  await sp("a1b2c3d4e5f6", { status: "ignoriert" });
+  r = await L2(env.DB, today, 7);
+  assert.ok(!R2(r, {}).includes("/fehler/a1b2c3d4e5f6") && R2(r, { ign: "1" }).includes("/fehler/a1b2c3d4e5f6"), "ignorierte nur auf Wunsch");
+  await sp("a1b2c3d4e5f6", { status: "arbeit" });
+  const d = await O2(env.DB, "a1b2c3d4e5f6", today);
+  assert.equal(d.g.status, "arbeit"); assert.equal(d.g.issue, 36, "Issue bleibt, wenn leer gelassen");
+  const u = new URL(issueUrl(d));
+  assert.equal(u.pathname, "/Maddog3010/ha-fenster-heizung/issues/new");
+  assert.ok(u.searchParams.get("title").startsWith("[Modul 1] invalid_format: expected str at 'id'"));
+  assert.ok(u.searchParams.get("body").includes("a1b2c3d4e5f6") && u.searchParams.get("body").includes("3 Installationen"));
+  const h = RO2(d, "x/y");
+  assert.ok(h.includes('action="/fehler/a1b2c3d4e5f6"') && h.includes("github.com/x/y/issues/new") && h.includes("Issue #36"));
+  console.log("Build-4-Tests OK");
+}
