@@ -25,9 +25,10 @@
     }
     return { x: i.x, y: i.y, fl: i.fl, moved: false, inf };
   }
-  _grDevSvg(P, fl, T, q, u, hell) {
+  _grDevSvg(P, fl, T, q, u, hell, skip) {
     const D = this._grDevList(); let d = "";
     (P.items || []).filter((i) => i.t === "g").forEach((i, n) => {
+      if (skip && skip.has(i)) return;   /* Handy: steht in der Status-Leiste des Raums */
       const p = this._grDevPos(i, P, D); if (p.fl !== fl) return;
       const ent = i.gk === "entf", c = ent ? "#38bdf8" : "#f97316", on = !!(p.inf && p.inf.on), g = `${u}dg${n}`, x = p.x, y = p.y;
       const icon = ent ? `<path d="M${x} ${y - 6.5 * q}c${3 * q} ${4 * q} ${4.6 * q} ${6 * q} ${4.6 * q} ${8.4 * q}a${4.6 * q} ${4.6 * q} 0 0 1 ${-9.2 * q} 0c0 ${-2.4 * q} ${1.6 * q} ${-4.4 * q} ${4.6 * q} ${-8.4 * q}z" fill="${on ? c : "none"}" stroke="${c}" stroke-width="1.6"/>`

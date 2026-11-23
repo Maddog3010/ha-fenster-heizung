@@ -2,6 +2,22 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b2] - 2026-11-23
+
+**Modul 0 · Haus & Grundriss** v0.11 Build 12–15 – neue Handy-Ansicht (Vorschlag D): alle Details bleiben im Plan, aber geordnet.
+
+### Neu
+- **Status-Leiste je Raum** (Handy): Temperatur links, rechts die Geräte mit Zustand („läuft“, „aus“, Watt), Melder und Lampen – immer an derselben Stelle oben im Raum. Schmale Räume bekommen eine zweite Zeile, Raumname und Fläche stehen frei darunter.
+- **Neue Werkzeugleiste** (Handy): Etage, „Ansicht“ (Modern, Bauplan, Hell, Maße), Bearbeiten und „⋯“ (Räume, Ebenen, Sichern & Einlesen, Einstellungen, Plan-Check) in einer Zeile; die Ebenen als Wischleiste. Der Plan beginnt deutlich weiter oben.
+- **Sonderfälle:** Reicht der Platz nicht, werden Symbole zu farbigen Punkten; bei vielen Symbolen endet die Leiste mit „+2“; in sehr kleinen Räumen (z. B. WC) zeigt ein Farbpunkt die Temperatur. Raum antippen öffnet wie bisher das Raum-Blatt mit allen Werten.
+
+### Behoben
+- **Raumnamen ragten in den Nachbarraum** oder lagen unter Temperatur, Melder und Geräten (z. B. „Sportzimmer“, „Schlafzimmer“ am Handy). Fand die Beschriftung keinen freien Platz, wurde sie in die Raummitte gelegt – auch über die Wand hinaus. Jetzt bleibt sie immer im Raum, wird bei Bedarf kleiner und an der Wortfuge getrennt („Sport-/zimmer“, „Ankleide-/zimmer“). Gilt auch für Tablet, PC, Wärmekarte, Lichtkarte und Modul 11.
+
+### Wichtig beim Update
+- Tablet und PC zeigen den Plan wie bisher; die Status-Leiste und die neue Werkzeugleiste gibt es nur auf schmalen Bildschirmen (unter 600 Pixel).
+- Enthält auch 2026.11.5b1 (Modul 8: Kilometer-Sprünge, Kilometerstände nachtragen).
+
 ## [2026.11.5b1] - 2026-11-23
 
 **Modul 8 · Elektroauto & Wallbox** 1.0.1 – Kilometer je Tag ohne Sprünge.

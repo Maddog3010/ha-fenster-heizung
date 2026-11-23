@@ -785,7 +785,7 @@ const MV_STG = [
   ["vorab", "0.9", "Fertig bis auf Feinschliff.", "Einstellungen bleiben erhalten, nur Aussehen und Kleinigkeiten ändern sich noch.", "Weiter zu Stabil nach mindestens zwei Updates ohne gemeldeten Datenverlust oder schweren Fehler."],
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
-  gr: { v: "0.10.1", b: 11, d: "2026-11-23", p: "2026.11.4", log: [["0.10.1", 11, "2026.11.4", "Stufe Beta: Modul 0 ist mit Version 2026.11.4 zum Testen freigegeben – der Grundriss läuft mit echten Daten und wird von Modul 1, 11 und 18 genutzt"], ["0.10.1", 10, "2026.11.4b58", "Puppenhaus entfernt (nur noch der Plan, im Banner wieder das Haus-Symbol). Werkzeugleiste im Baukasten bleibt am Handy/iPad nach dem Wischen stehen und springt nicht mehr an den Anfang (auch Ebenen- und Etagen-Knöpfe)."], ["0.10", 10, "2026.11.4b56", "Puppenhaus (alle Etagen schräg übereinander, Antippen klappt flach, auch im Banner), Sonnenlicht durch die Fenster mit Tageszeit-Regler und Nordrichtung, Möbel (19) und Außenbereich (42: Garten & Pflanzen, Spielen & Freizeit, Wege, Bauten & Technik) mit Größe in cm, Grundstück als eigene Etage mit Haus-Umriss, Zustände (Pool, Bewässerung, Gartenlampe …). Raumnamen passen sich dem Raum an und verdecken keine Melder mehr"], ["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
+  gr: { v: "0.11", b: 15, d: "2026-11-23", p: "2026.11.5b2", log: [["0.11", 15, "2026.11.5b2", "Handy-Ansicht Build 4: Sonderfälle – in schmalen Räumen werden Symbole zu Punkten, zu viele enden mit „+2“, in sehr kleinen Räumen zeigt ein Farbpunkt die Temperatur; Raum antippen zeigt alles im Raum-Blatt"], ["0.11", 14, "2026.11.5b2", "Handy-Ansicht Build 3: neue Werkzeugleiste – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile, Ebenen als Wischleiste; der Plan beginnt weiter oben"], ["0.11", 13, "2026.11.5b2", "Handy-Ansicht Build 2: Status-Leiste je Raum – Temperatur links, Geräte mit Zustand, Melder und Lampen rechts, bei schmalen Räumen zweizeilig; nichts überlagert mehr den Raumnamen"], ["0.11", 12, "2026.11.5b2", "Handy-Ansicht Build 1: Raumnamen bleiben immer im Raum (vorher ragte z. B. „Sportzimmer“ in den Nachbarraum), Trennung an der Wortfuge („Sport-/zimmer“), Schrift nach Raumbreite"], ["0.10.1", 11, "2026.11.4", "Stufe Beta: Modul 0 ist mit Version 2026.11.4 zum Testen freigegeben – der Grundriss läuft mit echten Daten und wird von Modul 1, 11 und 18 genutzt"], ["0.10.1", 10, "2026.11.4b58", "Puppenhaus entfernt (nur noch der Plan, im Banner wieder das Haus-Symbol). Werkzeugleiste im Baukasten bleibt am Handy/iPad nach dem Wischen stehen und springt nicht mehr an den Anfang (auch Ebenen- und Etagen-Knöpfe)."], ["0.10", 10, "2026.11.4b56", "Puppenhaus (alle Etagen schräg übereinander, Antippen klappt flach, auch im Banner), Sonnenlicht durch die Fenster mit Tageszeit-Regler und Nordrichtung, Möbel (19) und Außenbereich (42: Garten & Pflanzen, Spielen & Freizeit, Wege, Bauten & Technik) mit Größe in cm, Grundstück als eigene Etage mit Haus-Umriss, Zustände (Pool, Bewässerung, Gartenlampe …). Raumnamen passen sich dem Raum an und verdecken keine Melder mehr"], ["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
   fh: { v: "1.9", b: 9, d: "2026-11-23", p: "2026.11.4b59", log: [["1.9", 9, "2026.11.4b59", "Elektroheizer 2.0 Build 1–4: Entfernen-Dialog mit Rückgängig, Papierkorb (30 Tage) zum Wiederherstellen, Leistung messen und Testlauf im Assistenten; Heizer unter Modul 1 · Einstellungen › Geräte (eigener Reiter entfällt) mit Liste und PV-Regeln, Geräte-Blatt mit Bearbeiten, Pausieren und „In anderen Raum stellen“ (Statistik zieht mit), Raumeinstellungen nur noch mit Kurzinfo; Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum als Kachel, Leistung per Vorlage, Regeln mit Vorschlägen) aus Raumkarte „⋯“, Modul-1-Einstellungen, Raumeinstellungen und Grundriss; eigene Geräteliste mit fester ID und Namen, automatische Übernahme bestehender Heizer (Reste in den Papierkorb), Entfernen räumt auf (Gerät aus, Thermostate zurück, Schalter-Entität gelöscht, Statistik auf Wunsch behalten)"], ["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -17531,6 +17531,11 @@ class FensterHeizungPanel extends HTMLElement {
       .grly .nums{display:flex;gap:6px;flex-wrap:wrap}.grly .nums span{border-radius:8px;padding:3px 9px;font-size:.78rem;background:color-mix(in srgb,var(--primary-text-color) 7%,transparent)}.grly .nums span.w{background:color-mix(in srgb,#f59e0b 18%,transparent);color:#fbbf24}
       .grly .ft{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:4px}.grly .ft .btn2{flex:0 0 auto}.grly .card.off{opacity:.62}
       @media (max-width:700px){.grtab thead{display:none}.grtab tr{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:10px 0;border-top:1px solid color-mix(in srgb,var(--primary-text-color) 9%,transparent)}.grtab td{border:0;padding:2px 4px}.grtab td:first-child{grid-column:1/-1}.grtab td[data-l]::before{content:attr(data-l);display:block;font-size:.7rem;color:var(--mut)}}
+      .grtn{display:flex;gap:6px;align-items:center;margin:0 0 8px;flex-wrap:wrap}.grtn button{display:inline-flex;align-items:center;gap:5px;border:1px solid color-mix(in srgb,var(--primary-text-color) 14%,transparent);background:var(--card);color:var(--primary-text-color);border-radius:999px;padding:7px 12px;font:inherit;font-size:.84rem;font-weight:650;cursor:pointer}
+      .grtn button.on{border-color:var(--teal);color:var(--teal)}.grtn .sp{margin-left:auto}.grtn .sffl{display:inline-flex;gap:4px}.grtn .grchk{padding:7px 10px}
+      .grmn{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;padding:8px;border-radius:14px;background:color-mix(in srgb,var(--primary-text-color) 5%,transparent)}.grmn button{border:1px solid color-mix(in srgb,var(--primary-text-color) 14%,transparent);background:var(--card);color:var(--primary-text-color);border-radius:999px;padding:6px 12px;font:inherit;font-size:.82rem;cursor:pointer}.grmn button.on{border-color:var(--teal);color:var(--teal)}
+      .grl.rail{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:0 0 8px;mask-image:linear-gradient(90deg,#000 88%,transparent)}.grl.rail::-webkit-scrollbar{display:none}.grl.rail button{flex:none}
+      .card.grpc{padding-top:12px}
       .grinfo{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));margin-top:12px}.grinfo .card{margin:0}.grinfo b{display:block}.grinfo small{color:var(--mut)}
       @media (max-width:560px){.grh{flex-direction:column;align-items:flex-start}.grh svg.grhs{width:100%;max-width:240px}}</style>`;
     if (!P) return css + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Grundriss wird geladen …</div></div>`;
@@ -17543,7 +17548,9 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="s">${st.rooms ? `${st.layers ? `${st.layers.sf || 0} Melder · ${st.layers.licht || 0} Lampen im Plan · ` : ""}genutzt von ${esc(uTxt)}` : "Einmal zeichnen, in allen Modulen nutzen"}</div><div class="v"><button class="pri" data-act="grxtab" data-k="plan">Plan ansehen</button>${edit}</div></div></div>`;
     const tab = ["plan", "raeume", "ebenen", "io", "einst"].includes(this._grTab) ? this._grTab : "plan", rq = this._grRoomStats(P);
     const tb = (k, t) => `<button class="${tab === k ? "on" : ""}" data-act="grxtab" data-k="${k}" aria-pressed="${tab === k}">${t}</button>`;
-    const tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}${tb("ebenen", "Ebenen")}${adm ? tb("io", "Sichern &amp; Einlesen") : ""}${adm ? tb("einst", "Einstellungen") : ""}</div>`;
+    const narrow = this._narrow || (this.clientWidth || 999) < 600;
+    let tabs = `<div class="grt">${tb("plan", "Plan")}${tb("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}${tb("ebenen", "Ebenen")}${adm ? tb("io", "Sichern &amp; Einlesen") : ""}${adm ? tb("einst", "Einstellungen") : ""}</div>`;
+    if (narrow) tabs = this._grNav(tab, rq, adm, P, fls);   /* Build 3: Handy – eine Zeile statt fünf */
     if (tab === "einst" && adm) return css + hero + tabs + this._grSetView(D);
     if (tab === "io" && adm) return css + hero + tabs + this._grIoView(P, D);
     if (!items.some((i) => i.t === "r")) return css + hero + tabs + `<div class="card empty">${ic("home", 36)}<div style="margin:10px 0 4px;font-weight:700;color:var(--primary-text-color)">Noch kein Grundriss</div>Zeichne Räume, Wände, Türen und Fenster einmal – Modul 1 (Wärmekarte), Modul 11 (Melder) und Modul 18 (Lichtkarte) nutzen ihn dann mit.<div style="margin-top:12px">${adm ? `<button class="btn2 pri" data-act="grxedit">${ic("pencil", 16)} Grundriss zeichnen</button>` : ""}</div></div>`;
@@ -17552,13 +17559,14 @@ class FensterHeizungPanel extends HTMLElement {
     const fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, ly = this._grLy(), here = items.filter((i) => i.fl === fl);
     const rs = here.filter((i) => i.t === "r"), B = rs.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
     if (!rs.length) Object.assign(B, { x0: 0, y0: 0, x1: 800, y1: 480 });
-    const narrow = this._narrow || (this.clientWidth || 999) < 600, sty = this._grStyle(), dims = this._grDimsOn();
-    const G = this._grDraw(P, fl, { style: sty, dims, narrow, click: true, now: ly.now !== false, layers: { licht: ly.licht && !!(this._liOn && this._liOn()), sf: ly.sf, gt: ly.gt !== false, ht: ly.ht !== false, mo: ly.mo !== false, sun: !!ly.sun } });
+    const sty = this._grStyle(), dims = this._grDimsOn(), cw = this._grFull ? (window.innerWidth || 390) : (this.clientWidth || 390);
+    const G = this._grDraw(P, fl, { style: sty, dims, narrow, click: true, strip: narrow ? { pw: Math.max(240, cw - 56), ph: (window.innerHeight || 800) * (this._grFull ? 0.86 : 0.66) } : null, now: ly.now !== false, layers: { licht: ly.licht && !!(this._liOn && this._liOn()), sf: ly.sf, gt: ly.gt !== false, ht: ly.ht !== false, mo: ly.mo !== false, sun: !!ly.sun } });
     const nL = items.filter((i) => i.t === "l").length, nM = items.filter((i) => i.t === "m").length, liOn = !!(this._liOn && this._liOn());
     const bar = fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "";
     const lyr = `<div class="grl">${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled title=\"Addon „licht“ ist aus\""}><i style="background:#ffb36b"></i>Lampen · Modul 18 (${nL})</button>` : ""}<button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder · Modul 11 (${nM})</button>${items.some((i) => i.t === "h") ? `<button class="${ly.ht !== false ? "on" : ""}" data-act="grxly" data-k="ht"><i style="background:#eab308"></i>Technik (${items.filter((i) => i.t === "h").length})</button>` : ""}${items.some((i) => i.t === "g") ? `<button class="${ly.gt !== false ? "on" : ""}" data-act="grxly" data-k="gt"><i style="background:#f97316"></i>Geräte (${items.filter((i) => i.t === "g").length})</button>` : ""}${items.some((i) => i.t === "o") ? `<button class="${ly.mo !== false ? "on" : ""}" data-act="grxly" data-k="mo"><i style="background:#94a3b8"></i>Möbel (${items.filter((i) => i.t === "o").length})</button>` : ""}<button class="${ly.sun ? "on" : ""}" data-act="grxly" data-k="sun" title="Sonnenlicht durch die Fenster"><i style="background:#fbbf24"></i>Sonne</button><button class="${ly.now !== false ? "on" : ""}" data-act="grxnow" title="Temperatur aus Modul 1 und Bewegung"><i style="background:#2dd4bf"></i>Jetzt</button><span class="grsty">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, t]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}"><i class="sw-${k}"></i>${t}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></span></div>`;
+    const lyrN = `<div class="grl rail"><button class="${ly.now !== false ? "on" : ""}" data-act="grxnow"><i style="background:#2dd4bf"></i>Jetzt</button><button class="${ly.sf ? "on" : ""}" data-act="grxly" data-k="sf"><i style="background:#f87171"></i>Melder ${nM}</button>${liOn || nL ? `<button class="${ly.licht && liOn ? "on" : ""}" data-act="grxly" data-k="licht" ${liOn ? "" : "disabled"}><i style="background:#ffb36b"></i>Lampen ${nL}</button>` : ""}${items.some((i) => i.t === "g") ? `<button class="${ly.gt !== false ? "on" : ""}" data-act="grxly" data-k="gt"><i style="background:#f97316"></i>Geräte ${items.filter((i) => i.t === "g").length}</button>` : ""}${items.some((i) => i.t === "h") ? `<button class="${ly.ht !== false ? "on" : ""}" data-act="grxly" data-k="ht"><i style="background:#eab308"></i>Technik ${items.filter((i) => i.t === "h").length}</button>` : ""}${items.some((i) => i.t === "o") ? `<button class="${ly.mo !== false ? "on" : ""}" data-act="grxly" data-k="mo"><i style="background:#94a3b8"></i>Möbel ${items.filter((i) => i.t === "o").length}</button>` : ""}<button class="${ly.sun ? "on" : ""}" data-act="grxly" data-k="sun"><i style="background:#fbbf24"></i>Sonne</button></div>`;
     const VB = this._grVB ? this._grVB(G.vb, fl) : G.vb;
-    const card = `<div class="card${this._grFull ? " grfull" : ""}"><h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}
+    const card = `<div class="card${this._grFull ? " grfull" : ""}${narrow ? " grpc" : ""}">${narrow ? (this._grFull ? this._grNav("plan", rq, adm, P, fls) : "") + lyrN : `<h2>${ic("home", 18)}Grundriss<span class="sfhr">${this._grChkChip ? this._grChkChip(P) : ""}${bar}${edit ? edit.replace("<button", '<button class="sfed"') : ""}</span></h2>${lyr}`}
       ${ly.sun && this._grSunBar ? this._grSunBar(P, fl) : ""}<div class="grv grv-${sty}">${this._grZoomBar ? this._grZoomBar(fl) : ""}<svg class="grzsvg${VB !== G.vb ? " zm" : ""}" data-fl="${esc(fl)}" data-vb="${G.vb.x} ${G.vb.y} ${G.vb.w} ${G.vb.h}" viewBox="${VB.x} ${VB.y} ${VB.w} ${VB.h}" role="img" aria-label="Grundriss ${esc((fls.find((f) => f.id === fl) || {}).n || "")}">${G.svg}</svg></div></div>`;
     const since = meta.since ? new Date(meta.since).toLocaleDateString("de-DE") : "", until = meta.copy_until ? new Date(meta.copy_until).toLocaleDateString("de-DE") : "";
     const info = `<div class="grinfo">
@@ -17566,6 +17574,19 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="card"><b>${ic("shield", 15)} Umzug aus Modul 11</b><small>${since ? `Am ${since} übernommen${meta.src === "sf" ? " aus Modul 11" : ""}. Die Kopie vom alten Stand wird bis ${until} aufgehoben.` : "Der Plan liegt jetzt im Kern von Strom &amp; Wärme."}</small></div>
       <div class="card"><b>${ic("pencil", 15)} Bearbeiten</b><small>Im Baukasten hier in Modul 0 – auch „Bearbeiten“ in Modul 1, 11 und 18 führt hierher und danach zurück. Alle Module sehen die Änderung sofort.</small></div></div>`;
     return css + hero + tabs + card + info;
+  }
+  /* Build 3 (2026.11.5): Werkzeugleiste auf dem Handy – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile.
+     „Ansicht“ klappt Stil und Maße auf, „⋯“ die Reiter (Räume, Ebenen, Sichern, Einstellungen) und den Plan-Check. */
+  _grNav(tab, rq, adm, P, fls) {
+    const M = this._grMenu || "", fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, sty = this._grStyle(), dims = this._grDimsOn();
+    const chk = this._grChkChip ? this._grChkChip(P) : "", warn = /grchk w/.test(chk);
+    const left = tab === "plan" ? (fls.length > 1 ? `<span class="sffl">${fls.map((f) => `<button class="${f.id === fl ? "on" : ""}" data-act="grxfl" data-k="${esc(f.id)}">${esc(f.n)}</button>`).join("")}</span>` : "") + `<button class="${M === "view" ? "on" : ""}" data-act="grxmenu" data-k="view" aria-expanded="${M === "view"}">Ansicht ${M === "view" ? "▴" : "▾"}</button>`
+      : `<button data-act="grxtab" data-k="plan">‹ Plan</button><b style="font-size:.95rem">${{ raeume: "Räume", ebenen: "Ebenen", io: "Sichern &amp; Einlesen", einst: "Einstellungen" }[tab] || ""}</b>`;
+    const row = `<div class="grtn">${left}${adm && tab === "plan" ? `<button data-act="grxedit" aria-label="Bearbeiten">${ic("pencil", 14)}</button>` : ""}<button class="sp${M === "more" ? " on" : ""}" data-act="grxmenu" data-k="more" aria-expanded="${M === "more"}" aria-label="Mehr">⋯${rq.open || warn ? ` <b class="grtb">${(rq.open || 0) + (warn ? 1 : 0) || "!"}</b>` : ""}</button></div>`;
+    const t = (k, x) => `<button class="${tab === k ? "on" : ""}" data-act="grxtab" data-k="${k}">${x}</button>`;
+    const menu = M === "more" ? `<div class="grmn">${t("plan", "Plan")}${t("raeume", `Räume (${rq.n})${rq.open ? ` <b class="grtb">${rq.open}</b>` : ""}`)}${t("ebenen", "Ebenen")}${adm ? t("io", "Sichern &amp; Einlesen") : ""}${adm ? t("einst", "Einstellungen") : ""}${chk}</div>`
+      : M === "view" && tab === "plan" ? `<div class="grmn">${[["modern", "Modern"], ["bauplan", "Bauplan"], ["hell", "Hell"]].map(([k, x]) => `<button class="${sty === k ? "on" : ""}" data-act="grxsty" data-k="${k}" aria-pressed="${sty === k}">${x}</button>`).join("")}<button class="${dims ? "on" : ""}" data-act="grxdims" aria-pressed="${dims}">📐 Maße</button></div>` : "";
+    return row + menu;
   }
   /* ---- Baukasten in Modul 0 (Build 3) */
   _grT() { return this._mdList().some((m) => m.id === "sf") && this._sfStat ? this._sfStat() : { l: [], al: [] }; }
@@ -17764,7 +17785,8 @@ class FensterHeizungPanel extends HTMLElement {
     const k = b && b.dataset ? b.dataset.k : "";
     if (a === "grxfl") { this._grFl = k; this._render(); return true; }
     if (a === "grxly") { const L = this._grLy(); if (k in L) { L[k] = !L[k]; this._render(); } return true; }
-    if (a === "grxtab") { this._grTab = k || "plan"; this._render(); return true; }
+    if (a === "grxtab") { this._grTab = k || "plan"; this._grMenu = ""; this._render(); return true; }
+    if (a === "grxmenu") { this._grMenu = this._grMenu === k ? "" : k; this._render(); return true; }
     if (a === "grxarea") { if (this._admin()) { this._modal = { type: "grxarea", k }; this._renderModal(); } return true; }
     if (a === "grxaset") {
       if (!this._admin()) return true;
@@ -17840,20 +17862,28 @@ class FensterHeizungPanel extends HTMLElement {
   }
   /* Raumnamen (Build 10 neu): Schrift passt sich der Raumbreite an (kleiner, sonst zweizeilig oder gekürzt), die Plakette liegt ganz im Raum
      und meidet Melder, Lampen, Türen, Treppen, Geräte, Technik und die Temperatur-Marke. Ohne Platz: zuerst ohne Symbol, dann ohne Fläche. */
+  /* 2026.11.5 Build 1 (Handy-Ansicht): Die Plakette bleibt immer im Raum. Findet sie keinen freien Platz, wird sie nicht mehr
+     in die Mitte „geworfen“, sondern im Raum verkleinert und gekürzt – Symbole dürfen dann überdeckt werden, die Wand nie.
+     Jede Zeile wird so gekürzt, dass sie in die Raumbreite passt. Mit o.upx (Handy, Status-Leiste) rechnet die Schrift in Bildschirm-Pixeln. */
   _grLabels(rs, items, o, T, kinds, NF, sc, f1, q) {
     let d = "";
-    const obsAll = items.filter((i) => ["l", "m", "d", "s", "g", "h", "f"].includes(i.t)).map((i) => (i.t === "s" ? [i.x, i.y, i.x + (i.w || 60), i.y + (i.h || 90)] : i.t === "d" || i.t === "f" ? [i.x - 14, i.y - 14, i.x + 14, i.y + 14] : [i.x - 12 * q, i.y - 12 * q, i.x + 12 * q, i.y + 12 * q]));
+    const skip = o.skip || null;
+    const obsAll = items.filter((i) => ["l", "m", "d", "s", "g", "h", "f"].includes(i.t) && !(skip && skip.has(i))).map((i) => (i.t === "s" ? [i.x, i.y, i.x + (i.w || 60), i.y + (i.h || 90)] : i.t === "d" || i.t === "f" ? [i.x - 14, i.y - 14, i.x + 14, i.y + 14] : [i.x - 12 * q, i.y - 12 * q, i.x + 12 * q, i.y + 12 * q]));
     const tw = (t, f) => [...String(t)].length * f * 0.6;
     rs.forEach((r) => {
       const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y), k = kinds.get(r.id), m2 = this._grAreaM2(r, sc), [cx0, cy0] = this._grCen(r);
       const nm = r.n || (this._grArea && this._grArea(r) ? this._grArea(r).name : "Raum"), chip = (this._grChipAt || {})[r.id];
       const obs = obsAll.concat(chip ? [chip] : [], o.obs || []);   /* Temperatur-Marke (und was der Aufrufer freihalten will) */
-      const maxW = Math.max(30, r.w - 18), base = Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1), minF = 7.5 * (o.narrow ? 1.15 : 1);
-      let fz = Math.min(base, (maxW - 14) / Math.max(1, [...nm].length * 0.6)), lines = [nm];
+      const U = o.upx || 0, maxW = Math.max(U ? 24 * U : 30, r.w - (U ? 10 * U : 18));
+      const base = U ? 11.5 * U : Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1), minF = U ? 8.5 * U : 7.5 * (o.narrow ? 1.15 : 1);
+      const fitL = (ls, f) => ls.map((x) => { if (tw(x, f) <= maxW - 15) return x; const n = Math.max(2, Math.floor((maxW - 16) / (f * 0.6)) - 1); return [...x].slice(0, n).join("") + "…"; });
+      let fz = Math.min(base, (maxW - 16) / Math.max(1, [...nm].length * 0.6)), lines = [nm];
       if (fz < minF) {   /* zweizeilig an Leerzeichen, Bindestrich oder „s“-Fuge, sonst kürzen */
-        const cut = nm.search(/[ \-\u2010]/) > 0 ? nm.search(/[ \-\u2010]/) : Math.ceil(nm.length / 2), a1 = nm.slice(0, cut + (nm[cut] === "-" ? 1 : 0)).trim(), a2 = nm.slice(cut + (nm[cut] === "-" ? 1 : 0)).trim();
-        lines = a2 ? [a1, a2] : [nm]; fz = Math.min(base, (maxW - 14) / Math.max(1, Math.max(...lines.map((x) => [...x].length)) * 0.6));
-        if (fz < minF) { fz = minF; const n = Math.max(3, Math.floor((maxW - 14) / (fz * 0.6)) - 1); lines = lines.map((x) => ([...x].length > n ? [...x].slice(0, n).join("") + "…" : x)); }
+        /* 2026.11.5: Wortfugen statt Wortmitte – „Sport-/zimmer“, „Ankleide-/zimmer“ (vorher „Sportz/immer“) */
+        const sp = nm.search(/[ \-\u2010]/), fu = sp > 0 ? -1 : (nm.match(/^(.{2,}?)(zimmer|raum|räume|kammer|keller|küche|bad|büro|flur|diele|garage|boden|stube|ecke|platz|terrasse|balkon|garten|werkstatt|schlafen|wohnen|essen)$/i) || [])[1];
+        const cut = sp > 0 ? sp : fu ? fu.length : Math.ceil(nm.length / 2), a1 = sp > 0 ? nm.slice(0, cut + (nm[cut] === "-" ? 1 : 0)).trim() : nm.slice(0, cut) + "-", a2 = nm.slice(cut + (sp > 0 && nm[cut] === "-" ? 1 : 0)).trim();
+        lines = a2 ? [a1, a2] : [nm]; fz = Math.min(base, (maxW - 16) / Math.max(1, Math.max(...lines.map((x) => [...x].length)) * 0.6));
+        if (fz < minF) { fz = minF; const n = Math.max(3, Math.floor((maxW - 16) / (fz * 0.6)) - 1); lines = lines.map((x) => ([...x].length > n ? [...x].slice(0, n).join("") + "…" : x)); }
       }
       const area = o.sub ? String(o.sub(r) || "") : m2 >= 0.5 ? `${f1(m2)} m²` : "", dim = o.sub ? "" : o.dims && !(r.pts && r.pts.length >= 3) ? ` · ${f1(r.w / sc)} × ${f1(r.h / sc)} m` : "";
       const variants = [{ ico: true, ar: true, s: 1 }, { ico: false, ar: true, s: 1 }, { ico: false, ar: true, s: 0.85 }, { ico: false, ar: true, s: 0.72 }, { ico: false, ar: false, s: 0.85 }];
@@ -17861,18 +17891,28 @@ class FensterHeizungPanel extends HTMLElement {
       let pick = null;
       for (const v of variants) {
         fz = Math.max(minF * 0.9, fz0 * v.s);
-        const sub = v.ar ? area + dim : "", w = Math.min(maxW, Math.max(...lines.map((x) => tw(x, fz)), tw(sub, fz * 0.78)) + 16), lh = fz * 1.2, h = lines.length * lh + (sub ? fz * 1.05 : 0) + 8, ih = v.ico && !(Math.min(r.w, r.h) < 80) && ICONS[k.i] ? 22 * NF : 0;
+        const ls = fitL(lines, fz), sub = v.ar && tw(area + dim, fz * 0.78) <= maxW - 12 ? area + dim : v.ar && tw(area, fz * 0.78) <= maxW - 12 ? area : "";
+        const w = Math.min(maxW, Math.max(...ls.map((x) => tw(x, fz)), tw(sub, fz * 0.78)) + 16), lh = fz * 1.2, h = ls.length * lh + (sub ? fz * 1.05 : 0) + 8, ih = v.ico && !(Math.min(r.w, r.h) < (U ? 70 * U : 80)) && ICONS[k.i] ? (U ? 16 * U : 22 * NF) : 0;
         if (v.ico && !ih) continue;
         const fits = (x, y) => { const x0 = x - w / 2, x1 = x + w / 2, y0 = y - h / 2 - ih, y1 = y + h / 2; return [[x0, y0], [x1, y0], [x0, y1], [x1, y1], [x, y0], [x, y1], [x0, y], [x1, y]].every((p) => inR(p[0], p[1])) && !obs.some((b) => b[0] < x1 + 2 && b[2] > x0 - 2 && b[1] < y1 + 2 && b[3] > y0 - 2); };
         const cand = [];
         for (let gy = 0; gy <= 8; gy++) for (let gx = 0; gx <= 8; gx++) { const x = r.x + (r.w * (gx + 0.5)) / 9, y = r.y + (r.h * (gy + 0.5)) / 9; cand.push([x, y, Math.hypot(x - cx0, (y - cy0) * 1.3)]); }
         cand.sort((A, B) => A[2] - B[2]);
         const hit = cand.find(([x, y]) => fits(x, y));
-        if (hit) { pick = { x: hit[0], y: hit[1], w, h, lh, sub, ih }; break; }
+        if (hit) { pick = { x: hit[0], y: hit[1], w, h, lh, sub, ih, ls }; break; }
       }
-      if (!pick) { fz = Math.max(minF * 0.9, fz0 * 0.85); const w = Math.min(maxW, Math.max(...lines.map((x) => tw(x, fz))) + 16), lh = fz * 1.2; pick = { x: cx0, y: cy0, w, h: lines.length * lh + 8, lh, sub: "", ih: 0 }; }
-      const { x, y, w, h, lh, sub, ih } = pick, top = y - h / 2;
-      const ico = ih ? `<g transform="translate(${x - 10 * NF} ${top - ih}) scale(${(20 * NF) / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
+      if (!pick) {   /* Kein freier Platz: im Raum bleiben, Symbole notfalls überdecken (vorher: Raummitte, auch über die Wand hinaus) */
+        const inside = (x, y, w, h) => { const x0 = x - w / 2, x1 = x + w / 2, y0 = y - h / 2, y1 = y + h / 2; return [[x0, y0], [x1, y0], [x0, y1], [x1, y1], [x, y0], [x, y1]].every((p) => inR(p[0], p[1])); };
+        for (const [s2, strict] of [[1, 1], [0.85, 1], [0.72, 1], [0.6, 1], [0.85, 0], [0.72, 0], [0.6, 0]]) {   /* erst ohne Symbole zu überdecken, dann notfalls darüber */
+          fz = Math.max(minF * 0.8, fz0 * s2); const ls = fitL(lines, fz), lh = fz * 1.2, w = Math.min(maxW, Math.max(...ls.map((x) => tw(x, fz))) + 12), h = ls.length * lh + 6;
+          const cand = []; for (let gy = 0; gy <= 8; gy++) for (let gx = 0; gx <= 8; gx++) { const x = r.x + (r.w * (gx + 0.5)) / 9, y = r.y + (r.h * (gy + 0.5)) / 9; cand.push([x, y, Math.hypot(x - cx0, (y - cy0) * 1.3) + (obs.some((b) => b[0] < x + w / 2 && b[2] > x - w / 2 && b[1] < y + h / 2 && b[3] > y - h / 2) ? 1e4 : 0)]); }
+          cand.sort((A, B) => A[2] - B[2]); const hit = cand.find(([x, y, sc2]) => inside(x, y, w, h) && (!strict || sc2 < 1e4));
+          if (hit) { pick = { x: hit[0], y: hit[1], w, h, lh, sub: "", ih: 0, ls }; break; }
+        }
+        if (!pick) { fz = Math.max(minF * 0.75, Math.min(fz0, (r.h - 6) / 1.25)); const ls = fitL([lines.join(" ")], fz), lh = fz * 1.2; pick = { x: cx0, y: cy0, w: Math.min(maxW, tw(ls[0], fz) + 10), h: lh + 4, lh, sub: "", ih: 0, ls }; }
+      }
+      const { x, y, w, h, lh, sub, ih, ls: lines2 } = pick, top = y - h / 2; lines = lines2;
+      const isz = U ? 14 * U : 20 * NF, ico = ih ? `<g transform="translate(${x - isz / 2} ${top - ih}) scale(${isz / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
       const plate = o.style === "modern" ? `<rect x="${x - w / 2}" y="${top}" width="${w}" height="${h}" rx="${Math.min(10, fz * 0.6)}" fill="#0b1220" opacity=".55"/>` : "";
       d += `<g pointer-events="none">${ico}${plate}${lines.map((t, n) => `<text x="${x}" y="${top + 4 + lh * (n + 0.8)}" text-anchor="middle" font-size="${fz}" font-weight="700" fill="${T.text}">${esc(t)}</text>`).join("")}${sub ? `<text x="${x}" y="${top + 4 + lh * lines.length + fz * 0.8}" text-anchor="middle" font-size="${fz * 0.78}" font-weight="${o.subCol && o.subCol(r) ? 700 : 400}" fill="${(o.subCol && o.subCol(r)) || T.sub}">${esc(sub)}</text>` : ""}</g>`;   /* o.sub/o.subCol: eigene zweite Zeile, z. B. Lichtkarte „75 % · 2 von 3 an“ */
     });
@@ -17930,21 +17970,25 @@ class FensterHeizungPanel extends HTMLElement {
     });
     /* 5) Raumnamen und „Jetzt“ – vor den Lampen und Meldern, damit diese immer sichtbar oben liegen (Build 10) */
     const q = o.narrow ? 1.4 : 1;
-    this._grChipAt = {}; const nowSvg = o.now ? this._grNow(P, fl, rs, o, T) : "";   /* merkt sich, wo Temperatur-Marken sitzen */
+    /* 2026.11.5: Handy – Status-Leiste je Raum (Temperatur, Geräte, Melder, Lampen); die Symbole erscheinen dann nur dort */
+    const SP = o.strip && this._grStrip ? this._grStrip(P, fl, rs, items, o, T, vb) : null;
+    if (SP) o = { ...o, upx: SP.upx, skip: SP.skip, obs: (o.obs || []).concat(SP.boxes) };
+    this._grChipAt = {}; const nowSvg = o.now ? this._grNow(P, fl, rs, SP ? { ...o, noChip: true } : o, T) : "";   /* merkt sich, wo Temperatur-Marken sitzen */
     if (o.labels) d += this._grLabels(rs, items, o, T, kinds, NF, sc, f1, q);
     d += nowSvg;
     /* 6) Ebenen: Lampen (Modul 18) und Melder (Modul 11) */
-    if (o.layers.licht) items.filter((i) => i.t === "l" && i.e).forEach((i, n) => {
+    if (o.layers.licht) items.filter((i) => i.t === "l" && i.e && !(SP && SP.skip.has(i))).forEach((i, n) => {
       const s2 = st[i.e], on = !!(s2 && s2.state === "on"), c = on && this._liLampHex ? this._liLampHex(i.e) : "#64748b", g = `${u}lg${n}`;
       d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><circle cx="${i.x}" cy="${i.y}" r="${46 * q}" fill="url(#${g})"/>` : ""}
         ${i.k === "streifen" ? `<rect x="${i.x - 22 * q}" y="${i.y - 3.5 * q}" width="${44 * q}" height="${7 * q}" rx="${3.5 * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.4"${i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : ""}/>` : `<circle cx="${i.x}" cy="${i.y}" r="${(i.k === "spot" ? 5 : 8) * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.8"/>`}</g>`;
     });
     if ((o.layers.ht || o.layers.nf) && this._grTechSvg) d += this._grTechSvg(P, fl, T, q, u, o.style === "hell", o.layers.ht ? "" : "notfall");   /* Build 9: Haustechnik, Notfall-Punkte */
-    if (o.layers.gt && this._grDevSvg) d += this._grDevSvg(P, fl, T, q, u, o.style === "hell");   /* Build 7: mobile Heizer und Entfeuchter */
-    if (o.layers.sf) items.filter((i) => i.t === "m").forEach((i) => {
+    if (o.layers.gt && this._grDevSvg) d += this._grDevSvg(P, fl, T, q, u, o.style === "hell", SP ? SP.skip : null);   /* Build 7: mobile Heizer und Entfeuchter */
+    if (o.layers.sf) items.filter((i) => i.t === "m" && !(SP && SP.skip.has(i))).forEach((i) => {
       const s2 = i.e && st[i.e], al = !!(s2 && s2.state === "on");
       d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${10 * q}" fill="${o.style === "hell" ? "#fff" : "#111827"}" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><g transform="translate(${i.x - 6 * q} ${i.y - 6 * q}) scale(${(12 * q) / 24})" fill="none" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
     });
+    if (SP) d += SP.svg;
     /* 7) Maßketten außen, Nordpfeil und Maßstab */
     if (o.dims && rs.length) {
       const y = bx.y0 - 38, x = bx.x0 - 38, wm = (bx.x1 - bx.x0) / sc, hm = (bx.y1 - bx.y0) / sc, tick = (x1, y1) => `<path d="M${x1 - 5} ${y1 + 5}L${x1 + 5} ${y1 - 5}" stroke="${T.dim}" stroke-width="1.6"/>`;
@@ -17955,6 +17999,108 @@ class FensterHeizungPanel extends HTMLElement {
     if (o.deco) d += `<g fill="${T.dim}" font-size="${11 * NF}"><rect x="${sx}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="${T.dim}"/><rect x="${sx + sbM * sc / 2}" y="${sy}" width="${sbM * sc / 2}" height="5" fill="none" stroke="${T.dim}"/><text x="${sx}" y="${sy - 5}">0</text><text x="${bx.x1}" y="${sy - 5}" text-anchor="end">${sbM} m</text>
       <g transform="translate(${bx.x0 + 10} ${sy - 2}) rotate(${P.north || 0})"><path d="M0 -14L6 4L0 0L-6 4Z" fill="${T.text}"/><text x="12" y="2" font-weight="700" fill="${T.text}">N</text></g></g>`;
     return { vb, svg: d };
+  }
+  /* ================= Modul 0 · Handy-Ansicht (2026.11.5, Vorschlag D) =================
+     Build 2: Status-Leiste je Raum. Auf dem Handy stehen Temperatur, Geräte (mit Zustand), Melder und Lampen nicht mehr frei
+     verstreut im Raum, sondern in einer Leiste oben im Raum: links die Temperatur, rechts die Symbole. Schmale Räume bekommen
+     eine zweite Zeile. Raumname und Fläche suchen sich darunter einen freien Platz (siehe _grLabels).
+     Build 4: Sonderfälle – passt die Leiste nicht, werden die Symbole zu Punkten; sind es zu viele, endet die Leiste mit „+2“.
+     Antippen des Raums öffnet wie bisher das Raum-Blatt mit allen Werten. Alle Größen in Bildschirm-Pixeln (upx = Plan-Einheiten je Pixel). */
+  _grStrip(P, fl, rs, items, o, T, vb) {
+    const S = o.strip || {}, upx = Math.max(vb.w / Math.max(200, S.pw || 340), vb.h / Math.max(200, S.ph || 520)), st = this._hass.states, hell = o.style === "hell";
+    const L = o.layers || {}, skip = new Set(), boxes = [];
+    const inRoom = (r, x, y) => (this._sfInRoom ? this._sfInRoom(r, x, y) : x > r.x && x < r.x + r.w && y > r.y && y < r.y + r.h);
+    const kinds = new Map(rs.map((r) => [r.id, this._grKind(r)])), order = rs.filter((r) => !(kinds.get(r.id).k === "aussen" || r.ds)).concat(rs.filter((r) => kinds.get(r.id).k === "aussen" || r.ds));
+    const roomOf = (x, y) => order.find((r) => inRoom(r, x, y)) || null;
+    const per = new Map(rs.map((r) => [r.id, []])), add = (r, e) => { if (r) per.get(r.id).push(e); };
+    /* Temperatur aus Modul 1 */
+    let all = []; try { all = this._gpAll ? this._gpAll(this._collect ? this._collect(true) : []) : []; } catch (_) { all = []; }
+    if (o.now) rs.forEach((r) => { const m = this._gpMatch ? this._gpMatch(r, all) : null, s = m && !m.ms && this._rkState ? this._rkState(m) : null; if (s && s.cur != null) add(r, { k: "t", s, name: m.name, o: 0 }); });
+    /* Geräte (mit Zustand), Melder, Lampen */
+    if (L.gt && this._grDevList) { const D = this._grDevList(); (P.items || []).filter((i) => i.t === "g").forEach((i) => { const p = this._grDevPos(i, P, D); if (p.fl !== fl) return; const r = roomOf(p.x, p.y); if (r) add(r, { k: "g", i, inf: p.inf, moved: p.moved, o: 1 }); }); }
+    if (L.sf) items.filter((i) => i.t === "m").forEach((i) => add(roomOf(i.x, i.y), { k: "m", i, o: 2 }));
+    if (L.licht) items.filter((i) => i.t === "l" && i.e).forEach((i) => add(roomOf(i.x, i.y), { k: "l", i, o: 3 }));
+    const H = 16 * upx, G = 3 * upx, FS = 10.5 * upx, tw = (t, f) => [...String(t)].length * f * 0.6;
+    const devTxt = (e) => (e.inf ? String(e.inf.txt || (e.inf.on ? "an" : "aus")) : "offline").slice(0, 12);
+    /* Breite je Element und Stufe: 0 = normal, 1 = Temperatur kompakt, 2 = Symbole als Punkte, 3 = auch die Temperatur als Farbpunkt */
+    const wOf = (e, lv) => {
+      if (e.k === "t" && lv >= 3) return 8 * upx;
+      if (e.k === "t") return lv ? tw(`${num(e.s.cur, 1)}°`, FS * 0.9) + 8 * upx : tw(`${num(e.s.cur, 1)}°`, FS) + 17 * upx;
+      if (e.k === "more") return tw(`+${e.n}`, FS * 0.9) + 10 * upx;
+      if (lv >= 2) return 8 * upx;
+      if (e.k === "g") return H + tw(devTxt(e), 9.5 * upx) + 9 * upx;
+      return H;
+    };
+    let svg = "";
+    rs.forEach((r) => {
+      const els = per.get(r.id).sort((a, b) => a.o - b.o); if (!els.length) return;
+      const pad = 8 + 3 * upx, maxH = Math.max(H, Math.min(r.h - 2 * pad - 16 * upx, 2 * H + G));   /* darunter bleibt Platz für den Namen */
+      /* Packen: Zeile 1 = Temperatur links, Symbole rechts; weitere Zeilen links. Gibt null zurück, wenn es nicht passt. */
+      const pack = (aw, lv, rowsMax, over) => {
+        const rows = [[]]; let x = 0;
+        for (let n = 0; n < els.length; n++) {
+          const e = els[n], w = wOf(e, lv);
+          if (w > aw) return null;
+          if (x && x + G + w > aw) { if (rows.length >= rowsMax) { if (!over) return null; const rest = els.length - n, last = rows[rows.length - 1]; let more = { k: "more", n: rest }; while (last.length > (last[0] && last[0].e.k === "t" ? 1 : 0) && last.reduce((a, q) => a + q.w + G, 0) + wOf(more, lv) > aw) { last.pop(); more = { k: "more", n: more.n + 1 }; } last.push({ e: more, w: wOf(more, lv) }); break; } rows.push([]); x = 0; }
+          rows[rows.length - 1].push({ e, w }); x += (x ? G : 0) + w;
+        }
+        const h = rows.length * (lv >= 2 ? 10 * upx : H) + (rows.length - 1) * G; return h <= maxH + 0.1 ? { rows, h, lv } : null;
+      };
+      let lay = null, ox = 0, oy = 0;
+      for (const f of [1, 0.8, 0.62]) {
+        const aw = (r.w - 2 * pad) * f; if (aw < 10 * upx) continue;
+        lay = pack(aw, 0, 2, false) || pack(aw, 1, 2, false) || pack(aw, 0, 2, true) || pack(aw, 1, 2, true) || pack(aw, 2, 2, true) || pack(aw, 2, 1, true) || pack(aw, 3, 2, true) || pack(aw, 3, 1, true);
+        if (!lay) continue;
+        if (lay.lv === 3 && f < 1) { lay = null; continue; }
+        const wid = Math.max(...lay.rows.map((rw) => rw.reduce((a, q) => a + q.w, 0) + G * (rw.length - 1))), ok = (x, y) => [[x, y], [x + wid, y], [x, y + lay.h], [x + wid, y + lay.h], [x + wid / 2, y + lay.h / 2]].every((p) => inRoom(r, p[0], p[1]));
+        let hit = null; for (let dy = 0; dy <= r.h / 2 && !hit; dy += 6 * upx) for (let dx = 0; dx <= r.w - wid - 2 * pad && !hit; dx += 6 * upx) if (ok(r.x + pad + dx, r.y + pad + dy)) hit = [r.x + pad + dx, r.y + pad + dy];
+        if (hit) { [ox, oy] = hit; lay.aw = Math.min(aw, r.x + r.w - pad - ox); lay.wid = wid; break; }
+        lay = null;
+      }
+      if (!lay) return;   /* passt gar nicht: Symbole bleiben an ihrer Stelle im Plan */
+      const rh = lay.lv >= 2 ? 10 * upx : H;
+      lay.rows.forEach((rw, ri) => {
+        const y = oy + ri * (rh + G), first = ri === 0 && rw[0] && rw[0].e.k === "t";
+        let x = ox, tail = first ? ox + lay.aw - rw.slice(1).reduce((a, q) => a + q.w, 0) - G * Math.max(0, rw.length - 2) : 0;
+        rw.forEach((q, n) => {
+          let px = x; if (first && n > 0) { px = tail; tail += q.w + G; } else x += q.w + G;
+          svg += this._grStripEl(q.e, px, y, q.w, rh, lay.lv, upx, T, hell, st);
+          if (q.e.i) skip.add(q.e.i);
+        });
+      });
+      boxes.push([ox, oy, ox + Math.max(lay.wid, lay.rows[0] && lay.rows[0][0] && lay.rows[0][0].e.k === "t" && lay.rows[0].length > 1 ? lay.aw : 0), oy + lay.h]);
+      els.forEach((e) => { if (e.i) skip.add(e.i); });   /* auch die unter „+2“ zusammengefassten */
+    });
+    return { svg: `<g pointer-events="none" class="grstrip">${svg}</g>`, boxes, skip, upx };
+  }
+  /* Ein Element der Status-Leiste: Temperatur, Gerät mit Zustand, Melder, Lampe, „+2“ – kompakt (lv) als Punkt */
+  _grStripEl(e, x, y, w, h, lv, upx, T, hell, st) {
+    const bg = hell ? "#ffffff" : "#0b1220", cy = y + h / 2;
+    if (e.k === "t") {
+      const s = e.s, t = `${num(s.cur, 1)}°`, col = s.k === "aus" ? "#64748b" : this._rkCol(s.cur, 17, 22), fs = (lv ? 9.5 : 10.5) * upx;
+      if (lv >= 3) return `<g><title>${esc(e.name)} · ${t}</title><circle cx="${x + w / 2}" cy="${cy}" r="${3.8 * upx}" fill="${col}" stroke="#fff" stroke-width="${0.8 * upx}"/></g>`;   /* sehr kleiner Raum: Temperatur als Farbpunkt, Wert im Raum-Blatt */
+      return `<g><title>${esc(e.name)} · ${t}${s.ziel != null ? ` · Ziel ${num(s.ziel, 1)}°` : ""}${s.heating ? " · heizt" : ""}</title><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}" fill="${col}"${s.heating ? ` stroke="#fb923c" stroke-width="${1.6 * upx}"` : ""}/>${lv ? "" : `<circle cx="${x + 7 * upx}" cy="${cy}" r="${2.4 * upx}" fill="#fff" opacity=".85"/>`}<text x="${lv ? x + w / 2 : x + 12 * upx}" y="${cy + fs * 0.36}" font-size="${fs}" font-weight="800" fill="#111"${lv ? ' text-anchor="middle"' : ""}>${t}</text></g>`;
+    }
+    if (e.k === "more") { const fs = 9.5 * upx; return `<g><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}" fill="${bg}" stroke="${T.sub}" stroke-width="${upx}"/><text x="${x + w / 2}" y="${cy + fs * 0.36}" text-anchor="middle" font-size="${fs}" font-weight="800" fill="${T.text}">+${e.n}</text></g>`; }
+    if (e.k === "m") {
+      const al = !!(e.i.e && st[e.i.e] && st[e.i.e].state === "on"), c = al ? "#ef4444" : "#f87171", ttl = `<title>${esc(e.i.e ? this._wzName(e.i.e) : "Melder")}${al ? " · Alarm" : ""}</title>`;
+      if (lv >= 2) return `<g>${ttl}<circle cx="${x + w / 2}" cy="${cy}" r="${3.5 * upx}" fill="${c}"/></g>`;
+      return `<g>${ttl}<circle cx="${x + h / 2}" cy="${cy}" r="${h / 2 - 0.8 * upx}" fill="${al ? "#7f1d1d" : hell ? "#fff" : "#111827"}" stroke="${c}" stroke-width="${1.5 * upx}"/><g transform="translate(${x + h / 2 - 5.5 * upx} ${cy - 5.5 * upx}) scale(${(11 * upx) / 24})" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
+    }
+    if (e.k === "l") {
+      const s2 = st[e.i.e], on = !!(s2 && s2.state === "on"), c = on && this._liLampHex ? this._liLampHex(e.i.e) : "#64748b", ttl = `<title>${esc(this._wzName(e.i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>`;
+      if (lv >= 2) return `<g>${ttl}<circle cx="${x + w / 2}" cy="${cy}" r="${3.5 * upx}" fill="${c}"/></g>`;
+      return `<g>${ttl}${on ? `<circle cx="${x + h / 2}" cy="${cy}" r="${h / 2}" fill="${c}" opacity=".3"/>` : ""}<circle cx="${x + h / 2}" cy="${cy}" r="${h * 0.3}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="${1.2 * upx}"/></g>`;
+    }
+    /* Gerät: Symbol + Zustand („läuft“, „800 W“, „aus“) */
+    const ent = e.i.gk === "entf", c = ent ? "#38bdf8" : "#f97316", on = !!(e.inf && e.inf.on), txt = e.inf ? String(e.inf.txt || (on ? "an" : "aus")).slice(0, 12) : "offline";
+    const ttl = `<title>${ent ? "Luftentfeuchter" : "Heizer"}${e.inf ? ` · ${esc(e.inf.name)}` : ""} · ${esc(txt)}${e.moved ? " · Standort aus Modul 1" : ""}</title>`;
+    if (lv >= 2) return `<g>${ttl}<circle cx="${x + w / 2}" cy="${cy}" r="${3.5 * upx}" fill="${on ? c : "none"}" stroke="${c}" stroke-width="${1.4 * upx}"/></g>`;
+    const ix = x + h / 2, k = upx * 0.95;
+    const icon = ent ? `<path d="M${ix} ${cy - 5.5 * k}c${2.6 * k} ${3.4 * k} ${4 * k} ${5 * k} ${4 * k} ${7 * k}a${4 * k} ${4 * k} 0 0 1 ${-8 * k} 0c0 ${-2 * k} ${1.4 * k} ${-3.6 * k} ${4 * k} ${-7 * k}z" fill="${on ? c : "none"}" stroke="${c}" stroke-width="${1.3 * upx}"/>`
+      : `<path d="M${ix - 4 * k} ${cy + 4 * k}V${cy - 4 * k}M${ix - 1.3 * k} ${cy + 4 * k}V${cy - 4 * k}M${ix + 1.3 * k} ${cy + 4 * k}V${cy - 4 * k}M${ix + 4 * k} ${cy + 4 * k}V${cy - 4 * k}M${ix - 5.2 * k} ${cy + 4 * k}H${ix + 5.2 * k}" stroke="${c}" stroke-width="${1.4 * upx}" stroke-linecap="round"/>`;
+    const fs = 9.5 * upx;
+    return `<g>${ttl}<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${5 * upx}" fill="${bg}" stroke="${c}" stroke-width="${(on ? 1.6 : 1) * upx}"${e.moved ? ` stroke-dasharray="${3 * upx} ${2 * upx}"` : ""}/>${icon}<text x="${x + h + 1 * upx}" y="${cy + fs * 0.36}" font-size="${fs}" font-weight="700" fill="${on ? c : T.sub}">${esc(txt)}</text></g>`;
   }
   /* ================= Modul 0 Build 6: eine Optik überall, neuer Baukasten, Ebene „Jetzt“, Raum-Blatt =================
      Der Zeichner _grDraw liegt jetzt auch unter dem Baukasten und unter den Plänen von Modul 1 (Wärmekarte) und Modul 11: die Module legen
@@ -17992,7 +18138,7 @@ class FensterHeizungPanel extends HTMLElement {
     const mot = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class) && st[e].state === "on");
     rs.forEach((r) => {
       const m = this._gpMatch ? this._gpMatch(r, all) : null, s = m && !m.ms && this._rkState ? this._rkState(m) : null;
-      if (s && s.cur != null) {
+      if (s && s.cur != null && !o.noChip) {
         const t = `${num(s.cur, 1)}°`, col = s.k === "aus" ? "#64748b" : this._rkCol(s.cur, 17, 22), B = this._grChipBox(r, t), w = B[2] - B[0], x = B[0], y = B[1]; if (this._grChipAt) this._grChipAt[r.id] = B;
         d += `<g pointer-events="none"><title>${esc(m.name)} · ${t}${s.ziel != null ? ` · Ziel ${num(s.ziel, 1)}°` : ""}</title><rect x="${x}" y="${y}" width="${w}" height="20" rx="10" fill="${col}"/><circle cx="${x + 10}" cy="${y + 10}" r="3.4" fill="#fff" opacity=".85"/><text x="${x + 17}" y="${y + 14.3}" font-size="12" font-weight="800" fill="#111">${t}</text>${s.heating ? `<text x="${x - 12}" y="${y + 15}" font-size="13">🔥</text>` : ""}</g>`;
       }
@@ -18355,9 +18501,10 @@ class FensterHeizungPanel extends HTMLElement {
     }
     return { x: i.x, y: i.y, fl: i.fl, moved: false, inf };
   }
-  _grDevSvg(P, fl, T, q, u, hell) {
+  _grDevSvg(P, fl, T, q, u, hell, skip) {
     const D = this._grDevList(); let d = "";
     (P.items || []).filter((i) => i.t === "g").forEach((i, n) => {
+      if (skip && skip.has(i)) return;   /* Handy: steht in der Status-Leiste des Raums */
       const p = this._grDevPos(i, P, D); if (p.fl !== fl) return;
       const ent = i.gk === "entf", c = ent ? "#38bdf8" : "#f97316", on = !!(p.inf && p.inf.on), g = `${u}dg${n}`, x = p.x, y = p.y;
       const icon = ent ? `<path d="M${x} ${y - 6.5 * q}c${3 * q} ${4 * q} ${4.6 * q} ${6 * q} ${4.6 * q} ${8.4 * q}a${4.6 * q} ${4.6 * q} 0 0 1 ${-9.2 * q} 0c0 ${-2.4 * q} ${1.6 * q} ${-4.4 * q} ${4.6 * q} ${-8.4 * q}z" fill="${on ? c : "none"}" stroke="${c}" stroke-width="1.6"/>`

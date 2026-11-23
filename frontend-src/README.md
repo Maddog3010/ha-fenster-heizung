@@ -25,6 +25,7 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 05e-raumkarte | Modul 1: Raumkarte 2.0 – Raumbilder (7 Typen + Messraum), Temperatur-Ring, Heizplan-Band, Fenster-Uhr, Menü „⋯“ |
 | 05d-grafik | Gemeinsame Grafik-Bibliothek: HD-Symbolsatz (41 Symbole, inkl. Haus-Bilder für Modul 19), Herkunfts-Ring, Prozentzeile, „noch ~ Min.“, Zuordnung alter Symbole |
 | 05f-haus-szene, 05g-grundriss, 05h-zeitleiste | Modul 1: Haus-Szene, Grundriss & Bewegung, „Warum?“ als Zeitleiste |
+| 12m3b-grundriss-handy | Modul 0 · Handy-Ansicht (2026.11.5): Status-Leiste je Raum (Temperatur, Geräte, Melder, Lampen), Sonderfälle für kleine Räume; Werkzeugleiste fürs Handy steht in 12m2 (`_grNav`) |
 | 05i-modul3-optik, 05j-modul3-fluss, 05k-modul3-szene, 05m-modul3-diagramme | Modul 3 Neue Optik: Stufe 1 (Kacheln 2.0, Doppelring, Preis-Skala), Stufe 2 (Energiefluss HD, Hinweise mit Bild und Knopf), Stufe 3 (Energie-Szene im Banner, Mini-Szene Startseite), Stufe 4 (Preisband, gespiegelte Balken, Solar-Kalender, Kosten-Treppe, Sparschwein, Verteilungs-Ring) |
 | 05l-szenen-stile | Sponsor-Extra W7: Haus-Stile und Himmel-Themen für die Szenen in Modul 1 und 3 |
 | 06-ereignisse-raumoptionen | Ereignisse, Aktionen, Raumeinstellungen |

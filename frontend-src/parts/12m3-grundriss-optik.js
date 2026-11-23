@@ -30,20 +30,28 @@
   }
   /* Raumnamen (Build 10 neu): Schrift passt sich der Raumbreite an (kleiner, sonst zweizeilig oder gekürzt), die Plakette liegt ganz im Raum
      und meidet Melder, Lampen, Türen, Treppen, Geräte, Technik und die Temperatur-Marke. Ohne Platz: zuerst ohne Symbol, dann ohne Fläche. */
+  /* 2026.11.5 Build 1 (Handy-Ansicht): Die Plakette bleibt immer im Raum. Findet sie keinen freien Platz, wird sie nicht mehr
+     in die Mitte „geworfen“, sondern im Raum verkleinert und gekürzt – Symbole dürfen dann überdeckt werden, die Wand nie.
+     Jede Zeile wird so gekürzt, dass sie in die Raumbreite passt. Mit o.upx (Handy, Status-Leiste) rechnet die Schrift in Bildschirm-Pixeln. */
   _grLabels(rs, items, o, T, kinds, NF, sc, f1, q) {
     let d = "";
-    const obsAll = items.filter((i) => ["l", "m", "d", "s", "g", "h", "f"].includes(i.t)).map((i) => (i.t === "s" ? [i.x, i.y, i.x + (i.w || 60), i.y + (i.h || 90)] : i.t === "d" || i.t === "f" ? [i.x - 14, i.y - 14, i.x + 14, i.y + 14] : [i.x - 12 * q, i.y - 12 * q, i.x + 12 * q, i.y + 12 * q]));
+    const skip = o.skip || null;
+    const obsAll = items.filter((i) => ["l", "m", "d", "s", "g", "h", "f"].includes(i.t) && !(skip && skip.has(i))).map((i) => (i.t === "s" ? [i.x, i.y, i.x + (i.w || 60), i.y + (i.h || 90)] : i.t === "d" || i.t === "f" ? [i.x - 14, i.y - 14, i.x + 14, i.y + 14] : [i.x - 12 * q, i.y - 12 * q, i.x + 12 * q, i.y + 12 * q]));
     const tw = (t, f) => [...String(t)].length * f * 0.6;
     rs.forEach((r) => {
       const inR = (x, y) => !this._sfInRoom || this._sfInRoom(r, x, y), k = kinds.get(r.id), m2 = this._grAreaM2(r, sc), [cx0, cy0] = this._grCen(r);
       const nm = r.n || (this._grArea && this._grArea(r) ? this._grArea(r).name : "Raum"), chip = (this._grChipAt || {})[r.id];
       const obs = obsAll.concat(chip ? [chip] : [], o.obs || []);   /* Temperatur-Marke (und was der Aufrufer freihalten will) */
-      const maxW = Math.max(30, r.w - 18), base = Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1), minF = 7.5 * (o.narrow ? 1.15 : 1);
-      let fz = Math.min(base, (maxW - 14) / Math.max(1, [...nm].length * 0.6)), lines = [nm];
+      const U = o.upx || 0, maxW = Math.max(U ? 24 * U : 30, r.w - (U ? 10 * U : 18));
+      const base = U ? 11.5 * U : Math.max(9, Math.min(15, r.w / 9)) * (o.narrow ? 1.25 : 1), minF = U ? 8.5 * U : 7.5 * (o.narrow ? 1.15 : 1);
+      const fitL = (ls, f) => ls.map((x) => { if (tw(x, f) <= maxW - 15) return x; const n = Math.max(2, Math.floor((maxW - 16) / (f * 0.6)) - 1); return [...x].slice(0, n).join("") + "…"; });
+      let fz = Math.min(base, (maxW - 16) / Math.max(1, [...nm].length * 0.6)), lines = [nm];
       if (fz < minF) {   /* zweizeilig an Leerzeichen, Bindestrich oder „s“-Fuge, sonst kürzen */
-        const cut = nm.search(/[ \-\u2010]/) > 0 ? nm.search(/[ \-\u2010]/) : Math.ceil(nm.length / 2), a1 = nm.slice(0, cut + (nm[cut] === "-" ? 1 : 0)).trim(), a2 = nm.slice(cut + (nm[cut] === "-" ? 1 : 0)).trim();
-        lines = a2 ? [a1, a2] : [nm]; fz = Math.min(base, (maxW - 14) / Math.max(1, Math.max(...lines.map((x) => [...x].length)) * 0.6));
-        if (fz < minF) { fz = minF; const n = Math.max(3, Math.floor((maxW - 14) / (fz * 0.6)) - 1); lines = lines.map((x) => ([...x].length > n ? [...x].slice(0, n).join("") + "…" : x)); }
+        /* 2026.11.5: Wortfugen statt Wortmitte – „Sport-/zimmer“, „Ankleide-/zimmer“ (vorher „Sportz/immer“) */
+        const sp = nm.search(/[ \-\u2010]/), fu = sp > 0 ? -1 : (nm.match(/^(.{2,}?)(zimmer|raum|räume|kammer|keller|küche|bad|büro|flur|diele|garage|boden|stube|ecke|platz|terrasse|balkon|garten|werkstatt|schlafen|wohnen|essen)$/i) || [])[1];
+        const cut = sp > 0 ? sp : fu ? fu.length : Math.ceil(nm.length / 2), a1 = sp > 0 ? nm.slice(0, cut + (nm[cut] === "-" ? 1 : 0)).trim() : nm.slice(0, cut) + "-", a2 = nm.slice(cut + (sp > 0 && nm[cut] === "-" ? 1 : 0)).trim();
+        lines = a2 ? [a1, a2] : [nm]; fz = Math.min(base, (maxW - 16) / Math.max(1, Math.max(...lines.map((x) => [...x].length)) * 0.6));
+        if (fz < minF) { fz = minF; const n = Math.max(3, Math.floor((maxW - 16) / (fz * 0.6)) - 1); lines = lines.map((x) => ([...x].length > n ? [...x].slice(0, n).join("") + "…" : x)); }
       }
       const area = o.sub ? String(o.sub(r) || "") : m2 >= 0.5 ? `${f1(m2)} m²` : "", dim = o.sub ? "" : o.dims && !(r.pts && r.pts.length >= 3) ? ` · ${f1(r.w / sc)} × ${f1(r.h / sc)} m` : "";
       const variants = [{ ico: true, ar: true, s: 1 }, { ico: false, ar: true, s: 1 }, { ico: false, ar: true, s: 0.85 }, { ico: false, ar: true, s: 0.72 }, { ico: false, ar: false, s: 0.85 }];
@@ -51,18 +59,28 @@
       let pick = null;
       for (const v of variants) {
         fz = Math.max(minF * 0.9, fz0 * v.s);
-        const sub = v.ar ? area + dim : "", w = Math.min(maxW, Math.max(...lines.map((x) => tw(x, fz)), tw(sub, fz * 0.78)) + 16), lh = fz * 1.2, h = lines.length * lh + (sub ? fz * 1.05 : 0) + 8, ih = v.ico && !(Math.min(r.w, r.h) < 80) && ICONS[k.i] ? 22 * NF : 0;
+        const ls = fitL(lines, fz), sub = v.ar && tw(area + dim, fz * 0.78) <= maxW - 12 ? area + dim : v.ar && tw(area, fz * 0.78) <= maxW - 12 ? area : "";
+        const w = Math.min(maxW, Math.max(...ls.map((x) => tw(x, fz)), tw(sub, fz * 0.78)) + 16), lh = fz * 1.2, h = ls.length * lh + (sub ? fz * 1.05 : 0) + 8, ih = v.ico && !(Math.min(r.w, r.h) < (U ? 70 * U : 80)) && ICONS[k.i] ? (U ? 16 * U : 22 * NF) : 0;
         if (v.ico && !ih) continue;
         const fits = (x, y) => { const x0 = x - w / 2, x1 = x + w / 2, y0 = y - h / 2 - ih, y1 = y + h / 2; return [[x0, y0], [x1, y0], [x0, y1], [x1, y1], [x, y0], [x, y1], [x0, y], [x1, y]].every((p) => inR(p[0], p[1])) && !obs.some((b) => b[0] < x1 + 2 && b[2] > x0 - 2 && b[1] < y1 + 2 && b[3] > y0 - 2); };
         const cand = [];
         for (let gy = 0; gy <= 8; gy++) for (let gx = 0; gx <= 8; gx++) { const x = r.x + (r.w * (gx + 0.5)) / 9, y = r.y + (r.h * (gy + 0.5)) / 9; cand.push([x, y, Math.hypot(x - cx0, (y - cy0) * 1.3)]); }
         cand.sort((A, B) => A[2] - B[2]);
         const hit = cand.find(([x, y]) => fits(x, y));
-        if (hit) { pick = { x: hit[0], y: hit[1], w, h, lh, sub, ih }; break; }
+        if (hit) { pick = { x: hit[0], y: hit[1], w, h, lh, sub, ih, ls }; break; }
       }
-      if (!pick) { fz = Math.max(minF * 0.9, fz0 * 0.85); const w = Math.min(maxW, Math.max(...lines.map((x) => tw(x, fz))) + 16), lh = fz * 1.2; pick = { x: cx0, y: cy0, w, h: lines.length * lh + 8, lh, sub: "", ih: 0 }; }
-      const { x, y, w, h, lh, sub, ih } = pick, top = y - h / 2;
-      const ico = ih ? `<g transform="translate(${x - 10 * NF} ${top - ih}) scale(${(20 * NF) / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
+      if (!pick) {   /* Kein freier Platz: im Raum bleiben, Symbole notfalls überdecken (vorher: Raummitte, auch über die Wand hinaus) */
+        const inside = (x, y, w, h) => { const x0 = x - w / 2, x1 = x + w / 2, y0 = y - h / 2, y1 = y + h / 2; return [[x0, y0], [x1, y0], [x0, y1], [x1, y1], [x, y0], [x, y1]].every((p) => inR(p[0], p[1])); };
+        for (const [s2, strict] of [[1, 1], [0.85, 1], [0.72, 1], [0.6, 1], [0.85, 0], [0.72, 0], [0.6, 0]]) {   /* erst ohne Symbole zu überdecken, dann notfalls darüber */
+          fz = Math.max(minF * 0.8, fz0 * s2); const ls = fitL(lines, fz), lh = fz * 1.2, w = Math.min(maxW, Math.max(...ls.map((x) => tw(x, fz))) + 12), h = ls.length * lh + 6;
+          const cand = []; for (let gy = 0; gy <= 8; gy++) for (let gx = 0; gx <= 8; gx++) { const x = r.x + (r.w * (gx + 0.5)) / 9, y = r.y + (r.h * (gy + 0.5)) / 9; cand.push([x, y, Math.hypot(x - cx0, (y - cy0) * 1.3) + (obs.some((b) => b[0] < x + w / 2 && b[2] > x - w / 2 && b[1] < y + h / 2 && b[3] > y - h / 2) ? 1e4 : 0)]); }
+          cand.sort((A, B) => A[2] - B[2]); const hit = cand.find(([x, y, sc2]) => inside(x, y, w, h) && (!strict || sc2 < 1e4));
+          if (hit) { pick = { x: hit[0], y: hit[1], w, h, lh, sub: "", ih: 0, ls }; break; }
+        }
+        if (!pick) { fz = Math.max(minF * 0.75, Math.min(fz0, (r.h - 6) / 1.25)); const ls = fitL([lines.join(" ")], fz), lh = fz * 1.2; pick = { x: cx0, y: cy0, w: Math.min(maxW, tw(ls[0], fz) + 10), h: lh + 4, lh, sub: "", ih: 0, ls }; }
+      }
+      const { x, y, w, h, lh, sub, ih, ls: lines2 } = pick, top = y - h / 2; lines = lines2;
+      const isz = U ? 14 * U : 20 * NF, ico = ih ? `<g transform="translate(${x - isz / 2} ${top - ih}) scale(${isz / 24})" fill="none" stroke="${T.sub}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICONS[k.i]}</g>` : "";
       const plate = o.style === "modern" ? `<rect x="${x - w / 2}" y="${top}" width="${w}" height="${h}" rx="${Math.min(10, fz * 0.6)}" fill="#0b1220" opacity=".55"/>` : "";
       d += `<g pointer-events="none">${ico}${plate}${lines.map((t, n) => `<text x="${x}" y="${top + 4 + lh * (n + 0.8)}" text-anchor="middle" font-size="${fz}" font-weight="700" fill="${T.text}">${esc(t)}</text>`).join("")}${sub ? `<text x="${x}" y="${top + 4 + lh * lines.length + fz * 0.8}" text-anchor="middle" font-size="${fz * 0.78}" font-weight="${o.subCol && o.subCol(r) ? 700 : 400}" fill="${(o.subCol && o.subCol(r)) || T.sub}">${esc(sub)}</text>` : ""}</g>`;   /* o.sub/o.subCol: eigene zweite Zeile, z. B. Lichtkarte „75 % · 2 von 3 an“ */
     });
@@ -120,21 +138,25 @@
     });
     /* 5) Raumnamen und „Jetzt“ – vor den Lampen und Meldern, damit diese immer sichtbar oben liegen (Build 10) */
     const q = o.narrow ? 1.4 : 1;
-    this._grChipAt = {}; const nowSvg = o.now ? this._grNow(P, fl, rs, o, T) : "";   /* merkt sich, wo Temperatur-Marken sitzen */
+    /* 2026.11.5: Handy – Status-Leiste je Raum (Temperatur, Geräte, Melder, Lampen); die Symbole erscheinen dann nur dort */
+    const SP = o.strip && this._grStrip ? this._grStrip(P, fl, rs, items, o, T, vb) : null;
+    if (SP) o = { ...o, upx: SP.upx, skip: SP.skip, obs: (o.obs || []).concat(SP.boxes) };
+    this._grChipAt = {}; const nowSvg = o.now ? this._grNow(P, fl, rs, SP ? { ...o, noChip: true } : o, T) : "";   /* merkt sich, wo Temperatur-Marken sitzen */
     if (o.labels) d += this._grLabels(rs, items, o, T, kinds, NF, sc, f1, q);
     d += nowSvg;
     /* 6) Ebenen: Lampen (Modul 18) und Melder (Modul 11) */
-    if (o.layers.licht) items.filter((i) => i.t === "l" && i.e).forEach((i, n) => {
+    if (o.layers.licht) items.filter((i) => i.t === "l" && i.e && !(SP && SP.skip.has(i))).forEach((i, n) => {
       const s2 = st[i.e], on = !!(s2 && s2.state === "on"), c = on && this._liLampHex ? this._liLampHex(i.e) : "#64748b", g = `${u}lg${n}`;
       d += `<g><title>${esc(this._wzName(i.e))} · ${on ? "an" : s2 && s2.state === "unavailable" ? "offline" : "aus"}</title>${on ? `<radialGradient id="${g}"><stop offset="0" stop-color="${c}" stop-opacity=".55"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient><circle cx="${i.x}" cy="${i.y}" r="${46 * q}" fill="url(#${g})"/>` : ""}
         ${i.k === "streifen" ? `<rect x="${i.x - 22 * q}" y="${i.y - 3.5 * q}" width="${44 * q}" height="${7 * q}" rx="${3.5 * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.4"${i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : ""}/>` : `<circle cx="${i.x}" cy="${i.y}" r="${(i.k === "spot" ? 5 : 8) * q}" fill="${c}" stroke="${on ? "#fff" : T.sub}" stroke-width="1.8"/>`}</g>`;
     });
     if ((o.layers.ht || o.layers.nf) && this._grTechSvg) d += this._grTechSvg(P, fl, T, q, u, o.style === "hell", o.layers.ht ? "" : "notfall");   /* Build 9: Haustechnik, Notfall-Punkte */
-    if (o.layers.gt && this._grDevSvg) d += this._grDevSvg(P, fl, T, q, u, o.style === "hell");   /* Build 7: mobile Heizer und Entfeuchter */
-    if (o.layers.sf) items.filter((i) => i.t === "m").forEach((i) => {
+    if (o.layers.gt && this._grDevSvg) d += this._grDevSvg(P, fl, T, q, u, o.style === "hell", SP ? SP.skip : null);   /* Build 7: mobile Heizer und Entfeuchter */
+    if (o.layers.sf) items.filter((i) => i.t === "m" && !(SP && SP.skip.has(i))).forEach((i) => {
       const s2 = i.e && st[i.e], al = !!(s2 && s2.state === "on");
       d += `<g><title>${esc(i.e ? this._wzName(i.e) : "Melder")}${al ? " · Alarm" : ""}</title><circle cx="${i.x}" cy="${i.y}" r="${10 * q}" fill="${o.style === "hell" ? "#fff" : "#111827"}" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2"/><g transform="translate(${i.x - 6 * q} ${i.y - 6 * q}) scale(${(12 * q) / 24})" fill="none" stroke="${al ? "#ef4444" : "#f87171"}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">${ICONS.shield}</g></g>`;
     });
+    if (SP) d += SP.svg;
     /* 7) Maßketten außen, Nordpfeil und Maßstab */
     if (o.dims && rs.length) {
       const y = bx.y0 - 38, x = bx.x0 - 38, wm = (bx.x1 - bx.x0) / sc, hm = (bx.y1 - bx.y0) / sc, tick = (x1, y1) => `<path d="M${x1 - 5} ${y1 + 5}L${x1 + 5} ${y1 - 5}" stroke="${T.dim}" stroke-width="1.6"/>`;
