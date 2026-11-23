@@ -104,6 +104,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._hcon = h.connection;
       try { h.connection.addEventListener("ready", () => { if (this._hass && this._hass.connection === h.connection) setTimeout(() => this._resume(), 300); }); } catch (_) { /* ältere Home-Assistant-Version */ }
     }
+    this._errWrap(h);   /* Fehler-Statistik: fehlgeschlagene eigene Befehle ins Fehlerprotokoll */
     this._hass = h;
     if (first) this._load();
     this._render();

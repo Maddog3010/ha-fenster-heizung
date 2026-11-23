@@ -3804,6 +3804,7 @@ class FensterHeizungPanel extends HTMLElement {
       this._hcon = h.connection;
       try { h.connection.addEventListener("ready", () => { if (this._hass && this._hass.connection === h.connection) setTimeout(() => this._resume(), 300); }); } catch (_) { /* ältere Home-Assistant-Version */ }
     }
+    this._errWrap(h);   /* Fehler-Statistik: fehlgeschlagene eigene Befehle ins Fehlerprotokoll */
     this._hass = h;
     if (first) this._load();
     this._render();
@@ -4790,7 +4791,7 @@ class FensterHeizungPanel extends HTMLElement {
     const keep = {}; if (sr0) sr0.querySelectorAll("img[data-keep]").forEach((i) => { keep[i.getAttribute("src")] = i; });  /* Bilder behalten, sonst flackern sie bei jedem Neuaufbau */
     const kk = {}; if (sr0) sr0.querySelectorAll("#main [data-kk]").forEach((e) => { kk[e.dataset.kk] = e; });  /* Raumbilder (Raumkarte 2.0): gleicher Zustand = altes Bild bleibt, Bewegung läuft weiter */
     const at = this._animSave(kk);  /* Stand der laufenden Bewegung (Flüsse, Wolken …), sonst beginnt sie bei jedem neuen Wert von vorn */
-    try { this._render0(); this._kontaktLeiste(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o) && (!n.hasAttribute("data-ks") || this._kkSync(o, n))) n.replaceWith(o); }); this._animLoad(at); this._visObs(); if (this._saiDeco) this._saiDeco(sr0); this._msn(); if (this._hzAnimRun) this._hzAnimRun(); } } catch (err) { console.error("fenster_heizung render", err); if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
+    try { this._render0(); this._kontaktLeiste(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o) && (!n.hasAttribute("data-ks") || this._kkSync(o, n))) n.replaceWith(o); }); this._animLoad(at); this._visObs(); if (this._saiDeco) this._saiDeco(sr0); this._msn(); if (this._hzAnimRun) this._hzAnimRun(); } } catch (err) { console.error("fenster_heizung render", err); try { this._errJs(err, "Neuaufbau"); } catch (_) { /* nie stören */ } if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     if (sr0) sr0.querySelectorAll(HS).forEach((e, n) => { const v = hsx[e.className.split(" ")[0] + "|" + n]; if (v) e.scrollLeft = v; });
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {
@@ -7823,6 +7824,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("spn")) this._spnAct(a, b);
     else if (a.startsWith("sup")) this._supAct(a, b);
     else if (a.startsWith("sts")) this._stsAct(a, b);
+    else if (a.startsWith("errx")) this._errAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
     else if (a.startsWith("mx") && this._mxAct) this._mxAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
@@ -8508,6 +8510,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "s3rep") { box.innerHTML = this._s3RepModal(); return; }
     if (m.type === "mxsim" || m.type === "mxwaset" || m.type === "mxapset") { const top = (box.querySelector(".sheet") || {}).scrollTop || 0; box.innerHTML = this._mxModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sup") { box.innerHTML = this._supModal(); this._supBind(box); return; }
+    if (m.type === "errlog") { box.innerHTML = this._errModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sts") { box.innerHTML = this._stsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm", "spngh"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -8946,6 +8949,7 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
           ${this._admin() ? this._stsRow(row) : ""}
+          ${this._admin() ? (this._errD || this._errLd || ((this._errLd = 1), this._errLoad().then(() => this._render()).catch(() => {})), this._errRow(row)) : ""}
           ${row("layers", "Versionen &amp; Updates", "Nach Updates suchen, letzte Änderungen, Module und Addons", "mver", "", this._upd && vgt(this._upd.latest, this._ver) ? `<em class="sxc warn">Update</em>` : "")}`),
       sp: () => card(this._spnRow()),
       ad: () => this._adSetPage(card),
@@ -14329,6 +14333,75 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "stsreset") this._stsWS("reset").then(() => { this._renderModal(); this._toast("Neue Kennung erzeugt"); }).catch(fail);
     else if (a === "stsdel") { m.mode = "del"; this._renderModal(); }
     else if (a === "stsdelok") this._stsWS("forget").then((r) => { m.mode = "main"; this._renderModal(); this._render(); this._toast(r.forgotten ? "Gelöscht, Statistik aus" : "Hier gelöscht, Server nicht erreichbar"); }).catch(fail);
+  }
+  /* ================= Fehler-Statistik Build 1: Fehlerprotokoll (lokal) =================
+     Programmfehler aus Backend, Befehlen und Oberfläche – bereinigt, zusammengefasst, 30 Tage. Einstellungen → System → Fehlerprotokoll.
+     Die Oberfläche meldet fehlgeschlagene Befehle (Schema-Fehler wie „expected str at 'id'“, unbekannte Befehle, unerwartete Fehler)
+     und eigene Anzeigefehler an fenster_heizung/err_report. In Build 1 wird nichts versendet. */
+  _errWrap(h) {
+    if (!h || typeof h.callWS !== "function" || h.__fhErr) return;
+    const orig = h.callWS, self = this;
+    try {
+      Object.defineProperty(h, "__fhErr", { value: true });
+      /* nur eigene Befehle; der Fehler wird unverändert weitergereicht */
+      h.callWS = function (msg) { return orig.call(this, msg).catch((e) => { try { self._errCmd(msg, e); } catch (_) { /* nie stören */ } throw e; }); };
+    } catch (_) { /* Objekt gesperrt: dann eben ohne */ }
+    if (!this.constructor._errHook) {
+      this.constructor._errHook = true;
+      const mine = (s) => /fenster_heizung_static|fenster-heizung-panel/.test(String(s || ""));
+      window.addEventListener("error", (ev) => { if (mine(ev.filename) || mine(ev.error && ev.error.stack)) this._errJs(ev.error || ev.message, "Fenster"); });
+      window.addEventListener("unhandledrejection", (ev) => { const r = ev.reason; if (r && mine(r.stack)) this._errJs(r, "Versprechen"); });
+    }
+  }
+  _errDev() { const w = window.innerWidth || 1000; return w < 600 ? "handy" : w < 1100 ? "tablet" : "pc"; }
+  _errSend(p) {
+    const t = Date.now(); this._errQ = (this._errQ || []).filter((x) => t - x < 60000);
+    if (this._errQ.length >= 10 || !this._hass) return;   /* höchstens 10 Meldungen pro Minute */
+    this._errQ.push(t);
+    try { this._hass.callWS({ type: "fenster_heizung/err_report", dev: this._errDev(), ...p }).catch(() => { /* älteres Backend */ }); } catch (_) { /* egal */ }
+  }
+  /* Fehlgeschlagener Befehl: nur echte Programmfehler – „nicht bereit“, „nicht gefunden“ usw. sind erwartete Antworten */
+  _errCmd(msg, e) {
+    const type = String((msg && msg.type) || "");
+    if (!type.startsWith("fenster_heizung/") || type === "fenster_heizung/err_report" || type === "fenster_heizung/err_list") return;
+    const code = String((e && e.code) || "");
+    if (!["invalid_format", "unknown_command", "unknown_error", "home_assistant_error"].includes(code)) return;
+    this._errSend({ src: "befehl", kind: code, where: type.slice(16), cmd: type, msg: String((e && e.message) || "") });
+  }
+  /* Anzeigefehler (Neuaufbau, Fenster-Fehler aus panel.js): Fehlerart und innerste Funktion aus dem Stapel */
+  _errJs(err, where) {
+    const st = String((err && err.stack) || ""), fn = (st.split("\n").map((l) => (l.match(/at (?:FensterHeizungPanel\.)?([A-Za-z_$][\w$]*) \(/) || l.match(/^([A-Za-z_$][\w$]*)@/) || [])[1]).find((x) => x && !/^(Array|Object|Function|eval)$/.test(x))) || "";
+    this._errSend({ src: "oberflaeche", kind: String((err && err.name) || "Fehler").slice(0, 60), where: (fn ? `${fn} · ` : "") + where, msg: String((err && err.message) || err || "") });
+  }
+  /* ---- Einstellungen → System */
+  _errRow(row) {
+    const n = this._errD ? this._errD.items.length : 0;
+    return row("alert", "Fehlerprotokoll", "Programmfehler der letzten 30 Tage – zum Kopieren für den Support", "errxopen", "", n ? `<em class="sxc warn">${n}</em>` : `<em class="sxc ok">0</em>`);
+  }
+  _errLoad() { return this._hass.callWS({ type: "fenster_heizung/err_list" }).then((r) => { this._errD = r; return r; }); }
+  _errModal() {
+    const D = this._errD, m = this._modal, SRC = { backend: ["Backend", "#a78bfa"], befehl: ["Befehl", "#f59e0b"], oberflaeche: ["Oberfläche", "#38bdf8"] };
+    const fd = (d) => (d ? new Date(d + "T12:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" }) : "");
+    const list = !D ? `<div class="mut sm">Wird geladen …</div>` : !D.items.length ? `<div class="errempty">${ic("check", 22)}<b>Keine Programmfehler</b><span>In den letzten ${D.keep_days} Tagen ist nichts aufgetreten.</span></div>`
+      : D.items.map((e) => `<div class="erri"><div class="errh"><span class="errs" style="--c:${(SRC[e.src] || ["", "#94a3b8"])[1]}">${(SRC[e.src] || [e.src])[0]}</span><b>${esc(e.mod)}</b><span class="errn">${num(e.n)}×</span><span class="mut sm">${e.first === e.last ? fd(e.last) : `${fd(e.first)} – ${fd(e.last)}`}</span></div>
+          <div class="errm">${esc(e.kind)}: ${esc(e.msg || "–")}</div>${e.where ? `<div class="mut sm errw">${esc(e.where)}</div>` : ""}
+          <div class="mut sm">Version ${esc((e.vers || []).join(", ") || "?")}${e.ha ? ` · Home Assistant ${esc(e.ha)}` : ""}</div>
+          <div class="errb"><button class="lnk" data-act="errxcopy" data-k="${esc(e.fp)}">${ic("copy", 14)} Kopieren</button><button class="lnk" data-act="errxdel" data-k="${esc(e.fp)}">Entfernen</button></div></div>`).join("");
+    const css = `<style>.erri{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}.errh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-bottom:4px}.errs{border-radius:999px;padding:1px 8px;font-size:.72rem;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent)}.errn{margin-left:auto;font-weight:700}
+      .errm{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;word-break:break-word;margin:2px 0}.errw{font-family:ui-monospace,Menlo,monospace}.errb{display:flex;gap:14px;margin-top:6px}.errb .lnk{display:inline-flex;align-items:center;gap:4px}
+      .errempty{display:flex;flex-direction:column;align-items:center;gap:4px;padding:22px 0;color:var(--teal)}.errempty span{color:var(--mut);font-size:.86rem}.errnote{border-radius:12px;padding:10px 12px;margin-bottom:10px;background:color-mix(in srgb,var(--teal) 9%,transparent);font-size:.86rem}</style>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Fehlerprotokoll">${css}<div class="sh"><div><b>Fehlerprotokoll</b><span>${D ? `${D.items.length} ${D.items.length === 1 ? "Fehler" : "Fehler"} · letzte ${D.keep_days} Tage` : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="errnote">Nur Programmfehler von Strom &amp; Wärme, bereinigt: keine Entitäten, Namen, Werte oder Adressen. <b>Bleibt auf deinem Home Assistant</b> – mit „Kopieren“ kannst du einen Fehler für den Support oder ein GitHub-Issue weitergeben.</div>
+      ${list}${D && D.items.length ? `<div class="gbtns" style="margin-top:6px"><button class="btn2" data-act="errxcopyall">Alle kopieren</button><button class="btn2" data-act="errxclear">Alle löschen</button></div>` : ""}</div>`;
+  }
+  _errAct(a, b) {
+    const k = b && b.dataset ? b.dataset.k : "", D = this._errD, copy = (t) => { try { navigator.clipboard.writeText(t); this._toast("Kopiert"); } catch (_) { this._toast("Kopieren ging nicht"); } };
+    if (a === "errxopen") { this._modal = { type: "errlog" }; this._renderModal(); this._errLoad().then(() => { if (this._modal && this._modal.type === "errlog") this._renderModal(); this._render(); }).catch(() => this._toast("Fehlerprotokoll nicht erreichbar")); return; }
+    if (a === "errxcopy" && D) { const e = D.items.find((x) => x.fp === k); if (e) copy(e.text); return; }
+    if (a === "errxcopyall" && D) { copy(D.items.map((e) => e.text).join("\n\n")); return; }
+    if (a === "errxdel" || a === "errxclear") {
+      this._hass.callWS({ type: "fenster_heizung/err_list", clear: true, ...(a === "errxdel" ? { fp: k } : {}) }).then((r) => { this._errD = r; this._renderModal(); this._render(); this._toast(a === "errxdel" ? "Entfernt" : "Fehlerprotokoll geleert"); }).catch(() => this._toast("Das ging nicht"));
+    }
   }
   /* ================= Sponsor-Lounge (Konzept Sponsor-Bereich 2.0, Stufen S1 + S2) und Sponsor Max 1 =================
      Eigene Seite statt Dialog, erreichbar über das Herz/den Stern im Kopf, die Startseite und die Einstellungen.
@@ -20791,6 +20864,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       { id: "backup", t: "Sichern & Wiederherstellen", p: "System", k: "sicherung backup homeserver webdav smb wiederherstellen datei", go: ["gen"], h: "Einstellungen als Datei sichern, automatisch auf einen Homeserver kopieren oder interne Kopien zurückholen." },
       { id: "verlauf", t: "Änderungsverlauf", p: "System", k: "verlauf rückgängig änderung wer wann undo", go: ["mdstlog"], h: "Die letzten 50 Änderungen mit Benutzer und Zeit. Jede lässt sich einzeln zurücknehmen." },
       { id: "diag", t: "Diagnose", p: "System", k: "diagnose ventil thermostat batterie problem", go: ["diag"] },
+      { id: "errlog", t: "Fehlerprotokoll", p: "System", k: "fehler protokoll log programmfehler support kopieren github absturz", go: ["errxopen"], h: "Programmfehler der letzten 30 Tage, bereinigt und zum Kopieren für den Support. Bleibt auf deinem Home Assistant." },
       { id: "stats", t: "Versions-Statistik", p: "System", k: "statistik version anonym daten senden datenschutz popup teilnehmen kennung", go: ["stsopen"], h: "Freiwillig und anonym: höchstens 1× pro Tag Versionsnummer und Kanal an den Entwickler. Ausschalten und Daten löschen jederzeit möglich." },
       { id: "versions", t: "Versionen", p: "System", k: "version changelog beta modulversion", go: ["mver"] },
     ];

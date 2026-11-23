@@ -1318,6 +1318,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         from .support import SupportChat
         store["support"] = SupportChat(hass)
         await store["support"].async_start()
+    if "fehler" not in store:  # Fehler-Statistik Build 1: Programmfehler lokal sammeln (Fehlerprotokoll), früh starten
+        from .fehler import FehlerSammler
+        store["fehler"] = FehlerSammler(hass)
+        await store["fehler"].async_start()
     if "stats" not in store:  # Versions-Statistik (freiwillig, anonym; sendet nur nach Zustimmung)
         from .stats import VersionStats
         store["stats"] = VersionStats(hass)
@@ -1449,6 +1453,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             sts = hass.data.get(DOMAIN, {}).pop("stats", None)
             if sts is not None:
                 sts.async_stop()
+            fhs = hass.data.get(DOMAIN, {}).pop("fehler", None)
+            if fhs is not None:
+                fhs.async_stop()
             spn = hass.data.get(DOMAIN, {}).pop("sponsor", None)
             if spn is not None:
                 spn.async_stop()
