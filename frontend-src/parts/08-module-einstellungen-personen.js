@@ -42,7 +42,7 @@
   }
   _mdPoll(r) {
     if (!this._hass) return;
-    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "mods", "enset", "gsset", "evset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
+    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "enset", "gsset", "evset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
     if (r) { apply(r); return; }
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
@@ -125,7 +125,7 @@
       ["lk", "palette", "Darstellung", "Farben, Wetter, Raumsymbole", ""],
       ["dv", "tablet", "Dieses Gerät", "Tablet-Modus, Zeiträume, Ansicht", ""],
       ["ad", "package", "Addons", (() => { const L = this._adState().addons || [], n = L.filter((a) => a.installed).length; return `${n} installiert · ${L.length - n} im Katalog`; })(), (() => { const L = this._adState().addons || [], u = L.filter((a) => a.update).length, e = L.filter((a) => a.status === "error").length; return e ? `<em class="sxc er">${e}</em>` : u ? `<em class="sxc wa">${u}</em>` : ""; })()],
-      ["ex", "flask", "Erweiterungen", "Store, Labs, eigene Module", this._labCount() ? `<em class="sxc ok">${this._labCount()} ${this._labCount() === 1 ? "Lab" : "Labs"}</em>` : ""],
+      ["ex", "flask", "Erweiterungen", "Store und Labs", this._labCount() ? `<em class="sxc ok">${this._labCount()} ${this._labCount() === 1 ? "Lab" : "Labs"}</em>` : ""],
       ["sy", "shield", "System", "Sichern, Diagnose, Versionen", ""],
       ["sp", "heart", "Sponsor", "Schlüssel und Extras", ""]];
     const area = AREAS.some((a) => a[0] === this._stA) ? this._stA : wide ? "ov" : "";
@@ -139,16 +139,14 @@
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Datei und Homeserver", "gen")}`, "Häufig gebraucht")}`,
       hs: () => this._hsPage(row, card, lv),
       mw: () => this._mwPage(card),
-      md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).concat(this._adMods().map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n} · v${esc(m.ad.version)}</i>`, esc((this._adDef(m.aid) || {}).settingsTxt || m.tag), "adxset", m.aid, `<em class="sxc ${STG[m.stage] ? STG[m.stage].c : ""}">Addon</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
-        ${off.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdstoff" aria-expanded="${!this._stOffC}">Ausgeschaltet <small>· ${off.length} · ein Tipp schaltet ein</small><span class="stgo">${this._stOffC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>
-          ${this._stOffC ? "" : `<div class="stmini">${off.map((m) => `<button class="stmb" data-act="mdtog" data-k="${m.id}" title="${esc(m.name)} einschalten">${ic(m.icon, 16)}<span class="stmt"><b>${esc(m.short)}</b><small>Modul ${m.n}${m.sponsor ? " · Sponsor" : m.beta && modSt(m) ? " · " + STG[modSt(m)].t : ""}</small></span></button>`).join("")}</div>`}</div>` : ""}`,
+      md: () => this._mdsPage(card),
       lk: () => card(`${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}${this._saiRow ? this._saiRow(row) : ""}${row("home", "Startseite", this._hzOn() ? "Karten, Bubbles und Begrüßung" : "ausgeschaltet · hier wieder einschalten", "hzopen")}`),
       dv: () => `${card(`${row("tablet", `Tablet-Modus ${lv("dev")}`, `${this._tmOn() ? "An" : "Aus"} · PIN, Ruhemodus, Display`, "tmopen")}
           <div class="sxrow stinfo"><span class="sxi">${ic("month", 20)}</span><span class="sxt"><b>Zeitraum Modul 3 und 4 ${lv("dev")}</b><small>Wird in diesem Browser gemerkt, wenn du ihn im Modul wechselst</small></span></div>
           <div class="sxrow stinfo"><span class="sxi">${ic("grid", 20)}</span><span class="sxt"><b>Ansicht der Raumkarten ${lv("dev")}</b><small>${this._view() === "compact" ? "Kompakt" : "Detail"} · umschalten in Modul 1</small></span></div>`)}<div class="stleg">${lv("dev")} Diese Einstellungen gelten nur für diesen Browser und sind nicht in der Sicherung.</div>`,
       ex: () => card(`${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen")}
           ${row("flask", "Labs", "Experimentelle Funktionen ansehen und einschalten", "labopen", "", `<em class="sxc ${this._labCount() ? "ok" : "off"}">${this._labCount() ? this._labCount() + " an" : "Aus"}</em>`)}
-          ${row("layers", "Module verwalten", "Module ein- und ausschalten, eigene Module hinzufügen", "mdmgr")}`),
+`),
       sy: () => card(`${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern, Homeserver, interne Kopien", "gen", "", `<em class="sxc ${lt ? "ok" : ""}">${esc(ltTxt)}</em>`)}
           ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}

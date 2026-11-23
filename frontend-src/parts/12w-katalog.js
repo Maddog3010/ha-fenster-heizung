@@ -53,7 +53,7 @@
       { id: "tablet", t: "Tablet-Modus", p: "Dieses Gerät", k: "tablet fully kiosk pin wandtablet", lv: "dev", go: ["tmopen"], v: () => onoff(this._tmOn()), h: "Nur für diesen Browser: Vollbild für ein Wandtablet mit PIN und Ruhemodus." },
       { id: "store", t: "Store & Integrationen", p: "Erweiterungen", k: "store integration dienst tibber go-e forecast", go: ["igopen"] },
       { id: "labs", t: "Labs", p: "Erweiterungen", k: "labs experimentell test", go: ["labopen"] },
-      { id: "mods", t: "Module verwalten", p: "Erweiterungen", k: "module ein aus eigenes modul", go: ["mdmgr"] },
+      { id: "mods", t: "Module ein- und ausschalten", p: "Module", k: "module verwalten ein aus eigenes modul hinzufügen adresse", go: ["mdsta", "md"] },
       { id: "general.updates", t: "Update-Hinweise", p: "System › Sichern", k: "update version hinweis", go: ["gen"], v: () => onoff(g().updates !== false) },
       { id: "backup", t: "Sichern & Wiederherstellen", p: "System", k: "sicherung backup homeserver webdav smb wiederherstellen datei", go: ["gen"], h: "Einstellungen als Datei sichern, automatisch auf einen Homeserver kopieren oder interne Kopien zurückholen." },
       { id: "verlauf", t: "Änderungsverlauf", p: "System", k: "verlauf rückgängig änderung wer wann undo", go: ["mdstlog"], h: "Die letzten 50 Änderungen mit Benutzer und Zeit. Jede lässt sich einzeln zurücknehmen." },

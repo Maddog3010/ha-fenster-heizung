@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.3b4] - 2026-11-23
+
+Vierte Testversion für 2026.11.4.3 – alle Module an einer Stelle.
+
+### Geändert
+- **Einstellungen › Module** ist jetzt der einzige Ort für Module: Ein Tipp auf die Zeile öffnet die Einstellungen des Moduls, der Schalter rechts schaltet es ein oder aus (nur Admins). Status, Version und Probleme („1 Sensor ohne Wert“, „Noch nicht eingerichtet“) stehen in derselben Zeile. Filter oben: Alle, Stabil, Beta & Entwicklung, Probleme.
+- Darunter „Ausgeschaltet“ (mit Schaltern, nichts wird gelöscht) und „Eigene Module“ (per Adresse hinzufügen, entfernen, Marketplace, „Wie funktionieren Module?“).
+- Beim Ausschalten erscheint kurz „Modul … ausgeschaltet · Rückgängig“.
+- Auf dem Handy zeigt jede Zeile nur „Modul N · Status“; „Ausgeschaltet“ und „Eigene Module“ sind eingeklappt.
+
+### Entfernt
+- Der Knopf **Module** im Store und das Fenster „Module“. „Module verwalten“ unter Erweiterungen führt nicht mehr in ein eigenes Fenster – die Suche „Module ein- und ausschalten“ springt direkt zu Einstellungen › Module.
+
 ## [2026.11.4.3b3] - 2026-11-23
 
 Dritte Testversion für 2026.11.4.3 – das Messwerk versteht den Hausfluss (Modul 19) besser.

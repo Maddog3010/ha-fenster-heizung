@@ -55,31 +55,36 @@
       this._hass.callWS({ type: "fenster_heizung/haus_set", haus: { mig_seen: true } }).then((r) => { if (r && r.haus) this._haus = r.haus; }).catch(() => {});
     }
     else if (a === "mdsta") { this._stA = k || ""; this._stS = ""; this._render(); const m = this.shadowRoot.getElementById("main"); if (m && m.scrollIntoView) window.scrollTo && window.scrollTo(0, 0); }
-    else if (a === "mdstoff") { this._stOffC = !this._stOffC; this._render(); }
+    else if (a === "mdstoff") { this._stOffC = !(this._stOffC ?? !!this._narrow); this._render(); }
     else if (a === "mdstpv") { this._ehListOpen({ type: "fh", tab: "gr" }); }
     else if (a === "mdstx") { this._stOpen = false; this._render(); }
-    else if (a === "mdmgr") { this._modal = { type: "mods" }; this._renderModal(); }
+    else if (a === "mdmgr") { this._modal = null; this._renderModal(); this._igOpen = false; this._stOpen = true; this._stA = "md"; this._stS = ""; this._render(); }   /* früheres Fenster „Module“ → Einstellungen › Module */
+    else if (a === "mdsf") { this._mdsF = k || ""; this._render(); }
+    else if (a === "mdsext") { this._mdsExtC = !(this._mdsExtC ?? !!this._narrow); this._render(); }
     else if (a === "mdsetup") { this._modal = { type: "wwset" }; this._renderModal(); }
     else if (a === "mdevset") { this._modal = { type: "evset" }; this._renderModal(); }
     else if (a === "mdgs") { this._modal = { type: "gsset" }; this._renderModal(); }
     else if (a === "mdbeta") { this._toast("Für dieses Modul gibt es in der Beta noch keine Einstellungen"); }
     else if (a === "mdensetup") { this._modal = { type: "enset", tab: k || "" }; this._renderModal(); }
     else if (a === "mdtog") {
+      if (b.closest && b.closest(".toast")) { clearTimeout(this._tt); const t = this.shadowRoot.getElementById("toast"); if (t) t.innerHTML = ""; }
       if (MODS.some((x) => x.id === k && x.sponsor) && !this._spnS().active) { this._modal = { type: "spndlg", err: "" }; this._renderModal(); return; }
       if (k === "gr") { if (s.on.gr === false) { s.on.gr = true; this._mdSave(); this._renderModal(); this._render(); } else { this._modal = { type: "grxoff" }; this._renderModal(); } return; }   /* Modul 0: Rückfrage */
       if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else if (k === "gs") s.on.gs = s.on.gs === false; else if (MODS.some((m) => m.beta && m.id === k)) s.on[k] = s.on[k] !== true; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
       if (!this._mdList().some((x) => x.id === s.active)) this._mdActiveSet("fh");
       this._mdSave(); this._renderModal(); this._render();
+      const now = k === "ww" ? s.on.ww : k === "en" ? s.on.en : k === "gs" ? s.on.gs !== false : MODS.some((m) => m.id === k) ? s.on[k] === true : !!(s.ext.find((e) => e.id === k) || {}).on;
+      if (!now) this._mdsUndo(k);   /* Ausschalten: kurz „Rückgängig“ anbieten */
     }
     else if (a === "mdextadd") {
-      const inp = this.shadowRoot.querySelector('[data-f="mdurl"]'), url = (inp ? inp.value : "").trim();
-      if (!/^(https:\/\/|\/local\/|\/hacsfiles\/).+\.js$/i.test(url)) { m.err = "Bitte die Adresse der Moduldatei eintragen, z. B. /local/mein-modul.js oder https://…/modul.js"; m.url = url; this._renderModal(); return; }
+      const inp = this.shadowRoot.querySelector('[data-f="mdurl"]'), url = (inp ? inp.value : "").trim(), E = (this._mdsE = this._mdsE || {});
+      if (!/^(https:\/\/|\/local\/|\/hacsfiles\/).+\.js$/i.test(url)) { E.err = "Bitte die Adresse der Moduldatei eintragen, z. B. /local/mein-modul.js oder https://…/modul.js"; E.url = url; this._render(); return; }
       const base = decodeURIComponent(url.split("/").pop().replace(/\.js$/i, "")).replace(/[-_.]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-      s.ext.push({ id: "x" + Date.now().toString(36), name: base || "Eigenes Modul", url, on: true }); m.err = ""; m.url = ""; this._mdSave(); this._renderModal(); this._render(); this._toast("Modul hinzugefügt");
+      s.ext.push({ id: "x" + Date.now().toString(36), name: base || "Eigenes Modul", url, on: true }); E.err = ""; E.url = ""; this._mdSave(); this._render(); this._toast("Modul hinzugefügt");
     }
-    else if (a === "mdextdel") { s.ext = s.ext.filter((x) => x.id !== k); if (s.active === k) this._mdActiveSet("fh"); this._mdSave(); this._renderModal(); this._render(); }
+    else if (a === "mdextdel") { s.ext = s.ext.filter((e) => e.id !== k); if (s.active === k) this._mdActiveSet("fh"); this._mdSave(); this._render(); }
     else if (a === "mdhacs") { this._modal = null; this._renderModal(); this._storeOpen(false); }
-    else if (a === "mdinfo") { m.info = !m.info; this._renderModal(); }
+    else if (a === "mdinfo") { this._mdsInfo = !this._mdsInfo; this._render(); }
     else if (a.startsWith("ww")) this._wwAct(a, b);
     else if (a.startsWith("en")) this._enAct(a, b);
     else if (a.startsWith("gs")) this._gsAct(a, b);
@@ -88,7 +93,7 @@
   }
   _mdChange(t) {
     const f = t.dataset.f, m = this._modal;
-    if (f === "mdurl") { if (m) m.url = t.value; return true; }
+    if (f === "mdurl") { (this._mdsE = this._mdsE || {}).url = t.value; return true; }
     if (f.startsWith("ww")) return this._wwChange(t);
     if (f.startsWith("en")) return this._enChange(t);
     if (f.startsWith("gs")) return this._gsChange(t);
@@ -103,30 +108,7 @@
     if (m.type === "enset") return this._enSetModal();
     if (m.type === "gsset") return this._gsSetModal();
     if (m.type === "evset") return this._evSetModal();
-    const s = this._mdState(), W = s.ww, ok = this._wwConfigured();
-    const row = (id, ico, name, sub, right) => `<div class="mrow"><span class="mi">${ic(ico, 22)}</span><div class="mt"><b>${esc(name)}</b><span>${sub}</span></div>${right}</div>`;
-    const tog = (id, on) => `<button class="sw ${on ? "on" : ""}" data-act="mdtog" data-k="${id}" aria-pressed="${on}" aria-label="Modul ein- oder ausschalten"></button>`;
-    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Module</b><span>Funktionen erweitern, ohne dass sie sich stören</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="lsec">${ic("check", 15)}Installiert</div>
-      ${row("gr", "home", "Modul 0 – Haus & Grundriss", "Ein Bauplan für alle Module · in Entwicklung", `<span class="mact"><span class="mbadge dvl">In Entwicklung</span>${tog("gr", s.on.gr !== false)}</span>`)}
-      ${row("fh", "windowOpen", "Modul 1 – Fenster & Heizung", "Fenster, Heizpläne, Elektroheizer, Berichte", `<span class="mbadge">Grundmodul</span>`)}
-      ${row("ww", "boiler", "Modul 2 – Warmwasser & Zirkulation", ok ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!ok && s.on.ww ? `<button class="btn2 pri" data-act="mdsetup">Einrichten</button>` : ""}${tog("ww", s.on.ww)}</span>`)}
-      ${row("en", "energy", "Modul 3 – Energie-Übersicht", this._enConfigured() ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!this._enConfigured() && this._enOn() ? `<button class="btn2 pri" data-act="mdensetup">Einrichten</button>` : ""}${tog("en", this._enOn())}</span>`)}
-      ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
-      ${row("gs", "laundry", "Modul 4 – Gerätestrom", this._gsState().devices.length ? this._gsState().devices.length + (this._gsState().devices.length === 1 ? " Gerät" : " Geräte") : "Noch nicht eingerichtet", `<span class="mact">${tog("gs", s.on.gs !== false)}</span>`)}
-      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion", stabil: "stabil" }[modSt(x)] + "", `<span class="mact">${x.sponsor ? `<span class="mbadge sp">${ic("heart", 11)}Nur Sponsoren</span>` : ""}<span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
-      ${MOD_SOON.length ? `<div class="lsec">${ic("clock", 15)}Geplant</div>
-      ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
-      <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>
-      <div class="mut sm" style="margin:2px 0 8px">Module sind kleine Erweiterungen. Sie nutzen deine Räume, die PV-Einstellungen und die Meldungen mit und erscheinen hier als eigene Seite.</div>
-      <div class="gbtns"><button class="btn2" data-act="mdhacs">${ic("download", 16)} Im ${this._storeName()} suchen</button></div>
-      <div class="mut sm" style="margin:4px 0 0">Oder die Adresse einer Moduldatei eintragen</div>
-      <div class="murl"><input class="otxt" data-f="mdurl" placeholder="/local/mein-modul.js" value="${esc(m.url || "")}" autocomplete="off" spellcheck="false"><button class="btn2 pri" data-act="mdextadd">Hinzufügen</button></div>
-      ${m.err ? `<div class="gst on">${ic("alert", 15)}${esc(m.err)}</div>` : ""}
-      <button class="lnk" data-act="mdinfo">${ic("info", 15)}Wie funktionieren Module?</button>
-      ${m.info ? `<div class="minfo"><b>So ist es aufgebaut</b><ul><li>Jedes Modul meldet sich mit <b>ID, Name, Symbol und einer Seite</b> (JavaScript-Datei) an.</li><li>Es bekommt Zugriff auf Räume, PV-Überschuss, Benachrichtigungen und die Gerätediagnose.</li><li>Was ein Modul speichert, bleibt in seinem eigenen Bereich. Ausschalten löscht nichts.</li><li>Module werden einzeln über den Marketplace (bis Home Assistant 2026.10: HACS) installiert und haben eigene Versionen.</li></ul></div>` : ""}
-      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+    return "";   /* das frühere Fenster „Module“ steht seit 2026.11.4.3b4 unter Einstellungen › Module (_mdsPage) */
   }
 
   /* ---- Warmwasser: Daten ---- */
