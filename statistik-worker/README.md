@@ -13,7 +13,7 @@ Einrichtung: siehe `Anleitung_Statistik-Cloudflare-Worker.pdf`. Kurz:
 
 Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
 
-## Fehler-Statistik (ab 2026.11.5b3)
+## Fehler-Statistik (ab 2026.11.4.3b1)
 
 Eingang `POST /v1/errors` (Bericht mit höchstens 50 bereinigten Programmfehlern, max. 64 KB, 1 pro Kennung und Stunde) und
 `POST /v1/errors/forget` (alle Berichte einer Kennung löschen). Dashboard: Reiter **Fehler** auf `dash.…/fehler` – gleiche Fehler

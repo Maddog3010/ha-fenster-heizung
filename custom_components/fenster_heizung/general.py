@@ -174,7 +174,7 @@ def _vkey(tag: str) -> tuple[float, ...]:
     b = int(m.group(2)) if m.group(2) is not None else float("inf")
     if p[0] >= 2000 and p[1] > 12:  # Datumsschema Jahr.MonatTag.Zähler
         return (p[0], p[1] // 100, 0, p[1] % 100, p[2], b)
-    if p[0] >= 2000:  # Jahr.Monat.Release[.Korrektur] – 2026.11.4 < 2026.11.4.1 < 2026.11.5b1
+    if p[0] >= 2000:  # Jahr.Monat.Release[.Korrektur] – 2026.11.4 < 2026.11.4.1 < 2026.11.4.3b1 < 2026.11.4.3
         return (p[0], p[1], p[2], p[3], 0, b)
     return (*p, 0, b)
 

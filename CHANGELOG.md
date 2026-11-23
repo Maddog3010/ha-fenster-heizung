@@ -2,43 +2,23 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [2026.11.5b3] - 2026-11-23
+## [2026.11.4.3b1] - 2026-11-23
 
-**Fehler-Statistik · Build 3:** Der Statistik-Server (Cloudflare-Worker) nimmt Fehlerberichte an und zeigt sie im Dashboard.
-
-### Neu
-- **Worker:** Eingang `POST /v1/errors` (höchstens 50 Fehler, 64 KB, 1 Bericht pro Kennung und Stunde, jedes Feld wird geprüft, Adressen werden zusätzlich entfernt, keine IP-Adressen gespeichert) und `POST /v1/errors/forget`. Berichte werden nach 90 Tagen gelöscht.
-- **Dashboard, Reiter „Fehler“:** gleiche Fehler aller Nutzer als eine Zeile, sortiert nach betroffenen Installationen – mit Modul, Quelle, Anzahl, Versionen, 14-Tage-Verlauf und Kennzeichen „neu“, „steigt“, „bekannt“, „behoben?“, „ruhig“. Filter nach Zeitraum (7/30/90 Tage), Modul und Quelle. Detailansicht je Fehler mit Verlauf über 30 Tage, Versionen, Home-Assistant-Versionen und Kanal.
-- **Dashboard, Build 4:** Status je Fehler (offen, in Arbeit, behoben in Version …, ignorieren) und GitHub-Issue-Nummer. „Behoben in“ wird geprüft: Taucht der Fehler in dieser oder einer neueren Version wieder auf, steht er rot als „wieder da“ ganz oben. Ignorierte Fehler nur auf Wunsch. „GitHub-Issue anlegen“ öffnet ein vorausgefülltes Issue (Titel, Meldung, Stelle, Fehler-ID, Versionen, Anzahl).
-- Integration: „Gerade erst gesendet“ statt Fehlermeldung, wenn innerhalb einer Stunde erneut gesendet wird.
-
-### Wichtig beim Update
-- Für den Entwickler: Worker-Datenbank einmal aktualisieren (`npx wrangler d1 execute stats --remote --file=schema.sql`), dann `npx wrangler deploy`. Siehe statistik-worker/README.md.
-
-## [2026.11.5b2] - 2026-11-23
-
-**Fehler-Statistik · Build 2:** Fehlerberichte senden – freiwillig, mit eigener Zustimmung und voller Einsicht.
-
-### Neu
-- **Fehlerberichte senden** (Einstellungen → System → Fehlerprotokoll): eigener Schalter, getrennt von der Versions-Statistik, mit eigener zufälliger Kennung. Gesendet wird höchstens 1× am Tag und nur, wenn es seit dem letzten Bericht neue Programmfehler gibt.
-- **Einmalige Nachfrage** für alle, die bei der Versions-Statistik mitmachen oder eine Beta nutzen (beim Wechsel auf eine Beta). Ohne „Ja“ wird nichts gesendet.
-- **Volle Einsicht:** „Das wird gesendet“ zeigt den nächsten Bericht genau so, wie er rausgeht. Jeder Fehler zeigt, ob er im nächsten Bericht steht; mit „weglassen“ wird er nie gesendet (bleibt im Protokoll).
-- **Jetzt senden** und **Meine Berichte auf dem Server löschen** (schaltet das Senden aus und vergisst die Kennung).
-
-### Wichtig beim Update
-- Der Server nimmt Fehlerberichte erst mit Build 3 an. Bis dahin bleiben sie im Protokoll und werden später nachgeschickt; die Integration läuft normal weiter.
-
-## [2026.11.5b1] - 2026-11-23
-
-**Fehler-Statistik · Build 1:** Fehlerprotokoll – Programmfehler werden auf deinem Home Assistant gesammelt, bereinigt und zum Kopieren angeboten. Es wird noch nichts gesendet.
+Testversion für 2026.11.4.3: **Fehler-Statistik** – Programmfehler finden, bevor du sie melden musst. Enthält alle Korrekturen aus 2026.11.4.2.
 
 ### Neu
 - **Fehlerprotokoll** unter Einstellungen → System: alle Programmfehler von Strom & Wärme der letzten 30 Tage, gleiche Fehler zusammengefasst mit Anzahl, Zeitraum, Modul, Version und Home-Assistant-Version. „Kopieren“ je Fehler oder für alle – fertig für den Support oder ein GitHub-Issue. Einzelne Einträge entfernen oder alles löschen.
 - **Erfasst werden nur Programmfehler** aus drei Quellen: Backend (Ausnahmen und Fehlermeldungen von Strom & Wärme), Befehle zwischen Oberfläche und Backend (z. B. „expected str at 'id'“, unbekannte Befehle nach einem Update ohne Neustart) und Anzeigefehler im Dashboard. Erwartete Antworten wie „noch nicht bereit“ zählen nicht, Probleme der Geräte-Diagnose auch nicht.
 - **Bereinigt:** Entitäten (sensor.* statt Namen), Namen in Anführungszeichen, Zahlen und Werte, Adressen, Dateipfade und Kennungen werden vor dem Speichern entfernt.
+- **Fehlerberichte senden** (freiwillig): eigener Schalter im Fehlerprotokoll, getrennt von der Versions-Statistik, mit eigener zufälliger Kennung. Gesendet wird höchstens 1× am Tag und nur, wenn es seit dem letzten Bericht neue Fehler gibt.
+- **Einmalige Nachfrage** für alle, die bei der Versions-Statistik mitmachen oder eine Beta nutzen. Ohne „Ja“ wird nichts gesendet.
+- **Volle Einsicht:** „Das wird gesendet“ zeigt den nächsten Bericht genau so, wie er rausgeht. Jeder Fehler zeigt, ob er im nächsten Bericht steht; mit „weglassen“ wird er nie gesendet. „Jetzt senden“ und „Meine Berichte auf dem Server löschen“ (schaltet aus und vergisst die Kennung).
+- **Statistik-Server (Cloudflare-Worker):** nimmt Fehlerberichte an (`POST /v1/errors`, höchstens 50 Fehler, 1 Bericht pro Kennung und Stunde, jedes Feld geprüft, keine IP-Adressen, nach 90 Tagen gelöscht) und zeigt sie im Dashboard im neuen Reiter **„Fehler“**: gleiche Fehler aller Nutzer als eine Zeile, sortiert nach betroffenen Installationen, mit Filtern, Verlauf und Detailansicht.
+- **Dashboard:** Status je Fehler (offen, in Arbeit, behoben in Version …, ignorieren) mit automatischer Prüfung – taucht ein behobener Fehler wieder auf, steht er rot als „wieder da“ oben. „GitHub-Issue anlegen“ öffnet ein vorausgefülltes Issue.
 
 ### Wichtig beim Update
-- Das Fehlerprotokoll bleibt auf deinem Home Assistant. Das freiwillige Senden an den Entwickler (mit eigener Zustimmung) folgt in einem späteren Build.
+- Testversion: Das Fehlerprotokoll bleibt auf deinem Home Assistant, bis du „Fehlerberichte senden“ einschaltest.
+- Für den Entwickler: Worker-Datenbank einmal aktualisieren (`npx wrangler d1 execute stats --remote --file=schema.sql`), dann `npx wrangler deploy`. Siehe statistik-worker/README.md.
 
 ## [2026.11.4.2] - 2026-11-23
 
