@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b1] - 2026-11-23
+
+**Fehler-Statistik · Build 1:** Fehlerprotokoll – Programmfehler werden auf deinem Home Assistant gesammelt, bereinigt und zum Kopieren angeboten. Es wird noch nichts gesendet.
+
+### Neu
+- **Fehlerprotokoll** unter Einstellungen → System: alle Programmfehler von Strom & Wärme der letzten 30 Tage, gleiche Fehler zusammengefasst mit Anzahl, Zeitraum, Modul, Version und Home-Assistant-Version. „Kopieren“ je Fehler oder für alle – fertig für den Support oder ein GitHub-Issue. Einzelne Einträge entfernen oder alles löschen.
+- **Erfasst werden nur Programmfehler** aus drei Quellen: Backend (Ausnahmen und Fehlermeldungen von Strom & Wärme), Befehle zwischen Oberfläche und Backend (z. B. „expected str at 'id'“, unbekannte Befehle nach einem Update ohne Neustart) und Anzeigefehler im Dashboard. Erwartete Antworten wie „noch nicht bereit“ zählen nicht, Probleme der Geräte-Diagnose auch nicht.
+- **Bereinigt:** Entitäten (sensor.* statt Namen), Namen in Anführungszeichen, Zahlen und Werte, Adressen, Dateipfade und Kennungen werden vor dem Speichern entfernt.
+
+### Wichtig beim Update
+- Das Fehlerprotokoll bleibt auf deinem Home Assistant. Das freiwillige Senden an den Entwickler (mit eigener Zustimmung) folgt in einem späteren Build.
+
 ## [2026.11.4.2] - 2026-11-23
 
 Korrektur zu 2026.11.4.1: Elektroheizer lassen sich wieder speichern, die Sonne steht wieder außerhalb des Hauses und scheint durch alle Fenster, die Wetterkarte lädt schneller.

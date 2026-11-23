@@ -1,0 +1,172 @@
+"""Fehler-Statistik Build 1: Programmfehler bereinigen, zusammenfassen und speichern – ohne Home Assistant (testbar).
+
+Ein Fehler wird zu einem Eintrag mit „Fingerabdruck“ (Quelle + Art + Stelle + bereinigte Meldung). Gleiche Fehler werden
+gezählt statt wiederholt. Die Bereinigung entfernt alles, was auf den Nutzer zeigt: Entitäten, Namen in Anführungszeichen,
+Zahlen und Werte, Adressen, Dateipfade außerhalb von Strom & Wärme, Kennungen. In Build 1 bleibt alles lokal.
+"""
+from __future__ import annotations
+
+import hashlib
+import re
+from datetime import date, timedelta
+from typing import Any
+
+KEEP_DAYS = 30
+MAX_ENTRIES = 200
+MSG_MAX = 200
+SOURCES = ("backend", "befehl", "oberflaeche")
+
+_DOMAINS = (
+    "sensor|binary_sensor|switch|light|climate|cover|fan|input_boolean|input_number|input_select|input_text|input_datetime|"
+    "number|select|button|lock|media_player|person|device_tracker|zone|weather|sun|automation|script|scene|group|timer|"
+    "counter|water_heater|humidifier|vacuum|camera|alarm_control_panel|notify|update|event|todo|calendar|image|text|valve|siren"
+)
+_RX = [
+    (re.compile(r"https?://\S+|wss?://\S+", re.I), "<adresse>"),
+    (re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.-]+\b"), "<adresse>"),
+    (re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}(?::\d+)?\b"), "<adresse>"),
+    (re.compile(r"\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b", re.I), "<id>"),
+    (re.compile(r"\b[0-9a-f]{16,}\b", re.I), "<id>"),
+    (re.compile(rf"\b({_DOMAINS})\.[a-z0-9_]+\b"), r"\1.*"),
+    (re.compile(r"(?:[A-Za-z]:)?(?:[\\/][\w.\-]+){2,}[\\/]?"), "<pfad>"),
+]
+_QUOTED = re.compile(r"(['\"„“])([^'\"„“\n]{0,80})(['\"“”])")
+_KEY = re.compile(r"^[a-z_][a-z0-9_.]{0,23}$")
+_NUM = re.compile(r"(?<![\w.])-?\d+(?:[.,]\d+)?(?![\w])")
+
+
+def sanitize(msg: Any) -> str:
+    """Meldung ohne persönliche Angaben. Technische Schlüssel in Anführungszeichen ('id', 'heater') bleiben stehen."""
+    s = str(msg or "").replace("\r", " ").replace("\n", " ").strip()
+    for rx, rep in _RX:
+        s = rx.sub(rep, s)
+    s = _QUOTED.sub(lambda m: m.group(0) if _KEY.match(m.group(2)) else f"{m.group(1)}…{m.group(3)}", s)
+    s = _NUM.sub("#", s)
+    s = re.sub(r"\s+", " ", s)
+    return s[:MSG_MAX]
+
+
+def where_of(path: str, line: int | None = None, func: str = "") -> str:
+    """Stelle im Code: nur Dateiname aus Strom & Wärme, Zeile und Funktion (z. B. „wallbox.py:976 add_km“)."""
+    p = str(path or "").replace("\\", "/")
+    if "/fenster_heizung/" not in p and not p.startswith("fenster_heizung/"):
+        return ""
+    name = p.split("/fenster_heizung/", 1)[-1] if "/fenster_heizung/" in p else p.split("/", 1)[-1]
+    out = f"{name}:{int(line)}" if line else name
+    return f"{out} {func}".strip() if func and re.fullmatch(r"[A-Za-z_]\w{0,60}", func) else out
+
+
+_MOD_FILES = [
+    (r"^wallbox|^goe|evcc", "Modul 8"), (r"^wetter", "Modul 9"), (r"^grundriss|^haus", "Modul 0"),
+    (r"^sicherheit|^melder", "Modul 11"), (r"^heizer|^geraete|^climate|^luftf|^lueft", "Modul 1"),
+    (r"^warmwasser", "Modul 2"), (r"^energie|^ebuch|^energiebuch", "Modul 3"), (r"^tarif|^preise", "Modul 14"),
+    (r"^wartung", "Modul 15"), (r"^addons/licht", "Modul 18"), (r"^addons/muell", "Modul 17"), (r"^addons/abrechnung", "Modul 20"),
+    (r"^stats|^fehler", "Statistik"), (r"^saison|^advent", "Weihnachts-Theme"), (r"^sponsor", "Sponsor"),
+]
+_MOD_CMDS = [
+    (r"^(heizer|room|plan|layout|presence|lf_|mess)", "Modul 1"), (r"^(wb_|goe)", "Modul 8"), (r"^wx", "Modul 9"), (r"^gr_|^haus", "Modul 0"),
+    (r"^sf_", "Modul 11"), (r"^tarif|^preise", "Modul 14"), (r"^wt_", "Modul 15"), (r"^li_", "Modul 18"), (r"^advent|^saison", "Weihnachts-Theme"),
+    (r"^stats|^err_", "Statistik"), (r"^spn", "Sponsor"),
+]
+
+
+_MOD_JS = [
+    (r"^_(gr|haus)", "Modul 0"), (r"^_(rk|eh|htr|lf|mess|room)", "Modul 1"), (r"^_ww", "Modul 2"), (r"^_(en|ef|m3)", "Modul 3"),
+    (r"^_(ev|wb|goe|rf)", "Modul 8"), (r"^_wx", "Modul 9"), (r"^_sf", "Modul 11"), (r"^_tarif|^_tf", "Modul 14"), (r"^_wt", "Modul 15"),
+    (r"^_li", "Modul 18"), (r"^_(sts|err)", "Statistik"), (r"^_(adv|sz)", "Weihnachts-Theme"), (r"^_spn", "Sponsor"),
+]
+
+
+def module_of(where: str = "", cmd: str = "") -> str:
+    if str(where or "").startswith("_"):   # Oberfläche: Funktionsname aus panel.js
+        for rx, m in _MOD_JS:
+            if re.search(rx, where):
+                return m
+    if cmd:
+        c = str(cmd).split("/", 1)[-1]
+        for rx, m in _MOD_CMDS:
+            if re.search(rx, c):
+                return m
+    w = str(where or "").split(":", 1)[0]
+    for rx, m in _MOD_FILES:
+        if re.search(rx, w):
+            return m
+    return "Allgemein"
+
+
+def fingerprint(src: str, kind: str, where: str, msg: str) -> str:
+    w = re.sub(r":\d+", "", str(where or ""))   # Zeilennummer gehört nicht dazu – nach einem Update bleibt es derselbe Fehler
+    return hashlib.sha1(f"{src}|{kind}|{w}|{msg}".encode()).hexdigest()[:12]
+
+
+def empty() -> dict[str, Any]:
+    return {"v": 1, "items": {}}
+
+
+def add(st: dict[str, Any], *, src: str, kind: str, where: str, msg: str, today: date, version: str, ha: str = "",
+        cmd: str = "", dev: str = "") -> dict[str, Any] | None:
+    """Einen Fehler eintragen (bereinigt). Gibt den Eintrag zurück oder None, wenn er nicht zählt."""
+    if src not in SOURCES:
+        return None
+    kind = re.sub(r"[^\w.\- ]", "", str(kind or "Fehler"))[:60] or "Fehler"
+    where = str(where or "")[:120]
+    m = sanitize(msg)
+    fp = fingerprint(src, kind, where, m)
+    it = st.setdefault("items", {})
+    d = today.isoformat()
+    e = it.get(fp)
+    if e is None:
+        if len(it) >= MAX_ENTRIES:
+            oldest = min(it.values(), key=lambda x: (x["last"], x["n"]))
+            it.pop(oldest["fp"], None)
+        e = it[fp] = {"fp": fp, "src": src, "kind": kind, "where": where, "mod": module_of(where, cmd), "msg": m,
+                      "n": 0, "first": d, "last": d, "vers": [], "ha": ha[:20], "dev": {}}
+    e["n"] = min(e["n"] + 1, 999999)
+    e["last"] = d
+    if version and version not in e["vers"]:
+        e["vers"] = (e["vers"] + [version[:20]])[-5:]
+    if ha:
+        e["ha"] = ha[:20]
+    if dev in ("handy", "tablet", "pc", "app"):
+        e["dev"][dev] = e["dev"].get(dev, 0) + 1
+    return e
+
+
+def prune(st: dict[str, Any], today: date) -> int:
+    lim = (today - timedelta(days=KEEP_DAYS)).isoformat()
+    it = st.get("items", {})
+    old = [k for k, e in it.items() if e.get("last", "") < lim]
+    for k in old:
+        it.pop(k, None)
+    return len(old)
+
+
+def clean(raw: Any) -> dict[str, Any]:
+    st = empty()
+    if not isinstance(raw, dict) or not isinstance(raw.get("items"), dict):
+        return st
+    for k, e in list(raw["items"].items())[:MAX_ENTRIES]:
+        if isinstance(e, dict) and re.fullmatch(r"[0-9a-f]{12}", str(k)) and e.get("src") in SOURCES:
+            try:
+                st["items"][k] = {"fp": k, "src": e["src"], "kind": str(e.get("kind", ""))[:60], "where": str(e.get("where", ""))[:120],
+                                  "mod": str(e.get("mod", "Allgemein"))[:30], "msg": str(e.get("msg", ""))[:MSG_MAX], "n": int(e.get("n", 1)),
+                                  "first": str(e.get("first", ""))[:10], "last": str(e.get("last", ""))[:10],
+                                  "vers": [str(v)[:20] for v in (e.get("vers") or [])][-5:], "ha": str(e.get("ha", ""))[:20],
+                                  "dev": {str(a): int(b) for a, b in (e.get("dev") or {}).items() if a in ("handy", "tablet", "pc", "app")}}
+            except (TypeError, ValueError):
+                continue
+    return st
+
+
+def view(st: dict[str, Any]) -> list[dict[str, Any]]:
+    """Liste für die Oberfläche: neueste zuerst, dann häufigste."""
+    return sorted(st.get("items", {}).values(), key=lambda e: (e["last"], e["n"]), reverse=True)
+
+
+def as_text(e: dict[str, Any]) -> str:
+    """Zum Kopieren (z. B. für ein GitHub-Issue)."""
+    src = {"backend": "Backend", "befehl": "Befehl", "oberflaeche": "Oberfläche"}.get(e["src"], e["src"])
+    return (f"Strom & Wärme · {e['mod']} · {src}\n{e['kind']}: {e['msg']}\n"
+            + (f"Stelle: {e['where']}\n" if e.get("where") else "")
+            + f"{e['n']}× · {e['first']} bis {e['last']} · Version {', '.join(e.get('vers') or ['?'])}"
+            + (f" · Home Assistant {e['ha']}" if e.get("ha") else "") + f" · Fehler-ID {e['fp']}")

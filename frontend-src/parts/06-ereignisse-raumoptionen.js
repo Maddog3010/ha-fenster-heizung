@@ -123,6 +123,7 @@
     else if (a.startsWith("spn")) this._spnAct(a, b);
     else if (a.startsWith("sup")) this._supAct(a, b);
     else if (a.startsWith("sts")) this._stsAct(a, b);
+    else if (a.startsWith("errx")) this._errAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
     else if (a.startsWith("mx") && this._mxAct) this._mxAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
