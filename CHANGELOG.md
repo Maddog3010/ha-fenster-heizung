@@ -2,6 +2,19 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b2] - 2026-11-23
+
+**Fehler-Statistik · Build 2:** Fehlerberichte senden – freiwillig, mit eigener Zustimmung und voller Einsicht.
+
+### Neu
+- **Fehlerberichte senden** (Einstellungen → System → Fehlerprotokoll): eigener Schalter, getrennt von der Versions-Statistik, mit eigener zufälliger Kennung. Gesendet wird höchstens 1× am Tag und nur, wenn es seit dem letzten Bericht neue Programmfehler gibt.
+- **Einmalige Nachfrage** für alle, die bei der Versions-Statistik mitmachen oder eine Beta nutzen (beim Wechsel auf eine Beta). Ohne „Ja“ wird nichts gesendet.
+- **Volle Einsicht:** „Das wird gesendet“ zeigt den nächsten Bericht genau so, wie er rausgeht. Jeder Fehler zeigt, ob er im nächsten Bericht steht; mit „weglassen“ wird er nie gesendet (bleibt im Protokoll).
+- **Jetzt senden** und **Meine Berichte auf dem Server löschen** (schaltet das Senden aus und vergisst die Kennung).
+
+### Wichtig beim Update
+- Der Server nimmt Fehlerberichte erst mit Build 3 an. Bis dahin bleiben sie im Protokoll und werden später nachgeschickt; die Integration läuft normal weiter.
+
 ## [2026.11.5b1] - 2026-11-23
 
 **Fehler-Statistik · Build 1:** Fehlerprotokoll – Programmfehler werden auf deinem Home Assistant gesammelt, bereinigt und zum Kopieren angeboten. Es wird noch nichts gesendet.

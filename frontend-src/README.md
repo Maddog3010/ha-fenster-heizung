@@ -17,7 +17,7 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 02-konstanten | Konstanten, Module, Vorlagen |
 | 03-stile | CSS |
 | 03f-stile-statistik, 12e5-statistik | Versions-Statistik: Popup (einmalig, freiwillig), Seite in Einstellungen → System, Daten-Dialog |
-| 12e6-fehlerprotokoll | Fehler-Statistik Build 1: Fehlerprotokoll (Einstellungen → System), fehlgeschlagene eigene Befehle und Anzeigefehler melden (bleibt lokal) |
+| 12e6-fehlerprotokoll | Fehler-Statistik: Fehlerprotokoll (Einstellungen → System), fehlgeschlagene eigene Befehle und Anzeigefehler melden; Build 2: Fehlerberichte senden (Zustimmung, Nachfrage, „weglassen“, Vorschau) |
 | 03b-stile-raumkarte | CSS der Raumkarte 2.0 (Modul 1) |
 | 04-kern | Grundgerüst der Komponente, Hilfsfunktionen |
 | 05-modul1-fenster-heizung | Modul 1: Räume, Kopfkarte, Heizung, PV-Heizer |

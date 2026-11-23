@@ -100,7 +100,7 @@ def fingerprint(src: str, kind: str, where: str, msg: str) -> str:
 
 
 def empty() -> dict[str, Any]:
-    return {"v": 1, "items": {}}
+    return {"v": 1, "items": {}, "cfg": clean_cfg(None)}
 
 
 def add(st: dict[str, Any], *, src: str, kind: str, where: str, msg: str, today: date, version: str, ha: str = "",
@@ -122,6 +122,7 @@ def add(st: dict[str, Any], *, src: str, kind: str, where: str, msg: str, today:
         e = it[fp] = {"fp": fp, "src": src, "kind": kind, "where": where, "mod": module_of(where, cmd), "msg": m,
                       "n": 0, "first": d, "last": d, "vers": [], "ha": ha[:20], "dev": {}}
     e["n"] = min(e["n"] + 1, 999999)
+    e["nd"] = min(int(e.get("nd", 0)) + 1, 999999)   # seit dem letzten Senden (Build 2)
     e["last"] = d
     if version and version not in e["vers"]:
         e["vers"] = (e["vers"] + [version[:20]])[-5:]
@@ -143,7 +144,10 @@ def prune(st: dict[str, Any], today: date) -> int:
 
 def clean(raw: Any) -> dict[str, Any]:
     st = empty()
-    if not isinstance(raw, dict) or not isinstance(raw.get("items"), dict):
+    if not isinstance(raw, dict):
+        return st
+    st["cfg"] = clean_cfg(raw.get("cfg"))
+    if not isinstance(raw.get("items"), dict):
         return st
     for k, e in list(raw["items"].items())[:MAX_ENTRIES]:
         if isinstance(e, dict) and re.fullmatch(r"[0-9a-f]{12}", str(k)) and e.get("src") in SOURCES:
@@ -152,7 +156,8 @@ def clean(raw: Any) -> dict[str, Any]:
                                   "mod": str(e.get("mod", "Allgemein"))[:30], "msg": str(e.get("msg", ""))[:MSG_MAX], "n": int(e.get("n", 1)),
                                   "first": str(e.get("first", ""))[:10], "last": str(e.get("last", ""))[:10],
                                   "vers": [str(v)[:20] for v in (e.get("vers") or [])][-5:], "ha": str(e.get("ha", ""))[:20],
-                                  "dev": {str(a): int(b) for a, b in (e.get("dev") or {}).items() if a in ("handy", "tablet", "pc", "app")}}
+                                  "dev": {str(a): int(b) for a, b in (e.get("dev") or {}).items() if a in ("handy", "tablet", "pc", "app")},
+                                  "nd": max(0, int(e.get("nd", 0)))}
             except (TypeError, ValueError):
                 continue
     return st
@@ -170,3 +175,52 @@ def as_text(e: dict[str, Any]) -> str:
             + (f"Stelle: {e['where']}\n" if e.get("where") else "")
             + f"{e['n']}× · {e['first']} bis {e['last']} · Version {', '.join(e.get('vers') or ['?'])}"
             + (f" · Home Assistant {e['ha']}" if e.get("ha") else "") + f" · Fehler-ID {e['fp']}")
+
+
+# ------------------------------------------------------------ Build 2: Fehlerberichte senden (eigene Zustimmung)
+SCHEMA = 1
+MAX_SEND = 50
+INTERVAL = 24 * 3600
+_ID = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$")
+
+
+def clean_cfg(raw: Any) -> dict[str, Any]:
+    r = raw if isinstance(raw, dict) else {}
+    i = str(r.get("id") or "")
+    c = {"asked": bool(r.get("asked")), "on": bool(r.get("on")), "id": i if _ID.match(i) else "",
+         "last_ok": float(r.get("last_ok") or 0), "last_try": float(r.get("last_try") or 0), "err": str(r.get("err") or "")[:20],
+         "skip": [str(x) for x in (r.get("skip") or []) if re.fullmatch(r"[0-9a-f]{12}", str(x))][:MAX_ENTRIES]}
+    if c["on"] and not c["id"]:
+        c["on"] = False   # ohne gültige Kennung wird nichts gesendet
+    return c
+
+
+def channel_of(version: str) -> str:
+    return "beta" if re.search(r"b\d+$", str(version or "")) else "stable"
+
+
+def build_report(st: dict[str, Any], version: str, ha: str = "", real: bool = True) -> dict[str, Any] | None:
+    """Der komplette Bericht – genau das wird gesendet. Nur Fehler seit dem letzten Senden (nd > 0), ohne „weglassen“."""
+    c = st.get("cfg") or clean_cfg(None)
+    if real and not (c["on"] and c["id"]):
+        return None
+    skip = set(c["skip"])
+    rows = [e for e in view(st) if e.get("nd", 0) > 0 and e["fp"] not in skip][:MAX_SEND]
+    return {"schema": SCHEMA, "id": c["id"] if real else "7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41", "version": str(version)[:20],
+            "channel": channel_of(version), "ha": str(ha)[:20],
+            "errors": [{"fp": e["fp"], "src": e["src"], "mod": e["mod"], "kind": e["kind"], "where": e["where"], "msg": e["msg"],
+                        "n": int(e["nd"]), "first": e["first"], "last": e["last"], "vers": list(e.get("vers") or [])} for e in rows]}
+
+
+def mark_sent(st: dict[str, Any], report: dict[str, Any], now: float) -> None:
+    sent = {x["fp"] for x in report.get("errors", [])}
+    for fp, e in st.get("items", {}).items():
+        if fp in sent:
+            e["nd"] = 0
+    st["cfg"]["last_ok"] = st["cfg"]["last_try"] = now
+    st["cfg"]["err"] = ""
+
+
+def is_due(st: dict[str, Any], now: float) -> bool:
+    c = st.get("cfg") or {}
+    return bool(c.get("on")) and now - max(c.get("last_ok", 0), c.get("last_try", 0)) >= INTERVAL
