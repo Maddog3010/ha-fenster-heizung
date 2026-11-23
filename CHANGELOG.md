@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.3b2] - 2026-11-23
+
+Zweite Testversion für 2026.11.4.3 – zwei Fehler, die die Fehler-Statistik gleich am ersten Abend gefunden hat.
+
+### Behoben
+- **Modul 0 · Raum-Sensoren:** Die Aktualisierung der Raum-Entitäten (Fläche, Temperatur, Lampen, Bewegung je Raum) lief nach Änderungen in einem Hilfs-Thread. Home Assistant meldete dann „calls async_dispatcher_send from a thread other than the event loop“ – im schlimmsten Fall kann das Home Assistant stören. Läuft jetzt im Event-Loop.
+- **Weihnachts-Theme:** Der Minutentakt lief ebenfalls in einem Hilfs-Thread. Der Tageswechsel um Mitternacht (neues Türchen, Adventssonntag) kam deshalb bei den Entitäten nicht an, bis Home Assistant neu startete. Läuft jetzt im Event-Loop.
+- Fehler-Statistik: Fehler aus den Raum-Sensoren von Modul 0 werden „Modul 0“ zugeordnet statt „Allgemein“.
+
 ## [2026.11.4.3b1] - 2026-11-23
 
 Testversion für 2026.11.4.3: **Fehler-Statistik** – Programmfehler finden, bevor du sie melden musst. Enthält alle Korrekturen aus 2026.11.4.2.
