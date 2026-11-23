@@ -98,7 +98,7 @@
     const pathOf = (r) => "M" + this._grPoly(r).map((p) => p[0] + " " + p[1]).join("L") + "Z";
     const bxl = [...rs, ...items.filter((i) => i.t === "o" && i.w)], bx = bxl.length ? bxl.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
     o = { labels: true, windows: true, doors: true, stairs: true, deco: true, bgImg: true, ...o };
-    const pad = o.dims ? 70 : 40, vb = { x: bx.x0 - pad, y: bx.y0 - pad, w: bx.x1 - bx.x0 + pad * 2, h: bx.y1 - bx.y0 + pad * 2 + 34 };
+    const pad = (o.dims ? 70 : 40) + (o.layers && o.layers.sun ? 34 : 0),   /* Sonne: Platz für das Symbol außen */ vb = { x: bx.x0 - pad, y: bx.y0 - pad, w: bx.x1 - bx.x0 + pad * 2, h: bx.y1 - bx.y0 + pad * 2 + 34 };
     const W = (T.wall || "").replace("U_", u), WI = (T.wallIn || "").replace("U_", u), kinds = new Map(rs.map((r) => [r.id, this._grKind(r)]));
     /* Muster: Böden in Plan-Einheiten (40 = 1 m) */
     const F = T.fl;

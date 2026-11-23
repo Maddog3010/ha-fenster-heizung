@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.2] - 2026-11-23
+
+Korrektur zu 2026.11.4.1: Elektroheizer lassen sich wieder speichern, die Sonne steht wieder außerhalb des Hauses und scheint durch alle Fenster, die Wetterkarte lädt schneller.
+
+### Behoben
+- **Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen** brach mit „expected str at 'id'“ ab. Home Assistant belegt das Feld „id“ in jeder Nachricht mit einer eigenen Nummer; die Befehle nutzen dafür jetzt ein eigenes Feld. Neue Heizer anlegen war nicht betroffen.
+- **Modul 0 · Sonne im Raum:** Mit der Ebene „Sonne“ lag das Sonnensymbol bei schräger Richtung (z. B. Südwest) in der Hausecke, also mitten in einem Raum. Es steht jetzt immer außerhalb des Hauses in Sonnenrichtung.
+- **Modul 0 · Keine Sonne durch die Fenster:** Fenster, die etwas außen auf der Wand gezeichnet sind, wurden für das Sonnenlicht nicht erkannt („keine Sonne durch die Fenster“, obwohl die Sonne darauf stand). Jetzt zählt jedes Fenster bis zur Wandstärke neben der Wandlinie, der Lichtstreifen beginnt an der Wand.
+- **Modul 9 · Wetterkarte lädt schneller:** Grundkarte (Satellitenbild, Kreise) und Warnungen bzw. Regenradar kommen jetzt als zwei Bilder. Die Grundkarte wird nur einmal geladen; alle 5 Minuten und beim Umschalten zwischen Warnungen und Regenradar kommt nur noch die dünne Wetter-Ebene neu, die jeweils andere wird im Hintergrund vorgeladen.
+- Gleicher Fehler behoben beim **Übernehmen von Vorschlägen in Modul 9** (Akku, Auto, Heizen) und **Modul 0 · Sichern & Einlesen** (älteren Stand wiederherstellen).
+
+### Wichtig beim Update
+- Update im Marketplace, danach Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen). Deine Heizer und Einstellungen bleiben erhalten.
+
 ## [2026.11.4.1] - 2026-11-23
 
 Korrektur zu 2026.11.4: **Modul 0** wird am Handy übersichtlich (neue Handy-Ansicht, Modul 0 v0.11) und **Modul 8** zählt die Kilometer je Tag ohne Sprünge (v1.0.1).

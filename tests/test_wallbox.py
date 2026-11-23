@@ -676,3 +676,17 @@ def test_version_order_with_hotfix():
     k = ns["_vkey"]
     vs = ["2026.11.5b1", "2026.11.4.1", "2026.11.4", "2026.11.4b59", "2026.11.4.1b1", "2026.11.3.1", "2026.1030.0b5"]
     assert sorted(vs, key=k) == ["2026.1030.0b5", "2026.11.3.1", "2026.11.4b59", "2026.11.4", "2026.11.4.1b1", "2026.11.4.1", "2026.11.5b1"]
+
+
+def test_no_ws_command_uses_reserved_id():
+    """Home Assistant belegt „id“ in jeder WebSocket-Nachricht mit der Nachrichtennummer (Zahl).
+    Ein eigenes Feld „id“ im Schema führt zu „expected str at 'id'“ (z. B. Elektroheizer speichern, 2026.11.4)."""
+    import re as _re
+    base = pathlib.Path(__file__).resolve().parents[1] / "custom_components" / "fenster_heizung"
+    bad = []
+    for f in base.rglob("*.py"):
+        src = f.read_text(encoding="utf-8")
+        for m in _re.finditer(r"websocket_command\(\s*\{(.*?)\}\s*\)\s*\n", src, _re.S):
+            if _re.search(r"vol\.(Required|Optional)\(\s*[\"']id[\"']", m.group(1)):
+                bad.append(f"{f.name}: {m.group(1)[:60]}")
+    assert not bad, bad

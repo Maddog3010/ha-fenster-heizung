@@ -20,9 +20,9 @@
   }
   _grOnSeg(s, x, y) { const [x1, y1, x2, y2] = s, dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 1) return null; const t = Math.max(0, Math.min(L, ((x - x1) * dx + (y - y1) * dy) / L)); return { t, L, d: Math.hypot(x1 + (dx * t) / L - x, y1 + (dy * t) / L - y) }; }
   /* Wo sitzt eine Tür / ein Fenster? Wand, Abstand zu beiden Ecken (in Plan-Punkten) */
-  _grOpenInfo(it, P) {
+  _grOpenInfo(it, P, tol = 3) {   /* tol: Abstand zur Wandlinie (Sonne: großzügiger, Fenster sitzen oft außen auf der Wand) */
     let best = null;
-    this._grSegs(it.fl, P).forEach((s) => { const o = this._grOnSeg(s, it.x, it.y); if (o && o.d <= 3 && o.L > 8 && (!best || o.d < best.d)) best = { ...o, seg: s }; });
+    this._grSegs(it.fl, P).forEach((s) => { const o = this._grOnSeg(s, it.x, it.y); if (o && o.d <= tol && o.L > 8 && (!best || o.d < best.d)) best = { ...o, seg: s }; });
     if (!best) return null;
     const hw = this._grHw(it, (P || this._sfPl()).scale || 40);
     return { ...best, a: best.t - hw, b: best.L - best.t - hw };

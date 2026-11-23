@@ -142,20 +142,24 @@
     if (S.el > 0.5) {
       const tn = Math.tan((S.el * Math.PI) / 180);
       (P.items || []).filter((i) => i.t === "f" && i.fl === fl && i.fk !== "dach").forEach((i, n) => {
-        const inf = this._grOpenInfo(i, P); if (!inf) return;
-        const [x1, y1, x2, y2] = inf.seg, ux = (x2 - x1) / inf.L, uy = (y2 - y1) / inf.L, nx = -uy, ny = ux, hw = this._grHw(i, sc);
-        const room = ins.find((r) => this._sfInRoom(r, i.x + nx * 12, i.y + ny * 12)) ? 1 : ins.find((r) => this._sfInRoom(r, i.x - nx * 12, i.y - ny * 12)) ? -1 : 0; if (!room) return;
+        /* 2026.11.4.2: Fenster dürfen bis zur Wandstärke neben der Wandlinie sitzen (vorher 3 Einheiten – Fenster außen auf der Wand bekamen keine Sonne) */
+        const inf = this._grOpenInfo(i, P, 14); if (!inf) return;
+        const [x1, y1, x2, y2] = inf.seg, ux = (x2 - x1) / inf.L, uy = (y2 - y1) / inf.L, nx = -uy, ny = ux, hw = this._grHw(i, sc), fx = x1 + ux * inf.t, fy = y1 + uy * inf.t;   /* Fußpunkt auf der Wandlinie */
+        const room = ins.find((r) => this._sfInRoom(r, fx + nx * 12, fy + ny * 12)) ? 1 : ins.find((r) => this._sfInRoom(r, fx - nx * 12, fy - ny * 12)) ? -1 : 0; if (!room) return;
         const inx = nx * room, iny = ny * room, outDot = -(sx * inx + sy * iny); if (outDot < 0.05) return;
-        const rm = ins.find((r) => this._sfInRoom(r, i.x + inx * 12, i.y + iny * 12)); if (!rm) return;
+        const rm = ins.find((r) => this._sfInRoom(r, fx + inx * 12, fy + iny * 12)); if (!rm) return;
         const far = Math.min(8, 2.1 / tn), n0 = (i.fk === "boden" ? 0 : 0.9) / tn, near = n0 > far - 0.5 ? Math.max(0, far - 3) : n0,   /* tiefe Wintersonne: Lichtstreifen bis weit in den Raum */ dx = -sx, dy = -sy, k = (v) => v * sc;
-        const E1 = [i.x - ux * hw, i.y - uy * hw], E2 = [i.x + ux * hw, i.y + uy * hw];
+        const E1 = [fx - ux * hw, fy - uy * hw], E2 = [fx + ux * hw, fy + uy * hw];
         const pt = (E, t) => `${E[0] + dx * k(t)} ${E[1] + dy * k(t)}`;
         const id = `${u}sun${n}`; clips += `<clipPath id="${id}"><path d="M${this._grPoly(rm).map((p) => p[0] + " " + p[1]).join("L")}Z"/></clipPath>`;
         d += `<path d="M${pt(E1, 0)}L${pt(E2, 0)}L${pt(E2, near)}L${pt(E1, near)}Z" fill="#fde68a" fill-opacity=".1" clip-path="url(#${id})"/><path d="M${pt(E1, near)}L${pt(E2, near)}L${pt(E2, far)}L${pt(E1, far)}Z" fill="url(#${u}sung)" clip-path="url(#${id})"/>`;   /* schwacher Strahl vom Fenster, dann die Lichtfläche auf dem Boden */
         lit.add(rm.n || "Raum");
       });
     }
-    const cx = (bx.x0 + bx.x1) / 2, cy = (bx.y0 + bx.y1) / 2, R = Math.max(bx.x1 - bx.x0, bx.y1 - bx.y0) / 2 + 26, px = cx + sx * R, py = cy + sy * R, up = S.el > 0;
+    /* 2026.11.4.2: Sonne immer außerhalb des Hauses – Abstand bis zum Rand des Plans in Sonnenrichtung (vorher halbe Breite + 26:
+       bei schräger Richtung wie Südwest lag sie in der Hausecke, z. B. im Sportzimmer) */
+    const cx = (bx.x0 + bx.x1) / 2, cy = (bx.y0 + bx.y1) / 2, hx = (bx.x1 - bx.x0) / 2, hy = (bx.y1 - bx.y0) / 2;
+    const R = Math.min(Math.abs(sx) > 1e-6 ? hx / Math.abs(sx) : Infinity, Math.abs(sy) > 1e-6 ? hy / Math.abs(sy) : Infinity) + (this._grDimsOn && this._grDimsOn() ? 62 : 32), px = cx + sx * R, py = cy + sy * R, up = S.el > 0;
     const sun = `<g pointer-events="none"><circle cx="${px}" cy="${py}" r="11" fill="${up ? "#fbbf24" : "#475569"}" opacity="${up ? 1 : 0.6}"/>${up ? Array.from({ length: 8 }, (_, j) => { const a = (j * Math.PI) / 4; return `<path d="M${px + 14 * Math.cos(a)} ${py + 14 * Math.sin(a)}L${px + 19 * Math.cos(a)} ${py + 19 * Math.sin(a)}" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>`; }).join("") : ""}</g>`;
     return { svg: `<defs><linearGradient id="${u}sung" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a" stop-opacity=".55"/><stop offset="1" stop-color="#fbbf24" stop-opacity=".22"/></linearGradient>${clips}</defs><g pointer-events="none" style="mix-blend-mode:screen">${d}</g>${sun}`, rooms: [...lit], S };
   }

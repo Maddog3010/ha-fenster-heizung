@@ -808,7 +808,7 @@ const MV = {
    Seite nach dem Zurückwechseln teils neu auf – dann wird sofort der letzte Stand gezeigt und im Hintergrund aktualisiert. */
 const FH_CACHE = (window.__fhCache = window.__fhCache || {});
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
-const REL = [{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]},{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]},{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]}];
+const REL = [{"v":"2026.11.4.2","d":"2026-11-23","t":["Behoben: Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen","Behoben: Modul 0 · Sonne im Raum","Behoben: Modul 0 · Keine Sonne durch die Fenster"],"c":[]},{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]},{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]}];
 const CSS_MAIN = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -7465,7 +7465,7 @@ class FensterHeizungPanel extends HTMLElement {
     const heater = { room: d.room, entity: d.entity, name: d.name.trim(), steps: W, watt: Math.max(...W), target: d.target, thermo: d.thermo, auto: d.auto, prio: d.prio, from: d.from || null, to: d.to || null };
     if (M.edit) { delete heater.room; delete heater.entity; }
     try {
-      const r = M.edit ? await this._hass.callWS({ type: "fenster_heizung/heizer_update", id: M.edit, heater }) : await this._hass.callWS({ type: "fenster_heizung/heizer_add", heater });
+      const r = M.edit ? await this._hass.callWS({ type: "fenster_heizung/heizer_update", hid: M.edit, heater }) : await this._hass.callWS({ type: "fenster_heizung/heizer_add", heater });
       if (M.edit) { this._ehD = r; this._modal = M.back; this._renderModal(); this._render(); this._toast(`„${heater.name}“ gespeichert`); return; }
       this._ehD = r; this._modal = M.back && (M.back.type === "fh" || M.back.type === "ehlist") ? M.back : null;  /* Raumdialog nicht zurückholen: sein Entwurf kennt den Heizer noch nicht */ this._renderModal(); this._render();
       this._toast(`„${heater.name}“ eingerichtet – heizt mit PV-Überschuss`);
@@ -7561,7 +7561,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "ehxpause") {
       const r = this._ehRooms().find((x) => x.id === id), e = this._ehOf(id); if (!r || !e) { this._ehLoad(); return true; }
       const pause = !this._ehPaused(r);
-      this._ehCall({ type: "fenster_heizung/heizer_update", id: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder mit PV-Überschuss`).then(() => this._renderModal());
+      this._ehCall({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder mit PV-Überschuss`).then(() => this._renderModal());
       return true;
     }
     if (!M || M.type !== "ehmove") return false;
@@ -7572,7 +7572,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "ehxmvok") {
       const e = this._ehOf(M.id), to = this._ehRooms().find((x) => x.id === M.to); if (!e || !to || M.busy) return true;
       M.busy = true; this._renderModal();
-      this._hass.callWS({ type: "fenster_heizung/heizer_update", id: e.id, heater: { room: M.to, target: M.target } })
+      this._hass.callWS({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { room: M.to, target: M.target } })
         .then((r) => { this._ehD = r; this._modal = null; this._renderModal(); this._render(); this._toast(`„${e.name}“ steht jetzt in ${to.name}`); })
         .catch((err) => { M.busy = false; M.err = (err && err.message) || "Umstellen fehlgeschlagen"; this._renderModal(); });
       return true;
@@ -7661,7 +7661,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   async _ehRestore(tid, room) {
     try {
-      this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_restore", id: tid, ...(room ? { room } : {}) });
+      this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_restore", hid: tid, ...(room ? { room } : {}) });
       const h = (this._ehD.heaters || []).find((x) => x.id === tid);
       this._toast(`„${h ? h.name : "Heizer"}“ ist wieder da${h && h.room_name ? " in " + h.room_name : ""}`); return true;
     } catch (e) { this._toast((e && e.message) || "Wiederherstellen fehlgeschlagen"); return false; }
@@ -7678,7 +7678,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     if (a === "ehxpurge") { if (M) { M.purge = b.dataset.k; this._renderModal(); } return true; }
     if (a === "ehxpurgeno") { if (M) { M.purge = ""; this._renderModal(); } return true; }
-    if (a === "ehxpurgeok") { this._hass.callWS({ type: "fenster_heizung/heizer_purge", id: b.dataset.k }).then((r) => { this._ehD = r; if (this._modal) this._modal.purge = ""; this._renderModal(); this._toast("Endgültig gelöscht"); }).catch(() => this._toast("Löschen fehlgeschlagen")); return true; }
+    if (a === "ehxpurgeok") { this._hass.callWS({ type: "fenster_heizung/heizer_purge", hid: b.dataset.k }).then((r) => { this._ehD = r; if (this._modal) this._modal.purge = ""; this._renderModal(); this._toast("Endgültig gelöscht"); }).catch(() => this._toast("Löschen fehlgeschlagen")); return true; }
     if (M && M.type === "ehrest") {
       if (a === "ehxrestno") { this._modal = M.back; this._renderModal(); return true; }
       if (a === "ehxrestto") { M.to = b.dataset.k; M.err = ""; this._renderModal(); return true; }
@@ -7690,7 +7690,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (a === "ehxdelok") {
         const e = this._ehOf(M.id); if (!e || M.busy) return true;
         M.busy = true; this._renderModal();
-        this._hass.callWS({ type: "fenster_heizung/heizer_remove", id: e.id, keep_stats: M.keep })
+        this._hass.callWS({ type: "fenster_heizung/heizer_remove", hid: e.id, keep_stats: M.keep })
           .then((r) => { this._ehD = r; this._modal = M.back && M.back.type === "ehlist" ? M.back : null; this._renderModal(); this._render(); this._ehUndoToast(`„${e.name}“ entfernt`, e.id); })
           .catch((err) => { M.busy = false; this._renderModal(); this._toast((err && err.message) || "Entfernen fehlgeschlagen"); });
         return true;
@@ -12116,7 +12116,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "wxsrb") { this._wxRbP = k; this._render(); return; }
     if (a === "wxslog") { this._wxLogF = k; this._wxLogN = 12; this._render(); return; }
     if (a === "wxslogmore") { this._wxLogN = (this._wxLogN || 12) + 30; this._render(); return; }
-    if (a === "wxsvor") { this._hass.callWS({ type: "fenster_heizung/wx_vor", id: k }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(r && r.ok ? "Erledigt" : "Das hat nicht geklappt"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
+    if (a === "wxsvor") { this._hass.callWS({ type: "fenster_heizung/wx_vor", k }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(r && r.ok ? "Erledigt" : "Das hat nicht geklappt"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
     if (a === "wxsack" && this._modal && this._modal.type === "wxalarm") { this._modal = null; this._renderModal(); }
     if (a === "wxsack" || a === "wxspause" || a === "wxsclose") {
       const m = a === "wxsack" ? { type: "fenster_heizung/wx_ack" } : a === "wxspause" ? { type: "fenster_heizung/wx_pause", minutes: Number(k) || 0 } : { type: "fenster_heizung/wx_close" };
@@ -17818,7 +17818,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "grxrest") { this._grHLoad(); this._modal = { type: "grxrest", k }; this._renderModal(); return true; }
     if (a === "grxrestgo") {
       const S = this._grS0(); this._modal = null; this._renderModal();
-      this._hass.callWS({ type: "fenster_heizung/gr_restore", id: k }).then((r) => { const { h, ...d } = r; S.d = d; S.ts = Date.now(); if (this._grH) { this._grH.d = h; this._grH.ts = Date.now(); } if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); this._toast("Stand wiederhergestellt"); })
+      this._hass.callWS({ type: "fenster_heizung/gr_restore", bid: k }).then((r) => { const { h, ...d } = r; S.d = d; S.ts = Date.now(); if (this._grH) { this._grH.d = h; this._grH.ts = Date.now(); } if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); this._toast("Stand wiederhergestellt"); })
         .catch(() => this._toast("Dieser Stand ist nicht mehr da"));
       return true;
     }
@@ -17930,7 +17930,7 @@ class FensterHeizungPanel extends HTMLElement {
     const pathOf = (r) => "M" + this._grPoly(r).map((p) => p[0] + " " + p[1]).join("L") + "Z";
     const bxl = [...rs, ...items.filter((i) => i.t === "o" && i.w)], bx = bxl.length ? bxl.reduce((a, i) => ({ x0: Math.min(a.x0, i.x), y0: Math.min(a.y0, i.y), x1: Math.max(a.x1, i.x + i.w), y1: Math.max(a.y1, i.y + i.h) }), { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 }) : { x0: 0, y0: 0, x1: 800, y1: 480 };
     o = { labels: true, windows: true, doors: true, stairs: true, deco: true, bgImg: true, ...o };
-    const pad = o.dims ? 70 : 40, vb = { x: bx.x0 - pad, y: bx.y0 - pad, w: bx.x1 - bx.x0 + pad * 2, h: bx.y1 - bx.y0 + pad * 2 + 34 };
+    const pad = (o.dims ? 70 : 40) + (o.layers && o.layers.sun ? 34 : 0),   /* Sonne: Platz für das Symbol außen */ vb = { x: bx.x0 - pad, y: bx.y0 - pad, w: bx.x1 - bx.x0 + pad * 2, h: bx.y1 - bx.y0 + pad * 2 + 34 };
     const W = (T.wall || "").replace("U_", u), WI = (T.wallIn || "").replace("U_", u), kinds = new Map(rs.map((r) => [r.id, this._grKind(r)]));
     /* Muster: Böden in Plan-Einheiten (40 = 1 m) */
     const F = T.fl;
@@ -18266,9 +18266,9 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _grOnSeg(s, x, y) { const [x1, y1, x2, y2] = s, dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 1) return null; const t = Math.max(0, Math.min(L, ((x - x1) * dx + (y - y1) * dy) / L)); return { t, L, d: Math.hypot(x1 + (dx * t) / L - x, y1 + (dy * t) / L - y) }; }
   /* Wo sitzt eine Tür / ein Fenster? Wand, Abstand zu beiden Ecken (in Plan-Punkten) */
-  _grOpenInfo(it, P) {
+  _grOpenInfo(it, P, tol = 3) {   /* tol: Abstand zur Wandlinie (Sonne: großzügiger, Fenster sitzen oft außen auf der Wand) */
     let best = null;
-    this._grSegs(it.fl, P).forEach((s) => { const o = this._grOnSeg(s, it.x, it.y); if (o && o.d <= 3 && o.L > 8 && (!best || o.d < best.d)) best = { ...o, seg: s }; });
+    this._grSegs(it.fl, P).forEach((s) => { const o = this._grOnSeg(s, it.x, it.y); if (o && o.d <= tol && o.L > 8 && (!best || o.d < best.d)) best = { ...o, seg: s }; });
     if (!best) return null;
     const hw = this._grHw(it, (P || this._sfPl()).scale || 40);
     return { ...best, a: best.t - hw, b: best.L - best.t - hw };
@@ -19038,20 +19038,24 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     if (S.el > 0.5) {
       const tn = Math.tan((S.el * Math.PI) / 180);
       (P.items || []).filter((i) => i.t === "f" && i.fl === fl && i.fk !== "dach").forEach((i, n) => {
-        const inf = this._grOpenInfo(i, P); if (!inf) return;
-        const [x1, y1, x2, y2] = inf.seg, ux = (x2 - x1) / inf.L, uy = (y2 - y1) / inf.L, nx = -uy, ny = ux, hw = this._grHw(i, sc);
-        const room = ins.find((r) => this._sfInRoom(r, i.x + nx * 12, i.y + ny * 12)) ? 1 : ins.find((r) => this._sfInRoom(r, i.x - nx * 12, i.y - ny * 12)) ? -1 : 0; if (!room) return;
+        /* 2026.11.4.2: Fenster dürfen bis zur Wandstärke neben der Wandlinie sitzen (vorher 3 Einheiten – Fenster außen auf der Wand bekamen keine Sonne) */
+        const inf = this._grOpenInfo(i, P, 14); if (!inf) return;
+        const [x1, y1, x2, y2] = inf.seg, ux = (x2 - x1) / inf.L, uy = (y2 - y1) / inf.L, nx = -uy, ny = ux, hw = this._grHw(i, sc), fx = x1 + ux * inf.t, fy = y1 + uy * inf.t;   /* Fußpunkt auf der Wandlinie */
+        const room = ins.find((r) => this._sfInRoom(r, fx + nx * 12, fy + ny * 12)) ? 1 : ins.find((r) => this._sfInRoom(r, fx - nx * 12, fy - ny * 12)) ? -1 : 0; if (!room) return;
         const inx = nx * room, iny = ny * room, outDot = -(sx * inx + sy * iny); if (outDot < 0.05) return;
-        const rm = ins.find((r) => this._sfInRoom(r, i.x + inx * 12, i.y + iny * 12)); if (!rm) return;
+        const rm = ins.find((r) => this._sfInRoom(r, fx + inx * 12, fy + iny * 12)); if (!rm) return;
         const far = Math.min(8, 2.1 / tn), n0 = (i.fk === "boden" ? 0 : 0.9) / tn, near = n0 > far - 0.5 ? Math.max(0, far - 3) : n0,   /* tiefe Wintersonne: Lichtstreifen bis weit in den Raum */ dx = -sx, dy = -sy, k = (v) => v * sc;
-        const E1 = [i.x - ux * hw, i.y - uy * hw], E2 = [i.x + ux * hw, i.y + uy * hw];
+        const E1 = [fx - ux * hw, fy - uy * hw], E2 = [fx + ux * hw, fy + uy * hw];
         const pt = (E, t) => `${E[0] + dx * k(t)} ${E[1] + dy * k(t)}`;
         const id = `${u}sun${n}`; clips += `<clipPath id="${id}"><path d="M${this._grPoly(rm).map((p) => p[0] + " " + p[1]).join("L")}Z"/></clipPath>`;
         d += `<path d="M${pt(E1, 0)}L${pt(E2, 0)}L${pt(E2, near)}L${pt(E1, near)}Z" fill="#fde68a" fill-opacity=".1" clip-path="url(#${id})"/><path d="M${pt(E1, near)}L${pt(E2, near)}L${pt(E2, far)}L${pt(E1, far)}Z" fill="url(#${u}sung)" clip-path="url(#${id})"/>`;   /* schwacher Strahl vom Fenster, dann die Lichtfläche auf dem Boden */
         lit.add(rm.n || "Raum");
       });
     }
-    const cx = (bx.x0 + bx.x1) / 2, cy = (bx.y0 + bx.y1) / 2, R = Math.max(bx.x1 - bx.x0, bx.y1 - bx.y0) / 2 + 26, px = cx + sx * R, py = cy + sy * R, up = S.el > 0;
+    /* 2026.11.4.2: Sonne immer außerhalb des Hauses – Abstand bis zum Rand des Plans in Sonnenrichtung (vorher halbe Breite + 26:
+       bei schräger Richtung wie Südwest lag sie in der Hausecke, z. B. im Sportzimmer) */
+    const cx = (bx.x0 + bx.x1) / 2, cy = (bx.y0 + bx.y1) / 2, hx = (bx.x1 - bx.x0) / 2, hy = (bx.y1 - bx.y0) / 2;
+    const R = Math.min(Math.abs(sx) > 1e-6 ? hx / Math.abs(sx) : Infinity, Math.abs(sy) > 1e-6 ? hy / Math.abs(sy) : Infinity) + (this._grDimsOn && this._grDimsOn() ? 62 : 32), px = cx + sx * R, py = cy + sy * R, up = S.el > 0;
     const sun = `<g pointer-events="none"><circle cx="${px}" cy="${py}" r="11" fill="${up ? "#fbbf24" : "#475569"}" opacity="${up ? 1 : 0.6}"/>${up ? Array.from({ length: 8 }, (_, j) => { const a = (j * Math.PI) / 4; return `<path d="M${px + 14 * Math.cos(a)} ${py + 14 * Math.sin(a)}L${px + 19 * Math.cos(a)} ${py + 19 * Math.sin(a)}" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>`; }).join("") : ""}</g>`;
     return { svg: `<defs><linearGradient id="${u}sung" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a" stop-opacity=".55"/><stop offset="1" stop-color="#fbbf24" stop-opacity=".22"/></linearGradient>${clips}</defs><g pointer-events="none" style="mix-blend-mode:screen">${d}</g>${sun}`, rooms: [...lit], S };
   }
@@ -20679,27 +20683,34 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       x0 = cx - dx; x1 = cx + dx; y0 = cy - dy; y1 = cy + dy;
     }
     if (zoom === "de" || !ok) { const cx = (x0 + x1) / 2, dy = (y1 - y0) / 2, dx = (dy * w) / h; x0 = cx - dx; x1 = cx + dx; }
-    /* Reihenfolge wie im Beispiel des DWD: Kreise (gefüllt) unten, Warnungen bzw. Radar oben – sonst deckt die Kreis-Fläche alles grün zu */
-    const L = layer === "radar" ? "dwd:bluemarble,dwd:Warngebiete_Kreise,dwd:Niederschlagsradar" : "dwd:bluemarble,dwd:Warngebiete_Kreise,dwd:Warnungen_Gemeinden_vereinigt";
-    const slot = Math.floor(Date.now() / 300000);
-    const url = `https://maps.dwd.de/geoserver/dwd/wms?service=WMS&version=1.1.1&request=GetMap&layers=${encodeURIComponent(L)}&styles=&srs=EPSG:3857&bbox=${[x0, y0, x1, y1].map((v) => v.toFixed(0)).join(",")}&width=${w}&height=${h}&format=image%2Fpng&t=${slot}`;
+    /* Reihenfolge wie im Beispiel des DWD: Kreise (gefüllt) unten, Warnungen bzw. Radar oben – sonst deckt die Kreis-Fläche alles grün zu.
+       2026.11.4.2 (schneller): zwei Bilder statt einem. Die Grundkarte (Satellitenbild + Kreise) ändert sich nie – ohne Zeitstempel, als JPEG,
+       wird nur beim ersten Mal und bei neuem Ausschnitt geladen. Alle 5 Minuten und beim Umschalten kommt nur die dünne Ebene
+       (Warnungen bzw. Radar, durchsichtiges PNG) neu; die jeweils andere Ebene wird im Hintergrund vorgeladen. */
+    const slot = Math.floor(Date.now() / 300000), bb = [x0, y0, x1, y1].map((v) => v.toFixed(0)).join(","), W = `https://maps.dwd.de/geoserver/dwd/wms?service=WMS&version=1.1.1&request=GetMap&styles=&srs=EPSG:3857&bbox=${bb}&width=${w}&height=${h}`;
+    const base = `${W}&layers=${encodeURIComponent("dwd:bluemarble,dwd:Warngebiete_Kreise")}&format=image%2Fjpeg`;
+    const ov = (ly) => `${W}&layers=${encodeURIComponent(ly === "radar" ? "dwd:Niederschlagsradar" : "dwd:Warnungen_Gemeinden_vereinigt")}&transparent=true&format=image%2Fpng&t=${slot}`;
+    const url = ov(layer), other = ov(layer === "radar" ? "warn" : "radar");
     let pin = null;
     if (ok) { const [px, py] = this._wxMerc(lat, lon); if (px >= x0 && px <= x1 && py >= y0 && py <= y1) pin = [((px - x0) / (x1 - x0)) * 100, ((y1 - py) / (y1 - y0)) * 100]; }
-    return { url, pin, ok, inDe: ok && lat > 47 && lat < 55.3 && lon > 5.5 && lon < 15.5, slot };
+    return { url, base, other, pin, ok, inDe: ok && lat > 47 && lat < 55.3 && lon > 5.5 && lon < 15.5, slot };
   }
   _wxMap(S) {
     const M = (S.cfg && S.cfg.map) || { on: true, layer: "warn", zoom: "region" };
     if (M.on === false) return "";
     const layer = this._wxMapL || M.layer || "warn", zoom = this._wxMapZ || M.zoom || "region", w = 760, h = 520, m = this._wxMapUrl(layer, zoom, w, h), Z = this.constructor.WX_MAP_Z;
     /* Gegen Flackern: gleiches Bild bleibt beim Neuaufbau stehen (data-keep); bei neuem Stand liegt das alte Bild darunter, bis das neue geladen ist */
-    const W = this._wxMapPrev || (this._wxMapPrev = { cur: "", prev: "" }), sameView = W.cur && W.cur.split("&t=")[0] === m.url.split("&t=")[0];
+    const W = this._wxMapPrev || (this._wxMapPrev = { cur: "", prev: "" }), vk = (u) => String(u).replace(/&layers=[^&]*/, "").replace(/&t=\d+/, ""), sameView = W.cur && vk(W.cur) === vk(m.url);   /* gleicher Ausschnitt: alte Ebene bleibt sichtbar, bis die neue da ist – auch beim Umschalten Warnungen ↔ Radar */
     if (W.cur !== m.url) { W.prev = sameView ? W.cur : ""; W.cur = m.url; }
     const prev = W.prev;
+    /* Vorladen: die andere Ebene (Warnungen ↔ Radar) und die Grundkarte bleiben im Speicher des Browsers – Umschalten ist dann sofort da */
+    const P = this._wxPre || (this._wxPre = new Map()), pre = (u) => { if (P.has(u)) return; if (P.size > 8) P.delete(P.keys().next().value); const im = new Image(); im.src = u; if (im.decode) im.decode().catch(() => {}); P.set(u, im); };   /* fertig entschlüsselt im Speicher */
+    pre(m.base); pre(m.url); setTimeout(() => pre(m.other), 1200);
     const t = new Date(m.slot * 300000), hm = String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
     const legend = layer === "radar" ? `<span class="wxmlg rad">leicht<i class="grad"></i>stark</span>` : `<span class="wxmlg">${[1, 2, 3, 4].map((l) => `<i style="background:${this._wxLvCol(l)}"></i>${l}`).join("")}<em>Stufe</em></span>`;
     return `<div class="card wxmap"><div class="wxtlh"><h2>${ic("pin", 18)}Wetterkarte <small class="mut">Deutscher Wetterdienst</small></h2><div class="seg wxseg"><button class="${layer === "warn" ? "sel" : ""}" data-act="wxsmapl" data-k="warn">Warnungen</button><button class="${layer === "radar" ? "sel" : ""}" data-act="wxsmapl" data-k="radar">Regenradar</button></div></div>
       ${m.ok && !m.inDe ? `<div class="wxnote">${ic("info", 15)}Dein Zuhause liegt außerhalb Deutschlands. Der DWD zeigt nur Deutschland.</div>` : ""}
-      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.url)}" data-keep="1"${prev ? ` style="background:url('${esc(prev)}') center/100% 100% no-repeat"` : ""} alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" width="${w}" height="${h}" onload="this.style.background='none'" onerror="this.parentNode.classList.add('err')">
+      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.base)}" data-keep="1" alt="" width="${w}" height="${h}" fetchpriority="high" onerror="this.parentNode.classList.add('err')"><img src="${esc(m.url)}" data-keep="1"${prev ? ` style="background:url('${esc(prev)}') center/100% 100% no-repeat"` : ""} alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" width="${w}" height="${h}" onload="this.style.background='none'" onerror="this.parentNode.classList.add('err')">
         ${m.pin ? `<span class="wxpin" style="left:${m.pin[0].toFixed(2)}%;top:${m.pin[1].toFixed(2)}%" title="Zuhause">${ic("home", 14)}</span>` : ""}<div class="wxmerr">${ic("alert", 16)}Karte vom DWD gerade nicht erreichbar. Neuer Versuch beim nächsten Aufbau.</div></div>
       <div class="wxmft"><div class="gschips">${Object.entries(Z).map(([k, [, t2]]) => `<button class="gsch ${zoom === k ? "sel" : ""}" data-act="wxsmapz" data-k="${k}">${t2}</button>`).join("")}</div>${legend}</div>
       <div class="wxmsrc">Stand ${hm} Uhr · neu alle 5 Minuten · Quelle: Deutscher Wetterdienst (GeoServer) · <a href="https://www.dwd.de/DE/wetter/warnungen_gemeinden/warnWetter_node.html" target="_blank" rel="noopener">auf dwd.de öffnen</a></div></div>`;

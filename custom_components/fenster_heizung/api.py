@@ -822,20 +822,20 @@ async def ws_heizer_add(hass: HomeAssistant, connection, msg: dict) -> None:
 
 @websocket_api.require_admin
 @websocket_api.websocket_command({
-    vol.Required("type"): "fenster_heizung/heizer_update", vol.Required("id"): str, vol.Required("heater"): dict,
+    vol.Required("type"): "fenster_heizung/heizer_update", vol.Required("hid"): str, vol.Required("heater"): dict,
 })
 @websocket_api.async_response
 async def ws_heizer_update(hass: HomeAssistant, connection, msg: dict) -> None:
-    await _heizer_do(hass, connection, msg, lambda m: m.async_update(msg["id"], msg["heater"]))
+    await _heizer_do(hass, connection, msg, lambda m: m.async_update(msg["hid"], msg["heater"]))
 
 
 @websocket_api.require_admin
 @websocket_api.websocket_command({
-    vol.Required("type"): "fenster_heizung/heizer_remove", vol.Required("id"): str, vol.Optional("keep_stats", default=True): bool,
+    vol.Required("type"): "fenster_heizung/heizer_remove", vol.Required("hid"): str, vol.Optional("keep_stats", default=True): bool,
 })
 @websocket_api.async_response
 async def ws_heizer_remove(hass: HomeAssistant, connection, msg: dict) -> None:
-    await _heizer_do(hass, connection, msg, lambda m: m.async_remove(msg["id"], msg["keep_stats"]))
+    await _heizer_do(hass, connection, msg, lambda m: m.async_remove(msg["hid"], msg["keep_stats"]))
 
 
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/get_diag"})
@@ -1626,14 +1626,14 @@ async def ws_wx_close(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 @websocket_api.require_admin
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wx_vor", vol.Required("id"): vol.In(["akku", "car", "heat_close", "heat_air"])})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/wx_vor", vol.Required("k"): vol.In(["akku", "car", "heat_close", "heat_air"])})
 @websocket_api.async_response
 async def ws_wx_vor(hass: HomeAssistant, connection, msg: dict) -> None:
     mgr = hass.data.get(DOMAIN, {}).get("wetter")
     if mgr is None:
         connection.send_error(msg["id"], "not_ready", "Wetter ist noch nicht bereit")
         return
-    connection.send_result(msg["id"], await mgr.async_vor(msg["id"], _wxwho(connection)))
+    connection.send_result(msg["id"], await mgr.async_vor(msg["k"], _wxwho(connection)))
 
 
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/tarif_get"})
@@ -1851,7 +1851,7 @@ async def ws_gr_hist(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 @websocket_api.require_admin
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/gr_restore", vol.Required("id"): vol.All(str, vol.Length(min=1, max=40))})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/gr_restore", vol.Required("bid"): vol.All(str, vol.Length(min=1, max=40))})
 @websocket_api.async_response
 async def ws_gr_restore(hass: HomeAssistant, connection, msg: dict) -> None:
     """Modul 0 Build 4: Stand aus dem Verlauf oder die Umzugs-Kopie wiederherstellen. Nur Administratoren."""
@@ -1859,7 +1859,7 @@ async def ws_gr_restore(hass: HomeAssistant, connection, msg: dict) -> None:
     if hs is None:
         connection.send_error(msg["id"], "not_ready", "Haus & Grundriss ist noch nicht bereit")
         return
-    if not await hs.restore(msg["id"]):
+    if not await hs.restore(msg["bid"]):
         connection.send_error(msg["id"], "not_found", "Diesen Stand gibt es nicht mehr")
         return
     connection.send_result(msg["id"], {**hs.snapshot(), "h": await hs.hist_list()})
@@ -2466,17 +2466,17 @@ async def ws_advent_sign(hass: HomeAssistant, connection, msg: dict) -> None:
 
 
 @websocket_api.require_admin
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/heizer_restore", vol.Required("id"): str, vol.Optional("room"): str})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/heizer_restore", vol.Required("hid"): str, vol.Optional("room"): str})
 @websocket_api.async_response
 async def ws_heizer_restore(hass: HomeAssistant, connection, msg: dict) -> None:
-    await _heizer_do(hass, connection, msg, lambda m: m.async_restore(msg["id"], msg.get("room")))
+    await _heizer_do(hass, connection, msg, lambda m: m.async_restore(msg["hid"], msg.get("room")))
 
 
 @websocket_api.require_admin
-@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/heizer_purge", vol.Required("id"): str})
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/heizer_purge", vol.Required("hid"): str})
 @websocket_api.async_response
 async def ws_heizer_purge(hass: HomeAssistant, connection, msg: dict) -> None:
-    await _heizer_do(hass, connection, msg, lambda m: m.async_purge(msg["id"]))
+    await _heizer_do(hass, connection, msg, lambda m: m.async_purge(msg["hid"]))
 
 
 @websocket_api.require_admin
