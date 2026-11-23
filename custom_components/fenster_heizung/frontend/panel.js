@@ -808,7 +808,7 @@ const MV = {
    Seite nach dem Zurückwechseln teils neu auf – dann wird sofort der letzte Stand gezeigt und im Hintergrund aktualisiert. */
 const FH_CACHE = (window.__fhCache = window.__fhCache || {});
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
-const REL = [{"v":"2026.11.4.2","d":"2026-11-23","t":["Behoben: Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen","Behoben: Modul 0 · Sonne im Raum","Behoben: Gleicher Fehler behoben beim Übernehmen von Vorschlägen in Modul 9 (Akku, Auto, Heizen) und Modul 0 · Sichern & Einlesen (älteren …"],"c":[]},{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]},{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]}];
+const REL = [{"v":"2026.11.4.2","d":"2026-11-23","t":["Behoben: Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen","Behoben: Modul 0 · Sonne im Raum","Behoben: Modul 0 · Keine Sonne durch die Fenster"],"c":[]},{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]},{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]}];
 const CSS_MAIN = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -18266,9 +18266,9 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _grOnSeg(s, x, y) { const [x1, y1, x2, y2] = s, dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy); if (L < 1) return null; const t = Math.max(0, Math.min(L, ((x - x1) * dx + (y - y1) * dy) / L)); return { t, L, d: Math.hypot(x1 + (dx * t) / L - x, y1 + (dy * t) / L - y) }; }
   /* Wo sitzt eine Tür / ein Fenster? Wand, Abstand zu beiden Ecken (in Plan-Punkten) */
-  _grOpenInfo(it, P) {
+  _grOpenInfo(it, P, tol = 3) {   /* tol: Abstand zur Wandlinie (Sonne: großzügiger, Fenster sitzen oft außen auf der Wand) */
     let best = null;
-    this._grSegs(it.fl, P).forEach((s) => { const o = this._grOnSeg(s, it.x, it.y); if (o && o.d <= 3 && o.L > 8 && (!best || o.d < best.d)) best = { ...o, seg: s }; });
+    this._grSegs(it.fl, P).forEach((s) => { const o = this._grOnSeg(s, it.x, it.y); if (o && o.d <= tol && o.L > 8 && (!best || o.d < best.d)) best = { ...o, seg: s }; });
     if (!best) return null;
     const hw = this._grHw(it, (P || this._sfPl()).scale || 40);
     return { ...best, a: best.t - hw, b: best.L - best.t - hw };
@@ -19038,13 +19038,14 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     if (S.el > 0.5) {
       const tn = Math.tan((S.el * Math.PI) / 180);
       (P.items || []).filter((i) => i.t === "f" && i.fl === fl && i.fk !== "dach").forEach((i, n) => {
-        const inf = this._grOpenInfo(i, P); if (!inf) return;
-        const [x1, y1, x2, y2] = inf.seg, ux = (x2 - x1) / inf.L, uy = (y2 - y1) / inf.L, nx = -uy, ny = ux, hw = this._grHw(i, sc);
-        const room = ins.find((r) => this._sfInRoom(r, i.x + nx * 12, i.y + ny * 12)) ? 1 : ins.find((r) => this._sfInRoom(r, i.x - nx * 12, i.y - ny * 12)) ? -1 : 0; if (!room) return;
+        /* 2026.11.4.2: Fenster dürfen bis zur Wandstärke neben der Wandlinie sitzen (vorher 3 Einheiten – Fenster außen auf der Wand bekamen keine Sonne) */
+        const inf = this._grOpenInfo(i, P, 14); if (!inf) return;
+        const [x1, y1, x2, y2] = inf.seg, ux = (x2 - x1) / inf.L, uy = (y2 - y1) / inf.L, nx = -uy, ny = ux, hw = this._grHw(i, sc), fx = x1 + ux * inf.t, fy = y1 + uy * inf.t;   /* Fußpunkt auf der Wandlinie */
+        const room = ins.find((r) => this._sfInRoom(r, fx + nx * 12, fy + ny * 12)) ? 1 : ins.find((r) => this._sfInRoom(r, fx - nx * 12, fy - ny * 12)) ? -1 : 0; if (!room) return;
         const inx = nx * room, iny = ny * room, outDot = -(sx * inx + sy * iny); if (outDot < 0.05) return;
-        const rm = ins.find((r) => this._sfInRoom(r, i.x + inx * 12, i.y + iny * 12)); if (!rm) return;
+        const rm = ins.find((r) => this._sfInRoom(r, fx + inx * 12, fy + iny * 12)); if (!rm) return;
         const far = Math.min(8, 2.1 / tn), n0 = (i.fk === "boden" ? 0 : 0.9) / tn, near = n0 > far - 0.5 ? Math.max(0, far - 3) : n0,   /* tiefe Wintersonne: Lichtstreifen bis weit in den Raum */ dx = -sx, dy = -sy, k = (v) => v * sc;
-        const E1 = [i.x - ux * hw, i.y - uy * hw], E2 = [i.x + ux * hw, i.y + uy * hw];
+        const E1 = [fx - ux * hw, fy - uy * hw], E2 = [fx + ux * hw, fy + uy * hw];
         const pt = (E, t) => `${E[0] + dx * k(t)} ${E[1] + dy * k(t)}`;
         const id = `${u}sun${n}`; clips += `<clipPath id="${id}"><path d="M${this._grPoly(rm).map((p) => p[0] + " " + p[1]).join("L")}Z"/></clipPath>`;
         d += `<path d="M${pt(E1, 0)}L${pt(E2, 0)}L${pt(E2, near)}L${pt(E1, near)}Z" fill="#fde68a" fill-opacity=".1" clip-path="url(#${id})"/><path d="M${pt(E1, near)}L${pt(E2, near)}L${pt(E2, far)}L${pt(E1, far)}Z" fill="url(#${u}sung)" clip-path="url(#${id})"/>`;   /* schwacher Strahl vom Fenster, dann die Lichtfläche auf dem Boden */

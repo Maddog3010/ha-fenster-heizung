@@ -4,11 +4,12 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 
 ## [2026.11.4.2] - 2026-11-23
 
-Korrektur zu 2026.11.4.1: Elektroheizer lassen sich wieder speichern, die Sonne steht wieder außerhalb des Hauses.
+Korrektur zu 2026.11.4.1: Elektroheizer lassen sich wieder speichern, die Sonne steht wieder außerhalb des Hauses und scheint durch alle Fenster.
 
 ### Behoben
 - **Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen** brach mit „expected str at 'id'“ ab. Home Assistant belegt das Feld „id“ in jeder Nachricht mit einer eigenen Nummer; die Befehle nutzen dafür jetzt ein eigenes Feld. Neue Heizer anlegen war nicht betroffen.
 - **Modul 0 · Sonne im Raum:** Mit der Ebene „Sonne“ lag das Sonnensymbol bei schräger Richtung (z. B. Südwest) in der Hausecke, also mitten in einem Raum. Es steht jetzt immer außerhalb des Hauses in Sonnenrichtung.
+- **Modul 0 · Keine Sonne durch die Fenster:** Fenster, die etwas außen auf der Wand gezeichnet sind, wurden für das Sonnenlicht nicht erkannt („keine Sonne durch die Fenster“, obwohl die Sonne darauf stand). Jetzt zählt jedes Fenster bis zur Wandstärke neben der Wandlinie, der Lichtstreifen beginnt an der Wand.
 - Gleicher Fehler behoben beim **Übernehmen von Vorschlägen in Modul 9** (Akku, Auto, Heizen) und **Modul 0 · Sichern & Einlesen** (älteren Stand wiederherstellen).
 
 ### Wichtig beim Update
