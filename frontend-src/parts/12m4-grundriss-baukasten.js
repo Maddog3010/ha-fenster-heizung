@@ -34,7 +34,7 @@
     const mot = Object.keys(st).filter((e) => e.startsWith("binary_sensor.") && ["motion", "occupancy", "presence"].includes((st[e].attributes || {}).device_class) && st[e].state === "on");
     rs.forEach((r) => {
       const m = this._gpMatch ? this._gpMatch(r, all) : null, s = m && !m.ms && this._rkState ? this._rkState(m) : null;
-      if (s && s.cur != null) {
+      if (s && s.cur != null && !o.noChip) {
         const t = `${num(s.cur, 1)}°`, col = s.k === "aus" ? "#64748b" : this._rkCol(s.cur, 17, 22), B = this._grChipBox(r, t), w = B[2] - B[0], x = B[0], y = B[1]; if (this._grChipAt) this._grChipAt[r.id] = B;
         d += `<g pointer-events="none"><title>${esc(m.name)} · ${t}${s.ziel != null ? ` · Ziel ${num(s.ziel, 1)}°` : ""}</title><rect x="${x}" y="${y}" width="${w}" height="20" rx="10" fill="${col}"/><circle cx="${x + 10}" cy="${y + 10}" r="3.4" fill="#fff" opacity=".85"/><text x="${x + 17}" y="${y + 14.3}" font-size="12" font-weight="800" fill="#111">${t}</text>${s.heating ? `<text x="${x - 12}" y="${y + 15}" font-size="13">🔥</text>` : ""}</g>`;
       }

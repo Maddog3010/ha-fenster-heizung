@@ -7,7 +7,7 @@ import logging
 import re
 import time
 from collections import deque
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from typing import Any
 from urllib.parse import quote
 
@@ -28,7 +28,7 @@ from .wallbox_calc import (
 )
 STALE_S = 180  # B6: so alt darf der Netz-Sensor sein, sonst wird nicht mehr erhöht
 from .wallbox_plan import (
-    add_energy, add_km, add_temp, build_slots, odo_manual, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick, assign_unknown,
+    add_energy, add_km, add_temp, build_slots, odo_history, odo_manual, clean_stats, close_session, day_ok, deadline, est_add, est_set, plan_calc, plan_mode, prices_from_attr, prune, pv_from_wh, session_edit, session_tick, assign_unknown,
     stats_view, import_plan, import_apply, UNKNOWN, sessions_bulk, sessions_clear, reconcile_days,
 )
 
@@ -544,6 +544,22 @@ class WallboxManager:
         if r["ok"]:
             self._st_store.async_delay_save(lambda: self._st, 2)
             self._add(f"Kilometerstand von {v['name']}: {round(km)} km" + ("" if r["base"] else f", {round(r['km'])} km auf {r['days']} Tage verteilt") + ".")
+        return {**r, "snap": self.snapshot()}
+
+    async def async_odo_hist(self, vid: str, rows: list[tuple[date, float]]) -> dict[str, Any]:
+        """Kilometerstände nachtragen/korrigieren (z. B. wenn der Sensor tagelang keinen Wert lieferte)."""
+        v = self._vehicle(vid)
+        if v is None:
+            return {"ok": False, "err": "Fahrzeug nicht gefunden."}
+        r = odo_history(self._st, v["name"], rows, dt_util.now().date(), only=len(self.cfg["vehicles"]) <= 1)
+        if r["ok"]:
+            last = max(rows, key=lambda x: x[0])
+            o = self._st["odoset"].get(vid)
+            if not v["ent"].get("odo") and (o is None or o["d"] <= last[0].isoformat()):
+                self._st["odoset"][vid] = {"km": float(last[1]), "d": last[0].isoformat()}
+                self._st["odos"][vid] = float(last[1])
+            self._st_store.async_delay_save(lambda: self._st, 2)
+            self._add(f"Kilometerstände von {v['name']} nachgetragen: {round(r['km'])} km auf {r['days']} Tage (vorher {round(r['old'])} km).")
         return {**r, "snap": self.snapshot()}
 
     async def async_assign(self, d0: str, d1: str, to: str) -> dict[str, Any]:

@@ -10,7 +10,7 @@ import asyncio
 import importlib.util
 import pathlib
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
 ROOT = pathlib.Path(__file__).resolve().parents[1] / "custom_components" / "fenster_heizung"
 
@@ -597,3 +597,82 @@ def test_session_sun_share_edit_adjusts_day_and_cost():
     d = st["days"]["2026-11-18"]
     assert r["pv"] == 0 and abs(d["pv"]) < 1e-9 and abs(d["grid"] - 36.5) < 1e-6
     assert abs(r["cost"] - 13.77 / 35.77 * 36.5) < 0.01 and "Sonnenanteil: 2 % → 0 %" in r["chg"][-1]["x"][0]
+
+
+# ---- 2026.11.4.1: Sensor-Lücken und Kilometerstände nachtragen
+def test_add_km_spreads_sensor_gap_over_days():
+    st = P.empty_stats()
+    t0 = datetime(2026, 10, 29, 18, 0)
+    P.add_km(st, t0, 13218, "v1", "BYD")                       # erster Wert = Startwert
+    P.add_km(st, t0 + timedelta(days=10), 14054, "v1", "BYD")  # 10 Tage kein Wert, dann 836 km mehr
+    km = {k: round(d["km"], 1) for k, d in st["days"].items() if d["km"]}
+    assert len(km) == 10 and abs(sum(km.values()) - 836) < 1e-6 and "2026-10-29" not in km
+    assert abs(st["days"]["2026-11-08"]["veh"]["BYD"]["km"] - 83.6) < 1e-6
+    assert P.clean_stats(st)["odod"]["v1"] == "2026-11-08"
+
+
+def test_add_km_same_day_and_implausible_jump():
+    st = P.empty_stats()
+    P.add_km(st, NOW, 1000, "v1", "BYD")
+    P.add_km(st, NOW, 1040, "v1", "BYD")
+    assert st["days"][NOW.date().isoformat()]["km"] == 40
+    P.add_km(st, NOW, 9000, "v1", "BYD")                         # Tachotausch/falscher Wert: nicht zählen, neu aufsetzen
+    P.add_km(st, NOW, 9010, "v1", "BYD")
+    assert st["days"][NOW.date().isoformat()]["km"] == 50
+
+
+def test_odo_history_replaces_lumped_day():
+    """Fall aus der Praxis: Sensor lieferte vom 29.10. bis 08.11. nichts, 836 km landeten am 08.11."""
+    st = P.empty_stats()
+    P.add_km(st, datetime(2026, 10, 28, 20), 13155, "v1", "BYD")
+    P.add_km(st, datetime(2026, 10, 29, 20), 13218, "v1", "BYD")
+    st["odod"].pop("v1")                                         # alter Stand ohne Datum: so entstand der Sprung
+    P.add_km(st, datetime(2026, 11, 8, 23), 14054, "v1", "BYD")
+    assert st["days"]["2026-11-08"]["km"] == 836
+    P.add_energy(st, datetime(2026, 11, 8, 13), 3600, 2600, 1400, 30.0, "BYD", "")
+    raw = "28.10. 13155 / 29.10. 13218 / 30.10. 13281 / 31.10. 13281 / 1.11. 13295 / 2.11. 13295 / 3.11. 13387 / 4.11. 13563 / 5.11. 13632 / 6.11. 13690 / 7.11. 13775 / 8.11. 14054"
+    rows = []
+    for x in raw.split("/"):
+        d, k = x.split()
+        dd, mm = d.strip(".").split(".")
+        rows.append((date(2026, int(mm), int(dd)), float(k)))
+    r = P.odo_history(st, "BYD", rows, date(2026, 11, 23), only=True)
+    assert r["ok"] and r["km"] == 899 and r["old"] == 899 and r["days"] == 11
+    want = {"2026-10-29": 63, "2026-10-30": 63, "2026-10-31": 0, "2026-11-01": 14, "2026-11-02": 0, "2026-11-03": 92,
+            "2026-11-04": 176, "2026-11-05": 69, "2026-11-06": 58, "2026-11-07": 85, "2026-11-08": 279}
+    for k, v in want.items():
+        assert abs(st["days"][k]["km"] - v) < 1e-6, k
+        assert abs(st["days"][k]["veh"].get("BYD", {}).get("km", 0) - v) < 1e-6, k
+    assert st["days"]["2026-11-08"]["grid"] > 0                  # Ladungen bleiben unberührt
+    v = P.odo_history(st, "BYD", rows, date(2026, 11, 23), only=True)   # zweimal anwenden ändert nichts
+    assert v["km"] == 899 and v["old"] == 899 and st["days"]["2026-11-08"]["km"] == 279
+
+
+def test_odo_history_rejects_bad_input():
+    st = P.empty_stats()
+    t = date(2026, 11, 1)
+    assert not P.odo_history(st, "BYD", [(t, 100.0)], t)["ok"]
+    assert not P.odo_history(st, "BYD", [(t - timedelta(days=1), 200.0), (t, 100.0)], t)["ok"]
+    assert not P.odo_history(st, "BYD", [(t - timedelta(days=1), 100.0), (t, 5000.0)], t)["ok"]
+    assert not P.odo_history(st, "BYD", [(t, 100.0), (t + timedelta(days=1), 200.0)], t)["ok"]
+
+
+def test_odo_history_keeps_other_vehicle():
+    st = P.empty_stats()
+    P._book_km(st, "2026-11-02", 30, "Golf")
+    P._book_km(st, "2026-11-02", 500, "BYD")
+    r = P.odo_history(st, "BYD", [(date(2026, 11, 1), 1000.0), (date(2026, 11, 2), 1050.0)], date(2026, 11, 5))
+    d = st["days"]["2026-11-02"]
+    assert r["old"] == 500 and d["km"] == 80 and d["veh"]["Golf"]["km"] == 30 and d["veh"]["BYD"]["km"] == 50
+
+
+def test_version_order_with_hotfix():
+    """2026.11.4.1: Die vierte Stelle (Korrektur) zählt beim Update-Hinweis."""
+    import re as _re
+    src = (pathlib.Path(__file__).resolve().parents[1] / "custom_components" / "fenster_heizung" / "general.py").read_text(encoding="utf-8")
+    ns: dict = {"re": _re}
+    code = src[src.index("_TAG_RE = "):src.index("def _is_beta")]
+    exec("from __future__ import annotations\n" + code, ns)
+    k = ns["_vkey"]
+    vs = ["2026.11.5b1", "2026.11.4.1", "2026.11.4", "2026.11.4b59", "2026.11.4.1b1", "2026.11.3.1", "2026.1030.0b5"]
+    assert sorted(vs, key=k) == ["2026.1030.0b5", "2026.11.3.1", "2026.11.4b59", "2026.11.4", "2026.11.4.1b1", "2026.11.4.1", "2026.11.5b1"]

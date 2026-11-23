@@ -221,7 +221,7 @@ def prices_from_attr(attrs: dict[str, Any]) -> list[dict[str, Any]]:
 
 # ---- Ladestatistik
 def empty_stats() -> dict[str, Any]:
-    return {"days": {}, "sessions": [], "open": None, "odo": None, "odos": {}, "est": {}, "odoset": {}, "goe": {}}
+    return {"days": {}, "sessions": [], "open": None, "odo": None, "odos": {}, "est": {}, "odoset": {}, "goe": {}, "odod": {}}
 
 
 def clean_stats(raw: Any) -> dict[str, Any]:
@@ -286,6 +286,9 @@ def clean_stats(raw: Any) -> dict[str, Any]:
                 st["odoset"][str(k)] = {"km": float(v["km"]), "d": str(v["d"])}
         except (TypeError, ValueError):
             continue
+    for k, v in (raw.get("odod") or {}).items() if isinstance(raw.get("odod"), dict) else []:
+        if re.fullmatch(r"[a-z0-9_]{1,12}", str(k)) and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(v)):
+            st["odod"][str(k)] = str(v)
     for k, v in (raw.get("est") or {}).items() if isinstance(raw.get("est"), dict) else []:
         try:
             if re.fullmatch(r"[a-z0-9]{1,12}", str(k)) and isinstance(v, dict) and 0 <= float(v.get("soc")) <= 100:
@@ -301,8 +304,21 @@ def day_ok(days: str, when: datetime) -> bool:
     return not ((days == "wk" and wd > 4) or (days == "we" and wd < 5))
 
 
+KM_DAY_MAX = 1500  # mehr als so viele km je Tag sind kein echter Wert (falscher Sensorwert, Tachotausch)
+
+
+def _book_km(st: dict[str, Any], k: str, km: float, veh: str) -> None:
+    d = _day(st, k)
+    d["km"] = d.get("km", 0.0) + km
+    if veh:
+        v = d["veh"].setdefault(veh, {"kwh": 0.0, "cost": 0.0})
+        v["km"] = v.get("km", 0.0) + km
+
+
 def add_km(st: dict[str, Any], now: datetime, odo: float | None, vid: str = "", veh: str = "") -> None:
-    """Gefahrene Kilometer aus dem Kilometerstand-Sensor fortschreiben – je Fahrzeug (v0.8), damit ein Wechsel keinen Sprung ergibt."""
+    """Gefahrene Kilometer aus dem Kilometerstand-Sensor fortschreiben – je Fahrzeug (v0.8), damit ein Wechsel keinen Sprung ergibt.
+    2026.11.4.1: Lieferte der Sensor tagelang keinen Wert (Auto schläft, Cloud offline), wird die Strecke auf die Tage seit der
+    letzten Messung verteilt – vorher landete alles auf dem Tag, an dem der Wert zurückkam (z. B. 836 km an einem Tag)."""
     if odo is None or odo < 0:
         return
     if vid:
@@ -313,12 +329,72 @@ def add_km(st: dict[str, Any], now: datetime, odo: float | None, vid: str = "", 
     else:
         last = st.get("odo")
     st["odo"] = float(odo)
-    if last is not None and 0 < odo - last < 2000:
-        d = st["days"].setdefault(now.date().isoformat(), {"pv": 0.0, "grid": 0.0, "cost": 0.0, "full": 0.0, "km": 0.0, "veh": {}})
-        d["km"] = d.get("km", 0.0) + (odo - last)
-        if veh:
-            v = d["veh"].setdefault(veh, {"kwh": 0.0, "cost": 0.0})
-            v["km"] = v.get("km", 0.0) + (odo - last)
+    today = now.date()
+    od = st.setdefault("odod", {})
+    key = vid or "_"
+    seen = od.get(key)
+    od[key] = today.isoformat()
+    if last is None or not odo - last > 0:
+        return
+    diff = odo - last
+    try:
+        start = date.fromisoformat(seen) if seen else today
+    except ValueError:
+        start = today
+    days = [start + timedelta(days=i + 1) for i in range((today - start).days)] if start < today else [today]
+    if diff / len(days) > KM_DAY_MAX:
+        return  # unplausibler Sprung: nur neu aufsetzen, nichts zählen
+    lim = (today - timedelta(days=KEEP_DAYS)).isoformat()
+    per = diff / len(days)
+    for t in days:
+        if t.isoformat() >= lim:
+            _book_km(st, t.isoformat(), per, veh)
+
+
+def odo_history(st: dict[str, Any], veh: str, rows: list[tuple[date, float]], today: date, only: bool = False) -> dict[str, Any]:
+    """Kilometerstände nachtragen oder korrigieren: Zwischen zwei Ständen wird die Strecke gleichmäßig auf die Tage dazwischen
+    verteilt (Stand = Tagesende). Die bisher gezählten km dieses Fahrzeugs im Zeitraum (erster Stand, letzter Stand] werden ersetzt.
+    only: es gibt nur ein Fahrzeug – km ohne Fahrzeug-Zuordnung zählen dann auch als seine.
+    Rückgabe: {"ok", "km" (neu), "old" (ersetzt), "days", "err"}."""
+    rows = sorted(rows, key=lambda r: r[0])
+    if len(rows) < 2:
+        return {"ok": False, "err": "Bitte mindestens zwei Kilometerstände eingeben."}
+    for (d1, k1), (d2, k2) in zip(rows, rows[1:]):
+        if d1 == d2:
+            return {"ok": False, "err": f"Der {d1.strftime('%d.%m.%Y')} steht doppelt in der Liste."}
+        if k2 < k1:
+            return {"ok": False, "err": f"Der Stand am {d2.strftime('%d.%m.')} ({round(k2)} km) ist kleiner als am {d1.strftime('%d.%m.')} ({round(k1)} km)."}
+        if (k2 - k1) / (d2 - d1).days > KM_DAY_MAX:
+            return {"ok": False, "err": f"Zwischen {d1.strftime('%d.%m.')} und {d2.strftime('%d.%m.')} wären es mehr als {KM_DAY_MAX} km am Tag – bitte prüfen."}
+    if rows[-1][0] > today:
+        return {"ok": False, "err": "Kilometerstände in der Zukunft sind nicht möglich."}
+    lim = today - timedelta(days=KEEP_DAYS)
+    if rows[0][0] < lim:
+        return {"ok": False, "err": "So weit zurück wird nicht gespeichert."}
+    new: dict[str, float] = {}
+    for (d1, k1), (d2, k2) in zip(rows, rows[1:]):
+        n = (d2 - d1).days
+        for i in range(n):
+            new[(d1 + timedelta(days=i + 1)).isoformat()] = (k2 - k1) / n
+    old = 0.0
+    for k in new:
+        d = st["days"].get(k)
+        if not d:
+            continue
+        v = d["veh"].get(veh) if veh else None
+        rm = (v or {}).get("km", 0.0)
+        if not rm and only and not any(x.get("km") for x in d["veh"].values()):
+            rm = d.get("km", 0.0)  # alte km ohne Fahrzeug
+        if v and "km" in v:
+            v.pop("km")
+        d["km"] = max(0.0, d.get("km", 0.0) - rm)
+        old += rm
+    for k, km in new.items():
+        if km > 0:
+            _book_km(st, k, km, veh)
+        else:
+            _day(st, k)
+    return {"ok": True, "km": round(sum(new.values()), 1), "old": round(old, 1), "days": len(new)}
 
 
 def _day(st: dict[str, Any], d: str) -> dict[str, Any]:
