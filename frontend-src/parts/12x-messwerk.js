@@ -9,6 +9,22 @@
   }
   _mwMod(m) { return m === 0 ? "Allgemein" : `Modul ${m}`; }
   _mwModName(m) { const x = MODS.find((y) => y.n === m) || [MOD_MU, MOD_LI].find((y) => y && y.n === m); return m === 0 ? "Start, Tablet, Personen, Labs" : x ? x.name : ((this._mwD || {}).mods || {})[m] || ""; }
+  _mwSugName(g) { return g.mode === "two" ? `${this._wzName(g.bchg)} + ${this._wzName(g.bdis)}` : this._wzName(g.eid); }
+  /* Vorschlag aus Modul 19 ins Haus übernehmen (mit Vorzeichen der Kachel) */
+  _mwSug(tid) {
+    const t = ((this._mwD || {}).tasks || []).find((x) => x.id === tid), g = t && t.sug; if (!g || !this._admin()) return;
+    const E = this._enState(), key = tid.split(".").pop();
+    if (key === "bat" && g.mode === "two") { E.bmode = "two"; E.ent.bchg = g.bchg; E.ent.bdis = g.bdis; }
+    else if (key === "bat") { E.bmode = "one"; E.ent.bat = g.eid; E.bsign = g.bsign || "charge"; }
+    else if (key === "grid") { E.ent.grid = g.eid; E.sign = g.sign || "export"; this._gen.pv = { ...this._pv(), sensor: g.eid, sign: E.sign }; }
+    else if (key === "pv") E.ent.pv = g.eid;
+    else return;
+    this._enSave(true);
+    const nm = [...new Set(t.uses.map((u) => u.m))].sort((a, b) => a - b).map((x) => (x === 0 ? "A" : x)).join(", ");
+    this._toast(`${this._mwSugName(g)} gilt jetzt für ${t.n} · Modul ${nm}`);
+    this._pkId = null; this._pkS = null; this._modal = null; this._renderModal();
+    setTimeout(() => this._mwLoad(true), 1800);
+  }
   _mwVal(eid) {
     const s = eid && this._hass.states[eid]; if (!s) return "fehlt";
     if (["unavailable", "unknown"].includes(String(s.state))) return "kein Wert";
@@ -29,7 +45,7 @@
     const order = Object.keys(G).filter((g) => by[g]);
     const list = D.tasks.filter((t) => (!f || t.g === f) && (!only || t.st !== "ok"));
     const stc = { ok: "", dead: "bad", missing: "bad", unit: "wa", open: "wa" };
-    const rows = (ts) => ts.map((t) => `<button class="sxrow mwr" data-act="${t.st === "open" && this._mwCan(t) ? "mdmwpick" : "mdmwd"}" data-k="${esc(t.id)}"><span class="sxi">${ic(this._mwIcon(t.g), 18)}</span><span class="sxt"><b>${esc(t.n)}</b><small>${t.st === "open" ? "noch kein Sensor · " + esc(t.where) : esc(t.ents.map((e) => this._wzName(e)).join(", ")) + " · " + esc(t.where)}</small></span><em class="hsv ${stc[t.st] || ""}">${esc(t.st === "ok" ? this._mwVal(t.ents[0]) : t.st === "open" ? "Zuordnen" : t.chk.find((c) => c.st !== "ok").txt)}</em>${this._mwChips(t.uses)}<span class="sxg">${ic("chev", 16)}</span></button>`).join("");
+    const rows = (ts) => ts.map((t) => `<button class="sxrow mwr" data-act="${t.st === "open" && this._mwCan(t) ? "mdmwpick" : "mdmwd"}" data-k="${esc(t.id)}"><span class="sxi">${ic(this._mwIcon(t.g), 18)}</span><span class="sxt"><b>${esc(t.n)}</b><small>${t.st === "open" ? (t.sug ? "in Modul 19 gefunden: " + esc(this._mwSugName(t.sug)) : "noch kein Sensor · " + esc(t.where)) : esc(t.ents.map((e) => this._wzName(e)).join(", ")) + " · " + esc(t.where)}</small></span><em class="hsv ${stc[t.st] || ""}">${esc(t.st === "ok" ? (t.chk.some((c) => c.night) ? "nachts aus" : this._mwVal(t.ents[0])) : t.st === "open" ? (t.sug ? "Übernehmen" : "Zuordnen") : t.chk.find((c) => c.st !== "ok").txt)}</em>${this._mwChips(t.uses)}<span class="sxg">${ic("chev", 16)}</span></button>`).join("");
     const groups = (f ? [f] : order).map((g) => { const ts = list.filter((t) => t.g === g); return ts.length ? card(rows(ts), `${esc(G[g])} <small>· ${ts.length}</small>`) : ""; }).join("");
     const hints = (D.hints || []).length ? card(D.hints.map((h) => `<${h.go ? `button class="stck" data-act="mdmwgo" data-k="${esc(h.go)}"` : 'div class="stck"'}><span class="stdot ${h.lvl || "wn"}"></span><span class="sxt"><b>${esc(h.t)}</b><small>${esc(h.x)}</small></span>${h.go ? `<span class="stgo">Ansehen ${ic("chev", 14)}</span>` : ""}</${h.go ? "button" : "div"}>`).join(""), "Hinweise des Messwerks") : "";
     return `<div class="hsuse">Jeder Sensor, der in einem Modul eingestellt ist, mit Aufgabe, Live-Wert und den Modulen, die ihn nutzen · <em class="stlv l1">🏠 für alle</em></div>

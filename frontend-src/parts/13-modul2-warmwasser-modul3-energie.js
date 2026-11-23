@@ -37,6 +37,7 @@
     else if (a === "mdstgo") { this._stGo(k); }
     else if (a === "mdmwd") { this._modal = { type: "mwdet", k }; this._renderModal(); }
     else if (a === "mdmwgo") { this._mwGo(k); }
+    else if (a === "mdmwsug") this._mwSug(k);
     else if (a === "mdmwpick") { this._pkS = null; this._modal = { type: "mwpick", k, e: b.dataset.e || "", add: !!b.dataset.add }; this._renderModal(); }
     else if (a === "mdmwg") { this._mwG = k || ""; this._mwBad = false; this._render(); }
     else if (a === "mdmwbad") { this._mwBad = !this._mwBad; this._mwG = ""; this._render(); }

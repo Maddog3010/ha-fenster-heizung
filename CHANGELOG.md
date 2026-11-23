@@ -2,6 +2,15 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.3b3] - 2026-11-23
+
+Dritte Testversion für 2026.11.4.3 – das Messwerk versteht den Hausfluss (Modul 19) besser.
+
+### Behoben
+- **Messwerk · Batterieleistung:** Ist der Akku nur in Modul 19 eingerichtet (eine Kachel mit „Beides, ein Sensor“ oder getrennt Laden/Entladen), schlägt das Messwerk diesen Sensor jetzt vor. Ein Tipp auf „Übernehmen“ trägt ihn unter Haus › Energiequellen ein – mit dem Vorzeichen der Kachel („Vorzeichen umkehren“ wird zu „Entladen positiv“). Gleiches für Solar und Netz. Sind Laden und Entladen getrennt gewählt, erscheint „Batterieleistung“ nicht mehr als offen.
+- **Messwerk · Hausfluss-Sensoren:** Statt „Power“ oder „Bottom“ steht jetzt der Kachelname und das Feld da, z. B. „PV Dach · Leistung“ oder „Hyper 2000 · Wert unten“. Ausgeschaltete Kacheln werden nicht mehr geprüft.
+- **Messwerk · Solar nachts:** Wechselrichter wie Fronius SolarNet melden nachts „nicht verfügbar“. Das gilt nachts (Sonne unter 5°) nicht mehr als Problem, sondern zeigt „nachts aus“ – für alle Solar-Sensoren, auch die im Hausfluss. Tagsüber wird ein ausgefallener Solar-Sensor jetzt gemeldet.
+
 ## [2026.11.4.3b2] - 2026-11-23
 
 Zweite Testversion für 2026.11.4.3 – zwei Fehler, die die Fehler-Statistik gleich am ersten Abend gefunden hat.
