@@ -2443,6 +2443,8 @@ button.stck{cursor:pointer}
 .stmn{font-style:normal;font-weight:400;font-size:.76rem;color:var(--mut);margin-left:6px}
 .stinfo{cursor:default}
 .stmini{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;padding:6px 14px 14px}
+.mdsr{display:flex;align-items:center;min-width:0}.mdsr+.mdsr{border-top:1px solid var(--line)}.mdsr .sxrow{flex:1;min-width:0}.mdsr .mdsx{cursor:default}.mdsr .mdsx:hover{background:none}.mdsr.off .sxt b{color:var(--mut)}.mdsoff{opacity:.55}.mdsep{flex:none;width:1px;height:28px;background:var(--line);margin:0 12px 0 4px}.mdsr .sw{margin-right:14px}.mdsr>.ibtn{flex:none}.mdsnt{flex:none;width:46px;margin-right:14px}.mdsst{display:none}.mdsseg{max-width:560px}.mdsseg button{white-space:nowrap}.mdsadd{padding:6px 14px 12px;border-top:1px solid var(--line)}.mdsft .btn2{flex:none}.mdsft{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:8px}
+@media(max-width:600px){.mdsr .sxrow>.sxc{display:none}.mdsst{display:inline}.mdsr .mdsd{display:none}.mdsr .sxt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.mdsep{margin:0 8px 0 2px}.mdsr .sw{margin-right:10px}.mdsnt{width:46px;margin-right:10px}.mdsseg button{font-size:.74rem;padding:8px 2px}}
 .stmb{display:flex;align-items:center;gap:8px;border:1px dashed var(--line);border-radius:12px;background:transparent;color:inherit;font:inherit;text-align:left;padding:8px 10px;cursor:pointer}
 .stmt{display:flex;flex-direction:column;min-width:0;line-height:1.25}.stmb b{font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stmb small{font-size:.68rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stgo svg{transform:rotate(-90deg)}
 .sxc.er{border-color:color-mix(in srgb,#ef4444 50%,transparent);color:#f87171;background:color-mix(in srgb,#ef4444 9%,transparent)}
@@ -8544,7 +8546,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "wbveh") { box.innerHTML = this._wbVehModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "iggoe") { box.innerHTML = this._igGoeModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "ortper" || m.type === "ortzone") { box.innerHTML = m.type === "ortper" ? this._ortPerModal() : this._ortZoneModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._ortBind(); return; }
-    if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
     if (m.type === "ehlist") { box.innerHTML = this._ehListModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "ehdel") { box.innerHTML = this._ehDelModal(); if (!box.innerHTML) this._modal = null; return; }
@@ -8838,7 +8840,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _mdPoll(r) {
     if (!this._hass) return;
-    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "mods", "enset", "gsset", "evset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
+    const apply = (x) => { if (!x || this._dragging || (this._modal && ["wwset", "wwsch", "enset", "gsset", "evset"].includes(this._modal.type)) || this._mdT) return; this._mdApply(x); this._render(); };
     if (r) { apply(r); return; }
     this._hass.callWS({ type: "fenster_heizung/get_modules" }).then(apply).catch(() => {});
   }
@@ -8921,7 +8923,7 @@ class FensterHeizungPanel extends HTMLElement {
       ["lk", "palette", "Darstellung", "Farben, Wetter, Raumsymbole", ""],
       ["dv", "tablet", "Dieses Gerät", "Tablet-Modus, Zeiträume, Ansicht", ""],
       ["ad", "package", "Addons", (() => { const L = this._adState().addons || [], n = L.filter((a) => a.installed).length; return `${n} installiert · ${L.length - n} im Katalog`; })(), (() => { const L = this._adState().addons || [], u = L.filter((a) => a.update).length, e = L.filter((a) => a.status === "error").length; return e ? `<em class="sxc er">${e}</em>` : u ? `<em class="sxc wa">${u}</em>` : ""; })()],
-      ["ex", "flask", "Erweiterungen", "Store, Labs, eigene Module", this._labCount() ? `<em class="sxc ok">${this._labCount()} ${this._labCount() === 1 ? "Lab" : "Labs"}</em>` : ""],
+      ["ex", "flask", "Erweiterungen", "Store und Labs", this._labCount() ? `<em class="sxc ok">${this._labCount()} ${this._labCount() === 1 ? "Lab" : "Labs"}</em>` : ""],
       ["sy", "shield", "System", "Sichern, Diagnose, Versionen", ""],
       ["sp", "heart", "Sponsor", "Schlüssel und Extras", ""]];
     const area = AREAS.some((a) => a[0] === this._stA) ? this._stA : wide ? "ov" : "";
@@ -8935,16 +8937,14 @@ class FensterHeizungPanel extends HTMLElement {
           ${row("sliders", "Sichern &amp; Wiederherstellen", "Datei und Homeserver", "gen")}`, "Häufig gebraucht")}`,
       hs: () => this._hsPage(row, card, lv),
       mw: () => this._mwPage(card),
-      md: () => `${card(act.map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(MOD_SET[m.id].txt), MOD_SET[m.id].act, "", modChip(m))]).concat(labM.filter((x) => this._labOn(x[1])).map(([m, , a, t]) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n}${MV[m.id] ? " · v" + esc(MV[m.id].v) : ""}</i>`, esc(t), a, "", `<em class="sxc lab">Lab</em>`)])).concat(this._adMods().map((m) => [m.n, row(m.icon, `${esc(m.name)} <i class="stmn">Modul ${m.n} · v${esc(m.ad.version)}</i>`, esc((this._adDef(m.aid) || {}).settingsTxt || m.tag), "adxset", m.aid, `<em class="sxc ${STG[m.stage] ? STG[m.stage].c : ""}">Addon</em>`)])).sort((x, y) => x[0] - y[0]).map((x) => x[1]).join("") + s.ext.map((x) => row("puzzle", `${esc(x.name)} <i class="stmn">Eigenes Modul</i>`, esc(x.url), "mdmgr", "", `<em class="sxc ${x.on ? "ok" : "off"}">${x.on ? "An" : "Aus"}</em>`)).join(""), `Eingeschaltet <small>· ${act.length}</small>`)}
-        ${off.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdstoff" aria-expanded="${!this._stOffC}">Ausgeschaltet <small>· ${off.length} · ein Tipp schaltet ein</small><span class="stgo">${this._stOffC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>
-          ${this._stOffC ? "" : `<div class="stmini">${off.map((m) => `<button class="stmb" data-act="mdtog" data-k="${m.id}" title="${esc(m.name)} einschalten">${ic(m.icon, 16)}<span class="stmt"><b>${esc(m.short)}</b><small>Modul ${m.n}${m.sponsor ? " · Sponsor" : m.beta && modSt(m) ? " · " + STG[modSt(m)].t : ""}</small></span></button>`).join("")}</div>`}</div>` : ""}`,
+      md: () => this._mdsPage(card),
       lk: () => card(`${row("palette", "Darstellung", "Akzentfarbe, Wetter, Raumsymbole", "look")}${this._saiRow ? this._saiRow(row) : ""}${row("home", "Startseite", this._hzOn() ? "Karten, Bubbles und Begrüßung" : "ausgeschaltet · hier wieder einschalten", "hzopen")}`),
       dv: () => `${card(`${row("tablet", `Tablet-Modus ${lv("dev")}`, `${this._tmOn() ? "An" : "Aus"} · PIN, Ruhemodus, Display`, "tmopen")}
           <div class="sxrow stinfo"><span class="sxi">${ic("month", 20)}</span><span class="sxt"><b>Zeitraum Modul 3 und 4 ${lv("dev")}</b><small>Wird in diesem Browser gemerkt, wenn du ihn im Modul wechselst</small></span></div>
           <div class="sxrow stinfo"><span class="sxi">${ic("grid", 20)}</span><span class="sxt"><b>Ansicht der Raumkarten ${lv("dev")}</b><small>${this._view() === "compact" ? "Kompakt" : "Detail"} · umschalten in Modul 1</small></span></div>`)}<div class="stleg">${lv("dev")} Diese Einstellungen gelten nur für diesen Browser und sind nicht in der Sicherung.</div>`,
       ex: () => card(`${row("puzzle", "Store &amp; Integrationen", "Dienste und Geräte entdecken, verbinden und verwalten", "igopen")}
           ${row("flask", "Labs", "Experimentelle Funktionen ansehen und einschalten", "labopen", "", `<em class="sxc ${this._labCount() ? "ok" : "off"}">${this._labCount() ? this._labCount() + " an" : "Aus"}</em>`)}
-          ${row("layers", "Module verwalten", "Module ein- und ausschalten, eigene Module hinzufügen", "mdmgr")}`),
+`),
       sy: () => card(`${row("sliders", "Sichern &amp; Wiederherstellen", "Einstellungen als Datei sichern, Homeserver, interne Kopien", "gen", "", `<em class="sxc ${lt ? "ok" : ""}">${esc(ltTxt)}</em>`)}
           ${row("clock", "Änderungsverlauf", "Wer hat wann was geändert, jede Änderung einzeln zurücknehmen", "mdstlog", "", (this._stLog || []).length ? `<em class="sxc">${this._stLog.length}</em>` : "")}
           ${row("shield", "Diagnose", "Ventile, Fenster und Verbindung prüfen", "diag")}
@@ -9411,7 +9411,6 @@ class FensterHeizungPanel extends HTMLElement {
     mainEl.innerHTML = `
       <div class="bar${this._narrow ? " nar" : ""}">${this._narrow ? `<button class="ib0" data-act="menu" aria-label="Menü">${ic("menu", 24)}</button>` : ""}
         <div class="brand"><img class="blogo" src="${LOGO_URL}" alt="MADDOG3010" draggable="false"><div><em class="pn">${esc(PRODUCT)}</em><b>Store</b><span><em class="tag">Integrationen und Dienste</em>${this._verTag()}</span></div></div>
-        <button class="pillbtn" data-act="mdmgr" aria-label="Module verwalten">${ic("layers", 16)}<span class="bl">Module</span></button>
         <button class="pillbtn" data-act="stoset" aria-label="Store anzeigen">${ic("sliders", 16)}<span class="bl">Anzeige</span></button>
         <button class="pillbtn pri" data-act="igback">${ic("check", 16)}<span class="bl">Fertig</span></button></div>
       <div class="wrap"><div class="sxw stow">
@@ -20912,7 +20911,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       { id: "tablet", t: "Tablet-Modus", p: "Dieses Gerät", k: "tablet fully kiosk pin wandtablet", lv: "dev", go: ["tmopen"], v: () => onoff(this._tmOn()), h: "Nur für diesen Browser: Vollbild für ein Wandtablet mit PIN und Ruhemodus." },
       { id: "store", t: "Store & Integrationen", p: "Erweiterungen", k: "store integration dienst tibber go-e forecast", go: ["igopen"] },
       { id: "labs", t: "Labs", p: "Erweiterungen", k: "labs experimentell test", go: ["labopen"] },
-      { id: "mods", t: "Module verwalten", p: "Erweiterungen", k: "module ein aus eigenes modul", go: ["mdmgr"] },
+      { id: "mods", t: "Module ein- und ausschalten", p: "Module", k: "module verwalten ein aus eigenes modul hinzufügen adresse", go: ["mdsta", "md"] },
       { id: "general.updates", t: "Update-Hinweise", p: "System › Sichern", k: "update version hinweis", go: ["gen"], v: () => onoff(g().updates !== false) },
       { id: "backup", t: "Sichern & Wiederherstellen", p: "System", k: "sicherung backup homeserver webdav smb wiederherstellen datei", go: ["gen"], h: "Einstellungen als Datei sichern, automatisch auf einen Homeserver kopieren oder interne Kopien zurückholen." },
       { id: "verlauf", t: "Änderungsverlauf", p: "System", k: "verlauf rückgängig änderung wer wann undo", go: ["mdstlog"], h: "Die letzten 50 Änderungen mit Benutzer und Zeit. Jede lässt sich einzeln zurücknehmen." },
@@ -21141,6 +21140,67 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     if (bad.length) out.push(["wn", `Messwerk: ${bad.length === 1 ? "1 Sensor hat" : bad.length + " Sensoren haben"} ein Problem`, bad.slice(0, 3).map((t) => esc(`${t.n} (${t.chk.find((c) => c.st !== "ok").txt})`)).join(", ") + (bad.length > 3 ? " …" : ""), "mdmwopen", "bad"]);
     (D.hints || []).filter((h) => h.lvl !== "in").forEach((h) => out.push(["wn", esc(h.t), esc(h.x), "mdmwgo", h.go]));
     return out;
+  }
+  /* ================= Einstellungen › Module (2026.11.4.3b4): alle Module an einer Stelle =================
+     Ersetzt das frühere Fenster „Module“ (Store-Knopf und „Module verwalten“). Zeile = Einstellungen des Moduls,
+     Schalter rechts = ein/aus (nur Admins). Ausschalten löscht nichts und lässt sich im Hinweis zurücknehmen. */
+  _mdsProblems() {
+    const dead = this._stDead(), out = {};
+    for (const id of Object.keys(dead)) out[id] = `${dead[id].length === 1 ? "1 Sensor ohne Wert" : dead[id].length + " Sensoren ohne Wert"}`;
+    const s = this._mdState();
+    if (s.on.ww && !this._stDone("ww") && !out.ww) out.ww = "Noch nicht eingerichtet";
+    if (this._enOn() && !this._stDone("en") && !out.en) out.en = "Noch nicht eingerichtet";
+    return out;
+  }
+  _mdsStage(m) { return m.beta ? (modSt(m) === "stabil" ? "st" : "bt") : "st"; }
+  _mdsRow(o) {
+    const adm = this._admin();
+    /* Handy: statt Beschreibung nur „Modul N · Status“ (Klassen mdsd/mdsst, umgeschaltet per CSS) */
+    const st = `<span class="mdsst">${esc(o.tag.split(" · ")[0])}${o.status ? " · " + esc(o.status) : ""}</span>`;
+    const head = `<span class="sxi${o.off ? " mdsoff" : ""}">${ic(o.icon, 20)}</span><span class="sxt"><b>${esc(o.name)} <i class="stmn mdsd">${esc(o.tag)}</i></b><small><span class="mdsd">${o.sub}</span>${st}</small></span>${o.chip || ""}`;
+    const main = o.act && !o.off ? `<button class="sxrow mdsb" data-act="${o.act}"${o.k ? ` data-k="${esc(o.k)}"` : ""}>${head}<span class="sxg">${ic("chev", 16)}</span></button>`
+      : `<div class="sxrow mdsb mdsx">${head}</div>`;
+    const tog = o.tog && adm ? `<span class="mdsep"></span><button class="sw ${o.on ? "on" : ""}" data-act="mdtog" data-k="${esc(o.id)}" aria-pressed="${!!o.on}" aria-label="${esc(o.tag)} ${o.on ? "ausschalten" : "einschalten"}"></button>`
+      : o.tog === false ? `<span class="mdsep"></span><span class="mdsnt"></span>` : "";
+    return `<div class="mdsr${o.off ? " off" : ""}">${main}${tog}</div>`;
+  }
+  _mdsPage(card) {
+    const s = this._mdState(), adm = this._admin(), prob = this._mdsProblems(), F = this._mdsF || "";
+    const chipOf = (m, id) => prob[id] ? `<em class="sxc er">${esc(prob[id])}</em>` : m && m.sponsor && m.beta ? `<em class="sxc sp">${ic("heart", 11)}Sponsor</em><em class="sxc ${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>`
+      : m && m.beta ? `<em class="sxc ${STG[modSt(m)].c}">${STG[modSt(m)].t}</em>` : id === "fh" ? `<em class="sxc">Grundmodul</em>` : this._stDone(id) ? `<em class="sxc ok">${esc(id === "gs" || id === "fh" ? this._stDone(id) : "Eingerichtet")}</em>` : `<em class="sxc wa">Offen</em>`;
+    const statusOf = (m, id) => prob[id] || (m && m.beta ? STG[modSt(m)].t : id === "fh" ? "Grundmodul" : this._stDone(id) || "Offen");
+    const keep = (stage, id) => !F || (F === "pr" ? !!prob[id] : F === stage);
+    /* Modul 0 steht nicht in MODS */
+    const gr = { n: 0, id: "gr", icon: "home", name: "Haus & Grundriss", on: s.on.gr !== false, stage: "bt", sub: "Ein Bauplan für alle Module", chip: `<em class="sxc ${STG.dev ? STG.dev.c : ""}">${STG.dev ? STG.dev.t : "In Entwicklung"}</em>`, status: "In Entwicklung" };
+    const list = [gr, ...MODS.map((m) => ({ n: m.n, id: m.id, m, icon: m.icon, name: m.name, on: this._stIsOn(m), stage: this._mdsStage(m), sub: esc((MOD_SET[m.id] || {}).txt || m.tag || ""), chip: chipOf(m, m.id), status: statusOf(m, m.id), act: (MOD_SET[m.id] || {}).act }))];
+    gr.act = "mdgo"; gr.k = "gr";
+    const ads = this._adMods().map((m) => ({ n: m.n, id: m.id, icon: m.icon, name: m.name, on: true, stage: STG[m.stage] && m.stage !== "stabil" ? "bt" : "st", sub: esc((this._adDef(m.aid) || {}).settingsTxt || m.tag || ""), chip: `<em class="sxc ${STG[m.stage] ? STG[m.stage].c : ""}">Addon</em>`, status: "Addon", act: "adxset", k: m.aid, ver: m.ad && m.ad.version, addon: true }));
+    const onL = list.filter((x) => x.on).concat(ads).sort((a, b) => a.n - b.n), offL = list.filter((x) => !x.on);
+    const rowOf = (x) => this._mdsRow({ id: x.id, icon: x.icon, name: x.name, tag: `Modul ${x.n}${x.ver ? " · v" + x.ver : MV[x.id] ? " · v" + MV[x.id].v : ""}`, sub: x.sub, status: x.status, chip: x.chip,
+      act: x.act, k: x.k, on: x.on, off: !x.on, tog: x.addon ? undefined : x.id === "fh" ? false : true });
+    const onShow = onL.filter((x) => keep(x.stage, x.id)), offShow = offL.filter((x) => keep(x.stage, x.id));
+    const nPr = Object.keys(prob).length, core = MODS.filter((m) => !m.beta && this._stIsOn(m)), done = core.filter((m) => this._stDone(m.id)).length;
+    const seg = [["", "Alle"], ["st", "Stabil"], ["bt", "Beta & Entwicklung"], ["pr", `Probleme${nPr ? " " + nPr : ""}`]].map(([k, t]) => `<button class="${F === k ? "sel" : ""}" data-act="mdsf" data-k="${k}" aria-pressed="${F === k}">${t}</button>`).join("");
+    const offC = this._stOffC ?? !!this._narrow, extC = this._mdsExtC ?? !!this._narrow, E = this._mdsE || {};
+    const extRows = s.ext.map((x) => `<div class="mdsr"><div class="sxrow mdsb mdsx"><span class="sxi">${ic("puzzle", 20)}</span><span class="sxt"><b>${esc(x.name)}</b><small><code>${esc(x.url)}</code></small></span></div>${adm ? `<button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="${esc(x.name)} entfernen">${ic("trash", 17)}</button><span class="mdsep"></span><button class="sw ${x.on ? "on" : ""}" data-act="mdtog" data-k="${x.id}" aria-pressed="${!!x.on}" aria-label="${esc(x.name)} ein- oder ausschalten"></button>` : ""}</div>`).join("");
+    const info = `<div class="minfo"><b>So ist es aufgebaut</b><ul><li>Jedes Modul meldet sich mit <b>ID, Name, Symbol und einer Seite</b> (JavaScript-Datei) an.</li><li>Es bekommt Zugriff auf Räume, PV-Überschuss, Benachrichtigungen und die Gerätediagnose.</li><li>Was ein Modul speichert, bleibt in seinem eigenen Bereich. Ausschalten löscht nichts.</li><li>Module werden einzeln über den Marketplace (bis Home Assistant 2026.10: HACS) installiert und haben eigene Versionen.</li></ul></div>`;
+    return `<div class="sxsum"><div><b>${onL.length}</b><span>an</span></div><div><b>${offL.length}</b><span>aus</span></div><div><b>${done} / ${core.length}</b><span>eingerichtet</span></div><div><b>${s.ext.length}</b><span>${s.ext.length === 1 ? "eigenes Modul" : "eigene Module"}</span></div></div>
+      <div class="seg mdsseg" role="group" aria-label="Module filtern">${seg}</div>
+      ${onShow.length ? card(onShow.map(rowOf).join(""), `Eingeschaltet <small>· ${onShow.length}${adm && !this._narrow ? " · Zeile = Einstellungen · Schalter = an/aus" : ""}</small>`) : F ? `<div class="card sxl stcard"><div class="mut sm" style="padding:14px">${F === "pr" ? "Keine Probleme – alle eingeschalteten Module sind eingerichtet und ihre Sensoren liefern." : "In diesem Filter ist kein Modul eingeschaltet."}</div></div>` : ""}
+      ${offShow.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdstoff" aria-expanded="${!offC}">Ausgeschaltet <small>· ${offShow.length} · nichts wird gelöscht</small><span class="stgo">${offC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>${offC ? "" : offShow.map(rowOf).join("")}</div>` : ""}
+      ${adm || s.ext.length ? `<div class="card sxl stcard"><button class="stch sttg" data-act="mdsext" aria-expanded="${!extC}">Eigene Module <small>· ${s.ext.length ? s.ext.length : "per Adresse einbinden"}</small><span class="stgo">${extC ? "Anzeigen ▾" : "Einklappen ▴"}</span></button>
+        ${extC ? "" : `${extRows}${adm ? `<div class="mdsadd"><div class="murl"><input class="otxt" data-f="mdurl" placeholder="/local/mein-modul.js" value="${esc(E.url || "")}" autocomplete="off" spellcheck="false" aria-label="Adresse der Moduldatei"><button class="btn2 pri" data-act="mdextadd">Hinzufügen</button></div>
+          ${E.err ? `<div class="gst on">${ic("alert", 15)}${esc(E.err)}</div>` : ""}
+          <div class="mdsft"><button class="btn2" data-act="mdhacs">${ic("download", 16)} Im ${this._storeName()} suchen</button><button class="lnk" data-act="mdinfo" aria-expanded="${!!this._mdsInfo}">${ic("info", 15)}Wie funktionieren Module?</button></div>
+          ${this._mdsInfo ? info : ""}</div>` : ""}`}</div>` : ""}`;
+  }
+  /* Nach dem Ausschalten: Hinweis mit „Rückgängig“ (kein Nachfragen – Ausschalten löscht nichts) */
+  _mdsUndo(id) {
+    const t = this.shadowRoot.getElementById("toast"); if (!t) return;
+    const m = MODS.find((x) => x.id === id), x = (this._mdState().ext || []).find((e) => e.id === id);
+    const nm = m ? `Modul ${m.n} ${m.short || m.name}` : x ? x.name : id === "gr" ? "Modul 0" : "Modul";
+    t.innerHTML = `<div class="toast ehundo"><span>${esc(nm)} ausgeschaltet</span><button data-act="mdtog" data-k="${esc(id)}">Rückgängig</button></div>`; clearTimeout(this._tt);
+    this._tt = setTimeout(() => (t.innerHTML = ""), 5000);
   }
   /* ================= Sensorsuche ohne Aufklappmenü (Messwerk M2: S1 Vorschläge, S2 Nach Raum, S4 Filter) =================
      Ersetzt die lange Liste mit Suchfeld in jeder Sensor-Auswahl. Gewählt wird wie bisher über „pkpick“, alle Aufrufer bleiben gleich. */
@@ -22102,31 +22162,36 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       this._hass.callWS({ type: "fenster_heizung/haus_set", haus: { mig_seen: true } }).then((r) => { if (r && r.haus) this._haus = r.haus; }).catch(() => {});
     }
     else if (a === "mdsta") { this._stA = k || ""; this._stS = ""; this._render(); const m = this.shadowRoot.getElementById("main"); if (m && m.scrollIntoView) window.scrollTo && window.scrollTo(0, 0); }
-    else if (a === "mdstoff") { this._stOffC = !this._stOffC; this._render(); }
+    else if (a === "mdstoff") { this._stOffC = !(this._stOffC ?? !!this._narrow); this._render(); }
     else if (a === "mdstpv") { this._ehListOpen({ type: "fh", tab: "gr" }); }
     else if (a === "mdstx") { this._stOpen = false; this._render(); }
-    else if (a === "mdmgr") { this._modal = { type: "mods" }; this._renderModal(); }
+    else if (a === "mdmgr") { this._modal = null; this._renderModal(); this._igOpen = false; this._stOpen = true; this._stA = "md"; this._stS = ""; this._render(); }   /* früheres Fenster „Module“ → Einstellungen › Module */
+    else if (a === "mdsf") { this._mdsF = k || ""; this._render(); }
+    else if (a === "mdsext") { this._mdsExtC = !(this._mdsExtC ?? !!this._narrow); this._render(); }
     else if (a === "mdsetup") { this._modal = { type: "wwset" }; this._renderModal(); }
     else if (a === "mdevset") { this._modal = { type: "evset" }; this._renderModal(); }
     else if (a === "mdgs") { this._modal = { type: "gsset" }; this._renderModal(); }
     else if (a === "mdbeta") { this._toast("Für dieses Modul gibt es in der Beta noch keine Einstellungen"); }
     else if (a === "mdensetup") { this._modal = { type: "enset", tab: k || "" }; this._renderModal(); }
     else if (a === "mdtog") {
+      if (b.closest && b.closest(".toast")) { clearTimeout(this._tt); const t = this.shadowRoot.getElementById("toast"); if (t) t.innerHTML = ""; }
       if (MODS.some((x) => x.id === k && x.sponsor) && !this._spnS().active) { this._modal = { type: "spndlg", err: "" }; this._renderModal(); return; }
       if (k === "gr") { if (s.on.gr === false) { s.on.gr = true; this._mdSave(); this._renderModal(); this._render(); } else { this._modal = { type: "grxoff" }; this._renderModal(); } return; }   /* Modul 0: Rückfrage */
       if (k === "ww") s.on.ww = !s.on.ww; else if (k === "en") { s.on.en = !this._enOn(); this._enState().on = s.on.en; } else if (k === "gs") s.on.gs = s.on.gs === false; else if (MODS.some((m) => m.beta && m.id === k)) s.on[k] = s.on[k] !== true; else { const x = s.ext.find((e) => e.id === k); if (x) x.on = !x.on; }
       if (!this._mdList().some((x) => x.id === s.active)) this._mdActiveSet("fh");
       this._mdSave(); this._renderModal(); this._render();
+      const now = k === "ww" ? s.on.ww : k === "en" ? s.on.en : k === "gs" ? s.on.gs !== false : MODS.some((m) => m.id === k) ? s.on[k] === true : !!(s.ext.find((e) => e.id === k) || {}).on;
+      if (!now) this._mdsUndo(k);   /* Ausschalten: kurz „Rückgängig“ anbieten */
     }
     else if (a === "mdextadd") {
-      const inp = this.shadowRoot.querySelector('[data-f="mdurl"]'), url = (inp ? inp.value : "").trim();
-      if (!/^(https:\/\/|\/local\/|\/hacsfiles\/).+\.js$/i.test(url)) { m.err = "Bitte die Adresse der Moduldatei eintragen, z. B. /local/mein-modul.js oder https://…/modul.js"; m.url = url; this._renderModal(); return; }
+      const inp = this.shadowRoot.querySelector('[data-f="mdurl"]'), url = (inp ? inp.value : "").trim(), E = (this._mdsE = this._mdsE || {});
+      if (!/^(https:\/\/|\/local\/|\/hacsfiles\/).+\.js$/i.test(url)) { E.err = "Bitte die Adresse der Moduldatei eintragen, z. B. /local/mein-modul.js oder https://…/modul.js"; E.url = url; this._render(); return; }
       const base = decodeURIComponent(url.split("/").pop().replace(/\.js$/i, "")).replace(/[-_.]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-      s.ext.push({ id: "x" + Date.now().toString(36), name: base || "Eigenes Modul", url, on: true }); m.err = ""; m.url = ""; this._mdSave(); this._renderModal(); this._render(); this._toast("Modul hinzugefügt");
+      s.ext.push({ id: "x" + Date.now().toString(36), name: base || "Eigenes Modul", url, on: true }); E.err = ""; E.url = ""; this._mdSave(); this._render(); this._toast("Modul hinzugefügt");
     }
-    else if (a === "mdextdel") { s.ext = s.ext.filter((x) => x.id !== k); if (s.active === k) this._mdActiveSet("fh"); this._mdSave(); this._renderModal(); this._render(); }
+    else if (a === "mdextdel") { s.ext = s.ext.filter((e) => e.id !== k); if (s.active === k) this._mdActiveSet("fh"); this._mdSave(); this._render(); }
     else if (a === "mdhacs") { this._modal = null; this._renderModal(); this._storeOpen(false); }
-    else if (a === "mdinfo") { m.info = !m.info; this._renderModal(); }
+    else if (a === "mdinfo") { this._mdsInfo = !this._mdsInfo; this._render(); }
     else if (a.startsWith("ww")) this._wwAct(a, b);
     else if (a.startsWith("en")) this._enAct(a, b);
     else if (a.startsWith("gs")) this._gsAct(a, b);
@@ -22135,7 +22200,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
   }
   _mdChange(t) {
     const f = t.dataset.f, m = this._modal;
-    if (f === "mdurl") { if (m) m.url = t.value; return true; }
+    if (f === "mdurl") { (this._mdsE = this._mdsE || {}).url = t.value; return true; }
     if (f.startsWith("ww")) return this._wwChange(t);
     if (f.startsWith("en")) return this._enChange(t);
     if (f.startsWith("gs")) return this._gsChange(t);
@@ -22150,30 +22215,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     if (m.type === "enset") return this._enSetModal();
     if (m.type === "gsset") return this._gsSetModal();
     if (m.type === "evset") return this._evSetModal();
-    const s = this._mdState(), W = s.ww, ok = this._wwConfigured();
-    const row = (id, ico, name, sub, right) => `<div class="mrow"><span class="mi">${ic(ico, 22)}</span><div class="mt"><b>${esc(name)}</b><span>${sub}</span></div>${right}</div>`;
-    const tog = (id, on) => `<button class="sw ${on ? "on" : ""}" data-act="mdtog" data-k="${id}" aria-pressed="${on}" aria-label="Modul ein- oder ausschalten"></button>`;
-    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Module</b><span>Funktionen erweitern, ohne dass sie sich stören</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="lsec">${ic("check", 15)}Installiert</div>
-      ${row("gr", "home", "Modul 0 – Haus & Grundriss", "Ein Bauplan für alle Module · in Entwicklung", `<span class="mact"><span class="mbadge dvl">In Entwicklung</span>${tog("gr", s.on.gr !== false)}</span>`)}
-      ${row("fh", "windowOpen", "Modul 1 – Fenster & Heizung", "Fenster, Heizpläne, Elektroheizer, Berichte", `<span class="mbadge">Grundmodul</span>`)}
-      ${row("ww", "boiler", "Modul 2 – Warmwasser & Zirkulation", ok ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!ok && s.on.ww ? `<button class="btn2 pri" data-act="mdsetup">Einrichten</button>` : ""}${tog("ww", s.on.ww)}</span>`)}
-      ${row("en", "energy", "Modul 3 – Energie-Übersicht", this._enConfigured() ? "Eingerichtet" : "Noch nicht eingerichtet", `<span class="mact">${!this._enConfigured() && this._enOn() ? `<button class="btn2 pri" data-act="mdensetup">Einrichten</button>` : ""}${tog("en", this._enOn())}</span>`)}
-      ${s.ext.map((x) => row(x.id, "puzzle", x.name, `<code>${esc(x.url)}</code>`, `<span class="mact"><button class="ibtn" data-act="mdextdel" data-k="${x.id}" aria-label="Modul entfernen">${ic("trash", 17)}</button>${tog(x.id, x.on)}</span>`)).join("")}
-      ${row("gs", "laundry", "Modul 4 – Gerätestrom", this._gsState().devices.length ? this._gsState().devices.length + (this._gsState().devices.length === 1 ? " Gerät" : " Geräte") : "Noch nicht eingerichtet", `<span class="mact">${tog("gs", s.on.gs !== false)}</span>`)}
-      ${MODS.filter((x) => x.beta).map((x) => row(x.id, x.icon, `Modul ${x.n} – ${x.name}`, esc(x.tag) + " · " + { dev: "in Entwicklung", beta: "Beta", vorab: "Vorabversion", stabil: "stabil" }[modSt(x)] + "", `<span class="mact">${x.sponsor ? `<span class="mbadge sp">${ic("heart", 11)}Nur Sponsoren</span>` : ""}<span class="mbadge ${STG[modSt(x)].c}">${STG[modSt(x)].t}</span>${tog(x.id, s.on[x.id] === true && (!x.sponsor || this._spnS().active))}</span>`)).join("")}
-      ${MOD_SOON.length ? `<div class="lsec">${ic("clock", 15)}Geplant</div>
-      ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
-      <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>
-      <div class="mut sm" style="margin:2px 0 8px">Module sind kleine Erweiterungen. Sie nutzen deine Räume, die PV-Einstellungen und die Meldungen mit und erscheinen hier als eigene Seite.</div>
-      <div class="gbtns"><button class="btn2" data-act="mdhacs">${ic("download", 16)} Im ${this._storeName()} suchen</button></div>
-      <div class="mut sm" style="margin:4px 0 0">Oder die Adresse einer Moduldatei eintragen</div>
-      <div class="murl"><input class="otxt" data-f="mdurl" placeholder="/local/mein-modul.js" value="${esc(m.url || "")}" autocomplete="off" spellcheck="false"><button class="btn2 pri" data-act="mdextadd">Hinzufügen</button></div>
-      ${m.err ? `<div class="gst on">${ic("alert", 15)}${esc(m.err)}</div>` : ""}
-      <button class="lnk" data-act="mdinfo">${ic("info", 15)}Wie funktionieren Module?</button>
-      ${m.info ? `<div class="minfo"><b>So ist es aufgebaut</b><ul><li>Jedes Modul meldet sich mit <b>ID, Name, Symbol und einer Seite</b> (JavaScript-Datei) an.</li><li>Es bekommt Zugriff auf Räume, PV-Überschuss, Benachrichtigungen und die Gerätediagnose.</li><li>Was ein Modul speichert, bleibt in seinem eigenen Bereich. Ausschalten löscht nichts.</li><li>Module werden einzeln über den Marketplace (bis Home Assistant 2026.10: HACS) installiert und haben eigene Versionen.</li></ul></div>` : ""}
-      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+    return "";   /* das frühere Fenster „Module“ steht seit 2026.11.4.3b4 unter Einstellungen › Module (_mdsPage) */
   }
 
   /* ---- Warmwasser: Daten ---- */

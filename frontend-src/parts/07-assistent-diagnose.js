@@ -433,7 +433,7 @@
     if (m.type === "wbveh") { box.innerHTML = this._wbVehModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "iggoe") { box.innerHTML = this._igGoeModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "ortper" || m.type === "ortzone") { box.innerHTML = m.type === "ortper" ? this._ortPerModal() : this._ortZoneModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._ortBind(); return; }
-    if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
     if (m.type === "ehlist") { box.innerHTML = this._ehListModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "ehdel") { box.innerHTML = this._ehDelModal(); if (!box.innerHTML) this._modal = null; return; }
