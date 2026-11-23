@@ -6,7 +6,7 @@
 // Gespeichert wird je Installation: zufällige Kennung, Version, Kanal, erster/letzter Tag. Keine IP-Adresse,
 // kein User-Agent. Die Begrenzung pro Absender übernimmt eine Cloudflare-Rate-Limit-Regel (siehe Anleitung).
 
-import { validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus } from "./fehler.js";
+import { validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
 export const SCHEMAS = [1, 2];   // Schema 1: ohne Module · Schema 2: mit Modulliste
 export const MODULES = { ww: "2 Warmwasser", en: "3 Energie", gs: "4 Gerätestrom", lu: "5 Lüftung", rb: "6 Rollläden", wp: "7 Wärmepumpe", ev: "8 E-Auto", wx: "9 Wetter", ga: "10 Garten", sf: "11 Sicherheit", pl: "12 Pool & Sauna", bt: "13 Batterie", dt: "14 Stromtarif", wa: "15 Wartung", sp: "16 Prognose", ef: "19 Hausfluss" };
 const MAX_BODY = 1024;
@@ -19,7 +19,7 @@ export function verKey(v) {
   const m = VER_RE.exec(v || "");
   if (!m) return [0, 0, 0, 0, 0, 0];
   const [, y, mo, r, h, b] = m;
-  return [+y, +mo, +r, b !== undefined ? 0 : 1, +(h || 0), +(b || 0)];
+  return [+y, +mo, +r, +(h || 0), b !== undefined ? 0 : 1, +(b || 0)];   // Build 5: Korrektur vor Beta – 2026.11.4.3b1 ist neuer als 2026.11.4.2
 }
 export function cmp(a, b) {
   const x = verKey(a), y = verKey(b);
@@ -80,7 +80,7 @@ export async function dbCleanup(DB, keepDays, todayMs) {
 }
 
 // ---------------------------------------------------------------- Auswertung (Port von server.py: compute)
-export function compute(installs, daily, todayStr) {
+export function compute(installs, daily, todayStr, releases = []) {
   // installs: [id, first_day, last_day, version, channel, modules]; daily: [day, id, version, channel]
   const today = D(todayStr);
   const age = (r) => diff(todayStr, r[2]);
@@ -132,6 +132,8 @@ export function compute(installs, daily, todayStr) {
   const allv = [...new Set(wk.flatMap((w) => Object.keys(w)))].sort(desc);
   const top = allv.slice(0, 4);
   out.week_versions = top;
+  out.week_from = S(weeks[0]);
+  out.rel = releaseMarks(releases, out.week_from, todayStr, 6);   // Build 5: Release-Marken im Wochenverlauf
   out.weeks = weeks.map((w, n) => {
     const d = new Date(w);
     const counts = {};
@@ -178,7 +180,7 @@ export async function loadAndCompute(DB, todayStr) {
   const since = S(D(todayStr) - 60 * dayMs - 8 * 7 * dayMs); // großzügig; compute() filtert selbst
   const dl = await DB.prepare("SELECT day, id, version, channel FROM daily WHERE day>=?").bind(since).all();
   const a = (rs) => rs.results.map((r) => Object.values(r));
-  return compute(a(ins), a(dl), todayStr);
+  return compute(a(ins), a(dl), todayStr, await loadReleases(DB));
 }
 
 // ---------------------------------------------------------------- Darstellung (Port von server.py: render)
@@ -218,11 +220,12 @@ function modBars(rows, base) {
   });
   return s + "</svg>";
 }
-function columns(weeks, vers) {
+function columns(weeks, vers, rel = [], from = "") {
   const tot = weeks.map((w) => Object.values(w.counts).reduce((a, b) => a + b, 0) + w.other);
   if (!tot.some(Boolean)) return '<div class="empty">Noch keine Daten</div>';
   const mx = Math.max(...tot) || 1;
-  let s = '<svg viewBox="0 0 460 190" role="img" aria-label="Versionen pro Woche">';
+  let s = '<svg viewBox="0 -16 460 206" role="img" aria-label="Versionen pro Woche">';
+  if (from) s += markSvg(rel, (d) => { const k = Math.round((D(d) - D(from)) / dayMs); return k < 0 || k > 55 ? null : f1(6 + Math.floor(k / 7) * 56 + ((k % 7) * 50) / 7); }, -6, 158, -6, 460);
   weeks.forEach((w, n) => {
     const x = 6 + n * 56, bw = 38;
     let y = 158;
@@ -257,7 +260,7 @@ function curvesSvg(curves) {
   for (const d of [0, 3, 7, 10, 14]) s += `<text x="${40 + (360 * d) / 14}" y="178" fill="#8d8c84" font-size="10" text-anchor="middle">${d}</text>`;
   return s + "</svg>";
 }
-export function render(r, retention = "180") {
+export function render(r, retention = "180", x = {}) {
   const ch = r.channels, cht = ch.stable + ch.beta;
   const kan = cht
     ? `<svg viewBox="0 0 460 40"><rect x="0" y="6" width="${f1((440 * ch.stable) / cht)}" height="26" rx="5" fill="#3987e5"/>` +
@@ -269,16 +272,16 @@ export function render(r, retention = "180") {
   const t50 = r.t50 !== null ? `${r.t50} Tage` : "–";
   return `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><title>Strom &amp; Wärme · Statistik</title><style>${CSS}${ERR_CSS}</style></head><body><div class="w">
-<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Welche Version ist im Einsatz? · anonym · Version und Module</small></div><span class="chip">nur du · Stand ${e(r.today)}</span></div>${tabs("v")}
+<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Welche Version ist im Einsatz? · anonym · Version und Module</small></div><span class="chip">nur du · Stand ${e(r.today)}</span></div>${tabs("v")}${x.week ? weekHtml(x.week) : ""}
 <div class="k"><div class="c"><div class="t">Aktive Installationen</div><div class="n">${r.a30}</div><div class="s">30 Tage · ${r.a7} in den letzten 7 Tagen</div></div>
 <div class="c"><div class="t">Neu diese Woche</div><div class="n">+${r.new7}</div><div class="s">${r.inactive} Installationen seit &gt;14 Tagen inaktiv</div></div>
 <div class="c"><div class="t">Auf neuester Version</div><div class="n">${r.newest_share} %</div><div class="s">${e(r.newest || "–")}</div></div>
 <div class="c"><div class="t">Update-Tempo</div><div class="n">${e(t50)}</div><div class="s">bis 50 % einer neuen Version nutzen</div></div></div>
 <div class="g"><div class="c"><h2>Versionen aktuell</h2><div class="u">${r.a30} aktive Installationen (30 Tage)</div>${bars(r.versions.slice(0, 8), VCOL)}</div>
-<div class="c"><h2>Verlauf: Versionen pro Woche</h2><div class="u">Neueste Version je Installation und Woche</div>${columns(r.weeks, r.week_versions)}<div class="l">${legend}</div></div>
+<div class="c"><h2>Verlauf: Versionen pro Woche</h2><div class="u">Neueste Version je Installation und Woche</div>${columns(r.weeks, r.week_versions, r.rel, r.week_from)}<div class="l">${legend}${(r.rel || []).length ? '<span><i style="background:#d95926"></i>neue Version erschienen</span>' : ""}</div></div>
 <div class="c"><h2>Kanal &amp; Aktivität</h2><div class="u">Kanal (30 Tage)</div>${kan}<div class="u" style="margin-top:10px">Zuletzt gesehen</div>${bars(r.seen, "#3987e5", 78)}</div>
 <div class="c"><h2>Update-Tempo</h2><div class="u">Anteil auf neuer Version nach x Tagen</div>${curvesSvg(r.curves)}</div>
-<div class="c"><h2>Modul-Nutzung</h2><div class="u">Installationen mit Modul an · Basis ${r.mod_base} (30 Tage)</div>${modBars(r.modules, r.mod_base)}</div></div>
+<div class="c"><h2>Modul-Nutzung</h2><div class="u">Installationen mit Modul an · Basis ${r.mod_base} (30 Tage)</div>${modBars(r.modules, r.mod_base)}</div>${x.lag ? lagHtml(x.lag) : ""}</div>
 <div class="f">Nur Teilnehmende zählen: Die Zahlen sind Untergrenzen und zeigen Trends, keine absolute Nutzerzahl. Kennungen ohne Meldung seit ${e(retention)} Tagen werden gelöscht.</div></div></body></html>`;
 }
 
@@ -345,9 +348,9 @@ async function ingest(req, env, url) {
   return res === "ok" ? json(200) : json(429, { ok: false, error: res });
 }
 
-const page = (title, body, today) => `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+const page = (title, body, today, week = null) => `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><title>${title}</title><style>${CSS}${ERR_CSS}</style></head><body><div class="w">
-<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Fehlerberichte · freiwillig · bereinigt</small></div><span class="chip">nur du · Stand ${e(today)}</span></div>${tabs("f")}${body}
+<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Fehlerberichte · freiwillig · bereinigt</small></div><span class="chip">nur du · Stand ${e(today)}</span></div>${tabs("f")}${weekHtml(week)}${body}
 <div class="f">Nur Installationen, die Fehlerberichte eingeschaltet haben. Berichte älter als 90 Tage werden gelöscht.</div></div></body></html>`;
 const html = (s, code = 200) => new Response(s, { status: code, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
 
@@ -368,15 +371,16 @@ async function dashboard(req, env, url) {
   }
   if (fm && fm[1]) {
     const D = await errLoadOne(env.DB, fm[1], today);
-    return D ? html(page("Fehler · Strom &amp; Wärme", errRenderOne(D, env.GITHUB_REPO), today)) : html(page("Fehler · Strom &amp; Wärme", '<div class="c"><div class="empty">Diesen Fehler gibt es nicht (mehr).</div></div>', today), 404);
+    return D ? html(page("Fehler · Strom &amp; Wärme", errRenderOne(D, env.GITHUB_REPO), today, (await errLoad(env.DB, today, 7)).week)) : html(page("Fehler · Strom &amp; Wärme", '<div class="c"><div class="empty">Diesen Fehler gibt es nicht (mehr).</div></div>', today), 404);
   }
   if (fm) {
-    const q = {}; for (const k of ["tage", "mod", "src", "neu", "alle", "ign"]) { const v = url.searchParams.get(k); if (v) q[k] = v.slice(0, 40); }
-    const days = [30, 90].includes(+q.tage) ? +q.tage : 7;
-    return html(page("Fehler · Strom &amp; Wärme", errRender(await errLoad(env.DB, today, days), q), today));
+    const q = {}; for (const k of ["tage", "mod", "src", "neu", "alle", "ign", "ver"]) { const v = url.searchParams.get(k); if (v) q[k] = v.slice(0, 40); }
+    if (q.ver && !VER_RE.test(q.ver)) delete q.ver;
+    const days = [30, 90].includes(+q.tage) ? +q.tage : 7, er = await errLoad(env.DB, today, days);
+    return html(page("Fehler · Strom &amp; Wärme", errRender(er, q), today, er.week));
   }
-  const r = await loadAndCompute(env.DB, today);
-  return html(render(r, env.RETENTION_DAYS || "180"));
+  const r = await loadAndCompute(env.DB, today), er = await errLoad(env.DB, today, 7);
+  return html(render(r, env.RETENTION_DAYS || "180", { week: er.week, lag: laggards(er.rows, r.versions) }));
 }
 
 export default {

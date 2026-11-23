@@ -11,6 +11,7 @@ const post = (env, path, body, host = "stats.x.dev") => worker.fetch(new Request
 
 // Versionsreihenfolge
 assert.ok(cmp("2026.11.3b42", "2026.11.3") < 0 && cmp("2026.11.3", "2026.11.3.1") < 0 && cmp("2026.11.3.1", "2026.11.4b25") < 0);
+assert.ok(cmp("2026.11.4.2", "2026.11.4.3b1") < 0 && cmp("2026.11.4.3b2", "2026.11.4.3b3") < 0 && cmp("2026.11.4.3b3", "2026.11.4.3") < 0, "Korrektur-Betas nach der letzten Korrektur");
 // Validierung
 const id = ID();
 assert.ok(validPing({ schema: 1, id, version: "2026.11.4", channel: "stable" }));

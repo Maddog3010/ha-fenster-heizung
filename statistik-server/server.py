@@ -51,12 +51,12 @@ def cfg(name: str, default: str = "") -> str:
 
 # ------------------------------------------------------------------ Versionen
 def ver_key(v: str) -> tuple:
-    """Sortierschlüssel: 2026.11.4b25 < 2026.11.4 < 2026.11.4.1 < 2026.11.5b1."""
+    """Sortierschlüssel: 2026.11.4b25 < 2026.11.4 < 2026.11.4.1 < 2026.11.4.2 < 2026.11.4.3b1 < 2026.11.4.3 < 2026.11.5b1."""
     m = VER_RE.match(v or "")
     if not m:
         return (0, 0, 0, 0, 0, 0)
     y, mo, r, h, b = m.groups()
-    return (int(y), int(mo), int(r), 0 if b else 1, int(h or 0), int(b or 0))
+    return (int(y), int(mo), int(r), int(h or 0), 0 if b else 1, int(b or 0))
 
 
 def channel_of(v: str) -> str:

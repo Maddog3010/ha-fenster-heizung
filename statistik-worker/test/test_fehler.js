@@ -113,3 +113,51 @@ console.log("Fehler-Tests OK");
   assert.ok(h.includes('action="/fehler/a1b2c3d4e5f6"') && h.includes("github.com/x/y/issues/new") && h.includes("Issue #36"));
   console.log("Build-4-Tests OK");
 }
+
+// ---- Build 5: neu in Version, Wochenblick, Release-Marken, Nachzügler
+{
+  const F = await import("../src/fehler.js");
+  const env = mkenv(), a = ID(), b = ID(), c = ID();
+  const day = (k) => new Date(Date.now() - k * 86400000).toISOString().slice(0, 10);
+  await post(env, "/v1/errors", R(a, [E(), E({ fp: "111111111111", mod: "Modul 9", msg: "Timeout" })], { version: "2026.11.4.3b1", channel: "beta" }));
+  await post(env, "/v1/errors", R(b, [E({ fp: "222222222222", mod: "Modul 0", msg: "thread" })], { version: "2026.11.4.3b3", channel: "beta" }));
+  await post(env, "/v1/errors", R(c, [E()], { version: "2026.11.4.2" }));
+  // F2: erste Version je Fehler, Filter
+  let r = await F.errLoad(env.DB, today, 7);
+  const by = Object.fromEntries(r.rows.map((x) => [x.fp, x]));
+  assert.equal(by.a1b2c3d4e5f6.first_ver, "2026.11.4.2"); assert.equal(by["222222222222"].first_ver, "2026.11.4.3b3");
+  assert.deepEqual(r.intro.map((x) => x[0]), ["2026.11.4.3b3", "2026.11.4.3b1", "2026.11.4.2"]);
+  let h = F.errRender(r, { ver: "2026.11.4.3b3" });
+  assert.ok(h.includes("/fehler/222222222222") && !h.includes("/fehler/111111111111") && h.includes("Neu in Version:") && h.includes("seit 11.4.3b3"));
+  assert.ok(!F.errRender(r, { ver: "2026.11.4.3b3", mod: "Modul 9" }).includes("/fehler/222222222222"), "Filter kombinierbar");
+  // F6: Wochenblick
+  assert.deepEqual(r.week, { neu: 3, back: 0, fixed: 0, stale: 0 });
+  env.DB.raw.prepare("UPDATE err_groups SET status='behoben', fixed_in='2026.11.4.3b2', status_day=? WHERE fp='a1b2c3d4e5f6'").run(today);
+  env.DB.raw.prepare("UPDATE err_groups SET status='arbeit', status_day=? WHERE fp='111111111111'").run(day(20));
+  r = await F.errLoad(env.DB, today, 7);
+  assert.deepEqual(r.week, { neu: 2, back: 0, fixed: 1, stale: 1 }, "neu bleibt neu, auch wenn in Arbeit");
+  assert.ok(F.weekHtml(r.week).includes("1 behoben") && F.weekHtml(r.week).includes("seit über 14 Tagen"));
+  assert.ok(F.weekHtml({ neu: 0, back: 0, fixed: 0, stale: 0 }).includes("keine neuen Fehler"));
+  // V3: Nachzügler – Fehler seit 4.2, behoben in 4.3b2 → 4.2 und 4.3b1 betroffen, 4.3b3 nicht
+  const L = F.laggards(r.rows, [["2026.11.4.3b3", 4], ["2026.11.4.3b1", 2], ["2026.11.4.2", 7], ["2026.11.4.1", 3]]);
+  assert.equal(L.total, 9); assert.equal(L.list.length, 1); assert.deepEqual(L.list[0].vers, ["2026.11.4.2", "2026.11.4.3b1"]);
+  assert.ok(F.lagHtml(L).includes("9 aktive Installationen") && F.lagHtml(L).includes("bisher nur Beta"));
+  assert.ok(F.lagHtml(F.laggards([], [])).includes("Noch kein Fehler"));
+  // V1: Release-Marken
+  env.DB.raw.prepare("INSERT INTO daily VALUES(?,?,?,?)").run(day(40), ID(), "2026.11.4.1", "stable");
+  const rel = await F.loadReleases(env.DB);
+  assert.equal(rel.find((x) => x.v === "2026.11.4.1").d, day(40)); assert.equal(rel.find((x) => x.v === "2026.11.4.2").d, today);
+  const many = Array.from({ length: 12 }, (_, i) => ({ v: `2026.11.5b${i + 1}`, d: day(12 - i) })).concat([{ v: "2026.11.4.2", d: day(20) }]);
+  const mk = F.releaseMarks(many, day(29), today, 6);
+  assert.equal(mk.length, 6); assert.ok(mk.some((x) => x.v === "2026.11.4.2"), "stabile immer"); assert.ok(mk.some((x) => x.v === "2026.11.5b12"), "neueste Beta");
+  const d = await F.errLoadOne(env.DB, "a1b2c3d4e5f6", today);
+  assert.ok(F.errRenderOne(d).includes("stroke-dasharray") && F.errRenderOne(d).includes("neue Version erschienen"));
+  // Dashboard: Wochenblick oben, Nachzügler-Karte, Filter-Parameter geprüft
+  await post(env, "/v1/ping", { schema: 1, id: ID(), version: "2026.11.4.2", channel: "stable" });
+  const home = await (await dget(env, "/")).text();
+  assert.ok(home.includes("Diese Woche") && home.includes("Nachzügler mit bekanntem Fehler") && home.includes("1 aktive Installationen"));
+  const fl = await (await dget(env, "/fehler?ver=2026.11.4.3b3")).text();
+  assert.ok(fl.includes("/fehler/222222222222") && !fl.includes("/fehler/111111111111"));
+  assert.ok((await (await dget(env, "/fehler?ver=<x>")).text()).includes("/fehler/111111111111"), "ungültige Version wird ignoriert");
+  console.log("Build-5-Tests OK");
+}
