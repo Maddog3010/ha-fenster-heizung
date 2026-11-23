@@ -28,7 +28,7 @@
     try { this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_get" }); } catch (_) { this._ehD = null; }
     if (this._modal && this._modal.type === "ehwiz") this._renderModal();
   }
-  _ehSteps(d) { return d.tpl === "own" ? String(d.txt || "").split(/[^0-9]+/).map(Number).filter((w) => w >= 50 && w <= 10000).slice(0, 8).sort((a, b) => a - b) : d.steps; }
+  _ehSteps(d) { if (d.tpl === "mess") return [...new Set((d.meas || []).map((w) => Math.round(w / 10) * 10))].filter((w) => w >= 50 && w <= 10000).sort((a, b) => a - b).slice(0, 8); return d.tpl === "own" ? String(d.txt || "").split(/[^0-9]+/).map(Number).filter((w) => w >= 50 && w <= 10000).slice(0, 8).sort((a, b) => a - b) : d.steps; }
   _ehCands() {
     const st = this._hass.states, rooms = this._ehRooms(), th = new Set(rooms.flatMap((r) => r.thermos || []));
     const used = new Map(((this._ehD && this._ehD.heaters) || []).map((h) => [h.entity, h.name]));
@@ -62,7 +62,9 @@
       const cl = d.entity.startsWith("climate."), pm = cl ? ((st[d.entity] || {}).attributes || {}).preset_modes || [] : [];
       body = `<h3 class="wzt">Wie viel Leistung?</h3><div class="mut sm" style="margin:-4px 0 8px">Nach der Leistung entscheidet Modul 1, ob der Überschuss reicht. Hat der Heizer Stufen, wird bei mehr Überschuss höher geschaltet.</div>
         <div class="lfkind">${S.EH_TPL.map(([k, l, w, i]) => `<button class="${d.tpl === k ? "sel" : ""}" data-act="ehxtpl" data-k="${k}"><b>${ic(i, 14)} ${l}</b><span>${w.length > 1 ? w.map((x) => num(x, 0)).join(" · ") + " W" : `eine Stufe, ${num(w[0], 0)} W`}</span></button>`).join("")}
+        ${d.entity.startsWith("switch.") && !M.edit ? `<button class="${d.tpl === "mess" ? "sel" : ""}" data-act="ehxtpl" data-k="mess"><b>${ic("chart", 14)} Messen</b><span>Mit dem Leistungssensor der Steckdose, Stufe für Stufe (je 30 Sekunden)</span></button>` : ""}
         <button class="${d.tpl === "own" ? "sel" : ""}" data-act="ehxtpl" data-k="own"><b>${ic("pencil", 14)} Eigene Werte</b><span>Leistung laut Typenschild, Stufen mit Komma trennen</span></button></div>
+        ${d.tpl === "mess" ? this._ehMeasBox(d) : ""}
         ${d.tpl === "own" ? `<div class="lsec">${ic("bolt", 15)}Leistungsstufen in Watt</div><input class="otxt" type="text" inputmode="numeric" data-f="ehxtxt" value="${esc(d.txt)}" placeholder="z. B. 800, 1200, 1800 oder 1500" aria-label="Leistungsstufen in Watt">` : ""}
         ${W.length ? `<div class="stpv" style="margin-top:10px">${W.map((w, i) => `<span><b>${i + 1}</b>${wfmt(w)}</span>`).join("")}</div>` : `<div class="mut sm" style="margin-top:8px">Mindestens eine Leistung zwischen 50 und 10 000 W eingeben.</div>`}
         ${cl ? `<div class="gst">${ic("info", 15)}${pm.length ? `Klima-Gerät mit ${pm.length} Voreinstellungen: Die Stufen werden ihnen automatisch zugeordnet, ändern kannst du das in den Raumeinstellungen.` : "Klima-Gerät ohne Voreinstellungen: Modul 1 schaltet nur ein und aus (höchste Stufe)."}</div>` : W.length > 1 ? `<div class="gst">${ic("info", 15)}Eine Steckdose kennt nur Ein und Aus: Modul 1 rechnet mit der höchsten Stufe. Stell den Heizer am Gerät auf diese Stufe.</div>` : ""}`;
@@ -77,6 +79,7 @@
         ${W.length > 1 && d.entity.startsWith("climate.") ? row("Stufen regeln", "Automatisch: höhere Stufe bei mehr Überschuss.", seg("auto", [["on", "Automatisch"], ["off", "Fest"]])) : ""}
         <button class="lnk" data-act="ehxmore" style="margin:8px 0 4px">${ic("chev", 14)} ${d.more ? "Weniger" : "Mehr Einstellungen (Priorität, Zeitfenster)"}</button>
         ${d.more ? row("Priorität", "1 wird zuerst versorgt, wenn der Überschuss nicht für alle reicht.", step("prio", "", 1, 1, 9)) + row("Erlaubt ab", "Optional. Leer = ganztägig.", tin("from", "Erlaubt ab")) + row("Erlaubt bis", "", tin("to", "Erlaubt bis")) + (d.from || d.to ? `<button class="lnk" data-act="ehxnotime">Zeitfenster entfernen</button>` : "") : ""}
+        ${!M.edit ? `<button class="btn2" data-act="ehxtest" style="width:100%;margin:8px 0 0" ${M.testUntil && M.testUntil > Date.now() ? "disabled" : ""}>${ic("play", 15)} ${M.testUntil && M.testUntil > Date.now() ? `Testlauf läuft noch ${Math.ceil((M.testUntil - Date.now()) / 1000)} s …` : "Testlauf (30 Sekunden ein)"}</button><div class="mut sm" style="margin:4px 0 0">Prüft, ob Modul 1 das Gerät schalten kann – unabhängig vom Überschuss. Danach ist es wieder wie vorher.</div>` : ""}
         <div class="gst on">${ic("sun", 15)}${this._pvNow() != null ? `Heizt nur mit PV-Überschuss. Gerade frei: ${wfmt(Math.max(0, this._pvNow()))}${this._pvNow() >= Math.min(...W) ? " – er könnte gleich starten." : "."}` : "Heizt nur mit PV-Überschuss. Den Netz-Sensor wählst du unter Haus › Energiequellen."}</div>`;
     }
     return `<div class="ov" data-act="ehxcancel"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Elektroheizer ${M.edit ? "bearbeiten" : "hinzufügen"}">
@@ -88,6 +91,7 @@
   _ehChange(t) {
     const M = this._modal; if (!M || M.type !== "ehwiz") return false;
     const f = t.dataset.f, d = M.d;
+    if (f === "ehxpw") { d.pw = t.value || ""; this._renderModal(); return true; }
     if (f === "ehxe") { d.entity = t.value || ""; d.name = ""; this._renderModal(); return true; }
     if (f === "ehxname") { d.name = t.value; return true; }
     if (f === "ehxtxt") { d.txt = t.value; this._renderModal(); return true; }
@@ -96,11 +100,11 @@
   }
   _ehAct(a, b) {
     if (a === "ehxnew") { this._ehOpen(b.dataset.id || ""); return; }
-    if (this._ehAct3(a, b)) return;
+    if (this._ehAct3(a, b) || this._ehAct4(a, b)) return;
     const M = this._modal; if (!M || M.type !== "ehwiz") return;
     const d = M.d, steps = this._ehStepList(M), pos = steps.indexOf(M.step);
     M.err = "";
-    if (a === "ehxcancel") { this._pkId = null; this._modal = M.back; this._renderModal(); return; }
+    if (a === "ehxcancel") { this._pkId = null; this._ehStopTick(); this._modal = M.back; this._renderModal(); return; }
     if (a === "ehxent") { d.entity = b.dataset.k; d.name = ""; }
     else if (a === "ehxroom") { d.room = b.dataset.k; if (!M.fixed) { const r = this._ehRooms().find((x) => x.id === d.room), z = r ? this._ehRoomTemp(r).ziel : null; if (z != null && isFinite(z)) d.target = Math.round(z * 2) / 2; } }
     else if (a === "ehxtpl") { d.tpl = b.dataset.k; const T = this.constructor.EH_TPL.find((x) => x[0] === d.tpl); if (T) d.steps = T[2]; }
@@ -111,6 +115,9 @@
     else if (a === "ehxback") { this._pkId = null; M.step = steps[Math.max(0, pos - 1)]; }
     else if (a === "ehxnext") { this._pkId = null; M.step = steps[Math.min(steps.length - 1, pos + 1)]; const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; }
     else if (a === "ehxsave") { this._ehSave(); return; }
+    else if (a === "ehxmeas") { this._ehMeasure(); return; }
+    else if (a === "ehxmdel") d.meas = (d.meas || []).filter((_, i) => i !== +b.dataset.i);
+    else if (a === "ehxtest") { this._ehTestRun(d.entity, 30).then((r) => { if (r) { M.testUntil = Date.now() + 30000; this._ehTick(); } }); return; }
     this._renderModal();
   }
   async _ehSave() {
@@ -149,6 +156,7 @@
       <div class="lsec">${ic("bolt", 15)}Deine Heizer</div>
       <div class="fhs"><div class="sxl">${rows || `<div class="mut sm" style="padding:12px 14px">Noch kein Elektroheizer eingerichtet.</div>`}</div>
       ${adm && rooms.some((r) => !r.htr) ? `<div style="padding:0 12px 12px"><button class="btn2 pri" data-act="ehxnew" style="width:100%">${ic("plus", 16)} Elektroheizer hinzufügen</button></div>` : ""}</div>
+      ${this._ehTrashBlock()}
       ${this._ehPvRules()}
       <div class="foot2">${M.back ? `<button class="btn2" data-act="ehxlback">Zurück</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
@@ -176,6 +184,7 @@
         ${it("ehxedit", "pencil", "Bearbeiten", `Name, Leistung${st.length > 1 ? ` (${st.length} Stufen)` : ""}, Heizen bis, Zeitfenster`)}
         ${it("ehxmove", "home", "In anderen Raum stellen", "Statistik und Einstellungen ziehen mit")}
         ${it("ehxpause", ps ? "play" : "pause", ps ? "Fortsetzen" : "Pausieren", ps ? "Heizt wieder mit PV-Überschuss" : "Bleibt eingerichtet, heizt nicht")}
+        ${it("ehxdel", "trash", "Heizer entfernen", "Gerät aus, Thermostate zurück, 30 Tage im Papierkorb", "dng")}
         ${it("hrep", "chart", "Bericht", "Überschuss, Stufen und Raumtemperatur eines Tages")}</div>` : ""}
       ${e ? "" : `<div class="mut sm" style="margin:8px 0 0">Wird geladen …</div>`}
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
@@ -230,4 +239,123 @@
       return true;
     }
     this._renderModal(); return true;
+  }
+  /* ---------- Build 4: Leistung messen, Testlauf, Entfernen mit Rückgängig, Papierkorb ---------- */
+  _ehPwSensors() {
+    const st = this._hass.states;
+    return Object.keys(st).filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "power" || /^k?W$/.test(st[e].attributes.unit_of_measurement || "")));
+  }
+  _ehW(eid) { const x = this._hass.states[eid]; if (!x) return null; const v = parseFloat(x.state); if (!isFinite(v)) return null; return x.attributes.unit_of_measurement === "kW" ? v * 1000 : v; }
+  _ehMeasBox(d) {
+    const M = this._modal, mz = M.meas, now = d.pw ? this._ehW(d.pw) : null, n = (d.meas || []).length;
+    const base = (d.entity || "").replace(/^switch\./, "").replace(/_(schalter|switch|steckdose|plug|socket)$/, "");
+    const hint = new RegExp(base.split("_").filter((x) => x.length > 3).join("|") || "steckdose|plug|leistung|power", "i");
+    const pct = mz ? Math.min(100, Math.round(((Date.now() - mz.t0) / 30000) * 100)) : 0;
+    return `<div class="lsec">${ic("chart", 15)}Leistungssensor der Steckdose</div>
+      ${this._wzSel(this._ehPwSensors(), d.pw || "", "ehxpw", `data-k="pw"`, "– Sensor wählen –", hint)}
+      ${d.pw ? `<div class="ehmeter${mz ? " run" : ""}"><i style="width:${mz ? pct : 0}%"></i><span>${now != null ? wfmt(Math.max(0, now)) : "kein Wert"}${mz ? ` · misst ${Math.max(0, 30 - Math.round((Date.now() - mz.t0) / 1000))} s` : ""}</span></div>
+        <div class="mut sm" style="margin:0 0 6px">${n ? `Stell den Heizer am Gerät auf die nächste Stufe und miss erneut.` : `Stell den Heizer am Gerät auf die kleinste Stufe (oder seine einzige) und tippe „Messen“. Er läuft dafür 30 Sekunden.`}</div>
+        ${n ? `<div class="stpv">${(d.meas || []).map((w, i) => `<span><b>${i + 1}</b>${wfmt(w)}<button class="ehx" data-act="ehxmdel" data-i="${i}" aria-label="Messung ${i + 1} entfernen">${ic("close", 12)}</button></span>`).join("")}</div>` : ""}
+        <button class="btn2 ${n ? "" : "pri"}" data-act="ehxmeas" style="width:100%" ${mz || n >= 8 ? "disabled" : ""}>${ic("play", 15)} ${mz ? "Misst …" : n ? `Stufe ${n + 1} messen` : "Messen"}</button>` : `<div class="mut sm" style="margin:6px 0 0">Ohne Leistungssensor bitte „Vorlage“ oder „Eigene Werte“ nehmen.</div>`}`;
+  }
+  async _ehTestRun(entity, seconds) {
+    try { await this._hass.callWS({ type: "fenster_heizung/heizer_test", entity, seconds }); return true; }
+    catch (e) { this._toast((e && e.message) || "Testlauf nicht möglich"); return false; }
+  }
+  _ehTick() { clearInterval(this._ehT); this._ehT = setInterval(() => { const M = this._modal; if (!M || M.type !== "ehwiz") { this._ehStopTick(); return; } const busy = (M.meas) || (M.testUntil && M.testUntil > Date.now() - 1000); if (!busy) { this._ehStopTick(); } this._renderModal(); }, 1000); }
+  _ehStopTick() { clearInterval(this._ehT); this._ehT = null; }
+  async _ehMeasure() {
+    const M = this._modal, d = M.d; if (!d.pw || M.meas) return;
+    if (!(await this._ehTestRun(d.entity, 32))) return;
+    M.meas = { t0: Date.now(), vals: [] }; this._ehTick();
+    const sample = setInterval(() => {
+      const cur = this._modal; if (!cur || cur !== M) { clearInterval(sample); return; }
+      const v = this._ehW(d.pw), age = Date.now() - M.meas.t0;
+      if (v != null && age > 8000) M.meas.vals.push(v);   /* die ersten Sekunden: Gerät heizt erst an */
+      if (age >= 30000) {
+        clearInterval(sample);
+        const vs = M.meas.vals.filter((x) => x > 20).sort((a, b) => a - b), med = vs.length ? vs[Math.floor(vs.length / 2)] : null;
+        M.meas = null;
+        if (med == null) { M.err = "Keine Leistung gemessen. Ist der Heizer am Gerät eingeschaltet und der richtige Sensor gewählt?"; }
+        else { d.meas = [...(d.meas || []), Math.round(med)]; this._toast(`Gemessen: ${wfmt(Math.round(med))}`); }
+        this._renderModal();
+      }
+    }, 1000);
+  }
+  /* Entfernen */
+  _ehDelModal() {
+    const M = this._modal, r = this._ehRooms().find((x) => x.id === M.id), e = this._ehOf(M.id); if (!r || !r.htr) return "";
+    const h = r.htr, kwh = Number(h.heute_kwh) || 0, days = Object.keys(h.verlauf || {}).length, line = (l, v) => `<div class="of"><div class="ol"><b>${l}</b></div><div class="oc"><b>${v}</b></div></div>`;
+    return `<div class="ov" data-act="ehxdelno"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${esc(this._ehName(r))} entfernen?</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="ehxdelno" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:0 0 6px">Das passiert:</div>
+      ${line("Heizer", h.stufe > 0 ? "wird sofort ausgeschaltet" : "bleibt aus")}
+      ${line(`Thermostate in ${esc(r.name)}`, h.thermo_aktiv ? "laufen wieder normal" : "unverändert")}
+      ${line("Schalter „Elektroheizer aktiv“", "wird entfernt")}
+      ${line("Gerät in Home Assistant", "bleibt")}
+      ${e && e.autos ? `<div class="gbox" style="margin:8px 0">${ic("info", 14)} ${e.autos} ${e.autos === 1 ? "Automation nutzt" : "Automationen nutzen"} den Schalter „Elektroheizer aktiv“. Sie ${e.autos === 1 ? "findet" : "finden"} ihn danach nicht mehr.</div>` : ""}
+      <div class="lsec">${ic("chart", 15)}Statistik${kwh || days ? ` (${num(kwh, 1)} kWh heute${days ? `, Verlauf ${days} Tage` : ""})` : ""}</div>
+      <div class="seg oseg"><button class="${M.keep ? "sel" : ""}" data-act="ehxkeep" data-v="1">Behalten</button><button class="${!M.keep ? "sel" : ""}" data-act="ehxkeep" data-v="0">Löschen</button></div>
+      <div class="mut sm" style="margin:6px 0 0">Der Heizer bleibt 30 Tage im Papierkorb (Modul 1 · Einstellungen › Geräte › Elektroheizer) und lässt sich dort wiederherstellen${M.keep ? " – mit Statistik" : ""}.</div>
+      <div class="foot2"><button class="btn2" data-act="ehxdelno">Abbrechen</button><button class="btn2 dng" data-act="ehxdelok" ${M.busy || !e ? "disabled" : ""}>${M.busy ? "Entfernt …" : "Entfernen"}</button></div></div>`;
+  }
+  _ehUndoToast(msg, hid) {
+    const t = this.shadowRoot.getElementById("toast"); if (!t) return;
+    t.innerHTML = `<div class="toast ehundo"><span>${esc(msg)}</span><button data-act="ehxundo" data-k="${esc(hid)}">Rückgängig</button></div>`; clearTimeout(this._tt);
+    this._tt = setTimeout(() => (t.innerHTML = ""), 10000);
+  }
+  /* Papierkorb in der Liste */
+  _ehTrashBlock() {
+    const T = (this._ehD && this._ehD.trash) || [], M = this._modal, adm = this._admin(); if (!T.length || !adm) return "";
+    const left = (t) => Math.max(1, 30 - Math.floor((Date.now() / 1000 - (t.removed || 0)) / 86400)), why = { removed: "entfernt", off: "ausgeschaltet", migrated: "aus älterer Version", room_deleted: "Raum gelöscht" };
+    return `<div class="lsec">${ic("trash", 15)}Zuletzt entfernt</div><div class="fhs">${T.map((t) => `<div class="ehtr"><span class="sxi">${ic("bolt", 18)}</span><span class="sxt"><b>${esc(t.name)}</b><small>${esc(t.room_name || "Raum unbekannt")} · ${why[t.reason] || "entfernt"} am ${new Date((t.removed || 0) * 1000).toLocaleDateString("de-DE")}${t.has_stats ? " · mit Statistik" : ""}</small></span><em class="sxc">noch ${left(t)} T.</em>
+      <span class="ehtrb">${M.purge === t.id ? `<button class="btn2 sm" data-act="ehxpurgeno">Behalten</button><button class="btn2 sm dng" data-act="ehxpurgeok" data-k="${esc(t.id)}">Endgültig löschen</button>` : `<button class="btn2 sm" data-act="ehxpurge" data-k="${esc(t.id)}">Löschen</button><button class="btn2 sm pri" data-act="ehxrest" data-k="${esc(t.id)}">Wiederherstellen</button>`}</span></div>`).join("")}</div>`;
+  }
+  _ehRestModal() {
+    const M = this._modal, t = ((this._ehD && this._ehD.trash) || []).find((x) => x.id === M.tid); if (!t) return "";
+    const rooms = this._ehRooms();
+    return `<div class="ov" data-act="ehxrestno"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Wohin mit ${esc(t.name)}?</b><span>${esc(t.room_name || "Der alte Raum")} ist nicht frei</span></div><button class="ibtn" data-act="ehxrestno" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="ehrooms">${rooms.map((x) => `<button class="ehroom${M.to === x.id ? " sel" : ""}" data-act="ehxrestto" data-k="${esc(x.id)}" ${x.htr ? "disabled" : ""}>${this._rkMiniById(x.id)}<span><b>${esc(x.name)}</b><small>${x.htr ? "hat schon einen Heizer" : "kein Heizer"}</small></span></button>`).join("")}</div>
+      ${M.err ? `<div class="gbox" style="margin-top:10px">${esc(M.err)}</div>` : ""}
+      <div class="foot2"><button class="btn2" data-act="ehxrestno">Abbrechen</button><button class="btn2 pri" data-act="ehxrestok" ${M.to && !M.busy ? "" : "disabled"}>Wiederherstellen</button></div></div>`;
+  }
+  async _ehRestore(tid, room) {
+    try {
+      this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_restore", id: tid, ...(room ? { room } : {}) });
+      const h = (this._ehD.heaters || []).find((x) => x.id === tid);
+      this._toast(`„${h ? h.name : "Heizer"}“ ist wieder da${h && h.room_name ? " in " + h.room_name : ""}`); return true;
+    } catch (e) { this._toast((e && e.message) || "Wiederherstellen fehlgeschlagen"); return false; }
+  }
+  _ehAct4(a, b) {
+    const M = this._modal;
+    if (a === "ehxundo") { const t = this.shadowRoot.getElementById("toast"); if (t) t.innerHTML = ""; this._ehRestore(b.dataset.k).then(() => { this._render(); this._renderModal(); }); return true; }
+    if (a === "ehxdel") { this._modal = { type: "ehdel", id: b.dataset.id || (M && M.id), keep: true, back: M && M.back, busy: false }; this._renderModal(); this._ehLoad(); return true; }
+    if (a === "ehxrest") {
+      const tid = b.dataset.k, t = ((this._ehD && this._ehD.trash) || []).find((x) => x.id === tid), r = t && this._ehRooms().find((x) => x.id === t.room);
+      if (r && !r.htr) { this._ehRestore(tid).then(() => { this._render(); this._renderModal(); }); }
+      else { this._modal = { type: "ehrest", tid, to: "", back: M, busy: false, err: "" }; this._renderModal(); }
+      return true;
+    }
+    if (a === "ehxpurge") { if (M) { M.purge = b.dataset.k; this._renderModal(); } return true; }
+    if (a === "ehxpurgeno") { if (M) { M.purge = ""; this._renderModal(); } return true; }
+    if (a === "ehxpurgeok") { this._hass.callWS({ type: "fenster_heizung/heizer_purge", id: b.dataset.k }).then((r) => { this._ehD = r; if (this._modal) this._modal.purge = ""; this._renderModal(); this._toast("Endgültig gelöscht"); }).catch(() => this._toast("Löschen fehlgeschlagen")); return true; }
+    if (M && M.type === "ehrest") {
+      if (a === "ehxrestno") { this._modal = M.back; this._renderModal(); return true; }
+      if (a === "ehxrestto") { M.to = b.dataset.k; M.err = ""; this._renderModal(); return true; }
+      if (a === "ehxrestok") { M.busy = true; this._renderModal(); this._ehRestore(M.tid, M.to).then((ok) => { if (ok) { this._modal = M.back; this._render(); } else M.busy = false; this._renderModal(); }); return true; }
+    }
+    if (M && M.type === "ehdel") {
+      if (a === "ehxdelno") { this._modal = { type: "rkhtr", id: M.id, back: M.back }; this._renderModal(); return true; }
+      if (a === "ehxkeep") { M.keep = b.dataset.v === "1"; this._renderModal(); return true; }
+      if (a === "ehxdelok") {
+        const e = this._ehOf(M.id); if (!e || M.busy) return true;
+        M.busy = true; this._renderModal();
+        this._hass.callWS({ type: "fenster_heizung/heizer_remove", id: e.id, keep_stats: M.keep })
+          .then((r) => { this._ehD = r; this._modal = M.back && M.back.type === "ehlist" ? M.back : null; this._renderModal(); this._render(); this._ehUndoToast(`„${e.name}“ entfernt`, e.id); })
+          .catch((err) => { M.busy = false; this._renderModal(); this._toast((err && err.message) || "Entfernen fehlgeschlagen"); });
+        return true;
+      }
+    }
+    return false;
   }

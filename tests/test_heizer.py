@@ -290,6 +290,81 @@ def test_manager_move_carries_stats_and_pause():
                 sys.modules[n] = mod
 
 
+def test_manager_remove_restore_purge_and_test_run():
+    REG.ents, REG.removed = {"r1_heater_enabled": "switch.buero_aktiv"}, []
+    er = types.ModuleType("homeassistant.helpers.entity_registry")
+    er.async_get = lambda hass: REG
+    later = []
+    ev = types.ModuleType("homeassistant.helpers.event")
+    ev.async_call_later = lambda hass, s, fn: later.append((s, fn)) or (lambda: None)
+    names = ("homeassistant.helpers.entity_registry", "homeassistant.helpers.event", "homeassistant.config_entries", "fhpkg.api", "fhpkg.options")
+    old = {n: sys.modules.get(n) for n in names}
+    sys.modules["homeassistant.helpers.entity_registry"] = er
+    sys.modules["homeassistant.helpers.event"] = ev
+    sys.modules.setdefault("homeassistant.helpers", types.ModuleType("homeassistant.helpers")).entity_registry = er
+    sys.modules["homeassistant.config_entries"] = types.SimpleNamespace(ConfigEntryState=types.SimpleNamespace(LOADED="loaded"))
+    sys.modules["fhpkg.api"] = types.SimpleNamespace(_current_options=lambda e: dict(e.options))
+    sys.modules["fhpkg.options"] = types.SimpleNamespace(clean_options=lambda raw: dict(raw))
+    try:
+        e1, e2 = _Entry("r1", "Büro", _on()), _Entry("r2", "Bad", {})
+        e1.runtime_data, e2.runtime_data = _Ctrl(), _Ctrl()
+        hass = _Hass([e1, e2])
+        hass.config_entries.async_update_entry = lambda e, options: setattr(e, "options", options)
+        calls = []
+
+        async def _svc(dom, srv, data, blocking=False):
+            calls.append((dom, srv, data))
+        hass.services = types.SimpleNamespace(async_call=_svc)
+        states = {"switch.neu": types.SimpleNamespace(state="off", attributes={})}
+        hass.states = types.SimpleNamespace(get=lambda eid: states.get(eid))
+        m = H.HeizerManager(hass)
+        run(m.async_start())
+        hid = m.st["heaters"][0]["id"]
+        res = run(m.async_remove(hid, keep_stats=True))
+        assert res["kept_stats"] and e1.runtime_data.heater.released == 1 and e1.options["htr_on"] == "off"
+        assert m.st["trash"][0]["stats"]["kwh"] == 1.5 and REG.removed == ["switch.buero_aktiv"]
+        run(m.async_sync_room(e1))  # Neuladen nach dem Entfernen ändert nichts
+        assert m.st["heaters"] == [] and len(m.st["trash"]) == 1
+        # Rückgängig: gleiche ID, Statistik kommt beim Laden zurück
+        run(m.async_restore(hid))
+        assert m.st["heaters"][0]["id"] == hid and e1.options["htr_on"] == "on" and m.st["trash"] == []
+        run(m.async_sync_room(e1))
+        assert e1.runtime_data.heater.stats["kwh"] == 1.5
+        # wieder entfernen ohne Statistik, Raum inzwischen belegt -> anderer Raum
+        run(m.async_remove(hid, keep_stats=False))
+        assert "stats" not in m.st["trash"][0]
+        e1.options = _on("switch.anderer")
+        run(m.async_sync_room(e1))
+        try:
+            run(m.async_restore(hid))
+            raise AssertionError("Raum belegt")
+        except ValueError as err:
+            assert "anderen Raum" in str(err)
+        run(m.async_restore(hid, "r2"))
+        assert e2.options["htr_entity"] == "switch.oelradiator"
+        # Papierkorb endgültig löschen
+        run(m.async_remove(hid, keep_stats=False))
+        run(m.async_purge(hid))
+        assert all(t["id"] != hid for t in m.st["trash"])
+        # Testlauf: an, nach 30 s wieder aus; eingerichtete Heizer und Thermostate sind gesperrt
+        out = run(m.async_test("switch.neu", 30))
+        assert out["seconds"] == 30 and calls[-1] == ("switch", "turn_on", {"entity_id": "switch.neu"})
+        run(later[-1][1](None))
+        assert calls[-1] == ("switch", "turn_off", {"entity_id": "switch.neu"})
+        for bad in ("switch.anderer", "light.x", "switch.fehlt"):
+            try:
+                run(m.async_test(bad))
+                raise AssertionError(bad)
+            except ValueError:
+                pass
+    finally:
+        for n, mod in old.items():
+            if mod is None:
+                sys.modules.pop(n, None)
+            else:
+                sys.modules[n] = mod
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

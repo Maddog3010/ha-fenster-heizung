@@ -4,7 +4,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 
 ## [2026.11.4b59] - 2026-11-23
 
-**Modul 1 · Fenster & Heizung** v1.9 Build 9 – Elektroheizer 2.0, Build 1 bis 3: Geräteliste, Einrichtungs-Assistent und Heizer unter „Geräte“.
+**Modul 1 · Fenster & Heizung** v1.9 Build 9 – Elektroheizer 2.0 (Build 1 bis 4): einfach hinzufügen und sauber entfernen.
 
 ### Neu
 - **Einrichtungs-Assistent für Elektroheizer** in vier Schritten statt zwölf Feldern:
@@ -20,7 +20,11 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
   - In anderen Raum stellen: Raum als Kachel, „Heizen bis“ mit Vorschlag aus dem neuen Raum. Im alten Raum wird der Heizer ausgeschaltet und die Thermostate laufen wieder; Statistik, Verlauf und Pausen-Stellung ziehen mit. Der Schalter „Elektroheizer aktiv“ gehört danach zum neuen Raum (neue Entität).
 - **Geräteliste der Elektroheizer:** Jeder Heizer ist jetzt ein eigenes Gerät mit fester ID, Namen und Raum (eigener Speicher, mit automatischen Sicherungskopien). Grundlage für Einrichtungs-Assistent, Reiter „Geräte“, Raum wechseln und Papierkorb in den nächsten Builds.
 - **Automatische Übernahme:** Beim ersten Start wird jeder Raum mit eingeschaltetem Elektroheizer in die Liste übernommen. Räume mit ausgeschaltetem Heizer, aber eingetragenem Gerät landen im Papierkorb (30 Tage). Die Raum-Einstellungen werden dabei nicht verändert.
-- **Websocket-Befehle** `heizer_get`, `heizer_add`, `heizer_update`, `heizer_remove` (Hinzufügen, Ändern und Entfernen nur für Admins).
+- **Heizer entfernen** im Geräte-Blatt: Ein Dialog zeigt vorher, was passiert (Heizer aus, Thermostate zurück, Schalter weg, Gerät bleibt in Home Assistant) und wie viele Automationen den Schalter nutzen. Statistik behalten oder löschen. Danach 10 Sekunden „Rückgängig“.
+- **Papierkorb** („Zuletzt entfernt“ unter Geräte › Elektroheizer): 30 Tage wiederherstellen – mit gleichem Namen, Einstellungen und (falls behalten) Statistik. Ist der alte Raum belegt oder gelöscht, fragt Modul 1 nach einem Raum. Endgültig löschen mit Bestätigung.
+- **Leistung messen** im Assistenten (Steckdosen mit Leistungssensor): Heizer am Gerät auf eine Stufe stellen, „Messen“ – Modul 1 schaltet 30 Sekunden ein und nimmt den Mittelwert ohne die Anlaufsekunden. Stufe für Stufe, bis zu 8 Stufen.
+- **Testlauf** im letzten Schritt des Assistenten: Gerät 30 Sekunden ein, unabhängig vom Überschuss, danach wie vorher.
+- **Websocket-Befehle** `heizer_get`, `heizer_add`, `heizer_update`, `heizer_remove`, `heizer_restore`, `heizer_purge`, `heizer_test` (alles außer Lesen nur für Admins).
 
 ### Geändert
 - **Entfernen räumt auf:** Der Heizer wird ausgeschaltet (bei Klima-Geräten die alte Solltemperatur zurück), abgestellte Thermostate laufen wieder, die Heizer-Felder des Raums werden zurückgesetzt und der Schalter „Elektroheizer aktiv“ verschwindet aus Home Assistant statt als „nicht verfügbar“ stehen zu bleiben. Die Statistik wandert auf Wunsch mit in den Papierkorb.
@@ -33,7 +37,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 - PV-Regeln: Die Reserve ließ sich im Dashboard nicht über 100 W einstellen (Eingabe wurde auf 100 begrenzt); jetzt bis 2000 W wie vorgesehen.
 
 ### Hinweis
-- Entfernen-Dialog mit Rückgängig, Papierkorb zum Wiederherstellen, Leistung messen und Testlauf folgen in Build 4.
+- Wird ein Heizer in einen anderen Raum gestellt oder aus dem Papierkorb in einen anderen Raum geholt, ist der Schalter „Elektroheizer aktiv“ eine neue Entität im neuen Raum – Automationen bitte anpassen.
 
 ## [2026.11.4b58] - 2026-11-22
 

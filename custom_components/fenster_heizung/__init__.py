@@ -1434,7 +1434,9 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             if tgm is not None:
                 tgm.async_stop()
             hass.data.get(DOMAIN, {}).pop("fluss", None)
-            hass.data.get(DOMAIN, {}).pop("heizer", None)
+            hzm = hass.data.get(DOMAIN, {}).pop("heizer", None)
+            if hzm is not None:
+                hzm.async_stop()
             tbm = hass.data.get(DOMAIN, {}).pop("tablet", None)
             if tbm is not None:
                 tbm.async_stop()

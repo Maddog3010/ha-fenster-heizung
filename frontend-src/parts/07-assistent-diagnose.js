@@ -435,6 +435,8 @@
     if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
     if (m.type === "ehlist") { box.innerHTML = this._ehListModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "ehdel") { box.innerHTML = this._ehDelModal(); if (!box.innerHTML) this._modal = null; return; }
+    if (m.type === "ehrest") { box.innerHTML = this._ehRestModal(); if (!box.innerHTML) this._modal = null; return; }
     if (m.type === "ehmove") { box.innerHTML = this._ehMoveModal(); if (!box.innerHTML) this._modal = null; return; }
     if (m.type === "ehwiz") { box.innerHTML = this._ehModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "rkhtr" || m.type === "lfrk") { box.innerHTML = this._rkDevSheet(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; if (!box.innerHTML) this._modal = null; return; }

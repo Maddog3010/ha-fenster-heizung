@@ -16,6 +16,8 @@ Aufbau (Build 1):
 - Raum wechseln (Build 3): Gerät im alten Raum aus, Thermostate dort zurück, Felder des alten Raums zurückgesetzt,
   Felder im neuen Raum gesetzt. Statistik und Schalterstellung reisen im Eintrag mit (``move``) und werden beim Laden
   des neuen Raums übernommen. Pausieren schaltet den Schalter „Elektroheizer aktiv“ des Raums aus.
+- Build 4: Papierkorb wiederherstellen (gleiche ID, Name, Einstellungen und – falls behalten – Statistik), endgültig
+  löschen, Testlauf beim Einrichten (Gerät 30 Sekunden ein, danach wieder wie vorher) für „Leistung messen“.
 - Entfernen: Gerät aus, Thermostate zurück, Felder des Raums zurückgesetzt, Schalter „Elektroheizer aktiv“ aus der
   Entitäten-Registrierung gelöscht. Auf Wunsch wandert die Statistik mit in den Papierkorb (30 Tage).
 
@@ -33,6 +35,7 @@ _LOGGER = logging.getLogger(__name__)
 VERSION = 1
 TRASH_DAYS = 30
 TRASH_MAX = 20
+TEST_MAX_S = 60
 MAX_HEATERS = 40
 NAME_MAX = 40
 _HID = re.compile(r"^h[0-9a-z]{1,12}$")
@@ -267,6 +270,7 @@ class HeizerManager:
         self._domain = DOMAIN
         self._store = SafeStore(hass, 1, f"{DOMAIN}_heizer")
         self.st = empty_state()
+        self._tests: dict[str, Any] = {}
 
     # ---- Start, Speichern
     async def async_start(self) -> None:
@@ -292,7 +296,9 @@ class HeizerManager:
             self._save()
 
     def async_stop(self) -> None:
-        return None
+        for unsub in list(self._tests.values()):
+            unsub()
+        self._tests.clear()
 
     def _save(self) -> None:
         self._store.async_delay_save(lambda: self.st, 0)
@@ -361,8 +367,20 @@ class HeizerManager:
             ctrl = self._ctrl(h["room"])
             item["live"] = ctrl.heater.attrs() if ctrl is not None else None
             item["manual_on"] = ctrl.heater.manual_on if ctrl is not None else True
+            item["autos"] = self._autos(h["room"])
             heaters.append(item)
         return {"heaters": heaters, "trash": [public(t) for t in self.st["trash"]]}
+
+    def _autos(self, room: str) -> int:
+        """Wie viele Automationen nutzen den Schalter „Elektroheizer aktiv“ dieses Raums?"""
+        try:
+            from homeassistant.components.automation import automations_with_entity  # noqa: PLC0415
+            from homeassistant.helpers import entity_registry as er  # noqa: PLC0415
+
+            eid = er.async_get(self.hass).async_get_entity_id("switch", self._domain, f"{room}_heater_enabled")
+            return len(automations_with_entity(self.hass, eid)) if eid else 0
+        except Exception:  # noqa: BLE001 - nur ein Hinweis
+            return 0
 
     # ---- Schreiben
     def _thermostats(self) -> dict[str, list[str]]:
@@ -502,6 +520,84 @@ class HeizerManager:
         if entry is not None and self._opts(entry).get("htr_entity"):
             self._write_room(entry, dict(EMPTY))  # Felder zurücksetzen; der Raum lädt neu, ohne Schalter
         return {"removed": hid, "kept_stats": bool(stats)}
+
+    async def async_restore(self, tid: str, room: str | None = None) -> dict[str, Any]:
+        """Heizer aus dem Papierkorb zurückholen (auch „Rückgängig“ direkt nach dem Entfernen)."""
+        t = next((x for x in self.st["trash"] if x["id"] == tid), None)
+        if t is None:
+            raise ValueError("Nicht mehr im Papierkorb")
+        room = room or t["room"]
+        entry = self._entry(room)
+        if entry is None:
+            raise ValueError("Den Raum gibt es nicht mehr. Bitte einen anderen Raum wählen")
+        if by_room(self.st, room) is not None or is_on(self._opts(entry)):
+            raise ValueError(f"In „{entry.title}“ ist inzwischen ein anderer Elektroheizer. Bitte einen anderen Raum wählen")
+        entity = t["cfg"].get("htr_entity") or ""
+        err = check_entity(self.st, entity, room, self._thermostats())
+        if err:
+            raise ValueError(err)
+        fields = {**t["cfg"], "htr_on": "on"}
+        self._check(entry, fields)
+        h = {"id": t["id"], "name": t["name"], "room": room, "created": t.get("created", 0), "cfg": cfg_of(fields)}
+        ctrl = self._ctrl(room)
+        if ctrl is not None:
+            ctrl.heater.reset_stats()
+            await ctrl._save()
+        if isinstance(t.get("stats"), dict):
+            h["move"] = t["stats"]  # wird beim Laden des Raums übernommen
+        self.st["trash"] = [x for x in self.st["trash"] if x["id"] != tid]
+        self.st["heaters"].append(h)
+        self._save()
+        self._write_room(entry, fields)
+        return public(h)
+
+    async def async_purge(self, tid: str) -> dict[str, Any]:
+        """Eintrag endgültig aus dem Papierkorb löschen."""
+        if not any(x["id"] == tid for x in self.st["trash"]):
+            raise ValueError("Nicht mehr im Papierkorb")
+        self.st["trash"] = [x for x in self.st["trash"] if x["id"] != tid]
+        self._save()
+        return {"purged": tid}
+
+    async def async_test(self, entity: str, seconds: int = 30) -> dict[str, Any]:
+        """Testlauf beim Einrichten: Gerät kurz einschalten (für „Leistung messen“), danach wie vorher."""
+        from homeassistant.helpers.event import async_call_later  # noqa: PLC0415
+
+        dom = entity.split(".")[0] if "." in entity else ""
+        if dom not in ("switch", "climate"):
+            raise ValueError("Nur Schalter oder Klima-Geräte")
+        if any(h["cfg"].get("htr_entity") == entity for h in self.st["heaters"]):
+            raise ValueError("Das Gerät ist schon als Heizer eingerichtet. Ein Testlauf geht nur beim Einrichten")
+        if any(entity in ths for ths in self._thermostats().values()):
+            raise ValueError("Das Gerät ist Heizungsthermostat eines Raums")
+        st = self.hass.states.get(entity)
+        if st is None or st.state in ("unavailable", "unknown"):
+            raise ValueError("Das Gerät ist gerade nicht erreichbar")
+        seconds = max(5, min(TEST_MAX_S, int(seconds)))
+        old = self._tests.pop(entity, None)
+        if old is not None:
+            old()
+        if dom == "switch":
+            await self.hass.services.async_call("switch", "turn_on", {"entity_id": entity}, blocking=True)
+            back = ("switch", "turn_off", {"entity_id": entity}) if st.state != "on" else None
+        else:
+            modes = st.attributes.get("hvac_modes") or []
+            mode = next((m for m in ("heat", "auto", "heat_cool") if m in modes), None)
+            if mode is None:
+                raise ValueError("Das Klima-Gerät kennt keinen Heizmodus")
+            await self.hass.services.async_call("climate", "set_hvac_mode", {"entity_id": entity, "hvac_mode": mode}, blocking=True)
+            back = ("climate", "set_hvac_mode", {"entity_id": entity, "hvac_mode": st.state}) if st.state in modes and st.state != mode else None
+
+        async def _end(_now) -> None:
+            self._tests.pop(entity, None)
+            if back is not None:
+                try:
+                    await self.hass.services.async_call(back[0], back[1], back[2], blocking=True)
+                except Exception:  # noqa: BLE001
+                    _LOGGER.warning("Testlauf: %s nicht zurückgestellt", entity, exc_info=True)
+
+        self._tests[entity] = async_call_later(self.hass, seconds, _end)
+        return {"entity": entity, "seconds": seconds, "until": time.time() + seconds}
 
     def _check(self, entry, fields: dict[str, Any]) -> None:
         """Felder vorab prüfen, ohne zu speichern (gleiche Regeln wie der Raum-Dialog)."""
