@@ -231,13 +231,17 @@
       x0 = cx - dx; x1 = cx + dx; y0 = cy - dy; y1 = cy + dy;
     }
     if (zoom === "de" || !ok) { const cx = (x0 + x1) / 2, dy = (y1 - y0) / 2, dx = (dy * w) / h; x0 = cx - dx; x1 = cx + dx; }
-    /* Reihenfolge wie im Beispiel des DWD: Kreise (gefüllt) unten, Warnungen bzw. Radar oben – sonst deckt die Kreis-Fläche alles grün zu */
-    const L = layer === "radar" ? "dwd:bluemarble,dwd:Warngebiete_Kreise,dwd:Niederschlagsradar" : "dwd:bluemarble,dwd:Warngebiete_Kreise,dwd:Warnungen_Gemeinden_vereinigt";
-    const slot = Math.floor(Date.now() / 300000);
-    const url = `https://maps.dwd.de/geoserver/dwd/wms?service=WMS&version=1.1.1&request=GetMap&layers=${encodeURIComponent(L)}&styles=&srs=EPSG:3857&bbox=${[x0, y0, x1, y1].map((v) => v.toFixed(0)).join(",")}&width=${w}&height=${h}&format=image%2Fpng&t=${slot}`;
+    /* Reihenfolge wie im Beispiel des DWD: Kreise (gefüllt) unten, Warnungen bzw. Radar oben – sonst deckt die Kreis-Fläche alles grün zu.
+       2026.11.4.2 (schneller): zwei Bilder statt einem. Die Grundkarte (Satellitenbild + Kreise) ändert sich nie – ohne Zeitstempel, als JPEG,
+       wird nur beim ersten Mal und bei neuem Ausschnitt geladen. Alle 5 Minuten und beim Umschalten kommt nur die dünne Ebene
+       (Warnungen bzw. Radar, durchsichtiges PNG) neu; die jeweils andere Ebene wird im Hintergrund vorgeladen. */
+    const slot = Math.floor(Date.now() / 300000), bb = [x0, y0, x1, y1].map((v) => v.toFixed(0)).join(","), W = `https://maps.dwd.de/geoserver/dwd/wms?service=WMS&version=1.1.1&request=GetMap&styles=&srs=EPSG:3857&bbox=${bb}&width=${w}&height=${h}`;
+    const base = `${W}&layers=${encodeURIComponent("dwd:bluemarble,dwd:Warngebiete_Kreise")}&format=image%2Fjpeg`;
+    const ov = (ly) => `${W}&layers=${encodeURIComponent(ly === "radar" ? "dwd:Niederschlagsradar" : "dwd:Warnungen_Gemeinden_vereinigt")}&transparent=true&format=image%2Fpng&t=${slot}`;
+    const url = ov(layer), other = ov(layer === "radar" ? "warn" : "radar");
     let pin = null;
     if (ok) { const [px, py] = this._wxMerc(lat, lon); if (px >= x0 && px <= x1 && py >= y0 && py <= y1) pin = [((px - x0) / (x1 - x0)) * 100, ((y1 - py) / (y1 - y0)) * 100]; }
-    return { url, pin, ok, inDe: ok && lat > 47 && lat < 55.3 && lon > 5.5 && lon < 15.5, slot };
+    return { url, base, other, pin, ok, inDe: ok && lat > 47 && lat < 55.3 && lon > 5.5 && lon < 15.5, slot };
   }
   _wxMap(S) {
     const M = (S.cfg && S.cfg.map) || { on: true, layer: "warn", zoom: "region" };
@@ -247,11 +251,14 @@
     const W = this._wxMapPrev || (this._wxMapPrev = { cur: "", prev: "" }), sameView = W.cur && W.cur.split("&t=")[0] === m.url.split("&t=")[0];
     if (W.cur !== m.url) { W.prev = sameView ? W.cur : ""; W.cur = m.url; }
     const prev = W.prev;
+    /* Vorladen: die andere Ebene (Warnungen ↔ Radar) und die Grundkarte bleiben im Speicher des Browsers – Umschalten ist dann sofort da */
+    const P = this._wxPre || (this._wxPre = new Map()), pre = (u) => { if (P.has(u)) return; if (P.size > 8) P.delete(P.keys().next().value); const im = new Image(); im.decoding = "async"; im.src = u; P.set(u, im); };
+    pre(m.base); pre(m.url); setTimeout(() => pre(m.other), 1200);
     const t = new Date(m.slot * 300000), hm = String(t.getHours()).padStart(2, "0") + ":" + String(t.getMinutes()).padStart(2, "0");
     const legend = layer === "radar" ? `<span class="wxmlg rad">leicht<i class="grad"></i>stark</span>` : `<span class="wxmlg">${[1, 2, 3, 4].map((l) => `<i style="background:${this._wxLvCol(l)}"></i>${l}`).join("")}<em>Stufe</em></span>`;
     return `<div class="card wxmap"><div class="wxtlh"><h2>${ic("pin", 18)}Wetterkarte <small class="mut">Deutscher Wetterdienst</small></h2><div class="seg wxseg"><button class="${layer === "warn" ? "sel" : ""}" data-act="wxsmapl" data-k="warn">Warnungen</button><button class="${layer === "radar" ? "sel" : ""}" data-act="wxsmapl" data-k="radar">Regenradar</button></div></div>
       ${m.ok && !m.inDe ? `<div class="wxnote">${ic("info", 15)}Dein Zuhause liegt außerhalb Deutschlands. Der DWD zeigt nur Deutschland.</div>` : ""}
-      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.url)}" data-keep="1"${prev ? ` style="background:url('${esc(prev)}') center/100% 100% no-repeat"` : ""} alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" width="${w}" height="${h}" onload="this.style.background='none'" onerror="this.parentNode.classList.add('err')">
+      <div class="wxmimg" data-wxmap="${esc(m.url)}"><img src="${esc(m.base)}" data-keep="1" alt="" width="${w}" height="${h}" decoding="async" fetchpriority="high" onerror="this.parentNode.classList.add('err')"><img src="${esc(m.url)}" data-keep="1"${prev ? ` style="background:url('${esc(prev)}') center/100% 100% no-repeat"` : ""} alt="${layer === "radar" ? "Niederschlagsradar" : "Warnkarte"} des Deutschen Wetterdienstes" width="${w}" height="${h}" decoding="async" onload="this.style.background='none'" onerror="this.parentNode.classList.add('err')">
         ${m.pin ? `<span class="wxpin" style="left:${m.pin[0].toFixed(2)}%;top:${m.pin[1].toFixed(2)}%" title="Zuhause">${ic("home", 14)}</span>` : ""}<div class="wxmerr">${ic("alert", 16)}Karte vom DWD gerade nicht erreichbar. Neuer Versuch beim nächsten Aufbau.</div></div>
       <div class="wxmft"><div class="gschips">${Object.entries(Z).map(([k, [, t2]]) => `<button class="gsch ${zoom === k ? "sel" : ""}" data-act="wxsmapz" data-k="${k}">${t2}</button>`).join("")}</div>${legend}</div>
       <div class="wxmsrc">Stand ${hm} Uhr · neu alle 5 Minuten · Quelle: Deutscher Wetterdienst (GeoServer) · <a href="https://www.dwd.de/DE/wetter/warnungen_gemeinden/warnWetter_node.html" target="_blank" rel="noopener">auf dwd.de öffnen</a></div></div>`;
