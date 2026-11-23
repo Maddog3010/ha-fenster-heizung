@@ -22,6 +22,7 @@ from homeassistant.core import HomeAssistant
 
 from .backup import SafeStore
 from .const import DOMAIN
+from .messwerk_logic import bat_open, fluss_items, is_night, node_kind, pv_like, suggest
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -189,7 +190,15 @@ class Messwerk:
                 if isinstance(cur, str) and EID.match(cur):
                     add(f"haus.{path}", name, g, unit, cur, uses, where, f"hs:{sub}")
                 elif path in OPEN_HAUS:  # noch nicht zugeordnet: als offene Aufgabe zeigen (S1, S2, S4 im Messwerk)
-                    tasks[f"haus.{path}"] = {"id": f"haus.{path}", "n": name, "g": g, "u": unit, "ents": [], "uses": [{"m": m, "why": why, "on": on.get(m, True)} for m, why in uses], "where": where, "go": f"hs:{sub}", "open": True}
+                    if path == "energy.ent.bat" and not bat_open(hd.get("energy")):
+                        continue  # Laden und Entladen sind getrennt gewählt
+                    t = {"id": f"haus.{path}", "n": name, "g": g, "u": unit, "ents": [], "uses": [{"m": m, "why": why, "on": on.get(m, True)} for m, why in uses], "where": where, "go": f"hs:{sub}", "open": True}
+                    kind = {"energy.ent.bat": "bat", "energy.ent.grid": "grid", "energy.ent.pv": "pv"}.get(path)
+                    fm = store.get("fluss")
+                    sg = suggest(getattr(fm, "cfg", None), kind, self._fn) if kind and fm is not None else None
+                    if sg:
+                        t["sug"] = sg  # in Modul 19 schon eingerichtet: im Messwerk mit einem Tipp übernehmen
+                    tasks[f"haus.{path}"] = t
         # Räume (Modul 1)
         for entry in self.hass.config_entries.async_entries(DOMAIN):
             cfg = {**entry.data, **entry.options}
@@ -261,6 +270,13 @@ class Messwerk:
                 continue
             if src == "wetter.cfg":  # Wind und amtliche Warnungen gehören dem Haus
                 raw = {k: v for k, v in raw.items() if k not in ("wind", "official")}
+            if src == "fluss.cfg":  # Hausfluss: Kachelname und Feld statt „Power“, ausgeschaltete Kacheln nicht
+                for path, eid, name, why, node in fluss_items(raw):
+                    field = path.rsplit(".", 1)[-1].split("[")[0]
+                    add(f"fluss.{path}", name, g, "power" if field in ("power", "power_to_node", "power_to_house", "group") else "", eid, [(mod, why)], where, "mod:ef")
+                    if node_kind(node, eid, self._fn(eid)) == "pv":
+                        tasks[f"fluss.{path}"]["pv"] = True
+                continue
             go = {"wasser": "mod:ww", "wallbox": "mod:ev", "wetter": "mod:wx", "sicherheit": "mod:sf", "muell": "mod:mu", "entfeuchter": "lfx", "fluss": "mod:ef", "tags": "tgx", "solar": "mod:sp", "tablet": "tm", "presence": "ort"}[key]
             for path, eid in walk(raw):
                 if src == "presence.data" and ".people." not in f".{path}":
@@ -319,11 +335,18 @@ class Messwerk:
         self._seen(snap)
         seen = self.data.get("seen", {})
         tasks = []
+        sun = self.hass.states.get("sun.sun")
+        night = is_night(sun.state if sun else None, sun.attributes.get("elevation") if sun else None)
+        hd = getattr(self.hass.data.get(DOMAIN, {}).get("haus"), "data", None) or {}
+        hent = (hd.get("energy") or {}).get("ent") or {}
+        pv_ents = {hent.get(k) for k in ("pv", "pv2") if hent.get(k)}
         for t in snap["tasks"].values():
             chk = [self._check(e, t["u"]) for e in t["ents"]]
+            if night is not False:  # Wechselrichter schlafen nachts: „nicht verfügbar“ ist dann normal
+                for e, c in zip(t["ents"], chk):
+                    if c["st"] == "dead" and (t.get("pv") or t["n"] in ("Solarleistung", "Zweite Solaranlage") or pv_like(e, self._fn(e), pv_ents)):
+                        c.update(st="ok", txt="nachts aus", night=True)
             st = "open" if t.get("open") else next((c["st"] for c in chk if c["st"] != "ok"), "ok")
-            if st == "dead" and t["n"] in ("Solarleistung", "Zweite Solaranlage"):
-                st = "ok"  # nachts oft „nicht verfügbar“
             tasks.append({**t, "st": st, "chk": chk, "since": [seen.get(e, {}).get("ok", 0) for e in t["ents"]]})
         hints = self._hints(snap)
         mods = sorted({u["m"] for s in snap["sensors"].values() for u in s["uses"] if u["m"]})

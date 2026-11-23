@@ -133,6 +133,7 @@
     const nm = new Set(t.uses.map((u) => u.m)).size;
     return `<div class="ov" data-act="mwpx"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${m.add ? "Hinzufügen" : t.ents.length ? "Tauschen" : "Zuordnen"}: ${esc(t.n)}</b><span>Gilt danach für ${nm} ${nm === 1 ? "Modul" : "Module"} · ${esc(t.where)}</span></div><button class="ibtn" data-act="mwpx" aria-label="Schließen">${ic("close", 20)}</button></div>
+      ${t.sug && !cur && !m.add ? `<div class="gst">${ic("info", 15)}<span>In ${esc(t.sug.from)} schon eingerichtet: <b>${esc(this._mwSugName(t.sug))}</b>${t.sug.bsign ? ` · ${t.sug.bsign === "discharge" ? "Entladen positiv" : "Laden positiv"}` : ""}${t.sug.sign ? ` · ${t.sug.sign === "import" ? "Bezug positiv" : "Einspeisung positiv"}` : ""}</span></div><div class="gbtns"><button class="btn2 pri" data-act="mdmwsug" data-k="${esc(t.id)}">${ic("check", 15)} Übernehmen</button></div>` : ""}
       ${cur ? `<div class="gst">${ic("info", 15)}<span>Jetzt: <b>${esc(this._wzName(cur))}</b> · ${esc(this._mwVal(cur))}</span></div>` : ""}
       ${this._pkFinder(pid, opts, cur, "mwset", "– keiner –", h).replace('<button class="pkrow pkclr"', t.ents.length && !m.add ? '<button class="pkrow pkclr"' : '<button hidden class="pkrow pkclr"')}
       <div class="foot2"><button class="btn2" data-act="mwpx">Abbrechen</button></div></div>`;
