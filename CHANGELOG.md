@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.2] - 2026-11-23
+
+Korrektur zu 2026.11.4.1: Elektroheizer lassen sich wieder speichern.
+
+### Behoben
+- **Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen** brach mit „expected str at 'id'“ ab. Home Assistant belegt das Feld „id“ in jeder Nachricht mit einer eigenen Nummer; die Befehle nutzen dafür jetzt ein eigenes Feld. Neue Heizer anlegen war nicht betroffen.
+- Gleicher Fehler behoben bei **Modul 9 · Vorschläge** („Auto vorheizen“, „Akku“ u. a. übernehmen) und **Modul 0 · Sichern & Einlesen** (älteren Stand wiederherstellen).
+
+### Wichtig beim Update
+- Update im Marketplace, danach Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen). Deine Heizer und Einstellungen bleiben erhalten.
+
 ## [2026.11.4.1] - 2026-11-23
 
 Korrektur zu 2026.11.4: **Modul 0** wird am Handy übersichtlich (neue Handy-Ansicht, Modul 0 v0.11) und **Modul 8** zählt die Kilometer je Tag ohne Sprünge (v1.0.1).

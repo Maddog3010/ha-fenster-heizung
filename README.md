@@ -459,6 +459,7 @@ Die Integration folgt dem Schema **Jahr.Monat.Release**:
 | `2026.11.3.1` | Kleine Korrektur zu `2026.11.3` (eine vierte Stelle bedeutet: Korrektur ohne neue Funktionen) |
 | `2026.11.4` | Viertes Update im November 2026 |
 | `2026.11.4.1` | Korrektur zu `2026.11.4` (Modul 0 am Handy, Modul 8 Kilometer) |
+| `2026.11.4.2` | Korrektur zu `2026.11.4.1` (Elektroheizer speichern) |
 | `2026.12.1` | Erstes Update im Dezember, mit jedem Monat beginnt der Zähler wieder bei 1 |
 | `2026.12.1b1` | **Testversion** (Beta) für das kommende Update `2026.12.1` |
 

@@ -808,7 +808,7 @@ const MV = {
    Seite nach dem Zurückwechseln teils neu auf – dann wird sofort der letzte Stand gezeigt und im Hintergrund aktualisiert. */
 const FH_CACHE = (window.__fhCache = window.__fhCache || {});
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
-const REL = [{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]},{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]},{"v":"3.0.7.6","d":"2026-10-29","t":["Der Fluss in den Linien richtet sich nach der Leistung"],"c":["Modul 19 · v0.5 Build 6"]}];
+const REL = [{"v":"2026.11.4.2","d":"2026-11-23","t":["Behoben: Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen","Behoben: Gleicher Fehler behoben bei Modul 9 · Vorschläge („Auto vorheizen“, „Akku“ u","Update im Marketplace, danach Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen)"],"c":[]},{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]},{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]},{"v":"2026.11.1","d":"2026-11-05","t":["Einstellungen neu gedacht","Messwerk und neue Sensorsuche","Addons"],"c":["Modul 1 · v1.6 Build 1","Modul 3 · v1.1 Build 1","Modul 4 · v1.1 Build 2"]},{"v":"3.0.7.7","d":"2026-10-29","t":["Update-Prüfung versteht das neue Versionsschema","Einmaliger Hinweis"],"c":[]}];
 const CSS_MAIN = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -7465,7 +7465,7 @@ class FensterHeizungPanel extends HTMLElement {
     const heater = { room: d.room, entity: d.entity, name: d.name.trim(), steps: W, watt: Math.max(...W), target: d.target, thermo: d.thermo, auto: d.auto, prio: d.prio, from: d.from || null, to: d.to || null };
     if (M.edit) { delete heater.room; delete heater.entity; }
     try {
-      const r = M.edit ? await this._hass.callWS({ type: "fenster_heizung/heizer_update", id: M.edit, heater }) : await this._hass.callWS({ type: "fenster_heizung/heizer_add", heater });
+      const r = M.edit ? await this._hass.callWS({ type: "fenster_heizung/heizer_update", hid: M.edit, heater }) : await this._hass.callWS({ type: "fenster_heizung/heizer_add", heater });
       if (M.edit) { this._ehD = r; this._modal = M.back; this._renderModal(); this._render(); this._toast(`„${heater.name}“ gespeichert`); return; }
       this._ehD = r; this._modal = M.back && (M.back.type === "fh" || M.back.type === "ehlist") ? M.back : null;  /* Raumdialog nicht zurückholen: sein Entwurf kennt den Heizer noch nicht */ this._renderModal(); this._render();
       this._toast(`„${heater.name}“ eingerichtet – heizt mit PV-Überschuss`);
@@ -7561,7 +7561,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "ehxpause") {
       const r = this._ehRooms().find((x) => x.id === id), e = this._ehOf(id); if (!r || !e) { this._ehLoad(); return true; }
       const pause = !this._ehPaused(r);
-      this._ehCall({ type: "fenster_heizung/heizer_update", id: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder mit PV-Überschuss`).then(() => this._renderModal());
+      this._ehCall({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder mit PV-Überschuss`).then(() => this._renderModal());
       return true;
     }
     if (!M || M.type !== "ehmove") return false;
@@ -7572,7 +7572,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "ehxmvok") {
       const e = this._ehOf(M.id), to = this._ehRooms().find((x) => x.id === M.to); if (!e || !to || M.busy) return true;
       M.busy = true; this._renderModal();
-      this._hass.callWS({ type: "fenster_heizung/heizer_update", id: e.id, heater: { room: M.to, target: M.target } })
+      this._hass.callWS({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { room: M.to, target: M.target } })
         .then((r) => { this._ehD = r; this._modal = null; this._renderModal(); this._render(); this._toast(`„${e.name}“ steht jetzt in ${to.name}`); })
         .catch((err) => { M.busy = false; M.err = (err && err.message) || "Umstellen fehlgeschlagen"; this._renderModal(); });
       return true;
@@ -7661,7 +7661,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   async _ehRestore(tid, room) {
     try {
-      this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_restore", id: tid, ...(room ? { room } : {}) });
+      this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_restore", hid: tid, ...(room ? { room } : {}) });
       const h = (this._ehD.heaters || []).find((x) => x.id === tid);
       this._toast(`„${h ? h.name : "Heizer"}“ ist wieder da${h && h.room_name ? " in " + h.room_name : ""}`); return true;
     } catch (e) { this._toast((e && e.message) || "Wiederherstellen fehlgeschlagen"); return false; }
@@ -7678,7 +7678,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     if (a === "ehxpurge") { if (M) { M.purge = b.dataset.k; this._renderModal(); } return true; }
     if (a === "ehxpurgeno") { if (M) { M.purge = ""; this._renderModal(); } return true; }
-    if (a === "ehxpurgeok") { this._hass.callWS({ type: "fenster_heizung/heizer_purge", id: b.dataset.k }).then((r) => { this._ehD = r; if (this._modal) this._modal.purge = ""; this._renderModal(); this._toast("Endgültig gelöscht"); }).catch(() => this._toast("Löschen fehlgeschlagen")); return true; }
+    if (a === "ehxpurgeok") { this._hass.callWS({ type: "fenster_heizung/heizer_purge", hid: b.dataset.k }).then((r) => { this._ehD = r; if (this._modal) this._modal.purge = ""; this._renderModal(); this._toast("Endgültig gelöscht"); }).catch(() => this._toast("Löschen fehlgeschlagen")); return true; }
     if (M && M.type === "ehrest") {
       if (a === "ehxrestno") { this._modal = M.back; this._renderModal(); return true; }
       if (a === "ehxrestto") { M.to = b.dataset.k; M.err = ""; this._renderModal(); return true; }
@@ -7690,7 +7690,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (a === "ehxdelok") {
         const e = this._ehOf(M.id); if (!e || M.busy) return true;
         M.busy = true; this._renderModal();
-        this._hass.callWS({ type: "fenster_heizung/heizer_remove", id: e.id, keep_stats: M.keep })
+        this._hass.callWS({ type: "fenster_heizung/heizer_remove", hid: e.id, keep_stats: M.keep })
           .then((r) => { this._ehD = r; this._modal = M.back && M.back.type === "ehlist" ? M.back : null; this._renderModal(); this._render(); this._ehUndoToast(`„${e.name}“ entfernt`, e.id); })
           .catch((err) => { M.busy = false; this._renderModal(); this._toast((err && err.message) || "Entfernen fehlgeschlagen"); });
         return true;
@@ -12116,7 +12116,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "wxsrb") { this._wxRbP = k; this._render(); return; }
     if (a === "wxslog") { this._wxLogF = k; this._wxLogN = 12; this._render(); return; }
     if (a === "wxslogmore") { this._wxLogN = (this._wxLogN || 12) + 30; this._render(); return; }
-    if (a === "wxsvor") { this._hass.callWS({ type: "fenster_heizung/wx_vor", id: k }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(r && r.ok ? "Erledigt" : "Das hat nicht geklappt"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
+    if (a === "wxsvor") { this._hass.callWS({ type: "fenster_heizung/wx_vor", k }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(r && r.ok ? "Erledigt" : "Das hat nicht geklappt"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
     if (a === "wxsack" && this._modal && this._modal.type === "wxalarm") { this._modal = null; this._renderModal(); }
     if (a === "wxsack" || a === "wxspause" || a === "wxsclose") {
       const m = a === "wxsack" ? { type: "fenster_heizung/wx_ack" } : a === "wxspause" ? { type: "fenster_heizung/wx_pause", minutes: Number(k) || 0 } : { type: "fenster_heizung/wx_close" };
@@ -17818,7 +17818,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "grxrest") { this._grHLoad(); this._modal = { type: "grxrest", k }; this._renderModal(); return true; }
     if (a === "grxrestgo") {
       const S = this._grS0(); this._modal = null; this._renderModal();
-      this._hass.callWS({ type: "fenster_heizung/gr_restore", id: k }).then((r) => { const { h, ...d } = r; S.d = d; S.ts = Date.now(); if (this._grH) { this._grH.d = h; this._grH.ts = Date.now(); } if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); this._toast("Stand wiederhergestellt"); })
+      this._hass.callWS({ type: "fenster_heizung/gr_restore", bid: k }).then((r) => { const { h, ...d } = r; S.d = d; S.ts = Date.now(); if (this._grH) { this._grH.d = h; this._grH.ts = Date.now(); } if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); this._toast("Stand wiederhergestellt"); })
         .catch(() => this._toast("Dieser Stand ist nicht mehr da"));
       return true;
     }

@@ -288,7 +288,7 @@
     if (a === "wxsrb") { this._wxRbP = k; this._render(); return; }
     if (a === "wxslog") { this._wxLogF = k; this._wxLogN = 12; this._render(); return; }
     if (a === "wxslogmore") { this._wxLogN = (this._wxLogN || 12) + 30; this._render(); return; }
-    if (a === "wxsvor") { this._hass.callWS({ type: "fenster_heizung/wx_vor", id: k }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(r && r.ok ? "Erledigt" : "Das hat nicht geklappt"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
+    if (a === "wxsvor") { this._hass.callWS({ type: "fenster_heizung/wx_vor", k }).then((r) => { this._wxsD = { d: r || {}, ts: Date.now() }; this._render(); this._toast(r && r.ok ? "Erledigt" : "Das hat nicht geklappt"); }).catch(() => this._toast("Das hat nicht geklappt")); return; }
     if (a === "wxsack" && this._modal && this._modal.type === "wxalarm") { this._modal = null; this._renderModal(); }
     if (a === "wxsack" || a === "wxspause" || a === "wxsclose") {
       const m = a === "wxsack" ? { type: "fenster_heizung/wx_ack" } : a === "wxspause" ? { type: "fenster_heizung/wx_pause", minutes: Number(k) || 0 } : { type: "fenster_heizung/wx_close" };

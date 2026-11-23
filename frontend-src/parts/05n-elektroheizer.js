@@ -126,7 +126,7 @@
     const heater = { room: d.room, entity: d.entity, name: d.name.trim(), steps: W, watt: Math.max(...W), target: d.target, thermo: d.thermo, auto: d.auto, prio: d.prio, from: d.from || null, to: d.to || null };
     if (M.edit) { delete heater.room; delete heater.entity; }
     try {
-      const r = M.edit ? await this._hass.callWS({ type: "fenster_heizung/heizer_update", id: M.edit, heater }) : await this._hass.callWS({ type: "fenster_heizung/heizer_add", heater });
+      const r = M.edit ? await this._hass.callWS({ type: "fenster_heizung/heizer_update", hid: M.edit, heater }) : await this._hass.callWS({ type: "fenster_heizung/heizer_add", heater });
       if (M.edit) { this._ehD = r; this._modal = M.back; this._renderModal(); this._render(); this._toast(`„${heater.name}“ gespeichert`); return; }
       this._ehD = r; this._modal = M.back && (M.back.type === "fh" || M.back.type === "ehlist") ? M.back : null;  /* Raumdialog nicht zurückholen: sein Entwurf kennt den Heizer noch nicht */ this._renderModal(); this._render();
       this._toast(`„${heater.name}“ eingerichtet – heizt mit PV-Überschuss`);
@@ -222,7 +222,7 @@
     if (a === "ehxpause") {
       const r = this._ehRooms().find((x) => x.id === id), e = this._ehOf(id); if (!r || !e) { this._ehLoad(); return true; }
       const pause = !this._ehPaused(r);
-      this._ehCall({ type: "fenster_heizung/heizer_update", id: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder mit PV-Überschuss`).then(() => this._renderModal());
+      this._ehCall({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder mit PV-Überschuss`).then(() => this._renderModal());
       return true;
     }
     if (!M || M.type !== "ehmove") return false;
@@ -233,7 +233,7 @@
     else if (a === "ehxmvok") {
       const e = this._ehOf(M.id), to = this._ehRooms().find((x) => x.id === M.to); if (!e || !to || M.busy) return true;
       M.busy = true; this._renderModal();
-      this._hass.callWS({ type: "fenster_heizung/heizer_update", id: e.id, heater: { room: M.to, target: M.target } })
+      this._hass.callWS({ type: "fenster_heizung/heizer_update", hid: e.id, heater: { room: M.to, target: M.target } })
         .then((r) => { this._ehD = r; this._modal = null; this._renderModal(); this._render(); this._toast(`„${e.name}“ steht jetzt in ${to.name}`); })
         .catch((err) => { M.busy = false; M.err = (err && err.message) || "Umstellen fehlgeschlagen"; this._renderModal(); });
       return true;
@@ -322,7 +322,7 @@
   }
   async _ehRestore(tid, room) {
     try {
-      this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_restore", id: tid, ...(room ? { room } : {}) });
+      this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_restore", hid: tid, ...(room ? { room } : {}) });
       const h = (this._ehD.heaters || []).find((x) => x.id === tid);
       this._toast(`„${h ? h.name : "Heizer"}“ ist wieder da${h && h.room_name ? " in " + h.room_name : ""}`); return true;
     } catch (e) { this._toast((e && e.message) || "Wiederherstellen fehlgeschlagen"); return false; }
@@ -339,7 +339,7 @@
     }
     if (a === "ehxpurge") { if (M) { M.purge = b.dataset.k; this._renderModal(); } return true; }
     if (a === "ehxpurgeno") { if (M) { M.purge = ""; this._renderModal(); } return true; }
-    if (a === "ehxpurgeok") { this._hass.callWS({ type: "fenster_heizung/heizer_purge", id: b.dataset.k }).then((r) => { this._ehD = r; if (this._modal) this._modal.purge = ""; this._renderModal(); this._toast("Endgültig gelöscht"); }).catch(() => this._toast("Löschen fehlgeschlagen")); return true; }
+    if (a === "ehxpurgeok") { this._hass.callWS({ type: "fenster_heizung/heizer_purge", hid: b.dataset.k }).then((r) => { this._ehD = r; if (this._modal) this._modal.purge = ""; this._renderModal(); this._toast("Endgültig gelöscht"); }).catch(() => this._toast("Löschen fehlgeschlagen")); return true; }
     if (M && M.type === "ehrest") {
       if (a === "ehxrestno") { this._modal = M.back; this._renderModal(); return true; }
       if (a === "ehxrestto") { M.to = b.dataset.k; M.err = ""; this._renderModal(); return true; }
@@ -351,7 +351,7 @@
       if (a === "ehxdelok") {
         const e = this._ehOf(M.id); if (!e || M.busy) return true;
         M.busy = true; this._renderModal();
-        this._hass.callWS({ type: "fenster_heizung/heizer_remove", id: e.id, keep_stats: M.keep })
+        this._hass.callWS({ type: "fenster_heizung/heizer_remove", hid: e.id, keep_stats: M.keep })
           .then((r) => { this._ehD = r; this._modal = M.back && M.back.type === "ehlist" ? M.back : null; this._renderModal(); this._render(); this._ehUndoToast(`„${e.name}“ entfernt`, e.id); })
           .catch((err) => { M.busy = false; this._renderModal(); this._toast((err && err.message) || "Entfernen fehlgeschlagen"); });
         return true;

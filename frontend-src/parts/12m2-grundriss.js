@@ -371,7 +371,7 @@
     if (a === "grxrest") { this._grHLoad(); this._modal = { type: "grxrest", k }; this._renderModal(); return true; }
     if (a === "grxrestgo") {
       const S = this._grS0(); this._modal = null; this._renderModal();
-      this._hass.callWS({ type: "fenster_heizung/gr_restore", id: k }).then((r) => { const { h, ...d } = r; S.d = d; S.ts = Date.now(); if (this._grH) { this._grH.d = h; this._grH.ts = Date.now(); } if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); this._toast("Stand wiederhergestellt"); })
+      this._hass.callWS({ type: "fenster_heizung/gr_restore", bid: k }).then((r) => { const { h, ...d } = r; S.d = d; S.ts = Date.now(); if (this._grH) { this._grH.d = h; this._grH.ts = Date.now(); } if (this._mdList().some((x) => x.id === "sf") && this._sfxLoad) this._sfxLoad(true); this._render(); this._toast("Stand wiederhergestellt"); })
         .catch(() => this._toast("Dieser Stand ist nicht mehr da"));
       return true;
     }
