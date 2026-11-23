@@ -263,6 +263,18 @@ class HeaterRoom:
         self.pv_kwh += min(pv_w, power_w) * dt_s / 3_600_000
         self.minutes += dt_s / 60
 
+    def stats_data(self) -> dict[str, Any]:
+        """Statistik des Heizers (für den Papierkorb beim Entfernen)."""
+        self._roll()
+        return {"day": self._day, "kwh": round(self.kwh, 4), "pv_kwh": round(self.pv_kwh, 4),
+                "minutes": round(self.minutes, 2), "history": dict(self.history)}
+
+    def reset_stats(self) -> None:
+        """Statistik leeren (neues Gerät im Raum oder Heizer entfernt)."""
+        self.kwh = self.pv_kwh = self.minutes = 0.0
+        self.history = {}
+        self._day = dt_util.now().date().isoformat()
+
     def attrs(self) -> dict[str, Any] | None:
         c = self.cfg()
         if c is None:

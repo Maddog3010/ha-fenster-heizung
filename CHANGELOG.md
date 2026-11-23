@@ -2,6 +2,23 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b59] - 2026-11-23
+
+**Modul 1 · Fenster & Heizung** v1.9 Build 9 – Elektroheizer 2.0, Build 1: Geräteliste im Hintergrund.
+
+### Neu
+- **Geräteliste der Elektroheizer:** Jeder Heizer ist jetzt ein eigenes Gerät mit fester ID, Namen und Raum (eigener Speicher, mit automatischen Sicherungskopien). Grundlage für Einrichtungs-Assistent, Reiter „Geräte“, Raum wechseln und Papierkorb in den nächsten Builds.
+- **Automatische Übernahme:** Beim ersten Start wird jeder Raum mit eingeschaltetem Elektroheizer in die Liste übernommen. Räume mit ausgeschaltetem Heizer, aber eingetragenem Gerät landen im Papierkorb (30 Tage). Die Raum-Einstellungen werden dabei nicht verändert.
+- **Websocket-Befehle** `heizer_get`, `heizer_add`, `heizer_update`, `heizer_remove` (Hinzufügen, Ändern und Entfernen nur für Admins).
+
+### Geändert
+- **Entfernen räumt auf:** Der Heizer wird ausgeschaltet (bei Klima-Geräten die alte Solltemperatur zurück), abgestellte Thermostate laufen wieder, die Heizer-Felder des Raums werden zurückgesetzt und der Schalter „Elektroheizer aktiv“ verschwindet aus Home Assistant statt als „nicht verfügbar“ stehen zu bleiben. Die Statistik wandert auf Wunsch mit in den Papierkorb.
+- Ausschalten im Raum-Dialog wie bisher legt den Heizer in den Papierkorb; wieder einschalten mit demselben Gerät holt ihn mit gleicher ID und gleichem Namen zurück.
+- Ein neuer Heizer im Raum beginnt mit leerer Statistik.
+
+### Hinweis
+- Im Dashboard ändert sich mit diesem Build noch nichts; Assistent und Reiter „Geräte“ folgen in Build 2 und 3.
+
 ## [2026.11.4b58] - 2026-11-22
 
 **Modul 0 · Haus & Grundriss** v0.10.1 – Korrektur und Aufräumen.

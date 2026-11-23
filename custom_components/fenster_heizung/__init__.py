@@ -1240,6 +1240,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     entry.async_on_unload(entry.add_update_listener(_reload))
     await _async_register_panel(hass)
     store = hass.data.setdefault(DOMAIN, {})
+    try:  # Elektroheizer 2.0: Geräteliste; beim ersten Start werden alle Räume übernommen, danach je Raum abgeglichen
+        if "heizer" not in store:
+            from .heizer import HeizerManager
+            store["heizer"] = HeizerManager(hass)
+            await store["heizer"].async_start()
+        else:
+            await store["heizer"].async_sync_room(entry)
+    except Exception:  # noqa: BLE001 - die Liste ist ein Verzeichnis, die Regelung läuft auch ohne sie
+        _LOGGER.warning("Geräteliste der Elektroheizer nicht abgeglichen", exc_info=True)
     if "verlauf" not in store:
         store["verlauf"] = Verlauf(hass)
         await store["verlauf"].async_start()
@@ -1425,6 +1434,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             if tgm is not None:
                 tgm.async_stop()
             hass.data.get(DOMAIN, {}).pop("fluss", None)
+            hass.data.get(DOMAIN, {}).pop("heizer", None)
             tbm = hass.data.get(DOMAIN, {}).pop("tablet", None)
             if tbm is not None:
                 tbm.async_stop()

@@ -780,6 +780,63 @@ async def ws_set_options(hass: HomeAssistant, connection, msg: dict) -> None:
     connection.send_result(msg["id"], {"options": _current_options(entry)})
 
 
+# ---- Elektroheizer 2.0 (Modul 1): Geräteliste --------------------------------------------------------------
+def _heizer(hass: HomeAssistant):
+    return hass.data.get(DOMAIN, {}).get("heizer")
+
+
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/heizer_get"})
+@websocket_api.async_response
+async def ws_heizer_get(hass: HomeAssistant, connection, msg: dict) -> None:
+    mgr = _heizer(hass)
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Noch nicht bereit")
+        return
+    connection.send_result(msg["id"], mgr.snapshot())
+
+
+async def _heizer_do(hass: HomeAssistant, connection, msg: dict, fn) -> None:
+    _who(connection)
+    mgr = _heizer(hass)
+    if mgr is None:
+        connection.send_error(msg["id"], "not_ready", "Noch nicht bereit")
+        return
+    try:
+        res = await fn(mgr)
+    except ValueError as err:
+        connection.send_error(msg["id"], "invalid_format", f"Elektroheizer: {err}")
+        return
+    pv = hass.data.get(DOMAIN, {}).get("pv")
+    if pv is not None:
+        hass.async_create_task(pv.async_evaluate())  # gleich neu verteilen, nicht erst im nächsten Takt
+    connection.send_result(msg["id"], {"result": res, **mgr.snapshot()})
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/heizer_add", vol.Required("heater"): dict})
+@websocket_api.async_response
+async def ws_heizer_add(hass: HomeAssistant, connection, msg: dict) -> None:
+    await _heizer_do(hass, connection, msg, lambda m: m.async_add(msg["heater"]))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({
+    vol.Required("type"): "fenster_heizung/heizer_update", vol.Required("id"): str, vol.Required("heater"): dict,
+})
+@websocket_api.async_response
+async def ws_heizer_update(hass: HomeAssistant, connection, msg: dict) -> None:
+    await _heizer_do(hass, connection, msg, lambda m: m.async_update(msg["id"], msg["heater"]))
+
+
+@websocket_api.require_admin
+@websocket_api.websocket_command({
+    vol.Required("type"): "fenster_heizung/heizer_remove", vol.Required("id"): str, vol.Optional("keep_stats", default=True): bool,
+})
+@websocket_api.async_response
+async def ws_heizer_remove(hass: HomeAssistant, connection, msg: dict) -> None:
+    await _heizer_do(hass, connection, msg, lambda m: m.async_remove(msg["id"], msg["keep_stats"]))
+
+
 @websocket_api.websocket_command({vol.Required("type"): "fenster_heizung/get_diag"})
 @websocket_api.async_response
 async def ws_get_diag(hass: HomeAssistant, connection, msg: dict) -> None:
@@ -2391,7 +2448,7 @@ async def ws_advent_sign(hass: HomeAssistant, connection, msg: dict) -> None:
 
 def async_register_api(hass: HomeAssistant) -> None:
     for command in (
-        ws_get_state, ws_set_layout, ws_haus_get, ws_haus_set, ws_log_get, ws_log_undo, ws_mw_get, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options,
+        ws_get_state, ws_set_layout, ws_haus_get, ws_haus_set, ws_log_get, ws_log_undo, ws_mw_get, ws_set_plan, ws_set_presence, ws_get_options, ws_set_options, ws_heizer_get, ws_heizer_add, ws_heizer_update, ws_heizer_remove,
         ws_get_general, ws_set_general, ws_get_update, ws_beta_gate, ws_get_learning, ws_restore,
         ws_get_diag, ws_clear_diag, ws_get_modules, ws_bak_list, ws_bak_restore, ws_ebk_get, ws_ebk_set, ws_ebk_test, ws_ebk_run, ws_gs_get, ws_gs_runs, ws_gs_remind, ws_brief_get, ws_brief_set, ws_brief_test, ws_set_modules, ws_set_wasser, ws_wasser_cmd,
         ws_wb_get, ws_wb_set, ws_wb_test, ws_wb_scan, ws_wb_ha_test, ws_wb_est, ws_wb_odo, ws_wb_who, ws_wb_session, ws_wb_import, ws_wb_sessions, ws_wb_assign, ws_preise, ws_wb_quick, ws_wb_stats, ws_wb_forecast, ws_tb_get, ws_tb_test, ws_tb_set, ws_wx_get, ws_wx_set, ws_wx_test, ws_wx_ack, ws_wx_pause, ws_wx_close, ws_wx_vor, ws_tarif_get, ws_tarif_set, ws_tarif_sub, ws_tarif_remind, ws_tarif_test, ws_tarif_check,
