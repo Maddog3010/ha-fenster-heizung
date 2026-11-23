@@ -22,3 +22,15 @@ sind eine Zeile (Fingerabdruck), sortiert nach betroffenen Installationen, Filte
 
     npx wrangler d1 execute stats --remote --file=schema.sql
     npx wrangler deploy
+
+## Build 5 (Dashboard): neu in Version, Wochenblick, Release-Marken, Nachzügler
+
+Nur der Worker ändert sich – keine neue Tabelle, kein Update der Integration nötig:
+
+    npx wrangler deploy
+
+- **Diese Woche** (oben auf beiden Reitern): neue Fehler, „wieder da“, diese Woche behoben, seit über 14 Tagen „in Arbeit“. Keine Benachrichtigung.
+- **Neu in Version** (Reiter Fehler): jeder Fehler zeigt „seit 11.4.3b3“, Filter `?ver=<Version>` zeigt, was eine Version neu mitgebracht hat.
+- **Release-Marken**: orange Linien im Wochenverlauf und im Fehler-Verlauf am ersten Tag einer Version (stabile immer, dazu die neuesten Betas).
+- **Nachzügler mit bekanntem Fehler** (Reiter Versionen): aktive Installationen auf einer Version ab dem ersten Auftreten und vor „behoben in …“.
+- Korrektur der Versions-Reihenfolge: Korrektur-Betas (2026.11.4.3b1) sortieren jetzt nach 2026.11.4.2 statt davor – „neueste Version“ und der Wochenverlauf stimmen damit auch bei Korrektur-Betas (auch im Python-Server).

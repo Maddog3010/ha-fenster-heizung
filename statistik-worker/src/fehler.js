@@ -82,7 +82,7 @@ export async function dbErrCleanup(DB, todayMs) {
 
 // ---------------------------------------------------------------- Auswertung
 export const vkey = (v) => { const m = VER_RE.exec(v || "") || []; return [+m[1] || 0, +m[2] || 0, +m[3] || 0, +m[4] || 0, m[5] === undefined ? 1e9 : +m[5]]; };
-const vcmp = (a, b) => { const x = vkey(a), y = vkey(b); for (let i = 0; i < 5; i++) if (x[i] !== y[i]) return x[i] - y[i]; return 0; };
+export const vcmp = (a, b) => { const x = vkey(a), y = vkey(b); for (let i = 0; i < 5; i++) if (x[i] !== y[i]) return x[i] - y[i]; return 0; };
 
 /** groups: Zeilen aus err_groups · hits: Zeilen aus err_hits · Ergebnis: Liste für das Dashboard (Fenster in Tagen) */
 export function errCompute(groups, hits, todayStr, days = 7) {
@@ -109,27 +109,92 @@ export function errCompute(groups, hits, todayStr, days = 7) {
     else if (g.status === "arbeit") tag = "in Arbeit";
     else if (g.status === "ignoriert") tag = "ignoriert";
     const spark = Array.from({ length: 14 }, (_, i) => { const d = S(today - (13 - i) * dayMs); return new Set(all.filter((h) => h.day === d).map((h) => h.rid)).size; });
-    rows.push({ ...g, back: new Set(back.map((h) => h.rid)).size, inst, hits: win.reduce((a, h) => a + h.n, 0), inst_all: new Set(all.map((h) => h.rid)).size, hits_all: all.reduce((a, h) => a + h.n, 0), vers, tag, spark, in_newest: inNewest });
+    rows.push({ ...g, first_ver: vers[0] || "", back: new Set(back.map((h) => h.rid)).size, inst, hits: win.reduce((a, h) => a + h.n, 0), inst_all: new Set(all.map((h) => h.rid)).size, hits_all: all.reduce((a, h) => a + h.n, 0), vers, tag, spark, in_newest: inNewest });
   }
   const prio = (x) => (x.tag === "wieder da" ? 0 : x.tag === "ignoriert" || x.tag === "behoben" ? 2 : 1);
   rows.sort((a, b) => prio(a) - prio(b) || b.inst - a.inst || b.hits - a.hits || (a.last_day < b.last_day ? 1 : -1));
-  return { rows, newest, reporters: new Set(hits.filter((h) => h.day >= from).map((h) => h.rid)).size, days, today: todayStr };
+  /* Build 5: In welcher Version ist ein Fehler zuerst aufgetaucht? (ohne ignorierte) */
+  const intro = new Map();
+  for (const x of rows) if (x.first_ver && x.status !== "ignoriert") intro.set(x.first_ver, (intro.get(x.first_ver) || 0) + 1);
+  return { rows, newest, reporters: new Set(hits.filter((h) => h.day >= from).map((h) => h.rid)).size, days, today: todayStr,
+    intro: [...intro].sort((a, b) => vcmp(b[0], a[0])).slice(0, 5), week: errWeek(rows, todayStr) };
 }
-export function errDetail(g, hits, todayStr) {
+/** Build 5 · Wochenblick: neu, wieder da, behoben, lange in Arbeit (nur Anzeige, keine Benachrichtigung) */
+export function errWeek(rows, todayStr) {
+  const today = Date.parse(todayStr + "T00:00:00Z"), d7 = S(today - 6 * dayMs), d14 = S(today - 14 * dayMs);
+  return {
+    neu: rows.filter((x) => x.status !== "ignoriert" && x.status !== "behoben" && x.first_day >= d7).length,
+    back: rows.filter((x) => x.tag === "wieder da" && x.last_day >= d7).length,
+    fixed: rows.filter((x) => x.status === "behoben" && x.tag !== "wieder da" && (x.status_day || "") >= d7).length,
+    stale: rows.filter((x) => x.status === "arbeit" && x.status_day && x.status_day <= d14).length,
+  };
+}
+export function weekHtml(w) {
+  if (!w) return "";
+  const p = (n, t, bg, fg, href) => (n ? `<a class="tg wkp" href="${href}" style="background:${bg};color:${fg}">${n} ${t}</a>` : "");
+  const items = p(w.neu, "neu", "#7f1d1d", "#fecaca", "/fehler?neu=1") + p(w.back, "wieder da", "#b91c1c", "#fff", "/fehler?alle=1") +
+    p(w.fixed, "behoben", "#134e4a", "#5eead4", "/fehler?alle=1") + p(w.stale, "in Arbeit seit über 14 Tagen", "#1e3a8a", "#bfdbfe", "/fehler?alle=1");
+  return `<div class="c wk"><b>Diese Woche</b>${items || '<span class="u" style="margin:0">keine neuen Fehler, nichts wieder aufgetaucht</span>'}</div>`;
+}
+/** Build 5 · Release-Marken: erster Tag je Version (aus Versions-Statistik und Fehlerberichten) */
+export async function loadReleases(DB) {
+  const a = (await DB.prepare("SELECT version v, MIN(day) d FROM daily GROUP BY version").all()).results;
+  const b = (await DB.prepare("SELECT version v, MIN(day) d FROM err_hits GROUP BY version").all()).results;
+  const m = new Map();
+  for (const x of [...a, ...b]) if (VER_RE.test(x.v) && (!m.has(x.v) || x.d < m.get(x.v))) m.set(x.v, x.d);
+  return [...m].map(([v, d]) => ({ v, d }));
+}
+/** Marken im Zeitraum: stabile Versionen immer, dazu die neuesten Betas – höchstens max Stück */
+export function releaseMarks(rel, fromStr, toStr, max = 8) {
+  const inR = (rel || []).filter((x) => x.d >= fromStr && x.d <= toStr);
+  const st = inR.filter((x) => channelOf(x.v) === "stable"), be = inR.filter((x) => channelOf(x.v) === "beta").sort((a, b) => vcmp(b.v, a.v));
+  return [...st.slice(-max), ...be.slice(0, Math.max(0, max - st.length))].sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : vcmp(a.v, b.v))).slice(-max);
+}
+export const vshort = (v) => String(v || "").replace(/^\d{4}\./, "");
+/** Senkrechte Release-Linien; xOf(Tag) → x oder null. Beschriftung nur, wenn Platz ist. */
+export function markSvg(marks, xOf, yTop, yBot, labelY, W = 600) {
+  let s = "", last = -1e9;
+  for (const m of marks) {
+    const x = xOf(m.d); if (x == null) continue;
+    s += `<line x1="${x}" x2="${x}" y1="${yTop}" y2="${yBot}" stroke="#d95926" stroke-width="1" stroke-dasharray="3 3"><title>${e(m.v)} · ab ${e(m.d)}</title></line>`;
+    if (x - last >= 34) { const end = x > W - 40; s += `<text x="${end ? x - 2 : x + 2}" y="${labelY}" fill="#f5a37b" font-size="9"${end ? ' text-anchor="end"' : ""}>${e(vshort(m.v))}</text>`; last = x; }
+  }
+  return s;
+}
+/** Build 5 · Nachzügler: aktive Installationen auf einer Version, in der ein schon behobener Fehler steckt */
+export function laggards(rows, versions) {
+  const vc = new Map(versions || []), hit = new Set(), list = [];
+  for (const x of rows) {
+    if (x.status !== "behoben" || !x.fixed_in || !x.first_ver) continue;
+    const aff = [...vc.keys()].filter((v) => vcmp(v, x.first_ver) >= 0 && vcmp(v, x.fixed_in) < 0);
+    const n = aff.reduce((a, v) => a + vc.get(v), 0);
+    if (!n) continue;
+    aff.forEach((v) => hit.add(v));
+    list.push({ fp: x.fp, mod: x.mod, kind: x.kind, msg: x.msg, fixed_in: x.fixed_in, n, vers: aff.sort(vcmp) });
+  }
+  list.sort((a, b) => b.n - a.n);
+  return { total: [...hit].reduce((a, v) => a + vc.get(v), 0), list: list.slice(0, 6), any: rows.some((x) => x.status === "behoben" && x.fixed_in) };
+}
+export function lagHtml(L) {
+  const body = L.list.length ? `<table class="mini">${L.list.map((x) => `<tr><td><a href="/fehler/${x.fp}" class="lga"><b>${e(x.kind)}:</b> ${e(String(x.msg || "–").slice(0, 70))}</a><small style="display:block;color:#8d8c84">${e(x.mod)} · behoben in ${e(x.fixed_in)}${channelOf(x.fixed_in) === "beta" ? " (bisher nur Beta)" : ""} · betroffen: ${e(x.vers.map(vshort).join(", "))}</small></td><td class="num">${x.n} Inst.</td></tr>`).join("")}</table>`
+    : `<div class="empty">${L.any ? "Keine – die behobenen Fehler stecken in keiner Version mehr, die noch genutzt wird." : "Noch kein Fehler als „behoben in …“ markiert."}</div>`;
+  return `<div class="c"><h2>Nachzügler mit bekanntem Fehler</h2><div class="u">${L.total ? `${L.total} aktive Installationen laufen auf einer Version mit schon behobenem Fehler` : "Aktive Installationen (30 Tage) auf einer Version vor dem Fix"}</div>${body}</div>`;
+}
+export function errDetail(g, hits, todayStr, rel = []) {
   const today = Date.parse(todayStr + "T00:00:00Z"), cnt = (key) => { const m = new Map(); for (const h of hits) { const k = h[key] || "?"; const o = m.get(k) || { inst: new Set(), n: 0 }; o.inst.add(h.rid); o.n += h.n; m.set(k, o); } return [...m].map(([k, o]) => ({ k, inst: o.inst.size, n: o.n })); };
   const days = Array.from({ length: 30 }, (_, i) => { const d = S(today - (29 - i) * dayMs); const hs = hits.filter((h) => h.day === d); return { d, inst: new Set(hs.map((h) => h.rid)).size, n: hs.reduce((a, h) => a + h.n, 0) }; });
-  return { g, inst: new Set(hits.map((h) => h.rid)).size, hits: hits.reduce((a, h) => a + h.n, 0), vers: cnt("version").sort((a, b) => vcmp(b.k, a.k)), ha: cnt("ha").sort((a, b) => b.inst - a.inst), ch: cnt("channel"), days };
+  return { rel: releaseMarks(rel, days[0].d, todayStr), g, inst: new Set(hits.map((h) => h.rid)).size, hits: hits.reduce((a, h) => a + h.n, 0), vers: cnt("version").sort((a, b) => vcmp(b.k, a.k)), ha: cnt("ha").sort((a, b) => b.inst - a.inst), ch: cnt("channel"), days };
 }
 export async function errLoad(DB, todayStr, days) {
   const groups = (await DB.prepare("SELECT fp, src, mod, kind, where_ AS \"where\", msg, first_day, last_day, status, fixed_in, issue, status_day FROM err_groups").all()).results;
   const hits = (await DB.prepare("SELECT day, fp, rid, version, channel, ha, n FROM err_hits").all()).results;
   return errCompute(groups, hits, todayStr, days);
 }
-export async function errLoadOne(DB, fp, todayStr) {
+export async function errLoadOne(DB, fp, todayStr, rel = null) {
   const g = await DB.prepare("SELECT fp, src, mod, kind, where_ AS \"where\", msg, first_day, last_day, status, fixed_in, issue, status_day FROM err_groups WHERE fp=?").bind(fp).first();
   if (!g) return null;
   const hits = (await DB.prepare("SELECT day, fp, rid, version, channel, ha, n FROM err_hits WHERE fp=?").bind(fp).all()).results;
-  return errDetail(g, hits, todayStr);
+  return errDetail(g, hits, todayStr, rel || (await loadReleases(DB)));
 }
 
 // ---------------------------------------------------------------- Darstellung
@@ -144,6 +209,7 @@ export const ERR_CSS = `.tabs{display:flex;gap:6px;margin:10px 0}.tabs a{color:#
 .rb{display:inline-flex;align-items:center;gap:5px;border:1px solid #3a3a38;border-radius:99px;padding:3px 11px;font-size:.82rem;cursor:pointer}.rb input{accent-color:#2dd4bf;margin:0}
 .sfr{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:.84rem;color:#c3c2b7}.sfr input{background:#111110;color:#f0efec;border:1px solid #3a3a38;border-radius:8px;padding:5px 8px;font:inherit}
 .sfr button{background:#2dd4bf;color:#042f2e;border:0;border-radius:99px;padding:6px 16px;font-weight:700;cursor:pointer}.warnb{background:#450a0a;color:#fecaca;border-radius:10px;padding:8px 12px;margin:6px 0 10px;font-size:.86rem}
+.lga{color:#f0efec;text-decoration:none;font-size:.84rem;word-break:break-word}.lga:hover{text-decoration:underline}.wk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;margin:0 0 10px}.wkp{text-decoration:none}
 @media(max-width:700px){.et .hide{display:none}.kv{grid-template-columns:1fr}}`;
 const spark = (a, w = 84, h = 18) => { const mx = Math.max(1, ...a); return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${a.map((v, i) => `<rect x="${(i * w) / a.length + 0.5}" y="${h - (v / mx) * (h - 2) - 1}" width="${w / a.length - 1.5}" height="${(v / mx) * (h - 2) + 1}" rx="1" fill="${v ? "#f87171" : "#3a3a38"}"/>`).join("")}</svg>`; };
 const tag = (t) => { const x = TAG[t] || TAG.bekannt; return `<span class="tg" style="background:${x[1]};color:${x[2]}">${x[0]}</span>`; };
@@ -155,12 +221,14 @@ export function errRender(r, q = {}) {
   const ln = (k, v, t, on) => { const p = new URLSearchParams({ ...q, [k]: v }); if (!v) p.delete(k); return `<a href="/fehler?${p}" class="${on ? "on" : ""}">${e(t)}</a>`; };
   let rows = r.rows.filter((x) => (!q.mod || x.mod === q.mod) && (!q.src || x.src === q.src) && (q.alle || x.inst > 0 || x.tag === "neu" || x.tag === "wieder da") && (q.ign || x.tag !== "ignoriert"));
   if (q.neu) rows = rows.filter((x) => ["neu", "steigt", "wieder da"].includes(x.tag));
+  if (q.ver) rows = r.rows.filter((x) => x.first_ver === q.ver && (!q.mod || x.mod === q.mod) && (!q.src || x.src === q.src) && (q.ign || x.tag !== "ignoriert"));   /* Build 5: neu in dieser Version, unabhängig vom Zeitraum */
   const body = rows.length ? `<table class="et"><tr><th></th><th>Fehler</th><th>Modul</th><th class="num">Installationen</th><th class="num hide">Anzahl</th><th class="hide">Versionen</th><th class="hide">14 Tage</th><th>zuletzt</th></tr>
-    ${rows.map((x) => `<tr><td>${tag(x.tag)}${x.status === "behoben" && x.fixed_in ? `<small>${e(x.fixed_in)}</small>` : ""}${x.issue ? `<small>#${x.issue}</small>` : ""}</td><td><a href="/fehler/${x.fp}"><b class="m">${e(x.kind)}: ${e(x.msg || "–")}</b></a><small>${e(SRC[x.src])}${x.where ? " · " + e(x.where) : ""}</small></td><td>${e(x.mod)}</td><td class="num">${x.inst}</td><td class="num hide">${x.hits}</td><td class="hide">${e(x.vers.slice(-2).join(" · "))}</td><td class="hide">${spark(x.spark)}</td><td>${fd(x.last_day)}</td></tr>`).join("")}</table>`
+    ${rows.map((x) => `<tr><td>${tag(x.tag)}${x.status === "behoben" && x.fixed_in ? `<small>${e(x.fixed_in)}</small>` : ""}${x.issue ? `<small>#${x.issue}</small>` : ""}</td><td><a href="/fehler/${x.fp}"><b class="m">${e(x.kind)}: ${e(x.msg || "–")}</b></a><small>${e(SRC[x.src])}${x.where ? " · " + e(x.where) : ""}${x.first_ver ? ` · seit ${e(vshort(x.first_ver))}` : ""}</small></td><td>${e(x.mod)}</td><td class="num">${x.inst}</td><td class="num hide">${x.hits}</td><td class="hide">${e(x.vers.slice(-2).join(" · "))}</td><td class="hide">${spark(x.spark)}</td><td>${fd(x.last_day)}</td></tr>`).join("")}</table>`
     : '<div class="empty">Keine Fehler in diesem Zeitraum – oder noch keine Berichte.</div>';
   return `<div class="c"><h2>Fehler · letzte ${r.days} Tage</h2><div class="u">${r.reporters} Installationen haben berichtet · neueste Version ${e(r.newest || "–")} · gleicher Fehler = eine Zeile</div>
     <div class="flt">${ln("tage", "", "7 Tage", r.days === 7)}${ln("tage", "30", "30 Tage", r.days === 30)}${ln("tage", "90", "90 Tage", r.days === 90)}<span style="width:8px"></span>${ln("neu", q.neu ? "" : "1", "nur neu / steigt", !!q.neu)}${ln("alle", q.alle ? "" : "1", "auch ruhige", !!q.alle)}${ln("ign", q.ign ? "" : "1", "auch ignorierte", !!q.ign)}</div>
     <div class="flt">${ln("mod", "", "alle Module", !q.mod)}${mods.map((m) => ln("mod", m, m, q.mod === m)).join("")}<span style="width:8px"></span>${ln("src", "", "alle Quellen", !q.src)}${Object.entries(SRC).map(([k, t]) => ln("src", k, t, q.src === k)).join("")}</div>
+    ${(r.intro || []).length ? `<div class="flt"><span class="u" style="margin:4px 4px 0 2px">Neu in Version:</span>${ln("ver", "", "alle", !q.ver)}${r.intro.map(([v, n]) => ln("ver", v, `${vshort(v)} · ${n}`, q.ver === v)).join("")}</div>` : ""}
     ${body}</div>`;
 }
 export function issueUrl(D, repo = "Maddog3010/ha-fenster-heizung") {
@@ -180,11 +248,12 @@ export function errRenderOne(D, repo) {
     <div class="sfr"><label>behoben in Version <input name="fixed_in" list="vl" value="${e(g.fixed_in || "")}" placeholder="z. B. 2026.11.4.2" pattern="\\d{4}\\.\\d{1,2}\\.\\d{1,2}(\\.\\d{1,2})?(b\\d{1,3})?"></label><datalist id="vl">${vs.map((v) => `<option value="${e(v)}">`).join("")}</datalist>
     <label>GitHub-Issue # <input name="issue" value="${g.issue || ""}" inputmode="numeric" size="6"></label><button type="submit">Speichern</button></div></form>
     <div class="flt" style="margin-top:10px"><a href="${e(issueUrl(D, repo))}" target="_blank" rel="noopener">GitHub-Issue anlegen (vorausgefüllt)</a>${g.issue ? `<a href="https://github.com/${e(repo || "Maddog3010/ha-fenster-heizung")}/issues/${g.issue}" target="_blank" rel="noopener">Issue #${g.issue} öffnen</a>` : ""}</div></div>`;
-  const chart = `<svg viewBox="0 0 600 90">${D.days.map((x, i) => `<rect x="${i * 20 + 2}" y="${80 - (x.inst / mx) * 70}" width="16" height="${(x.inst / mx) * 70 + 1}" rx="2" fill="${x.inst ? "#f87171" : "#3a3a38"}"><title>${fd(x.d)} · ${x.inst} Installationen · ${x.n}×</title></rect>`).join("")}<text x="2" y="89" fill="#8d8c84" font-size="9">${fd(D.days[0].d)}</text><text x="598" y="89" fill="#8d8c84" font-size="9" text-anchor="end">heute</text></svg>`;
+  const xOf = (d) => { const i = D.days.findIndex((x) => x.d === d); return i < 0 ? null : i * 20 + 1; };
+  const chart = `<svg viewBox="0 -14 600 104">${markSvg(D.rel || [], xOf, -4, 80, -6)}${D.days.map((x, i) => `<rect x="${i * 20 + 2}" y="${80 - (x.inst / mx) * 70}" width="16" height="${(x.inst / mx) * 70 + 1}" rx="2" fill="${x.inst ? "#f87171" : "#3a3a38"}"><title>${fd(x.d)} · ${x.inst} Installationen · ${x.n}×</title></rect>`).join("")}<text x="2" y="89" fill="#8d8c84" font-size="9">${fd(D.days[0].d)}</text><text x="598" y="89" fill="#8d8c84" font-size="9" text-anchor="end">heute</text></svg>`;
   const mini = (rows, t) => `<table class="mini">${rows.map((x) => `<tr><td>${e(t ? t(x.k) : x.k)}</td><td class="num">${x.inst} Inst.</td><td class="num">${x.n}×</td></tr>`).join("")}</table>`;
   return `<div class="c"><div class="flt"><a href="/fehler">← alle Fehler</a></div><h2 class="m">${e(g.kind)}: ${e(g.msg || "–")}</h2><div class="u">Fehler-ID ${e(g.fp)}</div>
     <div class="kv"><span>Modul · Quelle</span><b>${e(g.mod)} · ${e(SRC[g.src])}</b><span>Stelle</span><b class="m">${e(g.where || "–")}</b><span>Zuerst · zuletzt</span><b>${e(g.first_day)} · ${e(g.last_day)}</b>
     <span>Betroffen</span><b>${D.inst} Installationen · ${D.hits}× (letzte ${ERR_KEEP_DAYS} Tage)</b><span>Kanal</span><b>${D.ch.map((x) => `${x.k === "beta" ? "Beta" : "Stabil"} ${x.inst}`).join(" · ")}</b></div></div>
-    ${st}<div class="g"><div class="c"><h2>Verlauf</h2><div class="u">Installationen pro Tag, 30 Tage</div>${chart}</div>
+    ${st}<div class="g"><div class="c"><h2>Verlauf</h2><div class="u">Installationen pro Tag, 30 Tage${(D.rel || []).length ? " · orange: neue Version erschienen" : ""}</div>${chart}</div>
     <div class="c"><h2>Versionen</h2><div class="u">Strom &amp; Wärme</div>${mini(D.vers)}</div><div class="c"><h2>Home Assistant</h2><div class="u">Version</div>${mini(D.ha)}</div></div>`;
 }
