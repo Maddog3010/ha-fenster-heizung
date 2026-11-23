@@ -786,7 +786,7 @@ const MV_STG = [
   ["stabil", "ab 1.0", "Geprüft und für den Alltag gedacht.", "Einstellungen bleiben bei Updates erhalten, neue Funktionen kommen nur dazu.", "Neue Funktionen heben die Version an (1.1, 1.2). Ein großer Umbau macht daraus 2.0."]];
 const MV = {
   gr: { v: "0.10.1", b: 10, d: "2026-11-22", p: "2026.11.4b58", log: [["0.10.1", 10, "2026.11.4b58", "Puppenhaus entfernt (nur noch der Plan, im Banner wieder das Haus-Symbol). Werkzeugleiste im Baukasten bleibt am Handy/iPad nach dem Wischen stehen und springt nicht mehr an den Anfang (auch Ebenen- und Etagen-Knöpfe)."], ["0.10", 10, "2026.11.4b56", "Puppenhaus (alle Etagen schräg übereinander, Antippen klappt flach, auch im Banner), Sonnenlicht durch die Fenster mit Tageszeit-Regler und Nordrichtung, Möbel (19) und Außenbereich (42: Garten & Pflanzen, Spielen & Freizeit, Wege, Bauten & Technik) mit Größe in cm, Grundstück als eigene Etage mit Haus-Umriss, Zustände (Pool, Bewässerung, Gartenlampe …). Raumnamen passen sich dem Raum an und verdecken keine Melder mehr"], ["0.9", 9, "2026.11.4b55", "Haustechnik, Sensoren und Notfall-Punkte im Plan (34 Teile, mit Zustand aus Home Assistant, Kegel für Bewegungsmelder und Kamera, WLAN-Reichweite, Notizen); Notfall-Punkte auch in Modul 11. Raum-Sensoren in Home Assistant (Fläche, Temperatur, Lampen an, Fenster offen, belegt, Wohnfläche). Bereiche und Etagen aus dem Plan anlegen"], ["0.8", 8, "2026.11.4b55", "Zoom (+/−, Strg+Mausrad, zwei Finger), Verschieben, Vollbild und Raum-Fokus im Plan. Export als PDF (A4 quer, alle Etagen, mit Titel, Fläche und Datum), PNG und SVG. Dashboard-Karte „Grundriss“ (custom:sw-grundriss-card) mit Stil, Etage, Ebenen und Raum-Blatt"], ["0.7", 7, "2026.11.4b54", "Baukasten 2.0: Raster 5–50 cm, Wände rasten auf 15° ein, Maße im Plan. Türen und Fenster schräg auf jeder Wand, frei drehbar, mit Breite und Art (Doppel-, Schiebe-, Pendel-, Falt-, Terrassentür, Garagentor; bodentief, Dachfenster, Rollladen), Abstand zur Ecke, wandern mit dem Raum. Plan-Check, Maßstab messen, Etage kopieren, Tastatur. Treppenarten (L, U halbgewendelt, Wendel, Dachboden), mobile Heizer und Luftentfeuchter aus Modul 1 (Entfeuchter folgt seinem Standort), Markise mit Stand"], ["0.6", 6, "2026.11.4b54", "Eine Optik überall: Modul 1, 11 und der Baukasten zeichnen den Grundriss wie Modul 0. Neuer Baukasten mit Leiste oben, Werkzeugen links, Eigenschaften daneben und Ablage zum Ziehen. Ebene „Jetzt“ und Raum-Blatt beim Antippen eines Raums"], ["0.5", 5, "2026.11.4b53", "Neue Optik des Grundrisses: Wandstärken, Böden je Raumart, Türen mit Schwenkbogen, Fenster mit Glas (offen = gelb), Treppen, Raumsymbol und m², Maße, Nordpfeil, Maßstab; Stile Modern, Bauplan und Hell"], ["0.4", 4, "2026.11.4b53", "Sichern & Einlesen: Plan als Datei, Einlesen mit Vorschau (ersetzen oder Etagen dazu), Verlauf der letzten 15 Stände und Umzugs-Kopie wiederherstellen"], ["0.3", 3, "2026.11.4b52", "Baukasten zieht aus Modul 11 nach Modul 0: Bearbeiten in Modul 1, 11 und 18 führt hierher und zurück, Reiter Ebenen mit Bauplan, Melder, Lampen und Wärme"], ["0.2", 2, "2026.11.4b52", "Reiter Räume: eine Liste Plan-Raum ↔ Bereich ↔ Raum in Modul 1 mit „genutzt von“, Zuordnung aus Modul 18 übernommen, Einstellungen mit Rückfrage beim Ausschalten"], ["0.1", 1, "2026.11.4b52", "Neues Modul: der Grundriss gehört dem Kern, Umzug aus Modul 11, Plan mit Ebenen Melder und Lampen ansehen"]] },
-  fh: { v: "1.8", b: 8, d: "2026-11-12", p: "2026.11.3", log: [["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
+  fh: { v: "1.9", b: 9, d: "2026-11-23", p: "2026.11.4b59", log: [["1.9", 9, "2026.11.4b59", "Elektroheizer 2.0 Build 1–4: Entfernen-Dialog mit Rückgängig, Papierkorb (30 Tage) zum Wiederherstellen, Leistung messen und Testlauf im Assistenten; Heizer unter Modul 1 · Einstellungen › Geräte (eigener Reiter entfällt) mit Liste und PV-Regeln, Geräte-Blatt mit Bearbeiten, Pausieren und „In anderen Raum stellen“ (Statistik zieht mit), Raumeinstellungen nur noch mit Kurzinfo; Einrichtungs-Assistent in vier Schritten (Gerät mit Vorschlägen, Raum als Kachel, Leistung per Vorlage, Regeln mit Vorschlägen) aus Raumkarte „⋯“, Modul-1-Einstellungen, Raumeinstellungen und Grundriss; eigene Geräteliste mit fester ID und Namen, automatische Übernahme bestehender Heizer (Reste in den Papierkorb), Entfernen räumt auf (Gerät aus, Thermostate zurück, Schalter-Entität gelöscht, Statistik auf Wunsch behalten)"], ["1.8", 8, "2026.11.3b10", "Haus-Szene: Solarmodule liegen jetzt gerade auf der Dachfläche (unten 4, darüber 3, links vom Schornstein) statt schräg über der Dachkante; Glanz bei Überschuss, Schnee bei Frost"], ["1.8", 7, "2026.11.3b9", "Messräume im Grundriss (Zuordnung im Grundriss oder in den Raumeinstellungen) und Messräume innen oder außen: außen ohne Wohlfühlbereich, mit Frost- und Glättehinweis, als Außenfläche im Grundriss und als Außentemperatur des Hauses wählbar"], ["1.8", 6, "2026.11.3b8", "Grundriss in der neuen Optik: Räume als Kacheln mit Licht in der Temperaturfarbe, Ziel-Temperatur, Status-Plakette wie in der Detail-Ansicht, HD-Heizkörper mit Wärme, Fenster mit Glas, Punktraster und Zusammenfassung (Ø, heizen, Fenster offen)"], ["1.8", 5, "2026.11.3b7", "Grundriss aus Modul 11 erscheint zuverlässig: erneuter Abruf nach Fehler (z. B. nach Neustart von Home Assistant) und jede Minute, Hinweis wenn der Grundriss nur Wände hat"], ["1.8", 4, "2026.11.3b4", "Karten lückenlos: jede Karte rutscht in die freie Lücke der kürzeren Spalte"], ["1.8", 3, "2026.11.3b3", "Luftentfeuchter: Betriebsart „Nur mit PV-Überschuss“ mit Start- und Aus-Verzögerung, Schimmelschutz und Batterie-Ladung als Überschuss; Haus-Szene: Sponsor-Extra Haus-Stile und Himmel-Themen (W7), Himmel gemeinsam mit Modul 3; Animationen halten an, wenn nicht sichtbar; eigene Animationsstufe im Tablet-Modus (Standard Aus)"], ["1.8", 2, "2026.11.3b2", "„Warum?“ als Zeitleiste; Präsenzmelder je Raum (Mindestens/Genau, Verzögerungen, Leerlauf-Absenkung); Haus-Szene in der Kopfkarte (Räume nach Etagen, Zustand, Wärmequelle, PV, Tageszeit und Wetter); Grundriss als Wärmekarte (dritte Ansicht, Baukasten aus Modul 11) mit Hinweis-Plaketten; acht neue Raumbilder (Esszimmer, Wintergarten, Keller / Hauswirtschaft, Werkstatt, Fitness, Dachboden, Garage, Carport / Außen); Messräume: Raumbild wählbar und aus dem Namen erkannt, Menü „⋯“ mit Messraum einstellen und Raumbild & Farbe"], ["1.8", 1, "2026.11.3b1", "Raumkarte 2.0: Raumbild je Raumtyp mit Zustand als Licht, Fenster und Heizkörper, Temperatur-Ring, Heizplan-Band mit Temperaturfarben, Fenster-Uhr, Hinweis-Plaketten, Menü „⋯“, Kompakt-Liste mit Mini-Bild, Elektroheizer und Luftentfeuchter als Kacheln und im Raumbild; Schalter „Raumkarten wie bisher“"], ["1.7", 1, "2026.11.2b10", "Luftentfeuchter-Nachtmodus: eigene Nachtzeit, nachts nur bei hoher Feuchte oder ganz aus, Leise-Modus des Geräts, Meldungen bis zum Morgen zurückhalten"], ["1.6", 3, "2026.11.2b7", "Messräume verschwinden nicht mehr, wenn das Dashboard die Einstellungen nicht laden konnte; fehlende Messräume lassen sich aus der Sicherung zurückholen"], ["1.6", 2, "2026.11.2b2", "Anwesenheit: Standort-Einstellungen und Temperatur bei Abwesenheit fallen nicht mehr auf die Grundwerte zurück"], ["1.6", 1, "2026.11.1b16", "Luftentfeuchter: NFC-Tags am Stellplatz gehören jetzt zu „Tags & Karten“, neue Tag-Aktionen Entfeuchter heute aus und Wassertank geleert"], ["1.5", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.5", 1, "2026.11.1b14", "Luftentfeuchter: „hierher stellen“ auf den Raumkarten, bis zu vier Geräte, Vorziehen bei PV-Überschuss oder günstigem Strom, Statistik, Meldungen und NFC-Tag am Stellplatz"], ["1.4", 1, "2026.11.1b13", "Luftentfeuchter: tägliche Standortbestätigung mit Standort-Karte, Erinnerung am Handy, Verhalten ohne Antwort und Standortverlauf"], ["1.3", 2, "2026.11.1b9", "Behoben: Nachdem alle weg waren, schaltete die Anwesenheit nicht mehr auf „Zu Hause“ zurück"], ["1.3", 1, "2026.11.1b2", "Messraum (nur Temperatur und Luftfeuchte, ohne Thermostat und Fenster) und Luftentfeuchter mit Regelung nach der Raumfeuchte, Standort per Raumkachel"], ["1.2", 2, "2026.11.1b1", "Personen: Sind eigene Standortquellen gewählt, zählen nur diese – die Personen-Entität von Home Assistant hält niemanden mehr fälschlich auf „Zu Hause“"], ["1.2", 1, "2026.1030.0b5", "Regelung mit Raumsensor: Offset-Ausgleich und „Aus bei Ziel“ je Raum, Regelung im Detail im Fenster „Warum?“"], ["1.1", 2, "3.0.7.0", "Auswahlfelder klappen nicht mehr von selbst zu, wenn Home Assistant neue Werte meldet"], ["1.1", 1, "3.0.6.9", "Optionaler Raumtemperatur-Sensor je Raum: Anzeige mit Raum und Thermostat, Bericht mit zwei Linien, Aufheizzeit, Taupunkt und Elektroheizer nach Raumtemperatur"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   ww: { v: "1.1", b: 2, d: "2026-11-22", p: "2026.11.4b46", log: [["1.1", 2, "2026.11.4b46", "Neues Banner: Speicher im Schnitt mit Temperatur oben und unten, Zirkulation, Aufheizen und PV-Überschuss"], ["1.1", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.0", 2, "2026.11.1b15", "Uhrzeit-Felder aus Stunde und Minute statt Auswahlrad: kein Absturz mehr in der Mac-App von Home Assistant"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   en: { v: "1.6", b: 5, d: "2026-11-15", p: "2026.11.3", log: [["1.6", 5, "2026.11.3", "Gaszähler mit Karte für Tag, Woche, Monat und Jahr, Abrechnungsjahr, Preisliste mit „gültig ab“ und Abschlag; Einstellungen in Reitern (Strom, Zähler, Gas, Anzeige)"], ["1.6", 4, "2026.11.3b21", "Autarkie-Ring im Banner sprang hin und her"], ["1.6", 3, "2026.11.3b20", "Flüsse in der Szene liefen nur beim Scrollen: Bewegung läuft jetzt über jeden Neuaufbau weiter"], ["1.6", 2, "2026.11.3b4", "Karten lückenlos beim Verschieben; Kosten-Treppe passt ihre Höhe an, Beschriftungen werden nicht mehr verdeckt; Energie-Szene ohne Zuschnitt, größere Werte, lange Namen gekürzt"], ["1.6", 1, "2026.11.3b3", "Neue Optik Stufe 4: Preisband unter der Tageskurve, Woche/Monat/Jahr gespiegelt (Solar oben, Netzbezug unten), Solar-Kalender im Jahr, Kosten-Treppe mit Symbolen, Sparschwein mit Anschaffungskosten, Verteilung als Ring mit Auto und Geräten aus Modul 4, Werte zählen beim Zeitraumwechsel hoch; W7 Sponsor-Extra Haus-Stile und Himmel-Themen; Energiefluss und Szene ohne Neustart der Animation bei neuen Werten"], ["1.5", 1, "2026.11.3b3", "Neue Optik Stufe 3: Energie-Szene im Banner (Haus mit Dach-PV, Balkon, Batterie, Strommast, Auto), Himmel und Wetter wie Modul 1, Summe mit Σ bei vergangenen Zeiträumen, Antippen führt zu Modul 8/13/14/16, flacher Streifen am Handy, Mini-Szene auf der Startseite"], ["1.4", 1, "2026.11.3b3", "Neue Optik Stufe 2: Energiefluss HD mit Geräte-Plaketten, Balkon als eigener Knoten, Batterie mit Füllstand, Auto aus Modul 8, Linienstärke nach Leistung, Antippen zeigt Werte; Hinweise mit Bild und Knopf, günstigster Strom des Tages; Schalter „Energiefluss wie bisher“"], ["1.3", 1, "2026.11.3b2", "Neue Optik Stufe 1: HD-Symbole an den Kacheln (Solar mit Balkon, Netzbezug, Einspeisung, Verbrauch), Kacheln 2.0 mit Verlauf als Fläche und Punkt „jetzt“, Vergleich als Plakette, Doppelring Autarkie/Eigenverbrauch, Preis-Skala; Schalter „Kacheln wie bisher“"], ["1.2", 1, "2026.11.2b10", "Anpassen: Karten verschieben und ausblenden wie in Modul 1"], ["1.1", 1, "2026.1030.0b1", "Tag, Woche, Monat und Jahr mit Blättern, Kacheln mit Verlauf und Vergleich, Diagramm zum Antippen, Kosten als Treppe, Vorzeichen prüfen"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
   gs: { v: "1.5", b: 1, d: "2026-11-10", p: "2026.11.2b13", log: [["1.5", 1, "2026.11.2b13", "Stufe 4 der neuen Optik: Geräte-Szene im Banner, Tablet-Modus als Geräte-Wand (quer) und Liste (hoch), Bewegung Aus/Dezent/Voll, Standby je Gerät, Monatsziel im Banner, Jahresrückblick zum Teilen"], ["1.4", 1, "2026.11.2b12", "Stufe 3 der neuen Optik (ohne Rangliste): bestes Startfenster als Bild mit Solarprognose und Preisband, „Um … erinnern“, Startfenster aller Geräte auf einen Blick; bei gleichem Solar-Anteil gewinnt der günstigere Preis"], ["1.3", 2, "2026.11.2b11", "Stufe 2 der neuen Optik: Geräte-Seite mit Programm-Kurve nach Herkunft, Durchlauf-Protokoll und typischem Lauf; auf dem Handy Liste der Geräte, Details beim Antippen"], ["1.3", 1, "2026.11.2b10", "Anpassen: Karten und Geräte verschieben und ausblenden"], ["1.2", 3, "2026.11.2b8", "Merkt sich die letzten Läufe mit Startzeit (für den Energie-Coach)"], ["1.2", 2, "2026.11.2b3", "„Erinnern“ funktioniert wieder"], ["1.2", 1, "2026.11.2b2", "Gerätekarten 2.0: HD-Bild mit Herkunfts-Ring, Prozentzeile statt Balken, „noch ~ Min. · fertig ~ Uhr“ ab 3 Läufen, drei Felder, Startempfehlung mit „Erinnern“, Schalter „Karten wie bisher“"], ["1.1", 2, "2026.11.1b1", "Bis zu 15 statt 8 Geräte, mit Zähler beim Hinzufügen"], ["1.1", 1, "2026.1030.0b2", "Tag, Woche, Monat und Jahr mit Blättern, Gerätetypen mit Symbol, Farben wie Modul 3, Diagramm zum Antippen, Vergleich zur Vorperiode"], ["1.0", 1, "3.0.6.5", "Start der Zählung"]] },
@@ -3256,6 +3256,20 @@ div.rk2pl{cursor:default}
 [data-vis="0"],[data-vis="0"] *{animation-play-state:paused!important}
 /* Karten lückenlos (Mauerwerk) */
 .mublks.msn{grid-auto-rows:2px;row-gap:0}.mublks.msn>*{align-self:start}
+/* Elektroheizer 2.0: Einrichtungs-Assistent */
+.ehbar{display:flex;gap:6px;margin:0 0 14px}.ehbar i{flex:1;height:4px;border-radius:4px;background:var(--line)}.ehbar i.on{background:var(--teal)}
+.ehrooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.ehroom{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:8px 10px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.ehroom span{flex:1;min-width:0}.ehroom b{display:block;font-size:.88rem}.ehroom small{display:block;font-size:.72rem;color:var(--mut)}.ehroom em{font-style:normal;font-weight:700;font-variant-numeric:tabular-nums}
+.ehroom.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}.ehroom:disabled{opacity:.45;cursor:default}
+.ehmeter{position:relative;height:40px;border-radius:12px;background:color-mix(in srgb,var(--line) 60%,transparent);overflow:hidden;margin:10px 0 6px}.ehmeter i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#f97316,#fbbf24);opacity:.75;transition:width 1s linear}
+.ehmeter span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-variant-numeric:tabular-nums}
+.stpv .ehx{border:0;background:none;color:var(--mut);padding:0 0 0 2px;cursor:pointer;display:grid}
+.rk2mi.dng,.rk2mi.dng small{color:#f87171}
+.toast.ehundo{display:flex;align-items:center;gap:14px;pointer-events:auto}.toast.ehundo button{border:0;background:none;color:#fb923c;font:inherit;font-weight:700;cursor:pointer;padding:0}
+.ehtr{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 14px}.ehtr+.ehtr{border-top:1px solid var(--line)}.ehtr .sxt{flex:1;min-width:150px}.ehtr .sxt b{display:block}.ehtr .sxt small{color:var(--mut);font-size:.74rem}
+.ehtrb{display:flex;gap:6px;margin-left:auto}
+.ehsum{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}.ehsum span{display:flex;align-items:center;gap:6px;font-size:.8rem;padding:5px 10px;border-radius:99px;border:1px solid var(--line)}
 `;
 /* Sponsor-Lounge · Mit GitHub freischalten (Konzept Sponsor-Freischaltung, Stufe 2) */
 const CSS_GH = `
@@ -3793,7 +3807,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass = h;
     if (first) this._load();
     this._render();
-    if (this._modal && ["why", "rkhtr"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
+    if (this._modal && ["why", "rkhtr", "ehlist"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
   }
   set narrow(v) { this._narrow = v; this._render(); }
   set panel(_) {}
@@ -4685,7 +4699,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (f === "gwxn") { const v = Number(t.value); this._gen.wxadj = { ...this._gen.wxadj, [t.dataset.k]: isFinite(v) ? v : 0 }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gpvs" || f === "gpvb") { this._gen.pv = { ...this._pv(), [f === "gpvs" ? "sensor" : "soc_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gpvp") { this._gen.pv = { ...this._pv(), [t.dataset.p + "_sensor"]: t.value }; this._saveGen(); this._render(); this._renderModal(); return true; }
-    if (f === "gpvn") { const v = Number(t.value); this._gen.pv = { ...this._pv(), [t.dataset.k]: isFinite(v) ? Math.min(100, Math.max(0, Math.round(v * 100) / 100)) : 0 }; this._saveGen(); this._render(); this._renderModal(); return true; }
+    if (f === "gpvn") { const v = Number(t.value), lo = t.min !== "" && t.min != null ? Number(t.min) : 0, hi = t.max !== "" && t.max != null ? Number(t.max) : 100; this._gen.pv = { ...this._pv(), [t.dataset.k]: isFinite(v) ? Math.min(hi, Math.max(lo, Math.round(v * 100) / 100)) : 0 }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "gth") { const v = Math.min(35, Math.max(5, Number(t.value) || 18)); this._gen.summer = { ...this._gen.summer, temp: v }; this._saveGen(); this._render(); this._renderModal(); return true; }
     if (f === "rsfile") {
       const file = t.files && t.files[0]; if (!file) return true;
@@ -6233,7 +6247,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
       <div class="sh"><div><b>${esc(r.name)}</b><span><i class="rk2dot" style="background:${s.col}"></i>${esc(s.lab)} · ${esc(this._rkTypeName(this._rkType(r)))}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
       <div class="rk2menu">${it("why", "info", "Warum?", "Was die Regelung gerade tut und weshalb")}${it("rep", "chart", "Bericht", "Temperatur, Fenster und Pausen eines Tages")}
-      ${r.htr ? it("rkhtr", "bolt", "Elektroheizer", "Stufen, Laufzeit, Bericht") + it("hrep", "chart", "Heizer-Bericht", "Elektroheizer mit PV-Überschuss") : ""}
+      ${r.htr ? it("rkhtr", "bolt", "Elektroheizer", "Stufen, Laufzeit, Bericht") + it("hrep", "chart", "Heizer-Bericht", "Elektroheizer mit PV-Überschuss") : adm ? it("ehxnew", "bolt", "Elektroheizer hinzufügen", "Heizen mit PV-Überschuss in diesem Raum") : ""}
       ${s.lfs.map((d) => `<button class="rk2mi" data-act="lfrk" data-id="${id}" data-d="${esc(d.id)}">${ic("fan", 20)}<span><b>${esc(d.name)}</b><small>Luftentfeuchter · Standort, Tank, Statistik</small></span>${ic("chev", 16)}</button>`).join("")}
       ${adm ? it("plan", "plan", "Heizplan bearbeiten", s.pts.length ? "Zeiten und Temperaturen" : "Noch kein Heizplan") : ""}
       ${adm ? it("opt", "sliders", "Raumeinstellungen", "Fenster, Thermostate, Sensoren, Regelung") : ""}
@@ -6296,10 +6310,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _rkDevSheet(m) {
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id); if (!r) return "";
-    if (m.type === "rkhtr") return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Elektroheizer</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="rk2sht">${this._gx("heater", 64, { stage: r.htr && r.htr.status === "pv" ? Math.min(3, r.htr.stufe || 2) : 0, on: r.htr && r.htr.status === "pv" })}</div>${this._htrBox(r)}
-      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+    if (m.type === "rkhtr") return this._ehDevSheet(r);  /* Elektroheizer 2.0: Geräte-Blatt mit Bearbeiten, Pausieren, Raum wechseln */
     const d = this._lfDev(m.d); if (!d) return "";
     const L = d.S.live || {};
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
@@ -6365,7 +6376,7 @@ class FensterHeizungPanel extends HTMLElement {
   _rkAct(a, b) {
     const L = this._cfg.layout;
     if (a === "rkmenu") { this._modal = { type: "rkmenu", id: b.dataset.id }; this._renderModal(); return true; }
-    if (a === "rkhtr") { this._modal = { type: "rkhtr", id: b.dataset.id }; this._renderModal(); return true; }
+    if (a === "rkhtr") { this._modal = { type: "rkhtr", id: b.dataset.id, back: this._modal && this._modal.type === "ehlist" ? this._modal : null }; this._renderModal(); this._ehLoad(); return true; }
     if (a === "rktype") { const t = { ...(L.rtype || {}) }; if (b.dataset.k) t[this._modal.id] = b.dataset.k; else delete t[this._modal.id]; L.rtype = t; }
     else if (a === "rkold") L.rk = { ...(L.rk || {}), old: !this._rkCfg().old };
     else if (a === "rkanim") L.rk = { ...(L.rk || {}), anim: b.dataset.k };
@@ -7326,6 +7337,367 @@ class FensterHeizungPanel extends HTMLElement {
       <div class="vrow"><span>Anschaffungskosten der Anlage<small class="mut" style="display:block">In Euro. Leer: nur „Vorteil seit Beginn der Aufzeichnung“.</small></span><input class="inp" style="width:110px" type="number" min="0" step="100" data-f="enm3cost" value="${m.cost ? esc(String(m.cost)) : ""}" placeholder="z. B. 3400"></div>
       <div class="vrow"><span>In Betrieb seit<small class="mut" style="display:block">Monat der Inbetriebnahme, z. B. 2024-03.</small></span><input class="inp" style="width:110px" type="month" data-f="enm3since" value="${esc(m.since || "")}"></div>`;
   }
+  /* ================= Modul 1 · Elektroheizer 2.0 (Build 2 und 3): Assistent, Geräteliste, Geräte-Blatt =================
+     Vier Schritte statt zwölf Felder: 1 Gerät · 2 Raum · 3 Leistung · 4 Fertig. Kommt man aus einem Raum (Raumkarte „⋯“,
+     Raumeinstellungen), ist der Raum gesetzt und Schritt 2 entfällt. Speichern über fenster_heizung/heizer_add (heizer.py).
+     Einstiege: Raumkarte „⋯“, Modul 1 · Einstellungen › Geräte › Elektroheizer, Grundriss (Gerät „Mobiler Heizer“), Raumeinstellungen.
+     Build 3: Der eigene Reiter „Elektroheizer“ entfällt. Unter Modul 1 · Einstellungen › Geräte steht die Zeile „Elektroheizer“;
+     sie öffnet die Liste (Modal „ehlist“) mit „+ hinzufügen“ und den PV-Regeln für alle Heizer. Jeder Heizer hat ein Geräte-Blatt
+     (Modal „rkhtr“, auch von der Raumkarte) mit Bearbeiten (Assistent Schritt 3–4), Pausieren und „In anderen Raum stellen“ (Modal „ehmove“).
+     Aktionen beginnen mit „ehx“, Eingabefelder mit data-f="ehx…". */
+  static EH_TPL = [
+    ["oel", "Ölradiator 2 000 W", [800, 1200, 2000], "flame"],
+    ["luefter", "Heizlüfter 2 000 W", [1000, 2000], "fan"],
+    ["ir", "Infrarot-Paneel", [600], "sun"],
+    ["konv", "Konvektor 2 000 W", [750, 1250, 2000], "bolt"],
+  ];
+  static EH_HINT = /heiz|heater|radiator|lüfter|luefter|konvektor|infrarot|ofen|panel|steckdose|plug|outlet|socket/i;
+  _ehRooms() { return this._collect(true); }
+  _ehRoomTemp(r) { try { const s = this._rkState(r); return { cur: s.cur, ziel: s.ziel }; } catch (_) { return { cur: null, ziel: null }; } }
+  async _ehOpen(room) {
+    if (!this._admin()) { this._toast("Nur für Admins"); return; }
+    const rooms = this._ehRooms(), r = room ? rooms.find((x) => x.id === room) : null;
+    if (r && r.htr) { this._modal = { type: "rkhtr", id: r.id }; this._renderModal(); this._toast(`In „${r.name}“ ist schon ein Elektroheizer eingerichtet`); return; }
+    if (!rooms.some((x) => !x.htr)) { this._toast("Alle Räume haben schon einen Elektroheizer"); return; }
+    const back = this._modal && this._modal.type !== "ehwiz" ? this._modal : null, z = r ? this._ehRoomTemp(r).ziel : null;
+    this._pkId = null;
+    this._modal = { type: "ehwiz", step: 1, fixed: !!r, back, busy: false, err: "",
+      d: { room: r ? r.id : "", entity: "", name: "", tpl: "oel", steps: [800, 1200, 2000], txt: "", target: z != null && isFinite(z) ? Math.round(z * 2) / 2 : 21, thermo: "off", auto: "on", prio: 5, from: "", to: "", more: false } };
+    this._renderModal();
+    try { this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_get" }); } catch (_) { this._ehD = null; }
+    if (this._modal && this._modal.type === "ehwiz") this._renderModal();
+  }
+  _ehSteps(d) { if (d.tpl === "mess") return [...new Set((d.meas || []).map((w) => Math.round(w / 10) * 10))].filter((w) => w >= 50 && w <= 10000).sort((a, b) => a - b).slice(0, 8); return d.tpl === "own" ? String(d.txt || "").split(/[^0-9]+/).map(Number).filter((w) => w >= 50 && w <= 10000).slice(0, 8).sort((a, b) => a - b) : d.steps; }
+  _ehCands() {
+    const st = this._hass.states, rooms = this._ehRooms(), th = new Set(rooms.flatMap((r) => r.thermos || []));
+    const used = new Map(((this._ehD && this._ehD.heaters) || []).map((h) => [h.entity, h.name]));
+    rooms.forEach((r) => { if (r.htr && r.htr.entity && !used.has(r.htr.entity)) used.set(r.htr.entity, `Heizer in ${r.name}`); });
+    const all = Object.keys(st).filter((e) => (e.startsWith("switch.") || e.startsWith("climate.")) && !e.startsWith("switch.fenster_heizung") && !(st[e].attributes || {}).funktion);
+    return { free: all.filter((e) => !th.has(e) && !used.has(e)), th: all.filter((e) => th.has(e)).length, used };
+  }
+  _ehModal() {
+    const M = this._modal, d = M.d, S = this.constructor, rooms = this._ehRooms(), st = this._hass.states;
+    const steps = this._ehStepList(M), pos = steps.indexOf(M.step), last = pos === steps.length - 1;
+    const room = rooms.find((x) => x.id === d.room), W = this._ehSteps(d);
+    const row = (l, h, ctl) => `<div class="of"><div class="ol"><b>${l}</b>${h ? `<small>${h}</small>` : ""}</div><div class="oc">${ctl}</div></div>`;
+    const seg = (k, opts) => `<div class="seg oseg">${opts.map(([v, l]) => `<button class="${d[k] === v ? "sel" : ""}" data-act="ehxseg" data-k="${k}" data-v="${v}">${l}</button>`).join("")}</div>`;
+    const step = (k, unit, s, lo, hi, dec = 0) => `<div class="lfstep"><button class="ibtn" data-act="ehxstep" data-k="${k}" data-v="${-s}" data-lo="${lo}" data-hi="${hi}" aria-label="weniger">${ic("minus", 16)}</button><b>${num(d[k], dec)}<small> ${unit}</small></b><button class="ibtn" data-act="ehxstep" data-k="${k}" data-v="${s}" data-lo="${lo}" data-hi="${hi}" aria-label="mehr">${ic("plus", 16)}</button></div>`;
+    const tin = (k, lbl) => `<span class="tin">${this._tIn(esc(d[k]), false, lbl)}<input type="hidden" data-f="ehxt" data-k="${k}" value="${esc(d[k])}" aria-label="${lbl}"></span>`;
+    let body = "", ok = true;
+    if (M.step === 1) {
+      const C = this._ehCands(), sug = C.free.filter((e) => S.EH_HINT.test(e + " " + ((st[e].attributes || {}).friendly_name || ""))).slice(0, 4);
+      ok = !!d.entity;
+      body = `<h3 class="wzt">Welches Gerät?</h3><div class="mut sm" style="margin:-4px 0 8px">Ein Schalter (z. B. die Steckdose des Heizers) oder ein Klima-Gerät. Modul 1 schaltet es nur bei genug PV-Überschuss ein.</div>
+        ${sug.length ? `<div class="lsec">${ic("bolt", 15)}Passt wahrscheinlich</div><div class="lfkind">${sug.map((e) => `<button class="${d.entity === e ? "sel" : ""}" data-act="ehxent" data-k="${esc(e)}"><b>${esc(this._wzName(e))}</b><span>${esc(e)}${e.startsWith("climate.") ? ` · Klima-Gerät${((st[e].attributes || {}).preset_modes || []).length ? `, ${st[e].attributes.preset_modes.length} Voreinstellungen` : ""}` : " · Schalter"}</span></button>`).join("")}</div>` : ""}
+        <div class="lsec">${ic("search", 15)}${sug.length ? "Oder ein anderes Gerät" : "Gerät wählen"}</div>
+        ${this._wzSel(C.free, d.entity, "ehxe", `data-k="entity"`, "– Gerät wählen –", S.EH_HINT)}
+        ${C.th || C.used.size ? `<div class="mut sm" style="margin:8px 0 0">${[C.th ? `${C.th} Thermostat${C.th === 1 ? "" : "e"} der Räume` : "", C.used.size ? `${C.used.size} schon eingerichtete${C.used.size === 1 ? "r" : ""} Heizer` : ""].filter(Boolean).join(" und ")} stehen nicht zur Wahl.</div>` : ""}`;
+    } else if (M.step === 2) {
+      ok = !!room && !room.htr;
+      body = `<h3 class="wzt">In welchem Raum steht er?</h3><div class="mut sm" style="margin:-4px 0 8px">Gilt für „Heizen bis“ und die Thermostate dort. Mobile Heizer lassen sich später umstellen.</div>
+        <div class="ehrooms">${rooms.map((r) => { const t = this._ehRoomTemp(r), dis = !!r.htr; return `<button class="ehroom${d.room === r.id ? " sel" : ""}" data-act="ehxroom" data-k="${esc(r.id)}" ${dis ? "disabled" : ""}>${this._rkMiniById(r.id)}<span><b>${esc(r.name)}</b><small>${dis ? "hat schon einen Heizer" : "kein Heizer"}</small></span>${t.cur != null ? `<em>${num(t.cur, 1)}°</em>` : ""}</button>`; }).join("")}</div>`;
+    } else if (M.step === 3) {
+      ok = W.length > 0;
+      const cl = d.entity.startsWith("climate."), pm = cl ? ((st[d.entity] || {}).attributes || {}).preset_modes || [] : [];
+      body = `<h3 class="wzt">Wie viel Leistung?</h3><div class="mut sm" style="margin:-4px 0 8px">Nach der Leistung entscheidet Modul 1, ob der Überschuss reicht. Hat der Heizer Stufen, wird bei mehr Überschuss höher geschaltet.</div>
+        <div class="lfkind">${S.EH_TPL.map(([k, l, w, i]) => `<button class="${d.tpl === k ? "sel" : ""}" data-act="ehxtpl" data-k="${k}"><b>${ic(i, 14)} ${l}</b><span>${w.length > 1 ? w.map((x) => num(x, 0)).join(" · ") + " W" : `eine Stufe, ${num(w[0], 0)} W`}</span></button>`).join("")}
+        ${d.entity.startsWith("switch.") && !M.edit ? `<button class="${d.tpl === "mess" ? "sel" : ""}" data-act="ehxtpl" data-k="mess"><b>${ic("chart", 14)} Messen</b><span>Mit dem Leistungssensor der Steckdose, Stufe für Stufe (je 30 Sekunden)</span></button>` : ""}
+        <button class="${d.tpl === "own" ? "sel" : ""}" data-act="ehxtpl" data-k="own"><b>${ic("pencil", 14)} Eigene Werte</b><span>Leistung laut Typenschild, Stufen mit Komma trennen</span></button></div>
+        ${d.tpl === "mess" ? this._ehMeasBox(d) : ""}
+        ${d.tpl === "own" ? `<div class="lsec">${ic("bolt", 15)}Leistungsstufen in Watt</div><input class="otxt" type="text" inputmode="numeric" data-f="ehxtxt" value="${esc(d.txt)}" placeholder="z. B. 800, 1200, 1800 oder 1500" aria-label="Leistungsstufen in Watt">` : ""}
+        ${W.length ? `<div class="stpv" style="margin-top:10px">${W.map((w, i) => `<span><b>${i + 1}</b>${wfmt(w)}</span>`).join("")}</div>` : `<div class="mut sm" style="margin-top:8px">Mindestens eine Leistung zwischen 50 und 10 000 W eingeben.</div>`}
+        ${cl ? `<div class="gst">${ic("info", 15)}${pm.length ? `Klima-Gerät mit ${pm.length} Voreinstellungen: Die Stufen werden ihnen automatisch zugeordnet, ändern kannst du das in den Raumeinstellungen.` : "Klima-Gerät ohne Voreinstellungen: Modul 1 schaltet nur ein und aus (höchste Stufe)."}</div>` : W.length > 1 ? `<div class="gst">${ic("info", 15)}Eine Steckdose kennt nur Ein und Aus: Modul 1 rechnet mit der höchsten Stufe. Stell den Heizer am Gerät auf diese Stufe.</div>` : ""}`;
+    } else {
+      if (!d.name) d.name = this._wzName(d.entity) || "Elektroheizer";
+      ok = !!d.name.trim() && (!d.from === !d.to);
+      body = `<h3 class="wzt">${M.edit ? "Regeln" : "Fast fertig"}</h3>
+        <div class="lsec">${ic("pencil", 15)}Name</div><input class="otxt" type="text" maxlength="40" data-f="ehxname" value="${esc(d.name)}" aria-label="Name des Heizers">
+        <div class="ehsum"><span>${ic("bolt", 15)}<b>${esc(this._wzName(d.entity))}</b></span><span>${ic("home", 15)}<b>${esc(room ? room.name : "–")}</b></span><span>${ic("flame", 15)}<b>${W.map((w) => num(w, 0)).join(" · ")} W</b></span></div>
+        ${row("Heizen bis", "Der Heizer schaltet ab, sobald der Raum so warm ist.", step("target", "°C", 0.5, 10, 30, 1))}
+        ${row("Thermostate, solange er heizt", "Ausschalten: Die Heizkörper des Raums ruhen, danach regeln sie wieder.", seg("thermo", [["off", "Ausschalten"], ["on", "Weiterlaufen"]]))}
+        ${W.length > 1 && d.entity.startsWith("climate.") ? row("Stufen regeln", "Automatisch: höhere Stufe bei mehr Überschuss.", seg("auto", [["on", "Automatisch"], ["off", "Fest"]])) : ""}
+        <button class="lnk" data-act="ehxmore" style="margin:8px 0 4px">${ic("chev", 14)} ${d.more ? "Weniger" : "Mehr Einstellungen (Priorität, Zeitfenster)"}</button>
+        ${d.more ? row("Priorität", "1 wird zuerst versorgt, wenn der Überschuss nicht für alle reicht.", step("prio", "", 1, 1, 9)) + row("Erlaubt ab", "Optional. Leer = ganztägig.", tin("from", "Erlaubt ab")) + row("Erlaubt bis", "", tin("to", "Erlaubt bis")) + (d.from || d.to ? `<button class="lnk" data-act="ehxnotime">Zeitfenster entfernen</button>` : "") : ""}
+        ${!M.edit ? `<button class="btn2" data-act="ehxtest" style="width:100%;margin:8px 0 0" ${M.testUntil && M.testUntil > Date.now() ? "disabled" : ""}>${ic("play", 15)} ${M.testUntil && M.testUntil > Date.now() ? `Testlauf läuft noch ${Math.ceil((M.testUntil - Date.now()) / 1000)} s …` : "Testlauf (30 Sekunden ein)"}</button><div class="mut sm" style="margin:4px 0 0">Prüft, ob Modul 1 das Gerät schalten kann – unabhängig vom Überschuss. Danach ist es wieder wie vorher.</div>` : ""}
+        <div class="gst on">${ic("sun", 15)}${this._pvNow() != null ? `Heizt nur mit PV-Überschuss. Gerade frei: ${wfmt(Math.max(0, this._pvNow()))}${this._pvNow() >= Math.min(...W) ? " – er könnte gleich starten." : "."}` : "Heizt nur mit PV-Überschuss. Den Netz-Sensor wählst du unter Haus › Energiequellen."}</div>`;
+    }
+    return `<div class="ov" data-act="ehxcancel"></div><div class="sheet" role="dialog" aria-modal="true" aria-label="Elektroheizer ${M.edit ? "bearbeiten" : "hinzufügen"}">
+      <div class="sh"><div><b>Elektroheizer ${M.edit ? "bearbeiten" : "hinzufügen"}</b><span>Schritt ${pos + 1} von ${steps.length}${room && M.fixed ? " · " + esc(room.name) : ""}</span></div><button class="ibtn" data-act="ehxcancel" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="ehbar">${steps.map((s, i) => `<i class="${i <= pos ? "on" : ""}"></i>`).join("")}</div>
+      ${body}${M.err ? `<div class="gbox" style="margin-top:10px">${esc(M.err)}</div>` : ""}
+      <div class="foot2">${pos > 0 ? `<button class="btn2" data-act="ehxback">Zurück</button>` : `<button class="btn2" data-act="ehxcancel">Abbrechen</button>`}<button class="btn2 pri" data-act="${last ? "ehxsave" : "ehxnext"}" ${ok && !M.busy ? "" : "disabled"}>${last ? (M.busy ? "Speichert …" : "Speichern") : "Weiter"}</button></div></div>`;
+  }
+  _ehChange(t) {
+    const M = this._modal; if (!M || M.type !== "ehwiz") return false;
+    const f = t.dataset.f, d = M.d;
+    if (f === "ehxpw") { d.pw = t.value || ""; this._renderModal(); return true; }
+    if (f === "ehxe") { d.entity = t.value || ""; d.name = ""; this._renderModal(); return true; }
+    if (f === "ehxname") { d.name = t.value; return true; }
+    if (f === "ehxtxt") { d.txt = t.value; this._renderModal(); return true; }
+    if (f === "ehxt") { if (/^\d\d:\d\d$/.test(t.value)) d[t.dataset.k] = t.value; this._renderModal(); return true; }
+    return false;
+  }
+  _ehAct(a, b) {
+    if (a === "ehxnew") { this._ehOpen(b.dataset.id || ""); return; }
+    if (this._ehAct3(a, b) || this._ehAct4(a, b)) return;
+    const M = this._modal; if (!M || M.type !== "ehwiz") return;
+    const d = M.d, steps = this._ehStepList(M), pos = steps.indexOf(M.step);
+    M.err = "";
+    if (a === "ehxcancel") { this._pkId = null; this._ehStopTick(); this._modal = M.back; this._renderModal(); return; }
+    if (a === "ehxent") { d.entity = b.dataset.k; d.name = ""; }
+    else if (a === "ehxroom") { d.room = b.dataset.k; if (!M.fixed) { const r = this._ehRooms().find((x) => x.id === d.room), z = r ? this._ehRoomTemp(r).ziel : null; if (z != null && isFinite(z)) d.target = Math.round(z * 2) / 2; } }
+    else if (a === "ehxtpl") { d.tpl = b.dataset.k; const T = this.constructor.EH_TPL.find((x) => x[0] === d.tpl); if (T) d.steps = T[2]; }
+    else if (a === "ehxseg") d[b.dataset.k] = b.dataset.v;
+    else if (a === "ehxstep") { const k = b.dataset.k; d[k] = Math.round(Math.min(parseFloat(b.dataset.hi), Math.max(parseFloat(b.dataset.lo), (Number(d[k]) || 0) + parseFloat(b.dataset.v))) * 10) / 10; }
+    else if (a === "ehxmore") d.more = !d.more;
+    else if (a === "ehxnotime") { d.from = ""; d.to = ""; }
+    else if (a === "ehxback") { this._pkId = null; M.step = steps[Math.max(0, pos - 1)]; }
+    else if (a === "ehxnext") { this._pkId = null; M.step = steps[Math.min(steps.length - 1, pos + 1)]; const sh = this.shadowRoot.querySelector("#modal .sheet"); if (sh) sh.scrollTop = 0; }
+    else if (a === "ehxsave") { this._ehSave(); return; }
+    else if (a === "ehxmeas") { this._ehMeasure(); return; }
+    else if (a === "ehxmdel") d.meas = (d.meas || []).filter((_, i) => i !== +b.dataset.i);
+    else if (a === "ehxtest") { this._ehTestRun(d.entity, 30).then((r) => { if (r) { M.testUntil = Date.now() + 30000; this._ehTick(); } }); return; }
+    this._renderModal();
+  }
+  async _ehSave() {
+    const M = this._modal, d = M.d, W = this._ehSteps(d); if (M.busy) return;
+    M.busy = true; this._renderModal();
+    const heater = { room: d.room, entity: d.entity, name: d.name.trim(), steps: W, watt: Math.max(...W), target: d.target, thermo: d.thermo, auto: d.auto, prio: d.prio, from: d.from || null, to: d.to || null };
+    if (M.edit) { delete heater.room; delete heater.entity; }
+    try {
+      const r = M.edit ? await this._hass.callWS({ type: "fenster_heizung/heizer_update", id: M.edit, heater }) : await this._hass.callWS({ type: "fenster_heizung/heizer_add", heater });
+      if (M.edit) { this._ehD = r; this._modal = M.back; this._renderModal(); this._render(); this._toast(`„${heater.name}“ gespeichert`); return; }
+      this._ehD = r; this._modal = M.back && (M.back.type === "fh" || M.back.type === "ehlist") ? M.back : null;  /* Raumdialog nicht zurückholen: sein Entwurf kennt den Heizer noch nicht */ this._renderModal(); this._render();
+      this._toast(`„${heater.name}“ eingerichtet – heizt mit PV-Überschuss`);
+    } catch (e) { M.busy = false; M.err = (e && e.message) || "Speichern fehlgeschlagen"; this._renderModal(); }
+  }
+  _ehStepList(M) { return M.edit ? [3, 4] : M.fixed ? [1, 3, 4] : [1, 2, 3, 4]; }
+  /* ---------- Build 3: Geräteliste, Geräte-Blatt, Raum wechseln ---------- */
+  async _ehLoad() {
+    try { this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_get" }); } catch (_) { return; }
+    if (this._modal && ["ehlist", "rkhtr", "ehmove"].includes(this._modal.type)) this._renderModal();
+  }
+  _ehOf(room) { return ((this._ehD && this._ehD.heaters) || []).find((h) => h.room === room) || null; }
+  _ehName(r) { const e = this._ehOf(r.id); return e ? e.name : this._wzName((r.htr || {}).entity) || "Elektroheizer"; }
+  _ehPaused(r) { return !!r.htrSw && r.htrOn === false; }
+  _ehListOpen(back) { this._pkId = null; this._modal = { type: "ehlist", back: back || null }; this._renderModal(); this._ehLoad(); }
+  /* Zeile im Reiter „Geräte“ der Modul-1-Einstellungen */
+  _ehGeraeteRow() {
+    const hs = this._ehRooms().filter((r) => r.htr), n = hs.length;
+    const txt = n === 1 ? `${esc(this._ehName(hs[0]))} · ${esc(hs[0].name)} · nur mit PV-Überschuss` : n ? `${n} Geräte: ${esc(hs.map((r) => this._ehName(r)).join(", "))}` : "Heizer mit PV-Überschuss einbinden";
+    return `<button class="sxrow" data-act="ehxlist"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>Elektroheizer</b><small>${txt}</small></span><em class="sxc ${n ? "ok" : ""}">${n ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>`;
+  }
+  _ehListModal() {
+    const M = this._modal, rooms = this._ehRooms(), hs = rooms.filter((r) => r.htr).sort((a, b) => ((a.htr.prio || 5) - (b.htr.prio || 5)) || a.name.localeCompare(b.name, "de")), adm = this._admin();
+    const rows = hs.map((r) => { const h = r.htr, on = h.status === "pv", ps = this._ehPaused(r), st = stepsOf(h); return `<button class="sxrow" data-act="rkhtr" data-id="${esc(r.id)}"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>${esc(this._ehName(r))}</b><small>${esc(r.name)} · ${st.length > 1 ? `${st.length} Stufen bis ${wfmt(Math.max(...st))}` : wfmt(h.watt)}</small></span><em class="sxc ${on ? "ok" : ps ? "off" : ""}">${ps ? "pausiert" : on ? "☀ " + wfmt(h.watt_now) : "wartet"}</em><span class="sxg">${ic("chev", 16)}</span></button>`; }).join("");
+    return `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${M.back ? `<button class="lnk ehbk" data-act="ehxlback" aria-label="Zurück">‹</button>` : ""}Elektroheizer</b><span>Modul 1 · Geräte · ${hs.length ? `${hs.length} ${hs.length === 1 ? "Heizer" : "Heizer"}` : "noch keiner eingerichtet"}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="lsec">${ic("bolt", 15)}Deine Heizer</div>
+      <div class="fhs"><div class="sxl">${rows || `<div class="mut sm" style="padding:12px 14px">Noch kein Elektroheizer eingerichtet.</div>`}</div>
+      ${adm && rooms.some((r) => !r.htr) ? `<div style="padding:0 12px 12px"><button class="btn2 pri" data-act="ehxnew" style="width:100%">${ic("plus", 16)} Elektroheizer hinzufügen</button></div>` : ""}</div>
+      ${this._ehTrashBlock()}
+      ${this._ehPvRules()}
+      <div class="foot2">${M.back ? `<button class="btn2" data-act="ehxlback">Zurück</button>` : ""}<button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  /* PV-Regeln für alle Heizer (bis Build 2 im Reiter „Elektroheizer“) */
+  _ehPvRules() {
+    const pv = this._pv(), pvn = this._pvNow(), rp = this._rate("price"), rf = this._rate("feed");
+    const n = (k, l, u, h, lo, hi, st) => `<div class="of"><div class="ol"><b>${l}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="${lo}" max="${hi}" step="${st}"><i>${u}</i></span></div></div>`;
+    return `<div class="lsec">${ic("sun", 15)}PV-Regeln für alle Heizer</div><div class="fhs open fhst"><div class="sxrow stinfo"><span class="sxi">${ic("bolt", 20)}</span><span class="sxt"><b>PV-Überschuss für Elektroheizer${this._stHelpBtn("general.pv.reserve")}</b><small>${pv.sensor ? (pvn != null ? `${wfmt(pvn)} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Sensor gewählt, noch kein Wert.") : "Noch kein Sensor für die Einspeisung gewählt."}</small></span><em class="sxc ${pv.sensor ? "ok" : ""}">${pv.sensor ? "Eingerichtet" : "Offen"}</em></div><div class="fhb">
+      <div class="mut sm" style="margin:2px 0 4px">Elektroheizer heizen nur bei genug Überschuss. Diese Regeln gelten für alle Heizer.</div>
+      <div class="hslk">${this._hsLink("en", `Netz ${pv.sensor ? esc(this._wzName(pv.sensor)) + (pv.sign === "import" ? " (Bezug positiv)" : " (Einspeisung positiv)") : "noch nicht gewählt"}${pv.soc_sensor ? " · Ladestand " + esc(this._wzName(pv.soc_sensor)) : ""}`)}</div>
+      ${n("reserve", "Reserve", "W", "Bleibt zusätzlich zur Heizerleistung übrig.", 0, 2000, 50)}${n("delay", "Einschalten nach", "Min.", "So lange muss der Überschuss anliegen.", 0, 30, 1)}${n("minrun", "Mindestlaufzeit", "Min.", "Kürzer läuft ein Heizer nicht an einem Stück.", 0, 120, 5)}
+      ${pv.soc_sensor ? n("soc_min", "Heizer erst ab", "%", "Die Batterie wird zuerst geladen.", 0, 100, 5) : ""}
+      <div class="gst ${pvn != null ? "on" : ""}">${ic(pvn != null ? "bolt" : "info", 15)}${pvn != null ? `Aktuell ${wfmt(pvn)} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Noch kein Sensor gewählt."}</div></div></div>
+      <div class="hslk">${this._hsLink("pr", `Bezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh`)}</div>`;
+  }
+  /* Geräte-Blatt eines Heizers (Raumkarte, Liste) */
+  _ehDevSheet(r) {
+    const adm = this._admin(), h = r.htr, on = h && h.status === "pv", ps = this._ehPaused(r), e = this._ehOf(r.id), st = h ? stepsOf(h) : [];
+    if (!h) return "";
+    const it = (act, icon, t, sub, cls = "") => `<button class="rk2mi ${cls}" data-act="${act}" data-id="${esc(r.id)}">${ic(icon, 20)}<span><b>${t}</b><small>${sub}</small></span>${ic("chev", 16)}</button>`;
+    return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${esc(this._ehName(r))}</b><span>${esc(r.name)} · ${esc((h.entity || "").split(".")[0] === "climate" ? "Klima-Gerät" : "Schalter")}${ps ? " · pausiert" : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="rk2sht">${this._gx("heater", 64, { stage: on ? Math.min(3, h.stufe || 2) : 0, on })}</div>${this._htrBox(r)}
+      ${adm ? `<div class="rk2menu" style="margin-top:10px">
+        ${it("ehxedit", "pencil", "Bearbeiten", `Name, Leistung${st.length > 1 ? ` (${st.length} Stufen)` : ""}, Heizen bis, Zeitfenster`)}
+        ${it("ehxmove", "home", "In anderen Raum stellen", "Statistik und Einstellungen ziehen mit")}
+        ${it("ehxpause", ps ? "play" : "pause", ps ? "Fortsetzen" : "Pausieren", ps ? "Heizt wieder mit PV-Überschuss" : "Bleibt eingerichtet, heizt nicht")}
+        ${it("ehxdel", "trash", "Heizer entfernen", "Gerät aus, Thermostate zurück, 30 Tage im Papierkorb", "dng")}
+        ${it("hrep", "chart", "Bericht", "Überschuss, Stufen und Raumtemperatur eines Tages")}</div>` : ""}
+      ${e ? "" : `<div class="mut sm" style="margin:8px 0 0">Wird geladen …</div>`}
+      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+  }
+  _ehEditOpen(room) {
+    const r = this._ehRooms().find((x) => x.id === room), e = this._ehOf(room); if (!r || !r.htr || !e) { this._toast("Heizer wird noch geladen"); this._ehLoad(); return; }
+    const S = this.constructor, st = (e.steps && e.steps.length ? e.steps : [e.watt || 1500]), T = S.EH_TPL.find((x) => x[2].join() === st.join());
+    this._pkId = null;
+    this._modal = { type: "ehwiz", step: 3, fixed: true, edit: e.id, back: this._modal, busy: false, err: "",
+      d: { room, entity: e.entity, name: e.name, tpl: T ? T[0] : "own", steps: T ? T[2] : st, txt: st.join(", "), target: Number(e.target) || 21, thermo: e.thermo === "on" ? "on" : "off", auto: e.auto === "off" ? "off" : "on", prio: Number(e.prio) || 5, from: (e.from || "").slice(0, 5), to: (e.to || "").slice(0, 5), more: !!(e.from || Number(e.prio) !== 5) } };
+    this._renderModal();
+  }
+  _ehMoveModal() {
+    const M = this._modal, rooms = this._ehRooms(), r = rooms.find((x) => x.id === M.id); if (!r || !r.htr) return "";
+    const to = rooms.find((x) => x.id === M.to);
+    return `<div class="ov" data-act="ehxmvno"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>In anderen Raum stellen</b><span>${esc(this._ehName(r))} steht in ${esc(r.name)}</span></div><button class="ibtn" data-act="ehxmvno" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="ehrooms">${rooms.map((x) => { const t = this._ehRoomTemp(x), here = x.id === r.id, dis = here || !!x.htr; return `<button class="ehroom${M.to === x.id ? " sel" : ""}" data-act="ehxmvto" data-k="${esc(x.id)}" ${dis ? "disabled" : ""}>${this._rkMiniById(x.id)}<span><b>${esc(x.name)}</b><small>${here ? "steht jetzt hier" : x.htr ? "hat schon einen Heizer" : "kein Heizer"}</small></span>${t.cur != null ? `<em>${num(t.cur, 1)}°</em>` : ""}</button>`; }).join("")}</div>
+      ${to ? `<div class="of"><div class="ol"><b>Heizen bis</b><small>Vorschlag aus ${esc(to.name)}</small></div><div class="oc"><div class="lfstep"><button class="ibtn" data-act="ehxmvt" data-v="-0.5" aria-label="weniger">${ic("minus", 16)}</button><b>${num(M.target, 1)}<small> °C</small></b><button class="ibtn" data-act="ehxmvt" data-v="0.5" aria-label="mehr">${ic("plus", 16)}</button></div></div></div>
+        <div class="gst on">${ic("info", 15)}${r.htr.thermo_aus ? `Thermostate in ${esc(r.name)} laufen wieder normal. In ${esc(to.name)} werden sie abgestellt, solange er heizt.` : `Die Thermostate laufen in beiden Räumen weiter.`} Der Schalter „Elektroheizer aktiv“ gehört danach zu ${esc(to.name)}.</div>` : `<div class="mut sm" style="margin:8px 0 0">Wähle den Raum, in dem der Heizer jetzt steht.</div>`}
+      ${M.err ? `<div class="gbox" style="margin-top:10px">${esc(M.err)}</div>` : ""}
+      <div class="foot2"><button class="btn2" data-act="ehxmvno">Abbrechen</button><button class="btn2 pri" data-act="ehxmvok" ${to && !M.busy ? "" : "disabled"}>${M.busy ? "Stellt um …" : "Umstellen"}</button></div></div>`;
+  }
+  async _ehCall(msg, ok) {
+    try { this._ehD = await this._hass.callWS(msg); if (ok) this._toast(ok); return true; }
+    catch (e) { this._toast((e && e.message) || "Nicht möglich"); return false; }
+  }
+  _ehAct3(a, b) {
+    const M = this._modal, id = b.dataset.id || (M && M.id) || "";
+    if (a === "ehxlist") { this._ehListOpen(M && M.type === "fh" ? M : null); return true; }
+    if (a === "ehxlback") { this._modal = (M && M.back) || null; this._renderModal(); return true; }
+    if (a === "ehxdev") { this._modal = { type: "rkhtr", id }; this._renderModal(); this._ehLoad(); return true; }
+    if (a === "ehxedit") { this._ehEditOpen(id); return true; }
+    if (a === "ehxmove") { this._modal = { type: "ehmove", id, to: "", target: 21, back: M, busy: false, err: "" }; this._renderModal(); return true; }
+    if (a === "ehxpause") {
+      const r = this._ehRooms().find((x) => x.id === id), e = this._ehOf(id); if (!r || !e) { this._ehLoad(); return true; }
+      const pause = !this._ehPaused(r);
+      this._ehCall({ type: "fenster_heizung/heizer_update", id: e.id, heater: { paused: pause } }, pause ? `„${e.name}“ pausiert` : `„${e.name}“ heizt wieder mit PV-Überschuss`).then(() => this._renderModal());
+      return true;
+    }
+    if (!M || M.type !== "ehmove") return false;
+    M.err = "";
+    if (a === "ehxmvno") { this._modal = M.back; this._renderModal(); return true; }
+    if (a === "ehxmvto") { M.to = b.dataset.k; const t = this._ehRoomTemp(this._ehRooms().find((x) => x.id === M.to) || {}).ziel; M.target = t != null && isFinite(t) ? Math.round(t * 2) / 2 : Number((this._ehOf(M.id) || {}).target) || 21; }
+    else if (a === "ehxmvt") M.target = Math.round(Math.min(30, Math.max(10, M.target + parseFloat(b.dataset.v))) * 10) / 10;
+    else if (a === "ehxmvok") {
+      const e = this._ehOf(M.id), to = this._ehRooms().find((x) => x.id === M.to); if (!e || !to || M.busy) return true;
+      M.busy = true; this._renderModal();
+      this._hass.callWS({ type: "fenster_heizung/heizer_update", id: e.id, heater: { room: M.to, target: M.target } })
+        .then((r) => { this._ehD = r; this._modal = null; this._renderModal(); this._render(); this._toast(`„${e.name}“ steht jetzt in ${to.name}`); })
+        .catch((err) => { M.busy = false; M.err = (err && err.message) || "Umstellen fehlgeschlagen"; this._renderModal(); });
+      return true;
+    }
+    this._renderModal(); return true;
+  }
+  /* ---------- Build 4: Leistung messen, Testlauf, Entfernen mit Rückgängig, Papierkorb ---------- */
+  _ehPwSensors() {
+    const st = this._hass.states;
+    return Object.keys(st).filter((e) => e.startsWith("sensor.") && (st[e].attributes.device_class === "power" || /^k?W$/.test(st[e].attributes.unit_of_measurement || "")));
+  }
+  _ehW(eid) { const x = this._hass.states[eid]; if (!x) return null; const v = parseFloat(x.state); if (!isFinite(v)) return null; return x.attributes.unit_of_measurement === "kW" ? v * 1000 : v; }
+  _ehMeasBox(d) {
+    const M = this._modal, mz = M.meas, now = d.pw ? this._ehW(d.pw) : null, n = (d.meas || []).length;
+    const base = (d.entity || "").replace(/^switch\./, "").replace(/_(schalter|switch|steckdose|plug|socket)$/, "");
+    const hint = new RegExp(base.split("_").filter((x) => x.length > 3).join("|") || "steckdose|plug|leistung|power", "i");
+    const pct = mz ? Math.min(100, Math.round(((Date.now() - mz.t0) / 30000) * 100)) : 0;
+    return `<div class="lsec">${ic("chart", 15)}Leistungssensor der Steckdose</div>
+      ${this._wzSel(this._ehPwSensors(), d.pw || "", "ehxpw", `data-k="pw"`, "– Sensor wählen –", hint)}
+      ${d.pw ? `<div class="ehmeter${mz ? " run" : ""}"><i style="width:${mz ? pct : 0}%"></i><span>${now != null ? wfmt(Math.max(0, now)) : "kein Wert"}${mz ? ` · misst ${Math.max(0, 30 - Math.round((Date.now() - mz.t0) / 1000))} s` : ""}</span></div>
+        <div class="mut sm" style="margin:0 0 6px">${n ? `Stell den Heizer am Gerät auf die nächste Stufe und miss erneut.` : `Stell den Heizer am Gerät auf die kleinste Stufe (oder seine einzige) und tippe „Messen“. Er läuft dafür 30 Sekunden.`}</div>
+        ${n ? `<div class="stpv">${(d.meas || []).map((w, i) => `<span><b>${i + 1}</b>${wfmt(w)}<button class="ehx" data-act="ehxmdel" data-i="${i}" aria-label="Messung ${i + 1} entfernen">${ic("close", 12)}</button></span>`).join("")}</div>` : ""}
+        <button class="btn2 ${n ? "" : "pri"}" data-act="ehxmeas" style="width:100%" ${mz || n >= 8 ? "disabled" : ""}>${ic("play", 15)} ${mz ? "Misst …" : n ? `Stufe ${n + 1} messen` : "Messen"}</button>` : `<div class="mut sm" style="margin:6px 0 0">Ohne Leistungssensor bitte „Vorlage“ oder „Eigene Werte“ nehmen.</div>`}`;
+  }
+  async _ehTestRun(entity, seconds) {
+    try { await this._hass.callWS({ type: "fenster_heizung/heizer_test", entity, seconds }); return true; }
+    catch (e) { this._toast((e && e.message) || "Testlauf nicht möglich"); return false; }
+  }
+  _ehTick() { clearInterval(this._ehT); this._ehT = setInterval(() => { const M = this._modal; if (!M || M.type !== "ehwiz") { this._ehStopTick(); return; } const busy = (M.meas) || (M.testUntil && M.testUntil > Date.now() - 1000); if (!busy) { this._ehStopTick(); } this._renderModal(); }, 1000); }
+  _ehStopTick() { clearInterval(this._ehT); this._ehT = null; }
+  async _ehMeasure() {
+    const M = this._modal, d = M.d; if (!d.pw || M.meas) return;
+    if (!(await this._ehTestRun(d.entity, 32))) return;
+    M.meas = { t0: Date.now(), vals: [] }; this._ehTick();
+    const sample = setInterval(() => {
+      const cur = this._modal; if (!cur || cur !== M) { clearInterval(sample); return; }
+      const v = this._ehW(d.pw), age = Date.now() - M.meas.t0;
+      if (v != null && age > 8000) M.meas.vals.push(v);   /* die ersten Sekunden: Gerät heizt erst an */
+      if (age >= 30000) {
+        clearInterval(sample);
+        const vs = M.meas.vals.filter((x) => x > 20).sort((a, b) => a - b), med = vs.length ? vs[Math.floor(vs.length / 2)] : null;
+        M.meas = null;
+        if (med == null) { M.err = "Keine Leistung gemessen. Ist der Heizer am Gerät eingeschaltet und der richtige Sensor gewählt?"; }
+        else { d.meas = [...(d.meas || []), Math.round(med)]; this._toast(`Gemessen: ${wfmt(Math.round(med))}`); }
+        this._renderModal();
+      }
+    }, 1000);
+  }
+  /* Entfernen */
+  _ehDelModal() {
+    const M = this._modal, r = this._ehRooms().find((x) => x.id === M.id), e = this._ehOf(M.id); if (!r || !r.htr) return "";
+    const h = r.htr, kwh = Number(h.heute_kwh) || 0, days = Object.keys(h.verlauf || {}).length, line = (l, v) => `<div class="of"><div class="ol"><b>${l}</b></div><div class="oc"><b>${v}</b></div></div>`;
+    return `<div class="ov" data-act="ehxdelno"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>${esc(this._ehName(r))} entfernen?</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="ehxdelno" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="mut sm" style="margin:0 0 6px">Das passiert:</div>
+      ${line("Heizer", h.stufe > 0 ? "wird sofort ausgeschaltet" : "bleibt aus")}
+      ${line(`Thermostate in ${esc(r.name)}`, h.thermo_aktiv ? "laufen wieder normal" : "unverändert")}
+      ${line("Schalter „Elektroheizer aktiv“", "wird entfernt")}
+      ${line("Gerät in Home Assistant", "bleibt")}
+      ${e && e.autos ? `<div class="gbox" style="margin:8px 0">${ic("info", 14)} ${e.autos} ${e.autos === 1 ? "Automation nutzt" : "Automationen nutzen"} den Schalter „Elektroheizer aktiv“. Sie ${e.autos === 1 ? "findet" : "finden"} ihn danach nicht mehr.</div>` : ""}
+      <div class="lsec">${ic("chart", 15)}Statistik${kwh || days ? ` (${num(kwh, 1)} kWh heute${days ? `, Verlauf ${days} Tage` : ""})` : ""}</div>
+      <div class="seg oseg"><button class="${M.keep ? "sel" : ""}" data-act="ehxkeep" data-v="1">Behalten</button><button class="${!M.keep ? "sel" : ""}" data-act="ehxkeep" data-v="0">Löschen</button></div>
+      <div class="mut sm" style="margin:6px 0 0">Der Heizer bleibt 30 Tage im Papierkorb (Modul 1 · Einstellungen › Geräte › Elektroheizer) und lässt sich dort wiederherstellen${M.keep ? " – mit Statistik" : ""}.</div>
+      <div class="foot2"><button class="btn2" data-act="ehxdelno">Abbrechen</button><button class="btn2 dng" data-act="ehxdelok" ${M.busy || !e ? "disabled" : ""}>${M.busy ? "Entfernt …" : "Entfernen"}</button></div></div>`;
+  }
+  _ehUndoToast(msg, hid) {
+    const t = this.shadowRoot.getElementById("toast"); if (!t) return;
+    t.innerHTML = `<div class="toast ehundo"><span>${esc(msg)}</span><button data-act="ehxundo" data-k="${esc(hid)}">Rückgängig</button></div>`; clearTimeout(this._tt);
+    this._tt = setTimeout(() => (t.innerHTML = ""), 10000);
+  }
+  /* Papierkorb in der Liste */
+  _ehTrashBlock() {
+    const T = (this._ehD && this._ehD.trash) || [], M = this._modal, adm = this._admin(); if (!T.length || !adm) return "";
+    const left = (t) => Math.max(1, 30 - Math.floor((Date.now() / 1000 - (t.removed || 0)) / 86400)), why = { removed: "entfernt", off: "ausgeschaltet", migrated: "aus älterer Version", room_deleted: "Raum gelöscht" };
+    return `<div class="lsec">${ic("trash", 15)}Zuletzt entfernt</div><div class="fhs">${T.map((t) => `<div class="ehtr"><span class="sxi">${ic("bolt", 18)}</span><span class="sxt"><b>${esc(t.name)}</b><small>${esc(t.room_name || "Raum unbekannt")} · ${why[t.reason] || "entfernt"} am ${new Date((t.removed || 0) * 1000).toLocaleDateString("de-DE")}${t.has_stats ? " · mit Statistik" : ""}</small></span><em class="sxc">noch ${left(t)} T.</em>
+      <span class="ehtrb">${M.purge === t.id ? `<button class="btn2 sm" data-act="ehxpurgeno">Behalten</button><button class="btn2 sm dng" data-act="ehxpurgeok" data-k="${esc(t.id)}">Endgültig löschen</button>` : `<button class="btn2 sm" data-act="ehxpurge" data-k="${esc(t.id)}">Löschen</button><button class="btn2 sm pri" data-act="ehxrest" data-k="${esc(t.id)}">Wiederherstellen</button>`}</span></div>`).join("")}</div>`;
+  }
+  _ehRestModal() {
+    const M = this._modal, t = ((this._ehD && this._ehD.trash) || []).find((x) => x.id === M.tid); if (!t) return "";
+    const rooms = this._ehRooms();
+    return `<div class="ov" data-act="ehxrestno"></div><div class="sheet" role="dialog" aria-modal="true">
+      <div class="sh"><div><b>Wohin mit ${esc(t.name)}?</b><span>${esc(t.room_name || "Der alte Raum")} ist nicht frei</span></div><button class="ibtn" data-act="ehxrestno" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <div class="ehrooms">${rooms.map((x) => `<button class="ehroom${M.to === x.id ? " sel" : ""}" data-act="ehxrestto" data-k="${esc(x.id)}" ${x.htr ? "disabled" : ""}>${this._rkMiniById(x.id)}<span><b>${esc(x.name)}</b><small>${x.htr ? "hat schon einen Heizer" : "kein Heizer"}</small></span></button>`).join("")}</div>
+      ${M.err ? `<div class="gbox" style="margin-top:10px">${esc(M.err)}</div>` : ""}
+      <div class="foot2"><button class="btn2" data-act="ehxrestno">Abbrechen</button><button class="btn2 pri" data-act="ehxrestok" ${M.to && !M.busy ? "" : "disabled"}>Wiederherstellen</button></div></div>`;
+  }
+  async _ehRestore(tid, room) {
+    try {
+      this._ehD = await this._hass.callWS({ type: "fenster_heizung/heizer_restore", id: tid, ...(room ? { room } : {}) });
+      const h = (this._ehD.heaters || []).find((x) => x.id === tid);
+      this._toast(`„${h ? h.name : "Heizer"}“ ist wieder da${h && h.room_name ? " in " + h.room_name : ""}`); return true;
+    } catch (e) { this._toast((e && e.message) || "Wiederherstellen fehlgeschlagen"); return false; }
+  }
+  _ehAct4(a, b) {
+    const M = this._modal;
+    if (a === "ehxundo") { const t = this.shadowRoot.getElementById("toast"); if (t) t.innerHTML = ""; this._ehRestore(b.dataset.k).then(() => { this._render(); this._renderModal(); }); return true; }
+    if (a === "ehxdel") { this._modal = { type: "ehdel", id: b.dataset.id || (M && M.id), keep: true, back: M && M.back, busy: false }; this._renderModal(); this._ehLoad(); return true; }
+    if (a === "ehxrest") {
+      const tid = b.dataset.k, t = ((this._ehD && this._ehD.trash) || []).find((x) => x.id === tid), r = t && this._ehRooms().find((x) => x.id === t.room);
+      if (r && !r.htr) { this._ehRestore(tid).then(() => { this._render(); this._renderModal(); }); }
+      else { this._modal = { type: "ehrest", tid, to: "", back: M, busy: false, err: "" }; this._renderModal(); }
+      return true;
+    }
+    if (a === "ehxpurge") { if (M) { M.purge = b.dataset.k; this._renderModal(); } return true; }
+    if (a === "ehxpurgeno") { if (M) { M.purge = ""; this._renderModal(); } return true; }
+    if (a === "ehxpurgeok") { this._hass.callWS({ type: "fenster_heizung/heizer_purge", id: b.dataset.k }).then((r) => { this._ehD = r; if (this._modal) this._modal.purge = ""; this._renderModal(); this._toast("Endgültig gelöscht"); }).catch(() => this._toast("Löschen fehlgeschlagen")); return true; }
+    if (M && M.type === "ehrest") {
+      if (a === "ehxrestno") { this._modal = M.back; this._renderModal(); return true; }
+      if (a === "ehxrestto") { M.to = b.dataset.k; M.err = ""; this._renderModal(); return true; }
+      if (a === "ehxrestok") { M.busy = true; this._renderModal(); this._ehRestore(M.tid, M.to).then((ok) => { if (ok) { this._modal = M.back; this._render(); } else M.busy = false; this._renderModal(); }); return true; }
+    }
+    if (M && M.type === "ehdel") {
+      if (a === "ehxdelno") { this._modal = { type: "rkhtr", id: M.id, back: M.back }; this._renderModal(); return true; }
+      if (a === "ehxkeep") { M.keep = b.dataset.v === "1"; this._renderModal(); return true; }
+      if (a === "ehxdelok") {
+        const e = this._ehOf(M.id); if (!e || M.busy) return true;
+        M.busy = true; this._renderModal();
+        this._hass.callWS({ type: "fenster_heizung/heizer_remove", id: e.id, keep_stats: M.keep })
+          .then((r) => { this._ehD = r; this._modal = M.back && M.back.type === "ehlist" ? M.back : null; this._renderModal(); this._render(); this._ehUndoToast(`„${e.name}“ entfernt`, e.id); })
+          .catch((err) => { M.busy = false; this._renderModal(); this._toast((err && err.message) || "Entfernen fehlgeschlagen"); });
+        return true;
+      }
+    }
+    return false;
+  }
   _build() {
     const sr = this.shadowRoot;
     sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
@@ -7392,6 +7764,7 @@ class FensterHeizungPanel extends HTMLElement {
       if (t.dataset && (t.dataset.f === "vnotify" || t.dataset.f === "vwarn" || t.dataset.f === "vdays" || t.dataset.f === "vbat" || t.dataset.f === "vbatinv")) { const v = { ...this._vcfg() }; if (t.dataset.f === "vbat" || t.dataset.f === "vbatinv") { const bs = { ...(v.batsrc || {}) }, e = t.dataset.e, cur = bs[e] || { src: "", inv: false }; if (t.dataset.f === "vbat") { if (t.value) bs[e] = { src: t.value, inv: t.value.startsWith("binary_sensor.") ? !!cur.inv : false }; else delete bs[e]; } else if (bs[e]) bs[e] = { ...bs[e], inv: t.checked }; v.batsrc = bs; } else if (t.dataset.f === "vnotify") v.notify = t.value; else if (t.dataset.f === "vdays") { const n = Number(String(t.value).replace(",", ".")); v.days = isFinite(n) ? Math.min(60, Math.max(1, Math.round(n))) : 7; } else { const n = Number(String(t.value).replace(",", ".")); v.warn = isFinite(n) ? Math.min(60, Math.max(11, Math.round(n))) : 20; } this._gen.valve = v; this._saveGen(); this._renderModal(); return; }
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("msx") && this._msChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("lfx") && this._lfChange(t)) return;
+      if (t.dataset && t.dataset.f && t.dataset.f.startsWith("ehx") && this._ehChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("wz") && this._wzChange(t)) return;
       if (t.dataset && t.dataset.f && (t.dataset.f.startsWith("md") || t.dataset.f.startsWith("ww") || t.dataset.f.startsWith("en") || t.dataset.f.startsWith("gs") || t.dataset.f.startsWith("ev")) && this._mdChange(t)) return;
       if (t.dataset && t.dataset.f && t.dataset.f.startsWith("labf_") && this._labChange(t)) return;
@@ -7432,6 +7805,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("advx")) this._advAct(a, b);
     else if (a.startsWith("msx")) this._msAct(a, b);
     else if (a.startsWith("lfx")) this._lfAct(a, b);
+    else if (a.startsWith("ehx")) this._ehAct(a, b);
     else if (a.startsWith("ort")) this._ortAct(a, b);
     else if (a.startsWith("lab")) this._labAct(a, b);
     else if (a.startsWith("sto")) this._stoAct(a, b);
@@ -7705,16 +8079,8 @@ class FensterHeizungPanel extends HTMLElement {
       sec("wxa", "partly", "Wetter-Anpassung", d.weather_adj === "off" ? "ausgenommen" : "folgt der allgemeinen Einstellung",
         row("Zieltemperatur nach Wetter anpassen", "Die Grenzwerte stellst du unter „Allgemein“ ein.", seg("weather_adj", [["on", "Ja"], ["off", "Ausnehmen"]]))),
       sec("htr", "bolt", "Elektroheizer", d.htr_on === "on" ? `${parseSteps(d.htr_steps).length > 1 ? parseSteps(d.htr_steps).length + " Stufen bis " + wfmt(parseSteps(d.htr_steps).slice(-1)[0]) : wfmt(parseSteps(d.htr_steps)[0] || d.htr_watt)} · bis ${d.htr_target} °C` : "nicht aktiviert",
-        row("Elektroheizer in diesem Raum", "Heizt nur bei genug PV-Überschuss. Die Karte zeigt Status und Bericht.", seg("htr_on", [["off", "Aus"], ["on", "An"]])) +
-        (d.htr_on === "on" ? one("htr_entity", ent("switch").concat(ent("climate").filter((e) => !usedTh.has(e) || e === d.htr_entity)), "Schalter oder Gerät des Heizers", "Ein Schalter oder ein Klima-Gerät. Thermostate der Räume stehen hier nicht zur Auswahl.") +
-          txt("htr_steps", { l: "Leistungsstufen in Watt", h: "Falls der Heizer Stufen hat, z. B. 800, 1200, 1800. Leer = eine Stufe mit der Leistung unten." }) +
-          (parseSteps(d.htr_steps).length ? `<div class="stpv">${parseSteps(d.htr_steps).map((w, i) => `<span><b>${i + 1}</b>${wfmt(w)}</span>`).join("")}</div>` : num("htr_watt", "W", { l: "Leistung des Heizers", h: "Nennleistung laut Typenschild.", min: 50, max: 5000, step: 50 })) +
-          this._presetRows(d, st, row) +
-          (parseSteps(d.htr_steps).length > 1 ? row("Stufen regeln", "Automatisch: höhere Stufe bei mehr Überschuss, niedrigere bei weniger. Fest: nur die höchste Stufe.", seg("htr_auto", [["on", "Automatisch"], ["off", "Fest"]])) : "") +
-          row("Thermostat während des Heizers", "Aus = die Heizkörper-Thermostate des Raums werden abgestellt, solange der Heizer läuft. Danach regeln sie wieder.", seg("htr_thermo", [["off", "Ausschalten"], ["on", "Weiterlaufen"]])) +
-          num("htr_target", "°C", { l: "Heizen bis", h: "Der Heizer schaltet ab, sobald der Raum so warm ist.", min: 10, max: 30, step: 0.5 }) +
-          num("htr_prio", "", { l: "Priorität", h: "1 wird zuerst versorgt, wenn der Überschuss nicht für alle reicht.", min: 1, max: 9, step: 1 }) +
-          time("htr_from", { l: "Erlaubt ab", h: "Optional. Leer = ganztägig." }) + time("htr_to", { l: "Erlaubt bis" }) : "")),
+        (d.htr_on !== "on" ? `<button class="btn2 pri" data-act="ehxnew" data-id="${esc(m.id)}" style="width:100%;margin:6px 0 4px">${ic("plus", 16)} Elektroheizer hinzufügen</button><div class="mut sm" style="margin:0 0 6px">Vier kurze Schritte mit Vorschlägen. Ungespeicherte Änderungen in diesem Fenster gehen dabei verloren.</div>`
+          : `<div class="mut sm" style="margin:6px 0">Der Heizer ist ein eigenes Gerät: Leistung, „Heizen bis“, Zeitfenster, Pausieren und Raum wechseln findest du im Geräte-Blatt (auch unter Modul 1 · Einstellungen › Geräte › Elektroheizer).</div><button class="btn2" data-act="ehxdev" data-id="${esc(m.id)}" style="width:100%;margin:0 0 6px">${ic("bolt", 16)} Heizer öffnen</button>` + this._presetRows(d, st, row))),
       sec("fuel", "flame", "Brennstoff &amp; Ersparnis", `${fu[0]} · ${d.energy_per_unit || fu[2]} kWh/${fu[1]}${Number(d.room_area) > 0 ? " · " + d.room_area + " m²" : ""}`,
         row("Brennstoff", "Bestimmt Einheit und Beschriftung im Dashboard.", `<select class="osel" data-f="oval" data-k="fuel">${Object.entries(FU).map(([v, x]) => `<option value="${v}" ${d.fuel === v ? "selected" : ""}>${x[0]} (${x[1]})</option>`).join("")}</select>`) +
         num("energy_per_unit", "kWh/" + fu[1], { l: "Energie pro Einheit", h: "Leer = Standard des Brennstoffs.", min: 0, max: 40, step: 0.1, ph: String(fu[2]) }) +
@@ -8167,6 +8533,11 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "ortper" || m.type === "ortzone") { box.innerHTML = m.type === "ortper" ? this._ortPerModal() : this._ortZoneModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; this._ortBind(); return; }
     if (m.type === "mods" || m.type === "wwset" || m.type === "wwsch" || m.type === "enset" || m.type === "gsset" || m.type === "evset") { box.innerHTML = this._mdModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "wiz") { box.innerHTML = this._wzModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = m.keepTop ? top : 0; m.keepTop = true; return; }
+    if (m.type === "ehlist") { box.innerHTML = this._ehListModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "ehdel") { box.innerHTML = this._ehDelModal(); if (!box.innerHTML) this._modal = null; return; }
+    if (m.type === "ehrest") { box.innerHTML = this._ehRestModal(); if (!box.innerHTML) this._modal = null; return; }
+    if (m.type === "ehmove") { box.innerHTML = this._ehMoveModal(); if (!box.innerHTML) this._modal = null; return; }
+    if (m.type === "ehwiz") { box.innerHTML = this._ehModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "rkhtr" || m.type === "lfrk") { box.innerHTML = this._rkDevSheet(m); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; if (!box.innerHTML) this._modal = null; return; }
     if (m.type === "gpmap") { box.innerHTML = this._gpMapModal(m); if (!box.innerHTML) this._modal = null; return; }
     if (m.type === "rkmenu") { box.innerHTML = this._rkMenu(m); if (!box.innerHTML) this._modal = null; return; }
@@ -8185,11 +8556,12 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="mut sm" style="margin:0 0 8px">Das Foto wird verkleinert (ca. 560 px) und für alle Nutzer gespeichert. Höchstens 12 Fotos.</div>
         <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     } else if (m.type === "fh") {
+      if (m.tab === "pv") { this._ehListOpen({ type: "fh", tab: "gr" }); return; }  /* Reiter „Elektroheizer“ gibt es nicht mehr (Build 3): alte Links und Suche führen zu Geräte › Elektroheizer */
       const g = this._gen, sm = g.summer, S = this._sum(), wa = g.wxadj, wadj = this._wxAdj(), pv = this._pv();
       const sumInfo = S.active ? `Aktiv${S.out != null ? `: ${num(S.out, 1)} °C draußen` : ""}. Der Heizplan ruht, die Fenstermeldung bleibt.` : sm.mode === "off" ? "Aus. Der Heizplan läuft wie gewohnt." : `Inaktiv${S.out != null ? `: ${num(S.out, 1)} °C draußen, Schwelle ${num(sm.temp, 1)} °C` : ""}.`;
       const open = this._fhOpenSet(), pvn = this._pvNow(), rp = this._rate("price"), rf = this._rate("feed"), dn = (n) => (n === 1 ? "1 Tag" : n + " Tage");
       /* Stufe 3 (A5): Reiter statt Aufklappen. Jeder Abschnitt steht offen in seinem Reiter. */
-      const TABS = [["rg", "Regeln", "sliders"], ["pv", "Elektroheizer", "bolt"], ["gr", "Geräte", "tools"], ...(this._labFields("fh") ? [["lb", "Labs", "flask"]] : [])], tab = TABS.some((x) => x[0] === m.tab) ? m.tab : "rg", IN = { sum: "rg", wx: "rg", pv: "pv" }, HID = { sum: "general.summer.mode", wx: "general.wxadj.on", pv: "general.pv.reserve" };
+      const TABS = [["rg", "Regeln", "sliders"], ["gr", "Geräte", "tools"], ...(this._labFields("fh") ? [["lb", "Labs", "flask"]] : [])], tab = TABS.some((x) => x[0] === m.tab) ? m.tab : "rg", IN = { sum: "rg", wx: "rg", pv: "pv" }, HID = { sum: "general.summer.mode", wx: "general.wxadj.on", pv: "general.pv.reserve" };
       const sec = (id, ico, ttl, txt, chip, tone, body) => IN[id] !== tab ? "" : `<div class="fhs open fhst"><div class="sxrow stinfo"><span class="sxi">${ic(ico, 20)}</span><span class="sxt"><b>${ttl}${this._stHelpBtn(HID[id])}</b><small>${txt}</small></span><em class="sxc ${tone}">${chip}</em></div><div class="fhb">${body}</div></div>`;
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet wide" role="dialog" aria-modal="true">
         <div class="sh"><div><b>Modul 1 · Einstellungen</b><span>Fenster &amp; Heizung, gilt für alle Nutzer</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
@@ -8205,15 +8577,8 @@ class FensterHeizungPanel extends HTMLElement {
         <div class="ltog"><span>Zieltemperatur nach Wetter anpassen</span><button class="sw ${wa.on ? "on" : ""}" data-act="gwx" aria-pressed="${wa.on}" aria-label="Wetter-Anpassung"></button></div>
         ${wa.on ? [["mild", "Mild ab", "°C", "Bei Sonne schon ab 5 °C weniger."], ["down", "Dann absenken um", "K", ""], ["frost", "Frost bis", "°C", ""], ["up", "Dann anheben um", "K", ""]].map(([k, l, u, h]) => `<div class="of"><div class="ol"><b>${l}</b>${h ? `<span>${h}</span>` : ""}</div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gwxn" data-k="${k}" value="${wa[k]}" min="${k === "mild" || k === "frost" ? -20 : 0}" max="${k === "mild" || k === "frost" ? 40 : 5}" step="0.5"><i>${u}</i></span></div></div>`).join("") : ""}
         <div class="gst ${wadj && wadj.d ? "on" : ""}">${ic(wadj && wadj.d ? (wadj.fr ? "snow" : "sun") : "info", 15)}${!wa.on ? "Aus." : wadj && wadj.d ? `Aktiv: ${wadj.d > 0 ? "+" : "−"}${num(Math.abs(wadj.d), 1)} °C (${wadj.why}).` : "Gerade keine Anpassung nötig."}</div>`)}
-        ${sec("pv", "bolt", "PV-Überschuss für Elektroheizer", pv.sensor ? (pvn != null ? `${wfmt(pvn)} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Sensor gewählt, noch kein Wert.") : "Noch kein Sensor für die Einspeisung gewählt.", pv.sensor ? "Eingerichtet" : "Offen", pv.sensor ? "ok" : "", `
-        <div class="mut sm" style="margin:2px 0 4px">Elektroheizer in den Räumen heizen nur bei genug Überschuss. Sie schaltest du in den Raumeinstellungen ein.</div>
-        <div class="hslk">${this._hsLink("en", `Netz ${pv.sensor ? esc(this._wzName(pv.sensor)) + (pv.sign === "import" ? " (Bezug positiv)" : " (Einspeisung positiv)") : "noch nicht gewählt"}${pv.soc_sensor ? " · Ladestand " + esc(this._wzName(pv.soc_sensor)) : ""}`)}</div>
-        ${[["reserve", "Reserve", "W", "Bleibt zusätzlich zur Heizerleistung übrig.", 0, 2000, 50], ["delay", "Einschalten nach", "Min.", "So lange muss der Überschuss anliegen.", 0, 30, 1], ["minrun", "Mindestlaufzeit", "Min.", "Kürzer läuft ein Heizer nicht an einem Stück.", 0, 120, 5]].map(([k, l, u, h, lo, hi, st]) => `<div class="of"><div class="ol"><b>${l}</b><span>${h}</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="${k}" value="${pv[k]}" min="${lo}" max="${hi}" step="${st}"><i>${u}</i></span></div></div>`).join("")}
-        ${pv.soc_sensor ? `<div class="of"><div class="ol"><b>Heizer erst ab</b><span>Die Batterie wird zuerst geladen.</span></div><div class="oc"><span class="onum"><input type="number" inputmode="decimal" data-f="gpvn" data-k="soc_min" value="${pv.soc_min}" min="0" max="100" step="5"><i>%</i></span></div></div>` : ""}
-        <div class="gst ${this._pvNow() != null ? "on" : ""}">${ic(this._pvNow() != null ? "bolt" : "info", 15)}${this._pvNow() != null ? `Aktuell ${wfmt(this._pvNow())} Überschuss, ${wfmt(this._htrTotal())} an Heizer verteilt.` : "Noch kein Sensor gewählt."}</div>`)}
-        ${tab === "pv" ? `<div class="hslk">${this._hsLink("pr", `Bezug ${num(rp, 2)} ct/kWh, Einspeisung ${num(rf, 2)} ct/kWh`)}</div>` : ""}
         ${tab === "lb" ? `<div class="mut sm" style="margin:2px 0 6px">Eingeschaltete Labs mit Einstellungen für Modul 1.</div>${this._labFields("fh")}` : ""}
-        ${tab !== "gr" ? "" : `<div class="fhs"><button class="sxrow" data-act="lfxset"><span class="sxi">${ic("fan", 20)}</span><span class="sxt"><b>Luftentfeuchter</b><small>${(() => { const L = this._lfDevs(); return L.length === 1 ? `${esc(L[0].name)} · Ein über ${num(L[0].hi, 0)} %, aus bei ${num(L[0].lo, 0)} %` : L.length ? `${L.length} Geräte: ${esc(L.map((x) => x.name).join(", "))}` : "Mobile Entfeuchter einbinden und mit der Raumfeuchte regeln"; })()}</small></span><em class="sxc ${this._lfDevs().length ? "ok" : ""}">${this._lfDevs().length ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>
+        ${tab !== "gr" ? "" : `<div class="fhs">${this._ehGeraeteRow()}<button class="sxrow" data-act="lfxset"><span class="sxi">${ic("fan", 20)}</span><span class="sxt"><b>Luftentfeuchter</b><small>${(() => { const L = this._lfDevs(); return L.length === 1 ? `${esc(L[0].name)} · Ein über ${num(L[0].hi, 0)} %, aus bei ${num(L[0].lo, 0)} %` : L.length ? `${L.length} Geräte: ${esc(L.map((x) => x.name).join(", "))}` : "Mobile Entfeuchter einbinden und mit der Raumfeuchte regeln"; })()}</small></span><em class="sxc ${this._lfDevs().length ? "ok" : ""}">${this._lfDevs().length ? "Eingerichtet" : "Neu"}</em><span class="sxg">${ic("chev", 16)}</span></button>
         <button class="sxrow" data-act="diag"><span class="sxi">${ic("shield", 20)}</span><span class="sxt"><b>Ventile &amp; Batterien</b><small>Diagnose, Batterie schwach ab ${num((g.valve || {}).warn || 20, 0)} %, Meldung bei Problemen</small></span><span class="sxg">${ic("chev", 16)}</span></button></div>`}
         <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
     } else if (m.type === "gen") {
@@ -17990,7 +18355,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _grDevProps(sel) {
     const D = this._grDevList(), gk = sel.gk === "entf" ? "entf" : "heizer", L = D[gk], inf = L.find((x) => x.e === sel.e), P = this._sfPl(), pos = this._grDevPos(sel, P, D);
-    const none = gk === "heizer" ? "Noch kein Elektroheizer in Modul 1. Er wird beim Raum unter „Elektroheizer“ eingerichtet." : "Noch kein Luftentfeuchter in Modul 1. Er wird in Modul 1 unter „Luftentfeuchter“ eingerichtet.";
+    const none = gk === "heizer" ? `Noch kein Elektroheizer in Modul 1.${this._admin() ? ` <button class="lnk" data-act="ehxnew">${ic("plus", 14)} Jetzt einrichten</button>` : ""}` : "Noch kein Luftentfeuchter in Modul 1. Er wird in Modul 1 unter „Luftentfeuchter“ eingerichtet.";
     return `<div class="sffld"><label>Art</label><div class="grseg"><button class="${gk === "heizer" ? "on" : ""}" data-act="grxgk" data-v="heizer">Mobiler Heizer</button><button class="${gk === "entf" ? "on" : ""}" data-act="grxgk" data-v="entf">Luftentfeuchter</button></div></div>
       <div class="sffld"><label>Gerät aus Modul 1</label>${L.length ? `<div class="gschips">${L.map((x) => `<button class="gsch ${sel.e === x.e ? "sel" : ""}" data-act="grxge" data-v="${esc(x.e)}">${esc(x.name)}${x.room ? `<small class="mut"> · ${esc(x.room)}</small>` : ""}</button>`).join("")}</div>` : `<div class="mut sm">${none}</div>`}</div>
       ${inf ? `<div class="grwall ok">${ic(inf.on ? "bolt" : "info", 14)}<span>${esc(inf.name)} · <b>${esc(inf.txt || (inf.on ? "läuft" : "aus"))}</b>${inf.room ? ` · Modul 1: ${esc(inf.room)}` : ""}</span></div>` : ""}
@@ -20184,10 +20549,10 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       { id: "general.wxadj.on", t: "Wetterabhängige Absenkung", p: `${M1} › Regeln`, k: "wetter absenkung sonne frost anheben mild", go: ["fhset"], tab: "rg", v: () => onoff(g().wxadj.on), h: "Bei Sonne oder milder Luft sinkt die Zieltemperatur, bei Frost steigt sie." },
       { id: "general.wxadj.down", t: "Absenkung bei mildem Wetter", p: `${M1} › Regeln`, k: "absenken kelvin mild", go: ["fhset"], tab: "rg", v: () => `${num(g().wxadj.down, 1)} K`, n: "K" },
       { id: "general.wxadj.up", t: "Anhebung bei Frost", p: `${M1} › Regeln`, k: "anheben frost kelvin", go: ["fhset"], tab: "rg", v: () => `${num(g().wxadj.up, 1)} K`, n: "K" },
-      { id: "general.pv.reserve", t: "Reserve für Elektroheizer", p: `${M1} › Elektroheizer`, k: "elektroheizer reserve watt überschuss heizer", go: ["fhset"], tab: "pv", v: () => `${pv().reserve} W`, n: "W", h: "So viel Leistung bleibt zusätzlich zur Heizerleistung übrig, bevor ein Heizer einschaltet." },
-      { id: "general.pv.delay", t: "Elektroheizer einschalten nach", p: `${M1} › Elektroheizer`, k: "verzögerung einschalten minuten heizer", go: ["fhset"], tab: "pv", v: () => `${pv().delay} Min.`, n: "Min." },
-      { id: "general.pv.minrun", t: "Mindestlaufzeit Elektroheizer", p: `${M1} › Elektroheizer`, k: "mindestlaufzeit heizer minuten", go: ["fhset"], tab: "pv", v: () => `${pv().minrun} Min.`, n: "Min." },
-      { id: "general.pv.soc_min", t: "Elektroheizer erst ab Ladestand", p: `${M1} › Elektroheizer`, k: "ladestand batterie heizer prozent", go: ["fhset"], tab: "pv", v: () => `${pv().soc_min} %`, n: "%", h: "Die Batterie wird zuerst bis zu diesem Ladestand geladen." },
+      { id: "general.pv.reserve", t: "Reserve für Elektroheizer", p: `${M1} › Geräte › Elektroheizer`, k: "elektroheizer reserve watt überschuss heizer", go: ["fhset"], tab: "pv", v: () => `${pv().reserve} W`, n: "W", h: "So viel Leistung bleibt zusätzlich zur Heizerleistung übrig, bevor ein Heizer einschaltet." },
+      { id: "general.pv.delay", t: "Elektroheizer einschalten nach", p: `${M1} › Geräte › Elektroheizer`, k: "verzögerung einschalten minuten heizer", go: ["fhset"], tab: "pv", v: () => `${pv().delay} Min.`, n: "Min." },
+      { id: "general.pv.minrun", t: "Mindestlaufzeit Elektroheizer", p: `${M1} › Geräte › Elektroheizer`, k: "mindestlaufzeit heizer minuten", go: ["fhset"], tab: "pv", v: () => `${pv().minrun} Min.`, n: "Min." },
+      { id: "general.pv.soc_min", t: "Elektroheizer erst ab Ladestand", p: `${M1} › Geräte › Elektroheizer`, k: "ladestand batterie heizer prozent", go: ["fhset"], tab: "pv", v: () => `${pv().soc_min} %`, n: "%", h: "Die Batterie wird zuerst bis zu diesem Ladestand geladen." },
       { id: "entfeuchter", t: "Luftentfeuchter", p: `${M1} › Geräte`, k: "entfeuchter luftfeuchte feucht schimmel keller nfc tag stellplatz", go: ["fhset"], tab: "gr", h: "Mobile Entfeuchter einbinden und mit der Raumfeuchte regeln. NFC-Tags am Stellplatz unter Gerät → Standort." },
       { id: "general.valve.warn", t: "Batterie schwach ab", p: `${M1} › Geräte`, k: "batterie thermostat ventil schwach warnung", go: ["diag"], v: () => `${(g().valve || {}).warn || 20} %`, n: "%", h: "Ab diesem Batteriestand meldet die Diagnose ein Thermostat als schwach." },
       { id: "general.valve.notify", t: "Meldung bei Ventil-Problemen", p: `${M1} › Geräte`, k: "benachrichtigung ventil problem meldung", go: ["diag"], h: "Benachrichtigungsdienst für ausgefallene Ventile und schwache Batterien." },
@@ -21376,7 +21741,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     }
     else if (a === "mdsta") { this._stA = k || ""; this._stS = ""; this._render(); const m = this.shadowRoot.getElementById("main"); if (m && m.scrollIntoView) window.scrollTo && window.scrollTo(0, 0); }
     else if (a === "mdstoff") { this._stOffC = !this._stOffC; this._render(); }
-    else if (a === "mdstpv") { const o = this._fhOpenSet(); o.clear(); o.add("pv"); this._modal = { type: "fh" }; this._renderModal(); }
+    else if (a === "mdstpv") { this._ehListOpen({ type: "fh", tab: "gr" }); }
     else if (a === "mdstx") { this._stOpen = false; this._render(); }
     else if (a === "mdmgr") { this._modal = { type: "mods" }; this._renderModal(); }
     else if (a === "mdsetup") { this._modal = { type: "wwset" }; this._renderModal(); }

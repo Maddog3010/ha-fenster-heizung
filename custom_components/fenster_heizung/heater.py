@@ -263,6 +263,32 @@ class HeaterRoom:
         self.pv_kwh += min(pv_w, power_w) * dt_s / 3_600_000
         self.minutes += dt_s / 60
 
+    def stats_data(self) -> dict[str, Any]:
+        """Statistik des Heizers (für den Papierkorb beim Entfernen)."""
+        self._roll()
+        return {"day": self._day, "kwh": round(self.kwh, 4), "pv_kwh": round(self.pv_kwh, 4),
+                "minutes": round(self.minutes, 2), "history": dict(self.history)}
+
+    def load_stats(self, raw: dict[str, Any]) -> None:
+        """Statistik eines Heizers übernehmen, der aus einem anderen Raum hierher gestellt wurde."""
+        if not isinstance(raw, dict):
+            return
+        self._day = raw.get("day") or self._day
+        self.kwh = float(raw.get("kwh") or 0)
+        self.pv_kwh = float(raw.get("pv_kwh") or 0)
+        self.minutes = float(raw.get("minutes") or 0)
+        hist = raw.get("history")
+        self.history = {k: [float(x) for x in v] for k, v in hist.items() if isinstance(v, list)} if isinstance(hist, dict) else {}
+        if "manual_on" in raw:
+            self.manual_on = raw.get("manual_on") is not False
+        self._roll()
+
+    def reset_stats(self) -> None:
+        """Statistik leeren (neues Gerät im Raum oder Heizer entfernt)."""
+        self.kwh = self.pv_kwh = self.minutes = 0.0
+        self.history = {}
+        self._day = dt_util.now().date().isoformat()
+
     def attrs(self) -> dict[str, Any] | None:
         c = self.cfg()
         if c is None:

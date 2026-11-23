@@ -2,6 +2,43 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4b59] - 2026-11-23
+
+**Modul 1 · Fenster & Heizung** v1.9 Build 9 – Elektroheizer 2.0 (Build 1 bis 4): einfach hinzufügen und sauber entfernen.
+
+### Neu
+- **Einrichtungs-Assistent für Elektroheizer** in vier Schritten statt zwölf Feldern:
+  - Gerät: Vorschläge nach Name (Heizer, Radiator, Lüfter, Steckdose …), dazu Suche über alle Schalter und Klima-Geräte. Thermostate der Räume und schon eingerichtete Heizer stehen nicht zur Wahl.
+  - Raum: Räume als Kacheln mit Raumbild und Temperatur; Räume mit Heizer sind gesperrt. Kommt man aus einem Raum, entfällt der Schritt.
+  - Leistung: Vorlagen (Ölradiator, Heizlüfter, Infrarot-Paneel, Konvektor) oder eigene Werte, mit Hinweis für Steckdosen und Klima-Geräte.
+  - Fertig: Name, „Heizen bis“ (Vorschlag aus dem Raum), Thermostate, Stufen regeln; Priorität und Zeitfenster unter „Mehr Einstellungen“; Hinweis zum aktuellen Überschuss.
+- **Einstiege:** Raumkarte „⋯“ › Elektroheizer hinzufügen, Modul 1 · Einstellungen › Geräte › Elektroheizer („+ Elektroheizer hinzufügen“), Raumeinstellungen und Grundriss (Gerät „Mobiler Heizer“ › Jetzt einrichten).
+- **Elektroheizer unter „Geräte“:** Modul 1 · Einstellungen hat nur noch die Reiter „Regeln“ und „Geräte“. Unter „Geräte“ steht der Elektroheizer ganz oben (wie der Luftentfeuchter); dahinter die Liste aller Heizer mit Status und die PV-Regeln für alle Heizer (Reserve, Einschalten nach, Mindestlaufzeit, Ladestand).
+- **Geräte-Blatt je Heizer** (Raumkarte, Liste): Status und Bericht wie bisher, dazu
+  - Bearbeiten: Name, Leistung, „Heizen bis“, Thermostate, Priorität und Zeitfenster im Assistenten (Schritte Leistung und Regeln)
+  - Pausieren / Fortsetzen: bleibt eingerichtet, heizt nicht (gleich wie der Schalter „Elektroheizer aktiv“)
+  - In anderen Raum stellen: Raum als Kachel, „Heizen bis“ mit Vorschlag aus dem neuen Raum. Im alten Raum wird der Heizer ausgeschaltet und die Thermostate laufen wieder; Statistik, Verlauf und Pausen-Stellung ziehen mit. Der Schalter „Elektroheizer aktiv“ gehört danach zum neuen Raum (neue Entität).
+- **Geräteliste der Elektroheizer:** Jeder Heizer ist jetzt ein eigenes Gerät mit fester ID, Namen und Raum (eigener Speicher, mit automatischen Sicherungskopien). Grundlage für Einrichtungs-Assistent, Reiter „Geräte“, Raum wechseln und Papierkorb in den nächsten Builds.
+- **Automatische Übernahme:** Beim ersten Start wird jeder Raum mit eingeschaltetem Elektroheizer in die Liste übernommen. Räume mit ausgeschaltetem Heizer, aber eingetragenem Gerät landen im Papierkorb (30 Tage). Die Raum-Einstellungen werden dabei nicht verändert.
+- **Heizer entfernen** im Geräte-Blatt: Ein Dialog zeigt vorher, was passiert (Heizer aus, Thermostate zurück, Schalter weg, Gerät bleibt in Home Assistant) und wie viele Automationen den Schalter nutzen. Statistik behalten oder löschen. Danach 10 Sekunden „Rückgängig“.
+- **Papierkorb** („Zuletzt entfernt“ unter Geräte › Elektroheizer): 30 Tage wiederherstellen – mit gleichem Namen, Einstellungen und (falls behalten) Statistik. Ist der alte Raum belegt oder gelöscht, fragt Modul 1 nach einem Raum. Endgültig löschen mit Bestätigung.
+- **Leistung messen** im Assistenten (Steckdosen mit Leistungssensor): Heizer am Gerät auf eine Stufe stellen, „Messen“ – Modul 1 schaltet 30 Sekunden ein und nimmt den Mittelwert ohne die Anlaufsekunden. Stufe für Stufe, bis zu 8 Stufen.
+- **Testlauf** im letzten Schritt des Assistenten: Gerät 30 Sekunden ein, unabhängig vom Überschuss, danach wie vorher.
+- **Websocket-Befehle** `heizer_get`, `heizer_add`, `heizer_update`, `heizer_remove`, `heizer_restore`, `heizer_purge`, `heizer_test` (alles außer Lesen nur für Admins).
+
+### Geändert
+- **Entfernen räumt auf:** Der Heizer wird ausgeschaltet (bei Klima-Geräten die alte Solltemperatur zurück), abgestellte Thermostate laufen wieder, die Heizer-Felder des Raums werden zurückgesetzt und der Schalter „Elektroheizer aktiv“ verschwindet aus Home Assistant statt als „nicht verfügbar“ stehen zu bleiben. Die Statistik wandert auf Wunsch mit in den Papierkorb.
+- Ausschalten im Raum-Dialog wie bisher legt den Heizer in den Papierkorb; wieder einschalten mit demselben Gerät holt ihn mit gleicher ID und gleichem Namen zurück.
+- Ein neuer Heizer im Raum beginnt mit leerer Statistik.
+- Raumeinstellungen zeigen beim Elektroheizer nur noch eine Kurzinfo mit „Heizer öffnen“ (bei Klima-Geräten weiter die Zuordnung der Voreinstellungen) bzw. „Elektroheizer hinzufügen“.
+- Alte Links und die Einstellungssuche (Reserve, Einschalten nach, Mindestlaufzeit, Ladestand) führen zu Geräte › Elektroheizer.
+
+### Behoben
+- PV-Regeln: Die Reserve ließ sich im Dashboard nicht über 100 W einstellen (Eingabe wurde auf 100 begrenzt); jetzt bis 2000 W wie vorgesehen.
+
+### Hinweis
+- Wird ein Heizer in einen anderen Raum gestellt oder aus dem Papierkorb in einen anderen Raum geholt, ist der Schalter „Elektroheizer aktiv“ eine neue Entität im neuen Raum – Automationen bitte anpassen.
+
 ## [2026.11.4b58] - 2026-11-22
 
 **Modul 0 · Haus & Grundriss** v0.10.1 – Korrektur und Aufräumen.
