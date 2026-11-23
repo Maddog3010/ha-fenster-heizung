@@ -803,7 +803,7 @@
     if (this._press || (this._hold && Date.now() < this._hold)) { this._prPend = true; return; }
     const sr0 = this.shadowRoot, ae0 = sr0 && sr0.activeElement;
     /* Läuft gerade eine Eingabe (Uhrzeit, Zahl, Text), wird die Seite nicht neu aufgebaut. Home Assistant meldet laufend neue Werte, das würde das Feld mitten im Tippen wegwerfen. Nach dem Verlassen des Feldes wird nachgezogen. */
-    if (ae0 && ae0.tagName === "INPUT" && ["time", "date", "number", "text"].includes(ae0.type) && !ae0.classList.contains("stoq") && sr0.getElementById("main") && sr0.getElementById("main").contains(ae0)) {
+    if (ae0 && ((ae0.tagName === "INPUT" && ["time", "date", "number", "text"].includes(ae0.type) && !ae0.classList.contains("stoq")) || (ae0.tagName === "TEXTAREA" && ae0.dataset.f === "kmhist")) && sr0.getElementById("main") && sr0.getElementById("main").contains(ae0)) {
       if (this._inHook !== ae0) { this._inHook = ae0; ae0.addEventListener("blur", () => { this._inHook = null; setTimeout(() => this._render(), 0); }, { once: true }); }
       return;
     }

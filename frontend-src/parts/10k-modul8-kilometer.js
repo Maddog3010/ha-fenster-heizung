@@ -8,7 +8,8 @@
     const odoNow = v0 ? ((v0.ent || {}).odo ? ev.odo : (D.odos || {})[v0.id]) : ev.odo;
     const manual = adm && noSensor.length ? `<div class="evkmm">${ic("pencil", 16)}<div><b>Ohne Kilometer-Sensor?</b><small>Kilometerstand ab und zu eintragen – die Strecke seit dem letzten Eintrag wird auf die Tage dazwischen verteilt.</small>
         ${noSensor.map((x) => { const o = (D.odoset || {})[x.id]; return `<div class="evkmr"><span>${esc(x.name)}<small>${o ? `zuletzt ${num(o.km, 0)} km am ${new Date(o.d + "T12:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" })}` : "noch kein Eintrag – der erste Stand ist der Startwert"}</small></span><input class="otxt" type="text" inputmode="numeric" data-km="${esc(x.id)}" placeholder="${o ? num(o.km, 0) : "z. B. 24.318"}" aria-label="Kilometerstand ${esc(x.name)}"><button class="btn2 pri" data-act="wbkmok" data-v="${esc(x.id)}">Eintragen</button></div>`; }).join("")}</div></div>` : "";
-    if (!anyKm) return `<div class="card evkm"><h2>${this._gx("car", 24)}Kilometer &amp; Verbrauch</h2><div class="mut sm">Noch keine Kilometer. Wähle beim Fahrzeug einen Kilometerstand-Sensor${adm && noSensor.length ? " oder trage den Stand unten von Hand ein" : ""} – ab dann zählt Modul 8 die gefahrenen Kilometer je Tag.</div>${manual}</div>`;
+    const hist = adm && cv.length ? this._evKmHistBox(cv, v0) : "";
+    if (!anyKm) return `<div class="card evkm"><h2>${this._gx("car", 24)}Kilometer &amp; Verbrauch</h2><div class="mut sm">Noch keine Kilometer. Wähle beim Fahrzeug einen Kilometerstand-Sensor${adm && noSensor.length ? " oder trage den Stand unten von Hand ein" : ""} – ab dann zählt Modul 8 die gefahrenen Kilometer je Tag.</div>${manual}${hist}</div>`;
     // Kacheln
     const sh = T.kwh > 0 ? T.pv / T.kwh : 0, k100 = T.km > 0 && T.kwh > 0 ? T.kwh / T.km * 100 : null, k100p = Pv.km > 0 && Pv.kwh > 0 ? Pv.kwh / Pv.km * 100 : null;
     const elapsed = Math.max(1, Math.ceil(((run ? new Date() : R.d1) - R.d0) / 864e5)), per = days.filter((r) => r.d >= key(R.d0) && r.d < key(R.d1));
@@ -28,7 +29,7 @@
       <div class="evkmc">${sl.map((s, i) => { const kw = s.x.kwh, g = kw > 0 ? (1 - s.x.pv / kw) * 100 : 0, cls = s.x.km <= 0 ? "z" : kw > 0 ? "" : "nl";
         return `<button class="${cls}" data-act="wbvgo" data-k="${s.go.getTime()}" data-p="${s.p}" style="--h:${s.x.km > 0 ? Math.max(4, s.x.km / mx * 100) : 3}%;--g:${g}%" title="${esc(s.l)}: ${num(s.x.km, 0)} km${kw > 0 ? ` · ${num(kw, 1)} kWh geladen · ${num(s.x.pv / kw * 100, 0)} % Sonne` : ""}" aria-label="${esc(s.l)}: ${num(s.x.km, 0)} km"><i></i><span>${lab(i) ? esc(s.l) : ""}</span></button>`; }).join("")}</div>
       <div class="gsleg" style="margin-top:6px"><span><i style="background:var(--teal)"></i>mit Sonne</span><span><i style="background:var(--amber)"></i>mit Netzstrom</span><span><i style="background:#60a5fa"></i>an dem Tag nicht geladen</span></div>` : "";
-    const head = `<div class="card evkm"><h2>${this._gx("car", 24)}Kilometer &amp; Verbrauch<span class="evmr">${odoNow != null ? `Kilometerstand ${num(odoNow, 0)} km${v0 ? " · " + esc(v0.name) : ""}` : ""}</span></h2>${tiles}${chart}${manual}</div>`;
+    const head = `<div class="card evkm"><h2>${this._gx("car", 24)}Kilometer &amp; Verbrauch<span class="evmr">${odoNow != null ? `Kilometerstand ${num(odoNow, 0)} km${v0 ? " · " + esc(v0.name) : ""}` : ""}</span></h2>${tiles}${chart}${manual}${hist}</div>`;
     return `${head}<div class="evkm2">${this._evKmTemp(days)}${this._evKmYear(days, v0, cv)}</div>`;
   }
   /* Verbrauch nach Außentemperatur: letzte 12 Monate, Tage mit Kilometern und Temperatur, je Bereich geladene kWh ÷ gefahrene km */
@@ -66,6 +67,53 @@
       <div class="evbl"><span><b>${num(km, 0)} km</b> seit ${from === 1 ? "1. Januar" : fd(y0)}</span><span>${proj != null ? `Hochrechnung <b>${num(proj, 0)} km</b>` : "Hochrechnung ab 14 Tagen"}</span></div>
       ${st ? `<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center"><span class="evkmst ${st[0]}">${st[0] === "ok" ? "✓" : "!"} ${st[1]}</span><span class="mut sm">${left > 0 ? `noch ${num(left, 0)} km bis zur Grenze · ca. ${num(left / wk, 0)} km/Woche übrig` : `Grenze um ${num(-left, 0)} km überschritten`}</span></div>` : ""}
       <div class="mut sm" style="margin-top:8px">${kmP > 0 ? `Vorjahr: ${num(kmP, 0)} km. ` : ""}${late ? `Gezählt seit ${fd(new Date(first.d + "T12:00:00"))}, die Hochrechnung nutzt diesen Zeitraum. ` : ""}${lim ? "" : "Eine Grenze (z. B. Leasing) stellst du beim Fahrzeug unter „Aussehen &amp; Sensoren“ ein."}</div></div>`;
+  }
+  /* 2026.11.5: Kilometerstände nachtragen oder korrigieren – z. B. wenn der Sensor tagelang keinen Wert lieferte und die ganze Strecke
+     auf einem Tag gelandet ist. Zwischen zwei Ständen wird gleichmäßig auf die Tage verteilt, die bisherigen km im Zeitraum werden ersetzt. */
+  _evKmHistBox(cv, v0) {
+    const H = this._kmHist || {}, vid = H.vid && cv.some((x) => x.id === H.vid) ? H.vid : (v0 || cv[0]).id;
+    if (!H.open) return `<div class="evkmm">${ic("pencil", 16)}<div><b>Kilometer stimmen nicht?</b><small>Ein Tag mit viel zu vielen Kilometern entsteht, wenn der Sensor ein paar Tage keinen Wert geliefert hat. Mit echten Kilometerständen lässt sich das korrigieren.</small>
+      <div class="evkmr"><button class="btn2" data-act="wbkmhopen">Kilometerstände nachtragen</button></div></div></div>`;
+    const P = this._evKmHistParse(H.txt || "");
+    return `<div class="evkmm">${ic("pencil", 16)}<div style="flex:1;min-width:0"><b>Kilometerstände nachtragen</b><small>Ein Stand pro Zeile oder mit „/“ getrennt, Stand am Ende des Tages, z. B. <i>28.10. 13155</i>. Die Strecke zwischen zwei Ständen wird gleichmäßig auf die Tage dazwischen verteilt; was bisher in diesem Zeitraum gezählt wurde, wird ersetzt.</small>
+      ${cv.length > 1 ? `<div class="evkmr">${cv.map((x) => `<button class="btn2${x.id === vid ? " pri" : ""}" data-act="wbkmhveh" data-v="${esc(x.id)}">${esc(x.name)}</button>`).join("")}</div>` : ""}
+      <textarea class="osel" data-f="kmhist" rows="5" spellcheck="false" style="width:100%;box-sizing:border-box;margin-top:8px;font:inherit" placeholder="28.10. 13155&#10;29.10. 13218&#10;30.10. 13281" aria-label="Kilometerstände">${esc(H.txt || "")}</textarea>
+      <div class="mut sm" style="margin-top:4px">${P.err ? esc(P.err) : P.rows.length >= 2 ? `${P.rows.length} Stände · ${num(P.rows[P.rows.length - 1].km - P.rows[0].km, 0)} km vom ${this._evKmD(P.rows[0].d)} bis ${this._evKmD(P.rows[P.rows.length - 1].d)}` : "mindestens zwei Stände"}</div>
+      <div class="evkmr"><button class="btn2 pri" data-act="wbkmhok" data-v="${esc(vid)}">Übernehmen</button><button class="btn2" data-act="wbkmhopen">Abbrechen</button></div></div></div>`;
+  }
+  _evKmD(d) { return new Date(d + "T12:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit", year: "numeric" }); }
+  /* „28.10. 13155km / 29.10.2026 13.218 km“ → [{d: "2026-10-28", km: 13155}, …]; ohne Jahr: dieses Jahr, liegt das Datum in der Zukunft, das Vorjahr */
+  _evKmHistParse(txt) {
+    const rows = [], now = new Date(), parts = String(txt).split(/[\n;\/]+/).map((x) => x.trim()).filter(Boolean);
+    for (const p of parts) {
+      const m = p.match(/^(\d{1,2})\.(\d{1,2})\.?(\d{2,4})?\s*[-–:=]?\s*(\d{1,3}(?:[.\s]\d{3})+|\d+)(?:,\d+)?\s*(?:km)?$/i);
+      if (!m) return { rows, err: `Nicht verstanden: „${p}“` };
+      const dd = +m[1], mm = +m[2]; let yy = m[3] ? +m[3] : now.getFullYear(); if (yy < 100) yy += 2000;
+      let t = new Date(yy, mm - 1, dd);
+      if (t.getMonth() !== mm - 1 || t.getDate() !== dd) return { rows, err: `Kein gültiges Datum: „${p}“` };
+      if (!m[3] && t > now) t = new Date(yy - 1, mm - 1, dd);
+      const d = `${t.getFullYear()}-${String(mm).padStart(2, "0")}-${String(dd).padStart(2, "0")}`;
+      if (rows.some((r) => r.d === d)) return { rows, err: `Der ${dd}.${mm}. steht doppelt in der Liste` };
+      rows.push({ d, km: Number(m[4].replace(/[.\s]/g, "")) });
+    }
+    rows.sort((a, b) => (a.d < b.d ? -1 : 1));
+    for (let i = 1; i < rows.length; i++) if (rows[i].km < rows[i - 1].km) return { rows, err: `Der Stand am ${this._evKmD(rows[i].d)} ist kleiner als der davor` };
+    return { rows, err: "" };
+  }
+  _evKmHistAct(a, b) {
+    const H = (this._kmHist = this._kmHist || {});
+    if (a === "wbkmhopen") { H.open = !H.open; this._render(); return; }
+    if (a === "wbkmhveh") { H.vid = b.dataset.v; this._render(); return; }
+    const ta = this.shadowRoot.querySelector('[data-f="kmhist"]'); if (ta) H.txt = ta.value;
+    const P = this._evKmHistParse(H.txt || "");
+    if (P.err || P.rows.length < 2) { this._toast(P.err || "Bitte mindestens zwei Kilometerstände eingeben"); return; }
+    this._hass.callWS({ type: "fenster_heizung/wb_odo_hist", vid: b.dataset.v, rows: P.rows }).then((r) => {
+      if (!r || !r.ok) { this._toast((r && r.err) || "Kilometerstände konnten nicht gespeichert werden"); return; }
+      if (r.snap) this._wbD = { snap: r.snap, ts: Date.now() };
+      this._kmHist = {};
+      this._toast(`${num(r.km, 0)} km auf ${r.days} ${r.days === 1 ? "Tag" : "Tage"} verteilt (vorher gezählt: ${num(r.old, 0)} km)`);
+      this._wbStatLoad(true);
+    }).catch(() => this._toast("Kilometerstände konnten nicht gespeichert werden"));
   }
   _evKmOdo(b) {
     const vid = b.dataset.v, inp = this.shadowRoot.querySelector(`[data-km="${CSS.escape(vid)}"]`), v = parseFloat(String((inp && inp.value) || "").replace(/\./g, "").replace(",", "."));

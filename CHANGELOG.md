@@ -2,6 +2,20 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b1] - 2026-11-23
+
+**Modul 8 · Elektroauto & Wallbox** 1.0.1 – Kilometer je Tag ohne Sprünge.
+
+### Behoben
+- **Ein Tag mit viel zu vielen Kilometern:** Lieferte der Kilometerstand-Sensor ein paar Tage keinen Wert (Auto schläft, Hersteller-Cloud offline), wurde die ganze Strecke auf den Tag gebucht, an dem der Wert zurückkam (z. B. 836 km an einem Tag). Jetzt wird sie gleichmäßig auf die Tage seit der letzten Messung verteilt. Sprünge über 1.500 km pro Tag (falscher Wert, Tachotausch) werden nicht mehr gezählt.
+
+### Neu
+- **Kilometerstände nachtragen** (Statistik › Kilometer & Verbrauch, nur Admins): echte Stände eingeben, z. B. „28.10. 13155 / 29.10. 13218 / …“. Zwischen zwei Ständen wird die Strecke auf die Tage verteilt, die bisher gezählten Kilometer des Fahrzeugs in diesem Zeitraum werden ersetzt. Ladungen bleiben unverändert. Funktioniert mit und ohne Kilometer-Sensor.
+
+### Wichtig beim Update
+- Falsche Tage aus der Zeit vor dem Update korrigierst du einmalig mit „Kilometerstände nachtragen“. Danach stimmen auch „Ø pro Tag“, „am meisten“ und die Jahres-Hochrechnung.
+- Liefert ein Sensor statt „nicht verfügbar“ tagelang den alten Wert weiter, kann Modul 8 die Lücke nicht erkennen – dann hilft ebenfalls „Kilometerstände nachtragen“.
+
 ## [2026.11.4] - 2026-11-23
 
 Vierte stabile Version im November: **Ein Bauplan für dein ganzes Haus.** Das neue Modul 0 wird der gemeinsame Grundriss aller Module, Modul 18 zeigt das Licht darin, ab dem 1. Dezember kommt das Weihnachts-Theme mit Adventskalender, Modul 1 bekommt den neuen Elektroheizer, und **Modul 8 Elektroauto & Wallbox** sowie **Modul 11 Rauch- & Sicherheitsmelder** sind stabil (1.0). Die Version enthält alles aus den Testversionen 2026.11.4b1 bis 2026.11.4b59. README und Bedienungsanleitung sind an diese Version angepasst (Kapitel 24 „Neu in Version 2026.11.4“).
