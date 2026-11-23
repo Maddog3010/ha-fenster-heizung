@@ -4,9 +4,15 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 
 ## [2026.11.4b59] - 2026-11-23
 
-**Modul 1 · Fenster & Heizung** v1.9 Build 9 – Elektroheizer 2.0, Build 1: Geräteliste im Hintergrund.
+**Modul 1 · Fenster & Heizung** v1.9 Build 9 – Elektroheizer 2.0, Build 1 und 2: Geräteliste und Einrichtungs-Assistent.
 
 ### Neu
+- **Einrichtungs-Assistent für Elektroheizer** in vier Schritten statt zwölf Feldern:
+  - Gerät: Vorschläge nach Name (Heizer, Radiator, Lüfter, Steckdose …), dazu Suche über alle Schalter und Klima-Geräte. Thermostate der Räume und schon eingerichtete Heizer stehen nicht zur Wahl.
+  - Raum: Räume als Kacheln mit Raumbild und Temperatur; Räume mit Heizer sind gesperrt. Kommt man aus einem Raum, entfällt der Schritt.
+  - Leistung: Vorlagen (Ölradiator, Heizlüfter, Infrarot-Paneel, Konvektor) oder eigene Werte, mit Hinweis für Steckdosen und Klima-Geräte.
+  - Fertig: Name, „Heizen bis“ (Vorschlag aus dem Raum), Thermostate, Stufen regeln; Priorität und Zeitfenster unter „Mehr Einstellungen“; Hinweis zum aktuellen Überschuss.
+- **Einstiege:** Raumkarte „⋯“ › Elektroheizer hinzufügen, Modul 1 · Einstellungen › Elektroheizer (neue Liste „Deine Elektroheizer“ mit „+ Elektroheizer hinzufügen“), Raumeinstellungen („Mit Assistent einrichten“) und Grundriss (Gerät „Mobiler Heizer“ › Jetzt einrichten).
 - **Geräteliste der Elektroheizer:** Jeder Heizer ist jetzt ein eigenes Gerät mit fester ID, Namen und Raum (eigener Speicher, mit automatischen Sicherungskopien). Grundlage für Einrichtungs-Assistent, Reiter „Geräte“, Raum wechseln und Papierkorb in den nächsten Builds.
 - **Automatische Übernahme:** Beim ersten Start wird jeder Raum mit eingeschaltetem Elektroheizer in die Liste übernommen. Räume mit ausgeschaltetem Heizer, aber eingetragenem Gerät landen im Papierkorb (30 Tage). Die Raum-Einstellungen werden dabei nicht verändert.
 - **Websocket-Befehle** `heizer_get`, `heizer_add`, `heizer_update`, `heizer_remove` (Hinzufügen, Ändern und Entfernen nur für Admins).
@@ -17,7 +23,7 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 - Ein neuer Heizer im Raum beginnt mit leerer Statistik.
 
 ### Hinweis
-- Im Dashboard ändert sich mit diesem Build noch nichts; Assistent und Reiter „Geräte“ folgen in Build 2 und 3.
+- Reiter „Geräte“ statt eigenem Reiter, Raum wechseln und Pausieren folgen in Build 3; Entfernen-Dialog, Papierkorb und Leistung messen in Build 4.
 
 ## [2026.11.4b58] - 2026-11-22
 

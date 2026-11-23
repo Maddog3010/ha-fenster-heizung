@@ -84,7 +84,7 @@
   }
   _grDevProps(sel) {
     const D = this._grDevList(), gk = sel.gk === "entf" ? "entf" : "heizer", L = D[gk], inf = L.find((x) => x.e === sel.e), P = this._sfPl(), pos = this._grDevPos(sel, P, D);
-    const none = gk === "heizer" ? "Noch kein Elektroheizer in Modul 1. Er wird beim Raum unter „Elektroheizer“ eingerichtet." : "Noch kein Luftentfeuchter in Modul 1. Er wird in Modul 1 unter „Luftentfeuchter“ eingerichtet.";
+    const none = gk === "heizer" ? `Noch kein Elektroheizer in Modul 1.${this._admin() ? ` <button class="lnk" data-act="ehxnew">${ic("plus", 14)} Jetzt einrichten</button>` : ""}` : "Noch kein Luftentfeuchter in Modul 1. Er wird in Modul 1 unter „Luftentfeuchter“ eingerichtet.";
     return `<div class="sffld"><label>Art</label><div class="grseg"><button class="${gk === "heizer" ? "on" : ""}" data-act="grxgk" data-v="heizer">Mobiler Heizer</button><button class="${gk === "entf" ? "on" : ""}" data-act="grxgk" data-v="entf">Luftentfeuchter</button></div></div>
       <div class="sffld"><label>Gerät aus Modul 1</label>${L.length ? `<div class="gschips">${L.map((x) => `<button class="gsch ${sel.e === x.e ? "sel" : ""}" data-act="grxge" data-v="${esc(x.e)}">${esc(x.name)}${x.room ? `<small class="mut"> · ${esc(x.room)}</small>` : ""}</button>`).join("")}</div>` : `<div class="mut sm">${none}</div>`}</div>
       ${inf ? `<div class="grwall ok">${ic(inf.on ? "bolt" : "info", 14)}<span>${esc(inf.name)} · <b>${esc(inf.txt || (inf.on ? "läuft" : "aus"))}</b>${inf.room ? ` · Modul 1: ${esc(inf.room)}` : ""}</span></div>` : ""}

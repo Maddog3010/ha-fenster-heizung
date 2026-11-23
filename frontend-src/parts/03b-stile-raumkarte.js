@@ -278,4 +278,11 @@ div.rk2pl{cursor:default}
 [data-vis="0"],[data-vis="0"] *{animation-play-state:paused!important}
 /* Karten lückenlos (Mauerwerk) */
 .mublks.msn{grid-auto-rows:2px;row-gap:0}.mublks.msn>*{align-self:start}
+/* Elektroheizer 2.0: Einrichtungs-Assistent */
+.ehbar{display:flex;gap:6px;margin:0 0 14px}.ehbar i{flex:1;height:4px;border-radius:4px;background:var(--line)}.ehbar i.on{background:var(--teal)}
+.ehrooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.ehroom{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:8px 10px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.ehroom span{flex:1;min-width:0}.ehroom b{display:block;font-size:.88rem}.ehroom small{display:block;font-size:.72rem;color:var(--mut)}.ehroom em{font-style:normal;font-weight:700;font-variant-numeric:tabular-nums}
+.ehroom.sel{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}.ehroom:disabled{opacity:.45;cursor:default}
+.ehsum{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}.ehsum span{display:flex;align-items:center;gap:6px;font-size:.8rem;padding:5px 10px;border-radius:99px;border:1px solid var(--line)}
 `;
