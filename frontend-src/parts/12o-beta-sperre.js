@@ -24,13 +24,13 @@
   _blRender() {
     const sr = this.shadowRoot, main = sr.getElementById("main"); if (!main) return;
     const s = this._spnS(), v = this._ver, st = this._blStable(), adm = this._admin(), state = this._blState(), wasMax = s.tier === "max" && !s.active;
-    const hacs = "/hacs/repository?owner=Maddog3010&repository=ha-fenster-heizung", f = this._blFreeAt();
+    const hacs = this._storeRepo(), mk = this._isMkt(), f = this._blFreeAt();
     const left = f ? Math.max(0, f - this._blNow()) : 0, dd = Math.floor(left / 864e5), hh = Math.ceil((left % 864e5) / 36e5);
     const step = (n, t, sub) => `<div class="blstp"><em>${n}</em><span><b>${t}</b><small>${sub}</small></span></div>`;
     const sp = state === "sp";
     const head = sp ? "Diese Testversion ist bald für dich frei" : "Testversionen sind für Sponsoren";
     const txt = sp ? (f ? `Als Sponsor kannst du Testversionen 3 Tage nach Erscheinen nutzen. <b>${esc(v)}</b> ist für dich ab <b>${esc(this._blWhen(f))}</b> frei. Mit Sponsor Max sofort.`
-        : `Als Sponsor kannst du Testversionen 3 Tage nach Erscheinen nutzen. Bei <b>${esc(v)}</b> lässt sich der Erscheinungstag nicht prüfen. Installiere die Testversion bitte neu über HACS oder wechsle zur stabilen Version. Mit Sponsor Max sofort.`)
+        : `Als Sponsor kannst du Testversionen 3 Tage nach Erscheinen nutzen. Bei <b>${esc(v)}</b> lässt sich der Erscheinungstag nicht prüfen. Installiere die Testversion bitte neu über ${mk ? "den Marketplace" : "HACS"} oder wechsle zur stabilen Version. Mit Sponsor Max sofort.`)
       : `${wasMax ? "Dein Sponsor-Max-Schlüssel ist abgelaufen. " : ""}Testversionen aus dem Beta-Kanal kannst du mit <b>Sponsor Max sofort</b> und als <b>Sponsor 3 Tage nach Erscheinen</b> nutzen. Bitte wechsle bis dahin zur ${st ? `letzten stabilen Version <b>${esc(st)}</b>` : "letzten stabilen Version"}.`;
     main.innerHTML = `<div class="blwrap"><div class="blcard">
       <div class="blhead"><span class="blic">${ic("flask", 30)}</span><div><em class="lgchip bl">Testversion ${esc(v)}</em><h2>${head}</h2></div></div>
@@ -38,8 +38,8 @@
       ${adm && !sp && this._ghS().ready && !(s.manage && s.dev_off) ? `<div class="blgh"><span class="blghi">${ic("heart", 22)}</span><span class="blght"><b>Schon Sponsor?</b><small>Mit GitHub anmelden – deine Stufe wird erkannt und die Testversion ist sofort frei, wenn sie für dich gilt.</small></span><button class="btn2 spnb pri" data-act="spngh">${ic("key", 16)} Mit GitHub freischalten</button></div>` : ""}
       ${sp && left ? `<div class="blcount"><div><b>${dd}</b><small>${dd === 1 ? "Tag" : "Tage"}</small></div><div><b>${hh}</b><small>${hh === 1 ? "Stunde" : "Stunden"}</small></div><span>bis zur Freigabe</span></div>` : ""}
       <div class="blok">${ic("check", 16)}<span>Heizung, Fenster-Automatik und alle Regeln laufen im Hintergrund normal weiter. Räume, Pläne und Einstellungen bleiben erhalten.</span></div>
-      ${adm ? `<div class="blsteps">${step(1, "HACS öffnen", "Strom &amp; Wärme")}${step(2, `⋮ → Erneut herunterladen`, st ? `Version ${esc(st)} wählen` : "die oberste Version ohne „b“ wählen")}${step(3, "Home Assistant neu starten", "danach ist alles wieder frei")}</div>
-      <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="_top" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : "In HACS öffnen"}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · ab $3 im Monat</a></div>
+      ${adm ? `<div class="blsteps">${mk ? step(1, "Einstellungen → Marketplace", "Strom &amp; Wärme öffnen") + step(2, "Andere Version wählen", (st ? `Version ${esc(st)}` : "die oberste Version ohne „b“") + " – dafür einmal mit GitHub verbinden") : step(1, "HACS öffnen", "Strom &amp; Wärme") + step(2, `⋮ → Erneut herunterladen`, st ? `Version ${esc(st)} wählen` : "die oberste Version ohne „b“ wählen")}${step(3, "Home Assistant neu starten", "danach ist alles wieder frei")}</div>
+      <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="${this._storeTarget()}" rel="noopener" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : `Im ${this._storeName()} öffnen`}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · ab $3 im Monat</a></div>
       ${s.manage && s.dev_off ? `<div class="bldev">${ic("flask", 18)}<span><b>Entwickler-Zugang ist zum Testen aus.</b> Deshalb siehst du diese Sperre wie ein Nutzer ohne Sponsoring.</span><button class="btn2 pri" data-act="spndev" data-k="on">Entwickler-Zugang wieder einschalten</button><button class="lnk" data-act="spnadm">Sponsoren verwalten</button></div>` : ""}
       <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
       : `<div class="blok wa">${ic("info", 16)}<span>Bitte die Person mit Admin-Rechten in Home Assistant, zur stabilen Version zu wechseln.</span></div>`}
