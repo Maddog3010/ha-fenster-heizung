@@ -8,7 +8,7 @@ Korrektur zu 2026.11.4.1: Elektroheizer lassen sich wieder speichern.
 
 ### Behoben
 - **Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen** brach mit „expected str at 'id'“ ab. Home Assistant belegt das Feld „id“ in jeder Nachricht mit einer eigenen Nummer; die Befehle nutzen dafür jetzt ein eigenes Feld. Neue Heizer anlegen war nicht betroffen.
-- Gleicher Fehler behoben bei **Modul 9 · Vorschläge** („Auto vorheizen“, „Akku“ u. a. übernehmen) und **Modul 0 · Sichern & Einlesen** (älteren Stand wiederherstellen).
+- Gleicher Fehler behoben beim **Übernehmen von Vorschlägen in Modul 9** (Akku, Auto, Heizen) und **Modul 0 · Sichern & Einlesen** (älteren Stand wiederherstellen).
 
 ### Wichtig beim Update
 - Update im Marketplace, danach Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen). Deine Heizer und Einstellungen bleiben erhalten.
