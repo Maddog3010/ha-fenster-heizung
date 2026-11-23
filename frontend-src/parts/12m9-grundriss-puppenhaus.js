@@ -155,7 +155,10 @@
         lit.add(rm.n || "Raum");
       });
     }
-    const cx = (bx.x0 + bx.x1) / 2, cy = (bx.y0 + bx.y1) / 2, R = Math.max(bx.x1 - bx.x0, bx.y1 - bx.y0) / 2 + 26, px = cx + sx * R, py = cy + sy * R, up = S.el > 0;
+    /* 2026.11.4.2: Sonne immer außerhalb des Hauses – Abstand bis zum Rand des Plans in Sonnenrichtung (vorher halbe Breite + 26:
+       bei schräger Richtung wie Südwest lag sie in der Hausecke, z. B. im Sportzimmer) */
+    const cx = (bx.x0 + bx.x1) / 2, cy = (bx.y0 + bx.y1) / 2, hx = (bx.x1 - bx.x0) / 2, hy = (bx.y1 - bx.y0) / 2;
+    const R = Math.min(Math.abs(sx) > 1e-6 ? hx / Math.abs(sx) : Infinity, Math.abs(sy) > 1e-6 ? hy / Math.abs(sy) : Infinity) + (this._grDimsOn && this._grDimsOn() ? 62 : 32), px = cx + sx * R, py = cy + sy * R, up = S.el > 0;
     const sun = `<g pointer-events="none"><circle cx="${px}" cy="${py}" r="11" fill="${up ? "#fbbf24" : "#475569"}" opacity="${up ? 1 : 0.6}"/>${up ? Array.from({ length: 8 }, (_, j) => { const a = (j * Math.PI) / 4; return `<path d="M${px + 14 * Math.cos(a)} ${py + 14 * Math.sin(a)}L${px + 19 * Math.cos(a)} ${py + 19 * Math.sin(a)}" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>`; }).join("") : ""}</g>`;
     return { svg: `<defs><linearGradient id="${u}sung" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fde68a" stop-opacity=".55"/><stop offset="1" stop-color="#fbbf24" stop-opacity=".22"/></linearGradient>${clips}</defs><g pointer-events="none" style="mix-blend-mode:screen">${d}</g>${sun}`, rooms: [...lit], S };
   }
