@@ -68,7 +68,7 @@
       ${st ? `<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center"><span class="evkmst ${st[0]}">${st[0] === "ok" ? "✓" : "!"} ${st[1]}</span><span class="mut sm">${left > 0 ? `noch ${num(left, 0)} km bis zur Grenze · ca. ${num(left / wk, 0)} km/Woche übrig` : `Grenze um ${num(-left, 0)} km überschritten`}</span></div>` : ""}
       <div class="mut sm" style="margin-top:8px">${kmP > 0 ? `Vorjahr: ${num(kmP, 0)} km. ` : ""}${late ? `Gezählt seit ${fd(new Date(first.d + "T12:00:00"))}, die Hochrechnung nutzt diesen Zeitraum. ` : ""}${lim ? "" : "Eine Grenze (z. B. Leasing) stellst du beim Fahrzeug unter „Aussehen &amp; Sensoren“ ein."}</div></div>`;
   }
-  /* 2026.11.5: Kilometerstände nachtragen oder korrigieren – z. B. wenn der Sensor tagelang keinen Wert lieferte und die ganze Strecke
+  /* 2026.11.4.1: Kilometerstände nachtragen oder korrigieren – z. B. wenn der Sensor tagelang keinen Wert lieferte und die ganze Strecke
      auf einem Tag gelandet ist. Zwischen zwei Ständen wird gleichmäßig auf die Tage verteilt, die bisherigen km im Zeitraum werden ersetzt. */
   _evKmHistBox(cv, v0) {
     const H = this._kmHist || {}, vid = H.vid && cv.some((x) => x.id === H.vid) ? H.vid : (v0 || cv[0]).id;

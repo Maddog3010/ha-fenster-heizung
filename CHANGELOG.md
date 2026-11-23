@@ -2,35 +2,26 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [2026.11.5b2] - 2026-11-23
+## [2026.11.4.1] - 2026-11-23
 
-**Modul 0 · Haus & Grundriss** v0.11 Build 12–15 – neue Handy-Ansicht (Vorschlag D): alle Details bleiben im Plan, aber geordnet.
-
-### Neu
-- **Status-Leiste je Raum** (Handy): Temperatur links, rechts die Geräte mit Zustand („läuft“, „aus“, Watt), Melder und Lampen – immer an derselben Stelle oben im Raum. Schmale Räume bekommen eine zweite Zeile, Raumname und Fläche stehen frei darunter.
-- **Neue Werkzeugleiste** (Handy): Etage, „Ansicht“ (Modern, Bauplan, Hell, Maße), Bearbeiten und „⋯“ (Räume, Ebenen, Sichern & Einlesen, Einstellungen, Plan-Check) in einer Zeile; die Ebenen als Wischleiste. Der Plan beginnt deutlich weiter oben.
-- **Sonderfälle:** Reicht der Platz nicht, werden Symbole zu farbigen Punkten; bei vielen Symbolen endet die Leiste mit „+2“; in sehr kleinen Räumen (z. B. WC) zeigt ein Farbpunkt die Temperatur. Raum antippen öffnet wie bisher das Raum-Blatt mit allen Werten.
+Korrektur zu 2026.11.4: **Modul 0** wird am Handy übersichtlich (neue Handy-Ansicht, Modul 0 v0.11) und **Modul 8** zählt die Kilometer je Tag ohne Sprünge (v1.0.1).
 
 ### Behoben
-- **Raumnamen ragten in den Nachbarraum** oder lagen unter Temperatur, Melder und Geräten (z. B. „Sportzimmer“, „Schlafzimmer“ am Handy). Fand die Beschriftung keinen freien Platz, wurde sie in die Raummitte gelegt – auch über die Wand hinaus. Jetzt bleibt sie immer im Raum, wird bei Bedarf kleiner und an der Wortfuge getrennt („Sport-/zimmer“, „Ankleide-/zimmer“). Gilt auch für Tablet, PC, Wärmekarte, Lichtkarte und Modul 11.
-
-### Wichtig beim Update
-- Tablet und PC zeigen den Plan wie bisher; die Status-Leiste und die neue Werkzeugleiste gibt es nur auf schmalen Bildschirmen (unter 600 Pixel).
-- Enthält auch 2026.11.5b1 (Modul 8: Kilometer-Sprünge, Kilometerstände nachtragen).
-
-## [2026.11.5b1] - 2026-11-23
-
-**Modul 8 · Elektroauto & Wallbox** 1.0.1 – Kilometer je Tag ohne Sprünge.
-
-### Behoben
-- **Ein Tag mit viel zu vielen Kilometern:** Lieferte der Kilometerstand-Sensor ein paar Tage keinen Wert (Auto schläft, Hersteller-Cloud offline), wurde die ganze Strecke auf den Tag gebucht, an dem der Wert zurückkam (z. B. 836 km an einem Tag). Jetzt wird sie gleichmäßig auf die Tage seit der letzten Messung verteilt. Sprünge über 1.500 km pro Tag (falscher Wert, Tachotausch) werden nicht mehr gezählt.
+- **Modul 0 · Raumnamen ragten in den Nachbarraum** oder lagen unter Temperatur, Meldern und Geräten (z. B. „Sportzimmer“, „Schlafzimmer“ am Handy). Fand die Beschriftung keinen freien Platz, wurde sie in die Raummitte gelegt – auch über die Wand hinaus. Jetzt bleibt sie immer im Raum, wird bei Bedarf kleiner und an der Wortfuge getrennt („Sport-/zimmer“, „Ankleide-/zimmer“). Gilt auch für Tablet, PC, Wärmekarte, Lichtkarte und Modul 11.
+- **Modul 8 · Ein Tag mit viel zu vielen Kilometern:** Lieferte der Kilometerstand-Sensor ein paar Tage keinen Wert (Auto schläft, Hersteller-Cloud offline), wurde die ganze Strecke auf den Tag gebucht, an dem der Wert zurückkam (z. B. 836 km an einem Tag). Jetzt wird sie gleichmäßig auf die Tage seit der letzten Messung verteilt. Sprünge über 1.500 km pro Tag (falscher Wert, Tachotausch) werden nicht mehr gezählt.
+- **Update-Hinweis:** Korrektur-Versionen mit vierter Stelle (z. B. 2026.11.4.1) werden jetzt als neuer erkannt als die Version davor.
 
 ### Neu
-- **Kilometerstände nachtragen** (Statistik › Kilometer & Verbrauch, nur Admins): echte Stände eingeben, z. B. „28.10. 13155 / 29.10. 13218 / …“. Zwischen zwei Ständen wird die Strecke auf die Tage verteilt, die bisher gezählten Kilometer des Fahrzeugs in diesem Zeitraum werden ersetzt. Ladungen bleiben unverändert. Funktioniert mit und ohne Kilometer-Sensor.
+- **Modul 0 · Status-Leiste je Raum** (Handy): Temperatur links, rechts die Geräte mit Zustand („läuft“, „aus“, Watt), Melder und Lampen – immer an derselben Stelle oben im Raum. Schmale Räume bekommen eine zweite Zeile, Raumname und Fläche stehen frei darunter.
+- **Modul 0 · Neue Werkzeugleiste** (Handy): Etage, „Ansicht“ (Modern, Bauplan, Hell, Maße), Bearbeiten und „⋯“ (Räume, Ebenen, Sichern & Einlesen, Einstellungen, Plan-Check) in einer Zeile; die Ebenen als Wischleiste. Der Plan beginnt deutlich weiter oben.
+- **Modul 0 · Sonderfälle:** Reicht der Platz nicht, werden Symbole zu farbigen Punkten; bei vielen Symbolen endet die Leiste mit „+2“; in sehr kleinen Räumen zeigt ein Farbpunkt die Temperatur. Raum antippen öffnet wie bisher das Raum-Blatt mit allen Werten.
+- **Modul 8 · Kilometerstände nachtragen** (Statistik › Kilometer & Verbrauch, nur Admins): echte Stände eingeben, z. B. „28.10. 13155 / 29.10. 13218 / …“. Zwischen zwei Ständen wird die Strecke auf die Tage verteilt, die bisher gezählten Kilometer des Fahrzeugs in diesem Zeitraum werden ersetzt. Ladungen bleiben unverändert. Funktioniert mit und ohne Kilometer-Sensor.
 
 ### Wichtig beim Update
-- Falsche Tage aus der Zeit vor dem Update korrigierst du einmalig mit „Kilometerstände nachtragen“. Danach stimmen auch „Ø pro Tag“, „am meisten“ und die Jahres-Hochrechnung.
-- Liefert ein Sensor statt „nicht verfügbar“ tagelang den alten Wert weiter, kann Modul 8 die Lücke nicht erkennen – dann hilft ebenfalls „Kilometerstände nachtragen“.
+- Update im Marketplace (Einstellungen → Marketplace oder Einstellungen → Updates), danach Home Assistant neu starten und die Seite neu laden, in der App die App ganz schließen und neu öffnen. Deine Einstellungen bleiben erhalten.
+- Wer 2026.11.4 nutzt, sieht den Hinweis auf diese Version nur im Marketplace, nicht in Strom & Wärme selbst (dort war die vierte Stelle noch nicht bekannt). Ab 2026.11.4.1 klappt auch der eigene Hinweis.
+- Modul 0: Tablet und PC zeigen den Plan wie bisher; Status-Leiste und neue Werkzeugleiste gibt es nur auf schmalen Bildschirmen (unter 600 Pixel).
+- Modul 8: Falsche Tage aus der Zeit vor dem Update korrigierst du einmalig mit „Kilometerstände nachtragen“. Danach stimmen auch „Ø pro Tag“, „am meisten“ und die Jahres-Hochrechnung. Liefert ein Sensor statt „nicht verfügbar“ tagelang den alten Wert weiter, kann Modul 8 die Lücke nicht erkennen – dann hilft ebenfalls „Kilometerstände nachtragen“.
 
 ## [2026.11.4] - 2026-11-23
 

@@ -160,7 +160,7 @@ def _vkey(tag: str) -> tuple[float, ...]:
 
     - altes Schema: 3.0.7.6
     - Datumsschema (nur Testversionen bis Oktober 2026): Jahr.MonatTag.Zähler, z. B. 2026.1030.0b5
-    - aktuelles Schema: Jahr.Monat.Release, z. B. 2026.11.1; Testversionen tragen die Nummer des
+    - aktuelles Schema: Jahr.Monat.Release, z. B. 2026.11.1, Korrektur mit vierter Stelle (2026.11.4.1); Testversionen tragen die Nummer des
       kommenden Updates: 2026.11.2b1 < 2026.11.2b2 < 2026.11.2
 
     Schlüssel: (Hauptnummer, Monat, Release, Tag, Zähler, Testversion). Testversionen liegen vor der
@@ -174,8 +174,8 @@ def _vkey(tag: str) -> tuple[float, ...]:
     b = int(m.group(2)) if m.group(2) is not None else float("inf")
     if p[0] >= 2000 and p[1] > 12:  # Datumsschema Jahr.MonatTag.Zähler
         return (p[0], p[1] // 100, 0, p[1] % 100, p[2], b)
-    if p[0] >= 2000:  # Jahr.Monat.Release
-        return (p[0], p[1], p[2], 0, 0, b)
+    if p[0] >= 2000:  # Jahr.Monat.Release[.Korrektur] – 2026.11.4 < 2026.11.4.1 < 2026.11.5b1
+        return (p[0], p[1], p[2], p[3], 0, b)
     return (*p, 0, b)
 
 

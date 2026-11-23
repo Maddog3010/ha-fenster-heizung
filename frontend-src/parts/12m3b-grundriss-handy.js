@@ -1,4 +1,4 @@
-  /* ================= Modul 0 · Handy-Ansicht (2026.11.5, Vorschlag D) =================
+  /* ================= Modul 0 · Handy-Ansicht (2026.11.4.1, Vorschlag D) =================
      Build 2: Status-Leiste je Raum. Auf dem Handy stehen Temperatur, Geräte (mit Zustand), Melder und Lampen nicht mehr frei
      verstreut im Raum, sondern in einer Leiste oben im Raum: links die Temperatur, rechts die Symbole. Schmale Räume bekommen
      eine zweite Zeile. Raumname und Fläche suchen sich darunter einen freien Platz (siehe _grLabels).

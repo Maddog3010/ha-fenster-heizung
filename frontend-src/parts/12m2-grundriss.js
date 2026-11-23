@@ -128,7 +128,7 @@
       <div class="card"><b>${ic("pencil", 15)} Bearbeiten</b><small>Im Baukasten hier in Modul 0 – auch „Bearbeiten“ in Modul 1, 11 und 18 führt hierher und danach zurück. Alle Module sehen die Änderung sofort.</small></div></div>`;
     return css + hero + tabs + card + info;
   }
-  /* Build 3 (2026.11.5): Werkzeugleiste auf dem Handy – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile.
+  /* Build 3 (2026.11.4.1): Werkzeugleiste auf dem Handy – Etage, Ansicht, Bearbeiten und „⋯“ in einer Zeile.
      „Ansicht“ klappt Stil und Maße auf, „⋯“ die Reiter (Räume, Ebenen, Sichern, Einstellungen) und den Plan-Check. */
   _grNav(tab, rq, adm, P, fls) {
     const M = this._grMenu || "", fl = fls.some((f) => f.id === this._grFl) ? this._grFl : fls[0].id, sty = this._grStyle(), dims = this._grDimsOn();

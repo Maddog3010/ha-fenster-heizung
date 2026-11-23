@@ -599,7 +599,7 @@ def test_session_sun_share_edit_adjusts_day_and_cost():
     assert abs(r["cost"] - 13.77 / 35.77 * 36.5) < 0.01 and "Sonnenanteil: 2 % → 0 %" in r["chg"][-1]["x"][0]
 
 
-# ---- 2026.11.5: Sensor-Lücken und Kilometerstände nachtragen
+# ---- 2026.11.4.1: Sensor-Lücken und Kilometerstände nachtragen
 def test_add_km_spreads_sensor_gap_over_days():
     st = P.empty_stats()
     t0 = datetime(2026, 10, 29, 18, 0)
@@ -664,3 +664,15 @@ def test_odo_history_keeps_other_vehicle():
     r = P.odo_history(st, "BYD", [(date(2026, 11, 1), 1000.0), (date(2026, 11, 2), 1050.0)], date(2026, 11, 5))
     d = st["days"]["2026-11-02"]
     assert r["old"] == 500 and d["km"] == 80 and d["veh"]["Golf"]["km"] == 30 and d["veh"]["BYD"]["km"] == 50
+
+
+def test_version_order_with_hotfix():
+    """2026.11.4.1: Die vierte Stelle (Korrektur) zählt beim Update-Hinweis."""
+    import re as _re
+    src = (pathlib.Path(__file__).resolve().parents[1] / "custom_components" / "fenster_heizung" / "general.py").read_text(encoding="utf-8")
+    ns: dict = {"re": _re}
+    code = src[src.index("_TAG_RE = "):src.index("def _is_beta")]
+    exec("from __future__ import annotations\n" + code, ns)
+    k = ns["_vkey"]
+    vs = ["2026.11.5b1", "2026.11.4.1", "2026.11.4", "2026.11.4b59", "2026.11.4.1b1", "2026.11.3.1", "2026.1030.0b5"]
+    assert sorted(vs, key=k) == ["2026.1030.0b5", "2026.11.3.1", "2026.11.4b59", "2026.11.4", "2026.11.4.1b1", "2026.11.4.1", "2026.11.5b1"]

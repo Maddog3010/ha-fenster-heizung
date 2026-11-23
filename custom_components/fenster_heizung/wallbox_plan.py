@@ -317,7 +317,7 @@ def _book_km(st: dict[str, Any], k: str, km: float, veh: str) -> None:
 
 def add_km(st: dict[str, Any], now: datetime, odo: float | None, vid: str = "", veh: str = "") -> None:
     """Gefahrene Kilometer aus dem Kilometerstand-Sensor fortschreiben – je Fahrzeug (v0.8), damit ein Wechsel keinen Sprung ergibt.
-    2026.11.5: Lieferte der Sensor tagelang keinen Wert (Auto schläft, Cloud offline), wird die Strecke auf die Tage seit der
+    2026.11.4.1: Lieferte der Sensor tagelang keinen Wert (Auto schläft, Cloud offline), wird die Strecke auf die Tage seit der
     letzten Messung verteilt – vorher landete alles auf dem Tag, an dem der Wert zurückkam (z. B. 836 km an einem Tag)."""
     if odo is None or odo < 0:
         return

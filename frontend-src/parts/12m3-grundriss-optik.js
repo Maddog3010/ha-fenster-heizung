@@ -30,7 +30,7 @@
   }
   /* Raumnamen (Build 10 neu): Schrift passt sich der Raumbreite an (kleiner, sonst zweizeilig oder gekürzt), die Plakette liegt ganz im Raum
      und meidet Melder, Lampen, Türen, Treppen, Geräte, Technik und die Temperatur-Marke. Ohne Platz: zuerst ohne Symbol, dann ohne Fläche. */
-  /* 2026.11.5 Build 1 (Handy-Ansicht): Die Plakette bleibt immer im Raum. Findet sie keinen freien Platz, wird sie nicht mehr
+  /* 2026.11.4.1 Build 1 (Handy-Ansicht): Die Plakette bleibt immer im Raum. Findet sie keinen freien Platz, wird sie nicht mehr
      in die Mitte „geworfen“, sondern im Raum verkleinert und gekürzt – Symbole dürfen dann überdeckt werden, die Wand nie.
      Jede Zeile wird so gekürzt, dass sie in die Raumbreite passt. Mit o.upx (Handy, Status-Leiste) rechnet die Schrift in Bildschirm-Pixeln. */
   _grLabels(rs, items, o, T, kinds, NF, sc, f1, q) {
@@ -47,7 +47,7 @@
       const fitL = (ls, f) => ls.map((x) => { if (tw(x, f) <= maxW - 15) return x; const n = Math.max(2, Math.floor((maxW - 16) / (f * 0.6)) - 1); return [...x].slice(0, n).join("") + "…"; });
       let fz = Math.min(base, (maxW - 16) / Math.max(1, [...nm].length * 0.6)), lines = [nm];
       if (fz < minF) {   /* zweizeilig an Leerzeichen, Bindestrich oder „s“-Fuge, sonst kürzen */
-        /* 2026.11.5: Wortfugen statt Wortmitte – „Sport-/zimmer“, „Ankleide-/zimmer“ (vorher „Sportz/immer“) */
+        /* 2026.11.4.1: Wortfugen statt Wortmitte – „Sport-/zimmer“, „Ankleide-/zimmer“ (vorher „Sportz/immer“) */
         const sp = nm.search(/[ \-\u2010]/), fu = sp > 0 ? -1 : (nm.match(/^(.{2,}?)(zimmer|raum|räume|kammer|keller|küche|bad|büro|flur|diele|garage|boden|stube|ecke|platz|terrasse|balkon|garten|werkstatt|schlafen|wohnen|essen)$/i) || [])[1];
         const cut = sp > 0 ? sp : fu ? fu.length : Math.ceil(nm.length / 2), a1 = sp > 0 ? nm.slice(0, cut + (nm[cut] === "-" ? 1 : 0)).trim() : nm.slice(0, cut) + "-", a2 = nm.slice(cut + (sp > 0 && nm[cut] === "-" ? 1 : 0)).trim();
         lines = a2 ? [a1, a2] : [nm]; fz = Math.min(base, (maxW - 16) / Math.max(1, Math.max(...lines.map((x) => [...x].length)) * 0.6));
@@ -138,7 +138,7 @@
     });
     /* 5) Raumnamen und „Jetzt“ – vor den Lampen und Meldern, damit diese immer sichtbar oben liegen (Build 10) */
     const q = o.narrow ? 1.4 : 1;
-    /* 2026.11.5: Handy – Status-Leiste je Raum (Temperatur, Geräte, Melder, Lampen); die Symbole erscheinen dann nur dort */
+    /* 2026.11.4.1: Handy – Status-Leiste je Raum (Temperatur, Geräte, Melder, Lampen); die Symbole erscheinen dann nur dort */
     const SP = o.strip && this._grStrip ? this._grStrip(P, fl, rs, items, o, T, vb) : null;
     if (SP) o = { ...o, upx: SP.upx, skip: SP.skip, obs: (o.obs || []).concat(SP.boxes) };
     this._grChipAt = {}; const nowSvg = o.now ? this._grNow(P, fl, rs, SP ? { ...o, noChip: true } : o, T) : "";   /* merkt sich, wo Temperatur-Marken sitzen */
