@@ -215,6 +215,81 @@ def _manager_case():
     assert REG.removed == ["switch.buero_elektroheizer_aktiv"]
 
 
+class _Heater:
+    def __init__(self):
+        self.manual_on, self.released, self.stats = True, 0, {"kwh": 1.5, "history": {"2026-11-22": [2.0, 1.8]}}
+
+    async def release(self):
+        self.released += 1
+
+    def stats_data(self):
+        return dict(self.stats)
+
+    def reset_stats(self):
+        self.stats = {}
+
+    def load_stats(self, raw):
+        self.stats = {k: v for k, v in raw.items() if k != "manual_on"}
+        self.manual_on = raw.get("manual_on") is not False
+
+    async def async_set_manual(self, on):
+        self.manual_on = on
+
+
+class _Ctrl:
+    def __init__(self):
+        self.heater = _Heater()
+
+    async def _save(self):
+        pass
+
+    def _signal(self):
+        pass
+
+
+def test_manager_move_carries_stats_and_pause():
+    REG.ents, REG.removed = {"r1_heater_enabled": "switch.buero_aktiv"}, []
+    er = types.ModuleType("homeassistant.helpers.entity_registry")
+    er.async_get = lambda hass: REG
+    old = {n: sys.modules.get(n) for n in ("homeassistant.helpers.entity_registry", "homeassistant.config_entries", "fhpkg.api", "fhpkg.options")}
+    sys.modules["homeassistant.helpers.entity_registry"] = er
+    sys.modules.setdefault("homeassistant.helpers", types.ModuleType("homeassistant.helpers")).entity_registry = er
+    sys.modules["homeassistant.config_entries"] = types.SimpleNamespace(ConfigEntryState=types.SimpleNamespace(LOADED="loaded"))
+    sys.modules["fhpkg.api"] = types.SimpleNamespace(_current_options=lambda e: dict(e.options))
+    sys.modules["fhpkg.options"] = types.SimpleNamespace(clean_options=lambda raw: dict(raw))
+    try:
+        e1, e2 = _Entry("r1", "Büro", _on()), _Entry("r2", "Schlafzimmer", {"thermostats": ["climate.schlaf"]})
+        e1.runtime_data, e2.runtime_data = _Ctrl(), _Ctrl()
+        hass = _Hass([e1, e2])
+        hass.config_entries.async_update_entry = lambda e, options: setattr(e, "options", options)
+        m = H.HeizerManager(hass)
+        run(m.async_start())
+        hid = m.st["heaters"][0]["id"]
+        run(m.async_update(hid, {"paused": True}))
+        assert e1.runtime_data.heater.manual_on is False
+        run(m.async_update(hid, {"room": "r2", "target": 19.0}))
+        assert e1.runtime_data.heater.released == 1 and e1.runtime_data.heater.stats == {}
+        assert e1.options["htr_on"] == "off" and e1.options["htr_entity"] is None
+        assert e2.options["htr_on"] == "on" and e2.options["htr_target"] == 19.0
+        assert REG.removed == ["switch.buero_aktiv"]
+        run(m.async_sync_room(e1))
+        run(m.async_sync_room(e2))  # nach dem Neuladen des neuen Raums
+        h2 = e2.runtime_data.heater
+        assert h2.stats["kwh"] == 1.5 and h2.manual_on is False and "move" not in m.st["heaters"][0]
+        assert m.st["heaters"][0]["room"] == "r2" and m.st["trash"] == []
+        try:
+            run(m.async_move(hid, "r2"))
+            raise AssertionError("gleicher Raum")
+        except ValueError:
+            pass
+    finally:
+        for n, mod in old.items():
+            if mod is None:
+                sys.modules.pop(n, None)
+            else:
+                sys.modules[n] = mod
+
+
 if __name__ == "__main__":
     for name, fn in list(globals().items()):
         if name.startswith("test_"):

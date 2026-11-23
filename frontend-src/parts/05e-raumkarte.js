@@ -416,10 +416,7 @@
   }
   _rkDevSheet(m) {
     const r = this._collect().find((x) => x.id === m.id) || this._msList().find((x) => x.id === m.id); if (!r) return "";
-    if (m.type === "rkhtr") return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
-      <div class="sh"><div><b>Elektroheizer</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-      <div class="rk2sht">${this._gx("heater", 64, { stage: r.htr && r.htr.status === "pv" ? Math.min(3, r.htr.stufe || 2) : 0, on: r.htr && r.htr.status === "pv" })}</div>${this._htrBox(r)}
-      <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
+    if (m.type === "rkhtr") return this._ehDevSheet(r);  /* Elektroheizer 2.0: Geräte-Blatt mit Bearbeiten, Pausieren, Raum wechseln */
     const d = this._lfDev(m.d); if (!d) return "";
     const L = d.S.live || {};
     return `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
@@ -485,7 +482,7 @@
   _rkAct(a, b) {
     const L = this._cfg.layout;
     if (a === "rkmenu") { this._modal = { type: "rkmenu", id: b.dataset.id }; this._renderModal(); return true; }
-    if (a === "rkhtr") { this._modal = { type: "rkhtr", id: b.dataset.id }; this._renderModal(); return true; }
+    if (a === "rkhtr") { this._modal = { type: "rkhtr", id: b.dataset.id, back: this._modal && this._modal.type === "ehlist" ? this._modal : null }; this._renderModal(); this._ehLoad(); return true; }
     if (a === "rktype") { const t = { ...(L.rtype || {}) }; if (b.dataset.k) t[this._modal.id] = b.dataset.k; else delete t[this._modal.id]; L.rtype = t; }
     else if (a === "rkold") L.rk = { ...(L.rk || {}), old: !this._rkCfg().old };
     else if (a === "rkanim") L.rk = { ...(L.rk || {}), anim: b.dataset.k };

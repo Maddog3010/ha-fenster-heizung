@@ -21,7 +21,7 @@ Das Ergebnis ist byte-gleich zur bisherigen Einzeldatei (Zwischenschritt, ohne T
 | 04-kern | Grundgerüst der Komponente, Hilfsfunktionen |
 | 05-modul1-fenster-heizung | Modul 1: Räume, Kopfkarte, Heizung, PV-Heizer |
 | 05b-messraum, 05c-entfeuchter | Modul 1: Messraum, Luftentfeuchter |
-| 05n-elektroheizer | Modul 1: Elektroheizer 2.0 – Einrichtungs-Assistent (Gerät, Raum, Leistung, Fertig), Heizer-Liste im Reiter „Elektroheizer“ |
+| 05n-elektroheizer | Modul 1: Elektroheizer 2.0 – Einrichtungs-Assistent (Gerät, Raum, Leistung, Fertig), Liste unter Geräte › Elektroheizer mit PV-Regeln, Geräte-Blatt (Bearbeiten, Pausieren, Raum wechseln) |
 | 05e-raumkarte | Modul 1: Raumkarte 2.0 – Raumbilder (7 Typen + Messraum), Temperatur-Ring, Heizplan-Band, Fenster-Uhr, Menü „⋯“ |
 | 05d-grafik | Gemeinsame Grafik-Bibliothek: HD-Symbolsatz (41 Symbole, inkl. Haus-Bilder für Modul 19), Herkunfts-Ring, Prozentzeile, „noch ~ Min.“, Zuordnung alter Symbole |
 | 05f-haus-szene, 05g-grundriss, 05h-zeitleiste | Modul 1: Haus-Szene, Grundriss & Bewegung, „Warum?“ als Zeitleiste |

@@ -13,6 +13,9 @@ Aufbau (Build 1):
 - Übernahme: Beim ersten Start wird jeder Raum mit eingeschaltetem Heizer zu einem Eintrag der Liste. Räume mit
   ausgeschaltetem Heizer, aber eingetragenem Gerät, landen im Papierkorb (``trash``). Die Raum-Einstellungen selbst
   werden dabei nicht verändert – die Übernahme ist ohne Datenverlust umkehrbar.
+- Raum wechseln (Build 3): Gerät im alten Raum aus, Thermostate dort zurück, Felder des alten Raums zurückgesetzt,
+  Felder im neuen Raum gesetzt. Statistik und Schalterstellung reisen im Eintrag mit (``move``) und werden beim Laden
+  des neuen Raums übernommen. Pausieren schaltet den Schalter „Elektroheizer aktiv“ des Raums aus.
 - Entfernen: Gerät aus, Thermostate zurück, Felder des Raums zurückgesetzt, Schalter „Elektroheizer aktiv“ aus der
   Entitäten-Registrierung gelöscht. Auf Wunsch wandert die Statistik mit in den Papierkorb (30 Tage).
 
@@ -133,6 +136,8 @@ def clean_state(raw: Any) -> dict[str, Any]:
                 "cfg": cfg_of(cfg),
                 "created": float(h.get("created") or 0),
             }
+            if lst == "heaters" and isinstance(h.get("move"), dict):
+                item["move"] = h["move"]  # Statistik unterwegs in den neuen Raum (Raum wechseln)
             if lst == "trash":
                 item["removed"] = float(h.get("removed") or 0)
                 item["reason"] = str(h.get("reason") or "removed")[:20]
@@ -334,6 +339,12 @@ class HeizerManager:
         res = sync_room(self.st, entry.entry_id, self._opts(entry), now, name_of=self._ent_name, room_name=entry.title)
         if res == "trashed":
             self._drop_switch(entry.entry_id)
+        h = by_room(self.st, entry.entry_id)
+        ctrl = getattr(entry, "runtime_data", None)
+        if h is not None and "move" in h and ctrl is not None and is_on(self._opts(entry)):
+            ctrl.heater.load_stats(h.pop("move"))  # Statistik aus dem alten Raum
+            await ctrl._save()
+            res = res or "moved"
         if res is not None:
             self._save()
 
@@ -402,7 +413,7 @@ class HeizerManager:
         if h is None:
             raise ValueError("Elektroheizer nicht gefunden")
         if "room" in inp and inp["room"] != h["room"]:
-            raise ValueError("Raum wechseln kommt mit Build 3")
+            return await self.async_move(hid, str(inp["room"]), inp.get("target"))
         entry = self._entry(h["room"])
         if entry is None:
             raise ValueError("Raum nicht gefunden")
@@ -413,6 +424,11 @@ class HeizerManager:
                 raise ValueError(err)
         if "name" in inp:
             h["name"] = clean_name(inp["name"], h["name"])
+        if "paused" in inp:
+            ctrl = self._ctrl(h["room"])
+            if ctrl is None:
+                raise ValueError("Raum ist gerade nicht geladen")
+            await ctrl.heater.async_set_manual(not bool(inp["paused"]))
         if fields:
             new = {**h["cfg"], **fields, "htr_on": "on"}
             self._check(entry, new)
@@ -422,6 +438,48 @@ class HeizerManager:
                 self._write_room(entry, new)
         else:
             self._save()
+        return public(h)
+
+    async def async_move(self, hid: str, room: str, target: float | None = None) -> dict[str, Any]:
+        """Heizer in einen anderen Raum stellen; Statistik und Schalterstellung ziehen mit."""
+        h = by_id(self.st, hid)
+        if h is None:
+            raise ValueError("Elektroheizer nicht gefunden")
+        if room == h["room"]:
+            raise ValueError("Der Heizer steht schon in diesem Raum")
+        new, old = self._entry(room), self._entry(h["room"])
+        if new is None:
+            raise ValueError("Raum nicht gefunden")
+        if by_room(self.st, room) is not None or is_on(self._opts(new)):
+            raise ValueError(f"In „{new.title}“ ist schon ein Elektroheizer eingerichtet")
+        entity = h["cfg"].get("htr_entity") or ""
+        err = check_entity(self.st, entity, room, self._thermostats(), skip_id=hid)
+        if err:
+            raise ValueError(err)
+        fields = {**h["cfg"], "htr_on": "on"}
+        if target is not None:
+            fields["htr_target"] = target
+        self._check(new, fields)
+        ctrl = self._ctrl(h["room"])
+        move: dict[str, Any] = {}
+        if ctrl is not None:
+            await ctrl.heater.release()  # im alten Raum: Gerät aus, Thermostate zurück
+            move = {**ctrl.heater.stats_data(), "manual_on": ctrl.heater.manual_on}
+            ctrl.heater.reset_stats()
+            await ctrl._save()
+        nctrl = self._ctrl(room)
+        if nctrl is not None:  # Reste eines früheren Heizers im neuen Raum
+            nctrl.heater.reset_stats()
+            await nctrl._save()
+        h["room"], h["cfg"] = room, cfg_of(fields)
+        if move:
+            h["move"] = move
+        self._save()
+        if old is not None:
+            self._drop_switch(old.entry_id)
+        if old is not None and self._opts(old).get("htr_entity"):
+            self._write_room(old, dict(EMPTY))
+        self._write_room(new, fields)
         return public(h)
 
     async def async_remove(self, hid: str, keep_stats: bool = True) -> dict[str, Any]:

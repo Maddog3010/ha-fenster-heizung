@@ -107,7 +107,7 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass = h;
     if (first) this._load();
     this._render();
-    if (this._modal && ["why", "rkhtr"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
+    if (this._modal && ["why", "rkhtr", "ehlist"].includes(this._modal.type)) this._renderModal();  // Gründe bleiben aktuell
   }
   set narrow(v) { this._narrow = v; this._render(); }
   set panel(_) {}
