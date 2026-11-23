@@ -95,6 +95,13 @@ def _stub_ha2():
     mod("homeassistant.const", __version__="2026.11.2")
     mod("homeassistant.core", HomeAssistant=object, callback=lambda f: f)
     mod("homeassistant.helpers.storage", Store=object)
+    mod("homeassistant.helpers.aiohttp_client", async_get_clientsession=None)
+    mod("homeassistant.helpers.event", async_call_later=None, async_track_time_interval=None)
+    if "aiohttp" not in sys.modules:
+        try:
+            import aiohttp  # noqa: F401
+        except ImportError:
+            mod("aiohttp", ClientError=Exception, ClientTimeout=lambda **k: None)
     mod("homeassistant.util.dt", now=lambda: types.SimpleNamespace(date=lambda: D))
     pkg = mod("fhfpkg"); pkg.__path__ = [str(BASE)]
     mod("fhfpkg.const", DOMAIN="fenster_heizung")
@@ -140,3 +147,62 @@ def test_module_from_frontend_function():
     assert L.module_of("_grStrip · Neuaufbau") == "Modul 0"
     assert L.module_of("_evKmCards · Neuaufbau") == "Modul 8"
     assert L.module_of("Neuaufbau") == "Allgemein"
+
+
+def test_report_only_new_not_skipped_and_mark_sent():
+    st = L.empty()
+    assert L.build_report(st, "2026.11.5b2") is None                     # aus: kein Bericht
+    st["cfg"].update(on=True, id="7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41", asked=True)
+    a = L.add(st, src="befehl", kind="invalid_format", where="heizer_update", cmd="fenster_heizung/heizer_update", msg="expected str at 'id'. Got 154", today=D, version="2026.11.4.1")
+    b = L.add(st, src="backend", kind="TypeError", where="wallbox.py:976 add_km", msg="x", today=D, version="2026.11.4.1")
+    L.add(st, src="backend", kind="TypeError", where="wallbox.py:976 add_km", msg="x", today=D, version="2026.11.4.1")
+    st["cfg"]["skip"] = [a["fp"]]
+    r = L.build_report(st, "2026.11.5b2", "2026.11.2")
+    assert set(r) == {"schema", "id", "version", "channel", "ha", "errors"} and r["channel"] == "beta"
+    assert [e["fp"] for e in r["errors"]] == [b["fp"]] and r["errors"][0]["n"] == 2
+    assert set(r["errors"][0]) == {"fp", "src", "mod", "kind", "where", "msg", "n", "first", "last", "vers"}   # nichts darüber hinaus
+    L.mark_sent(st, r, 1000.0)
+    assert b["nd"] == 0 and b["n"] == 2 and L.build_report(st, "2026.11.5b2")["errors"] == []
+    assert not L.is_due(st, 1000.0 + 3600) and L.is_due(st, 1000.0 + L.INTERVAL)
+    L.add(st, src="backend", kind="TypeError", where="wallbox.py:976 add_km", msg="x", today=D, version="2026.11.4.1")
+    assert L.build_report(st, "2026.11.5b2")["errors"][0]["n"] == 1      # nur seit dem letzten Bericht
+
+
+def test_cfg_clean_and_kept_on_clear():
+    c = L.clean_cfg({"on": True, "id": "kaputt", "skip": ["0123456789ab", "nope"]})
+    assert c["on"] is False and c["skip"] == ["0123456789ab"]             # ohne gültige Kennung kein Senden
+    st = L.clean({"cfg": {"asked": True}, "items": {}})
+    assert st["cfg"]["asked"] is True
+    assert L.build_report(L.empty(), "2026.11.4", real=False)["id"].startswith("7f3c")   # Beispiel für „Was würde gesendet?“
+
+
+def test_manager_send_forget_and_404():
+    import asyncio
+    F = _stub_ha()
+    F.async_call_later = lambda *a, **k: (lambda: None)
+    hass = types.SimpleNamespace(data={"fenster_heizung": {}}, loop=types.SimpleNamespace(call_soon_threadsafe=lambda f: f()))
+    m = F.FehlerSammler.__new__(F.FehlerSammler)
+    m.hass, m._st, m._lock, m._version, m._rep, m._unsubs, m._busy = hass, L.empty(), __import__("threading").Lock(), "2026.11.5b2", [], [], False
+    m._store = types.SimpleNamespace(async_delay_save=lambda *a, **k: None)
+    calls = []
+
+    async def post(path, body, status=[404]):
+        calls.append((path, body)); return status[0]
+    m._post = post
+
+    async def run():
+        await m.async_answer(True)
+        assert m._st["cfg"]["on"] and L._ID.match(m._st["cfg"]["id"])
+        r = await m.async_send(force=True)
+        assert r == {"sent": False, "why": "nichts"} and not calls          # ohne Fehler wird nichts geschickt
+        m.record_threadsafe("backend", "TypeError", "wallbox.py:1 x", "boom 5")
+        r = await m.async_send(force=True)
+        assert calls[-1][0] == "/v1/errors" and not r["sent"] and r["why"] == "noch nicht"   # Server kennt /v1/errors noch nicht
+        assert m.snapshot()["items"][0]["nd"] == 1                           # bleibt für später
+        post.__defaults__[0][0] = 200
+        r = await m.async_send(force=True)
+        assert r["sent"] and m.snapshot()["items"][0]["nd"] == 0
+        idv = m._st["cfg"]["id"]
+        s = await m.async_forget()
+        assert calls[-1] == ("/v1/errors/forget", {"schema": 1, "id": idv}) and s["forgotten"] and not s["cfg"]["on"] and s["cfg"]["id"] == ""
+    asyncio.run(run())

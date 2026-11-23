@@ -138,7 +138,7 @@ class FensterHeizungPanel extends HTMLElement {
     try { await this._spnLoad(); this._spnApply(); } catch (_) { /* Sponsor-Bereich ist optional */ }
     try { await this._saiLoad(); await this._advLoad(); } catch (_) { /* Weihnachts-Theme ist optional */ }
     if (this._admin()) this._supWatch();
-    if (this._admin()) this._stsInit();
+    if (this._admin()) { this._stsInit(); this._errInit(); }
     try { if (this._admin() && new URLSearchParams(location.search).get("support") === "1") { history.replaceState(null, "", location.pathname); this._supOpen(); } } catch (_) { /* Link aus der Handy-Mitteilung */ }
     try { this._upd = await this._hass.callWS({ type: "fenster_heizung/get_update" }); } catch (_) { this._upd = null; }
     if (vbeta(this._ver)) { try { this._blG = await this._hass.callWS({ type: "fenster_heizung/beta_gate" }); } catch (_) { this._blG = null; } }  /* Beta-Freigabe, für alle Nutzer */
