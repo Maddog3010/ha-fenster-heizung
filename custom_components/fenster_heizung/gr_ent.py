@@ -173,6 +173,7 @@ def register(hass: HomeAssistant, platform: str, add: Callable[[list], None], ma
     @callback
     def _soon(*_a) -> None:
         if st["later"] is None:
+            @callback   # 2026.11.4.3b2: ohne @callback lief _go in einem Hilfs-Thread → async_dispatcher_send aus fremdem Thread (RuntimeError)
             def _go(_now) -> None:
                 st["later"] = None
                 _sync()

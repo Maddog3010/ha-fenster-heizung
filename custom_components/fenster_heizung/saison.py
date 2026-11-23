@@ -19,6 +19,12 @@ from typing import Any
 
 from homeassistant.util import dt as dt_util
 
+try:
+    from homeassistant.core import callback
+except ImportError:  # Tests ohne Home Assistant
+    def callback(f):  # type: ignore[no-redef]
+        return f
+
 from .backup import SafeStore
 
 _LOGGER = logging.getLogger(__name__)
@@ -190,6 +196,7 @@ class SaisonManager:
         self.sim_offset, self.sim_until = 0.0, 0.0
 
     # ---- Takt
+    @callback   # 2026.11.4.3b2: im Event-Loop – sonst lief der Minutentakt in einem Hilfs-Thread und der Tageswechsel (Signal) schlug still fehl
     def _tick(self, _now: Any = None) -> None:
         self.sim_active()  # beendet eine abgelaufene Simulation
         key = self._now().date().isoformat()

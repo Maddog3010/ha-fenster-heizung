@@ -57,7 +57,7 @@ def where_of(path: str, line: int | None = None, func: str = "") -> str:
 
 
 _MOD_FILES = [
-    (r"^wallbox|^goe|evcc", "Modul 8"), (r"^wetter", "Modul 9"), (r"^grundriss|^haus", "Modul 0"),
+    (r"^wallbox|^goe|evcc", "Modul 8"), (r"^wetter", "Modul 9"), (r"^grundriss|^haus|^gr_", "Modul 0"),
     (r"^sicherheit|^melder", "Modul 11"), (r"^heizer|^geraete|^climate|^luftf|^lueft", "Modul 1"),
     (r"^warmwasser", "Modul 2"), (r"^energie|^ebuch|^energiebuch", "Modul 3"), (r"^tarif|^preise", "Modul 14"),
     (r"^wartung", "Modul 15"), (r"^addons/licht", "Modul 18"), (r"^addons/muell", "Modul 17"), (r"^addons/abrechnung", "Modul 20"),

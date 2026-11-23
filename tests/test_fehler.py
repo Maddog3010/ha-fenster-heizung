@@ -147,6 +147,7 @@ def test_module_from_frontend_function():
     assert L.module_of("_grStrip · Neuaufbau") == "Modul 0"
     assert L.module_of("_evKmCards · Neuaufbau") == "Modul 8"
     assert L.module_of("Neuaufbau") == "Allgemein"
+    assert L.module_of("gr_ent.py:171 _sync") == "Modul 0"
 
 
 def test_report_only_new_not_skipped_and_mark_sent():
