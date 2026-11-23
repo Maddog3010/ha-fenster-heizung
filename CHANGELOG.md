@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b3] - 2026-11-23
+
+**Fehler-Statistik · Build 3:** Der Statistik-Server (Cloudflare-Worker) nimmt Fehlerberichte an und zeigt sie im Dashboard.
+
+### Neu
+- **Worker:** Eingang `POST /v1/errors` (höchstens 50 Fehler, 64 KB, 1 Bericht pro Kennung und Stunde, jedes Feld wird geprüft, Adressen werden zusätzlich entfernt, keine IP-Adressen gespeichert) und `POST /v1/errors/forget`. Berichte werden nach 90 Tagen gelöscht.
+- **Dashboard, Reiter „Fehler“:** gleiche Fehler aller Nutzer als eine Zeile, sortiert nach betroffenen Installationen – mit Modul, Quelle, Anzahl, Versionen, 14-Tage-Verlauf und Kennzeichen „neu“, „steigt“, „bekannt“, „behoben?“, „ruhig“. Filter nach Zeitraum (7/30/90 Tage), Modul und Quelle. Detailansicht je Fehler mit Verlauf über 30 Tage, Versionen, Home-Assistant-Versionen und Kanal.
+- Integration: „Gerade erst gesendet“ statt Fehlermeldung, wenn innerhalb einer Stunde erneut gesendet wird.
+
+### Wichtig beim Update
+- Für den Entwickler: Worker-Datenbank einmal aktualisieren (`npx wrangler d1 execute stats --remote --file=schema.sql`), dann `npx wrangler deploy`. Siehe statistik-worker/README.md.
+
 ## [2026.11.5b2] - 2026-11-23
 
 **Fehler-Statistik · Build 2:** Fehlerberichte senden – freiwillig, mit eigener Zustimmung und voller Einsicht.

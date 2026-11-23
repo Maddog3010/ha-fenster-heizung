@@ -219,7 +219,7 @@ class FehlerSammler:
                     L.mark_sent(self._st, rep, now)
             else:
                 c["last_try"] = now
-                c["err"] = "offline" if st == 0 else "noch nicht" if st == 404 else f"http{st}"
+                c["err"] = "offline" if st == 0 else "noch nicht" if st == 404 else "zu oft" if st == 429 else f"http{st}"
             self._cfg_save()
             return {"sent": 200 <= st < 300, "n": len(rep["errors"]), "why": c["err"]}
         finally:
