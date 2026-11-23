@@ -185,7 +185,7 @@
     else if (a === "news") { this._modal = { type: "news" }; this._renderModal(); }
     else if (a === "updx") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet bis zur nächsten Version"); }
     else if (a === "skipv") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._modal = null; this._renderModal(); this._render(); }
-    else if (a === "hacs") { this._modal = null; this._renderModal(); this._nav("/hacs"); }
+    else if (a === "hacs") { this._modal = null; this._renderModal(); this._storeOpen(true); }
     else if (a === "chk") {
       this._toast("Prüfe auf neue Version …");
       this._hass.callWS({ type: "fenster_heizung/get_update", force: true }).then((u) => {
@@ -283,6 +283,16 @@
       else if (a === "psave") return this._savePlan();
       this._renderModal();
     }
+  }
+  /* Ab Home Assistant 2026.11 ist HACS als „Marketplace“ eingebaut (Einstellungen → Marketplace). Ältere Versionen nutzen weiter HACS. */
+  _isMkt() { const m = String((this._hass && this._hass.config && this._hass.config.version) || "").match(/^(\d+)\.(\d+)/); return !!m && (+m[1] > 2026 || (+m[1] === 2026 && +m[2] >= 11)); }
+  _storeName() { return this._isMkt() ? "Marketplace" : "HACS"; }
+  _storeRepo() { return this._isMkt() ? "https://my.home-assistant.io/redirect/marketplace_repository/?owner=Maddog3010&repository=ha-fenster-heizung&category=integration" : "/hacs/repository?owner=Maddog3010&repository=ha-fenster-heizung"; }
+  _storeTarget() { return this._isMkt() ? "_blank" : "_top"; }
+  _storeOpen(repo = true) {
+    if (!this._isMkt()) { this._nav(repo ? "/hacs/repository?owner=Maddog3010&repository=ha-fenster-heizung" : "/hacs"); return; }
+    if (repo) { window.open(this._storeRepo(), "_blank", "noopener"); return; }
+    this._nav("/config/dashboard"); this._toast("Unter Einstellungen → Marketplace");
   }
   _nav(path) {
     try { history.pushState(null, "", path); window.dispatchEvent(new CustomEvent("location-changed", { detail: { replace: false } })); } catch (_) { location.href = path; }

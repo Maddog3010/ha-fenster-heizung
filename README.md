@@ -5,7 +5,7 @@
 <h1 align="center">Strom & Wärme</h1>
 
 <p align="center">
-  <a href="https://hacs.xyz"><img alt="HACS" src="https://img.shields.io/badge/HACS-Custom-41BDF5?logo=homeassistantcommunitystore&logoColor=white"></a>
+  <a href="https://my.home-assistant.io/redirect/marketplace_repository/?owner=Maddog3010&repository=ha-fenster-heizung&category=integration"><img alt="Marketplace" src="https://img.shields.io/badge/Marketplace-Home%20Assistant-41BDF5?logo=homeassistant&logoColor=white"></a>
   <a href="https://github.com/Maddog3010/ha-fenster-heizung/releases"><img alt="Stabil" src="https://img.shields.io/github/v/release/Maddog3010/ha-fenster-heizung?label=Stabil&color=2dd4bf"></a>
   <a href="https://github.com/Maddog3010/ha-fenster-heizung/releases"><img alt="Beta" src="https://img.shields.io/github/v/release/Maddog3010/ha-fenster-heizung?include_prereleases&label=Beta&color=f59e0b"></a>
   <img alt="Home Assistant" src="https://img.shields.io/badge/Home%20Assistant-2024.11%2B-18bcf2">
@@ -114,13 +114,25 @@ Heizkörper pausieren bei offenem Fenster, Solarstrom landet im Heizer, im Warmw
 
 ## Installation
 
-**Du brauchst:** Home Assistant 2024.11 oder neuer und [HACS](https://hacs.xyz).
+Ab **Home Assistant 2026.11** ist der frühere Community Store HACS als **Marketplace** fest eingebaut (**Einstellungen → Marketplace**). Es muss nichts mehr extra installiert werden.
+
+<p><a href="https://my.home-assistant.io/redirect/marketplace_repository/?owner=Maddog3010&repository=ha-fenster-heizung&category=integration"><img src="https://my.home-assistant.io/badges/marketplace_repository.svg" alt="Strom &amp; Wärme im Marketplace von Home Assistant öffnen"></a></p>
+
+1. Auf den Knopf oben tippen – oder **Einstellungen → Marketplace → Über Link hinzufügen** und `https://github.com/Maddog3010/ha-fenster-heizung` eintragen. Für eigene Repositories verbindet sich der Marketplace einmal mit GitHub.
+2. **Strom & Wärme** installieren und Home Assistant **neu starten**.
+3. **Einstellungen → Geräte & Dienste → Integration hinzufügen → Strom & Wärme**. Pro Raum ein Eintrag mit Fenstersensoren und Thermostaten.
+4. In der Seitenleiste **Strom & Wärme** öffnen. Der **Einrichtungsassistent** führt in acht Schritten durch Räume, Fenstermeldung, Heizung, Luftfeuchte, PV und Meldungen. Jeden Schritt außer dem ersten kannst du überspringen.
+
+<details>
+<summary>Home Assistant 2026.10 oder älter (mit HACS)</summary>
+<br>
 
 1. **HACS** öffnen, oben rechts die drei Punkte, **Benutzerdefinierte Repositories**.
 2. `https://github.com/Maddog3010/ha-fenster-heizung` eintragen, Kategorie **Integration**.
-3. **Strom & Wärme** installieren und Home Assistant **neu starten**.
-4. **Einstellungen → Geräte & Dienste → Integration hinzufügen → Strom & Wärme**. Pro Raum ein Eintrag mit Fenstersensoren und Thermostaten.
-5. In der Seitenleiste **Strom & Wärme** öffnen. Der **Einrichtungsassistent** führt in acht Schritten durch Räume, Fenstermeldung, Heizung, Luftfeuchte, PV und Meldungen. Jeden Schritt außer dem ersten kannst du überspringen.
+3. **Strom & Wärme** installieren, Home Assistant neu starten und weiter mit Schritt 3 oben.
+
+Beim Update auf Home Assistant 2026.11 zieht HACS mit allen Downloads automatisch in den Marketplace um.
+</details>
 
 Die Module 2 bis 4 sind ab Werk an, alle weiteren aus. Einschalten und einrichten kannst du sie unter **Einstellungen → Module**.
 
@@ -453,13 +465,13 @@ Testversionen tragen die Nummer des Updates, das sie vorbereiten: `2026.11.4b1` 
 
 ### Stabil oder Beta
 
-- **Stabil** (Standard): HACS bietet nur geprüfte Updates an.
-- **Beta:** In HACS das Repository **Strom & Wärme** öffnen, über die drei Punkte **Neu herunterladen** wählen, **Beta-Versionen anzeigen** einschalten und die Testversion installieren. Zurück zu Stabil geht es auf demselben Weg.
+- **Stabil** (Standard): Der Marketplace (bis Home Assistant 2026.10: HACS) bietet nur geprüfte Updates an. Updates erscheinen unter **Einstellungen → Updates**.
+- **Beta:** Im **Marketplace** bei **Strom & Wärme** eine andere Version wählen und die Testversion installieren (dafür verbindet sich der Marketplace einmal mit GitHub). Bis Home Assistant 2026.10 in HACS: über die drei Punkte **Neu herunterladen**, **Beta-Versionen anzeigen** einschalten. Zurück zu Stabil geht es auf demselben Weg.
 - **Beta-Freigabe ab 2026.11.2:** Testversionen sind mit **Sponsor Max sofort** und als **Sponsor 3 Tage nach Erscheinen** nutzbar. Vorher zeigt das Panel einer Testversion nur den Weg zurück zur letzten stabilen Version, mit Countdown für Sponsoren. Heizung, Fenster und alle Regeln laufen im Hintergrund weiter. **Stabile Versionen sind für alle frei.**
 
 ### Update einspielen
 
-Über HACS aktualisieren, Home Assistant neu starten und die Seite neu laden (Strg+F5, in der App nach unten ziehen). Deine Einstellungen bleiben erhalten.
+Im Marketplace (bis Home Assistant 2026.10: HACS) aktualisieren, Home Assistant neu starten und die Seite neu laden (Strg+F5, in der App nach unten ziehen). Deine Einstellungen bleiben erhalten.
 
 > **Update auf 2026.11.4:** Nach dem Update Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen und neu öffnen). Bestehende Elektroheizer werden beim ersten Start automatisch in die neue Geräteliste übernommen, deine Raum-Einstellungen bleiben unverändert. Der Grundriss aus Modul 11 ist schon seit den Testversionen in Modul 0 umgezogen; Modul 11 und Modul 18 lesen ihn von dort. Das Weihnachts-Theme startet von selbst am 1. Dezember.
 
@@ -580,7 +592,7 @@ Modul 4 braucht drei Läufe, um die Restzeit zu schätzen. Danach erscheint „n
 Nein. Für den Alltag reicht die stabile Version, und die ist für alle frei.
 
 **Ich habe eine Testversion installiert und sehe nur „Testversionen sind für Sponsoren“.**
-Testversionen sind mit Sponsor Max sofort und als Sponsor 3 Tage nach Erscheinen frei. Über **Zurück zu …** kommst du in HACS zur letzten stabilen Version. Deine Einstellungen bleiben, die Regelung läuft weiter.
+Testversionen sind mit Sponsor Max sofort und als Sponsor 3 Tage nach Erscheinen frei. Über **Zurück zu …** kommst du im Marketplace (bis Home Assistant 2026.10: HACS) zur letzten stabilen Version. Deine Einstellungen bleiben, die Regelung läuft weiter.
 
 **Gehen meine Einstellungen bei einem Update verloren?**
 Nein. Sie bleiben erhalten, dazu gibt es interne Kopien und auf Wunsch eine Sicherung auf deinem Homeserver.

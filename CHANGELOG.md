@@ -21,6 +21,7 @@ Vierte stabile Version im November: **Ein Bauplan für dein ganzes Haus.** Das n
 - **Versions-Statistik** (freiwillig, anonym): Abfrage beim ersten Start nach dem Update, Seite unter Einstellungen → System → Versions-Statistik.
 
 ### Geändert
+- **Marketplace statt HACS:** Ab Home Assistant 2026.11 ist HACS als Marketplace eingebaut. Strom & Wärme spricht dann überall vom Marketplace – Update-Hinweis, Beta-Sperre, Sponsor Max, Versionen, Store-Anleitungen – und öffnet die Seite von Strom & Wärme über „Im Marketplace öffnen“. Mit Home Assistant 2026.10 oder älter bleibt alles bei HACS. README und Anleitung beschreiben die Installation über **Einstellungen → Marketplace → Über Link hinzufügen**.
 - Einstellungs-Knopf oben rechts öffnet in jedem Modul (auch bei Addons und auf der Startseite) die passenden Einstellungen.
 - Modul 1: Raumeinstellungen zeigen beim Elektroheizer nur noch eine Kurzinfo; Entfernen räumt auf (Schalter „Elektroheizer aktiv“ bleibt nicht als „nicht verfügbar“ stehen).
 
@@ -31,7 +32,7 @@ Vierte stabile Version im November: **Ein Bauplan für dein ganzes Haus.** Das n
 - Modul 1: Die PV-Reserve ließ sich im Dashboard nicht über 100 W einstellen.
 
 ### Wichtig beim Update
-- Nach dem Update Home Assistant neu starten und die Seite neu laden, in der App die App ganz schließen und neu öffnen. Deine Einstellungen bleiben erhalten.
+- Update im Marketplace (Einstellungen → Marketplace oder Einstellungen → Updates; bis Home Assistant 2026.10 in HACS), danach Home Assistant neu starten und die Seite neu laden, in der App die App ganz schließen und neu öffnen. Deine Einstellungen bleiben erhalten.
 - Bestehende Elektroheizer werden beim ersten Start in die neue Geräteliste übernommen, die Raum-Einstellungen bleiben unverändert. Nach „In anderen Raum stellen“ ist der Schalter „Elektroheizer aktiv“ eine neue Entität im neuen Raum – Automationen bitte anpassen.
 - Der Grundriss liegt jetzt in Modul 0. Wer von 2026.11.3 kommt: Der Plan aus Modul 11 wird automatisch übernommen, eine Umzugs-Kopie bleibt 90 Tage erhalten.
 - Das Weihnachts-Theme startet von selbst am 1. Dezember; abschalten unter Einstellungen → Darstellung → Weihnachts-Theme.

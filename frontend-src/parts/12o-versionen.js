@@ -44,7 +44,7 @@
       <div class="lsec">${ic("info", 15)}So liest du die Hauptversion</div>
       <div class="rlx"><div class="rlxn"><i>2026</i>.<i>11</i>.<i>1</i></div>
         <p><b>Jahr · Monat · Release.</b> 2026.11.1 ist das erste Update im November 2026, 2026.11.2 das zweite. Mit jedem neuen Monat beginnt der Zähler wieder bei 1, zum Beispiel 2026.12.1 oder 2027.1.1.</p>
-        <p>Testversionen tragen die Nummer des Updates, das sie vorbereiten, mit b1, b2 … am Ende: 2026.11.2b1 und 2026.11.2b2 werden zu 2026.11.2. Sie erscheinen nur, wenn in HACS Beta-Versionen eingeschaltet sind, nicht in dieser Liste.</p>
+        <p>Testversionen tragen die Nummer des Updates, das sie vorbereiten, mit b1, b2 … am Ende: 2026.11.2b1 und 2026.11.2b2 werden zu 2026.11.2. Sie erscheinen nur, wenn ${this._isMkt() ? "du sie im Marketplace als Version wählst" : "in HACS Beta-Versionen eingeschaltet sind"}, nicht in dieser Liste.</p>
         <p>Was sich in einem Modul geändert hat, zeigen die Modulversionen.</p></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
@@ -53,7 +53,7 @@
     const u = this._upd, g = this._gen || {}, cur = this._ver || "", nw = u && u.latest && vgt(u.latest, cur);
     return `<div class="updbox ${nw ? "nw" : ""}"><span class="sxi">${ic(nw ? "download" : "check", 20)}</span><div class="updt"><b>${nw ? `Update verfügbar: ${esc(u.latest)}` : "Du hast die neueste Version"}</b><small>Installiert ${esc(cur || "–")}${u && u.latest && !nw ? ` · neueste ${esc(u.latest)}` : ""}${u && u.error ? ` · Prüfung zuletzt nicht möglich` : ""}</small></div>
       <div class="updb">${nw ? `<button class="btn2 pri" data-act="news">Was ist neu?</button>` : ""}<button class="btn2" data-act="chk">${ic("refresh", 16)} Jetzt prüfen</button></div></div>
-      <div class="ltog"><span>Auf neue Versionen hinweisen<small class="mut" style="display:block">Zeigt ein neues Update oben im Dashboard an. Aktualisiert wird in HACS.</small></span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Auf neue Versionen hinweisen"></button></div>`;
+      <div class="ltog"><span>Auf neue Versionen hinweisen<small class="mut" style="display:block">Zeigt ein neues Update oben im Dashboard an. Aktualisiert wird ${this._isMkt() ? "im Marketplace" : "in HACS"}.</small></span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Auf neue Versionen hinweisen"></button></div>`;
   }
   /* Addons in den Modulversionen: installierte Addons mit Version, Build, Stufe und verfügbarem Update */
   _mvAddons() {

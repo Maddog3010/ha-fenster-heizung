@@ -498,8 +498,8 @@
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>Neu in Version ${esc(u.latest)}</b><span>${u.date ? "veröffentlicht am " + esc(new Date(u.date + "T12:00:00").toLocaleDateString("de-DE")) : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <ul class="news">${(u.notes || []).map(([i, t]) => `<li>${ic(i, 18)}<span>${esc(t)}</span></li>`).join("")}</ul>
-        <div class="mut sm" style="margin:10px 0">Aktualisieren kannst du in HACS. Danach Home Assistant neu starten.</div>
-        <div class="foot2"><button class="btn2" data-act="skipv">Überspringen</button><button class="btn2 pri" data-act="hacs">In HACS öffnen</button></div></div>`;
+        <div class="mut sm" style="margin:10px 0">Aktualisieren kannst du ${this._isMkt() ? "im Marketplace (Einstellungen → Marketplace oder Einstellungen → Updates)" : "in HACS"}. Danach Home Assistant neu starten.</div>
+        <div class="foot2"><button class="btn2" data-act="skipv">Überspringen</button><button class="btn2 pri" data-act="hacs">Im ${this._storeName()} öffnen</button></div></div>`;
     } else if (m.type === "my") {
       const my = this._my(), all = this._collect(true), ids = all.map((r) => r.id);
       const ord = my.order.length ? [...my.order.filter((i) => ids.includes(i)), ...ids.filter((i) => !my.order.includes(i))] : ids, byId = Object.fromEntries(all.map((r) => [r.id, r]));

@@ -7885,7 +7885,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "news") { this._modal = { type: "news" }; this._renderModal(); }
     else if (a === "updx") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._render(); this._toast("Hinweis ausgeblendet bis zur nächsten Version"); }
     else if (a === "skipv") { try { localStorage.setItem("fh_upd_skip", this._upd.latest); } catch (_) { /* egal */ } this._modal = null; this._renderModal(); this._render(); }
-    else if (a === "hacs") { this._modal = null; this._renderModal(); this._nav("/hacs"); }
+    else if (a === "hacs") { this._modal = null; this._renderModal(); this._storeOpen(true); }
     else if (a === "chk") {
       this._toast("Prüfe auf neue Version …");
       this._hass.callWS({ type: "fenster_heizung/get_update", force: true }).then((u) => {
@@ -7983,6 +7983,16 @@ class FensterHeizungPanel extends HTMLElement {
       else if (a === "psave") return this._savePlan();
       this._renderModal();
     }
+  }
+  /* Ab Home Assistant 2026.11 ist HACS als „Marketplace“ eingebaut (Einstellungen → Marketplace). Ältere Versionen nutzen weiter HACS. */
+  _isMkt() { const m = String((this._hass && this._hass.config && this._hass.config.version) || "").match(/^(\d+)\.(\d+)/); return !!m && (+m[1] > 2026 || (+m[1] === 2026 && +m[2] >= 11)); }
+  _storeName() { return this._isMkt() ? "Marketplace" : "HACS"; }
+  _storeRepo() { return this._isMkt() ? "https://my.home-assistant.io/redirect/marketplace_repository/?owner=Maddog3010&repository=ha-fenster-heizung&category=integration" : "/hacs/repository?owner=Maddog3010&repository=ha-fenster-heizung"; }
+  _storeTarget() { return this._isMkt() ? "_blank" : "_top"; }
+  _storeOpen(repo = true) {
+    if (!this._isMkt()) { this._nav(repo ? "/hacs/repository?owner=Maddog3010&repository=ha-fenster-heizung" : "/hacs"); return; }
+    if (repo) { window.open(this._storeRepo(), "_blank", "noopener"); return; }
+    this._nav("/config/dashboard"); this._toast("Unter Einstellungen → Marketplace");
   }
   _nav(path) {
     try { history.pushState(null, "", path); window.dispatchEvent(new CustomEvent("location-changed", { detail: { replace: false } })); } catch (_) { location.href = path; }
@@ -8597,8 +8607,8 @@ class FensterHeizungPanel extends HTMLElement {
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>Neu in Version ${esc(u.latest)}</b><span>${u.date ? "veröffentlicht am " + esc(new Date(u.date + "T12:00:00").toLocaleDateString("de-DE")) : ""}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
         <ul class="news">${(u.notes || []).map(([i, t]) => `<li>${ic(i, 18)}<span>${esc(t)}</span></li>`).join("")}</ul>
-        <div class="mut sm" style="margin:10px 0">Aktualisieren kannst du in HACS. Danach Home Assistant neu starten.</div>
-        <div class="foot2"><button class="btn2" data-act="skipv">Überspringen</button><button class="btn2 pri" data-act="hacs">In HACS öffnen</button></div></div>`;
+        <div class="mut sm" style="margin:10px 0">Aktualisieren kannst du ${this._isMkt() ? "im Marketplace (Einstellungen → Marketplace oder Einstellungen → Updates)" : "in HACS"}. Danach Home Assistant neu starten.</div>
+        <div class="foot2"><button class="btn2" data-act="skipv">Überspringen</button><button class="btn2 pri" data-act="hacs">Im ${this._storeName()} öffnen</button></div></div>`;
     } else if (m.type === "my") {
       const my = this._my(), all = this._collect(true), ids = all.map((r) => r.id);
       const ord = my.order.length ? [...my.order.filter((i) => ids.includes(i)), ...ids.filter((i) => !my.order.includes(i))] : ids, byId = Object.fromEntries(all.map((r) => [r.id, r]));
@@ -9346,7 +9356,7 @@ class FensterHeizungPanel extends HTMLElement {
     for (const x of this._igSfCatalog()) { const n = det.filter((y) => (y.src || (E[y.id] || {}).platform) === x.d).length, up = n > 0 || (x.d === "xsense" && anyX), cx = X[x.d] || ["Cloud", "Offiziell"], isx = x.d === "xsense";
       out.push({ id: x.d, d: x.d, n: x.n, sub: "Melder", cat: "sicherheit", c: x.c, i: x.i, mid: "sf", mods: ["Modul 11"], on: up, top: x.top, feat: isx, hacs: x.hacs, conn: cx[0], src: cx[1], st: up ? (n ? `${n} Melder · genutzt von Modul 11` : "Verbunden, aber noch ohne Melder") : "", desc: x.t,
         feats: ["Alarm aufs Handy und Aktionen (Licht, Ventil, Sirene)", "Batteriestand und Erreichbarkeit im Blick", "Erinnerung an die regelmäßige Prüfung"],
-        steps: isx ? ["Community-Integration in HACS als benutzerdefiniertes Repository (Kategorie „Integration“) hinzufügen, die Adresse steht hinter „Anleitung“", "Home Assistant neu starten und unter Geräte & Dienste „X-Sense“ hinzufügen, besser mit einem zweiten Konto, mit dem du nur die Melder teilst", "Fertig: Die Melder erscheinen in Modul 11, mit Batterie und, wenn vorhanden, Testknopf"] : ["Unten „Einrichten“ tippen und den Dienst in Home Assistant hinzufügen", "Melder anlernen", "Modul 11 erkennt alle Melder (Rauch, CO, Gas, Wasser, Hitze) automatisch"],
+        steps: isx ? ["Community-Integration im Marketplace (Einstellungen → Marketplace → „Über Link hinzufügen“, bis Home Assistant 2026.10: HACS → Benutzerdefinierte Repositories) hinzufügen, die Adresse steht hinter „Anleitung“", "Home Assistant neu starten und unter Geräte & Dienste „X-Sense“ hinzufügen, besser mit einem zweiten Konto, mit dem du nur die Melder teilst", "Fertig: Die Melder erscheinen in Modul 11, mit Batterie und, wenn vorhanden, Testknopf"] : ["Unten „Einrichten“ tippen und den Dienst in Home Assistant hinzufügen", "Melder anlernen", "Modul 11 erkennt alle Melder (Rauch, CO, Gas, Wasser, Hitze) automatisch"],
         note: isx ? "Inoffiziell und cloud-basiert, von der Community gepflegt. Nach Home-Assistant-Updates kann sie kurz ausfallen. Die Melder selbst alarmieren auch ohne Home Assistant weiter." : "" }); }
     const hp = this._hsProfiles(), cnt = {}; ids.filter((k) => k.startsWith("climate.")).forEach((k) => { const id = this._hsOf(k); if (id) cnt[id] = (cnt[id] || 0) + 1; });
     for (const id of Object.keys(hp)) { const x = hp[id], n = cnt[id] || 0;
@@ -9355,7 +9365,7 @@ class FensterHeizungPanel extends HTMLElement {
       out.push({ id: "wcs", d: "waste_collection_schedule", n: "Abfallkalender", sub: "waste_collection_schedule", cat: "haus", c: "#16a34a", i: "trash", mid: "mu", mods: ["Modul 17"], on: n > 0, top: 1, hacs: "https://github.com/mampfes/hacs_waste_collection_schedule", conn: "Cloud", src: "Community", st: n ? `${n} ${n === 1 ? "Entität" : "Entitäten"} · genutzt von Modul 17` : "",
         desc: "Holt die Abholtermine deines Entsorgers in einen Kalender von Home Assistant. Dafür gibt es Hunderte Anbieter.",
         feats: ["Termine für Restmüll, Bio, Papier und Gelben Sack als Kalender", "Modul 17 zeigt sie an und erinnert am Vorabend", "Kennt viele Entsorger in Deutschland, Österreich und der Schweiz"],
-        steps: ["Community-Integration in HACS als benutzerdefiniertes Repository (Kategorie „Integration“) hinzufügen, die Adresse steht hinter „Anleitung“", "Home Assistant neu starten und unter Geräte & Dienste „Waste Collection Schedule“ hinzufügen, dann den Entsorger wählen", "Fertig: Der Kalender erscheint automatisch in Modul 17, oder du wählst ihn in den Einstellungen des Moduls"],
+        steps: ["Community-Integration im Marketplace (Einstellungen → Marketplace → „Über Link hinzufügen“, bis Home Assistant 2026.10: HACS → Benutzerdefinierte Repositories) hinzufügen, die Adresse steht hinter „Anleitung“", "Home Assistant neu starten und unter Geräte & Dienste „Waste Collection Schedule“ hinzufügen, dann den Entsorger wählen", "Fertig: Der Kalender erscheint automatisch in Modul 17, oder du wählst ihn in den Einstellungen des Moduls"],
         note: "Inoffiziell, von der Community gepflegt. Der Eintrag erscheint nur, solange das Lab „Müllabfuhr“ eingeschaltet ist. Ausgeschaltet verschwindet er hier wieder, die Integration selbst bleibt in Home Assistant, bis du sie dort entfernst." }); }
     out.forEach((x) => { x.tag = x.src === "Community" ? "Inoffiziell" : x.conn === "Cloud" ? "Konto nötig" : "In HA einrichten"; });
     return out;
@@ -9480,7 +9490,7 @@ class FensterHeizungPanel extends HTMLElement {
   }
   _igSfCatalog() {
     return [
-      { d: "xsense", n: "X-Sense", t: "Rauch-, CO-, Hitze- und Wassermelder über die X-Sense-Basisstation. Inoffizielle Community-Integration (HACS), nutzt die X-Sense-Cloud.", c: "#e11d48", i: "flame", top: 1, hacs: "https://github.com/Jarnsen/ha-xsense-component_test" },
+      { d: "xsense", n: "X-Sense", t: "Rauch-, CO-, Hitze- und Wassermelder über die X-Sense-Basisstation. Inoffizielle Community-Integration (Marketplace), nutzt die X-Sense-Cloud.", c: "#e11d48", i: "flame", top: 1, hacs: "https://github.com/Jarnsen/ha-xsense-component_test" },
       { d: "zha", n: "Zigbee (ZHA)", t: "Zigbee-Melder direkt über Home Assistant, ohne Cloud", c: "#f59e0b", i: "shield", top: 1 },
       { d: "mqtt", n: "Zigbee2MQTT / MQTT", t: "Melder über Zigbee2MQTT oder MQTT-Bridges", c: "#a855f7", i: "shield", top: 1 },
       { d: "homematicip_cloud", n: "Homematic IP", t: "Rauch- und Wassermelder von Homematic IP", c: "#0ea5e9", i: "shield", top: 1 },
@@ -18957,13 +18967,13 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
   _blRender() {
     const sr = this.shadowRoot, main = sr.getElementById("main"); if (!main) return;
     const s = this._spnS(), v = this._ver, st = this._blStable(), adm = this._admin(), state = this._blState(), wasMax = s.tier === "max" && !s.active;
-    const hacs = "/hacs/repository?owner=Maddog3010&repository=ha-fenster-heizung", f = this._blFreeAt();
+    const hacs = this._storeRepo(), mk = this._isMkt(), f = this._blFreeAt();
     const left = f ? Math.max(0, f - this._blNow()) : 0, dd = Math.floor(left / 864e5), hh = Math.ceil((left % 864e5) / 36e5);
     const step = (n, t, sub) => `<div class="blstp"><em>${n}</em><span><b>${t}</b><small>${sub}</small></span></div>`;
     const sp = state === "sp";
     const head = sp ? "Diese Testversion ist bald für dich frei" : "Testversionen sind für Sponsoren";
     const txt = sp ? (f ? `Als Sponsor kannst du Testversionen 3 Tage nach Erscheinen nutzen. <b>${esc(v)}</b> ist für dich ab <b>${esc(this._blWhen(f))}</b> frei. Mit Sponsor Max sofort.`
-        : `Als Sponsor kannst du Testversionen 3 Tage nach Erscheinen nutzen. Bei <b>${esc(v)}</b> lässt sich der Erscheinungstag nicht prüfen. Installiere die Testversion bitte neu über HACS oder wechsle zur stabilen Version. Mit Sponsor Max sofort.`)
+        : `Als Sponsor kannst du Testversionen 3 Tage nach Erscheinen nutzen. Bei <b>${esc(v)}</b> lässt sich der Erscheinungstag nicht prüfen. Installiere die Testversion bitte neu über ${mk ? "den Marketplace" : "HACS"} oder wechsle zur stabilen Version. Mit Sponsor Max sofort.`)
       : `${wasMax ? "Dein Sponsor-Max-Schlüssel ist abgelaufen. " : ""}Testversionen aus dem Beta-Kanal kannst du mit <b>Sponsor Max sofort</b> und als <b>Sponsor 3 Tage nach Erscheinen</b> nutzen. Bitte wechsle bis dahin zur ${st ? `letzten stabilen Version <b>${esc(st)}</b>` : "letzten stabilen Version"}.`;
     main.innerHTML = `<div class="blwrap"><div class="blcard">
       <div class="blhead"><span class="blic">${ic("flask", 30)}</span><div><em class="lgchip bl">Testversion ${esc(v)}</em><h2>${head}</h2></div></div>
@@ -18971,8 +18981,8 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       ${adm && !sp && this._ghS().ready && !(s.manage && s.dev_off) ? `<div class="blgh"><span class="blghi">${ic("heart", 22)}</span><span class="blght"><b>Schon Sponsor?</b><small>Mit GitHub anmelden – deine Stufe wird erkannt und die Testversion ist sofort frei, wenn sie für dich gilt.</small></span><button class="btn2 spnb pri" data-act="spngh">${ic("key", 16)} Mit GitHub freischalten</button></div>` : ""}
       ${sp && left ? `<div class="blcount"><div><b>${dd}</b><small>${dd === 1 ? "Tag" : "Tage"}</small></div><div><b>${hh}</b><small>${hh === 1 ? "Stunde" : "Stunden"}</small></div><span>bis zur Freigabe</span></div>` : ""}
       <div class="blok">${ic("check", 16)}<span>Heizung, Fenster-Automatik und alle Regeln laufen im Hintergrund normal weiter. Räume, Pläne und Einstellungen bleiben erhalten.</span></div>
-      ${adm ? `<div class="blsteps">${step(1, "HACS öffnen", "Strom &amp; Wärme")}${step(2, `⋮ → Erneut herunterladen`, st ? `Version ${esc(st)} wählen` : "die oberste Version ohne „b“ wählen")}${step(3, "Home Assistant neu starten", "danach ist alles wieder frei")}</div>
-      <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="_top" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : "In HACS öffnen"}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · ab $3 im Monat</a></div>
+      ${adm ? `<div class="blsteps">${mk ? step(1, "Einstellungen → Marketplace", "Strom &amp; Wärme öffnen") + step(2, "Andere Version wählen", (st ? `Version ${esc(st)}` : "die oberste Version ohne „b“") + " – dafür einmal mit GitHub verbinden") : step(1, "HACS öffnen", "Strom &amp; Wärme") + step(2, `⋮ → Erneut herunterladen`, st ? `Version ${esc(st)} wählen` : "die oberste Version ohne „b“ wählen")}${step(3, "Home Assistant neu starten", "danach ist alles wieder frei")}</div>
+      <div class="lgbtns"><a class="btn2 pri" href="${hacs}" target="${this._storeTarget()}" rel="noopener" style="text-decoration:none">${ic("download", 16)} ${st ? `Zurück zu ${esc(st)}` : `Im ${this._storeName()} öffnen`}</a><a class="btn2 lggold" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">★ Sponsor Max · ab $3 im Monat</a></div>
       ${s.manage && s.dev_off ? `<div class="bldev">${ic("flask", 18)}<span><b>Entwickler-Zugang ist zum Testen aus.</b> Deshalb siehst du diese Sperre wie ein Nutzer ohne Sponsoring.</span><button class="btn2 pri" data-act="spndev" data-k="on">Entwickler-Zugang wieder einschalten</button><button class="lnk" data-act="spnadm">Sponsoren verwalten</button></div>` : ""}
       <div class="blfoot">${sp ? "" : `<a class="lnk" href="${esc(s.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">♥ Sponsor werden</a> · `}<button class="lnk" data-act="spnkeydlg">Ich habe einen Schlüssel</button></div>`
       : `<div class="blok wa">${ic("info", 16)}<span>Bitte die Person mit Admin-Rechten in Home Assistant, zur stabilen Version zu wechseln.</span></div>`}
@@ -19061,9 +19071,9 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     return `<div class="lgt" style="--c:#818cf8"><div class="s3h"><span class="mxk big">${ic("flask", 18)}</span><span><b>Beta-Kanal</b><small>Vorabversionen 30 statt 14 Tage früher</small></span></div>
       <div class="mxbnote"><span class="lggd">★</span><span><b>Ab Version 2026.11.2</b><small>Beta-Versionen sofort mit Sponsor Max installierbar</small></span></div>
       ${pre ? `<div class="mxprop"><span class="mxk">${ic("flask", 16)}</span><span><b>Testversion ${esc(pre.tag)}</b><small>vom ${esc(this._mxD(pre.ts))}${pre.tag === v ? " · installiert" : v ? ` · du hast ${esc(v)}` : ""}</small></span><a class="lgopen" href="${esc(pre.url)}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Was ist neu</a></div>` : `<div class="mut sm">${R.busy ? "Lädt …" : R.err ? "GitHub gerade nicht erreichbar." : "Gerade gibt es keine Testversion."}</div>`}
-      ${(() => { const st = this._blStable(); return vbeta(v) && st ? `<div class="mxprop"><span class="mxk">${ic("shield", 16)}</span><span><b>Letzte stabile Version ${esc(st)}</b><small>Du nutzt gerade die Testversion ${esc(v)}. Zurück geht jederzeit über HACS.</small></span></div>` : ""; })()}
-      <div class="lgbtns"><a class="btn2" href="/hacs/repository?owner=Maddog3010&repository=ha-fenster-heizung" target="_top" style="text-decoration:none">${ic("download", 15)} In HACS öffnen</a><a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues/new?title=${encodeURIComponent("Rückmeldung " + v)}&body=${diag}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${ic("mail", 15)} Rückmeldung</a></div>
-      <div class="lgnote2">In HACS: ⋮ → Erneut herunterladen → Version wählen. Zurück zur stabilen Version genauso. Ohne Freigabe (ohne Sponsoring, als Sponsor in den ersten 3 Tagen) zeigt eine Testversion nur den Weg zurück zur stabilen Version. Die Rückmeldung enthält nur Version, Module und Browser – keine Namen, keine Sensoren.</div></div>`;
+      ${(() => { const st = this._blStable(); return vbeta(v) && st ? `<div class="mxprop"><span class="mxk">${ic("shield", 16)}</span><span><b>Letzte stabile Version ${esc(st)}</b><small>Du nutzt gerade die Testversion ${esc(v)}. Zurück geht jederzeit über ${this._isMkt() ? "den Marketplace" : "HACS"}.</small></span></div>` : ""; })()}
+      <div class="lgbtns"><a class="btn2" href="${this._storeRepo()}" target="${this._storeTarget()}" rel="noopener" style="text-decoration:none">${ic("download", 15)} Im ${this._storeName()} öffnen</a><a class="btn2" href="https://github.com/Maddog3010/ha-fenster-heizung/issues/new?title=${encodeURIComponent("Rückmeldung " + v)}&body=${diag}" target="_blank" rel="noopener noreferrer" style="text-decoration:none">${ic("mail", 15)} Rückmeldung</a></div>
+      <div class="lgnote2">${this._isMkt() ? "Im Marketplace bei Strom &amp; Wärme eine andere Version wählen (dafür einmal mit GitHub verbinden)." : "In HACS: ⋮ → Erneut herunterladen → Version wählen."} Zurück zur stabilen Version genauso. Ohne Freigabe (ohne Sponsoring, als Sponsor in den ersten 3 Tagen) zeigt eine Testversion nur den Weg zurück zur stabilen Version. Die Rückmeldung enthält nur Version, Module und Browser – keine Namen, keine Sensoren.</div></div>`;
   }
   _mxSection() {
     return `<div class="lgh4 mxh">★ Sponsor Max</div><div class="mxweek">${this._mxWeek()}</div>
@@ -19224,7 +19234,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       <div class="lsec">${ic("info", 15)}So liest du die Hauptversion</div>
       <div class="rlx"><div class="rlxn"><i>2026</i>.<i>11</i>.<i>1</i></div>
         <p><b>Jahr · Monat · Release.</b> 2026.11.1 ist das erste Update im November 2026, 2026.11.2 das zweite. Mit jedem neuen Monat beginnt der Zähler wieder bei 1, zum Beispiel 2026.12.1 oder 2027.1.1.</p>
-        <p>Testversionen tragen die Nummer des Updates, das sie vorbereiten, mit b1, b2 … am Ende: 2026.11.2b1 und 2026.11.2b2 werden zu 2026.11.2. Sie erscheinen nur, wenn in HACS Beta-Versionen eingeschaltet sind, nicht in dieser Liste.</p>
+        <p>Testversionen tragen die Nummer des Updates, das sie vorbereiten, mit b1, b2 … am Ende: 2026.11.2b1 und 2026.11.2b2 werden zu 2026.11.2. Sie erscheinen nur, wenn ${this._isMkt() ? "du sie im Marketplace als Version wählst" : "in HACS Beta-Versionen eingeschaltet sind"}, nicht in dieser Liste.</p>
         <p>Was sich in einem Modul geändert hat, zeigen die Modulversionen.</p></div>
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
@@ -19233,7 +19243,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     const u = this._upd, g = this._gen || {}, cur = this._ver || "", nw = u && u.latest && vgt(u.latest, cur);
     return `<div class="updbox ${nw ? "nw" : ""}"><span class="sxi">${ic(nw ? "download" : "check", 20)}</span><div class="updt"><b>${nw ? `Update verfügbar: ${esc(u.latest)}` : "Du hast die neueste Version"}</b><small>Installiert ${esc(cur || "–")}${u && u.latest && !nw ? ` · neueste ${esc(u.latest)}` : ""}${u && u.error ? ` · Prüfung zuletzt nicht möglich` : ""}</small></div>
       <div class="updb">${nw ? `<button class="btn2 pri" data-act="news">Was ist neu?</button>` : ""}<button class="btn2" data-act="chk">${ic("refresh", 16)} Jetzt prüfen</button></div></div>
-      <div class="ltog"><span>Auf neue Versionen hinweisen<small class="mut" style="display:block">Zeigt ein neues Update oben im Dashboard an. Aktualisiert wird in HACS.</small></span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Auf neue Versionen hinweisen"></button></div>`;
+      <div class="ltog"><span>Auf neue Versionen hinweisen<small class="mut" style="display:block">Zeigt ein neues Update oben im Dashboard an. Aktualisiert wird ${this._isMkt() ? "im Marketplace" : "in HACS"}.</small></span><button class="sw ${g.updates !== false ? "on" : ""}" data-act="gupd" aria-pressed="${g.updates !== false}" aria-label="Auf neue Versionen hinweisen"></button></div>`;
   }
   /* Addons in den Modulversionen: installierte Addons mit Version, Build, Stufe und verfügbarem Update */
   _mvAddons() {
@@ -21763,7 +21773,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       s.ext.push({ id: "x" + Date.now().toString(36), name: base || "Eigenes Modul", url, on: true }); m.err = ""; m.url = ""; this._mdSave(); this._renderModal(); this._render(); this._toast("Modul hinzugefügt");
     }
     else if (a === "mdextdel") { s.ext = s.ext.filter((x) => x.id !== k); if (s.active === k) this._mdActiveSet("fh"); this._mdSave(); this._renderModal(); this._render(); }
-    else if (a === "mdhacs") { this._modal = null; this._renderModal(); this._nav("/hacs"); }
+    else if (a === "mdhacs") { this._modal = null; this._renderModal(); this._storeOpen(false); }
     else if (a === "mdinfo") { m.info = !m.info; this._renderModal(); }
     else if (a.startsWith("ww")) this._wwAct(a, b);
     else if (a.startsWith("en")) this._enAct(a, b);
@@ -21805,12 +21815,12 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
       ${MOD_SOON.map(([ico, n, t]) => row("", ico, n, t, `<span class="mbadge soon">Geplant</span>`)).join("")}` : ""}
       <div class="lsec">${ic("plus", 15)}Weiteres Modul hinzufügen</div>
       <div class="mut sm" style="margin:2px 0 8px">Module sind kleine Erweiterungen. Sie nutzen deine Räume, die PV-Einstellungen und die Meldungen mit und erscheinen hier als eigene Seite.</div>
-      <div class="gbtns"><button class="btn2" data-act="mdhacs">${ic("download", 16)} Über HACS suchen</button></div>
+      <div class="gbtns"><button class="btn2" data-act="mdhacs">${ic("download", 16)} Im ${this._storeName()} suchen</button></div>
       <div class="mut sm" style="margin:4px 0 0">Oder die Adresse einer Moduldatei eintragen</div>
       <div class="murl"><input class="otxt" data-f="mdurl" placeholder="/local/mein-modul.js" value="${esc(m.url || "")}" autocomplete="off" spellcheck="false"><button class="btn2 pri" data-act="mdextadd">Hinzufügen</button></div>
       ${m.err ? `<div class="gst on">${ic("alert", 15)}${esc(m.err)}</div>` : ""}
       <button class="lnk" data-act="mdinfo">${ic("info", 15)}Wie funktionieren Module?</button>
-      ${m.info ? `<div class="minfo"><b>So ist es aufgebaut</b><ul><li>Jedes Modul meldet sich mit <b>ID, Name, Symbol und einer Seite</b> (JavaScript-Datei) an.</li><li>Es bekommt Zugriff auf Räume, PV-Überschuss, Benachrichtigungen und die Gerätediagnose.</li><li>Was ein Modul speichert, bleibt in seinem eigenen Bereich. Ausschalten löscht nichts.</li><li>Module werden einzeln über HACS installiert und haben eigene Versionen.</li></ul></div>` : ""}
+      ${m.info ? `<div class="minfo"><b>So ist es aufgebaut</b><ul><li>Jedes Modul meldet sich mit <b>ID, Name, Symbol und einer Seite</b> (JavaScript-Datei) an.</li><li>Es bekommt Zugriff auf Räume, PV-Überschuss, Benachrichtigungen und die Gerätediagnose.</li><li>Was ein Modul speichert, bleibt in seinem eigenen Bereich. Ausschalten löscht nichts.</li><li>Module werden einzeln über den Marketplace (bis Home Assistant 2026.10: HACS) installiert und haben eigene Versionen.</li></ul></div>` : ""}
       <div class="foot2"><button class="btn2 pri" data-act="close">Fertig</button></div></div>`;
   }
 
