@@ -25,6 +25,7 @@ crons = ["17 3 * * *"]
 INGEST_HOST = "stats.stromwaerme.dev"
 DASH_HOST = "dash.stromwaerme.dev"
 RETENTION_DAYS = "180"
+GITHUB_REPO = "Maddog3010/ha-fenster-heizung"   # für „GitHub-Issue anlegen“ in der Fehler-Statistik
 # Aus Cloudflare Zero Trust (Access → Anwendung): Team-Domain und „Application Audience (AUD) Tag“
 TEAM_DOMAIN = "DEIN-TEAM.cloudflareaccess.com"
 POLICY_AUD = "HIER-DEN-AUD-TAG-EINTRAGEN"

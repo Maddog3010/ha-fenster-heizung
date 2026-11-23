@@ -18,7 +18,7 @@ Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.j
 Eingang `POST /v1/errors` (Bericht mit höchstens 50 bereinigten Programmfehlern, max. 64 KB, 1 pro Kennung und Stunde) und
 `POST /v1/errors/forget` (alle Berichte einer Kennung löschen). Dashboard: Reiter **Fehler** auf `dash.…/fehler` – gleiche Fehler
 sind eine Zeile (Fingerabdruck), sortiert nach betroffenen Installationen, Filter nach Zeitraum, Modul und Quelle; Detail unter
-`/fehler/<fp>`. Berichte werden nach 90 Tagen gelöscht. **Nach dem Update einmal ausführen:**
+`/fehler/<fp>` mit Status (offen, in Arbeit, behoben in …, ignorieren), Issue-Nummer und „GitHub-Issue anlegen“ (Repo aus `GITHUB_REPO`). Status-Änderungen nur per POST aus dem eigenen Dashboard (gleiche Herkunft) und hinter Access. Berichte werden nach 90 Tagen gelöscht. **Nach dem Update einmal ausführen:**
 
     npx wrangler d1 execute stats --remote --file=schema.sql
     npx wrangler deploy
