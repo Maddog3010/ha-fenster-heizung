@@ -116,7 +116,7 @@
     else if (a === "errxskip") cfg("skip", { fp: k, on: b.dataset.v === "1" }).then(re).catch(fail);
     else if (a === "errxdata") { m.back = m.mode || "main"; m.mode = "data"; this._renderModal(); }
     else if (a === "errxback") { m.mode = m.back && m.back !== "data" && m.back !== "del" ? m.back : "main"; m.back = ""; this._renderModal(); }
-    else if (a === "errxsend") { m.busy = true; this._renderModal(); cfg("send").then((r) => { m.busy = false; re(); const S = r.send || {}; this._toast(S.sent ? `${S.n} ${S.n === 1 ? "Fehler" : "Fehler"} gesendet` : S.why === "nichts" ? "Nichts Neues zu senden" : S.why === "noch nicht" ? "Server nimmt Fehlerberichte noch nicht an" : "Server nicht erreichbar – später erneut"); }).catch(() => { m.busy = false; re(); fail(); }); }
+    else if (a === "errxsend") { m.busy = true; this._renderModal(); cfg("send").then((r) => { m.busy = false; re(); const S = r.send || {}; this._toast(S.sent ? `${S.n} ${S.n === 1 ? "Fehler" : "Fehler"} gesendet` : S.why === "nichts" ? "Nichts Neues zu senden" : S.why === "noch nicht" ? "Server nimmt Fehlerberichte noch nicht an" : S.why === "zu oft" ? "Gerade erst gesendet – in einer Stunde wieder möglich" : "Server nicht erreichbar – später erneut"); }).catch(() => { m.busy = false; re(); fail(); }); }
     else if (a === "errxdel") { m.mode = "del"; this._renderModal(); }
     else if (a === "errxdelok") cfg("forget").then((r) => { m.mode = "main"; re(); this._toast(r.forgotten ? "Gelöscht, Senden aus" : "Hier gelöscht, Server nicht erreichbar"); }).catch(fail);
   }

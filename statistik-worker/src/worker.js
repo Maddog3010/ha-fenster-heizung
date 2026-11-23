@@ -1,11 +1,12 @@
 // Statistik-Worker für „Strom & Wärme“ – Versions-Statistik auf Cloudflare Workers + D1.
 //
-//   stats.stromwaerme.dev  Eingang:   nur POST /v1/ping und POST /v1/forget, gibt nie Daten heraus.
+//   stats.stromwaerme.dev  Eingang:   nur POST /v1/ping, /v1/forget, /v1/errors, /v1/errors/forget – gibt nie Daten heraus.
 //   dash.stromwaerme.dev   Dashboard: nur mit gültigem Cloudflare-Access-Token (wird hier geprüft, nicht nur vorausgesetzt).
 //
 // Gespeichert wird je Installation: zufällige Kennung, Version, Kanal, erster/letzter Tag. Keine IP-Adresse,
 // kein User-Agent. Die Begrenzung pro Absender übernimmt eine Cloudflare-Rate-Limit-Regel (siehe Anleitung).
 
+import { validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs } from "./fehler.js";
 export const SCHEMAS = [1, 2];   // Schema 1: ohne Module · Schema 2: mit Modulliste
 export const MODULES = { ww: "2 Warmwasser", en: "3 Energie", gs: "4 Gerätestrom", lu: "5 Lüftung", rb: "6 Rollläden", wp: "7 Wärmepumpe", ev: "8 E-Auto", wx: "9 Wetter", ga: "10 Garten", sf: "11 Sicherheit", pl: "12 Pool & Sauna", bt: "13 Batterie", dt: "14 Stromtarif", wa: "15 Wartung", sp: "16 Prognose", ef: "19 Hausfluss" };
 const MAX_BODY = 1024;
@@ -267,8 +268,8 @@ export function render(r, retention = "180") {
   const legend = r.week_versions.map((v, k) => `<span><i style="background:${VCOL[k]}"></i>${e(v)}</span>`).join("");
   const t50 = r.t50 !== null ? `${r.t50} Tage` : "–";
   return `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>Strom &amp; Wärme · Statistik</title><style>${CSS}</style></head><body><div class="w">
-<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Welche Version ist im Einsatz? · anonym · Version und Module</small></div><span class="chip">nur du · Stand ${e(r.today)}</span></div>
+<meta name="robots" content="noindex"><title>Strom &amp; Wärme · Statistik</title><style>${CSS}${ERR_CSS}</style></head><body><div class="w">
+<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Welche Version ist im Einsatz? · anonym · Version und Module</small></div><span class="chip">nur du · Stand ${e(r.today)}</span></div>${tabs("v")}
 <div class="k"><div class="c"><div class="t">Aktive Installationen</div><div class="n">${r.a30}</div><div class="s">30 Tage · ${r.a7} in den letzten 7 Tagen</div></div>
 <div class="c"><div class="t">Neu diese Woche</div><div class="n">+${r.new7}</div><div class="s">${r.inactive} Installationen seit &gt;14 Tagen inaktiv</div></div>
 <div class="c"><div class="t">Auf neuester Version</div><div class="n">${r.newest_share} %</div><div class="s">${e(r.newest || "–")}</div></div>
@@ -317,11 +318,22 @@ const json = (code, body) =>
 
 async function ingest(req, env, url) {
   if (req.method === "GET" && url.pathname === "/health") return json(200);
-  if (req.method !== "POST" || !["/v1/ping", "/v1/forget"].includes(url.pathname)) return json(404, { ok: false });
+  if (req.method !== "POST" || !["/v1/ping", "/v1/forget", "/v1/errors", "/v1/errors/forget"].includes(url.pathname)) return json(404, { ok: false });
   const raw = await req.arrayBuffer();
-  if (raw.byteLength === 0 || raw.byteLength > MAX_BODY) return json(413, { ok: false });
+  if (raw.byteLength === 0 || raw.byteLength > (url.pathname === "/v1/errors" ? ERR_MAX_BODY : MAX_BODY)) return json(413, { ok: false });
   let d;
   try { d = JSON.parse(new TextDecoder().decode(raw)); } catch { return json(400, { ok: false }); }
+  if (url.pathname === "/v1/errors/forget") {   /* Fehler-Statistik: alle Berichte einer Kennung löschen */
+    const id = d && typeof d === "object" ? d.id : null;
+    if (typeof id === "string" && ID_RE.test(id)) { await dbErrForget(env.DB, id); return json(200); }
+    return json(400, { ok: false });
+  }
+  if (url.pathname === "/v1/errors") {
+    const p = validErrors(d);
+    if (!p) return json(400, { ok: false });
+    const res = await dbErrors(env.DB, p, Date.now());
+    return res === "ok" ? json(200, { ok: true, n: p.errors.length }) : json(429, { ok: false, error: res });
+  }
   if (url.pathname === "/v1/forget") {
     const id = d && typeof d === "object" ? d.id : null;
     if (typeof id === "string" && ID_RE.test(id)) { await dbForget(env.DB, id); return json(200); }
@@ -333,11 +345,28 @@ async function ingest(req, env, url) {
   return res === "ok" ? json(200) : json(429, { ok: false, error: res });
 }
 
+const page = (title, body, today) => `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>${title}</title><style>${CSS}${ERR_CSS}</style></head><body><div class="w">
+<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Fehlerberichte · freiwillig · bereinigt</small></div><span class="chip">nur du · Stand ${e(today)}</span></div>${tabs("f")}${body}
+<div class="f">Nur Installationen, die Fehlerberichte eingeschaltet haben. Berichte älter als 90 Tage werden gelöscht.</div></div></body></html>`;
+const html = (s, code = 200) => new Response(s, { status: code, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
+
 async function dashboard(req, env, url) {
-  if (req.method !== "GET" || url.pathname !== "/") return json(404, { ok: false });
+  const fm = /^\/fehler(?:\/([0-9a-f]{12}))?\/?$/.exec(url.pathname);
+  if (req.method !== "GET" || (url.pathname !== "/" && !fm)) return json(404, { ok: false });
   if (!(await verifyAccess(req.headers.get("cf-access-jwt-assertion"), env))) return new Response("Zugriff verweigert", { status: 403, headers: { "cache-control": "no-store" } });
-  const r = await loadAndCompute(env.DB, S(Date.now()));
-  return new Response(render(r, env.RETENTION_DAYS || "180"), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
+  const today = S(Date.now());
+  if (fm && fm[1]) {
+    const D = await errLoadOne(env.DB, fm[1], today);
+    return D ? html(page("Fehler · Strom &amp; Wärme", errRenderOne(D), today)) : html(page("Fehler · Strom &amp; Wärme", '<div class="c"><div class="empty">Diesen Fehler gibt es nicht (mehr).</div></div>', today), 404);
+  }
+  if (fm) {
+    const q = {}; for (const k of ["tage", "mod", "src", "neu", "alle"]) { const v = url.searchParams.get(k); if (v) q[k] = v.slice(0, 40); }
+    const days = [30, 90].includes(+q.tage) ? +q.tage : 7;
+    return html(page("Fehler · Strom &amp; Wärme", errRender(await errLoad(env.DB, today, days), q), today));
+  }
+  const r = await loadAndCompute(env.DB, today);
+  return html(render(r, env.RETENTION_DAYS || "180"));
 }
 
 export default {
@@ -348,6 +377,6 @@ export default {
     return json(404, { ok: false });
   },
   async scheduled(_ev, env, ctx) {
-    ctx.waitUntil(dbCleanup(env.DB, +(env.RETENTION_DAYS || 180), Date.now()));
+    ctx.waitUntil(Promise.all([dbCleanup(env.DB, +(env.RETENTION_DAYS || 180), Date.now()), dbErrCleanup(env.DB, Date.now())]));
   },
 };
