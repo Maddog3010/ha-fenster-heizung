@@ -1,6 +1,6 @@
   /* ================= Versions-Statistik (freiwillig, anonym) =================
      Popup einmalig nach dem Update (nur Administratoren, nicht im Tablet-Modus) und Seite Einstellungen → System → Versions-Statistik.
-     Gesendet wird höchstens 1× pro Tag: zufällige Kennung, Versionsnummer, Kanal und die Kurzzeichen der eingeschalteten Module (stats.py). Ohne „Ja“ wird nichts gesendet. */
+     Gesendet wird höchstens 1× pro Tag: zufällige Kennung, Versionsnummer, Kanal, die Kurzzeichen der eingeschalteten Module und die HA-Version ohne Patch-Stufe (stats.py). Ohne „Ja“ wird nichts gesendet. */
   _stsS() { return this._stsD || { ok: false, asked: true, on: false, version: "", channel: "stable", id: "", last_ok: 0, last_try: 0, next: 0, err: "", url_dev: "", payload: null }; }
   _stsWS(act, extra = {}) {
     return this._hass.callWS({ type: "fenster_heizung/stats", act, ...extra }).then((r) => { this._stsD = r; return r; });
@@ -51,7 +51,7 @@
       return wrap(`${ic("chart", 18)} Hilf mit, Strom &amp; Wärme besser zu machen`, "",
         `<p class="stsp">Darf die Integration anonym mitteilen, welche Version du nutzt und welche Module eingeschaltet sind? Es werden <b>nur diese Angaben</b> erhoben – sonst nichts.</p>
          <div class="stsbox"><b class="stsh">Das wird gesendet (höchstens 1× pro Tag)</b>
-           <ul><li>Zufällige Kennung (ohne Bezug zu dir oder Home Assistant)</li><li>Versionsnummer, z. B. ${esc(S.version || "2026.11.4")}</li><li>Kanal: Stabil oder Beta</li><li>Welche Module an sind, nur als Kurzzeichen (z. B. ww, en, gs)</li></ul></div>
+           <ul><li>Zufällige Kennung (ohne Bezug zu dir oder Home Assistant)</li><li>Versionsnummer, z. B. ${esc(S.version || "2026.11.4")}</li><li>Kanal: Stabil oder Beta</li><li>Welche Module an sind, nur als Kurzzeichen (z. B. ww, en, gs)</li><li>Home-Assistant-Version ohne Patch-Stufe, z. B. 2026.11</li></ul></div>
          <div class="mut sm">Nicht gesendet: Name, Standort, Räume, Geräte, Sensorwerte, eigene Erweiterungen. Deine IP-Adresse wird nicht gespeichert.</div>
          <div class="stslks"><button class="lnk" data-act="stsdata">Gesendete Daten ansehen</button><span>·</span>${link}</div>
          <div class="gbtns"><button class="btn2 pri" data-act="stsyes">Ja, teilnehmen</button><button class="btn2" data-act="stsno">Nein danke</button></div>
@@ -73,7 +73,7 @@
       : `<div class="stsbox">Du hilfst, Strom &amp; Wärme besser zu machen, wenn du die Statistik einschaltest. Du kannst das jederzeit ändern.</div>
        <div class="gbtns"><button class="btn2 pri" data-act="stsask">Einschalten und Erklärung ansehen</button></div>`;
     return wrap("Versions-Statistik", "Einstellungen › System",
-      `<div class="vrow"><span><b>Versions-Statistik</b><small class="mut" style="display:block">${S.on ? "Sendet höchstens 1× pro Tag anonym deine Versionsnummer und welche Module an sind. Sonst nichts." : "Aus. Es wird nichts gesendet und es gibt keine Kennung."}</small></span>${sw}</div>
+      `<div class="vrow"><span><b>Versions-Statistik</b><small class="mut" style="display:block">${S.on ? "Sendet höchstens 1× pro Tag anonym deine Versionsnummer, welche Module an sind und die Home-Assistant-Version (ohne Patch-Stufe). Sonst nichts." : "Aus. Es wird nichts gesendet und es gibt keine Kennung."}</small></span>${sw}</div>
        ${body}<div class="stslks"><button class="lnk" data-act="stsdata">Was wird gesendet?</button><span>·</span>${link}</div>`, "close");
   }
   _stsAct(a, b) {

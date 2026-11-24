@@ -491,16 +491,19 @@ Seit `2026.11.4` fragt die Integration einmalig, ob sie **anonym mitteilen darf,
 **Was gesendet wird** (höchstens 1× pro Tag):
 
 ```json
-{ "schema": 2, "id": "7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41", "version": "2026.11.4", "channel": "stable", "modules": ["ww", "en", "gs"] }
+{ "schema": 3, "id": "7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41", "version": "2026.11.4", "channel": "stable", "modules": ["ww", "en", "gs"], "ha": "2026.11" }
 ```
 
 - `id`: eine zufällige Kennung, die erst bei „Ja“ erzeugt wird. Sie hat keinen Bezug zu dir, deinem Home Assistant oder deinem GitHub-Konto.
 - `version` und `channel`: die installierte Versionsnummer und ob es eine stabile oder eine Testversion (Beta) ist.
 - `modules`: welche Module eingeschaltet sind, nur als Kurzzeichen (z. B. `ww` = Modul 2 Warmwasser). Nur diese festen Kurzzeichen werden angenommen, eigene Erweiterungen und alles andere nie.
+- `ha` (ab 2026.11.5b1): die Home-Assistant-Version ohne Patch-Stufe, z. B. `2026.11`. Damit lässt sich entscheiden, ab wann alte Home-Assistant-Versionen nicht mehr unterstützt werden müssen.
+
+**Fehlerberichte** (eigene Zustimmung, eigene Kennung, Einstellungen → System → Fehlerprotokoll): Ab 2026.11.5b1 geht einmal am Tag ein Bericht raus – auch ohne neue Fehler als `"errors": []` („0 Fehler“), damit sich eine Fehlerquote je Version berechnen lässt. Er enthält zusätzlich die Kurzzeichen der aktiven Module (`"mods": ["gr", "ev"]`) für „Fehler je Modul“. Sonst bleibt alles wie bisher: bereinigte Programmfehler, keine Namen, Entitäten, Werte oder IP-Adressen.
 
 **Was nie gesendet wird:** Name, E-Mail, Standort, Räume, Geräte, Sensor- und Verbrauchswerte, Anwesenheit, die Instanz-ID von Home Assistant und Zugangsdaten. Die IP-Adresse wird auf dem Server weder gespeichert noch protokolliert.
 
-**Wohin:** an einen Statistik-Dienst des Entwicklers, der auf Cloudflare läuft (ein kleiner Worker mit Datenbank), nicht bei einem Analyse-Dienst. Gespeichert werden Kennung, Version, Kanal, die Modul-Kurzzeichen sowie erster und letzter Tag der Meldung, keine IP-Adressen. Cloudflare sieht als Betreiber technisch die Verbindungsdaten, wertet sie aber nicht für diese Statistik aus. Kennungen, die 180 Tage nicht gemeldet haben, werden automatisch gelöscht. Die Auswertung sieht nur der Entwickler (Anmeldung per E-Mail-Code).
+**Wohin:** an einen Statistik-Dienst des Entwicklers, der auf Cloudflare läuft (ein kleiner Worker mit Datenbank), nicht bei einem Analyse-Dienst. Gespeichert werden Kennung, Version, Kanal, die Modul-Kurzzeichen, die Home-Assistant-Version (ohne Patch-Stufe) sowie erster und letzter Tag der Meldung, keine IP-Adressen. Cloudflare sieht als Betreiber technisch die Verbindungsdaten, wertet sie aber nicht für diese Statistik aus. Kennungen, die 180 Tage nicht gemeldet haben, werden automatisch gelöscht. Die Auswertung sieht nur der Entwickler (Anmeldung per E-Mail-Code).
 
 **Deine Rechte und Kontrolle:** Unter **Einstellungen → System → Versions-Statistik** kannst du jederzeit ausschalten, die genaue Meldung ansehen, die Kennung erneuern und **deine Daten auf dem Server löschen**. Beim Ausschalten wird der Server gebeten, die Kennung zu vergessen. Fragen oder Löschwünsche: support@stromwaerme.dev. Die Zahlen sind Untergrenzen (nur Teilnehmende zählen) und zeigen Trends, keine absolute Nutzerzahl.
 

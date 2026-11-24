@@ -49,7 +49,7 @@ def test_valid_ping():
         assert S.valid_ping({**ok, "schema": 2, "modules": badm}) is None
     assert S.valid_ping({**ok, "channel": "beta"}) is None            # passt nicht zur Version
     assert S.valid_ping({**ok, "version": "2026.11.4b3", "channel": "beta"})["channel"] == "beta"
-    for bad in [{**ok, "schema": 3}, {**ok, "schema": 2}, {**ok, "id": "abc"}, {**ok, "version": "x"}, {**ok, "id": i.upper()}, [], "x", None, {}]:
+    for bad in [{**ok, "schema": 4}, {**ok, "schema": 2}, {**ok, "id": "abc"}, {**ok, "version": "x"}, {**ok, "id": i.upper()}, [], "x", None, {}]:
         assert S.valid_ping(bad) is None
 
 

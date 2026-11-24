@@ -23,7 +23,7 @@ def test_channel():
 
 def test_payload_has_exactly_five_fields():
     p = L.build_payload(GOOD_ID, "2026.11.4", ["en", "ww"])
-    assert p == {"schema": 2, "id": GOOD_ID, "version": "2026.11.4", "channel": "stable", "modules": ["ww", "en"]}
+    assert p == {"schema": 3, "id": GOOD_ID, "version": "2026.11.4", "channel": "stable", "modules": ["ww", "en"], "ha": ""}
     assert L.build_payload(GOOD_ID, "2026.11.4")["modules"] == []
 
 
@@ -86,6 +86,7 @@ def test_stats_start_with_saved_answer():
     sys.modules["aiohttp"].ClientTimeout = lambda **k: None
     sys.modules["aiohttp"].ClientError = OSError
     stub("homeassistant.core", CALLBACK_TYPE=object, HomeAssistant=object)
+    stub("homeassistant.const", __version__="2026.11.3")
     sys.modules["homeassistant.helpers.aiohttp_client"].async_get_clientsession = lambda h: None
     stub("homeassistant.helpers.event", async_call_later=lambda *a, **k: (lambda: None), async_track_time_interval=lambda *a, **k: (lambda: None))
     stub("homeassistant.helpers.storage", Store=_Store)
@@ -107,3 +108,15 @@ def test_stats_start_with_saved_answer():
     vs = mod.VersionStats(types.SimpleNamespace(data={}))
     asyncio.new_event_loop().run_until_complete(vs.async_start())
     assert vs.on and vs.asked and vs.id.startswith("7f3c")
+
+
+def test_ha_minor_build6():
+    """Build 6: Home-Assistant-Version nur als Jahr.Monat, ohne Patch-Stufe und ohne Beta/Dev-Zusatz."""
+    assert L.ha_minor("2026.11.3") == "2026.11"
+    assert L.ha_minor("2026.6.0b2") == "2026.6"
+    assert L.ha_minor("2026.12.0.dev20261120") == "2026.12"
+    assert L.ha_minor("2026.06.1") == "2026.6"
+    for bad in ("", None, "abc", "26.11", 2026.11):
+        assert L.ha_minor(bad) == ""
+    p = L.build_payload(GOOD_ID, "2026.11.5b1", ["ev"], "2026.11.3")
+    assert p == {"schema": 3, "id": GOOD_ID, "version": "2026.11.5b1", "channel": "beta", "modules": ["ev"], "ha": "2026.11"}

@@ -6,6 +6,14 @@ Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich a
 
 Erste Testversion für 2026.11.5 (Branch `beta`). Hotfixes der stabilen Version 2026.11.4.x entstehen auf `main` und werden danach hierher übernommen.
 
+### Neu
+- **Fehlerberichte · Tages-Meldung:** Wer Fehlerberichte eingeschaltet hat, schickt jetzt einmal am Tag auch dann eine Meldung, wenn es keine neuen Fehler gibt („0 Fehler“ mit Version, Kanal und Home-Assistant-Version). Nur so lässt sich ausrechnen, wie viele Installationen eine Version fehlerfrei nutzen. Dieselbe Kennung wie bisher, keine neuen persönlichen Daten.
+- **Fehlerberichte · Module:** Der Bericht enthält die Kurzzeichen der aktiven Module (z. B. gr, ev, wx), damit der Entwickler sieht, welches Modul im Verhältnis zur Nutzung die meisten Fehler macht. Die Kennungen von Fehlerberichten und Versions-Statistik bleiben getrennt.
+- **Versions-Statistik · Home Assistant:** Die tägliche Meldung enthält die Home-Assistant-Version ohne Patch-Stufe (z. B. 2026.11). Damit lässt sich begründet entscheiden, ab wann alte Home-Assistant-Versionen nicht mehr unterstützt werden.
+
+### Geändert
+- Die Datenschutz-Hinweise beim Einschalten von Fehlerberichten und Versions-Statistik nennen die neuen Angaben. „Was wird gesendet?“ zeigt den Bericht genau so, auch die leere Tages-Meldung.
+
 ## [2026.11.4.5] - 2026-11-24
 
 Korrekturen zu gemeldeten Fehlern.

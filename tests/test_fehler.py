@@ -159,7 +159,7 @@ def test_report_only_new_not_skipped_and_mark_sent():
     L.add(st, src="backend", kind="TypeError", where="wallbox.py:976 add_km", msg="x", today=D, version="2026.11.4.1")
     st["cfg"]["skip"] = [a["fp"]]
     r = L.build_report(st, "2026.11.5b2", "2026.11.2")
-    assert set(r) == {"schema", "id", "version", "channel", "ha", "errors"} and r["channel"] == "beta"
+    assert set(r) == {"schema", "id", "version", "channel", "ha", "mods", "errors"} and r["channel"] == "beta"
     assert [e["fp"] for e in r["errors"]] == [b["fp"]] and r["errors"][0]["n"] == 2
     assert set(r["errors"][0]) == {"fp", "src", "mod", "kind", "where", "msg", "n", "first", "last", "vers"}   # nichts darüber hinaus
     L.mark_sent(st, r, 1000.0)
@@ -195,7 +195,8 @@ def test_manager_send_forget_and_404():
         await m.async_answer(True)
         assert m._st["cfg"]["on"] and L._ID.match(m._st["cfg"]["id"])
         r = await m.async_send(force=True)
-        assert r == {"sent": False, "why": "nichts"} and not calls          # ohne Fehler wird nichts geschickt
+        assert r == {"sent": False, "n": 0, "why": "noch nicht"} and calls[-1][1]["errors"] == []   # Build 6: Tages-Meldung „0 Fehler“
+        assert calls[-1][1]["schema"] == 2 and calls[-1][1]["mods"] == [] and calls[-1][1]["id"] == m._st["cfg"]["id"]
         m.record_threadsafe("backend", "TypeError", "wallbox.py:1 x", "boom 5")
         r = await m.async_send(force=True)
         assert calls[-1][0] == "/v1/errors" and not r["sent"] and r["why"] == "noch nicht"   # Server kennt /v1/errors noch nicht
@@ -205,5 +206,22 @@ def test_manager_send_forget_and_404():
         assert r["sent"] and m.snapshot()["items"][0]["nd"] == 0
         idv = m._st["cfg"]["id"]
         s = await m.async_forget()
-        assert calls[-1] == ("/v1/errors/forget", {"schema": 1, "id": idv}) and s["forgotten"] and not s["cfg"]["on"] and s["cfg"]["id"] == ""
+        assert calls[-1] == ("/v1/errors/forget", {"schema": 2, "id": idv}) and s["forgotten"] and not s["cfg"]["on"] and s["cfg"]["id"] == ""
     asyncio.run(run())
+
+
+def test_build6_daily_report_and_modules():
+    """Build 6: Bericht auch ohne Fehler (Tages-Meldung) und mit den Kurzzeichen der aktiven Module."""
+    st = L.empty()
+    st["cfg"].update(on=True, id="7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41")
+    r = L.build_report(st, "2026.11.5b1", "2026.11.3", mods=["ev", "gr", "xmein", "<b>"])
+    assert r["schema"] == 2 and r["errors"] == [] and r["mods"] == ["gr", "ev"]
+    assert set(r) == {"schema", "id", "version", "channel", "ha", "mods", "errors"}
+    assert L.build_report(st, "2026.11.5b1")["mods"] == []
+
+
+def test_build6_active_mods():
+    on = {"gr": True, "ww": False, "ev": True, "wx": 1, "xmein": True}
+    addons = {"licht": {"v": "1"}, "muell": {"paused": True}, "abrechnung": {}, "saugroboter": {}, "boese": "x"}
+    assert L.active_mods(on, addons) == ["gr", "ev", "li", "ab"]
+    assert L.active_mods(None, None) == [] and L.active_mods([1], [2]) == []

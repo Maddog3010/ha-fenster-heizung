@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-SCHEMA = 2
+SCHEMA = 3                 # Build 6: zusätzlich die Home-Assistant-Version ohne Patch-Stufe („2026.11“)
 # Module, deren Ein/Aus-Zustand gemeldet wird (Kurzzeichen wie in der Oberfläche). Eigene Erweiterungen (x…) nie.
 MODULE_KEYS = ("ww", "en", "gs", "lu", "rb", "wp", "ev", "wx", "ga", "sf", "pl", "bt", "dt", "wa", "sp", "ef")
 INTERVAL = 23 * 3600      # frühestens nach 23 Stunden wieder melden (Fehlversuche zählen mit)
@@ -23,12 +23,18 @@ def active_modules(on: Any) -> list[str]:
     return [k for k in MODULE_KEYS if on.get(k) is True]
 
 
-def build_payload(inst_id: str, version: str, modules: Any = None) -> dict[str, Any] | None:
+def ha_minor(ha: Any) -> str:
+    """Home-Assistant-Version ohne Patch-Stufe und ohne Beta/Dev-Zusatz: „2026.11.3“ → „2026.11“. Unbekannt → „“."""
+    m = re.match(r"^(\d{4})\.(\d{1,2})(?:\D|$)", ha) if isinstance(ha, str) else None
+    return f"{m.group(1)}.{int(m.group(2))}" if m else ""
+
+
+def build_payload(inst_id: str, version: str, modules: Any = None, ha: Any = "") -> dict[str, Any] | None:
     """Die komplette Meldung – oder None, wenn Kennung oder Version nicht gültig sind (dann wird nichts gesendet)."""
     if not _ID_RE.match(inst_id or "") or not _VER_RE.match(version or ""):
         return None
     mods = [k for k in MODULE_KEYS if isinstance(modules, (list, tuple, set)) and k in modules]
-    return {"schema": SCHEMA, "id": inst_id, "version": version, "channel": channel_of(version), "modules": mods}
+    return {"schema": SCHEMA, "id": inst_id, "version": version, "channel": channel_of(version), "modules": mods, "ha": ha_minor(ha)}
 
 
 def next_due(last_ok: float, last_try: float) -> float:
