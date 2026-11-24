@@ -2,7 +2,7 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
-## [2026.11.5b3] - unveröffentlicht
+## [2026.11.5b3] - 2026-11-24
 
 Genauere Fehlerberichte.
 
