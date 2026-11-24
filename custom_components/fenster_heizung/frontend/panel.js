@@ -14449,7 +14449,8 @@ class FensterHeizungPanel extends HTMLElement {
   _errRow(row) {
     const n = this._errD ? this._errD.items.length : 0;
     const on = !!(this._errD && this._errD.cfg && this._errD.cfg.on);
-    return row("alert", "Fehlerprotokoll", `Programmfehler der letzten 30 Tage${on ? " · Berichte an" : " · zum Kopieren für den Support"}`, "errxopen", "", n ? `<em class="sxc warn">${n}</em>` : `<em class="sxc ok">0</em>`);
+    const u = (this._errD && this._errD.upd && this._errD.upd.n) || 0;   /* Build 7: in einer neueren Version behoben */
+    return row("alert", "Fehlerprotokoll", u ? `${u} ${u === 1 ? "Fehler ist" : "Fehler sind"} in ${esc(this._errD.upd.to)} behoben – Update verfügbar` : `Programmfehler der letzten 30 Tage${on ? " · Berichte an" : " · zum Kopieren für den Support"}`, "errxopen", "", u ? `<em class="sxc ok">${ic("download", 13)} ${u}</em>` : n ? `<em class="sxc warn">${n}</em>` : `<em class="sxc ok">0</em>`);
   }
   _errLoad() { return this._hass.callWS({ type: "fenster_heizung/err_list" }).then((r) => { this._errD = r; return r; }); }
   _errModal() {
@@ -14458,7 +14459,9 @@ class FensterHeizungPanel extends HTMLElement {
     const css = `<style>.erri{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}.erri.off{opacity:.6}.errh{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin-bottom:4px}.errs{border-radius:999px;padding:1px 8px;font-size:.72rem;font-weight:700;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent)}.errn{margin-left:auto;font-weight:700}
       .errm{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;word-break:break-word;margin:2px 0}.errw{font-family:ui-monospace,Menlo,monospace}.errb{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:6px;align-items:center}.errb .lnk{display:inline-flex;align-items:center;gap:4px}.errst{font-size:.74rem;color:var(--mut)}.errst.on{color:var(--teal)}
       .errempty{display:flex;flex-direction:column;align-items:center;gap:4px;padding:22px 0;color:var(--teal)}.errempty span{color:var(--mut);font-size:.86rem}.errnote{border-radius:12px;padding:10px 12px;margin-bottom:10px;background:color-mix(in srgb,var(--teal) 9%,transparent);font-size:.86rem}
-      .errsend{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}.errsend .vrow{margin:0}</style>`;
+      .errsend{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}.errsend .vrow{margin:0}
+      .errfx{border-radius:999px;padding:1px 9px;font-size:.72rem;font-weight:700;margin-left:auto;color:var(--c);background:color-mix(in srgb,var(--c) 15%,transparent);white-space:nowrap}.errfx+.errn{margin-left:0}
+      .errfxl{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;margin-top:6px;font-size:.84rem}.errupd{display:flex;align-items:center;gap:10px;border-radius:12px;padding:10px 12px;margin-bottom:10px;background:color-mix(in srgb,var(--teal) 14%,transparent)}.errupd span{flex:1}</style>`;
     const wrap = (title, sub, body, ov) => `<div class="ov" data-act="${ov}"></div><div class="sheet stssh" role="dialog" aria-modal="true" aria-label="${esc(title)}">${css}<div class="sh"><div><b>${title}</b>${sub ? `<span>${sub}</span>` : ""}</div><button class="ibtn" data-act="${m.mode === "ask" ? "errxno" : "close"}" aria-label="Schließen">${ic("close", 20)}</button></div>${body}</div>`;
     if (m.mode === "ask") {
       return wrap(`${ic("alert", 18)} Fehlerberichte an den Entwickler?`, "",
@@ -14486,14 +14489,21 @@ class FensterHeizungPanel extends HTMLElement {
           ${C.err && C.last_try > C.last_ok ? `<div class="stsnote">${C.err === "noch nicht" ? "Der Server nimmt Fehlerberichte noch nicht an. Die Berichte bleiben hier und werden später nachgeschickt." : "Der Server war zuletzt nicht erreichbar. Nichts geht verloren – der nächste Versuch kommt von selbst."}</div>` : ""}
           <div class="gbtns"><button class="btn2" data-act="errxdata">Das wird gesendet</button><button class="btn2" data-act="errxsend"${m.busy ? " disabled" : ""}>${m.busy ? "Sendet …" : "Jetzt senden"}</button></div>
           <div class="gbtns"><button class="btn2 stsdan" data-act="errxdel">Meine Berichte auf dem Server löschen</button></div>` : `<div class="stslks"><button class="lnk" data-act="errxdata">Was würde gesendet?</button></div>`}</div>` : "";
+    /* Build 7: Rückmeldung vom Entwickler – nur mit Zustimmung, „ignoriert“ zeigt nichts */
+    const fxChip = (f) => !f ? "" : f.s === "behoben" ? `<span class="errfx" style="--c:var(--teal)">${f.fx ? `Behoben in ${esc(f.fx)}` : "Behoben"}</span>` : f.s === "arbeit" ? `<span class="errfx" style="--c:#60a5fa">in Arbeit</span>` : `<span class="errfx" style="--c:#94a3b8">bekannt</span>`;
+    const fxLine = (f) => !f || f.s !== "behoben" || !f.fx ? (f && f.s === "arbeit" ? `<div class="errfxl mut">Der Entwickler arbeitet an diesem Fehler.</div>` : "")
+      : f.again ? `<div class="errfxl mut">Trotz Korrektur in ${esc(f.fx)} wieder aufgetreten – der Entwickler sieht das mit dem nächsten Bericht.</div>`
+      : f.upd ? `<div class="errfxl"><span>Behoben in ${esc(f.fx)}${f.beta_fix ? " (Testversion)" : ""} – Update installieren</span><button class="lnk" data-act="errxupd">${ic("download", 14)} Zum Update</button></div>`
+      : f.wait ? `<div class="errfxl mut">Behoben in der Testversion ${esc(f.fx)} – kommt mit der nächsten stabilen Version.</div>` : "";
+    const U = (D && D.upd) || {}, updBox = U.n ? `<div class="errupd">${ic("download", 20)}<span><b>Update verfügbar</b><br>${U.n === 1 ? "1 deiner Fehler ist" : `${U.n} deiner Fehler sind`} in einer neueren Version behoben (${esc(U.to)}).</span><button class="btn2 pri" data-act="errxupd" style="flex:none">Zum Update</button></div>` : "";
     const list = !D ? `<div class="mut sm">Wird geladen …</div>` : !D.items.length ? `<div class="errempty">${ic("check", 22)}<b>Keine Programmfehler</b><span>In den letzten ${D.keep_days} Tagen ist nichts aufgetreten.</span></div>`
-      : D.items.map((e) => { const sk = skip.has(e.fp); return `<div class="erri${on && sk ? " off" : ""}"><div class="errh"><span class="errs" style="--c:${(SRC[e.src] || ["", "#94a3b8"])[1]}">${(SRC[e.src] || [e.src])[0]}</span><b>${esc(e.mod)}</b><span class="errn">${num(e.n)}×</span><span class="mut sm">${e.first === e.last ? fd(e.last) : `${fd(e.first)} – ${fd(e.last)}`}</span></div>
+      : D.items.map((e) => { const sk = skip.has(e.fp); return `<div class="erri${on && sk ? " off" : ""}"><div class="errh"><span class="errs" style="--c:${(SRC[e.src] || ["", "#94a3b8"])[1]}">${(SRC[e.src] || [e.src])[0]}</span><b>${esc(e.mod)}</b>${fxChip(e.fix)}<span class="errn">${num(e.n)}×</span><span class="mut sm">${e.first === e.last ? fd(e.last) : `${fd(e.first)} – ${fd(e.last)}`}</span></div>
           <div class="errm">${esc(e.kind)}: ${esc(e.msg || "–")}</div>${e.where ? `<div class="mut sm errw">${esc(e.where)}</div>` : ""}
-          <div class="mut sm">Version ${esc((e.vers || []).join(", ") || "?")}${e.ha ? ` · Home Assistant ${esc(e.ha)}` : ""}</div>
+          <div class="mut sm">Version ${esc((e.vers || []).join(", ") || "?")}${e.ha ? ` · Home Assistant ${esc(e.ha)}` : ""}</div>${fxLine(e.fix)}
           <div class="errb">${on ? `<span class="errst ${sk ? "" : "on"}">${sk ? "wird nicht gesendet" : e.nd > 0 ? "kommt in den nächsten Bericht" : "schon gesendet"}</span><button class="lnk" data-act="errxskip" data-k="${esc(e.fp)}" data-v="${sk ? "0" : "1"}">${sk ? "wieder senden" : "weglassen"}</button>` : ""}<button class="lnk" data-act="errxcopy" data-k="${esc(e.fp)}">${ic("copy", 14)} Kopieren</button><button class="lnk" data-act="errxdelone" data-k="${esc(e.fp)}">Entfernen</button></div></div>`; }).join("");
     return wrap("Fehlerprotokoll", D ? `${D.items.length} Fehler · letzte ${D.keep_days} Tage` : "",
       `<div class="errnote">Nur Programmfehler von Strom &amp; Wärme, bereinigt: keine Entitäten, Namen, Werte oder Adressen. Mit „Kopieren“ kannst du einen Fehler für den Support oder ein GitHub-Issue weitergeben.</div>
-      ${send}${list}${D && D.items.length ? `<div class="gbtns" style="margin-top:6px"><button class="btn2" data-act="errxcopyall">Alle kopieren</button><button class="btn2" data-act="errxclear">Alle löschen</button></div>` : ""}`, "close");
+      ${updBox}${send}${list}${D && D.items.length ? `<div class="gbtns" style="margin-top:6px"><button class="btn2" data-act="errxcopyall">Alle kopieren</button><button class="btn2" data-act="errxclear">Alle löschen</button></div>` : ""}`, "close");
   }
   /* Einmal fragen (Build 2): wer bei der Versions-Statistik mitmacht oder eine Beta nutzt – sobald nichts anderes offen ist */
   _errInit() {
@@ -14510,6 +14520,7 @@ class FensterHeizungPanel extends HTMLElement {
     const cfg = (act, extra = {}) => this._hass.callWS({ type: "fenster_heizung/err_cfg", act, ...extra }).then((r) => { this._errD = r; return r; });
     const re = () => { this._renderModal(); this._render(); }, fail = () => this._toast("Das ging nicht");
     if (a === "errxopen") { this._modal = { type: "errlog", mode: "main" }; this._renderModal(); this._errLoad().then(() => { if (this._modal && this._modal.type === "errlog") this._renderModal(); this._render(); }).catch(() => this._toast("Fehlerprotokoll nicht erreichbar")); return; }
+    if (a === "errxupd") { this._modal = null; this._renderModal(); this._storeOpen(true); return; }
     if (a === "errxcopy" && D) { const e = D.items.find((x) => x.fp === k); if (e) copy(e.text); return; }
     if (a === "errxcopyall" && D) { copy(D.items.map((e) => e.text).join("\n\n")); return; }
     if (a === "errxdelone" || a === "errxclear") {

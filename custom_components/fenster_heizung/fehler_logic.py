@@ -158,6 +158,9 @@ def clean(raw: Any) -> dict[str, Any]:
                                   "vers": [str(v)[:20] for v in (e.get("vers") or [])][-5:], "ha": str(e.get("ha", ""))[:20],
                                   "dev": {str(a): int(b) for a, b in (e.get("dev") or {}).items() if a in ("handy", "tablet", "pc", "app")},
                                   "nd": max(0, int(e.get("nd", 0)))}
+                srv = clean_srv(e.get("srv"))
+                if srv:
+                    st["items"][k]["srv"] = srv
             except (TypeError, ValueError):
                 continue
     return st
@@ -178,7 +181,7 @@ def as_text(e: dict[str, Any]) -> str:
 
 
 # ------------------------------------------------------------ Build 2: Fehlerberichte senden (eigene Zustimmung)
-SCHEMA = 2          # Build 6: Bericht auch ohne Fehler (Tages-Meldung „0 Fehler“) und mit den Kurzzeichen der aktiven Module
+SCHEMA = 3          # Build 7: „known“ = schon gesendete Fehler, für die der Server den Status zurückmeldet · Build 6: Bericht auch ohne Fehler (Tages-Meldung „0 Fehler“) und mit den Kurzzeichen der aktiven Module
 # Module, die man aus- oder einschalten kann (Kurzzeichen wie in der Versions-Statistik, dazu gr = Modul 0 und die Add-ons).
 # Modul 1 und der Kern sind immer an und brauchen kein Kürzel. Eigene Erweiterungen (x…) werden nie gemeldet.
 MOD_KEYS = ("gr", "ww", "en", "gs", "lu", "rb", "wp", "ev", "wx", "ga", "sf", "pl", "bt", "dt", "wa", "sp", "mu", "li", "ef", "ab")
@@ -225,6 +228,7 @@ def build_report(st: dict[str, Any], version: str, ha: str = "", real: bool = Tr
     return {"schema": SCHEMA, "id": c["id"] if real else "7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41", "version": str(version)[:20],
             "channel": channel_of(version), "ha": str(ha)[:20],
             "mods": [k for k in MOD_KEYS if isinstance(mods, (list, tuple, set)) and k in mods],
+            "known": [e["fp"] for e in view(st) if e["fp"] not in skip and e["fp"] not in {x["fp"] for x in rows} and was_sent(e)][:MAX_ENTRIES],
             "errors": [{"fp": e["fp"], "src": e["src"], "mod": e["mod"], "kind": e["kind"], "where": e["where"], "msg": e["msg"],
                         "n": int(e["nd"]), "first": e["first"], "last": e["last"], "vers": list(e.get("vers") or [])} for e in rows]}
 
@@ -241,3 +245,71 @@ def mark_sent(st: dict[str, Any], report: dict[str, Any], now: float) -> None:
 def is_due(st: dict[str, Any], now: float) -> bool:
     c = st.get("cfg") or {}
     return bool(c.get("on")) and now - max(c.get("last_ok", 0), c.get("last_try", 0)) >= INTERVAL
+
+
+# ------------------------------------------------------------ Build 7: Rückmeldung an den Nutzer (Status der eigenen Fehler)
+SRV_STATUS = ("offen", "arbeit", "behoben")   # „ignoriert“ meldet der Server nicht – dann zeigt die Integration nichts an
+_VER = re.compile(r"^(\d{4})\.(\d{1,2})\.(\d{1,2})(?:\.(\d{1,2}))?(?:b(\d{1,3}))?$")
+
+
+def was_sent(e: dict[str, Any]) -> bool:
+    """Schon einmal gesendet: „nd“ zählt seit dem letzten Senden, „n“ insgesamt – ist n größer, ging ein Teil schon raus."""
+    return int(e.get("n", 0)) > int(e.get("nd", 0))
+
+
+def vkey(v: Any) -> tuple[int, ...]:
+    """Versions-Reihenfolge wie im Worker: 2026.11.4.2 < 2026.11.4.3b1 < 2026.11.4.3 < 2026.11.5b1. Unbekannt → ganz alt."""
+    m = _VER.match(str(v or ""))
+    if not m:
+        return (0, 0, 0, 0, 0, 0)
+    y, mo, r_, h, b = m.groups()
+    return (int(y), int(mo), int(r_), int(h or 0), 0 if b is not None else 1, int(b or 0))
+
+
+def clean_srv(raw: Any) -> dict[str, str] | None:
+    if not isinstance(raw, dict) or raw.get("s") not in SRV_STATUS:
+        return None
+    fx = str(raw.get("fx") or "")
+    return {"s": raw["s"], "fx": fx if raw["s"] == "behoben" and _VER.match(fx) else "", "d": str(raw.get("d") or "")[:10]}
+
+
+def apply_status(st: dict[str, Any], report: dict[str, Any], answer: Any, today: date) -> int:
+    """Antwort des Servers übernehmen. Nur Fehler, nach denen gefragt wurde; was der Server nicht (mehr) meldet, verliert den Status."""
+    asked = {x["fp"] for x in report.get("errors", [])} | set(report.get("known", []))
+    got = answer if isinstance(answer, dict) else {}
+    n = 0
+    for fp in asked:
+        e = st.get("items", {}).get(fp)
+        if e is None:
+            continue
+        srv = clean_srv(got.get(fp))
+        if srv:
+            srv["d"] = today.isoformat()
+            e["srv"] = srv
+            n += 1
+        else:
+            e.pop("srv", None)
+    return n
+
+
+def clear_status(st: dict[str, Any]) -> None:
+    for e in st.get("items", {}).values():
+        e.pop("srv", None)
+
+
+def fix_info(e: dict[str, Any], version: str) -> dict[str, Any] | None:
+    """Was das Fehlerprotokoll zu diesem Fehler anzeigt. upd = in einer neueren Version behoben als der installierten;
+    again = trotz Fix in dieser oder einer neueren Version wieder aufgetreten."""
+    srv = e.get("srv")
+    if not srv:
+        return None
+    out: dict[str, Any] = {"s": srv["s"], "fx": srv.get("fx", ""), "upd": False, "again": False, "beta_fix": False}
+    if srv["s"] == "behoben" and srv.get("fx"):
+        fx = vkey(srv["fx"])
+        cur_beta = channel_of(version) == "beta"
+        out["beta_fix"] = channel_of(srv["fx"]) == "beta"
+        out["again"] = any(vkey(v) >= fx for v in e.get("vers") or [])
+        newer = vkey(version) < fx
+        out["upd"] = newer and (cur_beta or not out["beta_fix"])   # stabile Nutzer warten auf die nächste stabile Version
+        out["wait"] = newer and not out["upd"]
+    return out

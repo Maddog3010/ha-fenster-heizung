@@ -143,11 +143,12 @@ class FehlerSammler:
     # ---- Ansehen
     def snapshot(self) -> dict[str, Any]:
         with self._lock:
-            items = [dict(e, text=L.as_text(e)) for e in L.view(self._st)]
             c = dict(self._st["cfg"])
+            items = [dict(e, text=L.as_text(e), fix=L.fix_info(e, self._version) if c["on"] else None) for e in L.view(self._st)]
             rep = L.build_report(self._st, self._version, HA_VERSION, real=c["on"], mods=self._mods()) or {}
         sts = self.hass.data.get(DOMAIN, {}).get("stats")
-        return {"items": items, "version": self._version, "ha": HA_VERSION, "keep_days": L.KEEP_DAYS,
+        upd = [i for i in items if i["fix"] and i["fix"]["upd"]]
+        return {"items": items, "version": self._version, "upd": {"n": len(upd), "to": max((i["fix"]["fx"] for i in upd), key=L.vkey, default="")}, "ha": HA_VERSION, "keep_days": L.KEEP_DAYS,
                 "cfg": {"asked": c["asked"], "on": c["on"], "id": (c["id"][:4] + "…" + c["id"][-4:]) if c["id"] else "",
                         "last_ok": c["last_ok"], "last_try": c["last_try"], "err": c["err"], "skip": c["skip"],
                         "next": (max(c["last_ok"], c["last_try"]) + L.INTERVAL) if c["on"] else 0,
@@ -205,12 +206,20 @@ class FehlerSammler:
         return L.active_mods(on, getattr(d.get("addons"), "inst", None))
 
     async def _post(self, path: str, body: dict[str, Any]) -> int:
+        return (await self._post_json(path, body))[0]
+
+    async def _post_json(self, path: str, body: dict[str, Any]) -> tuple[int, Any]:
+        """Status und (falls vorhanden) JSON-Antwort. Eine kaputte Antwort zählt wie keine."""
         try:
             sess = async_get_clientsession(self.hass)
             async with sess.post(self.url + path, json=body, timeout=aiohttp.ClientTimeout(total=TIMEOUT)) as r:
-                return r.status
+                try:
+                    data = await r.json(content_type=None) if 200 <= r.status < 300 else None
+                except (ValueError, aiohttp.ClientError):
+                    data = None
+                return r.status, data
         except (aiohttp.ClientError, asyncio.TimeoutError, OSError, ValueError):
-            return 0
+            return 0, None
 
     async def async_send(self, force: bool = False) -> dict[str, Any]:
         """Bericht senden – nur wenn eingeschaltet. Build 6: auch ohne neue Fehler (Tages-Meldung „0 Fehler“)."""
@@ -224,11 +233,14 @@ class FehlerSammler:
             return {"sent": False, "why": "aus"}
         self._busy = True
         try:
-            st = await self._post("/v1/errors", rep)
+            st, data = await self._post_json("/v1/errors", rep)
             now = time.time()
             if 200 <= st < 300:
                 with self._lock:
                     L.mark_sent(self._st, rep, now)
+                    # Build 7: Status der eigenen Fehler (offen, in Arbeit, behoben in X) – „ignoriert“ kommt nicht zurück
+                    if isinstance(data, dict) and "status" in data:
+                        L.apply_status(self._st, rep, data.get("status"), dt_util.now().date())
             else:
                 c["last_try"] = now
                 c["err"] = "offline" if st == 0 else "noch nicht" if st == 404 else "zu oft" if st == 429 else f"http{st}"
@@ -245,6 +257,8 @@ class FehlerSammler:
             st = await self._post("/v1/errors/forget", {"schema": L.SCHEMA, "id": c["id"]})
             ok = 200 <= st < 300
         c.update(on=False, id="", last_ok=0.0, last_try=0.0, err="", asked=True)
+        with self._lock:
+            L.clear_status(self._st)   # ohne Zustimmung keine Rückmeldung
         self._cfg_save()
         return {**self.snapshot(), "forgotten": ok}
 
