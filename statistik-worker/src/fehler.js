@@ -90,14 +90,69 @@ export async function dbErrStatus(DB, fp, s, nowMs) {
   const r = await DB.prepare("UPDATE err_groups SET status=?, fixed_in=?, issue=COALESCE(?, issue), status_day=? WHERE fp=?").bind(s.status, s.fixed_in, s.issue, S(nowMs), fp).run();
   return !!(r && (r.changes ?? (r.meta && r.meta.changes)));
 }
+async function dbMergeCleanup(DB) {   /* Build 8: Verweise auf gelöschte Fehler entfernen (Tabelle fehlt vor der Migration → nichts tun) */
+  try { await DB.prepare("DELETE FROM err_merge WHERE fp NOT IN (SELECT fp FROM err_groups) OR into_fp NOT IN (SELECT fp FROM err_groups)").run(); } catch { /* vor Build 8 */ }
+}
 export async function dbErrForget(DB, rid) {
   await DB.batch([DB.prepare("DELETE FROM err_hits WHERE rid=?").bind(rid), DB.prepare("DELETE FROM err_reporters WHERE rid=?").bind(rid), DB.prepare("DELETE FROM err_days WHERE rid=?").bind(rid),
     DB.prepare("DELETE FROM err_groups WHERE fp NOT IN (SELECT DISTINCT fp FROM err_hits)")]);
+  await dbMergeCleanup(DB);
 }
 export async function dbErrCleanup(DB, todayMs) {
   const cut = S(todayMs - ERR_KEEP_DAYS * dayMs);
   await DB.batch([DB.prepare("DELETE FROM err_hits WHERE day<?").bind(cut), DB.prepare("DELETE FROM err_reporters WHERE last_day<?").bind(cut), DB.prepare("DELETE FROM err_days WHERE day<?").bind(cut),
     DB.prepare("DELETE FROM err_groups WHERE fp NOT IN (SELECT DISTINCT fp FROM err_hits)")]);
+  await dbMergeCleanup(DB);
+}
+
+// ---------------------------------------------------------------- Build 8 · F5 Zusammenführen
+/* „Fingerabdruck B gehört zu A“ steht in err_merge. Die Daten bleiben getrennt gespeichert; erst beim Auswerten laufen Zahlen,
+   Verlauf und Status von B unter A. Trennen = Zeile löschen, dann ist B wieder ein eigener Fehler mit seinem alten Status. */
+export async function loadMerges(DB) {
+  try { return (await DB.prepare("SELECT fp, into_fp FROM err_merge").all()).results; } catch { return []; }   // vor der Migration: keine
+}
+export function mergeMap(merges) {
+  const m = new Map((merges || []).map((x) => [x.fp, x.into_fp]));
+  const root = (fp) => { let x = fp; for (let n = 0; m.has(x) && n < 20; n++) x = m.get(x); return x; };
+  return { m, root };
+}
+export function applyMerges(groups, hits, merges) {
+  const { m, root } = mergeMap(merges);
+  if (!m.size) return { groups, hits };
+  const by = new Map(groups.map((g) => [g.fp, g])), R = (fp) => { const r = root(fp); return r !== fp && by.has(r) ? r : fp; };
+  const kids = new Map();
+  for (const g of groups) { const r = R(g.fp); if (r !== g.fp) { if (!kids.has(r)) kids.set(r, []); kids.get(r).push(g); } }
+  const out = groups.filter((g) => R(g.fp) === g.fp).map((g) => {
+    const k = kids.get(g.fp);
+    if (!k) return g;
+    const all = [g, ...k];
+    return { ...g, first_day: all.map((x) => x.first_day).sort()[0], last_day: all.map((x) => x.last_day).sort().pop(),
+      merged: k.map((x) => ({ fp: x.fp, kind: x.kind, msg: x.msg, where: x.where, mod: x.mod })) };
+  });
+  return { groups: out, hits: hits.map((h) => (R(h.fp) !== h.fp ? { ...h, fp: R(h.fp) } : h)) };
+}
+const noLine = (w) => String(w || "").replace(/:\d+/g, "");
+/** Vorschläge auf der Detailseite: gleiche Stelle (ohne Zeile), gleiche Art, gleiches Modul zuerst */
+export function mergeCandidates(g, others, max = 25) {
+  const score = (x) => (noLine(x.where) && noLine(x.where) === noLine(g.where) ? 4 : 0) + (x.kind === g.kind ? 2 : 0) + (x.mod === g.mod ? 1 : 0) + (x.src === g.src ? 0.5 : 0);
+  return others.map((x) => ({ fp: x.fp, kind: x.kind, msg: x.msg, where: x.where, mod: x.mod, s: score(x), last: x.last_day }))
+    .sort((a, b) => b.s - a.s || (a.last < b.last ? 1 : -1)).slice(0, max);
+}
+/** B (fp) in A (into) einordnen. Kein Zusammenführen mit sich selbst oder im Kreis. Ergebnis: Haupt-Fehler oder Grund. */
+export async function dbErrMerge(DB, fp, into, nowMs) {
+  if (!/^[0-9a-f]{12}$/.test(fp) || !/^[0-9a-f]{12}$/.test(into) || fp === into) return { err: "ungültig" };
+  const ok = await DB.prepare("SELECT COUNT(*) n FROM err_groups WHERE fp IN (?,?)").bind(fp, into).first();
+  if (!ok || ok.n !== 2) return { err: "unbekannt" };
+  const { root } = mergeMap(await loadMerges(DB));
+  const target = root(into);
+  if (target === fp) return { err: "Kreis" };
+  await DB.prepare("INSERT INTO err_merge(fp, into_fp, day) VALUES(?,?,?) ON CONFLICT(fp) DO UPDATE SET into_fp=excluded.into_fp, day=excluded.day").bind(fp, target, S(nowMs)).run();
+  return { root: target };
+}
+export async function dbErrSplit(DB, fp) {
+  if (!/^[0-9a-f]{12}$/.test(fp)) return false;
+  const r = await DB.prepare("DELETE FROM err_merge WHERE fp=?").bind(fp).run();
+  return !!(r && (r.changes ?? (r.meta && r.meta.changes)));
 }
 
 // ---------------------------------------------------------------- Auswertung
@@ -207,8 +262,9 @@ export function errDetail(g, hits, todayStr, rel = []) {
   return { rel: releaseMarks(rel, days[0].d, todayStr), g, inst: new Set(hits.map((h) => h.rid)).size, hits: hits.reduce((a, h) => a + h.n, 0), vers: cnt("version").sort((a, b) => vcmp(b.k, a.k)), ha: cnt("ha").sort((a, b) => b.inst - a.inst), ch: cnt("channel"), days };
 }
 export async function errLoad(DB, todayStr, days) {
-  const groups = (await DB.prepare("SELECT fp, src, mod, kind, where_ AS \"where\", msg, first_day, last_day, status, fixed_in, issue, status_day FROM err_groups").all()).results;
-  const hits = (await DB.prepare("SELECT day, fp, rid, version, channel, ha, n FROM err_hits").all()).results;
+  const M = applyMerges((await DB.prepare("SELECT fp, src, mod, kind, where_ AS \"where\", msg, first_day, last_day, status, fixed_in, issue, status_day FROM err_groups").all()).results,
+    (await DB.prepare("SELECT day, fp, rid, version, channel, ha, n FROM err_hits").all()).results, await loadMerges(DB));   /* Build 8 */
+  const groups = M.groups, hits = M.hits;
   const r = errCompute(groups, hits, todayStr, days), dd = await loadDays(DB, todayStr);
   r.reife = releaseReady(r.rows, hits, dd, await loadReleases(DB), todayStr);   /* Build 6 */
   r.mods = modErrors(r.rows, hits, dd, todayStr);
@@ -216,10 +272,16 @@ export async function errLoad(DB, todayStr, days) {
   return r;
 }
 export async function errLoadOne(DB, fp, todayStr, rel = null) {
-  const g = await DB.prepare("SELECT fp, src, mod, kind, where_ AS \"where\", msg, first_day, last_day, status, fixed_in, issue, status_day FROM err_groups WHERE fp=?").bind(fp).first();
-  if (!g) return null;
-  const hits = (await DB.prepare("SELECT day, fp, rid, version, channel, ha, n FROM err_hits WHERE fp=?").bind(fp).all()).results;
-  return errDetail(g, hits, todayStr, rel || (await loadReleases(DB)));
+  const merges = await loadMerges(DB), { root } = mergeMap(merges);
+  const groups = (await DB.prepare("SELECT fp, src, mod, kind, where_ AS \"where\", msg, first_day, last_day, status, fixed_in, issue, status_day FROM err_groups").all()).results, by = new Map(groups.map((g) => [g.fp, g]));
+  if (!by.has(fp)) return null;
+  if (root(fp) !== fp && by.has(root(fp))) return { redirect: root(fp) };   /* Build 8: zusammengeführt → zum Haupt-Fehler */
+  const fam = groups.filter((g) => g.fp === fp || (root(g.fp) === fp && g.fp !== fp)).map((g) => g.fp);
+  const raw = (await DB.prepare(`SELECT day, fp, rid, version, channel, ha, n FROM err_hits WHERE fp IN (${fam.map(() => "?").join(",")})`).bind(...fam).all()).results;
+  const M = applyMerges(groups.filter((g) => fam.includes(g.fp)), raw, merges), g = M.groups.find((x) => x.fp === fp);
+  const D = errDetail(g, M.hits, todayStr, rel || (await loadReleases(DB)));
+  D.cand = mergeCandidates(g, groups.filter((x) => root(x.fp) === x.fp || !by.has(root(x.fp))).filter((x) => !fam.includes(x.fp)));
+  return D;
 }
 
 // ---------------------------------------------------------------- Darstellung
@@ -235,6 +297,7 @@ export const ERR_CSS = `.tabs{display:flex;gap:6px;margin:10px 0}.tabs a{color:#
 .sfr{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:.84rem;color:#c3c2b7}.sfr input{background:#111110;color:#f0efec;border:1px solid #3a3a38;border-radius:8px;padding:5px 8px;font:inherit}
 .sfr button{background:#2dd4bf;color:#042f2e;border:0;border-radius:99px;padding:6px 16px;font-weight:700;cursor:pointer}.warnb{background:#450a0a;color:#fecaca;border-radius:10px;padding:8px 12px;margin:6px 0 10px;font-size:.86rem}
 .rkk{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin:6px 0 12px}.rk{padding:10px 12px}.rk .n{font-size:1.5rem}
+.sfr select{background:#111110;color:#f0efec;border:1px solid #3a3a38;border-radius:8px;padding:5px 8px;font:inherit}.btnl{background:none;border:1px solid #3a3a38;color:#c3c2b7;border-radius:99px;padding:3px 11px;cursor:pointer;font:inherit;font-size:.8rem}
 .lga{color:#f0efec;text-decoration:none;font-size:.84rem;word-break:break-word}.lga:hover{text-decoration:underline}.wk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;margin:0 0 10px}.wkp{text-decoration:none}
 @media(max-width:700px){.et .hide{display:none}.kv{grid-template-columns:1fr}}`;
 const spark = (a, w = 84, h = 18) => { const mx = Math.max(1, ...a); return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${a.map((v, i) => `<rect x="${(i * w) / a.length + 0.5}" y="${h - (v / mx) * (h - 2) - 1}" width="${w / a.length - 1.5}" height="${(v / mx) * (h - 2) + 1}" rx="1" fill="${v ? "#f87171" : "#3a3a38"}"/>`).join("")}</svg>`; };
@@ -249,7 +312,7 @@ export function errRender(r, q = {}) {
   if (q.neu) rows = rows.filter((x) => ["neu", "steigt", "wieder da"].includes(x.tag));
   if (q.ver) rows = r.rows.filter((x) => x.first_ver === q.ver && (!q.mod || x.mod === q.mod) && (!q.src || x.src === q.src) && (q.ign || x.tag !== "ignoriert"));   /* Build 5: neu in dieser Version, unabhängig vom Zeitraum */
   const body = rows.length ? `<table class="et"><tr><th></th><th>Fehler</th><th>Modul</th><th class="num">Installationen</th><th class="num hide">Anzahl</th><th class="hide">Versionen</th><th class="hide">14 Tage</th><th>zuletzt</th></tr>
-    ${rows.map((x) => `<tr><td>${tag(x.tag)}${x.status === "behoben" && x.fixed_in ? `<small>${e(x.fixed_in)}</small>` : ""}${x.issue ? `<small>#${x.issue}</small>` : ""}</td><td><a href="/fehler/${x.fp}"><b class="m">${e(x.kind)}: ${e(x.msg || "–")}</b></a><small>${e(SRC[x.src])}${x.where ? " · " + e(x.where) : ""}${x.first_ver ? ` · seit ${e(vshort(x.first_ver))}` : ""}</small></td><td>${e(x.mod)}</td><td class="num">${x.inst}</td><td class="num hide">${x.hits}</td><td class="hide">${e(x.vers.slice(-2).join(" · "))}</td><td class="hide">${spark(x.spark)}</td><td>${fd(x.last_day)}</td></tr>`).join("")}</table>`
+    ${rows.map((x) => `<tr><td>${tag(x.tag)}${x.status === "behoben" && x.fixed_in ? `<small>${e(x.fixed_in)}</small>` : ""}${x.issue ? `<small>#${x.issue}</small>` : ""}</td><td><a href="/fehler/${x.fp}"><b class="m">${e(x.kind)}: ${e(x.msg || "–")}</b></a><small>${e(SRC[x.src])}${x.where ? " · " + e(x.where) : ""}${x.first_ver ? ` · seit ${e(vshort(x.first_ver))}` : ""}${x.merged && x.merged.length ? ` · +${x.merged.length} zusammengeführt` : ""}</small></td><td>${e(x.mod)}</td><td class="num">${x.inst}</td><td class="num hide">${x.hits}</td><td class="hide">${e(x.vers.slice(-2).join(" · "))}</td><td class="hide">${spark(x.spark)}</td><td>${fd(x.last_day)}</td></tr>`).join("")}</table>`
     : '<div class="empty">Keine Fehler in diesem Zeitraum – oder noch keine Berichte.</div>';
   return `${!q.ver && r.reife ? `<div id="reife">${reifeHtml(r.reife)}</div>` : ""}<div class="c"><h2>Fehler · letzte ${r.days} Tage</h2><div class="u">${r.reporters} Installationen haben berichtet · neueste Version ${e(r.newest || "–")} · gleicher Fehler = eine Zeile</div>
     <div class="flt">${ln("tage", "", "7 Tage", r.days === 7)}${ln("tage", "30", "30 Tage", r.days === 30)}${ln("tage", "90", "90 Tage", r.days === 90)}<span style="width:8px"></span>${ln("neu", q.neu ? "" : "1", "nur neu / steigt", !!q.neu)}${ln("alle", q.alle ? "" : "1", "auch ruhige", !!q.alle)}${ln("ign", q.ign ? "" : "1", "auch ignorierte", !!q.ign)}</div>
@@ -265,6 +328,14 @@ export function issueUrl(D, repo = "Maddog3010/ha-fenster-heizung") {
     `- Versionen: ${D.vers.map((x) => `${x.k} (${x.inst})`).join(", ")}`, `- Home Assistant: ${D.ha.map((x) => `${x.k} (${x.inst})`).join(", ")}`, "", "_Aus der Fehler-Statistik (anonyme, bereinigte Fehlerberichte)._"].filter((x, i, a) => x !== "" || a[i - 1] !== "").join("\n");
   return `https://github.com/${repo}/issues/new?${new URLSearchParams({ title, body })}`;
 }
+function mergeHtml(D) {
+  const g = D.g, kids = g.merged || [], c = D.cand || [];
+  const one = (x) => `${e(x.kind)}: ${e(String(x.msg || "–").slice(0, 60))}${x.where ? ` · ${e(x.where)}` : ""}`;
+  const list = kids.length ? `<div class="u" style="margin:12px 0 4px">Zusammengeführt – Zahlen, Verlauf und Status laufen hier:</div><table class="mini">${kids.map((x) => `<tr><td class="m" style="font-size:.78rem">${one(x)}<small style="display:block;color:#8d8c84">${e(x.mod)} · ${e(x.fp)}</small></td><td style="text-align:right"><form method="post" action="/fehler/${g.fp}" style="margin:0"><input type="hidden" name="act" value="split"><input type="hidden" name="fp" value="${e(x.fp)}"><button type="submit" class="btnl">Trennen</button></form></td></tr>`).join("")}</table>` : "";
+  const sel = c.length ? `<form method="post" action="/fehler/${g.fp}" class="sfr" style="margin-top:12px"><input type="hidden" name="act" value="merge"><label style="flex:1;min-width:220px">Mit … zusammenführen <select name="into" required style="width:100%;margin-top:4px"><option value="">Fehler wählen</option>${c.map((x) => `<option value="${e(x.fp)}">${x.s >= 4 ? "★ " : ""}${e(x.mod)} · ${one(x)}</option>`).join("")}</select></label><button type="submit">Zusammenführen</button></form>
+    <div class="u" style="margin-top:4px">Dieser Fehler wird Teil des gewählten. ★ = gleiche Stelle im Code. Trennen geht jederzeit auf der Seite des anderen Fehlers.</div>` : "";
+  return list + sel;
+}
 export function errRenderOne(D, repo) {
   const g = D.g, mx = Math.max(1, ...D.days.map((x) => x.inst));
   const vs = D.vers.map((x) => x.k), back = g.status === "behoben" && g.fixed_in ? D.vers.filter((x) => vcmp(x.k, g.fixed_in) >= 0) : [];
@@ -273,6 +344,7 @@ export function errRenderOne(D, repo) {
     <form method="post" action="/fehler/${g.fp}" class="sf"><div class="flt">${Object.entries(STATUS).map(([k, t]) => `<label class="rb"><input type="radio" name="status" value="${k}"${(g.status || "offen") === k ? " checked" : ""}><span>${e(t)}</span></label>`).join("")}</div>
     <div class="sfr"><label>behoben in Version <input name="fixed_in" list="vl" value="${e(g.fixed_in || "")}" placeholder="z. B. 2026.11.4.2" pattern="\\d{4}\\.\\d{1,2}\\.\\d{1,2}(\\.\\d{1,2})?(b\\d{1,3})?"></label><datalist id="vl">${vs.map((v) => `<option value="${e(v)}">`).join("")}</datalist>
     <label>GitHub-Issue # <input name="issue" value="${g.issue || ""}" inputmode="numeric" size="6"></label><button type="submit">Speichern</button></div></form>
+    ${mergeHtml(D)}
     <div class="flt" style="margin-top:10px"><a href="${e(issueUrl(D, repo))}" target="_blank" rel="noopener">GitHub-Issue anlegen (vorausgefüllt)</a>${g.issue ? `<a href="https://github.com/${e(repo || "Maddog3010/ha-fenster-heizung")}/issues/${g.issue}" target="_blank" rel="noopener">Issue #${g.issue} öffnen</a>` : ""}</div></div>`;
   const xOf = (d) => { const i = D.days.findIndex((x) => x.d === d); return i < 0 ? null : i * 20 + 1; };
   const chart = `<svg viewBox="0 -14 600 104">${markSvg(D.rel || [], xOf, -4, 80, -6)}${D.days.map((x, i) => `<rect x="${i * 20 + 2}" y="${80 - (x.inst / mx) * 70}" width="16" height="${(x.inst / mx) * 70 + 1}" rx="2" fill="${x.inst ? "#f87171" : "#3a3a38"}"><title>${fd(x.d)} · ${x.inst} Installationen · ${x.n}×</title></rect>`).join("")}<text x="2" y="89" fill="#8d8c84" font-size="9">${fd(D.days[0].d)}</text><text x="598" y="89" fill="#8d8c84" font-size="9" text-anchor="end">heute</text></svg>`;
@@ -396,15 +468,18 @@ export async function loadDays(DB, todayStr, window = 30) {
 /** Status der eigenen Fehler (aus dem Bericht und „known“). Nichts über andere Nutzer, keine Liste aller Fehler.
  *  „ignoriert“ wird nicht gemeldet – dann zeigt die Integration nichts an. */
 export async function errOwnStatus(DB, p) {
-  const fps = [...new Set([...p.errors.map((x) => x.fp), ...(p.known || [])])];
-  const out = {};
+  const asked = [...new Set([...p.errors.map((x) => x.fp), ...(p.known || [])])];
+  const { root } = mergeMap(await loadMerges(DB)), back = new Map();   /* Build 8: zusammengeführte Fehler melden den Status des Haupt-Fehlers */
+  for (const fp of asked) { const r = root(fp); if (!back.has(r)) back.set(r, []); back.get(r).push(fp); }
+  const fps = [...back.keys()], res = {}, out = {};
   for (let i = 0; i < fps.length; i += 50) {
     const part = fps.slice(i, i + 50);
     const rs = (await DB.prepare(`SELECT fp, status, fixed_in FROM err_groups WHERE fp IN (${part.map(() => "?").join(",")})`).bind(...part).all()).results;
     for (const g of rs) {
       if (g.status === "ignoriert" || !(g.status in STATUS)) continue;
-      out[g.fp] = g.status === "behoben" && g.fixed_in ? { s: "behoben", fx: g.fixed_in } : { s: g.status === "behoben" ? "offen" : g.status };
+      res[g.fp] = g.status === "behoben" && g.fixed_in ? { s: "behoben", fx: g.fixed_in } : { s: g.status === "behoben" ? "offen" : g.status };
     }
   }
+  for (const [r, list] of back) if (res[r]) for (const fp of list) out[fp] = res[r];
   return out;
 }
