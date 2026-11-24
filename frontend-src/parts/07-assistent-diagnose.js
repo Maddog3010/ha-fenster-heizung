@@ -376,7 +376,18 @@
     else if (a === "dgcopy") { const t = (m.data.log || []).map((e) => `${e.t} [${e.level}] ${e.room || "Allgemein"}: ${e.msg}`).join("\n"); this._clip(t, "Protokoll kopiert"); return; }
     this._renderModal();
   }
-  _renderModal() {
+  /* Schlüssel eines Aufklappbereichs: Klasse + Überschrift ohne Zahlen („Melder ausschließen (3)“ bleibt derselbe). Bereiche mit eigener Steuerung (data-act an der Überschrift) bleiben außen vor. */
+  _dKey(d) {
+    const s = d.querySelector(":scope > summary"); if (!s || s.hasAttribute("data-act")) return "";
+    return d.dataset.dk || `${(d.className || "").split(" ")[0]}|${String(s.textContent || "").replace(/\([^)]*\)|\d+/g, "").replace(/\s+/g, " ").trim().toLowerCase().slice(0, 80)}`;
+  }
+  _dkApply(root) {
+    const M = this._dOpen; if (!root || !M) return;
+    this._dkBusy = true;
+    try { root.querySelectorAll("details").forEach((d) => { const k = this._dKey(d); if (k && k in M && d.open !== M[k]) d.open = M[k]; }); } finally { setTimeout(() => { this._dkBusy = false; }, 0); }
+  }
+  _renderModal() { this._renderModal0(); this._dkApply(this.shadowRoot.getElementById("modal")); }
+  _renderModal0() {
     const box = this.shadowRoot.getElementById("modal"), m = this._modal;
     const old = box.querySelector(".sheet"), top = old ? old.scrollTop : 0;
     if (!m) { box.innerHTML = ""; return; }

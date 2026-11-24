@@ -4,7 +4,7 @@
   /* Suchfeld: tippen filtert sofort über Name, Entitäts-ID, Raum, Gerät und Hersteller (alle Wörter müssen passen) */
   _pkInput(t) {
     const P = this._pkSt(), v = t.value || "", pos = t.selectionStart; P.q = v; P.more = 0;
-    if (this._modal) this._renderModal(); else this._render();
+    if (this._modal) this._renderModal(); else { this._pkForce = true; try { this._render(); } finally { this._pkForce = false; } }
     const i = this.shadowRoot.querySelector('[data-f="pkq"]'); if (i) { i.focus(); try { i.setSelectionRange(pos, pos); } catch (_) { /* egal */ } }
   }
   _pkArea(e) {
@@ -15,6 +15,7 @@
   /* Raum aus dem Zusammenhang: Raumeinstellungen, Messwerk-Aufgabe „… · Bad“, Messraum */
   _pkCtx() {
     const m = this._modal || {};
+    if (String(this._pkId || "").startsWith("grxpk|") && this._grPkCtx) return this._grPkCtx();   /* Modul 0: Raum, in dem das Element im Plan steht */
     if (m.type === "opt") return m.name || "";
     if (m.type === "mwpick") { const t = ((this._mwD || {}).tasks || []).find((x) => x.id === m.k); return t && t.n.includes(" · ") ? t.n.split(" · ").pop() : ""; }
     if (m.type === "msx" || m.type === "msedit") return (m.draft && m.draft.name) || "";
@@ -30,8 +31,8 @@
     const u = (st && st.attributes.unit_of_measurement) || ""; if (u) why.push(u);
     const dc = (st && st.attributes.device_class) || "";
     if (["temperature", "humidity"].includes(dc) && /thermostat|trv|ventil|heizkörper/i.test(`${this._wzName(e)} ${A.devName}`)) { s -= 14; why.push("misst am Heizkörper"); }
-    const used = this._mwD && this._mwD.sensors && this._mwD.sensors[e];
-    if (used && e !== cur) { s -= 22; why.push("schon für etwas anderes genutzt"); }
+    const used = (this._mwD && this._mwD.sensors && this._mwD.sensors[e]) || (String(this._pkId || "").startsWith("grxpk|") && this._grPkUsed && this._grPkUsed().has(e));
+    if (used && e !== cur) { s -= 22; why.push(this._mwD && this._mwD.sensors && this._mwD.sensors[e] ? "schon für etwas anderes genutzt" : "schon im Plan"); }
     if (e === cur) { s += 10; why.unshift("jetzt gewählt"); }
     return { e, s: Math.max(1, Math.min(98, s)), why };
   }

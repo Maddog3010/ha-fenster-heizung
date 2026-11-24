@@ -169,16 +169,27 @@
     return `<div class="grsun"><span class="gsi">☀</span><span><b>${hh}</b> · ${S.el > 0 ? `${this._grDir(S.az)} · ${num(S.el, 0)}° hoch` : "Sonne unter dem Horizont"}${S.el > 0 ? ` · <b>${G.rooms.length ? "Sonne in: " + esc(G.rooms.join(", ")) : "keine Sonne durch die Fenster"}</b>` : ""}</span>
       <input type="range" min="5" max="22" step="0.25" value="${h.toFixed(2)}" data-f="grxsunh" aria-label="Tageszeit"><button class="grb ${this._grSunH == null ? "on" : ""}" data-act="grxsunnow">Jetzt</button></div>`;
   }
+  /* ---- Modul 0: Entität wählen wie überall sonst (Suchfeld + Vorschläge, 2026.11.4.3b5) – ersetzt die Knopfreihen */
+  _grSelItem() { const ed = this._sfEd; return ed ? (ed.plan.items || []).find((x) => x.id === ed.sel) : null; }
+  _grPkCtx() {
+    const sel = this._grSelItem(); if (!sel) return "";
+    const rm = (this._sfPl().items || []).find((r) => r.t === "r" && r.fl === sel.fl && this._sfInRoom(r, sel.x, sel.y)); if (!rm) return "";
+    const ar = this._grArea ? this._grArea(rm) : null; return (ar && ar.name) || rm.n || "";
+  }
+  _grPkUsed() { const sel = this._grSelItem(); return new Set((this._sfPl().items || []).filter((x) => x.e && (!sel || x.id !== sel.id)).map((x) => x.e)); }
+  _grPick(sel, cand, hint) {
+    return this._wzSel(cand, sel.e || "", "grxpk", `data-k="${esc(sel.t)}"`, "– nicht verbunden –", hint || null);
+  }
   /* ---- Baukasten: Möbel/Außen */
   _grMobCat(cur, act, onlyOut) { const K = this._grMK(); return Object.entries(K.G).filter(([g]) => onlyOut == null || this._grOUT.has(g) === onlyOut).map(([g, [gn, gc]]) => `<div class="grtkg"><small style="color:${gc}">${gn}</small><div class="grseg">${K.L.filter((x) => x[2] === g).map((x) => `<button class="${cur === x[0] ? "on" : ""}" data-act="${act}" data-v="${x[0]}">${x[1]}</button>`).join("")}</div></div>`).join(""); }
   _grMobProps(sel) {
     const k = this._grMk(sel), sc = this._sfScale(), st = this._hass.states, cm = (px) => Math.round((px / sc) * 100);
-    const want = k.d, match = (e) => want.some((w) => { const [dm, dc] = w.split(":"); return e.startsWith(dm + ".") && (!dc || ((st[e].attributes || {}).device_class === dc)); }), cand = want.length ? Object.keys(st).filter(match).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")).slice(0, 20) : [];
+    const want = k.d, match = (e) => want.some((w) => { const [dm, dc] = w.split(":"); return e.startsWith(dm + ".") && (!dc || ((st[e].attributes || {}).device_class === dc)); }), cand = want.length ? Object.keys(st).filter(match) : [];
     const S = sel.e && this._grTechState ? this._grTechState(sel) : null, step = (act, lab, v) => `<div class="vrow" style="margin:6px 0"><span>${lab}</span><div class="step" style="flex:none"><button data-act="${act}" data-s="-10" aria-label="weniger">${ic("minus", 16)}</button><b>${num(v / 100, 2)} m</b><button data-act="${act}" data-s="10" aria-label="mehr">${ic("plus", 16)}</button></div></div>`;
     return `<details class="grtkd"><summary><span style="color:${this._grMK().G[k.g][1]}">●</span> ${esc(k.n)} <small class="mut">· ändern</small></summary>${this._grMobCat(sel.ok, "grxok2")}</details>
       ${step("grxow", "Breite", cm(sel.w || 40))}${step("grxoh", "Tiefe", cm(sel.h || 40))}
       <div class="grseg" style="margin:2px 0 8px"><button data-act="grxorot" data-s="-15">↺ 15°</button><button data-act="grxorot" data-s="15">↻ 15°</button><button data-act="grxorot" data-s="90">↻ 90°</button><button data-act="grxosz">Normgröße</button></div>
-      ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length ? `<div class="gschips"><button class="gsch ${!sel.e ? "sel" : ""}" data-act="grxoe" data-v="">keine</button>${cand.map((e) => `<button class="gsch ${sel.e === e ? "sel" : ""}" data-act="grxoe" data-v="${esc(e)}">${esc(this._wzName(e))}</button>`).join("")}</div>` : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}`;
+      ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length || sel.e ? this._grPick(sel, cand, /heiz|thermostat|trv|radiator|klima|ofen|kamin|lampe|licht/i) : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}`;
   }
   _grB10Box() {
     const ed = this._sfEd; if (!ed) return "";
@@ -204,6 +215,7 @@
     return false;
   }
   _grB10Change(t) {
+    if (t.dataset && t.dataset.f === "grxpk") { const cur = this._grSelItem(); if (cur) { this._sfSnap(); cur.e = t.value || ""; this._render(); } return true; }
     if (t.dataset && t.dataset.f === "grxsunh") { this._grSunH = Number(t.value); this._render(); return true; }
     return false;
   }

@@ -2,6 +2,18 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.3b5] - 2026-11-24
+
+Fünfte Testversion für 2026.11.4.3.
+
+### Behoben
+- **Aufklappbereiche bleiben offen:** „iPhone: Das muss stimmen“, „Heizkörper · ändern“, „Welche Kacheln einfließen“ und alle anderen Aufklappbereiche klappten bei jedem neuen Wert aus Home Assistant wieder zu. Die App merkt sich jetzt, was offen ist – auf Seiten und in Fenstern, bis die Seite neu geladen wird.
+- **Sensorsuche:** Das Suchfeld bleibt beim Tippen stehen, auch wenn Home Assistant neue Werte schickt.
+
+### Geändert
+- **Modul 0 · Heizkörper wie in echt:** Der Heizkörper erscheint im Plan maßstäblich als Heizkörper mit Lamellen und Thermostatkopf statt als Symbol. Länge (30–300 cm) und Tiefe (6–30 cm) sind einstellbar, er lässt sich drehen und mit „An Wand“ parallel an die nächste Wand stellen. Heizt er, glüht er orange und strahlt Wärme in den Raum; aus oder nicht verbunden ist er grau.
+- **Modul 0 · Verbinden mit Home Assistant:** Heizkörper, Thermostat, Klima, Melder, Kamera, Markise und die anderen Elemente wählen ihre Entität jetzt wie überall sonst – mit Suchfeld, Vorschlägen und „Nach Raum“. Entitäten aus dem Raum, in dem das Element im Plan steht, kommen zuerst; schon im Plan verwendete rutschen nach unten. Unter jedem Namen steht die Entität, gleich benannte Thermostate sind so unterscheidbar. Die Begrenzung auf 20–30 Einträge entfällt.
+
 ## [2026.11.4.3b4] - 2026-11-23
 
 Vierte Testversion für 2026.11.4.3 – alle Module an einer Stelle.
