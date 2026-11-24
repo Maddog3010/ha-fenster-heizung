@@ -35,7 +35,6 @@
     return hit ? { id: hit.id, name: nmOf(hit.id), auto: true } : null;
   }
   _grAreaName(id) { const a = (this._hass.areas || {})[id]; return (a && a.name) || id; }
-  _grEntArea(e) { const H = this._hass, en = (H.entities || {})[e]; if (!en) return ""; if (en.area_id) return en.area_id; const dv = en.device_id && (H.devices || {})[en.device_id]; return (dv && dv.area_id) || ""; }
   _grFloors(P) { return P && P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }]; }
   /* Banner: Haus im Schnitt, eine Reihe je Etage (oben die höchste), Zellen = Räume der Etage */
   _grHouse(P) {
@@ -206,7 +205,8 @@
     this._hass.callWS({ type: "fenster_heizung/gr_hist" }).then((r) => { H.d = r; }).catch(() => { H.d = H.d || { hist: [], copy: null, err: true }; }).finally(() => { H.busy = false; H.ts = Date.now(); if (this._mdActive() === "gr") this._render(); });
     return H;
   }
-  _grExport(P, withBg) {
+  /* Plan als JSON-Text (Datei „Grundriss-….json“, auch Modul 11 „Plan sichern“). Eigener Name: _grExport ist der Export-Dialog in 12m7 */
+  _grExportJson(P, withBg) {
     const D = this._grS0().d || {}, p = { ...P, bg: withBg ? P.bg || {} : {} };
     return JSON.stringify({ app: "fenster_heizung", modul: "grundriss", v: 1, date: new Date().toISOString(), stats: this._grSt(p), plan: p, rooms: D.rooms || {} });
   }
@@ -358,7 +358,7 @@
     }
     if (a === "grxoffgo") { const s = this._mdState(); s.on.gr = false; this._modal = null; this._renderModal(); if (this._mdActive() === "gr") this._mdActiveSet("fh"); this._mdSave(); this._render(); this._toast("Modul 0 ist aus – der Grundriss bleibt in den anderen Modulen sichtbar"); return true; }
     if (a === "grxexbg") { this._grExBg = this._grExBg === false; this._render(); return true; }
-    if (a === "grxexp") { const P = this._grRaw(); if (P) this._sfDeliver(this._grExport(P, this._grExBg !== false), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss"); return true; }
+    if (a === "grxexp") { const P = this._grRaw(); if (P) this._sfDeliver(this._grExportJson(P, this._grExBg !== false), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss"); return true; }
     if (a === "grximpm") { const m = this._modal; if (m && m.type === "grximp") { m.mode = k === "add" ? "add" : "replace"; this._renderModal(); } return true; }
     if (a === "grximpr") { const m = this._modal; if (m && m.type === "grximp") { m.rooms = !m.rooms; this._renderModal(); } return true; }
     if (a === "grximpgo") {

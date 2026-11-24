@@ -96,15 +96,28 @@
   /* Kopieren: moderne Zwischenablage, sonst Ersatzweg (HTTP-Adresse, App-Ansicht, ältere Browser) */
   _clip(t, ok) {
     const done = () => this._toast(ok);
+    /* letzter Weg: Fenster mit markiertem Text – auf iPad/iPhone lange drücken › Kopieren */
+    const manual = () => { this._clipBack = this._modal && this._modal.type !== "cliptext" ? this._modal : this._clipBack || null; this._modal = { type: "cliptext", text: t }; this._renderModal(); setTimeout(() => { const ta = this.shadowRoot.querySelector(".cliptxt"); if (ta) { ta.focus(); ta.select(); ta.setSelectionRange(0, t.length); } }, 60); };
     const fb = () => {
       try {
-        const ta = document.createElement("textarea"); ta.value = t; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
-        document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, t.length);
-        const r = document.execCommand("copy"); ta.remove();
-        if (r) done(); else this._toast("Kopieren nicht möglich. Bitte den Text von Hand markieren und kopieren");
-      } catch (_) { this._toast("Kopieren nicht möglich. Bitte den Text von Hand markieren und kopieren"); }
+        /* in der eigenen Oberfläche anlegen (sonst nimmt iOS die Auswahl nicht), bearbeitbar machen, Bereich auswählen */
+        const host = this.shadowRoot.querySelector(".sheet") || this.shadowRoot.getElementById("main") || document.body;
+        const ta = document.createElement("textarea"); ta.value = t; ta.contentEditable = "true"; ta.readOnly = false;
+        ta.style.cssText = "position:fixed;left:0;top:0;width:1px;height:1px;opacity:0.01;font-size:16px;border:0;padding:0";
+        host.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, t.length);
+        let r = false;
+        try { r = document.execCommand("copy"); } catch (_) { r = false; }
+        ta.remove();
+        if (r) done(); else manual();
+      } catch (_) { manual(); }
     };
     try { if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done, fb); else fb(); } catch (_) { fb(); }
+  }
+  _clipModal() {
+    const m = this._modal;
+    return `<div class="ov" data-act="clipback"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Zum Kopieren markiert</b><span>Lange drücken › Kopieren (oder Strg/⌘ + C)</span></div><button class="ibtn" data-act="clipback" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <textarea class="osel cliptxt" readonly style="width:100%;min-height:220px;font-family:ui-monospace,monospace;font-size:13px;white-space:pre;user-select:text;-webkit-user-select:text">${esc(m.text || "")}</textarea>
+      <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="clipback">Fertig</button></div></div>`;
   }
   _spnRedeem(key, mine) {
     this._hass.callWS({ type: "fenster_heizung/spn_redeem", key }).then((r) => {

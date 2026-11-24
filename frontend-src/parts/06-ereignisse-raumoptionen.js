@@ -129,6 +129,7 @@
     else if (a.startsWith("errx")) this._errAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
     else if (a.startsWith("mqx")) this._mqAct(a, b);
+    else if (a === "clipback") { this._modal = this._clipBack || null; this._clipBack = null; this._renderModal(); }
     else if (a.startsWith("mx") && this._mxAct) this._mxAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);

@@ -88,7 +88,7 @@
     else if (a === "stsoff") this._stsWS("answer", { on: false }).then(() => { m.mode = "main"; this._renderModal(); this._render(); this._toast("Statistik ausgeschaltet"); }).catch(fail);
     else if (a === "stsdata") { m.back = m.mode; m.mode = "data"; this._renderModal(); }
     else if (a === "stsback") { m.mode = m.back || "main"; m.back = ""; this._renderModal(); }
-    else if (a === "stscopy") { try { navigator.clipboard.writeText(JSON.stringify(S.payload, null, 2)); this._toast("Kopiert"); } catch (_) { this._toast("Kopieren ging nicht"); } }
+    else if (a === "stscopy") this._clip(JSON.stringify(S.payload, null, 2), "Kopiert");
     else if (a === "stssend") { m.busy = true; this._renderModal(); this._stsWS("send").then((r) => { m.busy = false; this._renderModal(); this._toast(r.sent ? "Gesendet" : "Server nicht erreichbar – neuer Versuch folgt"); }).catch(() => { m.busy = false; this._renderModal(); fail(); }); }
     else if (a === "stsreset") this._stsWS("reset").then(() => { this._renderModal(); this._toast("Neue Kennung erzeugt"); }).catch(fail);
     else if (a === "stsdel") { m.mode = "del"; this._renderModal(); }
