@@ -209,7 +209,7 @@ export function weekHtml(w) {
   const p = (n, t, bg, fg, href) => (n ? `<a class="tg wkp" href="${href}" style="background:${bg};color:${fg}">${n} ${t}</a>` : "");
   const items = p(w.neu, "neu", "#7f1d1d", "#fecaca", "/fehler?neu=1") + p(w.back, "wieder da", "#b91c1c", "#fff", "/fehler?alle=1") +
     p(w.fixed, "behoben", "#134e4a", "#5eead4", "/fehler?alle=1") + p(w.stale, "in Arbeit seit über 14 Tagen", "#1e3a8a", "#bfdbfe", "/fehler?alle=1");
-  const rf = w.reife ? (() => { const x = AMP[w.reife.amp] || AMP.abwarten; return `<a class="tg wkp" href="/fehler#reife" style="margin-left:auto;background:${x[1]};color:${x[2]}">${channelOf(w.reife.v) === "beta" ? "Beta" : "Stabil"} ${e(vshort(w.reife.v))} · ${e(x[0])}</a>`; })() : "";
+  const rf = w.reife ? (() => { const x = AMP[w.reife.amp] || AMP.abwarten; return `<a class="tg wkp" href="/version/${encodeURIComponent(w.reife.v)}" style="margin-left:auto;background:${x[1]};color:${x[2]}">${channelOf(w.reife.v) === "beta" ? "Beta" : "Stabil"} ${e(vshort(w.reife.v))} · ${e(x[0])}</a>`; })() : "";
   return `<div class="c wk"><b>Diese Woche</b>${items || '<span class="u" style="margin:0">keine neuen Fehler, nichts wieder aufgetaucht</span>'}${rf}</div>`;
 }
 /** Build 5 · Release-Marken: erster Tag je Version (aus Versions-Statistik und Fehlerberichten) */
@@ -268,6 +268,7 @@ export async function errLoad(DB, todayStr, days) {
   const r = errCompute(groups, hits, todayStr, days), dd = await loadDays(DB, todayStr);
   r.reife = releaseReady(r.rows, hits, dd, await loadReleases(DB), todayStr);   /* Build 6 */
   r.mods = modErrors(r.rows, hits, dd, todayStr);
+  r.ham = haMatrix(r.rows, hits, dd, todayStr);   /* Build 9 */
   r.week.reife = r.reife.top ? { v: r.reife.top.v, amp: r.reife.top.amp } : null;
   return r;
 }
@@ -298,6 +299,7 @@ export const ERR_CSS = `.tabs{display:flex;gap:6px;margin:10px 0}.tabs a{color:#
 .sfr button{background:#2dd4bf;color:#042f2e;border:0;border-radius:99px;padding:6px 16px;font-weight:700;cursor:pointer}.warnb{background:#450a0a;color:#fecaca;border-radius:10px;padding:8px 12px;margin:6px 0 10px;font-size:.86rem}
 .rkk{grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin:6px 0 12px}.rk{padding:10px 12px}.rk .n{font-size:1.5rem}
 .sfr select{background:#111110;color:#f0efec;border:1px solid #3a3a38;border-radius:8px;padding:5px 8px;font:inherit}.btnl{background:none;border:1px solid #3a3a38;color:#c3c2b7;border-radius:99px;padding:3px 11px;cursor:pointer;font:inherit;font-size:.8rem}
+.hm td{padding:4px 6px}.hmc{display:inline-block;min-width:46px;text-align:center;border-radius:6px;padding:2px 6px;font-weight:700}.vb{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .lga{color:#f0efec;text-decoration:none;font-size:.84rem;word-break:break-word}.lga:hover{text-decoration:underline}.wk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;margin:0 0 10px}.wkp{text-decoration:none}
 @media(max-width:700px){.et .hide{display:none}.kv{grid-template-columns:1fr}}`;
 const spark = (a, w = 84, h = 18) => { const mx = Math.max(1, ...a); return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${a.map((v, i) => `<rect x="${(i * w) / a.length + 0.5}" y="${h - (v / mx) * (h - 2) - 1}" width="${w / a.length - 1.5}" height="${(v / mx) * (h - 2) + 1}" rx="1" fill="${v ? "#f87171" : "#3a3a38"}"/>`).join("")}</svg>`; };
@@ -318,7 +320,7 @@ export function errRender(r, q = {}) {
     <div class="flt">${ln("tage", "", "7 Tage", r.days === 7)}${ln("tage", "30", "30 Tage", r.days === 30)}${ln("tage", "90", "90 Tage", r.days === 90)}<span style="width:8px"></span>${ln("neu", q.neu ? "" : "1", "nur neu / steigt", !!q.neu)}${ln("alle", q.alle ? "" : "1", "auch ruhige", !!q.alle)}${ln("ign", q.ign ? "" : "1", "auch ignorierte", !!q.ign)}</div>
     <div class="flt">${ln("mod", "", "alle Module", !q.mod)}${mods.map((m) => ln("mod", m, m, q.mod === m)).join("")}<span style="width:8px"></span>${ln("src", "", "alle Quellen", !q.src)}${Object.entries(SRC).map(([k, t]) => ln("src", k, t, q.src === k)).join("")}</div>
     ${(r.intro || []).length ? `<div class="flt"><span class="u" style="margin:4px 4px 0 2px">Neu in Version:</span>${ln("ver", "", "alle", !q.ver)}${r.intro.map(([v, n]) => ln("ver", v, `${vshort(v)} · ${n}`, q.ver === v)).join("")}</div>` : ""}
-    ${body}</div>${!q.ver && r.mods ? modErrHtml(r.mods) : ""}`;
+    ${body}</div>${!q.ver && r.mods ? `<div class="g">${modErrHtml(r.mods)}${r.ham ? haMatrixHtml(r.ham) : ""}</div>` : ""}`;
 }
 export function issueUrl(D, repo = "Maddog3010/ha-fenster-heizung") {
   const g = D.g, src = SRC[g.src];
@@ -384,12 +386,16 @@ export function releaseReady(rows, hits, days, rel, todayStr, o = REIFE) {
     const d0 = relDay.get(v) || [...Dd, ...H].filter((x) => x.version === v).map((x) => x.day).sort()[0];
     const live = d0 ? Math.max(0, Math.round((today - dOf(d0)) / dayMs)) : 0;
     const lastNew = intro.map((x) => x.first_day).sort().pop();
+    /* Build 9 · S2: fehlerfreie Tage = Nutzungstage ohne Fehler ÷ Nutzungstage (ein Tag = Tag + Kennung) */
+    const use = new Set([...Dd.filter((d) => d.version === v && d.mods != null).map((d) => d.day + "|" + d.rid), ...H.filter((h) => h.version === v).map((h) => h.day + "|" + h.rid)]);
+    const bad = new Set(H.filter((h) => h.version === v).map((h) => h.day + "|" + h.rid));
     return { v, ch: channelOf(v), inst, err: err.size, counted, quote: counted && inst ? err.size / inst : null,
+      useDays: counted ? use.size : 0, errDays: bad.size, clean: counted && use.size ? 1 - bad.size / use.size : null,
       neu: intro.filter((x) => x.status !== "behoben").length, newOpen: intro.filter((x) => (x.status || "offen") === "offen").length,
       newWork: intro.filter((x) => x.status === "arbeit").length, back, live, quiet: lastNew ? Math.max(0, Math.round((today - dOf(lastNew)) / dayMs)) : live };
   });
   const stables = list.filter((x) => x.ch === "stable" && x.counted), newestStable = list.filter((x) => x.ch === "stable").pop() || null;
-  const pct = (q) => `${Math.round(q * 100)} %`;
+  const pct = (q) => `${Math.round(q * 100)} %`, pc1 = (q) => `${(Math.round(q * 1000) / 10).toFixed(1).replace(".", ",")} %`;
   for (const x of list) {
     const newer = list.some((y) => vcmp(y.v, x.v) > 0 && (x.ch === "beta" || y.ch === "stable"));
     const ref = [...stables].reverse().find((y) => vcmp(y.v, x.v) < 0) || null;
@@ -406,6 +412,7 @@ export function releaseReady(rows, hits, days, rel, todayStr, o = REIFE) {
     else if (x.inst < o.minInst) [x.amp, x.why] = ["abwarten", `erst ${x.inst} Installationen, mindestens ${o.minInst}`];
     else if (x.newWork) [x.amp, x.why] = ["abwarten", `${x.newWork} neuer Fehler in Arbeit`];
     else if (ref && ref.quote != null && x.quote > ref.quote) [x.amp, x.why] = ["abwarten", `Quote ${pct(x.quote)} höher als ${vshort(ref.v)} (${pct(ref.quote)})`];
+    else if (ref && ref.clean != null && x.clean != null && x.clean < ref.clean - 0.005) [x.amp, x.why] = ["abwarten", `fehlerfreie Tage ${pc1(x.clean)} schlechter als ${vshort(ref.v)} (${pc1(ref.clean)})`];
     else [x.amp, x.why] = [x.ch === "beta" ? "bereit" : "gut", ref ? `Quote nicht höher als ${vshort(ref.v)}` : "keine neuen Fehler"];
   }
   const desc = [...list].reverse(), betas = desc.filter((x) => x.ch === "beta");
@@ -414,14 +421,16 @@ export function releaseReady(rows, hits, days, rel, todayStr, o = REIFE) {
 }
 const amp = (a) => { const x = AMP[a] || AMP.abwarten; return `<span class="tg" style="background:${x[1]};color:${x[2]}">${e(x[0])}</span>`; };
 const pq = (x) => (x.quote == null ? "–" : `${Math.round(x.quote * 100)} %`);
+export const pc1 = (q) => `${(Math.round(q * 1000) / 10).toFixed(1).replace(".", ",")} %`;
+const pcl = (x) => (x.clean == null ? "–" : pc1(x.clean));
 export function reifeHtml(R) {
   if (!R || !R.list.length) return `<div class="c"><h2>Release-Reife</h2><div class="empty">Noch keine Berichte in den letzten ${REIFE.window} Tagen.</div></div>`;
-  const tile = (x, t) => `<div class="c rk"><div class="t">${e(t)} ${e(vshort(x.v))}</div><div class="n">${pq(x)}</div><div class="s">${x.counted ? `${x.err} von ${x.inst} Installationen mit Fehler` : `${x.err} mit Fehler · Quote ab Tages-Meldungen`}</div><div style="margin-top:6px">${amp(x.amp)}</div></div>`;
+  const tile = (x, t) => `<div class="c rk"><div class="t"><a class="lga" href="/version/${encodeURIComponent(x.v)}">${e(t)} ${e(vshort(x.v))}</a></div><div class="n">${pq(x)}</div><div class="s">${x.counted ? `${x.err} von ${x.inst} Installationen mit Fehler · ${pcl(x)} fehlerfreie Tage` : `${x.err} mit Fehler · Quote ab Tages-Meldungen`}</div><div style="margin-top:6px">${amp(x.amp)}</div></div>`;
   const heroes = R.hero.map((x, i) => tile(x, x.ch === "stable" ? "Stabil" : i === 0 ? "Beta" : "vorher")).join("");
-  const rows = R.list.slice(0, 8).map((x) => `<tr><td><a href="/fehler?ver=${encodeURIComponent(x.v)}" class="lga"><b>${e(x.v)}</b></a></td><td>${x.ch === "beta" ? "Beta" : "Stabil"}</td><td class="num">${x.inst}</td><td class="num">${x.err}</td><td class="num">${pq(x)}</td><td class="num">${x.neu}</td><td class="num hide">${x.live}</td><td class="num hide">${x.quiet}</td><td>${amp(x.amp)}<small style="display:block;color:#8d8c84;font-family:inherit">${e(x.why)}</small></td></tr>`).join("");
+  const rows = R.list.slice(0, 8).map((x) => `<tr><td><a href="/version/${encodeURIComponent(x.v)}" class="lga"><b>${e(x.v)}</b></a></td><td>${x.ch === "beta" ? "Beta" : "Stabil"}</td><td class="num">${x.inst}</td><td class="num">${x.err}</td><td class="num">${pq(x)}</td><td class="num hide">${pcl(x)}</td><td class="num">${x.neu ? `<a class="lga" href="/fehler?ver=${encodeURIComponent(x.v)}">${x.neu}</a>` : 0}</td><td class="num hide">${x.live}</td><td class="num hide">${x.quiet}</td><td>${amp(x.amp)}<small style="display:block;color:#8d8c84;font-family:inherit">${e(x.why)}</small></td></tr>`).join("");
   return `<div class="c"><h2>Release-Reife</h2><div class="u">Installationen mit Fehler-Zustimmung · letzte ${R.o.window} Tage · Ampel: mindestens ${R.o.minDays} Tage live, ${R.o.minInst} Installationen, keine neuen offenen Fehler, Quote nicht höher als die letzte stabile Version</div>
     <div class="k rkk">${heroes}</div>
-    <table class="et"><tr><th>Version</th><th>Kanal</th><th class="num">Installationen</th><th class="num">mit Fehler</th><th class="num">Quote</th><th class="num">neue Fehler</th><th class="num hide">Tage live</th><th class="num hide">ohne neuen Fehler</th><th>Ampel</th></tr>${rows}</table></div>`;
+    <table class="et"><tr><th>Version</th><th>Kanal</th><th class="num">Installationen</th><th class="num">mit Fehler</th><th class="num">Quote</th><th class="num hide">fehlerfreie Tage</th><th class="num">neue Fehler</th><th class="num hide">Tage live</th><th class="num hide">ohne neuen Fehler</th><th>Ampel</th></tr>${rows}</table></div>`;
 }
 
 // ---------------------------------------------------------------- Build 6 · F4 Fehler je Modul
@@ -482,4 +491,43 @@ export async function errOwnStatus(DB, p) {
   }
   for (const [r, list] of back) if (res[r]) for (const fp of list) out[fp] = res[r];
   return out;
+}
+
+// ---------------------------------------------------------------- Build 9 · S5 Home Assistant × Version
+const haMin = (h) => { const m = /^(\d{4})\.(\d{1,2})/.exec(String(h || "")); return m ? `${m[1]}.${+m[2]}` : ""; };
+const haCmp9 = (a, b) => { const [x1, x2] = a.split(".").map(Number), [y1, y2] = b.split(".").map(Number); return x1 - y1 || x2 - y2; };
+/** Fehlerquote je Kombination aus HA-Version (ohne Patch) und Strom-&-Wärme-Version · nur Tages-Meldungen ab Build 6 · Felder ab minN */
+export function haMatrix(rows, hits, days, todayStr, { window = 30, cols = 4, minN = 3 } = {}) {
+  const from = S(dOf(todayStr) - (window - 1) * dayMs), ign = new Set(rows.filter((x) => x.status === "ignoriert").map((x) => x.fp));
+  const Dd = (days || []).filter((d) => d.day >= from && d.mods != null && haMin(d.ha));
+  const who = new Map();   // Version|Kennung → HA (letzte Meldung)
+  for (const d of Dd) { const k = d.version + "|" + d.rid, o = who.get(k); if (!o || d.day > o.day) who.set(k, { day: d.day, ha: haMin(d.ha), v: d.version, rid: d.rid }); }
+  const bad = new Set(hits.filter((h) => h.day >= from && !ign.has(h.fp)).map((h) => h.version + "|" + h.rid));
+  const vers = [...new Set([...who.values()].map((x) => x.v))].sort(vcmp).reverse().slice(0, cols);
+  const has = [...new Set([...who.values()].map((x) => x.ha))].sort(haCmp9).reverse();
+  const cell = (ha, v) => { const L = [...who.values()].filter((x) => x.ha === ha && x.v === v); const n = L.length, err = L.filter((x) => bad.has(v + "|" + x.rid)).length; return { n, err, q: n >= minN ? err / n : null }; };
+  return { vers, has, cells: has.map((ha) => vers.map((v) => cell(ha, v))), minN };
+}
+export function haMatrixHtml(M) {
+  if (!M || !M.vers.length) return `<div class="c"><h2>Home Assistant × Version</h2><div class="empty">Sobald Installationen ab 2026.11.5b1 ihre Tages-Meldung schicken, steht hier die Fehlerquote je Home-Assistant-Version.</div></div>`;
+  const col = (q) => (q == null ? "color:#5b5a55" : q >= 0.15 ? "background:#7f1d1d;color:#fecaca" : q >= 0.08 ? "background:#78350f;color:#fde68a" : "background:#134e4a;color:#5eead4");
+  return `<div class="c"><h2>Home Assistant × Version</h2><div class="u">Installationen mit Fehler ÷ Installationen · 30 Tage · Feld erst ab ${M.minN} Installationen</div>
+    <table class="et hm"><tr><th>Home Assistant</th>${M.vers.map((v) => `<th class="num"><a class="lga" href="/version/${encodeURIComponent(v)}">${e(vshort(v))}</a></th>`).join("")}</tr>
+    ${M.has.map((ha, i) => `<tr><td>${e(ha)}</td>${M.cells[i].map((c) => `<td class="num"><span class="hmc" style="${col(c.q)}" title="${c.err} von ${c.n}">${c.q == null ? (c.n ? `(${c.n})` : "–") : `${Math.round(c.q * 100)} %`}</span></td>`).join("")}</tr>`).join("")}</table></div>`;
+}
+
+// ---------------------------------------------------------------- Build 9 · S1 Release-Bericht je Version
+/** Fehler-Teil des Berichts: Reife-Zeile, neu in dieser Version, in dieser Version behoben */
+export function versionErrPart(er, v) {
+  const R = (er.reife && er.reife.list.find((x) => x.v === v)) || null;
+  const neu = er.rows.filter((x) => x.first_ver === v && x.status !== "ignoriert");
+  const fixed = er.rows.filter((x) => x.status === "behoben" && x.fixed_in === v);
+  const list = (er.reife && er.reife.list) || [], i = list.findIndex((x) => x.v === v);
+  return { R, neu, fixed, prev: i >= 0 ? list.slice(i + 1).find((x) => x.ch === (R ? R.ch : channelOf(v))) || null : null, stable: list.find((x) => x.ch === "stable" && vcmp(x.v, v) < 0) || null };
+}
+export function versionErrHtml(P, v) {
+  const tag2 = (x) => x.tag === "wieder da" ? tag("wieder da") : x.status === "arbeit" ? tag("in Arbeit") : x.status === "behoben" ? tag("behoben") : tag(x.tag === "neu" ? "neu" : "bekannt");
+  const li = (L, empty) => L.length ? `<table class="mini">${L.slice(0, 10).map((x) => `<tr><td><a class="lga" href="/fehler/${x.fp}"><b>${e(x.kind)}:</b> ${e(String(x.msg || "–").slice(0, 70))}</a><small style="display:block;color:#8d8c84">${e(x.mod)} · ${x.inst_all} Inst.</small></td><td style="text-align:right">${tag2(x)}</td></tr>`).join("")}</table>` : `<div class="empty">${empty}</div>`;
+  return `<div class="g"><div class="c"><h2>Neu in dieser Version</h2><div class="u">erst mit ${e(vshort(v))} aufgetaucht${P.neu.length ? ` · <a class="lga" href="/fehler?ver=${encodeURIComponent(v)}">alle in der Fehlerliste</a>` : ""}</div>${li(P.neu, "Keine neuen Fehler.")}</div>
+    <div class="c"><h2>In dieser Version behoben</h2><div class="u">als „behoben in ${e(vshort(v))}“ markiert</div>${li(P.fixed, "Noch kein Fehler als behoben in dieser Version markiert.")}</div></div>`;
 }

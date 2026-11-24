@@ -143,7 +143,7 @@ const rows = (groups, hits) => F.errCompute(groups, hits, today, 30).rows;
   assert.equal(v["2026.11.5b2"].amp, "abwarten"); assert.ok(v["2026.11.5b2"].why.includes("Tages-Meldungen"));
   assert.ok(F.reifeHtml(F.releaseReady([], [], [], [], today)).includes("Noch keine Berichte"));
   const h = F.reifeHtml(F.releaseReady(rows(S.groups, S.hits), S.hits, S.days, S.rel, today));
-  assert.ok(h.includes("Release-Reife") && h.includes("abgelöst") && h.includes("?ver=2026.11.5b2"));
+  assert.ok(h.includes("Release-Reife") && h.includes("abgelöst") && h.includes("/version/2026.11.5b2"));
   console.log("Build-6-Release-Reife OK");
 
   // ---------------------------------------------------------------- F4 Fehler je Modul

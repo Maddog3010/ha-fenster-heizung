@@ -6,7 +6,11 @@
 // Gespeichert wird je Installation: zufällige Kennung, Version, Kanal, erster/letzter Tag. Keine IP-Adresse,
 // kein User-Agent. Die Begrenzung pro Absender übernimmt eine Cloudflare-Rate-Limit-Regel (siehe Anleitung).
 
-import { dbErrMerge, dbErrSplit, errOwnStatus, validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
+import { haMatrixHtml, versionErrPart, versionErrHtml, pc1, dbErrMerge, dbErrSplit, errOwnStatus, validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
+/** Build 9: Version dieses Dashboards/Workers – steht im Banner und unter /health. Bei jedem Build hochzählen. */
+export const DASH = { build: 9, date: "2026-11-24" };
+const dashChip = () => `<span class="chip dv" title="Version des Statistik-Workers – nach „wrangler deploy“ prüfen, ob der neue Stand aktiv ist">Dashboard Build ${DASH.build} · ${DASH.date.slice(8, 10)}.${DASH.date.slice(5, 7)}.${DASH.date.slice(0, 4)}</span>`;
+const banChips = (today) => `<span class="chips">${dashChip()}<span class="chip">nur du · Stand ${e(today)}</span></span>`;
 export const SCHEMAS = [1, 2, 3];   // Schema 1: ohne Module · Schema 2: mit Modulliste · Schema 3 (Build 6): dazu HA-Version „2026.11“
 export const MODULES = { ww: "2 Warmwasser", en: "3 Energie", gs: "4 Gerätestrom", lu: "5 Lüftung", rb: "6 Rollläden", wp: "7 Wärmepumpe", ev: "8 E-Auto", wx: "9 Wetter", ga: "10 Garten", sf: "11 Sicherheit", pl: "12 Pool & Sauna", bt: "13 Batterie", dt: "14 Stromtarif", wa: "15 Wartung", sp: "16 Prognose", ef: "19 Hausfluss" };
 const MAX_BODY = 1024;
@@ -218,11 +222,12 @@ const CSS = `:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;backg
 .c .t{color:#c3c2b7;font-size:.82rem}.c .n{font-size:1.9rem;font-weight:800;margin:2px 0}.c .s{color:#8d8c84;font-size:.74rem}
 .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:10px}.c h2{margin:0 0 2px;font-size:1rem}.c .u{color:#8d8c84;font-size:.78rem;margin-bottom:8px}
 .l{display:flex;gap:12px;flex-wrap:wrap;font-size:.78rem;color:#c3c2b7;margin-top:6px}.l i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.empty{color:#8d8c84;padding:20px 0;text-align:center}svg{max-width:100%;height:auto}.f{color:#8d8c84;font-size:.74rem;margin:12px 2px}`;
+.empty{color:#8d8c84;padding:20px 0;text-align:center}.chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.chip.dv{background:#0b3f3b;border:1px solid #2a7d76;color:#fff}
+.vk{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:10px 0}.vh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 0}.vh h2{margin:0;font-size:1.25rem}svg{max-width:100%;height:auto}.f{color:#8d8c84;font-size:.74rem;margin:12px 2px}`;
 const e = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#x27;" }[c]));
 const f1 = (x) => (Math.round(x * 10) / 10).toString();
 
-function bars(rows, colors, labelW = 96) {
+function bars(rows, colors, labelW = 96, link = null) {
   if (!rows.length) return '<div class="empty">Noch keine Daten</div>';
   const mx = Math.max(...rows.map((r) => r[1])) || 1;
   const tot = rows.reduce((s, r) => s + r[1], 0) || 1;
@@ -230,7 +235,8 @@ function bars(rows, colors, labelW = 96) {
   rows.forEach(([name, v], n) => {
     const col = typeof colors === "string" ? colors : colors[Math.min(n, colors.length - 1)];
     const w = Math.max(3, (250 * v) / mx), y = n * 30;
-    s += `<text x="0" y="${y + 19}" fill="#c3c2b7" font-size="12">${e(name)}</text><rect x="${labelW}" y="${y + 5}" width="${f1(w)}" height="18" rx="4" fill="${col}"/>` +
+    const lab = `<text x="0" y="${y + 19}" fill="#c3c2b7" font-size="12"${link ? ' text-decoration="underline"' : ""}>${e(name)}</text>`;
+    s += `${link ? `<a href="${link(name)}">${lab}</a>` : lab}<rect x="${labelW}" y="${y + 5}" width="${f1(w)}" height="18" rx="4" fill="${col}"/>` +
       `<text x="${f1(labelW + w + 8)}" y="${y + 19}" fill="#f0efec" font-size="12">${v} · ${Math.round((100 * v) / tot)} %</text>`;
   });
   return s + "</svg>";
@@ -298,17 +304,54 @@ export function render(r, retention = "180", x = {}) {
   const t50 = r.t50 !== null ? `${r.t50} Tage` : "–";
   return `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><title>Strom &amp; Wärme · Statistik</title><style>${CSS}${ERR_CSS}</style></head><body><div class="w">
-<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Welche Version ist im Einsatz? · anonym · Version und Module</small></div><span class="chip">nur du · Stand ${e(r.today)}</span></div>${tabs("v")}${x.week ? weekHtml(x.week) : ""}
+<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Welche Version ist im Einsatz? · anonym · Version und Module</small></div>${banChips(r.today)}</div>${tabs("v")}${x.week ? weekHtml(x.week) : ""}
 <div class="k"><div class="c"><div class="t">Aktive Installationen</div><div class="n">${r.a30}</div><div class="s">30 Tage · ${r.a7} in den letzten 7 Tagen</div></div>
 <div class="c"><div class="t">Neu diese Woche</div><div class="n">+${r.new7}</div><div class="s">${r.inactive} Installationen seit &gt;14 Tagen inaktiv</div></div>
 <div class="c"><div class="t">Auf neuester Version</div><div class="n">${r.newest_share} %</div><div class="s">${e(r.newest || "–")}</div></div>
 <div class="c"><div class="t">Update-Tempo</div><div class="n">${e(t50)}</div><div class="s">bis 50 % einer neuen Version nutzen</div></div></div>
-<div class="g"><div class="c"><h2>Versionen aktuell</h2><div class="u">${r.a30} aktive Installationen (30 Tage)</div>${bars(r.versions.slice(0, 8), VCOL)}</div>
+<div class="g"><div class="c"><h2>Versionen aktuell</h2><div class="u">${r.a30} aktive Installationen (30 Tage)</div>${bars(r.versions.slice(0, 8), VCOL, 96, (v) => `/version/${encodeURIComponent(v)}`)}</div>
 <div class="c"><h2>Verlauf: Versionen pro Woche</h2><div class="u">Neueste Version je Installation und Woche</div>${columns(r.weeks, r.week_versions, r.rel, r.week_from)}<div class="l">${legend}${(r.rel || []).length ? '<span><i style="background:#d95926"></i>neue Version erschienen</span>' : ""}</div></div>
 <div class="c"><h2>Kanal &amp; Aktivität</h2><div class="u">Kanal (30 Tage)</div>${kan}<div class="u" style="margin-top:10px">Zuletzt gesehen</div>${bars(r.seen, "#3987e5", 78)}</div>
 <div class="c"><h2>Update-Tempo</h2><div class="u">Anteil auf neuer Version nach x Tagen</div>${curvesSvg(r.curves)}</div>
 <div class="c"><h2>Modul-Nutzung</h2><div class="u">Installationen mit Modul an · Basis ${r.mod_base} (30 Tage)</div>${modBars(r.modules, r.mod_base)}</div>${haHtml(r.ha)}${x.lag ? lagHtml(x.lag) : ""}</div>
 <div class="f">Nur Teilnehmende zählen: Die Zahlen sind Untergrenzen und zeigen Trends, keine absolute Nutzerzahl. Kennungen ohne Meldung seit ${e(retention)} Tagen werden gelöscht.</div></div></body></html>`;
+}
+
+// ---------------------------------------------------------------- Build 9 · S1 Release-Bericht je Version
+export async function versionReport(DB, v, todayStr) {
+  const [r, er] = [await loadAndCompute(DB, todayStr), await errLoad(DB, todayStr, 30)];
+  const rel = await loadReleases(DB), d0 = (rel.find((x) => x.v === v) || {}).d || "";
+  const from = S(D(todayStr) - 29 * dayMs);
+  const per = (await DB.prepare("SELECT day, COUNT(*) n FROM daily WHERE version=? AND day>=? GROUP BY day").bind(v, from).all()).results;
+  const ha = (await DB.prepare("SELECT ha, COUNT(*) n FROM installs WHERE version=? AND last_day>=? GROUP BY ha").bind(v, from).all()).results;
+  const inst = (r.versions.find((x) => x[0] === v) || [v, 0])[1];
+  const P = versionErrPart(er, v);
+  if (!inst && !d0 && !P.R && !P.neu.length && !P.fixed.length) return null;
+  const pm = new Map(per.map((x) => [x.day, x.n]));
+  const days = Array.from({ length: 30 }, (_, i) => { const d = S(D(todayStr) - (29 - i) * dayMs); return { d, n: pm.get(d) || 0 }; });
+  const all = r.versions.map((x) => x[0]), i = all.indexOf(v);
+  return { v, ch: channelOf(v), d0, live: d0 ? diff(todayStr, d0) : null, inst, share: r.a30 ? Math.round((100 * inst) / r.a30) : 0, a30: r.a30,
+    newer: i > 0 ? all.slice(0, i).filter((x) => cmp(x, v) > 0) : [], days, ha: ha.filter((x) => x.ha).sort((a, b) => b.n - a.n), P, week: er.week };
+}
+const AMPC = { bereit: "#134e4a|#5eead4", gut: "#134e4a|#5eead4", abwarten: "#78350f|#fde68a", "nicht freigeben": "#7f1d1d|#fecaca", "Hotfix prüfen": "#7f1d1d|#fecaca", "Update empfehlen": "#7c2d12|#fdba74", abgelöst: "#262624|#8d8c84", älter: "#262624|#8d8c84" };
+export function versionHtml(R) {
+  const X = R.P.R, a = X ? (AMPC[X.amp] || AMPC.abwarten).split("|") : null, fd = (d) => (d ? `${d.slice(8, 10)}.${d.slice(5, 7)}.` : "");
+  const pq = (x) => (x && x.quote != null ? `${Math.round(x.quote * 100)} %` : "–"), pcl = (x) => (x && x.clean != null ? pc1(x.clean) : "–");
+  const cmpTxt = [R.P.prev && R.P.prev.quote != null ? `vorher ${e(R.P.prev.v.replace(/^\d{4}\./, ""))}: ${pq(R.P.prev)}` : "", R.P.stable && R.P.stable.quote != null && R.P.stable !== R.P.prev ? `Stabil ${e(R.P.stable.v.replace(/^\d{4}\./, ""))}: ${pq(R.P.stable)}` : ""].filter(Boolean).join(" · ");
+  const mx = Math.max(1, ...R.days.map((x) => x.n)), xOf = (d) => { const k = R.days.findIndex((x) => x.d === d); return k < 0 ? null : k * 20 + 10; };
+  const pts = R.days.map((x, k) => `${k * 20 + 10},${f1(80 - (x.n / mx) * 70)}`).join(" ");
+  const chart = R.days.some((x) => x.n) ? `<svg viewBox="0 -14 600 112" role="img" aria-label="Verbreitung">${R.d0 && xOf(R.d0) != null ? markSvg([{ v: R.v, d: R.d0 }], xOf, -4, 80, -6) : ""}<polyline points="${pts}" fill="none" stroke="#3987e5" stroke-width="2.5"/><text x="2" y="92" fill="#8d8c84" font-size="9">${fd(R.days[0].d)}</text><text x="598" y="92" fill="#8d8c84" font-size="9" text-anchor="end">heute · ${R.days.at(-1).n}</text></svg>` : '<div class="empty">Keine Versions-Meldungen in den letzten 30 Tagen.</div>';
+  const haT = R.ha.length ? `<table class="mini">${R.ha.slice(0, 6).map((x) => `<tr><td>${e(x.ha)}</td><td class="num">${x.n} Inst.</td></tr>`).join("")}</table>` : '<div class="empty">Keine Angaben (erst ab 2026.11.5b1).</div>';
+  return `<div class="c"><div class="flt"><a href="/">← Versionen</a><a href="/fehler">Fehler</a></div>
+    <div class="vh"><h2>${e(R.v)}</h2><span class="tg" style="background:${R.ch === "beta" ? "#7c2d12;color:#fdba74" : "#1e3a8a;color:#bfdbfe"}">${R.ch === "beta" ? "Beta" : "Stabil"}</span>${X ? `<span class="tg" style="background:${a[0]};color:${a[1]}">${e(X.amp)}</span><span class="u" style="margin:0">${e(X.why)}</span>` : ""}</div>
+    <div class="u" style="margin-top:4px">${R.d0 ? `zuerst gemeldet am ${e(R.d0)} · seit ${R.live} ${R.live === 1 ? "Tag" : "Tagen"}` : "Erscheinungstag unbekannt"}${R.newer.length ? ` · neuere Versionen: ${R.newer.slice(-3).map((x) => `<a class="lga" href="/version/${encodeURIComponent(x)}">${e(x)}</a>`).join(", ")}` : " · neueste Version"}</div></div>
+  <div class="vk"><div class="c"><div class="t">Installationen</div><div class="n">${R.inst}</div><div class="s">${R.share} % aller ${R.a30} aktiven (30 Tage)</div></div>
+    <div class="c"><div class="t">Fehlerquote</div><div class="n">${pq(X)}</div><div class="s">${X && X.counted ? `${X.err} von ${X.inst} mit Fehler` : "erst mit Tages-Meldungen (ab 2026.11.5b1)"}${cmpTxt ? ` · ${cmpTxt}` : ""}</div></div>
+    <div class="c"><div class="t">Fehlerfreie Tage</div><div class="n">${pcl(X)}</div><div class="s">${X && X.useDays ? `${X.useDays - X.errDays} von ${X.useDays} Nutzungstagen ohne Fehler` : "Nutzungstage ohne Fehler"}</div></div>
+    <div class="c"><div class="t">Neu · behoben</div><div class="n">${R.P.neu.length} · ${R.P.fixed.length}</div><div class="s">Fehler neu in dieser Version · hier behoben</div></div></div>
+  ${versionErrHtml(R.P, R.v)}
+  <div class="g" style="margin-top:10px"><div class="c"><h2>Verbreitung</h2><div class="u">Installationen auf ${e(R.v)} pro Tag · 30 Tage · orange: erschienen</div>${chart}</div>
+    <div class="c"><h2>Home Assistant</h2><div class="u">Installationen auf dieser Version</div>${haT}</div></div>`;
 }
 
 // ---------------------------------------------------------------- Cloudflare-Access-Token prüfen (RS256)
@@ -346,7 +389,7 @@ const json = (code, body) =>
   new Response(JSON.stringify(body ?? { ok: code < 300 }), { status: code, headers: { "content-type": "application/json", "cache-control": "no-store" } });
 
 async function ingest(req, env, url) {
-  if (req.method === "GET" && url.pathname === "/health") return json(200);
+  if (req.method === "GET" && url.pathname === "/health") return json(200, { ok: true, build: DASH.build, date: DASH.date });
   if (req.method !== "POST" || !["/v1/ping", "/v1/forget", "/v1/errors", "/v1/errors/forget"].includes(url.pathname)) return json(404, { ok: false });
   const raw = await req.arrayBuffer();
   if (raw.byteLength === 0 || raw.byteLength > (url.pathname === "/v1/errors" ? ERR_MAX_BODY : MAX_BODY)) return json(413, { ok: false });
@@ -375,16 +418,16 @@ async function ingest(req, env, url) {
   return res === "ok" ? json(200) : json(429, { ok: false, error: res });
 }
 
-const page = (title, body, today, week = null) => `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+const page = (title, body, today, week = null, tab = "f", sub = "Fehlerberichte · freiwillig · bereinigt", foot = "Nur Installationen, die Fehlerberichte eingeschaltet haben. Berichte älter als 90 Tage werden gelöscht.") => `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex"><title>${title}</title><style>${CSS}${ERR_CSS}</style></head><body><div class="w">
-<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Fehlerberichte · freiwillig · bereinigt</small></div><span class="chip">nur du · Stand ${e(today)}</span></div>${tabs("f")}${weekHtml(week)}${body}
-<div class="f">Nur Installationen, die Fehlerberichte eingeschaltet haben. Berichte älter als 90 Tage werden gelöscht.</div></div></body></html>`;
+<div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>${sub}</small></div>${banChips(today)}</div>${tabs(tab)}${weekHtml(week)}${body}
+<div class="f">${foot}</div></div></body></html>`;
 const html = (s, code = 200) => new Response(s, { status: code, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
 
 async function dashboard(req, env, url) {
-  const fm = /^\/fehler(?:\/([0-9a-f]{12}))?\/?$/.exec(url.pathname);
+  const fm = /^\/fehler(?:\/([0-9a-f]{12}))?\/?$/.exec(url.pathname), vm = /^\/version\/([0-9.b]{5,24})\/?$/.exec(url.pathname);
   const post = req.method === "POST" && fm && fm[1];
-  if ((req.method !== "GET" && !post) || (url.pathname !== "/" && !fm)) return json(404, { ok: false });
+  if ((req.method !== "GET" && !post) || (url.pathname !== "/" && !fm && !vm)) return json(404, { ok: false });
   if (!(await verifyAccess(req.headers.get("cf-access-jwt-assertion"), env))) return new Response("Zugriff verweigert", { status: 403, headers: { "cache-control": "no-store" } });
   const today = S(Date.now());
   if (post) {   /* Build 4: Status speichern – nur aus dem eigenen Dashboard (gleiche Herkunft), nur hinter Access */
@@ -406,6 +449,12 @@ async function dashboard(req, env, url) {
     if (!st) return json(400, { ok: false });
     if (!(await dbErrStatus(env.DB, fm[1], st, Date.now()))) return json(404, { ok: false });
     return new Response(null, { status: 303, headers: { location: `/fehler/${fm[1]}`, "cache-control": "no-store" } });
+  }
+  if (vm) {   /* Build 9 · Release-Bericht je Version */
+    const v = decodeURIComponent(vm[1]);
+    if (!VER_RE.test(v)) return json(404, { ok: false });
+    const R = await versionReport(env.DB, v, today);
+    return R ? html(page(`${e(v)} · Strom &amp; Wärme`, versionHtml(R), today, R.week, "", "Release-Bericht · eine Version auf einen Blick", "Installationen aus der Versions-Statistik, Fehlerquote und fehlerfreie Tage aus den Fehlerberichten (nur mit Zustimmung).")) : html(page("Version · Strom &amp; Wärme", `<div class="c"><div class="empty">Zu ${e(v)} gibt es keine Meldungen.</div></div>`, today, null, ""), 404);
   }
   if (fm && fm[1]) {
     const D = await errLoadOne(env.DB, fm[1], today);

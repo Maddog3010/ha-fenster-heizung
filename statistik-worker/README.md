@@ -11,7 +11,7 @@ Einrichtung: siehe `Anleitung_Statistik-Cloudflare-Worker.pdf`. Kurz:
     npx wrangler d1 execute stats --remote --file=schema.sql
     npx wrangler deploy                   # danach Access-Anwendung für dash.… anlegen, TEAM_DOMAIN/POLICY_AUD eintragen, erneut deploy
 
-Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
+Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
 
 ## Fehler-Statistik (ab 2026.11.4.3b1)
 
@@ -78,3 +78,16 @@ Nur der Worker und eine neue, kleine Tabelle – kein Update der Integration:
 - Kein Zusammenführen mit sich selbst oder im Kreis. Verweise auf gelöschte Fehler räumt der Worker selbst auf.
 
 Tests: zusätzlich `node --no-warnings test/test_build8.js`.
+
+## Build 9: Dashboard-Version, Release-Bericht, fehlerfreie Tage, Home Assistant × Version
+
+Nur der Worker – keine Datenbank-Änderung, kein Update der Integration:
+
+    npx wrangler deploy
+
+- **Dashboard-Version im Banner** („Dashboard Build 9 · 24.11.2026“) und unter `GET https://stats.stromwaerme.dev/health` → `{"ok":true,"build":9,"date":"2026-11-24"}`. Bei jedem neuen Build `DASH` in `src/worker.js` hochzählen. So lässt sich nach `wrangler deploy` prüfen, ob der neue Stand läuft.
+- **Release-Bericht** `/version/<Version>`: Installationen und Anteil, Fehlerquote mit Vergleich zur Vorversion und zur letzten stabilen, fehlerfreie Tage, Ampel, „Neu in dieser Version“, „In dieser Version behoben“, Verbreitung pro Tag mit Release-Marke, Home-Assistant-Versionen. Verlinkt aus „Versionen aktuell“, Release-Reife, Wochenblick und HA × Version.
+- **Fehlerfreie Tage**: Nutzungstage (Tag + Kennung) ohne Fehler ÷ Nutzungstage, nur ab Tages-Meldungen. Neue Spalte in der Release-Reife. Die Ampel bleibt auf „abwarten“, wenn eine Version mehr als 0,5 Prozentpunkte schlechter ist als die letzte stabile.
+- **Home Assistant × Version** (Reiter Fehler): Fehlerquote je HA-Version (ohne Patch) und den vier neuesten Versionen, Feld erst ab 3 Installationen.
+
+Tests: zusätzlich `node --no-warnings test/test_build9.js`.
