@@ -2443,7 +2443,7 @@ button.stck{cursor:pointer}
 .stmn{font-style:normal;font-weight:400;font-size:.76rem;color:var(--mut);margin-left:6px}
 .stinfo{cursor:default}
 .stmini{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px;padding:6px 14px 14px}
-.mdsr{display:flex;align-items:center;min-width:0}.mdsr+.mdsr{border-top:1px solid var(--line)}.mdsr .sxrow{flex:1;min-width:0}.mdsr .mdsx{cursor:default}.mdsr .mdsx:hover{background:none}.mdsr.off .sxt b{color:var(--mut)}.mdsoff{opacity:.55}.mdsep{flex:none;width:1px;height:28px;background:var(--line);margin:0 12px 0 4px}.mdsr .sw{margin-right:14px}.mdsr>.ibtn{flex:none}.mdsnt{flex:none;width:46px;margin-right:14px}.mdsst{display:none}.mdsseg{max-width:560px}.mdsseg button{white-space:nowrap}.mdsadd{padding:6px 14px 12px;border-top:1px solid var(--line)}.mdsft .btn2{flex:none}.mdsft{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:8px}
+.grprops .pkbtn,.grprops .pkbox{box-sizing:border-box;max-width:100%;min-width:0}.mdsr{display:flex;align-items:center;min-width:0}.mdsr+.mdsr{border-top:1px solid var(--line)}.mdsr .sxrow{flex:1;min-width:0}.mdsr .mdsx{cursor:default}.mdsr .mdsx:hover{background:none}.mdsr.off .sxt b{color:var(--mut)}.mdsoff{opacity:.55}.mdsep{flex:none;width:1px;height:28px;background:var(--line);margin:0 12px 0 4px}.mdsr .sw{margin-right:14px}.mdsr>.ibtn{flex:none}.mdsnt{flex:none;width:46px;margin-right:14px}.mdsst{display:none}.mdsseg{max-width:560px}.mdsseg button{white-space:nowrap}.mdsadd{padding:6px 14px 12px;border-top:1px solid var(--line)}.mdsft .btn2{flex:none}.mdsft{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-top:8px}
 @media(max-width:600px){.mdsr .sxrow>.sxc{display:none}.mdsst{display:inline}.mdsr .mdsd{display:none}.mdsr .sxt b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}.mdsep{margin:0 8px 0 2px}.mdsr .sw{margin-right:10px}.mdsnt{width:46px;margin-right:10px}.mdsseg button{font-size:.74rem;padding:8px 2px}}
 .stmb{display:flex;align-items:center;gap:8px;border:1px dashed var(--line);border-radius:12px;background:transparent;color:inherit;font:inherit;text-align:left;padding:8px 10px;cursor:pointer}
 .stmt{display:flex;flex-direction:column;min-width:0;line-height:1.25}.stmb b{font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stmb small{font-size:.68rem;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stgo svg{transform:rotate(-90deg)}
@@ -4778,7 +4778,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (this._press || (this._hold && Date.now() < this._hold)) { this._prPend = true; return; }
     const sr0 = this.shadowRoot, ae0 = sr0 && sr0.activeElement;
     /* Läuft gerade eine Eingabe (Uhrzeit, Zahl, Text), wird die Seite nicht neu aufgebaut. Home Assistant meldet laufend neue Werte, das würde das Feld mitten im Tippen wegwerfen. Nach dem Verlassen des Feldes wird nachgezogen. */
-    if (ae0 && ((ae0.tagName === "INPUT" && ["time", "date", "number", "text"].includes(ae0.type) && !ae0.classList.contains("stoq")) || (ae0.tagName === "TEXTAREA" && ae0.dataset.f === "kmhist")) && sr0.getElementById("main") && sr0.getElementById("main").contains(ae0)) {
+    if (ae0 && ((ae0.tagName === "INPUT" && (["time", "date", "number", "text"].includes(ae0.type) || (ae0.dataset.f === "pkq" && !this._pkForce)) && !ae0.classList.contains("stoq")) || (ae0.tagName === "TEXTAREA" && ae0.dataset.f === "kmhist")) && sr0.getElementById("main") && sr0.getElementById("main").contains(ae0)) {
       if (this._inHook !== ae0) { this._inHook = ae0; ae0.addEventListener("blur", () => { this._inHook = null; setTimeout(() => this._render(), 0); }, { once: true }); }
       return;
     }
@@ -4795,6 +4795,7 @@ class FensterHeizungPanel extends HTMLElement {
     const at = this._animSave(kk);  /* Stand der laufenden Bewegung (Flüsse, Wolken …), sonst beginnt sie bei jedem neuen Wert von vorn */
     try { this._render0(); this._kontaktLeiste(); if (sr0) { sr0.querySelectorAll("img[data-keep]").forEach((i) => { const o = keep[i.getAttribute("src")]; if (o && o !== i) i.replaceWith(o); }); sr0.querySelectorAll("#main [data-kk]").forEach((n) => { const o = kk[n.dataset.kk]; if (o && o !== n && !n.contains(o) && (!n.hasAttribute("data-ks") || this._kkSync(o, n))) n.replaceWith(o); }); this._animLoad(at); this._visObs(); if (this._saiDeco) this._saiDeco(sr0); this._msn(); if (this._hzAnimRun) this._hzAnimRun(); } } catch (err) { console.error("fenster_heizung render", err); try { this._errJs(err, "Neuaufbau"); } catch (_) { /* nie stören */ } if (this._toast && Date.now() - (this._errT || 0) > 4000) { this._errT = Date.now(); this._toast("Anzeigefehler: " + (err && err.message || err)); } return; }
     if (sr0) sr0.querySelectorAll(HS).forEach((e, n) => { const v = hsx[e.className.split(" ")[0] + "|" + n]; if (v) e.scrollLeft = v; });
+    this._dkApply(sr0 && sr0.getElementById("main"));
     const nb = sr0 && sr0.querySelector(".mbar"); if (!nb) { this._mbId = id; return; }
     if (this._mbId !== id || x == null) {
       const t = nb.querySelector(".mtab.sel"); if (t) nb.scrollLeft = Math.max(0, t.offsetLeft - (nb.clientWidth - t.offsetWidth) / 2);
@@ -7705,6 +7706,8 @@ class FensterHeizungPanel extends HTMLElement {
     const sr = this.shadowRoot;
     sr.innerHTML = `<style>${CSS_MAIN}${CSS_RK}${CSS_GH}${CSS_SUP}${CSS_STS}${CSS_GOE}${CSS_SF2}${CSS_WT}${CSS_SAI}${CSS_SB}</style><div id="main"></div><div id="modal"></div><div id="toast"></div>`;
     this._built = true; this._t0 = Date.now();
+    /* Aufklappbereiche (<details>) merken: Home Assistant meldet laufend neue Werte, jeder Neuaufbau würde sie sonst wieder zuklappen (2026.11.4.3b5) */
+    sr.addEventListener("toggle", (e) => { const d = e.target; if (d && d.tagName === "DETAILS" && !this._dkBusy) { const k = this._dKey(d); if (k) (this._dOpen = this._dOpen || {})[k] = d.open; } }, true);
     /* Ein Klick zählt nur, wenn der Finger oder die Maus auch hier aufgesetzt wurde. So lösen Geisterklicks (zum Beispiel nach dem Antippen der Seitenleiste oder beim Wischen) keine Schaltfläche aus. Tastatur (detail 0) bleibt erlaubt. */
     const sig = (b) => `${b.dataset.act}|${b.dataset.k || ""}|${b.dataset.id || ""}|${b.dataset.i || ""}`;
     sr.addEventListener("pointerdown", (e) => { const b = e.target.closest && e.target.closest("[data-act]"); this._pd = b ? { s: sig(b), t: Date.now() } : null; }, true);
@@ -8489,7 +8492,18 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "dgcopy") { const t = (m.data.log || []).map((e) => `${e.t} [${e.level}] ${e.room || "Allgemein"}: ${e.msg}`).join("\n"); this._clip(t, "Protokoll kopiert"); return; }
     this._renderModal();
   }
-  _renderModal() {
+  /* Schlüssel eines Aufklappbereichs: Klasse + Überschrift ohne Zahlen („Melder ausschließen (3)“ bleibt derselbe). Bereiche mit eigener Steuerung (data-act an der Überschrift) bleiben außen vor. */
+  _dKey(d) {
+    const s = d.querySelector(":scope > summary"); if (!s || s.hasAttribute("data-act")) return "";
+    return d.dataset.dk || `${(d.className || "").split(" ")[0]}|${String(s.textContent || "").replace(/\([^)]*\)|\d+/g, "").replace(/\s+/g, " ").trim().toLowerCase().slice(0, 80)}`;
+  }
+  _dkApply(root) {
+    const M = this._dOpen; if (!root || !M) return;
+    this._dkBusy = true;
+    try { root.querySelectorAll("details").forEach((d) => { const k = this._dKey(d); if (k && k in M && d.open !== M[k]) d.open = M[k]; }); } finally { setTimeout(() => { this._dkBusy = false; }, 0); }
+  }
+  _renderModal() { this._renderModal0(); this._dkApply(this.shadowRoot.getElementById("modal")); }
+  _renderModal0() {
     const box = this.shadowRoot.getElementById("modal"), m = this._modal;
     const old = box.querySelector(".sheet"), top = old ? old.scrollTop : 0;
     if (!m) { box.innerHTML = ""; return; }
@@ -18693,11 +18707,11 @@ class FensterHeizungPanel extends HTMLElement {
       ${gk === "entf" ? `<div class="sffld" style="margin-top:8px"><label>Standort</label><div class="grseg"><button class="${!sel.fix ? "on" : ""}" data-act="grxgfix" data-v="0">Folgt Modul 1</button><button class="${sel.fix ? "on" : ""}" data-act="grxgfix" data-v="1">Fest hier</button></div><small class="mut" style="display:block;margin-top:4px">${!sel.fix ? `Wird das Gerät in Modul 1 woanders hingestellt („Hierher stellen“, NFC), zeigt der Plan es dort.${pos.moved ? " Gerade steht es laut Modul 1 in einem anderen Raum." : ""}` : "Das Gerät bleibt im Plan an dieser Stelle."}</small></div>` : ""}`;
   }
   _grAwnProps(sel) {
-    const st = this._hass.states, cov = Object.keys(st).filter((e) => e.startsWith("cover.")).sort((a, b) => (/markise|awning|sonnen/i.test(b) ? 1 : 0) - (/markise|awning|sonnen/i.test(a) ? 1 : 0)).slice(0, 30), inf = this._grOpenInfo(sel);
+    const st = this._hass.states, cov = Object.keys(st).filter((e) => e.startsWith("cover.")), inf = this._grOpenInfo(sel);
     return `<div class="vrow" style="margin:6px 0"><span>Breite</span><div class="step" style="flex:none"><button data-act="grxob" data-s="-25" aria-label="schmaler">${ic("minus", 16)}</button><b>${num((sel.b || 400) / 100, 2)} m</b><button data-act="grxob" data-s="25" aria-label="breiter">${ic("plus", 16)}</button></div></div>
       <div class="vrow" style="margin:6px 0"><span>Ausfall</span><div class="step" style="flex:none"><button data-act="grxatf" data-s="-25" aria-label="weniger">${ic("minus", 16)}</button><b>${num((sel.tf || 300) / 100, 2)} m</b><button data-act="grxatf" data-s="25" aria-label="mehr">${ic("plus", 16)}</button></div></div>
       <div class="grseg" style="margin:2px 0 8px"><button data-act="grxamv">Seite wechseln</button><button data-act="grxor" data-s="90">↻ 90°</button></div>
-      <div class="sffld"><label>Markise in Home Assistant (optional)</label>${cov.length ? `<div class="gschips"><button class="gsch ${!sel.e ? "sel" : ""}" data-act="grxae" data-v="">keine</button>${cov.map((e) => `<button class="gsch ${sel.e === e ? "sel" : ""}" data-act="grxae" data-v="${esc(e)}">${esc(this._grNiceName(e))}</button>`).join("")}</div>` : `<div class="mut sm">Keine Rollo-/Markisen-Entität (cover) gefunden.</div>`}<small class="mut" style="display:block;margin-top:4px">Mit Entität zeigt der Plan, wie weit sie ausgefahren ist.</small></div>
+      <div class="sffld"><label>Markise in Home Assistant (optional)</label>${cov.length || sel.e ? this._grPick(sel, cov, /markise|awning|sonnen/i) : `<div class="mut sm">Keine Rollo-/Markisen-Entität (cover) gefunden.</div>`}<small class="mut" style="display:block;margin-top:4px">Mit Entität zeigt der Plan, wie weit sie ausgefahren ist.</small></div>
       ${inf ? `<div class="grwall ok">${ic("check", 14)}<span>An der Wand · Abstand zur Ecke <b>${num(Math.max(0, inf.a) / this._sfScale(), 2)} m</b> und <b>${num(Math.max(0, inf.b) / this._sfScale(), 2)} m</b></span></div>` : `<div class="grwall">${ic("alert", 14)}<span>Hängt nicht an einer Wand.</span><button class="grb" data-act="grxosnap">An Wand einrasten</button></div>`}`;
   }
   /* Raum-Blatt: Geräte im Raum */
@@ -18938,13 +18952,12 @@ class FensterHeizungPanel extends HTMLElement {
     const K = this._grTK(), k = this._grTk(sel), st = this._hass.states;
     const groups = this._grTechCat(sel.hk, "grxhk");
     const want = k.d, match = (e) => want.some((w) => { const [dm, dc] = w.split(":"); return e.startsWith(dm + ".") && (!dc || ((st[e].attributes || {}).device_class === dc)); });
-    const rm = (this._sfPl().items || []).find((r) => r.t === "r" && r.fl === sel.fl && this._sfInRoom(r, sel.x, sel.y)), ar = rm && this._grArea ? this._grArea(rm) : null;
-    const cand = want.length ? Object.keys(st).filter(match).sort((a, b) => ((ar && this._grEntArea(b) === ar.id ? 1 : 0) - (ar && this._grEntArea(a) === ar.id ? 1 : 0)) || this._wzName(a).localeCompare(this._wzName(b), "de")).slice(0, 24) : [];
+    const cand = want.length ? Object.keys(st).filter(match) : [];   /* Reihenfolge macht die Sensorsuche (Raum zuerst) */
     const S = this._grTechState(sel), cone = k.k === "bewegung" || k.k === "kamera", rad = k.k === "wlan" || k.k === "router";
     const step = (act, lab, val, unit) => `<div class="vrow" style="margin:6px 0"><span>${lab}</span><div class="step" style="flex:none"><button data-act="${act}" data-s="-1" aria-label="weniger">${ic("minus", 16)}</button><b>${val} ${unit}</b><button data-act="${act}" data-s="1" aria-label="mehr">${ic("plus", 16)}</button></div></div>`;
     return `<details class="grtkd"><summary><span style="color:${k.c}">●</span> ${esc(k.n)} <small class="mut">· ändern</small></summary>${groups}</details>
       ${k.k === "notiz" ? `<div class="sffld"><label>Text der Notiz</label><textarea class="osel" data-f="grxtx" rows="3" maxlength="200" placeholder="z. B. Wasserrohr in der Wand, Ersatzschlüssel im Schrank">${esc(sel.tx || "")}</textarea></div>` : ""}
-      ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length ? `<div class="gschips"><button class="gsch ${!sel.e ? "sel" : ""}" data-act="grxhe" data-v="">keine</button>${cand.map((e) => `<button class="gsch ${sel.e === e ? "sel" : ""}" data-act="grxhe" data-v="${esc(e)}">${esc(this._wzName(e))}${ar && this._grEntArea(e) === ar.id ? `<small class="mut"> · ${esc(ar.name)}</small>` : ""}</button>`).join("")}</div>` : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}
+      ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length || sel.e ? this._grPick(sel, cand, want.some((w) => w.startsWith("climate")) ? /thermostat|heiz|trv|radiator|ventil/i : new RegExp(String(k.n || "").split(/[\s&-]/)[0].replace(/[^a-zäöüß]/gi, "") || "x", "i")) : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}
       ${cone ? step("grxhrg", "Reichweite", num(sel.rg || (k.k === "kamera" ? 8 : 6), 1), "m") + step("grxhfov", "Blickwinkel", sel.fov || (k.k === "kamera" ? 90 : 110), "°") + `<div class="grseg" style="margin:2px 0 6px"><button data-act="grxhdir" data-s="-15">↺ 15°</button><button data-act="grxhdir" data-s="15">↻ 15°</button><button data-act="grxhdir" data-s="90">↻ 90°</button></div>` : ""}
       ${rad ? step("grxhrg", "Reichweite", num(sel.rg || (k.k === "wlan" ? 10 : 6), 1), "m") : ""}
       ${k.g === "notfall" ? `<div class="mut sm" style="margin-top:6px">Notfall-Punkte erscheinen auch im Grundriss von Modul 11 – im Alarm sieht man sofort, wo Haupthahn, Sicherungen und Feuerlöscher sind.</div>` : ""}`;
@@ -19190,16 +19203,27 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     return `<div class="grsun"><span class="gsi">☀</span><span><b>${hh}</b> · ${S.el > 0 ? `${this._grDir(S.az)} · ${num(S.el, 0)}° hoch` : "Sonne unter dem Horizont"}${S.el > 0 ? ` · <b>${G.rooms.length ? "Sonne in: " + esc(G.rooms.join(", ")) : "keine Sonne durch die Fenster"}</b>` : ""}</span>
       <input type="range" min="5" max="22" step="0.25" value="${h.toFixed(2)}" data-f="grxsunh" aria-label="Tageszeit"><button class="grb ${this._grSunH == null ? "on" : ""}" data-act="grxsunnow">Jetzt</button></div>`;
   }
+  /* ---- Modul 0: Entität wählen wie überall sonst (Suchfeld + Vorschläge, 2026.11.4.3b5) – ersetzt die Knopfreihen */
+  _grSelItem() { const ed = this._sfEd; return ed ? (ed.plan.items || []).find((x) => x.id === ed.sel) : null; }
+  _grPkCtx() {
+    const sel = this._grSelItem(); if (!sel) return "";
+    const rm = (this._sfPl().items || []).find((r) => r.t === "r" && r.fl === sel.fl && this._sfInRoom(r, sel.x, sel.y)); if (!rm) return "";
+    const ar = this._grArea ? this._grArea(rm) : null; return (ar && ar.name) || rm.n || "";
+  }
+  _grPkUsed() { const sel = this._grSelItem(); return new Set((this._sfPl().items || []).filter((x) => x.e && (!sel || x.id !== sel.id)).map((x) => x.e)); }
+  _grPick(sel, cand, hint) {
+    return this._wzSel(cand, sel.e || "", "grxpk", `data-k="${esc(sel.t)}"`, "– nicht verbunden –", hint || null);
+  }
   /* ---- Baukasten: Möbel/Außen */
   _grMobCat(cur, act, onlyOut) { const K = this._grMK(); return Object.entries(K.G).filter(([g]) => onlyOut == null || this._grOUT.has(g) === onlyOut).map(([g, [gn, gc]]) => `<div class="grtkg"><small style="color:${gc}">${gn}</small><div class="grseg">${K.L.filter((x) => x[2] === g).map((x) => `<button class="${cur === x[0] ? "on" : ""}" data-act="${act}" data-v="${x[0]}">${x[1]}</button>`).join("")}</div></div>`).join(""); }
   _grMobProps(sel) {
     const k = this._grMk(sel), sc = this._sfScale(), st = this._hass.states, cm = (px) => Math.round((px / sc) * 100);
-    const want = k.d, match = (e) => want.some((w) => { const [dm, dc] = w.split(":"); return e.startsWith(dm + ".") && (!dc || ((st[e].attributes || {}).device_class === dc)); }), cand = want.length ? Object.keys(st).filter(match).sort((a, b) => this._wzName(a).localeCompare(this._wzName(b), "de")).slice(0, 20) : [];
+    const want = k.d, match = (e) => want.some((w) => { const [dm, dc] = w.split(":"); return e.startsWith(dm + ".") && (!dc || ((st[e].attributes || {}).device_class === dc)); }), cand = want.length ? Object.keys(st).filter(match) : [];
     const S = sel.e && this._grTechState ? this._grTechState(sel) : null, step = (act, lab, v) => `<div class="vrow" style="margin:6px 0"><span>${lab}</span><div class="step" style="flex:none"><button data-act="${act}" data-s="-10" aria-label="weniger">${ic("minus", 16)}</button><b>${num(v / 100, 2)} m</b><button data-act="${act}" data-s="10" aria-label="mehr">${ic("plus", 16)}</button></div></div>`;
     return `<details class="grtkd"><summary><span style="color:${this._grMK().G[k.g][1]}">●</span> ${esc(k.n)} <small class="mut">· ändern</small></summary>${this._grMobCat(sel.ok, "grxok2")}</details>
       ${step("grxow", "Breite", cm(sel.w || 40))}${step("grxoh", "Tiefe", cm(sel.h || 40))}
       <div class="grseg" style="margin:2px 0 8px"><button data-act="grxorot" data-s="-15">↺ 15°</button><button data-act="grxorot" data-s="15">↻ 15°</button><button data-act="grxorot" data-s="90">↻ 90°</button><button data-act="grxosz">Normgröße</button></div>
-      ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length ? `<div class="gschips"><button class="gsch ${!sel.e ? "sel" : ""}" data-act="grxoe" data-v="">keine</button>${cand.map((e) => `<button class="gsch ${sel.e === e ? "sel" : ""}" data-act="grxoe" data-v="${esc(e)}">${esc(this._wzName(e))}</button>`).join("")}</div>` : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}`;
+      ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length || sel.e ? this._grPick(sel, cand, /heiz|thermostat|trv|radiator|klima|ofen|kamin|lampe|licht/i) : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}`;
   }
   _grB10Box() {
     const ed = this._sfEd; if (!ed) return "";
@@ -19225,6 +19249,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     return false;
   }
   _grB10Change(t) {
+    if (t.dataset && t.dataset.f === "grxpk") { const cur = this._grSelItem(); if (cur) { this._sfSnap(); cur.e = t.value || ""; this._render(); } return true; }
     if (t.dataset && t.dataset.f === "grxsunh") { this._grSunH = Number(t.value); this._render(); return true; }
     return false;
   }
@@ -21208,7 +21233,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
   /* Suchfeld: tippen filtert sofort über Name, Entitäts-ID, Raum, Gerät und Hersteller (alle Wörter müssen passen) */
   _pkInput(t) {
     const P = this._pkSt(), v = t.value || "", pos = t.selectionStart; P.q = v; P.more = 0;
-    if (this._modal) this._renderModal(); else this._render();
+    if (this._modal) this._renderModal(); else { this._pkForce = true; try { this._render(); } finally { this._pkForce = false; } }
     const i = this.shadowRoot.querySelector('[data-f="pkq"]'); if (i) { i.focus(); try { i.setSelectionRange(pos, pos); } catch (_) { /* egal */ } }
   }
   _pkArea(e) {
@@ -21219,6 +21244,7 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
   /* Raum aus dem Zusammenhang: Raumeinstellungen, Messwerk-Aufgabe „… · Bad“, Messraum */
   _pkCtx() {
     const m = this._modal || {};
+    if (String(this._pkId || "").startsWith("grxpk|") && this._grPkCtx) return this._grPkCtx();   /* Modul 0: Raum, in dem das Element im Plan steht */
     if (m.type === "opt") return m.name || "";
     if (m.type === "mwpick") { const t = ((this._mwD || {}).tasks || []).find((x) => x.id === m.k); return t && t.n.includes(" · ") ? t.n.split(" · ").pop() : ""; }
     if (m.type === "msx" || m.type === "msedit") return (m.draft && m.draft.name) || "";
@@ -21234,8 +21260,8 @@ sensor.strom_waerme_haus_wohnflaeche</pre><div class="mut sm" style="margin-top:
     const u = (st && st.attributes.unit_of_measurement) || ""; if (u) why.push(u);
     const dc = (st && st.attributes.device_class) || "";
     if (["temperature", "humidity"].includes(dc) && /thermostat|trv|ventil|heizkörper/i.test(`${this._wzName(e)} ${A.devName}`)) { s -= 14; why.push("misst am Heizkörper"); }
-    const used = this._mwD && this._mwD.sensors && this._mwD.sensors[e];
-    if (used && e !== cur) { s -= 22; why.push("schon für etwas anderes genutzt"); }
+    const used = (this._mwD && this._mwD.sensors && this._mwD.sensors[e]) || (String(this._pkId || "").startsWith("grxpk|") && this._grPkUsed && this._grPkUsed().has(e));
+    if (used && e !== cur) { s -= 22; why.push(this._mwD && this._mwD.sensors && this._mwD.sensors[e] ? "schon für etwas anderes genutzt" : "schon im Plan"); }
     if (e === cur) { s += 10; why.unshift("jetzt gewählt"); }
     return { e, s: Math.max(1, Math.min(98, s)), why };
   }
