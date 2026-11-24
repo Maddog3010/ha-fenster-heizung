@@ -6,9 +6,10 @@
 // Gespeichert wird je Installation: zufällige Kennung, Version, Kanal, erster/letzter Tag. Keine IP-Adresse,
 // kein User-Agent. Die Begrenzung pro Absender übernimmt eine Cloudflare-Rate-Limit-Regel (siehe Anleitung).
 
+import { snapToday, snapCleanup, loadSnaps, langzeitHtml, lostAfterUpdate, lostHtml, cohorts, cohortHtml, csv, EXPORTS, CSV_CSS } from "./langzeit.js";
 import { haMatrixHtml, versionErrPart, versionErrHtml, pc1, dbErrMerge, dbErrSplit, errOwnStatus, validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
 /** Build 9: Version dieses Dashboards/Workers – steht im Banner und unter /health. Bei jedem Build hochzählen. */
-export const DASH = { build: 9, date: "2026-11-24" };
+export const DASH = { build: 10, date: "2026-11-24" };
 const dashChip = () => `<span class="chip dv" title="Version des Statistik-Workers – nach „wrangler deploy“ prüfen, ob der neue Stand aktiv ist">Dashboard Build ${DASH.build} · ${DASH.date.slice(8, 10)}.${DASH.date.slice(5, 7)}.${DASH.date.slice(0, 4)}</span>`;
 const banChips = (today) => `<span class="chips">${dashChip()}<span class="chip">nur du · Stand ${e(today)}</span></span>`;
 export const SCHEMAS = [1, 2, 3];   // Schema 1: ohne Module · Schema 2: mit Modulliste · Schema 3 (Build 6): dazu HA-Version „2026.11“
@@ -202,7 +203,7 @@ function haHtml(h) {
   const rows = h.rows.slice(0, 10), mx = Math.max(...rows.map((x) => x[1]));
   const svg = `<svg viewBox="0 0 460 ${26 * rows.length}" role="img" aria-label="Home-Assistant-Versionen">${rows.map(([v, n, c], k) => { const w = Math.max(3, (210 * n) / mx), y = k * 26;
     return `<text x="0" y="${y + 17}" fill="#c3c2b7" font-size="12">${e(v)}</text><rect x="70" y="${y + 4}" width="${f1(w)}" height="16" rx="4" fill="#3987e5"/><text x="${f1(70 + w + 8)}" y="${y + 17}" fill="#f0efec" font-size="12">${n} · ${Math.round((100 * n) / h.base)} %</text><text x="458" y="${y + 17}" fill="#8d8c84" font-size="11" text-anchor="end">${f1(c).replace(".", ",")} % ≥</text>`; }).join("")}</svg>`;
-  return `<div class="c"><h2>Home Assistant</h2><div class="u">alle aktiven Installationen (30 Tage) · Basis ${h.base}${h.min ? ` · <b style="color:#5eead4">${h.min.p} % auf ${e(h.min.v)} oder neuer</b>` : ""}</div>${svg}<div class="l">rechts: Anteil auf dieser oder neuerer Version – Grundlage für die Mindestversion in hacs.json</div></div>`;
+  return `<div class="c"><div style="display:flex;justify-content:space-between;gap:8px"><h2>Home Assistant</h2><a class="csv" href="/export/ha.csv">CSV</a></div><div class="u">alle aktiven Installationen (30 Tage) · Basis ${h.base}${h.min ? ` · <b style="color:#5eead4">${h.min.p} % auf ${e(h.min.v)} oder neuer</b>` : ""}</div>${svg}<div class="l">rechts: Anteil auf dieser oder neuerer Version – Grundlage für die Mindestversion in hacs.json</div></div>`;
 }
 
 export async function loadAndCompute(DB, todayStr) {
@@ -303,17 +304,17 @@ export function render(r, retention = "180", x = {}) {
   const legend = r.week_versions.map((v, k) => `<span><i style="background:${VCOL[k]}"></i>${e(v)}</span>`).join("");
   const t50 = r.t50 !== null ? `${r.t50} Tage` : "–";
   return `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>Strom &amp; Wärme · Statistik</title><style>${CSS}${ERR_CSS}</style></head><body><div class="w">
+<meta name="robots" content="noindex"><title>Strom &amp; Wärme · Statistik</title><style>${CSS}${ERR_CSS}${CSV_CSS}</style></head><body><div class="w">
 <div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>Welche Version ist im Einsatz? · anonym · Version und Module</small></div>${banChips(r.today)}</div>${tabs("v")}${x.week ? weekHtml(x.week) : ""}
 <div class="k"><div class="c"><div class="t">Aktive Installationen</div><div class="n">${r.a30}</div><div class="s">30 Tage · ${r.a7} in den letzten 7 Tagen</div></div>
 <div class="c"><div class="t">Neu diese Woche</div><div class="n">+${r.new7}</div><div class="s">${r.inactive} Installationen seit &gt;14 Tagen inaktiv</div></div>
 <div class="c"><div class="t">Auf neuester Version</div><div class="n">${r.newest_share} %</div><div class="s">${e(r.newest || "–")}</div></div>
 <div class="c"><div class="t">Update-Tempo</div><div class="n">${e(t50)}</div><div class="s">bis 50 % einer neuen Version nutzen</div></div></div>
-<div class="g"><div class="c"><h2>Versionen aktuell</h2><div class="u">${r.a30} aktive Installationen (30 Tage)</div>${bars(r.versions.slice(0, 8), VCOL, 96, (v) => `/version/${encodeURIComponent(v)}`)}</div>
+<div class="g"><div class="c"><div style="display:flex;justify-content:space-between;gap:8px"><h2>Versionen aktuell</h2><a class="csv" href="/export/versionen.csv">CSV</a></div><div class="u">${r.a30} aktive Installationen (30 Tage)</div>${bars(r.versions.slice(0, 8), VCOL, 96, (v) => `/version/${encodeURIComponent(v)}`)}</div>
 <div class="c"><h2>Verlauf: Versionen pro Woche</h2><div class="u">Neueste Version je Installation und Woche</div>${columns(r.weeks, r.week_versions, r.rel, r.week_from)}<div class="l">${legend}${(r.rel || []).length ? '<span><i style="background:#d95926"></i>neue Version erschienen</span>' : ""}</div></div>
 <div class="c"><h2>Kanal &amp; Aktivität</h2><div class="u">Kanal (30 Tage)</div>${kan}<div class="u" style="margin-top:10px">Zuletzt gesehen</div>${bars(r.seen, "#3987e5", 78)}</div>
 <div class="c"><h2>Update-Tempo</h2><div class="u">Anteil auf neuer Version nach x Tagen</div>${curvesSvg(r.curves)}</div>
-<div class="c"><h2>Modul-Nutzung</h2><div class="u">Installationen mit Modul an · Basis ${r.mod_base} (30 Tage)</div>${modBars(r.modules, r.mod_base)}</div>${haHtml(r.ha)}${x.lag ? lagHtml(x.lag) : ""}</div>
+<div class="c"><div style="display:flex;justify-content:space-between;gap:8px"><h2>Modul-Nutzung</h2><a class="csv" href="/export/module.csv">CSV</a></div><div class="u">Installationen mit Modul an · Basis ${r.mod_base} (30 Tage)</div>${modBars(r.modules, r.mod_base)}</div>${haHtml(r.ha)}${x.lag ? lagHtml(x.lag) : ""}${x.lost ? lostHtml(x.lost) : ""}${x.coh ? cohortHtml(x.coh) : ""}${x.lz !== undefined ? langzeitHtml(x.lz, x.rel) : ""}</div>
 <div class="f">Nur Teilnehmende zählen: Die Zahlen sind Untergrenzen und zeigen Trends, keine absolute Nutzerzahl. Kennungen ohne Meldung seit ${e(retention)} Tagen werden gelöscht.</div></div></body></html>`;
 }
 
@@ -352,6 +353,35 @@ export function versionHtml(R) {
   ${versionErrHtml(R.P, R.v)}
   <div class="g" style="margin-top:10px"><div class="c"><h2>Verbreitung</h2><div class="u">Installationen auf ${e(R.v)} pro Tag · 30 Tage · orange: erschienen</div>${chart}</div>
     <div class="c"><h2>Home Assistant</h2><div class="u">Installationen auf dieser Version</div>${haT}</div></div>`;
+}
+
+// ---------------------------------------------------------------- Build 10: Langzeit, Verloren nach Update, Treue, Export
+export async function build10Data(DB, today) {
+  const dl = (await DB.prepare("SELECT day, id, version FROM daily").all()).results;
+  const ins = (await DB.prepare("SELECT first_day, last_day FROM installs").all()).results;
+  return { lz: await loadSnaps(DB, today), lost: lostAfterUpdate(dl, today), coh: cohorts(ins, today), rel: await loadReleases(DB) };
+}
+const csvRes = (name, body) => new Response(body, { headers: { "content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="stromwaerme-${name}-${S(Date.now())}.csv"`, "cache-control": "no-store", "x-robots-tag": "noindex" } });
+export async function exportCsv(DB, name, today) {
+  const pc = (q) => (q == null ? null : Math.round(q * 1000) / 10);
+  if (name === "verlauf") return csvRes(name, csv(["Tag", "aktiv 30 Tage", "aktiv 7 Tage", "Beta", "neueste Version", "Anteil neueste %", "mit Fehler-Zustimmung", "Fehlerquote %", "fehlerfreie Tage %", "Quelle"],
+    ((await loadSnaps(DB, today, 730)) || []).map((x) => [x.day, x.a30, x.a7, x.beta, x.newest, x.newest_share, x.rep, pc(x.quote), pc(x.clean), x.src === "r" ? "nachgerechnet" : "Tageswert"])));
+  if (name === "verloren" || name === "treue") {
+    const B = await build10Data(DB, today);
+    if (name === "verloren") return csvRes(name, csv(["Version", "aktualisiert", "verstummt", "Anteil %", "jünger als 7 Tage"], B.lost.map((x) => [x.v, x.upd, x.lost, pc(x.q), x.open])));
+    return csvRes(name, csv(["neu in Woche ab", "neu", ...B.coh.ks.map((k) => `aktiv nach ${k} Wo. %`)], B.coh.rows.map((x) => [x.week, x.n, ...x.ret.map(pc)])));
+  }
+  const r = await loadAndCompute(DB, today);
+  if (name === "versionen") return csvRes(name, csv(["Version", "Kanal", "Installationen 30 Tage", "Anteil %"], r.versions.map(([v, n]) => [v, channelOf(v) === "beta" ? "Beta" : "Stabil", n, r.a30 ? pc(n / r.a30) : null])));
+  if (name === "ha") return csvRes(name, csv(["Home Assistant", "Installationen", "diese oder neuer %"], r.ha.rows));
+  const er = await errLoad(DB, today, 30);
+  if (name === "module") return csvRes(name, csv(["Modul", "Installationen mit Modul an", "Anteil %", "davon mit Fehler", "Fehlerquote %"], [
+    ...r.modules.map(([m, n]) => { const k = Object.entries(MODULES).find(([, l]) => l === m), x = k && er.mods.list.find((y) => y.k === k[0]); return [m, n, r.mod_base ? pc(n / r.mod_base) : null, x ? x.aff : null, x ? pc(x.q) : null]; }),
+    ...er.mods.list.filter((x) => x.always || !MODULES[x.k]).map((x) => [x.label, x.on, null, x.aff, pc(x.q)])]));
+  if (name === "reife") return csvRes(name, csv(["Version", "Kanal", "Installationen", "mit Fehler", "Fehlerquote %", "fehlerfreie Tage %", "neue Fehler", "Tage live", "Tage ohne neuen Fehler", "Ampel", "Grund"],
+    er.reife.list.map((x) => [x.v, x.ch === "beta" ? "Beta" : "Stabil", x.inst, x.err, pc(x.quote), pc(x.clean), x.neu, x.live, x.quiet, x.amp, x.why])));
+  return csvRes(name, csv(["Fehler-ID", "Status", "behoben in", "Modul", "Quelle", "Art", "Meldung", "Stelle", "zuerst", "zuletzt", "seit Version", "Installationen 30 Tage", "Anzahl 30 Tage", "Installationen gesamt", "zusammengeführt"],
+    er.rows.map((x) => [x.fp, x.status, x.fixed_in, x.mod, x.src, x.kind, x.msg, x.where, x.first_day, x.last_day, x.first_ver, x.inst, x.hits, x.inst_all, (x.merged || []).map((m) => m.fp).join(" ")])));
 }
 
 // ---------------------------------------------------------------- Cloudflare-Access-Token prüfen (RS256)
@@ -419,15 +449,16 @@ async function ingest(req, env, url) {
 }
 
 const page = (title, body, today, week = null, tab = "f", sub = "Fehlerberichte · freiwillig · bereinigt", foot = "Nur Installationen, die Fehlerberichte eingeschaltet haben. Berichte älter als 90 Tage werden gelöscht.") => `<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><title>${title}</title><style>${CSS}${ERR_CSS}</style></head><body><div class="w">
+<meta name="robots" content="noindex"><title>${title}</title><style>${CSS}${ERR_CSS}${CSV_CSS}</style></head><body><div class="w">
 <div class="ban"><div><h1>Strom &amp; Wärme · Statistik</h1><small>${sub}</small></div>${banChips(today)}</div>${tabs(tab)}${weekHtml(week)}${body}
 <div class="f">${foot}</div></div></body></html>`;
 const html = (s, code = 200) => new Response(s, { status: code, headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-robots-tag": "noindex" } });
 
 async function dashboard(req, env, url) {
   const fm = /^\/fehler(?:\/([0-9a-f]{12}))?\/?$/.exec(url.pathname), vm = /^\/version\/([0-9.b]{5,24})\/?$/.exec(url.pathname);
+  const xm = /^\/export\/([a-z]{2,12})\.csv$/.exec(url.pathname);
   const post = req.method === "POST" && fm && fm[1];
-  if ((req.method !== "GET" && !post) || (url.pathname !== "/" && !fm && !vm)) return json(404, { ok: false });
+  if ((req.method !== "GET" && !post) || (url.pathname !== "/" && !fm && !vm && !(xm && EXPORTS.includes(xm[1])))) return json(404, { ok: false });
   if (!(await verifyAccess(req.headers.get("cf-access-jwt-assertion"), env))) return new Response("Zugriff verweigert", { status: 403, headers: { "cache-control": "no-store" } });
   const today = S(Date.now());
   if (post) {   /* Build 4: Status speichern – nur aus dem eigenen Dashboard (gleiche Herkunft), nur hinter Access */
@@ -467,8 +498,11 @@ async function dashboard(req, env, url) {
     const days = [30, 90].includes(+q.tage) ? +q.tage : 7, er = await errLoad(env.DB, today, days);
     return html(page("Fehler · Strom &amp; Wärme", errRender(er, q), today, er.week));
   }
+  if (xm) return exportCsv(env.DB, xm[1], today);
   const r = await loadAndCompute(env.DB, today), er = await errLoad(env.DB, today, 7);
-  return html(render(r, env.RETENTION_DAYS || "180", { week: er.week, lag: laggards(er.rows, r.versions) }));
+  await snapToday(env.DB, today, r, er.reife.list);   /* Build 10: Tageswert speichern (einmal am Tag reicht, mehrfach schadet nicht) */
+  const ex = await build10Data(env.DB, today);
+  return html(render(r, env.RETENTION_DAYS || "180", { week: er.week, lag: laggards(er.rows, r.versions), ...ex }));
 }
 
 export default {
@@ -479,6 +513,10 @@ export default {
     return json(404, { ok: false });
   },
   async scheduled(_ev, env, ctx) {
-    ctx.waitUntil(Promise.all([dbCleanup(env.DB, +(env.RETENTION_DAYS || 180), Date.now()), dbErrCleanup(env.DB, Date.now())]));
+    ctx.waitUntil((async () => {
+      const today = S(Date.now());
+      try { const r = await loadAndCompute(env.DB, today), er = await errLoad(env.DB, today, 7); await snapToday(env.DB, today, r, er.reife.list); } catch { /* Statistik darf das Aufräumen nie blockieren */ }
+      await Promise.all([dbCleanup(env.DB, +(env.RETENTION_DAYS || 180), Date.now()), dbErrCleanup(env.DB, Date.now()), snapCleanup(env.DB, Date.now())]);
+    })());
   },
 };

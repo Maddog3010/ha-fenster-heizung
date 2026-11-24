@@ -11,7 +11,7 @@ Einrichtung: siehe `Anleitung_Statistik-Cloudflare-Worker.pdf`. Kurz:
     npx wrangler d1 execute stats --remote --file=schema.sql
     npx wrangler deploy                   # danach Access-Anwendung für dash.… anlegen, TEAM_DOMAIN/POLICY_AUD eintragen, erneut deploy
 
-Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
+Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js && node --no-warnings test/test_build10.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
 
 ## Fehler-Statistik (ab 2026.11.4.3b1)
 
@@ -91,3 +91,20 @@ Nur der Worker – keine Datenbank-Änderung, kein Update der Integration:
 - **Home Assistant × Version** (Reiter Fehler): Fehlerquote je HA-Version (ohne Patch) und den vier neuesten Versionen, Feld erst ab 3 Installationen.
 
 Tests: zusätzlich `node --no-warnings test/test_build9.js`.
+
+## Build 10: Langzeit-Verlauf, Verloren nach Update, Treue, Export als CSV
+
+Worker und eine neue Tabelle – kein Update der Integration:
+
+    npx wrangler d1 execute stats --remote --file=migrate-build10.sql
+    npx wrangler deploy
+
+(Mehrfach ausführen schadet nicht. Ohne die Tabelle läuft alles, der Langzeit-Verlauf zeigt dann einen Hinweis.)
+
+- **Langzeit-Verlauf** (Reiter Versionen, unten): Tabelle `snap` mit einer Zeile pro Tag – aktive Installationen (30 und 7 Tage), Beta, neueste Version und Anteil, Installationen mit Fehler-Zustimmung, Fehlerquote, fehlerfreie Tage. Keine Kennungen, 2 Jahre aufbewahrt. Geschrieben beim nächtlichen Aufräumen und beim Öffnen der Startseite. Beim ersten Mal werden die vergangenen Tage aus `daily` nachgerechnet (nur aktive Installationen und Beta, Quelle „nachgerechnet“).
+- **Verloren nach Update**: je Version die Installationen, die nach dem Wechsel auf diese Version höchstens noch 6 Tage gemeldet haben und seit mindestens 7 Tagen still sind. Updates jünger als 7 Tage zählen noch nicht, ein Wechsel auf eine ältere Version ist kein Update.
+- **Treue neuer Installationen**: Kohorten nach der Woche des ersten Tages, Anteil noch aktiv nach 1, 4 und 8 Wochen.
+- **Export als CSV** unter `/export/<name>.csv` (nur hinter Access): `versionen`, `reife`, `fehler` (30 Tage), `verlauf`, `verloren`, `treue`, `module`, `ha`. Semikolon, Dezimalkomma, UTF-8 mit BOM – öffnet sich direkt in Excel.
+- Banner: Dashboard Build 10.
+
+Tests: zusätzlich `node --no-warnings test/test_build10.js`.
