@@ -501,6 +501,8 @@ Seit `2026.11.4` fragt die Integration einmalig, ob sie **anonym mitteilen darf,
 
 **Fehlerberichte** (eigene Zustimmung, eigene Kennung, Einstellungen → System → Fehlerprotokoll): Ab 2026.11.5b1 geht einmal am Tag ein Bericht raus – auch ohne neue Fehler als `"errors": []` („0 Fehler“), damit sich eine Fehlerquote je Version berechnen lässt. Er enthält zusätzlich die Kurzzeichen der aktiven Module (`"mods": ["gr", "ev"]`) für „Fehler je Modul“. Sonst bleibt alles wie bisher: bereinigte Programmfehler, keine Namen, Entitäten, Werte oder IP-Adressen.
 
+Ab 2026.11.5b2 enthält der Bericht außerdem die Fehler-IDs schon gesendeter Fehler (`"known"`). Der Server antwortet nur mit dem Status dieser eigenen Fehler (offen, in Arbeit, behoben in …), damit das Fehlerprotokoll „Behoben in … – Update installieren“ anzeigen kann. Weggelassene Fehler werden nie abgefragt.
+
 **Was nie gesendet wird:** Name, E-Mail, Standort, Räume, Geräte, Sensor- und Verbrauchswerte, Anwesenheit, die Instanz-ID von Home Assistant und Zugangsdaten. Die IP-Adresse wird auf dem Server weder gespeichert noch protokolliert.
 
 **Wohin:** an einen Statistik-Dienst des Entwicklers, der auf Cloudflare läuft (ein kleiner Worker mit Datenbank), nicht bei einem Analyse-Dienst. Gespeichert werden Kennung, Version, Kanal, die Modul-Kurzzeichen, die Home-Assistant-Version (ohne Patch-Stufe) sowie erster und letzter Tag der Meldung, keine IP-Adressen. Cloudflare sieht als Betreiber technisch die Verbindungsdaten, wertet sie aber nicht für diese Statistik aus. Kennungen, die 180 Tage nicht gemeldet haben, werden automatisch gelöscht. Die Auswertung sieht nur der Entwickler (Anmeldung per E-Mail-Code).

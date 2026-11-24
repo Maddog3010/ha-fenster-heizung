@@ -2,7 +2,7 @@
 // Gleicher Fehler bei vielen Nutzern = eine Zeile (Fingerabdruck fp). Die Integration bereinigt vorher; der Worker prüft jedes
 // Feld noch einmal, schneidet Unbekanntes ab und entfernt Adressen, falls doch welche durchrutschen. Keine IP-Adressen gespeichert.
 
-export const ERR_SCHEMAS = [1, 2];   // Schema 2 (Build 6): auch ohne Fehler („0 Fehler“), dazu „mods“ = aktive Module
+export const ERR_SCHEMAS = [1, 2, 3];   // Schema 3 (Build 7): „known“ = schon gesendete Fehler, Antwort mit deren Status ·   // Schema 2 (Build 6): auch ohne Fehler („0 Fehler“), dazu „mods“ = aktive Module
 export const ERR_MAX_BODY = 64 * 1024;
 export const ERR_MIN_GAP = 3600;      // höchstens 1 Bericht pro Kennung und Stunde
 export const ERR_KEEP_DAYS = 90;
@@ -45,7 +45,12 @@ export function validErrors(d) {
     if (out.some((o) => o.fp === fp)) continue;   // doppelt im selben Bericht: einmal reicht
     out.push({ fp, src, mod, kind, where: clean(where, 120), msg: clean(msg, 200), n, first, last, vers });
   }
-  return { id, version, channel, ha: ha || "", errors: out, mods };
+  let known = [];
+  if (d.schema >= 3 && d.known != null) {
+    if (!Array.isArray(d.known) || d.known.length > 200 || d.known.some((x) => typeof x !== "string" || !/^[0-9a-f]{12}$/.test(x))) return null;
+    known = [...new Set(d.known)];
+  }
+  return { id, version, channel, ha: ha || "", errors: out, mods, known, schema: d.schema };
 }
 
 const S = (ms) => new Date(ms).toISOString().slice(0, 10);
@@ -263,7 +268,7 @@ export function issueUrl(D, repo = "Maddog3010/ha-fenster-heizung") {
 export function errRenderOne(D, repo) {
   const g = D.g, mx = Math.max(1, ...D.days.map((x) => x.inst));
   const vs = D.vers.map((x) => x.k), back = g.status === "behoben" && g.fixed_in ? D.vers.filter((x) => vcmp(x.k, g.fixed_in) >= 0) : [];
-  const st = `<div class="c"><h2>Status</h2><div class="u">${g.status_day ? `geändert am ${e(g.status_day)}` : "noch nicht bearbeitet"}${g.status === "behoben" && g.fixed_in ? ` · behoben in ${e(g.fixed_in)}` : ""}</div>
+  const st = `<div class="c"><h2>Status</h2><div class="u">${g.status_day ? `geändert am ${e(g.status_day)}` : "noch nicht bearbeitet"}${g.status === "behoben" && g.fixed_in ? ` · behoben in ${e(g.fixed_in)}` : ""} · Betroffene sehen „offen“, „in Arbeit“ oder „behoben in …“ in ihrem Fehlerprotokoll (ab 2026.11.5b2), „ignorieren“ nicht</div>
     ${back.length ? `<div class="warnb">Wieder da: ${back.map((x) => `${e(x.k)} (${x.inst} Inst.)`).join(", ")} – obwohl als behoben in ${e(g.fixed_in)} markiert.</div>` : ""}
     <form method="post" action="/fehler/${g.fp}" class="sf"><div class="flt">${Object.entries(STATUS).map(([k, t]) => `<label class="rb"><input type="radio" name="status" value="${k}"${(g.status || "offen") === k ? " checked" : ""}><span>${e(t)}</span></label>`).join("")}</div>
     <div class="sfr"><label>behoben in Version <input name="fixed_in" list="vl" value="${e(g.fixed_in || "")}" placeholder="z. B. 2026.11.4.2" pattern="\\d{4}\\.\\d{1,2}\\.\\d{1,2}(\\.\\d{1,2})?(b\\d{1,3})?"></label><datalist id="vl">${vs.map((v) => `<option value="${e(v)}">`).join("")}</datalist>
@@ -385,4 +390,21 @@ export function modErrHtml(M) {
 }
 export async function loadDays(DB, todayStr, window = 30) {
   return (await DB.prepare("SELECT day, rid, version, channel, ha, mods FROM err_days WHERE day>=?").bind(S(dOf(todayStr) - (window - 1) * dayMs)).all()).results;
+}
+
+// ---------------------------------------------------------------- Build 7 · F3 Rückmeldung an den Nutzer
+/** Status der eigenen Fehler (aus dem Bericht und „known“). Nichts über andere Nutzer, keine Liste aller Fehler.
+ *  „ignoriert“ wird nicht gemeldet – dann zeigt die Integration nichts an. */
+export async function errOwnStatus(DB, p) {
+  const fps = [...new Set([...p.errors.map((x) => x.fp), ...(p.known || [])])];
+  const out = {};
+  for (let i = 0; i < fps.length; i += 50) {
+    const part = fps.slice(i, i + 50);
+    const rs = (await DB.prepare(`SELECT fp, status, fixed_in FROM err_groups WHERE fp IN (${part.map(() => "?").join(",")})`).bind(...part).all()).results;
+    for (const g of rs) {
+      if (g.status === "ignoriert" || !(g.status in STATUS)) continue;
+      out[g.fp] = g.status === "behoben" && g.fixed_in ? { s: "behoben", fx: g.fixed_in } : { s: g.status === "behoben" ? "offen" : g.status };
+    }
+  }
+  return out;
 }

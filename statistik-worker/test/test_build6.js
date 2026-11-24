@@ -188,3 +188,24 @@ const rows = (groups, hits) => F.errCompute(groups, hits, today, 30).rows;
   assert.ok(home.includes("Home Assistant") && home.includes("100 % auf 2026.11 oder neuer") && home.includes("· nicht freigeben"));
   console.log("Build-6-Dashboard OK");
 }
+
+// ---------------------------------------------------------------- Build 7 · F3 Rückmeldung
+{
+  const env = mkenv(), id = ID(), other = ID();
+  const E = (fp) => ({ fp, src: "backend", mod: "Modul 1", kind: "TypeError", where: "a.py:1 f", msg: "m", n: 1, first: today, last: today, vers: ["2026.11.5b1"] });
+  assert.equal((await post(env, "/v1/errors", R(other, { errors: [E("111111111111"), E("222222222222"), E("333333333333"), E("444444444444")] }))).status, 200);
+  const st = (fp, s, fx = null) => env.DB.raw.prepare("UPDATE err_groups SET status=?, fixed_in=? WHERE fp=?").run(s, fx, fp);
+  st("111111111111", "behoben", "2026.11.5b2"); st("222222222222", "arbeit"); st("333333333333", "ignoriert"); st("444444444444", "behoben");
+  assert.equal(F.validErrors(R(id, { schema: 3, known: ["xyz"] })), null);
+  assert.equal(F.validErrors(R(id, { schema: 3, known: Array.from({ length: 201 }, () => "111111111111") })), null);
+  assert.deepEqual(F.validErrors(R(id, { schema: 3, known: ["111111111111", "111111111111"] })).known, ["111111111111"]);
+  const res = await post(env, "/v1/errors", R(id, { schema: 3, errors: [E("222222222222")], known: ["111111111111", "333333333333", "444444444444", "999999999999"] }));
+  assert.equal(res.status, 200);
+  const j = await res.json();
+  assert.deepEqual(j.status, { "111111111111": { s: "behoben", fx: "2026.11.5b2" }, "222222222222": { s: "arbeit" }, "444444444444": { s: "offen" } },
+    "nur eigene Fehler, ignoriert und unbekannt fehlen, „behoben“ ohne Version zählt als offen");
+  assert.equal(env.DB.raw.prepare("SELECT COUNT(*) n FROM err_groups WHERE fp='999999999999'").get().n, 0, "known legt nichts an");
+  const old = await (await post(env, "/v1/errors", R(ID()))).json();
+  assert.ok(!("status" in old), "Schema 2 bekommt keine Rückmeldung");
+  console.log("Build-7-Rückmeldung OK");
+}

@@ -2,6 +2,17 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.5b2] - unveröffentlicht
+
+Rückmeldung zu deinen gemeldeten Fehlern.
+
+### Neu
+- **Fehlerprotokoll · Rückmeldung vom Entwickler:** Wer Fehlerberichte eingeschaltet hat, sieht jetzt bei jedem gemeldeten Fehler, was daraus geworden ist: „bekannt“, „in Arbeit“ oder „Behoben in …“. Ist der Fehler in einer neueren Version behoben, steht dort „Update installieren“ mit dem Knopf „Zum Update“, oben im Fehlerprotokoll ein Hinweis „Update verfügbar“ und in Einstellungen → System die Zahl dieser Fehler.
+- Ist ein Fehler nur in einer Testversion behoben, sehen Nutzer der stabilen Version „kommt mit der nächsten stabilen Version“. Tritt ein Fehler trotz Korrektur wieder auf, steht das ebenfalls dort.
+
+### Datenschutz
+- Der tägliche Bericht nennt zusätzlich die Fehler-IDs (Fingerabdrücke) der schon früher gesendeten Fehler, damit der Server deren Status zurückmelden kann. Die Antwort enthält nur den Status deiner eigenen Fehler, keine Liste aller Fehler und nichts über andere Nutzer. Weggelassene Fehler werden nie abgefragt. Ohne Zustimmung wird nichts abgefragt, beim Ausschalten wird der Status gelöscht.
+
 ## [2026.11.5b1] - 2026-11-24
 
 Erste Testversion für 2026.11.5 (Branch `beta`). Hotfixes der stabilen Version 2026.11.4.x entstehen auf `main` und werden danach hierher übernommen.

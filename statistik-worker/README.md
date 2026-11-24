@@ -50,3 +50,15 @@ Worker **und** Datenbank-Erweiterung – in dieser Reihenfolge, **bevor** die Be
 - **Home Assistant** (Reiter Versionen): Versions-Ping Schema 3 mit `ha` („2026.11“, ohne Patch-Stufe), Verteilung aller aktiven Installationen mit „diese oder neuer“ und der Zeile „x % auf … oder neuer“ (ab 95 %).
 
 Tests: zusätzlich `node --no-warnings test/test_build6.js`.
+
+## Build 7: Rückmeldung an den Nutzer (ab 2026.11.5b2)
+
+Nur der Worker – keine Datenbank-Änderung:
+
+    npx wrangler deploy
+
+`POST /v1/errors` mit Schema 3 enthält `known` (Fingerabdrücke schon gesendeter Fehler, höchstens 200). Die Antwort bringt
+`status` = `{ "<fp>": { "s": "offen" | "arbeit" | "behoben", "fx": "<Version>" } }` – nur für Fehler aus dem Bericht und aus `known`,
+nur für vorhandene Gruppen. „ignorieren“ wird nicht gemeldet, „behoben“ ohne Version zählt als „offen“. Ältere Integrationen
+(Schema 1 und 2) bekommen die Antwort wie bisher ohne `status`. Die Integration zeigt den Status im Fehlerprotokoll und
+„Zum Update“, wenn die installierte Version älter als „behoben in …“ ist.

@@ -159,7 +159,7 @@ def test_report_only_new_not_skipped_and_mark_sent():
     L.add(st, src="backend", kind="TypeError", where="wallbox.py:976 add_km", msg="x", today=D, version="2026.11.4.1")
     st["cfg"]["skip"] = [a["fp"]]
     r = L.build_report(st, "2026.11.5b2", "2026.11.2")
-    assert set(r) == {"schema", "id", "version", "channel", "ha", "mods", "errors"} and r["channel"] == "beta"
+    assert set(r) == {"schema", "id", "version", "channel", "ha", "mods", "known", "errors"} and r["channel"] == "beta"
     assert [e["fp"] for e in r["errors"]] == [b["fp"]] and r["errors"][0]["n"] == 2
     assert set(r["errors"][0]) == {"fp", "src", "mod", "kind", "where", "msg", "n", "first", "last", "vers"}   # nichts darüber hinaus
     L.mark_sent(st, r, 1000.0)
@@ -190,13 +190,19 @@ def test_manager_send_forget_and_404():
     async def post(path, body, status=[404]):
         calls.append((path, body)); return status[0]
     m._post = post
+    srv = {}
+
+    async def post_json(path, body):
+        st = await post(path, body)
+        return st, ({"ok": True, "status": srv} if 200 <= st < 300 else None)
+    m._post_json = post_json
 
     async def run():
         await m.async_answer(True)
         assert m._st["cfg"]["on"] and L._ID.match(m._st["cfg"]["id"])
         r = await m.async_send(force=True)
         assert r == {"sent": False, "n": 0, "why": "noch nicht"} and calls[-1][1]["errors"] == []   # Build 6: Tages-Meldung „0 Fehler“
-        assert calls[-1][1]["schema"] == 2 and calls[-1][1]["mods"] == [] and calls[-1][1]["id"] == m._st["cfg"]["id"]
+        assert calls[-1][1]["schema"] == 3 and calls[-1][1]["mods"] == [] and calls[-1][1]["id"] == m._st["cfg"]["id"]
         m.record_threadsafe("backend", "TypeError", "wallbox.py:1 x", "boom 5")
         r = await m.async_send(force=True)
         assert calls[-1][0] == "/v1/errors" and not r["sent"] and r["why"] == "noch nicht"   # Server kennt /v1/errors noch nicht
@@ -204,9 +210,15 @@ def test_manager_send_forget_and_404():
         post.__defaults__[0][0] = 200
         r = await m.async_send(force=True)
         assert r["sent"] and m.snapshot()["items"][0]["nd"] == 0
+        fp0 = m.snapshot()["items"][0]["fp"]
+        srv[fp0] = {"s": "behoben", "fx": "2026.11.5b3"}                     # Build 7: Rückmeldung des Servers
+        await m.async_send(force=True)
+        assert calls[-1][1]["known"] == [fp0] and calls[-1][1]["errors"] == []
+        sn = m.snapshot()
+        assert sn["items"][0]["fix"]["upd"] and sn["upd"] == {"n": 1, "to": "2026.11.5b3"}
         idv = m._st["cfg"]["id"]
         s = await m.async_forget()
-        assert calls[-1] == ("/v1/errors/forget", {"schema": 2, "id": idv}) and s["forgotten"] and not s["cfg"]["on"] and s["cfg"]["id"] == ""
+        assert calls[-1] == ("/v1/errors/forget", {"schema": 3, "id": idv}) and s["forgotten"] and not s["cfg"]["on"] and s["cfg"]["id"] == ""
     asyncio.run(run())
 
 
@@ -215,8 +227,8 @@ def test_build6_daily_report_and_modules():
     st = L.empty()
     st["cfg"].update(on=True, id="7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41")
     r = L.build_report(st, "2026.11.5b1", "2026.11.3", mods=["ev", "gr", "xmein", "<b>"])
-    assert r["schema"] == 2 and r["errors"] == [] and r["mods"] == ["gr", "ev"]
-    assert set(r) == {"schema", "id", "version", "channel", "ha", "mods", "errors"}
+    assert r["schema"] == 3 and r["errors"] == [] and r["mods"] == ["gr", "ev"]
+    assert set(r) == {"schema", "id", "version", "channel", "ha", "mods", "known", "errors"}
     assert L.build_report(st, "2026.11.5b1")["mods"] == []
 
 
@@ -225,3 +237,50 @@ def test_build6_active_mods():
     addons = {"licht": {"v": "1"}, "muell": {"paused": True}, "abrechnung": {}, "saugroboter": {}, "boese": "x"}
     assert L.active_mods(on, addons) == ["gr", "ev", "li", "ab"]
     assert L.active_mods(None, None) == [] and L.active_mods([1], [2]) == []
+
+
+def test_build7_versions_order():
+    v = ["2026.11.5b1", "2026.11.4.2", "2026.11.4.3b1", "2026.11.4.3", "2026.11.5", "2026.11.4", "kaputt"]
+    assert sorted(v, key=L.vkey) == ["kaputt", "2026.11.4", "2026.11.4.2", "2026.11.4.3b1", "2026.11.4.3", "2026.11.5b1", "2026.11.5"]
+
+
+def test_build7_known_and_status():
+    """Build 7: Der Bericht fragt nach dem Status schon gesendeter Fehler; die Antwort landet am Eintrag."""
+    st = L.empty()
+    st["cfg"].update(on=True, id="7f3c1e9a-4b2d-4c5e-9a1f-2d8b6e0c3a41")
+    a = L.add(st, src="backend", kind="TypeError", where="a.py:1 f", msg="a", today=D, version="2026.11.5b1")
+    b = L.add(st, src="backend", kind="TypeError", where="b.py:1 f", msg="b", today=D, version="2026.11.5b1")
+    c = L.add(st, src="backend", kind="TypeError", where="c.py:1 f", msg="c", today=D, version="2026.11.5b1")
+    r = L.build_report(st, "2026.11.5b1")
+    assert r["schema"] == 3 and r["known"] == [] and len(r["errors"]) == 3
+    L.mark_sent(st, r, 1.0)
+    L.add(st, src="backend", kind="TypeError", where="a.py:1 f", msg="a", today=D, version="2026.11.5b1")   # a ist wieder neu
+    st["cfg"]["skip"] = [c["fp"]]
+    r = L.build_report(st, "2026.11.5b1")
+    assert [x["fp"] for x in r["errors"]] == [a["fp"]] and r["known"] == [b["fp"]], "weggelassene nie, neue stehen in errors"
+    ans = {a["fp"]: {"s": "behoben", "fx": "2026.11.5b2"}, b["fp"]: {"s": "ignoriert"}, "ffffffffffff": {"s": "offen"}}
+    b["srv"] = {"s": "arbeit", "fx": "", "d": "x"}
+    assert L.apply_status(st, r, ans, D) == 1
+    assert a["srv"] == {"s": "behoben", "fx": "2026.11.5b2", "d": D.isoformat()}
+    assert "srv" not in b, "ignoriert → keine Anzeige, alter Status weg"
+    assert "ffffffffffff" not in st["items"]
+    st2 = L.clean(st)
+    assert st2["items"][a["fp"]]["srv"]["fx"] == "2026.11.5b2" and "srv" not in st2["items"][b["fp"]]
+    assert L.clean_srv({"s": "behoben", "fx": "<script>"}) == {"s": "behoben", "fx": "", "d": ""}
+    assert L.clean_srv({"s": "geheim"}) is None and L.clean_srv("x") is None
+    L.clear_status(st)
+    assert "srv" not in a
+
+
+def test_build7_fix_info():
+    e = {"vers": ["2026.11.5b1"], "srv": {"s": "behoben", "fx": "2026.11.5b2", "d": ""}}
+    f = L.fix_info(e, "2026.11.5b1")
+    assert f["upd"] and not f["again"] and f["beta_fix"]
+    assert not L.fix_info(e, "2026.11.5b2")["upd"]
+    f = L.fix_info(e, "2026.11.4.5")          # stabiler Nutzer, Fix bisher nur in einer Beta
+    assert not f["upd"] and f["wait"]
+    assert L.fix_info({**e, "srv": {"s": "behoben", "fx": "2026.11.4.6", "d": ""}}, "2026.11.4.5")["upd"]
+    f = L.fix_info({"vers": ["2026.11.5b1", "2026.11.5b2"], "srv": e["srv"]}, "2026.11.5b2")
+    assert f["again"] and not f["upd"], "trotz Fix wieder aufgetreten"
+    assert L.fix_info({"srv": {"s": "arbeit", "fx": "", "d": ""}}, "2026.11.5b1") == {"s": "arbeit", "fx": "", "upd": False, "again": False, "beta_fix": False}
+    assert L.fix_info({}, "2026.11.5b1") is None
