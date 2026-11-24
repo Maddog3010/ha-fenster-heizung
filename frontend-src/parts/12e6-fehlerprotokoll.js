@@ -98,7 +98,7 @@
     setTimeout(() => { if (!this._modal && !((this._errD || {}).cfg || {}).asked) { this._modal = { type: "errlog", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 4000);
   }
   _errAct(a, b) {
-    const k = b && b.dataset ? b.dataset.k : "", D = this._errD, m = this._modal, copy = (t) => { try { navigator.clipboard.writeText(t); this._toast("Kopiert"); } catch (_) { this._toast("Kopieren ging nicht"); } };
+    const k = b && b.dataset ? b.dataset.k : "", D = this._errD, m = this._modal, copy = (t) => this._clip(t, "Kopiert");
     const cfg = (act, extra = {}) => this._hass.callWS({ type: "fenster_heizung/err_cfg", act, ...extra }).then((r) => { this._errD = r; return r; });
     const re = () => { this._renderModal(); this._render(); }, fail = () => this._toast("Das ging nicht");
     if (a === "errxopen") { this._modal = { type: "errlog", mode: "main" }; this._renderModal(); this._errLoad().then(() => { if (this._modal && this._modal.type === "errlog") this._renderModal(); this._render(); }).catch(() => this._toast("Fehlerprotokoll nicht erreichbar")); return; }

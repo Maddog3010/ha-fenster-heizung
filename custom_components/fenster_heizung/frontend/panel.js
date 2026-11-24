@@ -808,7 +808,7 @@ const MV = {
    Seite nach dem Zurückwechseln teils neu auf – dann wird sofort der letzte Stand gezeigt und im Hintergrund aktualisiert. */
 const FH_CACHE = (window.__fhCache = window.__fhCache || {});
 /* Automatisch aus CHANGELOG.md erzeugt (frontend-src/build.py). Nicht von Hand ändern. */
-const REL = [{"v":"2026.11.4.4","d":"2026-11-24","t":["Wohnklima-Zeugnis (Sponsor Max)","Heizkosten je Raum (Sponsor Max)","Wand-Tablet-Extras (Sponsor Max)"],"c":[]},{"v":"2026.11.4.3","d":"2026-11-24","t":["Fehlerprotokoll","Modul 0 · Heizkörper wie in echt","Einstellungen › Module"],"c":[]},{"v":"2026.11.4.2","d":"2026-11-23","t":["Behoben: Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen","Behoben: Modul 0 · Sonne im Raum","Behoben: Modul 0 · Keine Sonne durch die Fenster"],"c":[]},{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]},{"v":"2026.11.2","d":"2026-11-10","t":["Neue Optik","Anpassen in Modul 2, 3 und 4","Sensorsuche"],"c":["Modul 4 · v1.5","Modul 19 · v0.6","Modul 1 · v1.7"]}];
+const REL = [{"v":"2026.11.4.5","d":"2026-11-24","t":["Behoben: Modul 1 · „Warum?“","Behoben: Kopieren auf iPad und iPhone","Behoben: Modul 11 · „Plan sichern“ und Modul 0 · „Datei herunterladen“"],"c":[]},{"v":"2026.11.4.4","d":"2026-11-24","t":["Wohnklima-Zeugnis (Sponsor Max)","Heizkosten je Raum (Sponsor Max)","Wand-Tablet-Extras (Sponsor Max)"],"c":[]},{"v":"2026.11.4.3","d":"2026-11-24","t":["Fehlerprotokoll","Modul 0 · Heizkörper wie in echt","Einstellungen › Module"],"c":[]},{"v":"2026.11.4.2","d":"2026-11-23","t":["Behoben: Modul 1 · Elektroheizer bearbeiten, pausieren, in anderen Raum stellen, entfernen, wiederherstellen und endgültig löschen","Behoben: Modul 0 · Sonne im Raum","Behoben: Modul 0 · Keine Sonne durch die Fenster"],"c":[]},{"v":"2026.11.4.1","d":"2026-11-23","t":["Behoben: Modul 0 · Raumnamen ragten in den Nachbarraum","Behoben: Modul 8 · Ein Tag mit viel zu vielen Kilometern","Behoben: Update-Hinweis"],"c":[]},{"v":"2026.11.4","d":"2026-11-23","t":["Modul 0 · Haus & Grundriss (neu, Beta v0.10)","Modul 18 · Licht & Lampen (Addon v0.9)","Weihnachts-Theme & Adventskalender"],"c":["Modul 14 · v0.9","Modul 15 · v0.2"]},{"v":"2026.11.3.1","d":"2026-11-17","t":["Kopf, Chat und E-Mail","Kopf, Store und Labs","Behoben: E-Mail-Knopf"],"c":[]},{"v":"2026.11.3","d":"2026-11-17","t":["Startseite, Neue Optik","Modul 8 Elektroauto & Wallbox (v0.9, Vorabversion)","Modul 9 (v0.9) Wetter & Warnungen"],"c":["Modul 1 · v1.8","Modul 3 · v1.6"]}];
 const CSS_MAIN = `
 .room.hph,.crow.hph{background-size:cover;background-position:center}
 .room.hph{background-image:linear-gradient(180deg,color-mix(in srgb,var(--card) 50%,transparent) 0,color-mix(in srgb,var(--card) 84%,transparent) 34%,color-mix(in srgb,var(--card) 95%,transparent) 100%),var(--ph)}
@@ -6812,20 +6812,22 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "gpedit") { this._grEdit("fh"); return true; }   /* Modul 0 Build 3: Baukasten in Modul 0, danach zurück in die Wärmekarte */
     return false;
   }
-  /* ================= Modul 1 · „Warum?“ als Zeitleiste (D3) ================= */
+  /* ================= Modul 1 · „Warum?“ als Zeitleiste (D3) =================
+     Präfix _zl…: _wt… gehört zu Modul 15 (Wartung, 12p-wartung.js). Gleiche Namen überschreiben sich in der Klasse –
+     dann rief „Warum?“ das Laden der Wartung auf und brach mit „undefined is not an object (evaluating 'L.ev')“ ab. */
 
   /* ---- D3: Zeitleiste. Verlauf der letzten 12 Std. aus Home Assistant (Fenster, Modus, Präsenz) plus geplante Punkte */
-  _wtLoad(r) {
-    const c = (this._wtC = this._wtC || {}), k = r.id, now = Date.now();
+  _zlLoad(r) {
+    const c = (this._zlC = this._zlC || {}), k = r.id, now = Date.now();
     if (c[k] && (c[k].busy || now - c[k].ts < 60000)) return c[k];
     const ids = [...(r.windows || []), r.modeEid, r.pres && r.pres.melder].filter(Boolean);
     c[k] = { busy: true, ts: now, ev: (c[k] && c[k].ev) || null };
     this._hass.callWS({ type: "history/history_during_period", start_time: new Date(now - 12 * 3600e3).toISOString(), end_time: new Date(now).toISOString(), entity_ids: ids, include_start_time_state: false, significant_changes_only: false, minimal_response: true, no_attributes: true })
-      .then((res) => { c[k] = { busy: false, ts: Date.now(), ev: this._wtEvents(r, res || {}) }; if (this._modal && this._modal.type === "why" && this._modal.id === k) this._renderModal(); })
+      .then((res) => { c[k] = { busy: false, ts: Date.now(), ev: this._zlEvents(r, res || {}) }; if (this._modal && this._modal.type === "why" && this._modal.id === k) this._renderModal(); })
       .catch(() => { c[k] = { busy: false, ts: Date.now(), ev: [] }; if (this._modal && this._modal.type === "why") this._renderModal(); });
     return c[k];
   }
-  _wtEvents(r, res) {
+  _zlEvents(r, res) {
     const st = this._hass.states, nm = (e) => (st[e] && st[e].attributes.friendly_name) || e, ev = [], t = (x) => (x.lu ?? x.lc ?? 0) * 1000;
     const MT = { heizung_pausiert: ["Heizung pausiert", "am"], regelung_aktiv: ["Heizung läuft wieder", "ok"], nur_fenstermeldung: ["Heizung aus, nur Fenstermeldung", "in"], regelung_aus: ["Regelung ausgeschaltet", "in"] };
     for (const w of r.windows || []) {
@@ -6841,7 +6843,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (s.planOn) s.pts.filter((p) => p.w >= s.today * 1440 && p.w <= s.now && p.w >= s.now - 720).forEach((p) => ev.push({ t: d0.getTime() + (p.w % 1440) * 60000, c: "pl", x: `Heizplan: ${num(p.t, 1)} °C` }));
     return ev.filter((e) => e.t > Date.now() - 12 * 3600e3).sort((a, b) => a.t - b.t).slice(-12);
   }
-  _wtFuture(r) {
+  _zlFuture(r) {
     const s = this._rkState(r), out = [], need = ventMin(this._out().t);
     if (s.anyOpen && Date.now() >= s.since + need * 60000) out.push({ c: "am", x: "Genug gelüftet: Fenster schließen", s: `${need} Min. reichen bei ${this._out().t != null ? num(this._out().t, 0) + " °C draußen" : "dieser Außentemperatur"}` });
     else if (s.anyOpen) out.push({ c: "bl", x: `Lüften empfohlen bis ${new Date(s.since + need * 60000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`, s: `${need} Min. bei ${this._out().t != null ? num(this._out().t, 0) + " °C draußen" : "dieser Außentemperatur"}` });
@@ -6850,12 +6852,12 @@ class FensterHeizungPanel extends HTMLElement {
     if (s.pres && s.pres.anwesend && !s.pres.gesperrt) out.push({ c: "pr", x: `Bei Leerstand zurück auf den Heizplan`, s: `nach ${s.pres.verz_aus} Min. ohne Bewegung` });
     return out.slice(0, 3);
   }
-  _wtHtml(r) {
+  _zlHtml(r) {
     if (!this._rkOn()) return "";
-    const L = this._wtLoad(r), tm = (ms) => new Date(ms).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), s = this._rkState(r);
+    const L = this._zlLoad(r), tm = (ms) => new Date(ms).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), s = this._rkState(r);
     const past = L.ev == null ? `<div class="wt0 mut sm">Verlauf wird geladen …</div>` : L.ev.length ? L.ev.map((e) => `<div class="wti ${e.c}"><time>${tm(e.t)}</time><i></i><span>${esc(e.x)}</span></div>`).join("") : `<div class="wt0 mut sm">In den letzten 12 Stunden ist nichts passiert.</div>`;
     const now = `<div class="wti now" style="--c:${s.col}"><time>jetzt</time><i></i><span><b>${esc(s.lab)}</b>${s.cur != null ? ` · ${num(s.cur, 1)} °C` : ""}${s.ziel != null ? ` → ${num(s.ziel, 1)} °C` : ""}</span></div>`;
-    const fut = this._wtFuture(r).map((e) => `<div class="wti fut ${e.c}"><time>geplant</time><i></i><span>${esc(e.x)}${e.s ? `<small>${esc(e.s)}</small>` : ""}</span></div>`).join("");
+    const fut = this._zlFuture(r).map((e) => `<div class="wti fut ${e.c}"><time>geplant</time><i></i><span>${esc(e.x)}${e.s ? `<small>${esc(e.s)}</small>` : ""}</span></div>`).join("");
     return `<div class="lsec">${ic("clock", 15)}Verlauf und was als Nächstes passiert</div><div class="wtl">${past}${now}${fut}</div><div class="lsec">${ic("info", 15)}Gründe im Moment</div>`;
   }
 
@@ -7868,6 +7870,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a.startsWith("errx")) this._errAct(a, b);
     else if (a.startsWith("lgx")) this._lgAct(a, b);
     else if (a.startsWith("mqx")) this._mqAct(a, b);
+    else if (a === "clipback") { this._modal = this._clipBack || null; this._clipBack = null; this._renderModal(); }
     else if (a.startsWith("mx") && this._mxAct) this._mxAct(a, b);
     else if (a.startsWith("spx")) this._spAct(a, b);
     else if (a.startsWith("sfx")) this._sfxAct(a, b);
@@ -8565,6 +8568,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (m.type === "sup") { box.innerHTML = this._supModal(); this._supBind(box); return; }
     if (m.type === "errlog") { box.innerHTML = this._errModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (m.type === "sts") { box.innerHTML = this._stsModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
+    if (m.type === "cliptext") { box.innerHTML = this._clipModal(); return; }
     if (String(m.type).startsWith("mqx")) { box.innerHTML = this._mqModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["lgbrief", "lgposter", "lgex"].includes(m.type)) { box.innerHTML = this._lgModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
     if (["spndlg", "spnadm", "spngh"].includes(m.type)) { box.innerHTML = this._spnModal(); const sh = box.querySelector(".sheet"); if (sh) sh.scrollTop = top; return; }
@@ -8726,7 +8730,7 @@ class FensterHeizungPanel extends HTMLElement {
       const mm = MODE[r.mode] || MODE.regelung_aus;
       box.innerHTML = `<div class="ov" data-act="close"></div><div class="sheet" role="dialog" aria-modal="true">
         <div class="sh"><div><b>${r.mode === "heizung_pausiert" ? "Warum pausiert die Heizung?" : "Warum „" + mm.t + "“?"}</b><span>${esc(r.name)}</span></div><button class="ibtn" data-act="close" aria-label="Schließen">${ic("close", 20)}</button></div>
-        ${this._wtHtml(r)}<div class="why-l">${(r.why || []).map((w) => `<div class="wl ${w.s}"><i></i><span>${esc(w.t)}</span></div>`).join("") || `<div class="mut">Keine Angaben vorhanden.</div>`}</div>
+        ${this._zlHtml(r)}<div class="why-l">${(r.why || []).map((w) => `<div class="wl ${w.s}"><i></i><span>${esc(w.t)}</span></div>`).join("") || `<div class="mut">Keine Angaben vorhanden.</div>`}</div>
         ${this._regDiag(r)}
         <div class="foot2"><button class="btn2" data-act="close">Schließen</button></div></div>`;
     } else if (m.type === "vac") {
@@ -13905,15 +13909,28 @@ class FensterHeizungPanel extends HTMLElement {
   /* Kopieren: moderne Zwischenablage, sonst Ersatzweg (HTTP-Adresse, App-Ansicht, ältere Browser) */
   _clip(t, ok) {
     const done = () => this._toast(ok);
+    /* letzter Weg: Fenster mit markiertem Text – auf iPad/iPhone lange drücken › Kopieren */
+    const manual = () => { this._clipBack = this._modal && this._modal.type !== "cliptext" ? this._modal : this._clipBack || null; this._modal = { type: "cliptext", text: t }; this._renderModal(); setTimeout(() => { const ta = this.shadowRoot.querySelector(".cliptxt"); if (ta) { ta.focus(); ta.select(); ta.setSelectionRange(0, t.length); } }, 60); };
     const fb = () => {
       try {
-        const ta = document.createElement("textarea"); ta.value = t; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;left:-9999px;top:0;opacity:0";
-        document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, t.length);
-        const r = document.execCommand("copy"); ta.remove();
-        if (r) done(); else this._toast("Kopieren nicht möglich. Bitte den Text von Hand markieren und kopieren");
-      } catch (_) { this._toast("Kopieren nicht möglich. Bitte den Text von Hand markieren und kopieren"); }
+        /* in der eigenen Oberfläche anlegen (sonst nimmt iOS die Auswahl nicht), bearbeitbar machen, Bereich auswählen */
+        const host = this.shadowRoot.querySelector(".sheet") || this.shadowRoot.getElementById("main") || document.body;
+        const ta = document.createElement("textarea"); ta.value = t; ta.contentEditable = "true"; ta.readOnly = false;
+        ta.style.cssText = "position:fixed;left:0;top:0;width:1px;height:1px;opacity:0.01;font-size:16px;border:0;padding:0";
+        host.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0, t.length);
+        let r = false;
+        try { r = document.execCommand("copy"); } catch (_) { r = false; }
+        ta.remove();
+        if (r) done(); else manual();
+      } catch (_) { manual(); }
     };
     try { if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done, fb); else fb(); } catch (_) { fb(); }
+  }
+  _clipModal() {
+    const m = this._modal;
+    return `<div class="ov" data-act="clipback"></div><div class="sheet" role="dialog" aria-modal="true"><div class="sh"><div><b>Zum Kopieren markiert</b><span>Lange drücken › Kopieren (oder Strg/⌘ + C)</span></div><button class="ibtn" data-act="clipback" aria-label="Schließen">${ic("close", 20)}</button></div>
+      <textarea class="osel cliptxt" readonly style="width:100%;min-height:220px;font-family:ui-monospace,monospace;font-size:13px;white-space:pre;user-select:text;-webkit-user-select:text">${esc(m.text || "")}</textarea>
+      <div class="gbtns" style="margin-top:10px"><button class="btn2" data-act="clipback">Fertig</button></div></div>`;
   }
   _spnRedeem(key, mine) {
     this._hass.callWS({ type: "fenster_heizung/spn_redeem", key }).then((r) => {
@@ -14383,7 +14400,7 @@ class FensterHeizungPanel extends HTMLElement {
     else if (a === "stsoff") this._stsWS("answer", { on: false }).then(() => { m.mode = "main"; this._renderModal(); this._render(); this._toast("Statistik ausgeschaltet"); }).catch(fail);
     else if (a === "stsdata") { m.back = m.mode; m.mode = "data"; this._renderModal(); }
     else if (a === "stsback") { m.mode = m.back || "main"; m.back = ""; this._renderModal(); }
-    else if (a === "stscopy") { try { navigator.clipboard.writeText(JSON.stringify(S.payload, null, 2)); this._toast("Kopiert"); } catch (_) { this._toast("Kopieren ging nicht"); } }
+    else if (a === "stscopy") this._clip(JSON.stringify(S.payload, null, 2), "Kopiert");
     else if (a === "stssend") { m.busy = true; this._renderModal(); this._stsWS("send").then((r) => { m.busy = false; this._renderModal(); this._toast(r.sent ? "Gesendet" : "Server nicht erreichbar – neuer Versuch folgt"); }).catch(() => { m.busy = false; this._renderModal(); fail(); }); }
     else if (a === "stsreset") this._stsWS("reset").then(() => { this._renderModal(); this._toast("Neue Kennung erzeugt"); }).catch(fail);
     else if (a === "stsdel") { m.mode = "del"; this._renderModal(); }
@@ -14489,7 +14506,7 @@ class FensterHeizungPanel extends HTMLElement {
     setTimeout(() => { if (!this._modal && !((this._errD || {}).cfg || {}).asked) { this._modal = { type: "errlog", mode: "ask", first: true }; this._renderModal(); } }, n ? 0 : 4000);
   }
   _errAct(a, b) {
-    const k = b && b.dataset ? b.dataset.k : "", D = this._errD, m = this._modal, copy = (t) => { try { navigator.clipboard.writeText(t); this._toast("Kopiert"); } catch (_) { this._toast("Kopieren ging nicht"); } };
+    const k = b && b.dataset ? b.dataset.k : "", D = this._errD, m = this._modal, copy = (t) => this._clip(t, "Kopiert");
     const cfg = (act, extra = {}) => this._hass.callWS({ type: "fenster_heizung/err_cfg", act, ...extra }).then((r) => { this._errD = r; return r; });
     const re = () => { this._renderModal(); this._render(); }, fail = () => this._toast("Das ging nicht");
     if (a === "errxopen") { this._modal = { type: "errlog", mode: "main" }; this._renderModal(); this._errLoad().then(() => { if (this._modal && this._modal.type === "errlog") this._renderModal(); this._render(); }).catch(() => this._toast("Fehlerprotokoll nicht erreichbar")); return; }
@@ -17612,7 +17629,7 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "sfxmdup") { this._sfSnap(); const ids = []; P.items.filter((x) => ed.multi.includes(x.id)).forEach((x) => { const c = { ...x, id: uid(), x: x.x + 20, y: x.y + 20 }; if (c.t === "w") { c.x2 += 20; c.y2 += 20; } if (c.t === "m") c.e = ""; P.items.push(c); ids.push(c.id); }); ed.multi = ids; this._render(); return true; }
     if (a === "sfxpscale") { this._sfSnap(); P.scale = Math.round(800 / Number(k)); this._render(); return true; }
     if (a === "sfxprg" && cur && cur.t === "m") { this._sfSnap(); const d = cur.e ? this._sfDetMap()[cur.e] : null, now = this._sfRangeM(cur, d); cur.rg = Math.max(1, Math.min(15, Math.round((now + Number(b.dataset.s) * 0.5) * 2) / 2)); this._render(); return true; }
-    if (a === "sfxpexp") { this._sfDeliver(this._grExport ? this._grExport(P, true) : JSON.stringify({ app: "fenster_heizung", modul: "sicherheit", v: 1, plan: P }), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss Modul 11"); return true; }
+    if (a === "sfxpexp") { this._sfDeliver(this._grExportJson ? this._grExportJson(P, true) : JSON.stringify({ app: "fenster_heizung", modul: "sicherheit", v: 1, plan: P }), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss Modul 11"); return true; }
     return false;
   }
   _sfxP2Change(t) {
@@ -18015,7 +18032,6 @@ class FensterHeizungPanel extends HTMLElement {
     return hit ? { id: hit.id, name: nmOf(hit.id), auto: true } : null;
   }
   _grAreaName(id) { const a = (this._hass.areas || {})[id]; return (a && a.name) || id; }
-  _grEntArea(e) { const H = this._hass, en = (H.entities || {})[e]; if (!en) return ""; if (en.area_id) return en.area_id; const dv = en.device_id && (H.devices || {})[en.device_id]; return (dv && dv.area_id) || ""; }
   _grFloors(P) { return P && P.floors && P.floors.length ? P.floors : [{ id: "eg", n: "EG" }]; }
   /* Banner: Haus im Schnitt, eine Reihe je Etage (oben die höchste), Zellen = Räume der Etage */
   _grHouse(P) {
@@ -18186,7 +18202,8 @@ class FensterHeizungPanel extends HTMLElement {
     this._hass.callWS({ type: "fenster_heizung/gr_hist" }).then((r) => { H.d = r; }).catch(() => { H.d = H.d || { hist: [], copy: null, err: true }; }).finally(() => { H.busy = false; H.ts = Date.now(); if (this._mdActive() === "gr") this._render(); });
     return H;
   }
-  _grExport(P, withBg) {
+  /* Plan als JSON-Text (Datei „Grundriss-….json“, auch Modul 11 „Plan sichern“). Eigener Name: _grExport ist der Export-Dialog in 12m7 */
+  _grExportJson(P, withBg) {
     const D = this._grS0().d || {}, p = { ...P, bg: withBg ? P.bg || {} : {} };
     return JSON.stringify({ app: "fenster_heizung", modul: "grundriss", v: 1, date: new Date().toISOString(), stats: this._grSt(p), plan: p, rooms: D.rooms || {} });
   }
@@ -18338,7 +18355,7 @@ class FensterHeizungPanel extends HTMLElement {
     }
     if (a === "grxoffgo") { const s = this._mdState(); s.on.gr = false; this._modal = null; this._renderModal(); if (this._mdActive() === "gr") this._mdActiveSet("fh"); this._mdSave(); this._render(); this._toast("Modul 0 ist aus – der Grundriss bleibt in den anderen Modulen sichtbar"); return true; }
     if (a === "grxexbg") { this._grExBg = this._grExBg === false; this._render(); return true; }
-    if (a === "grxexp") { const P = this._grRaw(); if (P) this._sfDeliver(this._grExport(P, this._grExBg !== false), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss"); return true; }
+    if (a === "grxexp") { const P = this._grRaw(); if (P) this._sfDeliver(this._grExportJson(P, this._grExBg !== false), `Grundriss-${new Date().toISOString().slice(0, 10)}.json`, "application/json", "Grundriss"); return true; }
     if (a === "grximpm") { const m = this._modal; if (m && m.type === "grximp") { m.mode = k === "add" ? "add" : "replace"; this._renderModal(); } return true; }
     if (a === "grximpr") { const m = this._modal; if (m && m.type === "grximp") { m.rooms = !m.rooms; this._renderModal(); } return true; }
     if (a === "grximpgo") {

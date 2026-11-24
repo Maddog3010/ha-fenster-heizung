@@ -1,17 +1,19 @@
-  /* ================= Modul 1 · „Warum?“ als Zeitleiste (D3) ================= */
+  /* ================= Modul 1 · „Warum?“ als Zeitleiste (D3) =================
+     Präfix _zl…: _wt… gehört zu Modul 15 (Wartung, 12p-wartung.js). Gleiche Namen überschreiben sich in der Klasse –
+     dann rief „Warum?“ das Laden der Wartung auf und brach mit „undefined is not an object (evaluating 'L.ev')“ ab. */
 
   /* ---- D3: Zeitleiste. Verlauf der letzten 12 Std. aus Home Assistant (Fenster, Modus, Präsenz) plus geplante Punkte */
-  _wtLoad(r) {
-    const c = (this._wtC = this._wtC || {}), k = r.id, now = Date.now();
+  _zlLoad(r) {
+    const c = (this._zlC = this._zlC || {}), k = r.id, now = Date.now();
     if (c[k] && (c[k].busy || now - c[k].ts < 60000)) return c[k];
     const ids = [...(r.windows || []), r.modeEid, r.pres && r.pres.melder].filter(Boolean);
     c[k] = { busy: true, ts: now, ev: (c[k] && c[k].ev) || null };
     this._hass.callWS({ type: "history/history_during_period", start_time: new Date(now - 12 * 3600e3).toISOString(), end_time: new Date(now).toISOString(), entity_ids: ids, include_start_time_state: false, significant_changes_only: false, minimal_response: true, no_attributes: true })
-      .then((res) => { c[k] = { busy: false, ts: Date.now(), ev: this._wtEvents(r, res || {}) }; if (this._modal && this._modal.type === "why" && this._modal.id === k) this._renderModal(); })
+      .then((res) => { c[k] = { busy: false, ts: Date.now(), ev: this._zlEvents(r, res || {}) }; if (this._modal && this._modal.type === "why" && this._modal.id === k) this._renderModal(); })
       .catch(() => { c[k] = { busy: false, ts: Date.now(), ev: [] }; if (this._modal && this._modal.type === "why") this._renderModal(); });
     return c[k];
   }
-  _wtEvents(r, res) {
+  _zlEvents(r, res) {
     const st = this._hass.states, nm = (e) => (st[e] && st[e].attributes.friendly_name) || e, ev = [], t = (x) => (x.lu ?? x.lc ?? 0) * 1000;
     const MT = { heizung_pausiert: ["Heizung pausiert", "am"], regelung_aktiv: ["Heizung läuft wieder", "ok"], nur_fenstermeldung: ["Heizung aus, nur Fenstermeldung", "in"], regelung_aus: ["Regelung ausgeschaltet", "in"] };
     for (const w of r.windows || []) {
@@ -27,7 +29,7 @@
     if (s.planOn) s.pts.filter((p) => p.w >= s.today * 1440 && p.w <= s.now && p.w >= s.now - 720).forEach((p) => ev.push({ t: d0.getTime() + (p.w % 1440) * 60000, c: "pl", x: `Heizplan: ${num(p.t, 1)} °C` }));
     return ev.filter((e) => e.t > Date.now() - 12 * 3600e3).sort((a, b) => a.t - b.t).slice(-12);
   }
-  _wtFuture(r) {
+  _zlFuture(r) {
     const s = this._rkState(r), out = [], need = ventMin(this._out().t);
     if (s.anyOpen && Date.now() >= s.since + need * 60000) out.push({ c: "am", x: "Genug gelüftet: Fenster schließen", s: `${need} Min. reichen bei ${this._out().t != null ? num(this._out().t, 0) + " °C draußen" : "dieser Außentemperatur"}` });
     else if (s.anyOpen) out.push({ c: "bl", x: `Lüften empfohlen bis ${new Date(s.since + need * 60000).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })}`, s: `${need} Min. bei ${this._out().t != null ? num(this._out().t, 0) + " °C draußen" : "dieser Außentemperatur"}` });
@@ -36,12 +38,12 @@
     if (s.pres && s.pres.anwesend && !s.pres.gesperrt) out.push({ c: "pr", x: `Bei Leerstand zurück auf den Heizplan`, s: `nach ${s.pres.verz_aus} Min. ohne Bewegung` });
     return out.slice(0, 3);
   }
-  _wtHtml(r) {
+  _zlHtml(r) {
     if (!this._rkOn()) return "";
-    const L = this._wtLoad(r), tm = (ms) => new Date(ms).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), s = this._rkState(r);
+    const L = this._zlLoad(r), tm = (ms) => new Date(ms).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" }), s = this._rkState(r);
     const past = L.ev == null ? `<div class="wt0 mut sm">Verlauf wird geladen …</div>` : L.ev.length ? L.ev.map((e) => `<div class="wti ${e.c}"><time>${tm(e.t)}</time><i></i><span>${esc(e.x)}</span></div>`).join("") : `<div class="wt0 mut sm">In den letzten 12 Stunden ist nichts passiert.</div>`;
     const now = `<div class="wti now" style="--c:${s.col}"><time>jetzt</time><i></i><span><b>${esc(s.lab)}</b>${s.cur != null ? ` · ${num(s.cur, 1)} °C` : ""}${s.ziel != null ? ` → ${num(s.ziel, 1)} °C` : ""}</span></div>`;
-    const fut = this._wtFuture(r).map((e) => `<div class="wti fut ${e.c}"><time>geplant</time><i></i><span>${esc(e.x)}${e.s ? `<small>${esc(e.s)}</small>` : ""}</span></div>`).join("");
+    const fut = this._zlFuture(r).map((e) => `<div class="wti fut ${e.c}"><time>geplant</time><i></i><span>${esc(e.x)}${e.s ? `<small>${esc(e.s)}</small>` : ""}</span></div>`).join("");
     return `<div class="lsec">${ic("clock", 15)}Verlauf und was als Nächstes passiert</div><div class="wtl">${past}${now}${fut}</div><div class="lsec">${ic("info", 15)}Gründe im Moment</div>`;
   }
 

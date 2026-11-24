@@ -2,6 +2,16 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.5] - 2026-11-24
+
+Korrekturen zu gemeldeten Fehlern.
+
+### Behoben
+- **Modul 1 · „Warum?“:** Das Fenster brach mit „undefined is not an object (evaluating 'L.ev')“ ab. Ursache: Die Zeitleiste und Modul 15 (Wartung) nutzten intern denselben Funktionsnamen – „Warum?“ lud dadurch die Wartung statt des Verlaufs. Im Fehlerprotokoll erschien das als Fehler in Modul 15 („_wtHtml · Versprechen“).
+- **Kopieren auf iPad und iPhone:** „Kopieren“ im Fehlerprotokoll und in der Statistik meldete „Kopieren ging nicht“. Jetzt wird wie beim Sponsor-Schlüssel ein Ersatzweg genutzt; klappt auch der nicht, öffnet sich ein Fenster mit dem markierten Text zum Kopieren per langem Drücken.
+- **Modul 11 · „Plan sichern“ und Modul 0 · „Datei herunterladen“:** riefen wegen desselben Namensproblems den Export-Dialog auf statt die Plan-Datei zu speichern.
+- Ein Test prüft jetzt, dass keine Funktion im Dashboard doppelt benannt ist.
+
 ## [2026.11.4.4] - 2026-11-24
 
 Drei neue Extras für Sponsor Max, Fenster- und Türkontakte im Grundriss und eine bessere Handy-Ansicht von Modul 0. Enthält alles aus den Testversionen 2026.11.4.4b1 bis b4 und die Korrekturen danach.
