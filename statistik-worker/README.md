@@ -11,7 +11,7 @@ Einrichtung: siehe `Anleitung_Statistik-Cloudflare-Worker.pdf`. Kurz:
     npx wrangler d1 execute stats --remote --file=schema.sql
     npx wrangler deploy                   # danach Access-Anwendung für dash.… anlegen, TEAM_DOMAIN/POLICY_AUD eintragen, erneut deploy
 
-Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js && node --no-warnings test/test_build10.js && node --no-warnings test/test_build11.js && node --no-warnings test/test_build12.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
+Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js && node --no-warnings test/test_build9.js && node --no-warnings test/test_build10.js && node --no-warnings test/test_build11.js && node --no-warnings test/test_build12.js && node --no-warnings test/test_build13.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
 
 ## Fehler-Statistik (ab 2026.11.4.3b1)
 
@@ -139,3 +139,22 @@ Worker und zwei neue Spalten, dazu die Beta 2026.11.5b3 der Integration:
 - Banner: Dashboard Build 12.
 
 Tests: zusätzlich `node --no-warnings test/test_build12.js`.
+
+## Build 13: Reiter „System“
+
+Worker und zwei kleine Tabellen – kein Update der Integration:
+
+    npx wrangler d1 execute stats --remote --file=migrate-build13.sql
+    npx wrangler deploy
+
+(Mehrfach ausführen schadet nicht. Ohne die Tabellen läuft alles, nur die Zähler fehlen.)
+
+- **Reiter-Leiste** in fester Reihenfolge: Versionen · Fehler · Module · Releases · System · Support · Wochen (`TABS` in `src/fehler.js`). Sichtbar sind nur gebaute Reiter.
+- **System** (`/system`): Versions-Meldungen und Fehlerberichte heute und 14 Tage (angenommen/abgelehnt), letzter nächtlicher Lauf (Zeit, Dauer, Fehler, Tageswert gespeichert), Dashboard-Build, abgelehnte Meldungen nach Grund, Zeilen je Tabelle und Datenbank-Stand aller Erweiterungen mit dem Befehl für fehlende.
+- Zähler: Tabelle `sys` (Tag, Art wie `ping:ok`, `err:429`, n) ohne Kennungen, 400 Tage. Gezählt wird nach der Antwort (`ctx.waitUntil`), eine Meldung wird dadurch nie langsamer oder abgelehnt.
+- Letzter nächtlicher Lauf: `syskv` (Schlüssel `cron`).
+- **Warnhinweis** unter dem Banner aller Reiter, wenn eine Erweiterung fehlt.
+- Optional: Cloudflare-Versions-ID im Reiter System. Dazu in `wrangler.toml` ergänzen: `[version_metadata]` mit `binding = "CF_VERSION_METADATA"`.
+- Banner: Dashboard Build 13.
+
+Tests: zusätzlich `node --no-warnings test/test_build13.js`.

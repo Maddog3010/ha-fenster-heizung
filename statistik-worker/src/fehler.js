@@ -305,7 +305,7 @@ export async function errLoadOne(DB, fp, todayStr, rel = null) {
 // ---------------------------------------------------------------- Darstellung
 const e = (x) => String(x ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#x27;" }[c]));
 const TAG = { "wieder da": ["wieder da", "#b91c1c", "#fff"], "in Arbeit": ["in Arbeit", "#1e3a8a", "#bfdbfe"], behoben: ["behoben", "#134e4a", "#5eead4"], ignoriert: ["ignoriert", "#262624", "#8d8c84"], neu: ["neu", "#7f1d1d", "#fecaca"], steigt: ["steigt", "#78350f", "#fde68a"], bekannt: ["bekannt", "#334155", "#cbd5e1"], "behoben?": ["behoben?", "#134e4a", "#5eead4"], ruhig: ["ruhig", "#262624", "#8d8c84"] };
-export const ERR_CSS = `.tabs{display:flex;gap:6px;margin:10px 0}.tabs a{color:#c3c2b7;text-decoration:none;border:1px solid #3a3a38;border-radius:99px;padding:5px 14px;font-weight:600}.tabs a.on{border-color:#2dd4bf;color:#5eead4}
+export const ERR_CSS = `.tabs{display:flex;gap:6px;margin:10px 0;overflow-x:auto;scrollbar-width:none}.tabs a{flex:none}.tabs a{color:#c3c2b7;text-decoration:none;border:1px solid #3a3a38;border-radius:99px;padding:5px 14px;font-weight:600}.tabs a.on{border-color:#2dd4bf;color:#5eead4}
 .flt{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.flt a{color:#c3c2b7;text-decoration:none;border:1px solid #3a3a38;border-radius:99px;padding:3px 11px;font-size:.8rem}.flt a.on{border-color:#2dd4bf;color:#5eead4}
 .et{width:100%;border-collapse:collapse;font-size:.86rem}.et th{color:#5eead4;text-align:left;font-weight:600;padding:6px 8px;border-bottom:1px solid #3a3a38}.et td{padding:8px;border-bottom:1px solid #262624;vertical-align:top}.et td:nth-child(3){white-space:nowrap}
 .et a{color:#f0efec;text-decoration:none}.et a:hover b{text-decoration:underline}.et small{color:#8d8c84;display:block;font-family:ui-monospace,Menlo,monospace;font-size:.74rem;margin-top:2px}
@@ -321,7 +321,10 @@ export const ERR_CSS = `.tabs{display:flex;gap:6px;margin:10px 0}.tabs a{color:#
 @media(max-width:700px){.et .hide{display:none}.kv{grid-template-columns:1fr}}`;
 const spark = (a, w = 84, h = 18) => { const mx = Math.max(1, ...a); return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${a.map((v, i) => `<rect x="${(i * w) / a.length + 0.5}" y="${h - (v / mx) * (h - 2) - 1}" width="${w / a.length - 1.5}" height="${(v / mx) * (h - 2) + 1}" rx="1" fill="${v ? "#f87171" : "#3a3a38"}"/>`).join("")}</svg>`; };
 const tag = (t) => { const x = TAG[t] || TAG.bekannt; return `<span class="tg" style="background:${x[1]};color:${x[2]}">${x[0]}</span>`; };
-export const tabs = (on) => `<div class="tabs"><a href="/" class="${on === "v" ? "on" : ""}">Versionen</a><a href="/fehler" class="${on === "f" ? "on" : ""}">Fehler</a></div>`;
+/** Reiter in fester Reihenfolge (Konzept „neue Reiter“). Sichtbar sind nur die schon gebauten. */
+export const TABS = [["v", "/", "Versionen", true], ["f", "/fehler", "Fehler", true], ["m", "/module", "Module", false], ["r", "/releases", "Releases", false],
+  ["s", "/system", "System", true], ["u", "/support", "Support", false], ["w", "/wochen", "Wochen", false]];
+export const tabs = (on) => `<div class="tabs">${TABS.filter((t) => t[3]).map(([k, href, t]) => `<a href="${href}" class="${on === k ? "on" : ""}">${t}</a>`).join("")}</div>`;
 const fd = (d) => (d ? `${d.slice(8, 10)}.${d.slice(5, 7)}.` : "");
 
 export function errRender(r, q = {}) {
