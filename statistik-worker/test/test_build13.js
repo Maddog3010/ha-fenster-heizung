@@ -47,7 +47,7 @@ assert.deepEqual(Y.kindOf("/v1/ping", 200), "ping:ok"); assert.equal(Y.kindOf("/
 
   // Seite
   const h = await (await dget(env, "/system")).text();
-  for (const t of ["Versions-Meldungen heute", "Fehlerberichte heute", "Nächtlicher Lauf", "Build 13", "Datenbank-Stand", "Abgelehnte Meldungen", "zu oft (429)", "ungültig (400)", "falscher Pfad (404)", "installs 1", "Gerät, Aufrufkette", "1 Installationen gemeldet, davon 0 mit Fehler"])
+  for (const t of ["Versions-Meldungen heute", "Fehlerberichte heute", "Nächtlicher Lauf", "Build 13", "Datenbank-Stand", "Abgelehnte Meldungen", "zu oft (429)", "ungültig (400)", "falscher Pfad (404)", "installs 1", "Gerät, Aufrufkette", "0 Installationen mit Fehler (alle Versionen)"])
     assert.ok(h.includes(t), t);
   assert.ok(!h.includes("Datenbank unvollständig") && !h.includes(">fehlt<"), "alles da");
   assert.ok(h.includes('href="/system" class="on"'), "Reiter aktiv");
@@ -56,6 +56,16 @@ assert.deepEqual(Y.kindOf("/v1/ping", 200), "ping:ok"); assert.equal(Y.kindOf("/
   assert.equal((await dget(env, "/system", null)).status, 403, "nur hinter Access");
   const X = await Y.sysLoad(env.DB, today, { CF_VERSION_METADATA: { id: "abcdef1234567", timestamp: "2026-11-24T20:10:00Z" } });
   assert.ok(Y.sysHtml(X, DASH).includes("Cloudflare-Version abcdef12 (2026-11-24 20:10)"));
+  // angenommene Meldungen kommen aus der Tagesliste – auch für Tage vor den Zählern
+  const d3 = new Date(Date.parse(today) - 3 * 864e5).toISOString().slice(0, 10);
+  for (let i = 0; i < 5; i++) env.DB.raw.prepare("INSERT INTO daily(day, id, version, channel) VALUES(?,?,?,?)").run(d3, ID(), "2026.11.4.5", "stable");
+  const X2 = await Y.sysLoad(env.DB, today);
+  assert.equal(X2.ping.find((x) => x.d === d3).ok, 5); assert.equal(X2.ping.at(-1).ok, 1); assert.equal(X2.err.at(-1).ok, 1);
+  // Cloudflare D1: sqlite_master-Verknüpfungen und pragma_table_info mit variablem Namen sind gesperrt
+  const strict = { ...env.DB, prepare: (sql) => { if (/sqlite_master|pragma_table_info\((?!')/i.test(sql)) throw new Error("SQLITE_AUTH: not authorized"); return env.DB.prepare(sql); } };
+  const C = await Y.schemaCheck(strict);
+  assert.ok(C && C.every((c) => c.ok), "Datenbank-Stand trotz D1-Einschränkung");
+  assert.equal(await Y.schemaCheck({ prepare: () => { throw new Error("x"); } }), null);
   console.log("Build-13-System OK");
 }
 // Ältere Datenbank: Warnhinweis auf allen Reitern, Befehl im Reiter System, Meldungen laufen weiter

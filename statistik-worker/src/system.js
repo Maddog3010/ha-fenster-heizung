@@ -36,12 +36,19 @@ export const CHECKS = [
   { b: 12, t: "Gerät, Aufrufkette", need: ["err_hits.dev", "err_groups.chain"], file: "migrate-build12.sql" },
   { b: 13, t: "System-Zähler", need: ["sys", "syskv"], file: "migrate-build13.sql" },
 ];
+const KNOWN = ["installs", "daily", "err_groups", "err_hits", "err_reporters", "err_days", "err_merge", "snap", "sys", "syskv"];
+/* Cloudflare D1 erlaubt pragma_table_info nur mit festem Tabellennamen (keine Verknüpfung über sqlite_master) – also je Tabelle einzeln. */
 export async function schemaCheck(DB) {
-  let cols;
-  try {
-    cols = (await DB.prepare("SELECT m.name AS t, p.name AS c FROM sqlite_master m, pragma_table_info(m.name) p WHERE m.type='table'").all()).results;
-  } catch { return null; }   // Abfrage nicht möglich: Stand unbekannt
-  const have = new Set(cols.flatMap((x) => [x.t, `${x.t}.${x.c}`]));
+  const have = new Set();
+  let okAny = false;
+  for (const t of KNOWN) {
+    try {
+      const cols = (await DB.prepare(`SELECT name FROM pragma_table_info('${t}')`).all()).results;
+      okAny = true;
+      if (cols.length) { have.add(t); for (const c of cols) have.add(`${t}.${c.name}`); }
+    } catch { /* einzelne Abfrage nicht möglich */ }
+  }
+  if (!okAny) return null;   // Abfrage gar nicht möglich: Stand unbekannt
   return CHECKS.map((c) => ({ ...c, missing: c.need.filter((n) => !have.has(n)), ok: c.need.every((n) => have.has(n)) }));
 }
 /** Hinweis unter dem Banner aller Reiter, wenn eine Erweiterung fehlt */
@@ -72,13 +79,17 @@ export async function sysLoad(DB, todayStr, env = {}) {
     errWith = (await DB.prepare("SELECT COUNT(DISTINCT rid) n FROM err_hits WHERE day=?").bind(todayStr).first()).n;
   } catch { /* vor Build 6 */ }
   const days = Array.from({ length: 14 }, (_, i) => S(D(todayStr) - (13 - i) * dayMs));
+  /* angenommen = Installationen mit Meldung an diesem Tag (Tagesliste bzw. Tages-Meldungen) – gibt es auch vor Build 13 */
+  const acc = { ping: new Map(), err: new Map() };
+  try { for (const x of (await DB.prepare("SELECT day, COUNT(*) n FROM daily WHERE day>=? GROUP BY day").bind(from).all()).results) acc.ping.set(x.day, x.n); for (const d of days) if (!acc.ping.has(d)) acc.ping.set(d, 0); } catch { /* */ }
+  try { for (const x of (await DB.prepare("SELECT day, COUNT(*) n FROM err_days WHERE day>=? GROUP BY day").bind(from).all()).results) acc.err.set(x.day, x.n); for (const d of days) if (!acc.err.has(d)) acc.err.set(d, 0); } catch { /* vor Build 6 */ }
   const get = (d, k) => (rows || []).filter((x) => x.day === d && x.kind === k).reduce((a, x) => a + x.n, 0);
   const sum = (d, pre, ok) => (rows || []).filter((x) => x.day === d && x.kind.startsWith(pre + ":") && (ok ? x.kind.endsWith(":ok") : !x.kind.endsWith(":ok"))).reduce((a, x) => a + x.n, 0);
   const rej = {};
   for (const x of rows || []) if (x.day >= S(D(todayStr) - 6 * dayMs) && !x.kind.endsWith(":ok")) { const [k, c] = x.kind.split(":"); rej[c] = rej[c] || {}; rej[c][k] = (rej[c][k] || 0) + x.n; }
   const ver = env.CF_VERSION_METADATA ? { id: env.CF_VERSION_METADATA.id || "", ts: env.CF_VERSION_METADATA.timestamp || "" } : null;
   return { today: todayStr, checks, counts, size, cron, rows, days, rej, ver, errDays, errWith,
-    ping: days.map((d) => ({ d, ok: sum(d, "ping", true), bad: sum(d, "ping", false) })), err: days.map((d) => ({ d, ok: sum(d, "err", true), bad: sum(d, "err", false) })), get };
+    ping: days.map((d) => ({ d, ok: acc.ping.get(d) ?? sum(d, "ping", true), bad: sum(d, "ping", false) })), err: days.map((d) => ({ d, ok: acc.err.get(d) ?? sum(d, "err", true), bad: sum(d, "err", false) })), get };
 }
 function bars(L, col) {
   const mx = Math.max(1, ...L.map((x) => x.ok + x.bad)), W = 600, H = 120, bw = W / L.length;
@@ -92,11 +103,11 @@ export function sysHtml(X, DASH) {
   const t = X.ping.at(-1), f = X.err.at(-1), avg = (L) => Math.round(L.slice(0, 13).reduce((a, x) => a + x.ok, 0) / 13);
   const cron = X.cron ? `<div class="n" style="font-size:1.25rem;margin-top:6px">${X.cron.day === X.today ? "heute" : e(X.cron.day)} ${e(String(X.cron.time || "").slice(0, 5))}</div><div class="s">${X.cron.ok ? `ok · ${X.cron.ms} ms` : `<span style="color:#f87171">Fehler: ${e(X.cron.msg || "?")}</span>`}${X.cron.snap ? " · Tageswert gespeichert" : ""}</div>`
     : `<div class="n" style="font-size:1.25rem;margin-top:6px">–</div><div class="s">noch kein Lauf seit Build 13 (täglich 03:17 UTC)</div>`;
-  const noRows = X.rows == null;
-  const kpi = `<div class="k"><div class="c"><div class="t">Versions-Meldungen heute</div><div class="n">${noRows ? "–" : t.ok}</div><div class="s">${noRows ? "Zähler ab Build 13" : `7 Tage: Ø ${avg(X.ping)} · abgelehnt heute ${t.bad}`}</div></div>
-    <div class="c"><div class="t">Fehlerberichte heute</div><div class="n">${noRows ? "–" : f.ok}</div><div class="s">${X.errDays != null ? `${nf(X.errDays)} Installationen gemeldet, davon ${nf(X.errWith)} mit Fehler` : ""}${noRows ? "" : ` · abgelehnt ${f.bad}`}</div></div>
+  const noRows = X.rows == null, rj = (n) => (noRows ? "Ablehnungen ab Build 13" : `abgelehnt heute ${n}`);
+  const kpi = `<div class="k"><div class="c"><div class="t">Versions-Meldungen heute</div><div class="n">${nf(t.ok)}</div><div class="s">Installationen mit Meldung · 13 Tage davor: Ø ${avg(X.ping)} · ${rj(t.bad)}</div></div>
+    <div class="c"><div class="t">Fehlerberichte heute</div><div class="n">${nf(f.ok)}</div><div class="s">Tages-Meldungen ab 2026.11.5b1${X.errWith != null ? ` · ${nf(X.errWith)} ${X.errWith === 1 ? "Installation" : "Installationen"} mit Fehler (alle Versionen)` : ""} · ${rj(f.bad)}</div></div>
     <div class="c"><div class="t">Nächtlicher Lauf</div>${cron}</div>
-    <div class="c"><div class="t">Dashboard</div><div class="n" style="font-size:1.25rem;margin-top:6px">Build ${DASH.build}</div><div class="s">vom ${e(DASH.date)}${X.ver ? ` · Cloudflare-Version ${e(String(X.ver.id).slice(0, 8))}${X.ver.ts ? ` (${e(String(X.ver.ts).slice(0, 16).replace("T", " "))})` : ""}` : ""}</div></div></div>`;
+    <div class="c"><div class="t">Dashboard</div><div class="n" style="font-size:1.25rem;margin-top:6px">Build ${DASH.build}${DASH.patch ? "." + DASH.patch : ""}</div><div class="s">${DASH.patch ? `Korrektur ${DASH.patch} · ` : ""}vom ${e(DASH.date)}${X.ver ? ` · Cloudflare-Version ${e(String(X.ver.id).slice(0, 8))}${X.ver.ts ? ` (${e(String(X.ver.ts).slice(0, 16).replace("T", " "))})` : ""}` : ""}</div></div></div>`;
   const chk = X.checks == null ? '<div class="empty">Der Datenbank-Stand lässt sich nicht abfragen.</div>'
     : `<table class="mini">${X.checks.map((c) => `<tr><td>Build ${c.b} · ${e(c.t)}${c.ok ? "" : `<small style="display:block;color:#fde68a;font-family:ui-monospace,Menlo,monospace;margin-top:2px">npx wrangler d1 execute stats --remote --file=${e(c.file)}</small><small style="display:block;color:#8d8c84">fehlt: ${c.missing.map(e).join(", ")}</small>`}</td><td class="num">${c.ok ? '<span style="color:#5eead4;font-weight:700">✓</span>' : '<span class="tg" style="background:#7f1d1d;color:#fecaca">fehlt</span>'}</td></tr>`).join("")}</table>`;
   const codes = Object.keys(X.rej).sort();
@@ -105,8 +116,8 @@ export function sysHtml(X, DASH) {
     : '<div class="empty">Keine abgelehnten Meldungen in 7 Tagen.</div>';
   const tbl = `${X.counts.map(([t, n]) => `${e(t)} ${nf(n)}`).join(" · ")}${X.size ? ` · Datenbank ${(X.size / 1048576).toFixed(1).replace(".", ",")} MB` : ""}`;
   return `${kpi}
-  <div class="g2s"><div class="c"><h2>Versions-Meldungen · 14 Tage</h2><div class="u">blau: angenommen · rot: abgelehnt</div>${noRows ? '<div class="empty">Ab Build 13.</div>' : bars(X.ping, "#3987e5")}</div>
-    <div class="c"><h2>Fehlerberichte · 14 Tage</h2><div class="u">teal: angenommen (auch „0 Fehler“) · rot: abgelehnt</div>${noRows ? '<div class="empty">Ab Build 13.</div>' : bars(X.err, "#2dd4bf")}</div></div>
+  <div class="g2s"><div class="c"><h2>Versions-Meldungen · 14 Tage</h2><div class="u">blau: Installationen mit Meldung · rot: abgelehnt (ab Build 13)</div>${bars(X.ping, "#3987e5")}</div>
+    <div class="c"><h2>Fehlerberichte · 14 Tage</h2><div class="u">teal: Tages-Meldungen (auch „0 Fehler“, ab 2026.11.5b1) · rot: abgelehnt (ab Build 13)</div>${bars(X.err, "#2dd4bf")}</div></div>
   <div class="g2s"><div class="c"><h2>Datenbank-Stand</h2><div class="u">fehlt etwas, steht der Befehl dazu · danach ist kein neues deploy nötig</div>${chk}</div>
     <div class="c"><h2>Abgelehnte Meldungen · 7 Tage</h2><div class="u">vom Worker abgelehnt · was eine Cloudflare-Regel vorher abweist, kommt hier nicht an</div>${rej}<div class="u" style="margin-top:10px">Zeilen: ${tbl}</div></div></div>`;
 }
