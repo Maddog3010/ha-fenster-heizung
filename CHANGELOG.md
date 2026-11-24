@@ -2,6 +2,14 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.4b3] - 2026-11-24
+
+### Geändert
+- **Handy · Modul 0:** Die normale Ansicht zeigt den Plan jetzt wie im Bearbeiten-Modus: Melder, Technik und Lampen stehen an ihrem Platz statt gesammelt in der Raumecke, Raumnamen und Temperaturen in normaler Größe („Speisekammer“ statt „Sp… ka…“). Die bisherige Handy-Darstellung mit großer Schrift und Symbolleiste gibt es weiter unter **Ansicht ▾ › 🔍 Groß** – die Wahl merkt sich das Gerät.
+
+### Behoben
+- **Modul 0 · Überlappungen:** Raumnamen legen sich nicht mehr über die Temperatur am Heizkörper.
+
 ## [2026.11.4.4b2] - 2026-11-24
 
 ### Behoben
