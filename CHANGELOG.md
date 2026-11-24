@@ -2,6 +2,33 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.3] - 2026-11-24
+
+Fehlerprotokoll, alle Module an einer Stelle, ein echter Heizkörper im Grundriss und viele Korrekturen. Enthält alles aus den Testversionen 2026.11.4.3b1 bis b5.
+
+### Neu
+- **Fehlerprotokoll** unter Einstellungen → System: alle Programmfehler von Strom & Wärme der letzten 30 Tage, gleiche Fehler zusammengefasst. Bereinigt um Namen, Werte, Adressen und Kennungen. Auf Wunsch (eigener Schalter, einmalige Nachfrage) werden die Fehler anonym an den Entwickler gesendet – „Das wird gesendet“ zeigt jeden Bericht vorher genau so, wie er rausgeht.
+- **Modul 0 · Heizkörper wie in echt:** maßstäblich mit Lamellen und Thermostatkopf statt Symbol. Länge und Tiefe einstellbar, drehen, „An Wand“ stellt ihn parallel an die nächste Wand. Heizt er, glüht er orange.
+- **Einstellungen › Module:** alle Module an einer Stelle – Zeile öffnet die Einstellungen, Schalter rechts schaltet ein und aus, Status und Probleme in der Zeile, Filter Alle / Stabil / Beta / Probleme, darunter Ausgeschaltet und Eigene Module. Ausschalten lässt sich im Hinweis zurücknehmen.
+
+### Geändert
+- **Modul 0 · Verbinden mit Home Assistant:** Heizkörper, Thermostat, Melder, Kamera, Markise und alle anderen Elemente wählen ihre Entität mit Suchfeld und Vorschlägen. Entitäten aus dem Raum im Plan kommen zuerst, gleich benannte Thermostate sind an der Entität unterscheidbar, keine Begrenzung mehr auf 20–30 Einträge.
+- **Messwerk · Akku aus Modul 19:** Ist die Batterie nur im Hausfluss eingerichtet, schlägt das Messwerk sie vor; „Übernehmen“ trägt sie mit dem richtigen Vorzeichen unter Haus › Energiequellen ein. Gleiches für Solar und Netz.
+- **Messwerk · Hausfluss-Sensoren** heißen jetzt nach Kachel und Feld („PV Dach · Leistung“) statt „Power“ oder „Bottom“; ausgeschaltete Kacheln werden nicht geprüft.
+
+### Entfernt
+- Der Knopf **Module** im Store und das Fenster „Module“ – alles steht unter Einstellungen › Module.
+
+### Behoben
+- **Aufklappbereiche bleiben offen:** „iPhone: Das muss stimmen“, „Heizkörper · ändern“ und alle anderen klappten bei jedem neuen Wert aus Home Assistant wieder zu.
+- **Messwerk · Solar nachts:** Wechselrichter wie Fronius SolarNet, die nachts „nicht verfügbar“ melden, gelten nicht mehr als Problem („nachts aus“). Tagsüber wird ein ausgefallener Solar-Sensor gemeldet.
+- **Weihnachts-Theme:** Der Tageswechsel um Mitternacht (neues Türchen, Adventssonntag) kommt jetzt ohne Neustart an.
+- **Modul 0 · Raum-Sensoren** (Fläche, Temperatur, Lampen, Bewegung je Raum) aktualisierten sich nach Änderungen teils nicht und erzeugten Fehlermeldungen im Log.
+- **Sensorsuche:** Das Suchfeld bleibt beim Tippen stehen, auch wenn Home Assistant neue Werte schickt.
+
+### Wichtig beim Update
+- Update im Marketplace, danach Home Assistant neu starten und die Seite neu laden (in der App die App ganz schließen). Einstellungen, Pläne und Zuordnungen bleiben erhalten.
+
 ## [2026.11.4.3b5] - 2026-11-24
 
 Fünfte Testversion für 2026.11.4.3.
