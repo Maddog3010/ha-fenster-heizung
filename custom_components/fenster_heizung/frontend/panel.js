@@ -862,7 +862,7 @@ button{font:inherit;color:inherit}
 .bar:not(.nar) .brand div span{font-size:.82rem;margin-top:2px}
 .pillbtn{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:transparent;border-radius:999px;padding:7px 12px;font-size:.82rem;font-weight:600;cursor:pointer}
 .pillbtn.pri{background:var(--teal);border-color:var(--teal);color:var(--on-acc)}
-.wrap{max-width:1180px;margin:0 auto;padding:16px 14px calc(28px + env(safe-area-inset-bottom,0px));display:grid;gap:14px}
+.wrap{max-width:1180px;margin:0 auto;padding:16px 14px calc(28px + env(safe-area-inset-bottom,0px));display:grid;gap:14px}.wrap{grid-template-columns:minmax(0,1fr)}.wrap>*{min-width:0;max-width:100%}.grv,.grv svg,.sfpl,.sfpl svg{min-width:0;max-width:100%}
 .banner{display:flex;gap:10px;align-items:flex-start;border:1px dashed var(--teal);border-radius:14px;padding:11px 13px;font-size:.84rem;color:var(--mut);background:color-mix(in srgb,var(--teal) 8%,transparent)}
 .banner .ic{color:var(--teal);flex:none;margin-top:1px}
 .blk.editing{outline:2px dashed var(--line);outline-offset:4px;border-radius:20px;position:relative}

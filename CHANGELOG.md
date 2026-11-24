@@ -2,6 +2,11 @@
 
 Alle wichtigen Änderungen an „Strom & Wärme“. Das Format orientiert sich an [Keep a Changelog](https://keepachangelog.com/de/1.1.0/).
 
+## [2026.11.4.4b2] - 2026-11-24
+
+### Behoben
+- **Handy · Modul 0:** Der Plan und die ganze Seite waren auf dem iPhone nach rechts verschoben bzw. breiter als der Bildschirm (rechter Rand, „…“-Knopf und Zoom-Leiste abgeschnitten). Kein Element kann die Seite jetzt mehr breiter machen als den Bildschirm; der Plan passt sich immer der Breite an.
+
 ## [2026.11.4.4b1] - 2026-11-24
 
 Erste Testversion für 2026.11.4.4 – Fenster und Türen zeigen, ob sie offen sind. Modul 0 v0.12.
