@@ -6,7 +6,7 @@
 // Gespeichert wird je Installation: zufällige Kennung, Version, Kanal, erster/letzter Tag. Keine IP-Adresse,
 // kein User-Agent. Die Begrenzung pro Absender übernimmt eine Cloudflare-Rate-Limit-Regel (siehe Anleitung).
 
-import { errOwnStatus, validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
+import { dbErrMerge, dbErrSplit, errOwnStatus, validErrors, dbErrors, dbErrForget, dbErrCleanup, errLoad, errLoadOne, errRender, errRenderOne, ERR_CSS, ERR_MAX_BODY, tabs, validStatus, dbErrStatus, loadReleases, releaseMarks, markSvg, weekHtml, laggards, lagHtml } from "./fehler.js";
 export const SCHEMAS = [1, 2, 3];   // Schema 1: ohne Module · Schema 2: mit Modulliste · Schema 3 (Build 6): dazu HA-Version „2026.11“
 export const MODULES = { ww: "2 Warmwasser", en: "3 Energie", gs: "4 Gerätestrom", lu: "5 Lüftung", rb: "6 Rollläden", wp: "7 Wärmepumpe", ev: "8 E-Auto", wx: "9 Wetter", ga: "10 Garten", sf: "11 Sicherheit", pl: "12 Pool & Sauna", bt: "13 Batterie", dt: "14 Stromtarif", wa: "15 Wartung", sp: "16 Prognose", ef: "19 Hausfluss" };
 const MAX_BODY = 1024;
@@ -391,6 +391,17 @@ async function dashboard(req, env, url) {
     const origin = req.headers.get("origin"), site = req.headers.get("sec-fetch-site");
     if ((origin && origin !== `https://${env.DASH_HOST}`) || (!origin && site !== "same-origin")) return new Response("Fremde Herkunft", { status: 403, headers: { "cache-control": "no-store" } });
     let form; try { form = await req.formData(); } catch { return json(400, { ok: false }); }
+    const act = String(form.get("act") || "");
+    if (act === "merge") {   /* Build 8: diesen Fehler in einen anderen einordnen */
+      const m = await dbErrMerge(env.DB, fm[1], String(form.get("into") || ""), Date.now());
+      if (m.err) return json(m.err === "unbekannt" ? 404 : 400, { ok: false, error: m.err });
+      return new Response(null, { status: 303, headers: { location: `/fehler/${m.root}`, "cache-control": "no-store" } });
+    }
+    if (act === "split") {
+      const kid = String(form.get("fp") || "");
+      if (!(await dbErrSplit(env.DB, kid))) return json(404, { ok: false });
+      return new Response(null, { status: 303, headers: { location: `/fehler/${fm[1]}`, "cache-control": "no-store" } });
+    }
     const st = validStatus(form);
     if (!st) return json(400, { ok: false });
     if (!(await dbErrStatus(env.DB, fm[1], st, Date.now()))) return json(404, { ok: false });
@@ -398,6 +409,7 @@ async function dashboard(req, env, url) {
   }
   if (fm && fm[1]) {
     const D = await errLoadOne(env.DB, fm[1], today);
+    if (D && D.redirect) return new Response(null, { status: 302, headers: { location: `/fehler/${D.redirect}`, "cache-control": "no-store" } });
     return D ? html(page("Fehler · Strom &amp; Wärme", errRenderOne(D, env.GITHUB_REPO), today, (await errLoad(env.DB, today, 7)).week)) : html(page("Fehler · Strom &amp; Wärme", '<div class="c"><div class="empty">Diesen Fehler gibt es nicht (mehr).</div></div>', today), 404);
   }
   if (fm) {

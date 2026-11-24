@@ -11,7 +11,7 @@ Einrichtung: siehe `Anleitung_Statistik-Cloudflare-Worker.pdf`. Kurz:
     npx wrangler d1 execute stats --remote --file=schema.sql
     npx wrangler deploy                   # danach Access-Anwendung für dash.… anlegen, TEAM_DOMAIN/POLICY_AUD eintragen, erneut deploy
 
-Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
+Tests: `node --no-warnings test/test.js && node --no-warnings test/test_fehler.js && node --no-warnings test/test_build6.js && node --no-warnings test/test_build8.js` (Node ≥ 22.5, nutzt `node:sqlite` als D1-Ersatz).
 
 ## Fehler-Statistik (ab 2026.11.4.3b1)
 
@@ -62,3 +62,19 @@ Nur der Worker – keine Datenbank-Änderung:
 nur für vorhandene Gruppen. „ignorieren“ wird nicht gemeldet, „behoben“ ohne Version zählt als „offen“. Ältere Integrationen
 (Schema 1 und 2) bekommen die Antwort wie bisher ohne `status`. Die Integration zeigt den Status im Fehlerprotokoll und
 „Zum Update“, wenn die installierte Version älter als „behoben in …“ ist.
+
+## Build 8: Fehler zusammenführen
+
+Nur der Worker und eine neue, kleine Tabelle – kein Update der Integration:
+
+    npx wrangler d1 execute stats --remote --file=migrate-build8.sql
+    npx wrangler deploy
+
+(Mehrfach ausführen schadet nicht. Ohne die Tabelle läuft alles wie bisher, nur Zusammenführen geht dann nicht.)
+
+- Detailseite eines Fehlers: **„Mit … zusammenführen“** – Vorschläge mit gleicher Stelle im Code (★), gleicher Art und gleichem Modul zuerst. Der Fehler wird Teil des gewählten: Zahlen, Verlauf, Versionen, Release-Reife, Fehler je Modul und der Status laufen danach dort. Seine eigene Seite leitet weiter.
+- Auf der Seite des Haupt-Fehlers stehen die zusammengeführten Fehler mit **„Trennen“**. Getrennt hat jeder Fehler wieder seine eigenen Zahlen und seinen alten Status.
+- Gespeichert wird nur „Fingerabdruck B gehört zu A“ (`err_merge`); die Berichte selbst bleiben unverändert. Neue Berichte mit B landen automatisch bei A. Die Rückmeldung an Nutzer (Build 7) meldet für B den Status von A.
+- Kein Zusammenführen mit sich selbst oder im Kreis. Verweise auf gelöschte Fehler räumt der Worker selbst auf.
+
+Tests: zusätzlich `node --no-warnings test/test_build8.js`.

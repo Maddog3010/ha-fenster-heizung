@@ -15,3 +15,5 @@ CREATE TABLE IF NOT EXISTS err_reporters(rid TEXT PRIMARY KEY, last_ts INTEGER N
 CREATE TABLE IF NOT EXISTS err_days(day TEXT NOT NULL, rid TEXT NOT NULL, version TEXT NOT NULL, channel TEXT NOT NULL, ha TEXT,
   mods TEXT, PRIMARY KEY(day, rid));
 CREATE INDEX IF NOT EXISTS err_days_ver ON err_days(version);
+-- Build 8: Fehler zusammenführen („fp gehört zu into_fp“), Trennen = Zeile löschen
+CREATE TABLE IF NOT EXISTS err_merge(fp TEXT PRIMARY KEY, into_fp TEXT NOT NULL, day TEXT NOT NULL);
