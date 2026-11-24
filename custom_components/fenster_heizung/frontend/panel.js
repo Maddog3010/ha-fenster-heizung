@@ -16154,6 +16154,7 @@ class FensterHeizungPanel extends HTMLElement {
       else if (i.t === "d") out += `<g ${id}${a}><rect class="sfdg" x="${i.x - 15}" y="${i.y - 3.5}" width="30" height="7"></rect>${i.dg ? `<path class="sfda" d="M${i.x - 15} ${i.y - 6}v12M${i.x + 15} ${i.y - 6}v12"></path>` : `<path class="sfda" d="M${i.x - 15} ${i.y}a15 15 0 0 1 15 -15"${i.mh || i.mv ? ` transform="translate(${i.x} ${i.y}) scale(${i.mh ? -1 : 1} ${i.mv ? -1 : 1}) translate(${-i.x} ${-i.y})"` : ""}></path>`}<rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 16) - 2}" y="${i.y - 16}" width="${(this._grHw ? this._grHw(i) : 16) * 2 + 4}" height="32"></rect></g>`;
       else if (i.t === "f") out += `<g ${id}${a}><rect class="sffw" x="${i.x - 17}" y="${i.y - 3.5}" width="34" height="7"></rect><rect class="sfhit" x="${i.x - (this._grHw ? this._grHw(i) : 18) - 2}" y="${i.y - 14}" width="${(this._grHw ? this._grHw(i) : 18) * 2 + 4}" height="28"></rect></g>`;
       else if (i.t === "o") out += `<g ${id}><rect class="sfhit" x="${i.x}" y="${i.y}" width="${Math.max(8, i.w || 0)}" height="${Math.max(8, i.h || 0)}"${i.r ? ` transform="rotate(${i.r} ${i.x + (i.w || 0) / 2} ${i.y + (i.h || 0) / 2})"` : ""}></rect></g>`;
+      else if (i.t === "h" && i.hk === "heizkoerper" && this._grRadDim) { const sc = this._sfPl().scale || 40, R = this._grRadDim(i), w = Math.max(28, (R.L / 100) * sc + 8), h = Math.max(24, (R.D / 100) * sc + 8); out += `<g ${id}><rect class="sfhit" x="${i.x - w / 2}" y="${i.y - h / 2}" width="${w}" height="${h}" rx="6"${i.r ? ` transform="rotate(${i.r} ${i.x} ${i.y})"` : ""}></rect></g>`; }
       else if (i.t === "h") out += `<g ${id}><rect class="sfhit" x="${i.x - 14}" y="${i.y - 14}" width="28" height="28" rx="6"></rect></g>`;
       else if (i.t === "g") { out += `<g ${id}><rect class="sfhit" x="${i.x - 15}" y="${i.y - 15}" width="30" height="30" rx="7"></rect></g>`; }
       else if (i.t === "a") { const hw = this._grHw ? this._grHw(i) : 80; out += `<g ${id}${a}><rect class="sfhit" x="${i.x - hw}" y="${i.y - 10}" width="${hw * 2}" height="20"></rect></g>`; }
@@ -18928,10 +18929,26 @@ class FensterHeizungPanel extends HTMLElement {
     if (d === "camera") return { t: v === "streaming" ? "live" : "", on: v === "streaming" || v === "recording" };
     return { t: v === "on" ? "an" : v === "off" ? "aus" : v, on: v === "on" };
   }
+  /* Heizkörper wie in echt: Länge × Tiefe in cm, Lamellen, Thermostatkopf am Ende. Heizt er (hvac_action heating), glüht er und strahlt Wärme in den Raum. */
+  _grRadDim(i) { return { L: Math.max(30, Math.min(300, i.lw || 100)), D: Math.max(6, Math.min(30, i.dp || 10)) }; }
+  _grRadSvg(i, S, sc, T, hell, u) {
+    const { L, D } = this._grRadDim(i), w = (L / 100) * sc, h = Math.max(6, (D / 100) * sc), x = i.x, y = i.y, rot = i.r ? ` transform="rotate(${i.r} ${x} ${y})"` : "";
+    const s = this._hass.states[i.e], a = (s && s.attributes) || {}, heat = !!(S && a.hvac_action === "heating"), off = !s || ["off", "unavailable", "unknown"].includes(s.state), id = `${u || "g"}rad${String(i.id).replace(/[^a-z0-9]/gi, "")}`;
+    const body = heat ? `url(#${id}h)` : off ? (hell ? "#d1d5db" : "#4b5563") : hell ? "#f8fafc" : "#cbd5e1", edge = heat ? "#f97316" : off ? (hell ? "#9ca3af" : "#6b7280") : "#94a3b8";
+    const n = Math.max(3, Math.min(60, Math.round(w / Math.max(3, (6 / 100) * sc)))), ribs = Array.from({ length: n - 1 }, (_, j) => x - w / 2 + ((j + 1) * w) / n).map((rx) => `M${rx.toFixed(1)} ${(y - h / 2 + 1).toFixed(1)}V${(y + h / 2 - 1).toFixed(1)}`).join("");
+    const glow = heat ? `<g pointer-events="none"${rot}><rect x="${x - w / 2 - h}" y="${y - h * 2.6}" width="${w + 2 * h}" height="${h * 5.2}" rx="${h * 2.6}" fill="url(#${id}g)"><animate attributeName="opacity" values=".55;.9;.55" dur="3s" repeatCount="indefinite"/></rect></g>` : "";
+    const defs = heat ? `<defs><linearGradient id="${id}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdba74"/><stop offset=".5" stop-color="#f97316"/><stop offset="1" stop-color="#ea580c"/></linearGradient><radialGradient id="${id}g"><stop offset="0" stop-color="#f97316" stop-opacity=".45"/><stop offset="1" stop-color="#f97316" stop-opacity="0"/></radialGradient></defs>` : "";
+    const valve = `<circle cx="${x + w / 2 + h * 0.55}" cy="${y}" r="${Math.max(2.5, h * 0.55)}" fill="${heat ? "#fdba74" : hell ? "#fff" : "#e5e7eb"}" stroke="${edge}" stroke-width="1.2"/>`;
+    const lab = S && S.t ? S.t : "", lw = lab.length * 5.6 + 12, ly = y + Math.max(h, 10) / 2 + 4;
+    const chip = lab ? `<rect x="${x - lw / 2}" y="${ly}" width="${lw}" height="15" rx="7.5" fill="${hell ? "#fff" : "#0b1220"}" opacity=".92"/><text x="${x}" y="${ly + 11}" text-anchor="middle" font-size="9.5" font-weight="700" fill="${heat ? "#f97316" : T.sub}">${esc(lab)}</text>` : "";
+    const tit = `<title>Heizkörper ${num(L, 0)} × ${num(D, 0)} cm${i.e ? ` · ${esc(this._wzName(i.e))}` : ""}${lab ? ` · ${esc(lab)}` : ""}${heat ? " · heizt" : ""}</title>`;
+    return { under: defs + glow, over: `<g>${tit}<g${rot}><rect x="${x - w / 2}" y="${y - h / 2}" width="${w}" height="${h}" rx="${Math.min(3, h / 3)}" fill="${body}" stroke="${edge}" stroke-width="1.4"/><path d="${ribs}" stroke="${heat ? "#c2410c" : edge}" stroke-opacity=".7" stroke-width="1"/>${valve}</g>${chip}</g>` };
+  }
   _grTechSvg(P, fl, T, q, u, hell, only) {
     const K = this._grTK(), sc = P.scale > 0 ? P.scale : 40; let d = "", over = "";
     (P.items || []).filter((i) => i.t === "h" && i.fl === fl && (!only || this._grTk(i).g === only)).forEach((i) => {
       const k = this._grTk(i), S = this._grTechState(i), c = S && S.al ? "#ef4444" : k.c, on = !!(S && S.on), x = i.x, y = i.y, nf = k.g === "notfall";
+      if (k.k === "heizkoerper") { const R = this._grRadSvg(i, S, sc, T, hell, u); d += R.under; over += R.over; return; }   /* 2026.11.4.3b5: Heizkörper maßstäblich statt Symbol */
       if (k.k === "bewegung" || k.k === "kamera") {
         const R = (i.rg || (k.k === "kamera" ? 8 : 6)) * sc, fov = i.fov || (k.k === "kamera" ? 90 : 110), a0 = (((i.r || 0) - 90 - fov / 2) * Math.PI) / 180, a1 = (((i.r || 0) - 90 + fov / 2) * Math.PI) / 180;
         d += `<path d="M${x} ${y}L${x + R * Math.cos(a0)} ${y + R * Math.sin(a0)}A${R} ${R} 0 ${fov > 180 ? 1 : 0} 1 ${x + R * Math.cos(a1)} ${y + R * Math.sin(a1)}Z" fill="${c}" fill-opacity="${on ? 0.22 : 0.08}" stroke="${c}" stroke-opacity=".45" stroke-dasharray="4 4"/>`;
@@ -18958,6 +18975,7 @@ class FensterHeizungPanel extends HTMLElement {
     return `<details class="grtkd"><summary><span style="color:${k.c}">●</span> ${esc(k.n)} <small class="mut">· ändern</small></summary>${groups}</details>
       ${k.k === "notiz" ? `<div class="sffld"><label>Text der Notiz</label><textarea class="osel" data-f="grxtx" rows="3" maxlength="200" placeholder="z. B. Wasserrohr in der Wand, Ersatzschlüssel im Schrank">${esc(sel.tx || "")}</textarea></div>` : ""}
       ${want.length ? `<div class="sffld"><label>Verbinden mit Home Assistant (optional)</label>${cand.length || sel.e ? this._grPick(sel, cand, want.some((w) => w.startsWith("climate")) ? /thermostat|heiz|trv|radiator|ventil/i : new RegExp(String(k.n || "").split(/[\s&-]/)[0].replace(/[^a-zäöüß]/gi, "") || "x", "i")) : `<div class="mut sm">Keine passende Entität gefunden.</div>`}${S ? `<div class="grwall ok" style="margin-top:6px">${ic("check", 14)}<span>${esc(this._wzName(sel.e))} · <b>${esc(S.t || "verbunden")}</b></span></div>` : ""}</div>` : ""}
+      ${k.k === "heizkoerper" ? (() => { const { L, D } = this._grRadDim(sel); return step("grxhlw", "Länge", num(L, 0), "cm") + step("grxhdp", "Tiefe", num(D, 0), "cm") + `<div class="grseg" style="margin:2px 0 6px"><button data-act="grxhdir" data-s="-15">↺ 15°</button><button data-act="grxhdir" data-s="15">↻ 15°</button><button data-act="grxhdir" data-s="90">↻ 90°</button><button data-act="grxhwall">An Wand</button></div>`; })() : ""}
       ${cone ? step("grxhrg", "Reichweite", num(sel.rg || (k.k === "kamera" ? 8 : 6), 1), "m") + step("grxhfov", "Blickwinkel", sel.fov || (k.k === "kamera" ? 90 : 110), "°") + `<div class="grseg" style="margin:2px 0 6px"><button data-act="grxhdir" data-s="-15">↺ 15°</button><button data-act="grxhdir" data-s="15">↻ 15°</button><button data-act="grxhdir" data-s="90">↻ 90°</button></div>` : ""}
       ${rad ? step("grxhrg", "Reichweite", num(sel.rg || (k.k === "wlan" ? 10 : 6), 1), "m") : ""}
       ${k.g === "notfall" ? `<div class="mut sm" style="margin-top:6px">Notfall-Punkte erscheinen auch im Grundriss von Modul 11 – im Alarm sieht man sofort, wo Haupthahn, Sicherungen und Feuerlöscher sind.</div>` : ""}`;
@@ -18970,6 +18988,13 @@ class FensterHeizungPanel extends HTMLElement {
     if (a === "grxhe") { this._sfSnap(); cur.e = v; this._render(); return true; }
     if (a === "grxhrg") { this._sfSnap(); const k = this._grTk(cur), base = cur.rg || (k.k === "kamera" ? 8 : k.k === "wlan" ? 10 : 6); cur.rg = Math.max(1, Math.min(30, Math.round((base + s * (base >= 10 ? 1 : 0.5)) * 2) / 2)); this._render(); return true; }
     if (a === "grxhfov") { this._sfSnap(); const base = cur.fov || (this._grTk(cur).k === "kamera" ? 90 : 110); cur.fov = Math.max(20, Math.min(360, base + s * 10)); this._render(); return true; }
+    if (a === "grxhlw") { this._sfSnap(); cur.lw = Math.max(30, Math.min(300, this._grRadDim(cur).L + s * 10)); this._render(); return true; }
+    if (a === "grxhdp") { this._sfSnap(); cur.dp = Math.max(6, Math.min(30, this._grRadDim(cur).D + s * 2)); this._render(); return true; }
+    if (a === "grxhwall") {   /* an die nächste Wand stellen: parallel, auf der Raumseite, mit kleinem Abstand */
+      const sn = this._sfSnapOpen(cur.fl, cur.x, cur.y, 120, null); if (!sn) { this._toast("Keine Wand in der Nähe"); return true; }
+      this._sfSnap(); const sc = this._sfPl().scale || 40, r = (sn.r * Math.PI) / 180, nx = -Math.sin(r), ny = Math.cos(r), side = Math.sign((cur.x - sn.x) * nx + (cur.y - sn.y) * ny) || 1, off = 10 + (this._grRadDim(cur).D / 200) * sc + 0.04 * sc;
+      cur.x = Math.round(sn.x + nx * side * off); cur.y = Math.round(sn.y + ny * side * off); cur.r = sn.r; this._render(); return true;
+    }
     if (a === "grxhdir") { this._sfSnap(); cur.r = ((((cur.r || 0) + s) % 360) + 360) % 360; this._render(); return true; }
     return false;
   }
